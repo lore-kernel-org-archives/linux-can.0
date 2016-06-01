@@ -1,72 +1,164 @@
-From: Marek Vasut <marex@denx.de>
-Subject: Re: [RFC] K-Line protocol via SocketCAN
-Date: Wed, 01 Jun 2016 04:26:16 +0200
-Message-ID: <574E47C8.4000709@denx.de>
-References: <573E491E.1000906@denx.de> <CAJ=nTsu_bJgj1A5JNJNAd9HAao5493CnofbQpJ_qftYOiCgaYw@mail.gmail.com> <573EAE9D.20006@hartkopp.net> <573EFC23.2040906@denx.de>
+From: Richard Andrysek <richard.andrysek@gomtec.de>
+Subject: AW: c_can driver sometimes sends first two bytes filled with zeros
+Date: Wed, 1 Jun 2016 09:40:03 +0000
+Message-ID: <0120733A154AE74CA608A286CE7FFD2621DD3945@rg-contact.RG.local>
+References: <0120733A154AE74CA608A286CE7FFD2621D9A343@rg-contact.RG.local>
+ <574349BB.3010703@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:56511 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750927AbcFAC0V (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 May 2016 22:26:21 -0400
-In-Reply-To: <573EFC23.2040906@denx.de>
+Received: from apollon.gomtec.de ([80.153.46.48]:57428 "EHLO post.gomtec.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751415AbcFAJkH convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Jun 2016 05:40:07 -0400
+In-Reply-To: <574349BB.3010703@grandegger.com>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Mirza Krak <mirza.krak@hostmobility.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Thor Thayer <tthayer@opensource.altera.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>
 
-On 05/20/2016 01:59 PM, Marek Vasut wrote:
-> On 05/20/2016 08:28 AM, Oliver Hartkopp wrote:
->> Hi,
-> 
-> Hi!
+Hi Wolfgang,
 
-Hi again,
+Sorry for one week break. Good idea with dumps, see answers below.
 
->> I removed Dave Miller from the discussion not to be tagged as SPAM :-)
->> That's not Daves focus as networking maintainer ...
-> 
-> Heh, all right.
-> 
->> Here's an update about the LIN Status from Pavel Pisa:
->>
->> http://marc.info/?l=linux-can&m=146163127517268&w=2
-> 
-> I am aware of the sllin. There is also freediag , which implements kline
-> protocol.
-> 
->> I remember a K-Line implementation for Linux where we had a MPC5200 UART
->> which we programmed with bit-banging of some control line to do the
->> 5bit/s opening pattern.
->> After that we went to 10400 bit/s and did some K-Line communication.
->> All this was done by a user space application on /dev/ttyS0.
-> 
-> Yes, and this does make perfect sense until you start dealing with
-> faster modes and need more precise timing. The K-Line is limited by
-> 250kBaud/s bus speed.
-> 
->> What would be the advantages to put this into kernel space (or into the
->> CAN networking infrastructure)?
-> 
-> I see two for putting this into the kernel:
-> - At faster bus speeds, you can achieve more precise timing if this is
->   in the kernel, both of the inter-byte delay and also for the
->   timestamps. Having this in the kernel even allows usage of the
->   realtime extensions if needed.
-> - Dedicated hardware driver can plug into such K-Line infrastructure.
->   Such hardware might be needed to support the faster modes to further
->   increase the timing precision.
-> 
-> And two for using socketcan/network interface:
-> - The addressing support of the network stack can be mapped to K-Line
->   bus addresses.
-> - The rtnl can be used as an extensible interface for configuring the
->   K-Line parameters.
+>> The official "cansend" does not support "--loop".
+I've made the extra test program, please see my email from " 20 May 14:=
+01 2016	Richard Andrysek".
+With this test I've made following steps.
 
-What do you think about putting the KLine support into socketcan stack ?
+>>ip  -s -d link show
+After 1 hour I've called this command
+# ip -s -d link show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mod=
+e DEFAULT group default
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 promiscuity 0
+    RX: bytes  packets  errors  dropped overrun mcast
+    0          0        0       0       0       0
+    TX: bytes  packets  errors  dropped carrier collsns
+    0          0        0       0       0       0
+2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN=
+ mode DEFAULT group default qlen 10
+    link/can  promiscuity 0
+    can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
+          bitrate 1000000 sample-point 0.750
+          tq 50 prop-seg 7 phase-seg1 7 phase-seg2 5 sjw 1
+          c_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
+          clock 100000000
+          re-started bus-errors arbit-lost error-warn error-pass bus-of=
+f
+          0          0          0          0          0          0
+    RX: bytes  packets  errors  dropped overrun mcast
+    0          0        0       0       0       0
+    TX: bytes  packets  errors  dropped carrier collsns
+    85337216   10667152 0       0       0       0
+3: can1: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN=
+ mode DEFAULT group default qlen 10
+    link/can  promiscuity 0
+    can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
+          bitrate 1000000 sample-point 0.750
+          tq 50 prop-seg 7 phase-seg1 7 phase-seg2 5 sjw 1
+          c_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc 1
+          clock 100000000
+          re-started bus-errors arbit-lost error-warn error-pass bus-of=
+f
+          0          0          0          0          0          0
+    RX: bytes  packets  errors  dropped overrun mcast
+    0          0        0       0       0       0
+    TX: bytes  packets  errors  dropped carrier collsns
+    85337216   10667152 0       0       0       0
 
--- 
-Best regards,
-Marek Vasut
+>> run "candump any,0:0,#FFFFFFFF"
+I can run following commands, I let to run for 5min, 10 min, and more:
+  # candump can0 | grep -v "01 02 03 04"
+  interface =3D can0, family =3D 29, type =3D 3, proto =3D 1
+   Or
+ # candump can1 | grep -v "01 02 03 04"
+ interface =3D can1, family =3D 29, type =3D 3, proto =3D 1=20
+
+Nothing except a first line, which is OK.
+
+Summary:
+    If I understand it correctly socketcan is OK. On the bus I have log=
+ging without any error, so from Altera to PEAK it is also OK. It is som=
+ewhere between "socketcan layer" and peripheral out buffer. What can I =
+do now? E.g. shall I try to make the  atomic call over " priv->write_re=
+g(...)", if yes how?
+
+CH.
+
+Richard
+   =20
+
+-----Urspr=FCngliche Nachricht-----
+Von: Wolfgang Grandegger [mailto:wg@grandegger.com]=20
+Gesendet: Montag, 23. Mai 2016 20:20
+An: Richard Andrysek <richard.andrysek@gomtec.de>; linux-can@vger.kerne=
+l.org
+Betreff: Re: c_can driver sometimes sends first two bytes filled with z=
+eros
+
+Hello,
+
+Am 12.05.2016 um 11:23 schrieb Richard Andrysek:
+> We can reproduce an issue with the canutils. We send messages in the =
+loop with non-zero bytes and from time to time we get first two bytes o=
+f the message with zero values. The test script looks so:
+>
+> #!/bin/sh
+>
+> echo "Press [CTRL+C] to stop.."
+> while true
+> do
+>                 cansend can1 --loop=3D15 -i 933 0xde 0xde 0xde 0xde 0=
+xde=20
+> 0xde done
+>
+> With CAN analyzer we see normally the right message, but in cycles ~1=
+min we see first two bytes are zero.
+>
+> If we add some delays between messages, like this:
+>
+> do
+>                 cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0x=
+de 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
+>                 usleep 5
+>
+> done
+>
+> It works fine.
+>
+> We use Altera Cyclone V, where the  c_can driver is used. It runs wit=
+h Linux kernel 3.16, but I've checked 4.5 version of a driver and it is=
+ a same one.
+>
+> Have somebody idea how to find a reason for that?
+
+The official "cansend" does not support "--loop". The official canutils=
+ have cangen and canfdtest for more thorough testing. Anyway, does "ip =
+-s -d link show" report any errors? And could you run "candump any,0:0,=
+#FFFFFFFF" while sending. Does it also list the messages with the wrong=
+ data?
+
+Wolfgang.
