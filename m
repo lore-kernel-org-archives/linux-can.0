@@ -1,195 +1,110 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: c_can driver sometimes sends first two bytes filled with zeros
-Date: Wed, 1 Jun 2016 15:09:55 +0200
-Message-ID: <574EDEA3.5090204@grandegger.com>
-References: <0120733A154AE74CA608A286CE7FFD2621D9A343@rg-contact.RG.local>
- <574349BB.3010703@grandegger.com>
- <0120733A154AE74CA608A286CE7FFD2621DD3945@rg-contact.RG.local>
+From: Amr Bekhit <amrbekhit@gmail.com>
+Subject: Re: Flooding AT91_CAN peripheral with messages causes it to stop
+ receiving any more messages
+Date: Wed, 1 Jun 2016 14:21:17 +0100
+Message-ID: <CAOLz05qKWrDK2f6tg9wyY6HsQp1m=jvN+KF4v5z2u0xUakSQCw@mail.gmail.com>
+References: <CAOLz05quWjxFaxdPcLvybc4YdTmE+qUGhbKUCjji6DGNAUwZ3g@mail.gmail.com>
+ <1834894.mYn6oCiL2x@ws-stein> <57275BE6.5060905@grandegger.com> <CAOLz05qzdyPk2CoUZH4F0-b5syJDQehN6rEBoVo-7fpngQgxPw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy01.manitu.net ([217.11.48.140]:51408 "EHLO
-	mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751355AbcFANJ7 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Jun 2016 09:09:59 -0400
-In-Reply-To: <0120733A154AE74CA608A286CE7FFD2621DD3945@rg-contact.RG.local>
+Received: from mail-wm0-f48.google.com ([74.125.82.48]:37573 "EHLO
+	mail-wm0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751570AbcFANVi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 1 Jun 2016 09:21:38 -0400
+Received: by mail-wm0-f48.google.com with SMTP id z87so29337515wmh.0
+        for <linux-can@vger.kernel.org>; Wed, 01 Jun 2016 06:21:37 -0700 (PDT)
+In-Reply-To: <CAOLz05qzdyPk2CoUZH4F0-b5syJDQehN6rEBoVo-7fpngQgxPw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Richard Andrysek <richard.andrysek@gomtec.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Thor Thayer <tthayer@opensource.altera.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>, mkl@pengutronix.de, linux-can@vger.kernel.org
 
-Hello Richard,
+Hi Wolfgang and Alexander,
 
-Am 01.06.2016 um 11:40 schrieb Richard Andrysek:
-> Hi Wolfgang,
+@Wolfgang: using the patch you sent to me, I ran the test twice until
+the unit stopped responding to messages. After taking the can
+interface down, here is the output from the console for both tests:
+
+# ifconfig can0 down
+at91_can f8004000.can can0: reg_sr=1
+at91_can f8004000.can can0: tx_next=0
+at91_can f8004000.can can0: tx_echo=0
+at91_can f8004000.can can0: rx_next=6
+
+# ifconfig can0 down
+at91_can f8004000.can can0: reg_sr=1
+at91_can f8004000.can can0: tx_next=8042
+at91_can f8004000.can can0: tx_echo=8042
+at91_can f8004000.can can0: rx_next=6
+
+I've also tried out the patch suggested by Alexander and that seems to
+work fine - I was unable to get the CAN device to lock up after
+running it for over a day continuously (test repeated twice). As I
+understood it, the aim of the patch was to get the messages out of the
+CAN peripheral immediately during the interrupt and store them in a
+kfifo for later processing. From my testing, this does appear to have
+solved the problem (or severely reduced the probability of it
+happening).
+
+Amr
+
+On 3 May 2016 at 09:27, Amr Bekhit <amrbekhit@gmail.com> wrote:
+> Hi Wolfgang and Alexander,
 >
-> Sorry for one week break. Good idea with dumps, see answers below.
->
->>> The official "cansend" does not support "--loop".
-> I've made the extra test program, please see my email from " 20 May 1=
-4:01 2016	Richard Andrysek".
-> With this test I've made following steps.
->
->>> ip  -s -d link show
-> After 1 hour I've called this command
-> # ip -s -d link show
-> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN m=
-ode DEFAULT group default
->      link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 promiscuit=
-y 0
->      RX: bytes  packets  errors  dropped overrun mcast
->      0          0        0       0       0       0
->      TX: bytes  packets  errors  dropped carrier collsns
->      0          0        0       0       0       0
-> 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNO=
-WN mode DEFAULT group default qlen 10
->      link/can  promiscuity 0
->      can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
->            bitrate 1000000 sample-point 0.750
-
->            tq 50 prop-seg 7 phase-seg1 7 phase-seg2 5 sjw 1
->            c_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc=
- 1
->            clock 100000000
->            re-started bus-errors arbit-lost error-warn error-pass bus=
--off
->            0          0          0          0          0          0
->      RX: bytes  packets  errors  dropped overrun mcast
->      0          0        0       0       0       0
->      TX: bytes  packets  errors  dropped carrier collsns
->      85337216   10667152 0       0       0       0
-> 3: can1: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNO=
-WN mode DEFAULT group default qlen 10
->      link/can  promiscuity 0
->      can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
->            bitrate 1000000 sample-point 0.750
->            tq 50 prop-seg 7 phase-seg1 7 phase-seg2 5 sjw 1
->            c_can: tseg1 2..16 tseg2 1..8 sjw 1..4 brp 1..1024 brp-inc=
- 1
->            clock 100000000
->            re-started bus-errors arbit-lost error-warn error-pass bus=
--off
->            0          0          0          0          0          0
->      RX: bytes  packets  errors  dropped overrun mcast
->      0          0        0       0       0       0
->      TX: bytes  packets  errors  dropped carrier collsns
->      85337216   10667152 0       0       0       0
-
-OK, no errors reported.
-
->>> run "candump any,0:0,#FFFFFFFF"
-> I can run following commands, I let to run for 5min, 10 min, and more=
-:
->    # candump can0 | grep -v "01 02 03 04"
->    interface =3D can0, family =3D 29, type =3D 3, proto =3D 1
->     Or
->   # candump can1 | grep -v "01 02 03 04"
->   interface =3D can1, family =3D 29, type =3D 3, proto =3D 1
->
-> Nothing except a first line, which is OK.
-
-Ok, anyway, please use the official CAN utilities [1] sooner than later=
-=2E
-
-
-> Summary:
->      If I understand it correctly socketcan is OK. On the bus I have =
-logging without any error, so from Altera to PEAK it is also OK. It is =
-somewhere between "socketcan layer" and peripheral out buffer. What can=
- I do now? E.g. shall I try to make the  atomic call over " priv->write=
-_reg(...)", if yes how?
-
-Making "priv->write_regs() atomic is something I would try as well. My=20
-suspicion is that something goes wrong writing(/reading) the controller=
-=20
-registers.
-
-[1] https://github.com/linux-can/can-utils
-
-Wolfgang.
-
-> CH.
->
-> Richard
+> Thanks for both of your responses.
 >
 >
-> -----Urspr=FCngliche Nachricht-----
-> Von: Wolfgang Grandegger [mailto:wg@grandegger.com]
-> Gesendet: Montag, 23. Mai 2016 20:20
-> An: Richard Andrysek <richard.andrysek@gomtec.de>; linux-can@vger.ker=
-nel.org
-> Betreff: Re: c_can driver sometimes sends first two bytes filled with=
- zeros
+> @Alexander: Thanks for pointing out the patch.
 >
-> Hello,
+> @Wolfgang: In response to your earlier request, I've uploaded my dts
+> file to pastebin, which can find at http://pastebin.com/tNp2PnW4. I'll
+> give the patch mentioned by Alexander and your one a try and let you
+> know how it goes.
 >
-> Am 12.05.2016 um 11:23 schrieb Richard Andrysek:
->> We can reproduce an issue with the canutils. We send messages in the=
- loop with non-zero bytes and from time to time we get first two bytes =
-of the message with zero values. The test script looks so:
+> Amr
+>
+> On 2 May 2016 at 14:53, Wolfgang Grandegger <wg@grandegger.com> wrote:
+>> Hello Alexander,
 >>
->> #!/bin/sh
+>> Am 02.05.2016 um 08:23 schrieb Alexander Stein:
+>>>
+>>> On Tuesday 05 April 2016 14:10:48, Amr Bekhit wrote:
+>>>>
+>>>> I working on a board based on the AT91SAM9X25 SoC and I'm using
+>>>> integrated CAN peripheral. I seem to have run into an issue whereby
+>>>> sending lots of messages very rapidly in quick succession causes the
+>>>> CAN peripheral to then stop receiving any messages at all. The only
+>>>> way to bring it back to a functional state is to bring the network
+>>>> interface down and then back up again.
+>>>> [...]
+>>>> I then start sending CAN messages to the unit using a PCAN-USB adapter
+>>>> that is plugged into a test Linux PC. After bringing up the CAN
+>>>> interface on the test PC, messages can be continuously sent using the
+>>>> following bash script:
+>>>> [...]
+>>>> I then leave the system running for some time (1.5 hours typically,
+>>>> may vary), periodically running ifconfig can0 to check to see if new
+>>>> packets are being received. After a while, the can interface will stop
+>>>> receiving new packets, even though the test PC is still transmitting
+>>>> them. Stopping and restarting the CAN transmissions on the test PC
+>>>> does not solve the problem. The interface does not appear to be in the
+>>>> bus off state, as shown by running the following:
+>>>
+>>>
+>>> That sounds a bit like my getting stuck problem in
+>>> http://linux-can.vger.kernel.narkive.com/bBQqK84G/resend-patch-net-can-at91-can-c-decrease-likelyhood-of-rx-overruns#post2
+>>>
+>>> The patch post1 at least keeps the driver working. Although I don't know
+>>> what
+>>> has changed in at91_can meanwhile.
 >>
->> echo "Press [CTRL+C] to stop.."
->> while true
->> do
->>                  cansend can1 --loop=3D15 -i 933 0xde 0xde 0xde 0xde=
- 0xde
->> 0xde done
 >>
->> With CAN analyzer we see normally the right message, but in cycles ~=
-1min we see first two bytes are zero.
+>> Thanks for pointing me to that patch. It still applies to Linux 4.1 with
+>> some minor fixes. Amr, could you please give it a try. Please let me know if
+>> you need help.
 >>
->> If we add some delays between messages, like this:
+>> Anyway, I think the driver should not hang even in case of overflows. I will
+>> have a closer look later this week.
 >>
->> do
->>                  cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde =
-0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->> 	cansend can1 --loop=3D1 -i 933 0xde 0xde 0xde 0xde 0xde 0xde
->>                  usleep 5
->>
->> done
->>
->> It works fine.
->>
->> We use Altera Cyclone V, where the  c_can driver is used. It runs wi=
-th Linux kernel 3.16, but I've checked 4.5 version of a driver and it i=
-s a same one.
->>
->> Have somebody idea how to find a reason for that?
->
-> The official "cansend" does not support "--loop". The official canuti=
-ls have cangen and canfdtest for more thorough testing. Anyway, does "i=
-p -s -d link show" report any errors? And could you run "candump any,0:=
-0,#FFFFFFFF" while sending. Does it also list the messages with the wro=
-ng data?
->
-> Wolfgang.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
+>> Wolfgang.
