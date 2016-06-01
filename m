@@ -1,93 +1,72 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v3 1/5] can: bcm: fix indention style
-Date: Tue, 31 May 2016 20:23:04 +0200
-Message-ID: <1464718988-9386-2-git-send-email-socketcan@hartkopp.net>
-References: <1464718988-9386-1-git-send-email-socketcan@hartkopp.net>
+From: Marek Vasut <marex@denx.de>
+Subject: Re: [RFC] K-Line protocol via SocketCAN
+Date: Wed, 01 Jun 2016 04:26:16 +0200
+Message-ID: <574E47C8.4000709@denx.de>
+References: <573E491E.1000906@denx.de> <CAJ=nTsu_bJgj1A5JNJNAd9HAao5493CnofbQpJ_qftYOiCgaYw@mail.gmail.com> <573EAE9D.20006@hartkopp.net> <573EFC23.2040906@denx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:18486 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755602AbcEaSX0 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 31 May 2016 14:23:26 -0400
-In-Reply-To: <1464718988-9386-1-git-send-email-socketcan@hartkopp.net>
+Received: from mail-out.m-online.net ([212.18.0.10]:56511 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750927AbcFAC0V (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 31 May 2016 22:26:21 -0400
+In-Reply-To: <573EFC23.2040906@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Mirza Krak <mirza.krak@hostmobility.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/bcm.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+On 05/20/2016 01:59 PM, Marek Vasut wrote:
+> On 05/20/2016 08:28 AM, Oliver Hartkopp wrote:
+>> Hi,
+> 
+> Hi!
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 6863310..1f4ccc3 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -184,42 +184,42 @@ static int bcm_proc_show(struct seq_file *m, void *v)
- 			continue;
- 
- 		seq_printf(m, "rx_op: %03X %-5s ",
--				op->can_id, bcm_proc_getifname(ifname, op->ifindex));
-+			   op->can_id, bcm_proc_getifname(ifname, op->ifindex));
- 		seq_printf(m, "[%u]%c ", op->nframes,
--				(op->flags & RX_CHECK_DLC)?'d':' ');
-+			   (op->flags & RX_CHECK_DLC)?'d':' ');
- 		if (op->kt_ival1.tv64)
- 			seq_printf(m, "timeo=%lld ",
--					(long long)
--					ktime_to_us(op->kt_ival1));
-+				   (long long)
-+				   ktime_to_us(op->kt_ival1));
- 
- 		if (op->kt_ival2.tv64)
- 			seq_printf(m, "thr=%lld ",
--					(long long)
--					ktime_to_us(op->kt_ival2));
-+				   (long long)
-+				   ktime_to_us(op->kt_ival2));
- 
- 		seq_printf(m, "# recv %ld (%ld) => reduction: ",
--				op->frames_filtered, op->frames_abs);
-+			   op->frames_filtered, op->frames_abs);
- 
- 		reduction = 100 - (op->frames_filtered * 100) / op->frames_abs;
- 
- 		seq_printf(m, "%s%ld%%\n",
--				(reduction == 100)?"near ":"", reduction);
-+			   (reduction == 100)?"near ":"", reduction);
- 	}
- 
- 	list_for_each_entry(op, &bo->tx_ops, list) {
- 
- 		seq_printf(m, "tx_op: %03X %s [%u] ",
--				op->can_id,
--				bcm_proc_getifname(ifname, op->ifindex),
--				op->nframes);
-+			   op->can_id,
-+			   bcm_proc_getifname(ifname, op->ifindex),
-+			   op->nframes);
- 
- 		if (op->kt_ival1.tv64)
- 			seq_printf(m, "t1=%lld ",
--					(long long) ktime_to_us(op->kt_ival1));
-+				   (long long) ktime_to_us(op->kt_ival1));
- 
- 		if (op->kt_ival2.tv64)
- 			seq_printf(m, "t2=%lld ",
--					(long long) ktime_to_us(op->kt_ival2));
-+				   (long long) ktime_to_us(op->kt_ival2));
- 
- 		seq_printf(m, "# sent %ld\n", op->frames_abs);
- 	}
-@@ -282,7 +282,7 @@ static void bcm_can_tx(struct bcm_op *op)
- 	/* reached last frame? */
- 	if (op->currframe >= op->nframes)
- 		op->currframe = 0;
-- out:
-+out:
- 	dev_put(dev);
- }
- 
+Hi again,
+
+>> I removed Dave Miller from the discussion not to be tagged as SPAM :-)
+>> That's not Daves focus as networking maintainer ...
+> 
+> Heh, all right.
+> 
+>> Here's an update about the LIN Status from Pavel Pisa:
+>>
+>> http://marc.info/?l=linux-can&m=146163127517268&w=2
+> 
+> I am aware of the sllin. There is also freediag , which implements kline
+> protocol.
+> 
+>> I remember a K-Line implementation for Linux where we had a MPC5200 UART
+>> which we programmed with bit-banging of some control line to do the
+>> 5bit/s opening pattern.
+>> After that we went to 10400 bit/s and did some K-Line communication.
+>> All this was done by a user space application on /dev/ttyS0.
+> 
+> Yes, and this does make perfect sense until you start dealing with
+> faster modes and need more precise timing. The K-Line is limited by
+> 250kBaud/s bus speed.
+> 
+>> What would be the advantages to put this into kernel space (or into the
+>> CAN networking infrastructure)?
+> 
+> I see two for putting this into the kernel:
+> - At faster bus speeds, you can achieve more precise timing if this is
+>   in the kernel, both of the inter-byte delay and also for the
+>   timestamps. Having this in the kernel even allows usage of the
+>   realtime extensions if needed.
+> - Dedicated hardware driver can plug into such K-Line infrastructure.
+>   Such hardware might be needed to support the faster modes to further
+>   increase the timing precision.
+> 
+> And two for using socketcan/network interface:
+> - The addressing support of the network stack can be mapped to K-Line
+>   bus addresses.
+> - The rtnl can be used as an extensible interface for configuring the
+>   K-Line parameters.
+
+What do you think about putting the KLine support into socketcan stack ?
+
 -- 
-2.8.1
-
+Best regards,
+Marek Vasut
