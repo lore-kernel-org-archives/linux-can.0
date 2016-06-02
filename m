@@ -1,99 +1,99 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: [RESEND PATCH v5 2/2] can: rcar_can: Move Renesas CAN driver to rcar dir
-Date: Thu,  2 Jun 2016 10:45:02 +0100
-Message-ID: <1464860702-46087-3-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+From: Ulrich Hecht <ulrich.hecht@gmail.com>
+Subject: Re: [RESEND PATCH v5 1/2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
+Date: Thu, 2 Jun 2016 18:01:59 +0200
+Message-ID: <CAO3366wP+tBaGbrMceupcJu0agW5Euo3NBNwijNCmpM1XcDGmQ@mail.gmail.com>
 References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1464860702-46087-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor4.renesas.com ([210.160.252.174]:22865 "EHLO
-	relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1752849AbcFBJvS (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 2 Jun 2016 05:51:18 -0400
-In-Reply-To: <1464860702-46087-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de, wg@grandegger.com, socketcan@hartkopp.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, chris.paterson2@renesas.com, horms@verge.net.au, magnus.damm@gmail.com, ulrich.hecht@gmail.com, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+	<1464860702-46087-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+	<1464860702-46087-2-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <1464860702-46087-2-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Cc: mkl@pengutronix.de, wg@grandegger.com, socketcan@hartkopp.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, chris.paterson2@renesas.com, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This patch clubs the Renesas controller drivers in one rcar dir.
+Thank you for your patch.
 
-Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
----
- drivers/net/can/Kconfig               | 10 ----------
- drivers/net/can/Makefile              |  1 -
- drivers/net/can/rcar/Kconfig          | 10 ++++++++++
- drivers/net/can/rcar/Makefile         |  3 ++-
- drivers/net/can/{ => rcar}/rcar_can.c |  0
- 5 files changed, 12 insertions(+), 12 deletions(-)
- rename drivers/net/can/{ => rcar}/rcar_can.c (100%)
+On Thu, Jun 2, 2016 at 11:45 AM, Ramesh Shanmugasundaram
+<ramesh.shanmugasundaram@bp.renesas.com> wrote:
+[...]
+> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+> new file mode 100644
+> index 0000000..e198732
+> --- /dev/null
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
+> @@ -0,0 +1,1624 @@
+> +/* Renesas R-Car CAN FD device driver
+> + *
+> + * Copyright (C) 2015 Renesas Electronics Corp.
+> + *
+> + * This program is free software; you can redistribute  it and/or modify it
+> + * under  the terms of  the GNU General  Public License as published by the
+> + * Free Software Foundation;  either version 2 of the  License, or (at your
+> + * option) any later version.
+> + */
+> +
+> +/* The R-Car CAN FD controller can operate in either one of the below two modes
+> + *  - CAN FD only mode
+> + *  - Classical CAN (CAN 2.0) only mode
+> + *
+> + * This driver puts the controller in CAN FD only mode by default. In this
+> + * mode, the controller acts as a CAN FD node that can also interoperate with
+> + * CAN 2.0 nodes.
+> + *
+> + * As of now, this driver does not support the Classical CAN (CAN 2.0) mode,
+> + * which is handled by a different register map compared to CAN FD only mode.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/moduleparam.h>
+> +#include <linux/kernel.h>
+> +#include <linux/types.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/errno.h>
+> +#include <linux/netdevice.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/can/led.h>
+> +#include <linux/can/dev.h>
+> +#include <linux/clk.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/bitmap.h>
+> +#include <linux/bitops.h>
+> +#include <linux/iopoll.h>
+> +
+> +#define RCANFD_DRV_NAME                        "rcar_canfd"
+> +
+> +#define RCANFD_FIFO_DEPTH              8       /* Tx FIFO depth */
+> +#define RCANFD_NAPI_WEIGHT             8       /* Rx poll quota */
+> +
+> +#define RCANFD_NUM_CHANNELS            2       /* Two channels max */
+> +#define RCANFD_CHANNELS_MASK           BIT((RCANFD_NUM_CHANNELS) - 1)
+> +
+> +/* Rx FIFO is a global resource of the controller. There are 8 such FIFOs
+> + * available. Each channel gets a dedicated Rx FIFO (i.e.) the channel
+> + * number is added to RFFIFO index.
+> + */
+> +#define RCANFD_RFFIFO_IDX              0
+> +
+> +/* Tx/Rx or Common FIFO is a per channel resource. Each channel has 3 Common
+> + * FIFOs dedicated to them. Use the first (index 0) FIFO out of the 3 for Tx.
+> + */
+> +#define RCANFD_CFFIFO_IDX              0
+> +
+> +/* Global register bits */
+> +#define RCANFD_GINTF_CANFD             BIT(0)
+> +
+> +#define RCANFD_GCFG_TPRI               BIT(0)
+> +#define RCANFD_GCFG_DCE                        BIT(1)
+> +#define RCANFD_GCFG_DCS                        BIT(4)
+> +#define RCANFD_GCFG_CMPOC              BIT(5)
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index 13003a9..22570ea 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -104,16 +104,6 @@ config CAN_JANZ_ICAN3
- 	  This driver can also be built as a module. If so, the module will be
- 	  called janz-ican3.ko.
- 
--config CAN_RCAR
--	tristate "Renesas R-Car CAN controller"
--	depends on ARCH_RENESAS || ARM
--	---help---
--	  Say Y here if you want to use CAN controller found on Renesas R-Car
--	  SoCs.
--
--	  To compile this driver as a module, choose M here: the module will
--	  be called rcar_can.
--
- config CAN_SUN4I
- 	tristate "Allwinner A10 CAN controller"
- 	depends on MACH_SUN4I || MACH_SUN7I || COMPILE_TEST
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index 226d5b5..26ba4b7 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -25,7 +25,6 @@ obj-$(CONFIG_CAN_IFI_CANFD)	+= ifi_canfd/
- obj-$(CONFIG_CAN_JANZ_ICAN3)	+= janz-ican3.o
- obj-$(CONFIG_CAN_MSCAN)		+= mscan/
- obj-$(CONFIG_CAN_M_CAN)		+= m_can/
--obj-$(CONFIG_CAN_RCAR)		+= rcar_can.o
- obj-$(CONFIG_CAN_SJA1000)	+= sja1000/
- obj-$(CONFIG_CAN_SUN4I)		+= sun4i_can.o
- obj-$(CONFIG_CAN_TI_HECC)	+= ti_hecc.o
-diff --git a/drivers/net/can/rcar/Kconfig b/drivers/net/can/rcar/Kconfig
-index 6ea64d1..7b03a3a 100644
---- a/drivers/net/can/rcar/Kconfig
-+++ b/drivers/net/can/rcar/Kconfig
-@@ -1,3 +1,13 @@
-+config CAN_RCAR
-+	tristate "Renesas R-Car CAN controller"
-+	depends on ARCH_RENESAS || ARM
-+	---help---
-+	  Say Y here if you want to use CAN controller found on Renesas R-Car
-+	  SoCs.
-+
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called rcar_can.
-+
- config CAN_RCAR_CANFD
- 	tristate "Renesas R-Car CAN FD controller"
- 	depends on ARCH_RENESAS || ARM
-diff --git a/drivers/net/can/rcar/Makefile b/drivers/net/can/rcar/Makefile
-index cbaf498e..08de36a 100644
---- a/drivers/net/can/rcar/Makefile
-+++ b/drivers/net/can/rcar/Makefile
-@@ -1,5 +1,6 @@
- #
--#  Makefile for the Renesas R-Car CAN FD controller driver
-+#  Makefile for the Renesas R-Car CAN & CAN FD controller drivers
- #
- 
-+obj-$(CONFIG_CAN_RCAR)		+= rcar_can.o
- obj-$(CONFIG_CAN_RCAR_CANFD)	+= rcar_canfd.o
-diff --git a/drivers/net/can/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-similarity index 100%
-rename from drivers/net/can/rcar_can.c
-rename to drivers/net/can/rcar/rcar_can.c
--- 
-1.9.1
+What reference are the register layouts based on? This bit, for
+instance, is marked reserved in R-Car-Gen3-rev0.51e.pdf, and many are
+named differently.
 
+CU
+Uli
