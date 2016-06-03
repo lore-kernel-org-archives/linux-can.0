@@ -1,159 +1,137 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: Flooding AT91_CAN peripheral with messages causes it to stop
- receiving any more messages
-Date: Fri, 3 Jun 2016 09:22:32 +0200
-Message-ID: <57513038.2080107@grandegger.com>
-References: <CAOLz05quWjxFaxdPcLvybc4YdTmE+qUGhbKUCjji6DGNAUwZ3g@mail.gmail.com>
- <1834894.mYn6oCiL2x@ws-stein> <57275BE6.5060905@grandegger.com>
- <CAOLz05qzdyPk2CoUZH4F0-b5syJDQehN6rEBoVo-7fpngQgxPw@mail.gmail.com>
- <CAOLz05qKWrDK2f6tg9wyY6HsQp1m=jvN+KF4v5z2u0xUakSQCw@mail.gmail.com>
+From: Ulrich Hecht <ulrich.hecht@gmail.com>
+Subject: Re: [RESEND PATCH v5 1/2] can: rcar_canfd: Add Renesas R-Car CAN FD driver
+Date: Fri, 3 Jun 2016 19:03:41 +0200
+Message-ID: <CAO3366wxRkRZyR3nayY5=7sTxk-pWZ-BRjXA7p8OzvuZ-YbvDw@mail.gmail.com>
+References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <1464860702-46087-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <1464860702-46087-2-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <CAO3366wP+tBaGbrMceupcJu0agW5Euo3NBNwijNCmpM1XcDGmQ@mail.gmail.com> <KL1PR06MB1031E61B9DD9A59B305CCC15C3590@KL1PR06MB1031.apcprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy01.manitu.net ([217.11.48.140]:56734 "EHLO
-	mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751882AbcFCHWx (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 3 Jun 2016 03:22:53 -0400
-In-Reply-To: <CAOLz05qKWrDK2f6tg9wyY6HsQp1m=jvN+KF4v5z2u0xUakSQCw@mail.gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Amr Bekhit <amrbekhit@gmail.com>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>, mkl@pengutronix.de, linux-can@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <KL1PR06MB1031E61B9DD9A59B305CCC15C3590@KL1PR06MB1031.apcprd06.prod.outlook.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Cc: "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-Hello Amr,
-
-I'm resending this message because it did not show up on the linux-can 
-mailing list archive...
-
-Am 01.06.2016 um 15:21 schrieb Amr Bekhit:
-> Hi Wolfgang and Alexander,
+On Fri, Jun 3, 2016 at 8:42 AM, Ramesh Shanmugasundaram
+<ramesh.shanmugasundaram@bp.renesas.com> wrote:
+> Hi Uli,
 >
-> @Wolfgang: using the patch you sent to me, I ran the test twice until
-> the unit stopped responding to messages. After taking the can
-> interface down, here is the output from the console for both tests:
+> Thanks for the review
 >
-> # ifconfig can0 down
-> at91_can f8004000.can can0: reg_sr=1
-> at91_can f8004000.can can0: tx_next=0
-> at91_can f8004000.can can0: tx_echo=0
-> at91_can f8004000.can can0: rx_next=6
+>> Thank you for your patch.
+>>
+>> On Thu, Jun 2, 2016 at 11:45 AM, Ramesh Shanmugasundaram
+>> <ramesh.shanmugasundaram@bp.renesas.com> wrote:
+>> [...]
+>> > diff --git a/drivers/net/can/rcar/rcar_canfd.c
+>> > b/drivers/net/can/rcar/rcar_canfd.c
+>> > new file mode 100644
+>> > index 0000000..e198732
+>> > --- /dev/null
+>> > +++ b/drivers/net/can/rcar/rcar_canfd.c
+>> > @@ -0,0 +1,1624 @@
+>> > +/* Renesas R-Car CAN FD device driver
+>> > + *
+>> > + * Copyright (C) 2015 Renesas Electronics Corp.
+>> > + *
+>> > + * This program is free software; you can redistribute  it and/or
+>> > +modify it
+>> > + * under  the terms of  the GNU General  Public License as published
+>> > +by the
+>> > + * Free Software Foundation;  either version 2 of the  License, or
+>> > +(at your
+>> > + * option) any later version.
+>> > + */
+>> > +
+>> > +/* The R-Car CAN FD controller can operate in either one of the below
+>> > +two modes
+>> > + *  - CAN FD only mode
+>> > + *  - Classical CAN (CAN 2.0) only mode
+>> > + *
+>> > + * This driver puts the controller in CAN FD only mode by default. In
+>> > +this
+>> > + * mode, the controller acts as a CAN FD node that can also
+>> > +interoperate with
+>> > + * CAN 2.0 nodes.
+>> > + *
+>> > + * As of now, this driver does not support the Classical CAN (CAN
+>> > +2.0) mode,
+>> > + * which is handled by a different register map compared to CAN FD only
+>> mode.
+>> > + */
+>> > +
+>> > +#include <linux/module.h>
+>> > +#include <linux/moduleparam.h>
+>> > +#include <linux/kernel.h>
+>> > +#include <linux/types.h>
+>> > +#include <linux/interrupt.h>
+>> > +#include <linux/errno.h>
+>> > +#include <linux/netdevice.h>
+>> > +#include <linux/platform_device.h>
+>> > +#include <linux/can/led.h>
+>> > +#include <linux/can/dev.h>
+>> > +#include <linux/clk.h>
+>> > +#include <linux/of.h>
+>> > +#include <linux/of_device.h>
+>> > +#include <linux/bitmap.h>
+>> > +#include <linux/bitops.h>
+>> > +#include <linux/iopoll.h>
+>> > +
+>> > +#define RCANFD_DRV_NAME                        "rcar_canfd"
+>> > +
+>> > +#define RCANFD_FIFO_DEPTH              8       /* Tx FIFO depth */
+>> > +#define RCANFD_NAPI_WEIGHT             8       /* Rx poll quota */
+>> > +
+>> > +#define RCANFD_NUM_CHANNELS            2       /* Two channels max */
+>> > +#define RCANFD_CHANNELS_MASK           BIT((RCANFD_NUM_CHANNELS) - 1)
+>> > +
+>> > +/* Rx FIFO is a global resource of the controller. There are 8 such
+>> > +FIFOs
+>> > + * available. Each channel gets a dedicated Rx FIFO (i.e.) the
+>> > +channel
+>> > + * number is added to RFFIFO index.
+>> > + */
+>> > +#define RCANFD_RFFIFO_IDX              0
+>> > +
+>> > +/* Tx/Rx or Common FIFO is a per channel resource. Each channel has 3
+>> > +Common
+>> > + * FIFOs dedicated to them. Use the first (index 0) FIFO out of the 3
+>> for Tx.
+>> > + */
+>> > +#define RCANFD_CFFIFO_IDX              0
+>> > +
+>> > +/* Global register bits */
+>> > +#define RCANFD_GINTF_CANFD             BIT(0)
+>> > +
+>> > +#define RCANFD_GCFG_TPRI               BIT(0)
+>> > +#define RCANFD_GCFG_DCE                        BIT(1)
+>> > +#define RCANFD_GCFG_DCS                        BIT(4)
+>> > +#define RCANFD_GCFG_CMPOC              BIT(5)
+>>
+>> What reference are the register layouts based on? This bit, for instance,
+>> is marked reserved in R-Car-Gen3-rev0.51e.pdf, and many are named
+>> differently.
 >
-> # ifconfig can0 down
-> at91_can f8004000.can can0: reg_sr=1
-> at91_can f8004000.can can0: tx_next=8042
-> at91_can f8004000.can can0: tx_echo=8042
-> at91_can f8004000.can can0: rx_next=6
+> It is based on rev0.51e Gen3 h/w manual. This controller has two register maps within itself for classical CAN only mode or CAN FD only mode. Section 52A.7.3.1 defines GCFG classical CAN only mode where bit 5 is reserved and Section 52A.9.3.1 defines GCFG CAN FD mode where bit 5 is defined as CMPOC.
 
-Trying to understand why RX stopped: at91_poll() entered with all RX 
-message boxes filled (reg_sr=1, rx_next=6). Because "quota" is exceeded, 
-the following if block is not executed:
+Thanks; I missed that every register is described twice.
 
-http://lxr.free-electrons.com/source/drivers/net/can/at91_can.c#L713
+Nevertheless, names often vary more or less subtly between your patch
+and the specs, making it very hard to review. Some have letters added,
+some have letters removed, and some are just plain confusing. For
+instance, RCANFD_DCFG_* apparently does not describe, as one might
+think, RSCFDnCFDCmDCFG, but RSCFDnCFDCmFDCFG. These names are, of
+course, completely ridiculous, but inventing a new set makes things
+even worse, IMO.
 
-At the next entrance of at91_poll(), at91_poll_rx() is *not* called, 
-because reg_sr is 0 and the RX MB interrupts are not re-enabled, because 
-rx_next is still 6. The RX interrupts stay *disabled*.
+At least for the bits, I'd stick with the names given in the
+datasheet. They usually make a modicum of sense, and it makes it way
+easier to search for them. It would also help if the bits were sorted
+consistently.
 
-If I'm not wrong, the following patch should fix that problem:
-
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 945c095..c9f36a4 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -733,9 +733,10 @@ static int at91_poll_rx(struct net_device *dev, int 
-quota)
-
-         /* upper group completed, look again in lower */
-         if (priv->rx_next > get_mb_rx_low_last(priv) &&
--           quota > 0 && mb > get_mb_rx_last(priv)) {
-+           mb > get_mb_rx_last(priv)) {
-                 priv->rx_next = get_mb_rx_first(priv);
--               goto again;
-+               if (quota > 0)
-+                       goto again;
-         }
-
-         return received;
-
-Could you give this patch a try, please.
-
-> I've also tried out the patch suggested by Alexander and that seems to
-> work fine - I was unable to get the CAN device to lock up after
-> running it for over a day continuously (test repeated twice). As I
-> understood it, the aim of the patch was to get the messages out of the
-> CAN peripheral immediately during the interrupt and store them in a
-> kfifo for later processing. From my testing, this does appear to have
-> solved the problem (or severely reduced the probability of it
-> happening).
-
-The existing driver may loose messages due to latency, but it should not 
-stop working.
-
-Wolfgang.
-
-> On 3 May 2016 at 09:27, Amr Bekhit <amrbekhit@gmail.com> wrote:
->> Hi Wolfgang and Alexander,
->>
->> Thanks for both of your responses.
->>
->>
->> @Alexander: Thanks for pointing out the patch.
->>
->> @Wolfgang: In response to your earlier request, I've uploaded my dts
->> file to pastebin, which can find at http://pastebin.com/tNp2PnW4. I'll
->> give the patch mentioned by Alexander and your one a try and let you
->> know how it goes.
->>
->> Amr
->>
->> On 2 May 2016 at 14:53, Wolfgang Grandegger <wg@grandegger.com> wrote:
->>> Hello Alexander,
->>>
->>> Am 02.05.2016 um 08:23 schrieb Alexander Stein:
->>>>
->>>> On Tuesday 05 April 2016 14:10:48, Amr Bekhit wrote:
->>>>>
->>>>> I working on a board based on the AT91SAM9X25 SoC and I'm using
->>>>> integrated CAN peripheral. I seem to have run into an issue whereby
->>>>> sending lots of messages very rapidly in quick succession causes the
->>>>> CAN peripheral to then stop receiving any messages at all. The only
->>>>> way to bring it back to a functional state is to bring the network
->>>>> interface down and then back up again.
->>>>> [...]
->>>>> I then start sending CAN messages to the unit using a PCAN-USB adapter
->>>>> that is plugged into a test Linux PC. After bringing up the CAN
->>>>> interface on the test PC, messages can be continuously sent using the
->>>>> following bash script:
->>>>> [...]
->>>>> I then leave the system running for some time (1.5 hours typically,
->>>>> may vary), periodically running ifconfig can0 to check to see if new
->>>>> packets are being received. After a while, the can interface will stop
->>>>> receiving new packets, even though the test PC is still transmitting
->>>>> them. Stopping and restarting the CAN transmissions on the test PC
->>>>> does not solve the problem. The interface does not appear to be in the
->>>>> bus off state, as shown by running the following:
->>>>
->>>>
->>>> That sounds a bit like my getting stuck problem in
->>>> http://linux-can.vger.kernel.narkive.com/bBQqK84G/resend-patch-net-can-at91-can-c-decrease-likelyhood-of-rx-overruns#post2
->>>>
->>>> The patch post1 at least keeps the driver working. Although I don't know
->>>> what
->>>> has changed in at91_can meanwhile.
->>>
->>>
->>> Thanks for pointing me to that patch. It still applies to Linux 4.1 with
->>> some minor fixes. Amr, could you please give it a try. Please let me know if
->>> you need help.
->>>
->>> Anyway, I think the driver should not hang even in case of overflows. I will
->>> have a closer look later this week.
->>>
->>> Wolfgang.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
+CU
+Uli
