@@ -1,99 +1,159 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: RE: [RESEND PATCH v5 1/2] can: rcar_canfd: Add Renesas R-Car CAN FD
- driver
-Date: Fri, 3 Jun 2016 06:42:12 +0000
-Message-ID: <KL1PR06MB1031E61B9DD9A59B305CCC15C3590@KL1PR06MB1031.apcprd06.prod.outlook.com>
-References: <1456824849-7987-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-	<1464860702-46087-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-	<1464860702-46087-2-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <CAO3366wP+tBaGbrMceupcJu0agW5Euo3NBNwijNCmpM1XcDGmQ@mail.gmail.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: Flooding AT91_CAN peripheral with messages causes it to stop
+ receiving any more messages
+Date: Fri, 3 Jun 2016 09:22:32 +0200
+Message-ID: <57513038.2080107@grandegger.com>
+References: <CAOLz05quWjxFaxdPcLvybc4YdTmE+qUGhbKUCjji6DGNAUwZ3g@mail.gmail.com>
+ <1834894.mYn6oCiL2x@ws-stein> <57275BE6.5060905@grandegger.com>
+ <CAOLz05qzdyPk2CoUZH4F0-b5syJDQehN6rEBoVo-7fpngQgxPw@mail.gmail.com>
+ <CAOLz05qKWrDK2f6tg9wyY6HsQp1m=jvN+KF4v5z2u0xUakSQCw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor1.renesas.com ([210.160.252.171]:63286 "EHLO
-	relmlie4.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751143AbcFCGrW (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 3 Jun 2016 02:47:22 -0400
-In-Reply-To: <CAO3366wP+tBaGbrMceupcJu0agW5Euo3NBNwijNCmpM1XcDGmQ@mail.gmail.com>
-Content-Language: en-US
+Received: from mailproxy01.manitu.net ([217.11.48.140]:56734 "EHLO
+	mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751882AbcFCHWx (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 3 Jun 2016 03:22:53 -0400
+In-Reply-To: <CAOLz05qKWrDK2f6tg9wyY6HsQp1m=jvN+KF4v5z2u0xUakSQCw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ulrich Hecht <ulrich.hecht@gmail.com>
-Cc: "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
+To: Amr Bekhit <amrbekhit@gmail.com>
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>, mkl@pengutronix.de, linux-can@vger.kernel.org
 
-SGkgVWxpLA0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXcNCg0KPiBUaGFuayB5b3UgZm9yIHlvdXIg
-cGF0Y2guDQo+IA0KPiBPbiBUaHUsIEp1biAyLCAyMDE2IGF0IDExOjQ1IEFNLCBSYW1lc2ggU2hh
-bm11Z2FzdW5kYXJhbQ0KPiA8cmFtZXNoLnNoYW5tdWdhc3VuZGFyYW1AYnAucmVuZXNhcy5jb20+
-IHdyb3RlOg0KPiBbLi4uXQ0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vcmNhci9y
-Y2FyX2NhbmZkLmMNCj4gPiBiL2RyaXZlcnMvbmV0L2Nhbi9yY2FyL3JjYXJfY2FuZmQuYw0KPiA+
-IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+ID4gaW5kZXggMDAwMDAwMC4uZTE5ODczMg0KPiA+IC0t
-LSAvZGV2L251bGwNCj4gPiArKysgYi9kcml2ZXJzL25ldC9jYW4vcmNhci9yY2FyX2NhbmZkLmMN
-Cj4gPiBAQCAtMCwwICsxLDE2MjQgQEANCj4gPiArLyogUmVuZXNhcyBSLUNhciBDQU4gRkQgZGV2
-aWNlIGRyaXZlcg0KPiA+ICsgKg0KPiA+ICsgKiBDb3B5cmlnaHQgKEMpIDIwMTUgUmVuZXNhcyBF
-bGVjdHJvbmljcyBDb3JwLg0KPiA+ICsgKg0KPiA+ICsgKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBz
-b2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgIGl0IGFuZC9vcg0KPiA+ICttb2RpZnkgaXQN
-Cj4gPiArICogdW5kZXIgIHRoZSB0ZXJtcyBvZiAgdGhlIEdOVSBHZW5lcmFsICBQdWJsaWMgTGlj
-ZW5zZSBhcyBwdWJsaXNoZWQNCj4gPiArYnkgdGhlDQo+ID4gKyAqIEZyZWUgU29mdHdhcmUgRm91
-bmRhdGlvbjsgIGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlICBMaWNlbnNlLCBvcg0KPiA+ICsoYXQg
-eW91cg0KPiA+ICsgKiBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLg0KPiA+ICsgKi8NCj4gPiAr
-DQo+ID4gKy8qIFRoZSBSLUNhciBDQU4gRkQgY29udHJvbGxlciBjYW4gb3BlcmF0ZSBpbiBlaXRo
-ZXIgb25lIG9mIHRoZSBiZWxvdw0KPiA+ICt0d28gbW9kZXMNCj4gPiArICogIC0gQ0FOIEZEIG9u
-bHkgbW9kZQ0KPiA+ICsgKiAgLSBDbGFzc2ljYWwgQ0FOIChDQU4gMi4wKSBvbmx5IG1vZGUNCj4g
-PiArICoNCj4gPiArICogVGhpcyBkcml2ZXIgcHV0cyB0aGUgY29udHJvbGxlciBpbiBDQU4gRkQg
-b25seSBtb2RlIGJ5IGRlZmF1bHQuIEluDQo+ID4gK3RoaXMNCj4gPiArICogbW9kZSwgdGhlIGNv
-bnRyb2xsZXIgYWN0cyBhcyBhIENBTiBGRCBub2RlIHRoYXQgY2FuIGFsc28NCj4gPiAraW50ZXJv
-cGVyYXRlIHdpdGgNCj4gPiArICogQ0FOIDIuMCBub2Rlcy4NCj4gPiArICoNCj4gPiArICogQXMg
-b2Ygbm93LCB0aGlzIGRyaXZlciBkb2VzIG5vdCBzdXBwb3J0IHRoZSBDbGFzc2ljYWwgQ0FOIChD
-QU4NCj4gPiArMi4wKSBtb2RlLA0KPiA+ICsgKiB3aGljaCBpcyBoYW5kbGVkIGJ5IGEgZGlmZmVy
-ZW50IHJlZ2lzdGVyIG1hcCBjb21wYXJlZCB0byBDQU4gRkQgb25seQ0KPiBtb2RlLg0KPiA+ICsg
-Ki8NCj4gPiArDQo+ID4gKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gPiArI2luY2x1ZGUg
-PGxpbnV4L21vZHVsZXBhcmFtLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9rZXJuZWwuaD4NCj4g
-PiArI2luY2x1ZGUgPGxpbnV4L3R5cGVzLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9pbnRlcnJ1
-cHQuaD4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L2Vycm5vLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51
-eC9uZXRkZXZpY2UuaD4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPg0K
-PiA+ICsjaW5jbHVkZSA8bGludXgvY2FuL2xlZC5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvY2Fu
-L2Rldi5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvY2xrLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51
-eC9vZi5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvb2ZfZGV2aWNlLmg+DQo+ID4gKyNpbmNsdWRl
-IDxsaW51eC9iaXRtYXAuaD4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L2JpdG9wcy5oPg0KPiA+ICsj
-aW5jbHVkZSA8bGludXgvaW9wb2xsLmg+DQo+ID4gKw0KPiA+ICsjZGVmaW5lIFJDQU5GRF9EUlZf
-TkFNRSAgICAgICAgICAgICAgICAgICAgICAgICJyY2FyX2NhbmZkIg0KPiA+ICsNCj4gPiArI2Rl
-ZmluZSBSQ0FORkRfRklGT19ERVBUSCAgICAgICAgICAgICAgOCAgICAgICAvKiBUeCBGSUZPIGRl
-cHRoICovDQo+ID4gKyNkZWZpbmUgUkNBTkZEX05BUElfV0VJR0hUICAgICAgICAgICAgIDggICAg
-ICAgLyogUnggcG9sbCBxdW90YSAqLw0KPiA+ICsNCj4gPiArI2RlZmluZSBSQ0FORkRfTlVNX0NI
-QU5ORUxTICAgICAgICAgICAgMiAgICAgICAvKiBUd28gY2hhbm5lbHMgbWF4ICovDQo+ID4gKyNk
-ZWZpbmUgUkNBTkZEX0NIQU5ORUxTX01BU0sgICAgICAgICAgIEJJVCgoUkNBTkZEX05VTV9DSEFO
-TkVMUykgLSAxKQ0KPiA+ICsNCj4gPiArLyogUnggRklGTyBpcyBhIGdsb2JhbCByZXNvdXJjZSBv
-ZiB0aGUgY29udHJvbGxlci4gVGhlcmUgYXJlIDggc3VjaA0KPiA+ICtGSUZPcw0KPiA+ICsgKiBh
-dmFpbGFibGUuIEVhY2ggY2hhbm5lbCBnZXRzIGEgZGVkaWNhdGVkIFJ4IEZJRk8gKGkuZS4pIHRo
-ZQ0KPiA+ICtjaGFubmVsDQo+ID4gKyAqIG51bWJlciBpcyBhZGRlZCB0byBSRkZJRk8gaW5kZXgu
-DQo+ID4gKyAqLw0KPiA+ICsjZGVmaW5lIFJDQU5GRF9SRkZJRk9fSURYICAgICAgICAgICAgICAw
-DQo+ID4gKw0KPiA+ICsvKiBUeC9SeCBvciBDb21tb24gRklGTyBpcyBhIHBlciBjaGFubmVsIHJl
-c291cmNlLiBFYWNoIGNoYW5uZWwgaGFzIDMNCj4gPiArQ29tbW9uDQo+ID4gKyAqIEZJRk9zIGRl
-ZGljYXRlZCB0byB0aGVtLiBVc2UgdGhlIGZpcnN0IChpbmRleCAwKSBGSUZPIG91dCBvZiB0aGUg
-Mw0KPiBmb3IgVHguDQo+ID4gKyAqLw0KPiA+ICsjZGVmaW5lIFJDQU5GRF9DRkZJRk9fSURYICAg
-ICAgICAgICAgICAwDQo+ID4gKw0KPiA+ICsvKiBHbG9iYWwgcmVnaXN0ZXIgYml0cyAqLw0KPiA+
-ICsjZGVmaW5lIFJDQU5GRF9HSU5URl9DQU5GRCAgICAgICAgICAgICBCSVQoMCkNCj4gPiArDQo+
-ID4gKyNkZWZpbmUgUkNBTkZEX0dDRkdfVFBSSSAgICAgICAgICAgICAgIEJJVCgwKQ0KPiA+ICsj
-ZGVmaW5lIFJDQU5GRF9HQ0ZHX0RDRSAgICAgICAgICAgICAgICAgICAgICAgIEJJVCgxKQ0KPiA+
-ICsjZGVmaW5lIFJDQU5GRF9HQ0ZHX0RDUyAgICAgICAgICAgICAgICAgICAgICAgIEJJVCg0KQ0K
-PiA+ICsjZGVmaW5lIFJDQU5GRF9HQ0ZHX0NNUE9DICAgICAgICAgICAgICBCSVQoNSkNCj4gDQo+
-IFdoYXQgcmVmZXJlbmNlIGFyZSB0aGUgcmVnaXN0ZXIgbGF5b3V0cyBiYXNlZCBvbj8gVGhpcyBi
-aXQsIGZvciBpbnN0YW5jZSwNCj4gaXMgbWFya2VkIHJlc2VydmVkIGluIFItQ2FyLUdlbjMtcmV2
-MC41MWUucGRmLCBhbmQgbWFueSBhcmUgbmFtZWQNCj4gZGlmZmVyZW50bHkuDQoNCkl0IGlzIGJh
-c2VkIG9uIHJldjAuNTFlIEdlbjMgaC93IG1hbnVhbC4gVGhpcyBjb250cm9sbGVyIGhhcyB0d28g
-cmVnaXN0ZXIgbWFwcyB3aXRoaW4gaXRzZWxmIGZvciBjbGFzc2ljYWwgQ0FOIG9ubHkgbW9kZSBv
-ciBDQU4gRkQgb25seSBtb2RlLiBTZWN0aW9uIDUyQS43LjMuMSBkZWZpbmVzIEdDRkcgY2xhc3Np
-Y2FsIENBTiBvbmx5IG1vZGUgd2hlcmUgYml0IDUgaXMgcmVzZXJ2ZWQgYW5kIFNlY3Rpb24gNTJB
-LjkuMy4xIGRlZmluZXMgR0NGRyBDQU4gRkQgbW9kZSB3aGVyZSBiaXQgNSBpcyBkZWZpbmVkIGFz
-IENNUE9DLg0KDQpJdCBpcyBleHBsYWluZWQgaW4gdGhlIGluaXRpYWwgY29tbWVudHMgc2VjdGlv
-biBvZiB0aGlzIGRyaXZlciANCg0KLS0tLS0tLS0tLS0tLQ0KKy8qIFRoZSBSLUNhciBDQU4gRkQg
-Y29udHJvbGxlciBjYW4gb3BlcmF0ZSBpbiBlaXRoZXIgb25lIG9mIHRoZSBiZWxvdyB0d28gbW9k
-ZXMNCisgKiAgLSBDQU4gRkQgb25seSBtb2RlDQorICogIC0gQ2xhc3NpY2FsIENBTiAoQ0FOIDIu
-MCkgb25seSBtb2RlDQorICoNCisgKiBUaGlzIGRyaXZlciBwdXRzIHRoZSBjb250cm9sbGVyIGlu
-IENBTiBGRCBvbmx5IG1vZGUgYnkgZGVmYXVsdC4gSW4gdGhpcw0KKyAqIG1vZGUsIHRoZSBjb250
-cm9sbGVyIGFjdHMgYXMgYSBDQU4gRkQgbm9kZSB0aGF0IGNhbiBhbHNvIGludGVyb3BlcmF0ZSB3
-aXRoDQorICogQ0FOIDIuMCBub2Rlcy4NCisgKg0KKyAqIEFzIG9mIG5vdywgdGhpcyBkcml2ZXIg
-ZG9lcyBub3Qgc3VwcG9ydCB0aGUgQ2xhc3NpY2FsIENBTiAoQ0FOIDIuMCkgbW9kZSwNCisgKiB3
-aGljaCBpcyBoYW5kbGVkIGJ5IGEgZGlmZmVyZW50IHJlZ2lzdGVyIG1hcCBjb21wYXJlZCB0byBD
-QU4gRkQgb25seSBtb2RlDQotLS0tLS0tLS0tLS0tLQ0KDQpUaGFua3MsDQpSYW1lc2gNCg==
+Hello Amr,
+
+I'm resending this message because it did not show up on the linux-can 
+mailing list archive...
+
+Am 01.06.2016 um 15:21 schrieb Amr Bekhit:
+> Hi Wolfgang and Alexander,
+>
+> @Wolfgang: using the patch you sent to me, I ran the test twice until
+> the unit stopped responding to messages. After taking the can
+> interface down, here is the output from the console for both tests:
+>
+> # ifconfig can0 down
+> at91_can f8004000.can can0: reg_sr=1
+> at91_can f8004000.can can0: tx_next=0
+> at91_can f8004000.can can0: tx_echo=0
+> at91_can f8004000.can can0: rx_next=6
+>
+> # ifconfig can0 down
+> at91_can f8004000.can can0: reg_sr=1
+> at91_can f8004000.can can0: tx_next=8042
+> at91_can f8004000.can can0: tx_echo=8042
+> at91_can f8004000.can can0: rx_next=6
+
+Trying to understand why RX stopped: at91_poll() entered with all RX 
+message boxes filled (reg_sr=1, rx_next=6). Because "quota" is exceeded, 
+the following if block is not executed:
+
+http://lxr.free-electrons.com/source/drivers/net/can/at91_can.c#L713
+
+At the next entrance of at91_poll(), at91_poll_rx() is *not* called, 
+because reg_sr is 0 and the RX MB interrupts are not re-enabled, because 
+rx_next is still 6. The RX interrupts stay *disabled*.
+
+If I'm not wrong, the following patch should fix that problem:
+
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 945c095..c9f36a4 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -733,9 +733,10 @@ static int at91_poll_rx(struct net_device *dev, int 
+quota)
+
+         /* upper group completed, look again in lower */
+         if (priv->rx_next > get_mb_rx_low_last(priv) &&
+-           quota > 0 && mb > get_mb_rx_last(priv)) {
++           mb > get_mb_rx_last(priv)) {
+                 priv->rx_next = get_mb_rx_first(priv);
+-               goto again;
++               if (quota > 0)
++                       goto again;
+         }
+
+         return received;
+
+Could you give this patch a try, please.
+
+> I've also tried out the patch suggested by Alexander and that seems to
+> work fine - I was unable to get the CAN device to lock up after
+> running it for over a day continuously (test repeated twice). As I
+> understood it, the aim of the patch was to get the messages out of the
+> CAN peripheral immediately during the interrupt and store them in a
+> kfifo for later processing. From my testing, this does appear to have
+> solved the problem (or severely reduced the probability of it
+> happening).
+
+The existing driver may loose messages due to latency, but it should not 
+stop working.
+
+Wolfgang.
+
+> On 3 May 2016 at 09:27, Amr Bekhit <amrbekhit@gmail.com> wrote:
+>> Hi Wolfgang and Alexander,
+>>
+>> Thanks for both of your responses.
+>>
+>>
+>> @Alexander: Thanks for pointing out the patch.
+>>
+>> @Wolfgang: In response to your earlier request, I've uploaded my dts
+>> file to pastebin, which can find at http://pastebin.com/tNp2PnW4. I'll
+>> give the patch mentioned by Alexander and your one a try and let you
+>> know how it goes.
+>>
+>> Amr
+>>
+>> On 2 May 2016 at 14:53, Wolfgang Grandegger <wg@grandegger.com> wrote:
+>>> Hello Alexander,
+>>>
+>>> Am 02.05.2016 um 08:23 schrieb Alexander Stein:
+>>>>
+>>>> On Tuesday 05 April 2016 14:10:48, Amr Bekhit wrote:
+>>>>>
+>>>>> I working on a board based on the AT91SAM9X25 SoC and I'm using
+>>>>> integrated CAN peripheral. I seem to have run into an issue whereby
+>>>>> sending lots of messages very rapidly in quick succession causes the
+>>>>> CAN peripheral to then stop receiving any messages at all. The only
+>>>>> way to bring it back to a functional state is to bring the network
+>>>>> interface down and then back up again.
+>>>>> [...]
+>>>>> I then start sending CAN messages to the unit using a PCAN-USB adapter
+>>>>> that is plugged into a test Linux PC. After bringing up the CAN
+>>>>> interface on the test PC, messages can be continuously sent using the
+>>>>> following bash script:
+>>>>> [...]
+>>>>> I then leave the system running for some time (1.5 hours typically,
+>>>>> may vary), periodically running ifconfig can0 to check to see if new
+>>>>> packets are being received. After a while, the can interface will stop
+>>>>> receiving new packets, even though the test PC is still transmitting
+>>>>> them. Stopping and restarting the CAN transmissions on the test PC
+>>>>> does not solve the problem. The interface does not appear to be in the
+>>>>> bus off state, as shown by running the following:
+>>>>
+>>>>
+>>>> That sounds a bit like my getting stuck problem in
+>>>> http://linux-can.vger.kernel.narkive.com/bBQqK84G/resend-patch-net-can-at91-can-c-decrease-likelyhood-of-rx-overruns#post2
+>>>>
+>>>> The patch post1 at least keeps the driver working. Although I don't know
+>>>> what
+>>>> has changed in at91_can meanwhile.
+>>>
+>>>
+>>> Thanks for pointing me to that patch. It still applies to Linux 4.1 with
+>>> some minor fixes. Amr, could you please give it a try. Please let me know if
+>>> you need help.
+>>>
+>>> Anyway, I think the driver should not hang even in case of overflows. I will
+>>> have a closer look later this week.
+>>>
+>>> Wolfgang.
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>
