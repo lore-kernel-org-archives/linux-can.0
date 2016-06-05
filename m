@@ -1,72 +1,32 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [RFC] K-Line protocol via SocketCAN
-Date: Sun, 5 Jun 2016 14:07:17 +0200
-Message-ID: <575415F5.3070306@hartkopp.net>
-References: <573E491E.1000906@denx.de>
- <CAJ=nTsu_bJgj1A5JNJNAd9HAao5493CnofbQpJ_qftYOiCgaYw@mail.gmail.com>
- <573EAE9D.20006@hartkopp.net> <573EFC23.2040906@denx.de>
- <574E47C8.4000709@denx.de>
+From: =?utf-8?Q?Michael_Luxen?= <mluxen@gmx.net>
+Subject: Still looking for standard low cost CAN datalogger with >= 2x CAN
+ channel
+Date: Sun, 5 Jun 2016 23:20:11 +0200
+Message-ID: <zarafa.5754978b.40be.4b975893491651b0@euve35974.vserver.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:50768 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750826AbcFEMHf (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 5 Jun 2016 08:07:35 -0400
-In-Reply-To: <574E47C8.4000709@denx.de>
+Received: from euve35974.vserver.de ([62.75.213.146]:36990 "EHLO
+	euve35974.vserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752164AbcFEV3W convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 5 Jun 2016 17:29:22 -0400
+Received: from euve35974.vserver.de (localhost.localdomain [127.0.0.1])
+	by euve35974.vserver.de (Postfix) with ESMTP id 495E27580C77
+	for <linux-can@vger.kernel.org>; Sun,  5 Jun 2016 23:20:11 +0200 (CEST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marek Vasut <marex@denx.de>, Mirza Krak <mirza.krak@hostmobility.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+To: =?utf-8?Q?linux-can=40vger=2Ekernel=2Eorg?= <linux-can@vger.kernel.org>
 
-On 06/01/2016 04:26 AM, Marek Vasut wrote:
+Hello,
 
->>> What would be the advantages to put this into kernel space (or into the
->>> CAN networking infrastructure)?
->>
->> I see two for putting this into the kernel:
->> - At faster bus speeds, you can achieve more precise timing if this is
->>    in the kernel, both of the inter-byte delay and also for the
->>    timestamps. Having this in the kernel even allows usage of the
->>    realtime extensions if needed.
+I'm starting with a Raspi B+, a MCP2515 CAN controller connected via SPI few years ago to get more experience with embedded Linux devices and socketcan. While connecting a second MCP2515 via SPI on the Raspi B+ I and of course some other people observed some issues with higher busload (= message lost or hanging CAN-interfaces).
+Martin Sperl and the introduction of DMA mode for the Raspi based architecture (BCM2708/BCM2835) did a big improvement on getting higher busload. For me round about <=20% 2014 with a Raspi B+ (Kernel 3.8.x) and >=50% with Raspi 3 (Kernel 4.4.x) for two CAN channel in parallel with candump.
 
-A topic for the serial driver infrastructure?
+What are your experience with different embedded Linux devices using socketcan?
+Which are your recommendation for a low cost full featured (max busload) embedded Linux CAN datalogger?
 
->> - Dedicated hardware driver can plug into such K-Line infrastructure.
->>    Such hardware might be needed to support the faster modes to further
->>    increase the timing precision.
+My personal favourite is still the BeagleBone Black as the AM335x SOC has two CAN transceiver included and the CPU load is close to 1% if I'm using candump or cangw with a CAN busload >=70% (no message lost, no CAN interface crashes, no CAN interface reinit).
 
-Which K-Line infrastructure?
-
->> And two for using socketcan/network interface:
->> - The addressing support of the network stack can be mapped to K-Line
->>    bus addresses.
-
-The K-Line addressing is totally different from CAN addressing. Why do 
-you think the stuff in linux/net/can has any conjunction to K-Line 
-addressing?
-
->> - The rtnl can be used as an extensible interface for configuring the
->>    K-Line parameters.
-
-The idea of SocketCAN using the Linux networking infrastructure and 
-network interfaces is the multi-user capability which is enabled through 
-this layering.
-
-IIRC K-Line is ONE point-to-point connection which is not multi-user 
-capable - so what would be the benefit to implement a K-Line serial 
-driver as network device and then configure it via rtnl?
-
-> What do you think about putting the KLine support into socketcan stack ?
-
-If I would think about your mentioned requirements and ideas I would 
-start with pyOBD http://www.obdtester.com/pyobd and probably move this 
-to be a PREEMPT_RT task and I would add an interface to specify 
-inter-byte delays into the serial driver infrastructure.
-
-Even when trying to think very positively about your question I don't 
-see any conjunction to SocketCAN.
-
-Best regards,
-Oliver
+Regards
+Michael
