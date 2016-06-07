@@ -1,32 +1,68 @@
-From: =?utf-8?Q?Michael_Luxen?= <mluxen@gmx.net>
-Subject: Still looking for standard low cost CAN datalogger with >= 2x CAN
- channel
-Date: Sun, 5 Jun 2016 23:20:11 +0200
-Message-ID: <zarafa.5754978b.40be.4b975893491651b0@euve35974.vserver.de>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: [RESEND PATCH v5 1/2] can: rcar_canfd: Add Renesas R-Car CAN FD
+ driver
+Date: Tue, 7 Jun 2016 13:18:38 +0000
+Message-ID: <SG2PR06MB1038056F44EFBCB51674B832C35D0@SG2PR06MB1038.apcprd06.prod.outlook.com>
+References: <KL1PR06MB1031E61B9DD9A59B305CCC15C3590@KL1PR06MB1031.apcprd06.prod.outlook.com>
+	<CAO3366wxRkRZyR3nayY5=7sTxk-pWZ-BRjXA7p8OzvuZ-YbvDw@mail.gmail.com>
+	<5751BB31.5030708@hartkopp.net>
+ <20160603.113902.296916236989519473.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from euve35974.vserver.de ([62.75.213.146]:36990 "EHLO
-	euve35974.vserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752164AbcFEV3W convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 5 Jun 2016 17:29:22 -0400
-Received: from euve35974.vserver.de (localhost.localdomain [127.0.0.1])
-	by euve35974.vserver.de (Postfix) with ESMTP id 495E27580C77
-	for <linux-can@vger.kernel.org>; Sun,  5 Jun 2016 23:20:11 +0200 (CEST)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?Q?linux-can=40vger=2Ekernel=2Eorg?= <linux-can@vger.kernel.org>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <20160603.113902.296916236989519473.davem@davemloft.net>
+Content-Language: en-US
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>
+Cc: "ulrich.hecht@gmail.com" <ulrich.hecht@gmail.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, "horms@verge.net.au" <horms@verge.net.au>, "magnus.damm@gmail.com" <magnus.damm@gmail.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-Hello,
+> > On 06/03/2016 07:03 PM, Ulrich Hecht wrote:
+> >
+> >> Thanks; I missed that every register is described twice.
+> >>
+> >> Nevertheless, names often vary more or less subtly between your patch
+> >> and the specs, making it very hard to review. Some have letters
+> >> added, some have letters removed, and some are just plain confusing.
+> >> For instance, RCANFD_DCFG_* apparently does not describe, as one
+> >> might think, RSCFDnCFDCmDCFG, but RSCFDnCFDCmFDCFG. These names are,
+> >> of course, completely ridiculous, but inventing a new set makes
+> >> things even worse, IMO.
+> >
+> > ???
+> >
+> > You suggest to use 'completely ridiculous' definitions in favor to
+> > definitions that have a proper name space RCANFD_ ?
+> >
+> > When there is a more readable way that maintains proper readable code
+> > there's no reason to adopt crappy definitions just because some chip
+> > designer has no clue how to design proper register names.
+> >
+> > When there's some mapping from RSCFDnCFDCmFDCFG to RCANFD_DCFG_* this
+> > could be mentioned in the comments.
+> >
+> > But I'm totally against these blurry upper/lower case letter stuff for
+> > register definitions.
+> 
+> I agree with Oliver, these StuDlyCaPS names used in the spec should not be
+> used in the driver, they are completely unreadable.
 
-I'm starting with a Raspi B+, a MCP2515 CAN controller connected via SPI few years ago to get more experience with embedded Linux devices and socketcan. While connecting a second MCP2515 via SPI on the Raspi B+ I and of course some other people observed some issues with higher busload (= message lost or hanging CAN-interfaces).
-Martin Sperl and the introduction of DMA mode for the Raspi based architecture (BCM2708/BCM2835) did a big improvement on getting higher busload. For me round about <=20% 2014 with a Raspi B+ (Kernel 3.8.x) and >=50% with Raspi 3 (Kernel 4.4.x) for two CAN channel in parallel with candump.
+Thanks Oliver, Dave for your inputs.
 
-What are your experience with different embedded Linux devices using socketcan?
-Which are your recommendation for a low cost full featured (max busload) embedded Linux CAN datalogger?
+Hi Uli,
 
-My personal favourite is still the BeagleBone Black as the AM335x SOC has two CAN transceiver included and the CPU load is close to 1% if I'm using candump or cangw with a CAN busload >=70% (no message lost, no CAN interface crashes, no CAN interface reinit).
+I have added comments to the readable register set mapping them to the clumsy name in h/w manual to aid your review. I have kept the bit name definitions within register exactly as in h/w manual. E.g.
 
-Regards
-Michael
++/* RSCFDnCFDGSTS */
++#define RCANFD_GSTS_GRAMINIT		BIT(3)
++#define RCANFD_GSTS_GSLPSTS		BIT(2)
++#define RCANFD_GSTS_GHLTSTS		BIT(1)
++#define RCANFD_GSTS_GRSTSTS		BIT(0)
+
+I have also sorted the bit definition ordering from MSB to LSB. I will send out the updated patch set next. I hope this addresses your concern.
+
+Please note that I am planning to add classical CAN only mode support next (after the current patch set is accepted). The code is designed to support both modes and hence I have classified the register definitions as "common register set" & "CAN FD specific register set". In future, I will just add the "Classical CAN specific register set" alone without much code re-org.
+
+Thanks,
+Ramesh
