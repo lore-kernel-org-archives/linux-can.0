@@ -1,201 +1,86 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: Flooding AT91_CAN peripheral with messages causes it to stop
- receiving any more messages
-Date: Wed, 8 Jun 2016 10:37:30 +0200
-Message-ID: <5757D94A.4090802@grandegger.com>
-References: <CAOLz05quWjxFaxdPcLvybc4YdTmE+qUGhbKUCjji6DGNAUwZ3g@mail.gmail.com>
- <1834894.mYn6oCiL2x@ws-stein> <57275BE6.5060905@grandegger.com>
- <CAOLz05qzdyPk2CoUZH4F0-b5syJDQehN6rEBoVo-7fpngQgxPw@mail.gmail.com>
- <CAOLz05qKWrDK2f6tg9wyY6HsQp1m=jvN+KF4v5z2u0xUakSQCw@mail.gmail.com>
- <57513038.2080107@grandegger.com>
- <CAOLz05oGGuXA+R=rFkk1uP0fpqPdq4JKx3L_-cowpj1h2gAC6A@mail.gmail.com>
+From: Maximilian Schneider <max@schneidersoft.net>
+Subject: [PATCH] can: gs_usb: Add Basic support for the bytewerk.org
+ candleLight interface
+Date: Wed, 08 Jun 2016 18:00:26 +0000
+Message-ID: <1465408826.1149.15.camel@schneidersoft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy02.manitu.net ([217.11.48.150]:60240 "EHLO
-	mailproxy02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1422903AbcFHIhe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 8 Jun 2016 04:37:34 -0400
-In-Reply-To: <CAOLz05oGGuXA+R=rFkk1uP0fpqPdq4JKx3L_-cowpj1h2gAC6A@mail.gmail.com>
+Received: from h2448646.stratoserver.net ([85.214.222.201]:54945 "EHLO
+	h2448646.stratoserver.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751687AbcFHR5c (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 8 Jun 2016 13:57:32 -0400
+Received: from blackbox (unknown [179.80.178.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: max@schneidersoft.net)
+	by h2448646.stratoserver.net (Postfix) with ESMTPSA id 4231ED940527
+	for <linux-can@vger.kernel.org>; Wed,  8 Jun 2016 17:52:22 +0000 (UTC)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Amr Bekhit <amrbekhit@gmail.com>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>, mkl@pengutronix.de, linux-can@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello Amr,
+=46rom aad71889fffa819155ec85d5f5538bc4cca252e6 Mon Sep 17 00:00:00 200=
+1
+=46rom: Maximilian Schneider <max@schneidersoft.net>
+Date: Wed, 8 Jun 2016 17:29:48 +0000
+Subject: [PATCH] Add basic support for the bytewerk.org candleLight int=
+erface,
+a open hardware (CERN OHL) USB CAN adapter.
 
-Am 08.06.2016 um 10:17 schrieb Amr Bekhit:
-> Hi Wolfgang,
->
-> I've implemented the patch that you suggested and have been testing
-> the unit for almost 48 hours, sending CAN messages continuously and
-> the unit has continued to operate fine with no problems whatsoever.
-> So, it appears that your patch has fixed the problem. Thanks!
+Signed-off-by: Hubert Denkmair <hubert@denkmair.de>
+Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
+---
+ drivers/net/can/usb/gs_usb.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-Good news. I'm going to prepare a patch for mainline inclusion. Can I 
-add your "Tested-by: Amr Bekhit <amrbekhit@gmail.com>" ?
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.=
+c
+index 1556d42..acb0c84 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -1,7 +1,9 @@
+-/* CAN driver for Geschwister Schneider USB/CAN devices.
++/* CAN driver for Geschwister Schneider USB/CAN devices
++ * and bytewerk.org candleLight USB CAN interfaces.
+  *
+- * Copyright (C) 2013 Geschwister Schneider Technologie-,
++ * Copyright (C) 2013-2016 Geschwister Schneider Technologie-,
+  * Entwicklungs- und Vertriebs UG (Haftungsbeschr=C3=A4nkt).
++ * Copyright (C) 2016 Hubert Denkmair
+  *
+  * Many thanks to all socketcan devs!
+  *
+@@ -29,6 +31,9 @@
+ #define USB_GSUSB_1_VENDOR_ID      0x1d50
+ #define USB_GSUSB_1_PRODUCT_ID     0x606f
+=20
++#define USB_CANDLELIGHT_VENDOR_ID  0x1209
++#define USB_CANDLELIGHT_PRODUCT_ID 0x2323
++
+ #define GSUSB_ENDPOINT_IN          1
+ #define GSUSB_ENDPOINT_OUT         2
+=20
+@@ -952,6 +957,8 @@ static void gs_usb_disconnect(struct usb_interface =
+*intf)
+ static const struct usb_device_id gs_usb_table[] =3D {
+ 	{ USB_DEVICE_INTERFACE_NUMBER(USB_GSUSB_1_VENDOR_ID,
+ 				      USB_GSUSB_1_PRODUCT_ID, 0) },
++	{ USB_DEVICE_INTERFACE_NUMBER(USB_CANDLELIGHT_VENDOR_ID,
++				      USB_CANDLELIGHT_PRODUCT_ID, 0) },
+ 	{} /* Terminating entry */
+ };
+=20
+@@ -969,5 +976,6 @@ module_usb_driver(gs_usb_driver);
+ MODULE_AUTHOR("Maximilian Schneider <mws@schneidersoft.net>");
+ MODULE_DESCRIPTION(
+ "Socket CAN device driver for Geschwister Schneider Technologie-, "
+-"Entwicklungs- und Vertriebs UG. USB2.0 to CAN interfaces.");
++"Entwicklungs- und Vertriebs UG. USB2.0 to CAN interfaces\n"
++"and bytewerk.org candleLight USB CAN interfaces.");
+ MODULE_LICENSE("GPL v2");
+--=20
+2.1.4
 
-BTW, did you realize message overflows (with "ip -d -s link show") or 
-related out-of-order messages in the kernel log ("dmesg").
 
-Thanks,
-
-Wolfgang.
-
-> Amr
->
-> On 3 June 2016 at 08:22, Wolfgang Grandegger <wg@grandegger.com> wrote:
->> Hello Amr,
->>
->> I'm resending this message because it did not show up on the linux-can
->> mailing list archive...
->>
->> Am 01.06.2016 um 15:21 schrieb Amr Bekhit:
->>>
->>> Hi Wolfgang and Alexander,
->>>
->>> @Wolfgang: using the patch you sent to me, I ran the test twice until
->>> the unit stopped responding to messages. After taking the can
->>> interface down, here is the output from the console for both tests:
->>>
->>> # ifconfig can0 down
->>> at91_can f8004000.can can0: reg_sr=1
->>> at91_can f8004000.can can0: tx_next=0
->>> at91_can f8004000.can can0: tx_echo=0
->>> at91_can f8004000.can can0: rx_next=6
->>>
->>> # ifconfig can0 down
->>> at91_can f8004000.can can0: reg_sr=1
->>> at91_can f8004000.can can0: tx_next=8042
->>> at91_can f8004000.can can0: tx_echo=8042
->>> at91_can f8004000.can can0: rx_next=6
->>
->>
->> Trying to understand why RX stopped: at91_poll() entered with all RX message
->> boxes filled (reg_sr=1, rx_next=6). Because "quota" is exceeded, the
->> following if block is not executed:
->>
->> http://lxr.free-electrons.com/source/drivers/net/can/at91_can.c#L713
->>
->> At the next entrance of at91_poll(), at91_poll_rx() is *not* called, because
->> reg_sr is 0 and the RX MB interrupts are not re-enabled, because rx_next is
->> still 6. The RX interrupts stay *disabled*.
->>
->> If I'm not wrong, the following patch should fix that problem:
->>
->> diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
->> index 945c095..c9f36a4 100644
->> --- a/drivers/net/can/at91_can.c
->> +++ b/drivers/net/can/at91_can.c
->> @@ -733,9 +733,10 @@ static int at91_poll_rx(struct net_device *dev, int
->> quota)
->>
->>          /* upper group completed, look again in lower */
->>          if (priv->rx_next > get_mb_rx_low_last(priv) &&
->> -           quota > 0 && mb > get_mb_rx_last(priv)) {
->> +           mb > get_mb_rx_last(priv)) {
->>                  priv->rx_next = get_mb_rx_first(priv);
->> -               goto again;
->> +               if (quota > 0)
->> +                       goto again;
->>          }
->>
->>          return received;
->>
->> Could you give this patch a try, please.
->>
->>> I've also tried out the patch suggested by Alexander and that seems to
->>> work fine - I was unable to get the CAN device to lock up after
->>> running it for over a day continuously (test repeated twice). As I
->>> understood it, the aim of the patch was to get the messages out of the
->>> CAN peripheral immediately during the interrupt and store them in a
->>> kfifo for later processing. From my testing, this does appear to have
->>> solved the problem (or severely reduced the probability of it
->>> happening).
->>
->>
->> The existing driver may loose messages due to latency, but it should not
->> stop working.
->>
->> Wolfgang.
->>
->>> On 3 May 2016 at 09:27, Amr Bekhit <amrbekhit@gmail.com> wrote:
->>>>
->>>> Hi Wolfgang and Alexander,
->>>>
->>>> Thanks for both of your responses.
->>>>
->>>>
->>>> @Alexander: Thanks for pointing out the patch.
->>>>
->>>> @Wolfgang: In response to your earlier request, I've uploaded my dts
->>>> file to pastebin, which can find at http://pastebin.com/tNp2PnW4. I'll
->>>> give the patch mentioned by Alexander and your one a try and let you
->>>> know how it goes.
->>>>
->>>> Amr
->>>>
->>>> On 2 May 2016 at 14:53, Wolfgang Grandegger <wg@grandegger.com> wrote:
->>>>>
->>>>> Hello Alexander,
->>>>>
->>>>> Am 02.05.2016 um 08:23 schrieb Alexander Stein:
->>>>>>
->>>>>>
->>>>>> On Tuesday 05 April 2016 14:10:48, Amr Bekhit wrote:
->>>>>>>
->>>>>>>
->>>>>>> I working on a board based on the AT91SAM9X25 SoC and I'm using
->>>>>>> integrated CAN peripheral. I seem to have run into an issue whereby
->>>>>>> sending lots of messages very rapidly in quick succession causes the
->>>>>>> CAN peripheral to then stop receiving any messages at all. The only
->>>>>>> way to bring it back to a functional state is to bring the network
->>>>>>> interface down and then back up again.
->>>>>>> [...]
->>>>>>> I then start sending CAN messages to the unit using a PCAN-USB adapter
->>>>>>> that is plugged into a test Linux PC. After bringing up the CAN
->>>>>>> interface on the test PC, messages can be continuously sent using the
->>>>>>> following bash script:
->>>>>>> [...]
->>>>>>> I then leave the system running for some time (1.5 hours typically,
->>>>>>> may vary), periodically running ifconfig can0 to check to see if new
->>>>>>> packets are being received. After a while, the can interface will stop
->>>>>>> receiving new packets, even though the test PC is still transmitting
->>>>>>> them. Stopping and restarting the CAN transmissions on the test PC
->>>>>>> does not solve the problem. The interface does not appear to be in the
->>>>>>> bus off state, as shown by running the following:
->>>>>>
->>>>>>
->>>>>>
->>>>>> That sounds a bit like my getting stuck problem in
->>>>>>
->>>>>> http://linux-can.vger.kernel.narkive.com/bBQqK84G/resend-patch-net-can-at91-can-c-decrease-likelyhood-of-rx-overruns#post2
->>>>>>
->>>>>> The patch post1 at least keeps the driver working. Although I don't
->>>>>> know
->>>>>> what
->>>>>> has changed in at91_can meanwhile.
->>>>>
->>>>>
->>>>>
->>>>> Thanks for pointing me to that patch. It still applies to Linux 4.1 with
->>>>> some minor fixes. Amr, could you please give it a try. Please let me
->>>>> know if
->>>>> you need help.
->>>>>
->>>>> Anyway, I think the driver should not hang even in case of overflows. I
->>>>> will
->>>>> have a closer look later this week.
->>>>>
->>>>> Wolfgang.
->>>
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>>
->>>
->>
->
->
