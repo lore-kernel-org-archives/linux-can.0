@@ -1,61 +1,118 @@
 From: Marek Vasut <marex@denx.de>
-Subject: [PATCH 3/5][RFC] can: Add register_candevice()
-Date: Thu,  9 Jun 2016 21:21:02 +0200
-Message-ID: <1465500064-5402-3-git-send-email-marex@denx.de>
-References: <1465500064-5402-1-git-send-email-marex@denx.de>
+Subject: Re: [RFC] K-Line protocol via SocketCAN
+Date: Thu, 09 Jun 2016 21:21:53 +0200
+Message-ID: <5759C1D1.1000001@denx.de>
+References: <573E491E.1000906@denx.de> <CAJ=nTsu_bJgj1A5JNJNAd9HAao5493CnofbQpJ_qftYOiCgaYw@mail.gmail.com> <573EAE9D.20006@hartkopp.net> <573EFC23.2040906@denx.de> <574E47C8.4000709@denx.de> <575415F5.3070306@hartkopp.net> <57598472.3070207@denx.de> <5759B597.3060009@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:44064 "EHLO
+Received: from mail-out.m-online.net ([212.18.0.10]:60627 "EHLO
 	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750806AbcFITVp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jun 2016 15:21:45 -0400
-In-Reply-To: <1465500064-5402-1-git-send-email-marex@denx.de>
+	with ESMTP id S1750756AbcFITV5 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jun 2016 15:21:57 -0400
+In-Reply-To: <5759B597.3060009@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Marek Vasut <marex@denx.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Mirza Krak <mirza.krak@hostmobility.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-Add register_candevice() call, which unlike register_candev(),
-registers the candev without rtnl lock held. This is very similar
-to register_netdev() and register_netdevice().
+On 06/09/2016 08:29 PM, Oliver Hartkopp wrote:
+> On 06/09/2016 05:00 PM, Marek Vasut wrote:
+>> On 06/05/2016 02:07 PM, Oliver Hartkopp wrote:
+>>> On 06/01/2016 04:26 AM, Marek Vasut wrote:
+>>>
+>>>>>> What would be the advantages to put this into kernel space (or
+>>>>>> into the
+>>>>>> CAN networking infrastructure)?
+>>>>>
+>>>>> I see two for putting this into the kernel:
+>>>>> - At faster bus speeds, you can achieve more precise timing if this is
+>>>>>     in the kernel, both of the inter-byte delay and also for the
+>>>>>     timestamps. Having this in the kernel even allows usage of the
+>>>>>     realtime extensions if needed.
+>>>
+>>> A topic for the serial driver infrastructure?
+>>
+>> Can you elaborate a bit please ?
+> 
+> No. If you have requirements for in-time transmission that could no be
+> solved in user space, you might add some handler or functionality that
+> adds this feature. So where would you add that for a K-Line driver? In
+> the video driver infrastructure?
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/dev.c   | 7 +++++++
- include/linux/can/dev.h | 1 +
- 2 files changed, 8 insertions(+)
+Huh ?
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index f8ef6b0..0db16f6 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -984,6 +984,13 @@ static struct rtnl_link_ops can_link_ops __read_mostly = {
- /*
-  * Register the CAN network device
-  */
-+int register_candevice(struct net_device *dev)
-+{
-+	dev->rtnl_link_ops = &can_link_ops;
-+	return register_netdevice(dev);
-+}
-+EXPORT_SYMBOL_GPL(register_candevice);
-+
- int register_candev(struct net_device *dev)
- {
- 	dev->rtnl_link_ops = &can_link_ops;
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 9b0520d..c67082d 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -125,6 +125,7 @@ int open_candev(struct net_device *dev);
- void close_candev(struct net_device *dev);
- int can_change_mtu(struct net_device *dev, int new_mtu);
- 
-+int register_candevice(struct net_device *dev);
- int register_candev(struct net_device *dev);
- void unregister_candev(struct net_device *dev);
- 
+>>>>> - Dedicated hardware driver can plug into such K-Line infrastructure.
+>>>>>     Such hardware might be needed to support the faster modes to
+>>>>> further
+>>>>>     increase the timing precision.
+>>>
+>>> Which K-Line infrastructure?
+>>
+>> The one which would be added to socketcan. The patches don't seem too
+>> disruptive in fact.
+>>
+> 
+> Why don't you just post them? I'm pretty tired of these pointless
+> discussions exchanging our arguments again and again.
+
+Done
+
+>>>>> And two for using socketcan/network interface:
+>>>>> - The addressing support of the network stack can be mapped to K-Line
+>>>>>     bus addresses.
+>>>
+>>> The K-Line addressing is totally different from CAN addressing. Why do
+>>> you think the stuff in linux/net/can has any conjunction to K-Line
+>>> addressing?
+>>
+>> Let me just ask what you mean by "totally different" first ?
+>>
+> 
+> CAN Frame: 11/29 bit ID and max 8 or 64 (CAN FD) byte frame length
+> KWP2000 Message: (optional!) 8 bit target address 8 bit receiver address
+> and 1 .. 255 data bytes
+> 
+> => totally different!
+
+The capacity for flexible addressing is part of the socketcan apparently .
+
+>>>>> - The rtnl can be used as an extensible interface for configuring the
+>>>>>     K-Line parameters.
+>>>
+>>> The idea of SocketCAN using the Linux networking infrastructure and
+>>> network interfaces is the multi-user capability which is enabled through
+>>> this layering.
+>>>
+>>> IIRC K-Line is ONE point-to-point connection which is not multi-user
+>>> capable - so what would be the benefit to implement a K-Line serial
+>>> driver as network device and then configure it via rtnl?
+>>
+>> I am more interested in the RTNL configuration interface, since the
+>> kline has way too many parameters and the RTNL scales well in that
+>> aspect.
+> 
+> If like rtnl so much why don't you create a K-Line netdevice driver for
+> it and use the PF_PACKET socket to exchange data with the netdevice?
+
+Because last time I did that with the arinc, I was told to integrate
+that into the socketcan instead.
+
+>> When using the socket interface, I can also add various flags to the
+>> packet and control the properties of the data that are to be transmitted
+>> via the KLine interface. That's real convenient.
+> 
+> But that has nothing to do with PF_CAN.
+
+So I should add another orthogonal infrastructure ? That's what I did
+with the arinc and I was told the exact opposite, so I am really
+confused here .
+
+> Oliver
+> 
+
+
 -- 
-2.7.0
-
+Best regards,
+Marek Vasut
