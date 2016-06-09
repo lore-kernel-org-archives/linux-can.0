@@ -1,86 +1,93 @@
-From: Maximilian Schneider <max@schneidersoft.net>
-Subject: [PATCH] can: gs_usb: Add Basic support for the bytewerk.org
- candleLight interface
-Date: Wed, 08 Jun 2016 18:00:26 +0000
-Message-ID: <1465408826.1149.15.camel@schneidersoft.net>
+From: Marek Vasut <marex@denx.de>
+Subject: Re: [RFC] K-Line protocol via SocketCAN
+Date: Thu, 09 Jun 2016 17:00:02 +0200
+Message-ID: <57598472.3070207@denx.de>
+References: <573E491E.1000906@denx.de> <CAJ=nTsu_bJgj1A5JNJNAd9HAao5493CnofbQpJ_qftYOiCgaYw@mail.gmail.com> <573EAE9D.20006@hartkopp.net> <573EFC23.2040906@denx.de> <574E47C8.4000709@denx.de> <575415F5.3070306@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from h2448646.stratoserver.net ([85.214.222.201]:54945 "EHLO
-	h2448646.stratoserver.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751687AbcFHR5c (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 8 Jun 2016 13:57:32 -0400
-Received: from blackbox (unknown [179.80.178.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	(Authenticated sender: max@schneidersoft.net)
-	by h2448646.stratoserver.net (Postfix) with ESMTPSA id 4231ED940527
-	for <linux-can@vger.kernel.org>; Wed,  8 Jun 2016 17:52:22 +0000 (UTC)
+Received: from mail-out.m-online.net ([212.18.0.9]:56137 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751469AbcFIPBB (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 9 Jun 2016 11:01:01 -0400
+In-Reply-To: <575415F5.3070306@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Mirza Krak <mirza.krak@hostmobility.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-=46rom aad71889fffa819155ec85d5f5538bc4cca252e6 Mon Sep 17 00:00:00 200=
-1
-=46rom: Maximilian Schneider <max@schneidersoft.net>
-Date: Wed, 8 Jun 2016 17:29:48 +0000
-Subject: [PATCH] Add basic support for the bytewerk.org candleLight int=
-erface,
-a open hardware (CERN OHL) USB CAN adapter.
+On 06/05/2016 02:07 PM, Oliver Hartkopp wrote:
+> On 06/01/2016 04:26 AM, Marek Vasut wrote:
+> 
+>>>> What would be the advantages to put this into kernel space (or into the
+>>>> CAN networking infrastructure)?
+>>>
+>>> I see two for putting this into the kernel:
+>>> - At faster bus speeds, you can achieve more precise timing if this is
+>>>    in the kernel, both of the inter-byte delay and also for the
+>>>    timestamps. Having this in the kernel even allows usage of the
+>>>    realtime extensions if needed.
+> 
+> A topic for the serial driver infrastructure?
 
-Signed-off-by: Hubert Denkmair <hubert@denkmair.de>
-Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
----
- drivers/net/can/usb/gs_usb.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+Can you elaborate a bit please ?
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.=
-c
-index 1556d42..acb0c84 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -1,7 +1,9 @@
--/* CAN driver for Geschwister Schneider USB/CAN devices.
-+/* CAN driver for Geschwister Schneider USB/CAN devices
-+ * and bytewerk.org candleLight USB CAN interfaces.
-  *
-- * Copyright (C) 2013 Geschwister Schneider Technologie-,
-+ * Copyright (C) 2013-2016 Geschwister Schneider Technologie-,
-  * Entwicklungs- und Vertriebs UG (Haftungsbeschr=C3=A4nkt).
-+ * Copyright (C) 2016 Hubert Denkmair
-  *
-  * Many thanks to all socketcan devs!
-  *
-@@ -29,6 +31,9 @@
- #define USB_GSUSB_1_VENDOR_ID      0x1d50
- #define USB_GSUSB_1_PRODUCT_ID     0x606f
-=20
-+#define USB_CANDLELIGHT_VENDOR_ID  0x1209
-+#define USB_CANDLELIGHT_PRODUCT_ID 0x2323
-+
- #define GSUSB_ENDPOINT_IN          1
- #define GSUSB_ENDPOINT_OUT         2
-=20
-@@ -952,6 +957,8 @@ static void gs_usb_disconnect(struct usb_interface =
-*intf)
- static const struct usb_device_id gs_usb_table[] =3D {
- 	{ USB_DEVICE_INTERFACE_NUMBER(USB_GSUSB_1_VENDOR_ID,
- 				      USB_GSUSB_1_PRODUCT_ID, 0) },
-+	{ USB_DEVICE_INTERFACE_NUMBER(USB_CANDLELIGHT_VENDOR_ID,
-+				      USB_CANDLELIGHT_PRODUCT_ID, 0) },
- 	{} /* Terminating entry */
- };
-=20
-@@ -969,5 +976,6 @@ module_usb_driver(gs_usb_driver);
- MODULE_AUTHOR("Maximilian Schneider <mws@schneidersoft.net>");
- MODULE_DESCRIPTION(
- "Socket CAN device driver for Geschwister Schneider Technologie-, "
--"Entwicklungs- und Vertriebs UG. USB2.0 to CAN interfaces.");
-+"Entwicklungs- und Vertriebs UG. USB2.0 to CAN interfaces\n"
-+"and bytewerk.org candleLight USB CAN interfaces.");
- MODULE_LICENSE("GPL v2");
---=20
-2.1.4
+>>> - Dedicated hardware driver can plug into such K-Line infrastructure.
+>>>    Such hardware might be needed to support the faster modes to further
+>>>    increase the timing precision.
+> 
+> Which K-Line infrastructure?
+
+The one which would be added to socketcan. The patches don't seem too
+disruptive in fact.
+
+>>> And two for using socketcan/network interface:
+>>> - The addressing support of the network stack can be mapped to K-Line
+>>>    bus addresses.
+> 
+> The K-Line addressing is totally different from CAN addressing. Why do
+> you think the stuff in linux/net/can has any conjunction to K-Line
+> addressing?
+
+Let me just ask what you mean by "totally different" first ?
+
+>>> - The rtnl can be used as an extensible interface for configuring the
+>>>    K-Line parameters.
+> 
+> The idea of SocketCAN using the Linux networking infrastructure and
+> network interfaces is the multi-user capability which is enabled through
+> this layering.
+> 
+> IIRC K-Line is ONE point-to-point connection which is not multi-user
+> capable - so what would be the benefit to implement a K-Line serial
+> driver as network device and then configure it via rtnl?
+
+I am more interested in the RTNL configuration interface, since the
+kline has way too many parameters and the RTNL scales well in that
+aspect.
+
+When using the socket interface, I can also add various flags to the
+packet and control the properties of the data that are to be transmitted
+via the KLine interface. That's real convenient.
+
+>> What do you think about putting the KLine support into socketcan stack ?
+> 
+> If I would think about your mentioned requirements and ideas I would
+> start with pyOBD http://www.obdtester.com/pyobd and probably move this
+> to be a PREEMPT_RT task and I would add an interface to specify
+> inter-byte delays into the serial driver infrastructure.
+
+The python overhead would be waaaay too much. The reason for putting
+this into the kernel is to get better timing control.
+
+> Even when trying to think very positively about your question I don't
+> see any conjunction to SocketCAN.
+> 
+> Best regards,
+> Oliver
 
 
+-- 
+Best regards,
+Marek Vasut
