@@ -1,132 +1,83 @@
-From: "Menschel.P" <menschel.p@posteo.de>
-Subject: Re: [PATCH 4/5][RFC] can: kline: Add KLine rtnl configuration options
-Date: Thu, 9 Jun 2016 22:21:33 +0200
-Message-ID: <5759CFCD.1050305@posteo.de>
-References: <1465500064-5402-1-git-send-email-marex@denx.de>
- <1465500064-5402-4-git-send-email-marex@denx.de>
+From: Andy Haydon <ahaydon@moog.com>
+Subject: Re: =?utf-8?b?Y19jYW4=?= driver sometimes sends first two bytes filled with zeros
+Date: Fri, 10 Jun 2016 10:49:57 +0000 (UTC)
+Message-ID: <loom.20160610T122431-248@post.gmane.org>
+References: <0120733A154AE74CA608A286CE7FFD2621D9A343@rg-contact.RG.local> <574349BB.3010703@grandegger.com> <0120733A154AE74CA608A286CE7FFD2621DD3945@rg-contact.RG.local> <574EDEA3.5090204@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms050503020600050507050006"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout01.posteo.de ([185.67.36.65]:58202 "EHLO mout01.posteo.de"
+Received: from plane.gmane.org ([80.91.229.3]:56568 "EHLO plane.gmane.org"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750756AbcFIUVq (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 9 Jun 2016 16:21:46 -0400
-Received: from dovecot03.posteo.de (dovecot03.posteo.de [172.16.0.13])
-	by mout01.posteo.de (Postfix) with ESMTPS id 61EDD209A1
-	for <linux-can@vger.kernel.org>; Thu,  9 Jun 2016 22:21:41 +0200 (CEST)
-In-Reply-To: <1465500064-5402-4-git-send-email-marex@denx.de>
+	id S932084AbcFJKzK (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Fri, 10 Jun 2016 06:55:10 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1bBK5g-0006s8-H4
+	for linux-can@vger.kernel.org; Fri, 10 Jun 2016 12:55:04 +0200
+Received: from mail2.uk.moog.com ([195.33.118.208])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 10 Jun 2016 12:55:04 +0200
+Received: from ahaydon by mail2.uk.moog.com with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Fri, 10 Jun 2016 12:55:04 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marek Vasut <marex@denx.de>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Hi Wolfgang,
 
---------------ms050503020600050507050006
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Wolfgang Grandegger <wg <at> grandegger.com> writes:
 
-Hello Marek,
+> 
+> Making "priv->write_regs() atomic is something I would try as well. My 
+> suspicion is that something goes wrong writing(/reading) the controller 
+> registers.
 
-these look like the timing parameters for KWP2000 protocol.
-> +struct kline_timing {
-> +	__u32 w0;
-> +	__u32 w1;
-> +	__u32 w2;
-> +	__u32 w3;
-> +	__u32 w4;
-> +	__u32 w5;
-> +	__u32 p1;
-> +	__u32 p2_94;
-> +	__u32 p2_08;
-> +	__u32 p3;
-> +	__u32 p4;
-> +};
-The wX parameters are the wake up timings and the pX are the response=20
-timings in between tester and ecu.
-Imho the protocol needs to be separated from the device driver since=20
-there are other protocols like kwp500 and kwp1281 that use k-line.
+We have also been looking at a similar issue over the last few days. In our 
+case, bytes 0 and 1 and bytes 4 and 5 of an 8 byte message can be corrupted 
+randomly - not necessarily zeroed. Bytes 2 and 3 and bytes 6 and 7 are never
+corrupted. The Tx task is running as a high priority real time thread in 
+PREEMPT_RT.
+
+I've found that so far the only thing that fixes this issue is to perform 
+the writes to the data registers as 32 bit operations something like this 
+(for 3.18.20):
+
+--- a/drivers/net/can/c_can/c_can.c	2015-08-07 20:08:04.000000000 +0100
++++ b/drivers/net/can/c_can/c_can.c	2016-06-09 14:46:51.497895357 +0100
+@@ -331,9 +332,19 @@
+ 
+ 	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), ctrl);
+ 
+-	for (i = 0; i < frame->can_dlc; i += 2) {
+-		priv->write_reg(priv, C_CAN_IFACE(DATA1_REG, iface) + i / 2,
+-				frame->data[i] | (frame->data[i + 1] << 8));
++// this doesn't work for Cyclone V
++//	for (i = 0; i < frame->can_dlc; i += 2) {
++//		priv->write_reg(priv, C_CAN_IFACE(DATA1_REG, iface) + i / 2,
++//				frame->data[i] | (frame->data[i + 1] << 8));
++
++// replaced with this as a workaround
++	u32 data = 0;
++	for (i = 0; i < frame->can_dlc; i += 4) {
++		data = (u32)frame->data[i];
++		data |= (u32)frame->data[i + 1] << 8;
++		data |= (u32)frame->data[i + 2] << 16;
++		data |= (u32)frame->data[i + 3] << 24;
++		priv->write_reg32(priv, C_CAN_IFACE(DATA1_REG, iface) + i / 
+2, data);
+ 	}
+ }
+ 
+At the moment I can't explain this behaviour, or if this is really the only 
+way to fix the issue for the Cyclone V. 
+The tests that I've done so far seem to indicate that the data is correct 
+in the driver right up to the point at which it is actually written to the 
+CAN peripheral registers, so I think that your suspicion is correct.
 
 Regards,
-Patrick
+Andy
 
 
-
-
-
-
---------------ms050503020600050507050006
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-CfcwggSvMIIDl6ADAgECAhEA4CPLFRKDU4mtYW56VGdrITANBgkqhkiG9w0BAQsFADBvMQsw
-CQYDVQQGEwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxJjAkBgNVBAsTHUFkZFRydXN0IEV4
-dGVybmFsIFRUUCBOZXR3b3JrMSIwIAYDVQQDExlBZGRUcnVzdCBFeHRlcm5hbCBDQSBSb290
-MB4XDTE0MTIyMjAwMDAwMFoXDTIwMDUzMDEwNDgzOFowgZsxCzAJBgNVBAYTAkdCMRswGQYD
-VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNP
-TU9ETyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
-AQoCggEBAImxDdp6UxlOcFIdvFamBia3uEngludRq/HwWhNJFaO0jBtgvHpRQqd5jKQi3xdh
-TpHVdiMKFNNKAn+2HQmAbqUEPdm6uxb+oYepLkNSQxZ8rzJQyKZPWukI2M+TJZx7iOgwZOak
-+FaA/SokFDMXmaxE5WmLo0YGS8Iz1OlAnwawsayTQLm1CJM6nCpToxDbPSBhPFUDjtlOdiUC
-ISn6o3xxdk/u4V+B6ftUgNvDezVSt4TeIj0sMC0xf1m9UjewM2ktQ+v61qXxl3dnUYzZ7ifr
-vKUHOHaMpKk4/9+M9QOsSb7K93OZOg8yq5yVOhM9DkY6V3RhUL7GQD/L5OKfoiECAwEAAaOC
-ARcwggETMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0GA1UdDgQWBBSSYWuC
-4aKgqk/sZ/HCo/e0gADB7DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIBADAd
-BgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYDVR0gBAowCDAGBgRVHSAAMEQGA1Ud
-HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9BZGRUcnVzdEV4dGVybmFs
-Q0FSb290LmNybDA1BggrBgEFBQcBAQQpMCcwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVz
-ZXJ0cnVzdC5jb20wDQYJKoZIhvcNAQELBQADggEBABsqbqxVwTqriMXY7c1V86prYSvACRAj
-mQ/FZmpvsfW0tXdeDwJhAN99Bf4Ss6SAgAD8+x1banICCkG8BbrBWNUmwurVTYT7/oKYz1gb
-4yJjnFL4uwU2q31Ypd6rO2Pl2tVz7+zg+3vio//wQiOcyraNTT7kSxgDsqgt1Ni7QkuQaYUQ
-26Y3NOh74AEQpZzKOsefT4g0bopl0BqKu6ncyso20fT8wmQpNa/WsadxEdIDQ7GPPprsnjJT
-9HaSyoY0B7ksyuYcStiZDcGG4pCS+1pCaiMhEOllx/XVu37qjIUgAmLq0ToHLFnFmTPyOInl
-tukWeh95FPZKEBom+nyK+5swggVAMIIEKKADAgECAhEAvREavCLRTrKKuEIsseliUTANBgkq
-hkiG9w0BAQsFADCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3Rl
-cjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxQTA/BgNV
-BAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVt
-YWlsIENBMB4XDTE2MDYwNDAwMDAwMFoXDTE3MDYwNDIzNTk1OVowJTEjMCEGCSqGSIb3DQEJ
-ARYUbWVuc2NoZWwucEBwb3N0ZW8uZGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
-AQDhF/cULHYMLK+xHh/HbwO1aY3M+56GI9uRfRLAJWEEpdSFWvW8whRizlAZ0t9eHDzzCI1l
-wi7xDKBfwJt3VNxVjqHs3JjpcxSln/22AF3t8BKy3ACUtw6COlAk7bbwxr29qf7R4wFjumdS
-AS4uc6vDEBqlLrpdQCICwgOne97Dvi849VmbCBTCLTDpMxgrOXkiveGmQ2wBqLEPU/9o5ZH8
-jcCbenY5GZTh7u4gvigPfgIu79jE3dS6he+c64SWgcD7bI/zA9KMCkRuvLrFnN+bu8TeH9jy
-FpdsFuJ4+7mjoYsalR7S/wm0M7pbcZEDw2fJp4XogbLFmpjIlJjA8QM1AgMBAAGjggHyMIIB
-7jAfBgNVHSMEGDAWgBSSYWuC4aKgqk/sZ/HCo/e0gADB7DAdBgNVHQ4EFgQUsac6ykMiqHZ3
-OqhHkkcxeF9NoW8wDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYI
-KwYBBQUHAwQGCysGAQQBsjEBAwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsG
-DCsGAQQBsjEBAgEBATArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0
-L0NQUzBdBgNVHR8EVjBUMFKgUKBOhkxodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9T
-SEEyNTZDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3JsMIGQBggrBgEF
-BQcBAQSBgzCBgDBYBggrBgEFBQcwAoZMaHR0cDovL2NydC5jb21vZG9jYS5jb20vQ09NT0RP
-U0hBMjU2Q2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAkBggrBgEF
-BQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMB8GA1UdEQQYMBaBFG1lbnNjaGVsLnBA
-cG9zdGVvLmRlMA0GCSqGSIb3DQEBCwUAA4IBAQBSqnMFVFL1I7Hr3/FWhV3r0cHCSYrAAJu0
-lpgUJcvf6TOGuWNTksdyxbRFWyB6uc6trI9VrQHXbUhHHaUOPyDYBT50Xv4BrgIFYpQe7JI1
-IYPyE5PAR4323CeOTADK4S7KyerSRm7ZnqRCOHp6NTC/2cehFgkfCuO01AeRmzyA8arANiZf
-TS2rPtd31PjpBQ0OpngLxn2qWEIf90Ibq+XxSuiXaLg4l2PI/975QLi0nn466Ql7U2nUeawn
-R34LMZk1c2ImpKZUX+cpz17btGWyohXSdXLQnrruWvO2dx4F5AjuJ/F8JHbIm17I/mlzh883
-4e16eovJEoiXCNVlmxZ3MYIERDCCBEACAQEwgbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
-ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
-TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGlj
-YXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAL0RGrwi0U6yirhCLLHpYlEwDQYJYIZIAWUD
-BAIBBQCgggJjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE2
-MDYwOTIwMjEzM1owLwYJKoZIhvcNAQkEMSIEIFvRWvUOl97i0ACPonA5R9T40+rHmrFKz8hb
-d0fM9KO0MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggq
-hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
-hvcNAwICASgwgcIGCSsGAQQBgjcQBDGBtDCBsTCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgT
-EkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RP
-IENBIExpbWl0ZWQxQTA/BgNVBAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNh
-dGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAvREavCLRTrKKuEIsseliUTCBxAYLKoZIhvcN
-AQkQAgsxgbSggbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0
-ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYD
-VQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
-bWFpbCBDQQIRAL0RGrwi0U6yirhCLLHpYlEwDQYJKoZIhvcNAQEBBQAEggEAnObsCZmAs5DE
-142+UfyZK6TZAEQOWOdvD4WkiU+OAzOij2iaTUj0M6HjCXy09hDWaWdLAV8L0mEJFqkBFznC
-5zGbFIHd/0Sr+gzRl5eJjOndQl5ChzFqr4rE3ISz62SbE7JbRnfqLpx8L9W69Ts2tQlqTDf3
-MqKl4dD4nwHb7cuwqnsdON2YPTWbj03atVYZWIjGpoC/q7mL5S9WjVU0pnMUEHJaJYdxIOc1
-jIe/lqNRE+dzgkhRKszQTsWgaoqUfVemf1yLdGG8uHzvyy0+Jni4OMUgDVyQOiB3Ueqq7cDT
-lH47PRQn905RMst9xjYy1PR9zHxzXfePla1H8uuReAAAAAAAAA==
---------------ms050503020600050507050006--
