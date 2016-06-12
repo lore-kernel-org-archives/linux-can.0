@@ -1,75 +1,113 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: "user id" for can usb adapters
-Date: Sun, 12 Jun 2016 21:05:18 +0200
-Message-ID: <575DB26E.2050306@hartkopp.net>
-References: <575C0C0A.60903@xor.wtf>
+Subject: Re: [RFC] K-Line protocol via SocketCAN
+Date: Sun, 12 Jun 2016 21:28:52 +0200
+Message-ID: <575DB7F4.3030906@hartkopp.net>
+References: <573E491E.1000906@denx.de>
+ <CAJ=nTsu_bJgj1A5JNJNAd9HAao5493CnofbQpJ_qftYOiCgaYw@mail.gmail.com>
+ <573EAE9D.20006@hartkopp.net> <573EFC23.2040906@denx.de>
+ <574E47C8.4000709@denx.de> <575415F5.3070306@hartkopp.net>
+ <57598472.3070207@denx.de> <5759B597.3060009@hartkopp.net>
+ <5759C1D1.1000001@denx.de> <5759CDC9.2010204@hartkopp.net>
+ <575C699A.8080000@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:42246 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:14332 "EHLO
 	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932081AbcFLTFb (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jun 2016 15:05:31 -0400
-In-Reply-To: <575C0C0A.60903@xor.wtf>
+	with ESMTP id S1752674AbcFLT3B (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Sun, 12 Jun 2016 15:29:01 -0400
+In-Reply-To: <575C699A.8080000@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Hubert Denkmair <xor@xor.wtf>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Maximilian Schneider <max@schneidersoft.net>
+To: Marek Vasut <marex@denx.de>, Mirza Krak <mirza.krak@hostmobility.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-Hello Hubert, Max,
+Hi Marek,
 
-On 06/11/2016 03:03 PM, Hubert Denkmair wrote:
-> for my candleLight adapter (gs_usb driver), I would like to implement a feature which is afaik currently not used in linux / socketcan:
+On 06/11/2016 09:42 PM, Marek Vasut wrote:
+> On 06/09/2016 10:12 PM, Oliver Hartkopp wrote:
+>> On 06/09/2016 09:21 PM, Marek Vasut wrote:
+>>> On 06/09/2016 08:29 PM, Oliver Hartkopp wrote:
+>>
+>>>>> I am more interested in the RTNL configuration interface, since the
+>>>>> kline has way too many parameters and the RTNL scales well in that
+>>>>> aspect.
+>>>>
+>>>> If like rtnl so much why don't you create a K-Line netdevice driver for
+>>>> it and use the PF_PACKET socket to exchange data with the netdevice?
+>>>
+>>> Because last time I did that with the arinc, I was told to integrate
+>>> that into the socketcan instead.
+>>>
+>>>>> When using the socket interface, I can also add various flags to the
+>>>>> packet and control the properties of the data that are to be
+>>>>> transmitted
+>>>>> via the KLine interface. That's real convenient.
+>>>>
+>>>> But that has nothing to do with PF_CAN.
+>>>
+>>> So I should add another orthogonal infrastructure ? That's what I did
+>>> with the arinc and I was told the exact opposite, so I am really
+>>> confused here .
+>>
+>> ARINC 825 *is* CAN. When people tell you to use the existing
+>> infrastructure that was a good hint, but K-Line is definitely not CAN.
 >
-> A device ID that the user can assign and store permanently on CAN interfaces, e.g. a USB CAN interface.
-> This is not new - e.g. Peak System implements this in their Windows API.
+> Well, I was talking about arinc 429 .
 >
-> One use case would be to build multiple measurement setups, each with more than one CAN adapter.
+
+Ah - I remember that discussion:
+https://lwn.net/Articles/663130/
+http://thread.gmane.org/gmane.linux.network/385449
+
+What happed to it?
+
+I don't see anything from the patchset in the kernel.
+
+>> Your patch set shows that you are adding things to the CAN
+>> infrastructure that have nothing to do with CAN.
+>>
+>> E.g. the K-Line timing you add in patch 4/5 has nothing to do with CAN
+>> specific configurations.
+>>
+>> Additionally I don't know whether the struct kline_frame is the optimal
+>> solution because it sticks to struct can_frame and does not reflect the
+>> (optional) K-Line address scheme.
+>>
+>> So you could either use the sl_kline.c with PF_PACKET and create a
+>> separate rtnl configuration for it OR you could create a character
+>> device which handles K-Line frames and has some ioctls to configure the
+>> specialized timings.
 >
-> For example, at my company, we build test racks with several CAN interfaces.
-> Each test rack should run with the same (unmodified) software image.
-> To be able to build a stable environment, devices shall have a predictable name in each rack.
+> Is adding a specialized chardev really such a great idea ?
 >
-> One way to achieve this would be to
-> - assign "user IDs" to the CAN interfaces (e.g. CAN A = 0, CAN B = 1, ...)
-> - have this id exported, e.g. as a sysfs attribute
-> - use udev to assign defined names for can interfaces with a certain id
->
-> Implementing a sysfs attribute for one driver is easy - and I did that for testing purposes.
-> But since this is (imho) a feature which could be useful for the whole socketcan infrastructure,
-> I would like to see a standardized method for the functionality.
-> We should also implement this in the pcan_usb linux driver.
->
-> I am aware that there is a file /sys/class/net/<device>/dev_id - but no idea if that would be the right place.
 
 Why not?
 
-So far the dev_id is already used in some CAN drivers to identify 
-instances/interfaces in CAN adapters that contain more than one CAN 
-interface.
+E.g. think about a chardev in /dev/kline0 which is located in 
+linux/drivers/misc and which uses a tty under the hood.
 
-As this dev_id is established and already available e.g. for udev 
-scripts I wonder if we only have to provide an interface to write this 
-value (to set a specific value).
+I'm not a K-Line specialist like Mirza who was able to point at timings 
+that should be handled in user space and not in kernel space.
 
-Is there a way to implement a handler that sets the dev_id into the 
-hardware by writing to the sysfs entry??
+But if you implement a chardev driver which allows the configuration of 
+these kernel relevant K-Line timings and makes use of the tty layer - 
+what should be wrong with this approach?
 
-This could be used e.g. for the PEAK USB interfaces too.
+You would have a single user K-Line interface which can handle specific 
+struct kline data. Fine.
+
+>> As K-Line never was multi-user capable by design the chardev approach is
+>> the most 'natural' concept IMHO.
+>
+> I could technically just implement this as a ldisc with some additional
+> ioctls, but is that really such a good idea ?
+
+Yes. It would be some kind of ldisc for a K-Line chardev driver (and not 
+for a netdevice) like other ldiscs in linux/include/uapi/linux/tty.h
+
+Why do you feel this is not a good idea?
 
 Regards,
 Oliver
-
-
-> Seems to me as if adding a new sysfs attribute like /sys/class/net/<device>/user_id would be a better way to go.
->
-> So - any opinions on this?
->
-> Greetings,
->
-> Hubert
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
