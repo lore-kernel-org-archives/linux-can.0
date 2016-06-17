@@ -1,196 +1,106 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v5 3/5] can: bcm: unify bcm_msg_head handling and prepare function parameters
-Date: Fri, 17 Jun 2016 15:35:26 +0200
-Message-ID: <1466170528-10193-4-git-send-email-socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v5 0/5] Add support for CAN FD to broadcast manager
+ (CAN_BCM)
+Date: Fri, 17 Jun 2016 15:42:05 +0200
+Message-ID: <21cd205a-197c-6fc4-e9c0-79f6fc304536@pengutronix.de>
 References: <1466170528-10193-1-git-send-email-socketcan@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="uBIcVG6iiT12nvvLk1BlvxNS17PHMb5M2"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:42757 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933652AbcFQNfm (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 09:35:42 -0400
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:52008 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751309AbcFQNmM (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 09:42:12 -0400
 In-Reply-To: <1466170528-10193-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/bcm.c | 54 +++++++++++++++++++++++++++++-------------------------
- 1 file changed, 29 insertions(+), 25 deletions(-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--uBIcVG6iiT12nvvLk1BlvxNS17PHMb5M2
+Content-Type: multipart/mixed; boundary="1xTpJ7xXcbXUjb6lv5oD2hkVaTlaCF7ke"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Message-ID: <21cd205a-197c-6fc4-e9c0-79f6fc304536@pengutronix.de>
+Subject: Re: [PATCH v5 0/5] Add support for CAN FD to broadcast manager
+ (CAN_BCM)
+References: <1466170528-10193-1-git-send-email-socketcan@hartkopp.net>
+In-Reply-To: <1466170528-10193-1-git-send-email-socketcan@hartkopp.net>
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 83aa6cf..f3bf387 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -693,13 +693,13 @@ rx_starttimer:
- /*
-  * helpers for bcm_op handling: find & delete bcm [rx|tx] op elements
-  */
--static struct bcm_op *bcm_find_op(struct list_head *ops, canid_t can_id,
--				  int ifindex)
-+static struct bcm_op *bcm_find_op(struct list_head *ops,
-+				  struct bcm_msg_head *mh, int ifindex)
- {
- 	struct bcm_op *op;
- 
- 	list_for_each_entry(op, ops, list) {
--		if ((op->can_id == can_id) && (op->ifindex == ifindex))
-+		if ((op->can_id == mh->can_id) && (op->ifindex == ifindex))
- 			return op;
- 	}
- 
-@@ -742,12 +742,13 @@ static void bcm_rx_unreg(struct net_device *dev, struct bcm_op *op)
- /*
-  * bcm_delete_rx_op - find and remove a rx op (returns number of removed ops)
-  */
--static int bcm_delete_rx_op(struct list_head *ops, canid_t can_id, int ifindex)
-+static int bcm_delete_rx_op(struct list_head *ops, struct bcm_msg_head *mh,
-+			    int ifindex)
- {
- 	struct bcm_op *op, *n;
- 
- 	list_for_each_entry_safe(op, n, ops, list) {
--		if ((op->can_id == can_id) && (op->ifindex == ifindex)) {
-+		if ((op->can_id == mh->can_id) && (op->ifindex == ifindex)) {
- 
- 			/*
- 			 * Don't care if we're bound or not (due to netdev
-@@ -787,12 +788,13 @@ static int bcm_delete_rx_op(struct list_head *ops, canid_t can_id, int ifindex)
- /*
-  * bcm_delete_tx_op - find and remove a tx op (returns number of removed ops)
-  */
--static int bcm_delete_tx_op(struct list_head *ops, canid_t can_id, int ifindex)
-+static int bcm_delete_tx_op(struct list_head *ops, struct bcm_msg_head *mh,
-+			    int ifindex)
- {
- 	struct bcm_op *op, *n;
- 
- 	list_for_each_entry_safe(op, n, ops, list) {
--		if ((op->can_id == can_id) && (op->ifindex == ifindex)) {
-+		if ((op->can_id == mh->can_id) && (op->ifindex == ifindex)) {
- 			list_del(&op->list);
- 			bcm_remove_op(op);
- 			return 1; /* done */
-@@ -808,7 +810,7 @@ static int bcm_delete_tx_op(struct list_head *ops, canid_t can_id, int ifindex)
- static int bcm_read_op(struct list_head *ops, struct bcm_msg_head *msg_head,
- 		       int ifindex)
- {
--	struct bcm_op *op = bcm_find_op(ops, msg_head->can_id, ifindex);
-+	struct bcm_op *op = bcm_find_op(ops, msg_head, ifindex);
- 
- 	if (!op)
- 		return -EINVAL;
-@@ -845,8 +847,7 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		return -EINVAL;
- 
- 	/* check the given can_id */
--	op = bcm_find_op(&bo->tx_ops, msg_head->can_id, ifindex);
--
-+	op = bcm_find_op(&bo->tx_ops, msg_head, ifindex);
- 	if (op) {
- 		/* update existing BCM operation */
- 
-@@ -1010,7 +1011,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		return -EINVAL;
- 
- 	/* check the given can_id */
--	op = bcm_find_op(&bo->rx_ops, msg_head->can_id, ifindex);
-+	op = bcm_find_op(&bo->rx_ops, msg_head, ifindex);
- 	if (op) {
- 		/* update existing BCM operation */
- 
-@@ -1192,7 +1193,8 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- /*
-  * bcm_tx_send - send a single CAN frame to the CAN interface (for bcm_sendmsg)
-  */
--static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk)
-+static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk,
-+		       int cfsiz)
- {
- 	struct sk_buff *skb;
- 	struct net_device *dev;
-@@ -1202,13 +1204,13 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk)
- 	if (!ifindex)
- 		return -ENODEV;
- 
--	skb = alloc_skb(CFSIZ + sizeof(struct can_skb_priv), GFP_KERNEL);
-+	skb = alloc_skb(cfsiz + sizeof(struct can_skb_priv), GFP_KERNEL);
- 	if (!skb)
- 		return -ENOMEM;
- 
- 	can_skb_reserve(skb);
- 
--	err = memcpy_from_msg(skb_put(skb, CFSIZ), msg, CFSIZ);
-+	err = memcpy_from_msg(skb_put(skb, cfsiz), msg, cfsiz);
- 	if (err < 0) {
- 		kfree_skb(skb);
- 		return err;
-@@ -1230,7 +1232,7 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk)
- 	if (err)
- 		return err;
- 
--	return CFSIZ + MHSIZ;
-+	return cfsiz + MHSIZ;
- }
- 
- /*
-@@ -1248,7 +1250,15 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		return -ENOTCONN;
- 
- 	/* check for valid message length from userspace */
--	if (size < MHSIZ || (size - MHSIZ) % CFSIZ)
-+	if (size < MHSIZ)
-+		return -EINVAL;
-+
-+	/* read message head information */
-+	ret = memcpy_from_msg((u8 *)&msg_head, msg, MHSIZ);
-+	if (ret < 0)
-+		return ret;
-+
-+	if ((size - MHSIZ) % CFSIZ)
- 		return -EINVAL;
- 
- 	/* check for alternative ifindex for this bcm_op */
-@@ -1282,12 +1292,6 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		}
- 	}
- 
--	/* read message head information */
--
--	ret = memcpy_from_msg((u8 *)&msg_head, msg, MHSIZ);
--	if (ret < 0)
--		return ret;
--
- 	lock_sock(sk);
- 
- 	switch (msg_head.opcode) {
-@@ -1301,14 +1305,14 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		break;
- 
- 	case TX_DELETE:
--		if (bcm_delete_tx_op(&bo->tx_ops, msg_head.can_id, ifindex))
-+		if (bcm_delete_tx_op(&bo->tx_ops, &msg_head, ifindex))
- 			ret = MHSIZ;
- 		else
- 			ret = -EINVAL;
- 		break;
- 
- 	case RX_DELETE:
--		if (bcm_delete_rx_op(&bo->rx_ops, msg_head.can_id, ifindex))
-+		if (bcm_delete_rx_op(&bo->rx_ops, &msg_head, ifindex))
- 			ret = MHSIZ;
- 		else
- 			ret = -EINVAL;
-@@ -1331,7 +1335,7 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		if ((msg_head.nframes != 1) || (size != CFSIZ + MHSIZ))
- 			ret = -EINVAL;
- 		else
--			ret = bcm_tx_send(msg, ifindex, sk);
-+			ret = bcm_tx_send(msg, ifindex, sk, CFSIZ);
- 		break;
- 
- 	default:
--- 
-2.8.1
+--1xTpJ7xXcbXUjb6lv5oD2hkVaTlaCF7ke
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+On 06/17/2016 03:35 PM, Oliver Hartkopp wrote:
+> This series adds the capability for the CAN broadcast manager to handle=
+
+> CAN FD frames analogue to the CAN frames. It allows sending as well as =
+all
+> known data filtering functions (including multiplex filtering).
+>=20
+> Changes in v2:
+> Introduce a helper variable cfsiz to prevent multiple CFSIZ(op) operati=
+ons
+> in bcm_rx_handler() (patch 4/5).
+>=20
+> Changes in v3:
+> Introduce a helper variable cfsiz into struct bcm_op to minimize CFSIZ(=
+op)
+> operations (patch 4/5).
+> Fix documentation table of contents and code example (patch 5/5)
+>=20
+> Changes in v4:
+> fixed more style issues remarked by checkpatch.pl (patch 1/5)
+> Use CFSIZ macro in bcm_sendmsg() for TX_SEND too (patch 4/5)
+>=20
+> Changes in v5:
+> Rename function GET_U64() to get_u64() and update version date (patch 4=
+/5)
+>=20
+> Oliver Hartkopp (5):
+>   can: bcm: fix indention and other minor style issues
+>   can: bcm: use CAN frame instead of can_frame in comments
+>   can: bcm: unify bcm_msg_head handling and prepare function parameters=
+
+>   can: bcm: add support for CAN FD frames
+>   can: bcm: add documentation for CAN FD support
+>=20
+>  Documentation/networking/can.txt |  25 +++-
+>  include/uapi/linux/can/bcm.h     |   1 +
+>  net/can/bcm.c                    | 309 +++++++++++++++++++++++--------=
+--------
+>  3 files changed, 204 insertions(+), 131 deletions(-)
+
+applied to can-next.
+
+tnx,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--1xTpJ7xXcbXUjb6lv5oD2hkVaTlaCF7ke--
+
+--uBIcVG6iiT12nvvLk1BlvxNS17PHMb5M2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJXY/4tAAoJED07qiWsqSVqJYwIAJinHd1SQzrpHv+5YRlow+aU
+L/ow0r2dKeXcGsCcnLbhDMauzEwH6CSVjVkJyMGb9nU5qCSprpvSql9/TIPjKBBI
+1ydyPQNYUaJczg0dCG4HGRtMyZUnKCZWd7y3B8CxyBELhedlgDbhHVpuQjYRXFeJ
+TrGuT03kX5w2c8G+RuJdj1YzauaPiUwXyU3XD3etApSsYhBu9aCxmS3dYfNTiIWl
+Tim3us9/yKqltyA28QDtu7ehoPl0nG0k//BI1vqZDKEC008CQYKv402S9AX6PHrU
+7BBZNTfXM8SVtzqxoX4KBEkWK5QCXmWN5R9hl+2uWWcaJ/gqFlmqRAE2NaRCb2s=
+=5LvF
+-----END PGP SIGNATURE-----
+
+--uBIcVG6iiT12nvvLk1BlvxNS17PHMb5M2--
