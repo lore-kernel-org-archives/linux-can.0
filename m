@@ -1,45 +1,92 @@
-From: <tthayer@opensource.altera.com>
-Subject: [RFC] Fix D_CAN corrupted bytes by using 32 bit register r/w
-Date: Thu, 16 Jun 2016 11:10:18 -0500
-Message-ID: <1466093419-27575-1-git-send-email-tthayer@opensource.altera.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: [[RESEND]PATCH v7 0/2] Add CAN FD driver support to r8a7795 SoC
+Date: Fri, 17 Jun 2016 09:20:54 +0100
+Message-ID: <1466151656-51147-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+References: <1465888372-38319-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2on0073.outbound.protection.outlook.com ([65.55.169.73]:24752
-	"EHLO na01-bl2-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753916AbcFPQFn (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 16 Jun 2016 12:05:43 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:47505 "EHLO
+	relmlie1.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1752337AbcFQI1p (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 04:27:45 -0400
+In-Reply-To: <1465888372-38319-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: socketcan@hartkopp.net, mkl@pengutronix.de, wg@grandegger.com, richard.andrysek@gomtec.de
-Cc: anilkumar@ti.com, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, tthayer.linux@gmail.com, tthayer@opensource.altera.com
+To: davem@davemloft.net
+Cc: mkl@pengutronix.de, wg@grandegger.com, socketcan@hartkopp.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, horms@verge.net.au, magnus.damm@gmail.com, chris.paterson2@renesas.com, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
 
-From: Thor Thayer <tthayer@opensource.altera.com>
+--------------
+Hello David M,
 
-Corrupted bytes in CAN transmission on the Altera CycloneV seem
-to be an issue because the D_CAN registers are 32 bits [1].
-Changing to a 32 bit write fixes the problem and this patch
-includes one method of fixing the problem by selecting 32 bit
-writes for D_CAN or 16 bit writes for C_CAN.
+   Would it be possible for you to consider this patch please?
 
-Another option would be to remove the D_CAN if test and always use
-the priv->read_reg32() and priv->write_reg32() for both C_CAN and
-D_CAN. The C_CAN read_reg32() function performs two 16 bit writes.
-The code is cleaner without the D_CAN if branch but it adds additional
-overhead for C_CAN (2nd 16 bit write may not be needed in many cases).
+   This patch set has undergone multiple reviews as in the change history
+   below. We would be grateful if you could consider accepting this patch as
+   Marc K appears to be inactive and we haven't heard from him since March.
 
-This patch isolates the changes to D_CAN and has been tesed on
-on the Altera CycloneV devkit using a flood write test.
+Thanks,
+Ramesh
+--------------
 
-[1] http://comments.gmane.org/gmane.linux.can/9402
+Hi All,
 
-Thor Thayer (1):
-  can: c_can: Update D_CAN TX and RX functions to 32 bit.
+   This patch is based on can-next latest tag "linux-can-next-for-4.7-20160509"
 
- drivers/net/can/c_can/c_can.c |   38 +++++++++++++++++++++++++++++++-------
- 1 file changed, 31 insertions(+), 7 deletions(-)
+Changes since v6:
+	* Corrected two register definitions as pointed out by Ulrich
+	* Added Ulrich's Reviewed-by: tag
+
+Changes since v5:
+	* Addressed Ulrich's concerns on register, bits naming convention
+	* Rebased to latest tag (linux-can-next-for-4.7-20160509)
+
+Changes since v4:
+	* Rebased to latest can-next/testing branch
+	* Addressed Marc K review comments on v2 patch
+	* Use clk_get_rate() to find ext clock availability. Refer thread
+	(https://lkml.org/lkml/2016/4/8/203)
+
+Changes since v3:
+	* Split v3 patch into two (Marc K)
+	  (1) Introduce rcar_canfd.c driver in drivers/net/can/rcar dir
+	  (2) Move rcar_can.c driver to new drivers/net/can/rcar dir
+	* Added Acked-by Rob H for the bindings
+	* Added comments on CAN FD only mode in driver & Kconfig (Oliver H)
+
+Changes since v2:
+	* Rebased to latest tag (linux-can-next-for-4.6-20160310)
+	* Cleaned up leftover debugfs code (Thanks Oliver H)
+	* Revised devicetree documentation text (as suggested by Rob H)
+	  (https://www.mail-archive.com/linux-renesas-soc@vger.kernel.org/msg01597.html)
+	* Used new can subsystem api to set static configuration & removed check in rcar_canfd_start (as suggested by Oliver H)
+	  (Refer: http://comments.gmane.org/gmane.linux.can/9126 &
+	   https://www.mail-archive.com/linux-renesas-soc@vger.kernel.org/msg01867.html)
+	* Clubbed Renesas controller drivers to driver/net/can/rcar dir (as suggested by Oliver H)
+	* Updated commit message
+
+Changes since v1:
+	* Removed testmodes & debugfs code (suggested by Oliver H)
+	* Fixed tx path race issue by introducing lock (suggested by Marc K)
+	* Removed __maybe_unused attribute of rcar_canfd_of_table
+
+
+Ramesh Shanmugasundaram (2):
+  can: rcar_canfd: Add Renesas R-Car CAN FD driver
+  can: rcar_can: Move Renesas CAN driver to rcar dir
+
+ .../devicetree/bindings/net/can/rcar_canfd.txt     |   89 +
+ drivers/net/can/Kconfig                            |   11 +-
+ drivers/net/can/Makefile                           |    2 +-
+ drivers/net/can/rcar/Kconfig                       |   21 +
+ drivers/net/can/rcar/Makefile                      |    6 +
+ drivers/net/can/{ => rcar}/rcar_can.c              |    0
+ drivers/net/can/rcar/rcar_canfd.c                  | 1695 ++++++++++++++++++++
+ 7 files changed, 1813 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+ create mode 100644 drivers/net/can/rcar/Kconfig
+ create mode 100644 drivers/net/can/rcar/Makefile
+ rename drivers/net/can/{ => rcar}/rcar_can.c (100%)
+ create mode 100644 drivers/net/can/rcar/rcar_canfd.c
 
 -- 
-1.7.9.5
+1.9.1
 
