@@ -1,64 +1,62 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] Implement ethtool set_phys_id callback to ease locating
- specific physical devices.
-Date: Fri, 17 Jun 2016 11:55:32 +0200
-Message-ID: <910612ea-4a66-9875-57a7-17898b92b4ba@pengutronix.de>
-References: <1465591162.2164.2.camel@schneidersoft.net>
- <9b9492cc-2776-60f7-ea38-ee29b1955192@pengutronix.de>
+Subject: Re: bit-timing and sample point
+Date: Fri, 17 Jun 2016 11:59:40 +0200
+Message-ID: <1fc3edc4-23d5-d492-ce12-f628d812b8a4@pengutronix.de>
+References: <570E205B.7030900@pengutronix.de>
+ <20160414102608.GC16018@airbook.vandijck-laurijssen.be>
+ <570F7547.8030805@pengutronix.de>
+ <20160414121932.GA7409@airbook.vandijck-laurijssen.be>
+ <570F8DCA.4090701@pengutronix.de>
+ <KL1PR06MB10312DC099D9EE3A19B6B872C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
+ <570F93B2.1010804@pengutronix.de>
+ <KL1PR06MB1031E7E5F2414AF6C81030A4C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
+ <570FA3DE.9030001@pengutronix.de>
+ <SG2PR06MB103858C6137ED1B430B8ABCFC3570@SG2PR06MB1038.apcprd06.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="jIFsQqK1U6txcmXkSbI72fejcKbGwtEPp"
+ boundary="bD3k9huexfAHMk9g7eR28SktrLB74bjXd"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:58581 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:49156 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753211AbcFQJzk (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 05:55:40 -0400
-In-Reply-To: <9b9492cc-2776-60f7-ea38-ee29b1955192@pengutronix.de>
+	by vger.kernel.org with ESMTP id S1753362AbcFQJ7q (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 05:59:46 -0400
+In-Reply-To: <SG2PR06MB103858C6137ED1B430B8ABCFC3570@SG2PR06MB1038.apcprd06.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Maximilian Schneider <max@schneidersoft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, linux-can <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---jIFsQqK1U6txcmXkSbI72fejcKbGwtEPp
-Content-Type: multipart/mixed; boundary="ivIBawbdFQ1m52o9GInEckmkLFGeCc3fE"
+--bD3k9huexfAHMk9g7eR28SktrLB74bjXd
+Content-Type: multipart/mixed; boundary="lun0P7FuU8sStBijWPIhUfen6CtHselCM"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Maximilian Schneider <max@schneidersoft.net>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <910612ea-4a66-9875-57a7-17898b92b4ba@pengutronix.de>
-Subject: Re: [PATCH] Implement ethtool set_phys_id callback to ease locating
- specific physical devices.
-References: <1465591162.2164.2.camel@schneidersoft.net>
- <9b9492cc-2776-60f7-ea38-ee29b1955192@pengutronix.de>
-In-Reply-To: <9b9492cc-2776-60f7-ea38-ee29b1955192@pengutronix.de>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
+ linux-can <linux-can@vger.kernel.org>
+Message-ID: <1fc3edc4-23d5-d492-ce12-f628d812b8a4@pengutronix.de>
+Subject: Re: bit-timing and sample point
+References: <570E205B.7030900@pengutronix.de>
+ <20160414102608.GC16018@airbook.vandijck-laurijssen.be>
+ <570F7547.8030805@pengutronix.de>
+ <20160414121932.GA7409@airbook.vandijck-laurijssen.be>
+ <570F8DCA.4090701@pengutronix.de>
+ <KL1PR06MB10312DC099D9EE3A19B6B872C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
+ <570F93B2.1010804@pengutronix.de>
+ <KL1PR06MB1031E7E5F2414AF6C81030A4C3970@KL1PR06MB1031.apcprd06.prod.outlook.com>
+ <570FA3DE.9030001@pengutronix.de>
+ <SG2PR06MB103858C6137ED1B430B8ABCFC3570@SG2PR06MB1038.apcprd06.prod.outlook.com>
+In-Reply-To: <SG2PR06MB103858C6137ED1B430B8ABCFC3570@SG2PR06MB1038.apcprd06.prod.outlook.com>
 
---ivIBawbdFQ1m52o9GInEckmkLFGeCc3fE
+--lun0P7FuU8sStBijWPIhUfen6CtHselCM
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 06/17/2016 11:46 AM, Marc Kleine-Budde wrote:
-> On 06/10/2016 10:39 PM, Maximilian Schneider wrote:
->> From a58480fb1c7bb86c11c0d861f3f2997941a84a65 Mon Sep 17 00:00:00 2001=
+On 06/17/2016 11:46 AM, Ramesh Shanmugasundaram wrote:
+> Hi Marc,
+>=20
+> Any plans to upstream your algorithm fix[1]? It has been there in can-u=
+tils for a while now.
 
->> From: Maximilian Schneider <max@schneidersoft.net>
->> Date: Fri, 10 Jun 2016 16:50:16 +0000
->> Subject: [PATCH] Implement ethtool set_phys_id callback to ease locati=
-ng
->>  specific physical devices.
->>
->> currently supported on candleLight interfaces.
->=20
-> Does the LED blink automatically or do you switch it on and off via a
-> USB msg?
->=20
-> Please move the coding style enhancements into a separate patch.
->=20
->>
->> Signed-off-by: Hubert Denkmair <hubert@denkmair.de>
->> Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
-
-BTW: Who's the Author of the patch? Hubert Denkmair or Maximilian Schneid=
-er?
+Will be included in this pull reqeust.
 
 Marc
 
@@ -69,22 +67,22 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---ivIBawbdFQ1m52o9GInEckmkLFGeCc3fE--
+--lun0P7FuU8sStBijWPIhUfen6CtHselCM--
 
---jIFsQqK1U6txcmXkSbI72fejcKbGwtEPp
+--bD3k9huexfAHMk9g7eR28SktrLB74bjXd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJXY8kUAAoJED07qiWsqSVqHBgIAKV8xA6jf/cWJpDX/pSVIctV
-AmnkH+rVFRQK2jtRB9730hlEqc5jKuQW6ZxQ++igiQ/1but9fZIkl7aZr9tm4cWQ
-RDlxd2uVj6AGerLQfKmSyjGbKgzz3pvLCgPhTRGTkZjymI7e1GoFWJ5yQts+iCge
-L+IwUfn0sg2Q18pC90++96K0vEHs4AienWCWaqklLi+67RyhHUcFoooldP7AJHro
-dfH++nEHh/Ha/SDK4LJEeDlG8zIeD9+Ab3qV14Ao0ealr/b6aXQM2Ev1hb9UibcT
-R9ykhReY3L8q5fTMV8YAIClxlP0hT6Jc39APW7Ybg0ksBbtIWurd+eVIYMTGyx8=
-=dKwp
+iQEcBAEBCgAGBQJXY8oMAAoJED07qiWsqSVqyjkIALk+H76fLDcNfa9aBFADmDqU
+nGkzFzvV3m4VRrd7MJ/LxRnAl1H0suYKsqVLbgEoN+Sl7pWp/7kfhhrG3QoZUdU7
+qivK2gHfmepQjYVlbtIJ4IxiLhH6PGFG9mD+xwGXZszFWn8tURVrhg7OYyGJaosL
+In93T77TqW1ENobAaWD+OVAsBrLXBa1wdgC8ETfXK4b5KZgcxQgyO80vH5tSSH0u
+RFyPCVdIliV3XFifFt/VODp/NPgY5NI26Y8h7UwWVm/lmmDOnPrwy6SU4XjyE/AD
+huPUw3uzSxMxYwuTJQcMlQO9CQZkzi/mHEpBO4qSgikyAuVN0u7e2bO1yb4FXLU=
+=rLB5
 -----END PGP SIGNATURE-----
 
---jIFsQqK1U6txcmXkSbI72fejcKbGwtEPp--
+--bD3k9huexfAHMk9g7eR28SktrLB74bjXd--
