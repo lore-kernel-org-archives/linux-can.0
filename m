@@ -1,103 +1,93 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v4 4/5] can: bcm: add support for CAN FD frames
-Date: Fri, 17 Jun 2016 12:41:09 +0200
-Message-ID: <d6d31b17-9ec2-6682-f54b-28fec6358154@pengutronix.de>
-References: <1465068411-24301-1-git-send-email-socketcan@hartkopp.net>
- <1465068411-24301-5-git-send-email-socketcan@hartkopp.net>
- <d37c690e-d872-cf25-b22c-7a6def80069f@pengutronix.de>
- <5763D2F1.5040408@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="WVv1t3h4kQmqsLfPMNb8FisCnJiirBVH7"
+Subject: [PATCH v2] can: build proc support only if CONFIG_PROC_FS is activated
+Date: Fri, 17 Jun 2016 14:08:46 +0200
+Message-ID: <1466165326-29777-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37832 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:33687 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751711AbcFQKlR (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 06:41:17 -0400
-In-Reply-To: <5763D2F1.5040408@hartkopp.net>
+	by vger.kernel.org with ESMTP id S933675AbcFQMIy (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 08:08:54 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: "linux-can @ vger . kernel . org" <linux-can@vger.kernel.org>
+Cc: Alexander Aring <aar@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WVv1t3h4kQmqsLfPMNb8FisCnJiirBVH7
-Content-Type: multipart/mixed; boundary="93kGkUQKwOdBLQ7Gu359sBLMSFMKTbTmw"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Message-ID: <d6d31b17-9ec2-6682-f54b-28fec6358154@pengutronix.de>
-Subject: Re: [PATCH v4 4/5] can: bcm: add support for CAN FD frames
-References: <1465068411-24301-1-git-send-email-socketcan@hartkopp.net>
- <1465068411-24301-5-git-send-email-socketcan@hartkopp.net>
- <d37c690e-d872-cf25-b22c-7a6def80069f@pengutronix.de>
- <5763D2F1.5040408@hartkopp.net>
-In-Reply-To: <5763D2F1.5040408@hartkopp.net>
+From: Alexander Aring <aar@pengutronix.de>
 
---93kGkUQKwOdBLQ7Gu359sBLMSFMKTbTmw
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+When building can subsystem with CONFIG_PROC_FS=n I detected some unused
+variables warning by using proc functions. In CAN the proc handling is
+nicely placed in one object file. This patch adds simple add a
+dependency on CONFIG_PROC_FS for CAN's proc.o file and corresponding
+static inline no-op functions.
 
-On 06/17/2016 12:37 PM, Oliver Hartkopp wrote:
-> On 06/17/2016 12:23 PM, Marc Kleine-Budde wrote:
->> On 06/04/2016 09:26 PM, Oliver Hartkopp wrote:
->=20
->>> -/* easy access to CAN frame payload */
->>> -static inline u64 GET_U64(const struct can_frame *cp)
->>> +/* easy access to the first 64 bit of can(fd)_frame payload */
->>> +static inline u64 GET_U64(const struct canfd_frame *cp, int offset)
->>>   {
->>> -	return *(u64 *)cp->data;
->>> +	return *(u64 *)(cp->data + offset);
->>
->> Can you ensure that offset is always a multiple of 8?
->=20
-> I would like to put that into a comment, as a check for this helper at =
+Signed-off-by: Alexander Aring <aar@pengutronix.de>
+[mkl: provide static inline noops instead of using #ifdefs]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Hello,
 
-> runtime is too expensive - and the caller is only in this C-file at two=
-=20
-> places.
+picking up Alex's work. I've switched from #ifdef's to no-ops.
 
-No need to check during runtime, if you know your code and can ensure
-that offset is always a multiple of 8 :D
-
->> Unaligned pointer
->> access will be quite slow on some platforms.
->=20
-> cp->data is well aligned.
-
-"cp->data + offset" must be aligned properly, this is why offset must be
-a multiple of 8.
-
->> Can you please make this
->> function lower-case (as it's a function not a macro).
->=20
-> will do.
-
+regards,
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+ net/can/Makefile |  3 ++-
+ net/can/af_can.h | 11 +++++++++++
+ net/can/proc.c   |  3 +--
+ 3 files changed, 14 insertions(+), 3 deletions(-)
 
+diff --git a/net/can/Makefile b/net/can/Makefile
+index cef49eb1f5c7..10936754e3f2 100644
+--- a/net/can/Makefile
++++ b/net/can/Makefile
+@@ -3,7 +3,8 @@
+ #
+ 
+ obj-$(CONFIG_CAN)	+= can.o
+-can-y			:= af_can.o proc.o
++can-y			:= af_can.o
++can-$(CONFIG_PROC_FS)	+= proc.o
+ 
+ obj-$(CONFIG_CAN_RAW)	+= can-raw.o
+ can-raw-y		:= raw.o
+diff --git a/net/can/af_can.h b/net/can/af_can.h
+index fca0fe9fc45a..38a79ff20022 100644
+--- a/net/can/af_can.h
++++ b/net/can/af_can.h
+@@ -113,8 +113,19 @@ struct s_pstats {
+ extern struct dev_rcv_lists can_rx_alldev_list;
+ 
+ /* function prototypes for the CAN networklayer procfs (proc.c) */
++#ifdef CONFIG_PROC_FS
+ void can_init_proc(void);
+ void can_remove_proc(void);
++#else
++static inline void can_init_proc(void)
++{
++	pr_info("can: Can't create /proc/net/can. CONFIG_PROC_FS missing!\n");
++}
++
++static inline void can_remove_proc(void)
++{
++}
++#endif
+ void can_stat_update(unsigned long data);
+ 
+ /* structures and variables from af_can.c needed in proc.c for reading */
+diff --git a/net/can/proc.c b/net/can/proc.c
+index 1a19b985a868..85ef7bb0f176 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -517,8 +517,7 @@ void can_init_proc(void)
+ 	can_dir = proc_mkdir("can", init_net.proc_net);
+ 
+ 	if (!can_dir) {
+-		printk(KERN_INFO "can: failed to create /proc/net/can . "
+-		       "CONFIG_PROC_FS missing?\n");
++		pr_info("can: failed to create /proc/net/can.\n");
+ 		return;
+ 	}
+ 
+-- 
+2.8.1
 
---93kGkUQKwOdBLQ7Gu359sBLMSFMKTbTmw--
-
---WVv1t3h4kQmqsLfPMNb8FisCnJiirBVH7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJXY9PFAAoJED07qiWsqSVqTGIH/iKNAJDAcXSVkZMrmeIJoik6
-0hFJpJ6aYNpL7ggbvFxqX46c0o2XI0i/fJ/tV8aw0U7Sm7SGTSZUTczM+XlDknmp
-r0pfBDLlQsZIupgaDriZH/5FqGo0UvjXgTZNJN4vEoWcQjybup2fQl6XCt4EvVl8
-xg763hzWiLttsCIfJNZqOKqxOkTuRnfZK85yN4r0OPH0r0wJtdULRvj//isQ0Shd
-5A/5FKQpPqdRIhYLa5gQqOtjJ0m7svLYPykjHdUvMzgZHpxzg7y1rDqEwF1d5DhY
-4/HMLPI0vASV9guNhP6JwldAa9VMwPNdhZid3jo+juehKzt9onX6iOXNrtep1F0=
-=RlLI
------END PGP SIGNATURE-----
-
---WVv1t3h4kQmqsLfPMNb8FisCnJiirBVH7--
