@@ -1,55 +1,62 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: gs_usb: Add Basic support for the bytewerk.org
- candleLight interface
-Date: Fri, 17 Jun 2016 11:14:59 +0200
-Message-ID: <a09dad2b-ed17-8702-3443-d88c0512dc57@pengutronix.de>
-References: <1465408826.1149.15.camel@schneidersoft.net>
+Subject: Re: [[RESEND]PATCH v7 0/2] Add CAN FD driver support to r8a7795 SoC
+Date: Fri, 17 Jun 2016 11:17:14 +0200
+Message-ID: <14ed8578-6795-ba77-262f-6707168743b0@pengutronix.de>
+References: <1465888372-38319-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <1466151656-51147-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="WfaUnN9E4axW3Rqf5OcXFtAKAtPnB5kDL"
+ boundary="hKRiPbMuGbja6IsfwPSrBRAWs2kJlbVbj"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:43970 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:44797 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751711AbcFQJPK (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 05:15:10 -0400
-In-Reply-To: <1465408826.1149.15.camel@schneidersoft.net>
+	by vger.kernel.org with ESMTP id S1752815AbcFQJRe (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 05:17:34 -0400
+In-Reply-To: <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Maximilian Schneider <max@schneidersoft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, davem@davemloft.net
+Cc: wg@grandegger.com, socketcan@hartkopp.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, horms@verge.net.au, magnus.damm@gmail.com, chris.paterson2@renesas.com
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WfaUnN9E4axW3Rqf5OcXFtAKAtPnB5kDL
-Content-Type: multipart/mixed; boundary="tGiNWe6dmATEi4N3CmBIBEw1XgXbXkqhk"
+--hKRiPbMuGbja6IsfwPSrBRAWs2kJlbVbj
+Content-Type: multipart/mixed; boundary="cKn5T19WV4oKRvJUa1QF07WSAR61Mjb0p"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Maximilian Schneider <max@schneidersoft.net>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <a09dad2b-ed17-8702-3443-d88c0512dc57@pengutronix.de>
-Subject: Re: [PATCH] can: gs_usb: Add Basic support for the bytewerk.org
- candleLight interface
-References: <1465408826.1149.15.camel@schneidersoft.net>
-In-Reply-To: <1465408826.1149.15.camel@schneidersoft.net>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
+ davem@davemloft.net
+Cc: wg@grandegger.com, socketcan@hartkopp.net, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ horms@verge.net.au, magnus.damm@gmail.com, chris.paterson2@renesas.com
+Message-ID: <14ed8578-6795-ba77-262f-6707168743b0@pengutronix.de>
+Subject: Re: [[RESEND]PATCH v7 0/2] Add CAN FD driver support to r8a7795 SoC
+References: <1465888372-38319-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <1466151656-51147-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+ <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
+In-Reply-To: <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
 
---tGiNWe6dmATEi4N3CmBIBEw1XgXbXkqhk
+--cKn5T19WV4oKRvJUa1QF07WSAR61Mjb0p
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 06/08/2016 08:00 PM, Maximilian Schneider wrote:
-> From aad71889fffa819155ec85d5f5538bc4cca252e6 Mon Sep 17 00:00:00 2001
-> From: Maximilian Schneider <max@schneidersoft.net>
-> Date: Wed, 8 Jun 2016 17:29:48 +0000
-> Subject: [PATCH] Add basic support for the bytewerk.org candleLight int=
-erface,
-> a open hardware (CERN OHL) USB CAN adapter.
+On 06/17/2016 10:30 AM, Marc Kleine-Budde wrote:
+> On 06/17/2016 10:20 AM, Ramesh Shanmugasundaram wrote:
+>>    Would it be possible for you to consider this patch please?
+>>
+>>    This patch set has undergone multiple reviews as in the change hist=
+ory
+>>    below. We would be grateful if you could consider accepting this pa=
+tch as
+>>    Marc K appears to be inactive and we haven't heard from him since M=
+arch.
 >=20
-> Signed-off-by: Hubert Denkmair <hubert@denkmair.de>
-> Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
+> I'll take the patch.
 
-Applied to can/master.
+Added to can-next/master.
 
 Tnx,
 Marc
-
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -57,22 +64,22 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---tGiNWe6dmATEi4N3CmBIBEw1XgXbXkqhk--
+--cKn5T19WV4oKRvJUa1QF07WSAR61Mjb0p--
 
---WfaUnN9E4axW3Rqf5OcXFtAKAtPnB5kDL
+--hKRiPbMuGbja6IsfwPSrBRAWs2kJlbVbj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJXY7+VAAoJED07qiWsqSVqKIEIALXW5vieqWiEzZReDlSMo6yd
-g2FZD3bkVI2UqlXF18euKn/MOd40vhO2mVpMGqKiD9e52jbJRrUe7MTeqoUreUPt
-LPoc7/xEDEWk9HTTKccNILBZ29z12+eiWkN96meQYaraTfnaM3YvqBEpqW1Bsajy
-cEJDC783+XsJ8ZtKMPTnNcxVbwaAQMyZqGaTVBNmr/galSvzJMj7VSczlEISJSAM
-6TVs5cgluOzdVseiAyNaBdLrMqLOM8GATp3ONzArcPdwqvMtRAOBrJwHORFeJNJs
-WPHOvCRuJ43xug/5rL22oLz+UYT/uK1722+Z2912+JVt+2OWAq5HUThXfTAemzg=
-=itVw
+iQEcBAEBCgAGBQJXY8AaAAoJED07qiWsqSVqXuUH/2sSVDB91lOd1SdCiTJav6GB
+luifZfrp0WzCSjNueMlCm1aAvEBDFoLT3jtuPvclzTxeVvRXzR3qLKEofWTwPGKX
+dldUC8d9AdodbNX3Gk3tC2YH9w3lTJJ1DroaYt0eGQfnts6TamMVUg5rAq2VYR2x
+46n+W+gGHfvoxEP+4x8clLdD2yIRIWxGeBSoR2cNt2t/+oMoQPF1vwYaKhYKJxDd
+Jvp+Yuzxa4fwOhJUPqn1Rb8OJPEd4WzLcnFfmZTBh7FPM933KhYmOTpEaVTH6fDw
+MlEywe7pr/bbUd2c4jwuOw9m4mY2qXxRNPosYqjC7JxF96D5z/4sHtd23jNStQY=
+=H8kh
 -----END PGP SIGNATURE-----
 
---WfaUnN9E4axW3Rqf5OcXFtAKAtPnB5kDL--
+--hKRiPbMuGbja6IsfwPSrBRAWs2kJlbVbj--
