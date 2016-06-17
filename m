@@ -1,62 +1,87 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [[RESEND]PATCH v7 0/2] Add CAN FD driver support to r8a7795 SoC
-Date: Fri, 17 Jun 2016 11:17:14 +0200
-Message-ID: <14ed8578-6795-ba77-262f-6707168743b0@pengutronix.de>
-References: <1465888372-38319-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1466151656-51147-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
+Subject: Re: [PATCH] can: mcp251x: add some messages to mcp251x_can_probe()
+Date: Fri, 17 Jun 2016 11:22:12 +0200
+Message-ID: <9e944b22-b63b-dc72-c060-b2c21f124569@pengutronix.de>
+References: <1464487156-20858-1-git-send-email-edo.rus@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="hKRiPbMuGbja6IsfwPSrBRAWs2kJlbVbj"
+ boundary="xetiB6ei3TB4WLmG6TQK8tMBMaCTvP4FA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:44797 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:38034 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752815AbcFQJRe (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 05:17:34 -0400
-In-Reply-To: <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
+	by vger.kernel.org with ESMTP id S1754038AbcFQJWU (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 05:22:20 -0400
+In-Reply-To: <1464487156-20858-1-git-send-email-edo.rus@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, davem@davemloft.net
-Cc: wg@grandegger.com, socketcan@hartkopp.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, horms@verge.net.au, magnus.damm@gmail.com, chris.paterson2@renesas.com
+To: Ed Spiridonov <edo.rus@gmail.com>
+Cc: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---hKRiPbMuGbja6IsfwPSrBRAWs2kJlbVbj
-Content-Type: multipart/mixed; boundary="cKn5T19WV4oKRvJUa1QF07WSAR61Mjb0p"
+--xetiB6ei3TB4WLmG6TQK8tMBMaCTvP4FA
+Content-Type: multipart/mixed; boundary="FPSjQhLpkHENsQgE8JKpa1fVTCufjqV7s"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
- davem@davemloft.net
-Cc: wg@grandegger.com, socketcan@hartkopp.net, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- horms@verge.net.au, magnus.damm@gmail.com, chris.paterson2@renesas.com
-Message-ID: <14ed8578-6795-ba77-262f-6707168743b0@pengutronix.de>
-Subject: Re: [[RESEND]PATCH v7 0/2] Add CAN FD driver support to r8a7795 SoC
-References: <1465888372-38319-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1466151656-51147-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
-In-Reply-To: <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
+To: Ed Spiridonov <edo.rus@gmail.com>
+Cc: linux-can@vger.kernel.org
+Message-ID: <9e944b22-b63b-dc72-c060-b2c21f124569@pengutronix.de>
+Subject: Re: [PATCH] can: mcp251x: add some messages to mcp251x_can_probe()
+References: <1464487156-20858-1-git-send-email-edo.rus@gmail.com>
+In-Reply-To: <1464487156-20858-1-git-send-email-edo.rus@gmail.com>
 
---cKn5T19WV4oKRvJUa1QF07WSAR61Mjb0p
+--FPSjQhLpkHENsQgE8JKpa1fVTCufjqV7s
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 06/17/2016 10:30 AM, Marc Kleine-Budde wrote:
-> On 06/17/2016 10:20 AM, Ramesh Shanmugasundaram wrote:
->>    Would it be possible for you to consider this patch please?
->>
->>    This patch set has undergone multiple reviews as in the change hist=
-ory
->>    below. We would be grateful if you could consider accepting this pa=
-tch as
->>    Marc K appears to be inactive and we haven't heard from him since M=
-arch.
+On 05/29/2016 03:59 AM, Ed Spiridonov wrote:
+> Print error message if mcp251x_hw_probe() fails (e.g. MCP2515 isn't con=
+nected or other wiring issue).
+> Print information message if mcp251x_can_probe() is successful.
+
+Can I add your S-o-b to the patch?
+
+> ---
+>  drivers/net/can/spi/mcp251x.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >=20
-> I'll take the patch.
+> diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251=
+x.c
+> index cf36d26..49453f7 100644
+> --- a/drivers/net/can/spi/mcp251x.c
+> +++ b/drivers/net/can/spi/mcp251x.c
+> @@ -1145,8 +1145,10 @@ static int mcp251x_can_probe(struct spi_device *=
+spi)
+> =20
+>  	/* Here is OK to not lock the MCP, no one knows about it yet */
+>  	ret =3D mcp251x_hw_probe(spi);
+> -	if (ret)
+> +	if (ret) {
+> +		dev_err(&spi->dev, "hw_probe failed, err=3D%d (wrong wiring?)\n", -r=
+et);
+>  		goto error_probe;
+> +	}
+> =20
+>  	mcp251x_hw_sleep(spi);
+> =20
+> @@ -1156,6 +1158,8 @@ static int mcp251x_can_probe(struct spi_device *s=
+pi)
+> =20
+>  	devm_can_led_init(net);
+> =20
+> +	netdev_info(net, "successfully initialized.\n");
 
-Added to can-next/master.
+I'll remove this hunk, as we try to make the CAN devices as silent as
+possible in case of no errors.
 
-Tnx,
+> +
+>  	return 0;
+> =20
+>  error_probe:
+>=20
+
+regards,
 Marc
+
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
 Industrial Linux Solutions        | Phone: +49-231-2826-924     |
@@ -64,22 +89,22 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---cKn5T19WV4oKRvJUa1QF07WSAR61Mjb0p--
+--FPSjQhLpkHENsQgE8JKpa1fVTCufjqV7s--
 
---hKRiPbMuGbja6IsfwPSrBRAWs2kJlbVbj
+--xetiB6ei3TB4WLmG6TQK8tMBMaCTvP4FA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJXY8AaAAoJED07qiWsqSVqXuUH/2sSVDB91lOd1SdCiTJav6GB
-luifZfrp0WzCSjNueMlCm1aAvEBDFoLT3jtuPvclzTxeVvRXzR3qLKEofWTwPGKX
-dldUC8d9AdodbNX3Gk3tC2YH9w3lTJJ1DroaYt0eGQfnts6TamMVUg5rAq2VYR2x
-46n+W+gGHfvoxEP+4x8clLdD2yIRIWxGeBSoR2cNt2t/+oMoQPF1vwYaKhYKJxDd
-Jvp+Yuzxa4fwOhJUPqn1Rb8OJPEd4WzLcnFfmZTBh7FPM933KhYmOTpEaVTH6fDw
-MlEywe7pr/bbUd2c4jwuOw9m4mY2qXxRNPosYqjC7JxF96D5z/4sHtd23jNStQY=
-=H8kh
+iQEcBAEBCgAGBQJXY8FEAAoJED07qiWsqSVqAzEH/A0kKyjI6gija/O98Ysa2icS
+U3xF9GH9Q1iRlg4Yv4Gt0AqCP+yo08D4WywtH36IgSC4GCiWKRTL+sUARXr/INEp
+kJOUPmigH84cPiuWm7lCAAM8qH8BcxWAsMhh2jGzb+q7P8mnWDMfsFOxW+q3yPLR
+1OCxlrCUyUk7HlbvcGEQSf/WtpjeLRKvyvUCcnxJd/KUqVZBCa9fa7KJtM3tRVoZ
+Gjg09UHiypJZUnjWKQ3S2ksH3KkZHeuzJkwQ/zBVC54ZHV6zF7CyFk+6cUMK4swb
+bgFCiZq5E1dqXkyZQ9RAamxqP2R1GGprHj9p2oYng+iQG55SXMUmDbFLCjYi4fA=
+=ezJC
 -----END PGP SIGNATURE-----
 
---hKRiPbMuGbja6IsfwPSrBRAWs2kJlbVbj--
+--xetiB6ei3TB4WLmG6TQK8tMBMaCTvP4FA--
