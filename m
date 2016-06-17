@@ -1,50 +1,57 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [[RESEND]PATCH v7 0/2] Add CAN FD driver support to r8a7795 SoC
-Date: Fri, 17 Jun 2016 10:30:17 +0200
-Message-ID: <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
-References: <1465888372-38319-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1466151656-51147-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+Subject: Re: [RFC] Fix D_CAN corrupted bytes by using 32 bit register r/w
+Date: Fri, 17 Jun 2016 10:48:54 +0200
+Message-ID: <dd1178ed-64e7-a117-82e7-4787b59e98c6@pengutronix.de>
+References: <1466093419-27575-1-git-send-email-tthayer@opensource.altera.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="EUe0eewVC1xjkngquWJBOjsuqMGbG5gws"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1466151656-51147-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Sender: netdev-owner@vger.kernel.org
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, davem@davemloft.net
-Cc: wg@grandegger.com, socketcan@hartkopp.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, horms@verge.net.au, magnus.damm@gmail.com, chris.paterson2@renesas.com
-List-Id: linux-can.vger.kernel.org
+ boundary="To7mB4Xu25hPv6FdQlbqB4UXmxp0xM7Qe"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37763 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752337AbcFQItI (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 04:49:08 -0400
+In-Reply-To: <1466093419-27575-1-git-send-email-tthayer@opensource.altera.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: tthayer@opensource.altera.com, socketcan@hartkopp.net, wg@grandegger.com, richard.andrysek@gomtec.de
+Cc: anilkumar@ti.com, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, tthayer.linux@gmail.com
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EUe0eewVC1xjkngquWJBOjsuqMGbG5gws
-Content-Type: multipart/mixed; boundary="pr2SamgwnX6Tk0ut55NeMtqVNrD25hQbq"
+--To7mB4Xu25hPv6FdQlbqB4UXmxp0xM7Qe
+Content-Type: multipart/mixed; boundary="Trw0B5UDERCOvBwoPuIIKtQhdCnKjw8QN"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
- davem@davemloft.net
-Cc: wg@grandegger.com, socketcan@hartkopp.net, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- horms@verge.net.au, magnus.damm@gmail.com, chris.paterson2@renesas.com
-Message-ID: <6823878d-743d-8dfd-3128-3e5794265b15@pengutronix.de>
-Subject: Re: [[RESEND]PATCH v7 0/2] Add CAN FD driver support to r8a7795 SoC
-References: <1465888372-38319-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1466151656-51147-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-In-Reply-To: <1466151656-51147-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+To: tthayer@opensource.altera.com, socketcan@hartkopp.net, wg@grandegger.com,
+ richard.andrysek@gomtec.de
+Cc: anilkumar@ti.com, linux-can@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, tthayer.linux@gmail.com
+Message-ID: <dd1178ed-64e7-a117-82e7-4787b59e98c6@pengutronix.de>
+Subject: Re: [RFC] Fix D_CAN corrupted bytes by using 32 bit register r/w
+References: <1466093419-27575-1-git-send-email-tthayer@opensource.altera.com>
+In-Reply-To: <1466093419-27575-1-git-send-email-tthayer@opensource.altera.com>
 
---pr2SamgwnX6Tk0ut55NeMtqVNrD25hQbq
+--Trw0B5UDERCOvBwoPuIIKtQhdCnKjw8QN
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 06/17/2016 10:20 AM, Ramesh Shanmugasundaram wrote:
->    Would it be possible for you to consider this patch please?
+On 06/16/2016 06:10 PM, tthayer@opensource.altera.com wrote:
+> From: Thor Thayer <tthayer@opensource.altera.com>
 >=20
->    This patch set has undergone multiple reviews as in the change histo=
-ry
->    below. We would be grateful if you could consider accepting this pat=
-ch as
->    Marc K appears to be inactive and we haven't heard from him since Ma=
-rch.
+> Corrupted bytes in CAN transmission on the Altera CycloneV seem
+> to be an issue because the D_CAN registers are 32 bits [1].
+> Changing to a 32 bit write fixes the problem and this patch
+> includes one method of fixing the problem by selecting 32 bit
+> writes for D_CAN or 16 bit writes for C_CAN.
+>=20
+> Another option would be to remove the D_CAN if test and always use
+> the priv->read_reg32() and priv->write_reg32() for both C_CAN and
+> D_CAN. The C_CAN read_reg32() function performs two 16 bit writes.
+> The code is cleaner without the D_CAN if branch but it adds additional
+> overhead for C_CAN (2nd 16 bit write may not be needed in many cases).
 
-I'll take the patch.
+Better save the overhead, as an additional register access may seems to
+be quite expensive on some platforms.
 
 Marc
 
@@ -55,22 +62,22 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---pr2SamgwnX6Tk0ut55NeMtqVNrD25hQbq--
+--Trw0B5UDERCOvBwoPuIIKtQhdCnKjw8QN--
 
---EUe0eewVC1xjkngquWJBOjsuqMGbG5gws
+--To7mB4Xu25hPv6FdQlbqB4UXmxp0xM7Qe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJXY7UZAAoJED07qiWsqSVqohEH/jIPxSTW/fYeg6SDNViz6c4l
-dCzN3d8j/y4dgsM47BjvjPDJmyYvO8CXD5GCxpF0fiLFxOgy+xs5ipQ9AitquCAM
-3Q+td8Bky3bGhxSgz7g8TzVa4rtX3T7hWbfqpkE6Nq2wvUcpS6kfL8qFchyBHYUG
-uKrV2IZUsp9avIUw7/IBWvXL+rU/yy9hV+WvrwwFc1NhycfO8g+npjyA14ALw1Xy
-XfBNUE2hDZWHJCLkTw9Cmjd9pTk7TwP8gHEUbxGftvlHVlm+fANizSfvkPlz4ttg
-rVxnBKxTGAvH0Zp1fiszriW7lunpx6hnFS4L+kN0iduNAbXp2pf35xTaszTp3Aw=
-=g2sc
+iQEcBAEBCgAGBQJXY7l2AAoJED07qiWsqSVqh6sH/jtt1LwjwGCnk+X6DIakpdzf
++A9g0cLcltjXoP7PS5rjh3/p0pIWq3DvfQQwSRGavELT2aN1zeFyJtinifH9/PDy
+9DuOGa48z1Xz16MRJ9Q0xlVeuTAWMouXoRkedLsHCj+Xmn7DjGbOlLisGYEF2rlc
+6Il3OqA5/+iMxg3wYIOs73mDD9vYpQNhalZolZSLJvtpo2/HRAtxsU44vZNUxGKT
+GJT+J2724Q86r9tnr6jAhlfISNGX+tcWjCvJJG9h+8KDHD5h0EiiDlYUCjxkHyiM
+fSr0a49VmB57YwiM+1w23uepQVIvlKdoI+16iBeOsTj1GgfTuZilU/ZONvZ5uTI=
+=OjU9
 -----END PGP SIGNATURE-----
 
---EUe0eewVC1xjkngquWJBOjsuqMGbG5gws--
+--To7mB4Xu25hPv6FdQlbqB4UXmxp0xM7Qe--
