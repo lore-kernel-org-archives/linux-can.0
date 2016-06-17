@@ -1,96 +1,162 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 1/2] can: gs_usb: codingstyle: introduce use of BIT() + fix indention
-Date: Fri, 17 Jun 2016 12:03:26 +0200
-Message-ID: <1466157807-12727-2-git-send-email-mkl@pengutronix.de>
-References: <1466157807-12727-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: [PATCH v4 4/5] can: bcm: add support for CAN FD frames
+Date: Fri, 17 Jun 2016 12:23:50 +0200
+Message-ID: <d37c690e-d872-cf25-b22c-7a6def80069f@pengutronix.de>
+References: <1465068411-24301-1-git-send-email-socketcan@hartkopp.net>
+ <1465068411-24301-5-git-send-email-socketcan@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="7MVhdcugvWFWAqvSmQg6U2ibXEspnhgE6"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:42453 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:34996 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S933404AbcFQKDa (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 06:03:30 -0400
-In-Reply-To: <1466157807-12727-1-git-send-email-mkl@pengutronix.de>
+	by vger.kernel.org with ESMTP id S1754177AbcFQKX6 (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 17 Jun 2016 06:23:58 -0400
+In-Reply-To: <1465068411-24301-5-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can @ vger . kernel . org" <linux-can@vger.kernel.org>
-Cc: Maximilian Schneider <max@schneidersoft.net>, Hubert Denkmair <hubert@denkmair.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-From: Maximilian Schneider <max@schneidersoft.net>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7MVhdcugvWFWAqvSmQg6U2ibXEspnhgE6
+Content-Type: multipart/mixed; boundary="7DtQNVJA6ILBaSBcEKan2xomMPI9ATLqG"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Message-ID: <d37c690e-d872-cf25-b22c-7a6def80069f@pengutronix.de>
+Subject: Re: [PATCH v4 4/5] can: bcm: add support for CAN FD frames
+References: <1465068411-24301-1-git-send-email-socketcan@hartkopp.net>
+ <1465068411-24301-5-git-send-email-socketcan@hartkopp.net>
+In-Reply-To: <1465068411-24301-5-git-send-email-socketcan@hartkopp.net>
 
-This patch converts "1 << n" by BIT(n) and fixes the indention. No
-functional change.
+--7DtQNVJA6ILBaSBcEKan2xomMPI9ATLqG
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Hubert Denkmair <hubert@denkmair.de>
-Signed-off-by: Maximilian Schneider <max@schneidersoft.net>
-[mkl: split codingstyle changes into separate patch]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/gs_usb.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+On 06/04/2016 09:26 PM, Oliver Hartkopp wrote:
+> The programming API of the CAN_BCM depends on struct can_frame which is=
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 1556d4286235..6186a9436bb8 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -77,10 +77,10 @@ struct gs_device_config {
- } __packed;
- 
- #define GS_CAN_MODE_NORMAL               0
--#define GS_CAN_MODE_LISTEN_ONLY          (1<<0)
--#define GS_CAN_MODE_LOOP_BACK            (1<<1)
--#define GS_CAN_MODE_TRIPLE_SAMPLE        (1<<2)
--#define GS_CAN_MODE_ONE_SHOT             (1<<3)
-+#define GS_CAN_MODE_LISTEN_ONLY          BIT(0)
-+#define GS_CAN_MODE_LOOP_BACK            BIT(1)
-+#define GS_CAN_MODE_TRIPLE_SAMPLE        BIT(2)
-+#define GS_CAN_MODE_ONE_SHOT             BIT(3)
- 
- struct gs_device_mode {
- 	u32 mode;
-@@ -101,10 +101,10 @@ struct gs_device_bittiming {
- 	u32 brp;
- } __packed;
- 
--#define GS_CAN_FEATURE_LISTEN_ONLY      (1<<0)
--#define GS_CAN_FEATURE_LOOP_BACK        (1<<1)
--#define GS_CAN_FEATURE_TRIPLE_SAMPLE    (1<<2)
--#define GS_CAN_FEATURE_ONE_SHOT         (1<<3)
-+#define GS_CAN_FEATURE_LISTEN_ONLY      BIT(0)
-+#define GS_CAN_FEATURE_LOOP_BACK        BIT(1)
-+#define GS_CAN_FEATURE_TRIPLE_SAMPLE    BIT(2)
-+#define GS_CAN_FEATURE_ONE_SHOT         BIT(3)
- 
- struct gs_device_bt_const {
- 	u32 feature;
-@@ -209,7 +209,8 @@ static void gs_free_tx_context(struct gs_tx_context *txc)
- 
- /* Get a tx context by id.
-  */
--static struct gs_tx_context *gs_get_tx_context(struct gs_can *dev, unsigned int id)
-+static struct gs_tx_context *gs_get_tx_context(struct gs_can *dev,
-+					       unsigned int id)
- {
- 	unsigned long flags;
- 
-@@ -452,7 +453,8 @@ static void gs_usb_xmit_callback(struct urb *urb)
- 		netif_wake_queue(netdev);
- }
- 
--static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb, struct net_device *netdev)
-+static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
-+				     struct net_device *netdev)
- {
- 	struct gs_can *dev = netdev_priv(netdev);
- 	struct net_device_stats *stats = &dev->netdev->stats;
-@@ -658,7 +660,8 @@ static int gs_can_open(struct net_device *netdev)
- 	rc = usb_control_msg(interface_to_usbdev(dev->iface),
- 			     usb_sndctrlpipe(interface_to_usbdev(dev->iface), 0),
- 			     GS_USB_BREQ_MODE,
--			     USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
-+			     USB_DIR_OUT | USB_TYPE_VENDOR |
-+			     USB_RECIP_INTERFACE,
- 			     dev->channel,
- 			     0,
- 			     dm,
--- 
-2.8.1
+> given as array directly behind the bcm_msg_head structure. To follow th=
+is
+> schema for the CAN FD frames a new flag 'CAN_FD_FRAME' in the bcm_msg_h=
+ead
+> flags indicates that the concatenated CAN frame structures behind the
+> bcm_msg_head are defined as struct canfd_frame.
+>=20
+> This patch adds the support to handle CAN and CAN FD frames on a per BC=
+M-op
+> base. Main changes:
+>=20
+> - generally use struct canfd_frames instead if struct can_frames
+> - use canfd_frame.flags instead of can_frame.can_dlc for private BCM fl=
+ags
+> - make all CAN frame sizes depending on the new CAN_FD_FRAME flags
+> - separate between CAN and CAN FD when sending/receiving frames
+>=20
+> Due to the dependence of the CAN_FD_FRAME flag the former binary interf=
+ace
+> for classic CAN frames remains stable.
+>=20
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>  include/uapi/linux/can/bcm.h |   1 +
+>  net/can/bcm.c                | 223 ++++++++++++++++++++++++++---------=
+--------
+>  2 files changed, 134 insertions(+), 90 deletions(-)
+>=20
+> diff --git a/include/uapi/linux/can/bcm.h b/include/uapi/linux/can/bcm.=
+h
+> index 7a291dc..cefb304 100644
+> --- a/include/uapi/linux/can/bcm.h
+> +++ b/include/uapi/linux/can/bcm.h
+> @@ -99,5 +99,6 @@ enum {
+>  #define RX_ANNOUNCE_RESUME  0x0100
+>  #define TX_RESET_MULTI_IDX  0x0200
+>  #define RX_RTR_FRAME        0x0400
+> +#define CAN_FD_FRAME        0x0800
+> =20
+>  #endif /* !_UAPI_CAN_BCM_H */
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index f3bf387..31571b6 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+> @@ -1,7 +1,7 @@
+>  /*
+>   * bcm.c - Broadcast Manager to filter/send (cyclic) CAN content
+>   *
+> - * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+> + * Copyright (c) 2002-2016 Volkswagen Group Electronic Research
+>   * All rights reserved.
+>   *
+>   * Redistribution and use in source and binary forms, with or without
+> @@ -67,27 +67,27 @@
+>   */
+>  #define MAX_NFRAMES 256
+> =20
+> -/* use of last_frames[index].can_dlc */
+> +/* use of last_frames[index].flags */
+>  #define RX_RECV    0x40 /* received data for this element */
+>  #define RX_THR     0x80 /* element not been sent due to throttle featu=
+re */
+> -#define BCM_CAN_DLC_MASK 0x0F /* clean private flags in can_dlc by mas=
+king */
+> +#define BCM_CAN_FLAGS_MASK 0x3F /* to clean private flags after usage =
+*/
+> =20
+>  /* get best masking value for can_rx_register() for a given single can=
+_id */
+>  #define REGMASK(id) ((id & CAN_EFF_FLAG) ? \
+>  		     (CAN_EFF_MASK | CAN_EFF_FLAG | CAN_RTR_FLAG) : \
+>  		     (CAN_SFF_MASK | CAN_EFF_FLAG | CAN_RTR_FLAG))
+> =20
+> -#define CAN_BCM_VERSION CAN_VERSION
+> +#define CAN_BCM_VERSION "20160531"
+> =20
+>  MODULE_DESCRIPTION("PF_CAN broadcast manager protocol");
+>  MODULE_LICENSE("Dual BSD/GPL");
+>  MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
+>  MODULE_ALIAS("can-proto-2");
+> =20
+> -/* easy access to CAN frame payload */
+> -static inline u64 GET_U64(const struct can_frame *cp)
+> +/* easy access to the first 64 bit of can(fd)_frame payload */
+> +static inline u64 GET_U64(const struct canfd_frame *cp, int offset)
+>  {
+> -	return *(u64 *)cp->data;
+> +	return *(u64 *)(cp->data + offset);
 
+Can you ensure that offset is always a multiple of 8? Unaligned pointer
+access will be quite slow on some platforms. Can you please make this
+function lower-case (as it's a function not a macro).
+
+>  }
+> =20
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--7DtQNVJA6ILBaSBcEKan2xomMPI9ATLqG--
+
+--7MVhdcugvWFWAqvSmQg6U2ibXEspnhgE6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJXY8+2AAoJED07qiWsqSVqqiAH/2nGC01ZkOWQfuQ/kPfq0k+0
+hwuRk6Lsw6fw1A0LIAWOoK1UzGH/YWu58/ehIWHTTOX6jzSZyCTvkFa3IbSuQRXh
+xSP7mNWECVN18qrsI2daJYOHp5WLJhbE6mIqm2f7ammQky+nWxXiMXiE/A68zqQk
+15ob1iNOggnlsUD+fxaH/Ufs68/FMx8+KFiyhSD8N1Ik7oOIm6Vk38DQAaalS9At
+5Epxf7B+tYuMQlnTB/HE3aJS9o19Crsqf7mpNkynlfD90r+8azyDi8sQTkRA4Odm
+nXJyZ8vxUP8SIxhw9jRgkcH8rL/BH8pjUeu8eV/Uw5WaEfFrMvyVaqAkZwNWGXg=
+=jpKp
+-----END PGP SIGNATURE-----
+
+--7MVhdcugvWFWAqvSmQg6U2ibXEspnhgE6--
