@@ -1,48 +1,90 @@
-From: Alexander Aring <aar@pengutronix.de>
-Subject: Re: [PATCH v2] can: build proc support only if CONFIG_PROC_FS is
- activated
-Date: Sat, 18 Jun 2016 13:19:58 +0200
-Message-ID: <a4cd0b07-9dd8-b7db-b45f-dc7dd9e17947@pengutronix.de>
-References: <1466165326-29777-1-git-send-email-mkl@pengutronix.de>
- <57650D13.1030706@hartkopp.net>
- <d8067cd1-12c7-56cf-30fc-5e88c2ee6a2e@pengutronix.de>
- <57651749.7070603@hartkopp.net>
- <6dcab1d0-274c-eac9-0c36-eb098823e3c2@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:55489 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751090AbcFRLUA (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sat, 18 Jun 2016 07:20:00 -0400
-In-Reply-To: <6dcab1d0-274c-eac9-0c36-eb098823e3c2@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 1/3] can: c_can: Update D_CAN TX and RX functions to 32 bit - fix Altera Cyclone access
+Date: Mon, 20 Jun 2016 10:00:28 +0200
+Message-ID: <1466409630-6268-2-git-send-email-mkl@pengutronix.de>
+References: <1466409630-6268-1-git-send-email-mkl@pengutronix.de>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1466409630-6268-1-git-send-email-mkl@pengutronix.de>
+Sender: stable-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Thor Thayer <tthayer@opensource.altera.com>, stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+List-Id: linux-can.vger.kernel.org
 
-Hi,
+From: Thor Thayer <tthayer@opensource.altera.com>
 
-On 06/18/2016 01:15 PM, Alexander Aring wrote:
-> 
-> Hi,
-> 
-...
-> I think this was some kind of gcc change and I used my host compiler
-> which occured this warning in a special gcc version.
-> 
-> My gcc version is now and it seems they revert the change:
-> 
-> gcc (GCC) 6.1.1 20160602
-> 
-> and I don't see such warning anymore when CONFIG_PROC_FS isn't set.
-> 
+When testing CAN write floods on Altera's CycloneV, the first 2 bytes
+are sometimes 0x00, 0x00 or corrupted instead of the values sent. Also
+observed bytes 4 & 5 were corrupted in some cases.
 
-checked my mails again, it was gcc version:
+The D_CAN Data registers are 32 bits and changing from 16 bit writes to
+32 bit writes fixes the problem.
 
-gcc (GCC) 6.1.1 20160501
+Testing performed on Altera CycloneV (D_CAN).  Requesting tests on other
+C_CAN & D_CAN platforms.
 
-which produced such warnings.
+Reported-by: Richard Andrysek <richard.andrysek@gomtec.de>
+Signed-off-by: Thor Thayer <tthayer@opensource.altera.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/c_can/c_can.c | 38 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 31 insertions(+), 7 deletions(-)
 
-- Alex
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index f91b094288da..e3dccd3200d5 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -332,9 +332,23 @@ static void c_can_setup_tx_object(struct net_device *dev, int iface,
+ 
+ 	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), ctrl);
+ 
+-	for (i = 0; i < frame->can_dlc; i += 2) {
+-		priv->write_reg(priv, C_CAN_IFACE(DATA1_REG, iface) + i / 2,
+-				frame->data[i] | (frame->data[i + 1] << 8));
++	if (priv->type == BOSCH_D_CAN) {
++		u32 data = 0, dreg = C_CAN_IFACE(DATA1_REG, iface);
++
++		for (i = 0; i < frame->can_dlc; i += 4, dreg += 2) {
++			data = (u32)frame->data[i];
++			data |= (u32)frame->data[i + 1] << 8;
++			data |= (u32)frame->data[i + 2] << 16;
++			data |= (u32)frame->data[i + 3] << 24;
++			priv->write_reg32(priv, dreg, data);
++		}
++	} else {
++		for (i = 0; i < frame->can_dlc; i += 2) {
++			priv->write_reg(priv,
++					C_CAN_IFACE(DATA1_REG, iface) + i / 2,
++					frame->data[i] |
++					(frame->data[i + 1] << 8));
++		}
+ 	}
+ }
+ 
+@@ -402,10 +416,20 @@ static int c_can_read_msg_object(struct net_device *dev, int iface, u32 ctrl)
+ 	} else {
+ 		int i, dreg = C_CAN_IFACE(DATA1_REG, iface);
+ 
+-		for (i = 0; i < frame->can_dlc; i += 2, dreg ++) {
+-			data = priv->read_reg(priv, dreg);
+-			frame->data[i] = data;
+-			frame->data[i + 1] = data >> 8;
++		if (priv->type == BOSCH_D_CAN) {
++			for (i = 0; i < frame->can_dlc; i += 4, dreg += 2) {
++				data = priv->read_reg32(priv, dreg);
++				frame->data[i] = data;
++				frame->data[i + 1] = data >> 8;
++				frame->data[i + 2] = data >> 16;
++				frame->data[i + 3] = data >> 24;
++			}
++		} else {
++			for (i = 0; i < frame->can_dlc; i += 2, dreg++) {
++				data = priv->read_reg(priv, dreg);
++				frame->data[i] = data;
++				frame->data[i + 1] = data >> 8;
++			}
+ 		}
+ 	}
+ 
+-- 
+2.8.1
