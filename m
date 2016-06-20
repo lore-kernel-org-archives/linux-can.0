@@ -1,27 +1,27 @@
 From: ajneu <ajneu1@gmail.com>
 Subject: Re: Bug? -- NEVER getting =?utf-8?b?Y29udHJvbGxlci1wcm9ibGVte2JhY2stdG8tZXJyb3ItYWN0aXZlfQ==?=
-Date: Mon, 20 Jun 2016 13:00:39 +0000 (UTC)
-Message-ID: <loom.20160620T145908-586@post.gmane.org>
+Date: Mon, 20 Jun 2016 12:41:09 +0000 (UTC)
+Message-ID: <loom.20160620T143643-848@post.gmane.org>
 References: <loom.20160620T110554-742@post.gmane.org> <5767C65D.2010303@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:57343 "EHLO plane.gmane.org"
+Received: from plane.gmane.org ([80.91.229.3]:58770 "EHLO plane.gmane.org"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751938AbcFTNBO (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Mon, 20 Jun 2016 09:01:14 -0400
+	id S1754021AbcFTNNZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Mon, 20 Jun 2016 09:13:25 -0400
 Received: from list by plane.gmane.org with local (Exim 4.69)
 	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1bEyot-0001Bg-Fh
-	for linux-can@vger.kernel.org; Mon, 20 Jun 2016 15:00:51 +0200
+	id 1bEyVz-00069F-Br
+	for linux-can@vger.kernel.org; Mon, 20 Jun 2016 14:41:19 +0200
 Received: from 195.50.142.51 ([195.50.142.51])
         by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
         id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 20 Jun 2016 15:00:51 +0200
+        for <linux-can@vger.kernel.org>; Mon, 20 Jun 2016 14:41:19 +0200
 Received: from ajneu1 by 195.50.142.51 with local (Gmexim 0.1 (Debian))
         id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Mon, 20 Jun 2016 15:00:51 +0200
+        for <linux-can@vger.kernel.org>; Mon, 20 Jun 2016 14:41:19 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
@@ -72,15 +72,17 @@ pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
 
 Hi Wolfgang,
 
-yes wonderful: you patch works (and solves both issues)!
-Will it be going into the mainline linux kernel?
+yes wonderful: both issues are fixed with your patch!
+Will that be going into the mainline linux kernel??
 
-Thanks,
+Thanks.
+
+Regards,
 ajneu
 
 
 PS:
-Note to self: compiling module peak_usb with Wolfgang's patch
+Note to self -- compiling kernel with Wolfgang's change:
 
 ## this is under Debian (stretch)
 ## (I'm currently using Kernel 4.6)
