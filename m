@@ -1,96 +1,28 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] can: only call can_stat_update with procfs
-Date: Mon, 20 Jun 2016 17:51:52 +0200
-Message-ID: <20160620155234.2414971-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+From: Ed Spiridonov <edo.rus@gmail.com>
+Subject: Re: [PATCH] can: mcp251x: add some messages to mcp251x_can_probe()
+Date: Mon, 20 Jun 2016 21:49:53 +0300
+Message-ID: <CACm0Nn3q4R05=8EB1e=psmdvq+7om5h5EXVA+UKTDVFHEH8qkQ@mail.gmail.com>
+References: <1464487156-20858-1-git-send-email-edo.rus@gmail.com>
+ <9e944b22-b63b-dc72-c060-b2c21f124569@pengutronix.de> <CACm0Nn320ry07YOuorrMO=u8Q4+JsOd9i3s7eFAwQ-L8AWGm=Q@mail.gmail.com>
+ <a359e915-5dcc-5094-eb29-76b6677252e8@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-lf0-f41.google.com ([209.85.215.41]:33513 "EHLO
+	mail-lf0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753258AbcFTSuT (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 20 Jun 2016 14:50:19 -0400
+Received: by mail-lf0-f41.google.com with SMTP id f6so43603760lfg.0
+        for <linux-can@vger.kernel.org>; Mon, 20 Jun 2016 11:50:19 -0700 (PDT)
+In-Reply-To: <a359e915-5dcc-5094-eb29-76b6677252e8@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, Oliver Hartkopp <socketcan@hartkopp.net>, "David S. Miller" <davem@davemloft.net>, Alexander Aring <aar@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Cc: linux-can@vger.kernel.org
 
-The change to leave out procfs support in CAN when CONFIG_PROC_FS
-is not set was incomplete and leads to a build error:
+2016-06-20 11:47 GMT+03:00 Marc Kleine-Budde <mkl@pengutronix.de>:
+> ok, can I have your S-o-b [1]?
 
-net/built-in.o: In function `can_init':
-:(.init.text+0x9858): undefined reference to `can_stat_update'
-ERROR: "can_stat_update" [net/can/can.ko] undefined!
-
-This tries a better approach, encapsulating all of the calls
-within IS_ENABLED(), so we also leave out the timer function
-from the object file.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: a20fadf85312 ("can: build proc support only if CONFIG_PROC_FS is activated")
----
- net/can/af_can.c | 22 ++++++++++++----------
- net/can/af_can.h | 11 -----------
- 2 files changed, 12 insertions(+), 21 deletions(-)
-
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 166d436196c1..1108079d934f 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -911,14 +911,14 @@ static __init int can_init(void)
- 	if (!rcv_cache)
- 		return -ENOMEM;
- 
--	if (stats_timer) {
-+	if (IS_ENABLED(CONFIG_PROC_FS)) {
-+		if (stats_timer) {
- 		/* the statistics are updated every second (timer triggered) */
--		setup_timer(&can_stattimer, can_stat_update, 0);
--		mod_timer(&can_stattimer, round_jiffies(jiffies + HZ));
--	} else
--		can_stattimer.function = NULL;
--
--	can_init_proc();
-+			setup_timer(&can_stattimer, can_stat_update, 0);
-+			mod_timer(&can_stattimer, round_jiffies(jiffies + HZ));
-+		}
-+		can_init_proc();
-+	}
- 
- 	/* protocol register */
- 	sock_register(&can_family_ops);
-@@ -933,10 +933,12 @@ static __exit void can_exit(void)
- {
- 	struct net_device *dev;
- 
--	if (stats_timer)
--		del_timer_sync(&can_stattimer);
-+	if (IS_ENABLED(CONFIG_PROC_FS)) {
-+		if (stats_timer)
-+			del_timer_sync(&can_stattimer);
- 
--	can_remove_proc();
-+		can_remove_proc();
-+	}
- 
- 	/* protocol unregister */
- 	dev_remove_pack(&canfd_packet);
-diff --git a/net/can/af_can.h b/net/can/af_can.h
-index 38a79ff20022..fca0fe9fc45a 100644
---- a/net/can/af_can.h
-+++ b/net/can/af_can.h
-@@ -113,19 +113,8 @@ struct s_pstats {
- extern struct dev_rcv_lists can_rx_alldev_list;
- 
- /* function prototypes for the CAN networklayer procfs (proc.c) */
--#ifdef CONFIG_PROC_FS
- void can_init_proc(void);
- void can_remove_proc(void);
--#else
--static inline void can_init_proc(void)
--{
--	pr_info("can: Can't create /proc/net/can. CONFIG_PROC_FS missing!\n");
--}
--
--static inline void can_remove_proc(void)
--{
--}
--#endif
- void can_stat_update(unsigned long data);
- 
- /* structures and variables from af_can.c needed in proc.c for reading */
--- 
-2.9.0
+I submitted new version of this patch.
+I'm unsure if my english is good enough, you are welcome to fix it if
+you see fit..
