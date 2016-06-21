@@ -1,86 +1,81 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] can: rcar_canfd: Add Classical CAN only mode support
-Date: Tue, 21 Jun 2016 08:29:58 -0500
-Message-ID: <20160621132958.GA5283@rob-hp-laptop>
-References: <1466434007-50873-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Kernel Oops with: ip link set can0 type can
+Date: Tue, 21 Jun 2016 15:28:36 +0200
+Message-ID: <0c80e255-f0d5-182a-b9ef-b2c385bb8092@hartkopp.net>
+References: <loom.20160621T095606-63@post.gmane.org>
+ <loom.20160621T105023-651@post.gmane.org>
+ <53a1d68d-6267-e3fc-af7d-ba4d49f8124a@hartkopp.net>
+ <loom.20160621T142652-138@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <1466434007-50873-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, chris.paterson2@renesas.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, socketcan@hartkopp.net, magnus.damm@gmail.com, linux-can@vger.kernel.org, linux-renesas-soc@vger.kernel.org, horms@verge.net.au, mkl@pengutronix.de, linux-arm-kernel@lists.infradead.org, galak@codeaurora.org, ulrich.hecht+renesas@gmail.com, wg@grandegger.com
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:35511 "EHLO
+	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750707AbcFUNdW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jun 2016 09:33:22 -0400
+In-Reply-To: <loom.20160621T142652-138@post.gmane.org>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: ajneu <ajneu1@gmail.com>, linux-can@vger.kernel.org
 
-On Mon, Jun 20, 2016 at 03:46:47PM +0100, Ramesh Shanmugasundaram wrote:
-> The controller can operate in one of the two global modes
->  - CAN FD only mode (default)
->  - Classical CAN (CAN2.0) only mode
-> 
-> This patch adds support for Classical CAN only mode. It can be enabled
-> by defining the optional device tree property "renesas,can-nofd" of this
-> node.
-> 
-> Note: R-Car Gen3 h/w manual v0.51E shows bit6 of RSCFDnCFDGCFG as
-> reserved, which is incorrect. This bit is same as RSCFDnGCFG.
-> 
-> Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-> ---
-> Hi Marc, All,
-> 
->    This patch is based on top of can-next(tag:linux-can-next-for-4.8-20160617).
-> 
-> Thanks,
-> Ramesh.
-> ---
->  .../devicetree/bindings/net/can/rcar_canfd.txt     |   9 +-
->  drivers/net/can/rcar/rcar_canfd.c                  | 355 ++++++++++++++-------
->  2 files changed, 249 insertions(+), 115 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> index d45182b..a343359 100644
-> --- a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> @@ -32,6 +32,12 @@ below properties.
->  - assigned-clocks: phandle of canfd clock.
->  - assigned-clock-rates: maximum frequency of this clock.
->  
-> +Optional property:
-> +The controller can operate in either CAN FD only mode (default) or
-> +Classical CAN only mode. The mode is global to both the channels. In order to
-> +enable the later, define the following optional property.
-> + - renesas,can-nofd: puts the controller in Classical CAN only mode.
+On 06/21/2016 02:31 PM, ajneu wrote:
 
-renesas,no-can-fd would be a bit more readable.
+>>> Question:
+>>> How should one add and set a can device???
+>>
+>> You do can not add a CAN device.
+>>
+>> A 'real' CAN netdevice is detected and initialized automatically.
+>
+> Well ok, I hear you.
+>
+> But how is the netdevice detected and initialized automatically?
 
-> +
->  Example
->  -------
->  
-> @@ -63,11 +69,12 @@ SoC common .dtsi file:
->  
->  Board specific .dts file:
->  
-> -E.g. below enables Channel 1 alone in the board.
-> +E.g. below enables Channel 1 alone in the board in Classical CAN only mode.
->  
->  &canfd {
->          pinctrl-0 = <&canfd1_pins>;
->          pinctrl-names = "default";
-> +	renesas,can-nofd;
+Usually at driver loading time (e.g. USB plug-in) the driver initializes 
+the USB adapter and creates the CAN network device.
 
-Now we have a mixture of tabs and spaces.
+> Is this from udev somewhere? Where? Can you point me to where that is?
+> What if I want to issue commands myself -- that possible?
 
->          status = "okay";
->  
->  	channel1 {
+It's like Ethernet network devices. They are available or not.
+And sometimes they are assigned in device tree descriptions for S-o-Cs 
+or are hotplugged like USB.
+
+>
+>
+> Note also:
+> I can still do this:
+>    sudo ip link delete can0   ## also removes /sys/class/net/can0
+>
+> Is this "legal"??
+
+No. Definitely not.
+
+> As mentioned in another post -- If I still have the can0 interface
+> connected, and remove it from the PC AFTER that 'ip link delete' command,
+> then the whole system hangs.
+
+Yes I've seen that posting.
+
+I just wondered why you can delete 'can0' when there's no callback in
+
+	static struct rtnl_link_ops can_link_ops __read_mostly = {
+
+in linux/drivers/net/can/dev.c ??
+
+Looks like the default for rtnl dellink is to do something - instead of 
+doing nothing %-(
+
+http://lxr.free-electrons.com/source/include/net/rtnetlink.h#L51
+
+Obviously we need a similar handling for rtnl dellink as we had for
+rtnl newlink for can here:
+
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=993e6f2fd
+
+I will send a patch for testing ...
+
+Best regards,
+Oliver
+
