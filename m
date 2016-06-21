@@ -1,57 +1,48 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] can: fix oops caused by wrong rtnl dellink usage
-Date: Tue, 21 Jun 2016 15:45:47 +0200
-Message-ID: <1466516747-5192-1-git-send-email-socketcan@hartkopp.net>
+From: ajneu <ajneu1@gmail.com>
+Subject: programatically determine netlink-type: can or vcan ...
+Date: Tue, 21 Jun 2016 14:40:24 +0000 (UTC)
+Message-ID: <loom.20160621T163010-819@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:22665 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750931AbcFUN61 (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 21 Jun 2016 09:58:27 -0400
+Received: from plane.gmane.org ([80.91.229.3]:43958 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751396AbcFUO5t (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Tue, 21 Jun 2016 10:57:49 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glc-linux-can2@m.gmane.org>)
+	id 1bFMqx-0006gG-HK
+	for linux-can@vger.kernel.org; Tue, 21 Jun 2016 16:40:35 +0200
+Received: from 195.50.142.51 ([195.50.142.51])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 21 Jun 2016 16:40:35 +0200
+Received: from ajneu1 by 195.50.142.51 with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-can@vger.kernel.org>; Tue, 21 Jun 2016 16:40:35 +0200
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-For 'real' hardware CAN devices the netlink interface is used to set CAN
-specific communication parameters. Real CAN hardware can not be created nor
-removed with the ip tool ...
+Hi,
 
-This patch adds a private dellink function for the CAN device driver interface
-that does just nothing.
+how can one determine the netlink-type (can or vcan, ...) of an
+interface-name (e.g. can1), from a C program?
 
-It's a follow up to commit 993e6f2fd ("can: fix oops caused by wrong rtnl
-newlink usage") but for dellink.
+It would be great if I can e.g. get that from /sys/class/net/can1 somehow.
 
-Reported-by: ajneu <ajneu1@gmail.com>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+What would work, but is NOT nice (because of portability problems), is to
+use the C-function system:
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 910c12e..b1dc109 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -1008,6 +1008,11 @@ static int can_newlink(struct net *src_net, struct net_device *dev,
- 	return -EOPNOTSUPP;
- }
- 
-+static void can_dellink(struct net_device *dev, struct list_head *head)
-+{
-+	return;
-+}
-+
- static struct rtnl_link_ops can_link_ops __read_mostly = {
- 	.kind		= "can",
- 	.maxtype	= IFLA_CAN_MAX,
-@@ -1016,6 +1021,7 @@ static struct rtnl_link_ops can_link_ops __read_mostly = {
- 	.validate	= can_validate,
- 	.newlink	= can_newlink,
- 	.changelink	= can_changelink,
-+	.dellink	= can_dellink,
- 	.get_size	= can_get_size,
- 	.fill_info	= can_fill_info,
- 	.get_xstats_size = can_get_xstats_size,
--- 
-2.8.1
+if (system("test \"$(ip link show can1 type vcan)\" !=  \"\"")) {
+   printf("can1 is not vcan\n");
+} else {
+   printf("can1 is vcan\n");
+}
+
+Thanks.
+ajneu
+
+
 
