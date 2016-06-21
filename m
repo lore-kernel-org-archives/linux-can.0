@@ -1,151 +1,86 @@
-From: ajneu <ajneu1@gmail.com>
-Subject: Re: Kernel Oops with: ip link set can0 type can
-Date: Tue, 21 Jun 2016 12:25:56 +0000 (UTC)
-Message-ID: <loom.20160621T142101-867@post.gmane.org>
-References: <loom.20160621T095606-63@post.gmane.org> <loom.20160621T105023-651@post.gmane.org> <53a1d68d-6267-e3fc-af7d-ba4d49f8124a@hartkopp.net> <d9d3c57a-1c47-2220-7b09-40b46966c80a@hartkopp.net>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] can: rcar_canfd: Add Classical CAN only mode support
+Date: Tue, 21 Jun 2016 08:29:58 -0500
+Message-ID: <20160621132958.GA5283@rob-hp-laptop>
+References: <1466434007-50873-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:33151 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750906AbcFUMn6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Tue, 21 Jun 2016 08:43:58 -0400
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1bFKkq-0008LW-So
-	for linux-can@vger.kernel.org; Tue, 21 Jun 2016 14:26:09 +0200
-Received: from 195.50.142.51 ([195.50.142.51])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Tue, 21 Jun 2016 14:26:08 +0200
-Received: from ajneu1 by 195.50.142.51 with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Tue, 21 Jun 2016 14:26:08 +0200
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <1466434007-50873-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, chris.paterson2@renesas.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, socketcan@hartkopp.net, magnus.damm@gmail.com, linux-can@vger.kernel.org, linux-renesas-soc@vger.kernel.org, horms@verge.net.au, mkl@pengutronix.de, linux-arm-kernel@lists.infradead.org, galak@codeaurora.org, ulrich.hecht+renesas@gmail.com, wg@grandegger.com
+List-Id: linux-can.vger.kernel.org
 
-Oliver Hartkopp <socketcan <at> hartkopp.net> writes:
-
+On Mon, Jun 20, 2016 at 03:46:47PM +0100, Ramesh Shanmugasundaram wrote:
+> The controller can operate in one of the two global modes
+>  - CAN FD only mode (default)
+>  - Classical CAN (CAN2.0) only mode
 > 
+> This patch adds support for Classical CAN only mode. It can be enabled
+> by defining the optional device tree property "renesas,can-nofd" of this
+> node.
 > 
-> On 06/21/2016 11:17 AM, Oliver Hartkopp wrote:
-> > On 06/21/2016 10:55 AM, ajneu wrote:
-> >> ajneu <ajneu1 <at> gmail.com> writes:
-> >>
-> >>>
-> >>> Hi,
-> >>>
-> >>> issuing the command
-> >>>    sudo ip link set can0 type can
-> >>> I get Kernel Oops (NULL pointer dereference)
+> Note: R-Car Gen3 h/w manual v0.51E shows bit6 of RSCFDnCFDGCFG as
+> reserved, which is incorrect. This bit is same as RSCFDnGCFG.
 > 
-> > But the OOPS should no occur due to your ip usage anyway 
-> > This has to be fixed ...
+> Signed-off-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+> ---
+> Hi Marc, All,
 > 
-> Can you please check whether my posted patch fixes your problem?
+>    This patch is based on top of can-next(tag:linux-can-next-for-4.8-20160617).
 > 
-> http://marc.info/?l=linux-can&m=146650412017263&w=2
+> Thanks,
+> Ramesh.
+> ---
+>  .../devicetree/bindings/net/can/rcar_canfd.txt     |   9 +-
+>  drivers/net/can/rcar/rcar_canfd.c                  | 355 ++++++++++++++-------
+>  2 files changed, 249 insertions(+), 115 deletions(-)
 > 
-> I tested it myself with success.
-> 
-> Thanks for catching this issue!
-> 
-> Regards,
-> Oliver
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo <at> vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> 
+> diff --git a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+> index d45182b..a343359 100644
+> --- a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+> +++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+> @@ -32,6 +32,12 @@ below properties.
+>  - assigned-clocks: phandle of canfd clock.
+>  - assigned-clock-rates: maximum frequency of this clock.
+>  
+> +Optional property:
+> +The controller can operate in either CAN FD only mode (default) or
+> +Classical CAN only mode. The mode is global to both the channels. In order to
+> +enable the later, define the following optional property.
+> + - renesas,can-nofd: puts the controller in Classical CAN only mode.
 
+renesas,no-can-fd would be a bit more readable.
 
-Hi Oliver,
+> +
+>  Example
+>  -------
+>  
+> @@ -63,11 +69,12 @@ SoC common .dtsi file:
+>  
+>  Board specific .dts file:
+>  
+> -E.g. below enables Channel 1 alone in the board.
+> +E.g. below enables Channel 1 alone in the board in Classical CAN only mode.
+>  
+>  &canfd {
+>          pinctrl-0 = <&canfd1_pins>;
+>          pinctrl-names = "default";
+> +	renesas,can-nofd;
 
-thanks for the patch.
+Now we have a mixture of tabs and spaces.
 
-I unloaded the old driver, and loaded yours with the patch as follows:
-   lsmod | grep can
-   sudo rmmod peak_usb # I had to remove this first, since issuing 
-                       #   sudo rmmod vcan 
-                       # showed
-                       # ERROR: Module can_dev is in use by: peak_usb
-   sudo rmmod can_dev
-   lsmod | grep can
-   sudo insmod drivers/net/can/can-dev.ko
-   sudo insmod drivers/net/can/usb/peak_usb/peak_usb.ko
-
-
-
-Then I tested the command:
-  sudo ip link set can0 type can       ## working!
-
-  sudo ip link add can0 type can       ## working!
-   => RTNETLINK answers: File exists
-
-~~>So far so good. Good till here.
-
-
-
-Then I tested SOME MORE:
-  sudo ip link delete can0   ## also removes /sys/class/net/can0
-
-  sudo ip link add can0 type can       ## hmmmm?
-   => RTNETLINK answers: Operation not supported
-
-~~>Is this still ok?
-
-
-
-Directly after this I managed to provoke a bug:
- I pulled out the Peak USB Adapter, and the computer computer HANGS!!!!
-~~>NOTHINGS WORKS. Absolutely nothing. No mouse. No keyboard.
-
-This bug is therefore:
-Calling
-   sudo ip link delete can0
-while the Peak USB Adapter is still plugged in,
-and THEN disconnecting the Peak USB Adapter.
-
-
-Regards,
-ajneu
-
-
-
-PS:
-Note to self -- how to apply Oliver's patch and unload load can kernel modules
-
-## this is under Debian (stretch)
-## (I'm currently using Kernel 4.6)
-sudo aptitude install build-essential
-sudo aptitude install linux-source
-mkdir ~/kernel
-cd    ~/kernel
-tar xf /usr/src/linux-source-4.6.tar.xz
-cd ~/kernel/linux-source*
-cp /boot/config-4.6.0-1-amd64                          .config
-cp /usr/src/linux-headers-4.6.0-1-amd64/Module.symvers .
-make prepare
-make modules_prepare
-make SUBDIRS=scripts/mod
-make SUBDIRS=drivers/net/can modules
-
-## perform patch and then recompile with:
-
-make SUBDIRS=drivers/net/can modules
-
-## Then unload old and insert new driver
-## (as already shown at beginning of this message)
-lsmod | grep can
-sudo rmmod peak_usb # I had to remove this first, since issuing 
-                    #   sudo rmmod vcan 
-                    # showed
-                    # ERROR: Module can_dev is in use by: peak_usb
-sudo rmmod can_dev
-lsmod | grep can
-sudo insmod drivers/net/can/can-dev.ko
-sudo insmod drivers/net/can/usb/peak_usb/peak_usb.ko
-
+>          status = "okay";
+>  
+>  	channel1 {
