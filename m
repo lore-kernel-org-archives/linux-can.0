@@ -1,51 +1,28 @@
-From: Richard Andrysek <richard.andrysek@gomtec.de>
-Subject: AW: [RFC] can: c_can: Update D_CAN TX and RX functions to 32 bit.
-Date: Wed, 22 Jun 2016 18:43:01 +0000
-Message-ID: <0120733A154AE74CA608A286CE7FFD2621E13EB5@rg-contact.RG.local>
-References: <1466093419-27575-1-git-send-email-tthayer@opensource.altera.com>
- <1466093419-27575-2-git-send-email-tthayer@opensource.altera.com>
- <612130a4-30ea-ed73-ac8e-dabe7919ec35@pengutronix.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2016-06-20
+Date: Wed, 22 Jun 2016 16:30:02 -0400 (EDT)
+Message-ID: <20160622.163002.416950357869278214.davem@davemloft.net>
+References: <1466409630-6268-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from apollon.gomtec.de ([80.153.46.48]:43425 "EHLO post.gomtec.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751630AbcFVSnG (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 22 Jun 2016 14:43:06 -0400
-In-Reply-To: <612130a4-30ea-ed73-ac8e-dabe7919ec35@pengutronix.de>
-Content-Language: de-DE
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "tthayer@opensource.altera.com" <tthayer@opensource.altera.com>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "wg@grandegger.com" <wg@grandegger.com>
-Cc: "anilkumar@ti.com" <anilkumar@ti.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "tthayer.linux@gmail.com" <tthayer.linux@gmail.com>
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1466409630-6268-1-git-send-email-mkl@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-U29ycnkgZm9yIGEgZGVsYXkuIEkndmUgcnVuIG15IHRlc3Qgd2l0aCAxNiBtZXNzYWdlcyBwZXIg
-Y2hhbm5lbCAoY2FuMCwgY2FuMSBjb25jdXJyZW50bHkpIHdpdGggYSBjeWNsZSB0aW1lIDIuOG1z
-LCAxTWJwcy4gQW5kIGl0IHdvcmtzIG5vdyBwcm9wZXJseS4NCg0KVGhhbmsgeW91IGFsbCBwYXJ0
-aWNpcGF0ZWQgb24gdGhpcyBpc3N1ZQ0KDQpSaWNoYXJkDQoNCi0tLS0tVXJzcHLDvG5nbGljaGUg
-TmFjaHJpY2h0LS0tLS0NClZvbjogTWFyYyBLbGVpbmUtQnVkZGUgW21haWx0bzpta2xAcGVuZ3V0
-cm9uaXguZGVdIA0KR2VzZW5kZXQ6IEZyZWl0YWcsIDE3LiBKdW5pIDIwMTYgMTE6MDQNCkFuOiB0
-dGhheWVyQG9wZW5zb3VyY2UuYWx0ZXJhLmNvbTsgc29ja2V0Y2FuQGhhcnRrb3BwLm5ldDsgd2dA
-Z3JhbmRlZ2dlci5jb207IFJpY2hhcmQgQW5kcnlzZWsgPHJpY2hhcmQuYW5kcnlzZWtAZ29tdGVj
-LmRlPg0KQ2M6IGFuaWxrdW1hckB0aS5jb207IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IGxp
-bnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgdHRoYXllci5saW51eEBnbWFpbC5j
-b20NCkJldHJlZmY6IFJlOiBbUkZDXSBjYW46IGNfY2FuOiBVcGRhdGUgRF9DQU4gVFggYW5kIFJY
-IGZ1bmN0aW9ucyB0byAzMiBiaXQuDQoNCk9uIDA2LzE2LzIwMTYgMDY6MTAgUE0sIHR0aGF5ZXJA
-b3BlbnNvdXJjZS5hbHRlcmEuY29tIHdyb3RlOg0KPiBGcm9tOiBUaG9yIFRoYXllciA8dHRoYXll
-ckBvcGVuc291cmNlLmFsdGVyYS5jb20+DQo+IA0KPiBXaGVuIHRlc3RpbmcgQ0FOIHdyaXRlIGZs
-b29kcyBvbiBBbHRlcmEncyBDeWNsb25lViwgdGhlIGZpcnN0IDIgYnl0ZXMgDQo+IGFyZSBzb21l
-dGltZXMgMHgwMCwgMHgwMCBvciBjb3JydXB0ZWQgaW5zdGVhZCBvZiB0aGUgdmFsdWVzIHNlbnQu
-IEFsc28gDQo+IG9ic2VydmVkIGJ5dGVzIDQgJiA1IHdlcmUgY29ycnVwdGVkIGluIHNvbWUgY2Fz
-ZXMuDQo+IA0KPiBUaGUgRF9DQU4gRGF0YSByZWdpc3RlcnMgYXJlIDMyIGJpdHMgYW5kIGNoYW5n
-aW5nIGZyb20NCj4gMTYgYml0IHdyaXRlcyB0byAzMiBiaXQgd3JpdGVzIGZpeGVzIHRoZSBwcm9i
-bGVtLg0KPiANCj4gVGVzdGluZyBwZXJmb3JtZWQgb24gQWx0ZXJhIEN5Y2xvbmVWIChEX0NBTiku
-DQo+IFJlcXVlc3RpbmcgdGVzdHMgb24gb3RoZXIgQ19DQU4gJiBEX0NBTiBwbGF0Zm9ybXMuDQo+
-IA0KPiBSZXBvcnRlZC1ieTogUmljaGFyZCBBbmRyeXNlayA8cmljaGFyZC5hbmRyeXNla0Bnb210
-ZWMuZGU+DQo+IFNpZ25lZC1vZmYtYnk6IFRob3IgVGhheWVyIDx0dGhheWVyQG9wZW5zb3VyY2Uu
-YWx0ZXJhLmNvbT4NCg0KQXBwbGllZCB0byBjYW4gd2l0aCBzdGFibGUgb24gQ2MuDQoNCk1hcmMN
-Cg0KLS0gDQpQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1C
-dWRkZSAgICAgICAgICAgfA0KSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhv
-bmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNClZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAg
-ICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQpBbXRzZ2VyaWNodCBIaWxkZXNo
-ZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Mon, 20 Jun 2016 10:00:27 +0200
+
+> this is a pull request of 3 patches for the upcoming linux-4.7 release.
+> 
+> The first patch is by Thor Thayer for the c_can/d_can driver. It fixes the
+> registar access on Altera Cyclone devices, which caused CAN frames to have 0x0
+> in the first two bytes incorrectly. Wolfgang Grandegger's patch for the at91
+> driver fixes a hanging driver under high bus load situations. A patch for the
+> gs_usb driver by Maximilian Schneider adds support for the bytewerk.org
+> candleLight interface.
+
+Pulled, thanks.
