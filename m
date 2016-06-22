@@ -1,101 +1,51 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: want blocking writes, but eventually get: errno 105 (No buffer
- space available)
-Date: Wed, 22 Jun 2016 17:52:04 +0200
-Message-ID: <1322d2e3-31f1-dddd-908b-8a95eb024353@hartkopp.net>
-References: <loom.20160622T163626-806@post.gmane.org>
- <loom.20160622T165844-987@post.gmane.org>
+From: Richard Andrysek <richard.andrysek@gomtec.de>
+Subject: AW: [RFC] can: c_can: Update D_CAN TX and RX functions to 32 bit.
+Date: Wed, 22 Jun 2016 18:43:01 +0000
+Message-ID: <0120733A154AE74CA608A286CE7FFD2621E13EB5@rg-contact.RG.local>
+References: <1466093419-27575-1-git-send-email-tthayer@opensource.altera.com>
+ <1466093419-27575-2-git-send-email-tthayer@opensource.altera.com>
+ <612130a4-30ea-ed73-ac8e-dabe7919ec35@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:14422 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752311AbcFVPwJ (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 22 Jun 2016 11:52:09 -0400
-In-Reply-To: <loom.20160622T165844-987@post.gmane.org>
+Received: from apollon.gomtec.de ([80.153.46.48]:43425 "EHLO post.gomtec.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751630AbcFVSnG (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 22 Jun 2016 14:43:06 -0400
+In-Reply-To: <612130a4-30ea-ed73-ac8e-dabe7919ec35@pengutronix.de>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: ajneu <ajneu1@gmail.com>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "tthayer@opensource.altera.com" <tthayer@opensource.altera.com>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "wg@grandegger.com" <wg@grandegger.com>
+Cc: "anilkumar@ti.com" <anilkumar@ti.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "tthayer.linux@gmail.com" <tthayer.linux@gmail.com>
 
-
-
-On 06/22/2016 05:00 PM, ajneu wrote:
-> ajneu <ajneu1 <at> gmail.com> writes:
->
->>    errno 105 (No buffer space available)
-> This is ENOBUFS
->
-> ajneu <ajneu1 <at> gmail.com> writes:
->
->
->> * My config:
->>   sudo ip link set can0 down
->>   sudo ip link set can0 txqueuelen 10
->>   sudo ip link set can0 up type can bitrate 250000
->>
->> 1st program run:
->> ~> block on 33'rd write (32 frames queued)
->>
->> 2nd program run:
->> ~> block on 7'th write (6 frames queued)
->>
->> 3rd program run:
->> ~> block on 7'th write (6 frames queued)
->>
->> 4rd program run:
->> ~> when trying 3'rd write: errno 105 (No buffer space available)
->>    (so 2 frames queued)
->>
->> PLEASE: could sombody explain these numbers !
->> They don't make sense to me.
->
-> Above if you sum the queued frames, I get: 32+6+6+2 = 46 queued
->
->
-> I've checked it for other values of txqueuelen:
->
-> sudo ip link set can0 down
-> sudo ip link set can0 txqueuelen 1
-> sudo ip link set can0 up type can bitrate 250000
-> ~> queued: 32+5 == 37
->
-> sudo ip link set can0 down
-> sudo ip link set can0 txqueuelen 2
-> sudo ip link set can0 up type can bitrate 250000
-> ~> queued: 32+6 == 38
->
-> sudo ip link set can0 down
-> sudo ip link set can0 txqueuelen 10
-> sudo ip link set can0 up type can bitrate 250000
-> ~> queued: 32+6+6+2 == 46
->
-> sudo ip link set can0 down
-> sudo ip link set can0 txqueuelen 46
-> sudo ip link set can0 up type can bitrate 250000
-> ~> queued: 32+6+6+6+6+6+6+6+6+2 == 82
->
->
->
-> So this is the general formula:
->
-> For txqueuelen == N, i.e.
->
-> sudo ip link set can0 down
-> sudo ip link set can0 txqueuelen N
-> sudo ip link set can0 up type can bitrate 250000
-> ~> queued: N + 36
->
->
-> Please can someone explain this...
-> (And also how I can get guaranteed blocking behaviour. ;)  )
-
-If you check proto_ops in Linux there are some sendmsg implementations 
-that implement waiting for the queue to be able to take new messages.
-Some others do not implement that waiting.
-
-The question is whether blocking write (and probably write outdated 
-content) is what you want for CAN.
-
-Regards,
-Oliver
+U29ycnkgZm9yIGEgZGVsYXkuIEkndmUgcnVuIG15IHRlc3Qgd2l0aCAxNiBtZXNzYWdlcyBwZXIg
+Y2hhbm5lbCAoY2FuMCwgY2FuMSBjb25jdXJyZW50bHkpIHdpdGggYSBjeWNsZSB0aW1lIDIuOG1z
+LCAxTWJwcy4gQW5kIGl0IHdvcmtzIG5vdyBwcm9wZXJseS4NCg0KVGhhbmsgeW91IGFsbCBwYXJ0
+aWNpcGF0ZWQgb24gdGhpcyBpc3N1ZQ0KDQpSaWNoYXJkDQoNCi0tLS0tVXJzcHLDvG5nbGljaGUg
+TmFjaHJpY2h0LS0tLS0NClZvbjogTWFyYyBLbGVpbmUtQnVkZGUgW21haWx0bzpta2xAcGVuZ3V0
+cm9uaXguZGVdIA0KR2VzZW5kZXQ6IEZyZWl0YWcsIDE3LiBKdW5pIDIwMTYgMTE6MDQNCkFuOiB0
+dGhheWVyQG9wZW5zb3VyY2UuYWx0ZXJhLmNvbTsgc29ja2V0Y2FuQGhhcnRrb3BwLm5ldDsgd2dA
+Z3JhbmRlZ2dlci5jb207IFJpY2hhcmQgQW5kcnlzZWsgPHJpY2hhcmQuYW5kcnlzZWtAZ29tdGVj
+LmRlPg0KQ2M6IGFuaWxrdW1hckB0aS5jb207IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IGxp
+bnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgdHRoYXllci5saW51eEBnbWFpbC5j
+b20NCkJldHJlZmY6IFJlOiBbUkZDXSBjYW46IGNfY2FuOiBVcGRhdGUgRF9DQU4gVFggYW5kIFJY
+IGZ1bmN0aW9ucyB0byAzMiBiaXQuDQoNCk9uIDA2LzE2LzIwMTYgMDY6MTAgUE0sIHR0aGF5ZXJA
+b3BlbnNvdXJjZS5hbHRlcmEuY29tIHdyb3RlOg0KPiBGcm9tOiBUaG9yIFRoYXllciA8dHRoYXll
+ckBvcGVuc291cmNlLmFsdGVyYS5jb20+DQo+IA0KPiBXaGVuIHRlc3RpbmcgQ0FOIHdyaXRlIGZs
+b29kcyBvbiBBbHRlcmEncyBDeWNsb25lViwgdGhlIGZpcnN0IDIgYnl0ZXMgDQo+IGFyZSBzb21l
+dGltZXMgMHgwMCwgMHgwMCBvciBjb3JydXB0ZWQgaW5zdGVhZCBvZiB0aGUgdmFsdWVzIHNlbnQu
+IEFsc28gDQo+IG9ic2VydmVkIGJ5dGVzIDQgJiA1IHdlcmUgY29ycnVwdGVkIGluIHNvbWUgY2Fz
+ZXMuDQo+IA0KPiBUaGUgRF9DQU4gRGF0YSByZWdpc3RlcnMgYXJlIDMyIGJpdHMgYW5kIGNoYW5n
+aW5nIGZyb20NCj4gMTYgYml0IHdyaXRlcyB0byAzMiBiaXQgd3JpdGVzIGZpeGVzIHRoZSBwcm9i
+bGVtLg0KPiANCj4gVGVzdGluZyBwZXJmb3JtZWQgb24gQWx0ZXJhIEN5Y2xvbmVWIChEX0NBTiku
+DQo+IFJlcXVlc3RpbmcgdGVzdHMgb24gb3RoZXIgQ19DQU4gJiBEX0NBTiBwbGF0Zm9ybXMuDQo+
+IA0KPiBSZXBvcnRlZC1ieTogUmljaGFyZCBBbmRyeXNlayA8cmljaGFyZC5hbmRyeXNla0Bnb210
+ZWMuZGU+DQo+IFNpZ25lZC1vZmYtYnk6IFRob3IgVGhheWVyIDx0dGhheWVyQG9wZW5zb3VyY2Uu
+YWx0ZXJhLmNvbT4NCg0KQXBwbGllZCB0byBjYW4gd2l0aCBzdGFibGUgb24gQ2MuDQoNCk1hcmMN
+Cg0KLS0gDQpQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1C
+dWRkZSAgICAgICAgICAgfA0KSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhv
+bmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNClZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAg
+ICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQpBbXRzZ2VyaWNodCBIaWxkZXNo
+ZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
