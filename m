@@ -1,61 +1,56 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 0/2] can: rcar_canfd: Add Classical CAN & lower state
- transition support
-Date: Wed, 22 Jun 2016 22:34:09 +0200
-Message-ID: <602d4286-754f-f02f-4bd2-3e238cc4789a@pengutronix.de>
-References: <1466434007-50873-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1466598707-44076-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+Subject: Re: [PATCH] can: only call can_stat_update with procfs
+Date: Wed, 22 Jun 2016 22:36:52 +0200
+Message-ID: <04d27ce4-9393-764e-7e73-b1854a0136c3@pengutronix.de>
+References: <20160620155234.2414971-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="sHCbUQ4mJTiSdMAk7lsULQ5m8agaXj9Dn"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <1466598707-44076-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, wg@grandegger.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org
-Cc: ulrich.hecht+renesas@gmail.com, horms@verge.net.au, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, chris.paterson2@renesas.com, magnus.damm@gmail.com, socketcan@hartkopp.net
-List-Id: linux-can.vger.kernel.org
+ boundary="UgMgiITliweJhsGRCMLxXbIDKNjcpnH8O"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:35608 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751209AbcFVUhC (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 22 Jun 2016 16:37:02 -0400
+In-Reply-To: <20160620155234.2414971-1-arnd@arndb.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, "David S. Miller" <davem@davemloft.net>, Alexander Aring <aar@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---sHCbUQ4mJTiSdMAk7lsULQ5m8agaXj9Dn
-Content-Type: multipart/mixed; boundary="sPmXpiwEJs9x3qPRuaurOL4wcxhPk5T6h"
+--UgMgiITliweJhsGRCMLxXbIDKNjcpnH8O
+Content-Type: multipart/mixed; boundary="a4PcgO8XHucxOnLh8QMTKlFCSSGR2NMGa"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
- wg@grandegger.com, robh+dt@kernel.org, pawel.moll@arm.com,
- mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org
-Cc: ulrich.hecht+renesas@gmail.com, horms@verge.net.au,
- linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- chris.paterson2@renesas.com, magnus.damm@gmail.com, socketcan@hartkopp.net
-Message-ID: <602d4286-754f-f02f-4bd2-3e238cc4789a@pengutronix.de>
-Subject: Re: [PATCH v2 0/2] can: rcar_canfd: Add Classical CAN & lower state
- transition support
-References: <1466434007-50873-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
- <1466598707-44076-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
-In-Reply-To: <1466598707-44076-1-git-send-email-ramesh.shanmugasundaram@bp.renesas.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+ "David S. Miller" <davem@davemloft.net>, Alexander Aring
+ <aar@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <04d27ce4-9393-764e-7e73-b1854a0136c3@pengutronix.de>
+Subject: Re: [PATCH] can: only call can_stat_update with procfs
+References: <20160620155234.2414971-1-arnd@arndb.de>
+In-Reply-To: <20160620155234.2414971-1-arnd@arndb.de>
 
---sPmXpiwEJs9x3qPRuaurOL4wcxhPk5T6h
+--a4PcgO8XHucxOnLh8QMTKlFCSSGR2NMGa
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 06/22/2016 02:31 PM, Ramesh Shanmugasundaram wrote:
-> This patch is based on latest can-next(tag:linux-can-next-for-4.8-20160=
-617).
+On 06/20/2016 05:51 PM, Arnd Bergmann wrote:
+> The change to leave out procfs support in CAN when CONFIG_PROC_FS
+> is not set was incomplete and leads to a build error:
 >=20
-> Changes since v1:
->  - property named changed from "can-nofd" to "no-can-fd" (Rob H)
->  - added new patch(0002) that support lower state transitions (Wolfgang=
- G)
->    (http://marc.info/?l=3Dlinux-can&m=3D146650325116971&w=3D2)
+> net/built-in.o: In function `can_init':
+> :(.init.text+0x9858): undefined reference to `can_stat_update'
+> ERROR: "can_stat_update" [net/can/can.ko] undefined!
 >=20
-> Ramesh Shanmugasundaram (2):
->   can: rcar_canfd: Add Classical CAN only mode support
->   can: rcar_canfd: Add back-to-error-active support
+> This tries a better approach, encapsulating all of the calls
+> within IS_ENABLED(), so we also leave out the timer function
+> from the object file.
 >=20
->  .../devicetree/bindings/net/can/rcar_canfd.txt     |  21 +-
->  drivers/net/can/rcar/rcar_canfd.c                  | 429 +++++++++++++=
-+-------
->  2 files changed, 310 insertions(+), 140 deletions(-)
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: a20fadf85312 ("can: build proc support only if CONFIG_PROC_FS is=
+ activated")
 
 Applied to can-next.
 
@@ -69,22 +64,22 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---sPmXpiwEJs9x3qPRuaurOL4wcxhPk5T6h--
+--a4PcgO8XHucxOnLh8QMTKlFCSSGR2NMGa--
 
---sHCbUQ4mJTiSdMAk7lsULQ5m8agaXj9Dn
+--UgMgiITliweJhsGRCMLxXbIDKNjcpnH8O
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJXavZBAAoJED07qiWsqSVqqgIH/1b8DgsnztQETaJ8WYLkokQz
-ZOcUOwpDOXGxA5BdYxHCyO74hoLIqvgR78ToxveujVynHPgR/gbUBjMR/QWp4S1G
-AoN8sBLWY2121DF362KAQ5QGje18Bx502V0X0CFGHZUMUuH1MnoSXVmNp9nC8Cwk
-XzEO66M/AgB8Zto2u6por+Y3r2mkuWWMrcIhzMKlGN0HWnTD1RckqxlxMOdXWDct
-h1nnyCtG8imb1N0Wh707xRiBjaBbdzcj+mxKf/f1adQXJVsZjPFL9ojvsnVbxcP8
-V6ucN9hlNwSXuSFE2qFTG1ny6ihOoLmK30BcyHu5vFWmk5WVpqz3+HvgwR582sU=
-=4uYv
+iQEcBAEBCgAGBQJXavbkAAoJED07qiWsqSVq1RYIAJeZDzEUBQAV9dvppUNQim2R
+ZpX+gz41W7Zbul2QmVS4veflrWRbAs10rDX7+4x589ay3A46hVY4y1gpnxSofzXC
+0AIbsa0N+k4Hi63UDBPMjnqvfEUW/+RFmzflKF5cf65/JVmANCxRev0rcsIjZ3pH
+5FlT+LZXuH6AifQFhDeE29OjUM/0qNCyEO9IHgZjms2YK7DIF5Nh29uuA44lw6zg
+o3TVZDLJWarH+z7v1fblxEOu6Q6iwK5HOFjBCmY7glMuVhKCUCcAAyZ/2HlxmGQq
+EliER2w1WDHw1r4oZcOQ/y6MkMA+w9CZkT8qMI9f8wZLUJJYRxyhDH8fMY3/cww=
+=QeYK
 -----END PGP SIGNATURE-----
 
---sHCbUQ4mJTiSdMAk7lsULQ5m8agaXj9Dn--
+--UgMgiITliweJhsGRCMLxXbIDKNjcpnH8O--
