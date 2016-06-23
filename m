@@ -1,112 +1,62 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2016-06-17
-Date: Thu, 23 Jun 2016 11:30:30 +0200
-Message-ID: <0c371efc-6afa-130a-6752-50c3d5a0694c@pengutronix.de>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH 2/3] can: fix oops caused by wrong rtnl dellink usage
+Date: Thu, 23 Jun 2016 15:55:27 +0300
+Message-ID: <e092c3e9-56f3-f765-a9ef-89697ec46e16@cogentembedded.com>
+References: <1466673741-23115-1-git-send-email-mkl@pengutronix.de>
+ <1466673741-23115-3-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="wmJsXVQrSjhxX6GdtLuavrM2AGKl9BKr9"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:60819 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751185AbcFWJak (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jun 2016 05:30:40 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1466673741-23115-3-git-send-email-mkl@pengutronix.de>
+Sender: stable-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, stable@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wmJsXVQrSjhxX6GdtLuavrM2AGKl9BKr9
-Content-Type: multipart/mixed; boundary="079sod0RbOqEUETPlju00qW1p5Le2DWLU"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <0c371efc-6afa-130a-6752-50c3d5a0694c@pengutronix.de>
-Subject: pull-request: can-next 2016-06-17
+Hello.
 
---079sod0RbOqEUETPlju00qW1p5Le2DWLU
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 6/23/2016 12:22 PM, Marc Kleine-Budde wrote:
 
-Hello David,
+> From: Oliver Hartkopp <socketcan@hartkopp.net>
+>
+> For 'real' hardware CAN devices the netlink interface is used to set CAN
+> specific communication parameters. Real CAN hardware can not be created nor
+> removed with the ip tool ...
+>
+> This patch adds a private dellink function for the CAN device driver interface
+> that does just nothing.
+>
+> It's a follow up to commit 993e6f2fd ("can: fix oops caused by wrong rtnl
+> newlink usage") but for dellink.
+>
+> Reported-by: ajneu <ajneu1@gmail.com>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/net/can/dev.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index 348dd5001fa4..ad535a854e5c 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -1011,6 +1011,11 @@ static int can_newlink(struct net *src_net, struct net_device *dev,
+>  	return -EOPNOTSUPP;
+>  }
+>
+> +static void can_dellink(struct net_device *dev, struct list_head *head)
+> +{
+> +	return;
 
-this is a pull request of 4 patches for net-next/master.
+    Why?
 
-Arnd Bergmann's patch fixes a regresseion in af_can introduced in
-linux-can-next-for-4.8-20160617. There are two patches by Ramesh
-Shanmugasundaram, which add CAN-2.0 support to the rcar_canfd driver.
-And a patch by Ed Spiridonov that adds better error diagnoses messages
-to the Ed Spiridonov driver.
+> +}
+> +
+>  static struct rtnl_link_ops can_link_ops __read_mostly = {
+>  	.kind		= "can",
+>  	.maxtype	= IFLA_CAN_MAX,
+[...]
 
-regards,
-Marc
-
----
-
-The following changes since commit b95e5928fcc76d156352570858abdea7b2628e=
-fd:
-
-  openvswitch: Add packet len info to upcall. (2016-06-22 16:34:39 -0400)=
-
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-4.8-20160623
-
-for you to fetch changes up to b63f69d0fc1fa1e25842a2266633862d523c380f:
-
-  can: mcp251x: add message about sucessful/unsuccessful probe (2016-06-2=
-3 11:23:49 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-4.8-20160623
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      can: only call can_stat_update with procfs
-
-Ed Spiridonov (1):
-      can: mcp251x: add message about sucessful/unsuccessful probe
-
-Ramesh Shanmugasundaram (2):
-      can: rcar_canfd: Add Classical CAN only mode support
-      can: rcar_canfd: Add back-to-error-active support
-
- .../devicetree/bindings/net/can/rcar_canfd.txt     |  21 +-
- drivers/net/can/rcar/rcar_canfd.c                  | 429 ++++++++++++++-=
-------
- drivers/net/can/spi/mcp251x.c                      |   7 +-
- net/can/af_can.c                                   |  22 +-
- net/can/af_can.h                                   |  11 -
- 5 files changed, 328 insertions(+), 162 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---079sod0RbOqEUETPlju00qW1p5Le2DWLU--
-
---wmJsXVQrSjhxX6GdtLuavrM2AGKl9BKr9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJXa6w2AAoJED07qiWsqSVq87oIAKtBeB1B8vRayZ5NN/Gxzz09
-5MGzi372vzlhpEMz9YpyU0o3U8s24ijjuVnL3q6VMXhBkye/1l9i0N+EJ31nZ8mV
-AiIUsQG2/8mMkzD4KJ4uHVfUDCvvifABjDGy0jSS0I6pjGAA5D4eJYXdOMtzxc2e
-R/JfWPxYG4u0bscLO8m4xAjGta9taEBN7MrZcuuO846Mxeh+BAxjbYa1bsuoj2DB
-ZndigAbRJdKggNzteKlGIrnfPYukEE9AdF5eOCih5fq13z34OkSb1dTyPKTiD6JF
-JZgSYzi7eZ0dR9TIR1NVMExfq3VHXwmvfCk4hAQ3XgpDZ1bOYJwAihwvbKZasQ0=
-=+5XK
------END PGP SIGNATURE-----
-
---wmJsXVQrSjhxX6GdtLuavrM2AGKl9BKr9--
+MBR, Sergei
