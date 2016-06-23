@@ -1,75 +1,81 @@
-From: ajneu <ajneu1@gmail.com>
-Subject: Re: Clear transmit buffer (of pending queued tx-messages)
-Date: Thu, 23 Jun 2016 08:45:27 +0000 (UTC)
-Message-ID: <loom.20160623T104337-28@post.gmane.org>
-References: <loom.20160622T135857-352@post.gmane.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: fix handling of unmodifiable configuration options
+ fix
+Date: Thu, 23 Jun 2016 10:57:04 +0200
+Message-ID: <65d3bb99-ab73-4985-5553-4c7c05c1889f@pengutronix.de>
+References: <1466504047-5110-1-git-send-email-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="POUKsmX4XvijKnbF4ueR1Mtqj7oJn07so"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:54901 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751788AbcFWIpq (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 23 Jun 2016 04:45:46 -0400
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glc-linux-can2@m.gmane.org>)
-	id 1bG0Gc-0005CS-MC
-	for linux-can@vger.kernel.org; Thu, 23 Jun 2016 10:45:42 +0200
-Received: from 195.50.142.51 ([195.50.142.51])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 23 Jun 2016 10:45:42 +0200
-Received: from ajneu1 by 195.50.142.51 with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-can@vger.kernel.org>; Thu, 23 Jun 2016 10:45:42 +0200
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:48258 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751782AbcFWI5P (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jun 2016 04:57:15 -0400
+In-Reply-To: <1466504047-5110-1-git-send-email-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-Oliver Hartkopp <socketcan <at> hartkopp.net> writes:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--POUKsmX4XvijKnbF4ueR1Mtqj7oJn07so
+Content-Type: multipart/mixed; boundary="MehcGUJQUPLxSVfmLC37kVIjOCtauS4e8"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Message-ID: <65d3bb99-ab73-4985-5553-4c7c05c1889f@pengutronix.de>
+Subject: Re: [PATCH] can: fix handling of unmodifiable configuration options
+ fix
+References: <1466504047-5110-1-git-send-email-socketcan@hartkopp.net>
+In-Reply-To: <1466504047-5110-1-git-send-email-socketcan@hartkopp.net>
 
-> 
-> The question is whether blocking write (and probably write outdated 
-> content) is what you want for CAN.
+--MehcGUJQUPLxSVfmLC37kVIjOCtauS4e8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Oliver Hartkopp posted that on a different thread...
-Subject: Re: want blocking writes, but eventually get: errno 105 (No buffer
-space available)
-Date: 2016-06-22 15:52:04 GMT (15 hours and 32 minutes ago)
+On 06/21/2016 12:14 PM, Oliver Hartkopp wrote:
+> With upstream commit bb208f144cf3f59 (can: fix handling of unmodifiable=
 
-OK ->
+> configuration options) a new can_validate() function was introduced.
+>=20
+> When invoking 'ip link set can0 type can' without any configuration dat=
+a
+> can_validate() tries to validate the content without taking into accoun=
+t that
+> there's totally no content. This patch adds a check for missing content=
+=2E
+>=20
+> Reported-by: ajneu <ajneu1@gmail.com>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-I've tried non-blocking.
-Unfortunately non-blocking will not tell you if messages are delivered or not.
+Applied to can + stable on Cc.
 
-Example:
-If I send out 2 messages (non-blocking) with no participant on the bus,
-those messages will remain queued.
-If 5 minutes later a participant joins the bus, he'll get those 2 very old
-messages: outdated content.
+Tnx,
+Marc
 
-What are my options to solve this?
-(Can I find out if a message has actually been sent out onto the bus?)
-(I'm currently thinking about checking the CAN-Bus status: If NOT
-error-active (and high tx count), I know that tx-messages will not get
-delivered.
-But if I had a few messages in the queue, I still cannot tell which ones got
-delivered. Hmmmm...
-  ***)
-)
-
-Thanks,
-ajneu
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-PS:
-  ***)
-Perhaps in some cases it does not matter to know which messages actually
-still got delivered and which not.
-In that case, when the program detects NO-longer-ERROR_ACTIVE, it can enter
-into an error-state "waiting for online":
-first it does can_do_stop followed by can_do_start, to clear the queue. Then
-it just sends periodic messages, until it get's back_to_error_active.
-Once it get's back_to_error_active, it it back "online".
-Thoughts?
+--MehcGUJQUPLxSVfmLC37kVIjOCtauS4e8--
 
+--POUKsmX4XvijKnbF4ueR1Mtqj7oJn07so
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJXa6RgAAoJED07qiWsqSVq3RIH/14Zqhg38+U6KsHNPm7lPTGH
+mFO06+o/21CeZgUeDZe79zeANnLF04eUSQvVZYNMXvmJ6ZAOwmk8qXgeB0M7Q+tn
+7lF65pkY90Nmj1OJA8p9SjHpisjE/K89tppE1ecYEMGZOM9t88hz724LDYYt+r4Y
+JIngoc2K7MVve2Uy8XgGBfCUaWpPjU1ZmwUbSVUp5HvJEKsefUc73E0RW8Olg5G6
+rVqK0Jl8x7ieJgbhg7febhE9RoNNm+Hu5NB/ovFHITksnhdSTVcW6b63SRd3dYup
+WnnXDh3Qnxym3QCKVz4scuChUhwk6r1V9F8RlTMTY/VYV7F8m8vLT1FjPdo/e7U=
+=K7nf
+-----END PGP SIGNATURE-----
+
+--POUKsmX4XvijKnbF4ueR1Mtqj7oJn07so--
