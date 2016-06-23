@@ -1,81 +1,50 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: fix handling of unmodifiable configuration options
- fix
-Date: Thu, 23 Jun 2016 10:57:04 +0200
-Message-ID: <65d3bb99-ab73-4985-5553-4c7c05c1889f@pengutronix.de>
-References: <1466504047-5110-1-git-send-email-socketcan@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="POUKsmX4XvijKnbF4ueR1Mtqj7oJn07so"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:48258 "EHLO
-	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751782AbcFWI5P (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 23 Jun 2016 04:57:15 -0400
-In-Reply-To: <1466504047-5110-1-git-send-email-socketcan@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Subject: pull-request: can 2016-06-23
+Date: Thu, 23 Jun 2016 11:22:18 +0200
+Message-ID: <1466673741-23115-1-git-send-email-mkl@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---POUKsmX4XvijKnbF4ueR1Mtqj7oJn07so
-Content-Type: multipart/mixed; boundary="MehcGUJQUPLxSVfmLC37kVIjOCtauS4e8"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Message-ID: <65d3bb99-ab73-4985-5553-4c7c05c1889f@pengutronix.de>
-Subject: Re: [PATCH] can: fix handling of unmodifiable configuration options
- fix
-References: <1466504047-5110-1-git-send-email-socketcan@hartkopp.net>
-In-Reply-To: <1466504047-5110-1-git-send-email-socketcan@hartkopp.net>
+Hello David,
 
---MehcGUJQUPLxSVfmLC37kVIjOCtauS4e8
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+this is a pull request of 3 patches for the upcoming linux-4.7 release.
 
-On 06/21/2016 12:14 PM, Oliver Hartkopp wrote:
-> With upstream commit bb208f144cf3f59 (can: fix handling of unmodifiable=
+The first two patches are by Oliver Hartkopp fixing oopes in the generic CAN
+device netlink handling. Jimmy Assarsson's patch for the kvaser_usb driver adds
+support for more devices by adding their USB product ids.
 
-> configuration options) a new can_validate() function was introduced.
->=20
-> When invoking 'ip link set can0 type can' without any configuration dat=
-a
-> can_validate() tries to validate the content without taking into accoun=
-t that
-> there's totally no content. This patch adds a check for missing content=
-=2E
->=20
-> Reported-by: ajneu <ajneu1@gmail.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
-Applied to can + stable on Cc.
-
-Tnx,
+regards,
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+---
 
+The following changes since commit acd43fe85b2d1dbad55ce211b8817e6d6687246f:
 
---MehcGUJQUPLxSVfmLC37kVIjOCtauS4e8--
+  Merge branch 'mlx4-fixes' (2016-06-22 16:38:17 -0400)
 
---POUKsmX4XvijKnbF4ueR1Mtqj7oJn07so
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+are available in the git repository at:
 
------BEGIN PGP SIGNATURE-----
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.7-20160623
 
-iQEcBAEBCgAGBQJXa6RgAAoJED07qiWsqSVq3RIH/14Zqhg38+U6KsHNPm7lPTGH
-mFO06+o/21CeZgUeDZe79zeANnLF04eUSQvVZYNMXvmJ6ZAOwmk8qXgeB0M7Q+tn
-7lF65pkY90Nmj1OJA8p9SjHpisjE/K89tppE1ecYEMGZOM9t88hz724LDYYt+r4Y
-JIngoc2K7MVve2Uy8XgGBfCUaWpPjU1ZmwUbSVUp5HvJEKsefUc73E0RW8Olg5G6
-rVqK0Jl8x7ieJgbhg7febhE9RoNNm+Hu5NB/ovFHITksnhdSTVcW6b63SRd3dYup
-WnnXDh3Qnxym3QCKVz4scuChUhwk6r1V9F8RlTMTY/VYV7F8m8vLT1FjPdo/e7U=
-=K7nf
------END PGP SIGNATURE-----
+for you to fetch changes up to 71873a9b38d1cc6c93e2962149a7bb7272a7cb66:
 
---POUKsmX4XvijKnbF4ueR1Mtqj7oJn07so--
+  can: kvaser_usb: Add support for more Kvaser Leaf v2 devices (2016-06-23 11:16:41 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.7-20160623
+
+----------------------------------------------------------------
+Jimmy Assarsson (1):
+      can: kvaser_usb: Add support for more Kvaser Leaf v2 devices
+
+Oliver Hartkopp (2):
+      can: fix handling of unmodifiable configuration options fix
+      can: fix oops caused by wrong rtnl dellink usage
+
+ drivers/net/can/dev.c            | 9 +++++++++
+ drivers/net/can/usb/Kconfig      | 2 ++
+ drivers/net/can/usb/kvaser_usb.c | 8 +++++++-
+ 3 files changed, 18 insertions(+), 1 deletion(-)
