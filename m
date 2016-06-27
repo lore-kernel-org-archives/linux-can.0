@@ -1,29 +1,32 @@
 From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2016-06-23
-Date: Mon, 27 Jun 2016 10:08:34 -0400 (EDT)
-Message-ID: <20160627.100834.1279506995546905688.davem@davemloft.net>
-References: <1466673741-23115-1-git-send-email-mkl@pengutronix.de>
+Subject: Re: pull-request: can-next 2016-06-17,pull-request: can-next
+ 2016-06-17
+Date: Mon, 27 Jun 2016 10:34:52 -0400 (EDT)
+Message-ID: <20160627.103452.275232307829856838.davem@davemloft.net>
+References: <0c371efc-6afa-130a-6752-50c3d5a0694c@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:44588 "EHLO
+Received: from shards.monkeyblade.net ([149.20.54.216]:44856 "EHLO
 	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750869AbcF0OJE (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Jun 2016 10:09:04 -0400
-In-Reply-To: <1466673741-23115-1-git-send-email-mkl@pengutronix.de>
+	with ESMTP id S1751385AbcF0OfV (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Jun 2016 10:35:21 -0400
+In-Reply-To: <0c371efc-6afa-130a-6752-50c3d5a0694c@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: netdev@vger.kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org
 
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Thu, 23 Jun 2016 11:22:18 +0200
+Date: Thu, 23 Jun 2016 11:30:30 +0200
 
-> this is a pull request of 3 patches for the upcoming linux-4.7 release.
+> this is a pull request of 4 patches for net-next/master.
 > 
-> The first two patches are by Oliver Hartkopp fixing oopes in the generic CAN
-> device netlink handling. Jimmy Assarsson's patch for the kvaser_usb driver adds
-> support for more devices by adding their USB product ids.
+> Arnd Bergmann's patch fixes a regresseion in af_can introduced in
+> linux-can-next-for-4.8-20160617. There are two patches by Ramesh
+> Shanmugasundaram, which add CAN-2.0 support to the rcar_canfd driver.
+> And a patch by Ed Spiridonov that adds better error diagnoses messages
+> to the Ed Spiridonov driver.
 
 Pulled, thanks.
