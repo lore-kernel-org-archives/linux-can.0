@@ -1,32 +1,81 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2016-06-17,pull-request: can-next
- 2016-06-17
-Date: Mon, 27 Jun 2016 10:34:52 -0400 (EDT)
-Message-ID: <20160627.103452.275232307829856838.davem@davemloft.net>
-References: <0c371efc-6afa-130a-6752-50c3d5a0694c@pengutronix.de>
+From: Kurt Van Dijck <kurt@vandijck-laurijssen.be>
+Subject: Re: Clear transmit buffer (of pending queued tx-messages)
+Date: Tue, 28 Jun 2016 00:01:32 +0200
+Message-ID: <3F0116BE-40E1-4461-A6C0-787B7D67932C@vandijck-laurijssen.be>
+References: <loom.20160622T135857-352@post.gmane.org> <loom.20160623T104337-28@post.gmane.org> <576BAB39.4080006@grandegger.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:44856 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751385AbcF0OfV (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Jun 2016 10:35:21 -0400
-In-Reply-To: <0c371efc-6afa-130a-6752-50c3d5a0694c@pengutronix.de>
+Received: from relay-b02.edpnet.be ([212.71.1.222]:42320 "EHLO
+	relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751639AbcF0WUh (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Jun 2016 18:20:37 -0400
+In-Reply-To: <576BAB39.4080006@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, ajneu <ajneu1@gmail.com>, linux-can@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Thu, 23 Jun 2016 11:30:30 +0200
 
-> this is a pull request of 4 patches for net-next/master.
-> 
-> Arnd Bergmann's patch fixes a regresseion in af_can introduced in
-> linux-can-next-for-4.8-20160617. There are two patches by Ramesh
-> Shanmugasundaram, which add CAN-2.0 support to the rcar_canfd driver.
-> And a patch by Ed Spiridonov that adds better error diagnoses messages
-> to the Ed Spiridonov driver.
 
-Pulled, thanks.
+On 23 June 2016 11:26:17 CEST, Wolfgang Grandegger <wg@grandegger.com> wrote:
+>Am 23.06.2016 um 10:45 schrieb ajneu:
+>> Oliver Hartkopp <socketcan <at> hartkopp.net> writes:
+>>
+>>>
+>>> The question is whether blocking write (and probably write outdated
+>>> content) is what you want for CAN.
+>>
+>> Oliver Hartkopp posted that on a different thread...
+>> Subject: Re: want blocking writes, but eventually get: errno 105 (No
+>buffer
+>> space available)
+>> Date: 2016-06-22 15:52:04 GMT (15 hours and 32 minutes ago)
+>>
+>> OK ->
+>>
+>> I've tried non-blocking.
+>> Unfortunately non-blocking will not tell you if messages are
+>delivered or not.
+>>
+>> Example:
+>> If I send out 2 messages (non-blocking) with no participant on the
+>bus,
+>> those messages will remain queued.
+>
+>Yes, in software but also hardware queues.
+>
+>> If 5 minutes later a participant joins the bus, he'll get those 2
+>very old
+>> messages: outdated content.
+>
+>Yep.
+>
+>> What are my options to solve this?
+>
+>The only method I know to flush the queue is restarting the device 
+>(down->up).
+>
+>> (Can I find out if a message has actually been sent out onto the
+>bus?)
+>
+>If you really need to known, you could check for the looped back
+>message 
+>on the same socket enabling CAN_RAW_RECV_OWN_MSGS. But it will slow
+>down 
+>the message transfers.
+>
+>> (I'm currently thinking about checking the CAN-Bus status: If NOT
+>> error-active (and high tx count), I know that tx-messages will not
+>get
+>> delivered.
+>
+>Well, the errors could also be caused by other issues. You could check 
+>for no-ack bus error messages but not all CAN controllers support that 
+>feature.
+
+CAN is like datagram networks. You will never know if the intended receiver actually got the message until he replies. This semantics impact the communication design. All actions above make the code hard to write but not significant better.
+
+Kurt
+
