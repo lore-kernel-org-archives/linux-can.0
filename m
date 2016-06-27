@@ -1,54 +1,29 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: want blocking writes, but eventually get: errno 105 (No buffer
- space available)
-Date: Mon, 27 Jun 2016 09:24:53 +1000
-Message-ID: <57706445.80506@optusnet.com.au>
-References: <loom.20160622T163626-806@post.gmane.org>
- <loom.20160622T171459-416@post.gmane.org>
-Reply-To: tom_usenet@optusnet.com.au
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2016-06-23
+Date: Mon, 27 Jun 2016 10:08:34 -0400 (EDT)
+Message-ID: <20160627.100834.1279506995546905688.davem@davemloft.net>
+References: <1466673741-23115-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:35089 "EHLO
-	mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751459AbcFZXor (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Sun, 26 Jun 2016 19:44:47 -0400
-In-Reply-To: <loom.20160622T171459-416@post.gmane.org>
+Received: from shards.monkeyblade.net ([149.20.54.216]:44588 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750869AbcF0OJE (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 27 Jun 2016 10:09:04 -0400
+In-Reply-To: <1466673741-23115-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: ajneu <ajneu1@gmail.com>, linux-can@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-On 23/06/16 01:18, ajneu wrote:
-> ajneu <ajneu1 <at> gmail.com> writes:
->
->> My test-program blocks (in write) in the beginning (the 1st few
->> program-runs), but then after a number of program-restarts I eventually get:
->>     errno 105 (No buffer space available)
->> which is not acceptable, since I want to block (in the write), and not get
->> any error!!
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Thu, 23 Jun 2016 11:22:18 +0200
 
-Very old news. CAN is implemented "sort of like IP-over-Ethernet, and so has 
-inherited the buffering from that system. So there's a NETBUF queue. When that 
-one overflows you get ENOBUFS. So you can change it with:
+> this is a pull request of 3 patches for the upcoming linux-4.7 release.
+> 
+> The first two patches are by Oliver Hartkopp fixing oopes in the generic CAN
+> device netlink handling. Jimmy Assarsson's patch for the kvaser_usb driver adds
+> support for more devices by adding their USB product ids.
 
-     setsockopt(pSkt->skt, SOL_SOCKET, SO_SNDBUF, &sndbuf, sizeof(sndbuf));
-
-Other details here:
-
-http://socket-can.996257.n3.nabble.com/Solving-ENOBUFS-returned-by-write-td2886.html
-
-Search for ENOBUFS in this as well:
-
-http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
-
- > 1st program run:
- > ~> block on 33'rd write (32 frames queued)
-
-You'll have the Network queue, the "tx_queue_len" in the driver, as well as 
-however many physical message buffers there are in your hardware, which looks 
-to be "32".
-
-Tom
-
-
+Pulled, thanks.
