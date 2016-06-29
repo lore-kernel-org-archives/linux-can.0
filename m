@@ -1,72 +1,73 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 2/3] can: fix oops caused by wrong rtnl dellink usage
-Date: Tue, 28 Jun 2016 17:55:27 +0200
-Message-ID: <34b61d80-6069-4ee4-a129-93d77305edae@hartkopp.net>
-References: <1466673741-23115-1-git-send-email-mkl@pengutronix.de>
- <1466673741-23115-3-git-send-email-mkl@pengutronix.de>
- <e092c3e9-56f3-f765-a9ef-89697ec46e16@cogentembedded.com>
- <0e51107f-a381-6c94-0079-d0ed415d8bcc@hartkopp.net>
- <f4b685f9-a2ad-d3cc-1204-f457705467df@cogentembedded.com>
- <a1bd95b5-ea93-0e99-7784-dad393240f06@hartkopp.net>
- <874m8d7oiu.fsf@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: Flexcan on i.MX6Q softreset error
+Date: Wed, 29 Jun 2016 10:05:36 +0200
+Message-ID: <c27f9934-180b-7fc5-2164-9dadc3398367@pengutronix.de>
+References: <2016062916020197471912@aliyun.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Ptr6tGIIHQcu2nGTCcxR95eQ5AkAOpxWj"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:60119 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752471AbcF1Pzp (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 28 Jun 2016 11:55:45 -0400
-In-Reply-To: <874m8d7oiu.fsf@gmail.com>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:49138 "EHLO
+	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751334AbcF2IFo (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 29 Jun 2016 04:05:44 -0400
+In-Reply-To: <2016062916020197471912@aliyun.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Holger Schurig <holgerschurig@gmail.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, stable@vger.kernel.org
+To: "jinfeng.zhuang@aliyun.com" <jinfeng.zhuang@aliyun.com>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-On 06/28/2016 09:36 AM, Holger Schurig wrote:
->> static void can_dellink(struct net_device *dev, struct list_head *head);
->>
->> and
->>
->> static void can_dellink(struct net_device *dev, struct list_head *head)
->> {
->> 	return;
->> }
->
-> Wouldn't the canonical form be this:
->
-> static void can_dellink(struct net_device *dev, struct list_head *head)
-> {
-> }
->
->
-> - the curly braces make sure this isn't a forward definition
-> - but no useless return either
->
->
-> But then again, this "return" is only cosmetical.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Ptr6tGIIHQcu2nGTCcxR95eQ5AkAOpxWj
+Content-Type: multipart/mixed; boundary="nQurTagNah4CBE02JuMX0boWPRednaLqA"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "jinfeng.zhuang@aliyun.com" <jinfeng.zhuang@aliyun.com>
+Cc: linux-can <linux-can@vger.kernel.org>
+Message-ID: <c27f9934-180b-7fc5-2164-9dadc3398367@pengutronix.de>
+Subject: Re: Flexcan on i.MX6Q softreset error
+References: <2016062916020197471912@aliyun.com>
+In-Reply-To: <2016062916020197471912@aliyun.com>
 
-Yes it is just coding style.
+--nQurTagNah4CBE02JuMX0boWPRednaLqA
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
- > No compiler will
-> generate any code from it.
+Hello,
 
-ACK.
+please use the linux-can mailinglist: linux-can@vger.kernel.org
 
-If you check
+On 06/29/2016 10:02 AM, jinfeng.zhuang@aliyun.com wrote:
+>     Flexcan on i.MX6Q, if do softreset, the machine will not go to the
+> next instruction ?
 
-	~/linux$ git grep \{\ return\;
+Which kernel version are you using?
 
-there are many occurrences of empty void functions having a 'return' 
-inside the curly braces.
+Marc
 
-I think
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-	static void can_dellink( ... ){}
 
-would have made it too.
+--nQurTagNah4CBE02JuMX0boWPRednaLqA--
 
-Now can_dellink() just locks similar to can_newlink() some lines above.
+--Ptr6tGIIHQcu2nGTCcxR95eQ5AkAOpxWj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Regards,
-Oliver
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJXc4FQAAoJED07qiWsqSVqo6UH/3XAtH8l3uiUHL/idvStcaHQ
+Hvbu6it6bb+Qpm2KDAEqN9Zupbm1N0P0FIBxEhzrjT4k1rhaEZNTU/L/yJ3UIFYD
++OAW/WXNhAdWq4YTc2RhyXjByc/fk7xknKtjkcHK+59c0RQ2IiDDM4RwP2bAziOd
+q4NnTilwKnjHB+hxIYIxjqlHhIryHXanrnJ9TOqOBA2e4gDikQvEmIhECiHmVpsj
+OEpVKkerWCqNgN9EhvDH6fOtOacHb+fvEH9WHYBrqbuSKG79yF+LLBkKTaexixAM
+2pkQFThmf531xCqYb1E+YntKpFZABxwcdokcH20exZvI0lX7IDm11lxpj5xD7ag=
+=iUYw
+-----END PGP SIGNATURE-----
+
+--Ptr6tGIIHQcu2nGTCcxR95eQ5AkAOpxWj--
