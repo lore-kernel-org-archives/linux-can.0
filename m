@@ -1,73 +1,88 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Flexcan on i.MX6Q softreset error
-Date: Wed, 29 Jun 2016 10:05:36 +0200
-Message-ID: <c27f9934-180b-7fc5-2164-9dadc3398367@pengutronix.de>
-References: <2016062916020197471912@aliyun.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Ptr6tGIIHQcu2nGTCcxR95eQ5AkAOpxWj"
+Subject: [PATCH v2 05/12] can: flexcan: calculate default value for imask1 during runtime
+Date: Mon,  4 Jul 2016 20:32:10 +0200
+Message-ID: <1467657137-18891-6-git-send-email-mkl@pengutronix.de>
+References: <1467657137-18891-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:49138 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:46497 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751334AbcF2IFo (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 29 Jun 2016 04:05:44 -0400
-In-Reply-To: <2016062916020197471912@aliyun.com>
+	by vger.kernel.org with ESMTP id S1752442AbcGDScW (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Mon, 4 Jul 2016 14:32:22 -0400
+In-Reply-To: <1467657137-18891-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "jinfeng.zhuang@aliyun.com" <jinfeng.zhuang@aliyun.com>
-Cc: linux-can <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Ptr6tGIIHQcu2nGTCcxR95eQ5AkAOpxWj
-Content-Type: multipart/mixed; boundary="nQurTagNah4CBE02JuMX0boWPRednaLqA"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "jinfeng.zhuang@aliyun.com" <jinfeng.zhuang@aliyun.com>
-Cc: linux-can <linux-can@vger.kernel.org>
-Message-ID: <c27f9934-180b-7fc5-2164-9dadc3398367@pengutronix.de>
-Subject: Re: Flexcan on i.MX6Q softreset error
-References: <2016062916020197471912@aliyun.com>
-In-Reply-To: <2016062916020197471912@aliyun.com>
+This patch converts the define FLEXCAN_IFLAG_DEFAULT into the runtime
+calculated value priv->reg_imask1_default. This is a preparation patch to make
+the TX mailbox selectable during runtime, too.
 
---nQurTagNah4CBE02JuMX0boWPRednaLqA
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/flexcan.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-Hello,
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 617e723de909..bcdad95a5749 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -149,9 +149,6 @@
+ #define FLEXCAN_IFLAG_RX_FIFO_OVERFLOW	BIT(7)
+ #define FLEXCAN_IFLAG_RX_FIFO_WARN	BIT(6)
+ #define FLEXCAN_IFLAG_RX_FIFO_AVAILABLE	BIT(5)
+-#define FLEXCAN_IFLAG_DEFAULT \
+-	(FLEXCAN_IFLAG_RX_FIFO_OVERFLOW | FLEXCAN_IFLAG_RX_FIFO_AVAILABLE | \
+-	 FLEXCAN_IFLAG_BUF(FLEXCAN_TX_BUF_ID))
+ 
+ /* FLEXCAN message buffers */
+ #define FLEXCAN_MB_CODE_RX_INACTIVE	(0x0 << 24)
+@@ -254,6 +251,7 @@ struct flexcan_priv {
+ 	struct flexcan_regs __iomem *regs;
+ 	u32 reg_esr;
+ 	u32 reg_ctrl_default;
++	u32 reg_imask1_default;
+ 
+ 	struct clk *clk_ipg;
+ 	struct clk *clk_per;
+@@ -704,7 +702,7 @@ static int flexcan_poll(struct napi_struct *napi, int quota)
+ 	if (work_done < quota) {
+ 		napi_complete(napi);
+ 		/* enable IRQs */
+-		flexcan_write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
++		flexcan_write(priv->reg_imask1_default, &regs->imask1);
+ 		flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
+ 	}
+ 
+@@ -738,7 +736,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 		 * save them for later use.
+ 		 */
+ 		priv->reg_esr = reg_esr & FLEXCAN_ESR_ERR_BUS;
+-		flexcan_write(FLEXCAN_IFLAG_DEFAULT &
++		flexcan_write(priv->reg_imask1_default &
+ 			      ~FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->imask1);
+ 		flexcan_write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
+ 			      &regs->ctrl);
+@@ -941,7 +939,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	/* enable interrupts atomically */
+ 	disable_irq(dev->irq);
+ 	flexcan_write(priv->reg_ctrl_default, &regs->ctrl);
+-	flexcan_write(FLEXCAN_IFLAG_DEFAULT, &regs->imask1);
++	flexcan_write(priv->reg_imask1_default, &regs->imask1);
+ 	enable_irq(dev->irq);
+ 
+ 	/* print chip status */
+@@ -1225,6 +1223,10 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	priv->devtype_data = devtype_data;
+ 	priv->reg_xceiver = reg_xceiver;
+ 
++	priv->reg_imask1_default = FLEXCAN_IFLAG_RX_FIFO_OVERFLOW |
++		FLEXCAN_IFLAG_RX_FIFO_AVAILABLE |
++		FLEXCAN_IFLAG_BUF(FLEXCAN_TX_BUF_ID);
++
+ 	netif_napi_add(dev, &priv->napi, flexcan_poll, FLEXCAN_NAPI_WEIGHT);
+ 
+ 	platform_set_drvdata(pdev, dev);
+-- 
+2.8.1
 
-please use the linux-can mailinglist: linux-can@vger.kernel.org
-
-On 06/29/2016 10:02 AM, jinfeng.zhuang@aliyun.com wrote:
->     Flexcan on i.MX6Q, if do softreset, the machine will not go to the
-> next instruction ?
-
-Which kernel version are you using?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---nQurTagNah4CBE02JuMX0boWPRednaLqA--
-
---Ptr6tGIIHQcu2nGTCcxR95eQ5AkAOpxWj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJXc4FQAAoJED07qiWsqSVqo6UH/3XAtH8l3uiUHL/idvStcaHQ
-Hvbu6it6bb+Qpm2KDAEqN9Zupbm1N0P0FIBxEhzrjT4k1rhaEZNTU/L/yJ3UIFYD
-+OAW/WXNhAdWq4YTc2RhyXjByc/fk7xknKtjkcHK+59c0RQ2IiDDM4RwP2bAziOd
-q4NnTilwKnjHB+hxIYIxjqlHhIryHXanrnJ9TOqOBA2e4gDikQvEmIhECiHmVpsj
-OEpVKkerWCqNgN9EhvDH6fOtOacHb+fvEH9WHYBrqbuSKG79yF+LLBkKTaexixAM
-2pkQFThmf531xCqYb1E+YntKpFZABxwcdokcH20exZvI0lX7IDm11lxpj5xD7ag=
-=iUYw
------END PGP SIGNATURE-----
-
---Ptr6tGIIHQcu2nGTCcxR95eQ5AkAOpxWj--
