@@ -1,12 +1,12 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 04/12] can: flexcan: make declaration of devtype_data const
-Date: Mon,  4 Jul 2016 20:32:09 +0200
-Message-ID: <1467657137-18891-5-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v2 09/12] can: flexcan: activate individual RX masking and initialize reg_rximr
+Date: Mon,  4 Jul 2016 20:32:14 +0200
+Message-ID: <1467657137-18891-10-git-send-email-mkl@pengutronix.de>
 References: <1467657137-18891-1-git-send-email-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:53867 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41353 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750734AbcGDScW (ORCPT
+	by vger.kernel.org with ESMTP id S1753385AbcGDScW (ORCPT
 	<rfc822;linux-can@vger.kernel.org>); Mon, 4 Jul 2016 14:32:22 -0400
 In-Reply-To: <1467657137-18891-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,39 +14,57 @@ List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: david@protonic.nl, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch changes the declaration of the devtype data to const.
+Modern flexcan IP cores support two RX modes. One is using the 6 fames deep
+hardware FIFO, the other is using up to 64 mailboxes (in non FIFO mode). For
+now only the HW FIFO mode is activated.
+
+In order to make use of the RX mailboxes the individual RX masking feature has
+to be activated, otherwise matching mailboxes are overwritten during the
+reception process. This however switches on the individual RX masking, which
+uses reg_rximr registers for masking.
+
+This patch activates the individual RX masking feature unconditionally and
+initializes the mask registers (reg_rximr) with 0x0 == "don't care", which
+switches off any filtering.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/flexcan.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index dea2bf27cfc4..617e723de909 100644
+index ae16add589a8..793be68e02b7 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -261,17 +261,17 @@ struct flexcan_priv {
- 	struct regulator *reg_xceiver;
- };
+@@ -818,6 +818,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	 * only supervisor access
+ 	 * enable warning int
+ 	 * disable local echo
++	 * enable individual RX masking
+ 	 * choose format C
+ 	 * set max mailbox number
+ 	 */
+@@ -825,7 +826,8 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
+ 	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_FEN | FLEXCAN_MCR_HALT |
+ 		FLEXCAN_MCR_SUPV | FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_SRX_DIS |
+-		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
++		FLEXCAN_MCR_IRMQ | FLEXCAN_MCR_IDAM_C |
++		FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
+ 	netdev_dbg(dev, "%s: writing mcr=0x%08x", __func__, reg_mcr);
+ 	flexcan_write(reg_mcr, &regs->mcr);
  
--static struct flexcan_devtype_data fsl_p1010_devtype_data = {
-+static const struct flexcan_devtype_data fsl_p1010_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_BROKEN_ERR_STATE,
- };
+@@ -884,6 +886,10 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_DISABLE_RXFG)
+ 		flexcan_write(0x0, &regs->rxfgmask);
  
--static struct flexcan_devtype_data fsl_imx28_devtype_data;
-+static const struct flexcan_devtype_data fsl_imx28_devtype_data;
- 
--static struct flexcan_devtype_data fsl_imx6q_devtype_data = {
-+static const struct flexcan_devtype_data fsl_imx6q_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG,
- };
- 
--static struct flexcan_devtype_data fsl_vf610_devtype_data = {
-+static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_DISABLE_MECR,
- };
- 
++	/* clear acceptance filters */
++	for (i = 0; i < ARRAY_SIZE(regs->mb); i++)
++		flexcan_write(0, &regs->rximr[i]);
++
+ 	/* On Vybrid, disable memory error detection interrupts
+ 	 * and freeze mode.
+ 	 * This also works around errata e5295 which generates
 -- 
 2.8.1
 
