@@ -1,116 +1,123 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v2 02/12] can: rx-offload: Add support for timestamp based
  irq offloading
-Date: Tue, 5 Jul 2016 09:21:14 +0200
-Message-ID: <7bb62b19-9bce-8f0d-76b5-81927c05feef@pengutronix.de>
+Date: Tue, 5 Jul 2016 14:40:23 +0200
+Message-ID: <d86b55f5-56eb-1d16-b630-27afc0fda005@pengutronix.de>
 References: <1467657137-18891-1-git-send-email-mkl@pengutronix.de>
  <1467657137-18891-3-git-send-email-mkl@pengutronix.de>
- <3035212.Yo4Bos9bxC@ws-stein>
- <9e7e6562-3ed5-6807-a178-aa19595191a8@pengutronix.de>
- <20160705083109.1c8d44a8@erd980>
+ <146765818281.26740.6668128129784946822@maxwell>
+ <1d462f0c-3dc2-ba44-b3bf-53469062ff22@pengutronix.de>
+ <4456cc74-7d85-c05e-fc86-af916ce0edb0@pengutronix.de>
+ <20160705115851.GA13601@maxwell>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="VPOg9xdCaJIkcadnrglOmwrLuwwxNvvg4"
+ boundary="xUREF7VumKCGVoCCXsnL05k8SWBhFna1v"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:51022 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:40208 "EHLO
 	metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751354AbcGEHVX (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 5 Jul 2016 03:21:23 -0400
-In-Reply-To: <20160705083109.1c8d44a8@erd980>
+	by vger.kernel.org with ESMTP id S1754519AbcGEMkf (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 5 Jul 2016 08:40:35 -0400
+In-Reply-To: <20160705115851.GA13601@maxwell>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Jander <david@protonic.nl>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>, linux-can@vger.kernel.org
+To: Andri Yngvason <andri.yngvason@marel.com>
+Cc: linux-can@vger.kernel.org, david@protonic.nl
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---VPOg9xdCaJIkcadnrglOmwrLuwwxNvvg4
-Content-Type: multipart/mixed; boundary="0r0GcgL00a4F3oggqr98sWv3OUHgf5q5v"
+--xUREF7VumKCGVoCCXsnL05k8SWBhFna1v
+Content-Type: multipart/mixed; boundary="5vNo8XPWKUxqBwUvQN9JI6pC3W1cDUx19"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: David Jander <david@protonic.nl>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>,
- linux-can@vger.kernel.org
-Message-ID: <7bb62b19-9bce-8f0d-76b5-81927c05feef@pengutronix.de>
+To: Andri Yngvason <andri.yngvason@marel.com>
+Cc: linux-can@vger.kernel.org, david@protonic.nl
+Message-ID: <d86b55f5-56eb-1d16-b630-27afc0fda005@pengutronix.de>
 Subject: Re: [PATCH v2 02/12] can: rx-offload: Add support for timestamp based
  irq offloading
 References: <1467657137-18891-1-git-send-email-mkl@pengutronix.de>
  <1467657137-18891-3-git-send-email-mkl@pengutronix.de>
- <3035212.Yo4Bos9bxC@ws-stein>
- <9e7e6562-3ed5-6807-a178-aa19595191a8@pengutronix.de>
- <20160705083109.1c8d44a8@erd980>
-In-Reply-To: <20160705083109.1c8d44a8@erd980>
+ <146765818281.26740.6668128129784946822@maxwell>
+ <1d462f0c-3dc2-ba44-b3bf-53469062ff22@pengutronix.de>
+ <4456cc74-7d85-c05e-fc86-af916ce0edb0@pengutronix.de>
+ <20160705115851.GA13601@maxwell>
+In-Reply-To: <20160705115851.GA13601@maxwell>
 
---0r0GcgL00a4F3oggqr98sWv3OUHgf5q5v
+--5vNo8XPWKUxqBwUvQN9JI6pC3W1cDUx19
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 07/05/2016 08:31 AM, David Jander wrote:
-> On Tue, 5 Jul 2016 08:19:31 +0200
-> Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->=20
->> On 07/05/2016 07:46 AM, Alexander Stein wrote:
->>> On Monday 04 July 2016 20:32:07, Marc Kleine-Budde wrote: =20
->>>> Some CAN controllers don't implement a FIFO in hardware, but fill th=
-eir
->>>> mailboxes in a particular order (from lowest to highest or highest t=
-o
->>>> lowest). This makes problems to read the frames in the correct order=
- from
->>>> the hardware, as new frames might be filled into just read (low) mai=
-lboxes.
->>>> This gets worse, when following new frames are received into not rea=
-d
->>>> (higher) mailboxes.
->>>>
->>>> On the bright side some these CAN controllers put a timestamp on eac=
-h
->>>> received CAN frame. This patch adds support to offload CAN frames in=
-
->>>> interrupt context, order them by timestamp and then transmitted in a=
- NAPI
->>>> context.
->>>>
->>>> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de> =20
->>>
->>> How is this supposed to work with CAN controllers without tmestamps, =
-e.g.=20
->>> CCAN/DCAN? Do you need to set the timestamp manually using ktime_get(=
-) or=20
->>> similar when reading each mailbox? IMHO especially those controllers =
-are prone=20
->>> to ordering issues under heavy load as the hardware doesn't ensure or=
-dering by=20
->>> itself and there is no hardware based timestamp. =20
->>
->> The algorithm added in this patch only supports controllers that add
->> timestamps to the mailbox on reception in hardware (like flexcan, at91=
-
->> and hecc). However the other algorithm we implemented didn't make use =
-of
->> timestamps and targeted controllers that fill mailboxes in a particula=
+On 07/05/2016 01:58 PM, Andri Yngvason wrote:
+> On Tue, Jul 05, 2016 at 12:30:32AM +0200, Marc Kleine-Budde wrote:
+>> On 07/04/2016 10:59 PM, Marc Kleine-Budde wrote:
+>>> Actually I want to have the difference between two timestamps in orde=
 r
->> order. It can be ported to the current framework and the c_can/d_can
->> driver to it.
->=20
-> I originally wrote order-based FIFO simulation for the flexcan, that di=
-dn't
-> use the timestamps. It turned out that flexcan has some hardware issues=
- that
-> prevented this implementation from working reliably on the flexcan cont=
-roller.
-> In fact, the whole ordered reception mechanism is useless on flexcan wi=
-thout
-> timestamps.
-> Marc: did you throw away the original implementation for good, or are y=
-ou
-> planning to add it again, in order to use it for CCAN/DCAN and similar
-> controllers?
+>>> to sort . The timestamps are monotonically increasing and will
+>>> eventually roll over. As the flexcan core only has a 16 bit timer, I
+>>> shift the timestamp by 16 bit (cb =3D reg_ts << 16), to fill the whol=
+e 32
+>>> bit. This way I don't have to take care about the overflow, right?
+>>>
+> Hmmm, yes, that is quite clever. If I understand correctly, this means =
+that if
+> you have three timestamps on the roll-over boundary: 0xfffe0000, 0xffff=
+0000 and
+> 0x0001000, the sorting algorithm will sort them in this particular orde=
+r because
+> 	(int)(0xfffe0000 - 0xffff0000) < 0
+> and
+> 	(int)(0xffff0000 - 0x00010000) < 0
 
-My focus was on flexcan for now, but the old order-based FIFO simulation
-can be ported to the new infrastructure and probably to the c_can/d_can
-driver.
+ACK. The queue_add_sort will walk the skb_queue reverse (from oldest to
+newest) optimizing for the case that frames are read in-order. So if I
+read the frames in order (even over a roll-over) there will be a maximum
+of one compare for each frame. Only the frames that are read in one
+can_rx_offload_irq_offload_timestamp() call will be sorted.
 
-regards,
+> Perhaps there should be a comment explaining this?
+
+ACK
+
+>>>> main: a=3D0xfffffff0 b=3D0xfffffffc diff=3D 12
+>>>> main: a=3D0xfffffff0 b=3D0xfffffffd diff=3D 13
+>>>> main: a=3D0xfffffff0 b=3D0xfffffffe diff=3D 14
+>>>> main: a=3D0xfffffff0 b=3D0xffffffff diff=3D 15
+>>>> main: a=3D0xfffffff0 b=3D0x00000000 diff=3D 16
+>>>> main: a=3D0xfffffff0 b=3D0x00000001 diff=3D 17
+>>>> main: a=3D0xfffffff0 b=3D0x00000002 diff=3D 18
+>>>> main: a=3D0xfffffff0 b=3D0x00000003 diff=3D 19
+>>>> main: a=3D0xfffffff0 b=3D0x00000004 diff=3D 20
+>>
+>> It's also working when the difference is negative:
+>>
+>>> main: a=3D0xfffffffc b=3D0xfffffff0 diff=3D-12
+>>> main: a=3D0xfffffffd b=3D0xfffffff0 diff=3D-13
+>>> main: a=3D0xfffffffe b=3D0xfffffff0 diff=3D-14
+>>> main: a=3D0xffffffff b=3D0xfffffff0 diff=3D-15
+>>> main: a=3D0x00000000 b=3D0xfffffff0 diff=3D-16
+>>> main: a=3D0x00000001 b=3D0xfffffff0 diff=3D-17
+>>> main: a=3D0x00000002 b=3D0xfffffff0 diff=3D-18
+>>> main: a=3D0x00000003 b=3D0xfffffff0 diff=3D-19
+>>
+>> It will get "problematic" if the difference between the two u32 is
+>> around 2^31. But then it's hard to tell which of the mailboxes holds t=
+he
+>> older timestamp.
+>>
+> Yes, it's also safe to assume that if you ever get this much of a diffe=
+rence
+> between timestamps in the mailbox, something else must be wrong before =
+that
+> happens.
+
+ACK
+
+> I've run into bugs involving this kind of a comparison function where t=
+he
+> difference actually can be large enough to cause problems, so this was =
+a red
+> flag for me, but it turns out to be OK.
+
+That
+
 Marc
 
 --=20
@@ -120,22 +127,22 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---0r0GcgL00a4F3oggqr98sWv3OUHgf5q5v--
+--5vNo8XPWKUxqBwUvQN9JI6pC3W1cDUx19--
 
---VPOg9xdCaJIkcadnrglOmwrLuwwxNvvg4
+--xUREF7VumKCGVoCCXsnL05k8SWBhFna1v
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJXe1/qAAoJED07qiWsqSVqa04H/iDWQnjE3pa+B+dDbR037KI9
-5yD3vtnBnzmFMu2NlyeWzNo85GJjTtI1xz45gRjtK+UMT5fCRZhOcLobU7HNVVol
-Og25pCOpPsGewhJeoe3DjI9qaXn8obSOu5EC/6ugXbsFP9ZrV+a++n+j6kGVaOup
-la1IlOnMnHqup1E66tgRJevkhBy/Qiq3BSGl805q0smZat74d8BwuGjJYNCTfDmn
-1V9wTXhdApLHFlBbaD5bPoSLol9yoCnjdZAoMT4Kh60d8uNW3U9bIeQcNzkl8s4S
-BnrE2GvjHQ5OPgYA65w8hQO8Tw/xJb/JdI0rfj5269a+yUIboL/EJpYU3/np970=
-=HXq5
+iQEcBAEBCgAGBQJXe6q3AAoJED07qiWsqSVqFvYH/iU/inyLnJzMW0MILVt4BZnz
+QJmKtoj6w8ERkU2PdPpAOAvFq2ukMIdDAilnIK8Tn8+b9U3eHyECkE1UXezGdRoY
+Hv2aLid7vrGHlpiiPswLWTR6KS6Ahcg7LO0j6l96GpqI9I3s85MYzM610qKpOH/+
+70/oAv9t86ZBNVmOa+e/bDlh9VM8WkQMuMP4r7fC6C2TvUgF9v+UN2FsUq4Yd1v2
+mesMCmsG5NV8FS6zCtTbZPVuHmSSk0gJ+nzv1U3ZLQaksHOQcf5yG9fujpgt0yVk
+dsbX5PJnJ3T7Xqf1A/G+UKPcpQU67OhICNk3YDzeFoN9e1Y5kMUwuvvgDiqGRD4=
+=GUky
 -----END PGP SIGNATURE-----
 
---VPOg9xdCaJIkcadnrglOmwrLuwwxNvvg4--
+--xUREF7VumKCGVoCCXsnL05k8SWBhFna1v--
