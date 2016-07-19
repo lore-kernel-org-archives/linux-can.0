@@ -1,44 +1,26 @@
-From: Andreas Werner <andreas.werner@men.de>
-Subject: Re: [PATCH] net: can: Introduce MEN 16Z192-00 CAN controller driver
-Date: Fri, 15 Jul 2016 10:02:03 +0200
-Message-ID: <20160715080202.GA5183@awelinux>
-References: <20160628134412.GA25172@awelinux>
+From: Laurenz <linux-can@laure.nz>
+Subject: Clear errorframe
+Date: Tue, 19 Jul 2016 16:12:50 +0200
+Message-ID: <b91b00bc-8ebb-766b-5fc1-57e37886bc87@laure.nz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160628134412.GA25172@awelinux>
-Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com
-Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, morbidrsa@gmail.com, andy@wernerandy.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from gacrux.uberspace.de ([185.26.156.53]:59375 "EHLO
+	gacrux.uberspace.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753534AbcGSOTi (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Tue, 19 Jul 2016 10:19:38 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
 Hi,
-just want to send a ping.
 
-Does anybody have comments on this driver?
+when I "cansend can0 000#" and no device is attached to my bus, "candump 
+-e any,#FFFFFFFF" will print a no-acknowledgement-on-tx errorframe forever.
 
-Regards
-Andy
+Is there a way to clear the error?
 
-> This CAN Controller is found on MEN Chameleon FPGAs.
-> 
-> The driver/device supports the CAN2.0 specification.
-> There are 255 RX and 255 Tx buffer within the IP. The
-> pointer for the buffer are handled by HW to make the
-> access from within the driver as simple as possible.
->
-> The driver also supports parameters to configure the
-> buffer level interrupt for RX/TX as well as a RX timeout
-> interrupt.
-> 
-> With this configuration options, the driver/device
-> provides flexibility for different types of usecases.
-> 
-> Signed-off-by: Andreas Werner <andreas.werner@men.de>
-> ---
->  drivers/net/can/Kconfig        |  10 +
->  drivers/net/can/Makefile       |   1 +
->  drivers/net/can/men_z192_can.c | 990 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 1001 insertions(+)
->  create mode 100644 drivers/net/can/men_z192_can.c
+Cheers
+Laurenz
+
