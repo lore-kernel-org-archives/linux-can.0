@@ -1,1066 +1,270 @@
-From: Andreas Werner <andreas.werner@men.de>
-Subject: [PATCH RESEND] net: can: Introduce MEN 16Z192-00 CAN controller
- driver
-Date: Tue, 26 Jul 2016 11:16:03 +0200
-Message-ID: <20160726091555.GA26227@awelinux>
+From: Damien Dusha <d.dusha@gmail.com>
+Subject: Dropped Tx frames with SJA1000
+Date: Wed, 27 Jul 2016 16:23:41 +1000
+Message-ID: <CABeNA8droHfwjaTkqnjbJBZTmETy_n58QDxFq9dne9w1EcjyHQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com
-Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net, jthumshirn@suse.de, andy@wernerandy.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-yw0-f193.google.com ([209.85.161.193]:35911 "EHLO
+	mail-yw0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751339AbcG0GXo (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Jul 2016 02:23:44 -0400
+Received: by mail-yw0-f193.google.com with SMTP id u134so3168971ywg.3
+        for <linux-can@vger.kernel.org>; Tue, 26 Jul 2016 23:23:43 -0700 (PDT)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-This CAN Controller is found on MEN Chameleon FPGAs.
+Dear linux-can,
 
-The driver/device supports the CAN2.0 specification.
-There are 255 RX and 255 Tx buffer within the IP. The
-pointer for the buffer are handled by HW to make the
-access from within the driver as simple as possible.
+I am attempting to debug an issue with the SJA1000 driver. The symptom
+is the occasional dropped frame when transmitting a burst of frames.
+Reception is unaffected.
 
-The driver also supports parameters to configure the
-buffer level interrupt for RX/TX as well as a RX timeout
-interrupt.
 
-With this configuration options, the driver/device
-provides flexibility for different types of usecases.
+Hardware and Setup:
 
-Signed-off-by: Andreas Werner <andreas.werner@men.de>
----
- drivers/net/can/Kconfig        |  10 +
- drivers/net/can/Makefile       |   1 +
- drivers/net/can/men_z192_can.c | 989 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 1000 insertions(+)
- create mode 100644 drivers/net/can/men_z192_can.c
+I am using an ESD CAN-PCI200 [1], which uses the sja1000_plx_pci
+driver, on a standard Core 2 Duo machine running Fedora 24 i686 with a
+freshly compiled vanilla linux-4.6.4.
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index 0d40aef..0fa0387 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -104,6 +104,16 @@ config CAN_JANZ_ICAN3
- 	  This driver can also be built as a module. If so, the module will be
- 	  called janz-ican3.ko.
- 
-+config CAN_MEN_Z192
-+	tristate "MEN 16Z192-00 CAN Controller"
-+	depends on MCB
-+	---help---
-+	  Driver for MEN 16Z192-00 CAN Controller IP-Core, which
-+	  is connected to the MEN Chameleon Bus.
-+
-+	  This driver can also be built as a module. If so, the module will be
-+	  called men_z192_can.ko.
-+
- config CAN_RCAR
- 	tristate "Renesas R-Car CAN controller"
- 	depends on ARCH_RENESAS || ARM
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index e3db0c8..eb206b3 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -22,6 +22,7 @@ obj-$(CONFIG_CAN_FLEXCAN)	+= flexcan.o
- obj-$(CONFIG_CAN_GRCAN)		+= grcan.o
- obj-$(CONFIG_CAN_IFI_CANFD)	+= ifi_canfd/
- obj-$(CONFIG_CAN_JANZ_ICAN3)	+= janz-ican3.o
-+obj-$(CONFIG_CAN_MEN_Z192)	+= men_z192_can.o
- obj-$(CONFIG_CAN_MSCAN)		+= mscan/
- obj-$(CONFIG_CAN_M_CAN)		+= m_can/
- obj-$(CONFIG_CAN_RCAR)		+= rcar_can.o
-diff --git a/drivers/net/can/men_z192_can.c b/drivers/net/can/men_z192_can.c
-new file mode 100644
-index 0000000..b39ffee
---- /dev/null
-+++ b/drivers/net/can/men_z192_can.c
-@@ -0,0 +1,989 @@
-+/*
-+ * MEN 16Z192 CAN Controller driver
-+ *
-+ * Copyright (C) 2016 MEN Mikroelektronik GmbH (www.men.de)
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License as published by the Free
-+ * Software Foundation; version 2 of the License.
-+ */
-+
-+#include <linux/netdevice.h>
-+#include <linux/can/error.h>
-+#include <linux/can/dev.h>
-+#include <linux/bitops.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/err.h>
-+#include <linux/mcb.h>
-+#include <linux/can.h>
-+#include <linux/io.h>
-+
-+#define DRV_NAME	"z192_can"
-+
-+#define MEN_Z192_NAPI_WEIGHT	64
-+#define MEN_Z192_MODE_TOUT_US	40
-+
-+/* CTL/BTR Register Bits */
-+#define MEN_Z192_CTL0_INITRQ	BIT(0)
-+#define MEN_Z192_CTL0_SLPRQ	BIT(1)
-+#define MEN_Z192_CTL1_INITAK	BIT(8)
-+#define MEN_Z192_CTL1_SLPAK	BIT(9)
-+#define MEN_Z192_CTL1_LISTEN	BIT(12)
-+#define MEN_Z192_CTL1_LOOPB	BIT(13)
-+#define MEN_Z192_CTL1_CANE	BIT(15)
-+#define MEN_Z192_BTR0_BRP(x)	(((x) & 0x3f) << 16)
-+#define MEN_Z192_BTR0_SJW(x)	(((x) & 0x03) << 22)
-+#define MEN_Z192_BTR1_TSEG1(x)	(((x) & 0x0f) << 24)
-+#define MEN_Z192_BTR1_TSEG2(x)	(((x) & 0x07) << 28)
-+#define MEN_Z192_BTR1_SAMP	BIT(31)
-+
-+/* IER Interrupt Enable Register bits */
-+#define MEN_Z192_RXIE		BIT(0)
-+#define MEN_Z192_OVRIE		BIT(1)
-+#define MEN_Z192_CSCIE		BIT(6)
-+#define MEN_Z192_TOUTE		BIT(7)
-+#define MEN_Z192_TXIE		BIT(16)
-+#define MEN_Z192_ERRIE		BIT(17)
-+
-+#define MEN_Z192_IRQ_ALL				\
-+		(MEN_Z192_RXIE | MEN_Z192_OVRIE |	\
-+		 MEN_Z192_CSCIE | MEN_Z192_TOUTE |	\
-+		 MEN_Z192_TXIE)
-+
-+#define MEN_Z192_IRQ_NAPI	(MEN_Z192_RXIE | MEN_Z192_TOUTE)
-+
-+/* RX_TX_STAT RX/TX Status status register bits */
-+#define MEN_Z192_RX_BUF_CNT(x)	((x) & 0xff)
-+#define MEN_Z192_TX_BUF_CNT(x)	(((x) & 0xff00) >> 8)
-+#define	MEN_Z192_RFLG_RXIF	BIT(16)
-+#define	MEN_Z192_RFLG_OVRF	BIT(17)
-+#define	MEN_Z192_RFLG_TSTATE	GENMASK(19, 18)
-+#define	MEN_Z192_RFLG_RSTATE	GENMASK(21, 20)
-+#define	MEN_Z192_RFLG_CSCIF	BIT(22)
-+#define	MEN_Z192_RFLG_TOUTF	BIT(23)
-+#define MEN_Z192_TFLG_TXIF	BIT(24)
-+
-+#define MEN_Z192_GET_TSTATE(x)	(((x) & MEN_Z192_RFLG_TSTATE) >> 18)
-+#define MEN_Z192_GET_RSTATE(x)	(((x) & MEN_Z192_RFLG_RSTATE) >> 20)
-+
-+#define MEN_Z192_IRQ_FLAGS_ALL					\
-+		(MEN_Z192_RFLG_RXIF | MEN_Z192_RFLG_OVRF |	\
-+		 MEN_Z192_RFLG_TSTATE | MEN_Z192_RFLG_RSTATE |	\
-+		 MEN_Z192_RFLG_CSCIF | MEN_Z192_RFLG_TOUTF |	\
-+		 MEN_Z192_TFLG_TXIF)
-+
-+/* RX/TX Error counter bits */
-+#define MEN_Z192_GET_RX_ERR_CNT(x)	((x) & 0xff)
-+#define MEN_Z192_GET_TX_ERR_CNT(x)	(((x) & 0x00ff0000) >> 16)
-+
-+/* Buffer level register bits */
-+#define MEN_Z192_RX_BUF_LVL	GENMASK(15, 0)
-+#define MEN_Z192_TX_BUF_LVL	GENMASK(31, 16)
-+
-+/* RX/TX Buffer register bits */
-+#define MEN_Z192_CFBUF_LEN	GENMASK(3, 0)
-+#define MEN_Z192_CFBUF_ID1	GENMASK(31, 21)
-+#define MEN_Z192_CFBUF_ID2	GENMASK(18, 1)
-+#define MEN_Z192_CFBUF_TS	GENMASK(31, 8)
-+#define MEN_Z192_CFBUF_E_RTR	BIT(0)
-+#define MEN_Z192_CFBUF_IDE	BIT(19)
-+#define MEN_Z192_CFBUF_SRR	BIT(20)
-+#define MEN_Z192_CFBUF_S_RTR	BIT(20)
-+#define MEN_Z192_CFBUF_ID2_SHIFT	1
-+#define MEN_Z192_CFBUF_ID1_SHIFT	21
-+
-+/* Global register offsets */
-+#define MEN_Z192_RX_BUF_START	0x0000
-+#define MEN_Z192_TX_BUF_START	0x1000
-+#define MEN_Z192_REGS_OFFS	0x2000
-+
-+/* Buffer level control values */
-+#define MEN_Z192_MIN_BUF_LVL	0
-+#define MEN_Z192_MAX_BUF_LVL	254
-+#define MEN_Z192_RX_BUF_LVL_DEF	5
-+#define MEN_Z192_TX_BUF_LVL_DEF	5
-+#define MEN_Z192_RX_TOUT_MIN	0
-+#define MEN_Z192_RX_TOUT_MAX	65535
-+#define MEN_Z192_RX_TOUT_DEF	1000
-+
-+static int txlvl = MEN_Z192_TX_BUF_LVL_DEF;
-+module_param(txlvl, int, S_IRUGO);
-+MODULE_PARM_DESC(txlvl, "TX IRQ trigger level (in frames) 0-254, default="
-+		 __MODULE_STRING(MEN_Z192_TX_BUF_LVL_DEF) ")");
-+
-+static int rxlvl = MEN_Z192_RX_BUF_LVL_DEF;
-+module_param(rxlvl, int, S_IRUGO);
-+MODULE_PARM_DESC(rxlvl, "RX IRQ trigger level (in frames) 0-254, default="
-+		 __MODULE_STRING(MEN_Z192_RX_BUF_LVL_DEF) ")");
-+
-+static int rx_timeout = MEN_Z192_RX_TOUT_DEF;
-+module_param(rx_timeout, int, S_IRUGO);
-+MODULE_PARM_DESC(rx_timeout, "RX IRQ timeout (in 100usec steps), default="
-+		 __MODULE_STRING(MEN_Z192_RX_TOUT_DEF) ")");
-+
-+struct men_z192_regs {
-+	u32 ctl_btr;		/* Control and bus timing register */
-+	u32 ier;                /* Interrupt enable register */
-+	u32 buf_lvl;            /* Buffer level register */
-+	u32 rxa;                /* RX Data acknowledge register */
-+	u32 txa;                /* TX data acknowledge register */
-+	u32 rx_tx_sts;          /* RX/TX flags and buffer level */
-+	u32 ovr_ecc_sts;        /* Overrun/ECC status register */
-+	u32 idac_ver;           /* ID acceptance control / version */
-+	u32 rx_tx_err;          /* RX/TX error counter register */
-+	u32 idar_0_to_3;        /* ID acceptance register 0...3 */
-+	u32 idar_4_to_7;        /* ID acceptance register 4...7 */
-+	u32 idmr_0_to_3;        /* ID mask register 0...3 */
-+	u32 idmr_4_to_7;        /* ID mask register 4...7 */
-+	u32 rx_timeout;		/* receive timeout */
-+	u32 timebase;		/* Base frequency for baudrate calculation */
-+};
-+
-+struct men_z192 {
-+	struct can_priv can;
-+	struct napi_struct napi;
-+	struct net_device *ndev;
-+	struct device *dev;
-+
-+	/* Lock for CTL_BTR register access.
-+	 * This register combines bittiming bits
-+	 * and the operation mode bits.
-+	 * It is also used for bit r/m/w access
-+	 * to all registers.
-+	 */
-+	spinlock_t lock;
-+	struct resource *mem;
-+	struct men_z192_regs __iomem *regs;
-+	void __iomem *dev_base;
-+};
-+
-+struct men_z192_cf_buf {
-+	u32 can_id;
-+	u32 data[2];
-+	u32 length;
-+};
-+
-+enum men_z192_int_state {
-+	MEN_Z192_CAN_DIS = 0,
-+	MEN_Z192_CAN_EN,
-+	MEN_Z192_CAN_NAPI_DIS,
-+	MEN_Z192_CAN_NAPI_EN,
-+};
-+
-+static enum can_state bus_state_map[] = {
-+	CAN_STATE_ERROR_ACTIVE,
-+	CAN_STATE_ERROR_WARNING,
-+	CAN_STATE_ERROR_PASSIVE,
-+	CAN_STATE_BUS_OFF
-+};
-+
-+static const struct can_bittiming_const men_z192_bittiming_const = {
-+	.name = DRV_NAME,
-+	.tseg1_min = 4,
-+	.tseg1_max = 16,
-+	.tseg2_min = 2,
-+	.tseg2_max = 8,
-+	.sjw_max = 4,
-+	.brp_min = 2,
-+	.brp_max = 64,
-+	.brp_inc = 1,
-+};
-+
-+static inline void men_z192_bit_clr(struct men_z192 *priv, void __iomem *addr,
-+				    u32 mask)
-+{
-+	unsigned long flags;
-+	u32 val;
-+
-+	spin_lock_irqsave(&priv->lock, flags);
-+
-+	val = readl(addr);
-+	val &= ~mask;
-+	writel(val, addr);
-+
-+	spin_unlock_irqrestore(&priv->lock, flags);
-+}
-+
-+static inline void men_z192_bit_set(struct men_z192 *priv, void __iomem *addr,
-+				    u32 mask)
-+{
-+	unsigned long flags;
-+	u32 val;
-+
-+	spin_lock_irqsave(&priv->lock, flags);
-+
-+	val = readl(addr);
-+	val |= mask;
-+	writel(val, addr);
-+
-+	spin_unlock_irqrestore(&priv->lock, flags);
-+}
-+
-+static inline void men_z192_ack_rx_pkg(struct men_z192 *priv,
-+				       unsigned int count)
-+{
-+	writel(count, &priv->regs->rxa);
-+}
-+
-+static inline void men_z192_ack_tx_pkg(struct men_z192 *priv,
-+				       unsigned int count)
-+{
-+	writel(count, &priv->regs->txa);
-+}
-+
-+static void men_z192_set_int(struct men_z192 *priv,
-+			     enum men_z192_int_state state)
-+{
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+
-+	switch (state) {
-+	case MEN_Z192_CAN_DIS:
-+		men_z192_bit_clr(priv, &regs->ier, MEN_Z192_IRQ_ALL);
-+		break;
-+
-+	case MEN_Z192_CAN_EN:
-+		men_z192_bit_set(priv, &regs->ier, MEN_Z192_IRQ_ALL);
-+		break;
-+
-+	case MEN_Z192_CAN_NAPI_DIS:
-+		men_z192_bit_clr(priv, &regs->ier, MEN_Z192_IRQ_NAPI);
-+		break;
-+
-+	case MEN_Z192_CAN_NAPI_EN:
-+		men_z192_bit_set(priv, &regs->ier, MEN_Z192_IRQ_NAPI);
-+		break;
-+
-+	default:
-+		netdev_err(priv->ndev, "invalid interrupt state\n");
-+		break;
-+	}
-+}
-+
-+static int men_z192_get_berr_counter(const struct net_device *ndev,
-+				     struct can_berr_counter *bec)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	u32 err_cnt;
-+
-+	err_cnt = readl(&regs->rx_tx_err);
-+
-+	bec->txerr = MEN_Z192_GET_TX_ERR_CNT(err_cnt);
-+	bec->rxerr = MEN_Z192_GET_RX_ERR_CNT(err_cnt);
-+
-+	return 0;
-+}
-+
-+static int men_z192_req_run_mode(struct men_z192 *priv)
-+{
-+	unsigned int timeout = MEN_Z192_MODE_TOUT_US / 10;
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	u32 val;
-+
-+	men_z192_bit_clr(priv, &regs->ctl_btr, MEN_Z192_CTL0_INITRQ);
-+
-+	while (timeout--) {
-+		val = readl(&regs->ctl_btr);
-+		if (!(val & MEN_Z192_CTL1_INITAK))
-+			break;
-+
-+		udelay(10);
-+	}
-+
-+	if (val & MEN_Z192_CTL1_INITAK)
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
-+static int men_z192_req_init_mode(struct men_z192 *priv)
-+{
-+	unsigned int timeout = MEN_Z192_MODE_TOUT_US / 10;
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	u32 val;
-+
-+	men_z192_bit_set(priv, &regs->ctl_btr, MEN_Z192_CTL0_INITRQ);
-+
-+	while (timeout--) {
-+		val = readl(&regs->ctl_btr);
-+		if (val & MEN_Z192_CTL1_INITAK)
-+			break;
-+
-+		udelay(10);
-+	}
-+
-+	if (!(val & MEN_Z192_CTL1_INITAK))
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
-+static int men_z192_read_frame(struct net_device *ndev, unsigned int frame_nr)
-+{
-+	struct net_device_stats *stats = &ndev->stats;
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_cf_buf __iomem *cf_buf;
-+	struct can_frame *cf;
-+	struct sk_buff *skb;
-+	u32 cf_offset;
-+	u32 length;
-+	u32 data;
-+	u32 id;
-+
-+	skb = alloc_can_skb(ndev, &cf);
-+	if (unlikely(!skb)) {
-+		stats->rx_dropped++;
-+		return 0;
-+	}
-+
-+	cf_offset = sizeof(struct men_z192_cf_buf) * frame_nr;
-+
-+	cf_buf = priv->dev_base + MEN_Z192_RX_BUF_START + cf_offset;
-+	length = readl(&cf_buf->length) & MEN_Z192_CFBUF_LEN;
-+	id = readl(&cf_buf->can_id);
-+
-+	if (id & MEN_Z192_CFBUF_IDE) {
-+		/* Extended frame */
-+		cf->can_id = (id & MEN_Z192_CFBUF_ID1) >> 3;
-+		cf->can_id |= (id & MEN_Z192_CFBUF_ID2) >>
-+				MEN_Z192_CFBUF_ID2_SHIFT;
-+
-+		cf->can_id |= CAN_EFF_FLAG;
-+
-+		if (id & MEN_Z192_CFBUF_E_RTR)
-+			cf->can_id |= CAN_RTR_FLAG;
-+	} else {
-+		/* Standard frame */
-+		cf->can_id = (id & MEN_Z192_CFBUF_ID1) >>
-+				MEN_Z192_CFBUF_ID1_SHIFT;
-+
-+		if (id & MEN_Z192_CFBUF_S_RTR)
-+			cf->can_id |= CAN_RTR_FLAG;
-+	}
-+
-+	cf->can_dlc = get_can_dlc(length);
-+
-+	/* remote transmission request frame
-+	 * contains no data field even if the
-+	 * data length is set to a value > 0
-+	 */
-+	if (!(cf->can_id & CAN_RTR_FLAG)) {
-+		if (cf->can_dlc > 0) {
-+			data = readl(&cf_buf->data[0]);
-+			*(__be32 *)cf->data = cpu_to_be32(data);
-+		}
-+		if (cf->can_dlc > 4) {
-+			data = readl(&cf_buf->data[1]);
-+			*(__be32 *)(cf->data + 4) = cpu_to_be32(data);
-+		}
-+	}
-+
-+	stats->rx_bytes += cf->can_dlc;
-+	stats->rx_packets++;
-+	netif_receive_skb(skb);
-+
-+	return 1;
-+}
-+
-+static int men_z192_poll(struct napi_struct *napi, int quota)
-+{
-+	struct net_device *ndev = napi->dev;
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	int work_done = 0;
-+	u32 frame_cnt;
-+	u32 status;
-+
-+	status = readl(&regs->rx_tx_sts);
-+
-+	frame_cnt = MEN_Z192_RX_BUF_CNT(status);
-+
-+	while (frame_cnt-- && (work_done < quota)) {
-+		work_done += men_z192_read_frame(ndev, 0);
-+		men_z192_ack_rx_pkg(priv, 1);
-+	}
-+
-+	if (work_done < quota) {
-+		napi_complete(napi);
-+		men_z192_set_int(priv, MEN_Z192_CAN_NAPI_EN);
-+	}
-+
-+	return work_done;
-+}
-+
-+static int men_z192_xmit(struct sk_buff *skb, struct net_device *ndev)
-+{
-+	struct can_frame *cf = (struct can_frame *)skb->data;
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	struct net_device_stats *stats = &ndev->stats;
-+	struct men_z192_cf_buf __iomem *cf_buf;
-+	u32 data[2] = {0, 0};
-+	int status;
-+	u32 id;
-+
-+	if (can_dropped_invalid_skb(ndev, skb))
-+		return NETDEV_TX_OK;
-+
-+	status = readl(&regs->rx_tx_sts);
-+
-+	if (MEN_Z192_TX_BUF_CNT(status) >= 255) {
-+		netif_stop_queue(ndev);
-+		netdev_err(ndev, "not enough space in TX buffer\n");
-+
-+		return NETDEV_TX_BUSY;
-+	}
-+
-+	cf_buf = priv->dev_base + MEN_Z192_TX_BUF_START;
-+
-+	if (cf->can_id & CAN_EFF_FLAG) {
-+		/* Extended frame */
-+		id = ((cf->can_id & CAN_EFF_MASK) <<
-+			MEN_Z192_CFBUF_ID2_SHIFT) & MEN_Z192_CFBUF_ID2;
-+
-+		id |= (((cf->can_id & CAN_EFF_MASK) >>
-+			(CAN_EFF_ID_BITS - CAN_SFF_ID_BITS)) <<
-+			 MEN_Z192_CFBUF_ID1_SHIFT) & MEN_Z192_CFBUF_ID1;
-+
-+		id |= MEN_Z192_CFBUF_IDE;
-+		id |= MEN_Z192_CFBUF_SRR;
-+
-+		if (cf->can_id & CAN_RTR_FLAG)
-+			id |= MEN_Z192_CFBUF_E_RTR;
-+	} else {
-+		/* Standard frame */
-+		id = ((cf->can_id & CAN_SFF_MASK) <<
-+		       MEN_Z192_CFBUF_ID1_SHIFT) & MEN_Z192_CFBUF_ID1;
-+
-+		if (cf->can_id & CAN_RTR_FLAG)
-+			id |= MEN_Z192_CFBUF_S_RTR;
-+	}
-+
-+	if (cf->can_dlc > 0)
-+		data[0] = be32_to_cpup((__be32 *)(cf->data));
-+	if (cf->can_dlc > 3)
-+		data[1] = be32_to_cpup((__be32 *)(cf->data + 4));
-+
-+	writel(id, &cf_buf->can_id);
-+	writel(cf->can_dlc, &cf_buf->length);
-+
-+	if (!(cf->can_id & CAN_RTR_FLAG)) {
-+		writel(data[0], &cf_buf->data[0]);
-+		writel(data[1], &cf_buf->data[1]);
-+
-+		stats->tx_bytes += cf->can_dlc;
-+	}
-+
-+	/* be sure everything is written to the
-+	 * device before acknowledge the data.
-+	 */
-+	mmiowb();
-+
-+	/* trigger the transmission */
-+	men_z192_ack_tx_pkg(priv, 1);
-+
-+	stats->tx_packets++;
-+
-+	kfree_skb(skb);
-+
-+	return NETDEV_TX_OK;
-+}
-+
-+static void men_z192_err_interrupt(struct net_device *ndev, u32 status)
-+{
-+	struct net_device_stats *stats = &ndev->stats;
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct can_berr_counter bec;
-+	struct can_frame *cf;
-+	struct sk_buff *skb;
-+	enum can_state rx_state = 0, tx_state = 0;
-+
-+	skb = alloc_can_err_skb(ndev, &cf);
-+	if (unlikely(!skb))
-+		return;
-+
-+	/* put the rx/tx error counter to
-+	 * the additional controller specific
-+	 * section of the error frame.
-+	 */
-+	men_z192_get_berr_counter(ndev, &bec);
-+	cf->data[6] = bec.txerr;
-+	cf->data[7] = bec.rxerr;
-+
-+	/* overrun interrupt */
-+	if (status & MEN_Z192_RFLG_OVRF) {
-+		cf->can_id |= CAN_ERR_CRTL;
-+		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
-+		stats->rx_over_errors++;
-+		stats->rx_errors++;
-+	}
-+
-+	/* bus change interrupt */
-+	if (status & MEN_Z192_RFLG_CSCIF) {
-+		rx_state = bus_state_map[MEN_Z192_GET_RSTATE(status)];
-+		tx_state = bus_state_map[MEN_Z192_GET_TSTATE(status)];
-+		can_change_state(ndev, cf, tx_state, rx_state);
-+
-+		if (priv->can.state == CAN_STATE_BUS_OFF)
-+			can_bus_off(ndev);
-+	}
-+
-+	stats->rx_packets++;
-+	stats->rx_bytes += cf->can_dlc;
-+	netif_receive_skb(skb);
-+}
-+
-+static irqreturn_t men_z192_isr(int irq, void *dev_id)
-+{
-+	struct net_device *ndev = dev_id;
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	bool handled = false;
-+	u32 irq_flags;
-+	u32 status;
-+
-+	status = readl(&regs->rx_tx_sts);
-+
-+	irq_flags = status & MEN_Z192_IRQ_FLAGS_ALL;
-+	if (!irq_flags)
-+		goto out;
-+
-+	/* It is save to write to RX_TS_STS[15:0] */
-+	writel(irq_flags, &regs->rx_tx_sts);
-+
-+	if (irq_flags & MEN_Z192_TFLG_TXIF) {
-+		netif_wake_queue(ndev);
-+		handled = true;
-+	}
-+
-+	/* handle errors */
-+	if ((irq_flags & MEN_Z192_RFLG_OVRF) ||
-+	    (irq_flags & MEN_Z192_RFLG_CSCIF)) {
-+		men_z192_err_interrupt(ndev, status);
-+		handled = true;
-+	}
-+
-+	/* schedule NAPI if:
-+	 * - rx IRQ
-+	 * - rx timeout IRQ
-+	 */
-+	if ((irq_flags & MEN_Z192_RFLG_RXIF) ||
-+	    (irq_flags & MEN_Z192_RFLG_TOUTF)) {
-+		men_z192_set_int(priv, MEN_Z192_CAN_NAPI_DIS);
-+		napi_schedule(&priv->napi);
-+		handled = true;
-+	}
-+
-+out:
-+	return IRQ_RETVAL(handled);
-+}
-+
-+static int men_z192_set_bittiming(struct net_device *ndev)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	const struct can_bittiming *bt = &priv->can.bittiming;
-+	unsigned long flags;
-+	u32 ctlbtr;
-+	int ret = 0;
-+
-+	spin_lock_irqsave(&priv->lock, flags);
-+
-+	ctlbtr = readl(&priv->regs->ctl_btr);
-+
-+	if (!(ctlbtr & MEN_Z192_CTL1_INITAK)) {
-+		netdev_alert(ndev,
-+			     "cannot set bittiminig while in running mode\n");
-+		ret = -EPERM;
-+		goto out_restore;
-+	}
-+
-+	ctlbtr &= ~(MEN_Z192_BTR0_BRP(0x3f) |
-+		    MEN_Z192_BTR0_SJW(0x03) |
-+		    MEN_Z192_BTR1_TSEG1(0x0f) |
-+		    MEN_Z192_BTR1_TSEG2(0x07) |
-+		    MEN_Z192_CTL1_LISTEN |
-+		    MEN_Z192_CTL1_LOOPB |
-+		    MEN_Z192_BTR1_SAMP);
-+
-+	ctlbtr |= MEN_Z192_BTR0_BRP(bt->brp - 1) |
-+		  MEN_Z192_BTR0_SJW(bt->sjw - 1) |
-+		  MEN_Z192_BTR1_TSEG1(bt->phase_seg1 + bt->prop_seg - 1) |
-+		  MEN_Z192_BTR1_TSEG2(bt->phase_seg2 - 1);
-+
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
-+		ctlbtr |= MEN_Z192_BTR1_SAMP;
-+
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
-+		ctlbtr |= MEN_Z192_CTL1_LISTEN;
-+
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
-+		ctlbtr |= MEN_Z192_CTL1_LOOPB;
-+
-+	netdev_dbg(ndev, "CTL_BTR=0x%08x\n", ctlbtr);
-+
-+	writel(ctlbtr, &priv->regs->ctl_btr);
-+
-+out_restore:
-+	spin_unlock_irqrestore(&priv->lock, flags);
-+
-+	return ret;
-+}
-+
-+static void men_z192_init_idac(struct net_device *ndev)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+
-+	/* hardware filtering (accept everything) */
-+	writel(0x00000000, &regs->idar_0_to_3);
-+	writel(0x00000000, &regs->idar_4_to_7);
-+	writel(0xffffffff, &regs->idmr_0_to_3);
-+	writel(0xffffffff, &regs->idmr_4_to_7);
-+}
-+
-+void men_z192_set_can_state(struct net_device *ndev)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	enum can_state rx_state, tx_state;
-+	u32 status;
-+
-+	status = readl(&regs->rx_tx_sts);
-+
-+	rx_state = bus_state_map[MEN_Z192_GET_RSTATE(status)];
-+	tx_state = bus_state_map[MEN_Z192_GET_TSTATE(status)];
-+
-+	priv->can.state = max(tx_state, rx_state);
-+}
-+
-+static int men_z192_start(struct net_device *ndev)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	int ret;
-+
-+	ret = men_z192_req_init_mode(priv);
-+	if (ret)
-+		return ret;
-+
-+	ret = men_z192_set_bittiming(ndev);
-+	if (ret)
-+		return ret;
-+
-+	ret = men_z192_req_run_mode(priv);
-+	if (ret)
-+		return ret;
-+
-+	men_z192_init_idac(ndev);
-+
-+	/* The 16z192 CAN IP does not reset the can bus state
-+	 * if we enter the init mode. There is also
-+	 * no software reset to reset the state machine.
-+	 * We need to read the current state, and
-+	 * inform the upper layer about the current state.
-+	 */
-+	men_z192_set_can_state(ndev);
-+
-+	men_z192_set_int(priv, MEN_Z192_CAN_EN);
-+
-+	return 0;
-+}
-+
-+static int men_z192_open(struct net_device *ndev)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	int ret;
-+
-+	ret = open_candev(ndev);
-+	if (ret)
-+		return ret;
-+
-+	ret = request_irq(ndev->irq, men_z192_isr, IRQF_SHARED,
-+			  ndev->name, ndev);
-+	if (ret)
-+		goto out_close;
-+
-+	ret = men_z192_start(ndev);
-+	if (ret)
-+		goto out_free_irq;
-+
-+	napi_enable(&priv->napi);
-+	netif_start_queue(ndev);
-+
-+	return 0;
-+
-+out_free_irq:
-+	free_irq(ndev->irq, ndev);
-+out_close:
-+	close_candev(ndev);
-+	return ret;
-+}
-+
-+static int men_z192_stop(struct net_device *ndev)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	int ret;
-+
-+	men_z192_set_int(priv, MEN_Z192_CAN_DIS);
-+
-+	ret = men_z192_req_init_mode(priv);
-+	if (ret)
-+		return ret;
-+
-+	priv->can.state = CAN_STATE_STOPPED;
-+
-+	return 0;
-+}
-+
-+static int men_z192_close(struct net_device *ndev)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	int ret;
-+
-+	netif_stop_queue(ndev);
-+
-+	napi_disable(&priv->napi);
-+
-+	ret = men_z192_stop(ndev);
-+
-+	free_irq(ndev->irq, ndev);
-+
-+	close_candev(ndev);
-+
-+	return ret;
-+}
-+
-+static int men_z192_set_mode(struct net_device *ndev, enum can_mode mode)
-+{
-+	int ret;
-+
-+	switch (mode) {
-+	case CAN_MODE_START:
-+		ret = men_z192_start(ndev);
-+		if (ret)
-+			return ret;
-+
-+		netif_wake_queue(ndev);
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct net_device_ops men_z192_netdev_ops = {
-+	.ndo_open	= men_z192_open,
-+	.ndo_stop	= men_z192_close,
-+	.ndo_start_xmit	= men_z192_xmit,
-+	.ndo_change_mtu	= can_change_mtu,
-+};
-+
-+static int men_z192_verify_buf_lvl(int buffer_lvl)
-+{
-+	if (buffer_lvl < MEN_Z192_MIN_BUF_LVL ||
-+	    buffer_lvl > MEN_Z192_MAX_BUF_LVL)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static void men_z192_set_buf_lvl_irq(struct net_device *ndev, int rxlvl,
-+				     int txlvl)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	int reg_val;
-+
-+	if (men_z192_verify_buf_lvl(rxlvl))
-+		reg_val = MEN_Z192_RX_BUF_LVL_DEF & MEN_Z192_RX_BUF_LVL;
-+	else
-+		reg_val = rxlvl & MEN_Z192_RX_BUF_LVL;
-+
-+	if (men_z192_verify_buf_lvl(txlvl))
-+		reg_val |= (MEN_Z192_TX_BUF_LVL_DEF << 16) &
-+			    MEN_Z192_TX_BUF_LVL;
-+	else
-+		reg_val |= (txlvl << 16) & MEN_Z192_TX_BUF_LVL;
-+
-+	dev_info(priv->dev, "RX IRQ Level: %d TX IRQ Level: %d\n",
-+		 rxlvl, txlvl);
-+
-+	writel(reg_val, &regs->buf_lvl);
-+}
-+
-+static void men_z192_set_rx_tout(struct net_device *ndev, int tout)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	int reg_val;
-+
-+	if (tout < MEN_Z192_RX_TOUT_MIN || tout > MEN_Z192_RX_TOUT_MAX)
-+		reg_val = MEN_Z192_RX_TOUT_MAX;
-+	else
-+		reg_val = tout;
-+
-+	dev_info(priv->dev, "RX IRQ timeout set to: %d\n", reg_val);
-+
-+	writel(reg_val, &regs->rx_timeout);
-+}
-+
-+static int men_z192_register(struct net_device *ndev)
-+{
-+	struct men_z192 *priv = netdev_priv(ndev);
-+	struct men_z192_regs __iomem *regs = priv->regs;
-+	u32 ctl_btr;
-+	int ret;
-+
-+	/* The CAN controller should be always enabled.
-+	 * There is no way to enable it if disabled.
-+	 */
-+	ctl_btr = readl(&regs->ctl_btr);
-+	if (!(ctl_btr & MEN_Z192_CTL1_CANE))
-+		return -ENODEV;
-+
-+	men_z192_set_buf_lvl_irq(ndev, rxlvl, txlvl);
-+	men_z192_set_rx_tout(ndev, rx_timeout);
-+
-+	ret = men_z192_req_init_mode(priv);
-+	if (ret) {
-+		dev_err(priv->dev, "failed to request init mode\n");
-+		return ret;
-+	}
-+
-+	return register_candev(ndev);
-+}
-+
-+static void men_z192_unregister(struct net_device *ndev)
-+{
-+	return unregister_candev(ndev);
-+}
-+
-+static int men_z192_probe(struct mcb_device *mdev,
-+			  const struct mcb_device_id *id)
-+{
-+	struct device *dev = &mdev->dev;
-+	struct men_z192 *priv;
-+	struct net_device *ndev;
-+	void __iomem *dev_base;
-+	struct resource *mem;
-+	u32 timebase;
-+	int ret = 0;
-+	int irq;
-+
-+	mem = mcb_request_mem(mdev, dev_name(dev));
-+	if (IS_ERR(mem)) {
-+		dev_err(dev, "failed to request device memory");
-+		return PTR_ERR(mem);
-+	}
-+
-+	dev_base = ioremap(mem->start, resource_size(mem));
-+	if (!dev_base) {
-+		dev_err(dev, "failed to ioremap device memory");
-+		ret = -ENXIO;
-+		goto out_release;
-+	}
-+
-+	irq = mcb_get_irq(mdev);
-+	if (irq <= 0) {
-+		ret = -ENODEV;
-+		goto out_unmap;
-+	}
-+
-+	ndev = alloc_candev(sizeof(struct men_z192), 1);
-+	if (!ndev) {
-+		dev_err(dev, "failed to allocate the can device");
-+		ret = -ENOMEM;
-+		goto out_unmap;
-+	}
-+
-+	ndev->netdev_ops = &men_z192_netdev_ops;
-+	ndev->irq = irq;
-+
-+	priv = netdev_priv(ndev);
-+	priv->ndev = ndev;
-+	priv->dev = dev;
-+
-+	priv->mem = mem;
-+	priv->dev_base = dev_base;
-+	priv->regs = priv->dev_base + MEN_Z192_REGS_OFFS;
-+
-+	timebase = readl(&priv->regs->timebase);
-+	if (!timebase) {
-+		dev_err(dev, "invalid timebase configured (timebase=%d)\n",
-+			timebase);
-+		ret = -EINVAL;
-+		goto out_unmap;
-+	}
-+
-+	priv->can.clock.freq = timebase;
-+	priv->can.bittiming_const = &men_z192_bittiming_const;
-+	priv->can.do_set_mode = men_z192_set_mode;
-+	priv->can.do_get_berr_counter = men_z192_get_berr_counter;
-+	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+				       CAN_CTRLMODE_3_SAMPLES |
-+				       CAN_CTRLMODE_LOOPBACK;
-+
-+	spin_lock_init(&priv->lock);
-+
-+	netif_napi_add(ndev, &priv->napi, men_z192_poll,
-+		       MEN_Z192_NAPI_WEIGHT);
-+
-+	mcb_set_drvdata(mdev, ndev);
-+	SET_NETDEV_DEV(ndev, dev);
-+
-+	ret = men_z192_register(ndev);
-+	if (ret) {
-+		dev_err(dev, "failed to register CAN device");
-+		goto out_free_candev;
-+	}
-+
-+	dev_info(dev, "MEN 16z192 CAN driver successfully registered\n");
-+
-+	return 0;
-+
-+out_free_candev:
-+	netif_napi_del(&priv->napi);
-+	free_candev(ndev);
-+out_unmap:
-+	iounmap(dev_base);
-+out_release:
-+	mcb_release_mem(mem);
-+	return ret;
-+}
-+
-+static void men_z192_remove(struct mcb_device *mdev)
-+{
-+	struct net_device *ndev = mcb_get_drvdata(mdev);
-+	struct men_z192 *priv = netdev_priv(ndev);
-+
-+	men_z192_unregister(ndev);
-+	netif_napi_del(&priv->napi);
-+
-+	iounmap(priv->dev_base);
-+	mcb_release_mem(priv->mem);
-+
-+	free_candev(ndev);
-+}
-+
-+static const struct mcb_device_id men_z192_ids[] = {
-+	{ .device = 0xc0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(mcb, men_z192_ids);
-+
-+static struct mcb_driver men_z192_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = men_z192_probe,
-+	.remove = men_z192_remove,
-+	.id_table = men_z192_ids,
-+};
-+module_mcb_driver(men_z192_driver);
-+
-+MODULE_AUTHOR("Andreas Werner <andreas.werner@men.de>");
-+MODULE_DESCRIPTION("MEN 16z192 CAN Controller");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("mcb:16z192");
--- 
-2.6.2
+The SJA1000 driver is patched with some debug (patch is shown below).
+The problem appears without the debug, but it seems to appear more
+frequently with debug (??).
+
+07:04.0 Bridge: PLX Technology, Inc. PCI <-> IOBus Bridge (rev 02)
+    Subsystem: ESD Electronic System Design GmbH Device 0004
+    Flags: medium devsel, IRQ 20
+    Memory at f0200400 (32-bit, non-prefetchable) [size=128]
+    I/O ports at 1100 [size=128]
+    Memory at f0200000 (32-bit, non-prefetchable) [size=1K]
+    Kernel driver in use: sja1000_plx_pci
+    Kernel modules: plx_pci
+
+
+Symptoms:
+
+The missing frames are not received with ./candump on the same
+machine, nor is it seen on the bus externally; two other machines are
+listening to the bus, both not receiving the same packet (PEAK USB
+adaptors).
+
+Dropped packets are not counted as a TX error in ifconfig, nor are
+they counted as being sent.
+
+can0: flags=193<UP,RUNNING,NOARP>  mtu 16
+        unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+txqueuelen 1000  (UNSPEC)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 10539  bytes 40178 (39.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 20
+
+It appears to be unrelated to the SJA1000 Tx drop issue observed in
+Peak PCI devices earlier in the year [2].
+
+
+Reproduction:
+
+The easiest way to reproduce the problem is with the following
+command, although it may take several attempts to do so:
+
+for i in `seq 1 20`; do strace ./cangen can0 -g 0 -Ii -Di -Li -n 32; done
+
+For example, it can be seen that ID 0x0A is missing with the following
+run of ./candump (on a remote machine).
+
+  can0  000   [1]  00
+  can0  001   [1]  01
+  can0  002   [2]  02 00
+  can0  003   [3]  03 00 00
+  can0  004   [4]  04 00 00 00
+  can0  005   [5]  05 00 00 00 00
+  can0  006   [6]  06 00 00 00 00 00
+  can0  007   [7]  07 00 00 00 00 00 00
+  can0  008   [8]  08 00 00 00 00 00 00 00
+  can0  009   [1]  09
+*** Missing 0x0A ***
+  can0  00B   [2]  0B 00
+  can0  00C   [3]  0C 00 00
+  can0  00D   [4]  0D 00 00 00
+  can0  00E   [5]  0E 00 00 00 00
+  can0  00F   [6]  0F 00 00 00 00 00
+  can0  010   [7]  10 00 00 00 00 00 00
+  can0  011   [8]  11 00 00 00 00 00 00 00
+  can0  012   [1]  12
+  can0  013   [1]  13
+  can0  014   [2]  14 00
+  can0  015   [3]  15 00 00
+  can0  016   [4]  16 00 00 00
+  can0  017   [5]  17 00 00 00 00
+  can0  018   [6]  18 00 00 00 00 00
+  can0  019   [7]  19 00 00 00 00 00 00
+  can0  01A   [8]  1A 00 00 00 00 00 00 00
+  can0  01B   [1]  1B
+  can0  01C   [1]  1C
+  can0  01D   [2]  1D 00
+  can0  01E   [3]  1E 00 00
+  can0  01F   [4]  1F 00 00 00
+
+Running strace is not necessary to reproduce the problem, but it does
+confirm that the packet is received by the kernel.
+
+write(3, "\0\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0", 16) = 16
+write(3, "\1\0\0\0\1\0\0\0\1\0\0\0\0\0\0\0", 16) = 16
+write(3, "\2\0\0\0\2\0\0\0\2\0\0\0\0\0\0\0", 16) = 16
+write(3, "\3\0\0\0\3\0\0\0\3\0\0\0\0\0\0\0", 16) = 16
+write(3, "\4\0\0\0\4\0\0\0\4\0\0\0\0\0\0\0", 16) = 16
+write(3, "\5\0\0\0\5\0\0\0\5\0\0\0\0\0\0\0", 16) = 16
+write(3, "\6\0\0\0\6\0\0\0\6\0\0\0\0\0\0\0", 16) = 16
+write(3, "\7\0\0\0\7\0\0\0\7\0\0\0\0\0\0\0", 16) = 16
+write(3, "\10\0\0\0\10\0\0\0\10\0\0\0\0\0\0\0", 16) = 16
+write(3, "\t\0\0\0\1\0\0\0\t\0\0\0\0\0\0\0", 16) = 16
+** Note that 0x0A is indeed sent without error ***
+write(3, "\n\0\0\0\1\0\0\0\n\0\0\0\0\0\0\0", 16) = 16
+write(3, "\v\0\0\0\2\0\0\0\v\0\0\0\0\0\0\0", 16) = 16
+write(3, "\f\0\0\0\3\0\0\0\f\0\0\0\0\0\0\0", 16) = 16
+write(3, "\r\0\0\0\4\0\0\0\r\0\0\0\0\0\0\0", 16) = 16
+write(3, "\16\0\0\0\5\0\0\0\16\0\0\0\0\0\0\0", 16) = 16
+write(3, "\17\0\0\0\6\0\0\0\17\0\0\0\0\0\0\0", 16) = 16
+write(3, "\20\0\0\0\7\0\0\0\20\0\0\0\0\0\0\0", 16) = 16
+write(3, "\21\0\0\0\10\0\0\0\21\0\0\0\0\0\0\0", 16) = 16
+write(3, "\22\0\0\0\1\0\0\0\22\0\0\0\0\0\0\0", 16) = 16
+write(3, "\23\0\0\0\1\0\0\0\23\0\0\0\0\0\0\0", 16) = 16
+write(3, "\24\0\0\0\2\0\0\0\24\0\0\0\0\0\0\0", 16) = 16
+write(3, "\25\0\0\0\3\0\0\0\25\0\0\0\0\0\0\0", 16) = 16
+write(3, "\26\0\0\0\4\0\0\0\26\0\0\0\0\0\0\0", 16) = 16
+write(3, "\27\0\0\0\5\0\0\0\27\0\0\0\0\0\0\0", 16) = 16
+write(3, "\30\0\0\0\6\0\0\0\30\0\0\0\0\0\0\0", 16) = 16
+write(3, "\31\0\0\0\7\0\0\0\31\0\0\0\0\0\0\0", 16) = 16
+write(3, "\32\0\0\0\10\0\0\0\32\0\0\0\0\0\0\0", 16) = 16
+write(3, "\33\0\0\0\1\0\0\0\33\0\0\0\0\0\0\0", 16) = 16
+write(3, "\34\0\0\0\1\0\0\0\34\0\0\0\0\0\0\0", 16) = 16
+write(3, "\35\0\0\0\2\0\0\0\35\0\0\0\0\0\0\0", 16) = 16
+write(3, "\36\0\0\0\3\0\0\0\36\0\0\0\0\0\0\0", 16) = 16
+write(3, "\37\0\0\0\4\0\0\0\37\0\0\0\0\0\0\0", 16) = 16
+
+Examining dmesg debug which was added to the SJA1000 driver, it
+appears that 0x0A was never sent to the device.
+
+[ 5223.770685] [sja1000_interrupt] start
+[ 5223.770692] [sja1000_interrupt] tx_packets++
+[ 5223.770693] [sja1000_interrupt] tx processing complete
+[ 5223.770696] [sja1000_interrupt] end
+[ 5223.770698] [sja1000_start_xmit] start
+[ 5223.770700] Start tx, ID = 0x07
+[ 5223.770704] [sja1000_start_xmit] end
+[ 5223.771157] [sja1000_interrupt] start
+[ 5223.771164] [sja1000_interrupt] tx_packets++
+[ 5223.771166] [sja1000_interrupt] tx processing complete
+[ 5223.771168] [sja1000_interrupt] end
+[ 5223.771171] [sja1000_start_xmit] start
+[ 5223.771172] Start tx, ID = 0x08
+[ 5223.771177] [sja1000_start_xmit] end
+[ 5223.771675] [sja1000_interrupt] start
+[ 5223.771682] [sja1000_interrupt] tx_packets++
+[ 5223.771684] [sja1000_interrupt] tx processing complete
+[ 5223.771686] [sja1000_interrupt] end
+[ 5223.771692] [sja1000_start_xmit] start
+[ 5223.771694] Start tx, ID = 0x09
+[ 5223.771698] [sja1000_start_xmit] end
+[ 5223.771925] [sja1000_interrupt] start
+[ 5223.771931] [sja1000_interrupt] tx_packets++
+[ 5223.771932] [sja1000_interrupt] tx processing complete
+[ 5223.771934] [sja1000_interrupt] end
+*** Note that ID = 0x0A is never sent to the device ***
+[ 5223.771938] [sja1000_start_xmit] start
+[ 5223.771940] Start tx, ID = 0x0B
+[ 5223.771944] [sja1000_start_xmit] end
+[ 5223.772209] [sja1000_interrupt] start
+[ 5223.772215] [sja1000_interrupt] tx_packets++
+[ 5223.772217] [sja1000_interrupt] tx processing complete
+[ 5223.772219] [sja1000_interrupt] end
+[ 5223.772222] [sja1000_start_xmit] start
+[ 5223.772223] Start tx, ID = 0x0C
+[ 5223.772227] [sja1000_start_xmit] end
+[ 5223.772529] [sja1000_interrupt] start
+[ 5223.772536] [sja1000_interrupt] tx_packets++
+[ 5223.772538] [sja1000_interrupt] tx processing complete
+[ 5223.772540] [sja1000_interrupt] end
+[ 5223.772542] [sja1000_start_xmit] start
+[ 5223.772544] Start tx, ID = 0x0D
+
+
+I am unsure how to proceed here to help debug the problem. Ideas are welcome.
+
+Kind regards,
+Damien.
+
+References:
+
+[1] https://esd.eu/en/products/can-pci200
+[2] http://article.gmane.org/gmane.linux.can/8923
+
+
+
+Patch with debug:
+
+
+--- linux-4.6.4/drivers/net/can/sja1000/sja1000.c    2016-07-27
+13:58:25.343706506 +1000
++++ clean/linux-4.6.4/drivers/net/can/sja1000/sja1000.c    2016-07-12
+02:30:07.000000000 +1000
+@@ -290,8 +290,6 @@
+     u8 cmd_reg_val = 0x00;
+     int i;
+
+-    printk(KERN_NOTICE "[sja1000_start_xmit] start\n");
+-
+     if (can_dropped_invalid_skb(dev, skb))
+         return NETDEV_TX_OK;
+
+@@ -300,8 +298,6 @@
+     fi = dlc = cf->can_dlc;
+     id = cf->can_id;
+
+-    printk(KERN_NOTICE "Start tx, ID = 0x%02X\n", id);
+-
+     if (id & CAN_RTR_FLAG)
+         fi |= SJA1000_FI_RTR;
+
+@@ -335,7 +331,6 @@
+
+     sja1000_write_cmdreg(priv, cmd_reg_val);
+
+-    printk("[sja1000_start_xmit] end\n");
+     return NETDEV_TX_OK;
+ }
+
+@@ -505,8 +500,6 @@
+     uint8_t isrc, status;
+     int n = 0;
+
+-    printk(KERN_NOTICE "[sja1000_interrupt] start\n");
+-
+     if (priv->pre_irq)
+         priv->pre_irq(priv);
+
+@@ -537,12 +530,9 @@
+                     priv->read_reg(priv, SJA1000_FI) & 0xf;
+                 stats->tx_packets++;
+                 can_get_echo_skb(dev, 0);
+-                printk(KERN_NOTICE "[sja1000_interrupt] tx_packets++\n");
+             }
+             netif_wake_queue(dev);
+             can_led_event(dev, CAN_LED_EVENT_TX);
+-
+-            printk(KERN_NOTICE "[sja1000_interrupt] tx processing complete\n");
+         }
+         if (isrc & IRQ_RI) {
+             /* receive interrupt */
+@@ -568,8 +558,6 @@
+     if (n >= SJA1000_MAX_IRQ)
+         netdev_dbg(dev, "%d messages handled in ISR", n);
+
+-    printk(KERN_NOTICE "[sja1000_interrupt] end\n");
+-
+     return (n) ? IRQ_HANDLED : IRQ_NONE;
+ }
+ EXPORT_SYMBOL_GPL(sja1000_interrupt);
