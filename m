@@ -1,41 +1,129 @@
-From: laurent vaudoit <laurent.vaudoit@gmail.com>
-Subject: can-J1939 crash after rxtask timeout
-Date: Wed, 27 Jul 2016 15:39:05 +0200
-Message-ID: <CAA7hF3ykNM8Nn1-bnqsG2dHE-hrE2MBC3++O4HkSw7WaL5rq0A@mail.gmail.com>
+From: Damien Dusha <d.dusha@gmail.com>
+Subject: Re: Dropped Tx frames with SJA1000
+Date: Thu, 28 Jul 2016 08:47:45 +1000
+Message-ID: <CABeNA8dX7GRTDO+1wgz3Wv9v-n4U5tnpHJUHi=V_G57PtXVyCQ@mail.gmail.com>
+References: <CABeNA8droHfwjaTkqnjbJBZTmETy_n58QDxFq9dne9w1EcjyHQ@mail.gmail.com>
+ <111f48cb-d8e6-67fc-9644-389f342601cb@optusnet.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf0-f54.google.com ([209.85.215.54]:33839 "EHLO
-	mail-lf0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756264AbcG0NjI (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Jul 2016 09:39:08 -0400
-Received: by mail-lf0-f54.google.com with SMTP id l69so27609970lfg.1
-        for <linux-can@vger.kernel.org>; Wed, 27 Jul 2016 06:39:07 -0700 (PDT)
+Received: from mail-yw0-f180.google.com ([209.85.161.180]:36624 "EHLO
+	mail-yw0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1162436AbcG0Wrr (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Wed, 27 Jul 2016 18:47:47 -0400
+Received: by mail-yw0-f180.google.com with SMTP id u134so71092447ywg.3
+        for <linux-can@vger.kernel.org>; Wed, 27 Jul 2016 15:47:46 -0700 (PDT)
+In-Reply-To: <111f48cb-d8e6-67fc-9644-389f342601cb@optusnet.com.au>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can <linux-can@vger.kernel.org>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To: tom_usenet@optusnet.com.au
+Cc: linux-can@vger.kernel.org
 
-Hi all,
+Hi Tom,
 
-Kurt, i've add a little time to investigate the problem related to this thread
-http://thread.gmane.org/gmane.linux.can/8788/focus=8828
+On Wed, Jul 27, 2016 at 5:17 PM, Tom Evans <tom_usenet@optusnet.com.au> wrote:
+> On 27/07/16 16:23, Damien Dusha wrote:
+>>
+>> Dear linux-can,
+>>
+>> I am attempting to debug an issue with the SJA1000 driver. The symptom
+>> is the occasional dropped frame when transmitting a burst of frames.
+>> Reception is unaffected.
+>
+> * What are you setting "/sys/class/net/can0/tx_queue_len" to?
 
+[damien@localhost can-utils]$ cat /sys/class/net/can0/tx_queue_len
+1000
 
-My problems seems to be a sort of deadlock.
-The sequence is :
-I receive a BAM message with no DT messages.
-the rxtask tasklet is launched for the DT timeout.
-In this tasklet, at the end, the put_session is called, which call the
-destroy session function.
+The test sends 640 messages (20 bursts of 32 messages).
 
-And in the destroy_session function, the tasklet_disable(rxtask) is called.
-So if i understand well, we are in a tasket, and we want to disable this one.
-But if i read the documentation on tasklet_disable, it says that the
-function will busy-wait until the tasket end running.
+> * Are your tools (cangen et al) making a "setsockopt(s, SOL_SOCKET,
+> SO_SNDBUF, &buflen)" call with a sensible value? What do they do when they
+> get ENOBUFS?
 
-Is there something i miss?
-The problem seems present with the rtpatch, and not present without.
+cangen is from the standard CAN utilities, which may be found at:
+git clone https://github.com/linux-can/can-utils.git
 
+> http://socket-can.996257.n3.nabble.com/Solving-ENOBUFS-returned-by-write-td2886.html
 
-Best regards
-Laurent
+I'm not convinced is the ENOBUFS problem.  When strace is performed on
+the process, all writes are returned successfully, but the message
+never makes it to the hardware.
+
+The entire strace is shown below where message with ID = 0x0A was
+dropped, Note all 32 write() calls are successful.
+
+execve("./cangen", ["./cangen", "can0", "-g", "0", "-Ii", "-Di",
+"-Li", "-n", "32"], [/* 33 vars */]) = 0
+brk(NULL)                               = 0x9606000
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+0) = 0xb7723000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=98687, ...}) = 0
+mmap2(NULL, 98687, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb76e3000
+close(3)                                = 0
+open("/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\1\1\1\3\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0000\207\1\0004\0\0\0"...,
+512) = 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=2111020, ...}) = 0
+mmap2(NULL, 1894876, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE,
+3, 0) = 0xb7514000
+mprotect(0xb76dc000, 4096, PROT_NONE)   = 0
+mmap2(0xb76dd000, 12288, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1c8000) = 0xb76dd000
+mmap2(0xb76e0000, 10716, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb76e0000
+close(3)                                = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+0) = 0xb7513000
+set_thread_area({entry_number:-1, base_addr:0xb7513700, limit:1048575,
+seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1,
+seg_not_present:0, useable:1}) = 0 (entry_number:6)
+mprotect(0xb76dd000, 8192, PROT_READ)   = 0
+mprotect(0x804d000, 4096, PROT_READ)    = 0
+mprotect(0xb7724000, 4096, PROT_READ)   = 0
+munmap(0xb76e3000, 98687)               = 0
+rt_sigaction(SIGTERM, {0x8049610, [TERM], SA_RESTART}, {SIG_DFL, [], 0}, 8) = 0
+rt_sigaction(SIGHUP, {0x8049610, [HUP], SA_RESTART}, {SIG_DFL, [], 0}, 8) = 0
+rt_sigaction(SIGINT, {0x8049610, [INT], SA_RESTART}, {SIG_DFL, [], 0}, 8) = 0
+socket(AF_CAN, SOCK_RAW, 1)             = 3
+ioctl(3, SIOCGIFINDEX, {ifr_name="can0", }) = 0
+setsockopt(3, 0x65 /* SOL_?? */, 1, NULL, 0) = 0
+bind(3, {sa_family=AF_CAN,
+sa_data="\0\0\3\0\0\0\320\257p\267\350[r\267"}, 16) = 0
+write(3, "\0\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0", 16) = 16
+write(3, "\1\0\0\0\1\0\0\0\1\0\0\0\0\0\0\0", 16) = 16
+write(3, "\2\0\0\0\2\0\0\0\2\0\0\0\0\0\0\0", 16) = 16
+write(3, "\3\0\0\0\3\0\0\0\3\0\0\0\0\0\0\0", 16) = 16
+write(3, "\4\0\0\0\4\0\0\0\4\0\0\0\0\0\0\0", 16) = 16
+write(3, "\5\0\0\0\5\0\0\0\5\0\0\0\0\0\0\0", 16) = 16
+write(3, "\6\0\0\0\6\0\0\0\6\0\0\0\0\0\0\0", 16) = 16
+write(3, "\7\0\0\0\7\0\0\0\7\0\0\0\0\0\0\0", 16) = 16
+write(3, "\10\0\0\0\10\0\0\0\10\0\0\0\0\0\0\0", 16) = 16
+write(3, "\t\0\0\0\1\0\0\0\t\0\0\0\0\0\0\0", 16) = 16
+write(3, "\n\0\0\0\1\0\0\0\n\0\0\0\0\0\0\0", 16) = 16
+write(3, "\v\0\0\0\2\0\0\0\v\0\0\0\0\0\0\0", 16) = 16
+write(3, "\f\0\0\0\3\0\0\0\f\0\0\0\0\0\0\0", 16) = 16
+write(3, "\r\0\0\0\4\0\0\0\r\0\0\0\0\0\0\0", 16) = 16
+write(3, "\16\0\0\0\5\0\0\0\16\0\0\0\0\0\0\0", 16) = 16
+write(3, "\17\0\0\0\6\0\0\0\17\0\0\0\0\0\0\0", 16) = 16
+write(3, "\20\0\0\0\7\0\0\0\20\0\0\0\0\0\0\0", 16) = 16
+write(3, "\21\0\0\0\10\0\0\0\21\0\0\0\0\0\0\0", 16) = 16
+write(3, "\22\0\0\0\1\0\0\0\22\0\0\0\0\0\0\0", 16) = 16
+write(3, "\23\0\0\0\1\0\0\0\23\0\0\0\0\0\0\0", 16) = 16
+write(3, "\24\0\0\0\2\0\0\0\24\0\0\0\0\0\0\0", 16) = 16
+write(3, "\25\0\0\0\3\0\0\0\25\0\0\0\0\0\0\0", 16) = 16
+write(3, "\26\0\0\0\4\0\0\0\26\0\0\0\0\0\0\0", 16) = 16
+write(3, "\27\0\0\0\5\0\0\0\27\0\0\0\0\0\0\0", 16) = 16
+write(3, "\30\0\0\0\6\0\0\0\30\0\0\0\0\0\0\0", 16) = 16
+write(3, "\31\0\0\0\7\0\0\0\31\0\0\0\0\0\0\0", 16) = 16
+write(3, "\32\0\0\0\10\0\0\0\32\0\0\0\0\0\0\0", 16) = 16
+write(3, "\33\0\0\0\1\0\0\0\33\0\0\0\0\0\0\0", 16) = 16
+write(3, "\34\0\0\0\1\0\0\0\34\0\0\0\0\0\0\0", 16) = 16
+write(3, "\35\0\0\0\2\0\0\0\35\0\0\0\0\0\0\0", 16) = 16
+write(3, "\36\0\0\0\3\0\0\0\36\0\0\0\0\0\0\0", 16) = 16
+write(3, "\37\0\0\0\4\0\0\0\37\0\0\0\0\0\0\0", 16) = 16
+close(3)                                = 0
+exit_group(0)                           = ?
++++ exited with 0 +++
