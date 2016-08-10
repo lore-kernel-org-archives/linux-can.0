@@ -1,58 +1,100 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Possible NULL sample_point in the new way of computing bit-timings
-Date: Tue, 9 Aug 2016 16:17:08 +0200
-Message-ID: <1a3f3f0a-5648-345b-b197-3e956d9ef39b@peak-system.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH RESEND] net: can: Introduce MEN 16Z192-00 CAN controller
+ driver
+Date: Wed, 10 Aug 2016 22:28:45 +0200
+Message-ID: <a0169f54-c8c7-5cf6-b93b-acd4a308a052@hartkopp.net>
+References: <20160726091555.GA26227@awelinux>
+ <9487fe77-dbd0-3a64-b648-cf76b897feda@grandegger.com>
+ <20160808113938.GA17459@awelinux>
+ <456c4f82-6a53-e821-3396-63d413db9eb7@grandegger.com>
+ <20160808140546.GA1733@awelinux>
+ <808e919b-8643-2113-9fde-001861883abe@grandegger.com>
+ <20160809061038.GC1733@awelinux>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:39281 "EHLO
-	mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752504AbcHIOYr (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Tue, 9 Aug 2016 10:24:47 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160809061038.GC1733@awelinux>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andreas Werner <andreas.werner@men.de>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net, jthumshirn@suse.de, andy@wernerandy.de, michael.miehling@men.de
+List-Id: linux-can.vger.kernel.org
 
-Hi all,
+Hi Andreas,
 
-With the new way of computing bit-timings introduced in linux-can-next, 
-when CONFIG_CAN_CALC_BITTIMING is defined, I think there's a chance to 
-set 0 in "bt->sample_point" of a can device. This is a different 
-behavior than with the previous versions.
+On 08/09/2016 08:10 AM, Andreas Werner wrote:
+> On Mon, Aug 08, 2016 at 04:35:34PM +0200, Wolfgang Grandegger wrote:
 
-IMHO, there are cases where "can_update_sample_point()" might return 0 
-("best_sample_point" is initialized to 0). There is no real damage in 
-the main loop of "can_calc_bittiming()": its returned value is ignored 
-(and only *sample_point_error matters). But it is not, outside this 
-loop, when setting the (real) value of the sample_point. So I think that 
-the real value of the sample_point must be computed using the final 
-values of tseg and tseg2, something like:
+>>>>>> You specify here one echo_skb but it's not used anywhere. Local loopback
+>>>>>> seems not to be implemented.
+>>>>>>
+>>>>>
+>>>>> Agree with you, will set it to "0".
+>>>>
+>>>> No, the local loopback is mandetory!
+>>>>
+>>>
+>>> Hm ok, but if i check alloc_candev() in drivers/net/can/dev.c
+>>> it is not mandatory.
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 7188137..de422b3 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -200,8 +200,8 @@ static int can_calc_bittiming(struct net_device 
-*dev, struct can_bittiming *bt,
-         }
+It is.
 
-         /* real sample point */
--       bt->sample_point = can_update_sample_point(btc, 
-sample_point_nominal, best_tseg,
--                                         &tseg1, &tseg2, NULL);
-+       bt->sample_point = 1000 * (best_tseg + CAN_CALC_SYNC_SEG - tseg2) /
-+                                       (best_tseg + CAN_CALC_SYNC_SEG);
+Even those drivers that show up to use zero echo skbs in alloc_candev() 
+implement the echo functionality correct.
 
-         v64 = (u64)best_brp * 1000 * 1000 * 1000;
-         do_div(v64, priv->clock.freq);
+Just check 'git grep IFF_ECHO'. Even grcan.c and janz-ican3.c have 
+IFF_ECHO set - but implement it in a different way without using the 
+provided machanism from dev.c .
 
-The best would be to introduce a function that implements the formula...
+>>> In the Documentation/networking/can.txt
+>>> there is also a "should" and a fallback mechnism if the driver
+>>> does not support the local loopback.
 
-Stéphane
+But this fallback mechanism is bad - really bad!
 
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt - HRB 9183 
-Geschaeftsfuehrung: A.Gach, U.Wilhelm
---
+E.g. the slcan.c driver sends a stream of CAN frames without knowing 
+whether the frames ever hit the wire. The slcan driver is more less for 
+hobby users. The CAN frame echo with IFF_ECHO gives a correct 
+representation of the traffic on the wire - including the correct 
+timestamps.
+
+You really want to know whether a CAN frame was sent correctly on the 
+bus instead of getting some shortcut info from inside the network layer.
+.
+>>
+>> Well, s/driver/hardware/ ! Local loopback is the preferred mechanism.
+>>
+>
+> Sure...
+>
+>>> I'm currently ok with this fallback mechanism.
+
+/me not.
+
+>>> Anyway I am not sure that the driver can handle the echo skb correctly.
+>>> If i understand it correctly, the can_get_echo_skb() is normally called
+>>> on a "TX done IRQ" to get the skb and loop it back.
+
+ack.
+
+>>> I do not have such a "TX done IRQ" and have not implemented implemented
+>>> and added the local looback.
+
+I'm not really sure how grcan.c and janz-ican3.c implemented the echo 
+functionality but they must have faced a similar situation.
+
+A local loopback inside the CAN controller which is generated after 
+successful transmit is an excellent implementation with excellent 
+timestamps. The only problem for you is to detect the looped CAN frames 
+and match them to the skb pointer of the outgoing frame to 'receive' the 
+correct echo skb.
+
+When you send CAN frames to an unconnected CAN bus it can't be sent out 
+due to the missing acknowledge from other nodes. So when you send frames 
+and you get echo frames due to the fallback mode your cool CAN 
+controller degrades to slcan level.
+
+Regards,
+Oliver
+
+ps. Do you have any URL where one can get the MEN 16Z192 spec?
