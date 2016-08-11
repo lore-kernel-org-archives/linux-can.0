@@ -1,7 +1,7 @@
 From: Wolfram Sang <wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>
-Subject: [PATCH 02/16] net: can: usb: esd_usb2: don't print error when allocating urb fails
-Date: Thu, 11 Aug 2016 23:05:21 +0200
-Message-ID: <1470949539-25392-3-git-send-email-wsa-dev@sang-engineering.com>
+Subject: [PATCH 05/16] net: can: usb: peak_usb: pcan_usb_core: don't print error when allocating urb fails
+Date: Thu, 11 Aug 2016 23:05:24 +0200
+Message-ID: <1470949539-25392-6-git-send-email-wsa-dev@sang-engineering.com>
 References: <1470949539-25392-1-git-send-email-wsa-dev@sang-engineering.com>
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1470949539-25392-1-git-send-email-wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>
@@ -14,30 +14,41 @@ kmalloc will print enough information in case of failure.
 
 Signed-off-by: Wolfram Sang <wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>
 ---
- drivers/net/can/usb/esd_usb2.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
-index 784a9002fbb930..be928ce62d32e0 100644
---- a/drivers/net/can/usb/esd_usb2.c
-+++ b/drivers/net/can/usb/esd_usb2.c
-@@ -558,8 +558,6 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
- 		/* create a URB, and a buffer for it */
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index bfb91d8fa46056..c06382cdfdfee4 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -399,7 +399,6 @@ static int peak_usb_start(struct peak_usb_device *dev)
+ 		/* create a URB, and a buffer for it, to receive usb messages */
  		urb = usb_alloc_urb(0, GFP_KERNEL);
  		if (!urb) {
--			dev_warn(dev->udev->dev.parent,
--				 "No memory left for URBs\n");
+-			netdev_err(netdev, "No memory left for URBs\n");
  			err = -ENOMEM;
  			break;
  		}
-@@ -730,7 +728,6 @@ static netdev_tx_t esd_usb2_start_xmit(struct sk_buff *skb,
- 	/* create a URB, and a buffer for it, and copy the data to the URB */
+@@ -454,7 +453,6 @@ static int peak_usb_start(struct peak_usb_device *dev)
+ 		/* create a URB and a buffer for it, to transmit usb messages */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+ 		if (!urb) {
+-			netdev_err(netdev, "No memory left for URBs\n");
+ 			err = -ENOMEM;
+ 			break;
+ 		}
+@@ -651,10 +649,8 @@ static int peak_usb_restart(struct peak_usb_device *dev)
+ 
+ 	/* first allocate a urb to handle the asynchronous steps */
  	urb = usb_alloc_urb(0, GFP_ATOMIC);
- 	if (!urb) {
--		netdev_err(netdev, "No memory left for URBs\n");
- 		stats->tx_dropped++;
- 		dev_kfree_skb(skb);
- 		goto nourbmem;
+-	if (!urb) {
+-		netdev_err(dev->netdev, "no memory left for urb\n");
++	if (!urb)
+ 		return -ENOMEM;
+-	}
+ 
+ 	/* also allocate enough space for the commands to send */
+ 	buf = kmalloc(PCAN_USB_MAX_CMD_LEN, GFP_ATOMIC);
 -- 
 2.8.1
 
