@@ -1,7 +1,7 @@
 From: Wolfram Sang <wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>
-Subject: [PATCH 04/16] net: can: usb: kvaser_usb: don't print error when allocating urb fails
-Date: Thu, 11 Aug 2016 23:05:23 +0200
-Message-ID: <1470949539-25392-5-git-send-email-wsa-dev@sang-engineering.com>
+Subject: [PATCH 02/16] net: can: usb: esd_usb2: don't print error when allocating urb fails
+Date: Thu, 11 Aug 2016 23:05:21 +0200
+Message-ID: <1470949539-25392-3-git-send-email-wsa-dev@sang-engineering.com>
 References: <1470949539-25392-1-git-send-email-wsa-dev@sang-engineering.com>
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1470949539-25392-1-git-send-email-wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>
@@ -14,27 +14,15 @@ kmalloc will print enough information in case of failure.
 
 Signed-off-by: Wolfram Sang <wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>
 ---
- drivers/net/can/usb/kvaser_usb.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/net/can/usb/esd_usb2.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-index 6f1f3b675ff553..d51e0c401b483c 100644
---- a/drivers/net/can/usb/kvaser_usb.c
-+++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -787,10 +787,8 @@ static int kvaser_usb_simple_msg_async(struct kvaser_usb_net_priv *priv,
- 	int err;
- 
- 	urb = usb_alloc_urb(0, GFP_ATOMIC);
--	if (!urb) {
--		netdev_err(netdev, "No memory left for URBs\n");
-+	if (!urb)
- 		return -ENOMEM;
--	}
- 
- 	buf = kmalloc(sizeof(struct kvaser_msg), GFP_ATOMIC);
- 	if (!buf) {
-@@ -1393,8 +1391,6 @@ static int kvaser_usb_setup_rx_urbs(struct kvaser_usb *dev)
- 
+diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
+index 784a9002fbb930..be928ce62d32e0 100644
+--- a/drivers/net/can/usb/esd_usb2.c
++++ b/drivers/net/can/usb/esd_usb2.c
+@@ -558,8 +558,6 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
+ 		/* create a URB, and a buffer for it */
  		urb = usb_alloc_urb(0, GFP_KERNEL);
  		if (!urb) {
 -			dev_warn(dev->udev->dev.parent,
@@ -42,14 +30,14 @@ index 6f1f3b675ff553..d51e0c401b483c 100644
  			err = -ENOMEM;
  			break;
  		}
-@@ -1670,7 +1666,6 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
- 
+@@ -730,7 +728,6 @@ static netdev_tx_t esd_usb2_start_xmit(struct sk_buff *skb,
+ 	/* create a URB, and a buffer for it, and copy the data to the URB */
  	urb = usb_alloc_urb(0, GFP_ATOMIC);
  	if (!urb) {
 -		netdev_err(netdev, "No memory left for URBs\n");
  		stats->tx_dropped++;
  		dev_kfree_skb(skb);
- 		return NETDEV_TX_OK;
+ 		goto nourbmem;
 -- 
 2.8.1
 
