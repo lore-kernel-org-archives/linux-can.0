@@ -1,56 +1,63 @@
-From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
-Subject: Re: SocketCAN device enumeration API
-Date: Thu, 11 Aug 2016 10:36:07 +0200
-Message-ID: <e7d06ad8-579d-0053-c7e5-ddc8feee673b@gmx.de>
-References: <201d5fca-9ea8-aa0e-843e-f21441cd7170@gmx.de>
- <20160809140453.GE25116@airbook.newtec.eu>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH RESEND] net: can: Introduce MEN 16Z192-00 CAN controller
+ driver
+Date: Thu, 11 Aug 2016 10:45:00 +0200
+Message-ID: <1d81436b-4ad2-a34f-e2e1-accde0b16a47@hartkopp.net>
+References: <20160726091555.GA26227@awelinux>
+ <9487fe77-dbd0-3a64-b648-cf76b897feda@grandegger.com>
+ <20160808113938.GA17459@awelinux>
+ <456c4f82-6a53-e821-3396-63d413db9eb7@grandegger.com>
+ <20160808140546.GA1733@awelinux>
+ <808e919b-8643-2113-9fde-001861883abe@grandegger.com>
+ <20160809061038.GC1733@awelinux>
+ <a0169f54-c8c7-5cf6-b93b-acd4a308a052@hartkopp.net>
+ <20160811071458.GA25813@awelinux>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.17.22]:59763 "EHLO mout.gmx.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751764AbcHKIg0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Thu, 11 Aug 2016 04:36:26 -0400
-In-Reply-To: <20160809140453.GE25116@airbook.newtec.eu>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Mirza Krak <mirza.krak@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160811071458.GA25813@awelinux>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andreas Werner <andreas.werner@men.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net, jthumshirn@suse.de, andy@wernerandy.de, michael.miehling@men.de
+List-Id: linux-can.vger.kernel.org
 
-Hello Kurt and Mirza,
+On 08/11/2016 09:14 AM, Andreas Werner wrote:
+> On Wed, Aug 10, 2016 at 10:28:45PM +0200, Oliver Hartkopp wrote:
 
-thanks for your pointers, I did already did search time, but haven't 
-found much useful.
+>> Just check 'git grep IFF_ECHO'. Even grcan.c and janz-ican3.c have IFF_ECHO
+>> set - but implement it in a different way without using the provided
+>> machanism from dev.c .
+>>
+>
+> Ok I am with you.
 
-Kurt, your library does exactly what I need. I was impressed (and a bit 
-shocked), how much code is necessary to do this work. I think (parts of) 
-your library would also make a good extension to libsocketcan, as it 
-seems I'm not the only one asking, so there is definitely a need for 
-this function.
+Great :-)
 
-However, the only possiblity I see for me now, would be to ship a copy 
-of libenumif along with Qt and to integrate it into Qt's build system 
-for cross-platform builds.
+>> A local loopback inside the CAN controller which is generated after
+>> successful transmit is an excellent implementation with excellent
+>> timestamps. The only problem for you is to detect the looped CAN frames and
+>> match them to the skb pointer of the outgoing frame to 'receive' the correct
+>> echo skb.
+>>
+>
+> At the moment, i think there is no way to detect those looped frames.
+> I will talk to our IC designer and discuss this issue with him. Maybe we
+> have the possibility to get a local loopback inside the CAN controller.
+> This seems to be the best way to do it.
 
-Thats where my problems begin. I neither know about the technical, nor 
-the legal possibilities to do so :(
+When you still have the possibility to change the IP core I would 
+suggest to create some kind of 16/32 bit value which you can pass to the 
+CAN controller along with the CAN frame to be sent.
 
-The other possiblility according to Mirza's links seems to parse 
-/sys/class/net/ - I will give this a try too.
+And when this frame comes back due to the loopback you can use this 
+non-zero 16/32 bit value to match into a list of tx skb pointers for 
+IFF_ECHO.
 
-QNetworkInterface gives me a list of interfaces, but has the same 
-problems like a simple getifaddrs(), you cannot find out if an interface 
-is of type CAN.
+E.g. when this 16/32 bit value is zero this CAN frame obviously was 
+received from another CAN node.
 
-I also found this extension to libsocketcan:
+Just an idea.
 
-https://github.com/ajneu/libsocketcan/commit/26ef
-
-Is there any chance that this extension can be merged upstream? It 
-contains the can_get_typekind function to query whether an interface is 
-virtual or not.
-
-Best regards,
-Andre
-
+Regards,
+Oliver
