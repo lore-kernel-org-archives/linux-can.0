@@ -1,80 +1,62 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH RESEND] net: can: Introduce MEN 16Z192-00 CAN controller
- driver
-Date: Thu, 11 Aug 2016 13:46:55 +0200
-Message-ID: <0ab4653f-81b5-565c-2fca-b52b425ecf43@hartkopp.net>
-References: <20160726091555.GA26227@awelinux>
- <9487fe77-dbd0-3a64-b648-cf76b897feda@grandegger.com>
- <20160808113938.GA17459@awelinux>
- <456c4f82-6a53-e821-3396-63d413db9eb7@grandegger.com>
- <20160808140546.GA1733@awelinux>
- <808e919b-8643-2113-9fde-001861883abe@grandegger.com>
- <20160809061038.GC1733@awelinux>
- <a0169f54-c8c7-5cf6-b93b-acd4a308a052@hartkopp.net>
- <20160811071458.GA25813@awelinux>
- <1d81436b-4ad2-a34f-e2e1-accde0b16a47@hartkopp.net>
- <20160811085826.GB25813@awelinux>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20160811085826.GB25813@awelinux>
-Sender: netdev-owner@vger.kernel.org
-To: Andreas Werner <andreas.werner@men.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net, jthumshirn@suse.de, andy@wernerandy.de, michael.miehling@men.de
+From: Wolfram Sang <wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>
+Subject: [PATCH 01/16] net: can: usb: ems_usb: don't print error when allocating urb fails
+Date: Thu, 11 Aug 2016 23:05:20 +0200
+Message-ID: <1470949539-25392-2-git-send-email-wsa-dev@sang-engineering.com>
+References: <1470949539-25392-1-git-send-email-wsa-dev@sang-engineering.com>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1470949539-25392-1-git-send-email-wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Wolfram Sang <wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
+kmalloc will print enough information in case of failure.
 
+Signed-off-by: Wolfram Sang <wsa-dev-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>
+---
+ drivers/net/can/usb/ems_usb.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-On 08/11/2016 10:58 AM, Andreas Werner wrote:
-> On Thu, Aug 11, 2016 at 10:45:00AM +0200, Oliver Hartkopp wrote:
+diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+index 71f0e791355b9c..b3d02759c226bb 100644
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -600,7 +600,6 @@ static int ems_usb_start(struct ems_usb *dev)
+ 		/* create a URB, and a buffer for it */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+ 		if (!urb) {
+-			netdev_err(netdev, "No memory left for URBs\n");
+ 			err = -ENOMEM;
+ 			break;
+ 		}
+@@ -752,10 +751,8 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
+ 
+ 	/* create a URB, and a buffer for it, and copy the data to the URB */
+ 	urb = usb_alloc_urb(0, GFP_ATOMIC);
+-	if (!urb) {
+-		netdev_err(netdev, "No memory left for URBs\n");
++	if (!urb)
+ 		goto nomem;
+-	}
+ 
+ 	buf = usb_alloc_coherent(dev->udev, size, GFP_ATOMIC, &urb->transfer_dma);
+ 	if (!buf) {
+@@ -1007,10 +1004,8 @@ static int ems_usb_probe(struct usb_interface *intf,
+ 		dev->tx_contexts[i].echo_index = MAX_TX_URBS;
+ 
+ 	dev->intr_urb = usb_alloc_urb(0, GFP_KERNEL);
+-	if (!dev->intr_urb) {
+-		dev_err(&intf->dev, "Couldn't alloc intr URB\n");
++	if (!dev->intr_urb)
+ 		goto cleanup_candev;
+-	}
+ 
+ 	dev->intr_in_buffer = kzalloc(INTR_IN_BUFFER_SIZE, GFP_KERNEL);
+ 	if (!dev->intr_in_buffer)
+-- 
+2.8.1
 
-
->> When you still have the possibility to change the IP core I would suggest to
->> create some kind of 16/32 bit value which you can pass to the CAN controller
->> along with the CAN frame to be sent.
->>
->> And when this frame comes back due to the loopback you can use this non-zero
->> 16/32 bit value to match into a list of tx skb pointers for IFF_ECHO.
->>
->> E.g. when this 16/32 bit value is zero this CAN frame obviously was received
->> from another CAN node.
->>
->> Just an idea.
->>
->
-> I am not sure if we have a way to change the IP but i will try to talk with
-> my IC designer. He will be available next week.
->
-> Your idea sounds good. I will check a few more driver to get more information
-> how they did the implementation.
->
-
-I just looked into your patch at 
-http://marc.info/?l=linux-can&m=146952497113100&w=2
-
-The
-
-	struct men_z192_cf_buf {
-		u32 can_id;
-		u32 data[2];
-		u32 length;
-	};
-
-has a u32 for the length which is masked by
-
-	#define MEN_Z192_CFBUF_LEN	GENMASK(3, 0)
-
-in men_z192_read_frame() and is just copied in men_z192_xmit()
-
-	writel(cf->can_dlc, &cf_buf->length);
-
-as only 4 bits are used in the u32 length you probably already can use 
-the upper 16 bits for the discussed IFF_ECHO purpose.
-
-Don't know how your IP core handles this u32 length when you enable the 
-loopback - maybe the upper 16 bits are still there in the receive path 
-and you can implement this idea directly :-)
-
-Regards,
-Oliver
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
