@@ -1,80 +1,61 @@
-From: Andreas Werner <andreas.werner@men.de>
-Subject: Re: [PATCH RESEND] net: can: Introduce MEN 16Z192-00 CAN controller
- driver
-Date: Thu, 11 Aug 2016 10:58:26 +0200
-Message-ID: <20160811085826.GB25813@awelinux>
-References: <20160726091555.GA26227@awelinux>
- <9487fe77-dbd0-3a64-b648-cf76b897feda@grandegger.com>
- <20160808113938.GA17459@awelinux>
- <456c4f82-6a53-e821-3396-63d413db9eb7@grandegger.com>
- <20160808140546.GA1733@awelinux>
- <808e919b-8643-2113-9fde-001861883abe@grandegger.com>
- <20160809061038.GC1733@awelinux>
- <a0169f54-c8c7-5cf6-b93b-acd4a308a052@hartkopp.net>
- <20160811071458.GA25813@awelinux>
- <1d81436b-4ad2-a34f-e2e1-accde0b16a47@hartkopp.net>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: SocketCAN device enumeration API
+Date: Thu, 11 Aug 2016 12:05:58 +0200
+Message-ID: <20160811100558.GA2147@airbook.newtec.eu>
+References: <201d5fca-9ea8-aa0e-843e-f21441cd7170@gmx.de>
+ <20160809140453.GE25116@airbook.newtec.eu>
+ <e7d06ad8-579d-0053-c7e5-ddc8feee673b@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail1.bemta5.messagelabs.com ([195.245.231.152]:36290 "EHLO
-	mail1.bemta5.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752408AbcHKI7O (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Thu, 11 Aug 2016 04:59:14 -0400
+Received: from relay-b02.edpnet.be ([212.71.1.222]:43897 "EHLO
+	relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752240AbcHKKGa (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Thu, 11 Aug 2016 06:06:30 -0400
 Content-Disposition: inline
-In-Reply-To: <1d81436b-4ad2-a34f-e2e1-accde0b16a47@hartkopp.net>
+In-Reply-To: <e7d06ad8-579d-0053-c7e5-ddc8feee673b@gmx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Andreas Werner <andreas.werner@men.de>, Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net, jthumshirn@suse.de, andy@wernerandy.de, michael.miehling@men.de
+To: =?utf-8?B?QW5kcsOp?= Hartmann <aha_1980@gmx.de>
+Cc: linux-can@vger.kernel.org, Mirza Krak <mirza.krak@gmail.com>
 
-On Thu, Aug 11, 2016 at 10:45:00AM +0200, Oliver Hartkopp wrote:
-> On 08/11/2016 09:14 AM, Andreas Werner wrote:
-> >On Wed, Aug 10, 2016 at 10:28:45PM +0200, Oliver Hartkopp wrote:
+> Hello Kurt and Mirza,
 > 
-> >>Just check 'git grep IFF_ECHO'. Even grcan.c and janz-ican3.c have IFF_ECHO
-> >>set - but implement it in a different way without using the provided
-> >>machanism from dev.c .
-> >>
-> >
-> >Ok I am with you.
+> thanks for your pointers, I did already did search time, but haven't found
+> much useful.
 > 
-> Great :-)
-> 
-> >>A local loopback inside the CAN controller which is generated after
-> >>successful transmit is an excellent implementation with excellent
-> >>timestamps. The only problem for you is to detect the looped CAN frames and
-> >>match them to the skb pointer of the outgoing frame to 'receive' the correct
-> >>echo skb.
-> >>
-> >
-> >At the moment, i think there is no way to detect those looped frames.
-> >I will talk to our IC designer and discuss this issue with him. Maybe we
-> >have the possibility to get a local loopback inside the CAN controller.
-> >This seems to be the best way to do it.
-> 
-> When you still have the possibility to change the IP core I would suggest to
-> create some kind of 16/32 bit value which you can pass to the CAN controller
-> along with the CAN frame to be sent.
-> 
-> And when this frame comes back due to the loopback you can use this non-zero
-> 16/32 bit value to match into a list of tx skb pointers for IFF_ECHO.
-> 
-> E.g. when this 16/32 bit value is zero this CAN frame obviously was received
-> from another CAN node.
-> 
-> Just an idea.
-> 
+> Kurt, your library does exactly what I need. I was impressed (and a bit
+> shocked), how much code is necessary to do this work.
 
-I am not sure if we have a way to change the IP but i will try to talk with
-my IC designer. He will be available next week.
+I too think netlink was as such not designed to be an end-user
+interface, but a generic mechanism to create libraries like
+libsocketcan, of libenumif.
 
-Your idea sounds good. I will check a few more driver to get more information
-how they did the implementation.
+> I think (parts of)
+> your library would also make a good extension to libsocketcan, as it seems
+> I'm not the only one asking, so there is definitely a need for this
+> function.
 
-> Regards,
-> Oliver
+Well, libsocketcan could copy part of the code for easy CAN enumeration.
+libenumif is not really restricted to CAN, or any other type.
 
-Thanks your comments and explanations Oliver.
+> 
+> However, the only possiblity I see for me now, would be to ship a copy of
+> libenumif along with Qt and to integrate it into Qt's build system for
+> cross-platform builds.
 
-Regards
-Andy
+When you ship libenumif along with QT, doesn't that imply that it should
+stay out of QT.
+Or did you mean to ship libenumif as shared object along with QT's
+shared objects?
+
+> 
+> Thats where my problems begin. I neither know about the technical, nor the
+> legal possibilities to do so :(
+
+QT is not my technical competence.
+Legally, libenumif is shipped with LGPLv3. I don't see a problem
+shipping it. LGPL allows to use the library (as shared object) from
+non-GPL code AFAIK.
+
+Kurt
