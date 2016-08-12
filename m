@@ -1,53 +1,46 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] can: introduce CANFD_USE flag for mixed content in struct canfd_frame
-Date: Fri, 12 Aug 2016 10:31:00 +0200
-Message-ID: <1470990660-4810-1-git-send-email-socketcan@hartkopp.net>
+From: =?UTF-8?Q?Einar_J=C3=B3n?= <tolvupostur@gmail.com>
+Subject: [PATCH] can: c_can_pci set device pointer
+Date: Fri, 12 Aug 2016 13:50:41 +0200
+Message-ID: <CABhNV20Tv3LxJw=e_JhP-tGwpFz3qNeGo1dUV8HZW6wQUMf1ww@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:29625 "EHLO
-	mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750922AbcHLIeT (ORCPT
-	<rfc822;linux-can@vger.kernel.org>); Fri, 12 Aug 2016 04:34:19 -0400
+Received: from mail-oi0-f65.google.com ([209.85.218.65]:33056 "EHLO
+	mail-oi0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752596AbcHLLwD (ORCPT
+	<rfc822;linux-can@vger.kernel.org>); Fri, 12 Aug 2016 07:52:03 -0400
+Received: by mail-oi0-f65.google.com with SMTP id s207so1917982oie.0
+        for <linux-can@vger.kernel.org>; Fri, 12 Aug 2016 04:50:42 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The struct can_frame and struct canfd_frame intentionaly share the same
-layout to be able to write CAN frame content into a CAN FD frame structure.
-When this is done the former differentiation via CAN_MTU / CANFD_MTU gets
-lost. CANFD_USE allows programmers to mark CAN FD frames in the case of
-using struct canfd_frame for mixed CAN / CAN FD content (dual use).
-N.B. the Kernel APIs do NOT provide mixed CAN / CAN FD content inside of
-struct canfd_frame therefore the CANFD_USE flag is disregarded by Linux.
+The priv->device pointer for c_can_pci is never set, but it is used
+without a null check in
+drivers/net/can/c_can/c_can.c:615:static int c_can_start(struct net_device *dev)
+Setting it in c_can_pci_probe() like c_can_plat_probe() prevents
+c_can_pci.ko from crashing, with and without CONFIG_PM,
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+This might also cause the pm_runtime_*() functions in c_can.c to
+actually be executed for c_can_pci devices - they are the only other
+place where priv->device is used, but they all contain a null check.
+
 ---
- include/uapi/linux/can.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/can/c_can/c_can_pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
-index 9692cda..698ffc5 100644
---- a/include/uapi/linux/can.h
-+++ b/include/uapi/linux/can.h
-@@ -124,9 +124,18 @@ struct can_frame {
-  * controller only the CANFD_BRS bit is relevant for real CAN controllers when
-  * building a CAN FD frame for transmission. Setting the CANFD_ESI bit can make
-  * sense for virtual CAN interfaces to test applications with echoed frames.
-+ *
-+ * The struct can_frame and struct canfd_frame intentionaly share the same
-+ * layout to be able to write CAN frame content into a CAN FD frame structure.
-+ * When this is done the former differentiation via CAN_MTU / CANFD_MTU gets
-+ * lost. CANFD_USE allows programmers to mark CAN FD frames in the case of
-+ * using struct canfd_frame for mixed CAN / CAN FD content (dual use).
-+ * N.B. the Kernel APIs do NOT provide mixed CAN / CAN FD content inside of
-+ * struct canfd_frame therefore the CANFD_USE flag is disregarded by Linux.
-  */
- #define CANFD_BRS 0x01 /* bit rate switch (second bitrate for payload data) */
- #define CANFD_ESI 0x02 /* error state indicator of the transmitting node */
-+#define CANFD_USE 0x04 /* mark CAN FD for dual use of struct canfd_frame */
- 
- /**
-  * struct canfd_frame - CAN flexible data rate frame structure
+diff --git a/drivers/net/can/c_can/c_can_pci.c
+b/drivers/net/can/c_can/c_can_pci.c
+index 7be393c..cf7c189 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -161,6 +161,7 @@ static int c_can_pci_probe(struct pci_dev *pdev,
+
+     dev->irq = pdev->irq;
+     priv->base = addr;
++    priv->device = &pdev->dev;
+
+     if (!c_can_pci_data->freq) {
+         dev_err(&pdev->dev, "no clock frequency defined\n");
 -- 
-2.8.1
-
+1.9.1
