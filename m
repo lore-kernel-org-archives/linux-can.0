@@ -1,15 +1,15 @@
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH] can: flexcan: fix suspend function
-Date: Wed, 17 Aug 2016 11:00:23 -0300
-Message-ID: <1471442423-14539-1-git-send-email-fabio.estevam@nxp.com>
+Subject: [PATCH v2] can: flexcan: fix resume function
+Date: Wed, 17 Aug 2016 12:29:51 -0300
+Message-ID: <1471447791-15808-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-by2nam01on0088.outbound.protection.outlook.com ([104.47.34.88]:36832
-	"EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-sn1nam02on0046.outbound.protection.outlook.com ([104.47.36.46]:16310
+	"EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752296AbcHQQfz (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 17 Aug 2016 12:35:55 -0400
+	id S1752535AbcHQREJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 17 Aug 2016 13:04:09 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: mkl@pengutronix.de
@@ -31,6 +31,9 @@ Based on a patch from Dong Aisheng in the NXP kernel.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
+Changes since v1:
+- Change Subject: 'resume' instead of 'suspend'
+
  drivers/net/can/flexcan.c | 13 ++++++++-----
  1 file changed, 8 insertions(+), 5 deletions(-)
 
