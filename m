@@ -1,82 +1,19 @@
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH v2] can: flexcan: fix resume function
-Date: Wed, 17 Aug 2016 12:29:51 -0300
-Message-ID: <1471447791-15808-1-git-send-email-fabio.estevam@nxp.com>
+From: Financial Service <suharto.widjojo@big.go.id>
+Subject: Fast Loans
+Date: Thu, 18 Aug 2016 06:09:18 +0530
+Message-ID: <20160818003939.21356195F3F@mta1.big.go.id>
+Reply-To: y_loanspvt@aol.co.uk
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-sn1nam02on0046.outbound.protection.outlook.com ([104.47.36.46]:16310
-	"EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752535AbcHQREJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-	Wed, 17 Aug 2016 13:04:09 -0400
+Received: from [202.4.179.4] ([202.4.179.4]:41415 "EHLO mta1.big.go.id"
+	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+	id S1945889AbcHRCW7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+	Wed, 17 Aug 2016 22:22:59 -0400
+Content-Description: Mail message body
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: wg@grandegger.com, aisheng.dong@nxp.com, linux-can@vger.kernel.org, festevam@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>
+To: Recipients <suharto.widjojo@big.go.id>
 
-On a imx6ul-pico board the following error is seen during system suspend:
-    
-dpm_run_callback(): platform_pm_resume+0x0/0x54 returns -110     
-PM: Device 2090000.flexcan failed to resume: error -110          
-
-The reason for this suspend error is because when the CAN interface is not
-active the clocks are disabled and then flexcan_chip_enable() will
-always fail due to a timeout error.
-
-In order to fix this issue, only call flexcan_chip_enable/disable()
-when the CAN interface is active.
-
-Based on a patch from Dong Aisheng in the NXP kernel.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
-Changes since v1:
-- Change Subject: 'resume' instead of 'suspend'
-
- drivers/net/can/flexcan.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 41c0fc9..13bea0f 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1268,13 +1268,12 @@ static int __maybe_unused flexcan_suspend(struct device *device)
- 	struct flexcan_priv *priv = netdev_priv(dev);
- 	int err;
- 
--	err = flexcan_chip_disable(priv);
--	if (err)
--		return err;
--
- 	if (netif_running(dev)) {
- 		netif_stop_queue(dev);
- 		netif_device_detach(dev);
-+		err = flexcan_chip_disable(priv);
-+		if (err)
-+			return err;
- 	}
- 	priv->can.state = CAN_STATE_SLEEPING;
- 
-@@ -1285,13 +1284,17 @@ static int __maybe_unused flexcan_resume(struct device *device)
- {
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
-+	int err;
- 
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 	if (netif_running(dev)) {
- 		netif_device_attach(dev);
- 		netif_start_queue(dev);
-+		err = flexcan_chip_enable(priv);
-+		if (err)
-+			return err;
- 	}
--	return flexcan_chip_enable(priv);
-+	return 0;
- }
- 
- static SIMPLE_DEV_PM_OPS(flexcan_pm_ops, flexcan_suspend, flexcan_resume);
--- 
-1.9.1
-
+Apply for a loan at 2% reply to this Email for more Info
