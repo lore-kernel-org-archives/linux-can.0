@@ -1,112 +1,59 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Possible NULL sample_point in the new way of computing
- bit-timings
-Date: Mon, 5 Sep 2016 14:14:58 +0200
-Message-ID: <25ca562e-25b6-8517-eb92-36ff0ee1b2d2@pengutronix.de>
-References: <1a3f3f0a-5648-345b-b197-3e956d9ef39b@peak-system.com>
+From: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
+Subject: SJA1000 register accesses
+Date: Mon,  5 Sep 2016 20:58:51 +0300
+Message-ID: <20160905175852.1513-1-nebaruzdin@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="CRlnECO7GcKdhnQ4thRab3kxkF1Dg7Ikr"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:48182 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1755127AbcIEMPG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Sep 2016 08:15:06 -0400
-In-Reply-To: <1a3f3f0a-5648-345b-b197-3e956d9ef39b@peak-system.com>
+Received: from mail-lf0-f48.google.com ([209.85.215.48]:35130 "EHLO
+        mail-lf0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S932234AbcIESAz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Sep 2016 14:00:55 -0400
+Received: by mail-lf0-f48.google.com with SMTP id l131so37419391lfl.2
+        for <linux-can@vger.kernel.org>; Mon, 05 Sep 2016 11:00:55 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:2168:c20:3f01:8219:34ff:fe1f:3777])
+        by smtp.gmail.com with ESMTPSA id 136sm5000314ljj.0.2016.09.05.11.00.52
+        for <linux-can@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Sep 2016 11:00:52 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CRlnECO7GcKdhnQ4thRab3kxkF1Dg7Ikr
-Content-Type: multipart/mixed; boundary="gr5pNUrPOwOiWCT4MEfkEhqEobihbKJtJ"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can@vger.kernel.org
-Message-ID: <25ca562e-25b6-8517-eb92-36ff0ee1b2d2@pengutronix.de>
-Subject: Re: Possible NULL sample_point in the new way of computing
- bit-timings
-References: <1a3f3f0a-5648-345b-b197-3e956d9ef39b@peak-system.com>
-In-Reply-To: <1a3f3f0a-5648-345b-b197-3e956d9ef39b@peak-system.com>
+Hello,
 
---gr5pNUrPOwOiWCT4MEfkEhqEobihbKJtJ
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+We use CAN at 1 Mbit/s with sometimes pretty high bus load (our client wants to
+do some strange things over CAN). So my colleagues were complaining that CAN
+consumes too much CPU on our machines, which negatively affects the work of
+other network interfaces.
 
-On 08/09/2016 04:17 PM, Stephane Grosjean wrote:
-> Hi all,
->=20
-> With the new way of computing bit-timings introduced in linux-can-next,=
-=20
-> when CONFIG_CAN_CALC_BITTIMING is defined, I think there's a chance to =
+While investigating if we can do anything about this, I have learned that
+sja1000 interrupt handler wastes 90 % of the time on register accesses.
+Particularly, when the driver deals with the transmit/receive buffer, it needs
+to access up to 13 consecutive bytes (frame information byte + 2/4 CAN ID bytes
++ 0-8 payload bytes). At the moment, this is done with 13 ioread8()/iowrite8()
+calls. Considering that PCI bus transactions are at least 32 bits wide, I
+believe we can do much better.
 
-> set 0 in "bt->sample_point" of a can device. This is a different=20
-> behavior than with the previous versions.
->=20
-> IMHO, there are cases where "can_update_sample_point()" might return 0 =
+Thus I made the patch. I tested it on the machine with Intel Core 2 Duo E4700
+CPU (2.60 GHz) and ELCUS CAN-200PCI (SJA1000-based) card under the maximum load
+(cangen -ig 0) and got the following results:
 
-> ("best_sample_point" is initialized to 0). There is no real damage in=20
-> the main loop of "can_calc_bittiming()": its returned value is ignored =
+> ==========================================================================================================
+>			CPU load: irq/can0, irq/can1	Bus load		Frames per second (+/- 100)
+> ----------------------------------------------------------------------------------------------------------
+> Traffic\Variant	Current		Patched		Current	Patched		Current	Patched
+> ----------------------------------------------------------------------------------------------------------
+> STD random		25 %, 26 %	22 %, 23 %	88 %	92 %		7900	8200
+> EXT random		23 %, 24 %	20 %, 20 %	91 %	94 %		6600	6900
+> STD RTR random	37 %, 31 %	34 %, 31 %	73 %	77 %		13400	14000
+> EXT RTR random	31 %, 27 %	28 %, 25 %	80 %	85 %		10000	10600
+> STD 8 bytes payload	23 %, 25 %	21 %, 21 %	90 %	94 %		6600	7000
+> EXT 8 bytes payload	22 %, 24 %	19 %, 19 %	91 %	96 %		5700	6000
+> STD 5 bytes payload	26 %, 27 %	24 %, 23 %	88 %	91 %		8400	8600
+> STD 1 byte payload	30 %, 31 %	29 %, 30 %	82 %	83 %		12600	12800
 
-> (and only *sample_point_error matters). But it is not, outside this=20
-> loop, when setting the (real) value of the sample_point. So I think tha=
-t=20
-> the real value of the sample_point must be computed using the final=20
-> values of tseg and tseg2, something like:
->=20
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index 7188137..de422b3 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -200,8 +200,8 @@ static int can_calc_bittiming(struct net_device=20
-> *dev, struct can_bittiming *bt,
->          }
->=20
->          /* real sample point */
-> -       bt->sample_point =3D can_update_sample_point(btc, sample_point_=
-nominal, best_tseg,
-> -                                         &tseg1, &tseg2, NULL);
-> +       bt->sample_point =3D 1000 * (best_tseg + CAN_CALC_SYNC_SEG - ts=
-eg2) /
-> +                                       (best_tseg + CAN_CALC_SYNC_SEG)=
-;
-
-You're using tseg2 as an input, where before it was used as an output
-value. As the sample point has already been calculated in the loop, why
-should it not be possible to calculate it again?
-
->=20
->          v64 =3D (u64)best_brp * 1000 * 1000 * 1000;
->          do_div(v64, priv->clock.freq);
->=20
-> The best would be to introduce a function that implements the formula..=
-=2E
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---gr5pNUrPOwOiWCT4MEfkEhqEobihbKJtJ--
-
---CRlnECO7GcKdhnQ4thRab3kxkF1Dg7Ikr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJXzWHCAAoJED07qiWsqSVqsNgH/iIeLa0xMDV7yScl2sz8Drsu
-8Qj4hDaxYeUYnHBq5TOYIuLRMFgwaE8Bu+dRtgTsyrdJTDjlst7LscPIunncqt35
-Q6fku/DXVEnbf0ue5t4kHRSPWYO0KqZrG49P95DIgbzOdJoMPwZK9BN7ny7bpQKd
-Ua6HXUShfOgeUgrmCYfWe2tqdben6+5MuWWTBKNZeepHCgquss7+DR4wM2dLMpa7
-MlOGPKJQgJWSozEADRKUI0BXpAgmPrnntLwc4o5xlXBwrQnuKLvBhxcOrJItGkwf
-D9ptIQKm2yBPVtt8D2rMRjgWpP4W2SaGSaQD/IT86o5ZOhA9Ra3ilBD+vtj5UWU=
-=ATRs
------END PGP SIGNATURE-----
-
---CRlnECO7GcKdhnQ4thRab3kxkF1Dg7Ikr--
+These results are obtained with the help of cangen, htop and canbusload. can0
+was the sender and can1 — the receiver. As you can see, in all cases the CPU
+load decreased while the number of transmitted frames and the bus load went up.
