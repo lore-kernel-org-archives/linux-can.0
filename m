@@ -1,242 +1,84 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: sja1000: Optimise register accesses
-Date: Mon, 5 Sep 2016 21:56:43 +0200
-Message-ID: <9a11af52-faf8-b784-8387-9ee48a6ed744@hartkopp.net>
-References: <20160905175852.1513-1-nebaruzdin@gmail.com>
- <20160905175852.1513-2-nebaruzdin@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH RESEND v3] can: flexcan: fix resume function
+Date: Mon,  5 Sep 2016 19:15:16 -0300
+Message-ID: <1473113716-2834-1-git-send-email-festevam@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:29441 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932446AbcIET4y (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Sep 2016 15:56:54 -0400
-In-Reply-To: <20160905175852.1513-2-nebaruzdin@gmail.com>
+Received: from mail-qk0-f193.google.com ([209.85.220.193]:33530 "EHLO
+        mail-qk0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753358AbcIEWPh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Sep 2016 18:15:37 -0400
+Received: by mail-qk0-f193.google.com with SMTP id n66so13300634qkf.0
+        for <linux-can@vger.kernel.org>; Mon, 05 Sep 2016 15:15:37 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Nikita Edward Baruzdin <nebaruzdin@gmail.com>, linux-can@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: wg@grandegger.com, linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@nxp.com>
 
-Hello Nikita,
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-On 09/05/2016 07:58 PM, Nikita Edward Baruzdin wrote:
-> Since PCI bus width is at least 32 bits, using ioread32()/iowrite32()
-> instead of consecutive ioread8()/iowrite8() calls seems reasonable.
+On a imx6ul-pico board the following error is seen during system suspend:
+    
+dpm_run_callback(): platform_pm_resume+0x0/0x54 returns -110     
+PM: Device 2090000.flexcan failed to resume: error -110          
 
-I definitely like this patch.
+The reason for this suspend error is because when the CAN interface is not
+active the clocks are disabled and then flexcan_chip_enable() will
+always fail due to a timeout error.
 
-> Thus, this patch introduces plx_pci_read_reg_rep() and
-> plx_pci_write_reg_rep() functions that use ioread32()/iowrite32() for
-> register accesses as much as possible. The functions are then used to
-> read/write CAN ID and payload data to improve driver performance.
+In order to fix this issue, only call flexcan_chip_enable/disable()
+when the CAN interface is active.
 
-But there is something more to do as you currently brake all sja1000 
-drivers except plx_pci ;-)
+Based on a patch from Dong Aisheng in the NXP kernel.
 
-You need to take care of drivers that do not support 
-priv->[read|write]_reg_rep().
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+Changes since v2:
+- Move flexcan_chip_disable() to be called as the first function in
+flexcan_suspen() to keep the original order.
+Changes since v1:
+- Change Subject: 'resume' instead of 'suspend'
 
-So that other (pci) drivers can follow at will after testing.
+ drivers/net/can/flexcan.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-> Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
-> ---
->  drivers/net/can/sja1000/plx_pci.c | 42 +++++++++++++++++++++++++++++++++++++++
->  drivers/net/can/sja1000/sja1000.c | 30 +++++++++++-----------------
->  drivers/net/can/sja1000/sja1000.h |  4 ++++
->  3 files changed, 58 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
-> index 3eb7430..7aaf6b9 100644
-> --- a/drivers/net/can/sja1000/plx_pci.c
-> +++ b/drivers/net/can/sja1000/plx_pci.c
-> @@ -371,6 +371,46 @@ static void plx_pci_write_reg(const struct sja1000_priv *priv, int port, u8 val)
->  	iowrite8(val, priv->reg_base + port);
->  }
->
-> +static void plx_pci_read_reg_rep(const struct sja1000_priv *priv, int reg,
-> +                                 void *buffer, unsigned long count)
-> +{
-> +	u8 *p = buffer;
-> +
-> +	while (count >= 4) {
-> +		*(u32 *)p = ioread32(priv->reg_base + reg);
-> +		p += 4;
-> +		reg += 4;
-> +		count -= 4;
-> +	}
-> +	if (count & 2) {
-> +		*(u16 *)p = ioread16(priv->reg_base + reg);
-> +		p += 2;
-> +		reg += 2;
-> +	}
-> +	if (count & 1)
-> +		*p = ioread8(priv->reg_base + reg);
-> +}
-> +
-> +static void plx_pci_write_reg_rep(const struct sja1000_priv *priv, int reg,
-> +                                  const void *buffer, unsigned long count)
-> +{
-> +	const u8 *p = buffer;
-> +
-> +	while (count >= 4) {
-> +		iowrite32(*(u32 *)p, priv->reg_base + reg);
-> +		p += 4;
-> +		reg += 4;
-> +		count -= 4;
-> +	}
-> +	if (count & 2) {
-> +		iowrite16(*(u16 *)p, priv->reg_base + reg);
-> +		p += 2;
-> +		reg += 2;
-> +	}
-> +	if (count & 1)
-> +		iowrite8(*p, priv->reg_base + reg);
-> +}
-> +
->  /*
->   * Check if a CAN controller is present at the specified location
->   * by trying to switch 'em from the Basic mode into the PeliCAN mode.
-> @@ -626,6 +666,8 @@ static int plx_pci_add_card(struct pci_dev *pdev,
->  		priv->reg_base = addr + cm->offset;
->  		priv->read_reg = plx_pci_read_reg;
->  		priv->write_reg = plx_pci_write_reg;
-> +		priv->read_reg_rep = plx_pci_read_reg_rep;
-> +		priv->write_reg_rep = plx_pci_write_reg_rep;
->
->  		/* Check if channel is present */
->  		if (plx_pci_check_sja1000(priv)) {
-> diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-> index 9f10779..b26173e 100644
-> --- a/drivers/net/can/sja1000/sja1000.c
-> +++ b/drivers/net/can/sja1000/sja1000.c
-> @@ -288,7 +288,7 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
->  	canid_t id;
->  	uint8_t dreg;
->  	u8 cmd_reg_val = 0x00;
-> -	int i;
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 41c0fc9..16f7cad 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1268,11 +1268,10 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 	int err;
+ 
+-	err = flexcan_chip_disable(priv);
+-	if (err)
+-		return err;
+-
+ 	if (netif_running(dev)) {
++		err = flexcan_chip_disable(priv);
++		if (err)
++			return err;
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+ 	}
+@@ -1285,13 +1284,17 @@ static int __maybe_unused flexcan_resume(struct device *device)
+ {
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
++	int err;
+ 
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	if (netif_running(dev)) {
+ 		netif_device_attach(dev);
+ 		netif_start_queue(dev);
++		err = flexcan_chip_enable(priv);
++		if (err)
++			return err;
+ 	}
+-	return flexcan_chip_enable(priv);
++	return 0;
+ }
+ 
+ static SIMPLE_DEV_PM_OPS(flexcan_pm_ops, flexcan_suspend, flexcan_resume);
+-- 
+1.9.1
 
-This 'i' needs to be preserved, see below.
-
-> +	u8 id_buf[4];
->
->  	if (can_dropped_invalid_skb(dev, skb))
->  		return NETDEV_TX_OK;
-> @@ -305,19 +305,16 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
->  		fi |= SJA1000_FI_FF;
->  		dreg = SJA1000_EFF_BUF;
->  		priv->write_reg(priv, SJA1000_FI, fi);
-> -		priv->write_reg(priv, SJA1000_ID1, (id & 0x1fe00000) >> 21);
-> -		priv->write_reg(priv, SJA1000_ID2, (id & 0x001fe000) >> 13);
-> -		priv->write_reg(priv, SJA1000_ID3, (id & 0x00001fe0) >> 5);
-> -		priv->write_reg(priv, SJA1000_ID4, (id & 0x0000001f) << 3);
-
-Has to be
-
-if (priv->write_reg_rep) {
-	*(u32 *)id_buf = cpu_to_be32(id << 3);
-	priv->write_reg_rep(priv, SJA1000_ID1, id_buf, 4);
-} else {
-	priv->write_reg(priv, SJA1000_ID1, (id & 0x1fe00000) >> 21);
-	priv->write_reg(priv, SJA1000_ID2, (id & 0x001fe000) >> 13);
-	priv->write_reg(priv, SJA1000_ID3, (id & 0x00001fe0) >> 5);
-	priv->write_reg(priv, SJA1000_ID4, (id & 0x0000001f) << 3);
-}
-
-at all occurrences of priv->[read|write]_reg_rep().
-
-
->  	} else {
->  		dreg = SJA1000_SFF_BUF;
->  		priv->write_reg(priv, SJA1000_FI, fi);
-> -		priv->write_reg(priv, SJA1000_ID1, (id & 0x000007f8) >> 3);
-> -		priv->write_reg(priv, SJA1000_ID2, (id & 0x00000007) << 5);
-> +		*(u16 *)id_buf = cpu_to_be16(id << 5);
-> +		priv->write_reg_rep(priv, SJA1000_ID1, id_buf, 2);
-
-Like here.
-
->  	}
->
-> -	for (i = 0; i < dlc; i++)
-> -		priv->write_reg(priv, dreg++, cf->data[i]);
-> +	priv->write_reg_rep(priv, dreg, cf->data, dlc);
-
-dito
-
->
->  	can_put_echo_skb(skb, dev, 0);
->
-> @@ -343,7 +340,7 @@ static void sja1000_rx(struct net_device *dev)
->  	uint8_t fi;
->  	uint8_t dreg;
->  	canid_t id;
-> -	int i;
-> +	u8 id_buf[4];
->
->  	/* create zero'ed CAN frame buffer */
->  	skb = alloc_can_skb(dev, &cf);
-> @@ -355,24 +352,21 @@ static void sja1000_rx(struct net_device *dev)
->  	if (fi & SJA1000_FI_FF) {
->  		/* extended frame format (EFF) */
->  		dreg = SJA1000_EFF_BUF;
-> -		id = (priv->read_reg(priv, SJA1000_ID1) << 21)
-> -		    | (priv->read_reg(priv, SJA1000_ID2) << 13)
-> -		    | (priv->read_reg(priv, SJA1000_ID3) << 5)
-> -		    | (priv->read_reg(priv, SJA1000_ID4) >> 3);
-> +		priv->read_reg_rep(priv, SJA1000_ID1, id_buf, 4);
-> +		id = be32_to_cpu(*(u32 *)id_buf) >> 3;
-
-here
-
->  		id |= CAN_EFF_FLAG;
->  	} else {
->  		/* standard frame format (SFF) */
->  		dreg = SJA1000_SFF_BUF;
-> -		id = (priv->read_reg(priv, SJA1000_ID1) << 3)
-> -		    | (priv->read_reg(priv, SJA1000_ID2) >> 5);
-> +		priv->read_reg_rep(priv, SJA1000_ID1, id_buf, 2);
-> +		id = be16_to_cpu(*(u16 *)id_buf) >> 5;
-
-here
-
->  	}
->
->  	cf->can_dlc = get_can_dlc(fi & 0x0F);
->  	if (fi & SJA1000_FI_RTR) {
->  		id |= CAN_RTR_FLAG;
->  	} else {
-> -		for (i = 0; i < cf->can_dlc; i++)
-> -			cf->data[i] = priv->read_reg(priv, dreg++);
-> +		priv->read_reg_rep(priv, dreg, cf->data, cf->can_dlc);
-
-and here.
-
-Additionally:
-
-You always take care of the CPU endian when reading writing CAN 
-identifiers. Why is it ok to use read_reg_rep() for the CAN data content 
-without any beXX_to_cpu() conversion?
-
-Regards,
-Oliver
-
-
->  	}
->
->  	cf->can_id = id;
-> diff --git a/drivers/net/can/sja1000/sja1000.h b/drivers/net/can/sja1000/sja1000.h
-> index 9d46398..887045a 100644
-> --- a/drivers/net/can/sja1000/sja1000.h
-> +++ b/drivers/net/can/sja1000/sja1000.h
-> @@ -157,6 +157,10 @@ struct sja1000_priv {
->  	/* the lower-layer is responsible for appropriate locking */
->  	u8 (*read_reg) (const struct sja1000_priv *priv, int reg);
->  	void (*write_reg) (const struct sja1000_priv *priv, int reg, u8 val);
-> +	void (*read_reg_rep) (const struct sja1000_priv *priv, int reg,
-> +	                      void *buffer, unsigned long count);
-> +	void (*write_reg_rep) (const struct sja1000_priv *priv, int reg,
-> +	                       const void *buffer, unsigned long count);
->  	void (*pre_irq) (const struct sja1000_priv *priv);
->  	void (*post_irq) (const struct sja1000_priv *priv);
->
->
