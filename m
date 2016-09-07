@@ -1,47 +1,46 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: sja1000: Optimise register accesses
-Date: Tue, 6 Sep 2016 21:18:41 +0200
-Message-ID: <bd27d046-fcbe-ad14-d750-7b136d87097c@hartkopp.net>
-References: <20160905175852.1513-1-nebaruzdin@gmail.com>
- <20160905175852.1513-2-nebaruzdin@gmail.com>
- <9a11af52-faf8-b784-8387-9ee48a6ed744@hartkopp.net>
- <CAEJ7JO1BRcMux59srO6VMW8jBXn8ycMy_U-ir2ke65pzXrS+UQ@mail.gmail.com>
+From: Holger Schurig <holgerschurig@gmail.com>
+Subject: Re: [PATCH v2 00/12] can: rx-offload: add implmentation and switch flexcan driver to use it
+Date: Wed, 07 Sep 2016 08:33:57 +0200
+Message-ID: <878tv48bhm.fsf@gmail.com>
+References: <1467657137-18891-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:13262 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755878AbcIFTSw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Sep 2016 15:18:52 -0400
-In-Reply-To: <CAEJ7JO1BRcMux59srO6VMW8jBXn8ycMy_U-ir2ke65pzXrS+UQ@mail.gmail.com>
+Received: from mail-wm0-f67.google.com ([74.125.82.67]:33213 "EHLO
+        mail-wm0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754746AbcIGGeA (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Sep 2016 02:34:00 -0400
+Received: by mail-wm0-f67.google.com with SMTP id w207so1295032wmw.0
+        for <linux-can@vger.kernel.org>; Tue, 06 Sep 2016 23:34:00 -0700 (PDT)
+In-Reply-To: <1467657137-18891-1-git-send-email-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-On 09/06/2016 06:22 PM, Nikita Edward Baruzdin wrote:
-> On Mon, Sep 5, 2016 at 10:56 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+Marc Kleine-Budde <mkl@pengutronix.de> writes:
 
->> You always take care of the CPU endian when reading writing CAN identifiers.
->> Why is it ok to use read_reg_rep() for the CAN data content without any
->> beXX_to_cpu() conversion?
->
-> beXX_to_cpu() is there just because CAN ID is stored in device registers in the
-> big-endian manner. The old code actually does the same byte reordering manually
-> with shifts.
->
-> However, I've now realised that current plx_pci_read/write_reg_rep()
-> implementations won't work with big-endian CPUs as ioreadXX()/iowriteXX()
-> assume the driver data needs to be cpu-endian while it really needs to be
-> little-endian since it is treated as a byte array.
->
-> Will it be ok, if I add cpu_to_leXX()/leXX_to_cpu() and change functions like
-> this? I've checked this is still correct with Intel CPU.
+Late answer :-)
 
-I assume this will be ok :-)
-Please send an updated version, so that Marc can take a look too.
+This driver was tested with Linux 4.7.2 an on i.MX6Q device. Not by me,
+I don't even have their exact test software. I just get the reports ...
 
-Best regards,
-Oliver
 
+Using some external tool (maybe Kvaser?) they generated 80% busload at
+500 kbps, the driver survived for 3 days without any data loss. So,
+compared with the current in-kernel driver, this is a definitive
+improvement!
+
+
+
+Then they did same CAN ping-ping test with reboots and wrote: "Out of
+about 16,000 reboots we had one failure. This failed both CAN interfaces
+and the logs show that the PTX-C received all CAN messages and returned
+them, but the test machine for some reason did not receive any CAN
+messages."
+
+I don't have any idea why Linux thought it was sending but the receiver
+didn't receive anything. And I'm no CAN expert, not at all. Wouldn't I
+get an error condition on the sending side?   How would a program get
+this error, is it a return value to sendto()
+
+Holger
