@@ -1,151 +1,85 @@
-From: Sergei Miroshnichenko <sergeimir@emcraft.com>
-Subject: [PATCH 1/1] can: fix deadlock reported after bus-off
-Date: Wed,  7 Sep 2016 16:51:12 +0300
-Message-ID: <1473256272-30283-1-git-send-email-sergeimir@emcraft.com>
+From: Alexander Gerasiov <gq@redlab-i.ru>
+Subject: Re: [PATCH v2] can: sja1000: Optimise register accesses
+Date: Wed, 7 Sep 2016 18:33:16 +0300
+Message-ID: <20160907183316.0c2fdc4f@brick.gerasiov.net>
+References: <20160907103852.28795-1-nebaruzdin@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ocean.emcraft.com ([185.75.190.205]:33212 "EHLO
-        ocean.emcraft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756490AbcIGOTc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Sep 2016 10:19:32 -0400
+Received: from mx.redlab-i.ru ([195.16.34.155]:53146 "EHLO mail.redlab-i.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1757373AbcIGPju (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 7 Sep 2016 11:39:50 -0400
+In-Reply-To: <20160907103852.28795-1-nebaruzdin@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: Alexander Dyachenko <sasha_d@emcraft.com>, Stefano Babic <sbabic@denx.de>, Sergei Miroshnichenko <sergeimir@emcraft.com>
+To: Nikita Edward Baruzdin <nebaruzdin@gmail.com>, linux-can@vger.kernel.org
 
-A timer was used to restart after the bus-off state, leading to a
-relatively large can_restart() executed in an interrupt context,
-which in turn sets up pinctrl. When this happens during system boot,
-there is a high probability of grabbing the pinctrl_list_mutex,
-which is locked already by the probe() of other device, making the
-kernel suspect a deadlock condition [1].
+Hello Nikita,
 
-To resolve this issue, the restart_timer is replaced by a delayed
-work.
+On Wed,  7 Sep 2016 13:38:52 +0300
+Nikita Edward Baruzdin <nebaruzdin@gmail.com> wrote:
 
-[1] https://github.com/victronenergy/venus/issues/24
+> Since PCI bus width is at least 32 bits, using ioread32()/iowrite32()
+> instead of consecutive ioread8()/iowrite8() calls seems reasonable.
+> 
+> Thus, this patch introduces plx_pci_read_reg_rep() and
+> plx_pci_write_reg_rep() functions that use ioread32()/iowrite32() for
+> register accesses as much as possible. The functions are then used to
+> read/write CAN ID and payload data to improve driver performance.
+> 
+> Signed-off-by: Nikita Edward Baruzdin <nebaruzdin@gmail.com>
 
-Signed-off-by: Sergei Miroshnichenko <sergeimir@emcraft.com>
----
- drivers/net/can/dev.c   | 27 +++++++++++++++++----------
- include/linux/can/dev.h |  3 ++-
- 2 files changed, 19 insertions(+), 11 deletions(-)
+> @@ -305,19 +306,33 @@ static netdev_tx_t sja1000_start_xmit(struct sk_buff *skb,
+>  		fi |= SJA1000_FI_FF;
+>  		dreg = SJA1000_EFF_BUF;
+>  		priv->write_reg(priv, SJA1000_FI, fi);
+> -		priv->write_reg(priv, SJA1000_ID1, (id & 0x1fe00000) >> 21);
+> -		priv->write_reg(priv, SJA1000_ID2, (id & 0x001fe000) >> 13);
+> -		priv->write_reg(priv, SJA1000_ID3, (id & 0x00001fe0) >> 5);
+> -		priv->write_reg(priv, SJA1000_ID4, (id & 0x0000001f) << 3);
+> +		if (priv->write_reg_rep) {
+> +			*(u32 *)id_buf = cpu_to_be32(id << 3);
+> +			priv->write_reg_rep(priv, SJA1000_ID1, id_buf, 4);
+> +		} else {
+> +			priv->write_reg(priv, SJA1000_ID1, (id & 0x1fe00000) >> 21);
+> +			priv->write_reg(priv, SJA1000_ID2, (id & 0x001fe000) >> 13);
+> +			priv->write_reg(priv, SJA1000_ID3, (id & 0x00001fe0) >> 5);
+> +			priv->write_reg(priv, SJA1000_ID4, (id & 0x0000001f) << 3);
+> +		}
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index e21f7cc..8d6208c 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -21,6 +21,7 @@
- #include <linux/slab.h>
- #include <linux/netdevice.h>
- #include <linux/if_arp.h>
-+#include <linux/workqueue.h>
- #include <linux/can.h>
- #include <linux/can/dev.h>
- #include <linux/can/skb.h>
-@@ -501,9 +502,8 @@ EXPORT_SYMBOL_GPL(can_free_echo_skb);
- /*
-  * CAN device restart for bus-off recovery
-  */
--static void can_restart(unsigned long data)
-+static void can_restart(struct net_device *dev)
- {
--	struct net_device *dev = (struct net_device *)data;
- 	struct can_priv *priv = netdev_priv(dev);
- 	struct net_device_stats *stats = &dev->stats;
- 	struct sk_buff *skb;
-@@ -543,6 +543,14 @@ restart:
- 		netdev_err(dev, "Error %d during restart", err);
- }
- 
-+static void can_restart_work(struct work_struct *work)
-+{
-+	struct delayed_work *dwork = to_delayed_work(work);
-+	struct can_priv *priv = container_of(dwork, struct can_priv, restart_work);
-+
-+	can_restart(priv->dev);
-+}
-+
- int can_restart_now(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
-@@ -556,8 +564,8 @@ int can_restart_now(struct net_device *dev)
- 	if (priv->state != CAN_STATE_BUS_OFF)
- 		return -EBUSY;
- 
--	/* Runs as soon as possible in the timer context */
--	mod_timer(&priv->restart_timer, jiffies);
-+	cancel_delayed_work_sync(&priv->restart_work);
-+	can_restart(dev);
- 
- 	return 0;
- }
-@@ -578,8 +586,8 @@ void can_bus_off(struct net_device *dev)
- 	netif_carrier_off(dev);
- 
- 	if (priv->restart_ms)
--		mod_timer(&priv->restart_timer,
--			  jiffies + (priv->restart_ms * HZ) / 1000);
-+		schedule_delayed_work(&priv->restart_work,
-+				      msecs_to_jiffies(priv->restart_ms));
- }
- EXPORT_SYMBOL_GPL(can_bus_off);
- 
-@@ -688,6 +696,7 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
- 		return NULL;
- 
- 	priv = netdev_priv(dev);
-+	priv->dev = dev;
- 
- 	if (echo_skb_max) {
- 		priv->echo_skb_max = echo_skb_max;
-@@ -697,7 +706,7 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
- 
- 	priv->state = CAN_STATE_STOPPED;
- 
--	init_timer(&priv->restart_timer);
-+	INIT_DELAYED_WORK(&priv->restart_work, can_restart_work);
- 
- 	return dev;
- }
-@@ -778,8 +787,6 @@ int open_candev(struct net_device *dev)
- 	if (!netif_carrier_ok(dev))
- 		netif_carrier_on(dev);
- 
--	setup_timer(&priv->restart_timer, can_restart, (unsigned long)dev);
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(open_candev);
-@@ -794,7 +801,7 @@ void close_candev(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 
--	del_timer_sync(&priv->restart_timer);
-+	cancel_delayed_work_sync(&priv->restart_work);
- 	can_flush_echo_skb(dev);
- }
- EXPORT_SYMBOL_GPL(close_candev);
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 5261751..5f527094 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -32,6 +32,7 @@ enum can_mode {
-  * CAN common private data
-  */
- struct can_priv {
-+	struct net_device *dev;
- 	struct can_device_stats can_stats;
- 
- 	struct can_bittiming bittiming, data_bittiming;
-@@ -47,7 +48,7 @@ struct can_priv {
- 	u32 ctrlmode_static;	/* static enabled options for driver/hardware */
- 
- 	int restart_ms;
--	struct timer_list restart_timer;
-+	struct delayed_work restart_work;
- 
- 	int (*do_set_bittiming)(struct net_device *dev);
- 	int (*do_set_data_bittiming)(struct net_device *dev);
+Nikita, as I said before, I believe that this should be implemented in
+slightly different way.
+
+sja1000.c should have
+static void sja1000_read_reg_rep(u8 *buf, size_t size)
+{
+	unsigned pos = 0;
+	while(pos < size){
+		priv->read_reg(buf[pos]);
+		pos++;
+	}
+}
+
+and priv->read_reg_rep = sja1000_read_reg_rep;
+
+But in plx_pci.c you implement optimized version
+static void plx_pci_read_reg_rep()
+{
+}
+
+and assign it to priv->read_reg_rep
+
+The same thing should be done with write functions.
+
+Then you call _reg_rep functions everywhere in the code (where you read/write
+more then one register).
+
 -- 
-2.1.0
+Best regards,
+ Alexander Gerasiov
 
+ Contacts:
+ e-mail: gq@cs.msu.su  Homepage: http://gerasiov.net  Skype: gerasiov
+ PGP fingerprint: 04B5 9D90 DF7C C2AB CD49  BAEA CA87 E9E8 2AAC 33F1
