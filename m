@@ -1,171 +1,150 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 00/26] constify local structures
-Date: Sun, 11 Sep 2016 15:05:42 +0200
-Message-ID: <1473599168-30561-1-git-send-email-Julia.Lawall@lip6.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
-To: linux-renesas-soc@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mustafa Ismail <mustafa.ismail@intel.com>, Tatyana Nikolova <tatyana.e.nikolova@intel.com>, kernel-janitors@vger.kernel.org, linux-fbdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, linux-acpi@vger.kernel.org, tpmdd-devel@lists.sourceforge.net, linux-media@vger.kernel.org, linux-pm@vger.kernel.org, linux-can@vger.kernel.org, Shiraz Saleem <shiraz.saleem@intel.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, Chien Tin Tung <chien.tin.tung@intel.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, linux-usb@vger.kernel.org, joe@perches.com
+Subject: [PATCH 11/26] can: constify local structures
+Date: Sun, 11 Sep 2016 15:05:53 +0200
+Message-ID: <1473599168-30561-12-git-send-email-Julia.Lawall@lip6.fr>
+References: <1473599168-30561-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1473599168-30561-1-git-send-email-Julia.Lawall@lip6.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: joe@perches.com, kernel-janitors@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Constify local structures.
+For structure types defined in the same file or local header files, find
+top-level static structure declarations that have the following
+properties:
+1. Never reassigned.
+2. Address never taken
+3. Not passed to a top-level macro call
+4. No pointer or array-typed field passed to a function or stored in a
+variable.
+Declare structures having all of these properties as const.
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+Done using Coccinelle.
+Based on a suggestion by Joe Perches <joe@perches.com>.
 
-// <smpl>
-// The first rule ignores some cases that posed problems
-@r disable optional_qualifier@
-identifier s != {peri_clk_data,threshold_attr,tracer_flags,tracer};
-identifier i != {s5k5baf_cis_rect,smtcfb_fix};
-position p;
-@@
-static struct s i@p = { ... };
-
-@lstruct@
-identifier r.s;
-@@
-struct s { ... };
-
-@used depends on lstruct@
-identifier r.i;
-@@
-i
-
-@bad1@
-expression e;
-identifier r.i;
-assignment operator a;
-@@
- (<+...i...+>) a e
-
-@bad2@
-identifier r.i;
-@@
- &(<+...i...+>)
-
-@bad3@
-identifier r.i;
-declarer d;
-@@
- d(...,<+...i...+>,...);
-
-@bad4@
-identifier r.i;
-type T;
-T[] e;
-identifier f;
-position p;
-@@
-
-f@p(...,
-(
-  (<+...i...+>)
-&
-  e
-)
-,...)
-
-@bad4a@
-identifier r.i;
-type T;
-T *e;
-identifier f;
-position p;
-@@
-
-f@p(...,
-(
-  (<+...i...+>)
-&
-  e
-)
-,...)
-
-@ok5@
-expression *e;
-identifier r.i;
-position p;
-@@
-e =@p i
-
-@bad5@
-expression *e;
-identifier r.i;
-position p != ok5.p;
-@@
-e =@p (<+...i...+>)
-
-@rr depends on used && !bad1 && !bad2 && !bad3 && !bad4 && !bad4a && !bad5@
-identifier s,r.i;
-position r.p;
-@@
-
-static
-+const
- struct s i@p = { ... };
-
-@depends on used && !bad1 && !bad2 && !bad3 && !bad4 && !bad4a && !bad5
- disable optional_qualifier@
-identifier rr.s,r.i;
-@@
-
-static
-+const
- struct s i;
-// </smpl>
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
+The semantic patch seems too long for a commit log, but is in the cover
+letter.
 
- drivers/acpi/acpi_apd.c                              |    8 +++---
- drivers/char/tpm/tpm-interface.c                     |   10 ++++----
- drivers/char/tpm/tpm-sysfs.c                         |    2 -
- drivers/cpufreq/intel_pstate.c                       |    8 +++---
- drivers/infiniband/hw/i40iw/i40iw_uk.c               |    6 ++---
- drivers/media/i2c/tvp514x.c                          |    2 -
- drivers/media/pci/ddbridge/ddbridge-core.c           |   18 +++++++--------
- drivers/media/pci/ngene/ngene-cards.c                |   14 ++++++------
- drivers/media/pci/smipcie/smipcie-main.c             |    8 +++---
- drivers/misc/sgi-xp/xpc_uv.c                         |    2 -
- drivers/net/arcnet/com20020-pci.c                    |   10 ++++----
- drivers/net/can/c_can/c_can_pci.c                    |    4 +--
- drivers/net/can/sja1000/plx_pci.c                    |   20 ++++++++---------
- drivers/net/ethernet/mellanox/mlx4/main.c            |    4 +--
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c |    2 -
- drivers/net/ethernet/renesas/sh_eth.c                |   14 ++++++------
- drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c     |    2 -
- drivers/net/wireless/ath/dfs_pattern_detector.c      |    2 -
- drivers/net/wireless/intel/iwlegacy/3945.c           |    4 +--
- drivers/net/wireless/realtek/rtlwifi/rtl8188ee/sw.c  |    2 -
- drivers/net/wireless/realtek/rtlwifi/rtl8192ce/sw.c  |    2 -
- drivers/net/wireless/realtek/rtlwifi/rtl8192de/sw.c  |    2 -
- drivers/net/wireless/realtek/rtlwifi/rtl8192ee/sw.c  |    2 -
- drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c  |    2 -
- drivers/net/wireless/realtek/rtlwifi/rtl8723ae/sw.c  |    2 -
- drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c  |    2 -
- drivers/net/wireless/realtek/rtlwifi/rtl8821ae/sw.c  |    2 -
- drivers/platform/chrome/chromeos_laptop.c            |   22 +++++++++----------
- drivers/platform/x86/intel_scu_ipc.c                 |    6 ++---
- drivers/platform/x86/intel_telemetry_debugfs.c       |    2 -
- drivers/scsi/esas2r/esas2r_flash.c                   |    2 -
- drivers/scsi/hptiop.c                                |    6 ++---
- drivers/spi/spi-dw-pci.c                             |    4 +--
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c         |    2 -
- drivers/usb/misc/ezusb.c                             |    2 -
- drivers/video/fbdev/matrox/matroxfb_g450.c           |    2 -
- lib/crc64_ecma.c                                     |    2 -
- sound/pci/ctxfi/ctatc.c                              |    2 -
- sound/pci/hda/patch_ca0132.c                         |   10 ++++----
- sound/pci/riptide/riptide.c                          |    2 -
- 40 files changed, 110 insertions(+), 110 deletions(-)
+ drivers/net/can/c_can/c_can_pci.c |    4 ++--
+ drivers/net/can/sja1000/plx_pci.c |   20 ++++++++++----------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index 7be393c..4bc345d 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -251,14 +251,14 @@ static void c_can_pci_remove(struct pci_dev *pdev)
+ 	pci_disable_device(pdev);
+ }
+ 
+-static struct c_can_pci_data c_can_sta2x11= {
++static const struct c_can_pci_data c_can_sta2x11 = {
+ 	.type = BOSCH_C_CAN,
+ 	.reg_align = C_CAN_REG_ALIGN_32,
+ 	.freq = 52000000, /* 52 Mhz */
+ 	.bar = 0,
+ };
+ 
+-static struct c_can_pci_data c_can_pch = {
++static const struct c_can_pci_data c_can_pch = {
+ 	.type = BOSCH_C_CAN,
+ 	.reg_align = C_CAN_REG_32,
+ 	.freq = 50000000, /* 50 MHz */
+diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+index 3eb7430..59bc378 100644
+--- a/drivers/net/can/sja1000/plx_pci.c
++++ b/drivers/net/can/sja1000/plx_pci.c
+@@ -170,7 +170,7 @@ struct plx_pci_card_info {
+ 	void (*reset_func)(struct pci_dev *pdev);
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_adlink = {
++static const struct plx_pci_card_info plx_pci_card_info_adlink = {
+ 	"Adlink PCI-7841/cPCI-7841", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{1, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x80, 0x80} },
+@@ -178,7 +178,7 @@ static struct plx_pci_card_info plx_pci_card_info_adlink = {
+ 	/* based on PLX9052 */
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_adlink_se = {
++static const struct plx_pci_card_info plx_pci_card_info_adlink_se = {
+ 	"Adlink PCI-7841/cPCI-7841 SE", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x80, 0x80} },
+@@ -186,7 +186,7 @@ static struct plx_pci_card_info plx_pci_card_info_adlink_se = {
+ 	/* based on PLX9052 */
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_esd200 = {
++static const struct plx_pci_card_info plx_pci_card_info_esd200 = {
+ 	"esd CAN-PCI/CPCI/PCI104/200", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x100, 0x80} },
+@@ -194,7 +194,7 @@ static struct plx_pci_card_info plx_pci_card_info_esd200 = {
+ 	/* based on PLX9030/9050 */
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_esd266 = {
++static const struct plx_pci_card_info plx_pci_card_info_esd266 = {
+ 	"esd CAN-PCI/PMC/266", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x100, 0x80} },
+@@ -202,7 +202,7 @@ static struct plx_pci_card_info plx_pci_card_info_esd266 = {
+ 	/* based on PLX9056 */
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_esd2000 = {
++static const struct plx_pci_card_info plx_pci_card_info_esd2000 = {
+ 	"esd CAN-PCIe/2000", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x100, 0x80} },
+@@ -210,7 +210,7 @@ static struct plx_pci_card_info plx_pci_card_info_esd2000 = {
+ 	/* based on PEX8311 */
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_ixxat = {
++static const struct plx_pci_card_info plx_pci_card_info_ixxat = {
+ 	"IXXAT PC-I 04/PCI", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x200, 0x80} },
+@@ -218,7 +218,7 @@ static struct plx_pci_card_info plx_pci_card_info_ixxat = {
+ 	/* based on PLX9050 */
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_marathon_pci = {
++static const struct plx_pci_card_info plx_pci_card_info_marathon_pci = {
+ 	"Marathon CAN-bus-PCI", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{0, 0x00, 0x00}, { {2, 0x00, 0x00}, {4, 0x00, 0x00} },
+@@ -234,7 +234,7 @@ static struct plx_pci_card_info plx_pci_card_info_marathon_pcie = {
+ 	/* based on PEX8311 */
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_tews = {
++static const struct plx_pci_card_info plx_pci_card_info_tews = {
+ 	"TEWS TECHNOLOGIES TPMC810", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{0, 0x00, 0x00}, { {2, 0x000, 0x80}, {2, 0x100, 0x80} },
+@@ -242,7 +242,7 @@ static struct plx_pci_card_info plx_pci_card_info_tews = {
+ 	/* based on PLX9030 */
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_cti = {
++static const struct plx_pci_card_info plx_pci_card_info_cti = {
+ 	"Connect Tech Inc. CANpro/104-Plus Opto (CRG001)", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{0, 0x00, 0x00}, { {2, 0x000, 0x80}, {2, 0x100, 0x80} },
+@@ -250,7 +250,7 @@ static struct plx_pci_card_info plx_pci_card_info_cti = {
+ 	/* based on PLX9030 */
+ };
+ 
+-static struct plx_pci_card_info plx_pci_card_info_elcus = {
++static const struct plx_pci_card_info plx_pci_card_info_elcus = {
+ 	"Eclus CAN-200-PCI", 2,
+ 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+ 	{1, 0x00, 0x00}, { {2, 0x00, 0x80}, {3, 0x00, 0x80} },
