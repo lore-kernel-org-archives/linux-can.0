@@ -1,29 +1,22 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Open Source CANopen Stack
-Date: Fri, 16 Sep 2016 18:23:20 +0000
-Message-ID: <147405019990.11763.11132381073827730113@maxwell>
+From: makafe david <kendeykoffi@gmail.com>
+Subject: (unknown)
+Date: Sat, 17 Sep 2016 08:07:18 +0000
+Message-ID: <CALec-3K2qib=8deycMLbzyjQvgRzUZg6PqW1Nts2CALOvcWf_A@mail.gmail.com>
+Reply-To: makafedavid@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db5eur01on0086.outbound.protection.outlook.com ([104.47.2.86]:12896
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1754701AbcIQDBc (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 16 Sep 2016 23:01:32 -0400
+Received: from mail-vk0-f66.google.com ([209.85.213.66]:35279 "EHLO
+        mail-vk0-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754949AbcIQIHU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 17 Sep 2016 04:07:20 -0400
+Received: by mail-vk0-f66.google.com with SMTP id b133so2316295vka.2
+        for <linux-can@vger.kernel.org>; Sat, 17 Sep 2016 01:07:20 -0700 (PDT)
+Subject: 
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
 
-Hi guys,
+Hello!
 
-I've written a new CANopen master.
-
-I asked the boss if I could make it Open Source and he said yes.
-
-So... enjoy :)
-
-https://github.com/marel-keytech/openCANopen
-
-Best regards,
-Andri
+I have something I wanna share with you. Kindly reply back if interested.
+Thank you!!
