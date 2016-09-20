@@ -1,25 +1,40 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: BCM loopback - Information request
-Date: Tue, 20 Sep 2016 17:29:26 +0200
-Message-ID: <79dbb349-8bf5-ea85-e0dc-80cd5114e41a@hartkopp.net>
+From: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>
+Subject: RE: BCM loopback - Information request
+Date: Tue, 20 Sep 2016 15:43:55 +0000
+Message-ID: <BECC71D675C45C4F912901A0BBE9A3A41493CDF0@srv-mail.DominioAlfa.local>
 References: <BECC71D675C45C4F912901A0BBE9A3A41493CD7D@srv-mail.DominioAlfa.local>
  <1509366.LC0YPQ3zn0@ws-stein>
  <BECC71D675C45C4F912901A0BBE9A3A41493CDA1@srv-mail.DominioAlfa.local>
  <0cbe9cab-e983-0439-e11d-bd59b8e2f32e@hartkopp.net>
  <BECC71D675C45C4F912901A0BBE9A3A41493CDCC@srv-mail.DominioAlfa.local>
+ <79dbb349-8bf5-ea85-e0dc-80cd5114e41a@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:26561 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753182AbcITP3c (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Sep 2016 11:29:32 -0400
-In-Reply-To: <BECC71D675C45C4F912901A0BBE9A3A41493CDCC@srv-mail.DominioAlfa.local>
+Received: from relay.efuture.it ([81.29.204.82]:40421 "EHLO relay.efuture.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751643AbcITPoF (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 20 Sep 2016 11:44:05 -0400
+In-Reply-To: <79dbb349-8bf5-ea85-e0dc-80cd5114e41a@hartkopp.net>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>, Alexander Stein <alexander.stein@systec-electronic.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Alexander Stein <alexander.stein@systec-electronic.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+
+It solves perfectly my issue.
+
+Thanks for your piece of software, good  luck sirs.
+
+Andrea
+
+-----Original Message-----
+From: Oliver Hartkopp [mailto:socketcan@hartkopp.net] 
+Sent: martedì 20 settembre 2016 17:29
+To: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>; Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: linux-can@vger.kernel.org
+Subject: Re: BCM loopback - Information request
 
 
 
@@ -33,17 +48,11 @@ Yes.
 "MSG_DONTROUTE: set when the received frame was created on the local host."
 
 
-or same CAN interface? On the uPC I'm currently using there are two CAN 
-interfaces, and it could happen that one sends data to be processed to 
-the other.
+or same CAN interface? On the uPC I'm currently using there are two CAN interfaces, and it could happen that one sends data to be processed to the other.
 
-When the CAN frame is physically received by the CAN controller it comes 
-'from outer space' and not from the local host.
+When the CAN frame is physically received by the CAN controller it comes 'from outer space' and not from the local host.
 
-When you sent a frame with CAN ID 0x123 with the CAN_BCM on can0 and you 
-have can0 and can1 connected together the received frame on can0 will 
-have MSG_DONTROUTE set and the frame received from can1 will have 
-MSG_DONTROUTE unset.
+When you sent a frame with CAN ID 0x123 with the CAN_BCM on can0 and you have can0 and can1 connected together the received frame on can0 will have MSG_DONTROUTE set and the frame received from can1 will have MSG_DONTROUTE unset.
 
 Regards,
 Oliver
@@ -55,7 +64,8 @@ Oliver
 > -----Original Message-----
 > From: Oliver Hartkopp [mailto:socketcan@hartkopp.net]
 > Sent: martedì 20 settembre 2016 17:07
-> To: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>; Alexander Stein <alexander.stein@systec-electronic.com>
+> To: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>; Alexander 
+> Stein <alexander.stein@systec-electronic.com>
 > Cc: linux-can@vger.kernel.org
 > Subject: Re: BCM loopback - Information request
 >
@@ -73,7 +83,8 @@ Oliver
 >
 > Alternatively you can check for the fames you received on a CAN_RAW socket whether these frames have been created on the local host:
 >
-> http://lxr.linux.no/#linux+v4.7.4/Documentation/networking/can.txt#L632
+> http://lxr.linux.no/#linux+v4.7.4/Documentation/networking/can.txt#L63
+> 2
 >
 > Which means that you have to use recvmsg() to read from CAN_RAW.
 >
@@ -102,17 +113,18 @@ Oliver
 >> Hi Andrea,
 >>
 >> On Tuesday 20 September 2016 09:42:53, Angeloni Andrea wrote:
->>> In my application there is a thread for each initialized CAN
+>>> In my application there is a thread for each initialized CAN 
 >>> interface that sends over TCP all the read data to a Windows Client.
->>> Data are read using Socket RAW. Application is also capable to send
+>>> Data are read using Socket RAW. Application is also capable to send 
 >>> cyclic messages using Broadcast manager.
 >>>
->>> Here is my question: how can I configure my application so that
+>>> Here is my question: how can I configure my application so that 
 >>> reading thread does not get messages sent by BCM on the same interface?
 >>
->> I think the socket option CAN_RAW_LOOPBACK is what you need. Please
->> refer to
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/D
+>> I think the socket option CAN_RAW_LOOPBACK is what you need. Please 
+>> refer to 
+>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/
+>> D
 >> ocumentation/networking/can.txt#n536
 >> You will not receive CAN frames sent from interface (BCM and other CAN frames), thus only messages from other CAN nodes.
 >>
@@ -122,8 +134,9 @@ Oliver
 >>
 >> --
 >> To unsubscribe from this list: send the line "unsubscribe linux-can"
->> in the body of a message to majordomo@vger.kernel.org More majordomo
+>> in the body of a message to majordomo@vger.kernel.org More majordomo 
 >> info at  http://vger.kernel.org/majordomo-info.html
 >>
 >
 >
+
