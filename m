@@ -1,73 +1,159 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] net: can: ifi: Configure transmitter delay
-Date: Wed, 21 Sep 2016 10:43:55 +0200
-Message-ID: <20160921084355.20972-2-mkl@pengutronix.de>
-References: <20160921084355.20972-1-mkl@pengutronix.de>
+From: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>
+Subject: RE: BCM loopback - Information request
+Date: Wed, 21 Sep 2016 13:35:19 +0000
+Message-ID: <BECC71D675C45C4F912901A0BBE9A3A41493CE5B@srv-mail.DominioAlfa.local>
+References: <BECC71D675C45C4F912901A0BBE9A3A41493CD7D@srv-mail.DominioAlfa.local>
+ <1509366.LC0YPQ3zn0@ws-stein>
+ <BECC71D675C45C4F912901A0BBE9A3A41493CDA1@srv-mail.DominioAlfa.local>
+ <0cbe9cab-e983-0439-e11d-bd59b8e2f32e@hartkopp.net>
+ <BECC71D675C45C4F912901A0BBE9A3A41493CDCC@srv-mail.DominioAlfa.local>
+ <79dbb349-8bf5-ea85-e0dc-80cd5114e41a@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41808 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751360AbcIUIoE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Sep 2016 04:44:04 -0400
-In-Reply-To: <20160921084355.20972-1-mkl@pengutronix.de>
+Received: from relay.efuture.it ([81.29.204.82]:48803 "EHLO relay.efuture.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S932624AbcIUNfa (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 21 Sep 2016 09:35:30 -0400
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marek Vasut <marex@denx.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, linux-stable <stable@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-From: Marek Vasut <marex@denx.de>
+Dears,
 
-Configure the transmitter delay register at +0x1c to correctly handle
-the CAN FD bitrate switch (BRS). This moves the SSP (secondary sample
-point) to a proper offset, so that the TDC mechanism works and won't
-generate error frames on the CAN link.
+sorry to bother you again with newby questions.
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/ifi_canfd/ifi_canfd.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+I changed my code so that "read" is replaced by "recvmsg". After reading, flag MSG_DONTROUTE is checked to understand if data is coming from same CAN device. Now I correctly do not see on CAN[i] messages sent by CAN[i], but whatever I send, via socket RAW or BCM, is read (i.e. n = recvmsg() > 0) twice by recvmsg.
 
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index 2d1d22eec750..368bb0710d8f 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -81,6 +81,10 @@
- #define IFI_CANFD_TIME_SET_TIMEA_4_12_6_6	BIT(15)
- 
- #define IFI_CANFD_TDELAY			0x1c
-+#define IFI_CANFD_TDELAY_DEFAULT		0xb
-+#define IFI_CANFD_TDELAY_MASK			0x3fff
-+#define IFI_CANFD_TDELAY_ABS			BIT(14)
-+#define IFI_CANFD_TDELAY_EN			BIT(15)
- 
- #define IFI_CANFD_ERROR				0x20
- #define IFI_CANFD_ERROR_TX_OFFSET		0
-@@ -641,7 +645,7 @@ static void ifi_canfd_set_bittiming(struct net_device *ndev)
- 	struct ifi_canfd_priv *priv = netdev_priv(ndev);
- 	const struct can_bittiming *bt = &priv->can.bittiming;
- 	const struct can_bittiming *dbt = &priv->can.data_bittiming;
--	u16 brp, sjw, tseg1, tseg2;
-+	u16 brp, sjw, tseg1, tseg2, tdc;
- 
- 	/* Configure bit timing */
- 	brp = bt->brp - 2;
-@@ -664,6 +668,11 @@ static void ifi_canfd_set_bittiming(struct net_device *ndev)
- 	       (brp << IFI_CANFD_TIME_PRESCALE_OFF) |
- 	       (sjw << IFI_CANFD_TIME_SJW_OFF_7_9_8_8),
- 	       priv->base + IFI_CANFD_FTIME);
-+
-+	/* Configure transmitter delay */
-+	tdc = (dbt->brp * (dbt->phase_seg1 + 1)) & IFI_CANFD_TDELAY_MASK;
-+	writel(IFI_CANFD_TDELAY_EN | IFI_CANFD_TDELAY_ABS | tdc,
-+	       priv->base + IFI_CANFD_TDELAY);
- }
- 
- static void ifi_canfd_set_filter(struct net_device *ndev, const u32 id,
--- 
-2.9.3
+Any hint?
+
+Thanks,
+Andrea
+
+-----Original Message-----
+From: Angeloni Andrea 
+Sent: martedì 20 settembre 2016 17:44
+To: 'Oliver Hartkopp' <socketcan@hartkopp.net>; Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: linux-can@vger.kernel.org
+Subject: RE: BCM loopback - Information request
+
+It solves perfectly my issue.
+
+Thanks for your piece of software, good  luck sirs.
+
+Andrea
+
+-----Original Message-----
+From: Oliver Hartkopp [mailto:socketcan@hartkopp.net] 
+Sent: martedì 20 settembre 2016 17:29
+To: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>; Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: linux-can@vger.kernel.org
+Subject: Re: BCM loopback - Information request
+
+
+
+On 09/20/2016 05:19 PM, Angeloni Andrea wrote:
+> Ok clear.
+>
+> With local host you mean same Linux system
+
+Yes.
+
+"MSG_DONTROUTE: set when the received frame was created on the local host."
+
+
+or same CAN interface? On the uPC I'm currently using there are two CAN interfaces, and it could happen that one sends data to be processed to the other.
+
+When the CAN frame is physically received by the CAN controller it comes 'from outer space' and not from the local host.
+
+When you sent a frame with CAN ID 0x123 with the CAN_BCM on can0 and you have can0 and can1 connected together the received frame on can0 will have MSG_DONTROUTE set and the frame received from can1 will have MSG_DONTROUTE unset.
+
+Regards,
+Oliver
+
+>
+> Regards,
+> Andrea
+>
+> -----Original Message-----
+> From: Oliver Hartkopp [mailto:socketcan@hartkopp.net]
+> Sent: martedì 20 settembre 2016 17:07
+> To: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>; Alexander 
+> Stein <alexander.stein@systec-electronic.com>
+> Cc: linux-can@vger.kernel.org
+> Subject: Re: BCM loopback - Information request
+>
+> Hi Andrea,
+>
+> the CAN_BCM sets the loopback by default:
+>
+> http://lxr.linux.no/#linux+v4.7.4/net/can/bcm.c#L1229
+>
+> So it is not configurable by now.
+>
+> An possibility could be to implement socket options for the CAN_BCM so that a setsockopt() with a new CAN_BCM_LOOPBACK becomes available.
+>
+> But this is not in mainline Linux now.
+>
+> Alternatively you can check for the fames you received on a CAN_RAW socket whether these frames have been created on the local host:
+>
+> http://lxr.linux.no/#linux+v4.7.4/Documentation/networking/can.txt#L63
+> 2
+>
+> Which means that you have to use recvmsg() to read from CAN_RAW.
+>
+> 'candump' does it here:
+> https://github.com/linux-can/can-utils/blob/master/candump.c#L793
+>
+> Regards,
+> Oliver
+>
+> On 09/20/2016 12:19 PM, Angeloni Andrea wrote:
+>> Ciao Alexander,
+>>
+>> thanks for your answer.
+>>
+>> Unfortunately, CAN_RAW_LOOPBACK is not working. Option is indeed referring to socket and not device, while BCM messages are coming from a different socket.
+>>
+>> Andrea
+>>
+>> -----Original Message-----
+>> From: Alexander Stein [mailto:alexander.stein@systec-electronic.com]
+>> Sent: martedì 20 settembre 2016 11:54
+>> To: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>
+>> Cc: linux-can@vger.kernel.org
+>> Subject: Re: BCM loopback - Information request
+>>
+>> Hi Andrea,
+>>
+>> On Tuesday 20 September 2016 09:42:53, Angeloni Andrea wrote:
+>>> In my application there is a thread for each initialized CAN 
+>>> interface that sends over TCP all the read data to a Windows Client.
+>>> Data are read using Socket RAW. Application is also capable to send 
+>>> cyclic messages using Broadcast manager.
+>>>
+>>> Here is my question: how can I configure my application so that 
+>>> reading thread does not get messages sent by BCM on the same interface?
+>>
+>> I think the socket option CAN_RAW_LOOPBACK is what you need. Please 
+>> refer to 
+>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/
+>> D
+>> ocumentation/networking/can.txt#n536
+>> You will not receive CAN frames sent from interface (BCM and other CAN frames), thus only messages from other CAN nodes.
+>>
+>> HTH
+>> Alexander
+>>
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-can"
+>> in the body of a message to majordomo@vger.kernel.org More majordomo 
+>> info at  http://vger.kernel.org/majordomo-info.html
+>>
+>
+>
 
