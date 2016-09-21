@@ -1,7 +1,7 @@
 From: Angeloni Andrea <andrea.angeloni@alfamationglobal.com>
 Subject: RE: BCM loopback - Information request
-Date: Wed, 21 Sep 2016 13:35:19 +0000
-Message-ID: <BECC71D675C45C4F912901A0BBE9A3A41493CE5B@srv-mail.DominioAlfa.local>
+Date: Wed, 21 Sep 2016 15:03:21 +0000
+Message-ID: <BECC71D675C45C4F912901A0BBE9A3A41493CE6D@srv-mail.DominioAlfa.local>
 References: <BECC71D675C45C4F912901A0BBE9A3A41493CD7D@srv-mail.DominioAlfa.local>
  <1509366.LC0YPQ3zn0@ws-stein>
  <BECC71D675C45C4F912901A0BBE9A3A41493CDA1@srv-mail.DominioAlfa.local>
@@ -12,15 +12,29 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay.efuture.it ([81.29.204.82]:48803 "EHLO relay.efuture.it"
+Received: from relay.efuture.it ([81.29.204.82]:49442 "EHLO relay.efuture.it"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S932624AbcIUNfa (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 21 Sep 2016 09:35:30 -0400
+        id S934935AbcIUPDc (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 21 Sep 2016 11:03:32 -0400
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>, Alexander Stein <alexander.stein@systec-electronic.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+
+As usual, problem exists between chair and keyboard.
+
+I changed during debug the CAN filters. Same message was matching two of them, thus returning two different reads. Nothing related to recvmsg as wrongly reported by me.
+
+Regards,
+Andrea
+
+-----Original Message-----
+From: Angeloni Andrea 
+Sent: mercoledì 21 settembre 2016 15:35
+To: 'Oliver Hartkopp' <socketcan@hartkopp.net>; 'Alexander Stein' <alexander.stein@systec-electronic.com>
+Cc: 'linux-can@vger.kernel.org' <linux-can@vger.kernel.org>
+Subject: RE: BCM loopback - Information request
 
 Dears,
 
