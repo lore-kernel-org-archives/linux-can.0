@@ -1,82 +1,49 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/1] can: fix deadlock reported after bus-off
-Date: Thu, 22 Sep 2016 10:02:53 +0200
-Message-ID: <26ba9ddb-48f8-0c60-e971-305be23a2e02@pengutronix.de>
-References: <1473256272-30283-1-git-send-email-sergeimir@emcraft.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="sFBpe5TvUI39iidFPkgWe9jvld0m6lh7J"
+Subject: pull-request: can 2016-09-22
+Date: Thu, 22 Sep 2016 14:42:21 +0200
+Message-ID: <20160922124222.31598-1-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:33458 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:33814 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751455AbcIVIDL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Sep 2016 04:03:11 -0400
-In-Reply-To: <1473256272-30283-1-git-send-email-sergeimir@emcraft.com>
+        by vger.kernel.org with ESMTP id S1756095AbcIVMm2 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Sep 2016 08:42:28 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Sergei Miroshnichenko <sergeimir@emcraft.com>, linux-can@vger.kernel.org
-Cc: Alexander Dyachenko <sasha_d@emcraft.com>, Stefano Babic <sbabic@denx.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---sFBpe5TvUI39iidFPkgWe9jvld0m6lh7J
-Content-Type: multipart/mixed; boundary="3Kk9jvSUFM0I8iwSgcO19QsQ8qoelgKrP";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Sergei Miroshnichenko <sergeimir@emcraft.com>, linux-can@vger.kernel.org
-Cc: Alexander Dyachenko <sasha_d@emcraft.com>, Stefano Babic <sbabic@denx.de>
-Message-ID: <26ba9ddb-48f8-0c60-e971-305be23a2e02@pengutronix.de>
-Subject: Re: [PATCH 1/1] can: fix deadlock reported after bus-off
-References: <1473256272-30283-1-git-send-email-sergeimir@emcraft.com>
-In-Reply-To: <1473256272-30283-1-git-send-email-sergeimir@emcraft.com>
+Hello David,
 
---3Kk9jvSUFM0I8iwSgcO19QsQ8qoelgKrP
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+this is a pull request of one patch for the upcoming linux-4.8 release.
 
-On 09/07/2016 03:51 PM, Sergei Miroshnichenko wrote:
-> A timer was used to restart after the bus-off state, leading to a
-> relatively large can_restart() executed in an interrupt context,
-> which in turn sets up pinctrl. When this happens during system boot,
-> there is a high probability of grabbing the pinctrl_list_mutex,
-> which is locked already by the probe() of other device, making the
-> kernel suspect a deadlock condition [1].
->=20
-> To resolve this issue, the restart_timer is replaced by a delayed
-> work.
->=20
-> [1] https://github.com/victronenergy/venus/issues/24
->=20
-> Signed-off-by: Sergei Miroshnichenko <sergeimir@emcraft.com>
+The patch by Sergei Miroshnichenko fixes a potential deadlock in the generic
+CAN device code that cann occour after a bus-off.
 
-Applied to can.
-
-Tnx,
+regards,
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+---
 
+The following changes since commit 7e32b44361abc77fbc01f2b97b045c405b2583e5:
 
---3Kk9jvSUFM0I8iwSgcO19QsQ8qoelgKrP--
+  tcp: properly account Fast Open SYN-ACK retrans (2016-09-22 03:33:01 -0400)
 
---sFBpe5TvUI39iidFPkgWe9jvld0m6lh7J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+are available in the git repository at:
 
------BEGIN PGP SIGNATURE-----
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.8-20160922
 
-iQEcBAEBCgAGBQJX45AtAAoJED07qiWsqSVqJ6YH/3Xu5RWzKteswFyNoR5VQ3e0
-K0MjkAGcJRoGZwgTQ8IPpbDKNtCWoKaRo8rPRltPEN/LfKlXLUJXOJcBliFNu+Xb
-AA1eJprkDXDzMpo+fn1gU3cLkrlYY/3J9qQFynR2BakCa2rqgtwMPJkI57Ijtnn8
-8sjkMxTWqCYLuxx7guHqpkNNOZTTx8SH07FqaJsZR0bqwmnaKbjkDTyjeoObhT+l
-Pbx35MtgQL8hFcFqOQ/ugv9ZGox7TVUyWk+5e/KaSkSLqedH5BAFME8BLqjFFBUN
-cD1Xd91t0PDmIdOZDxFL4EiAR2JBBmK15S9ZCZQPhWiz2WJrLOCaZPL0z6JFhZ0=
-=ZX2d
------END PGP SIGNATURE-----
+for you to fetch changes up to 9abefcb1aaa58b9d5aa40a8bb12c87d02415e4c8:
 
---sFBpe5TvUI39iidFPkgWe9jvld0m6lh7J--
+  can: dev: fix deadlock reported after bus-off (2016-09-22 10:01:21 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.8-20160922
+
+----------------------------------------------------------------
+Sergei Miroshnichenko (1):
+      can: dev: fix deadlock reported after bus-off
+
+ drivers/net/can/dev.c   | 27 +++++++++++++++++----------
+ include/linux/can/dev.h |  3 ++-
+ 2 files changed, 19 insertions(+), 11 deletions(-)
+
