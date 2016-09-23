@@ -1,157 +1,227 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: dev: fix deadlock reported after bus-off
-Date: Thu, 22 Sep 2016 14:42:22 +0200
-Message-ID: <20160922124222.31598-2-mkl@pengutronix.de>
-References: <20160922124222.31598-1-mkl@pengutronix.de>
+From: aj neu <ajneu1@gmail.com>
+Subject: libsocketcan proposal for upstream (get typekind vcan or can, etc.)
+Date: Fri, 23 Sep 2016 08:16:53 +0200
+Message-ID: <CAPgtGZNhuinRb-gpj9QkTVnhfY8PE03JKoqhKm8Lw3g2s1+rzw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:58069 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1755498AbcIVMmg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Sep 2016 08:42:36 -0400
-In-Reply-To: <20160922124222.31598-1-mkl@pengutronix.de>
+Received: from mail-it0-f65.google.com ([209.85.214.65]:32973 "EHLO
+        mail-it0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1757392AbcIWGQy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Sep 2016 02:16:54 -0400
+Received: by mail-it0-f65.google.com with SMTP id x192so431839itb.0
+        for <linux-can@vger.kernel.org>; Thu, 22 Sep 2016 23:16:54 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Sergei Miroshnichenko <sergeimir@emcraft.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: linux-can@vger.kernel.org
 
-From: Sergei Miroshnichenko <sergeimir@emcraft.com>
+Hello,
 
-A timer was used to restart after the bus-off state, leading to a
-relatively large can_restart() executed in an interrupt context,
-which in turn sets up pinctrl. When this happens during system boot,
-there is a high probability of grabbing the pinctrl_list_mutex,
-which is locked already by the probe() of other device, making the
-kernel suspect a deadlock condition [1].
+below, please find a patch which adds the following functions to libsocketcan
 
-To resolve this issue, the restart_timer is replaced by a delayed
-work.
+    device_exists, device_is_up, can_get_typekind
 
-[1] https://github.com/victronenergy/venus/issues/24
+    int device_exists(const char *name);
+     // determine if device is libsocketcan-compatible and exists
 
-Signed-off-by: Sergei Miroshnichenko <sergeimir@emcraft.com>
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/dev.c   | 27 +++++++++++++++++----------
- include/linux/can/dev.h |  3 ++-
- 2 files changed, 19 insertions(+), 11 deletions(-)
+    int device_is_up(const char *name);
+     // determine if device is up (also usable for vcan)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index e21f7cc5ae4d..8d6208c0b400 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -21,6 +21,7 @@
- #include <linux/slab.h>
- #include <linux/netdevice.h>
- #include <linux/if_arp.h>
-+#include <linux/workqueue.h>
- #include <linux/can.h>
- #include <linux/can/dev.h>
- #include <linux/can/skb.h>
-@@ -501,9 +502,8 @@ EXPORT_SYMBOL_GPL(can_free_echo_skb);
- /*
-  * CAN device restart for bus-off recovery
+    int can_get_typekind(const char *name, char *buf, size_t buflen);
+     // determine if typekind is "can" or "vcan"
+
+
+The patch can be applied to
+https://git.platon.pengutronix.de/cgit/tools/libsocketcan
+as follows:
+   git apply diff.patch
+
+
+Can this be applied to upstream?
+
+Thanks.
+ajneu
+
+
+diff --git a/include/libsocketcan.h b/include/libsocketcan.h
+index dc52053..16fd60a 100644
+--- a/include/libsocketcan.h
++++ b/include/libsocketcan.h
+@@ -27,11 +27,15 @@
   */
--static void can_restart(unsigned long data)
-+static void can_restart(struct net_device *dev)
- {
--	struct net_device *dev = (struct net_device *)data;
- 	struct can_priv *priv = netdev_priv(dev);
- 	struct net_device_stats *stats = &dev->stats;
- 	struct sk_buff *skb;
-@@ -543,6 +543,14 @@ restart:
- 		netdev_err(dev, "Error %d during restart", err);
- }
- 
-+static void can_restart_work(struct work_struct *work)
-+{
-+	struct delayed_work *dwork = to_delayed_work(work);
-+	struct can_priv *priv = container_of(dwork, struct can_priv, restart_work);
+
+ #include <can_netlink.h>
++#include <stddef.h>
+
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+
++int device_exists(const char *name);
++int device_is_up(const char *name);
 +
-+	can_restart(priv->dev);
+ int can_do_restart(const char *name);
+ int can_do_stop(const char *name);
+ int can_do_start(const char *name);
+@@ -46,6 +50,7 @@ int can_get_restart_ms(const char *name, __u32 *restart_ms);
+ int can_get_bittiming(const char *name, struct can_bittiming *bt);
+ int can_get_ctrlmode(const char *name, struct can_ctrlmode *cm);
+ int can_get_state(const char *name, int *state);
++int can_get_typekind(const char *name, char *buf, size_t buflen);
+ int can_get_clock(const char *name, struct can_clock *clock);
+ int can_get_bittiming_const(const char *name, struct can_bittiming_const *btc);
+ int can_get_berr_counter(const char *name, struct can_berr_counter *bc);
+diff --git a/src/libsocketcan.c b/src/libsocketcan.c
+index c97a28c..7c7f9bb 100644
+--- a/src/libsocketcan.c
++++ b/src/libsocketcan.c
+@@ -46,6 +46,10 @@
+ #define IF_UP 1
+ #define IF_DOWN 2
+
++#ifndef IFF_UP
++#define IFF_UP IF_UP
++#endif
++
+ #define GET_STATE 1
+ #define GET_RESTART_MS 2
+ #define GET_BITTIMING 3
+@@ -54,6 +58,9 @@
+ #define GET_BITTIMING_CONST 6
+ #define GET_BERR_COUNTER 7
+ #define GET_XSTATS 8
++#define GET_TYPEKIND 9
++#define GET_DEVICEEXISTS 10
++#define GET_DEVICE_UP 11
+
+ struct get_req {
+     struct nlmsghdr n;
+@@ -74,6 +81,11 @@ struct req_info {
+     struct can_bittiming *bittiming;
+ };
+
++struct str_buf {
++    char * buf;
++    const size_t capacity; // storage capacity of buf: number of bytes
++};
++
+ static void
+ parse_rtattr(struct rtattr **tb, int max, struct rtattr *rta, int len)
+ {
+@@ -389,7 +401,8 @@ static int do_get_nl_link(int fd, __u8 acquire,
+const char *name, void *res)
+             else
+                 continue;
+
+-            if (acquire == GET_XSTATS) {
++            switch (acquire) {
++            case GET_XSTATS:
+                 if (!linkinfo[IFLA_INFO_XSTATS])
+                     fprintf(stderr, "no can statistics found\n");
+                 else {
+@@ -398,6 +411,30 @@ static int do_get_nl_link(int fd, __u8 acquire,
+const char *name, void *res)
+                     ret = 0;
+                 }
+                 continue;
++
++            case GET_TYPEKIND:
++                if (!linkinfo[IFLA_INFO_KIND])
++                    fprintf(stderr, "no type-kind found\n");
++                else {
++                    const size_t buflen = ((struct str_buf *)res)->capacity;
++                    if (buflen) {
++                        char * const buf = ((struct str_buf *)res)->buf;
++                        *buf = '\0';
++                        strncat(buf,
+RTA_DATA(linkinfo[IFLA_INFO_KIND]), buflen-1);
++                    }
++                    ret = 0;
++                }
++                continue;
++
++            case GET_DEVICEEXISTS:
++                ret = 0;
++                continue;
++
++            case GET_DEVICE_UP:
++                if ((ifi->ifi_flags & IFF_UP) == IFF_UP) {
++                    ret = 0;
++                }
++                continue;
+             }
+
+             if (!linkinfo[IFLA_INFO_DATA]) {
+@@ -652,6 +689,38 @@ static int set_link(const char *name, __u8
+if_state, struct req_info *req_info)
+
+ /**
+  * @ingroup extern
++ * device_exists - return non-zero if the device exists
++ *
++ * @param name name of the device. This is the netdev name, as
+ifconfig -a shows
++ * in your system. usually it contains prefix "can" and the numer of the can
++ * line. e.g. "can0"
++ *
++ * @return 1 if device exists
++ * @return 0 if device does not exist
++ */
++int device_exists(const char *name)
++{
++    return !get_link(name, GET_DEVICEEXISTS, NULL);
 +}
 +
- int can_restart_now(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
-@@ -556,8 +564,8 @@ int can_restart_now(struct net_device *dev)
- 	if (priv->state != CAN_STATE_BUS_OFF)
- 		return -EBUSY;
- 
--	/* Runs as soon as possible in the timer context */
--	mod_timer(&priv->restart_timer, jiffies);
-+	cancel_delayed_work_sync(&priv->restart_work);
-+	can_restart(dev);
- 
- 	return 0;
- }
-@@ -578,8 +586,8 @@ void can_bus_off(struct net_device *dev)
- 	netif_carrier_off(dev);
- 
- 	if (priv->restart_ms)
--		mod_timer(&priv->restart_timer,
--			  jiffies + (priv->restart_ms * HZ) / 1000);
-+		schedule_delayed_work(&priv->restart_work,
-+				      msecs_to_jiffies(priv->restart_ms));
- }
- EXPORT_SYMBOL_GPL(can_bus_off);
- 
-@@ -688,6 +696,7 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
- 		return NULL;
- 
- 	priv = netdev_priv(dev);
-+	priv->dev = dev;
- 
- 	if (echo_skb_max) {
- 		priv->echo_skb_max = echo_skb_max;
-@@ -697,7 +706,7 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
- 
- 	priv->state = CAN_STATE_STOPPED;
- 
--	init_timer(&priv->restart_timer);
-+	INIT_DELAYED_WORK(&priv->restart_work, can_restart_work);
- 
- 	return dev;
- }
-@@ -778,8 +787,6 @@ int open_candev(struct net_device *dev)
- 	if (!netif_carrier_ok(dev))
- 		netif_carrier_on(dev);
- 
--	setup_timer(&priv->restart_timer, can_restart, (unsigned long)dev);
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(open_candev);
-@@ -794,7 +801,7 @@ void close_candev(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 
--	del_timer_sync(&priv->restart_timer);
-+	cancel_delayed_work_sync(&priv->restart_work);
- 	can_flush_echo_skb(dev);
- }
- EXPORT_SYMBOL_GPL(close_candev);
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 5261751f6bd4..5f5270941ba0 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -32,6 +32,7 @@ enum can_mode {
-  * CAN common private data
-  */
- struct can_priv {
-+	struct net_device *dev;
- 	struct can_device_stats can_stats;
- 
- 	struct can_bittiming bittiming, data_bittiming;
-@@ -47,7 +48,7 @@ struct can_priv {
- 	u32 ctrlmode_static;	/* static enabled options for driver/hardware */
- 
- 	int restart_ms;
--	struct timer_list restart_timer;
-+	struct delayed_work restart_work;
- 
- 	int (*do_set_bittiming)(struct net_device *dev);
- 	int (*do_set_data_bittiming)(struct net_device *dev);
--- 
-2.9.3
++/**
++ * @ingroup extern
++ * device_is_up - return non-zero if the device is up
++ *
++ * @param name name of the device. This is the netdev name, as
+ifconfig -a shows
++ * in your system. usually it contains prefix "can" and the numer of the can
++ * line. e.g. "can0"
++ *
++ * @return 1 if device is up
++ * @return 0 if device is not up
++ */
++int device_is_up(const char *name)
++{
++    return !get_link(name, GET_DEVICE_UP, NULL);
++}
++
++/**
++ * @ingroup extern
+  * can_do_start - start the can interface
+  * @param name name of the can device. This is the netdev name, as
+ifconfig -a shows
+  * in your system. usually it contains prefix "can" and the numer of the can
+@@ -961,6 +1030,25 @@ int can_get_state(const char *name, int *state)
 
+ /**
+  * @ingroup extern
++ * can_get_typekind - get the type (kind) of the netlink, i.e. can or vcan
++ *
++ * @param name name of the can device. This is the netdev name, as
+ifconfig -a shows
++ * in your system. usually it contains prefix "can" and the numer of the can
++ * line. e.g. "can0"
++ * @param buf pointer to the first element of a string buffer, to
+store the kind
++ * @param buflen length of the string buffer (at most buflen-1 chars
+will be written)
++ *
++ * @return 0 if success
++ * @return -1 if failed
++ */
++int can_get_typekind(const char *name, char *buf, size_t buflen)
++{
++    struct str_buf sbuf = { buf, buflen };
++    return get_link(name, GET_TYPEKIND, &sbuf);
++}
++
++/**
++ * @ingroup extern
+  * can_get_restart_ms - get the current interval of auto restarting.
+  *
+  * @param name name of the can device. This is the netdev name, as
+ifconfig -a shows
