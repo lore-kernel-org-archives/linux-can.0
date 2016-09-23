@@ -1,117 +1,63 @@
-From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
-Subject: Re: libsocketcan proposal for upstream (get typekind vcan or can,
- etc.)
-Date: Fri, 23 Sep 2016 12:19:17 +0200
-Message-ID: <7c0a6023-6a14-9af0-a297-d721ffcc0b16@gmx.de>
-References: <CAPgtGZNhuinRb-gpj9QkTVnhfY8PE03JKoqhKm8Lw3g2s1+rzw@mail.gmail.com>
- <CAPgtGZOuJEkRC+X4yWz8E4Qp1SZivkj6RV9kZ3RPJ20MUBAfUA@mail.gmail.com>
+From: Alexander Gerasiov <gq@cs.msu.su>
+Subject: Re: [PATCH v4] can: sja1000: Optimise register accesses
+Date: Fri, 23 Sep 2016 14:06:30 +0300
+Message-ID: <20160923140630.37373192@brick.gerasiov.net>
+References: <20160908135101.17978-1-nebaruzdin@gmail.com>
+        <6f96b7d9-e8b6-28cc-b1d3-dbd04bf1a46d@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/+Nu/6Fgst_+bO4bM=ObD/0a"; protocol="application/pgp-signature"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.17.22]:58389 "EHLO mout.gmx.net"
+Received: from off.redlab-i.ru ([195.16.34.157]:53242 "EHLO mail.gerasiov.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1752747AbcIWKTa (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 23 Sep 2016 06:19:30 -0400
-In-Reply-To: <CAPgtGZOuJEkRC+X4yWz8E4Qp1SZivkj6RV9kZ3RPJ20MUBAfUA@mail.gmail.com>
+        id S1759250AbcIWLNn (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 23 Sep 2016 07:13:43 -0400
+In-Reply-To: <6f96b7d9-e8b6-28cc-b1d3-dbd04bf1a46d@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: aj neu <ajneu1@gmail.com>, linux-can@vger.kernel.org, mkl@pengutronix.de
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Nikita Edward Baruzdin <nebaruzdin@gmail.com>, linux-can@vger.kernel.org
 
-Am 23.09.2016 um 08:19 schrieb aj neu:
-> On Fri, Sep 23, 2016 at 8:16 AM, aj neu wrote:
->> Hello,
->>
->> below, please find a patch which adds the following functions to libsocketcan
->>
->>     device_exists, device_is_up, can_get_typekind
->>
->>     int device_exists(const char *name);
->>      // determine if device is libsocketcan-compatible and exists
->>
->>     int device_is_up(const char *name);
->>      // determine if device is up (also usable for vcan)
->>
->>     int can_get_typekind(const char *name, char *buf, size_t buflen);
->>      // determine if typekind is "can" or "vcan"
->>
->>
->> The patch can be applied to
->> https://git.platon.pengutronix.de/cgit/tools/libsocketcan
->> as follows:
->>    git apply diff.patch
->>
->>
->> Can this be applied to upstream?
->>
->> Thanks.
->> ajneu
->
-> Here's the patch as attachment.
->
+--Sig_/+Nu/6Fgst_+bO4bM=ObD/0a
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hello AJ,
+Hello Marc,
 
-without having a deeper look at your patch, I think it is a quite useful 
-addition. Please find my comments below.
+On Mon, 19 Sep 2016 16:08:04 +0200
+Marc Kleine-Budde <mkl@pengutronix.de> wrote:
 
- >>     int device_exists(const char *name);
+> I talked to my PCI expert and we came to the conclusion that it's a
+> very bad idea to acess the PCI bus with 32 bit on non aligned
+> addresses.
+>=20
+> #define SJA1000_ID1		0x11
 
-This is good, but even better would be something that enumerates 
-available interfaces. Looking for available interfaces is a common task, 
-I guess. Something like Kurt's library [1] does and what I do in 
-QtSerialBus [2] because I was unable to use [1] because of license 
-reasons :(
+Agree, I've missed this. I'll update (write|read)_reg_rep() and send
+updated patch next week.
 
- >>     int device_is_up(const char *name);
-
-OK, if device_exists returns true for devices that are not up.
-
- >>     int can_get_typekind(const char *name, char *buf, size_t buflen);
-
-Can buf contains anything else beside "can" and "vcan"? If not, I 
-instead propose a more concise function:
-
-     int device_is_virtual(const char *name);
-
-Regarding the patch itself:
-
-Marc, what do you say? Will you accept patches to libsocketcan  The last 
-commits are from 2014...
-
-And last, one more comment to the code:
-
-+case GET_TYPEKIND:
-+  if (!linkinfo[IFLA_INFO_KIND])
-+    fprintf(stderr, "no type-kind found\n");
-+  else {
-
-I don't know if there are any rules in libsocketcan, but I really prefer 
-having curly braces { } around the if also, when there are curly braces 
-around the else branch.
-
-+    const size_t buflen = ((struct str_buf *)res)->capacity;
-+    if (buflen) {
-+      char * const buf = ((struct str_buf *)res)->buf;
-+      *buf = '\0';
-+      strncat(buf, RTA_DATA(linkinfo[IFLA_INFO_KIND]), buflen-1);
-
-First I asked why not using strncpy, but I guess this is a trick to make 
-sure buf is null-terminated? On the other hand, the following code is 
-not longer (buflen - 1 is allowed because you checked for zero already):
-
-       strncpy(buf, RTA_DATA(linkinfo[IFLA_INFO_KIND]), buflen);
-       buf[buflen - 1] = '\0';
-
-+    }
-+    ret = 0;
-+}
-
+--=20
 Best regards,
-André
+ Alexander Gerasiov
 
-[1] https://github.com/kurt-vd/enumif
-[2] 
-https://codereview.qt-project.org/#/c/166460/13/src/plugins/canbus/socketcan/socketcanbackend.cpp
+ Contacts:
+ e-mail: gq@cs.msu.su  Homepage: http://gerasiov.net  Skype: gerasiov
+ PGP fingerprint: 04B5 9D90 DF7C C2AB CD49  BAEA CA87 E9E8 2AAC 33F1
 
+--Sig_/+Nu/6Fgst_+bO4bM=ObD/0a
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJX5Qy+AAoJEMqH6egqrDPxzF4H/1iR0OsvyiiW7/a05DpVSkzF
+pg2frl8kpXz4v2jXdLbBFTu8pMsiMC7jwiVO29QJGUMQui5hpXbFbTYtfLdx62Fm
+J+8Cdjo0kuelhfuGGucU9v1sKoUlHAa4kuS3XQIXBiGG/5RJD+NmkzERPk2P6C+Z
+kXrohUUxN69hy0aOTuampeJov7/9LJkGQXbYpIQUh7XZZEj5rjc9XYqD/dJcYka6
+8apkBwcWBvfB/mNRAVLFtI6QsAlFjfy4kUGgtf56ApwOuWXsk3G+lazNjduivaAC
++w3p9J+7hN+MjRZrXy1E7sX7qHhl94qRh4cn5zFJXAD1y315ta0h9qT9mKiwf1Q=
+=R241
+-----END PGP SIGNATURE-----
+
+--Sig_/+Nu/6Fgst_+bO4bM=ObD/0a--
