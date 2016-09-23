@@ -1,147 +1,117 @@
-From: aj neu <ajneu1@gmail.com>
-Subject: Re: libsocketcan proposal for upstream (get typekind vcan or can, etc.)
-Date: Fri, 23 Sep 2016 08:19:10 +0200
-Message-ID: <CAPgtGZOuJEkRC+X4yWz8E4Qp1SZivkj6RV9kZ3RPJ20MUBAfUA@mail.gmail.com>
+From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
+Subject: Re: libsocketcan proposal for upstream (get typekind vcan or can,
+ etc.)
+Date: Fri, 23 Sep 2016 12:19:17 +0200
+Message-ID: <7c0a6023-6a14-9af0-a297-d721ffcc0b16@gmx.de>
 References: <CAPgtGZNhuinRb-gpj9QkTVnhfY8PE03JKoqhKm8Lw3g2s1+rzw@mail.gmail.com>
+ <CAPgtGZOuJEkRC+X4yWz8E4Qp1SZivkj6RV9kZ3RPJ20MUBAfUA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001a113f9064b0880b053d26c1f5
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-io0-f172.google.com ([209.85.223.172]:36406 "EHLO
-        mail-io0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1758626AbcIWGTM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Sep 2016 02:19:12 -0400
-Received: by mail-io0-f172.google.com with SMTP id m79so109107120ioo.3
-        for <linux-can@vger.kernel.org>; Thu, 22 Sep 2016 23:19:11 -0700 (PDT)
-In-Reply-To: <CAPgtGZNhuinRb-gpj9QkTVnhfY8PE03JKoqhKm8Lw3g2s1+rzw@mail.gmail.com>
+Received: from mout.gmx.net ([212.227.17.22]:58389 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1752747AbcIWKTa (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 23 Sep 2016 06:19:30 -0400
+In-Reply-To: <CAPgtGZOuJEkRC+X4yWz8E4Qp1SZivkj6RV9kZ3RPJ20MUBAfUA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: aj neu <ajneu1@gmail.com>, linux-can@vger.kernel.org, mkl@pengutronix.de
 
---001a113f9064b0880b053d26c1f5
-Content-Type: text/plain; charset=UTF-8
+Am 23.09.2016 um 08:19 schrieb aj neu:
+> On Fri, Sep 23, 2016 at 8:16 AM, aj neu wrote:
+>> Hello,
+>>
+>> below, please find a patch which adds the following functions to libsocketcan
+>>
+>>     device_exists, device_is_up, can_get_typekind
+>>
+>>     int device_exists(const char *name);
+>>      // determine if device is libsocketcan-compatible and exists
+>>
+>>     int device_is_up(const char *name);
+>>      // determine if device is up (also usable for vcan)
+>>
+>>     int can_get_typekind(const char *name, char *buf, size_t buflen);
+>>      // determine if typekind is "can" or "vcan"
+>>
+>>
+>> The patch can be applied to
+>> https://git.platon.pengutronix.de/cgit/tools/libsocketcan
+>> as follows:
+>>    git apply diff.patch
+>>
+>>
+>> Can this be applied to upstream?
+>>
+>> Thanks.
+>> ajneu
+>
+> Here's the patch as attachment.
+>
 
-On Fri, Sep 23, 2016 at 8:16 AM, aj neu wrote:
-> Hello,
->
-> below, please find a patch which adds the following functions to libsocketcan
->
->     device_exists, device_is_up, can_get_typekind
->
->     int device_exists(const char *name);
->      // determine if device is libsocketcan-compatible and exists
->
->     int device_is_up(const char *name);
->      // determine if device is up (also usable for vcan)
->
->     int can_get_typekind(const char *name, char *buf, size_t buflen);
->      // determine if typekind is "can" or "vcan"
->
->
-> The patch can be applied to
-> https://git.platon.pengutronix.de/cgit/tools/libsocketcan
-> as follows:
->    git apply diff.patch
->
->
-> Can this be applied to upstream?
->
-> Thanks.
-> ajneu
+Hello AJ,
 
-Here's the patch as attachment.
+without having a deeper look at your patch, I think it is a quite useful 
+addition. Please find my comments below.
 
---001a113f9064b0880b053d26c1f5
-Content-Type: text/x-patch; charset=US-ASCII; name="diff.patch"
-Content-Disposition: attachment; filename="diff.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_itfdngwf0
+ >>     int device_exists(const char *name);
 
-ZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGlic29ja2V0Y2FuLmggYi9pbmNsdWRlL2xpYnNvY2tldGNh
-bi5oCmluZGV4IGRjNTIwNTMuLjE2ZmQ2MGEgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGlic29ja2V0
-Y2FuLmgKKysrIGIvaW5jbHVkZS9saWJzb2NrZXRjYW4uaApAQCAtMjcsMTEgKzI3LDE1IEBACiAg
-Ki8KIAogI2luY2x1ZGUgPGNhbl9uZXRsaW5rLmg+CisjaW5jbHVkZSA8c3RkZGVmLmg+CiAKICNp
-ZmRlZiBfX2NwbHVzcGx1cwogZXh0ZXJuICJDIiB7CiAjZW5kaWYKIAoraW50IGRldmljZV9leGlz
-dHMoY29uc3QgY2hhciAqbmFtZSk7CitpbnQgZGV2aWNlX2lzX3VwKGNvbnN0IGNoYXIgKm5hbWUp
-OworCiBpbnQgY2FuX2RvX3Jlc3RhcnQoY29uc3QgY2hhciAqbmFtZSk7CiBpbnQgY2FuX2RvX3N0
-b3AoY29uc3QgY2hhciAqbmFtZSk7CiBpbnQgY2FuX2RvX3N0YXJ0KGNvbnN0IGNoYXIgKm5hbWUp
-OwpAQCAtNDYsNiArNTAsNyBAQCBpbnQgY2FuX2dldF9yZXN0YXJ0X21zKGNvbnN0IGNoYXIgKm5h
-bWUsIF9fdTMyICpyZXN0YXJ0X21zKTsKIGludCBjYW5fZ2V0X2JpdHRpbWluZyhjb25zdCBjaGFy
-ICpuYW1lLCBzdHJ1Y3QgY2FuX2JpdHRpbWluZyAqYnQpOwogaW50IGNhbl9nZXRfY3RybG1vZGUo
-Y29uc3QgY2hhciAqbmFtZSwgc3RydWN0IGNhbl9jdHJsbW9kZSAqY20pOwogaW50IGNhbl9nZXRf
-c3RhdGUoY29uc3QgY2hhciAqbmFtZSwgaW50ICpzdGF0ZSk7CitpbnQgY2FuX2dldF90eXBla2lu
-ZChjb25zdCBjaGFyICpuYW1lLCBjaGFyICpidWYsIHNpemVfdCBidWZsZW4pOwogaW50IGNhbl9n
-ZXRfY2xvY2soY29uc3QgY2hhciAqbmFtZSwgc3RydWN0IGNhbl9jbG9jayAqY2xvY2spOwogaW50
-IGNhbl9nZXRfYml0dGltaW5nX2NvbnN0KGNvbnN0IGNoYXIgKm5hbWUsIHN0cnVjdCBjYW5fYml0
-dGltaW5nX2NvbnN0ICpidGMpOwogaW50IGNhbl9nZXRfYmVycl9jb3VudGVyKGNvbnN0IGNoYXIg
-Km5hbWUsIHN0cnVjdCBjYW5fYmVycl9jb3VudGVyICpiYyk7CmRpZmYgLS1naXQgYS9zcmMvbGli
-c29ja2V0Y2FuLmMgYi9zcmMvbGlic29ja2V0Y2FuLmMKaW5kZXggYzk3YTI4Yy4uN2M3ZjliYiAx
-MDA2NDQKLS0tIGEvc3JjL2xpYnNvY2tldGNhbi5jCisrKyBiL3NyYy9saWJzb2NrZXRjYW4uYwpA
-QCAtNDYsNiArNDYsMTAgQEAKICNkZWZpbmUgSUZfVVAgMQogI2RlZmluZSBJRl9ET1dOIDIKIAor
-I2lmbmRlZiBJRkZfVVAKKyNkZWZpbmUgSUZGX1VQIElGX1VQCisjZW5kaWYKKwogI2RlZmluZSBH
-RVRfU1RBVEUgMQogI2RlZmluZSBHRVRfUkVTVEFSVF9NUyAyCiAjZGVmaW5lIEdFVF9CSVRUSU1J
-TkcgMwpAQCAtNTQsNiArNTgsOSBAQAogI2RlZmluZSBHRVRfQklUVElNSU5HX0NPTlNUIDYKICNk
-ZWZpbmUgR0VUX0JFUlJfQ09VTlRFUiA3CiAjZGVmaW5lIEdFVF9YU1RBVFMgOAorI2RlZmluZSBH
-RVRfVFlQRUtJTkQgOQorI2RlZmluZSBHRVRfREVWSUNFRVhJU1RTIDEwCisjZGVmaW5lIEdFVF9E
-RVZJQ0VfVVAgMTEKIAogc3RydWN0IGdldF9yZXEgewogCXN0cnVjdCBubG1zZ2hkciBuOwpAQCAt
-NzQsNiArODEsMTEgQEAgc3RydWN0IHJlcV9pbmZvIHsKIAlzdHJ1Y3QgY2FuX2JpdHRpbWluZyAq
-Yml0dGltaW5nOwogfTsKIAorc3RydWN0IHN0cl9idWYgeworCWNoYXIgKiBidWY7CisJY29uc3Qg
-c2l6ZV90IGNhcGFjaXR5OyAvLyBzdG9yYWdlIGNhcGFjaXR5IG9mIGJ1ZjogbnVtYmVyIG9mIGJ5
-dGVzCit9OworCiBzdGF0aWMgdm9pZAogcGFyc2VfcnRhdHRyKHN0cnVjdCBydGF0dHIgKip0Yiwg
-aW50IG1heCwgc3RydWN0IHJ0YXR0ciAqcnRhLCBpbnQgbGVuKQogewpAQCAtMzg5LDcgKzQwMSw4
-IEBAIHN0YXRpYyBpbnQgZG9fZ2V0X25sX2xpbmsoaW50IGZkLCBfX3U4IGFjcXVpcmUsIGNvbnN0
-IGNoYXIgKm5hbWUsIHZvaWQgKnJlcykKIAkJCWVsc2UKIAkJCQljb250aW51ZTsKIAotCQkJaWYg
-KGFjcXVpcmUgPT0gR0VUX1hTVEFUUykgeworCQkJc3dpdGNoIChhY3F1aXJlKSB7CisJCQljYXNl
-IEdFVF9YU1RBVFM6CiAJCQkJaWYgKCFsaW5raW5mb1tJRkxBX0lORk9fWFNUQVRTXSkKIAkJCQkJ
-ZnByaW50ZihzdGRlcnIsICJubyBjYW4gc3RhdGlzdGljcyBmb3VuZFxuIik7CiAJCQkJZWxzZSB7
-CkBAIC0zOTgsNiArNDExLDMwIEBAIHN0YXRpYyBpbnQgZG9fZ2V0X25sX2xpbmsoaW50IGZkLCBf
-X3U4IGFjcXVpcmUsIGNvbnN0IGNoYXIgKm5hbWUsIHZvaWQgKnJlcykKIAkJCQkJcmV0ID0gMDsK
-IAkJCQl9CiAJCQkJY29udGludWU7CisKKwkJCWNhc2UgR0VUX1RZUEVLSU5EOgorCQkJCWlmICgh
-bGlua2luZm9bSUZMQV9JTkZPX0tJTkRdKQorCQkJCQlmcHJpbnRmKHN0ZGVyciwgIm5vIHR5cGUt
-a2luZCBmb3VuZFxuIik7CisJCQkJZWxzZSB7CisJCQkJCWNvbnN0IHNpemVfdCBidWZsZW4gPSAo
-KHN0cnVjdCBzdHJfYnVmICopcmVzKS0+Y2FwYWNpdHk7CisJCQkJCWlmIChidWZsZW4pIHsKKwkJ
-CQkJCWNoYXIgKiBjb25zdCBidWYgPSAoKHN0cnVjdCBzdHJfYnVmICopcmVzKS0+YnVmOworCQkJ
-CQkJKmJ1ZiA9ICdcMCc7CisJCQkJCQlzdHJuY2F0KGJ1ZiwgUlRBX0RBVEEobGlua2luZm9bSUZM
-QV9JTkZPX0tJTkRdKSwgYnVmbGVuLTEpOworCQkJCQl9CisJCQkJCXJldCA9IDA7CisJCQkJfQor
-CQkJCWNvbnRpbnVlOworCisJCQljYXNlIEdFVF9ERVZJQ0VFWElTVFM6CisJCQkJcmV0ID0gMDsK
-KwkJCQljb250aW51ZTsKKworCQkJY2FzZSBHRVRfREVWSUNFX1VQOgorCQkJCWlmICgoaWZpLT5p
-ZmlfZmxhZ3MgJiBJRkZfVVApID09IElGRl9VUCkgeworCQkJCQlyZXQgPSAwOworCQkJCX0KKwkJ
-CQljb250aW51ZTsKIAkJCX0KIAogCQkJaWYgKCFsaW5raW5mb1tJRkxBX0lORk9fREFUQV0pIHsK
-QEAgLTY1Miw2ICs2ODksMzggQEAgc3RhdGljIGludCBzZXRfbGluayhjb25zdCBjaGFyICpuYW1l
-LCBfX3U4IGlmX3N0YXRlLCBzdHJ1Y3QgcmVxX2luZm8gKnJlcV9pbmZvKQogCiAvKioKICAqIEBp
-bmdyb3VwIGV4dGVybgorICogZGV2aWNlX2V4aXN0cyAtIHJldHVybiBub24temVybyBpZiB0aGUg
-ZGV2aWNlIGV4aXN0cworICoKKyAqIEBwYXJhbSBuYW1lIG5hbWUgb2YgdGhlIGRldmljZS4gVGhp
-cyBpcyB0aGUgbmV0ZGV2IG5hbWUsIGFzIGlmY29uZmlnIC1hIHNob3dzCisgKiBpbiB5b3VyIHN5
-c3RlbS4gdXN1YWxseSBpdCBjb250YWlucyBwcmVmaXggImNhbiIgYW5kIHRoZSBudW1lciBvZiB0
-aGUgY2FuCisgKiBsaW5lLiBlLmcuICJjYW4wIgorICoKKyAqIEByZXR1cm4gMSBpZiBkZXZpY2Ug
-ZXhpc3RzCisgKiBAcmV0dXJuIDAgaWYgZGV2aWNlIGRvZXMgbm90IGV4aXN0CisgKi8KK2ludCBk
-ZXZpY2VfZXhpc3RzKGNvbnN0IGNoYXIgKm5hbWUpCit7CisJcmV0dXJuICFnZXRfbGluayhuYW1l
-LCBHRVRfREVWSUNFRVhJU1RTLCBOVUxMKTsKK30KKworLyoqCisgKiBAaW5ncm91cCBleHRlcm4K
-KyAqIGRldmljZV9pc191cCAtIHJldHVybiBub24temVybyBpZiB0aGUgZGV2aWNlIGlzIHVwCisg
-KgorICogQHBhcmFtIG5hbWUgbmFtZSBvZiB0aGUgZGV2aWNlLiBUaGlzIGlzIHRoZSBuZXRkZXYg
-bmFtZSwgYXMgaWZjb25maWcgLWEgc2hvd3MKKyAqIGluIHlvdXIgc3lzdGVtLiB1c3VhbGx5IGl0
-IGNvbnRhaW5zIHByZWZpeCAiY2FuIiBhbmQgdGhlIG51bWVyIG9mIHRoZSBjYW4KKyAqIGxpbmUu
-IGUuZy4gImNhbjAiCisgKgorICogQHJldHVybiAxIGlmIGRldmljZSBpcyB1cAorICogQHJldHVy
-biAwIGlmIGRldmljZSBpcyBub3QgdXAKKyAqLworaW50IGRldmljZV9pc191cChjb25zdCBjaGFy
-ICpuYW1lKQoreworCXJldHVybiAhZ2V0X2xpbmsobmFtZSwgR0VUX0RFVklDRV9VUCwgTlVMTCk7
-Cit9CisKKy8qKgorICogQGluZ3JvdXAgZXh0ZXJuCiAgKiBjYW5fZG9fc3RhcnQgLSBzdGFydCB0
-aGUgY2FuIGludGVyZmFjZQogICogQHBhcmFtIG5hbWUgbmFtZSBvZiB0aGUgY2FuIGRldmljZS4g
-VGhpcyBpcyB0aGUgbmV0ZGV2IG5hbWUsIGFzIGlmY29uZmlnIC1hIHNob3dzCiAgKiBpbiB5b3Vy
-IHN5c3RlbS4gdXN1YWxseSBpdCBjb250YWlucyBwcmVmaXggImNhbiIgYW5kIHRoZSBudW1lciBv
-ZiB0aGUgY2FuCkBAIC05NjEsNiArMTAzMCwyNSBAQCBpbnQgY2FuX2dldF9zdGF0ZShjb25zdCBj
-aGFyICpuYW1lLCBpbnQgKnN0YXRlKQogCiAvKioKICAqIEBpbmdyb3VwIGV4dGVybgorICogY2Fu
-X2dldF90eXBla2luZCAtIGdldCB0aGUgdHlwZSAoa2luZCkgb2YgdGhlIG5ldGxpbmssIGkuZS4g
-Y2FuIG9yIHZjYW4KKyAqCisgKiBAcGFyYW0gbmFtZSBuYW1lIG9mIHRoZSBjYW4gZGV2aWNlLiBU
-aGlzIGlzIHRoZSBuZXRkZXYgbmFtZSwgYXMgaWZjb25maWcgLWEgc2hvd3MKKyAqIGluIHlvdXIg
-c3lzdGVtLiB1c3VhbGx5IGl0IGNvbnRhaW5zIHByZWZpeCAiY2FuIiBhbmQgdGhlIG51bWVyIG9m
-IHRoZSBjYW4KKyAqIGxpbmUuIGUuZy4gImNhbjAiCisgKiBAcGFyYW0gYnVmIHBvaW50ZXIgdG8g
-dGhlIGZpcnN0IGVsZW1lbnQgb2YgYSBzdHJpbmcgYnVmZmVyLCB0byBzdG9yZSB0aGUga2luZAor
-ICogQHBhcmFtIGJ1ZmxlbiBsZW5ndGggb2YgdGhlIHN0cmluZyBidWZmZXIgKGF0IG1vc3QgYnVm
-bGVuLTEgY2hhcnMgd2lsbCBiZSB3cml0dGVuKQorICoKKyAqIEByZXR1cm4gMCBpZiBzdWNjZXNz
-CisgKiBAcmV0dXJuIC0xIGlmIGZhaWxlZAorICovCitpbnQgY2FuX2dldF90eXBla2luZChjb25z
-dCBjaGFyICpuYW1lLCBjaGFyICpidWYsIHNpemVfdCBidWZsZW4pCit7CisJc3RydWN0IHN0cl9i
-dWYgc2J1ZiA9IHsgYnVmLCBidWZsZW4gfTsKKwlyZXR1cm4gZ2V0X2xpbmsobmFtZSwgR0VUX1RZ
-UEVLSU5ELCAmc2J1Zik7Cit9CisKKy8qKgorICogQGluZ3JvdXAgZXh0ZXJuCiAgKiBjYW5fZ2V0
-X3Jlc3RhcnRfbXMgLSBnZXQgdGhlIGN1cnJlbnQgaW50ZXJ2YWwgb2YgYXV0byByZXN0YXJ0aW5n
-LgogICoKICAqIEBwYXJhbSBuYW1lIG5hbWUgb2YgdGhlIGNhbiBkZXZpY2UuIFRoaXMgaXMgdGhl
-IG5ldGRldiBuYW1lLCBhcyBpZmNvbmZpZyAtYSBzaG93cwo=
---001a113f9064b0880b053d26c1f5--
+This is good, but even better would be something that enumerates 
+available interfaces. Looking for available interfaces is a common task, 
+I guess. Something like Kurt's library [1] does and what I do in 
+QtSerialBus [2] because I was unable to use [1] because of license 
+reasons :(
+
+ >>     int device_is_up(const char *name);
+
+OK, if device_exists returns true for devices that are not up.
+
+ >>     int can_get_typekind(const char *name, char *buf, size_t buflen);
+
+Can buf contains anything else beside "can" and "vcan"? If not, I 
+instead propose a more concise function:
+
+     int device_is_virtual(const char *name);
+
+Regarding the patch itself:
+
+Marc, what do you say? Will you accept patches to libsocketcan  The last 
+commits are from 2014...
+
+And last, one more comment to the code:
+
++case GET_TYPEKIND:
++  if (!linkinfo[IFLA_INFO_KIND])
++    fprintf(stderr, "no type-kind found\n");
++  else {
+
+I don't know if there are any rules in libsocketcan, but I really prefer 
+having curly braces { } around the if also, when there are curly braces 
+around the else branch.
+
++    const size_t buflen = ((struct str_buf *)res)->capacity;
++    if (buflen) {
++      char * const buf = ((struct str_buf *)res)->buf;
++      *buf = '\0';
++      strncat(buf, RTA_DATA(linkinfo[IFLA_INFO_KIND]), buflen-1);
+
+First I asked why not using strncpy, but I guess this is a trick to make 
+sure buf is null-terminated? On the other hand, the following code is 
+not longer (buflen - 1 is allowed because you checked for zero already):
+
+       strncpy(buf, RTA_DATA(linkinfo[IFLA_INFO_KIND]), buflen);
+       buf[buflen - 1] = '\0';
+
++    }
++    ret = 0;
++}
+
+Best regards,
+André
+
+[1] https://github.com/kurt-vd/enumif
+[2] 
+https://codereview.qt-project.org/#/c/166460/13/src/plugins/canbus/socketcan/socketcanbackend.cpp
+
+
