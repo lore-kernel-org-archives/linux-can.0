@@ -1,76 +1,113 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: j1939
-Date: Tue, 4 Oct 2016 20:40:36 +0200
-Message-ID: <20161004184036.GD25008@airbook.vandijck-laurijssen.be>
-References: <9a40e851-4bc8-f57c-ffc5-478f3ea93acb@pengutronix.de>
+Date: Tue, 4 Oct 2016 20:43:01 +0200
+Message-ID: <a4af635e-9a0c-d5df-5a90-4722967f0ac1@pengutronix.de>
+References: <018c2e89-87c0-c1cc-686e-d5d715651ab3@hartkopp.net>
+ <9a40e851-4bc8-f57c-ffc5-478f3ea93acb@pengutronix.de>
  <1be622f4-1376-189b-9180-487aef3dc636@hartkopp.net>
  <CANGgnMaxNRBDG9WWAanHEem-wDJ1ujxYdqgko7nAx3iJNcPUGA@mail.gmail.com>
  <20160920091525.2ff22d58@erd980>
  <20161004073703.GB13813@airbook.vandijck-laurijssen.be>
  <20161004145202.6c5238d9@erd980>
  <20161004135701.GA25008@airbook.vandijck-laurijssen.be>
- <20161004164725.08802a61@erd980>
- <20161004173129.GB25008@airbook.vandijck-laurijssen.be>
- <8f5ebcf8-8bb6-a9f0-33af-47d4a551e811@pengutronix.de>
+ <8972643b-d6c8-1880-3360-4f8ef129cc4f@pengutronix.de>
+ <7661b770-574f-6337-d9a9-ff2103ebb8a6@posteo.de>
+ <20161004183848.GC25008@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="fBdUUPgiiMhA6R1o4bPmiB3QxSjoVKL45"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b01.edpnet.be ([212.71.1.221]:39201 "EHLO
-        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751521AbcJDSld (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Oct 2016 14:41:33 -0400
-Content-Disposition: inline
-In-Reply-To: <8f5ebcf8-8bb6-a9f0-33af-47d4a551e811@pengutronix.de>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:60639 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752778AbcJDSnO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Oct 2016 14:43:14 -0400
+In-Reply-To: <20161004183848.GC25008@airbook.vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: David Jander <david@protonic.nl>, Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can <linux-can@vger.kernel.org>
+To: Patrick Menschel <menschel.p@posteo.de>, David Jander <david@protonic.nl>, Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can <linux-can@vger.kernel.org>
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--fBdUUPgiiMhA6R1o4bPmiB3QxSjoVKL45
+Content-Type: multipart/mixed; boundary="OfKQnN096WnonsN8pAbG0gTbwetP7XgPS";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Patrick Menschel <menschel.p@posteo.de>, David Jander
+ <david@protonic.nl>, Austin Schuh <austin@peloton-tech.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
+ linux-can <linux-can@vger.kernel.org>
+Message-ID: <a4af635e-9a0c-d5df-5a90-4722967f0ac1@pengutronix.de>
+Subject: Re: j1939
+References: <018c2e89-87c0-c1cc-686e-d5d715651ab3@hartkopp.net>
+ <9a40e851-4bc8-f57c-ffc5-478f3ea93acb@pengutronix.de>
+ <1be622f4-1376-189b-9180-487aef3dc636@hartkopp.net>
+ <CANGgnMaxNRBDG9WWAanHEem-wDJ1ujxYdqgko7nAx3iJNcPUGA@mail.gmail.com>
+ <20160920091525.2ff22d58@erd980>
+ <20161004073703.GB13813@airbook.vandijck-laurijssen.be>
+ <20161004145202.6c5238d9@erd980>
+ <20161004135701.GA25008@airbook.vandijck-laurijssen.be>
+ <8972643b-d6c8-1880-3360-4f8ef129cc4f@pengutronix.de>
+ <7661b770-574f-6337-d9a9-ff2103ebb8a6@posteo.de>
+ <20161004183848.GC25008@airbook.vandijck-laurijssen.be>
+In-Reply-To: <20161004183848.GC25008@airbook.vandijck-laurijssen.be>
+
+--OfKQnN096WnonsN8pAbG0gTbwetP7XgPS
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 10/04/2016 08:38 PM, Kurt Van Dijck wrote:
+>=20
+>>
+>>>> Recently, someone on this list was confronted with an engine ECU tha=
+t
+>>>> dropped TP that had the last packet not 8 bytes long.
+>>>> And I believe I've encountered an issue a long time ago where this
+>>>> happened on all PGNs.
+>>>> So I introduced this option, having 3 possibilities:
+>>>> * no padding
+>>>> * padding for TP
+>>>> * padding for all PGN.
+>>> How to switch between padding for TP only and padding for all PGN?
+>=20
+> 0: no padding
+> 1: TP padding
+> 2: all PGN padding
+
+Hmmm, have I taken the latest and greatest code of yours?
+
+"padding" is static and only used once in main.c
+
+https://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can-next.git/tree/=
+net/can/j1939/main.c?h=3Dj1939#n45
+
+https://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can-next.git/tree/=
+net/can/j1939/main.c?h=3Dj1939#n171
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-> On 10/04/2016 07:31 PM, Kurt Van Dijck wrote:
-> >>
-> >>> But often, especially for proprietary messages, not all 8 bytes are
-> >>> used, and the DLC is cut accordingly.
-> >>> And less often, this is done for TP too.
-> >>> I also did that for as long as I can remember.
-> >>> As long as all defined bytes are there, this should not really be a
-> >>> problem.
-> >>>
-> >>> Recently, someone on this list was confronted with an engine ECU that
-> >>> dropped TP that had the last packet not 8 bytes long.
-> >>> And I believe I've encountered an issue a long time ago where this
-> >>> happened on all PGNs.
-> >>> So I introduced this option, having 3 possibilities:
-> >>> * no padding
-> >>> * padding for TP
-> >>> * padding for all PGN.
-> >>
-> >> I have yet to check, but I fear that in ISOBus conformance tests on some
-> >> places at least this is tested for. I'd say that if the standard says "pad and
-> >> fill with 0xff", any ECU should do this and not doing it should be regarded as
-> >> a bug... 
-> > 
-> > I (EIA Electronics) got a certified ISOBus Terminal with this code, back
-> > in 2011, with this code (well, the code back then). I cannot remember
-> > that I needed to pad TP.
-> > The networking layer was the easy part in Potsdam, the layers above were
-> > more difficult :-)
-> > 
-> > Things may have become more strict in between.
-> > And we should be prepared for the strict setting.
-> > On the other hand, during debugging, not padding helps identifying the
-> > real data, and this has been valueable too for me.
-> > 
-> > I think we agree on what must be possible, we may just differ on the
-> > defaults and how to set things.
-> 
-> It seems, or rather what I'd like to see is that we want most things to
-> be per socket option. All module parameters should go away. The default
-> for transport_max_size might be a system wide value, similar to
-> /proc/sys/net/core/rmem_max.
+--OfKQnN096WnonsN8pAbG0gTbwetP7XgPS--
 
-do you propose to add /proc files?
-I'm willing to replace module parameters with /proc files, but I don't
-see the real advantage yet. And module parameters were quicker :-)
+--fBdUUPgiiMhA6R1o4bPmiB3QxSjoVKL45
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Kurt
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJX8/g2AAoJED07qiWsqSVq9FgH/1L+BTWrt9LsUncWV5ihEr8/
+jaOti//aBEf02WWF4hrHDvtuz4lGnt6rvtUMHZxBfF45YJe+O81JQ6YlgeJzM0VJ
+iLwWhrg9W7Rri6PX845YOcKXMmhUqSCJlndNJ5g5CnDzCu1krIb0pMP1rsYR/m1e
+3ZSPRBWMTTeu5ws1dlrlsO7wULGfpN8o+jp0mT1EBkZvqR6W6ZfbS0dOoG0LtaNS
+kUtVGTOAWXPkTuGmR7Xj/Mj1Oxn2YAOMPeAwjXgSFqyAicmXbXoIMaaz2tSMioHV
+O7EpOydZKHmz/E/PvBslw/BdylqHCGlfR3LKXPZIV462gXmO4kURxBsqkQ8O6IE=
+=thct
+-----END PGP SIGNATURE-----
+
+--fBdUUPgiiMhA6R1o4bPmiB3QxSjoVKL45--
