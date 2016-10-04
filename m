@@ -1,74 +1,75 @@
-From: David Jander <david@protonic.nl>
-Subject: Re: [PATCH v2 00/12] can: rx-offload: add implmentation and switch
- flexcan driver to use it
-Date: Tue, 4 Oct 2016 14:33:15 +0200
-Message-ID: <20161004143315.23423e56@erd980>
-References: <1467657137-18891-1-git-send-email-mkl@pengutronix.de>
-        <12311540.OPjVtcIYq6@ws-stein>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: j1939
+Date: Tue, 4 Oct 2016 09:41:53 +0200
+Message-ID: <20161004074153.GC13813@airbook.vandijck-laurijssen.be>
+References: <a6ad3606-b295-dc72-c557-098c45769cb9@pengutronix.de>
+ <018c2e89-87c0-c1cc-686e-d5d715651ab3@hartkopp.net>
+ <9a40e851-4bc8-f57c-ffc5-478f3ea93acb@pengutronix.de>
+ <1be622f4-1376-189b-9180-487aef3dc636@hartkopp.net>
+ <CANGgnMaxNRBDG9WWAanHEem-wDJ1ujxYdqgko7nAx3iJNcPUGA@mail.gmail.com>
+ <6d3c3af0-12bb-ba14-c8f9-a8837da82795@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:6452 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753471AbcJDMdR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Oct 2016 08:33:17 -0400
-In-Reply-To: <12311540.OPjVtcIYq6@ws-stein>
+Received: from relay-b03.edpnet.be ([212.71.1.220]:37841 "EHLO
+        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753946AbcJDMo3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Oct 2016 08:44:29 -0400
+Content-Disposition: inline
+In-Reply-To: <6d3c3af0-12bb-ba14-c8f9-a8837da82795@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Martin =?ISO-8859-1?Q?D=E4umler?= <martin.daeumler@systec-electronic.com>, Daniel =?ISO-8859-1?Q?Kr=FCger?= <daniel.krueger@systec-electronic.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>
 
-On Tue, 04 Oct 2016 13:57:33 +0200
-Alexander Stein <alexander.stein@systec-electronic.com> wrote:
-
-> Hi,
 > 
-> On Monday 04 July 2016 20:32:05, Marc Kleine-Budde wrote:
-> > this patch takes up the idea to read the CAN frames in IRQ context and send
-> > them later in NAPI. The first two patches add each an offloading scheme.
+> On 09/19/2016 11:37 PM, Austin Schuh wrote:
+> >>>> What about putting them into socket depended sockopts with setsockopt()?
+> >>>
+> >>> Is it a per interface or a per socket setting?
+> >>
+> >> At least for iso-tp these kind of settings are transport channel
+> >> specific. Don't know if this can be applied to j1939 too.
+> >>
+> >> This is something Kurt or others can answer better than me.
 > > 
-> > The first one is for hardware FIFO based cores, like the flexcan in FIFO
-> > mode. The second one requires mailboxes with timestamps. The mailboxes are
-> > read and sorted by timestamp in IRQ context, sending is done later in NAPI
-> > aswell.
-> > 
-> > The remaining patches modify the flexcan driver to make use of it. imx6 and
-> > vf610 SoCs can make use of the 64 mailbox software FIFO, while older SoCs
-> > still use flexcan's 6 mailbox deep hardware FIFO.
-> > 
-> > Testing on any flexcan core is highly appreciated.  
+> > These parameters should be defined by the standard.  For the padding,
+> > I'm not aware of any messages (besides the RQST message which should
+> > be 3 bytes long) which are not already 8 bytes.  If you want to
+> > enforce that, I would think it would be better to refuse to accept the
+> > packet rather than pad it out to surprise the user less.
 > 
-> We did some tests on our custom i.MX35 based board. This means we are stuck
-> at the 6 mailbox deep hardware FIFO. This is how our test works:
-> * Send 2 * 250000 CAN frames to the i.MX board, in 2 * 250 burst sizes at
-> 1MBit/s
-> * Running iperf in parallel
+> So an option is to check if PGN is 0xea00 then length must be 3,
+> otherwise length must be 8?
 > 
-> Originally we used 3.10.95-rt102 (RT enabled) and lost CAN frames. The
-> CAN-IRQ-Thread has been prioritized to SCHED_FIFO 91. Then we updated to
-> 4.6.7-rt13. Without those patches in either case, RT enabled or not, the
-> hardware FIFO still overran. When this patchset is applied the non-RT
-> configuration successfully received all CAN frames without any drop.
-> Unfortunately when RT is enabled there are still hardware overruns. A first
-> try on the newly released 4.6.7-rt14 improved the situation, there are less
-> overruns, but they still exist.
+> > The unused bits should be set to 1, but that's hard to do at the
+> > driver level when you don't know which bits are used and which are
+> > unused in a request.
 > 
-> In summary the non-RT case seems fine now, but I wonder what causes the
-> delays on RT to the CAN-IRQ-Thread which seem to be about 500us (bus time of
-> 6 4Byte CAN frames).
+> The padding is done in the j1939_send() function. So padding is no
+> problem here.
+> 
+> > SAE J1939-21 defines all the timing requirements and other constraints
+> > pretty well.  Is there a reason to make them configurable?
+> 
+> Dunno...Kurt?
 
-Thanks for testing!
-Well, in -RT I guess anything with a higher priority than the CAN-IRQ can
-cause a delay... but since going from -rt13 to -rt14 improved the situation,
-this sounds like bugs in the -rt code. Are you running any code in SCHED_FIFO
-that you don't run in the non-RT case?
-It's nevertheless very nice to see that for non-RT, you got from losing
-messages to not losing any message with this patchset, even on a lowly i.MX35
-at 1Mbit/s! This proves that the patchset is certainly worth it.
+As said in a previous email, to support different environments.
+The timings are defined in the standard, but in a 'receive' way, i.e.
+the standard defines what timing is acceptable.
+For the TX path, you may prefer to send ASAP (most of the times) or to
+relax the timing so the opposite side can keep up. This preference does
+not violate the standard.
 
-Best regards,
+> 
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                  | Marc Kleine-Budde           |
+> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> 
 
--- 
-David Jander
-Protonic Holland.
+
+
