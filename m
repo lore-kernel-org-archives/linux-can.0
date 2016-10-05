@@ -1,47 +1,56 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [PATCH v2 00/12] can: rx-offload: add implmentation and switch flexcan driver to use it
-Date: Wed, 05 Oct 2016 14:37:20 +0200
-Message-ID: <1506116.7yduGgf9eG@ws-stein>
-References: <1467657137-18891-1-git-send-email-mkl@pengutronix.de> <12311540.OPjVtcIYq6@ws-stein> <20161004143315.23423e56@erd980>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: j1939
+Date: Wed, 5 Oct 2016 20:02:05 +0200
+Message-ID: <20161005180205.GE25008@airbook.vandijck-laurijssen.be>
+References: <CANGgnMaxNRBDG9WWAanHEem-wDJ1ujxYdqgko7nAx3iJNcPUGA@mail.gmail.com>
+ <20160920091525.2ff22d58@erd980>
+ <20161004073703.GB13813@airbook.vandijck-laurijssen.be>
+ <20161004145202.6c5238d9@erd980>
+ <20161004135701.GA25008@airbook.vandijck-laurijssen.be>
+ <20161004164725.08802a61@erd980>
+ <20161004173129.GB25008@airbook.vandijck-laurijssen.be>
+ <8f5ebcf8-8bb6-a9f0-33af-47d4a551e811@pengutronix.de>
+ <20161004184036.GD25008@airbook.vandijck-laurijssen.be>
+ <48bf45a3-b724-a546-62ee-31a27dc3db33@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:59780 "EHLO
-        webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752328AbcJEMhy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Oct 2016 08:37:54 -0400
-In-Reply-To: <20161004143315.23423e56@erd980>
+Received: from relay-b02.edpnet.be ([212.71.1.222]:50111 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752248AbcJESDD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Oct 2016 14:03:03 -0400
+Content-Disposition: inline
+In-Reply-To: <48bf45a3-b724-a546-62ee-31a27dc3db33@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Jander <david@protonic.nl>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Martin =?ISO-8859-1?Q?D=E4umler?= <martin.daeumler@systec-electronic.com>, Daniel =?ISO-8859-1?Q?Kr=FCger?= <daniel.krueger@systec-electronic.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: David Jander <david@protonic.nl>, Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can <linux-can@vger.kernel.org>
 
-Hi David,
 
-On Tuesday 04 October 2016 14:33:15, David Jander wrote:
-> > In summary the non-RT case seems fine now, but I wonder what causes the
-> > delays on RT to the CAN-IRQ-Thread which seem to be about 500us (bus time
-> > of 6 4Byte CAN frames).
+> On 10/04/2016 08:40 PM, Kurt Van Dijck wrote:
+> >>> I think we agree on what must be possible, we may just differ on the
+> >>> defaults and how to set things.
+> >>
+> >> It seems, or rather what I'd like to see is that we want most things to
+> >> be per socket option. All module parameters should go away. The default
+> >> for transport_max_size might be a system wide value, similar to
+> >> /proc/sys/net/core/rmem_max.
+> > 
+> > do you propose to add /proc files?
+
+In that case, I didn't understand your point :-(
+
 > 
-> Thanks for testing!
-> Well, in -RT I guess anything with a higher priority than the CAN-IRQ can
-> cause a delay... but since going from -rt13 to -rt14 improved the situation,
-> this sounds like bugs in the -rt code. Are you running any code in
-> SCHED_FIFO that you don't run in the non-RT case?
+> No - However I'm not sure yet, though.
+> 
+> > I'm willing to replace module parameters with /proc files, but I don't
+> > see the real advantage yet. And module parameters were quicker :-)
+> 
+> When trying to bring new code into the kernel, this is probably not the
+> best argument :)
 
-AFAIK no userspace process is put into SCHED_FIFO and only the priority of 
-CAN-IRQ-Thread is increased to 91. Userspace runs with unchanged priority. So 
-yes I guess there is still problem in -rt code.
+Well, in my experience, the infrastructures are built so that
+easy-to-read code do the right thing in the right way.
+In that regard, I suspect module parameters may be the preferred way?
 
-> It's nevertheless very nice to see that for non-RT, you got from losing
-> messages to not losing any message with this patchset, even on a lowly
-> i.MX35 at 1Mbit/s! This proves that the patchset is certainly worth it.
-
-I would expect the same from running with RT enabled, especially as the CAN-
-IRQ-Thread has SCHED_FIFO wuth priority 91. There shouldn't be much code which 
-can delay that thread.
-
-Best regards,
-Alexander
-
+Kurt
