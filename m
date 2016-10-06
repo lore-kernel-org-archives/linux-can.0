@@ -1,50 +1,54 @@
 From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: mailmap
-Date: Thu, 6 Oct 2016 14:24:27 +0200
-Message-ID: <20161006122427.GF26915@airbook.vandijck-laurijssen.be>
+Subject: Re: j1939
+Date: Thu, 6 Oct 2016 14:26:10 +0200
+Message-ID: <20161006122610.GG26915@airbook.vandijck-laurijssen.be>
+References: <a6ad3606-b295-dc72-c557-098c45769cb9@pengutronix.de>
+ <20161006084407.GB11907@airbook.vandijck-laurijssen.be>
+ <a6920929-30e0-0c69-52f1-96998698bbf6@pengutronix.de>
+ <20161006092403.GA26915@airbook.vandijck-laurijssen.be>
+ <9472847f-aa01-f4b0-f2cc-968a04c6ce06@pengutronix.de>
+ <20161006102643.GB26915@airbook.vandijck-laurijssen.be>
+ <7a910650-0d91-e98c-8694-2d8b32ae68a7@pengutronix.de>
+ <20161006111347.GC26915@airbook.vandijck-laurijssen.be>
+ <20161006113244.GD26915@airbook.vandijck-laurijssen.be>
+ <03b3bac9-b8c4-72ea-cc1d-9bf8f0210e3b@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b03.edpnet.be ([212.71.1.220]:58803 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S941902AbcJFMZ3 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Oct 2016 08:25:29 -0400
+Received: from relay-b02.edpnet.be ([212.71.1.222]:54207 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753292AbcJFM1K (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Oct 2016 08:27:10 -0400
 Content-Disposition: inline
+In-Reply-To: <03b3bac9-b8c4-72ea-cc1d-9bf8f0210e3b@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+Cc: linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>
 
-Marc,
+details :-)
 
-Besides the legal aspect of squashing the whole j1939 tree, which I did
-half on EIA, half in private time, it sure seems a good idea to fix
-the email address in .mailmap:
-Can you, besides the j1939 stuff, incorporate this one.
-
-I also prepare a MAINTAINERS commit, that should go along with the J1939
-stuff....
-
-commit 9989fe341b87f43c3f412a6307fcdc99c4e3d9ca
+commit 5f78bacf9df1df0c54f79f3008b5d74f9b020843
 Author: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Date:   Thu Oct 6 14:15:19 2016
+Date:   Thu Oct 6 14:20:16 2016
 
-    mailmap: update email address
-    
-    This commit replaces my company's email address with a stable private
-    address.
+    can-j1939: update MAINTAINERS
     
     Signed-off-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 
-diff --git a/.mailmap b/.mailmap
-index 52489f5..8f1fc01 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -89,6 +89,7 @@ Konstantin Khlebnikov <koct9i@gmail.com> <k.khlebnikov@samsung.com>
- Koushik <raghavendra.koushik@neterion.com>
- Krzysztof Kozlowski <krzk@kernel.org> <k.kozlowski.k@gmail.com>
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+<dev.kurt@vandijck-laurijssen.be> <kurt.van.dijck@eia.be>
- Leonid I Ananiev <leonid.i.ananiev@intel.com>
- Linas Vepstas <linas@austin.ibm.com>
- Mark Brown <broonie@sirena.org.uk>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 02ab672..32b59fa 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2819,9 +2819,8 @@ F:	include/uapi/linux/can/error.h
+ F:	include/uapi/linux/can/netlink.h
+ 
+ CAN-J1939 NETWORK LAYER
+-M:	Kurt Van Dijck <kurt.van.dijck@eia.be>
+-L:	socketcan-core@lists.berlios.de
+-L:	netdev@vger.kernel.org
++M:	Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
++L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/networking/j1939.txt
+ F:	net/can/j1939/
