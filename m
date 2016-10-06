@@ -1,91 +1,97 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: j1939
-Date: Thu, 6 Oct 2016 09:41:03 +0200
-Message-ID: <20161006074103.GA11907@airbook.vandijck-laurijssen.be>
-References: <20161004073703.GB13813@airbook.vandijck-laurijssen.be>
- <20161004145202.6c5238d9@erd980>
- <20161004135701.GA25008@airbook.vandijck-laurijssen.be>
- <20161004164725.08802a61@erd980>
- <20161004173129.GB25008@airbook.vandijck-laurijssen.be>
- <8f5ebcf8-8bb6-a9f0-33af-47d4a551e811@pengutronix.de>
- <20161004184036.GD25008@airbook.vandijck-laurijssen.be>
- <48bf45a3-b724-a546-62ee-31a27dc3db33@pengutronix.de>
- <20161005180205.GE25008@airbook.vandijck-laurijssen.be>
- <5fb6231c-4461-2be7-bd47-530aa62c121f@pengutronix.de>
+Date: Thu, 6 Oct 2016 10:59:50 +0200
+Message-ID: <a6920929-30e0-0c69-52f1-96998698bbf6@pengutronix.de>
+References: <a6ad3606-b295-dc72-c557-098c45769cb9@pengutronix.de>
+ <20161006084407.GB11907@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="0ii4xDWfN23Xq0j822OMENdxERfdqWUjt"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b03.edpnet.be ([212.71.1.220]:44205 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750939AbcJFHmE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Oct 2016 03:42:04 -0400
-Content-Disposition: inline
-In-Reply-To: <5fb6231c-4461-2be7-bd47-530aa62c121f@pengutronix.de>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:48270 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S966106AbcJFJAA (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Oct 2016 05:00:00 -0400
+In-Reply-To: <20161006084407.GB11907@airbook.vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: David Jander <david@protonic.nl>, Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can <linux-can@vger.kernel.org>
+To: linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>, Kurt Van Dijck <kurt.van.dijck@eia.be>
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0ii4xDWfN23Xq0j822OMENdxERfdqWUjt
+Content-Type: multipart/mixed; boundary="n0JjXAVHGL1tRcLHKiGFWFmIunkVtXhJM";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>,
+ Kurt Van Dijck <kurt.van.dijck@eia.be>
+Message-ID: <a6920929-30e0-0c69-52f1-96998698bbf6@pengutronix.de>
+Subject: Re: j1939
+References: <a6ad3606-b295-dc72-c557-098c45769cb9@pengutronix.de>
+ <20161006084407.GB11907@airbook.vandijck-laurijssen.be>
+In-Reply-To: <20161006084407.GB11907@airbook.vandijck-laurijssen.be>
+
+--n0JjXAVHGL1tRcLHKiGFWFmIunkVtXhJM
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 10/06/2016 10:44 AM, Kurt Van Dijck wrote:
+>> The remaining warning is about a case statement without fall through
+>> annotations and/or breaks:
+>>
+> I rebased this code for my own use so that I have access to my
+> individual commits. You will find this on
+>=20
+> git://github.com/kurt-vd/linux, branch j1939d-v4.7
+
+As long as the diff between you and my branch is zero :)
+
+> I pushed 2 extra commits:
+> * 3dfa139: Pad TP data packets only
+>   This is based on the discussions here. I promised to move the
+>   padding...
+
+Thanks.
+
+> * e2447ef: make TP data transmission work again
+>   This commit fixes a mistake you've done with the fall-trough
+>   statements in j1939tp_txnext (this isn't the easiest state machien on=
+
+>   Earth :-) ).
+
+Thanks.
+
+I have cherry picked both and will push them to v4.7. If everything
+works on the v4.7 branch, I'll squash most of it together an move to v4.8=
+=2E
+
+Thoughts?
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---- Original message ---
-> Date:   Thu, 6 Oct 2016 09:26:00 +0200
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> To: David Jander <david@protonic.nl>, Austin Schuh
->  <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>,
->  linux-can <linux-can@vger.kernel.org>
-> Subject: Re: j1939
-> User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101
->  Icedove/45.2.0
-> 
-> On 10/05/2016 08:02 PM, Kurt Van Dijck wrote:
-> >> On 10/04/2016 08:40 PM, Kurt Van Dijck wrote:
-> >>>>> I think we agree on what must be possible, we may just differ on the
-> >>>>> defaults and how to set things.
-> >>>>
-> >>>> It seems, or rather what I'd like to see is that we want most things to
-> >>>> be per socket option. All module parameters should go away. The default
-> >>>> for transport_max_size might be a system wide value, similar to
-> >>>> /proc/sys/net/core/rmem_max.
-> >>>
-> >>> do you propose to add /proc files?
-> > 
-> >> No - However I'm not sure yet, though.
-> > In that case, I didn't understand your point :-(
-> 
-> The rmem_max and rmem_default and their wmem friends define both a
-> system wide default and a maximum for the read and write buffer of
-> sockets. And there are two sockopts to change the default up to the
-> maximum value that correspondes to the _max value. Where to put this
-> value is another question. As it's a system wide setting /proc might be
-> a sensible place.
+--n0JjXAVHGL1tRcLHKiGFWFmIunkVtXhJM--
 
-I see.
-Your example happened to live in proc, but that wasn't the point.
-I agree with something like that, although I only envisioned xxx_default
-and not xxx_max.
-> 
-> >>> I'm willing to replace module parameters with /proc files, but I don't
-> >>> see the real advantage yet. And module parameters were quicker :-)
-> >>
-> >> When trying to bring new code into the kernel, this is probably not the
-> >> best argument :)
-> > 
-> > Well, in my experience, the infrastructures are built so that
-> > easy-to-read code do the right thing in the right way.
-> > In that regard, I suspect module parameters may be the preferred way?
-> 
-> Some weeks ago Grek turned down a patch, as it introduced new module
-> parameters and said quite clearly no new module parameters.
-> 
-> regards,
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
+--0ii4xDWfN23Xq0j822OMENdxERfdqWUjt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEcBAEBCgAGBQJX9hKGAAoJED07qiWsqSVqDQwH/A2kmu/POpZOKugLLhokGl9v
+eDNV9ifD7nHhOV9MtagRqAKtrqfZ4Jss/XEkAZKUfuVDuRch1/f7kZ82boYE8se2
+Ri/hSOXn8ko7B1ocRlmp8+XX374+lRk/IjfRdWDjaP5DykhZ1c7fKQcJR3A5GLY4
+74FFHczYhjvGLq+n8Ta4Z/jTK3bGX8vT81bQ38qi1bqJrNsbSRWDMvkUnv+OGyKB
+Na3U1DKpdrpLkSg+3xIb4wg/K0PJLfcxy5kKR8IqmWTq69zn4wOrGPcpgHsu7Clg
+yXprMsPZTZdfrdjUHtlD3B3qDKrwaN6mkGBZ/psi5P1p6GClr6+g1w5dYypDT0s=
+=JlJP
+-----END PGP SIGNATURE-----
 
+--0ii4xDWfN23Xq0j822OMENdxERfdqWUjt--
