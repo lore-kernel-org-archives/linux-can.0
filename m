@@ -1,52 +1,49 @@
 From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Subject: Re: j1939
-Date: Thu, 6 Oct 2016 10:44:07 +0200
-Message-ID: <20161006084407.GB11907@airbook.vandijck-laurijssen.be>
+Date: Thu, 6 Oct 2016 12:26:43 +0200
+Message-ID: <20161006102643.GB26915@airbook.vandijck-laurijssen.be>
 References: <a6ad3606-b295-dc72-c557-098c45769cb9@pengutronix.de>
+ <20161006084407.GB11907@airbook.vandijck-laurijssen.be>
+ <a6920929-30e0-0c69-52f1-96998698bbf6@pengutronix.de>
+ <20161006092403.GA26915@airbook.vandijck-laurijssen.be>
+ <9472847f-aa01-f4b0-f2cc-968a04c6ce06@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b01.edpnet.be ([212.71.1.221]:51194 "EHLO
-        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S942134AbcJFIpI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Oct 2016 04:45:08 -0400
+Received: from relay-b03.edpnet.be ([212.71.1.220]:38972 "EHLO
+        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754067AbcJFK1o (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Oct 2016 06:27:44 -0400
 Content-Disposition: inline
-In-Reply-To: <a6ad3606-b295-dc72-c557-098c45769cb9@pengutronix.de>
+In-Reply-To: <9472847f-aa01-f4b0-f2cc-968a04c6ce06@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>, Kurt Van Dijck <kurt.van.dijck@eia.be>
 
-Hey Marc,
+> On 10/06/2016 11:24 AM, Kurt Van Dijck wrote:
+> >>> * e2447ef: make TP data transmission work again
+> >>>   This commit fixes a mistake you've done with the fall-trough
+> >>>   statements in j1939tp_txnext (this isn't the easiest state machien on
+> >>>   Earth :-) ).
+> >>
+> >> Thanks.
+> >>
+> >> I have cherry picked both and will push them to v4.7. If everything
+> >> works on the v4.7 branch, I'll squash most of it together an move to v4.8.
+> >>
+> >> Thoughts?
+> > 
+> > 1) I'll try to move module parameters to /proc/sys/net/can-j1939/ items.
 
-I was able to take a close look in the code.
+I'm done.
+I fixed the Makefile so it can compile can-j1939 as module again :-)
+I changed the defaults to strict j1939 compliant (way-to-large max
+	packet size, padding).
+And I migrated the module parameters to /proc/sys/net/can-j1939.
+I loaded the module, and verified /proc, without any real wire tests.
 
-> Hello,
-> 
-> I've ported Kurt's latest j1939 patches to linux-4.7. I've squashed all
-> patches into one. Then a patch to undo unused modifications and a bunch
-> of patches to make checkpatch happy.
-> 
-> I've pushed the result to
-> 
-> https://git.kernel.org/cgit/linux/kernel/git/mkl/linux-can-next.git/log/?h=j1939
-> 
-> The remaining warning is about a case statement without fall through
-> annotations and/or breaks:
-> 
-I rebased this code for my own use so that I have access to my
-individual commits. You will find this on
-
-git://github.com/kurt-vd/linux, branch j1939d-v4.7
-
-I pushed 2 extra commits:
-* 3dfa139: Pad TP data packets only
-  This is based on the discussions here. I promised to move the
-  padding...
-* e2447ef: make TP data transmission work again
-  This commit fixes a mistake you've done with the fall-trough
-  statements in j1939tp_txnext (this isn't the easiest state machien on
-  Earth :-) ).
+So you need to cherry-pick another 3 commits.
 
 Kind regards,
 Kurt
