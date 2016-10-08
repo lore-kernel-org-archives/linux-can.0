@@ -1,93 +1,130 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Measuring latency of CAN messages in SocketCAN
-Date: Sat, 8 Oct 2016 18:44:45 +0200
-Message-ID: <dd528b79-1f31-b24e-c4d9-5696c56207c0@hartkopp.net>
-References: <web-11102383@rz.tu-bs.de>
- <d01e175a-7c62-3e55-ed34-bb65a96458e9@posteo.de>
- <201610062224.02526.pisa@cmp.felk.cvut.cz>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: j1939
+Date: Sat, 8 Oct 2016 21:48:20 +0200
+Message-ID: <20161008194820.GC10286@airbook.vandijck-laurijssen.be>
+References: <a6ad3606-b295-dc72-c557-098c45769cb9@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:39500 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755186AbcJHQox (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 8 Oct 2016 12:44:53 -0400
-In-Reply-To: <201610062224.02526.pisa@cmp.felk.cvut.cz>
+Received: from relay-b02.edpnet.be ([212.71.1.222]:45828 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751280AbcJHTtW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 8 Oct 2016 15:49:22 -0400
+Content-Disposition: inline
+In-Reply-To: <a6ad3606-b295-dc72-c557-098c45769cb9@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pavel Pisa <pisa@cmp.felk.cvut.cz>, Patrick Menschel <menschel.p@posteo.de>, Bremer Henning <h.bremer@tu-braunschweig.de>
-Cc: linux-can@vger.kernel.org, Martin Jerabek <jerabma7@fel.cvut.cz>, Michal Sojka <sojkam1@fel.cvut.cz>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>
 
-On 10/06/2016 10:24 PM, Pavel Pisa wrote:
+Marc
 
-> If the task is to evaluate latencies between reception of message
-> and reaction to it then it is the best to use the second system
-> which provides hardware timestamping.
->
-> We have more such projects developed at our university.
-> The Linux related ones mainly in our group, low level systems
-> with up to sub bittime measurements at department of Measurement
-> have been done for Skoda Auto.
->
-> See some of our CAN related projects
->
->   http://rtime.felk.cvut.cz/can/
->
-> Quite powerfull and relatively cheap tool is next Zynq based
-> solution developed by Martin Jerabek in frame of his bachelor
-> thesis
->
->   http://rtime.felk.cvut.cz/can/F3-BP-2016-Jerabek-Martin-Jerabek-thesis-2016.pdf
+I tried to replace a spinlock+int by an atomic_t.
+Is it something similar that you had in mind.
+You were right in your comments that it is replaceable by an atomic_t.
+I pushed it to my repo, and appended it to this email.
 
-Very interesting - thanks for the reference.
+David, this should be transparent, but I wasn't able to test it.
 
-I usually poll http://rtime.felk.cvut.cz/can/ time after time.
+Kind regards,
+Kurt
 
-Maybe I overlooked this thesis as there was no '2016' at the URL on the 
-page :-)
+commit b8bfd1fe84869ee1c5eed3b8e6717da67dc3da60
+Author: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Date:   Sat Oct 8 21:43:04 2016
 
->
-> The Xilinx CAN driver update to provide hardware CAN messages timestamping
-> with microsecond resolution is working nice way, there are missing
-> some minor details to be ready for submission to the list for inclusion
-> into mainline
+    can-j1939: replace spinlock+counter by atomic_t
+    
+    The skb_pending member of j1939 sockets does not really need an extra spinlock
+    
+    Signed-off-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 
-Looking forward to it.
-
->   https://rtime.felk.cvut.cz/gitweb/fpga/zynq/canbench-sw.git
->
-> Change for candump to allow select hardware timestamps has been prepared
-> by Michal Sojka and is quite ready as well.
->
-> We use this Linux Zynq "CAN analyzer" setup in to evalueate our development
-> of CPU independent precise CAN messages Tx according to the schedule
-> on embedded TMS570 based system.
->
-> We have updated to this more precise setup even our SocketCAN CAN to CAN
-> gateway continuous testing.
->
-> As for checking of Tx delay from some internal or external asynchronous
-> event, the oscilloscope is tool of choice.  If event is internal,
-> send alter some GPIO output pin at that even and use that as trigger.
-
-Maybe you can also use the established and supported LED trigger (for 
-CAN RX/TX) infrastructure and define one of the used LED outputs as a 
-GPIO pin for measurements.
-
-> If you have more messages and need to find the right one then you can send
-> another message through the second unloaded CAN channel and then use for
-> example our analyzer to measure differences between messages other easy option
-> is to add logic input processing to FPGA which could lead for example to
-> capture of the same CAN HW timestamp counter even from non-FPGA processor
-> system integrated can controller. It is easy to access CPU address space
-> over AXI from FPGA side and then provide register with captured value
-> back to ARM/Linux system. We have done similar things in some of
-> our designs.
->
-> Best wishes,
->
-> Pavel Pisa
-
-Many thanks,
-Oliver
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 66d2301..41d59dd 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -57,8 +57,7 @@ struct j1939_sock {
+ 	 * when transport protocol comes in.
+ 	 * To allow emitting in order, keep a 'pending' nr. of packets
+ 	 */
+-	int skb_pending;	/* TODO: convert to atomic_t */
+-	spinlock_t lock;	/* protects skb_pending */
++	atomic_t skb_pending;
+ 	wait_queue_head_t waitq;
+ };
+ 
+@@ -67,42 +66,39 @@ static inline struct j1939_sock *j1939_sk(const struct sock *sk)
+ 	return container_of(sk, struct j1939_sock, sk);
+ }
+ 
+-/* skb_pending issues */
++/*
++ * j1939_sock_pending_add_first
++ * Succeeds when the first pending SKB is scheduled
++ * Fails when SKB are already pending
++ */
+ static inline int j1939_sock_pending_add_first(struct sock *sk)
+ {
+-	int saved;
+ 	struct j1939_sock *jsk = j1939_sk(sk);
+ 
+-	spin_lock_bh(&jsk->lock);
+-	if (!jsk->skb_pending) {
+-		++jsk->skb_pending;
+-		saved = 1;
+-	} else {
+-		saved = 0;
+-	}
+-	spin_unlock_bh(&jsk->lock);
+-	return saved;
++	/*
++	 * atomic_cmpxchg returns the old value
++	 * When it was 0, it is exchanged with 1 and this function
++	 * succeeded. (return 1)
++	 * When it was != 0, it is not exchanged, and this fuction
++	 * fails (returns 0).
++	 */
++	return !atomic_cmpxchg(&jsk->skb_pending, 0, 1);
+ }
+ 
+ static inline void j1939_sock_pending_add(struct sock *sk)
+ {
+ 	struct j1939_sock *jsk = j1939_sk(sk);
+ 
+-	spin_lock_bh(&jsk->lock);
+-	++jsk->skb_pending;
+-	spin_unlock_bh(&jsk->lock);
++	atomic_inc(&jsk->skb_pending);
+ }
+ 
+ void j1939_sock_pending_del(struct sock *sk)
+ {
+ 	struct j1939_sock *jsk = j1939_sk(sk);
+-	int saved;
+ 
+-	spin_lock_bh(&jsk->lock);
+-	--jsk->skb_pending;
+-	saved = jsk->skb_pending;
+-	spin_unlock_bh(&jsk->lock);
+-	if (!saved)
++	/* atomic_dec_return returns the new value */
++	if (!atomic_dec_return(&jsk->skb_pending))
++		/* no pending SKB's */
+ 		wake_up(&jsk->waitq);
+ }
+ 
+@@ -209,13 +205,13 @@ static int j1939sk_init(struct sock *sk)
+ 	struct j1939_sock *jsk = j1939_sk(sk);
+ 
+ 	INIT_LIST_HEAD(&jsk->list);
+-	spin_lock_init(&jsk->lock);
+ 	init_waitqueue_head(&jsk->waitq);
+ 	jsk->sk.sk_priority = j1939_to_sk_priority(6);
+ 	jsk->sk.sk_reuse = 1; /* per default */
+ 	jsk->addr.sa = J1939_NO_ADDR;
+ 	jsk->addr.da = J1939_NO_ADDR;
+ 	jsk->addr.pgn = J1939_NO_PGN;
++	atomic_set(&jsk->skb_pending, 0);
+ 	return 0;
+ }
+ 
