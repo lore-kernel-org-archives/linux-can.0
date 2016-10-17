@@ -1,60 +1,37 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: About adding a new CAN-FD driver...
-Date: Mon, 17 Oct 2016 11:42:02 +0200
-Message-ID: <d88756ae-0eb8-705d-e6a5-0e4532a8e28c@peak-system.com>
+From: =?UTF-8?Q?Micka=c3=abl_Gu=c3=a9rin?= <kael@crocobox.org>
+Subject: Re: using VCAN interfaces with containers
+Date: Mon, 17 Oct 2016 13:19:37 +0200
+Message-ID: <7ba72b31-20fa-6c95-54c3-391fe1dd3048@crocobox.org>
+References: <e2bccb97-c0b8-617b-a6e3-b273a05f48e8@crocobox.org>
+ <147670126999.12954.15947433823240101893@maxwell>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:61118 "EHLO
-        mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932310AbcJQJ6p (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 17 Oct 2016 05:58:45 -0400
+Received: from cookie.crocobox.org ([5.135.166.110]:51826 "EHLO
+        cookie.crocobox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S935077AbcJQLTl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 17 Oct 2016 07:19:41 -0400
+In-Reply-To: <147670126999.12954.15947433823240101893@maxwell>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org
 
-Hello,
+Le 17/10/2016 à 12:47, Andri Yngvason a écrit :
+> Network namespaces are not implemented for SocketCAN. I actually tried adding
+> them a year ago [1], but I ran into trouble on multi-core systems. You are free
+> to pick up where I left off.;)
+I've seen your work but I thought it had been integrated; I admit I have 
+not tryed anything yet ;)
 
-We're planning to add a new driver under drivers/net/can that adds 
-support to our PCAN-PCIe FD boards family.
+> I found other means by which to achieve my goals, so I gave up on adding the
+> namespaces. I created an abstraction that allowed me to forward CAN frames over
+> TCP [2]. This method has the downside the you need to embed it into your code,
+> but it's easier to do this that to implement net namespaces for CAN.
+Same conclusion for me too. It seems to be the easy way.
 
-Before pushing any patches, I would first discuss about how and where to 
-do that: all of our CAN-FD products actually embed some FPGA running the 
-same µCode, internally called "uCAN core". So I first think to create a 
-new sub-dir "drivers/net/can/ucan".
+thanks,
 
-But several months ago (Kernel v4.0), we already have pushed a driver 
-for our USB CAN-FD adapters, so the new files have been obviously added 
-under "driver/net/can/usb/peak_usb". Among these new files, 
-"pcan_ucan.h" describes messages exchanged between host and uCAN core, 
-whatever the PC interface is (USB, PCie...). So, I can imagine that the 
-new driver for PCIe should include this file too, as well as some pieces 
-of code present in "peak_usb_fd.c"...
+-- 
+Mickaël.
 
-ASFAI, #include "../usb/peak_usb/pcan_ucan.h" is not the proper way to 
-do this, isn't it?
-
-So, first of all, I would propose to push some patch(es) in order to 
-make things cleaner:
-
-1/ move file "pcan_ucan.h" from "drivers/net/can/usb/peak_usb" to the 
-(newly created) "drivers/net/can/ucan"
-
-2/ add the corresponding CFLAGS def into 
-"drivers/net/can/usb/peak_usb/makefile":
-
-+CFLAGS_pcan_usb_fd.o        += -Idrivers/net/can/ucan
-
-is this the best approach, please?
-
-Thanks for your help.
-
-Stéphane
-
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt - HRB 9183 
-Geschaeftsfuehrung: A.Gach, U.Wilhelm
---
