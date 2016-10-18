@@ -1,73 +1,101 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: using VCAN interfaces with containers
-Date: Mon, 17 Oct 2016 10:47:50 +0000
-Message-ID: <147670126999.12954.15947433823240101893@maxwell>
-References: <e2bccb97-c0b8-617b-a6e3-b273a05f48e8@crocobox.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: About adding a new CAN-FD driver...
+Date: Tue, 18 Oct 2016 09:15:20 +0200
+Message-ID: <6d435ca7-dda2-5213-4fb1-bff663255746@hartkopp.net>
+References: <d88756ae-0eb8-705d-e6a5-0e4532a8e28c@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db5eur01on0049.outbound.protection.outlook.com ([104.47.2.49]:42352
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S933268AbcJQM2N (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 17 Oct 2016 08:28:13 -0400
-In-Reply-To: <e2bccb97-c0b8-617b-a6e3-b273a05f48e8@crocobox.org>
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.176]:21578 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S933754AbcJRHPj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Oct 2016 03:15:39 -0400
+In-Reply-To: <d88756ae-0eb8-705d-e6a5-0e4532a8e28c@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?q?Micka=C3=ABl_Gu=C3=A9rin?= <kael@crocobox.org>, linux-can@vger.kernel.org
+To: Stephane Grosjean <s.grosjean@peak-system.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Quoting Micka=C3=ABl Gu=C3=A9rin (2016-10-16 13:22:41)
+Hello Stephane,
+
+thanks for starting the uCAN support for the non-USB hardware types!
+
+As a third alternative we cloud think about a common place to host 
+include files that are needed by all drivers.
+
+Looking into
+
+	linux/include/linux/can/
+
+there's dev.h which is needed by all drivers today.
+
+In
+
+	linux/include/linux/can/platform
+
+there are the platform specific infos for some CAN controllers.
+
+So we could place e.g. a peak_ucan.h in either
+
+	linux/include/linux/can/
+or
+	linux/include/linux/can/dev/
+
+At least this looks more clearly instead of creating unusual 
+dependencies inside linux/drivers/net/can/
+
+Any other opinions out there?
+
+Regards,
+Oliver
+
+
+On 10/17/2016 11:42 AM, Stephane Grosjean wrote:
 > Hello,
-> =
-
-> I have a software that I would like to test inside LXC or nspawn =
-
-> container. This software uses CAN and ethernet.
-> =
-
-> I need a way to have VCAN interface(s) allowing communication between =
-
-> host and container. (Something like veth ?)
-> =
-
->  From what I know it is not possible to "peer" two VCAN interfaces. It's =
-
-> also not possible to have the same VCAN interface in two namespaces.
-> =
-
-> =
-
-> Can anyone tell me if this is possible (without sharing the same network =
-
-> namespace) ?
-...
-
-Hi Micka=C3=ABl,
-
-Network namespaces are not implemented for SocketCAN. I actually tried addi=
-ng
-them a year ago [1], but I ran into trouble on multi-core systems. You are =
-free
-to pick up where I left off. ;)
-
-I found other means by which to achieve my goals, so I gave up on adding the
-namespaces. I created an abstraction that allowed me to forward CAN frames =
-over
-TCP [2]. This method has the downside the you need to embed it into your co=
-de,
-but it's easier to do this that to implement net namespaces for CAN.
-
-On the host, I run a "bridge" [3] that opens the CAN interface and listens =
-to
-TCP. The LXC guest connects to the TCP server via the interface defined in
-sock.h.
-
-I hope this helps.
-
-Best regards,
-Andri
-
-[1] http://marc.info/?l=3Dlinux-can&m=3D144337815016037
-[2] https://github.com/marel-keytech/openCANopen/blob/master/src/sock.c
-[3] https://github.com/marel-keytech/openCANopen/blob/master/src/canbridge.c
+>
+> We're planning to add a new driver under drivers/net/can that adds
+> support to our PCAN-PCIe FD boards family.
+>
+> Before pushing any patches, I would first discuss about how and where to
+> do that: all of our CAN-FD products actually embed some FPGA running the
+> same µCode, internally called "uCAN core". So I first think to create a
+> new sub-dir "drivers/net/can/ucan".
+>
+> But several months ago (Kernel v4.0), we already have pushed a driver
+> for our USB CAN-FD adapters, so the new files have been obviously added
+> under "driver/net/can/usb/peak_usb". Among these new files,
+> "pcan_ucan.h" describes messages exchanged between host and uCAN core,
+> whatever the PC interface is (USB, PCie...). So, I can imagine that the
+> new driver for PCIe should include this file too, as well as some pieces
+> of code present in "peak_usb_fd.c"...
+>
+> ASFAI, #include "../usb/peak_usb/pcan_ucan.h" is not the proper way to
+> do this, isn't it?
+>
+> So, first of all, I would propose to push some patch(es) in order to
+> make things cleaner:
+>
+> 1/ move file "pcan_ucan.h" from "drivers/net/can/usb/peak_usb" to the
+> (newly created) "drivers/net/can/ucan"
+>
+> 2/ add the corresponding CFLAGS def into
+> "drivers/net/can/usb/peak_usb/makefile":
+>
+> +CFLAGS_pcan_usb_fd.o        += -Idrivers/net/can/ucan
+>
+> is this the best approach, please?
+>
+> Thanks for your help.
+>
+> Stéphane
+>
+>
+> --
+> PEAK-System Technik GmbH
+> Sitz der Gesellschaft Darmstadt - HRB 9183 Geschaeftsfuehrung: A.Gach,
+> U.Wilhelm
+> --
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
