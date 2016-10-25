@@ -1,33 +1,142 @@
-From: Cong Wang <xiyou.wangcong@gmail.com>
-Subject: Re: [PATCH] can: fix warning in bcm_connect/proc_register
-Date: Mon, 24 Oct 2016 13:17:19 -0700
-Message-ID: <CAM_iQpVmhH_9vQcTw+wP1qmPLOijZZrMZrq=_e4i5fUXYDON0Q@mail.gmail.com>
-References: <20161024191126.30256-1-socketcan@hartkopp.net> <CAM_iQpXj3ktALCmjwaPKJuf0SDEc6Txk-yYkRzZ79LFEsxOx3w@mail.gmail.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: About adding a new CAN-FD driver...
+Date: Tue, 25 Oct 2016 09:01:48 +0200
+Message-ID: <59fb4102-64e1-af16-7b98-8ac8e39f78f7@peak-system.com>
+References: <d88756ae-0eb8-705d-e6a5-0e4532a8e28c@peak-system.com>
+ <6d435ca7-dda2-5213-4fb1-bff663255746@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAM_iQpXj3ktALCmjwaPKJuf0SDEc6Txk-yYkRzZ79LFEsxOx3w@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Andrey Konovalov <andreyknvl@google.com>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, Linux Kernel Network Developers <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, syzkaller <syzkaller@googlegroups.com>, Kostya Serebryany <kcc@google.com>, Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail.peak-system.com ([213.157.13.214]:44288 "EHLO
+        mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755444AbcJYHCn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Oct 2016 03:02:43 -0400
+In-Reply-To: <6d435ca7-dda2-5213-4fb1-bff663255746@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On Mon, Oct 24, 2016 at 1:10 PM, Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> On Mon, Oct 24, 2016 at 12:11 PM, Oliver Hartkopp
-> <socketcan@hartkopp.net> wrote:
->>         if (proc_dir) {
->>                 /* unique socket address as filename */
->>                 sprintf(bo->procname, "%lu", sock_i_ino(sk));
->>                 bo->bcm_proc_read = proc_create_data(bo->procname, 0644,
->>                                                      proc_dir,
->>                                                      &bcm_proc_fops, sk);
->> +               if (!bo->bcm_proc_read) {
->> +                       ret = -ENOMEM;
->> +                       goto fail;
->> +               }
+Hello Oliver,
+
+So I think that
+
+  linux/include/linux/can/platform
+
+is the most appropriate location for storing some common header file and 
+definitions.
+
+What about the code now? I would suggest to do as you did with the 
+SJA1000 controller, that is, creating a common module that will be 
+loaded each time "peak_usb.ko" and/or the new one in charge of PCAN-PCIe 
+FD will be loaded. Is this ok for you?
+
+After meeting, we have decided that the name of this new module would be 
+"peak_canfd" (instead of the internal one "ucan"). So, to summarize, 
+what I propose would be:
+
+- to add a new file named "peak_canfd.h" into 
+linux/include/linux/can/platform, mainly a "move" of 
+drivers/net/can/usb/peak_usb/pcan_ucan.h
+
+- to add a new directory under "drivers/net/can" named "peak_canfd" that 
+would contain the code of the common module "peak_canfd.ko" as well as 
+the (new) module "peak_pciefd.ko"
+
+Are these ok for you?
+
+Regards,
+
+Stéphane
+
+
+Le 18/10/2016 à 09:15, Oliver Hartkopp a écrit :
+> Hello Stephane,
 >
-> Well, I meant we need to call proc_create_data() once per socket,
-> so we need a check before proc_create_data() too.
+> thanks for starting the uCAN support for the non-USB hardware types!
+>
+> As a third alternative we cloud think about a common place to host 
+> include files that are needed by all drivers.
+>
+> Looking into
+>
+>     linux/include/linux/can/
+>
+> there's dev.h which is needed by all drivers today.
+>
+> In
+>
+>     linux/include/linux/can/platform
+>
+> there are the platform specific infos for some CAN controllers.
+>
+> So we could place e.g. a peak_ucan.h in either
+>
+>     linux/include/linux/can/
+> or
+>     linux/include/linux/can/dev/
+>
+> At least this looks more clearly instead of creating unusual 
+> dependencies inside linux/drivers/net/can/
+>
+> Any other opinions out there?
+>
+> Regards,
+> Oliver
+>
+>
+> On 10/17/2016 11:42 AM, Stephane Grosjean wrote:
+>> Hello,
+>>
+>> We're planning to add a new driver under drivers/net/can that adds
+>> support to our PCAN-PCIe FD boards family.
+>>
+>> Before pushing any patches, I would first discuss about how and where to
+>> do that: all of our CAN-FD products actually embed some FPGA running the
+>> same µCode, internally called "uCAN core". So I first think to create a
+>> new sub-dir "drivers/net/can/ucan".
+>>
+>> But several months ago (Kernel v4.0), we already have pushed a driver
+>> for our USB CAN-FD adapters, so the new files have been obviously added
+>> under "driver/net/can/usb/peak_usb". Among these new files,
+>> "pcan_ucan.h" describes messages exchanged between host and uCAN core,
+>> whatever the PC interface is (USB, PCie...). So, I can imagine that the
+>> new driver for PCIe should include this file too, as well as some pieces
+>> of code present in "peak_usb_fd.c"...
+>>
+>> ASFAI, #include "../usb/peak_usb/pcan_ucan.h" is not the proper way to
+>> do this, isn't it?
+>>
+>> So, first of all, I would propose to push some patch(es) in order to
+>> make things cleaner:
+>>
+>> 1/ move file "pcan_ucan.h" from "drivers/net/can/usb/peak_usb" to the
+>> (newly created) "drivers/net/can/ucan"
+>>
+>> 2/ add the corresponding CFLAGS def into
+>> "drivers/net/can/usb/peak_usb/makefile":
+>>
+>> +CFLAGS_pcan_usb_fd.o        += -Idrivers/net/can/ucan
+>>
+>> is this the best approach, please?
+>>
+>> Thanks for your help.
+>>
+>> Stéphane
+>>
+>>
+>> -- 
+>> PEAK-System Technik GmbH
+>> Sitz der Gesellschaft Darmstadt - HRB 9183 Geschaeftsfuehrung: A.Gach,
+>> U.Wilhelm
+>> -- 
+>> -- 
+>> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at http://vger.kernel.org/majordomo-info.html
 
-Hmm, bo->bound should guarantee it, so never mind, your patch
-looks fine.
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt - HRB 9183 
+Geschaeftsfuehrung: A.Gach, U.Wilhelm
+--
