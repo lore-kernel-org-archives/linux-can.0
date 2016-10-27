@@ -1,41 +1,80 @@
-From: Andrey Konovalov <andreyknvl@google.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH] can: fix warning in bcm_connect/proc_register
-Date: Tue, 25 Oct 2016 14:12:57 +0200
-Message-ID: <CAAeHK+yJA=h7znkP0s2pQbXif3+7rGSgtpOO0EaP3kW-JZGjeA@mail.gmail.com>
+Date: Thu, 27 Oct 2016 10:47:28 +0200
+Message-ID: <c25b97be-7330-a648-c207-16c93282d07f@pengutronix.de>
 References: <20161024191126.30256-1-socketcan@hartkopp.net>
- <CAM_iQpXj3ktALCmjwaPKJuf0SDEc6Txk-yYkRzZ79LFEsxOx3w@mail.gmail.com> <CAM_iQpVmhH_9vQcTw+wP1qmPLOijZZrMZrq=_e4i5fUXYDON0Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAM_iQpVmhH_9vQcTw+wP1qmPLOijZZrMZrq=_e4i5fUXYDON0Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, Linux Kernel Network Developers <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, syzkaller <syzkaller@googlegroups.com>, Kostya Serebryany <kcc@google.com>, Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="bLDjNK7ir05wU9qpehexLsLGCmXKawrJD"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:53482 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1755834AbcJ0JQX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 27 Oct 2016 05:16:23 -0400
+In-Reply-To: <20161024191126.30256-1-socketcan@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, andreyknvl@google.com, xiyou.wangcong@gmail.com, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, kcc@google.com, glider@google.com, dvyukov@google.com, edumazet@google.com
 
-Hi Oliver,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--bLDjNK7ir05wU9qpehexLsLGCmXKawrJD
+Content-Type: multipart/mixed; boundary="LmcKubxrAGma1IFtoieuRe4ootxwnSQch";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, andreyknvl@google.com,
+ xiyou.wangcong@gmail.com, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, kcc@google.com,
+ glider@google.com, dvyukov@google.com, edumazet@google.com
+Message-ID: <c25b97be-7330-a648-c207-16c93282d07f@pengutronix.de>
+Subject: Re: [PATCH] can: fix warning in bcm_connect/proc_register
+References: <20161024191126.30256-1-socketcan@hartkopp.net>
+In-Reply-To: <20161024191126.30256-1-socketcan@hartkopp.net>
 
-I can confirm that your patch fixes the warnings for me.
+--LmcKubxrAGma1IFtoieuRe4ootxwnSQch
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
+On 10/24/2016 09:11 PM, Oliver Hartkopp wrote:
+> Andrey Konovalov reported an issue with proc_register in bcm.c.
+> As suggested by Cong Wang this patch adds a lock_sock() protection and
+> a check for unsuccessful proc_create_data() in bcm_connect().
+>=20
+> Reference: http://marc.info/?l=3Dlinux-netdev&m=3D147732648731237
+>=20
+> Reported-by: Andrey Konovalov <andreyknvl@google.com>
+> Suggested-by: Cong Wang <xiyou.wangcong@gmail.com>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-On Mon, Oct 24, 2016 at 10:17 PM, Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> On Mon, Oct 24, 2016 at 1:10 PM, Cong Wang <xiyou.wangcong@gmail.com> wrote:
->> On Mon, Oct 24, 2016 at 12:11 PM, Oliver Hartkopp
->> <socketcan@hartkopp.net> wrote:
->>>         if (proc_dir) {
->>>                 /* unique socket address as filename */
->>>                 sprintf(bo->procname, "%lu", sock_i_ino(sk));
->>>                 bo->bcm_proc_read = proc_create_data(bo->procname, 0644,
->>>                                                      proc_dir,
->>>                                                      &bcm_proc_fops, sk);
->>> +               if (!bo->bcm_proc_read) {
->>> +                       ret = -ENOMEM;
->>> +                       goto fail;
->>> +               }
->>
->> Well, I meant we need to call proc_create_data() once per socket,
->> so we need a check before proc_create_data() too.
->
-> Hmm, bo->bound should guarantee it, so never mind, your patch
-> looks fine.
+Added with Andrey Konovalov Tested-by to can/master with stable on Cc.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--LmcKubxrAGma1IFtoieuRe4ootxwnSQch--
+
+--bLDjNK7ir05wU9qpehexLsLGCmXKawrJD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJYEb8iAAoJED07qiWsqSVqxoUIAJR2ugHxlcaFWz4C4ziKTKTt
+7GELb3Snz5FT9oBrz4eVNtD8L5N3woxU3KqgdU1F4SIaMyDwC/lVbbq4eGMbgyzd
+dG8idaBSSKsQnCntPlDG9+icwg3/Xhyn0l02C+ToBbNSnq4DbxwCOAmIHuet/nMj
+Ze/oglOpJmkLy7qbhkpwxB6tQP8/wmT+/xFJnSp+mV9QgzL3bnhIcdYTVVM7Rp+o
+PBZuCdmNH9t+sJEd18s388OHSpj9Px/+b2g8eVxzPF7aF7EaUgGJUSRGYNfEK3oF
+JBv4Q84px1D4OBWdqNKH8WG/bh7STCTdTjvEgBSjevVDNEZMOW3SZh/hPdF/y2U=
+=eLRx
+-----END PGP SIGNATURE-----
+
+--bLDjNK7ir05wU9qpehexLsLGCmXKawrJD--
