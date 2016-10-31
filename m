@@ -1,25 +1,54 @@
-From: =?utf-8?B?5Ziy6aOO5byE5pyI?= <master@arteduinfo.com>
-Subject: =?utf-8?B?5Y+MMTHpooTllK7kuJPlnLrlt7Lnu4/lvIDlkK/vvIHkvY7oh7PkupTmipjvvIzlj4zljYHkuIA=?=
-        =?utf-8?B?5YmN5Zuk6LSn6auY5bOw77yB?=
-Date: Mon, 31 Oct 2016 17:01:12 +0800
-Message-ID: <A5D00E1055FE2A5B878B2D4E6C6B4ED3@KDA.guz>
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can 2016-10-31
+Date: Mon, 31 Oct 2016 21:36:18 +0100
+Message-ID: <20161031203620.14384-1-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from [222.240.139.199] ([222.240.139.199]:3452 "HELO arteduinfo.com"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with SMTP
-        id S1764136AbcJaJfk (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 31 Oct 2016 05:35:40 -0400
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37990 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S946605AbcJaUg0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 31 Oct 2016 16:36:26 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-ICAgICAgICAgICAgICAgIOWPjDEx5rW36YeP5aW96LSn5o+Q5YmN5pud5YWJDQoNCuaPkOWJjeaf
-peeci+WPjDEx5aW96LSn77yM5oqi5YWI5pS26JeP77yM5Y+MMTHlvZPlpKnnq4vljbPkuIvljZXv
-vIzpgb/lhY3mjpLpmJ/ku5jmrL7vvIzkuI3mraLmmK/kupTmipjvvIENCg0K55S16ISR55So5oi3
-5YWl5Y+j77yaaHR0cDovL3MuY2xpY2sudGFvYmFvLmNvbS8wRFBVV1B4DQrmiYvmnLrnlKjmiLfl
-haXlj6PvvJpodHRwOi8vcy5jbGljay50YW9iYW8uY29tL1hRbFVXUHg=
+Hello David,
+
+this is a pull request of two patches for the upcoming v4.9 release.
+
+The first patch is by Lukas Resch for the sja1000 plx_pci driver that adds
+support for Moxa CAN devices. The second patch is by Oliver Hartkopp and fixes
+a potential kernel panic in the CAN broadcast manager.
+
+regards,
+Marc
+
+---
+
+The following changes since commit 46d0847cdd4a3fc1920e56827b9189b9a105d362:
+
+  mlxsw: spectrum: Fix incorrect reuse of MID entries (2016-10-31 15:34:43 -0400)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.9-20161031
+
+for you to fetch changes up to deb507f91f1adbf64317ad24ac46c56eeccfb754:
+
+  can: bcm: fix warning in bcm_connect/proc_register (2016-10-31 20:48:19 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.9-20161031
+
+----------------------------------------------------------------
+Lukas Resch (1):
+      can: sja1000: plx_pci: Add support for Moxa CAN devices
+
+Oliver Hartkopp (1):
+      can: bcm: fix warning in bcm_connect/proc_register
+
+ drivers/net/can/sja1000/plx_pci.c | 18 ++++++++++++++++++
+ net/can/bcm.c                     | 32 +++++++++++++++++++++++---------
+ 2 files changed, 41 insertions(+), 9 deletions(-)
 
 
