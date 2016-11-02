@@ -1,116 +1,61 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v2 34/37] docs: fix locations of several documents that
-	got moved
-Date: Wed, 2 Nov 2016 10:31:54 +0100
-Message-ID: <20161102093154.GC23350@amd>
-References: <cover.1476801354.git.mchehab@s-opensource.com>
-	<28c1f5d3867174a7017e3f3d9e9e4ebb096ceed8.1476801354.git.mchehab@s-opensource.com>
-	<20161019103442.GD1461@amd> <20161019115918.1162d16e@vento.lan>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Adding new CAN driver
+Date: Wed, 2 Nov 2016 10:37:55 +0100
+Message-ID: <1f16bce3-d285-7d93-7dca-6902bf184f88@hartkopp.net>
+References: <CAKT-o-cOb0sqRmvH+BKjX4yvBLp5_GqVd6=ifr2jm5T75-hcZA@mail.gmail.com>
+ <c8ba150c-11d2-176c-f3b7-936d89f54de2@hartkopp.net>
+ <CAKT-o-cDp0vUY12=Tyv909QC-ZcGpxFKxzSAuf0mrzAojS38Jw@mail.gmail.com>
+ <ce34a9f7-d310-00aa-6d53-ad08b45cfa3f@hartkopp.net>
+ <CAKT-o-cZryPfqkU2rOPu1SdEp8imkTke_NzVgwgghOY6RxrZmg@mail.gmail.com>
+ <22552.25820.453841.413376@gargle.gargle.HOWL>
+ <CAKT-o-d_tLkZgAuJz7rrRaDPxmi3hDiLmVhLcpjNBc1weDLvyg@mail.gmail.com>
+ <ddb4ed13-819f-ad8c-8ce2-da7585a79098@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7680369000982517778=="
-Return-path: <virtualization-bounces@lists.linux-foundation.org>
-In-Reply-To: <20161019115918.1162d16e@vento.lan>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/virtualization>,
-	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/virtualization/>
-List-Post: <mailto:virtualization@lists.linux-foundation.org>
-List-Help: <mailto:virtualization-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/virtualization>,
-	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
-Sender: virtualization-bounces@lists.linux-foundation.org
-Errors-To: virtualization-bounces@lists.linux-foundation.org
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Chris Metcalf <cmetcalf@ezchip.com>, Peter Loeffler <peter.loeffler@guruz.at>, Finn Thain <fthain@telegraphics.com.au>, Yaowei Bai <baiyaowei@cmss.chinamobile.com>, Jakub Wilk <jwilk@jwilk.net>, linux-acpi@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Guenter Roeck <linux@roeck-us.net>, Petr Mladek <pmladek@suse.com>, Jean Delvare <jdelvare@suse.com>, linux-pm@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Karsten Keil <isdn@linux-pingi.de>, Jiri Kosina <jkosina@suse.cz>, "seokhoon.yoon" <iamyooon@gmail.com>, Li Zefan <lizefan@huawei.com>, Ryan Swan <ryan@ryanswan.com>, Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>, Mark
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:35213 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750762AbcKBJiH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 2 Nov 2016 05:38:07 -0400
+In-Reply-To: <ddb4ed13-819f-ad8c-8ce2-da7585a79098@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>
+Cc: linux-can@vger.kernel.org
 
+On 11/02/2016 09:48 AM, Marc Kleine-Budde wrote:
+> On 11/02/2016 08:23 AM, Kołłątaj, Remigiusz wrote:
 
---===============7680369000982517778==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+nBD6E3TurpgldQp"
-Content-Disposition: inline
+>> I didn't get a chance to work on adding support for termination to
+>> "ip". Before investing any effort I would prefer to get confirmation
+>> from Oliver of Marc that the direction is right. Anyway setting up
+>> termination via sysfs works just fine. It is described in readme file
+>> in repository.
+>
+> I'd like to see a netlink interface for this. Oliver what about adding
+> it to CTRL_MODE?
 
+I would suggest to create some kind of TRX_MODE configuration instead.
 
---+nBD6E3TurpgldQp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The CTRL_MODE is CAN controller related (layer 2 / bitstream) while the 
+transceiver is layer 1.
 
-Hi!
+When creating an interface for transceivers we need to take care about 
+the different power saving modes /and/ the termination.
 
-> > Dunno, but kernel-parameters.txt was already quite long... for a file
-> > that is referenced quite often. Adding admin-guide/ into the path does
-> > not really help.
->=20
-> The big string name starts with Documentation/ :) There are some discussi=
-ons=20
-> about changing it to doc/ (or docs/). Also, as you said, kernel-parameters
-> is already a big name. Perhaps we could use, instead,
-> > "kernel-parms".
+E.g. when you have a wake-up capable transceiver you may power-down the 
+entire machine when you put the TRX into sleep mode (and to wait for CAN 
+traffic to switch on the power supply again).
 
-cmdline?
+Additionally some transceivers have the capability to switch on the 
+power supply only when a specific CAN ID is seen on the CAN bus 
+(selective wake-up). In fact these transceivers contain a reduced CAN 
+controller with on-board clock generation to perform this kind of 
+functionality.
 
-> If we rename kernel-parameters.rst to kernel-parms.rst, plus the doc/ ren=
-ame,
-> then the string size will actually reduce:
->=20
-> -		(see Documentation/kernel-parameters.txt), the minimum possible
-> +		(see doc/admin-guide/kernel-parms.rst), the minimum possible
->=20
-> > Maybe admin-guide should go directly into Documentation/ , as that's
-> > what our users are interested in?
->=20
-> There are several problems if we keep them at Documentation/ dir:
->=20
-> - We'll end by mixing documents already converted to ReST with documents
->   not converted yet;
->=20
-> - A rename is needed anyway, as Sphinx only accepts ReST files that end
->   with the extension(s) defined at Documentation/conf.py (currently,
->   .rst);
->=20
-> - A partial documentation build is made by sub-directory. If we put
->   files under /Documentation, there's no way to build just one
->   book.
-
-Well, documentation is primarily for users. I'm sure tools can adapt...
-
-> > Plus, I'm not sure how many developers will figure out that process/
-> > is what describes kernel patch submission process. We have processes
-> > in the kernel, after all...
->=20
-> Do you have a better idea?
-
-development/ ?
+So when we create a new netlink interface for that purpose we need to 
+take care to provide a proper API.
 
 Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---+nBD6E3TurpgldQp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlgZsooACgkQMOfwapXb+vKDEwCdEmlwjrrTY1HV6PoP/Pyie4I+
-oBMAnjN0WHtyXtQBydl/7WLL5tES6tZi
-=EDvv
------END PGP SIGNATURE-----
-
---+nBD6E3TurpgldQp--
-
---===============7680369000982517778==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Virtualization mailing list
-Virtualization@lists.linux-foundation.org
-https://lists.linuxfoundation.org/mailman/listinfo/virtualization
---===============7680369000982517778==--
+Oliver
