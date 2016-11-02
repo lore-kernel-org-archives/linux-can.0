@@ -1,94 +1,45 @@
-From: Prarit Bhargava <prarit-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH v2 34/37] docs: fix locations of several
- documents that got moved
-Date: Wed, 02 Nov 2016 06:08:43 -0400
-Message-ID: <5819BB2B.7010404@redhat.com>
-References: <cover.1476801354.git.mchehab@s-opensource.com> <28c1f5d3867174a7017e3f3d9e9e4ebb096ceed8.1476801354.git.mchehab@s-opensource.com> <20161019103442.GD1461@amd> <20161019115918.1162d16e@vento.lan> <20161102093154.GC23350@amd>
-Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: Adding new CAN driver
+Date: Wed, 2 Nov 2016 13:38:22 +0000
+Message-ID: <SG2PR06MB10384C09F05B12731B6D7151C3A00@SG2PR06MB1038.apcprd06.prod.outlook.com>
+References: <CAKT-o-cOb0sqRmvH+BKjX4yvBLp5_GqVd6=ifr2jm5T75-hcZA@mail.gmail.com>
+ <c8ba150c-11d2-176c-f3b7-936d89f54de2@hartkopp.net>
+ <CAKT-o-cDp0vUY12=Tyv909QC-ZcGpxFKxzSAuf0mrzAojS38Jw@mail.gmail.com>
+ <ce34a9f7-d310-00aa-6d53-ad08b45cfa3f@hartkopp.net>
+ <CAKT-o-cZryPfqkU2rOPu1SdEp8imkTke_NzVgwgghOY6RxrZmg@mail.gmail.com>
+ <22552.25820.453841.413376@gargle.gargle.HOWL>
+ <CAKT-o-d_tLkZgAuJz7rrRaDPxmi3hDiLmVhLcpjNBc1weDLvyg@mail.gmail.com>
+ <ddb4ed13-819f-ad8c-8ce2-da7585a79098@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <rtc-linux+bncBCWZZUED64BBBQ7W43AAKGQEGSPATFY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161102093154.GC23350@amd>
-List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/rtc-linux
-List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/rtc-linux/subscribe>
-To: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
-Cc: Linux Doc Mailing List <linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mauro Carvalho Chehab <mchehab-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>, Jonathan Corbet <corbet-T1hC0tSOHrs@public.gmane.org>, "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Len Brown <lenb-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jens Axboe <axboe-tSWWG44O7X1aa/9Udqfwiw@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jean Delvare <jdelvare-IBi9RG/b67k@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>, Karsten Keil <isdn-iHCpqvpFUx0uJkBD2foKsQ@public.gmane.org>, Mauro Carvalho Chehab <mchehab-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steffen Klassert <klassert-H0bhvm5RIPI+B2oLq8eQJv4efur1V5z/s0AfqQuZ5sE@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Paolo Bonzini <pbon>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from relmlor2.renesas.com ([210.160.252.172]:23839 "EHLO
+        relmlie1.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1751795AbcKBNsH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 2 Nov 2016 09:48:07 -0400
+In-Reply-To: <ddb4ed13-819f-ad8c-8ce2-da7585a79098@pengutronix.de>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, =?utf-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>
 
-
-
-On 11/02/2016 05:31 AM, Pavel Machek wrote:
-> Hi!
-> 
->>> Dunno, but kernel-parameters.txt was already quite long... for a file
->>> that is referenced quite often. Adding admin-guide/ into the path does
->>> not really help.
->>
->> The big string name starts with Documentation/ :) There are some discussions 
->> about changing it to doc/ (or docs/). Also, as you said, kernel-parameters
->> is already a big name. Perhaps we could use, instead,
->>> "kernel-parms".
-> 
-> cmdline?
-
-You would not believe the number of users I've dealt with that have confused
-"cmdline/command line" (aka prompt) with "kernel parameter".  I go back and edit
-customer debug requests to make sure there's no use of cmdline in place of
-kernel parameter.
-
-For the love of every customer facing engineer out there, please stop using
-cmdline ;).
-
-P.
-
-> 
->> If we rename kernel-parameters.rst to kernel-parms.rst, plus the doc/ rename,
->> then the string size will actually reduce:
->>
->> -		(see Documentation/kernel-parameters.txt), the minimum possible
->> +		(see doc/admin-guide/kernel-parms.rst), the minimum possible
->>
->>> Maybe admin-guide should go directly into Documentation/ , as that's
->>> what our users are interested in?
->>
->> There are several problems if we keep them at Documentation/ dir:
->>
->> - We'll end by mixing documents already converted to ReST with documents
->>   not converted yet;
->>
->> - A rename is needed anyway, as Sphinx only accepts ReST files that end
->>   with the extension(s) defined at Documentation/conf.py (currently,
->>   .rst);
->>
->> - A partial documentation build is made by sub-directory. If we put
->>   files under /Documentation, there's no way to build just one
->>   book.
-> 
-> Well, documentation is primarily for users. I'm sure tools can adapt...
-> 
->>> Plus, I'm not sure how many developers will figure out that process/
->>> is what describes kernel patch submission process. We have processes
->>> in the kernel, after all...
->>
->> Do you have a better idea?
-> 
-> development/ ?
-> 
-> Best regards,
-> 									Pavel
-> 
-
--- 
-You received this message because you are subscribed to "rtc-linux".
-Membership options at http://groups.google.com/group/rtc-linux .
-Please read http://groups.google.com/group/rtc-linux/web/checklist
-before submitting a driver.
---- 
-You received this message because you are subscribed to the Google Groups "rtc-linux" group.
-To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+PiBPbiAxMS8wMi8yMDE2IDA4OjIzIEFNLCBLb8WCxYLEhXRhaiwgUmVtaWdpdXN6IHdyb3RlOg0K
+PiA+IEhpIFV3ZSwNCj4gPg0KPiA+IE5vdCBzdXJlIGlmIHlvdSBhcmUgYXNraW5nIGFib3V0IHRl
+cm1pbmF0aW9uIG9yIGFib3V0IHRoZSBkcml2ZXINCj4gPiBpdHNlbGYsIHNvIGxldCBtZSBnaXZl
+IHR3byBhbnN3ZXJzLg0KPiA+DQo+ID4gSSdsbCB0cnkgdG8gc2VuZCB0aGUgcGF0Y2ggdGlsbCBl
+bmQgb2YgdGhpcyB3ZWVrLiBJbiB0aGUgbWVhbnRpbWUgeW91DQo+ID4gbWF5IHN0aWxsIHVzZSB0
+aGUgZHJpdmVyIGZyb20gdGhlIGdpdGh1YiByZXBvc2l0b3J5DQo+ID4gKGh0dHBzOi8vZ2l0aHVi
+LmNvbS9ya29sbGF0YWovbWNiYV91c2IpLiBJIGFtIGtlZXBpbmcgaXQgdXAgdG8gZGF0ZS4NCj4g
+Pg0KPiA+IEkgZGlkbid0IGdldCBhIGNoYW5jZSB0byB3b3JrIG9uIGFkZGluZyBzdXBwb3J0IGZv
+ciB0ZXJtaW5hdGlvbiB0bw0KPiA+ICJpcCIuIEJlZm9yZSBpbnZlc3RpbmcgYW55IGVmZm9ydCBJ
+IHdvdWxkIHByZWZlciB0byBnZXQgY29uZmlybWF0aW9uDQo+ID4gZnJvbSBPbGl2ZXIgb2YgTWFy
+YyB0aGF0IHRoZSBkaXJlY3Rpb24gaXMgcmlnaHQuIEFueXdheSBzZXR0aW5nIHVwDQo+ID4gdGVy
+bWluYXRpb24gdmlhIHN5c2ZzIHdvcmtzIGp1c3QgZmluZS4gSXQgaXMgZGVzY3JpYmVkIGluIHJl
+YWRtZSBmaWxlDQo+ID4gaW4gcmVwb3NpdG9yeS4NCj4gDQo+IEknZCBsaWtlIHRvIHNlZSBhIG5l
+dGxpbmsgaW50ZXJmYWNlIGZvciB0aGlzLiBPbGl2ZXIgd2hhdCBhYm91dCBhZGRpbmcgaXQNCj4g
+dG8gQ1RSTF9NT0RFPw0KDQpJcyBpdCBhYm91dCB0aGUgQ0FOIGJ1cyB0ZXJtaW5hdGlvbj8gV2h5
+IHRoZSBkcml2ZXIgbmVlZCB0byBiZSBhd2FyZSBvZiBpdD8NCklmIGl0IG5lZWRlZCBmb3Igc29t
+ZSByZWFzb24gc2hvdWxkbid0IGl0IGJlIGEgZGV2aWNlIHRyZWUgcHJvcGVydHkgb2YgdGhhdCBk
+ZXZpY2UvYnJpZGdlIG5vZGU/DQoNClRoYW5rcywNClJhbWVzaA0K
