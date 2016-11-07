@@ -1,24 +1,24 @@
-From: Mirza Krak <mirza.krak@gmail.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: Problems PEAK CAN SJA1000 CAN interface
-Date: Mon, 7 Nov 2016 15:30:57 +0100
-Message-ID: <CALw8SCU6ZRKAbtyfnJ_SELyRnewfUWy0bYamFn-hn_xuYZ8U6w@mail.gmail.com>
+Date: Mon, 7 Nov 2016 15:25:30 +0100
+Message-ID: <d3e56e77-15c7-750e-f7cb-83011fe768a4@grandegger.com>
 References: <CAPO0vctcyJMMVJ7BvhGYum+BzbhJ4vK+LM2fPPbVC_S-o=L9Ag@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qk0-f177.google.com ([209.85.220.177]:34645 "EHLO
-        mail-qk0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753016AbcKGObl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Nov 2016 09:31:41 -0500
-Received: by mail-qk0-f177.google.com with SMTP id q130so177897270qke.1
-        for <linux-can@vger.kernel.org>; Mon, 07 Nov 2016 06:30:59 -0800 (PST)
+Received: from mailproxy03.manitu.net ([217.11.48.151]:51134 "EHLO
+        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752858AbcKGOsx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Nov 2016 09:48:53 -0500
 In-Reply-To: <CAPO0vctcyJMMVJ7BvhGYum+BzbhJ4vK+LM2fPPbVC_S-o=L9Ag@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Rein Appeldoorn <reinappeldoorn@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Rein Appeldoorn <reinappeldoorn@gmail.com>, linux-can@vger.kernel.org
 
-2016-11-07 15:15 GMT+01:00 Rein Appeldoorn <reinappeldoorn@gmail.com>:
+Hello,
+
+Am 07.11.2016 um 15:15 schrieb Rein Appeldoorn:
 > Hi all,
 >
 > We have two of these a linux machine:
@@ -55,14 +55,6 @@ Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 >
 > Somebody any ideas? Any help is appreciated!
 
-The output from "ip -d -s link show can0" would be interesting.
+What does "ip -d -s link show can0" report?
 
-What is your physical network setup? How are the CAN busses connected?
-
-My initial though is that you are missing CAN network termination (see
-[1]) or do not have a node that ACKs on the bus.
-
-[1]. http://www.ni.com/white-paper/9759/en/
-
-Best Regards
-Mirza
+Wolfgang.
