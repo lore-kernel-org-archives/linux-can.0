@@ -1,123 +1,82 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: RE: Adding new CAN driver
-Date: Fri, 4 Nov 2016 11:06:19 +0000
-Message-ID: <SG2PR06MB10381FBE7242FA602F1AC319C3A20@SG2PR06MB1038.apcprd06.prod.outlook.com>
-References: <CAKT-o-cOb0sqRmvH+BKjX4yvBLp5_GqVd6=ifr2jm5T75-hcZA@mail.gmail.com>
- <3113364.8FuUfmAlHQ@ws-stein>
- <SG2PR06MB1038F0416E850F0C09BC5CCEC3A00@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <1490105.s3iJfGbYsS@ws-stein>
- <CAKT-o-cJ3UwD=xakh7-hF5101rS2zCa5AHfjBvdRNATJD+Weqw@mail.gmail.com>
- <5f302213-c072-b6b8-aa78-4bc405dc167d@hartkopp.net>
- <20161103212427.GA1677@airbook.vandijck-laurijssen.be>
+From: Rein Appeldoorn <reinappeldoorn@gmail.com>
+Subject: Problems PEAK CAN SJA1000 CAN interface
+Date: Mon, 7 Nov 2016 15:15:32 +0100
+Message-ID: <CAPO0vctcyJMMVJ7BvhGYum+BzbhJ4vK+LM2fPPbVC_S-o=L9Ag@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor4.renesas.com ([210.160.252.174]:42467 "EHLO
-        relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1754445AbcKDLG0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 4 Nov 2016 07:06:26 -0400
-In-Reply-To: <20161103212427.GA1677@airbook.vandijck-laurijssen.be>
-Content-Language: en-US
+Received: from mail-wm0-f54.google.com ([74.125.82.54]:36752 "EHLO
+        mail-wm0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752567AbcKGOQE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Nov 2016 09:16:04 -0500
+Received: by mail-wm0-f54.google.com with SMTP id p190so185640318wmp.1
+        for <linux-can@vger.kernel.org>; Mon, 07 Nov 2016 06:16:04 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: =?utf-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Alexander Stein <alexander.stein@systec-electronic.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-PiA+IE9uIDExLzAyLzIwMTYgMDc6MDMgUE0sIEtvxYLFgsSFdGFqLCBSZW1pZ2l1c3ogd3JvdGU6
-DQo+ID4gPk9uIDIgTm92ZW1iZXIgMjAxNiBhdCAxNzowOCwgQWxleGFuZGVyIFN0ZWluDQo+ID4g
-PjxhbGV4YW5kZXIuc3RlaW5Ac3lzdGVjLWVsZWN0cm9uaWMuY29tPiB3cm90ZToNCj4gPiA+Pk9u
-IFdlZG5lc2RheSAwMiBOb3ZlbWJlciAyMDE2IDE1OjQ5OjUwLCBSYW1lc2ggU2hhbm11Z2FzdW5k
-YXJhbSB3cm90ZToNCj4gPg0KPiA+ID4+PkJ1dCB0aGlzIGlzIHBoeXNpY2FsIGxheWVyIGluZm9y
-bWF0aW9uIGFzIE9saXZlciBtZW50aW9uZWQuIFRoZSBDQU4NCj4gPiA+Pj50cmFuc2NlaXZlciBt
-YXkgZXZlbiByZXF1aXJlIHNvbWUgc3RhcnQtdXAgc3RhdGUgdGhhdCBtYXkgYmUNCj4gPiA+Pj5l
-bmFibGVkIGJ5IHNldHRpbmcgY291cGxlIG9mIEdQSU9zIChhcyBvbiBteSBib2FyZCkuIFllcywg
-aXQgaXMNCj4gPiA+Pj5wYXJ0IG9mIHRoZSBDQU4gaW50ZXJmYWNlIGNvbmZpZ3VyYXRpb24gYnV0
-IGl0IG5vdCBwYXJ0IG9mIHRoZSBDQU4NCj4gPiA+Pj5jb250cm9sbGVyIGRyaXZlci4gSSB0aGlu
-ayB3ZSBjb3VsZCBtYXAgaXQgdG8gRXRoZXJuZXQgTUFDICYgUEhZIGNhc2UNCj4gLSBpc24ndCBp
-dD8NCj4gPg0KPiA+IElJUkMgdGhlcmUncyBzb21lIG1paS10b29sIHRvIGNvbmZpZ3VyZSwgdmll
-dyAmIG1hbmlwdWxhdGUNCj4gPiBtZWRpYS1pbmRlcGVuZGVudCBpbnRlcmZhY2Ugc3RhdHVzOg0K
-PiA+DQo+ID4gaHR0cDovL21hbjcub3JnL2xpbnV4L21hbi1wYWdlcy9tYW44L21paS10b29sLjgu
-aHRtbA0KPiA+DQo+ID4gQXQgbGVhc3QgdGhlIGV0aGVybmV0IHBlb3BsZSBmb3VuZCBhIHdheSB0
-byBjb25maWd1cmUgdGhlaXINCj4gPiB0cmFuc2NlaXZlciBwYXJ0IHdpdGggdGhpcyB0b29sLg0K
-DQo6LSkNCg0KPiA+DQo+ID4gPj5UaGUgdHJhbnNjZWl2ZXIgbWlnaHQgYmUgbWFuYWdlZCBieSBy
-ZWd1bGF0b3JzIGFzIGRvbmUgYnkgZS5nLg0KPiA+ID4+ZmxleGNhbi4gVGhpcyBpcyBwYXJ0IG9m
-IHRoZSBoYXJkd2FyZSBkZXNjcmlwdGlvbiwgc28gZGV2aWNlIHRyZWUgaGVyZQ0KPiBpcyBmaW5l
-Lg0KPiA+ID4+QnV0IGluIG15IG9waW5pb24gYnVzIHRlcm1pbmF0aW9uIGlzIGFuIGVuZCB1c2Vy
-IGNvbmZpZ3VyYXRpb24gd2hpY2gNCj4gPiA+Pm1pZ2h0IGNoYW5nZSByYXRoZXIgb2Z0ZW4gdGhh
-biBub3QuIEl0IG1pZ2h0IGJlIGluZGVwZW5kZW50IG9mIHRoZQ0KPiA+ID4+Y29udHJvbGxlciBk
-cml2ZXIgYXMgZS5nLiBpbiBmbGV4Y2FuLCBidXQgaXQgbWlnaHQgYmUgcGFydCBvZiB0aGUNCj4g
-PiA+PmRldmljZSBhcyBpbiBVU0IgaGFyZHdhcmUgd2hpY2ggcmVxdWlyZXMgc29tZSBzcGVjaWZp
-YyBjb21tYW5kIHRvDQo+IGNoYW5nZSBidXMgdGVybWluYXRpb24uDQo+ID4gPj5JTUhPIGl0IG1h
-a2VzIG5vIHNlbnNlIHRvIHNwbGl0IGFuIFVTQiBpbnRlcmZhY2UgZHJpdmVyIGludG8gdHdvDQo+
-ID4gPj5wYXJ0cyB1c2luZyB0aGUgc2FtZSBpbnRlcmZhY2UgaW4gdGhlIGVuZC4NCj4gPg0KPiA+
-IGFjay4NCg0KT0sNCg0KPiA+DQo+ID4gPkkgYWdyZWUgdGhhdCB0ZXJtaW5hdGlvbiBpcyBhIHBo
-eXNpY2FsIGxheWVyIHNldHRpbmcgYnV0IHRvIGJlDQo+ID4gPnNwZWNpZmljIGluIGNhc2Ugb2Yg
-TWljcm9jaGlwJ3MgQ0FOIEJVUyBpdCBpcyBuZWl0aGVyIHJlbGF0ZWQgdG8gQ0FODQo+ID4gPmNv
-bnRyb2xsZXIgbm9yIHRyYW5zY2VpdmVyLg0KPiA+DQo+ID4gU28gd2hhdCBhYm91dCBjcmVhdGlu
-ZyBUV08gbmV3IG5ldGxpbmsgY29uZmlndXJhdGlvbiBvcHRpb25zOg0KPiA+DQo+ID4gZGlmZiAt
-LWdpdCBhL2luY2x1ZGUvdWFwaS9saW51eC9jYW4vbmV0bGluay5oDQo+ID4gYi9pbmNsdWRlL3Vh
-cGkvbGludXgvY2FuL25ldGxpbmsuaA0KPiA+IGluZGV4IDk0ZmZlMGMuLjhkN2M0YjkgMTAwNjQ0
-DQo+ID4gLS0tIGEvaW5jbHVkZS91YXBpL2xpbnV4L2Nhbi9uZXRsaW5rLmgNCj4gPiArKysgYi9p
-bmNsdWRlL3VhcGkvbGludXgvY2FuL25ldGxpbmsuaA0KPiA+IEBAIC0xMjcsNiArMTI3LDggQEAg
-ZW51bSB7DQo+ID4gICAgICAgICBJRkxBX0NBTl9CRVJSX0NPVU5URVIsDQo+ID4gICAgICAgICBJ
-RkxBX0NBTl9EQVRBX0JJVFRJTUlORywNCj4gPiAgICAgICAgIElGTEFfQ0FOX0RBVEFfQklUVElN
-SU5HX0NPTlNULA0KPiA+ICsgICAgICAgSUZMQV9DQU5fVFJYX0NUUkwsDQoNCk5vdCBzdXJlIGFi
-b3V0IHRoaXMuDQoNCj4gPiArICAgICAgIElGTEFfQ0FOX1RFUk1JTkFUSU9OLA0KDQpBQ0sNCg0K
-PiA+ICAgICAgICAgX19JRkxBX0NBTl9NQVgNCj4gPiAgfTsNCj4gPg0KPiA+IFdoZXJlIElGTEFf
-Q0FOX1RSWF9DVFJMIHByb3ZpZGVzIGFuIGludGVyZmFjZSB0byBjb25maWd1cmUgdGhlDQo+ID4g
-dHJhbnNjZWl2ZXIgYW5kIElGTEFfQ0FOX1RFUk1JTkFUSU9OIHRvIGNvbmZpZ3VyZSB0aGUgdGVy
-bWluYXRpb24uDQo+IA0KPiB0ZXJtaW5hdGlvbiwgbGlrZSBiaXR0aW1pbmcsIGRlcGVuZHMgb24g
-dGhlIHBoeXNpY2FsIGxheWVyLg0KDQpJdCBpcy4gSG93ZXZlciwgYml0dGltaW5nIGlzIGNvbmZp
-Z3VyZWQgImluIiBjb250cm9sbGVyIHJlZ2lzdGVycyBhbmQgSSBkb24ndCBrbm93IGlmIHdlIGNh
-biBzYXkgdGhlIHNhbWUgZm9yIHRlcm1pbmF0aW9uLiBIb3dldmVyLCBpdCBzZWVtcyBsaWtlIFVT
-QiBkcml2ZXJzIChtYXkgYmUgd2l0aCB1c2VyIHNwYWNlIGFwcCkgcHJvdmlkZSB0aGlzIGluZm8g
-YXMgYSBmZWF0dXJlIHRvIHRoZSB1c2VyLiBXb25kZXIgaG93IGl0IGlzIGRvbmUgaW4gUENJIGJh
-c2VkIENBTiBjYXJkcz8gDQoNCj4gSGFyZCB0byBzYXkgaWYgaXQncyBhIHVzZXIgb3B0aW9uIG9m
-IGEgc3lzdGVtIHJlcXVpcmVtZW50LCBpdCBpcyBzaW1pbGFyDQo+IGFuZCBzaG91bGQgYmUgY29u
-ZmlndXJhYmxlIGZyb20gdXNlcnNwYWNlIChyb290IHByb2JhYmx5KS4NCj4gDQo+ID4NCj4gPiBC
-dXQgZm9yIElGTEFfQ0FOX1RFUk1JTkFUSU9OIHdlIG5lZWQgc29tZSBwb3NzaWJpbGl0eSB0byBj
-b25maWd1cmUNCj4gPiBlaXRoZXIgYSBzZXQgb2Ygc3VwcG9ydGVkIHRlcm1pbmF0aW9uIHJlc2lz
-dG9ycyAoZS5nLiBkaXNhYmxlZCwgNjANCj4gPiBPaG1zLCAxMjAgT2htcywgeHh4IE9obXMsIC4u
-Likgb3IgYSBmcmVlIHRlcm1pbmF0aW9uIHZhbHVlIChlLmcuIDEgT2htDQo+ID4gLSAxMCBrT2ht
-cykgZm9sbG93aW5nIHRoZSBoYXJkd2FyZSBjYXBhYmlsaXRpZXMgb2YgdGhlIENBTiBkZXZpY2Uu
-DQo+ID4gVGhlcmVmb3JlIGEgbGlzdCBvZiB2YWx1ZXMgYW5kIHJhbmdlcyBoYXMgdG8gYmUgbWFk
-ZSBhdmFpbGFibGUgYnkgdGhlDQo+ID4gbmV0bGluayBpbnRlcmZhY2UgYmVmb3JlIHVzZXJzcGFj
-ZSBjYW4gc2VsZWN0IHNvbWUgb2YgdGhlbS4NCj4gDQo+IEluc3RlYWQgb2YgdHJ5aW5nIHRvIGZv
-cmVzZWUgdGhlIGZ1dHVyZSBhbmQgYWxsb3dpbmcgYW55IHJlc2lzdG9yIHZhbHVlLA0KPiBJJ2Qg
-cHJvcG9zZSB0byBzdGljayB0byBjb21tb24gcGh5c2ljYWwgbGF5ZXJzLiBJIHdhc24ndCBhd2Fy
-ZSBvZiBhbnkNCj4gcGh5c2ljYWwgdGhhdCBoYXMgYSAxMEtPaG0gdGVybWludGluZyByZXNpc3Rv
-ciwgbm9yIGRpZCBJIHNlZSBhbnkgVFJYDQo+IHN1cHBvcnRpbmcgaXQuIFNvIGFuIElTTyAxMTg5
-OCBidXMgdGVybWluYXRpb24gc2hvdWxkIG5vdCBhbGxvdyBfYW55Xw0KPiByZXNpc3RvciB2YWx1
-ZT8NCj4gTWF5YmUgbmV4dCB5ZWFyIGEgYnJhbmQgbmV3IHBoeXNpY2FsIGxheWVyIGFwcGVhcnMs
-IHRoZW4gd2UnbGwgYWRkIHN1cHBvcnQNCj4gZm9yIHRoYXQgbGF5ZXI/IEFuZCBtYXliZSB0aGF0
-IGxheWVyIG1heSBzdXBwb3J0IHJhbmRvbSB0ZXJtaW50aW9uDQo+IHJlc2lzdG9ycyAocmVhbGx5
-PyksIHdlJ2xsIHNlZSB0aGVuLg0KPiANCj4gZm9yIG5vdywgSUZMQV9DQU5fVEVSTUlOQVRJT04g
-bWF5IGJlIGEgYm9vbGVhbiAob3IgZW51bWVyYXRpb24pLg0KDQpBQ0suIFdlIGNvdWxkIHN0YXJ0
-IHNpbXBsZSB3aXRoIGEgYm9vbC4NCg0KPiANCj4gS2luZCByZWdhcmRzLA0KPiBLdXJ0DQo+IA0K
-PiA+DQo+ID4gQm90aCBJRkxBX0NBTl9UUlhfQ1RSTCBhbmQgSUZMQV9DQU5fVEVSTUlOQVRJT04g
-d291bGQgb25seSBiZQ0KPiA+IHN1cHBvcnRlZCBpZiB0aGUgQ0FOIGRldmljZSBjYW4gaGFuZGxl
-IHRoZW0uDQoNCkFDSw0KDQogUHJvYmFibHkgYSBkZXZpY2UgdHJlZQ0KPiA+IGRlY3JpcHRpb24g
-ZGVmaW5lcyBhIGZpeGVkIGNvbmZpZ3VyYXRpb24gd2hpY2ggY2FuIGJlIHJlYWQgYnV0IG5vdA0K
-PiBtb2RpZmllZC4NCg0KTWF5IGJlIHdlIGRvbid0IG5lZWQgdG8gcmVwb3J0L2ZpbGwgdGhlc2Ug
-ZGV0YWlscyBpZiB0aGUgQ0FOIGNvbnRyb2xsZXIgZG9lcyBub3QgbWFuYWdlIHRoZW0/DQoNCj4g
-DQo+IEZvciBJRkxBX0NBTl9URVJNSU5BVElPTiwgSSBkb24ndCBzZWUgYWRkZWQgdmFsdWUgcHV0
-dGluZyBjb25zdGFudHMgaW4NCj4gZGV2aWNlIHRyZWUsIHNpbmNlIGRldmljZSB0cmVlIGRlc2Ny
-aWJlcyB0aGUgYm9hcmQgYW5kIHRlcm1pbmF0aW9uIGRlcGVuZHMNCj4gb24gdGhlIGJ1cyBiZXlv
-bmQgdGhlIGJvYXJkLiBTbyB5b3UgY2FuJ3QgZGVzY3JpYmUgaW4gZGV2aWNldHJlZSB0aGF0IHlv
-dQ0KPiBhbHdheXMgd2FudCB0aGUgdGVybWluYXRpb24gYWN0aXZhdGVkIGluIHRoZSBjb250cm9s
-bGVyLg0KDQpJZiB0aGUgYm9hcmQgc3VwcG9ydHMgb24tYm9hcmQgdGVybWluYXRpb24gYW5kIGlm
-IGl0IGlzIG1vZGlmaWFibGUgKG9uL29mZiAtIGUuZy4gd2l0aCBHUElPL3JlZ3VsYXRvcikgZm9y
-IHdoYXRldmVyIHJlYXNvbiwgSSB0aGluayBpdCBpcyBPSyB0byBkZWZpbmUgdGhlIGluaXRpYWwg
-c3RhdGUgaW4gZGV2IHRyZWUuIE5ldGxpbmsgY291bGQgcmVwb3J0IHRoaXMgYW5kIG1vZGlmeSBp
-ZiBpdCBpcyBhbGxvd2VkLg0KDQo+IA0KPiBCZXNpZGVzIHRoYXQgcmVtYXJrIG9uIHRoZSBjb25z
-dGFudCwgSSBhZ3JlZSB3aXRoIHlvdSwgYWx0aG91Z2ggSSdtIG5vdA0KPiBzdXJlIHdoYXQgZnVu
-Y3Rpb24gd291bGQgYmUgcG9zc2libGUgd2l0aCBJRkxBX0NBTl9UUlhfQ1RSTD8NCj4gV2FrZXVw
-LWdwaW8/IG1heGltdW0tYml0cmF0ZSAoY29udHJvbGxlZCBieSBhIDAtMTAwS09obSByZXNpc3Rv
-ciBvbg0KPiBwb3B1bGFyIHBoeSdzPywgLi4uKS4NCg0KQUNLLiBJIHRoaW5rIFRSWF9DVFJMIGNv
-dWxkIGJlIGFueXRoaW5nIGFuZCBJIHdvbmRlciBpZiB3ZSBuZWVkIHRvIGV4cG9zZSB0aGlzIHVu
-ZGVyIG5ldGRldj8gSXQgY291bGQgYmUgYXMgc2ltcGxlIGFzIHdha2V1cC1ncGlvIHRvIGNvbXBs
-ZXggcG9saWNpZXMuIEFzIHlvdSBtZW50aW9uZWQgdGhlcmUgY291bGQgYmUgYSBtaW5pLWNhbiBj
-b250cm9sbGVyIGJlaGluZCB0aGUgdHJhbnNjZWl2ZXIgcnVubmluZyBvd24gZmlybXdhcmUgd2l0
-aCBzb21lIGRlZmF1bHQgY29uZmlnLiBTbyBub3Qgc3VyZSBhYm91dCB0aGlzIG9wdGlvbi4NCg0K
-VGhhbmtzLA0KUmFtZXNoDQo=
+Hi all,
+
+We have two of these a linux machine:
+
+http://www.peak-system.com/PCAN-miniPCIe.285.0.html?&L=1
+
+According to http://elinux.org/CAN_Bus , the cards should be
+supported. They are getting discovered by the kernel and listed in
+ifconfig
+
+$ ifconfig can0
+
+can0      Link encap:UNSPEC  HWaddr
+00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+
+          UP RUNNING NOARP  MTU:16  Metric:1
+
+          RX packets:17386379 errors:0 dropped:3 overruns:0 frame:0
+
+          TX packets:0 errors:17386373 dropped:3 overruns:0 carrier:3
+
+          collisions:0 txqueuelen:10
+
+          RX bytes:139091032 (139.0 MB)  TX bytes:0 (0.0 B)
+
+          Interrupt:16
+
+And it is possible to bring the interface up:
+
+$ ip link set can0 type can bitrate 500000 $ ifconfig can0 up
+
+However, candump and cansend do not seem to work. Another thing I
+noticed is that I have a lot of TX errors.
+
+Somebody any ideas? Any help is appreciated!
+
+Thanks,
+
+-Rein
+
+
+
+--------------
+
+Some more information:
+
+$ cat /proc/net/can/version
+
+rev 20120528 abi 9
+
+$ lsmod:
+
+slcan                    16384    1
+
+can_raw              20480    1
+
+can                       45056    1             can_raw
+
+can_dev              24576    1             sja1000
+
+peak_pci             16384    0
+
+sja1000                16384    1             peak_pci
+
+i2c_algo_bit       16384    3             igb,i915,peak_pci
