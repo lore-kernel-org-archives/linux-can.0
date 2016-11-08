@@ -1,55 +1,73 @@
-From: Paul Bongaerts <pauluzs@gmail.com>
-Subject: slcand multiple interfaces on single serial interface
-Date: Tue, 8 Nov 2016 19:17:07 +0100
-Message-ID: <CAGJdXcGu0CftG8wz10_0N5r6xfPeL_SZ71gTR8x=UXqJ+ox1iw@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: slcand multiple interfaces on single serial interface
+Date: Tue, 8 Nov 2016 21:08:20 +0100
+Message-ID: <d3eb4ca8-f2f0-72dd-16eb-f500b4fa433f@hartkopp.net>
+References: <CAGJdXcGu0CftG8wz10_0N5r6xfPeL_SZ71gTR8x=UXqJ+ox1iw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yw0-f181.google.com ([209.85.161.181]:33668 "EHLO
-        mail-yw0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932258AbcKHSRJ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Nov 2016 13:17:09 -0500
-Received: by mail-yw0-f181.google.com with SMTP id r204so188669360ywb.0
-        for <linux-can@vger.kernel.org>; Tue, 08 Nov 2016 10:17:08 -0800 (PST)
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:30491 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753306AbcKHUI3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Nov 2016 15:08:29 -0500
+In-Reply-To: <CAGJdXcGu0CftG8wz10_0N5r6xfPeL_SZ71gTR8x=UXqJ+ox1iw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Paul Bongaerts <pauluzs@gmail.com>, linux-can@vger.kernel.org
 
-Hi my name is Paul, 37, dutch mechanical engineer new to mailing lists
-and no programmer.
+Hi Paul,
 
-After looking into linux-can i would like setup 2 mcp2515 controllers
-on one serial interface.
+On 11/08/2016 07:17 PM, Paul Bongaerts wrote:
+> After looking into linux-can i would like setup 2 mcp2515 controllers
+> on one serial interface.
 
-I'm using an ATMEGA 328 based arduino with 2 mcp2515 controllers on
-isobus (2 250kbbs can interfaces)
+(..)
 
-For this i found :
+> What i cant figure out is how to do use enumeration to specify which
+> can controller is used on the serial bus.
+>
+> There is a serial option
+> N[CR] which will return the serial. maybe this could be set to ie CAN0 and CAN1
+> So
+> Tiiiiiiiildd...[CR]
+> Could maybe changed into
+> Tiiiiiiiildd...Nx[CR] to send on CANx
+>
+> this way it might be possible bind linux CAN0 and CAN1 interfaces to
+> CAN0 and CAN1 on the arduino.
+>
+> Who can help me out or point in the correct direction?
 
-The latest mcp_library:
-https://github.com/coryjfowler/MCP_CAN_lib
+The slcan driver sets the so called 'serial line discipline' of an 
+existing serial 'tty' to be used with a special protocol.
 
-Also i found two ways to use this with the slcand driver
-The arduino-canbus-monitor
-https://github.com/latonita/arduino-canbus-monitor
-And https://github.com/kahiroka/slcanuino/blob/master/slcan.ino
+E.g. for serial line IP (SLIP) an encapsulation for IP frames over 
+serial is enabled and a new netdevice is created.
 
-The commands used in the driver
-http://www.can232.com/can232/can232_v3.pdf
+SLCAN does the same for CAN and creates a CAN network interface.
 
-What i cant figure out is how to do use enumeration to specify which
-can controller is used on the serial bus.
+Your idea to *change* the SLCAN protocol to support more than one CAN 
+interface at a time would therefore lead to an extended slcan.c driver.
 
-There is a serial option
-N[CR] which will return the serial. maybe this could be set to ie CAN0 and CAN1
-So
-Tiiiiiiiildd...[CR]
-Could maybe changed into
-Tiiiiiiiildd...Nx[CR] to send on CANx
+This extended slcan.c driver would need to create multiple CAN network 
+interfaces (e.g. 4) for a single serial tty and we would need to define 
+a new 'line discipline' value (different from N_SLCAN).
 
-this way it might be possible bind linux CAN0 and CAN1 interfaces to
-CAN0 and CAN1 on the arduino.
+I would start to copy/paste the slcan.c driver to a slcanx.c and 
+implement the N_SLCANX protocol as suggested by you.
 
-Who can help me out or point in the correct direction?
+Btw. when creating the SLCANX protocol I would put the interface 
+instance directly after the command:
 
-Br Paul
+ > So
+ > Tiiiiiiiildd...[CR]
+ > Could maybe changed into
+ > Tiiiiiiiildd...Nx[CR] to send on CANx
+
+Would better look like
+
+Txiiiiiiiildd...[CR]
+
+Regards,
+Oliver
