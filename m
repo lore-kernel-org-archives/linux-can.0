@@ -1,7 +1,7 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Adding new CAN driver
-Date: Mon, 7 Nov 2016 22:24:18 +0100
-Message-ID: <e521bee5-d0e3-d894-2c0f-be2c437a2f48@hartkopp.net>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: Adding new CAN driver
+Date: Tue, 8 Nov 2016 09:36:14 +0000
+Message-ID: <SG2PR06MB1038E2022EEA5837EB6BD25BC3A60@SG2PR06MB1038.apcprd06.prod.outlook.com>
 References: <CAKT-o-cOb0sqRmvH+BKjX4yvBLp5_GqVd6=ifr2jm5T75-hcZA@mail.gmail.com>
  <3113364.8FuUfmAlHQ@ws-stein>
  <SG2PR06MB1038F0416E850F0C09BC5CCEC3A00@SG2PR06MB1038.apcprd06.prod.outlook.com>
@@ -10,113 +10,90 @@ References: <CAKT-o-cOb0sqRmvH+BKjX4yvBLp5_GqVd6=ifr2jm5T75-hcZA@mail.gmail.com>
  <5f302213-c072-b6b8-aa78-4bc405dc167d@hartkopp.net>
  <20161103212427.GA1677@airbook.vandijck-laurijssen.be>
  <SG2PR06MB10381FBE7242FA602F1AC319C3A20@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <e521bee5-d0e3-d894-2c0f-be2c437a2f48@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:30806 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752242AbcKGVYh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Nov 2016 16:24:37 -0500
-In-Reply-To: <SG2PR06MB10381FBE7242FA602F1AC319C3A20@SG2PR06MB1038.apcprd06.prod.outlook.com>
+Received: from relmlor4.renesas.com ([210.160.252.174]:62593 "EHLO
+        relmlie3.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S932862AbcKHJga (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Nov 2016 04:36:30 -0500
+In-Reply-To: <e521bee5-d0e3-d894-2c0f-be2c437a2f48@hartkopp.net>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Alexander Stein <alexander.stein@systec-electronic.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: =?utf-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Alexander Stein <alexander.stein@systec-electronic.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 11/04/2016 12:06 PM, Ramesh Shanmugasundaram wrote:
->> for now, IFLA_CAN_TERMINATION may be a boolean (or enumeration).
->
-> ACK. We could start simple with a bool.
-
-I would suggest to support a variable resistor (varistor) ranging from 1 
-to 65534 Ohms and a list of discrete termination values as suggested.
-
-diff --git a/include/uapi/linux/can/netlink.h 
-b/include/uapi/linux/can/netlink.h
-index 94ffe0c..a07601a 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -91,6 +91,32 @@ struct can_ctrlmode {
-  	__u32 flags;
-  };
-
-+/*
-+ * CAN hardware-dependent termination resistor constants
-+ *
-+ * Capabilities shown by ip tool if supported by CAN hardware
-+ * Unsupported values are filled with zero (CAN_RESISTOR_INVALID)
-+ */
-+struct can_termination_const {
-+
-+	/* range for programmable resistor (if supported) */
-+	__u16 range_low;	/* lowermost resistor value (Ohm) */
-+	__u16 range_high;	/* highest resistor value (Ohm) */
-+
-+	/* array of supported discrete resistor values (Ohm) */
-+	__u16 term[8];
-+};
-+
-+/*
-+ * CAN termination
-+ */
-+struct can_termination {
-+	__u16 term;
-+};
-+
-+#define CAN_RESISTOR_INVALID	0x0000U	/* indicates no value / unsupported */
-+#define CAN_RESISTOR_DISABLED	0xFFFFU	/* indicates disabled termination */
-+
-  #define CAN_CTRLMODE_LOOPBACK		0x01	/* Loopback mode */
-  #define CAN_CTRLMODE_LISTENONLY		0x02	/* Listen-only mode */
-  #define CAN_CTRLMODE_3_SAMPLES		0x04	/* Triple sampling mode */
-@@ -127,6 +153,8 @@ enum {
-  	IFLA_CAN_BERR_COUNTER,
-  	IFLA_CAN_DATA_BITTIMING,
-  	IFLA_CAN_DATA_BITTIMING_CONST,
-+	IFLA_CAN_TERMINATION,
-+	IFLA_CAN_TERMINATION_CONST,
-  	__IFLA_CAN_MAX
-  };
-
-With this interface the ip tool can get the capabilities of the 
-termination analogue to the BITTIMING_CONST values.
-And it can set the termination with IFLA_CAN_TERMINATION.
-
-The CAN driver would provide a struct can_termination_const - in the 
-case the CAN interface supports termination control.
-
-E.g. the mcba_usb driver would provide this:
-
-static struct can_termination_const = {
-	.range_low = CAN_RESISTOR_INVALID;
-	.range_high = CAN_RESISTOR_INVALID;
-	.term = { 120, CAN_RESISTOR_DISABLED, CAN_RESISTOR_INVALID };
-}
-
-Another driver supporting 60 and 120 Ohms but no possibility to disable 
-the termination:
-
-static struct can_termination_const = {
-	.range_low = CAN_RESISTOR_INVALID;
-	.range_high = CAN_RESISTOR_INVALID;
-	.term = { 60, 120, CAN_RESISTOR_INVALID };
-}
-
-Another driver supporting 60 to 5600 Ohms varistor and the possibility 
-to disable the termination:
-
-static struct can_termination_const = {
-	.range_low = 60;
-	.range_high = 5600;
-	.term = { CAN_RESISTOR_DISABLED, CAN_RESISTOR_INVALID };
-}
-
-These termination capabilities might be provided by device tree 
-configuration too - although I don't know how this would be done.
-
-What do you think about this kind of configuration interface?
-
-Regards,
-Oliver
-
+PiA+PiBmb3Igbm93LCBJRkxBX0NBTl9URVJNSU5BVElPTiBtYXkgYmUgYSBib29sZWFuIChvciBl
+bnVtZXJhdGlvbikuDQo+ID4NCj4gPiBBQ0suIFdlIGNvdWxkIHN0YXJ0IHNpbXBsZSB3aXRoIGEg
+Ym9vbC4NCj4gDQo+IEkgd291bGQgc3VnZ2VzdCB0byBzdXBwb3J0IGEgdmFyaWFibGUgcmVzaXN0
+b3IgKHZhcmlzdG9yKSByYW5naW5nIGZyb20gMQ0KPiB0byA2NTUzNCBPaG1zIGFuZCBhIGxpc3Qg
+b2YgZGlzY3JldGUgdGVybWluYXRpb24gdmFsdWVzIGFzIHN1Z2dlc3RlZC4NCg0KSWYgdGhlcmUg
+YXJlIHVzZSBjYXNlcyBmb3Igc3VjaCB2YXJpYWJsZSByZXNpc3RvciBjb25maWdzLCBpdCBpcyBP
+Sy4NCiANCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3VhcGkvbGludXgvY2FuL25ldGxpbmsu
+aA0KPiBiL2luY2x1ZGUvdWFwaS9saW51eC9jYW4vbmV0bGluay5oDQo+IGluZGV4IDk0ZmZlMGMu
+LmEwNzYwMWEgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvdWFwaS9saW51eC9jYW4vbmV0bGluay5o
+DQo+ICsrKyBiL2luY2x1ZGUvdWFwaS9saW51eC9jYW4vbmV0bGluay5oDQo+IEBAIC05MSw2ICs5
+MSwzMiBAQCBzdHJ1Y3QgY2FuX2N0cmxtb2RlIHsNCj4gICAJX191MzIgZmxhZ3M7DQo+ICAgfTsN
+Cj4gDQo+ICsvKg0KPiArICogQ0FOIGhhcmR3YXJlLWRlcGVuZGVudCB0ZXJtaW5hdGlvbiByZXNp
+c3RvciBjb25zdGFudHMNCj4gKyAqDQo+ICsgKiBDYXBhYmlsaXRpZXMgc2hvd24gYnkgaXAgdG9v
+bCBpZiBzdXBwb3J0ZWQgYnkgQ0FOIGhhcmR3YXJlDQoNCiJDYXBhYmlsaXRpZXMgc2hvd24gYnkg
+aXAgdG9vbCBpZiBtYW5hZ2VkIGJ5IENBTiBkcml2ZXIiIC0gd291bGQgdGhhdCBiZSBhcHQ/DQpB
+cyB0ZXJtaW5hdGlvbiBpcyBwcm92aWRlZCBvbiB0aGUgQ0FOIGJ1cyBieSBzb21lYm9keSAoREI5
+IGNvbm5lY3Rvci9maXhlZCBvbiBib2FyZCB0ZXJtaW5hdGlvbi9ncGlvIG1hbmFnZWQgZXRjLiks
+IHRoaXMgd291bGQgY2xhcmlmeSB0aGUgZHJpdmVyJ3Mgcm9sZSBpbiBtYW5hZ2luZyBpdC4NCg0K
+PiArICogVW5zdXBwb3J0ZWQgdmFsdWVzIGFyZSBmaWxsZWQgd2l0aCB6ZXJvIChDQU5fUkVTSVNU
+T1JfSU5WQUxJRCkgICovDQo+ICtzdHJ1Y3QgY2FuX3Rlcm1pbmF0aW9uX2NvbnN0IHsNCj4gKw0K
+PiArCS8qIHJhbmdlIGZvciBwcm9ncmFtbWFibGUgcmVzaXN0b3IgKGlmIHN1cHBvcnRlZCkgKi8N
+Cj4gKwlfX3UxNiByYW5nZV9sb3c7CS8qIGxvd2VybW9zdCByZXNpc3RvciB2YWx1ZSAoT2htKSAq
+Lw0KPiArCV9fdTE2IHJhbmdlX2hpZ2g7CS8qIGhpZ2hlc3QgcmVzaXN0b3IgdmFsdWUgKE9obSkg
+Ki8NCj4gKw0KPiArCS8qIGFycmF5IG9mIHN1cHBvcnRlZCBkaXNjcmV0ZSByZXNpc3RvciB2YWx1
+ZXMgKE9obSkgKi8NCj4gKwlfX3UxNiB0ZXJtWzhdOw0KPiArfTsNCj4gKw0KPiArLyoNCj4gKyAq
+IENBTiB0ZXJtaW5hdGlvbg0KPiArICovDQo+ICtzdHJ1Y3QgY2FuX3Rlcm1pbmF0aW9uIHsNCj4g
+KwlfX3UxNiB0ZXJtOw0KPiArfTsNCj4gKw0KPiArI2RlZmluZSBDQU5fUkVTSVNUT1JfSU5WQUxJ
+RAkweDAwMDBVCS8qIGluZGljYXRlcyBubyB2YWx1ZSAvDQo+IHVuc3VwcG9ydGVkICovDQo+ICsj
+ZGVmaW5lIENBTl9SRVNJU1RPUl9ESVNBQkxFRAkweEZGRkZVCS8qIGluZGljYXRlcyBkaXNhYmxl
+ZA0KPiB0ZXJtaW5hdGlvbiAqLw0KPiArDQo+ICAgI2RlZmluZSBDQU5fQ1RSTE1PREVfTE9PUEJB
+Q0sJCTB4MDEJLyogTG9vcGJhY2sgbW9kZSAqLw0KPiAgICNkZWZpbmUgQ0FOX0NUUkxNT0RFX0xJ
+U1RFTk9OTFkJCTB4MDIJLyogTGlzdGVuLW9ubHkgbW9kZSAqLw0KPiAgICNkZWZpbmUgQ0FOX0NU
+UkxNT0RFXzNfU0FNUExFUwkJMHgwNAkvKiBUcmlwbGUgc2FtcGxpbmcgbW9kZSAqLw0KPiBAQCAt
+MTI3LDYgKzE1Myw4IEBAIGVudW0gew0KPiAgIAlJRkxBX0NBTl9CRVJSX0NPVU5URVIsDQo+ICAg
+CUlGTEFfQ0FOX0RBVEFfQklUVElNSU5HLA0KPiAgIAlJRkxBX0NBTl9EQVRBX0JJVFRJTUlOR19D
+T05TVCwNCj4gKwlJRkxBX0NBTl9URVJNSU5BVElPTiwNCj4gKwlJRkxBX0NBTl9URVJNSU5BVElP
+Tl9DT05TVCwNCj4gICAJX19JRkxBX0NBTl9NQVgNCj4gICB9Ow0KPiANCj4gV2l0aCB0aGlzIGlu
+dGVyZmFjZSB0aGUgaXAgdG9vbCBjYW4gZ2V0IHRoZSBjYXBhYmlsaXRpZXMgb2YgdGhlDQo+IHRl
+cm1pbmF0aW9uIGFuYWxvZ3VlIHRvIHRoZSBCSVRUSU1JTkdfQ09OU1QgdmFsdWVzLg0KPiBBbmQg
+aXQgY2FuIHNldCB0aGUgdGVybWluYXRpb24gd2l0aCBJRkxBX0NBTl9URVJNSU5BVElPTi4NCg0K
+QUNLLg0KDQo+IFRoZSBDQU4gZHJpdmVyIHdvdWxkIHByb3ZpZGUgYSBzdHJ1Y3QgY2FuX3Rlcm1p
+bmF0aW9uX2NvbnN0IC0gaW4gdGhlIGNhc2UNCj4gdGhlIENBTiBpbnRlcmZhY2Ugc3VwcG9ydHMg
+dGVybWluYXRpb24gY29udHJvbC4NCj4gDQo+IEUuZy4gdGhlIG1jYmFfdXNiIGRyaXZlciB3b3Vs
+ZCBwcm92aWRlIHRoaXM6DQo+IA0KPiBzdGF0aWMgc3RydWN0IGNhbl90ZXJtaW5hdGlvbl9jb25z
+dCA9IHsNCj4gCS5yYW5nZV9sb3cgPSBDQU5fUkVTSVNUT1JfSU5WQUxJRDsNCj4gCS5yYW5nZV9o
+aWdoID0gQ0FOX1JFU0lTVE9SX0lOVkFMSUQ7DQo+IAkudGVybSA9IHsgMTIwLCBDQU5fUkVTSVNU
+T1JfRElTQUJMRUQsIENBTl9SRVNJU1RPUl9JTlZBTElEIH07IH0NCj4gDQo+IEFub3RoZXIgZHJp
+dmVyIHN1cHBvcnRpbmcgNjAgYW5kIDEyMCBPaG1zIGJ1dCBubyBwb3NzaWJpbGl0eSB0byBkaXNh
+YmxlDQo+IHRoZSB0ZXJtaW5hdGlvbjoNCj4gDQo+IHN0YXRpYyBzdHJ1Y3QgY2FuX3Rlcm1pbmF0
+aW9uX2NvbnN0ID0gew0KPiAJLnJhbmdlX2xvdyA9IENBTl9SRVNJU1RPUl9JTlZBTElEOw0KPiAJ
+LnJhbmdlX2hpZ2ggPSBDQU5fUkVTSVNUT1JfSU5WQUxJRDsNCj4gCS50ZXJtID0geyA2MCwgMTIw
+LCBDQU5fUkVTSVNUT1JfSU5WQUxJRCB9OyB9DQo+IA0KPiBBbm90aGVyIGRyaXZlciBzdXBwb3J0
+aW5nIDYwIHRvIDU2MDAgT2htcyB2YXJpc3RvciBhbmQgdGhlIHBvc3NpYmlsaXR5IHRvDQo+IGRp
+c2FibGUgdGhlIHRlcm1pbmF0aW9uOg0KPiANCj4gc3RhdGljIHN0cnVjdCBjYW5fdGVybWluYXRp
+b25fY29uc3QgPSB7DQo+IAkucmFuZ2VfbG93ID0gNjA7DQo+IAkucmFuZ2VfaGlnaCA9IDU2MDA7
+DQo+IAkudGVybSA9IHsgQ0FOX1JFU0lTVE9SX0RJU0FCTEVELCBDQU5fUkVTSVNUT1JfSU5WQUxJ
+RCB9OyB9DQo+IA0KPiBUaGVzZSB0ZXJtaW5hdGlvbiBjYXBhYmlsaXRpZXMgbWlnaHQgYmUgcHJv
+dmlkZWQgYnkgZGV2aWNlIHRyZWUNCj4gY29uZmlndXJhdGlvbiB0b28gLSBhbHRob3VnaCBJIGRv
+bid0IGtub3cgaG93IHRoaXMgd291bGQgYmUgZG9uZS4NCg0KSSB0aGluayBpdCBjYW4gYmUgc29t
+ZXRoaW5nIGxpa2UgdGhpcyANCg0KQm9hcmQgRFRTIGZpbGUNCiZjYW4wIHsNCgkuLi4NCgljYW4t
+dGVybWluYXRpb24gPSA8MTIwPjsJLyogZGVmYXVsdCB2YWx1ZSAqLw0KCQ0KCS8qIEdQSU8gbWFu
+YWdlZCAqLw0KCWNhbi10ZXJtLWdwaW8gPSA8JmdwaW8wIDEwIEdQSU9fQUNUSVZFX0hJR0g+Ow0K
+CS4uLg0KDQoJLyogUmVndWxhdG9yIG1hbmFnZWQgKi8NCgljYW4tdGVybS1zdXBwbHkgPSA8JnBo
+YW5kbGUgdG8gcmVndWxhdG9yIG5vZGU+DQp9Ow0KDQpUaGUgZHJpdmVyIGNvdWxkIG1hbmFnZSB0
+aGUgcmVzcGVjdGl2ZSBHUElPL3JlZ3VsYXRvciBmcm9tIHRoZSBwaGFuZGxlLiBUaGUgTU1DIHN1
+YnN5c3RlbSBjb2RlIGhhcyBleGFtcGxlcyBvZiBzdWNoIGNvbmZpZy4NCg0KQ29tcGxleCBjYXNl
+cyBjb3VsZCB1c2UgYSBkcml2ZXIgc3BlY2lmaWMgaG9vayAoYXMgd2l0aCBiaXR0aW1pbmcpIHRv
+IHNldCBURVJNIHZhbHVlcy4NCg0KPiANCj4gV2hhdCBkbyB5b3UgdGhpbmsgYWJvdXQgdGhpcyBr
+aW5kIG9mIGNvbmZpZ3VyYXRpb24gaW50ZXJmYWNlPw0KPiANCg0KQUNLLiANClVTQiwgUENJIGJh
+c2VkIENBTiBkZXNpZ25lcnMgbWF5IGhhdmUgc29tZSBzdWdnZXN0aW9ucy9yZXF1aXJlbWVudHM/
+DQoNClRoYW5rcywNClJhbWVzaA0KDQo=
