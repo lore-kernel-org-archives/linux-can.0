@@ -1,7 +1,7 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: Adding new CAN driver
-Date: Fri, 11 Nov 2016 16:40:49 +1100
-Message-ID: <5005aa56-80a6-0054-939e-886c3e22c0e8@optusnet.com.au>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: Adding new CAN driver
+Date: Fri, 11 Nov 2016 08:04:54 +0000
+Message-ID: <SG2PR06MB1038B5CD96A353FF137D228EC3BB0@SG2PR06MB1038.apcprd06.prod.outlook.com>
 References: <3113364.8FuUfmAlHQ@ws-stein>
  <SG2PR06MB1038F0416E850F0C09BC5CCEC3A00@SG2PR06MB1038.apcprd06.prod.outlook.com>
  <1490105.s3iJfGbYsS@ws-stein>
@@ -14,29 +14,72 @@ References: <3113364.8FuUfmAlHQ@ws-stein>
  <fc26a0a8-8c15-9b1f-c699-31f83177c431@hartkopp.net>
  <20161110091830.GB22657@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:48790 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1755964AbcKKGDi (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 11 Nov 2016 01:03:38 -0500
+Received: from relmlor1.renesas.com ([210.160.252.171]:54033 "EHLO
+        relmlie4.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1753762AbcKKIKE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 11 Nov 2016 03:10:04 -0500
 In-Reply-To: <20161110091830.GB22657@airbook.vandijck-laurijssen.be>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Alexander Stein <alexander.stein@systec-electronic.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: =?utf-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Alexander Stein <alexander.stein@systec-electronic.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 10/11/2016 8:18 PM, Kurt Van Dijck wrote:
-> Up to now, I only saw systems that allow to enable 120Ohm,
- > and no other values are coming AFAIK.
-
-ISO/CD 11898-3?
-
-If you don't have the ISO standards, check the second picture in:
-
-https://en.wikipedia.org/wiki/CAN_bus#Architecture
-
-Maybe some 11898-3 transceivers have internal resistors.
-
-Tom
-
+PiBTdWJqZWN0OiBSZTogQWRkaW5nIG5ldyBDQU4gZHJpdmVyDQo+IA0KPiA+IE9uIDExLzA4LzIw
+MTYgMTA6MzYgQU0sIFJhbWVzaCBTaGFubXVnYXN1bmRhcmFtIHdyb3RlOg0KPiA+ID4+Pj5mb3Ig
+bm93LCBJRkxBX0NBTl9URVJNSU5BVElPTiBtYXkgYmUgYSBib29sZWFuIChvciBlbnVtZXJhdGlv
+bikuDQo+ID4gPj4+DQo+ID4gPj4+QUNLLiBXZSBjb3VsZCBzdGFydCBzaW1wbGUgd2l0aCBhIGJv
+b2wuDQo+ID4gPj4NCj4gPiA+Pkkgd291bGQgc3VnZ2VzdCB0byBzdXBwb3J0IGEgdmFyaWFibGUg
+cmVzaXN0b3IgKHZhcmlzdG9yKSByYW5naW5nDQo+ID4gPj5mcm9tIDEgdG8gNjU1MzQgT2htcyBh
+bmQgYSBsaXN0IG9mIGRpc2NyZXRlIHRlcm1pbmF0aW9uIHZhbHVlcyBhcw0KPiBzdWdnZXN0ZWQu
+DQo+ID4gPg0KPiA+ID5JZiB0aGVyZSBhcmUgdXNlIGNhc2VzIGZvciBzdWNoIHZhcmlhYmxlIHJl
+c2lzdG9yIGNvbmZpZ3MsIGl0IGlzIE9LLg0KPiA+ID4NCj4gPg0KPiA+IEkgZG91YmxlIGNoZWNr
+ZWQgdGhlIHZhcmlzdG9ycyBjdXJyZW50bHkgdXNlZCBpbiBDQU4gY29udGV4dC4NCj4gPiBUaGV5
+IGFyZSB1c2VkIHRvIHByb3ZpZGUgRVNEIChlbGVjdHJvc3RhdGljIGRpc2NoYXJnZSkgcHJvdGVj
+dGlvbiAlLSkNCj4gPg0KPiA+IFNvIGhhdmluZyBhIGRpc2NyZXRlIGxpc3Qgb2YgZGlzY3JldGUg
+dGVybWluYXRpb24gcmVzaXN0b3JzIHdvdWxkDQo+ID4gb2J2aW91c2x5IGJlIHN1ZmZpY2llbnQg
+Zm9yIG91ciB1c2UtY2FzZS4NCj4gDQo+IFVwIHRvIG5vdywgSSBvbmx5IHNhdyBzeXN0ZW1zIHRo
+YXQgYWxsb3cgdG8gZW5hYmxlIDEyME9obSwgYW5kIG5vIG90aGVyDQo+IHZhbHVlcyBhcmUgY29t
+aW5nIEFGQUlLLg0KPiBUaGlzIGNhbiBiZSBhZGRyZXNzZWQgYXMgYSAnbGlzdCBvZiBkaXNjcmV0
+ZSB2YWx1ZXMnIGluZGVlZC4NCg0KQUNLLg0KDQo+IA0KPiBbLi4uXQ0KPiANCj4gPiA+DQo+ID4g
+PkkgdGhpbmsgaXQgY2FuIGJlIHNvbWV0aGluZyBsaWtlIHRoaXMNCj4gPiA+DQo+ID4gPkJvYXJk
+IERUUyBmaWxlDQo+ID4gPiZjYW4wIHsNCj4gPiA+CS4uLg0KPiA+ID4JY2FuLXRlcm1pbmF0aW9u
+ID0gPDEyMD47CS8qIGRlZmF1bHQgdmFsdWUgKi8NCj4gPiA+DQo+ID4gPgkvKiBHUElPIG1hbmFn
+ZWQgKi8NCj4gPiA+CWNhbi10ZXJtLWdwaW8gPSA8JmdwaW8wIDEwIEdQSU9fQUNUSVZFX0hJR0g+
+Ow0KPiA+ID4JLi4uDQo+ID4gPg0KPiA+ID4JLyogUmVndWxhdG9yIG1hbmFnZWQgKi8NCj4gPiA+
+CWNhbi10ZXJtLXN1cHBseSA9IDwmcGhhbmRsZSB0byByZWd1bGF0b3Igbm9kZT4gfTsNCj4gDQo+
+IFRoaXMgR1BJTyB5b3UncmUgdXNpbmcgdG8gYWN0aXZhdGUgdGhlIHRlcm1pbmF0aW9uIHJlc2lz
+dG9yIGlzL3Nob3VsZCBiZQ0KPiBjb250cm9sbGVkIGluZGVwZW5kYW50bHkgb2YgdGhlIHJlc3Qg
+b2YgeW91ciBDQU4gZHJpdmVyLg0KDQpJIGFncmVlLiBUaGlzIGlzIGFuIGUuZy4gY29uZmlnIG9u
+bHkgYW5kIGluIGdlbmVyYWwgSSB0b28gcHJlZmVyIHRoZSBDQU4gZHJpdmVyIChleHBvc2luZyBh
+IG5ldGRldikgbGltaXRzIGl0IHRvIG1hbmFnaW5nIHRoZSBjb250cm9sbGVyIGFsb25lLiBCdXQg
+YXMgd2UgYXJlIGludHJvZHVjaW5nIFRFUk0gYXMgYSBuZXRsaW5rIGNvbmZpZyB3ZSBjb3VsZCB0
+cnkgdG8gaXNvbGF0ZSB0aGUgY29uZmlnICJhY3Rpb24iIHdpdGggYSBkcml2ZXIgc3BlY2lmaWMg
+Y2FsbGJhY2suIEluIFVTQiBjYXNlLCBpdCBnZXRzIHRoZSBjb25maWcgYW5kIHRoZSBhY3Rpb24g
+aXMgc2VuZGluZyBhIFVTQiBtZXNzYWdlLiBJbiBHUElPIG9yIHJlZ3VsYXRvciBjYXNlLCB0aGUg
+YWN0aW9uIGlzIHVwdG8gdGhlIGRyaXZlciAiaWYiIGl0IHdhbnRzIHRoYXQgdG8gYmUgcGFydCBv
+ZiBpdCAtIGxpa2Ugb3BlbmluZyBhIGdhdGUgdGhhdCBzd2l0Y2hlcyB0ZXJtaW5hdGlvbiBwYXRo
+cyBvbmJvYXJkLiBJdCBjb3VsZCBiZSBhIG9uZXRpbWUgY29uZmlnIG9yIHJ1bi10aW1lIG1hbmFn
+ZWFibGUgLSBpdHMgdXAgdG8gdGhlIGRyaXZlci4NCg0KVGhlcmUgYXJlIG90aGVyIHRoaW5ncyB3
+ZSBuZWVkIHRvIGRlY2lkZSBmb3IgdGhpcyBuZXRsaW5rIGNvbmZpZyAtIHdoYXQgc2hvdWxkIGJl
+IHRoZSBzdGF0ZSBvZiBuZXRkZXYoVVAvRE9XTikgd2hlbiBURVJNIGlzIGNvbmZpZ3VyZWQ/IERv
+ZXMgaXQgbWF0dGVyPyBJdCBkZXBlbmRzIG9uIHRoZSBlbmQgc29sdXRpb24gYW5kIEkgd291bGQg
+dm90ZSBmb3Igbm90IGhhdmluZyBhbnkgcG9saWN5IHdpdGhpbiBDQU4gY29yZS4gQW55IHRob3Vn
+aHRzPw0KDQo+IFRha2UgdGhpcyBzY2VuYXJpbzogeW91IGFjdGl2YXRlIHRoZSBidXMgdGVybWlu
+YXRpb24gZnJvbSB0aGUgQ0FOIGRyaXZlci4NCj4gVXAgdG8gdGhhdCBwb2ludCwgdGhlIGJ1cyBp
+cyBub3QgcHJvcGVybHkgdGVybWluYXRlZCwgYW5kIG90aGVyIG5vZGVzIG9uDQo+IHRoZSBidXMg
+ZG8gbm90IGNvbW11bmljYXRlIChwcm9wZXJseSkuDQo+IElmIHlvdSByZWFsbHkgZGVwZW5kZWQg
+b24gdGhhdCB0ZXJtaW5hdGlvbiwgYW5kIGl0IHRvb2sgdGhhdCBsb25nIGluIG9yZGVyDQo+IHRv
+IGVuYWJsZSwgeW91IHdvdWxkIHBsYWNlIHRoZSB0ZXJtaW5hdGlvbiBlbHNld2hlcmUuDQo+IA0K
+PiBJdCBzZWVtcyB3ZSdyZSBhZGRpbmcgcXVpdGUgYSBsb3QganVzdCB0byBtYWtlIHRoZSBzeXN0
+ZW0gYWN0aXZhdGUgYSBHUElPDQo+IHRoYXQgZG9lcyBub3Qgd2FudCBhbnkgaW50ZXJhY3Rpb24g
+dG8gdGhlIENBTiBzdWJzeXN0ZW0gKGF0IGxlYXN0LCBJIGhhdmUNCj4gbm90IHNlZW4gYW55IHVz
+ZSBjYXNlIHVwIHRvIG5vdyBqdXN0aWZ5aW5nIHRoaXMpLg0KPiBPciBhbSBJIG1pc3Npbmcgc29t
+ZXRoaW5nIGhlcmU/DQo+IA0KPiBOb3RlIHRoYXQgdGhpcyBhcHBsaWVzIHRvIHRoZSBDQU4gYnVz
+IHRlcm1pbmF0aW9uLg0KPiBUaGUgdHJhbnNjZWl2ZXIgc2V0dGluZ3Mgb24gdGhlIG90aGVyIGhh
+bmQgZG8gaW50ZXJhY3Qgd2l0aCB0aGUgQ0FOIGRyaXZlcg0KPiAobGlrZSBsaW1pdGluZyB0aGUg
+bWF4IGJhdWRyYXRlIGFzIGFuIGV4YW1wbGUsIG9yIGFjdGl2YXRpbmcgdGhlIFRSWCB2aWEgYQ0K
+PiBHUElPKS4NCj4gDQoNClRoYW5rcywNClJhbWVzaA0K
