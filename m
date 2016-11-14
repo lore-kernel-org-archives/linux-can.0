@@ -1,83 +1,50 @@
-From: <sunaina@velvetcase.com>
-Subject: 50149 linux-can
-Date: Sat, 12 Nov 2016 21:44:56 -0000
-Message-ID: <147898709639.19228.691843879710903224@wifiweb.it>
-Mime-Version: 1.0
-Content-Type: application/zip; name="MESSAGE_2068817903_linux-can.zip"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from 188-95-79-222.wdsl.wifiweb.it ([188.95.79.222]:49086 "HELO
-        wifiweb.it" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with SMTP
-        id S1752629AbcKLVph (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 12 Nov 2016 16:45:37 -0500
-Content-Disposition: attachment
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+From: Akshay Bhat <akshay.bhat@timesys.com>
+Subject: [PATCH 1/2] can: holt_hi311x: document device tree bindings
+Date: Mon, 14 Nov 2016 12:55:43 -0500
+Message-ID: <1479146144-29143-1-git-send-email-akshay.bhat@timesys.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org
+Cc: mark.rutland@arm.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Akshay Bhat <akshay.bhat@timesys.com>, Akshay Bhat <nodeax@gmail.com>
+List-Id: linux-can.vger.kernel.org
 
-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
-AQABAFgAAAAZDgAAAAA=
+Document the HOLT HI-311x CAN device tree bindings.
+
+Signed-off-by: Akshay Bhat <nodeax@gmail.com>
+---
+ .../devicetree/bindings/net/can/holt_hi311x.txt    | 24 ++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/holt_hi311x.txt
+
+diff --git a/Documentation/devicetree/bindings/net/can/holt_hi311x.txt b/Documentation/devicetree/bindings/net/can/holt_hi311x.txt
+new file mode 100644
+index 0000000..23aa94e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/holt_hi311x.txt
+@@ -0,0 +1,24 @@
++* Holt HI-311X stand-alone CAN controller device tree bindings
++
++Required properties:
++ - compatible: Should be one of the following:
++   - "holt,hi3110" for HI-3110
++ - reg: SPI chip select.
++ - clocks: The clock feeding the CAN controller.
++ - interrupt-parent: The parent interrupt controller.
++ - interrupts: Should contain IRQ line for the CAN controller.
++
++Optional properties:
++ - vdd-supply: Regulator that powers the CAN controller.
++ - xceiver-supply: Regulator that powers the CAN transceiver.
++
++Example:
++	can0: can@1 {
++		compatible = "holt,hi3110";
++		reg = <1>;
++		clocks = <&clk32m>;
++		interrupt-parent = <&gpio4>;
++		interrupts = <13 IRQ_TYPE_EDGE_RISING>;
++		vdd-supply = <&reg5v0>;
++		xceiver-supply = <&reg5v0>;
++	};
+-- 
+2.8.1
