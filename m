@@ -1,73 +1,64 @@
-From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: [PATCH 0/3] arm64: dts: r8a7796: Add CAN/CAN FD support
-Date: Thu, 24 Nov 2016 17:41:58 +0100
-Message-ID: <CAMuHMdXO=uFuJCXPjkdYB_CeyfPMqy6cMrOW=s1DZzcJ9Gp33A@mail.gmail.com>
+From: Chris Paterson <Chris.Paterson2@renesas.com>
+Subject: RE: [PATCH 0/3] arm64: dts: r8a7796: Add CAN/CAN FD support
+Date: Thu, 24 Nov 2016 17:12:33 +0000
+Message-ID: <HK2PR0601MB13293054589DCDED4AFC3DBFB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
 References: <1479903243-1860-1-git-send-email-chris.paterson2@renesas.com>
- <f358442c-8373-328c-1270-709498c133f5@pengutronix.de> <20161123142938.GF9057@verge.net.au>
+ <f358442c-8373-328c-1270-709498c133f5@pengutronix.de>
+ <20161123142938.GF9057@verge.net.au>
  <HK2PR0601MB132929329C3574A0B4D9A0EAB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
- <20161124101733.GA18027@verge.net.au> <HK2PR0601MB1329C747CA5C6B5222C02C3FB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
+ <20161124101733.GA18027@verge.net.au>
+ <HK2PR0601MB1329C747CA5C6B5222C02C3FB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
+ <CAMuHMdXO=uFuJCXPjkdYB_CeyfPMqy6cMrOW=s1DZzcJ9Gp33A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <HK2PR0601MB1329C747CA5C6B5222C02C3FB7B60-5BHi1SMfQIfsvBovKiDY8NK/flDYrvD0nBOFsp37pqbUKgpGm//BTAC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Chris Paterson <Chris.Paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Simon Horman <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>, "linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdXO=uFuJCXPjkdYB_CeyfPMqy6cMrOW=s1DZzcJ9Gp33A@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Simon Horman <horms@verge.net.au>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Hi Chris,
-
-On Thu, Nov 24, 2016 at 3:25 PM, Chris Paterson
-<Chris.Paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
-> From: Simon Horman [mailto:horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org]
-> Sent: 24 November 2016 10:18
->> On Thu, Nov 24, 2016 at 10:05:08AM +0000, Chris Paterson wrote:
->> > From: Simon Horman [mailto:horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org]
->> > > Regarding the arch/arm64/boot/dts/renesas/ portion, I would like
->> > > some consideration given to what effect enabling memory above 4Gb
->> > > (64bit
->> > > addressing) would have.
->> >
->> > Can you give me some guidance here? I'm not sure what you're referring
->> > to. As far as I know the DT reg definition here is 64-bit, or are you
->> > referring to DMA usage? If the later, neither CAN driver uses DMA.
->>
->> Sorry for not being clearer.
->>
->> What I would like to know is if there are any problems in the CAN driver or
->> hardware that would prevent it from functioning with memory that requires
->> 64bit addressing present.
->>
->> If the CAN hardware cannot use DMA then DMA doesn't need to be taken
->> into account. But if it DMA could be enabled in future for CAN, for example
->> after some driver enhancements, then it would be good to know if 64bit
->> memory can be supported - if not it would imply DMA cannot be enabled.
->
-> Thank you for the clarification.
->
-> The CAN interface for r8a7795/6 does not support DMA.
->
-> With CAN FD there is currently a H/W issue that means DMA is unusable.
-
-Is that issue present on R-Car M3-W, or only on R-Car H3 ES1.x?
-
-> Potentially this issue could be fixed in the future and DMA support could
-> be added to the driver. If this happens I can see no reason why the CAN FD
-> IP wouldn't be able to handle DMA transfers when using 64bit addressing.
-
-Yep, AFAIK it uses SYS-DMAC, which supports 64-bit addressing.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGVsbG8gR2VlcnQsDQoNCkZyb206IGdlZXJ0LnV5dHRlcmhvZXZlbkBnbWFpbC5jb20NClNlbnQ6
+IDI0IE5vdmVtYmVyIDIwMTYgMTY6NDINCj4gSGkgQ2hyaXMsDQo+IA0KPiBPbiBUaHUsIE5vdiAy
+NCwgMjAxNiBhdCAzOjI1IFBNLCBDaHJpcyBQYXRlcnNvbg0KPiA8Q2hyaXMuUGF0ZXJzb24yQHJl
+bmVzYXMuY29tPiB3cm90ZToNCj4gPiBGcm9tOiBTaW1vbiBIb3JtYW4gW21haWx0bzpob3Jtc0B2
+ZXJnZS5uZXQuYXVdDQo+ID4gU2VudDogMjQgTm92ZW1iZXIgMjAxNiAxMDoxOA0KPiA+PiBPbiBU
+aHUsIE5vdiAyNCwgMjAxNiBhdCAxMDowNTowOEFNICswMDAwLCBDaHJpcyBQYXRlcnNvbiB3cm90
+ZToNCj4gPj4gPiBGcm9tOiBTaW1vbiBIb3JtYW4gW21haWx0bzpob3Jtc0B2ZXJnZS5uZXQuYXVd
+DQo+ID4+ID4gPiBSZWdhcmRpbmcgdGhlIGFyY2gvYXJtNjQvYm9vdC9kdHMvcmVuZXNhcy8gcG9y
+dGlvbiwgSSB3b3VsZCBsaWtlDQo+ID4+ID4gPiBzb21lIGNvbnNpZGVyYXRpb24gZ2l2ZW4gdG8g
+d2hhdCBlZmZlY3QgZW5hYmxpbmcgbWVtb3J5IGFib3ZlIDRHYg0KPiA+PiA+ID4gKDY0Yml0DQo+
+ID4+ID4gPiBhZGRyZXNzaW5nKSB3b3VsZCBoYXZlLg0KPiA+PiA+DQo+ID4+ID4gQ2FuIHlvdSBn
+aXZlIG1lIHNvbWUgZ3VpZGFuY2UgaGVyZT8gSSdtIG5vdCBzdXJlIHdoYXQgeW91J3JlDQo+ID4+
+ID4gcmVmZXJyaW5nIHRvLiBBcyBmYXIgYXMgSSBrbm93IHRoZSBEVCByZWcgZGVmaW5pdGlvbiBo
+ZXJlIGlzDQo+ID4+ID4gNjQtYml0LCBvciBhcmUgeW91IHJlZmVycmluZyB0byBETUEgdXNhZ2U/
+IElmIHRoZSBsYXRlciwgbmVpdGhlciBDQU4NCj4gZHJpdmVyIHVzZXMgRE1BLg0KPiA+Pg0KPiA+
+PiBTb3JyeSBmb3Igbm90IGJlaW5nIGNsZWFyZXIuDQo+ID4+DQo+ID4+IFdoYXQgSSB3b3VsZCBs
+aWtlIHRvIGtub3cgaXMgaWYgdGhlcmUgYXJlIGFueSBwcm9ibGVtcyBpbiB0aGUgQ0FODQo+ID4+
+IGRyaXZlciBvciBoYXJkd2FyZSB0aGF0IHdvdWxkIHByZXZlbnQgaXQgZnJvbSBmdW5jdGlvbmlu
+ZyB3aXRoIG1lbW9yeQ0KPiA+PiB0aGF0IHJlcXVpcmVzIDY0Yml0IGFkZHJlc3NpbmcgcHJlc2Vu
+dC4NCj4gPj4NCj4gPj4gSWYgdGhlIENBTiBoYXJkd2FyZSBjYW5ub3QgdXNlIERNQSB0aGVuIERN
+QSBkb2Vzbid0IG5lZWQgdG8gYmUNCj4gdGFrZW4NCj4gPj4gaW50byBhY2NvdW50LiBCdXQgaWYg
+aXQgRE1BIGNvdWxkIGJlIGVuYWJsZWQgaW4gZnV0dXJlIGZvciBDQU4sIGZvcg0KPiA+PiBleGFt
+cGxlIGFmdGVyIHNvbWUgZHJpdmVyIGVuaGFuY2VtZW50cywgdGhlbiBpdCB3b3VsZCBiZSBnb29k
+IHRvIGtub3cNCj4gPj4gaWYgNjRiaXQgbWVtb3J5IGNhbiBiZSBzdXBwb3J0ZWQgLSBpZiBub3Qg
+aXQgd291bGQgaW1wbHkgRE1BIGNhbm5vdCBiZQ0KPiBlbmFibGVkLg0KPiA+DQo+ID4gVGhhbmsg
+eW91IGZvciB0aGUgY2xhcmlmaWNhdGlvbi4NCj4gPg0KPiA+IFRoZSBDQU4gaW50ZXJmYWNlIGZv
+ciByOGE3Nzk1LzYgZG9lcyBub3Qgc3VwcG9ydCBETUEuDQo+ID4NCj4gPiBXaXRoIENBTiBGRCB0
+aGVyZSBpcyBjdXJyZW50bHkgYSBIL1cgaXNzdWUgdGhhdCBtZWFucyBETUEgaXMgdW51c2FibGUu
+DQo+IA0KPiBJcyB0aGF0IGlzc3VlIHByZXNlbnQgb24gUi1DYXIgTTMtVywgb3Igb25seSBvbiBS
+LUNhciBIMyBFUzEueD8NCg0KQm90aA0KDQo+IA0KPiA+IFBvdGVudGlhbGx5IHRoaXMgaXNzdWUg
+Y291bGQgYmUgZml4ZWQgaW4gdGhlIGZ1dHVyZSBhbmQgRE1BIHN1cHBvcnQNCj4gPiBjb3VsZCBi
+ZSBhZGRlZCB0byB0aGUgZHJpdmVyLiBJZiB0aGlzIGhhcHBlbnMgSSBjYW4gc2VlIG5vIHJlYXNv
+biB3aHkNCj4gPiB0aGUgQ0FOIEZEIElQIHdvdWxkbid0IGJlIGFibGUgdG8gaGFuZGxlIERNQSB0
+cmFuc2ZlcnMgd2hlbiB1c2luZyA2NGJpdA0KPiBhZGRyZXNzaW5nLg0KPiANCj4gWWVwLCBBRkFJ
+SyBpdCB1c2VzIFNZUy1ETUFDLCB3aGljaCBzdXBwb3J0cyA2NC1iaXQgYWRkcmVzc2luZy4NCg0K
+WWVwDQoNCj4gDQo+IEdye29ldGplLGVldGluZ31zLA0KPiANCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgR2VlcnQNCj4gDQo+IC0tDQo+IEdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxv
+dHMgb2YgTGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGludXgtDQo+IG02OGsub3JnDQo+IA0K
+PiBJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGggdGVjaG5pY2FsIHBlb3BsZSwgSSBjYWxs
+IG15c2VsZiBhIGhhY2tlci4gQnV0DQo+IHdoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5hbGlzdHMg
+SSBqdXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4NCj4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAtLSBMaW51cyBUb3J2YWxkcw0K
