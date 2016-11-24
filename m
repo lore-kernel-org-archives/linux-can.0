@@ -1,85 +1,93 @@
-From: Simon Horman <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>
-Subject: Re: [PATCH 0/3] arm64: dts: r8a7796: Add CAN/CAN FD support
-Date: Thu, 24 Nov 2016 15:32:39 +0100
-Message-ID: <20161124143238.GB24267@verge.net.au>
-References: <1479903243-1860-1-git-send-email-chris.paterson2@renesas.com>
- <f358442c-8373-328c-1270-709498c133f5@pengutronix.de>
- <20161123142938.GF9057@verge.net.au>
- <HK2PR0601MB132929329C3574A0B4D9A0EAB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
- <20161124101733.GA18027@verge.net.au>
- <HK2PR0601MB1329C747CA5C6B5222C02C3FB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: wrong CAN frame order in network layer due to SMP?
+Date: Thu, 24 Nov 2016 16:49:13 +0100
+Message-ID: <1864402.pXgGBBp51L@ws-stein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <HK2PR0601MB1329C747CA5C6B5222C02C3FB7B60-5BHi1SMfQIfsvBovKiDY8NK/flDYrvD0nBOFsp37pqbUKgpGm//BTAC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Chris Paterson <Chris.Paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>, "linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from webbox1416.server-home.net ([77.236.96.61]:45001 "EHLO
+        webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S966250AbcKXPtZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Nov 2016 10:49:25 -0500
+Received: from imapserver.systec-electronic.com (unknown [212.185.67.146])
+        by webbox1416.server-home.net (Postfix) with ESMTPA id 1D94427A711
+        for <linux-can@vger.kernel.org>; Thu, 24 Nov 2016 16:49:18 +0100 (CET)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: Daniel =?ISO-8859-1?Q?Kr=FCger?= <daniel.krueger@systec-electronic.com>
 
-Hi Chris,
+Hi,
 
-On Thu, Nov 24, 2016 at 02:25:06PM +0000, Chris Paterson wrote:
-> Hello Simon,
-> 
-> From: Simon Horman [mailto:horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org]
-> Sent: 24 November 2016 10:18
-> > Hi Chris,
-> > 
-> > On Thu, Nov 24, 2016 at 10:05:08AM +0000, Chris Paterson wrote:
-> > > Hello Simon,
-> > >
-> > > From: Simon Horman [mailto:horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org]
-> > > Sent: 23 November 2016 14:30
-> > > > On Wed, Nov 23, 2016 at 02:18:13PM +0100, Marc Kleine-Budde wrote:
-> > > > > On 11/23/2016 01:14 PM, Chris Paterson wrote:
+I experienced a rather interesting problem while doing a CAN burst test.
+This sends a bunch of CAN frames while each frame has a counter in it and the 
+receiver checks if the counter are in correct order.
+Now I got the error about wrong order:
+> Error on MSG ID 0x251. Got counter 141606 and expected 141605
+> Error on MSG ID 0x251. Got counter 141605 and expected 141607
+> Error on MSG ID 0x251. Got counter 141607 and expected 141606
 
-...
+Here is the corresponding part from "candump -t d -a -x any -l"
+> (1479993291.766686) can0 251#00022926
+> (1479993291.766574) can0 251#00022925
+> (1479993291.766816) can0 251#00022927
 
-> > > > Regarding the arch/arm64/boot/dts/renesas/ portion, I would like
-> > > > some consideration given to what effect enabling memory above 4Gb
-> > > > (64bit
-> > > > addressing) would have.
-> > >
-> > > Can you give me some guidance here? I'm not sure what you're referring
-> > > to. As far as I know the DT reg definition here is 64-bit, or are you
-> > > referring to DMA usage? If the later, neither CAN driver uses DMA.
-> > 
-> > Sorry for not being clearer.
-> > 
-> > What I would like to know is if there are any problems in the CAN driver or
-> > hardware that would prevent it from functioning with memory that requires
-> > 64bit addressing present.
-> > 
-> > If the CAN hardware cannot use DMA then DMA doesn't need to be taken
-> > into account. But if it DMA could be enabled in future for CAN, for example
-> > after some driver enhancements, then it would be good to know if 64bit
-> > memory can be supported - if not it would imply DMA cannot be enabled.
-> 
-> Thank you for the clarification.
-> 
-> The CAN interface for r8a7795/6 does not support DMA.
-> 
-> With CAN FD there is currently a H/W issue that means DMA is unusable.
-> Potentially this issue could be fixed in the future and DMA support could
-> be added to the driver. If this happens I can see no reason why the CAN
-> FD IP wouldn't be able to handle DMA transfers when using 64bit
-> addressing.
-> 
-> > 
-> > As for non-DMA mode, will this function if memory above 4G is present?
-> > If not then in theory such memory couldn't be enabled if the CAN driver
-> > is enabled. This is my main concern.
-> 
-> Yes, it functions fine. We have already tested this with the Renesas
-> v3.3.2 BSP with >4Gb memory.
-> 
-> If this is explanation okay for you, I'll proceed with a v2 splitting off
-> the DT bindings documentation.
+And in fact they are ordered wrongly. But the timestamps are correct, e.g. if 
+you reorder the frame by timestamp the order of counters is ok. This also 
+shows that the order is wrong on both sockets in the same way!
 
-Thanks for the explanation. I think it would be good to proceed with a v2.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The used driver is systec_can (downloadable at [1] if you like).
+But the driver is not to blame: In the URB complete callback a SKB is created 
+and passed to network stack by netif_rx.
+The timestamp is set by net_timestamp_check() directly at the beginning of 
+netif_rx_internal() so at this point the frames are still in order.
+In enqueue_to_backlog the skb are enqueued in some per_cpu softnet_data. I 
+don't know the details.
+Now per_cpu gave me a hint the problem might be caused by SMP. So I put 7 of 
+my 8 cores offline:
+> for i in $(seq 1 7); do echo 0 > /sys/bus/cpu/devices/cpu${i}/online; done
+Repeating the test run resulted in no order problems. My guess is that the USB 
+interrupt is done on different cores and that gathering the SKBs to be put in 
+the sockets is somewhat racy.
+This is supported by the fact after puttng the core online again:
+> for i in $(seq 1 7); do echo 1 > /sys/bus/cpu/devices/cpu${i}/online; done
+there are still no order problems. But this again is caused by the fact 
+(probably a bug in ACPI tables of my local machine) that any CPU put back 
+online serves no IO-APIC or MSI IRQs. This can easily be checked by calling:
+> watch -d -n 1 cat /proc/interrupts
+See that interrupts are handled on different CPUs. Put some CPUs (or all but 
+one) offline and online again. The ones which went offline dont serve any IO-
+APIC or MSI IRQs (so including the one for ehci_hcd).
+Back to my CAN problem: Only a single core handles USB IRQs and there is 
+apparently no softnet_data race.
+The test about wrong CAN frame ordering was done on kernel 4.8.9-gentoo but I 
+was also able to reproduce this problem on 3.14.58-gentoo-r1. 3.12.52-gentoo-
+r1 apparently does not suffer from that problem, at least 3 tries were without 
+errors. In buggy kernels this problems occured next to every time.
+
+Any idea what got wrong in the network code about gathering the SKBs 
+which might result in wrong order?
+
+Best regards,
+Alexander
+
+[1] http://www.systec-electronic.com/en/products/industrial-communication/interfaces-and-gateways/can-usb-adapter-usb-canmodul1
+-- 
+Dipl.-Inf. Alexander Stein
+SYS TEC electronic GmbH
+alexander.stein@systec-electronic.com
+
+Legal and Commercial Address:
+Am Windrad 2
+08468 Heinsdorfergrund
+Germany
+
+Office: +49 (0) 3765 38600-0
+Fax:    +49 (0) 3765 38600-4100
+ 
+Managing Directors:
+	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
+	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
+Commercial Registry:
+	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
