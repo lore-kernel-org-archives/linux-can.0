@@ -1,88 +1,66 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: bcm: fix support for CAN FD frames
-Date: Wed, 23 Nov 2016 15:35:32 +0100
-Message-ID: <781efa22-a378-dd4c-97e1-9045eafd9121@pengutronix.de>
-References: <20161123133325.1812-1-socketcan@hartkopp.net>
+From: Chris Paterson <Chris.Paterson2@renesas.com>
+Subject: RE: [PATCH 0/3] arm64: dts: r8a7796: Add CAN/CAN FD support
+Date: Thu, 24 Nov 2016 10:05:08 +0000
+Message-ID: <HK2PR0601MB132929329C3574A0B4D9A0EAB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
+References: <1479903243-1860-1-git-send-email-chris.paterson2@renesas.com>
+ <f358442c-8373-328c-1270-709498c133f5@pengutronix.de>
+ <20161123142938.GF9057@verge.net.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="fgpiL6WF8hGjaDePglOKcxne3h7sWd9Sw"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20161123133325.1812-1-socketcan@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---fgpiL6WF8hGjaDePglOKcxne3h7sWd9Sw
-Content-Type: multipart/mixed; boundary="iCe7rsqAlkTpkFojCKaeFBeWNw9egHm8l";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org,
- Andrey Konovalov <andreyknvl@google.com>, netdev@vger.kernel.org
-Message-ID: <781efa22-a378-dd4c-97e1-9045eafd9121@pengutronix.de>
-Subject: Re: [PATCH] can: bcm: fix support for CAN FD frames
-References: <20161123133325.1812-1-socketcan@hartkopp.net>
-In-Reply-To: <20161123133325.1812-1-socketcan@hartkopp.net>
-
---iCe7rsqAlkTpkFojCKaeFBeWNw9egHm8l
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from relmlor2.renesas.com ([210.160.252.172]:19220 "EHLO
+        relmlie1.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S936459AbcKXKFP (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Nov 2016 05:05:15 -0500
+In-Reply-To: <20161123142938.GF9057@verge.net.au>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Simon Horman <horms@verge.net.au>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 11/23/2016 02:33 PM, Oliver Hartkopp wrote:
-> Since commit 6f3b911d5f29b98 ("can: bcm: add support for CAN FD frames"=
-) the
-> CAN broadcast manager supports CAN and CAN FD data frames.
+Hello Simon,
+
+From: Simon Horman [mailto:horms@verge.net.au]
+Sent: 23 November 2016 14:30
+> On Wed, Nov 23, 2016 at 02:18:13PM +0100, Marc Kleine-Budde wrote:
+> > On 11/23/2016 01:14 PM, Chris Paterson wrote:
+> > > This patch series adds CAN and CAN FD support to the r8a7796.
+> > >
+> > > Based on renesas-devel-20161122-v4.9-rc6.
+> > >
+> > > Chris Paterson (3):
+> > >   arm64: dts: r8a7796: Add CAN external clock support
+> > >   arm64: dts: r8a7796: Add CAN support
+> > >   arm64: dts: r8a7796: Add CAN FD support
+> > >
+> > >  .../devicetree/bindings/net/can/rcar_can.txt       | 12 +++--
+> > >  .../devicetree/bindings/net/can/rcar_canfd.txt     | 12 +++--
+> > >  arch/arm64/boot/dts/renesas/r8a7796.dtsi           | 61
+> ++++++++++++++++++++++
+> > >  3 files changed, 75 insertions(+), 10 deletions(-)
+> >
+> > For all three:
+> >
+> > Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> >
+> > Who takes this series?
 >=20
-> As these data frames are embedded in struct can[fd]_frames which have a=
+> I would like to see these patches split up so that the .../devicetree/bin=
+dings/
+> portions can go through you whole the arch/arm64/boot/dts/renesas/
+> portions go thorugh my renesas tree.
 
-> different length the access to the provided array of CAN frames became
-> dependend of op->cfsiz. By using a struct canfd_frame pointer for the a=
-rray of
-> CAN frames the new offset calculation based on op->cfsiz was accidently=
- applied
-> to CAN FD frame element lengths.
+Okay, will do.
+
 >=20
-> This fix makes the pointer to the arrays of the different CAN frame typ=
-es a
-> void pointer so that the offset calculation in bytes accesses the corre=
-ct CAN
-> frame elements.
->=20
-> Reference: http://marc.info/?l=3Dlinux-netdev&m=3D147980658909653
->=20
-> Reported-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Regarding the arch/arm64/boot/dts/renesas/ portion, I would like some
+> consideration given to what effect enabling memory above 4Gb (64bit
+> addressing) would have.
 
-Added to can and send a pull request to David.
+Can you give me some guidance here? I'm not sure what you're referring to. =
+As far as I know the DT reg definition here is 64-bit, or are you referring=
+ to DMA usage? If the later, neither CAN driver uses DMA.
 
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---iCe7rsqAlkTpkFojCKaeFBeWNw9egHm8l--
-
---fgpiL6WF8hGjaDePglOKcxne3h7sWd9Sw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlg1qTQACgkQPTuqJayp
-JWqb9wf/eWIZ3XFFT0tcd8FA9fhE+qPKPwBj9bT0oAI3Rb5tbISZ8IrIzSKHRLlR
-mEKaFy3VnXY7PFK7h/ou/NFwVRyjbLXnNnfiiPWpbxwDVdppBBPcX6h0RHJjw2fv
-irInlUNA0aoApRqIffw3Jt1T4md2t797ZWw14IQxCHdh2POQW1Ti3NEPVRebTPN0
-Sve8dTWYSb5566Q32S2fec2IX7lNP6Edjpd9qGYvQQb/NYS6nqmlEWs2rZXkvIBn
-kCyP13gbLqy8BklMqMAKNMyLromVlC2BJZSwjsPMNPqz5gGQO5VoFmOAAFEAgfDl
-k4MZg0X36bfbznxgCAe7cLAupyM5Ew==
-=1F4I
------END PGP SIGNATURE-----
-
---fgpiL6WF8hGjaDePglOKcxne3h7sWd9Sw--
+Kind regards, Chris
