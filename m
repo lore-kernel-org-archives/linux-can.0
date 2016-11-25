@@ -1,91 +1,69 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 0/2] can: Add r8a7796 support to CAN/CAN FD
-Date: Fri, 25 Nov 2016 08:19:07 +0100
-Message-ID: <1207930c-e9ad-27eb-f5a6-d889771fd840@pengutronix.de>
-References: <1479903243-1860-1-git-send-email-chris.paterson2@renesas.com>
- <1480003917-3953-1-git-send-email-chris.paterson2@renesas.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: wrong CAN frame order in network layer due to SMP?
+Date: Fri, 25 Nov 2016 12:46:08 +0100
+Message-ID: <153c7653-ab74-fd0c-c605-7bafe5e44297@hartkopp.net>
+References: <1864402.pXgGBBp51L@ws-stein>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="QxBqHiksG8pIPKJlKpD3AVNwOgmPSv9bh"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37269 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1750995AbcKYHTf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Nov 2016 02:19:35 -0500
-In-Reply-To: <1480003917-3953-1-git-send-email-chris.paterson2@renesas.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:36293 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751294AbcKYLrB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Nov 2016 06:47:01 -0500
+In-Reply-To: <1864402.pXgGBBp51L@ws-stein>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Chris Paterson <chris.paterson2@renesas.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Simon Horman <horms@verge.net.au>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+To: Alexander Stein <alexander.stein@systec-electronic.com>, linux-can@vger.kernel.org
+Cc: =?UTF-8?Q?Daniel_Kr=c3=bcger?= <daniel.krueger@systec-electronic.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---QxBqHiksG8pIPKJlKpD3AVNwOgmPSv9bh
-Content-Type: multipart/mixed; boundary="ITqXwFTsfhkdXiHXNwrbkeqfkxBJKer66";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Chris Paterson <chris.paterson2@renesas.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Simon Horman <horms@verge.net.au>,
- Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
- linux-can@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Message-ID: <1207930c-e9ad-27eb-f5a6-d889771fd840@pengutronix.de>
-Subject: Re: [PATCH v2 0/2] can: Add r8a7796 support to CAN/CAN FD
-References: <1479903243-1860-1-git-send-email-chris.paterson2@renesas.com>
- <1480003917-3953-1-git-send-email-chris.paterson2@renesas.com>
-In-Reply-To: <1480003917-3953-1-git-send-email-chris.paterson2@renesas.com>
+Hello Alexander,
 
---ITqXwFTsfhkdXiHXNwrbkeqfkxBJKer66
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 11/24/2016 04:49 PM, Alexander Stein wrote:
+> Back to my CAN problem: Only a single core handles USB IRQs and there is
+> apparently no softnet_data race.
+> The test about wrong CAN frame ordering was done on kernel 4.8.9-gentoo but I
+> was also able to reproduce this problem on 3.14.58-gentoo-r1. 3.12.52-gentoo-
+> r1 apparently does not suffer from that problem, at least 3 tries were without
+> errors. In buggy kernels this problems occured next to every time.
+>
+> Any idea what got wrong in the network code about gathering the SKBs
+> which might result in wrong order?
 
-On 11/24/2016 05:11 PM, Chris Paterson wrote:
-> This series adds support for r8a7796 to rcar_can and rcar_canfd.
->=20
-> Original series: [PATCH 0/3] arm64: dts: r8a7796: Add CAN/CAN FD suppor=
-t.
->=20
-> Changes since v1:
-> - Split bindings documentation changes from device tree changes.
-> - Rebased on renesas-devel-20161123v2-v4.9-rc6.
->=20
->=20
-> Chris Paterson (2):
->   can: rcar_can: Add r8a7796 support
->   can: rcar_canfd: Add r8a7796 support
+I detected a similar issue in some 3.1x kernel and asked this question:
 
-Both added to can-next.
+http://marc.info/?l=linux-can&m=143637774606287&w=2
 
-Thanks,
-Marc
+When you follow the entire discussion at
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+http://marc.info/?t=143637789700002&r=1&w=2
 
+you will see that they pushed me to implement NAPI on all CAN interfaces 
+which neither makes no sense for CAN controllers that do not have a RX 
+FIFO (e.g. sja1000) nor fixes the issue at it's root cause.
 
---ITqXwFTsfhkdXiHXNwrbkeqfkxBJKer66--
+Your findings bring up the problem again - good :-)
 
---QxBqHiksG8pIPKJlKpD3AVNwOgmPSv9bh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+When you look at the networking guys that like to speed up TCP traffic 
+and also put skbs into percpu queues that are related to the receiving 
+socket(!!!) instance then it should be possible to put CAN skbs related 
+to their CAN interfaces into a percpu queue (to suppress out-of-order 
+reception).
 
------BEGIN PGP SIGNATURE-----
+IMO the difference is not to queue the skbs for a specific socket but 
+for a specific interface.
+The 'endpoint' of CAN frames where they have to be in order is can_rcv() 
+in af_can.c and not any TCP instance that needs to reassemble the TCP 
+traffic for a specific socket.
 
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlg35e0ACgkQPTuqJayp
-JWpoqggAh7NurPpr5AyJuBGperq4j/0gMKUU3wXN2oaSLaRQOP2+vWwp7pjo48SS
-upuiicgFGNe9d7favlzbWPGjlmXgWGWyX9X6exQ2mTD0jd8fvP/axdzfCKdN6/e7
-cG40wB+P7BNIklMtkJSA7FhtpxSPI+Zuny4AVpT8qyJhWrEkaMh/Rp7tjy4c0aFu
-kKEW9Gi9uKn2G7fotiRI6zMTImtAxuHtxySJ/nQ6ZMf/g/7geGRW1iycTnBouwFe
-/+/hf/ESJCUVwo+NydsJ/m3smz6Oh372H+NIi981hfXD06MihqXPVlqcMp5snccH
-NzL/KSUd/V6c3oYdOxmtHFJCo018DA==
-=KYai
------END PGP SIGNATURE-----
+Can you check whether my suggestion with skb_set_hash() in 
+alloc_can_skb() works for you?
 
---QxBqHiksG8pIPKJlKpD3AVNwOgmPSv9bh--
+In any way I think we should start a new attempt to make clear that the 
+skbs have to be in order for a specific interface at can_rcv().
+And we need some solution that is enabled by default and fits to the 
+netdev guys mindset.
+
+Regards,
+Oliver
+
