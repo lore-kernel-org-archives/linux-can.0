@@ -1,68 +1,142 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: wrong CAN frame order in network layer due to SMP?
-Date: Fri, 25 Nov 2016 12:46:08 +0100
-Message-ID: <153c7653-ab74-fd0c-c605-7bafe5e44297@hartkopp.net>
-References: <1864402.pXgGBBp51L@ws-stein>
+Subject: CAN Termination API - was Re: Adding new CAN driver
+Date: Fri, 25 Nov 2016 15:16:10 +0100
+Message-ID: <18d3932b-8c74-a470-661d-7f2ee1a9f2f5@hartkopp.net>
+References: <CAKT-o-cOb0sqRmvH+BKjX4yvBLp5_GqVd6=ifr2jm5T75-hcZA@mail.gmail.com>
+ <3113364.8FuUfmAlHQ@ws-stein>
+ <SG2PR06MB1038F0416E850F0C09BC5CCEC3A00@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <1490105.s3iJfGbYsS@ws-stein>
+ <CAKT-o-cJ3UwD=xakh7-hF5101rS2zCa5AHfjBvdRNATJD+Weqw@mail.gmail.com>
+ <5f302213-c072-b6b8-aa78-4bc405dc167d@hartkopp.net>
+ <20161103212427.GA1677@airbook.vandijck-laurijssen.be>
+ <SG2PR06MB10381FBE7242FA602F1AC319C3A20@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <e521bee5-d0e3-d894-2c0f-be2c437a2f48@hartkopp.net>
+ <SG2PR06MB1038E2022EEA5837EB6BD25BC3A60@SG2PR06MB1038.apcprd06.prod.outlook.com>
+ <fc26a0a8-8c15-9b1f-c699-31f83177c431@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:36293 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:33266 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751294AbcKYLrB (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Nov 2016 06:47:01 -0500
-In-Reply-To: <1864402.pXgGBBp51L@ws-stein>
+        with ESMTP id S1753947AbcKYOTZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Nov 2016 09:19:25 -0500
+In-Reply-To: <fc26a0a8-8c15-9b1f-c699-31f83177c431@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>, linux-can@vger.kernel.org
-Cc: =?UTF-8?Q?Daniel_Kr=c3=bcger?= <daniel.krueger@systec-electronic.com>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Alexander Stein <alexander.stein@systec-electronic.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hello Alexander,
+Hi all,
 
-On 11/24/2016 04:49 PM, Alexander Stein wrote:
-> Back to my CAN problem: Only a single core handles USB IRQs and there is
-> apparently no softnet_data race.
-> The test about wrong CAN frame ordering was done on kernel 4.8.9-gentoo but I
-> was also able to reproduce this problem on 3.14.58-gentoo-r1. 3.12.52-gentoo-
-> r1 apparently does not suffer from that problem, at least 3 tries were without
-> errors. In buggy kernels this problems occured next to every time.
+I would like to pick up the termination API again.
+
+>>> +
+>>> +    /* array of supported discrete resistor values (Ohm) */
+>>> +    __u16 term[8];
 >
-> Any idea what got wrong in the network code about gathering the SKBs
-> which might result in wrong order?
+> Do you think 8 resistor values are enough?
+>
 
-I detected a similar issue in some 3.1x kernel and asked this question:
+see below ...
 
-http://marc.info/?l=linux-can&m=143637774606287&w=2
+>>> +};
+>>> +
+>>> +/*
+>>> + * CAN termination
+>>> + */
+>>> +struct can_termination {
+>>> +    __u16 term;
+>>> +};
+>>> +
+>>> +#define CAN_RESISTOR_INVALID    0x0000U    /* indicates no value /
+>>> unsupported */
+>>> +#define CAN_RESISTOR_DISABLED    0xFFFFU    /* indicates disabled
+>>> termination */
+>>> +
+>>>   #define CAN_CTRLMODE_LOOPBACK        0x01    /* Loopback mode */
+>>>   #define CAN_CTRLMODE_LISTENONLY        0x02    /* Listen-only mode */
+>>>   #define CAN_CTRLMODE_3_SAMPLES        0x04    /* Triple sampling
+>>> mode */
+>>> @@ -127,6 +153,8 @@ enum {
+>>>       IFLA_CAN_BERR_COUNTER,
+>>>       IFLA_CAN_DATA_BITTIMING,
+>>>       IFLA_CAN_DATA_BITTIMING_CONST,
+>>> +    IFLA_CAN_TERMINATION,
+>>> +    IFLA_CAN_TERMINATION_CONST,
+>>>       __IFLA_CAN_MAX
+>>>   };
+>>>
+>>> With this interface the ip tool can get the capabilities of the
+>>> termination analogue to the BITTIMING_CONST values.
+>>> And it can set the termination with IFLA_CAN_TERMINATION.
+>>
+>> ACK.
 
-When you follow the entire discussion at
+I tried to get into the netlink stuff and I wonder how to make this API 
+really simple.
 
-http://marc.info/?t=143637789700002&r=1&w=2
+By now the netlink interface in linux/drivers/net/can/dev.c looks like:
 
-you will see that they pushed me to implement NAPI on all CAN interfaces 
-which neither makes no sense for CAN controllers that do not have a RX 
-FIFO (e.g. sja1000) nor fixes the issue at it's root cause.
+/*
+  * CAN netlink interface
+  */
+static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
+         [IFLA_CAN_STATE]        = { .type = NLA_U32 },
+         [IFLA_CAN_CTRLMODE]     = { .len = sizeof(struct can_ctrlmode) },
+         [IFLA_CAN_RESTART_MS]   = { .type = NLA_U32 },
+         [IFLA_CAN_RESTART]      = { .type = NLA_U32 },
+         [IFLA_CAN_BITTIMING]    = { .len = sizeof(struct can_bittiming) },
+         [IFLA_CAN_BITTIMING_CONST]
+                                 = { .len = sizeof(struct 
+can_bittiming_const) },
+         [IFLA_CAN_CLOCK]        = { .len = sizeof(struct can_clock) },
+         [IFLA_CAN_BERR_COUNTER] = { .len = sizeof(struct 
+can_berr_counter) },
+         [IFLA_CAN_DATA_BITTIMING]
+                                 = { .len = sizeof(struct can_bittiming) },
+         [IFLA_CAN_DATA_BITTIMING_CONST]
+                                 = { .len = sizeof(struct 
+can_bittiming_const) },
+};
 
-Your findings bring up the problem again - good :-)
+To add IFLA_CAN_TERMINATION we would just need
 
-When you look at the networking guys that like to speed up TCP traffic 
-and also put skbs into percpu queues that are related to the receiving 
-socket(!!!) instance then it should be possible to put CAN skbs related 
-to their CAN interfaces into a percpu queue (to suppress out-of-order 
-reception).
+	[IFLA_CAN_TERMINATION]   = { .type = NLA_U16 },
 
-IMO the difference is not to queue the skbs for a specific socket but 
-for a specific interface.
-The 'endpoint' of CAN frames where they have to be in order is can_rcv() 
-in af_can.c and not any TCP instance that needs to reassemble the TCP 
-traffic for a specific socket.
+to enable a defined termination value from 1 to 65534 Ohms where 65535 
+would be CAN_RESISTOR_DISABLED. In the CAN driver this given value is 
+checked against the supported list of termination values and switched on 
+if supported.
 
-Can you check whether my suggestion with skb_set_hash() in 
-alloc_can_skb() works for you?
+To provide a list of possible termination values with 
+IFLA_CAN_TERMINATION_CONST we need to pass an array of u16 constants to 
+the userspace.
 
-In any way I think we should start a new attempt to make clear that the 
-skbs have to be in order for a specific interface at can_rcv().
-And we need some solution that is enabled by default and fits to the 
-netdev guys mindset.
+In opposite to our current netlink messages this array make contain 1..n 
+constant values - so defining a fixed struct of e.g. 8 entries looks 
+like a bad design.
+
+But how to provide the array to the netlink interface correctly?
+
+With the netlink type NLA_UNSPEC, NLA_NESTED, NLA_NESTED_COMPAT or 
+NLA_BINARY??
+
+See http://lxr.linux.no/#linux+v4.8.10/include/net/netlink.h#L160
+
+The current
+
+[IFLA_CAN_DATA_BITTIMING]  = { .len = sizeof(struct can_bittiming_const) },
+
+seems to use NLA_UNSPEC which means the .len value is the _minimum_ 
+length value.
+
+Would this mean we can define
+
+[IFLA_CAN_TERMINATION_CONST]   = { .len = sizeof(__u16) },
+
+as a minimum length value and provide as much termination values as the 
+CAN interface supports?
 
 Regards,
 Oliver
