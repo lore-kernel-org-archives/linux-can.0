@@ -1,64 +1,91 @@
-From: Chris Paterson <Chris.Paterson2@renesas.com>
-Subject: RE: [PATCH 0/3] arm64: dts: r8a7796: Add CAN/CAN FD support
-Date: Thu, 24 Nov 2016 17:12:33 +0000
-Message-ID: <HK2PR0601MB13293054589DCDED4AFC3DBFB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2 0/2] can: Add r8a7796 support to CAN/CAN FD
+Date: Fri, 25 Nov 2016 08:19:07 +0100
+Message-ID: <1207930c-e9ad-27eb-f5a6-d889771fd840@pengutronix.de>
 References: <1479903243-1860-1-git-send-email-chris.paterson2@renesas.com>
- <f358442c-8373-328c-1270-709498c133f5@pengutronix.de>
- <20161123142938.GF9057@verge.net.au>
- <HK2PR0601MB132929329C3574A0B4D9A0EAB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
- <20161124101733.GA18027@verge.net.au>
- <HK2PR0601MB1329C747CA5C6B5222C02C3FB7B60@HK2PR0601MB1329.apcprd06.prod.outlook.com>
- <CAMuHMdXO=uFuJCXPjkdYB_CeyfPMqy6cMrOW=s1DZzcJ9Gp33A@mail.gmail.com>
+ <1480003917-3953-1-git-send-email-chris.paterson2@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXO=uFuJCXPjkdYB_CeyfPMqy6cMrOW=s1DZzcJ9Gp33A@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Simon Horman <horms@verge.net.au>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="QxBqHiksG8pIPKJlKpD3AVNwOgmPSv9bh"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37269 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1750995AbcKYHTf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Nov 2016 02:19:35 -0500
+In-Reply-To: <1480003917-3953-1-git-send-email-chris.paterson2@renesas.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Chris Paterson <chris.paterson2@renesas.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Simon Horman <horms@verge.net.au>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
 
-SGVsbG8gR2VlcnQsDQoNCkZyb206IGdlZXJ0LnV5dHRlcmhvZXZlbkBnbWFpbC5jb20NClNlbnQ6
-IDI0IE5vdmVtYmVyIDIwMTYgMTY6NDINCj4gSGkgQ2hyaXMsDQo+IA0KPiBPbiBUaHUsIE5vdiAy
-NCwgMjAxNiBhdCAzOjI1IFBNLCBDaHJpcyBQYXRlcnNvbg0KPiA8Q2hyaXMuUGF0ZXJzb24yQHJl
-bmVzYXMuY29tPiB3cm90ZToNCj4gPiBGcm9tOiBTaW1vbiBIb3JtYW4gW21haWx0bzpob3Jtc0B2
-ZXJnZS5uZXQuYXVdDQo+ID4gU2VudDogMjQgTm92ZW1iZXIgMjAxNiAxMDoxOA0KPiA+PiBPbiBU
-aHUsIE5vdiAyNCwgMjAxNiBhdCAxMDowNTowOEFNICswMDAwLCBDaHJpcyBQYXRlcnNvbiB3cm90
-ZToNCj4gPj4gPiBGcm9tOiBTaW1vbiBIb3JtYW4gW21haWx0bzpob3Jtc0B2ZXJnZS5uZXQuYXVd
-DQo+ID4+ID4gPiBSZWdhcmRpbmcgdGhlIGFyY2gvYXJtNjQvYm9vdC9kdHMvcmVuZXNhcy8gcG9y
-dGlvbiwgSSB3b3VsZCBsaWtlDQo+ID4+ID4gPiBzb21lIGNvbnNpZGVyYXRpb24gZ2l2ZW4gdG8g
-d2hhdCBlZmZlY3QgZW5hYmxpbmcgbWVtb3J5IGFib3ZlIDRHYg0KPiA+PiA+ID4gKDY0Yml0DQo+
-ID4+ID4gPiBhZGRyZXNzaW5nKSB3b3VsZCBoYXZlLg0KPiA+PiA+DQo+ID4+ID4gQ2FuIHlvdSBn
-aXZlIG1lIHNvbWUgZ3VpZGFuY2UgaGVyZT8gSSdtIG5vdCBzdXJlIHdoYXQgeW91J3JlDQo+ID4+
-ID4gcmVmZXJyaW5nIHRvLiBBcyBmYXIgYXMgSSBrbm93IHRoZSBEVCByZWcgZGVmaW5pdGlvbiBo
-ZXJlIGlzDQo+ID4+ID4gNjQtYml0LCBvciBhcmUgeW91IHJlZmVycmluZyB0byBETUEgdXNhZ2U/
-IElmIHRoZSBsYXRlciwgbmVpdGhlciBDQU4NCj4gZHJpdmVyIHVzZXMgRE1BLg0KPiA+Pg0KPiA+
-PiBTb3JyeSBmb3Igbm90IGJlaW5nIGNsZWFyZXIuDQo+ID4+DQo+ID4+IFdoYXQgSSB3b3VsZCBs
-aWtlIHRvIGtub3cgaXMgaWYgdGhlcmUgYXJlIGFueSBwcm9ibGVtcyBpbiB0aGUgQ0FODQo+ID4+
-IGRyaXZlciBvciBoYXJkd2FyZSB0aGF0IHdvdWxkIHByZXZlbnQgaXQgZnJvbSBmdW5jdGlvbmlu
-ZyB3aXRoIG1lbW9yeQ0KPiA+PiB0aGF0IHJlcXVpcmVzIDY0Yml0IGFkZHJlc3NpbmcgcHJlc2Vu
-dC4NCj4gPj4NCj4gPj4gSWYgdGhlIENBTiBoYXJkd2FyZSBjYW5ub3QgdXNlIERNQSB0aGVuIERN
-QSBkb2Vzbid0IG5lZWQgdG8gYmUNCj4gdGFrZW4NCj4gPj4gaW50byBhY2NvdW50LiBCdXQgaWYg
-aXQgRE1BIGNvdWxkIGJlIGVuYWJsZWQgaW4gZnV0dXJlIGZvciBDQU4sIGZvcg0KPiA+PiBleGFt
-cGxlIGFmdGVyIHNvbWUgZHJpdmVyIGVuaGFuY2VtZW50cywgdGhlbiBpdCB3b3VsZCBiZSBnb29k
-IHRvIGtub3cNCj4gPj4gaWYgNjRiaXQgbWVtb3J5IGNhbiBiZSBzdXBwb3J0ZWQgLSBpZiBub3Qg
-aXQgd291bGQgaW1wbHkgRE1BIGNhbm5vdCBiZQ0KPiBlbmFibGVkLg0KPiA+DQo+ID4gVGhhbmsg
-eW91IGZvciB0aGUgY2xhcmlmaWNhdGlvbi4NCj4gPg0KPiA+IFRoZSBDQU4gaW50ZXJmYWNlIGZv
-ciByOGE3Nzk1LzYgZG9lcyBub3Qgc3VwcG9ydCBETUEuDQo+ID4NCj4gPiBXaXRoIENBTiBGRCB0
-aGVyZSBpcyBjdXJyZW50bHkgYSBIL1cgaXNzdWUgdGhhdCBtZWFucyBETUEgaXMgdW51c2FibGUu
-DQo+IA0KPiBJcyB0aGF0IGlzc3VlIHByZXNlbnQgb24gUi1DYXIgTTMtVywgb3Igb25seSBvbiBS
-LUNhciBIMyBFUzEueD8NCg0KQm90aA0KDQo+IA0KPiA+IFBvdGVudGlhbGx5IHRoaXMgaXNzdWUg
-Y291bGQgYmUgZml4ZWQgaW4gdGhlIGZ1dHVyZSBhbmQgRE1BIHN1cHBvcnQNCj4gPiBjb3VsZCBi
-ZSBhZGRlZCB0byB0aGUgZHJpdmVyLiBJZiB0aGlzIGhhcHBlbnMgSSBjYW4gc2VlIG5vIHJlYXNv
-biB3aHkNCj4gPiB0aGUgQ0FOIEZEIElQIHdvdWxkbid0IGJlIGFibGUgdG8gaGFuZGxlIERNQSB0
-cmFuc2ZlcnMgd2hlbiB1c2luZyA2NGJpdA0KPiBhZGRyZXNzaW5nLg0KPiANCj4gWWVwLCBBRkFJ
-SyBpdCB1c2VzIFNZUy1ETUFDLCB3aGljaCBzdXBwb3J0cyA2NC1iaXQgYWRkcmVzc2luZy4NCg0K
-WWVwDQoNCj4gDQo+IEdye29ldGplLGVldGluZ31zLA0KPiANCj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgR2VlcnQNCj4gDQo+IC0tDQo+IEdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxv
-dHMgb2YgTGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGludXgtDQo+IG02OGsub3JnDQo+IA0K
-PiBJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGggdGVjaG5pY2FsIHBlb3BsZSwgSSBjYWxs
-IG15c2VsZiBhIGhhY2tlci4gQnV0DQo+IHdoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5hbGlzdHMg
-SSBqdXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4NCj4gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAtLSBMaW51cyBUb3J2YWxkcw0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--QxBqHiksG8pIPKJlKpD3AVNwOgmPSv9bh
+Content-Type: multipart/mixed; boundary="ITqXwFTsfhkdXiHXNwrbkeqfkxBJKer66";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Chris Paterson <chris.paterson2@renesas.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Simon Horman <horms@verge.net.au>,
+ Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
+ linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Message-ID: <1207930c-e9ad-27eb-f5a6-d889771fd840@pengutronix.de>
+Subject: Re: [PATCH v2 0/2] can: Add r8a7796 support to CAN/CAN FD
+References: <1479903243-1860-1-git-send-email-chris.paterson2@renesas.com>
+ <1480003917-3953-1-git-send-email-chris.paterson2@renesas.com>
+In-Reply-To: <1480003917-3953-1-git-send-email-chris.paterson2@renesas.com>
+
+--ITqXwFTsfhkdXiHXNwrbkeqfkxBJKer66
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 11/24/2016 05:11 PM, Chris Paterson wrote:
+> This series adds support for r8a7796 to rcar_can and rcar_canfd.
+>=20
+> Original series: [PATCH 0/3] arm64: dts: r8a7796: Add CAN/CAN FD suppor=
+t.
+>=20
+> Changes since v1:
+> - Split bindings documentation changes from device tree changes.
+> - Rebased on renesas-devel-20161123v2-v4.9-rc6.
+>=20
+>=20
+> Chris Paterson (2):
+>   can: rcar_can: Add r8a7796 support
+>   can: rcar_canfd: Add r8a7796 support
+
+Both added to can-next.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--ITqXwFTsfhkdXiHXNwrbkeqfkxBJKer66--
+
+--QxBqHiksG8pIPKJlKpD3AVNwOgmPSv9bh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlg35e0ACgkQPTuqJayp
+JWpoqggAh7NurPpr5AyJuBGperq4j/0gMKUU3wXN2oaSLaRQOP2+vWwp7pjo48SS
+upuiicgFGNe9d7favlzbWPGjlmXgWGWyX9X6exQ2mTD0jd8fvP/axdzfCKdN6/e7
+cG40wB+P7BNIklMtkJSA7FhtpxSPI+Zuny4AVpT8qyJhWrEkaMh/Rp7tjy4c0aFu
+kKEW9Gi9uKn2G7fotiRI6zMTImtAxuHtxySJ/nQ6ZMf/g/7geGRW1iycTnBouwFe
+/+/hf/ESJCUVwo+NydsJ/m3smz6Oh372H+NIi981hfXD06MihqXPVlqcMp5snccH
+NzL/KSUd/V6c3oYdOxmtHFJCo018DA==
+=KYai
+-----END PGP SIGNATURE-----
+
+--QxBqHiksG8pIPKJlKpD3AVNwOgmPSv9bh--
