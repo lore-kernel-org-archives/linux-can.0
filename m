@@ -1,31 +1,26 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 3/3] arm64: dts: r8a7796: Add CAN FD support
-Date: Wed, 30 Nov 2016 14:37:38 -0600
-Message-ID: <20161130203738.qi4y6c3nycxa5umu@rob-hp-laptop>
-References: <1479903288-2009-1-git-send-email-chris.paterson2@renesas.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] can: rcar_canfd: Correct order of interrupt specifiers
+Date: Wed, 30 Nov 2016 14:38:34 -0600
+Message-ID: <20161130203834.iinxujdkegmd6fa7@rob-hp-laptop>
+References: <1479908686-14028-1-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1479903288-2009-1-git-send-email-chris.paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Chris Paterson <chris.paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Simon Horman <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>, linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+In-Reply-To: <1479908686-14028-1-git-send-email-geert+renesas@glider.be>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Chris Paterson <chris.paterson2@renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Nov 23, 2016 at 12:14:48PM +0000, Chris Paterson wrote:
-> Adds CAN FD controller node for r8a7796.
+On Wed, Nov 23, 2016 at 02:44:46PM +0100, Geert Uytterhoeven wrote:
+> According to both DTS (example and actual files), and Linux driver code,
+> the first interrupt specifier should be the Channel interrupt, while the
+> second interrupt specifier should be the Global interrupt.
 > 
-> Based on a patch for r8a7795 by Ramesh Shanmugasundaram.
-> 
-> Signed-off-by: Chris Paterson <chris.paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  .../devicetree/bindings/net/can/rcar_canfd.txt     | 12 ++++++-----
->  arch/arm64/boot/dts/renesas/r8a7796.dtsi           | 24 ++++++++++++++++++++++
->  2 files changed, 31 insertions(+), 5 deletions(-)
+>  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Acked-by: Rob Herring <robh@kernel.org>
