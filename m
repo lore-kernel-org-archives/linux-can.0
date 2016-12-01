@@ -1,171 +1,103 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH 1/2] can: peak: Fix bittiming fields size in bits
-Date: Thu,  1 Dec 2016 11:41:11 +0100
-Message-ID: <1480588872-13555-2-git-send-email-s.grosjean@peak-system.com>
-References: <1480588872-13555-1-git-send-email-s.grosjean@peak-system.com>
+From: David Howells <dhowells@redhat.com>
+Subject: [PATCH 18/39] Annotate hardware config module parameters in
+ drivers/net/can/
+Date: Thu, 01 Dec 2016 12:32:01 +0000
+Message-ID: <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
+References: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:30582 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754409AbcLAKlR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Dec 2016 05:41:17 -0500
-In-Reply-To: <1480588872-13555-1-git-send-email-s.grosjean@peak-system.com>
+Received: from mx1.redhat.com ([209.132.183.28]:50882 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S933706AbcLAMcn (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 1 Dec 2016 07:32:43 -0500
+In-Reply-To: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
+To: linux-kernel@vger.kernel.org
+Cc: gnomes@lxorguk.ukuu.org.uk, minyard@acm.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, dhowells@redhat.com, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-This fixes the bitimings fields ranges supported by all the CAN-FD USB
-interfaces of the PEAK-System CAN-FD adapters.
+When the kernel is running in secure boot mode, we lock down the kernel to
+prevent userspace from modifying the running kernel image.  Whilst this
+includes prohibiting access to things like /dev/mem, it must also prevent
+access by means of configuring driver modules in such a way as to cause a
+device to access or modify the kernel image.
 
-Very first development versions of the IP core API defined smaller TSGEx
-and SJW fields for both nominal and data bittimings records than the
-production versions. This patch fixes them by enlarging their sizes to
-the actual values:
+To this end, annotate module_param* statements that refer to hardware
+configuration and indicate for future reference what type of parameter they
+specify.  The parameter parser in the core sees this information and can
+skip such parameters with an error message if the kernel is locked down.
+The module initialisation then runs as normal, but just sees whatever the
+default values for those parameters is.
 
-field:           old size:    fixed size:
-nominal TSGEG1   6            8
-nominal TSGEG2   4            7
-nominal SJW      4            7
-data TSGEG1      4            5
-data TSGEG2      3            4
-data SJW         2            4
+Note that we do still need to do the module initialisation because some
+drivers have viable defaults set in case parameters aren't specified and
+some drivers support automatic configuration (e.g. PNP or PCI) in addition
+to manually coded parameters.
 
-Note that this has no other consequences than offering larger choice to
-bitrate encoding.
+This patch annotates drivers in drivers/net/can/.
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Suggested-by: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Wolfgang Grandegger <wg@grandegger.com>
+cc: Marc Kleine-Budde <mkl@pengutronix.de>
+cc: linux-can@vger.kernel.org
+cc: netdev@vger.kernel.org
 ---
- drivers/net/can/usb/peak_usb/pcan_ucan.h   | 37 +++++++++++++++++++++++-------
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 32 +++++++++++++-------------
- 2 files changed, 45 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_ucan.h b/drivers/net/can/usb/peak_usb/pcan_ucan.h
-index e8fc495..2147678 100644
---- a/drivers/net/can/usb/peak_usb/pcan_ucan.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_ucan.h
-@@ -43,11 +43,22 @@ struct __packed pucan_command {
- 	u16	args[3];
- };
+ drivers/net/can/cc770/cc770_isa.c     |    8 ++++----
+ drivers/net/can/sja1000/sja1000_isa.c |    8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/can/cc770/cc770_isa.c b/drivers/net/can/cc770/cc770_isa.c
+index e0d15711e9ac..3a30fd3b4498 100644
+--- a/drivers/net/can/cc770/cc770_isa.c
++++ b/drivers/net/can/cc770/cc770_isa.c
+@@ -82,16 +82,16 @@ static u8 cor[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+ static u8 bcr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+ static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
  
-+#define PUCAN_TSLOW_BRP_BITS		10
-+#define PUCAN_TSLOW_TSGEG1_BITS		8
-+#define PUCAN_TSLOW_TSGEG2_BITS		7
-+#define PUCAN_TSLOW_SJW_BITS		7
-+
-+#define PUCAN_TSLOW_BRP_MASK		((1 << PUCAN_TSLOW_BRP_BITS) - 1)
-+#define PUCAN_TSLOW_TSEG1_MASK		((1 << PUCAN_TSLOW_TSGEG1_BITS) - 1)
-+#define PUCAN_TSLOW_TSEG2_MASK		((1 << PUCAN_TSLOW_TSGEG2_BITS) - 1)
-+#define PUCAN_TSLOW_SJW_MASK		((1 << PUCAN_TSLOW_SJW_BITS) - 1)
-+
- /* uCAN TIMING_SLOW command fields */
--#define PUCAN_TSLOW_SJW_T(s, t)		(((s) & 0xf) | ((!!(t)) << 7))
--#define PUCAN_TSLOW_TSEG2(t)		((t) & 0xf)
--#define PUCAN_TSLOW_TSEG1(t)		((t) & 0x3f)
--#define PUCAN_TSLOW_BRP(b)		((b) & 0x3ff)
-+#define PUCAN_TSLOW_SJW_T(s, t)		(((s) & PUCAN_TSLOW_SJW_MASK) | \
-+								((!!(t)) << 7))
-+#define PUCAN_TSLOW_TSEG2(t)		((t) & PUCAN_TSLOW_TSEG2_MASK)
-+#define PUCAN_TSLOW_TSEG1(t)		((t) & PUCAN_TSLOW_TSEG1_MASK)
-+#define PUCAN_TSLOW_BRP(b)		((b) & PUCAN_TSLOW_BRP_MASK)
+-module_param_array(port, ulong, NULL, S_IRUGO);
++module_param_hw_array(port, ulong, ioport, NULL, S_IRUGO);
+ MODULE_PARM_DESC(port, "I/O port number");
  
- struct __packed pucan_timing_slow {
- 	__le16	opcode_channel;
-@@ -60,11 +71,21 @@ struct __packed pucan_timing_slow {
- 	__le16	brp;		/* BaudRate Prescaler */
- };
+-module_param_array(mem, ulong, NULL, S_IRUGO);
++module_param_hw_array(mem, ulong, iomem, NULL, S_IRUGO);
+ MODULE_PARM_DESC(mem, "I/O memory address");
  
-+#define PUCAN_TFAST_BRP_BITS		10
-+#define PUCAN_TFAST_TSGEG1_BITS		5
-+#define PUCAN_TFAST_TSGEG2_BITS		4
-+#define PUCAN_TFAST_SJW_BITS		4
-+
-+#define PUCAN_TFAST_BRP_MASK		((1 << PUCAN_TFAST_BRP_BITS) - 1)
-+#define PUCAN_TFAST_TSEG1_MASK		((1 << PUCAN_TFAST_TSGEG1_BITS) - 1)
-+#define PUCAN_TFAST_TSEG2_MASK		((1 << PUCAN_TFAST_TSGEG2_BITS) - 1)
-+#define PUCAN_TFAST_SJW_MASK		((1 << PUCAN_TFAST_SJW_BITS) - 1)
-+
- /* uCAN TIMING_FAST command fields */
--#define PUCAN_TFAST_SJW(s)		((s) & 0x3)
--#define PUCAN_TFAST_TSEG2(t)		((t) & 0x7)
--#define PUCAN_TFAST_TSEG1(t)		((t) & 0xf)
--#define PUCAN_TFAST_BRP(b)		((b) & 0x3ff)
-+#define PUCAN_TFAST_SJW(s)		((s) & PUCAN_TFAST_SJW_MASK)
-+#define PUCAN_TFAST_TSEG2(t)		((t) & PUCAN_TFAST_TSEG2_MASK)
-+#define PUCAN_TFAST_TSEG1(t)		((t) & PUCAN_TFAST_TSEG1_MASK)
-+#define PUCAN_TFAST_BRP(b)		((b) & PUCAN_TFAST_BRP_MASK)
+-module_param_array(indirect, int, NULL, S_IRUGO);
++module_param_hw_array(indirect, int, ioport, NULL, S_IRUGO);
+ MODULE_PARM_DESC(indirect, "Indirect access via address and data port");
  
- struct __packed pucan_timing_fast {
- 	__le16	opcode_channel;
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index ce44a03..8a316a1 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -993,24 +993,24 @@ static void pcan_usb_fd_free(struct peak_usb_device *dev)
- static const struct can_bittiming_const pcan_usb_fd_const = {
- 	.name = "pcan_usb_fd",
- 	.tseg1_min = 1,
--	.tseg1_max = 64,
-+	.tseg1_max = (1 << PUCAN_TSLOW_TSGEG1_BITS),
- 	.tseg2_min = 1,
--	.tseg2_max = 16,
--	.sjw_max = 16,
-+	.tseg2_max = (1 << PUCAN_TSLOW_TSGEG2_BITS),
-+	.sjw_max = (1 << PUCAN_TSLOW_SJW_BITS),
- 	.brp_min = 1,
--	.brp_max = 1024,
-+	.brp_max = (1 << PUCAN_TSLOW_BRP_BITS),
- 	.brp_inc = 1,
- };
+-module_param_array(irq, int, NULL, S_IRUGO);
++module_param_hw_array(irq, int, irq, NULL, S_IRUGO);
+ MODULE_PARM_DESC(irq, "IRQ number");
  
- static const struct can_bittiming_const pcan_usb_fd_data_const = {
- 	.name = "pcan_usb_fd",
- 	.tseg1_min = 1,
--	.tseg1_max = 16,
-+	.tseg1_max = (1 << PUCAN_TFAST_TSGEG1_BITS),
- 	.tseg2_min = 1,
--	.tseg2_max = 8,
--	.sjw_max = 4,
-+	.tseg2_max = (1 << PUCAN_TFAST_TSGEG2_BITS),
-+	.sjw_max = (1 << PUCAN_TFAST_SJW_BITS),
- 	.brp_min = 1,
--	.brp_max = 1024,
-+	.brp_max = (1 << PUCAN_TFAST_BRP_BITS),
- 	.brp_inc = 1,
- };
+ module_param_array(clk, int, NULL, S_IRUGO);
+diff --git a/drivers/net/can/sja1000/sja1000_isa.c b/drivers/net/can/sja1000/sja1000_isa.c
+index e97e6d35b300..a89c1e92554d 100644
+--- a/drivers/net/can/sja1000/sja1000_isa.c
++++ b/drivers/net/can/sja1000/sja1000_isa.c
+@@ -48,16 +48,16 @@ static unsigned char ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+ static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+ static spinlock_t indirect_lock[MAXDEV];  /* lock for indirect access mode */
  
-@@ -1065,24 +1065,24 @@ const struct peak_usb_adapter pcan_usb_fd = {
- static const struct can_bittiming_const pcan_usb_pro_fd_const = {
- 	.name = "pcan_usb_pro_fd",
- 	.tseg1_min = 1,
--	.tseg1_max = 64,
-+	.tseg1_max = (1 << PUCAN_TSLOW_TSGEG1_BITS),
- 	.tseg2_min = 1,
--	.tseg2_max = 16,
--	.sjw_max = 16,
-+	.tseg2_max = (1 << PUCAN_TSLOW_TSGEG2_BITS),
-+	.sjw_max = (1 << PUCAN_TSLOW_SJW_BITS),
- 	.brp_min = 1,
--	.brp_max = 1024,
-+	.brp_max = (1 << PUCAN_TSLOW_BRP_BITS),
- 	.brp_inc = 1,
- };
+-module_param_array(port, ulong, NULL, S_IRUGO);
++module_param_hw_array(port, ulong, ioport, NULL, S_IRUGO);
+ MODULE_PARM_DESC(port, "I/O port number");
  
- static const struct can_bittiming_const pcan_usb_pro_fd_data_const = {
- 	.name = "pcan_usb_pro_fd",
- 	.tseg1_min = 1,
--	.tseg1_max = 16,
-+	.tseg1_max = (1 << PUCAN_TFAST_TSGEG1_BITS),
- 	.tseg2_min = 1,
--	.tseg2_max = 8,
--	.sjw_max = 4,
-+	.tseg2_max = (1 << PUCAN_TFAST_TSGEG2_BITS),
-+	.sjw_max = (1 << PUCAN_TFAST_SJW_BITS),
- 	.brp_min = 1,
--	.brp_max = 1024,
-+	.brp_max = (1 << PUCAN_TFAST_BRP_BITS),
- 	.brp_inc = 1,
- };
+-module_param_array(mem, ulong, NULL, S_IRUGO);
++module_param_hw_array(mem, ulong, iomem, NULL, S_IRUGO);
+ MODULE_PARM_DESC(mem, "I/O memory address");
  
--- 
-2.7.4
+-module_param_array(indirect, int, NULL, S_IRUGO);
++module_param_hw_array(indirect, int, ioport, NULL, S_IRUGO);
+ MODULE_PARM_DESC(indirect, "Indirect access via address and data port");
+ 
+-module_param_array(irq, int, NULL, S_IRUGO);
++module_param_hw_array(irq, int, irq, NULL, S_IRUGO);
+ MODULE_PARM_DESC(irq, "IRQ number");
+ 
+ module_param_array(clk, int, NULL, S_IRUGO);
 
