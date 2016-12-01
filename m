@@ -1,87 +1,62 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 18/39] Annotate hardware config module parameters in
- drivers/net/can/
-Date: Thu, 1 Dec 2016 14:05:14 +0100
-Message-ID: <b8f03afb-05b4-c710-c948-948cefc12c80@pengutronix.de>
-References: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
- <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
+Subject: Re: [PATCH 0/2] can: peak: Fix bittiming ranges and add PCAN-USB X6
+ support
+Date: Thu, 1 Dec 2016 14:14:27 +0100
+Message-ID: <81bc2c0a-f607-ab51-f4b6-80a5bc041ce3@pengutronix.de>
+References: <1480588872-13555-1-git-send-email-s.grosjean@peak-system.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="xwX8KKmvaVXvGewfsnJXe6XWTdWRdGWhJ"
+ boundary="5uF7FRdmVJJRkqrkj93JkFdQi1ixAkG6v"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:44685 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:54081 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1757754AbcLANGC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Dec 2016 08:06:02 -0500
-In-Reply-To: <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
+        by vger.kernel.org with ESMTP id S1751423AbcLANOe (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Dec 2016 08:14:34 -0500
+In-Reply-To: <1480588872-13555-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org
-Cc: gnomes@lxorguk.ukuu.org.uk, minyard@acm.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---xwX8KKmvaVXvGewfsnJXe6XWTdWRdGWhJ
-Content-Type: multipart/mixed; boundary="pibw3MjHPXDFfDuEcqVPLluMWuU8NI0l0";
+--5uF7FRdmVJJRkqrkj93JkFdQi1ixAkG6v
+Content-Type: multipart/mixed; boundary="P42Ml4HL5Iv8Xghq2MGlJqXoCHNvAF6jb";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org
-Cc: gnomes@lxorguk.ukuu.org.uk, minyard@acm.org, netdev@vger.kernel.org,
- linux-can@vger.kernel.org, linux-security-module@vger.kernel.org,
- keyrings@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
-Message-ID: <b8f03afb-05b4-c710-c948-948cefc12c80@pengutronix.de>
-Subject: Re: [PATCH 18/39] Annotate hardware config module parameters in
- drivers/net/can/
-References: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
- <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
-In-Reply-To: <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
+To: Stephane Grosjean <s.grosjean@peak-system.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+Message-ID: <81bc2c0a-f607-ab51-f4b6-80a5bc041ce3@pengutronix.de>
+Subject: Re: [PATCH 0/2] can: peak: Fix bittiming ranges and add PCAN-USB X6
+ support
+References: <1480588872-13555-1-git-send-email-s.grosjean@peak-system.com>
+In-Reply-To: <1480588872-13555-1-git-send-email-s.grosjean@peak-system.com>
 
---pibw3MjHPXDFfDuEcqVPLluMWuU8NI0l0
+--P42Ml4HL5Iv8Xghq2MGlJqXoCHNvAF6jb
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 12/01/2016 01:32 PM, David Howells wrote:
-> When the kernel is running in secure boot mode, we lock down the kernel=
- to
-> prevent userspace from modifying the running kernel image.  Whilst this=
-
-> includes prohibiting access to things like /dev/mem, it must also preve=
-nt
-> access by means of configuring driver modules in such a way as to cause=
- a
-> device to access or modify the kernel image.
+On 12/01/2016 11:41 AM, Stephane Grosjean wrote:
+> These patches fix obsolete bittiming ranges definitions for all USB CAN=
+-FD
+> interfaces family and add support for the new PCAN-USB X6 USB CAN-FD
+> interface.
 >=20
-> To this end, annotate module_param* statements that refer to hardware
-> configuration and indicate for future reference what type of parameter =
-they
-> specify.  The parameter parser in the core sees this information and ca=
-n
-> skip such parameters with an error message if the kernel is locked down=
-=2E
-> The module initialisation then runs as normal, but just sees whatever t=
-he
-> default values for those parameters is.
+> Stephane Grosjean (2):
+>   can: peak: Fix bittiming fields size in bits
+>   can: peak: Add support for PCAN-USB X6 USB interface
 >=20
-> Note that we do still need to do the module initialisation because some=
+>  drivers/net/can/usb/peak_usb/pcan_ucan.h     |  37 +++++++---
+>  drivers/net/can/usb/peak_usb/pcan_usb_core.c |   2 +
+>  drivers/net/can/usb/peak_usb/pcan_usb_core.h |   2 +
+>  drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 104 +++++++++++++++++++=
++++-----
+>  4 files changed, 121 insertions(+), 24 deletions(-)
 
-> drivers have viable defaults set in case parameters aren't specified an=
-d
-> some drivers support automatic configuration (e.g. PNP or PCI) in addit=
-ion
-> to manually coded parameters.
->=20
-> This patch annotates drivers in drivers/net/can/.
->=20
-> Suggested-by: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Wolfgang Grandegger <wg@grandegger.com>
-> cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> cc: linux-can@vger.kernel.org
-> cc: netdev@vger.kernel.org
+Added to can.
 
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-regards,
+Thanks,
 Marc
 
 --=20
@@ -91,23 +66,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---pibw3MjHPXDFfDuEcqVPLluMWuU8NI0l0--
+--P42Ml4HL5Iv8Xghq2MGlJqXoCHNvAF6jb--
 
---xwX8KKmvaVXvGewfsnJXe6XWTdWRdGWhJ
+--5uF7FRdmVJJRkqrkj93JkFdQi1ixAkG6v
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhAIAoACgkQPTuqJayp
-JWp1IAgAkADs01rvguaxMOp7okZBrkV5PWieww+Pc0u8sYWav9tPsPOnxnBbiQtE
-mznY8OW4pRfa8BHpjyltUtgTShn05ThtwU/E09g8EU4TaIghX146DwjKxbrbUlTR
-g6etsM6kV+UzF07AD22PzcMKGGj3gP6Ppgec7AJEdW4eY18CH8TJL5/5xf1hUjRN
-b0OKbhOdVLKw62JOaJ9dJ8eTRqv78EIpPYQQ6Il1ztGv1rY023zoz4LFam7be3vI
-46U46sW7FHhIuy4RhTwa7WsAON073+etnIYBtAsaHCXM+GKFiGlcyaGsLGuQoV7r
-1eFTh9mb0GQ7xObbESgIoBdqqsXDBQ==
-=3XdM
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhAIjMACgkQPTuqJayp
+JWoXwAf/b3Qqgs5JNFwEfGCotxnH43KmzatI1wGAQiqm9w/QXl4NFLelOcBXtDfM
+1pzo/m786BRAgokaAXKtw8OeDggWaSgy42CHs0hqkg+J5drLu9D9i8wlZ/OaRk8/
+VM143BiazkP4mvJ8GGTD8avmtNZ0MBjSHXjr6jgrtgOd7RyLaO4jry12TnsInwx/
+3wt6EDRxfctqjcfM5tFqJZhU140Lb3hVzRoBp8x6vW235wtWqyl7GSgwm1YGgPeY
+tzIk2P9rjRVnPjzYN5TLtL2iuWs0LL7uudSI8oUpTzxXYI+X/cOMlI8W74UUyz7b
+PGcb5RlvzSDt98tZnEuwChAU1APxQw==
+=XTvN
 -----END PGP SIGNATURE-----
 
---xwX8KKmvaVXvGewfsnJXe6XWTdWRdGWhJ--
+--5uF7FRdmVJJRkqrkj93JkFdQi1ixAkG6v--
