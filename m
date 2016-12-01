@@ -1,12 +1,12 @@
 From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH 2/2] can: peak: Add support for PCAN-USB X6 USB interface
-Date: Thu,  1 Dec 2016 11:41:12 +0100
-Message-ID: <1480588872-13555-3-git-send-email-s.grosjean@peak-system.com>
+Subject: [PATCH 1/2] can: peak: Fix bittiming fields size in bits
+Date: Thu,  1 Dec 2016 11:41:11 +0100
+Message-ID: <1480588872-13555-2-git-send-email-s.grosjean@peak-system.com>
 References: <1480588872-13555-1-git-send-email-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:39785 "EHLO
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:30582 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751997AbcLAKlR (ORCPT
+        with ESMTP id S1754409AbcLAKlR (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 1 Dec 2016 05:41:17 -0500
 In-Reply-To: <1480588872-13555-1-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,150 +14,158 @@ List-ID: <linux-can.vger.kernel.org>
 To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
 
-This adds support for PEAK-System PCAN-USB X6 USB to CAN interface.
+This fixes the bitimings fields ranges supported by all the CAN-FD USB
+interfaces of the PEAK-System CAN-FD adapters.
 
-The CAN FD adapter PCAN-USB X6 allows the connection of up to 6 CAN FD
-or CAN networks to a computer via USB. The interface is installed in an
-aluminum profile casing and is shipped in versions with D-Sub connectors
-or M12 circular connectors.
+Very first development versions of the IP core API defined smaller TSGEx
+and SJW fields for both nominal and data bittimings records than the
+production versions. This patch fixes them by enlarging their sizes to
+the actual values:
 
-The PCAN-USB X6 registers in the USB sub-system as if 3x PCAN-USB-Pro FD
-adapters were plugged. So, this patch:
+field:           old size:    fixed size:
+nominal TSGEG1   6            8
+nominal TSGEG2   4            7
+nominal SJW      4            7
+data TSGEG1      4            5
+data TSGEG2      3            4
+data SJW         2            4
 
-- updates the PEAK_USB entry of the corresponding Kconfig file
-- defines and adds the device id. of the PCAN-USB X6 (0x0014) into the
-  table of supported device ids
-- defines and adds the new software structure implementing the PCAN-USB X6,
-  which is obviously a clone of the software structure implementing the
-  PCAN-USB Pro FD.
+Note that this has no other consequences than offering larger choice to
+bitrate encoding.
 
 Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c |  2 +
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |  2 +
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 72 ++++++++++++++++++++++++++++
- 3 files changed, 76 insertions(+)
+ drivers/net/can/usb/peak_usb/pcan_ucan.h   | 37 +++++++++++++++++++++++-------
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 32 +++++++++++++-------------
+ 2 files changed, 45 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index c06382c..f3141ca 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -39,6 +39,7 @@ static struct usb_device_id peak_usb_table[] = {
- 	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBPRO_PRODUCT_ID)},
- 	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBFD_PRODUCT_ID)},
- 	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBPROFD_PRODUCT_ID)},
-+	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBX6_PRODUCT_ID)},
- 	{} /* Terminating entry */
+diff --git a/drivers/net/can/usb/peak_usb/pcan_ucan.h b/drivers/net/can/usb/peak_usb/pcan_ucan.h
+index e8fc495..2147678 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_ucan.h
++++ b/drivers/net/can/usb/peak_usb/pcan_ucan.h
+@@ -43,11 +43,22 @@ struct __packed pucan_command {
+ 	u16	args[3];
  };
  
-@@ -50,6 +51,7 @@ static const struct peak_usb_adapter *const peak_usb_adapters_list[] = {
- 	&pcan_usb_pro,
- 	&pcan_usb_fd,
- 	&pcan_usb_pro_fd,
-+	&pcan_usb_x6,
++#define PUCAN_TSLOW_BRP_BITS		10
++#define PUCAN_TSLOW_TSGEG1_BITS		8
++#define PUCAN_TSLOW_TSGEG2_BITS		7
++#define PUCAN_TSLOW_SJW_BITS		7
++
++#define PUCAN_TSLOW_BRP_MASK		((1 << PUCAN_TSLOW_BRP_BITS) - 1)
++#define PUCAN_TSLOW_TSEG1_MASK		((1 << PUCAN_TSLOW_TSGEG1_BITS) - 1)
++#define PUCAN_TSLOW_TSEG2_MASK		((1 << PUCAN_TSLOW_TSGEG2_BITS) - 1)
++#define PUCAN_TSLOW_SJW_MASK		((1 << PUCAN_TSLOW_SJW_BITS) - 1)
++
+ /* uCAN TIMING_SLOW command fields */
+-#define PUCAN_TSLOW_SJW_T(s, t)		(((s) & 0xf) | ((!!(t)) << 7))
+-#define PUCAN_TSLOW_TSEG2(t)		((t) & 0xf)
+-#define PUCAN_TSLOW_TSEG1(t)		((t) & 0x3f)
+-#define PUCAN_TSLOW_BRP(b)		((b) & 0x3ff)
++#define PUCAN_TSLOW_SJW_T(s, t)		(((s) & PUCAN_TSLOW_SJW_MASK) | \
++								((!!(t)) << 7))
++#define PUCAN_TSLOW_TSEG2(t)		((t) & PUCAN_TSLOW_TSEG2_MASK)
++#define PUCAN_TSLOW_TSEG1(t)		((t) & PUCAN_TSLOW_TSEG1_MASK)
++#define PUCAN_TSLOW_BRP(b)		((b) & PUCAN_TSLOW_BRP_MASK)
+ 
+ struct __packed pucan_timing_slow {
+ 	__le16	opcode_channel;
+@@ -60,11 +71,21 @@ struct __packed pucan_timing_slow {
+ 	__le16	brp;		/* BaudRate Prescaler */
  };
  
- /*
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index 506fe50..3cbfb06 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -27,6 +27,7 @@
- #define PCAN_USBPRO_PRODUCT_ID		0x000d
- #define PCAN_USBPROFD_PRODUCT_ID	0x0011
- #define PCAN_USBFD_PRODUCT_ID		0x0012
-+#define PCAN_USBX6_PRODUCT_ID		0x0014
++#define PUCAN_TFAST_BRP_BITS		10
++#define PUCAN_TFAST_TSGEG1_BITS		5
++#define PUCAN_TFAST_TSGEG2_BITS		4
++#define PUCAN_TFAST_SJW_BITS		4
++
++#define PUCAN_TFAST_BRP_MASK		((1 << PUCAN_TFAST_BRP_BITS) - 1)
++#define PUCAN_TFAST_TSEG1_MASK		((1 << PUCAN_TFAST_TSGEG1_BITS) - 1)
++#define PUCAN_TFAST_TSEG2_MASK		((1 << PUCAN_TFAST_TSGEG2_BITS) - 1)
++#define PUCAN_TFAST_SJW_MASK		((1 << PUCAN_TFAST_SJW_BITS) - 1)
++
+ /* uCAN TIMING_FAST command fields */
+-#define PUCAN_TFAST_SJW(s)		((s) & 0x3)
+-#define PUCAN_TFAST_TSEG2(t)		((t) & 0x7)
+-#define PUCAN_TFAST_TSEG1(t)		((t) & 0xf)
+-#define PUCAN_TFAST_BRP(b)		((b) & 0x3ff)
++#define PUCAN_TFAST_SJW(s)		((s) & PUCAN_TFAST_SJW_MASK)
++#define PUCAN_TFAST_TSEG2(t)		((t) & PUCAN_TFAST_TSEG2_MASK)
++#define PUCAN_TFAST_TSEG1(t)		((t) & PUCAN_TFAST_TSEG1_MASK)
++#define PUCAN_TFAST_BRP(b)		((b) & PUCAN_TFAST_BRP_MASK)
  
- #define PCAN_USB_DRIVER_NAME		"peak_usb"
- 
-@@ -90,6 +91,7 @@ extern const struct peak_usb_adapter pcan_usb;
- extern const struct peak_usb_adapter pcan_usb_pro;
- extern const struct peak_usb_adapter pcan_usb_fd;
- extern const struct peak_usb_adapter pcan_usb_pro_fd;
-+extern const struct peak_usb_adapter pcan_usb_x6;
- 
- struct peak_time_ref {
- 	struct timeval tv_host_0, tv_host;
+ struct __packed pucan_timing_fast {
+ 	__le16	opcode_channel;
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 8a316a1..3047325 100644
+index ce44a03..8a316a1 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -1132,3 +1132,75 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
- 
- 	.do_get_berr_counter = pcan_usb_fd_get_berr_counter,
- };
-+
-+/* describes the PCAN-USB X6 adapter */
-+static const struct can_bittiming_const pcan_usb_x6_const = {
-+	.name = "pcan_usb_x6",
-+	.tseg1_min = 1,
+@@ -993,24 +993,24 @@ static void pcan_usb_fd_free(struct peak_usb_device *dev)
+ static const struct can_bittiming_const pcan_usb_fd_const = {
+ 	.name = "pcan_usb_fd",
+ 	.tseg1_min = 1,
+-	.tseg1_max = 64,
 +	.tseg1_max = (1 << PUCAN_TSLOW_TSGEG1_BITS),
-+	.tseg2_min = 1,
+ 	.tseg2_min = 1,
+-	.tseg2_max = 16,
+-	.sjw_max = 16,
 +	.tseg2_max = (1 << PUCAN_TSLOW_TSGEG2_BITS),
 +	.sjw_max = (1 << PUCAN_TSLOW_SJW_BITS),
-+	.brp_min = 1,
+ 	.brp_min = 1,
+-	.brp_max = 1024,
 +	.brp_max = (1 << PUCAN_TSLOW_BRP_BITS),
-+	.brp_inc = 1,
-+};
-+
-+static const struct can_bittiming_const pcan_usb_x6_data_const = {
-+	.name = "pcan_usb_x6",
-+	.tseg1_min = 1,
+ 	.brp_inc = 1,
+ };
+ 
+ static const struct can_bittiming_const pcan_usb_fd_data_const = {
+ 	.name = "pcan_usb_fd",
+ 	.tseg1_min = 1,
+-	.tseg1_max = 16,
 +	.tseg1_max = (1 << PUCAN_TFAST_TSGEG1_BITS),
-+	.tseg2_min = 1,
+ 	.tseg2_min = 1,
+-	.tseg2_max = 8,
+-	.sjw_max = 4,
 +	.tseg2_max = (1 << PUCAN_TFAST_TSGEG2_BITS),
 +	.sjw_max = (1 << PUCAN_TFAST_SJW_BITS),
-+	.brp_min = 1,
+ 	.brp_min = 1,
+-	.brp_max = 1024,
 +	.brp_max = (1 << PUCAN_TFAST_BRP_BITS),
-+	.brp_inc = 1,
-+};
-+
-+const struct peak_usb_adapter pcan_usb_x6 = {
-+	.name = "PCAN-USB X6",
-+	.device_id = PCAN_USBX6_PRODUCT_ID,
-+	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
-+	.ctrlmode_supported = CAN_CTRLMODE_FD |
-+			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
-+	.clock = {
-+		.freq = PCAN_UFD_CRYSTAL_HZ,
-+	},
-+	.bittiming_const = &pcan_usb_x6_const,
-+	.data_bittiming_const = &pcan_usb_x6_data_const,
-+
-+	/* size of device private data */
-+	.sizeof_dev_private = sizeof(struct pcan_usb_fd_device),
-+
-+	/* timestamps usage */
-+	.ts_used_bits = 32,
-+	.ts_period = 1000000, /* calibration period in ts. */
-+	.us_per_ts_scale = 1, /* us = (ts * scale) >> shift */
-+	.us_per_ts_shift = 0,
-+
-+	/* give here messages in/out endpoints */
-+	.ep_msg_in = PCAN_USBPRO_EP_MSGIN,
-+	.ep_msg_out = {PCAN_USBPRO_EP_MSGOUT_0, PCAN_USBPRO_EP_MSGOUT_1},
-+
-+	/* size of rx/tx usb buffers */
-+	.rx_buffer_size = PCAN_UFD_RX_BUFFER_SIZE,
-+	.tx_buffer_size = PCAN_UFD_TX_BUFFER_SIZE,
-+
-+	/* device callbacks */
-+	.intf_probe = pcan_usb_pro_probe,	/* same as PCAN-USB Pro */
-+	.dev_init = pcan_usb_fd_init,
-+
-+	.dev_exit = pcan_usb_fd_exit,
-+	.dev_free = pcan_usb_fd_free,
-+	.dev_set_bus = pcan_usb_fd_set_bus,
-+	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
-+	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
-+	.dev_decode_buf = pcan_usb_fd_decode_buf,
-+	.dev_start = pcan_usb_fd_start,
-+	.dev_stop = pcan_usb_fd_stop,
-+	.dev_restart_async = pcan_usb_fd_restart_async,
-+	.dev_encode_msg = pcan_usb_fd_encode_msg,
-+
-+	.do_get_berr_counter = pcan_usb_fd_get_berr_counter,
-+};
+ 	.brp_inc = 1,
+ };
+ 
+@@ -1065,24 +1065,24 @@ const struct peak_usb_adapter pcan_usb_fd = {
+ static const struct can_bittiming_const pcan_usb_pro_fd_const = {
+ 	.name = "pcan_usb_pro_fd",
+ 	.tseg1_min = 1,
+-	.tseg1_max = 64,
++	.tseg1_max = (1 << PUCAN_TSLOW_TSGEG1_BITS),
+ 	.tseg2_min = 1,
+-	.tseg2_max = 16,
+-	.sjw_max = 16,
++	.tseg2_max = (1 << PUCAN_TSLOW_TSGEG2_BITS),
++	.sjw_max = (1 << PUCAN_TSLOW_SJW_BITS),
+ 	.brp_min = 1,
+-	.brp_max = 1024,
++	.brp_max = (1 << PUCAN_TSLOW_BRP_BITS),
+ 	.brp_inc = 1,
+ };
+ 
+ static const struct can_bittiming_const pcan_usb_pro_fd_data_const = {
+ 	.name = "pcan_usb_pro_fd",
+ 	.tseg1_min = 1,
+-	.tseg1_max = 16,
++	.tseg1_max = (1 << PUCAN_TFAST_TSGEG1_BITS),
+ 	.tseg2_min = 1,
+-	.tseg2_max = 8,
+-	.sjw_max = 4,
++	.tseg2_max = (1 << PUCAN_TFAST_TSGEG2_BITS),
++	.sjw_max = (1 << PUCAN_TFAST_SJW_BITS),
+ 	.brp_min = 1,
+-	.brp_max = 1024,
++	.brp_max = (1 << PUCAN_TFAST_BRP_BITS),
+ 	.brp_inc = 1,
+ };
+ 
 -- 
 2.7.4
 
