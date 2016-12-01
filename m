@@ -1,58 +1,85 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH net-next] net: can: usb: kvaser_usb: fix spelling mistake
- of "outstanding"
-Date: Thu, 1 Dec 2016 14:25:20 +0100
-Message-ID: <06da26ba-bf0f-a864-63e4-2bf2a392539d@pengutronix.de>
-References: <20161129162717.8785-1-colin.king@canonical.com>
+Subject: pull-request: can-next 2016-12-01
+Date: Thu, 1 Dec 2016 21:21:44 +0100
+Message-ID: <de63a1d8-2822-2d98-973c-c1b2f8c493cf@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="qvBWtflwHPd5DeNtM92V4HdE67xoJO2vm"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:45113 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1753680AbcLANZ2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Dec 2016 08:25:28 -0500
-In-Reply-To: <20161129162717.8785-1-colin.king@canonical.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Colin King <colin.king@canonical.com>, Wolfgang Grandegger <wg@grandegger.com>, Jimmy Assarsson <jimmyassarsson@gmail.com>, Wolfram Sang <wsa-dev@sang-engineering.com>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+ boundary="B4KBEbLD6O0eQjcoKqrecwcbLnhx8xdXV"
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qvBWtflwHPd5DeNtM92V4HdE67xoJO2vm
-Content-Type: multipart/mixed; boundary="6KNoo3GX736Fc9WM7AXHiWgRlbrW15vhO";
+--B4KBEbLD6O0eQjcoKqrecwcbLnhx8xdXV
+Content-Type: multipart/mixed; boundary="PsKBTs1ChGK6iG974jPSm4mvAJSVeAEfJ";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Colin King <colin.king@canonical.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- Jimmy Assarsson <jimmyassarsson@gmail.com>,
- Wolfram Sang <wsa-dev@sang-engineering.com>,
- "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-ID: <06da26ba-bf0f-a864-63e4-2bf2a392539d@pengutronix.de>
-Subject: Re: [PATCH net-next] net: can: usb: kvaser_usb: fix spelling mistake
- of "outstanding"
-References: <20161129162717.8785-1-colin.king@canonical.com>
-In-Reply-To: <20161129162717.8785-1-colin.king@canonical.com>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <de63a1d8-2822-2d98-973c-c1b2f8c493cf@pengutronix.de>
+Subject: pull-request: can-next 2016-12-01
 
---6KNoo3GX736Fc9WM7AXHiWgRlbrW15vhO
+--PsKBTs1ChGK6iG974jPSm4mvAJSVeAEfJ
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 11/29/2016 05:27 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> Trivial fix to spelling mistake "oustanding" to "outstanding" in
-> comment and dev_dbg message.
->=20
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Hello David,
 
-Added to can-next.
+this is a pull request of 4 patches for net-next/master.
 
-Thanks,
+There are two patches by Chris Paterson for the rcar_can and rcar_canfd
+device tree binding documentation. And a patch by Geert Uytterhoeven
+that corrects the order of interrupt specifiers.
+
+The fourth patch by Colin Ian King fixes a spelling error in the
+kvaser_usb driver.
+
+
+regards,
 Marc
+
+---
+The following changes since commit 8f679ed88f8860206edddff725e2749b4cdbb0=
+e8:
+
+  driver: ipvlan: Remove useless member mtu_adj of struct ipvl_dev (2016-=
+11-30 15:01:32 -0500)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.10-20161201
+
+for you to fetch changes up to 0d8f8efd32bace9f222fcc92d4a3132d877e5df6:
+
+  net: can: usb: kvaser_usb: fix spelling mistake of "outstanding" (2016-=
+12-01 14:27:02 +0100)
+
+----------------------------------------------------------------
+linux-can-next-for-4.10-20161201
+
+----------------------------------------------------------------
+Chris Paterson (2):
+      can: rcar_can: Add r8a7796 support
+      can: rcar_canfd: Add r8a7796 support
+
+Colin Ian King (1):
+      net: can: usb: kvaser_usb: fix spelling mistake of "outstanding"
+
+Geert Uytterhoeven (1):
+      can: rcar_canfd: Correct order of interrupt specifiers
+
+ Documentation/devicetree/bindings/net/can/rcar_can.txt   | 12 +++++++---=
+--
+ Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 14 ++++++++--=
+----
+ drivers/net/can/usb/kvaser_usb.c                         |  4 ++--
+ 3 files changed, 17 insertions(+), 13 deletions(-)
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -61,23 +88,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---6KNoo3GX736Fc9WM7AXHiWgRlbrW15vhO--
+--PsKBTs1ChGK6iG974jPSm4mvAJSVeAEfJ--
 
---qvBWtflwHPd5DeNtM92V4HdE67xoJO2vm
+--B4KBEbLD6O0eQjcoKqrecwcbLnhx8xdXV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhAJMAACgkQPTuqJayp
-JWqpuwf9FOCKNRiRHZDDXZWNhlpAj6yHjb9+ovxPu0KNTyKgCeRh7auPnc2UKY4I
-WSugGAJe12/l5FE5CGfJt2puMEgJm8H4GtQ7VlttVjQY78RhsawCI/UqwRGimvzI
-K0AW/Q1IikFncJGklCV09RZzxhD3IuhtgZTSRrAT9Hyhc/P85cZ048SgP4AO/lAc
-hG1Ccb8Ca4sDDgNrQCXcPUSxzHgIcRUO4+kuCExSYng1e+Frc2H5STd/wJcxlTWb
-5XGAab3ijZtoR1xyd9YVvcqC6jDzQMkZTTkV7njwDH/MMrdJCEIDgrtxuWGU3lSg
-DZildKrYBl1DgyZd4OlHxySpI3c4AQ==
-=HLyh
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhAhloACgkQPTuqJayp
+JWrOgggAvEaKSAx2xSJUrFMmWg3XU5XkNLADF3orH0tDy9J0EQTDWhwhSZfvp5mC
+iMWWDxqvhZZUhumpSwdNyCm2RyK7yuM0oR0I05xvCcNv5zT4d0m3xTvLQNNncRfX
+QRqduVJ7tyI0r+K3aemUVQ8+9WUOU8bEuj0FbHiHKP23MPMs1+BMfckziAshlB3F
+9tZn2o00L9wt5Eu5hfA2/JDZNNNFHkuSh+UDPrFzhJQBG8vsfVQq/UDFq3GIoUQH
+uWOj64f9oQ5a740lUaOHTHAfgnImKWiwSSYVzPAt5BSA/1fSB2g77+yxObQnERXX
+tguN4otzQOoHpqh1X3liw1WY222BoQ==
+=WVSN
 -----END PGP SIGNATURE-----
 
---qvBWtflwHPd5DeNtM92V4HdE67xoJO2vm--
+--B4KBEbLD6O0eQjcoKqrecwcbLnhx8xdXV--
