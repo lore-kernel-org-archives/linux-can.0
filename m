@@ -1,103 +1,113 @@
-From: David Howells <dhowells@redhat.com>
-Subject: [PATCH 18/39] Annotate hardware config module parameters in
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 18/39] Annotate hardware config module parameters in
  drivers/net/can/
-Date: Thu, 01 Dec 2016 12:32:01 +0000
-Message-ID: <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
+Date: Thu, 1 Dec 2016 14:05:14 +0100
+Message-ID: <b8f03afb-05b4-c710-c948-948cefc12c80@pengutronix.de>
 References: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
+ <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="xwX8KKmvaVXvGewfsnJXe6XWTdWRdGWhJ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx1.redhat.com ([209.132.183.28]:50882 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S933706AbcLAMcn (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 1 Dec 2016 07:32:43 -0500
-In-Reply-To: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:44685 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1757754AbcLANGC (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Dec 2016 08:06:02 -0500
+In-Reply-To: <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: gnomes@lxorguk.ukuu.org.uk, minyard@acm.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, dhowells@redhat.com, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+To: David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org
+Cc: gnomes@lxorguk.ukuu.org.uk, minyard@acm.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 
-When the kernel is running in secure boot mode, we lock down the kernel to
-prevent userspace from modifying the running kernel image.  Whilst this
-includes prohibiting access to things like /dev/mem, it must also prevent
-access by means of configuring driver modules in such a way as to cause a
-device to access or modify the kernel image.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--xwX8KKmvaVXvGewfsnJXe6XWTdWRdGWhJ
+Content-Type: multipart/mixed; boundary="pibw3MjHPXDFfDuEcqVPLluMWuU8NI0l0";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org
+Cc: gnomes@lxorguk.ukuu.org.uk, minyard@acm.org, netdev@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-security-module@vger.kernel.org,
+ keyrings@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+Message-ID: <b8f03afb-05b4-c710-c948-948cefc12c80@pengutronix.de>
+Subject: Re: [PATCH 18/39] Annotate hardware config module parameters in
+ drivers/net/can/
+References: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
+ <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
+In-Reply-To: <148059552122.31612.3286291221641529296.stgit@warthog.procyon.org.uk>
 
-To this end, annotate module_param* statements that refer to hardware
-configuration and indicate for future reference what type of parameter they
-specify.  The parameter parser in the core sees this information and can
-skip such parameters with an error message if the kernel is locked down.
-The module initialisation then runs as normal, but just sees whatever the
-default values for those parameters is.
+--pibw3MjHPXDFfDuEcqVPLluMWuU8NI0l0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Note that we do still need to do the module initialisation because some
-drivers have viable defaults set in case parameters aren't specified and
-some drivers support automatic configuration (e.g. PNP or PCI) in addition
-to manually coded parameters.
+On 12/01/2016 01:32 PM, David Howells wrote:
+> When the kernel is running in secure boot mode, we lock down the kernel=
+ to
+> prevent userspace from modifying the running kernel image.  Whilst this=
 
-This patch annotates drivers in drivers/net/can/.
+> includes prohibiting access to things like /dev/mem, it must also preve=
+nt
+> access by means of configuring driver modules in such a way as to cause=
+ a
+> device to access or modify the kernel image.
+>=20
+> To this end, annotate module_param* statements that refer to hardware
+> configuration and indicate for future reference what type of parameter =
+they
+> specify.  The parameter parser in the core sees this information and ca=
+n
+> skip such parameters with an error message if the kernel is locked down=
+=2E
+> The module initialisation then runs as normal, but just sees whatever t=
+he
+> default values for those parameters is.
+>=20
+> Note that we do still need to do the module initialisation because some=
 
-Suggested-by: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Wolfgang Grandegger <wg@grandegger.com>
-cc: Marc Kleine-Budde <mkl@pengutronix.de>
-cc: linux-can@vger.kernel.org
-cc: netdev@vger.kernel.org
----
+> drivers have viable defaults set in case parameters aren't specified an=
+d
+> some drivers support automatic configuration (e.g. PNP or PCI) in addit=
+ion
+> to manually coded parameters.
+>=20
+> This patch annotates drivers in drivers/net/can/.
+>=20
+> Suggested-by: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Wolfgang Grandegger <wg@grandegger.com>
+> cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> cc: linux-can@vger.kernel.org
+> cc: netdev@vger.kernel.org
 
- drivers/net/can/cc770/cc770_isa.c     |    8 ++++----
- drivers/net/can/sja1000/sja1000_isa.c |    8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-diff --git a/drivers/net/can/cc770/cc770_isa.c b/drivers/net/can/cc770/cc770_isa.c
-index e0d15711e9ac..3a30fd3b4498 100644
---- a/drivers/net/can/cc770/cc770_isa.c
-+++ b/drivers/net/can/cc770/cc770_isa.c
-@@ -82,16 +82,16 @@ static u8 cor[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
- static u8 bcr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
- static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
- 
--module_param_array(port, ulong, NULL, S_IRUGO);
-+module_param_hw_array(port, ulong, ioport, NULL, S_IRUGO);
- MODULE_PARM_DESC(port, "I/O port number");
- 
--module_param_array(mem, ulong, NULL, S_IRUGO);
-+module_param_hw_array(mem, ulong, iomem, NULL, S_IRUGO);
- MODULE_PARM_DESC(mem, "I/O memory address");
- 
--module_param_array(indirect, int, NULL, S_IRUGO);
-+module_param_hw_array(indirect, int, ioport, NULL, S_IRUGO);
- MODULE_PARM_DESC(indirect, "Indirect access via address and data port");
- 
--module_param_array(irq, int, NULL, S_IRUGO);
-+module_param_hw_array(irq, int, irq, NULL, S_IRUGO);
- MODULE_PARM_DESC(irq, "IRQ number");
- 
- module_param_array(clk, int, NULL, S_IRUGO);
-diff --git a/drivers/net/can/sja1000/sja1000_isa.c b/drivers/net/can/sja1000/sja1000_isa.c
-index e97e6d35b300..a89c1e92554d 100644
---- a/drivers/net/can/sja1000/sja1000_isa.c
-+++ b/drivers/net/can/sja1000/sja1000_isa.c
-@@ -48,16 +48,16 @@ static unsigned char ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
- static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
- static spinlock_t indirect_lock[MAXDEV];  /* lock for indirect access mode */
- 
--module_param_array(port, ulong, NULL, S_IRUGO);
-+module_param_hw_array(port, ulong, ioport, NULL, S_IRUGO);
- MODULE_PARM_DESC(port, "I/O port number");
- 
--module_param_array(mem, ulong, NULL, S_IRUGO);
-+module_param_hw_array(mem, ulong, iomem, NULL, S_IRUGO);
- MODULE_PARM_DESC(mem, "I/O memory address");
- 
--module_param_array(indirect, int, NULL, S_IRUGO);
-+module_param_hw_array(indirect, int, ioport, NULL, S_IRUGO);
- MODULE_PARM_DESC(indirect, "Indirect access via address and data port");
- 
--module_param_array(irq, int, NULL, S_IRUGO);
-+module_param_hw_array(irq, int, irq, NULL, S_IRUGO);
- MODULE_PARM_DESC(irq, "IRQ number");
- 
- module_param_array(clk, int, NULL, S_IRUGO);
+regards,
+Marc
 
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--pibw3MjHPXDFfDuEcqVPLluMWuU8NI0l0--
+
+--xwX8KKmvaVXvGewfsnJXe6XWTdWRdGWhJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhAIAoACgkQPTuqJayp
+JWp1IAgAkADs01rvguaxMOp7okZBrkV5PWieww+Pc0u8sYWav9tPsPOnxnBbiQtE
+mznY8OW4pRfa8BHpjyltUtgTShn05ThtwU/E09g8EU4TaIghX146DwjKxbrbUlTR
+g6etsM6kV+UzF07AD22PzcMKGGj3gP6Ppgec7AJEdW4eY18CH8TJL5/5xf1hUjRN
+b0OKbhOdVLKw62JOaJ9dJ8eTRqv78EIpPYQQ6Il1ztGv1rY023zoz4LFam7be3vI
+46U46sW7FHhIuy4RhTwa7WsAON073+etnIYBtAsaHCXM+GKFiGlcyaGsLGuQoV7r
+1eFTh9mb0GQ7xObbESgIoBdqqsXDBQ==
+=3XdM
+-----END PGP SIGNATURE-----
+
+--xwX8KKmvaVXvGewfsnJXe6XWTdWRdGWhJ--
