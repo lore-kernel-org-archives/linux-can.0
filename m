@@ -1,162 +1,140 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/2] can: peak: Add support for PCAN-USB X6 USB interface
-Date: Fri,  2 Dec 2016 09:29:31 +0100
-Message-ID: <20161202082931.22270-3-mkl@pengutronix.de>
-References: <20161202082931.22270-1-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20161202082931.22270-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Stephane Grosjean <s.grosjean@peak-system.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: net/can: warning in raw_setsockopt/__alloc_pages_slowpath
+Date: Fri, 2 Dec 2016 13:43:55 +0100
+Message-ID: <CAAeHK+x3vqjzzXPtp-xCshWnvTcVrZqGmJR7rbooRFxBJanv8g@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary=94eb2c1a0b9c8d65760542ac4a67
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+--94eb2c1a0b9c8d65760542ac4a67
+Content-Type: text/plain; charset=UTF-8
 
-This adds support for PEAK-System PCAN-USB X6 USB to CAN interface.
+Hi!
 
-The CAN FD adapter PCAN-USB X6 allows the connection of up to 6 CAN FD
-or CAN networks to a computer via USB. The interface is installed in an
-aluminum profile casing and is shipped in versions with D-Sub connectors
-or M12 circular connectors.
+I've got the following error report while running the syzkaller fuzzer.
 
-The PCAN-USB X6 registers in the USB sub-system as if 3x PCAN-USB-Pro FD
-adapters were plugged. So, this patch:
+A reproducer is attached.
 
-- updates the PEAK_USB entry of the corresponding Kconfig file
-- defines and adds the device id. of the PCAN-USB X6 (0x0014) into the
-  table of supported device ids
-- defines and adds the new software structure implementing the PCAN-USB X6,
-  which is obviously a clone of the software structure implementing the
-  PCAN-USB Pro FD.
+On commit d8e435f3ab6fea2ea324dce72b51dd7761747523 (Nov 26).
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/peak_usb/pcan_usb_core.c |  2 +
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |  2 +
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 72 ++++++++++++++++++++++++++++
- 3 files changed, 76 insertions(+)
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 4009 at mm/page_alloc.c:3511
+__alloc_pages_slowpath+0x3d4/0x1bf0
+Modules linked in:
+CPU: 0 PID: 4009 Comm: a.out Not tainted 4.9.0-rc6+ #54
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+ ffff88006832f8a8 ffffffff81c73b14 0000000000000000 0000000000000000
+ ffffffff842c6320 0000000000000000 ffff88006832f8f0 ffffffff8123dc57
+ ffff880067d86000 ffffffff00000db7 ffffffff842c6320 0000000000000db7
+Call Trace:
+ [<     inline     >] __dump_stack lib/dump_stack.c:15
+ [<ffffffff81c73b14>] dump_stack+0xb3/0x10f lib/dump_stack.c:51
+ [<ffffffff8123dc57>] __warn+0x1a7/0x1f0 kernel/panic.c:550
+ [<ffffffff8123de6c>] warn_slowpath_null+0x2c/0x40 kernel/panic.c:585
+ [<ffffffff81559b04>] __alloc_pages_slowpath+0x3d4/0x1bf0 mm/page_alloc.c:3511
+ [<ffffffff8155b8e2>] __alloc_pages_nodemask+0x5c2/0x710 mm/page_alloc.c:3781
+ [<ffffffff816236a4>] alloc_pages_current+0xf4/0x400 mm/mempolicy.c:2072
+ [<     inline     >] alloc_pages ./include/linux/gfp.h:469
+ [<ffffffff815a834f>] kmalloc_order+0x1f/0x70 mm/slab_common.c:1015
+ [<ffffffff815a83bf>] kmalloc_order_trace+0x1f/0x160 mm/slab_common.c:1026
+ [<     inline     >] kmalloc_large ./include/linux/slab.h:422
+ [<ffffffff81635e67>] __kmalloc_track_caller+0x227/0x2a0 mm/slub.c:4233
+ [<ffffffff8159932c>] memdup_user+0x2c/0xa0 mm/util.c:137
+ [<ffffffff8369e0de>] raw_setsockopt+0x1be/0x9f0 net/can/raw.c:506
+ [<     inline     >] SYSC_setsockopt net/socket.c:1757
+ [<ffffffff82ca10c4>] SyS_setsockopt+0x154/0x240 net/socket.c:1736
+ [<ffffffff840f2901>] entry_SYSCALL_64_fastpath+0x1f/0xc2
+arch/x86/entry/entry_64.S:209
+---[ end trace bc80556cca970089 ]---
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index c06382cdfdfe..f3141ca56bc3 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -39,6 +39,7 @@ static struct usb_device_id peak_usb_table[] = {
- 	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBPRO_PRODUCT_ID)},
- 	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBFD_PRODUCT_ID)},
- 	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBPROFD_PRODUCT_ID)},
-+	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBX6_PRODUCT_ID)},
- 	{} /* Terminating entry */
- };
- 
-@@ -50,6 +51,7 @@ static const struct peak_usb_adapter *const peak_usb_adapters_list[] = {
- 	&pcan_usb_pro,
- 	&pcan_usb_fd,
- 	&pcan_usb_pro_fd,
-+	&pcan_usb_x6,
- };
- 
- /*
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index 506fe506c9d3..3cbfb069893d 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -27,6 +27,7 @@
- #define PCAN_USBPRO_PRODUCT_ID		0x000d
- #define PCAN_USBPROFD_PRODUCT_ID	0x0011
- #define PCAN_USBFD_PRODUCT_ID		0x0012
-+#define PCAN_USBX6_PRODUCT_ID		0x0014
- 
- #define PCAN_USB_DRIVER_NAME		"peak_usb"
- 
-@@ -90,6 +91,7 @@ extern const struct peak_usb_adapter pcan_usb;
- extern const struct peak_usb_adapter pcan_usb_pro;
- extern const struct peak_usb_adapter pcan_usb_fd;
- extern const struct peak_usb_adapter pcan_usb_pro_fd;
-+extern const struct peak_usb_adapter pcan_usb_x6;
- 
- struct peak_time_ref {
- 	struct timeval tv_host_0, tv_host;
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 8a316a194cf7..304732550f0a 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -1132,3 +1132,75 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
- 
- 	.do_get_berr_counter = pcan_usb_fd_get_berr_counter,
- };
-+
-+/* describes the PCAN-USB X6 adapter */
-+static const struct can_bittiming_const pcan_usb_x6_const = {
-+	.name = "pcan_usb_x6",
-+	.tseg1_min = 1,
-+	.tseg1_max = (1 << PUCAN_TSLOW_TSGEG1_BITS),
-+	.tseg2_min = 1,
-+	.tseg2_max = (1 << PUCAN_TSLOW_TSGEG2_BITS),
-+	.sjw_max = (1 << PUCAN_TSLOW_SJW_BITS),
-+	.brp_min = 1,
-+	.brp_max = (1 << PUCAN_TSLOW_BRP_BITS),
-+	.brp_inc = 1,
-+};
-+
-+static const struct can_bittiming_const pcan_usb_x6_data_const = {
-+	.name = "pcan_usb_x6",
-+	.tseg1_min = 1,
-+	.tseg1_max = (1 << PUCAN_TFAST_TSGEG1_BITS),
-+	.tseg2_min = 1,
-+	.tseg2_max = (1 << PUCAN_TFAST_TSGEG2_BITS),
-+	.sjw_max = (1 << PUCAN_TFAST_SJW_BITS),
-+	.brp_min = 1,
-+	.brp_max = (1 << PUCAN_TFAST_BRP_BITS),
-+	.brp_inc = 1,
-+};
-+
-+const struct peak_usb_adapter pcan_usb_x6 = {
-+	.name = "PCAN-USB X6",
-+	.device_id = PCAN_USBX6_PRODUCT_ID,
-+	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
-+	.ctrlmode_supported = CAN_CTRLMODE_FD |
-+			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
-+	.clock = {
-+		.freq = PCAN_UFD_CRYSTAL_HZ,
-+	},
-+	.bittiming_const = &pcan_usb_x6_const,
-+	.data_bittiming_const = &pcan_usb_x6_data_const,
-+
-+	/* size of device private data */
-+	.sizeof_dev_private = sizeof(struct pcan_usb_fd_device),
-+
-+	/* timestamps usage */
-+	.ts_used_bits = 32,
-+	.ts_period = 1000000, /* calibration period in ts. */
-+	.us_per_ts_scale = 1, /* us = (ts * scale) >> shift */
-+	.us_per_ts_shift = 0,
-+
-+	/* give here messages in/out endpoints */
-+	.ep_msg_in = PCAN_USBPRO_EP_MSGIN,
-+	.ep_msg_out = {PCAN_USBPRO_EP_MSGOUT_0, PCAN_USBPRO_EP_MSGOUT_1},
-+
-+	/* size of rx/tx usb buffers */
-+	.rx_buffer_size = PCAN_UFD_RX_BUFFER_SIZE,
-+	.tx_buffer_size = PCAN_UFD_TX_BUFFER_SIZE,
-+
-+	/* device callbacks */
-+	.intf_probe = pcan_usb_pro_probe,	/* same as PCAN-USB Pro */
-+	.dev_init = pcan_usb_fd_init,
-+
-+	.dev_exit = pcan_usb_fd_exit,
-+	.dev_free = pcan_usb_fd_free,
-+	.dev_set_bus = pcan_usb_fd_set_bus,
-+	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
-+	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
-+	.dev_decode_buf = pcan_usb_fd_decode_buf,
-+	.dev_start = pcan_usb_fd_start,
-+	.dev_stop = pcan_usb_fd_stop,
-+	.dev_restart_async = pcan_usb_fd_restart_async,
-+	.dev_encode_msg = pcan_usb_fd_encode_msg,
-+
-+	.do_get_berr_counter = pcan_usb_fd_get_berr_counter,
-+};
--- 
-2.10.2
+--94eb2c1a0b9c8d65760542ac4a67
+Content-Type: text/x-csrc; charset=US-ASCII; name="setsockopt-kmalloc-warning-poc.c"
+Content-Disposition: attachment; filename="setsockopt-kmalloc-warning-poc.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_iw7s6juv0
+
+Ly8gYXV0b2dlbmVyYXRlZCBieSBzeXprYWxsZXIgKGh0dHA6Ly9naXRodWIuY29tL2dvb2dsZS9z
+eXprYWxsZXIpCgojaWZuZGVmIF9fTlJfc2V0c29ja29wdAojZGVmaW5lIF9fTlJfc2V0c29ja29w
+dCA1NAojZW5kaWYKI2lmbmRlZiBfX05SX3NvY2tldAojZGVmaW5lIF9fTlJfc29ja2V0IDQxCiNl
+bmRpZgoKI2RlZmluZSBfR05VX1NPVVJDRQoKI2luY2x1ZGUgPHN5cy9pb2N0bC5oPgojaW5jbHVk
+ZSA8c3lzL21vdW50Lmg+CiNpbmNsdWRlIDxzeXMvcHJjdGwuaD4KI2luY2x1ZGUgPHN5cy9yZXNv
+dXJjZS5oPgojaW5jbHVkZSA8c3lzL3NvY2tldC5oPgojaW5jbHVkZSA8c3lzL3N0YXQuaD4KI2lu
+Y2x1ZGUgPHN5cy9zeXNjYWxsLmg+CiNpbmNsdWRlIDxzeXMvdGltZS5oPgojaW5jbHVkZSA8c3lz
+L3R5cGVzLmg+CiNpbmNsdWRlIDxzeXMvd2FpdC5oPgoKI2luY2x1ZGUgPGxpbnV4L2NhcGFiaWxp
+dHkuaD4KI2luY2x1ZGUgPGxpbnV4L2lmLmg+CiNpbmNsdWRlIDxsaW51eC9pZl90dW4uaD4KI2lu
+Y2x1ZGUgPGxpbnV4L3NjaGVkLmg+CiNpbmNsdWRlIDxuZXQvaWZfYXJwLmg+CgojaW5jbHVkZSA8
+YXNzZXJ0Lmg+CiNpbmNsdWRlIDxkaXJlbnQuaD4KI2luY2x1ZGUgPGVycm5vLmg+CiNpbmNsdWRl
+IDxmY250bC5oPgojaW5jbHVkZSA8Z3JwLmg+CiNpbmNsdWRlIDxwdGhyZWFkLmg+CiNpbmNsdWRl
+IDxzZXRqbXAuaD4KI2luY2x1ZGUgPHNpZ25hbC5oPgojaW5jbHVkZSA8c3RkYXJnLmg+CiNpbmNs
+dWRlIDxzdGRkZWYuaD4KI2luY2x1ZGUgPHN0ZGludC5oPgojaW5jbHVkZSA8c3RkaW8uaD4KI2lu
+Y2x1ZGUgPHN0ZGxpYi5oPgojaW5jbHVkZSA8c3RyaW5nLmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4K
+CmNvbnN0IGludCBrRmFpbFN0YXR1cyA9IDY3Owpjb25zdCBpbnQga0Vycm9yU3RhdHVzID0gNjg7
+CmNvbnN0IGludCBrUmV0cnlTdGF0dXMgPSA2OTsKCl9fYXR0cmlidXRlX18oKG5vcmV0dXJuKSkg
+dm9pZCBmYWlsKGNvbnN0IGNoYXIqIG1zZywgLi4uKQp7CiAgaW50IGUgPSBlcnJubzsKICBmZmx1
+c2goc3Rkb3V0KTsKICB2YV9saXN0IGFyZ3M7CiAgdmFfc3RhcnQoYXJncywgbXNnKTsKICB2ZnBy
+aW50ZihzdGRlcnIsIG1zZywgYXJncyk7CiAgdmFfZW5kKGFyZ3MpOwogIGZwcmludGYoc3RkZXJy
+LCAiIChlcnJubyAlZClcbiIsIGUpOwogIGV4aXQoa0ZhaWxTdGF0dXMpOwp9CgpfX2F0dHJpYnV0
+ZV9fKChub3JldHVybikpIHZvaWQgZXhpdGYoY29uc3QgY2hhciogbXNnLCAuLi4pCnsKICBpbnQg
+ZSA9IGVycm5vOwogIGZmbHVzaChzdGRvdXQpOwogIHZhX2xpc3QgYXJnczsKICB2YV9zdGFydChh
+cmdzLCBtc2cpOwogIHZmcHJpbnRmKHN0ZGVyciwgbXNnLCBhcmdzKTsKICB2YV9lbmQoYXJncyk7
+CiAgZnByaW50ZihzdGRlcnIsICIgKGVycm5vICVkKVxuIiwgZSk7CiAgZXhpdChrUmV0cnlTdGF0
+dXMpOwp9CgpzdGF0aWMgaW50IGZsYWdfZGVidWc7Cgp2b2lkIGRlYnVnKGNvbnN0IGNoYXIqIG1z
+ZywgLi4uKQp7CiAgaWYgKCFmbGFnX2RlYnVnKQogICAgcmV0dXJuOwogIHZhX2xpc3QgYXJnczsK
+ICB2YV9zdGFydChhcmdzLCBtc2cpOwogIHZmcHJpbnRmKHN0ZG91dCwgbXNnLCBhcmdzKTsKICB2
+YV9lbmQoYXJncyk7CiAgZmZsdXNoKHN0ZG91dCk7Cn0KCl9fdGhyZWFkIGludCBza2lwX3NlZ3Y7
+Cl9fdGhyZWFkIGptcF9idWYgc2Vndl9lbnY7CgpzdGF0aWMgdm9pZCBzZWd2X2hhbmRsZXIoaW50
+IHNpZywgc2lnaW5mb190KiBpbmZvLCB2b2lkKiB1Y3R4KQp7CiAgaWYgKF9fYXRvbWljX2xvYWRf
+bigmc2tpcF9zZWd2LCBfX0FUT01JQ19SRUxBWEVEKSkKICAgIF9sb25nam1wKHNlZ3ZfZW52LCAx
+KTsKICBleGl0KHNpZyk7Cn0KCnN0YXRpYyB2b2lkIGluc3RhbGxfc2Vndl9oYW5kbGVyKCkKewog
+IHN0cnVjdCBzaWdhY3Rpb24gc2E7CiAgbWVtc2V0KCZzYSwgMCwgc2l6ZW9mKHNhKSk7CiAgc2Eu
+c2Ffc2lnYWN0aW9uID0gc2Vndl9oYW5kbGVyOwogIHNhLnNhX2ZsYWdzID0gU0FfTk9ERUZFUiB8
+IFNBX1NJR0lORk87CiAgc2lnYWN0aW9uKFNJR1NFR1YsICZzYSwgTlVMTCk7CiAgc2lnYWN0aW9u
+KFNJR0JVUywgJnNhLCBOVUxMKTsKfQoKI2RlZmluZSBOT05GQUlMSU5HKC4uLikgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCiAgeyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAog
+ICAgX19hdG9taWNfZmV0Y2hfYWRkKCZza2lwX3NlZ3YsIDEsIF9fQVRPTUlDX1NFUV9DU1QpOyAg
+ICAgICAgICAgICAgIFwKICAgIGlmIChfc2V0am1wKHNlZ3ZfZW52KSA9PSAwKSB7ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCiAgICAgIF9fVkFfQVJHU19fOyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAogICAgfSAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIFwKICAgIF9fYXRvbWljX2ZldGNoX3N1Yigmc2tpcF9zZWd2LCAxLCBfX0FUT01JQ19TRVFf
+Q1NUKTsgICAgICAgICAgICAgICBcCiAgfQoKc3RhdGljIHVpbnRwdHJfdCBleGVjdXRlX3N5c2Nh
+bGwoaW50IG5yLCB1aW50cHRyX3QgYTAsIHVpbnRwdHJfdCBhMSwKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgdWludHB0cl90IGEyLCB1aW50cHRyX3QgYTMsCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHVpbnRwdHJfdCBhNCwgdWludHB0cl90IGE1LAogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB1aW50cHRyX3QgYTYsIHVpbnRwdHJfdCBhNywKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgdWludHB0cl90IGE4KQp7CiAgc3dpdGNoIChucikg
+ewogIGRlZmF1bHQ6CiAgICByZXR1cm4gc3lzY2FsbChuciwgYTAsIGExLCBhMiwgYTMsIGE0LCBh
+NSk7CiAgfQp9CgpzdGF0aWMgdm9pZCBzZXR1cF9tYWluX3Byb2Nlc3ModWludDY0X3QgcGlkKQp7
+CiAgc3RydWN0IHNpZ2FjdGlvbiBzYTsKICBtZW1zZXQoJnNhLCAwLCBzaXplb2Yoc2EpKTsKICBz
+YS5zYV9oYW5kbGVyID0gU0lHX0lHTjsKICBzeXNjYWxsKFNZU19ydF9zaWdhY3Rpb24sIDB4MjAs
+ICZzYSwgTlVMTCwgOCk7CiAgc3lzY2FsbChTWVNfcnRfc2lnYWN0aW9uLCAweDIxLCAmc2EsIE5V
+TEwsIDgpOwogIGluc3RhbGxfc2Vndl9oYW5kbGVyKCk7CgogIGNoYXIgdG1wZGlyX3RlbXBsYXRl
+W10gPSAiLi9zeXprYWxsZXIuWFhYWFhYIjsKICBjaGFyKiB0bXBkaXIgPSBta2R0ZW1wKHRtcGRp
+cl90ZW1wbGF0ZSk7CiAgaWYgKCF0bXBkaXIpCiAgICBmYWlsKCJmYWlsZWQgdG8gbWtkdGVtcCIp
+OwogIGlmIChjaG1vZCh0bXBkaXIsIDA3NzcpKQogICAgZmFpbCgiZmFpbGVkIHRvIGNobW9kIik7
+CiAgaWYgKGNoZGlyKHRtcGRpcikpCiAgICBmYWlsKCJmYWlsZWQgdG8gY2hkaXIiKTsKfQoKc3Rh
+dGljIHZvaWQgbG9vcCgpOwoKc3RhdGljIHZvaWQgc2FuZGJveF9jb21tb24oKQp7CiAgcHJjdGwo
+UFJfU0VUX1BERUFUSFNJRywgU0lHS0lMTCwgMCwgMCwgMCk7CiAgc2V0cGdycCgpOwogIHNldHNp
+ZCgpOwoKICBzdHJ1Y3QgcmxpbWl0IHJsaW07CiAgcmxpbS5ybGltX2N1ciA9IHJsaW0ucmxpbV9t
+YXggPSAxMjggPDwgMjA7CiAgc2V0cmxpbWl0KFJMSU1JVF9BUywgJnJsaW0pOwogIHJsaW0ucmxp
+bV9jdXIgPSBybGltLnJsaW1fbWF4ID0gMSA8PCAyMDsKICBzZXRybGltaXQoUkxJTUlUX0ZTSVpF
+LCAmcmxpbSk7CiAgcmxpbS5ybGltX2N1ciA9IHJsaW0ucmxpbV9tYXggPSAxIDw8IDIwOwogIHNl
+dHJsaW1pdChSTElNSVRfU1RBQ0ssICZybGltKTsKICBybGltLnJsaW1fY3VyID0gcmxpbS5ybGlt
+X21heCA9IDA7CiAgc2V0cmxpbWl0KFJMSU1JVF9DT1JFLCAmcmxpbSk7CgogIHVuc2hhcmUoQ0xP
+TkVfTkVXTlMpOwogIHVuc2hhcmUoQ0xPTkVfTkVXSVBDKTsKICB1bnNoYXJlKENMT05FX0lPKTsK
+fQoKc3RhdGljIGludCBkb19zYW5kYm94X25vbmUoKQp7CiAgaW50IHBpZCA9IGZvcmsoKTsKICBp
+ZiAocGlkKQogICAgcmV0dXJuIHBpZDsKICBzYW5kYm94X2NvbW1vbigpOwogIGxvb3AoKTsKICBl
+eGl0KDEpOwp9Cgpsb25nIHJbMl07CnZvaWQgbG9vcCgpCnsKICBtZW1zZXQociwgLTEsIHNpemVv
+ZihyKSk7CiAgclswXSA9IGV4ZWN1dGVfc3lzY2FsbChfX05SX3NvY2tldCwgMHgxZHVsLCAweDN1
+bCwgMHgxdWwsIDAsIDAsIDAsIDAsCiAgICAgICAgICAgICAgICAgICAgICAgICAwLCAwKTsKICBy
+WzFdID0gZXhlY3V0ZV9zeXNjYWxsKF9fTlJfc2V0c29ja29wdCwgclswXSwgMHg2NXVsLCAweDF1
+bCwKICAgICAgICAgICAgICAgICAgICAgICAgIDB4MjAwMDAwMDB1bCwgMHgxODAwMDAwMHVsLCAw
+LCAwLCAwLCAwKTsKfQppbnQgbWFpbigpCnsKICBzZXR1cF9tYWluX3Byb2Nlc3MoMCk7CiAgaW50
+IHBpZCA9IGRvX3NhbmRib3hfbm9uZSgpOwogIGludCBzdGF0dXMgPSAwOwogIHdoaWxlICh3YWl0
+cGlkKHBpZCwgJnN0YXR1cywgX19XQUxMKSAhPSBwaWQpIHsKICB9CiAgcmV0dXJuIDA7Cn0KCgo=
+--94eb2c1a0b9c8d65760542ac4a67--
