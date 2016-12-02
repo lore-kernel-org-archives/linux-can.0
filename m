@@ -1,140 +1,153 @@
-From: Andrey Konovalov <andreyknvl@google.com>
-Subject: net/can: warning in raw_setsockopt/__alloc_pages_slowpath
-Date: Fri, 2 Dec 2016 13:43:55 +0100
-Message-ID: <CAAeHK+x3vqjzzXPtp-xCshWnvTcVrZqGmJR7rbooRFxBJanv8g@mail.gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: net/can: warning in raw_setsockopt/__alloc_pages_slowpath
+Date: Fri, 2 Dec 2016 14:24:37 +0100
+Message-ID: <c47865a1-4aae-5eae-f9e0-7b4f7f7e9897@pengutronix.de>
+References: <CAAeHK+x3vqjzzXPtp-xCshWnvTcVrZqGmJR7rbooRFxBJanv8g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=94eb2c1a0b9c8d65760542ac4a67
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="2G7f8nmLqlwadLXxvXgqKDN7KniMiDRb3"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:42131 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752118AbcLBNYs (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 2 Dec 2016 08:24:48 -0500
+In-Reply-To: <CAAeHK+x3vqjzzXPtp-xCshWnvTcVrZqGmJR7rbooRFxBJanv8g@mail.gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Andrey Konovalov <andreyknvl@google.com>, Oliver Hartkopp <socketcan@hartkopp.net>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
-List-Id: linux-can.vger.kernel.org
 
---94eb2c1a0b9c8d65760542ac4a67
-Content-Type: text/plain; charset=UTF-8
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--2G7f8nmLqlwadLXxvXgqKDN7KniMiDRb3
+Content-Type: multipart/mixed; boundary="Np5CwEkFIpp783ujbVp3chDKP7O3Q8Tmc";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Andrey Konovalov <andreyknvl@google.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
+ "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
+ netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>,
+ syzkaller <syzkaller@googlegroups.com>
+Message-ID: <c47865a1-4aae-5eae-f9e0-7b4f7f7e9897@pengutronix.de>
+Subject: Re: net/can: warning in raw_setsockopt/__alloc_pages_slowpath
+References: <CAAeHK+x3vqjzzXPtp-xCshWnvTcVrZqGmJR7rbooRFxBJanv8g@mail.gmail.com>
+In-Reply-To: <CAAeHK+x3vqjzzXPtp-xCshWnvTcVrZqGmJR7rbooRFxBJanv8g@mail.gmail.com>
 
-Hi!
+--Np5CwEkFIpp783ujbVp3chDKP7O3Q8Tmc
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-I've got the following error report while running the syzkaller fuzzer.
+On 12/02/2016 01:43 PM, Andrey Konovalov wrote:
+> Hi!
+>=20
+> I've got the following error report while running the syzkaller fuzzer.=
 
-A reproducer is attached.
+>=20
+> A reproducer is attached.
+>=20
+> On commit d8e435f3ab6fea2ea324dce72b51dd7761747523 (Nov 26).
+>=20
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 4009 at mm/page_alloc.c:3511
+> __alloc_pages_slowpath+0x3d4/0x1bf0
+> Modules linked in:
+> CPU: 0 PID: 4009 Comm: a.out Not tainted 4.9.0-rc6+ #54
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01=
+/2011
+>  ffff88006832f8a8 ffffffff81c73b14 0000000000000000 0000000000000000
+>  ffffffff842c6320 0000000000000000 ffff88006832f8f0 ffffffff8123dc57
+>  ffff880067d86000 ffffffff00000db7 ffffffff842c6320 0000000000000db7
+> Call Trace:
+>  [<     inline     >] __dump_stack lib/dump_stack.c:15
+>  [<ffffffff81c73b14>] dump_stack+0xb3/0x10f lib/dump_stack.c:51
+>  [<ffffffff8123dc57>] __warn+0x1a7/0x1f0 kernel/panic.c:550
+>  [<ffffffff8123de6c>] warn_slowpath_null+0x2c/0x40 kernel/panic.c:585
+>  [<ffffffff81559b04>] __alloc_pages_slowpath+0x3d4/0x1bf0 mm/page_alloc=
+=2Ec:3511
+>  [<ffffffff8155b8e2>] __alloc_pages_nodemask+0x5c2/0x710 mm/page_alloc.=
+c:3781
+>  [<ffffffff816236a4>] alloc_pages_current+0xf4/0x400 mm/mempolicy.c:207=
+2
+>  [<     inline     >] alloc_pages ./include/linux/gfp.h:469
+>  [<ffffffff815a834f>] kmalloc_order+0x1f/0x70 mm/slab_common.c:1015
+>  [<ffffffff815a83bf>] kmalloc_order_trace+0x1f/0x160 mm/slab_common.c:1=
+026
+>  [<     inline     >] kmalloc_large ./include/linux/slab.h:422
+>  [<ffffffff81635e67>] __kmalloc_track_caller+0x227/0x2a0 mm/slub.c:4233=
 
-On commit d8e435f3ab6fea2ea324dce72b51dd7761747523 (Nov 26).
+>  [<ffffffff8159932c>] memdup_user+0x2c/0xa0 mm/util.c:137
+>  [<ffffffff8369e0de>] raw_setsockopt+0x1be/0x9f0 net/can/raw.c:506
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 4009 at mm/page_alloc.c:3511
-__alloc_pages_slowpath+0x3d4/0x1bf0
-Modules linked in:
-CPU: 0 PID: 4009 Comm: a.out Not tainted 4.9.0-rc6+ #54
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
- ffff88006832f8a8 ffffffff81c73b14 0000000000000000 0000000000000000
- ffffffff842c6320 0000000000000000 ffff88006832f8f0 ffffffff8123dc57
- ffff880067d86000 ffffffff00000db7 ffffffff842c6320 0000000000000db7
-Call Trace:
- [<     inline     >] __dump_stack lib/dump_stack.c:15
- [<ffffffff81c73b14>] dump_stack+0xb3/0x10f lib/dump_stack.c:51
- [<ffffffff8123dc57>] __warn+0x1a7/0x1f0 kernel/panic.c:550
- [<ffffffff8123de6c>] warn_slowpath_null+0x2c/0x40 kernel/panic.c:585
- [<ffffffff81559b04>] __alloc_pages_slowpath+0x3d4/0x1bf0 mm/page_alloc.c:3511
- [<ffffffff8155b8e2>] __alloc_pages_nodemask+0x5c2/0x710 mm/page_alloc.c:3781
- [<ffffffff816236a4>] alloc_pages_current+0xf4/0x400 mm/mempolicy.c:2072
- [<     inline     >] alloc_pages ./include/linux/gfp.h:469
- [<ffffffff815a834f>] kmalloc_order+0x1f/0x70 mm/slab_common.c:1015
- [<ffffffff815a83bf>] kmalloc_order_trace+0x1f/0x160 mm/slab_common.c:1026
- [<     inline     >] kmalloc_large ./include/linux/slab.h:422
- [<ffffffff81635e67>] __kmalloc_track_caller+0x227/0x2a0 mm/slub.c:4233
- [<ffffffff8159932c>] memdup_user+0x2c/0xa0 mm/util.c:137
- [<ffffffff8369e0de>] raw_setsockopt+0x1be/0x9f0 net/can/raw.c:506
- [<     inline     >] SYSC_setsockopt net/socket.c:1757
- [<ffffffff82ca10c4>] SyS_setsockopt+0x154/0x240 net/socket.c:1736
- [<ffffffff840f2901>] entry_SYSCALL_64_fastpath+0x1f/0xc2
-arch/x86/entry/entry_64.S:209
----[ end trace bc80556cca970089 ]---
+We should add a check for a sensible optlen....
 
---94eb2c1a0b9c8d65760542ac4a67
-Content-Type: text/x-csrc; charset=US-ASCII; name="setsockopt-kmalloc-warning-poc.c"
-Content-Disposition: attachment; filename="setsockopt-kmalloc-warning-poc.c"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_iw7s6juv0
+> static int raw_setsockopt(struct socket *sock, int level, int optname,
+> 			  char __user *optval, unsigned int optlen)
+> {
+> 	struct sock *sk =3D sock->sk;
+> 	struct raw_sock *ro =3D raw_sk(sk);
+> 	struct can_filter *filter =3D NULL;  /* dyn. alloc'ed filters */
+> 	struct can_filter sfilter;         /* single filter */
+> 	struct net_device *dev =3D NULL;
+> 	can_err_mask_t err_mask =3D 0;
+> 	int count =3D 0;
+> 	int err =3D 0;
+>=20
+> 	if (level !=3D SOL_CAN_RAW)
+> 		return -EINVAL;
+>=20
+> 	switch (optname) {
+>=20
+> 	case CAN_RAW_FILTER:
+> 		if (optlen % sizeof(struct can_filter) !=3D 0)
+> 			return -EINVAL;
 
-Ly8gYXV0b2dlbmVyYXRlZCBieSBzeXprYWxsZXIgKGh0dHA6Ly9naXRodWIuY29tL2dvb2dsZS9z
-eXprYWxsZXIpCgojaWZuZGVmIF9fTlJfc2V0c29ja29wdAojZGVmaW5lIF9fTlJfc2V0c29ja29w
-dCA1NAojZW5kaWYKI2lmbmRlZiBfX05SX3NvY2tldAojZGVmaW5lIF9fTlJfc29ja2V0IDQxCiNl
-bmRpZgoKI2RlZmluZSBfR05VX1NPVVJDRQoKI2luY2x1ZGUgPHN5cy9pb2N0bC5oPgojaW5jbHVk
-ZSA8c3lzL21vdW50Lmg+CiNpbmNsdWRlIDxzeXMvcHJjdGwuaD4KI2luY2x1ZGUgPHN5cy9yZXNv
-dXJjZS5oPgojaW5jbHVkZSA8c3lzL3NvY2tldC5oPgojaW5jbHVkZSA8c3lzL3N0YXQuaD4KI2lu
-Y2x1ZGUgPHN5cy9zeXNjYWxsLmg+CiNpbmNsdWRlIDxzeXMvdGltZS5oPgojaW5jbHVkZSA8c3lz
-L3R5cGVzLmg+CiNpbmNsdWRlIDxzeXMvd2FpdC5oPgoKI2luY2x1ZGUgPGxpbnV4L2NhcGFiaWxp
-dHkuaD4KI2luY2x1ZGUgPGxpbnV4L2lmLmg+CiNpbmNsdWRlIDxsaW51eC9pZl90dW4uaD4KI2lu
-Y2x1ZGUgPGxpbnV4L3NjaGVkLmg+CiNpbmNsdWRlIDxuZXQvaWZfYXJwLmg+CgojaW5jbHVkZSA8
-YXNzZXJ0Lmg+CiNpbmNsdWRlIDxkaXJlbnQuaD4KI2luY2x1ZGUgPGVycm5vLmg+CiNpbmNsdWRl
-IDxmY250bC5oPgojaW5jbHVkZSA8Z3JwLmg+CiNpbmNsdWRlIDxwdGhyZWFkLmg+CiNpbmNsdWRl
-IDxzZXRqbXAuaD4KI2luY2x1ZGUgPHNpZ25hbC5oPgojaW5jbHVkZSA8c3RkYXJnLmg+CiNpbmNs
-dWRlIDxzdGRkZWYuaD4KI2luY2x1ZGUgPHN0ZGludC5oPgojaW5jbHVkZSA8c3RkaW8uaD4KI2lu
-Y2x1ZGUgPHN0ZGxpYi5oPgojaW5jbHVkZSA8c3RyaW5nLmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4K
-CmNvbnN0IGludCBrRmFpbFN0YXR1cyA9IDY3Owpjb25zdCBpbnQga0Vycm9yU3RhdHVzID0gNjg7
-CmNvbnN0IGludCBrUmV0cnlTdGF0dXMgPSA2OTsKCl9fYXR0cmlidXRlX18oKG5vcmV0dXJuKSkg
-dm9pZCBmYWlsKGNvbnN0IGNoYXIqIG1zZywgLi4uKQp7CiAgaW50IGUgPSBlcnJubzsKICBmZmx1
-c2goc3Rkb3V0KTsKICB2YV9saXN0IGFyZ3M7CiAgdmFfc3RhcnQoYXJncywgbXNnKTsKICB2ZnBy
-aW50ZihzdGRlcnIsIG1zZywgYXJncyk7CiAgdmFfZW5kKGFyZ3MpOwogIGZwcmludGYoc3RkZXJy
-LCAiIChlcnJubyAlZClcbiIsIGUpOwogIGV4aXQoa0ZhaWxTdGF0dXMpOwp9CgpfX2F0dHJpYnV0
-ZV9fKChub3JldHVybikpIHZvaWQgZXhpdGYoY29uc3QgY2hhciogbXNnLCAuLi4pCnsKICBpbnQg
-ZSA9IGVycm5vOwogIGZmbHVzaChzdGRvdXQpOwogIHZhX2xpc3QgYXJnczsKICB2YV9zdGFydChh
-cmdzLCBtc2cpOwogIHZmcHJpbnRmKHN0ZGVyciwgbXNnLCBhcmdzKTsKICB2YV9lbmQoYXJncyk7
-CiAgZnByaW50ZihzdGRlcnIsICIgKGVycm5vICVkKVxuIiwgZSk7CiAgZXhpdChrUmV0cnlTdGF0
-dXMpOwp9CgpzdGF0aWMgaW50IGZsYWdfZGVidWc7Cgp2b2lkIGRlYnVnKGNvbnN0IGNoYXIqIG1z
-ZywgLi4uKQp7CiAgaWYgKCFmbGFnX2RlYnVnKQogICAgcmV0dXJuOwogIHZhX2xpc3QgYXJnczsK
-ICB2YV9zdGFydChhcmdzLCBtc2cpOwogIHZmcHJpbnRmKHN0ZG91dCwgbXNnLCBhcmdzKTsKICB2
-YV9lbmQoYXJncyk7CiAgZmZsdXNoKHN0ZG91dCk7Cn0KCl9fdGhyZWFkIGludCBza2lwX3NlZ3Y7
-Cl9fdGhyZWFkIGptcF9idWYgc2Vndl9lbnY7CgpzdGF0aWMgdm9pZCBzZWd2X2hhbmRsZXIoaW50
-IHNpZywgc2lnaW5mb190KiBpbmZvLCB2b2lkKiB1Y3R4KQp7CiAgaWYgKF9fYXRvbWljX2xvYWRf
-bigmc2tpcF9zZWd2LCBfX0FUT01JQ19SRUxBWEVEKSkKICAgIF9sb25nam1wKHNlZ3ZfZW52LCAx
-KTsKICBleGl0KHNpZyk7Cn0KCnN0YXRpYyB2b2lkIGluc3RhbGxfc2Vndl9oYW5kbGVyKCkKewog
-IHN0cnVjdCBzaWdhY3Rpb24gc2E7CiAgbWVtc2V0KCZzYSwgMCwgc2l6ZW9mKHNhKSk7CiAgc2Eu
-c2Ffc2lnYWN0aW9uID0gc2Vndl9oYW5kbGVyOwogIHNhLnNhX2ZsYWdzID0gU0FfTk9ERUZFUiB8
-IFNBX1NJR0lORk87CiAgc2lnYWN0aW9uKFNJR1NFR1YsICZzYSwgTlVMTCk7CiAgc2lnYWN0aW9u
-KFNJR0JVUywgJnNhLCBOVUxMKTsKfQoKI2RlZmluZSBOT05GQUlMSU5HKC4uLikgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCiAgeyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAog
-ICAgX19hdG9taWNfZmV0Y2hfYWRkKCZza2lwX3NlZ3YsIDEsIF9fQVRPTUlDX1NFUV9DU1QpOyAg
-ICAgICAgICAgICAgIFwKICAgIGlmIChfc2V0am1wKHNlZ3ZfZW52KSA9PSAwKSB7ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCiAgICAgIF9fVkFfQVJHU19fOyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAogICAgfSAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIFwKICAgIF9fYXRvbWljX2ZldGNoX3N1Yigmc2tpcF9zZWd2LCAxLCBfX0FUT01JQ19TRVFf
-Q1NUKTsgICAgICAgICAgICAgICBcCiAgfQoKc3RhdGljIHVpbnRwdHJfdCBleGVjdXRlX3N5c2Nh
-bGwoaW50IG5yLCB1aW50cHRyX3QgYTAsIHVpbnRwdHJfdCBhMSwKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgdWludHB0cl90IGEyLCB1aW50cHRyX3QgYTMsCiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHVpbnRwdHJfdCBhNCwgdWludHB0cl90IGE1LAogICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB1aW50cHRyX3QgYTYsIHVpbnRwdHJfdCBhNywKICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgdWludHB0cl90IGE4KQp7CiAgc3dpdGNoIChucikg
-ewogIGRlZmF1bHQ6CiAgICByZXR1cm4gc3lzY2FsbChuciwgYTAsIGExLCBhMiwgYTMsIGE0LCBh
-NSk7CiAgfQp9CgpzdGF0aWMgdm9pZCBzZXR1cF9tYWluX3Byb2Nlc3ModWludDY0X3QgcGlkKQp7
-CiAgc3RydWN0IHNpZ2FjdGlvbiBzYTsKICBtZW1zZXQoJnNhLCAwLCBzaXplb2Yoc2EpKTsKICBz
-YS5zYV9oYW5kbGVyID0gU0lHX0lHTjsKICBzeXNjYWxsKFNZU19ydF9zaWdhY3Rpb24sIDB4MjAs
-ICZzYSwgTlVMTCwgOCk7CiAgc3lzY2FsbChTWVNfcnRfc2lnYWN0aW9uLCAweDIxLCAmc2EsIE5V
-TEwsIDgpOwogIGluc3RhbGxfc2Vndl9oYW5kbGVyKCk7CgogIGNoYXIgdG1wZGlyX3RlbXBsYXRl
-W10gPSAiLi9zeXprYWxsZXIuWFhYWFhYIjsKICBjaGFyKiB0bXBkaXIgPSBta2R0ZW1wKHRtcGRp
-cl90ZW1wbGF0ZSk7CiAgaWYgKCF0bXBkaXIpCiAgICBmYWlsKCJmYWlsZWQgdG8gbWtkdGVtcCIp
-OwogIGlmIChjaG1vZCh0bXBkaXIsIDA3NzcpKQogICAgZmFpbCgiZmFpbGVkIHRvIGNobW9kIik7
-CiAgaWYgKGNoZGlyKHRtcGRpcikpCiAgICBmYWlsKCJmYWlsZWQgdG8gY2hkaXIiKTsKfQoKc3Rh
-dGljIHZvaWQgbG9vcCgpOwoKc3RhdGljIHZvaWQgc2FuZGJveF9jb21tb24oKQp7CiAgcHJjdGwo
-UFJfU0VUX1BERUFUSFNJRywgU0lHS0lMTCwgMCwgMCwgMCk7CiAgc2V0cGdycCgpOwogIHNldHNp
-ZCgpOwoKICBzdHJ1Y3QgcmxpbWl0IHJsaW07CiAgcmxpbS5ybGltX2N1ciA9IHJsaW0ucmxpbV9t
-YXggPSAxMjggPDwgMjA7CiAgc2V0cmxpbWl0KFJMSU1JVF9BUywgJnJsaW0pOwogIHJsaW0ucmxp
-bV9jdXIgPSBybGltLnJsaW1fbWF4ID0gMSA8PCAyMDsKICBzZXRybGltaXQoUkxJTUlUX0ZTSVpF
-LCAmcmxpbSk7CiAgcmxpbS5ybGltX2N1ciA9IHJsaW0ucmxpbV9tYXggPSAxIDw8IDIwOwogIHNl
-dHJsaW1pdChSTElNSVRfU1RBQ0ssICZybGltKTsKICBybGltLnJsaW1fY3VyID0gcmxpbS5ybGlt
-X21heCA9IDA7CiAgc2V0cmxpbWl0KFJMSU1JVF9DT1JFLCAmcmxpbSk7CgogIHVuc2hhcmUoQ0xP
-TkVfTkVXTlMpOwogIHVuc2hhcmUoQ0xPTkVfTkVXSVBDKTsKICB1bnNoYXJlKENMT05FX0lPKTsK
-fQoKc3RhdGljIGludCBkb19zYW5kYm94X25vbmUoKQp7CiAgaW50IHBpZCA9IGZvcmsoKTsKICBp
-ZiAocGlkKQogICAgcmV0dXJuIHBpZDsKICBzYW5kYm94X2NvbW1vbigpOwogIGxvb3AoKTsKICBl
-eGl0KDEpOwp9Cgpsb25nIHJbMl07CnZvaWQgbG9vcCgpCnsKICBtZW1zZXQociwgLTEsIHNpemVv
-ZihyKSk7CiAgclswXSA9IGV4ZWN1dGVfc3lzY2FsbChfX05SX3NvY2tldCwgMHgxZHVsLCAweDN1
-bCwgMHgxdWwsIDAsIDAsIDAsIDAsCiAgICAgICAgICAgICAgICAgICAgICAgICAwLCAwKTsKICBy
-WzFdID0gZXhlY3V0ZV9zeXNjYWxsKF9fTlJfc2V0c29ja29wdCwgclswXSwgMHg2NXVsLCAweDF1
-bCwKICAgICAgICAgICAgICAgICAgICAgICAgIDB4MjAwMDAwMDB1bCwgMHgxODAwMDAwMHVsLCAw
-LCAwLCAwLCAwKTsKfQppbnQgbWFpbigpCnsKICBzZXR1cF9tYWluX3Byb2Nlc3MoMCk7CiAgaW50
-IHBpZCA9IGRvX3NhbmRib3hfbm9uZSgpOwogIGludCBzdGF0dXMgPSAwOwogIHdoaWxlICh3YWl0
-cGlkKHBpZCwgJnN0YXR1cywgX19XQUxMKSAhPSBwaWQpIHsKICB9CiAgcmV0dXJuIDA7Cn0KCgo=
---94eb2c1a0b9c8d65760542ac4a67--
+here...
+
+		if (optlen > 64 * sizeof(struct can_filter))
+			return -EINVAL;
+
+>=20
+> 		count =3D optlen / sizeof(struct can_filter);
+>=20
+> 		if (count > 1) {
+> 			/* filter does not fit into dfilter =3D> alloc space */
+> 			filter =3D memdup_user(optval, optlen);
+> 			if (IS_ERR(filter))
+> 				return PTR_ERR(filter);
+> 		} else if (count =3D=3D 1) {
+> 			if (copy_from_user(&sfilter, optval, sizeof(sfilter)))
+> 				return -EFAULT;
+> 		}
+>=20
+> 		lock_sock(sk);
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--Np5CwEkFIpp783ujbVp3chDKP7O3Q8Tmc--
+
+--2G7f8nmLqlwadLXxvXgqKDN7KniMiDRb3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhBdhUACgkQPTuqJayp
+JWrk8Qf/ZwINBxTDbgKlofOMDU5zddIUyjXjQybTcZw3HKz9wh3e8+HIcA3KPsAd
+YvnbstoIhXWVM4zGpPqlP4qQz9gjbJNdoHrd3fdIrkJobgVa16V/uWxlM7U1+pfS
+15wCqOVfYACkXLZxJIwsURdhOwoz9HVgFT7btfomotnoI57DCmgkoODiWYMAIs3B
+4RNXiz3X9fIgcLt8dBKr9HGfh55l6aU8+4zaeEJut1u/djRXm2eS7oECblTbEuCD
+7r9aj5zx2Z1lS27VBKeb+0C7BAYdHX2M7EQmcQQ0YQWB2KiKR9BxDystIb2i0X6+
+TWrNokG39HoaKEOufqKENDa9tyy7Hw==
+=ODLo
+-----END PGP SIGNATURE-----
+
+--2G7f8nmLqlwadLXxvXgqKDN7KniMiDRb3--
