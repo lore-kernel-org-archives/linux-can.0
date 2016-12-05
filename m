@@ -1,140 +1,95 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: net/can: warning in raw_setsockopt/__alloc_pages_slowpath
-Date: Mon, 5 Dec 2016 11:55:45 +0100
-Message-ID: <1d643f72-d90a-ab39-a23c-844766c10749@pengutronix.de>
-References: <CAAeHK+x3vqjzzXPtp-xCshWnvTcVrZqGmJR7rbooRFxBJanv8g@mail.gmail.com>
- <c47865a1-4aae-5eae-f9e0-7b4f7f7e9897@pengutronix.de>
- <73b78023-bc11-25c0-33e3-3a748dbc81cd@hartkopp.net>
- <74e2aed8-ba38-ee91-59a3-49131ea18d60@pengutronix.de>
- <6fe05efd-eb2c-a5e2-9d45-48f2c3098abb@hartkopp.net>
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH] can: raw: raw_setsockopt: limit number of can_filter that
+ can be set
+Date: Mon, 5 Dec 2016 12:34:44 +0100
+Message-ID: <CAAeHK+wtKLZbS_VNyNby_fbAt6o=p2H1we+ZhErbHpyUOEvv7A@mail.gmail.com>
+References: <20161205105536.23668-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="lpn3P6fO2KhAuQvsCO2IPwVO5LjnXiJvV"
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:52449 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1750849AbcLEKzz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Dec 2016 05:55:55 -0500
-In-Reply-To: <6fe05efd-eb2c-a5e2-9d45-48f2c3098abb@hartkopp.net>
+Received: from mail-wm0-f53.google.com ([74.125.82.53]:35045 "EHLO
+        mail-wm0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751233AbcLELey (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Dec 2016 06:34:54 -0500
+Received: by mail-wm0-f53.google.com with SMTP id a197so92446527wmd.0
+        for <linux-can@vger.kernel.org>; Mon, 05 Dec 2016 03:34:46 -0800 (PST)
+In-Reply-To: <20161205105536.23668-1-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Andrey Konovalov <andreyknvl@google.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lpn3P6fO2KhAuQvsCO2IPwVO5LjnXiJvV
-Content-Type: multipart/mixed; boundary="qBikJLJmAmUdFF4KjOcAvTKTSVRtE7FBk";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>,
- Andrey Konovalov <andreyknvl@google.com>,
- "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
- netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>,
- syzkaller <syzkaller@googlegroups.com>
-Message-ID: <1d643f72-d90a-ab39-a23c-844766c10749@pengutronix.de>
-Subject: Re: net/can: warning in raw_setsockopt/__alloc_pages_slowpath
-References: <CAAeHK+x3vqjzzXPtp-xCshWnvTcVrZqGmJR7rbooRFxBJanv8g@mail.gmail.com>
- <c47865a1-4aae-5eae-f9e0-7b4f7f7e9897@pengutronix.de>
- <73b78023-bc11-25c0-33e3-3a748dbc81cd@hartkopp.net>
- <74e2aed8-ba38-ee91-59a3-49131ea18d60@pengutronix.de>
- <6fe05efd-eb2c-a5e2-9d45-48f2c3098abb@hartkopp.net>
-In-Reply-To: <6fe05efd-eb2c-a5e2-9d45-48f2c3098abb@hartkopp.net>
+On Mon, Dec 5, 2016 at 11:55 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> This patch adds a check to limit the number of can_filters that can be ser via
+> setsockopt on CAN_RAW sockets.
+>
+> Otherwise allocations > MAX_ORDER are not prevented resulting in the following
+> warning found by Andrey Konovalov:
+>
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 4009 at mm/page_alloc.c:3511
+> __alloc_pages_slowpath+0x3d4/0x1bf0
+> Modules linked in:
+> CPU: 0 PID: 4009 Comm: a.out Not tainted 4.9.0-rc6+ #54
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+>  ffff88006832f8a8 ffffffff81c73b14 0000000000000000 0000000000000000
+>  ffffffff842c6320 0000000000000000 ffff88006832f8f0 ffffffff8123dc57
+>  ffff880067d86000 ffffffff00000db7 ffffffff842c6320 0000000000000db7
+> Call Trace:
+>  [<     inline     >] __dump_stack lib/dump_stack.c:15
+>  [<ffffffff81c73b14>] dump_stack+0xb3/0x10f lib/dump_stack.c:51
+>  [<ffffffff8123dc57>] __warn+0x1a7/0x1f0 kernel/panic.c:550
+>  [<ffffffff8123de6c>] warn_slowpath_null+0x2c/0x40 kernel/panic.c:585
+>  [<ffffffff81559b04>] __alloc_pages_slowpath+0x3d4/0x1bf0 mm/page_alloc.c:3511
+>  [<ffffffff8155b8e2>] __alloc_pages_nodemask+0x5c2/0x710 mm/page_alloc.c:3781
+>  [<ffffffff816236a4>] alloc_pages_current+0xf4/0x400 mm/mempolicy.c:2072
+>  [<     inline     >] alloc_pages ./include/linux/gfp.h:469
+>  [<ffffffff815a834f>] kmalloc_order+0x1f/0x70 mm/slab_common.c:1015
+>  [<ffffffff815a83bf>] kmalloc_order_trace+0x1f/0x160 mm/slab_common.c:1026
+>  [<     inline     >] kmalloc_large ./include/linux/slab.h:422
+>  [<ffffffff81635e67>] __kmalloc_track_caller+0x227/0x2a0 mm/slub.c:4233
+>  [<ffffffff8159932c>] memdup_user+0x2c/0xa0 mm/util.c:137
+>  [<ffffffff8369e0de>] raw_setsockopt+0x1be/0x9f0 net/can/raw.c:506
+>  [<     inline     >] SYSC_setsockopt net/socket.c:1757
+>  [<ffffffff82ca10c4>] SyS_setsockopt+0x154/0x240 net/socket.c:1736
+>  [<ffffffff840f2901>] entry_SYSCALL_64_fastpath+0x1f/0xc2
+> arch/x86/entry/entry_64.S:209
+> ---[ end trace bc80556cca970089 ]---
+>
+> Cc: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  include/uapi/linux/can.h | 1 +
+>  net/can/raw.c            | 3 +++
+>  2 files changed, 4 insertions(+)
+>
+> diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
+> index 9692cda5f8fc..c48d93a28d1a 100644
+> --- a/include/uapi/linux/can.h
+> +++ b/include/uapi/linux/can.h
+> @@ -196,5 +196,6 @@ struct can_filter {
+>  };
+>
+>  #define CAN_INV_FILTER 0x20000000U /* to be set in can_filter.can_id */
+> +#define CAN_RAW_FILTER_MAX 512 /* maximum number of can_filter set via setsockopt() */
+>
+>  #endif /* !_UAPI_CAN_H */
+> diff --git a/net/can/raw.c b/net/can/raw.c
+> index 972c187d40ab..b075f028d7e2 100644
+> --- a/net/can/raw.c
+> +++ b/net/can/raw.c
+> @@ -499,6 +499,9 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>                 if (optlen % sizeof(struct can_filter) != 0)
+>                         return -EINVAL;
+>
+> +               if (optlen > CAN_RAW_FILTER_MAX * sizeof(struct can_filter))
+> +                       return -EINVAL;
+> +
+>                 count = optlen / sizeof(struct can_filter);
+>
+>                 if (count > 1) {
+> --
+> 2.10.2
+>
 
---qBikJLJmAmUdFF4KjOcAvTKTSVRtE7FBk
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 12/02/2016 06:05 PM, Oliver Hartkopp wrote:
->=20
->=20
-> On 12/02/2016 04:42 PM, Marc Kleine-Budde wrote:
->> On 12/02/2016 04:11 PM, Oliver Hartkopp wrote:
->>>
->>>
->>> On 12/02/2016 02:24 PM, Marc Kleine-Budde wrote:
->>>> On 12/02/2016 01:43 PM, Andrey Konovalov wrote:
->>>
->>>
->>>>>  [<ffffffff8369e0de>] raw_setsockopt+0x1be/0x9f0 net/can/raw.c:506
->>>>
->>>> We should add a check for a sensible optlen....
->>>>
->>>>> static int raw_setsockopt(struct socket *sock, int level, int optna=
-me,
->>>>> 			  char __user *optval, unsigned int optlen)
->>>>> {
->>>>> 	struct sock *sk =3D sock->sk;
->>>>> 	struct raw_sock *ro =3D raw_sk(sk);
->>>>> 	struct can_filter *filter =3D NULL;  /* dyn. alloc'ed filters */
->>>>> 	struct can_filter sfilter;         /* single filter */
->>>>> 	struct net_device *dev =3D NULL;
->>>>> 	can_err_mask_t err_mask =3D 0;
->>>>> 	int count =3D 0;
->>>>> 	int err =3D 0;
->>>>>
->>>>> 	if (level !=3D SOL_CAN_RAW)
->>>>> 		return -EINVAL;
->>>>>
->>>>> 	switch (optname) {
->>>>>
->>>>> 	case CAN_RAW_FILTER:
->>>>> 		if (optlen % sizeof(struct can_filter) !=3D 0)
->>>>> 			return -EINVAL;
->>>>
->>>> here...
->>>>
->>>> 		if (optlen > 64 * sizeof(struct can_filter))
->>>> 			return -EINVAL;
->>>>
->>>
->>> Agreed.
->>>
->>> But what is sensible here?
->>> 64 filters is way to small IMO.
->>>
->>> When thinking about picking a bunch of single CAN IDs I would tend to=
-
->>> something like 512 filters.
->>
->> Ok - 64 was just an arbitrary chosen value for demonstration purposes =
-:)
->>
->=20
-> :-)
->=20
-> Would you like to send a patch?
-
-Yes, how many Filters? 512? Can you test, as I don't have the setup ready=
-?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---qBikJLJmAmUdFF4KjOcAvTKTSVRtE7FBk--
-
---lpn3P6fO2KhAuQvsCO2IPwVO5LjnXiJvV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhFR7EACgkQPTuqJayp
-JWq8dQf+PDkoyNL5m6WBE76ojPnKNkhSS8gNvxysN0zCLe+xv52A1pAxVF0jIuFq
-NbF3vyXkNrX0UwSHWS/p76o4noan+49h+XFWmsGFckdrX+94lGahEIWqSpPklbAm
-hUnsU3uIvpgV9cn7CstMAx/68KSAo9Ffq82bfk84ALU+KqB0vBTgRjQQFU5fYfqs
-HCcI1AmHSWYg/jBPKsJA5jlgIn6e+KfH78yWKLFfpyDcBojkux2K91Pn76kTkdpN
-JHnPf4iqZU/pmqF95U7GcEt8RK0I7m3dLx6k1cQRscN7JCJX3XPZeeHFrZQ1aNhQ
-2X2/je0q4kg3UB0+vMfDnCtv9MBxGQ==
-=OECu
------END PGP SIGNATURE-----
-
---lpn3P6fO2KhAuQvsCO2IPwVO5LjnXiJvV--
+Tested-by: Andrey Konovalov <andreyknvl@google.com>
