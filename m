@@ -1,30 +1,83 @@
-From: Andrey Konovalov <andreyknvl@google.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [PATCH] can: raw: raw_setsockopt: limit number of can_filter that
  can be set
-Date: Mon, 5 Dec 2016 12:34:44 +0100
-Message-ID: <CAAeHK+wtKLZbS_VNyNby_fbAt6o=p2H1we+ZhErbHpyUOEvv7A@mail.gmail.com>
+Date: Mon, 5 Dec 2016 21:44:16 +0100
+Message-ID: <d807d5f3-632f-e5c1-dc71-7acb75717af0@hartkopp.net>
 References: <20161205105536.23668-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wm0-f53.google.com ([74.125.82.53]:35045 "EHLO
-        mail-wm0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751233AbcLELey (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Dec 2016 06:34:54 -0500
-Received: by mail-wm0-f53.google.com with SMTP id a197so92446527wmd.0
-        for <linux-can@vger.kernel.org>; Mon, 05 Dec 2016 03:34:46 -0800 (PST)
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:31355 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751161AbcLEUo3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Dec 2016 15:44:29 -0500
 In-Reply-To: <20161205105536.23668-1-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: Andrey Konovalov <andreyknvl@google.com>
 
-On Mon, Dec 5, 2016 at 11:55 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+Hi Marc,
+
+On 12/05/2016 11:55 AM, Marc Kleine-Budde wrote:
 > This patch adds a check to limit the number of can_filters that can be ser via
+
+Typo: ser -> set
+
+
 > setsockopt on CAN_RAW sockets.
 >
 > Otherwise allocations > MAX_ORDER are not prevented resulting in the following
 > warning found by Andrey Konovalov:
+
+Indeed I got a different warning on my machine:
+
+[ 7570.747275] ------------[ cut here ]------------
+[ 7570.747283] WARNING: CPU: 5 PID: 3134 at mm/slab_common.c:861 
+kmalloc_slab+0x86/0xa0
+[ 7570.747283] Modules linked in: can_raw can ...
+[ 7570.747334] CPU: 5 PID: 3134 Comm: setsockopt-kmal Not tainted 
+4.9.0-rc7-00198-g0cb65c8 #1
+[ 7570.747335] Hardware name: Hewlett-Packard HP ZBook 17
+[ 7570.747337]  0000000000000000 ffffffff819b7d20 0000000000000000 
+0000000000000000
+[ 7570.747341]  ffffffff810f1fa8 ffffffff0000035d fffffffffffffff4 
+0000000018000000
+[ 7570.747344]  00000000024000c0 0000000018000000 ffff8803e35b7f20 
+ffffffffa0244200
+[ 7570.747347] Call Trace:
+[ 7570.747354]  [<ffffffff819b7d20>] ? dump_stack+0x46/0x66
+[ 7570.747358]  [<ffffffff810f1fa8>] ? __warn+0x168/0x1a0
+[ 7570.747361]  [<ffffffff8143a276>] ? kmalloc_slab+0x86/0xa0
+[ 7570.747364]  [<ffffffff814cb2a3>] ? __kmalloc_track_caller+0x23/0x540
+[ 7570.747366]  [<ffffffff814c9c9d>] ? kmem_cache_alloc+0xcd/0x530
+[ 7570.747371]  [<ffffffffa0241d0b>] ? raw_setsockopt+0x25b/0x810 [can_raw]
+[ 7570.747373]  [<ffffffff814c9c9d>] ? kmem_cache_alloc+0xcd/0x530
+[ 7570.747376]  [<ffffffff814299c8>] ? memdup_user+0x28/0x80
+[ 7570.747379]  [<ffffffffa0241d0b>] ? raw_setsockopt+0x25b/0x810 [can_raw]
+[ 7570.747382]  [<ffffffffa0241ab0>] ? raw_rcv+0x720/0x720 [can_raw]
+[ 7570.747386]  [<ffffffff82291a40>] ? sock_splice_read+0x130/0x130
+[ 7570.747390]  [<ffffffff8156c890>] ? get_unused_fd_flags+0xd0/0xd0
+[ 7570.747393]  [<ffffffff8156c384>] ? __alloc_fd+0x94/0x4d0
+[ 7570.747396]  [<ffffffff82294f1c>] ? sockfd_lookup_light+0x1c/0x150
+[ 7570.747399]  [<ffffffff82299b80>] ? SyS_setsockopt+0x110/0x1d0
+[ 7570.747401]  [<ffffffff82299a70>] ? SyS_recv+0x10/0x10
+[ 7570.747403]  [<ffffffff8229931d>] ? SyS_socket+0xed/0x180
+[ 7570.747406]  [<ffffffff8112ad9c>] ? sys_setsid+0x14c/0x330
+[ 7570.747409]  [<ffffffff8268cea4>] ? entry_SYSCALL_64_fastpath+0x17/0x98
+[ 7570.747411] ---[ end trace acabb2bee46c9bf4 ]---
+
+which points to a different check in mm/slab_common.c:861.
+
+I think it is generally a sane idea to limit the number of can_filters.
+
+I would suggest to write a
+
+Reported-by: Andrey Konovalov <andreyknvl@google.com>
+
+without giving a detailed example of a WARNING.
+
 >
 > ------------[ cut here ]------------
 > WARNING: CPU: 0 PID: 4009 at mm/page_alloc.c:3511
@@ -79,17 +132,19 @@ On Mon, Dec 5, 2016 at 11:55 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
 > --- a/net/can/raw.c
 > +++ b/net/can/raw.c
 > @@ -499,6 +499,9 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
->                 if (optlen % sizeof(struct can_filter) != 0)
->                         return -EINVAL;
+>  		if (optlen % sizeof(struct can_filter) != 0)
+>  			return -EINVAL;
 >
-> +               if (optlen > CAN_RAW_FILTER_MAX * sizeof(struct can_filter))
-> +                       return -EINVAL;
-> +
->                 count = optlen / sizeof(struct can_filter);
->
->                 if (count > 1) {
-> --
-> 2.10.2
->
+> +		if (optlen > CAN_RAW_FILTER_MAX * sizeof(struct can_filter))
+> +			return -EINVAL;
 
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
+What about -E2BIG instead of -EINVAL here?
+
+Best regards,
+Oliver
+
+> +
+>  		count = optlen / sizeof(struct can_filter);
+>
+>  		if (count > 1) {
+>
