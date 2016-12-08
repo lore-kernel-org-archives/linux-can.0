@@ -1,46 +1,118 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2016-12-08
-Date: Thu,  8 Dec 2016 16:35:51 +0100
-Message-ID: <20161208153552.18122-1-mkl@pengutronix.de>
+From: =?UTF-8?B?7LaU7KeA7Zi4?= <jiho.chu@samsung.com>
+Subject: =?UTF-8?B?W1BBVENIXSBuZXQ6IGNhbjogcGVhazogZml4IGJhZCBtZW1v?=
+ =?UTF-8?B?cnkgYWNjZXNzIGFuZCBmcmVlIHNlcXVlbmNl?=
+Date: Thu, 08 Dec 2016 12:01:13 +0000
+Message-ID: <201778981.871011.1481198473938.JavaMail.weblogic@ep1ml101a>
+References: <CGME20161208114907epcms1p263def532c5b3705a19fff179385a50a0@epcms1p2>
+Reply-To: jiho.chu@samsung.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="----=_Part_871010_237286780.1481198473938"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:35151 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S932628AbcLHPnT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Dec 2016 10:43:19 -0500
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.84_2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1cF0qr-00024k-Um
+        for linux-can@vger.kernel.org; Thu, 08 Dec 2016 16:43:18 +0100
+Received: from [IPv6:2001:470:7eea:1122:11e8:7f38:867d:64f2] (unknown [IPv6:2001:470:7eea:1122:11e8:7f38:867d:64f2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (verified OK))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 587371A2DC9
+        for <linux-can@vger.kernel.org>; Thu,  8 Dec 2016 15:43:17 +0000 (UTC)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: =?UTF-8?B?bWtsQHBlbmd1dHJvbml4LmRl?= <mkl@pengutronix.de>
+Cc: =?UTF-8?B?d2dAZ3JhbmRlZ2dlci5jb20=?= <wg@grandegger.com>
 
-Hello David,
+------=_Part_871010_237286780.1481198473938
+Content-Type: multipart/related;
+	boundary="----=_Part_871008_987472764.1481198473912"
 
-this is a pull request for one patch.
+------=_Part_871008_987472764.1481198473912
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"
 
-Jiho Chu found and fixed a use-after-free error in the cleanup path in the peak
-pcan USB CAN driver.
+Rml4wqBmb3LCoGJhZMKgbWVtb3J5wqBhY2Nlc3PCoHdoaWxlwqBkaXNjb25uZWN0aW5nLsKgbmV0
+ZGV2wqBpc8KgZnJlZWQNCmJlZm9yZcKgcHJpdmF0ZcKgZGF0YcKgZnJlZSzCoGFuZMKgZGV2wqBp
+c8KgYWNjZXNzZWTCoGFmdGVywqBmcmVlaW5nwqBuZXRkZXYuDQrCoA0KVGhpc8KgbWFrZXPCoGHC
+oHNsdWLCoHByb2JsZW0swqBhbmTCoGl0wqByYWlzZcKga2VybmVswqBvb3BzwqB3aXRowqBzbHVi
+wqBkZWJ1Z2dlcg0KY29uZmlnLg0KwqANClNpZ25lZC1vZmYtYnk6wqBKaWhvwqBDaHXCoDxqaWhv
+LmNodUBzYW1zdW5nLmNvbT4NCi0tLQ0KwqBkcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3Bj
+YW5fdXNiX2NvcmUuY8KgfMKgNsKgKysrKy0tDQrCoDHCoGZpbGXCoGNoYW5nZWQswqA0wqBpbnNl
+cnRpb25zKCspLMKgMsKgZGVsZXRpb25zKC0pDQrCoA0KZGlmZsKgLS1naXTCoGEvZHJpdmVycy9u
+ZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9jb3JlLmPCoGIvZHJpdmVycy9uZXQvY2FuL3Vz
+Yi9wZWFrX3VzYi9wY2FuX3VzYl9jb3JlLmMNCmluZGV4wqA3OTIxY2ZmLi41Y2M2YmFlwqAxMDA2
+NDQNCi0tLcKgYS9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYw0K
+KysrwqBiL2RyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfY29yZS5jDQpAQMKg
+LTg3MiwyM8KgKzg3MiwyNcKgQEDCoGxibF9mcmVlX2NhbmRldjoNCsKgc3RhdGljwqB2b2lkwqBw
+ZWFrX3VzYl9kaXNjb25uZWN0KHN0cnVjdMKgdXNiX2ludGVyZmFjZcKgKmludGYpDQrCoHsNCsKg
+wqDCoMKgwqDCoMKgwqBzdHJ1Y3TCoHBlYWtfdXNiX2RldmljZcKgKmRldjsNCivCoMKgwqDCoMKg
+wqDCoHN0cnVjdMKgcGVha191c2JfZGV2aWNlwqAqZGV2X3ByZXZfc2libGluZ3M7DQrCoA0KwqDC
+oMKgwqDCoMKgwqDCoC8qwqB1bnJlZ2lzdGVywqBhc8KgbWFuecKgbmV0ZGV2wqBkZXZpY2VzwqBh
+c8Kgc2libGluZ3PCoCovDQotwqDCoMKgwqDCoMKgwqBmb3LCoChkZXbCoD3CoHVzYl9nZXRfaW50
+ZmRhdGEoaW50Zik7wqBkZXY7wqBkZXbCoD3CoGRldi0+cHJldl9zaWJsaW5ncynCoHsNCivCoMKg
+wqDCoMKgwqDCoGZvcsKgKGRldsKgPcKgdXNiX2dldF9pbnRmZGF0YShpbnRmKTvCoGRldjvCoGRl
+dsKgPcKgZGV2X3ByZXZfc2libGluZ3MpwqB7DQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHN0cnVjdMKgbmV0X2RldmljZcKgKm5ldGRldsKgPcKgZGV2LT5uZXRkZXY7DQrCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNoYXLCoG5hbWVbSUZOQU1TSVpdOw0KwqANCivCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfcHJldl9zaWJsaW5nc8KgPcKgZGV2LT5wcmV2
+X3NpYmxpbmdzOw0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXYtPnN0YXRlwqAm
+PcKgflBDQU5fVVNCX1NUQVRFX0NPTk5FQ1RFRDsNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgc3RybmNweShuYW1lLMKgbmV0ZGV2LT5uYW1lLMKgSUZOQU1TSVopOw0KwqANCsKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdW5yZWdpc3Rlcl9uZXRkZXYobmV0ZGV2KTsNCi3C
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBmcmVlX2NhbmRldihuZXRkZXYpOw0KwqANCsKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKga2ZyZWUoZGV2LT5jbWRfYnVmKTsNCsKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2LT5uZXh0X3NpYmxpbmdzwqA9wqBOVUxMOw0K
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZsKgKGRldi0+YWRhcHRlci0+ZGV2X2Zy
+ZWUpDQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXYt
+PmFkYXB0ZXItPmRldl9mcmVlKGRldik7DQrCoA0KK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoGZyZWVfY2FuZGV2KG5ldGRldik7DQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oGRldl9pbmZvKCZpbnRmLT5kZXYswqAiJXPCoHJlbW92ZWRcbiIswqBuYW1lKTsNCsKgwqDCoMKg
+wqDCoMKgwqB9DQrCoA0KLS0NCjIuNy40DQo=
+------=_Part_871008_987472764.1481198473912--
 
-regards,
-Marc
+------=_Part_871010_237286780.1481198473938
+Content-Type: application/octet-stream
+Content-Disposition: attachment;
+	filename="=?UTF-8?B?MDAwMS1uZXQtY2FuLXBlYWstZml4LWJhZC1tZW1vcnktYWNjZXNzLWFuZC1mcmVlLXNlcXVlbmNlLnBhdGNo?="
+Content-Transfer-Encoding: base64
 
----
+RnJvbSAzMDUyNTExMGJjN2U4M2Q2N2ViNmM5ZDg1YmZhODdlODA5MjY1ZmUyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBKaWhvIENodSA8amloby5jaHVAc2Ftc3VuZy5jb20+CkRhdGU6
+IFRodSwgOCBEZWMgMjAxNiAxNzozNTo1MSArMDkwMApTdWJqZWN0OiBbUEFUQ0hdIG5ldDogY2Fu
+OiBwZWFrOiBmaXggYmFkIG1lbW9yeSBhY2Nlc3MgYW5kIGZyZWUgc2VxdWVuY2UKCkZpeCBmb3Ig
+YmFkIG1lbW9yeSBhY2Nlc3Mgd2hpbGUgZGlzY29ubmVjdGluZy4gbmV0ZGV2IGlzIGZyZWVkCmJl
+Zm9yZSBwcml2YXRlIGRhdGEgZnJlZSwgYW5kIGRldiBpcyBhY2Nlc3NlZCBhZnRlciBmcmVlaW5n
+IG5ldGRldi4KClRoaXMgbWFrZXMgYSBzbHViIHByb2JsZW0sIGFuZCBpdCByYWlzZSBrZXJuZWwg
+b29wcyB3aXRoIHNsdWIgZGVidWdnZXIKY29uZmlnLgoKU2lnbmVkLW9mZi1ieTogSmlobyBDaHUg
+PGppaG8uY2h1QHNhbXN1bmcuY29tPgotLS0KIGRyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2Iv
+cGNhbl91c2JfY29yZS5jIHwgNiArKysrLS0KIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMo
+KyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFr
+X3VzYi9wY2FuX3VzYl9jb3JlLmMgYi9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5f
+dXNiX2NvcmUuYwppbmRleCA3OTIxY2ZmLi41Y2M2YmFlIDEwMDY0NAotLS0gYS9kcml2ZXJzL25l
+dC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYworKysgYi9kcml2ZXJzL25ldC9jYW4v
+dXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYwpAQCAtODcyLDIzICs4NzIsMjUgQEAgbGJsX2Zy
+ZWVfY2FuZGV2Ogogc3RhdGljIHZvaWQgcGVha191c2JfZGlzY29ubmVjdChzdHJ1Y3QgdXNiX2lu
+dGVyZmFjZSAqaW50ZikKIHsKIAlzdHJ1Y3QgcGVha191c2JfZGV2aWNlICpkZXY7CisJc3RydWN0
+IHBlYWtfdXNiX2RldmljZSAqZGV2X3ByZXZfc2libGluZ3M7CiAKIAkvKiB1bnJlZ2lzdGVyIGFz
+IG1hbnkgbmV0ZGV2IGRldmljZXMgYXMgc2libGluZ3MgKi8KLQlmb3IgKGRldiA9IHVzYl9nZXRf
+aW50ZmRhdGEoaW50Zik7IGRldjsgZGV2ID0gZGV2LT5wcmV2X3NpYmxpbmdzKSB7CisJZm9yIChk
+ZXYgPSB1c2JfZ2V0X2ludGZkYXRhKGludGYpOyBkZXY7IGRldiA9IGRldl9wcmV2X3NpYmxpbmdz
+KSB7CiAJCXN0cnVjdCBuZXRfZGV2aWNlICpuZXRkZXYgPSBkZXYtPm5ldGRldjsKIAkJY2hhciBu
+YW1lW0lGTkFNU0laXTsKIAorCQlkZXZfcHJldl9zaWJsaW5ncyA9IGRldi0+cHJldl9zaWJsaW5n
+czsKIAkJZGV2LT5zdGF0ZSAmPSB+UENBTl9VU0JfU1RBVEVfQ09OTkVDVEVEOwogCQlzdHJuY3B5
+KG5hbWUsIG5ldGRldi0+bmFtZSwgSUZOQU1TSVopOwogCiAJCXVucmVnaXN0ZXJfbmV0ZGV2KG5l
+dGRldik7Ci0JCWZyZWVfY2FuZGV2KG5ldGRldik7CiAKIAkJa2ZyZWUoZGV2LT5jbWRfYnVmKTsK
+IAkJZGV2LT5uZXh0X3NpYmxpbmdzID0gTlVMTDsKIAkJaWYgKGRldi0+YWRhcHRlci0+ZGV2X2Zy
+ZWUpCiAJCQlkZXYtPmFkYXB0ZXItPmRldl9mcmVlKGRldik7CiAKKwkJZnJlZV9jYW5kZXYobmV0
+ZGV2KTsKIAkJZGV2X2luZm8oJmludGYtPmRldiwgIiVzIHJlbW92ZWRcbiIsIG5hbWUpOwogCX0K
+IAotLSAKMi43LjQKCg==
 
-The following changes since commit ec988ad78ed6d184a7f4ca6b8e962b0e8f1de461:
+------=_Part_871010_237286780.1481198473938--
 
-  phy: Don't increment MDIO bus refcount unless it's a different owner (2016-12-07 13:27:14 -0500)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.9-20161208
-
-for you to fetch changes up to b67d0dd7d0dc9e456825447bbeb935d8ef43ea7c:
-
-  can: peak: fix bad memory access and free sequence (2016-12-08 15:59:52 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-4.9-20161208
-
-----------------------------------------------------------------
-추지호 (1):
-      can: peak: fix bad memory access and free sequence
-
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
