@@ -1,118 +1,80 @@
-From: =?UTF-8?B?7LaU7KeA7Zi4?= <jiho.chu@samsung.com>
-Subject: =?UTF-8?B?W1BBVENIXSBuZXQ6IGNhbjogcGVhazogZml4IGJhZCBtZW1v?=
- =?UTF-8?B?cnkgYWNjZXNzIGFuZCBmcmVlIHNlcXVlbmNl?=
-Date: Thu, 08 Dec 2016 12:01:13 +0000
-Message-ID: <201778981.871011.1481198473938.JavaMail.weblogic@ep1ml101a>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] net: can: peak: fix bad memory access and free sequence
+Date: Thu, 8 Dec 2016 16:44:38 +0100
+Message-ID: <5cbead3e-fa18-7272-0590-ad6633d41c52@pengutronix.de>
 References: <CGME20161208114907epcms1p263def532c5b3705a19fff179385a50a0@epcms1p2>
-Reply-To: jiho.chu@samsung.com
+ <201778981.871011.1481198473938.JavaMail.weblogic@ep1ml101a>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_Part_871010_237286780.1481198473938"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="12NveEPMQ6hHFTlq3Dp1k2XA9KIl8CoWk"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:35151 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:42735 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S932628AbcLHPnT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Dec 2016 10:43:19 -0500
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.84_2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1cF0qr-00024k-Um
-        for linux-can@vger.kernel.org; Thu, 08 Dec 2016 16:43:18 +0100
-Received: from [IPv6:2001:470:7eea:1122:11e8:7f38:867d:64f2] (unknown [IPv6:2001:470:7eea:1122:11e8:7f38:867d:64f2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (verified OK))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 587371A2DC9
-        for <linux-can@vger.kernel.org>; Thu,  8 Dec 2016 15:43:17 +0000 (UTC)
+        by vger.kernel.org with ESMTP id S932790AbcLHPon (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Dec 2016 10:44:43 -0500
+In-Reply-To: <201778981.871011.1481198473938.JavaMail.weblogic@ep1ml101a>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?bWtsQHBlbmd1dHJvbml4LmRl?= <mkl@pengutronix.de>
-Cc: =?UTF-8?B?d2dAZ3JhbmRlZ2dlci5jb20=?= <wg@grandegger.com>
+To: jiho.chu@samsung.com
+Cc: "wg@grandegger.com" <wg@grandegger.com>, linux-can <linux-can@vger.kernel.org>
 
-------=_Part_871010_237286780.1481198473938
-Content-Type: multipart/related;
-	boundary="----=_Part_871008_987472764.1481198473912"
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--12NveEPMQ6hHFTlq3Dp1k2XA9KIl8CoWk
+Content-Type: multipart/mixed; boundary="qKMcmlheuHbgtJQa6VMgtd8LaPUfB0gUX";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: jiho.chu@samsung.com
+Cc: "wg@grandegger.com" <wg@grandegger.com>,
+ linux-can <linux-can@vger.kernel.org>
+Message-ID: <5cbead3e-fa18-7272-0590-ad6633d41c52@pengutronix.de>
+Subject: Re: [PATCH] net: can: peak: fix bad memory access and free sequence
+References: <CGME20161208114907epcms1p263def532c5b3705a19fff179385a50a0@epcms1p2>
+ <201778981.871011.1481198473938.JavaMail.weblogic@ep1ml101a>
+In-Reply-To: <201778981.871011.1481198473938.JavaMail.weblogic@ep1ml101a>
 
-------=_Part_871008_987472764.1481198473912
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"
+--qKMcmlheuHbgtJQa6VMgtd8LaPUfB0gUX
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Rml4wqBmb3LCoGJhZMKgbWVtb3J5wqBhY2Nlc3PCoHdoaWxlwqBkaXNjb25uZWN0aW5nLsKgbmV0
-ZGV2wqBpc8KgZnJlZWQNCmJlZm9yZcKgcHJpdmF0ZcKgZGF0YcKgZnJlZSzCoGFuZMKgZGV2wqBp
-c8KgYWNjZXNzZWTCoGFmdGVywqBmcmVlaW5nwqBuZXRkZXYuDQrCoA0KVGhpc8KgbWFrZXPCoGHC
-oHNsdWLCoHByb2JsZW0swqBhbmTCoGl0wqByYWlzZcKga2VybmVswqBvb3BzwqB3aXRowqBzbHVi
-wqBkZWJ1Z2dlcg0KY29uZmlnLg0KwqANClNpZ25lZC1vZmYtYnk6wqBKaWhvwqBDaHXCoDxqaWhv
-LmNodUBzYW1zdW5nLmNvbT4NCi0tLQ0KwqBkcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3Bj
-YW5fdXNiX2NvcmUuY8KgfMKgNsKgKysrKy0tDQrCoDHCoGZpbGXCoGNoYW5nZWQswqA0wqBpbnNl
-cnRpb25zKCspLMKgMsKgZGVsZXRpb25zKC0pDQrCoA0KZGlmZsKgLS1naXTCoGEvZHJpdmVycy9u
-ZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9jb3JlLmPCoGIvZHJpdmVycy9uZXQvY2FuL3Vz
-Yi9wZWFrX3VzYi9wY2FuX3VzYl9jb3JlLmMNCmluZGV4wqA3OTIxY2ZmLi41Y2M2YmFlwqAxMDA2
-NDQNCi0tLcKgYS9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYw0K
-KysrwqBiL2RyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfY29yZS5jDQpAQMKg
-LTg3MiwyM8KgKzg3MiwyNcKgQEDCoGxibF9mcmVlX2NhbmRldjoNCsKgc3RhdGljwqB2b2lkwqBw
-ZWFrX3VzYl9kaXNjb25uZWN0KHN0cnVjdMKgdXNiX2ludGVyZmFjZcKgKmludGYpDQrCoHsNCsKg
-wqDCoMKgwqDCoMKgwqBzdHJ1Y3TCoHBlYWtfdXNiX2RldmljZcKgKmRldjsNCivCoMKgwqDCoMKg
-wqDCoHN0cnVjdMKgcGVha191c2JfZGV2aWNlwqAqZGV2X3ByZXZfc2libGluZ3M7DQrCoA0KwqDC
-oMKgwqDCoMKgwqDCoC8qwqB1bnJlZ2lzdGVywqBhc8KgbWFuecKgbmV0ZGV2wqBkZXZpY2VzwqBh
-c8Kgc2libGluZ3PCoCovDQotwqDCoMKgwqDCoMKgwqBmb3LCoChkZXbCoD3CoHVzYl9nZXRfaW50
-ZmRhdGEoaW50Zik7wqBkZXY7wqBkZXbCoD3CoGRldi0+cHJldl9zaWJsaW5ncynCoHsNCivCoMKg
-wqDCoMKgwqDCoGZvcsKgKGRldsKgPcKgdXNiX2dldF9pbnRmZGF0YShpbnRmKTvCoGRldjvCoGRl
-dsKgPcKgZGV2X3ByZXZfc2libGluZ3MpwqB7DQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoHN0cnVjdMKgbmV0X2RldmljZcKgKm5ldGRldsKgPcKgZGV2LT5uZXRkZXY7DQrCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNoYXLCoG5hbWVbSUZOQU1TSVpdOw0KwqANCivCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfcHJldl9zaWJsaW5nc8KgPcKgZGV2LT5wcmV2
-X3NpYmxpbmdzOw0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXYtPnN0YXRlwqAm
-PcKgflBDQU5fVVNCX1NUQVRFX0NPTk5FQ1RFRDsNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgc3RybmNweShuYW1lLMKgbmV0ZGV2LT5uYW1lLMKgSUZOQU1TSVopOw0KwqANCsKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdW5yZWdpc3Rlcl9uZXRkZXYobmV0ZGV2KTsNCi3C
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBmcmVlX2NhbmRldihuZXRkZXYpOw0KwqANCsKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKga2ZyZWUoZGV2LT5jbWRfYnVmKTsNCsKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2LT5uZXh0X3NpYmxpbmdzwqA9wqBOVUxMOw0K
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZsKgKGRldi0+YWRhcHRlci0+ZGV2X2Zy
-ZWUpDQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXYt
-PmFkYXB0ZXItPmRldl9mcmVlKGRldik7DQrCoA0KK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoGZyZWVfY2FuZGV2KG5ldGRldik7DQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oGRldl9pbmZvKCZpbnRmLT5kZXYswqAiJXPCoHJlbW92ZWRcbiIswqBuYW1lKTsNCsKgwqDCoMKg
-wqDCoMKgwqB9DQrCoA0KLS0NCjIuNy40DQo=
-------=_Part_871008_987472764.1481198473912--
+On 12/08/2016 01:01 PM, =EC=B6=94=EC=A7=80=ED=98=B8 wrote:
+> Fix for bad memory access while disconnecting. netdev is freed
+> before private data free, and dev is accessed after freeing netdev.
+> =20
+> This makes a slub problem, and it raise kernel oops with slub debugger
+> config.
+> =20
+> Signed-off-by: Jiho Chu <jiho.chu@samsung.com>
 
-------=_Part_871010_237286780.1481198473938
-Content-Type: application/octet-stream
-Content-Disposition: attachment;
-	filename="=?UTF-8?B?MDAwMS1uZXQtY2FuLXBlYWstZml4LWJhZC1tZW1vcnktYWNjZXNzLWFuZC1mcmVlLXNlcXVlbmNlLnBhdGNo?="
-Content-Transfer-Encoding: base64
+Applied to can.
 
-RnJvbSAzMDUyNTExMGJjN2U4M2Q2N2ViNmM5ZDg1YmZhODdlODA5MjY1ZmUyIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBKaWhvIENodSA8amloby5jaHVAc2Ftc3VuZy5jb20+CkRhdGU6
-IFRodSwgOCBEZWMgMjAxNiAxNzozNTo1MSArMDkwMApTdWJqZWN0OiBbUEFUQ0hdIG5ldDogY2Fu
-OiBwZWFrOiBmaXggYmFkIG1lbW9yeSBhY2Nlc3MgYW5kIGZyZWUgc2VxdWVuY2UKCkZpeCBmb3Ig
-YmFkIG1lbW9yeSBhY2Nlc3Mgd2hpbGUgZGlzY29ubmVjdGluZy4gbmV0ZGV2IGlzIGZyZWVkCmJl
-Zm9yZSBwcml2YXRlIGRhdGEgZnJlZSwgYW5kIGRldiBpcyBhY2Nlc3NlZCBhZnRlciBmcmVlaW5n
-IG5ldGRldi4KClRoaXMgbWFrZXMgYSBzbHViIHByb2JsZW0sIGFuZCBpdCByYWlzZSBrZXJuZWwg
-b29wcyB3aXRoIHNsdWIgZGVidWdnZXIKY29uZmlnLgoKU2lnbmVkLW9mZi1ieTogSmlobyBDaHUg
-PGppaG8uY2h1QHNhbXN1bmcuY29tPgotLS0KIGRyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2Iv
-cGNhbl91c2JfY29yZS5jIHwgNiArKysrLS0KIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMo
-KyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFr
-X3VzYi9wY2FuX3VzYl9jb3JlLmMgYi9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5f
-dXNiX2NvcmUuYwppbmRleCA3OTIxY2ZmLi41Y2M2YmFlIDEwMDY0NAotLS0gYS9kcml2ZXJzL25l
-dC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYworKysgYi9kcml2ZXJzL25ldC9jYW4v
-dXNiL3BlYWtfdXNiL3BjYW5fdXNiX2NvcmUuYwpAQCAtODcyLDIzICs4NzIsMjUgQEAgbGJsX2Zy
-ZWVfY2FuZGV2Ogogc3RhdGljIHZvaWQgcGVha191c2JfZGlzY29ubmVjdChzdHJ1Y3QgdXNiX2lu
-dGVyZmFjZSAqaW50ZikKIHsKIAlzdHJ1Y3QgcGVha191c2JfZGV2aWNlICpkZXY7CisJc3RydWN0
-IHBlYWtfdXNiX2RldmljZSAqZGV2X3ByZXZfc2libGluZ3M7CiAKIAkvKiB1bnJlZ2lzdGVyIGFz
-IG1hbnkgbmV0ZGV2IGRldmljZXMgYXMgc2libGluZ3MgKi8KLQlmb3IgKGRldiA9IHVzYl9nZXRf
-aW50ZmRhdGEoaW50Zik7IGRldjsgZGV2ID0gZGV2LT5wcmV2X3NpYmxpbmdzKSB7CisJZm9yIChk
-ZXYgPSB1c2JfZ2V0X2ludGZkYXRhKGludGYpOyBkZXY7IGRldiA9IGRldl9wcmV2X3NpYmxpbmdz
-KSB7CiAJCXN0cnVjdCBuZXRfZGV2aWNlICpuZXRkZXYgPSBkZXYtPm5ldGRldjsKIAkJY2hhciBu
-YW1lW0lGTkFNU0laXTsKIAorCQlkZXZfcHJldl9zaWJsaW5ncyA9IGRldi0+cHJldl9zaWJsaW5n
-czsKIAkJZGV2LT5zdGF0ZSAmPSB+UENBTl9VU0JfU1RBVEVfQ09OTkVDVEVEOwogCQlzdHJuY3B5
-KG5hbWUsIG5ldGRldi0+bmFtZSwgSUZOQU1TSVopOwogCiAJCXVucmVnaXN0ZXJfbmV0ZGV2KG5l
-dGRldik7Ci0JCWZyZWVfY2FuZGV2KG5ldGRldik7CiAKIAkJa2ZyZWUoZGV2LT5jbWRfYnVmKTsK
-IAkJZGV2LT5uZXh0X3NpYmxpbmdzID0gTlVMTDsKIAkJaWYgKGRldi0+YWRhcHRlci0+ZGV2X2Zy
-ZWUpCiAJCQlkZXYtPmFkYXB0ZXItPmRldl9mcmVlKGRldik7CiAKKwkJZnJlZV9jYW5kZXYobmV0
-ZGV2KTsKIAkJZGV2X2luZm8oJmludGYtPmRldiwgIiVzIHJlbW92ZWRcbiIsIG5hbWUpOwogCX0K
-IAotLSAKMi43LjQKCg==
+Tnx,
+Marc
 
-------=_Part_871010_237286780.1481198473938--
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
+
+--qKMcmlheuHbgtJQa6VMgtd8LaPUfB0gUX--
+
+--12NveEPMQ6hHFTlq3Dp1k2XA9KIl8CoWk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhJf+YACgkQPTuqJayp
+JWrqIQf/UYAxe0sbH4uaWTIDHINKL1P/TEoLX8iUZSD10R8yd1PR0dG+QQcmpo3g
+uEexEDToq1tJzVRLHXtl7nQdUKfegJ9nd7+073ghHEzqoW/hQFwvuFpePDEM/v4R
+bUrrfhb5CSaARONJ1g4/ZgP6vjG3zintqocTUABi5ytAuex+huhXWEDBKrV95AQo
+f0x16tZ+wPUeArsAyuRm8LV+VUkK2hfMpNVB307sSjK/Nm/ZzWMoIjLryDTRzs8l
+17kwFWh6ScGucMorWeN+TbBgS08m44RYpcXDg3AwHR3kkxPS/1ZQLyznIYq+aFqm
+asc7GK8x8tr9XiuQraaU6DDa4Zl7Og==
+=tvQc
+-----END PGP SIGNATURE-----
+
+--12NveEPMQ6hHFTlq3Dp1k2XA9KIl8CoWk--
