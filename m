@@ -1,60 +1,78 @@
-From: Brian Silverman <brian@peloton-tech.com>
-Subject: Re: Troubleshooting bus errors, bus turns off during canplayer playback
-Date: Tue, 20 Dec 2016 00:23:31 -0500
-Message-ID: <CAGt3f4kYuUb5VDe7w-HjLYVJDFuE22jE_2dZ_06vGw8rBeLEvg@mail.gmail.com>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: Troubleshooting bus errors, bus turns off during canplayer
+ playback
+Date: Tue, 20 Dec 2016 16:01:55 +1100
+Message-ID: <7f223f19-7e27-50f4-85c2-3c6785deae91@optusnet.com.au>
 References: <CAFoRp-PSPtdenVSihp+Ar-1xfsOQd1M6rrUN6kgMOGd2egCcoA@mail.gmail.com>
+Reply-To: tom_usenet@optusnet.com.au
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf0-f41.google.com ([209.85.215.41]:36486 "EHLO
-        mail-lf0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752921AbcLTFYE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Dec 2016 00:24:04 -0500
-Received: by mail-lf0-f41.google.com with SMTP id t196so68595808lff.3
-        for <linux-can@vger.kernel.org>; Mon, 19 Dec 2016 21:24:03 -0800 (PST)
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:39371 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751442AbcLTF3j (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Dec 2016 00:29:39 -0500
 In-Reply-To: <CAFoRp-PSPtdenVSihp+Ar-1xfsOQd1M6rrUN6kgMOGd2egCcoA@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Hans L <thehans@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Hans L <thehans@gmail.com>, linux-can@vger.kernel.org
 
-Are you sending messages from the log file with the same source
-address as something else currently on the bus is sending from? I get
-those same symptoms when I do that (doing the same thing too). I'm
-pretty sure the problem is both nodes think they won the arbitration
-because they're using the same address, but then the first to try
-sending a recessive data bit when the other one's sending a dominant
-one gets a bit error. The first node which detected the error then
-sends an error frame so all nodes on the bus ignore the frame and see
-an error.
+On 20/12/16 15:53, Hans L wrote:
+> I'm a developer writing firmware for a J1939 device and I have some
+> logs recorded from vehicles that I want to use as test data, playing
+> these on a "bench" setup.
+>
+> I am using a Beaglebone black running debian, with a PEAK PCAN-USB
+> adapter to play these logs on my test bus.
+>
+> When I attempt to play a log that has pretty high bus utilization, it
+> just quits after sending few frames with "No buffer space available".
 
-I'm using a PEAK PCAN-miniPCIe card with 3.14.43-rt42, and I have a
-"berr-counter tx NNN rx NNN" in the `ip -d -s link show` output. I
-don't recall whether I've ever looked at those when two nodes are
-sending with the same address to see if they increment, but I can
-check in a few days after I'm done travelling. For reference, this is
-what that output looks like on a random box of mine (I think it has no
-CAN wires attached):
-brian@box:~$ sudo ip -d -s link show can0
-3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state
-UNKNOWN mode DEFAULT group default qlen 10
-    link/can  promiscuity 0
-    can <TRIPLE-SAMPLING> state ERROR-PASSIVE (berr-counter tx 0 rx
-135) restart-ms 1000
-        bitrate 250000 sample-point 0.875
-        tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
-        sja1000: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
-        clock 8000000
-        re-started bus-errors arbit-lost error-warn error-pass bus-off
-        0          0          -688250473 1          1          0
-    RX: bytes  packets  errors  dropped overrun mcast
-    28853734600 3606716825 0       0       0       0
-    TX: bytes  packets  errors  dropped carrier collsns
-    0          0        3606716823 0       0       0
+That's an old problem that everyone runs into eventually.
 
-Interestingly, that appears to be without berr-reporting on. When I
-explicitly pass "berr-reporting on" in the `ip link set can0 up ...`
-command, BERR-REPORTING shows up next to TRIPLE-SAMPLING as expected.
-I'll have to check if that has any noticeable effect on the numbers
-reported. I too would appreciate a pointer to more detailed
-documentation on what exactly that option does.
+It has come up before on this list.
+
+Here's something I posted in March 2015:
+
+====
+
+Sockets can block or return ENOBUFS. Ethernet blocks before it returns ENOBUFS 
+like you'd expect. With CAN it does the opposite "out of the box" and needs to 
+be fixed.
+
+http://socket-can.996257.n3.nabble.com/Solving-ENOBUFS-returned-by-write-td2886.html
+
+     With Ethernet, the transmit queue length is 1000 (which would
+     return ENOBUF) but before that happens it hits SO_SNDBUF,
+     which may be 108544, which is the total Data plus SKB, and
+     with an SKB size of about 200 that means it blocks at about
+     500 before it ENOBUFs at 1000.
+
+     With CAN, it would block at 500, but it ENOBUFs at 10 first with
+     the default queue depth!
+
+I do the following to get a 256-deep queue that blocks before it overflows:
+
+     /bin/echo 256 > /sys/class/net/can0/tx_queue_len
+     /bin/echo 256 > /sys/class/net/can1/tx_queue_len
+
+     int sndbuf = (250 + 8) * 256;
+     socklen_t socklen = sizeof(sndbuf);
+     /* Minimum socket buffer to try and get it blocking */
+     rc = setsockopt(pSkt->skt, SOL_SOCKET, SO_SNDBUF,
+                     &sndbuf, sizeof(sndbuf));
+
+You might also like to read:
+
+http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
+
+     SocketCAN and queueing disciplines:
+     Final Report
+     M. Sojka, R. Lisovy, P. Psa
+     Czech Technical University in Prague
+     July 20, 2012
+     Version 1.2
+
+Tom
+
