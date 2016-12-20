@@ -1,49 +1,78 @@
-From: Luca Coelho <luca-XPOmlcxoEMv1KXRcyAk9cg@public.gmane.org>
-Subject: Re: [PATCH 8/8] Makefile: drop -D__CHECK_ENDIAN__ from cflags
-Date: Mon, 19 Dec 2016 11:08:10 +0200
-Message-ID: <1482138490.26174.7.camel@coelho.fi>
-References: <1481778865-27667-1-git-send-email-mst@redhat.com>
- <1481778865-27667-9-git-send-email-mst@redhat.com>
+From: Hans L <thehans@gmail.com>
+Subject: Troubleshooting bus errors, bus turns off during canplayer playback
+Date: Mon, 19 Dec 2016 22:53:17 -0600
+Message-ID: <CAFoRp-PSPtdenVSihp+Ar-1xfsOQd1M6rrUN6kgMOGd2egCcoA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1481778865-27667-9-git-send-email-mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: "Michael S. Tsirkin" <mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Emmanuel Grumbach <emmanuel.grumbach-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Stanislaw Gruszka <sgruszka-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Gustavo Padovan <gustavo-THi1TnShQwVAfugRpC6u6w@public.gmane.org>, Arend van Spriel <arend.vanspriel-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, Jakub Kicinski <kubakici-5tc4TXWwyLM@public.gmane.org>, Stefan Schmidt <stefan-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, wil6210-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Chris Snook <chris.snook-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Jay Cliburn <jcliburn-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-wpan-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Johan Hedberg <johan.hedberg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Johannes Berg <johannes.berg-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Intel Linux Wireless <linuxwifi-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Alexander Aring <aar-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Marcel Holtmann <marcel-kz+m5ild9QBg9hUCZPvPmw@public.gmane.org>, Hante Meuleman <hante.meuleman-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kall
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-ua0-f179.google.com ([209.85.217.179]:35976 "EHLO
+        mail-ua0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754005AbcLTEx6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Dec 2016 23:53:58 -0500
+Received: by mail-ua0-f179.google.com with SMTP id 88so10213669uaq.3
+        for <linux-can@vger.kernel.org>; Mon, 19 Dec 2016 20:53:58 -0800 (PST)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-On Thu, 2016-12-15 at 07:15 +0200, Michael S. Tsirkin wrote:
-> That's the default now, no need for makefiles to set it.
-> 
-> Signed-off-by: Michael S. Tsirkin <mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-> ---
->  drivers/bluetooth/Makefile                                | 2 --
->  drivers/net/can/Makefile                                  | 1 -
->  drivers/net/ethernet/altera/Makefile                      | 1 -
->  drivers/net/ethernet/atheros/alx/Makefile                 | 1 -
->  drivers/net/ethernet/freescale/Makefile                   | 2 --
->  drivers/net/wireless/ath/Makefile                         | 2 --
->  drivers/net/wireless/ath/wil6210/Makefile                 | 2 --
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/Makefile | 2 --
->  drivers/net/wireless/broadcom/brcm80211/brcmsmac/Makefile | 1 -
->  drivers/net/wireless/intel/iwlegacy/Makefile              | 2 --
->  drivers/net/wireless/intel/iwlwifi/Makefile               | 2 +-
->  drivers/net/wireless/intel/iwlwifi/dvm/Makefile           | 2 +-
->  drivers/net/wireless/intel/iwlwifi/mvm/Makefile           | 2 +-
+I'm a developer writing firmware for a J1939 device and I have some
+logs recorded from vehicles that I want to use as test data, playing
+these on a "bench" setup.
 
-For the drivers/net/wireless/intel/iwlwifi/ part:
+I am using a Beaglebone black running debian, with a PEAK PCAN-USB
+adapter to play these logs on my test bus.
 
-Acked-by: Luca Coelho <luciano.coelho-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+When I attempt to play a log that has pretty high bus utilization, it
+just quits after sending few frames with "No buffer space available".
+I found that default txqueuelen was 10 and increasing it to 1000 helps
+get rid of the buffer space issues, but then the canplayer process
+still just stops transmitting after 300 frames or so.
+I guess the bus is encountering some sort of error, and turning off,
+so I set restart-ms 1 to have minimal downtime.
 
---
-Luca.
+With these settings it seems that canplayer is able to get through the
+whole log and transmit all frames, but I don't understand why the bus
+has to restart so much in the first place, or the cause of these
+errors that regularly kill the bus?
+
+Also many options that I tried such as "berr-reporting on" result in
+"RTNETLINK answers: Operation not supported".
+And where are the descriptions of what these settings do? I search
+through the manual but berr-reporting is only mentioned once in the
+options list, but no explanation(same for most other settings)
+https://www.kernel.org/doc/Documentation/networking/can.txt
+
+Below is some system info:
+
+debian@beaglebone:~$ uname -a
+Linux beaglebone 3.8.13-bone79 #1 SMP Tue Oct 13 20:44:55 UTC 2015
+armv7l GNU/Linux
+
+debian@beaglebone:~$ sudo modinfo peak_usb
+filename:
+/lib/modules/3.8.13-bone79/kernel/drivers/net/can/usb/peak_usb/peak_usb.ko
+license:        GPL v2
+description:    CAN driver for PEAK-System USB adapters
+author:         Stephane Grosjean <s.grosjean@peak-system.com>
+srcversion:     E230D7B8207864FEABBECC6
+alias:          usb:v0C72p000Dd*dc*dsc*dp*ic*isc*ip*in*
+alias:          usb:v0C72p000Cd*dc*dsc*dp*ic*isc*ip*in*
+depends:        can-dev
+intree:         Y
+vermagic:       3.8.13-bone79 SMP mod_unload modversions ARMv7 thumb2 p2v8
+
+debian@beaglebone:~$ ip -d -s link show can0
+5: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UP
+mode DEFAULT qlen 1000
+    link/can
+    can state ERROR-PASSIVE restart-ms 1
+    bitrate 250000 sample-point 0.875
+    tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1
+    pcan_usb: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
+    clock 8000000
+    re-started bus-errors arbit-lost error-warn error-pass bus-off
+    18         0          0          36         41         20
+    RX: bytes  packets  errors  dropped overrun mcast
+    10167      2709     0       0       0       0
+    TX: bytes  packets  errors  dropped carrier collsns
+    1663258    207911   0       46      0       0
