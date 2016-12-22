@@ -1,111 +1,35 @@
-From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
-Subject: RE: CAN Termination API - was Re: Adding new CAN driver
-Date: Thu, 22 Dec 2016 09:39:00 +0000
-Message-ID: <HK2PR06MB054590B87E4D3D9F11A8598FC3920@HK2PR06MB0545.apcprd06.prod.outlook.com>
-References: <CAKT-o-cOb0sqRmvH+BKjX4yvBLp5_GqVd6=ifr2jm5T75-hcZA@mail.gmail.com>
- <3113364.8FuUfmAlHQ@ws-stein>
- <SG2PR06MB1038F0416E850F0C09BC5CCEC3A00@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <1490105.s3iJfGbYsS@ws-stein>
- <CAKT-o-cJ3UwD=xakh7-hF5101rS2zCa5AHfjBvdRNATJD+Weqw@mail.gmail.com>
- <5f302213-c072-b6b8-aa78-4bc405dc167d@hartkopp.net>
- <20161103212427.GA1677@airbook.vandijck-laurijssen.be>
- <SG2PR06MB10381FBE7242FA602F1AC319C3A20@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <e521bee5-d0e3-d894-2c0f-be2c437a2f48@hartkopp.net>
- <SG2PR06MB1038E2022EEA5837EB6BD25BC3A60@SG2PR06MB1038.apcprd06.prod.outlook.com>
- <fc26a0a8-8c15-9b1f-c699-31f83177c431@hartkopp.net>
- <18d3932b-8c74-a470-661d-7f2ee1a9f2f5@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relmlor3.renesas.com ([210.160.252.173]:61885 "EHLO
-        relmlie2.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1765208AbcLVJjF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Dec 2016 04:39:05 -0500
-In-Reply-To: <18d3932b-8c74-a470-661d-7f2ee1a9f2f5@hartkopp.net>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: =?utf-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Alexander Stein <alexander.stein@systec-electronic.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+From: "Vyacheslav V. Yurkov" <uvv.mail-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH] Fixed status entry in m_can documentation
+Date: Thu, 22 Dec 2016 11:45:21 +0100
+Message-ID: <20161222104521.20683-1-uvv.mail@gmail.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jiri Kosina <trivial-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "Vyacheslav V. Yurkov" <uvv.mail-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-PiBTdWJqZWN0OiBDQU4gVGVybWluYXRpb24gQVBJIC0gd2FzIFJlOiBBZGRpbmcgbmV3IENBTiBk
-cml2ZXINCj4gDQo+IEhpIGFsbCwNCj4gDQo+IEkgd291bGQgbGlrZSB0byBwaWNrIHVwIHRoZSB0
-ZXJtaW5hdGlvbiBBUEkgYWdhaW4uDQo+IA0KPiA+Pj4gKw0KPiA+Pj4gKyAgICAvKiBhcnJheSBv
-ZiBzdXBwb3J0ZWQgZGlzY3JldGUgcmVzaXN0b3IgdmFsdWVzIChPaG0pICovDQo+ID4+PiArICAg
-IF9fdTE2IHRlcm1bOF07DQo+ID4NCj4gPiBEbyB5b3UgdGhpbmsgOCByZXNpc3RvciB2YWx1ZXMg
-YXJlIGVub3VnaD8NCj4gPg0KPiANCj4gc2VlIGJlbG93IC4uLg0KPiANCj4gPj4+ICt9Ow0KPiA+
-Pj4gKw0KPiA+Pj4gKy8qDQo+ID4+PiArICogQ0FOIHRlcm1pbmF0aW9uDQo+ID4+PiArICovDQo+
-ID4+PiArc3RydWN0IGNhbl90ZXJtaW5hdGlvbiB7DQo+ID4+PiArICAgIF9fdTE2IHRlcm07DQo+
-ID4+PiArfTsNCj4gPj4+ICsNCj4gPj4+ICsjZGVmaW5lIENBTl9SRVNJU1RPUl9JTlZBTElEICAg
-IDB4MDAwMFUgICAgLyogaW5kaWNhdGVzIG5vIHZhbHVlIC8NCj4gPj4+IHVuc3VwcG9ydGVkICov
-DQo+ID4+PiArI2RlZmluZSBDQU5fUkVTSVNUT1JfRElTQUJMRUQgICAgMHhGRkZGVSAgICAvKiBp
-bmRpY2F0ZXMgZGlzYWJsZWQNCj4gPj4+IHRlcm1pbmF0aW9uICovDQo+ID4+PiArDQo+ID4+PiAg
-ICNkZWZpbmUgQ0FOX0NUUkxNT0RFX0xPT1BCQUNLICAgICAgICAweDAxICAgIC8qIExvb3BiYWNr
-IG1vZGUgKi8NCj4gPj4+ICAgI2RlZmluZSBDQU5fQ1RSTE1PREVfTElTVEVOT05MWSAgICAgICAg
-MHgwMiAgICAvKiBMaXN0ZW4tb25seSBtb2RlDQo+ICovDQo+ID4+PiAgICNkZWZpbmUgQ0FOX0NU
-UkxNT0RFXzNfU0FNUExFUyAgICAgICAgMHgwNCAgICAvKiBUcmlwbGUgc2FtcGxpbmcNCj4gPj4+
-IG1vZGUgKi8NCj4gPj4+IEBAIC0xMjcsNiArMTUzLDggQEAgZW51bSB7DQo+ID4+PiAgICAgICBJ
-RkxBX0NBTl9CRVJSX0NPVU5URVIsDQo+ID4+PiAgICAgICBJRkxBX0NBTl9EQVRBX0JJVFRJTUlO
-RywNCj4gPj4+ICAgICAgIElGTEFfQ0FOX0RBVEFfQklUVElNSU5HX0NPTlNULA0KPiA+Pj4gKyAg
-ICBJRkxBX0NBTl9URVJNSU5BVElPTiwNCj4gPj4+ICsgICAgSUZMQV9DQU5fVEVSTUlOQVRJT05f
-Q09OU1QsDQo+ID4+PiAgICAgICBfX0lGTEFfQ0FOX01BWA0KPiA+Pj4gICB9Ow0KPiA+Pj4NCj4g
-Pj4+IFdpdGggdGhpcyBpbnRlcmZhY2UgdGhlIGlwIHRvb2wgY2FuIGdldCB0aGUgY2FwYWJpbGl0
-aWVzIG9mIHRoZQ0KPiA+Pj4gdGVybWluYXRpb24gYW5hbG9ndWUgdG8gdGhlIEJJVFRJTUlOR19D
-T05TVCB2YWx1ZXMuDQo+ID4+PiBBbmQgaXQgY2FuIHNldCB0aGUgdGVybWluYXRpb24gd2l0aCBJ
-RkxBX0NBTl9URVJNSU5BVElPTi4NCj4gPj4NCj4gPj4gQUNLLg0KPiANCj4gSSB0cmllZCB0byBn
-ZXQgaW50byB0aGUgbmV0bGluayBzdHVmZiBhbmQgSSB3b25kZXIgaG93IHRvIG1ha2UgdGhpcyBB
-UEkNCj4gcmVhbGx5IHNpbXBsZS4NCj4gDQo+IEJ5IG5vdyB0aGUgbmV0bGluayBpbnRlcmZhY2Ug
-aW4gbGludXgvZHJpdmVycy9uZXQvY2FuL2Rldi5jIGxvb2tzIGxpa2U6DQo+IA0KPiAvKg0KPiAg
-ICogQ0FOIG5ldGxpbmsgaW50ZXJmYWNlDQo+ICAgKi8NCj4gc3RhdGljIGNvbnN0IHN0cnVjdCBu
-bGFfcG9saWN5IGNhbl9wb2xpY3lbSUZMQV9DQU5fTUFYICsgMV0gPSB7DQo+ICAgICAgICAgIFtJ
-RkxBX0NBTl9TVEFURV0gICAgICAgID0geyAudHlwZSA9IE5MQV9VMzIgfSwNCj4gICAgICAgICAg
-W0lGTEFfQ0FOX0NUUkxNT0RFXSAgICAgPSB7IC5sZW4gPSBzaXplb2Yoc3RydWN0IGNhbl9jdHJs
-bW9kZSkgfSwNCj4gICAgICAgICAgW0lGTEFfQ0FOX1JFU1RBUlRfTVNdICAgPSB7IC50eXBlID0g
-TkxBX1UzMiB9LA0KPiAgICAgICAgICBbSUZMQV9DQU5fUkVTVEFSVF0gICAgICA9IHsgLnR5cGUg
-PSBOTEFfVTMyIH0sDQo+ICAgICAgICAgIFtJRkxBX0NBTl9CSVRUSU1JTkddICAgID0geyAubGVu
-ID0gc2l6ZW9mKHN0cnVjdCBjYW5fYml0dGltaW5nKQ0KPiB9LA0KPiAgICAgICAgICBbSUZMQV9D
-QU5fQklUVElNSU5HX0NPTlNUXQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9
-IHsgLmxlbiA9IHNpemVvZihzdHJ1Y3QNCj4gY2FuX2JpdHRpbWluZ19jb25zdCkgfSwNCj4gICAg
-ICAgICAgW0lGTEFfQ0FOX0NMT0NLXSAgICAgICAgPSB7IC5sZW4gPSBzaXplb2Yoc3RydWN0IGNh
-bl9jbG9jaykgfSwNCj4gICAgICAgICAgW0lGTEFfQ0FOX0JFUlJfQ09VTlRFUl0gPSB7IC5sZW4g
-PSBzaXplb2Yoc3RydWN0DQo+IGNhbl9iZXJyX2NvdW50ZXIpIH0sDQo+ICAgICAgICAgIFtJRkxB
-X0NBTl9EQVRBX0JJVFRJTUlOR10NCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-PSB7IC5sZW4gPSBzaXplb2Yoc3RydWN0IGNhbl9iaXR0aW1pbmcpDQo+IH0sDQo+ICAgICAgICAg
-IFtJRkxBX0NBTl9EQVRBX0JJVFRJTUlOR19DT05TVF0NCj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgPSB7IC5sZW4gPSBzaXplb2Yoc3RydWN0DQo+IGNhbl9iaXR0aW1pbmdfY29u
-c3QpIH0sDQo+IH07DQo+IA0KPiBUbyBhZGQgSUZMQV9DQU5fVEVSTUlOQVRJT04gd2Ugd291bGQg
-anVzdCBuZWVkDQo+IA0KPiAJW0lGTEFfQ0FOX1RFUk1JTkFUSU9OXSAgID0geyAudHlwZSA9IE5M
-QV9VMTYgfSwNCj4gDQo+IHRvIGVuYWJsZSBhIGRlZmluZWQgdGVybWluYXRpb24gdmFsdWUgZnJv
-bSAxIHRvIDY1NTM0IE9obXMgd2hlcmUgNjU1MzUNCj4gd291bGQgYmUgQ0FOX1JFU0lTVE9SX0RJ
-U0FCTEVELiBJbiB0aGUgQ0FOIGRyaXZlciB0aGlzIGdpdmVuIHZhbHVlIGlzDQo+IGNoZWNrZWQg
-YWdhaW5zdCB0aGUgc3VwcG9ydGVkIGxpc3Qgb2YgdGVybWluYXRpb24gdmFsdWVzIGFuZCBzd2l0
-Y2hlZCBvbg0KPiBpZiBzdXBwb3J0ZWQuDQo+IFRvIHByb3ZpZGUgYSBsaXN0IG9mIHBvc3NpYmxl
-IHRlcm1pbmF0aW9uIHZhbHVlcyB3aXRoDQo+IElGTEFfQ0FOX1RFUk1JTkFUSU9OX0NPTlNUIHdl
-IG5lZWQgdG8gcGFzcyBhbiBhcnJheSBvZiB1MTYgY29uc3RhbnRzIHRvDQo+IHRoZSB1c2Vyc3Bh
-Y2UuDQo+IA0KPiBJbiBvcHBvc2l0ZSB0byBvdXIgY3VycmVudCBuZXRsaW5rIG1lc3NhZ2VzIHRo
-aXMgYXJyYXkgbWFrZSBjb250YWluIDEuLm4NCj4gY29uc3RhbnQgdmFsdWVzIC0gc28gZGVmaW5p
-bmcgYSBmaXhlZCBzdHJ1Y3Qgb2YgZS5nLiA4IGVudHJpZXMgbG9va3MgbGlrZQ0KPiBhIGJhZCBk
-ZXNpZ24uDQo+IA0KPiBCdXQgaG93IHRvIHByb3ZpZGUgdGhlIGFycmF5IHRvIHRoZSBuZXRsaW5r
-IGludGVyZmFjZSBjb3JyZWN0bHk/DQo+IA0KPiBXaXRoIHRoZSBuZXRsaW5rIHR5cGUgTkxBX1VO
-U1BFQywgTkxBX05FU1RFRCwgTkxBX05FU1RFRF9DT01QQVQgb3INCj4gTkxBX0JJTkFSWT8/DQo+
-IA0KPiBTZWUgaHR0cDovL2x4ci5saW51eC5uby8jbGludXgrdjQuOC4xMC9pbmNsdWRlL25ldC9u
-ZXRsaW5rLmgjTDE2MA0KPiANCj4gVGhlIGN1cnJlbnQNCj4gDQo+IFtJRkxBX0NBTl9EQVRBX0JJ
-VFRJTUlOR10gID0geyAubGVuID0gc2l6ZW9mKHN0cnVjdCBjYW5fYml0dGltaW5nX2NvbnN0KQ0K
-PiB9LA0KPiANCj4gc2VlbXMgdG8gdXNlIE5MQV9VTlNQRUMgd2hpY2ggbWVhbnMgdGhlIC5sZW4g
-dmFsdWUgaXMgdGhlIF9taW5pbXVtXyBsZW5ndGgNCj4gdmFsdWUuDQo+IA0KPiBXb3VsZCB0aGlz
-IG1lYW4gd2UgY2FuIGRlZmluZQ0KPiANCj4gW0lGTEFfQ0FOX1RFUk1JTkFUSU9OX0NPTlNUXSAg
-ID0geyAubGVuID0gc2l6ZW9mKF9fdTE2KSB9LA0KPiANCj4gYXMgYSBtaW5pbXVtIGxlbmd0aCB2
-YWx1ZSBhbmQgcHJvdmlkZSBhcyBtdWNoIHRlcm1pbmF0aW9uIHZhbHVlcyBhcyB0aGUNCj4gQ0FO
-IGludGVyZmFjZSBzdXBwb3J0cz8NCg0KT0suIFRoaXMgd291bGQgYmUgYSBzaW1wbGVyIG9wdGlv
-bi4NCg0KT3B0aW9uYWxseSwgdGhlIGNhbiBjb3JlIGNvdWxkIGFsc28gY2hlY2sgdGhlIGdpdmVu
-IHZhbHVlIGFnYWluc3QgYSBsaXN0IG9mIHZhbGlkIHRlcm1pbmF0aW9uIHZhbHVlcyAmIHJvdW5k
-IGl0IHRvIHRoZSBuZWFyZXN0IHBvc3NpYmxlIHZhbHVlLiBTb21ldGhpbmcgbGlrZSBiZWxvdw0K
-DQpwb3NzaWJsZV90ZXJtaW5hdGlvbl92YWx1ZXMgPSB7IDYwLCAxMjAsIDI0MCAgfSAvKiBzb21l
-IHJhbmRvbSBudW1iZXJzICovDQoNCi0gaWYgdXNlcl92YWwgPCA2MCAtPiB1c2UgNjANCi0gaWYg
-dXNlcl92YWwgPiAyNDAgLT4gdXNlIDI0MA0KLSBpZiB1c2VyX3ZhbCBmYWxscyB3aXRoaW4gYSBy
-YW5nZSBvZiB0aGUgcG9zc2libGUgdmFsdWVzDQogICAgaWYgKChyYW5nZV9sb3cgKyAocmFuZ2Vf
-aGlnaCAtIHJhbmdlX2xvdykgLyAyKSkgPD0gdXNlcl92YWwpDQoJdXNlcl92YWwgPSByYW5nZV9s
-b3c7DQogICAgZWxzZQ0KICAgICAgdXNlcl92YWwgPSByYW5nZV9oaWdoOw0KDQogICByZXQgPSBk
-cml2ZXJfY2FsbGJhY2sodXNlcl92YWwpDQoNCkkgZmVsdCB0aGUgZXJyb3IgcmVwb3J0aW5nIHdv
-dWxkIGJlIGNvbnNpc3RlbnQuIEl0IGlzIHVwIHRvIHlvdS4NCg0KVGhhbmtzLA0KUmFtZXNoLg0K
+Use valid value for 'enabled' in status field
+
+Signed-off-by: Vyacheslav V. Yurkov <uvv.mail-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+---
+ Documentation/devicetree/bindings/net/can/m_can.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
+index 9e33177..5facaf5 100644
+--- a/Documentation/devicetree/bindings/net/can/m_can.txt
++++ b/Documentation/devicetree/bindings/net/can/m_can.txt
+@@ -63,5 +63,5 @@ Board dts:
+ &m_can1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_m_can1>;
+-	status = "enabled";
++	status = "okay";
+ };
+-- 
+2.9.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
