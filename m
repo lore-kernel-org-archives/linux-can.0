@@ -1,41 +1,48 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] Fixed status entry in m_can documentation
-Date: Thu, 22 Dec 2016 17:14:08 -0600
-Message-ID: <20161222231408.drbakherghdegnam@rob-hp-laptop>
-References: <20161222104521.20683-1-uvv.mail@gmail.com>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: Troubleshooting bus errors, bus turns off during canplayer
+ playback
+Date: Fri, 23 Dec 2016 23:03:07 +1100
+Message-ID: <7497ef25-5968-f707-0dcc-d7fdb4a972d2@optusnet.com.au>
+References: <CAFoRp-PSPtdenVSihp+Ar-1xfsOQd1M6rrUN6kgMOGd2egCcoA@mail.gmail.com>
+ <7f223f19-7e27-50f4-85c2-3c6785deae91@optusnet.com.au>
+ <CAFoRp-P4Arepyya2PyzLVzNLdn60FR1dzVzUCSQx5CJTxLt=qQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20161222104521.20683-1-uvv.mail-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Vyacheslav V. Yurkov" <uvv.mail-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jiri Kosina <trivial-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:36881 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S932873AbcLWMDQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Dec 2016 07:03:16 -0500
+In-Reply-To: <CAFoRp-P4Arepyya2PyzLVzNLdn60FR1dzVzUCSQx5CJTxLt=qQ@mail.gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Hans L <thehans@gmail.com>, linux-can@vger.kernel.org
 
-On Thu, Dec 22, 2016 at 11:45:21AM +0100, Vyacheslav V. Yurkov wrote:
-> Use valid value for 'enabled' in status field
-> 
-> Signed-off-by: Vyacheslav V. Yurkov <uvv.mail-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/net/can/m_can.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
-> index 9e33177..5facaf5 100644
-> --- a/Documentation/devicetree/bindings/net/can/m_can.txt
-> +++ b/Documentation/devicetree/bindings/net/can/m_can.txt
-> @@ -63,5 +63,5 @@ Board dts:
->  &m_can1 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_m_can1>;
-> -	status = "enabled";
-> +	status = "okay";
+On 22/12/2016 5:08 AM, Hans L wrote:
+ > I'm reading some of these links talking about the issue of dealing
+ > with multiple programs accessing the socket, but in the case I'm
+ > dealing with, there's only one program connecting to the can socket on
+ > this device.
 
-Examples don't need to have status prop. Just remove.
+That's not the problem. The network layer is set up to assume 1500-byte 
+Ethernet packets. There are two limits - the number of packets on the 
+lower just-above-the-hardware queue and the number of buffers taken up 
+by each socket. The default settings mean that programs sending "as fast 
+as they can" like an FTP file-transfer will block before the hit the 
+"start dumping buffers" limit. By default, CAN is set up completely the 
+wrong way for this. You have to increase the hardware queue (who ever 
+thought "10" was a good number?) and change the socket limit.
 
-Rob
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ > That program is canplayer.  So I would need to patch
+ > canplayer with that setsockopt code you are suggesting?
+
+If it doesn't have a command to make it rate-limit its transmissions - 
+if it is written assuming the lower layers will properly flow-control 
+it, then I'd say "yes". There may be a way to change the OS defaults so 
+you don't have to patch it. It may make it a better program if you do 
+add explicit command-line-specified rate-limiting to it.
+
+Tom
+
+
