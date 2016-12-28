@@ -1,48 +1,42 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: Troubleshooting bus errors, bus turns off during canplayer
- playback
-Date: Fri, 23 Dec 2016 23:03:07 +1100
-Message-ID: <7497ef25-5968-f707-0dcc-d7fdb4a972d2@optusnet.com.au>
-References: <CAFoRp-PSPtdenVSihp+Ar-1xfsOQd1M6rrUN6kgMOGd2egCcoA@mail.gmail.com>
- <7f223f19-7e27-50f4-85c2-3c6785deae91@optusnet.com.au>
- <CAFoRp-P4Arepyya2PyzLVzNLdn60FR1dzVzUCSQx5CJTxLt=qQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] can: flexcan: improve error message
+Date: Wed, 28 Dec 2016 14:12:41 -0200
+Message-ID: <1482941561-28094-1-git-send-email-festevam@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:36881 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S932873AbcLWMDQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Dec 2016 07:03:16 -0500
-In-Reply-To: <CAFoRp-P4Arepyya2PyzLVzNLdn60FR1dzVzUCSQx5CJTxLt=qQ@mail.gmail.com>
+Received: from mail-qt0-f194.google.com ([209.85.216.194]:34541 "EHLO
+        mail-qt0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751305AbcL1QMk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 28 Dec 2016 11:12:40 -0500
+Received: by mail-qt0-f194.google.com with SMTP id p16so24429162qta.1
+        for <linux-can@vger.kernel.org>; Wed, 28 Dec 2016 08:12:39 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Hans L <thehans@gmail.com>, linux-can@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@nxp.com>
 
-On 22/12/2016 5:08 AM, Hans L wrote:
- > I'm reading some of these links talking about the issue of dealing
- > with multiple programs accessing the socket, but in the case I'm
- > dealing with, there's only one program connecting to the can socket on
- > this device.
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-That's not the problem. The network layer is set up to assume 1500-byte 
-Ethernet packets. There are two limits - the number of packets on the 
-lower just-above-the-hardware queue and the number of buffers taken up 
-by each socket. The default settings mean that programs sending "as fast 
-as they can" like an FTP file-transfer will block before the hit the 
-"start dumping buffers" limit. By default, CAN is set up completely the 
-wrong way for this. You have to increase the hardware queue (who ever 
-thought "10" was a good number?) and change the socket limit.
+When register_flexcandev() fails it is better to mention 'flexcandev'
+in the error message for better clarity.
 
- > That program is canplayer.  So I would need to patch
- > canplayer with that setsockopt code you are suggesting?
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If it doesn't have a command to make it rate-limit its transmissions - 
-if it is written assuming the lower layers will properly flow-control 
-it, then I'd say "yes". There may be a way to change the OS defaults so 
-you don't have to patch it. It may make it a better program if you do 
-add explicit command-line-specified rate-limiting to it.
-
-Tom
-
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 16f7cad..f1da809 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1234,7 +1234,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 
+ 	err = register_flexcandev(dev);
+ 	if (err) {
+-		dev_err(&pdev->dev, "registering netdev failed\n");
++		dev_err(&pdev->dev, "registering flexcandev failed\n");
+ 		goto failed_register;
+ 	}
+ 
+-- 
+2.7.4
 
