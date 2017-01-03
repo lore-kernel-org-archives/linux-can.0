@@ -1,91 +1,50 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 4/4] can: peak: add support for PEAK PCAN-PCIe FD
- CAN-FD boards
-Date: Tue, 3 Jan 2017 15:25:46 +0100
-Message-ID: <a86ff34f-856a-b63a-4b6a-8106728d176b@pengutronix.de>
-References: <1483360491-31682-1-git-send-email-s.grosjean@peak-system.com>
- <1483360491-31682-5-git-send-email-s.grosjean@peak-system.com>
+Subject: Re: [PATCH] can: flexcan: improve error message
+Date: Tue, 3 Jan 2017 15:26:25 +0100
+Message-ID: <40c163f0-9d41-6811-40f7-a58dea6454ea@pengutronix.de>
+References: <1482941561-28094-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="gxdpSAwGW1cA9hool4mxNcBQV0wdxXdef"
+ boundary="pmpqnuWwmk6qveNl1iS4H0il2OiCmd8K9"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:56661 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:59485 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752218AbdACO0X (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Jan 2017 09:26:23 -0500
-In-Reply-To: <1483360491-31682-5-git-send-email-s.grosjean@peak-system.com>
+        by vger.kernel.org with ESMTP id S1755730AbdACO1D (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Jan 2017 09:27:03 -0500
+In-Reply-To: <1482941561-28094-1-git-send-email-festevam@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@nxp.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gxdpSAwGW1cA9hool4mxNcBQV0wdxXdef
-Content-Type: multipart/mixed; boundary="H8gmh1R9V1wshvEvNUhdR0FwckpOctScf";
+--pmpqnuWwmk6qveNl1iS4H0il2OiCmd8K9
+Content-Type: multipart/mixed; boundary="XbB1PFKeqIxhDgOJS47gIIFwQxVgFjC4l";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Stephane Grosjean <s.grosjean@peak-system.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
-Message-ID: <a86ff34f-856a-b63a-4b6a-8106728d176b@pengutronix.de>
-Subject: Re: [PATCH v2 4/4] can: peak: add support for PEAK PCAN-PCIe FD
- CAN-FD boards
-References: <1483360491-31682-1-git-send-email-s.grosjean@peak-system.com>
- <1483360491-31682-5-git-send-email-s.grosjean@peak-system.com>
-In-Reply-To: <1483360491-31682-5-git-send-email-s.grosjean@peak-system.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: linux-can@vger.kernel.org, Fabio Estevam <fabio.estevam@nxp.com>
+Message-ID: <40c163f0-9d41-6811-40f7-a58dea6454ea@pengutronix.de>
+Subject: Re: [PATCH] can: flexcan: improve error message
+References: <1482941561-28094-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1482941561-28094-1-git-send-email-festevam@gmail.com>
 
---H8gmh1R9V1wshvEvNUhdR0FwckpOctScf
+--XbB1PFKeqIxhDgOJS47gIIFwQxVgFjC4l
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 01/02/2017 01:34 PM, Stephane Grosjean wrote:
-> This patch adds the support of the PCAN-PCI Express FD boards made
-> by PEAK-System, for computers using the PCI Express slot.
+On 12/28/2016 05:12 PM, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@nxp.com>
 >=20
-> The PCAN-PCI Express FD has one or two CAN FD channels, depending
-> on the model. A galvanic isolation of the CAN ports protects
-> the electronics of the card and the respective computer against
-> disturbances of up to 500 Volts. The PCAN-PCI Express FD can be operate=
-d
-> with ambient temperatures in a range of -40 to +85 =C2=B0C.
+> When register_flexcandev() fails it is better to mention 'flexcandev'
+> in the error message for better clarity.
 >=20
-> Such boards run an extented version of the CAN-FD IP running into USB
-> CAN-FD interfaces from PEAK-System, so this patch adds several new comm=
-ands
-> and their corresponding data types to the PEAK CAN-FD common definition=
-s
-> header file too.
->=20
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 
-> +/* CAN-FD channel object */
-> +struct pciefd_board;
-> +struct pciefd_can {
-> +	struct peak_canfd_priv ucan;	/* must be the first member */
-> +	void __iomem *reg_base;		/* channel config base addr */
-> +	struct pciefd_board *board;	/* reverse link */
-> +
-> +	struct pucan_command pucan_cmd;	/* command buffer */
-> +
-> +	u32 flags;
+Added to can-next.
 
-not used.
-
-> +
-> +	dma_addr_t rx_dma_laddr;	/* DMA virtual and logical addr */
-> +	void *rx_dma_vaddr;		/* for Rx and Tx areas */
-> +	dma_addr_t tx_dma_laddr;
-> +	void *tx_dma_vaddr;
-> +
-> +	struct pciefd_page tx_pages[PCIEFD_TX_PAGE_COUNT];
-> +	u16 tx_pages_free;		/* free Tx pages counter */
-> +	u16 tx_page_index;		/* current page used for Tx */
-> +
-> +	struct pciefd_irq_status irq_status;	/* current irq status */
-> +	u32 irq_tag;				/* next irq tag */
-> +};
-
+Thanks,
 Marc
 
 --=20
@@ -95,23 +54,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---H8gmh1R9V1wshvEvNUhdR0FwckpOctScf--
+--XbB1PFKeqIxhDgOJS47gIIFwQxVgFjC4l--
 
---gxdpSAwGW1cA9hool4mxNcBQV0wdxXdef
+--pmpqnuWwmk6qveNl1iS4H0il2OiCmd8K9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhrtGoACgkQPTuqJayp
-JWoAGggAvj/aPNd4h3Ysa0YQK2zqo6uMrGPJYMBEOLb9jQ9IOCtvJC1Os0goZHuT
-NQl2wlPZGOGFdSRv75ASWHYK+jMKuEd/vywtmeov9JOMfyYEz97Pl1ihSTKQkWSI
-tTruSq+Jy+W3tq40MsTIcliedGg18naqHnSxKBnDv7U09IZx0XCwD0WfR/bQ4x3P
-WmX53/PLqPZGNEtpZT2vNt7MYU0vy9JzFMDIQ1Q3icjOKenyQbWSwrHN3bbF/7uY
-V532s0t8ITSwIRnmgxrFrKnlhWXhqCLTfBmSU0pxJbK0plKHiqK3VtNKPkiGr+o6
-HQNqBWbnOIGOSKqbCV63NvPj0OACjQ==
-=rNwe
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhrtJEACgkQPTuqJayp
+JWpmBgf/ditRASVOPS2fzzZSHaiMeqLLBqlw0h4QbXMNdcigTxNmaCI4Euvte3FI
+HdQ8dTP/Qxyy0F/G32on/h2sbDcEMB+bnr5mUT6dd6iGRZC9Y+aRLo51/KIrxgQd
+NNY8YLlT84NQBjNNR+RUVuYNmPYReP3lH+KgvfY/i+H5WKTwOx+GaD69Gwk/aeZz
+Ek87ePQbKwgH7klVGNqYl/0kTgWvuDBsOH9jukFs8JgguGrWAIyxaVEPO5HknDen
+KDc+i7hg+TU5S4kOOgJWPoEPSmhCfuTaTNYpUHzKCyl+tsqzegRzgZv1cIIiepia
+/lagGi+HEUkKqjw0+7Km0SlxLolhLA==
+=uuJb
 -----END PGP SIGNATURE-----
 
---gxdpSAwGW1cA9hool4mxNcBQV0wdxXdef--
+--pmpqnuWwmk6qveNl1iS4H0il2OiCmd8K9--
