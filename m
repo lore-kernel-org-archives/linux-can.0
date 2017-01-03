@@ -1,19 +1,19 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v2 4/4] can: peak: add support for PEAK PCAN-PCIe FD
  CAN-FD boards
-Date: Tue, 3 Jan 2017 15:08:29 +0100
-Message-ID: <f0815d4c-fe69-458a-73f7-38ae865a57b3@pengutronix.de>
+Date: Tue, 3 Jan 2017 15:25:46 +0100
+Message-ID: <a86ff34f-856a-b63a-4b6a-8106728d176b@pengutronix.de>
 References: <1483360491-31682-1-git-send-email-s.grosjean@peak-system.com>
  <1483360491-31682-5-git-send-email-s.grosjean@peak-system.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="0BPCJlOakrQ1Vhafbs2h2Vk6Fxqf6V4eG"
+ boundary="gxdpSAwGW1cA9hool4mxNcBQV0wdxXdef"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:53111 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:56661 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752774AbdACOJG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Jan 2017 09:09:06 -0500
+        by vger.kernel.org with ESMTP id S1752218AbdACO0X (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Jan 2017 09:26:23 -0500
 In-Reply-To: <1483360491-31682-5-git-send-email-s.grosjean@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -21,21 +21,21 @@ To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@h
 Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---0BPCJlOakrQ1Vhafbs2h2Vk6Fxqf6V4eG
-Content-Type: multipart/mixed; boundary="VQtU37fvLErpexUsSLLnltCdpGfOWEquB";
+--gxdpSAwGW1cA9hool4mxNcBQV0wdxXdef
+Content-Type: multipart/mixed; boundary="H8gmh1R9V1wshvEvNUhdR0FwckpOctScf";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: Stephane Grosjean <s.grosjean@peak-system.com>,
  Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: linux-can Mailing List <linux-can@vger.kernel.org>
-Message-ID: <f0815d4c-fe69-458a-73f7-38ae865a57b3@pengutronix.de>
+Message-ID: <a86ff34f-856a-b63a-4b6a-8106728d176b@pengutronix.de>
 Subject: Re: [PATCH v2 4/4] can: peak: add support for PEAK PCAN-PCIe FD
  CAN-FD boards
 References: <1483360491-31682-1-git-send-email-s.grosjean@peak-system.com>
  <1483360491-31682-5-git-send-email-s.grosjean@peak-system.com>
 In-Reply-To: <1483360491-31682-5-git-send-email-s.grosjean@peak-system.com>
 
---VQtU37fvLErpexUsSLLnltCdpGfOWEquB
+--H8gmh1R9V1wshvEvNUhdR0FwckpOctScf
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
@@ -59,29 +59,32 @@ s
 >=20
 > Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 
-[...]
+> +/* CAN-FD channel object */
+> +struct pciefd_board;
+> +struct pciefd_can {
+> +	struct peak_canfd_priv ucan;	/* must be the first member */
+> +	void __iomem *reg_base;		/* channel config base addr */
+> +	struct pciefd_board *board;	/* reverse link */
+> +
+> +	struct pucan_command pucan_cmd;	/* command buffer */
+> +
+> +	u32 flags;
 
-> +static void *pucan_add_cmd(struct peak_canfd_priv *priv, int cmd_op)
-> +{
-> +	struct pucan_command *cmd;
-> +
-> +	if (priv->cmd_len + sizeof(*cmd) > priv->cmd_maxlen)
-> +		return NULL;
-> +
-> +	cmd =3D priv->cmd_buffer + priv->cmd_len;
-> +
-> +	/* reset all unused bit to default */
-> +	*(u64 *)cmd =3D 0;
-
-pease use memset() instead.
+not used.
 
 > +
-> +	cmd->opcode_channel =3D pucan_cmd_opcode_channel(priv->index, cmd_op)=
-;
-> +	priv->cmd_len +=3D sizeof(*cmd);
+> +	dma_addr_t rx_dma_laddr;	/* DMA virtual and logical addr */
+> +	void *rx_dma_vaddr;		/* for Rx and Tx areas */
+> +	dma_addr_t tx_dma_laddr;
+> +	void *tx_dma_vaddr;
 > +
-> +	return cmd;
-> +}
+> +	struct pciefd_page tx_pages[PCIEFD_TX_PAGE_COUNT];
+> +	u16 tx_pages_free;		/* free Tx pages counter */
+> +	u16 tx_page_index;		/* current page used for Tx */
+> +
+> +	struct pciefd_irq_status irq_status;	/* current irq status */
+> +	u32 irq_tag;				/* next irq tag */
+> +};
 
 Marc
 
@@ -92,23 +95,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---VQtU37fvLErpexUsSLLnltCdpGfOWEquB--
+--H8gmh1R9V1wshvEvNUhdR0FwckpOctScf--
 
---0BPCJlOakrQ1Vhafbs2h2Vk6Fxqf6V4eG
+--gxdpSAwGW1cA9hool4mxNcBQV0wdxXdef
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhrsF0ACgkQPTuqJayp
-JWpp8Af5AcmZaJjL7c5s3F3iV9xjBjZIeV1CpkTZzdqRsnoKazwT4TJcB7tuniKh
-yHVDq1wOFZ1NLGiuB2bJioV0wZNNFYLPCsSjBrjN+dlvS+H1hGaqyt7iUx2yj+RN
-LGmaNJUXQa9prXE9VPb/MGdLJSGuTwux3GlKnK9RKS5nHxaAmhW1HoYniUH7vDD1
-rniomK7/V6Zi1IFSxZqKWMPuVIldwofGAsfXC14ko534nNe1ZHSynhOWVqdZslMo
-eiSlPUhYSgQ5D7sdr5HMjFKoFVhHllir6gPVyNkFdYHqZiFKybspEqm2FIR7Rb+g
-6XKKGSCEaByup/EDocjf2Ob3JqDinA==
-=Sb6R
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhrtGoACgkQPTuqJayp
+JWoAGggAvj/aPNd4h3Ysa0YQK2zqo6uMrGPJYMBEOLb9jQ9IOCtvJC1Os0goZHuT
+NQl2wlPZGOGFdSRv75ASWHYK+jMKuEd/vywtmeov9JOMfyYEz97Pl1ihSTKQkWSI
+tTruSq+Jy+W3tq40MsTIcliedGg18naqHnSxKBnDv7U09IZx0XCwD0WfR/bQ4x3P
+WmX53/PLqPZGNEtpZT2vNt7MYU0vy9JzFMDIQ1Q3icjOKenyQbWSwrHN3bbF/7uY
+V532s0t8ITSwIRnmgxrFrKnlhWXhqCLTfBmSU0pxJbK0plKHiqK3VtNKPkiGr+o6
+HQNqBWbnOIGOSKqbCV63NvPj0OACjQ==
+=rNwe
 -----END PGP SIGNATURE-----
 
---0BPCJlOakrQ1Vhafbs2h2Vk6Fxqf6V4eG--
+--gxdpSAwGW1cA9hool4mxNcBQV0wdxXdef--
