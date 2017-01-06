@@ -1,114 +1,97 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [RFC, PATCH] can: dev: can_changelink: allow to set bitrate on devices not providing {data_,}bittiming_const
-Date: Fri,  6 Jan 2017 13:53:44 +0100
-Message-ID: <20170106125344.15267-1-mkl@pengutronix.de>
+From: "Grim, Dennis" <Dennis.Grim@teejet.com>
+Subject: RE: ti hecc rx frames out of order
+Date: Fri, 6 Jan 2017 20:51:07 +0000
+Message-ID: <1579A5A5423CC14B827884B535F8E9513497B097@SSCOXCHG2.spray.com>
+References: <1579A5A5423CC14B827884B535F8E951349421F6@SSCOXCHG2.spray.com>
+ <CAGm1_kspg3iYO87kk+iugNuC+ABwFn9DuN3KYTXiJ2LFh8_JOg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:56857 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1760580AbdAFNNd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Jan 2017 08:13:33 -0500
+Received: from ms.spray.com ([207.247.13.3]:36945 "EHLO mail.spray.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1030629AbdAFUvK (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 6 Jan 2017 15:51:10 -0500
+In-Reply-To: <CAGm1_kspg3iYO87kk+iugNuC+ABwFn9DuN3KYTXiJ2LFh8_JOg@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Until commit
-
-    08da7da41ea4 can: provide a separate bittiming_const parameter to
-                 bittiming functions
-
-it was possible to have devices not providing bittiming_const. This can
-be used for hardware that only support pre-defined fixed bitrates.
-Although no mainline driver is using this feature so far.
-
-This patch re-introduces this feature for the bitrate and the data
-bitrate (of CANFD controllers). The driver can specify the
-{data_,}bittiming_const (if the bittiming parameters should be
-calculated from the bittiming_const) as before or no
-{data_,}bittiming_const but implement the do_set_{data,}bittiming
-callback.
-
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Hello,
-
-this patch should make the mcba_usb driver, which only support fixed bitrates,
-a bit simpler.
-
-regards,
-Marc
-
- drivers/net/can/dev.c | 40 ++++++++++++++++++++++++++++++----------
- 1 file changed, 30 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 8d6208c0b400..c240cd9f823b 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -284,10 +284,6 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
- {
- 	int err;
- 
--	/* Check if the CAN device has bit-timing parameters */
--	if (!btc)
--		return -EOPNOTSUPP;
--
- 	/*
- 	 * Depending on the given can_bittiming parameter structure the CAN
- 	 * timing parameters are calculated based on the provided bitrate OR
-@@ -872,10 +868,22 @@ static int can_changelink(struct net_device *dev,
- 		/* Do not allow changing bittiming while running */
- 		if (dev->flags & IFF_UP)
- 			return -EBUSY;
-+
-+		/* Calculate bittiming parameters based on
-+		 * bittiming_const if set, otherwise pass bitrate
-+		 * directly via do_set_bitrate(). Bail out if neither
-+		 * is given.
-+		 */
-+		if (!priv->bittiming_const && !priv->do_set_bittiming)
-+			return -EOPNOTSUPP;
-+
- 		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
--		err = can_get_bittiming(dev, &bt, priv->bittiming_const);
--		if (err)
--			return err;
-+		if (priv->bittiming_const) {
-+			err = can_get_bittiming(dev, &bt,
-+						priv->bittiming_const);
-+			if (err)
-+				return err;
-+		}
- 		memcpy(&priv->bittiming, &bt, sizeof(bt));
- 
- 		if (priv->do_set_bittiming) {
-@@ -943,11 +951,23 @@ static int can_changelink(struct net_device *dev,
- 		/* Do not allow changing bittiming while running */
- 		if (dev->flags & IFF_UP)
- 			return -EBUSY;
-+
-+		/* Calculate bittiming parameters based on
-+		 * data_bittiming_const if set, otherwise pass bitrate
-+		 * directly via do_set_bitrate(). Bail out if neither
-+		 * is given.
-+		 */
-+		if (!priv->data_bittiming_const && !priv->do_set_data_bittiming)
-+			return -EOPNOTSUPP;
-+
- 		memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
- 		       sizeof(dbt));
--		err = can_get_bittiming(dev, &dbt, priv->data_bittiming_const);
--		if (err)
--			return err;
-+		if (priv->data_bittiming_const) {
-+			err = can_get_bittiming(dev, &dbt,
-+						priv->data_bittiming_const);
-+			if (err)
-+				return err;
-+		}
- 		memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
- 
- 		if (priv->do_set_data_bittiming) {
--- 
-2.11.0
-
+SGVsbG8gWWVnb3IsDQoNCkknbSB1c2luZyBhIHZlbmRvci1zdXBwbGllZCBib2FyZCBzdXBwb3J0
+IHBhY2thZ2UgdGhhdCBpcyBiYXNlZCBvbiB0aGUgMy42LjAgTGludXgga2VybmVsLg0KDQpUaGUg
+cGFja2FnZSBkb2VzIG5vdCBtYWtlIHVzZSBvZiB0aGUgRGV2aWNlIFRyZWUuDQoNCkRlbm5pcw0K
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogWWVnb3IgWWVmcmVtb3Yg
+W21haWx0bzp5ZWdvcnNsaXN0c0Bnb29nbGVtYWlsLmNvbV0NCj4gU2VudDogVGh1cnNkYXksIEph
+bnVhcnkgMDUsIDIwMTcgMzoxMCBBTQ0KPiBUbzogR3JpbSwgRGVubmlzIDxEZW5uaXMuR3JpbUB0
+ZWVqZXQuY29tPg0KPiBDYzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBS
+ZTogdGkgaGVjYyByeCBmcmFtZXMgb3V0IG9mIG9yZGVyDQo+IA0KPiBIaSBEZW5uaXMsDQo+IA0K
+PiBPbiBGcmksIERlYyAyLCAyMDE2IGF0IDg6NDMgUE0sIEdyaW0sIERlbm5pcyA8RGVubmlzLkdy
+aW1AdGVlamV0LmNvbT4gd3JvdGU6DQo+ID4gV2hlbiBydW5uaW5nIGNhbmZkdGVzdCBvbiBhIFRJ
+IEFNMzUxNyBIRUNDLCBmcmFtZXMgcmFuZG9tbHkgYXBwZWFyIG91dCBvZg0KPiBvcmRlci4NCj4g
+Pg0KPiA+ICJjYW4tdXRpbHMiIGlzIGN1cnJlbnQgKGNsb25lZCB0aGlzIHdlZWsgZnJvbSBnaXRo
+dWIpDQo+ID4NCj4gPiBMaW51eCBrZXJuZWwgaXMgMy4xOS4wLg0KPiANCj4gQXJlIHlvdSB1c2lu
+ZyBEZXZpY2UgVHJlZSAoRFRTKT8gSWYgeWVzLCBjb3VsZCB5b3Ugc2hhcmUgeW91ciBIRUNDIGNv
+bmZpZ3VyYXRpb24NCj4gZnJhZ21lbnQ/IEFzaWRlIGZyb20gaGVjY19jayBJIGRvbid0IHNlZSBt
+dWNoIERUUyByZWxhdGVkIGluZm8uDQo+IA0KPiBUaGFua3MuDQo+IA0KPiBZZWdvcg0KPiANCj4g
+PiBGcm9tIGhvc3QgKGNhbmZkdGVzdCAtdnYgLWcgY2FuMCk6DQo+ID4NCj4gPiAwMDc4OiBbOF0g
+ZWQgZWUgZWYgZjAgZjEgZjIgZjMgZjQNCj4gPiAwMDc4OiBbOF0gZWUgZWYgZjAgZjEgZjIgZjMg
+ZjQgZjUNCj4gPiAwMDc4OiBbOF0gZWYgZjAgZjEgZjIgZjMgZjQgZjUgZjYNCj4gPiAwMDc4OiBb
+OF0gZjAgZjEgZjIgZjMgZjQgZjUgZjYgZjcNCj4gPiAwMDc4OiBbOF0gZjIgZjMgZjQgZjUgZjYg
+ZjcgZjggZjkNCj4gPiBEYXRhYnl0ZSAwIG1pc21hdGNoICENCj4gPiBleHBlY3RlZDogMDA3ODog
+WzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBm
+MyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSAxIG1pc21hdGNoICENCj4gPiBleHBlY3RlZDog
+MDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4
+XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSAyIG1pc21hdGNoICENCj4gPiBleHBl
+Y3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAw
+Nzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSAzIG1pc21hdGNoICENCj4g
+PiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2
+ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSA0IG1pc21hdGNo
+ICENCj4gPiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4g
+cmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSA1IG1p
+c21hdGNoICENCj4gPiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4
+DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0
+ZSA2IG1pc21hdGNoICENCj4gPiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2
+IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBE
+YXRhYnl0ZSA3IG1pc21hdGNoICENCj4gPiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0
+IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBm
+OCBmOQ0KPiA+DQo+ID4gVGVzdCBtZXNzYWdlcyBzZW50IGFuZCByZWNlaXZlZDogNTA3Mzc3IEV4
+aXRpbmcuLi4NCj4gPg0KPiA+IEZyb20gdGkgaGVjYyBEVVQgKGNhbmZkdGVzdCAtdnYgY2FuMik6
+DQo+ID4NCj4gPiAwMDc3OiBbOF0gZWQgZWUgZWYgZjAgZjEgZjIgZjMgZjQNCj4gPiAwMDc3OiBb
+OF0gZWUgZWYgZjAgZjEgZjIgZjMgZjQgZjUNCj4gPiAwMDc3OiBbOF0gZWYgZjAgZjEgZjIgZjMg
+ZjQgZjUgZjYNCj4gPiAwMDc3OiBbOF0gZjEgZjIgZjMgZjQgZjUgZjYgZjcgZjgNCj4gPiAwMDc3
+OiBbOF0gZjIgZjMgZjQgZjUgZjYgZjcgZjggZjkNCj4gPiAwMDc3OiBbOF0gZjAgZjEgZjIgZjMg
+ZjQgZjUgZjYgZjcgICBOT1RFOiB0aGlzIGxpbmUgaXMgb3V0IG9mIG9yZGVyDQo+ID4gMDA3Nzog
+WzhdIGYzIGY0IGY1IGY2IGY3IGY4IGY5IGZhDQo+ID4gMDA3NzogWzhdIGY0IGY1IGY2IGY3IGY4
+IGY5IGZhIGZiDQo+ID4gMDA3NzogWzhdIGY1IGY2IGY3IGY4IGY5IGZhIGZiIGZjDQo+ID4NCj4g
+Pg0KPiA+IEZyb20gUGVhayBQQ0FOLVZpZXc6DQo+ID4NCj4gPiA5OTg5MykgICAgNTk0MzYwLjcg
+IFJ4ICAgICAgICAgMDA3NyAgOCAgRUQgRUUgRUYgRjAgRjEgRjIgRjMgRjQNCj4gPiA5OTg5NCkg
+ICAgNTk0MzYxLjEgIFJ4ICAgICAgICAgMDA3OCAgOCAgRUMgRUQgRUUgRUYgRjAgRjEgRjIgRjMN
+Cj4gPiA5OTg5NSkgICAgNTk0MzYxLjYgIFJ4ICAgICAgICAgMDA3NyAgOCAgRUUgRUYgRjAgRjEg
+RjIgRjMgRjQgRjUNCj4gPiA5OTg5NikgICAgNTk0MzYyLjEgIFJ4ICAgICAgICAgMDA3OCAgOCAg
+RUQgRUUgRUYgRjAgRjEgRjIgRjMgRjQNCj4gPiA5OTg5NykgICAgNTk0MzYyLjUgIFJ4ICAgICAg
+ICAgMDA3OCAgOCAgRUUgRUYgRjAgRjEgRjIgRjMgRjQgRjUNCj4gPiA5OTg5OCkgICAgNTk0MzYz
+LjAgIFJ4ICAgICAgICAgMDA3OCAgOCAgRUYgRjAgRjEgRjIgRjMgRjQgRjUgRjYNCj4gPiA5OTg5
+OSkgICAgNTk0MzYzLjUgIFJ4ICAgICAgICAgMDA3NyAgOCAgRUYgRjAgRjEgRjIgRjMgRjQgRjUg
+RjYNCj4gPiA5OTkwMCkgICAgNTk0MzYzLjkgIFJ4ICAgICAgICAgMDA3NyAgOCAgRjAgRjEgRjIg
+RjMgRjQgRjUgRjYgRjcNCj4gPiA5OTkwMSkgICAgNTk0MzY0LjQgIFJ4ICAgICAgICAgMDA3OCAg
+OCAgRjAgRjEgRjIgRjMgRjQgRjUgRjYgRjcNCj4gPiA5OTkwMikgICAgNTk0MzY0LjkgIFJ4ICAg
+ICAgICAgMDA3NyAgOCAgRjEgRjIgRjMgRjQgRjUgRjYgRjcgRjgNCj4gPiA5OTkwMykgICAgNTk0
+MzY1LjggIFJ4ICAgICAgICAgMDA3NyAgOCAgRjIgRjMgRjQgRjUgRjYgRjcgRjggRjkNCj4gPiA5
+OTkwNCkgICAgNTk0MzY2LjggIFJ4ICAgICAgICAgMDA3NyAgOCAgRjMgRjQgRjUgRjYgRjcgRjgg
+RjkgRkENCj4gPiA5OTkwNSkgICAgNTk0MzY3LjMgIFJ4ICAgICAgICAgMDA3OCAgOCAgRjIgRjMg
+RjQgRjUgRjYgRjcgRjggRjkNCj4gPiA5OTkwNikgICAgNTk0MzY3LjggIFJ4ICAgICAgICAgMDA3
+OCAgOCAgRjMgRjQgRjUgRjYgRjcgRjggRjkgRkENCj4gPiA5OTkwNykgICAgNTk0MzY4LjMgIFJ4
+ICAgICAgICAgMDA3NyAgOCAgRjQgRjUgRjYgRjcgRjggRjkgRkEgRkINCj4gPiA5OTkwOCkgICAg
+NTk0MzY4LjcgIFJ4ICAgICAgICAgMDA3OCAgOCAgRjEgRjIgRjMgRjQgRjUgRjYgRjcgRjggICAg
+ICBOT1RFOiB0aGlzIGxpbmUNCj4gaXMgb3V0IG9mIG9yZGVyDQo+ID4gOTk5MDkpICAgIDU5NDM2
+OS4yICBSeCAgICAgICAgIDAwNzcgIDggIEY1IEY2IEY3IEY4IEY5IEZBIEZCIEZDDQo+ID4gOTk5
+MTApICAgIDU5NDM2OS43ICBSeCAgICAgICAgIDAwNzggIDggIEY0IEY1IEY2IEY3IEY4IEY5IEZB
+IEZCDQo+ID4gOTk5MTEpICAgIDU5NDM3MC4yICBSeCAgICAgICAgIDAwNzcgIDggIEY2IEY3IEY4
+IEY5IEZBIEZCIEZDIEZEDQo+ID4NCj4gPiBJJ20gbG9va2luZyBhdCB0aV9oZWNjLmMuDQo+ID4N
+Cj4gPiBBbnkgZ3VpZGFuY2Ugd291bGQgYmUgdmVyeSBtdWNoIGFwcHJlY2lhdGVkLg0KPiA+DQo+
+ID4gRGVubmlzDQo+ID4NCj4gPg0KPiA+IC0tDQo+ID4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlz
+IGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LWNhbiINCj4gPiBpbiB0aGUg
+Ym9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZyBNb3JlIG1ham9y
+ZG9tbw0KPiA+IGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8u
+aHRtbA0K
