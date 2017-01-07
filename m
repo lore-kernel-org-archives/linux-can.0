@@ -1,97 +1,169 @@
-From: "Grim, Dennis" <Dennis.Grim@teejet.com>
-Subject: RE: ti hecc rx frames out of order
-Date: Fri, 6 Jan 2017 20:51:07 +0000
-Message-ID: <1579A5A5423CC14B827884B535F8E9513497B097@SSCOXCHG2.spray.com>
-References: <1579A5A5423CC14B827884B535F8E951349421F6@SSCOXCHG2.spray.com>
- <CAGm1_kspg3iYO87kk+iugNuC+ABwFn9DuN3KYTXiJ2LFh8_JOg@mail.gmail.com>
+From: Michael Josenhans <michael.josenhans@web.de>
+Subject: Issues with SocketCAN
+Date: Sat, 7 Jan 2017 14:05:11 +0100
+Message-ID: <a4601513-6eb3-eef1-8245-11010d74e685@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ms.spray.com ([207.247.13.3]:36945 "EHLO mail.spray.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1030629AbdAFUvK (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 6 Jan 2017 15:51:10 -0500
-In-Reply-To: <CAGm1_kspg3iYO87kk+iugNuC+ABwFn9DuN3KYTXiJ2LFh8_JOg@mail.gmail.com>
-Content-Language: en-US
+Received: from mout.web.de ([212.227.15.4]:59964 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S932228AbdAGNFQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 7 Jan 2017 08:05:16 -0500
+Received: from [192.168.178.35] ([89.244.96.239]) by smtp.web.de (mrweb004
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MB06e-1cI6vD488q-009xUD for
+ <linux-can@vger.kernel.org>; Sat, 07 Jan 2017 14:05:12 +0100
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-SGVsbG8gWWVnb3IsDQoNCkknbSB1c2luZyBhIHZlbmRvci1zdXBwbGllZCBib2FyZCBzdXBwb3J0
-IHBhY2thZ2UgdGhhdCBpcyBiYXNlZCBvbiB0aGUgMy42LjAgTGludXgga2VybmVsLg0KDQpUaGUg
-cGFja2FnZSBkb2VzIG5vdCBtYWtlIHVzZSBvZiB0aGUgRGV2aWNlIFRyZWUuDQoNCkRlbm5pcw0K
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogWWVnb3IgWWVmcmVtb3Yg
-W21haWx0bzp5ZWdvcnNsaXN0c0Bnb29nbGVtYWlsLmNvbV0NCj4gU2VudDogVGh1cnNkYXksIEph
-bnVhcnkgMDUsIDIwMTcgMzoxMCBBTQ0KPiBUbzogR3JpbSwgRGVubmlzIDxEZW5uaXMuR3JpbUB0
-ZWVqZXQuY29tPg0KPiBDYzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBS
-ZTogdGkgaGVjYyByeCBmcmFtZXMgb3V0IG9mIG9yZGVyDQo+IA0KPiBIaSBEZW5uaXMsDQo+IA0K
-PiBPbiBGcmksIERlYyAyLCAyMDE2IGF0IDg6NDMgUE0sIEdyaW0sIERlbm5pcyA8RGVubmlzLkdy
-aW1AdGVlamV0LmNvbT4gd3JvdGU6DQo+ID4gV2hlbiBydW5uaW5nIGNhbmZkdGVzdCBvbiBhIFRJ
-IEFNMzUxNyBIRUNDLCBmcmFtZXMgcmFuZG9tbHkgYXBwZWFyIG91dCBvZg0KPiBvcmRlci4NCj4g
-Pg0KPiA+ICJjYW4tdXRpbHMiIGlzIGN1cnJlbnQgKGNsb25lZCB0aGlzIHdlZWsgZnJvbSBnaXRo
-dWIpDQo+ID4NCj4gPiBMaW51eCBrZXJuZWwgaXMgMy4xOS4wLg0KPiANCj4gQXJlIHlvdSB1c2lu
-ZyBEZXZpY2UgVHJlZSAoRFRTKT8gSWYgeWVzLCBjb3VsZCB5b3Ugc2hhcmUgeW91ciBIRUNDIGNv
-bmZpZ3VyYXRpb24NCj4gZnJhZ21lbnQ/IEFzaWRlIGZyb20gaGVjY19jayBJIGRvbid0IHNlZSBt
-dWNoIERUUyByZWxhdGVkIGluZm8uDQo+IA0KPiBUaGFua3MuDQo+IA0KPiBZZWdvcg0KPiANCj4g
-PiBGcm9tIGhvc3QgKGNhbmZkdGVzdCAtdnYgLWcgY2FuMCk6DQo+ID4NCj4gPiAwMDc4OiBbOF0g
-ZWQgZWUgZWYgZjAgZjEgZjIgZjMgZjQNCj4gPiAwMDc4OiBbOF0gZWUgZWYgZjAgZjEgZjIgZjMg
-ZjQgZjUNCj4gPiAwMDc4OiBbOF0gZWYgZjAgZjEgZjIgZjMgZjQgZjUgZjYNCj4gPiAwMDc4OiBb
-OF0gZjAgZjEgZjIgZjMgZjQgZjUgZjYgZjcNCj4gPiAwMDc4OiBbOF0gZjIgZjMgZjQgZjUgZjYg
-ZjcgZjggZjkNCj4gPiBEYXRhYnl0ZSAwIG1pc21hdGNoICENCj4gPiBleHBlY3RlZDogMDA3ODog
-WzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBm
-MyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSAxIG1pc21hdGNoICENCj4gPiBleHBlY3RlZDog
-MDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4
-XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSAyIG1pc21hdGNoICENCj4gPiBleHBl
-Y3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAw
-Nzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSAzIG1pc21hdGNoICENCj4g
-PiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2
-ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSA0IG1pc21hdGNo
-ICENCj4gPiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4DQo+ID4g
-cmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0ZSA1IG1p
-c21hdGNoICENCj4gPiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2IGY3IGY4
-DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBEYXRhYnl0
-ZSA2IG1pc21hdGNoICENCj4gPiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0IGY1IGY2
-IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBmOCBmOSBE
-YXRhYnl0ZSA3IG1pc21hdGNoICENCj4gPiBleHBlY3RlZDogMDA3ODogWzhdIGYxIGYyIGYzIGY0
-IGY1IGY2IGY3IGY4DQo+ID4gcmVjZWl2ZWQ6IDAwNzg6IFs4XSBmMiBmMyBmNCBmNSBmNiBmNyBm
-OCBmOQ0KPiA+DQo+ID4gVGVzdCBtZXNzYWdlcyBzZW50IGFuZCByZWNlaXZlZDogNTA3Mzc3IEV4
-aXRpbmcuLi4NCj4gPg0KPiA+IEZyb20gdGkgaGVjYyBEVVQgKGNhbmZkdGVzdCAtdnYgY2FuMik6
-DQo+ID4NCj4gPiAwMDc3OiBbOF0gZWQgZWUgZWYgZjAgZjEgZjIgZjMgZjQNCj4gPiAwMDc3OiBb
-OF0gZWUgZWYgZjAgZjEgZjIgZjMgZjQgZjUNCj4gPiAwMDc3OiBbOF0gZWYgZjAgZjEgZjIgZjMg
-ZjQgZjUgZjYNCj4gPiAwMDc3OiBbOF0gZjEgZjIgZjMgZjQgZjUgZjYgZjcgZjgNCj4gPiAwMDc3
-OiBbOF0gZjIgZjMgZjQgZjUgZjYgZjcgZjggZjkNCj4gPiAwMDc3OiBbOF0gZjAgZjEgZjIgZjMg
-ZjQgZjUgZjYgZjcgICBOT1RFOiB0aGlzIGxpbmUgaXMgb3V0IG9mIG9yZGVyDQo+ID4gMDA3Nzog
-WzhdIGYzIGY0IGY1IGY2IGY3IGY4IGY5IGZhDQo+ID4gMDA3NzogWzhdIGY0IGY1IGY2IGY3IGY4
-IGY5IGZhIGZiDQo+ID4gMDA3NzogWzhdIGY1IGY2IGY3IGY4IGY5IGZhIGZiIGZjDQo+ID4NCj4g
-Pg0KPiA+IEZyb20gUGVhayBQQ0FOLVZpZXc6DQo+ID4NCj4gPiA5OTg5MykgICAgNTk0MzYwLjcg
-IFJ4ICAgICAgICAgMDA3NyAgOCAgRUQgRUUgRUYgRjAgRjEgRjIgRjMgRjQNCj4gPiA5OTg5NCkg
-ICAgNTk0MzYxLjEgIFJ4ICAgICAgICAgMDA3OCAgOCAgRUMgRUQgRUUgRUYgRjAgRjEgRjIgRjMN
-Cj4gPiA5OTg5NSkgICAgNTk0MzYxLjYgIFJ4ICAgICAgICAgMDA3NyAgOCAgRUUgRUYgRjAgRjEg
-RjIgRjMgRjQgRjUNCj4gPiA5OTg5NikgICAgNTk0MzYyLjEgIFJ4ICAgICAgICAgMDA3OCAgOCAg
-RUQgRUUgRUYgRjAgRjEgRjIgRjMgRjQNCj4gPiA5OTg5NykgICAgNTk0MzYyLjUgIFJ4ICAgICAg
-ICAgMDA3OCAgOCAgRUUgRUYgRjAgRjEgRjIgRjMgRjQgRjUNCj4gPiA5OTg5OCkgICAgNTk0MzYz
-LjAgIFJ4ICAgICAgICAgMDA3OCAgOCAgRUYgRjAgRjEgRjIgRjMgRjQgRjUgRjYNCj4gPiA5OTg5
-OSkgICAgNTk0MzYzLjUgIFJ4ICAgICAgICAgMDA3NyAgOCAgRUYgRjAgRjEgRjIgRjMgRjQgRjUg
-RjYNCj4gPiA5OTkwMCkgICAgNTk0MzYzLjkgIFJ4ICAgICAgICAgMDA3NyAgOCAgRjAgRjEgRjIg
-RjMgRjQgRjUgRjYgRjcNCj4gPiA5OTkwMSkgICAgNTk0MzY0LjQgIFJ4ICAgICAgICAgMDA3OCAg
-OCAgRjAgRjEgRjIgRjMgRjQgRjUgRjYgRjcNCj4gPiA5OTkwMikgICAgNTk0MzY0LjkgIFJ4ICAg
-ICAgICAgMDA3NyAgOCAgRjEgRjIgRjMgRjQgRjUgRjYgRjcgRjgNCj4gPiA5OTkwMykgICAgNTk0
-MzY1LjggIFJ4ICAgICAgICAgMDA3NyAgOCAgRjIgRjMgRjQgRjUgRjYgRjcgRjggRjkNCj4gPiA5
-OTkwNCkgICAgNTk0MzY2LjggIFJ4ICAgICAgICAgMDA3NyAgOCAgRjMgRjQgRjUgRjYgRjcgRjgg
-RjkgRkENCj4gPiA5OTkwNSkgICAgNTk0MzY3LjMgIFJ4ICAgICAgICAgMDA3OCAgOCAgRjIgRjMg
-RjQgRjUgRjYgRjcgRjggRjkNCj4gPiA5OTkwNikgICAgNTk0MzY3LjggIFJ4ICAgICAgICAgMDA3
-OCAgOCAgRjMgRjQgRjUgRjYgRjcgRjggRjkgRkENCj4gPiA5OTkwNykgICAgNTk0MzY4LjMgIFJ4
-ICAgICAgICAgMDA3NyAgOCAgRjQgRjUgRjYgRjcgRjggRjkgRkEgRkINCj4gPiA5OTkwOCkgICAg
-NTk0MzY4LjcgIFJ4ICAgICAgICAgMDA3OCAgOCAgRjEgRjIgRjMgRjQgRjUgRjYgRjcgRjggICAg
-ICBOT1RFOiB0aGlzIGxpbmUNCj4gaXMgb3V0IG9mIG9yZGVyDQo+ID4gOTk5MDkpICAgIDU5NDM2
-OS4yICBSeCAgICAgICAgIDAwNzcgIDggIEY1IEY2IEY3IEY4IEY5IEZBIEZCIEZDDQo+ID4gOTk5
-MTApICAgIDU5NDM2OS43ICBSeCAgICAgICAgIDAwNzggIDggIEY0IEY1IEY2IEY3IEY4IEY5IEZB
-IEZCDQo+ID4gOTk5MTEpICAgIDU5NDM3MC4yICBSeCAgICAgICAgIDAwNzcgIDggIEY2IEY3IEY4
-IEY5IEZBIEZCIEZDIEZEDQo+ID4NCj4gPiBJJ20gbG9va2luZyBhdCB0aV9oZWNjLmMuDQo+ID4N
-Cj4gPiBBbnkgZ3VpZGFuY2Ugd291bGQgYmUgdmVyeSBtdWNoIGFwcHJlY2lhdGVkLg0KPiA+DQo+
-ID4gRGVubmlzDQo+ID4NCj4gPg0KPiA+IC0tDQo+ID4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlz
-IGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LWNhbiINCj4gPiBpbiB0aGUg
-Ym9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZyBNb3JlIG1ham9y
-ZG9tbw0KPiA+IGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8u
-aHRtbA0K
+Dear all,
+
+the last months I wrote a TTCN-test adapter for the eclipse titan. 
+Eclipse Titan is a TTCN-3 compiler written in C++ with Eclipse IDE 
+integration provided by Ericsson.
+
+TTCN is a protocol testing language widely used by various Standards 
+such as 3GPP, ITU, Bluetooth, .. for protocol tests and protocol 
+conformance tests. It allows now testing of complex scenarios with a 
+fraction of the usually needed effort.
+
+With the TTCN-test adapter it is now possible to do CAN-protocol tests 
+using TTCN-3.
+
+While developing the test adapter, I build also some regression tests 
+and came up with several issues I'd like to get clarifications on:
+
+1) Concurrent BCM channels:
+
+Is it possible to use concurrent BCM channels?
+When using multiple BCM channels it did not seem to work, but I did not 
+get an error message, nor did I find anything prohibiting it in the 
+SocketCAN specification 
+(https://www.kernel.org/doc/Documentation/networking/can.txt).
+
+2) BCM Sending / BCM Receiving of CAN- and CAN_FD-frames:
+
+Is it possible to mix sending and receiving CAN- and CAN_FD-frames via 
+the BCM? I did not find anything related in the SocketCAN specification. 
+Not sure if this even makes sense?
+
+3) BCM TX_READ:
+
+Is there a TX_READ example. I did not get it working.
+
+I had been using the Sequence TX_SETUP, TX_DELETE, TX_READ. Especially 
+it is unclear, what TX_READ is supposed to return.
+
+A (broken) TTCN-3 testcase for this is available.
+
+4) SocketCAN specification for getting the interface name
+
+I saw that later SocketCAN application implementations use the function 
+if_nametoindex instead of the way recommended in:
+
+https://www.kernel.org/doc/Documentation/networking/can.txt
+
+Which is the preferred way? Should the specification be updated?
+
+5) Socketname of BCM socket:
+
+I have set the BCM socket as default to "vcan0".
+
+Why is the socket name, when retrieved set to "any".
+
+     s = socket(PF_CAN, SOCK_DGRAM, CAN_BCM);
+     strcpy(ifr.ifr_name, "vcan0");
+     ioctl(s, SIOCGIFINDEX, &ifr);
+
+Why ifr.ifr_ifindex == 0?
+
+6) Querying the BCM socketname for interface Index = 0 (=Any)
+
+Querying the interface name for interface index set to 0 fails:
+
+Example:
+
+     ifr.ifr_ifindex = 0; /* Any interface*/
+     ioctl(s, SIOCGIFNAME, &ifr);
+
+7) RTR-Bit
+
+What is the purpose of the RTR-bit, if set in the CAN-ID?
+
+8) Send queue full behavior is unclear to me
+
+How to handle writing of long sequences of CAN-messages. E.g. SAE J1939 
+based standards like Isobus segment large messages into a sequence of 
+CAN-Frames. These may easily overflow any configured CAN-queue size.
+
+  nbytes = write(s, &frame, sizeof(struct can_frame));
+
+I assume that nbytes becomes 0, if nothing could be sent as the queue is 
+full and -1 in case of an error. How to resume sending when the send 
+queue becomes empty again? Is there a blocking write?
+
+9) SocketCAN-kernel interface versioning
+
+Is there a defined way to build a software against any (older or newer) 
+kernel version?
+It was quite a mess, when building against multiple kernels. When 
+looking at the latest version of the specification it seemed to get even 
+more complicated.
+I have to do this as the test adapter is not shipped with the kernel but 
+with TTCN-Titan.
+
+Here is the solution I came up with:
+
+
+// workaround, as some of those below may not yet be defined in 
+"linux/can/raw.h":
+#define CAN_RAW_FILTER            1 /* set 0 .. n can_filter(s)          */
+#define CAN_RAW_ERR_FILTER        2 /* set filter for error frames       */
+#define CAN_RAW_LOOPBACK          3 /* local loopback (default:on)       */
+#define CAN_RAW_RECV_OWN_MSGS     4 /* receive my own msgs (default:off) */
+#define CAN_RAW_FD_FRAMES         5 /* allow CAN FD frames (default:off) */
+#define CAN_RAW_JOIN_FILTERS      6 /* all filters must match to trigger */
+
+// workaround, as not yet defined in all versions of "linux/Can.h":
+#ifndef CAN_MAX_DLEN
+#define CAN_MAX_DLEN 8
+#endif
+
+// workaround, as not defined in some older kernel versions
+#ifndef    CAN_MTU
+#define CAN_MTU        (sizeof(struct can_frame))
+#endif  //CANFD_MTU
+
+// workaround, as canfd not defined in some older kernel versions
+// and thus canfd frames can not be used for data transfer between
+// kernel module and userspace.
+#ifdef    CANFD_MTU
+#define CANFD_FRAME_STRUCT_DEFINED             true
+#define RAW_CANFD_SUPPORT                      true
+#endif  //CANFD_MTU
+
+// has to be defined in later kernel versions in bcm.h as #define 
+CAN_FD_FRAME   0x0800
+#ifdef  CAN_FD_FRAME
+#define BCM_CANFD_SUPPORT                      true
+#endif
+
+I use the following compile flags in my software:
+CANFD_FRAME_STRUCT_DEFINED
+RAW_CANFD_SUPPORT
+BCM_CANFD_SUPPORT
+
+Is there a better way to do that?
+
+10) SocketCAN-regression tests
+Is there a need for a SocketCAN-regression test suite?
+
+Best regards,
+Michael
+
+PS:
+
+Reference:
+http://elinux.org/TTCN
+
