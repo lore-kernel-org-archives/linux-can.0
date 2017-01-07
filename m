@@ -1,142 +1,252 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] [RFC] can: add CAN interface termination API
-Date: Sat,  7 Jan 2017 20:58:07 +0100
-Message-ID: <20170107195807.16423-1-socketcan@hartkopp.net>
+From: Michael Josenhans <michael.josenhans@web.de>
+Subject: Re: Issues with SocketCAN
+Date: Sat, 7 Jan 2017 23:36:07 +0100
+Message-ID: <705a81dc-36f6-3022-9a8b-9c114608414c@web.de>
+References: <a4601513-6eb3-eef1-8245-11010d74e685@web.de>
+ <67c0bc8f-2ee4-d64d-977b-a9c6e7d80779@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:18050 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S941792AbdAGT7D (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 7 Jan 2017 14:59:03 -0500
+Received: from mout.web.de ([212.227.15.4]:55917 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751224AbdAGWgN (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 7 Jan 2017 17:36:13 -0500
+In-Reply-To: <67c0bc8f-2ee4-d64d-977b-a9c6e7d80779@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-This patch adds a netlink interface to configure the CAN bus termination of
-CAN interfaces.
+Hello Oliver,
 
-Inside the driver an array of supported termination values is defined:
+thank you for the fast reply:
 
-const u16 drvname_termination = { 60, 120, CAN_TERMINATION_DISABLED };
+>> 1) Concurrent BCM channels:
+>>
+>> Is it possible to use concurrent BCM channels?
+>> When using multiple BCM channels it did not seem to work, but I did not
+>> get an error message, nor did I find anything prohibiting it in the
+>> SocketCAN specification
+>> (https://www.kernel.org/doc/Documentation/networking/can.txt).
+>
+> What are "concurrent BCM channels"?
+>
+> You can open multiple CAN_BCM sockets and all of them operate
+> independently and can work on different CAN interfaces each.
+>
 
-struct drvname_priv *priv;
-priv = netdev_priv(dev);
+No, I have opened multiple BCM sockets for the same interface "vcan0". 
+Not sure if this is permitted or should be prevented.
 
-priv->termination_const = &drvname_termination;
-priv->termination_const_size = sizeof(drvname_termination);
-priv->termination = CAN_TERMINATION_DISABLED;
 
-And the funtion to set the value has to be defined:
+>> 2) BCM Sending / BCM Receiving of CAN- and CAN_FD-frames:
+>>
+>> Is it possible to mix sending and receiving CAN- and CAN_FD-frames via
+>> the BCM? I did not find anything related in the SocketCAN specification.
+>> Not sure if this even makes sense?
+>
+> The bit CAN_FD_FRAME in the bcm_msg_head flags defines the binary
+> representation of the following CAN(FD) frame array.
+>
+> You can open one CAN_BCM socket and you can send multiple RX/TX jobs to
+> this socket which are distinguished by CAN ID / interface / CAN_FD_FRAME
+> flag:
+>
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/net/can/bcm.c#n718
+>
 
-priv->do_set_termination = drvname_set_termination;
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev.c            | 34 +++++++++++++++++++++++++++++++++-
- include/linux/can/dev.h          |  4 ++++
- include/uapi/linux/can/netlink.h |  5 +++++
- 3 files changed, 42 insertions(+), 1 deletion(-)
+Asked differently. Can I send CAN_FD- and CAN-frames on the same 
+interface e.g. "vcan0"?
+Is it permitted that I create a sequence with TX_SETUP, which sends 
+first a CAN-frame and then 2 CAN_FD-frames?
+I think the interface permits that, but does this make sense?
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 8d6208c0b400..a779172cffcb 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -958,6 +958,27 @@ static int can_changelink(struct net_device *dev,
- 		}
- 	}
- 
-+	if (data[IFLA_CAN_TERMINATION]) {
-+		u16 t = nla_get_u16(data[IFLA_CAN_TERMINATION]);
-+		int num_t = priv->termination_const_size / sizeof(u16);
-+		int i;
-+
-+		/* check whether given value is supported by the interface */
-+		for (i = 0; i < num_t && t != priv->termination_const[i]; i++);
-+		if (i >= num_t)
-+			return -EINVAL;
-+
-+		priv->termination = t;
-+
-+		if (priv->do_set_termination) {
-+			/* Finally, set the termination */
-+			err = priv->do_set_termination(dev);
-+			if (err)
-+				return err;
-+		} else
-+			return -EOPNOTSUPP;
-+	}
-+
- 	return 0;
- }
- 
-@@ -980,6 +1001,11 @@ static size_t can_get_size(const struct net_device *dev)
- 		size += nla_total_size(sizeof(struct can_bittiming));
- 	if (priv->data_bittiming_const)				/* IFLA_CAN_DATA_BITTIMING_CONST */
- 		size += nla_total_size(sizeof(struct can_bittiming_const));
-+	if (priv->termination_const &&
-+	    priv->termination_const_size) {			/* IFLA_CAN_TERMINATION_CONST */
-+		size += nla_total_size(priv->termination_const_size);
-+		size += nla_total_size(sizeof(u16));		/* IFLA_CAN_TERMINATION */
-+	}
- 
- 	return size;
- }
-@@ -1018,7 +1044,13 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 	    (priv->data_bittiming_const &&
- 	     nla_put(skb, IFLA_CAN_DATA_BITTIMING_CONST,
- 		     sizeof(*priv->data_bittiming_const),
--		     priv->data_bittiming_const)))
-+		     priv->data_bittiming_const)) ||
-+
-+	    (priv->termination_const && priv->termination_const_size &&
-+	     nla_put(skb, IFLA_CAN_TERMINATION_CONST,
-+		     priv->termination_const_size,
-+		     priv->termination_const) &&
-+	     nla_put_u16(skb, IFLA_CAN_TERMINATION, priv->termination)))
- 		return -EMSGSIZE;
- 
- 	return 0;
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 5f5270941ba0..8539fbdc5f5e 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -38,6 +38,9 @@ struct can_priv {
- 	struct can_bittiming bittiming, data_bittiming;
- 	const struct can_bittiming_const *bittiming_const,
- 		*data_bittiming_const;
-+	const u16 *termination_const;
-+	const int termination_const_size;
-+	u16 termination;
- 	struct can_clock clock;
- 
- 	enum can_state state;
-@@ -53,6 +56,7 @@ struct can_priv {
- 	int (*do_set_bittiming)(struct net_device *dev);
- 	int (*do_set_data_bittiming)(struct net_device *dev);
- 	int (*do_set_mode)(struct net_device *dev, enum can_mode mode);
-+	int (*do_set_termination)(struct net_device *dev);
- 	int (*do_get_state)(const struct net_device *dev,
- 			    enum can_state *state);
- 	int (*do_get_berr_counter)(const struct net_device *dev,
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index 94ffe0c83ce7..c52347a20477 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -127,9 +127,14 @@ enum {
- 	IFLA_CAN_BERR_COUNTER,
- 	IFLA_CAN_DATA_BITTIMING,
- 	IFLA_CAN_DATA_BITTIMING_CONST,
-+	IFLA_CAN_TERMINATION,
-+	IFLA_CAN_TERMINATION_CONST,
- 	__IFLA_CAN_MAX
- };
- 
- #define IFLA_CAN_MAX	(__IFLA_CAN_MAX - 1)
- 
-+/* termination range: 1..65534 Ohms */
-+#define CAN_TERMINATION_DISABLED 0xFFFFU
-+
- #endif /* !_UAPI_CAN_NETLINK_H */
--- 
-2.11.0
+I need to review the BCM implementation for CAN_FD and add some test cases.
 
+>>
+>> 3) BCM TX_READ:
+>>
+>> Is there a TX_READ example. I did not get it working.
+>>
+>> I had been using the Sequence TX_SETUP, TX_DELETE, TX_READ. Especially
+>> it is unclear, what TX_READ is supposed to return.
+>
+> TX_READ is supposed to read the tx job configuration which was given by
+> TX_SETUP.
+>
+> A working example for TX_READ is here:
+>
+> https://github.com/linux-can/can-tests/blob/master/tst-bcm-tx_read.c
+>
+I tried with the same parameters. But it does not seem to work. I 
+crashes my whole linux PC.
+The test case did not work before, but it did not crash the PC in the 
+past. Now the shell sometimes keeps working, but I can not activate any 
+other kde-window anymore.
+
+Lately I have updated the TTCN compiler version and also the kernel.
+I am currently running kbuntu 16.10 and ubuntu 16.10. In the past I used 
+ubuntu 16.04. I do not think that it is caused by the TTCN-compiler. We 
+will check with older versions.
+
+In above example there are 2 CAN_IDs:
+msg.msg_head.can_id  = 0x42;
+msg.frame[0].can_id = 0xAA;
+
+In the log of candump I did not remember to have seen the CAN_ID 0xAA.
+
+Is there a documentation of the BCM commands and their parameters?
+Is there a specification, on what TX_READ should return?
+
+>> A (broken) TTCN-3 testcase for this is available.
+>>
+
+>> 5) Socketname of BCM socket:
+>>
+>> I have set the BCM socket as default to "vcan0".
+>>
+>> Why is the socket name, when retrieved set to "any".
+>>
+>>     s = socket(PF_CAN, SOCK_DGRAM, CAN_BCM);
+>>     strcpy(ifr.ifr_name, "vcan0");
+>>     ioctl(s, SIOCGIFINDEX, &ifr);
+>>
+>> Why ifr.ifr_ifindex == 0?
+>
+> You should check for ioctl's return value.
+> Are you sure vcan0 exists in your system?
+> Did you create it and set it to 'up'?
+>
+
+I can not reproduce it anymore. I come back, if it should appear again.
+>> 6) Querying the BCM socketname for interface Index = 0 (=Any)
+>>
+>> Querying the interface name for interface index set to 0 fails:
+>>
+>> Example:
+>>
+>>     ifr.ifr_ifindex = 0; /* Any interface*/
+>>     ioctl(s, SIOCGIFNAME, &ifr);
+>>
+>
+> There is no interface name for interface index 0.
+>
+> Interface index 0 is not defined in Linux and we use this value to read
+> data from 'any' CAN interface, e.g. using the CAN_RAW socket in candump.
+> This is a PF_CAN specific thing on the interface index value.
+>
+
+As I understood the 'any' interface can be used for sending or do I have 
+always to select a specific interface such as "vcan0" for sending?
+
+Here the related sections from the specification:
+     "To send on a socket that is bound to 'any' interface sendto(2) is 
+needed to specify the outgoing interface."
+     "When the broadcast manager socket is bound to 'any' CAN interface"
+
+Did I misinterpret 'any' here?
+
+>
+>> 8) Send queue full behavior is unclear to me
+>>
+>> How to handle writing of long sequences of CAN-messages. E.g. SAE J1939
+>> based standards like Isobus segment large messages into a sequence of
+>> CAN-Frames. These may easily overflow any configured CAN-queue size.
+>>
+>>  nbytes = write(s, &frame, sizeof(struct can_frame));
+>>
+>> I assume that nbytes becomes 0, if nothing could be sent as the queue is
+>> full and -1 in case of an error. How to resume sending when the send
+>> queue becomes empty again? Is there a blocking write?
+>
+> See chapter 3.4 here:
+> http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
+
+Ok. I will set SO_SNDBUF and txqueuelen accordingly.
+
+>> 9) SocketCAN-kernel interface versioning
+>>
+>> Is there a defined way to build a software against any (older or newer)
+>> kernel version?
+>> ...
+>
+> The binary API is fixed and can only be extended by the time.
+>
+> I would suggest to create you compile flags based on the Linux kernel
+> version and always use the latest can.h and friends.
+>
+
+ >
+Do you suggest that I review the can changes in all mainline kernels and 
+create something like this:
+
+
+#include <linux/version.h>
+
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(X1,Y1,Z1)
+
+#define CANFD_FRAME_STRUCT_DEFINED             true
+#define RAW_CANFD_SUPPORT                      true
+
+#else
+
+#define CANFD_FRAME_STRUCT_DEFINED             false
+#define RAW_CANFD_SUPPORT                      false
+
+#endif
+
+
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(X2,Y2,Z2)
+
+#define CANFD_FRAME_STRUCT_DEFINED             true
+#define RAW_CANFD_SUPPORT                      true
+
+#else
+
+#define CAN_MAX_DLEN 8
+#define CAN_MTU        (sizeof(struct can_frame))
+
+#endif
+
+
+Ref:
+http://stackoverflow.com/questions/16721346/linux-kernel-version-macro-definition
+
+>> 10) SocketCAN-regression tests
+>> Is there a need for a SocketCAN-regression test suite?
+>
+> This test has been contributed to the Linux Test Project (LTP):
+> https://github.com/linux-can/can-tests/blob/master/test_netlayer.sh
+>
+> More regression tests are always welcome :-)
+>
+I had been thinking on building a test suite with the test cases in TTCN.
+In fact I have already build a test suite with some test cases for my 
+purpose:
+
+Until now I have created the following tests:
+<TTCN-testcase-filename>.<testcasename>
+SocketCAN_RAW_test.tc_can_raw_send_and_receive_frame
+SocketCAN_RAW_test.tc_can_raw_setsockopt_CAN_RAW_FILTER
+SocketCAN_RAW_test.tc_can_raw_setsockopt_CAN_RAW_ERR_FILTER
+SocketCAN_RAW_test.tc_can_raw_setsockopt_CAN_RAW_LOOPBACK
+SocketCAN_RAW_test.tc_can_raw_setsockopt_CAN_RAW_RECV_OWN_MSGS
+SocketCAN_RAW_test.tc_can_raw_setsockopt_CAN_RAW_FD_FRAMES
+SocketCAN_RAW_test.tc_can_raw_setsockopt_CAN_RAW_JOIN_FILTERS
+
+//CAN BCM tests
+SocketCAN_BCM_test.tc_can_bcm_TX_SETUP_TX_DELETE                 (lately 
+broken, crashes on some kernels, needs to be investigated)
+SocketCAN_BCM_test.tc_can_bcm_TX_SETUP_TX_DELETE_TX_READ__broken 
+(broken, handling of TX_READ unclear)
+
+Especially for building bcm tests I am lacking a clear description of 
+the BCM commands, the meaning of their parameter and their expected returns.
+
+
+Best regards,
+Michael
+
+>> Reference:
+>> http://elinux.org/TTCN
