@@ -1,191 +1,156 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [RFC, PATCH] can: dev: can_changelink: allow to set bitrate on
- devices not providing {data_,}bittiming_const
-Date: Mon, 9 Jan 2017 11:39:47 +0100
-Message-ID: <8cad5778-0af9-175e-5a6b-4d6baadff021@pengutronix.de>
-References: <20170106125344.15267-1-mkl@pengutronix.de>
- <4bbdf65f-fc33-23ae-1a30-b5b45595b2e2@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] [RFCv2] can: add CAN interface termination API
+Date: Mon, 9 Jan 2017 18:13:02 +0100
+Message-ID: <3f7eaf11-1c0c-c560-906a-54b4cde46874@hartkopp.net>
+References: <20170108163506.30818-1-socketcan@hartkopp.net>
+ <762d5db6-6115-af51-bbce-8d96f3b8d947@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="8D7kHXkO2LiiWXctBjhg9dmuGeHcxXavn"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:33695 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751302AbdAIKjy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Jan 2017 05:39:54 -0500
-In-Reply-To: <4bbdf65f-fc33-23ae-1a30-b5b45595b2e2@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:29940 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S934191AbdAIRNf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Jan 2017 12:13:35 -0500
+In-Reply-To: <762d5db6-6115-af51-bbce-8d96f3b8d947@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8D7kHXkO2LiiWXctBjhg9dmuGeHcxXavn
-Content-Type: multipart/mixed; boundary="HRmpPTrCw4jBuck52IJFCC3Kh283pdMPt";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Message-ID: <8cad5778-0af9-175e-5a6b-4d6baadff021@pengutronix.de>
-Subject: Re: [RFC, PATCH] can: dev: can_changelink: allow to set bitrate on
- devices not providing {data_,}bittiming_const
-References: <20170106125344.15267-1-mkl@pengutronix.de>
- <4bbdf65f-fc33-23ae-1a30-b5b45595b2e2@hartkopp.net>
-In-Reply-To: <4bbdf65f-fc33-23ae-1a30-b5b45595b2e2@hartkopp.net>
+Hello Marc,
 
---HRmpPTrCw4jBuck52IJFCC3Kh283pdMPt
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 01/09/2017 10:25 AM, Marc Kleine-Budde wrote:
+> On 01/08/2017 05:35 PM, Oliver Hartkopp wrote:
+>> This patch adds a netlink interface to configure the CAN bus termination of
+>> CAN interfaces.
+>>
+>> Inside the driver an array of supported termination values is defined:
+>>
+>> const u16 drvname_termination = { 60, 120, CAN_TERMINATION_DISABLED };
+>
+> drvname_termination[]
+>
 
-On 01/07/2017 02:22 PM, Oliver Hartkopp wrote:
-> Hi Marc,
->=20
-> On 01/06/2017 01:53 PM, Marc Kleine-Budde wrote:
->=20
->> @@ -872,10 +868,22 @@ static int can_changelink(struct net_device *dev=
-,
->>  		/* Do not allow changing bittiming while running */
->>  		if (dev->flags & IFF_UP)
->>  			return -EBUSY;
+Ok.
+
+>>
+>> struct drvname_priv *priv;
+>> priv = netdev_priv(dev);
+>>
+>> priv->termination_const = &drvname_termination;
+>> priv->termination_const_size = sizeof(drvname_termination);
+>
+> ARRAY_SIZE()
+
+When we use ARRAY_SIZE(drvname_termination) here ...
+
+>> priv->termination = CAN_TERMINATION_DISABLED;
+>>
+>> And the funtion to set the value has to be defined:
+>>
+>> priv->do_set_termination = drvname_set_termination;
+>>
+>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>> ---
+>>  drivers/net/can/dev.c            | 34 +++++++++++++++++++++++++++++++++-
+>>  include/linux/can/dev.h          |  4 ++++
+>>  include/uapi/linux/can/netlink.h |  5 +++++
+>>  3 files changed, 42 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+>> index 8d6208c0b400..f98825f6ea2e 100644
+>> --- a/drivers/net/can/dev.c
+>> +++ b/drivers/net/can/dev.c
+>> @@ -958,6 +958,27 @@ static int can_changelink(struct net_device *dev,
+>>  		}
+>>  	}
+>>
+>> +	if (data[IFLA_CAN_TERMINATION]) {
+>> +		u16 t = nla_get_u16(data[IFLA_CAN_TERMINATION]);
+>> +		int num_t = priv->termination_const_size / sizeof(u16);
+
+... this needs to turn into
+
+	int num_t = priv->termination_const_size;
+
+but ...
+
+>
+> ARRAY_SIZE...or see below:
+>
+>> +		int i;
 >> +
->> +		/* Calculate bittiming parameters based on
->> +		 * bittiming_const if set, otherwise pass bitrate
->> +		 * directly via do_set_bitrate(). Bail out if neither
->> +		 * is given.
->> +		 */
->> +		if (!priv->bittiming_const && !priv->do_set_bittiming)
->> +			return -EOPNOTSUPP;
+>> +		/* check whether given value is supported by the interface */
+>> +		for (i = 0; i < num_t && t != priv->termination_const[i]; i++);
+>
+> Nitpick: unusual for() loop, better make more explicit what's going on:
+>
+> for (i = 0; i < ARRAY_SIZE(priv->termination_const_size), i++) {
+
+... this does never work as it references an integer ...
+
+> 	if (t == priv->termination_const[i])
+> 		break;
+> }
+>
+>> +		if (i >= num_t)
+>> +			return -EINVAL;
 >> +
->=20
-> I would suggest to remove this check and the comment here and better ad=
-d=20
-> an else path with
->=20
-> 	return -EOPNOTSUPP;
-> at
-> 	if (priv->do_set_bittiming) { } else ...
-
-Then the code looks like this:
-
-> 	if (data[IFLA_CAN_BITTIMING]) {
-> 		struct can_bittiming bt;
->=20
-> 		/* Do not allow changing bittiming while running */
-> 		if (dev->flags & IFF_UP)
-> 			return -EBUSY;
->=20
-> 		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
-> 		if (priv->bittiming_const) {
-> 			err =3D can_get_bittiming(dev, &bt,
-> 						priv->bittiming_const);
-> 			if (err)
-> 				return err;
-> 		}
-> 		memcpy(&priv->bittiming, &bt, sizeof(bt));
->=20
-> 		if (priv->do_set_bittiming) {
-> 			/* Finally, set the bit-timing registers */
-> 			err =3D priv->do_set_bittiming(dev);
-> 			if (err)
-> 				return err;
-> 		} else if (!priv->bittiming_const) {
-
-This "else" means an implicit "!priv->do_set_bittiming &&" which makes
-the code IMHO quite hard to understand.
-
-> 			/* Calculate bittiming parameters based on
-> 			 * bittiming_const if set, otherwise pass bitrate
-> 			 * directly via do_set_bitrate(). Bail out if neither
-> 			 * is given.
-> 			 */
-> 			return -EOPNOTSUPP;
-> 		}
-> 	}
-
-
->>  		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
->> -		err =3D can_get_bittiming(dev, &bt, priv->bittiming_const);
->> -		if (err)
->> -			return err;
->> +		if (priv->bittiming_const) {
->> +			err =3D can_get_bittiming(dev, &bt,
->> +						priv->bittiming_const);
+>> +		if (priv->do_set_termination) {
+>
+> What about moving the check for priv->do_set_termination in front of the
+> loop?
+>
+>> +			/* Finally, set the termination */
+>> +			err = priv->do_set_termination(dev, t);
 >> +			if (err)
 >> +				return err;
->> +		}
->>  		memcpy(&priv->bittiming, &bt, sizeof(bt));
->>
->>  		if (priv->do_set_bittiming) {
->> @@ -943,11 +951,23 @@ static int can_changelink(struct net_device *dev=
-,
->>  		/* Do not allow changing bittiming while running */
->>  		if (dev->flags & IFF_UP)
->>  			return -EBUSY;
 >> +
->> +		/* Calculate bittiming parameters based on
->> +		 * data_bittiming_const if set, otherwise pass bitrate
->> +		 * directly via do_set_bitrate(). Bail out if neither
->> +		 * is given.
->> +		 */
->> +		if (!priv->data_bittiming_const && !priv->do_set_data_bittiming)
+>> +			priv->termination = t;
+>> +		} else
 >> +			return -EOPNOTSUPP;
+>
+> { } on both legs of the else
+>
+>> +	}
 >> +
->>  		memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
->>  		       sizeof(dbt));
->> -		err =3D can_get_bittiming(dev, &dbt, priv->data_bittiming_const);
->> -		if (err)
->> -			return err;
->> +		if (priv->data_bittiming_const) {
->> +			err =3D can_get_bittiming(dev, &dbt,
->> +						priv->data_bittiming_const);
->> +			if (err)
->> +				return err;
->> +		}
->>  		memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
+>>  	return 0;
+>>  }
 >>
->>  		if (priv->do_set_data_bittiming) {
+>> @@ -980,6 +1001,11 @@ static size_t can_get_size(const struct net_device *dev)
+>>  		size += nla_total_size(sizeof(struct can_bittiming));
+>>  	if (priv->data_bittiming_const)				/* IFLA_CAN_DATA_BITTIMING_CONST */
+>>  		size += nla_total_size(sizeof(struct can_bittiming_const));
+>> +	if (priv->termination_const &&
+>> +	    priv->termination_const_size) {			/* IFLA_CAN_TERMINATION_CONST */
+>> +		size += nla_total_size(priv->termination_const_size);
+
+... this will break ...
+
+>> +		size += nla_total_size(sizeof(u16));		/* IFLA_CAN_TERMINATION */
+>> +	}
 >>
->=20
-> dito here.
->=20
-> Maybe this leads to two patches then:
->=20
-> 1. Introduce the -EOPNOTSUPP for missing do_set[_data]_bittiming
+>>  	return size;
+>>  }
+>> @@ -1018,7 +1044,13 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+>>  	    (priv->data_bittiming_const &&
+>>  	     nla_put(skb, IFLA_CAN_DATA_BITTIMING_CONST,
+>>  		     sizeof(*priv->data_bittiming_const),
+>> -		     priv->data_bittiming_const)))
+>> +		     priv->data_bittiming_const)) ||
+>> +
+>> +	    (priv->termination_const && priv->termination_const_size &&
+>> +	     nla_put(skb, IFLA_CAN_TERMINATION_CONST,
+>> +		     priv->termination_const_size,
 
-do_set_bittiming is and was not mandatory. Before your patch it was
-mandatory to have one (bittiming_const or do_set_bittiming) or both.
-With your patch bittiming_const got mandatory, too. My patch
-re-introduces the "bittiming_const or do_set_bittiming" state, which is
-directly reflected by the "if (!priv->bittiming_const &&
-!priv->do_set_bittiming)" statement.
+... and this too.
 
-> 2. Allow to set bitrates without providing bittiming_const
+>> +		     priv->termination_const) &&
+>> +	     nla_put_u16(skb, IFLA_CAN_TERMINATION, priv->termination)))
+>>  		return -EMSGSIZE;
+>>
 
-Marc
+I just wonder, which is the most readable representation here?
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---HRmpPTrCw4jBuck52IJFCC3Kh283pdMPt--
-
---8D7kHXkO2LiiWXctBjhg9dmuGeHcxXavn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlhzaHMACgkQPTuqJayp
-JWrWzAf/StZaoChP35S9VbVrj/5BgWTC8IzFtmPoPqeyObDAXubvd1Ypp9/I/iM0
-fehbbERKThTQMeqS6pNM0Hln1UZakJHx7YZuoUb3hVYQCwS2CQwsPhokecN+THSQ
-XEzqDX1ggtMI46gfYw6DZodjd4hFf7TAXjGrksFp7b4B/27v8HuJs0btBdXtoH6i
-FEXv2nRyBl5ykRvqq2aP4rWEJbQ6Dp/PLl840NAJCASrCL02bB6GAdG29FvW2CU4
-5qQMGVCqSioQHvIc3ut/DqIQy5JOEdgv6Myt21XlMrvlStIWptCIb7ueJEX7Mikj
-pU+XkRMKd0lZ5FKxcm1WYN+ehom/BQ==
-=pfn+
------END PGP SIGNATURE-----
-
---8D7kHXkO2LiiWXctBjhg9dmuGeHcxXavn--
+Regards,
+Oliver
