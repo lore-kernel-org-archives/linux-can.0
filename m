@@ -1,153 +1,119 @@
-From: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?=
-        <remigiusz.kollataj@mobica.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [RFC, PATCH] can: dev: can_changelink: allow to set bitrate on
  devices not providing {data_,}bittiming_const
-Date: Tue, 10 Jan 2017 11:18:23 +0100
-Message-ID: <CAKT-o-dT5ZR9J+zwJuGZELg3=ssQ7GcuGzr7P5ATYX8rWa_YKQ@mail.gmail.com>
-References: <20170106125344.15267-1-mkl@pengutronix.de> <4bbdf65f-fc33-23ae-1a30-b5b45595b2e2@hartkopp.net>
- <8cad5778-0af9-175e-5a6b-4d6baadff021@pengutronix.de> <588eacb5-c565-34bf-fed7-89bd46755819@hartkopp.net>
+Date: Tue, 10 Jan 2017 11:33:37 +0100
+Message-ID: <14f11375-b53e-d839-81f7-469cec1d9547@pengutronix.de>
+References: <20170106125344.15267-1-mkl@pengutronix.de>
+ <4bbdf65f-fc33-23ae-1a30-b5b45595b2e2@hartkopp.net>
+ <8cad5778-0af9-175e-5a6b-4d6baadff021@pengutronix.de>
+ <588eacb5-c565-34bf-fed7-89bd46755819@hartkopp.net>
  <41946abf-548d-ba21-3da6-f3398905f932@pengutronix.de>
+ <CAKT-o-dT5ZR9J+zwJuGZELg3=ssQ7GcuGzr7P5ATYX8rWa_YKQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="ITmaFBo8cQWrRs2l6uEhhf98xjFR7aNDP"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ua0-f174.google.com ([209.85.217.174]:34339 "EHLO
-        mail-ua0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759537AbdAJKSt (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 10 Jan 2017 05:18:49 -0500
-Received: by mail-ua0-f174.google.com with SMTP id 35so49554549uak.1
-        for <linux-can@vger.kernel.org>; Tue, 10 Jan 2017 02:18:49 -0800 (PST)
-In-Reply-To: <41946abf-548d-ba21-3da6-f3398905f932@pengutronix.de>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41267 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S935354AbdAJKds (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 10 Jan 2017 05:33:48 -0500
+In-Reply-To: <CAKT-o-dT5ZR9J+zwJuGZELg3=ssQ7GcuGzr7P5ATYX8rWa_YKQ@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ITmaFBo8cQWrRs2l6uEhhf98xjFR7aNDP
+Content-Type: multipart/mixed; boundary="ufXNnTfA6jNpA9hkWixHvHCULI1P8R56U";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?=
+ <remigiusz.kollataj@mobica.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Message-ID: <14f11375-b53e-d839-81f7-469cec1d9547@pengutronix.de>
+Subject: Re: [RFC, PATCH] can: dev: can_changelink: allow to set bitrate on
+ devices not providing {data_,}bittiming_const
+References: <20170106125344.15267-1-mkl@pengutronix.de>
+ <4bbdf65f-fc33-23ae-1a30-b5b45595b2e2@hartkopp.net>
+ <8cad5778-0af9-175e-5a6b-4d6baadff021@pengutronix.de>
+ <588eacb5-c565-34bf-fed7-89bd46755819@hartkopp.net>
+ <41946abf-548d-ba21-3da6-f3398905f932@pengutronix.de>
+ <CAKT-o-dT5ZR9J+zwJuGZELg3=ssQ7GcuGzr7P5ATYX8rWa_YKQ@mail.gmail.com>
+In-Reply-To: <CAKT-o-dT5ZR9J+zwJuGZELg3=ssQ7GcuGzr7P5ATYX8rWa_YKQ@mail.gmail.com>
 
-I can see three major problems with setting up predefined bitrates:
-1. I think that there is no way to pass supported bitrates to
-userspace (other than printk)
-2. The bitrate that is passed to the driver is calculated/validated by
-can_get_bittiming. This causes that driver not always get exact value
-that was input by a user.
-3. When CAN device is using predefined bitrates you do not have
-influence or even access to bittiming parameters. As you noticed I had
-to hardcode those values in mcba_usb to present them correctly to
-userspace.
+--ufXNnTfA6jNpA9hkWixHvHCULI1P8R56U
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Based on solution created by Oliver for termination I created
-something similar for predefined bitrates. It solves issue number 1
-and 2. Not sure how to solve issue 3 correctly to maintain
-compatibility (adding another netlink value for predefined bitrate
-will break it). As for now I just zeroed values.
+On 01/10/2017 11:18 AM, Ko=C5=82=C5=82=C4=85taj, Remigiusz wrote:
+> Hi,
+>=20
+> I can see three major problems with setting up predefined bitrates:
+> 1. I think that there is no way to pass supported bitrates to
+> userspace (other than printk)
 
-The patch is just to visualise my idea. It definitely needs some more work.
+yes
 
-Inside the driver:
-const u32 predef_bitrate[] = {20000, 50000, 100000};
+> 2. The bitrate that is passed to the driver is calculated/validated by
+> can_get_bittiming. This causes that driver not always get exact value
+> that was input by a user.
 
-priv->bitrate_const = predef_bitrate;
-priv->bitrate_const_cnt = ARRAY_SIZE(predef_bitrate);
+Have you seen my patch?
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 8d6208c0b400..d2034a69c990 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -279,25 +279,44 @@ static int can_fixup_bittiming(struct net_device
-*dev, struct can_bittiming *bt,
-        return 0;
- }
+> 3. When CAN device is using predefined bitrates you do not have
+> influence or even access to bittiming parameters. As you noticed I had
+> to hardcode those values in mcba_usb to present them correctly to
+> userspace.
 
-+/*
-+ * Checks the validity of predefined bitrate settings
-+ */
-+static int can_validate_bittiming(struct net_device *dev, struct
-can_bittiming *bt)
-+{
-+       struct can_priv *priv = netdev_priv(dev);
-+       int i;
-+
-+       for(i = 0; i < priv->bitrate_const_cnt &&
-+               bt->bitrate != priv->bitrate_const[i]; ++i);
-+
-+       if (i >= priv->bitrate_const_cnt)
-+               return -EINVAL;
-+
-+       /* Clear bittiming settings to idicate we are using predefined
-bitrate */
-+       memset(bt, 0, sizeof(struct can_bittiming));
-+       bt->bitrate = priv->bitrate_const[i];
-+
-+       return 0;
-+}
-+
- static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
-                             const struct can_bittiming_const *btc)
- {
-        int err;
+With my patch, there's no need to set bittiming_const anymore.
 
--       /* Check if the CAN device has bit-timing parameters */
--       if (!btc)
--               return -EOPNOTSUPP;
--
-        /*
-         * Depending on the given can_bittiming parameter structure the CAN
-         * timing parameters are calculated based on the provided bitrate OR
-         * alternatively the CAN timing parameters (tq, prop_seg, etc.) are
-         * provided directly which are then checked and fixed up.
-         */
--       if (!bt->tq && bt->bitrate)
-+       if (!bt->tq && bt->bitrate && btc)
-                err = can_calc_bittiming(dev, bt, btc);
--       else if (bt->tq && !bt->bitrate)
-+       else if (bt->tq && !bt->bitrate && btc)
-                err = can_fixup_bittiming(dev, bt, btc);
-+       else if (bt->bitrate && !btc)
-+               err = can_validate_bittiming(dev, bt);
-        else
-                err = -EINVAL;
+> Based on solution created by Oliver for termination I created
+> something similar for predefined bitrates. It solves issue number 1
+> and 2. Not sure how to solve issue 3 correctly to maintain
+> compatibility (adding another netlink value for predefined bitrate
+> will break it). As for now I just zeroed values.
+>=20
+> The patch is just to visualise my idea. It definitely needs some more w=
+ork.
+>=20
+> Inside the driver:
+> const u32 predef_bitrate[] =3D {20000, 50000, 100000};
+>=20
+> priv->bitrate_const =3D predef_bitrate;
+> priv->bitrate_const_cnt =3D ARRAY_SIZE(predef_bitrate);
 
-@@ -1018,7 +1037,11 @@ static int can_fill_info(struct sk_buff *skb,
-const struct net_device *dev)
-            (priv->data_bittiming_const &&
-             nla_put(skb, IFLA_CAN_DATA_BITTIMING_CONST,
-                     sizeof(*priv->data_bittiming_const),
--                    priv->data_bittiming_const)))
-+                    priv->data_bittiming_const)) ||
-+
-+           (priv->bitrate_const &&
-+            nla_put(skb, IFLA_CAN_BITRATE_CONST,
-+                    sizeof(u32) * priv->bitrate_const_cnt,
-priv->bitrate_const)))
-                return -EMSGSIZE;
+The general idea makes sense, although we need support for CANFD, too.
+Let's first agree on Oliver's and my patch, then yours will fit in easily=
+=2E
 
-        return 0;
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 5f5270941ba0..fa5e8337f0e3 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -38,6 +38,8 @@ struct can_priv {
-        struct can_bittiming bittiming, data_bittiming;
-        const struct can_bittiming_const *bittiming_const,
-                *data_bittiming_const;
-+       const u32 *bitrate_const;
-+       const int bitrate_const_cnt;
-        struct can_clock clock;
+Marc
 
-        enum can_state state;
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index 94ffe0c83ce7..7d1815dad72b 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -127,6 +127,7 @@ enum {
-        IFLA_CAN_BERR_COUNTER,
-        IFLA_CAN_DATA_BITTIMING,
-        IFLA_CAN_DATA_BITTIMING_CONST,
-+       IFLA_CAN_BITRATE_CONST,
-        __IFLA_CAN_MAX
- };
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
+--ufXNnTfA6jNpA9hkWixHvHCULI1P8R56U--
 
-Regards,
-Remik
+--ITmaFBo8cQWrRs2l6uEhhf98xjFR7aNDP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlh0uIEACgkQPTuqJayp
+JWoLUQf40Zqkh2f9d5VZiJgqt0B+ezaYlZWz3VSeso/t45hY9Sq8trnIt14+bjnK
+DUuJ5hxPhN0ppaYwHzLY8Psk2kb27a8OH8QCLjkqvfxbX/dJN+yfJrSug+q0vJrB
+OUC/mNoQj1ga5FteN+8slOJVe7stPRgTiYyfeNgL7o97J86h5ONbN3F4hDXp0JGV
+8rugXNJ73Dmhqf5IWPIOVhE40y8q/4ntK6AG7/goDywn2tpgHBo9w8YEN4VnwyE6
+mZ2dsOkD5KNTOFKAwNa8PAddfg/TGXpdbWhLtHi3vUGnG+VWcx/RDKY18fHs4YxM
+MghhjpG1LsOZedVOd6Ub98j4lLjh
+=vOi2
+-----END PGP SIGNATURE-----
+
+--ITmaFBo8cQWrRs2l6uEhhf98xjFR7aNDP--
