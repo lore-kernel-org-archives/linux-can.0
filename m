@@ -1,225 +1,87 @@
-From: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?=
-        <remigiusz.kollataj@mobica.com>
-Subject: Re: [RFC, PATCH v2] can: add CAN interface API for fixed bitrates
-Date: Thu, 12 Jan 2017 10:41:22 +0100
-Message-ID: <CAKT-o-dudc56=0GV0EHJWXjGAtNxavzKNq+dWSrttJ2o52_A1A@mail.gmail.com>
-References: <20170111161003.14506-1-mkl@pengutronix.de>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [PATCH v3 4/4] can: peak: add support for PEAK PCAN-PCIe FD
+ CAN-FD boards
+Date: Thu, 12 Jan 2017 12:40:48 +0100
+Message-ID: <2a721fb7-38a3-a535-191a-0623742f3645@peak-system.com>
+References: <1484136978-3823-1-git-send-email-s.grosjean@peak-system.com>
+ <1484136978-3823-5-git-send-email-s.grosjean@peak-system.com>
+ <1180cb22-d2e2-19a4-d0d7-d534dcec6274@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-vk0-f53.google.com ([209.85.213.53]:34029 "EHLO
-        mail-vk0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750864AbdALJlo (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 12 Jan 2017 04:41:44 -0500
-Received: by mail-vk0-f53.google.com with SMTP id r136so8944320vke.1
-        for <linux-can@vger.kernel.org>; Thu, 12 Jan 2017 01:41:43 -0800 (PST)
-In-Reply-To: <20170111161003.14506-1-mkl@pengutronix.de>
+Received: from mail.peak-system.com ([213.157.13.214]:58631 "EHLO
+        mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750817AbdALLk7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 12 Jan 2017 06:40:59 -0500
+In-Reply-To: <1180cb22-d2e2-19a4-d0d7-d534dcec6274@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
-Looks good to me.
+Le 11/01/2017 à 21:11, Oliver Hartkopp a écrit :
+>
+>
+> On 01/11/2017 01:16 PM, Stephane Grosjean wrote:
+>> This patch adds the support of the PCAN-PCI Express FD boards made
+>> by PEAK-System, for computers using the PCI Express slot.
+>>
+>> The PCAN-PCI Express FD has one or two CAN FD channels, depending
+>> on the model. A galvanic isolation of the CAN ports protects
+>> the electronics of the card and the respective computer against
+>> disturbances of up to 500 Volts. The PCAN-PCI Express FD can be operated
+>> with ambient temperatures in a range of -40 to +85 °C.
+>>
+>> Such boards run an extented version of the CAN-FD IP running into USB
+>> CAN-FD interfaces from PEAK-System, so this patch adds several new 
+>> commands
+>> and their corresponding data types to the PEAK CAN-FD common definitions
+>> header file too.
+>>
+>> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+>> ---
+>>  v3:
+>>  - remove unused flags field from struct pciefd_can
+>>  - use memset() to reset 64-bits area instead of *(u64 *) cast
+>>  - use dmam_alloc_coherent() and dmam_free_coheren()
+>>  - state handling has been separated from err skb building
+>>  - peak_canfd_start_xmit() now stops netif queue when there is not 
+>> enough room
+>>    left to save one more CANFD msgs in the Tx DMA pages (no CAN msg 
+>> lost)
+>>  - remove the IFF_ECHO flag from ndev flags (no tx-complete interrupt 
+>> available)
+>
+> This is a really bad decision!
+>
+> It breaks use-cases where programmers need to know whether the CAN 
+> frame really hit the bus. Without IFF_ECHO you fall back to low cost 
+> CAN interfaces functionality e.g. with slcan protocol.
+>
+> Did you ask the CAN IP core designers whether they have a working 
+> solution for this? Is the DMA mode the only way to write CAN frames to 
+> the ucan core - or is there some sja1000-like mode too?
+>
+> Regards,
+> Oliver
 
-Cheers,
-Remik
+There's one potential fix by setting something like an "ECHO" bit to any 
+transmitted frame; The driver rx path will be able to distinguish 
+between these "echoed" frames and the - application - "looped back" 
+frames, so that the rx stats will be ok.
 
-On 11 January 2017 at 17:10, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> Inside the driver:
-> const u32 drvname_bitrate[] = { 20000, 50000, 100000 };
->
-> struct drvname_priv *priv;
-> priv = netdev_priv(dev);
->
-> priv->bitrate_const = drvname_bitrate;
-> priv->bitrate_const_cnt = ARRAY_SIZE(drvname_bitrate);
->
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
-> Hello,
->
-> based on Remik's work. Rebased on the latest CAN termination API, streamlined
-> and add support for data_bitrate.
->
-> regards,
-> Marc
->
->  drivers/net/can/dev.c            | 83 ++++++++++++++++++++++++++++++++--------
->  include/linux/can/dev.h          |  4 ++
->  include/uapi/linux/can/netlink.h |  2 +
->  3 files changed, 73 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index 254183e5baf9..db6ad7f5d96d 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -279,8 +279,29 @@ static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt,
->         return 0;
->  }
->
-> +/* Checks the validity of predefined bitrate settings */
-> +static int can_validate_bitrate(struct net_device *dev, struct can_bittiming *bt,
-> +                               const u32 *bitrate_const,
-> +                               const int bitrate_const_cnt)
-> +{
-> +       struct can_priv *priv = netdev_priv(dev);
-> +       int i;
-> +
-> +       for (i = 0; i < bitrate_const_cnt; i++) {
-> +               if (bt->bitrate == bitrate_const[i])
-> +                       break;
-> +       }
-> +
-> +       if (i >= priv->bitrate_const_cnt)
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +
->  static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
-> -                            const struct can_bittiming_const *btc)
-> +                            const struct can_bittiming_const *btc,
-> +                            const u32 *bitrate_const,
-> +                            const int bitrate_const_cnt)
->  {
->         int err;
->
-> @@ -290,10 +311,13 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
->          * alternatively the CAN timing parameters (tq, prop_seg, etc.) are
->          * provided directly which are then checked and fixed up.
->          */
-> -       if (!bt->tq && bt->bitrate)
-> +       if (!bt->tq && bt->bitrate && btc)
->                 err = can_calc_bittiming(dev, bt, btc);
-> -       else if (bt->tq && !bt->bitrate)
-> +       else if (bt->tq && !bt->bitrate && btc)
->                 err = can_fixup_bittiming(dev, bt, btc);
-> +       else if (!bt->tq && bt->bitrate && bitrate_const)
-> +               err = can_validate_bitrate(dev, bt, bitrate_const,
-> +                                          bitrate_const_cnt);
->         else
->                 err = -EINVAL;
->
-> @@ -878,12 +902,12 @@ static int can_changelink(struct net_device *dev,
->                         return -EOPNOTSUPP;
->
->                 memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
-> -               if (priv->bittiming_const) {
-> -                       err = can_get_bittiming(dev, &bt,
-> -                                               priv->bittiming_const);
-> -                       if (err)
-> -                               return err;
-> -               }
-> +               err = can_get_bittiming(dev, &bt,
-> +                                       priv->bittiming_const,
-> +                                       priv->bitrate_const,
-> +                                       priv->bitrate_const_cnt);
-> +               if (err)
-> +                       return err;
->                 memcpy(&priv->bittiming, &bt, sizeof(bt));
->
->                 if (priv->do_set_bittiming) {
-> @@ -962,12 +986,12 @@ static int can_changelink(struct net_device *dev,
->
->                 memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
->                        sizeof(dbt));
-> -               if (priv->data_bittiming_const) {
-> -                       err = can_get_bittiming(dev, &dbt,
-> -                                               priv->data_bittiming_const);
-> -                       if (err)
-> -                               return err;
-> -               }
-> +               err = can_get_bittiming(dev, &dbt,
-> +                                       priv->data_bittiming_const,
-> +                                       priv->data_bitrate_const,
-> +                                       priv->data_bitrate_const_cnt);
-> +               if (err)
-> +                       return err;
->                 memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
->
->                 if (priv->do_set_data_bittiming) {
-> @@ -1029,6 +1053,12 @@ static size_t can_get_size(const struct net_device *dev)
->                 size += nla_total_size(sizeof(*priv->termination_const) *       /* IFLA_CAN_TERMINATION_CONST */
->                                        priv->termination_const_cnt);
->         }
-> +       if (priv->bitrate_const)                                /* IFLA_CAN_BITRATE_CONST */
-> +               size += nla_total_size(sizeof(*priv->bitrate_const) *
-> +                                      priv->bitrate_const_cnt);
-> +       if (priv->data_bitrate_const)                           /* IFLA_CAN_DATA_BITRATE_CONST */
-> +               size += nla_total_size(sizeof(*priv->data_bitrate_const) *
-> +                                      priv->data_bitrate_const_cnt);
->
->         return size;
->  }
-> @@ -1074,7 +1104,20 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
->               nla_put(skb, IFLA_CAN_TERMINATION_CONST,
->                       sizeof(*priv->termination_const) *
->                       priv->termination_const_cnt,
-> -                     priv->termination_const))))
-> +                     priv->termination_const))) ||
-> +
-> +           (priv->bitrate_const &&
-> +            nla_put(skb, IFLA_CAN_BITRATE_CONST,
-> +                    sizeof(*priv->bitrate_const) *
-> +                    priv->bitrate_const_cnt,
-> +                    priv->bitrate_const)) ||
-> +
-> +           (priv->data_bitrate_const &&
-> +            nla_put(skb, IFLA_CAN_BITRATE_CONST,
-> +                    sizeof(*priv->data_bitrate_const) *
-> +                    priv->data_bitrate_const_cnt,
-> +                    priv->data_bitrate_const))
-> +           )
->
->                 return -EMSGSIZE;
->
-> @@ -1139,6 +1182,14 @@ int register_candev(struct net_device *dev)
->             (!priv->termination_const && priv->termination_const_cnt != 0))
->                 return -EINVAL;
->
-> +       if ((priv->bitrate_const && priv->bitrate_const_cnt <= 0) ||
-> +           (!priv->bitrate_const && priv->bitrate_const_cnt != 0))
-> +               return -EINVAL;
-> +
-> +       if ((priv->data_bitrate_const && priv->data_bitrate_const_cnt <= 0) ||
-> +           (!priv->data_bitrate_const && priv->data_bitrate_const_cnt != 0))
-> +               return -EINVAL;
-> +
->         dev->rtnl_link_ops = &can_link_ops;
->         return register_netdev(dev);
->  }
-> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-> index cba7f4b5a722..02f5b789f79a 100644
-> --- a/include/linux/can/dev.h
-> +++ b/include/linux/can/dev.h
-> @@ -41,6 +41,10 @@ struct can_priv {
->         const u16 *termination_const;
->         const int termination_const_cnt;
->         u16 termination;
-> +       const u32 *bitrate_const;
-> +       const int bitrate_const_cnt;
-> +       const u32 *data_bitrate_const;
-> +       const int data_bitrate_const_cnt;
->         struct can_clock clock;
->
->         enum can_state state;
-> diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-> index 7414771926fb..fdf75f74fdaf 100644
-> --- a/include/uapi/linux/can/netlink.h
-> +++ b/include/uapi/linux/can/netlink.h
-> @@ -129,6 +129,8 @@ enum {
->         IFLA_CAN_DATA_BITTIMING_CONST,
->         IFLA_CAN_TERMINATION,
->         IFLA_CAN_TERMINATION_CONST,
-> +       IFLA_CAN_BITRATE_CONST,
-> +       IFLA_CAN_DATA_BITRATE_CONST,
->         __IFLA_CAN_MAX
->  };
->
-> --
-> 2.11.0
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+One question comes to my mind: if I understand well, 'loopback' frames 
+are read twice by application: once because of the ECHO mechanism, twice 
+because the controller has looped-back it, right?
+
+Regards,
+
+Stéphane
+
+
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt - HRB 9183 
+Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
+--
