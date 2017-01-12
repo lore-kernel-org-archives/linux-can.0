@@ -1,80 +1,58 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v3 4/4] can: peak: add support for PEAK PCAN-PCIe FD
- CAN-FD boards
-Date: Thu, 12 Jan 2017 17:30:12 +0100
-Message-ID: <a7ca612b-2c62-2a15-7ff0-8791db422647@hartkopp.net>
-References: <1484136978-3823-1-git-send-email-s.grosjean@peak-system.com>
- <1484136978-3823-5-git-send-email-s.grosjean@peak-system.com>
- <1180cb22-d2e2-19a4-d0d7-d534dcec6274@hartkopp.net>
- <2a721fb7-38a3-a535-191a-0623742f3645@peak-system.com>
+Subject: Re: [PATCH] can: Fix kernel panic at security_sock_rcv_skb
+Date: Thu, 12 Jan 2017 17:33:38 +0100
+Message-ID: <9e6817a0-65b3-ed16-4616-f8e55aee09c4@hartkopp.net>
+References: <1484202799-7287-1-git-send-email-shuo.a.liu@intel.com>
+ <0e458012-e97b-298d-296e-ed25e35689a0@hartkopp.net>
+ <1484226099.15816.25.camel@edumazet-glaptop3.roam.corp.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:26842 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:9523 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750920AbdALQa2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 12 Jan 2017 11:30:28 -0500
-In-Reply-To: <2a721fb7-38a3-a535-191a-0623742f3645@peak-system.com>
+        with ESMTP id S1751079AbdALQdy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 12 Jan 2017 11:33:54 -0500
+In-Reply-To: <1484226099.15816.25.camel@edumazet-glaptop3.roam.corp.google.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: Liu ShuoX <shuo.a.liu@intel.com>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, linux-kernel@vger.kernel.org, yanmin_zhang@linux.intel.com, shuox.liu@gmail.com, Zhang Yanmin <yanmin.zhang@intel.com>, "He, Bo" <bo.he@intel.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, "open list:CAN NETWORK LAYER" <linux-can@vger.kernel.org>, "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
 
-On 01/12/2017 12:40 PM, Stephane Grosjean wrote:
-> Le 11/01/2017 à 21:11, Oliver Hartkopp a écrit :
+On 01/12/2017 02:01 PM, Eric Dumazet wrote:
+> On Thu, 2017-01-12 at 09:22 +0100, Oliver Hartkopp wrote:
 
->>>  - remove the IFF_ECHO flag from ndev flags (no tx-complete interrupt
->>> available)
-
-(..)
-
->> Did you ask the CAN IP core designers whether they have a working
->> solution for this? Is the DMA mode the only way to write CAN frames to
->> the ucan core - or is there some sja1000-like mode too?
+>> But my main concern is:
 >>
+>> The reason why can_rx_delete_receiver() was introduced was the need to
+>> remove a huge number of receivers with can_rx_unregister().
+>>
+>> When you call synchronize_rcu() after each receiver removal this would
+>> potentially lead to a big performance issue when e.g. closing CAN_RAW
+>> sockets with a high number of receivers.
+>>
+>> So the idea was to remove/unlink the receiver hlist_del_rcu(&r->list)
+>> and also kmem_cache_free(rcv_cache, r) by some rcu mechanism - so that
+>> all elements are cleaned up by rcu at a later point.
+>>
+>> Is it possible that the problems emerge due to hlist_del_rcu(&r->list)
+>> and you accidently fix it with your introduced synchronize_rcu()?
+>
+> I agree this patch does not fix the root cause.
+>
+> The main problem seems that the sockets themselves are not RCU
+> protected.
+>
+> If CAN uses RCU for delivery, then sockets should be freed only after
+> one RCU grace period.
+>
+> On recent kernels, following patch could help :
+>
 
-(..)
+Thanks Eric!
 
-> There's one potential fix by setting something like an "ECHO" bit to any
-> transmitted frame; The driver rx path will be able to distinguish
-> between these "echoed" frames and the - application - "looped back"
-> frames, so that the rx stats will be ok.
+@Liu ShuoX: Can you check if Eric's suggestion fixes the issue in your 
+setup?
 
-That would be cool!
-I remember discussing about a good echo functionality with Philipp.
-Can you also pass some extra data along with the CAN frame down to the 
-controller (e.g. to carry an index into the echo skb table?).
-
-Because even when you know that the received frame was echoed, you need 
-to got through your saved echo skb list to pick the oldest skb for this 
-interface/CAN-ID/mtu combination. This stored skb has to be sent back 
-into the system.
-
-Do not create a new skb for echo'ed skbs! See echo skb handling in dev.c
-
-> One question comes to my mind: if I understand well, 'loopback' frames
-> are read twice by application: once because of the ECHO mechanism, twice
-> because the controller has looped-back it, right?
-
-No.
-
-The application gets normal frames and echo frames only once.
-In fact only the originating CAN_RAW socket does not see it's own sent 
-traffic unless you set CAN_RAW_RECV_OWN_MSGS socktopt.
-
-To be able to present all other applications (e.g. multiple candump 
-instances) the correct traffic on the bus - including the sent traffic 
-by getting the echo skbs AND to suppress the echo skbs for the 
-originating socket, the reuse of the original tx skbs is needed:
-
-http://lxr.free-electrons.com/source/net/can/raw.c?v=4.8#L126
-
-This checks whether the received (echo) skb has the same sk pointer as 
-myself. skbs from 'the outside' do have sk = NULL.
-
-Thanks for searching for an IFF_ECHO capable solution!
-
-Regards,
+Best regards,
 Oliver
-
