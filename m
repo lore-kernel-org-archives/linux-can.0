@@ -1,95 +1,83 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: [PATCH v3 4/4] can: peak: add support for PEAK PCAN-PCIe FD
- CAN-FD boards
-Date: Fri, 13 Jan 2017 16:01:26 +0100
-Message-ID: <16ed4fc6-9085-b128-c299-0c5f501b87bf@peak-system.com>
-References: <1484136978-3823-1-git-send-email-s.grosjean@peak-system.com>
- <1484136978-3823-5-git-send-email-s.grosjean@peak-system.com>
- <aa642d9e-28a1-6494-5ad0-e7ae534a95da@pengutronix.de>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 2/3] can: ti_hecc: Add TI HECC DT binding documentation
+Date: Fri, 13 Jan 2017 13:56:33 -0600
+Message-ID: <20170113195633.7igh7fdlcsw5ov6g@rob-hp-laptop>
+References: <1484143521-4898-1-git-send-email-yegorslists@googlemail.com>
+ <1484143521-4898-3-git-send-email-yegorslists@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:51796 "EHLO
-        mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751806AbdAMPBw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 13 Jan 2017 10:01:52 -0500
-In-Reply-To: <aa642d9e-28a1-6494-5ad0-e7ae534a95da@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can Mailing List <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1484143521-4898-3-git-send-email-yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org, andrej.skvortzov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, hs-ynQEQJNshbs@public.gmane.org, Anton Glukhov <anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-Le 13/01/2017 à 15:00, Marc Kleine-Budde a écrit :
-> On 01/11/2017 01:16 PM, Stephane Grosjean wrote:
->> This patch adds the support of the PCAN-PCI Express FD boards made
->> by PEAK-System, for computers using the PCI Express slot.
->>
->> The PCAN-PCI Express FD has one or two CAN FD channels, depending
->> on the model. A galvanic isolation of the CAN ports protects
->> the electronics of the card and the respective computer against
->> disturbances of up to 500 Volts. The PCAN-PCI Express FD can be operated
->> with ambient temperatures in a range of -40 to +85 °C.
->>
->> Such boards run an extented version of the CAN-FD IP running into USB
->> CAN-FD interfaces from PEAK-System, so this patch adds several new commands
->> and their corresponding data types to the PEAK CAN-FD common definitions
->> header file too.
->>
->> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-> The access of tx_pages_free seems not be be synchronized. It's accessed
-> from IRQ context and from the xmit function. See more comments inline.
+On Wed, Jan 11, 2017 at 03:05:20PM +0100, yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org wrote:
+> From: Anton Glukhov <anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> 
+> DT binding documentation for TI High End CAN Controller
+> 
+> Signed-off-by: Anton Glukhov <anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Signed-off-by: Yegor Yefremov <yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+> ---
+> Changes v1 -> v2:
+> 	change compatible to "ti,am3505"
+> 
+>  .../devicetree/bindings/net/can/ti_hecc.txt        | 31 ++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/net/can/ti_hecc.txt b/Documentation/devicetree/bindings/net/can/ti_hecc.txt
+> new file mode 100644
+> index 0000000..ce015cf
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/ti_hecc.txt
+> @@ -0,0 +1,31 @@
+> +* Texas Instruments High End CAN Controller (HECC)
+> +
+> +This file provides information, what the device node
+> +for the hecc interface contains.
+> +
+> +Required properties:
+> +- compatible: "ti,am3505"
+> +- reg: offset and length of the register set for the device
+> +- interrupts: interrupt mapping for the hecc interrupts sources
+> +- clocks: clock phandles (see clock bindings for details)
 
-Arf yes, you're right. Now it's used to compute room left...
+> +- ti,scc-ram-offset: offset to scc module ram
+> +- ti,hecc-ram-offset: offset to hecc module ram
+> +- ti,mbx-offset: offset to mailbox ram
 
->> +		netif_start_queue(ndev);
-> I think this must be wake_queue()
+Is there not a common case that would be the default?
 
-Yep! fixed.
+> +
+> +Optional properties:
+> +- ti,int-line: interrupt line
 
-> + /* should never happen */
->> +	if (!msg) {
->> +		netdev_err(ndev, "Abnormal NULL msg (CAN frame lost)\n");
->> +		stats->rx_dropped++;
-> tx?
+Needs a better description. What are valid values? This is some internal 
+setting about which pin to route the interrupt output to I'm guessing.
 
-Aaargh... Yep (again!)
-
->
->> +		netif_stop_queue(ndev);
->> +		return NETDEV_TX_OK;
-> NETDEV_TX_BUSY
-Ok.
->
->> +	}
->> +
->> +	msg->size = cpu_to_le16(msg_size);
->> +	msg->type = cpu_to_le16(PUCAN_MSG_CAN_TX);
->> +	msg_flags = 0;
->> +
->> +	if (cf->can_id & CAN_EFF_FLAG) {
->> +		msg_flags |= PUCAN_MSG_EXT_ID;
->> +		msg->can_id = cpu_to_le32(cf->can_id & CAN_EFF_MASK);
->> +	} else {
->> +		msg->can_id = cpu_to_le32(cf->can_id & CAN_SFF_MASK);
->> +	}
->> +
->> +	can_dlc = can_len2dlc(cf->len);
-> it's overwritten later
-True...
-> +struct net_device *alloc_peak_canfd_dev(int sizeof_priv, int index,
->> +					int echo_skb_max);
-> Why do you have this peak_canfd abstraction here? Are there more HW
-> using this chip?
-
-Yep! And I'd really like to migrate one of these days 
-"peak_usb/pcan_usb_fd.c", for example. That's also the reason of the 
-renaming/moving of "peak_canfd.h" under "include/linux/can/dev".
-> Marc
->
-
+> +
+> +Example:
+> +
+> +For am3517evm board:
+> +	hecc: can@0x5c050000 {
+> +		compatible = "ti,am3505";
+> +		status = "disabled";
+> +		reg = <0x5c050000 0x4000>;
+> +		interrupts = <24>;
+> +		clocks = <&hecc_ck>;
+> +		ti,scc-ram-offset = <0x3000>;
+> +		ti,hecc-ram-offset = <0x3000>;
+> +		ti,mbx-offset = <0x2000>;
+> +		ti,int-line = <0>;
+> +	};
+> -- 
+> 2.1.4
+> 
 --
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt - HRB 9183 
-Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
---
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
