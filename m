@@ -1,81 +1,102 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: peak_pci and DMA
-Date: Mon, 16 Jan 2017 10:44:41 +0100
-Message-ID: <880086f5-fec7-680a-dc44-888597e59358@peak-system.com>
-References: <87527bfb-a1d3-5d3c-2d7b-becd4b82dcba@gmx.de>
+From: Yegor Yefremov <yegorslists@googlemail.com>
+Subject: Re: [PATCH v2 2/3] can: ti_hecc: Add TI HECC DT binding documentation
+Date: Mon, 16 Jan 2017 11:59:17 +0100
+Message-ID: <CAGm1_ksspvFG+ScMjtw6uXAL2cAuB5ZsawaH1nYPVwQEQVE9HA@mail.gmail.com>
+References: <1484143521-4898-1-git-send-email-yegorslists@googlemail.com>
+ <1484143521-4898-3-git-send-email-yegorslists@googlemail.com> <20170113195633.7igh7fdlcsw5ov6g@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.peak-system.com ([213.157.13.214]:37307 "EHLO
-        mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750886AbdAPJou (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 16 Jan 2017 04:44:50 -0500
-In-Reply-To: <87527bfb-a1d3-5d3c-2d7b-becd4b82dcba@gmx.de>
+Received: from mail-ua0-f193.google.com ([209.85.217.193]:34491 "EHLO
+        mail-ua0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751543AbdAPK7j (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 16 Jan 2017 05:59:39 -0500
+In-Reply-To: <20170113195633.7igh7fdlcsw5ov6g@rob-hp-laptop>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Selina Schuler <Selina.Schuler@gmx.de>
-Cc: linux-can@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, devicetree@vger.kernel.org, Andrey Skvortsov <andrej.skvortzov@gmail.com>, hs@denx.de, Anton Glukhov <anton.a.glukhov@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "Grim, Dennis" <dennis.grim@teejet.com>
 
-Hello,
-
-
-Le 15/01/2017 à 21:39, Selina Schuler a écrit :
-> Hello,
+On Fri, Jan 13, 2017 at 8:56 PM, Rob Herring <robh@kernel.org> wrote:
+> On Wed, Jan 11, 2017 at 03:05:20PM +0100, yegorslists@googlemail.com wrote:
+>> From: Anton Glukhov <anton.a.glukhov@gmail.com>
+>>
+>> DT binding documentation for TI High End CAN Controller
+>>
+>> Signed-off-by: Anton Glukhov <anton.a.glukhov@gmail.com>
+>> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+>> ---
+>> Changes v1 -> v2:
+>>       change compatible to "ti,am3505"
+>>
+>>  .../devicetree/bindings/net/can/ti_hecc.txt        | 31 ++++++++++++++++++++++
+>>  1 file changed, 31 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/can/ti_hecc.txt b/Documentation/devicetree/bindings/net/can/ti_hecc.txt
+>> new file mode 100644
+>> index 0000000..ce015cf
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/net/can/ti_hecc.txt
+>> @@ -0,0 +1,31 @@
+>> +* Texas Instruments High End CAN Controller (HECC)
+>> +
+>> +This file provides information, what the device node
+>> +for the hecc interface contains.
+>> +
+>> +Required properties:
+>> +- compatible: "ti,am3505"
+>> +- reg: offset and length of the register set for the device
+>> +- interrupts: interrupt mapping for the hecc interrupts sources
+>> +- clocks: clock phandles (see clock bindings for details)
 >
-> as part of my bachelor thesis I've been looking into the peak_pci 
-> device driver and socketCan this week. In particular I want to know if 
-> the driver uses DMA. To me it seems like the peak_pci and sja1000 
-> drivers don't use DMA or at least not the DMA-API. Is this correct or 
-> am I missing something?
-
-Nope: the peak_pci driver doesn't use any DMA access, but memory mapped 
-IO. I don't know if it does exist any DMA -based implementation of the 
-SJA1000 controller...
-
+>> +- ti,scc-ram-offset: offset to scc module ram
+>> +- ti,hecc-ram-offset: offset to hecc module ram
+>> +- ti,mbx-offset: offset to mailbox ram
 >
-> And while following the list for the last few days this caught my eye 
-> in the discussion about the added support for PEAK PCAN-PCIe FD CAN-FD 
-> boards:
+> Is there not a common case that would be the default?
+
+So far HECC is only implemented in two SoCs am3505/am3517. Both are
+identical in this regard and differ in having/not having a 3D graphics
+engine. So perhaps it makes sense just to move these offsets to the
+driver itself?
+
+>> +
+>> +Optional properties:
+>> +- ti,int-line: interrupt line
+
+Marc suggested to convert this option to bool. Though it should be
+also renamed then. HECC has basically two interrupts HECC0 and HECC1.
+The one is for mailbox interrupts the other for system interrupts. But
+one can map all interrupts to one "pin". This is also made in the
+driver. The user can decide which one to use for all interrupts.
+
+I'd suggest following name:
+
+ti,use-hecc1int: if provided configures HECC to produce all interrupts
+on HECC1INT interrupt line. By default HECC0INT interrupt line will be
+used.
+
+Yegor
+
+> Needs a better description. What are valid values? This is some internal
+> setting about which pin to route the interrupt output to I'm guessing.
 >
-> "Is the DMA mode the only way to write CAN frames to the ucan core - 
-> or is there some sja1000-like mode too?"
-
-DMA is used to exchange data between the IP core running the PCAN-PCIe 
-FD boards and the host. This is the only way to dialog with. The main 
-difference between the SJA100-like controllers based adapters and this 
-kind of mechanism is that large memory buffers can be used to exchange 
-data, rather than "simple" IO registers.
-
->
-> Is this sja1000-like mode the PeliCAN mode and does this actually 
-> mean, that DMA and sja1000 exlude each other?
-
-Basically both are CAN controllers but with some different API. PeliCAN 
-mode is a SJA1000 concept only.
-
->
-> I'm sorry if this questions seem too basic but I'm still trying to 
-> wrap my head around this and appreciate any feedback.
->
-
-There is no basic question.
-
->
-> Thanks and best regards,
-
-Regards,
-
-Stéphane
-
-> Selina
-> -- 
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt - HRB 9183 
-Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
---
+>> +
+>> +Example:
+>> +
+>> +For am3517evm board:
+>> +     hecc: can@0x5c050000 {
+>> +             compatible = "ti,am3505";
+>> +             status = "disabled";
+>> +             reg = <0x5c050000 0x4000>;
+>> +             interrupts = <24>;
+>> +             clocks = <&hecc_ck>;
+>> +             ti,scc-ram-offset = <0x3000>;
+>> +             ti,hecc-ram-offset = <0x3000>;
+>> +             ti,mbx-offset = <0x2000>;
+>> +             ti,int-line = <0>;
+>> +     };
+>> --
+>> 2.1.4
+>>
