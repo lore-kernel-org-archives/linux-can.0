@@ -1,111 +1,81 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: [PATCH v2 0/3] Adding DT support for TI HECC module
-Date: Mon, 16 Jan 2017 10:34:46 +0100
-Message-ID: <CAGm1_kvSeFDjtb4=it4uwXywrKj0S=Df4u5Aozh0ALOjwvHNDw@mail.gmail.com>
-References: <1484143521-4898-1-git-send-email-yegorslists@googlemail.com>
- <CAGm1_kvWXfZ_f3PPL1VJj8AhBf59Pax_GFHDVdejuMBRDu9y6Q@mail.gmail.com>
- <20170112004757.GZ2630@atomide.com> <CAGm1_kvNcmpayN-=mMmkCn1=wXaykhENUrHK2-MVmZLC+Cca0Q@mail.gmail.com>
- <20170112154155.GA2630@atomide.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: peak_pci and DMA
+Date: Mon, 16 Jan 2017 10:44:41 +0100
+Message-ID: <880086f5-fec7-680a-dc44-888597e59358@peak-system.com>
+References: <87527bfb-a1d3-5d3c-2d7b-becd4b82dcba@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-vk0-f68.google.com ([209.85.213.68]:34195 "EHLO
-        mail-vk0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750742AbdAPJfI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 16 Jan 2017 04:35:08 -0500
-In-Reply-To: <20170112154155.GA2630@atomide.com>
+Received: from mail.peak-system.com ([213.157.13.214]:37307 "EHLO
+        mail.peak-system.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750886AbdAPJou (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 16 Jan 2017 04:44:50 -0500
+In-Reply-To: <87527bfb-a1d3-5d3c-2d7b-becd4b82dcba@gmx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Tony Lindgren <tony@atomide.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, devicetree@vger.kernel.org, robh+dt@kernel.org, Andrey Skvortsov <andrej.skvortzov@gmail.com>, hs@denx.de, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Selina Schuler <Selina.Schuler@gmx.de>
+Cc: linux-can@vger.kernel.org
 
-On Thu, Jan 12, 2017 at 4:41 PM, Tony Lindgren <tony@atomide.com> wrote:
-> * Yegor Yefremov <yegorslists@googlemail.com> [170112 00:00]:
->> On Thu, Jan 12, 2017 at 1:47 AM, Tony Lindgren <tony@atomide.com> wrote:
->> > * Yegor Yefremov <yegorslists@googlemail.com> [170111 13:52]:
->> >> On Wed, Jan 11, 2017 at 3:05 PM,  <yegorslists@googlemail.com> wrote:
->> >> > From: Yegor Yefremov <yegorslists@googlemail.com>
->> >> >
->> >> > This is an attempt to revive DT support for TI HECC that was started in 2015.
->> >> >
->> >> > I haven't changed much because not all questions could be fully answered:
->> >> >
->> >> > * Should HECC use "am3505" as compatible?
->> >>
->> >> I mean "ti,am3505-hecc"
->> >
->> > Yeah it should use the device name for the driver.
->> >
->> >> > * What should be done to the offsets (ti,scc-ram-offset, ti,hecc-ram-offset, ti,mbx-offset)?
->> >
->> > The devicetree maintainers need to ack the binding doc. Maybe
->> > send that as a first patch?
->>
->> The question is whether to place these settings into dtsi (as it was
->> done in the original patch) or in the driver itself.
+Hello,
+
+
+Le 15/01/2017 à 21:39, Selina Schuler a écrit :
+> Hello,
 >
-> Well where are they on the SoC? Each driver should only access registers
-> that belong to the driver module.
+> as part of my bachelor thesis I've been looking into the peak_pci 
+> device driver and socketCan this week. In particular I want to know if 
+> the driver uses DMA. To me it seems like the peak_pci and sja1000 
+> drivers don't use DMA or at least not the DMA-API. Is this correct or 
+> am I missing something?
+
+Nope: the peak_pci driver doesn't use any DMA access, but memory mapped 
+IO. I don't know if it does exist any DMA -based implementation of the 
+SJA1000 controller...
+
 >
-> If the ti,scc-ram-offset and ti,hecc-ram-offset are not within the ECC
-> driver module, probably you should use a separate driver for them
-> such as drivers/misc/sram.c.
+> And while following the list for the last few days this caught my eye 
+> in the discussion about the added support for PEAK PCAN-PCIe FD CAN-FD 
+> boards:
 >
-> Also, sounds like the ti,mbx-offset should just be using the mailbox
-> framework like remoteproc is doing with include/linux/omap-mailbox.h?
+> "Is the DMA mode the only way to write CAN frames to the ucan core - 
+> or is there some sja1000-like mode too?"
 
-AFAIK all offsets are in RAM and belong to ioremapped space:
+DMA is used to exchange data between the IP core running the PCAN-PCIe 
+FD boards and the host. This is the only way to dialog with. The main 
+difference between the SJA100-like controllers based adapters and this 
+kind of mechanism is that large memory buffers can be used to exchange 
+data, rather than "simple" IO registers.
 
-        mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-        if (!mem) {
-                dev_err(&pdev->dev, "No mem resources\n");
-                goto probe_exit;
-        }
-        irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-        if (!irq) {
-                dev_err(&pdev->dev, "No irq resource\n");
-                goto probe_exit;
-        }
-        if (!request_mem_region(mem->start, resource_size(mem), pdev->name)) {
-                dev_err(&pdev->dev, "HECC region already claimed\n");
-                err = -EBUSY;
-                goto probe_exit;
-        }
-        addr = ioremap(mem->start, resource_size(mem));
-        if (!addr) {
-                dev_err(&pdev->dev, "ioremap failed\n");
-                err = -ENOMEM;
-                goto probe_exit_free_region;
-        }
+>
+> Is this sja1000-like mode the PeliCAN mode and does this actually 
+> mean, that DMA and sja1000 exlude each other?
 
-hecc_ram_offset usage:
+Basically both are CAN controllers but with some different API. PeliCAN 
+mode is a SJA1000 concept only.
 
-static inline void hecc_write_lam(struct ti_hecc_priv *priv, u32 mbxno, u32 val)
-{
-        __raw_writel(val, priv->base + priv->hecc_ram_offset + mbxno * 4);
-}
+>
+> I'm sorry if this questions seem too basic but I'm still trying to 
+> wrap my head around this and appreciate any feedback.
+>
 
-mbx_offset usage:
+There is no basic question.
 
-static inline void hecc_write_mbx(struct ti_hecc_priv *priv, u32 mbxno,
-        u32 reg, u32 val)
-{
-        __raw_writel(val, priv->base + priv->mbx_offset + mbxno * 0x10 +
-                        reg);
-}
+>
+> Thanks and best regards,
 
-static inline u32 hecc_read_mbx(struct ti_hecc_priv *priv, u32 mbxno, u32 reg)
-{
-        return __raw_readl(priv->base + priv->mbx_offset + mbxno * 0x10 +
-                        reg);
-}
+Regards,
 
-scc_ram_offset won't be used at all. CAN controller will be used in
-HECC mode only:
+Stéphane
 
-        /* SCC compat mode NOT supported (and not needed too) */
-        hecc_set_bit(priv, HECC_CANMC, HECC_CANMC_SCM);
+> Selina
+> -- 
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-@Marc is mailbox infra applicable here?
-
-Yegor
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt - HRB 9183 
+Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
+--
