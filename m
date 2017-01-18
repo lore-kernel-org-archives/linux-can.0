@@ -1,237 +1,78 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [RFC, PATCH v2] can: add CAN interface API for fixed bitrates
-Date: Thu, 12 Jan 2017 17:36:56 +0100
-Message-ID: <083932d1-2ec6-11a2-9e06-fb23c1bd9694@hartkopp.net>
-References: <20170111161003.14506-1-mkl@pengutronix.de>
- <CAKT-o-dudc56=0GV0EHJWXjGAtNxavzKNq+dWSrttJ2o52_A1A@mail.gmail.com>
+Subject: Re: [PATCH] can: fix hrtimer/tasklet termination in bcm op removal
+Date: Wed, 18 Jan 2017 21:40:00 +0100
+Message-ID: <3bc0f7a6-479f-d2ee-c3b4-ada91c784966@hartkopp.net>
+References: <20170118203051.16192-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:27785 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:36249 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751014AbdALQhe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 12 Jan 2017 11:37:34 -0500
-In-Reply-To: <CAKT-o-dudc56=0GV0EHJWXjGAtNxavzKNq+dWSrttJ2o52_A1A@mail.gmail.com>
+        with ESMTP id S1752306AbdARUwW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 18 Jan 2017 15:52:22 -0500
+In-Reply-To: <20170118203051.16192-1-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Michael Josenhans <michael.josenhans@web.de>
 Cc: linux-can@vger.kernel.org
 
+Hi Michael,
 
+thanks for your bug report!
 
-On 01/12/2017 10:41 AM, Kołłątaj, Remigiusz wrote:
-> Looks good to me.
+I created and tested this patch with some weird settings using a 1 usec 
+cycle together with TX_SETUP and TX_DELETE.
+
+Can you please check this patch with your setup?
+
+Best regards,
+Oliver
+
+On 01/18/2017 09:30 PM, Oliver Hartkopp wrote:
+> When removing a bcm tx operation either a hrtimer or a tasklet might run.
+> As the hrtimer triggers its associated tasklet and vice versa we need to
+> take care to mutually terminate both handlers.
 >
-> Cheers,
-> Remik
+> Reported-by: Michael Josenhans <michael.josenhans@web.de>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>  net/can/bcm.c | 23 ++++++++++++++++-------
+>  1 file changed, 16 insertions(+), 7 deletions(-)
 >
-> On 11 January 2017 at 17:10, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->> Inside the driver:
->> const u32 drvname_bitrate[] = { 20000, 50000, 100000 };
->>
->> struct drvname_priv *priv;
->> priv = netdev_priv(dev);
->>
->> priv->bitrate_const = drvname_bitrate;
->> priv->bitrate_const_cnt = ARRAY_SIZE(drvname_bitrate);
->>
->> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
->> ---
->> Hello,
->>
->> based on Remik's work. Rebased on the latest CAN termination API, streamlined
->> and add support for data_bitrate.
->>
->> regards,
->> Marc
->>
->>  drivers/net/can/dev.c            | 83 ++++++++++++++++++++++++++++++++--------
->>  include/linux/can/dev.h          |  4 ++
->>  include/uapi/linux/can/netlink.h |  2 +
->>  3 files changed, 73 insertions(+), 16 deletions(-)
->>
->> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
->> index 254183e5baf9..db6ad7f5d96d 100644
->> --- a/drivers/net/can/dev.c
->> +++ b/drivers/net/can/dev.c
->> @@ -279,8 +279,29 @@ static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt,
->>         return 0;
->>  }
->>
->> +/* Checks the validity of predefined bitrate settings */
->> +static int can_validate_bitrate(struct net_device *dev, struct can_bittiming *bt,
->> +                               const u32 *bitrate_const,
->> +                               const int bitrate_const_cnt)
->> +{
->> +       struct can_priv *priv = netdev_priv(dev);
->> +       int i;
->> +
->> +       for (i = 0; i < bitrate_const_cnt; i++) {
->> +               if (bt->bitrate == bitrate_const[i])
->> +                       break;
->> +       }
->> +
->> +       if (i >= priv->bitrate_const_cnt)
->> +               return -EINVAL;
->> +
->> +       return 0;
->> +}
->> +
->>  static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
->> -                            const struct can_bittiming_const *btc)
->> +                            const struct can_bittiming_const *btc,
->> +                            const u32 *bitrate_const,
->> +                            const int bitrate_const_cnt)
->>  {
->>         int err;
->>
->> @@ -290,10 +311,13 @@ static int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
->>          * alternatively the CAN timing parameters (tq, prop_seg, etc.) are
->>          * provided directly which are then checked and fixed up.
->>          */
->> -       if (!bt->tq && bt->bitrate)
->> +       if (!bt->tq && bt->bitrate && btc)
->>                 err = can_calc_bittiming(dev, bt, btc);
->> -       else if (bt->tq && !bt->bitrate)
->> +       else if (bt->tq && !bt->bitrate && btc)
->>                 err = can_fixup_bittiming(dev, bt, btc);
->> +       else if (!bt->tq && bt->bitrate && bitrate_const)
->> +               err = can_validate_bitrate(dev, bt, bitrate_const,
->> +                                          bitrate_const_cnt);
->>         else
->>                 err = -EINVAL;
->>
->> @@ -878,12 +902,12 @@ static int can_changelink(struct net_device *dev,
->>                         return -EOPNOTSUPP;
->>
->>                 memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
->> -               if (priv->bittiming_const) {
->> -                       err = can_get_bittiming(dev, &bt,
->> -                                               priv->bittiming_const);
->> -                       if (err)
->> -                               return err;
->> -               }
->> +               err = can_get_bittiming(dev, &bt,
->> +                                       priv->bittiming_const,
->> +                                       priv->bitrate_const,
->> +                                       priv->bitrate_const_cnt);
->> +               if (err)
->> +                       return err;
->>                 memcpy(&priv->bittiming, &bt, sizeof(bt));
->>
->>                 if (priv->do_set_bittiming) {
->> @@ -962,12 +986,12 @@ static int can_changelink(struct net_device *dev,
->>
->>                 memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
->>                        sizeof(dbt));
->> -               if (priv->data_bittiming_const) {
->> -                       err = can_get_bittiming(dev, &dbt,
->> -                                               priv->data_bittiming_const);
->> -                       if (err)
->> -                               return err;
->> -               }
->> +               err = can_get_bittiming(dev, &dbt,
->> +                                       priv->data_bittiming_const,
->> +                                       priv->data_bitrate_const,
->> +                                       priv->data_bitrate_const_cnt);
->> +               if (err)
->> +                       return err;
->>                 memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
->>
->>                 if (priv->do_set_data_bittiming) {
->> @@ -1029,6 +1053,12 @@ static size_t can_get_size(const struct net_device *dev)
->>                 size += nla_total_size(sizeof(*priv->termination_const) *       /* IFLA_CAN_TERMINATION_CONST */
->>                                        priv->termination_const_cnt);
->>         }
->> +       if (priv->bitrate_const)                                /* IFLA_CAN_BITRATE_CONST */
->> +               size += nla_total_size(sizeof(*priv->bitrate_const) *
->> +                                      priv->bitrate_const_cnt);
->> +       if (priv->data_bitrate_const)                           /* IFLA_CAN_DATA_BITRATE_CONST */
->> +               size += nla_total_size(sizeof(*priv->data_bitrate_const) *
->> +                                      priv->data_bitrate_const_cnt);
->>
->>         return size;
->>  }
->> @@ -1074,7 +1104,20 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
->>               nla_put(skb, IFLA_CAN_TERMINATION_CONST,
->>                       sizeof(*priv->termination_const) *
->>                       priv->termination_const_cnt,
->> -                     priv->termination_const))))
->> +                     priv->termination_const))) ||
->> +
->> +           (priv->bitrate_const &&
->> +            nla_put(skb, IFLA_CAN_BITRATE_CONST,
->> +                    sizeof(*priv->bitrate_const) *
->> +                    priv->bitrate_const_cnt,
->> +                    priv->bitrate_const)) ||
->> +
->> +           (priv->data_bitrate_const &&
->> +            nla_put(skb, IFLA_CAN_BITRATE_CONST,
-
-copy/paste?
-
-IFLA_CAN_DATA_BITRATE_CONST
-
->> +                    sizeof(*priv->data_bitrate_const) *
->> +                    priv->data_bitrate_const_cnt,
->> +                    priv->data_bitrate_const))
->> +           )
->>
->>                 return -EMSGSIZE;
->>
->> @@ -1139,6 +1182,14 @@ int register_candev(struct net_device *dev)
->>             (!priv->termination_const && priv->termination_const_cnt != 0))
->>                 return -EINVAL;
->>
->> +       if ((priv->bitrate_const && priv->bitrate_const_cnt <= 0) ||
->> +           (!priv->bitrate_const && priv->bitrate_const_cnt != 0))
->> +               return -EINVAL;
->> +
->> +       if ((priv->data_bitrate_const && priv->data_bitrate_const_cnt <= 0) ||
->> +           (!priv->data_bitrate_const && priv->data_bitrate_const_cnt != 0))
->> +               return -EINVAL;
->> +
->>         dev->rtnl_link_ops = &can_link_ops;
->>         return register_netdev(dev);
->>  }
->> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
->> index cba7f4b5a722..02f5b789f79a 100644
->> --- a/include/linux/can/dev.h
->> +++ b/include/linux/can/dev.h
->> @@ -41,6 +41,10 @@ struct can_priv {
->>         const u16 *termination_const;
->>         const int termination_const_cnt;
->>         u16 termination;
->> +       const u32 *bitrate_const;
->> +       const int bitrate_const_cnt;
->> +       const u32 *data_bitrate_const;
->> +       const int data_bitrate_const_cnt;
->>         struct can_clock clock;
->>
->>         enum can_state state;
->> diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
->> index 7414771926fb..fdf75f74fdaf 100644
->> --- a/include/uapi/linux/can/netlink.h
->> +++ b/include/uapi/linux/can/netlink.h
->> @@ -129,6 +129,8 @@ enum {
->>         IFLA_CAN_DATA_BITTIMING_CONST,
->>         IFLA_CAN_TERMINATION,
->>         IFLA_CAN_TERMINATION_CONST,
->> +       IFLA_CAN_BITRATE_CONST,
->> +       IFLA_CAN_DATA_BITRATE_CONST,
->>         __IFLA_CAN_MAX
->>  };
->>
->> --
->> 2.11.0
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index 21ac75390e3d..a7dc80c8e724 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+> @@ -734,14 +734,23 @@ static struct bcm_op *bcm_find_op(struct list_head *ops,
+>
+>  static void bcm_remove_op(struct bcm_op *op)
+>  {
+> -	hrtimer_cancel(&op->timer);
+> -	hrtimer_cancel(&op->thrtimer);
+> -
+> -	if (op->tsklet.func)
+> -		tasklet_kill(&op->tsklet);
+> +	if (op->tsklet.func) {
+> +		while (test_bit(TASKLET_STATE_SCHED, &op->tsklet.state) ||
+> +		       test_bit(TASKLET_STATE_RUN, &op->tsklet.state) ||
+> +		       hrtimer_active(&op->timer)) {
+> +			hrtimer_cancel(&op->timer);
+> +			tasklet_kill(&op->tsklet);
+> +		}
+> +	}
+>
+> -	if (op->thrtsklet.func)
+> -		tasklet_kill(&op->thrtsklet);
+> +	if (op->thrtsklet.func) {
+> +		while (test_bit(TASKLET_STATE_SCHED, &op->thrtsklet.state) ||
+> +		       test_bit(TASKLET_STATE_RUN, &op->thrtsklet.state) ||
+> +		       hrtimer_active(&op->thrtimer)) {
+> +			hrtimer_cancel(&op->thrtimer);
+> +			tasklet_kill(&op->thrtsklet);
+> +		}
+> +	}
+>
+>  	if ((op->frames) && (op->frames != &op->sframe))
+>  		kfree(op->frames);
 >
