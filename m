@@ -1,64 +1,50 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5] can: dev: add CAN interface termination API
-Date: Wed, 18 Jan 2017 14:43:11 +0100
-Message-ID: <3f4094fb-7643-2096-3309-e1a4b9d493bb@pengutronix.de>
-References: <20170113113457.21775-1-mkl@pengutronix.de>
- <CAKT-o-e-NyQt7TDeBRXsJ8f3KQ2penkk+JdeTZ1BBWS=vPivig@mail.gmail.com>
+Subject: Re: [PATCH] softingcs: ret is never non-zero, so remove non-zero
+ check and -ENODEV return
+Date: Wed, 18 Jan 2017 15:44:53 +0100
+Message-ID: <315e8833-1222-88bd-c806-e3688a37dab3@pengutronix.de>
+References: <20170111150238.19845-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="Nmfmo9tp9q0FhWefIotmBBWpqiXIRt7bL"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:56251 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751384AbdARNnT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 18 Jan 2017 08:43:19 -0500
-In-Reply-To: <CAKT-o-e-NyQt7TDeBRXsJ8f3KQ2penkk+JdeTZ1BBWS=vPivig@mail.gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>
-Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
+ boundary="GndtMIgVp6uOepqtOMnGO1cXlUVkhHcH3"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170111150238.19845-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin King <colin.king@canonical.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Nmfmo9tp9q0FhWefIotmBBWpqiXIRt7bL
-Content-Type: multipart/mixed; boundary="iwghkpTUP4bPVBul9ec5xdX71AQFucqEk";
+--GndtMIgVp6uOepqtOMnGO1cXlUVkhHcH3
+Content-Type: multipart/mixed; boundary="r09e9mQ3c2gLcCafopB83UGsHfqwLcQoL";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?=
- <remigiusz.kollataj@mobica.com>
-Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <3f4094fb-7643-2096-3309-e1a4b9d493bb@pengutronix.de>
-Subject: Re: [PATCH v5] can: dev: add CAN interface termination API
-References: <20170113113457.21775-1-mkl@pengutronix.de>
- <CAKT-o-e-NyQt7TDeBRXsJ8f3KQ2penkk+JdeTZ1BBWS=vPivig@mail.gmail.com>
-In-Reply-To: <CAKT-o-e-NyQt7TDeBRXsJ8f3KQ2penkk+JdeTZ1BBWS=vPivig@mail.gmail.com>
+To: Colin King <colin.king@canonical.com>,
+ Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <315e8833-1222-88bd-c806-e3688a37dab3@pengutronix.de>
+Subject: Re: [PATCH] softingcs: ret is never non-zero, so remove non-zero
+ check and -ENODEV return
+References: <20170111150238.19845-1-colin.king@canonical.com>
+In-Reply-To: <20170111150238.19845-1-colin.king@canonical.com>
 
---iwghkpTUP4bPVBul9ec5xdX71AQFucqEk
+--r09e9mQ3c2gLcCafopB83UGsHfqwLcQoL
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 01/16/2017 02:55 PM, Ko=C5=82=C5=82=C4=85taj, Remigiusz wrote:
->> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
->> index 5f5270941ba0..94c5037881f3 100644
->> --- a/include/linux/can/dev.h
->> +++ b/include/linux/can/dev.h
->> @@ -38,6 +38,9 @@ struct can_priv {
->>         struct can_bittiming bittiming, data_bittiming;
->>         const struct can_bittiming_const *bittiming_const,
->>                 *data_bittiming_const;
->> +       const u16 *termination_const;
->> +       const unsigned int termination_const_cnt;
+On 01/11/2017 04:02 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 >=20
-> 1. Is const intentional here? It makes setting value in a driver hard..=
-=2E
+> The error return ret is never zero in the error handling path in
+> softingcs_probe, so the check for non-zero and returning -ENODEV
+> is logically dead code and hence redundant.  Remove it and just
+> return ret.
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-No. Will fix.
-
-> 2. nitpick - as the value is intended to be initialized with
-> ARRAY_SIZE maybe we should change it to size_t? If so we should also
-> change "const unsigned int num_term" above.
-
-I think on 32 bit archs size_t is 64 wide, we don't need this many bits.
+Thanks, applied to can-next.
 
 Marc
 
@@ -69,23 +55,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---iwghkpTUP4bPVBul9ec5xdX71AQFucqEk--
+--r09e9mQ3c2gLcCafopB83UGsHfqwLcQoL--
 
---Nmfmo9tp9q0FhWefIotmBBWpqiXIRt7bL
+--GndtMIgVp6uOepqtOMnGO1cXlUVkhHcH3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlh/cO8ACgkQPTuqJayp
-JWrNhggAtve7BYkppVsJDAD4q1AKsz4yd9kAblTFQ55HJCAhbUkVtg5v73RPYvRy
-j6lkwkcQY1erGoxXS+nmNazJlCiOE1zC9x90Nf8fnJ/WVvPYgeDyaPDUkWV6sR/h
-HnuiXBdQjqjQDKgGqR1VSVkQnAvcQjoD7N27KpQrv/8u/7+K3cbDXIbAy2xrISTX
-H238gXS33kdcvfbgQ0F47NnhLTZtqC2sC+RB67OwFWA8OwJn4JT/2IPAj4PEl4Bc
-OeST0NzEXYYphAb2xos4zFpMHSL/JI9mYxrstG0d6dt3R4QVKn83WoFpYleifwwW
-Td/+d+FJ+2Fj5bLlnW589KHds6FfMA==
-=H7eb
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlh/f2UACgkQPTuqJayp
+JWotzQf/ScgjXP3W0fgQPHp1qR7TEc/LqdOK5VFmv50bO2Gsat6Ijfks7fvMj96e
+jJtCXBWuLYBaUZic22TEp4xOhLHsXfIjOEFNkccnye29vdZAN4qTytKH/JijSx54
+qPWy99bzotkaRE4vcnT/+r2/b6ZW/kQJptLhq0vEM5Wuaxx4hVjjZz3ZJf2/Ewdq
+0u4TFDFQDoYS9/uRMnkWtS5GjRHnxaxf19kEBE3zyWMtOtJx/oSxnJTJqaw8l/TI
+whcqL21rqb7B+WGq6WTBca0i1/zl2Zgsxfggwo+nCW0Nza6fOEwBKkUG0mDQhVUH
+V03FSBdujbxdqap7VHLI9wQup643mw==
+=Tn2v
 -----END PGP SIGNATURE-----
 
---Nmfmo9tp9q0FhWefIotmBBWpqiXIRt7bL--
+--GndtMIgVp6uOepqtOMnGO1cXlUVkhHcH3--
