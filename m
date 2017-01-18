@@ -1,77 +1,172 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] softingcs: ret is never non-zero, so remove non-zero
- check and -ENODEV return
-Date: Wed, 18 Jan 2017 15:44:53 +0100
-Message-ID: <315e8833-1222-88bd-c806-e3688a37dab3@pengutronix.de>
-References: <20170111150238.19845-1-colin.king@canonical.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="GndtMIgVp6uOepqtOMnGO1cXlUVkhHcH3"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170111150238.19845-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin King <colin.king@canonical.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Subject: [PATCH v6] can: dev: add CAN interface termination API
+Date: Wed, 18 Jan 2017 15:59:16 +0100
+Message-ID: <20170118145916.10580-1-mkl@pengutronix.de>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:55771 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752102AbdARO7U (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 18 Jan 2017 09:59:20 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GndtMIgVp6uOepqtOMnGO1cXlUVkhHcH3
-Content-Type: multipart/mixed; boundary="r09e9mQ3c2gLcCafopB83UGsHfqwLcQoL";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Colin King <colin.king@canonical.com>,
- Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-ID: <315e8833-1222-88bd-c806-e3688a37dab3@pengutronix.de>
-Subject: Re: [PATCH] softingcs: ret is never non-zero, so remove non-zero
- check and -ENODEV return
-References: <20170111150238.19845-1-colin.king@canonical.com>
-In-Reply-To: <20170111150238.19845-1-colin.king@canonical.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
---r09e9mQ3c2gLcCafopB83UGsHfqwLcQoL
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+This patch adds a netlink interface to configure the CAN bus termination of
+CAN interfaces.
 
-On 01/11/2017 04:02 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> The error return ret is never zero in the error handling path in
-> softingcs_probe, so the check for non-zero and returning -ENODEV
-> is logically dead code and hence redundant.  Remove it and just
-> return ret.
->=20
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Inside the driver an array of supported termination values is defined:
 
-Thanks, applied to can-next.
+const u16 drvname_termination[] = { 60, 120, CAN_TERMINATION_DISABLED };
 
-Marc
+struct drvname_priv *priv;
+priv = netdev_priv(dev);
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+priv->termination_const = &drvname_termination;
+priv->termination_const_cnt = ARRAY_SIZE(drvname_termination);
+priv->termination = CAN_TERMINATION_DISABLED;
 
+And the funtion to set the value has to be defined:
 
---r09e9mQ3c2gLcCafopB83UGsHfqwLcQoL--
+priv->do_set_termination = drvname_set_termination;
 
---GndtMIgVp6uOepqtOMnGO1cXlUVkhHcH3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Reviewed-by: Ramesh Shanmugasundaram <Ramesh.shanmugasundaram@bp.renesas.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
 
------BEGIN PGP SIGNATURE-----
+changes since v5:
+- do not use const for struct can_priv::termination_const_cnt
 
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAlh/f2UACgkQPTuqJayp
-JWotzQf/ScgjXP3W0fgQPHp1qR7TEc/LqdOK5VFmv50bO2Gsat6Ijfks7fvMj96e
-jJtCXBWuLYBaUZic22TEp4xOhLHsXfIjOEFNkccnye29vdZAN4qTytKH/JijSx54
-qPWy99bzotkaRE4vcnT/+r2/b6ZW/kQJptLhq0vEM5Wuaxx4hVjjZz3ZJf2/Ewdq
-0u4TFDFQDoYS9/uRMnkWtS5GjRHnxaxf19kEBE3zyWMtOtJx/oSxnJTJqaw8l/TI
-whcqL21rqb7B+WGq6WTBca0i1/zl2Zgsxfggwo+nCW0Nza6fOEwBKkUG0mDQhVUH
-V03FSBdujbxdqap7VHLI9wQup643mw==
-=Tn2v
------END PGP SIGNATURE-----
+ drivers/net/can/dev.c            | 49 +++++++++++++++++++++++++++++++++++++++-
+ include/linux/can/dev.h          |  4 ++++
+ include/uapi/linux/can/netlink.h |  5 ++++
+ 3 files changed, 57 insertions(+), 1 deletion(-)
 
---GndtMIgVp6uOepqtOMnGO1cXlUVkhHcH3--
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 8d6208c0b400..fefe2cd17721 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -958,6 +958,30 @@ static int can_changelink(struct net_device *dev,
+ 		}
+ 	}
+ 
++	if (data[IFLA_CAN_TERMINATION]) {
++		const u16 termval = nla_get_u16(data[IFLA_CAN_TERMINATION]);
++		const unsigned int num_term = priv->termination_const_cnt;
++		unsigned int i;
++
++		if (!priv->do_set_termination)
++			return -EOPNOTSUPP;
++
++		/* check whether given value is supported by the interface */
++		for (i = 0; i < num_term; i++) {
++			if (termval == priv->termination_const[i])
++				break;
++		}
++		if (i >= num_term)
++			return -EINVAL;
++
++		/* Finally, set the termination value */
++		err = priv->do_set_termination(dev, termval);
++		if (err)
++			return err;
++
++		priv->termination = termval;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -980,6 +1004,11 @@ static size_t can_get_size(const struct net_device *dev)
+ 		size += nla_total_size(sizeof(struct can_bittiming));
+ 	if (priv->data_bittiming_const)				/* IFLA_CAN_DATA_BITTIMING_CONST */
+ 		size += nla_total_size(sizeof(struct can_bittiming_const));
++	if (priv->termination_const) {
++		size += nla_total_size(sizeof(priv->termination));		/* IFLA_CAN_TERMINATION */
++		size += nla_total_size(sizeof(*priv->termination_const) *	/* IFLA_CAN_TERMINATION_CONST */
++				       priv->termination_const_cnt);
++	}
+ 
+ 	return size;
+ }
+@@ -1018,7 +1047,15 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 	    (priv->data_bittiming_const &&
+ 	     nla_put(skb, IFLA_CAN_DATA_BITTIMING_CONST,
+ 		     sizeof(*priv->data_bittiming_const),
+-		     priv->data_bittiming_const)))
++		     priv->data_bittiming_const)) ||
++
++	    (priv->termination_const &&
++	     (nla_put_u16(skb, IFLA_CAN_TERMINATION, priv->termination) ||
++	      nla_put(skb, IFLA_CAN_TERMINATION_CONST,
++		      sizeof(*priv->termination_const) *
++		      priv->termination_const_cnt,
++		      priv->termination_const))))
++
+ 		return -EMSGSIZE;
+ 
+ 	return 0;
+@@ -1073,6 +1110,16 @@ static struct rtnl_link_ops can_link_ops __read_mostly = {
+  */
+ int register_candev(struct net_device *dev)
+ {
++	struct can_priv *priv = netdev_priv(dev);
++
++	/* Ensure termination_const, termination_const_cnt and
++	 * do_set_termination consistency. All must be either set or
++	 * unset.
++	 */
++	if ((!priv->termination_const != !priv->termination_const_cnt) ||
++	    (!priv->termination_const != !priv->do_set_termination))
++		return -EINVAL;
++
+ 	dev->rtnl_link_ops = &can_link_ops;
+ 	return register_netdev(dev);
+ }
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 5f5270941ba0..f6a57f322f00 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -38,6 +38,9 @@ struct can_priv {
+ 	struct can_bittiming bittiming, data_bittiming;
+ 	const struct can_bittiming_const *bittiming_const,
+ 		*data_bittiming_const;
++	const u16 *termination_const;
++	unsigned int termination_const_cnt;
++	u16 termination;
+ 	struct can_clock clock;
+ 
+ 	enum can_state state;
+@@ -53,6 +56,7 @@ struct can_priv {
+ 	int (*do_set_bittiming)(struct net_device *dev);
+ 	int (*do_set_data_bittiming)(struct net_device *dev);
+ 	int (*do_set_mode)(struct net_device *dev, enum can_mode mode);
++	int (*do_set_termination)(struct net_device *dev, u16 term);
+ 	int (*do_get_state)(const struct net_device *dev,
+ 			    enum can_state *state);
+ 	int (*do_get_berr_counter)(const struct net_device *dev,
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index 94ffe0c83ce7..7414771926fb 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -127,9 +127,14 @@ enum {
+ 	IFLA_CAN_BERR_COUNTER,
+ 	IFLA_CAN_DATA_BITTIMING,
+ 	IFLA_CAN_DATA_BITTIMING_CONST,
++	IFLA_CAN_TERMINATION,
++	IFLA_CAN_TERMINATION_CONST,
+ 	__IFLA_CAN_MAX
+ };
+ 
+ #define IFLA_CAN_MAX	(__IFLA_CAN_MAX - 1)
+ 
++/* u16 termination range: 1..65535 Ohms */
++#define CAN_TERMINATION_DISABLED 0
++
+ #endif /* !_UAPI_CAN_NETLINK_H */
+-- 
+2.11.0
+
