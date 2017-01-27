@@ -1,53 +1,112 @@
-From: laurent vaudoit <laurent.vaudoit@gmail.com>
-Subject: J1939: put_session BUG_ON
-Date: Fri, 27 Jan 2017 09:47:55 +0100
-Message-ID: <CAA7hF3yAMSbd1HM79N12vfw0VKa96nCJsMLgcOA-=Oomqv-Qpg@mail.gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2017-01-24
+Date: Fri, 27 Jan 2017 10:02:09 +0100
+Message-ID: <37eedb82-54d7-c7a9-0cd6-ed26738efff7@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-oi0-f48.google.com ([209.85.218.48]:36690 "EHLO
-        mail-oi0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754314AbdA0Ir4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 27 Jan 2017 03:47:56 -0500
-Received: by mail-oi0-f48.google.com with SMTP id u143so153210928oif.3
-        for <linux-can@vger.kernel.org>; Fri, 27 Jan 2017 00:47:56 -0800 (PST)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can <linux-can@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="dh1eeTtbluMUlt1NECpWQkkeCvjkBoAdc"
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dh1eeTtbluMUlt1NECpWQkkeCvjkBoAdc
+Content-Type: multipart/mixed; boundary="6uv2CPvITEPI0pnPvA3U6JvlBFqrxFlXn";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <37eedb82-54d7-c7a9-0cd6-ed26738efff7@pengutronix.de>
+Subject: pull-request: can-next 2017-01-24
 
-i'm using old j1939 way on a project (with modified iproute2)
-and my client detect some problem when making some robustness test (weird
-test and not
-available test in my mind).
+--6uv2CPvITEPI0pnPvA3U6JvlBFqrxFlXn
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-on the board, we have two can interface, with j1939 on, and source adress
-0x4a on each.
-the 2 can interace are plugged together (this is the weird stuff for me)
+Hello David,
 
-from an external canalyzer, we send a pgn request
-18ea4a01x 0xcd 0xfe 0x00
+this is a pull request of 4 patches for net-next/master.
 
-on this, the client application wants to answer a segmented frame on both
-interfaces
-so on each interface we send a rts message (pgn 0xEC00) with the same SA.
+The first patch by Oliver Hartkopp adds a netlink API to configure the
+interface termination of a CAN card. The next two patches are by me and
+add a netlink API to query and configure CAN interfaces that only
+support fixed bitrates. The last patch by Colin Ian King simplifies the
+return path in the softing_cs driver's softingcs_probe() function.
 
-nobody answer with the CTS message, and so my interface wants to send abort
-message.
+regards,
+Marc
 
-and at this step i have a kernel BUG in transport/put_session function
-BUG_ON(!list_empty(&session->list));
+---
 
-Would you have an idea of what could lead to this behaviour?
-What is the goal of this line code?
+The following changes since commit d140199af510ad4749dc5e38b7922135258ba5=
+fd:
 
-I've tested with and without rtpatch with the same behaviour.
+  bpf, lpm: fix kfree of im_node in trie_update_elem (2017-01-23 21:17:35=
+ -0500)
 
-Another question, on my board we have rtpatch, and so the in(interrupt
-function allways return 0 (as with rtpatch interrupt are kernel threads).
-Is this point can lead to some problem?
+are available in the git repository at:
 
-Thanks in advance for your help
-Best regards
-Laurent
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.11-20170124
+
+for you to fetch changes up to 1e9bbb9bc2aa549d31fa0a0496ec33df0b3ae7a8:
+
+  can: softing_cs: ret is never non-zero, so remove non-zero check and -E=
+NODEV return (2017-01-24 13:52:00 +0100)
+
+----------------------------------------------------------------
+linux-can-next-for-4.11-20170124
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      can: softing_cs: ret is never non-zero, so remove non-zero check an=
+d -ENODEV return
+
+Marc Kleine-Budde (2):
+      can: dev: can_changelink: allow to set bitrate on devices not provi=
+ding {data_,}bittiming_const
+      can: dev: add CAN interface API for fixed bitrates
+
+Oliver Hartkopp (1):
+      can: dev: add CAN interface termination API
+
+ drivers/net/can/dev.c                | 136 +++++++++++++++++++++++++++++=
++++---
+ drivers/net/can/softing/softing_cs.c |   2 +-
+ include/linux/can/dev.h              |   8 +++
+ include/uapi/linux/can/netlink.h     |   7 ++
+ 4 files changed, 142 insertions(+), 11 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+
+--6uv2CPvITEPI0pnPvA3U6JvlBFqrxFlXn--
+
+--dh1eeTtbluMUlt1NECpWQkkeCvjkBoAdc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAliLDJkACgkQPTuqJayp
+JWpy4AgAvlInyuYr/imDWpEFnXCB/uCOVTgvpY8EZkqoubVUl00jwhOB5CHa38n/
+KMnZDYQtTB88E+Pu7vIb8DpjbSe2BTwQZgKHV/lHeB1Ho9ghCU/rNx6SmZlOlPdJ
+riF1FSDMN3YadSSiaFcntOJc0tWNEmUWyN3Elqm5mtJiSDo7VVyqSyrXie+NSSuc
+CK//rCscPJ+vgDizaEMK5GJiUtY3TjwuFE30PhtobC7rK08uhO3rMpcxhTVQG9tb
+aEUeDKTxzxop2nBDk6yEyw21LTlPoXCEFR3ibqjBpeE90NBWTnMvEPa12UGtXfhM
+0kigbwCVpi+vGQuGY0+ndh2VnJipNA==
+=W0by
+-----END PGP SIGNATURE-----
+
+--dh1eeTtbluMUlt1NECpWQkkeCvjkBoAdc--
