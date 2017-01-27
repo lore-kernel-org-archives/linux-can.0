@@ -1,112 +1,101 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2017-01-24
-Date: Fri, 27 Jan 2017 10:02:09 +0100
-Message-ID: <37eedb82-54d7-c7a9-0cd6-ed26738efff7@pengutronix.de>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: J1939: put_session BUG_ON
+Date: Fri, 27 Jan 2017 12:30:43 +0100
+Message-ID: <20170127113043.GD29959@airbook.vandijck-laurijssen.be>
+References: <CAA7hF3yAMSbd1HM79N12vfw0VKa96nCJsMLgcOA-=Oomqv-Qpg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="dh1eeTtbluMUlt1NECpWQkkeCvjkBoAdc"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---dh1eeTtbluMUlt1NECpWQkkeCvjkBoAdc
-Content-Type: multipart/mixed; boundary="6uv2CPvITEPI0pnPvA3U6JvlBFqrxFlXn";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <37eedb82-54d7-c7a9-0cd6-ed26738efff7@pengutronix.de>
-Subject: pull-request: can-next 2017-01-24
-
---6uv2CPvITEPI0pnPvA3U6JvlBFqrxFlXn
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from relay-b03.edpnet.be ([212.71.1.220]:44633 "EHLO
+        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S933749AbdA0Lax (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 27 Jan 2017 06:30:53 -0500
+Content-Disposition: inline
+In-Reply-To: <CAA7hF3yAMSbd1HM79N12vfw0VKa96nCJsMLgcOA-=Oomqv-Qpg@mail.gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: laurent vaudoit <laurent.vaudoit@gmail.com>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-Hello David,
+Hey,
 
-this is a pull request of 4 patches for net-next/master.
+> Hi,
+> 
+> i'm using old j1939 way on a project (with modified iproute2)
+> and my client detect some problem when making some robustness test (weird
+> test and not
+> available test in my mind).
+> 
+> on the board, we have two can interface, with j1939 on, and source adress
+> 0x4a on each.
 
-The first patch by Oliver Hartkopp adds a netlink API to configure the
-interface termination of a CAN card. The next two patches are by me and
-add a netlink API to query and configure CAN interfaces that only
-support fixed bitrates. The last patch by Colin Ian King simplifies the
-return path in the softing_cs driver's softingcs_probe() function.
+OK
 
-regards,
-Marc
+> the 2 can interace are plugged together (this is the weird stuff for me)
 
----
+Well, that's illegal in j1939. You cannot have 2 cannodes on the bus
+sharing the same source address.
 
-The following changes since commit d140199af510ad4749dc5e38b7922135258ba5=
-fd:
+You can debate if the kernel should support this properly or not.
 
-  bpf, lpm: fix kfree of im_node in trie_update_elem (2017-01-23 21:17:35=
- -0500)
+> 
+> from an external canalyzer, we send a pgn request
+> 18ea4a01x 0xcd 0xfe 0x00
+> 
+> on this, the client application wants to answer a segmented frame on both
+> interfaces
+> so on each interface we send a rts message (pgn 0xEC00) with the same SA.
+> 
+> nobody answer with the CTS message, and so my interface wants to send abort
+> message.
 
-are available in the git repository at:
+both interfaces send the abort, if I'm not mistaken.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-4.11-20170124
+> 
+> and at this step i have a kernel BUG in transport/put_session function
+> BUG_ON(!list_empty(&session->list));
+> 
+> Would you have an idea of what could lead to this behaviour?
+> What is the goal of this line code?
 
-for you to fetch changes up to 1e9bbb9bc2aa549d31fa0a0496ec33df0b3ae7a8:
+I checked j1939-v3.8 branch (my local one, since you didn't really specify).
+But my conclusion is similar to my latest j1939d-v4.x branch.
 
-  can: softing_cs: ret is never non-zero, so remove non-zero check and -E=
-NODEV return (2017-01-24 13:52:00 +0100)
+The immediate goal is to prevent to remove the session while it has not
+been removed from a list (so it is still possible to match against the
+session).
 
-----------------------------------------------------------------
-linux-can-next-for-4.11-20170124
+I think that you triggered a condition where you received an abort
+message around the time that the timeout is expiring.
+So you will end up destroying the session from both (a) abort reception
+and (b) session expiry.
+This condition is hard to simulate, I'm sure that aborts did not crash
+all the time, it did work.
+Can this be related to the rtpatch, where both events run from a thread
+rather than a softirq, which may schedule at some critical point in my
+code?
 
-----------------------------------------------------------------
-Colin Ian King (1):
-      can: softing_cs: ret is never non-zero, so remove non-zero check an=
-d -ENODEV return
+> 
+> I've tested with and without rtpatch with the same behaviour.
 
-Marc Kleine-Budde (2):
-      can: dev: can_changelink: allow to set bitrate on devices not provi=
-ding {data_,}bittiming_const
-      can: dev: add CAN interface API for fixed bitrates
+That means you're pretty successfull already with running can-j1939 with
+rtpatch? nice to hear.
 
-Oliver Hartkopp (1):
-      can: dev: add CAN interface termination API
+> 
+> Another question, on my board we have rtpatch, and so the in(interrupt
+> function allways return 0 (as with rtpatch interrupt are kernel threads).
+> Is this point can lead to some problem?
 
- drivers/net/can/dev.c                | 136 +++++++++++++++++++++++++++++=
-+++---
- drivers/net/can/softing/softing_cs.c |   2 +-
- include/linux/can/dev.h              |   8 +++
- include/uapi/linux/can/netlink.h     |   7 ++
- 4 files changed, 142 insertions(+), 11 deletions(-)
+The in_interrupt() is used to avoid killing tasklets from interrupt
+context. I'm not that experienced with rtpatch, but I assume that 
+this would pose no problem and tasklets get cancelled right away.
+But I'm not sure :-)
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-
---6uv2CPvITEPI0pnPvA3U6JvlBFqrxFlXn--
-
---dh1eeTtbluMUlt1NECpWQkkeCvjkBoAdc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEES2FAuYbJvAGobdVQPTuqJaypJWoFAliLDJkACgkQPTuqJayp
-JWpy4AgAvlInyuYr/imDWpEFnXCB/uCOVTgvpY8EZkqoubVUl00jwhOB5CHa38n/
-KMnZDYQtTB88E+Pu7vIb8DpjbSe2BTwQZgKHV/lHeB1Ho9ghCU/rNx6SmZlOlPdJ
-riF1FSDMN3YadSSiaFcntOJc0tWNEmUWyN3Elqm5mtJiSDo7VVyqSyrXie+NSSuc
-CK//rCscPJ+vgDizaEMK5GJiUtY3TjwuFE30PhtobC7rK08uhO3rMpcxhTVQG9tb
-aEUeDKTxzxop2nBDk6yEyw21LTlPoXCEFR3ibqjBpeE90NBWTnMvEPa12UGtXfhM
-0kigbwCVpi+vGQuGY0+ndh2VnJipNA==
-=W0by
------END PGP SIGNATURE-----
-
---dh1eeTtbluMUlt1NECpWQkkeCvjkBoAdc--
+> 
+> Thanks in advance for your help
+> Best regards
+> Laurent
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
