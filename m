@@ -1,78 +1,38 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: fix hrtimer/tasklet termination in bcm op removal
-Date: Sat, 28 Jan 2017 18:25:47 +0100
-Message-ID: <00fddc03-13c7-cf6e-0b90-04aea7fe645f@hartkopp.net>
-References: <20170118203051.16192-1-socketcan@hartkopp.net>
- <7ded2bd2-45af-e4e1-63d9-e9959d8db2e3@web.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH v3] can: Fix kernel panic at security_sock_rcv_skb
+Date: Sun, 29 Jan 2017 18:34:06 -0500 (EST)
+Message-ID: <20170129.183406.1410276231781823069.davem@davemloft.net>
+References: <0e458012-e97b-298d-296e-ed25e35689a0@hartkopp.net>
+        <1484226099.15816.25.camel@edumazet-glaptop3.roam.corp.google.com>
+        <1485533504.6360.62.camel@edumazet-glaptop3.roam.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:31227 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751171AbdA1R3i (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 28 Jan 2017 12:29:38 -0500
-In-Reply-To: <7ded2bd2-45af-e4e1-63d9-e9959d8db2e3@web.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Michael Josenhans <michael.josenhans@web.de>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1485533504.6360.62.camel@edumazet-glaptop3.roam.corp.google.com>
+Sender: netdev-owner@vger.kernel.org
+To: eric.dumazet@gmail.com
+Cc: socketcan@hartkopp.net, shuo.a.liu@intel.com, yanmin_zhang@linux.intel.com, shuox.liu@gmail.com, yanmin.zhang@intel.com, bo.he@intel.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-On 01/28/2017 05:42 PM, Michael Josenhans wrote:
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Date: Fri, 27 Jan 2017 08:11:44 -0800
 
-> When removing a bcm tx operation either a hrtimer or a tasklet might run.
-> As the hrtimer triggers its associated tasklet and vice versa we need to
-> take care to mutually terminate both handlers.
->
-> Reported-by: Michael Josenhans <michael.josenhans@web.de>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> Tested-by: Michael Josenhans <michael.josenhans@web.de>
+> From: Eric Dumazet <edumazet@google.com>
+> 
+> Zhang Yanmin reported crashes [1] and provided a patch adding a
+> synchronize_rcu() call in can_rx_unregister()
+> 
+> The main problem seems that the sockets themselves are not RCU
+> protected.
+> 
+> If CAN uses RCU for delivery, then sockets should be freed only after
+> one RCU grace period.
+> 
+> Recent kernels could use sock_set_flag(sk, SOCK_RCU_FREE), but let's
+> ease stable backports with the following fix instead.
+ ...
+> Reported-by: Zhang Yanmin <yanmin.zhang@intel.com>
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
 
-Thanks for testing!
-
-@Marc: This is a candidate for stable too.
-
-Best regards,
-Oliver
-
->> ---
->>  net/can/bcm.c | 23 ++++++++++++++++-------
->>  1 file changed, 16 insertions(+), 7 deletions(-)
->>
->> diff --git a/net/can/bcm.c b/net/can/bcm.c
->> index 21ac75390e3d..a7dc80c8e724 100644
->> --- a/net/can/bcm.c
->> +++ b/net/can/bcm.c
->> @@ -734,14 +734,23 @@ static struct bcm_op *bcm_find_op(struct
->> list_head *ops,
->>
->>  static void bcm_remove_op(struct bcm_op *op)
->>  {
->> -    hrtimer_cancel(&op->timer);
->> -    hrtimer_cancel(&op->thrtimer);
->> -
->> -    if (op->tsklet.func)
->> -        tasklet_kill(&op->tsklet);
->> +    if (op->tsklet.func) {
->> +        while (test_bit(TASKLET_STATE_SCHED, &op->tsklet.state) ||
->> +               test_bit(TASKLET_STATE_RUN, &op->tsklet.state) ||
->> +               hrtimer_active(&op->timer)) {
->> +            hrtimer_cancel(&op->timer);
->> +            tasklet_kill(&op->tsklet);
->> +        }
->> +    }
->>
->> -    if (op->thrtsklet.func)
->> -        tasklet_kill(&op->thrtsklet);
->> +    if (op->thrtsklet.func) {
->> +        while (test_bit(TASKLET_STATE_SCHED, &op->thrtsklet.state) ||
->> +               test_bit(TASKLET_STATE_RUN, &op->thrtsklet.state) ||
->> +               hrtimer_active(&op->thrtimer)) {
->> +            hrtimer_cancel(&op->thrtimer);
->> +            tasklet_kill(&op->thrtsklet);
->> +        }
->> +    }
->>
->>      if ((op->frames) && (op->frames != &op->sframe))
->>          kfree(op->frames);
->> --
+Applied and queued up for -stable, thanks Eric.
