@@ -1,24 +1,31 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2017-01-30
-Date: Mon, 30 Jan 2017 16:39:36 -0500 (EST)
-Message-ID: <20170130.163936.1777388116676735029.davem@davemloft.net>
-References: <20170130101101.14150-1-mkl@pengutronix.de>
+From: saber mesgary <smesgary@gmail.com>
+Subject: cansend linux system memoryleak
+Date: Tue, 31 Jan 2017 19:52:01 +0330
+Message-ID: <CAJc8+a+Vu794K2wnvpKONQakt3Vn61w2Kdzj0-etYgwWpVvrHQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20170130101101.14150-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-oi0-f47.google.com ([209.85.218.47]:33033 "EHLO
+        mail-oi0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750935AbdAaQWm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2017 11:22:42 -0500
+Received: by mail-oi0-f47.google.com with SMTP id w204so217547883oiw.0
+        for <linux-can@vger.kernel.org>; Tue, 31 Jan 2017 08:22:42 -0800 (PST)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon, 30 Jan 2017 11:11:00 +0100
+Hi,
+I'm developing a software for an embedded system. I should use Can for
+communicate with other devices.
+When i send can messages using cansend, i have memory leak on system.
 
-> this is a pull request of one patch.
-> 
-> The patch is by Oliver Hartkopp and fixes the hrtimer/tasklet termination in
-> bcm op removal.
+for example:
+cansend can0 5A1#11.22.33.44.55.66.77.88
 
-Pulled, thanks Marc.
+I don't have any running software and I can see memory leak in top,
+free memory decrease and used memory increase. this problem stops when
+i make can port down using:
+ifconfig can0 down
+
+Thanks
