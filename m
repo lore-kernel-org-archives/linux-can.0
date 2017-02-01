@@ -1,68 +1,27 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH v4 2/4] can: peak: fix usage of const qualifier in pointers args
-Date: Thu, 19 Jan 2017 16:31:05 +0100
-Message-ID: <1484839867-2050-3-git-send-email-s.grosjean@peak-system.com>
-References: <1484839867-2050-1-git-send-email-s.grosjean@peak-system.com>
+From: Miss Marbell <spdr3re9@friend.ocn.ne.jp>
+Subject: =?utf-8?Q?Bitte_kontaktieren_Sie_mich_f=C3=BCr_weitere_Details!?=
+Date: Wed, 1 Feb 2017 17:10:10 +0900 (JST)
+Message-ID: <19729611.132169125.1485936610060.JavaMail.root__15253.4571978778$1485937227$gmane$org@friend.ocn.ne.jp>
+Reply-To: Miss Marbell <brownson.m221@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp1-g21.free.fr ([212.27.42.1]:13676 "EHLO smtp1-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753087AbdASPbg (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 19 Jan 2017 10:31:36 -0500
-In-Reply-To: <1484839867-2050-1-git-send-email-s.grosjean@peak-system.com>
+Received: from mbkd0222.ocn.ad.jp ([153.149.233.23]:60681 "EHLO
+        mbkd0222.ocn.ad.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751080AbdBAIUV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 1 Feb 2017 03:20:21 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
 
-Fixes the usage of the const qualifier in the memory pointer arguments
-of the declared inline functions. By changing the line containing "const",
-this patch also changes the name of the arg into a more usual one.
+Sehr geehrte Damen und Herren,
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
----
- v4: same as v3
+Ich brauche Ihre Unterstützung in Ihrem Land zu verlagern und zu investieren.Ich bitte Sie um Hilfe, weil ich nicht das Wissen über
+Geschäft und die Regeln, die Ihr Land für eine sichere Investition führen.
 
- drivers/net/can/usb/peak_usb/pcan_ucan.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Werden Sie versprechen, mit mir aufrichtig zu sein?
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_ucan.h b/drivers/net/can/usb/peak_usb/pcan_ucan.h
-index 104a467..25e20ef 100644
---- a/drivers/net/can/usb/peak_usb/pcan_ucan.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_ucan.h
-@@ -219,25 +219,25 @@ static inline __le16 pucan_cmd_opcode_channel(int index, int opcode)
- }
- 
- /* return the channel number part from any received message channel_dlc field */
--static inline int pucan_msg_get_channel(struct pucan_rx_msg *rm)
-+static inline int pucan_msg_get_channel(const struct pucan_rx_msg *msg)
- {
--	return rm->channel_dlc & 0xf;
-+	return msg->channel_dlc & 0xf;
- }
- 
- /* return the dlc value from any received message channel_dlc field */
--static inline int pucan_msg_get_dlc(struct pucan_rx_msg *rm)
-+static inline int pucan_msg_get_dlc(const struct pucan_rx_msg *msg)
- {
--	return rm->channel_dlc >> 4;
-+	return msg->channel_dlc >> 4;
- }
- 
--static inline int pucan_ermsg_get_channel(struct pucan_error_msg *em)
-+static inline int pucan_ermsg_get_channel(const struct pucan_error_msg *msg)
- {
--	return em->channel_type_d & 0x0f;
-+	return msg->channel_type_d & 0x0f;
- }
- 
--static inline int pucan_stmsg_get_channel(struct pucan_status_msg *sm)
-+static inline int pucan_stmsg_get_channel(const struct pucan_status_msg *msg)
- {
--	return sm->channel_p_w_b & 0x0f;
-+	return msg->channel_p_w_b & 0x0f;
- }
- 
- #endif
--- 
-2.7.4
+Bitte kontaktieren Sie mich für weitere Details!
 
+Mit freundlichen Grüßen,
+Fräulein Marbell.
