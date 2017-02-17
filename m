@@ -1,84 +1,59 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v4 3/3] can: ti_hecc: Add DT support for TI HECC module
-Date: Fri, 17 Feb 2017 14:54:35 +0100
-Message-ID: <5eeddc52-4bdc-6f40-51a4-f8e4d14e6b9b@pengutronix.de>
-References: <1487339158-18809-1-git-send-email-yegorslists@googlemail.com>
- <1487339158-18809-4-git-send-email-yegorslists@googlemail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="4woCS7riNlxXpl4W3aLUTw8klU4GlknPN"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1487339158-18809-4-git-send-email-yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, andrej.skvortzov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Anton Glukhov <anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+From: yegorslists@googlemail.com
+Subject: [PATCH v5 0/3] Adding DT support for TI HECC module
+Date: Fri, 17 Feb 2017 16:52:30 +0100
+Message-ID: <1487346753-19286-1-git-send-email-yegorslists@googlemail.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wr0-f194.google.com ([209.85.128.194]:35883 "EHLO
+        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S934668AbdBQPws (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Feb 2017 10:52:48 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: linux-omap@vger.kernel.org, devicetree@vger.kernel.org, robh@kernel.org, tony@atomide.com, mkl@pengutronix.de, andrej.skvortzov@gmail.com, Yegor Yefremov <yegorslists@googlemail.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4woCS7riNlxXpl4W3aLUTw8klU4GlknPN
-Content-Type: multipart/mixed; boundary="RI1Dp1huQ4w7CEojVNLIuNSi0Q7ctawrT";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-To: yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
- tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, andrej.skvortzov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
- Anton Glukhov <anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Message-ID: <5eeddc52-4bdc-6f40-51a4-f8e4d14e6b9b-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v4 3/3] can: ti_hecc: Add DT support for TI HECC module
-References: <1487339158-18809-1-git-send-email-yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
- <1487339158-18809-4-git-send-email-yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-In-Reply-To: <1487339158-18809-4-git-send-email-yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
---RI1Dp1huQ4w7CEojVNLIuNSi0Q7ctawrT
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+This is an attempt to revive DT support for TI HECC that was started in 2015 [1].
 
-On 02/17/2017 02:45 PM, yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org wrote:
-> From: Yegor Yefremov <yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
->=20
-> This patch converts TI HECC driver to DT only driver. This results in
-> removing ti_hecc.h containing now obsolete platform data.
->=20
-> Former transceiver_switch callback function will be now modelled via
-> regulator API.
->=20
-> Signed-off-by: Anton Glukhov <anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> Signed-off-by: Yegor Yefremov <yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Changes v4 -> v5:
+  - remove unneeded manual deallocations as we now use devm_ routines
+    (suggested by Marc Kleine-Budde)
 
-What about ti_hecc_remove(struct platform_device *pdev)? - As you now
-are using devm_ some manual deallocations will go away.
+Changes v3 -> v4:
+  - implement tranciever handling via regulator API (suggested by Marc Kleine-Budde)
+  - convert the driver to DT only driver, i.e. remove legacy platform struct and header
+    (suggested by Marc Kleine-Budde)
 
-Marc
+Changes v2 -> v3:
+  - rename compatible property to "ti,am3517-hecc" (though there is a stipped
+    device named 3505, EMAC driver already uses am3517-emac name, so keep this
+    property consistent)
+  - use reg-names to specify different HECC I/O mapping (suggested by Tony Lindgren)
+  - provide fallback offsets and sizes for board files
+  - convert optional property ti,int_line to ti,use-hecc1int and add proper
+    description
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Changes v1 -> v2:
+  - change compatible to "ti,am3505
+  - remove CONFIG_OF
+  - don't set int_line to 0 explicitly
 
+[1] http://comments.gmane.org/gmane.linux.can/8616
 
---RI1Dp1huQ4w7CEojVNLIuNSi0Q7ctawrT--
+Yegor Yefremov (3):
+  ARM: dts: AM35x: Add hecc node
+  can: ti_hecc: Add TI HECC DT binding documentation
+  can: ti_hecc: Add DT support for TI HECC module
 
---4woCS7riNlxXpl4W3aLUTw8klU4GlknPN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+ .../devicetree/bindings/net/can/ti_hecc.txt        |  33 ++++
+ arch/arm/boot/dts/am3517.dtsi                      |  12 ++
+ drivers/net/can/ti_hecc.c                          | 170 +++++++++++----------
+ include/linux/can/platform/ti_hecc.h               |  44 ------
+ 4 files changed, 133 insertions(+), 126 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc.txt
+ delete mode 100644 include/linux/can/platform/ti_hecc.h
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.1.4
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlinAJsACgkQHv7KIOw4
-HPYXcggAmogD1WAlogHGdGvt26l8h9vxDYLechKlJHiT+e6gpZoj2RzJeMV7d90z
-Nr9tgozVPVjmhwQH7Z2cMl2Lns+1FDfsvr6fNT8Wfdm78VSbeYbHGzK8VWQit+jD
-nzJFTpXC+TH/q3nEe/36veBI7A5KzRsY15jcJqOcW7IxfSrMd3Gzs/RjOjRkfMKn
-cI9StccwohV7q6revi2Bg8UIZDmE+vApzpbdQYDw44DMck8p5hKngVT60RBmRQa0
-qPIUIvXadReGagKrQUa7vBkZflSyeF1RGNEJQlurcNygKcoXGbqNVKK6Z/ke3E3n
-qE+CVzY6ZSpujKoc/tk88kGifoSTDQ==
-=3EOY
------END PGP SIGNATURE-----
-
---4woCS7riNlxXpl4W3aLUTw8klU4GlknPN--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
