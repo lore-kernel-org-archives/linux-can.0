@@ -1,46 +1,91 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH net-next] can: initial support for network namespaces
-Date: Thu, 16 Feb 2017 14:47:39 +0100
-Message-ID: <57d4cb90-b96e-27a4-3ac5-66ebb8f1e8f4@hartkopp.net>
-References: <40df4f6a-8df1-3b76-c0ed-9ba7800c2dc1@kicherer.org>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v3 0/3] Adding DT support for TI HECC module
+Date: Fri, 17 Feb 2017 09:46:52 +0100
+Message-ID: <7c8fb14d-835b-d1d0-ca4f-4d184b711ae0@pengutronix.de>
+References: <1487170125-10815-1-git-send-email-yegorslists@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <40df4f6a-8df1-3b76-c0ed-9ba7800c2dc1@kicherer.org>
-Sender: netdev-owner@vger.kernel.org
-To: Mario Kicherer <dev@kicherer.org>
-Cc: netdev@vger.kernel.org, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="fklsjnRseX9vAwDw0GQx1gPe8gw2B0agh"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1487170125-10815-1-git-send-email-yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, andrej.skvortzov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, hs-ynQEQJNshbs@public.gmane.org, anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-Hello Mario,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--fklsjnRseX9vAwDw0GQx1gPe8gw2B0agh
+Content-Type: multipart/mixed; boundary="W3mjXSSrBAjEOArEamvAwai7GNQo2tKV7";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+To: yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, andrej.skvortzov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
+ hs-ynQEQJNshbs@public.gmane.org, anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Message-ID: <7c8fb14d-835b-d1d0-ca4f-4d184b711ae0-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v3 0/3] Adding DT support for TI HECC module
+References: <1487170125-10815-1-git-send-email-yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+In-Reply-To: <1487170125-10815-1-git-send-email-yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
 
-thanks for your patch.
+--W3mjXSSrBAjEOArEamvAwai7GNQo2tKV7
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 02/16/2017 12:39 PM, Mario Kicherer wrote:
-> This patch adds initial support for network namespaces. The changes only
-> enable support in the CAN raw, proc and af_can code. GW and BCM still
-> have their checks that ensure that they are used only from the main
-> namespace.
->
-> The patch boils down to moving the global structures, i.e. the global
-> filter list and their /proc stats, into a per-namespace structure and passing
-> around the corresponding "struct net" in a lot of different places.
->
-> Signed-off-by: Mario Kicherer <dev@kicherer.org>
+On 02/15/2017 03:48 PM, yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org wrote:
+> From: Yegor Yefremov <yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+>=20
+> This is an attempt to revive DT support for TI HECC that was started in=
+ 2015 [1].
+>=20
+> Changes v2 -> v3:
+>   - rename compatible property to "ti,am3517-hecc" (though there is a s=
+tipped
+>     device named 3505, EMAC driver already uses am3517-emac name, so ke=
+ep this
+>     property consistent)
+>   - use reg-names to specify different HECC I/O mapping (suggested by T=
+ony Lindgren)
+>   - provide fallback offsets and sizes for board files
 
-Although it does not apply on the latest kernel due to this patch:
+Are there any board files using te_hecc intree? I don't see any on the
+first glance. What about making the driver DT only?
 
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=f1712c73714088a7252d276a57126d56c7d37e64
+>   - convert optional property ti,int_line to ti,use-hecc1int and add pr=
+oper
+>     description
 
-Please rebase your patch to the latest kernel tree and post it again.
+regards,
+Marc
 
-Additionally you should post CAN related stuff to the linux-can ML (see 
-CC) and the CAN maintainers found in the MAINTAINERS file. In this case 
-cross posting to netdev ML is fine as namespaces are very netdev related.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Do you have an idea how to go with namespace aware virtual CAN 
-interfaces to link the namespaces?
 
-Regards,
-Oliver
+--W3mjXSSrBAjEOArEamvAwai7GNQo2tKV7--
+
+--fklsjnRseX9vAwDw0GQx1gPe8gw2B0agh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlimuIAACgkQHv7KIOw4
+HPbY9Qf/Q9z5k9dRvk3dOK7j8u2PjKMga2t3aR4EEYAMvpMP+ziGgFxiNEw9Q97X
+a3IN/KItZ98ezhXaFwABKCbTaWD2oXXjg5lCaBgl1zmzxzQ71MWU6GJNlLGSJQ7q
+lOdi0fbi7lyFO6y5WMjp4pl4cw6HliwJHfrLgSOFWpT8DSHDcXpRZTxSWI3T4Vyg
+/aVgC4LjyO3BdMOjukgzArbmrnQFW7XHlx4EsMg1rABUfoQMMgJ5ZhA49IXI9TPs
+9nMXRl8gr6H6YF8SbKe/JXLCE2mlHZL0ZodKYZX3wqmwvvOBv5FidgnJHvLSWK7k
+GI7niIgZ92EQwJq9112sKoVRWRQ7nQ==
+=z82X
+-----END PGP SIGNATURE-----
+
+--fklsjnRseX9vAwDw0GQx1gPe8gw2B0agh--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
