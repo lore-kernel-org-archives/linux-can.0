@@ -1,66 +1,46 @@
-From: <Wenyou.Yang@microchip.com>
-Subject: iproute2 not function on CAN FD
-Date: Mon, 20 Feb 2017 01:12:52 +0000
-Message-ID: <F9F4555C4E01D7469D37975B62D0EFBB4D7587@CHN-SV-EXMX07.mchp-main.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: iproute2 not function on CAN FD
+Date: Mon, 20 Feb 2017 08:56:43 +0100
+Message-ID: <f4c78670-8c25-8ee3-5167-126d49ad5b00@hartkopp.net>
+References: <F9F4555C4E01D7469D37975B62D0EFBB4D7587@CHN-SV-EXMX07.mchp-main.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from exsmtp02.microchip.com ([198.175.253.38]:37831 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1751534AbdBTBNg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 19 Feb 2017 20:13:36 -0500
-Content-Language: en-US
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:25201 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750872AbdBTH6A (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 20 Feb 2017 02:58:00 -0500
+In-Reply-To: <F9F4555C4E01D7469D37975B62D0EFBB4D7587@CHN-SV-EXMX07.mchp-main.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: socketcan@hartkopp.net, mkl@pengutronix.de, wg@grandegger.com
+To: Wenyou.Yang@microchip.com, mkl@pengutronix.de, wg@grandegger.com
 Cc: linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-Hello,
+On 02/20/2017 02:12 AM, Wenyou.Yang@microchip.com wrote:
 
-I am testing the CAN FD of M_CAN on the SAMA5D2 Xplained board, 
-when using the ip tool from iprounte2 suite to set the CAN interface,
-it doesn't work with the message "RTNETLINK answers: Operation not supported".
---->8----
-# ip link set can0 type can bitrate 125000 dbitrate 8000000 fd on
-RTNETLINK answers: Operation not supported
----8<---
+> I am testing the CAN FD of M_CAN on the SAMA5D2 Xplained board,
+> when using the ip tool from iprounte2 suite to set the CAN interface,
+> it doesn't work with the message "RTNETLINK answers: Operation not supported".
+> --->8----
+> # ip link set can0 type can bitrate 125000 dbitrate 8000000 fd on
+> RTNETLINK answers: Operation not supported
 
-The version of iproute2 suite: 4.5.0 (iproute2-4.5.0)
---->8----
-# ip -V
-ip utility, iproute2-ss160314
----8<----
+Please try:
 
-The kernel version: 4.9.0
+# ip link set can0 type can bitrate 125000 dbitrate 8000000 fd on 
+fd-non-iso on
 
-I have looked on google to try to find a solution, it seems that my kernel configuration is missing something, 
-http://superuser.com/questions/232807/iproute2-not-functioning-rtnetlink-answers-operation-not-supported
+The driver for the M_CAN IP core 3.0.x in the mainline kernel supports a 
+NON_ISO IP core.
 
-According to the document, I enabled the below options based on arch/arm/configs/sama5_defconfig, it still doesn't work.
+This non-iso setting is fixed with this v3.0.x M_CAN and we decided to 
+make this configuration explicit - as all other options run into a mess.
 
---->8----
-CONFIG_IP_ADVANCED_ROUTER=y
-CONFIG_IP_MULTIPLE_TABLES=y
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit?id=bb208f144cf3f59d8f89a09a80efd04389718907
 
-CONFIG_NETFILTER=y
-CONFIG_NETFILTER_NETLINK_QUEUE=y
-CONFIG_NETFILTER_NETLINK_LOG=y
-CONFIG_NF_CONNTRACK=y
-CONFIG_NF_CT_NETLINK=y
-CONFIG_NETFILTER_XTABLES=y
-CONFIG_NETFILTER_XT_TARGET_MARK=y
-CONFIG_NET_SCHED=y
-CONFIG_NET_SCH_INGRESS=y
-CONFIG_NET_CLS_ACT=y
+Did that help?
 
-CONFIG_SCSI_FC_ATTRS=y
----8<----
-
-Any help would be really appreciated.
-
-
-
-Best Regards,
-Wenyou Yang
+Regards,
+Oliver
 
