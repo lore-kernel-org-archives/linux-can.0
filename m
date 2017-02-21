@@ -1,61 +1,89 @@
-From: Mario Kicherer <dev@kicherer.org>
-Subject: Re: [PATCH net-next] can: initial support for network namespaces
-Date: Tue, 21 Feb 2017 12:25:12 +0100
-Message-ID: <2bb24622-4387-f7cd-5c32-363840a69ae5@kicherer.org>
-References: <40df4f6a-8df1-3b76-c0ed-9ba7800c2dc1@kicherer.org>
- <57d4cb90-b96e-27a4-3ac5-66ebb8f1e8f4@hartkopp.net>
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
+Subject: Re: [PATCH 5/5 v2] can: xilinx_can: fix TX FIFO accounting getting
+ out of sync
+Date: Tue, 21 Feb 2017 16:57:15 +0200
+Message-ID: <6b7343be-f1ec-86bc-ef0b-2082e8f5c85d@bitwise.fi>
+References: <0f108f45-396f-f12f-128a-aa44f61fe547@bitwise.fi>
+ <20170213153937.1945-1-anssi.hannula@bitwise.fi>
+ <49191a70-f9d3-6082-0e9a-975ca15fa2d9@pengutronix.de>
+ <6bc632d8-1654-6e95-08ce-76ac6754cb9d@bitwise.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from www.zeus06.de ([194.117.254.36]:50818 "EHLO mail.zeus06.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751629AbdBULZP (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 21 Feb 2017 06:25:15 -0500
-In-Reply-To: <57d4cb90-b96e-27a4-3ac5-66ebb8f1e8f4@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: netdev@vger.kernel.org, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <6bc632d8-1654-6e95-08ce-76ac6754cb9d@bitwise.fi>
+Sender: stable-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Kedareswara rao Appana <appanad@xilinx.com>, stable@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-Hello Oliver,
+On 20.2.2017 12:27, Anssi Hannula wrote:
+> On 20.2.2017 11:42, Marc Kleine-Budde wrote:
+>> On 02/13/2017 04:39 PM, Anssi Hannula wrote:
+>>> The xilinx_can driver assumes that the TXOK interrupt only clears after
+>>> it has been acknowledged as many times as there have been successfully
+>>> sent frames.
+>>>
+>>> However, the documentation does not mention such behavior, instead
+>>> saying just that the interrupt is cleared when the clear bit is set.
+>>>
+>>> Similarly, testing seems to also suggest that it is immediately cleared
+>>> regardless of the amount of frames having been sent. Performing some
+>>> heavy TX load and then going back to idle has the tx_head drifting
+>>> further away from tx_tail over time, steadily reducing the amount of
+>>> frames the driver keeps in the TX FIFO (but not to zero, as the TXOK
+>>> interrupt always frees up space for 1 frame from the driver's
+>>> perspective, so frames continue to be sent) and delaying the local echo
+>>> frames.
+>>>
+>>> The TX FIFO tracking is also otherwise buggy as it does not account for
+>>> TX FIFO being cleared after software resets, causing
+>>>   BUG!, TX FIFO full when queue awake!
+>>> messages to be output.
+>>>
+>>> Since there does not seem to be any way to accurately track the state of
+>>> the TX FIFO, drop the code trying to do that and perform
+>>> netif_stop_queue() based on whether the HW reports the FIFO being full.
+>>> Driver-side local echo support is also removed as it is not possible to
+>>> do accurately (relying instead on the CAN core fallback support).
+>>>
+>>> Tested with the integrated CAN on Zynq-7000 SoC.
+>>>
+>>> v2: Add FIFO space check before TX queue wake with locking to
+>>> synchronize with queue stop. This avoids waking the queue when xmit()
+>>> had just filled it.
+>> Removing the echo on TX-complete should be avoided if possible. Is there
+>> a way to get a indication that an individual package has been send?
+> Looking at the reference manual [1, chapter 18 and appendix B.5] I can't
+> see any. The TX FIFO interrupts and status registers available are TXOK
+> (1 or more messages sent), FIFO empty, FIFO full, FIFO under watermark
+> (watermark not programmable while on-bus). There is no FIFO free space
+> counter that I can see.
+>
+> One way would be to only put a single frame into the FIFO at a time, of
+> course, but at least to me that seems worse than losing echo-on-TX-complete.
 
-I just sent a v2 patch to all the required recipients.
+A correction to my last statement above, we could probably put up to 3
+frames in TX FIFO at a time and still keep track of them using the TX
+FIFO watermark, allowing echo-on-TX-complete to still be supported, with
+something like this:
+if (tx fifo empty)
+   all frames sent;
+else if (tx fifo under watermark 2)
+   all except 1 frame sent;
+else if (txok)
+  1 frame sent; (all except 2)
 
-I do not have a plan yet but virtual CAN links are also of interest to me. However,
-I first wanted to check if this initial patch is acceptable before looking at this
-topic.
+Though 3 is still much less than 64, the current TX FIFO max size.
 
-Best regards,
-Mario
+I'd myself prefer keeping full FIFO over keeping echo-on-TX-complete,
+but not sure what is the general opinion.
 
-On 16.02.2017 14:47, Oliver Hartkopp wrote:
-> Hello Mario,
-> 
-> thanks for your patch.
-> 
-> On 02/16/2017 12:39 PM, Mario Kicherer wrote:
->> This patch adds initial support for network namespaces. The changes only
->> enable support in the CAN raw, proc and af_can code. GW and BCM still
->> have their checks that ensure that they are used only from the main
->> namespace.
->>
->> The patch boils down to moving the global structures, i.e. the global
->> filter list and their /proc stats, into a per-namespace structure and passing
->> around the corresponding "struct net" in a lot of different places.
->>
->> Signed-off-by: Mario Kicherer <dev@kicherer.org>
-> 
-> Although it does not apply on the latest kernel due to this patch:
-> 
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=f1712c73714088a7252d276a57126d56c7d37e64
-> 
-> Please rebase your patch to the latest kernel tree and post it again.
-> 
-> Additionally you should post CAN related stuff to the linux-can ML (see CC) and the CAN maintainers found in the MAINTAINERS file. In this case cross posting to netdev ML is fine as namespaces are very netdev related.
-> 
-> Do you have an idea how to go with namespace aware virtual CAN interfaces to link the namespaces?
-> 
-> Regards,
-> Oliver
-> 
+> [1]
+> https://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
+>
+>
+
+-- 
+Anssi Hannula / Bitwise Oy
++358503803997
