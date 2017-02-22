@@ -1,28 +1,52 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Subject: =?UTF-8?B?UmU6IGJ1ZyBpbiBEVCBkb2NzIHZzIG1jcDI1MXguYyBkcml2ZXI=?=
-Date: Wed, 22 Feb 2017 08:53:19 +0300
-Message-ID: <1487742799.631389473@f418.i.mail.ru>
+From: =?UTF-8?Q?Janusz_U=c5=bcycki?= <j.uzycki@elpromaelectronics.com>
+Subject: Re: bug in DT docs vs mcp251x.c driver
+Date: Wed, 22 Feb 2017 08:58:43 +0100
+Message-ID: <d56accc5-67a8-e474-f1df-f23d4d02d50b@elpromaelectronics.com>
 References: <1d36bb5b-b46a-8e9a-672b-907cac5c5ab4@elpromaelectronics.com>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ <CAOMZO5BCcQYNr6qV0qhmRGTBm030kNWyErO66_HOD0A5huYM3A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from fallback2.mail.ru ([94.100.179.22]:51887 "EHLO
-        fallback2.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751192AbdBVGpb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 22 Feb 2017 01:45:31 -0500
-In-Reply-To: <1d36bb5b-b46a-8e9a-672b-907cac5c5ab4@elpromaelectronics.com>
+Received: from cloudserver032797.home.net.pl ([89.161.177.31]:58459 "EHLO
+        cloudserver032797.home.net.pl" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1753309AbdBVH6r (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 22 Feb 2017 02:58:47 -0500
+In-Reply-To: <CAOMZO5BCcQYNr6qV0qhmRGTBm030kNWyErO66_HOD0A5huYM3A@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?B?SmFudXN6IFXFvHlja2k=?= <j.uzycki@elpromaelectronics.com>
-Cc: =?UTF-8?B?T2xpdmVyIEhhcnRrb3Bw?= <socketcan@hartkopp.net>, linux-can@vger.kernel.org, =?UTF-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>, =?UTF-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?= <wg@grandegger.com>, =?UTF-8?B?ZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc=?= <devicetree@vger.kernel.org>, =?UTF-8?B?bC5kYWxlayBlbHByb21hZWxlY3Ryb25pY3MuY29t?= <l.dalek@elpromaelectronics.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Alexander Shiyan <shc_work@mail.ru>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "l.dalek elpromaelectronics.com" <l.dalek@elpromaelectronics.com>
 
-PtCS0YLQvtGA0L3QuNC6LCAyMSDRhNC10LLRgNCw0LvRjyAyMDE3LCAyMTowOCArMDM6MDAg0L7R
-giBKYW51c3ogVcW8eWNraSA8ai51enlja2lAZWxwcm9tYWVsZWN0cm9uaWNzLmNvbT46Cgo+V2Un
-dmUgbm90aWNlZCB0aGUgaW5jb25zaXN0ZW5jeSBpbiBEVCB3aGljaCBzdGlsbCBleGlzdCBpbiBr
-ZXJuZWwgdjQuMTA6Cj4KPmRldm1fcmVndWxhdG9yX2dldCgmc3BpLT5kZXYsICJ2ZGQiKSBpbiBk
-cml2ZXJzL25ldC9jYW4vbWNwMjUxeC5jCj4KPnZzIHZkZC1zdXBwbHk6IFJlZ3VsYXRvciB0aGF0
-IHBvd2VycyB0aGUgQ0FOIGNvbnRyb2xsZXIuIGluCj5iaW5kaW5ncy9uZXQvY2FuL21pY3JvY2hp
-cCxtY3AyNTF4LnR4dAoKSSBkbyBub3Qgc2VlIHRoZSBidWcgaGVyZSwgY291bGQgeW91IGNsYXJp
-Znk/CgotLS0K
+Hi Fabio.
+
+You are right. Thanks.
+According to the source code printf adds the "-supply" indeed.
+I've not verified the code as I got a report for 3.14 that the driver
+does not work with vdd-supply in DT, works with vdd property
+and the supply was verified electrically.
+Now I have to investigate the problem better.
+
+best regards
+
+Janusz
+
+
+W dniu 2017-02-21 o 19:47, Fabio Estevam pisze:
+> Hi Janusz,
+>
+> On Tue, Feb 21, 2017 at 3:08 PM, Janusz Użycki
+> <j.uzycki@elpromaelectronics.com> wrote:
+>> Hi,
+>>
+>> We've noticed the inconsistency in DT which still exist in kernel v4.10:
+>>
+>> devm_regulator_get(&spi->dev, "vdd") in drivers/net/can/mcp251x.c
+>>
+>> vs vdd-supply: Regulator that powers the CAN controller. in
+>> bindings/net/can/microchip,mcp251x.txt
+> This is correct.
+>
+> When the regulator is retrieved as devm_regulator_get(dev, "xyz") then
+> it searches for a xyz-supply in the dts.
+
