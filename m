@@ -1,85 +1,126 @@
-From: Mirza Krak <mirza.krak@hostmobility.com>
-Subject: Re: socketcan support for kvaser pciecan 4xhs?
-Date: Fri, 24 Feb 2017 15:19:59 +0100
-Message-ID: <CAJ=nTsuLqmp36BLMVECnn531WbYoLEqETdF4zn5togK49EED2Q@mail.gmail.com>
-References: <CACAQXeKHkkx6JD3eEY=bS7g+RXq8xeyNs9RZ8da0OAa4E+O7ew@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Ethan Zonca <e@ethanzonca.com>
+Subject: [PATCH] gs_usb driver was performing USB transfers using buffers allocated on the stack
+Date: Fri, 24 Feb 2017 11:27:36 -0500
+Message-ID: <20170224162736.14688-1-e@ethanzonca.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf0-f54.google.com ([209.85.215.54]:35968 "EHLO
-        mail-lf0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751115AbdBXOUB (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Feb 2017 09:20:01 -0500
-Received: by mail-lf0-f54.google.com with SMTP id b80so9359015lfe.3
-        for <linux-can@vger.kernel.org>; Fri, 24 Feb 2017 06:20:00 -0800 (PST)
-In-Reply-To: <CACAQXeKHkkx6JD3eEY=bS7g+RXq8xeyNs9RZ8da0OAa4E+O7ew@mail.gmail.com>
+Received: from mail-it0-f67.google.com ([209.85.214.67]:36018 "EHLO
+        mail-it0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751163AbdBXQ1w (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Feb 2017 11:27:52 -0500
+Received: by mail-it0-f67.google.com with SMTP id w185so4396273ita.3
+        for <linux-can@vger.kernel.org>; Fri, 24 Feb 2017 08:27:52 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Rorex <drorex@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: Ethan Zonca <e@ethanzonca.com>
 
-2017-02-24 2:46 GMT+01:00 David Rorex <drorex@gmail.com>:
-> Hello,
->
-> I have one of these cards: https://www.kvaser.com/product/kvaser-pciecan-=
-4xhs/
-> and I am wondering if the kvaser_pci module supports it under linux. I
-> have had good results using the kvaser_usb module and a Kvaser Leaf
-> Light HS v2 usb adapter, but with the pcie card after I modprobe
-> kvaser_pci all I see is this in dmesg:
->
-> [100210.826630] CAN device driver interface
-> [100210.837062] sja1000 CAN netdevice driver
->
-> And no can0 etc interfaces get created.
->
-> Looking at the spec sheet for the device:
-> http://canlandbucket.s3-website-eu-west-1.amazonaws.com/productionResourc=
-esFiles/94452d98-248a-4618-8f75-04c016cc62d6/KVASER_PCIECAN_4XHS_A4_WEB.pdf
-> It says "Implements Kvaser=E2=80=99s CAN IP in an FPGA, resulting in high=
- max
-> message rate." so I am wondering if perhaps it does not use the same
-> sja1000 chip as the other pci cards and thus might not be supported by
-> the driver?
+This causes the driver to not function with vmapped stacks. Instead, allocate memory for the transfer buffers.
 
-The product sheet states that PCIECAN 4XHS supports CAN FD so it is
-safe to assume that it does not use a SJA1000 chip, or something that
-is compatible.
+Signed-off-by: Ethan Zonca <e@ethanzonca.com>
+---
+ drivers/net/can/usb/gs_usb.c | 35 ++++++++++++++++++++++++-----------
+ 1 file changed, 24 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 77e3cc06a30c..3f064f5a8633 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -908,10 +908,13 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 	struct gs_usb *dev;
+ 	int rc = -ENOMEM;
+ 	unsigned int icount, i;
+-	struct gs_host_config hconf = {
+-		.byte_order = 0x0000beef,
+-	};
+-	struct gs_device_config dconf;
++	struct gs_host_config *hconf;
++	struct gs_device_config *dconf;
++
++	hconf = kmalloc(sizeof(*hconf), GFP_KERNEL);
++	hconf->byte_order = 0x0000beef;
++
++	dconf = kmalloc(sizeof(*dconf), GFP_KERNEL);
+ 
+ 	/* send host config */
+ 	rc = usb_control_msg(interface_to_usbdev(intf),
+@@ -920,10 +923,12 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 			     USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
+ 			     1,
+ 			     intf->altsetting[0].desc.bInterfaceNumber,
+-			     &hconf,
+-			     sizeof(hconf),
++			     hconf,
++			     sizeof(*hconf),
+ 			     1000);
+ 
++	kfree(hconf);
++
+ 	if (rc < 0) {
+ 		dev_err(&intf->dev, "Couldn't send data format (err=%d)\n",
+ 			rc);
+@@ -937,28 +942,33 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 			     USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
+ 			     1,
+ 			     intf->altsetting[0].desc.bInterfaceNumber,
+-			     &dconf,
+-			     sizeof(dconf),
++			     dconf,
++			     sizeof(*dconf),
+ 			     1000);
+ 	if (rc < 0) {
+ 		dev_err(&intf->dev, "Couldn't get device config: (err=%d)\n",
+ 			rc);
++		kfree(dconf);
+ 		return rc;
+ 	}
+ 
+-	icount = dconf.icount + 1;
++	icount = dconf->icount + 1;
+ 	dev_info(&intf->dev, "Configuring for %d interfaces\n", icount);
+ 
+ 	if (icount > GS_MAX_INTF) {
+ 		dev_err(&intf->dev,
+ 			"Driver cannot handle more that %d CAN interfaces\n",
+ 			GS_MAX_INTF);
++		kfree(dconf);
+ 		return -EINVAL;
+ 	}
+ 
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+-	if (!dev)
++	if (!dev) {
++		kfree(dconf);
+ 		return -ENOMEM;
++	}
++
+ 	init_usb_anchor(&dev->rx_submitted);
+ 
+ 	atomic_set(&dev->active_channels, 0);
+@@ -967,7 +977,7 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 	dev->udev = interface_to_usbdev(intf);
+ 
+ 	for (i = 0; i < icount; i++) {
+-		dev->canch[i] = gs_make_candev(i, intf, &dconf);
++		dev->canch[i] = gs_make_candev(i, intf, dconf);
+ 		if (IS_ERR_OR_NULL(dev->canch[i])) {
+ 			/* save error code to return later */
+ 			rc = PTR_ERR(dev->canch[i]);
+@@ -978,12 +988,15 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 				gs_destroy_candev(dev->canch[i]);
+ 
+ 			usb_kill_anchored_urbs(&dev->rx_submitted);
++			kfree(dconf);
+ 			kfree(dev);
+ 			return rc;
+ 		}
+ 		dev->canch[i]->parent = dev;
+ 	}
+ 
++	kfree(dconf);
++
+ 	return 0;
+ }
+ 
+-- 
+2.11.1
 
-> 04:00.0 CANBUS: Kvaser AB Device 000d (rev 01)
->         Subsystem: Kvaser AB Device 000d
->         Flags: bus master, fast devsel, latency 0, IRQ 19
->         Memory at f7d00000 (32-bit, non-prefetchable) [size=3D128K]
->         Capabilities: [50] MSI: Enable- Count=3D1/1 Maskable- 64bit+
->         Capabilities: [78] Power Management version 3
->         Capabilities: [80] Express Endpoint, MSI 00
->         Capabilities: [100] Virtual Channel
-
-Looking in kvaser_pci.c, above device ID is not represented in the
-"supported" list. It only has two devices in the list:
-
-#define KVASER_PCI_VENDOR_ID1     0x10e8    /* the PCI device and vendor ID=
-s */
-#define KVASER_PCI_DEVICE_ID1     0x8406
-
-#define KVASER_PCI_VENDOR_ID2     0x1a07    /* the PCI device and vendor ID=
-s */
-#define KVASER_PCI_DEVICE_ID2     0x0008
-
---=20
-Med V=C3=A4nliga H=C3=A4lsningar / Best Regards
-
-*******************************************************************
-Mirza Krak
-Host Mobility AB
-mirza.krak@hostmobility.com
-Anders Personsgatan 12, 416 64 G=C3=B6teborg
-Sweden
-http://www.hostmobility.com
-Direct: +46 31 31 32 704
-Phone: +46 31 31 32 700
-Fax: +46 31 80 67 51
-Mobile: +46 730 28 06 22
-*******************************************************************
