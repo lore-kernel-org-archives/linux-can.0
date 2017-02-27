@@ -1,77 +1,84 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] The gs_usb driver was performing USB transfers with
- buffers allocated on the stack. This causes the driver to not function with
- vmapped stacks.
-Date: Fri, 24 Feb 2017 17:03:41 +0100
-Message-ID: <a7a75930-46ac-3eeb-6238-1138d84ecb0a@pengutronix.de>
-References: <20170224160034.13338-1-e@ethanzonca.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v5 2/3] can: ti_hecc: Add TI HECC DT binding documentation
+Date: Mon, 27 Feb 2017 10:44:52 -0600
+Message-ID: <20170227164452.3y3ilfxcb2s5ltnt@rob-hp-laptop>
+References: <1487346753-19286-1-git-send-email-yegorslists@googlemail.com>
+ <1487346753-19286-3-git-send-email-yegorslists@googlemail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="ENxTEoS4NW1o64tpRfcHbD6HJIigHiGbO"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:59437 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751334AbdBXQlz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Feb 2017 11:41:55 -0500
-In-Reply-To: <20170224160034.13338-1-e@ethanzonca.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Ethan Zonca <e@ethanzonca.com>, wg@grandegger.com, linux-can <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1487346753-19286-3-git-send-email-yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, andrej.skvortzov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Anton Glukhov <anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ENxTEoS4NW1o64tpRfcHbD6HJIigHiGbO
-Content-Type: multipart/mixed; boundary="oDvpTRQWna2Tmnd27tlqxsMJSd1EjlKOH";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ethan Zonca <e@ethanzonca.com>, wg@grandegger.com,
- linux-can <linux-can@vger.kernel.org>
-Message-ID: <a7a75930-46ac-3eeb-6238-1138d84ecb0a@pengutronix.de>
-Subject: Re: [PATCH] The gs_usb driver was performing USB transfers with
- buffers allocated on the stack. This causes the driver to not function with
- vmapped stacks.
-References: <20170224160034.13338-1-e@ethanzonca.com>
-In-Reply-To: <20170224160034.13338-1-e@ethanzonca.com>
+On Fri, Feb 17, 2017 at 04:52:32PM +0100, yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org wrote:
+> From: Yegor Yefremov <yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+> 
+> DT binding documentation for TI High End CAN Controller
+> 
+> Signed-off-by: Anton Glukhov <anton.a.glukhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Signed-off-by: Yegor Yefremov <yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+> ---
+>  .../devicetree/bindings/net/can/ti_hecc.txt        | 33 ++++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/net/can/ti_hecc.txt b/Documentation/devicetree/bindings/net/can/ti_hecc.txt
+> new file mode 100644
+> index 0000000..a7c601e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/ti_hecc.txt
+> @@ -0,0 +1,33 @@
+> +Texas Instruments High End CAN Controller (HECC)
+> +================================================
+> +
+> +This file provides information, what the device node
+> +for the hecc interface contains.
+> +
+> +Required properties:
+> +- compatible: "ti,am3517-hecc"
+> +- reg: addresses and lengths of the register spaces for 'hecc', 'hecc-ram'
+> +       and 'mbx'
+> +- reg-names :"hecc", "hecc-ram", "mbx"
+> +- interrupts: interrupt mapping for the hecc interrupts sources
+> +- clocks: clock phandles (see clock bindings for details)
+> +
+> +Optional properties:
+> +- ti,use-hecc1int: if provided configures HECC to produce all interrupts
+> +		   on HECC1INT interrupt line. By default HECC0INT interrupt
+> +		   line will be used.
+> +- xceiver-supply: regulator that powers the CAN transceiver
+> +
+> +Example:
+> +
+> +For am3517evm board:
+> +	hecc: can@0x5c050000 {
 
---oDvpTRQWna2Tmnd27tlqxsMJSd1EjlKOH
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Drop the '0x'.
 
-On 02/24/2017 05:00 PM, Ethan Zonca wrote:
-> Instead, allocate memory for the transfer buffers.
->=20
-> Also fix minor style issues: spaces between bitwise OR operators and de=
-claration of bare unsigned variable.
+> +		compatible = "ti,am3517-hecc";
+> +		status = "disabled";
 
-Can you please make that three separate patches. Please send them to the
-linux-can mailinglist (Cc'ed).
+No need to put status in examples.
 
-Marc
+With that,
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
-
---oDvpTRQWna2Tmnd27tlqxsMJSd1EjlKOH--
-
---ENxTEoS4NW1o64tpRfcHbD6HJIigHiGbO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAliwWV0ACgkQHv7KIOw4
-HPbqPggA0v0NiEnGSNYJRbNdpoqy604uRa1GlqsPPgCYh8yyTFY6hxT7/PjRIbIO
-IfdIfgL5dNPwNOxnV0NXk+tJ27cjff98asdzA/3Ogh96Sq5YmtyOMA4xfhMsUZv0
-Q7fXYm6gcYaUo07YIFOQQ7Qqp/MQfZlyvlKAYgp1vR50Dx68lbu0TQfyUjbBp7+/
-Pr0EV9ZW/Oz9Js3yG0vRI9QCrus6GmPyFzzdLVUOXHWo1DszN0ye+JdO4Lf0Xnj1
-m0FUdLNOL1kC0Ke6yyQPxeurBPd4C7lRDoJdEug7VOAWoxcjG4yClh6EH5X3Bt7C
-n5+ZmZMOocFt8GPdW48F1WygoW1S6A==
-=zVlt
------END PGP SIGNATURE-----
-
---ENxTEoS4NW1o64tpRfcHbD6HJIigHiGbO--
+> +		reg = <0x5c050000 0x80>,
+> +		      <0x5c053000 0x180>,
+> +		      <0x5c052000 0x200>;
+> +		reg-names = "hecc", "hecc-ram", "mbx";
+> +		interrupts = <24>;
+> +		clocks = <&hecc_ck>;
+> +	};
+> -- 
+> 2.1.4
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
