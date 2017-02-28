@@ -1,111 +1,73 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v5 2/3] can: ti_hecc: Add TI HECC DT binding documentation
-Date: Tue, 28 Feb 2017 09:04:21 +0100
-Message-ID: <215a254c-610d-24c1-0bd0-b047f3ebf063@pengutronix.de>
-References: <1487346753-19286-1-git-send-email-yegorslists@googlemail.com>
- <1487346753-19286-3-git-send-email-yegorslists@googlemail.com>
- <20170227164452.3y3ilfxcb2s5ltnt@rob-hp-laptop>
+Subject: Re: [PATCH] gs_usb driver was performing USB transfers using buffers
+ allocated on the stack
+Date: Tue, 28 Feb 2017 09:28:34 +0100
+Message-ID: <4b7aec09-87c8-2141-a452-9479a7c8743d@pengutronix.de>
+References: <20170224162736.14688-1-e@ethanzonca.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="XQ8cR5WVcdstb697diix8dNMc72cXi2rB"
+ boundary="gvxw72qF7tBtVbPPAgUPGwaeniSORPxOA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:51081 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:49355 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1750957AbdB1J3c (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Feb 2017 04:29:32 -0500
-In-Reply-To: <20170227164452.3y3ilfxcb2s5ltnt@rob-hp-laptop>
+        by vger.kernel.org with ESMTP id S1751677AbdB1Jr4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Feb 2017 04:47:56 -0500
+In-Reply-To: <20170224162736.14688-1-e@ethanzonca.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Rob Herring <robh@kernel.org>, yegorslists@googlemail.com
-Cc: linux-can@vger.kernel.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, tony@atomide.com, andrej.skvortzov@gmail.com, Anton Glukhov <anton.a.glukhov@gmail.com>
+To: Ethan Zonca <e@ethanzonca.com>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XQ8cR5WVcdstb697diix8dNMc72cXi2rB
-Content-Type: multipart/mixed; boundary="BFePjH2wbDMRaUaDKLOAaj00w3cV77u6b";
+--gvxw72qF7tBtVbPPAgUPGwaeniSORPxOA
+Content-Type: multipart/mixed; boundary="aBEIrhIfkgGX7FiGdGuCDhKWRJOcW9lrD";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Rob Herring <robh@kernel.org>, yegorslists@googlemail.com
-Cc: linux-can@vger.kernel.org, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, tony@atomide.com, andrej.skvortzov@gmail.com,
- Anton Glukhov <anton.a.glukhov@gmail.com>
-Message-ID: <215a254c-610d-24c1-0bd0-b047f3ebf063@pengutronix.de>
-Subject: Re: [PATCH v5 2/3] can: ti_hecc: Add TI HECC DT binding documentation
-References: <1487346753-19286-1-git-send-email-yegorslists@googlemail.com>
- <1487346753-19286-3-git-send-email-yegorslists@googlemail.com>
- <20170227164452.3y3ilfxcb2s5ltnt@rob-hp-laptop>
-In-Reply-To: <20170227164452.3y3ilfxcb2s5ltnt@rob-hp-laptop>
+To: Ethan Zonca <e@ethanzonca.com>, linux-can@vger.kernel.org
+Message-ID: <4b7aec09-87c8-2141-a452-9479a7c8743d@pengutronix.de>
+Subject: Re: [PATCH] gs_usb driver was performing USB transfers using buffers
+ allocated on the stack
+References: <20170224162736.14688-1-e@ethanzonca.com>
+In-Reply-To: <20170224162736.14688-1-e@ethanzonca.com>
 
---BFePjH2wbDMRaUaDKLOAaj00w3cV77u6b
+--aBEIrhIfkgGX7FiGdGuCDhKWRJOcW9lrD
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 02/27/2017 05:44 PM, Rob Herring wrote:
-> On Fri, Feb 17, 2017 at 04:52:32PM +0100, yegorslists@googlemail.com wr=
-ote:
->> From: Yegor Yefremov <yegorslists@googlemail.com>
->>
->> DT binding documentation for TI High End CAN Controller
->>
->> Signed-off-by: Anton Glukhov <anton.a.glukhov@gmail.com>
->> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
->> ---
->>  .../devicetree/bindings/net/can/ti_hecc.txt        | 33 +++++++++++++=
-+++++++++
->>  1 file changed, 33 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc.=
-txt
->>
->> diff --git a/Documentation/devicetree/bindings/net/can/ti_hecc.txt b/D=
-ocumentation/devicetree/bindings/net/can/ti_hecc.txt
->> new file mode 100644
->> index 0000000..a7c601e
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/net/can/ti_hecc.txt
->> @@ -0,0 +1,33 @@
->> +Texas Instruments High End CAN Controller (HECC)
->> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+On 02/24/2017 05:27 PM, Ethan Zonca wrote:
+> This causes the driver to not function with vmapped stacks. Instead, al=
+locate memory for the transfer buffers.
+>=20
+> Signed-off-by: Ethan Zonca <e@ethanzonca.com>
+> ---
+>  drivers/net/can/usb/gs_usb.c | 35 ++++++++++++++++++++++++-----------
+>  1 file changed, 24 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.=
+c
+> index 77e3cc06a30c..3f064f5a8633 100644
+> --- a/drivers/net/can/usb/gs_usb.c
+> +++ b/drivers/net/can/usb/gs_usb.c
+> @@ -908,10 +908,13 @@ static int gs_usb_probe(struct usb_interface *int=
+f,
+>  	struct gs_usb *dev;
+>  	int rc =3D -ENOMEM;
+>  	unsigned int icount, i;
+> -	struct gs_host_config hconf =3D {
+> -		.byte_order =3D 0x0000beef,
+> -	};
+> -	struct gs_device_config dconf;
+> +	struct gs_host_config *hconf;
+> +	struct gs_device_config *dconf;
+> +
+> +	hconf =3D kmalloc(sizeof(*hconf), GFP_KERNEL);
+> +	hconf->byte_order =3D 0x0000beef;
+> +
+> +	dconf =3D kmalloc(sizeof(*dconf), GFP_KERNEL);
 
->> +
->> +This file provides information, what the device node
->> +for the hecc interface contains.
->> +
->> +Required properties:
->> +- compatible: "ti,am3517-hecc"
->> +- reg: addresses and lengths of the register spaces for 'hecc', 'hecc=
--ram'
->> +       and 'mbx'
->> +- reg-names :"hecc", "hecc-ram", "mbx"
->> +- interrupts: interrupt mapping for the hecc interrupts sources
->> +- clocks: clock phandles (see clock bindings for details)
->> +
->> +Optional properties:
->> +- ti,use-hecc1int: if provided configures HECC to produce all interru=
-pts
->> +		   on HECC1INT interrupt line. By default HECC0INT interrupt
->> +		   line will be used.
->> +- xceiver-supply: regulator that powers the CAN transceiver
->> +
->> +Example:
->> +
->> +For am3517evm board:
->> +	hecc: can@0x5c050000 {
->=20
-> Drop the '0x'.
->=20
->> +		compatible =3D "ti,am3517-hecc";
->> +		status =3D "disabled";
->=20
-> No need to put status in examples.
->=20
-> With that,
->=20
-> Acked-by: Rob Herring <robh@kernel.org>
+I've added error checking here. Otherwise OK. Applied to can.
 
-I've updated the patch.
-
-tnx,
+Thanks,
 Marc
 
 --=20
@@ -115,23 +77,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---BFePjH2wbDMRaUaDKLOAaj00w3cV77u6b--
+--aBEIrhIfkgGX7FiGdGuCDhKWRJOcW9lrD--
 
---XQ8cR5WVcdstb697diix8dNMc72cXi2rB
+--gvxw72qF7tBtVbPPAgUPGwaeniSORPxOA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAli1LwUACgkQHv7KIOw4
-HPYgnQf/Tm7qMxPAJitc/S+IPYloe0lQPB722S9ukm3AJJKYhDoR6NUgp+2LuFBw
-M0uUR3+XzpTXaSJIV2c1jTnMAFUCSMGa79euMWaA0WeWFRcyzNPj62KpjIFruD89
-OhSaBICcPPM5c2g21DH8K0iZ94VQ4RyBS3BpPGnC4OYemoT6uw/dZO8wieqlcAh6
-dM1t79SzmUlObdB4+FyzNS/113LAiGeZ+jGD39aC4eME7OkIq9mAFQggc1USQKDB
-NNSXgVuS8cR6ixszFjove4aUeRRkkAZnsUqvxs6IZ7IGEDcfJFHhAwNIuoQyKUja
-rXgyQvfyDxhyxfrULf3cS3qsM0lfjQ==
-=ed/T
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAli1NLIACgkQHv7KIOw4
+HPawMQf+MGYr9hB3L34qqTdVGmzzzQD0FL7Ca3gqKx2NfmW9TiwFJ+Xwcu8FEemm
+0Yvs/2f2PYVqdoiqShSxX/jHhlUY6baL2V4yIcVlRXLwSrY2NXA2Tn1zGcC+fU4/
+7yIQyYJHdn9ujm4C+iow+f1VwX6ZDvkGnc1oNBK6Ev4FkWtxU+oXY6vLhfbo8Uca
+uftqYT3qLLakEFbW9fIXykaAFOKeoSCngZqVxVJfI1qZxcMGmbw8NJAF43Y8Mg5R
+KKYDLthtG1z78ZZKN5qrAAMD3mvdGbyR9fa12LJirw7veYEV3T5YXkfaUW92FQNC
+lOiAuEDAYnqBaytWKb3DU8rS0LAMIQ==
+=wOJe
 -----END PGP SIGNATURE-----
 
---XQ8cR5WVcdstb697diix8dNMc72cXi2rB--
+--gvxw72qF7tBtVbPPAgUPGwaeniSORPxOA--
