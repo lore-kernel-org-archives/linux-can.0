@@ -1,102 +1,96 @@
-From: Wenyou Yang <wenyou.yang@atmel.com>
-Subject: [PATCH] can: m_can: support transmit frame in CAN FD format
-Date: Fri, 3 Mar 2017 13:33:31 +0800
-Message-ID: <20170303053331.20883-1-wenyou.yang@atmel.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: FlexCAN on imx28
+Date: Fri, 3 Mar 2017 12:23:10 +0100
+Message-ID: <31bc327a-a900-c5fa-67fc-08a93134e753@pengutronix.de>
+References: <1488465746.18098.13.camel@serenergy.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Florian Fainelli <f.fainelli@gmail.com>, Quentin Schulz <quentin.schulz@free-electrons.com>, Wenyou Yang <wenyou.yang@microchip.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Wenyou Yang <wenyou.yang@atmel.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="LFxDUh7nKknACJ726Lb9CRXiG5bTUcd4I"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:35459 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751333AbdCCLXn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 3 Mar 2017 06:23:43 -0500
+In-Reply-To: <1488465746.18098.13.camel@serenergy.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Steffen Malmgaard Mortensen <smm@serenergy.com>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-Add support to transmit the frame in the CAN FD format and with
-the bit rate switching.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--LFxDUh7nKknACJ726Lb9CRXiG5bTUcd4I
+Content-Type: multipart/mixed; boundary="hBbfLQggDkCgc2ilFlVvxn0uDjGxUDh4L";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Steffen Malmgaard Mortensen <smm@serenergy.com>
+Cc: linux-can <linux-can@vger.kernel.org>
+Message-ID: <31bc327a-a900-c5fa-67fc-08a93134e753@pengutronix.de>
+Subject: Re: FlexCAN on imx28
+References: <1488465746.18098.13.camel@serenergy.com>
+In-Reply-To: <1488465746.18098.13.camel@serenergy.com>
 
-Tested on SAMA5D2 Xplained board.
+--hBbfLQggDkCgc2ilFlVvxn0uDjGxUDh4L
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
----
-The testing is based on
-[RESEND PATCH 1/1] can: m_can: fix bitrate setup on latest silicon
-http://lkml.iu.edu/hypermail/linux/kernel/1702.1/05347.html
+Hallo Steffen,
 
- drivers/net/can/m_can/m_can.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+I'm adding the linux-can ML on Cc, as the answer is of potential common
+interest.
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 195f15edb32e..9ef9b337d25b 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -266,8 +266,12 @@ enum m_can_mram_cfg {
- 
- /* Tx Buffer Element */
- /* R0 */
-+#define TX_BUF_ESI		BIT(31)
- #define TX_BUF_XTD		BIT(30)
- #define TX_BUF_RTR		BIT(29)
-+#define TX_BUF_EFC		BIT(23)
-+#define TX_BUF_EDL		BIT(21)
-+#define TX_BUF_BRS		BIT(20)
- 
- /* address offset and element number for each FIFO/Buffer in the Message RAM */
- struct mram_cfg {
-@@ -884,7 +888,7 @@ static void m_can_chip_config(struct net_device *dev)
- 	}
- 
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
--		cccr |= CCCR_CME_CANFD_BRS << CCCR_CME_SHIFT;
-+		cccr |= (CCCR_CME_CANFD_BRS | CCCR_CME_CANFD) << CCCR_CME_SHIFT;
- 
- 	m_can_write(priv, M_CAN_CCCR, cccr);
- 	m_can_write(priv, M_CAN_TEST, test);
-@@ -1047,6 +1051,7 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
- 	u32 id, cccr;
- 	int i;
-+	u32 dlc;
- 
- 	if (can_dropped_invalid_skb(dev, skb))
- 		return NETDEV_TX_OK;
-@@ -1065,7 +1070,6 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 
- 	/* message ram configuration */
- 	m_can_fifo_write(priv, 0, M_CAN_FIFO_ID, id);
--	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, can_len2dlc(cf->len) << 16);
- 
- 	for (i = 0; i < cf->len; i += 4)
- 		m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4),
-@@ -1073,20 +1077,29 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 
- 	can_put_echo_skb(skb, dev, 0);
- 
-+	dlc = can_len2dlc(cf->len) << 16;
-+
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
- 		cccr = m_can_read(priv, M_CAN_CCCR);
- 		cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
- 		if (can_is_canfd_skb(skb)) {
--			if (cf->flags & CANFD_BRS)
-+			dlc |= TX_BUF_EDL;
-+			if (cf->flags & CANFD_ESI)
-+				dlc |= TX_BUF_ESI;
-+			if (cf->flags & CANFD_BRS) {
-+				dlc |= TX_BUF_BRS;
- 				cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
--			else
-+			} else {
- 				cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
-+			}
- 		} else {
- 			cccr |= CCCR_CMR_CAN << CCCR_CMR_SHIFT;
- 		}
- 		m_can_write(priv, M_CAN_CCCR, cccr);
- 	}
- 
-+	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, dlc);
-+
- 	/* enable first TX buffer to start transfer  */
- 	m_can_write(priv, M_CAN_TXBTIE, 0x1);
- 	m_can_write(priv, M_CAN_TXBAR, 0x1);
--- 
-2.11.0
+On 03/02/2017 03:42 PM, Steffen Malmgaard Mortensen wrote:
+> I have been experiencing problems with CAN package loss under high bus
+> load at high bit rates using an imx28. During my search for a solution,=
+
+> I fell upon your flexcan-maxmb branch on the linux-can-next git tree. A=
+s
+> you are the author, I turn to you for a bit of advice. What is the
+> current state of the code?
+
+The current code is available as the tag
+"linux-can-next-for-4.11-20170206" and has already been merged to
+net-next. This means it will be included in the upcoming v4.11 release.
+
+> Is it tested on imx28, or only newer SOCs?
+
+Yes.
+
+> What are the plans for merging to linux-fslc or other upstream trees?
+
+It's already upstream \o/
+
+Regarding any freescale/nxp/... vendor trees I have personally no
+interest of merging the driver there. Feel free to contact me if you
+need commercial support, though.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--hBbfLQggDkCgc2ilFlVvxn0uDjGxUDh4L--
+
+--LFxDUh7nKknACJ726Lb9CRXiG5bTUcd4I
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAli5Uh4ACgkQHv7KIOw4
+HPZ07wgAgmUSPprAlQmZNRoJsls99tAPEjpyspD9ZrzbiKy9735kampVbNAIHybe
+ISbErIFe4wZ3DkbOch6Ehr9oovQEeuT8Wj77eaZigSLP8pwjt4H7fhbNwl2mTO5D
+1SCbSKXKeYdVIuNOoyHp4Il7TZnNFtVgHA0mQVVVhzbPlwODUYQb2YQExnZlTs4i
+TTXJXndO7aLyVBaTRmWQd6HkFQzfRqbpr2z0/WnNxV0PtNbbRJFoJI41YfzTByi7
+I5aQyMSuevkZAoLpLxFTGlnqZ5vcwIc6SWvyZhqGf9tJe/J1vb5t0AyOGl6nMsvJ
+qIA60tSJJcHUMbpSrS6D9XUN4t9vBQ==
+=3432
+-----END PGP SIGNATURE-----
+
+--LFxDUh7nKknACJ726Lb9CRXiG5bTUcd4I--
