@@ -1,140 +1,58 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 1/4] can: gs_usb: Don't use stack memory for USB transfers
-Date: Fri,  3 Mar 2017 14:55:32 +0100
-Message-ID: <20170303135535.22937-2-mkl@pengutronix.de>
-References: <20170303135535.22937-1-mkl@pengutronix.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20170303135535.22937-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Subject: pull-request: can 2017-03-03
+Date: Fri,  3 Mar 2017 14:55:31 +0100
+Message-ID: <20170303135535.22937-1-mkl@pengutronix.de>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:35659 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751610AbdCCN4K (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 3 Mar 2017 08:56:10 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Ethan Zonca <e@ethanzonca.com>, "linux-stable # = v4 . 8" <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-From: Ethan Zonca <e@ethanzonca.com>
+Hello David,
 
-Fixes: 05ca5270005c can: gs_usb: add ethtool set_phys_id callback to locate physical device
+this is a pull request for the upcoming v4.11 release.
 
-The gs_usb driver is performing USB transfers using buffers allocated on
-the stack. This causes the driver to not function with vmapped stacks.
-Instead, allocate memory for the transfer buffers.
+There are two patches by Ethan Zonca for the gs_usb driver, the first one fixes
+the memory used for USB transfers, the second one the coding style.
 
-Signed-off-by: Ethan Zonca <e@ethanzonca.com>
-Cc: linux-stable <stable@vger.kernel.org> # >= v4.8
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The last two patches are by me, one fixing a memory leak in the usb_8dev driver
+the other a typo in the flexcan driver.
+
+regards,
+Marc
+
 ---
- drivers/net/can/usb/gs_usb.c | 40 +++++++++++++++++++++++++++++-----------
- 1 file changed, 29 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 77e3cc06a30c..a0dabd4038ba 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -908,10 +908,14 @@ static int gs_usb_probe(struct usb_interface *intf,
- 	struct gs_usb *dev;
- 	int rc = -ENOMEM;
- 	unsigned int icount, i;
--	struct gs_host_config hconf = {
--		.byte_order = 0x0000beef,
--	};
--	struct gs_device_config dconf;
-+	struct gs_host_config *hconf;
-+	struct gs_device_config *dconf;
-+
-+	hconf = kmalloc(sizeof(*hconf), GFP_KERNEL);
-+	if (!hconf)
-+		return -ENOMEM;
-+
-+	hconf->byte_order = 0x0000beef;
- 
- 	/* send host config */
- 	rc = usb_control_msg(interface_to_usbdev(intf),
-@@ -920,16 +924,22 @@ static int gs_usb_probe(struct usb_interface *intf,
- 			     USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
- 			     1,
- 			     intf->altsetting[0].desc.bInterfaceNumber,
--			     &hconf,
--			     sizeof(hconf),
-+			     hconf,
-+			     sizeof(*hconf),
- 			     1000);
- 
-+	kfree(hconf);
-+
- 	if (rc < 0) {
- 		dev_err(&intf->dev, "Couldn't send data format (err=%d)\n",
- 			rc);
- 		return rc;
- 	}
- 
-+	dconf = kmalloc(sizeof(*dconf), GFP_KERNEL);
-+	if (!dconf)
-+		return -ENOMEM;
-+
- 	/* read device config */
- 	rc = usb_control_msg(interface_to_usbdev(intf),
- 			     usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
-@@ -937,28 +947,33 @@ static int gs_usb_probe(struct usb_interface *intf,
- 			     USB_DIR_IN|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
- 			     1,
- 			     intf->altsetting[0].desc.bInterfaceNumber,
--			     &dconf,
--			     sizeof(dconf),
-+			     dconf,
-+			     sizeof(*dconf),
- 			     1000);
- 	if (rc < 0) {
- 		dev_err(&intf->dev, "Couldn't get device config: (err=%d)\n",
- 			rc);
-+		kfree(dconf);
- 		return rc;
- 	}
- 
--	icount = dconf.icount + 1;
-+	icount = dconf->icount + 1;
- 	dev_info(&intf->dev, "Configuring for %d interfaces\n", icount);
- 
- 	if (icount > GS_MAX_INTF) {
- 		dev_err(&intf->dev,
- 			"Driver cannot handle more that %d CAN interfaces\n",
- 			GS_MAX_INTF);
-+		kfree(dconf);
- 		return -EINVAL;
- 	}
- 
- 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
--	if (!dev)
-+	if (!dev) {
-+		kfree(dconf);
- 		return -ENOMEM;
-+	}
-+
- 	init_usb_anchor(&dev->rx_submitted);
- 
- 	atomic_set(&dev->active_channels, 0);
-@@ -967,7 +982,7 @@ static int gs_usb_probe(struct usb_interface *intf,
- 	dev->udev = interface_to_usbdev(intf);
- 
- 	for (i = 0; i < icount; i++) {
--		dev->canch[i] = gs_make_candev(i, intf, &dconf);
-+		dev->canch[i] = gs_make_candev(i, intf, dconf);
- 		if (IS_ERR_OR_NULL(dev->canch[i])) {
- 			/* save error code to return later */
- 			rc = PTR_ERR(dev->canch[i]);
-@@ -978,12 +993,15 @@ static int gs_usb_probe(struct usb_interface *intf,
- 				gs_destroy_candev(dev->canch[i]);
- 
- 			usb_kill_anchored_urbs(&dev->rx_submitted);
-+			kfree(dconf);
- 			kfree(dev);
- 			return rc;
- 		}
- 		dev->canch[i]->parent = dev;
- 	}
- 
-+	kfree(dconf);
-+
- 	return 0;
- }
- 
--- 
-2.11.0
+The following changes since commit 9f674e48c13dcbc31ac903433727837795b81efe:
+
+  xen-netback: Use GFP_ATOMIC to allocate hash (2017-03-02 14:44:22 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.11-20170303
+
+for you to fetch changes up to 66ddb82129df66a94219844c509074adb4330a28:
+
+  can: flexcan: fix typo in comment (2017-03-03 13:00:07 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.11-20170303
+
+----------------------------------------------------------------
+Ethan Zonca (2):
+      can: gs_usb: Don't use stack memory for USB transfers
+      can: gs_usb: fix coding style
+
+Marc Kleine-Budde (2):
+      can: usb_8dev: Fix memory leak of priv->cmd_msg_buffer
+      can: flexcan: fix typo in comment
+
+ drivers/net/can/flexcan.c      |  2 +-
+ drivers/net/can/usb/gs_usb.c   | 51 ++++++++++++++++++++++++++++--------------
+ drivers/net/can/usb/usb_8dev.c |  9 +++-----
+ 3 files changed, 38 insertions(+), 24 deletions(-)
+
