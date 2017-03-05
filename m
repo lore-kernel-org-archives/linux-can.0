@@ -1,111 +1,56 @@
-From: Wenyou Yang <wenyou.yang@atmel.com>
-Subject: [PATCH v2] can: m_can: enable transmission of FD frame on latest version
-Date: Mon, 6 Mar 2017 10:21:43 +0800
-Message-ID: <20170306022143.7695-1-wenyou.yang@atmel.com>
+From: Tom Evans <tom_usenet@optusnet.com.au>
+Subject: Re: FlexCAN on imx28
+Date: Mon, 6 Mar 2017 10:17:38 +1100
+Message-ID: <9b6ca5ae-bad4-cb31-f325-694c14ca9463@optusnet.com.au>
+References: <1488465746.18098.13.camel@serenergy.com>
+ <31bc327a-a900-c5fa-67fc-08a93134e753@pengutronix.de>
+Reply-To: tom_usenet@optusnet.com.au
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from nasmtp01.atmel.com ([192.199.1.246]:26731 "EHLO
-        ussmtp01.atmel.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1752486AbdCFC16 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 5 Mar 2017 21:27:58 -0500
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:38906 "EHLO
+        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752582AbdCFCmh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 5 Mar 2017 21:42:37 -0500
+In-Reply-To: <31bc327a-a900-c5fa-67fc-08a93134e753@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Florian Fainelli <f.fainelli@gmail.com>, Quentin Schulz <quentin.schulz@free-electrons.com>, Wenyou Yang <wenyou.yang@microchip.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Wenyou Yang <wenyou.yang@atmel.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Steffen Malmgaard Mortensen <smm@serenergy.com>
+Cc: linux-can <linux-can@vger.kernel.org>
 
-Enables the transmission of CAN FD frames on M_CAN IP core >= v3.1.x
-and with the bit rate switching.
+On 03/03/17 22:23, Marc Kleine-Budde wrote:
+> Hallo Steffen,
+>
+> I'm adding the linux-can ML on Cc, as the answer is of potential common
+> interest.
+>
+> On 03/02/2017 03:42 PM, Steffen Malmgaard Mortensen wrote:
+>> I have been experiencing problems with CAN package loss under high bus
+>> load at high bit rates using an imx28.
 
-Tested on M_CAN IP 3.1.0 (CREL = 0x31040730) of SAMA5D2 SoC.
+Steffen didn't say which version of Linux he's using.
 
-Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
----
-The testing is based on
-[RESEND PATCH 1/1] can: m_can: fix bitrate setup on latest silicon
-http://lkml.iu.edu/hypermail/linux/kernel/1702.1/05347.html
+If he's using the latest NXP-supported version of Linux (2.6.35) then the 
+following patches may be of interest to him.
 
-Changes in v2:
- - Rename TX_BUF_EDL with TX_BUF_FDF.
- - Improve the commit log to avoid misleading.
+Search for my posts on this thread and then follow the links to the other bug 
+reports.
 
- drivers/net/can/m_can/m_can.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+https://community.nxp.com/message/593611#comment-585209
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 246584ed89b6..c2dd2550de40 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -283,8 +283,12 @@ enum m_can_mram_cfg {
- 
- /* Tx Buffer Element */
- /* R0 */
-+#define TX_BUF_ESI		BIT(31)
- #define TX_BUF_XTD		BIT(30)
- #define TX_BUF_RTR		BIT(29)
-+#define TX_BUF_EFC		BIT(23)
-+#define TX_BUF_FDF		BIT(21)
-+#define TX_BUF_BRS		BIT(20)
- 
- /* address offset and element number for each FIFO/Buffer in the Message RAM */
- struct mram_cfg {
-@@ -916,7 +920,7 @@ static void m_can_chip_config(struct net_device *dev)
- 	}
- 
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
--		cccr |= CCCR_CME_CANFD_BRS << CCCR_CME_SHIFT;
-+		cccr |= (CCCR_CME_CANFD_BRS | CCCR_CME_CANFD) << CCCR_CME_SHIFT;
- 
- 	m_can_write(priv, M_CAN_CCCR, cccr);
- 	m_can_write(priv, M_CAN_TEST, test);
-@@ -1079,6 +1083,7 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
- 	u32 id, cccr;
- 	int i;
-+	u32 dlc;
- 
- 	if (can_dropped_invalid_skb(dev, skb))
- 		return NETDEV_TX_OK;
-@@ -1097,7 +1102,6 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 
- 	/* message ram configuration */
- 	m_can_fifo_write(priv, 0, M_CAN_FIFO_ID, id);
--	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, can_len2dlc(cf->len) << 16);
- 
- 	for (i = 0; i < cf->len; i += 4)
- 		m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4),
-@@ -1105,20 +1109,29 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 
- 	can_put_echo_skb(skb, dev, 0);
- 
-+	dlc = can_len2dlc(cf->len) << 16;
-+
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
- 		cccr = m_can_read(priv, M_CAN_CCCR);
- 		cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
- 		if (can_is_canfd_skb(skb)) {
--			if (cf->flags & CANFD_BRS)
-+			dlc |= TX_BUF_FDF;
-+			if (cf->flags & CANFD_ESI)
-+				dlc |= TX_BUF_ESI;
-+			if (cf->flags & CANFD_BRS) {
-+				dlc |= TX_BUF_BRS;
- 				cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
--			else
-+			} else {
- 				cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
-+			}
- 		} else {
- 			cccr |= CCCR_CMR_CAN << CCCR_CMR_SHIFT;
- 		}
- 		m_can_write(priv, M_CAN_CCCR, cccr);
- 	}
- 
-+	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, dlc);
-+
- 	/* enable first TX buffer to start transfer  */
- 	m_can_write(priv, M_CAN_TXBTIE, 0x1);
- 	m_can_write(priv, M_CAN_TXBAR, 0x1);
--- 
-2.11.0
+This summarises the close to 20 separate bugs in the one old driver:
+
+https://community.nxp.com/message/593606#593606
+
+Why would anyone be using as old as 2.6.35? It is the only "supported" version 
+for this chip i.MX53. And in my case the only one that can access the graphics 
+hardware in the i.MX53.
+
+If Stefan's Linux is a later version where the CAN driver uses the FlexCAN 
+FIFO, but is the one using NAPI for everything, then that pretty much 
+guarantees packet loss and overflow. The have been some very good recent 
+changes to the driver to fix this.
+
+Tom
 
