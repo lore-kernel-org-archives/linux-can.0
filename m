@@ -1,135 +1,78 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: m_can: support transmit frame in CAN FD format
-Date: Sun, 5 Mar 2017 20:34:15 +0100
-Message-ID: <12c3ae1d-65f7-8ba2-61e7-eed5291ebd21@hartkopp.net>
-References: <20170303053331.20883-1-wenyou.yang@atmel.com>
+Subject: Re: Iso-tp status
+Date: Sun, 5 Mar 2017 20:55:30 +0100
+Message-ID: <c3d436af-f305-89fb-a177-73e4bee8ee31@hartkopp.net>
+References: <CAEQ58siD2MfV0=VFoGC4B67KcbJLtTFQJzAUFN19XF=AnVhhCQ@mail.gmail.com>
+ <CAEQ58shwC09Q+TTAhG=dH7VjZ9RSQ5xsW8Z9tBhhbyN+3JKvAQ@mail.gmail.com>
+ <CAEQ58sj93WMMgyQVdBqUkaaH8fcwOwNZvwbwsdJ0zOR0dgjpKA@mail.gmail.com>
+ <CAEQ58sgZh==ZTB6HSzOWJzXv56pQZ+VEKPsWThYFHCUtzUHTdA@mail.gmail.com>
+ <CAEQ58sgmm5=UzxU_DcGj-qy+B+qpb1d9ko-GPxx75+D=8Mq4VA@mail.gmail.com>
+ <CAEQ58sjBCytryhrCQ1DYRcYpg=3-6DGvDtDzJVHV2mBcDa5NiA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20170303053331.20883-1-wenyou.yang@atmel.com>
-Sender: netdev-owner@vger.kernel.org
-To: Wenyou Yang <wenyou.yang@atmel.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Florian Fainelli <f.fainelli@gmail.com>, Quentin Schulz <quentin.schulz@free-electrons.com>, Wenyou Yang <wenyou.yang@microchip.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:18810 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752329AbdCETzy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 5 Mar 2017 14:55:54 -0500
+In-Reply-To: <CAEQ58sjBCytryhrCQ1DYRcYpg=3-6DGvDtDzJVHV2mBcDa5NiA@mail.gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Francesco Giancane <francescogiancane8@gmail.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-The patch has some issues:
+Hi Francesco,
 
-On 03/03/2017 06:33 AM, Wenyou Yang wrote:
-> Add support to transmit the frame in the CAN FD format and with
-> the bit rate switching.
+On 03/03/2017 09:49 AM, Francesco Giancane wrote:
+> I currently work in the automotive field and in particular in the
+> diagnostics field. I am a Linux and oss enthusiasts and got by chance
+> interest in can protocols.
 
-This is a misleading comment.
+Fine :-)
 
-"can: m_can: support transmit frame in CAN FD format"
-is misleading too. You were able to send CAN FD frames before.
+> I see that till now the Isotp L4 is still not
+> supported mainline. I want to contribute so my question is can you give
+> me some reference to the current status of the project? Are you planning
+> to carry it on ?
 
-This patch enables the transmission of CAN FD frames on M_CAN IP cores 
- >= v3.1.x, right?
+Yes. Of course!
 
-So this should be mentioned properly.
+I updated the ISO-TP to the latest ISO 15765-2:2016 version for CAN FD - 
+as I was part of the ISO standardization process.
 
-> Tested on SAMA5D2 Xplained board.
+> I read the docs and I saw that there are some open points.
 
-Tested on which M_CAN IP core revision would be useful here.
+Due to the update of ISO 15765-2:2016 the PDU length increased from 12 
+bits (0 - 4095 byte) to 32(!) bit -> 4GB(!). See:
 
-> Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
-> ---
-> The testing is based on
-> [RESEND PATCH 1/1] can: m_can: fix bitrate setup on latest silicon
-> http://lkml.iu.edu/hypermail/linux/kernel/1702.1/05347.html
->
->  drivers/net/can/m_can/m_can.c | 21 +++++++++++++++++----
->  1 file changed, 17 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> index 195f15edb32e..9ef9b337d25b 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> @@ -266,8 +266,12 @@ enum m_can_mram_cfg {
->
->  /* Tx Buffer Element */
->  /* R0 */
-> +#define TX_BUF_ESI		BIT(31)
->  #define TX_BUF_XTD		BIT(30)
->  #define TX_BUF_RTR		BIT(29)
-> +#define TX_BUF_EFC		BIT(23)
-> +#define TX_BUF_EDL		BIT(21)
+https://github.com/hartkopp/can-isotp-modules/blob/master/net/can/isotp.c#L102
 
-This bit is named FDF (FD Format bit).
+That's why I was thinking about if/how to rearrange the code.
+Probably the sendfile() syscall could be a way to go for PDU sizes > 
+16kByte?!?
 
-It has to be:
+Some other open point is
+https://github.com/hartkopp/can-isotp-modules/blob/master/net/can/isotp.c#L178
 
-#define TX_BUF_FDF		BIT(21)
+By now no one expects error values - and many people are using the 
+implementation :-)
 
-> +#define TX_BUF_BRS		BIT(20)
->
->  /* address offset and element number for each FIFO/Buffer in the Message RAM */
->  struct mram_cfg {
-> @@ -884,7 +888,7 @@ static void m_can_chip_config(struct net_device *dev)
->  	}
->
->  	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-> -		cccr |= CCCR_CME_CANFD_BRS << CCCR_CME_SHIFT;
-> +		cccr |= (CCCR_CME_CANFD_BRS | CCCR_CME_CANFD) << CCCR_CME_SHIFT;
->
->  	m_can_write(priv, M_CAN_CCCR, cccr);
->  	m_can_write(priv, M_CAN_TEST, test);
-> @@ -1047,6 +1051,7 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
->  	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
->  	u32 id, cccr;
->  	int i;
-> +	u32 dlc;
->
->  	if (can_dropped_invalid_skb(dev, skb))
->  		return NETDEV_TX_OK;
-> @@ -1065,7 +1070,6 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
->
->  	/* message ram configuration */
->  	m_can_fifo_write(priv, 0, M_CAN_FIFO_ID, id);
-> -	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, can_len2dlc(cf->len) << 16);
->
->  	for (i = 0; i < cf->len; i += 4)
->  		m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4),
-> @@ -1073,20 +1077,29 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
->
->  	can_put_echo_skb(skb, dev, 0);
->
-> +	dlc = can_len2dlc(cf->len) << 16;
-> +
->  	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
->  		cccr = m_can_read(priv, M_CAN_CCCR);
->  		cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
->  		if (can_is_canfd_skb(skb)) {
-> -			if (cf->flags & CANFD_BRS)
-> +			dlc |= TX_BUF_EDL;
+So maybe we need to introduce a new isotp option flag to enable error 
+reporting.
 
-dito FDF
+Finally this
 
-> +			if (cf->flags & CANFD_ESI)
-> +				dlc |= TX_BUF_ESI;
-> +			if (cf->flags & CANFD_BRS) {
-> +				dlc |= TX_BUF_BRS;
->  				cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
-> -			else
-> +			} else {
->  				cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
-> +			}
->  		} else {
->  			cccr |= CCCR_CMR_CAN << CCCR_CMR_SHIFT;
->  		}
->  		m_can_write(priv, M_CAN_CCCR, cccr);
->  	}
->
-> +	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, dlc);
-> +
->  	/* enable first TX buffer to start transfer  */
->  	m_can_write(priv, M_CAN_TXBTIE, 0x1);
->  	m_can_write(priv, M_CAN_TXBAR, 0x1);
->
+https://github.com/hartkopp/can-isotp-modules/blob/master/README.isotp#L234
 
-Beside the documentation and the wrong bit naming the patch looks ok.
-Please resend.
+is not a really good 'hack'. I wonder if it makes sense to throttle the 
+transmission of outgoing CAN frames based on the ability of the CAN 
+interface to cope with the traffic.
 
-Regards,
+Besides these nitpicks I'm done for mainline :-)
+
+Best regards,
 Oliver
+
+ps. putting linux-can ML on CC to be able to catch other peoples opinion 
+too.
