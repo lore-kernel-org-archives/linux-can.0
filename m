@@ -1,114 +1,117 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 2/2] can: m_can: handle frame transmission on IP core >= 3.1.x
-Date: Mon,  6 Mar 2017 22:20:11 +0100
-Message-ID: <20170306212011.29519-2-socketcan@hartkopp.net>
-References: <20170306212011.29519-1-socketcan@hartkopp.net>
+Subject: [PATCH 1/2] can: m_can: handle bitrate setup on IP core >= 3.1.x
+Date: Mon,  6 Mar 2017 22:20:10 +0100
+Message-ID: <20170306212011.29519-1-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:8983 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:23428 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753672AbdCFVVT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Mar 2017 16:21:19 -0500
-In-Reply-To: <20170306212011.29519-1-socketcan@hartkopp.net>
+        with ESMTP id S1753658AbdCFVVU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Mar 2017 16:21:20 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Florian Vallee <fvallee@eukrea.fr>
 
-Enables the transmission of CAN FD frames on M_CAN IP core >= v3.1.x
-including bit rate switching and error state indicator.
+From: Florian Vallee <fvallee@eukrea.fr>
 
-Suggested-by: Wenyou Yang <wenyou.yang@atmel.com>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+According to the m_can user manual changelog the BTP register layout was
+updated with core revision 3.1.0
+
+This change is not backward-compatible and using the current driver along
+with a recent IP results in an incorrect bitrate on the wire.
+
+Tested with a SAMA5D2 SoC (CREL = 0x31040730)
+
+Signed-off-by: Florian Vallee <fvallee@eukrea.fr>
+Tested-by: Quentin Schulz <quentin.schulz@free-electrons.com>
 ---
- drivers/net/can/m_can/m_can.c | 41 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 11 deletions(-)
+ drivers/net/can/m_can/m_can.c | 38 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 35 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 650b656f3c05..297b55163812 100644
+index 7a6554efd42b..650b656f3c05 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -283,8 +283,12 @@ enum m_can_mram_cfg {
+@@ -105,6 +105,10 @@ enum m_can_mram_cfg {
+ 	MRAM_CFG_NUM,
+ };
  
- /* Tx Buffer Element */
- /* R0 */
-+#define TX_BUF_ESI		BIT(31)
- #define TX_BUF_XTD		BIT(30)
- #define TX_BUF_RTR		BIT(29)
-+#define TX_BUF_EFC		BIT(23)
-+#define TX_BUF_FDF		BIT(21)
-+#define TX_BUF_BRS		BIT(20)
- 
- /* address offset and element number for each FIFO/Buffer in the Message RAM */
- struct mram_cfg {
-@@ -916,7 +920,7 @@ static void m_can_chip_config(struct net_device *dev)
- 	}
- 
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
--		cccr |= CCCR_CME_CANFD_BRS << CCCR_CME_SHIFT;
-+		cccr |= (CCCR_CME_CANFD_BRS | CCCR_CME_CANFD) << CCCR_CME_SHIFT;
- 
- 	m_can_write(priv, M_CAN_CCCR, cccr);
- 	m_can_write(priv, M_CAN_TEST, test);
-@@ -1079,6 +1083,7 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
- 	u32 id, cccr;
- 	int i;
-+	u32 dlc;
- 
- 	if (can_dropped_invalid_skb(dev, skb))
- 		return NETDEV_TX_OK;
-@@ -1097,7 +1102,6 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 
- 	/* message ram configuration */
- 	m_can_fifo_write(priv, 0, M_CAN_FIFO_ID, id);
--	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, can_len2dlc(cf->len) << 16);
- 
- 	for (i = 0; i < cf->len; i += 4)
- 		m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4),
-@@ -1105,19 +1109,34 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 
- 	can_put_echo_skb(skb, dev, 0);
- 
-+	dlc = can_len2dlc(cf->len) << 16;
++/* Core Release Register (CREL) */
++#define CRR_REL_MASK		0xfff
++#define CRR_REL_SHIFT		20
 +
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
--		cccr = m_can_read(priv, M_CAN_CCCR);
--		cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
--		if (can_is_canfd_skb(skb)) {
--			if (cf->flags & CANFD_BRS)
--				cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
--			else
--				cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
-+		if (m_can_read_core_rev(priv) < M_CAN_COREREL_3_1_0) {
-+			/* set CCCR according to frame content */
-+			cccr = m_can_read(priv, M_CAN_CCCR);
-+			cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
-+			if (can_is_canfd_skb(skb)) {
-+				if (cf->flags & CANFD_BRS)
-+					cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
-+				else
-+					cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
-+			} else {
-+				cccr |= CCCR_CMR_CAN << CCCR_CMR_SHIFT;
-+			}
-+			m_can_write(priv, M_CAN_CCCR, cccr);
- 		} else {
--			cccr |= CCCR_CMR_CAN << CCCR_CMR_SHIFT;
-+			/* set tx buffer according to frame content */
-+			if (can_is_canfd_skb(skb)) {
-+				dlc |= TX_BUF_FDF;
-+				if (cf->flags & CANFD_ESI)
-+					dlc |= TX_BUF_ESI;
-+				if (cf->flags & CANFD_BRS)
-+					dlc |= TX_BUF_BRS;
-+			}
- 		}
--		m_can_write(priv, M_CAN_CCCR, cccr);
- 	}
-+	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, dlc);
+ /* Fast Bit Timing & Prescaler Register (FBTP) */
+ #define FBTR_FBRP_MASK		0x1f
+ #define FBTR_FBRP_SHIFT		16
+@@ -136,7 +140,7 @@ enum m_can_mram_cfg {
+ #define CCCR_INIT		BIT(0)
+ #define CCCR_CANFD		0x10
  
- 	/* enable first TX buffer to start transfer  */
- 	m_can_write(priv, M_CAN_TXBTIE, 0x1);
+-/* Bit Timing & Prescaler Register (BTP) */
++/* Bit Timing & Prescaler Register (BTP) (M_CAN IP < 3.1.0) */
+ #define BTR_BRP_MASK		0x3ff
+ #define BTR_BRP_SHIFT		16
+ #define BTR_TSEG1_SHIFT		8
+@@ -146,6 +150,16 @@ enum m_can_mram_cfg {
+ #define BTR_SJW_SHIFT		0
+ #define BTR_SJW_MASK		0xf
+ 
++/* Nominal Bit Timing & Prescaler Register (NBTP) (M_CAN IP >= 3.1.0) */
++#define NBTR_SJW_SHIFT		25
++#define NBTR_SJW_MASK		(0x7f << NBTR_SJW_SHIFT)
++#define NBTR_BRP_SHIFT		16
++#define NBTR_BRP_MASK		(0x3ff << NBTR_BRP_SHIFT)
++#define NBTR_TSEG1_SHIFT	8
++#define NBTR_TSEG1_MASK		(0xff << NBTR_TSEG1_SHIFT)
++#define NBTR_TSEG2_SHIFT	0
++#define NBTR_TSEG2_MASK		(0x7f << NBTR_TSEG2_SHIFT)
++
+ /* Error Counter Register(ECR) */
+ #define ECR_RP			BIT(15)
+ #define ECR_REC_SHIFT		8
+@@ -200,6 +214,9 @@ enum m_can_mram_cfg {
+ 			 IR_RF1L | IR_RF0L)
+ #define IR_ERR_ALL	(IR_ERR_STATE | IR_ERR_BUS)
+ 
++/* Core Version */
++#define M_CAN_COREREL_3_1_0	0x310
++
+ /* Interrupt Line Select (ILS) */
+ #define ILS_ALL_INT0	0x0
+ #define ILS_ALL_INT1	0xFFFFFFFF
+@@ -357,6 +374,13 @@ static inline void m_can_disable_all_interrupts(const struct m_can_priv *priv)
+ 	m_can_write(priv, M_CAN_ILE, 0x0);
+ }
+ 
++static inline int m_can_read_core_rev(const struct m_can_priv *priv)
++{
++	u32 reg = m_can_read(priv, M_CAN_CREL);
++
++	return ((reg >> CRR_REL_SHIFT) & CRR_REL_MASK);
++}
++
+ static void m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ {
+ 	struct net_device_stats *stats = &dev->stats;
+@@ -811,8 +835,16 @@ static int m_can_set_bittiming(struct net_device *dev)
+ 	sjw = bt->sjw - 1;
+ 	tseg1 = bt->prop_seg + bt->phase_seg1 - 1;
+ 	tseg2 = bt->phase_seg2 - 1;
+-	reg_btp = (brp << BTR_BRP_SHIFT) | (sjw << BTR_SJW_SHIFT) |
+-			(tseg1 << BTR_TSEG1_SHIFT) | (tseg2 << BTR_TSEG2_SHIFT);
++
++	if (m_can_read_core_rev(priv) < M_CAN_COREREL_3_1_0)
++		reg_btp = (brp << BTR_BRP_SHIFT) | (sjw << BTR_SJW_SHIFT) |
++				(tseg1 << BTR_TSEG1_SHIFT) |
++				(tseg2 << BTR_TSEG2_SHIFT);
++	else
++		reg_btp = (brp << NBTR_BRP_SHIFT) | (sjw << NBTR_SJW_SHIFT) |
++				(tseg1 << NBTR_TSEG1_SHIFT) |
++				(tseg2 << NBTR_TSEG2_SHIFT);
++
+ 	m_can_write(priv, M_CAN_BTP, reg_btp);
+ 
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
 -- 
 2.11.0
 
