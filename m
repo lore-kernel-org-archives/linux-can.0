@@ -1,58 +1,78 @@
-From: Steffen Malmgaard Mortensen <smm@serenergy.com>
-Subject: Re: FlexCAN on imx28
-Date: Mon, 6 Mar 2017 08:11:06 +0000
-Message-ID: <1488787866.4149.9.camel@serenergy.com>
-References: <1488465746.18098.13.camel@serenergy.com>
-         <31bc327a-a900-c5fa-67fc-08a93134e753@pengutronix.de>
-         <9b6ca5ae-bad4-cb31-f325-694c14ca9463@optusnet.com.au>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2] can: m_can: enable transmission of FD frame on latest
+ version
+Date: Mon, 6 Mar 2017 11:53:08 +0100
+Message-ID: <e4360c52-d62d-6c35-f691-7fcd0f74f954@pengutronix.de>
+References: <20170306022143.7695-1-wenyou.yang@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-he1eur01on0064.outbound.protection.outlook.com ([104.47.0.64]:4700
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1752725AbdCFI1F (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 6 Mar 2017 03:27:05 -0500
-In-Reply-To: <9b6ca5ae-bad4-cb31-f325-694c14ca9463@optusnet.com.au>
-Content-Language: en-US
-Content-ID: <C10BE3E6D8A3FD418AD50C3D9E3D6A32@eurprd03.prod.outlook.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "tom_usenet@optusnet.com.au" <tom_usenet@optusnet.com.au>, "mkl@pengutronix.de" <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="IX5UxED8QfIWdNwuu9eLI160fLvRJO1X0"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170306022143.7695-1-wenyou.yang@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wenyou Yang <wenyou.yang@atmel.com>, Wolfgang Grandegger <wg@grandegger.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Florian Fainelli <f.fainelli@gmail.com>, Quentin Schulz <quentin.schulz@free-electrons.com>, Wenyou Yang <wenyou.yang@microchip.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-T24gTW9uLCAyMDE3LTAzLTA2IGF0IDEwOjE3ICsxMTAwLCBUb20gRXZhbnMgd3JvdGU6DQo+IE9u
-IDAzLzAzLzE3IDIyOjIzLCBNYXJjIEtsZWluZS1CdWRkZSB3cm90ZToNCj4gPiANCj4gPiBIYWxs
-byBTdGVmZmVuLA0KPiA+IA0KPiA+IEknbSBhZGRpbmcgdGhlIGxpbnV4LWNhbiBNTCBvbiBDYywg
-YXMgdGhlIGFuc3dlciBpcyBvZiBwb3RlbnRpYWwNCj4gPiBjb21tb24NCj4gPiBpbnRlcmVzdC4N
-Cj4gPiANCj4gPiBPbiAwMy8wMi8yMDE3IDAzOjQyIFBNLCBTdGVmZmVuIE1hbG1nYWFyZCBNb3J0
-ZW5zZW4gd3JvdGU6DQo+ID4gPiANCj4gPiA+IEkgaGF2ZSBiZWVuIGV4cGVyaWVuY2luZyBwcm9i
-bGVtcyB3aXRoIENBTiBwYWNrYWdlIGxvc3MgdW5kZXINCj4gPiA+IGhpZ2ggYnVzDQo+ID4gPiBs
-b2FkIGF0IGhpZ2ggYml0IHJhdGVzIHVzaW5nIGFuIGlteDI4Lg0KPiBTdGVmZmVuIGRpZG4ndCBz
-YXkgd2hpY2ggdmVyc2lvbiBvZiBMaW51eCBoZSdzIHVzaW5nLg0KPiA+IElmIGhlJ3MgdXNpbmcg
-dGhlIGxhdGVzdCBOWFAtc3VwcG9ydGVkIHZlcnNpb24gb2YgTGludXggKDIuNi4zNSkgdGhlbg0K
-PiB0aGXCoA0KPiBmb2xsb3dpbmcgcGF0Y2hlcyBtYXkgYmUgb2YgaW50ZXJlc3QgdG8gaGltLg0K
-PiA+IFNlYXJjaCBmb3IgbXkgcG9zdHMgb24gdGhpcyB0aHJlYWQgYW5kIHRoZW4gZm9sbG93IHRo
-ZSBsaW5rcyB0byB0aGUNCj4gb3RoZXIgYnVnwqANCj4gcmVwb3J0cy4NCj4gPiBodHRwczovL2Nv
-bW11bml0eS5ueHAuY29tL21lc3NhZ2UvNTkzNjExI2NvbW1lbnQtNTg1MjA5DQo+ID4gVGhpcyBz
-dW1tYXJpc2VzIHRoZSBjbG9zZSB0byAyMCBzZXBhcmF0ZSBidWdzIGluIHRoZSBvbmUgb2xkIGRy
-aXZlcjoNCj4gPiBodHRwczovL2NvbW11bml0eS5ueHAuY29tL21lc3NhZ2UvNTkzNjA2IzU5MzYw
-Ng0KPiA+IFdoeSB3b3VsZCBhbnlvbmUgYmUgdXNpbmcgYXMgb2xkIGFzIDIuNi4zNT8gSXQgaXMg
-dGhlIG9ubHkNCj4gInN1cHBvcnRlZCIgdmVyc2lvbsKgDQo+IGZvciB0aGlzIGNoaXAgaS5NWDUz
-LiBBbmQgaW4gbXkgY2FzZSB0aGUgb25seSBvbmUgdGhhdCBjYW4gYWNjZXNzIHRoZQ0KPiBncmFw
-aGljc8KgDQo+IGhhcmR3YXJlIGluIHRoZSBpLk1YNTMuDQo+ID4gSWYgU3RlZmFuJ3MgTGludXgg
-aXMgYSBsYXRlciB2ZXJzaW9uIHdoZXJlIHRoZSBDQU4gZHJpdmVyIHVzZXMgdGhlDQo+IEZsZXhD
-QU7CoA0KPiBGSUZPLCBidXQgaXMgdGhlIG9uZSB1c2luZyBOQVBJIGZvciBldmVyeXRoaW5nLCB0
-aGVuIHRoYXQgcHJldHR5DQo+IG11Y2jCoA0KPiBndWFyYW50ZWVzIHBhY2tldCBsb3NzIGFuZCBv
-dmVyZmxvdy4gVGhlIGhhdmUgYmVlbiBzb21lIHZlcnkgZ29vZA0KPiByZWNlbnTCoA0KPiBjaGFu
-Z2VzIHRvIHRoZSBkcml2ZXIgdG8gZml4IHRoaXMuDQo+ID4gVG9tDQoNCkhpIE1hcmMgYW5kIFRv
-bSwNClRoYW5rcyBmb3IgeW91ciBpbnB1dC4gSSdtIHVzaW5nIHRoZSBGU0wgQ29tbXVuaXR5IEJT
-UCB2Mi4yIHRvIGJ1aWxkIGENCnNtYWxsIGxpbnV4IGRpc3RyaWJ1dGlvbiBmb3IgYSBjdXN0b20g
-aW14MjgtYmFzZWQgYm9hcmQuIFNpbmNlIEkgZGlkbid0DQprbm93IGFueSBiZXR0ZXIsIEkgdXNl
-ZCB0aGUgc2FtZSBrZXJuZWwgdmVyc2lvbiAoNC44LngrZnNsYyBicmFuY2ggZnJvbQ0KbGludXgt
-ZnNsYyB0cmVlKSB0aGF0IGlzIHVzZWQgZm9yIHRoZcKgaW14MjhldmsgcmVmZXJlbmNlIGJvYXJk
-LiBBcGFydA0KZnJvbSB0aGUgQ0FOIGlzc3VlIHRoZSBrZXJuZWwgc2VlbXMgdG8gZG8gdGhlIGpv
-YiwgYnV0IGlmIHlvdSAob3INCmFueW9uZSBvbiB0aGUgbWFpbGluZyBsaXN0KSB0aGluayBhIGRp
-ZmZlcmVudCBrZXJuZWwgdmVyc2lvbiB3b3VsZCBiZQ0KbW9yZSBhcHByb3ByaWF0ZSwgSSB3b3Vs
-ZCBsb3ZlIHRvIGhlYXIgYXJndW1lbnRzPw0KL1N0ZWZmZW4NCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--IX5UxED8QfIWdNwuu9eLI160fLvRJO1X0
+Content-Type: multipart/mixed; boundary="xPbqXldMXSBRQ22V2rjdUnfWClhorMRHR";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Wenyou Yang <wenyou.yang@atmel.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Quentin Schulz <quentin.schulz@free-electrons.com>,
+ Wenyou Yang <wenyou.yang@microchip.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <e4360c52-d62d-6c35-f691-7fcd0f74f954@pengutronix.de>
+Subject: Re: [PATCH v2] can: m_can: enable transmission of FD frame on latest
+ version
+References: <20170306022143.7695-1-wenyou.yang@atmel.com>
+In-Reply-To: <20170306022143.7695-1-wenyou.yang@atmel.com>
+
+--xPbqXldMXSBRQ22V2rjdUnfWClhorMRHR
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 03/06/2017 03:21 AM, Wenyou Yang wrote:
+> Enables the transmission of CAN FD frames on M_CAN IP core >=3D v3.1.x
+> and with the bit rate switching.
+>=20
+> Tested on M_CAN IP 3.1.0 (CREL =3D 0x31040730) of SAMA5D2 SoC.
+
+Does this patch work still with the old version of the silicon?
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--xPbqXldMXSBRQ22V2rjdUnfWClhorMRHR--
+
+--IX5UxED8QfIWdNwuu9eLI160fLvRJO1X0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAli9P5QACgkQHv7KIOw4
+HPZsGgf/UHQh4MADIYgWyI9k0oQacC5MYoOQKsmdFAjQTa2ilq031CPDCKvOBR3D
+RwnKR9+382gYPf/pyPj0jC/SeBVrQi5HIV4qCkzdJLbXUosRapNxQzxsWApfv2bw
+lgB1xcsp0AV7lGooPDpqss8KN4PY0xfLNIBheGvijxeys9gYLh0NatzhXCtdWIpB
+q24a902TSpGeTAa2MiH4/C0fQQUcRxXaKc+2QATd7h8hQT9dXOKw9vzAzH4X5LBk
+XA/sGvnf3VEtpsAjm3rTcqUlPFDz1vnqArYEvb0thONgYBGUt7u61+TIfN/93J+9
+/CW/mYryoyGZ6nIefOt+qoQBs2HLOA==
+=Gf4x
+-----END PGP SIGNATURE-----
+
+--IX5UxED8QfIWdNwuu9eLI160fLvRJO1X0--
