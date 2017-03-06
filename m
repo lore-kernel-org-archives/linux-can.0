@@ -1,78 +1,105 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Iso-tp status
-Date: Sun, 5 Mar 2017 20:55:30 +0100
-Message-ID: <c3d436af-f305-89fb-a177-73e4bee8ee31@hartkopp.net>
-References: <CAEQ58siD2MfV0=VFoGC4B67KcbJLtTFQJzAUFN19XF=AnVhhCQ@mail.gmail.com>
- <CAEQ58shwC09Q+TTAhG=dH7VjZ9RSQ5xsW8Z9tBhhbyN+3JKvAQ@mail.gmail.com>
- <CAEQ58sj93WMMgyQVdBqUkaaH8fcwOwNZvwbwsdJ0zOR0dgjpKA@mail.gmail.com>
- <CAEQ58sgZh==ZTB6HSzOWJzXv56pQZ+VEKPsWThYFHCUtzUHTdA@mail.gmail.com>
- <CAEQ58sgmm5=UzxU_DcGj-qy+B+qpb1d9ko-GPxx75+D=8Mq4VA@mail.gmail.com>
- <CAEQ58sjBCytryhrCQ1DYRcYpg=3-6DGvDtDzJVHV2mBcDa5NiA@mail.gmail.com>
+From: <Wenyou.Yang@microchip.com>
+Subject: RE: [PATCH] can: m_can: support transmit frame in CAN FD format
+Date: Mon, 6 Mar 2017 02:27:45 +0000
+Message-ID: <F9F4555C4E01D7469D37975B62D0EFBB4F8434@CHN-SV-EXMX07.mchp-main.com>
+References: <20170303053331.20883-1-wenyou.yang@atmel.com>
+ <12c3ae1d-65f7-8ba2-61e7-eed5291ebd21@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:18810 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752329AbdCETzy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 5 Mar 2017 14:55:54 -0500
-In-Reply-To: <CAEQ58sjBCytryhrCQ1DYRcYpg=3-6DGvDtDzJVHV2mBcDa5NiA@mail.gmail.com>
+Received: from smtpout.microchip.com ([198.175.253.82]:44093 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1752533AbdCFC1r (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 5 Mar 2017 21:27:47 -0500
+In-Reply-To: <12c3ae1d-65f7-8ba2-61e7-eed5291ebd21@hartkopp.net>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Francesco Giancane <francescogiancane8@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: socketcan@hartkopp.net, wg@grandegger.com, mkl@pengutronix.de
+Cc: alexandre.belloni@free-electrons.com, f.fainelli@gmail.com, quentin.schulz@free-electrons.com, nicolas.ferre@atmel.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi Francesco,
-
-On 03/03/2017 09:49 AM, Francesco Giancane wrote:
-> I currently work in the automotive field and in particular in the
-> diagnostics field. I am a Linux and oss enthusiasts and got by chance
-> interest in can protocols.
-
-Fine :-)
-
-> I see that till now the Isotp L4 is still not
-> supported mainline. I want to contribute so my question is can you give
-> me some reference to the current status of the project? Are you planning
-> to carry it on ?
-
-Yes. Of course!
-
-I updated the ISO-TP to the latest ISO 15765-2:2016 version for CAN FD - 
-as I was part of the ISO standardization process.
-
-> I read the docs and I saw that there are some open points.
-
-Due to the update of ISO 15765-2:2016 the PDU length increased from 12 
-bits (0 - 4095 byte) to 32(!) bit -> 4GB(!). See:
-
-https://github.com/hartkopp/can-isotp-modules/blob/master/net/can/isotp.c#L102
-
-That's why I was thinking about if/how to rearrange the code.
-Probably the sendfile() syscall could be a way to go for PDU sizes > 
-16kByte?!?
-
-Some other open point is
-https://github.com/hartkopp/can-isotp-modules/blob/master/net/can/isotp.c#L178
-
-By now no one expects error values - and many people are using the 
-implementation :-)
-
-So maybe we need to introduce a new isotp option flag to enable error 
-reporting.
-
-Finally this
-
-https://github.com/hartkopp/can-isotp-modules/blob/master/README.isotp#L234
-
-is not a really good 'hack'. I wonder if it makes sense to throttle the 
-transmission of outgoing CAN frames based on the ability of the CAN 
-interface to cope with the traffic.
-
-Besides these nitpicks I'm done for mainline :-)
-
-Best regards,
-Oliver
-
-ps. putting linux-can ML on CC to be able to catch other peoples opinion 
-too.
+SGkgT2xpdmVyLA0KDQpUaGFuayB5b3UgZm9yIHlvdXIgcmV2aWV3Lg0KDQo+IC0tLS0tT3JpZ2lu
+YWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE9saXZlciBIYXJ0a29wcCBbbWFpbHRvOnNvY2tldGNh
+bkBoYXJ0a29wcC5uZXRdDQo+IFNlbnQ6IDIwMTfE6jPUwjbI1SAzOjM0DQo+IFRvOiBXZW55b3Ug
+WWFuZyAtIEE0MTUzNSA8V2VueW91LllhbmdAbWljcm9jaGlwLmNvbT47IFdvbGZnYW5nDQo+IEdy
+YW5kZWdnZXIgPHdnQGdyYW5kZWdnZXIuY29tPjsgTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5n
+dXRyb25peC5kZT4NCj4gQ2M6IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5kcmUuYmVsbG9uaUBm
+cmVlLWVsZWN0cm9ucy5jb20+OyBGbG9yaWFuIEZhaW5lbGxpDQo+IDxmLmZhaW5lbGxpQGdtYWls
+LmNvbT47IFF1ZW50aW4gU2NodWx6IDxxdWVudGluLnNjaHVsekBmcmVlLWVsZWN0cm9ucy5jb20+
+Ow0KPiBXZW55b3UgWWFuZyAtIEE0MTUzNSA8V2VueW91LllhbmdAbWljcm9jaGlwLmNvbT47IE5p
+Y29sYXMgRmVycmUNCj4gPG5pY29sYXMuZmVycmVAYXRtZWwuY29tPjsgbGludXgtY2FuQHZnZXIu
+a2VybmVsLm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIu
+a2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBjYW46IG1fY2FuOiBzdXBwb3J0IHRy
+YW5zbWl0IGZyYW1lIGluIENBTiBGRCBmb3JtYXQNCj4gDQo+IFRoZSBwYXRjaCBoYXMgc29tZSBp
+c3N1ZXM6DQo+IA0KPiBPbiAwMy8wMy8yMDE3IDA2OjMzIEFNLCBXZW55b3UgWWFuZyB3cm90ZToN
+Cj4gPiBBZGQgc3VwcG9ydCB0byB0cmFuc21pdCB0aGUgZnJhbWUgaW4gdGhlIENBTiBGRCBmb3Jt
+YXQgYW5kIHdpdGggdGhlDQo+ID4gYml0IHJhdGUgc3dpdGNoaW5nLg0KPiANCj4gVGhpcyBpcyBh
+IG1pc2xlYWRpbmcgY29tbWVudC4NCj4gDQo+ICJjYW46IG1fY2FuOiBzdXBwb3J0IHRyYW5zbWl0
+IGZyYW1lIGluIENBTiBGRCBmb3JtYXQiDQo+IGlzIG1pc2xlYWRpbmcgdG9vLiBZb3Ugd2VyZSBh
+YmxlIHRvIHNlbmQgQ0FOIEZEIGZyYW1lcyBiZWZvcmUuDQo+IA0KPiBUaGlzIHBhdGNoIGVuYWJs
+ZXMgdGhlIHRyYW5zbWlzc2lvbiBvZiBDQU4gRkQgZnJhbWVzIG9uIE1fQ0FOIElQIGNvcmVzICA+
+PQ0KPiB2My4xLngsIHJpZ2h0Pw0KDQpUaGUgcmV2aXNpb24gb2YgTV9DQU4gSVAgb24gU0FNQTVE
+MiBpcyAzLjEuMCAoQ1JFTCA9IDB4MzEwNDA3MzApLg0KDQo+IA0KPiBTbyB0aGlzIHNob3VsZCBi
+ZSBtZW50aW9uZWQgcHJvcGVybHkuDQo+IA0KPiA+IFRlc3RlZCBvbiBTQU1BNUQyIFhwbGFpbmVk
+IGJvYXJkLg0KPiANCj4gVGVzdGVkIG9uIHdoaWNoIE1fQ0FOIElQIGNvcmUgcmV2aXNpb24gd291
+bGQgYmUgdXNlZnVsIGhlcmUuDQo+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFdlbnlvdSBZYW5nIDx3
+ZW55b3UueWFuZ0BhdG1lbC5jb20+DQo+ID4gLS0tDQo+ID4gVGhlIHRlc3RpbmcgaXMgYmFzZWQg
+b24NCj4gPiBbUkVTRU5EIFBBVENIIDEvMV0gY2FuOiBtX2NhbjogZml4IGJpdHJhdGUgc2V0dXAg
+b24gbGF0ZXN0IHNpbGljb24NCj4gPiBodHRwOi8vbGttbC5pdS5lZHUvaHlwZXJtYWlsL2xpbnV4
+L2tlcm5lbC8xNzAyLjEvMDUzNDcuaHRtbA0KPiA+DQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi9tX2Nh
+bi9tX2Nhbi5jIHwgMjEgKysrKysrKysrKysrKysrKystLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
+LCAxNyBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbmV0L2Nhbi9tX2Nhbi9tX2Nhbi5jDQo+ID4gYi9kcml2ZXJzL25ldC9jYW4vbV9j
+YW4vbV9jYW4uYyBpbmRleCAxOTVmMTVlZGIzMmUuLjllZjliMzM3ZDI1Yg0KPiA+IDEwMDY0NA0K
+PiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9tX2Nhbi9tX2Nhbi5jDQo+ID4gKysrIGIvZHJpdmVy
+cy9uZXQvY2FuL21fY2FuL21fY2FuLmMNCj4gPiBAQCAtMjY2LDggKzI2NiwxMiBAQCBlbnVtIG1f
+Y2FuX21yYW1fY2ZnIHsNCj4gPg0KPiA+ICAvKiBUeCBCdWZmZXIgRWxlbWVudCAqLw0KPiA+ICAv
+KiBSMCAqLw0KPiA+ICsjZGVmaW5lIFRYX0JVRl9FU0kJCUJJVCgzMSkNCj4gPiAgI2RlZmluZSBU
+WF9CVUZfWFRECQlCSVQoMzApDQo+ID4gICNkZWZpbmUgVFhfQlVGX1JUUgkJQklUKDI5KQ0KPiA+
+ICsjZGVmaW5lIFRYX0JVRl9FRkMJCUJJVCgyMykNCj4gPiArI2RlZmluZSBUWF9CVUZfRURMCQlC
+SVQoMjEpDQo+IA0KPiBUaGlzIGJpdCBpcyBuYW1lZCBGREYgKEZEIEZvcm1hdCBiaXQpLg0KPiAN
+Cj4gSXQgaGFzIHRvIGJlOg0KPiANCj4gI2RlZmluZSBUWF9CVUZfRkRGCQlCSVQoMjEpDQo+IA0K
+PiA+ICsjZGVmaW5lIFRYX0JVRl9CUlMJCUJJVCgyMCkNCj4gPg0KPiA+ICAvKiBhZGRyZXNzIG9m
+ZnNldCBhbmQgZWxlbWVudCBudW1iZXIgZm9yIGVhY2ggRklGTy9CdWZmZXIgaW4gdGhlDQo+ID4g
+TWVzc2FnZSBSQU0gKi8gIHN0cnVjdCBtcmFtX2NmZyB7IEBAIC04ODQsNyArODg4LDcgQEAgc3Rh
+dGljIHZvaWQNCj4gPiBtX2Nhbl9jaGlwX2NvbmZpZyhzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQ0K
+PiA+ICAJfQ0KPiA+DQo+ID4gIAlpZiAocHJpdi0+Y2FuLmN0cmxtb2RlICYgQ0FOX0NUUkxNT0RF
+X0ZEKQ0KPiA+IC0JCWNjY3IgfD0gQ0NDUl9DTUVfQ0FORkRfQlJTIDw8IENDQ1JfQ01FX1NISUZU
+Ow0KPiA+ICsJCWNjY3IgfD0gKENDQ1JfQ01FX0NBTkZEX0JSUyB8IENDQ1JfQ01FX0NBTkZEKSA8
+PA0KPiBDQ0NSX0NNRV9TSElGVDsNCj4gPg0KPiA+ICAJbV9jYW5fd3JpdGUocHJpdiwgTV9DQU5f
+Q0NDUiwgY2Njcik7DQo+ID4gIAltX2Nhbl93cml0ZShwcml2LCBNX0NBTl9URVNULCB0ZXN0KTsg
+QEAgLTEwNDcsNiArMTA1MSw3IEBAIHN0YXRpYw0KPiA+IG5ldGRldl90eF90IG1fY2FuX3N0YXJ0
+X3htaXQoc3RydWN0IHNrX2J1ZmYgKnNrYiwNCj4gPiAgCXN0cnVjdCBjYW5mZF9mcmFtZSAqY2Yg
+PSAoc3RydWN0IGNhbmZkX2ZyYW1lICopc2tiLT5kYXRhOw0KPiA+ICAJdTMyIGlkLCBjY2NyOw0K
+PiA+ICAJaW50IGk7DQo+ID4gKwl1MzIgZGxjOw0KPiA+DQo+ID4gIAlpZiAoY2FuX2Ryb3BwZWRf
+aW52YWxpZF9za2IoZGV2LCBza2IpKQ0KPiA+ICAJCXJldHVybiBORVRERVZfVFhfT0s7DQo+ID4g
+QEAgLTEwNjUsNyArMTA3MCw2IEBAIHN0YXRpYyBuZXRkZXZfdHhfdCBtX2Nhbl9zdGFydF94bWl0
+KHN0cnVjdA0KPiA+IHNrX2J1ZmYgKnNrYiwNCj4gPg0KPiA+ICAJLyogbWVzc2FnZSByYW0gY29u
+ZmlndXJhdGlvbiAqLw0KPiA+ICAJbV9jYW5fZmlmb193cml0ZShwcml2LCAwLCBNX0NBTl9GSUZP
+X0lELCBpZCk7DQo+ID4gLQltX2Nhbl9maWZvX3dyaXRlKHByaXYsIDAsIE1fQ0FOX0ZJRk9fRExD
+LCBjYW5fbGVuMmRsYyhjZi0+bGVuKSA8PCAxNik7DQo+ID4NCj4gPiAgCWZvciAoaSA9IDA7IGkg
+PCBjZi0+bGVuOyBpICs9IDQpDQo+ID4gIAkJbV9jYW5fZmlmb193cml0ZShwcml2LCAwLCBNX0NB
+Tl9GSUZPX0RBVEEoaSAvIDQpLCBAQCAtDQo+IDEwNzMsMjANCj4gPiArMTA3NywyOSBAQCBzdGF0
+aWMgbmV0ZGV2X3R4X3QgbV9jYW5fc3RhcnRfeG1pdChzdHJ1Y3Qgc2tfYnVmZiAqc2tiLA0KPiA+
+DQo+ID4gIAljYW5fcHV0X2VjaG9fc2tiKHNrYiwgZGV2LCAwKTsNCj4gPg0KPiA+ICsJZGxjID0g
+Y2FuX2xlbjJkbGMoY2YtPmxlbikgPDwgMTY7DQo+ID4gKw0KPiA+ICAJaWYgKHByaXYtPmNhbi5j
+dHJsbW9kZSAmIENBTl9DVFJMTU9ERV9GRCkgew0KPiA+ICAJCWNjY3IgPSBtX2Nhbl9yZWFkKHBy
+aXYsIE1fQ0FOX0NDQ1IpOw0KPiA+ICAJCWNjY3IgJj0gfihDQ0NSX0NNUl9NQVNLIDw8IENDQ1Jf
+Q01SX1NISUZUKTsNCj4gPiAgCQlpZiAoY2FuX2lzX2NhbmZkX3NrYihza2IpKSB7DQo+ID4gLQkJ
+CWlmIChjZi0+ZmxhZ3MgJiBDQU5GRF9CUlMpDQo+ID4gKwkJCWRsYyB8PSBUWF9CVUZfRURMOw0K
+PiANCj4gZGl0byBGREYNCj4gDQo+ID4gKwkJCWlmIChjZi0+ZmxhZ3MgJiBDQU5GRF9FU0kpDQo+
+ID4gKwkJCQlkbGMgfD0gVFhfQlVGX0VTSTsNCj4gPiArCQkJaWYgKGNmLT5mbGFncyAmIENBTkZE
+X0JSUykgew0KPiA+ICsJCQkJZGxjIHw9IFRYX0JVRl9CUlM7DQo+ID4gIAkJCQljY2NyIHw9IEND
+Q1JfQ01SX0NBTkZEX0JSUyA8PA0KPiBDQ0NSX0NNUl9TSElGVDsNCj4gPiAtCQkJZWxzZQ0KPiA+
+ICsJCQl9IGVsc2Ugew0KPiA+ICAJCQkJY2NjciB8PSBDQ0NSX0NNUl9DQU5GRCA8PA0KPiBDQ0NS
+X0NNUl9TSElGVDsNCj4gPiArCQkJfQ0KPiA+ICAJCX0gZWxzZSB7DQo+ID4gIAkJCWNjY3IgfD0g
+Q0NDUl9DTVJfQ0FOIDw8IENDQ1JfQ01SX1NISUZUOw0KPiA+ICAJCX0NCj4gPiAgCQltX2Nhbl93
+cml0ZShwcml2LCBNX0NBTl9DQ0NSLCBjY2NyKTsNCj4gPiAgCX0NCj4gPg0KPiA+ICsJbV9jYW5f
+Zmlmb193cml0ZShwcml2LCAwLCBNX0NBTl9GSUZPX0RMQywgZGxjKTsNCj4gPiArDQo+ID4gIAkv
+KiBlbmFibGUgZmlyc3QgVFggYnVmZmVyIHRvIHN0YXJ0IHRyYW5zZmVyICAqLw0KPiA+ICAJbV9j
+YW5fd3JpdGUocHJpdiwgTV9DQU5fVFhCVElFLCAweDEpOw0KPiA+ICAJbV9jYW5fd3JpdGUocHJp
+diwgTV9DQU5fVFhCQVIsIDB4MSk7DQo+ID4NCj4gDQo+IEJlc2lkZSB0aGUgZG9jdW1lbnRhdGlv
+biBhbmQgdGhlIHdyb25nIGJpdCBuYW1pbmcgdGhlIHBhdGNoIGxvb2tzIG9rLg0KPiBQbGVhc2Ug
+cmVzZW5kLg0KDQpJIHdpbGwgc2VuZCBhIHZlcnNpb24gMi4gVGhhbmtzDQoNCj4gDQo+IFJlZ2Fy
+ZHMsDQo+IE9saXZlcg0KDQoNCkJlc3QgUmVnYXJkcywNCldlbnlvdSBZYW5nDQo=
