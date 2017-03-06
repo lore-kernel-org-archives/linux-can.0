@@ -1,70 +1,114 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2] can: m_can: enable transmission of FD frame on latest
- version
-Date: Mon, 6 Mar 2017 20:33:15 +0100
-Message-ID: <b24f3252-6bd9-db48-b224-5bf3683cb75d@hartkopp.net>
-References: <20170306022143.7695-1-wenyou.yang@atmel.com>
- <e4360c52-d62d-6c35-f691-7fcd0f74f954@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH 2/2] can: m_can: handle frame transmission on IP core >= 3.1.x
+Date: Mon,  6 Mar 2017 22:20:11 +0100
+Message-ID: <20170306212011.29519-2-socketcan@hartkopp.net>
+References: <20170306212011.29519-1-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:16780 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:8983 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753621AbdCFTg5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Mar 2017 14:36:57 -0500
-In-Reply-To: <e4360c52-d62d-6c35-f691-7fcd0f74f954@pengutronix.de>
+        with ESMTP id S1753672AbdCFVVT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Mar 2017 16:21:19 -0500
+In-Reply-To: <20170306212011.29519-1-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wenyou Yang <wenyou.yang@atmel.com>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Florian Fainelli <f.fainelli@gmail.com>, Quentin Schulz <quentin.schulz@free-electrons.com>, Wenyou Yang <wenyou.yang@microchip.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Hi Marc,
+Enables the transmission of CAN FD frames on M_CAN IP core >= v3.1.x
+including bit rate switching and error state indicator.
 
-On 03/06/2017 11:53 AM, Marc Kleine-Budde wrote:
-> On 03/06/2017 03:21 AM, Wenyou Yang wrote:
->> Enables the transmission of CAN FD frames on M_CAN IP core >= v3.1.x
->> and with the bit rate switching.
->>
->> Tested on M_CAN IP 3.1.0 (CREL = 0x31040730) of SAMA5D2 SoC.
->
-> Does this patch work still with the old version of the silicon?
+Suggested-by: Wenyou Yang <wenyou.yang@atmel.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ drivers/net/can/m_can/m_can.c | 41 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 11 deletions(-)
 
-The bits that were added in the TX FIFO element are 'reserved' in the 
-old silicon - so it should not harm.
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 650b656f3c05..297b55163812 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -283,8 +283,12 @@ enum m_can_mram_cfg {
+ 
+ /* Tx Buffer Element */
+ /* R0 */
++#define TX_BUF_ESI		BIT(31)
+ #define TX_BUF_XTD		BIT(30)
+ #define TX_BUF_RTR		BIT(29)
++#define TX_BUF_EFC		BIT(23)
++#define TX_BUF_FDF		BIT(21)
++#define TX_BUF_BRS		BIT(20)
+ 
+ /* address offset and element number for each FIFO/Buffer in the Message RAM */
+ struct mram_cfg {
+@@ -916,7 +920,7 @@ static void m_can_chip_config(struct net_device *dev)
+ 	}
+ 
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+-		cccr |= CCCR_CME_CANFD_BRS << CCCR_CME_SHIFT;
++		cccr |= (CCCR_CME_CANFD_BRS | CCCR_CME_CANFD) << CCCR_CME_SHIFT;
+ 
+ 	m_can_write(priv, M_CAN_CCCR, cccr);
+ 	m_can_write(priv, M_CAN_TEST, test);
+@@ -1079,6 +1083,7 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+ 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+ 	u32 id, cccr;
+ 	int i;
++	u32 dlc;
+ 
+ 	if (can_dropped_invalid_skb(dev, skb))
+ 		return NETDEV_TX_OK;
+@@ -1097,7 +1102,6 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+ 
+ 	/* message ram configuration */
+ 	m_can_fifo_write(priv, 0, M_CAN_FIFO_ID, id);
+-	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, can_len2dlc(cf->len) << 16);
+ 
+ 	for (i = 0; i < cf->len; i += 4)
+ 		m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4),
+@@ -1105,19 +1109,34 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+ 
+ 	can_put_echo_skb(skb, dev, 0);
+ 
++	dlc = can_len2dlc(cf->len) << 16;
++
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+-		cccr = m_can_read(priv, M_CAN_CCCR);
+-		cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
+-		if (can_is_canfd_skb(skb)) {
+-			if (cf->flags & CANFD_BRS)
+-				cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
+-			else
+-				cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
++		if (m_can_read_core_rev(priv) < M_CAN_COREREL_3_1_0) {
++			/* set CCCR according to frame content */
++			cccr = m_can_read(priv, M_CAN_CCCR);
++			cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
++			if (can_is_canfd_skb(skb)) {
++				if (cf->flags & CANFD_BRS)
++					cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
++				else
++					cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
++			} else {
++				cccr |= CCCR_CMR_CAN << CCCR_CMR_SHIFT;
++			}
++			m_can_write(priv, M_CAN_CCCR, cccr);
+ 		} else {
+-			cccr |= CCCR_CMR_CAN << CCCR_CMR_SHIFT;
++			/* set tx buffer according to frame content */
++			if (can_is_canfd_skb(skb)) {
++				dlc |= TX_BUF_FDF;
++				if (cf->flags & CANFD_ESI)
++					dlc |= TX_BUF_ESI;
++				if (cf->flags & CANFD_BRS)
++					dlc |= TX_BUF_BRS;
++			}
+ 		}
+-		m_can_write(priv, M_CAN_CCCR, cccr);
+ 	}
++	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, dlc);
+ 
+ 	/* enable first TX buffer to start transfer  */
+ 	m_can_write(priv, M_CAN_TXBTIE, 0x1);
+-- 
+2.11.0
 
-This code enables
-
-  if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
--	cccr |= CCCR_CME_CANFD_BRS << CCCR_CME_SHIFT;
-+	cccr |= (CCCR_CME_CANFD_BRS | CCCR_CME_CANFD) << CCCR_CME_SHIFT;
-
-the CAN FD support in the new silicon.
-
-This register is set for the old silicon EVERY time a CAN frame is sent.
-So this change should not harm the old silicon either.
-
-In fact I was told that the v3.0.x IP core is rather seldom in the wild.
-Although I don't have a v3.0.x to test it should work from the 
-documentation side of view.
-
-Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
-If we would like to make it really better, the code in 
-m_can_start_xmit() should only fiddle with the M_CAN_CCCR register when 
-working with the v3.0.x silicon.
-
-In fact I would suggest to use the
-
-	if (m_can_read_core_rev(priv) < M_CAN_COREREL_3_1_0)
-
-method from
-
-	http://marc.info/?l=linux-can&m=148716783119090&w=2
-
-to split the code in m_can_start_xmit() accordingly.
-
-@Wenyou Yang: Can you please send a v3 which splits the tx function?
-
-Regards,
-Oliver
