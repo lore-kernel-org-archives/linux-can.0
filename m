@@ -1,56 +1,82 @@
-From: Tom Evans <tom_usenet@optusnet.com.au>
-Subject: Re: FlexCAN on imx28
-Date: Mon, 6 Mar 2017 10:17:38 +1100
-Message-ID: <9b6ca5ae-bad4-cb31-f325-694c14ca9463@optusnet.com.au>
-References: <1488465746.18098.13.camel@serenergy.com>
- <31bc327a-a900-c5fa-67fc-08a93134e753@pengutronix.de>
-Reply-To: tom_usenet@optusnet.com.au
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: PCAN-PCIe FD & mcba_usb mainline status?
+Date: Mon, 6 Mar 2017 08:41:32 +0100
+Message-ID: <3f8f48c1-1195-ffb9-3164-06805271a629@pengutronix.de>
+References: <c764c3d1-6248-0273-5c20-b401051c818a@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="GAaM4J9aOV8u4v1MHuoRgJO0rMEAU7OHW"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:38906 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752582AbdCFCmh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 5 Mar 2017 21:42:37 -0500
-In-Reply-To: <31bc327a-a900-c5fa-67fc-08a93134e753@pengutronix.de>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:43605 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752620AbdCFHl6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Mar 2017 02:41:58 -0500
+In-Reply-To: <c764c3d1-6248-0273-5c20-b401051c818a@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Steffen Malmgaard Mortensen <smm@serenergy.com>
-Cc: linux-can <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>, =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>
 
-On 03/03/17 22:23, Marc Kleine-Budde wrote:
-> Hallo Steffen,
->
-> I'm adding the linux-can ML on Cc, as the answer is of potential common
-> interest.
->
-> On 03/02/2017 03:42 PM, Steffen Malmgaard Mortensen wrote:
->> I have been experiencing problems with CAN package loss under high bus
->> load at high bit rates using an imx28.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--GAaM4J9aOV8u4v1MHuoRgJO0rMEAU7OHW
+Content-Type: multipart/mixed; boundary="sFOIu2luRhdc8phOX7PIEmchdxFTkU14B";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ Stephane Grosjean <s.grosjean@peak-system.com>,
+ =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?= <remigiusz.kollataj@mobica.com>
+Message-ID: <3f8f48c1-1195-ffb9-3164-06805271a629@pengutronix.de>
+Subject: Re: PCAN-PCIe FD & mcba_usb mainline status?
+References: <c764c3d1-6248-0273-5c20-b401051c818a@hartkopp.net>
+In-Reply-To: <c764c3d1-6248-0273-5c20-b401051c818a@hartkopp.net>
 
-Steffen didn't say which version of Linux he's using.
+--sFOIu2luRhdc8phOX7PIEmchdxFTkU14B
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-If he's using the latest NXP-supported version of Linux (2.6.35) then the 
-following patches may be of interest to him.
+On 03/05/2017 08:06 PM, Oliver Hartkopp wrote:
+> Hi Marc,
+>=20
+> these drivers are hanging around since January:
+>=20
+> [PATCH v4 0/4] can: peak: Add support for PCAN-PCIe FD cards
+> http://marc.info/?l=3Dlinux-can&m=3D148483988920494&w=3D2
+>=20
+> [PATCH v3] can: mcba_usb: Add support for Microchip CAN BUS Analyzer
+> http://marc.info/?l=3Dlinux-can&m=3D148534935211400&w=3D2
+>=20
+> What prevents you from pushing these drivers to mainline?
 
-Search for my posts on this thread and then follow the links to the other bug 
-reports.
+Resources to review properly.
 
-https://community.nxp.com/message/593611#comment-585209
+Marc
 
-This summarises the close to 20 separate bugs in the one old driver:
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-https://community.nxp.com/message/593606#593606
 
-Why would anyone be using as old as 2.6.35? It is the only "supported" version 
-for this chip i.MX53. And in my case the only one that can access the graphics 
-hardware in the i.MX53.
+--sFOIu2luRhdc8phOX7PIEmchdxFTkU14B--
 
-If Stefan's Linux is a later version where the CAN driver uses the FlexCAN 
-FIFO, but is the one using NAPI for everything, then that pretty much 
-guarantees packet loss and overflow. The have been some very good recent 
-changes to the driver to fix this.
+--GAaM4J9aOV8u4v1MHuoRgJO0rMEAU7OHW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Tom
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAli9Eq8ACgkQHv7KIOw4
+HPbVcgf+J8WVvgBbruRNt2H7IdOW7APVqY5UAPucAgPi583QJag99pZ3K6SRlJiG
+fSW3yZuExhjR212LEhO8LcR+AhlXzEDXab8YPmVKkR/t0EpxKDyRH1GFbJNMCx0G
+07jBYmZS5Wx9pJC+h5i6qXHsHM07dAV1+4NYWsw5A7BRnR5q5GbrNUjPAesNCo+w
+9KhWtMRI1yd9lM5TGs5zjCoSKxHhxtW5/2n6M3g5b8UHKfQtUo60oaGsO7ade+Pz
+9k/87zp6znQ05mesbOCtpyxUF4I8tyT1UwTFQf5liu7ASt3GI2ma2hCER5Vp9uXs
+BtDp6kvaGXdSkH5eWT319p4z+v+Fvg==
+=SIPa
+-----END PGP SIGNATURE-----
+
+--GAaM4J9aOV8u4v1MHuoRgJO0rMEAU7OHW--
