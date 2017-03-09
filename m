@@ -1,95 +1,58 @@
-From: Akshay Bhat <akshay.bhat-jEh4hwF5bVhBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
-Date: Thu, 9 Mar 2017 07:34:43 -0500
-Message-ID: <1447da4a-6a36-38fb-4298-fd7488697d11@timesys.com>
-References: <1484680922-25813-1-git-send-email-akshay.bhat@timesys.com>
- <1484680922-25813-2-git-send-email-akshay.bhat@timesys.com>
- <2197294b-e6cf-6c56-1419-3a4f95c29db7@timesys.com>
- <6df4a9ae-eaba-6f3f-9c23-ae269548b005@grandegger.com>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [mkl-can-next:j1939 1/38] net/can/j1939/socket.c:510:13-20: WARNING
+ opportunity for memdup_user
+Date: Thu, 9 Mar 2017 21:32:54 +0800
+Message-ID: <201703092151.dwyeu4qr%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <6df4a9ae-eaba-6f3f-9c23-ae269548b005-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Akshay Bhat <nodeax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mga11.intel.com ([192.55.52.93]:13114 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1750770AbdCINdH (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 9 Mar 2017 08:33:07 -0500
+Content-Disposition: inline
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: kbuild-all@01.org, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git j1939
+head:   a6a69925d6ac346bbaf98df159bc3493cd8d55a0
+commit: 5d073ddf073b82cfda82e86a0809b11895604009 [1/38] can-j1939: Import SAE J1939
 
 
+coccinelle warnings: (new ones prefixed by >>)
 
-On 03/09/2017 04:59 AM, Wolfgang Grandegger wrote:
-> Hello Akshay,
-> 
-> unfortunately there are not many CAN controllers for the SPI bus. I just
-> know the MPC251x, which behaves badly (message losses) under Linux,
-> especially at hight bit-rates due to insufficient RX buffering. What is
-> your experience with that driver for the HI-311x?
-> 
+>> net/can/j1939/socket.c:510:13-20: WARNING opportunity for memdup_user
 
-Hi Wolfgang,
+vim +510 net/can/j1939/socket.c
 
-Good question. I have not worked with MPC251x but the HI-311x performs
-much better because HI-3110 features:
-8 message FIFO (as opposed to 2 buffers on MPC2510)
-20 MHz SPI interface (as opposed to 2.5 MHz on MPC2510)
+   494			char __user *optval, unsigned int optlen)
+   495	{
+   496		struct sock *sk = sock->sk;
+   497		struct j1939_sock *jsk = j1939_sk(sk);
+   498		int tmp, count;
+   499		struct j1939_filter *filters, *ofilters;
+   500	
+   501		if (level != SOL_CAN_J1939)
+   502			return -EINVAL;
+   503	
+   504		switch (optname) {
+   505		case SO_J1939_FILTER:
+   506			if (optval) {
+   507				if (optlen % sizeof(*filters) != 0)
+   508					return -EINVAL;
+   509				count = optlen / sizeof(*filters);
+ > 510				filters = kmalloc(optlen, GFP_KERNEL);
+   511				if (!filters)
+   512					return -ENOMEM;
+   513				if (copy_from_user(filters, optval, optlen)) {
+   514					kfree(filters);
+   515					return -EFAULT;
+   516				}
+   517			} else {
+   518				filters = NULL;
 
-As for the real world test results:
-
-With RT patch applied to the kernel running on a i.MX6 Dual processor
-(worst case interrupt latency of 50us as reported by cyclictest), there
-are ZERO packet drops.
-Tested with Kvaser Leaf sending 100 burst messages (back to back) every
-40ms at a 1M CAN bit rate. 10 million messages were sent by the Kvaser
-leaf and received successfully by the HI-311x driver.
-
-Even without the RT patch, I was able to get the packet drop to zero but
-this was by moving the CAN/SPI IRQ threads to CPU1 instead of CPU0.
-
-Hence I feel the driver is a good candidate to be included in the Linux
-kernel.
-
-Below are detailed test results if you like:
-https://goo.gl/VWgzp7
-
-Ones of particular interest:
-10M-msgs-1M-bitrate-100burst-40ms-interval-leaf.png
-10M-msgs-1M-bitrate-100burst-40ms-interval-pwc.txt
-
-Thanks,
-Akshay
-
-> 
-> Am 07.03.2017 um 16:31 schrieb Akshay Bhat:
->>
->>
->> On 01/17/2017 02:22 PM, Akshay Bhat wrote:
->>> This patch adds support for the Holt HI-311x CAN controller. The HI311x
->>> CAN controller is capable of transmitting and receiving standard data
->>> frames, extended data frames and remote frames. The HI311x interfaces
->>> with the host over SPI.
->>>
->>> Datasheet: www.holtic.com/documents/371-hi-3110_v-rev-jpdf.do
->>>
->>> Signed-off-by: Akshay Bhat <nodeax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->>> ---
->>>
->>
->>
->> Hi Marc,
->>
->> Wanted to check if this patch can be included in the next kernel release
->> (4.12).
->>
->> Thanks,
->> Akshay
->> -- 
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
->>
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
