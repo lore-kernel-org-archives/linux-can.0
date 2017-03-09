@@ -1,58 +1,63 @@
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [mkl-can-next:j1939 1/38] net/can/j1939/socket.c:510:13-20: WARNING
- opportunity for memdup_user
-Date: Thu, 9 Mar 2017 21:32:54 +0800
-Message-ID: <201703092151.dwyeu4qr%fengguang.wu@intel.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH v2 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
+Date: Thu, 9 Mar 2017 15:45:15 +0100
+Message-ID: <a9cb37d9-a71e-ce59-c379-d9bde5d8afb9@grandegger.com>
+References: <1484680922-25813-1-git-send-email-akshay.bhat@timesys.com>
+ <1484680922-25813-2-git-send-email-akshay.bhat@timesys.com>
+ <2197294b-e6cf-6c56-1419-3a4f95c29db7@timesys.com>
+ <6df4a9ae-eaba-6f3f-9c23-ae269548b005@grandegger.com>
+ <1447da4a-6a36-38fb-4298-fd7488697d11@timesys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mga11.intel.com ([192.55.52.93]:13114 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750770AbdCINdH (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 9 Mar 2017 08:33:07 -0500
-Content-Disposition: inline
+Received: from mailproxy02.manitu.net ([217.11.48.66]:49488 "EHLO
+        mailproxy02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S932290AbdCIOpa (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 9 Mar 2017 09:45:30 -0500
+In-Reply-To: <1447da4a-6a36-38fb-4298-fd7488697d11@timesys.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <kurt.van.dijck@eia.be>
-Cc: kbuild-all@01.org, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Akshay Bhat <akshay.bhat@timesys.com>, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Akshay Bhat <nodeax@gmail.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git j1939
-head:   a6a69925d6ac346bbaf98df159bc3493cd8d55a0
-commit: 5d073ddf073b82cfda82e86a0809b11895604009 [1/38] can-j1939: Import SAE J1939
+Hello Akshay,
 
+Am 09.03.2017 um 13:34 schrieb Akshay Bhat:
+>
+>
+> On 03/09/2017 04:59 AM, Wolfgang Grandegger wrote:
+>> Hello Akshay,
+>>
+>> unfortunately there are not many CAN controllers for the SPI bus. I just
+>> know the MPC251x, which behaves badly (message losses) under Linux,
+>> especially at hight bit-rates due to insufficient RX buffering. What is
+>> your experience with that driver for the HI-311x?
+>>
+>
+> Hi Wolfgang,
+>
+> Good question. I have not worked with MPC251x but the HI-311x performs
+> much better because HI-3110 features:
+> 8 message FIFO (as opposed to 2 buffers on MPC2510)
+> 20 MHz SPI interface (as opposed to 2.5 MHz on MPC2510)
+>
+> As for the real world test results:
+>
+> With RT patch applied to the kernel running on a i.MX6 Dual processor
+> (worst case interrupt latency of 50us as reported by cyclictest), there
+> are ZERO packet drops.
+> Tested with Kvaser Leaf sending 100 burst messages (back to back) every
+> 40ms at a 1M CAN bit rate. 10 million messages were sent by the Kvaser
+> leaf and received successfully by the HI-311x driver.
 
-coccinelle warnings: (new ones prefixed by >>)
+This corresponds to a bus load of approx. 50%, I think?
 
->> net/can/j1939/socket.c:510:13-20: WARNING opportunity for memdup_user
+> Even without the RT patch, I was able to get the packet drop to zero but
+> this was by moving the CAN/SPI IRQ threads to CPU1 instead of CPU0.
 
-vim +510 net/can/j1939/socket.c
+Vanilla Linux is more critical here due to higher latencies. With 2500 
+Messages per sec the RX FIFO (8 Messages) fills up within 3.2 ms... and 
+in a burst even quicker. That's already heavy load.
 
-   494			char __user *optval, unsigned int optlen)
-   495	{
-   496		struct sock *sk = sock->sk;
-   497		struct j1939_sock *jsk = j1939_sk(sk);
-   498		int tmp, count;
-   499		struct j1939_filter *filters, *ofilters;
-   500	
-   501		if (level != SOL_CAN_J1939)
-   502			return -EINVAL;
-   503	
-   504		switch (optname) {
-   505		case SO_J1939_FILTER:
-   506			if (optval) {
-   507				if (optlen % sizeof(*filters) != 0)
-   508					return -EINVAL;
-   509				count = optlen / sizeof(*filters);
- > 510				filters = kmalloc(optlen, GFP_KERNEL);
-   511				if (!filters)
-   512					return -ENOMEM;
-   513				if (copy_from_user(filters, optval, optlen)) {
-   514					kfree(filters);
-   515					return -EFAULT;
-   516				}
-   517			} else {
-   518				filters = NULL;
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Wolfgang.
