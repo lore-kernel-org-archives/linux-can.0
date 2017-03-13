@@ -1,91 +1,68 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Efim Monjak <emonjak@lipowsky.de>
 Subject: Re: at91 driver lost CAN messages
-Date: Mon, 13 Mar 2017 10:47:53 +0100
-Message-ID: <351cfe9b-231e-3c6b-5b7e-483e2b684912@pengutronix.de>
+Date: Mon, 13 Mar 2017 13:55:41 +0100
+Message-ID: <5e786553-271f-6fdc-3bd9-2422f93757f5@lipowsky.de>
 References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de>
  <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
- <3972105.9n1vzaBFN5@ws-stein>
+ <1cfeef11-69e0-53c1-f95a-0340cce5803e@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="KGkq4HOK2SuupGwort0nimotfjCJV8ts9"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:48831 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752130AbdCMJsA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Mar 2017 05:48:00 -0400
-In-Reply-To: <3972105.9n1vzaBFN5@ws-stein>
+Received: from server1.railshosting.de ([5.45.177.35]:47871 "EHLO
+        server1.railshosting.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750859AbdCMMxn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Mar 2017 08:53:43 -0400
+In-Reply-To: <1cfeef11-69e0-53c1-f95a-0340cce5803e@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---KGkq4HOK2SuupGwort0nimotfjCJV8ts9
-Content-Type: multipart/mixed; boundary="UOXA3Qj8vWPML97QifxrAoCBVGR79hNIF";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Alexander Stein <alexander.stein@systec-electronic.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org
-Message-ID: <351cfe9b-231e-3c6b-5b7e-483e2b684912@pengutronix.de>
-Subject: Re: at91 driver lost CAN messages
-References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de>
- <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
- <3972105.9n1vzaBFN5@ws-stein>
-In-Reply-To: <3972105.9n1vzaBFN5@ws-stein>
-
---UOXA3Qj8vWPML97QifxrAoCBVGR79hNIF
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 03/13/2017 07:54 AM, Alexander Stein wrote:
->> @Marc: What was the reason to implement NAPI that days? Has it ever be=
-en
+Am 13.03.2017 um 10:47 schrieb Marc Kleine-Budde:
+> On 03/12/2017 12:06 AM, Oliver Hartkopp wrote:
+>> thanks for the patch!
+>>
+>> In fact I always thought NAPI is too heavy for CAN controllers. NAPI was
+>> intended for a very high interrupt load on some ethernet controllers
+>> with some considerable RX FIFO.
+>>
+>> I have a 20 CAN interfaces (SJA1000 driver) Core i7 system receiving
+>> ~22.000 frames/s without any problems, with an one-element FIFO and
+>> without NAPI.
+>>
+>> @Marc: What was the reason to implement NAPI that days? Has it ever been
 >> proved that NAPI had a remarkable positive effect in opposite to a
 >> direct CAN frame processing in the interrupt context?
->=20
-> One reason to use NAPI is out-of-order issues on SMP systems :-( You kn=
-ow the=20
-> problem: http://marc.info/?l=3Dlinux-can&m=3D143642135416355&w=3D2
-> If this is not resolved, things get even worse.
-> Well, now that there is generic FIFO-offload feature (drivers may need =
-changes=20
-> to use it) there is an easy way to read CAN frames with low latency whi=
-le=20
-> processing them in non-IRQ context.
-> IMHO reading CAN frames in softirq (NAPI) may be too late in some cases=
-, in RT=20
-> kernels this may be even worse.
+> On SMP systems the network stack doesn't seem to guarantee the order of
+> frames when put into the stack in IRQ context.
+>
+> Marc
+>
 
-ACK.
+As I see Socketcan use a default queuing discipline pfifo_fast.
+This use 3 bands with different priorities, may be here is a problem?
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+As I test my application I see a queue of about 163000 bytes can contain
+only 320 CAN frames. It seems the fifo is not configure for CAN frames 
+though
+used PDU is 16 bytes.
 
 
---UOXA3Qj8vWPML97QifxrAoCBVGR79hNIF--
+-- 
+Mit freundlichen Grüssen / Best regards
+Efim Monjak
 
---KGkq4HOK2SuupGwort0nimotfjCJV8ts9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+------------------------------------------------------------
+Lipowsky Industrie-Elektronik GmbH
+CAN- & LIN- TOOLS, Embedded Solutions
+------------------------------------------------------------
+Geschäftsführer/CEO: Andreas Lipowsky
+Sitz/domicile:       64291 Darmstadt, Roemerstr. 57
+Telefon/phone:       +49-(0)6151-93591-27
+Telefax/fax:         +49-(0)6151-93591-28
+Handelsregister      Darmstadt HRB 5139
+USt-IDNr/VAT-ID:     DE 111647423
+Quality Management:  DIN EN ISO 9001:2008
+------------------------------------------------------------
+Direktzugang: www.lipowsky.de
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljGaskACgkQHv7KIOw4
-HPYA9wgAiQt8O8RyTPY/eZEgCDMqqmvG/vidybn+mFpH22zNWDMhU5jb0QyKnmNL
-WIp1jxdmHDSo4/dWEjKwlgRrvbNa4aAIgc5p85IYb+RMbGyFjRByfddqEQDngfR8
-8/NDXjURoczO3CgOB81U9if/usQ/nNBcAyU59nT5BA9T4VEdYwhDw0rNDCNalgkz
-TSuvwslTxO4Hvwcpg+RnE1ygiHBV6SGTrCc6BG2YmK1nv7mScYpXW63Yco+DtGPh
-S99UjPPr1Hd7GZbbQ0YXi6rWnG40d6VtdvD7BICVYjFdcfhfos16ZgKtwuFYj/ac
-vru+S0nwoza0502r20Zlk27a00Rcrg==
-=T9od
------END PGP SIGNATURE-----
-
---KGkq4HOK2SuupGwort0nimotfjCJV8ts9--
