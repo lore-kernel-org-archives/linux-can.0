@@ -1,59 +1,70 @@
-From: Patrick Menschel <menschel.p@posteo.de>
-Subject: [PATCH 2/2] ARM: dts: sun7i: Add CAN node and can0_pins_a pinctrl settings
-Date: Sun, 12 Mar 2017 14:28:11 +0100
-Message-ID: <1489325291-6298-3-git-send-email-menschel.p@posteo.de>
-References: <1489325291-6298-1-git-send-email-menschel.p@posteo.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1489325291-6298-1-git-send-email-menschel.p@posteo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk, maxime.ripard@free-electrons.com, wens@csie.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
-Cc: Patrick Menschel <menschel.p@posteo.de>
-List-Id: linux-can.vger.kernel.org
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: at91 driver lost CAN messages
+Date: Mon, 13 Mar 2017 07:54:30 +0100
+Message-ID: <3972105.9n1vzaBFN5@ws-stein>
+References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de> <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from webbox1416.server-home.net ([77.236.96.61]:38916 "EHLO
+        webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1750726AbdCMGyn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Mar 2017 02:54:43 -0400
+In-Reply-To: <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 
-The A20 SoC has an on-board CAN controller. This patch adds the device node
-and the corresponding pinctrl settings for pins PH20 and PH21.
+On Sunday 12 March 2017 00:06:02, Oliver Hartkopp wrote:
+> Hi Efim,
+> 
+> On 03/10/2017 02:48 PM, Efim Monjak wrote:
+> > If napi polling is deactivated by follow change no more receive overflow
+> > error occurs.
+> 
+> thanks for the patch!
+> 
+> In fact I always thought NAPI is too heavy for CAN controllers. NAPI was
+> intended for a very high interrupt load on some ethernet controllers
+> with some considerable RX FIFO.
+> 
+> I have a 20 CAN interfaces (SJA1000 driver) Core i7 system receiving
+> ~22.000 frames/s without any problems, with an one-element FIFO and
+> without NAPI.
+> 
+> @Marc: What was the reason to implement NAPI that days? Has it ever been
+> proved that NAPI had a remarkable positive effect in opposite to a
+> direct CAN frame processing in the interrupt context?
 
-The CAN controller is inherited from the A10 SoC and uses the same driver.
+One reason to use NAPI is out-of-order issues on SMP systems :-( You know the 
+problem: http://marc.info/?l=linux-can&m=143642135416355&w=2
+If this is not resolved, things get even worse.
+Well, now that there is generic FIFO-offload feature (drivers may need changes 
+to use it) there is an easy way to read CAN frames with low latency while 
+processing them in non-IRQ context.
+IMHO reading CAN frames in softirq (NAPI) may be too late in some cases, in RT 
+kernels this may be even worse.
 
-This patch is adapted from the description in
-Documentation/devicetree/bindings/net/can/sun4i_can.txt
-
-Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
----
- arch/arm/boot/dts/sun7i-a20.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
-index f7db067..a0417c0 100644
---- a/arch/arm/boot/dts/sun7i-a20.dtsi
-+++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-@@ -1390,6 +1390,13 @@
- 				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
- 				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
- 			};
-+
-+			can0_pins_a: can0@0 {
-+				allwinner,pins = "PH20","PH21";
-+				allwinner,function = "can";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
- 		};
- 
- 		timer@01c20c00 {
-@@ -1711,5 +1718,13 @@
- 			clocks = <&apb1_gates 7>;
- 			status = "disabled";
- 		};
-+
-+		can0: can@01c2bc00 {
-+			compatible = "allwinner,sun4i-a10-can";
-+			reg = <0x01c2bc00 0x400>;
-+			interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&apb1_gates 4>;
-+			status = "disabled";
-+		};
- 	};
- };
+Best regards,
+Alexander
 -- 
-1.9.1
+Dipl.-Inf. Alexander Stein
+SYS TEC electronic GmbH
+alexander.stein@systec-electronic.com
+
+Legal and Commercial Address:
+Am Windrad 2
+08468 Heinsdorfergrund
+Germany
+
+Office: +49 (0) 3765 38600-0
+Fax:    +49 (0) 3765 38600-4100
+ 
+Managing Directors:
+	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
+	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
+Commercial Registry:
+	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
+
