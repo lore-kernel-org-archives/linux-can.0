@@ -1,70 +1,86 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: at91 driver lost CAN messages
-Date: Mon, 13 Mar 2017 07:54:30 +0100
-Message-ID: <3972105.9n1vzaBFN5@ws-stein>
-References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de> <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
+Date: Mon, 13 Mar 2017 10:47:10 +0100
+Message-ID: <1cfeef11-69e0-53c1-f95a-0340cce5803e@pengutronix.de>
+References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de>
+ <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="BUldtU44Tpnb56U50gkTQN1eVS5tBStmB"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:38916 "EHLO
-        webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1750726AbdCMGyn (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Mar 2017 02:54:43 -0400
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:60747 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751537AbdCMJrX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Mar 2017 05:47:23 -0400
 In-Reply-To: <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org
 
-On Sunday 12 March 2017 00:06:02, Oliver Hartkopp wrote:
-> Hi Efim,
-> 
-> On 03/10/2017 02:48 PM, Efim Monjak wrote:
-> > If napi polling is deactivated by follow change no more receive overflow
-> > error occurs.
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BUldtU44Tpnb56U50gkTQN1eVS5tBStmB
+Content-Type: multipart/mixed; boundary="6plgAOHdemtVEUcWDTsjNPceEv4Mup8qG";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
+ Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org
+Message-ID: <1cfeef11-69e0-53c1-f95a-0340cce5803e@pengutronix.de>
+Subject: Re: at91 driver lost CAN messages
+References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de>
+ <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
+In-Reply-To: <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
+
+--6plgAOHdemtVEUcWDTsjNPceEv4Mup8qG
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 03/12/2017 12:06 AM, Oliver Hartkopp wrote:
 > thanks for the patch!
-> 
-> In fact I always thought NAPI is too heavy for CAN controllers. NAPI was
-> intended for a very high interrupt load on some ethernet controllers
+>=20
+> In fact I always thought NAPI is too heavy for CAN controllers. NAPI wa=
+s=20
+> intended for a very high interrupt load on some ethernet controllers=20
 > with some considerable RX FIFO.
-> 
-> I have a 20 CAN interfaces (SJA1000 driver) Core i7 system receiving
-> ~22.000 frames/s without any problems, with an one-element FIFO and
+>=20
+> I have a 20 CAN interfaces (SJA1000 driver) Core i7 system receiving=20
+> ~22.000 frames/s without any problems, with an one-element FIFO and=20
 > without NAPI.
-> 
-> @Marc: What was the reason to implement NAPI that days? Has it ever been
-> proved that NAPI had a remarkable positive effect in opposite to a
+>=20
+> @Marc: What was the reason to implement NAPI that days? Has it ever bee=
+n=20
+> proved that NAPI had a remarkable positive effect in opposite to a=20
 > direct CAN frame processing in the interrupt context?
 
-One reason to use NAPI is out-of-order issues on SMP systems :-( You know the 
-problem: http://marc.info/?l=linux-can&m=143642135416355&w=2
-If this is not resolved, things get even worse.
-Well, now that there is generic FIFO-offload feature (drivers may need changes 
-to use it) there is an easy way to read CAN frames with low latency while 
-processing them in non-IRQ context.
-IMHO reading CAN frames in softirq (NAPI) may be too late in some cases, in RT 
-kernels this may be even worse.
+On SMP systems the network stack doesn't seem to guarantee the order of
+frames when put into the stack in IRQ context.
 
-Best regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
-SYS TEC electronic GmbH
-alexander.stein@systec-electronic.com
+Marc
 
-Legal and Commercial Address:
-Am Windrad 2
-08468 Heinsdorfergrund
-Germany
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Office: +49 (0) 3765 38600-0
-Fax:    +49 (0) 3765 38600-4100
- 
-Managing Directors:
-	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
-	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
-Commercial Registry:
-	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
 
+--6plgAOHdemtVEUcWDTsjNPceEv4Mup8qG--
+
+--BUldtU44Tpnb56U50gkTQN1eVS5tBStmB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljGaqMACgkQHv7KIOw4
+HPaGiwf9F160fVO9tjdDAkoR3c1qkVhKTSWKfhiob6+CXyGRm8QHvpF5VcJ5hHLC
++5tFXizVLUO1+hZqzYGikyTHT5iyC6XK36wO+5+pYs/Q3MNsH+oHu8lmMIExw1P5
+iF8z+B0iDhfj6Fv4EXJzgmE9A3c7nS58zMeqm3kgJmLKiozjUMby5E8i6WCz2Nwq
+yn4lfuBB6dxHICI81dYxNJ/gYpHqkiqT0mHVTGnRW9V+gaeEUrzb9s/2KByf9MuB
+Zpzpx2AF7947hRNZDAdVX9cv1S0PbfOr54no9xDvleJx2Pfga+eR6F4CBVXTpyEC
+LjUGdBBrrW5mRQhf2/RIbMLuqQqHLg==
+=eT2W
+-----END PGP SIGNATURE-----
+
+--BUldtU44Tpnb56U50gkTQN1eVS5tBStmB--
