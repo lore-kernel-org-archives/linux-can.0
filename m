@@ -1,89 +1,98 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: at91 driver lost CAN messages
-Date: Thu, 16 Mar 2017 11:11:57 +0100
-Message-ID: <54435ee2-2eb8-8467-8cee-196153cb2229@pengutronix.de>
+Date: Thu, 16 Mar 2017 11:18:33 +0100
+Message-ID: <85ad9a0c-50be-f7b1-4465-ecfdce02df75@pengutronix.de>
 References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de>
- <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
- <3972105.9n1vzaBFN5@ws-stein>
- <351cfe9b-231e-3c6b-5b7e-483e2b684912@pengutronix.de>
- <28df3655-1d69-2c0e-dd3a-2d70088388ff@hartkopp.net>
- <1666b5da-6ed9-a6f4-214a-d33bc0ab4aaa@pengutronix.de>
- <f0c3d9ad-5090-43ed-c584-390e9c31f7b1@lipowsky.de>
- <28711d42-4fc8-4fd6-3e74-60116984885c@pengutronix.de>
- <c7299ea9-3651-1519-f067-2792fe02b63c@lipowsky.de>
+ <3117407.TP9DfUe48K@ws-stein>
+ <c05c554a-c76c-f6d0-7327-f459d807ab3e@hartkopp.net>
+ <5803815.9246bLnB9A@ws-stein>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="oqg1HDBK8l9BxrKkvClH43Qj8QkSOHExc"
+ boundary="HPI6CJqu4UEVj6Hw5vojftELj6owAl4Lm"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:34541 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:54733 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751279AbdCPKMF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Mar 2017 06:12:05 -0400
-In-Reply-To: <c7299ea9-3651-1519-f067-2792fe02b63c@lipowsky.de>
+        by vger.kernel.org with ESMTP id S1751137AbdCPKUL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Mar 2017 06:20:11 -0400
+In-Reply-To: <5803815.9246bLnB9A@ws-stein>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Efim Monjak <emonjak@lipowsky.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org
+To: Alexander Stein <alexander.stein@systec-electronic.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oqg1HDBK8l9BxrKkvClH43Qj8QkSOHExc
-Content-Type: multipart/mixed; boundary="TsPNaLGEJFmCHlPp0vV8tkcOmOskjLm64";
+--HPI6CJqu4UEVj6Hw5vojftELj6owAl4Lm
+Content-Type: multipart/mixed; boundary="DIPdMNkjED02PO9wMU3l9Jov04mnliXS9";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Efim Monjak <emonjak@lipowsky.de>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org
-Message-ID: <54435ee2-2eb8-8467-8cee-196153cb2229@pengutronix.de>
+To: Alexander Stein <alexander.stein@systec-electronic.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org
+Message-ID: <85ad9a0c-50be-f7b1-4465-ecfdce02df75@pengutronix.de>
 Subject: Re: at91 driver lost CAN messages
 References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de>
- <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
- <3972105.9n1vzaBFN5@ws-stein>
- <351cfe9b-231e-3c6b-5b7e-483e2b684912@pengutronix.de>
- <28df3655-1d69-2c0e-dd3a-2d70088388ff@hartkopp.net>
- <1666b5da-6ed9-a6f4-214a-d33bc0ab4aaa@pengutronix.de>
- <f0c3d9ad-5090-43ed-c584-390e9c31f7b1@lipowsky.de>
- <28711d42-4fc8-4fd6-3e74-60116984885c@pengutronix.de>
- <c7299ea9-3651-1519-f067-2792fe02b63c@lipowsky.de>
-In-Reply-To: <c7299ea9-3651-1519-f067-2792fe02b63c@lipowsky.de>
+ <3117407.TP9DfUe48K@ws-stein>
+ <c05c554a-c76c-f6d0-7327-f459d807ab3e@hartkopp.net>
+ <5803815.9246bLnB9A@ws-stein>
+In-Reply-To: <5803815.9246bLnB9A@ws-stein>
 
---TsPNaLGEJFmCHlPp0vV8tkcOmOskjLm64
+--DIPdMNkjED02PO9wMU3l9Jov04mnliXS9
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 03/16/2017 11:06 AM, Efim Monjak wrote:
->> NAPI is supposed to be activated once you get an interrupt. But the
->> actual read of the messages and putting it into the networking stack i=
-s
->> done in NAPI, which comes after the IRQ.
+On 03/16/2017 10:58 AM, Alexander Stein wrote:
+>>> Let's see if I get time to cook rx-offload on a USB driver.
+>>=20
+>> That would be highly appreciated :-)
 >=20
-> Yes using of napi contains both issues NAPI-too-late and IRQ-too-late.
+> Mh, at a first glance I don't know how to do that, actually. AFAICS
+> rx-offload does not support 'pushing' struct can_frame into the
+> queue, only pulling from rx-offload. There is no fixed connection
+> bewteen the internal can device structure and CAN frames, like
+> hardware message boxes. In order to use
+> can_rx_offload_irq_offload_fifo() to insert (mostly) a single=20
+> can_frame I would need to store the last urb. I think I need to add a
+> function similar to can_rx_offload_irq_queue_err_skb(), e.g.=20
+> can_rx_offload_irq_queue_skb, but without scheduling. This should be
+> done once the urb was completly read.
 
-Yes - but IRQ-too-late cannot be fixed or worked around in the driver.
+Does your device support multiple CAN frames per USB?
 
->>>> Implementing rx-offload on the drivers passing skbs in the IRQ handl=
-er
->>>> will probably fix the out-of-order issue.
->>> Were possible by rx-offload implementing make skbs no such memory
->>> wasting for CAN data?
->> I'm not sure if I understand your question correctly. In CAN you need
->> still one skb for each CAN frame.
+Maybe rename
 
-> Yes an skb contains one CAN frame. As I have written early socket
-> show me receive buffer is about 163000 bytes. After overflow 320 CAN
-> frames are read from socket. I think receive buffer is full in this
-> case. If no place in receive buffer is used for other proposes=20
-> 163000bytes/320 skbs with CAN frames make about 500 bytes/skb. Linux
-> show CAN MTU is 16 byte big. What I mean: need an skb about a half of
-> kbyte to contain 16 bytes? Sure skbs are parts of list but do they
-> need this all memory?
+> int can_rx_offload_irq_queue_err_skb(struct can_rx_offload *offload, st=
+ruct sk_buff *skb)
 
-Yes - that's the overhead we accept for making use of the socket
-infrastructure in linux. Feel free to dig into the possibilities of
-aggregating several CAN frames into a single skb. On the ethernet side
-they have things like GRO.
+into can_rx_offload_irq_queue_skb() or
+can_rx_offload_irq_queue_skb_schedule() and fix the race condition:
 
+> int can_rx_offload_irq_queue_skb(struct can_rx_offload *offload, struct=
+ sk_buff *skb)
+> {
+take spinlock
+>         if (skb_queue_len(&offload->skb_queue) >
+>             offload->skb_queue_len_max)
+
+release in case of error
+
+>                 return -ENOMEM;
+>=20
+>         skb_queue_tail(&offload->skb_queue, skb);
+
+use unlocked variant of skb_queue_tail, i.e. __skb_queue_tail()
+
+release spin lock
+
+>         can_rx_offload_schedule(offload);
+>=20
+>         return 0;
+> }
+
+Then factor all but the can_rx_offload_schedule(offload) call into a
+separate function.
+
+regards,
 Marc
 
 --=20
@@ -93,23 +102,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---TsPNaLGEJFmCHlPp0vV8tkcOmOskjLm64--
+--DIPdMNkjED02PO9wMU3l9Jov04mnliXS9--
 
---oqg1HDBK8l9BxrKkvClH43Qj8QkSOHExc
+--HPI6CJqu4UEVj6Hw5vojftELj6owAl4Lm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljKZO0ACgkQHv7KIOw4
-HPZ0iAf+IC8Jj7gsIxQOeOmusYrvZnZ4TKyXynSJ1pgETWVHayGZcTNNQG+EhhMW
-0GY+9WxZwpBO8ATlgMBYvCfaJZXMKrVve0340QWAbVPnQ+zLfvHxYRpl64efqEN8
-k4eSvVMdXmctiAJgfFzBepCWyvf+koWnpF65GMzDyvHmlD/O9+zv+JaOUNsT1EPs
-D76zqkzlJ/Fi+q5Ue92WdKSbmG1E/KBDDmGFW8meK8uJQvsZSpPa1LTrF2AoSjci
-X+7+5gXaD8m49U8yQWfj0TDr24kbHph+iSqZ93Q7mdoQOroiBq+GMuW+jRl5n1A7
-wSb6D3zdOFGMgvWwB7aO1+NmS2QvNw==
-=y9NE
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljKZnkACgkQHv7KIOw4
+HPZ4fAf/dxHOCnXYRdxew+JmtaNxnqopKgQAn469hD40CP697GbIAEBMtxuXpc30
+miVxjlFxD52E/OKXKp3VanO1ONixacE/24PmvkXdFjC7fuGIsB+pEn6xsheiphvq
+AocI9nGZ4aZ9rkaVVjYnrsAcj6mddrQg+6NfZIzvVPioUUMhqmKJLQF11gnI+NDE
+eSihpvKEd+mKglIQ0EL1yIbS8d2Z/qILdE8VEpfp2ZE/YDYWEH5TKR5/2Y6b0O6i
+BNrZF3TmKIAydOt+21g8pLnPQy8Do4UJZcq4wK2pYCYLXs5P6J1jeavj6om9vnui
+R8AkSm9zcyq99NRHf6bdWcmxAB7ZSw==
+=iAj5
 -----END PGP SIGNATURE-----
 
---oqg1HDBK8l9BxrKkvClH43Qj8QkSOHExc--
+--HPI6CJqu4UEVj6Hw5vojftELj6owAl4Lm--
