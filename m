@@ -1,102 +1,97 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
 Subject: Re: at91 driver lost CAN messages
-Date: Thu, 16 Mar 2017 10:32:12 +0100
-Message-ID: <28711d42-4fc8-4fd6-3e74-60116984885c@pengutronix.de>
-References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de>
- <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
- <3972105.9n1vzaBFN5@ws-stein>
- <351cfe9b-231e-3c6b-5b7e-483e2b684912@pengutronix.de>
- <28df3655-1d69-2c0e-dd3a-2d70088388ff@hartkopp.net>
- <1666b5da-6ed9-a6f4-214a-d33bc0ab4aaa@pengutronix.de>
- <f0c3d9ad-5090-43ed-c584-390e9c31f7b1@lipowsky.de>
+Date: Thu, 16 Mar 2017 10:58 +0100
+Message-ID: <5803815.9246bLnB9A@ws-stein>
+References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de> <3117407.TP9DfUe48K@ws-stein> <c05c554a-c76c-f6d0-7327-f459d807ab3e@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="JAWBQAfpVB9DngAgFCSXubba3paW6aEOf"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:38121 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751214AbdCPJcV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Mar 2017 05:32:21 -0400
-In-Reply-To: <f0c3d9ad-5090-43ed-c584-390e9c31f7b1@lipowsky.de>
+Received: from webbox1416.server-home.net ([77.236.96.61]:41584 "EHLO
+        webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751137AbdCPJ6K (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Mar 2017 05:58:10 -0400
+In-Reply-To: <c05c554a-c76c-f6d0-7327-f459d807ab3e@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Efim Monjak <emonjak@lipowsky.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JAWBQAfpVB9DngAgFCSXubba3paW6aEOf
-Content-Type: multipart/mixed; boundary="SsEF86xf7LBjuuExalPShP0iKT0jP5GqU";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Efim Monjak <emonjak@lipowsky.de>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org
-Message-ID: <28711d42-4fc8-4fd6-3e74-60116984885c@pengutronix.de>
-Subject: Re: at91 driver lost CAN messages
-References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de>
- <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
- <3972105.9n1vzaBFN5@ws-stein>
- <351cfe9b-231e-3c6b-5b7e-483e2b684912@pengutronix.de>
- <28df3655-1d69-2c0e-dd3a-2d70088388ff@hartkopp.net>
- <1666b5da-6ed9-a6f4-214a-d33bc0ab4aaa@pengutronix.de>
- <f0c3d9ad-5090-43ed-c584-390e9c31f7b1@lipowsky.de>
-In-Reply-To: <f0c3d9ad-5090-43ed-c584-390e9c31f7b1@lipowsky.de>
+On Thursday 16 March 2017 10:09:30, Oliver Hartkopp wrote:
+> On 16.03.2017 10:06, Alexander Stein wrote:
+> > On Thursday 16 March 2017 09:34:38, Marc Kleine-Budde wrote:
+> >> On 03/16/2017 09:01 AM, Oliver Hartkopp wrote:
+> >>> On 13.03.2017 10:47, Marc Kleine-Budde wrote:
+> >>>> On 03/13/2017 07:54 AM, Alexander Stein wrote:
+> >>>>>> @Marc: What was the reason to implement NAPI that days? Has it ever
+> >>>>>> been
+> >>>>>> proved that NAPI had a remarkable positive effect in opposite to a
+> >>>>>> direct CAN frame processing in the interrupt context?
+> >>>>> 
+> >>>>> One reason to use NAPI is out-of-order issues on SMP systems :-( You
+> >>>>> know the problem: http://marc.info/?l=linux-can&m=143642135416355&w=2
+> >>>>> If this is not resolved, things get even worse.
+> >>>>> Well, now that there is generic FIFO-offload feature (drivers may need
+> >>>>> changes to use it) there is an easy way to read CAN frames with low
+> >>>>> latency while processing them in non-IRQ context.
+> >>>>> IMHO reading CAN frames in softirq (NAPI) may be too late in some
+> >>>>> cases,
+> >>>>> in RT kernels this may be even worse.
+> >>>> 
+> >>>> ACK.
+> >>> 
+> >>> Would then implementing CAN rx-offload on all(!) CAN drivers fix the
+> >>> NAPI-too-late and the out-of-order issue?
+> >> 
+> >> Implementing rx-offload on the drivers using NAPI, will fix the
+> >> NAPI-too-late issue (and turn it into a IRQ too late issue).
+> >> 
+> >> Implementing rx-offload on the drivers passing skbs in the IRQ handler
+> >> will probably fix the out-of-order issue.
+> >> 
+> >> I'm not sure if the USB and SPI drivers are affected by the out-of-order
+> >> issue.
+> > 
+> > IMO all drivers using netif_rx (IRQ context) rather han netif_receive_skb
+> > (NAPI poll context) are suffering from out-of-order issue. And I guess
+> > every USB CAN driver is using netif_rx in the URB callback function,
+> > which is essentially IRQ context. MCP2512 uses netif_rx_ni instead, dunno
+> > what is the actual difference to netif_rx.
+> > 
+> > Let's see if I get time to cook rx-offload on a USB driver.
+> 
+> That would be highly appreciated :-)
 
---SsEF86xf7LBjuuExalPShP0iKT0jP5GqU
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mh, at a first glance I don't know how to do that, actually. AFAICS rx-offload 
+does not support 'pushing' struct can_frame into the queue, only pulling from 
+rx-offload. There is no fixed connection bewteen the internal can device 
+structure and CAN frames, like hardware message boxes.
+In order to use can_rx_offload_irq_offload_fifo() to insert (mostly) a single 
+can_frame I would need to store the last urb. I think I need to add a function 
+similar to can_rx_offload_irq_queue_err_skb(), e.g. 
+can_rx_offload_irq_queue_skb, but without scheduling. This should be done once 
+the urb was completly read.
 
-On 03/16/2017 10:24 AM, Efim Monjak wrote:
->>> Would then implementing CAN rx-offload on all(!) CAN drivers fix the
->>> NAPI-too-late and the out-of-order issue?
->> Implementing rx-offload on the drivers using NAPI, will fix the
->> NAPI-too-late issue (and turn it into a IRQ too late issue).
->=20
-> It seems the napi in AT91 driver is called from CAN ISR. In this case
-> here are both issues.
+Marc: Does that sound reasonable?
 
-NAPI is supposed to be activated once you get an interrupt. But the
-actual read of the messages and putting it into the networking stack is
-done in NAPI, which comes after the IRQ.
+Best regards,
+Alexander
+-- 
+Dipl.-Inf. Alexander Stein
+SYS TEC electronic GmbH
+alexander.stein@systec-electronic.com
 
->> Implementing rx-offload on the drivers passing skbs in the IRQ handler=
+Legal and Commercial Address:
+Am Windrad 2
+08468 Heinsdorfergrund
+Germany
 
->> will probably fix the out-of-order issue.
->=20
-> Were possible by rx-offload implementing make skbs no such memory=20
-> wasting for CAN data?
+Office: +49 (0) 3765 38600-0
+Fax:    +49 (0) 3765 38600-4100
+ 
+Managing Directors:
+	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
+	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
+Commercial Registry:
+	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
 
-I'm not sure if I understand your question correctly. In CAN you need
-still one skb for each CAN frame.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---SsEF86xf7LBjuuExalPShP0iKT0jP5GqU--
-
---JAWBQAfpVB9DngAgFCSXubba3paW6aEOf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljKW5wACgkQHv7KIOw4
-HPbfcwf+IWHzqU6Fc9yzQ/6pmHwu9Ox1QQLxGUeJfChc/3DqV4Vl+9GIOukDc7y2
-itALv0gK5l0KTPrOdnX+hJJksH+TzJNY7kc7KN1to0cGOeY8Otr1fGAXjHnh0nLZ
-T1+GZqIXYEx5ZS1qMkiDAHcPf/e0YHSgXXYvDQ34MdUV7SJEDoqfWbQ//zRQ8H43
-i1N/+eHAOsoUDFQFKHU7mYo8SrVY84O7whmTEzTNk6jhWmXCfciuWMdviPtUbNVp
-2sjvxydvzb5yQQpriYXozFnmuNoBJl9tIz68iMZX/vEquLIJyDtiBCKnPXWPwG6e
-pVojrnMiyCZQr7JzEDrKKsNtt7FWyw==
-=Ar+4
------END PGP SIGNATURE-----
-
---JAWBQAfpVB9DngAgFCSXubba3paW6aEOf--
