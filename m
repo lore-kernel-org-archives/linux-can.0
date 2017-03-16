@@ -1,97 +1,66 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
+From: Efim Monjak <emonjak@lipowsky.de>
 Subject: Re: at91 driver lost CAN messages
-Date: Thu, 16 Mar 2017 10:58 +0100
-Message-ID: <5803815.9246bLnB9A@ws-stein>
-References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de> <3117407.TP9DfUe48K@ws-stein> <c05c554a-c76c-f6d0-7327-f459d807ab3e@hartkopp.net>
+Date: Thu, 16 Mar 2017 11:06:20 +0100
+Message-ID: <c7299ea9-3651-1519-f067-2792fe02b63c@lipowsky.de>
+References: <3f039cfd-cac1-3adb-77d2-87c5e67066f2@lipowsky.de>
+ <ee9c0d9d-6cd6-f93b-2f2b-8306777781c3@hartkopp.net>
+ <3972105.9n1vzaBFN5@ws-stein>
+ <351cfe9b-231e-3c6b-5b7e-483e2b684912@pengutronix.de>
+ <28df3655-1d69-2c0e-dd3a-2d70088388ff@hartkopp.net>
+ <1666b5da-6ed9-a6f4-214a-d33bc0ab4aaa@pengutronix.de>
+ <f0c3d9ad-5090-43ed-c584-390e9c31f7b1@lipowsky.de>
+ <28711d42-4fc8-4fd6-3e74-60116984885c@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:41584 "EHLO
-        webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751137AbdCPJ6K (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Mar 2017 05:58:10 -0400
-In-Reply-To: <c05c554a-c76c-f6d0-7327-f459d807ab3e@hartkopp.net>
+Received: from server1.railshosting.de ([5.45.177.35]:33382 "EHLO
+        server1.railshosting.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751281AbdCPKIC (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Mar 2017 06:08:02 -0400
+In-Reply-To: <28711d42-4fc8-4fd6-3e74-60116984885c@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Efim Monjak <emonjak@lipowsky.de>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: linux-can@vger.kernel.org
 
-On Thursday 16 March 2017 10:09:30, Oliver Hartkopp wrote:
-> On 16.03.2017 10:06, Alexander Stein wrote:
-> > On Thursday 16 March 2017 09:34:38, Marc Kleine-Budde wrote:
-> >> On 03/16/2017 09:01 AM, Oliver Hartkopp wrote:
-> >>> On 13.03.2017 10:47, Marc Kleine-Budde wrote:
-> >>>> On 03/13/2017 07:54 AM, Alexander Stein wrote:
-> >>>>>> @Marc: What was the reason to implement NAPI that days? Has it ever
-> >>>>>> been
-> >>>>>> proved that NAPI had a remarkable positive effect in opposite to a
-> >>>>>> direct CAN frame processing in the interrupt context?
-> >>>>> 
-> >>>>> One reason to use NAPI is out-of-order issues on SMP systems :-( You
-> >>>>> know the problem: http://marc.info/?l=linux-can&m=143642135416355&w=2
-> >>>>> If this is not resolved, things get even worse.
-> >>>>> Well, now that there is generic FIFO-offload feature (drivers may need
-> >>>>> changes to use it) there is an easy way to read CAN frames with low
-> >>>>> latency while processing them in non-IRQ context.
-> >>>>> IMHO reading CAN frames in softirq (NAPI) may be too late in some
-> >>>>> cases,
-> >>>>> in RT kernels this may be even worse.
-> >>>> 
-> >>>> ACK.
-> >>> 
-> >>> Would then implementing CAN rx-offload on all(!) CAN drivers fix the
-> >>> NAPI-too-late and the out-of-order issue?
-> >> 
-> >> Implementing rx-offload on the drivers using NAPI, will fix the
-> >> NAPI-too-late issue (and turn it into a IRQ too late issue).
-> >> 
-> >> Implementing rx-offload on the drivers passing skbs in the IRQ handler
-> >> will probably fix the out-of-order issue.
-> >> 
-> >> I'm not sure if the USB and SPI drivers are affected by the out-of-order
-> >> issue.
-> > 
-> > IMO all drivers using netif_rx (IRQ context) rather han netif_receive_skb
-> > (NAPI poll context) are suffering from out-of-order issue. And I guess
-> > every USB CAN driver is using netif_rx in the URB callback function,
-> > which is essentially IRQ context. MCP2512 uses netif_rx_ni instead, dunno
-> > what is the actual difference to netif_rx.
-> > 
-> > Let's see if I get time to cook rx-offload on a USB driver.
-> 
-> That would be highly appreciated :-)
+Am 16.03.2017 um 10:32 schrieb Marc Kleine-Budde:
+> On 03/16/2017 10:24 AM, Efim Monjak wrote:
+>>>> Would then implementing CAN rx-offload on all(!) CAN drivers fix the
+>>>> NAPI-too-late and the out-of-order issue?
+>>> Implementing rx-offload on the drivers using NAPI, will fix the
+>>> NAPI-too-late issue (and turn it into a IRQ too late issue).
+>> It seems the napi in AT91 driver is called from CAN ISR. In this case
+>> here are both issues.
+> NAPI is supposed to be activated once you get an interrupt. But the
+> actual read of the messages and putting it into the networking stack is
+> done in NAPI, which comes after the IRQ.
 
-Mh, at a first glance I don't know how to do that, actually. AFAICS rx-offload 
-does not support 'pushing' struct can_frame into the queue, only pulling from 
-rx-offload. There is no fixed connection bewteen the internal can device 
-structure and CAN frames, like hardware message boxes.
-In order to use can_rx_offload_irq_offload_fifo() to insert (mostly) a single 
-can_frame I would need to store the last urb. I think I need to add a function 
-similar to can_rx_offload_irq_queue_err_skb(), e.g. 
-can_rx_offload_irq_queue_skb, but without scheduling. This should be done once 
-the urb was completly read.
+Yes using of napi contains both issues NAPI-too-late and IRQ-too-late.
 
-Marc: Does that sound reasonable?
+>
+>>> Implementing rx-offload on the drivers passing skbs in the IRQ handler
+>>> will probably fix the out-of-order issue.
+>> Were possible by rx-offload implementing make skbs no such memory
+>> wasting for CAN data?
+> I'm not sure if I understand your question correctly. In CAN you need
+> still one skb for each CAN frame.
+>
+> Marc
+>
 
-Best regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
-SYS TEC electronic GmbH
-alexander.stein@systec-electronic.com
+Yes an skb contains one CAN frame. As I have written early socket show 
+me receive buffer
+is about 163000 bytes. After overflow 320 CAN frames are read from 
+socket. I think
+receive buffer is full in this case. If no place in receive buffer is 
+used for other proposes
+163000bytes/320 skbs with CAN frames make about 500 bytes/skb.
+Linux show CAN MTU is 16 byte big.
+What I mean: need an skb about a half of kbyte to contain 16 bytes?
+Sure skbs are parts of list but do they need this all memory?
 
-Legal and Commercial Address:
-Am Windrad 2
-08468 Heinsdorfergrund
-Germany
 
-Office: +49 (0) 3765 38600-0
-Fax:    +49 (0) 3765 38600-4100
- 
-Managing Directors:
-	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
-	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
-Commercial Registry:
-	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
+Regards,
+Efim
 
