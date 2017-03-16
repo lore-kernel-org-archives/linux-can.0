@@ -1,69 +1,109 @@
-From: Akshay Bhat <akshay.bhat-jEh4hwF5bVhBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
-Date: Thu, 16 Mar 2017 13:06:55 -0400
-Message-ID: <54d9a104-8ed1-4bb3-666e-042d3781dbfb@timesys.com>
-References: <1484680922-25813-1-git-send-email-akshay.bhat@timesys.com>
- <1484680922-25813-2-git-send-email-akshay.bhat@timesys.com>
- <234d9e75-0083-b8b4-c781-add653fdb550@grandegger.com>
- <b3ebb569-b50c-39ad-dec5-0059fbfba8fb@timesys.com>
- <eb4e0f6f-14de-3369-0d50-7371ae74f4fb@grandegger.com>
- <3dbf8748-9d04-0f21-0e95-448d7a72e7d5@timesys.com>
- <41439729-42d0-d883-2801-2d3607f2aeab@grandegger.com>
- <CANiP4c8WMeT1Cr7WDXew1ne7DFR04oaA8Uch0zvyyOf5yCa37A@mail.gmail.com>
- <3dba0948-ffcb-8e80-fb32-62bb0aca6627@grandegger.com>
+From: Francesco Giancane <francescogiancane8@gmail.com>
+Subject: Re: Iso-tp status
+Date: Thu, 16 Mar 2017 19:52:31 +0100
+Message-ID: <CAEQ58shkPoAu+qDsCLLGyC2D7=6UytwuH5n-5maoQZi-etka6w@mail.gmail.com>
+References: <CAEQ58siD2MfV0=VFoGC4B67KcbJLtTFQJzAUFN19XF=AnVhhCQ@mail.gmail.com>
+ <CAEQ58shwC09Q+TTAhG=dH7VjZ9RSQ5xsW8Z9tBhhbyN+3JKvAQ@mail.gmail.com>
+ <CAEQ58sj93WMMgyQVdBqUkaaH8fcwOwNZvwbwsdJ0zOR0dgjpKA@mail.gmail.com>
+ <CAEQ58sgZh==ZTB6HSzOWJzXv56pQZ+VEKPsWThYFHCUtzUHTdA@mail.gmail.com>
+ <CAEQ58sgmm5=UzxU_DcGj-qy+B+qpb1d9ko-GPxx75+D=8Mq4VA@mail.gmail.com>
+ <CAEQ58sjBCytryhrCQ1DYRcYpg=3-6DGvDtDzJVHV2mBcDa5NiA@mail.gmail.com>
+ <c3d436af-f305-89fb-a177-73e4bee8ee31@hartkopp.net> <CAEQ58sjaHg4-+E-RaFtwXdeZ71YCE_1LQDvGj6z2ssU_FERaXw@mail.gmail.com>
+ <CAEQ58sjOO=o-0s2y_BQAobNhEMo9X+=VDGfJcb10PcWmRs3q7Q@mail.gmail.com> <c29c7f0e-1f5b-ebaa-73bb-fb11294ece17@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <3dba0948-ffcb-8e80-fb32-62bb0aca6627-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Akshay Bhat <nodeax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wr0-f176.google.com ([209.85.128.176]:33469 "EHLO
+        mail-wr0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752771AbdCPSwh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Mar 2017 14:52:37 -0400
+Received: by mail-wr0-f176.google.com with SMTP id u48so38301164wrc.0
+        for <linux-can@vger.kernel.org>; Thu, 16 Mar 2017 11:52:32 -0700 (PDT)
+In-Reply-To: <c29c7f0e-1f5b-ebaa-73bb-fb11294ece17@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, mauro.cerrato@cnhind.com
 
-Hi Wolfgang,
+Hi Oliver,
+sorry for being late; thanks again for your feedback. Totally agree
+for the first point, maybe let us just stay focused on being mainline
+first - then we may think on how to send up to 4Gigs of data ;)
 
-On 03/15/2017 05:42 AM, Wolfgang Grandegger wrote:
-> Hello Akshay,
-> 
-..snip..
->>
->> So here is my plan:
->> - Have the bus error interrupt always enabled
->> - If berr-reporting off, then have the isr checks/reports state changes
-> 
-> Error state change messages should always be there. These are the
-> important one.
-> 
->> - if berr-reporting on, then have the isr checks/reports bus errors
->> and state changes (Does it make sense packing the error message, if
->> the ISR finds both bus and state changes?)
-> 
-> If berr-reporting is off, simply do not create an error message for bus
-> errors, and only if the state changed. If it's "on" create an additional
-> bus error message.
-> 
-> http://lxr.free-electrons.com/source/drivers/net/can/flexcan.c#L334
-> 
-> 
+Being the ISO-TP unreliable, i think that the only meaningful
+information may be whether the FF->FC exchange happened or not at
+all... Maybe nobody is answering on the other side, so it is worth
+informing the application at layer 7.
 
-I have fixed the driver to handle the error reporting. Also thanks for
-your tip for generating bus-off by setting the host device at a
-different CAN bit rate! Below are logs with the updated driver. Let me
-know if you have any concerns, if not I will submit the v4 patch.
+I have some good reference documentation by my side, it is the next
+schedule to be read; in time I will have more accurate answers in the
+form of which standard E* enumeration for errors maps good with which
+case.
 
-berr-reporting on case:
-http://pastebin.com/qDRLERmW
+As always, I am available for helping & contributing to this project.
+Let me know whether you need help :)
 
-berr-reporting off case:
-http://pastebin.com/fUn3j7qU
+Bye,
+Francesco Giancane
 
-Thanks,
-Akshay
+Via Paolo Braccini 46, 10141 Torino (TO)
++393933920466
+https://it.linkedin.com/in/francesco-giancane-aa7213117
 
 
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2017-03-11 23:42 GMT+01:00 Oliver Hartkopp <socketcan@hartkopp.net>:
+> Hi Francesco,
+>
+> On 03/10/2017 05:10 PM, Francesco Giancane wrote:
+>
+>> #1) What if we use conventional read/writes sys calls for supporting
+>> "old" ISO-TP specification up to 2^12 bytes, and using sendfile() +
+>> mmap() for source file descriptor greater than that? I think it would be
+>> unfeasible to statically allocate MAX_MSG_LENGTH to 4GB directly inside
+>> kernel space; maybe using zero copy would help us.
+>
+>
+> Yes. Something like this would be my intention too.
+> I would suggest to stay on the established read/write API e.g. up to 8192
+> byte to be able to play with the new length format.
+>
+> But for 'longer' PDUs sendfile & mmap would be cool.
+>
+> What about pushing the current approach to mainline first and add the 'long
+> PDU' API in a second step?
+>
+>> #2) Errors are good thing but as always developers prefer the Happy
+>> Path. I will double check standard socket() errors and see if there are
+>> already suitable matching codes.
+>
+>
+> As referenced in
+> https://github.com/hartkopp/can-isotp-modules/blob/master/net/can/isotp.c#L178
+> there is a possibility to detect some kind of timeout on protocol level.
+>
+> But in fact ISO15765-2 is an unreliable protocol anyway (like UDP) and you
+> never know whether the PDU was properly received at the data sink.
+>
+> For that reason you need a timeout handling a layer above anyway - e.g.
+> provided by an UDS application. So it's worth to discuss whether we really
+> need to provide a TIMEOUT error by the socket API.
+>
+>> #3) I wonder if setting an appropriate STmin parameter would fix this
+>> issue. (Mauro suggests STMin strictly greater than 0, to avoid CAN
+>> network flooding). Maybe also opening the socket in ISOTP mode should
+>> increase the txqueuelen.
+>
+>
+> Yeah - at least this reduces the problems. Adding an appropriate minimum
+> N_As value depending on the minimum CAN frame transmission time for CAN or
+> CAN FD.
+> https://github.com/hartkopp/can-isotp-modules/blob/master/net/can/isotp.c#L374
+>
+> But still this reasonable default value does not solve the general problem
+> of potential tx queue overflows. I wonder wether/how other network protocols
+> handle this - but I did not take a look on this so far %-)
+>
+> Thanks for your feedback & the discussion,
+> Oliver
+>
