@@ -1,116 +1,80 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v2 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
-Date: Fri, 17 Mar 2017 18:04:42 +0100
-Message-ID: <7730cff6-6e85-c98d-0315-bd3888d3aeb1@grandegger.com>
-References: <1484680922-25813-1-git-send-email-akshay.bhat@timesys.com>
- <1484680922-25813-2-git-send-email-akshay.bhat@timesys.com>
- <234d9e75-0083-b8b4-c781-add653fdb550@grandegger.com>
- <b3ebb569-b50c-39ad-dec5-0059fbfba8fb@timesys.com>
- <eb4e0f6f-14de-3369-0d50-7371ae74f4fb@grandegger.com>
- <3dbf8748-9d04-0f21-0e95-448d7a72e7d5@timesys.com>
- <41439729-42d0-d883-2801-2d3607f2aeab@grandegger.com>
- <CANiP4c8WMeT1Cr7WDXew1ne7DFR04oaA8Uch0zvyyOf5yCa37A@mail.gmail.com>
- <3dba0948-ffcb-8e80-fb32-62bb0aca6627@grandegger.com>
- <54d9a104-8ed1-4bb3-666e-042d3781dbfb@timesys.com>
- <006d9e14-47bf-1add-97c3-24098b43267f@grandegger.com>
- <69173747-cc2e-55f7-acad-4b5ba2a22863@timesys.com>
- <d5182e77-c243-1980-4cb6-39cd95075f4f@grandegger.com>
- <0362316b-ef76-1733-dbfc-8b644f758db9@timesys.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 2/3] can: m_can: Enable M_CAN IP version dependent
+ initialization
+Date: Fri, 17 Mar 2017 18:52:26 +0100
+Message-ID: <ffca3229-39f1-cc10-8086-72d7d94bdaef@hartkopp.net>
+References: <1489154417-19669-1-git-send-email-mario.huettel@de.bosch.com>
+ <1489154417-19669-4-git-send-email-mario.huettel@de.bosch.com>
+ <4f1f7a6f-457f-b1f8-036e-745b5b2c48d5@hartkopp.net>
+ <c3d26079-554b-104d-4836-825a8496b66f@de.bosch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <0362316b-ef76-1733-dbfc-8b644f758db9@timesys.com>
-Sender: netdev-owner@vger.kernel.org
-To: Akshay Bhat <akshay.bhat@timesys.com>, Akshay Bhat <nodeax@gmail.com>
-Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:28867 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751057AbdCQRx1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Mar 2017 13:53:27 -0400
+In-Reply-To: <c3d26079-554b-104d-4836-825a8496b66f@de.bosch.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "Mario.Huettel" <Mario.Huettel@de.bosch.com>, linux-can@vger.kernel.org
 
-Hi Akshay,
+Hello Mario,
 
-Am 17.03.2017 um 17:00 schrieb Akshay Bhat:
-> Hi Wolfgang,
->
-> On 03/17/2017 03:39 AM, Wolfgang Grandegger wrote:
->> Hello Akshay,
+On 03/17/2017 12:06 PM, Mario.Huettel wrote:
+> On 03/16/2017 09:52 AM, Oliver Hartkopp wrote:
+>>> * Chip configuaration for CAN_CTRLMODE_LOOPBACK is changed: Enabled
+>>>   CCCR_MON bit. In combination with TEST_LBCK it activates the internal
+>>>   loopback mode. Leaving CCCR_MON '0' results in external loopback mode.
 >>
->> Am 16.03.2017 um 23:29 schrieb Akshay Bhat:
->>> Hi Wolfgang,
->>>
->>> On 03/16/2017 04:02 PM, Wolfgang Grandegger wrote:
->>>>
->>>> Looks much better now! There are message for state changes to error
->>>> warning and passive. Just the following message is not correct:
->>>>
->>>>  (000.200824)  can0  20000004   [8]  00 40 00 00 00 00 5F 19
->>>> ERRORFRAME
->>>>     controller-problem{}
->>>>     error-counter-tx-rx{{95}{25}}
->>>>
->>>> Sorry, forgot to mention... the function can_change_state() [1]
->>>> should be used for that purpose, if possible. It fixes the issue
->>>> above as well.
->>>>
->>>
->>> The updated driver (the one used to create the above log) is using
->>> can_change_state() function. data[1] 40 corresponds to
->>> CAN_ERR_CRTL_ACTIVE, so looks correct? Could it be that the can-utils I
->>> am using is old and not reporting state change?
->>
->> Hm, yes. The raw data looks correct. You could download and build a
->> recent version from "https://github.com/linux-can/can-utils" to check.
->> It could also be a bug.
->>
+>> How is the interaction with the IFF_ECHO functionality then?
 >
-> Turned out to be a old version of can-utils. Using the above git tree
-> reports the flag.
+> It is the same as before. Internal loopback mode cuts the connection to
+> the CAN RX and TX pins.
 >
->  (000.200308)  can0  20000004   [8]  00 40 00 00 00 00 5F 00   ERRORFRAME
->         controller-problem{back-to-error-active}
->         error-counter-tx-rx{{95}{0}}
 >
->>> Enabling BUSOFF/ERRP/ERRW bits in STATFE did not generate any interrupts
->>> on the INT pin. Should we make it a requirement that both INT and STAT
->>> pins need to be connected in hardware for the driver to do the error
->>> reporting?
->>
->> As I said, it's the better solution, especially if interrupt flooding
->> does harm. How does your system behave when bus errors come in due to no
->> cable connected?
->>
+> However, sending a frame with enabled loopback results in following
+> situation:
+> * The socket that sent a frame receives the looped back frame
+
+In fact it receives the RX frame and not the echo'ed frame, right?
+
+> * Any other socket also receives the looped back frame but, in addition
+> to that, they
+>    also receive the echo frame created by the driver. Thus the frame is
+> received 2 times.
+
+This is bad.
+
+If I understood the frame flow correctly the 'non originating' socket 
+receives two frames:
+
+1. the frame from the completed TX operation (echo_skb / IFF_ECHO)
+2. the frame received from the RX path from the hw loopback shortcut
+
+I would suggest to drop the frame coming from the RX path (case 2) when 
+the CAN_CTRLMODE_LOOPBACK gets enabled.
+
+> I also observe this behavior in the old driver.
+
+Then it was always broken - and should be fixed.
+Unfortunately I never had any hardware to test this.
+
+>> Funny thing. So there are 3.2.x IP cores the only support the ISO mode?
 >
-> I did not see any issues on the system with the cable disconnected. In
-> my particular setup with the cable disconnected the system goes to
-> tx-error-passive and does not get any further interrupts until a state
-> change occurs.
+> Yes. We leave the choice, whether to support Non-ISO operation, to the
+> chip manufacturer.
+> Many customers want a fixed ISO-behavior as it reduces the risk of a
+> false configuration.
 
-Hm, that's unusual. Cable disconnected and then send a message:
+Interesting background.
 
-$ grep /proc/interrupts; sleep 10; /proc/interrupts
+> Regarding the code issues you highlighted. I fully agree with them and
+> will fix them for patch v2.
 
-should make things clear. But maybe it's a clever chip and it does stop 
-sending error messages if the error counter does not change any more. 
-After bus-off, the chip is quiet, of course. Should have a closer look 
-to the CAN standard.
+Thanks.
 
->> So far using NAPI was mandatory. There is the problem of out-of-order
->> message reception if handled in the isr on multi processor systems.
->> Marc, what is the current policy?
->>
->
-> Since this is a SPI based CAN, I am wary for any additional latencies
-> NAPI might introduce. The RX handling is being done at the very
-> beginning of the ISR for this reason.
->
-> Can we go ahead with the existing implementation and re-visit this at a
-> later time?
+Best regards,
+Oliver
 
-Likely yes, as Marc has already reviewed the driver once.
-
-BTW: what system board/processor are you using?
-
-> Thanks again for all your help in reviewing/improving the driver :)
-
-You are welcome!
-
-Wolfgang.
