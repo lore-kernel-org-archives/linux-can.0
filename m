@@ -1,320 +1,99 @@
-From: Mario Huettel <mario.huettel@de.bosch.com>
-Subject: [PATCH v2 3/3] can: m_can: Enable TX FIFO Handling for M_CAN IP version >= v3.1.x
-Date: Fri, 17 Mar 2017 13:52:54 +0100
-Message-ID: <1489755174-17546-4-git-send-email-mario.huettel@de.bosch.com>
-References: <1489755174-17546-1-git-send-email-mario.huettel@de.bosch.com>
+From: Akshay Bhat <akshay.bhat@timesys.com>
+Subject: Re: [PATCH v2 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
+Date: Fri, 17 Mar 2017 12:00:32 -0400
+Message-ID: <0362316b-ef76-1733-dbfc-8b644f758db9@timesys.com>
+References: <1484680922-25813-1-git-send-email-akshay.bhat@timesys.com>
+ <1484680922-25813-2-git-send-email-akshay.bhat@timesys.com>
+ <234d9e75-0083-b8b4-c781-add653fdb550@grandegger.com>
+ <b3ebb569-b50c-39ad-dec5-0059fbfba8fb@timesys.com>
+ <eb4e0f6f-14de-3369-0d50-7371ae74f4fb@grandegger.com>
+ <3dbf8748-9d04-0f21-0e95-448d7a72e7d5@timesys.com>
+ <41439729-42d0-d883-2801-2d3607f2aeab@grandegger.com>
+ <CANiP4c8WMeT1Cr7WDXew1ne7DFR04oaA8Uch0zvyyOf5yCa37A@mail.gmail.com>
+ <3dba0948-ffcb-8e80-fb32-62bb0aca6627@grandegger.com>
+ <54d9a104-8ed1-4bb3-666e-042d3781dbfb@timesys.com>
+ <006d9e14-47bf-1add-97c3-24098b43267f@grandegger.com>
+ <69173747-cc2e-55f7-acad-4b5ba2a22863@timesys.com>
+ <d5182e77-c243-1980-4cb6-39cd95075f4f@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:39072 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751017AbdCQMxl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Mar 2017 08:53:41 -0400
-Received: from vsmta13.fe.internet.bosch.com (unknown [10.4.98.53])
-        by imta23.fe.bosch.de (Postfix) with ESMTP id 463921580159
-        for <linux-can@vger.kernel.org>; Fri, 17 Mar 2017 13:53:00 +0100 (CET)
-Received: from FE-HUB1000.de.bosch.com (vsgw24.fe.internet.bosch.com [10.4.98.24])
-        by vsmta13.fe.internet.bosch.com (Postfix) with ESMTP id EF53A2E40E4D
-        for <linux-can@vger.kernel.org>; Fri, 17 Mar 2017 13:52:59 +0100 (CET)
-In-Reply-To: <1489755174-17546-1-git-send-email-mario.huettel@de.bosch.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <d5182e77-c243-1980-4cb6-39cd95075f4f@grandegger.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Akshay Bhat <nodeax@gmail.com>
+Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-* Added defines for TX Event FIFO Element
-* Adapted ndo_start_xmit function.
-  For versions >= v3.1.x it uses the TX FIFO to optimize the data
-  throughput. It stores the echo skb at the same index as in the
-  M_CAN's TX FIFO. The frame's message marker is set to this index.
-  This message marker is received in the TX Event FIFO after
-  the message was successfully transmitted. It is used to echo the
-  correct echo skb back to the network stack.
-* Added m_can_echo_tx_event function. It reads all received
-  message markers in the TX Event FIFO and loops back the
-  corresponding echo skbs.
-* ISR checks for new TX Event Entry interrupt for version >= 3.1.x.
-* Added spinlock to prevent concurrent accesses on the TX queue.
+Hi Wolfgang,
 
-Signed-off-by: Mario Huettel <mario.huettel@de.bosch.com>
----
- drivers/net/can/m_can/m_can.c | 190 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 167 insertions(+), 23 deletions(-)
+On 03/17/2017 03:39 AM, Wolfgang Grandegger wrote:
+> Hello Akshay,
+> 
+> Am 16.03.2017 um 23:29 schrieb Akshay Bhat:
+>> Hi Wolfgang,
+>>
+>> On 03/16/2017 04:02 PM, Wolfgang Grandegger wrote:
+>>>
+>>> Looks much better now! There are message for state changes to error
+>>> warning and passive. Just the following message is not correct:
+>>>
+>>>  (000.200824)  can0  20000004   [8]  00 40 00 00 00 00 5F 19  
+>>> ERRORFRAME
+>>>     controller-problem{}
+>>>     error-counter-tx-rx{{95}{25}}
+>>>
+>>> Sorry, forgot to mention... the function can_change_state() [1]
+>>> should be used for that purpose, if possible. It fixes the issue
+>>> above as well.
+>>>
+>>
+>> The updated driver (the one used to create the above log) is using
+>> can_change_state() function. data[1] 40 corresponds to
+>> CAN_ERR_CRTL_ACTIVE, so looks correct? Could it be that the can-utils I
+>> am using is old and not reporting state change?
+> 
+> Hm, yes. The raw data looks correct. You could download and build a
+> recent version from "https://github.com/linux-can/can-utils" to check.
+> It could also be a bug.
+> 
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 5aafdf2..fdafbcd 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -23,6 +23,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/spinlock.h>
- 
- #include <linux/can/dev.h>
- 
-@@ -334,6 +335,11 @@ enum m_can_mram_cfg {
- #define TX_BUF_MM_SHIFT		24
- #define TX_BUF_MM_MASK		(0xff << TX_BUF_MM_SHIFT)
- 
-+/* Tx event FIFO Element */
-+/* E1 */
-+#define TX_EVENT_MM_SHIFT	TX_BUF_MM_SHIFT
-+#define TX_EVENT_MM_MASK	(0xff << TX_EVENT_MM_SHIFT)
-+
- /* address offset and element number for each FIFO/Buffer in the Message RAM */
- struct mram_cfg {
- 	u16 off;
-@@ -351,6 +357,8 @@ struct m_can_priv {
- 	void __iomem *base;
- 	u32 irqstatus;
- 	int version;
-+	/* Spinlock to protect TX queue */
-+	spinlock_t xmit_lock;
- 
- 	/* message ram configuration */
- 	void __iomem *mram_base;
-@@ -821,6 +829,44 @@ static int m_can_poll(struct napi_struct *napi, int quota)
- 	return work_done;
- }
- 
-+static void m_can_echo_tx_event(struct net_device *dev)
-+{
-+	u32 txe_count = 0;
-+	u32 m_can_txefs;
-+	u32 fgi = 0;
-+	int i = 0;
-+	unsigned int msg_mark;
-+
-+	struct m_can_priv *priv = netdev_priv(dev);
-+	struct net_device_stats *stats = &dev->stats;
-+
-+	/* read tx event fifo status */
-+	m_can_txefs = m_can_read(priv, M_CAN_TXEFS);
-+
-+	/* Get Tx Event fifo element count */
-+	txe_count = (m_can_txefs & TXEFS_EFFL_MASK)
-+			>> TXEFS_EFFL_SHIFT;
-+
-+	/* Get and process all sent elements */
-+	for (i = 0; i < txe_count; i++) {
-+		/* retrieve get index */
-+		fgi = (m_can_read(priv, M_CAN_TXEFS) & TXEFS_EFGI_MASK)
-+			>> TXEFS_EFGI_SHIFT;
-+
-+		/* get message marker */
-+		msg_mark = (m_can_txe_fifo_read(priv, fgi, 4) &
-+			    TX_EVENT_MM_MASK) >> TX_EVENT_MM_SHIFT;
-+
-+		/* ack txe element */
-+		m_can_write(priv, M_CAN_TXEFA, (TXEFA_EFAI_MASK &
-+						(fgi << TXEFA_EFAI_SHIFT)));
-+
-+		/* update stats */
-+		stats->tx_bytes += can_get_echo_skb(dev, msg_mark);
-+		stats->tx_packets++;
-+	}
-+}
-+
- static irqreturn_t m_can_isr(int irq, void *dev_id)
- {
- 	struct net_device *dev = (struct net_device *)dev_id;
-@@ -848,11 +894,17 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
- 	}
- 
- 	/* transmission complete interrupt */
--	if (ir & IR_TC) {
-+	if ((ir & IR_TC) && priv->version == 30) {
- 		stats->tx_bytes += can_get_echo_skb(dev, 0);
- 		stats->tx_packets++;
- 		can_led_event(dev, CAN_LED_EVENT_TX);
- 		netif_wake_queue(dev);
-+	} else if ((ir & IR_TEFN) && priv->version >= 31) {
-+		/* New TX FIFO Element arrived */
-+		m_can_echo_tx_event(dev);
-+		can_led_event(dev, CAN_LED_EVENT_TX);
-+		if (netif_queue_stopped(dev) && !m_can_tx_fifo_full(priv))
-+			netif_wake_queue(dev);
- 	}
- 
- 	return IRQ_HANDLED;
-@@ -1310,19 +1362,35 @@ static int m_can_close(struct net_device *dev)
- 	return 0;
- }
- 
-+static int m_can_next_echo_skb_occupied(struct net_device *dev, int putidx)
-+{
-+	struct m_can_priv *priv = netdev_priv(dev);
-+	/*get wrap around for loopback skb index */
-+	unsigned int wrap = priv->can.echo_skb_max;
-+	int next_idx;
-+
-+	/* calculate next index */
-+	next_idx = (++putidx >= wrap ? 0 : putidx);
-+
-+	/* check if occupied */
-+	return !!priv->can.echo_skb[next_idx];
-+}
-+
- static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 				    struct net_device *dev)
- {
- 	struct m_can_priv *priv = netdev_priv(dev);
- 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
--	u32 id, cccr;
-+	u32 id, cccr, fdflags;
- 	int i;
-+	int putidx;
-+	unsigned long irqsave;
- 
- 	if (can_dropped_invalid_skb(dev, skb))
- 		return NETDEV_TX_OK;
- 
--	netif_stop_queue(dev);
--
-+	/* Generate ID field for TX buffer Element */
-+	/* Common to all supported M_CAN versions */
- 	if (cf->can_id & CAN_EFF_FLAG) {
- 		id = cf->can_id & CAN_EFF_MASK;
- 		id |= TX_BUF_XTD;
-@@ -1333,33 +1401,106 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 	if (cf->can_id & CAN_RTR_FLAG)
- 		id |= TX_BUF_RTR;
- 
--	/* message ram configuration */
--	m_can_fifo_write(priv, 0, M_CAN_FIFO_ID, id);
--	m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC, can_len2dlc(cf->len) << 16);
-+	if (priv->version == 30) {
-+		netif_stop_queue(dev);
- 
--	for (i = 0; i < cf->len; i += 4)
--		m_can_fifo_write(priv, 0, M_CAN_FIFO_DATA(i / 4),
--				 *(u32 *)(cf->data + i));
-+		/* message ram configuration */
-+		m_can_fifo_write(priv, 0, M_CAN_FIFO_ID, id);
-+		m_can_fifo_write(priv, 0, M_CAN_FIFO_DLC,
-+				 can_len2dlc(cf->len) << 16);
- 
--	can_put_echo_skb(skb, dev, 0);
-+		for (i = 0; i < cf->len; i += 4)
-+			m_can_fifo_write(priv, 0,
-+					 M_CAN_FIFO_DATA(i / 4),
-+					 *(u32 *)(cf->data + i));
-+
-+		can_put_echo_skb(skb, dev, 0);
-+
-+		if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
-+			cccr = m_can_read(priv, M_CAN_CCCR);
-+			cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
-+			if (can_is_canfd_skb(skb)) {
-+				if (cf->flags & CANFD_BRS)
-+					cccr |= CCCR_CMR_CANFD_BRS <<
-+						CCCR_CMR_SHIFT;
-+				else
-+					cccr |= CCCR_CMR_CANFD <<
-+						CCCR_CMR_SHIFT;
-+			} else {
-+				cccr |= CCCR_CMR_CAN << CCCR_CMR_SHIFT;
-+			}
-+			m_can_write(priv, M_CAN_CCCR, cccr);
-+		}
-+		m_can_write(priv, M_CAN_TXBTIE, 0x1);
-+		m_can_write(priv, M_CAN_TXBAR, 0x1);
-+		/* End of xmit function for version 3.0.x */
-+	} else {
-+		/* Transmit routine for version >= v3.1.x */
-+
-+		/* Check if FIFO full */
-+		if (m_can_tx_fifo_full(priv)) {
-+			/* This shouldn't happen */
-+			netif_stop_queue(dev);
-+			netdev_warn(dev,
-+				    "TX queue active although FIFO is full.");
-+			return NETDEV_TX_BUSY;
-+		}
- 
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
--		cccr = m_can_read(priv, M_CAN_CCCR);
--		cccr &= ~(CCCR_CMR_MASK << CCCR_CMR_SHIFT);
-+		/* get put index for frame */
-+		putidx = ((m_can_read(priv, M_CAN_TXFQS) & TXFQS_TFQPI_MASK)
-+				  >> TXFQS_TFQPI_SHIFT);
-+		/* Write ID Field to FIFO Element */
-+		m_can_fifo_write(priv, putidx, M_CAN_FIFO_ID, id);
-+
-+		/* get CAN FD configuration of frame */
-+		fdflags = 0;
- 		if (can_is_canfd_skb(skb)) {
-+			fdflags |= TX_BUF_FDF;
- 			if (cf->flags & CANFD_BRS)
--				cccr |= CCCR_CMR_CANFD_BRS << CCCR_CMR_SHIFT;
--			else
--				cccr |= CCCR_CMR_CANFD << CCCR_CMR_SHIFT;
--		} else {
--			cccr |= CCCR_CMR_CAN << CCCR_CMR_SHIFT;
-+				fdflags |= TX_BUF_BRS;
- 		}
--		m_can_write(priv, M_CAN_CCCR, cccr);
-+
-+		/* Construct DLC Field. Also contains CAN-FD configuration
-+		 * use put index of fifo as message marker
-+		 * it is used in TX interrupt for
-+		 * sending the correct echo frame
-+		 */
-+		m_can_fifo_write(priv, putidx, M_CAN_FIFO_DLC,
-+				 ((putidx << TX_BUF_MM_SHIFT) &
-+				  TX_BUF_MM_MASK) |
-+				 (can_len2dlc(cf->len) << 16) |
-+				 fdflags | TX_BUF_EFC);
-+
-+		for (i = 0; i < cf->len; i += 4)
-+			m_can_fifo_write(priv, putidx, M_CAN_FIFO_DATA(i / 4),
-+					 *(u32 *)(cf->data + i));
-+
-+		/* Push loopback echo.
-+		 * Will be looped back on TX interrupt based on message marker
-+		 */
-+		can_put_echo_skb(skb, dev, putidx);
-+
-+		/* Enable TX FIFO element to start transfer  */
-+		m_can_write(priv, M_CAN_TXBAR, (1 << putidx));
-+
-+		/* wait until put index has changed */
-+		while (((m_can_read(priv, M_CAN_TXFQS) & TXFQS_TFQPI_MASK)
-+			>> TXFQS_TFQPI_SHIFT) == putidx)
-+			;
-+
-+		/* Lock spinlock for TX to prevent concurrent
-+		 * access on the network queue
-+		 */
-+		spin_lock_irqsave(&priv->xmit_lock, irqsave);
-+
-+		/* stop network queue if fifo full */
-+			if (m_can_tx_fifo_full(priv) ||
-+			    m_can_next_echo_skb_occupied(dev, putidx))
-+				netif_stop_queue(dev);
-+
-+		spin_unlock_irqrestore(&priv->xmit_lock, irqsave);
- 	}
- 
--	/* enable first TX buffer to start transfer  */
--	m_can_write(priv, M_CAN_TXBTIE, 0x1);
--	m_can_write(priv, M_CAN_TXBAR, 0x1);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -1533,9 +1674,12 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 	dev_info(&pdev->dev, "%s device registered (regs=%p, irq=%d)\n",
- 		 KBUILD_MODNAME, priv->base, dev->irq);
- 
-+	spin_lock_init(&priv->xmit_lock);
-+
- 	/* Probe finished
- 	 * Stop clocks. They will be reactivated once the M_CAN device is opened
- 	 */
-+
- 	goto disable_cclk_ret;
- 
- failed_free_dev:
--- 
-1.9.1
+Turned out to be a old version of can-utils. Using the above git tree
+reports the flag.
 
+ (000.200308)  can0  20000004   [8]  00 40 00 00 00 00 5F 00   ERRORFRAME
+        controller-problem{back-to-error-active}
+        error-counter-tx-rx{{95}{0}}
+
+>> Enabling BUSOFF/ERRP/ERRW bits in STATFE did not generate any interrupts
+>> on the INT pin. Should we make it a requirement that both INT and STAT
+>> pins need to be connected in hardware for the driver to do the error
+>> reporting?
+> 
+> As I said, it's the better solution, especially if interrupt flooding
+> does harm. How does your system behave when bus errors come in due to no
+> cable connected?
+>
+
+I did not see any issues on the system with the cable disconnected. In
+my particular setup with the cable disconnected the system goes to
+tx-error-passive and does not get any further interrupts until a state
+change occurs.
+
+> So far using NAPI was mandatory. There is the problem of out-of-order
+> message reception if handled in the isr on multi processor systems.
+> Marc, what is the current policy?
+> 
+
+Since this is a SPI based CAN, I am wary for any additional latencies
+NAPI might introduce. The RX handling is being done at the very
+beginning of the ISR for this reason.
+
+Can we go ahead with the existing implementation and re-visit this at a
+later time?
+
+Thanks again for all your help in reviewing/improving the driver :)
+
+Akshay
+
+> Wolfgang.
