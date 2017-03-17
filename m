@@ -1,7 +1,7 @@
-From: Akshay Bhat <akshay.bhat@timesys.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: [PATCH v2 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
-Date: Thu, 16 Mar 2017 18:29:38 -0400
-Message-ID: <69173747-cc2e-55f7-acad-4b5ba2a22863@timesys.com>
+Date: Fri, 17 Mar 2017 08:39:30 +0100
+Message-ID: <d5182e77-c243-1980-4cb6-39cd95075f4f@grandegger.com>
 References: <1484680922-25813-1-git-send-email-akshay.bhat@timesys.com>
  <1484680922-25813-2-git-send-email-akshay.bhat@timesys.com>
  <234d9e75-0083-b8b4-c781-add653fdb550@grandegger.com>
@@ -13,75 +13,79 @@ References: <1484680922-25813-1-git-send-email-akshay.bhat@timesys.com>
  <3dba0948-ffcb-8e80-fb32-62bb0aca6627@grandegger.com>
  <54d9a104-8ed1-4bb3-666e-042d3781dbfb@timesys.com>
  <006d9e14-47bf-1add-97c3-24098b43267f@grandegger.com>
+ <69173747-cc2e-55f7-acad-4b5ba2a22863@timesys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qk0-f169.google.com ([209.85.220.169]:33887 "EHLO
-        mail-qk0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752680AbdCPWaK (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Mar 2017 18:30:10 -0400
-Received: by mail-qk0-f169.google.com with SMTP id p64so51902104qke.1
-        for <linux-can@vger.kernel.org>; Thu, 16 Mar 2017 15:29:40 -0700 (PDT)
-In-Reply-To: <006d9e14-47bf-1add-97c3-24098b43267f@grandegger.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Akshay Bhat <nodeax@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <69173747-cc2e-55f7-acad-4b5ba2a22863@timesys.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Akshay Bhat <akshay.bhat@timesys.com>, Akshay Bhat <nodeax@gmail.com>
 Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-Hi Wolfgang,
+Hello Akshay,
 
-On 03/16/2017 04:02 PM, Wolfgang Grandegger wrote:
-> 
-> Looks much better now! There are message for state changes to error
-> warning and passive. Just the following message is not correct:
-> 
->  (000.200824)  can0  20000004   [8]  00 40 00 00 00 00 5F 19   ERRORFRAME
->     controller-problem{}
->     error-counter-tx-rx{{95}{25}}
-> 
-> Sorry, forgot to mention... the function can_change_state() [1]
-> should be used for that purpose, if possible. It fixes the issue
-> above as well.
-> 
+Am 16.03.2017 um 23:29 schrieb Akshay Bhat:
+> Hi Wolfgang,
+>
+> On 03/16/2017 04:02 PM, Wolfgang Grandegger wrote:
+>>
+>> Looks much better now! There are message for state changes to error
+>> warning and passive. Just the following message is not correct:
+>>
+>>  (000.200824)  can0  20000004   [8]  00 40 00 00 00 00 5F 19   ERRORFRAME
+>>     controller-problem{}
+>>     error-counter-tx-rx{{95}{25}}
+>>
+>> Sorry, forgot to mention... the function can_change_state() [1]
+>> should be used for that purpose, if possible. It fixes the issue
+>> above as well.
+>>
+>
+> The updated driver (the one used to create the above log) is using
+> can_change_state() function. data[1] 40 corresponds to
+> CAN_ERR_CRTL_ACTIVE, so looks correct? Could it be that the can-utils I
+> am using is old and not reporting state change?
 
-The updated driver (the one used to create the above log) is using
-can_change_state() function. data[1] 40 corresponds to
-CAN_ERR_CRTL_ACTIVE, so looks correct? Could it be that the can-utils I
-am using is old and not reporting state change?
+Hm, yes. The raw data looks correct. You could download and build a 
+recent version from "https://github.com/linux-can/can-utils" to check. 
+It could also be a bug.
 
-Tentative v4 driver for reference:
-http://pastebin.com/4xFVL1Sj
+> Tentative v4 driver for reference:
+> http://pastebin.com/4xFVL1Sj
+>
+>>> berr-reporting off case:
+>>> http://pastebin.com/fUn3j7qU
+>>
+>> Ditto.
+>>
+>> I just had another look to the manual and there is this undocumented
+>> STATFE register at offset 0x1E. It's mentioned in some other parts of
+>> the doc as interrupt enable register for STATF events. I would assume
+>> the same bit layout than STATF. If you set bit 2 (BUSOFF), 3 (ERRP)
+>> and 4 (ERRW), you may get interrupts. It's worth a try, I think. If
+>> it works, it's the much better solution.
+>>
+>
+> The HI-311x has a INT pin and a STAT pin. The hardware I have has only
+> the INT pin connected to the processor. If the STAT pin was also
+> connected, then like you mentioned it could be a much better solution to
+> use STAT for state changes.
 
->> berr-reporting off case:
->> http://pastebin.com/fUn3j7qU
-> 
-> Ditto.
-> 
-> I just had another look to the manual and there is this undocumented
-> STATFE register at offset 0x1E. It's mentioned in some other parts of
-> the doc as interrupt enable register for STATF events. I would assume
-> the same bit layout than STATF. If you set bit 2 (BUSOFF), 3 (ERRP)
-> and 4 (ERRW), you may get interrupts. It's worth a try, I think. If
-> it works, it's the much better solution.
-> 
+OK, I understand.
 
-The HI-311x has a INT pin and a STAT pin. The hardware I have has only
-the INT pin connected to the processor. If the STAT pin was also
-connected, then like you mentioned it could be a much better solution to
-use STAT for state changes.
+> Enabling BUSOFF/ERRP/ERRW bits in STATFE did not generate any interrupts
+> on the INT pin. Should we make it a requirement that both INT and STAT
+> pins need to be connected in hardware for the driver to do the error
+> reporting?
 
-Enabling BUSOFF/ERRP/ERRW bits in STATFE did not generate any interrupts
-on the INT pin. Should we make it a requirement that both INT and STAT
-pins need to be connected in hardware for the driver to do the error
-reporting?
+As I said, it's the better solution, especially if interrupt flooding 
+does harm. How does your system behave when bus errors come in due to no 
+cable connected?
 
-Thanks,
-Akshay
+So far using NAPI was mandatory. There is the problem of out-of-order 
+message reception if handled in the isr on multi processor systems. 
+Marc, what is the current policy?
 
-> Wolfgang.
-> 
-> [1] http://lxr.free-electrons.com/ident?i=can_change_state
-> 
-> Wolfgang.
-> 
+Wolfgang.
