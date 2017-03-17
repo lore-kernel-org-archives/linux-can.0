@@ -1,115 +1,116 @@
-From: Patrick Menschel <menschel.p@posteo.de>
-Subject: A20 CAN device tree overlay
-Date: Fri, 17 Mar 2017 17:57:05 +0100
-Message-ID: <bb45d79c-6975-c1bd-7c9c-98e6af4ef10d@posteo.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH v2 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
+Date: Fri, 17 Mar 2017 18:04:42 +0100
+Message-ID: <7730cff6-6e85-c98d-0315-bd3888d3aeb1@grandegger.com>
+References: <1484680922-25813-1-git-send-email-akshay.bhat@timesys.com>
+ <1484680922-25813-2-git-send-email-akshay.bhat@timesys.com>
+ <234d9e75-0083-b8b4-c781-add653fdb550@grandegger.com>
+ <b3ebb569-b50c-39ad-dec5-0059fbfba8fb@timesys.com>
+ <eb4e0f6f-14de-3369-0d50-7371ae74f4fb@grandegger.com>
+ <3dbf8748-9d04-0f21-0e95-448d7a72e7d5@timesys.com>
+ <41439729-42d0-d883-2801-2d3607f2aeab@grandegger.com>
+ <CANiP4c8WMeT1Cr7WDXew1ne7DFR04oaA8Uch0zvyyOf5yCa37A@mail.gmail.com>
+ <3dba0948-ffcb-8e80-fb32-62bb0aca6627@grandegger.com>
+ <54d9a104-8ed1-4bb3-666e-042d3781dbfb@timesys.com>
+ <006d9e14-47bf-1add-97c3-24098b43267f@grandegger.com>
+ <69173747-cc2e-55f7-acad-4b5ba2a22863@timesys.com>
+ <d5182e77-c243-1980-4cb6-39cd95075f4f@grandegger.com>
+ <0362316b-ef76-1733-dbfc-8b644f758db9@timesys.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms050104040609030300090808"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout02.posteo.de ([185.67.36.66]:42633 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751079AbdCQQ5Q (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 17 Mar 2017 12:57:16 -0400
-Received: from submission (posteo.de [89.146.220.130])
-        by mout02.posteo.de (Postfix) with ESMTPS id B07AB20B09
-        for <linux-can@vger.kernel.org>; Fri, 17 Mar 2017 17:57:06 +0100 (CET)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: maxime.ripard@free-electrons.com, linux-can <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <0362316b-ef76-1733-dbfc-8b644f758db9@timesys.com>
+Sender: netdev-owner@vger.kernel.org
+To: Akshay Bhat <akshay.bhat@timesys.com>, Akshay Bhat <nodeax@gmail.com>
+Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Hi Akshay,
 
---------------ms050104040609030300090808
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Am 17.03.2017 um 17:00 schrieb Akshay Bhat:
+> Hi Wolfgang,
+>
+> On 03/17/2017 03:39 AM, Wolfgang Grandegger wrote:
+>> Hello Akshay,
+>>
+>> Am 16.03.2017 um 23:29 schrieb Akshay Bhat:
+>>> Hi Wolfgang,
+>>>
+>>> On 03/16/2017 04:02 PM, Wolfgang Grandegger wrote:
+>>>>
+>>>> Looks much better now! There are message for state changes to error
+>>>> warning and passive. Just the following message is not correct:
+>>>>
+>>>>  (000.200824)  can0  20000004   [8]  00 40 00 00 00 00 5F 19
+>>>> ERRORFRAME
+>>>>     controller-problem{}
+>>>>     error-counter-tx-rx{{95}{25}}
+>>>>
+>>>> Sorry, forgot to mention... the function can_change_state() [1]
+>>>> should be used for that purpose, if possible. It fixes the issue
+>>>> above as well.
+>>>>
+>>>
+>>> The updated driver (the one used to create the above log) is using
+>>> can_change_state() function. data[1] 40 corresponds to
+>>> CAN_ERR_CRTL_ACTIVE, so looks correct? Could it be that the can-utils I
+>>> am using is old and not reporting state change?
+>>
+>> Hm, yes. The raw data looks correct. You could download and build a
+>> recent version from "https://github.com/linux-can/can-utils" to check.
+>> It could also be a bug.
+>>
+>
+> Turned out to be a old version of can-utils. Using the above git tree
+> reports the flag.
+>
+>  (000.200308)  can0  20000004   [8]  00 40 00 00 00 00 5F 00   ERRORFRAME
+>         controller-problem{back-to-error-active}
+>         error-counter-tx-rx{{95}{0}}
+>
+>>> Enabling BUSOFF/ERRP/ERRW bits in STATFE did not generate any interrupts
+>>> on the INT pin. Should we make it a requirement that both INT and STAT
+>>> pins need to be connected in hardware for the driver to do the error
+>>> reporting?
+>>
+>> As I said, it's the better solution, especially if interrupt flooding
+>> does harm. How does your system behave when bus errors come in due to no
+>> cable connected?
+>>
+>
+> I did not see any issues on the system with the cable disconnected. In
+> my particular setup with the cable disconnected the system goes to
+> tx-error-passive and does not get any further interrupts until a state
+> change occurs.
 
-Hello Maxime,
+Hm, that's unusual. Cable disconnected and then send a message:
 
-I'd like to send a patch for a dt overlay to enable CAN on the A20 SoC,
-e.g. Banana Pi.
-However I don't know the correct location for a sunxi dt overlay.
+$ grep /proc/interrupts; sleep 10; /proc/interrupts
 
-For example, in the Raspberry Pi repository, dt overlays are located in
-arch/arm/boot/dts/overlays.
+should make things clear. But maybe it's a clever chip and it does stop 
+sending error messages if the error counter does not change any more. 
+After bus-off, the chip is quiet, of course. Should have a closer look 
+to the CAN standard.
 
-Is there something similar for sunxi?
+>> So far using NAPI was mandatory. There is the problem of out-of-order
+>> message reception if handled in the isr on multi processor systems.
+>> Marc, what is the current policy?
+>>
+>
+> Since this is a SPI based CAN, I am wary for any additional latencies
+> NAPI might introduce. The RX handling is being done at the very
+> beginning of the ISR for this reason.
+>
+> Can we go ahead with the existing implementation and re-visit this at a
+> later time?
 
-Regards,
-Patrick
+Likely yes, as Marc has already reviewed the driver once.
 
+BTW: what system board/processor are you using?
 
---------------ms050104040609030300090808
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+> Thanks again for all your help in reviewing/improving the driver :)
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-CfcwggSvMIIDl6ADAgECAhEA4CPLFRKDU4mtYW56VGdrITANBgkqhkiG9w0BAQsFADBvMQsw
-CQYDVQQGEwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxJjAkBgNVBAsTHUFkZFRydXN0IEV4
-dGVybmFsIFRUUCBOZXR3b3JrMSIwIAYDVQQDExlBZGRUcnVzdCBFeHRlcm5hbCBDQSBSb290
-MB4XDTE0MTIyMjAwMDAwMFoXDTIwMDUzMDEwNDgzOFowgZsxCzAJBgNVBAYTAkdCMRswGQYD
-VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNP
-TU9ETyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
-AQoCggEBAImxDdp6UxlOcFIdvFamBia3uEngludRq/HwWhNJFaO0jBtgvHpRQqd5jKQi3xdh
-TpHVdiMKFNNKAn+2HQmAbqUEPdm6uxb+oYepLkNSQxZ8rzJQyKZPWukI2M+TJZx7iOgwZOak
-+FaA/SokFDMXmaxE5WmLo0YGS8Iz1OlAnwawsayTQLm1CJM6nCpToxDbPSBhPFUDjtlOdiUC
-ISn6o3xxdk/u4V+B6ftUgNvDezVSt4TeIj0sMC0xf1m9UjewM2ktQ+v61qXxl3dnUYzZ7ifr
-vKUHOHaMpKk4/9+M9QOsSb7K93OZOg8yq5yVOhM9DkY6V3RhUL7GQD/L5OKfoiECAwEAAaOC
-ARcwggETMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0GA1UdDgQWBBSSYWuC
-4aKgqk/sZ/HCo/e0gADB7DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIBADAd
-BgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYDVR0gBAowCDAGBgRVHSAAMEQGA1Ud
-HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9BZGRUcnVzdEV4dGVybmFs
-Q0FSb290LmNybDA1BggrBgEFBQcBAQQpMCcwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVz
-ZXJ0cnVzdC5jb20wDQYJKoZIhvcNAQELBQADggEBABsqbqxVwTqriMXY7c1V86prYSvACRAj
-mQ/FZmpvsfW0tXdeDwJhAN99Bf4Ss6SAgAD8+x1banICCkG8BbrBWNUmwurVTYT7/oKYz1gb
-4yJjnFL4uwU2q31Ypd6rO2Pl2tVz7+zg+3vio//wQiOcyraNTT7kSxgDsqgt1Ni7QkuQaYUQ
-26Y3NOh74AEQpZzKOsefT4g0bopl0BqKu6ncyso20fT8wmQpNa/WsadxEdIDQ7GPPprsnjJT
-9HaSyoY0B7ksyuYcStiZDcGG4pCS+1pCaiMhEOllx/XVu37qjIUgAmLq0ToHLFnFmTPyOInl
-tukWeh95FPZKEBom+nyK+5swggVAMIIEKKADAgECAhEAvREavCLRTrKKuEIsseliUTANBgkq
-hkiG9w0BAQsFADCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3Rl
-cjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxQTA/BgNV
-BAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVt
-YWlsIENBMB4XDTE2MDYwNDAwMDAwMFoXDTE3MDYwNDIzNTk1OVowJTEjMCEGCSqGSIb3DQEJ
-ARYUbWVuc2NoZWwucEBwb3N0ZW8uZGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
-AQDhF/cULHYMLK+xHh/HbwO1aY3M+56GI9uRfRLAJWEEpdSFWvW8whRizlAZ0t9eHDzzCI1l
-wi7xDKBfwJt3VNxVjqHs3JjpcxSln/22AF3t8BKy3ACUtw6COlAk7bbwxr29qf7R4wFjumdS
-AS4uc6vDEBqlLrpdQCICwgOne97Dvi849VmbCBTCLTDpMxgrOXkiveGmQ2wBqLEPU/9o5ZH8
-jcCbenY5GZTh7u4gvigPfgIu79jE3dS6he+c64SWgcD7bI/zA9KMCkRuvLrFnN+bu8TeH9jy
-FpdsFuJ4+7mjoYsalR7S/wm0M7pbcZEDw2fJp4XogbLFmpjIlJjA8QM1AgMBAAGjggHyMIIB
-7jAfBgNVHSMEGDAWgBSSYWuC4aKgqk/sZ/HCo/e0gADB7DAdBgNVHQ4EFgQUsac6ykMiqHZ3
-OqhHkkcxeF9NoW8wDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYI
-KwYBBQUHAwQGCysGAQQBsjEBAwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsG
-DCsGAQQBsjEBAgEBATArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0
-L0NQUzBdBgNVHR8EVjBUMFKgUKBOhkxodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9T
-SEEyNTZDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3JsMIGQBggrBgEF
-BQcBAQSBgzCBgDBYBggrBgEFBQcwAoZMaHR0cDovL2NydC5jb21vZG9jYS5jb20vQ09NT0RP
-U0hBMjU2Q2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAkBggrBgEF
-BQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMB8GA1UdEQQYMBaBFG1lbnNjaGVsLnBA
-cG9zdGVvLmRlMA0GCSqGSIb3DQEBCwUAA4IBAQBSqnMFVFL1I7Hr3/FWhV3r0cHCSYrAAJu0
-lpgUJcvf6TOGuWNTksdyxbRFWyB6uc6trI9VrQHXbUhHHaUOPyDYBT50Xv4BrgIFYpQe7JI1
-IYPyE5PAR4323CeOTADK4S7KyerSRm7ZnqRCOHp6NTC/2cehFgkfCuO01AeRmzyA8arANiZf
-TS2rPtd31PjpBQ0OpngLxn2qWEIf90Ibq+XxSuiXaLg4l2PI/975QLi0nn466Ql7U2nUeawn
-R34LMZk1c2ImpKZUX+cpz17btGWyohXSdXLQnrruWvO2dx4F5AjuJ/F8JHbIm17I/mlzh883
-4e16eovJEoiXCNVlmxZ3MYIERDCCBEACAQEwgbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
-ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
-TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGlj
-YXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAL0RGrwi0U6yirhCLLHpYlEwDQYJYIZIAWUD
-BAIBBQCgggJjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE3
-MDMxNzE2NTcwNVowLwYJKoZIhvcNAQkEMSIEICS6sSzcM3YHez8AgE81UO6pZOsxMPRTK0JE
-MnH/hbkAMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggq
-hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
-hvcNAwICASgwgcIGCSsGAQQBgjcQBDGBtDCBsTCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgT
-EkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RP
-IENBIExpbWl0ZWQxQTA/BgNVBAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNh
-dGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAvREavCLRTrKKuEIsseliUTCBxAYLKoZIhvcN
-AQkQAgsxgbSggbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0
-ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYD
-VQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
-bWFpbCBDQQIRAL0RGrwi0U6yirhCLLHpYlEwDQYJKoZIhvcNAQEBBQAEggEADWv42xxMxhs2
-5RFat+/icpkIwficL1P/YLmRsRH+rz/sE7beKwxenO3/fJItTDV1o5gRN3+AOvrLUC+F5w8G
-r1GVwVm9zxoSlT0bnxj7OhtF5A6VSQfNT3vq8Ah6fEWAmGvk4BuoaOg0jz+pvNTHat4O65+E
-xERJ5oxgs07spdkQSr+xp0kwZhMsjEElic1VLpXvxV1Sn3Ndzl7ZO3Qylr6/2yG3T/eq7lSp
-0dLI1u2oLOaf1LqkMZ37C25Oktu7gy/Vq5yLgmY2CkwzDRn+7g16+eRlFnLBpLoOIJOQ2AaD
-dhadhRvpotj0VikHNo/lOllZDuIuhr6bWHPFdavKPgAAAAAAAA==
---------------ms050104040609030300090808--
+You are welcome!
+
+Wolfgang.
