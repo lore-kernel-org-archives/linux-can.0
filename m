@@ -1,75 +1,66 @@
-From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
-Date: Sat, 18 Mar 2017 13:30:51 +0100
-Message-ID: <9545c361-61e2-0d93-c5a6-c0b3837e1c8d@grandegger.com>
-References: <1484680922-25813-1-git-send-email-akshay.bhat@timesys.com>
- <1484680922-25813-2-git-send-email-akshay.bhat@timesys.com>
- <234d9e75-0083-b8b4-c781-add653fdb550@grandegger.com>
- <b3ebb569-b50c-39ad-dec5-0059fbfba8fb@timesys.com>
- <eb4e0f6f-14de-3369-0d50-7371ae74f4fb@grandegger.com>
- <3dbf8748-9d04-0f21-0e95-448d7a72e7d5@timesys.com>
- <41439729-42d0-d883-2801-2d3607f2aeab@grandegger.com>
- <CANiP4c8WMeT1Cr7WDXew1ne7DFR04oaA8Uch0zvyyOf5yCa37A@mail.gmail.com>
- <3dba0948-ffcb-8e80-fb32-62bb0aca6627@grandegger.com>
- <54d9a104-8ed1-4bb3-666e-042d3781dbfb@timesys.com>
- <006d9e14-47bf-1add-97c3-24098b43267f@grandegger.com>
- <69173747-cc2e-55f7-acad-4b5ba2a22863@timesys.com>
- <d5182e77-c243-1980-4cb6-39cd95075f4f@grandegger.com>
- <0362316b-ef76-1733-dbfc-8b644f758db9@timesys.com>
- <7730cff6-6e85-c98d-0315-bd3888d3aeb1@grandegger.com>
- <ff5d44d1-3bfe-8dae-2aaa-561ab0cb989c@timesys.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 2/3] can: m_can: Enable M_CAN IP version dependent
+ initialization
+Date: Sat, 18 Mar 2017 14:27:15 +0100
+Message-ID: <fe3184ee-6f56-33be-db57-4ecb5a9b1cad@hartkopp.net>
+References: <1489154417-19669-1-git-send-email-mario.huettel@de.bosch.com>
+ <1489154417-19669-4-git-send-email-mario.huettel@de.bosch.com>
+ <4f1f7a6f-457f-b1f8-036e-745b5b2c48d5@hartkopp.net>
+ <c3d26079-554b-104d-4836-825a8496b66f@de.bosch.com>
+ <ffca3229-39f1-cc10-8086-72d7d94bdaef@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <ff5d44d1-3bfe-8dae-2aaa-561ab0cb989c-jEh4hwF5bVhBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Akshay Bhat <akshay.bhat-jEh4hwF5bVhBDgjK7y7TUQ@public.gmane.org>, Akshay Bhat <nodeax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:34148 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751397AbdCRN2Q (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 18 Mar 2017 09:28:16 -0400
+In-Reply-To: <ffca3229-39f1-cc10-8086-72d7d94bdaef@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "Mario.Huettel" <Mario.Huettel@de.bosch.com>, linux-can@vger.kernel.org
 
-Hello Akshay,
+Hi Marc, Wolfgang,
 
-Am 17.03.2017 um 19:28 schrieb Akshay Bhat:
-> Hi Wolfgang,
+On 03/17/2017 06:52 PM, Oliver Hartkopp wrote:
+> On 03/17/2017 12:06 PM, Mario.Huettel wrote:
+>> On 03/16/2017 09:52 AM, Oliver Hartkopp wrote:
+>>>> * Chip configuaration for CAN_CTRLMODE_LOOPBACK is changed: Enabled
+>>>>   CCCR_MON bit. In combination with TEST_LBCK it activates the internal
+>>>>   loopback mode. Leaving CCCR_MON '0' results in external loopback
+>>>> mode.
+>>>
+>>> How is the interaction with the IFF_ECHO functionality then?
+>>
+>> It is the same as before. Internal loopback mode cuts the connection to
+>> the CAN RX and TX pins.
+>>
+>> However, sending a frame with enabled loopback results in following
+>> situation:
+>> * The socket that sent a frame receives the looped back frame
 >
-> On 03/17/2017 01:04 PM, Wolfgang Grandegger wrote:
->>
->> Hm, that's unusual. Cable disconnected and then send a message:
->>
->> $ grep /proc/interrupts; sleep 10; /proc/interrupts
->>
->> should make things clear. But maybe it's a clever chip and it does stop
->> sending error messages if the error counter does not change any more.
->> After bus-off, the chip is quiet, of course. Should have a closer look
->> to the CAN standard.
->>
+> In fact it receives the RX frame and not the echo'ed frame, right?
 >
-> The interrupt count does not increment after device reaches
-> tx-error-passive (with cable disconnected).
+>> * Any other socket also receives the looped back frame but, in addition
+>> to that, they
+>>    also receive the echo frame created by the driver. Thus the frame is
+>> received 2 times.
 >
-> # while true; do grep -i hi3110 /proc/interrupts; sleep 10; done &
-> [1] 793
-> #
-> 111:          0          0  gpio-mxc  12 Edge      hi3110
-> # candump -t d -e any,0:0,#FFFFFFF &
-> [2] 798
-> # cansend can0 123#
-> #
->  (000.000000)  can0  20000004   [8]  00 08 00 00 00 00 60 00   ERRORFRAME
-> 	controller-problem{tx-error-warning}
-> 	error-counter-tx-rx{{96}{0}}
->  (000.002122)  can0  20000004   [8]  00 20 00 00 00 00 80 00   ERRORFRAME
-> 	controller-problem{tx-error-passive}
-> 	error-counter-tx-rx{{128}{0}}
-> 111:         10          0  gpio-mxc  12 Edge      hi3110
-> 111:         10          0  gpio-mxc  12 Edge      hi3110
-> 111:         10          0  gpio-mxc  12 Edge      hi3110
+> This is bad.
+>
+> If I understood the frame flow correctly the 'non originating' socket
+> receives two frames:
+>
+> 1. the frame from the completed TX operation (echo_skb / IFF_ECHO)
+> 2. the frame received from the RX path from the hw loopback shortcut
+>
+> I would suggest to drop the frame coming from the RX path (case 2) when
+> the CAN_CTRLMODE_LOOPBACK gets enabled.
 
-OK, then there is no good reason connecting the STAT interrupt pin.
+Do we have an agreement on this?
+Did we ever discuss this topic in this detailed manner before?
 
-Wolfgang.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards,
+Oliver
