@@ -1,88 +1,233 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH 2/3] can: m_can: Enable M_CAN IP version dependent
- initialization
-Date: Sun, 19 Mar 2017 15:44:47 +0100
-Message-ID: <91845de3-a9ed-a6e2-a7ba-f63ae0320f44@grandegger.com>
-References: <1489154417-19669-1-git-send-email-mario.huettel@de.bosch.com>
- <1489154417-19669-4-git-send-email-mario.huettel@de.bosch.com>
- <4f1f7a6f-457f-b1f8-036e-745b5b2c48d5@hartkopp.net>
- <c3d26079-554b-104d-4836-825a8496b66f@de.bosch.com>
- <ffca3229-39f1-cc10-8086-72d7d94bdaef@hartkopp.net>
- <fe3184ee-6f56-33be-db57-4ecb5a9b1cad@hartkopp.net>
- <e04f267c-3f2d-50e6-0e94-982202c994e4@grandegger.com>
+From: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+Subject: Re: [PATCH v4 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
+Date: Sun, 19 Mar 2017 17:17:37 +0100
+Message-ID: <78bf099d-32ad-9981-6ba9-fe56fbcabc3e@grandegger.com>
+References: <1489785040-26477-1-git-send-email-akshay.bhat@timesys.com>
+ <1489785040-26477-2-git-send-email-akshay.bhat@timesys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy03.manitu.net ([217.11.48.67]:47484 "EHLO
-        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751463AbdCSOov (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 19 Mar 2017 10:44:51 -0400
-In-Reply-To: <e04f267c-3f2d-50e6-0e94-982202c994e4@grandegger.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "Mario.Huettel" <Mario.Huettel@de.bosch.com>, linux-can@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1489785040-26477-2-git-send-email-akshay.bhat-jEh4hwF5bVhBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Akshay Bhat <akshay.bhat-jEh4hwF5bVhBDgjK7y7TUQ@public.gmane.org>, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Akshay Bhat <nodeax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
+Hello Akshay,
 
-Am 19.03.2017 um 14:59 schrieb Wolfgang Grandegger:
-> Hi Oliver,
->
-> Am 18.03.2017 um 14:27 schrieb Oliver Hartkopp:
->> Hi Marc, Wolfgang,
->>
->> On 03/17/2017 06:52 PM, Oliver Hartkopp wrote:
->>> On 03/17/2017 12:06 PM, Mario.Huettel wrote:
->>>> On 03/16/2017 09:52 AM, Oliver Hartkopp wrote:
->>>>>> * Chip configuaration for CAN_CTRLMODE_LOOPBACK is changed: Enabled
->>>>>>   CCCR_MON bit. In combination with TEST_LBCK it activates the
->>>>>> internal
->>>>>>   loopback mode. Leaving CCCR_MON '0' results in external loopback
->>>>>> mode.
->>>>>
->>>>> How is the interaction with the IFF_ECHO functionality then?
->>>>
->>>> It is the same as before. Internal loopback mode cuts the connection to
->>>> the CAN RX and TX pins.
->>>>
->>>> However, sending a frame with enabled loopback results in following
->>>> situation:
->>>> * The socket that sent a frame receives the looped back frame
->>>
->>> In fact it receives the RX frame and not the echo'ed frame, right?
->>>
->>>> * Any other socket also receives the looped back frame but, in addition
->>>> to that, they
->>>>    also receive the echo frame created by the driver. Thus the frame is
->>>> received 2 times.
->>>
->>> This is bad.
->>>
->>> If I understood the frame flow correctly the 'non originating' socket
->>> receives two frames:
->>>
->>> 1. the frame from the completed TX operation (echo_skb / IFF_ECHO)
->>> 2. the frame received from the RX path from the hw loopback shortcut
->
-> Yep.
->
->>> I would suggest to drop the frame coming from the RX path (case 2) when
->>> the CAN_CTRLMODE_LOOPBACK gets enabled.
->
-> Why? Mario, what is you motivation/use case?
->
->> Do we have an agreement on this?
->> Did we ever discuss this topic in this detailed manner before?
->
-> As I see it, the CAN_CTRLMODE_LOOPBACK provides a internal hardware
-> loopback to test the send and receive software (including echo skb). It
-> has noting to to with echo skbs. The loopback mode never got big
-> attention. I think it's rarely used and if, then just for testing
-> purposes. That's maybe the reason why this issue was never discussed.
-> There might even be hardware specific issues, e.g. some controller may
-> not even do the loopback like the SJA1000.
+I still see some improvements...
 
-I just see that CAN_CTRLMODE_LOOPBACK is even undocumented :(, like most 
-other CTRLMODEs.
+Am 17.03.2017 um 22:10 schrieb Akshay Bhat:
+> This patch adds support for the Holt HI-311x CAN controller. The HI311x
+> CAN controller is capable of transmitting and receiving standard data
+> frames, extended data frames and remote frames. The HI311x interfaces
+> with the host over SPI.
+>
+> Datasheet: www.holtic.com/documents/371-hi-3110_v-rev-jpdf.do
+>
+> Signed-off-by: Akshay Bhat <nodeax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> ---
+>
+> v3 -> v4:
+> Address comments from Wolfgang Grandegger:
+> - Add support for CAN warning state reporting
+> - Add support for reporting tx/rx error counts in bus error messages
+> - Keep bus error interrupts enabled to detect CAN state changes
+> - Fix bug in restart code after BUSOFF state
+> - Clean up error handling code
+>
+>  drivers/net/can/spi/Kconfig  |    6 +
+>  drivers/net/can/spi/Makefile |    1 +
+>  drivers/net/can/spi/hi311x.c | 1072 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 1079 insertions(+)
+>  create mode 100644 drivers/net/can/spi/hi311x.c
+>
+> diff --git a/drivers/net/can/spi/Kconfig b/drivers/net/can/spi/Kconfig
+> index 148cae5..8f2e0dd 100644
+> --- a/drivers/net/can/spi/Kconfig
+> +++ b/drivers/net/can/spi/Kconfig
+> @@ -1,6 +1,12 @@
+>  menu "CAN SPI interfaces"
+>  	depends on SPI
+>
+> +config CAN_HI311X
+> +	tristate "Holt HI311x SPI CAN controllers"
+> +	depends on CAN_DEV && SPI && HAS_DMA
+> +	---help---
+> +	  Driver for the Holt HI311x SPI CAN controllers.
+> +
+>  config CAN_MCP251X
+>  	tristate "Microchip MCP251x SPI CAN controllers"
+>  	depends on HAS_DMA
+> diff --git a/drivers/net/can/spi/Makefile b/drivers/net/can/spi/Makefile
+> index 0e86040..f59fa37 100644
+> --- a/drivers/net/can/spi/Makefile
+> +++ b/drivers/net/can/spi/Makefile
+> @@ -3,4 +3,5 @@
+>  #
+>
+>
+> +obj-$(CONFIG_CAN_HI311X)	+= hi311x.o
+>  obj-$(CONFIG_CAN_MCP251X)	+= mcp251x.o
+> diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+> new file mode 100644
+> index 0000000..2a3d794
+> --- /dev/null
+> +++ b/drivers/net/can/spi/hi311x.c
+> @@ -0,0 +1,1072 @@
+> +/* CAN bus driver for Holt HI3110 CAN Controller with SPI Interface
+> + *
+> + * Copyright(C) Timesys Corporation 2016
+> + *
+> + * Based on Microchip 251x CAN Controller (mcp251x) Linux kernel driver
+> + * Copyright 2009 Christian Pellegrin EVOL S.r.l.
+> + * Copyright 2007 Raymarine UK, Ltd. All Rights Reserved.
+> + * Copyright 2006 Arcom Control Systems Ltd.
+> + *
+> + * Based on CAN bus driver for the CCAN controller written by
+> + * - Sascha Hauer, Marc Kleine-Budde, Pengutronix
+> + * - Simon Kallweit, intefo AG
+> + * Copyright 2007
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+
+... snip...
+
+> +
+> +static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
+> +{
+> +	struct hi3110_priv *priv = dev_id;
+> +	struct spi_device *spi = priv->spi;
+> +	struct net_device *net = priv->net;
+> +
+> +	mutex_lock(&priv->hi3110_lock);
+> +
+> +	while (!priv->force_quit) {
+> +		enum can_state new_state;
+> +		u8 intf, eflag, statf;
+> +
+> +		while (!(HI3110_STAT_RXFMTY &
+> +		       (statf = hi3110_read(spi, HI3110_READ_STATF)))) {
+> +			hi3110_hw_rx(spi);
+> +		}
+> +
+> +		intf = hi3110_read(spi, HI3110_READ_INTF);
+
+I think HI3110_READ_ERR is only valid if HI3110_INT_BUSERR is set! 
+Therefore:
+
+                 if ((intf & HI3110_INT_BUSERR) {
+
+It saves reading one SPI register in the message processing path. Please 
+check if back-to-error-active still comes.
+
+> +		eflag = hi3110_read(spi, HI3110_READ_ERR);
+> +		/* Update can state */
+> +		if (eflag & HI3110_ERR_BUSOFF)
+> +			new_state = CAN_STATE_BUS_OFF;
+> +		else if (eflag & HI3110_ERR_PASSIVE_MASK)
+> +			new_state = CAN_STATE_ERROR_PASSIVE;
+> +		else if (statf & HI3110_STAT_ERRW)
+> +			new_state = CAN_STATE_ERROR_WARNING;
+> +		else
+> +			new_state = CAN_STATE_ERROR_ACTIVE;
+> +
+> +		if (new_state != priv->can.state) {
+> +			struct can_frame *cf;
+> +			struct sk_buff *skb;
+> +			enum can_state rx_state, tx_state;
+> +			u8 rxerr, txerr;
+> +
+> +			skb = alloc_can_err_skb(net, &cf);
+> +			if (!skb)
+> +				break;
+> +
+> +			txerr = hi3110_read(spi, HI3110_READ_TEC);
+> +			rxerr = hi3110_read(spi, HI3110_READ_REC);
+> +			cf->data[6] = txerr;
+> +			cf->data[7] = rxerr;
+> +			tx_state = txerr >= rxerr ? new_state : 0;
+> +			rx_state = txerr <= rxerr ? new_state : 0;
+> +			can_change_state(net, cf, tx_state, rx_state);
+> +			netif_rx_ni(skb);
+> +
+> +			if (new_state == CAN_STATE_BUS_OFF) {
+> +				can_bus_off(net);
+> +				if (priv->can.restart_ms == 0) {
+> +					priv->force_quit = 1;
+> +					hi3110_hw_sleep(spi);
+> +					break;
+> +				}
+> +			}
+> +		}
+> +
+> +		/* Update bus errors */
+> +		if ((intf & HI3110_INT_BUSERR) &&
+> +		    (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)) {
+> +			struct can_frame *cf;
+> +			struct sk_buff *skb;
+> +
+> +			/* Check for protocol errors */
+> +			if (eflag & HI3110_ERR_PROTOCOL_MASK) {
+> +				skb = alloc_can_err_skb(net, &cf);
+> +				if (!skb)
+> +					break;
+> +
+> +				cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+> +				priv->can.can_stats.bus_error++;
+> +				priv->net->stats.rx_errors++;
+> +				if (eflag & HI3110_ERR_BITERR)
+> +					cf->data[2] |= CAN_ERR_PROT_BIT;
+> +				else if (eflag & HI3110_ERR_FRMERR)
+> +					cf->data[2] |= CAN_ERR_PROT_FORM;
+> +				else if (eflag & HI3110_ERR_STUFERR)
+> +					cf->data[2] |= CAN_ERR_PROT_STUFF;
+> +				else if (eflag & HI3110_ERR_CRCERR)
+> +					cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
+> +				else if (eflag & HI3110_ERR_ACKERR)
+> +					cf->data[3] |= CAN_ERR_PROT_LOC_ACK;
+> +
+> +				cf->data[6] = hi3110_read(spi, HI3110_READ_TEC);
+> +				cf->data[7] = hi3110_read(spi, HI3110_READ_REC);
+> +				netdev_dbg(priv->net, "Bus Error\n");
+> +				netif_rx_ni(skb);
+> +			}
+> +		}
+> +
+> +		if (intf == 0)
+> +			break;
+
+I do not see a real benefit of the check above. Just more code.
+
+> +		if (intf & HI3110_INT_TXCPLT) {
+> +			net->stats.tx_packets++;
+> +			net->stats.tx_bytes += priv->tx_len - 1;
+> +			can_led_event(net, CAN_LED_EVENT_TX);
+> +			if (priv->tx_len) {
+> +				can_get_echo_skb(net, 0);
+> +				priv->tx_len = 0;
+> +			}
+> +			netif_wake_queue(net);
+> +		}
+> +	}
+> +	mutex_unlock(&priv->hi3110_lock);
+> +	return IRQ_HANDLED;
+> +}
+
+Apart from that, it looks good now and you can add my:
+
+Acked-by: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>
+
+Thanks,
 
 Wolfgang.
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
