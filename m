@@ -1,8 +1,8 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: [PATCH 2/3] can: m_can: Enable M_CAN IP version dependent
  initialization
-Date: Sun, 19 Mar 2017 21:16:32 +0100
-Message-ID: <e4e32b30-8175-ae44-2afe-0f6099fcf963@hartkopp.net>
+Date: Sun, 19 Mar 2017 21:33:47 +0100
+Message-ID: <e9fd262d-7185-376d-6841-f66b460503cf@grandegger.com>
 References: <1489154417-19669-1-git-send-email-mario.huettel@de.bosch.com>
  <1489154417-19669-4-git-send-email-mario.huettel@de.bosch.com>
  <4f1f7a6f-457f-b1f8-036e-745b5b2c48d5@hartkopp.net>
@@ -12,91 +12,110 @@ References: <1489154417-19669-1-git-send-email-mario.huettel@de.bosch.com>
  <e04f267c-3f2d-50e6-0e94-982202c994e4@grandegger.com>
  <4e92ae71-e310-ff42-36fc-f734d9fe22c2@hartkopp.net>
  <167b6fb9-870c-60ca-2ae1-605bd8a0cd91@grandegger.com>
+ <e4e32b30-8175-ae44-2afe-0f6099fcf963@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:18032 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752249AbdCSUQs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 19 Mar 2017 16:16:48 -0400
-In-Reply-To: <167b6fb9-870c-60ca-2ae1-605bd8a0cd91@grandegger.com>
+Received: from mailproxy02.manitu.net ([217.11.48.66]:50198 "EHLO
+        mailproxy02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752394AbdCSUdu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 19 Mar 2017 16:33:50 -0400
+In-Reply-To: <e4e32b30-8175-ae44-2afe-0f6099fcf963@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "Mario.Huettel" <Mario.Huettel@de.bosch.com>, linux-can@vger.kernel.org
 
-
-
-On 03/19/2017 08:12 PM, Wolfgang Grandegger wrote:
-> Am 19.03.2017 um 18:43 schrieb Oliver Hartkopp:
-
->>>>> If I understood the frame flow correctly the 'non originating' socket
->>>>> receives two frames:
->>>>>
->>>>> 1. the frame from the completed TX operation (echo_skb / IFF_ECHO)
->>>>> 2. the frame received from the RX path from the hw loopback shortcut
->>>
->>> Yep.
->>>
->>>>> I would suggest to drop the frame coming from the RX path (case 2)
->>>>> when
->>>>> the CAN_CTRLMODE_LOOPBACK gets enabled.
->>>
->>> Why? Mario, what is you motivation/use case?
->>
->> This was just my (Olivers) suggestion.
->>
->> The effect with CAN_CTRLMODE_LOOPBACK enabled would then be similar to
->> using a virtual CAN interface.
->>
->>>> Do we have an agreement on this?
->>>> Did we ever discuss this topic in this detailed manner before?
->>>
->>> As I see it, the CAN_CTRLMODE_LOOPBACK provides a internal hardware
->>> loopback to test the send and receive software (including echo skb). It
->>> has noting to to with echo skbs.
->>
->> Agreed.
->>
->> But the question is what happens to the IFF_ECHO 'mechanism' when the
->> CAN controller is switched into CAN_CTRLMODE_LOOPBACK?
+Am 19.03.2017 um 21:16 schrieb Oliver Hartkopp:
 >
-> Nothing special. The software does *not* known that the message was
-> looped back by the hardware. The TX and RX is treated a usual.
 >
->> Do we get a virtual CAN behavior (from IFF_ECHO on driver level) or do
->> we get IFF_ECHO AND a reception due to the controllers loopback?
+> On 03/19/2017 08:12 PM, Wolfgang Grandegger wrote:
+>> Am 19.03.2017 um 18:43 schrieb Oliver Hartkopp:
 >
-> The latter: The echoed message when TX is done and the RX (from the
-> hardware loopback).
+>>>>>> If I understood the frame flow correctly the 'non originating' socket
+>>>>>> receives two frames:
+>>>>>>
+>>>>>> 1. the frame from the completed TX operation (echo_skb / IFF_ECHO)
+>>>>>> 2. the frame received from the RX path from the hw loopback shortcut
+>>>>
+>>>> Yep.
+>>>>
+>>>>>> I would suggest to drop the frame coming from the RX path (case 2)
+>>>>>> when
+>>>>>> the CAN_CTRLMODE_LOOPBACK gets enabled.
+>>>>
+>>>> Why? Mario, what is you motivation/use case?
+>>>
+>>> This was just my (Olivers) suggestion.
+>>>
+>>> The effect with CAN_CTRLMODE_LOOPBACK enabled would then be similar to
+>>> using a virtual CAN interface.
+>>>
+>>>>> Do we have an agreement on this?
+>>>>> Did we ever discuss this topic in this detailed manner before?
+>>>>
+>>>> As I see it, the CAN_CTRLMODE_LOOPBACK provides a internal hardware
+>>>> loopback to test the send and receive software (including echo skb). It
+>>>> has noting to to with echo skbs.
+>>>
+>>> Agreed.
+>>>
+>>> But the question is what happens to the IFF_ECHO 'mechanism' when the
+>>> CAN controller is switched into CAN_CTRLMODE_LOOPBACK?
+>>
+>> Nothing special. The software does *not* known that the message was
+>> looped back by the hardware. The TX and RX is treated a usual.
+>>
+>>> Do we get a virtual CAN behavior (from IFF_ECHO on driver level) or do
+>>> we get IFF_ECHO AND a reception due to the controllers loopback?
+>>
+>> The latter: The echoed message when TX is done and the RX (from the
+>> hardware loopback).
+>
+> But this would be different to normal operation then!
 
-But this would be different to normal operation then!
+Depends on the intended usage. For testing if TX and RX software works 
+that's just fine.
 
-When you have a second CAN interface on a real CAN bus that only ACKs 
-your frames but doesn't send own traffic, you only see your echo'ed 
-frames in the system (due to successful TX irq notification) - but no RX 
-frames.
+> When you have a second CAN interface on a real CAN bus that only ACKs
+> your frames but doesn't send own traffic, you only see your echo'ed
+> frames in the system (due to successful TX irq notification) - but no RX
+> frames.
 
->>> The loopback mode never got big
->>> attention. I think it's rarely used and if, then just for testing
->>> purposes. That's maybe the reason why this issue was never discussed.
+Using the loopback as a virtual CAN device came never into my mind.
 
-So you vote for "The echoed message when TX is done and the RX (from the 
-hardware loopback)." - which reflects the current implementation in 
-SJA1000 and M_CAN.
+>>>> The loopback mode never got big
+>>>> attention. I think it's rarely used and if, then just for testing
+>>>> purposes. That's maybe the reason why this issue was never discussed.
+>
+> So you vote for "The echoed message when TX is done and the RX (from the
+> hardware loopback)." - which reflects the current implementation in
+> SJA1000 and M_CAN.
+>
+> But my question is:
+>
+> Are developers using CAN_CTRLMODE_LOOPBACK to
+>
+> 1. Run their CAN controller without a working CAN bus hardware
+> 2. To test the hardware loopback mode of the controller
+>
+> For case 1 the RX frames should be dropped and only the echo'ed frames
+> should be provided to the system.
 
-But my question is:
+Yes, feedback would really be useful.
 
-Are developers using CAN_CTRLMODE_LOOPBACK to
+In the past I used it for the following purpose. After configuring and 
+starting the controller, I'm not able to get messages out to the bus or 
+receive from it. To understand if it's a software or hardware problem, I 
+switch to loopback mode. If it still doesn't work, it's software.
 
-1. Run their CAN controller without a working CAN bus hardware
-2. To test the hardware loopback mode of the controller
+>
+> I hopefully was able to clearly describe my concern ...
 
-For case 1 the RX frames should be dropped and only the echo'ed frames 
-should be provided to the system.
+Yes, there seem to be some confusion about loopback mode as I realize 
+from the following line.
 
-I hopefully was able to clearly describe my concern ...
+http://lxr.free-electrons.com/source/Documentation/networking/can.txt#L1003
 
-Regards,
-Oliver
+Wolfgang.
