@@ -1,39 +1,70 @@
-From: Akshay Bhat <akshay.bhat-jEh4hwF5bVhBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v4 2/2] can: spi: hi311x: Add Holt HI-311x CAN driver
-Date: Fri, 24 Mar 2017 13:20:01 -0400
-Message-ID: <32114de2-8ab7-daec-9b36-209cab0ea550@timesys.com>
-References: <1489785040-26477-1-git-send-email-akshay.bhat@timesys.com>
- <1489785040-26477-2-git-send-email-akshay.bhat@timesys.com>
+From: "Halba, Khalid (IntlAssoc)" <khalid.halba@nist.gov>
+Subject: Can-utils and mininet :
+Date: Fri, 24 Mar 2017 21:31:56 +0000
+Message-ID: <BL2PR09MB110732E7774B7DDAFA9DC5AEE13E0@BL2PR09MB1107.namprd09.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1489785040-26477-2-git-send-email-akshay.bhat-jEh4hwF5bVhBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Akshay Bhat <nodeax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-dm2gcc01on0094.outbound.protection.outlook.com ([23.103.201.94]:54427
+        "EHLO gcc01-dm2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S936010AbdCXVcA (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 24 Mar 2017 17:32:00 -0400
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "Mahmoudi, Charif (IntlAssoc)" <charif.mahmoudi@nist.gov>
 
-Hi Marc,
-
-On 03/17/2017 05:10 PM, Akshay Bhat wrote:
-> This patch adds support for the Holt HI-311x CAN controller. The HI311x
-> CAN controller is capable of transmitting and receiving standard data
-> frames, extended data frames and remote frames. The HI311x interfaces
-> with the host over SPI.
-> 
-> Datasheet: www.holtic.com/documents/371-hi-3110_v-rev-jpdf.do
-> 
-> Signed-off-by: Akshay Bhat <nodeax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> ---
-> 
-
-If there are no further review comments can this series be applied to
-can-next or does it need to wait for the next kernel release cycle (4.13)?
-
-Thanks,
-Akshay
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGkgQWxsLA0KDQpJIGFtIHRyeWluZyB0byB1c2UgY2FuLXV0aWxzIGluc2lkZSBtaW5pbmV0IGJ1
+dCBJIGdldCBhbiBlcnJvciB3aGVuZXZlciBJIHRyeSB0byBydW4gYSBjYW4tdXRpbHMgYXBwbGlj
+YXRpb24uIA0KDQpJIGRpZCB0aGUgZm9sbG93aW5nIDogDQoNCjEtIENyZWF0aW5nIDIgaG9zdHMg
+YW5kIDEgc3dpdGNoIGluIG1pbmluZXQgOiANCg0Kc3VkbyBtbiAgLS1zd2l0Y2ggb3ZzayAtLW1h
+YyAtLXRvcG8gc2luZ2xlLDINCg0KMi0gb24gaG9zdCAxIGFuZCBob3N0IDIgSSBkaWQgdGhlIGZv
+bGxvd2luZyA6IA0KDQogICBzdWRvIGFwdC1nZXQgaW5zdGFsbCBjYW4tdXRpbHMgDQogICBzdWRv
+IG1vZHByb2JlIGNhbiANCiAgIHN1ZG8gbW9kcHJvYmUgdmNhbiANCiAgIHN1ZG8gaXAgbGluayBh
+ZGQgZGV2IHZjYW4wIHR5cGUgdmNhbiANCiAgIHN1ZG8gaXAgbGluayBzZXQgdXAgdmNhbjAgDQog
+ICBzdWRvIGlmY29uZmlnIHZjYW4wIHVwIA0KDQozLSBvbiBob3N0IDEgSSBkaWQgdGhlIGlmY29u
+ZmlnIGFuZCBoZXJlIGlzIHRoZSBvdXRwdXQgOiANCg0KbWluaW5ldD4gaDEgaWZjb25maWcNCmgx
+LWV0aDAgICBMaW5rIGVuY2FwOkV0aGVybmV0ICBIV2FkZHIgMDA6MDA6MDA6MDA6MDA6MDEgIA0K
+ICAgICAgICAgIGluZXQgYWRkcjoxMC4wLjAuMSAgQmNhc3Q6MTAuMjU1LjI1NS4yNTUgIE1hc2s6
+MjU1LjAuMC4wDQogICAgICAgICAgaW5ldDYgYWRkcjogZmU4MDo6MjAwOmZmOmZlMDA6MS82NCBT
+Y29wZTpMaW5rDQogICAgICAgICAgVVAgQlJPQURDQVNUIFJVTk5JTkcgTVVMVElDQVNUICBNVFU6
+MTUwMCAgTWV0cmljOjENCiAgICAgICAgICBSWCBwYWNrZXRzOjEwNyBlcnJvcnM6MCBkcm9wcGVk
+OjAgb3ZlcnJ1bnM6MCBmcmFtZTowDQogICAgICAgICAgVFggcGFja2V0czo5IGVycm9yczowIGRy
+b3BwZWQ6MCBvdmVycnVuczowIGNhcnJpZXI6MA0KICAgICAgICAgIGNvbGxpc2lvbnM6MCB0eHF1
+ZXVlbGVuOjEwMDAgDQogICAgICAgICAgUlggYnl0ZXM6MTkyNjEgKDE5LjIgS0IpICBUWCBieXRl
+czo3MzggKDczOC4wIEIpDQoNCmxvICAgICAgICBMaW5rIGVuY2FwOkxvY2FsIExvb3BiYWNrICAN
+CiAgICAgICAgICBpbmV0IGFkZHI6MTI3LjAuMC4xICBNYXNrOjI1NS4wLjAuMA0KICAgICAgICAg
+IGluZXQ2IGFkZHI6IDo6MS8xMjggU2NvcGU6SG9zdA0KICAgICAgICAgIFVQIExPT1BCQUNLIFJV
+Tk5JTkcgIE1UVTo2NTUzNiAgTWV0cmljOjENCiAgICAgICAgICBSWCBwYWNrZXRzOjAgZXJyb3Jz
+OjAgZHJvcHBlZDowIG92ZXJydW5zOjAgZnJhbWU6MA0KICAgICAgICAgIFRYIHBhY2tldHM6MCBl
+cnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBjYXJyaWVyOjANCiAgICAgICAgICBjb2xsaXNp
+b25zOjAgdHhxdWV1ZWxlbjowIA0KICAgICAgICAgIFJYIGJ5dGVzOjAgKDAuMCBCKSAgVFggYnl0
+ZXM6MCAoMC4wIEIpDQoNCnZjYW4wICAgICBMaW5rIGVuY2FwOlVOU1BFQyAgSFdhZGRyIDAwLTAw
+LTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwICANCiAgICAgICAgICBV
+UCBSVU5OSU5HIE5PQVJQICBNVFU6MTYgIE1ldHJpYzoxDQogICAgICAgICAgUlggcGFja2V0czow
+IGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGZyYW1lOjANCiAgICAgICAgICBUWCBwYWNr
+ZXRzOjAgZXJyb3JzOjAgZHJvcHBlZDowIG92ZXJydW5zOjAgY2FycmllcjowDQogICAgICAgICAg
+Y29sbGlzaW9uczowIHR4cXVldWVsZW46MCANCiAgICAgICAgICBSWCBieXRlczowICgwLjAgQikg
+IFRYIGJ5dGVzOjAgKDAuMCBCKQ0KDQpBcyB5b3UgY2FuIHNlZSB0aGUgdmNhbjAgaXMgVVAgYW5k
+IHJ1bm5pbmcgDQoNCjQ6IHRoZSBjYW4gbW9kdWxlcyBhcmUgYWxzbyBsb2FkZWQgDQoNCm1pbmlu
+ZXQ+IGgxIGxzbW9kIHxncmVwIGNhbg0KdmNhbiAgICAgICAgICAgICAgICAgICAxNjM4NCAgMCAN
+CmNhbl9yYXcgICAgICAgICAgICAgICAgMjA0ODAgIDAgDQpjYW4gICAgICAgICAgICAgICAgICAg
+IDQ1MDU2ICAxIGNhbl9yYXcNCg0KDQo1LSB3aGVuIEkgdHJ5IHRvIHJ1biB0aGUgY2FuZHVtcCBj
+b21tYW5kIHRoZSBmb2xsb3dpbmcgZXJyb3Igc2hvd3MgdXAgOiANCg0KbWluaW5ldD4gaDEgY2Fu
+ZHVtcCB2Y2FuMA0Kc29ja2V0OiBBZGRyZXNzIGZhbWlseSBub3Qgc3VwcG9ydGVkIGJ5IHByb3Rv
+Y29sDQoNCg0KNi0gRXJyb3JzIGFsc28gaGFwcGVuIHdoZW4gSSBydW4gdGhlIGNhbnNlbmQgY29t
+bWFuZCANCg0KbWluaW5ldD4gaDEgY2Fuc2VuZCB2Y2FuMCAxMjMjMTEyMjMzDQoNCldyb25nIENB
+Ti1mcmFtZSBmb3JtYXQhIFRyeToNCg0KICAgIDxjYW5faWQ+I3tSfGRhdGF9ICAgICAgICAgIGZv
+ciBDQU4gMi4wIGZyYW1lcw0KICAgIDxjYW5faWQ+IyM8ZmxhZ3M+e2RhdGF9ICAgIGZvciBDQU4g
+RkQgZnJhbWVzDQoNCjxjYW5faWQ+IGNhbiBoYXZlIDMgKFNGRikgb3IgOCAoRUZGKSBoZXggY2hh
+cnMNCntkYXRhfSBoYXMgMC4uOCAoMC4uNjQgQ0FOIEZEKSBBU0NJSSBoZXgtdmFsdWVzIChvcHRp
+b25hbGx5IHNlcGFyYXRlZCBieSAnLicpDQo8ZmxhZ3M+IGEgc2luZ2xlIEFTQ0lJIEhleCB2YWx1
+ZSAoMCAuLiBGKSB3aGljaCBkZWZpbmVzIGNhbmZkX2ZyYW1lLmZsYWdzDQoNCmUuZy4gNUExIzEx
+LjIyMzMuNDQ1NTY2NzcuODggLyAxMjMjREVBREJFRUYgLyA1QUEjIC8gMTIzIyMxIC8gMjEzIyMz
+MTENCiAgICAgMUYzMzQ0NTUjMTEyMjMzNDQ1NTY2Nzc4OCAvIDEyMyNSIGZvciByZW1vdGUgdHJh
+bnNtaXNzaW9uIHJlcXVlc3QuDQoNCg0KICAgDQoNCkRpZCBhbnlvbmUgdHJpZWQgdG8gcnVuIGNh
+bnV0aWxzIGFuZCBoZSB3YXMgc3VjY2Vzc2Z1bCA/DQoNCg0KVGhhbmsgeW91Lg0KDQpLaGFsaWQu
+DQo=
