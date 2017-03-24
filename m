@@ -1,70 +1,41 @@
-From: "Halba, Khalid (IntlAssoc)" <khalid.halba@nist.gov>
-Subject: Can-utils and mininet :
-Date: Fri, 24 Mar 2017 21:31:56 +0000
-Message-ID: <BL2PR09MB110732E7774B7DDAFA9DC5AEE13E0@BL2PR09MB1107.namprd09.prod.outlook.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-dm2gcc01on0094.outbound.protection.outlook.com ([23.103.201.94]:54427
-        "EHLO gcc01-dm2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S936010AbdCXVcA (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 24 Mar 2017 17:32:00 -0400
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "Mahmoudi, Charif (IntlAssoc)" <charif.mahmoudi@nist.gov>
+From: Patrick Menschel <menschel.p@posteo.de>
+Subject: [PATCH v2 0/2] ARM: dts: sunxi: Add CAN node and can0_pins_a pinctrl setting
+Date: Fri, 24 Mar 2017 22:52:17 +0100
+Message-ID: <1490392339-23565-1-git-send-email-menschel.p@posteo.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk, maxime.ripard@free-electrons.com, wens@csie.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+Cc: Patrick Menschel <menschel.p@posteo.de>
+List-Id: linux-can.vger.kernel.org
 
-SGkgQWxsLA0KDQpJIGFtIHRyeWluZyB0byB1c2UgY2FuLXV0aWxzIGluc2lkZSBtaW5pbmV0IGJ1
-dCBJIGdldCBhbiBlcnJvciB3aGVuZXZlciBJIHRyeSB0byBydW4gYSBjYW4tdXRpbHMgYXBwbGlj
-YXRpb24uIA0KDQpJIGRpZCB0aGUgZm9sbG93aW5nIDogDQoNCjEtIENyZWF0aW5nIDIgaG9zdHMg
-YW5kIDEgc3dpdGNoIGluIG1pbmluZXQgOiANCg0Kc3VkbyBtbiAgLS1zd2l0Y2ggb3ZzayAtLW1h
-YyAtLXRvcG8gc2luZ2xlLDINCg0KMi0gb24gaG9zdCAxIGFuZCBob3N0IDIgSSBkaWQgdGhlIGZv
-bGxvd2luZyA6IA0KDQogICBzdWRvIGFwdC1nZXQgaW5zdGFsbCBjYW4tdXRpbHMgDQogICBzdWRv
-IG1vZHByb2JlIGNhbiANCiAgIHN1ZG8gbW9kcHJvYmUgdmNhbiANCiAgIHN1ZG8gaXAgbGluayBh
-ZGQgZGV2IHZjYW4wIHR5cGUgdmNhbiANCiAgIHN1ZG8gaXAgbGluayBzZXQgdXAgdmNhbjAgDQog
-ICBzdWRvIGlmY29uZmlnIHZjYW4wIHVwIA0KDQozLSBvbiBob3N0IDEgSSBkaWQgdGhlIGlmY29u
-ZmlnIGFuZCBoZXJlIGlzIHRoZSBvdXRwdXQgOiANCg0KbWluaW5ldD4gaDEgaWZjb25maWcNCmgx
-LWV0aDAgICBMaW5rIGVuY2FwOkV0aGVybmV0ICBIV2FkZHIgMDA6MDA6MDA6MDA6MDA6MDEgIA0K
-ICAgICAgICAgIGluZXQgYWRkcjoxMC4wLjAuMSAgQmNhc3Q6MTAuMjU1LjI1NS4yNTUgIE1hc2s6
-MjU1LjAuMC4wDQogICAgICAgICAgaW5ldDYgYWRkcjogZmU4MDo6MjAwOmZmOmZlMDA6MS82NCBT
-Y29wZTpMaW5rDQogICAgICAgICAgVVAgQlJPQURDQVNUIFJVTk5JTkcgTVVMVElDQVNUICBNVFU6
-MTUwMCAgTWV0cmljOjENCiAgICAgICAgICBSWCBwYWNrZXRzOjEwNyBlcnJvcnM6MCBkcm9wcGVk
-OjAgb3ZlcnJ1bnM6MCBmcmFtZTowDQogICAgICAgICAgVFggcGFja2V0czo5IGVycm9yczowIGRy
-b3BwZWQ6MCBvdmVycnVuczowIGNhcnJpZXI6MA0KICAgICAgICAgIGNvbGxpc2lvbnM6MCB0eHF1
-ZXVlbGVuOjEwMDAgDQogICAgICAgICAgUlggYnl0ZXM6MTkyNjEgKDE5LjIgS0IpICBUWCBieXRl
-czo3MzggKDczOC4wIEIpDQoNCmxvICAgICAgICBMaW5rIGVuY2FwOkxvY2FsIExvb3BiYWNrICAN
-CiAgICAgICAgICBpbmV0IGFkZHI6MTI3LjAuMC4xICBNYXNrOjI1NS4wLjAuMA0KICAgICAgICAg
-IGluZXQ2IGFkZHI6IDo6MS8xMjggU2NvcGU6SG9zdA0KICAgICAgICAgIFVQIExPT1BCQUNLIFJV
-Tk5JTkcgIE1UVTo2NTUzNiAgTWV0cmljOjENCiAgICAgICAgICBSWCBwYWNrZXRzOjAgZXJyb3Jz
-OjAgZHJvcHBlZDowIG92ZXJydW5zOjAgZnJhbWU6MA0KICAgICAgICAgIFRYIHBhY2tldHM6MCBl
-cnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBjYXJyaWVyOjANCiAgICAgICAgICBjb2xsaXNp
-b25zOjAgdHhxdWV1ZWxlbjowIA0KICAgICAgICAgIFJYIGJ5dGVzOjAgKDAuMCBCKSAgVFggYnl0
-ZXM6MCAoMC4wIEIpDQoNCnZjYW4wICAgICBMaW5rIGVuY2FwOlVOU1BFQyAgSFdhZGRyIDAwLTAw
-LTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwICANCiAgICAgICAgICBV
-UCBSVU5OSU5HIE5PQVJQICBNVFU6MTYgIE1ldHJpYzoxDQogICAgICAgICAgUlggcGFja2V0czow
-IGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGZyYW1lOjANCiAgICAgICAgICBUWCBwYWNr
-ZXRzOjAgZXJyb3JzOjAgZHJvcHBlZDowIG92ZXJydW5zOjAgY2FycmllcjowDQogICAgICAgICAg
-Y29sbGlzaW9uczowIHR4cXVldWVsZW46MCANCiAgICAgICAgICBSWCBieXRlczowICgwLjAgQikg
-IFRYIGJ5dGVzOjAgKDAuMCBCKQ0KDQpBcyB5b3UgY2FuIHNlZSB0aGUgdmNhbjAgaXMgVVAgYW5k
-IHJ1bm5pbmcgDQoNCjQ6IHRoZSBjYW4gbW9kdWxlcyBhcmUgYWxzbyBsb2FkZWQgDQoNCm1pbmlu
-ZXQ+IGgxIGxzbW9kIHxncmVwIGNhbg0KdmNhbiAgICAgICAgICAgICAgICAgICAxNjM4NCAgMCAN
-CmNhbl9yYXcgICAgICAgICAgICAgICAgMjA0ODAgIDAgDQpjYW4gICAgICAgICAgICAgICAgICAg
-IDQ1MDU2ICAxIGNhbl9yYXcNCg0KDQo1LSB3aGVuIEkgdHJ5IHRvIHJ1biB0aGUgY2FuZHVtcCBj
-b21tYW5kIHRoZSBmb2xsb3dpbmcgZXJyb3Igc2hvd3MgdXAgOiANCg0KbWluaW5ldD4gaDEgY2Fu
-ZHVtcCB2Y2FuMA0Kc29ja2V0OiBBZGRyZXNzIGZhbWlseSBub3Qgc3VwcG9ydGVkIGJ5IHByb3Rv
-Y29sDQoNCg0KNi0gRXJyb3JzIGFsc28gaGFwcGVuIHdoZW4gSSBydW4gdGhlIGNhbnNlbmQgY29t
-bWFuZCANCg0KbWluaW5ldD4gaDEgY2Fuc2VuZCB2Y2FuMCAxMjMjMTEyMjMzDQoNCldyb25nIENB
-Ti1mcmFtZSBmb3JtYXQhIFRyeToNCg0KICAgIDxjYW5faWQ+I3tSfGRhdGF9ICAgICAgICAgIGZv
-ciBDQU4gMi4wIGZyYW1lcw0KICAgIDxjYW5faWQ+IyM8ZmxhZ3M+e2RhdGF9ICAgIGZvciBDQU4g
-RkQgZnJhbWVzDQoNCjxjYW5faWQ+IGNhbiBoYXZlIDMgKFNGRikgb3IgOCAoRUZGKSBoZXggY2hh
-cnMNCntkYXRhfSBoYXMgMC4uOCAoMC4uNjQgQ0FOIEZEKSBBU0NJSSBoZXgtdmFsdWVzIChvcHRp
-b25hbGx5IHNlcGFyYXRlZCBieSAnLicpDQo8ZmxhZ3M+IGEgc2luZ2xlIEFTQ0lJIEhleCB2YWx1
-ZSAoMCAuLiBGKSB3aGljaCBkZWZpbmVzIGNhbmZkX2ZyYW1lLmZsYWdzDQoNCmUuZy4gNUExIzEx
-LjIyMzMuNDQ1NTY2NzcuODggLyAxMjMjREVBREJFRUYgLyA1QUEjIC8gMTIzIyMxIC8gMjEzIyMz
-MTENCiAgICAgMUYzMzQ0NTUjMTEyMjMzNDQ1NTY2Nzc4OCAvIDEyMyNSIGZvciByZW1vdGUgdHJh
-bnNtaXNzaW9uIHJlcXVlc3QuDQoNCg0KICAgDQoNCkRpZCBhbnlvbmUgdHJpZWQgdG8gcnVuIGNh
-bnV0aWxzIGFuZCBoZSB3YXMgc3VjY2Vzc2Z1bCA/DQoNCg0KVGhhbmsgeW91Lg0KDQpLaGFsaWQu
-DQo=
+The Allwinner A10/A20 SoCs have an on-board CAN (Controller Area Network)
+controller. This patch adds the CAN core to the SoC's include files,
+sun4i-a10.dtsi and sun7i-a20.dtsi.
+
+On linux-can mailing list was a discussion about updating the device tree bindings
+https://lkml.org/lkml/2015/9/17/220
+but it did not progress past writing the documentation file.
+Documentation/devicetree/bindings/net/can/sun4i_can.txt
+
+The CAN controller can be enabled in a board specific dts file as
+described in the documentation file or by using a device tree overlay.
+
+I have tested the patch v2 on a Banana Pi (A20 SoC) with mainline kernel 4.10.5.
+
+History:
+    v2: changed can0_pins_a node contents to new generic binding method, 
+	changed can0_pins_a node position by alphabetical order,
+        changed can0 device node position by rising physical address order
+
+    v1: initial
+
+Patrick Menschel (2):
+  ARM: dts: sun4i: Add CAN node and can0_pins_a pinctrl settings
+  ARM: dts: sun7i: Add CAN node and can0_pins_a pinctrl settings
+
+ arch/arm/boot/dts/sun4i-a10.dtsi | 13 +++++++++++++
+ arch/arm/boot/dts/sun7i-a20.dtsi | 13 +++++++++++++
+ 2 files changed, 26 insertions(+)
+
+-- 
+1.9.1
