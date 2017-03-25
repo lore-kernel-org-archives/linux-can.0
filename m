@@ -1,53 +1,82 @@
-From: =?UTF-8?Q?Mario_H=c3=bcttel?= <mario.huettel@gmx.net>
-Subject: Re: [PATCH v3 5/6] can: m_can: Configuration for TX and TX event
- FIFOs
-Date: Sat, 25 Mar 2017 17:29:21 +0100
-Message-ID: <e7d73a46-6d53-71bf-9f93-ba07be83d547@gmx.net>
-References: <1490374171-15190-1-git-send-email-mario.huettel@de.bosch.com>
- <1490374171-15190-5-git-send-email-mario.huettel@de.bosch.com>
- <b46cde32-2e06-2685-1a90-9d8a48d9dd5e@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Can-utils and mininet :
+Date: Sat, 25 Mar 2017 18:57:56 +0100
+Message-ID: <075e2df7-ffff-591c-13d2-b7903d4e8777@hartkopp.net>
+References: <BL2PR09MB110732E7774B7DDAFA9DC5AEE13E0@BL2PR09MB1107.namprd09.prod.outlook.com>
+ <58e9975e-bd02-7818-15ff-0b1fb4d4efd4@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.15.15]:64052 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751488AbdCYQ3a (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 25 Mar 2017 12:29:30 -0400
-In-Reply-To: <b46cde32-2e06-2685-1a90-9d8a48d9dd5e@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:33646 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751494AbdCYSAP (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 25 Mar 2017 14:00:15 -0400
+In-Reply-To: <58e9975e-bd02-7818-15ff-0b1fb4d4efd4@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: "Halba, Khalid (IntlAssoc)" <khalid.halba@nist.gov>, Mario Kicherer <dev@kicherer.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Mahmoudi, Charif (IntlAssoc)" <charif.mahmoudi@nist.gov>
+
+Answering myself ...
+
+On 03/25/2017 04:03 PM, Oliver Hartkopp wrote:
+
+> Mario Kicherer posted a patch to implement namespaces in parts of the
+> CAN networklayer:
+>
+> http://marc.info/?l=linux-can&m=148767639224547&w=2
+>
+> So additionally to Mario's patch the virtual CAN driver has to be made
+> namespace aware to make initial tests with mininet.
+
+I applied Mario's patch for a test.
+
+Then I followed
+
+http://blog.scottlowe.org/2013/09/04/introducing-linux-network-namespaces/
+
+and moved my already existing vcan0 virtual CAN interface to the 
+namespace 'blue':
+
+# ip netns add blue
+# ip link set dev vcan0 netns blue
+
+ From now vcan0 is not visible from 'ip link show' anymore.
+
+But it is visible in the namespace 'blue':
+
+# ip netns exec blue ip link list
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group 
+default qlen 1000
+     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+6: vcan0: <NOARP> mtu 72 qdisc noop state DOWN mode DEFAULT group 
+default qlen 1000
+     link/can
+
+# ip netns exec blue cangen vcan0
+write: Network is down
+
+Obviously the move to the namespace puts the interface 'down', so ...
+# ip netns exec blue ifconfig vcan0 up
+
+And then executed
+# ip netns exec blue cangen vcan0
+
+And in another terminal
+# ip netns exec blue candump any
+
+Which shows the traffic on vcan0 in namespace blue - cool! Tnx Mario!
+
+As vcan does not create two connected peers as veth I would suggest to 
+use can-gw to connect (and modify/filter) CAN traffic between CAN 
+interfaces inside/outside of namespaces.
+
+Regards,
+Oliver
 
 
-On 03/25/2017 05:16 PM, Oliver Hartkopp wrote:
->
->
-> On 03/24/2017 05:49 PM, Mario Huettel wrote:
->>
->> -    /* only support one Tx Buffer currently */
->> -    m_can_write(priv, M_CAN_TXBC, (1 << TXBC_NDTB_SHIFT) |
->> -            priv->mcfg[MRAM_TXB].off);
->> +    if (priv->version == 30) {
->> +        /* only support one Tx Buffer currently */
->> +        m_can_write(priv, M_CAN_TXBC, (1 << TXBC_NDTB_SHIFT) |
->> +                priv->mcfg[MRAM_TXB].off);
->> +    } else {
->> +        /* TX FIFO is used for newer IP Core versions */
->> +        m_can_write(priv, M_CAN_TXBC,
->> +                (priv->mcfg[MRAM_TXB].num << TXBC_TFQS_SHIFT) |
->
-> Are you sure?
->
-> Shouldn't this be TXBC_NDTB_SHIFT too?
->
 
-No, the code is correct.
-* NDTB (Number of Dedicated Transmit Buffers) is used for 1 Buffer
-configuration.
-* TFQS (Transmit FIFO/QUEUE Size) is used to set HW-FIFO size.
 
-The driver uses either a dedicated buffer for v3.0.x or the FIFO for
-versions >= v3.1.x
 
-Mario
+
