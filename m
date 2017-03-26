@@ -1,27 +1,59 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Mario Kicherer <dev@kicherer.org>
 Subject: Re: Can-utils and mininet :
-Date: Sat, 25 Mar 2017 18:57:56 +0100
-Message-ID: <075e2df7-ffff-591c-13d2-b7903d4e8777@hartkopp.net>
+Date: Sun, 26 Mar 2017 12:56:26 +0200
+Message-ID: <0e9550b8-6fcb-fbbe-f72f-55a97e8a4a99@kicherer.org>
 References: <BL2PR09MB110732E7774B7DDAFA9DC5AEE13E0@BL2PR09MB1107.namprd09.prod.outlook.com>
  <58e9975e-bd02-7818-15ff-0b1fb4d4efd4@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:33646 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751494AbdCYSAP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 25 Mar 2017 14:00:15 -0400
+Received: from www.zeus06.de ([194.117.254.36]:38618 "EHLO mail.zeus06.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751264AbdCZK4b (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sun, 26 Mar 2017 06:56:31 -0400
 In-Reply-To: <58e9975e-bd02-7818-15ff-0b1fb4d4efd4@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Halba, Khalid (IntlAssoc)" <khalid.halba@nist.gov>, Mario Kicherer <dev@kicherer.org>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Mahmoudi, Charif (IntlAssoc)" <charif.mahmoudi@nist.gov>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "Halba, Khalid (IntlAssoc)" <khalid.halba@nist.gov>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "Mahmoudi, Charif (IntlAssoc)" <charif.mahmoudi@nist.gov>
 
-Answering myself ...
+Hi Oliver and Khalid,
 
-On 03/25/2017 04:03 PM, Oliver Hartkopp wrote:
+I am interested in virtual CAN interface pairs and I would develop a
+patch. But first, I would like to know if my initial patch will be
+accepted. Unfortunately, I did not receive any feedback so far.
 
+Best regards,
+Mario
+
+On 25.03.2017 16:03, Oliver Hartkopp wrote:
+> Hi Khalid,
+>
+> On 03/24/2017 10:31 PM, Halba, Khalid (IntlAssoc) wrote:
+>> I am trying to use can-utils inside mininet but I get an error
+>> whenever I try to run a can-utils application.
+>>
+>> I did the following :
+>>
+>> 1- Creating 2 hosts and 1 switch in mininet :
+>>
+>> sudo mn  --switch ovsk --mac --topo single,2
+>
+> (..)
+>
+>> Did anyone tried to run canutils and he was successful ?
+>
+> I just had to 'google' for myself to learn about 'mininet':
+>
+> https://sreeninet.wordpress.com/2014/11/30/mininet-internals-and-network-namespaces/
+>
+>
+> "1 of the key concepts used in Mininet is Network namespaces which is
+> also the basis for Linux containers."
+>
+> The CAN subsystem  of the Linux kernel is currently not namespace aware.
+>
 > Mario Kicherer posted a patch to implement namespaces in parts of the
 > CAN networklayer:
 >
@@ -29,54 +61,9 @@ On 03/25/2017 04:03 PM, Oliver Hartkopp wrote:
 >
 > So additionally to Mario's patch the virtual CAN driver has to be made
 > namespace aware to make initial tests with mininet.
-
-I applied Mario's patch for a test.
-
-Then I followed
-
-http://blog.scottlowe.org/2013/09/04/introducing-linux-network-namespaces/
-
-and moved my already existing vcan0 virtual CAN interface to the 
-namespace 'blue':
-
-# ip netns add blue
-# ip link set dev vcan0 netns blue
-
- From now vcan0 is not visible from 'ip link show' anymore.
-
-But it is visible in the namespace 'blue':
-
-# ip netns exec blue ip link list
-1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group 
-default qlen 1000
-     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-6: vcan0: <NOARP> mtu 72 qdisc noop state DOWN mode DEFAULT group 
-default qlen 1000
-     link/can
-
-# ip netns exec blue cangen vcan0
-write: Network is down
-
-Obviously the move to the namespace puts the interface 'down', so ...
-# ip netns exec blue ifconfig vcan0 up
-
-And then executed
-# ip netns exec blue cangen vcan0
-
-And in another terminal
-# ip netns exec blue candump any
-
-Which shows the traffic on vcan0 in namespace blue - cool! Tnx Mario!
-
-As vcan does not create two connected peers as veth I would suggest to 
-use can-gw to connect (and modify/filter) CAN traffic between CAN 
-interfaces inside/outside of namespaces.
-
-Regards,
-Oliver
-
-
-
-
-
+>
+> Are you interested to work on this stuff?
+>
+> Regards,
+> Oliver
 
