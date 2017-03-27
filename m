@@ -1,40 +1,62 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH 2/2] can: usb: Kconfig: Add PCAN-USB X6 device in help text
-Date: Mon, 27 Mar 2017 14:36:11 +0200
-Message-ID: <1490618171-3128-3-git-send-email-s.grosjean@peak-system.com>
-References: <1490618171-3128-1-git-send-email-s.grosjean@peak-system.com>
+From: "Halba, Khalid (IntlAssoc)" <khalid.halba@nist.gov>
+Subject: RE: Can-utils and mininet :
+Date: Mon, 27 Mar 2017 18:29:19 +0000
+Message-ID: <BL2PR09MB11076F7BC33FEF2D16E58246E1330@BL2PR09MB1107.namprd09.prod.outlook.com>
+References: <BL2PR09MB110732E7774B7DDAFA9DC5AEE13E0@BL2PR09MB1107.namprd09.prod.outlook.com>
+ <58e9975e-bd02-7818-15ff-0b1fb4d4efd4@hartkopp.net>
+ <0e9550b8-6fcb-fbbe-f72f-55a97e8a4a99@kicherer.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp1-g21.free.fr ([212.27.42.1]:37493 "EHLO smtp1-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751813AbdC0Mgq (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 27 Mar 2017 08:36:46 -0400
-In-Reply-To: <1490618171-3128-1-git-send-email-s.grosjean@peak-system.com>
+Received: from mail-cy1gcc01on0131.outbound.protection.outlook.com ([23.103.200.131]:56662
+        "EHLO gcc01-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751403AbdC0Sac (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 27 Mar 2017 14:30:32 -0400
+In-Reply-To: <0e9550b8-6fcb-fbbe-f72f-55a97e8a4a99@kicherer.org>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
+To: Mario Kicherer <dev@kicherer.org>, Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "Mahmoudi, Charif (IntlAssoc)" <charif.mahmoudi@nist.gov>
 
-This patch adds a text line in the help section of the CAN_PEAK_USB
-config item describing the support of the PCAN-USB X6 adapter, which is
-already included in the Kernel since 4.9.
-
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
----
- drivers/net/can/usb/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
-index 3f8adc3..5f9e0e6 100644
---- a/drivers/net/can/usb/Kconfig
-+++ b/drivers/net/can/usb/Kconfig
-@@ -73,6 +73,7 @@ config CAN_PEAK_USB
- 	  PCAN-USB FD          single CAN-FD channel USB adapter
- 	  PCAN-USB Pro FD      dual CAN-FD channels USB adapter
- 	  PCAN-Chip USB        CAN-FD to USB stamp module
-+	  PCAN-USB X6          6 CAN-FD channels USB adapter
- 
- 	  (see also http://www.peak-system.com).
- 
--- 
-2.7.4
-
+SGkgTWFyaW8sIE9saXZlci4NCg0KVGhhbmsgeW91IGZvciB5b3VyIGZlZWRiYWNrIGFuZCB5b3Vy
+IHJlc3BvbnNpdmVuZXNzLiANCg0KSSB3aWxsIGxvb2sgYXQgTWFyaW8ncyBQYXRjaCBhbmQgZ2l2
+ZSB5b3UgYSBmZWVkYmFjayBiZWZvcmUgdGhpcyBGcmlkYXkuIA0KSSB3aWxsIGFsc28gbG9vayBh
+dCBuYW1lc3BhY2UgY29tcGF0aWJpbGl0eSBiZXR3ZWVuIHRoZSBDQU4gdXRpbHMgIGFuZCBNaW5p
+bmV0IGFuZCBob3cgaXQgY2FuIGZpdCBpbiBzb2x2aW5nIHRoZSBpc3N1ZSBJIGRlc2NyaWJlZC4g
+DQoNCkkgdGhpbmsgdGhhdCBJbXBsZW1lbnRpbmcgY2FuLXV0aWxzIGluIG1pbmluZXQgd2lsbCBi
+ZSBoZWxwZnVsIGluIHNpbXVsYXRpbmcgdmVoaWN1bGFyIG5ldHdvcmtzIHNjZW5hcmlvcy4gIA0K
+DQpLaGFsaWQuIA0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IE1hcmlvIEtpY2hl
+cmVyIFttYWlsdG86ZGV2QGtpY2hlcmVyLm9yZ10gDQpTZW50OiBTdW5kYXksIE1hcmNoIDI2LCAy
+MDE3IDY6NTYgQU0NClRvOiBPbGl2ZXIgSGFydGtvcHAgPHNvY2tldGNhbkBoYXJ0a29wcC5uZXQ+
+OyBIYWxiYSwgS2hhbGlkIChJbnRsQXNzb2MpIDxraGFsaWQuaGFsYmFAbmlzdC5nb3Y+OyBsaW51
+eC1jYW5Admdlci5rZXJuZWwub3JnDQpDYzogTWFobW91ZGksIENoYXJpZiAoSW50bEFzc29jKSA8
+Y2hhcmlmLm1haG1vdWRpQG5pc3QuZ292Pg0KU3ViamVjdDogUmU6IENhbi11dGlscyBhbmQgbWlu
+aW5ldCA6DQoNCkhpIE9saXZlciBhbmQgS2hhbGlkLA0KDQpJIGFtIGludGVyZXN0ZWQgaW4gdmly
+dHVhbCBDQU4gaW50ZXJmYWNlIHBhaXJzIGFuZCBJIHdvdWxkIGRldmVsb3AgYSBwYXRjaC4gQnV0
+IGZpcnN0LCBJIHdvdWxkIGxpa2UgdG8ga25vdyBpZiBteSBpbml0aWFsIHBhdGNoIHdpbGwgYmUg
+YWNjZXB0ZWQuIFVuZm9ydHVuYXRlbHksIEkgZGlkIG5vdCByZWNlaXZlIGFueSBmZWVkYmFjayBz
+byBmYXIuDQoNCkJlc3QgcmVnYXJkcywNCk1hcmlvDQoNCk9uIDI1LjAzLjIwMTcgMTY6MDMsIE9s
+aXZlciBIYXJ0a29wcCB3cm90ZToNCj4gSGkgS2hhbGlkLA0KPg0KPiBPbiAwMy8yNC8yMDE3IDEw
+OjMxIFBNLCBIYWxiYSwgS2hhbGlkIChJbnRsQXNzb2MpIHdyb3RlOg0KPj4gSSBhbSB0cnlpbmcg
+dG8gdXNlIGNhbi11dGlscyBpbnNpZGUgbWluaW5ldCBidXQgSSBnZXQgYW4gZXJyb3IgDQo+PiB3
+aGVuZXZlciBJIHRyeSB0byBydW4gYSBjYW4tdXRpbHMgYXBwbGljYXRpb24uDQo+Pg0KPj4gSSBk
+aWQgdGhlIGZvbGxvd2luZyA6DQo+Pg0KPj4gMS0gQ3JlYXRpbmcgMiBob3N0cyBhbmQgMSBzd2l0
+Y2ggaW4gbWluaW5ldCA6DQo+Pg0KPj4gc3VkbyBtbiAgLS1zd2l0Y2ggb3ZzayAtLW1hYyAtLXRv
+cG8gc2luZ2xlLDINCj4NCj4gKC4uKQ0KPg0KPj4gRGlkIGFueW9uZSB0cmllZCB0byBydW4gY2Fu
+dXRpbHMgYW5kIGhlIHdhcyBzdWNjZXNzZnVsID8NCj4NCj4gSSBqdXN0IGhhZCB0byAnZ29vZ2xl
+JyBmb3IgbXlzZWxmIHRvIGxlYXJuIGFib3V0ICdtaW5pbmV0JzoNCj4NCj4gaHR0cHM6Ly9zcmVl
+bmluZXQud29yZHByZXNzLmNvbS8yMDE0LzExLzMwL21pbmluZXQtaW50ZXJuYWxzLWFuZC1uZXR3
+bw0KPiByay1uYW1lc3BhY2VzLw0KPg0KPg0KPiAiMSBvZiB0aGUga2V5IGNvbmNlcHRzIHVzZWQg
+aW4gTWluaW5ldCBpcyBOZXR3b3JrIG5hbWVzcGFjZXMgd2hpY2ggaXMgDQo+IGFsc28gdGhlIGJh
+c2lzIGZvciBMaW51eCBjb250YWluZXJzLiINCj4NCj4gVGhlIENBTiBzdWJzeXN0ZW0gIG9mIHRo
+ZSBMaW51eCBrZXJuZWwgaXMgY3VycmVudGx5IG5vdCBuYW1lc3BhY2UgYXdhcmUuDQo+DQo+IE1h
+cmlvIEtpY2hlcmVyIHBvc3RlZCBhIHBhdGNoIHRvIGltcGxlbWVudCBuYW1lc3BhY2VzIGluIHBh
+cnRzIG9mIHRoZSANCj4gQ0FOIG5ldHdvcmtsYXllcjoNCj4NCj4gaHR0cDovL21hcmMuaW5mby8/
+bD1saW51eC1jYW4mbT0xNDg3Njc2MzkyMjQ1NDcmdz0yDQo+DQo+IFNvIGFkZGl0aW9uYWxseSB0
+byBNYXJpbydzIHBhdGNoIHRoZSB2aXJ0dWFsIENBTiBkcml2ZXIgaGFzIHRvIGJlIG1hZGUgDQo+
+IG5hbWVzcGFjZSBhd2FyZSB0byBtYWtlIGluaXRpYWwgdGVzdHMgd2l0aCBtaW5pbmV0Lg0KPg0K
+PiBBcmUgeW91IGludGVyZXN0ZWQgdG8gd29yayBvbiB0aGlzIHN0dWZmPw0KPg0KPiBSZWdhcmRz
+LA0KPiBPbGl2ZXINCg0K
