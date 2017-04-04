@@ -1,58 +1,55 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v3 1/4] ARM: dts: sun4i: Add CAN node
-Date: Tue, 4 Apr 2017 17:40:18 +0200
-Message-ID: <20170404154018.6phu2udfgwuzklkk@lukather>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH v3 2/4] ARM: dts: sun4i: Add can0_pins_a pinctrl settings
+Date: Tue, 4 Apr 2017 17:40:55 +0200
+Message-ID: <20170404154055.ccteyn3eeviciwvh@lukather>
 References: <1491238814-4888-1-git-send-email-menschel.p@posteo.de>
- <1491238814-4888-2-git-send-email-menschel.p@posteo.de>
+ <1491238814-4888-3-git-send-email-menschel.p@posteo.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ka5cukxufqo6yptp"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+        protocol="application/pgp-signature"; boundary="y6rzyeakzjypnhrf"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail.free-electrons.com ([62.4.15.54]:36826 "EHLO
+        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754089AbdDDPlH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2017 11:41:07 -0400
 Content-Disposition: inline
-In-Reply-To: <1491238814-4888-2-git-send-email-menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+In-Reply-To: <1491238814-4888-3-git-send-email-menschel.p@posteo.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Patrick Menschel <menschel.p@posteo.de>
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk, wens@csie.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
 
 
---ka5cukxufqo6yptp
+--y6rzyeakzjypnhrf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 03, 2017 at 07:00:11PM +0200, Patrick Menschel wrote:
-> The A10 SoC has an on-board CAN controller.
-> This patch adds the device node.
+On Mon, Apr 03, 2017 at 07:00:12PM +0200, Patrick Menschel wrote:
+> The A10 SoC has an on-board CAN controller. This patch adds the
+> pinctrl settings for pins PH20 and PH21.
 >=20
 > This patch is adapted from the description in
 > Documentation/devicetree/bindings/net/can/sun4i_can.txt
 >=20
-> Signed-off-by: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
+> Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
 > ---
->  arch/arm/boot/dts/sun4i-a10.dtsi | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  arch/arm/boot/dts/sun4i-a10.dtsi | 5 +++++
+>  1 file changed, 5 insertions(+)
 >=20
 > diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a=
 10.dtsi
-> index ba20b48..7c559e7 100644
+> index 7c559e7..f7dced4 100644
 > --- a/arch/arm/boot/dts/sun4i-a10.dtsi
 > +++ b/arch/arm/boot/dts/sun4i-a10.dtsi
-> @@ -1313,6 +1313,14 @@
->  			#size-cells =3D <0>;
->  		};
+> @@ -974,6 +974,11 @@
+>  			#interrupt-cells =3D <3>;
+>  			#gpio-cells =3D <3>;
 > =20
-> +		can0: can@01c2bc00 {
-> +			compatible =3D "allwinner,sun4i-a10-can";
-> +			reg =3D <0x01c2bc00 0x400>;
-> +			interrupts =3D <26>;
-> +			clocks =3D <&apb1_gates 4>;
-> +			status =3D "disabled";
-> +		};
-> +
+> +			can0_pins_a: can0@0 {
+> +				pins =3D "PH20","PH21";
 
-This wasn't ordered properly. Fixed and applied.
-
+You need a space after the comma here. Fixed and applied.
 Maxime
 
 --=20
@@ -60,28 +57,24 @@ Maxime Ripard, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
 
---ka5cukxufqo6yptp
+--y6rzyeakzjypnhrf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJY475iAAoJEBx+YmzsjxAgUMoP/2RK7ZIuiKlVu21BoZAaEXIL
-FaxXfL3i/31qgs06++m6tdWmln0frjmfQmCad8e4AuF5RFO3PvxvIP/0L+gpUXc2
-rAjuOc4C4h+F7cP4PqbXA5iEKYl2gkc5o4Yfq5NdP90CAtvJRVGtQLoFtoHCXAzI
-Dk3G90tj0NMF4Hf09Dc5Z/txYY70WU9ZalF9hgj4iFvsEgNS/vmWc1oMxZa7Go0M
-oFPWDLGS6rkQ7kfVcnX0bvhVJnrVGJRvCvtUGKNjNon5p4K0akvBU9XvXwAP8+XR
-oTtJ4hbwmbXRungSLv1folWIb3ORb3QunQt+QpQbogMf292SZKwamOrtIZBLaYOX
-d9CSouBl7qWo2oMwuHt3hXUgNwrLLOBgmorzofh+/3iUxxQ8IArnLoOuRO6eZqGO
-6lJ17tj6i0ckypC5n50tbnbLM3uyR7O5d/cC31n/ADXx/RXt8nGyqS5TorBsqB1K
-YFiQuD5aDpYjLSSx0mHZLbpchIWJBE4vc1UK4r0xiDes4JxlfPMgHcoK2ls6AAZ3
-J5P80GLmjFELX4PH/a6jy79FIZIqF4wfjFA2Gx8+ybWY4s3SLp9lcT+vLLOJYOec
-joauYuKBZpiHqjMJZXSP8R2Gc5kRmlHh5gI3+72qU/s5yOwHWDh3WD9EgGEpzk7q
-q03YHDYGu5FvaRWA3FY4
-=v/hd
+iQIcBAEBCAAGBQJY476HAAoJEBx+YmzsjxAgYVYQAKYNFedMrmBe024DIkxiVh9y
++J+rFCauPtdI26Ltf0wlw1GzrL4G77fKW02yi2/cIcjooq2NLGMw8nI9oG9tosdR
+O+eD2C1Nz2pogBXm45K/a6S5fveYkH9DxdA/m3NfQMnBxcy4hW7nlrdSU0ECrzK6
+Y/r1m+0pAuRqF1EBEJSAkK+plFoG+MKm+VJLVF712zH0iN67KxixsKegNWmxvvPc
+stz5Dk7chwXZgv20cGn2vhjykz70Il6wN1Cps0zZv6vfPyQR2mo0msFT1fhe8lCY
+rS+76WrbU+R2LdArtL1d5LxsoTNNdakavPx2T8KwxLJAzxOkrZmNB7LpoxptkiM0
+b1ZbctaGFEnqiWVcP3WLIa2opXAhxN1iEllWOdSqXvP3ilrORtz586dnoyJXFXRx
+6LNO9YPiTVl7vM8YgsAyA2Tx7BkbRtqIqb7KwEV52eEdL4BpSJkO0jrldAcBQ0y+
+TFrwQeWEnx204e61WExSD3N4SaBe2/pQPkLbTioVZu0b57cfVqYxwwXibo6kg3AL
+OwG9x2uKbnRZx2Qgu+apCa7DoJsj9Qq3LnwKnyi6YgyDRZwhZw7/RORXsv2/MN4y
+vIOJrNZWrVznn3DBOw6xlg4nZJ0A8SMukGH1gXZz30QEWqVkMx0QCTNR5TwSsAGv
+qdm4bV2REr1DXYJCwN6L
+=GFyb
 -----END PGP SIGNATURE-----
 
---ka5cukxufqo6yptp--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--y6rzyeakzjypnhrf--
