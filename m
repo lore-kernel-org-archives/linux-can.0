@@ -1,82 +1,132 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v3 4/4] ARM: dts: sun7i: Add can0_pins_a pinctrl settings
-Date: Tue, 4 Apr 2017 17:43:04 +0200
-Message-ID: <20170404154304.7vgqx3jbkfm3n5lt@lukather>
-References: <1491238814-4888-1-git-send-email-menschel.p@posteo.de>
- <1491238814-4888-5-git-send-email-menschel.p@posteo.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2017-03-03
+Date: Tue, 4 Apr 2017 17:47:28 +0200
+Message-ID: <f4c403dd-50c0-be1a-90eb-1d45d3bc1afd@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pqn6mwmliho32pua"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1491238814-4888-5-git-send-email-menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="HTdrFOGG1PXTpTPHtD8iHONuON8rQp8G6"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:58787 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S932131AbdDDPrm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2017 11:47:42 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--HTdrFOGG1PXTpTPHtD8iHONuON8rQp8G6
+Content-Type: multipart/mixed; boundary="fh1cpQriiAMq1LXb7P575bG196n5qLO4E";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <f4c403dd-50c0-be1a-90eb-1d45d3bc1afd@pengutronix.de>
+Subject: pull-request: can-next 2017-03-03
 
---pqn6mwmliho32pua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--fh1cpQriiAMq1LXb7P575bG196n5qLO4E
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 03, 2017 at 07:00:14PM +0200, Patrick Menschel wrote:
-> The A20 SoC has an on-board CAN controller. This patch adds
-> the pinctrl settings for pins PH20 and PH21.
->=20
-> This patch is adapted from the description in
-> Documentation/devicetree/bindings/net/can/sun4i_can.txt
->=20
-> Signed-off-by: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-> ---
->  arch/arm/boot/dts/sun7i-a20.dtsi | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a=
-20.dtsi
-> index c637e10..8536caf 100644
-> --- a/arch/arm/boot/dts/sun7i-a20.dtsi
-> +++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-> @@ -1096,6 +1096,11 @@
->  			#interrupt-cells =3D <3>;
->  			#gpio-cells =3D <3>;
-> =20
-> +			can0_pins_a: can0@0 {
-> +				pins =3D "PH20","PH21";
+Hello David,
 
-Same thing here, you need a space after that comma. I've fixed it and
-applied the patch.
+this is a pull request of 5 patches for net-next/master.
 
-Thanks!
-Maxime
+There are two patches by Yegor Yefremov which convert the ti_hecc
+driver into a DT only driver, as there is no in-tree user of the old
+platform driver interface anymore. The next patch by Mario Kicherer
+adds network namespace support to the can subsystem. The last two
+patches by Akshay Bhat add support for the holt_hi311x SPI CAN driver.
+
+regards,
+Marc
+
+---
+
+The following changes since commit 822f9bb104c9d1d2dea3669f1941558c6304cf=
+92:
+
+  soreuseport: use "unsigned int" in __reuseport_alloc() (2017-04-03 19:0=
+6:38 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.13-20170404
+
+for you to fetch changes up to 57e83fb9b7468c75cb65cde1d23043553c346c6d:
+
+  can: hi311x: Add Holt HI-311x CAN driver (2017-04-04 17:35:59 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-4.13-20170404
+
+----------------------------------------------------------------
+Akshay Bhat (2):
+      can: holt_hi311x: document device tree bindings
+      can: hi311x: Add Holt HI-311x CAN driver
+
+Mario Kicherer (1):
+      can: initial support for network namespaces
+
+Yegor Yefremov (2):
+      can: ti_hecc: Add TI HECC DT binding documentation
+      can: ti_hecc: Convert TI HECC driver to DT only driver
+
+ .../devicetree/bindings/net/can/holt_hi311x.txt    |   24 +
+ .../devicetree/bindings/net/can/ti_hecc.txt        |   32 +
+ drivers/net/can/spi/Kconfig                        |    6 +
+ drivers/net/can/spi/Makefile                       |    1 +
+ drivers/net/can/spi/hi311x.c                       | 1076 ++++++++++++++=
+++++++
+ drivers/net/can/ti_hecc.c                          |  170 ++--
+ include/linux/can/core.h                           |    7 +-
+ include/linux/can/platform/ti_hecc.h               |   44 -
+ include/net/net_namespace.h                        |    4 +
+ include/net/netns/can.h                            |   31 +
+ net/can/af_can.c                                   |  122 ++-
+ net/can/af_can.h                                   |    4 +-
+ net/can/bcm.c                                      |   13 +-
+ net/can/gw.c                                       |    4 +-
+ net/can/proc.c                                     |  144 ++-
+ net/can/raw.c                                      |   92 +-
+ 16 files changed, 1469 insertions(+), 305 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/holt_hi311x=
+=2Etxt
+ create mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc.txt=
+
+ create mode 100644 drivers/net/can/spi/hi311x.c
+ delete mode 100644 include/linux/can/platform/ti_hecc.h
+ create mode 100644 include/net/netns/can.h
+
 --=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
---pqn6mwmliho32pua
+
+--fh1cpQriiAMq1LXb7P575bG196n5qLO4E--
+
+--HTdrFOGG1PXTpTPHtD8iHONuON8rQp8G6
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJY478IAAoJEBx+YmzsjxAgvgwQALA63j9K9rwoQxX1yDHPq/Zi
-WnVQMIDI1Oy7FTfuW5Z0R3tFMrFF5BvU/ARmksbypDIPhm1NCS/a0f2e9M9XmuaM
-LGW6RbvSOEJ9qn7CmNNY8RSeHF203KH9QbC9JCMScTq/+Z3YedHAhZwRVM+45U9j
-+pvkvIb+WM7v8FSCrBXwn8suCh/9jzgoBABYOovrzB3UCZuykzSGh09ItxFruh3A
-i6RV5bM1uNofb6aJy5PZ1gffiiaGI/L6eHb1/tE/X/298JgIn6J5rs0SrpcbT9il
-SIKWPrPeVSFgo6qqiEIH97Ktf8VdXP6xJisB8NR1SZ916EtujV9h7NJjub+MNtSg
-uiH0PNsGzYbkzvbHyj01RVSQ9LOGX+GxtzzWH8PqHFFjefhrCK0LZJXD20t0ReUX
-dMOmnUqqDXUIKiv4CVk0p4U4KPtnFaKVc1/OHGnuXxHIK58Xp16tcjKq8tXpXp5D
-TlhOInqEb4lzt0zsQp/ZKyHkKZC3t/BK/oLmBzN7O796kLkwPbx67ncRH6/3+TsL
-RiXI5nU7mu0w5PuOudGpvLxBVb/nOX3XeFEdVh/dskVNtHQAIsSzpO8y6Fhyc2UM
-DX6ZJZFpbJ5S2w1RkjqvVWCGIzoalThHMfJrmmipT1AB3TRR+vdNwmCzI/scwwKF
-QQh+LTXWpx4aKdKRHolw
-=fU2Q
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljjwBAACgkQHv7KIOw4
+HPYoFwf/dFKhwau59FEPC9H/veC4Xb62lWeXgrKpovC4yr2cw1m2R571JYa/KW3y
+7mZ2nBwUqOtTL91oTvDX31edb1k203Pv4xAZu4EBIZ8mJjVCC6I6GEtYdKhqt5q+
+J5ugHxPTBNCA/B9ZRI4RSMxnsjpOsQBev5nvb3g6nsouSjepGlLdibPO6P7BM3mH
+GvP9IVQ+JxWpMv/WnsflWkM28n8oheq5irICewuSRynXrrVffirUcQB7ZQULOY1V
+3ZFH2/yb65Zhzyjc5iUtDWcCNedN4QtZVuJuJvPSlC13Yp+R8OHo9iqPnrYoVodf
+SWa63IBW8FUAZKqlVNgDKCcjqOGaAQ==
+=3wGp
 -----END PGP SIGNATURE-----
 
---pqn6mwmliho32pua--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--HTdrFOGG1PXTpTPHtD8iHONuON8rQp8G6--
