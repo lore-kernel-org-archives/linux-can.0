@@ -1,46 +1,98 @@
-From: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Subject: [PATCH v4 3/6] ARM: dts: sun4i: Add can0_pins_a pinctrl settings
-Date: Tue,  4 Apr 2017 20:36:29 +0200
-Message-ID: <1491330992-9876-4-git-send-email-menschel.p@posteo.de>
+From: Patrick Menschel <menschel.p@posteo.de>
+Subject: [PATCH v4 4/6] ARM: dts: sun7i: fix device node ordering
+Date: Tue,  4 Apr 2017 20:36:30 +0200
+Message-ID: <1491330992-9876-5-git-send-email-menschel.p@posteo.de>
 References: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1491330992-9876-1-git-send-email-menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk, maxime.ripard@free-electrons.com, wens@csie.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+Cc: Patrick Menschel <menschel.p@posteo.de>
 List-Id: linux-can.vger.kernel.org
 
-The A10 SoC has an on-board CAN controller. This patch adds the
-pinctrl settings for pins PH20 and PH21.
+This patch changes the device node position of ps20 and ps21 to fix
+ordering by rising physical address.
 
-This patch is adapted from the description in
-Documentation/devicetree/bindings/net/can/sun4i_can.txt
+From
 
-Signed-off-by: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
+uart7: serial@01c29c00
+i2c0: i2c@01c2ac00
+i2c1: i2c@01c2b000
+i2c2: i2c@01c2b400
+i2c3: i2c@01c2b800
+i2c4: i2c@01c2c000
+gmac: ethernet@01c50000
+hstimer@01c60000
+gic: interrupt-controller@01c81000
+ps20: ps2@01c2a000
+ps21: ps2@01c2a400
+
+to
+
+uart7: serial@01c29c00
+ps20: ps2@01c2a000
+ps21: ps2@01c2a400
+i2c0: i2c@01c2ac00
+i2c1: i2c@01c2b000
+i2c2: i2c@01c2b400
+i2c3: i2c@01c2b800
+i2c4: i2c@01c2c000
+gmac: ethernet@01c50000
+hstimer@01c60000
+gic: interrupt-controller@01c81000
+
+Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
 ---
- arch/arm/boot/dts/sun4i-a10.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm/boot/dts/sun7i-a20.dtsi | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
-index 4d8eaf2..e72d67d 100644
---- a/arch/arm/boot/dts/sun4i-a10.dtsi
-+++ b/arch/arm/boot/dts/sun4i-a10.dtsi
-@@ -974,6 +974,11 @@
- 			#interrupt-cells = <3>;
- 			#gpio-cells = <3>;
+diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
+index 2db97fc..100b4e9 100644
+--- a/arch/arm/boot/dts/sun7i-a20.dtsi
++++ b/arch/arm/boot/dts/sun7i-a20.dtsi
+@@ -1538,6 +1538,22 @@
+ 			status = "disabled";
+ 		};
  
-+			can0_pins_a: can0@0 {
-+				pins = "PH20", "PH21";
-+				function = "can";
-+			};
++		ps20: ps2@01c2a000 {
++			compatible = "allwinner,sun4i-a10-ps2";
++			reg = <0x01c2a000 0x400>;
++			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&apb1_gates 6>;
++			status = "disabled";
++		};
 +
- 			emac_pins_a: emac0@0 {
- 				pins = "PA0", "PA1", "PA2",
- 				       "PA3", "PA4", "PA5", "PA6",
++		ps21: ps2@01c2a400 {
++			compatible = "allwinner,sun4i-a10-ps2";
++			reg = <0x01c2a400 0x400>;
++			interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&apb1_gates 7>;
++			status = "disabled";
++		};
++
+ 		i2c0: i2c@01c2ac00 {
+ 			compatible = "allwinner,sun7i-a20-i2c",
+ 				     "allwinner,sun4i-a10-i2c";
+@@ -1629,20 +1645,5 @@
+ 			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+ 		};
+ 
+-		ps20: ps2@01c2a000 {
+-			compatible = "allwinner,sun4i-a10-ps2";
+-			reg = <0x01c2a000 0x400>;
+-			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&apb1_gates 6>;
+-			status = "disabled";
+-		};
+-
+-		ps21: ps2@01c2a400 {
+-			compatible = "allwinner,sun4i-a10-ps2";
+-			reg = <0x01c2a400 0x400>;
+-			interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&apb1_gates 7>;
+-			status = "disabled";
+-		};
+ 	};
+ };
 -- 
 2.7.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
