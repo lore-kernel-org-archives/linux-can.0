@@ -1,97 +1,53 @@
 From: Patrick Menschel <menschel.p@posteo.de>
-Subject: [PATCH v4 4/6] ARM: dts: sun7i: fix device node ordering
-Date: Tue,  4 Apr 2017 20:36:30 +0200
-Message-ID: <1491330992-9876-5-git-send-email-menschel.p@posteo.de>
+Subject: [PATCH v4 2/6] ARM: dts: sun4i: Add CAN node
+Date: Tue,  4 Apr 2017 20:36:28 +0200
+Message-ID: <1491330992-9876-3-git-send-email-menschel.p@posteo.de>
 References: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk, maxime.ripard@free-electrons.com, wens@csie.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
 Cc: Patrick Menschel <menschel.p@posteo.de>
 List-Id: linux-can.vger.kernel.org
 
-This patch changes the device node position of ps20 and ps21 to fix
-ordering by rising physical address.
+The A10 SoC has an on-board CAN controller.
+This patch adds the device node.
 
-From
-
-uart7: serial@01c29c00
-i2c0: i2c@01c2ac00
-i2c1: i2c@01c2b000
-i2c2: i2c@01c2b400
-i2c3: i2c@01c2b800
-i2c4: i2c@01c2c000
-gmac: ethernet@01c50000
-hstimer@01c60000
-gic: interrupt-controller@01c81000
-ps20: ps2@01c2a000
-ps21: ps2@01c2a400
-
-to
-
-uart7: serial@01c29c00
-ps20: ps2@01c2a000
-ps21: ps2@01c2a400
-i2c0: i2c@01c2ac00
-i2c1: i2c@01c2b000
-i2c2: i2c@01c2b400
-i2c3: i2c@01c2b800
-i2c4: i2c@01c2c000
-gmac: ethernet@01c50000
-hstimer@01c60000
-gic: interrupt-controller@01c81000
+This patch is adapted from the description in
+Documentation/devicetree/bindings/net/can/sun4i_can.txt
 
 Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
 ---
- arch/arm/boot/dts/sun7i-a20.dtsi | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ arch/arm/boot/dts/sun4i-a10.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
-index 2db97fc..100b4e9 100644
---- a/arch/arm/boot/dts/sun7i-a20.dtsi
-+++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-@@ -1538,6 +1538,22 @@
- 			status = "disabled";
+diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
+index 498f7f2..4d8eaf2 100644
+--- a/arch/arm/boot/dts/sun4i-a10.dtsi
++++ b/arch/arm/boot/dts/sun4i-a10.dtsi
+@@ -1329,5 +1329,13 @@
+ 			#size-cells = <0>;
  		};
  
-+		ps20: ps2@01c2a000 {
-+			compatible = "allwinner,sun4i-a10-ps2";
-+			reg = <0x01c2a000 0x400>;
-+			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&apb1_gates 6>;
++		can0: can@01c2bc00 {
++			compatible = "allwinner,sun4i-a10-can";
++			reg = <0x01c2bc00 0x400>;
++			interrupts = <26>;
++			clocks = <&apb1_gates 4>;
 +			status = "disabled";
 +		};
 +
-+		ps21: ps2@01c2a400 {
-+			compatible = "allwinner,sun4i-a10-ps2";
-+			reg = <0x01c2a400 0x400>;
-+			interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&apb1_gates 7>;
-+			status = "disabled";
-+		};
-+
- 		i2c0: i2c@01c2ac00 {
- 			compatible = "allwinner,sun7i-a20-i2c",
- 				     "allwinner,sun4i-a10-i2c";
-@@ -1629,20 +1645,5 @@
- 			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
- 		};
- 
--		ps20: ps2@01c2a000 {
--			compatible = "allwinner,sun4i-a10-ps2";
--			reg = <0x01c2a000 0x400>;
--			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&apb1_gates 6>;
--			status = "disabled";
--		};
--
--		ps21: ps2@01c2a400 {
--			compatible = "allwinner,sun4i-a10-ps2";
--			reg = <0x01c2a400 0x400>;
--			interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&apb1_gates 7>;
--			status = "disabled";
--		};
  	};
  };
 -- 
