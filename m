@@ -1,49 +1,88 @@
 From: Patrick Menschel <menschel.p@posteo.de>
-Subject: [PATCH v4 6/6] ARM: dts: sun7i: Add can0_pins_a pinctrl settings
-Date: Tue,  4 Apr 2017 20:36:32 +0200
-Message-ID: <1491330992-9876-7-git-send-email-menschel.p@posteo.de>
+Subject: [PATCH v4 1/6] ARM: dts: sun4i: fix device node ordering
+Date: Tue,  4 Apr 2017 20:36:27 +0200
+Message-ID: <1491330992-9876-2-git-send-email-menschel.p@posteo.de>
 References: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout02.posteo.de ([185.67.36.66]:53530 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755364AbdDDShA (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 4 Apr 2017 14:37:00 -0400
-Received: from submission (posteo.de [89.146.220.130])
-        by mout02.posteo.de (Postfix) with ESMTPS id 63F5020E5C
-        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2017 20:36:59 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk, maxime.ripard@free-electrons.com, wens@csie.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
 Cc: Patrick Menschel <menschel.p@posteo.de>
+List-Id: linux-can.vger.kernel.org
 
-The A20 SoC has an on-board CAN controller. This patch adds
-the pinctrl settings for pins PH20 and PH21.
+This patch changes the device node position of ps20 and ps21 to fix
+ordering by rising physical address.
 
-This patch is adapted from the description in
-Documentation/devicetree/bindings/net/can/sun4i_can.txt
+From
+
+uart7: serial@01c29c00
+i2c0: i2c@01c2ac00
+i2c1: i2c@01c2b000
+i2c2: i2c@01c2b400
+ps20: ps2@01c2a000
+ps21: ps2@01c2a400
+
+to
+
+uart7: serial@01c29c00
+ps20: ps2@01c2a000
+ps21: ps2@01c2a400
+i2c0: i2c@01c2ac00
+i2c1: i2c@01c2b000
+i2c2: i2c@01c2b400
 
 Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
 ---
- arch/arm/boot/dts/sun7i-a20.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm/boot/dts/sun4i-a10.dtsi | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
-index edf85ca..31aaa02 100644
---- a/arch/arm/boot/dts/sun7i-a20.dtsi
-+++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-@@ -1096,6 +1096,11 @@
- 			#interrupt-cells = <3>;
- 			#gpio-cells = <3>;
+diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
+index ba20b48..498f7f2 100644
+--- a/arch/arm/boot/dts/sun4i-a10.dtsi
++++ b/arch/arm/boot/dts/sun4i-a10.dtsi
+@@ -1283,6 +1283,22 @@
+ 			status = "disabled";
+ 		};
  
-+			can0_pins_a: can0@0 {
-+				pins = "PH20", "PH21";
-+				function = "can";
-+			};
++		ps20: ps2@01c2a000 {
++			compatible = "allwinner,sun4i-a10-ps2";
++			reg = <0x01c2a000 0x400>;
++			interrupts = <62>;
++			clocks = <&apb1_gates 6>;
++			status = "disabled";
++		};
 +
- 			clk_out_a_pins_a: clk_out_a@0 {
- 				pins = "PI12";
- 				function = "clk_out_a";
++		ps21: ps2@01c2a400 {
++			compatible = "allwinner,sun4i-a10-ps2";
++			reg = <0x01c2a400 0x400>;
++			interrupts = <63>;
++			clocks = <&apb1_gates 7>;
++			status = "disabled";
++		};
++
+ 		i2c0: i2c@01c2ac00 {
+ 			compatible = "allwinner,sun4i-a10-i2c";
+ 			reg = <0x01c2ac00 0x400>;
+@@ -1313,20 +1329,5 @@
+ 			#size-cells = <0>;
+ 		};
+ 
+-		ps20: ps2@01c2a000 {
+-			compatible = "allwinner,sun4i-a10-ps2";
+-			reg = <0x01c2a000 0x400>;
+-			interrupts = <62>;
+-			clocks = <&apb1_gates 6>;
+-			status = "disabled";
+-		};
+-
+-		ps21: ps2@01c2a400 {
+-			compatible = "allwinner,sun4i-a10-ps2";
+-			reg = <0x01c2a400 0x400>;
+-			interrupts = <63>;
+-			clocks = <&apb1_gates 7>;
+-			status = "disabled";
+-		};
+ 	};
+ };
 -- 
 2.7.4
-
