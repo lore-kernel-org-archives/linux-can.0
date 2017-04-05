@@ -1,96 +1,68 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: pull-request: can-next 2017-03-03
-Date: Tue, 4 Apr 2017 23:02:27 +0200
-Message-ID: <71c7af28-07fe-8009-863e-8ed19f109f5b@hartkopp.net>
-References: <f4c403dd-50c0-be1a-90eb-1d45d3bc1afd@pengutronix.de>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH v4 0/6] ARM: dts: sunxi: Add CAN node and can0_pins_a
+ pinctrl settings
+Date: Wed, 5 Apr 2017 08:22:14 +0200
+Message-ID: <20170405062214.ejc4irrypxjoqufu@lukather>
+References: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:12597 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752603AbdDDVCh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2017 17:02:37 -0400
-In-Reply-To: <f4c403dd-50c0-be1a-90eb-1d45d3bc1afd@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="szsydsokvcl6e52r"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Patrick Menschel <menschel.p@posteo.de>
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk, wens@csie.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-Hello Marc,
 
-I wonder why the net namespace patches are pushed to upstream without 
-some more feedback from others - and the M_CAN, PEAK PCI FD and mcba_usb 
-are still pending for nearly 3 month.
+--szsydsokvcl6e52r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is not really transparent for the driver contributors :-(
+On Tue, Apr 04, 2017 at 08:36:26PM +0200, Patrick Menschel wrote:
+> The Allwinner A10/A20 SoCs have an on-board CAN (Controller Area Network)
+> controller. This patch adds the CAN core to the SoC's include files,
+> sun4i-a10.dtsi and sun7i-a20.dtsi.
+>=20
+> On linux-can mailing list was a discussion about updating the device tree=
+ bindings
+> https://lkml.org/lkml/2015/9/17/220
+> but it did not progress past writing the documentation file.
+> Documentation/devicetree/bindings/net/can/sun4i_can.txt
+>=20
+> The CAN controller can be enabled in a board specific dts file as
+> described in the documentation file or by using a device tree overlay.
 
-Regards,
-Oliver
+Applied 1 and 4. The others were already merged.
 
-On 04/04/2017 05:47 PM, Marc Kleine-Budde wrote:
-> Hello David,
->
-> this is a pull request of 5 patches for net-next/master.
->
-> There are two patches by Yegor Yefremov which convert the ti_hecc
-> driver into a DT only driver, as there is no in-tree user of the old
-> platform driver interface anymore. The next patch by Mario Kicherer
-> adds network namespace support to the can subsystem. The last two
-> patches by Akshay Bhat add support for the holt_hi311x SPI CAN driver.
->
-> regards,
-> Marc
->
-> ---
->
-> The following changes since commit 822f9bb104c9d1d2dea3669f1941558c6304cf92:
->
->   soreuseport: use "unsigned int" in __reuseport_alloc() (2017-04-03 19:06:38 -0700)
->
-> are available in the git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-4.13-20170404
->
-> for you to fetch changes up to 57e83fb9b7468c75cb65cde1d23043553c346c6d:
->
->   can: hi311x: Add Holt HI-311x CAN driver (2017-04-04 17:35:59 +0200)
->
-> ----------------------------------------------------------------
-> linux-can-next-for-4.13-20170404
->
-> ----------------------------------------------------------------
-> Akshay Bhat (2):
->       can: holt_hi311x: document device tree bindings
->       can: hi311x: Add Holt HI-311x CAN driver
->
-> Mario Kicherer (1):
->       can: initial support for network namespaces
->
-> Yegor Yefremov (2):
->       can: ti_hecc: Add TI HECC DT binding documentation
->       can: ti_hecc: Convert TI HECC driver to DT only driver
->
->  .../devicetree/bindings/net/can/holt_hi311x.txt    |   24 +
->  .../devicetree/bindings/net/can/ti_hecc.txt        |   32 +
->  drivers/net/can/spi/Kconfig                        |    6 +
->  drivers/net/can/spi/Makefile                       |    1 +
->  drivers/net/can/spi/hi311x.c                       | 1076 ++++++++++++++++++++
->  drivers/net/can/ti_hecc.c                          |  170 ++--
->  include/linux/can/core.h                           |    7 +-
->  include/linux/can/platform/ti_hecc.h               |   44 -
->  include/net/net_namespace.h                        |    4 +
->  include/net/netns/can.h                            |   31 +
->  net/can/af_can.c                                   |  122 ++-
->  net/can/af_can.h                                   |    4 +-
->  net/can/bcm.c                                      |   13 +-
->  net/can/gw.c                                       |    4 +-
->  net/can/proc.c                                     |  144 ++-
->  net/can/raw.c                                      |   92 +-
->  16 files changed, 1469 insertions(+), 305 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/holt_hi311x.txt
->  create mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc.txt
->  create mode 100644 drivers/net/can/spi/hi311x.c
->  delete mode 100644 include/linux/can/platform/ti_hecc.h
->  create mode 100644 include/net/netns/can.h
->
+Thanks!
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+
+--szsydsokvcl6e52r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJY5I0SAAoJEBx+YmzsjxAgSOEQAKjxcsCT7Rrf5sSDHpcMvezw
+bopxOY5Gns17NPohj2yhOHhRMKjaw74SBadlZLcT6U2M/uWS/qXfyYMswVu1F5be
+py1BnAcZZ26fp8Xj4K+RFUZvq8dMO8vNUIjy3R3HYbwsaww7zY7w+q5MsvkpR4Wk
+lxWr46O2KhjCtTf8NESrlR/hg8PkZUoYhABeaaWTB5W4SkgKLhFcAyDrE/2th7j+
+sBJZkN5qyzfl7IZ/EUIsayGjxF/gXhYi4N/0N9pyL164tcCBIcfvs/kIJ0bgPqxu
+pxxhrjEL5NOiYMLeLCnZdwNFQoFaVK30bXTQ3SH0qQKRhTtNQDpA+A7TRjMUcsBM
+5sjWPAEUpt49vTxaZszxRH3Rs44IGq0il76TQcoGZiSvM0ioNR9DiXqESxTA+ZUs
+RzleddwE1UpCk7YEtZk+MbpbBtwWeSuB0fg9l3MYATyp3pc+1DGxzqIOs01TKUjR
+lyT3zvCHuXAfpSOz3EuVNWNjMeRjMhMnCMdYvSGPbqxUmtirck1B26d5xS7ZhB/d
+jSSibC523Onw8OZIfRbl9B9iXpAfOrLXSELyBJ4Ou9snsRoTOrh0RYvxmAQPqvhf
+U7kRzJwvBgzf/98w/0D+DvJ+3KoALQ72mcNOC4Ca8smETlgMx3hSLP5amu0tkq9x
+Ltnk+AyUPNbdPyXNlQ2i
+=Tx1B
+-----END PGP SIGNATURE-----
+
+--szsydsokvcl6e52r--
