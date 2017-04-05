@@ -1,68 +1,98 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v4 0/6] ARM: dts: sunxi: Add CAN node and can0_pins_a
- pinctrl settings
-Date: Wed, 5 Apr 2017 08:22:14 +0200
-Message-ID: <20170405062214.ejc4irrypxjoqufu@lukather>
-References: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
+From: David Howells <dhowells@redhat.com>
+Subject: [PATCH 18/38] Annotate hardware config module parameters in
+ drivers/net/can/
+Date: Wed, 05 Apr 2017 17:59:31 +0100
+Message-ID: <149141157162.29162.10145088436840145584.stgit@warthog.procyon.org.uk>
+References: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="szsydsokvcl6e52r"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1491330992-9876-1-git-send-email-menschel.p@posteo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Patrick Menschel <menschel.p@posteo.de>
-Cc: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk, wens@csie.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
+Sender: netdev-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: gnomes@lxorguk.ukuu.org.uk, netdev@vger.kernel.org, linux-can@vger.kernel.org, dhowells@redhat.com, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, gregkh@linuxfoundation.org, Wolfgang Grandegger <wg@grandegger.com>
 List-Id: linux-can.vger.kernel.org
 
+When the kernel is running in secure boot mode, we lock down the kernel to
+prevent userspace from modifying the running kernel image.  Whilst this
+includes prohibiting access to things like /dev/mem, it must also prevent
+access by means of configuring driver modules in such a way as to cause a
+device to access or modify the kernel image.
 
---szsydsokvcl6e52r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To this end, annotate module_param* statements that refer to hardware
+configuration and indicate for future reference what type of parameter they
+specify.  The parameter parser in the core sees this information and can
+skip such parameters with an error message if the kernel is locked down.
+The module initialisation then runs as normal, but just sees whatever the
+default values for those parameters is.
 
-On Tue, Apr 04, 2017 at 08:36:26PM +0200, Patrick Menschel wrote:
-> The Allwinner A10/A20 SoCs have an on-board CAN (Controller Area Network)
-> controller. This patch adds the CAN core to the SoC's include files,
-> sun4i-a10.dtsi and sun7i-a20.dtsi.
->=20
-> On linux-can mailing list was a discussion about updating the device tree=
- bindings
-> https://lkml.org/lkml/2015/9/17/220
-> but it did not progress past writing the documentation file.
-> Documentation/devicetree/bindings/net/can/sun4i_can.txt
->=20
-> The CAN controller can be enabled in a board specific dts file as
-> described in the documentation file or by using a device tree overlay.
+Note that we do still need to do the module initialisation because some
+drivers have viable defaults set in case parameters aren't specified and
+some drivers support automatic configuration (e.g. PNP or PCI) in addition
+to manually coded parameters.
 
-Applied 1 and 4. The others were already merged.
+This patch annotates drivers in drivers/net/can/.
 
-Thanks!
-Maxime
+Suggested-by: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+cc: Wolfgang Grandegger <wg@grandegger.com>
+cc: linux-can@vger.kernel.org
+cc: netdev@vger.kernel.org
+---
 
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+ drivers/net/can/cc770/cc770_isa.c     |    8 ++++----
+ drivers/net/can/sja1000/sja1000_isa.c |    8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
---szsydsokvcl6e52r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJY5I0SAAoJEBx+YmzsjxAgSOEQAKjxcsCT7Rrf5sSDHpcMvezw
-bopxOY5Gns17NPohj2yhOHhRMKjaw74SBadlZLcT6U2M/uWS/qXfyYMswVu1F5be
-py1BnAcZZ26fp8Xj4K+RFUZvq8dMO8vNUIjy3R3HYbwsaww7zY7w+q5MsvkpR4Wk
-lxWr46O2KhjCtTf8NESrlR/hg8PkZUoYhABeaaWTB5W4SkgKLhFcAyDrE/2th7j+
-sBJZkN5qyzfl7IZ/EUIsayGjxF/gXhYi4N/0N9pyL164tcCBIcfvs/kIJ0bgPqxu
-pxxhrjEL5NOiYMLeLCnZdwNFQoFaVK30bXTQ3SH0qQKRhTtNQDpA+A7TRjMUcsBM
-5sjWPAEUpt49vTxaZszxRH3Rs44IGq0il76TQcoGZiSvM0ioNR9DiXqESxTA+ZUs
-RzleddwE1UpCk7YEtZk+MbpbBtwWeSuB0fg9l3MYATyp3pc+1DGxzqIOs01TKUjR
-lyT3zvCHuXAfpSOz3EuVNWNjMeRjMhMnCMdYvSGPbqxUmtirck1B26d5xS7ZhB/d
-jSSibC523Onw8OZIfRbl9B9iXpAfOrLXSELyBJ4Ou9snsRoTOrh0RYvxmAQPqvhf
-U7kRzJwvBgzf/98w/0D+DvJ+3KoALQ72mcNOC4Ca8smETlgMx3hSLP5amu0tkq9x
-Ltnk+AyUPNbdPyXNlQ2i
-=Tx1B
------END PGP SIGNATURE-----
-
---szsydsokvcl6e52r--
+diff --git a/drivers/net/can/cc770/cc770_isa.c b/drivers/net/can/cc770/cc770_isa.c
+index e0d15711e9ac..3a30fd3b4498 100644
+--- a/drivers/net/can/cc770/cc770_isa.c
++++ b/drivers/net/can/cc770/cc770_isa.c
+@@ -82,16 +82,16 @@ static u8 cor[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+ static u8 bcr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+ static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+ 
+-module_param_array(port, ulong, NULL, S_IRUGO);
++module_param_hw_array(port, ulong, ioport, NULL, S_IRUGO);
+ MODULE_PARM_DESC(port, "I/O port number");
+ 
+-module_param_array(mem, ulong, NULL, S_IRUGO);
++module_param_hw_array(mem, ulong, iomem, NULL, S_IRUGO);
+ MODULE_PARM_DESC(mem, "I/O memory address");
+ 
+-module_param_array(indirect, int, NULL, S_IRUGO);
++module_param_hw_array(indirect, int, ioport, NULL, S_IRUGO);
+ MODULE_PARM_DESC(indirect, "Indirect access via address and data port");
+ 
+-module_param_array(irq, int, NULL, S_IRUGO);
++module_param_hw_array(irq, int, irq, NULL, S_IRUGO);
+ MODULE_PARM_DESC(irq, "IRQ number");
+ 
+ module_param_array(clk, int, NULL, S_IRUGO);
+diff --git a/drivers/net/can/sja1000/sja1000_isa.c b/drivers/net/can/sja1000/sja1000_isa.c
+index e97e6d35b300..a89c1e92554d 100644
+--- a/drivers/net/can/sja1000/sja1000_isa.c
++++ b/drivers/net/can/sja1000/sja1000_isa.c
+@@ -48,16 +48,16 @@ static unsigned char ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+ static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+ static spinlock_t indirect_lock[MAXDEV];  /* lock for indirect access mode */
+ 
+-module_param_array(port, ulong, NULL, S_IRUGO);
++module_param_hw_array(port, ulong, ioport, NULL, S_IRUGO);
+ MODULE_PARM_DESC(port, "I/O port number");
+ 
+-module_param_array(mem, ulong, NULL, S_IRUGO);
++module_param_hw_array(mem, ulong, iomem, NULL, S_IRUGO);
+ MODULE_PARM_DESC(mem, "I/O memory address");
+ 
+-module_param_array(indirect, int, NULL, S_IRUGO);
++module_param_hw_array(indirect, int, ioport, NULL, S_IRUGO);
+ MODULE_PARM_DESC(indirect, "Indirect access via address and data port");
+ 
+-module_param_array(irq, int, NULL, S_IRUGO);
++module_param_hw_array(irq, int, irq, NULL, S_IRUGO);
+ MODULE_PARM_DESC(irq, "IRQ number");
+ 
+ module_param_array(clk, int, NULL, S_IRUGO);
