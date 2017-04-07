@@ -1,124 +1,78 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull-request: can 2017-04-04
-Date: Fri, 7 Apr 2017 11:00:20 +0200
-Message-ID: <bd352fa3-76ba-266d-0831-7cfe5e0abb36@pengutronix.de>
-References: <20170404155949.30965-1-mkl@pengutronix.de>
- <20170405.103734.436486519653060340.davem@davemloft.net>
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
+Subject: Re: [PATCH v2] can: m_can: enable transmission of FD frame on latest
+ version
+Date: Fri, 7 Apr 2017 13:41:11 +0200
+Message-ID: <2d0bf188-7c80-9dd7-87ec-ef6e4f685f5b@free-electrons.com>
+References: <20170306022143.7695-1-wenyou.yang@atmel.com>
+ <e4360c52-d62d-6c35-f691-7fcd0f74f954@pengutronix.de>
+ <b24f3252-6bd9-db48-b224-5bf3683cb75d@hartkopp.net>
+ <fe3a4152-643c-404f-f236-5066089fba2e@hartkopp.net>
+ <F9F4555C4E01D7469D37975B62D0EFBB4FC29C@CHN-SV-EXMX07.mchp-main.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="0ScKll3hvORtvvXF33NE0Ew26QoFpjK3P"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:38585 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752982AbdDGLDz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Apr 2017 07:03:55 -0400
-In-Reply-To: <20170405.103734.436486519653060340.davem@davemloft.net>
+Received: from mail.free-electrons.com ([62.4.15.54]:37786 "EHLO
+        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S932165AbdDGLlN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Apr 2017 07:41:13 -0400
+In-Reply-To: <F9F4555C4E01D7469D37975B62D0EFBB4FC29C@CHN-SV-EXMX07.mchp-main.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: Wenyou.Yang@microchip.com, socketcan@hartkopp.net, mkl@pengutronix.de, wg@grandegger.com
+Cc: alexandre.belloni@free-electrons.com, f.fainelli@gmail.com, nicolas.ferre@atmel.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---0ScKll3hvORtvvXF33NE0Ew26QoFpjK3P
-Content-Type: multipart/mixed; boundary="kCSKTxVXgf2qT8GDCM7Rs5qgMTUBFpuOd";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-Message-ID: <bd352fa3-76ba-266d-0831-7cfe5e0abb36@pengutronix.de>
-Subject: Re: pull-request: can 2017-04-04
-References: <20170404155949.30965-1-mkl@pengutronix.de>
- <20170405.103734.436486519653060340.davem@davemloft.net>
-In-Reply-To: <20170405.103734.436486519653060340.davem@davemloft.net>
+Hi Oliver and Marc,
 
---kCSKTxVXgf2qT8GDCM7Rs5qgMTUBFpuOd
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 04/05/2017 07:37 PM, David Miller wrote:
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> Date: Tue,  4 Apr 2017 17:59:47 +0200
->=20
->> this is a pull request of two patches for net/master.
-> ...
->> The following changes since commit 0b9aefea860063bb39e36bd7fe6c7087fed=
-0ba87:
+On 07/03/2017 02:03, Wenyou.Yang@microchip.com wrote:
+> HI Oliver, 
+> 
+>> -----Original Message-----
+>> From: Oliver Hartkopp [mailto:socketcan@hartkopp.net]
+>> Sent: 2017年3月7日 5:26
+>> To: Marc Kleine-Budde <mkl@pengutronix.de>; Wenyou Yang - A41535
+>> <Wenyou.Yang@microchip.com>; Wolfgang Grandegger <wg@grandegger.com>
+>> Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>; Florian Fainelli
+>> <f.fainelli@gmail.com>; Quentin Schulz <quentin.schulz@free-electrons.com>;
+>> Wenyou Yang - A41535 <Wenyou.Yang@microchip.com>; Nicolas Ferre
+>> <nicolas.ferre@atmel.com>; linux-can@vger.kernel.org; netdev@vger.kernel.org;
+>> linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH v2] can: m_can: enable transmission of FD frame on latest
+>> version
 >>
->>   tcp: minimize false-positives on TCP/GRO check (2017-04-03 18:43:41 =
--0700)
+>> @Wenyou Yang: Can you please test the two patches posted here:
+> 
+> Tested on SAMA5D2 SoC, It works.
+> 
 >>
->> are available in the git repository at:
+>> [PATCH 1/2] can: m_can: handle bitrate setup on IP core >= 3.1.x
+>> http://marc.info/?l=linux-can&m=148883529927720&w=2
 >>
->>   git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git=20
->=20
-> Pulling this doesn't give me anything:
->=20
-> [davem@kkuri net]$ git pull --no-ff git://git.kernel.org/pub/scm/linux/=
-kernel/git/mkl/linux-can.git
-> From git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can
->  * branch            HEAD       -> FETCH_HEAD
-> Already up-to-date.
+>> [PATCH 2/2] can: m_can: handle frame transmission on IP core >= 3.1.x
+>> http://marc.info/?l=linux-can&m=148883529927718&w=2
+>>
 
-Sorry. The "tag" some git lost, here it is:
+Sorry, never received those mails so didn't know I had to do something.
+I forgot to add my Signed-off-by when resending it so of course you can
+add it to your next version:
 
----
+Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
 
-The following changes since commit 0b9aefea860063bb39e36bd7fe6c7087fed0ba=
-87:
+That gives me the opportunity to relaunch the discussion on it. What's
+the status?
 
-  tcp: minimize false-positives on TCP/GRO check (2017-04-03 18:43:41 -07=
-00)
+Quentin
 
-are available in the git repository at:
+>> Tnx & regards,
+>> Oliver
+> 
+> Thank you.
+> 
+> Best Regards,
+> Wenyou Yang
+> 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/li=
-nux-can-fixes-for-4.12-20170404
-
-for you to fetch changes up to ca257b9e2d807ab6cb2678ecc7b74aaf4651f597:
-
-  can: rcar_can: Do not print virtual addresses (2017-04-04 17:49:59 +020=
-0)
-
-----------------------------------------------------------------
-linux-can-fixes-for-4.12-20170404
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      can: rcar_can: Do not print virtual addresses
-
-Markus Marb (1):
-      can: ifi: use correct register to read rx status
-
- drivers/net/can/ifi_canfd/ifi_canfd.c | 2 +-
- drivers/net/can/rcar/rcar_can.c       | 3 +--
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---kCSKTxVXgf2qT8GDCM7Rs5qgMTUBFpuOd--
-
---0ScKll3hvORtvvXF33NE0Ew26QoFpjK3P
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljnVScACgkQHv7KIOw4
-HPYhJQgArotZ5TK2PuceX0YkNOl95WdBT6ig1/kYeyguyX6gNcTMdPzu/XgwpKWl
-9mtl3VCYo1ix9uQAfWkO9husyO5S5vUYlJtrNGSGhh8fxGUOS8UJFCIgPwlIpZbi
-C7OZqV8fx6cKIAhEpgy9i+dlFS80Ffwivo0u1WEfUnzm6gUaQHL/K24eKfaISVTV
-2UUkvdnu6ISep5j1JYPNvNNC5XBtrC0iFgGbfqvnJVKQwr3gSL48oHG9fbjBdmUp
-K54ia1YU9G76XsxWwgpqmO7ZHPLSoY2yVHFeRo+2fixi8uCfcx22HipknVNPZcP6
-4dxfGvHe2eF4sLo1k0YkATNORjlgQA==
-=9J1q
------END PGP SIGNATURE-----
-
---0ScKll3hvORtvvXF33NE0Ew26QoFpjK3P--
+-- 
+Quentin Schulz, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
