@@ -1,28 +1,41 @@
-From: Sarah JOHNSON <sarah.johnson197070@gmail.com>
-Subject: Greetings.
-Date: Fri, 14 Apr 2017 09:22:50 +0000 (UTC)
-Message-ID: <1940046256.242872.1492161770258__33514.2646487386$1492161777$gmane$org@mail.yahoo.com>
-References: <1940046256.242872.1492161770258.ref@mail.yahoo.com>
-Reply-To: Sarah JOHNSON <sarah.johnson197070@yahoo.com>
+From: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] can: ifi: use correct register to read rx status
+Date: Fri, 14 Apr 2017 14:23:05 +0200
+Message-ID: <cb03e0d8-5ea4-2228-33ac-26033088d63a@denx.de>
+References: <e4cba95c-0a88-03cb-3e10-e49bb06b18ee@denx.de>
+ <20170410200733.GA5101@noone-desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from sonic332-29.consmr.mail.ne1.yahoo.com ([66.163.187.210]:41919
-        "EHLO sonic332-29.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1753406AbdDNJWv (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Apr 2017 05:22:51 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:56957 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750784AbdDNMXI (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Apr 2017 08:23:08 -0400
+In-Reply-To: <20170410200733.GA5101@noone-desktop>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
+To: Markus Marb <markus@marb.org>
+Cc: linux-can@vger.kernel.org
 
-Good Day Dearest.
+On 04/10/2017 10:07 PM, Markus Marb wrote:
+> Hi,
 
-My name is Sarah JOHNSON I am 18 years old, the only daughter of late Mr. Raymond JOHNSON from Burkina Faso, I am contacting you to help me relocate to your country to continue my university education in  your country, before my father died he gave me a deposit slip document of ($7,000,000 USD) and made me understand that it was because of his position in the government that his government associates planed and poisoned him on a business trip with them to France and he advised me to look for a faithful and reliable foreigner who will help me to transfer this money to his country and help me to relocate over there to continue my studies.
+Hi!
 
-I hope you will help me with the good faith and trust I have in you, after you have secured the money and settle my education, I will give you 30% of the money for your good and kind assistance to me. Please Contact me e-Mail:sarah.johnson197070@yahoo.com 
+>> Which version of the core do you use ? Can you also share value of
+>> register 0x54 and 0x58 ?
+> I am using core version 0x020F5B14 (register 0x54).
 
-I am waiting on your reply
+Thanks!
 
-Regards,
+> Register 0x58 is fixed i guess ? It holds 0xD073CAFD.
+> 
+> Regards,
+> Markus Marb
+> 
 
-Sarah.
+
+-- 
+Best regards,
+Marek Vasut
