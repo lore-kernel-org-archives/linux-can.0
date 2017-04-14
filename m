@@ -1,57 +1,87 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: introduce CANFD_FDF flag for mixed content in struct
- canfd_frame
-Date: Fri, 14 Apr 2017 15:04:06 +0200
-Message-ID: <be5e8910-a98f-51a8-3c2a-8fd61e676025@pengutronix.de>
-References: <20170411134343.3089-1-socketcan@hartkopp.net>
+Subject: Re: [PATCH 18/38] Annotate hardware config module parameters in
+ drivers/net/can/
+Date: Fri, 14 Apr 2017 15:08:13 +0200
+Message-ID: <8f7e225b-15fb-58c8-9e3f-34cfafb330d6@pengutronix.de>
+References: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
+ <149141157162.29162.10145088436840145584.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="uEfBlUids2SPOwch4KCTnQJ66S5wDgn4M"
+ boundary="olBsFKamhQTkREcfvHemkOaQRclQPh2ox"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41147 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:35855 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751698AbdDNNEN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Apr 2017 09:04:13 -0400
-In-Reply-To: <20170411134343.3089-1-socketcan@hartkopp.net>
+        by vger.kernel.org with ESMTP id S1751722AbdDNNI1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Apr 2017 09:08:27 -0400
+In-Reply-To: <149141157162.29162.10145088436840145584.stgit@warthog.procyon.org.uk>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org
+Cc: gnomes@lxorguk.ukuu.org.uk, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, gregkh@linuxfoundation.org, Wolfgang Grandegger <wg@grandegger.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---uEfBlUids2SPOwch4KCTnQJ66S5wDgn4M
-Content-Type: multipart/mixed; boundary="3m66BqmbDMmfspRj2BAM4nmxNkQ5iCMRR";
+--olBsFKamhQTkREcfvHemkOaQRclQPh2ox
+Content-Type: multipart/mixed; boundary="Qha9AQibvj5dtJ9SqfSMIFgaWPs2egNeq";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Message-ID: <be5e8910-a98f-51a8-3c2a-8fd61e676025@pengutronix.de>
-Subject: Re: [PATCH] can: introduce CANFD_FDF flag for mixed content in struct
- canfd_frame
-References: <20170411134343.3089-1-socketcan@hartkopp.net>
-In-Reply-To: <20170411134343.3089-1-socketcan@hartkopp.net>
+To: David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org
+Cc: gnomes@lxorguk.ukuu.org.uk, netdev@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-security-module@vger.kernel.org,
+ keyrings@vger.kernel.org, gregkh@linuxfoundation.org,
+ Wolfgang Grandegger <wg@grandegger.com>
+Message-ID: <8f7e225b-15fb-58c8-9e3f-34cfafb330d6@pengutronix.de>
+Subject: Re: [PATCH 18/38] Annotate hardware config module parameters in
+ drivers/net/can/
+References: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
+ <149141157162.29162.10145088436840145584.stgit@warthog.procyon.org.uk>
+In-Reply-To: <149141157162.29162.10145088436840145584.stgit@warthog.procyon.org.uk>
 
---3m66BqmbDMmfspRj2BAM4nmxNkQ5iCMRR
+--Qha9AQibvj5dtJ9SqfSMIFgaWPs2egNeq
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 04/11/2017 03:43 PM, Oliver Hartkopp wrote:
-> The struct can_frame and struct canfd_frame intentionaly share the same=
+On 04/05/2017 06:59 PM, David Howells wrote:
+> When the kernel is running in secure boot mode, we lock down the kernel=
+ to
+> prevent userspace from modifying the running kernel image.  Whilst this=
 
-> layout to be able to write CAN frame content into a CAN FD frame struct=
-ure.
-> When this is done the former differentiation via CAN_MTU / CANFD_MTU ge=
-ts
-> lost. CANFD_FDF allows programmers to mark CAN FD frames in the case of=
-
-> using struct canfd_frame for mixed CAN / CAN FD content (dual use).
-> N.B. the Kernel APIs do NOT provide mixed CAN / CAN FD content inside o=
-f
-> struct canfd_frame therefore the CANFD_FDF flag is disregarded by Linux=
+> includes prohibiting access to things like /dev/mem, it must also preve=
+nt
+> access by means of configuring driver modules in such a way as to cause=
+ a
+> device to access or modify the kernel image.
+>=20
+> To this end, annotate module_param* statements that refer to hardware
+> configuration and indicate for future reference what type of parameter =
+they
+> specify.  The parameter parser in the core sees this information and ca=
+n
+> skip such parameters with an error message if the kernel is locked down=
 =2E
+> The module initialisation then runs as normal, but just sees whatever t=
+he
+> default values for those parameters is.
+>=20
+> Note that we do still need to do the module initialisation because some=
 
-Sorry, I don't get the usecase. Who will evaluate this bit? The
-userspace, when using vcan? What does it mean, when this bit is set?
-That we have a CAN frame within a struct canfd_frame?
+> drivers have viable defaults set in case parameters aren't specified an=
+d
+> some drivers support automatic configuration (e.g. PNP or PCI) in addit=
+ion
+> to manually coded parameters.
+>=20
+> This patch annotates drivers in drivers/net/can/.
+>=20
+> Suggested-by: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> cc: Wolfgang Grandegger <wg@grandegger.com>
+> cc: linux-can@vger.kernel.org
+> cc: netdev@vger.kernel.org
+
+Who whill take this patch? Or will it be allied as part of the series by
+some of my upstreams?
 
 Marc
 
@@ -62,23 +92,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---3m66BqmbDMmfspRj2BAM4nmxNkQ5iCMRR--
+--Qha9AQibvj5dtJ9SqfSMIFgaWPs2egNeq--
 
---uEfBlUids2SPOwch4KCTnQJ66S5wDgn4M
+--olBsFKamhQTkREcfvHemkOaQRclQPh2ox
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljwyMYACgkQHv7KIOw4
-HPYv5gf+P/mUdwaHXYeZpyANcguwRzrhq1rWIuutj5Rsze9rMz08/jdVm4oIi8gL
-5K4T7wlyx3Jrh3wl0UqCHv9HlYjq51JYM1yyaN4wswOdT4qhGndxn7bU06f02akK
-QJMI0SWpr7wc0EFe/mJ9dzZ+lcxu/1zpO/O5qIayXUn8sgu//myFzEhRVTw41CmW
-Pje6PBx1ZYbxGrFSOUM+m1WNUp0ZyaFIaRIMesOXZ545Qt+wFU4Z4oz5iRJxQb1R
-9nbxqVyAaCpBsx1hnXgRzfDaBmfqmbfgBL3E9lcHJhgzwsaHfMHFxD0l4pQoBDJt
-Mr10db3u/8Pf9VUclVCvOa8zTTCh3g==
-=2TUz
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljwyb4ACgkQHv7KIOw4
+HPYMGAf/YtnBEkHSaSbXxSFzV80ka1beSa0k5UYuBBqoQ/ezinWO1ktSghNXEtf3
+PairBJxKIhs873E4+oFl75A1vkIMmSfMTg+J2aLzO2A5PByeVz9eQybhguRXFftn
+aapItLAKCe15B+4nNWONTbEvkCZGQFss5cLn03xJDtetoWAZ3+HAumtpYGfMrFkX
+26enYopfkzjX6A3EToaNqNdtIPCM9sMT275qrdcTB5377lI2uJrrhOTyKmmGkQaF
+g2/YZBRrMStm1USAQkkrnuCHxiZANFu5GMqeBMVCZtV92BZY5pQnkfqnpDMNZVci
+TJtqtRfjlTYyVWD0WBqDmf/N84YWUw==
+=ij7U
 -----END PGP SIGNATURE-----
 
---uEfBlUids2SPOwch4KCTnQJ66S5wDgn4M--
+--olBsFKamhQTkREcfvHemkOaQRclQPh2ox--
