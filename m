@@ -1,46 +1,56 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Several patches mainline status
-Date: Fri, 14 Apr 2017 17:48:31 +0200
-Message-ID: <92ee7e98-d08a-54bc-7f12-9c85ce77142d@hartkopp.net>
-References: <c764c3d1-6248-0273-5c20-b401051c818a@hartkopp.net>
- <11876946-e619-3141-af51-b1c98ac3ace5@hartkopp.net>
- <7bd99678-d8f5-390e-833a-7bb2738caec7@pengutronix.de>
+From: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?=
+        <remigiusz.kollataj@mobica.com>
+Subject: Re: [PATCH v3] can: mcba_usb: Add support for Microchip CAN BUS Analyzer
+Date: Fri, 14 Apr 2017 19:16:06 +0200
+Message-ID: <CAKT-o-f981C6K5hRhSfQqGATTV8Z81NtWZApmQZ64c4C3yQjJQ@mail.gmail.com>
+References: <20170125130201.6432-1-remigiusz.kollataj@mobica.com>
+ <51ef5231-673f-6a77-74ab-c0560b82ed27@pengutronix.de> <CAKT-o-d6bo075gkp_=t4LSKjw_WpH68G2wKQYNSOEP0F-sYNWA@mail.gmail.com>
+ <1c65544f-e024-0243-2343-881f0790bcca@pengutronix.de> <CAKT-o-eLiciPzst1SHvhpeBg20VS2UYpPnOHcQg7dWsEEoMwZg@mail.gmail.com>
+ <209acfa8-59d4-6d5a-eb4c-019d191cad7c@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:25053 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751371AbdDNPsf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Apr 2017 11:48:35 -0400
-In-Reply-To: <7bd99678-d8f5-390e-833a-7bb2738caec7@pengutronix.de>
+Received: from mail-ua0-f175.google.com ([209.85.217.175]:36693 "EHLO
+        mail-ua0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751554AbdDNRQ1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Apr 2017 13:16:27 -0400
+Received: by mail-ua0-f175.google.com with SMTP id a1so49677448uaf.3
+        for <linux-can@vger.kernel.org>; Fri, 14 Apr 2017 10:16:27 -0700 (PDT)
+In-Reply-To: <209acfa8-59d4-6d5a-eb4c-019d191cad7c@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: linux-can@vger.kernel.org
 
-On 04/14/2017 05:22 PM, Marc Kleine-Budde wrote:
-> On 04/11/2017 03:53 PM, Oliver Hartkopp wrote:
-
->> And now (brandnew):
->> [PATCH] can: introduce CANFD_FDF flag for mixed content in struct
->> canfd_frame
->> STATUS: Was sitting for some time on my box. NVIDIA is doing similar
->> stuff in their BSP for their Drive PX2
->> http://marc.info/?l=linux-can&m=149191823322125&w=2
+On 14 April 2017 at 16:34, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 04/14/2017 03:19 PM, Ko=C5=82=C5=82=C4=85taj, Remigiusz wrote:>>> In M=
+BCA leds are
+> controlled by device itself - CAN status leds are
+>>>> connected directly CANTX and CANRX pins of PIC controller and CAN
+>>>> Error led is driven by firmware.
+>>>
+>>> With LED support in the driver, you can use CAN RX and/or TX events to
+>>> drive generic LEDs.
+>>
+>> I am ok with adding it to the driver however I don't know if I
+>> understand the idea. Will addition of generic LEDs expose device TX
+>> and RX status via SYSFS?
 >
-> Please explain the usecase more, I don't get it.
+> No. If your System has a generic LED, you can use the CAN RX/TX trigger
+> to blink the LED - in a total generic way, see:
+>
+> https://fabiobaltieri.com/2011/09/21/linux-led-subsystem/
 
-It's a convenience bit reservation for CAN application programmers.
-
-Maybe we could name it CANFD_FDRES instead of CANFD_FDF - but I've 
-already seen code (from NVIDIA) where people introduce this bit for 
-their own to simplify their user space code.
-
-If you would have done CAN FD programming on your own you probably would 
-have felt the pain yourself ...
-
-Or what is your concrete concern I can try to explain better?
+Got it now. Thanks!
 
 Regards,
-Oliver
+Remik
+
+--=20
+____________________
+Remigiusz Ko=C5=82=C5=82=C4=85taj
+Mobica Ltd
+Technology Consultant
+Skype: remigiusz.kollataj
+www.mobica.com
