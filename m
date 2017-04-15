@@ -1,81 +1,74 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Fwd: [PATCH] can: use namespace aware procfs function
-Date: Sat, 15 Apr 2017 20:12:08 +0200
-Message-ID: <da6d2ac9-a6b1-2cdc-b80c-a47fef8ae887@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: Fwd: [PATCH] can: use namespace aware procfs function
+Date: Sat, 15 Apr 2017 20:21:40 +0200
+Message-ID: <82acaf2e-20d8-b6af-1853-292ceb5c1d43@pengutronix.de>
 References: <20170415180629.2268-1-socketcan@hartkopp.net>
+ <da6d2ac9-a6b1-2cdc-b80c-a47fef8ae887@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="MIVR5SOx2JWB6VpfNTxDfN12Rwemo1Avl"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:17182 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751616AbdDOSMQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 15 Apr 2017 14:12:16 -0400
-In-Reply-To: <20170415180629.2268-1-socketcan@hartkopp.net>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:55805 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751616AbdDOSVv (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 15 Apr 2017 14:21:51 -0400
+In-Reply-To: <da6d2ac9-a6b1-2cdc-b80c-a47fef8ae887@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hey Marc,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--MIVR5SOx2JWB6VpfNTxDfN12Rwemo1Avl
+Content-Type: multipart/mixed; boundary="KFIBN44iXQQisk3LjgiaFJF05RjlxaVWH";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <82acaf2e-20d8-b6af-1853-292ceb5c1d43@pengutronix.de>
+Subject: Re: Fwd: [PATCH] can: use namespace aware procfs function
+References: <20170415180629.2268-1-socketcan@hartkopp.net>
+ <da6d2ac9-a6b1-2cdc-b80c-a47fef8ae887@hartkopp.net>
+In-Reply-To: <da6d2ac9-a6b1-2cdc-b80c-a47fef8ae887@hartkopp.net>
 
-can you squash this fix into my original RFC v2 patch?
+--KFIBN44iXQQisk3LjgiaFJF05RjlxaVWH
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-I missed this change which then leads to a segfault.
+On 04/15/2017 08:12 PM, Oliver Hartkopp wrote:
+> Hey Marc,
+>=20
+> can you squash this fix into my original RFC v2 patch?
 
-Alternatively I can send a v3.
+will do.
 
-Regards,
-Oliver
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
--------- Forwarded Message --------
-Subject: [PATCH] can: use namespace aware procfs function
-Date: Sat, 15 Apr 2017 20:06:29 +0200
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-CC: Oliver Hartkopp <socketcan@hartkopp.net>
+--KFIBN44iXQQisk3LjgiaFJF05RjlxaVWH--
 
-Fixes 'can: complete initial namespace support'
+--MIVR5SOx2JWB6VpfNTxDfN12Rwemo1Avl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
-  net/can/proc.c | 6 +++---
-  1 file changed, 3 insertions(+), 3 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/net/can/proc.c b/net/can/proc.c
-index 1a7d95e2335b..83045f00c63c 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -272,7 +272,7 @@ static int can_stats_proc_show(struct seq_file *m, 
-void *v)
-   static int can_stats_proc_open(struct inode *inode, struct file *file)
-  {
--	return single_open(file, can_stats_proc_show, NULL);
-+	return single_open_net(inode, file, can_stats_proc_show);
-  }
-   static const struct file_operations can_stats_proc_fops = {
-@@ -306,7 +306,7 @@ static int can_reset_stats_proc_show(struct seq_file 
-*m, void *v)
-   static int can_reset_stats_proc_open(struct inode *inode, struct file 
-*file)
-  {
--	return single_open(file, can_reset_stats_proc_show, NULL);
-+	return single_open_net(inode, file, can_reset_stats_proc_show);
-  }
-   static const struct file_operations can_reset_stats_proc_fops = {
-@@ -325,7 +325,7 @@ static int can_version_proc_show(struct seq_file *m, 
-void *v)
-   static int can_version_proc_open(struct inode *inode, struct file *file)
-  {
--	return single_open(file, can_version_proc_show, NULL);
-+	return single_open_net(inode, file, can_version_proc_show);
-  }
-   static const struct file_operations can_version_proc_fops = {
--- 
-2.11.0
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAljyZLYACgkQHv7KIOw4
+HPaLQAf8CKhkvKzbThZqGVuuoln9nuuv4o1yN7lHe+sVuGXjUkE95pZ+at/nI+xm
+KbO3/qR/5wApOyH3wdCAf5oTExDu0CKc3yO80dDpmyRNDGg7+VmYHrpjwqR4DqQh
+CR8+YQNSP59wheUhAU2YM4cav0ax8j85H8GyW/niYdy/4z8pWMz64e/NUKH2/qeK
+5sy9yFZM995C+SmU78B+LNlIZNyB48E5DYx3w7PTiugYlr1z0ufFHOIJEVK38dOa
+8P8GJgrB03oh6zzpwjA12Myqg62N8aEC9uDTFQzUOLpR0sOi0Urw8hIrK3wwPiws
+eChCI8NO0ia2d58qvhsPgtsqYzRtZg==
+=pZOT
+-----END PGP SIGNATURE-----
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-can" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--MIVR5SOx2JWB6VpfNTxDfN12Rwemo1Avl--
