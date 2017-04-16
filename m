@@ -1,40 +1,331 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Fwd: [PATCH] can: use namespace aware procfs function
-Date: Sat, 15 Apr 2017 22:56:40 +0200
-Message-ID: <1e953bd5-9538-1d11-85bf-c9d30a911836@hartkopp.net>
-References: <20170415180629.2268-1-socketcan@hartkopp.net>
- <da6d2ac9-a6b1-2cdc-b80c-a47fef8ae887@hartkopp.net>
- <82acaf2e-20d8-b6af-1853-292ceb5c1d43@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] can: network namespace support for CAN_BCM protocol
+Date: Sun, 16 Apr 2017 15:20:01 +0200
+Message-ID: <20170416132001.2955-1-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:26914 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:8277 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751616AbdDOU4t (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 15 Apr 2017 16:56:49 -0400
-In-Reply-To: <82acaf2e-20d8-b6af-1853-292ceb5c1d43@pengutronix.de>
+        with ESMTP id S1754961AbdDPNUM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 16 Apr 2017 09:20:12 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Mario Kicherer <dev@kicherer.org>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
+The 'can: initial support for network namespaces' from Mario Kicherer did not
+contain the CAN_BCM protocol and its procfs entries. This patch enables the
+broadcast manager to be used in different namespaces.
 
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/net/netns/can.h |  1 +
+ net/can/bcm.c           | 90 ++++++++++++++++++++++++++++++++-----------------
+ 2 files changed, 60 insertions(+), 31 deletions(-)
 
-On 04/15/2017 08:21 PM, Marc Kleine-Budde wrote:
-> On 04/15/2017 08:12 PM, Oliver Hartkopp wrote:
->> Hey Marc,
->>
->> can you squash this fix into my original RFC v2 patch?
->
-> will do.
->
+diff --git a/include/net/netns/can.h b/include/net/netns/can.h
+index 574157dbc43a..0f3c31aab8a8 100644
+--- a/include/net/netns/can.h
++++ b/include/net/netns/can.h
+@@ -23,6 +23,7 @@ struct netns_can {
+ 	struct proc_dir_entry *pde_rcvlist_sff;
+ 	struct proc_dir_entry *pde_rcvlist_eff;
+ 	struct proc_dir_entry *pde_rcvlist_err;
++	struct proc_dir_entry *bcmproc_dir;
+ #endif
+ 
+ 	/* receive filters subscribed for 'all' CAN devices */
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 1976629a8463..7fd9d283d66f 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -84,6 +84,8 @@ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
+ MODULE_ALIAS("can-proto-2");
+ 
++static int canbcm_net_id;
++
+ /*
+  * easy access to the first 64 bit of can(fd)_frame payload. cp->data is
+  * 64 bit aligned so the offset has to be multiples of 8 which is ensured
+@@ -118,8 +120,6 @@ struct bcm_op {
+ 	struct net_device *rx_reg_dev;
+ };
+ 
+-static struct proc_dir_entry *proc_dir;
+-
+ struct bcm_sock {
+ 	struct sock sk;
+ 	int bound;
+@@ -149,7 +149,7 @@ static inline ktime_t bcm_timeval_to_ktime(struct bcm_timeval tv)
+ /*
+  * procfs functions
+  */
+-static char *bcm_proc_getifname(char *result, int ifindex)
++static char *bcm_proc_getifname(struct net *net, char *result, int ifindex)
+ {
+ 	struct net_device *dev;
+ 
+@@ -157,7 +157,7 @@ static char *bcm_proc_getifname(char *result, int ifindex)
+ 		return "any";
+ 
+ 	rcu_read_lock();
+-	dev = dev_get_by_index_rcu(&init_net, ifindex);
++	dev = dev_get_by_index_rcu(net, ifindex);
+ 	if (dev)
+ 		strcpy(result, dev->name);
+ 	else
+@@ -170,7 +170,8 @@ static char *bcm_proc_getifname(char *result, int ifindex)
+ static int bcm_proc_show(struct seq_file *m, void *v)
+ {
+ 	char ifname[IFNAMSIZ];
+-	struct sock *sk = (struct sock *)m->private;
++	struct net *net = m->private;
++	struct sock *sk = (struct sock *)PDE_DATA(m->file->f_inode);
+ 	struct bcm_sock *bo = bcm_sk(sk);
+ 	struct bcm_op *op;
+ 
+@@ -178,7 +179,7 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 	seq_printf(m, " / sk %pK", sk);
+ 	seq_printf(m, " / bo %pK", bo);
+ 	seq_printf(m, " / dropped %lu", bo->dropped_usr_msgs);
+-	seq_printf(m, " / bound %s", bcm_proc_getifname(ifname, bo->ifindex));
++	seq_printf(m, " / bound %s", bcm_proc_getifname(net, ifname, bo->ifindex));
+ 	seq_printf(m, " <<<\n");
+ 
+ 	list_for_each_entry(op, &bo->rx_ops, list) {
+@@ -190,7 +191,7 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 			continue;
+ 
+ 		seq_printf(m, "rx_op: %03X %-5s ", op->can_id,
+-			   bcm_proc_getifname(ifname, op->ifindex));
++			   bcm_proc_getifname(net, ifname, op->ifindex));
+ 
+ 		if (op->flags & CAN_FD_FRAME)
+ 			seq_printf(m, "(%u)", op->nframes);
+@@ -219,7 +220,7 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 	list_for_each_entry(op, &bo->tx_ops, list) {
+ 
+ 		seq_printf(m, "tx_op: %03X %s ", op->can_id,
+-			   bcm_proc_getifname(ifname, op->ifindex));
++			   bcm_proc_getifname(net, ifname, op->ifindex));
+ 
+ 		if (op->flags & CAN_FD_FRAME)
+ 			seq_printf(m, "(%u) ", op->nframes);
+@@ -242,7 +243,7 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 
+ static int bcm_proc_open(struct inode *inode, struct file *file)
+ {
+-	return single_open(file, bcm_proc_show, PDE_DATA(inode));
++	return single_open_net(inode, file, bcm_proc_show);
+ }
+ 
+ static const struct file_operations bcm_proc_fops = {
+@@ -267,7 +268,7 @@ static void bcm_can_tx(struct bcm_op *op)
+ 	if (!op->ifindex)
+ 		return;
+ 
+-	dev = dev_get_by_index(&init_net, op->ifindex);
++	dev = dev_get_by_index(sock_net(op->sk), op->ifindex);
+ 	if (!dev) {
+ 		/* RFC: should this bcm_op remove itself here? */
+ 		return;
+@@ -764,7 +765,7 @@ static void bcm_remove_op(struct bcm_op *op)
+ static void bcm_rx_unreg(struct net_device *dev, struct bcm_op *op)
+ {
+ 	if (op->rx_reg_dev == dev) {
+-		can_rx_unregister(&init_net, dev, op->can_id,
++		can_rx_unregister(dev_net(dev), dev, op->can_id,
+ 				  REGMASK(op->can_id), bcm_rx_handler, op);
+ 
+ 		/* mark as removed subscription */
+@@ -800,7 +801,7 @@ static int bcm_delete_rx_op(struct list_head *ops, struct bcm_msg_head *mh,
+ 				if (op->rx_reg_dev) {
+ 					struct net_device *dev;
+ 
+-					dev = dev_get_by_index(&init_net,
++					dev = dev_get_by_index(sock_net(op->sk),
+ 							       op->ifindex);
+ 					if (dev) {
+ 						bcm_rx_unreg(dev, op);
+@@ -808,7 +809,8 @@ static int bcm_delete_rx_op(struct list_head *ops, struct bcm_msg_head *mh,
+ 					}
+ 				}
+ 			} else
+-				can_rx_unregister(&init_net, NULL, op->can_id,
++				can_rx_unregister(sock_net(op->sk), NULL,
++						  op->can_id,
+ 						  REGMASK(op->can_id),
+ 						  bcm_rx_handler, op);
+ 
+@@ -1220,9 +1222,9 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		if (ifindex) {
+ 			struct net_device *dev;
+ 
+-			dev = dev_get_by_index(&init_net, ifindex);
++			dev = dev_get_by_index(sock_net(sk), ifindex);
+ 			if (dev) {
+-				err = can_rx_register(&init_net, dev,
++				err = can_rx_register(sock_net(sk), dev,
+ 						      op->can_id,
+ 						      REGMASK(op->can_id),
+ 						      bcm_rx_handler, op,
+@@ -1233,7 +1235,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 			}
+ 
+ 		} else
+-			err = can_rx_register(&init_net, NULL, op->can_id,
++			err = can_rx_register(sock_net(sk), NULL, op->can_id,
+ 					      REGMASK(op->can_id),
+ 					      bcm_rx_handler, op, "bcm", sk);
+ 		if (err) {
+@@ -1273,7 +1275,7 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk,
+ 		return err;
+ 	}
+ 
+-	dev = dev_get_by_index(&init_net, ifindex);
++	dev = dev_get_by_index(sock_net(sk), ifindex);
+ 	if (!dev) {
+ 		kfree_skb(skb);
+ 		return -ENODEV;
+@@ -1338,7 +1340,7 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		if (ifindex) {
+ 			struct net_device *dev;
+ 
+-			dev = dev_get_by_index(&init_net, ifindex);
++			dev = dev_get_by_index(sock_net(sk), ifindex);
+ 			if (!dev)
+ 				return -ENODEV;
+ 
+@@ -1419,7 +1421,7 @@ static int bcm_notifier(struct notifier_block *nb, unsigned long msg,
+ 	struct bcm_op *op;
+ 	int notify_enodev = 0;
+ 
+-	if (!net_eq(dev_net(dev), &init_net))
++	if (!net_eq(dev_net(dev), sock_net(sk)))
+ 		return NOTIFY_DONE;
+ 
+ 	if (dev->type != ARPHRD_CAN)
+@@ -1491,6 +1493,7 @@ static int bcm_init(struct sock *sk)
+ static int bcm_release(struct socket *sock)
+ {
+ 	struct sock *sk = sock->sk;
++	struct net *net = sock_net(sk);
+ 	struct bcm_sock *bo;
+ 	struct bcm_op *op, *next;
+ 
+@@ -1522,14 +1525,14 @@ static int bcm_release(struct socket *sock)
+ 			if (op->rx_reg_dev) {
+ 				struct net_device *dev;
+ 
+-				dev = dev_get_by_index(&init_net, op->ifindex);
++				dev = dev_get_by_index(net, op->ifindex);
+ 				if (dev) {
+ 					bcm_rx_unreg(dev, op);
+ 					dev_put(dev);
+ 				}
+ 			}
+ 		} else
+-			can_rx_unregister(&init_net, NULL, op->can_id,
++			can_rx_unregister(net, NULL, op->can_id,
+ 					  REGMASK(op->can_id),
+ 					  bcm_rx_handler, op);
+ 
+@@ -1537,8 +1540,8 @@ static int bcm_release(struct socket *sock)
+ 	}
+ 
+ 	/* remove procfs entry */
+-	if (proc_dir && bo->bcm_proc_read)
+-		remove_proc_entry(bo->procname, proc_dir);
++	if (net->can.bcmproc_dir && bo->bcm_proc_read)
++		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
+ 
+ 	/* remove device reference */
+ 	if (bo->bound) {
+@@ -1561,6 +1564,7 @@ static int bcm_connect(struct socket *sock, struct sockaddr *uaddr, int len,
+ 	struct sockaddr_can *addr = (struct sockaddr_can *)uaddr;
+ 	struct sock *sk = sock->sk;
+ 	struct bcm_sock *bo = bcm_sk(sk);
++	struct net *net = sock_net(sk);
+ 	int ret = 0;
+ 
+ 	if (len < sizeof(*addr))
+@@ -1577,7 +1581,7 @@ static int bcm_connect(struct socket *sock, struct sockaddr *uaddr, int len,
+ 	if (addr->can_ifindex) {
+ 		struct net_device *dev;
+ 
+-		dev = dev_get_by_index(&init_net, addr->can_ifindex);
++		dev = dev_get_by_index(net, addr->can_ifindex);
+ 		if (!dev) {
+ 			ret = -ENODEV;
+ 			goto fail;
+@@ -1596,11 +1600,11 @@ static int bcm_connect(struct socket *sock, struct sockaddr *uaddr, int len,
+ 		bo->ifindex = 0;
+ 	}
+ 
+-	if (proc_dir) {
++	if (net->can.bcmproc_dir) {
+ 		/* unique socket address as filename */
+ 		sprintf(bo->procname, "%lu", sock_i_ino(sk));
+ 		bo->bcm_proc_read = proc_create_data(bo->procname, 0644,
+-						     proc_dir,
++						     net->can.bcmproc_dir,
+ 						     &bcm_proc_fops, sk);
+ 		if (!bo->bcm_proc_read) {
+ 			ret = -ENOMEM;
+@@ -1687,6 +1691,33 @@ static const struct can_proto bcm_can_proto = {
+ 	.prot       = &bcm_proto,
+ };
+ 
++static int canbcm_pernet_init(struct net *net)
++{
++	/* create /proc/net/can-bcm directory */
++	if (IS_ENABLED(CONFIG_PROC_FS)) {
++		net->can.bcmproc_dir =
++			proc_net_mkdir(net, "can-bcm", net->proc_net);
++	}
++
++	return 0;
++}
++
++static void canbcm_pernet_exit(struct net *net)
++{
++	/* remove /proc/net/can-bcm directory */
++	if (IS_ENABLED(CONFIG_PROC_FS)) {
++		if (net->can.bcmproc_dir)
++			remove_proc_entry("can-bcm", net->proc_net);
++	}
++}
++
++static struct pernet_operations canbcm_pernet_ops __read_mostly = {
++	.init = canbcm_pernet_init,
++	.exit = canbcm_pernet_exit,
++	.id = &canbcm_net_id,
++	.size = 0,
++};
++
+ static int __init bcm_module_init(void)
+ {
+ 	int err;
+@@ -1699,17 +1730,14 @@ static int __init bcm_module_init(void)
+ 		return err;
+ 	}
+ 
+-	/* create /proc/net/can-bcm directory */
+-	proc_dir = proc_mkdir("can-bcm", init_net.proc_net);
++	register_pernet_subsys(&canbcm_pernet_ops);
+ 	return 0;
+ }
+ 
+ static void __exit bcm_module_exit(void)
+ {
+ 	can_proto_unregister(&bcm_can_proto);
+-
+-	if (proc_dir)
+-		remove_proc_entry("can-bcm", init_net.proc_net);
++	unregister_pernet_subsys(&canbcm_pernet_ops);
+ }
+ 
+ module_init(bcm_module_init);
+-- 
+2.11.0
 
-Great!
-
-I finalized a namespace patch for CAN BCM some minutes ago.
-
-I'll do some more testing tomorrow and post it then.
-
-Best regards,
-Oliver
