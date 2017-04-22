@@ -1,61 +1,39 @@
-From: Maksim Salau <maksim.salau@gmail.com>
-Subject: [PATCH] net: can: usb: gs_usb: Fix buffer on stack
-Date: Sat, 22 Apr 2017 19:56:26 +0300
-Message-ID: <20170422165626.10534-1-maksim.salau@gmail.com>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Maximilian Schneider <max@schneidersoft.net>, Hubert Denkmair <hubert@denkmair.de>, Wolfram Sang <wsa-dev@sang-engineering.com>, Ethan Zonca <e@ethanzonca.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: Maksim Salau <maksim.salau@gmail.com>
-List-Id: linux-can.vger.kernel.org
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] net: can: usb: gs_usb: Fix buffer on stack
+Date: Sat, 22 Apr 2017 14:30:25 -0300
+Message-ID: <CAOMZO5DLdR00FY01r2z=RvSrn4vNEZ+Z3OS0KWB95DGt=3fh2w@mail.gmail.com>
+References: <20170422165626.10534-1-maksim.salau@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-oi0-f68.google.com ([209.85.218.68]:35335 "EHLO
+        mail-oi0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1043951AbdDVRa0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 22 Apr 2017 13:30:26 -0400
+In-Reply-To: <20170422165626.10534-1-maksim.salau@gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Maksim Salau <maksim.salau@gmail.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Maximilian Schneider <max@schneidersoft.net>, Hubert Denkmair <hubert@denkmair.de>, Wolfram Sang <wsa-dev@sang-engineering.com>, Ethan Zonca <e@ethanzonca.com>, linux-can@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 
-Allocate buffer on HEAP instead of STACK for a local structure
-that is to be sent using usb_control_msg().
+On Sat, Apr 22, 2017 at 1:56 PM, Maksim Salau <maksim.salau@gmail.com> wrote:
+> Allocate buffer on HEAP instead of STACK for a local structure
+> that is to be sent using usb_control_msg().
+>
+> Signed-off-by: Maksim Salau <maksim.salau@gmail.com>
+> ---
+>  drivers/net/can/usb/gs_usb.c | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+> index a0dabd4..98f972a 100644
+> --- a/drivers/net/can/usb/gs_usb.c
+> +++ b/drivers/net/can/usb/gs_usb.c
+> @@ -740,13 +740,18 @@ static const struct net_device_ops gs_usb_netdev_ops = {
+>  static int gs_usb_set_identify(struct net_device *netdev, bool do_identify)
+>  {
+>         struct gs_can *dev = netdev_priv(netdev);
+> -       struct gs_identify_mode imode;
+> +       struct gs_identify_mode *imode = NULL;
 
-Signed-off-by: Maksim Salau <maksim.salau@gmail.com>
----
- drivers/net/can/usb/gs_usb.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index a0dabd4..98f972a 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -740,13 +740,18 @@ static const struct net_device_ops gs_usb_netdev_ops = {
- static int gs_usb_set_identify(struct net_device *netdev, bool do_identify)
- {
- 	struct gs_can *dev = netdev_priv(netdev);
--	struct gs_identify_mode imode;
-+	struct gs_identify_mode *imode = NULL;
- 	int rc;
- 
-+	imode = kmalloc(sizeof(*imode), GFP_KERNEL);
-+
-+	if (!imode)
-+		return -ENOMEM;
-+
- 	if (do_identify)
--		imode.mode = GS_CAN_IDENTIFY_ON;
-+		imode->mode = GS_CAN_IDENTIFY_ON;
- 	else
--		imode.mode = GS_CAN_IDENTIFY_OFF;
-+		imode->mode = GS_CAN_IDENTIFY_OFF;
- 
- 	rc = usb_control_msg(interface_to_usbdev(dev->iface),
- 			     usb_sndctrlpipe(interface_to_usbdev(dev->iface),
-@@ -756,10 +761,12 @@ static int gs_usb_set_identify(struct net_device *netdev, bool do_identify)
- 			     USB_RECIP_INTERFACE,
- 			     dev->channel,
- 			     0,
--			     &imode,
--			     sizeof(imode),
-+			     imode,
-+			     sizeof(*imode),
- 			     100);
- 
-+	kfree(imode);
-+
- 	return (rc > 0) ? 0 : rc;
- }
- 
--- 
-2.9.3
+No need to assign imode to NULL here.
