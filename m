@@ -1,198 +1,272 @@
-From: Wenyou Yang <wenyou.yang@atmel.com>
-Subject: [PATCH v3] ARM: dts: at91: sama5d2: add m_can nodes
-Date: Mon, 24 Apr 2017 09:12:17 +0800
-Message-ID: <20170424011217.2530-1-wenyou.yang@atmel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Nicolas.Ferre@Microchip.com, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian
- Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Russell King <linux@arm.linux.org.uk>
-Cc: devicetree@vger.kernel.org, Wenyou Yang <wenyou.yang@microchip.com>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Quentin Schulz <quentin.schulz@free-electrons.com>, Wenyou Yang <wenyou.yang@atmel.com>, linux-arm-kernel@lists.infradead.org
-List-Id: linux-can.vger.kernel.org
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH 1/2] can: network namespace support for CAN gateway
+Date: Mon, 24 Apr 2017 15:08:59 +0200
+Message-ID: <20170424130900.2284-1-socketcan@hartkopp.net>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.221]:31864 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1170590AbdDXNJ0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 24 Apr 2017 09:09:26 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Add nodes to support the Controller Area Network(M_CAN) on SAMA5D2.
-The version of M_CAN IP core is 3.1.0 (CREL = 0x31040730).
+This patch enables the CAN gateway to be used in different namespaces.
 
-As said in SAMA5D2 datasheet, the CAN clock is recommended to use
-frequencies of 20, 40 or 80 MHz. To achieve these frequencies,
-PMC GCLK3 must select the UPLLCK(480 MHz) as source clock and
-divide by 24, 12, or 6. So, the "assigned-clock-rates" property
-has three options: 20000000, 40000000, and 80000000.
-The "assigned-clock-parents" property should be referred to utmi
-fixedly.
-
-The MSBs [bits 31:16] of the CAN Message RAM for CAN0 and CAN1 are
-default configured in 0x00200000. To avoid conflict with SRAM map
-for PM, change them to 0x00210000 in the AT91Bootstrap via setting
-the CAN Memories Address-based Register(SFR_CAN) of SFR.
-
-Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
-Tested-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
-The patch is tested on SAMA5D2 Xplained and based on the patch set,
- 1. [PATCH v4 1/7] can: m_can: Disabled Interrupt Line 1
-    http://marc.info/?l=linux-can&m=149165343604033&w=2
+ include/net/netns/can.h |  3 ++
+ net/can/gw.c            | 73 +++++++++++++++++++++++++++++++------------------
+ 2 files changed, 49 insertions(+), 27 deletions(-)
 
-Changes in v3:
- - Add Tested-by tag.
- - Change the number of Rx Rx Buffers, Tx Buffers and Tx Event FIFO
-   to maximum.
-
-Changes in v2:
- - Configures 10 TX Event FIFO elements and 10 TX Buffers/FIFO slots,
-   because the TXE FIFO is needed to be configured.
- - Configure the offset of Message RAM for CAN1 followed from CAN0's.
-
- arch/arm/boot/dts/at91-sama5d2_xplained.dts | 24 +++++++++++++
- arch/arm/boot/dts/sama5d2.dtsi              | 56 +++++++++++++++++++++++++++++
- 2 files changed, 80 insertions(+)
-
-diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-index 9f7f8a7d8ff9..2f19b08dc226 100644
---- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-+++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-@@ -257,6 +257,12 @@
- 				status = "okay";
- 			};
+diff --git a/include/net/netns/can.h b/include/net/netns/can.h
+index 0f3c31aab8a8..b106e6ae2e5b 100644
+--- a/include/net/netns/can.h
++++ b/include/net/netns/can.h
+@@ -32,6 +32,9 @@ struct netns_can {
+ 	struct timer_list can_stattimer;/* timer for statistics update */
+ 	struct s_stats *can_stats;	/* packet statistics */
+ 	struct s_pstats *can_pstats;	/* receive list statistics */
++
++	/* CAN GW per-net gateway jobs */
++	struct hlist_head cgw_list;
+ };
  
-+			can0: can@f8054000 {
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&pinctrl_can0_default>;
-+				status = "okay";
-+			};
-+
- 			uart3: serial@fc008000 {
- 				atmel,use-dma-rx;
- 				atmel,use-dma-tx;
-@@ -321,6 +327,18 @@
- 					bias-disable;
- 				};
+ #endif /* __NETNS_CAN_H__ */
+diff --git a/net/can/gw.c b/net/can/gw.c
+index 3b84fb7d98aa..e2935d9c1ef3 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -59,7 +59,7 @@
+ #include <net/net_namespace.h>
+ #include <net/sock.h>
  
-+				pinctrl_can0_default: can0_default {
-+					pinmux = <PIN_PC10__CANTX0>,
-+						 <PIN_PC11__CANRX0>;
-+					bias-disable;
-+				};
-+
-+				pinctrl_can1_default: can1_default {
-+					pinmux = <PIN_PC26__CANTX1>,
-+						 <PIN_PC27__CANRX1>;
-+					bias-disable;
-+				};
-+
- 				pinctrl_charger_chglev: charger_chglev {
- 					pinmux = <PIN_PA12__GPIO>;
- 					bias-disable;
-@@ -468,6 +486,12 @@
- 				};
+-#define CAN_GW_VERSION "20130117"
++#define CAN_GW_VERSION "20170422"
+ #define CAN_GW_NAME "can-gw"
  
- 			};
-+
-+			can1: can@fc050000 {
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&pinctrl_can1_default>;
-+				status = "okay";
-+			};
- 		};
- 	};
+ MODULE_DESCRIPTION("PF_CAN netlink gateway");
+@@ -79,9 +79,8 @@ MODULE_PARM_DESC(max_hops,
+ 		 __stringify(CGW_MAX_HOPS) " hops, "
+ 		 "default: " __stringify(CGW_DEFAULT_HOPS) ")");
  
-diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-index 22332be72140..7e00fa21373e 100644
---- a/arch/arm/boot/dts/sama5d2.dtsi
-+++ b/arch/arm/boot/dts/sama5d2.dtsi
-@@ -762,6 +762,18 @@
- 						atmel,clk-output-range = <0 83000000>;
- 					};
+-static HLIST_HEAD(cgw_list);
++static int cangw_net_id;
+ static struct notifier_block notifier;
+-
+ static struct kmem_cache *cgw_cache __read_mostly;
  
-+					can0_clk: can0_clk {
-+						#clock-cells = <0>;
-+						reg = <56>;
-+						atmel,clk-output-range = <0 83000000>;
-+					};
-+
-+					can1_clk: can1_clk {
-+						#clock-cells = <0>;
-+						reg = <57>;
-+						atmel,clk-output-range = <0 83000000>;
-+					};
-+
- 					classd_clk: classd_clk {
- 						#clock-cells = <0>;
- 						reg = <59>;
-@@ -890,6 +902,18 @@
- 						#clock-cells = <0>;
- 						reg = <55>;
- 					};
-+
-+					can0_gclk: can0_gclk {
-+						#clock-cells = <0>;
-+						reg = <56>;
-+						atmel,clk-output-range = <0 80000000>;
-+					};
-+
-+					can1_gclk: can1_gclk {
-+						#clock-cells = <0>;
-+						reg = <57>;
-+						atmel,clk-output-range = <0 80000000>;
-+					};
- 				};
- 			};
+ /* structure that contains the (on-the-fly) CAN frame modifications */
+@@ -438,16 +437,16 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 		gwj->handled_frames++;
+ }
  
-@@ -1144,6 +1168,22 @@
- 				clocks = <&clk32k>;
- 			};
+-static inline int cgw_register_filter(struct cgw_job *gwj)
++static inline int cgw_register_filter(struct net *net, struct cgw_job *gwj)
+ {
+-	return can_rx_register(&init_net, gwj->src.dev, gwj->ccgw.filter.can_id,
++	return can_rx_register(net, gwj->src.dev, gwj->ccgw.filter.can_id,
+ 			       gwj->ccgw.filter.can_mask, can_can_gw_rcv,
+ 			       gwj, "gw", NULL);
+ }
  
-+			can0: can@f8054000 {
-+				compatible = "bosch,m_can";
-+				reg = <0xf8054000 0x4000>, <0x210000 0x4000>;
-+				reg-names = "m_can", "message_ram";
-+				interrupts = <56 IRQ_TYPE_LEVEL_HIGH 7>,
-+					     <64 IRQ_TYPE_LEVEL_HIGH 7>;
-+				interrupt-names = "int0", "int1";
-+				clocks = <&can0_clk>, <&can0_gclk>;
-+				clock-names = "hclk", "cclk";
-+				assigned-clocks = <&can0_gclk>;
-+				assigned-clock-parents = <&utmi>;
-+				assigned-clock-rates = <40000000>;
-+				bosch,mram-cfg = <0x0 0 0 64 0 0 32 32>;
-+				status = "disabled";
-+			};
-+
- 			spi1: spi@fc000000 {
- 				compatible = "atmel,at91rm9200-spi";
- 				reg = <0xfc000000 0x100>;
-@@ -1305,6 +1345,22 @@
- 				status = "okay";
- 			};
+-static inline void cgw_unregister_filter(struct cgw_job *gwj)
++static inline void cgw_unregister_filter(struct net *net, struct cgw_job *gwj)
+ {
+-	can_rx_unregister(&init_net, gwj->src.dev, gwj->ccgw.filter.can_id,
++	can_rx_unregister(net, gwj->src.dev, gwj->ccgw.filter.can_id,
+ 			  gwj->ccgw.filter.can_mask, can_can_gw_rcv, gwj);
+ }
  
-+			can1: can@fc050000 {
-+				compatible = "bosch,m_can";
-+				reg = <0xfc050000 0x4000>, <0x210000 0x4000>;
-+				reg-names = "m_can", "message_ram";
-+				interrupts = <57 IRQ_TYPE_LEVEL_HIGH 7>,
-+					     <65 IRQ_TYPE_LEVEL_HIGH 7>;
-+				interrupt-names = "int0", "int1";
-+				clocks = <&can1_clk>, <&can1_gclk>;
-+				clock-names = "hclk", "cclk";
-+				assigned-clocks = <&can1_gclk>;
-+				assigned-clock-parents = <&utmi>;
-+				assigned-clock-rates = <40000000>;
-+				bosch,mram-cfg = <0x1100 0 0 64 0 0 32 32>;
-+				status = "disabled";
-+			};
+@@ -455,9 +454,8 @@ static int cgw_notifier(struct notifier_block *nb,
+ 			unsigned long msg, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
++	struct net *net = dev_net(dev);
+ 
+-	if (!net_eq(dev_net(dev), &init_net))
+-		return NOTIFY_DONE;
+ 	if (dev->type != ARPHRD_CAN)
+ 		return NOTIFY_DONE;
+ 
+@@ -468,11 +466,11 @@ static int cgw_notifier(struct notifier_block *nb,
+ 
+ 		ASSERT_RTNL();
+ 
+-		hlist_for_each_entry_safe(gwj, nx, &cgw_list, list) {
++		hlist_for_each_entry_safe(gwj, nx, &net->can.cgw_list, list) {
+ 
+ 			if (gwj->src.dev == dev || gwj->dst.dev == dev) {
+ 				hlist_del(&gwj->list);
+-				cgw_unregister_filter(gwj);
++				cgw_unregister_filter(net, gwj);
+ 				kmem_cache_free(cgw_cache, gwj);
+ 			}
+ 		}
+@@ -592,12 +590,13 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj, int type,
+ /* Dump information about all CAN gateway jobs, in response to RTM_GETROUTE */
+ static int cgw_dump_jobs(struct sk_buff *skb, struct netlink_callback *cb)
+ {
++	struct net *net = sock_net(skb->sk);
+ 	struct cgw_job *gwj = NULL;
+ 	int idx = 0;
+ 	int s_idx = cb->args[0];
+ 
+ 	rcu_read_lock();
+-	hlist_for_each_entry_rcu(gwj, &cgw_list, list) {
++	hlist_for_each_entry_rcu(gwj, &net->can.cgw_list, list) {
+ 		if (idx < s_idx)
+ 			goto cont;
+ 
+@@ -811,6 +810,7 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
+ 
+ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
+ {
++	struct net *net = sock_net(skb->sk);
+ 	struct rtcanmsg *r;
+ 	struct cgw_job *gwj;
+ 	struct cf_mod mod;
+@@ -841,7 +841,7 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
+ 		ASSERT_RTNL();
+ 
+ 		/* check for updating an existing job with identical uid */
+-		hlist_for_each_entry(gwj, &cgw_list, list) {
++		hlist_for_each_entry(gwj, &net->can.cgw_list, list) {
+ 
+ 			if (gwj->mod.uid != mod.uid)
+ 				continue;
+@@ -879,7 +879,7 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
+ 
+ 	err = -ENODEV;
+ 
+-	gwj->src.dev = __dev_get_by_index(&init_net, gwj->ccgw.src_idx);
++	gwj->src.dev = __dev_get_by_index(net, gwj->ccgw.src_idx);
+ 
+ 	if (!gwj->src.dev)
+ 		goto out;
+@@ -887,7 +887,7 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
+ 	if (gwj->src.dev->type != ARPHRD_CAN)
+ 		goto out;
+ 
+-	gwj->dst.dev = __dev_get_by_index(&init_net, gwj->ccgw.dst_idx);
++	gwj->dst.dev = __dev_get_by_index(net, gwj->ccgw.dst_idx);
+ 
+ 	if (!gwj->dst.dev)
+ 		goto out;
+@@ -897,9 +897,9 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
+ 
+ 	ASSERT_RTNL();
+ 
+-	err = cgw_register_filter(gwj);
++	err = cgw_register_filter(net, gwj);
+ 	if (!err)
+-		hlist_add_head_rcu(&gwj->list, &cgw_list);
++		hlist_add_head_rcu(&gwj->list, &net->can.cgw_list);
+ out:
+ 	if (err)
+ 		kmem_cache_free(cgw_cache, gwj);
+@@ -907,22 +907,23 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh)
+ 	return err;
+ }
+ 
+-static void cgw_remove_all_jobs(void)
++static void cgw_remove_all_jobs(struct net *net)
+ {
+ 	struct cgw_job *gwj = NULL;
+ 	struct hlist_node *nx;
+ 
+ 	ASSERT_RTNL();
+ 
+-	hlist_for_each_entry_safe(gwj, nx, &cgw_list, list) {
++	hlist_for_each_entry_safe(gwj, nx, &net->can.cgw_list, list) {
+ 		hlist_del(&gwj->list);
+-		cgw_unregister_filter(gwj);
++		cgw_unregister_filter(net, gwj);
+ 		kmem_cache_free(cgw_cache, gwj);
+ 	}
+ }
+ 
+ static int cgw_remove_job(struct sk_buff *skb, struct nlmsghdr *nlh)
+ {
++	struct net *net = sock_net(skb->sk);
+ 	struct cgw_job *gwj = NULL;
+ 	struct hlist_node *nx;
+ 	struct rtcanmsg *r;
+@@ -951,7 +952,7 @@ static int cgw_remove_job(struct sk_buff *skb, struct nlmsghdr *nlh)
+ 
+ 	/* two interface indices both set to 0 => remove all entries */
+ 	if (!ccgw.src_idx && !ccgw.dst_idx) {
+-		cgw_remove_all_jobs();
++		cgw_remove_all_jobs(net);
+ 		return 0;
+ 	}
+ 
+@@ -960,7 +961,7 @@ static int cgw_remove_job(struct sk_buff *skb, struct nlmsghdr *nlh)
+ 	ASSERT_RTNL();
+ 
+ 	/* remove only the first matching entry */
+-	hlist_for_each_entry_safe(gwj, nx, &cgw_list, list) {
++	hlist_for_each_entry_safe(gwj, nx, &net->can.cgw_list, list) {
+ 
+ 		if (gwj->flags != r->flags)
+ 			continue;
+@@ -983,7 +984,7 @@ static int cgw_remove_job(struct sk_buff *skb, struct nlmsghdr *nlh)
+ 			continue;
+ 
+ 		hlist_del(&gwj->list);
+-		cgw_unregister_filter(gwj);
++		cgw_unregister_filter(net, gwj);
+ 		kmem_cache_free(cgw_cache, gwj);
+ 		err = 0;
+ 		break;
+@@ -992,6 +993,26 @@ static int cgw_remove_job(struct sk_buff *skb, struct nlmsghdr *nlh)
+ 	return err;
+ }
+ 
++static int __net_init cangw_pernet_init(struct net *net)
++{
++	INIT_HLIST_HEAD(&net->can.cgw_list);
++	return 0;
++}
 +
- 			chipid@fc069000 {
- 				compatible = "atmel,sama5d2-chipid";
- 				reg = <0xfc069000 0x8>;
++static void __net_exit cangw_pernet_exit(struct net *net)
++{
++	rtnl_lock();
++	cgw_remove_all_jobs(net);
++	rtnl_unlock();
++}
++
++static struct pernet_operations cangw_pernet_ops = {
++	.init = cangw_pernet_init,
++	.exit = cangw_pernet_exit,
++	.id = &cangw_net_id,
++	.size = 0,
++};
++
+ static __init int cgw_module_init(void)
+ {
+ 	/* sanitize given module parameter */
+@@ -1000,6 +1021,7 @@ static __init int cgw_module_init(void)
+ 	pr_info("can: netlink gateway (rev " CAN_GW_VERSION ") max_hops=%d\n",
+ 		max_hops);
+ 
++	register_pernet_subsys(&cangw_pernet_ops);
+ 	cgw_cache = kmem_cache_create("can_gw", sizeof(struct cgw_job),
+ 				      0, 0, NULL);
+ 
+@@ -1029,10 +1051,7 @@ static __exit void cgw_module_exit(void)
+ 
+ 	unregister_netdevice_notifier(&notifier);
+ 
+-	rtnl_lock();
+-	cgw_remove_all_jobs();
+-	rtnl_unlock();
+-
++	unregister_pernet_subsys(&cangw_pernet_ops);
+ 	rcu_barrier(); /* Wait for completion of call_rcu()'s */
+ 
+ 	kmem_cache_destroy(cgw_cache);
 -- 
 2.11.0
+
