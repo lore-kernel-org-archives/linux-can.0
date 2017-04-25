@@ -1,95 +1,168 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Fwd: [PATCH] can: use namespace aware procfs function
-Date: Tue, 25 Apr 2017 10:59:31 +0200
-Message-ID: <59e144f6-2bed-26fd-9cef-545e3ffed176@pengutronix.de>
-References: <20170415180629.2268-1-socketcan@hartkopp.net>
- <da6d2ac9-a6b1-2cdc-b80c-a47fef8ae887@hartkopp.net>
- <82acaf2e-20d8-b6af-1853-292ceb5c1d43@pengutronix.de>
- <1e953bd5-9538-1d11-85bf-c9d30a911836@hartkopp.net>
- <2e398801-8723-881e-7666-1da6af4616d5@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="1rw7SJVlMrPWargVF7pSad4T19iUNGmj8"
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH RFC] ip: link add vxcan support
+Date: Tue, 25 Apr 2017 10:59:50 +0200
+Message-ID: <20170425085950.3252-1-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:42661 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1177034AbdDYI7g (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Apr 2017 04:59:36 -0400
-In-Reply-To: <2e398801-8723-881e-7666-1da6af4616d5@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:8607 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1177033AbdDYJAD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Apr 2017 05:00:03 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Mario Kicherer <dev@kicherer.org>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1rw7SJVlMrPWargVF7pSad4T19iUNGmj8
-Content-Type: multipart/mixed; boundary="NtWqpXHIgsc58J5gLuK0Lm4n2uOvwFMKP";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- Mario Kicherer <dev@kicherer.org>
-Message-ID: <59e144f6-2bed-26fd-9cef-545e3ffed176@pengutronix.de>
-Subject: Re: Fwd: [PATCH] can: use namespace aware procfs function
-References: <20170415180629.2268-1-socketcan@hartkopp.net>
- <da6d2ac9-a6b1-2cdc-b80c-a47fef8ae887@hartkopp.net>
- <82acaf2e-20d8-b6af-1853-292ceb5c1d43@pengutronix.de>
- <1e953bd5-9538-1d11-85bf-c9d30a911836@hartkopp.net>
- <2e398801-8723-881e-7666-1da6af4616d5@hartkopp.net>
-In-Reply-To: <2e398801-8723-881e-7666-1da6af4616d5@hartkopp.net>
+Support the configuration of the Virtual CAN Tunnel (vxcan).
+The code is derived from link_veth.c which implements a similar netlink
+interface for the configuration of netdevice pairs.
 
---NtWqpXHIgsc58J5gLuK0Lm4n2uOvwFMKP
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
 
-On 04/17/2017 12:55 PM, Oliver Hartkopp wrote:
-> On 04/15/2017 10:56 PM, Oliver Hartkopp wrote:
->> On 04/15/2017 08:21 PM, Marc Kleine-Budde wrote:
->>> On 04/15/2017 08:12 PM, Oliver Hartkopp wrote:
->>>> can you squash this fix into my original RFC v2 patch?
->>>
->>> will do.
->>>
->>
->> Great!
->>
->> I finalized a namespace patch for CAN BCM some minutes ago.
->>
->> I'll do some more testing tomorrow and post it then.
->=20
-> Done :-)
->=20
-> Will you push these patches to can-next?
+Hello Marc,
 
-done.
+I created this patch to test the vxcan driver. As include/linux/can/vxcan.h
+will be part of the standard update of iproute2, I will send the patch to
+netdev-ML when this is done.
 
-Marc
+IIRC the latest extensions to support the termination API and the fixed
+bitrate support is still not implemented in iproute2. Would you like to do
+this? I'm currently more addicted to the namespace stuff.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Regards,
+Oliver
 
+ include/linux/can/vxcan.h | 12 +++++++
+ ip/Makefile               |  2 +-
+ ip/iplink_vxcan.c         | 87 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 100 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/can/vxcan.h
+ create mode 100644 ip/iplink_vxcan.c
 
---NtWqpXHIgsc58J5gLuK0Lm4n2uOvwFMKP--
+diff --git a/include/linux/can/vxcan.h b/include/linux/can/vxcan.h
+new file mode 100644
+index 00000000..ffb0b715
+--- /dev/null
++++ b/include/linux/can/vxcan.h
+@@ -0,0 +1,12 @@
++#ifndef _UAPI_CAN_VXCAN_H
++#define _UAPI_CAN_VXCAN_H
++
++enum {
++	VXCAN_INFO_UNSPEC,
++	VXCAN_INFO_PEER,
++
++	__VXCAN_INFO_MAX
++#define VXCAN_INFO_MAX	(__VXCAN_INFO_MAX - 1)
++};
++
++#endif
+diff --git a/ip/Makefile b/ip/Makefile
+index 035d42c7..d5c6473a 100644
+--- a/ip/Makefile
++++ b/ip/Makefile
+@@ -2,7 +2,7 @@ IPOBJ=ip.o ipaddress.o ipaddrlabel.o iproute.o iprule.o ipnetns.o \
+     rtm_map.o iptunnel.o ip6tunnel.o tunnel.o ipneigh.o ipntable.o iplink.o \
+     ipmaddr.o ipmonitor.o ipmroute.o ipprefix.o iptuntap.o iptoken.o \
+     ipxfrm.o xfrm_state.o xfrm_policy.o xfrm_monitor.o iplink_dummy.o \
+-    iplink_ifb.o iplink_nlmon.o iplink_team.o iplink_vcan.o \
++    iplink_ifb.o iplink_nlmon.o iplink_team.o iplink_vcan.o iplink_vxcan.o \
+     iplink_vlan.o link_veth.o link_gre.o iplink_can.o iplink_xdp.o \
+     iplink_macvlan.o ipl2tp.o link_vti.o link_vti6.o \
+     iplink_vxlan.o tcp_metrics.o iplink_ipoib.o ipnetconf.o link_ip6tnl.o \
+diff --git a/ip/iplink_vxcan.c b/ip/iplink_vxcan.c
+new file mode 100644
+index 00000000..0074ae38
+--- /dev/null
++++ b/ip/iplink_vxcan.c
+@@ -0,0 +1,87 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <net/if.h>
++#include <linux/can/vxcan.h>
++
++#include "utils.h"
++#include "ip_common.h"
++
++static void print_usage(FILE *f)
++{
++	printf("Usage: ip link <options> type vxcan [peer <options>]\n"
++	       "To get <options> type 'ip link add help'\n");
++}
++
++static void usage(void)
++{
++	print_usage(stderr);
++}
++
++static int vxcan_parse_opt(struct link_util *lu, int argc, char **argv,
++			  struct nlmsghdr *hdr)
++{
++	char *dev = NULL;
++	char *name = NULL;
++	char *link = NULL;
++	char *type = NULL;
++	int index = 0;
++	int err, len;
++	struct rtattr *data;
++	int group;
++	struct ifinfomsg *ifm, *peer_ifm;
++	unsigned int ifi_flags, ifi_change;
++
++	if (strcmp(argv[0], "peer") != 0) {
++		usage();
++		return -1;
++	}
++
++	ifm = NLMSG_DATA(hdr);
++	ifi_flags = ifm->ifi_flags;
++	ifi_change = ifm->ifi_change;
++	ifm->ifi_flags = 0;
++	ifm->ifi_change = 0;
++
++	data = NLMSG_TAIL(hdr);
++	addattr_l(hdr, 1024, VXCAN_INFO_PEER, NULL, 0);
++
++	hdr->nlmsg_len += sizeof(struct ifinfomsg);
++
++	err = iplink_parse(argc - 1, argv + 1, (struct iplink_req *)hdr,
++			   &name, &type, &link, &dev, &group, &index);
++	if (err < 0)
++		return err;
++
++	if (name) {
++		len = strlen(name) + 1;
++		if (len > IFNAMSIZ)
++			invarg("\"name\" too long\n", *argv);
++		addattr_l(hdr, 1024, IFLA_IFNAME, name, len);
++	}
++
++	peer_ifm = RTA_DATA(data);
++	peer_ifm->ifi_index = index;
++	peer_ifm->ifi_flags = ifm->ifi_flags;
++	peer_ifm->ifi_change = ifm->ifi_change;
++	ifm->ifi_flags = ifi_flags;
++	ifm->ifi_change = ifi_change;
++
++	if (group != -1)
++		addattr32(hdr, 1024, IFLA_GROUP, group);
++
++	data->rta_len = (void *)NLMSG_TAIL(hdr) - (void *)data;
++	return argc - 1 - err;
++}
++
++static void vxcan_print_help(struct link_util *lu, int argc, char **argv,
++	FILE *f)
++{
++	print_usage(f);
++}
++
++struct link_util vxcan_link_util = {
++	.id = "vxcan",
++	.parse_opt = vxcan_parse_opt,
++	.print_help = vxcan_print_help,
++};
+-- 
+2.11.0
 
---1rw7SJVlMrPWargVF7pSad4T19iUNGmj8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlj/D/MACgkQHv7KIOw4
-HPadlQf6AqxJfw4b4CyJtHUd+NzaVCH4ow9f1ujO0w8yf62oReaERNFlouzlXICT
-IYaw38K5AExHVZSKWAHQ6603YpsTnG3ep3P2phzeDcjBUpG8lJD1j7rH9rsnk3d8
-fB0+lxvElwC55uxzrXuRcP1EWPKMbpMKMDCslC080e616NCnIjczqBgmRcGRFBim
-iVytv7Al/c2iRQwfyKK8FTFI1EpCeYxAzc5VlsB1dHlbtHTjFUVlOH13GWjiMeLU
-QQ+lzUDt46aLno4bahjfRA2xvn9wP3EQkPpULi7q+DXXC1kLsK2p0AXxkUvQ6OBf
-+VEkGUhR8EEr6t8TY1+96TVTs2LuVQ==
-=H8Ai
------END PGP SIGNATURE-----
-
---1rw7SJVlMrPWargVF7pSad4T19iUNGmj8--
