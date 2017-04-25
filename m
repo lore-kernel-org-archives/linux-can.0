@@ -1,79 +1,51 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull-request: can 2017-04-25
-Date: Tue, 25 Apr 2017 17:33:35 +0200
-Message-ID: <d9a6c753-cc92-f31e-47a6-9110040d7294@pengutronix.de>
-References: <20170425121645.9946-1-mkl@pengutronix.de>
- <20170425.112126.232541678435322858.davem@davemloft.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Reading BCM socket.
+Date: Tue, 25 Apr 2017 21:13:44 +0200
+Message-ID: <96b97a2b-c8fb-f3f1-2c6e-b0efa28ab844@hartkopp.net>
+References: <19408793-d028-4084-3d2a-f741dcf74577@iot.bzh>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="KBQ2hggjWbjaQpN0wcTxBAe5Bi9nrGMah"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20170425.112126.232541678435322858.davem@davemloft.net>
-Sender: netdev-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:24268 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1432239AbdDYTN7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Apr 2017 15:13:59 -0400
+In-Reply-To: <19408793-d028-4084-3d2a-f741dcf74577@iot.bzh>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "Romain Forlot [IoT.bzh]" <claneys@iot.bzh>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---KBQ2hggjWbjaQpN0wcTxBAe5Bi9nrGMah
-Content-Type: multipart/mixed; boundary="6IHlAq1Rs730a9fqDukvETcQKoHDuoCVX";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-Message-ID: <d9a6c753-cc92-f31e-47a6-9110040d7294@pengutronix.de>
-Subject: Re: pull-request: can 2017-04-25
-References: <20170425121645.9946-1-mkl@pengutronix.de>
- <20170425.112126.232541678435322858.davem@davemloft.net>
-In-Reply-To: <20170425.112126.232541678435322858.davem@davemloft.net>
+Hi Romain,
 
---6IHlAq1Rs730a9fqDukvETcQKoHDuoCVX
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 04/25/2017 05:03 PM, Romain Forlot [IoT.bzh] wrote:
+> I playing around BCM socket and wondering if there is a preferred way to
+> use them.
+>
+> For now, I use 1 BCM socket by device and adding or removing jobs, but I
+> wonder if it isn't better to get 1 BCM socket by job or arbitration ID.
 
-On 04/25/2017 05:21 PM, David Miller wrote:
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> Date: Tue, 25 Apr 2017 14:16:42 +0200
->=20
->> this is a pull request of three patches for net/master.
->>
->> There are two patches by Stephane Grosjean for that add a new variant =
-to the
->> PCAN-Chip USB driver. The other patch is by Maksim Salau, which swtich=
-es the
->> memory for USB transfers from heap to stack.
->=20
-> I think you meant "from stack to heap", but anyways pulled thanks!
+I would recommend 1 BCM socket per job.
+The question is: How do you specify 'job'? :-)
 
-Yes and that's what the patch does.
+> By ID it is possible to assign a socket to a CAN signal instead of a
+> device, it could make sense.
 
-Marc
+In fact I would use a BCM socket for each signal (when a signal is 
+something like 'vehicle speed', 'engine speed', 'door status', etc).
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+The idea is to put the filter into the kernel in the way that the 
+application only gets an update when it has something to calculate.
 
+E.g. for 'engine speed' you could also use the 'throttle' functionality 
+(throttle 10ms CAN signal down to e.g. 200ms) which is only possible 
+when you use a dedicated BCM socket for this signal.
 
---6IHlAq1Rs730a9fqDukvETcQKoHDuoCVX--
+Regards,
+Oliver
 
---KBQ2hggjWbjaQpN0wcTxBAe5Bi9nrGMah
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlj/bE8ACgkQHv7KIOw4
-HPa+4ggAjlL79RNjN5SpLt6ACyWILfQhcEC27pcaadpT8Htom/k5X45eqDulV/8S
-srTjocUvUbKyU/53TEZ+QrIuI7k9GU3fFCgqevnl9ZPLV0BTCvDUDJuQ0kvHlfdF
-iMyDB2Mr2QlrHVg4jGTPJwjmH0WckUTh0by1t0IA5wTRkFT6VC9b1CrO2NWhFzyM
-4POsXvCnfkY/VPk3jd8q+VxgnKQWFSYQ4YMzGdZGDD9h96wqHn584ArskYzEvMkT
-gSlsdDXn66zwwUo6qAHxdSvYoN/MsRnp2KoMnYl571CQUYQ+odO9aYygXiDjIcMA
-YztFNl6TB5kjj4XJPtF7v/AAQjEJ4Q==
-=QK/y
------END PGP SIGNATURE-----
-
---KBQ2hggjWbjaQpN0wcTxBAe5Bi9nrGMah--
+>
+> What do you think ? How do use that kind of socket in your apps ?
+>
+> Thanks.
+>
