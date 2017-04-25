@@ -1,43 +1,41 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [PATCH RFC] can: add Virtual CAN Tunnel driver (vxcan)
-Date: Tue, 25 Apr 2017 10:14:17 +0200
-Message-ID: <2991941.MzkBZeoEfP@ws-stein>
-References: <20170424201238.3587-1-socketcan@hartkopp.net> <1817567.PFpAbEA6ZR@ws-stein> <73a30dda-c0c6-a1f8-62d0-2cf4a193a7cc@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 0/8] Fix and complete CAN namespace support
+Date: Tue, 25 Apr 2017 10:43:00 +0200
+Message-ID: <bea0f00d-37d7-5a4a-1e5d-f5758da7e158@hartkopp.net>
+References: <20170425061945.28722-1-socketcan@hartkopp.net>
+ <8fc17f07-f165-970b-f96a-1d920302fd00@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:43621 "EHLO
-        webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1428466AbdDYIOX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Apr 2017 04:14:23 -0400
-In-Reply-To: <73a30dda-c0c6-a1f8-62d0-2cf4a193a7cc@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <8fc17f07-f165-970b-f96a-1d920302fd00@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, davem@davemloft.net
+Cc: dev@kicherer.org, netdev@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-Hi Oliver,
 
-On Tuesday 25 April 2017 08:28:11, Oliver Hartkopp wrote:
-> On 04/25/2017 07:35 AM, Alexander Stein wrote:
-> > On Monday 24 April 2017 22:12:37, Oliver Hartkopp wrote:
-> >> +
-> >> +	netif_rx_ni(skb);
-> >> 
-> >      ^^^^^^^^^^
-> > 
-> > Wouldn't this result in the known out-of-order problem on SMP systems?
-> 
-> I don't think so.
-> We're not dealing with irqs here that could reach different CPUs.
-> This is all in softirq/userspace context.
-> It's the same thing we have with the virtual CAN vcan.
 
-That would be great. I don't know the complete code path but is it possible 
-that this xmit function is executed on different CPUs at the same time? e.g. 
-multiple sockets/threads writing a CAN frame.
+On 04/25/2017 08:48 AM, Marc Kleine-Budde wrote:
+> On 04/25/2017 08:19 AM, Oliver Hartkopp wrote:
+>> Hello Dave,
+>>
+>> unfortunately the initial network namespace support by Mario Kicherer
+>> (8e8cda6d737d) slipped into net-next without further review and Marc pushed
+>> the code without my Acked-by. Due to the fact that this code was in net-next
+>> now I spent some nights to fix, clean up, finalize and test the missing pieces
+>> for the namespace support for the CAN subsystem in net/can.
+>>
+>> As Marc is currently *VERY* unresponsive on the mailing list due to his 'real'
+>
+> ... and holidays :) But I'm back in the office now.
 
-Best regards,
-Alexander
+I created a cleaned patch series to provide more detailed and proper 
+patches. And these patches are based on Dave's net-next as you did not 
+push your latest changes in mkl/linux-can-next to the public on week ago.
 
+When you manage to get this series integrated today then it would be ok 
+for me. Otherwise we should Dave take this series directly.
+
+Thanks,
+Oliver
