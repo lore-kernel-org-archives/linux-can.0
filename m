@@ -1,69 +1,61 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [PATCH RFC] can: add Virtual CAN Tunnel driver (vxcan)
-Date: Tue, 25 Apr 2017 07:35:47 +0200
-Message-ID: <1817567.PFpAbEA6ZR@ws-stein>
-References: <20170424201238.3587-1-socketcan@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH 0/8] Fix and complete CAN namespace support
+Date: Tue, 25 Apr 2017 08:19:37 +0200
+Message-ID: <20170425061945.28722-1-socketcan@hartkopp.net>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from webbox1416.server-home.net ([77.236.96.61]:35590 "EHLO
-        webbox1416.server-home.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S980244AbdDYFfy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Apr 2017 01:35:54 -0400
-In-Reply-To: <20170424201238.3587-1-socketcan@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:21962 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S980488AbdDYGU2 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Apr 2017 02:20:28 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org, davem@davemloft.net
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, mkl@pengutronix.de, dev@kicherer.org, netdev@vger.kernel.org
 
-On Monday 24 April 2017 22:12:37, Oliver Hartkopp wrote:
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> --- /dev/null
-> +++ b/drivers/net/can/vxcan.c
-> @@ -0,0 +1,313 @@
-> [...]
-> +static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
-> +{
-> +	struct vxcan_priv *priv = netdev_priv(dev);
-> +	struct net_device *peer;
-> +	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
-> +	struct net_device_stats *stats = &dev->stats;
-> +
-> +	if (can_dropped_invalid_skb(dev, skb))
-> +		return NETDEV_TX_OK;
-> +
-> +	rcu_read_lock();
-> +	peer = rcu_dereference(priv->peer);
-> +	if (unlikely(!peer)) {
-> +		kfree_skb(skb);
-> +		dev->stats.tx_dropped++;
-> +		goto out_unlock;
-> +	}
-> +
-> +	skb = can_create_echo_skb(skb);
-> +	if (!skb)
-> +		return NETDEV_TX_OK;
-> +
-> +	stats->tx_packets++;
-> +	stats->tx_bytes += cfd->len;
-> +
-> +	/* reset CAN GW hop counter */
-> +	skb->csum_start = 0;
-> +
-> +	stats = &peer->stats;
-> +
-> +	stats->rx_packets++;
-> +	stats->rx_bytes += cfd->len;
-> +
-> +	skb->pkt_type  = PACKET_BROADCAST;
-> +	skb->dev       = peer;
-> +	skb->ip_summed = CHECKSUM_UNNECESSARY;
-> +
-> +	netif_rx_ni(skb);
-     ^^^^^^^^^^
-Wouldn't this result in the known out-of-order problem on SMP systems?
+Hello Dave,
 
-Best regards,
-Alexander
+unfortunately the initial network namespace support by Mario Kicherer
+(8e8cda6d737d) slipped into net-next without further review and Marc pushed
+the code without my Acked-by. Due to the fact that this code was in net-next
+now I spent some nights to fix, clean up, finalize and test the missing pieces
+for the namespace support for the CAN subsystem in net/can.
+
+As Marc is currently *VERY* unresponsive on the mailing list due to his 'real'
+job I send this patch set directly to you to make sure it gets through the
+current merge window. We are already in -rc8 and I would like to avoid to push
+an incomplete functionality - that has to be fixed - to Linus.
+
+This patch set is based on the latest net-next.
+
+Thanks,
+Oliver
+
+Oliver Hartkopp (8):
+  can: fix memory leak in initial namespace support
+  can: remove obsolete pernet_operations definitions
+  can: remove obsolete definitions
+  can: complete initial namespace support
+  can: network namespace support for CAN_BCM protocol
+  can: network namespace support for CAN gateway
+  can: add Virtual CAN Tunnel driver (vxcan)
+  can: enable module auto loading for virtual CAN interfaces
+
+ drivers/net/can/Kconfig        |  18 +++
+ drivers/net/can/Makefile       |   1 +
+ drivers/net/can/vcan.c         |   7 +-
+ drivers/net/can/vxcan.c        | 316 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/can/core.h       |   4 +-
+ include/net/netns/can.h        |   9 ++
+ include/uapi/linux/can/vxcan.h |  12 ++
+ net/can/af_can.c               |  77 +++++-----
+ net/can/af_can.h               |   9 --
+ net/can/bcm.c                  |  90 +++++++-----
+ net/can/gw.c                   |  72 ++++++----
+ net/can/proc.c                 | 141 +++++++++---------
+ 12 files changed, 580 insertions(+), 176 deletions(-)
+ create mode 100644 drivers/net/can/vxcan.c
+ create mode 100644 include/uapi/linux/can/vxcan.h
+
+-- 
+2.11.0
 
