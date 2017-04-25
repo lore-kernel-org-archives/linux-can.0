@@ -1,40 +1,70 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH RFC] can: add Virtual CAN Tunnel driver (vxcan)
-Date: Tue, 25 Apr 2017 08:28:11 +0200
-Message-ID: <73a30dda-c0c6-a1f8-62d0-2cf4a193a7cc@hartkopp.net>
-References: <20170424201238.3587-1-socketcan@hartkopp.net>
- <1817567.PFpAbEA6ZR@ws-stein>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH net-next] can: ti_hecc: fix return value check in ti_hecc_probe()
+Date: Tue, 25 Apr 2017 06:44:05 +0000
+Message-ID: <20170425064405.3964-1-weiyj.lk@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:33491 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S979542AbdDYG22 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Apr 2017 02:28:28 -0400
-In-Reply-To: <1817567.PFpAbEA6ZR@ws-stein>
+Received: from mail-pg0-f67.google.com ([74.125.83.67]:32849 "EHLO
+        mail-pg0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S980899AbdDYGoM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Apr 2017 02:44:12 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Anton Glukhov <anton.a.glukhov@gmail.com>, Yegor Yefremov <yegorslists@googlemail.com>
+Cc: Wei Yongjun <weiyongjun1@huawei.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
-Hi Alexander,
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-On 04/25/2017 07:35 AM, Alexander Stein wrote:
-> On Monday 24 April 2017 22:12:37, Oliver Hartkopp wrote:
+In case of error, the function devm_ioremap_resource() returns ERR_PTR()
+and never returns NULL. The NULL test in the return value check should
+be replaced with IS_ERR().
 
->> +
->> +	netif_rx_ni(skb);
->      ^^^^^^^^^^
-> Wouldn't this result in the known out-of-order problem on SMP systems?
+Fixes: dabf54dd1c63 ("can: ti_hecc: Convert TI HECC driver to DT only driver")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/net/can/ti_hecc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-I don't think so.
-We're not dealing with irqs here that could reach different CPUs.
-This is all in softirq/userspace context.
-It's the same thing we have with the virtual CAN vcan.
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index b8aac53..4d49414 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -898,9 +898,9 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	priv->base = devm_ioremap_resource(&pdev->dev, res);
+-	if (!priv->base) {
++	if (IS_ERR(priv->base)) {
+ 		dev_err(&pdev->dev, "hecc ioremap failed\n");
+-		return -ENOMEM;
++		return PTR_ERR(priv->base);
+ 	}
+ 
+ 	/* handle hecc-ram memory */
+@@ -911,9 +911,9 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
+-	if (!priv->hecc_ram) {
++	if (IS_ERR(priv->hecc_ram)) {
+ 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
+-		return -ENOMEM;
++		return PTR_ERR(priv->hecc_ram);
+ 	}
+ 
+ 	/* handle mbx memory */
+@@ -924,9 +924,9 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
+-	if (!priv->mbx) {
++	if (IS_ERR(priv->mbx)) {
+ 		dev_err(&pdev->dev, "mbx ioremap failed\n");
+-		return -ENOMEM;
++		return PTR_ERR(priv->mbx);
+ 	}
+ 
+ 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 
-When there's something to fix, then we could fix up both vcan and vxcan.
-But I don't think so.
-
-Regards,
-Oliver
