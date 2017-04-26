@@ -1,93 +1,82 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Using CAN_FD_FRAME with BCM socket
-Date: Wed, 26 Apr 2017 20:44:08 +0200
-Message-ID: <a05f4636-3fa1-1d3f-4daf-e0173120609d@hartkopp.net>
-References: <6e32a9c4-2a08-87ac-aa1e-88907db27304@iot.bzh>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] can: peak: add support for PEAK PCAN-PCIe FD CAN-FD
+ boards
+Date: Wed, 26 Apr 2017 22:22:09 +0300
+Message-ID: <20170426192209.3ae4mloolqbmr27m@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:27176 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S965216AbdDZSoL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Apr 2017 14:44:11 -0400
-In-Reply-To: <6e32a9c4-2a08-87ac-aa1e-88907db27304@iot.bzh>
+Received: from userp1040.oracle.com ([156.151.31.81]:20404 "EHLO
+        userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S932781AbdDZTWf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Apr 2017 15:22:35 -0400
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Romain Forlot [IoT.bzh]" <claneys@iot.bzh>, linux-can@vger.kernel.org
+To: s.grosjean@peak-system.com
+Cc: linux-can@vger.kernel.org
 
-Hi Romain,
+Hello Stephane Grosjean,
 
-On 04/26/2017 11:19 AM, Romain Forlot [IoT.bzh] wrote:
-> I must miss something because I don't get it BCM socket uses
-> canfd_frame. If I use classic can_frame, it works without problems and I
-> don't get it.
+The patch 8ac8321e4a79: "can: peak: add support for PEAK PCAN-PCIe FD
+CAN-FD boards" from Jan 19, 2017, leads to the following static
+checker warning:
 
-Can you send your Linux Kernel version?
+	drivers/net/can/peak_canfd/peak_canfd.c:402 pucan_handle_status()
+	error: uninitialized symbol 'cf'.
 
-I just want to make sure that it contains this fix:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=5499a6b22e5508b921c447757685b0a5e40a07ed
+drivers/net/can/peak_canfd/peak_canfd.c
+   362          skb = alloc_can_err_skb(ndev, &cf);
+                                               ^^
+If skb is NULL "cf" is uninitialized.
 
-> Is there someone use canfd_frame with broadcast manager ? Every example
-> or source code I browse just use can_frame, only documentation talks
-> about that.
+   363  
+   364          /* test state error bits according to their priority */
+   365          if (pucan_status_is_busoff(msg)) {
+   366                  netdev_dbg(ndev, "Bus-off entry status\n");
+   367                  priv->can.state = CAN_STATE_BUS_OFF;
+   368                  priv->can.can_stats.bus_off++;
+   369                  can_bus_off(ndev);
+   370                  if (skb)
+   371                          cf->can_id |= CAN_ERR_BUSOFF;
+   372  
+   373          } else if (pucan_status_is_passive(msg)) {
+   374                  netdev_dbg(ndev, "Error passive status\n");
+   375                  priv->can.state = CAN_STATE_ERROR_PASSIVE;
+   376                  priv->can.can_stats.error_passive++;
+   377                  if (skb) {
+   378                          cf->can_id |= CAN_ERR_CRTL;
+   379                          cf->data[1] = (priv->bec.txerr > priv->bec.rxerr) ?
+   380                                          CAN_ERR_CRTL_TX_PASSIVE :
+   381                                          CAN_ERR_CRTL_RX_PASSIVE;
+   382                          cf->data[6] = priv->bec.txerr;
+   383                          cf->data[7] = priv->bec.rxerr;
+   384                  }
+   385  
+   386          } else if (pucan_status_is_warning(msg)) {
+   387                  netdev_dbg(ndev, "Error warning status\n");
+   388                  priv->can.state = CAN_STATE_ERROR_WARNING;
+   389                  priv->can.can_stats.error_warning++;
+   390                  if (skb) {
+   391                          cf->can_id |= CAN_ERR_CRTL;
+   392                          cf->data[1] = (priv->bec.txerr > priv->bec.rxerr) ?
+   393                                          CAN_ERR_CRTL_TX_WARNING :
+   394                                          CAN_ERR_CRTL_RX_WARNING;
+   395                          cf->data[6] = priv->bec.txerr;
+   396                          cf->data[7] = priv->bec.rxerr;
+   397                  }
+   398  
+   399          } else if (priv->can.state != CAN_STATE_ERROR_ACTIVE) {
+   400                  /* back to ERROR_ACTIVE */
+   401                  netdev_dbg(ndev, "Error active status\n");
+   402                  can_change_state(ndev, cf, CAN_STATE_ERROR_ACTIVE,
+   403                                   CAN_STATE_ERROR_ACTIVE);
 
-Yes, here:
+Presumably we want an "if (skb) " here like we have on the other paths.
 
-https://github.com/linux-can/can-tests
+   404          } else {
+   405                  dev_kfree_skb(skb);
 
-Namely:
 
-https://github.com/linux-can/can-tests/blob/master/tst-bcmfd-cycle.c
-https://github.com/linux-can/can-tests/blob/master/tst-bcmfd-filter.c
-https://github.com/linux-can/can-tests/blob/master/tst-bcm-tx_delete.c
-
->
-> Here is the code :
->
->  38         struct {
->  39           struct bcm_msg_head msg_head;
->  40           struct canfd_frame frame[4]; /* just an example */
->  41         } msg;
->  42
->  43         memset(msg.frame, 0, sizeof(msg.frame));
->  44
->  45         msg.msg_head.opcode  = RX_SETUP;
->  46         msg.msg_head.can_id  = 0x620;
->  47         msg.msg_head.flags   = SETTIMER|STARTTIMER|CAN_FD_FRAME;
->  48         msg.msg_head.nframes = 1;
->  49         msg.msg_head.count = 0;
->  50         msg.msg_head.ival1.tv_sec = 0;
->  51         msg.msg_head.ival1.tv_usec = 500000;
->  52 //      msg.msg_head.ival2.tv_sec = 0;
->  53 //      msg.msg_head.ival2.tv_usec = 100000;
-
-This is dangerous!
-
-You set SETTIMER|STARTTIMER but leave these values potentially 
-uninitialized.
-
->  54         msg.frame[0].data[0]   = 0x00;
->  55         msg.frame[0].data[1]   = 0x00;
->  56         msg.frame[0].data[2]   = 0x00;
->  57         msg.frame[0].data[3]   = 0x00;
->  58         msg.frame[0].data[4]   = 0x00;
->  59         msg.frame[0].data[5]   = 0x3C;
->  60         msg.frame[0].data[6]   = 0x00;
->  61         msg.frame[0].data[7]   = 0x00;
->  62
->  63         if(write(s, &msg, sizeof(msg)) < 0)
->  64                 printf("This is the end!\n%s\n", strerror(errno));
->
-> Then I use select on socket to read frames. In fact, if I remove
-> CAN_FD_FRAME it work even if my concatenated struct after bcm_msg_head
-> is canfd_frame structure but it will only read size of can_frame which
-> is normal.
-
-You always get the concatenated struct depending on CAN_FD_FRAME:
-http://lxr.free-electrons.com/source/Documentation/networking/can.txt?v=4.9#L856
-
-What length do you get back from the read() syscall?
-
-Regards,
-Oliver
+regards,
+dan carpenter
