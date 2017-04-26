@@ -1,69 +1,76 @@
 From: "Romain Forlot [IoT.bzh]" <claneys@iot.bzh>
-Subject: Re: Reading BCM socket.
-Date: Wed, 26 Apr 2017 09:35:32 +0200
-Message-ID: <a1848b4c-85a5-1da5-a485-954d046a03bf@iot.bzh>
-References: <19408793-d028-4084-3d2a-f741dcf74577@iot.bzh>
- <96b97a2b-c8fb-f3f1-2c6e-b0efa28ab844@hartkopp.net>
+Subject: Using CAN_FD_FRAME with BCM socket
+Date: Wed, 26 Apr 2017 11:19:15 +0200
+Message-ID: <6e32a9c4-2a08-87ac-aa1e-88907db27304@iot.bzh>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wr0-f177.google.com ([209.85.128.177]:35220 "EHLO
-        mail-wr0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1956385AbdDZHfh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Apr 2017 03:35:37 -0400
-Received: by mail-wr0-f177.google.com with SMTP id z52so79110653wrc.2
-        for <linux-can@vger.kernel.org>; Wed, 26 Apr 2017 00:35:36 -0700 (PDT)
-In-Reply-To: <96b97a2b-c8fb-f3f1-2c6e-b0efa28ab844@hartkopp.net>
+Received: from mail-wm0-f50.google.com ([74.125.82.50]:35890 "EHLO
+        mail-wm0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2995341AbdDZJTW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Apr 2017 05:19:22 -0400
+Received: by mail-wm0-f50.google.com with SMTP id u65so44243775wmu.1
+        for <linux-can@vger.kernel.org>; Wed, 26 Apr 2017 02:19:20 -0700 (PDT)
+Received: from shamash.uruk.home (ARennes-659-1-166-117.w2-12.abo.wanadoo.fr. [2.12.149.117])
+        by smtp.gmail.com with ESMTPSA id s137sm5186983wme.31.2017.04.26.02.19.17
+        for <linux-can@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 Apr 2017 02:19:18 -0700 (PDT)
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-Ok, thanks.
+Hi all,
 
-Using one socket does the job too, I just adding filters using 1 BCM 
-socket instead of 1 for each signals. There is a big socket containing 
-all filters for the device, but it may be more convenient to use 
-separated socket like you recommend, I'll go that way :-)
+I must miss something because I don't get it BCM socket uses 
+canfd_frame. If I use classic can_frame, it works without problems and I 
+don't get it.
 
-Parameters for filter is already presents in our signals description, 
-throttling etc... So I just have to plug them.
+Is there someone use canfd_frame with broadcast manager ? Every example 
+or source code I browse just use can_frame, only documentation talks 
+about that.
 
-On 04/25/2017 09:13 PM, Oliver Hartkopp wrote:
-> Hi Romain,
->
-> On 04/25/2017 05:03 PM, Romain Forlot [IoT.bzh] wrote:
->> I playing around BCM socket and wondering if there is a preferred way to
->> use them.
->>
->> For now, I use 1 BCM socket by device and adding or removing jobs, but I
->> wonder if it isn't better to get 1 BCM socket by job or arbitration ID.
->
-> I would recommend 1 BCM socket per job.
-> The question is: How do you specify 'job'? :-)
->
->> By ID it is possible to assign a socket to a CAN signal instead of a
->> device, it could make sense.
->
-> In fact I would use a BCM socket for each signal (when a signal is 
-> something like 'vehicle speed', 'engine speed', 'door status', etc).
->
-> The idea is to put the filter into the kernel in the way that the 
-> application only gets an update when it has something to calculate.
->
-> E.g. for 'engine speed' you could also use the 'throttle' 
-> functionality (throttle 10ms CAN signal down to e.g. 200ms) which is 
-> only possible when you use a dedicated BCM socket for this signal.
->
-> Regards,
-> Oliver
->
->>
->> What do you think ? How do use that kind of socket in your apps ?
->>
->> Thanks.
->>
+Here is the code :
+
+  38         struct {
+  39           struct bcm_msg_head msg_head;
+  40           struct canfd_frame frame[4]; /* just an example */
+  41         } msg;
+  42
+  43         memset(msg.frame, 0, sizeof(msg.frame));
+  44
+  45         msg.msg_head.opcode  = RX_SETUP;
+  46         msg.msg_head.can_id  = 0x620;
+  47         msg.msg_head.flags   = SETTIMER|STARTTIMER|CAN_FD_FRAME;
+  48         msg.msg_head.nframes = 1;
+  49         msg.msg_head.count = 0;
+  50         msg.msg_head.ival1.tv_sec = 0;
+  51         msg.msg_head.ival1.tv_usec = 500000;
+  52 //      msg.msg_head.ival2.tv_sec = 0;
+  53 //      msg.msg_head.ival2.tv_usec = 100000;
+  54         msg.frame[0].data[0]   = 0x00;
+  55         msg.frame[0].data[1]   = 0x00;
+  56         msg.frame[0].data[2]   = 0x00;
+  57         msg.frame[0].data[3]   = 0x00;
+  58         msg.frame[0].data[4]   = 0x00;
+  59         msg.frame[0].data[5]   = 0x3C;
+  60         msg.frame[0].data[6]   = 0x00;
+  61         msg.frame[0].data[7]   = 0x00;
+  62
+  63         if(write(s, &msg, sizeof(msg)) < 0)
+  64                 printf("This is the end!\n%s\n", strerror(errno));
+
+Then I use select on socket to read frames. In fact, if I remove 
+CAN_FD_FRAME it work even if my concatenated struct after bcm_msg_head 
+is canfd_frame structure but it will only read size of can_frame which 
+is normal.
+
+Thanks by advance.
+
+BR
+
 -- 
 Romain Forlot - Embedded Engineer - IoT.bzh
 claneys@iot.bzh - www.iot.bzh - +33257620298
