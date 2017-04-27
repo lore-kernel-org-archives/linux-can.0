@@ -1,102 +1,79 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH net-next] can: fix build error without CONFIG_PROC_FS
-Date: Thu, 27 Apr 2017 16:29:46 +0200
-Message-ID: <937e9144-c06c-d265-29eb-a1c6f96b6f89@pengutronix.de>
-References: <20170427142146.3107957-1-arnd@arndb.de>
+From: "Halba, Khalid (IntlAssoc)" <khalid.halba@nist.gov>
+Subject: RE: Can-utils and mininet :
+Date: Thu, 27 Apr 2017 15:26:20 +0000
+Message-ID: <BL2PR09MB1107FA0FD632A060BE330B4AE1100@BL2PR09MB1107.namprd09.prod.outlook.com>
+References: <BL2PR09MB110732E7774B7DDAFA9DC5AEE13E0@BL2PR09MB1107.namprd09.prod.outlook.com>
+ <58e9975e-bd02-7818-15ff-0b1fb4d4efd4@hartkopp.net>
+ <075e2df7-ffff-591c-13d2-b7903d4e8777@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="cjiqFJODSB0jwJxw4bPpuA5JnNGst9li1"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:44547 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S932774AbdD0OaA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 27 Apr 2017 10:30:00 -0400
-In-Reply-To: <20170427142146.3107957-1-arnd@arndb.de>
+Received: from mail-cy1gcc01on0139.outbound.protection.outlook.com ([23.103.200.139]:47997
+        "EHLO gcc01-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S936412AbdD0P0X (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 27 Apr 2017 11:26:23 -0400
+In-Reply-To: <075e2df7-ffff-591c-13d2-b7903d4e8777@hartkopp.net>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>, Oliver Hartkopp <socketcan@hartkopp.net>, "David S. Miller" <davem@davemloft.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Cong Wang <xiyou.wangcong@gmail.com>, Mario Kicherer <dev@kicherer.org>, Eric Dumazet <edumazet@google.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Mario Kicherer <dev@kicherer.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Mahmoudi, Charif (IntlAssoc)" <charif.mahmoudi@nist.gov>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cjiqFJODSB0jwJxw4bPpuA5JnNGst9li1
-Content-Type: multipart/mixed; boundary="fJFcolD8RlvilxddcSU38f0QA68Wtpxeb";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Arnd Bergmann <arnd@arndb.de>, Oliver Hartkopp <socketcan@hartkopp.net>,
- "David S. Miller" <davem@davemloft.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Cong Wang
- <xiyou.wangcong@gmail.com>, Mario Kicherer <dev@kicherer.org>,
- Eric Dumazet <edumazet@google.com>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <937e9144-c06c-d265-29eb-a1c6f96b6f89@pengutronix.de>
-Subject: Re: [PATCH net-next] can: fix build error without CONFIG_PROC_FS
-References: <20170427142146.3107957-1-arnd@arndb.de>
-In-Reply-To: <20170427142146.3107957-1-arnd@arndb.de>
-
---fJFcolD8RlvilxddcSU38f0QA68Wtpxeb
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Hello Arnd,
-
-On 04/27/2017 04:21 PM, Arnd Bergmann wrote:
-> The procfs dir entry was added inside of an #ifdef, causing a build err=
-or
-> when we try to access it without CONFIG_PROC_FS set:
->=20
-> net/can/bcm.c:1541:14: error: 'struct netns_can' has no member named 'b=
-cmproc_dir'
-> net/can/bcm.c: In function 'bcm_connect':
-> net/can/bcm.c:1601:14: error: 'struct netns_can' has no member named 'b=
-cmproc_dir'
-> net/can/bcm.c: In function 'canbcm_pernet_init':
-> net/can/bcm.c:1696:11: error: 'struct netns_can' has no member named 'b=
-cmproc_dir'
-> net/can/bcm.c: In function 'canbcm_pernet_exit':
-> net/can/bcm.c:1707:15: error: 'struct netns_can' has no member named 'b=
-cmproc_dir'
->=20
-> This adds the same #ifdef around all users of the pointer. Alternativel=
-y
-> we could move the pointer outside of the #ifdef.
->=20
-> Fixes: 384317ef4187 ("can: network namespace support for CAN_BCM protoc=
-ol")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-A fix for this problem is part of the pull request I send to David
-earlier today:
-
-    https://www.mail-archive.com/netdev@vger.kernel.org/msg165764.html
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---fJFcolD8RlvilxddcSU38f0QA68Wtpxeb--
-
---cjiqFJODSB0jwJxw4bPpuA5JnNGst9li1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlkCAFoACgkQHv7KIOw4
-HPbH1Qf9H/EHdYLAXPhJ0cPqBRw7k9EaW4VmElKqf7w4MAUA1J3p5aUZzEL2uY8C
-337RyNA9eTXybmJtDZRbb5DKPxC+2d6aJSoY9jUJ3vWIF2w1ZrfGJEtg5vYYX4J1
-O4CYMlrPyR93ZMReCePlOxOGG6WLijH00B1MCFB2uAslEGqmOup3yTNliA2p+SHY
-yKM4rSmnWEVn2G57CQahB54wIg6ZbdG1v64DwLzwg7a6qem2T9XEnpF7Tex+SF0/
-5RWYdQIkXkC6Awor+H1BR6FwKX4MOwdExlXQhcHf0hZMycqKp7hgWs59Cz33uDOJ
-xCafKWHEAu5fjMEub8Yo4Z0TIFLApw==
-=MP4x
------END PGP SIGNATURE-----
-
---cjiqFJODSB0jwJxw4bPpuA5JnNGst9li1--
+SGkgT2xpdmVyICwgTWFyaW8gDQoNCkl0IHRvb2sgbWUgc29tZSB0aW1lIHRvIHVuZGVyc3RhbmQg
+bmFtZXNwYWNlcyBhbmQgbGludXgga2VybmVsIHBhdGNoaW5nIC4NCg0KSSBqdXN0IGFwcGxpZWQg
+TWFyaW8ncyBwYXRjaCBhcyB3ZWxsIGFuZCBpdCB3b3JrcyBhcyBleHBlY3RlZCAhLiANCg0KSSBj
+YW4gcnVuIGNhbi11dGlscyBvbiBhIGRpZmZlcmVudCBuYW1lc3BhY2Ugbm93LiBUaGFua3MuDQoN
+ClRoZSBrZXJuZWwgZmlsZXMgSSB1c2VkIGFyZSB0aGUgb25lcyBpbiB0aGlzIGRpcmVjdG9yeSA6
+IA0KDQpodHRwczovL2tlcm5lbC5nb29nbGVzb3VyY2UuY29tL3B1Yi9zY20vbGludXgva2VybmVs
+L2dpdC9ta2wvbGludXgtY2FuLysvbWFzdGVyL25ldC9jYW4vDQoNCmFmX2Nhbi5jDQphZl9jYW4u
+aA0KYmNtLmMNCmd3LmMNCnByb2MuYw0KcmF3LmMNCg0KQW5kIHRoZSBvdGhlciBmaWxlcyBpbiB0
+aGUgbWFzdGVyIGJyYW5jaCB0aGF0IGFyZSBtZW50aW9uZWQgaW4gdGhlIHBhdGNoIGZpbGUuDQoN
+Ckhvd2V2ZXIgLCBNaW5pbmV0IG5vdyBmYWlscyB0byBzdGFydC4gVGhlIGVycm9yIEkgZ2V0IHdo
+ZW4gSSB0cnkgdG8gcnVuIHRoZSBkZWZhdWx0IHRvcG9sb2d5IGlzIHRoZSBmb2xsb3dpbmcgOg0K
+DQoNCi8vKioqIEFkZGluZyBsaW5rczoNCi8vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCi8vQ2F1
+Z2h0IGV4Y2VwdGlvbi4gQ2xlYW5pbmcgdXAuLi4NCi8vRXhjZXB0aW9uOiBFcnJvciBjcmVhdGlu
+ZyBpbnRlcmZhY2UgcGFpciAoaDEtZXRoMCxzMS1ldGgxKTogUlRORVRMSU5LIGFuc3dlcnM6IE9w
+ZXJhdGlvbiBub3Qgc3VwcG9ydGVkDQoNCg0KVGhhdCdzIHdoYXQgSSBhbSBjdXJyZW50bHkgdHJv
+dWJsZXNob290aW5nLiANCg0KUmVnYXJkcywNCg0KS2hhbGlkLg0KLS0tLS1PcmlnaW5hbCBNZXNz
+YWdlLS0tLS0NCkZyb206IGxpbnV4LWNhbi1vd25lckB2Z2VyLmtlcm5lbC5vcmcgW21haWx0bzps
+aW51eC1jYW4tb3duZXJAdmdlci5rZXJuZWwub3JnXSBPbiBCZWhhbGYgT2YgT2xpdmVyIEhhcnRr
+b3BwDQpTZW50OiBTYXR1cmRheSwgTWFyY2ggMjUsIDIwMTcgMTo1OCBQTQ0KVG86IEhhbGJhLCBL
+aGFsaWQgKEludGxBc3NvYykgPGtoYWxpZC5oYWxiYUBuaXN0Lmdvdj47IE1hcmlvIEtpY2hlcmVy
+IDxkZXZAa2ljaGVyZXIub3JnPg0KQ2M6IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IE1haG1v
+dWRpLCBDaGFyaWYgKEludGxBc3NvYykgPGNoYXJpZi5tYWhtb3VkaUBuaXN0Lmdvdj4NClN1Ympl
+Y3Q6IFJlOiBDYW4tdXRpbHMgYW5kIG1pbmluZXQgOg0KDQpBbnN3ZXJpbmcgbXlzZWxmIC4uLg0K
+DQpPbiAwMy8yNS8yMDE3IDA0OjAzIFBNLCBPbGl2ZXIgSGFydGtvcHAgd3JvdGU6DQoNCj4gTWFy
+aW8gS2ljaGVyZXIgcG9zdGVkIGEgcGF0Y2ggdG8gaW1wbGVtZW50IG5hbWVzcGFjZXMgaW4gcGFy
+dHMgb2YgdGhlIA0KPiBDQU4gbmV0d29ya2xheWVyOg0KPg0KPiBodHRwOi8vbWFyYy5pbmZvLz9s
+PWxpbnV4LWNhbiZtPTE0ODc2NzYzOTIyNDU0NyZ3PTINCj4NCj4gU28gYWRkaXRpb25hbGx5IHRv
+IE1hcmlvJ3MgcGF0Y2ggdGhlIHZpcnR1YWwgQ0FOIGRyaXZlciBoYXMgdG8gYmUgbWFkZSANCj4g
+bmFtZXNwYWNlIGF3YXJlIHRvIG1ha2UgaW5pdGlhbCB0ZXN0cyB3aXRoIG1pbmluZXQuDQoNCkkg
+YXBwbGllZCBNYXJpbydzIHBhdGNoIGZvciBhIHRlc3QuDQoNClRoZW4gSSBmb2xsb3dlZA0KDQpo
+dHRwOi8vYmxvZy5zY290dGxvd2Uub3JnLzIwMTMvMDkvMDQvaW50cm9kdWNpbmctbGludXgtbmV0
+d29yay1uYW1lc3BhY2VzLw0KDQphbmQgbW92ZWQgbXkgYWxyZWFkeSBleGlzdGluZyB2Y2FuMCB2
+aXJ0dWFsIENBTiBpbnRlcmZhY2UgdG8gdGhlIG5hbWVzcGFjZSAnYmx1ZSc6DQoNCiMgaXAgbmV0
+bnMgYWRkIGJsdWUNCiMgaXAgbGluayBzZXQgZGV2IHZjYW4wIG5ldG5zIGJsdWUNCg0KIEZyb20g
+bm93IHZjYW4wIGlzIG5vdCB2aXNpYmxlIGZyb20gJ2lwIGxpbmsgc2hvdycgYW55bW9yZS4NCg0K
+QnV0IGl0IGlzIHZpc2libGUgaW4gdGhlIG5hbWVzcGFjZSAnYmx1ZSc6DQoNCiMgaXAgbmV0bnMg
+ZXhlYyBibHVlIGlwIGxpbmsgbGlzdA0KMTogbG86IDxMT09QQkFDSz4gbXR1IDY1NTM2IHFkaXNj
+IG5vb3Agc3RhdGUgRE9XTiBtb2RlIERFRkFVTFQgZ3JvdXAgZGVmYXVsdCBxbGVuIDEwMDANCiAg
+ICAgbGluay9sb29wYmFjayAwMDowMDowMDowMDowMDowMCBicmQgMDA6MDA6MDA6MDA6MDA6MDAN
+CjY6IHZjYW4wOiA8Tk9BUlA+IG10dSA3MiBxZGlzYyBub29wIHN0YXRlIERPV04gbW9kZSBERUZB
+VUxUIGdyb3VwIGRlZmF1bHQgcWxlbiAxMDAwDQogICAgIGxpbmsvY2FuDQoNCiMgaXAgbmV0bnMg
+ZXhlYyBibHVlIGNhbmdlbiB2Y2FuMA0Kd3JpdGU6IE5ldHdvcmsgaXMgZG93bg0KDQpPYnZpb3Vz
+bHkgdGhlIG1vdmUgdG8gdGhlIG5hbWVzcGFjZSBwdXRzIHRoZSBpbnRlcmZhY2UgJ2Rvd24nLCBz
+byAuLi4NCiMgaXAgbmV0bnMgZXhlYyBibHVlIGlmY29uZmlnIHZjYW4wIHVwDQoNCkFuZCB0aGVu
+IGV4ZWN1dGVkDQojIGlwIG5ldG5zIGV4ZWMgYmx1ZSBjYW5nZW4gdmNhbjANCg0KQW5kIGluIGFu
+b3RoZXIgdGVybWluYWwNCiMgaXAgbmV0bnMgZXhlYyBibHVlIGNhbmR1bXAgYW55DQoNCldoaWNo
+IHNob3dzIHRoZSB0cmFmZmljIG9uIHZjYW4wIGluIG5hbWVzcGFjZSBibHVlIC0gY29vbCEgVG54
+IE1hcmlvIQ0KDQpBcyB2Y2FuIGRvZXMgbm90IGNyZWF0ZSB0d28gY29ubmVjdGVkIHBlZXJzIGFz
+IHZldGggSSB3b3VsZCBzdWdnZXN0IHRvIHVzZSBjYW4tZ3cgdG8gY29ubmVjdCAoYW5kIG1vZGlm
+eS9maWx0ZXIpIENBTiB0cmFmZmljIGJldHdlZW4gQ0FOIGludGVyZmFjZXMgaW5zaWRlL291dHNp
+ZGUgb2YgbmFtZXNwYWNlcy4NCg0KUmVnYXJkcywNCk9saXZlcg0KDQoNCg0KDQoNCg0KLS0NClRv
+IHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBs
+aW51eC1jYW4iIGluIHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJu
+ZWwub3JnIE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFq
+b3Jkb21vLWluZm8uaHRtbA0K
