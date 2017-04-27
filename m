@@ -1,66 +1,70 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH net-next] can: fix CAN BCM build with CONFIG_PROC_FS
- disabled
-Date: Thu, 27 Apr 2017 09:52:39 +0200
-Message-ID: <b8520a4a-0f1b-6410-f46c-1d0ca986bea3@pengutronix.de>
-References: <20170426181434.9635-1-socketcan@hartkopp.net>
+Subject: pull-request: can-next 2017-04-25
+Date: Thu, 27 Apr 2017 09:54:33 +0200
+Message-ID: <17d73df9-8f7a-1458-c4f8-e8153be206d5@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="1mkcIJgnT0Fpu5nviLpofNPpoGdGeqx1R"
+ boundary="1sqxFFC5tn9RH0Lnf6Rh24P6kiUe6jxm7"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20170426181434.9635-1-socketcan@hartkopp.net>
 Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, davem@davemloft.net, rdunlap@infradead.org
-Cc: netdev@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1mkcIJgnT0Fpu5nviLpofNPpoGdGeqx1R
-Content-Type: multipart/mixed; boundary="AbeWnrbnnI3TqV4hRNKhdvWMhnaVHPUuN";
+--1sqxFFC5tn9RH0Lnf6Rh24P6kiUe6jxm7
+Content-Type: multipart/mixed; boundary="CWK4jQulB1Uxrl5JBTXV4T6KMTNwRTXcF";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org,
- davem@davemloft.net, rdunlap@infradead.org
-Cc: netdev@vger.kernel.org
-Message-ID: <b8520a4a-0f1b-6410-f46c-1d0ca986bea3@pengutronix.de>
-Subject: Re: [PATCH net-next] can: fix CAN BCM build with CONFIG_PROC_FS
- disabled
-References: <20170426181434.9635-1-socketcan@hartkopp.net>
-In-Reply-To: <20170426181434.9635-1-socketcan@hartkopp.net>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <17d73df9-8f7a-1458-c4f8-e8153be206d5@pengutronix.de>
+Subject: pull-request: can-next 2017-04-25
 
---AbeWnrbnnI3TqV4hRNKhdvWMhnaVHPUuN
+--CWK4jQulB1Uxrl5JBTXV4T6KMTNwRTXcF
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 04/26/2017 08:14 PM, Oliver Hartkopp wrote:
-> The introduced namespace support moved the BCM variables for procfs int=
-o a
-> per-net data structure. This leads to a build failure with disabled pro=
-cfs:
->=20
-> on x86_64:
->=20
-> when CONFIG_PROC_FS is not enabled:
->=20
-> ../net/can/bcm.c:1541:14: error: 'struct netns_can' has no member named=
- 'bcmproc_dir'
-> ../net/can/bcm.c:1601:14: error: 'struct netns_can' has no member named=
- 'bcmproc_dir'
-> ../net/can/bcm.c:1696:11: error: 'struct netns_can' has no member named=
- 'bcmproc_dir'
-> ../net/can/bcm.c:1707:15: error: 'struct netns_can' has no member named=
- 'bcmproc_dir'
->=20
-> http://marc.info/?l=3Dlinux-can&m=3D149321842526524&w=3D2
->=20
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Hello David,
 
-Applied to can-next.
+this is a pull request of 1 patch for net-next/master.
 
-Thanks,
+This patch by Oliver Hartkopp fixes the build of the broad cast manager
+with CONFIG_PROC_FS disabled.
+
+regards,
 Marc
+
+---
+
+The following changes since commit b1513c35317c106a1588f3ab32f6888f0e2afd=
+71:
+
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/davem/net (2017-04-=
+26 22:39:08 -0400)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.12-20170427
+
+for you to fetch changes up to c2701b370e6b4d0022043691b5ac7adad015e4fc:
+
+  can: fix CAN BCM build with CONFIG_PROC_FS disabled (2017-04-27 09:34:1=
+3 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-4.12-20170427
+
+----------------------------------------------------------------
+Oliver Hartkopp (1):
+      can: fix CAN BCM build with CONFIG_PROC_FS disabled
+
+ net/can/bcm.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -69,23 +73,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---AbeWnrbnnI3TqV4hRNKhdvWMhnaVHPUuN--
+--CWK4jQulB1Uxrl5JBTXV4T6KMTNwRTXcF--
 
---1mkcIJgnT0Fpu5nviLpofNPpoGdGeqx1R
+--1sqxFFC5tn9RH0Lnf6Rh24P6kiUe6jxm7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlkBo0cACgkQHv7KIOw4
-HPYy7Qf+M98SwsskCf0prHfGhdYmnMmNkXfyQSXRiNIdZ/CADEO0cY3mCQZSpHo/
-FYlxzlXMsfwk4G5oVtv5lXXNpFEo6rqf2GqsvmDkW3/d//UrMoRXK7kyEzxuyuGB
-ErSoef8PEW41bO5PfarECPwoDhFdTaoIXr+yXhWUgUrvOxCvAJKgWsJXWhNjT1OA
-iSBF0JWKkYvh9rXoJ0HWhx2gHDBLe5A3846EQwD00nsaMUB96m9KsoL5o57DyIIt
-pfUiNeoXiLIis/eTJZhFgs8GvNLYhWpXgXVQQZw/n/VEzev88PJaQMAdRfSRDvpM
-1bREUYiwB5rMduUj8AcnzeicibPnNg==
-=JU4b
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlkBo7kACgkQHv7KIOw4
+HPbliggAu3kwXrqgUQYjFonVBHz9mqPhSc8QzX36EOO3l9V/BtxsSiPvtpkDpkJE
+3qH5Y8TrGe27+yVMVP9w9xotvDZeEa55cBvnChYVcZEEbZK7jm4Ycd6YQyKnpRgB
+2WbXETKnxYpGjdisQe/OS4HWuM0sRIOqEvaphT7TPw88Nv2bhNOd2pE9xluzGd0n
+6nlUTQXQCs+asp3cAEXfdBfcfKljl7/UGnEcUy9Fp92ZD6z5c8gHk6E/YjLZn5Hu
+nw9LYAzpsWjaVGFrv2I+WVocT6Ri6lulcK4JfjkwuNkbXCKM5g2DV1OWa0PwUQqB
+JdmG6hc5kZ8fw7Q3ZRZbGJy3lZhTkA==
+=3TaK
 -----END PGP SIGNATURE-----
 
---1mkcIJgnT0Fpu5nviLpofNPpoGdGeqx1R--
+--1sqxFFC5tn9RH0Lnf6Rh24P6kiUe6jxm7--
