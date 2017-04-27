@@ -1,95 +1,114 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2017-04-25
-Date: Thu, 27 Apr 2017 09:54:33 +0200
-Message-ID: <17d73df9-8f7a-1458-c4f8-e8153be206d5@pengutronix.de>
+From: "Romain Forlot [IoT.bzh]" <claneys@iot.bzh>
+Subject: Re: Using CAN_FD_FRAME with BCM socket
+Date: Thu, 27 Apr 2017 10:23:59 +0200
+Message-ID: <e450a73d-33e2-f273-ea84-4b056df270d6@iot.bzh>
+References: <6e32a9c4-2a08-87ac-aa1e-88907db27304@iot.bzh>
+ <a05f4636-3fa1-1d3f-4daf-e0173120609d@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="1sqxFFC5tn9RH0Lnf6Rh24P6kiUe6jxm7"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wr0-f175.google.com ([209.85.128.175]:34907 "EHLO
+        mail-wr0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S967248AbdD0IYQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 27 Apr 2017 04:24:16 -0400
+Received: by mail-wr0-f175.google.com with SMTP id z52so12640629wrc.2
+        for <linux-can@vger.kernel.org>; Thu, 27 Apr 2017 01:24:15 -0700 (PDT)
+In-Reply-To: <a05f4636-3fa1-1d3f-4daf-e0173120609d@hartkopp.net>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1sqxFFC5tn9RH0Lnf6Rh24P6kiUe6jxm7
-Content-Type: multipart/mixed; boundary="CWK4jQulB1Uxrl5JBTXV4T6KMTNwRTXcF";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <17d73df9-8f7a-1458-c4f8-e8153be206d5@pengutronix.de>
-Subject: pull-request: can-next 2017-04-25
+Hi Oliver,
 
---CWK4jQulB1Uxrl5JBTXV4T6KMTNwRTXcF
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 04/26/2017 08:44 PM, Oliver Hartkopp wrote:
+> Hi Romain,
+>
+> On 04/26/2017 11:19 AM, Romain Forlot [IoT.bzh] wrote:
+>> I must miss something because I don't get it BCM socket uses
+>> canfd_frame. If I use classic can_frame, it works without problems and I
+>> don't get it.
+>
+> Can you send your Linux Kernel version?
+Yes, I'm running  4.10.11-200.fc25.x86_64. This patch has been applied 
+to the kernel ?
+>
+> I just want to make sure that it contains this fix:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=5499a6b22e5508b921c447757685b0a5e40a07ed 
+>
+>
+>> Is there someone use canfd_frame with broadcast manager ? Every example
+>> or source code I browse just use can_frame, only documentation talks
+>> about that.
+>
+> Yes, here:
+>
+> https://github.com/linux-can/can-tests
+>
+> Namely:
+>
+> https://github.com/linux-can/can-tests/blob/master/tst-bcmfd-cycle.c
+> https://github.com/linux-can/can-tests/blob/master/tst-bcmfd-filter.c
+> https://github.com/linux-can/can-tests/blob/master/tst-bcm-tx_delete.c
+>
+Damned, I pass over them... Thanks you !
+>>
+>> Here is the code :
+>>
+>>  38         struct {
+>>  39           struct bcm_msg_head msg_head;
+>>  40           struct canfd_frame frame[4]; /* just an example */
+>>  41         } msg;
+>>  42
+>>  43         memset(msg.frame, 0, sizeof(msg.frame));
+>>  44
+>>  45         msg.msg_head.opcode  = RX_SETUP;
+>>  46         msg.msg_head.can_id  = 0x620;
+>>  47         msg.msg_head.flags   = SETTIMER|STARTTIMER|CAN_FD_FRAME;
+>>  48         msg.msg_head.nframes = 1;
+>>  49         msg.msg_head.count = 0;
+>>  50         msg.msg_head.ival1.tv_sec = 0;
+>>  51         msg.msg_head.ival1.tv_usec = 500000;
+>>  52 //      msg.msg_head.ival2.tv_sec = 0;
+>>  53 //      msg.msg_head.ival2.tv_usec = 100000;
+>
+> This is dangerous!
+>
+> You set SETTIMER|STARTTIMER but leave these values potentially 
+> uninitialized.
+This was just a sandbox piece of code, I do a memset before to 
+initialize my struct :)
+>
+>>  54         msg.frame[0].data[0]   = 0x00;
+>>  55         msg.frame[0].data[1]   = 0x00;
+>>  56         msg.frame[0].data[2]   = 0x00;
+>>  57         msg.frame[0].data[3]   = 0x00;
+>>  58         msg.frame[0].data[4]   = 0x00;
+>>  59         msg.frame[0].data[5]   = 0x3C;
+>>  60         msg.frame[0].data[6]   = 0x00;
+>>  61         msg.frame[0].data[7]   = 0x00;
+>>  62
+>>  63         if(write(s, &msg, sizeof(msg)) < 0)
+>>  64                 printf("This is the end!\n%s\n", strerror(errno));
+>>
+>> Then I use select on socket to read frames. In fact, if I remove
+>> CAN_FD_FRAME it work even if my concatenated struct after bcm_msg_head
+>> is canfd_frame structure but it will only read size of can_frame which
+>> is normal.
+>
+> You always get the concatenated struct depending on CAN_FD_FRAME:
+> http://lxr.free-electrons.com/source/Documentation/networking/can.txt?v=4.9#L856 
+>
+>
+> What length do you get back from the read() syscall?
+It's the heck, I don't get anything :) I'm stuck at select but I'll just 
+take a look at the code you send me before and see what I'm doing wrong.
+>
+> Regards,
+> Oliver
 
-Hello David,
+-- 
+Romain Forlot - Embedded Engineer - IoT.bzh
+claneys@iot.bzh - www.iot.bzh - +33257620298
 
-this is a pull request of 1 patch for net-next/master.
-
-This patch by Oliver Hartkopp fixes the build of the broad cast manager
-with CONFIG_PROC_FS disabled.
-
-regards,
-Marc
-
----
-
-The following changes since commit b1513c35317c106a1588f3ab32f6888f0e2afd=
-71:
-
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/davem/net (2017-04-=
-26 22:39:08 -0400)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-4.12-20170427
-
-for you to fetch changes up to c2701b370e6b4d0022043691b5ac7adad015e4fc:
-
-  can: fix CAN BCM build with CONFIG_PROC_FS disabled (2017-04-27 09:34:1=
-3 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-4.12-20170427
-
-----------------------------------------------------------------
-Oliver Hartkopp (1):
-      can: fix CAN BCM build with CONFIG_PROC_FS disabled
-
- net/can/bcm.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---CWK4jQulB1Uxrl5JBTXV4T6KMTNwRTXcF--
-
---1sqxFFC5tn9RH0Lnf6Rh24P6kiUe6jxm7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlkBo7kACgkQHv7KIOw4
-HPbliggAu3kwXrqgUQYjFonVBHz9mqPhSc8QzX36EOO3l9V/BtxsSiPvtpkDpkJE
-3qH5Y8TrGe27+yVMVP9w9xotvDZeEa55cBvnChYVcZEEbZK7jm4Ycd6YQyKnpRgB
-2WbXETKnxYpGjdisQe/OS4HWuM0sRIOqEvaphT7TPw88Nv2bhNOd2pE9xluzGd0n
-6nlUTQXQCs+asp3cAEXfdBfcfKljl7/UGnEcUy9Fp92ZD6z5c8gHk6E/YjLZn5Hu
-nw9LYAzpsWjaVGFrv2I+WVocT6Ri6lulcK4JfjkwuNkbXCKM5g2DV1OWa0PwUQqB
-JdmG6hc5kZ8fw7Q3ZRZbGJy3lZhTkA==
-=3TaK
------END PGP SIGNATURE-----
-
---1sqxFFC5tn9RH0Lnf6Rh24P6kiUe6jxm7--
