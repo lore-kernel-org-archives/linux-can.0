@@ -1,59 +1,91 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [bug report] can: peak: add support for PEAK PCAN-PCIe FD CAN-FD
- boards
-Date: Wed, 26 Apr 2017 22:24:59 +0300
-Message-ID: <20170426192459.m2o45pjmwycietis@mwanda>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH net-next] can: fix CAN BCM build with CONFIG_PROC_FS
+ disabled
+Date: Thu, 27 Apr 2017 09:52:39 +0200
+Message-ID: <b8520a4a-0f1b-6410-f46c-1d0ca986bea3@pengutronix.de>
+References: <20170426181434.9635-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from userp1040.oracle.com ([156.151.31.81]:21989 "EHLO
-        userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S966513AbdDZTZT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Apr 2017 15:25:19 -0400
-Content-Disposition: inline
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: s.grosjean@peak-system.com
-Cc: linux-can@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="1mkcIJgnT0Fpu5nviLpofNPpoGdGeqx1R"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20170426181434.9635-1-socketcan@hartkopp.net>
+Sender: netdev-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, davem@davemloft.net, rdunlap@infradead.org
+Cc: netdev@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-Hello Stephane Grosjean,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--1mkcIJgnT0Fpu5nviLpofNPpoGdGeqx1R
+Content-Type: multipart/mixed; boundary="AbeWnrbnnI3TqV4hRNKhdvWMhnaVHPUuN";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org,
+ davem@davemloft.net, rdunlap@infradead.org
+Cc: netdev@vger.kernel.org
+Message-ID: <b8520a4a-0f1b-6410-f46c-1d0ca986bea3@pengutronix.de>
+Subject: Re: [PATCH net-next] can: fix CAN BCM build with CONFIG_PROC_FS
+ disabled
+References: <20170426181434.9635-1-socketcan@hartkopp.net>
+In-Reply-To: <20170426181434.9635-1-socketcan@hartkopp.net>
 
-The patch 8ac8321e4a79: "can: peak: add support for PEAK PCAN-PCIe FD
-CAN-FD boards" from Jan 19, 2017, leads to the following static
-checker warning:
+--AbeWnrbnnI3TqV4hRNKhdvWMhnaVHPUuN
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-	drivers/net/can/peak_canfd/peak_canfd.c:504 peak_canfd_handle_msgs_list()
-	error: uninitialized symbol 'msg_size'.
+On 04/26/2017 08:14 PM, Oliver Hartkopp wrote:
+> The introduced namespace support moved the BCM variables for procfs int=
+o a
+> per-net data structure. This leads to a build failure with disabled pro=
+cfs:
+>=20
+> on x86_64:
+>=20
+> when CONFIG_PROC_FS is not enabled:
+>=20
+> ../net/can/bcm.c:1541:14: error: 'struct netns_can' has no member named=
+ 'bcmproc_dir'
+> ../net/can/bcm.c:1601:14: error: 'struct netns_can' has no member named=
+ 'bcmproc_dir'
+> ../net/can/bcm.c:1696:11: error: 'struct netns_can' has no member named=
+ 'bcmproc_dir'
+> ../net/can/bcm.c:1707:15: error: 'struct netns_can' has no member named=
+ 'bcmproc_dir'
+>=20
+> http://marc.info/?l=3Dlinux-can&m=3D149321842526524&w=3D2
+>=20
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-drivers/net/can/peak_canfd/peak_canfd.c
-   487  /* handle a list of rx_count messages from rx_msg memory address */
-   488  int peak_canfd_handle_msgs_list(struct peak_canfd_priv *priv,
-   489                                  struct pucan_rx_msg *msg_list, int msg_count)
-   490  {
-   491          void *msg_ptr = msg_list;
-   492          int i, msg_size;
-   493  
-   494          for (i = 0; i < msg_count; i++) {
-                            ^^^^^^^^^^^^^
-Can msg_count be zero?
+Applied to can-next.
 
-   495                  msg_size = peak_canfd_handle_msg(priv, msg_ptr);
-   496  
-   497                  /* a null packet can be found at the end of a list */
-   498                  if (msg_size <= 0)
-   499                          break;
-   500  
-   501                  msg_ptr += msg_size;
-   502          }
-   503  
-   504          if (msg_size < 0)
-                    ^^^^^^^^^^^^
-If so, then that's a problem.
+Thanks,
+Marc
 
-   505                  return msg_size;
-   506  
-   507          return i;
-   508  }
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-regards,
-dan carpenter
+
+--AbeWnrbnnI3TqV4hRNKhdvWMhnaVHPUuN--
+
+--1mkcIJgnT0Fpu5nviLpofNPpoGdGeqx1R
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlkBo0cACgkQHv7KIOw4
+HPYy7Qf+M98SwsskCf0prHfGhdYmnMmNkXfyQSXRiNIdZ/CADEO0cY3mCQZSpHo/
+FYlxzlXMsfwk4G5oVtv5lXXNpFEo6rqf2GqsvmDkW3/d//UrMoRXK7kyEzxuyuGB
+ErSoef8PEW41bO5PfarECPwoDhFdTaoIXr+yXhWUgUrvOxCvAJKgWsJXWhNjT1OA
+iSBF0JWKkYvh9rXoJ0HWhx2gHDBLe5A3846EQwD00nsaMUB96m9KsoL5o57DyIIt
+pfUiNeoXiLIis/eTJZhFgs8GvNLYhWpXgXVQQZw/n/VEzev88PJaQMAdRfSRDvpM
+1bREUYiwB5rMduUj8AcnzeicibPnNg==
+=JU4b
+-----END PGP SIGNATURE-----
+
+--1mkcIJgnT0Fpu5nviLpofNPpoGdGeqx1R--
