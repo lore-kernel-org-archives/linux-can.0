@@ -1,79 +1,149 @@
-From: "Halba, Khalid (IntlAssoc)" <khalid.halba@nist.gov>
-Subject: RE: Can-utils and mininet :
-Date: Thu, 27 Apr 2017 15:26:20 +0000
-Message-ID: <BL2PR09MB1107FA0FD632A060BE330B4AE1100@BL2PR09MB1107.namprd09.prod.outlook.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: Can-utils and mininet :
+Date: Thu, 27 Apr 2017 18:01:55 +0200
+Message-ID: <49758cf7-30a0-2681-be7f-57300f216c36@hartkopp.net>
 References: <BL2PR09MB110732E7774B7DDAFA9DC5AEE13E0@BL2PR09MB1107.namprd09.prod.outlook.com>
  <58e9975e-bd02-7818-15ff-0b1fb4d4efd4@hartkopp.net>
  <075e2df7-ffff-591c-13d2-b7903d4e8777@hartkopp.net>
+ <BL2PR09MB1107FA0FD632A060BE330B4AE1100@BL2PR09MB1107.namprd09.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-cy1gcc01on0139.outbound.protection.outlook.com ([23.103.200.139]:47997
-        "EHLO gcc01-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S936412AbdD0P0X (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 27 Apr 2017 11:26:23 -0400
-In-Reply-To: <075e2df7-ffff-591c-13d2-b7903d4e8777@hartkopp.net>
-Content-Language: en-US
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:34265 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755459AbdD0QCM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 27 Apr 2017 12:02:12 -0400
+In-Reply-To: <BL2PR09MB1107FA0FD632A060BE330B4AE1100@BL2PR09MB1107.namprd09.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Mario Kicherer <dev@kicherer.org>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Mahmoudi, Charif (IntlAssoc)" <charif.mahmoudi@nist.gov>
+To: "Halba, Khalid (IntlAssoc)" <khalid.halba@nist.gov>
+Cc: Mario Kicherer <dev@kicherer.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Mahmoudi, Charif (IntlAssoc)" <charif.mahmoudi@nist.gov>
 
-SGkgT2xpdmVyICwgTWFyaW8gDQoNCkl0IHRvb2sgbWUgc29tZSB0aW1lIHRvIHVuZGVyc3RhbmQg
-bmFtZXNwYWNlcyBhbmQgbGludXgga2VybmVsIHBhdGNoaW5nIC4NCg0KSSBqdXN0IGFwcGxpZWQg
-TWFyaW8ncyBwYXRjaCBhcyB3ZWxsIGFuZCBpdCB3b3JrcyBhcyBleHBlY3RlZCAhLiANCg0KSSBj
-YW4gcnVuIGNhbi11dGlscyBvbiBhIGRpZmZlcmVudCBuYW1lc3BhY2Ugbm93LiBUaGFua3MuDQoN
-ClRoZSBrZXJuZWwgZmlsZXMgSSB1c2VkIGFyZSB0aGUgb25lcyBpbiB0aGlzIGRpcmVjdG9yeSA6
-IA0KDQpodHRwczovL2tlcm5lbC5nb29nbGVzb3VyY2UuY29tL3B1Yi9zY20vbGludXgva2VybmVs
-L2dpdC9ta2wvbGludXgtY2FuLysvbWFzdGVyL25ldC9jYW4vDQoNCmFmX2Nhbi5jDQphZl9jYW4u
-aA0KYmNtLmMNCmd3LmMNCnByb2MuYw0KcmF3LmMNCg0KQW5kIHRoZSBvdGhlciBmaWxlcyBpbiB0
-aGUgbWFzdGVyIGJyYW5jaCB0aGF0IGFyZSBtZW50aW9uZWQgaW4gdGhlIHBhdGNoIGZpbGUuDQoN
-Ckhvd2V2ZXIgLCBNaW5pbmV0IG5vdyBmYWlscyB0byBzdGFydC4gVGhlIGVycm9yIEkgZ2V0IHdo
-ZW4gSSB0cnkgdG8gcnVuIHRoZSBkZWZhdWx0IHRvcG9sb2d5IGlzIHRoZSBmb2xsb3dpbmcgOg0K
-DQoNCi8vKioqIEFkZGluZyBsaW5rczoNCi8vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCi8vQ2F1
-Z2h0IGV4Y2VwdGlvbi4gQ2xlYW5pbmcgdXAuLi4NCi8vRXhjZXB0aW9uOiBFcnJvciBjcmVhdGlu
-ZyBpbnRlcmZhY2UgcGFpciAoaDEtZXRoMCxzMS1ldGgxKTogUlRORVRMSU5LIGFuc3dlcnM6IE9w
-ZXJhdGlvbiBub3Qgc3VwcG9ydGVkDQoNCg0KVGhhdCdzIHdoYXQgSSBhbSBjdXJyZW50bHkgdHJv
-dWJsZXNob290aW5nLiANCg0KUmVnYXJkcywNCg0KS2hhbGlkLg0KLS0tLS1PcmlnaW5hbCBNZXNz
-YWdlLS0tLS0NCkZyb206IGxpbnV4LWNhbi1vd25lckB2Z2VyLmtlcm5lbC5vcmcgW21haWx0bzps
-aW51eC1jYW4tb3duZXJAdmdlci5rZXJuZWwub3JnXSBPbiBCZWhhbGYgT2YgT2xpdmVyIEhhcnRr
-b3BwDQpTZW50OiBTYXR1cmRheSwgTWFyY2ggMjUsIDIwMTcgMTo1OCBQTQ0KVG86IEhhbGJhLCBL
-aGFsaWQgKEludGxBc3NvYykgPGtoYWxpZC5oYWxiYUBuaXN0Lmdvdj47IE1hcmlvIEtpY2hlcmVy
-IDxkZXZAa2ljaGVyZXIub3JnPg0KQ2M6IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IE1haG1v
-dWRpLCBDaGFyaWYgKEludGxBc3NvYykgPGNoYXJpZi5tYWhtb3VkaUBuaXN0Lmdvdj4NClN1Ympl
-Y3Q6IFJlOiBDYW4tdXRpbHMgYW5kIG1pbmluZXQgOg0KDQpBbnN3ZXJpbmcgbXlzZWxmIC4uLg0K
-DQpPbiAwMy8yNS8yMDE3IDA0OjAzIFBNLCBPbGl2ZXIgSGFydGtvcHAgd3JvdGU6DQoNCj4gTWFy
-aW8gS2ljaGVyZXIgcG9zdGVkIGEgcGF0Y2ggdG8gaW1wbGVtZW50IG5hbWVzcGFjZXMgaW4gcGFy
-dHMgb2YgdGhlIA0KPiBDQU4gbmV0d29ya2xheWVyOg0KPg0KPiBodHRwOi8vbWFyYy5pbmZvLz9s
-PWxpbnV4LWNhbiZtPTE0ODc2NzYzOTIyNDU0NyZ3PTINCj4NCj4gU28gYWRkaXRpb25hbGx5IHRv
-IE1hcmlvJ3MgcGF0Y2ggdGhlIHZpcnR1YWwgQ0FOIGRyaXZlciBoYXMgdG8gYmUgbWFkZSANCj4g
-bmFtZXNwYWNlIGF3YXJlIHRvIG1ha2UgaW5pdGlhbCB0ZXN0cyB3aXRoIG1pbmluZXQuDQoNCkkg
-YXBwbGllZCBNYXJpbydzIHBhdGNoIGZvciBhIHRlc3QuDQoNClRoZW4gSSBmb2xsb3dlZA0KDQpo
-dHRwOi8vYmxvZy5zY290dGxvd2Uub3JnLzIwMTMvMDkvMDQvaW50cm9kdWNpbmctbGludXgtbmV0
-d29yay1uYW1lc3BhY2VzLw0KDQphbmQgbW92ZWQgbXkgYWxyZWFkeSBleGlzdGluZyB2Y2FuMCB2
-aXJ0dWFsIENBTiBpbnRlcmZhY2UgdG8gdGhlIG5hbWVzcGFjZSAnYmx1ZSc6DQoNCiMgaXAgbmV0
-bnMgYWRkIGJsdWUNCiMgaXAgbGluayBzZXQgZGV2IHZjYW4wIG5ldG5zIGJsdWUNCg0KIEZyb20g
-bm93IHZjYW4wIGlzIG5vdCB2aXNpYmxlIGZyb20gJ2lwIGxpbmsgc2hvdycgYW55bW9yZS4NCg0K
-QnV0IGl0IGlzIHZpc2libGUgaW4gdGhlIG5hbWVzcGFjZSAnYmx1ZSc6DQoNCiMgaXAgbmV0bnMg
-ZXhlYyBibHVlIGlwIGxpbmsgbGlzdA0KMTogbG86IDxMT09QQkFDSz4gbXR1IDY1NTM2IHFkaXNj
-IG5vb3Agc3RhdGUgRE9XTiBtb2RlIERFRkFVTFQgZ3JvdXAgZGVmYXVsdCBxbGVuIDEwMDANCiAg
-ICAgbGluay9sb29wYmFjayAwMDowMDowMDowMDowMDowMCBicmQgMDA6MDA6MDA6MDA6MDA6MDAN
-CjY6IHZjYW4wOiA8Tk9BUlA+IG10dSA3MiBxZGlzYyBub29wIHN0YXRlIERPV04gbW9kZSBERUZB
-VUxUIGdyb3VwIGRlZmF1bHQgcWxlbiAxMDAwDQogICAgIGxpbmsvY2FuDQoNCiMgaXAgbmV0bnMg
-ZXhlYyBibHVlIGNhbmdlbiB2Y2FuMA0Kd3JpdGU6IE5ldHdvcmsgaXMgZG93bg0KDQpPYnZpb3Vz
-bHkgdGhlIG1vdmUgdG8gdGhlIG5hbWVzcGFjZSBwdXRzIHRoZSBpbnRlcmZhY2UgJ2Rvd24nLCBz
-byAuLi4NCiMgaXAgbmV0bnMgZXhlYyBibHVlIGlmY29uZmlnIHZjYW4wIHVwDQoNCkFuZCB0aGVu
-IGV4ZWN1dGVkDQojIGlwIG5ldG5zIGV4ZWMgYmx1ZSBjYW5nZW4gdmNhbjANCg0KQW5kIGluIGFu
-b3RoZXIgdGVybWluYWwNCiMgaXAgbmV0bnMgZXhlYyBibHVlIGNhbmR1bXAgYW55DQoNCldoaWNo
-IHNob3dzIHRoZSB0cmFmZmljIG9uIHZjYW4wIGluIG5hbWVzcGFjZSBibHVlIC0gY29vbCEgVG54
-IE1hcmlvIQ0KDQpBcyB2Y2FuIGRvZXMgbm90IGNyZWF0ZSB0d28gY29ubmVjdGVkIHBlZXJzIGFz
-IHZldGggSSB3b3VsZCBzdWdnZXN0IHRvIHVzZSBjYW4tZ3cgdG8gY29ubmVjdCAoYW5kIG1vZGlm
-eS9maWx0ZXIpIENBTiB0cmFmZmljIGJldHdlZW4gQ0FOIGludGVyZmFjZXMgaW5zaWRlL291dHNp
-ZGUgb2YgbmFtZXNwYWNlcy4NCg0KUmVnYXJkcywNCk9saXZlcg0KDQoNCg0KDQoNCg0KLS0NClRv
-IHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBs
-aW51eC1jYW4iIGluIHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJu
-ZWwub3JnIE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFq
-b3Jkb21vLWluZm8uaHRtbA0K
+Hi Khalid,
+
+On 04/27/2017 05:26 PM, Halba, Khalid (IntlAssoc) wrote:
+
+> It took me some time to understand namespaces and linux kernel patching .
+> I just applied Mario's patch as well and it works as expected !.
+> I can run can-utils on a different namespace now. Thanks.
+> The kernel files I used are the ones in this directory :
+> https://kernel.googlesource.com/pub/scm/linux/kernel/git/mkl/linux-can/+/master/net/can/
+
+The namespace support has now been completed and is available in Dave 
+Miller's net-next tree for Linux 4.12 upstream:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+This reository contains this latest patch set for the CAN subsystem:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/log?id=5e64ebc1c242523b491b5b5e5eba59243bb970cb
+
+So using the net-next tree is the best choice for testing now.
+
+> However , Mininet now fails to start. The error I get when I try to run the default topology is the following :
+>
+> //*** Adding links:
+> //--------------------------------------------------------------------------------
+> //Caught exception. Cleaning up...
+> //Exception: Error creating interface pair (h1-eth0,s1-eth1): RTNETLINK answers: Operation not supported
+>
+> That's what I am currently troubleshooting.
+
+Ah. You can not use veth to create the interface pair :-)
+Ethernet interfaces do not work for CAN.
+
+And for that reason ... tada! ... we have vxcan now!
+
+https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/commit/?id=a8f820a380a2a06fc4fe1a54159067958f800929
+
+See the Kconfig change in this commit which is in net-next too.
+
+Unfortunately you have to patch the 'ip' tool from the iproute2 package 
+to be able to create vxcan pairs.
+
+So you need to download
+
+https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
+
+and then apply this patch:
+
+http://marc.info/?l=linux-can&m=149311080629207&w=2
+
+Finally you can create e.g. this pair
+# ./ip link add rootcan type vxcan peer name bluecan
+# ./ip link set dev bluecan netns blue
+
+And then you have a CAN tunnel interface pair with the rootcan interface 
+in the initial namespace and the bluecan interface in the 'blue' namespace.
+
+Regards,
+Oliver
+
+> -----Original Message-----
+> From: linux-can-owner@vger.kernel.org [mailto:linux-can-owner@vger.kernel.org] On Behalf Of Oliver Hartkopp
+> Sent: Saturday, March 25, 2017 1:58 PM
+> To: Halba, Khalid (IntlAssoc) <khalid.halba@nist.gov>; Mario Kicherer <dev@kicherer.org>
+> Cc: linux-can@vger.kernel.org; Mahmoudi, Charif (IntlAssoc) <charif.mahmoudi@nist.gov>
+> Subject: Re: Can-utils and mininet :
+>
+> Answering myself ...
+>
+> On 03/25/2017 04:03 PM, Oliver Hartkopp wrote:
+>
+>> Mario Kicherer posted a patch to implement namespaces in parts of the
+>> CAN networklayer:
+>>
+>> http://marc.info/?l=linux-can&m=148767639224547&w=2
+>>
+>> So additionally to Mario's patch the virtual CAN driver has to be made
+>> namespace aware to make initial tests with mininet.
+>
+> I applied Mario's patch for a test.
+>
+> Then I followed
+>
+> http://blog.scottlowe.org/2013/09/04/introducing-linux-network-namespaces/
+>
+> and moved my already existing vcan0 virtual CAN interface to the namespace 'blue':
+>
+> # ip netns add blue
+> # ip link set dev vcan0 netns blue
+>
+>  From now vcan0 is not visible from 'ip link show' anymore.
+>
+> But it is visible in the namespace 'blue':
+>
+> # ip netns exec blue ip link list
+> 1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>      link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+> 6: vcan0: <NOARP> mtu 72 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>      link/can
+>
+> # ip netns exec blue cangen vcan0
+> write: Network is down
+>
+> Obviously the move to the namespace puts the interface 'down', so ...
+> # ip netns exec blue ifconfig vcan0 up
+>
+> And then executed
+> # ip netns exec blue cangen vcan0
+>
+> And in another terminal
+> # ip netns exec blue candump any
+>
+> Which shows the traffic on vcan0 in namespace blue - cool! Tnx Mario!
+>
+> As vcan does not create two connected peers as veth I would suggest to use can-gw to connect (and modify/filter) CAN traffic between CAN interfaces inside/outside of namespaces.
+>
+> Regards,
+> Oliver
+>
+>
+>
+>
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
