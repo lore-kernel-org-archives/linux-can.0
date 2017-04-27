@@ -1,114 +1,97 @@
-From: "Romain Forlot [IoT.bzh]" <claneys@iot.bzh>
-Subject: Re: Using CAN_FD_FRAME with BCM socket
-Date: Thu, 27 Apr 2017 10:23:59 +0200
-Message-ID: <e450a73d-33e2-f273-ea84-4b056df270d6@iot.bzh>
-References: <6e32a9c4-2a08-87ac-aa1e-88907db27304@iot.bzh>
- <a05f4636-3fa1-1d3f-4daf-e0173120609d@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH net-next] can: fix build error without CONFIG_PROC_FS
+Date: Thu, 27 Apr 2017 16:21:37 +0200
+Message-ID: <20170427142146.3107957-1-arnd@arndb.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wr0-f175.google.com ([209.85.128.175]:34907 "EHLO
-        mail-wr0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S967248AbdD0IYQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 27 Apr 2017 04:24:16 -0400
-Received: by mail-wr0-f175.google.com with SMTP id z52so12640629wrc.2
-        for <linux-can@vger.kernel.org>; Thu, 27 Apr 2017 01:24:15 -0700 (PDT)
-In-Reply-To: <a05f4636-3fa1-1d3f-4daf-e0173120609d@hartkopp.net>
-Content-Language: en-US
+Received: from mout.kundenserver.de ([212.227.126.130]:50746 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S939379AbdD0OV4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 27 Apr 2017 10:21:56 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
+Cc: Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, Cong Wang <xiyou.wangcong@gmail.com>, Mario Kicherer <dev@kicherer.org>, Eric Dumazet <edumazet@google.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi Oliver,
+The procfs dir entry was added inside of an #ifdef, causing a build error
+when we try to access it without CONFIG_PROC_FS set:
 
-On 04/26/2017 08:44 PM, Oliver Hartkopp wrote:
-> Hi Romain,
->
-> On 04/26/2017 11:19 AM, Romain Forlot [IoT.bzh] wrote:
->> I must miss something because I don't get it BCM socket uses
->> canfd_frame. If I use classic can_frame, it works without problems and I
->> don't get it.
->
-> Can you send your Linux Kernel version?
-Yes, I'm running  4.10.11-200.fc25.x86_64. This patch has been applied 
-to the kernel ?
->
-> I just want to make sure that it contains this fix:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=5499a6b22e5508b921c447757685b0a5e40a07ed 
->
->
->> Is there someone use canfd_frame with broadcast manager ? Every example
->> or source code I browse just use can_frame, only documentation talks
->> about that.
->
-> Yes, here:
->
-> https://github.com/linux-can/can-tests
->
-> Namely:
->
-> https://github.com/linux-can/can-tests/blob/master/tst-bcmfd-cycle.c
-> https://github.com/linux-can/can-tests/blob/master/tst-bcmfd-filter.c
-> https://github.com/linux-can/can-tests/blob/master/tst-bcm-tx_delete.c
->
-Damned, I pass over them... Thanks you !
->>
->> Here is the code :
->>
->>  38         struct {
->>  39           struct bcm_msg_head msg_head;
->>  40           struct canfd_frame frame[4]; /* just an example */
->>  41         } msg;
->>  42
->>  43         memset(msg.frame, 0, sizeof(msg.frame));
->>  44
->>  45         msg.msg_head.opcode  = RX_SETUP;
->>  46         msg.msg_head.can_id  = 0x620;
->>  47         msg.msg_head.flags   = SETTIMER|STARTTIMER|CAN_FD_FRAME;
->>  48         msg.msg_head.nframes = 1;
->>  49         msg.msg_head.count = 0;
->>  50         msg.msg_head.ival1.tv_sec = 0;
->>  51         msg.msg_head.ival1.tv_usec = 500000;
->>  52 //      msg.msg_head.ival2.tv_sec = 0;
->>  53 //      msg.msg_head.ival2.tv_usec = 100000;
->
-> This is dangerous!
->
-> You set SETTIMER|STARTTIMER but leave these values potentially 
-> uninitialized.
-This was just a sandbox piece of code, I do a memset before to 
-initialize my struct :)
->
->>  54         msg.frame[0].data[0]   = 0x00;
->>  55         msg.frame[0].data[1]   = 0x00;
->>  56         msg.frame[0].data[2]   = 0x00;
->>  57         msg.frame[0].data[3]   = 0x00;
->>  58         msg.frame[0].data[4]   = 0x00;
->>  59         msg.frame[0].data[5]   = 0x3C;
->>  60         msg.frame[0].data[6]   = 0x00;
->>  61         msg.frame[0].data[7]   = 0x00;
->>  62
->>  63         if(write(s, &msg, sizeof(msg)) < 0)
->>  64                 printf("This is the end!\n%s\n", strerror(errno));
->>
->> Then I use select on socket to read frames. In fact, if I remove
->> CAN_FD_FRAME it work even if my concatenated struct after bcm_msg_head
->> is canfd_frame structure but it will only read size of can_frame which
->> is normal.
->
-> You always get the concatenated struct depending on CAN_FD_FRAME:
-> http://lxr.free-electrons.com/source/Documentation/networking/can.txt?v=4.9#L856 
->
->
-> What length do you get back from the read() syscall?
-It's the heck, I don't get anything :) I'm stuck at select but I'll just 
-take a look at the code you send me before and see what I'm doing wrong.
->
-> Regards,
-> Oliver
+net/can/bcm.c:1541:14: error: 'struct netns_can' has no member named 'bcmproc_dir'
+net/can/bcm.c: In function 'bcm_connect':
+net/can/bcm.c:1601:14: error: 'struct netns_can' has no member named 'bcmproc_dir'
+net/can/bcm.c: In function 'canbcm_pernet_init':
+net/can/bcm.c:1696:11: error: 'struct netns_can' has no member named 'bcmproc_dir'
+net/can/bcm.c: In function 'canbcm_pernet_exit':
+net/can/bcm.c:1707:15: error: 'struct netns_can' has no member named 'bcmproc_dir'
 
+This adds the same #ifdef around all users of the pointer. Alternatively
+we could move the pointer outside of the #ifdef.
+
+Fixes: 384317ef4187 ("can: network namespace support for CAN_BCM protocol")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ net/can/bcm.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 0e855917b7e1..e6d9df27400b 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -1538,8 +1538,10 @@ static int bcm_release(struct socket *sock)
+ 	}
+ 
+ 	/* remove procfs entry */
++#ifdef CONFIG_PROC_FS
+ 	if (net->can.bcmproc_dir && bo->bcm_proc_read)
+ 		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
++#endif
+ 
+ 	/* remove device reference */
+ 	if (bo->bound) {
+@@ -1597,7 +1599,7 @@ static int bcm_connect(struct socket *sock, struct sockaddr *uaddr, int len,
+ 		/* no interface reference for ifindex = 0 ('any' CAN device) */
+ 		bo->ifindex = 0;
+ 	}
+-
++#ifdef CONFIG_PROC_FS
+ 	if (net->can.bcmproc_dir) {
+ 		/* unique socket address as filename */
+ 		sprintf(bo->procname, "%lu", sock_i_ino(sk));
+@@ -1609,6 +1611,7 @@ static int bcm_connect(struct socket *sock, struct sockaddr *uaddr, int len,
+ 			goto fail;
+ 		}
+ 	}
++#endif
+ 
+ 	bo->bound = 1;
+ 
+@@ -1691,22 +1694,23 @@ static const struct can_proto bcm_can_proto = {
+ 
+ static int canbcm_pernet_init(struct net *net)
+ {
++#ifdef CONFIG_PROC_FS
+ 	/* create /proc/net/can-bcm directory */
+-	if (IS_ENABLED(CONFIG_PROC_FS)) {
+-		net->can.bcmproc_dir =
+-			proc_net_mkdir(net, "can-bcm", net->proc_net);
+-	}
++	net->can.bcmproc_dir = proc_net_mkdir(net, "can-bcm", net->proc_net);
++#endif
+ 
+ 	return 0;
+ }
+ 
+ static void canbcm_pernet_exit(struct net *net)
+ {
++#ifdef CONFIG_PROC_FS
+ 	/* remove /proc/net/can-bcm directory */
+ 	if (IS_ENABLED(CONFIG_PROC_FS)) {
+ 		if (net->can.bcmproc_dir)
+ 			remove_proc_entry("can-bcm", net->proc_net);
+ 	}
++#endif
+ }
+ 
+ static struct pernet_operations canbcm_pernet_ops __read_mostly = {
 -- 
-Romain Forlot - Embedded Engineer - IoT.bzh
-claneys@iot.bzh - www.iot.bzh - +33257620298
+2.9.0
 
