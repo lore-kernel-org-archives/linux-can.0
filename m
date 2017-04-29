@@ -1,75 +1,57 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH net-next] can: fix build error without CONFIG_PROC_FS
-Date: Thu, 27 Apr 2017 18:11:11 +0200
-Message-ID: <499a8b67-8180-487b-9e7f-9ec0dc85adad@hartkopp.net>
-References: <20170427142146.3107957-1-arnd@arndb.de>
- <937e9144-c06c-d265-29eb-a1c6f96b6f89@pengutronix.de>
+From: Bogdan Mirea <Bogdan-Stefan_mirea@mentor.com>
+Subject: [PATCH] Enabling rcar_can changelink support
+Date: Sat, 29 Apr 2017 22:48:03 +0300
+Message-ID: <1493495283-55306-1-git-send-email-Bogdan-Stefan_mirea@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:28605 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1032672AbdD0QL3 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 27 Apr 2017 12:11:29 -0400
-In-Reply-To: <937e9144-c06c-d265-29eb-a1c6f96b6f89@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Cong Wang <xiyou.wangcong@gmail.com>, Mario Kicherer <dev@kicherer.org>, Eric Dumazet <edumazet@google.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: linux-can@vger.kernel.org, linux-renesas-soc@vger.kernel.org, mkl@pengutronix.de, socketcan@hartkopp.net
+Cc: Bogdan Mirea <Bogdan-Stefan_mirea@mentor.com>, Eugen Hristev <Eugen_hristev@mentor.com>
+List-Id: linux-can.vger.kernel.org
 
-Hello Arnd,
+Added rcar_can_set_bittiming as can.do_set_bittiming callback that will
+be called from can_changelink generic callback when link state is
+changed.
 
-many thanks for your patch.
+This enables set bittiming support:
+	ip link set can0 type can bitrate 500000 triple-sampling on
 
-Btw
+Signed-off-by: Bogdan Mirea <Bogdan-Stefan_mirea@mentor.com>
+Signed-off-by: Eugen Hristev <Eugen_hristev@mentor.com>
+---
+ drivers/net/can/rcar_can.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
- >  static void canbcm_pernet_exit(struct net *net)
- >  {
- > +#ifdef CONFIG_PROC_FS
- >  	/* remove /proc/net/can-bcm directory */
- >  	if (IS_ENABLED(CONFIG_PROC_FS)) {
- >  		if (net->can.bcmproc_dir)
- >  			remove_proc_entry("can-bcm", net->proc_net);
- >  	}
- > +#endif
- >  }
-
-"if (IS_ENABLED(CONFIG_PROC_FS))"
-
-becomes obsolete too then ...
-
-So I would suggest to take my patch to fix my fault ;-)
-
-Best regards,
-Oliver
-
-On 04/27/2017 04:29 PM, Marc Kleine-Budde wrote:
-> Hello Arnd,
->
-> On 04/27/2017 04:21 PM, Arnd Bergmann wrote:
->> The procfs dir entry was added inside of an #ifdef, causing a build error
->> when we try to access it without CONFIG_PROC_FS set:
->>
->> net/can/bcm.c:1541:14: error: 'struct netns_can' has no member named 'bcmproc_dir'
->> net/can/bcm.c: In function 'bcm_connect':
->> net/can/bcm.c:1601:14: error: 'struct netns_can' has no member named 'bcmproc_dir'
->> net/can/bcm.c: In function 'canbcm_pernet_init':
->> net/can/bcm.c:1696:11: error: 'struct netns_can' has no member named 'bcmproc_dir'
->> net/can/bcm.c: In function 'canbcm_pernet_exit':
->> net/can/bcm.c:1707:15: error: 'struct netns_can' has no member named 'bcmproc_dir'
->>
->> This adds the same #ifdef around all users of the pointer. Alternatively
->> we could move the pointer outside of the #ifdef.
->>
->> Fixes: 384317ef4187 ("can: network namespace support for CAN_BCM protocol")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> A fix for this problem is part of the pull request I send to David
-> earlier today:
->
->     https://www.mail-archive.com/netdev@vger.kernel.org/msg165764.html
->
-> regards,
-> Marc
->
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index 788459f..cfabb95 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -419,7 +419,7 @@ static irqreturn_t rcar_can_interrupt(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void rcar_can_set_bittiming(struct net_device *dev)
++static int rcar_can_set_bittiming(struct net_device *dev)
+ {
+ 	struct rcar_can_priv *priv = netdev_priv(dev);
+ 	struct can_bittiming *bt = &priv->can.bittiming;
+@@ -433,6 +433,8 @@ static void rcar_can_set_bittiming(struct net_device *dev)
+ 	 * read/write (but not on 8-bit, contrary to the manuals)...
+ 	 */
+ 	writel((bcr << 8) | priv->clock_select, &priv->regs->bcr);
++
++	return 0;
+ }
+ 
+ static void rcar_can_start(struct net_device *ndev)
+@@ -809,6 +811,7 @@ static int rcar_can_probe(struct platform_device *pdev)
+ 	priv->clock_select = clock_select;
+ 	priv->can.clock.freq = clk_get_rate(priv->can_clk);
+ 	priv->can.bittiming_const = &rcar_can_bittiming_const;
++	priv->can.do_set_bittiming = &rcar_can_set_bittiming;
+ 	priv->can.do_set_mode = rcar_can_do_set_mode;
+ 	priv->can.do_get_berr_counter = rcar_can_get_berr_counter;
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_BERR_REPORTING;
+-- 
+1.9.1
