@@ -1,19 +1,48 @@
-From: Loans Service <raysa.sari@brisyariah.co.id>
-Subject: Fast Loans
-Date: Sun, 30 Apr 2017 14:09:31 +0530
-Message-ID: <20170430084017.EAAC9263ED1F@safar.brisyariah.co.id>
-Reply-To: payingfunds@3mail.ie
+From: "Mirea, Bogdan-Stefan" <Bogdan-Stefan_Mirea@mentor.com>
+Subject: RE: [PATCH] Enabling rcar_can changelink support
+Date: Sun, 30 Apr 2017 11:33:32 +0000
+Message-ID: <0a97b4ea6a2f494c8f597a8e69025621@svr-ies-mbx-01.mgc.mentorg.com>
+References: <1493495283-55306-1-git-send-email-Bogdan-Stefan_mirea@mentor.com>
+ <01f8d1b7-0ef2-a13e-b626-5026b4409a7c@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from rihlah.brisyariah.co.id ([219.83.42.151]:54224 "EHLO
-        smtprihlah.brisyariah.co.id" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1165804AbdD3Iti (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 30 Apr 2017 04:49:38 -0400
-Content-Description: Mail message body
+Received: from relay1.mentorg.com ([192.94.38.131]:55267 "EHLO
+        relay1.mentorg.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S940209AbdD3Ldp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 30 Apr 2017 07:33:45 -0400
+In-Reply-To: <01f8d1b7-0ef2-a13e-b626-5026b4409a7c@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Recipients <raysa.sari@brisyariah.co.id>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>
 
-Do you need a loan to pay up bill or to start a business? Email Us
+SGVsbG8gTWFyYywNCg0KPiBPbiAwNC8yOS8yMDE3IDA5OjQ4IFBNLCBCb2dkYW4gTWlyZWEgd3Jv
+dGU6DQo+ID4gQWRkZWQgcmNhcl9jYW5fc2V0X2JpdHRpbWluZyBhcyBjYW4uZG9fc2V0X2JpdHRp
+bWluZyBjYWxsYmFjayB0aGF0DQo+ID4gd2lsbCBiZSBjYWxsZWQgZnJvbSBjYW5fY2hhbmdlbGlu
+ayBnZW5lcmljIGNhbGxiYWNrIHdoZW4gbGluayBzdGF0ZQ0KPiA+IGlzIA0KPiA+IGNoYW5nZWQu
+DQo+ID4gDQo+ID4gVGhpcyBlbmFibGVzIHNldCBiaXR0aW1pbmcgc3VwcG9ydDoNCj4gPiAgICAg
+aXAgbGluayBzZXQgY2FuMCB0eXBlIGNhbiBiaXRyYXRlIDUwMDAwMCB0cmlwbGUtc2FtcGxpbmcg
+b24NCj4gDQo+IFdoeSBpcyB0aGlzIG5lZWRlZD8gcmNhcl9jYW5fc2V0X2JpdHRpbWluZygpIGlz
+IGNhbGxlZCBkdXJpbmcNCj4gcmNhcl9jYW5fb3BlbigpLg0KDQpJIGtub3cgdGhhdCByY2FyX2Nh
+bl9zZXRfYml0dGltaW5nKCkgaXMgY2FsbGVkIGR1cmluZyByY2FyX2Nhbl9vcGVuKCkNCmFuZCBz
+ZXR0aW5nIGJpdHRpbWluZyB3b3JrcyBmaW5lIHdoZW4gc2V0dGluZyBjYW4gdXAgd2l0aCBhIGNv
+bW1hbmQNCmxpa2U6DQooMXN0IGFwcHJvYWgpDQogICAgJGlwIGxpbmsgc2V0IGNhbjAgdXAgdHlw
+ZSBjYW4gYml0cmF0ZSA1MDAwMDANCg0KQnV0IG1vc3Qgb2YgdHV0b3JpYWxzIG9ubGluZVsxXSBh
+cmUgcHJlc2VudGluZyBhcyBhIFRPRE8gdGhlIGZvbGxvd2luZw0KcGFpciBvZiBjb21tYW5kczoN
+CigybmQgYXBwcm9haCkNCiAgICAkaXAgbGluayBzZXQgY2FuMCB0eXBlIGNhbiBiaXRyYXRlIDUw
+MDAwMA0KICAgICRpcCBsaW5rIHNldCB1cCBjYW4wDQoNCkFuZCBpbiB0aGlzIDJuZCBhcHByb2Fo
+LCB0aGUgZmlyc3QgY29tbWFuZCB3aWxsIGZhaWwgc2luY2UgaXQgd2lsbCBjYWxsDQpjYW5fY2hh
+bmdlbGluayB3aGljaCBvbiBpdHMgdHVybiB3aWxsIHRyeSBjYWxsaW5nIC5kb19zZXRfYml0dGlt
+aW5nDQpjYWxsYmFjayBhbmQgdGhlIGZvcm1lciBjYWxsYmFjayBpcyBub3QgZGVmaW5lZCBmb3Ig
+cmNhcl9jYW4uDQoNCkkgZG9uJ3Qgc2F5IHRoaXMgaXMgYSBtdXN0LWhhdmUgZmVhdHVyZSwgc2lu
+Y2UgY2FsbGluZyBpcHJvdXRlMiB3aXRoDQoic2V0IGJpdHJhdGUiIGFuZCAic2V0IGNhbiB1cCIg
+IGFzIGluIDFzdCBhcHByb2FjaCB3aWxsIHdvcmsganVzdCBmaW5lLA0Kd2lsbCB3b3JrIGp1c3Qg
+ZmluZSwgYnV0IGl0IGlzIGEgbmljZSB0byBoYXZlIGZlYXR1cmUgZm9yIHRoZSBzZWNvbmQNCmFw
+cHJvYWNoIG9mIHNldHRpbmcgYml0cmF0ZS4NCkFsc28gcGVha191c2IgcGNhblsyXSB1c2VzIHRo
+aXMgc2Vjb25kIGFwcHJvYWNoICh0aGUgY2hhbmdlbGluayBvbmUpIGFuZA0KdGhpcyBwYXRjaCB1
+cGRhdGVzIHJjYXJfY2FuIGZvciBpdC4NCg0KQmVzdCBSZWdhcmRzLA0KQm9nZGFuDQoNClsxXSBo
+dHRwOi8vZWxpbnV4Lm9yZy9CcmluZ2luZ19DQU5faW50ZXJmYWNlX3VwDQpbMl0NCmh0dHA6Ly9s
+eHIuZnJlZS1lbGVjdHJvbnMuY29tL3NvdXJjZS9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNi
+L3BjYW5fdXNiLmMjTDkwMA0K
