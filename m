@@ -1,99 +1,72 @@
 From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Subject: Re: [PATCH 2/2] can: m_can: add deep Suspend/Resume support
-Date: Wed, 3 May 2017 14:28:00 +0200
-Message-ID: <c45cc113-6072-a514-f956-1c2c61484a13@free-electrons.com>
-References: <20170503121143.25090-1-quentin.schulz@free-electrons.com>
- <20170503121143.25090-2-quentin.schulz@free-electrons.com>
- <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="LrSQr6VmWEBUrnFgse6LKBctcNelDvXTs"
+Subject: [PATCH v2 1/2] can: m_can: move Message RAM initialization to function
+Date: Wed,  3 May 2017 14:37:49 +0200
+Message-ID: <20170503123750.26134-1-quentin.schulz@free-electrons.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.free-electrons.com ([62.4.15.54]:43932 "EHLO
+Received: from mail.free-electrons.com ([62.4.15.54]:44071 "EHLO
         mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751297AbdECM2I (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 May 2017 08:28:08 -0400
-In-Reply-To: <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
+        with ESMTP id S1751536AbdECMiE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 May 2017 08:38:04 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com, mario.huettel@gmx.net, socketcan@hartkopp.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com
+To: wg@grandegger.com, mkl@pengutronix.de, mario.huettel@gmx.net, socketcan@hartkopp.net
+Cc: Quentin Schulz <quentin.schulz@free-electrons.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LrSQr6VmWEBUrnFgse6LKBctcNelDvXTs
-Content-Type: multipart/mixed; boundary="ptpPMlRtoVucugJBNUEWL0e1aJQogc08V";
- protected-headers="v1"
-From: Quentin Schulz <quentin.schulz@free-electrons.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com,
- mario.huettel@gmx.net, socketcan@hartkopp.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com,
- thomas.petazzoni@free-electrons.com
-Message-ID: <c45cc113-6072-a514-f956-1c2c61484a13@free-electrons.com>
-Subject: Re: [PATCH 2/2] can: m_can: add deep Suspend/Resume support
-References: <20170503121143.25090-1-quentin.schulz@free-electrons.com>
- <20170503121143.25090-2-quentin.schulz@free-electrons.com>
- <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
-In-Reply-To: <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
+To avoid possible ECC/parity checksum errors when reading an
+uninitialized buffer, the entire Message RAM is initialized when probing
+the driver. This initialization is done in the same function reading the
+Device Tree properties.
 
---ptpPMlRtoVucugJBNUEWL0e1aJQogc08V
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+This patch moves the RAM initialization to a separate function so it can
+be called separately from device initialization from Device Tree.
 
-Hi Marc,
+Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+---
+ drivers/net/can/m_can/m_can.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
-On 03/05/2017 14:16, Marc Kleine-Budde wrote:
-> On 05/03/2017 02:11 PM, Quentin Schulz wrote:
->> This adds Power Management deep Suspend/Resume support for Bosch M_CAN=
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index bf8fdaeb955e..3f0445440146 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1489,6 +1489,20 @@ static int register_m_can_dev(struct net_device *dev)
+ 	return register_candev(dev);
+ }
+ 
++static void m_can_init_ram(struct m_can_priv *priv)
++{
++	int end, i, start;
++
++	/* initialize the entire Message RAM in use to avoid possible
++	 * ECC/parity checksum errors when reading an uninitialized buffer
++	 */
++	start = priv->mcfg[MRAM_SIDF].off;
++	end = priv->mcfg[MRAM_TXB].off +
++		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
++	for (i = start; i < end; i += 4)
++		writel(0x0, priv->mram_base + i);
++}
++
+ static void m_can_of_parse_mram(struct m_can_priv *priv,
+ 				const u32 *mram_config_vals)
+ {
+@@ -1529,15 +1543,7 @@ static void m_can_of_parse_mram(struct m_can_priv *priv,
+ 		priv->mcfg[MRAM_TXE].off, priv->mcfg[MRAM_TXE].num,
+ 		priv->mcfg[MRAM_TXB].off, priv->mcfg[MRAM_TXB].num);
+ 
+-	/* initialize the entire Message RAM in use to avoid possible
+-	 * ECC/parity checksum errors when reading an uninitialized buffer
+-	 */
+-	start = priv->mcfg[MRAM_SIDF].off;
+-	end = priv->mcfg[MRAM_TXB].off +
+-		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
+-	for (i = start; i < end; i += 4)
+-		writel(0x0, priv->mram_base + i);
+-
++	m_can_init_ram(priv);
+ }
+ 
+ static int m_can_plat_probe(struct platform_device *pdev)
+-- 
+2.11.0
 
->> chip.
->>
->> When the chip resumes from deep sleep, the RAM needs to be initialized=
-
->> as it is done when the driver probes. The net interface also needs to =
-be
->> closed and reopened to be fully functional.
->=20
-> Are you sure it's the closing and opening of the net interface. Maybe
-> it's the m_can_start() and/or the subsequent m_can_chip_config()?
->=20
-
-You're right. The chip needs to be completely reinitialized (clocks,
-chip itself) and it also closes and reopens the interface if I'm correct
-with close_candev and open_candev.
-I'm sending a v2 right away to fix the commit log.
-
-Thanks,
-Quentin
---=20
-Quentin Schulz, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
-
-
---ptpPMlRtoVucugJBNUEWL0e1aJQogc08V--
-
---LrSQr6VmWEBUrnFgse6LKBctcNelDvXTs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJZCczWAAoJEIS4mnU+4PGjFx4P/3k26G199FJSL/my8NyI+onN
-w9LzqFNdi/gQ/eGuCpzIr4X4T3JDhaIIw44qk2Pc14T0KuVEcxxX8s7/lYcmYUiG
-8o4u3+yLsjke+j5WiMT+TD17Q5/di/d383+Iu46yYyc2m8A74nU9gr2RIJhKe3Zm
-2s4d7bUxXzSYsyBgSFZfZC3aj0SLzTo6uhsD/F/VgLa+BQQDAaD6rLel0mEhv2GE
-jOPGYMG/btcNxLAx/xAorR4hwVBj0PmEkmiR/RIm/fKgUTugMiNOq819vvPyn+gT
-Z6FnJYQaoDhvk5ZWXJS2TJmpLYG6zegpocTcWL0NqsTgAPGfCGCxydFNH/Hwb55I
-eGHO3kWEeHf9tLkPmiWNuOUKn2jlC/otWhBZspe8bx8/E1aDlEHMy9s/ogSYBwby
-MXxQsvbfRtrKDb0rt86QKu0UFIdlT/amFgV/uiHP8WMlWiAFVYDuVgEHeb8YGa+1
-irSemarX9O+U8kuhw9e1ZM4kER2mhCNwFZAoKyAsBroRxqH8LV6ZDEnwNYaCQzJW
-a3gzoQKRQKgRnv1lbd2LOjCpgN3QcwJwNFh+i9GD6b+gZbyMA+RysB1Gk9r7GbBJ
-QfVpuv+Skkag2npypzrMWd4t+5civonuWqlMV8I8ZdeQ4vvb58G8qU7YUqLXwtYW
-VLM0dLyoFi2l7Xym+1q5
-=o62d
------END PGP SIGNATURE-----
-
---LrSQr6VmWEBUrnFgse6LKBctcNelDvXTs--
