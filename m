@@ -1,51 +1,72 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH] can: peak_canfd: fix uninitialized symbol warnings
-Date: Wed,  3 May 2017 10:35:04 +0200
-Message-ID: <1493800504-17529-1-git-send-email-s.grosjean@peak-system.com>
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
+Subject: [PATCH 1/2] can: m_can: move Message RAM initialization to function
+Date: Wed,  3 May 2017 14:11:42 +0200
+Message-ID: <20170503121143.25090-1-quentin.schulz@free-electrons.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp1-g21.free.fr ([212.27.42.1]:26245 "EHLO smtp1-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751825AbdECIfY (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 3 May 2017 04:35:24 -0400
+Received: from mail.free-electrons.com ([62.4.15.54]:43710 "EHLO
+        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750943AbdECMMR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 May 2017 08:12:17 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
+To: wg@grandegger.com, mkl@pengutronix.de, mario.huettel@gmx.net, socketcan@hartkopp.net
+Cc: Quentin Schulz <quentin.schulz@free-electrons.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com
 
-This patch fixes two uninitialized symbol warnings in the new code adding
-support of the PEAK-System PCAN-PCI Express FD boards, in the socket-CAN
-network protocol family.
+To avoid possible ECC/parity checksum errors when reading an
+uninitialized buffer, the entire Message RAM is initialized when probing
+the driver. This initialization is done in the same function reading the
+Device Tree properties.
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+This patch moves the RAM initialization to a separate function so it can
+be called separately from device initialization from Device Tree.
+
+Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
 ---
- drivers/net/can/peak_canfd/peak_canfd.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/can/m_can/m_can.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
-index 0d57be5..912bd81 100644
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -399,8 +399,9 @@ static int pucan_handle_status(struct peak_canfd_priv *priv,
- 	} else if (priv->can.state != CAN_STATE_ERROR_ACTIVE) {
- 		/* back to ERROR_ACTIVE */
- 		netdev_dbg(ndev, "Error active status\n");
--		can_change_state(ndev, cf, CAN_STATE_ERROR_ACTIVE,
--				 CAN_STATE_ERROR_ACTIVE);
-+		if (skb)
-+			can_change_state(ndev, cf, CAN_STATE_ERROR_ACTIVE,
-+					 CAN_STATE_ERROR_ACTIVE);
- 	} else {
- 		dev_kfree_skb(skb);
- 		return 0;
-@@ -489,7 +490,7 @@ int peak_canfd_handle_msgs_list(struct peak_canfd_priv *priv,
- 				struct pucan_rx_msg *msg_list, int msg_count)
- {
- 	void *msg_ptr = msg_list;
--	int i, msg_size;
-+	int i, msg_size = 0;
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index bf8fdaeb955e..3f0445440146 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1489,6 +1489,20 @@ static int register_m_can_dev(struct net_device *dev)
+ 	return register_candev(dev);
+ }
  
- 	for (i = 0; i < msg_count; i++) {
- 		msg_size = peak_canfd_handle_msg(priv, msg_ptr);
++static void m_can_init_ram(struct m_can_priv *priv)
++{
++	int end, i, start;
++
++	/* initialize the entire Message RAM in use to avoid possible
++	 * ECC/parity checksum errors when reading an uninitialized buffer
++	 */
++	start = priv->mcfg[MRAM_SIDF].off;
++	end = priv->mcfg[MRAM_TXB].off +
++		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
++	for (i = start; i < end; i += 4)
++		writel(0x0, priv->mram_base + i);
++}
++
+ static void m_can_of_parse_mram(struct m_can_priv *priv,
+ 				const u32 *mram_config_vals)
+ {
+@@ -1529,15 +1543,7 @@ static void m_can_of_parse_mram(struct m_can_priv *priv,
+ 		priv->mcfg[MRAM_TXE].off, priv->mcfg[MRAM_TXE].num,
+ 		priv->mcfg[MRAM_TXB].off, priv->mcfg[MRAM_TXB].num);
+ 
+-	/* initialize the entire Message RAM in use to avoid possible
+-	 * ECC/parity checksum errors when reading an uninitialized buffer
+-	 */
+-	start = priv->mcfg[MRAM_SIDF].off;
+-	end = priv->mcfg[MRAM_TXB].off +
+-		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
+-	for (i = start; i < end; i += 4)
+-		writel(0x0, priv->mram_base + i);
+-
++	m_can_init_ram(priv);
+ }
+ 
+ static int m_can_plat_probe(struct platform_device *pdev)
 -- 
-2.7.4
+2.11.0
 
