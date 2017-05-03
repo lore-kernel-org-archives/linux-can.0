@@ -1,82 +1,99 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
 Subject: Re: [PATCH 2/2] can: m_can: add deep Suspend/Resume support
-Date: Wed, 3 May 2017 14:16:54 +0200
-Message-ID: <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
+Date: Wed, 3 May 2017 14:28:00 +0200
+Message-ID: <c45cc113-6072-a514-f956-1c2c61484a13@free-electrons.com>
 References: <20170503121143.25090-1-quentin.schulz@free-electrons.com>
  <20170503121143.25090-2-quentin.schulz@free-electrons.com>
+ <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
+Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="iTPBP0wdBS41xrIln2nougfU52KFcm2dn"
+ boundary="LrSQr6VmWEBUrnFgse6LKBctcNelDvXTs"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41767 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751005AbdECMRC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 May 2017 08:17:02 -0400
-In-Reply-To: <20170503121143.25090-2-quentin.schulz@free-electrons.com>
+Received: from mail.free-electrons.com ([62.4.15.54]:43932 "EHLO
+        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751297AbdECM2I (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 May 2017 08:28:08 -0400
+In-Reply-To: <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Quentin Schulz <quentin.schulz@free-electrons.com>, wg@grandegger.com, mario.huettel@gmx.net, socketcan@hartkopp.net
+To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com, mario.huettel@gmx.net, socketcan@hartkopp.net
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---iTPBP0wdBS41xrIln2nougfU52KFcm2dn
-Content-Type: multipart/mixed; boundary="VL5H8r0h1PqTWB3AjEaW1E5N3O63Xc6wD";
+--LrSQr6VmWEBUrnFgse6LKBctcNelDvXTs
+Content-Type: multipart/mixed; boundary="ptpPMlRtoVucugJBNUEWL0e1aJQogc08V";
  protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Quentin Schulz <quentin.schulz@free-electrons.com>, wg@grandegger.com,
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com,
  mario.huettel@gmx.net, socketcan@hartkopp.net
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com,
  thomas.petazzoni@free-electrons.com
-Message-ID: <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
+Message-ID: <c45cc113-6072-a514-f956-1c2c61484a13@free-electrons.com>
 Subject: Re: [PATCH 2/2] can: m_can: add deep Suspend/Resume support
 References: <20170503121143.25090-1-quentin.schulz@free-electrons.com>
  <20170503121143.25090-2-quentin.schulz@free-electrons.com>
-In-Reply-To: <20170503121143.25090-2-quentin.schulz@free-electrons.com>
+ <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
+In-Reply-To: <39fcd931-eca6-2e89-ff8b-14a54e9342fc@pengutronix.de>
 
---VL5H8r0h1PqTWB3AjEaW1E5N3O63Xc6wD
+--ptpPMlRtoVucugJBNUEWL0e1aJQogc08V
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 05/03/2017 02:11 PM, Quentin Schulz wrote:
-> This adds Power Management deep Suspend/Resume support for Bosch M_CAN
-> chip.
+Hi Marc,
+
+On 03/05/2017 14:16, Marc Kleine-Budde wrote:
+> On 05/03/2017 02:11 PM, Quentin Schulz wrote:
+>> This adds Power Management deep Suspend/Resume support for Bosch M_CAN=
+
+>> chip.
+>>
+>> When the chip resumes from deep sleep, the RAM needs to be initialized=
+
+>> as it is done when the driver probes. The net interface also needs to =
+be
+>> closed and reopened to be fully functional.
 >=20
-> When the chip resumes from deep sleep, the RAM needs to be initialized
-> as it is done when the driver probes. The net interface also needs to b=
-e
-> closed and reopened to be fully functional.
+> Are you sure it's the closing and opening of the net interface. Maybe
+> it's the m_can_start() and/or the subsequent m_can_chip_config()?
+>=20
 
-Are you sure it's the closing and opening of the net interface. Maybe
-it's the m_can_start() and/or the subsequent m_can_chip_config()?
+You're right. The chip needs to be completely reinitialized (clocks,
+chip itself) and it also closes and reopens the interface if I'm correct
+with close_candev and open_candev.
+I'm sending a v2 right away to fix the commit log.
 
-Marc
-
+Thanks,
+Quentin
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Quentin Schulz, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
 
 
---VL5H8r0h1PqTWB3AjEaW1E5N3O63Xc6wD--
+--ptpPMlRtoVucugJBNUEWL0e1aJQogc08V--
 
---iTPBP0wdBS41xrIln2nougfU52KFcm2dn
+--LrSQr6VmWEBUrnFgse6LKBctcNelDvXTs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlkJyjYACgkQHv7KIOw4
-HPYBlQf/VyperIvkufXe4AE5diGFYYzPXEHqHgj6JONlsDNYG/2RutT02wXzUhM/
-eagnRT9RUOlaQ2VcSsdO1h000ClKq4iZIe5yaOMgtSnXr9+kg5QpCbMTm+z1x22r
-PTRdLOhLx5w+DRTQppvC7cZ/CAQTGN7//ozNQ+E99fvnoc8gWHHrhNgpD8zaFttZ
-wUcpA5orwG2lpGjUMjV418L2UEya1RZUFz4dx6SLmvxKntYVk2mnhNYfU0mJziUO
-RUIR4Of+feIpeNaa49s8otMntnPEO/lLo13yq5y2xBlCbrS/5w0HHF3hlAFeay1m
-tlp1l6KKt+59SRLBxys+2nVY93V0Ow==
-=sQK2
+iQIcBAEBCAAGBQJZCczWAAoJEIS4mnU+4PGjFx4P/3k26G199FJSL/my8NyI+onN
+w9LzqFNdi/gQ/eGuCpzIr4X4T3JDhaIIw44qk2Pc14T0KuVEcxxX8s7/lYcmYUiG
+8o4u3+yLsjke+j5WiMT+TD17Q5/di/d383+Iu46yYyc2m8A74nU9gr2RIJhKe3Zm
+2s4d7bUxXzSYsyBgSFZfZC3aj0SLzTo6uhsD/F/VgLa+BQQDAaD6rLel0mEhv2GE
+jOPGYMG/btcNxLAx/xAorR4hwVBj0PmEkmiR/RIm/fKgUTugMiNOq819vvPyn+gT
+Z6FnJYQaoDhvk5ZWXJS2TJmpLYG6zegpocTcWL0NqsTgAPGfCGCxydFNH/Hwb55I
+eGHO3kWEeHf9tLkPmiWNuOUKn2jlC/otWhBZspe8bx8/E1aDlEHMy9s/ogSYBwby
+MXxQsvbfRtrKDb0rt86QKu0UFIdlT/amFgV/uiHP8WMlWiAFVYDuVgEHeb8YGa+1
+irSemarX9O+U8kuhw9e1ZM4kER2mhCNwFZAoKyAsBroRxqH8LV6ZDEnwNYaCQzJW
+a3gzoQKRQKgRnv1lbd2LOjCpgN3QcwJwNFh+i9GD6b+gZbyMA+RysB1Gk9r7GbBJ
+QfVpuv+Skkag2npypzrMWd4t+5civonuWqlMV8I8ZdeQ4vvb58G8qU7YUqLXwtYW
+VLM0dLyoFi2l7Xym+1q5
+=o62d
 -----END PGP SIGNATURE-----
 
---iTPBP0wdBS41xrIln2nougfU52KFcm2dn--
+--LrSQr6VmWEBUrnFgse6LKBctcNelDvXTs--
