@@ -1,64 +1,74 @@
 From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Subject: [PATCH v2 2/2] can: m_can: add deep Suspend/Resume support
-Date: Wed,  3 May 2017 14:37:50 +0200
-Message-ID: <20170503123750.26134-2-quentin.schulz@free-electrons.com>
+Subject: Re: [PATCH v2 2/2] can: m_can: add deep Suspend/Resume support
+Date: Wed, 3 May 2017 14:40:12 +0200
+Message-ID: <6a6f521c-c551-703b-d5e2-d47999ae454b@free-electrons.com>
 References: <20170503123750.26134-1-quentin.schulz@free-electrons.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.free-electrons.com ([62.4.15.54]:44078 "EHLO
-        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751619AbdECMiF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 May 2017 08:38:05 -0400
-In-Reply-To: <20170503123750.26134-1-quentin.schulz@free-electrons.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+ <20170503123750.26134-2-quentin.schulz@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170503123750.26134-2-quentin.schulz@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: wg@grandegger.com, mkl@pengutronix.de, mario.huettel@gmx.net, socketcan@hartkopp.net
-Cc: Quentin Schulz <quentin.schulz@free-electrons.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com
+List-Id: linux-can.vger.kernel.org
 
-This adds Power Management deep Suspend/Resume support for Bosch M_CAN
-chip.
+Hum, forgot the changelog.
 
-When the system resumes from deep sleep, the chip needs to be fully
-reinitialized (RAM, chip, clocks, irq, candev, ...) to be functional.
+On 03/05/2017 14:37, Quentin Schulz wrote:
+> This adds Power Management deep Suspend/Resume support for Bosch M_CAN
+> chip.
+> 
+> When the system resumes from deep sleep, the chip needs to be fully
+> reinitialized (RAM, chip, clocks, irq, candev, ...) to be functional.
+> 
+> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+> ---
 
-Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
----
- drivers/net/can/m_can/m_can.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+v2:
+ - fix erroneous commit log,
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 3f0445440146..9e0143b528f1 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1670,12 +1670,10 @@ static __maybe_unused int m_can_suspend(struct device *dev)
- 	struct m_can_priv *priv = netdev_priv(ndev);
- 
- 	if (netif_running(ndev)) {
--		netif_stop_queue(ndev);
- 		netif_device_detach(ndev);
-+		m_can_close(ndev);
- 	}
- 
--	/* TODO: enter low power */
--
- 	priv->can.state = CAN_STATE_SLEEPING;
- 
- 	return 0;
-@@ -1686,13 +1684,13 @@ static __maybe_unused int m_can_resume(struct device *dev)
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct m_can_priv *priv = netdev_priv(ndev);
- 
--	/* TODO: exit low power */
-+	m_can_init_ram(priv);
- 
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
- 	if (netif_running(ndev)) {
-+		m_can_open(ndev);
- 		netif_device_attach(ndev);
--		netif_start_queue(ndev);
- 	}
- 
- 	return 0;
+>  drivers/net/can/m_can/m_can.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> index 3f0445440146..9e0143b528f1 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -1670,12 +1670,10 @@ static __maybe_unused int m_can_suspend(struct device *dev)
+>  	struct m_can_priv *priv = netdev_priv(ndev);
+>  
+>  	if (netif_running(ndev)) {
+> -		netif_stop_queue(ndev);
+>  		netif_device_detach(ndev);
+> +		m_can_close(ndev);
+>  	}
+>  
+> -	/* TODO: enter low power */
+> -
+>  	priv->can.state = CAN_STATE_SLEEPING;
+>  
+>  	return 0;
+> @@ -1686,13 +1684,13 @@ static __maybe_unused int m_can_resume(struct device *dev)
+>  	struct net_device *ndev = dev_get_drvdata(dev);
+>  	struct m_can_priv *priv = netdev_priv(ndev);
+>  
+> -	/* TODO: exit low power */
+> +	m_can_init_ram(priv);
+>  
+>  	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+>  
+>  	if (netif_running(ndev)) {
+> +		m_can_open(ndev);
+>  		netif_device_attach(ndev);
+> -		netif_start_queue(ndev);
+>  	}
+>  
+>  	return 0;
+> 
+
 -- 
-2.11.0
-
+Quentin Schulz, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
