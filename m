@@ -1,140 +1,126 @@
-From: =?UTF-8?B?S2/FgsWCxIV0YWosIFJlbWlnaXVzeg==?=
-        <remigiusz.kollataj@mobica.com>
-Subject: Re: [bug report] can: mcba_usb: Add support for Microchip CAN BUS Analyzer
-Date: Thu, 4 May 2017 16:46:58 +0200
-Message-ID: <CAKT-o-c8yhPzsKk4UaM=9qG+9oW=yPdariZuV=BgkWUk4+cBDg@mail.gmail.com>
-References: <20170504114236.zx7ktyrwiktpkmjw@mwanda>
+From: "Romain Forlot [IoT.bzh]" <claneys@iot.bzh>
+Subject: Re: Using CAN_FD_FRAME with BCM socket
+Date: Thu, 4 May 2017 20:04:51 +0200
+Message-ID: <7d495447-8785-9c2b-b2ce-850dcdeaf174@iot.bzh>
+References: <6e32a9c4-2a08-87ac-aa1e-88907db27304@iot.bzh>
+ <a05f4636-3fa1-1d3f-4daf-e0173120609d@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-vk0-f45.google.com ([209.85.213.45]:35383 "EHLO
-        mail-vk0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751932AbdEDOrU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 4 May 2017 10:47:20 -0400
-Received: by mail-vk0-f45.google.com with SMTP id v20so9046382vke.2
-        for <linux-can@vger.kernel.org>; Thu, 04 May 2017 07:47:19 -0700 (PDT)
-In-Reply-To: <20170504114236.zx7ktyrwiktpkmjw@mwanda>
+Received: from mail-wm0-f44.google.com ([74.125.82.44]:36551 "EHLO
+        mail-wm0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751738AbdEDSE4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 4 May 2017 14:04:56 -0400
+Received: by mail-wm0-f44.google.com with SMTP id u65so4083996wmu.1
+        for <linux-can@vger.kernel.org>; Thu, 04 May 2017 11:04:55 -0700 (PDT)
+In-Reply-To: <a05f4636-3fa1-1d3f-4daf-e0173120609d@hartkopp.net>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-Hi Dan,
+Hi here,
 
-On 4 May 2017 at 13:42, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+Testing with can-tests, tst-bcmfd-filter, I got the following output :
+
+<*>Writing RX_SETUP with RX_FILTER_ID for can_id <042>
+<*>Writing RX_DELETE for can_id <042>
+<*>Writing RX_SETUP with RX_FILTER_ID for can_id <042>
+<2>Writing TX_SEND with wrong can_id <043>
+write: Message too long
+<3>Writing TX_SEND with correct can_id <042>
+write: Message too long
+
+tst-bcm-filter with classic CAN frame, it is running fine.
+
+I check that patch your pointed out is applied at my kernel, do you have 
+an idea what could be the problem ? Thanks you.
+
+I continue investigation and let you know if i found anything else.
+
+Best regards.
+
+On 04/26/2017 08:44 PM, Oliver Hartkopp wrote:
+> Hi Romain,
 >
-> Hello Remigiusz Ko=C5=82=C5=82=C4=85taj,
+> On 04/26/2017 11:19 AM, Romain Forlot [IoT.bzh] wrote:
+>> I must miss something because I don't get it BCM socket uses
+>> canfd_frame. If I use classic can_frame, it works without problems and I
+>> don't get it.
 >
-> The patch 51f3baad7de9: "can: mcba_usb: Add support for Microchip CAN
-> BUS Analyzer" from Apr 14, 2017, leads to the following static
-> checker warning:
+> Can you send your Linux Kernel version?
 >
->         drivers/net/can/usb/mcba_usb.c:366 mcba_usb_start_xmit()
->         error: 'usb_msg.dlc' from user is not capped properly
->
-> drivers/net/can/usb/mcba_usb.c
->    320  static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
->    321                                         struct net_device *netdev)
->    322  {
->    323          struct mcba_priv *priv =3D netdev_priv(netdev);
->    324          struct can_frame *cf =3D (struct can_frame *)skb->data;
->                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Smatch distrusts skb->data.
+> I just want to make sure that it contains this fix:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=5499a6b22e5508b921c447757685b0a5e40a07ed 
 >
 >
->    325          struct mcba_usb_ctx *ctx =3D NULL;
->    326          struct net_device_stats *stats =3D &priv->netdev->stats;
->    327          u16 sid;
->    328          int err;
->    329          struct mcba_usb_msg_can usb_msg =3D {
->    330                  .cmd_id =3D MBCA_CMD_TRANSMIT_MESSAGE_EV
->    331          };
->    332
->    333          if (can_dropped_invalid_skb(netdev, skb))
->                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> We do actually cap cf->can_dlc here but it's limited to
-> CANFD_MAX_DLEN (64) on one path.  Also instead of calling it ->can_dlc
-> we call it "->len".  My devel versions of Smatch could have parsed this
-> if we had kept the types consistent.
-
-The function looks as follows:
-
-static inline bool can_dropped_invalid_skb(struct net_device *dev,
- struct sk_buff *skb) {
-const struct canfd_frame *cfd =3D (struct canfd_frame *)skb->data;
-if (skb->protocol =3D=3D htons(ETH_P_CAN)) {
-if (unlikely(skb->len !=3D CAN_MTU ||
-    cfd->len > CAN_MAX_DLEN))
-goto inval_skb;
-} else if (skb->protocol =3D=3D htons(ETH_P_CANFD)) {
-if (unlikely(skb->len !=3D CANFD_MTU ||
-    cfd->len > CANFD_MAX_DLEN))
-goto inval_skb;
-} else
-goto inval_skb;
-
-MCBA supports normal frames only so it falls into ETH_P_CAN. Both DLC
-and SKB sizes are verified here. I understand that it may be difficult
-for static analyser... Maybe you could make all values coming from skb
-trustworthy after they are verified with can_dropped_invalid_skb()?
-
+>> Is there someone use canfd_frame with broadcast manager ? Every example
+>> or source code I browse just use can_frame, only documentation talks
+>> about that.
 >
->    334                  return NETDEV_TX_OK;
->    335
->    336          ctx =3D mcba_usb_get_free_ctx(priv, cf);
->    337          if (!ctx)
->    338                  return NETDEV_TX_BUSY;
->    339
->    340          can_put_echo_skb(skb, priv->netdev, ctx->ndx);
->    341
->    342          if (cf->can_id & CAN_EFF_FLAG) {
->    343                  /* SIDH    | SIDL                 | EIDH   | EIDL
->    344                   * 28 - 21 | 20 19 18 x x x 17 16 | 15 - 8 | 7 - =
-0
->    345                   */
->    346                  sid =3D MCBA_SIDL_EXID_MASK;
->    347                  /* store 28-18 bits */
->    348                  sid |=3D (cf->can_id & 0x1ffc0000) >> 13;
->    349                  /* store 17-16 bits */
->    350                  sid |=3D (cf->can_id & 0x30000) >> 16;
->    351                  put_unaligned_be16(sid, &usb_msg.sid);
->    352
->    353                  /* store 15-0 bits */
->    354                  put_unaligned_be16(cf->can_id & 0xffff, &usb_msg.=
-eid);
->    355          } else {
->    356                  /* SIDH   | SIDL
->    357                   * 10 - 3 | 2 1 0 x x x x x
->    358                   */
->    359                  put_unaligned_be16((cf->can_id & CAN_SFF_MASK) <<=
- 5,
->    360                                     &usb_msg.sid);
->    361                  usb_msg.eid =3D 0;
->    362          }
->    363
->    364          usb_msg.dlc =3D cf->can_dlc;
->    365
->    366          memcpy(usb_msg.data, cf->data, usb_msg.dlc);
->                        ^^^^^^^^^^^^
-> This only has room for 8 bytes, so 64 might be a buffer overflow?
+> Yes, here:
 >
+> https://github.com/linux-can/can-tests
+>
+> Namely:
+>
+> https://github.com/linux-can/can-tests/blob/master/tst-bcmfd-cycle.c
+> https://github.com/linux-can/can-tests/blob/master/tst-bcmfd-filter.c
+> https://github.com/linux-can/can-tests/blob/master/tst-bcm-tx_delete.c
+>
+>>
+>> Here is the code :
+>>
+>>  38         struct {
+>>  39           struct bcm_msg_head msg_head;
+>>  40           struct canfd_frame frame[4]; /* just an example */
+>>  41         } msg;
+>>  42
+>>  43         memset(msg.frame, 0, sizeof(msg.frame));
+>>  44
+>>  45         msg.msg_head.opcode  = RX_SETUP;
+>>  46         msg.msg_head.can_id  = 0x620;
+>>  47         msg.msg_head.flags   = SETTIMER|STARTTIMER|CAN_FD_FRAME;
+>>  48         msg.msg_head.nframes = 1;
+>>  49         msg.msg_head.count = 0;
+>>  50         msg.msg_head.ival1.tv_sec = 0;
+>>  51         msg.msg_head.ival1.tv_usec = 500000;
+>>  52 //      msg.msg_head.ival2.tv_sec = 0;
+>>  53 //      msg.msg_head.ival2.tv_usec = 100000;
+>
+> This is dangerous!
+>
+> You set SETTIMER|STARTTIMER but leave these values potentially 
+> uninitialized.
+>
+>>  54         msg.frame[0].data[0]   = 0x00;
+>>  55         msg.frame[0].data[1]   = 0x00;
+>>  56         msg.frame[0].data[2]   = 0x00;
+>>  57         msg.frame[0].data[3]   = 0x00;
+>>  58         msg.frame[0].data[4]   = 0x00;
+>>  59         msg.frame[0].data[5]   = 0x3C;
+>>  60         msg.frame[0].data[6]   = 0x00;
+>>  61         msg.frame[0].data[7]   = 0x00;
+>>  62
+>>  63         if(write(s, &msg, sizeof(msg)) < 0)
+>>  64                 printf("This is the end!\n%s\n", strerror(errno));
+>>
+>> Then I use select on socket to read frames. In fact, if I remove
+>> CAN_FD_FRAME it work even if my concatenated struct after bcm_msg_head
+>> is canfd_frame structure but it will only read size of can_frame which
+>> is normal.
+>
+> You always get the concatenated struct depending on CAN_FD_FRAME:
+> http://lxr.free-electrons.com/source/Documentation/networking/can.txt?v=4.9#L856 
+>
+>
+> What length do you get back from the read() syscall?
+>
+> Regards,
+> Oliver
 
-thanks can_dropped_invalid_skb() cf->can_dlc is guaranteed to be <=3D 8.
+-- 
+Romain Forlot - Embedded Engineer - IoT.bzh
+claneys@iot.bzh - www.iot.bzh - +33257620298
 
-
-> regards,
-> dan carpenter
-
-Regards,
-Remik
-
-
-
---=20
-____________________
-Remigiusz Ko=C5=82=C5=82=C4=85taj
-Mobica Ltd
-Technology Consultant
-Skype: remigiusz.kollataj
-www.mobica.com
