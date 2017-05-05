@@ -1,44 +1,96 @@
-From: "Romain Forlot [IoT.bzh]" <claneys@iot.bzh>
-Subject: Re: Using CAN_FD_FRAME with BCM socket
-Date: Thu, 4 May 2017 21:27:42 +0200
-Message-ID: <cefbe7e3-6c84-55cf-e964-b73a2d8d3d72@iot.bzh>
-References: <6e32a9c4-2a08-87ac-aa1e-88907db27304@iot.bzh>
- <a05f4636-3fa1-1d3f-4daf-e0173120609d@hartkopp.net>
- <7d495447-8785-9c2b-b2ce-850dcdeaf174@iot.bzh>
- <fcdec4f3-41b0-c248-24de-555474bc5dee@hartkopp.net>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [bug report] can: mcba_usb: Add support for Microchip CAN BUS
+ Analyzer
+Date: Fri, 5 May 2017 07:36:58 +0300
+Message-ID: <20170505043658.nenftnwsiek4l2w4@mwanda>
+References: <20170504114236.zx7ktyrwiktpkmjw@mwanda>
+ <CAKT-o-c8yhPzsKk4UaM=9qG+9oW=yPdariZuV=BgkWUk4+cBDg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wr0-f169.google.com ([209.85.128.169]:36855 "EHLO
-        mail-wr0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755159AbdEDT1v (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 4 May 2017 15:27:51 -0400
-Received: by mail-wr0-f169.google.com with SMTP id l50so13070486wrc.3
-        for <linux-can@vger.kernel.org>; Thu, 04 May 2017 12:27:50 -0700 (PDT)
-In-Reply-To: <fcdec4f3-41b0-c248-24de-555474bc5dee@hartkopp.net>
-Content-Language: en-US
+Received: from aserp1040.oracle.com ([141.146.126.69]:21236 "EHLO
+        aserp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751035AbdEEEhJ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 5 May 2017 00:37:09 -0400
+Content-Disposition: inline
+In-Reply-To: <CAKT-o-c8yhPzsKk4UaM=9qG+9oW=yPdariZuV=BgkWUk4+cBDg@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+To: =?utf-8?B?S2/FgsWCxIV0YWos?= Remigiusz <remigiusz.kollataj@mobica.com>
+Cc: linux-can@vger.kernel.org
 
-It is a virtual can interface. I will check how to enable it.
+On Thu, May 04, 2017 at 04:46:58PM +0200, Kołłątaj, Remigiusz wrote:
+> Hi Dan,
+> 
+> On 4 May 2017 at 13:42, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > Hello Remigiusz Kołłątaj,
+> >
+> > The patch 51f3baad7de9: "can: mcba_usb: Add support for Microchip CAN
+> > BUS Analyzer" from Apr 14, 2017, leads to the following static
+> > checker warning:
+> >
+> >         drivers/net/can/usb/mcba_usb.c:366 mcba_usb_start_xmit()
+> >         error: 'usb_msg.dlc' from user is not capped properly
+> >
+> > drivers/net/can/usb/mcba_usb.c
+> >    320  static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
+> >    321                                         struct net_device *netdev)
+> >    322  {
+> >    323          struct mcba_priv *priv = netdev_priv(netdev);
+> >    324          struct can_frame *cf = (struct can_frame *)skb->data;
+> >                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > Smatch distrusts skb->data.
+> >
+> >
+> >    325          struct mcba_usb_ctx *ctx = NULL;
+> >    326          struct net_device_stats *stats = &priv->netdev->stats;
+> >    327          u16 sid;
+> >    328          int err;
+> >    329          struct mcba_usb_msg_can usb_msg = {
+> >    330                  .cmd_id = MBCA_CMD_TRANSMIT_MESSAGE_EV
+> >    331          };
+> >    332
+> >    333          if (can_dropped_invalid_skb(netdev, skb))
+> >                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > We do actually cap cf->can_dlc here but it's limited to
+> > CANFD_MAX_DLEN (64) on one path.  Also instead of calling it ->can_dlc
+> > we call it "->len".  My devel versions of Smatch could have parsed this
+> > if we had kept the types consistent.
+> 
+> The function looks as follows:
+> 
+> static inline bool can_dropped_invalid_skb(struct net_device *dev,
+>  struct sk_buff *skb) {
+> const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+> if (skb->protocol == htons(ETH_P_CAN)) {
+> if (unlikely(skb->len != CAN_MTU ||
+>     cfd->len > CAN_MAX_DLEN))
+> goto inval_skb;
+> } else if (skb->protocol == htons(ETH_P_CANFD)) {
+> if (unlikely(skb->len != CANFD_MTU ||
+>     cfd->len > CANFD_MAX_DLEN))
+> goto inval_skb;
+> } else
+> goto inval_skb;
+> 
+> MCBA supports normal frames only so it falls into ETH_P_CAN.
 
+Where is the function my static checker can look at to verify this?
 
-On 05/04/2017 08:21 PM, Oliver Hartkopp wrote:
-> Hi Romain,
->
-> On 05/04/2017 08:04 PM, Romain Forlot [IoT.bzh] wrote:
->> Message too long
->
-> you are using CAN FD frames on a non CAN FD capable CAN interface.
->
-> Right?
->
-> Regards,
-> Oliver
+> Both DLC and SKB sizes are verified here. I understand that it may be
+> difficult for static analyser...
 
--- 
-Romain Forlot - Embedded Engineer - IoT.bzh
-claneys@iot.bzh - www.iot.bzh - +33257620298
+The difficulty is because can_dropped_invalid_skb() treats skb->data as
+a canfd_frame struct and mcba_usb_start_xmit() treats it as a can_frame.
+The layouts happen to align, but the names are different.
+
+> Maybe you could make all values coming from skb trustworthy after they
+> are verified with can_dropped_invalid_skb()?
+
+That's a trickier thing and it probably doesn't scale.
+
+regards,
+dan carpenter
 
