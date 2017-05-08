@@ -1,84 +1,62 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Using CAN_FD_FRAME with BCM socket
-Date: Fri, 5 May 2017 19:26:58 +0200
-Message-ID: <820d1a65-4bdb-d3cf-adcf-91daadfdb049@hartkopp.net>
-References: <6e32a9c4-2a08-87ac-aa1e-88907db27304@iot.bzh>
- <a05f4636-3fa1-1d3f-4daf-e0173120609d@hartkopp.net>
- <7d495447-8785-9c2b-b2ce-850dcdeaf174@iot.bzh>
- <fcdec4f3-41b0-c248-24de-555474bc5dee@hartkopp.net>
- <cefbe7e3-6c84-55cf-e964-b73a2d8d3d72@iot.bzh>
- <74642ed6-012d-aaca-778a-c4a5af65fe3c@hartkopp.net>
- <a2dc8f51-77db-f4d2-783d-48f0acc1a217@iot.bzh>
+From: gianluca <gianlucarenzi@eurekelettronica.it>
+Subject: CanBus2Ethernet Bridge
+Date: Mon, 8 May 2017 11:31:52 +0200
+Message-ID: <e17fc677-1f3a-5a29-10f8-d27cea173b47@eurekelettronica.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:21991 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750988AbdEER1H (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 5 May 2017 13:27:07 -0400
-In-Reply-To: <a2dc8f51-77db-f4d2-783d-48f0acc1a217@iot.bzh>
+Received: from qmail34.e-mind.com ([188.94.192.34]:52460 "HELO
+        qmail.e-mind.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with SMTP id S1751255AbdEHJii (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 8 May 2017 05:38:38 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Romain Forlot [IoT.bzh]" <claneys@iot.bzh>, linux-can@vger.kernel.org
+To: linux-can@vger.kernel.org
 
-Hi Romain,
+Hello list!
 
-On 05/05/2017 12:19 PM, Romain Forlot [IoT.bzh] wrote:
+I am looking for a simple bridge who collect canbus packets over a 
+socketcan device (i.e. can0) and send them to a socket device (i.e. a 
+network socket).
 
-> Thanks for the links, I found out the same and make my test against the
-> wrong device... My bad, once MTU correctly set, it works.
->
-> I hoping that even if BCM socket filter use of FD frames, it could
-> handle classic CAN frame too, like the RAW socket do.
+I have a embedded board who run Linux Debian with CanBus (i.MX6 with 
+FlexCan) and I would like to send/receive those messages to a "server" 
+who is listening on the network socket and "translate" them to can 
+frames to an existing can device (i.e. vcan0 or a real can0 device).
 
-You obviously think CAN FD is 'just longer' than CAN which is wrong.
+Because on the "server" there is an application software who is using 
+the socketcan device to exchange data and such.
 
-A CAN frame with CAN ID 0x123 is something completely different than a 
-CAN FD frame with CAN ID 0x123. It has a different representation on the 
-wire and it can have a different signal descriptions.
+I was thinking about socketcand daemon but to my knowledge has a few 
+limitiations:
 
-Even a CAN FD frame with 8 bytes is something different than a CAN frame 
-with 8 bytes.
+1- It uses the REAL socketcan device as accessing device (-i option 
+[vcan0,can1] ...)
+2- It uses the interface to bind to, and NOT the address to send the 
+packets to (-l).
 
-> It doesn't, so I
-> guess that description about signals must specify if it's using FD
-> frames or not.
+I would like to have something like this on the embedded (it does not 
+work actually!!):
 
-Yes you have to treat it different.
+(iMX6 IP: 192.168.1.101)
+# socketcand -i can0 -l 192.168.1.100
 
-> Be able to also handle classic CAN frames avoid that.
->
-> There is a limitation to not handle both ?
+and on the server (192.168.1.100):
 
-A single CAN BCM socket *can* handle both at the same time.
+# socketcand -i vcan0 -l 192.168.1.101
 
-You have to specify two RX_SETUP jobs then:
-One for CAN and one for CAN FD
+In this way every packet sent from the application to the vcan0 can be 
+routed through the ethernet to the iMX6 @ address 192.168.1.101 and 
+every packet received from the real canbus CAN0 on the iMX6 can be 
+routed to the server 192.168.1.100 to the vcan0 interface.
 
-The fact whether a BCM job is CAN_FD_FRAME type is a relevant distinction:
-
-/*
-  * helpers for bcm_op handling: find & delete bcm [rx|tx] op elements
-  */
-static struct bcm_op *bcm_find_op(struct list_head *ops,
-                                   struct bcm_msg_head *mh, int ifindex)
-{
-         struct bcm_op *op;
-
-         list_for_each_entry(op, ops, list) {
-                 if ((op->can_id == mh->can_id) && (op->ifindex == 
-ifindex) &&
-                     (op->flags & CAN_FD_FRAME) == (mh->flags & 
-CAN_FD_FRAME))
-                         return op;
-         }
-
-         return NULL;
-}
-
-
-http://lxr.linux.no/#linux+v4.10.1/net/can/bcm.c#L717
+There is such possibility without writing a bridge from scratch???
 
 Regards,
-Oliver
+Gianluca Renzi
+-- 
+Eurek s.r.l.                          |
+Electronic Engineering                | http://www.eurek.it
+via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
+p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
