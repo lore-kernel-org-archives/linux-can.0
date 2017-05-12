@@ -1,99 +1,50 @@
-From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Subject: Re: [PATCH v4 1/4] can: m_can: move Message RAM initialization to
- function
-Date: Fri, 12 May 2017 08:37:07 +0200
-Message-ID: <90788d6d-24f3-64ba-43f3-16301b777536@free-electrons.com>
-References: <20170505135033.8349-1-quentin.schulz@free-electrons.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+From: Johan Hovold <johan@kernel.org>
+Subject: [PATCH] net: can: peak: fix product-id endianness in error message
+Date: Fri, 12 May 2017 12:09:25 +0200
+Message-ID: <20170512100925.1841-1-johan@kernel.org>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.free-electrons.com ([62.4.15.54]:47714 "EHLO
-        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750708AbdELGhL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2017 02:37:11 -0400
-In-Reply-To: <20170505135033.8349-1-quentin.schulz@free-electrons.com>
+Received: from mail-wr0-f194.google.com ([209.85.128.194]:33155 "EHLO
+        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1756326AbdELKJo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2017 06:09:44 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, mario.huettel@gmx.net, socketcan@hartkopp.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, Johan Hovold <johan@kernel.org>
 
-Hi all,
+Make sure to use the USB device product-id stored in host-byte order in
+a probe error message.
 
-On 05/05/2017 15:50, Quentin Schulz wrote:
-> To avoid possible ECC/parity checksum errors when reading an
-> uninitialized buffer, the entire Message RAM is initialized when probing
-> the driver. This initialization is done in the same function reading the
-> Device Tree properties.
-> 
-> This patch moves the RAM initialization to a separate function so it can
-> be called separately from device initialization from Device Tree.
-> 
-> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+Also remove a redundant reassignment of the local usb_dev variable which
+had already been used to retrieve the product id.
 
-It's been a week since I sent this patch series. Any comments?
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Thanks,
-Quentin
-
-> ---
-> 
-> v4:
->   - remove unused variables from m_can_of_parse_mram,
-> 
->  drivers/net/can/m_can/m_can.c | 26 +++++++++++++++-----------
->  1 file changed, 15 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> index bf8fdaeb955e..5da1bdb202a3 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> @@ -1489,11 +1489,23 @@ static int register_m_can_dev(struct net_device *dev)
->  	return register_candev(dev);
->  }
->  
-> +static void m_can_init_ram(struct m_can_priv *priv)
-> +{
-> +	int end, i, start;
-> +
-> +	/* initialize the entire Message RAM in use to avoid possible
-> +	 * ECC/parity checksum errors when reading an uninitialized buffer
-> +	 */
-> +	start = priv->mcfg[MRAM_SIDF].off;
-> +	end = priv->mcfg[MRAM_TXB].off +
-> +		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
-> +	for (i = start; i < end; i += 4)
-> +		writel(0x0, priv->mram_base + i);
-> +}
-> +
->  static void m_can_of_parse_mram(struct m_can_priv *priv,
->  				const u32 *mram_config_vals)
->  {
-> -	int i, start, end;
-> -
->  	priv->mcfg[MRAM_SIDF].off = mram_config_vals[0];
->  	priv->mcfg[MRAM_SIDF].num = mram_config_vals[1];
->  	priv->mcfg[MRAM_XIDF].off = priv->mcfg[MRAM_SIDF].off +
-> @@ -1529,15 +1541,7 @@ static void m_can_of_parse_mram(struct m_can_priv *priv,
->  		priv->mcfg[MRAM_TXE].off, priv->mcfg[MRAM_TXE].num,
->  		priv->mcfg[MRAM_TXB].off, priv->mcfg[MRAM_TXB].num);
->  
-> -	/* initialize the entire Message RAM in use to avoid possible
-> -	 * ECC/parity checksum errors when reading an uninitialized buffer
-> -	 */
-> -	start = priv->mcfg[MRAM_SIDF].off;
-> -	end = priv->mcfg[MRAM_TXB].off +
-> -		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
-> -	for (i = start; i < end; i += 4)
-> -		writel(0x0, priv->mram_base + i);
-> -
-> +	m_can_init_ram(priv);
->  }
->  
->  static int m_can_plat_probe(struct platform_device *pdev)
-> 
-
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 57913dbbae0a..1ca76e03e965 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -908,8 +908,6 @@ static int peak_usb_probe(struct usb_interface *intf,
+ 	const struct peak_usb_adapter *peak_usb_adapter = NULL;
+ 	int i, err = -ENOMEM;
+ 
+-	usb_dev = interface_to_usbdev(intf);
+-
+ 	/* get corresponding PCAN-USB adapter */
+ 	for (i = 0; i < ARRAY_SIZE(peak_usb_adapters_list); i++)
+ 		if (peak_usb_adapters_list[i]->device_id == usb_id_product) {
+@@ -920,7 +918,7 @@ static int peak_usb_probe(struct usb_interface *intf,
+ 	if (!peak_usb_adapter) {
+ 		/* should never come except device_id bad usage in this file */
+ 		pr_err("%s: didn't find device id. 0x%x in devices list\n",
+-			PCAN_USB_DRIVER_NAME, usb_dev->descriptor.idProduct);
++			PCAN_USB_DRIVER_NAME, usb_id_product);
+ 		return -ENODEV;
+ 	}
+ 
 -- 
-Quentin Schulz, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.13.0
+
