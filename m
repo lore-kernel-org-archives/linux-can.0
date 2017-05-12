@@ -1,146 +1,99 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 kernel for Raspberry Pi
-Date: Thu, 11 May 2017 21:29:36 +0200
-Message-ID: <20170511192936.GB15112@airbook.vandijck-laurijssen.be>
-References: <CAGJdXcFRUB=xLSdFkwadTkdd=OAvgkGgrOYRAxy0RkjpHGoCDQ@mail.gmail.com>
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
+Subject: Re: [PATCH v4 1/4] can: m_can: move Message RAM initialization to
+ function
+Date: Fri, 12 May 2017 08:37:07 +0200
+Message-ID: <90788d6d-24f3-64ba-43f3-16301b777536@free-electrons.com>
+References: <20170505135033.8349-1-quentin.schulz@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b03.edpnet.be ([212.71.1.220]:36750 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755390AbdEKTn6 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 11 May 2017 15:43:58 -0400
-Content-Disposition: inline
-In-Reply-To: <CAGJdXcFRUB=xLSdFkwadTkdd=OAvgkGgrOYRAxy0RkjpHGoCDQ@mail.gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54]:47714 "EHLO
+        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750708AbdELGhL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2017 02:37:11 -0400
+In-Reply-To: <20170505135033.8349-1-quentin.schulz@free-electrons.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Paul Bongaerts <pauluzs@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, mario.huettel@gmx.net, socketcan@hartkopp.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com
 
-> Because this takes several hours per build and over a day on the pi i
-> could use some help in the right direction
+Hi all,
 
-My principle is that I need indeed to decrease the
-'modify-build-reload' time before problems get solved.
+On 05/05/2017 15:50, Quentin Schulz wrote:
+> To avoid possible ECC/parity checksum errors when reading an
+> uninitialized buffer, the entire Message RAM is initialized when probing
+> the driver. This initialization is done in the same function reading the
+> Device Tree properties.
+> 
+> This patch moves the RAM initialization to a separate function so it can
+> be called separately from device initialization from Device Tree.
+> 
+> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
 
-> Merge j1939-v4.7 with rpi-master takes several hours
+It's been a week since I sent this patch series. Any comments?
 
-restrict yourself to cross-compile then. git merge should take 1.2.3
-seconds. A minute at most.
+Thanks,
+Quentin
 
-See my further comments inline below:
+> ---
+> 
+> v4:
+>   - remove unused variables from m_can_of_parse_mram,
+> 
+>  drivers/net/can/m_can/m_can.c | 26 +++++++++++++++-----------
+>  1 file changed, 15 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> index bf8fdaeb955e..5da1bdb202a3 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -1489,11 +1489,23 @@ static int register_m_can_dev(struct net_device *dev)
+>  	return register_candev(dev);
+>  }
+>  
+> +static void m_can_init_ram(struct m_can_priv *priv)
+> +{
+> +	int end, i, start;
+> +
+> +	/* initialize the entire Message RAM in use to avoid possible
+> +	 * ECC/parity checksum errors when reading an uninitialized buffer
+> +	 */
+> +	start = priv->mcfg[MRAM_SIDF].off;
+> +	end = priv->mcfg[MRAM_TXB].off +
+> +		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
+> +	for (i = start; i < end; i += 4)
+> +		writel(0x0, priv->mram_base + i);
+> +}
+> +
+>  static void m_can_of_parse_mram(struct m_can_priv *priv,
+>  				const u32 *mram_config_vals)
+>  {
+> -	int i, start, end;
+> -
+>  	priv->mcfg[MRAM_SIDF].off = mram_config_vals[0];
+>  	priv->mcfg[MRAM_SIDF].num = mram_config_vals[1];
+>  	priv->mcfg[MRAM_XIDF].off = priv->mcfg[MRAM_SIDF].off +
+> @@ -1529,15 +1541,7 @@ static void m_can_of_parse_mram(struct m_can_priv *priv,
+>  		priv->mcfg[MRAM_TXE].off, priv->mcfg[MRAM_TXE].num,
+>  		priv->mcfg[MRAM_TXB].off, priv->mcfg[MRAM_TXB].num);
+>  
+> -	/* initialize the entire Message RAM in use to avoid possible
+> -	 * ECC/parity checksum errors when reading an uninitialized buffer
+> -	 */
+> -	start = priv->mcfg[MRAM_SIDF].off;
+> -	end = priv->mcfg[MRAM_TXB].off +
+> -		priv->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
+> -	for (i = start; i < end; i += 4)
+> -		writel(0x0, priv->mram_base + i);
+> -
+> +	m_can_init_ram(priv);
+>  }
+>  
+>  static int m_can_plat_probe(struct platform_device *pdev)
+> 
 
---- Original message ---
-> Date:   Wed, 10 May 2017 13:50:25 +0200
-> From: Paul Bongaerts <pauluzs@gmail.com>
-> To: linux-can@vger.kernel.org
-> Subject: J1939 kernel for Raspberry Pi
-> 
-> After struggling for the last 5 days i keep failing in building a
-> working custom  jessie lite based j1939 arm kernel. for a raspberrypi
-> (b.t.w. i'm certainly no expert on kernel building)
-> 
-> Tried  local and  crosscompiled builds with different setting
-> 
-> Goal is to build a kernel according to the Raspberrypi kernel building guide
-> https://www.raspberrypi.org/documentation/linux/kernel/building.md
-> 
-> And merge this with a J1939 kernel according to this elinux j1939 guide.
-> http://elinux.org/J1939
-> 
-> Because this takes several hours per build and over a day on the pi i
-> could use some help in the right direction
-> 
-> 
-> 
-> Br, Paul
-> 
-> 
-> 
-> 
-> Failed attempts summary :
-> 
-> Compile a working kernel with no j1939 support on rpi locally
-> (modprobe can-j1939 Fails)
-> Crosscompile unbootable kernels with j1939 support on ubuntu (Fails to boot)
-> 
-> 
-> #########################################################################
-> Native compile
-> rapsberry pi zero w    16 GB SD Card
-> #########################################################################
-
-I stripped the native compile, it takes too much time, but should not be
-different.
-
-> #########################################################################
-> Crosscompile j1939-v4.7 > rpi kernel
-> ubuntu-16.04.2-server-amd64.iso
-> #########################################################################
-> 
-> cd /usr/src
-> 
-> Get crosscompile Toolchain
-> 
-> git clone git://github.com/raspberrypi/tools.git --depth=1
-> 
-> Get j1939-v4.7 branch kernel sources
-> 
-> git clone -b j1939d-v4.7 git://github.com/kurt-vd/linux --depth=1
-
-(1) You should not clone 2 repo's, but use remotes
-(2) using '--depth=1' ignores history, but you will need the history for
-the merge. 'git clone' takes time once, spending it enables you to
-benefit of the git features.
-
-> 
-> cd /usr/src/linux
-> 
-> export PATH
-> 
-> export PATH=$PATH:/usr/src/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
-> 
-> Clean the kernel source
-> 
-> make mrproper
-> 
-> 
-> 
-> Now login to a running rpi (Clean raspbian-jessie-lite, uname -a r 4.9.24+ )
-> 
-> Create config.gz
-> 
-> pi@raspberrypi:~ $ sudo modprobe configs
-> 
-> Copy the config.gz to build server
-> 
-> pi@raspberrypi:~ $ scp /proc/config.gz user@server.local:/usr/src/linux
-> 
-> 
-> 
-> Back on Server
-> 
-> gunzip -c config.gz > .config
-> 
-> Set kernel varialble
-> 
-> KERNEL=kernel
-> 
-> 
-> Build Kernel Image, Modules and Devicetreeoverlays (select: SAE J1939
-> as module, debug SAE J1939 yes, CAN_IFI_CANFD as module)
-> 
-> make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs
-> 
-> 
-> copy files to SD according to raspberry's kernelbuildingguide and boot
-> (fails to boot)
-
-Which files did you copy?
-
-I suspect you should make a (temporary) directory where you install
-kernel & modules to. That directory is to be copies recursively to the
-RPI.
-
-Kind regards,
-Kurt
+-- 
+Quentin Schulz, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
