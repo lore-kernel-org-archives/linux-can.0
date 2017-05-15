@@ -1,77 +1,184 @@
-From: <Wenyou.Yang@microchip.com>
-Subject: RE: [PATCH v3] ARM: dts: at91: sama5d2: add m_can nodes
-Date: Mon, 15 May 2017 10:17:08 +0000
-Message-ID: <F9F4555C4E01D7469D37975B62D0EFBB591F84@CHN-SV-EXMX07.mchp-main.com>
-References: <20170424011217.2530-1-wenyou.yang@atmel.com>
- <20170515094336.h6rllnei3cneb4j2@piout.net>
+From: Paul Bongaerts <pauluzs@gmail.com>
+Subject: Re: J1939 kernel for Raspberry Pi
+Date: Mon, 15 May 2017 12:50:42 +0200
+Message-ID: <CAGJdXcHk2qJxMnxjPTCVTFFSr-mdorGS+gzn8qVW-o+dX1vt3Q@mail.gmail.com>
+References: <CAGJdXcFRUB=xLSdFkwadTkdd=OAvgkGgrOYRAxy0RkjpHGoCDQ@mail.gmail.com>
+ <20170511192936.GB15112@airbook.vandijck-laurijssen.be> <CAGJdXcGg_8+cxi3Zn-iRgEci8TsCjrSs1q4pq4GscyQ+vBynVg@mail.gmail.com>
+ <CAGJdXcEP4ry-LDE5ZtM+00mBgQM3gB1M5rETTXJ2rdHNnw=Wfw@mail.gmail.com> <20170515071420.GA2533@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:1686 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756042AbdEOKRL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2017 06:17:11 -0400
-In-Reply-To: <20170515094336.h6rllnei3cneb4j2@piout.net>
-Content-Language: en-US
+Received: from mail-yw0-f195.google.com ([209.85.161.195]:33951 "EHLO
+        mail-yw0-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754692AbdEOKut (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2017 06:50:49 -0400
+Received: by mail-yw0-f195.google.com with SMTP id 17so5458064ywk.1
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2017 03:50:43 -0700 (PDT)
+In-Reply-To: <20170515071420.GA2533@airbook.vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: alexandre.belloni@free-electrons.com
-Cc: Nicolas.Ferre@microchip.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, socketcan@hartkopp.net, devicetree@vger.kernel.org, quentin.schulz@free-electrons.com, linux-arm-kernel@lists.infradead.org
+To: Paul Bongaerts <pauluzs@gmail.com>, linux-can@vger.kernel.org
 
-SGkgQWxleGFuZHJlLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFs
-ZXhhbmRyZSBCZWxsb25pIFttYWlsdG86YWxleGFuZHJlLmJlbGxvbmlAZnJlZS1lbGVjdHJvbnMu
-Y29tXQ0KPiBTZW50OiAyMDE3xOo11MIxNcjVIDE3OjQ0DQo+IFRvOiBXZW55b3UgWWFuZyAtIEE0
-MTUzNSA8V2VueW91LllhbmdAbWljcm9jaGlwLmNvbT4NCj4gQ2M6IE5pY29sYXMgRmVycmUgLSBN
-NDMyMzggPE5pY29sYXMuRmVycmVAbWljcm9jaGlwLmNvbT47IFJvYiBIZXJyaW5nDQo+IDxyb2Jo
-K2R0QGtlcm5lbC5vcmc+OyBQYXdlbCBNb2xsIDxwYXdlbC5tb2xsQGFybS5jb20+OyBNYXJrIFJ1
-dGxhbmQNCj4gPG1hcmsucnV0bGFuZEBhcm0uY29tPjsgSWFuIENhbXBiZWxsIDxpamMrZGV2aWNl
-dHJlZUBoZWxsaW9uLm9yZy51az47IEt1bWFyDQo+IEdhbGEgPGdhbGFrQGNvZGVhdXJvcmEub3Jn
-PjsgUnVzc2VsbCBLaW5nIDxsaW51eEBhcm0ubGludXgub3JnLnVrPjsgbGludXgtDQo+IGtlcm5l
-bEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IE9saXZlciBIYXJ0
-a29wcA0KPiA8c29ja2V0Y2FuQGhhcnRrb3BwLm5ldD47IGRldmljZXRyZWVAdmdlci5rZXJuZWwu
-b3JnOyBRdWVudGluIFNjaHVseg0KPiA8cXVlbnRpbi5zY2h1bHpAZnJlZS1lbGVjdHJvbnMuY29t
-PjsgV2VueW91IFlhbmcgLSBBNDE1MzUNCj4gPFdlbnlvdS5ZYW5nQG1pY3JvY2hpcC5jb20+OyBs
-aW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRD
-SCB2M10gQVJNOiBkdHM6IGF0OTE6IHNhbWE1ZDI6IGFkZCBtX2NhbiBub2Rlcw0KPiANCj4gT24g
-MjQvMDQvMjAxNyBhdCAwOToxMjoxNyArMDgwMCwgV2VueW91IFlhbmcgd3JvdGU6DQo+ID4gQWRk
-IG5vZGVzIHRvIHN1cHBvcnQgdGhlIENvbnRyb2xsZXIgQXJlYSBOZXR3b3JrKE1fQ0FOKSBvbiBT
-QU1BNUQyLg0KPiA+IFRoZSB2ZXJzaW9uIG9mIE1fQ0FOIElQIGNvcmUgaXMgMy4xLjAgKENSRUwg
-PSAweDMxMDQwNzMwKS4NCj4gPg0KPiA+IEFzIHNhaWQgaW4gU0FNQTVEMiBkYXRhc2hlZXQsIHRo
-ZSBDQU4gY2xvY2sgaXMgcmVjb21tZW5kZWQgdG8gdXNlDQo+ID4gZnJlcXVlbmNpZXMgb2YgMjAs
-IDQwIG9yIDgwIE1Iei4gVG8gYWNoaWV2ZSB0aGVzZSBmcmVxdWVuY2llcywgUE1DDQo+ID4gR0NM
-SzMgbXVzdCBzZWxlY3QgdGhlIFVQTExDSyg0ODAgTUh6KSBhcyBzb3VyY2UgY2xvY2sgYW5kIGRp
-dmlkZSBieQ0KPiA+IDI0LCAxMiwgb3IgNi4gU28sIHRoZSAiYXNzaWduZWQtY2xvY2stcmF0ZXMi
-IHByb3BlcnR5IGhhcyB0aHJlZQ0KPiA+IG9wdGlvbnM6IDIwMDAwMDAwLCA0MDAwMDAwMCwgYW5k
-IDgwMDAwMDAwLg0KPiA+IFRoZSAiYXNzaWduZWQtY2xvY2stcGFyZW50cyIgcHJvcGVydHkgc2hv
-dWxkIGJlIHJlZmVycmVkIHRvIHV0bWkNCj4gPiBmaXhlZGx5Lg0KPiA+DQo+ID4gVGhlIE1TQnMg
-W2JpdHMgMzE6MTZdIG9mIHRoZSBDQU4gTWVzc2FnZSBSQU0gZm9yIENBTjAgYW5kIENBTjEgYXJl
-DQo+ID4gZGVmYXVsdCBjb25maWd1cmVkIGluIDB4MDAyMDAwMDAuIFRvIGF2b2lkIGNvbmZsaWN0
-IHdpdGggU1JBTSBtYXAgZm9yDQo+ID4gUE0sIGNoYW5nZSB0aGVtIHRvIDB4MDAyMTAwMDAgaW4g
-dGhlIEFUOTFCb290c3RyYXAgdmlhIHNldHRpbmcgdGhlIENBTg0KPiA+IE1lbW9yaWVzIEFkZHJl
-c3MtYmFzZWQgUmVnaXN0ZXIoU0ZSX0NBTikgb2YgU0ZSLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1i
-eTogV2VueW91IFlhbmcgPHdlbnlvdS55YW5nQGF0bWVsLmNvbT4NCj4gPiBUZXN0ZWQtYnk6IFF1
-ZW50aW4gU2NodWx6IDxxdWVudGluLnNjaHVsekBmcmVlLWVsZWN0cm9ucy5jb20+DQo+ID4gLS0t
-DQo+ID4gVGhlIHBhdGNoIGlzIHRlc3RlZCBvbiBTQU1BNUQyIFhwbGFpbmVkIGFuZCBiYXNlZCBv
-biB0aGUgcGF0Y2ggc2V0LA0KPiA+IDEuIFtQQVRDSCB2NCAxLzddIGNhbjogbV9jYW46IERpc2Fi
-bGVkIEludGVycnVwdCBMaW5lIDENCj4gPiAgICAgaHR0cDovL21hcmMuaW5mby8/bD1saW51eC1j
-YW4mbT0xNDkxNjUzNDM2MDQwMzMmdz0yDQo+ID4NCj4gPiBDaGFuZ2VzIGluIHYzOg0KPiA+ICAt
-IEFkZCBUZXN0ZWQtYnkgdGFnLg0KPiA+ICAtIENoYW5nZSB0aGUgbnVtYmVyIG9mIFJ4IFJ4IEJ1
-ZmZlcnMsIFR4IEJ1ZmZlcnMgYW5kIFR4IEV2ZW50IEZJRk8NCj4gPiAgICB0byBtYXhpbXVtLg0K
-PiA+DQo+ID4gQ2hhbmdlcyBpbiB2MjoNCj4gPiAgLSBDb25maWd1cmVzIDEwIFRYIEV2ZW50IEZJ
-Rk8gZWxlbWVudHMgYW5kIDEwIFRYIEJ1ZmZlcnMvRklGTyBzbG90cywNCj4gPiAgICBiZWNhdXNl
-IHRoZSBUWEUgRklGTyBpcyBuZWVkZWQgdG8gYmUgY29uZmlndXJlZC4NCj4gPiAgLSBDb25maWd1
-cmUgdGhlIG9mZnNldCBvZiBNZXNzYWdlIFJBTSBmb3IgQ0FOMSBmb2xsb3dlZCBmcm9tIENBTjAn
-cy4NCj4gPg0KPiA+ICBhcmNoL2FybS9ib290L2R0cy9hdDkxLXNhbWE1ZDJfeHBsYWluZWQuZHRz
-IHwgMjQgKysrKysrKysrKysrKw0KPiA+ICBhcmNoL2FybS9ib290L2R0cy9zYW1hNWQyLmR0c2kg
-ICAgICAgICAgICAgIHwgNTYNCj4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAg
-MiBmaWxlcyBjaGFuZ2VkLCA4MCBpbnNlcnRpb25zKCspDQo+ID4NCj4gDQo+IEl0IGRpZG4ndCBh
-cHBseSBjbGVhbmx5LCBjYW4geW91IHBsZWFzZSB2ZXJpZnkNCj4gaHR0cHM6Ly9naXQua2VybmVs
-Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYWJlbGxvbmkvbGludXguZ2l0L2xvZy8/aD1h
-dDkxLWR0DQoNClZlcmlmaWVkLCBpdCB3b3Jrcy4gDQoNClRoYW5rIHlvdSBmb3IgeW91ciBlZmZv
-cnQuDQoNCg0KQlRXLCBpdCB3aWxsIGJlIGJldHRlciB0YWtlIHRoZSBwYXRjaCB0byBhZGQgdGhl
-IGNvbmZpZy4NCltQQVRDSCB2Ml0gQVJNOiBhdDkxL2RlZmNvbmZpZzogYWRkIE1DQU4gZHJpdmVy
-IHRvIHNhbWE1X2RlZmNvbmZpZw0KSSBqdXN0IHN1Ym1pdHRlZC4NCg0KPiANCj4gLS0NCj4gQWxl
-eGFuZHJlIEJlbGxvbmksIEZyZWUgRWxlY3Ryb25zDQo+IEVtYmVkZGVkIExpbnV4IGFuZCBLZXJu
-ZWwgZW5naW5lZXJpbmcNCj4gaHR0cDovL2ZyZWUtZWxlY3Ryb25zLmNvbQ0KDQoNCkJlc3QgUmVn
-YXJkcywNCldlbnlvdSBZYW5nDQo=
+Hi,
+
+I'll wait for your 4.9 fix.
+
+My own kernel is 4.9.24. only without the J1939
+That's what the question about branching was about.
+
+Is it possible to use the 4.7 branch?
+Like :
+git clone git://github.com/raspberrypi/linux/tree/rpi-4.7.y
+Or:
+git clone -b rpi-4.7.y git://github.com/raspberrypi/linux
+
+Instead of :
+git clone git://github.com/raspberrypi/linux.git
+
+Or does this mess up the history as well?
+
+Same goes for adding your remote
+would just the 4.7 branch be enough?
+Like:
+git clone -b j1939d-v4.7 git://github.com/kurt-vd/linux
+Or does this mess up the history as well?
+
+2017-05-15 9:14 GMT+02:00 Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>:
+> Hey,
+>
+> I was just looking your previous email, but I see here below that you
+> all got it right.
+>>
+>> Still getting a error when trying to cross compile
+>>
+>>
+>>
+>> Go into src dir
+>>
+>> cd /usr/src
+>>
+>> Get crosscompile Toolchain
+>>
+>> git clone git://github.com/raspberrypi/tools.git
+>>
+>> Next get raspberry sources
+>>
+>> git clone git://github.com/raspberrypi/linux.git
+>>
+>> Go into linux dir
+>>
+>> cd /usr/src/linux
+>>
+>> Remote add the j1939 sources
+>>
+>> git remote add j1939 git://github.com/kurt-vd/linux
+>>
+>> Update j1939 remote
+>>
+>> git remote update j1939
+>>
+>> Merge j1939-v4.7 with rpi-master
+>>
+>>     git merge j1939/j1939d-v4.7
+>>     (Rpi jessie image uses uname -r 4.9.24+  so 4.7 is closest lower
+>> J1939 version)
+>>
+>> export crosscompile toolchain path
+>>
+>> To build on 32 bit system
+>> export PATH=3D$PATH:/usr/src/tools/arm-bcm2708/gcc-linaro-arm-linux-gnue=
+abihf-raspbian/bin
+>> To build on 64 bits system
+>> export PATH=3D$PATH:/usr/src/tools/arm-bcm2708/gcc-linaro-arm-linux-gnue=
+abihf-raspbian-x64/bin
+>>
+>> Clean the kernel source
+>>
+>> make mrproper
+>>
+>> Set kernel type
+>>
+>> For Rapberry Pi 1/compute/zero (w)
+>> KERNEL=3Dkernel
+>> For Raspberry Pi 2/3
+>> KERNEL=3Dkernel7
+>>
+>> Use default config
+>>
+>> For Rapberry Pi 1/compute/zero(w)
+>> make ARCH=3Darm CROSS_COMPILE=3Darm-linux-gnueabihf- bcmrpi_defconfig
+>> For Raspberry Pi 2/3
+>> make ARCH=3Darm CROSS_COMPILE=3Darm-linux-gnueabihf- bcm2709_defconfig
+>>
+>> Enable j1939 can kernel modeles
+>>
+>> make ARCH=3Darm CROSS_COMPILE=3Darm-linux-gnueabihf- menuconfig
+>>
+>> Go into Networking Support Select SAE J1939 as module, enable debug.
+>> Go into CAN Device Drivers and select your device drivers
+>>
+>> <M>   CAN bus subsystem support  --->
+>> --- CAN bus subsystem support
+>> <M>   Raw CAN Protocol (raw access with CAN-ID filtering)
+>> <M>   Broadcast Manager CAN Protocol (with content filtering)
+>> <M>   CAN Gateway/Router (with netlink configuration)
+>> <M>   SAE J1939
+>> [*]     debug SAE J1939
+>> CAN Device Drivers  --->
+>>
+>> Exit menuconfig and save the config
+>>
+>> Build Kernel Image, Modules and Devicetreeoverlays
+>>
+>> make ARCH=3Darm CROSS_COMPILE=3Darm-linux-gnueabihf- zImage modules dtb
+>>
+>>   ......
+>>   CC [M]  net/bridge/br_netfilter_hooks.o
+>>   CC [M]  net/bridge/br_netfilter_ipv6.o
+>>   LD [M]  net/bridge/br_netfilter.o
+>>   LD      net/can/built-in.o
+>>   CC [M]  net/can/af_can.o
+>>   CC [M]  net/can/proc.o
+>>   LD [M]  net/can/can.o
+>>   CC [M]  net/can/raw.o
+>>   LD [M]  net/can/can-raw.o
+>>   CC [M]  net/can/bcm.o
+>>   LD [M]  net/can/can-bcm.o
+>>   CC [M]  net/can/gw.o
+>>   LD [M]  net/can/can-gw.o
+>>   LD      net/can/j1939/built-in.o
+>>   CC [M]  net/can/j1939/address-claim.o
+>>   CC [M]  net/can/j1939/bus.o
+>>   CC [M]  net/can/j1939/main.o
+>> net/can/j1939/main.c: In function =E2=80=98j1939_netdev_start=E2=80=99:
+>> net/can/j1939/main.c:238:10: error: too few arguments to function
+>> =E2=80=98can_rx_register=E2=80=99
+>>           j1939_can_recv, priv, "j1939");
+>>           ^
+>> In file included from net/can/j1939/main.c:25:0:
+>> ./include/linux/can/core.h:57:5: note: declared here
+>>  int can_rx_register(struct net_device *dev, canid_t can_id, canid_t mas=
+k,
+>>      ^
+>> scripts/Makefile.build:293: recipe for target 'net/can/j1939/main.o' fai=
+led
+>
+> This is a code problem, not a git problem.
+> Between 4.7 & 4.9, can_rx_register may have changed prototype.
+> You didn't do anything wrong.
+> I'll have to prepare a 4.9 branch with a small fix ...
+>
+>> make[3]: *** [net/can/j1939/main.o] Error 1
+>> scripts/Makefile.build:544: recipe for target 'net/can/j1939' failed
+>> make[2]: *** [net/can/j1939] Error 2
+>> scripts/Makefile.build:544: recipe for target 'net/can' failed
+>> make[1]: *** [net/can] Error 2
+>> Makefile:988: recipe for target 'net' failed
+>> make: *** [net] Error 2
+>> user@jessie:/usr/src/linux$
+>
+> To continue in between, when you don't add j1939 to the kernel, are you
+> able to boot you own kernel? You can grab the version with 'uname -a'.
+>
+> Kurt
