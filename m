@@ -1,65 +1,77 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH v3] ARM: dts: at91: sama5d2: add m_can nodes
-Date: Mon, 15 May 2017 11:43:36 +0200
-Message-ID: <20170515094336.h6rllnei3cneb4j2@piout.net>
+From: <Wenyou.Yang@microchip.com>
+Subject: RE: [PATCH v3] ARM: dts: at91: sama5d2: add m_can nodes
+Date: Mon, 15 May 2017 10:17:08 +0000
+Message-ID: <F9F4555C4E01D7469D37975B62D0EFBB591F84@CHN-SV-EXMX07.mchp-main.com>
 References: <20170424011217.2530-1-wenyou.yang@atmel.com>
+ <20170515094336.h6rllnei3cneb4j2@piout.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.free-electrons.com ([62.4.15.54]:44674 "EHLO
-        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1760304AbdEOJns (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2017 05:43:48 -0400
-Content-Disposition: inline
-In-Reply-To: <20170424011217.2530-1-wenyou.yang@atmel.com>
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:1686 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1756042AbdEOKRL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2017 06:17:11 -0400
+In-Reply-To: <20170515094336.h6rllnei3cneb4j2@piout.net>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wenyou Yang <wenyou.yang@atmel.com>
-Cc: Nicolas.Ferre@Microchip.com, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Russell King <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, devicetree@vger.kernel.org, Quentin Schulz <quentin.schulz@free-electrons.com>, Wenyou Yang <wenyou.yang@microchip.com>, linux-arm-kernel@lists.infradead.org
+To: alexandre.belloni@free-electrons.com
+Cc: Nicolas.Ferre@microchip.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, socketcan@hartkopp.net, devicetree@vger.kernel.org, quentin.schulz@free-electrons.com, linux-arm-kernel@lists.infradead.org
 
-On 24/04/2017 at 09:12:17 +0800, Wenyou Yang wrote:
-> Add nodes to support the Controller Area Network(M_CAN) on SAMA5D2.
-> The version of M_CAN IP core is 3.1.0 (CREL = 0x31040730).
-> 
-> As said in SAMA5D2 datasheet, the CAN clock is recommended to use
-> frequencies of 20, 40 or 80 MHz. To achieve these frequencies,
-> PMC GCLK3 must select the UPLLCK(480 MHz) as source clock and
-> divide by 24, 12, or 6. So, the "assigned-clock-rates" property
-> has three options: 20000000, 40000000, and 80000000.
-> The "assigned-clock-parents" property should be referred to utmi
-> fixedly.
-> 
-> The MSBs [bits 31:16] of the CAN Message RAM for CAN0 and CAN1 are
-> default configured in 0x00200000. To avoid conflict with SRAM map
-> for PM, change them to 0x00210000 in the AT91Bootstrap via setting
-> the CAN Memories Address-based Register(SFR_CAN) of SFR.
-> 
-> Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
-> Tested-by: Quentin Schulz <quentin.schulz@free-electrons.com>
-> ---
-> The patch is tested on SAMA5D2 Xplained and based on the patch set,
->  1. [PATCH v4 1/7] can: m_can: Disabled Interrupt Line 1
->     http://marc.info/?l=linux-can&m=149165343604033&w=2
-> 
-> Changes in v3:
->  - Add Tested-by tag.
->  - Change the number of Rx Rx Buffers, Tx Buffers and Tx Event FIFO
->    to maximum.
-> 
-> Changes in v2:
->  - Configures 10 TX Event FIFO elements and 10 TX Buffers/FIFO slots,
->    because the TXE FIFO is needed to be configured.
->  - Configure the offset of Message RAM for CAN1 followed from CAN0's.
-> 
->  arch/arm/boot/dts/at91-sama5d2_xplained.dts | 24 +++++++++++++
->  arch/arm/boot/dts/sama5d2.dtsi              | 56 +++++++++++++++++++++++++++++
->  2 files changed, 80 insertions(+)
-> 
-
-It didn't apply cleanly, can you please verify
-https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git/log/?h=at91-dt
-
--- 
-Alexandre Belloni, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+SGkgQWxleGFuZHJlLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFs
+ZXhhbmRyZSBCZWxsb25pIFttYWlsdG86YWxleGFuZHJlLmJlbGxvbmlAZnJlZS1lbGVjdHJvbnMu
+Y29tXQ0KPiBTZW50OiAyMDE3xOo11MIxNcjVIDE3OjQ0DQo+IFRvOiBXZW55b3UgWWFuZyAtIEE0
+MTUzNSA8V2VueW91LllhbmdAbWljcm9jaGlwLmNvbT4NCj4gQ2M6IE5pY29sYXMgRmVycmUgLSBN
+NDMyMzggPE5pY29sYXMuRmVycmVAbWljcm9jaGlwLmNvbT47IFJvYiBIZXJyaW5nDQo+IDxyb2Jo
+K2R0QGtlcm5lbC5vcmc+OyBQYXdlbCBNb2xsIDxwYXdlbC5tb2xsQGFybS5jb20+OyBNYXJrIFJ1
+dGxhbmQNCj4gPG1hcmsucnV0bGFuZEBhcm0uY29tPjsgSWFuIENhbXBiZWxsIDxpamMrZGV2aWNl
+dHJlZUBoZWxsaW9uLm9yZy51az47IEt1bWFyDQo+IEdhbGEgPGdhbGFrQGNvZGVhdXJvcmEub3Jn
+PjsgUnVzc2VsbCBLaW5nIDxsaW51eEBhcm0ubGludXgub3JnLnVrPjsgbGludXgtDQo+IGtlcm5l
+bEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IE9saXZlciBIYXJ0
+a29wcA0KPiA8c29ja2V0Y2FuQGhhcnRrb3BwLm5ldD47IGRldmljZXRyZWVAdmdlci5rZXJuZWwu
+b3JnOyBRdWVudGluIFNjaHVseg0KPiA8cXVlbnRpbi5zY2h1bHpAZnJlZS1lbGVjdHJvbnMuY29t
+PjsgV2VueW91IFlhbmcgLSBBNDE1MzUNCj4gPFdlbnlvdS5ZYW5nQG1pY3JvY2hpcC5jb20+OyBs
+aW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRD
+SCB2M10gQVJNOiBkdHM6IGF0OTE6IHNhbWE1ZDI6IGFkZCBtX2NhbiBub2Rlcw0KPiANCj4gT24g
+MjQvMDQvMjAxNyBhdCAwOToxMjoxNyArMDgwMCwgV2VueW91IFlhbmcgd3JvdGU6DQo+ID4gQWRk
+IG5vZGVzIHRvIHN1cHBvcnQgdGhlIENvbnRyb2xsZXIgQXJlYSBOZXR3b3JrKE1fQ0FOKSBvbiBT
+QU1BNUQyLg0KPiA+IFRoZSB2ZXJzaW9uIG9mIE1fQ0FOIElQIGNvcmUgaXMgMy4xLjAgKENSRUwg
+PSAweDMxMDQwNzMwKS4NCj4gPg0KPiA+IEFzIHNhaWQgaW4gU0FNQTVEMiBkYXRhc2hlZXQsIHRo
+ZSBDQU4gY2xvY2sgaXMgcmVjb21tZW5kZWQgdG8gdXNlDQo+ID4gZnJlcXVlbmNpZXMgb2YgMjAs
+IDQwIG9yIDgwIE1Iei4gVG8gYWNoaWV2ZSB0aGVzZSBmcmVxdWVuY2llcywgUE1DDQo+ID4gR0NM
+SzMgbXVzdCBzZWxlY3QgdGhlIFVQTExDSyg0ODAgTUh6KSBhcyBzb3VyY2UgY2xvY2sgYW5kIGRp
+dmlkZSBieQ0KPiA+IDI0LCAxMiwgb3IgNi4gU28sIHRoZSAiYXNzaWduZWQtY2xvY2stcmF0ZXMi
+IHByb3BlcnR5IGhhcyB0aHJlZQ0KPiA+IG9wdGlvbnM6IDIwMDAwMDAwLCA0MDAwMDAwMCwgYW5k
+IDgwMDAwMDAwLg0KPiA+IFRoZSAiYXNzaWduZWQtY2xvY2stcGFyZW50cyIgcHJvcGVydHkgc2hv
+dWxkIGJlIHJlZmVycmVkIHRvIHV0bWkNCj4gPiBmaXhlZGx5Lg0KPiA+DQo+ID4gVGhlIE1TQnMg
+W2JpdHMgMzE6MTZdIG9mIHRoZSBDQU4gTWVzc2FnZSBSQU0gZm9yIENBTjAgYW5kIENBTjEgYXJl
+DQo+ID4gZGVmYXVsdCBjb25maWd1cmVkIGluIDB4MDAyMDAwMDAuIFRvIGF2b2lkIGNvbmZsaWN0
+IHdpdGggU1JBTSBtYXAgZm9yDQo+ID4gUE0sIGNoYW5nZSB0aGVtIHRvIDB4MDAyMTAwMDAgaW4g
+dGhlIEFUOTFCb290c3RyYXAgdmlhIHNldHRpbmcgdGhlIENBTg0KPiA+IE1lbW9yaWVzIEFkZHJl
+c3MtYmFzZWQgUmVnaXN0ZXIoU0ZSX0NBTikgb2YgU0ZSLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1i
+eTogV2VueW91IFlhbmcgPHdlbnlvdS55YW5nQGF0bWVsLmNvbT4NCj4gPiBUZXN0ZWQtYnk6IFF1
+ZW50aW4gU2NodWx6IDxxdWVudGluLnNjaHVsekBmcmVlLWVsZWN0cm9ucy5jb20+DQo+ID4gLS0t
+DQo+ID4gVGhlIHBhdGNoIGlzIHRlc3RlZCBvbiBTQU1BNUQyIFhwbGFpbmVkIGFuZCBiYXNlZCBv
+biB0aGUgcGF0Y2ggc2V0LA0KPiA+IDEuIFtQQVRDSCB2NCAxLzddIGNhbjogbV9jYW46IERpc2Fi
+bGVkIEludGVycnVwdCBMaW5lIDENCj4gPiAgICAgaHR0cDovL21hcmMuaW5mby8/bD1saW51eC1j
+YW4mbT0xNDkxNjUzNDM2MDQwMzMmdz0yDQo+ID4NCj4gPiBDaGFuZ2VzIGluIHYzOg0KPiA+ICAt
+IEFkZCBUZXN0ZWQtYnkgdGFnLg0KPiA+ICAtIENoYW5nZSB0aGUgbnVtYmVyIG9mIFJ4IFJ4IEJ1
+ZmZlcnMsIFR4IEJ1ZmZlcnMgYW5kIFR4IEV2ZW50IEZJRk8NCj4gPiAgICB0byBtYXhpbXVtLg0K
+PiA+DQo+ID4gQ2hhbmdlcyBpbiB2MjoNCj4gPiAgLSBDb25maWd1cmVzIDEwIFRYIEV2ZW50IEZJ
+Rk8gZWxlbWVudHMgYW5kIDEwIFRYIEJ1ZmZlcnMvRklGTyBzbG90cywNCj4gPiAgICBiZWNhdXNl
+IHRoZSBUWEUgRklGTyBpcyBuZWVkZWQgdG8gYmUgY29uZmlndXJlZC4NCj4gPiAgLSBDb25maWd1
+cmUgdGhlIG9mZnNldCBvZiBNZXNzYWdlIFJBTSBmb3IgQ0FOMSBmb2xsb3dlZCBmcm9tIENBTjAn
+cy4NCj4gPg0KPiA+ICBhcmNoL2FybS9ib290L2R0cy9hdDkxLXNhbWE1ZDJfeHBsYWluZWQuZHRz
+IHwgMjQgKysrKysrKysrKysrKw0KPiA+ICBhcmNoL2FybS9ib290L2R0cy9zYW1hNWQyLmR0c2kg
+ICAgICAgICAgICAgIHwgNTYNCj4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAg
+MiBmaWxlcyBjaGFuZ2VkLCA4MCBpbnNlcnRpb25zKCspDQo+ID4NCj4gDQo+IEl0IGRpZG4ndCBh
+cHBseSBjbGVhbmx5LCBjYW4geW91IHBsZWFzZSB2ZXJpZnkNCj4gaHR0cHM6Ly9naXQua2VybmVs
+Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYWJlbGxvbmkvbGludXguZ2l0L2xvZy8/aD1h
+dDkxLWR0DQoNClZlcmlmaWVkLCBpdCB3b3Jrcy4gDQoNClRoYW5rIHlvdSBmb3IgeW91ciBlZmZv
+cnQuDQoNCg0KQlRXLCBpdCB3aWxsIGJlIGJldHRlciB0YWtlIHRoZSBwYXRjaCB0byBhZGQgdGhl
+IGNvbmZpZy4NCltQQVRDSCB2Ml0gQVJNOiBhdDkxL2RlZmNvbmZpZzogYWRkIE1DQU4gZHJpdmVy
+IHRvIHNhbWE1X2RlZmNvbmZpZw0KSSBqdXN0IHN1Ym1pdHRlZC4NCg0KPiANCj4gLS0NCj4gQWxl
+eGFuZHJlIEJlbGxvbmksIEZyZWUgRWxlY3Ryb25zDQo+IEVtYmVkZGVkIExpbnV4IGFuZCBLZXJu
+ZWwgZW5naW5lZXJpbmcNCj4gaHR0cDovL2ZyZWUtZWxlY3Ryb25zLmNvbQ0KDQoNCkJlc3QgUmVn
+YXJkcywNCldlbnlvdSBZYW5nDQo=
