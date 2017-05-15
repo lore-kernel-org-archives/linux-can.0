@@ -1,156 +1,65 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: J1939 kernel for Raspberry Pi
-Date: Mon, 15 May 2017 09:14:20 +0200
-Message-ID: <20170515071420.GA2533@airbook.vandijck-laurijssen.be>
-References: <CAGJdXcFRUB=xLSdFkwadTkdd=OAvgkGgrOYRAxy0RkjpHGoCDQ@mail.gmail.com>
- <20170511192936.GB15112@airbook.vandijck-laurijssen.be>
- <CAGJdXcGg_8+cxi3Zn-iRgEci8TsCjrSs1q4pq4GscyQ+vBynVg@mail.gmail.com>
- <CAGJdXcEP4ry-LDE5ZtM+00mBgQM3gB1M5rETTXJ2rdHNnw=Wfw@mail.gmail.com>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: Re: [PATCH v3] ARM: dts: at91: sama5d2: add m_can nodes
+Date: Mon, 15 May 2017 11:43:36 +0200
+Message-ID: <20170515094336.h6rllnei3cneb4j2@piout.net>
+References: <20170424011217.2530-1-wenyou.yang@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b02.edpnet.be ([212.71.1.222]:34690 "EHLO
-        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751211AbdEOHPC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2017 03:15:02 -0400
+Received: from mail.free-electrons.com ([62.4.15.54]:44674 "EHLO
+        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1760304AbdEOJns (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2017 05:43:48 -0400
 Content-Disposition: inline
-In-Reply-To: <CAGJdXcEP4ry-LDE5ZtM+00mBgQM3gB1M5rETTXJ2rdHNnw=Wfw@mail.gmail.com>
+In-Reply-To: <20170424011217.2530-1-wenyou.yang@atmel.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Paul Bongaerts <pauluzs@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Wenyou Yang <wenyou.yang@atmel.com>
+Cc: Nicolas.Ferre@Microchip.com, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Russell King <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, devicetree@vger.kernel.org, Quentin Schulz <quentin.schulz@free-electrons.com>, Wenyou Yang <wenyou.yang@microchip.com>, linux-arm-kernel@lists.infradead.org
 
-Hey,
+On 24/04/2017 at 09:12:17 +0800, Wenyou Yang wrote:
+> Add nodes to support the Controller Area Network(M_CAN) on SAMA5D2.
+> The version of M_CAN IP core is 3.1.0 (CREL = 0x31040730).
+> 
+> As said in SAMA5D2 datasheet, the CAN clock is recommended to use
+> frequencies of 20, 40 or 80 MHz. To achieve these frequencies,
+> PMC GCLK3 must select the UPLLCK(480 MHz) as source clock and
+> divide by 24, 12, or 6. So, the "assigned-clock-rates" property
+> has three options: 20000000, 40000000, and 80000000.
+> The "assigned-clock-parents" property should be referred to utmi
+> fixedly.
+> 
+> The MSBs [bits 31:16] of the CAN Message RAM for CAN0 and CAN1 are
+> default configured in 0x00200000. To avoid conflict with SRAM map
+> for PM, change them to 0x00210000 in the AT91Bootstrap via setting
+> the CAN Memories Address-based Register(SFR_CAN) of SFR.
+> 
+> Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
+> Tested-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+> ---
+> The patch is tested on SAMA5D2 Xplained and based on the patch set,
+>  1. [PATCH v4 1/7] can: m_can: Disabled Interrupt Line 1
+>     http://marc.info/?l=linux-can&m=149165343604033&w=2
+> 
+> Changes in v3:
+>  - Add Tested-by tag.
+>  - Change the number of Rx Rx Buffers, Tx Buffers and Tx Event FIFO
+>    to maximum.
+> 
+> Changes in v2:
+>  - Configures 10 TX Event FIFO elements and 10 TX Buffers/FIFO slots,
+>    because the TXE FIFO is needed to be configured.
+>  - Configure the offset of Message RAM for CAN1 followed from CAN0's.
+> 
+>  arch/arm/boot/dts/at91-sama5d2_xplained.dts | 24 +++++++++++++
+>  arch/arm/boot/dts/sama5d2.dtsi              | 56 +++++++++++++++++++++++++++++
+>  2 files changed, 80 insertions(+)
+> 
 
-I was just looking your previous email, but I see here below that you
-all got it right.
-> 
-> Still getting a error when trying to cross compile
-> 
-> 
-> 
-> Go into src dir
-> 
-> cd /usr/src
-> 
-> Get crosscompile Toolchain
-> 
-> git clone git://github.com/raspberrypi/tools.git
-> 
-> Next get raspberry sources
-> 
-> git clone git://github.com/raspberrypi/linux.git
-> 
-> Go into linux dir
-> 
-> cd /usr/src/linux
-> 
-> Remote add the j1939 sources
-> 
-> git remote add j1939 git://github.com/kurt-vd/linux
-> 
-> Update j1939 remote
-> 
-> git remote update j1939
-> 
-> Merge j1939-v4.7 with rpi-master
-> 
->     git merge j1939/j1939d-v4.7
->     (Rpi jessie image uses uname -r 4.9.24+  so 4.7 is closest lower
-> J1939 version)
-> 
-> export crosscompile toolchain path
-> 
-> To build on 32 bit system
-> export PATH=$PATH:/usr/src/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin
-> To build on 64 bits system
-> export PATH=$PATH:/usr/src/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
-> 
-> Clean the kernel source
-> 
-> make mrproper
-> 
-> Set kernel type
-> 
-> For Rapberry Pi 1/compute/zero (w)
-> KERNEL=kernel
-> For Raspberry Pi 2/3
-> KERNEL=kernel7
-> 
-> Use default config
-> 
-> For Rapberry Pi 1/compute/zero(w)
-> make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcmrpi_defconfig
-> For Raspberry Pi 2/3
-> make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig
-> 
-> Enable j1939 can kernel modeles
-> 
-> make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
-> 
-> Go into Networking Support Select SAE J1939 as module, enable debug.
-> Go into CAN Device Drivers and select your device drivers
-> 
-> <M>   CAN bus subsystem support  --->
-> --- CAN bus subsystem support
-> <M>   Raw CAN Protocol (raw access with CAN-ID filtering)
-> <M>   Broadcast Manager CAN Protocol (with content filtering)
-> <M>   CAN Gateway/Router (with netlink configuration)
-> <M>   SAE J1939
-> [*]     debug SAE J1939
-> CAN Device Drivers  --->
-> 
-> Exit menuconfig and save the config
-> 
-> Build Kernel Image, Modules and Devicetreeoverlays
-> 
-> make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtb
-> 
->   ......
->   CC [M]  net/bridge/br_netfilter_hooks.o
->   CC [M]  net/bridge/br_netfilter_ipv6.o
->   LD [M]  net/bridge/br_netfilter.o
->   LD      net/can/built-in.o
->   CC [M]  net/can/af_can.o
->   CC [M]  net/can/proc.o
->   LD [M]  net/can/can.o
->   CC [M]  net/can/raw.o
->   LD [M]  net/can/can-raw.o
->   CC [M]  net/can/bcm.o
->   LD [M]  net/can/can-bcm.o
->   CC [M]  net/can/gw.o
->   LD [M]  net/can/can-gw.o
->   LD      net/can/j1939/built-in.o
->   CC [M]  net/can/j1939/address-claim.o
->   CC [M]  net/can/j1939/bus.o
->   CC [M]  net/can/j1939/main.o
-> net/can/j1939/main.c: In function ‘j1939_netdev_start’:
-> net/can/j1939/main.c:238:10: error: too few arguments to function
-> ‘can_rx_register’
->           j1939_can_recv, priv, "j1939");
->           ^
-> In file included from net/can/j1939/main.c:25:0:
-> ./include/linux/can/core.h:57:5: note: declared here
->  int can_rx_register(struct net_device *dev, canid_t can_id, canid_t mask,
->      ^
-> scripts/Makefile.build:293: recipe for target 'net/can/j1939/main.o' failed
+It didn't apply cleanly, can you please verify
+https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git/log/?h=at91-dt
 
-This is a code problem, not a git problem.
-Between 4.7 & 4.9, can_rx_register may have changed prototype.
-You didn't do anything wrong.
-I'll have to prepare a 4.9 branch with a small fix ...
-
-> make[3]: *** [net/can/j1939/main.o] Error 1
-> scripts/Makefile.build:544: recipe for target 'net/can/j1939' failed
-> make[2]: *** [net/can/j1939] Error 2
-> scripts/Makefile.build:544: recipe for target 'net/can' failed
-> make[1]: *** [net/can] Error 2
-> Makefile:988: recipe for target 'net' failed
-> make: *** [net] Error 2
-> user@jessie:/usr/src/linux$
-
-To continue in between, when you don't add j1939 to the kernel, are you
-able to boot you own kernel? You can grab the version with 'uname -a'.
-
-Kurt
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
