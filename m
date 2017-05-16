@@ -1,137 +1,50 @@
-From: Patrick Menschel <menschel.p@posteo.de>
-Subject: Re: J1939 kernel for Raspberry Pi
-Date: Mon, 15 May 2017 18:52:14 +0200
-Message-ID: <8cadf968-35f7-d490-9f00-3be5b52ea34d@posteo.de>
-References: <CAGJdXcFRUB=xLSdFkwadTkdd=OAvgkGgrOYRAxy0RkjpHGoCDQ@mail.gmail.com>
- <20170511192936.GB15112@airbook.vandijck-laurijssen.be>
- <CAGJdXcGg_8+cxi3Zn-iRgEci8TsCjrSs1q4pq4GscyQ+vBynVg@mail.gmail.com>
- <CAGJdXcEP4ry-LDE5ZtM+00mBgQM3gB1M5rETTXJ2rdHNnw=Wfw@mail.gmail.com>
- <20170515071420.GA2533@airbook.vandijck-laurijssen.be>
- <CAGJdXcHk2qJxMnxjPTCVTFFSr-mdorGS+gzn8qVW-o+dX1vt3Q@mail.gmail.com>
- <CAGJdXcFPye1VUwaSkDLKNf_apXud3Qnj_wYXv1PzsypbmvCdXQ@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v4 1/4] can: m_can: move Message RAM initialization to
+ function
+Date: Mon, 15 May 2017 20:51:30 -0700
+Message-ID: <1d41efe1-d24f-4700-8986-0d5dc848ea23@hartkopp.net>
+References: <20170505135033.8349-1-quentin.schulz@free-electrons.com>
+ <90788d6d-24f3-64ba-43f3-16301b777536@free-electrons.com>
+ <4676456c-823c-d7db-2139-35c8229109f0@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms080602040009060406010203"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout02.posteo.de ([185.67.36.66]:35136 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S933032AbdEOQwP (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 15 May 2017 12:52:15 -0400
-Received: from submission (posteo.de [89.146.220.130])
-        by mout02.posteo.de (Postfix) with ESMTPS id 4F1AE20BD4
-        for <linux-can@vger.kernel.org>; Mon, 15 May 2017 18:52:12 +0200 (CEST)
-In-Reply-To: <CAGJdXcFPye1VUwaSkDLKNf_apXud3Qnj_wYXv1PzsypbmvCdXQ@mail.gmail.com>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:8514 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750961AbdEPDvn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2017 23:51:43 -0400
+In-Reply-To: <4676456c-823c-d7db-2139-35c8229109f0@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Paul Bongaerts <pauluzs@gmail.com>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Quentin Schulz <quentin.schulz@free-electrons.com>, wg@grandegger.com, mario.huettel@gmx.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com
 
-This is a cryptographically signed message in MIME format.
 
---------------ms080602040009060406010203
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
 
-Hello Paul,
+On 05/15/2017 06:50 AM, Marc Kleine-Budde wrote:
+> On 05/12/2017 08:37 AM, Quentin Schulz wrote:
+>> Hi all,
+>>
+>> On 05/05/2017 15:50, Quentin Schulz wrote:
+>>> To avoid possible ECC/parity checksum errors when reading an
+>>> uninitialized buffer, the entire Message RAM is initialized when probing
+>>> the driver. This initialization is done in the same function reading the
+>>> Device Tree properties.
+>>>
+>>> This patch moves the RAM initialization to a separate function so it can
+>>> be called separately from device initialization from Device Tree.
+>>>
+>>> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+>>
+>> It's been a week since I sent this patch series. Any comments?
+>
+> Looks good, added to linux-can-next.
 
-just to be sure, you're not doing both configurations, are you?
+Isn't this a fix for linux-can instead?
 
->>>> Set kernel type
->>>>
->>>> For Rapberry Pi 1/compute/zero (w)
->>>> KERNEL=3Dkernel
->>>> For Raspberry Pi 2/3
->>>> KERNEL=3Dkernel7
->>>>
->>>> Use default config
->>>>
->>>> For Rapberry Pi 1/compute/zero(w)
->>>> make ARCH=3Darm CROSS_COMPILE=3Darm-linux-gnueabihf- bcmrpi_defconfi=
-g
->>>> For Raspberry Pi 2/3
->>>> make ARCH=3Darm CROSS_COMPILE=3Darm-linux-gnueabihf- bcm2709_defconf=
-ig
->>>>
-Imho building this top down would result in armv7 code for rpi2/3
-(kernel7.img), not armv6 as needed for rpi1/ zero (kernel.img).
-
-That would explain your crosscompile issue.
+At least it would make no sense to me to have the upgraded M_CAN driver 
+in Linux 4.12 without this fix.
 
 Regards,
-Patrick
-
-
---------------ms080602040009060406010203
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-CfcwggSvMIIDl6ADAgECAhEA4CPLFRKDU4mtYW56VGdrITANBgkqhkiG9w0BAQsFADBvMQsw
-CQYDVQQGEwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxJjAkBgNVBAsTHUFkZFRydXN0IEV4
-dGVybmFsIFRUUCBOZXR3b3JrMSIwIAYDVQQDExlBZGRUcnVzdCBFeHRlcm5hbCBDQSBSb290
-MB4XDTE0MTIyMjAwMDAwMFoXDTIwMDUzMDEwNDgzOFowgZsxCzAJBgNVBAYTAkdCMRswGQYD
-VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNP
-TU9ETyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
-AQoCggEBAImxDdp6UxlOcFIdvFamBia3uEngludRq/HwWhNJFaO0jBtgvHpRQqd5jKQi3xdh
-TpHVdiMKFNNKAn+2HQmAbqUEPdm6uxb+oYepLkNSQxZ8rzJQyKZPWukI2M+TJZx7iOgwZOak
-+FaA/SokFDMXmaxE5WmLo0YGS8Iz1OlAnwawsayTQLm1CJM6nCpToxDbPSBhPFUDjtlOdiUC
-ISn6o3xxdk/u4V+B6ftUgNvDezVSt4TeIj0sMC0xf1m9UjewM2ktQ+v61qXxl3dnUYzZ7ifr
-vKUHOHaMpKk4/9+M9QOsSb7K93OZOg8yq5yVOhM9DkY6V3RhUL7GQD/L5OKfoiECAwEAAaOC
-ARcwggETMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0GA1UdDgQWBBSSYWuC
-4aKgqk/sZ/HCo/e0gADB7DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIBADAd
-BgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYDVR0gBAowCDAGBgRVHSAAMEQGA1Ud
-HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9BZGRUcnVzdEV4dGVybmFs
-Q0FSb290LmNybDA1BggrBgEFBQcBAQQpMCcwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVz
-ZXJ0cnVzdC5jb20wDQYJKoZIhvcNAQELBQADggEBABsqbqxVwTqriMXY7c1V86prYSvACRAj
-mQ/FZmpvsfW0tXdeDwJhAN99Bf4Ss6SAgAD8+x1banICCkG8BbrBWNUmwurVTYT7/oKYz1gb
-4yJjnFL4uwU2q31Ypd6rO2Pl2tVz7+zg+3vio//wQiOcyraNTT7kSxgDsqgt1Ni7QkuQaYUQ
-26Y3NOh74AEQpZzKOsefT4g0bopl0BqKu6ncyso20fT8wmQpNa/WsadxEdIDQ7GPPprsnjJT
-9HaSyoY0B7ksyuYcStiZDcGG4pCS+1pCaiMhEOllx/XVu37qjIUgAmLq0ToHLFnFmTPyOInl
-tukWeh95FPZKEBom+nyK+5swggVAMIIEKKADAgECAhEAvREavCLRTrKKuEIsseliUTANBgkq
-hkiG9w0BAQsFADCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3Rl
-cjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxQTA/BgNV
-BAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVt
-YWlsIENBMB4XDTE2MDYwNDAwMDAwMFoXDTE3MDYwNDIzNTk1OVowJTEjMCEGCSqGSIb3DQEJ
-ARYUbWVuc2NoZWwucEBwb3N0ZW8uZGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
-AQDhF/cULHYMLK+xHh/HbwO1aY3M+56GI9uRfRLAJWEEpdSFWvW8whRizlAZ0t9eHDzzCI1l
-wi7xDKBfwJt3VNxVjqHs3JjpcxSln/22AF3t8BKy3ACUtw6COlAk7bbwxr29qf7R4wFjumdS
-AS4uc6vDEBqlLrpdQCICwgOne97Dvi849VmbCBTCLTDpMxgrOXkiveGmQ2wBqLEPU/9o5ZH8
-jcCbenY5GZTh7u4gvigPfgIu79jE3dS6he+c64SWgcD7bI/zA9KMCkRuvLrFnN+bu8TeH9jy
-FpdsFuJ4+7mjoYsalR7S/wm0M7pbcZEDw2fJp4XogbLFmpjIlJjA8QM1AgMBAAGjggHyMIIB
-7jAfBgNVHSMEGDAWgBSSYWuC4aKgqk/sZ/HCo/e0gADB7DAdBgNVHQ4EFgQUsac6ykMiqHZ3
-OqhHkkcxeF9NoW8wDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYI
-KwYBBQUHAwQGCysGAQQBsjEBAwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsG
-DCsGAQQBsjEBAgEBATArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0
-L0NQUzBdBgNVHR8EVjBUMFKgUKBOhkxodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9T
-SEEyNTZDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3JsMIGQBggrBgEF
-BQcBAQSBgzCBgDBYBggrBgEFBQcwAoZMaHR0cDovL2NydC5jb21vZG9jYS5jb20vQ09NT0RP
-U0hBMjU2Q2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAkBggrBgEF
-BQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMB8GA1UdEQQYMBaBFG1lbnNjaGVsLnBA
-cG9zdGVvLmRlMA0GCSqGSIb3DQEBCwUAA4IBAQBSqnMFVFL1I7Hr3/FWhV3r0cHCSYrAAJu0
-lpgUJcvf6TOGuWNTksdyxbRFWyB6uc6trI9VrQHXbUhHHaUOPyDYBT50Xv4BrgIFYpQe7JI1
-IYPyE5PAR4323CeOTADK4S7KyerSRm7ZnqRCOHp6NTC/2cehFgkfCuO01AeRmzyA8arANiZf
-TS2rPtd31PjpBQ0OpngLxn2qWEIf90Ibq+XxSuiXaLg4l2PI/975QLi0nn466Ql7U2nUeawn
-R34LMZk1c2ImpKZUX+cpz17btGWyohXSdXLQnrruWvO2dx4F5AjuJ/F8JHbIm17I/mlzh883
-4e16eovJEoiXCNVlmxZ3MYIERDCCBEACAQEwgbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
-ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
-TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGlj
-YXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAL0RGrwi0U6yirhCLLHpYlEwDQYJYIZIAWUD
-BAIBBQCgggJjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE3
-MDUxNTE2NTIxNFowLwYJKoZIhvcNAQkEMSIEIFsAh3//K5D2sPBN78oj80At9rAyl0BzzzZ9
-8eEqX6J/MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggq
-hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
-hvcNAwICASgwgcIGCSsGAQQBgjcQBDGBtDCBsTCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgT
-EkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RP
-IENBIExpbWl0ZWQxQTA/BgNVBAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNh
-dGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAvREavCLRTrKKuEIsseliUTCBxAYLKoZIhvcN
-AQkQAgsxgbSggbEwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0
-ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYD
-VQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
-bWFpbCBDQQIRAL0RGrwi0U6yirhCLLHpYlEwDQYJKoZIhvcNAQEBBQAEggEAwqXguF39B5Ge
-7hh1fklV5dwQAujZ7DMvDLfE1m88XpmCi5LFk5yOg9etutsM6GiOf8Eg+wye8JXS77kL6YaH
-wf6ygo+RCUCp69FOP4pP1ka9TFNMafjp77RIXQCBgu9eqpY9SzzTJMcuEadQIGKi6gF3LfU1
-B4POKtIj3EJt5CFaC+jLg5EuKo+a8hOHS3cNlhusSgIjzAgmHk5yRNByXgDXweZOQnIAPme4
-Oo9QgHzccE4GxnDiNenJqB3OQrdkezBy0585NmfxSOiktdPYtP/NMgdnaQeffA6b/2ha1Xh+
-cgCsrkCZe7sZhp3xfVQ52BRpLs0r5lLvKYLTDQq0BwAAAAAAAA==
---------------ms080602040009060406010203--
+Oliver
