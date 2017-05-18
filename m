@@ -1,260 +1,131 @@
-From: Paul Bongaerts <pauluzs@gmail.com>
-Subject: Re: J1939 kernel for Raspberry Pi
-Date: Tue, 16 May 2017 22:40:55 +0200
-Message-ID: <CAGJdXcH83=tD3uW84Mf-szc5VUsg2gjP6j+gZKUwd+RZGW5hnA@mail.gmail.com>
-References: <CAGJdXcFRUB=xLSdFkwadTkdd=OAvgkGgrOYRAxy0RkjpHGoCDQ@mail.gmail.com>
- <20170511192936.GB15112@airbook.vandijck-laurijssen.be> <CAGJdXcGg_8+cxi3Zn-iRgEci8TsCjrSs1q4pq4GscyQ+vBynVg@mail.gmail.com>
- <CAGJdXcEP4ry-LDE5ZtM+00mBgQM3gB1M5rETTXJ2rdHNnw=Wfw@mail.gmail.com>
- <20170515071420.GA2533@airbook.vandijck-laurijssen.be> <CAGJdXcHk2qJxMnxjPTCVTFFSr-mdorGS+gzn8qVW-o+dX1vt3Q@mail.gmail.com>
- <CAGJdXcFPye1VUwaSkDLKNf_apXud3Qnj_wYXv1PzsypbmvCdXQ@mail.gmail.com>
- <20170515124359.GA10149@airbook.vandijck-laurijssen.be> <20170516130217.GA1126@airbook.vandijck-laurijssen.be>
- <20170516131342.GB1126@airbook.vandijck-laurijssen.be> <CAGJdXcH3qsaDRjfwiOadpO794z8fuaNyiGCowmLA_TVGc5xxTw@mail.gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: peak_canfd: fix uninitialized symbol warnings
+Date: Thu, 18 May 2017 10:21:36 +0200
+Message-ID: <7c1f58dc-a1f6-6c82-5b61-ba2944ea8f50@pengutronix.de>
+References: <1493800504-17529-1-git-send-email-s.grosjean@peak-system.com>
+ <1dd51305-2399-cce0-517c-a3c17a027577@peak-system.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="qus351xg1W6RS3ip3L8VgDSo7HdWLJErv"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yw0-f193.google.com ([209.85.161.193]:35153 "EHLO
-        mail-yw0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750924AbdEPUk4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 16 May 2017 16:40:56 -0400
-Received: by mail-yw0-f193.google.com with SMTP id p144so8690419ywp.2
-        for <linux-can@vger.kernel.org>; Tue, 16 May 2017 13:40:56 -0700 (PDT)
-In-Reply-To: <CAGJdXcH3qsaDRjfwiOadpO794z8fuaNyiGCowmLA_TVGc5xxTw@mail.gmail.com>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:60471 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1753168AbdERIVo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2017 04:21:44 -0400
+In-Reply-To: <1dd51305-2399-cce0-517c-a3c17a027577@peak-system.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Paul Bongaerts <pauluzs@gmail.com>, linux-can@vger.kernel.org
-
-Working, cleaned up howto
-Mailinglist messes up tabbed indentation for nice reading i'm afraid.
-
-#######################################################################################
-Cross Compile J1939 - Raspberrypi rpi-4.9.y
-Compiled on
-Linux 4.4.0-77-generic #98-Ubuntu SMP x86_64 x86_64 x86_64 GNU/Linux
-Tested hardware setup
-Raspberry pi zero wireless 16 GB SD Card
-2 mcp2515 8mhz xtal spi canschields modified for 3.3V
-cs0 on BCM pin 8 cs1 on BCM pin 7 interupts on BCM pins 24 and 25
-#######################################################################################
-
-Update and upgrade
-
-sudo apt-get update
-sudo apt-get upgrade
-
-Install  build-essentials, bc, git, ncurses and unzip
-
-sudo apt-get install build-essential bc git-core libncurses5-dev unzip
-
-Make a src dir in user directory
-
-mkdir ~/src
-
-Go into src dir
-
-cd ~/src
-
-Get crosscompile Toolchain
-
-git clone git://github.com/raspberrypi/tools.git
-
-Export crosscompile toolchain path
-
-To crosscompile on 32 bit system
-export PATH=$PATH:~/src/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin
-To crosscompile on 64 bits system
-export PATH=$PATH:~/src/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
-
-Next get raspberry 4.9 branch sources
-
-git clone -b rpi-4.9.y --single-branch git://github.com/raspberrypi/linux
-
-Go into linux dir
-
-cd ~/src/linux
-
-Add the J1939 v4.9.10 remote sources
-
-git remote add -t j1939d-v4.9.10 j1939 git://github.com/kurt-vd/linux
-
-Update J1939 remote
-
-git remote update j1939
-
-Merge j1939-v4.9.10 with rpi-4.9.y
-
-git merge j1939/j1939d-v4.9.10
-
-Set kernel type
-
-For Raspberry Pi 1/compute/zero (w)
-KERNEL=kernel
-For Raspberry Pi 2/3
-KERNEL=kernel7
-
-Use default config
-
-For Raspberry Pi 1/compute/zero(w)
-make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcmrpi_defconfig
-For Raspberry Pi 2/3
-make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig
-
-Enable j1939 can kernel modeles
-
-make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
-
-Go into [*] Networking support  --->
-Go into <M>   CAN bus subsystem support  --->
-Select SAE J1939 as module, enable debug
-<M>   SAE J1939
-[*]     debug SAE J1939
-Go into CAN Device Drivers  --->
-Select the desired device drivers
-Exit menuconfig and save the new kernel configuration
-
-Build Kernel Image, Modules and Devicetreeoverlays (remove the -j4
-option when building on 32 bit system)
-
-make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs
-
-Get latest Raspbian Image
-
-For Raspbian lite
-wget https://downloads.raspberrypi.org/raspbian_lite_latest -P ~/src/
-For Raspbian with pixel
-wget https://downloads.raspberrypi.org/raspbian_latest -P ~/src/
-
-Unzip and write image to SD card (assuming /dev/sdb is the SD)
-
-For Raspbian lite
-unzip -p ~/src/raspbian_lite_latest | sudo dd of=/dev/sdb bs=4096
-For Raspbian with pixel
-unzip -p ~/src/raspbian_latest | sudo dd of=/dev/sdb bs=4096
-
-Create mount locations and mount SD card
-mkdir ~/mnt
-mkdir ~/mnt/fat32
-mkdir ~/mnt/ext4
-sudo mount /dev/sdb1 ~/mnt/fat32
-sudo mount /dev/sdb2 ~/mnt/ext4
-
-Install the modules to SD:
-
-sudo make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
-INSTALL_MOD_PATH=~/mnt/ext4 modules_install
-
-Backup original Kernel, Copy new Kernel and Device Tree blobs to SD card
-
-sudo cp ~/mnt/fat32/$KERNEL.img ~/mnt/fat32/$KERNEL-backup.img
-sudo cp ~/src/linux/arch/arm/boot/zImage ~/mnt/fat32/$KERNEL.img
-sudo cp ~/src/linux/arch/arm/boot/dts/*.dtb ~/mnt/fat32/
-sudo cp ~/src/linux/arch/arm/boot/dts/overlays/*.dtb* ~/mnt/fat32/overlays/
-sudo cp ~/src/linux/arch/arm/boot/dts/overlays/README ~/mnt/fat32/overlays/
-
-Enable ssh on boot
-
-sudo touch ~/mnt/fat32/ssh
-
-Setup Wireless(add lines below)
-
-sudo nano ~/mnt/ext4/etc/wpa_supplicant/wpa_supplicant.conf
-
-network={
-ssid="YOURWIRELESSNETWORK"
-psk="YOURWIRELESSPASSWORD"
-}
-
-Enable spi and mcp2515 overlays(add lines below) for 16Mhz shields use
-oscillator=16000000
-
-sudo nano ~/mnt/fat32/config.txt
-
-dtparam=spi=on
-dtoverlay=spi-bcm2835-overlay
-dtoverlay=mcp2515-can0,oscillator=8000000,interrupt=24
-dtoverlay=mcp2515-can1,oscillator=8000000,interrupt=25
-
-Set can interfaces to start at boot (add lines below)
-
-sudo nano ~/mnt/ext4/etc/network/interfaces
-
-auto can0
-iface can0 inet manual
-pre-up /sbin/ip link set $IFACE type can bitrate 250000
-up /sbin/ifconfig $IFACE up
-down /sbin/ifconfig $IFACE down
-
-auto can1
-iface can1 inet manual
-pre-up /sbin/ip link set $IFACE type can bitrate 250000
-up /sbin/ifconfig $IFACE up
-down /sbin/ifconfig $IFACE down
-
-Unmount SD
-
-sudo umount ~/mnt/fat32
-sudo umount ~/mnt/ext4
-
-Put SD card in Raspberry Pi and give it about a minute to boot
-
-Ssh into Raspberry Pi
-
-ssh pi@raspberrypi.local
-
-Install build depencies
-
-pi@raspberrypi:~ $ sudo apt-get install git bc
-
-Install linux-can
-
-pi@raspberrypi:~ $ git clone https://github.com/linux-can/can-utils.git
-pi@raspberrypi:~ $ cd can-utils
-pi@raspberrypi:~ $ make
-pi@raspberrypi:~ $ sudo make install
-
-Install testj1939
-
-pi@raspberrypi:~ $ cd ~
-pi@raspberrypi:~ $ git clone https://github.com/kurt-vd/test-can-j1939.git
-pi@raspberrypi:~ $ cd test-can-j1939/
-pi@raspberrypi:~ $ make
-pi@raspberrypi:~ $ sudo make install
-
-Open a second Ssh into Raspberry Pi
-
-ssh pi@raspberrypi.local
-
-Test your can interfaces, (can0 needs to be wired to can1)
-On the first ssh session
-
-pi@raspberrypi:~ $ candump can0
-
-Op the second ssh sesion and send some data
-
-pi@raspberrypi:~ $ cansend can1 7DF#0201050000000000
-
-Check the output in first ssh session
-
-Repeat test vise versa to ensure both interupts are working
-
-On the first ssh session
-
-pi@raspberrypi:~ $ candump can1
-
-Op the second ssh sesion and send some data
-
-pi@raspberrypi:~ $ cansend can0 7DF#0201050000000000
-
-Check the output in first ssh session
-
-Test J1939
-On the first ssh session
-
-pi@raspberrypi:~ $ testj1939 -r can0
-
-Op the second ssh sesion and send some data
-
-pi@raspberrypi:~ $ testj1939 -s can1:0x90,0x3ffff
-
-Check the output in first ssh session
-
-All Done!!
+To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--qus351xg1W6RS3ip3L8VgDSo7HdWLJErv
+Content-Type: multipart/mixed; boundary="VRlACe3LQpxh97mAnQLWFOW1LE9qcwtsW";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Stephane Grosjean <s.grosjean@peak-system.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+Message-ID: <7c1f58dc-a1f6-6c82-5b61-ba2944ea8f50@pengutronix.de>
+Subject: Re: [PATCH] can: peak_canfd: fix uninitialized symbol warnings
+References: <1493800504-17529-1-git-send-email-s.grosjean@peak-system.com>
+ <1dd51305-2399-cce0-517c-a3c17a027577@peak-system.com>
+In-Reply-To: <1dd51305-2399-cce0-517c-a3c17a027577@peak-system.com>
+
+--VRlACe3LQpxh97mAnQLWFOW1LE9qcwtsW
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 05/16/2017 12:07 PM, Stephane Grosjean wrote:
+> Hello Oliver,
+>=20
+> Has this patch been pushed in Dave Miller's net-next tree please?
+>=20
+> Best regards,
+>=20
+> Stephane
+>=20
+>=20
+> Le 03/05/2017 =C3=A0 10:35, Stephane Grosjean a =C3=A9crit :
+>> This patch fixes two uninitialized symbol warnings in the new code add=
+ing
+>> support of the PEAK-System PCAN-PCI Express FD boards, in the socket-C=
+AN
+>> network protocol family.
+>>
+>> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+>> ---
+>>   drivers/net/can/peak_canfd/peak_canfd.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can=
+/peak_canfd/peak_canfd.c
+>> index 0d57be5..912bd81 100644
+>> --- a/drivers/net/can/peak_canfd/peak_canfd.c
+>> +++ b/drivers/net/can/peak_canfd/peak_canfd.c
+>> @@ -399,8 +399,9 @@ static int pucan_handle_status(struct peak_canfd_p=
+riv *priv,
+>>   	} else if (priv->can.state !=3D CAN_STATE_ERROR_ACTIVE) {
+>>   		/* back to ERROR_ACTIVE */
+>>   		netdev_dbg(ndev, "Error active status\n");
+>> -		can_change_state(ndev, cf, CAN_STATE_ERROR_ACTIVE,
+>> -				 CAN_STATE_ERROR_ACTIVE);
+>> +		if (skb)
+>> +			can_change_state(ndev, cf, CAN_STATE_ERROR_ACTIVE,
+>> +					 CAN_STATE_ERROR_ACTIVE);
+
+Looking at this again...In case of a OOM situation, where skb is NULL,
+skipping the can_change_state() will not update the state of the candev,
+see:
+
+http://elixir.free-electrons.com/linux/latest/source/drivers/net/can/dev.=
+c#L378
+
+What about making can_change_state() safe to be called with cf=3DNULL?
+
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index 611d16a7061d..ae4ed03dc642 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -391,6 +391,9 @@ void can_change_state(struct net_device *dev, struc=
+t can_frame *cf,
+>         can_update_state_error_stats(dev, new_state);
+>         priv->state =3D new_state;
+> =20
+> +       if (!cf)
+> +               return;
+> +
+>         if (unlikely(new_state =3D=3D CAN_STATE_BUS_OFF)) {
+>                 cf->can_id |=3D CAN_ERR_BUSOFF;
+>                 return;
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--VRlACe3LQpxh97mAnQLWFOW1LE9qcwtsW--
+
+--qus351xg1W6RS3ip3L8VgDSo7HdWLJErv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlkdWZAACgkQHv7KIOw4
+HPYIWQgApj0H5UFBtJhd6K1JC/KObqQqXxW1vd1F7v2y20Vc6ZbOyN/c7liSLeO3
+NYPcHFLRxau2JCZL52wOgVLaFK/YyDyfN1Ny6Il7ap/GnrR+u0tL9mO24wFMN5CK
+1RvO0u8Y9unshxqzg4Q3yL8ylgTU+w3oQvX4SJHQ/ondqMqBkqypqPozkNmGFpoM
+1tySl4uPU/N43wN7jrAuJHu6nPYcqxF9exAJdXJTpjfisLu6n0CM+U11GfRvG+TU
+EHfVZgbgf/hvLiajYcEMrawU77/2SNbqSuMf2MJLqATNpSnB6Qe5R/jo4ghRU9wX
+35qd5SdxCtPipIgWI4B7kYx0W/JhsA==
+=J7th
+-----END PGP SIGNATURE-----
+
+--qus351xg1W6RS3ip3L8VgDSo7HdWLJErv--
