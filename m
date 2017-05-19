@@ -1,102 +1,191 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2017-05-18
-Date: Thu, 18 May 2017 10:56:31 +0200
-Message-ID: <28d10e0b-bc7a-de01-8fd7-9eb3c1f70f3c@pengutronix.de>
+From: =?UTF-8?q?Remigiusz=20Ko=C5=82=C5=82=C4=85taj?=
+        <remigiusz.kollataj@mobica.com>
+Subject: [PATCH iproute2] ip: add handling for new CAN netlink interface
+Date: Fri, 19 May 2017 14:54:49 +0200
+Message-ID: <20170519125449.7214-1-remigiusz.kollataj@mobica.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="mkq4mIvFgsRwE8WH0vKxtqSad8or68oP1"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:56367 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1755007AbdERI4n (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2017 04:56:43 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: remigiusz.kollataj@mobica.com, linux-can@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mkq4mIvFgsRwE8WH0vKxtqSad8or68oP1
-Content-Type: multipart/mixed; boundary="CTgi3gkxnALGqvtgs9CgpDaPaOiSDBwe5";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <28d10e0b-bc7a-de01-8fd7-9eb3c1f70f3c@pengutronix.de>
-Subject: pull-request: can-next 2017-05-18
+This patch adds handling for new CAN netlink interface introduced in
+4.11 kernel:
+- IFLA_CAN_TERMINATION,
+- IFLA_CAN_TERMINATION_CONST,
+- IFLA_CAN_BITRATE_CONST,
+- IFLA_CAN_DATA_BITRATE_CONST
 
---CTgi3gkxnALGqvtgs9CgpDaPaOiSDBwe5
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Output example:
+$ip -d link show can0
+6: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default qlen 10
+    link/can  promiscuity 0
+    can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
+          bitrate 80000
+             [   20000,    33333,    50000,    80000,    83333,   100000,
+                125000,   150000,   175000,   200000,   225000,   250000,
+                275000,   300000,   500000,   625000,   800000,  1000000 ]
+          termination 0 [ 0, 120 ]
+          clock 0numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
 
-Hello David,
-
-this is a pull request of 4 patches for net-next/master.
-
-All 4 patches are by Quentin Schulz, they add deep deep Suspend/Resume
-support to the m_can driver.
-
-regards,
-Marc
-
+Signed-off-by: Remigiusz Kołłątaj <remigiusz.kollataj@mobica.com>
 ---
+ ip/iplink_can.c | 98 ++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 94 insertions(+), 4 deletions(-)
 
-The following changes since commit 1fc4d180b3c6bed0e7f5160bcd553aec895949=
-62:
-
-  Merge branch 'phy-marvell-cleanups' (2017-05-17 16:27:52 -0400)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-4.13-20170518
-
-for you to fetch changes up to d14ccea0e71a55ad02bf4e1cb378bbece282d5cf:
-
-  can: m_can: add deep Suspend/Resume support (2017-05-18 10:32:48 +0200)=
-
-
-----------------------------------------------------------------
-linux-can-next-for-4.13-20170518
-
-----------------------------------------------------------------
-Quentin Schulz (4):
-      can: m_can: move Message RAM initialization to function
-      can: m_can: make m_can_start and m_can_stop symmetric
-      can: m_can: factorize clock gating and ungating
-      can: m_can: add deep Suspend/Resume support
-
- drivers/net/can/m_can/m_can.c | 87 ++++++++++++++++++++++++++-----------=
-------
- 1 file changed, 53 insertions(+), 34 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---CTgi3gkxnALGqvtgs9CgpDaPaOiSDBwe5--
-
---mkq4mIvFgsRwE8WH0vKxtqSad8or68oP1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlkdYcAACgkQHv7KIOw4
-HPZr9Af/UWVZBNv5wza3EvOUAetNdg0DMiaGasLn7pd3GKzm3cbEmsneJrwnFBff
-TH3h3c0/XgbwGzWLUH8BjKo7Z323/f1Ly+OR1Cfdw7XzOBfYEmoLQjMncDstsmuB
-3VrEzMVeKbw3Yt7dkluu+yHAiie4HNLZt6TeE9SZNx7/tnJzCRe+YZTWGxKrMkG+
-f7AvPO9FczAwmz2pVX7yjyyhuknS5E2NEbFONpcfwJ0njBu+JgqAQN3qZ6BT2AF8
-Z+KdJsnRczekEgpeOXoxisK/O5RCRFg6Td1VY1WEZdumIjAvQxHLPRkacApcdv9y
-JdCLP2AkfRLC1BQGmFQnj0ckW5fvcA==
-=3UNB
------END PGP SIGNATURE-----
-
---mkq4mIvFgsRwE8WH0vKxtqSad8or68oP1--
+diff --git a/ip/iplink_can.c b/ip/iplink_can.c
+index 20d4d37d..5df56b2b 100644
+--- a/ip/iplink_can.c
++++ b/ip/iplink_can.c
+@@ -41,6 +41,8 @@ static void print_usage(FILE *f)
+ 		"\t[ restart-ms TIME-MS ]\n"
+ 		"\t[ restart ]\n"
+ 		"\n"
++		"\t[ termination { 0..65535 } ]\n"
++		"\n"
+ 		"\tWhere: BITRATE	:= { 1..1000000 }\n"
+ 		"\t	  SAMPLE-POINT	:= { 0.000..0.999 }\n"
+ 		"\t	  TQ		:= { NUMBER }\n"
+@@ -220,6 +222,14 @@ static int can_parse_opt(struct link_util *lu, int argc, char **argv,
+ 			if (get_u32(&val, *argv, 0))
+ 				invarg("invalid \"restart-ms\" value\n", *argv);
+ 			addattr32(n, 1024, IFLA_CAN_RESTART_MS, val);
++		} else if (matches(*argv, "termination") == 0) {
++			__u16 val;
++
++			NEXT_ARG();
++			if (get_u16(&val, *argv, 0))
++				invarg("invalid \"termination\" value\n",
++				       *argv);
++			addattr16(n, 1024, IFLA_CAN_TERMINATION, val);
+ 		} else if (matches(*argv, "help") == 0) {
+ 			usage();
+ 			return -1;
+@@ -282,7 +292,8 @@ static void can_print_opt(struct link_util *lu, FILE *f, struct rtattr *tb[])
+ 		fprintf(f, "restart-ms %d ", *restart_ms);
+ 	}
+ 
+-	if (tb[IFLA_CAN_BITTIMING]) {
++	/* bittiming is irrelevant if fixed bitrate is defined */
++	if (tb[IFLA_CAN_BITTIMING] && !tb[IFLA_CAN_BITRATE_CONST]) {
+ 		struct can_bittiming *bt = RTA_DATA(tb[IFLA_CAN_BITTIMING]);
+ 
+ 		fprintf(f, "\n	  bitrate %d sample-point %.3f ",
+@@ -292,7 +303,8 @@ static void can_print_opt(struct link_util *lu, FILE *f, struct rtattr *tb[])
+ 			bt->sjw);
+ 	}
+ 
+-	if (tb[IFLA_CAN_BITTIMING_CONST]) {
++	/* bittiming const is irrelevant if fixed bitrate is defined */
++	if (tb[IFLA_CAN_BITTIMING_CONST] && !tb[IFLA_CAN_BITRATE_CONST]) {
+ 		struct can_bittiming_const *btc =
+ 			RTA_DATA(tb[IFLA_CAN_BITTIMING_CONST]);
+ 
+@@ -303,7 +315,37 @@ static void can_print_opt(struct link_util *lu, FILE *f, struct rtattr *tb[])
+ 			btc->brp_min, btc->brp_max, btc->brp_inc);
+ 	}
+ 
+-	if (tb[IFLA_CAN_DATA_BITTIMING]) {
++	if (tb[IFLA_CAN_BITRATE_CONST]) {
++		__u32 *bitrate_const = RTA_DATA(tb[IFLA_CAN_BITRATE_CONST]);
++		int bitrate_cnt = RTA_PAYLOAD(tb[IFLA_CAN_BITRATE_CONST]) /
++				  sizeof(*bitrate_const);
++		int i;
++		__u32 bitrate = 0;
++
++		if (tb[IFLA_CAN_BITTIMING]) {
++			struct can_bittiming *bt =
++			    RTA_DATA(tb[IFLA_CAN_BITTIMING]);
++			bitrate = bt->bitrate;
++		}
++
++		fprintf(f, "\n	  bitrate %u", bitrate);
++		fprintf(f, "\n	     [");
++
++		for (i = 0; i < bitrate_cnt - 1; ++i) {
++			/* This will keep lines below 80 signs */
++			if (!(i % 6) && i)
++				fprintf(f, "\n	      ");
++
++			fprintf(f, "%8u, ", bitrate_const[i]);
++		}
++
++		if (!(i % 6) && i)
++			fprintf(f, "\n	      ");
++		fprintf(f, "%8u ]", bitrate_const[i]);
++	}
++
++	/* data bittiming is irrelevant if fixed bitrate is defined */
++	if (tb[IFLA_CAN_DATA_BITTIMING] && !tb[IFLA_CAN_DATA_BITRATE_CONST]) {
+ 		struct can_bittiming *dbt =
+ 			RTA_DATA(tb[IFLA_CAN_DATA_BITTIMING]);
+ 
+@@ -315,7 +357,9 @@ static void can_print_opt(struct link_util *lu, FILE *f, struct rtattr *tb[])
+ 			dbt->phase_seg2, dbt->sjw);
+ 	}
+ 
+-	if (tb[IFLA_CAN_DATA_BITTIMING_CONST]) {
++	/* data bittiming const is irrelevant if fixed bitrate is defined */
++	if (tb[IFLA_CAN_DATA_BITTIMING_CONST] &&
++	    !tb[IFLA_CAN_DATA_BITRATE_CONST]) {
+ 		struct can_bittiming_const *dbtc =
+ 			RTA_DATA(tb[IFLA_CAN_DATA_BITTIMING_CONST]);
+ 
+@@ -326,6 +370,52 @@ static void can_print_opt(struct link_util *lu, FILE *f, struct rtattr *tb[])
+ 			dbtc->brp_min, dbtc->brp_max, dbtc->brp_inc);
+ 	}
+ 
++	if (tb[IFLA_CAN_DATA_BITRATE_CONST]) {
++		__u32 *dbitrate_const =
++		    RTA_DATA(tb[IFLA_CAN_DATA_BITRATE_CONST]);
++		int dbitrate_cnt =
++		    RTA_PAYLOAD(tb[IFLA_CAN_DATA_BITRATE_CONST]) /
++		    sizeof(*dbitrate_const);
++		int i;
++		__u32 dbitrate = 0;
++
++		if (tb[IFLA_CAN_DATA_BITTIMING]) {
++			struct can_bittiming *dbt =
++			    RTA_DATA(tb[IFLA_CAN_DATA_BITTIMING]);
++			dbitrate = dbt->bitrate;
++		}
++
++		fprintf(f, "\n	  dbitrate %u", dbitrate);
++		fprintf(f, "\n	     [");
++
++		for (i = 0; i < dbitrate_cnt - 1; ++i) {
++			/* This will keep lines below 80 signs */
++			if (!(i % 6) && i)
++				fprintf(f, "\n	      ");
++
++			fprintf(f, "%8u, ", dbitrate_const[i]);
++		}
++
++		if (!(i % 6) && i)
++			fprintf(f, "\n	      ");
++		fprintf(f, "%8u ]", dbitrate_const[i]);
++	}
++
++	if (tb[IFLA_CAN_TERMINATION_CONST] && tb[IFLA_CAN_TERMINATION]) {
++		__u16 *trm = RTA_DATA(tb[IFLA_CAN_TERMINATION]);
++		__u16 *trm_const = RTA_DATA(tb[IFLA_CAN_TERMINATION_CONST]);
++		int trm_cnt = RTA_PAYLOAD(tb[IFLA_CAN_TERMINATION_CONST]) /
++			      sizeof(*trm_const);
++		int i;
++
++		fprintf(f, "\n	  termination %hu [ ", *trm);
++
++		for (i = 0; i < trm_cnt - 1; ++i)
++			fprintf(f, "%hu, ", trm_const[i]);
++
++		fprintf(f, "%hu ]", trm_const[i]);
++	}
++
+ 	if (tb[IFLA_CAN_CLOCK]) {
+ 		struct can_clock *clock = RTA_DATA(tb[IFLA_CAN_CLOCK]);
+ 
+-- 
+2.13.0
