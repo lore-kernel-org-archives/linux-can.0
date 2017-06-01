@@ -1,44 +1,117 @@
-From: Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [PATCH iproute2] ip: add handling for new CAN netlink interface
-Date: Tue, 30 May 2017 17:40:16 -0700
-Message-ID: <20170530174016.65cf8608@xeon-e3>
-References: <20170519125449.7214-1-remigiusz.kollataj@mobica.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: j1939: struct j1939_priv::kref
+Date: Thu, 1 Jun 2017 15:14:26 +0200
+Message-ID: <8dd1fbee-5488-3519-7997-c38220e4bf1a@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="XVDk3fVKLWdp8ISL7FuF5uBvGVBK5Vxvp"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:54377 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751089AbdFANOh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Jun 2017 09:14:37 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XVDk3fVKLWdp8ISL7FuF5uBvGVBK5Vxvp
+Content-Type: multipart/mixed; boundary="qdjanGfJxfdmeoOtswSGjNxGCl4vOTo4o";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>,
+ Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Message-ID: <8dd1fbee-5488-3519-7997-c38220e4bf1a@pengutronix.de>
+Subject: j1939: struct j1939_priv::kref
+
+--qdjanGfJxfdmeoOtswSGjNxGCl4vOTo4o
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20170519125449.7214-1-remigiusz.kollataj@mobica.com>
-Sender: netdev-owner@vger.kernel.org
-To: Remigiusz =?UTF-8?B?S2/FgsWCxIV0YWo=?= <remigiusz.kollataj@mobica.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
 
-On Fri, 19 May 2017 14:54:49 +0200
-Remigiusz Ko=C5=82=C5=82=C4=85taj         <remigiusz.kollataj@mobica.com> w=
-rote:
+Hello,
 
-> This patch adds handling for new CAN netlink interface introduced in
-> 4.11 kernel:
-> - IFLA_CAN_TERMINATION,
-> - IFLA_CAN_TERMINATION_CONST,
-> - IFLA_CAN_BITRATE_CONST,
-> - IFLA_CAN_DATA_BITRATE_CONST
+while reviewing the j1939 I stumbled over the struct j1939_priv....
+
+> struct j1939_priv {
+> 	struct list_head ecus;
+> 	/* local list entry in priv
+> 	 * These allow irq (& softirq) context lookups on j1939 devices
+> 	 * This approach (separate lists) is done as the other 2 alternatives
+> 	 * are not easier or even wrong
+> 	 * 1) using the pure kobject methods involves mutexes, which are not
+> 	 *    allowed in irq context.
+> 	 * 2) duplicating data structures would require a lot of synchronizati=
+on
+> 	 *    code
+> 	 * usage:
+> 	 */
 >=20
-> Output example:
-> $ip -d link show can0
-> 6: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group def=
-ault qlen 10
->     link/can  promiscuity 0
->     can state STOPPED (berr-counter tx 0 rx 0) restart-ms 0
->           bitrate 80000
->              [   20000,    33333,    50000,    80000,    83333,   100000,
->                 125000,   150000,   175000,   200000,   225000,   250000,
->                 275000,   300000,   500000,   625000,   800000,  1000000 ]
->           termination 0 [ 0, 120 ]
->           clock 0numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_s=
-egs 65535
+> 	/* segments need a lock to protect the above list */
+> 	rwlock_t lock;
 >=20
-> Signed-off-by: Remigiusz Ko=C5=82=C5=82=C4=85taj <remigiusz.kollataj@mobi=
-ca.com>
+> 	int ifindex;
+> 	struct net_device *netdev;
+> 	struct addr_ent {
+> 		ktime_t rxtime;
+> 		struct j1939_ecu *ecu;
+> 		/* count users, to help transport protocol */
+> 		int nusers;
+> 	} ents[256];
+>=20
+> 	/* tasklet to process ecu address claimed events.
+> 	 * These events raise in hardirq context. Signalling the event
+> 	 * and scheduling this tasklet successfully moves the
+> 	 * event to softirq context
+> 	 */
+> 	struct tasklet_struct ac_task;
+>=20
+> 	/* list of 256 ecu ptrs, that cache the claimed addresses.
+> 	 * also protected by the above lock
+> 	 * don't use directly, use j1939_ecu_set_address() instead
+> 	 */
+> 	struct kref kref;
 
-Applied, thanks for confirming the output change.
+=2E..and the comment above the kref make no sense to me. Is it a left ove=
+r
+from previous versions?
+
+>=20
+> 	/* ref counter that hold the number of active listeners.
+> 	 * This number itself is protected with a mutex
+> 	 */
+> 	int nusers;
+
+I want to get rid of nusers and use kref only instead.
+
+> };
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--qdjanGfJxfdmeoOtswSGjNxGCl4vOTo4o--
+
+--XVDk3fVKLWdp8ISL7FuF5uBvGVBK5Vxvp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlkwEzIACgkQHv7KIOw4
+HPYQ3Af/ZnAAVJHionBYEm/oD4rs93sQIIygCwwLzN1aCpbwNpIrlxChlOH6YZJh
+eo95JvSgX2QT5a6+6+7HkQHjpSsRc7Hibw7px9H2o/dP5Xo4+8BS1XAn6hFehRmh
+9/hQv46xs/AzDSuy8Ff77mJN1mgGjsVs0pmBlJAKOckikCCewjWH0Ri6NJvE0gUv
+9lOm10guPyvZZBqVl8GPS3LkyDP+PnXv+RRCBang4JmU9GVWtIvfD58iMDEaEtMs
+3ke8D8ZcYjEeZY1hC6k9i+p5gHmY7PL1040nhMTC12olsoc33ZhbyIE0VL3QGYtV
+fi9I1xH0JIa0RgrF89IBUXunUzdTjw==
+=DoZ3
+-----END PGP SIGNATURE-----
+
+--XVDk3fVKLWdp8ISL7FuF5uBvGVBK5Vxvp--
