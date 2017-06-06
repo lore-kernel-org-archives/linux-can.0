@@ -1,40 +1,57 @@
-From: Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [PATCH] ip: link add vxcan support
-Date: Mon, 5 Jun 2017 12:28:31 -0700
-Message-ID: <20170605122831.09a13387@xeon-e3>
-References: <20170602170447.2913-1-socketcan@hartkopp.net>
+From: Jim Morash <jmorash@gmail.com>
+Subject: Receiving overloaded and/or out-of-order on iMX6 platform
+Date: Tue, 6 Jun 2017 15:55:50 -0700
+Message-ID: <CAFFyqAYjEdxVg44=9VC=TqxMs6mbMGK1FFPQ-E_GPpPH0XwTSQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20170602170447.2913-1-socketcan@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-wr0-f181.google.com ([209.85.128.181]:36132 "EHLO
+        mail-wr0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751430AbdFFWzw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Jun 2017 18:55:52 -0400
+Received: by mail-wr0-f181.google.com with SMTP id v111so53683030wrc.3
+        for <linux-can@vger.kernel.org>; Tue, 06 Jun 2017 15:55:51 -0700 (PDT)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-On Fri,  2 Jun 2017 19:04:47 +0200
-Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+Hi Linux-CAN,
 
-> Since commit a8f820a380a2a06 ('can: add Virtual CAN Tunnel driver (vxcan)')
-> for Linux 4.12 a virtual CAN tunnel driver analogue to veth is available in
-> Linux.
-> 
-> This patch adds the ability to create vxcan device pairs.
-> 
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+My team is using SocketCAN on an iMX6 platform, currently running
+kernel 3.14.52. Our Linux system is connected to a CAN network of
+about 20 cortex M4 microcontrollers, bitrate 250kbps.
 
-Applied, with minor header cleanup so that sanitized headers are used.
+Most of the time, everything on this CAN network is fine. We have been
+able to intermittently push the flexcan controller into a bad state
+(error-warn followed eventually by bus-off) but the issue has proven
+difficult to reproduce.
 
-diff --git a/include/linux/can/vxcan.h b/include/linux/can/vxcan.h
-index ffb0b7156f7e..5b29e8a7bc27 100644
---- a/include/linux/can/vxcan.h
-+++ b/include/linux/can/vxcan.h
-@@ -1,5 +1,5 @@
--#ifndef _UAPI_CAN_VXCAN_H
--#define _UAPI_CAN_VXCAN_H
-+#ifndef _CAN_VXCAN_H
-+#define _CAN_VXCAN_H
- 
- enum {
-        VXCAN_INFO_UNSPEC,
+So far it looks like it is most reliably reproducible when we send a
+broadcast message to the entire microcontroller network and all of
+those nodes respond simultaneously. Our flexcan controller can't
+manage to receive all those messages at once, I guess? I found some
+old emails by Tom E. that describe a perhaps-related problem with tx
+queues but we're a bit confused about how the same principles might
+apply to rx:
+
+http://marc.info/?t=148220970300001&r=1&w=2
+
+In this type of situation we also see some frames come in out of
+order. I was digging through the linux-can list archives and happened
+upon a few messages, about various "rx-offload" patches that are meant
+to prevent out-of-order reception. For example:
+
+http://marc.info/?l=linux-can&m=148475186527666&w=2
+http://marc.info/?l=linux-can&m=148475343228248&w=2
+
+[side note, gmane list archives are not working, but marc.info is working]
+
+It doesn't look like this feature made it into the official freescale
+tree for either 3.14.52 or 4.1.15, but perhaps I am looking in the
+wrong places?
+
+http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/tree/drivers/net/can?h=imx_3.14.52_1.1.0_ga
+http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/tree/drivers/net/can?h=imx_4.1.15_1.0.0_ga
+
+Thanks in advance for any help available.
+Jim
