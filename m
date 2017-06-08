@@ -1,77 +1,47 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Receiving overloaded and/or out-of-order on iMX6 platform
-Date: Thu, 8 Jun 2017 14:59:07 +0200
-Message-ID: <9d4622db-f4f7-54f1-c294-08939377ffc9@pengutronix.de>
-References: <CAFFyqAYjEdxVg44=9VC=TqxMs6mbMGK1FFPQ-E_GPpPH0XwTSQ@mail.gmail.com>
- <CAFFyqAa-e9GLgcbQkcOamC4_n56FnwEnTJ0uAny64Kg3Npac1Q@mail.gmail.com>
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: net/can: trying to register non-static key in can_rx_register
+Date: Thu, 8 Jun 2017 17:16:22 +0200
+Message-ID: <CAAeHK+ywJzK4Hd=O_+j+Dw7pb=s-MgwVLJywrLAQdkwfybdu1Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="v06bl0W9GBSvp2ArlQmUBahFsJ8I9H1XS"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:52381 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1750725AbdFHM7P (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Jun 2017 08:59:15 -0400
-In-Reply-To: <CAFFyqAa-e9GLgcbQkcOamC4_n56FnwEnTJ0uAny64Kg3Npac1Q@mail.gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Jim Morash <jmorash@gmail.com>, linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---v06bl0W9GBSvp2ArlQmUBahFsJ8I9H1XS
-Content-Type: multipart/mixed; boundary="Mkxtk52F7WAIXKn6JMB9m2d3pMcLWM6MN";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Jim Morash <jmorash@gmail.com>, linux-can@vger.kernel.org
-Message-ID: <9d4622db-f4f7-54f1-c294-08939377ffc9@pengutronix.de>
-Subject: Re: Receiving overloaded and/or out-of-order on iMX6 platform
-References: <CAFFyqAYjEdxVg44=9VC=TqxMs6mbMGK1FFPQ-E_GPpPH0XwTSQ@mail.gmail.com>
- <CAFFyqAa-e9GLgcbQkcOamC4_n56FnwEnTJ0uAny64Kg3Npac1Q@mail.gmail.com>
-In-Reply-To: <CAFFyqAa-e9GLgcbQkcOamC4_n56FnwEnTJ0uAny64Kg3Npac1Q@mail.gmail.com>
+Hi,
 
---Mkxtk52F7WAIXKn6JMB9m2d3pMcLWM6MN
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+I've got the following error report while fuzzing the kernel with syzkaller.
 
-On 06/07/2017 01:16 AM, Jim Morash wrote:
-> Apologies for replying to myself:
-> Anyway, I see that the rx-offload stuff just got into the 4.11
-> mainline kernel, so that explains why it has not percolated down to
-> freescale as yet.
->=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/=
-drivers/net/can/flexcan.c?h=3Dv4.11
+On commit b29794ec95c6856b316c2295904208bf11ffddd9 (4.12-rc4+).
 
-There are not that many changes on the fsl tree, you can probably cherry
-pick the patches.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Mkxtk52F7WAIXKn6JMB9m2d3pMcLWM6MN--
-
---v06bl0W9GBSvp2ArlQmUBahFsJ8I9H1XS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlk5ShsACgkQHv7KIOw4
-HPZpbgf9FRQwxCbij32CpCd8Er5Do1pLfN6wMtOBGp3C+32Wr7P1ek7yCs2vFvx/
-My+F1ZoWAaph2B2/yH/bNG8rJ0+lAuxwN7jQBeywtZ7w1K6KAJ5tgm8W0zmEkrLw
-Z9FuAdbIqHMXYrMpgOTFNSLQdyag8NxmRicEL76MyuzID3O6k7X7/7tJAmz2Guze
-OB9J1Zymshv6oJeg9D9v7RqFf8aAPgM/lG4hfL+RHgzXHL3nbWsWN77tpnCZEo7u
-ujmz2gk1VjuecG114BNx/lrUjgVdsypEWgb+f2WF9TBzi9kwcndBGNFQq5xSoYax
-aQ7SXioF+o9BID1pCjTIYanPviSYbA==
-=nxQJ
------END PGP SIGNATURE-----
-
---v06bl0W9GBSvp2ArlQmUBahFsJ8I9H1XS--
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 2 PID: 17404 Comm: syz-executor1 Not tainted 4.12.0-rc4+ #15
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:16 [inline]
+ dump_stack+0x292/0x395 lib/dump_stack.c:52
+ register_lock_class+0x717/0x1aa0 kernel/locking/lockdep.c:755
+ __lock_acquire+0x269/0x3690 kernel/locking/lockdep.c:3255
+ ? 0xffffffffa0000000
+ lock_acquire+0x22d/0x560 kernel/locking/lockdep.c:3855
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2f/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:299 [inline]
+ can_rx_register+0x4f3/0x700 net/can/af_can.c:483
+ raw_enable_filters+0xd7/0x1e0 net/can/raw.c:192
+ raw_enable_allfilters+0x8a/0x1e0 net/can/raw.c:258
+ raw_bind+0x244/0x830 net/can/raw.c:435
+ SYSC_bind+0x20e/0x4c0 net/socket.c:1422
+ SyS_bind+0x29/0x30 net/socket.c:1408
+ entry_SYSCALL_64_fastpath+0x1f/0xbe
+RIP: 0033:0x446389
+RSP: 002b:00007fa1efda2c08 EFLAGS: 00000292 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 0000000000000220 RCX: 0000000000446389
+RDX: 0000000000000060 RSI: 0000000020001fa0 RDI: 0000000000000017
+RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000017
+R13: 0000000000003770 R14: 00000000006e4830 R15: 0000000000c13000
