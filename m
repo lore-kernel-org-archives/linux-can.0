@@ -1,64 +1,41 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: af_can: namespace support: fix lockdep splat: properly initialize spin_lock
-Date: Thu,  8 Jun 2017 12:02:42 +0200
-Message-ID: <20170608100242.5784-1-mkl@pengutronix.de>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37939 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751610AbdFHKCr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Jun 2017 06:02:47 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Subject: [PATCH] can: gs_usb: fix memory leak in gs_cmd_reset()
+Date: Thu,  8 Jun 2017 12:03:10 +0200
+Message-ID: <20170608100310.5868-1-mkl@pengutronix.de>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
 To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>, Maximilian Schneider <max@schneidersoft.net>
+List-Id: linux-can.vger.kernel.org
 
-This patch uses spin_lock_init() instead of __SPIN_LOCK_UNLOCKED() to
-initialize the per namespace net->can.can_rcvlists_lock lock to fix this
-lockdep warning:
+This patch adds the missing kfree() in gs_cmd_reset() to free the
+memory that is not used anymore after usb_control_msg().
 
-| INFO: trying to register non-static key.
-| the code is fine but needs lockdep annotation.
-| turning off the locking correctness validator.
-| CPU: 0 PID: 186 Comm: candump Not tainted 4.12.0-rc3+ #47
-| Hardware name: Marvell Kirkwood (Flattened Device Tree)
-| [<c0016644>] (unwind_backtrace) from [<c00139a8>] (show_stack+0x18/0x1c)
-| [<c00139a8>] (show_stack) from [<c0058c8c>] (register_lock_class+0x1e4/0x55c)
-| [<c0058c8c>] (register_lock_class) from [<c005bdfc>] (__lock_acquire+0x148/0x1990)
-| [<c005bdfc>] (__lock_acquire) from [<c005deec>] (lock_acquire+0x174/0x210)
-| [<c005deec>] (lock_acquire) from [<c04a6780>] (_raw_spin_lock+0x50/0x88)
-| [<c04a6780>] (_raw_spin_lock) from [<bf02116c>] (can_rx_register+0x94/0x15c [can])
-| [<bf02116c>] (can_rx_register [can]) from [<bf02a868>] (raw_enable_filters+0x60/0xc0 [can_raw])
-| [<bf02a868>] (raw_enable_filters [can_raw]) from [<bf02ac14>] (raw_enable_allfilters+0x2c/0xa0 [can_raw])
-| [<bf02ac14>] (raw_enable_allfilters [can_raw]) from [<bf02ad38>] (raw_bind+0xb0/0x250 [can_raw])
-| [<bf02ad38>] (raw_bind [can_raw]) from [<c03b5fb8>] (SyS_bind+0x70/0xac)
-| [<c03b5fb8>] (SyS_bind) from [<c000f8c0>] (ret_fast_syscall+0x0/0x1c)
-
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-stable <stable@vger.kernel.org>
+Cc: Maximilian Schneider <max@schneidersoft.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-Hello Oliver,
+Hello Maximilian,
 
 feel free to review this patch.
 
 Marc
 
- net/can/af_can.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/can/usb/gs_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index b6406fe33c76..88edac0f3e36 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -872,8 +872,7 @@ static int can_notifier(struct notifier_block *nb, unsigned long msg,
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index eecee7f8dfb7..afcc1312dbaf 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -265,6 +265,8 @@ static int gs_cmd_reset(struct gs_usb *gsusb, struct gs_can *gsdev)
+ 			     sizeof(*dm),
+ 			     1000);
  
- static int can_pernet_init(struct net *net)
- {
--	net->can.can_rcvlists_lock =
--		__SPIN_LOCK_UNLOCKED(net->can.can_rcvlists_lock);
-+	spin_lock_init(&net->can.can_rcvlists_lock);
- 	net->can.can_rx_alldev_list =
- 		kzalloc(sizeof(struct dev_rcv_lists), GFP_KERNEL);
++	kfree(dm);
++
+ 	return rc;
+ }
  
 -- 
 2.11.0
-
