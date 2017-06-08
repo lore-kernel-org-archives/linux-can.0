@@ -1,47 +1,83 @@
-From: Andrey Konovalov <andreyknvl@google.com>
-Subject: net/can: trying to register non-static key in can_rx_register
-Date: Thu, 8 Jun 2017 17:16:22 +0200
-Message-ID: <CAAeHK+ywJzK4Hd=O_+j+Dw7pb=s-MgwVLJywrLAQdkwfybdu1Q@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: af_can: namespace support: fix lockdep splat:
+ properly initialize spin_lock
+Date: Thu, 8 Jun 2017 17:20:31 +0200
+Message-ID: <30cf02ed-e8f0-ff52-22dd-e0d20790d8a4@hartkopp.net>
+References: <20170608100242.5784-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:9138 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751585AbdFHPUk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Jun 2017 11:20:40 -0400
+In-Reply-To: <20170608100242.5784-1-mkl@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-Hi,
+Hi Marc,
 
-I've got the following error report while fuzzing the kernel with syzkaller.
+On 06/08/2017 12:02 PM, Marc Kleine-Budde wrote:
+> This patch uses spin_lock_init() instead of __SPIN_LOCK_UNLOCKED() to
+> initialize the per namespace net->can.can_rcvlists_lock lock to fix this
+> lockdep warning:
+>
+> | INFO: trying to register non-static key.
+> | the code is fine but needs lockdep annotation.
+> | turning off the locking correctness validator.
+> | CPU: 0 PID: 186 Comm: candump Not tainted 4.12.0-rc3+ #47
+> | Hardware name: Marvell Kirkwood (Flattened Device Tree)
+> | [<c0016644>] (unwind_backtrace) from [<c00139a8>] (show_stack+0x18/0x1c)
+> | [<c00139a8>] (show_stack) from [<c0058c8c>] (register_lock_class+0x1e4/0x55c)
+> | [<c0058c8c>] (register_lock_class) from [<c005bdfc>] (__lock_acquire+0x148/0x1990)
+> | [<c005bdfc>] (__lock_acquire) from [<c005deec>] (lock_acquire+0x174/0x210)
+> | [<c005deec>] (lock_acquire) from [<c04a6780>] (_raw_spin_lock+0x50/0x88)
+> | [<c04a6780>] (_raw_spin_lock) from [<bf02116c>] (can_rx_register+0x94/0x15c [can])
+> | [<bf02116c>] (can_rx_register [can]) from [<bf02a868>] (raw_enable_filters+0x60/0xc0 [can_raw])
+> | [<bf02a868>] (raw_enable_filters [can_raw]) from [<bf02ac14>] (raw_enable_allfilters+0x2c/0xa0 [can_raw])
+> | [<bf02ac14>] (raw_enable_allfilters [can_raw]) from [<bf02ad38>] (raw_bind+0xb0/0x250 [can_raw])
+> | [<bf02ad38>] (raw_bind [can_raw]) from [<c03b5fb8>] (SyS_bind+0x70/0xac)
+> | [<c03b5fb8>] (SyS_bind) from [<c000f8c0>] (ret_fast_syscall+0x0/0x1c)
+>
+> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+> Hello Oliver,
+>
+> feel free to review this patch.
 
-On commit b29794ec95c6856b316c2295904208bf11ffddd9 (4.12-rc4+).
+That's definitely a better initialization.
 
-INFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 2 PID: 17404 Comm: syz-executor1 Not tainted 4.12.0-rc4+ #15
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:16 [inline]
- dump_stack+0x292/0x395 lib/dump_stack.c:52
- register_lock_class+0x717/0x1aa0 kernel/locking/lockdep.c:755
- __lock_acquire+0x269/0x3690 kernel/locking/lockdep.c:3255
- ? 0xffffffffa0000000
- lock_acquire+0x22d/0x560 kernel/locking/lockdep.c:3855
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2f/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:299 [inline]
- can_rx_register+0x4f3/0x700 net/can/af_can.c:483
- raw_enable_filters+0xd7/0x1e0 net/can/raw.c:192
- raw_enable_allfilters+0x8a/0x1e0 net/can/raw.c:258
- raw_bind+0x244/0x830 net/can/raw.c:435
- SYSC_bind+0x20e/0x4c0 net/socket.c:1422
- SyS_bind+0x29/0x30 net/socket.c:1408
- entry_SYSCALL_64_fastpath+0x1f/0xbe
-RIP: 0033:0x446389
-RSP: 002b:00007fa1efda2c08 EFLAGS: 00000292 ORIG_RAX: 0000000000000031
-RAX: ffffffffffffffda RBX: 0000000000000220 RCX: 0000000000446389
-RDX: 0000000000000060 RSI: 0000000020001fa0 RDI: 0000000000000017
-RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000017
-R13: 0000000000003770 R14: 00000000006e4830 R15: 0000000000c13000
+The change was introduced in 8e8cda6d737d which moved the static 
+variable into the per-net data structure.
+
+Please CC Mario too.
+
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+
+Tnx,
+Oliver
+
+>
+> Marc
+>
+>  net/can/af_can.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/net/can/af_can.c b/net/can/af_can.c
+> index b6406fe33c76..88edac0f3e36 100644
+> --- a/net/can/af_can.c
+> +++ b/net/can/af_can.c
+> @@ -872,8 +872,7 @@ static int can_notifier(struct notifier_block *nb, unsigned long msg,
+>
+>  static int can_pernet_init(struct net *net)
+>  {
+> -	net->can.can_rcvlists_lock =
+> -		__SPIN_LOCK_UNLOCKED(net->can.can_rcvlists_lock);
+> +	spin_lock_init(&net->can.can_rcvlists_lock);
+>  	net->can.can_rx_alldev_list =
+>  		kzalloc(sizeof(struct dev_rcv_lists), GFP_KERNEL);
+>
+>
