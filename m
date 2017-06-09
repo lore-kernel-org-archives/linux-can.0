@@ -1,68 +1,75 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH] can: enable CAN FD for virtual CAN devices by default
-Date: Thu, 8 Jun 2017 17:42:29 +0200
-Message-ID: <93dced42-88ad-3f41-a17e-5668462615b6@hartkopp.net>
+Date: Fri, 9 Jun 2017 14:39:24 +0200
+Message-ID: <8863eb38-04ac-4c70-4862-896f74937072@pengutronix.de>
 References: <20170602173730.13644-1-socketcan@hartkopp.net>
+ <93dced42-88ad-3f41-a17e-5668462615b6@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="U1pHACs2K8EdQ7IRD6sGp9hfAmRQETlV6"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:19196 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751511AbdFHPmi (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Jun 2017 11:42:38 -0400
-In-Reply-To: <20170602173730.13644-1-socketcan@hartkopp.net>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:52719 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751527AbdFIMjb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 9 Jun 2017 08:39:31 -0400
+In-Reply-To: <93dced42-88ad-3f41-a17e-5668462615b6@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hi Marc,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--U1pHACs2K8EdQ7IRD6sGp9hfAmRQETlV6
+Content-Type: multipart/mixed; boundary="51XIDUD2TO5SBwlREn6KCLD96EVvO1Qp8";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <8863eb38-04ac-4c70-4862-896f74937072@pengutronix.de>
+Subject: Re: [PATCH] can: enable CAN FD for virtual CAN devices by default
+References: <20170602173730.13644-1-socketcan@hartkopp.net>
+ <93dced42-88ad-3f41-a17e-5668462615b6@hartkopp.net>
+In-Reply-To: <93dced42-88ad-3f41-a17e-5668462615b6@hartkopp.net>
 
-would you like to put this tiny improvement into your pull request too?
+--51XIDUD2TO5SBwlREn6KCLD96EVvO1Qp8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Oliver
+On 06/08/2017 05:42 PM, Oliver Hartkopp wrote:
+> Hi Marc,
+>=20
+> would you like to put this tiny improvement into your pull request too?=
 
-On 06/02/2017 07:37 PM, Oliver Hartkopp wrote:
-> CAN FD capable CAN interfaces can handle (classic) CAN 2.0 frames too.
-> New users usually fail at their first attempt to explore CAN FD on
-> virtual CAN interfaces due to the current CAN_MTU default.
->
-> Set the MTU to CANFD_MTU by default to reduce this confusion.
-> If someone *really* needs a 'classic CAN'-only device this can be set
-> with the 'ip' tool with e.g. 'ip link set vcan0 mtu 16' as before.
->
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/vcan.c  | 2 +-
->  drivers/net/can/vxcan.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
-> index facca33d53e9..681ba80ed6d4 100644
-> --- a/drivers/net/can/vcan.c
-> +++ b/drivers/net/can/vcan.c
-> @@ -152,7 +152,7 @@ static const struct net_device_ops vcan_netdev_ops = {
->  static void vcan_setup(struct net_device *dev)
->  {
->  	dev->type		= ARPHRD_CAN;
-> -	dev->mtu		= CAN_MTU;
-> +	dev->mtu		= CANFD_MTU;
->  	dev->hard_header_len	= 0;
->  	dev->addr_len		= 0;
->  	dev->tx_queue_len	= 0;
-> diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-> index 7fbb24795681..51a31258a0f8 100644
-> --- a/drivers/net/can/vxcan.c
-> +++ b/drivers/net/can/vxcan.c
-> @@ -150,7 +150,7 @@ static const struct net_device_ops vxcan_netdev_ops = {
->  static void vxcan_setup(struct net_device *dev)
->  {
->  	dev->type		= ARPHRD_CAN;
-> -	dev->mtu		= CAN_MTU;
-> +	dev->mtu		= CANFD_MTU;
->  	dev->hard_header_len	= 0;
->  	dev->addr_len		= 0;
->  	dev->tx_queue_len	= 0;
->
+
+applied to can.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--51XIDUD2TO5SBwlREn6KCLD96EVvO1Qp8--
+
+--U1pHACs2K8EdQ7IRD6sGp9hfAmRQETlV6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlk6lvwACgkQHv7KIOw4
+HPZ8qgf/X0I4T9oG2xNyts0wx3dETT0fduQ8AwMFl1A6w7nxSXCEt62Xob0Na6bP
+dEmB4ks3lxfQ7wFAjFvIx9FsYkSPExlWkiairbZz1y5TVMkX4/FSfCRDQVayLw0W
+wbhCy1OG47YwDx4J4EP5kWQn0tD03Up036wiBnExyq/s6EpoQdNDKP1MK2CDXSHP
+dIcwnPSOnj/YEmTtKiqipjdmzNtd0omN0Vb09uYl+R+IJwKtMz1Exif+mH1flbTX
+vTmfZVslUjsxe3tpGNzLqV3WfhOhIkKyWpGUBbWmZCK2omO/tuau1s1ydyTzRssB
+SGKBV3WGi4R48uXsuPuqkDLCtIrpWA==
+=RkTM
+-----END PGP SIGNATURE-----
+
+--U1pHACs2K8EdQ7IRD6sGp9hfAmRQETlV6--
