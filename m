@@ -1,34 +1,38 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2017-06-09
-Date: Fri, 09 Jun 2017 15:42:17 -0400 (EDT)
-Message-ID: <20170609.154217.1768446080709146205.davem@davemloft.net>
-References: <20170609125513.24436-1-mkl@pengutronix.de>
+From: INFO <mguerrero@huv.gov.co>
+Subject: Re: Reply Urgent
+Date: Mon, 19 Jun 2017 14:39:18 -0500
+Message-ID: <20170619143918.2132176qvnaamicm__18866.7863411412$1497917365$gmane$org@correo.huv.gov.co>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain;
+ charset=ISO-8859-1;
+ DelSp="Yes";
+ format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([184.105.139.130]:38154 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751584AbdFITmT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 9 Jun 2017 15:42:19 -0400
-In-Reply-To: <20170609125513.24436-1-mkl@pengutronix.de>
+Received: from correo.huv.gov.co ([190.6.160.84]:4695 "EHLO correo.huv.gov.co"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753205AbdFTAIX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 19 Jun 2017 20:08:23 -0400
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri,  9 Jun 2017 14:55:07 +0200
+Hello,
 
-> this is a pull request of 6 patches for net/master.
-> 
-> There's a patch by Stephane Grosjean that fixes an uninitialized symbol warning
-> in the peak_canfd driver. A patch by Johan Hovold to fix the product-id
-> endianness in an error message in the the peak_usb driver. A patch by Oliver
-> Hartkopp to enable CAN FD for virtual CAN devices by default. Three patches by
-> me, one makes the helper function can_change_state() robust to be called with
-> cf == NULL. The next patch fixes a memory leak in the gs_usb driver. And the
-> last one fixes a lockdep splat by properly initialize the per-net
-> can_rcvlists_lock spin_lock.
+How are you doing? I have been sent to inform you that, We have an  
+inheritance of a deceased client with your surname. Contact Mr Andrew  
+Bailey Reply Email To: myinfand@gmail.com with your "Full Names" for  
+more info.  Thanks for your understanding.
 
-Pulled, thank you Marc.
+Reply ASAP thank you.
+
+Melissa.
+----------------------------------
+Correo Corporativo Hospital Universitario del Valle E.S.E
+*******************************************************************************
+
+"Estamos re-dimensionandonos para crecer!"
+
+******************************************************************************
+
+
