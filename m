@@ -1,38 +1,51 @@
-From: INFO <mguerrero@huv.gov.co>
-Subject: Re: Reply Urgent
-Date: Mon, 19 Jun 2017 14:39:18 -0500
-Message-ID: <20170619143918.2132176qvnaamicm__18866.7863411412$1497917365$gmane$org@correo.huv.gov.co>
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH] can: m_can: Propagate the real error code
+Date: Wed, 21 Jun 2017 12:42:32 -0300
+Message-ID: <1498059752-15463-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=ISO-8859-1;
- DelSp="Yes";
- format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from correo.huv.gov.co ([190.6.160.84]:4695 "EHLO correo.huv.gov.co"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753205AbdFTAIX (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 19 Jun 2017 20:08:23 -0400
-Content-Disposition: inline
+Received: from mail-bn3nam01on0080.outbound.protection.outlook.com ([104.47.33.80]:26016
+        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751082AbdFUQ0z (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 21 Jun 2017 12:26:55 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
+To: mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, festevam@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>
 
-Hello,
+Instead of propagating '-EINVAL' when devm_ioremap_resource() or
+platform_get_irq_byname() fails, it is better to propagate the 
+real error code instead.
 
-How are you doing? I have been sent to inform you that, We have an  
-inheritance of a deceased client with your surname. Contact Mr Andrew  
-Bailey Reply Email To: myinfand@gmail.com with your "Full Names" for  
-more info.  Thanks for your understanding.
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ drivers/net/can/m_can/m_can.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Reply ASAP thank you.
-
-Melissa.
-----------------------------------
-Correo Corporativo Hospital Universitario del Valle E.S.E
-*******************************************************************************
-
-"Estamos re-dimensionandonos para crecer!"
-
-******************************************************************************
-
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index f4947a7..5768070 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1587,10 +1587,14 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "m_can");
+ 	addr = devm_ioremap_resource(&pdev->dev, res);
+-	irq = platform_get_irq_byname(pdev, "int0");
++	if (IS_ERR(addr)) {
++		ret = PTR_ERR(addr);
++		goto disable_cclk_ret;
++	}
+ 
+-	if (IS_ERR(addr) || irq < 0) {
+-		ret = -EINVAL;
++	irq = platform_get_irq_byname(pdev, "int0");
++	if (irq < 0) {
++		ret = irq;
+ 		goto disable_cclk_ret;
+ 	}
+ 
+-- 
+2.7.4
 
