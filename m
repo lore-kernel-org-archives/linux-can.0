@@ -1,27 +1,39 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH net-next v2 0/5] net: add netlink_ext_ack support to
- rtnl_link_ops
-Date: Mon, 26 Jun 2017 23:13:48 -0400 (EDT)
-Message-ID: <20170626.231348.1980572987092832224.davem@davemloft.net>
-References: <cover.1498425679.git.mschiffer@universe-factory.net>
+From: Franklin S Cooper Jr <fcooper@ti.com>
+Subject: MCAN Registers Discrepancy
+Date: Wed, 28 Jun 2017 16:49:06 -0500
+Message-ID: <62a65051-a8f4-0bd9-238c-0e28814e4249@ti.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([184.105.139.130]:34448 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751493AbdF0DN7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jun 2017 23:13:59 -0400
-In-Reply-To: <cover.1498425679.git.mschiffer@universe-factory.net>
+Received: from lelnx194.ext.ti.com ([198.47.27.80]:34099 "EHLO
+        lelnx194.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751515AbdF1VtZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 28 Jun 2017 17:49:25 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: mschiffer@universe-factory.net
-Cc: dledford@redhat.com, sean.hefty@intel.com, hal.rosenstock@gmail.com, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, wg@grandegger.com, mkl@pengutronix.de, pablo@netfilter.org, laforge@gnumonks.org, paulus@samba.org, jiri@resnulli.us, dsa@cumulusnetworks.com, shm@cumulusnetworks.com, stephen@networkplumber.org, arvid.brodin@alten.se, alex.aring@gmail.com, stefan@osg.samsung.com, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, kaber@trash.net, steffen.klassert@secunet.com, herbert@gondor.apana.org.au, johannes@sipsolutions.net, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-ppp@vger.kernel.org, linux-wpan@vger.kernel.org
+To: linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, b29396@freescale.com, socketcan@hartkopp.net
 
-From: Matthias Schiffer <mschiffer@universe-factory.net>
-Date: Sun, 25 Jun 2017 23:55:58 +0200
+Hi,
 
-> Same changes as http://patchwork.ozlabs.org/patch/780351/ , split into
-> separate patches for each rtnl_link_ops field as requested.
+When looking at the latest versions of the MCAN user manual it seems
+that there is a discrepancy between the various BTR_XX_MASK and
+BTR_XX_SHIFT values. For example BTR_TSEG2_MASK is set to 0xF and
+BTR_TSEG2_SHIFT is 4. However, based on page 21 of the latest version of
+the MCAN User Manual NTSEG2 starts at bit 0. Therefore, it should have a
+shift value of 0. Also it is a 7 bit field so its mask should be 0x7F. I
+see similar issues with FBTR_XXX_MASK values.
 
-Series applied, thank you.
+So the original driver mentioned it was based on rev version 3.1.0 of
+the User Manual while the latest version publicly available is 3.2.12.
+Since I don't see any current users of this driver in upstream I am
+unsure if this is just a bug in the code or if the current values are
+correct for older versions of the IP.
+
+Does anyone have a copy of this older document available that they can
+share? Or at the very least verify that the current values were correct
+in older revisions of the MCAN IP? I need to make updates to the drivers
+but I want to avoid breaking things for other people.
+
+Latest version of the MCAN User Manual can be found at:
+http://www.bosch-semiconductors.de/media/automotive_electronics/pdf_2/ipmodules_3/m_can_m_ttcan_1/mcan_users_manual_v3212.pdf
