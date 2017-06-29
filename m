@@ -1,96 +1,125 @@
-From: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: Re: CAN-FD Transceiver Limitations
-Date: Thu, 29 Jun 2017 09:49:35 -0500
-Message-ID: <5d4f2bcf-bd0f-4fa1-5d5a-d7b4a83cbc5e@ti.com>
-References: <de1f6343-4b28-4a5f-c6df-4e54c09fcce2@ti.com>
- <20170629142142.GF9244@lunn.ch>
+From: =?UTF-8?Q?Mario_H=c3=bcttel?= <mario.huettel@gmx.net>
+Subject: Re: MCAN Registers Discrepancy
+Date: Thu, 29 Jun 2017 16:52:51 +0200
+Message-ID: <b640c93b-23fe-82dc-b0ec-5c77fea64ed7@gmx.net>
+References: <62a65051-a8f4-0bd9-238c-0e28814e4249@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="RMS4nNfqI7xeBNRxqismDUQtsjxDKSIAo"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from fllnx209.ext.ti.com ([198.47.19.16]:50393 "EHLO
-        fllnx209.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751974AbdF2Ou4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 29 Jun 2017 10:50:56 -0400
-In-Reply-To: <20170629142142.GF9244@lunn.ch>
+Received: from mout.gmx.net ([212.227.17.22]:59664 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1752852AbdF2OxM (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 29 Jun 2017 10:53:12 -0400
+In-Reply-To: <62a65051-a8f4-0bd9-238c-0e28814e4249@ti.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de
+To: Franklin S Cooper Jr <fcooper@ti.com>, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, b29396@freescale.com, socketcan@hartkopp.net
 
-Hi Andrew
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--RMS4nNfqI7xeBNRxqismDUQtsjxDKSIAo
+Content-Type: multipart/mixed; boundary="oUH6liCFTfnelu08jHPg9nT7R1GOitPwB";
+ protected-headers="v1"
+From: =?UTF-8?Q?Mario_H=c3=bcttel?= <mario.huettel@gmx.net>
+To: Franklin S Cooper Jr <fcooper@ti.com>, linux-can@vger.kernel.org,
+ wg@grandegger.com, mkl@pengutronix.de, b29396@freescale.com,
+ socketcan@hartkopp.net
+Message-ID: <b640c93b-23fe-82dc-b0ec-5c77fea64ed7@gmx.net>
+Subject: Re: MCAN Registers Discrepancy
+References: <62a65051-a8f4-0bd9-238c-0e28814e4249@ti.com>
+In-Reply-To: <62a65051-a8f4-0bd9-238c-0e28814e4249@ti.com>
 
-On 06/29/2017 09:21 AM, Andrew Lunn wrote:
-> On Wed, Jun 28, 2017 at 05:14:42PM -0500, Franklin S Cooper Jr wrote:
->> Hi All,
->>
->> The various CAN transceivers I've seen that support CAN-FD appear to be
->> fairly limited in terms of their supported max speed. I've seen some
->> transceivers that only support upto 2 Mbps while others support up to  5
->> Mbps. This is a problem when the SoC's CAN IP can support even higher
->> values than the transceiver.
->>
->> Ideally I would think the MCAN driver should at the very least know what
->> the maximum speed supported by the transceiver it is connected to.
->> Therefore, either throwing an error if a request for a speed above the
->> transceiver capability or lower the requested speed to what ever the
->> transceiver is capability of doing.
-> 
-> Hi Franklin
-> 
->> In either case I do not know if it makes sense to add a DT property
->> within the MCAN driver or create another subnode that contains this
->> information. For example I see some ethernet drivers support
->> "fixed-link" subnode which is trying to solve a similar issue.
-> 
-> Hi Franklin
-> 
-> I would say fixed-link is trying to solve a different issue. You use
-> fixed-link when you don't have a PHY connected to the Ethernet MAC. A
-> MAC driver will normally tell the PHY driver what speeds its supports,
-> and ask the PHY to negotiate a speed both the MAC and PHY supports
-> with the peer device. The MAC then gets told of the resulting speed.
-> If this PHY does not exist, you cannot ask it to perform auto-neg, you
-> have no idea what the peer is capable of. Hence you add a virtual PHY
-> using fixed-link, which always returns the same speed. This works
-> because if you don't have a PHY, the MAC is generally connected to
-> another MAC on the same board, typically an Ethernet switch. Hence the
-> speed is a board property and fixed.
-> 
-> You appear to have a different issue. I don't know the CAN
-> subsystem. Is the transceiver part of the model? Is there an API
-> between the CAN-MAC and the CAN-transceiver? It sounds like you need
-> to add an API call from the MAC driver to the transceiver driver to
-> ask it what it is capable of. I don't see this as being a DT property.
-> The transceiver should know its own capabilities. And you have to
-> think about non-DT systems, e.g. CAN devices on USB dongles.
+--oUH6liCFTfnelu08jHPg9nT7R1GOitPwB
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 
-Transceivers for CAN are not apart of any model. Traditional CAN didn't
-have a problem because all transceivers from my understanding supported
-the maximum speed of 1 Mbps defined by the spec. However, with the
-introduction of CAN Flexible Datarate mode it seems that for
-transceivers that supported CAN-FD the maximum supported speeds vary.
+Hello,
 
-Unfortunately, their is no way to communicate with the transceiver to
-understand its capabilities. You don't program it or configure a
-transceiver. It simply has a fixed configuration. Now that I think of it
-you also can't determine if the transceiver supports CAN-FD in the first
-place. IP that supports CAN-FD is backwards compatible with standard
-CAN. Therefore, its feasible that you may even use a transceiver that
-doesn't support CAN-FD. So I would think something like the below would
-be needed.
+you are right. There are/were some incosistencies in the values.
 
-mcan@0 {
-	...
-	fixed-transceiver {
-	      max-canfd-speed = <2000>
-	};
-	...
-};
+However, the driver used them correctly. The driver version you
 
-So the mcan driver can then check for this subnode and if found read in
-the max canfd speed that is supported. A value of 0 could be used to
-indicate that CAN-FD isn't supported by the transceiver.
-> 
->       Andrew
-> 
+talk about is not entirely compatible with the user manual you provided.
+
+
+I wrote some patches back in April which add support for the newer M_CAN
+
+versions up to 3.2.X:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/dr=
+ivers/net/can/m_can
+
+These should work as intended.
+
+Before, the driver could only handle IP versions 3.0.X.
+
+
+Mario
+
+
+
+On 06/28/2017 11:49 PM, Franklin S Cooper Jr wrote:
+> Hi,
+>
+> When looking at the latest versions of the MCAN user manual it seems
+> that there is a discrepancy between the various BTR_XX_MASK and
+> BTR_XX_SHIFT values. For example BTR_TSEG2_MASK is set to 0xF and
+> BTR_TSEG2_SHIFT is 4. However, based on page 21 of the latest version o=
+f
+> the MCAN User Manual NTSEG2 starts at bit 0. Therefore, it should have =
+a
+> shift value of 0. Also it is a 7 bit field so its mask should be 0x7F. =
+I
+> see similar issues with FBTR_XXX_MASK values.
+>
+> So the original driver mentioned it was based on rev version 3.1.0 of
+> the User Manual while the latest version publicly available is 3.2.12.
+> Since I don't see any current users of this driver in upstream I am
+> unsure if this is just a bug in the code or if the current values are
+> correct for older versions of the IP.
+>
+> Does anyone have a copy of this older document available that they can
+> share? Or at the very least verify that the current values were correct=
+
+> in older revisions of the MCAN IP? I need to make updates to the driver=
+s
+> but I want to avoid breaking things for other people.
+>
+> Latest version of the MCAN User Manual can be found at:
+> http://www.bosch-semiconductors.de/media/automotive_electronics/pdf_2/i=
+pmodules_3/m_can_m_ttcan_1/mcan_users_manual_v3212.pdf
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in=
+
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+
+--oUH6liCFTfnelu08jHPg9nT7R1GOitPwB--
+
+--RMS4nNfqI7xeBNRxqismDUQtsjxDKSIAo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEwjdBGUhyDYwF3W3ckaOeH7OEy/0FAllVFEcACgkQkaOeH7OE
+y/1i0BAAkX0T7MLkKv9d4jOgxvvhev+6IG9ABhkV7PzD1PYp+NzZcc/Az1N/gKem
+rsNIbnonBmabELux/jZQzq34t1fg9A4wDSDmNs6WTj5JnqzR3h6NLAtTcM17vvRf
+ddO2x5b36Cml9sE3JYtaBHHj7eV9kdzEBi1oDAp0HIgN0sj5AiXYT7QjA9blV41Y
+PbYZZv2UfHCVOsR8/end8DR6h3DM+DYifOPzyOSwMC9E/Nk2Zq19S0bRLtSPjf4G
+xd6qEt4JnMo2Xfm6Krd+PMVxmpN4n0vlTI8G3rdROPVHotTKf8ujcZ7FWge8F/+C
+RX4LvpexG6AIN4dkKnPZAiOTTUBKYfRVhAFgl8eOepPAsZB0XYa0l81FFNR16eUq
+WHRtfR/MSml5Ew9ZdVgLL1dT8ICaSA8X9Bw1XkbVXD6gtsGcMz1SUoDItlMMnk1I
+bDes+whFmLVOM+CGE5Cf7WRXepM3TvaSJRFGZmTk2n6udKKN/uWrOnVyh8x7f/PK
+AcnP+sKASFm8EclbG1M9tElAId3LwOwXR+v0mCAUU8LfScMPxLdMMJUGf1Tfav5N
+7EFXWJyO15ZiR0A0zQgnvcf4zn34T5pmg16qG6FwtlYKBdtYjRHoQPqeQfS+VPtr
+oBCrhFgfZls1Ijw73qZ2lPAyk5MdfULIb+hop2O/1xVEgnGLf6Q=
+=EpEX
+-----END PGP SIGNATURE-----
+
+--RMS4nNfqI7xeBNRxqismDUQtsjxDKSIAo--
