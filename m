@@ -1,100 +1,70 @@
-From: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
-Subject: Re: CAN-FD Transceiver Limitations
-Date: Fri, 30 Jun 2017 12:51:31 -0500
-Message-ID: <7883a83f-6af7-3ac8-a5ab-449ca1ab889a@ti.com>
-References: <de1f6343-4b28-4a5f-c6df-4e54c09fcce2@ti.com>
- <20170629142142.GF9244@lunn.ch> <5d4f2bcf-bd0f-4fa1-5d5a-d7b4a83cbc5e@ti.com>
- <20170629154139.GC13221@lunn.ch>
- <c0d3d772-6939-d22c-b954-3ba6486a9ede@ti.com>
- <20170629223551.GA6568@airbook.vandijck-laurijssen.be>
- <d5c2e2f2-8b74-58e1-0cc8-727ba39bd14c@ti.com>
- <20170630080906.GA26712@airbook.vandijck-laurijssen.be>
+From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
+Subject: Getting manufacturer/product name for CAN interface
+Date: Sat, 1 Jul 2017 17:57:37 +0200
+Message-ID: <c3904508-14b9-1ffb-8507-9196fa193f56@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170630080906.GA26712-W3bwb+3xS1LIj2mJfgo99rBP9FGTfoIhIWnq8iejnXE@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mout.gmx.net ([212.227.17.21]:51049 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751930AbdGAP5l (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 1 Jul 2017 11:57:41 -0400
+Received: from [192.168.2.107] ([87.187.211.128]) by mail.gmx.com (mrgmx101
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 0LpwZn-1du59J3W0l-00fklS for
+ <linux-can@vger.kernel.org>; Sat, 01 Jul 2017 17:57:38 +0200
+Content-Language: en-GB
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-Hi Kurt,
+Hi SocketCAN experts and developers,
 
-On 06/30/2017 03:09 AM, Kurt Van Dijck wrote:
->> On 06/29/2017 05:36 PM, Kurt Van Dijck wrote:
->>>>>>
->>>>>> mcan@0 {
->>>>>> 	...
->>>>>> 	fixed-transceiver {
->>>>>> 	      max-canfd-speed = <2000>
->>>>>> 	};
->>>>>> 	...
->>>>>> };
->>>
->>> Since when would a transceiver support different speeds for CAN & CANFD?
->>
->> When I say CAN I'm referring to CAN 2.0 specification which mentioned
->> speeds upto 1 Mbit/s. While CAN FD supports higher bitrates.
-> 
-> linux-can is not necessarily restricted to CAN 2.0B?
-> 
->>
->>> No transceivers were available, but they are now.
->>> I see no datalink problem applying 2MBit for regular CAN with apropriate
->>> physical layer, and CAN does not predefine the physical layer
->>> (advise != define).
->>>
->>> IMHO,
->>> 	fixed-transceiver {
->>> 		max-arbitration-speed = <2000000>
->>> 		max-data-speed = <4000000>
->>> 	};
->>> is way better to describe the hardware.
->>> Regular CAN chips would not consider max-data-speed...
->>
->> What is arbitration speed?
-> 
-> CANFD remains similar during the arbitration phase (when the CAN id is
-> sent on the wire), and after that allows to switch to a higher 'data'
-> speed because the round-trip wire restrictions during arbitration
-> don't apply anymore.
-> 
->>
->> Also if I understand you correctly then I agree drivers for traditional
->> CAN wouldn't care about this subnode. Although it may be helpful for
->> max-data-speed to become max-canfd-speed or something along those lines.
->> Just so the property's purpose is clear.
-> 
-> Transceivers exist that don't support 1MB either.
-> naming the speeds max-arbitration-speed and max-data-speed makes this
-> OF nodes usable for that kind of CAN 2.0 restrtications too.
-> 
-> Of course, CAN 2.0 chips only consider max-arbitration-speed as that
-> applies to the whole wire bitstream, where as CANFD considers both.
-> 
-> What I understand of your proposal is that max-arbitration-speed is
-> 'fixed to 1MB anyway', and that assumption has been proven not
-> universally applicable with CAN2.0 transceivers already.
-> 
-> I found the name 'max-canfd-speed' a bit dubious as CANFD relies on
-> 'flexible datarate'. transceivers may not necessarily support the same
-> speed for both arbitration and data.
-> So I propose to replace it with 'max-data-speed'
+I'm one of the QtSerialBus [1] developers and added a function to scan
+for available devices [2] some month ago.
 
-Thanks for the explanation. Makes sense.
-> 
-> Kind regards,
-> Kurt
-> 
->>>
->>> Kind regards,
->>> Kurt
->>>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+For now this function reads the sysfs to create a list like this:
+
+can0
+can1
+vcan0
+vcan1
+
+What I wanted to have now, is the corresponding hardware description for
+each of these interfaces. For the virtual devices this would be just 
+something like "Virtual CAN 0". For real hardware I'd like to get the 
+manufacturer and product strings.
+
+This information is available in dmesg when a device is connected:
+
+[48395.500029] usb 1-4: new full-speed USB device number 7 using xhci_hcd
+[48395.641496] usb 1-4: New USB device found, idVendor=0878, idProduct=1105
+[48395.641501] usb 1-4: New USB device strings: Mfr=1, Product=2, 
+SerialNumber=0
+[48395.641504] usb 1-4: Product: USB-CANmodul2
+[48395.641507] usb 1-4: Manufacturer: SYS TEC electronic GmbH
+
+But not even ifconfig shows this:
+
+can0      Link encap:UNSPEC  Hardware Adresse 00-01-B0-BD-...-00
+           NOARP  MTU:16  Metrik:1
+           RX-Pakete:0 Fehler:0 Verloren:0 Überläufe:0 Fenster:0
+           TX-Pakete:0 Fehler:0 Verloren:0 Überläufe:0 Träger:0
+           Kollisionen:0 Sendewarteschlangenlänge:10
+           RX-Bytes:0 (0.0 B)  TX-Bytes:0 (0.0 B)
+
+can1      Link encap:UNSPEC  Hardware Adresse 00-01-B0-BD--...-00
+           NOARP  MTU:16  Metrik:1
+           RX-Pakete:0 Fehler:0 Verloren:0 Überläufe:0 Fenster:0
+           TX-Pakete:0 Fehler:0 Verloren:0 Überläufe:0 Träger:0
+           Kollisionen:0 Sendewarteschlangenlänge:10
+           RX-Bytes:0 (0.0 B)  TX-Bytes:0 (0.0 B)
+
+Now the question: Is there a way to query manufacturer/device
+information for a given interface name canX from C/C++?
+
+Thanks in advance,
+André
+
+[1] http://code.qt.io/cgit/qt/qtserialbus.git
+[2] http://doc.qt.io/qt-5/qcanbus.html#availableDevices
