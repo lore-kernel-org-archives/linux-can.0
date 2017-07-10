@@ -1,80 +1,92 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: Getting manufacturer/product name for CAN interface
-Date: Wed, 5 Jul 2017 20:01:38 +0200
-Message-ID: <955344be-5991-5de9-a705-5f2e480c765d@grandegger.com>
-References: <c3904508-14b9-1ffb-8507-9196fa193f56@gmx.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: CAN-FD Transceiver Limitations
+Date: Mon, 10 Jul 2017 16:58:28 +0200
+Message-ID: <6f9f7a0b-ff9d-15bd-47be-012986a452c3@pengutronix.de>
+References: <de1f6343-4b28-4a5f-c6df-4e54c09fcce2@ti.com>
+ <20170629142142.GF9244@lunn.ch> <5d4f2bcf-bd0f-4fa1-5d5a-d7b4a83cbc5e@ti.com>
+ <20170629154139.GC13221@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Iqx4qef1IiqKu9KNPaTs6mCbafp6NrHqs"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy03.manitu.net ([217.11.48.67]:58624 "EHLO
-        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751772AbdGESHM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jul 2017 14:07:12 -0400
-In-Reply-To: <c3904508-14b9-1ffb-8507-9196fa193f56@gmx.de>
-Content-Language: en-GB
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:53011 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1753309AbdGJO6g (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 10 Jul 2017 10:58:36 -0400
+In-Reply-To: <20170629154139.GC13221@lunn.ch>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>, linux-can@vger.kernel.org
+To: Andrew Lunn <andrew@lunn.ch>, Franklin S Cooper Jr <fcooper@ti.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, wg@grandegger.com
 
-Hello,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Iqx4qef1IiqKu9KNPaTs6mCbafp6NrHqs
+Content-Type: multipart/mixed; boundary="PCX4K4U7FwPABNrrmrk8RTqqISHMq6cpq";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Andrew Lunn <andrew@lunn.ch>, Franklin S Cooper Jr <fcooper@ti.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, wg@grandegger.com
+Message-ID: <6f9f7a0b-ff9d-15bd-47be-012986a452c3@pengutronix.de>
+Subject: Re: CAN-FD Transceiver Limitations
+References: <de1f6343-4b28-4a5f-c6df-4e54c09fcce2@ti.com>
+ <20170629142142.GF9244@lunn.ch> <5d4f2bcf-bd0f-4fa1-5d5a-d7b4a83cbc5e@ti.com>
+ <20170629154139.GC13221@lunn.ch>
+In-Reply-To: <20170629154139.GC13221@lunn.ch>
 
-Am 01.07.2017 um 17:57 schrieb André Hartmann:
-> Hi SocketCAN experts and developers,
-> 
-> I'm one of the QtSerialBus [1] developers and added a function to scan
-> for available devices [2] some month ago.
-> 
-> For now this function reads the sysfs to create a list like this:
-> 
-> can0
-> can1
-> vcan0
-> vcan1
-> 
-> What I wanted to have now, is the corresponding hardware description for
-> each of these interfaces. For the virtual devices this would be just 
-> something like "Virtual CAN 0". For real hardware I'd like to get the 
-> manufacturer and product strings.
-> 
-> This information is available in dmesg when a device is connected:
-> 
-> [48395.500029] usb 1-4: new full-speed USB device number 7 using xhci_hcd
-> [48395.641496] usb 1-4: New USB device found, idVendor=0878, idProduct=1105
-> [48395.641501] usb 1-4: New USB device strings: Mfr=1, Product=2, 
-> SerialNumber=0
-> [48395.641504] usb 1-4: Product: USB-CANmodul2
-> [48395.641507] usb 1-4: Manufacturer: SYS TEC electronic GmbH
-> 
-> But not even ifconfig shows this:
-> 
-> can0      Link encap:UNSPEC  Hardware Adresse 00-01-B0-BD-...-00
->            NOARP  MTU:16  Metrik:1
->            RX-Pakete:0 Fehler:0 Verloren:0 Überläufe:0 Fenster:0
->            TX-Pakete:0 Fehler:0 Verloren:0 Überläufe:0 Träger:0
->            Kollisionen:0 Sendewarteschlangenlänge:10
->            RX-Bytes:0 (0.0 B)  TX-Bytes:0 (0.0 B)
-> 
-> can1      Link encap:UNSPEC  Hardware Adresse 00-01-B0-BD--...-00
->            NOARP  MTU:16  Metrik:1
->            RX-Pakete:0 Fehler:0 Verloren:0 Überläufe:0 Fenster:0
->            TX-Pakete:0 Fehler:0 Verloren:0 Überläufe:0 Träger:0
->            Kollisionen:0 Sendewarteschlangenlänge:10
->            RX-Bytes:0 (0.0 B)  TX-Bytes:0 (0.0 B)
-> 
-> Now the question: Is there a way to query manufacturer/device
-> information for a given interface name canX from C/C++?
+--PCX4K4U7FwPABNrrmrk8RTqqISHMq6cpq
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-You can get device information via netlink interface:
+On 06/29/2017 05:41 PM, Andrew Lunn wrote:
+>> Transceivers for CAN are not apart of any model. Traditional CAN didn'=
+t
+>> have a problem because all transceivers from my understanding supporte=
+d
+>> the maximum speed of 1 Mbps defined by the spec. However, with the
+>> introduction of CAN Flexible Datarate mode it seems that for
+>> transceivers that supported CAN-FD the maximum supported speeds vary.
+>=20
+> So transceivers are dumb devices, nothing to configure, so no need to
+> have a driver for them.
 
-  $ ip -d link show can0
-  4: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default qlen 10
-      link/can  promiscuity 0 
-      can state STOPPED restart-ms 0 
-      pcan_usb: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
-      clock 8000000
+Yes and no.
 
-It lists the short name of the CAN controller. Here "pcan_us", or 
-"sja1000", "mscan", "flexcan" and others.
+CAN transceivers are usually quite dumb, but most of them have some sort
+of "enable" pin. This pin is currently modelled as a regulator. Which
+fits nicely, as there dual transceivers with only one enable pin.
 
-Wolfgang.
+However there are more complicated transceivers with two pins, that
+implement a state machine, where you can query the chip for various
+error conditions and can configure remote wakeup, etc... So in the
+future a proper driver might be implemented.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--PCX4K4U7FwPABNrrmrk8RTqqISHMq6cpq--
+
+--Iqx4qef1IiqKu9KNPaTs6mCbafp6NrHqs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlljlhQACgkQHv7KIOw4
+HPbjaAf/TlYcsNitUFRD1vWPOf5wocd7lupy1uzARq0tOgIqBtRT2T2MBlYH4awM
+Kw26KjGP3/asGQo3/vAC3bMIfUwKEELFll6j/MNS5cBv6HQVqTZKJr6kpQkl1Trs
+zf+esFZRllIlxy6T+at1xWn5n7ahkHGgdYpt+YEEcdlrvG+Wsoej1wdXhpZXwcSK
+rd8YzQgWN8l5pNFQtdeaX9G1t2RvxgxOqv9sBTATR1OEXhzpOiiMMDdvKCIaqEcj
+t9KhyNLB6ZF6VEHfSzrcCbTnipRe9aeFEjo5iLFwvYTVcK8UOAqfs/2QMn0SssCU
+x6DxLSOfP5blM0+s8EnuEGeVya6tfw==
+=jNhR
+-----END PGP SIGNATURE-----
+
+--Iqx4qef1IiqKu9KNPaTs6mCbafp6NrHqs--
