@@ -1,47 +1,53 @@
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH v3 02/10] net: can: at91_can: constify attribute_group structures.
-Date: Tue, 18 Jul 2017 15:14:18 +0530
-Message-ID: <1500371059-14678-1-git-send-email-arvind.yadav.cs@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: davem@davemloft.net, wg@grandegger.com, mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+From: aha_1980@gmx.de
+Subject: Re: Getting manufacturer/product name for CAN interface
+Date: Wed, 19 Jul 2017 17:42:29 +0000
+Message-ID: <q10u44.otcmiv.1hge1d1-qmf@gmx.com>
+References: <c3904508-14b9-1ffb-8507-9196fa193f56@gmx.de>
+ <955344be-5991-5de9-a705-5f2e480c765d@grandegger.com>
+ <5c9a4542-aa3d-c54f-7f83-d7cd3f594a65@gmx.de>
+ <18d6c6fc-fcc2-34d9-a98a-1d2ae4d1e0b1@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mout.gmx.net ([212.227.17.21]:49163 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1754128AbdGSRmm (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 19 Jul 2017 13:42:42 -0400
+In-Reply-To: <18d6c6fc-fcc2-34d9-a98a-1d2ae4d1e0b1@pengutronix.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, Marcel.Birthelmer@microchip.com, wg@grandegger.com
 
-attribute_group are not supposed to change at runtime. All functions
-working with attribute_group provided by <linux/netdevice.h> work
-with const attribute_group. So mark the non-const structs as const.
-
-File size before:
-   text	   data	    bss	    dec	    hex	filename
-   6164	    304	      0	   6468	   1944	drivers/net/can/at91_can.o
-
-File size After adding 'const':
-   text	   data	    bss	    dec	    hex	filename
-   6228	    240	      0	   6468	   1944	drivers/net/can/at91_can.o
-
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
----
-Changes in v2:
-              Added cover later.
-Changes in v3:
-              net-next was closed. Now resubmitting it.
-
- drivers/net/can/at91_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 0e0df0b..f37ce0e 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -1232,7 +1232,7 @@ static DEVICE_ATTR(mb0_id, S_IWUSR | S_IRUGO,
- 	NULL,
- };
- 
--static struct attribute_group at91_sysfs_attr_group = {
-+static const struct attribute_group at91_sysfs_attr_group = {
- 	.attrs = at91_sysfs_attrs,
- };
- 
--- 
-1.9.1
+SGkgTWFyYywNCg0KQW0gRGllbnN0YWcgMTguIEp1bGkgMjAxNyBzY2hyaWViIE1hcmMgS2xlaW5l
+LUJ1ZGRlOg0KPiBPbiAwNy8xNy8yMDE3IDA5OjM2IFBNLCBBbmRyw6kgSGFydG1hbm4gd3JvdGU6
+DQo+ID4gdGhhbmtzIGZvciB5b3VyIGhpbnRzISBJJ3ZlIGludmVzdGlnYXRlZCBhIGJpdCAod2l0
+aCBQRUFLIGFuZCBTWVNURUMNCj4gPiBhZGFwdGVycykgYW5kIEknbSBwYXJ0bHkgc2F0aXNmaWVk
+Lg0KPiA+IA0KPiA+IFdvbGZnYW5ncyB0aXAgd2l0aCBpcCAtZCBnaXZlcyBtZSBpbmRlZWQgdGhl
+IGRyaXZlciBhc3NvY2lhdGVkIHRvIGENCj4gPiBDQU4gaW50ZXJmYWNlLiBBbmQgaW4gL3N5cy9j
+bGFzcy9uZXQvY2FuMC9zdWJzeXN0ZW0vY2FuMC9kZXZpY2UvDQo+ID4gaW50ZXJmYWNlIEkgZm91
+bmQgdGhlIGRldmljZSBzdHJpbmcsIHRoYW5rcyBNYXJjZWwuIChGdWxsIGxvZ3MgYXJlDQo+ID4g
+YXBwZW5kZWQpLg0KPiA+IA0KPiA+IEhvd2V2ZXIsIHRoZSBtb3N0IGltcG9ydGFudCBpbmZvcyBh
+cmUgc3RpbGwgb25seSB2aXNpYmxlIGluIGRtZXNnLg0KPiA+IEl0J3MgdGhlIGRyaXZlcnMgb3V0
+cHV0IHdoaWNoIENBTiBjaGFubmVsIGlzIGFzc29jaWF0ZWQgd2l0aCBlYWNoDQo+ID4gaGFyZHdh
+cmUgaW50ZXJmYWNlLCBlLmcuOg0KPiA+IA0KPiA+IHBlYWtfdXNiIDItMS40OjEuMDogUEVBSy1T
+eXN0ZW0gUENBTi1VU0IgUHJvIFsuLi5dICgyIGNoYW5uZWxzKQ0KPiA+IHBlYWtfdXNiIDItMS40
+OjEuMCBjYW4wOiBhdHRhY2hlZCB0byBQQ0FOLVVTQiBQcm8gY2hhbm5lbCAwIChkZXZpY2UgMSkN
+Cj4gPiBwZWFrX3VzYiAyLTEuNDoxLjAgY2FuMTogYXR0YWNoZWQgdG8gUENBTi1VU0IgUHJvIGNo
+YW5uZWwgMSAoZGV2aWNlIDApDQo+ID4gDQo+ID4gU28gaWYgdGhlcmUgaXMgbm8gd2F5IHRvIGdl
+dCB0aGVzZSBpbmZvcyBmcm9tIHVzZXJzcGFjZSBub3csIEkgdGhpbmsgaXQNCj4gPiB3b3VsZCBi
+ZSBhIGdvb2QgYWRkaXRpb24gdG8gaGF2ZSB0aGlzIHBvc3NpYmlsaXR5LiBFc3BlY2lhbGx5IGlm
+IHRoZXJlDQo+ID4gaXMgbW9yZSB0aGFuIG9uZSBDQU4gYWRhcHRlciBjb25uZWN0ZWQuDQo+IA0K
+PiBEb2VzIHRoZSB1ZGV2IHByb3BlcnR5IGRldl9pZCBoZWxwPyBTZWUNCj4gaHR0cDovL3Blcm1h
+bGluay5nbWFuZS5vcmcvZ21hbmUubGludXguY2FuLzUyMjcgZm9yIG1vcmUgaW5mb3JtYXRpb24u
+DQoNClRoYXQgbG9va3MgaW5kZWVkIGludGVyZXN0aW5nLiBNeSBHb29nbGUtZm9vIHRlbGxzIG1l
+IHRoZSBwYXRjaCB3YXMgaW5jbHVkZWQgaW4gYSBwdWxsIHJlcXVlc3QsIHNvIGl0IHNob3VsZCBi
+ZSBtZXJnZWQgdG8gbWFpbmxpbmUgS2VybmVsLg0KDQpMZXQncyBzZWUgd2hhdCBJIGNhbiBhY2hp
+dmUuDQoNClRoYW5rcywgQW5kcmUNCiANCj4gcmVnYXJkcywNCj4gTWFyYw0KPiANCj4gLS0gDQo+
+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAg
+ICAgICAgICB8DQo+IEluZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiAr
+NDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAg
+ICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hl
+aW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93d3cucGVuZ3V0cm9uaXguZGUgICB8DQo+IA0KPg0KDQot
+LSANClZvbiBtZWluZW0gSm9sbGEgZ2VzZW5kZXQ=
