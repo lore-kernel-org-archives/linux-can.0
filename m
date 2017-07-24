@@ -1,51 +1,53 @@
 From: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH v2 1/3] can: m_can: Make hclk optional
-Date: Mon, 24 Jul 2017 17:51:40 -0500
-Message-ID: <20170724225142.19975-2-fcooper@ti.com>
-References: <20170724225142.19975-1-fcooper@ti.com>
+Subject: [PATCH v2 0/4] can: Add new binding to limit bit rate used
+Date: Mon, 24 Jul 2017 18:05:17 -0500
+Message-ID: <20170724230521.1436-1-fcooper@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170724225142.19975-1-fcooper-l0cyMroinI0@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dev.kurt-yI9piX4KPfawT/RRk36CISFp6vIno51x@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org, socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org
 Cc: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
 List-Id: linux-can.vger.kernel.org
 
-Hclk is the MCAN's interface clock. However, for OMAP based devices such as
-DRA7 SoC family the interface clock is handled by hwmod. Therefore, this
-interface clock is managed by hwmod driver via pm_runtime_get and
-pm_runtime_put calls. Therefore, this interface clock isn't defined in DT
-and thus the driver shouldn't fail if this clock isn't found.
+Add a new generic binding that CAN drivers can use to specify the max
+arbitration and data bit rate supported by a transceiver. This is
+useful since in some instances the maximum speeds may be limited by
+the transceiver used. However, transceivers may not provide a means
+to determine this limitation at runtime. Therefore, create a new binding
+that mimics "fixed-link" that allows a user to hardcode the max speeds
+that can be used.
 
-Signed-off-by: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
----
+Also add support for this new binding in the MCAN driver.
+
+Note this is an optional subnode so even if a driver adds support for
+parsing fixed-transceiver the user does not have to define it in their
+device tree.
+
 Version 2 changes:
-Used NULL instead of 0 for unused hclk handle
+Rename function
+Define proper variable default
+Drop unit address
+Move check to changelink function
+Reword commit message
+Reword documentation
 
- drivers/net/can/m_can/m_can.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Franklin S Cooper Jr (4):
+  can: dev: Add support for limiting configured bitrate
+  can: fixed-transceiver: Add documentation for CAN fixed transceiver
+    bindings
+  can: m_can: Update documentation to mention new fixed transceiver
+    binding
+  can: m_can: Add call to of_can_transceiver_fixed
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index f4947a7..ea48e59 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1568,8 +1568,13 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 	hclk = devm_clk_get(&pdev->dev, "hclk");
- 	cclk = devm_clk_get(&pdev->dev, "cclk");
- 
--	if (IS_ERR(hclk) || IS_ERR(cclk)) {
--		dev_err(&pdev->dev, "no clock found\n");
-+	if (IS_ERR(hclk)) {
-+		dev_warn(&pdev->dev, "hclk could not be found\n");
-+		hclk = NULL;
-+	}
-+
-+	if (IS_ERR(cclk)) {
-+		dev_err(&pdev->dev, "cclk could not be found\n");
- 		ret = -ENODEV;
- 		goto failed_ret;
- 	}
+ .../bindings/net/can/fixed-transceiver.txt         | 42 +++++++++++++++
+ .../devicetree/bindings/net/can/m_can.txt          | 10 ++++
+ drivers/net/can/dev.c                              | 59 ++++++++++++++++++++++
+ drivers/net/can/m_can/m_can.c                      |  2 +
+ include/linux/can/dev.h                            |  5 ++
+ 5 files changed, 118 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/fixed-transceiver.txt
+
 -- 
 2.10.0
 
