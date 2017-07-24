@@ -1,64 +1,43 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 3/4] can: m_can: Update documentation to mention new
- fixed transceiver binding
-Date: Mon, 24 Jul 2017 14:50:54 -0500
-Message-ID: <20170724195054.or7vsl5mtvgh2tba@rob-hp-laptop>
-References: <20170719233654.25908-1-fcooper@ti.com>
- <20170719233654.25908-4-fcooper@ti.com>
+From: Franklin S Cooper Jr <fcooper@ti.com>
+Subject: [PATCH v2 2/3] can: m_can: Update documentation to indicate that hclk may be optional
+Date: Mon, 24 Jul 2017 17:51:41 -0500
+Message-ID: <20170724225142.19975-3-fcooper@ti.com>
+References: <20170724225142.19975-1-fcooper@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20170719233654.25908-4-fcooper-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dev.kurt-yI9piX4KPfawT/RRk36CISFp6vIno51x@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lelnx194.ext.ti.com ([198.47.27.80]:48365 "EHLO
+        lelnx194.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753460AbdGXWwN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 24 Jul 2017 18:52:13 -0400
+In-Reply-To: <20170724225142.19975-1-fcooper@ti.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com
+Cc: Franklin S Cooper Jr <fcooper@ti.com>
 
-On Wed, Jul 19, 2017 at 06:36:53PM -0500, Franklin S Cooper Jr wrote:
-> Add information regarding fixed transceiver binding. This is especially
-> important for MCAN since the IP allows CAN FD mode to run significantly
-> faster than what most transceivers are capable of.
-> 
-> Signed-off-by: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/net/can/m_can.txt | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
-> index 9e33177..4440e4b 100644
-> --- a/Documentation/devicetree/bindings/net/can/m_can.txt
-> +++ b/Documentation/devicetree/bindings/net/can/m_can.txt
-> @@ -43,6 +43,11 @@ Required properties:
->  			  Please refer to 2.4.1 Message RAM Configuration in
->  			  Bosch M_CAN user manual for details.
->  
-> +Optional properties:
-> +- fixed-transceiver	: Fixed-transceiver subnode describing maximum speed
-> +			  that can be used for CAN and/or CAN-FD modes.  See
-> +			  Documentation/devicetree/bindings/net/can/fixed-transceiver.txt
-> +			  for details.
->  Example:
->  SoC dtsi:
->  m_can1: can@020e8000 {
-> @@ -64,4 +69,9 @@ Board dts:
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_m_can1>;
->  	status = "enabled";
-> +
-> +	fixed-transceiver@0 {
+Update the documentation to reflect that hclk is now an optional clock.
 
-unit-address should have corresponding reg prop or unit-address should 
-be dropped.
+Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/net/can/m_can.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> +		max-arbitration-speed = <1000000>;
-> +		max-data-speed = <5000000>;
-> +	};
->  };
-> -- 
-> 2.10.0
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
+index 9e33177..2a0fe5b 100644
+--- a/Documentation/devicetree/bindings/net/can/m_can.txt
++++ b/Documentation/devicetree/bindings/net/can/m_can.txt
+@@ -12,7 +12,8 @@ Required properties:
+ - interrupt-names	: Should contain "int0" and "int1"
+ - clocks		: Clocks used by controller, should be host clock
+ 			  and CAN clock.
+-- clock-names		: Should contain "hclk" and "cclk"
++- clock-names		: Should contain "hclk" and "cclk". For some socs hclk
++			  may be optional.
+ - pinctrl-<n>		: Pinctrl states as described in bindings/pinctrl/pinctrl-bindings.txt
+ - pinctrl-names 	: Names corresponding to the numbered pinctrl states
+ - bosch,mram-cfg	: Message RAM configuration data.
+-- 
+2.10.0
+
