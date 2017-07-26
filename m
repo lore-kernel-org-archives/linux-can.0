@@ -1,55 +1,53 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: [PATCH 1/4] can: dev: Add support for limiting configured bitrate
-Date: Wed, 26 Jul 2017 22:04:03 +0200
-Message-ID: <20170726200403.GD6873@airbook.vandijck-laurijssen.be>
-References: <20170719233654.25908-1-fcooper@ti.com>
- <20170719233654.25908-2-fcooper@ti.com>
- <f45ea1b4-0f46-0002-a89b-b997f2693bb5@hartkopp.net>
- <055c00f5-0775-4e35-309c-0d1c8aa0afdf@ti.com>
+From: aivs <aivs@yandex.ru>
+Subject: Researching of Skoda CAN bus
+Date: Thu, 27 Jul 2017 00:21:20 +0300
+Message-ID: <586311501104080@web44o.yandex.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <055c00f5-0775-4e35-309c-0d1c8aa0afdf@ti.com>
-Sender: netdev-owner@vger.kernel.org
-To: Franklin S Cooper Jr <fcooper@ti.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, andrew@lunn.ch
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from forward100o.mail.yandex.net ([37.140.190.180]:34660 "EHLO
+        forward100o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1750996AbdGZV2p (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Jul 2017 17:28:45 -0400
+Received: from mxback7j.mail.yandex.net (mxback7j.mail.yandex.net [IPv6:2a02:6b8:0:1619::110])
+        by forward100o.mail.yandex.net (Yandex) with ESMTP id 295522A25953
+        for <linux-can@vger.kernel.org>; Thu, 27 Jul 2017 00:21:21 +0300 (MSK)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-Hi,
+Hi, my name is Vitaliy, I'm smart home developer.
+As a hobby I'm researching CAN bus of my Skoda Octavia 2011. I founded commands to control car devices, like this:
+// Front Left Glass Up/Down
+cansend can0 181#0200
+cansend can0 181#0800
 
-I know my response is late ...
+// Front Right Glass Up/Down
+cansend can0 181#2000
+cansend can0 181#8000
 
-> Hi Oliver
-> On 07/20/2017 02:43 AM, Oliver Hartkopp wrote:
-> > Hi Franklin,
-> > 
-> > On 07/20/2017 01:36 AM, Franklin S Cooper Jr wrote:
-> > 
-> >> +#ifdef CONFIG_OF
-> >> +void of_transceiver_is_fixed(struct net_device *dev)
-> >> +{
-> > 
-> > (..)
-> > 
-> >> +}
-> >> +EXPORT_SYMBOL(of_transceiver_is_fixed);
-> >> +#endif
-> > 
-> > I'm not sure about the naming here.
-> > 
-> > As this is a CAN transceiver related option it should be named accordingly:
+// Central Lock Open/Close
+cansend can0 291#09AA020000
+cansend can0 291#0955040000
 
-I contest the the name too:
-1) the can transceiver isn't fixed at all, it limited to the higher
-bitrates.
+and many others.
 
-2) of_can_transceiver_is_fixed suggests to test if a transceiver is
-fixed, it does not suggest to load some properties from the device tree.
-of_can_load_transceiver looks way more clear to me.
+Now I tried to add function "Keyless" to open the trunk foot. For that I need CAN a command to open the trunk. 
+When I press trunk button candump shows:
+400#00 02 0B 14 30 04 00 00
+291#09 00 08 00 00
+591#30 10 0F 0C 40 9C 00 00
 
-That's my opinion.
-The important things, like the contents of the functions, look good.
+When I press button on key fob candump shows the same.
+When I press button on key fob of additional alarm system candump shows the same.
 
-Kind regards,
-Kurt Van Dijck
+But, when I try to send those command nothing happens. I don't understand why trunk doesn't open. 
+May be you can get me recommendation how to open a trunk with CAN commands!
+
+-- 
+Yurkin Vitaliy
+Home automation engineer
+~~~~~~~~~~~~~~~~~~~~~~
+z-wave.me
+email: aivs@z-wave.me
