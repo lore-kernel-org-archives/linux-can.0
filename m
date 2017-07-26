@@ -1,57 +1,71 @@
-From: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
+From: Andrew Lunn <andrew@lunn.ch>
 Subject: Re: [PATCH v2 2/4] can: fixed-transceiver: Add documentation for CAN
  fixed transceiver bindings
-Date: Tue, 25 Jul 2017 13:14:26 -0500
-Message-ID: <04e3986b-bbeb-50ad-30e0-fb74bb534aa6@ti.com>
+Date: Wed, 26 Jul 2017 18:41:24 +0200
+Message-ID: <20170726164124.GL12049@lunn.ch>
 References: <20170724230521.1436-1-fcooper@ti.com>
  <20170724230521.1436-3-fcooper@ti.com>
- <29df7e04-01c6-a09b-491e-1354dab98cd0@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <29df7e04-01c6-a09b-491e-1354dab98cd0-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dev.kurt-yI9piX4KPfawT/RRk36CISFp6vIno51x@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170724230521.1436-3-fcooper@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Franklin S Cooper Jr <fcooper@ti.com>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, dev.kurt@vandijck-laurijssen.be, sergei.shtylyov@cogentembedded.com, socketcan@hartkopp.net
 List-Id: linux-can.vger.kernel.org
 
+On Mon, Jul 24, 2017 at 06:05:19PM -0500, Franklin S Cooper Jr wrote:
+> Add documentation to describe usage of the new fixed transceiver binding.
+> This new binding is applicable for any CAN device therefore it exists as
+> its own document.
+> 
+> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> ---
+> Version 2:
+> Tweak commit message working
+> Tweak wording for properties
+> Drop unit addressing
+> Give example if CAN-FD isn't supported
+> 
+>  .../bindings/net/can/fixed-transceiver.txt         | 42 ++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/fixed-transceiver.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/net/can/fixed-transceiver.txt b/Documentation/devicetree/bindings/net/can/fixed-transceiver.txt
+> new file mode 100644
+> index 0000000..dc7e3eb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/fixed-transceiver.txt
+> @@ -0,0 +1,42 @@
+> +Fixed transceiver Device Tree binding
+> +------------------------------
+> +
+> +CAN transceiver typically limits the max speed in standard CAN and CAN FD
+> +modes. Typically these limitations are static and the transceivers themselves
+> +provide no way to detect this limitation at runtime. For this situation,
+> +the "fixed-transceiver" node can be used.
+> +
+> +Properties:
+> +
+> +Optional:
+> + max-arbitration-speed: a positive non 0 value that determines the max
+> +			speed that CAN can run in non CAN-FD mode or during the
+> +			arbitration phase in CAN-FD mode.
 
+Hi Franklin
 
-On 07/25/2017 11:32 AM, Oliver Hartkopp wrote:
-> 
->> + max-data-speed:    a positive non 0 value that determines the max
->> data rate
->> +            that can be used in CAN-FD mode. A value of -1 implies
->> +            CAN-FD is not supported by the transceiver.
->> +
->> +Examples:
-> 
-> (..)
-> 
->> +    fixed-transceiver {
->> +        max-data-speed = <(-1)>;
-> 
-> Looks ugly IMHO.
-> 
-> Why didn't you stay on '0' for 'not supported'??
+Since this and the next property are optional, it is good to document
+what happens when they are not in the DT blob. Also document what 0
+means.
 
-Unless a driver specifically calls of_can_transceiver_fixed
-priv->max_trans_data_speed will be by default 0. Therefore, all drivers
-that support CAN-FD will claim that the transceiver indicates that it
-isn't supported. So one option was to update every single driver to set
-this property by default which I started to do but it end up becoming a
-massive patch and it was risky in case I missed a driver which would of
-resulted in major regressions. Its also problematic for new drivers that
-miss this property or the many out of tree CAN drivers. The other option
-was to create another variable to track to see if
-of_can_transceiver_fixed was called but I didn't think that was the
-better solution. So using signed values in DT is a bit ugly due to
-syntax but was valid and I made sure I documented it so its clear.
-> 
-> Regards,
-> Oliver
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> +
+> + max-data-speed:	a positive non 0 value that determines the max data rate
+> +			that can be used in CAN-FD mode. A value of -1 implies
+> +			CAN-FD is not supported by the transceiver.
+
+-1 is ugly. I think it would be better to have a missing
+max-data-speed property indicate that CAN-FD is not supported. And
+maybe put 'fd' into the property name.
+
+      Andrew
