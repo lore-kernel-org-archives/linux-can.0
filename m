@@ -1,67 +1,87 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: reading from socket can
-Date: Thu, 27 Jul 2017 20:32:37 +0200
-Message-ID: <492e6c1e-efad-155d-4557-bf8ce1a1cec0@hartkopp.net>
-References: <alpine.LNX.2.21.1707271530280.9093@mpslxdressel.desy.de>
+From: Oliver Hartkopp <socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org>
+Subject: Re: [PATCH v2 2/4] can: fixed-transceiver: Add documentation for CAN
+ fixed transceiver bindings
+Date: Thu, 27 Jul 2017 20:47:37 +0200
+Message-ID: <fe99189e-d077-ba65-4dfc-a4d8beee62b3@hartkopp.net>
+References: <20170724230521.1436-1-fcooper@ti.com>
+ <20170724230521.1436-3-fcooper@ti.com> <20170726164124.GL12049@lunn.ch>
+ <355b90b3-97ce-1057-6617-d5d709449c48@hartkopp.net>
+ <a77fe395-33c7-9405-b51a-5d3372e5c58b@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:31364 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750981AbdG0Scs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 27 Jul 2017 14:32:48 -0400
-In-Reply-To: <alpine.LNX.2.21.1707271530280.9093@mpslxdressel.desy.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Michael Dressel <michael.dressel@desy.de>, linux-can@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <a77fe395-33c7-9405-b51a-5d3372e5c58b-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>, Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dev.kurt-yI9piX4KPfawT/RRk36CISFp6vIno51x@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-Hi Michael,
+On 07/26/2017 08:29 PM, Franklin S Cooper Jr wrote:
+>
 
-On 07/27/2017 03:40 PM, Michael Dressel wrote:
+> I'm fine with switching to using bitrate instead of speed. Kurk was
+> originally the one that suggested to use the term arbitration and data
+> since thats how the spec refers to it. Which I do agree with. But your
+> right that in the drivers (struct can_priv) we just use bittiming and
+> data_bittiming (CAN-FD timings). I don't think adding "fd" into the
+> property name makes sense unless we are calling it something like
+> "max-canfd-bitrate" which I would agree is the easiest to understand.
+>
+> So what is the preference if we end up sticking with two properties?
+> Option 1 or 2?
+>
+> 1)
+> max-bitrate
+> max-data-bitrate
+>
+> 2)
+> max-bitrate
+> max-canfd-bitrate
+>
+>
 
-> is it guaranteed that a read on a SOCK_RAW  socket will always
-> return complete can_frames, if it returns data at all?
+1
 
-Yes.
+>> A CAN transceiver is limited in bandwidth. But you only have one RX and
+>> one TX line between the CAN controller and the CAN transceiver. The
+>> transceiver does not know about CAN FD - it has just a physical(!) layer
+>> with a limited bandwidth. This is ONE limitation.
+>>
+>> So I tend to specify only ONE 'max-bitrate' property for the
+>> fixed-transceiver binding.
+>>
+>> The fact whether the CAN controller is CAN FD capable or not is provided
+>> by the netlink configuration interface for CAN controllers.
+>
+> Part of the reasoning to have two properties is to indicate that you
+> don't support CAN FD while limiting the "arbitration" bit rate.
 
-I double checked the code in net/can/raw.c which uses 
-sock_queue_rcv_skb() in net/core/sock.c which completely fails when it's 
-not possible to to place the skb content (the CAN frame) in the socket 
-receive buffer.
+??
 
-In this case the dropcount counter is increased which can be monitored 
-by recvmsg() (see dropcount example in candump.c)
+It's a physical layer device which only has a bandwidth limitation.
+The transceiver does not know about CAN FD.
 
-> The documentation of "read" explicitly states, that it is not an error to
-> return with any number of bytes less than the "requested" number of
-> bytes.
+> With one
+> property you can not determine this and end up having to make some
+> assumptions that can quickly end up biting people.
 
-Yes that's right for read() in general.
+Despite the fact that the transceiver does not know anything about ISO 
+layer 2 (CAN/CAN FD) the properties should look like
 
-At least it makes sense to check whether the return value is 
-sizeof(struct can_frame) or sizeof(struct canfd_frame) or if some error 
-occured.
+	max-bitrate
+	canfd-capable
 
-> I found calls to read in some applications taking it for granted
-> that read always returns full can_frames.
+then.
 
-You also might get negative values for error codes, e.g. when the (USB) 
-CAN interface disappeared! So assuming to *always* get a CAN frame and 
-not checking for errors is bad.
+But when the tranceiver is 'canfd-capable' agnostic, why provide a 
+property for it?
 
-> And, having some very
-> rare issues not understood yet, I wonder if an error in reading
-> from the socket may cause this issues.
+Maybe I'm wrong but I still can't follow your argumentation ideas.
 
-Don't know. Can you post some code?
-
-> Actually I found a similar bug in a library for ModBus communication,
-> and there it was possible to verify that the issues came from using read
-> in a wrong way.
-
-Dito.
-
-Best,
+Regards,
 Oliver
-
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
