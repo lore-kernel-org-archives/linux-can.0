@@ -1,79 +1,43 @@
-From: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: Re: [PATCH 1/4] can: dev: Add support for limiting configured bitrate
-Date: Wed, 26 Jul 2017 20:44:33 -0500
-Message-ID: <05ca373b-977c-1a59-69fe-c17e5ec4ae75@ti.com>
-References: <20170719233654.25908-1-fcooper@ti.com>
- <20170719233654.25908-2-fcooper@ti.com>
- <f45ea1b4-0f46-0002-a89b-b997f2693bb5@hartkopp.net>
- <055c00f5-0775-4e35-309c-0d1c8aa0afdf@ti.com>
- <20170726200403.GD6873@airbook.vandijck-laurijssen.be>
+From: Michael Dressel <michael.dressel@desy.de>
+Subject: reading from socket can
+Date: Thu, 27 Jul 2017 15:40:36 +0200 (CEST)
+Message-ID: <alpine.LNX.2.21.1707271530280.9093@mpslxdressel.desy.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170726200403.GD6873@airbook.vandijck-laurijssen.be>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, andrew@lunn.ch
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; format=flowed; charset=US-ASCII
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from smtp-o-1.desy.de ([131.169.56.154]:53206 "EHLO smtp-o-1.desy.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751518AbdG0Nud (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 27 Jul 2017 09:50:33 -0400
+Received: from smtp-map-1.desy.de (smtp-map-1.desy.de [131.169.56.66])
+        by smtp-o-1.desy.de (DESY-O-1) with ESMTP id 78D642800EC
+        for <linux-can@vger.kernel.org>; Thu, 27 Jul 2017 15:40:37 +0200 (CEST)
+Received: from mpslxdressel.desy.de (mpslxdressel.desy.de [131.169.216.148])
+        by smtp-intra-1.desy.de (DESY-INTRA-1) with ESMTP id 440613E901
+        for <linux-can@vger.kernel.org>; Thu, 27 Jul 2017 15:40:37 +0200 (MEST)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+
+Hi,
+
+is it guaranteed that a read on a SOCK_RAW  socket will always
+return complete can_frames, if it returns data at all?
+
+The documentation of "read" explicitly states, that it is not an error to
+return with any number of bytes less than the "requested" number of
+bytes.
+
+I found calls to read in some applications taking it for granted
+that read always returns full can_frames. And, having some very
+rare issues not understood yet, I wonder if an error in reading
+from the socket may cause this issues.
+
+Actually I found a similar bug in a library for ModBus communication,
+and there it was possible to verify that the issues came from using read
+in a wrong way.
+
+Cheers,
+Michael
 
 
-Hi Kurt,
-On 07/26/2017 03:04 PM, Kurt Van Dijck wrote:
-> Hi,
-> 
-> I know my response is late ...
-> 
->> Hi Oliver
->> On 07/20/2017 02:43 AM, Oliver Hartkopp wrote:
->>> Hi Franklin,
->>>
->>> On 07/20/2017 01:36 AM, Franklin S Cooper Jr wrote:
->>>
->>>> +#ifdef CONFIG_OF
->>>> +void of_transceiver_is_fixed(struct net_device *dev)
->>>> +{
->>>
->>> (..)
->>>
->>>> +}
->>>> +EXPORT_SYMBOL(of_transceiver_is_fixed);
->>>> +#endif
->>>
->>> I'm not sure about the naming here.
->>>
->>> As this is a CAN transceiver related option it should be named accordingly:
-> 
-> I contest the the name too:
-> 1) the can transceiver isn't fixed at all, it limited to the higher
-> bitrates.
-
-Its "possible" that this subnode may have additional properties beyond
-bitrates in the future. But your right as of now it is specifically
-addressing max bit rates. The naming of this function and subnode is
-based on "fixed-link". So "fixed" is just implying that certain
-properties can't be changed.
-
-> 
-> 2) of_can_transceiver_is_fixed suggests to test if a transceiver is
-> fixed, it does not suggest to load some properties from the device tree.
-> of_can_load_transceiver looks way more clear to me.
-
-I address this partially in my rev 2 that I've already sent. I'm now
-using of_can_transceiver_fixed. The fact its of_ already implies it is
-loading properties from device tree. So I don't think
-of_can_load_transceiver really makes things clearer.
-
-> 
-> That's my opinion.
-> The important things, like the contents of the functions, look good.
-
-You mind throwing your two cents in the thread for my latest patch?
-Specifically the conversation regarding naming the properties. A couple
-of people prefer to not use "arbitration" in one of the property names.
-Currently I believe there are two options on property names that can be
-used and I'm open to a majority vote on which one to go with.
-
-> 
-> Kind regards,
-> Kurt Van Dijck
-> 
