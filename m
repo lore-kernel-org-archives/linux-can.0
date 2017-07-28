@@ -1,108 +1,204 @@
-From: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: Re: [PATCH v2 2/4] can: fixed-transceiver: Add documentation for CAN
- fixed transceiver bindings
-Date: Fri, 28 Jul 2017 13:53:18 -0500
-Message-ID: <80c167a2-7eb5-8076-04fc-0989981a523d@ti.com>
-References: <20170728130231.GA10680@airbook.vandijck-laurijssen.be>
- <c7d4c364-1ed9-ca73-2571-d04297ac3788@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: reading from socket can
+Date: Fri, 28 Jul 2017 21:26:33 +0200
+Message-ID: <6ea8486b-f87c-566d-6a1a-10ef451d6574@hartkopp.net>
+References: <alpine.LNX.2.21.1707271530280.9093@mpslxdressel.desy.de>
+ <492e6c1e-efad-155d-4557-bf8ce1a1cec0@hartkopp.net>
+ <alpine.LNX.2.21.1707280839520.1663@mpslxdressel.desy.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <c7d4c364-1ed9-ca73-2571-d04297ac3788@hartkopp.net>
+Content-Type: multipart/mixed;
+ boundary="------------61D392AB59F8411E7BFA81E7"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:36003 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752385AbdG1T0f (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 28 Jul 2017 15:26:35 -0400
+In-Reply-To: <alpine.LNX.2.21.1707280839520.1663@mpslxdressel.desy.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, sergei.shtylyov@cogentembedded.com, dev.kurt@vandijck-laurijssen.be
-List-Id: linux-can.vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Michael Dressel <michael.dressel@desy.de>
+Cc: linux-can@vger.kernel.org
+
+This is a multi-part message in MIME format.
+--------------61D392AB59F8411E7BFA81E7
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi Michael,
+
+On 07/28/2017 09:01 AM, Michael Dressel wrote:
+
+> Here is just some code, that is similar to what happens in the
+> driver we use:
+> 
+> nread = read(can_fd, &rx[0], sizeof(struct can_frame) * 10);
+>      if (nread > 0) {
+>          int i;
+
+If you wanted to check whether only 'correct & complete' struct 
+can_frames have been read from the socket at least this should be done:
+
+	if (nread % sizeof(struct can_frame))
+		exit(1); // or something like this ;-)
+
+ >          nread = nread / sizeof(struct can_frame);
+>              for (i = 0; i < nread; i++) {
+> 
+
+I was really unsure if
+
+	nread = read(can_fd, &rx[0], sizeof(struct can_frame) * 10);
+
+makes sense at all - and nread would ever be greater than 1 ?!?
+
+I modified https://github.com/linux-can/can-tests/blob/master/tst-raw.c 
+to get a similar setup (diff for tst-raw.c is attached):
+
+while (1) {
+    if ((nbytes = read(s, &frame[0], 10*sizeof(struct can_frame))) < 0) {
+         perror("read");
+         if (!ignore_errors)
+              return 1;
+    } else if (nbytes % sizeof(struct can_frame)) {
+         fprintf(stderr, "read: incomplete CAN frame\n");
+         return 1;
+    } else {
+         for (k=0; k < nbytes / sizeof(struct can_frame); k++) {
+              printf("<%d> ", k);
+
+              if (k) exit(1); // see remark below
+
+              if (frame[0].can_id & CAN_EFF_FLAG)
+                     printf("%8X  ", frame[0].can_id & CAN_EFF_MASK);
+
+(..)
+
+I tested this patch an NEVER got more than ONE single CAN frame per 
+read(). Then I added the brutal
+
+	if (k) exit(1);
+
+check to not miss any attempt of more than one CAN frame - but it did 
+not occur ...
+
+So I think your provided code does not have the functionality the 
+programmer intended.
+
+If you want to make sure that no frame was dropped in the socket's 
+receive queue take a look at this:
+
+http://marc.info/?l=linux-can&m=147929028915128&w=2
+
+Additionally you might increase the RX buffer size of the socket with 
+the SO_RCVBUF socket option:
+
+https://github.com/linux-can/can-utils/blob/master/candump.c#L525
+
+There are some examples how to use the Linux specific 'multiple read' 
+system calls:
+
+http://rtime.felk.cvut.cz/can/
+http://rtime.felk.cvut.cz/can/can-syscalls.pdf
+
+But finally I would just use recvmsg() and check for the dropcount value 
+to check whether you have a problem at all.
+
+Best,
+Oliver
 
 
+> I was not able to provoke my issues in a controlled test environment.
+> 
+> And in the productive environment it occurs only about every 3 to 5 weeks.
+> 
+> Cheers,
+> Michael
 
-On 07/28/2017 01:33 PM, Oliver Hartkopp wrote:
-> Hi Kurt,
-> 
-> On 07/28/2017 03:02 PM, Kurt Van Dijck wrote:
-> 
->>>> The word 'max-arbitration-bitrate' makes the difference very clear.
->>>
->>> I think you are mixing up ISO layer 1 and ISO layer 2.
->>
->> In order to provide higher data throughput without putting extra limits
->> on transceiver & wire, the requirement for the round-trip delay to be
->> within 1 bittime has been eliminated, but only for the data phase when
->> arbitration is over.
->> So layer 2 (CAN FD) has been adapted to circumvent the layer 1
->> (transceiver + wire) limitations.
->>
->> In fact, the round-trip delay requirement never actually did matter for
->> plain CAN during data bits either. CAN FD just makes use of that,
->> but is therefore incompatible on the wire.
->>
->> I forgot the precise wording, but this is the principle that Bosch
->> explained on the CAN conference in Nurnberg several years ago, or at
->> least this is how I remembered it :-)
-> 
-> I just checked an example for a CAN FD qualified transceiver
-> 
-> http://www.nxp.com/products/automotive-products/energy-power-management/can-transceivers/high-speed-can-transceiver-with-standby-mode:TJA1044
-> 
-> 
-> where it states:
-> 
-> The TJA1044T is specified for data rates up to 1 Mbit/s. Pending the
-> release of ISO11898-2:2016 including CAN FD and SAE-J2284-4/5,
-> additional timing parameters defining loop delay symmetry are specified
-> for the TJA1044GT and TJA1044GTK. This implementation enables reliable
-> communication in the CAN FD fast phase at data rates up to 5 Mbit/s.
-> 
-> and
-> 
-> TJA1044GT/TJA1044GTK
-> 
-> - Timing guaranteed for data rates up to 5 Mbit/s
-> - Improved TXD to RXD propagation delay of 210 ns
-> 
->> I haven't followed the developments of transceivers, but with the above
->> principle in mind, it's obvious that any transceiver allows higher
->> bitrates during the data segment because the TX-to-RX line delay must
->> not scale with the bitrate.
->> In reality, maybe not all transceivers will mention this in their
->> datasheet.
->>
->> So whether you call it 'max-arbitration-bitrate' & 'max-data-bitrate'
->> or 'max-bitrate' & 'max-data-bitrate' does not really matter (I prefer
->> 1st) but you will one day need 2 bitrates.
-> 
-> The question to me is whether it is right option to specify two bitrates
-> OR to specify one maximum bitrate and provide a property that a CAN FD
-> capable propagation delay is available.
-> 
-> E.g.
-> 
->     max-bitrate
->     max-data-bitrate
-> 
-> or
-> 
->     max-bitrate
->     canfd-capable    // CAN FD capable propagation delay available
-> 
-> 
-> I assume the optimized propagation delay is 'always on' as the
-> transceiver is not able to detect which kind of bits it is processing.
-> That's why I think providing two bitrates leads to a wrong view on the
-> transceiver.
+--------------61D392AB59F8411E7BFA81E7
+Content-Type: text/x-patch;
+ name="multiread.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="multiread.diff"
 
-I agree with this.
+diff --git a/tst-raw.c b/tst-raw.c
+index 1e0284b..0e5c2a9 100644
+--- a/tst-raw.c
++++ b/tst-raw.c
+@@ -59,8 +59,8 @@ int main(int argc, char **argv)
+ 	int s;
+ 	struct sockaddr_can addr;
+ 	struct can_filter rfilter[4];
+-	struct can_frame frame;
+-	int nbytes, i;
++	struct can_frame frame[10];
++	int nbytes, i, k;
+ 	struct ifreq ifr;
+ 	char *ifname = "vcan2";
+ 	int ifindex;
+@@ -142,38 +142,44 @@ int main(int argc, char **argv)
+ 
+ 	if(send_one_frame) {
+ 
+-		frame.can_id  = 0x123;
+-		frame.can_dlc = 2;
+-		frame.data[0] = 0x11;
+-		frame.data[1] = 0x22;
++		frame[0].can_id  = 0x123;
++		frame[0].can_dlc = 2;
++		frame[0].data[0] = 0x11;
++		frame[0].data[1] = 0x22;
+ 
+-		nbytes = write(s, &frame, sizeof(struct can_frame));
++		nbytes = write(s, &frame[0], sizeof(struct can_frame));
+ 	}
+ 
+ 	while (1) {
+ 
+-		if ((nbytes = read(s, &frame, sizeof(struct can_frame))) < 0) {
++		if ((nbytes = read(s, &frame[0], 10*sizeof(struct can_frame))) < 0) {
+ 			perror("read");
+ 			if (!ignore_errors)
+ 				return 1;
+-		} else if (nbytes < sizeof(struct can_frame)) {
++		} else if (nbytes % sizeof(struct can_frame)) {
+ 			fprintf(stderr, "read: incomplete CAN frame\n");
+ 			return 1;
+ 		} else {
+-			if (frame.can_id & CAN_EFF_FLAG)
+-				printf("%8X  ", frame.can_id & CAN_EFF_MASK);
+-			else
+-				printf("%3X  ", frame.can_id & CAN_SFF_MASK);
++			for (k=0; k < nbytes / sizeof(struct can_frame); k++) {
++				printf("<%d> ", k);
++
++				if (k) exit(1);
++
++				if (frame[0].can_id & CAN_EFF_FLAG)
++					printf("%8X  ", frame[0].can_id & CAN_EFF_MASK);
++				else
++					printf("%3X  ", frame[0].can_id & CAN_SFF_MASK);
+ 	    
+-			printf("[%d] ", frame.can_dlc);
++				printf("[%d] ", frame[0].can_dlc);
+ 	    
+-			for (i = 0; i < frame.can_dlc; i++) {
+-				printf("%02X ", frame.data[i]);
++				for (i = 0; i < frame[0].can_dlc; i++) {
++					printf("%02X ", frame[0].data[i]);
++				}
++				if (frame[0].can_id & CAN_RTR_FLAG)
++					printf("remote request");
++				printf("\n");
++				fflush(stdout);
+ 			}
+-			if (frame.can_id & CAN_RTR_FLAG)
+-				printf("remote request");
+-			printf("\n");
+-			fflush(stdout);
+ 		}
+ 	}
+ 
 
-The transceiver is an analog device that needs to support faster
-switching frequency (FETs) including minimizing delay to support CAN-FD
-ie higher bitrate. From the transceiver perspective the bits for
-"arbitration" and "data" look exactly the same. Since it can't
-differentiate between the two (at the physical layer) then the actual
-limit isn't specific to which part/type of the CAN message is being
-sent. Rather its just a single overall max bitrate limit.
-
-> 
-> Regards,
-> Oliver
-> 
+--------------61D392AB59F8411E7BFA81E7--
