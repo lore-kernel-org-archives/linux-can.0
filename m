@@ -1,114 +1,69 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: [PATCH v2 2/4] can: fixed-transceiver: Add documentation for CAN
- fixed transceiver bindings
-Date: Fri, 28 Jul 2017 06:57:24 +0200
-Message-ID: <20170728045724.GA27903@airbook.vandijck-laurijssen.be>
-References: <20170724230521.1436-1-fcooper@ti.com>
- <20170724230521.1436-3-fcooper@ti.com>
- <20170726164124.GL12049@lunn.ch>
- <355b90b3-97ce-1057-6617-d5d709449c48@hartkopp.net>
- <a77fe395-33c7-9405-b51a-5d3372e5c58b@ti.com>
- <fe99189e-d077-ba65-4dfc-a4d8beee62b3@hartkopp.net>
- <932602fe-d06a-7a17-5a0c-24265cf2e643@ti.com>
+From: Michael Dressel <michael.dressel@desy.de>
+Subject: Re: reading from socket can
+Date: Fri, 28 Jul 2017 09:01:26 +0200 (CEST)
+Message-ID: <alpine.LNX.2.21.1707280839520.1663@mpslxdressel.desy.de>
+References: <alpine.LNX.2.21.1707271530280.9093@mpslxdressel.desy.de> <492e6c1e-efad-155d-4557-bf8ce1a1cec0@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <932602fe-d06a-7a17-5a0c-24265cf2e643@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Franklin S Cooper Jr <fcooper@ti.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, sergei.shtylyov@cogentembedded.com
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from smtp-o-3.desy.de ([131.169.56.156]:38012 "EHLO smtp-o-3.desy.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751163AbdG1HB2 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 28 Jul 2017 03:01:28 -0400
+Received: from smtp-map-3.desy.de (smtp-map-3.desy.de [131.169.56.68])
+        by smtp-o-3.desy.de (DESY-O-3) with ESMTP id D5506280168
+        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2017 09:01:26 +0200 (CEST)
+In-Reply-To: <492e6c1e-efad-155d-4557-bf8ce1a1cec0@hartkopp.net>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
+
+Hi Oliver,
+
+thank you very much for the quick reply.
 
 
-> 
-> On 07/27/2017 01:47 PM, Oliver Hartkopp wrote:
-> > On 07/26/2017 08:29 PM, Franklin S Cooper Jr wrote:
-> >>
-> > 
-> >> I'm fine with switching to using bitrate instead of speed. Kurk was
-> >> originally the one that suggested to use the term arbitration and data
-> >> since thats how the spec refers to it. Which I do agree with. But your
-> >> right that in the drivers (struct can_priv) we just use bittiming and
-> >> data_bittiming (CAN-FD timings). I don't think adding "fd" into the
-> >> property name makes sense unless we are calling it something like
-> >> "max-canfd-bitrate" which I would agree is the easiest to understand.
-> >>
-> >> So what is the preference if we end up sticking with two properties?
-> >> Option 1 or 2?
-> >>
-> >> 1)
-> >> max-bitrate
-> >> max-data-bitrate
-> >>
-> >> 2)
-> >> max-bitrate
-> >> max-canfd-bitrate
-> >>
-> >>
-> > 
-> > 1
-> > 
-> >>> A CAN transceiver is limited in bandwidth. But you only have one RX and
-> >>> one TX line between the CAN controller and the CAN transceiver. The
-> >>> transceiver does not know about CAN FD - it has just a physical(!) layer
-> >>> with a limited bandwidth. This is ONE limitation.
-> >>>
-> >>> So I tend to specify only ONE 'max-bitrate' property for the
-> >>> fixed-transceiver binding.
-> >>>
-> >>> The fact whether the CAN controller is CAN FD capable or not is provided
-> >>> by the netlink configuration interface for CAN controllers.
-> >>
-> >> Part of the reasoning to have two properties is to indicate that you
-> >> don't support CAN FD while limiting the "arbitration" bit rate.
-> > 
-> > ??
-> > 
-> > It's a physical layer device which only has a bandwidth limitation.
-> > The transceiver does not know about CAN FD.
-> > 
-> >> With one
-> >> property you can not determine this and end up having to make some
-> >> assumptions that can quickly end up biting people.
-> > 
-> > Despite the fact that the transceiver does not know anything about ISO
-> > layer 2 (CAN/CAN FD) the properties should look like
-> > 
-> >     max-bitrate
-> >     canfd-capable
-> > 
-> > then.
-> > 
-> > But when the tranceiver is 'canfd-capable' agnostic, why provide a
-> > property for it?
-> > 
-> > Maybe I'm wrong but I still can't follow your argumentation ideas.
-> 
+On Thu, 27 Jul 2017, Oliver Hartkopp wrote:
 
-The transceiver does not know about CAN FD, but CAN FD uses
-the different restrictions of the arbitration & data phase in the CAN
-frame, i.e. during arbitration, the RX must indicate the wire
-(dominant/recessive) within 1 bit time, during data in CAN FD, this is
-not necessary.
+>>  is it guaranteed that a read on a SOCK_RAW  socket will always
+>>  return complete can_frames, if it returns data at all?
+>
+> Yes.
+>
+> I double checked the code in net/can/raw.c which uses sock_queue_rcv_skb() in 
+> net/core/sock.c which completely fails when it's not possible to to place the 
+> skb content (the CAN frame) in the socket receive buffer.
+>
+> In this case the dropcount counter is increased which can be monitored by 
+> recvmsg() (see dropcount example in candump.c)
 
-So while _a_ transceiver may be spec'd to 1MBit during arbitration,
-CAN FD packets may IMHO exceed that speed during data phase.
-That was the whole point of CAN FD: exceed the limits required for
-correct arbitration on transceiver & wire.
+I'm not familiar enough with drivers to really understand that. But is
+the read an atomic action? Even if it returns bytes from an completely
+filled buffer. Could this read action be interrupted?
 
-So I do not agree on the single bandwidth limitation.
+Well, anyway I guess I will introduce some messaging to see if I run in
+that problem at all.
 
-The word 'max-arbitration-bitrate' makes the difference very clear.
+>>  And, having some very
+>>  rare issues not understood yet, I wonder if an error in reading
+>>  from the socket may cause this issues.
+>
+> Don't know. Can you post some code?
+>
 
-> Your right. I spoke to our CAN transceiver team and I finally get your
-> points.
-> 
-> So yes using "max-bitrate" alone is all we need. Sorry for the confusion
-> and I'll create a new rev using this approach.
-> > 
-> > Regards,
-> > Oliver
+Here is just some code, that is similar to what happens in the
+driver we use:
 
-Kind regards,
-Kurt
+nread = read(can_fd, &rx[0], sizeof(struct can_frame) * 10);
+     if (nread > 0) {
+         int i;
+         nread = nread / sizeof(struct can_frame);
+             for (i = 0; i < nread; i++) {
+
+I was not able to provoke my issues in a controlled test environment.
+
+And in the productive environment it occurs only about every 3 to 5 weeks.
+
+Cheers,
+Michael
