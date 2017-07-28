@@ -1,69 +1,51 @@
-From: Michael Dressel <michael.dressel@desy.de>
-Subject: Re: reading from socket can
-Date: Fri, 28 Jul 2017 09:01:26 +0200 (CEST)
-Message-ID: <alpine.LNX.2.21.1707280839520.1663@mpslxdressel.desy.de>
-References: <alpine.LNX.2.21.1707271530280.9093@mpslxdressel.desy.de> <492e6c1e-efad-155d-4557-bf8ce1a1cec0@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v2 2/4] can: fixed-transceiver: Add documentation for CAN
+ fixed transceiver bindings
+Date: Fri, 28 Jul 2017 10:41:40 +0200
+Message-ID: <b6ee18fa-a72b-9596-00d8-f6bd4a993293@hartkopp.net>
+References: <20170724230521.1436-1-fcooper@ti.com>
+ <20170724230521.1436-3-fcooper@ti.com> <20170726164124.GL12049@lunn.ch>
+ <355b90b3-97ce-1057-6617-d5d709449c48@hartkopp.net>
+ <a77fe395-33c7-9405-b51a-5d3372e5c58b@ti.com>
+ <fe99189e-d077-ba65-4dfc-a4d8beee62b3@hartkopp.net>
+ <932602fe-d06a-7a17-5a0c-24265cf2e643@ti.com>
+ <20170728045724.GA27903@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp-o-3.desy.de ([131.169.56.156]:38012 "EHLO smtp-o-3.desy.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751163AbdG1HB2 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 28 Jul 2017 03:01:28 -0400
-Received: from smtp-map-3.desy.de (smtp-map-3.desy.de [131.169.56.68])
-        by smtp-o-3.desy.de (DESY-O-3) with ESMTP id D5506280168
-        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2017 09:01:26 +0200 (CEST)
-In-Reply-To: <492e6c1e-efad-155d-4557-bf8ce1a1cec0@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:12729 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751224AbdG1Ilt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 28 Jul 2017 04:41:49 -0400
+In-Reply-To: <20170728045724.GA27903@airbook.vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: Franklin S Cooper Jr <fcooper@ti.com>, Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, sergei.shtylyov@cogentembedded.com
 
-Hi Oliver,
+On 07/28/2017 06:57 AM, Kurt Van Dijck wrote:
 
-thank you very much for the quick reply.
+> So while _a_ transceiver may be spec'd to 1MBit during arbitration,
+> CAN FD packets may IMHO exceed that speed during data phase.
 
+When the bitrate is limited to 1Mbit/s you are ONLY allowed to use 
+1Mbit/s in the data section too (either with CAN or CAN FD).
 
-On Thu, 27 Jul 2017, Oliver Hartkopp wrote:
+> That was the whole point of CAN FD: exceed the limits required for
+> correct arbitration on transceiver & wire.
 
->>  is it guaranteed that a read on a SOCK_RAW  socket will always
->>  return complete can_frames, if it returns data at all?
->
-> Yes.
->
-> I double checked the code in net/can/raw.c which uses sock_queue_rcv_skb() in 
-> net/core/sock.c which completely fails when it's not possible to to place the 
-> skb content (the CAN frame) in the socket receive buffer.
->
-> In this case the dropcount counter is increased which can be monitored by 
-> recvmsg() (see dropcount example in candump.c)
+No. CAN FD is about a different frame format with up to 64 bytes AND the 
+possibility to increase the bitrate in the data section of the frame.
 
-I'm not familiar enough with drivers to really understand that. But is
-the read an atomic action? Even if it returns bytes from an completely
-filled buffer. Could this read action be interrupted?
+> So I do not agree on the single bandwidth limitation.
 
-Well, anyway I guess I will introduce some messaging to see if I run in
-that problem at all.
+The transceiver provides a single maximum bandwidth. It's an ISO Layer 1 
+device.
 
->>  And, having some very
->>  rare issues not understood yet, I wonder if an error in reading
->>  from the socket may cause this issues.
->
-> Don't know. Can you post some code?
->
+> The word 'max-arbitration-bitrate' makes the difference very clear.
 
-Here is just some code, that is similar to what happens in the
-driver we use:
+I think you are mixing up ISO layer 1 and ISO layer 2.
 
-nread = read(can_fd, &rx[0], sizeof(struct can_frame) * 10);
-     if (nread > 0) {
-         int i;
-         nread = nread / sizeof(struct can_frame);
-             for (i = 0; i < nread; i++) {
+Regards,
+Oliver
 
-I was not able to provoke my issues in a controlled test environment.
-
-And in the productive environment it occurs only about every 3 to 5 weeks.
-
-Cheers,
-Michael
