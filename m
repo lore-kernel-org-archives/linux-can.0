@@ -1,68 +1,73 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: reading from socket can
-Date: Mon, 31 Jul 2017 18:34:03 +0200
-Message-ID: <d108399b-5a25-7a0e-f3c4-8b8c1f55eedd@hartkopp.net>
-References: <alpine.LNX.2.21.1707271530280.9093@mpslxdressel.desy.de>
- <492e6c1e-efad-155d-4557-bf8ce1a1cec0@hartkopp.net>
- <alpine.LNX.2.21.1707280839520.1663@mpslxdressel.desy.de>
- <6ea8486b-f87c-566d-6a1a-10ef451d6574@hartkopp.net>
- <alpine.LNX.2.21.1707311317460.14130@mpslxdressel.desy.de>
+Subject: Re: [PATCH v2 2/4] can: fixed-transceiver: Add documentation for CAN
+ fixed transceiver bindings
+Date: Mon, 31 Jul 2017 19:03:38 +0200
+Message-ID: <91879489-87de-21b9-0227-650c0001e6a3@hartkopp.net>
+References: <20170728130231.GA10680@airbook.vandijck-laurijssen.be>
+ <c7d4c364-1ed9-ca73-2571-d04297ac3788@hartkopp.net>
+ <80c167a2-7eb5-8076-04fc-0989981a523d@ti.com>
+ <20170728194143.GA10599@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:18004 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:36392 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751046AbdGaQeN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 31 Jul 2017 12:34:13 -0400
-In-Reply-To: <alpine.LNX.2.21.1707311317460.14130@mpslxdressel.desy.de>
+        with ESMTP id S1750709AbdGaRDr (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 31 Jul 2017 13:03:47 -0400
+In-Reply-To: <20170728194143.GA10599@airbook.vandijck-laurijssen.be>
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Michael Dressel <michael.dressel@desy.de>
-Cc: linux-can@vger.kernel.org
+To: Franklin S Cooper Jr <fcooper@ti.com>, Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, sergei.shtylyov@cogentembedded.com
 
-Hi Michael,
+Hi Kurt,
 
-On 07/31/2017 01:33 PM, Michael Dressel wrote:
+On 07/28/2017 09:41 PM, Kurt Van Dijck wrote:
 
-> I tried provoking an error by calling read() with less
-> than sizeof(struct can_frame) bytes intentionally. The
-> intention was to corrupt the data this way.
+>> The transceiver is an analog device that needs to support faster
+>> switching frequency (FETs) including minimizing delay to support CAN-FD
+>> ie higher bitrate. From the transceiver perspective the bits for
+>> "arbitration" and "data" look exactly the same. Since it can't
+>> differentiate between the two (at the physical layer) then the actual
+>> limit isn't specific to which part/type of the CAN message is being
+>> sent. Rather its just a single overall max bitrate limit.
 > 
-> This I did after reading the first 5000 frames properly and than every 300
-> frames.
+> I must disagree here.
+> The transceiver is an analog device that performs 2 functions:
+> propagate tx bits to CAN wire, and propagate CAN wire state
+> (dominant/recesive) to rx bits.
 > 
-> I expected to get out of synch after corrupting the reading.
+> I'll rephrase the above explanation to fit your argument:
+> During arbitration, both directions are required, and needs to propagate
+> within 1 bit time. The transceiver doesn't know, it just performs to
+> best effort.
+> During data, the round-trip timing requirement of layer2 is relaxed.
+> The transceiver still doesn't know, it still performs to best effort.
+> Due to the relaxed round-trip timing requirement, the same transceiver
+> can suddenly allow higher bitrates. The transceiver didn't change, the
+> requirement did change.
+> This is what I meant earlier with "layer2 has been adapted to circumvent
+> layer1 limitations"
 > 
-> When I read only two bytes no interpretation is done because
-> two bytes are not a multiple of sizeof(struct can_frame).
-> 
-> During the next read I expected the read to put the remaining
-> bytes (not red by the previous call to read) in the beginning
-> of the buffer handed into read. Now the data should be corrupted.
-> 
-> But that is not the case.
-> 
-> The next frame read already seams to be correct.
-> 
-> My question here is if already the socket can driver prevents
-> corrupting data this way?
+> Was I successfull in transcoding my thoughts onto email :-) ?
 
-The CAN driver puts struct can(fd)_frames into the socket buffer (skb).
+Yes. But it's not relevant.
 
-That you don't get 'the rest' of the truncated read() is ensured in the 
-function raw_recvmsg() in linux/net/can/raw.c.
+I talked to our CAN transceiver & CAN physical layer specialist who was 
+involved in the ISO activities too.
 
-When the given buffer in the userspace is smaller than the skb->size (== 
-sizeof(struct can_frame)) there's only the MSG_TRUNC flag set.
+We just need ONE value: max-bitrate
 
-At the end of raw_recvmsg() the skb is free'd and there's no more action 
-on this skb. At the next call of raw_recvmsg() you have new skb and a 
-new CAN frame, see:
+The CAN transceiver is qualified to provide this bitrate. That's it.
+There's nothing special with the arbitration bitrate - we don't even 
+need to outline any CAN FD capability.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git/tree/net/can/raw.c?h=linux-4.12.y#n796
+The other things like 'loop delay compensation' are done in the CAN 
+controller. The better the transceiver get's the bits 'in shape' the 
+higher it can be qualified. But from the SoC/Controller/Linux view we 
+only need the max-bitrate value to double check with the CAN controllers 
+bitrate configuration request (which was Franklins intention).
 
 Best regards,
 Oliver
-
