@@ -1,41 +1,29 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 08/14] can: af_can: can_rx_register(): use max() instead of open coding it
-Date: Wed,  2 Aug 2017 19:44:28 +0200
-Message-ID: <20170802174434.4689-9-mkl@pengutronix.de>
-References: <20170802174434.4689-1-mkl@pengutronix.de>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:49505 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752404AbdHBRom (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 2 Aug 2017 13:44:42 -0400
-In-Reply-To: <20170802174434.4689-1-mkl@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+From: Franklin S Cooper Jr <fcooper@ti.com>
+Subject: [PATCH 0/3] ARM: dts: keystone-k2g: Add DCAN instances to 66AK2G
+Date: Wed, 2 Aug 2017 15:18:19 -0500
+Message-ID: <20170802201822.11532-1-fcooper@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, ssantosh@kernel.org, linux@armlinux.org.uk, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Franklin S Cooper Jr <fcooper@ti.com>
+List-Id: linux-can.vger.kernel.org
 
-This patch replaces an open coded max by the proper kernel define max().
+Add D CAN nodes to 66AK2G based SoC dtsi.
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/af_can.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Franklin S Cooper Jr (2):
+  dt-bindings: net: c_can: Update binding for clock and power-domains
+    property
+  ARM: configs: keystone: Enable D_CAN driver
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index cb079d2dcde2..e3df12cd2cae 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -498,8 +498,8 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
- 		dev_rcv_lists->entries++;
- 
- 		can_pstats->rcv_entries++;
--		if (can_pstats->rcv_entries_max < can_pstats->rcv_entries)
--			can_pstats->rcv_entries_max = can_pstats->rcv_entries;
-+		can_pstats->rcv_entries_max = max(can_pstats->rcv_entries_max,
-+						  can_pstats->rcv_entries);
- 	} else {
- 		kmem_cache_free(rcv_cache, rcv);
- 		err = -ENODEV;
+Lokesh Vutla (1):
+  ARM: dts: k2g: Add DCAN nodes
+
+ Documentation/devicetree/bindings/net/can/c_can.txt | 13 ++++++++++++-
+ arch/arm/boot/dts/keystone-k2g.dtsi                 | 18 ++++++++++++++++++
+ arch/arm/configs/keystone_defconfig                 |  3 +++
+ 3 files changed, 33 insertions(+), 1 deletion(-)
+
 -- 
-2.13.2
-
+2.9.4.dirty
