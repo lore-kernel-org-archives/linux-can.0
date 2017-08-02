@@ -1,12 +1,12 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 13/14] can: make use of preallocated can_ml_priv for per device struct can_dev_rcv_lists
-Date: Wed,  2 Aug 2017 19:44:33 +0200
-Message-ID: <20170802174434.4689-14-mkl@pengutronix.de>
+Subject: [PATCH 12/14] can: introduce CAN midlayer private and allocate it automatically
+Date: Wed,  2 Aug 2017 19:44:32 +0200
+Message-ID: <20170802174434.4689-13-mkl@pengutronix.de>
 References: <20170802174434.4689-1-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:34081 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:34063 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751956AbdHBRop (ORCPT
+        by vger.kernel.org with ESMTP id S1752564AbdHBRop (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 2 Aug 2017 13:44:45 -0400
 In-Reply-To: <20170802174434.4689-1-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -14,172 +14,172 @@ List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
 Cc: kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch removes the old method of allocating the per device protocol
-specific memory via a netdevice_notifier. This had the drawback, that
-the allocation can fail, leading to a lot of null pointer checks in the
-code. This also makes the live cycle management of this memory quite
-complicated.
+This patch introduces the CAN midlayer private structure ("struct
+can_ml_priv") which should be used to hold protocol specific per device
+data structures. For now it's only member is "struct can_dev_rcv_lists".
 
-This patch switches from the allocating the struct can_dev_rcv_lists in
-a NETDEV_REGISTER call to using the dev->ml_priv, which is allocated by
-the driver since the previous patch.
+The CAN midlayer private is allocated via alloc_netdev()'s private and
+assigned to "struct net_device::ml_priv" during device creation. This is
+done transparently for CAN drivers using alloc_candev(). The slcan, vcan
+and vxcan drivers which are not using alloc_candev() have been adopted
+manually. The memory layout of the netdev_priv allocated via
+alloc_candev() will looke like this:
+
+  +-------------------------+
+  | driver's priv           |
+  +-------------------------+
+  | struct can_ml_priv      |
+  +-------------------------+
+  | array of struct sk_buff |
+  +-------------------------+
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c   |  2 ++
- drivers/net/can/slcan.c |  1 +
- drivers/net/can/vcan.c  |  1 +
- drivers/net/can/vxcan.c |  1 +
- net/can/af_can.c        | 45 ++++++++-------------------------------------
- net/can/af_can.h        |  1 -
- 6 files changed, 13 insertions(+), 38 deletions(-)
+ drivers/net/can/dev.c      | 22 ++++++++++++++++++----
+ drivers/net/can/slcan.c    |  4 +++-
+ drivers/net/can/vcan.c     |  6 ++++--
+ drivers/net/can/vxcan.c    |  2 +-
+ include/linux/can/can-ml.h | 23 +++++++++++++++++++++++
+ 5 files changed, 49 insertions(+), 8 deletions(-)
+ create mode 100644 include/linux/can/can-ml.h
 
 diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 85a636760b98..89f9a05e97f0 100644
+index 365a8cc62405..85a636760b98 100644
 --- a/drivers/net/can/dev.c
 +++ b/drivers/net/can/dev.c
-@@ -735,6 +735,8 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
- 	priv = netdev_priv(dev);
- 	priv->dev = dev;
+@@ -23,6 +23,7 @@
+ #include <linux/if_arp.h>
+ #include <linux/workqueue.h>
+ #include <linux/can.h>
++#include <linux/can/can-ml.h>
+ #include <linux/can/dev.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/netlink.h>
+@@ -708,11 +709,24 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
+ 	struct can_priv *priv;
+ 	int size;
  
-+	dev->ml_priv = (void *)priv + ALIGN(sizeof_priv, NETDEV_ALIGN);
++	/* We put the driver's priv, the CAN mid layer priv and the
++	 * echo skb into the netdevice's priv. The memory layout for
++	 * the netdev_priv is like this:
++	 *
++	 * +-------------------------+
++	 * | driver's priv           |
++	 * +-------------------------+
++	 * | struct can_ml_priv      |
++	 * +-------------------------+
++	 * | array of struct sk_buff |
++	 * +-------------------------+
++	 */
 +
++	size = ALIGN(sizeof_priv, NETDEV_ALIGN) + sizeof(struct can_ml_priv);
++
+ 	if (echo_skb_max)
+-		size = ALIGN(sizeof_priv, sizeof(struct sk_buff *)) +
++		size = ALIGN(size, sizeof(struct sk_buff *)) +
+ 			echo_skb_max * sizeof(struct sk_buff *);
+-	else
+-		size = sizeof_priv;
+ 
+ 	dev = alloc_netdev(size, "can%d", NET_NAME_UNKNOWN, can_setup);
+ 	if (!dev)
+@@ -724,7 +738,7 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
  	if (echo_skb_max) {
  		priv->echo_skb_max = echo_skb_max;
  		priv->echo_skb = (void *)priv +
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index f1647b4fd1e6..38e82710848c 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -535,6 +535,7 @@ static struct slcan *slc_alloc(dev_t line)
- 
- 	dev->base_addr  = i;
- 	sl = netdev_priv(dev);
-+	dev->ml_priv = (void *)sl + ALIGN(sizeof(*sl), NETDEV_ALIGN);
- 
- 	/* Initialize channel control data */
- 	sl->magic = SLCAN_MAGIC;
-diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
-index 96e42eab2426..ff388f036124 100644
---- a/drivers/net/can/vcan.c
-+++ b/drivers/net/can/vcan.c
-@@ -158,6 +158,7 @@ static void vcan_setup(struct net_device *dev)
- 	dev->addr_len		= 0;
- 	dev->tx_queue_len	= 0;
- 	dev->flags		= IFF_NOARP;
-+	dev->ml_priv		= netdev_priv(dev);
- 
- 	/* set flags according to driver capabilities */
- 	if (echo)
-diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-index 8925d797e8ac..ed9293209ca2 100644
---- a/drivers/net/can/vxcan.c
-+++ b/drivers/net/can/vxcan.c
-@@ -157,6 +157,7 @@ static void vxcan_setup(struct net_device *dev)
- 	dev->flags		= (IFF_NOARP|IFF_ECHO);
- 	dev->netdev_ops		= &vxcan_netdev_ops;
- 	dev->needs_free_netdev	= true;
-+	dev->ml_priv		= netdev_priv(dev) + ALIGN(sizeof(struct vxcan_priv), NETDEV_ALIGN);
- }
- 
- /* forward declaration for rtnl_create_link() */
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index d781b9330f2c..c3eac4ab74e9 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -58,6 +58,7 @@
- #include <linux/can.h>
- #include <linux/can/core.h>
- #include <linux/can/skb.h>
-+#include <linux/can/can-ml.h>
- #include <linux/ratelimit.h>
- #include <net/net_namespace.h>
- #include <net/sock.h>
-@@ -324,10 +325,12 @@ EXPORT_SYMBOL(can_send);
- static struct can_dev_rcv_lists *can_dev_rcv_lists_find(struct net *net,
- 							struct net_device *dev)
- {
--	if (!dev)
-+	if (dev) {
-+		struct can_ml_priv *ml_priv = dev->ml_priv;
-+		return &ml_priv->dev_rcv_lists;
-+	} else {
- 		return net->can.can_rx_alldev_list;
--	else
--		return (struct can_dev_rcv_lists *)dev->ml_priv;
-+	}
- }
- 
- /**
-@@ -589,12 +592,6 @@ void can_rx_unregister(struct net *net, struct net_device *dev, canid_t can_id,
- 	if (can_pstats->rcv_entries > 0)
- 		can_pstats->rcv_entries--;
- 
--	/* remove device structure requested by NETDEV_UNREGISTER */
--	if (dev_rcv_lists->remove_on_zero_entries && !dev_rcv_lists->entries) {
--		kfree(dev_rcv_lists);
--		dev->ml_priv = NULL;
--	}
--
-  out:
- 	spin_unlock(&net->can.can_rcvlists_lock);
- 
-@@ -827,7 +824,6 @@ static int can_notifier(struct notifier_block *nb, unsigned long msg,
- 			void *ptr)
- {
- 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
--	struct can_dev_rcv_lists *dev_rcv_lists;
- 
- 	if (dev->type != ARPHRD_CAN)
- 		return NOTIFY_DONE;
-@@ -835,33 +831,8 @@ static int can_notifier(struct notifier_block *nb, unsigned long msg,
- 	switch (msg) {
- 
- 	case NETDEV_REGISTER:
--
--		/* create new dev_rcv_lists for this device */
--		dev_rcv_lists = kzalloc(sizeof(*dev_rcv_lists), GFP_KERNEL);
--		if (!dev_rcv_lists)
--			return NOTIFY_DONE;
--		BUG_ON(dev->ml_priv);
--		dev->ml_priv = dev_rcv_lists;
--
--		break;
--
--	case NETDEV_UNREGISTER:
--		spin_lock(&dev_net(dev)->can.can_rcvlists_lock);
--
--		dev_rcv_lists = dev->ml_priv;
--		if (dev_rcv_lists) {
--			if (dev_rcv_lists->entries)
--				dev_rcv_lists->remove_on_zero_entries = 1;
--			else {
--				kfree(dev_rcv_lists);
--				dev->ml_priv = NULL;
--			}
--		} else
--			pr_err("can: notifier: receive list not found for dev "
--			       "%s\n", dev->name);
--
--		spin_unlock(&dev_net(dev)->can.can_rcvlists_lock);
--
-+		WARN(!dev->ml_priv,
-+		     "No CAN mid layer private allocated, please fix your driver and use alloc_candev()!\n");
- 		break;
+-			ALIGN(sizeof_priv, sizeof(struct sk_buff *));
++			(size - echo_skb_max * sizeof(struct sk_buff *));
  	}
  
-diff --git a/net/can/af_can.h b/net/can/af_can.h
-index 4b77c7951f17..dc198a07a8d1 100644
---- a/net/can/af_can.h
-+++ b/net/can/af_can.h
-@@ -71,7 +71,6 @@ struct can_dev_rcv_lists {
- 	struct hlist_head rx[RX_MAX];
- 	struct hlist_head rx_sff[CAN_SFF_RCV_ARRAY_SZ];
- 	struct hlist_head rx_eff[CAN_EFF_RCV_ARRAY_SZ];
--	int remove_on_zero_entries;
- 	int entries;
+ 	priv->state = CAN_STATE_STOPPED;
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index 5d067c1b987f..f1647b4fd1e6 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -514,6 +514,7 @@ static struct slcan *slc_alloc(dev_t line)
+ 	char name[IFNAMSIZ];
+ 	struct net_device *dev = NULL;
+ 	struct slcan       *sl;
++	int size;
+ 
+ 	for (i = 0; i < maxdev; i++) {
+ 		dev = slcan_devs[i];
+@@ -527,7 +528,8 @@ static struct slcan *slc_alloc(dev_t line)
+ 		return NULL;
+ 
+ 	sprintf(name, "slcan%d", i);
+-	dev = alloc_netdev(sizeof(*sl), name, NET_NAME_UNKNOWN, slc_setup);
++	size = ALIGN(sizeof(*sl), NETDEV_ALIGN) + sizeof(struct can_ml_priv);
++	dev = alloc_netdev(size, name, NET_NAME_UNKNOWN, slc_setup);
+ 	if (!dev)
+ 		return NULL;
+ 
+diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
+index a8cb33264ff1..96e42eab2426 100644
+--- a/drivers/net/can/vcan.c
++++ b/drivers/net/can/vcan.c
+@@ -45,6 +45,7 @@
+ #include <linux/if_arp.h>
+ #include <linux/if_ether.h>
+ #include <linux/can.h>
++#include <linux/can/can-ml.h>
+ #include <linux/can/dev.h>
+ #include <linux/can/skb.h>
+ #include <linux/slab.h>
+@@ -167,8 +168,9 @@ static void vcan_setup(struct net_device *dev)
+ }
+ 
+ static struct rtnl_link_ops vcan_link_ops __read_mostly = {
+-	.kind	= DRV_NAME,
+-	.setup	= vcan_setup,
++	.kind = DRV_NAME,
++	.priv_size = sizeof(struct can_ml_priv),
++	.setup = vcan_setup,
  };
  
+ static __init int vcan_init_module(void)
+diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
+index 8404e8852a0f..8925d797e8ac 100644
+--- a/drivers/net/can/vxcan.c
++++ b/drivers/net/can/vxcan.c
+@@ -292,7 +292,7 @@ static struct net *vxcan_get_link_net(const struct net_device *dev)
+ 
+ static struct rtnl_link_ops vxcan_link_ops = {
+ 	.kind		= DRV_NAME,
+-	.priv_size	= sizeof(struct vxcan_priv),
++	.priv_size	= ALIGN(sizeof(struct vxcan_priv), NETDEV_ALIGN) + sizeof(struct can_ml_priv);
+ 	.setup		= vxcan_setup,
+ 	.newlink	= vxcan_newlink,
+ 	.dellink	= vxcan_dellink,
+diff --git a/include/linux/can/can-ml.h b/include/linux/can/can-ml.h
+new file mode 100644
+index 000000000000..2786b04251ea
+--- /dev/null
++++ b/include/linux/can/can-ml.h
+@@ -0,0 +1,23 @@
++/*
++ * Copyright (C) 2017 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++#ifndef CAN_ML_H
++#define CAN_ML_H
++
++#include "../../net/can/af_can.h"
++
++struct can_ml_priv {
++	struct can_dev_rcv_lists dev_rcv_lists;
++};
++
++#endif /* CAN_ML_H */
 -- 
 2.13.2
 
