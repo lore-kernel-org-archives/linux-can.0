@@ -1,58 +1,56 @@
 From: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: [PATCH 2/3] ARM: dts: k2g: Add DCAN nodes
-Date: Wed, 2 Aug 2017 15:18:21 -0500
-Message-ID: <20170802201822.11532-3-fcooper@ti.com>
-References: <20170802201822.11532-1-fcooper@ti.com>
+Subject: [PATCH v3 2/4] dt-bindings: can: fixed-transceiver: Add new CAN fixed transceiver bindings
+Date: Wed, 2 Aug 2017 19:51:48 -0500
+Message-ID: <20170803005150.9286-3-fcooper@ti.com>
+References: <20170803005150.9286-1-fcooper@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170802201822.11532-1-fcooper@ti.com>
+In-Reply-To: <20170803005150.9286-1-fcooper@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, ssantosh@kernel.org, linux@armlinux.org.uk, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Lokesh Vutla <lokeshvutla@ti.com>, Dave Gerlach <d-gerlach@ti.com>, Franklin S Cooper Jr <fcooper@ti.com>
+To: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, dev.kurt@vandijck-laurijssen.be, andrew@lunn.ch, sergei.shtylyov@cogentembedded.com, socketcan@hartkopp.net
+Cc: Franklin S Cooper Jr <fcooper@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Lokesh Vutla <lokeshvutla@ti.com>
+Add documentation to describe usage of the new fixed transceiver binding.
+This new binding is applicable for any CAN device therefore it exists as
+its own document.
 
-Add nodes for the two DCAN instances included in 66AK2G
-
-Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
-[d-gerlach@ti.com: add power-domains and clock information]
-Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
-[fcooper@ti.com: update subject and commit message. Misc minor updates]
 Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
 ---
- arch/arm/boot/dts/keystone-k2g.dtsi | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ .../bindings/net/can/fixed-transceiver.txt         | 24 ++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/fixed-transceiver.txt
 
-diff --git a/arch/arm/boot/dts/keystone-k2g.dtsi b/arch/arm/boot/dts/keystone-k2g.dtsi
-index bf4d1fa..bebc857 100644
---- a/arch/arm/boot/dts/keystone-k2g.dtsi
-+++ b/arch/arm/boot/dts/keystone-k2g.dtsi
-@@ -113,6 +113,24 @@
- 			status = "disabled";
- 		};
- 
-+		dcan0: can@0260B200 {
-+			compatible = "ti,am4372-d_can", "ti,am3352-d_can";
-+			reg = <0x0260B200 0x200>;
-+			interrupts = <GIC_SPI 190 IRQ_TYPE_EDGE_RISING>;
-+			status = "disabled";
-+			power-domains = <&k2g_pds 0x0008>;
-+			clocks = <&k2g_clks 0x0008 1>;
-+		};
+diff --git a/Documentation/devicetree/bindings/net/can/fixed-transceiver.txt b/Documentation/devicetree/bindings/net/can/fixed-transceiver.txt
+new file mode 100644
+index 0000000..2f58838b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/fixed-transceiver.txt
+@@ -0,0 +1,24 @@
++Fixed transceiver Device Tree binding
++------------------------------
 +
-+		dcan1: can@0260B400 {
-+			compatible = "ti,am4372-d_can", "ti,am3352-d_can";
-+			reg = <0x0260B400 0x200>;
-+			interrupts = <GIC_SPI 193 IRQ_TYPE_EDGE_RISING>;
-+			status = "disabled";
-+			power-domains = <&k2g_pds 0x0009>;
-+			clocks = <&k2g_clks 0x0009 1>;
-+		};
++CAN transceiver typically limits the max speed in standard CAN and CAN FD
++modes. Typically these limitations are static and the transceivers themselves
++provide no way to detect this limitation at runtime. For this situation,
++the "fixed-transceiver" node can be used.
 +
- 		kirq0: keystone_irq@026202a0 {
- 			compatible = "ti,keystone-irq";
- 			interrupts = <GIC_SPI 1 IRQ_TYPE_EDGE_RISING>;
++Required Properties:
++ max-bitrate:	a positive non 0 value that determines the max
++		speed that CAN/CAN-FD can run. Any other value
++		will be ignored.
++
++Examples:
++
++Based on Texas Instrument's TCAN1042HGV CAN Transceiver
++
++m_can0 {
++	....
++	fixed-transceiver@0 {
++		max-bitrate = <5000000>;
++	};
++	...
++};
 -- 
 2.9.4.dirty
