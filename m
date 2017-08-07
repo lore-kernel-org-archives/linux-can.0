@@ -1,89 +1,47 @@
-From: Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH 1/2] can: xilinx: Fix ksoftirq CPU monopolization
-Date: Mon,  7 Aug 2017 15:47:56 +0200
-Message-ID: <21850c76207942f5ae5c225f2627fb068d5234d0.1502113674.git.michal.simek@xilinx.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wr0-f193.google.com ([209.85.128.193]:37449 "EHLO
-        mail-wr0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751375AbdHGNr7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Aug 2017 09:47:59 -0400
-Received: by mail-wr0-f193.google.com with SMTP id 12so378609wrb.4
-        for <linux-can@vger.kernel.org>; Mon, 07 Aug 2017 06:47:59 -0700 (PDT)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-kernel@vger.kernel.org, monstr@monstr.eu
-Cc: Matthias Auchmann <m.auchmann@artech.at>, =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>, netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, linux-arm-kernel@lists.infradead.org
+From: Franklin S Cooper Jr <fcooper@ti.com>
+Subject: Re: [PATCH 0/3] ARM: dts: keystone-k2g: Add DCAN instances to 66AK2G
+Date: Mon, 7 Aug 2017 16:31:43 -0500
+Message-ID: <8930852b-6995-3d41-440e-86f440b313ad@ti.com>
+References: <20170802201822.11532-1-fcooper@ti.com>
+ <69995971-2fe7-87f4-a46a-8ef4f729ffc5@oracle.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <69995971-2fe7-87f4-a46a-8ef4f729ffc5@oracle.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Santosh Shilimkar <santosh.shilimkar@oracle.com>, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, ssantosh@kernel.org, linux@armlinux.org.uk, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+List-Id: linux-can.vger.kernel.org
 
-From: Matthias Auchmann <m.auchmann@artech.at>
 
-When using both the RXOK and the RXNEMP interrupt, when there were more
-than one receive messages in the FIFO, ksoftirqd started to go crazy
-and monopolize one CPU. The reason being is that RXOK just fires once
-even if there are multiple frames sitting in the RX FIFO, so the code
-didn't reflect that properly.
+Hi Santosh,
+On 08/04/2017 12:07 PM, Santosh Shilimkar wrote:
+> Hi Franklin,
+> 
+> On 8/2/2017 1:18 PM, Franklin S Cooper Jr wrote:
+>> Add D CAN nodes to 66AK2G based SoC dtsi.
+>>
+>> Franklin S Cooper Jr (2):
+>>    dt-bindings: net: c_can: Update binding for clock and power-domains
+>>      property
+>>    ARM: configs: keystone: Enable D_CAN driver
+>>
+>> Lokesh Vutla (1):
+>>    ARM: dts: k2g: Add DCAN nodes
+>>
+> Any DCAN driver dependency with these patchset ? If not, I can
+> queue this up so do let me know.
 
-Changed that to only use the RXNEMP interrupt and thereby got rid of the
-bug.
-
-Signed-off-by: Matthias Auchmann <m.auchmann@artech.at>
-Acked-by: Kedareswara rao Appana <appanad@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
-
- drivers/net/can/xilinx_can.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 89aec07c225f..05ea2820d27b 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -101,7 +101,7 @@ enum xcan_reg {
- #define XCAN_INTR_ALL		(XCAN_IXR_TXOK_MASK | XCAN_IXR_BSOFF_MASK |\
- 				 XCAN_IXR_WKUP_MASK | XCAN_IXR_SLP_MASK | \
- 				 XCAN_IXR_RXNEMP_MASK | XCAN_IXR_ERROR_MASK | \
--				 XCAN_IXR_ARBLST_MASK | XCAN_IXR_RXOK_MASK)
-+				 XCAN_IXR_ARBLST_MASK)
- 
- /* CAN register bit shift - XCAN_<REG>_<BIT>_SHIFT */
- #define XCAN_BTR_SJW_SHIFT		7  /* Synchronous jump width */
-@@ -709,15 +709,7 @@ static int xcan_rx_poll(struct napi_struct *napi, int quota)
- 
- 	isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
- 	while ((isr & XCAN_IXR_RXNEMP_MASK) && (work_done < quota)) {
--		if (isr & XCAN_IXR_RXOK_MASK) {
--			priv->write_reg(priv, XCAN_ICR_OFFSET,
--				XCAN_IXR_RXOK_MASK);
--			work_done += xcan_rx(ndev);
--		} else {
--			priv->write_reg(priv, XCAN_ICR_OFFSET,
--				XCAN_IXR_RXNEMP_MASK);
--			break;
--		}
-+		work_done += xcan_rx(ndev);
- 		priv->write_reg(priv, XCAN_ICR_OFFSET, XCAN_IXR_RXNEMP_MASK);
- 		isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
- 	}
-@@ -728,7 +720,7 @@ static int xcan_rx_poll(struct napi_struct *napi, int quota)
- 	if (work_done < quota) {
- 		napi_complete_done(napi, work_done);
- 		ier = priv->read_reg(priv, XCAN_IER_OFFSET);
--		ier |= (XCAN_IXR_RXOK_MASK | XCAN_IXR_RXNEMP_MASK);
-+		ier |= XCAN_IXR_RXNEMP_MASK;
- 		priv->write_reg(priv, XCAN_IER_OFFSET, ier);
- 	}
- 	return work_done;
-@@ -800,9 +792,9 @@ static irqreturn_t xcan_interrupt(int irq, void *dev_id)
- 	}
- 
- 	/* Check for the type of receive interrupt and Processing it */
--	if (isr & (XCAN_IXR_RXNEMP_MASK | XCAN_IXR_RXOK_MASK)) {
-+	if (isr & XCAN_IXR_RXNEMP_MASK) {
- 		ier = priv->read_reg(priv, XCAN_IER_OFFSET);
--		ier &= ~(XCAN_IXR_RXNEMP_MASK | XCAN_IXR_RXOK_MASK);
-+		ier &= ~XCAN_IXR_RXNEMP_MASK;
- 		priv->write_reg(priv, XCAN_IER_OFFSET, ier);
- 		napi_schedule(&priv->napi);
- 	}
--- 
-1.9.1
-
+There aren't any dependencies.
+> 
+> Regards,
+> Santosh
