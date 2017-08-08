@@ -1,47 +1,98 @@
-From: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: Re: [PATCH 0/3] ARM: dts: keystone-k2g: Add DCAN instances to 66AK2G
-Date: Mon, 7 Aug 2017 16:31:43 -0500
-Message-ID: <8930852b-6995-3d41-440e-86f440b313ad@ti.com>
-References: <20170802201822.11532-1-fcooper@ti.com>
- <69995971-2fe7-87f4-a46a-8ef4f729ffc5@oracle.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <69995971-2fe7-87f4-a46a-8ef4f729ffc5@oracle.com>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Santosh Shilimkar <santosh.shilimkar@oracle.com>, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, ssantosh@kernel.org, linux@armlinux.org.uk, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-List-Id: linux-can.vger.kernel.org
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: [PATCH 00/35] constify net usb_device_id
+Date: Tue,  8 Aug 2017 21:25:27 +0530
+Message-ID: <1502207730-11404-1-git-send-email-arvind.yadav.cs@gmail.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-pg0-f66.google.com ([74.125.83.66]:34126 "EHLO
+        mail-pg0-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752030AbdHHPzy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Aug 2017 11:55:54 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: kvalo@codeaurora.org, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
+usb_device_id are not supposed to change at runtime. All functions
+working with usb_device_id provided by <linux/usb.h> work with
+const usb_device_id. So mark the non-const structs as const.
 
-Hi Santosh,
-On 08/04/2017 12:07 PM, Santosh Shilimkar wrote:
-> Hi Franklin,
-> 
-> On 8/2/2017 1:18 PM, Franklin S Cooper Jr wrote:
->> Add D CAN nodes to 66AK2G based SoC dtsi.
->>
->> Franklin S Cooper Jr (2):
->>    dt-bindings: net: c_can: Update binding for clock and power-domains
->>      property
->>    ARM: configs: keystone: Enable D_CAN driver
->>
->> Lokesh Vutla (1):
->>    ARM: dts: k2g: Add DCAN nodes
->>
-> Any DCAN driver dependency with these patchset ? If not, I can
-> queue this up so do let me know.
+[PATCH 10/35] :Fix checkpatch.pl error.
+ERROR: space prohibited before open square bracket '['.
 
-There aren't any dependencies.
-> 
-> Regards,
-> Santosh
+Arvind Yadav (35):
+  [PATCH 01/35] can: ems_usb: constify usb_device_id
+  [PATCH 02/35] can: esd_usb2: constify usb_device_id
+  [PATCH 03/35] can: peak_usb: constify usb_device_id
+  [PATCH 04/35] net: irda: irda-usb: constify usb_device_id
+  [PATCH 05/35] net: irda: kingsun: constify usb_device_id
+  [PATCH 06/35] net: irda: ks959: constify usb_device_id
+  [PATCH 07/35] net: irda: ksdazzle: constify usb_device_id
+  [PATCH 08/35] net: irda: mcs7780: constify usb_device_id
+  [PATCH 09/35] net: irda: stir4200: constify usb_device_id
+  [PATCH 10/35] net: usb: catc: constify usb_device_id and and fix space before '[' error
+  [PATCH 11/35] net: usb: cdc-phonet: constify usb_device_id
+  [PATCH 12/35] net: usb: ipheth: constify usb_device_id
+  [PATCH 13/35] net: usb: kaweth: constify usb_device_id
+  [PATCH 14/35] net: usb: r8152: constify usb_device_id
+  [PATCH 15/35] net: usb: rtl8150: constify usb_device_id
+  [PATCH 16/35] wireless: ath: ar5523: constify usb_device_id
+  [PATCH 17/35] wireless: ath: ath6kl: constify usb_device_id
+  [PATCH 18/35] wireless: ath: ath9k: constify usb_device_id
+  [PATCH 19/35] wireless: ath: carl9170: constify usb_device_id
+  [PATCH 20/35] wireless: atmel: at76c50x: constify usb_device_id
+  [PATCH 21/35] wireless: broadcom: brcm80211: constify usb_device_id
+  [PATCH 22/35] wireless: intersil: orinoco: constify usb_device_id
+  [PATCH 23/35] wireless: intersil: p54: constify usb_device_id
+  [PATCH 24/35] wireless: marvell: libertas: constify usb_device_id
+  [PATCH 25/35] wireless: marvell: libertas_tf: constify usb_device_id
+  [PATCH 26/35] wireless: marvell: mwifiex: constify usb_device_id
+  [PATCH 27/35] wireless: mediatek: mt7601u: constify usb_device_id
+  [PATCH 28/35] wireless: ralink: rt2500usb: constify usb_device_id
+  [PATCH 29/35] wireless: ralink: rt2800usb: constify usb_device_id
+  [PATCH 30/35] wireless: ralink: rt73usb: constify usb_device_id
+  [PATCH 31/35] wireless: realtek: rtl8187: constify usb_device_id
+  [PATCH 32/35] wireless: realtek: rtl8xxxu: constify usb_device_id
+  [PATCH 33/35] wireless: realtek: rtl8192cu: constify usb_device_id
+  [PATCH 34/35] wireless: zydas: zd1201: constify usb_device_id
+  [PATCH 35/35] wireless: zydas: zd1211rw: constify usb_device_id
+
+ drivers/net/can/usb/ems_usb.c                          | 2 +-
+ drivers/net/can/usb/esd_usb2.c                         | 2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c           | 2 +-
+ drivers/net/irda/irda-usb.c                            | 2 +-
+ drivers/net/irda/kingsun-sir.c                         | 2 +-
+ drivers/net/irda/ks959-sir.c                           | 2 +-
+ drivers/net/irda/ksdazzle-sir.c                        | 2 +-
+ drivers/net/irda/mcs7780.c                             | 2 +-
+ drivers/net/irda/stir4200.c                            | 2 +-
+ drivers/net/usb/catc.c                                 | 2 +-
+ drivers/net/usb/cdc-phonet.c                           | 2 +-
+ drivers/net/usb/ipheth.c                               | 2 +-
+ drivers/net/usb/kaweth.c                               | 2 +-
+ drivers/net/usb/r8152.c                                | 2 +-
+ drivers/net/usb/rtl8150.c                              | 2 +-
+ drivers/net/wireless/ath/ar5523/ar5523.c               | 2 +-
+ drivers/net/wireless/ath/ath6kl/usb.c                  | 2 +-
+ drivers/net/wireless/ath/ath9k/hif_usb.c               | 2 +-
+ drivers/net/wireless/ath/carl9170/usb.c                | 2 +-
+ drivers/net/wireless/atmel/at76c50x-usb.c              | 2 +-
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c | 2 +-
+ drivers/net/wireless/intersil/orinoco/orinoco_usb.c    | 2 +-
+ drivers/net/wireless/intersil/p54/p54usb.c             | 2 +-
+ drivers/net/wireless/marvell/libertas/if_usb.c         | 2 +-
+ drivers/net/wireless/marvell/libertas_tf/if_usb.c      | 2 +-
+ drivers/net/wireless/marvell/mwifiex/usb.c             | 2 +-
+ drivers/net/wireless/mediatek/mt7601u/usb.c            | 2 +-
+ drivers/net/wireless/ralink/rt2x00/rt2500usb.c         | 2 +-
+ drivers/net/wireless/ralink/rt2x00/rt2800usb.c         | 2 +-
+ drivers/net/wireless/ralink/rt2x00/rt73usb.c           | 2 +-
+ drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c     | 2 +-
+ drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c  | 2 +-
+ drivers/net/wireless/realtek/rtlwifi/rtl8192cu/sw.c    | 2 +-
+ drivers/net/wireless/zydas/zd1201.c                    | 2 +-
+ drivers/net/wireless/zydas/zd1211rw/zd_usb.c           | 2 +-
+ 35 files changed, 35 insertions(+), 35 deletions(-)
+
+-- 
+2.7.4
+
