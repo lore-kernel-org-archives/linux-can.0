@@ -1,73 +1,98 @@
-From: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: Re: [PATCH v2 3/4] can: m_can: Update documentation to mention new
- fixed transceiver binding
-Date: Wed, 9 Aug 2017 20:02:16 -0500
-Message-ID: <93b31baa-c757-ddb7-a633-e04e931ae907@ti.com>
-References: <20170724230521.1436-1-fcooper@ti.com>
- <20170724230521.1436-4-fcooper@ti.com>
- <20170803170735.qntnxpx5olghzmbu@rob-hp-laptop>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v4 1/4] can: dev: Add support for limiting configured
+ bitrate
+Date: Thu, 10 Aug 2017 13:05:14 +0300
+Message-ID: <9a6f4fdf-a4f6-283b-0e5a-693cc7d263ef@cogentembedded.com>
+References: <20170810005916.27163-1-fcooper@ti.com>
+ <20170810005916.27163-2-fcooper@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lelnx193.ext.ti.com ([198.47.27.77]:24092 "EHLO
-        lelnx193.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752510AbdHJBDC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Aug 2017 21:03:02 -0400
-In-Reply-To: <20170803170735.qntnxpx5olghzmbu@rob-hp-laptop>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170810005916.27163-2-fcooper@ti.com>
 Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, quentin.schulz@free-electrons.com, dev.kurt@vandijck-laurijssen.be, andrew@lunn.ch, sergei.shtylyov@cogentembedded.com, socketcan@hartkopp.net
+Sender: linux-kernel-owner@vger.kernel.org
+To: Franklin S Cooper Jr <fcooper@ti.com>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, dev.kurt@vandijck-laurijssen.be, andrew@lunn.ch, socketcan@hartkopp.net
+List-Id: linux-can.vger.kernel.org
 
+Hello!
 
-Hi Rob,
-On 08/03/2017 12:07 PM, Rob Herring wrote:
-> On Mon, Jul 24, 2017 at 06:05:20PM -0500, Franklin S Cooper Jr wrote:
->> Add information regarding fixed transceiver binding. This is especially
->> important for MCAN since the IP allows CAN FD mode to run significantly
->> faster than what most transceivers are capable of.
->>
->> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
->> ---
->> Version 2 changes:
->> Drop unit address
->>
->>  Documentation/devicetree/bindings/net/can/m_can.txt | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
->> index 9e33177..e4abd2c 100644
->> --- a/Documentation/devicetree/bindings/net/can/m_can.txt
->> +++ b/Documentation/devicetree/bindings/net/can/m_can.txt
->> @@ -43,6 +43,11 @@ Required properties:
->>  			  Please refer to 2.4.1 Message RAM Configuration in
->>  			  Bosch M_CAN user manual for details.
->>  
->> +Optional properties:
->> +- fixed-transceiver	: Fixed-transceiver subnode describing maximum speed
+On 8/10/2017 3:59 AM, Franklin S Cooper Jr wrote:
+
+> Various CAN or CAN-FD IP may be able to run at a faster rate than
+> what the transceiver the CAN node is connected to. This can lead to
+> unexpected errors. However, CAN transceivers typically have fixed
+> limitations and provide no means to discover these limitations at
+> runtime. Therefore, add support for a can-transceiver node that
+> can be reused by other CAN peripheral drivers to determine for both
+> CAN and CAN-FD what the max bitrate that can be used. If the user
+> tries to configure CAN to pass these maximum bitrates it will throw
+> an error.
 > 
-> This is a node, not a property. Sub nodes should have their own section.
-
-Fixed in my v4 that I just sent.
+> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> ---
+> Version 4 changes:
+> Used can-transceiver instead of fixed-transceiver.
 > 
->> +			  that can be used for CAN and/or CAN-FD modes.  See
->> +			  Documentation/devicetree/bindings/net/can/fixed-transceiver.txt
->> +			  for details.
->>  Example:
->>  SoC dtsi:
->>  m_can1: can@020e8000 {
->> @@ -64,4 +69,9 @@ Board dts:
->>  	pinctrl-names = "default";
->>  	pinctrl-0 = <&pinctrl_m_can1>;
->>  	status = "enabled";
->> +
->> +	fixed-transceiver {
->> +		max-arbitration-speed = <1000000>;
->> +		max-data-speed = <5000000>;
->> +	};
->>  };
->> -- 
->> 2.10.0
->>
+>   drivers/net/can/dev.c   | 50 +++++++++++++++++++++++++++++++++++++++++++++++++
+>   include/linux/can/dev.h |  5 +++++
+>   2 files changed, 55 insertions(+)
+> 
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index 365a8cc..372108f 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+[...]
+> @@ -814,6 +815,39 @@ int open_candev(struct net_device *dev)
+>   }
+>   EXPORT_SYMBOL_GPL(open_candev);
+>   
+> +#ifdef CONFIG_OF
+> +/*
+> + * Common function that can be used to understand the limitation of
+> + * a transceiver when it provides no means to determine these limitations
+> + * at runtime.
+> + */
+> +void of_can_transceiver(struct net_device *dev)
+> +{
+> +	struct device_node *dn;
+> +	struct can_priv *priv = netdev_priv(dev);
+> +	struct device_node *np;
+> +	unsigned int max_bitrate;
+> +	int ret;
+> +
+> +	np = dev->dev.parent->of_node;
+
+    I'd do that as an initializer.
+
+> +
+> +	dn = of_get_child_by_name(np, "can-transceiver");
+> +	if (!dn)
+> +		return;
+> +
+> +	max_bitrate = 0;
+> +	ret = of_property_read_u32(dn, "max-bitrate", &max_bitrate);
+
+    I'd initialize max_bitrate to 0 as iff of_property_read_u32() fails, it'll 
+leave the variable unset...
+
+> +
+> +	if (max_bitrate > 0) {
+
+    You risk checking unset variable here.
+
+> +		priv->max_bitrate = max_bitrate;
+> +		priv->is_bitrate_limited = true;
+> +	} else if (ret != -EINVAL) {
+> +		netdev_warn(dev, "Invalid value for transceiver max bitrate\n");
+> +	}
+> +}
+> +EXPORT_SYMBOL(of_can_transceiver);
+> +#endif
+> +
+>   /*
+>    * Common close function for cleanup before the device gets closed.
+>    *
+[...]
+
+MBR, Sergei
