@@ -1,55 +1,63 @@
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 00/35] constify net usb_device_id
-Date: Tue, 08 Aug 2017 21:36:29 +0300
-Message-ID: <87mv79j49e.fsf@kamboji.qca.qualcomm.com>
-References: <1502207730-11404-1-git-send-email-arvind.yadav.cs@gmail.com>
+From: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH v4 0/4] can: Support transceiver based bit rate limit
+Date: Wed, 9 Aug 2017 19:59:12 -0500
+Message-ID: <20170810005916.27163-1-fcooper@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502207730-11404-1-git-send-email-arvind.yadav.cs@gmail.com>
-        (Arvind Yadav's message of "Tue, 8 Aug 2017 21:25:27 +0530")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dev.kurt-yI9piX4KPfawT/RRk36CISFp6vIno51x@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org, socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org
+Cc: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
 List-Id: linux-can.vger.kernel.org
 
-Arvind Yadav <arvind.yadav.cs@gmail.com> writes:
+Add a new generic binding that CAN drivers can be used to specify the max
+bit rate supported by a transceiver. This is useful since in some instances
+since the maximum speeds may be limited by the transceiver used. However,
+transceivers may not provide a means to determine this limitation at
+runtime. Therefore, create a new binding that mimics "fixed-link" that
+allows a user to hardcode the max speeds that can be used.
 
-> usb_device_id are not supposed to change at runtime. All functions
-> working with usb_device_id provided by <linux/usb.h> work with
-> const usb_device_id. So mark the non-const structs as const.
+Also add support for this new binding in the MCAN driver.
 
-[...]
+Note this is an optional subnode so even if a driver adds support for
+parsing can-transceiver the user does not have to define it in their
+device tree.
 
->   [PATCH 16/35] wireless: ath: ar5523: constify usb_device_id
->   [PATCH 17/35] wireless: ath: ath6kl: constify usb_device_id
->   [PATCH 18/35] wireless: ath: ath9k: constify usb_device_id
->   [PATCH 19/35] wireless: ath: carl9170: constify usb_device_id
->   [PATCH 20/35] wireless: atmel: at76c50x: constify usb_device_id
->   [PATCH 21/35] wireless: broadcom: brcm80211: constify usb_device_id
->   [PATCH 22/35] wireless: intersil: orinoco: constify usb_device_id
->   [PATCH 23/35] wireless: intersil: p54: constify usb_device_id
->   [PATCH 24/35] wireless: marvell: libertas: constify usb_device_id
->   [PATCH 25/35] wireless: marvell: libertas_tf: constify usb_device_id
->   [PATCH 26/35] wireless: marvell: mwifiex: constify usb_device_id
->   [PATCH 27/35] wireless: mediatek: mt7601u: constify usb_device_id
->   [PATCH 28/35] wireless: ralink: rt2500usb: constify usb_device_id
->   [PATCH 29/35] wireless: ralink: rt2800usb: constify usb_device_id
->   [PATCH 30/35] wireless: ralink: rt73usb: constify usb_device_id
->   [PATCH 31/35] wireless: realtek: rtl8187: constify usb_device_id
->   [PATCH 32/35] wireless: realtek: rtl8xxxu: constify usb_device_id
->   [PATCH 33/35] wireless: realtek: rtl8192cu: constify usb_device_id
->   [PATCH 34/35] wireless: zydas: zd1201: constify usb_device_id
->   [PATCH 35/35] wireless: zydas: zd1211rw: constify usb_device_id
+Version 4 changes:
+Switch from fixed-transceiver to can-transceiver
+Drop unit address that snuck back in again.
+Indicate that can-transceiver is a subnode and not a property in
+documentation
 
-No need to put the whole path to the title, it's enough to have the name
-of the driver there. For example:
+Version 3 changes:
+Switch from having two "max bitrates" to one universal bitrate.
 
-[PATCH 16/35] ar5523: constify usb_device_id
-[PATCH 17/35] ath6kl: constify usb_device_id
-[PATCH 18/35] ath9k: constify usb_device_id
+Version 2 changes:
+Rename function
+Define proper variable default
+Drop unit address
+Move check to changelink function
+Reword commit message
+Reword documentation
 
-Please resubmit the wireless patches separately in their own patchset.
+Franklin S Cooper Jr (4):
+  can: dev: Add support for limiting configured bitrate
+  dt-bindings: can: can-transceiver: Document new binding
+  dt-bindings: can: m_can: Document new can transceiver binding
+  can: m_can: Add call to of_can_transceiver
+
+ .../bindings/net/can/can-transceiver.txt           | 24 +++++++++++
+ .../devicetree/bindings/net/can/m_can.txt          |  9 ++++
+ drivers/net/can/dev.c                              | 50 ++++++++++++++++++++++
+ drivers/net/can/m_can/m_can.c                      |  2 +
+ include/linux/can/dev.h                            |  5 +++
+ 5 files changed, 90 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.txt
 
 -- 
-Kalle Valo
+2.9.4.dirty
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
