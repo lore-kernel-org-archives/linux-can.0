@@ -1,16 +1,16 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: net: c_can: Update binding for clock
- and power-domains property
-Date: Thu, 10 Aug 2017 11:35:58 -0500
-Message-ID: <20170810163558.todxrky4f4nve57x@rob-hp-laptop>
+From: "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>
+Subject: Re: [PATCH 0/3] ARM: dts: keystone-k2g: Add DCAN instances to 66AK2G
+Date: Thu, 10 Aug 2017 09:51:44 -0700
+Message-ID: <76400dbd-2970-a5bc-d994-3cc7933c8496@oracle.com>
 References: <20170802201822.11532-1-fcooper@ti.com>
- <20170802201822.11532-2-fcooper@ti.com>
+ <69995971-2fe7-87f4-a46a-8ef4f729ffc5@oracle.com>
+ <8930852b-6995-3d41-440e-86f440b313ad@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20170802201822.11532-2-fcooper@ti.com>
+In-Reply-To: <8930852b-6995-3d41-440e-86f440b313ad@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -20,32 +20,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Franklin S Cooper Jr <fcooper@ti.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux@armlinux.org.uk, linux-can@vger.kernel.org, mkl@pengutronix.de, linux-arm-kernel@lists.infradead.org, ssantosh@kernel.org, wg@grandegger.com
+To: Franklin S Cooper Jr <fcooper@ti.com>, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, ssantosh@kernel.org, linux@armlinux.org.uk, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Aug 02, 2017 at 03:18:20PM -0500, Franklin S Cooper Jr wrote:
-> CAN driver uses the clk_get_rate call to determine the frequency of the
-> functional clock. OMAP based SoCs do not require the clock property since
-> hwmod already handles creating a "fck" clock thats accessible to drivers.
-
-that's
-
-> However, this isn't the case for 66AK2G which makes the clocks property
-> require for that SoC.
-
-required
-
+On 8/7/17 2:31 PM, Franklin S Cooper Jr wrote:
 > 
-> 66AK2G requires a new property. Therefore, update the binding to also make
-> this property requirement clear. Also clarify that for OMAP based SoCs
-> ti,hwmod is a required property.
+> Hi Santosh,
+> On 08/04/2017 12:07 PM, Santosh Shilimkar wrote:
+>> Hi Franklin,
+>>
+>> On 8/2/2017 1:18 PM, Franklin S Cooper Jr wrote:
+>>> Add D CAN nodes to 66AK2G based SoC dtsi.
+>>>
+>>> Franklin S Cooper Jr (2):
+>>>     dt-bindings: net: c_can: Update binding for clock and power-domains
+>>>       property
+>>>     ARM: configs: keystone: Enable D_CAN driver
+>>>
+>>> Lokesh Vutla (1):
+>>>     ARM: dts: k2g: Add DCAN nodes
+>>>
+>> Any DCAN driver dependency with these patchset ? If not, I can
+>> queue this up so do let me know.
 > 
-> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-> ---
->  Documentation/devicetree/bindings/net/can/c_can.txt | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
+> There aren't any dependencies.
 
-Otherwise,
+Applied. Thanks !!
 
-Acked-by: Rob Herring <robh@kernel.org>
+Regards,
+Santosh
