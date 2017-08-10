@@ -1,98 +1,85 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v4 1/4] can: dev: Add support for limiting configured
- bitrate
-Date: Thu, 10 Aug 2017 13:05:14 +0300
-Message-ID: <9a6f4fdf-a4f6-283b-0e5a-693cc7d263ef@cogentembedded.com>
-References: <20170810005916.27163-1-fcooper@ti.com>
- <20170810005916.27163-2-fcooper@ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 00/35] constify net usb_device_id
+Date: Thu, 10 Aug 2017 13:02:02 +0200
+Message-ID: <289a61a2-7f2a-2da7-450d-55b9a5f3bc19@pengutronix.de>
+References: <1502207730-11404-1-git-send-email-arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170810005916.27163-2-fcooper@ti.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Franklin S Cooper Jr <fcooper@ti.com>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, dev.kurt@vandijck-laurijssen.be, andrew@lunn.ch, socketcan@hartkopp.net
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="sSbUrqq1NorDHiXk5kunRdfcfPoO0UaTe"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:42741 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1750868AbdHJLCJ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Aug 2017 07:02:09 -0400
+In-Reply-To: <1502207730-11404-1-git-send-email-arvind.yadav.cs@gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>, kvalo@codeaurora.org, wg@grandegger.com, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-Hello!
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--sSbUrqq1NorDHiXk5kunRdfcfPoO0UaTe
+Content-Type: multipart/mixed; boundary="Vp1oRd3GKk49F78XNSUBHvsPJhGi7H6lr";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>, kvalo@codeaurora.org,
+ wg@grandegger.com, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <289a61a2-7f2a-2da7-450d-55b9a5f3bc19@pengutronix.de>
+Subject: Re: [PATCH 00/35] constify net usb_device_id
+References: <1502207730-11404-1-git-send-email-arvind.yadav.cs@gmail.com>
+In-Reply-To: <1502207730-11404-1-git-send-email-arvind.yadav.cs@gmail.com>
 
-On 8/10/2017 3:59 AM, Franklin S Cooper Jr wrote:
+--Vp1oRd3GKk49F78XNSUBHvsPJhGi7H6lr
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-> Various CAN or CAN-FD IP may be able to run at a faster rate than
-> what the transceiver the CAN node is connected to. This can lead to
-> unexpected errors. However, CAN transceivers typically have fixed
-> limitations and provide no means to discover these limitations at
-> runtime. Therefore, add support for a can-transceiver node that
-> can be reused by other CAN peripheral drivers to determine for both
-> CAN and CAN-FD what the max bitrate that can be used. If the user
-> tries to configure CAN to pass these maximum bitrates it will throw
-> an error.
-> 
-> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-> ---
-> Version 4 changes:
-> Used can-transceiver instead of fixed-transceiver.
-> 
->   drivers/net/can/dev.c   | 50 +++++++++++++++++++++++++++++++++++++++++++++++++
->   include/linux/can/dev.h |  5 +++++
->   2 files changed, 55 insertions(+)
-> 
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index 365a8cc..372108f 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-[...]
-> @@ -814,6 +815,39 @@ int open_candev(struct net_device *dev)
->   }
->   EXPORT_SYMBOL_GPL(open_candev);
->   
-> +#ifdef CONFIG_OF
-> +/*
-> + * Common function that can be used to understand the limitation of
-> + * a transceiver when it provides no means to determine these limitations
-> + * at runtime.
-> + */
-> +void of_can_transceiver(struct net_device *dev)
-> +{
-> +	struct device_node *dn;
-> +	struct can_priv *priv = netdev_priv(dev);
-> +	struct device_node *np;
-> +	unsigned int max_bitrate;
-> +	int ret;
-> +
-> +	np = dev->dev.parent->of_node;
+On 08/08/2017 05:55 PM, Arvind Yadav wrote:
+> usb_device_id are not supposed to change at runtime. All functions
+> working with usb_device_id provided by <linux/usb.h> work with
+> const usb_device_id. So mark the non-const structs as const.
+>=20
+> [PATCH 10/35] :Fix checkpatch.pl error.
+> ERROR: space prohibited before open square bracket '['.
+>=20
+> Arvind Yadav (35):
+>   [PATCH 01/35] can: ems_usb: constify usb_device_id
+>   [PATCH 02/35] can: esd_usb2: constify usb_device_id
+>   [PATCH 03/35] can: peak_usb: constify usb_device_id
 
-    I'd do that as an initializer.
+For the CAN patches:
 
-> +
-> +	dn = of_get_child_by_name(np, "can-transceiver");
-> +	if (!dn)
-> +		return;
-> +
-> +	max_bitrate = 0;
-> +	ret = of_property_read_u32(dn, "max-bitrate", &max_bitrate);
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-    I'd initialize max_bitrate to 0 as iff of_property_read_u32() fails, it'll 
-leave the variable unset...
+regards,
+Marc
 
-> +
-> +	if (max_bitrate > 0) {
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-    You risk checking unset variable here.
 
-> +		priv->max_bitrate = max_bitrate;
-> +		priv->is_bitrate_limited = true;
-> +	} else if (ret != -EINVAL) {
-> +		netdev_warn(dev, "Invalid value for transceiver max bitrate\n");
-> +	}
-> +}
-> +EXPORT_SYMBOL(of_can_transceiver);
-> +#endif
-> +
->   /*
->    * Common close function for cleanup before the device gets closed.
->    *
-[...]
+--Vp1oRd3GKk49F78XNSUBHvsPJhGi7H6lr--
 
-MBR, Sergei
+--sSbUrqq1NorDHiXk5kunRdfcfPoO0UaTe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlmMPSoACgkQHv7KIOw4
+HPbEowgAlgZXUop04sEDHYlupFXQHqlbnfdCV6oQZV+WC94pFAXrLxvksAtZleNE
+bjPcCdP71Rhi2J/4Y/SUtJ4X8rfe/4Hwxs5tqhS9JYWAYrvfPV7FVZuh41d59au4
+0eGOr1RWhu3w8iCQU4aUrbx5ycimwVPiXZ9wcczYecDDGRtbRYtve/xkZLH3g46y
+vk/DkgIUHpDsy9IS7sPNlmhJQKaLc8qByVHTfPG+mqEFKCWNgdjgUW+K2mSk1Xzw
+npsY9fxcriB4yWFLy/lvxny894SFcbaoTfnU9qxro5L5UTNx+6ZLT1NZqbu0LoJd
+RWTyzzNvozKhEeQNyELLhLrJgI2dmA==
+=LYa6
+-----END PGP SIGNATURE-----
+
+--sSbUrqq1NorDHiXk5kunRdfcfPoO0UaTe--
