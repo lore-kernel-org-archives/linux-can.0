@@ -1,79 +1,84 @@
-From: David Jander <david@protonic.nl>
-Subject: Re: j1939: bind() and connect()
-Date: Tue, 15 Aug 2017 12:24:53 +0200
-Message-ID: <20170815122453.3945bead@erd980>
-References: <048c5290-6cd0-aaec-8a74-1f38cbeb9efe@pengutronix.de>
-        <e2a14f73-9456-18c1-7e83-70d43e30cdf0@pengutronix.de>
-        <20170815110116.4d12f4f3@erd980>
-        <7164d44c-76f9-45f6-b5fa-c931f058163f@pengutronix.de>
+From: Lehel Benedek <benedek.lehel@gmail.com>
+Subject: bind() Host is down listening on j1939 interfaces
+Date: Tue, 15 Aug 2017 21:27:38 +0800
+Message-ID: <CAJn4=pX9FczzJSFfQPQ3ghSv+T6Lj1SirSmVH1f8mrOXRux-dQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from protonic.xs4all.nl ([83.163.252.89]:24796 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753490AbdHOKYz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Aug 2017 06:24:55 -0400
-In-Reply-To: <7164d44c-76f9-45f6-b5fa-c931f058163f@pengutronix.de>
+Received: from mail-vk0-f42.google.com ([209.85.213.42]:38801 "EHLO
+        mail-vk0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751666AbdHON1j (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Aug 2017 09:27:39 -0400
+Received: by mail-vk0-f42.google.com with SMTP id g189so2482006vke.5
+        for <linux-can@vger.kernel.org>; Tue, 15 Aug 2017 06:27:39 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, linux-can <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org, cosmo@iocurrents.com, dev.kurt@vandijck-laurijssen.be
 
-On Tue, 15 Aug 2017 11:16:44 +0200
-Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+Hi all,
 
-> On 08/15/2017 11:01 AM, David Jander wrote:
-> > On Tue, 15 Aug 2017 10:14:18 +0200
-> > Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> >   
-> >> On 08/14/2017 07:37 PM, Marc Kleine-Budde wrote:  
-> >>> - Should a second bind() be allowed on a previously bind() socket?
-> >>>
-> >>> As far as I understand the code, there's some support, but when the
-> >>> interface is switched, j1939_ifindex_stop() is not called.    
-> >>
-> >> Ah, there's a check, that you cannot re-bind() to another interface:
-> >>  
-> >>> 		if (bound_dev_if != addr->can_ifindex)    
-> > 
-> > This makes sense. re-bind() to another interface only would make sense if
-> > bind() to any interface is also permitted, but that would imply separate
-> > address-claims on all different interfaces with potentially different
-> > source-address being claimed on each one.... don't think the stack should take
-> > care of such complex scenarios, at least not at first IMHO.  
-> 
-> Bind to any interface doesn't work, you cannot send anything:
-> 
-> > static int j1939sk_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
-> > {  
-> [...]
-> > 	ifindex = jsk->ifindex_started;
-> > 	if (!ifindex)
-> > 		return -EBADFD;  
-> 
-> And you will probably not receive anything, as the rx-register, which
-> takes place in j1939_ifindex_start() is not done if you try to bind to
-> any device (bound_dev_if == 0).
-> 
-> > 	if (bound_dev_if && bound_dev_if != jsk->ifindex_started) {  
-> [...]
-> > 
-> > 		ret = j1939_ifindex_start(bound_dev_if);  
-> 
-> Then I'll add proper test, that you have to bind to a specific
-> interface. That will make the code much simpler.
+I've found this message in the archives, and bringing this up because
+I'm having this exact same issue as described below on a 2.6.35 kernel
+on an imx53 board.
+Have tried vcan or flexcan modules, both throwing the same EHOSTDOWN
+error on binding.
+However binding to a CAN_RAW socket is working as expected, no problems there.
 
-I agree. Don't know if the case for bind-any will ever be necessary in the
-context of J1939, but we certainly should keep things simple for now.
-I've had cases myself where an ECU would talk J1939 on two interfaces at the
-same time, but not yet something like a Group-Function server exporting the
-same functions on more than one interface. I could think of that use-case
-happening though, but it can also be solved easily in user-space opening more
-than one socket...
+Haven't seen any replies to this issue, Cosmo have you managed to get around it?
+
+Any advice on how to troubleshoot this problem would be greatly appreciated.
 
 Best regards,
+Lehel
 
--- 
-David Jander
-Protonic Holland.
+
+> > Hello,
+> >
+> > I'm having a bit of trouble getting the j1939 CAN support working on a Freescale \
+> > i.MX6 UL.
+> >
+> > We are running Debian 3.14.52 kernel on armv7l patched with j1939 support as per \
+> > http://elinux.org/J1939 and also compiled the latest can-utils from \
+> > git://github.com/kurt-vd/can-utils and test-can-j1939.
+> >
+> > We have a real working can interface on can0 that we start like this:
+> > root@dart3:~# ip link set can0 up type can bitrate 250000
+> >
+> > And also added a vcan interface for testing just in case:
+> > root@dart3:~# ip link add can2 type vcan
+> > root@dart3:~# ip link set can2 up
+> >
+> > root@dart3:~# ifconfig
+> > can0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-> > 00-00-00-00
+> >          UP RUNNING NOARP  MTU:16  Metric:1
+> >          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+> >          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+> >          collisions:0 txqueuelen:10
+> >          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+> >          Interrupt:142
+> >
+> > can2      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+> >          UP RUNNING NOARP  MTU:16  Metric:1
+> >          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+> >         TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+> >          collisions:0 txqueuelen:0
+> >          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+> >
+> > testj1939 cannot listen on either can0 or can2.  The error is: testj1939: bind(): \
+> > Host is down
+> >
+> > root@dart3:~# testj1939 -r can0:
+> > - socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+> > - bind(, can0:,,, 24);
+> > testj1939: bind(): Host is down
+> >
+> > root@dart3:~# testj1939 -r can2:
+> > - socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+> > - bind(, can2:,,, 24);
+> > testj1939: bind(): Host is down
+> >
+> > I tested this same scenario on a Debian VM with 3.18 kernel and vcan and it worked \
+> > fine.  Any suggestions?
+> >
+> > Thank you!
+> > Cosmo
