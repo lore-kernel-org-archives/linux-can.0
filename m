@@ -1,128 +1,110 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: j1939: bind() and connect()
-Date: Wed, 16 Aug 2017 12:47:14 +0200
-Message-ID: <29c93555-7aff-ec3c-d917-69b36c1c0125@pengutronix.de>
-References: <048c5290-6cd0-aaec-8a74-1f38cbeb9efe@pengutronix.de>
- <20170816093454.GC32670@airbook.vandijck-laurijssen.be>
- <69814fe9-0e29-96d7-9ae2-cc4a600f3729@pengutronix.de>
+From: Lehel Benedek <benedek.lehel@gmail.com>
+Subject: Re: bind() Host is down listening on j1939 interfaces
+Date: Wed, 16 Aug 2017 22:18:32 +0800
+Message-ID: <CAJn4=pWXcvaXbZNxTmGj=8KV3RAWAwR7Hce7pb5jw7F=SGnrSQ@mail.gmail.com>
+References: <CAJn4=pX9FczzJSFfQPQ3ghSv+T6Lj1SirSmVH1f8mrOXRux-dQ@mail.gmail.com>
+ <20170816094029.GD32670@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="IXR1kV8Dm6b6q0QGpqApBOcJTcuSsXu9D"
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:48173 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751196AbdHPKrT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Aug 2017 06:47:19 -0400
-In-Reply-To: <69814fe9-0e29-96d7-9ae2-cc4a600f3729@pengutronix.de>
+Received: from mail-ua0-f173.google.com ([209.85.217.173]:35335 "EHLO
+        mail-ua0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751466AbdHPOSd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Aug 2017 10:18:33 -0400
+Received: by mail-ua0-f173.google.com with SMTP id d29so14345987uai.2
+        for <linux-can@vger.kernel.org>; Wed, 16 Aug 2017 07:18:33 -0700 (PDT)
+In-Reply-To: <20170816094029.GD32670@airbook.vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>
+To: Lehel Benedek <benedek.lehel@gmail.com>, linux-can@vger.kernel.org, cosmo@iocurrents.com
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IXR1kV8Dm6b6q0QGpqApBOcJTcuSsXu9D
-Content-Type: multipart/mixed; boundary="4idDe2Jk2pxdrwwRFBJs9tHbAQURq4KJ9";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: linux-can <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>
-Message-ID: <29c93555-7aff-ec3c-d917-69b36c1c0125@pengutronix.de>
-Subject: Re: j1939: bind() and connect()
-References: <048c5290-6cd0-aaec-8a74-1f38cbeb9efe@pengutronix.de>
- <20170816093454.GC32670@airbook.vandijck-laurijssen.be>
- <69814fe9-0e29-96d7-9ae2-cc4a600f3729@pengutronix.de>
-In-Reply-To: <69814fe9-0e29-96d7-9ae2-cc4a600f3729@pengutronix.de>
+Hi Kurt,
 
---4idDe2Jk2pxdrwwRFBJs9tHbAQURq4KJ9
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+I've been using the j1939-v2.6.35 branch from git, and doesn't seem to
+need enabling of the can-j1939 explicitly, and "ip link set can0 type
+j1939" doesn't work, but "modprobe can-j1939" does work!
 
-On 08/16/2017 12:06 PM, Marc Kleine-Budde wrote:
+When running the TestJ1939 the protocol seems to activate
+automatically (without needing to call modprobe):
+[   66.741478] can: controller area network core (rev 20090105 abi 8)
+[   66.754959] NET: Registered protocol family 29
+[   66.787201] can: SAE J1939
 
->>> - Should a connect() without a previous bind() be allowed?
->>>
->>> It's not checked for, but the error handling in sk_connect doesn't ta=
-ke
->>> that into account.
+however gets stuck on the bind call with EHOSTDOWN.
+
+On Wed, Aug 16, 2017 at 5:40 PM, Kurt Van Dijck
+<dev.kurt@vandijck-laurijssen.be> wrote:
+> Hello,
+>
 >>
->> Like UDP will auto-bind to the first known local address ...
->> Then an application would not need to know the local address to use.
->=20
-> Which will be:
->=20
->> static int j1939sk_init(struct sock *sk)
->> {
-> [...]
->> 	jsk->addr.sa =3D J1939_NO_ADDR;
->> 	jsk->addr.da =3D J1939_NO_ADDR;
->> 	jsk->addr.pgn =3D J1939_NO_PGN;
-> [...]
->> }
->=20
->> static int j1939sk_connect(struct socket *sock, struct sockaddr *uaddr=
-,
->> 			   int len, int flags)
-> [...]
->> 		j1939_name_local_get(priv, jsk->addr.src);
->> 		j1939_addr_local_get(priv, jsk->addr.sa);
->=20
-> right? Does this work, as sendmsg tests:
->=20
->> static int j1939sk_sendmsg(struct socket *sock, struct msghdr *msg, si=
-ze_t size)
->> {
-> [...]
->> 	if (jsk->addr.sa =3D=3D J1939_NO_ADDR && !jsk->addr.src)
->> 		/* no address assigned yet */
->> 		return -EBADFD;
+>> Hi all,
 >>
-
-sendmsg() will fail, as it checks if the socket is in bound state.
-
-> static int j1939sk_sendmsg(struct socket *sock, struct msghdr *msg, siz=
-e_t size)
-> {
-> 	struct sock *sk =3D sock->sk;
-> 	struct j1939_sock *jsk =3D j1939_sk(sk);
-> 	struct sockaddr_can *addr =3D msg->msg_name;
-> 	struct j1939_sk_buff_cb *skcb;
-> 	struct sk_buff *skb;
-> 	struct net_device *dev;
-> 	int ifindex;
-> 	int ret;
->=20
-> 	/* various socket state tests */
-> 	if (!(jsk->state & J1939_SOCK_BOUND))
-> 		return -EBADFD;
->=20
-Receiving doesn't work, but I don't know why.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---4idDe2Jk2pxdrwwRFBJs9tHbAQURq4KJ9--
-
---IXR1kV8Dm6b6q0QGpqApBOcJTcuSsXu9D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlmUIrIACgkQHv7KIOw4
-HPb3Cwf9Hiym6ooiNrcDpo1N3v/2QAETCdIDSepDEVIMFlJnd+8anSvdXU/NybHB
-zb9wm520IoVL3nOBjHKuxrMbT0nvhLtQMrO+yCiYDj23y6TXZvXmkpBRvNnEI9x7
-yd+3Y/KG+2RN/sNwai1U8wVfmIWwA4kXVhjYl/SqhKlA3cOdXNKaGSZgLbx1uSKl
-p9omft0+HHYxK0NG2oKr4SiG2/V9bFOe0V/3HMCHlICgBbTwpgF+TsqE5w/RsYAB
-t23lBLitbdhLuGwKBtcocB2HxUxowR8IGgBkqhbntS8c0n0sGu90T40JxG3b2u68
-5uip4WKFXxeuqtFtHxyA7KUQOrylCg==
-=qtuL
------END PGP SIGNATURE-----
-
---IXR1kV8Dm6b6q0QGpqApBOcJTcuSsXu9D--
+>> I've found this message in the archives, and bringing this up because
+>> I'm having this exact same issue as described below on a 2.6.35 kernel
+>> on an imx53 board.
+>> Have tried vcan or flexcan modules, both throwing the same EHOSTDOWN
+>> error on binding.
+>> However binding to a CAN_RAW socket is working as expected, no problems there.
+>>
+>> Haven't seen any replies to this issue, Cosmo have you managed to get around it?
+>>
+>> Any advice on how to troubleshoot this problem would be greatly appreciated.
+>
+> I assume that the code was still the old-style can-j1939 support, where
+> you had to enable the can-j1939 per interface explicitely.
+> I'll take a look this evening where the legacy documentation is exactly.
+>
+> Kurt
+>
+>>
+>> Best regards,
+>> Lehel
+>>
+>>
+>> > > Hello,
+>> > >
+>> > > I'm having a bit of trouble getting the j1939 CAN support working on a Freescale \
+>> > > i.MX6 UL.
+>> > >
+>> > > We are running Debian 3.14.52 kernel on armv7l patched with j1939 support as per \
+>> > > http://elinux.org/J1939 and also compiled the latest can-utils from \
+>> > > git://github.com/kurt-vd/can-utils and test-can-j1939.
+>> > >
+>> > > We have a real working can interface on can0 that we start like this:
+>> > > root@dart3:~# ip link set can0 up type can bitrate 250000
+>> > >
+>> > > And also added a vcan interface for testing just in case:
+>> > > root@dart3:~# ip link add can2 type vcan
+>> > > root@dart3:~# ip link set can2 up
+>> > >
+>> > > root@dart3:~# ifconfig
+>> > > can0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-> > 00-00-00-00
+>> > >          UP RUNNING NOARP  MTU:16  Metric:1
+>> > >          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+>> > >          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+>> > >          collisions:0 txqueuelen:10
+>> > >          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+>> > >          Interrupt:142
+>> > >
+>> > > can2      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+>> > >          UP RUNNING NOARP  MTU:16  Metric:1
+>> > >          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+>> > >         TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+>> > >          collisions:0 txqueuelen:0
+>> > >          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+>> > >
+>> > > testj1939 cannot listen on either can0 or can2.  The error is: testj1939: bind(): \
+>> > > Host is down
+>> > >
+>> > > root@dart3:~# testj1939 -r can0:
+>> > > - socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+>> > > - bind(, can0:,,, 24);
+>> > > testj1939: bind(): Host is down
+>> > >
+>> > > root@dart3:~# testj1939 -r can2:
+>> > > - socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+>> > > - bind(, can2:,,, 24);
+>> > > testj1939: bind(): Host is down
+>> > >
+>> > > I tested this same scenario on a Debian VM with 3.18 kernel and vcan and it worked \
+>> > > fine.  Any suggestions?
