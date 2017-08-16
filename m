@@ -1,94 +1,131 @@
 From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Subject: Re: j1939: bind() and connect()
-Date: Wed, 16 Aug 2017 23:08:31 +0200
-Message-ID: <20170816210831.GE32670@airbook.vandijck-laurijssen.be>
+Date: Wed, 16 Aug 2017 23:18:52 +0200
+Message-ID: <20170816211852.GF32670@airbook.vandijck-laurijssen.be>
 References: <048c5290-6cd0-aaec-8a74-1f38cbeb9efe@pengutronix.de>
- <e2a14f73-9456-18c1-7e83-70d43e30cdf0@pengutronix.de>
- <20170815110116.4d12f4f3@erd980>
- <7164d44c-76f9-45f6-b5fa-c931f058163f@pengutronix.de>
- <20170815122453.3945bead@erd980>
+ <20170816093454.GC32670@airbook.vandijck-laurijssen.be>
+ <69814fe9-0e29-96d7-9ae2-cc4a600f3729@pengutronix.de>
+ <20170816122927.02b362af@erd980>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b03.edpnet.be ([212.71.1.220]:33924 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752263AbdHPVKT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Aug 2017 17:10:19 -0400
+Received: from relay-b02.edpnet.be ([212.71.1.222]:42478 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752105AbdHPVUo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Aug 2017 17:20:44 -0400
 Content-Disposition: inline
-In-Reply-To: <20170815122453.3945bead@erd980>
+In-Reply-To: <20170816122927.02b362af@erd980>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: David Jander <david@protonic.nl>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
 
-> On Tue, 15 Aug 2017 11:16:44 +0200
+> 
+> On Wed, 16 Aug 2017 12:06:50 +0200
 > Marc Kleine-Budde <mkl@pengutronix.de> wrote:
 > 
-> > On 08/15/2017 11:01 AM, David Jander wrote:
-> > > On Tue, 15 Aug 2017 10:14:18 +0200
-> > > Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> > >   
-> > >> On 08/14/2017 07:37 PM, Marc Kleine-Budde wrote:  
-> > >>> - Should a second bind() be allowed on a previously bind() socket?
-> > >>>
-> > >>> As far as I understand the code, there's some support, but when the
-> > >>> interface is switched, j1939_ifindex_stop() is not called.    
+> > On 08/16/2017 11:34 AM, Kurt Van Dijck wrote:
+> > >> Hello Kurt,
 > > >>
-> > >> Ah, there's a check, that you cannot re-bind() to another interface:
-> > >>  
-> > >>> 		if (bound_dev_if != addr->can_ifindex)    
+> > >> I've a few questions about the j1939 socket model:
+> > >>
+> > >> - Should bind() be allowed to any interface, i.e. with can_ifindex == 0?
+> > >>
+> > >> I don't think so, but it's never checked for this.  
 > > > 
-> > > This makes sense. re-bind() to another interface only would make sense if
-> > > bind() to any interface is also permitted, but that would imply separate
-> > > address-claims on all different interfaces with potentially different
-> > > source-address being claimed on each one.... don't think the stack should take
-> > > care of such complex scenarios, at least not at first IMHO.  
+> > > I'll explain a bit what I tried to accomplish:
+> > > * allow bind to any interface, for receive packets only (obviously)
+> > > * for rx/tx, only bind to 1 interface.  
 > > 
-> > Bind to any interface doesn't work, you cannot send anything:
+> > Have you tested this? If I understand the code correctly
+> > j1939_ifindex_start() will not be called. So you will only receive
+> > packages from interfaces someone has other socket has bind() to, thus
+> > called j1939_ifindex_start(). And you'll stop receiving packages once
+> > the last socket on that interfaces is closed.
+
+Well, I'm well aware of the requirement to start j1939 processing on an
+interface. I tested this, with that requirement in mind.
+
+As already suggested in another mail in this thread, I don't thread this
+like a core requirement. Drop it if it solves things.
+
+> > 
+> > >> - Should a connect() without a previous bind() be allowed?
+> > >>
+> > >> It's not checked for, but the error handling in sk_connect doesn't take
+> > >> that into account.  
+> > > 
+> > > Like UDP will auto-bind to the first known local address ...
+> > > Then an application would not need to know the local address to use.  
+> > 
+> > Which will be:
+> > 
+> > > static int j1939sk_init(struct sock *sk)
+> > > {  
+> > [...]
+> > > 	jsk->addr.sa = J1939_NO_ADDR;
+> > > 	jsk->addr.da = J1939_NO_ADDR;
+> > > 	jsk->addr.pgn = J1939_NO_PGN;  
+> > [...]
+> > > }  
+> > 
+> > > static int j1939sk_connect(struct socket *sock, struct sockaddr *uaddr,
+> > > 			   int len, int flags)  
+> > [...]
+> > > 		j1939_name_local_get(priv, jsk->addr.src);
+> > > 		j1939_addr_local_get(priv, jsk->addr.sa);  
+> > 
+> > right? Does this work, as sendmsg tests:
 > > 
 > > > static int j1939sk_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
 > > > {  
 > > [...]
-> > > 	ifindex = jsk->ifindex_started;
-> > > 	if (!ifindex)
-> > > 		return -EBADFD;  
-> > 
-> > And you will probably not receive anything, as the rx-register, which
-> > takes place in j1939_ifindex_start() is not done if you try to bind to
-> > any device (bound_dev_if == 0).
+> > > 	if (jsk->addr.sa == J1939_NO_ADDR && !jsk->addr.src)
+> > > 		/* no address assigned yet */
+> > > 		return -EBADFD;
+> > >   
 
-which is like calling tcpdump when the interface is down, yep.
-That's a stupid thing to do, but not necessarily a bad API.
+Good point!
+Consider connect without bind as disfunctional for now.
+Maybe, if things clear up, we can try to add it then.
 
 > > 
-> > > 	if (bound_dev_if && bound_dev_if != jsk->ifindex_started) {  
-> > [...]
+> > >> - Should a second bind() be allowed on a previously bind() socket?  
 > > > 
-> > > 		ret = j1939_ifindex_start(bound_dev_if);  
+> > > Yes, definitely.
+> > > This is required to support dynamic addressing without possible losing
+> > > relevant messages.  
 > > 
-> > Then I'll add proper test, that you have to bind to a specific
-> > interface. That will make the code much simpler.
+> > With changing the interface or not?
+> > 
+> > >> As far as I understand the code, there's some support, but when the
+> > >> interface is switched, j1939_ifindex_stop() is not called.
 
-I agree that in contrast to my initial goal, binding to any interface
-complicates things. Since j1939 is not a routed protocol, you should be
-aware of at least which interface you're running on.
-Userspace programs can still default to can0 :-)
+A re-bind should not change interface!
+A re-bind is necessary for changing SA or PGN only.
 
-And it probably simplifies the socket code quite much. That's a good
-thing too.
-
+> > >>
+> > >> - Should a second conect() be allowed on a previously connect() socket?  
+> > > 
+> > > Never thought on that. This would equally be necessary when the remote
+> > > changes SA, but I consider this not a core requirement, since changing
+> > > SA implies possible glitches in the upper applications anyway.
+> > > closing socket and reopening a new one is allowed in that case.  
+> > 
+> > So I'll add a check against a re-connect().
 > 
-> I agree. Don't know if the case for bind-any will ever be necessary in the
-> context of J1939, but we certainly should keep things simple for now.
-> I've had cases myself where an ECU would talk J1939 on two interfaces at the
-> same time, but not yet something like a Group-Function server exporting the
-> same functions on more than one interface. I could think of that use-case
-> happening though, but it can also be solved easily in user-space opening more
-> than one socket...
+> Hmmm... in theory, any node can change SA at any time due to a re-claim. I
+> always try to make this as transparent as possible to applications. The worst
+> that I would deem acceptable to happen is that a transport session times-out
+> and is transparently re-started, or a single message gets lost due to the
+> inherent race of switching address. Why is a re-connect necessary if one
+> connects to the NAME instead of the SA?
 
-Indeed, logical ECU's connected to 2+ j1939 busses cannot take any
-advantage by combining multiple interfaces. the 2+ busses will always be
-addressed independantly, like David suggests by opening more sockets.
+That's true. A connect to a NAME is SA agnostic (should be), and so
+remote address changes are followed transparently.
+This is the core reason to put NAME's in kernel.
+
+So a re-connect should not be necessary.
 
 Kind regards,
 Kurt
