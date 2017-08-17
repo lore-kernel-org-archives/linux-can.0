@@ -1,12 +1,12 @@
 From: GBert <info@gerhard-bertelsmann.de>
-Subject: [PATCH 1/2] can: sun4i: fix overrun
-Date: Thu, 17 Aug 2017 15:59:48 +0200
-Message-ID: <4bd237f72c933953238738b1d12d11ff16a0b6b0.1502971879.git.info@gerhard-bertelsmann.de>
+Subject: [PATCH 2/2] can: sun4i: fix loopback mode
+Date: Thu, 17 Aug 2017 15:59:49 +0200
+Message-ID: <bfe80104fb201b9e05f5275ba9d09149def5e318.1502971879.git.info@gerhard-bertelsmann.de>
 References: <cover.1502971879.git.info@gerhard-bertelsmann.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.rdts.de ([195.243.153.28]:59234 "EHLO mail.rdts.de"
+Received: from mail.rdts.de ([195.243.153.28]:59240 "EHLO mail.rdts.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751637AbdHQOFj (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        id S1752270AbdHQOFj (ORCPT <rfc822;linux-can@vger.kernel.org>);
         Thu, 17 Aug 2017 10:05:39 -0400
 In-Reply-To: <cover.1502971879.git.info@gerhard-bertelsmann.de>
 In-Reply-To: <cover.1502971879.git.info@gerhard-bertelsmann.de>
@@ -18,55 +18,34 @@ Cc: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
 From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-SUN4Is CAN IP has a 64 byte deep FIFO buffer. If the buffer is not drained
-fast enough (overrun) it's getting mangled. The fix resets the buffer for
-faster recovery - unrecoverable data in the buffer will be ignored
+fix loopback mode by setting the right flag and remove presume mode
 
 Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 ---
- drivers/net/can/sun4i_can.c |   15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/net/can/sun4i_can.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git drivers/net/can/sun4i_can.c drivers/net/can/sun4i_can.c
-index 68ef0a4..0d673ff 100644
+index 0d673ff..c7413c5 100644
 --- drivers/net/can/sun4i_can.c
 +++ drivers/net/can/sun4i_can.c
-@@ -531,6 +531,7 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
- 	}
+@@ -342,7 +342,7 @@ static int sun4i_can_start(struct net_device *dev)
  
- 	if (isrc & SUN4I_INT_DATA_OR) {
-+		int err;
- 		/* data overrun interrupt */
- 		netdev_dbg(dev, "data overrun interrupt\n");
- 		if (likely(skb)) {
-@@ -539,6 +540,15 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
- 		}
- 		stats->rx_over_errors++;
- 		stats->rx_errors++;
-+
-+		/* reset the CAN IP by entering reset mode */
-+		err = set_reset_mode(dev);
-+		if (err)
-+			netdev_err(dev, "could not enter reset mode\n");
-+		err = set_normal_mode(dev);
-+		if (err)
-+			netdev_err(dev, "could not enter normal mode\n");
-+
- 		/* clear bit */
- 		sun4i_can_write_cmdreg(priv, SUN4I_CMD_CLEAR_OR_FLAG);
- 	}
-@@ -653,8 +663,9 @@ static irqreturn_t sun4i_can_interrupt(int irq, void *dev_id)
- 			netif_wake_queue(dev);
- 			can_led_event(dev, CAN_LED_EVENT_TX);
- 		}
--		if (isrc & SUN4I_INT_RBUF_VLD) {
--			/* receive interrupt */
-+		if ((isrc & SUN4I_INT_RBUF_VLD) &&
-+		    !(isrc & SUN4I_INT_DATA_OR)) {
-+			/* receive interrupt - don't read if overrun occurred */
- 			while (status & SUN4I_STA_RBUF_RDY) {
- 				/* RX buffer is not empty */
- 				sun4i_can_rx(dev);
+ 	/* enter the selected mode */
+ 	mod_reg_val = readl(priv->base + SUN4I_REG_MSEL_ADDR);
+-	if (priv->can.ctrlmode & CAN_CTRLMODE_PRESUME_ACK)
++	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
+ 		mod_reg_val |= SUN4I_MSEL_LOOPBACK_MODE;
+ 	else if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+ 		mod_reg_val |= SUN4I_MSEL_LISTEN_ONLY_MODE;
+@@ -822,7 +822,6 @@ static int sun4ican_probe(struct platform_device *pdev)
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_BERR_REPORTING |
+ 				       CAN_CTRLMODE_LISTENONLY |
+ 				       CAN_CTRLMODE_LOOPBACK |
+-				       CAN_CTRLMODE_PRESUME_ACK |
+ 				       CAN_CTRLMODE_3_SAMPLES;
+ 	priv->base = addr;
+ 	priv->clk = clk;
 -- 
 1.7.9.5
 
