@@ -1,78 +1,111 @@
-From: Lehel Benedek <benedek.lehel@gmail.com>
-Subject: Re: bind() Host is down listening on j1939 interfaces
-Date: Thu, 17 Aug 2017 23:26:18 +0800
-Message-ID: <CAJn4=pVtnj6LBvLnAjabuv3Fm2G9d5NUoQ3wHRCDAzB90o4Zmg@mail.gmail.com>
-References: <CAJn4=pX9FczzJSFfQPQ3ghSv+T6Lj1SirSmVH1f8mrOXRux-dQ@mail.gmail.com>
- <20170816094029.GD32670@airbook.vandijck-laurijssen.be> <CAJn4=pWXcvaXbZNxTmGj=8KV3RAWAwR7Hce7pb5jw7F=SGnrSQ@mail.gmail.com>
- <20170816212827.GG32670@airbook.vandijck-laurijssen.be>
+From: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH v4 1/4] can: dev: Add support for limiting configured
+ bitrate
+Date: Thu, 17 Aug 2017 12:54:48 -0500
+Message-ID: <b1082666-6cdf-374e-2c83-8d520e0996ad@ti.com>
+References: <20170810005916.27163-1-fcooper@ti.com>
+ <20170810005916.27163-2-fcooper@ti.com>
+ <9a6f4fdf-a4f6-283b-0e5a-693cc7d263ef@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ua0-f179.google.com ([209.85.217.179]:34088 "EHLO
-        mail-ua0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752176AbdHQP0T (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 17 Aug 2017 11:26:19 -0400
-Received: by mail-ua0-f179.google.com with SMTP id q25so26025063uah.1
-        for <linux-can@vger.kernel.org>; Thu, 17 Aug 2017 08:26:19 -0700 (PDT)
-In-Reply-To: <20170816212827.GG32670@airbook.vandijck-laurijssen.be>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Lehel Benedek <benedek.lehel@gmail.com>, linux-can@vger.kernel.org, cosmo@iocurrents.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <9a6f4fdf-a4f6-283b-0e5a-693cc7d263ef-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sergei Shtylyov <sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dev.kurt-yI9piX4KPfawT/RRk36CISFp6vIno51x@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org, socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-Hi Kurt,
 
-Thank you for the information, and for all your work on the J1939
-implementation in the kernel.
 
-I've followed your advice and recompiled the kernel with the
-j1939-iproute2 and that did the trick, TestJ1939 is working now.
-
-Initially I thought that the message: "can: SAE J1939" was indicating
-that the interface has activated, but not really.
-The "ip link set can0 type j1939" (mentioned on the TestJ1939 git) was
-not working because of the missing j1939-iproute2, same goes for the
-bind error.
-
-Thanks again!
-
-Best regards,
-Lehel
-
-On Thu, Aug 17, 2017 at 5:28 AM, Kurt Van Dijck
-<dev.kurt@vandijck-laurijssen.be> wrote:
-> Hey,
->
->> Hi Kurt,
+On 08/10/2017 05:05 AM, Sergei Shtylyov wrote:
+> Hello!
+> 
+> On 8/10/2017 3:59 AM, Franklin S Cooper Jr wrote:
+> 
+>> Various CAN or CAN-FD IP may be able to run at a faster rate than
+>> what the transceiver the CAN node is connected to. This can lead to
+>> unexpected errors. However, CAN transceivers typically have fixed
+>> limitations and provide no means to discover these limitations at
+>> runtime. Therefore, add support for a can-transceiver node that
+>> can be reused by other CAN peripheral drivers to determine for both
+>> CAN and CAN-FD what the max bitrate that can be used. If the user
+>> tries to configure CAN to pass these maximum bitrates it will throw
+>> an error.
 >>
->> I've been using the j1939-v2.6.35 branch from git,
-> That's old, but was supported.
->
->> and doesn't seem to
->> need enabling of the can-j1939 explicitly,
-> How did you conclude that?
->
->> and "ip link set can0 type j1939" doesn't work,
-> Where did you find this command?
->
->> but "modprobe can-j1939" does work!
+>> Signed-off-by: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
+>> ---
+>> Version 4 changes:
+>> Used can-transceiver instead of fixed-transceiver.
 >>
->> When running the TestJ1939 the protocol seems to activate
->> automatically (without needing to call modprobe):
->> [   66.741478] can: controller area network core (rev 20090105 abi 8)
->> [   66.754959] NET: Registered protocol family 29
->> [   66.787201] can: SAE J1939
+>>   drivers/net/can/dev.c   | 50
+>> +++++++++++++++++++++++++++++++++++++++++++++++++
+>>   include/linux/can/dev.h |  5 +++++
+>>   2 files changed, 55 insertions(+)
 >>
->> however gets stuck on the bind call with EHOSTDOWN.
->
+>> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+>> index 365a8cc..372108f 100644
+>> --- a/drivers/net/can/dev.c
+>> +++ b/drivers/net/can/dev.c
 > [...]
->
->> > I'll take a look this evening where the legacy documentation is exactly.
->
-> Please find relevant documentation for your version of can-j1939 support
-> at http://elinux.org/index.php?title=J1939&oldid=378716
-> I realize there is no real way you could have determined this yourself :-)
-> Anyway, if you follow this guid, it should bring you way further.
->
-> Kind regards,
-> Kurt
->
+>> @@ -814,6 +815,39 @@ int open_candev(struct net_device *dev)
+>>   }
+>>   EXPORT_SYMBOL_GPL(open_candev);
+>>   +#ifdef CONFIG_OF
+>> +/*
+>> + * Common function that can be used to understand the limitation of
+>> + * a transceiver when it provides no means to determine these
+>> limitations
+>> + * at runtime.
+>> + */
+>> +void of_can_transceiver(struct net_device *dev)
+>> +{
+>> +    struct device_node *dn;
+>> +    struct can_priv *priv = netdev_priv(dev);
+>> +    struct device_node *np;
+>> +    unsigned int max_bitrate;
+>> +    int ret;
+>> +
+>> +    np = dev->dev.parent->of_node;
+> 
+>    I'd do that as an initializer.
+
+Ok
+> 
+>> +
+>> +    dn = of_get_child_by_name(np, "can-transceiver");
+>> +    if (!dn)
+>> +        return;
+>> +
+>> +    max_bitrate = 0;
+>> +    ret = of_property_read_u32(dn, "max-bitrate", &max_bitrate);
+> 
+>    I'd initialize max_bitrate to 0 as iff of_property_read_u32() fails,
+> it'll leave the variable unset...>
+>> +
+>> +    if (max_bitrate > 0) {
+> 
+>    You risk checking unset variable here.
+
+Four lines up I am already setting max_bitrate to a default value of 0.
+
+> 
+>> +        priv->max_bitrate = max_bitrate;
+>> +        priv->is_bitrate_limited = true;
+>> +    } else if (ret != -EINVAL) {
+>> +        netdev_warn(dev, "Invalid value for transceiver max bitrate\n");
+>> +    }
+>> +}
+>> +EXPORT_SYMBOL(of_can_transceiver);
+>> +#endif
+>> +
+>>   /*
+>>    * Common close function for cleanup before the device gets closed.
+>>    *
+> [...]
+> 
+> MBR, Sergei
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
