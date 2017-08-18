@@ -1,99 +1,63 @@
 From: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: [RFC PATCH] can: m_can: Support higher speed CAN-FD bitrates
-Date: Fri, 18 Aug 2017 14:39:47 -0500
-Message-ID: <20170818193947.27862-1-fcooper@ti.com>
+Subject: [PATCH v5 0/4] can: Support transceiver based bit rate limit
+Date: Fri, 18 Aug 2017 15:21:33 -0500
+Message-ID: <20170818202137.29816-1-fcooper@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, mario.huettel@gmx.net, socketcan@hartkopp.net, quentin.schulz@free-electrons.com, edumazet@google.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com, dev.kurt@vandijck-laurijssen.be, andrew@lunn.ch, sergei.shtylyov@cogentembedded.com, socketcan@hartkopp.net
 Cc: Franklin S Cooper Jr <fcooper@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-During test transmitting using CAN-FD at high bitrates (4 Mbps) only
-resulted in errors. Scoping the signals I noticed that only a single bit
-was being transmitted and with a bit more investigation realized the actual
-MCAN IP would go back to initialization mode automatically.
+Add a new generic binding that CAN drivers can be used to specify the max
+bit rate supported by a transceiver. This is useful since in some instances
+since the maximum speeds may be limited by the transceiver used. However,
+transceivers may not provide a means to determine this limitation at
+runtime. Therefore, create a new binding that mimics "fixed-link" that
+allows a user to hardcode the max speeds that can be used.
 
-It appears this issue is due to the MCAN needing to use the Transmitter
-Delay Compensation Mode as defined in the MCAN User's Guide. When this
-mode is used the User's Guide indicates that the Transmitter Delay
-Compensation Offset register should be set. The document mentions that this
-register should be set to (1/dbitrate)/2*(Func Clk Freq).
+Also add support for this new binding in the MCAN driver.
 
-Additional CAN-CIA's "Bit Time Requirements for CAN FD" document indicates
-that this TDC mode is only needed for data bit rates above 2.5 Mbps.
-Therefore, only enable this mode and only set TDCO when the data bit rate
-is above 2.5 Mbps.
+Note this is an optional subnode so even if a driver adds support for
+parsing can-transceiver the user does not have to define it in their
+device tree.
 
-Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
----
-I'm pretty surprised that this hasn't been implemented already since
-the primary purpose of CAN-FD is to go beyond 1 Mbps and the MCAN IP
-supports up to 10 Mbps.
+Version 5 changes:
+Got rid of is_bitrate_limited
+Removed @ symbol from can-transceiver binding
 
-So it will be nice to get comments from users of this driver to understand
-if they have been able to use CAN-FD beyond 2.5 Mbps without this patch.
-If they haven't what did they do to get around it if they needed higher
-speeds.
+Version 4 changes:
+Switch from fixed-transceiver to can-transceiver
+Drop unit address that snuck back in again.
+Indicate that can-transceiver is a subnode and not a property in
+documentation
 
-Meanwhile I plan on testing this using a more "realistic" CAN bus to insure
-everything still works at 5 Mbps which is the max speed of my CAN
-transceiver.
+Version 3 changes:
+Switch from having two "max bitrates" to one universal bitrate.
 
- drivers/net/can/m_can/m_can.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+Version 2 changes:
+Rename function
+Define proper variable default
+Drop unit address
+Move check to changelink function
+Reword commit message
+Reword documentation
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index f4947a7..720e073 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -126,6 +126,12 @@ enum m_can_mram_cfg {
- #define DBTP_DSJW_SHIFT		0
- #define DBTP_DSJW_MASK		(0xf << DBTP_DSJW_SHIFT)
- 
-+/* Transmitter Delay Compensation Register (TDCR) */
-+#define TDCR_TDCO_SHIFT		8
-+#define TDCR_TDCO_MASK		(0x7F << TDCR_TDCO_SHIFT)
-+#define TDCR_TDCF_SHIFT		0
-+#define TDCR_TDCF_MASK		(0x7F << TDCR_TDCO_SHIFT)
-+
- /* Test Register (TEST) */
- #define TEST_LBCK		BIT(4)
- 
-@@ -977,6 +983,8 @@ static int m_can_set_bittiming(struct net_device *dev)
- 	const struct can_bittiming *dbt = &priv->can.data_bittiming;
- 	u16 brp, sjw, tseg1, tseg2;
- 	u32 reg_btp;
-+	u32 enable_tdc = 0;
-+	u32 tdco;
- 
- 	brp = bt->brp - 1;
- 	sjw = bt->sjw - 1;
-@@ -991,9 +999,23 @@ static int m_can_set_bittiming(struct net_device *dev)
- 		sjw = dbt->sjw - 1;
- 		tseg1 = dbt->prop_seg + dbt->phase_seg1 - 1;
- 		tseg2 = dbt->phase_seg2 - 1;
-+
-+		/* TDC is only needed for bitrates beyond 2.5 MBit/s
-+		 * Specified in the "Bit Time Requirements for CAN FD" document
-+		 */
-+		if (dbt->bitrate > 2500000) {
-+			enable_tdc = DBTP_TDC;
-+			/* Equation based on Bosch's M_CAN User Manual's
-+			 * Transmitter Delay Compensation Section
-+			 */
-+			tdco = priv->can.clock.freq / (dbt->bitrate * 2);
-+			m_can_write(priv, M_CAN_TDCR, tdco << TDCR_TDCO_SHIFT);
-+		}
-+
- 		reg_btp = (brp << DBTP_DBRP_SHIFT) | (sjw << DBTP_DSJW_SHIFT) |
- 			(tseg1 << DBTP_DTSEG1_SHIFT) |
--			(tseg2 << DBTP_DTSEG2_SHIFT);
-+			(tseg2 << DBTP_DTSEG2_SHIFT) | enable_tdc;
-+
- 		m_can_write(priv, M_CAN_DBTP, reg_btp);
- 	}
- 
+
+Franklin S Cooper Jr (4):
+  can: dev: Add support for limiting configured bitrate
+  dt-bindings: can: can-transceiver: Document new binding
+  dt-bindings: can: m_can: Document new can transceiver binding
+  can: m_can: Add call to of_can_transceiver
+
+ .../bindings/net/can/can-transceiver.txt           | 24 +++++++++++++
+ .../devicetree/bindings/net/can/m_can.txt          |  9 +++++
+ drivers/net/can/dev.c                              | 39 ++++++++++++++++++++++
+ drivers/net/can/m_can/m_can.c                      |  2 ++
+ include/linux/can/dev.h                            |  4 +++
+ 5 files changed, 78 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.txt
+
 -- 
 2.9.4.dirty
