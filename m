@@ -1,218 +1,99 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: flexcan missing error state transitions
-Date: Fri, 18 Aug 2017 07:47:41 +0000
-Message-ID: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
+From: Franklin S Cooper Jr <fcooper@ti.com>
+Subject: [RFC PATCH] can: m_can: Support higher speed CAN-FD bitrates
+Date: Fri, 18 Aug 2017 14:39:47 -0500
+Message-ID: <20170818193947.27862-1-fcooper@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-        boundary="_002_5213bc7ebd454acea568aba682d696caSGPMBX1017APACboschcom_"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:38064 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751055AbdHRHrp (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 18 Aug 2017 03:47:45 -0400
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
-Cc: "hs@denx.de" <hs@denx.de>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, mario.huettel@gmx.net, socketcan@hartkopp.net, quentin.schulz@free-electrons.com, edumazet@google.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Franklin S Cooper Jr <fcooper@ti.com>
+List-Id: linux-can.vger.kernel.org
 
---_002_5213bc7ebd454acea568aba682d696caSGPMBX1017APACboschcom_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+During test transmitting using CAN-FD at high bitrates (4 Mbps) only
+resulted in errors. Scoping the signals I noticed that only a single bit
+was being transmitted and with a bit more investigation realized the actual
+MCAN IP would go back to initialization mode automatically.
 
-Hello,
+It appears this issue is due to the MCAN needing to use the Transmitter
+Delay Compensation Mode as defined in the MCAN User's Guide. When this
+mode is used the User's Guide indicates that the Transmitter Delay
+Compensation Offset register should be set. The document mentions that this
+register should be set to (1/dbitrate)/2*(Func Clk Freq).
 
-In our i.MX6 based platform, we encountered Rx overflow in flexcan (kernel =
-v4.9-rc2),
-where commit b3cf53e9 (can: flexcan: add support for timestamp based rx-off=
-load)
-fixed this issue.
+Additional CAN-CIA's "Bit Time Requirements for CAN FD" document indicates
+that this TDC mode is only needed for data bit rates above 2.5 Mbps.
+Therefore, only enable this mode and only set TDCO when the data bit rate
+is above 2.5 Mbps.
 
-However,=20
-commit 30164759 (can: flexcan: make use of rx-offload's irq_offload_fifo) c=
-hanged=20
-the way of can state transition from poll state upon receive + state + erro=
-r interrupt to
-only update state upon state interrupt.
+Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+---
+I'm pretty surprised that this hasn't been implemented already since
+the primary purpose of CAN-FD is to go beyond 1 Mbps and the MCAN IP
+supports up to 10 Mbps.
 
-Due to a chip flaw in flexcan core regarding state interrupt generation, th=
-ere are some
-state transitions which do not generate interrupts:
-(copied from TomE's post on https://community.nxp.com/thread/333839)
+So it will be nice to get comments from users of this driver to understand
+if they have been able to use CAN-FD beyond 2.5 Mbps without this patch.
+If they haven't what did they do to get around it if they needed higher
+speeds.
 
-Interrupts     MCF53xx i.MX53 i.MX6  MSCAN
-------------------------------------------
-Active->Warn   No      No     Yes    Yes
-Warn->Active   No      No     No     Yes
-Warn->Passive  No      No     No     Yes
-Passive->Warn  No      No     No     Yes
-Passive->BOFF  Yes     Yes    Yes    Yes
-BOFF->Active   No      No     No     Yes
-Errors         Yes     Yes    Yes    No
+Meanwhile I plan on testing this using a more "realistic" CAN bus to insure
+everything still works at 5 Mbps which is the max speed of my CAN
+transceiver.
 
-As our application requires to monitor the can bus state change, so this fu=
-nction
-will not work properly after we applied all the commits to flexcan from v4.=
-11 to v4.9-rc2.
-We also tested v4.11 which contains all the latest patches to flexcan, and =
-it behaves the same.
+ drivers/net/can/m_can/m_can.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-Sadly, the flexcan core does not generate error state interrupts for all st=
-ate transitions.
-This is required for the current flexcan driver to operate smoothly. We pro=
-pose the following
-workaround to mitigate this problem:
-1. update state upon _any_ interrupt
-2. update state when user explicitly inquires (via do_get_state callback)
-
-Item 1 will keep the state correct as long as the bus is attached and can f=
-rames are send,
-so the core can	generates Tx/Rx/State/Error interrupts accordingly.
-
-However, if there is single node on the bus, then this node cannot enter bu=
-s off state
-(only becomes error passive), and the core only generates a single interrup=
-t (warn + ack error),
-and no more. It looks like i.MX6 disables flood of error interrupts in auto=
--retransmission,
-otherwise, the state would be updated. Nonetheless, the old driver (in v4.9=
--rc2) also cannot report
-error passive in this case, even it postponed (a little) to read FLT_CONF i=
-n napi_poll.
-
-This means the user space cannot simply rely on receiving a state change no=
-tification via a=20
-SocketCAN error frame. It needs to do active polling to get the correct sta=
-te. But without proper
-error interrupts or CAN traffic this is impossible. But essentially it is s=
-till an improvement over
-v4.9-rc2 because there you could not get the proper error passive state eve=
-n if polling was done
-from user space. Hence item 2 allows user space to get the correct state ma=
-nually.
-
-The attached patch implements this for i.MX6 and has been tested on i.MX6.
-It applies cleanly to v4.13-rc5.
-
-Best regards,
-Yi ZHU
-
-
---_002_5213bc7ebd454acea568aba682d696caSGPMBX1017APACboschcom_
-Content-Type: application/octet-stream;
-	name="0001-can-flexcan-mitigate-incomplete-state-interrupt.patch"
-Content-Description: 0001-can-flexcan-mitigate-incomplete-state-interrupt.patch
-Content-Disposition: attachment;
-	filename="0001-can-flexcan-mitigate-incomplete-state-interrupt.patch";
-	size=5938; creation-date="Fri, 18 Aug 2017 04:29:41 GMT";
-	modification-date="Fri, 18 Aug 2017 07:45:58 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSA2YzBjMTExZjBkOGMzMThhNDU5NjA2Y2Y1ODcxZGNjNTY1MTJmYjg0IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBaaHUgWWkgPHlpLnpodTVAY24uYm9zY2guY29tPgpEYXRlOiBU
-aHUsIDE3IEF1ZyAyMDE3IDE0OjQ1OjE5ICswODAwClN1YmplY3Q6IFtQQVRDSF0gY2FuOiBmbGV4
-Y2FuOiBtaXRpZ2F0ZSBpbmNvbXBsZXRlIHN0YXRlIGludGVycnVwdAoKVGhpcyBwYXRjaCBhZGRz
-IGEgd29ya2Fyb3VuZCB0byBtaXRpZ2F0ZSBtaXNzaW5nIHN0YXRlIHRyYW5zaXRpb25zCm9uIGku
-TVg2IGZsZXhjYW4gY29yZSB3aGljaCBoYXMgaW5jb21wbGV0ZSBzdGF0ZSBpbnRlcnJ1cHQgYnk6
-CjEuIHVwZGF0ZSBzdGF0ZSB1cG9uIF9hbnlfIGludGVycnVwdAoyLiB1cGRhdGUgc3RhdGUgd2hl
-biB1c2VyIGV4cGxpY2l0bHkgaW5xdWlyZXMgKGRvX2dldF9zdGF0ZSgpKQoKU2lnbmVkLW9mZi1i
-eTogWmh1IFlpIDx5aS56aHU1QGNuLmJvc2NoLmNvbT4KU2lnbmVkLW9mZi1ieTogTWFyayBKb25h
-cyA8bWFyay5qb25hc0BkZS5ib3NjaC5jb20+ClRlc3RlZC1ieTogUnVhbiBUaW5ncXVhbiA8dGlu
-Z3F1YW4ucnVhbkBjbi5ib3NjaC5jb20+Ci0tLQogZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyB8
-IDkxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tCiAxIGZp
-bGUgY2hhbmdlZCwgNzIgaW5zZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMK
-aW5kZXggMTNmMGYyMS4uYWMzN2ZlNCAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhj
-YW4uYworKysgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jCkBAIC0xOTksNiArMTk5LDIwIEBA
-CiAjZGVmaW5lIEZMRVhDQU5fUVVJUktfRElTQUJMRV9NRUNSCUJJVCg0KSAvKiBEaXNhYmxlIE1l
-bW9yeSBlcnJvciBkZXRlY3Rpb24gKi8KICNkZWZpbmUgRkxFWENBTl9RVUlSS19VU0VfT0ZGX1RJ
-TUVTVEFNUAlCSVQoNSkgLyogVXNlIHRpbWVzdGFtcCBiYXNlZCBvZmZsb2FkaW5nICovCiAKKy8q
-IEZMRVhDQU4gZG9lcyBub3QgY3JlYXRlIGEgY29tcGxldGUgc2V0IG9mIGVycm9yIHN0YXRlIElS
-UXMuCisgKgorICogRXJyb3IgU3RhdGUgSVJRICBpLk1YNTMgIGkuTVg2CisgKiAtLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KKyAqIEFjdGl2ZS0+V2FybiAgICAgICBubyAgICAgeWVzCisg
-KiBXYXJuLT5BY3RpdmUgICAgICAgbm8gICAgICBubworICogV2Fybi0+UGFzc2l2ZSAgICAgIG5v
-ICAgICAgbm8KKyAqIFBhc3NpdmUtPldhcm4gICAgICBubyAgICAgIG5vCisgKiBQYXNzaXZlLT5C
-T0ZGICAgICB5ZXMgICAgIHllcworICogQk9GRi0+QWN0aXZlICAgICAgIG5vICAgICAgbm8KKyAq
-IEVycm9ycyAgICAgICAgICAgIHllcyAgICAgeWVzCisgKi8KKyNkZWZpbmUgRkxFWENBTl9RVUlS
-S19CUk9LRU5fU1RBVEVfSVJRCUJJVCg2KSAvKiBJbmNvbXBsZXRlIHN0YXRlIElSUSAqLworCiAv
-KiBTdHJ1Y3R1cmUgb2YgdGhlIG1lc3NhZ2UgYnVmZmVyICovCiBzdHJ1Y3QgZmxleGNhbl9tYiB7
-CiAJdTMyIGNhbl9jdHJsOwpAQCAtMjg4LDcgKzMwMiw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
-ZmxleGNhbl9kZXZ0eXBlX2RhdGEgZnNsX2lteDI4X2RldnR5cGVfZGF0YTsKIAogc3RhdGljIGNv
-bnN0IHN0cnVjdCBmbGV4Y2FuX2RldnR5cGVfZGF0YSBmc2xfaW14NnFfZGV2dHlwZV9kYXRhID0g
-ewogCS5xdWlya3MgPSBGTEVYQ0FOX1FVSVJLX0RJU0FCTEVfUlhGRyB8IEZMRVhDQU5fUVVJUktf
-RU5BQkxFX0VBQ0VOX1JSUyB8Ci0JCUZMRVhDQU5fUVVJUktfVVNFX09GRl9USU1FU1RBTVAsCisJ
-CUZMRVhDQU5fUVVJUktfVVNFX09GRl9USU1FU1RBTVAgfCBGTEVYQ0FOX1FVSVJLX0JST0tFTl9T
-VEFURV9JUlEsCiB9OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGZsZXhjYW5fZGV2dHlwZV9kYXRh
-IGZzbF92ZjYxMF9kZXZ0eXBlX2RhdGEgPSB7CkBAIC00NzgsNiArNDkyLDU2IEBAIHN0YXRpYyBp
-bnQgZmxleGNhbl9nZXRfYmVycl9jb3VudGVyKGNvbnN0IHN0cnVjdCBuZXRfZGV2aWNlICpkZXYs
-CiAJcmV0dXJuIGVycjsKIH0KIAorc3RhdGljIGVudW0gY2FuX3N0YXRlIF9fZmxleGNhbl9nZXRf
-c3RhdGUoY29uc3Qgc3RydWN0IG5ldF9kZXZpY2UgKmRldiwKKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHUzMiByZWdfZXNyLAorICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgZW51bSBjYW5fc3RhdGUgKnJ4X3N0YXRlLAorICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZW51bSBjYW5fc3RhdGUgKnR4X3N0YXRl
-KQoreworCWVudW0gY2FuX3N0YXRlIG5ld19zdGF0ZTsKKwlpbnQgZmx0OworCXN0cnVjdCBjYW5f
-YmVycl9jb3VudGVyIGJlYzsKKworCWZsdCA9IHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9GTFRfQ09O
-Rl9NQVNLOworCWlmIChsaWtlbHkoZmx0ID09IEZMRVhDQU5fRVNSX0ZMVF9DT05GX0FDVElWRSkp
-IHsKKwkJKnR4X3N0YXRlID0gdW5saWtlbHkocmVnX2VzciAmIEZMRVhDQU5fRVNSX1RYX1dSTikg
-PworCQkJQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkcgOiBDQU5fU1RBVEVfRVJST1JfQUNUSVZFOwor
-CQkqcnhfc3RhdGUgPSB1bmxpa2VseShyZWdfZXNyICYgRkxFWENBTl9FU1JfUlhfV1JOKSA/CisJ
-CQlDQU5fU1RBVEVfRVJST1JfV0FSTklORyA6IENBTl9TVEFURV9FUlJPUl9BQ1RJVkU7CisJCW5l
-d19zdGF0ZSA9IG1heCgqdHhfc3RhdGUsICpyeF9zdGF0ZSk7CisJfSBlbHNlIHsKKwkJX19mbGV4
-Y2FuX2dldF9iZXJyX2NvdW50ZXIoZGV2LCAmYmVjKTsKKwkJbmV3X3N0YXRlID0gZmx0ID09IEZM
-RVhDQU5fRVNSX0ZMVF9DT05GX1BBU1NJVkUgPworCQkJQ0FOX1NUQVRFX0VSUk9SX1BBU1NJVkUg
-OiBDQU5fU1RBVEVfQlVTX09GRjsKKwkJKnJ4X3N0YXRlID0gYmVjLnJ4ZXJyID49IGJlYy50eGVy
-ciA/IG5ld19zdGF0ZSA6IDA7CisJCSp0eF9zdGF0ZSA9IGJlYy5yeGVyciA8PSBiZWMudHhlcnIg
-PyBuZXdfc3RhdGUgOiAwOworCX0KKworCXJldHVybiBuZXdfc3RhdGU7Cit9CisKK3N0YXRpYyBp
-bnQgZmxleGNhbl9nZXRfc3RhdGUoY29uc3Qgc3RydWN0IG5ldF9kZXZpY2UgKmRldiwKKwkJCSAg
-ICAgZW51bSBjYW5fc3RhdGUgKnN0YXRlKQoreworCWNvbnN0IHN0cnVjdCBmbGV4Y2FuX3ByaXYg
-KnByaXYgPSBuZXRkZXZfcHJpdihkZXYpOworCXN0cnVjdCBmbGV4Y2FuX3JlZ3MgX19pb21lbSAq
-cmVncyA9IHByaXYtPnJlZ3M7CisJdTMyIHJlZ19lc3I7CisJZW51bSBjYW5fc3RhdGUgcnhfc3Rh
-dGUsIHR4X3N0YXRlOworCisJKnN0YXRlID0gcHJpdi0+Y2FuLnN0YXRlOworCisJLyogb25seSB1
-cGRhdGUgdGhlIHN0YXRlcyB3aGljaCBhcmUgc3VwcG9zZWQgdG8gYmUgbWFuYWdlZCBieSBoYXJk
-d2FyZQorCSAqIGluIGNhc2UgdGhlIGNvcmUgaGFzIGluY29tcGxldGUgc3RhdGUgaW50ZXJydXB0
-CisJICovCisJaWYgKChwcml2LT5kZXZ0eXBlX2RhdGEtPnF1aXJrcyAmIEZMRVhDQU5fUVVJUktf
-QlJPS0VOX1NUQVRFX0lSUSkgJiYKKwkgICAgKHByaXYtPmNhbi5zdGF0ZSAhPSBDQU5fU1RBVEVf
-U1RPUFBFRCkgJiYKKwkgICAgKHByaXYtPmNhbi5zdGF0ZSAhPSBDQU5fU1RBVEVfU0xFRVBJTkcp
-KSB7CisJCXJlZ19lc3IgPSBmbGV4Y2FuX3JlYWQoJnJlZ3MtPmVzcik7CisJCSpzdGF0ZSA9IF9f
-ZmxleGNhbl9nZXRfc3RhdGUoZGV2LCByZWdfZXNyLCAmcnhfc3RhdGUsICZ0eF9zdGF0ZSk7CisJ
-fQorCisJcmV0dXJuIDA7Cit9CisKIHN0YXRpYyBpbnQgZmxleGNhbl9zdGFydF94bWl0KHN0cnVj
-dCBza19idWZmICpza2IsIHN0cnVjdCBuZXRfZGV2aWNlICpkZXYpCiB7CiAJY29uc3Qgc3RydWN0
-IGZsZXhjYW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7CkBAIC01ODcsMjMgKzY1MSw4
-IEBAIHN0YXRpYyB2b2lkIGZsZXhjYW5faXJxX3N0YXRlKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYs
-IHUzMiByZWdfZXNyKQogCXN0cnVjdCBza19idWZmICpza2I7CiAJc3RydWN0IGNhbl9mcmFtZSAq
-Y2Y7CiAJZW51bSBjYW5fc3RhdGUgbmV3X3N0YXRlLCByeF9zdGF0ZSwgdHhfc3RhdGU7Ci0JaW50
-IGZsdDsKLQlzdHJ1Y3QgY2FuX2JlcnJfY291bnRlciBiZWM7CiAKLQlmbHQgPSByZWdfZXNyICYg
-RkxFWENBTl9FU1JfRkxUX0NPTkZfTUFTSzsKLQlpZiAobGlrZWx5KGZsdCA9PSBGTEVYQ0FOX0VT
-Ul9GTFRfQ09ORl9BQ1RJVkUpKSB7Ci0JCXR4X3N0YXRlID0gdW5saWtlbHkocmVnX2VzciAmIEZM
-RVhDQU5fRVNSX1RYX1dSTikgPwotCQkJQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkcgOiBDQU5fU1RB
-VEVfRVJST1JfQUNUSVZFOwotCQlyeF9zdGF0ZSA9IHVubGlrZWx5KHJlZ19lc3IgJiBGTEVYQ0FO
-X0VTUl9SWF9XUk4pID8KLQkJCUNBTl9TVEFURV9FUlJPUl9XQVJOSU5HIDogQ0FOX1NUQVRFX0VS
-Uk9SX0FDVElWRTsKLQkJbmV3X3N0YXRlID0gbWF4KHR4X3N0YXRlLCByeF9zdGF0ZSk7Ci0JfSBl
-bHNlIHsKLQkJX19mbGV4Y2FuX2dldF9iZXJyX2NvdW50ZXIoZGV2LCAmYmVjKTsKLQkJbmV3X3N0
-YXRlID0gZmx0ID09IEZMRVhDQU5fRVNSX0ZMVF9DT05GX1BBU1NJVkUgPwotCQkJQ0FOX1NUQVRF
-X0VSUk9SX1BBU1NJVkUgOiBDQU5fU1RBVEVfQlVTX09GRjsKLQkJcnhfc3RhdGUgPSBiZWMucnhl
-cnIgPj0gYmVjLnR4ZXJyID8gbmV3X3N0YXRlIDogMDsKLQkJdHhfc3RhdGUgPSBiZWMucnhlcnIg
-PD0gYmVjLnR4ZXJyID8gbmV3X3N0YXRlIDogMDsKLQl9CisJbmV3X3N0YXRlID0gX19mbGV4Y2Fu
-X2dldF9zdGF0ZShkZXYsIHJlZ19lc3IsICZyeF9zdGF0ZSwgJnR4X3N0YXRlKTsKIAogCS8qIHN0
-YXRlIGhhc24ndCBjaGFuZ2VkICovCiAJaWYgKGxpa2VseShuZXdfc3RhdGUgPT0gcHJpdi0+Y2Fu
-LnN0YXRlKSkKQEAgLTc2NSw4ICs4MTQsOSBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgZmxleGNhbl9p
-cnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKQogCQlmbGV4Y2FuX3dyaXRlKHJlZ19lc3IgJiBGTEVY
-Q0FOX0VTUl9BTExfSU5ULCAmcmVncy0+ZXNyKTsKIAl9CiAKLQkvKiBzdGF0ZSBjaGFuZ2UgaW50
-ZXJydXB0ICovCi0JaWYgKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9FUlJfU1RBVEUpCisJLyogc3Rh
-dGUgY2hhbmdlIGludGVycnVwdCBvciBvbiBpbmNvbXBsZXRlIHN0YXRlIGludGVycnVwdCBjb3Jl
-ICovCisJaWYgKChyZWdfZXNyICYgRkxFWENBTl9FU1JfRVJSX1NUQVRFKSB8fAorCSAgICAocHJp
-di0+ZGV2dHlwZV9kYXRhLT5xdWlya3MgJiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9TVEFURV9JUlEp
-KQogCQlmbGV4Y2FuX2lycV9zdGF0ZShkZXYsIHJlZ19lc3IpOwogCiAJLyogYnVzIGVycm9yIElS
-USAtIGhhbmRsZSBpZiBidXMgZXJyb3IgcmVwb3J0aW5nIGlzIGFjdGl2YXRlZCAqLwpAQCAtMTI2
-NSw2ICsxMzE1LDkgQEAgc3RhdGljIGludCBmbGV4Y2FuX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9k
-ZXZpY2UgKnBkZXYpCiAJcHJpdi0+ZGV2dHlwZV9kYXRhID0gZGV2dHlwZV9kYXRhOwogCXByaXYt
-PnJlZ194Y2VpdmVyID0gcmVnX3hjZWl2ZXI7CiAKKwlpZiAocHJpdi0+ZGV2dHlwZV9kYXRhLT5x
-dWlya3MgJiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9TVEFURV9JUlEpCisJCXByaXYtPmNhbi5kb19n
-ZXRfc3RhdGUgPSBmbGV4Y2FuX2dldF9zdGF0ZTsKKwogCWlmIChwcml2LT5kZXZ0eXBlX2RhdGEt
-PnF1aXJrcyAmIEZMRVhDQU5fUVVJUktfVVNFX09GRl9USU1FU1RBTVApIHsKIAkJcHJpdi0+dHhf
-bWJfaWR4ID0gRkxFWENBTl9UWF9NQl9PRkZfVElNRVNUQU1QOwogCQlwcml2LT50eF9tYl9yZXNl
-cnZlZCA9ICZyZWdzLT5tYltGTEVYQ0FOX1RYX01CX1JFU0VSVkVEX09GRl9USU1FU1RBTVBdOwot
-LSAKMi43LjQKCg==
-
---_002_5213bc7ebd454acea568aba682d696caSGPMBX1017APACboschcom_--
-
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index f4947a7..720e073 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -126,6 +126,12 @@ enum m_can_mram_cfg {
+ #define DBTP_DSJW_SHIFT		0
+ #define DBTP_DSJW_MASK		(0xf << DBTP_DSJW_SHIFT)
+ 
++/* Transmitter Delay Compensation Register (TDCR) */
++#define TDCR_TDCO_SHIFT		8
++#define TDCR_TDCO_MASK		(0x7F << TDCR_TDCO_SHIFT)
++#define TDCR_TDCF_SHIFT		0
++#define TDCR_TDCF_MASK		(0x7F << TDCR_TDCO_SHIFT)
++
+ /* Test Register (TEST) */
+ #define TEST_LBCK		BIT(4)
+ 
+@@ -977,6 +983,8 @@ static int m_can_set_bittiming(struct net_device *dev)
+ 	const struct can_bittiming *dbt = &priv->can.data_bittiming;
+ 	u16 brp, sjw, tseg1, tseg2;
+ 	u32 reg_btp;
++	u32 enable_tdc = 0;
++	u32 tdco;
+ 
+ 	brp = bt->brp - 1;
+ 	sjw = bt->sjw - 1;
+@@ -991,9 +999,23 @@ static int m_can_set_bittiming(struct net_device *dev)
+ 		sjw = dbt->sjw - 1;
+ 		tseg1 = dbt->prop_seg + dbt->phase_seg1 - 1;
+ 		tseg2 = dbt->phase_seg2 - 1;
++
++		/* TDC is only needed for bitrates beyond 2.5 MBit/s
++		 * Specified in the "Bit Time Requirements for CAN FD" document
++		 */
++		if (dbt->bitrate > 2500000) {
++			enable_tdc = DBTP_TDC;
++			/* Equation based on Bosch's M_CAN User Manual's
++			 * Transmitter Delay Compensation Section
++			 */
++			tdco = priv->can.clock.freq / (dbt->bitrate * 2);
++			m_can_write(priv, M_CAN_TDCR, tdco << TDCR_TDCO_SHIFT);
++		}
++
+ 		reg_btp = (brp << DBTP_DBRP_SHIFT) | (sjw << DBTP_DSJW_SHIFT) |
+ 			(tseg1 << DBTP_DTSEG1_SHIFT) |
+-			(tseg2 << DBTP_DTSEG2_SHIFT);
++			(tseg2 << DBTP_DTSEG2_SHIFT) | enable_tdc;
++
+ 		m_can_write(priv, M_CAN_DBTP, reg_btp);
+ 	}
+ 
+-- 
+2.9.4.dirty
