@@ -1,45 +1,32 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: flexcan missing error state transitions
-Date: Mon, 21 Aug 2017 16:18:23 +0000
-Message-ID: <150333230375.13890.2773067532209799515@maxwell>
+From: "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+Subject: AW: flexcan missing error state transitions
+Date: Mon, 21 Aug 2017 17:13:34 +0000
+Message-ID: <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
 References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
+ <150333230375.13890.2773067532209799515@maxwell>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr20063.outbound.protection.outlook.com ([40.107.2.63]:30388
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1753264AbdHUQSc (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 21 Aug 2017 12:18:32 -0400
-In-Reply-To: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:53097 "EHLO
+        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753407AbdHURNl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Aug 2017 13:13:41 -0400
+In-Reply-To: <150333230375.13890.2773067532209799515@maxwell>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
-Cc: "hs@denx.de" <hs@denx.de>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>
+To: Andri Yngvason <andri.yngvason@marel.com>, "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
+Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>
 
-Hello Yi ZHU,
-
-Quoting ZHU Yi (ST-FIR/ENG1-Zhu) (2017-08-18 07:47:41)
-> Sadly, the flexcan core does not generate error state interrupts for all =
-state transitions.
-> This is required for the current flexcan driver to operate smoothly. We p=
-ropose the following
-> workaround to mitigate this problem:
-> 1. update state upon _any_ interrupt
-> 2. update state when user explicitly inquires (via do_get_state callback)
-
-For now, I think that it would be good enough to implement option 1 as this=
- is
-how things were before the regression. Unless there's a performance penalty?
-
-I am not sure that I like the userspace polling idea. I think it would be b=
-etter
-to have the polling implemented within the driver because it keeps the inte=
-rface
-"simple" and there will be fewer differences between different platforms. I=
-.e.
-the same userpspace code should work for flexcan, sja1000, mscan, etc..
-
-Regards,
-Andri
+SGVsbG8gQW5kcmksDQoNCj4gSSBhbSBub3Qgc3VyZSB0aGF0IEkgbGlrZSB0aGUgdXNlcnNwYWNl
+IHBvbGxpbmcgaWRlYS4gSSB0aGluayBpdCB3b3VsZCBiZSBiZXR0ZXIgdG8gaGF2ZQ0KPiB0aGUg
+cG9sbGluZyBpbXBsZW1lbnRlZCB3aXRoaW4gdGhlIGRyaXZlciBiZWNhdXNlIGl0IGtlZXBzIHRo
+ZSBpbnRlcmZhY2UgInNpbXBsZSINCj4gYW5kIHRoZXJlIHdpbGwgYmUgZmV3ZXIgZGlmZmVyZW5j
+ZXMgYmV0d2VlbiBkaWZmZXJlbnQgcGxhdGZvcm1zLiBJLmUuDQo+IHRoZSBzYW1lIHVzZXJwc3Bh
+Y2UgY29kZSBzaG91bGQgd29yayBmb3IgZmxleGNhbiwgc2phMTAwMCwgbXNjYW4sIGV0Yy4uDQoN
+CldoaWNoIHBvbGxpbmcgaW50ZXJ2YWwgZG8geW91IHRoaW5rIHdvdWxkIGJlIGFwcHJvcHJpYXRl
+PyBJdCBzb21laG93IGhhcyB0byBiZSBhIHJlYXNvbmFibGUgdHJhZGUtb2ZmIGJldHdlZW4gbGF0
+ZW5jeSBhbmQgQ1BVIHVzYWdlLg0KDQpXb3VsZCBpdCBtYWtlIHNlbnNlIHRvIG1ha2UgdGhlIHBv
+bGxpbmcgaW50ZXJ2YWwgY29uZmlndXJhYmxlIHZpYSBkZXZpY2UgdHJlZT8NCg0KUmVnYXJkcywN
+Ck1hcmsNCg==
