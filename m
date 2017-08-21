@@ -1,65 +1,32 @@
-From: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH v5 2/4] dt-bindings: can: can-transceiver: Document new binding
-Date: Fri, 18 Aug 2017 15:21:35 -0500
-Message-ID: <20170818202137.29816-3-fcooper@ti.com>
-References: <20170818202137.29816-1-fcooper@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170818202137.29816-1-fcooper-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dev.kurt-yI9piX4KPfawT/RRk36CISFp6vIno51x@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org, socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org
-Cc: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] can: peak_pci: Make i2c_algo_bit_data const
+Date: Mon, 21 Aug 2017 18:56:14 +0530
+Message-ID: <1503321974-25802-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: julia.lawall@lip6.fr, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
-Add documentation to describe usage of the new can-transceiver binding.
-This new binding is applicable for any CAN device therefore it exists as
-its own document.
+Make this const as it is only used in a copy operation.
 
-Signed-off-by: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
-Version 5 changes:
-Remove @ symbol from can-transceiver example
+ drivers/net/can/sja1000/peak_pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- .../bindings/net/can/can-transceiver.txt           | 24 ++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.txt
-
-diff --git a/Documentation/devicetree/bindings/net/can/can-transceiver.txt b/Documentation/devicetree/bindings/net/can/can-transceiver.txt
-new file mode 100644
-index 0000000..0011f53
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/can-transceiver.txt
-@@ -0,0 +1,24 @@
-+Generic CAN transceiver Device Tree binding
-+------------------------------
-+
-+CAN transceiver typically limits the max speed in standard CAN and CAN FD
-+modes. Typically these limitations are static and the transceivers themselves
-+provide no way to detect this limitation at runtime. For this situation,
-+the "can-transceiver" node can be used.
-+
-+Required Properties:
-+ max-bitrate:	a positive non 0 value that determines the max
-+		speed that CAN/CAN-FD can run. Any other value
-+		will be ignored.
-+
-+Examples:
-+
-+Based on Texas Instrument's TCAN1042HGV CAN Transceiver
-+
-+m_can0 {
-+	....
-+	can-transceiver {
-+		max-bitrate = <5000000>;
-+	};
-+	...
-+};
+diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
+index 131026f..44f1e37 100644
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -425,7 +425,7 @@ static void peak_pciec_write_reg(const struct sja1000_priv *priv,
+ 	peak_pci_write_reg(priv, port, val);
+ }
+ 
+-static struct i2c_algo_bit_data peak_pciec_i2c_bit_ops = {
++static const struct i2c_algo_bit_data peak_pciec_i2c_bit_ops = {
+ 	.setsda	= pita_setsda,
+ 	.setscl	= pita_setscl,
+ 	.getsda	= pita_getsda,
 -- 
-2.9.4.dirty
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.9.1
