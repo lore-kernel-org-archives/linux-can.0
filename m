@@ -1,82 +1,114 @@
-From: "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
-Subject: AW: AW: flexcan missing error state transitions
-Date: Tue, 22 Aug 2017 13:50:35 +0000
-Message-ID: <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: AW: AW: flexcan missing error state transitions
+Date: Tue, 22 Aug 2017 16:06:36 +0200
+Message-ID: <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
 References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
  <150333230375.13890.2773067532209799515@maxwell>
  <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
  <150333966184.28484.15326759292718336833@maxwell>
+ <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="5Nv288aBS0SV8GpXWpuBfjfBwCniVk9ge"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:40873 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932510AbdHVNuh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Aug 2017 09:50:37 -0400
-In-Reply-To: <150333966184.28484.15326759292718336833@maxwell>
-Content-Language: de-DE
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41869 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S932823AbdHVOGn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Aug 2017 10:06:43 -0400
+In-Reply-To: <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
-Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+To: "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>
+Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
 
-SGVsbG8gQW5kcmksDQoNCj4gPiBXaGljaCBwb2xsaW5nIGludGVydmFsIGRvIHlvdSB0aGluayB3
-b3VsZCBiZSBhcHByb3ByaWF0ZT8gSXQgc29tZWhvdyBoYXMgdG8gYmUNCj4gYSByZWFzb25hYmxl
-IHRyYWRlLW9mZiBiZXR3ZWVuIGxhdGVuY3kgYW5kIENQVSB1c2FnZS4NCj4gVGhhdCdzIGEgZ29v
-ZCBxdWVzdGlvbi4gSSBkb24ndCB0aGluayB0aGF0IHRoZXJlIGlzIGEgcmVhbGx5IGdvb2QgYW5z
-d2VyIHRvIGl0Lg0KPiBJdCB3b3VsZCBiZSBuaWNlIHRvIHNlZSBpbnRlcm1pdHRlbnQgc3RhdGUt
-dHJhbnNpdGlvbnMgaGFwcGVuaW5nLCBzbyBJIHdvdWxkIHNheSBhcw0KPiBmYXN0IGFzIHBvc3Np
-YmxlIHdpdGhvdXQgYWZmZWN0aW5nIENQVSB1c2FnZSB0byBhIHNpZ25pZmljYW50IGRlZ3JlZS4g
-VGhlIHBvbGxpbmcNCj4gdGltZXIgc2hvdWxkIG5vdCBiZSBhIGhpZ2ggcmVzb2x1dGlvbiB0aW1l
-ciBvciBhbnl0aGluZyB0aGF0IHdvdWxkIHByZWVtcHQgYW4gcnQNCj4gdGFzay4NCj4gDQo+IFRo
-aXMgdmFsdWUgY291bGQgYWxzbyBkZXBlbmQgb24gdGhlIGJpdHJhdGUgYXMgdGhhdCB3aWxsIGFm
-ZmVjdCB0aGUgcmF0ZSBhdCB3aGljaCB0aGUNCj4gZXJyb3ItY291bnRlciBjYW4gY2hhbmdlLiBF
-LmcuIG9uIDEyNSBrIHJhdGUsIHlvdSB3aWxsIHJlY2VpdmUgYXQgbW9zdCBvbmUgZnJhbWUNCj4g
-cGVyIDEgbXMuIFRoaXMgbWVhbnMgdGhhdCB0aGUgZXJyb3Igc3RhdGUgd2lsbCBjaGFuZ2UgYXQg
-YXQgbGVhc3QNCj4gNjQgbXMgaW50ZXJ2YWxzLCBzbyB3ZSB3b3VsZCBoYXZlIHRvIHNhbXBsZSBh
-dCAzMiBtcyBpbnRlcnZhbHMgdG8gY2F0Y2ggYWxsIHRoZQ0KPiB0cmFuc2l0aW9ucy4gRm9yIDEg
-TSB0aGlzIHdvdWxkIGJlIGFyb3VuZCAyIG1zLg0KPiANCj4gTm90ZSB0aGF0IHRoaXMgaXMgYWxs
-IHNvbWV3aGF0IHNwZWN1bGF0aXZlIGFzIEkgZG8gbm90IGtub3cgZXhhY3RseSBob3cgZmFzdCB0
-aGUNCj4gZXJyb3IgY291bnRlcnMgYXJlIGluY3JlbWVudGVkL2RlY3JlbWVudGVkLg0KDQpXZSBh
-Z3JlZSB0aGF0IHRoZXJlIGlzIGEgc2Vuc2libGUgbG93ZXIgYm91bmRhcnkgZm9yIHRoZSBwb2xs
-aW5nIGludGVydmFsIHdoaWNoIGRlcGVuZHMgb24gdGhlIGJpdHJhdGUuIEFuZCB0aGVyZSBpcyBh
-IHVwcGVyIGJvdW5kYXJ5IHdoaWNoIGRlcGVuZHMgb24gdGhlIGFwcGxpY2F0aW9uLg0KDQpXZSBh
-cmUgY3VycmVudGx5IHRoaW5raW5nIGFib3V0IHdoZXRoZXIgaXQgd291bGQgYmUgcG9zc2libGUg
-dG8gZG8gdGhlIHBvbGxpbmcgb25seSBpbiBjYXNlIHRoZSBjb250cm9sbGVyIGlzIGFjdHVhbGx5
-IGV4cGVyaWVuY2luZyB0cm91YmxlLg0KDQpGb3IgdGhlIGkuTVg2IHRoZXJlIGlzIGFuIGludGVy
-cnVwdCB3aGVuIHRoZSBjb250cm9sbGVyIGNoYW5nZXMgZnJvbSBFcnJvciBBY3RpdmUgdG8gRXJy
-b3IgV2FybmluZy4gVGhpcyBzaGFsbCBlbmFibGUgdGhlIHBvbGxpbmcuDQoNCkZvciB0aGUgaS5N
-WDUzIHRoZXJlIGlzIG5vIEFjdGl2ZSAtPiBXYXJuaW5nIGludGVycnVwdC4gQnV0IGZvciBhbGwg
-a2luZHMgb2YgZXJyb3IgZXZlbnRzIG9uIHRoZSBidXMgYW4gRXJyb3IgaW50ZXJydXB0IHdpbGwg
-YmUgY3JlYXRlZC4gU28gdGhlIHBvbGxpbmcgc2hhbGwgYmUgZW5hYmxlZCB0aGVuLiBUaGlzIGlz
-IGEgbGl0dGxlIGJpdCBsZXNzIGVmZmljaWVudCBjb21wYXJlZCB0byBpLk1YNiBidXQgdGhlIHBv
-bGxpbmcgd2lsbCBiZSBkaXNhYmxlZCBkdXJpbmcgdGhlIG5leHQgaW50ZXJydXB0IGlmIHRoZSBz
-dGF0ZSBpcyBzdGlsbCBFcnJvciBBY3RpdmUgKHNlZSBiZWxvdykuDQoNCkZvciBib3RoLCB0aGUg
-cG9sbGluZyBjYW4gYmUgZGlzYWJsZWQgd2hlbiB0aGUgc3RhdHVzIGlzIHJlYWQgYW5kIGl0IGlz
-IEVycm9yIEFjdGl2ZS4gVGhlIHBvbGxpbmcgc2hhbGwgYmUgZGlzYWJsZWQgYXMgd2VsbCB3aGVu
-IGEgQnVzLU9mZiBpbnRlcnJ1cHQgb2NjdXJzLg0KDQpXaGF0IHdlIHN0aWxsIG5lZWQgdG8gcmVz
-b2x2ZSBpcyB0aGUgY29uY3VycmVuY3kgYmV0d2VlbiB0aGUgdGltZXIgYW5kIHRoZSBpbnRlcnJ1
-cHQgd2hlbiBhY2Nlc3NpbmcgaW50ZXJuYWwgZGF0YSBzdHJ1Y3R1cmVzIGFuZCBzZW5kaW5nIFNv
-Y2tldENBTiBlcnJvciBmcmFtZXMuIE9uY2Ugd2UgaGF2ZSB0aGF0IHNvcnRlZCBvdXQgd2Ugd2ls
-bCBzZW5kIGEgcGF0Y2guIE5vbmUgdGhlIGxlc3MsIGVhcmx5IGZlZWRiYWNrIGlzIHdlbGNvbWUu
-DQoNCj4gPiBXb3VsZCBpdCBtYWtlIHNlbnNlIHRvIG1ha2UgdGhlIHBvbGxpbmcgaW50ZXJ2YWwg
-Y29uZmlndXJhYmxlIHZpYSBkZXZpY2UgdHJlZT8NCj4gQWxzbyBhIGdvb2QgcXVlc3Rpb25zLiBJ
-IHRyaWVkIGNvbXBpbGluZyBhIEMgcHJvZ3JhbSB0aGF0IHJ1bnMgdXNsZWVwKDIwMDApIGluIGEN
-Cj4gbG9vcCBmb3IgdGhlIGkuTVg2LiBJdCBydW5zIGF0IGFyb3VuZCAxJSBDUFUgdXNhZ2UgaW4g
-dG9wLiBJIHdvdWxkIGNhbGwgdGhhdA0KPiBzaWduaWZpY2FudC4gUGVyaGFwcyBpdCB3b3VsZCBy
-dW4gYmV0dGVyIGluIGtlcm5lbCBzcGFjZT8NCj4gDQo+IElmIHRoZSBwb2xsaW5nIGludGVydmFs
-IGNhbiBiZSBjb25maWd1cmVkLCB1c2VycyB3aG8gY2FyZSBhYm91dCBpdCBjYW4gc2V0IGl0IHRv
-IGENCj4gdmFsdWUgdGhhdCBtYXRjaGVzIHRoZWlyIGJpdHJhdGUuIE90aGVycyBjb3VsZCBzZXQg
-aXQgdG8gemVybyB0byB0dXJuIGl0IG9mZi4NCg0KV2UgYWxzbyB0aGluayB0aGF0IHRoZSBwb2xs
-aW5nIGludGVydmFsIHNob3VsZCBiZSBjb25maWd1cmFibGUuIEl0IHN0cm9uZ2x5IGRlcGVuZHMg
-b24gdGhlIGFwcGxpY2F0aW9uIHdoaWNoIGxhdGVuY3kgYmV0d2VlbiBzdGF0ZSBjaGFuZ2UgYW5k
-IG5vdGlmaWNhdGlvbiBpcyBhY2NlcHRhYmxlIGFuZCBob3cgbXVjaCBjb21wdXRpbmcgcmVzb3Vy
-Y2VzIG1heSBiZSBpbnZlc3RlZCB0byBhY2hpZXZlIHRoYXQuDQoNCj4gQXMgdGhlIHVzZWZ1bCBz
-YW1wbGluZyBmcmVxdWVuY3kgZGVwZW5kcyBvbiB0aGUgYml0cmF0ZSwgcGVyaGFwcyBpdCBzaG91
-bGQgZXZlbg0KPiBiZSBhIHBhcnQgb2YgdGhlIG5ldGxpbmsgaW50ZXJmYWNlPyBUaGlzIHdvdWxk
-IGFsc28gbWFrZSBpdCBlYXNpZXIgZm9yIHRoZSB1c2VyIHRvIGZpbmQNCj4gYSBnb29kIHNhbXBs
-aW5nIGZyZXF1ZW5jeSBiYXNlZCBvbiB0cmlhbCBhbmQgZXJyb3IuDQoNClJpZ2h0IG5vdyB3ZSBh
-cmUgbm90IGNvbnZpbmNlZCB0aGF0IGFkZGluZyB0byB0aGUgbmV0bGluayBpbnRlcmZhY2UgaXMg
-anVzdGlmaWVkIHRvIHdvcmsgYXJvdW5kIGRlZmljaWVuY2llcyBvZiBhIHNpbmdsZSBDQU4gcGVy
-aXBoZXJhbC4NCg0KUmVnYXJkcywNCk1hcmsNCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--5Nv288aBS0SV8GpXWpuBfjfBwCniVk9ge
+Content-Type: multipart/mixed; boundary="KA5OVHV8mgAvXVwfqbMkBl0gnBn8ogJQk";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>,
+ Andri Yngvason <andri.yngvason@marel.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "wg@grandegger.com" <wg@grandegger.com>
+Cc: "hs@denx.de" <hs@denx.de>,
+ "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>,
+ "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Message-ID: <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
+Subject: Re: AW: AW: flexcan missing error state transitions
+References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
+ <150333230375.13890.2773067532209799515@maxwell>
+ <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
+ <150333966184.28484.15326759292718336833@maxwell>
+ <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
+In-Reply-To: <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
+
+--KA5OVHV8mgAvXVwfqbMkBl0gnBn8ogJQk
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 08/22/2017 03:50 PM, Jonas Mark (ST-FIR/ENG1) wrote:
+> Hello Andri,
+>=20
+>>> Which polling interval do you think would be appropriate? It
+>>> somehow has to be
+>> a reasonable trade-off between latency and CPU usage. That's a good
+>> question. I don't think that there is a really good answer to it.=20
+>> It would be nice to see intermittent state-transitions happening,
+>> so I would say as fast as possible without affecting CPU usage to a
+>> significant degree. The polling timer should not be a high
+>> resolution timer or anything that would preempt an rt task.
+>>=20
+>> This value could also depend on the bitrate as that will affect the
+>> rate at which the error-counter can change. E.g. on 125 k rate, you
+>> will receive at most one frame per 1 ms. This means that the error
+>> state will change at at least 64 ms intervals, so we would have to
+>> sample at 32 ms intervals to catch all the transitions. For 1 M
+>> this would be around 2 ms.
+>>=20
+>> Note that this is all somewhat speculative as I do not know exactly
+>> how fast the error counters are incremented/decremented.
+>=20
+> We agree that there is a sensible lower boundary for the polling
+> interval which depends on the bitrate. And there is a upper boundary
+> which depends on the application.
+>=20
+> We are currently thinking about whether it would be possible to do
+> the polling only in case the controller is actually experiencing
+> trouble.
+
+Why not enable bus errors on broken controllers. Disable once a bus
+error hits and re-enable them after a configurable timeout with a proper
+default. I have a patch somewhere, although it applies only against the
+pre rx-offload version of the driver.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--KA5OVHV8mgAvXVwfqbMkBl0gnBn8ogJQk--
+
+--5Nv288aBS0SV8GpXWpuBfjfBwCniVk9ge
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlmcOm0ACgkQHv7KIOw4
+HPbGHQf/TLDV+QJyZy5uPwldkLLcRS+jfPC7A8Ne0WG1izVnUpnEXKURbgvQ9htF
+L8FP7gFxD6QdlLUFLPpn0A38zc/ILKjTd6z++GIiODQ1u95Oymkl6kH86vVbI0do
++H9CNOcy4pGr3cRhW8oGvLQBofjWExP5iQNGuxocAkjCG09mwa2CxwXhK++HjUhM
+FJZvi62+AkoJXLWrLtmjHBxgSn7TmZ+dYiOqpS2R+dlDsFFXlmupuJNlltgYo0S6
+0Euu7/R2KYx35LeUqaRqdxWQ3RMR1rz3u/mtRXbQiK7clsuMFjEMGEpDU2hLx6Gl
+F3H5v9CryzB0pREC96xstIP9t35wkw==
+=TOoi
+-----END PGP SIGNATURE-----
+
+--5Nv288aBS0SV8GpXWpuBfjfBwCniVk9ge--
