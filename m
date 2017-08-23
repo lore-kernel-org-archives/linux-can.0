@@ -1,48 +1,79 @@
-From: "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
-Subject: AW: AW: AW: flexcan missing error state transitions
-Date: Tue, 22 Aug 2017 19:03:48 +0000
-Message-ID: <6a410757a698403c91dcf254a1be3cd9@SI-MBX1030.de.bosch.com>
-References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
- <150333230375.13890.2773067532209799515@maxwell>
- <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
- <150333966184.28484.15326759292718336833@maxwell>
- <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
- <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Request-for-testing: j1939
+Date: Wed, 23 Aug 2017 17:17:54 +0200
+Message-ID: <9071ec9a-2b26-ed36-3b11-5f97f4b252d9@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="jFb1H5fO55BsGCIwCmWgC2TBEIdMorngA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:54099 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752031AbdHVTDu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Aug 2017 15:03:50 -0400
-In-Reply-To: <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
-Content-Language: de-DE
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:48897 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1754090AbdHWPSI (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Aug 2017 11:18:08 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>
-Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, David Jander <david@protonic.nl>
 
-SGVsbG8gTWFyYywNCg0KPiA+IFdlIGFyZSBjdXJyZW50bHkgdGhpbmtpbmcgYWJvdXQgd2hldGhl
-ciBpdCB3b3VsZCBiZSBwb3NzaWJsZSB0byBkbyB0aGUNCj4gPiBwb2xsaW5nIG9ubHkgaW4gY2Fz
-ZSB0aGUgY29udHJvbGxlciBpcyBhY3R1YWxseSBleHBlcmllbmNpbmcgdHJvdWJsZS4NCj4gDQo+
-IFdoeSBub3QgZW5hYmxlIGJ1cyBlcnJvcnMgb24gYnJva2VuIGNvbnRyb2xsZXJzLiBEaXNhYmxl
-IG9uY2UgYSBidXMgZXJyb3IgaGl0cw0KPiBhbmQgcmUtZW5hYmxlIHRoZW0gYWZ0ZXIgYSBjb25m
-aWd1cmFibGUgdGltZW91dCB3aXRoIGEgcHJvcGVyIGRlZmF1bHQuIEkgaGF2ZSBhDQo+IHBhdGNo
-IHNvbWV3aGVyZSwgYWx0aG91Z2ggaXQgYXBwbGllcyBvbmx5IGFnYWluc3QgdGhlIHByZSByeC1v
-ZmZsb2FkIHZlcnNpb24gb2YgdGhlDQo+IGRyaXZlci4NCg0KSSBhbSBub3Qgc3VyZSB3aGV0aGVy
-IEkgdW5kZXJzdGFuZCB5b3VyIHByb3Bvc2FsLiBEbyB5b3UgcHJvcG9zZSB0byBwb2xsIGFsbCB0
-aGUNCnRpbWUgYnV0IG9ubHkgc3RvcCB0aGUgcG9sbGluZyB3aGVuIHRoZSBjb250cm9sbGVyIGVu
-dGVycyBCdXMtT2ZmPw0KDQpPciBkbyB5b3UgbWVhbiB0byBlbmFibGUgYXV0b21hdGljIHJlc3Rh
-cnQgb2YgdGhlIENBTiBjb250cm9sbGVyIGFmdGVyIGEgQnVzLU9mZj8NCldlIGNvdWxkIG5vdCBk
-byB0aGlzLiBPdXIgYXBwbGljYXRpb24gbmVlZHMgdG8gaGFuZGxlIEJ1cy1PZmYgYnkgaXRzIG93
-bi4gQW5kDQp0aGVyZSB3aWxsIGJlIHN0aWxsIHNpdHVhdGlvbnMgd2hlcmUgRmxleENBTiB3aWxs
-IGJlIHNpbGVudGx5IHN0dWNrIGluIEVycm9yIFBhc3NpdmUuDQoNCkNvdWxkIHlvdSBleHBsYWlu
-IHlvdXIgaWRlYSBhIGxpdHRsZSBtb3JlPyANCg0KSW4gY2FzZSB5b3UgZmluZCB0aGUgcGF0Y2gg
-eW91IG1lbnRpb25lZCwgd2Ugd291bGQgYWxzbyBsaWtlIGxvb2sgYXQgaXQgdG8gc2VlIGlmIHdl
-DQpjYW4gZ2V0IGFuIGlkZWEgZnJvbSBpdC4NCg0KV2UgYXJlIGEgbGl0dGxlIGJpdCB0cmFwcGVk
-OiBPbiB0aGUgb25lIGhhbmQgd2UgcmVhbGx5IGxpa2UgdGhlIHJlY2VudCBwYXRjaGVzDQpiZWNh
-dXNlIGl0IHNvbHZlcyB0aGUgUnggb3ZlcmZsb3cgcHJvYmxlbSB3ZSBhbHNvIGV4cGVyaWVuY2Vk
-LiBPbiB0aGUgb3RoZXIgaGFuZA0KdGhlIGVycm9yIHN0YXRlIGhhbmRsaW5nIGlzIG5vdCBhcyBn
-b29kIGFueSBtb3JlIGFzIGl0IHdhcy4gU28gd2UgaGlnaGx5IHZhbHVlIHlvdXINCnN1cHBvcnQg
-aW4gZmluZGluZyBhIG1haW5saW5lLXJlYWR5IHNvbHV0aW9uLg0KDQpSZWdhcmRzLA0KTWFyaw0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jFb1H5fO55BsGCIwCmWgC2TBEIdMorngA
+Content-Type: multipart/mixed; boundary="P67biATWFAUL89VHHb7uMv2HKxTl3kA1R";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+ David Jander <david@protonic.nl>
+Message-ID: <9071ec9a-2b26-ed36-3b11-5f97f4b252d9@pengutronix.de>
+Subject: Request-for-testing: j1939
+
+--P67biATWFAUL89VHHb7uMv2HKxTl3kA1R
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+I've worked my way a bit through the lower layers of the j1939 stack.
+While there I cleaned up the livetime handling of the j1939 object and
+the bind() and connect() functions. Unplugging a USB network device
+while a application is running should now be possible.
+
+The patch stack consists of ~100 patches, ~15 of them are cleanups for
+the af_can. I'm not going to post the patches here for review, testing
+is much more welcome. Maybe we can put together a testsuite.
+
+The branch is available at my kernel.org linux-can-next repo in the
+j1939 branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/lo=
+g/?h=3Dj1939
+
+regards,
+Marc
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--P67biATWFAUL89VHHb7uMv2HKxTl3kA1R--
+
+--jFb1H5fO55BsGCIwCmWgC2TBEIdMorngA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlmdnKUACgkQHv7KIOw4
+HPZAGgf9GhDTAwHm6zphhCwwt2kRlwMiZ3CsunFqMDvkfzef/EpXS/GwnU1KoffN
++4sSRH2p4ZUq9gu/FD71KmCPWAjRrimryXj9a6RScRbwFa0qUQbGLyuggd8EVlk+
+l2FABFBNbjmdhO9gY9moAiSqCTGgNKITbV/zF2kuhRNVhW2Mb2y/2sgN4D6wT8mf
+CW5ihaNYbmqRp/8b0fN2KR7GZLNLYYtm6Esb5mzsiS6OjaqWVAsgzhKfryj/Z8CA
+T3PbkEeaVydPgY0OPkGT+GjN8ia9kk6koAUe57HNRVozxlWnyUVbpacLAO+knIuo
+NWS8Fxzk+uaZ5eNdJ0z5HhVveWpFAA==
+=kAn9
+-----END PGP SIGNATURE-----
+
+--jFb1H5fO55BsGCIwCmWgC2TBEIdMorngA--
