@@ -1,56 +1,79 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 2/2] can: bcm: limit minimum gap of tx cycle time
-Date: Thu, 24 Aug 2017 13:59:03 +0200
-Message-ID: <20170824115903.3661-2-socketcan@hartkopp.net>
-References: <20170824115903.3661-1-socketcan@hartkopp.net>
+Subject: Fwd: [PATCH] tun/tap: Add the missed return value check of
+ register_netdevice_notifier
+Date: Thu, 24 Aug 2017 14:10:03 +0200
+Message-ID: <b5a0b625-b474-cd67-d4d7-feeaa36b372e@hartkopp.net>
+References: <1500543694-23465-1-git-send-email-xiangxia.m.yue@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:8677 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:13519 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751270AbdHXL7Y (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Aug 2017 07:59:24 -0400
-In-Reply-To: <20170824115903.3661-1-socketcan@hartkopp.net>
+        with ESMTP id S1751290AbdHXMKK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Aug 2017 08:10:10 -0400
+In-Reply-To: <1500543694-23465-1-git-send-email-xiangxia.m.yue@gmail.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-The cyclic TX message creation is intended for automotive use-cases to
-implement high precision CAN frame transmissions from kernel space.
-Usual applications send CAN frames in a cycle time ranging from 1000ms
-down to 5ms. This patch implements a reasonable minimum gap of 500us.
+Hi Marc,
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+just going through your set of patches for the midlayer handling 
+simplifications, I was thinking about adding these kind of checks too.
+
+I would suggest these checks to be implemented within a general code 
+improvement.
+
+This patch 
+(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5edfbd3c0697e643f179dba819a7c09375b42543) 
+didn't make its way into -stable either.
+
+So I would leave it up to you where in the midlayer patchset these 
+checks are to be introduced.
+
+Regards,
+Oliver
+
+-------- Forwarded Message --------
+Subject: [PATCH] tun/tap: Add the missed return value check of 
+register_netdevice_notifier
+Date: Thu, 20 Jul 2017 02:41:34 -0700
+From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+To: netdev@vger.kernel.org
+CC: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+
+There is some codes of tun/tap module which did not check the return
+value of register_netdevice_notifier. Add the check now.
+
+Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 ---
- net/can/bcm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+  drivers/net/tun.c | 10 +++++++++-
+  1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index f1a8d9a5b1cb..b0dbe7a389ee 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -67,6 +67,9 @@
-  */
- #define MAX_NFRAMES 256
- 
-+/* minimum gap between two frame transmissions for TX_SETUP : 500 usecs */
-+#define BCM_TX_MIN_NS 500000
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 3d4c245..32ad873 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -2598,8 +2598,16 @@ static int __init tun_init(void)
+  		goto err_misc;
+  	}
+  -	register_netdevice_notifier(&tun_notifier_block);
++	ret = register_netdevice_notifier(&tun_notifier_block);
++	if (ret) {
++		pr_err("Can't register netdevice notifier\n");
++		goto err_notifier;
++	}
 +
- /* use of last_frames[index].flags */
- #define RX_RECV    0x40 /* received data for this element */
- #define RX_THR     0x80 /* element not been sent due to throttle feature */
-@@ -1020,6 +1023,12 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		op->kt_ival1 = bcm_timeval_to_ktime(msg_head->ival1);
- 		op->kt_ival2 = bcm_timeval_to_ktime(msg_head->ival2);
- 
-+		if (op->kt_ival1 && ktime_to_ns(op->kt_ival1) < BCM_TX_MIN_NS)
-+			op->kt_ival1 = BCM_TX_MIN_NS;
+  	return  0;
 +
-+		if (op->kt_ival2 && ktime_to_ns(op->kt_ival2) < BCM_TX_MIN_NS)
-+			op->kt_ival2 = BCM_TX_MIN_NS;
-+
- 		/* disable an active timer due to zero values? */
- 		if (!op->kt_ival1 && !op->kt_ival2)
- 			hrtimer_cancel(&op->timer);
++err_notifier:
++	misc_deregister(&tun_miscdev);
+  err_misc:
+  	rtnl_link_unregister(&tun_link_ops);
+  err_linkops:
 -- 
-2.11.0
+1.8.3.1
 
