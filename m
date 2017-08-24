@@ -1,69 +1,76 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: Request-for-testing: j1939
-Date: Thu, 24 Aug 2017 09:15:19 +0200
-Message-ID: <20170824071519.GA22055@airbook.vandijck-laurijssen.be>
-References: <9071ec9a-2b26-ed36-3b11-5f97f4b252d9@pengutronix.de>
+From: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [v2,1/3] can: m_can: Make hclk optional
+Date: Thu, 24 Aug 2017 13:30:30 +0530
+Message-ID: <6f574628-51cd-0db8-e5aa-e7ae4a9cf79a@ti.com>
+References: <20170724225142.19975-2-fcooper@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b01.edpnet.be ([212.71.1.221]:46838 "EHLO
-        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751214AbdHXHPX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Aug 2017 03:15:23 -0400
-Content-Disposition: inline
-In-Reply-To: <9071ec9a-2b26-ed36-3b11-5f97f4b252d9@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170724225142.19975-2-fcooper@ti.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Franklin Cooper <fcooper@ti.com>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com
+Cc: "Kristo, Tero" <t-kristo@ti.com>, Tony Lindgren <tony@atomide.com>, Linux OMAP List <linux-omap@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-Marc,
++ some OMAP folks and Linux OMAP list
 
-Looks good.
-I grouped the patches in 3 groups:
-* Patches we discussed
-* code (style) fixes
-* networking layer patches that appear to be improve the code
-  in a way I couldn't have done.
+On Tuesday 25 July 2017 04:21 AM, Franklin Cooper wrote:
+> Hclk is the MCAN's interface clock. However, for OMAP based devices such as
+> DRA7 SoC family the interface clock is handled by hwmod. Therefore, this
+> interface clock is managed by hwmod driver via pm_runtime_get and
+> pm_runtime_put calls. Therefore, this interface clock isn't defined in DT
+> and thus the driver shouldn't fail if this clock isn't found.
 
-I'll try to run some tests on it during the next couple of weeks.
+I agree that hclk is defined as interface clock for M_CAN IP on DRA76x.
 
-Kind regards,
-Kurt
+However, there may be a need for the driver to know the value of hclk to
+properly configure the RAM watchdog register which has a counter
+counting down using hclk. Looks like the driver does not use the RAM
+watchdog today. But if there is a need to configure it in future, it
+might be a problem.
 
---- Original message ---
-> Date: Wed, 23 Aug 2017 17:17:54 +0200
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Kurt Van Dijck
->  <dev.kurt@vandijck-laurijssen.be>, David Jander <david@protonic.nl>
-> Subject: Request-for-testing: j1939
-> User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
->  Thunderbird/52.2.1
+Is there a restriction in OMAP architecture against passing the
+interface clock also in the 'clocks' property in DT. I have not tried it
+myself, but wonder if you hit an issue that led to this patch.
+
 > 
-> Hello,
+> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> ---
+> Version 2 changes:
+> Used NULL instead of 0 for unused hclk handle
 > 
-> I've worked my way a bit through the lower layers of the j1939 stack.
-> While there I cleaned up the livetime handling of the j1939 object and
-> the bind() and connect() functions. Unplugging a USB network device
-> while a application is running should now be possible.
+>  drivers/net/can/m_can/m_can.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> The patch stack consists of ~100 patches, ~15 of them are cleanups for
-> the af_can. I'm not going to post the patches here for review, testing
-> is much more welcome. Maybe we can put together a testsuite.
-> 
-> The branch is available at my kernel.org linux-can-next repo in the
-> j1939 branch.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/?h=j1939
-> 
-> regards,
-> Marc
-> -- 
-> Pengutronix e.K.                  | Marc Kleine-Budde           |
-> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-> 
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> index f4947a7..ea48e59 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -1568,8 +1568,13 @@ static int m_can_plat_probe(struct platform_device *pdev)
+>  	hclk = devm_clk_get(&pdev->dev, "hclk");
+>  	cclk = devm_clk_get(&pdev->dev, "cclk");
+>  
+> -	if (IS_ERR(hclk) || IS_ERR(cclk)) {
+> -		dev_err(&pdev->dev, "no clock found\n");
+> +	if (IS_ERR(hclk)) {
+> +		dev_warn(&pdev->dev, "hclk could not be found\n");
+> +		hclk = NULL;
 
+What is the purpose of NULL setting the clock. I think this is taking it
+into a very implementation defined territory and the result could be
+different on different architectures. See Russell's explanation here:
+https://lkml.org/lkml/2016/11/10/799
 
+Thanks,
+Sekhar
 
+> +	}
+> +
+> +	if (IS_ERR(cclk)) {
+> +		dev_err(&pdev->dev, "cclk could not be found\n");
+>  		ret = -ENODEV;
+>  		goto failed_ret;
+>  	}
+> 
