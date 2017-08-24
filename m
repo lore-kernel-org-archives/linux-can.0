@@ -1,19 +1,19 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 06/14] can: af_can: rename find_rcv_list() to
- can_rcv_list_find()
-Date: Thu, 24 Aug 2017 15:11:03 +0200
-Message-ID: <068ceb4d-7a02-9a8a-2e1a-c4a2782310ca@hartkopp.net>
+Subject: Re: [PATCH 07/14] can: af_can: give variable holding the CAN receiver
+ and the receiver list a sensible name
+Date: Thu, 24 Aug 2017 15:27:26 +0200
+Message-ID: <dcc2b165-e262-d442-d97d-db60b64bc3ae@hartkopp.net>
 References: <20170802174434.4689-1-mkl@pengutronix.de>
- <20170802174434.4689-7-mkl@pengutronix.de>
+ <20170802174434.4689-8-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:23688 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:30732 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751280AbdHXNLE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Aug 2017 09:11:04 -0400
-In-Reply-To: <20170802174434.4689-7-mkl@pengutronix.de>
+        with ESMTP id S1751140AbdHXN12 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Aug 2017 09:27:28 -0400
+In-Reply-To: <20170802174434.4689-8-mkl@pengutronix.de>
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -23,23 +23,25 @@ Cc: kernel@pengutronix.de
 
 
 On 08/02/2017 07:44 PM, Marc Kleine-Budde wrote:
-> This patch add the commonly used prefix "can_" to the find_rcv_list()
-> function and add the "find" to the end, as the function returns a struct
-> rcv_list. This improves the overall readability of the code.
+> This patch gives the variables holding the CAN receiver and the receiver
+> list a better name by renaming them from "r to "rcv" and "rl" to
+> "recv_list".
 
-The function should be named according to it's natural function.
+Comment not consistent to code.
 
-If you want to move it to some kind of 'can' namespace I would suggest
+> 
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-find_can_rcv_list()
+Indeed I would suggest 'rcv' and 'rcvlist'
 
-> -		rl = find_rcv_list(&can_id, &mask, dev_rcv_lists);
-> +		rl = can_rcv_list_find(&can_id, &mask, dev_rcv_lists);
+> -		hlist_add_head_rcu(&r->list, rl);
+> +		hlist_add_head_rcu(&rcv->list, rcv_list);
 
-find_... is better to understand than can_...
+would lead to
 
-And this is a local function not visible to anyone else outside of 
-af_can.c .
+ > +		hlist_add_head_rcu(&rcv->list, rcvlist);
+
+which looks better to me.
 
 Regards,
 Oliver
