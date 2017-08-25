@@ -1,211 +1,146 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: [PATCH 09/14] can: raw: use struct sock::sk_bound_dev_if instead
- of struct raw_sock::ifindex
-Date: Fri, 25 Aug 2017 11:34:10 +0200
-Message-ID: <20170825093410.GC18332@airbook.vandijck-laurijssen.be>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 02/14] can: give structs holding the CAN statistics a
+ sensible name
+Date: Fri, 25 Aug 2017 15:08:17 +0200
+Message-ID: <361c5e96-0e89-ba24-4fbf-18087470bc69@pengutronix.de>
 References: <20170802174434.4689-1-mkl@pengutronix.de>
- <20170802174434.4689-10-mkl@pengutronix.de>
- <da0c99fe-16ca-6e3a-0249-663b0691c850@hartkopp.net>
- <20170824141126.GD21548@airbook.vandijck-laurijssen.be>
- <e1a150f8-7a0b-b327-86ac-e66cf3d817ef@hartkopp.net>
+ <20170802174434.4689-3-mkl@pengutronix.de>
+ <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="EAx739b9ppjGkouSmXP15BuFttuL8d4xh"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b03.edpnet.be ([212.71.1.220]:50693 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754481AbdHYJeP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Aug 2017 05:34:15 -0400
-Content-Disposition: inline
-In-Reply-To: <e1a150f8-7a0b-b327-86ac-e66cf3d817ef@hartkopp.net>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:38289 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1754456AbdHYNIX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Aug 2017 09:08:23 -0400
+In-Reply-To: <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de
 
-> On 08/24/2017 04:11 PM, Kurt Van Dijck wrote:
-> >>>This patch removes the struct raw_sock::ifindex from the CAN raw socket
-> >>>and uses the already existing sock::sk_bound_dev_if instead.
-> >>
-> >>I would like to omit this patch.
-> >>
-> >>1. It does NOT increase the readability ;-)
-> >>
-> >>ifindex points out that we are handling an interface index.
-> >>sk_bound_dev_if could be anything.
-> >
-> >See http://elixir.free-electrons.com/linux/v4.12.8/source/net/core/sock.c#L617
-> >sk_bound_dev_if may be a difficult name, but could not be anything.
-> >It allow to use SO_BINDTODEVICE (man 7 socket) to work properly for can raw sockets too.
-> 
-> When ro->ifindex = 0 it can still be bound in the case of CAN sockets.
-> There is a different semantic as ifindex = zero means 'all CAN interfaces'
-> and not 'no interface'.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--EAx739b9ppjGkouSmXP15BuFttuL8d4xh
+Content-Type: multipart/mixed; boundary="fQqVo31gigfT4Ng8LtAFOarIQmai0cmuL";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de
+Message-ID: <361c5e96-0e89-ba24-4fbf-18087470bc69@pengutronix.de>
+Subject: Re: [PATCH 02/14] can: give structs holding the CAN statistics a
+ sensible name
+References: <20170802174434.4689-1-mkl@pengutronix.de>
+ <20170802174434.4689-3-mkl@pengutronix.de>
+ <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
+In-Reply-To: <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
 
-ro->ifindex = 0: accept traffic from all interfaces
-ro->ifindex != 0: accept traffic only from 1 iface
+--fQqVo31gigfT4Ng8LtAFOarIQmai0cmuL
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 
-sk_bound_dev_if = 0: accept traffic from all interfaces
-sk_bound_dev_if != 0: accept traffic only from 1 iface
+On 08/24/2017 02:58 PM, Oliver Hartkopp wrote:
+> Naming structs and its instances identically is bad.
+>=20
+> On 08/02/2017 07:44 PM, Marc Kleine-Budde wrote:
+>=20
+>>   struct netns_can {
+>>   #if IS_ENABLED(CONFIG_PROC_FS)
+>> @@ -30,8 +30,8 @@ struct netns_can {
+>>   	struct dev_rcv_lists *can_rx_alldev_list;
+>>   	spinlock_t can_rcvlists_lock;
+>>   	struct timer_list can_stattimer;/* timer for statistics update */
+>> -	struct s_stats *can_stats;	/* packet statistics */
+>> -	struct s_pstats *can_pstats;	/* receive list statistics */
+>> +	struct can_stats *can_stats; /* packet statistics */
+>> +	struct can_pstats *can_pstats; /* receive list statistics */
+                               ^
+Now I found out what that "p" originally means:
 
-What is the semantic difference?
+> /* persistent statistics */
+> struct can_pstats {
+> 	unsigned long stats_reset;
+> 	unsigned long user_reset;
+> 	unsigned long rcv_entries;
+> 	unsigned long rcv_entries_max;
+> };
 
-> 
-> So I would really wonder whether SO_BINDTODEVICE (man 7 socket) would ever
-> work properly for can raw sockets too.
+\o/
 
-I guess that it's up to us to make it work or not.
-Due to the can filter design which is not tied to sockets, we must
-implement it per socket type. Yet, AF_CAN has already defined the
-functionality, so it shouldn't be too hard.
+> If you really want to rename this stuff, what about this:
+>=20
+> struct can_pkt_stats *can_stats; /* packet statistics */
+> struct can_rxl_stats *can_rstats; /* receive list statistics */
+             ^^^
+We're using rcv_list(s) instead of rxl in various other places.
 
-Regards,
-Kurt
+If we give the variables speaking names, the comments are obsolete:
 
-> 
-> Thanks for the reference to sock.c - it just proved my guts feeling.
-> 
-> Regards,
-> Oliver
-> 
-> >
-> >>
-> >>2. I have bad feelings on using data structures from the general networking
-> >>code as I had various discussions with e.g. iif in struct netdevice so that
-> >>we needed to store our CAN specific incoming interface in a separated space
-> >>before skb->data.
-> >
-> >sock::sk_bound_dev_if happens to be semantically identical to raw_sock::ifindex.
-> >The grounds for discussions are IMHO very limited in this matter.
-> >It also helps to check for the net device being a CAN device first.
-> >
-> >Kind regards,
-> >Kurt
-> >>
-> >>Regards,
-> >>Oliver
-> >>
-> >>>
-> >>>Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> >>>---
-> >>>  net/can/raw.c | 33 +++++++++++++++------------------
-> >>>  1 file changed, 15 insertions(+), 18 deletions(-)
-> >>>
-> >>>diff --git a/net/can/raw.c b/net/can/raw.c
-> >>>index 864c80dbdb72..80a1545bf51a 100644
-> >>>--- a/net/can/raw.c
-> >>>+++ b/net/can/raw.c
-> >>>@@ -83,7 +83,6 @@ struct uniqframe {
-> >>>  struct raw_sock {
-> >>>  	struct sock sk;
-> >>>  	int bound;
-> >>>-	int ifindex;
-> >>>  	struct notifier_block notifier;
-> >>>  	int loopback;
-> >>>  	int recv_own_msgs;
-> >>>@@ -279,7 +278,7 @@ static int raw_notifier(struct notifier_block *nb,
-> >>>  	if (dev->type != ARPHRD_CAN)
-> >>>  		return NOTIFY_DONE;
-> >>>-	if (ro->ifindex != dev->ifindex)
-> >>>+	if (sk->sk_bound_dev_if != dev->ifindex)
-> >>>  		return NOTIFY_DONE;
-> >>>  	switch (msg) {
-> >>>@@ -293,7 +292,7 @@ static int raw_notifier(struct notifier_block *nb,
-> >>>  		if (ro->count > 1)
-> >>>  			kfree(ro->filter);
-> >>>-		ro->ifindex = 0;
-> >>>+		sk->sk_bound_dev_if = 0;
-> >>>  		ro->bound   = 0;
-> >>>  		ro->count   = 0;
-> >>>  		release_sock(sk);
-> >>>@@ -318,7 +317,6 @@ static int raw_init(struct sock *sk)
-> >>>  	struct raw_sock *ro = raw_sk(sk);
-> >>>  	ro->bound            = 0;
-> >>>-	ro->ifindex          = 0;
-> >>>  	/* set default filter to single entry dfilter */
-> >>>  	ro->dfilter.can_id   = 0;
-> >>>@@ -361,10 +359,10 @@ static int raw_release(struct socket *sock)
-> >>>  	/* remove current filters & unregister */
-> >>>  	if (ro->bound) {
-> >>>-		if (ro->ifindex) {
-> >>>+		if (sk->sk_bound_dev_if) {
-> >>>  			struct net_device *dev;
-> >>>-			dev = dev_get_by_index(sock_net(sk), ro->ifindex);
-> >>>+			dev = dev_get_by_index(sock_net(sk), sk->sk_bound_dev_if);
-> >>>  			if (dev) {
-> >>>  				raw_disable_allfilters(dev_net(dev), dev, sk);
-> >>>  				dev_put(dev);
-> >>>@@ -376,7 +374,7 @@ static int raw_release(struct socket *sock)
-> >>>  	if (ro->count > 1)
-> >>>  		kfree(ro->filter);
-> >>>-	ro->ifindex = 0;
-> >>>+	sk->sk_bound_dev_if = 0;
-> >>>  	ro->bound   = 0;
-> >>>  	ro->count   = 0;
-> >>>  	free_percpu(ro->uniq);
-> >>>@@ -404,7 +402,7 @@ static int raw_bind(struct socket *sock, struct sockaddr *uaddr, int len)
-> >>>  	lock_sock(sk);
-> >>>-	if (ro->bound && addr->can_ifindex == ro->ifindex)
-> >>>+	if (ro->bound && addr->can_ifindex == sk->sk_bound_dev_if)
-> >>>  		goto out;
-> >>>  	if (addr->can_ifindex) {
-> >>>@@ -438,11 +436,11 @@ static int raw_bind(struct socket *sock, struct sockaddr *uaddr, int len)
-> >>>  	if (!err) {
-> >>>  		if (ro->bound) {
-> >>>  			/* unregister old filters */
-> >>>-			if (ro->ifindex) {
-> >>>+			if (sk->sk_bound_dev_if) {
-> >>>  				struct net_device *dev;
-> >>>  				dev = dev_get_by_index(sock_net(sk),
-> >>>-						       ro->ifindex);
-> >>>+						       sk->sk_bound_dev_if);
-> >>>  				if (dev) {
-> >>>  					raw_disable_allfilters(dev_net(dev),
-> >>>  							       dev, sk);
-> >>>@@ -451,7 +449,7 @@ static int raw_bind(struct socket *sock, struct sockaddr *uaddr, int len)
-> >>>  			} else
-> >>>  				raw_disable_allfilters(sock_net(sk), NULL, sk);
-> >>>  		}
-> >>>-		ro->ifindex = ifindex;
-> >>>+		sk->sk_bound_dev_if = ifindex;
-> >>>  		ro->bound = 1;
-> >>>  	}
-> >>>@@ -472,14 +470,13 @@ static int raw_getname(struct socket *sock, struct sockaddr *uaddr,
-> >>>  {
-> >>>  	struct sockaddr_can *addr = (struct sockaddr_can *)uaddr;
-> >>>  	struct sock *sk = sock->sk;
-> >>>-	struct raw_sock *ro = raw_sk(sk);
-> >>>  	if (peer)
-> >>>  		return -EOPNOTSUPP;
-> >>>  	memset(addr, 0, sizeof(*addr));
-> >>>  	addr->can_family  = AF_CAN;
-> >>>-	addr->can_ifindex = ro->ifindex;
-> >>>+	addr->can_ifindex = sk->sk_bound_dev_if;
-> >>>  	*len = sizeof(*addr);
-> >>>@@ -524,8 +521,8 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
-> >>>  		lock_sock(sk);
-> >>>-		if (ro->bound && ro->ifindex)
-> >>>-			dev = dev_get_by_index(sock_net(sk), ro->ifindex);
-> >>>+		if (ro->bound && sk->sk_bound_dev_if)
-> >>>+			dev = dev_get_by_index(sock_net(sk), sk->sk_bound_dev_if);
-> >>>  		if (ro->bound) {
-> >>>  			/* (try to) register the new filters */
-> >>>@@ -578,8 +575,8 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
-> >>>  		lock_sock(sk);
-> >>>-		if (ro->bound && ro->ifindex)
-> >>>-			dev = dev_get_by_index(sock_net(sk), ro->ifindex);
-> >>>+		if (ro->bound && sk->sk_bound_dev_if)
-> >>>+			dev = dev_get_by_index(sock_net(sk), sk->sk_bound_dev_if);
-> >>>  		/* remove current error mask */
-> >>>  		if (ro->bound) {
-> >>>@@ -743,7 +740,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
-> >>>  		ifindex = addr->can_ifindex;
-> >>>  	} else
-> >>>-		ifindex = ro->ifindex;
-> >>>+		ifindex = sk->sk_bound_dev_if;
-> >>>  	if (ro->fd_frames) {
-> >>>  		if (unlikely(size != CANFD_MTU && size != CAN_MTU))
-> >>>
-> >>--
-> >>To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> >>the body of a message to majordomo@vger.kernel.org
-> >>More majordomo info at  http://vger.kernel.org/majordomo-info.html
+struct can_pkg_stats *can_pkg_stats;
+struct can_rcv_list_stats *can_rcv_list_stats;
+
+We can remove the "can_" prefix of the variables in the struct
+netns_can, as the struct already has the "can" in it.
+
+So the struct becomes:
+
+> struct netns_can {
+> #if IS_ENABLED(CONFIG_PROC_FS)
+> 	struct proc_dir_entry *proc_dir;
+> 	struct proc_dir_entry *pde_version;
+> 	struct proc_dir_entry *pde_stats;
+> 	struct proc_dir_entry *pde_reset_stats;
+> 	struct proc_dir_entry *pde_rcvlist_all;
+> 	struct proc_dir_entry *pde_rcvlist_fil;
+> 	struct proc_dir_entry *pde_rcvlist_inv;
+> 	struct proc_dir_entry *pde_rcvlist_sff;
+> 	struct proc_dir_entry *pde_rcvlist_eff;
+> 	struct proc_dir_entry *pde_rcvlist_err;
+> 	struct proc_dir_entry *bcmproc_dir;
+> #endif
+>=20
+> 	/* receive filters subscribed for 'all' CAN devices */
+> 	struct can_dev_rcv_lists *rx_alldev_list;
+> 	spinlock_t rcvlists_lock;
+> 	struct timer_list stattimer; /* timer for statistics update */
+> 	struct can_pkg_stats *pkg_stats;
+> 	struct can_rcv_lists_stats *rcv_lists_stats;
+>=20
+> #if IS_ENABLED(CONFIG_CAN_GW)
+> 	/* CAN GW per-net gateway jobs */
+> 	struct hlist_head cgw_list;
+> #endif
+> };
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--fQqVo31gigfT4Ng8LtAFOarIQmai0cmuL--
+
+--EAx739b9ppjGkouSmXP15BuFttuL8d4xh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlmgIUEACgkQHv7KIOw4
+HPZ7Vgf7B8cQznPJjtQoQ7oDQvTM5bdUznfwJ5qUtsOmWgzrmV/oWt9zDU3j09yq
+/C4P+BIZYuc4rJf7xgHeT4Di6TcSNQIk0Y/+5R2q1OamGNo0jkumpcQDNv+wM2OX
+mW9lEHVeLhuXSZwgSphpZkbZ3YOPfV4lnqEUrmiL+/vZKW+PiURZxE/HtBnuVeJu
+0vTQMw0ajppw2fwisBvAi3VGIHKpUS7ILkAVgi/3buHflUt0zTlGvmm/4w430bqM
+RLKlCjpFNP70Nvq7CwENz6kWggomOBnqpW1vDbtMXgEwZzDf5aCo2jDDtaloNlEP
+UpM2B0s4VzQ6cZgirO/KvGaJ4Rkb8Q==
+=EF3h
+-----END PGP SIGNATURE-----
+
+--EAx739b9ppjGkouSmXP15BuFttuL8d4xh--
