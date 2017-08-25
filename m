@@ -1,146 +1,72 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 02/14] can: give structs holding the CAN statistics a
- sensible name
-Date: Fri, 25 Aug 2017 15:08:17 +0200
-Message-ID: <361c5e96-0e89-ba24-4fbf-18087470bc69@pengutronix.de>
-References: <20170802174434.4689-1-mkl@pengutronix.de>
- <20170802174434.4689-3-mkl@pengutronix.de>
- <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: RE: AW: AW: flexcan missing error state transitions
+Date: Fri, 25 Aug 2017 17:16:49 +0000
+Message-ID: <150368140986.1980.16506501029365689153@maxwell>
+References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
+ <150333230375.13890.2773067532209799515@maxwell>
+ <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
+ <150333966184.28484.15326759292718336833@maxwell>
+ <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
+ <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
+ <6a410757a698403c91dcf254a1be3cd9@SI-MBX1030.de.bosch.com>
+ <102e6fbef130471992b7e1a8feaa9465@SGPMBX1017.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="EAx739b9ppjGkouSmXP15BuFttuL8d4xh"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:38289 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1754456AbdHYNIX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Aug 2017 09:08:23 -0400
-In-Reply-To: <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
+Received: from mail-db5eur01on0078.outbound.protection.outlook.com ([104.47.2.78]:28813
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1755291AbdHYRQ6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 25 Aug 2017 13:16:58 -0400
+In-Reply-To: <102e6fbef130471992b7e1a8feaa9465@SGPMBX1017.APAC.bosch.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>
+Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EAx739b9ppjGkouSmXP15BuFttuL8d4xh
-Content-Type: multipart/mixed; boundary="fQqVo31gigfT4Ng8LtAFOarIQmai0cmuL";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de
-Message-ID: <361c5e96-0e89-ba24-4fbf-18087470bc69@pengutronix.de>
-Subject: Re: [PATCH 02/14] can: give structs holding the CAN statistics a
- sensible name
-References: <20170802174434.4689-1-mkl@pengutronix.de>
- <20170802174434.4689-3-mkl@pengutronix.de>
- <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
-In-Reply-To: <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
+Hi Yi
 
---fQqVo31gigfT4Ng8LtAFOarIQmai0cmuL
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+I've only had time to review patch 3.
 
-On 08/24/2017 02:58 PM, Oliver Hartkopp wrote:
-> Naming structs and its instances identically is bad.
->=20
-> On 08/02/2017 07:44 PM, Marc Kleine-Budde wrote:
->=20
->>   struct netns_can {
->>   #if IS_ENABLED(CONFIG_PROC_FS)
->> @@ -30,8 +30,8 @@ struct netns_can {
->>   	struct dev_rcv_lists *can_rx_alldev_list;
->>   	spinlock_t can_rcvlists_lock;
->>   	struct timer_list can_stattimer;/* timer for statistics update */
->> -	struct s_stats *can_stats;	/* packet statistics */
->> -	struct s_pstats *can_pstats;	/* receive list statistics */
->> +	struct can_stats *can_stats; /* packet statistics */
->> +	struct can_pstats *can_pstats; /* receive list statistics */
-                               ^
-Now I found out what that "p" originally means:
+Quoting ZHU Yi (ST-FIR/ENG1-Zhu) (2017-08-24 09:40:38)
+> Patch 3 (0001-can-flexcan-compensate-state-interrupt-on-demand.patch)
+> This patch adds a timer to poll the state to compensate the incomplete
+> state interrupt. The purpose is to avoid polling the state as much as
+> possible and still notify upon any state transition via the SocketCAN
+> error frame. It depends on auto-retransmission being enabled. But to
+> our understanding that is always the case - there is no code to disable
+> it. The user can configure the polling interval via DT based on the
+> bitrate used (reasonable lower boundary) or acceptable notification
+> latency in the application (upper boundary). The polling can be
+> disabled, too. Please note that the polling interval *must not* be
+> faster than <maximum transmission time for a frame> * 16, or else the
+> error counter will not reach 128 and thus the error state might not
+> change within the polling interval. So too fast is not good here.
 
-> /* persistent statistics */
-> struct can_pstats {
-> 	unsigned long stats_reset;
-> 	unsigned long user_reset;
-> 	unsigned long rcv_entries;
-> 	unsigned long rcv_entries_max;
-> };
+That sounds rather shaky. Wouldn't it be more robust to have the timer be
+periodic? Besides, over-sampling is preferable in order to avoid missed
+transitions, right? See diff below.
 
-\o/
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+...
+> +static void flexcan_update_state_timeout(unsigned long data)
+> +{
+> +	struct net_device *dev =3D (struct net_device*)data;
+> +	struct flexcan_priv *priv =3D netdev_priv(dev);
+> +	struct flexcan_regs __iomem *regs =3D priv->regs;
+> +	u32 reg_esr;
+> +
+> +	/* update state atomically */
+> +	disable_irq(dev->irq);
+> +	reg_esr =3D flexcan_read(&regs->esr);
+> +	flexcan_irq_state(dev, reg_esr);
+You could restart the timer here if the error state is not error-active. Th=
+en
+you would not have the problem of having to choose an interval so carefully.
+> +	enable_irq(dev->irq);
+> +}
+...
 
-> If you really want to rename this stuff, what about this:
->=20
-> struct can_pkt_stats *can_stats; /* packet statistics */
-> struct can_rxl_stats *can_rstats; /* receive list statistics */
-             ^^^
-We're using rcv_list(s) instead of rxl in various other places.
-
-If we give the variables speaking names, the comments are obsolete:
-
-struct can_pkg_stats *can_pkg_stats;
-struct can_rcv_list_stats *can_rcv_list_stats;
-
-We can remove the "can_" prefix of the variables in the struct
-netns_can, as the struct already has the "can" in it.
-
-So the struct becomes:
-
-> struct netns_can {
-> #if IS_ENABLED(CONFIG_PROC_FS)
-> 	struct proc_dir_entry *proc_dir;
-> 	struct proc_dir_entry *pde_version;
-> 	struct proc_dir_entry *pde_stats;
-> 	struct proc_dir_entry *pde_reset_stats;
-> 	struct proc_dir_entry *pde_rcvlist_all;
-> 	struct proc_dir_entry *pde_rcvlist_fil;
-> 	struct proc_dir_entry *pde_rcvlist_inv;
-> 	struct proc_dir_entry *pde_rcvlist_sff;
-> 	struct proc_dir_entry *pde_rcvlist_eff;
-> 	struct proc_dir_entry *pde_rcvlist_err;
-> 	struct proc_dir_entry *bcmproc_dir;
-> #endif
->=20
-> 	/* receive filters subscribed for 'all' CAN devices */
-> 	struct can_dev_rcv_lists *rx_alldev_list;
-> 	spinlock_t rcvlists_lock;
-> 	struct timer_list stattimer; /* timer for statistics update */
-> 	struct can_pkg_stats *pkg_stats;
-> 	struct can_rcv_lists_stats *rcv_lists_stats;
->=20
-> #if IS_ENABLED(CONFIG_CAN_GW)
-> 	/* CAN GW per-net gateway jobs */
-> 	struct hlist_head cgw_list;
-> #endif
-> };
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---fQqVo31gigfT4Ng8LtAFOarIQmai0cmuL--
-
---EAx739b9ppjGkouSmXP15BuFttuL8d4xh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlmgIUEACgkQHv7KIOw4
-HPZ7Vgf7B8cQznPJjtQoQ7oDQvTM5bdUznfwJ5qUtsOmWgzrmV/oWt9zDU3j09yq
-/C4P+BIZYuc4rJf7xgHeT4Di6TcSNQIk0Y/+5R2q1OamGNo0jkumpcQDNv+wM2OX
-mW9lEHVeLhuXSZwgSphpZkbZ3YOPfV4lnqEUrmiL+/vZKW+PiURZxE/HtBnuVeJu
-0vTQMw0ajppw2fwisBvAi3VGIHKpUS7ILkAVgi/3buHflUt0zTlGvmm/4w430bqM
-RLKlCjpFNP70Nvq7CwENz6kWggomOBnqpW1vDbtMXgEwZzDf5aCo2jDDtaloNlEP
-UpM2B0s4VzQ6cZgirO/KvGaJ4Rkb8Q==
-=EF3h
------END PGP SIGNATURE-----
-
---EAx739b9ppjGkouSmXP15BuFttuL8d4xh--
+Best regards,
+Andri
