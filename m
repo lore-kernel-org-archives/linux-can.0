@@ -1,129 +1,83 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 02/14] can: give structs holding the CAN statistics a
- sensible name
-Date: Fri, 25 Aug 2017 19:32:28 +0200
-Message-ID: <e3913ee0-93cc-2b22-dec2-75321a9b1ac7@hartkopp.net>
+Subject: Re: [PATCH 09/14] can: raw: use struct sock::sk_bound_dev_if instead
+ of struct raw_sock::ifindex
+Date: Fri, 25 Aug 2017 19:54:52 +0200
+Message-ID: <f739fc65-5f17-532c-a635-0cc2fe8e2382@hartkopp.net>
 References: <20170802174434.4689-1-mkl@pengutronix.de>
- <20170802174434.4689-3-mkl@pengutronix.de>
- <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
- <361c5e96-0e89-ba24-4fbf-18087470bc69@pengutronix.de>
+ <20170802174434.4689-10-mkl@pengutronix.de>
+ <da0c99fe-16ca-6e3a-0249-663b0691c850@hartkopp.net>
+ <20170824141126.GD21548@airbook.vandijck-laurijssen.be>
+ <e1a150f8-7a0b-b327-86ac-e66cf3d817ef@hartkopp.net>
+ <20170825093410.GC18332@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:19133 "EHLO
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:29518 "EHLO
         mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755564AbdHYRcd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Aug 2017 13:32:33 -0400
-In-Reply-To: <361c5e96-0e89-ba24-4fbf-18087470bc69@pengutronix.de>
+        with ESMTP id S1754700AbdHYRyy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Aug 2017 13:54:54 -0400
+In-Reply-To: <20170825093410.GC18332@airbook.vandijck-laurijssen.be>
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, kernel@pengutronix.de, dev.kurt@vandijck-laurijssen.be
 
 
 
-On 08/25/2017 03:08 PM, Marc Kleine-Budde wrote:
-> On 08/24/2017 02:58 PM, Oliver Hartkopp wrote:
->> Naming structs and its instances identically is bad.
+On 08/25/2017 11:34 AM, Kurt Van Dijck wrote:
+>> On 08/24/2017 04:11 PM, Kurt Van Dijck wrote:
+>>>>> This patch removes the struct raw_sock::ifindex from the CAN raw socket
+>>>>> and uses the already existing sock::sk_bound_dev_if instead.
+>>>>
+>>>> I would like to omit this patch.
+>>>>
+>>>> 1. It does NOT increase the readability ;-)
+>>>>
+>>>> ifindex points out that we are handling an interface index.
+>>>> sk_bound_dev_if could be anything.
+>>>
+>>> See http://elixir.free-electrons.com/linux/v4.12.8/source/net/core/sock.c#L617
+>>> sk_bound_dev_if may be a difficult name, but could not be anything.
+>>> It allow to use SO_BINDTODEVICE (man 7 socket) to work properly for can raw sockets too.
 >>
->> On 08/02/2017 07:44 PM, Marc Kleine-Budde wrote:
->>
->>>    struct netns_can {
->>>    #if IS_ENABLED(CONFIG_PROC_FS)
->>> @@ -30,8 +30,8 @@ struct netns_can {
->>>    	struct dev_rcv_lists *can_rx_alldev_list;
->>>    	spinlock_t can_rcvlists_lock;
->>>    	struct timer_list can_stattimer;/* timer for statistics update */
->>> -	struct s_stats *can_stats;	/* packet statistics */
->>> -	struct s_pstats *can_pstats;	/* receive list statistics */
->>> +	struct can_stats *can_stats; /* packet statistics */
->>> +	struct can_pstats *can_pstats; /* receive list statistics */
->                                 ^
-> Now I found out what that "p" originally means:
+>> When ro->ifindex = 0 it can still be bound in the case of CAN sockets.
+>> There is a different semantic as ifindex = zero means 'all CAN interfaces'
+>> and not 'no interface'.
 > 
->> /* persistent statistics */
->> struct can_pstats {
->> 	unsigned long stats_reset;
->> 	unsigned long user_reset;
->> 	unsigned long rcv_entries;
->> 	unsigned long rcv_entries_max;
->> };
+> ro->ifindex = 0: accept traffic from all interfaces
+> ro->ifindex != 0: accept traffic only from 1 iface
 > 
-> \o/
+> sk_bound_dev_if = 0: accept traffic from all interfaces
+> sk_bound_dev_if != 0: accept traffic only from 1 iface
 > 
->> If you really want to rename this stuff, what about this:
->>
->> struct can_pkt_stats *can_stats; /* packet statistics */
->> struct can_rxl_stats *can_rstats; /* receive list statistics */
->               ^^^
-> We're using rcv_list(s) instead of rxl in various other places.
-> 
-> If we give the variables speaking names, the comments are obsolete:
-> 
-> struct can_pkg_stats *can_pkg_stats;
-> struct can_rcv_list_stats *can_rcv_list_stats;
-> 
-> We can remove the "can_" prefix of the variables in the struct
-> netns_can, as the struct already has the "can" in it.
+> What is the semantic difference?
 
-Yes. Good idea.
+man 7 socket
 
-> 
-> So the struct becomes:
-> 
->> struct netns_can {
->> #if IS_ENABLED(CONFIG_PROC_FS)
->> 	struct proc_dir_entry *proc_dir;
->> 	struct proc_dir_entry *pde_version;
->> 	struct proc_dir_entry *pde_stats;
->> 	struct proc_dir_entry *pde_reset_stats;
->> 	struct proc_dir_entry *pde_rcvlist_all;
->> 	struct proc_dir_entry *pde_rcvlist_fil;
->> 	struct proc_dir_entry *pde_rcvlist_inv;
->> 	struct proc_dir_entry *pde_rcvlist_sff;
->> 	struct proc_dir_entry *pde_rcvlist_eff;
->> 	struct proc_dir_entry *pde_rcvlist_err;
->> 	struct proc_dir_entry *bcmproc_dir;
->> #endif
->>
->> 	/* receive filters subscribed for 'all' CAN devices */
->> 	struct can_dev_rcv_lists *rx_alldev_list;
->> 	spinlock_t rcvlists_lock;
->> 	struct timer_list stattimer; /* timer for statistics update */
->> 	struct can_pkg_stats *pkg_stats;
->> 	struct can_rcv_lists_stats *rcv_lists_stats;
+SO_BINDTODEVICE
 
-Agreed :-)
+Bind this socket to a particular device like “eth0”, as specified in the 
+passed interface name.  If the name  is  an empty  string  or the option 
+length is zero, the socket device binding is removed.  The passed option 
+is a variable-length null-terminated interface name string with the 
+maximum size of IFNAMSIZ.  If a socket is bound to  an  interface,  only 
+  packets received from that particular interface are processed by the 
+socket. Note that this works only for some socket types, particularly 
+AF_INET sockets.  It is not supported for packet  sockets  (use  normal 
+bind(2) there).
 
-So it would look like this then:
+Especially "If the name  is  an empty  string  or the option length is 
+zero, the socket device binding is removed." is wrong.
 
-diff --git a/net/can/proc.c b/net/can/proc.c
-index 83045f00c63c..559fca8035aa 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -77,14 +77,14 @@ static const char rx_list_name[][8] = {
+A bound CAN_RAW socket can have ifindex = 0.
 
-  static void can_init_stats(struct net *net)
-  {
--	struct s_stats *can_stats = net->can.can_stats;
--	struct s_pstats *can_pstats = net->can.can_pstats;
-+	struct can_pkg_stats *pkg_stats = net->can.pkg_stats;
-+	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+And "It is not supported for packet  sockets  (use  normal  bind(2) 
+there)" - the CAN_RAW socket is based on PF_PACKET sockets with the 
+device binding and addressing concept.
 
-Right?
+The more I look into this, the more I'm sure that we should leave it as-is.
 
-Best regards,
+Regards,
 Oliver
 
->>
->> #if IS_ENABLED(CONFIG_CAN_GW)
->> 	/* CAN GW per-net gateway jobs */
->> 	struct hlist_head cgw_list;
->> #endif
->> };
-> 
-> regards,
-> Marc
-> 
