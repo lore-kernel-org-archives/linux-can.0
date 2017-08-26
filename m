@@ -1,103 +1,69 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: [PATCH 09/14] can: raw: use struct sock::sk_bound_dev_if instead
- of struct raw_sock::ifindex
-Date: Fri, 25 Aug 2017 20:46:44 +0200
-Message-ID: <20170825184644.GB6602@airbook.vandijck-laurijssen.be>
-References: <20170802174434.4689-1-mkl@pengutronix.de>
- <20170802174434.4689-10-mkl@pengutronix.de>
- <da0c99fe-16ca-6e3a-0249-663b0691c850@hartkopp.net>
- <20170824141126.GD21548@airbook.vandijck-laurijssen.be>
- <e1a150f8-7a0b-b327-86ac-e66cf3d817ef@hartkopp.net>
- <20170825093410.GC18332@airbook.vandijck-laurijssen.be>
- <f739fc65-5f17-532c-a635-0cc2fe8e2382@hartkopp.net>
+From: =?GBK?B?1uygRA==?= <zhuyi882004@126.com>
+Subject: Re: flexcan missing error state transitions
+Date: Sat, 26 Aug 2017 13:46:36 +0800 (CST)
+Message-ID: <376b00a0.1c22.15e1d13e43a.Coremail.zhuyi882004@126.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=GBK
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b03.edpnet.be ([212.71.1.220]:58775 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755001AbdHYSqt (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Aug 2017 14:46:49 -0400
-Content-Disposition: inline
-In-Reply-To: <f739fc65-5f17-532c-a635-0cc2fe8e2382@hartkopp.net>
+Received: from m15-18.126.com ([220.181.15.18]:38163 "EHLO m15-18.126.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1750736AbdHZFrG (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 26 Aug 2017 01:47:06 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: andri.yngvason@marel.com, mkl@pengutronix.de, wg@grandegger.com, linux-can@vger.kernel.org
+Cc: hs@denx.de, mark.jonas@de.bosch.com, tingquan.ruan@cn.bosch.com, yi.zhu5@cn.bosch.com
 
-Hey Oliver,
-
-> On 08/25/2017 11:34 AM, Kurt Van Dijck wrote:
-> >>On 08/24/2017 04:11 PM, Kurt Van Dijck wrote:
-> >>>>>This patch removes the struct raw_sock::ifindex from the CAN raw socket
-> >>>>>and uses the already existing sock::sk_bound_dev_if instead.
-> >>>>
-> >>>>I would like to omit this patch.
-> >>>>
-> >>>>1. It does NOT increase the readability ;-)
-> >>>>
-> >>>>ifindex points out that we are handling an interface index.
-> >>>>sk_bound_dev_if could be anything.
-> >>>
-> >>>See http://elixir.free-electrons.com/linux/v4.12.8/source/net/core/sock.c#L617
-> >>>sk_bound_dev_if may be a difficult name, but could not be anything.
-> >>>It allow to use SO_BINDTODEVICE (man 7 socket) to work properly for can raw sockets too.
-> >>
-> >>When ro->ifindex = 0 it can still be bound in the case of CAN sockets.
-> >>There is a different semantic as ifindex = zero means 'all CAN interfaces'
-> >>and not 'no interface'.
-> >
-> >ro->ifindex = 0: accept traffic from all interfaces
-> >ro->ifindex != 0: accept traffic only from 1 iface
-> >
-> >sk_bound_dev_if = 0: accept traffic from all interfaces
-> >sk_bound_dev_if != 0: accept traffic only from 1 iface
-> >
-> >What is the semantic difference?
-> 
-> man 7 socket
-> 
-> SO_BINDTODEVICE
-> 
-> Bind this socket to a particular device like “eth0”, as specified in the
-> passed interface name.  If the name  is  an empty  string  or the option
-> length is zero, the socket device binding is removed.  The passed option is
-> a variable-length null-terminated interface name string with the maximum
-> size of IFNAMSIZ.  If a socket is bound to  an  interface,  only  packets
-> received from that particular interface are processed by the socket. Note
-> that this works only for some socket types, particularly AF_INET sockets.
-> It is not supported for packet  sockets  (use  normal bind(2) there).
-
-A verbatim copy of the man page isn't helping. I have read it.
-
-> 
-> Especially "If the name  is  an empty  string  or the option length is zero,
-> the socket device binding is removed." is wrong.
-
-Do you mean the man page is wrong?
-Or do you mean that the semantic difference is wrong?
-Or ?
-
-> 
-> A bound CAN_RAW socket can have ifindex = 0.
-
-I see no reason why a bound UDP socket can not have sk_bound_dev_if = 0.
-I see no reason why a bound CAN_RAW socket can not either.
-I start to think here that the word 'device binding' confuses you with
-bind(2), but I have not seen any reference that SO_BINDTODEVICE
-conflicts/interacts with bind() so far.
-
-> 
-> And "It is not supported for packet  sockets  (use  normal  bind(2) there)"
-> - the CAN_RAW socket is based on PF_PACKET sockets with the device binding
-> and addressing concept.
-> 
-> The more I look into this, the more I'm sure that we should leave it as-is.
-
-> >>>>I would like to omit this patch.
-
-Well, I feel it may block the others, so indeed, omitting may be the
-best by lack of consensus.
-
-Regards,
-Kurt
+SGkgQW5kcmksCgo+IFRoYXQgc291bmRzIHJhdGhlciBzaGFreS4gV291bGRuJ3QgaXQgYmUgbW9y
+ZSByb2J1c3QgdG8gaGF2ZSB0aGUgdGltZXIgYmUKPiBwZXJpb2RpYz8gQmVzaWRlcywgb3Zlci1z
+YW1wbGluZyBpcyBwcmVmZXJhYmxlIGluIG9yZGVyIHRvIGF2b2lkIG1pc3NlZAo+IHRyYW5zaXRp
+b25zLCByaWdodD8gU2VlIGRpZmYgYmVsb3cuCkkgY2FuIHVuZGVyc3RhbmQgd2h5IHlvdSBmZWVs
+IHNoYWt5LCBidXQgSSB0aGluayB1c2UgcGVyaW9kaWMgdGltZXIgd2lsbCBub3QKZG8gbWVhbmlu
+Z2Z1bCB3b3JrIGhlcmUgLSBqdXN0IHBvbGxpbmcgc3RhdGUgd2hpY2ggZG8gbm90IGNoYW5nZS4K
+ClRoZSByZWFzb24gaXMgZmxleGNhbl9pcnFfc3RhdGUoKSB3aWxsIGJlIGNhbGxlZCB1cG9uIGFu
+eSBpbnRlcnJ1cHQsIHRoYXQKYWxyZWFkeSBndWFyYW50ZWVzIHN0YXRlIGlzIHVwLXRvLWRhdGUg
+aWYgdGhlcmUgaXMgdHJhZmZpYyBvbiB0aGUgYnVzLCB3aGljaAppcyB0aGUgdHJpZ2dlciBvZiBh
+bnkgcG9zc2libGUgc3RhdGUgdHJhbnNpdGlvbnMuIEluIHRoaXMgY2FzZSwgYW55IGtpbmQgb2YK
+cG9sbGluZyBpcyBub3QgcmVxdWlyZWQgKGhvd2V2ZXIsIHRoaXMgcGF0Y2ggd2lsbCBzdGlsbCBk
+byBvbmNlIGV4dHJhIHBvbGxpbmcsCndoaWNoIEknZCBsaWtlIHRvIGF2b2lkIGFzIHdlbGwsIGJ1
+dCBzZWVtcyBubyBlYXN5IHNvbHV0aW9uKS4gRXh0cmEgcG9sbGluZwp3aWxsIGdldCB0aGUgc2Ft
+ZSBzdGF0ZSBhcyBiZWZvcmUgaWYgdGhlcmUgaXMgbm8gbW9yZSB0cmFmZmljLCBhbmQgaWYgdGhl
+CnRyYWZmaWMgaXMgb25nb2luZywgdGhlIGludGVycnVwdCB3aWxsIGJlIGZpcmVkLgoKVGhlIG9u
+bHkgY2FzZSBhYm92ZSBhcHByb2FjaCBjYW5ub3QgaGFuZGxlIGlzIHRoZXJlIGlzIG9ubHkgc2lu
+Z2xlZCBvdXQgbm9kZQpvbiB0aGUgYnVzLCB3aGVyZSB0aGUgdHJhZmZpYyBjYW5ub3QgY29udGlu
+dWUuIEFsdGhvdWdoIHRoZSBjb3JlIHdpbGwgcGVyZm9ybQphdXRvLXJldHJhbnNtaXNzaW9uLCBi
+dXQgaXQgd2lsbCBub3QgZ2VuZXJhdGUgZmxvb2Qgb2YgZXJyb3IgaW50ZXJydXB0cywKaW5zdGVh
+ZCBvbmx5IGdlbmVyYXRlIGFuIEFDSyBlcnJvciAoLytXQVJOKSBpbnRlcnJ1cHQsIHdoZXJlIHRo
+ZSBGTFRfQ09ORiBpcwpub3QgdXAtdG8tZGF0ZSB5ZXQgd2hlbiB0aGUgZmxleGNhbl9pcnFfc3Rh
+dGUoKSBiZWVuIGNhbGxlZCwgYW5kIHRoZXJlIGlzIG5vCnRyaWdnZXIgdG8gdXBkYXRlIHRoZSBz
+dGF0ZSBhZ2FpbiB3aGVuIHRoZSByZWdpc3RlciBpcyBjaGFuZ2VkLiBUaGF0J3MgdGhlCnBvaW50
+IG9mIHRoaXMgcGF0Y2ggdG8gY29tcGVuc2F0ZSB0aGlzIHRyaWdnZXIgYnkgcG9sbCBvbmNlIGF0
+IHRoZSByaWdodCB0aW1lLgpFeHRyYSBwb2xsaW5nIHdpbGwgZ2V0IHRoZSBzYW1lIHN0YXRlIHRv
+byBpZiB0aGUgYnVzIGlzIHN0aWxsIG9wZW4sIGFuZCBpZiB0aGUKYnVzIGlzIHJlY292ZXJlZCwg
+dGhlIGludGVycnVwdCB3aWxsIGJlIGZpcmVkIGFnYWluLgoKUmVnYXJkaW5nIG1pc3NlZCB0cmFu
+c2l0aW9ucywgeWVzLCBpZiB1c2VyIGNob3NlIGEgdG9vIHNob3J0IGRlbGF5LCB0aGVuIGhlCndp
+bGwgbWlzcyB0aGUgZXJyb3IgcGFzc2l2ZSB0cmFuc2l0aW9uLCB0aGF0J3Mgd2h5IHRoZSBkZWxh
+eSBpcyBjb25maWd1cmFibGUKdmlhIERULgoKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9j
+YW4vZmxleGNhbi5jIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYwo+IC4uLgo+ID4gK3N0YXRp
+YyB2b2lkIGZsZXhjYW5fdXBkYXRlX3N0YXRlX3RpbWVvdXQodW5zaWduZWQgbG9uZyBkYXRhKQo+
+ID4gK3sKPiA+ICsJc3RydWN0IG5ldF9kZXZpY2UgKmRldiA9M0QgKHN0cnVjdCBuZXRfZGV2aWNl
+KilkYXRhOwo+ID4gKwlzdHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2ID0zRCBuZXRkZXZfcHJpdihk
+ZXYpOwo+ID4gKwlzdHJ1Y3QgZmxleGNhbl9yZWdzIF9faW9tZW0gKnJlZ3MgPTNEIHByaXYtPnJl
+Z3M7Cj4gPiArCXUzMiByZWdfZXNyOwo+ID4gKwo+ID4gKwkvKiB1cGRhdGUgc3RhdGUgYXRvbWlj
+YWxseSAqLwo+ID4gKwlkaXNhYmxlX2lycShkZXYtPmlycSk7Cj4gPiArCXJlZ19lc3IgPSBmbGV4
+Y2FuX3JlYWQoJnJlZ3MtPmVzcik7Cj4gPiArCWZsZXhjYW5faXJxX3N0YXRlKGRldiwgcmVnX2Vz
+cik7Cj4gWW91IGNvdWxkIHJlc3RhcnQgdGhlIHRpbWVyIGhlcmUgaWYgdGhlIGVycm9yIHN0YXRl
+IGlzIG5vdCBlcnJvci1hY3RpdmUuIFRoZW4KPiB5b3Ugd291bGQgbm90IGhhdmUgdGhlIHByb2Js
+ZW0gb2YgaGF2aW5nIHRvIGNob29zZSBhbiBpbnRlcnZhbCBzbyBjYXJlZnVsbHkuClllcywgeW91
+J3JlIHJpZ2h0LiBCdXQgSSB0aGluayBpdCBpcyBnb29kIHRvIHRoaW5rIGNhcmVmdWxseSB3aGlj
+aCBkZWxheSBpcwpyZWFsbHkgbmVjZXNzYXJ5IHRoYW4ganVzdCBkcm9wIGEgcmFuZG9tbHkgbnVt
+YmVyIGhlcmUuIFdpdGggcGVyaW9kaWMgdGltZXIsCmlmIHZlcnkgc2hvcnQgZGVsYXkgYXNzaWdu
+ZWQsIHRoZW4gdGhlIHBlcmZvcm1hbmNlIHdpbGwgYmUgaGl0LCBpZiByZWFzb25hYmxlCmRlbGF5
+IGFzc2lnbmVkLCB0aGVuIHVubmVjZXNzYXJ5IHBvbGxpbmcgd2lsbCBiZSBkb25lLgo+ID4gKwll
+bmFibGVfaXJxKGRldi0+aXJxKTsKPiA+ICt9Cj4gLi4uCgpJIHVuZGVyc3RhbmQgdGhhdCB1c2Ug
+cGVyaW9kaWMgdGltZXIgaXMgYSBtb3JlIGdlbmVyaWMgYXBwcm9hY2ggd2hpY2ggZXZlbgpwb3Nz
+aWJsZSB0byByZXBsYWNlIHRoZSBpbnRlcnJ1cHQgZHJpdmVuIG9uIGJyb2tlbiBjb3JlIChpZiB3
+YW50IHRvKSwgYnV0IEkKd2FudCB0byBhdm9pZCB1bm5lY2Vzc2FyeSBwb2xsaW5nIGFzIG11Y2gg
+YXMgcG9zc2libGUgKGFuZCBzdGlsbCBnZXQgdGhlCmNvcnJlY3Qgc3RhdGUgdHJhbnNpdGlvbnMp
+LgoKV2hhdCBkbyB5b3UgdGhpbms/CgpCZXN0IHJlZ2FyZHMKWWk=
