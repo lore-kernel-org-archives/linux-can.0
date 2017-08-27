@@ -1,69 +1,70 @@
-From: =?GBK?B?1uygRA==?= <zhuyi882004@126.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: flexcan missing error state transitions
-Date: Sat, 26 Aug 2017 13:46:36 +0800 (CST)
-Message-ID: <376b00a0.1c22.15e1d13e43a.Coremail.zhuyi882004@126.com>
+Date: Sun, 27 Aug 2017 12:57:17 +0200
+Message-ID: <2ec91a72-49b2-ca43-9472-8f079b278c80@grandegger.com>
+References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
+ <150333230375.13890.2773067532209799515@maxwell>
+ <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
+ <150333966184.28484.15326759292718336833@maxwell>
+ <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
+ <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=GBK
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from m15-18.126.com ([220.181.15.18]:38163 "EHLO m15-18.126.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750736AbdHZFrG (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 26 Aug 2017 01:47:06 -0400
+Received: from mailproxy01.manitu.net ([217.11.48.65]:36742 "EHLO
+        mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751152AbdH0LDr (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 27 Aug 2017 07:03:47 -0400
+In-Reply-To: <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: andri.yngvason@marel.com, mkl@pengutronix.de, wg@grandegger.com, linux-can@vger.kernel.org
-Cc: hs@denx.de, mark.jonas@de.bosch.com, tingquan.ruan@cn.bosch.com, yi.zhu5@cn.bosch.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
 
-SGkgQW5kcmksCgo+IFRoYXQgc291bmRzIHJhdGhlciBzaGFreS4gV291bGRuJ3QgaXQgYmUgbW9y
-ZSByb2J1c3QgdG8gaGF2ZSB0aGUgdGltZXIgYmUKPiBwZXJpb2RpYz8gQmVzaWRlcywgb3Zlci1z
-YW1wbGluZyBpcyBwcmVmZXJhYmxlIGluIG9yZGVyIHRvIGF2b2lkIG1pc3NlZAo+IHRyYW5zaXRp
-b25zLCByaWdodD8gU2VlIGRpZmYgYmVsb3cuCkkgY2FuIHVuZGVyc3RhbmQgd2h5IHlvdSBmZWVs
-IHNoYWt5LCBidXQgSSB0aGluayB1c2UgcGVyaW9kaWMgdGltZXIgd2lsbCBub3QKZG8gbWVhbmlu
-Z2Z1bCB3b3JrIGhlcmUgLSBqdXN0IHBvbGxpbmcgc3RhdGUgd2hpY2ggZG8gbm90IGNoYW5nZS4K
-ClRoZSByZWFzb24gaXMgZmxleGNhbl9pcnFfc3RhdGUoKSB3aWxsIGJlIGNhbGxlZCB1cG9uIGFu
-eSBpbnRlcnJ1cHQsIHRoYXQKYWxyZWFkeSBndWFyYW50ZWVzIHN0YXRlIGlzIHVwLXRvLWRhdGUg
-aWYgdGhlcmUgaXMgdHJhZmZpYyBvbiB0aGUgYnVzLCB3aGljaAppcyB0aGUgdHJpZ2dlciBvZiBh
-bnkgcG9zc2libGUgc3RhdGUgdHJhbnNpdGlvbnMuIEluIHRoaXMgY2FzZSwgYW55IGtpbmQgb2YK
-cG9sbGluZyBpcyBub3QgcmVxdWlyZWQgKGhvd2V2ZXIsIHRoaXMgcGF0Y2ggd2lsbCBzdGlsbCBk
-byBvbmNlIGV4dHJhIHBvbGxpbmcsCndoaWNoIEknZCBsaWtlIHRvIGF2b2lkIGFzIHdlbGwsIGJ1
-dCBzZWVtcyBubyBlYXN5IHNvbHV0aW9uKS4gRXh0cmEgcG9sbGluZwp3aWxsIGdldCB0aGUgc2Ft
-ZSBzdGF0ZSBhcyBiZWZvcmUgaWYgdGhlcmUgaXMgbm8gbW9yZSB0cmFmZmljLCBhbmQgaWYgdGhl
-CnRyYWZmaWMgaXMgb25nb2luZywgdGhlIGludGVycnVwdCB3aWxsIGJlIGZpcmVkLgoKVGhlIG9u
-bHkgY2FzZSBhYm92ZSBhcHByb2FjaCBjYW5ub3QgaGFuZGxlIGlzIHRoZXJlIGlzIG9ubHkgc2lu
-Z2xlZCBvdXQgbm9kZQpvbiB0aGUgYnVzLCB3aGVyZSB0aGUgdHJhZmZpYyBjYW5ub3QgY29udGlu
-dWUuIEFsdGhvdWdoIHRoZSBjb3JlIHdpbGwgcGVyZm9ybQphdXRvLXJldHJhbnNtaXNzaW9uLCBi
-dXQgaXQgd2lsbCBub3QgZ2VuZXJhdGUgZmxvb2Qgb2YgZXJyb3IgaW50ZXJydXB0cywKaW5zdGVh
-ZCBvbmx5IGdlbmVyYXRlIGFuIEFDSyBlcnJvciAoLytXQVJOKSBpbnRlcnJ1cHQsIHdoZXJlIHRo
-ZSBGTFRfQ09ORiBpcwpub3QgdXAtdG8tZGF0ZSB5ZXQgd2hlbiB0aGUgZmxleGNhbl9pcnFfc3Rh
-dGUoKSBiZWVuIGNhbGxlZCwgYW5kIHRoZXJlIGlzIG5vCnRyaWdnZXIgdG8gdXBkYXRlIHRoZSBz
-dGF0ZSBhZ2FpbiB3aGVuIHRoZSByZWdpc3RlciBpcyBjaGFuZ2VkLiBUaGF0J3MgdGhlCnBvaW50
-IG9mIHRoaXMgcGF0Y2ggdG8gY29tcGVuc2F0ZSB0aGlzIHRyaWdnZXIgYnkgcG9sbCBvbmNlIGF0
-IHRoZSByaWdodCB0aW1lLgpFeHRyYSBwb2xsaW5nIHdpbGwgZ2V0IHRoZSBzYW1lIHN0YXRlIHRv
-byBpZiB0aGUgYnVzIGlzIHN0aWxsIG9wZW4sIGFuZCBpZiB0aGUKYnVzIGlzIHJlY292ZXJlZCwg
-dGhlIGludGVycnVwdCB3aWxsIGJlIGZpcmVkIGFnYWluLgoKUmVnYXJkaW5nIG1pc3NlZCB0cmFu
-c2l0aW9ucywgeWVzLCBpZiB1c2VyIGNob3NlIGEgdG9vIHNob3J0IGRlbGF5LCB0aGVuIGhlCndp
-bGwgbWlzcyB0aGUgZXJyb3IgcGFzc2l2ZSB0cmFuc2l0aW9uLCB0aGF0J3Mgd2h5IHRoZSBkZWxh
-eSBpcyBjb25maWd1cmFibGUKdmlhIERULgoKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9j
-YW4vZmxleGNhbi5jIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYwo+IC4uLgo+ID4gK3N0YXRp
-YyB2b2lkIGZsZXhjYW5fdXBkYXRlX3N0YXRlX3RpbWVvdXQodW5zaWduZWQgbG9uZyBkYXRhKQo+
-ID4gK3sKPiA+ICsJc3RydWN0IG5ldF9kZXZpY2UgKmRldiA9M0QgKHN0cnVjdCBuZXRfZGV2aWNl
-KilkYXRhOwo+ID4gKwlzdHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2ID0zRCBuZXRkZXZfcHJpdihk
-ZXYpOwo+ID4gKwlzdHJ1Y3QgZmxleGNhbl9yZWdzIF9faW9tZW0gKnJlZ3MgPTNEIHByaXYtPnJl
-Z3M7Cj4gPiArCXUzMiByZWdfZXNyOwo+ID4gKwo+ID4gKwkvKiB1cGRhdGUgc3RhdGUgYXRvbWlj
-YWxseSAqLwo+ID4gKwlkaXNhYmxlX2lycShkZXYtPmlycSk7Cj4gPiArCXJlZ19lc3IgPSBmbGV4
-Y2FuX3JlYWQoJnJlZ3MtPmVzcik7Cj4gPiArCWZsZXhjYW5faXJxX3N0YXRlKGRldiwgcmVnX2Vz
-cik7Cj4gWW91IGNvdWxkIHJlc3RhcnQgdGhlIHRpbWVyIGhlcmUgaWYgdGhlIGVycm9yIHN0YXRl
-IGlzIG5vdCBlcnJvci1hY3RpdmUuIFRoZW4KPiB5b3Ugd291bGQgbm90IGhhdmUgdGhlIHByb2Js
-ZW0gb2YgaGF2aW5nIHRvIGNob29zZSBhbiBpbnRlcnZhbCBzbyBjYXJlZnVsbHkuClllcywgeW91
-J3JlIHJpZ2h0LiBCdXQgSSB0aGluayBpdCBpcyBnb29kIHRvIHRoaW5rIGNhcmVmdWxseSB3aGlj
-aCBkZWxheSBpcwpyZWFsbHkgbmVjZXNzYXJ5IHRoYW4ganVzdCBkcm9wIGEgcmFuZG9tbHkgbnVt
-YmVyIGhlcmUuIFdpdGggcGVyaW9kaWMgdGltZXIsCmlmIHZlcnkgc2hvcnQgZGVsYXkgYXNzaWdu
-ZWQsIHRoZW4gdGhlIHBlcmZvcm1hbmNlIHdpbGwgYmUgaGl0LCBpZiByZWFzb25hYmxlCmRlbGF5
-IGFzc2lnbmVkLCB0aGVuIHVubmVjZXNzYXJ5IHBvbGxpbmcgd2lsbCBiZSBkb25lLgo+ID4gKwll
-bmFibGVfaXJxKGRldi0+aXJxKTsKPiA+ICt9Cj4gLi4uCgpJIHVuZGVyc3RhbmQgdGhhdCB1c2Ug
-cGVyaW9kaWMgdGltZXIgaXMgYSBtb3JlIGdlbmVyaWMgYXBwcm9hY2ggd2hpY2ggZXZlbgpwb3Nz
-aWJsZSB0byByZXBsYWNlIHRoZSBpbnRlcnJ1cHQgZHJpdmVuIG9uIGJyb2tlbiBjb3JlIChpZiB3
-YW50IHRvKSwgYnV0IEkKd2FudCB0byBhdm9pZCB1bm5lY2Vzc2FyeSBwb2xsaW5nIGFzIG11Y2gg
-YXMgcG9zc2libGUgKGFuZCBzdGlsbCBnZXQgdGhlCmNvcnJlY3Qgc3RhdGUgdHJhbnNpdGlvbnMp
-LgoKV2hhdCBkbyB5b3UgdGhpbms/CgpCZXN0IHJlZ2FyZHMKWWk=
+Am 22.08.2017 um 16:06 schrieb Marc Kleine-Budde:
+> On 08/22/2017 03:50 PM, Jonas Mark (ST-FIR/ENG1) wrote:
+>> Hello Andri,
+>>
+>>>> Which polling interval do you think would be appropriate? It
+>>>> somehow has to be
+>>> a reasonable trade-off between latency and CPU usage. That's a good
+>>> question. I don't think that there is a really good answer to it.
+>>> It would be nice to see intermittent state-transitions happening,
+>>> so I would say as fast as possible without affecting CPU usage to a
+>>> significant degree. The polling timer should not be a high
+>>> resolution timer or anything that would preempt an rt task.
+>>>
+>>> This value could also depend on the bitrate as that will affect the
+>>> rate at which the error-counter can change. E.g. on 125 k rate, you
+>>> will receive at most one frame per 1 ms. This means that the error
+>>> state will change at at least 64 ms intervals, so we would have to
+>>> sample at 32 ms intervals to catch all the transitions. For 1 M
+>>> this would be around 2 ms.
+>>>
+>>> Note that this is all somewhat speculative as I do not know exactly
+>>> how fast the error counters are incremented/decremented.
+>>
+>> We agree that there is a sensible lower boundary for the polling
+>> interval which depends on the bitrate. And there is a upper boundary
+>> which depends on the application.
+>>
+>> We are currently thinking about whether it would be possible to do
+>> the polling only in case the controller is actually experiencing
+>> trouble.
+> 
+> Why not enable bus errors on broken controllers. Disable once a bus
+
+Yes, that's what we have done in the past for Flexcan controller cores 
+that do not have dedicated interrupt lines for state changes. We have 
+introduced FLEXCAN_QUIRK_BROKEN_ERR_STATE for that purpose. It should 
+work already with the current driver. Yi ZHU, have you tried that?
+
+> error hits and re-enable them after a configurable timeout with a proper
+> default. I have a patch somewhere, although it applies only against the
+> pre rx-offload version of the driver.
+
+And that would help to avoid the interrupt flooding problem.
+
+Wolfgang.
