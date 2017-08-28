@@ -1,109 +1,172 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: flexcan missing error state transitions
-Date: Mon, 28 Aug 2017 04:21:35 +0000
-Message-ID: <a257405ba06949a9be5d64912d72d0ba@SGPMBX1017.APAC.bosch.com>
-References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
- <150333230375.13890.2773067532209799515@maxwell>
- <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
- <150333966184.28484.15326759292718336833@maxwell>
- <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
- <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
- <2ec91a72-49b2-ca43-9472-8f079b278c80@grandegger.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 02/14] can: give structs holding the CAN statistics a
+ sensible name
+Date: Mon, 28 Aug 2017 09:25:05 +0200
+Message-ID: <713e6bf9-5902-e138-598e-da5824cc1780@pengutronix.de>
+References: <20170802174434.4689-1-mkl@pengutronix.de>
+ <20170802174434.4689-3-mkl@pengutronix.de>
+ <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
+ <361c5e96-0e89-ba24-4fbf-18087470bc69@pengutronix.de>
+ <e3913ee0-93cc-2b22-dec2-75321a9b1ac7@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="iNRsL1Ja7DGg6a3NqqMic4awjVP0jSMBa"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:49646 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750735AbdH1EVk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Aug 2017 00:21:40 -0400
-In-Reply-To: <2ec91a72-49b2-ca43-9472-8f079b278c80@grandegger.com>
-Content-Language: en-US
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:43007 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1750797AbdH1HZN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Aug 2017 03:25:13 -0400
+In-Reply-To: <e3913ee0-93cc-2b22-dec2-75321a9b1ac7@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de
 
-SGkgV29sZmdhbmcsDQoNCj4gRnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndnQGdy
-YW5kZWdnZXIuY29tXQ0KPiBTZW50OiBTdW5kYXksIEF1Z3VzdCAyNywgMjAxNyA2OjU3IFBNDQo+
-IA0KPiBBbSAyMi4wOC4yMDE3IHVtIDE2OjA2IHNjaHJpZWIgTWFyYyBLbGVpbmUtQnVkZGU6DQo+
-ID4gT24gMDgvMjIvMjAxNyAwMzo1MCBQTSwgSm9uYXMgTWFyayAoU1QtRklSL0VORzEpIHdyb3Rl
-Og0KPiA+PiBIZWxsbyBBbmRyaSwNCj4gPj4NCj4gPj4+PiBXaGljaCBwb2xsaW5nIGludGVydmFs
-IGRvIHlvdSB0aGluayB3b3VsZCBiZSBhcHByb3ByaWF0ZT8gSXQNCj4gPj4+PiBzb21laG93IGhh
-cyB0byBiZQ0KPiA+Pj4gYSByZWFzb25hYmxlIHRyYWRlLW9mZiBiZXR3ZWVuIGxhdGVuY3kgYW5k
-IENQVSB1c2FnZS4gVGhhdCdzIGEgZ29vZA0KPiA+Pj4gcXVlc3Rpb24uIEkgZG9uJ3QgdGhpbmsg
-dGhhdCB0aGVyZSBpcyBhIHJlYWxseSBnb29kIGFuc3dlciB0byBpdC4NCj4gPj4+IEl0IHdvdWxk
-IGJlIG5pY2UgdG8gc2VlIGludGVybWl0dGVudCBzdGF0ZS10cmFuc2l0aW9ucyBoYXBwZW5pbmcs
-DQo+ID4+PiBzbyBJIHdvdWxkIHNheSBhcyBmYXN0IGFzIHBvc3NpYmxlIHdpdGhvdXQgYWZmZWN0
-aW5nIENQVSB1c2FnZSB0byBhDQo+ID4+PiBzaWduaWZpY2FudCBkZWdyZWUuIFRoZSBwb2xsaW5n
-IHRpbWVyIHNob3VsZCBub3QgYmUgYSBoaWdoDQo+ID4+PiByZXNvbHV0aW9uIHRpbWVyIG9yIGFu
-eXRoaW5nIHRoYXQgd291bGQgcHJlZW1wdCBhbiBydCB0YXNrLg0KPiA+Pj4NCj4gPj4+IFRoaXMg
-dmFsdWUgY291bGQgYWxzbyBkZXBlbmQgb24gdGhlIGJpdHJhdGUgYXMgdGhhdCB3aWxsIGFmZmVj
-dCB0aGUNCj4gPj4+IHJhdGUgYXQgd2hpY2ggdGhlIGVycm9yLWNvdW50ZXIgY2FuIGNoYW5nZS4g
-RS5nLiBvbiAxMjUgayByYXRlLCB5b3UNCj4gPj4+IHdpbGwgcmVjZWl2ZSBhdCBtb3N0IG9uZSBm
-cmFtZSBwZXIgMSBtcy4gVGhpcyBtZWFucyB0aGF0IHRoZSBlcnJvcg0KPiA+Pj4gc3RhdGUgd2ls
-bCBjaGFuZ2UgYXQgYXQgbGVhc3QgNjQgbXMgaW50ZXJ2YWxzLCBzbyB3ZSB3b3VsZCBoYXZlIHRv
-DQo+ID4+PiBzYW1wbGUgYXQgMzIgbXMgaW50ZXJ2YWxzIHRvIGNhdGNoIGFsbCB0aGUgdHJhbnNp
-dGlvbnMuIEZvciAxIE0NCj4gPj4+IHRoaXMgd291bGQgYmUgYXJvdW5kIDIgbXMuDQo+ID4+Pg0K
-PiA+Pj4gTm90ZSB0aGF0IHRoaXMgaXMgYWxsIHNvbWV3aGF0IHNwZWN1bGF0aXZlIGFzIEkgZG8g
-bm90IGtub3cgZXhhY3RseQ0KPiA+Pj4gaG93IGZhc3QgdGhlIGVycm9yIGNvdW50ZXJzIGFyZSBp
-bmNyZW1lbnRlZC9kZWNyZW1lbnRlZC4NCj4gPj4NCj4gPj4gV2UgYWdyZWUgdGhhdCB0aGVyZSBp
-cyBhIHNlbnNpYmxlIGxvd2VyIGJvdW5kYXJ5IGZvciB0aGUgcG9sbGluZw0KPiA+PiBpbnRlcnZh
-bCB3aGljaCBkZXBlbmRzIG9uIHRoZSBiaXRyYXRlLiBBbmQgdGhlcmUgaXMgYSB1cHBlciBib3Vu
-ZGFyeQ0KPiA+PiB3aGljaCBkZXBlbmRzIG9uIHRoZSBhcHBsaWNhdGlvbi4NCj4gPj4NCj4gPj4g
-V2UgYXJlIGN1cnJlbnRseSB0aGlua2luZyBhYm91dCB3aGV0aGVyIGl0IHdvdWxkIGJlIHBvc3Np
-YmxlIHRvIGRvDQo+ID4+IHRoZSBwb2xsaW5nIG9ubHkgaW4gY2FzZSB0aGUgY29udHJvbGxlciBp
-cyBhY3R1YWxseSBleHBlcmllbmNpbmcNCj4gPj4gdHJvdWJsZS4NCj4gPg0KPiA+IFdoeSBub3Qg
-ZW5hYmxlIGJ1cyBlcnJvcnMgb24gYnJva2VuIGNvbnRyb2xsZXJzLiBEaXNhYmxlIG9uY2UgYSBi
-dXMNCj4gDQo+IFllcywgdGhhdCdzIHdoYXQgd2UgaGF2ZSBkb25lIGluIHRoZSBwYXN0IGZvciBG
-bGV4Y2FuIGNvbnRyb2xsZXIgY29yZXMNCj4gdGhhdCBkbyBub3QgaGF2ZSBkZWRpY2F0ZWQgaW50
-ZXJydXB0IGxpbmVzIGZvciBzdGF0ZSBjaGFuZ2VzLiBXZSBoYXZlDQo+IGludHJvZHVjZWQgRkxF
-WENBTl9RVUlSS19CUk9LRU5fRVJSX1NUQVRFIGZvciB0aGF0IHB1cnBvc2UuIEl0IHNob3VsZA0K
-PiB3b3JrIGFscmVhZHkgd2l0aCB0aGUgY3VycmVudCBkcml2ZXIuIFlpIFpIVSwgaGF2ZSB5b3Ug
-dHJpZWQgdGhhdD8NClllcywgSSd2ZSB0cmllZCB0aGF0LiBBZnRlciBhZGQgRkxFWENBTl9RVUlS
-S19CUk9LRU5fRVJSX1NUQVRFIHRvIGkuTVg2LA0KdGhlIHN0YXRlIHRyYW5zaXRpb25zIHN0aWxs
-IG5vdCBjb3JyZWN0LiBUaGUgcmVhc29uIGlzIGZsZXhjYW5faXJxX3N0YXRlKCkgd2lsbCBvbmx5
-DQpiZSBjYWxsZWQgdXBvbiBzdGF0ZSBpbnRlcnJ1cHQsIGJ1dCB0aGUgZmxleGNhbiBjb3JlIHdp
-bGwgbm90IGdlbmVyYXRlIGludGVycnVwdHMgZm9yDQphbGwgc3RhdGUgdHJhbnNpdGlvbnMuDQoo
-aHR0cDovL2VsaXhpci5mcmVlLWVsZWN0cm9ucy5jb20vbGludXgvbGF0ZXN0L3NvdXJjZS9kcml2
-ZXJzL25ldC9jYW4vZmxleGNhbi5jI0w3NjkpDQoNCkFmdGVyIGVuYWJsZSBidXMgZXJyb3IgaW50
-ZXJydXB0IGFuZCBjaGFuZ2UgdG8gY2FsbCBmbGV4Y2FuX2lycV9zdGF0ZSgpIHVwb24gX2FueV8g
-DQppbnRlcnJ1cHQsIHRoZW4gd2UgY2FuIGdldCBjb3JyZWN0IHN0YXRlIHRyYW5zaXRpb25zIGFz
-IGV4cGVjdGVkLiBPZiBjb3Vyc2UsIGludGVycnVwdA0KZmxvb2RpbmcgYWxzbyBjYW1lIGFzIGV4
-cGVjdGVkLg0KDQo+IA0KPiA+IGVycm9yIGhpdHMgYW5kIHJlLWVuYWJsZSB0aGVtIGFmdGVyIGEg
-Y29uZmlndXJhYmxlIHRpbWVvdXQgd2l0aCBhIHByb3Blcg0KPiA+IGRlZmF1bHQuIEkgaGF2ZSBh
-IHBhdGNoIHNvbWV3aGVyZSwgYWx0aG91Z2ggaXQgYXBwbGllcyBvbmx5IGFnYWluc3QgdGhlDQo+
-ID4gcHJlIHJ4LW9mZmxvYWQgdmVyc2lvbiBvZiB0aGUgZHJpdmVyLg0KPiANCj4gQW5kIHRoYXQg
-d291bGQgaGVscCB0byBhdm9pZCB0aGUgaW50ZXJydXB0IGZsb29kaW5nIHByb2JsZW0uDQpZZXMs
-IHRoYXQgd291bGQgaGVscC4gQnV0IEkgdGhpbmsgaWYgd2UgY2hhbmdlIHRvIGFib3ZlIGFwcHJv
-YWNoLCB0aGVuIHdlIGRvIG5vdA0KbmVlZCB0byByZWx5IG9uIGEgY29uZmlndXJhYmxlIHRpbWVv
-dXQgdG8gYXZvaWQgaW50ZXJydXB0IGZsb29kaW5nLiBXZSBjYW4gZGlzYWJsZS8NCmVuYWJsZSBl
-cnJvciBpbnRlcnJ1cHQgZGVwZW5kcyBvbiB0aGUgc3RhdGUgdHJhbnNpdGlvbnM6DQoxLiBkaXNh
-YmxlIGVycm9yIGludGVycnVwdCB3aGVuIHN0YXRlIGNoYW5nZSB0byBlcnJvciBwYXNzaXZlDQpX
-aHkgZXJyb3IgcGFzc2l2ZSBub3QgYnVzIG9mZj8NCg0KRmlyc3QsIGZsZXhjYW4gaXMgYWJsZSB0
-byBpbnRlcnJ1cHQgd2hlbiBidXMgb2ZmLCBhbmQgdGhlIG5vZGUgd2lsbCBub3QgZ2VuZXJhdGUg
-YW55DQppbnRlcnJ1cHQgaW4gdGhpcyBzdGF0ZS4gU2Vjb25kLCBpbnRlcnJ1cHQgZmxvb2Rpbmcg
-aGFwcGVucyB3aGVuIG5vZGUgaXMgZG9pbmcgDQphdXRvLXJldHJhbnNtaXNzaW9uIHVudGlsIGJ1
-cyBvZmYsIGFuZCBpbiBjYXNlIG9mIG9ubHkgc2luZ2xlZCBvdXQgbm9kZSBvbiB0aGUgYnVzLA0K
-dGhlbiB0aGlzIG5vZGUgY2Fubm90IGJlY29tZSBidXMgb2ZmLCBoZW5jZSwgdGhlIGZsb29kaW5n
-IHdvbid0IHN0b3AuDQoNCkhvd2V2ZXIgYXQgbW9zdCAxNiB0aW1lcyBjb25zZWN1dGl2ZSBidXMg
-ZXJyb3IgaW50ZXJydXB0cyB3aWxsIGNoYW5nZSBzdGF0ZSB0byBlcnJvcg0KcGFzc2l2ZSwgc28g
-YWZ0ZXIgdGhlIG5vZGUgaW4gdGhpcyBzdGF0ZSwgd2UgY2FuIHNhZmVseSBkaXNhYmxlIHRoZSBi
-dXMgZXJyb3IgaW50ZXJydXB0Lg0KDQoyLiBlbmFibGUgZXJyb3IgaW50ZXJydXB0IHdoZW4gc3Rh
-dGUgY2hhbmdlIHRvIGVycm9yIHdhcm5pbmcNCldoeSBlcnJvciB3YXJuaW5nIG5vdCBlcnJvciBh
-Y3RpdmU/DQoNCk1pbmltYWwgMzIgdGltZXMgY29uc2VjdXRpdmUgVHgvUnggaW50ZXJydXB0cyB3
-aWxsIGNoYW5nZSBzdGF0ZSBmcm9tIGVycm9yIHBhc3NpdmUgdG8NCmVycm9yIGFjdGl2ZS4gU28g
-aWYgdGhlIGVycm9yIGNvbmRpdGlvbiBvY2N1ciBhZ2FpbiB3aGlsZSB0aGUgc3RhdGUgaXMgbm90
-IHJlY292ZXJlZCB0bw0KZXJyb3IgYWN0aXZlIChlLmcuLCBhdCBlcnJvciB3YXJuaW5nKSwgdGhl
-biB1bnRpbCB0aGUgZXJyb3IgY29uZGl0aW9uIGlzIHJlbW92ZWQsIHRoZSBzdGF0ZQ0Kd2lsbCBz
-dGF5IGluIGVycm9yIHdhcm5pbmcuDQoNCkhlbmNlLCByZS1lbmFibGUgdGhlIGVycm9yIGludGVy
-cnVwdCB1cG9uIGVycm9yIHdhcm5pbmcgdHJhbnNpdGlvbiBhbGxvdyB1cyB0byByZXBvcnQNCmVy
-cm9yIHBhc3NpdmUgYWdhaW4uIEFuZCBpZiB0aGUgZXJyb3IgY29uZGl0aW9uIG9jY3VyIGFnYWlu
-IHdoaWxlIHRoZSBzdGF0ZSBpcyBzdGlsbA0KZXJyb3IgcGFzc2l2ZSwgd2UgZG8gbm90IG5lZWQg
-dG8gdG91Y2ggdGhlIGJ1cyBlcnJvciBpbnRlcnJ1cHQuDQoNCkkndmUgdGVzdGVkIHRoaXMsIHRo
-ZSBzdGF0ZSB0cmFuc2l0aW9ucyB3b3JrcyBmaW5lLCBhbmQgdGhlIGZsb29kIG9mIGludGVycnVw
-dHMgYXJlIGxpbWl0ZWQNCnRvIHRoZSBudW1iZXIgb2YgcmVxdWlyZWQgZnJhbWUgdHJhbnNmZXIg
-YWNjb3JkaW5nIHRvIHRoZSBydWxlIG9mIGVycm9yIGNvdW50aW5nIGFuZA0Kc3RhdGUgdHJhbnNp
-dGlvbnMgZGVmaW5lZCBpbiBzcGVjaWZpY2F0aW9uLg0KDQpXaGF0IGRvIHlvdSB0aGluaz8gSWYg
-eW91IGFncmVlIHdpdGggdGhpcywgSSBjYW4gcHJlcGFyZSBhIHBhdGNoIGZvciByZXZpZXcuDQoN
-CkJlc3QgcmVnYXJkcw0KWWkNCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--iNRsL1Ja7DGg6a3NqqMic4awjVP0jSMBa
+Content-Type: multipart/mixed; boundary="5Ac18mxUogG8mPR1NGWcFRMpb1iiTvTPC";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de
+Message-ID: <713e6bf9-5902-e138-598e-da5824cc1780@pengutronix.de>
+Subject: Re: [PATCH 02/14] can: give structs holding the CAN statistics a
+ sensible name
+References: <20170802174434.4689-1-mkl@pengutronix.de>
+ <20170802174434.4689-3-mkl@pengutronix.de>
+ <92a0dacc-e1d2-435e-2bee-0ff0a20a655e@hartkopp.net>
+ <361c5e96-0e89-ba24-4fbf-18087470bc69@pengutronix.de>
+ <e3913ee0-93cc-2b22-dec2-75321a9b1ac7@hartkopp.net>
+In-Reply-To: <e3913ee0-93cc-2b22-dec2-75321a9b1ac7@hartkopp.net>
+
+--5Ac18mxUogG8mPR1NGWcFRMpb1iiTvTPC
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 08/25/2017 07:32 PM, Oliver Hartkopp wrote:
+> On 08/25/2017 03:08 PM, Marc Kleine-Budde wrote:
+>> On 08/24/2017 02:58 PM, Oliver Hartkopp wrote:
+>>> Naming structs and its instances identically is bad.
+>>>
+>>> On 08/02/2017 07:44 PM, Marc Kleine-Budde wrote:
+>>>
+>>>>    struct netns_can {
+>>>>    #if IS_ENABLED(CONFIG_PROC_FS)
+>>>> @@ -30,8 +30,8 @@ struct netns_can {
+>>>>    	struct dev_rcv_lists *can_rx_alldev_list;
+>>>>    	spinlock_t can_rcvlists_lock;
+>>>>    	struct timer_list can_stattimer;/* timer for statistics update *=
+/
+>>>> -	struct s_stats *can_stats;	/* packet statistics */
+>>>> -	struct s_pstats *can_pstats;	/* receive list statistics */
+>>>> +	struct can_stats *can_stats; /* packet statistics */
+>>>> +	struct can_pstats *can_pstats; /* receive list statistics */
+>>                                 ^
+>> Now I found out what that "p" originally means:
+>>
+>>> /* persistent statistics */
+>>> struct can_pstats {
+>>> 	unsigned long stats_reset;
+>>> 	unsigned long user_reset;
+>>> 	unsigned long rcv_entries;
+>>> 	unsigned long rcv_entries_max;
+>>> };
+>>
+>> \o/
+
+I'll remove that comment then.
+
+>>> If you really want to rename this stuff, what about this:
+>>>
+>>> struct can_pkt_stats *can_stats; /* packet statistics */
+>>> struct can_rxl_stats *can_rstats; /* receive list statistics */
+>>               ^^^
+>> We're using rcv_list(s) instead of rxl in various other places.
+>>
+>> If we give the variables speaking names, the comments are obsolete:
+>>
+>> struct can_pkg_stats *can_pkg_stats;
+>> struct can_rcv_list_stats *can_rcv_list_stats;
+>>
+>> We can remove the "can_" prefix of the variables in the struct
+>> netns_can, as the struct already has the "can" in it.
+>=20
+> Yes. Good idea.
+
+>> So the struct becomes:
+>>
+>>> struct netns_can {
+>>> #if IS_ENABLED(CONFIG_PROC_FS)
+>>> 	struct proc_dir_entry *proc_dir;
+>>> 	struct proc_dir_entry *pde_version;
+>>> 	struct proc_dir_entry *pde_stats;
+>>> 	struct proc_dir_entry *pde_reset_stats;
+>>> 	struct proc_dir_entry *pde_rcvlist_all;
+>>> 	struct proc_dir_entry *pde_rcvlist_fil;
+>>> 	struct proc_dir_entry *pde_rcvlist_inv;
+>>> 	struct proc_dir_entry *pde_rcvlist_sff;
+>>> 	struct proc_dir_entry *pde_rcvlist_eff;
+>>> 	struct proc_dir_entry *pde_rcvlist_err;
+>>> 	struct proc_dir_entry *bcmproc_dir;
+>>> #endif
+>>>
+>>> 	/* receive filters subscribed for 'all' CAN devices */
+>>> 	struct can_dev_rcv_lists *rx_alldev_list;
+>>> 	spinlock_t rcvlists_lock;
+>>> 	struct timer_list stattimer; /* timer for statistics update */
+>>> 	struct can_pkg_stats *pkg_stats;
+>>> 	struct can_rcv_lists_stats *rcv_lists_stats;
+>=20
+> Agreed :-)
+>=20
+> So it would look like this then:
+>=20
+> diff --git a/net/can/proc.c b/net/can/proc.c
+> index 83045f00c63c..559fca8035aa 100644
+> --- a/net/can/proc.c
+> +++ b/net/can/proc.c
+> @@ -77,14 +77,14 @@ static const char rx_list_name[][8] =3D {
+>=20
+>   static void can_init_stats(struct net *net)
+>   {
+> -	struct s_stats *can_stats =3D net->can.can_stats;
+> -	struct s_pstats *can_pstats =3D net->can.can_pstats;
+> +	struct can_pkg_stats *pkg_stats =3D net->can.pkg_stats;
+> +	struct can_rcv_lists_stats *rcv_lists_stats =3D net->can.rcv_lists_st=
+ats;
+>=20
+> Right?
+
+ACK
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--5Ac18mxUogG8mPR1NGWcFRMpb1iiTvTPC--
+
+--iNRsL1Ja7DGg6a3NqqMic4awjVP0jSMBa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlmjxVIACgkQHv7KIOw4
+HPYkOwf/YQwtFZTRHQb2mfDS27dGPNp7KBKI7Kt40ec77Pn2r7DttP9EyEqKY8A4
+6wOXGXQIFwiI5Hyx0G/oHtbOEJ5PgWQlHkyFcvN+KHEaSLZN6u7ljboaf0Qesech
+/psjSv9H1i4PykXoxLbAdxF3BCY7bIq8QmuUEtbxE3wfPDsYLNxvGYQkRb0MMtrK
+a9JYMttTQdLlfAZCOKNkyEg24PyiGUA5OffT2ZM4u4kNOtiVs69EfoPpnq+ARuwI
+ySQW2KMzHnNkpZGfYejmjFEcRTphk8Lo4caxM2k8LhOI0xOg7x9v5rvRPoI0MGSD
+TwJyhuW7L9QFda5WLRQuN2lpZaU2Sg==
+=kxmi
+-----END PGP SIGNATURE-----
+
+--iNRsL1Ja7DGg6a3NqqMic4awjVP0jSMBa--
