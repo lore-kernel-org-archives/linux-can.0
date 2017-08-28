@@ -1,120 +1,107 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: flexcan missing error state transitions
-Date: Mon, 28 Aug 2017 11:23:24 +0000
-Message-ID: <150391940455.32436.2657378736949568599@maxwell>
-References: <376b00a0.1c22.15e1d13e43a.Coremail.zhuyi882004@126.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 06/14] can: af_can: rename find_rcv_list() to
+ can_rcv_list_find()
+Date: Mon, 28 Aug 2017 13:53:49 +0200
+Message-ID: <e7a9a4ba-413a-406e-7f9a-c781f9b669d5@pengutronix.de>
+References: <20170802174434.4689-1-mkl@pengutronix.de>
+ <20170802174434.4689-7-mkl@pengutronix.de>
+ <068ceb4d-7a02-9a8a-2e1a-c4a2782310ca@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="akqbjdDACXDGNccBWF7Uw1WWIS17pM1iJ"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr40079.outbound.protection.outlook.com ([40.107.4.79]:16752
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751172AbdH1LXd (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 28 Aug 2017 07:23:33 -0400
-In-Reply-To: <376b00a0.1c22.15e1d13e43a.Coremail.zhuyi882004@126.com>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:44023 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1750866AbdH1Lxy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Aug 2017 07:53:54 -0400
+In-Reply-To: <068ceb4d-7a02-9a8a-2e1a-c4a2782310ca@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?b?5pyx54ea?= <zhuyi882004@126.com>, mkl@pengutronix.de, wg@grandegger.com, linux-can@vger.kernel.org
-Cc: hs@denx.de, mark.jonas@de.bosch.com, tingquan.ruan@cn.bosch.com, yi.zhu5@cn.bosch.com
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de
 
-Quoting =E6=9C=B1=E7=87=9A (2017-08-26 05:46:36)
-> > That sounds rather shaky. Wouldn't it be more robust to have the timer =
-be
-> > periodic? Besides, over-sampling is preferable in order to avoid missed
-> > transitions, right? See diff below.
-> I can understand why you feel shaky, but I think use periodic timer will =
-not
-> do meaningful work here - just polling state which do not change.
-> =
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--akqbjdDACXDGNccBWF7Uw1WWIS17pM1iJ
+Content-Type: multipart/mixed; boundary="BgIXnfGp5EgkE0t042PFDabkxptJHOL3D";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: kernel@pengutronix.de
+Message-ID: <e7a9a4ba-413a-406e-7f9a-c781f9b669d5@pengutronix.de>
+Subject: Re: [PATCH 06/14] can: af_can: rename find_rcv_list() to
+ can_rcv_list_find()
+References: <20170802174434.4689-1-mkl@pengutronix.de>
+ <20170802174434.4689-7-mkl@pengutronix.de>
+ <068ceb4d-7a02-9a8a-2e1a-c4a2782310ca@hartkopp.net>
+In-Reply-To: <068ceb4d-7a02-9a8a-2e1a-c4a2782310ca@hartkopp.net>
 
-> The reason is flexcan_irq_state() will be called upon any interrupt, that
-> already guarantees state is up-to-date if there is traffic on the bus, wh=
-ich
-> is the trigger of any possible state transitions. In this case, any kind =
-of
-> polling is not required (however, this patch will still do once extra pol=
-ling,
-> which I'd like to avoid as well, but seems no easy solution). Extra polli=
-ng
-> will get the same state as before if there is no more traffic, and if the
-> traffic is ongoing, the interrupt will be fired.
-> =
+--BgIXnfGp5EgkE0t042PFDabkxptJHOL3D
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 
-> The only case above approach cannot handle is there is only singled out n=
-ode
-> on the bus, where the traffic cannot continue. Although the core will per=
-form
-> auto-retransmission, but it will not generate flood of error interrupts,
-> instead only generate an ACK error (/+WARN) interrupt, where the FLT_CONF=
- is
-> not up-to-date yet when the flexcan_irq_state() been called, and there is=
- no
-> trigger to update the state again when the register is changed. That's the
-> point of this patch to compensate this trigger by poll once at the right =
-time.
-> Extra polling will get the same state too if the bus is still open, and i=
-f the
-> bus is recovered, the interrupt will be fired again.
-> =
+On 08/24/2017 03:11 PM, Oliver Hartkopp wrote:
+> On 08/02/2017 07:44 PM, Marc Kleine-Budde wrote:
+>> This patch add the commonly used prefix "can_" to the find_rcv_list()
+>> function and add the "find" to the end, as the function returns a stru=
+ct
+>> rcv_list. This improves the overall readability of the code.
+>=20
+> The function should be named according to it's natural function.
+>=20
+> If you want to move it to some kind of 'can' namespace I would suggest
+>=20
+> find_can_rcv_list()
 
-> Regarding missed transitions, yes, if user chose a too short delay, then =
-he
-> will miss the error passive transition, that's why the delay is configura=
-ble
-> via DT.
-> =
+Sadly C doesn't have native namespaces (and objects) like C++, so an
+option is to put a can_ in front of every CAN related function....
 
-> > > diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> > ...
-> > > +static void flexcan_update_state_timeout(unsigned long data)
-> > > +{
-> > > +   struct net_device *dev =3D3D (struct net_device*)data;
-> > > +   struct flexcan_priv *priv =3D3D netdev_priv(dev);
-> > > +   struct flexcan_regs __iomem *regs =3D3D priv->regs;
-> > > +   u32 reg_esr;
-> > > +
-> > > +   /* update state atomically */
-> > > +   disable_irq(dev->irq);
-> > > +   reg_esr =3D flexcan_read(&regs->esr);
-> > > +   flexcan_irq_state(dev, reg_esr);
-> > You could restart the timer here if the error state is not error-active=
-. Then
-> > you would not have the problem of having to choose an interval so caref=
-ully.
-> Yes, you're right. But I think it is good to think carefully which delay =
-is
-> really necessary than just drop a randomly number here. With periodic tim=
-er,
-> if very short delay assigned, then the performance will be hit, if reason=
-able
-> delay assigned, then unnecessary polling will be done.
-> > > +   enable_irq(dev->irq);
-> > > +}
-> > ...
-> =
+>> -		rl =3D find_rcv_list(&can_id, &mask, dev_rcv_lists);
+>> +		rl =3D can_rcv_list_find(&can_id, &mask, dev_rcv_lists);
+>=20
+> find_... is better to understand than can_...
 
-> I understand that use periodic timer is a more generic approach which even
-> possible to replace the interrupt driven on broken core (if want to), but=
- I
-> want to avoid unnecessary polling as much as possible (and still get the
-> correct state transitions).
-> =
+=2E..then the "object" or rather the variable the functions deals with,
+here a "rcv_list" and then what it does "find". Looks a bit like RPN
+calculator :)
 
-> What do you think?
+> And this is a local function not visible to anyone else outside of=20
+> af_can.c .
 
-Hi Yi,
+If you know the code, then it's clear, but if you don't know the code
+you immediately see that this is a CAN specific function and not a
+"generic" one from rest of the networking stack.
 
-I have users who can change the baudrate but they can not change the device
-tree. The baudrate can even be changed by service technicians. I.e. it's fi=
-eld
-configurable. How would I configure the timeout to work well for rates betw=
-een
-125k and 1M?
+Convinced? :D
 
-Do you think that a periodic timer would load the system more than an IRQ-f=
-lood
-due to a bad error situation?
+regards,
+Marc
 
-Best regards,
-Andri
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--BgIXnfGp5EgkE0t042PFDabkxptJHOL3D--
+
+--akqbjdDACXDGNccBWF7Uw1WWIS17pM1iJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlmkBE0ACgkQHv7KIOw4
+HPYZaAf+I17OKEGoYwWnbzldeOvkc0CIlUW3/O9w+Ky1CPkiXM24mNPBstgAoJyW
+OAtdrSM9euyCe4eU4WvwN/1SUs1eKBBFzSGJLmjotSFZhgm+0cV4/2RoU8ppiM5e
+A5GrIn+rxwmedBiFMSddl2fEYPBKZFzNK1uW82xmTs+MFelzhwJKI9waX2GdlGfO
+ZNnwBfV7hQKU1Ke+RN76Adj0yS6u2j7gfYw0Jt7bd+c9M/pvIHAgYCrnm4/8/UDs
+uK6XjiDLdwNB0fmHZD8gNN7k13PKZdF5ZoYvNoimyj+rkeYUZ3wgHym9VzfIWXSg
+MpfF8bjN2Zt0BANOaXo0ps88RbrAIg==
+=Yx78
+-----END PGP SIGNATURE-----
+
+--akqbjdDACXDGNccBWF7Uw1WWIS17pM1iJ--
