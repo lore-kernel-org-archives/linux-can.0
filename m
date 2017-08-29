@@ -1,94 +1,77 @@
-From: "Zhu Yi" <zhuyi882004@126.com>
-Subject: [PATCH 2/2] can: flexcan: mitigate error interrupt flooding
-Date: Tue, 29 Aug 2017 19:28:24 +0800 (CST)
-Message-ID: <64696796.93c8.15e2dbfe6d9.Coremail.zhuyi882004@126.com>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: RE: flexcan missing error state transitions
+Date: Tue, 29 Aug 2017 13:41:38 +0000
+Message-ID: <150401409824.16044.6548310235605366193@maxwell>
+References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
+ <150333230375.13890.2773067532209799515@maxwell>
+ <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
+ <150333966184.28484.15326759292718336833@maxwell>
+ <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
+ <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
+ <2ec91a72-49b2-ca43-9472-8f079b278c80@grandegger.com>
+ <a257405ba06949a9be5d64912d72d0ba@SGPMBX1017.APAC.bosch.com>
+ <23b53bdc-b7d4-f6de-b192-629ffe9795b0@grandegger.com>
+ <c5b11618c98a41108dfbe6cf034398f0@SGPMBX1017.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=GBK
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from m15-45.126.com ([220.181.15.45]:22807 "EHLO m15-45.126.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753290AbdH2L2t (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 29 Aug 2017 07:28:49 -0400
+Received: from mail-he1eur01on0069.outbound.protection.outlook.com ([104.47.0.69]:60104
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751834AbdH2Nlp (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 29 Aug 2017 09:41:45 -0400
+In-Reply-To: <c5b11618c98a41108dfbe6cf034398f0@SGPMBX1017.APAC.bosch.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "andri.yngvason@marel.com" <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "hs@denx.de" <hs@denx.de>, "mark.jonas@de.bosch.com" <mark.jonas@de.bosch.com>, "tingquan.ruan@cn.bosch.com" <tingquan.ruan@cn.bosch.com>, "yi.zhu5@cn.bosch.com" <yi.zhu5@cn.bosch.com>
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-RXJyb3IgaW50ZXJydXB0IGZsb29kaW5nIG1heSBoYXBwZW4gaWYgYmVyci1yZXBvcnRpbmcgaXMg
-ZW5hYmxlZCwgb3IKdGhlIGJyb2tlbiBlcnJvciBzdGF0ZSBxdWlyayBmaXggaXMgZW5hYmxlZC4g
-Rm9yIGV4YW1wbGUsIGluIGNhc2UKdGhlcmUgaXMgbm8gY2FibGUgY29ubmVjdGVkLCBlcnJvciBp
-bnRlcnJ1cHQgZmxvb2RpbmcgaXMgdmVyeSBsaWtlbHkKYmVjYXVzZSB0aGUgbm9kZSBjYW5ub3Qg
-Z28gdG8gYnVzIG9mZi4KClRoaXMgcGF0Y2ggbWl0aWdhdGVzIHRoaXMgaXNzdWUgYnk6CjEuIGRp
-c2FibGUgZXJyb3IgaW50ZXJydXB0IHVwb24gZXJyb3IgcGFzc2l2ZSBzdGF0ZSB0cmFuc2l0aW9u
-CjIuIHJlLWVuYWJsZSBlcnJvciBpbnRlcnJ1cHQgdXBvbiBlcnJvciB3YXJuaW5nIHN0YXRlIHRy
-YW5zaXRpb24KCkluIHRoaXMgd2F5LCB0aGUgZHJpdmVyIGlzIHN0aWxsIGFibGUgdG8gcmVwb3J0
-IGNvcnJlY3Qgc3RhdGUKdHJhbnNpdGlvbnMgd2l0aG91dCBhZGRpdGlvbmFsIGxhdGVuY3kuIEFu
-ZCBmbG9vZGluZyBvZiBlcnJvciBpbnRlcnJ1cHRzCmlzIGxpbWl0ZWQgdG8gdGhlIG51bWJlciBv
-ZiBmcmFtZXMgcmVxdWlyZWQgdG8gY2hhbmdlIHRoZSBzdGF0ZSB0byBlcnJvcgpwYXNzaXZlIHdo
-ZW4gdGhlcmUgYXJlIGJ1cyBwcm9ibGVtcy4KClNpZ25lZC1vZmYtYnk6IFpodSBZaSA8eWkuemh1
-NUBjbi5ib3NjaC5jb20+ClNpZ25lZC1vZmYtYnk6IE1hcmsgSm9uYXMgPG1hcmsuam9uYXNAZGUu
-Ym9zY2guY29tPgotLS0KIGRyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgfCA0NSArKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA0MCBp
-bnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nh
-bi9mbGV4Y2FuLmMgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jCmluZGV4IDc1YmI5ZjYuLjlk
-MGU5N2UgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMKKysrIGIvZHJpdmVy
-cy9uZXQvY2FuL2ZsZXhjYW4uYwpAQCAtNTgxLDcgKzU4MSw3IEBAIHN0YXRpYyB2b2lkIGZsZXhj
-YW5faXJxX2J1c19lcnIoc3RydWN0IG5ldF9kZXZpY2UgKmRldiwgdTMyIHJlZ19lc3IpCiAJY2Fu
-X3J4X29mZmxvYWRfaXJxX3F1ZXVlX2Vycl9za2IoJnByaXYtPm9mZmxvYWQsIHNrYik7CiB9CiAK
-LXN0YXRpYyB2b2lkIGZsZXhjYW5faXJxX3N0YXRlKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsIHUz
-MiByZWdfZXNyKQorc3RhdGljIGJvb2wgZmxleGNhbl9pcnFfc3RhdGUoc3RydWN0IG5ldF9kZXZp
-Y2UgKmRldiwgdTMyIHJlZ19lc3IpCiB7CiAJc3RydWN0IGZsZXhjYW5fcHJpdiAqcHJpdiA9IG5l
-dGRldl9wcml2KGRldik7CiAJc3RydWN0IHNrX2J1ZmYgKnNrYjsKQEAgLTYwNywxMSArNjA3LDEx
-IEBAIHN0YXRpYyB2b2lkIGZsZXhjYW5faXJxX3N0YXRlKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYs
-IHUzMiByZWdfZXNyKQogCiAJLyogc3RhdGUgaGFzbid0IGNoYW5nZWQgKi8KIAlpZiAobGlrZWx5
-KG5ld19zdGF0ZSA9PSBwcml2LT5jYW4uc3RhdGUpKQotCQlyZXR1cm47CisJCXJldHVybiBmYWxz
-ZTsKIAogCXNrYiA9IGFsbG9jX2Nhbl9lcnJfc2tiKGRldiwgJmNmKTsKIAlpZiAodW5saWtlbHko
-IXNrYikpCi0JCXJldHVybjsKKwkJcmV0dXJuIGZhbHNlOwogCiAJY2FuX2NoYW5nZV9zdGF0ZShk
-ZXYsIGNmLCB0eF9zdGF0ZSwgcnhfc3RhdGUpOwogCkBAIC02MTksNiArNjE5LDcgQEAgc3RhdGlj
-IHZvaWQgZmxleGNhbl9pcnFfc3RhdGUoc3RydWN0IG5ldF9kZXZpY2UgKmRldiwgdTMyIHJlZ19l
-c3IpCiAJCWNhbl9idXNfb2ZmKGRldik7CiAKIAljYW5fcnhfb2ZmbG9hZF9pcnFfcXVldWVfZXJy
-X3NrYigmcHJpdi0+b2ZmbG9hZCwgc2tiKTsKKwlyZXR1cm4gdHJ1ZTsKIH0KIAogc3RhdGljIGlu
-bGluZSBzdHJ1Y3QgZmxleGNhbl9wcml2ICpyeF9vZmZsb2FkX3RvX3ByaXYoc3RydWN0IGNhbl9y
-eF9vZmZsb2FkICpvZmZsb2FkKQpAQCAtNzEyLDcgKzcxMyw4IEBAIHN0YXRpYyBpcnFyZXR1cm5f
-dCBmbGV4Y2FuX2lycShpbnQgaXJxLCB2b2lkICpkZXZfaWQpCiAJc3RydWN0IGZsZXhjYW5fcHJp
-diAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7CiAJc3RydWN0IGZsZXhjYW5fcmVncyBfX2lvbWVt
-ICpyZWdzID0gcHJpdi0+cmVnczsKIAlpcnFyZXR1cm5fdCBoYW5kbGVkID0gSVJRX05PTkU7Ci0J
-dTMyIHJlZ19pZmxhZzEsIHJlZ19lc3I7CisJdTMyIHJlZ19pZmxhZzEsIHJlZ19lc3IsIHJlZ19j
-dHJsOworCWJvb2wgc3RhdGVfY2hhbmdlZCA9IGZhbHNlOwogCiAJcmVnX2lmbGFnMSA9IGZsZXhj
-YW5fcmVhZCgmcmVncy0+aWZsYWcxKTsKIApAQCAtNzY4LDEzICs3NzAsNDYgQEAgc3RhdGljIGly
-cXJldHVybl90IGZsZXhjYW5faXJxKGludCBpcnEsIHZvaWQgKmRldl9pZCkKIAkvKiBzdGF0ZSBj
-aGFuZ2UgaW50ZXJydXB0IG9yIG9uIGJyb2tlbiBlcnJvciBzdGF0ZSBjb3JlICovCiAJaWYgKChy
-ZWdfZXNyICYgRkxFWENBTl9FU1JfRVJSX1NUQVRFKSB8fAogCSAgICAocHJpdi0+ZGV2dHlwZV9k
-YXRhLT5xdWlya3MgJiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9FUlJfU1RBVEUpKQotCQlmbGV4Y2Fu
-X2lycV9zdGF0ZShkZXYsIHJlZ19lc3IpOworCQlzdGF0ZV9jaGFuZ2VkID0gZmxleGNhbl9pcnFf
-c3RhdGUoZGV2LCByZWdfZXNyKTsKIAogCS8qIGJ1cyBlcnJvciBJUlEgLSBoYW5kbGUgaWYgYnVz
-IGVycm9yIHJlcG9ydGluZyBpcyBhY3RpdmF0ZWQgKi8KIAlpZiAoKHJlZ19lc3IgJiBGTEVYQ0FO
-X0VTUl9FUlJfQlVTKSAmJgogCSAgICAocHJpdi0+Y2FuLmN0cmxtb2RlICYgQ0FOX0NUUkxNT0RF
-X0JFUlJfUkVQT1JUSU5HKSkKIAkJZmxleGNhbl9pcnFfYnVzX2VycihkZXYsIHJlZ19lc3IpOwog
-CisJLyogZGlzYWJsZSBlcnJvciBpbnRlcnJ1cHQgdXBvbiBlcnJvciBwYXNzaXZlIHN0YXRlIHRy
-YW5zaXRpb24KKwkgKiB0byBzdXNwZW5kIGJ1cyBlcnJvciByZXBvcnRpbmcgKHRvIGF2b2lkIGZs
-b29kaW5nKS4KKwkgKgorCSAqIHJlLWVuYWJsZSBlcnJvciBpbnRlcnJ1cHQgdXBvbiBlcnJvciB3
-YXJuaW5nIHN0YXRlIHRyYW5zaXRpb24KKwkgKiB0byByZXN1bWUgYnVzIGVycm9yIHJlcG9ydGlu
-ZyBhbmQgYWxsb3cgYnJva2VuIGVycm9yIHN0YXRlIGNvcmUKKwkgKiB0byByZXBvcnQgc3RhdGUg
-Y29ycmVjdGx5IChhZ2FpbikuCisJICoKKwkgKiBhdmFpbGFiaWxpdHkgb2YgZXJyb3IgaW50ZXJy
-dXB0IGFtb25nIHN0YXRlIHRyYW5zaXRpb25zOgorCSAqICArLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rCisJICogIHwgKy0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rIFtzdG9wcGVkIC8gIHwK
-KwkgKiAgfCB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
-IHNsZWVwaW5nXSAtKworCSAqICArLSstPiBhY3RpdmUgPC0+IHdhcm5pbmcgPC0+IHBhc3NpdmUg
-LT4gYnVzIG9mZiAtKworCSAqICAgICAgICBeXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KKwkgKiAgICAgICAgICAgICAgICBlbmFibGVkICAgICAg
-ICAgICAgICAgICAgICAgIGRpc2FibGVkCisJICovCisJaWYgKHN0YXRlX2NoYW5nZWQgJiYKKwkg
-ICAgKHByaXYtPmRldnR5cGVfZGF0YS0+cXVpcmtzICYgRkxFWENBTl9RVUlSS19CUk9LRU5fRVJS
-X1NUQVRFIHx8CisJICAgICBwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVfQkVSUl9S
-RVBPUlRJTkcpKSB7CisJCWlmICgocHJpdi0+Y2FuLnN0YXRlID09IENBTl9TVEFURV9FUlJPUl9Q
-QVNTSVZFKSB8fAorCQkgICAgKHByaXYtPmNhbi5zdGF0ZSA9PSBDQU5fU1RBVEVfQlVTX09GRikp
-IHsKKwkJCXJlZ19jdHJsID0gZmxleGNhbl9yZWFkKCZyZWdzLT5jdHJsKTsKKwkJCXJlZ19jdHJs
-ICY9IH5GTEVYQ0FOX0NUUkxfRVJSX01TSzsKKwkJCWZsZXhjYW5fd3JpdGUocmVnX2N0cmwsICZy
-ZWdzLT5jdHJsKTsKKwkJfQorCisJCWlmICgocHJpdi0+Y2FuLnN0YXRlID09IENBTl9TVEFURV9F
-UlJPUl9XQVJOSU5HKSB8fAorCQkgICAgKHByaXYtPmNhbi5zdGF0ZSA9PSBDQU5fU1RBVEVfRVJS
-T1JfQUNUSVZFKSkgeworCQkJcmVnX2N0cmwgPSBmbGV4Y2FuX3JlYWQoJnJlZ3MtPmN0cmwpOwor
-CQkJcmVnX2N0cmwgfD0gRkxFWENBTl9DVFJMX0VSUl9NU0s7CisJCQlmbGV4Y2FuX3dyaXRlKHJl
-Z19jdHJsLCAmcmVncy0+Y3RybCk7CisJCX0KKwl9CisKIAlyZXR1cm4gaGFuZGxlZDsKIH0KIAot
-LSAKMi43LjQK
+Hi Yi,
+
+Quoting ZHU Yi (ST-FIR/ENG1-Zhu) (2017-08-29 08:49:46)
+> > From: Andri Yngvason [mailto:andri.yngvason@marel.com]
+> > Sent: Monday, August 28, 2017 7:23 PM
+...
+> > I have users who can change the baudrate but they can not change the de=
+vice
+> > tree. The baudrate can even be changed by service technicians. I.e. it'=
+s field
+> > configurable. How would I configure the timeout to work well for rates =
+between
+> > 125k and 1M?
+> Yes, the poll once approach assumes user have access to device-tree, othe=
+rwise
+> a catch-all delay (based on the slowest bitrate) is required, which is le=
+ss
+> flexible than the periodic timer.
+Actually, if it depends on the bitrate, then it would be easiest for everyo=
+ne to
+just set it accordingly in the code based on the bitrate without involving =
+dt.
+Anyway, that doesn't really matter, since it seems that we're going with the
+"irq + suppress flooding" approach.
+
+> =
+
+> > =
+
+> > Do you think that a periodic timer would load the system more than an I=
+RQ-flood
+> > due to a bad error situation?
+> > =
+
+> If not the hrtimer than most likely the periodic timer will not load the =
+system
+> more than IRQ flood, and we can configure the interval so it can even low=
+er the
+> system load than IRQ flood. However, the error irq + suppress flooding ap=
+proach
+> has the following benefits compare to the timer approach:
+> 1. report state transitions in time
+> 2. no need to handle the contention between irq and timer
+> 3. no need to deal with how to specify the delay
+OK, good enough.
+
+Regards,
+Andri
