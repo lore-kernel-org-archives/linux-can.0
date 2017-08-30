@@ -1,7 +1,7 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: flexcan missing error state transitions
-Date: Wed, 30 Aug 2017 04:22:01 +0000
-Message-ID: <2245ab57e90f44d88e53449156cc1e1b@SGPMBX1017.APAC.bosch.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: flexcan missing error state transitions
+Date: Wed, 30 Aug 2017 08:25:37 +0200
+Message-ID: <6bd916d4-3eb2-c247-2072-6b4c95dd5c69@grandegger.com>
 References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
  <150333230375.13890.2773067532209799515@maxwell>
  <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
@@ -13,212 +13,318 @@ References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
  <23b53bdc-b7d4-f6de-b192-629ffe9795b0@grandegger.com>
  <c5b11618c98a41108dfbe6cf034398f0@SGPMBX1017.APAC.bosch.com>
  <3486f6ae-f4ef-fc94-e706-775f8af60826@grandegger.com>
+ <2245ab57e90f44d88e53449156cc1e1b@SGPMBX1017.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:38820 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750757AbdH3EWG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Aug 2017 00:22:06 -0400
-In-Reply-To: <3486f6ae-f4ef-fc94-e706-775f8af60826@grandegger.com>
-Content-Language: en-US
+Received: from mailproxy01.manitu.net ([217.11.48.65]:49902 "EHLO
+        mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750744AbdH3GZk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Aug 2017 02:25:40 -0400
+In-Reply-To: <2245ab57e90f44d88e53449156cc1e1b@SGPMBX1017.APAC.bosch.com>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-SGVsbG8gV29sZmdhbmcsDQoNCj4gRnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndn
-QGdyYW5kZWdnZXIuY29tXQ0KPiBTZW50OiBUdWVzZGF5LCBBdWd1c3QgMjksIDIwMTcgNzoxNyBQ
-TQ0KPiANCj4gSGVsbG8sDQo+IA0KPiBub3cgbG9va2luZyB0byB5b3VyIHBhdGNoZXMuLi4NCj4g
-DQo+IEFtIDI5LjA4LjIwMTcgdW0gMTA6NDkgc2NocmllYiBaSFUgWWkgKFNULUZJUi9FTkcxLVpo
-dSk6DQo+ID4gSGVsbG8gV29sZmdhbmcsIEhlbGxvIEFuZHJpLA0KPiBbLi4uXQ0KPiANCj4gPiBB
-dHRhY2hlZCBwbGVhc2UgZmluZCB0aGUgcGF0Y2ggZm9yIHJldmlldy4NCj4gPg0KPiA+IFBhdGNo
-IDEgKDAwMDEtY2FuLWZsZXhjYW4tbWl0aWdhdGUtaW5jb21wbGV0ZS1zdGF0ZS1pbnRlcnJ1cHQu
-cGF0Y2gpDQo+ID4gRml4ZXMgdGhlIHN0YXRlIHRyYW5zaXRpb24gaXNzdWUsIGJ1dCBpbnRlcnJ1
-cHQgZmxvb2RpbmcgbWF5IGhhcHBlbi4NCj4gDQo+ID4gRnJvbSAzMDI1YTNmNmYyN2Y2ZGY5OWQx
-ZGI2MGQzZWY4MjBlZmU2MjlmZDIwIE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KPiA+IEZyb206
-IFpodSBZaSA8eWkuemh1NUBjbi5ib3NjaC5jb20+DQo+ID4gRGF0ZTogTW9uLCAyOCBBdWcgMjAx
-NyAxNzoyOToyMyArMDgwMA0KPiA+IFN1YmplY3Q6IFtQQVRDSCAxLzJdIGNhbjogZmxleGNhbjog
-bWl0aWdhdGUgaS5NWDYgaW5jb21wbGV0ZSBzdGF0ZSBpcnENCj4gPg0KPiA+IFRoZSBpLk1YNiBm
-bGV4Y2FuIGNvcmUgd2lsbCBub3QgZ2VuZXJhdGUgc3RhdGUgaW50ZXJydXB0IGZvciBzb21lIHN0
-YXRlDQo+ID4gdHJhbnNpdGlvbnMuIFRoaXMgcGF0Y2ggZW5hYmxlcyB0aGUgYnVzIGVycm9yIGlu
-dGVycnVwdCBvbiBpLk1YNiBieQ0KPiA+IGVuYWJsaW5nIEZMRVhDQU5fUVVJUktfQlJPS0VOX0VS
-Ul9TVEFURSBhbmQgY2hhbmdpbmcgdGhlIGNhbGwgb2YNCj4gPiBmbGV4Y2FuX2lycV9zdGF0ZSgp
-IHVwb24gX2FueV8gaW50ZXJydXB0IHRvIG1pdGlnYXRlIHRoaXMgaXNzdWUuDQo+ID4NCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBaaHUgWWkgPHlpLnpodTVAY24uYm9zY2guY29tPg0KPiA+IFNpZ25lZC1v
-ZmYtYnk6IE1hcmsgSm9uYXMgPG1hcmsuam9uYXNAZGUuYm9zY2guY29tPg0KPiA+IC0tLQ0KPiA+
-ICBkcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIHwgNyArKysrLS0tDQo+ID4gIDEgZmlsZSBjaGFu
-Z2VkLCA0IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMN
-Cj4gPiBpbmRleCAxM2YwZjIxLi43NWJiOWY2IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0
-L2Nhbi9mbGV4Y2FuLmMNCj4gPiArKysgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4g
-QEAgLTI4OCw3ICsyODgsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZsZXhjYW5fZGV2dHlwZV9k
-YXRhDQo+IGZzbF9pbXgyOF9kZXZ0eXBlX2RhdGE7DQo+ID4NCj4gPiAgc3RhdGljIGNvbnN0IHN0
-cnVjdCBmbGV4Y2FuX2RldnR5cGVfZGF0YSBmc2xfaW14NnFfZGV2dHlwZV9kYXRhID0gew0KPiA+
-ICAJLnF1aXJrcyA9IEZMRVhDQU5fUVVJUktfRElTQUJMRV9SWEZHIHwNCj4gRkxFWENBTl9RVUlS
-S19FTkFCTEVfRUFDRU5fUlJTIHwNCj4gPiAtCQlGTEVYQ0FOX1FVSVJLX1VTRV9PRkZfVElNRVNU
-QU1QLA0KPiA+ICsJCUZMRVhDQU5fUVVJUktfVVNFX09GRl9USU1FU1RBTVAgfA0KPiBGTEVYQ0FO
-X1FVSVJLX0JST0tFTl9FUlJfU1RBVEUsDQo+ID4gIH07DQo+IA0KPiBUaGlzIHBhdGNoIHNob3Vs
-ZCBqdXN0IGZpeCB0aGUgcmVncmVzc2lvbiBidWcuLi4gd2l0aG91dCB1c2luZw0KPiBGTEVYQ0FO
-X1FVSVJLX0JST0tFTl9FUlJfU1RBVEUgZm9yIHRoZSBpbXg2cS4NCk9LLiBJJ2xsIGNyZWF0ZSBh
-IHNlcGFyYXRlIHBhdGNoIHRvIGVuYWJsZSB0aGUgcXVpcmsgZm9yIGlteDZxLg0KDQo+IA0KPiA+
-ICBzdGF0aWMgY29uc3Qgc3RydWN0IGZsZXhjYW5fZGV2dHlwZV9kYXRhIGZzbF92ZjYxMF9kZXZ0
-eXBlX2RhdGEgPSB7DQo+ID4gQEAgLTc2NSw4ICs3NjUsOSBAQCBzdGF0aWMgaXJxcmV0dXJuX3Qg
-ZmxleGNhbl9pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKQ0KPiA+ICAJCWZsZXhjYW5fd3JpdGUo
-cmVnX2VzciAmIEZMRVhDQU5fRVNSX0FMTF9JTlQsICZyZWdzLT5lc3IpOw0KPiA+ICAJfQ0KPiA+
-DQo+ID4gLQkvKiBzdGF0ZSBjaGFuZ2UgaW50ZXJydXB0ICovDQo+ID4gLQlpZiAocmVnX2VzciAm
-IEZMRVhDQU5fRVNSX0VSUl9TVEFURSkNCj4gPiArCS8qIHN0YXRlIGNoYW5nZSBpbnRlcnJ1cHQg
-b3Igb24gYnJva2VuIGVycm9yIHN0YXRlIGNvcmUgKi8NCj4gPiArCWlmICgocmVnX2VzciAmIEZM
-RVhDQU5fRVNSX0VSUl9TVEFURSkgfHwNCj4gPiArCSAgICAocHJpdi0+ZGV2dHlwZV9kYXRhLT5x
-dWlya3MgJg0KPiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9FUlJfU1RBVEUpKQ0KPiA+ICAJCWZsZXhj
-YW5faXJxX3N0YXRlKGRldiwgcmVnX2Vzcik7DQo+ID4NCj4gPiAgCS8qIGJ1cyBlcnJvciBJUlEg
-LSBoYW5kbGUgaWYgYnVzIGVycm9yIHJlcG9ydGluZyBpcyBhY3RpdmF0ZWQgKi8NCj4gPiAtLQ0K
-PiA+IDIuNy40DQo+IA0KPiBMb29rcyBnb29kIQ0KPiANCj4gPiBQYXRjaCAyICgwMDAyLWNhbi1m
-bGV4Y2FuLW1pdGlnYXRlLWVycm9yLWludGVycnVwdC1mbG9vZGluZy5wYXRjaCkNCj4gDQo+ID4g
-RnJvbSA1Y2EwNjFmY2IwY2M4NTc2Y2FhZmRkOWEwZjM5OGFkZjgxYzE4ZWNjIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQ0KPiA+IEZyb206IFpodSBZaSA8eWkuemh1NUBjbi5ib3NjaC5jb20+DQo+
-ID4gRGF0ZTogVHVlLCAyOSBBdWcgMjAxNyAxMjoxOTowNCArMDgwMA0KPiA+IFN1YmplY3Q6IFtQ
-QVRDSCAyLzJdIGNhbjogZmxleGNhbjogbWl0aWdhdGUgZXJyb3IgaW50ZXJydXB0IGZsb29kaW5n
-DQo+ID4NCj4gPiBFcnJvciBpbnRlcnJ1cHQgZmxvb2RpbmcgbWF5IGhhcHBlbiBpZiBiZXJyLXJl
-cG9ydGluZyBpcyBlbmFibGVkLCBvcg0KPiA+IHRoZSBicm9rZW4gZXJyb3Igc3RhdGUgcXVpcmsg
-Zml4IGlzIGVuYWJsZWQuIEZvciBleGFtcGxlLCBpbiBjYXNlDQo+ID4gdGhlcmUgaXMgbm8gY2Fi
-bGUgY29ubmVjdGVkLCBlcnJvciBpbnRlcnJ1cHQgZmxvb2RpbmcgaXMgdmVyeSBsaWtlbHkNCj4g
-PiBiZWNhdXNlIHRoZSBub2RlIGNhbm5vdCBnbyB0byBidXMgb2ZmLg0KPiA+DQo+ID4gVGhpcyBw
-YXRjaCBtaXRpZ2F0ZXMgdGhpcyBpc3N1ZSBieToNCj4gPiAxLiBkaXNhYmxlIGVycm9yIGludGVy
-cnVwdCB1cG9uIGVycm9yIHBhc3NpdmUgc3RhdGUgdHJhbnNpdGlvbg0KPiA+IDIuIHJlLWVuYWJs
-ZSBlcnJvciBpbnRlcnJ1cHQgdXBvbiBlcnJvciB3YXJuaW5nIHN0YXRlIHRyYW5zaXRpb24NCj4g
-Pg0KPiA+IEluIHRoaXMgd2F5LCB0aGUgZHJpdmVyIGlzIHN0aWxsIGFibGUgdG8gcmVwb3J0IGNv
-cnJlY3Qgc3RhdGUNCj4gPiB0cmFuc2l0aW9ucyB3aXRob3V0IGFkZGl0aW9uYWwgbGF0ZW5jeS4g
-QW5kIGZsb29kaW5nIG9mIGVycm9yIGludGVycnVwdHMNCj4gPiBpcyBsaW1pdGVkIHRvIHRoZSBu
-dW1iZXIgb2YgZnJhbWVzIHJlcXVpcmVkIHRvIGNoYW5nZSB0aGUgc3RhdGUgdG8gZXJyb3INCj4g
-PiBwYXNzaXZlIHdoZW4gdGhlcmUgYXJlIGJ1cyBwcm9ibGVtcy4NCj4gPg0KPiA+IFNpZ25lZC1v
-ZmYtYnk6IFpodSBZaSA8eWkuemh1NUBjbi5ib3NjaC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTog
-TWFyayBKb25hcyA8bWFyay5qb25hc0BkZS5ib3NjaC5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZl
-cnMvbmV0L2Nhbi9mbGV4Y2FuLmMgfCA0NQ0KPiArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLS0tLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQwIGluc2VydGlvbnMoKyks
-IDUgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL2Zs
-ZXhjYW4uYyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiBpbmRleCA3NWJiOWY2Li45
-ZDBlOTdlIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiAr
-KysgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4gQEAgLTU4MSw3ICs1ODEsNyBAQCBz
-dGF0aWMgdm9pZCBmbGV4Y2FuX2lycV9idXNfZXJyKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsDQo+
-IHUzMiByZWdfZXNyKQ0KPiA+ICAJY2FuX3J4X29mZmxvYWRfaXJxX3F1ZXVlX2Vycl9za2IoJnBy
-aXYtPm9mZmxvYWQsIHNrYik7DQo+ID4gIH0NCj4gPg0KPiA+IC1zdGF0aWMgdm9pZCBmbGV4Y2Fu
-X2lycV9zdGF0ZShzdHJ1Y3QgbmV0X2RldmljZSAqZGV2LCB1MzIgcmVnX2VzcikNCj4gPiArc3Rh
-dGljIGJvb2wgZmxleGNhbl9pcnFfc3RhdGUoc3RydWN0IG5ldF9kZXZpY2UgKmRldiwgdTMyIHJl
-Z19lc3IpDQo+ID4gIHsNCj4gPiAgCXN0cnVjdCBmbGV4Y2FuX3ByaXYgKnByaXYgPSBuZXRkZXZf
-cHJpdihkZXYpOw0KPiA+ICAJc3RydWN0IHNrX2J1ZmYgKnNrYjsNCj4gPiBAQCAtNjA3LDExICs2
-MDcsMTEgQEAgc3RhdGljIHZvaWQgZmxleGNhbl9pcnFfc3RhdGUoc3RydWN0IG5ldF9kZXZpY2Ug
-KmRldiwNCj4gdTMyIHJlZ19lc3IpDQo+ID4NCj4gPiAgCS8qIHN0YXRlIGhhc24ndCBjaGFuZ2Vk
-ICovDQo+ID4gIAlpZiAobGlrZWx5KG5ld19zdGF0ZSA9PSBwcml2LT5jYW4uc3RhdGUpKQ0KPiA+
-IC0JCXJldHVybjsNCj4gPiArCQlyZXR1cm4gZmFsc2U7DQo+ID4NCj4gPiAgCXNrYiA9IGFsbG9j
-X2Nhbl9lcnJfc2tiKGRldiwgJmNmKTsNCj4gPiAgCWlmICh1bmxpa2VseSghc2tiKSkNCj4gPiAt
-CQlyZXR1cm47DQo+ID4gKwkJcmV0dXJuIGZhbHNlOw0KPiA+DQo+ID4gIAljYW5fY2hhbmdlX3N0
-YXRlKGRldiwgY2YsIHR4X3N0YXRlLCByeF9zdGF0ZSk7DQo+ID4NCj4gPiBAQCAtNjE5LDYgKzYx
-OSw3IEBAIHN0YXRpYyB2b2lkIGZsZXhjYW5faXJxX3N0YXRlKHN0cnVjdCBuZXRfZGV2aWNlICpk
-ZXYsIHUzMg0KPiByZWdfZXNyKQ0KPiA+ICAJCWNhbl9idXNfb2ZmKGRldik7DQo+ID4NCj4gPiAg
-CWNhbl9yeF9vZmZsb2FkX2lycV9xdWV1ZV9lcnJfc2tiKCZwcml2LT5vZmZsb2FkLCBza2IpOw0K
-PiA+ICsJcmV0dXJuIHRydWU7DQo+ID4gIH0NCj4gPg0KPiA+ICBzdGF0aWMgaW5saW5lIHN0cnVj
-dCBmbGV4Y2FuX3ByaXYgKnJ4X29mZmxvYWRfdG9fcHJpdihzdHJ1Y3QgY2FuX3J4X29mZmxvYWQN
-Cj4gKm9mZmxvYWQpDQo+ID4gQEAgLTcxMiw3ICs3MTMsOCBAQCBzdGF0aWMgaXJxcmV0dXJuX3Qg
-ZmxleGNhbl9pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKQ0KPiA+ICAJc3RydWN0IGZsZXhjYW5f
-cHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQo+ID4gIAlzdHJ1Y3QgZmxleGNhbl9yZWdz
-IF9faW9tZW0gKnJlZ3MgPSBwcml2LT5yZWdzOw0KPiA+ICAJaXJxcmV0dXJuX3QgaGFuZGxlZCA9
-IElSUV9OT05FOw0KPiA+IC0JdTMyIHJlZ19pZmxhZzEsIHJlZ19lc3I7DQo+ID4gKwl1MzIgcmVn
-X2lmbGFnMSwgcmVnX2VzciwgcmVnX2N0cmw7DQo+ID4gKwlib29sIHN0YXRlX2NoYW5nZWQgPSBm
-YWxzZTsNCj4gPg0KPiA+ICAJcmVnX2lmbGFnMSA9IGZsZXhjYW5fcmVhZCgmcmVncy0+aWZsYWcx
-KTsNCj4gPg0KPiA+IEBAIC03NjgsMTMgKzc3MCw0NiBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgZmxl
-eGNhbl9pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKQ0KPiA+ICAJLyogc3RhdGUgY2hhbmdlIGlu
-dGVycnVwdCBvciBvbiBicm9rZW4gZXJyb3Igc3RhdGUgY29yZSAqLw0KPiA+ICAJaWYgKChyZWdf
-ZXNyICYgRkxFWENBTl9FU1JfRVJSX1NUQVRFKSB8fA0KPiA+ICAJICAgIChwcml2LT5kZXZ0eXBl
-X2RhdGEtPnF1aXJrcyAmDQo+IEZMRVhDQU5fUVVJUktfQlJPS0VOX0VSUl9TVEFURSkpDQo+ID4g
-LQkJZmxleGNhbl9pcnFfc3RhdGUoZGV2LCByZWdfZXNyKTsNCj4gPiArCQlzdGF0ZV9jaGFuZ2Vk
-ID0gZmxleGNhbl9pcnFfc3RhdGUoZGV2LCByZWdfZXNyKTsNCj4gPg0KPiA+ICAJLyogYnVzIGVy
-cm9yIElSUSAtIGhhbmRsZSBpZiBidXMgZXJyb3IgcmVwb3J0aW5nIGlzIGFjdGl2YXRlZCAqLw0K
-PiA+ICAJaWYgKChyZWdfZXNyICYgRkxFWENBTl9FU1JfRVJSX0JVUykgJiYNCj4gPiAgCSAgICAo
-cHJpdi0+Y2FuLmN0cmxtb2RlICYgQ0FOX0NUUkxNT0RFX0JFUlJfUkVQT1JUSU5HKSkNCj4gPiAg
-CQlmbGV4Y2FuX2lycV9idXNfZXJyKGRldiwgcmVnX2Vzcik7DQo+ID4NCj4gPiArCS8qIGRpc2Fi
-bGUgZXJyb3IgaW50ZXJydXB0IHVwb24gZXJyb3IgcGFzc2l2ZSBzdGF0ZSB0cmFuc2l0aW9uDQo+
-ID4gKwkgKiB0byBzdXNwZW5kIGJ1cyBlcnJvciByZXBvcnRpbmcgKHRvIGF2b2lkIGZsb29kaW5n
-KS4NCj4gPiArCSAqDQo+ID4gKwkgKiByZS1lbmFibGUgZXJyb3IgaW50ZXJydXB0IHVwb24gZXJy
-b3Igd2FybmluZyBzdGF0ZSB0cmFuc2l0aW9uDQo+ID4gKwkgKiB0byByZXN1bWUgYnVzIGVycm9y
-IHJlcG9ydGluZyBhbmQgYWxsb3cgYnJva2VuIGVycm9yIHN0YXRlIGNvcmUNCj4gPiArCSAqIHRv
-IHJlcG9ydCBzdGF0ZSBjb3JyZWN0bHkgKGFnYWluKS4NCj4gPiArCSAqDQo+ID4gKwkgKiBhdmFp
-bGFiaWxpdHkgb2YgZXJyb3IgaW50ZXJydXB0IGFtb25nIHN0YXRlIHRyYW5zaXRpb25zOg0KPiA+
-ICsJICogICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLSsNCj4gPiArCSAqICB8ICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tKyBbc3RvcHBlZCAvICB8DQo+ID4gKwkgKiAgfCB8ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIHNsZWVwaW5nXSAtKw0KPiA+
-ICsJICogICstKy0+IGFjdGl2ZSA8LT4gd2FybmluZyA8LT4gcGFzc2l2ZSAtPiBidXMgb2ZmIC0r
-DQo+ID4gKwkgKiAgICAgICAgXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fDQo+ID4gKwkgKiAgICAgICAgICAgICAgICBlbmFibGVkICAgICAgICAg
-ICAgICAgICAgICAgIGRpc2FibGVkDQo+ID4gKwkgKi8NCj4gPiArCWlmIChzdGF0ZV9jaGFuZ2Vk
-ICYmDQo+ID4gKwkgICAgKHByaXYtPmRldnR5cGVfZGF0YS0+cXVpcmtzICYNCj4gRkxFWENBTl9R
-VUlSS19CUk9LRU5fRVJSX1NUQVRFIHx8DQo+ID4gKwkgICAgIHByaXYtPmNhbi5jdHJsbW9kZSAm
-IENBTl9DVFJMTU9ERV9CRVJSX1JFUE9SVElORykpIHsNCj4gPiArCQlpZiAoKHByaXYtPmNhbi5z
-dGF0ZSA9PSBDQU5fU1RBVEVfRVJST1JfUEFTU0lWRSkgfHwNCj4gPiArCQkgICAgKHByaXYtPmNh
-bi5zdGF0ZSA9PSBDQU5fU1RBVEVfQlVTX09GRikpIHsNCj4gPiArCQkJcmVnX2N0cmwgPSBmbGV4
-Y2FuX3JlYWQoJnJlZ3MtPmN0cmwpOw0KPiA+ICsJCQlyZWdfY3RybCAmPSB+RkxFWENBTl9DVFJM
-X0VSUl9NU0s7DQo+ID4gKwkJCWZsZXhjYW5fd3JpdGUocmVnX2N0cmwsICZyZWdzLT5jdHJsKTsN
-Cj4gPiArCQl9DQo+IA0KPiBXZSBkbyBub3Qgd2FudCB0byBkaXNhYmxlIGJ1cyBlcnJvciBpbnRl
-cnJ1cHRzIGZvciBidXMgZXJyb3IgcmVwb3J0aW5nIQ0KSSBzZWUhIElmIHVzZXIgZW5hYmxlZCBi
-dXMgZXJyb3IgcmVwb3J0aW5nLCB0aGF0IG1lYW5zIGhlIHdhbnQgYWxsIGJ1cyBlcnJvcnMsDQpp
-bmNsdWRlIGZsb29kaW5nLiBJIHdpbGwgZml4IHRoaXMuDQoNCj4gDQo+ID4gKwkJaWYgKChwcml2
-LT5jYW4uc3RhdGUgPT0gQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkcpIHx8DQo+ID4gKwkJICAgIChw
-cml2LT5jYW4uc3RhdGUgPT0gQ0FOX1NUQVRFX0VSUk9SX0FDVElWRSkpIHsNCj4gPiArCQkJcmVn
-X2N0cmwgPSBmbGV4Y2FuX3JlYWQoJnJlZ3MtPmN0cmwpOw0KPiA+ICsJCQlyZWdfY3RybCB8PSBG
-TEVYQ0FOX0NUUkxfRVJSX01TSzsNCj4gPiArCQkJZmxleGNhbl93cml0ZShyZWdfY3RybCwgJnJl
-Z3MtPmN0cmwpOw0KPiA+ICsJCX0NCj4gPiArCX0NCj4gPiArDQo+IA0KPiBGb3IgdGhlIGxlZ2Fj
-eSBGTEVYQ0FOX1FVSVJLX0JST0tFTl9FUlJfU1RBVEUgd2UgZG8gbm90IHdhbnQgdG8NCj4gZGlz
-YWJsZQ0KPiBidXMgZXJyb3IgaW50ZXJydXB0cyBhcyB3ZWxsLiBUbyBoYW5kbGUgdGhhdCBwcm9w
-ZXJseSwgSSB0aGluayB3ZSBuZWVkDQpJJ20gbm90IHN1cmUgd2h5IHdlIGRvIG5vdCB3YW50IHRv
-IGRpc2FibGUgZXJyb3IgaW50ZXJydXB0IGZvciBsZWdhY3kgYnJva2VuIGNvcmUsDQpJIHRoaW5r
-IGlmIHRoaXMgYXBwcm9hY2ggd29ya3MgZm9yIGJvdGggKHdpdGgvd2l0aG91dCB3YXJuaW5nIGly
-cSkgY29yZSwgdGhlbiBkaXNhYmxlDQp0aGUgaW50ZXJydXB0cyBoZWxwcyBhdm9pZCBmbG9vZGlu
-Zy4NCg0KPiBhbiBhZGRpdGlvbmFsIEZMRVhDQU5fUVVJUktfQlJPS0VOX1BFUlJfU1RBVEUgYW5k
-IG1heWJlIHJlbmFtZQ0KPiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9FUlJfU1RBVEUgdG8NCj4gRkxF
-WENBTl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURS4NClRoYXQncyBhIGdvb2QgcG9pbnQuIFdpdGgg
-RkxFWENBTl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURSBhbmQNCkZMRVhDQU5fUVVJUktfQlJPS0VO
-X1BFUlJfU1RBVEUsIHdlIGNhbiBwcmVjaXNlbHkgdGVsbCB3aGljaCBjb3JlDQpsYWNrcyBvZiB3
-aGljaCBjYXBhYmlsaXR5Lg0KDQpIb3dldmVyLCBJJ20gd29uZGVyaW5nIGlzIHRoZXJlIGEgZmxl
-eGNhbiBjb3JlIHdoaWNoIGxhY2tpbmcgd2FybmluZyBpcnEsDQpidXQgaGF2aW5nIHBhc3NpdmUg
-aXJxPyBJZiB0aGlzIGlzIG5vdCB0cnVlLCB0aGVuIHdlIHdpbGwgbmV2ZXIgc3BlY2lmeSB0aGUN
-CldFUlJfU1RBVEUgcXVpcmsgYWxvbmUsIHJpZ2h0Pw0KDQo+IA0KPiA+ICAJcmV0dXJuIGhhbmRs
-ZWQ7DQo+ID4gIH0NCj4gPg0KPiA+IC0tDQo+ID4gMi43LjQNCj4gDQo+IA0KPiA+IEFkZHJlc3Nl
-cyB0aGUgaW50ZXJydXB0IGZsb29kaW5nIGlzc3VlIGFzIGFib3ZlIG1lbnRpb25lZCwgYW5kIHRh
-a2VzIGNhcmUNCj4gPiBvZiB0aGUgYnVzLWVycm9yIHJlcG9ydGluZy4gRm9yIHRoZSBvdGhlciBx
-dWlya3MsIHRoZXkgbG9va3MgbGlrZSB3b24ndA0KPiA+IGluZmx1ZW5jZSB0aGUgc3RhdGUgdHJh
-bnNpdGlvbiBhbmQgaW50ZXJydXB0IGZsb29kaW5nLiBQbGVhc2UgY29tbWVudCBpZg0KPiA+IHNv
-bWV0aGluZyBtaXNzZWQuDQo+ID4NCj4gPiBPbmUgbW9yZSB0aGluZyByZWdhcmRpbmcgcGF0Y2gg
-MiBpcywgaXQgZG9lc24ndCByZWx5IG9uIGVycm9yIHdhcm5pbmcNCj4gPiBjYW4gYmUgcmVwb3J0
-ZWQgYnkgW1RSXVdSTl9JTlQsIGJlY2F1c2UgdGhpcyBzdGF0ZSBjYW4gYWxzbyBiZSByZXBvcnRl
-ZA0KPiA+IHVwb24gdGhlIF9hbnlfIGludGVycnVwdC4gT25seSBidXMtb2ZmIHN0YXRlIG5lZWRz
-IHRvIGhhdmUgZGVkaWNhdGVkDQo+ID4gaW50ZXJydXB0IGxpbmUgKGlzIHRoaXMgdHJ1ZSBmb3Ig
-YWxsIGZsZXhjYW4gY29yZT8pDQo+IA0KPiBJIGRvbid0IHRoaW5rIHNvLiBIb3cgc2hvdWxkIGl0
-IHdvcmsgaWYgbm8gY2FibGUgaXMgY29ubmVjdGVkPyBBbnl3YXksDQo+IHRoZSBwYXRjaCBzZWVt
-cyBub3QgdG8gYmUgdG8gbGVuZ2h0eS4NCkkgZGlzYWJsZWQgdGhlIFtUUl1XUk5fSU5UIG9uIGku
-TVg2IGJ5IGNoYW5nZQ0KKGh0dHA6Ly9lbGl4aXIuZnJlZS1lbGVjdHJvbnMuY29tL2xpbnV4L2xh
-dGVzdC9zb3VyY2UvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyNMODgpDQp0bzoNCiNkZWZpbmUg
-RkxFWENBTl9DVFJMX0VSUl9TVEFURSBGTEVYQ0FOX0NUUkxfQk9GRl9NU0sNCmFuZCB0ZXN0ZWQg
-d2l0aCB0aGUgcGF0Y2gsIHNlZW1zIHRoZSBzdGF0ZSB0cmFuc2l0aW9ucyBzdGlsbCB3b3JrcyBm
-aW5lLg0KDQpJIHRoaW5rIHRoZSByZWFzb24gaXMgdGhlIHNhbWUgYXMgaG93IHRoZSBlcnJvciBp
-bnRlcnJ1cHQgaGVscHMgcmVwb3J0IGVycm9yIHBhc3NpdmU6DQpBdCBtb3N0IDEyIHRpbWVzIGNv
-bnNlY3V0aXZlIGJ1cyBlcnJvciBpbnRlcnJ1cHRzIHdpbGwgY2hhbmdlIHRvIGVycm9yIHdhcm5p
-bmcsIGFuZA0KbWluaW1hbCAxIHRpbWUgVHgvUnggaW50ZXJydXB0IHdpbGwgY2hhbmdlIHN0YXRl
-IGZyb20gZXJyb3IgcGFzc2l2ZSB0byBlcnJvciB3YXJuaW5nLg0KDQpJZiB3ZSBjaGFuZ2UgdG86
-DQojZGVmaW5lIEZMRVhDQU5fQ1RSTF9FUlJfU1RBVEUgMA0KdGhlbiB3ZSBjYW5ub3QgZW50ZXIg
-YnVzIG9mZiBzdGF0ZSBhbnkgbW9yZSBhcyBleHBlY3RlZCAob3RoZXIgdHJhbnNpdGlvbnMgc3Rp
-bGwgb2spLg0KDQpBcyB3ZSBvbmx5IGhhdmUgaS5NWDYgYXQgaGFuZCwgc28gd2UgY2Fubm90IHZl
-cmlmeSB0aGlzIG9uIG90aGVyIGZsZXhjYW4gY29yZS4NCklmIHdlIHdhbnQgdG8gbGltaXQgdGhl
-IHBhdGNoIHRvIG9ubHkgdGFrZSBlZmZlY3QgZm9yIGkuTVg2LCB0aGVuIHdlIHNob3VsZCBpbnRy
-b2R1Y2UNCnRoZSBGTEVYQ0FOX1FVSVJLX0JST0tFTl9QKFcpRVJSX1NUQVRFLCB0aHVzIHRoZSBs
-ZWdhY3kgY29yZSB3aWxsIG5vdCBiZQ0KYWZmZWN0ZWQuDQoNCk90aGVyd2lzZSwgdGhlIGxlZ2Fj
-eSBGTEVYQ0FOX1FVSVJLX0JPUktFTl9FUlJfU1RBVEUgY2FuIGJlIGV4dGVuZGVkDQp0byB0aGUg
-Y29yZSB3aXRoIGJyb2tlbiB3YXJuaW5nIGFuZC9vciBwYXNzaXZlIGlycS4NCg0KV2hhdCBkbyB5
-b3UgdGhpbms/DQoNCkknbGwgcHJlcGFyZSBwYXRjaGVzIGZvciByZXZpZXcgbGF0ZXI6DQoxLiBm
-aXggcmVncmVzc2lvbiBidWcNCjIuIHN1cHByZXNzIGludGVycnVwdCBmbG9vZGluZyBmb3IgYnJv
-a2VuIGNvcmUNCjMuIGVuYWJsZSBxdWlyayBmb3IgaS5teDYNCg0KU2hhbGwgSSBzZW5kIHNlcGFy
-YXRlIGUtbWFpbCBmb3IgZWFjaCBwYXRjaD8gRHVlIHRvIG91ciBtYWlsIGNsaWVudCBpcyBvdXRs
-b29rLCBJJ20NCm5vdCBzdXJlIHdoZXRoZXIgdGhlIGlubGluZSBwYXRjaCBjYW4gd29yayBzbW9v
-dGhseSwgaWYgbm90LCBzaGFsbCBJIGF0dGFjaCB0aGUgcGF0Y2g/DQoNClRoYW5rcyENCg0KQmVz
-dCByZWdhcmRzDQpZaQ0K
+
+
+Am 30.08.2017 um 06:22 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
+> Hello Wolfgang,
+> 
+>> From: Wolfgang Grandegger [mailto:wg@grandegger.com]
+>> Sent: Tuesday, August 29, 2017 7:17 PM
+>>
+>> Hello,
+>>
+>> now looking to your patches...
+>>
+>> Am 29.08.2017 um 10:49 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
+>>> Hello Wolfgang, Hello Andri,
+>> [...]
+>>
+>>> Attached please find the patch for review.
+>>>
+>>> Patch 1 (0001-can-flexcan-mitigate-incomplete-state-interrupt.patch)
+>>> Fixes the state transition issue, but interrupt flooding may happen.
+>>
+>>>  From 3025a3f6f27f6df99d1db60d3ef820efe629fd20 Mon Sep 17 00:00:00 2001
+>>> From: Zhu Yi <yi.zhu5@cn.bosch.com>
+>>> Date: Mon, 28 Aug 2017 17:29:23 +0800
+>>> Subject: [PATCH 1/2] can: flexcan: mitigate i.MX6 incomplete state irq
+>>>
+>>> The i.MX6 flexcan core will not generate state interrupt for some state
+>>> transitions. This patch enables the bus error interrupt on i.MX6 by
+>>> enabling FLEXCAN_QUIRK_BROKEN_ERR_STATE and changing the call of
+>>> flexcan_irq_state() upon _any_ interrupt to mitigate this issue.
+>>>
+>>> Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
+>>> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+>>> ---
+>>>   drivers/net/can/flexcan.c | 7 ++++---
+>>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+>>> index 13f0f21..75bb9f6 100644
+>>> --- a/drivers/net/can/flexcan.c
+>>> +++ b/drivers/net/can/flexcan.c
+>>> @@ -288,7 +288,7 @@ static const struct flexcan_devtype_data
+>> fsl_imx28_devtype_data;
+>>>
+>>>   static const struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+>>>   	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG |
+>> FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+>>> -		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
+>>> +		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
+>> FLEXCAN_QUIRK_BROKEN_ERR_STATE,
+>>>   };
+>>
+>> This patch should just fix the regression bug... without using
+>> FLEXCAN_QUIRK_BROKEN_ERR_STATE for the imx6q.
+> OK. I'll create a separate patch to enable the quirk for imx6q.
+> 
+>>
+>>>   static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
+>>> @@ -765,8 +765,9 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+>>>   		flexcan_write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
+>>>   	}
+>>>
+>>> -	/* state change interrupt */
+>>> -	if (reg_esr & FLEXCAN_ESR_ERR_STATE)
+>>> +	/* state change interrupt or on broken error state core */
+>>> +	if ((reg_esr & FLEXCAN_ESR_ERR_STATE) ||
+>>> +	    (priv->devtype_data->quirks &
+>> FLEXCAN_QUIRK_BROKEN_ERR_STATE))
+>>>   		flexcan_irq_state(dev, reg_esr);
+>>>
+>>>   	/* bus error IRQ - handle if bus error reporting is activated */
+>>> --
+>>> 2.7.4
+>>
+>> Looks good!
+>>
+>>> Patch 2 (0002-can-flexcan-mitigate-error-interrupt-flooding.patch)
+>>
+>>>  From 5ca061fcb0cc8576caafdd9a0f398adf81c18ecc Mon Sep 17 00:00:00 2001
+>>> From: Zhu Yi <yi.zhu5@cn.bosch.com>
+>>> Date: Tue, 29 Aug 2017 12:19:04 +0800
+>>> Subject: [PATCH 2/2] can: flexcan: mitigate error interrupt flooding
+>>>
+>>> Error interrupt flooding may happen if berr-reporting is enabled, or
+>>> the broken error state quirk fix is enabled. For example, in case
+>>> there is no cable connected, error interrupt flooding is very likely
+>>> because the node cannot go to bus off.
+>>>
+>>> This patch mitigates this issue by:
+>>> 1. disable error interrupt upon error passive state transition
+>>> 2. re-enable error interrupt upon error warning state transition
+>>>
+>>> In this way, the driver is still able to report correct state
+>>> transitions without additional latency. And flooding of error interrupts
+>>> is limited to the number of frames required to change the state to error
+>>> passive when there are bus problems.
+>>>
+>>> Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
+>>> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+>>> ---
+>>>   drivers/net/can/flexcan.c | 45
+>> ++++++++++++++++++++++++++++++++++++++++-----
+>>>   1 file changed, 40 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+>>> index 75bb9f6..9d0e97e 100644
+>>> --- a/drivers/net/can/flexcan.c
+>>> +++ b/drivers/net/can/flexcan.c
+>>> @@ -581,7 +581,7 @@ static void flexcan_irq_bus_err(struct net_device *dev,
+>> u32 reg_esr)
+>>>   	can_rx_offload_irq_queue_err_skb(&priv->offload, skb);
+>>>   }
+>>>
+>>> -static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
+>>> +static bool flexcan_irq_state(struct net_device *dev, u32 reg_esr)
+>>>   {
+>>>   	struct flexcan_priv *priv = netdev_priv(dev);
+>>>   	struct sk_buff *skb;
+>>> @@ -607,11 +607,11 @@ static void flexcan_irq_state(struct net_device *dev,
+>> u32 reg_esr)
+>>>
+>>>   	/* state hasn't changed */
+>>>   	if (likely(new_state == priv->can.state))
+>>> -		return;
+>>> +		return false;
+>>>
+>>>   	skb = alloc_can_err_skb(dev, &cf);
+>>>   	if (unlikely(!skb))
+>>> -		return;
+>>> +		return false;
+>>>
+>>>   	can_change_state(dev, cf, tx_state, rx_state);
+>>>
+>>> @@ -619,6 +619,7 @@ static void flexcan_irq_state(struct net_device *dev, u32
+>> reg_esr)
+>>>   		can_bus_off(dev);
+>>>
+>>>   	can_rx_offload_irq_queue_err_skb(&priv->offload, skb);
+>>> +	return true;
+>>>   }
+>>>
+>>>   static inline struct flexcan_priv *rx_offload_to_priv(struct can_rx_offload
+>> *offload)
+>>> @@ -712,7 +713,8 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+>>>   	struct flexcan_priv *priv = netdev_priv(dev);
+>>>   	struct flexcan_regs __iomem *regs = priv->regs;
+>>>   	irqreturn_t handled = IRQ_NONE;
+>>> -	u32 reg_iflag1, reg_esr;
+>>> +	u32 reg_iflag1, reg_esr, reg_ctrl;
+>>> +	bool state_changed = false;
+>>>
+>>>   	reg_iflag1 = flexcan_read(&regs->iflag1);
+>>>
+>>> @@ -768,13 +770,46 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+>>>   	/* state change interrupt or on broken error state core */
+>>>   	if ((reg_esr & FLEXCAN_ESR_ERR_STATE) ||
+>>>   	    (priv->devtype_data->quirks &
+>> FLEXCAN_QUIRK_BROKEN_ERR_STATE))
+>>> -		flexcan_irq_state(dev, reg_esr);
+>>> +		state_changed = flexcan_irq_state(dev, reg_esr);
+>>>
+>>>   	/* bus error IRQ - handle if bus error reporting is activated */
+>>>   	if ((reg_esr & FLEXCAN_ESR_ERR_BUS) &&
+>>>   	    (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+>>>   		flexcan_irq_bus_err(dev, reg_esr);
+>>>
+>>> +	/* disable error interrupt upon error passive state transition
+>>> +	 * to suspend bus error reporting (to avoid flooding).
+>>> +	 *
+>>> +	 * re-enable error interrupt upon error warning state transition
+>>> +	 * to resume bus error reporting and allow broken error state core
+>>> +	 * to report state correctly (again).
+>>> +	 *
+>>> +	 * availability of error interrupt among state transitions:
+>>> +	 *  +--------------------------------------------------------------+
+>>> +	 *  | +----------------------------------------------+ [stopped /  |
+>>> +	 *  | |                                              |  sleeping] -+
+>>> +	 *  +-+-> active <-> warning <-> passive -> bus off -+
+>>> +	 *        ^^^^^^^^^^^^^^^^^^^^^^^_______________________________
+>>> +	 *                enabled                      disabled
+>>> +	 */
+>>> +	if (state_changed &&
+>>> +	    (priv->devtype_data->quirks &
+>> FLEXCAN_QUIRK_BROKEN_ERR_STATE ||
+>>> +	     priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)) {
+>>> +		if ((priv->can.state == CAN_STATE_ERROR_PASSIVE) ||
+>>> +		    (priv->can.state == CAN_STATE_BUS_OFF)) {
+>>> +			reg_ctrl = flexcan_read(&regs->ctrl);
+>>> +			reg_ctrl &= ~FLEXCAN_CTRL_ERR_MSK;
+>>> +			flexcan_write(reg_ctrl, &regs->ctrl);
+>>> +		}
+>>
+>> We do not want to disable bus error interrupts for bus error reporting!
+> I see! If user enabled bus error reporting, that means he want all bus errors,
+> include flooding. I will fix this.
+
+Yep, serious flooding usually happens only on low end systems and at 
+high bitrates.
+
+>>
+>>> +		if ((priv->can.state == CAN_STATE_ERROR_WARNING) ||
+>>> +		    (priv->can.state == CAN_STATE_ERROR_ACTIVE)) {
+>>> +			reg_ctrl = flexcan_read(&regs->ctrl);
+>>> +			reg_ctrl |= FLEXCAN_CTRL_ERR_MSK;
+>>> +			flexcan_write(reg_ctrl, &regs->ctrl);
+>>> +		}
+>>> +	}
+>>> +
+>>
+>> For the legacy FLEXCAN_QUIRK_BROKEN_ERR_STATE we do not want to
+>> disable
+>> bus error interrupts as well. To handle that properly, I think we need
+> I'm not sure why we do not want to disable error interrupt for legacy broken core,
+> I think if this approach works for both (with/without warning irq) core, then disable
+> the interrupts helps avoid flooding.
+
+How does it work if no cable is connected?  On a legacy device (with 
+broken [TR]WRN_INT), no interrupt will arrive other than the bus error 
+interrupt. Maybe I have missed something. Unfortunately, I do not have 
+any Flexcan device at hand to check myself.
+
+>> an additional FLEXCAN_QUIRK_BROKEN_PERR_STATE and maybe rename
+>> FLEXCAN_QUIRK_BROKEN_ERR_STATE to
+>> FLEXCAN_QUIRK_BROKEN_WERR_STATE.
+> That's a good point. With FLEXCAN_QUIRK_BROKEN_WERR_STATE and
+> FLEXCAN_QUIRK_BROKEN_PERR_STATE, we can precisely tell which core
+> lacks of which capability.
+
+That's the idea.
+
+> However, I'm wondering is there a flexcan core which lacking warning irq,
+
+Good question? Don't know if the VF610 core does need that quirk as well.
+
+> but having passive irq? If this is not true, then we will never specify the
+> WERR_STATE quirk alone, right?
+
+Yep!
+> 
+>>
+>>>   	return handled;
+>>>   }
+>>>
+>>> --
+>>> 2.7.4
+>>
+>>
+>>> Addresses the interrupt flooding issue as above mentioned, and takes care
+>>> of the bus-error reporting. For the other quirks, they looks like won't
+>>> influence the state transition and interrupt flooding. Please comment if
+>>> something missed.
+>>>
+>>> One more thing regarding patch 2 is, it doesn't rely on error warning
+>>> can be reported by [TR]WRN_INT, because this state can also be reported
+>>> upon the _any_ interrupt. Only bus-off state needs to have dedicated
+>>> interrupt line (is this true for all flexcan core?)
+>>
+>> I don't think so. How should it work if no cable is connected? Anyway,
+>> the patch seems not to be to lenghty.
+> I disabled the [TR]WRN_INT on i.MX6 by change
+> (http://elixir.free-electrons.com/linux/latest/source/drivers/net/can/flexcan.c#L88)
+> to:
+> #define FLEXCAN_CTRL_ERR_STATE FLEXCAN_CTRL_BOFF_MSK
+> and tested with the patch, seems the state transitions still works fine.
+
+With no cable connected?
+
+> I think the reason is the same as how the error interrupt helps report error passive:
+> At most 12 times consecutive bus error interrupts will change to error warning, and
+> minimal 1 time Tx/Rx interrupt will change state from error passive to error warning.
+> 
+> If we change to:
+> #define FLEXCAN_CTRL_ERR_STATE 0
+> then we cannot enter bus off state any more as expected (other transitions still ok).
+> 
+> As we only have i.MX6 at hand, so we cannot verify this on other flexcan core.
+> If we want to limit the patch to only take effect for i.MX6, then we should introduce
+> the FLEXCAN_QUIRK_BROKEN_P(W)ERR_STATE, thus the legacy core will not be
+> affected.
+
+As you/I cannot test on legacy and other cores, I would go for a 
+separate quirk for the mx6q.
+
+> Otherwise, the legacy FLEXCAN_QUIRK_BORKEN_ERR_STATE can be extended
+> to the core with broken warning and/or passive irq.
+> 
+> What do you think?
+> 
+> I'll prepare patches for review later:
+> 1. fix regression bug
+> 2. suppress interrupt flooding for broken core
+> 3. enable quirk for i.mx6
+> 
+> Shall I send separate e-mail for each patch? Due to our mail client is outlook, I'm
+> not sure whether the inline patch can work smoothly, if not, shall I attach the patch?
+
+Separate patches please, especially for the first one.
+
+Wolfgang.
