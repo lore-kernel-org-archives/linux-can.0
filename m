@@ -1,7 +1,7 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: flexcan missing error state transitions
-Date: Wed, 30 Aug 2017 06:50:55 +0000
-Message-ID: <9904cd2d80964810b56b8612cc02bfb6@SGPMBX1017.APAC.bosch.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: flexcan missing error state transitions
+Date: Wed, 30 Aug 2017 09:15:41 +0200
+Message-ID: <5faf942d-4680-45a7-74f2-208a2b9f73f8@grandegger.com>
 References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
  <150333230375.13890.2773067532209799515@maxwell>
  <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
@@ -15,71 +15,88 @@ References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
  <3486f6ae-f4ef-fc94-e706-775f8af60826@grandegger.com>
  <2245ab57e90f44d88e53449156cc1e1b@SGPMBX1017.APAC.bosch.com>
  <6bd916d4-3eb2-c247-2072-6b4c95dd5c69@grandegger.com>
+ <9904cd2d80964810b56b8612cc02bfb6@SGPMBX1017.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:46605 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750756AbdH3Gu7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Aug 2017 02:50:59 -0400
-In-Reply-To: <6bd916d4-3eb2-c247-2072-6b4c95dd5c69@grandegger.com>
-Content-Language: en-US
+Received: from mailproxy03.manitu.net ([217.11.48.67]:44750 "EHLO
+        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750839AbdH3HPn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Aug 2017 03:15:43 -0400
+In-Reply-To: <9904cd2d80964810b56b8612cc02bfb6@SGPMBX1017.APAC.bosch.com>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-SGVsbG8gV29sZmdhbmcsDQoNCj4gRnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndn
-QGdyYW5kZWdnZXIuY29tXQ0KPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAzMCwgMjAxNyAyOjI2
-IFBNDQo+IA0KPiBBbSAzMC4wOC4yMDE3IHVtIDA2OjIyIHNjaHJpZWIgWkhVIFlpIChTVC1GSVIv
-RU5HMS1aaHUpOg0KPiA+DQo+ID4+IEZyb206IFdvbGZnYW5nIEdyYW5kZWdnZXIgW21haWx0bzp3
-Z0BncmFuZGVnZ2VyLmNvbV0NCj4gPj4gU2VudDogVHVlc2RheSwgQXVndXN0IDI5LCAyMDE3IDc6
-MTcgUE0NCj4gPj4NCj4gPj4gQW0gMjkuMDguMjAxNyB1bSAxMDo0OSBzY2hyaWViIFpIVSBZaSAo
-U1QtRklSL0VORzEtWmh1KToNCj4gPj4gWy4uLl0NCj4gPj4NCj4gPj4gRm9yIHRoZSBsZWdhY3kg
-RkxFWENBTl9RVUlSS19CUk9LRU5fRVJSX1NUQVRFIHdlIGRvIG5vdCB3YW50IHRvDQo+ID4+IGRp
-c2FibGUNCj4gPj4gYnVzIGVycm9yIGludGVycnVwdHMgYXMgd2VsbC4gVG8gaGFuZGxlIHRoYXQg
-cHJvcGVybHksIEkgdGhpbmsgd2UgbmVlZA0KPiA+IEknbSBub3Qgc3VyZSB3aHkgd2UgZG8gbm90
-IHdhbnQgdG8gZGlzYWJsZSBlcnJvciBpbnRlcnJ1cHQgZm9yIGxlZ2FjeSBicm9rZW4gY29yZSwN
-Cj4gPiBJIHRoaW5rIGlmIHRoaXMgYXBwcm9hY2ggd29ya3MgZm9yIGJvdGggKHdpdGgvd2l0aG91
-dCB3YXJuaW5nIGlycSkgY29yZSwgdGhlbg0KPiA+IGRpc2FibGUgdGhlIGludGVycnVwdHMgaGVs
-cHMgYXZvaWQgZmxvb2RpbmcuDQo+IA0KPiBIb3cgZG9lcyBpdCB3b3JrIGlmIG5vIGNhYmxlIGlz
-IGNvbm5lY3RlZD8gIE9uIGEgbGVnYWN5IGRldmljZSAod2l0aA0KPiBicm9rZW4gW1RSXVdSTl9J
-TlQpLCBubyBpbnRlcnJ1cHQgd2lsbCBhcnJpdmUgb3RoZXIgdGhhbiB0aGUgYnVzIGVycm9yDQo+
-IGludGVycnVwdC4gTWF5YmUgSSBoYXZlIG1pc3NlZCBzb21ldGhpbmcuIFVuZm9ydHVuYXRlbHks
-IEkgZG8gbm90IGhhdmUNCj4gYW55IEZsZXhjYW4gZGV2aWNlIGF0IGhhbmQgdG8gY2hlY2sgbXlz
-ZWxmLg0KVGhlIGJ1cyBlcnJvciBpbnRlcnJ1cHQgbWVhbnMgZXJyb3IgY291bnRlciBjaGFuZ2Vk
-LCBhbmQgd2UgY2FuIGRlcml2ZSBjb3JyZWN0DQpzdGF0ZSBmcm9tIHRoYXQuIEFoLCB0aGUgbm9k
-ZSBuZWVkcyB0byB0cnkgdG8gc2VuZCBzb21ldGhpbmcsIG90aGVyd2lzZSwNCnRoZSBzdGF0ZSB3
-aWxsIG5vdCBjaGFuZ2UsIGJ1dCB0aGlzIGlzIHZhbGlkIGZvciBhbGwgY2FuIGNvbnRyb2xsZXJz
-Lg0KDQo+DQo+ID4+PiBPbmUgbW9yZSB0aGluZyByZWdhcmRpbmcgcGF0Y2ggMiBpcywgaXQgZG9l
-c24ndCByZWx5IG9uIGVycm9yIHdhcm5pbmcNCj4gPj4+IGNhbiBiZSByZXBvcnRlZCBieSBbVFJd
-V1JOX0lOVCwgYmVjYXVzZSB0aGlzIHN0YXRlIGNhbiBhbHNvIGJlIHJlcG9ydGVkDQo+ID4+PiB1
-cG9uIHRoZSBfYW55XyBpbnRlcnJ1cHQuIE9ubHkgYnVzLW9mZiBzdGF0ZSBuZWVkcyB0byBoYXZl
-IGRlZGljYXRlZA0KPiA+Pj4gaW50ZXJydXB0IGxpbmUgKGlzIHRoaXMgdHJ1ZSBmb3IgYWxsIGZs
-ZXhjYW4gY29yZT8pDQo+ID4+DQo+ID4+IEkgZG9uJ3QgdGhpbmsgc28uIEhvdyBzaG91bGQgaXQg
-d29yayBpZiBubyBjYWJsZSBpcyBjb25uZWN0ZWQ/IEFueXdheSwNCj4gPj4gdGhlIHBhdGNoIHNl
-ZW1zIG5vdCB0byBiZSB0byBsZW5naHR5Lg0KPiA+IEkgZGlzYWJsZWQgdGhlIFtUUl1XUk5fSU5U
-IG9uIGkuTVg2IGJ5IGNoYW5nZQ0KPiA+IChodHRwOi8vZWxpeGlyLmZyZWUtZWxlY3Ryb25zLmNv
-bS9saW51eC9sYXRlc3Qvc291cmNlL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMjTDg4KQ0KPiA+
-IHRvOg0KPiA+ICNkZWZpbmUgRkxFWENBTl9DVFJMX0VSUl9TVEFURSBGTEVYQ0FOX0NUUkxfQk9G
-Rl9NU0sNCj4gPiBhbmQgdGVzdGVkIHdpdGggdGhlIHBhdGNoLCBzZWVtcyB0aGUgc3RhdGUgdHJh
-bnNpdGlvbnMgc3RpbGwgd29ya3MgZmluZS4NCj4gDQo+IFdpdGggbm8gY2FibGUgY29ubmVjdGVk
-Pw0KWWVzLCANCjEuIFVucGx1ZyB0aGUgY2FibGUgd2lsbCBjaGFuZ2UgdG8gZXJyb3IgcGFzc2l2
-ZQ0KMi4gcGx1ZyBiYWNrIHRoZSBjYWJsZSB3aWxsIGV2ZW50dWFsbHkgY2hhbmdlIHRvIGVycm9y
-IGFjdGl2ZQ0KMy4gdW5wbHVnIHRoZSBjYWJsZSB3aGlsZSB0aGUgYnVzIGlzIHJlY292ZXJpbmcg
-dG8gZXJyb3Igd2FybmluZyAvIGVycm9yIGFjdGl2ZSwNCml0IHdpbGwgcmVwb3J0IGVycm9yIHBh
-c3NpdmUgYWdhaW4NCjQuIHJlcGVhdCBwbHVnL3VucGx1ZyB0aGUgY2FibGUgYW5kIHdhdGNoZWQg
-dGhlIHN0YXRlIGNoYW5nZSBhcyBleHBlY3RlZA0KDQo+DQo+ID4gQXMgd2Ugb25seSBoYXZlIGku
-TVg2IGF0IGhhbmQsIHNvIHdlIGNhbm5vdCB2ZXJpZnkgdGhpcyBvbiBvdGhlciBmbGV4Y2FuIGNv
-cmUuDQo+ID4gSWYgd2Ugd2FudCB0byBsaW1pdCB0aGUgcGF0Y2ggdG8gb25seSB0YWtlIGVmZmVj
-dCBmb3IgaS5NWDYsIHRoZW4gd2Ugc2hvdWxkDQo+IGludHJvZHVjZQ0KPiA+IHRoZSBGTEVYQ0FO
-X1FVSVJLX0JST0tFTl9QKFcpRVJSX1NUQVRFLCB0aHVzIHRoZSBsZWdhY3kgY29yZSB3aWxsIG5v
-dA0KPiBiZQ0KPiA+IGFmZmVjdGVkLg0KPiANCj4gQXMgeW91L0kgY2Fubm90IHRlc3Qgb24gbGVn
-YWN5IGFuZCBvdGhlciBjb3JlcywgSSB3b3VsZCBnbyBmb3IgYQ0KPiBzZXBhcmF0ZSBxdWlyayBm
-b3IgdGhlIG14NnEuDQpPSy4NCg0KPiANCj4gPiBTaGFsbCBJIHNlbmQgc2VwYXJhdGUgZS1tYWls
-IGZvciBlYWNoIHBhdGNoPyBEdWUgdG8gb3VyIG1haWwgY2xpZW50IGlzIG91dGxvb2ssIEknbQ0K
-PiA+IG5vdCBzdXJlIHdoZXRoZXIgdGhlIGlubGluZSBwYXRjaCBjYW4gd29yayBzbW9vdGhseSwg
-aWYgbm90LCBzaGFsbCBJIGF0dGFjaCB0aGUNCj4gcGF0Y2g/DQo+IA0KPiBTZXBhcmF0ZSBwYXRj
-aGVzIHBsZWFzZSwgZXNwZWNpYWxseSBmb3IgdGhlIGZpcnN0IG9uZS4NCk9LLg0KDQpCZXN0IHJl
-Z2FyZHMNCllpDQo=
+Hello ZHU Yi,
+
+Am 30.08.2017 um 08:50 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
+> Hello Wolfgang,
+> 
+>> From: Wolfgang Grandegger [mailto:wg@grandegger.com]
+>> Sent: Wednesday, August 30, 2017 2:26 PM
+>>
+>> Am 30.08.2017 um 06:22 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
+>>>
+>>>> From: Wolfgang Grandegger [mailto:wg@grandegger.com]
+>>>> Sent: Tuesday, August 29, 2017 7:17 PM
+>>>>
+>>>> Am 29.08.2017 um 10:49 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
+>>>> [...]
+>>>>
+>>>> For the legacy FLEXCAN_QUIRK_BROKEN_ERR_STATE we do not want to
+>>>> disable
+>>>> bus error interrupts as well. To handle that properly, I think we need
+>>> I'm not sure why we do not want to disable error interrupt for legacy broken core,
+>>> I think if this approach works for both (with/without warning irq) core, then
+>>> disable the interrupts helps avoid flooding.
+>>
+>> How does it work if no cable is connected?  On a legacy device (with
+>> broken [TR]WRN_INT), no interrupt will arrive other than the bus error
+>> interrupt. Maybe I have missed something. Unfortunately, I do not have
+>> any Flexcan device at hand to check myself.
+> The bus error interrupt means error counter changed, and we can derive correct
+> state from that. Ah, the node needs to try to send something, otherwise,
+> the state will not change, but this is valid for all can controllers.
+
+Of course, we can always read the error counter on demand. But no 
+interrupt will be triggered after the send. How should the state change 
+then be realized?
+
+>>>>> One more thing regarding patch 2 is, it doesn't rely on error warning
+>>>>> can be reported by [TR]WRN_INT, because this state can also be reported
+>>>>> upon the _any_ interrupt. Only bus-off state needs to have dedicated
+>>>>> interrupt line (is this true for all flexcan core?)
+>>>>
+>>>> I don't think so. How should it work if no cable is connected? Anyway,
+>>>> the patch seems not to be to lenghty.
+>>> I disabled the [TR]WRN_INT on i.MX6 by change
+>>> (http://elixir.free-electrons.com/linux/latest/source/drivers/net/can/flexcan.c#L88)
+>>> to:
+>>> #define FLEXCAN_CTRL_ERR_STATE FLEXCAN_CTRL_BOFF_MSK
+>>> and tested with the patch, seems the state transitions still works fine.
+>>
+>> With no cable connected?
+> Yes,
+> 1. Unplug the cable will change to error passive
+
+No cable is connected. Then do an "ifconfig canX up". Then send  a 
+message. The state should change from "active->warning->passive", but 
+that's only realized by the driver if an interrupt is received. On 
+legacy cores, the bus error interrupt does the trigger. Can you show the 
+output of "dmesg| grep flexcan" with "CONFIG_CAN_DEBUG_DEVICES=y" for 
+that scenario, or even better the output of:
+
+   # candump -e -td any,0:0,#FFFFFFFF
+
+> 2. plug back the cable will eventually change to error active
+> 3. unplug the cable while the bus is recovering to error warning / error active,
+> it will report error passive again
+> 4. repeat plug/unplug the cable and watched the state change as expected
+
+It may report something, but only if the TX done interrupt occurs.
+
+Wolfgang.
