@@ -1,61 +1,114 @@
 From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: [PATCH 6/6] can: flexcan: update quirk documentation
-Date: Thu, 31 Aug 2017 08:28:21 +0000
-Message-ID: <61a39edb79784053bb441782edaddda9@SGPMBX1017.APAC.bosch.com>
+Subject: RE: flexcan missing error state transitions
+Date: Thu, 31 Aug 2017 08:33:25 +0000
+Message-ID: <1305c2749a86402fa15c48113bb0ed54@SGPMBX1017.APAC.bosch.com>
+References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
+ <150333230375.13890.2773067532209799515@maxwell>
+ <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
+ <150333966184.28484.15326759292718336833@maxwell>
+ <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
+ <71679863-5b47-faf2-ca44-27eb1abf16c6@pengutronix.de>
+ <2ec91a72-49b2-ca43-9472-8f079b278c80@grandegger.com>
+ <a257405ba06949a9be5d64912d72d0ba@SGPMBX1017.APAC.bosch.com>
+ <23b53bdc-b7d4-f6de-b192-629ffe9795b0@grandegger.com>
+ <c5b11618c98a41108dfbe6cf034398f0@SGPMBX1017.APAC.bosch.com>
+ <3486f6ae-f4ef-fc94-e706-775f8af60826@grandegger.com>
+ <2245ab57e90f44d88e53449156cc1e1b@SGPMBX1017.APAC.bosch.com>
+ <6bd916d4-3eb2-c247-2072-6b4c95dd5c69@grandegger.com>
+ <9904cd2d80964810b56b8612cc02bfb6@SGPMBX1017.APAC.bosch.com>
+ <5faf942d-4680-45a7-74f2-208a2b9f73f8@grandegger.com>
+ <db68b0a396574fe7883f962863804a4a@SGPMBX1017.APAC.bosch.com>
+ <c3bb7b46-d7f6-b188-73a2-d74e42ebf4f1@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:47947 "EHLO
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:52407 "EHLO
         smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750863AbdHaI2Z (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Aug 2017 04:28:25 -0400
+        with ESMTP id S1750783AbdHaId3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Aug 2017 04:33:29 -0400
+In-Reply-To: <c3bb7b46-d7f6-b188-73a2-d74e42ebf4f1@grandegger.com>
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-From 83d8a00f38c098b7df6ea948449851dbfa01921d Mon Sep 17 00:00:00 2001
-From: Zhu Yi <yi.zhu5@cn.bosch.com>
-Date: Thu, 31 Aug 2017 16:21:58 +0800
-Subject: [PATCH 6/6] can: flexcan: update quirk documentation
-
-Add "IRQ Err Passive" column to document which SOC is affected.
-
-Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
-Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
----
- drivers/net/can/flexcan.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index d9b997b..b71456e 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -182,14 +182,14 @@
- /* FLEXCAN hardware feature flags
-  *
-  * Below is some version info we got:
-- *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT Memory err RTR re-
-- *                                Filter? connected?  detection  ception in MB
-- *   MX25  FlexCAN2  03.00.00.00     no        no         no        no
-- *   MX28  FlexCAN2  03.00.04.00    yes       yes         no        no
-- *   MX35  FlexCAN2  03.00.00.00     no        no         no        no
-- *   MX53  FlexCAN2  03.00.00.00    yes        no         no        no
-- *   MX6s  FlexCAN3  10.00.12.00    yes       yes         no       yes
-- *   VF610 FlexCAN3  ?               no       yes        yes       yes?
-+ *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT IRQ Err  Memory err RTR re-
-+ *                                Filter? connected?  Passive detection  ception in MB
-+ *   MX25  FlexCAN2  03.00.00.00     no        no        ?        no        no
-+ *   MX28  FlexCAN2  03.00.04.00    yes       yes        ?        no        no
-+ *   MX35  FlexCAN2  03.00.00.00     no        no        ?        no        no
-+ *   MX53  FlexCAN2  03.00.00.00    yes        no       no?       no        no
-+ *   MX6s  FlexCAN3  10.00.12.00    yes       yes       no        no       yes
-+ *   VF610 FlexCAN3  ?               no       yes        ?       yes       yes?
-  *
-  * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
-  */
--- 
-2.7.4
-
+SGVsbG8gV29sZmdhbmcsDQoNCj4gRnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndn
+QGdyYW5kZWdnZXIuY29tXQ0KPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAzMCwgMjAxNyA2OjU5
+IFBNDQo+IFsuLi5dDQo+DQo+ID4gVGhlIGVycm9yIGludGVycnVwdCB3aWxsIGFsd2F5cyBiZSB0
+cmlnZ2VyZWQgYWZ0ZXIgdGhlIHNlbmQsIGJlY2F1c2UgdGhlDQo+ID4gYXV0by1yZXRyYW5zbWlz
+c2lvbiB3aWxsIGtlZXAgZ2V0dGluZyBBY2sgZXJyb3IgaWYgdGhlIGNhYmxlIGlzIG5vdCBjb25u
+ZWN0ZWQsDQo+ID4gdGhhdCdzIHdoZXJlIHRoZSBpbnRlcnJ1cHQgZmxvb2RpbmcgY29tZSBmcm9t
+IChhbmQgdGhlIGZsb29kaW5nIHdvbid0IHN0b3ANCj4gPiB1bnRpbCB0aGUgY2FibGUgaXMgY29u
+bmVjdGVkIGFnYWluKS4NCj4gDQo+IFlvdSBtZWFuIHRoZSBlcnJvciBpbnRlcnJ1cHQgc2lnbmFs
+bGluZyB0aGUgQUNLIGVycm9yIG9jY3VycyBldmVuIHdpdGgNCj4gRkxFWENBTl9DVFJMX0VSUl9N
+U0sgKm5vdCogc2V0IGluICJjdHJsIj8NCj4gT3IgaXMgaXQgc2V0IGZyb20gdGhlIGJlZ2lubmlu
+Zz8NClNvcnJ5IGZvciB0aGUgaW5jb21wbGV0ZSBkZXNjcmlwdGlvbiwgSSBmb3Jnb3QgdG8gbWVu
+dGlvbiBpdCBpcyBhc3N1bWVkDQp0aGF0IHRoZSBicm9rZW4gZXJyb3Igc3RhdGUgcXVpcmsgZml4
+IGlzIGVuYWJsZWQgZm9yIHRoZSBjb3JlLCBoZW5jZQ0KdGhlIGVycm9yIGludGVycnVwdCBpcyBl
+bmFibGVkIGZyb20gdGhlIGJlZ2lubmluZy4NCg0KQWx0aG91Z2ggb25seSBwMTAxMCBlbmFibGVk
+IHRoZSBxdWlyayBzbyBmYXIsIGJ1dCB0byBvdXIgdW5kZXJzdGFuZGluZywNCnRoZSByZXN0IGNv
+cmUgc2VlbXMgYWxzbyBuZWVkIHRoZSBxdWlyayBlbmFibGVkIHRvIHJlcG9ydCBjb3JyZWN0IHN0
+YXRlDQp0cmFuc2l0aW9ucywgZS5nLiwgaS5NWDYuDQoNCkhvd2V2ZXIsIGFzIG5laXRoZXIgb2Yg
+dXMgY2FuIHRlc3QgdGhlIGxlZ2FjeSBhbmQgb3RoZXIgY29yZXMsIHNvIHdlDQpjYW5ub3QgdG91
+Y2ggdGhlbSB3aXRob3V0IHRlc3RpbmcuIFBlcmhhcHMgc29tZW9uZSB3aG8gaGFzIHRoZSBhY2Nl
+c3MNCnRvIHRoZXNlIGNvcmVzIGNhbiBnaXZlIGEgaGFuZCB0byB2ZXJpZnkgdGhhdCBpbiBmdXR1
+cmUuDQoNCj4NCj4gWy4uLl0NCj4gSGVyZSBGTEVYQ0FOX0NUUkxfRVJSX01TSyAoMHg0MDAwKSBp
+cyBzZXQgaW4gImN0cmwiIQ0KPiANCj4gQ291bGQgeW91IHBsZWFzZSBhZGQgdG8gZmxleGNhbl9p
+cnEoKToNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJp
+dmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiBpbmRleCAxM2YwZjIxLi4wZGYwYzM0IDEwMDY0NA0K
+PiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nh
+bi9mbGV4Y2FuLmMNCj4gQEAgLTc1OCw2ICs3NTgsNyBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgZmxl
+eGNhbl9pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKQ0KPiAgICAgICAgIH0NCj4gDQo+ICAgICAg
+ICAgcmVnX2VzciA9IGZsZXhjYW5fcmVhZCgmcmVncy0+ZXNyKTsNCj4gKyAgICAgICBuZXRkZXZf
+ZGJnKGRldiwgInJlZ19pZmxhZzE9JSN4IHJlZ19lc3I9JSN4XG4iLCByZWdfaWZsYWcxLCByZWdz
+LT5lc3IpOw0KPiANCj4gICAgICAgICAvKiBBQ0sgYWxsIGJ1cyBlcnJvciBhbmQgc3RhdGUgY2hh
+bmdlIElSUSBzb3VyY2VzICovDQo+ICAgICAgICAgaWYgKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9B
+TExfSU5UKSB7DQo+IAlyZWdfZXNyID0gZmxleGNhbl9yZWFkKCZyZWdzLT5lc3IpOw0KPiANCj4g
+VGhpcyB3b3VsZCBtYWtlIGNsZWFuZXIgd2hhdCBpcyBnb2luZyBvbi4NClN1cmUuIEJlbG93IHRl
+c3QgaXMgYmFzZWQgb24ga2VybmVsIHY0LjExIHdpdGggdGhlIHByb3Bvc2VkIHBhdGNoZXMuDQpU
+byBkZW1vbnN0cmF0ZSB0aGUgdGhlb3J5IG9mIHRoZSBsZWdhY3kgY29yZXMgc2hvdWxkIGFsc28g
+d29yaywgdGhlDQoiW1RSXVdSTl9JTlQiIGFyZSBkaXNhYmxlZC4NCihjbGVhciBXUk5fRU4gaW4g
+TUNSIGFuZCBbVFJdV1JOX01TSyBpbiBDVFJMMSkNCg0KVGVzdCBjYXNlOg0KMS4gRGlzY29ubmVj
+dCB0aGUgY2FibGUNCjIuICJpcCBsaW5rIHNldCB4eHggdHlwZSBjYW4gYml0cmF0ZSA1MDAwMDAi
+IGFuZCAiaXAgbGluayBzZXQgeHh4IHVwIg0KMy4gImNhbnNlbmQgeHh4IDEyMyNmZmZmZmZmZmZm
+ZmZmZmZmIg0KDQojIGRtZXNnIHwgZ3JlcCBmbGV4Y2FuDQpbICAgIDEuNTYxMjQzXSBmbGV4Y2Fu
+IDIwOTAwMDAuZmxleGNhbjogMjA5MDAwMC5mbGV4Y2FuIHN1cHBseSB4Y2VpdmVyIG5vdCBmb3Vu
+ZCwgdXNpbmcgZHVtbXkgcmVndWxhdG9yDQpbICAgIDEuNTcwNjIxXSBmbGV4Y2FuIDIwOTAwMDAu
+ZmxleGNhbjogY2FuX3J4X29mZmxvYWRfaW5pdF9xdWV1ZTogc2tiX3F1ZXVlX2xlbl9tYXg9NTEy
+DQpbICAgIDEuNTcxMjA3XSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbjogZGV2aWNlIHJlZ2lzdGVy
+ZWQgKHJlZ19iYXNlPWUwYTc4MDAwLCBpcnE9MzQpDQpbICAgIDYuMjI3NzQ2XSBmbGV4Y2FuIDIw
+OTAwMDAuZmxleGNhbiBtb2IwOiByZW5hbWVkIGZyb20gY2FuMA0KWyAgIDM0LjQwMDY2OV0gZmxl
+eGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogd3JpdGluZyBjdHJsPTB4MDEzYTIwMDcNClsgICAz
+NC40MDA2OThdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IGZsZXhjYW5fc2V0X2JpdHRp
+bWluZzogbWNyPTB4NTk4MDAwMGYgY3RybD0weDAxM2EyMDA3DQpbICAgMzQuNDAwNzE1XSBmbGV4
+Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiBmbGV4Y2FuX2NoaXBfc3RhcnQ6IHdyaXRpbmcgbWNy
+PTB4NTk4MzAyM2YNClsgICAzNC40MDA3MzFdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6
+IGZsZXhjYW5fY2hpcF9zdGFydDogd3JpdGluZyBjdHJsPTB4MDEzYTIwNTcNClsgICAzNC40MDA4
+MjldIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IGZsZXhjYW5fY2hpcF9zdGFydDogcmVh
+ZGluZyBtY3I9MHg0MDgzMDIzZiBjdHJsPTB4MDEzYWUwNTcNClsgICA0NC4xMTIzMDddIGZsZXhj
+YW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjA0Mg0K
+WyAgIDQ0LjExMjU0N10gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0w
+eDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgNDQuMTEyODEwXSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNh
+biBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIwNDINClsgICA0NC4xMTMwNzRdIGZs
+ZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjA0
+Mg0KWyAgIDQ0LjExMzMzMV0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFn
+MT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgNDQuMTEzNjAzXSBmbGV4Y2FuIDIwOTAwMDAuZmxl
+eGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIwNDINClsgICA0NC4xMTM4NTFd
+IGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0
+MjA0Mg0KWyAgIDQ0LjExNDEyNF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lm
+bGFnMT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgNDQuMTE0MzY3XSBmbGV4Y2FuIDIwOTAwMDAu
+ZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIwNDINClsgICA0NC4xMTQ2
+MzFdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9
+MHg0MjA0Mg0KWyAgIDQ0LjExNDg4NF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVn
+X2lmbGFnMT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgNDQuMTE1MTQyXSBmbGV4Y2FuIDIwOTAw
+MDAuZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIyNDINClsgICA0NC4x
+MTUxNjJdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IE5ldyBlcnJvciBzdGF0ZTogMQ0K
+WyAgIDQ0LjExNTQwNF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0w
+eDAgcmVnX2Vzcj0weDQyMjQyDQpbICAgNDQuMTE1NjYxXSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNh
+biBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIyNDINClsgICA0NC4xMTU5MjFdIGZs
+ZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjI0
+Mg0KWyAgIDQ0LjExNjE4MF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFn
+MT0weDAgcmVnX2Vzcj0weDQyMjUyDQpbICAgNDQuMTE2MTk5XSBmbGV4Y2FuIDIwOTAwMDAuZmxl
+eGNhbiBtb2IwOiBOZXcgZXJyb3Igc3RhdGU6IDINCg0KQmVzdCByZWdhcmRzDQpZaQ0KDQo=
