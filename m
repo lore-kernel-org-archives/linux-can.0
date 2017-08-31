@@ -1,147 +1,307 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH 4/6] can: flexcan: mitigate error interrupt flooding
-Date: Thu, 31 Aug 2017 14:06:21 +0200
-Message-ID: <a1e82c3a-1632-7692-6014-c59ab4298883@grandegger.com>
-References: <9c55377c42d7481688123dd5fe3a775c@SGPMBX1017.APAC.bosch.com>
+From: Anna-Maria Gleixner <anna-maria@linutronix.de>
+Subject: [PATCH 19/25] can/bcm: Replace hrtimer_tasklet with softirq based
+ hrtimer
+Date: Thu, 31 Aug 2017 12:23:43 -0000
+Message-ID: <20170831105827.099510718@linutronix.de>
+References: <20170831105725.809317030@linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy03.manitu.net ([217.11.48.67]:36860 "EHLO
-        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750863AbdHaMGY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Aug 2017 08:06:24 -0400
-In-Reply-To: <9c55377c42d7481688123dd5fe3a775c@SGPMBX1017.APAC.bosch.com>
-Content-Language: en-GB
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline;
+ filename=canbcm_Replace_hrtimer_tasklet_with_softirq_based_hrtimer.patch
+Sender: linux-kernel-owner@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Christoph Hellwig <hch@lst.org>, keescook@chromium.org, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-Hello,
+From: Thomas Gleixner <tglx@linutronix.de>
 
-I think patch 3..6 can be squashed. They implement
-FLEXCAN_QUIRK_BROKEN_PERR_STATE.
+Switch the timer to CLOCK_MONOTONIC_SOFT, which executed the timer
+callback in softirq context and remove the hrtimer_tasklet.
 
-Am 31.08.2017 um 10:26 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
->>From 48c96795a780413eeb22f01ca6fff2e2de69bf5b Mon Sep 17 00:00:00 2001
-> From: Zhu Yi <yi.zhu5@cn.bosch.com>
-> Date: Thu, 31 Aug 2017 10:20:34 +0800
-> Subject: [PATCH 4/6] can: flexcan: mitigate error interrupt flooding
-> 
-> Error interrupt flooding may happen if the broken error state quirk
-> fix is enabled. For example, in case there is singled out node on
-> the bus and the node sends a frame, then error interrupt flooding
-> happens and will not stop because the node cannot go to bus off. The
-> flooding will stop after another node connected to the bus again.
-> 
-> If high bitrate configured on the low end system, then the flooding
-> may causes performance issue, hence, this patch mitigates this by:
-> 1. disable error interrupt upon error passive state transition
-> 2. re-enable error interrupt upon error warning state transition
-> 
-> In this way, the driver is still able to report correct state
-> transitions without additional latency. And flooding of error
-> interrupts is limited to the number of frames required to change
-> the state to error passive when there are bus problems.
-> 
-> Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
-> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
-> ---
->   drivers/net/can/flexcan.c | 45 ++++++++++++++++++++++++++++++++++++++++-----
->   1 file changed, 40 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index 712b7de..148d8c0 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -582,7 +582,7 @@ static void flexcan_irq_bus_err(struct net_device *dev, u32 reg_esr)
->   	can_rx_offload_irq_queue_err_skb(&priv->offload, skb);
->   }
->   
-> -static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
-> +static bool flexcan_irq_state(struct net_device *dev, u32 reg_esr)
->   {
->   	struct flexcan_priv *priv = netdev_priv(dev);
->   	struct sk_buff *skb;
-> @@ -608,11 +608,11 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
->   
->   	/* state hasn't changed */
->   	if (likely(new_state == priv->can.state))
-> -		return;
-> +		return false;
->   
->   	skb = alloc_can_err_skb(dev, &cf);
->   	if (unlikely(!skb))
-> -		return;
-> +		return false;
->   
->   	can_change_state(dev, cf, tx_state, rx_state);
->   
-> @@ -620,6 +620,7 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
->   		can_bus_off(dev);
->   
->   	can_rx_offload_irq_queue_err_skb(&priv->offload, skb);
-> +	return true;
->   }
->   
->   static inline struct flexcan_priv *rx_offload_to_priv(struct can_rx_offload *offload)
-> @@ -713,7 +714,8 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
->   	struct flexcan_priv *priv = netdev_priv(dev);
->   	struct flexcan_regs __iomem *regs = priv->regs;
->   	irqreturn_t handled = IRQ_NONE;
-> -	u32 reg_iflag1, reg_esr;
-> +	u32 reg_iflag1, reg_esr, reg_ctrl;
-> +	bool state_changed = false;
->   
->   	reg_iflag1 = flexcan_read(&regs->iflag1);
->   
-> @@ -770,13 +772,46 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
->   	if ((reg_esr & FLEXCAN_ESR_ERR_STATE) ||
->   	    (priv->devtype_data->quirks & FLEXCAN_QUIRK_BROKEN_WERR_STATE) ||
->   	    (priv->devtype_data->quirks & FLEXCAN_QUIRK_BROKEN_PERR_STATE))
-> -		flexcan_irq_state(dev, reg_esr);
-> +		state_changed = flexcan_irq_state(dev, reg_esr);
->   
->   	/* bus error IRQ - handle if bus error reporting is activated */
->   	if ((reg_esr & FLEXCAN_ESR_ERR_BUS) &&
->   	    (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
->   		flexcan_irq_bus_err(dev, reg_esr);
->   
-> +	/* availability of error interrupt among state transitions in case
-> +	 * bus error reporting is de-activated and broken error passive
-> +	 * state quirk fix is enabled:
-> +	 *  +--------------------------------------------------------------+
-> +	 *  | +----------------------------------------------+ [stopped /  |
-> +	 *  | |                                              |  sleeping] -+
-> +	 *  +-+-> active <-> warning <-> passive -> bus off -+
-> +	 *        ^^^^^^^^^^^^^^^^^^^^^^^_______________________________
-> +	 *                enabled                      disabled
-> +	 */
-> +	if (state_changed &&
-> +	    (priv->devtype_data->quirks & FLEXCAN_QUIRK_BROKEN_PERR_STATE) &&
-> +	   !(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)) {
-> +		switch (priv->can.state) {
-> +		case CAN_STATE_ERROR_PASSIVE:
-> +		case CAN_STATE_BUS_OFF:
-> +			reg_ctrl = flexcan_read(&regs->ctrl);
-> +			reg_ctrl &= ~FLEXCAN_CTRL_ERR_MSK;
-> +			flexcan_write(reg_ctrl, &regs->ctrl);
-> +			break;
-> +
-> +		case CAN_STATE_ERROR_WARNING:
-> +		case CAN_STATE_ERROR_ACTIVE:
-> +			reg_ctrl = flexcan_read(&regs->ctrl);
-> +			reg_ctrl |= FLEXCAN_CTRL_ERR_MSK;
-> +			flexcan_write(reg_ctrl, &regs->ctrl);
-> +			break;
-> +
-> +		default:
-> +			break;
-> +		}
-> +	}
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Anna-Maria Gleixner <anna-maria@linutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+---
+ net/can/bcm.c |  150 ++++++++++++++++++----------------------------------------
+ 1 file changed, 49 insertions(+), 101 deletions(-)
 
-I think it's enough if we  enable the error interrupt just between error 
-warning and error passive.
-
-Wolfgang.
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -102,7 +102,6 @@ struct bcm_op {
+ 	unsigned long frames_abs, frames_filtered;
+ 	struct bcm_timeval ival1, ival2;
+ 	struct hrtimer timer, thrtimer;
+-	struct tasklet_struct tsklet, thrtsklet;
+ 	ktime_t rx_stamp, kt_ival1, kt_ival2, kt_lastmsg;
+ 	int rx_ifindex;
+ 	int cfsiz;
+@@ -364,25 +363,34 @@ static void bcm_send_to_user(struct bcm_
+ 	}
+ }
+ 
+-static void bcm_tx_start_timer(struct bcm_op *op)
++static bool bcm_tx_set_expiry(struct bcm_op *op, struct hrtimer *hrt)
+ {
++	ktime_t ival;
++
+ 	if (op->kt_ival1 && op->count)
+-		hrtimer_start(&op->timer,
+-			      ktime_add(ktime_get(), op->kt_ival1),
+-			      HRTIMER_MODE_ABS);
++		ival = op->kt_ival1;
+ 	else if (op->kt_ival2)
+-		hrtimer_start(&op->timer,
+-			      ktime_add(ktime_get(), op->kt_ival2),
+-			      HRTIMER_MODE_ABS);
++		ival = op->kt_ival2;
++	else
++		return false;
++
++	hrtimer_set_expires(hrt, ktime_add(ktime_get(), ival));
++	return true;
+ }
+ 
+-static void bcm_tx_timeout_tsklet(unsigned long data)
++static void bcm_tx_start_timer(struct bcm_op *op)
+ {
+-	struct bcm_op *op = (struct bcm_op *)data;
++	if (bcm_tx_set_expiry(op, &op->timer))
++		hrtimer_start_expires(&op->timer, HRTIMER_MODE_ABS);
++}
++
++/* bcm_tx_timeout_handler - performs cyclic CAN frame transmissions */
++static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
++{
++	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+ 	struct bcm_msg_head msg_head;
+ 
+ 	if (op->kt_ival1 && (op->count > 0)) {
+-
+ 		op->count--;
+ 		if (!op->count && (op->flags & TX_COUNTEVT)) {
+ 
+@@ -399,22 +407,12 @@ static void bcm_tx_timeout_tsklet(unsign
+ 		}
+ 		bcm_can_tx(op);
+ 
+-	} else if (op->kt_ival2)
++	} else if (op->kt_ival2) {
+ 		bcm_can_tx(op);
++	}
+ 
+-	bcm_tx_start_timer(op);
+-}
+-
+-/*
+- * bcm_tx_timeout_handler - performs cyclic CAN frame transmissions
+- */
+-static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
+-{
+-	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+-
+-	tasklet_schedule(&op->tsklet);
+-
+-	return HRTIMER_NORESTART;
++	return bcm_tx_set_expiry(op, &op->timer) ?
++		HRTIMER_RESTART : HRTIMER_NORESTART;
+ }
+ 
+ /*
+@@ -542,11 +540,18 @@ static void bcm_rx_starttimer(struct bcm
+ 		hrtimer_start(&op->timer, op->kt_ival1, HRTIMER_MODE_REL);
+ }
+ 
+-static void bcm_rx_timeout_tsklet(unsigned long data)
++/* bcm_rx_timeout_handler - when the (cyclic) CAN frame reception timed out */
++static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
+ {
+-	struct bcm_op *op = (struct bcm_op *)data;
++	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+ 	struct bcm_msg_head msg_head;
+ 
++	/* if user wants to be informed, when cyclic CAN-Messages come back */
++	if ((op->flags & RX_ANNOUNCE_RESUME) && op->last_frames) {
++		/* clear received CAN frames to indicate 'nothing received' */
++		memset(op->last_frames, 0, op->nframes * op->cfsiz);
++	}
++
+ 	/* create notification to user */
+ 	msg_head.opcode  = RX_TIMEOUT;
+ 	msg_head.flags   = op->flags;
+@@ -557,25 +562,6 @@ static void bcm_rx_timeout_tsklet(unsign
+ 	msg_head.nframes = 0;
+ 
+ 	bcm_send_to_user(op, &msg_head, NULL, 0);
+-}
+-
+-/*
+- * bcm_rx_timeout_handler - when the (cyclic) CAN frame reception timed out
+- */
+-static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
+-{
+-	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+-
+-	/* schedule before NET_RX_SOFTIRQ */
+-	tasklet_hi_schedule(&op->tsklet);
+-
+-	/* no restart of the timer is done here! */
+-
+-	/* if user wants to be informed, when cyclic CAN-Messages come back */
+-	if ((op->flags & RX_ANNOUNCE_RESUME) && op->last_frames) {
+-		/* clear received CAN frames to indicate 'nothing received' */
+-		memset(op->last_frames, 0, op->nframes * op->cfsiz);
+-	}
+ 
+ 	return HRTIMER_NORESTART;
+ }
+@@ -583,14 +569,12 @@ static enum hrtimer_restart bcm_rx_timeo
+ /*
+  * bcm_rx_do_flush - helper for bcm_rx_thr_flush
+  */
+-static inline int bcm_rx_do_flush(struct bcm_op *op, int update,
+-				  unsigned int index)
++static inline int bcm_rx_do_flush(struct bcm_op *op, unsigned int index)
+ {
+ 	struct canfd_frame *lcf = op->last_frames + op->cfsiz * index;
+ 
+ 	if ((op->last_frames) && (lcf->flags & RX_THR)) {
+-		if (update)
+-			bcm_rx_changed(op, lcf);
++		bcm_rx_changed(op, lcf);
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -598,11 +582,8 @@ static inline int bcm_rx_do_flush(struct
+ 
+ /*
+  * bcm_rx_thr_flush - Check for throttled data and send it to the userspace
+- *
+- * update == 0 : just check if throttled data is available  (any irq context)
+- * update == 1 : check and send throttled data to userspace (soft_irq context)
+  */
+-static int bcm_rx_thr_flush(struct bcm_op *op, int update)
++static int bcm_rx_thr_flush(struct bcm_op *op)
+ {
+ 	int updated = 0;
+ 
+@@ -611,24 +592,16 @@ static int bcm_rx_thr_flush(struct bcm_o
+ 
+ 		/* for MUX filter we start at index 1 */
+ 		for (i = 1; i < op->nframes; i++)
+-			updated += bcm_rx_do_flush(op, update, i);
++			updated += bcm_rx_do_flush(op, i);
+ 
+ 	} else {
+ 		/* for RX_FILTER_ID and simple filter */
+-		updated += bcm_rx_do_flush(op, update, 0);
++		updated += bcm_rx_do_flush(op, 0);
+ 	}
+ 
+ 	return updated;
+ }
+ 
+-static void bcm_rx_thr_tsklet(unsigned long data)
+-{
+-	struct bcm_op *op = (struct bcm_op *)data;
+-
+-	/* push the changed data to the userspace */
+-	bcm_rx_thr_flush(op, 1);
+-}
+-
+ /*
+  * bcm_rx_thr_handler - the time for blocked content updates is over now:
+  *                      Check for throttled data and send it to the userspace
+@@ -637,9 +610,7 @@ static enum hrtimer_restart bcm_rx_thr_h
+ {
+ 	struct bcm_op *op = container_of(hrtimer, struct bcm_op, thrtimer);
+ 
+-	tasklet_schedule(&op->thrtsklet);
+-
+-	if (bcm_rx_thr_flush(op, 0)) {
++	if (bcm_rx_thr_flush(op)) {
+ 		hrtimer_forward(hrtimer, ktime_get(), op->kt_ival2);
+ 		return HRTIMER_RESTART;
+ 	} else {
+@@ -735,23 +706,8 @@ static struct bcm_op *bcm_find_op(struct
+ 
+ static void bcm_remove_op(struct bcm_op *op)
+ {
+-	if (op->tsklet.func) {
+-		while (test_bit(TASKLET_STATE_SCHED, &op->tsklet.state) ||
+-		       test_bit(TASKLET_STATE_RUN, &op->tsklet.state) ||
+-		       hrtimer_active(&op->timer)) {
+-			hrtimer_cancel(&op->timer);
+-			tasklet_kill(&op->tsklet);
+-		}
+-	}
+-
+-	if (op->thrtsklet.func) {
+-		while (test_bit(TASKLET_STATE_SCHED, &op->thrtsklet.state) ||
+-		       test_bit(TASKLET_STATE_RUN, &op->thrtsklet.state) ||
+-		       hrtimer_active(&op->thrtimer)) {
+-			hrtimer_cancel(&op->thrtimer);
+-			tasklet_kill(&op->thrtsklet);
+-		}
+-	}
++	hrtimer_cancel(&op->timer);
++	hrtimer_cancel(&op->thrtimer);
+ 
+ 	if ((op->frames) && (op->frames != &op->sframe))
+ 		kfree(op->frames);
+@@ -979,15 +935,13 @@ static int bcm_tx_setup(struct bcm_msg_h
+ 		op->ifindex = ifindex;
+ 
+ 		/* initialize uninitialized (kzalloc) structure */
+-		hrtimer_init(&op->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++		hrtimer_init(&op->timer, CLOCK_MONOTONIC_SOFT,
++			     HRTIMER_MODE_REL);
+ 		op->timer.function = bcm_tx_timeout_handler;
+ 
+-		/* initialize tasklet for tx countevent notification */
+-		tasklet_init(&op->tsklet, bcm_tx_timeout_tsklet,
+-			     (unsigned long) op);
+-
+ 		/* currently unused in tx_ops */
+-		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC_SOFT,
++			     HRTIMER_MODE_REL);
+ 
+ 		/* add this bcm_op to the list of the tx_ops */
+ 		list_add(&op->list, &bo->tx_ops);
+@@ -1150,20 +1104,14 @@ static int bcm_rx_setup(struct bcm_msg_h
+ 		op->rx_ifindex = ifindex;
+ 
+ 		/* initialize uninitialized (kzalloc) structure */
+-		hrtimer_init(&op->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++		hrtimer_init(&op->timer, CLOCK_MONOTONIC_SOFT,
++			     HRTIMER_MODE_REL);
+ 		op->timer.function = bcm_rx_timeout_handler;
+ 
+-		/* initialize tasklet for rx timeout notification */
+-		tasklet_init(&op->tsklet, bcm_rx_timeout_tsklet,
+-			     (unsigned long) op);
+-
+-		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC_SOFT,
++			     HRTIMER_MODE_REL);
+ 		op->thrtimer.function = bcm_rx_thr_handler;
+ 
+-		/* initialize tasklet for rx throttle handling */
+-		tasklet_init(&op->thrtsklet, bcm_rx_thr_tsklet,
+-			     (unsigned long) op);
+-
+ 		/* add this bcm_op to the list of the rx_ops */
+ 		list_add(&op->list, &bo->rx_ops);
+ 
+@@ -1209,7 +1157,7 @@ static int bcm_rx_setup(struct bcm_msg_h
+ 			 */
+ 			op->kt_lastmsg = 0;
+ 			hrtimer_cancel(&op->thrtimer);
+-			bcm_rx_thr_flush(op, 1);
++			bcm_rx_thr_flush(op);
+ 		}
+ 
+ 		if ((op->flags & STARTTIMER) && op->kt_ival1)
