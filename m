@@ -1,9 +1,8 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: flexcan missing error state transitions
-Date: Thu, 31 Aug 2017 08:33:25 +0000
-Message-ID: <1305c2749a86402fa15c48113bb0ed54@SGPMBX1017.APAC.bosch.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: flexcan missing error state transitions
+Date: Thu, 31 Aug 2017 11:53:43 +0200
+Message-ID: <5c1b52f3-56b9-b885-add2-57b5fbc05107@grandegger.com>
 References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
- <150333230375.13890.2773067532209799515@maxwell>
  <8e8b90f72f374fb1ab82bc29b8cfc108@SI-MBX1030.de.bosch.com>
  <150333966184.28484.15326759292718336833@maxwell>
  <e54b0db7ec524bcca65e1975aaf13b2b@SI-MBX1030.de.bosch.com>
@@ -19,96 +18,126 @@ References: <5213bc7ebd454acea568aba682d696ca@SGPMBX1017.APAC.bosch.com>
  <5faf942d-4680-45a7-74f2-208a2b9f73f8@grandegger.com>
  <db68b0a396574fe7883f962863804a4a@SGPMBX1017.APAC.bosch.com>
  <c3bb7b46-d7f6-b188-73a2-d74e42ebf4f1@grandegger.com>
+ <1305c2749a86402fa15c48113bb0ed54@SGPMBX1017.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:52407 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750783AbdHaId3 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Aug 2017 04:33:29 -0400
-In-Reply-To: <c3bb7b46-d7f6-b188-73a2-d74e42ebf4f1@grandegger.com>
-Content-Language: en-US
+Received: from mailproxy03.manitu.net ([217.11.48.67]:59594 "EHLO
+        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751387AbdHaJxq (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Aug 2017 05:53:46 -0400
+In-Reply-To: <1305c2749a86402fa15c48113bb0ed54@SGPMBX1017.APAC.bosch.com>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-SGVsbG8gV29sZmdhbmcsDQoNCj4gRnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndn
-QGdyYW5kZWdnZXIuY29tXQ0KPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAzMCwgMjAxNyA2OjU5
-IFBNDQo+IFsuLi5dDQo+DQo+ID4gVGhlIGVycm9yIGludGVycnVwdCB3aWxsIGFsd2F5cyBiZSB0
-cmlnZ2VyZWQgYWZ0ZXIgdGhlIHNlbmQsIGJlY2F1c2UgdGhlDQo+ID4gYXV0by1yZXRyYW5zbWlz
-c2lvbiB3aWxsIGtlZXAgZ2V0dGluZyBBY2sgZXJyb3IgaWYgdGhlIGNhYmxlIGlzIG5vdCBjb25u
-ZWN0ZWQsDQo+ID4gdGhhdCdzIHdoZXJlIHRoZSBpbnRlcnJ1cHQgZmxvb2RpbmcgY29tZSBmcm9t
-IChhbmQgdGhlIGZsb29kaW5nIHdvbid0IHN0b3ANCj4gPiB1bnRpbCB0aGUgY2FibGUgaXMgY29u
-bmVjdGVkIGFnYWluKS4NCj4gDQo+IFlvdSBtZWFuIHRoZSBlcnJvciBpbnRlcnJ1cHQgc2lnbmFs
-bGluZyB0aGUgQUNLIGVycm9yIG9jY3VycyBldmVuIHdpdGgNCj4gRkxFWENBTl9DVFJMX0VSUl9N
-U0sgKm5vdCogc2V0IGluICJjdHJsIj8NCj4gT3IgaXMgaXQgc2V0IGZyb20gdGhlIGJlZ2lubmlu
-Zz8NClNvcnJ5IGZvciB0aGUgaW5jb21wbGV0ZSBkZXNjcmlwdGlvbiwgSSBmb3Jnb3QgdG8gbWVu
-dGlvbiBpdCBpcyBhc3N1bWVkDQp0aGF0IHRoZSBicm9rZW4gZXJyb3Igc3RhdGUgcXVpcmsgZml4
-IGlzIGVuYWJsZWQgZm9yIHRoZSBjb3JlLCBoZW5jZQ0KdGhlIGVycm9yIGludGVycnVwdCBpcyBl
-bmFibGVkIGZyb20gdGhlIGJlZ2lubmluZy4NCg0KQWx0aG91Z2ggb25seSBwMTAxMCBlbmFibGVk
-IHRoZSBxdWlyayBzbyBmYXIsIGJ1dCB0byBvdXIgdW5kZXJzdGFuZGluZywNCnRoZSByZXN0IGNv
-cmUgc2VlbXMgYWxzbyBuZWVkIHRoZSBxdWlyayBlbmFibGVkIHRvIHJlcG9ydCBjb3JyZWN0IHN0
-YXRlDQp0cmFuc2l0aW9ucywgZS5nLiwgaS5NWDYuDQoNCkhvd2V2ZXIsIGFzIG5laXRoZXIgb2Yg
-dXMgY2FuIHRlc3QgdGhlIGxlZ2FjeSBhbmQgb3RoZXIgY29yZXMsIHNvIHdlDQpjYW5ub3QgdG91
-Y2ggdGhlbSB3aXRob3V0IHRlc3RpbmcuIFBlcmhhcHMgc29tZW9uZSB3aG8gaGFzIHRoZSBhY2Nl
-c3MNCnRvIHRoZXNlIGNvcmVzIGNhbiBnaXZlIGEgaGFuZCB0byB2ZXJpZnkgdGhhdCBpbiBmdXR1
-cmUuDQoNCj4NCj4gWy4uLl0NCj4gSGVyZSBGTEVYQ0FOX0NUUkxfRVJSX01TSyAoMHg0MDAwKSBp
-cyBzZXQgaW4gImN0cmwiIQ0KPiANCj4gQ291bGQgeW91IHBsZWFzZSBhZGQgdG8gZmxleGNhbl9p
-cnEoKToNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJp
-dmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiBpbmRleCAxM2YwZjIxLi4wZGYwYzM0IDEwMDY0NA0K
-PiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nh
-bi9mbGV4Y2FuLmMNCj4gQEAgLTc1OCw2ICs3NTgsNyBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgZmxl
-eGNhbl9pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKQ0KPiAgICAgICAgIH0NCj4gDQo+ICAgICAg
-ICAgcmVnX2VzciA9IGZsZXhjYW5fcmVhZCgmcmVncy0+ZXNyKTsNCj4gKyAgICAgICBuZXRkZXZf
-ZGJnKGRldiwgInJlZ19pZmxhZzE9JSN4IHJlZ19lc3I9JSN4XG4iLCByZWdfaWZsYWcxLCByZWdz
-LT5lc3IpOw0KPiANCj4gICAgICAgICAvKiBBQ0sgYWxsIGJ1cyBlcnJvciBhbmQgc3RhdGUgY2hh
-bmdlIElSUSBzb3VyY2VzICovDQo+ICAgICAgICAgaWYgKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9B
-TExfSU5UKSB7DQo+IAlyZWdfZXNyID0gZmxleGNhbl9yZWFkKCZyZWdzLT5lc3IpOw0KPiANCj4g
-VGhpcyB3b3VsZCBtYWtlIGNsZWFuZXIgd2hhdCBpcyBnb2luZyBvbi4NClN1cmUuIEJlbG93IHRl
-c3QgaXMgYmFzZWQgb24ga2VybmVsIHY0LjExIHdpdGggdGhlIHByb3Bvc2VkIHBhdGNoZXMuDQpU
-byBkZW1vbnN0cmF0ZSB0aGUgdGhlb3J5IG9mIHRoZSBsZWdhY3kgY29yZXMgc2hvdWxkIGFsc28g
-d29yaywgdGhlDQoiW1RSXVdSTl9JTlQiIGFyZSBkaXNhYmxlZC4NCihjbGVhciBXUk5fRU4gaW4g
-TUNSIGFuZCBbVFJdV1JOX01TSyBpbiBDVFJMMSkNCg0KVGVzdCBjYXNlOg0KMS4gRGlzY29ubmVj
-dCB0aGUgY2FibGUNCjIuICJpcCBsaW5rIHNldCB4eHggdHlwZSBjYW4gYml0cmF0ZSA1MDAwMDAi
-IGFuZCAiaXAgbGluayBzZXQgeHh4IHVwIg0KMy4gImNhbnNlbmQgeHh4IDEyMyNmZmZmZmZmZmZm
-ZmZmZmZmIg0KDQojIGRtZXNnIHwgZ3JlcCBmbGV4Y2FuDQpbICAgIDEuNTYxMjQzXSBmbGV4Y2Fu
-IDIwOTAwMDAuZmxleGNhbjogMjA5MDAwMC5mbGV4Y2FuIHN1cHBseSB4Y2VpdmVyIG5vdCBmb3Vu
-ZCwgdXNpbmcgZHVtbXkgcmVndWxhdG9yDQpbICAgIDEuNTcwNjIxXSBmbGV4Y2FuIDIwOTAwMDAu
-ZmxleGNhbjogY2FuX3J4X29mZmxvYWRfaW5pdF9xdWV1ZTogc2tiX3F1ZXVlX2xlbl9tYXg9NTEy
-DQpbICAgIDEuNTcxMjA3XSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbjogZGV2aWNlIHJlZ2lzdGVy
-ZWQgKHJlZ19iYXNlPWUwYTc4MDAwLCBpcnE9MzQpDQpbICAgIDYuMjI3NzQ2XSBmbGV4Y2FuIDIw
-OTAwMDAuZmxleGNhbiBtb2IwOiByZW5hbWVkIGZyb20gY2FuMA0KWyAgIDM0LjQwMDY2OV0gZmxl
-eGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogd3JpdGluZyBjdHJsPTB4MDEzYTIwMDcNClsgICAz
-NC40MDA2OThdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IGZsZXhjYW5fc2V0X2JpdHRp
-bWluZzogbWNyPTB4NTk4MDAwMGYgY3RybD0weDAxM2EyMDA3DQpbICAgMzQuNDAwNzE1XSBmbGV4
-Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiBmbGV4Y2FuX2NoaXBfc3RhcnQ6IHdyaXRpbmcgbWNy
-PTB4NTk4MzAyM2YNClsgICAzNC40MDA3MzFdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6
-IGZsZXhjYW5fY2hpcF9zdGFydDogd3JpdGluZyBjdHJsPTB4MDEzYTIwNTcNClsgICAzNC40MDA4
-MjldIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IGZsZXhjYW5fY2hpcF9zdGFydDogcmVh
-ZGluZyBtY3I9MHg0MDgzMDIzZiBjdHJsPTB4MDEzYWUwNTcNClsgICA0NC4xMTIzMDddIGZsZXhj
-YW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjA0Mg0K
-WyAgIDQ0LjExMjU0N10gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0w
-eDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgNDQuMTEyODEwXSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNh
-biBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIwNDINClsgICA0NC4xMTMwNzRdIGZs
-ZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjA0
-Mg0KWyAgIDQ0LjExMzMzMV0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFn
-MT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgNDQuMTEzNjAzXSBmbGV4Y2FuIDIwOTAwMDAuZmxl
-eGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIwNDINClsgICA0NC4xMTM4NTFd
-IGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0
-MjA0Mg0KWyAgIDQ0LjExNDEyNF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lm
-bGFnMT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgNDQuMTE0MzY3XSBmbGV4Y2FuIDIwOTAwMDAu
-ZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIwNDINClsgICA0NC4xMTQ2
-MzFdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9
-MHg0MjA0Mg0KWyAgIDQ0LjExNDg4NF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVn
-X2lmbGFnMT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgNDQuMTE1MTQyXSBmbGV4Y2FuIDIwOTAw
-MDAuZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIyNDINClsgICA0NC4x
-MTUxNjJdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IE5ldyBlcnJvciBzdGF0ZTogMQ0K
-WyAgIDQ0LjExNTQwNF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0w
-eDAgcmVnX2Vzcj0weDQyMjQyDQpbICAgNDQuMTE1NjYxXSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNh
-biBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIyNDINClsgICA0NC4xMTU5MjFdIGZs
-ZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjI0
-Mg0KWyAgIDQ0LjExNjE4MF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFn
-MT0weDAgcmVnX2Vzcj0weDQyMjUyDQpbICAgNDQuMTE2MTk5XSBmbGV4Y2FuIDIwOTAwMDAuZmxl
-eGNhbiBtb2IwOiBOZXcgZXJyb3Igc3RhdGU6IDINCg0KQmVzdCByZWdhcmRzDQpZaQ0KDQo=
+Hello ZHU Yi,
+
+Am 31.08.2017 um 10:33 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
+> Hello Wolfgang,
+> 
+>> From: Wolfgang Grandegger [mailto:wg@grandegger.com]
+>> Sent: Wednesday, August 30, 2017 6:59 PM
+>> [...]
+>>
+>>> The error interrupt will always be triggered after the send, because the
+>>> auto-retransmission will keep getting Ack error if the cable is not connected,
+>>> that's where the interrupt flooding come from (and the flooding won't stop
+>>> until the cable is connected again).
+>>
+>> You mean the error interrupt signalling the ACK error occurs even with
+>> FLEXCAN_CTRL_ERR_MSK *not* set in "ctrl"?
+>> Or is it set from the beginning?
+> Sorry for the incomplete description, I forgot to mention it is assumed
+> that the broken error state quirk fix is enabled for the core, hence
+> the error interrupt is enabled from the beginning.
+
+OK.
+
+> Although only p1010 enabled the quirk so far, but to our understanding,
+> the rest core seems also need the quirk enabled to report correct state
+> transitions, e.g., i.MX6.
+
+I will have a i.MX53 and i.MX28 board soon on my table to check error 
+passive handling. Would be nice to reduce interrupt flooding on these as 
+well.
+
+> However, as neither of us can test the legacy and other cores, so we
+> cannot touch them without testing. Perhaps someone who has the access
+> to these cores can give a hand to verify that in future.
+
+Other tester are welcome!
+
+>>
+>> [...]
+>> Here FLEXCAN_CTRL_ERR_MSK (0x4000) is set in "ctrl"!
+>>
+>> Could you please add to flexcan_irq():
+>>
+>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+>> index 13f0f21..0df0c34 100644
+>> --- a/drivers/net/can/flexcan.c
+>> +++ b/drivers/net/can/flexcan.c
+>> @@ -758,6 +758,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+>>          }
+>>
+>>          reg_esr = flexcan_read(&regs->esr);
+>> +       netdev_dbg(dev, "reg_iflag1=%#x reg_esr=%#x\n", reg_iflag1, regs->esr);
+>>
+>>          /* ACK all bus error and state change IRQ sources */
+>>          if (reg_esr & FLEXCAN_ESR_ALL_INT) {
+>> 	reg_esr = flexcan_read(&regs->esr);
+>>
+>> This would make cleaner what is going on.
+> Sure. Below test is based on kernel v4.11 with the proposed patches.
+> To demonstrate the theory of the legacy cores should also work, the
+> "[TR]WRN_INT" are disabled.
+> (clear WRN_EN in MCR and [TR]WRN_MSK in CTRL1)
+
+OK, then I understand how the following works:
+> Test case:
+> 1. Disconnect the cable
+> 2. "ip link set xxx type can bitrate 500000" and "ip link set xxx up"
+> 3. "cansend xxx 123#ffffffffffffffff"
+> 
+> # dmesg | grep flexcan
+> [    1.561243] flexcan 2090000.flexcan: 2090000.flexcan supply xceiver not found, using dummy regulator
+> [    1.570621] flexcan 2090000.flexcan: can_rx_offload_init_queue: skb_queue_len_max=512
+> [    1.571207] flexcan 2090000.flexcan: device registered (reg_base=e0a78000, irq=34)
+> [    6.227746] flexcan 2090000.flexcan mob0: renamed from can0
+> [   34.400669] flexcan 2090000.flexcan mob0: writing ctrl=0x013a2007
+> [   34.400698] flexcan 2090000.flexcan mob0: flexcan_set_bittiming: mcr=0x5980000f ctrl=0x013a2007
+> [   34.400715] flexcan 2090000.flexcan mob0: flexcan_chip_start: writing mcr=0x5983023f
+> [   34.400731] flexcan 2090000.flexcan mob0: flexcan_chip_start: writing ctrl=0x013a2057
+> [   34.400829] flexcan 2090000.flexcan mob0: flexcan_chip_start: reading mcr=0x4083023f ctrl=0x013ae057
+> [   44.112307] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.112547] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.112810] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.113074] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.113331] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.113603] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.113851] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.114124] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.114367] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.114631] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.114884] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   44.115142] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   44.115162] flexcan 2090000.flexcan mob0: New error state: 1
+> [   44.115404] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   44.115661] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   44.115921] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   44.116180] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42252
+> [   44.116199] flexcan 2090000.flexcan mob0: New error state: 2
+
+We disable the bus errors when error passive is reached. But what 
+happens if the error state decreases. It will require successful 
+transmissions. When the TX done interrupt comes, changes to error 
+warning are realized. Then we re-enable the error interrupt. But below 
+error warning, we would like to disable the error interrupt (for the 
+mx6q). That might be a problem but could be fixed by special treatment 
+(for legacy cores).
+
+Wolfgang.
