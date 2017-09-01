@@ -1,71 +1,109 @@
-From: "Shi, Zhongjie" <zhongjie.shi@intel.com>
-Subject: RE: [PATCH] Add TX limit for SocketCAN.
-Date: Fri, 1 Sep 2017 03:22:26 +0000
-Message-ID: <106C4230743D00439F3B474E2F2FC8CD53885BF7@SHSMSX101.ccr.corp.intel.com>
+From: Justin Delegard <justin@samsara.com>
+Subject: Re: [PATCH] Add TX limit for SocketCAN.
+Date: Thu, 31 Aug 2017 21:17:53 -0700
+Message-ID: <CANUzxrqNGZ7A_S=L66kZF_LVrkwks3jYjL0tYP173HRC8EnR4w@mail.gmail.com>
 References: <1504232079-2583-1-git-send-email-zhongjie.shi@intel.com>
- <CANGgnMb5-cKT=PjxEF6yYAcUkcP29BRnHU+_xY3ASsT-GQ6qzQ@mail.gmail.com>
+ <CANGgnMb5-cKT=PjxEF6yYAcUkcP29BRnHU+_xY3ASsT-GQ6qzQ@mail.gmail.com> <106C4230743D00439F3B474E2F2FC8CD53885BF7@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mga09.intel.com ([134.134.136.24]:27695 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750868AbdIADWb (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 31 Aug 2017 23:22:31 -0400
-In-Reply-To: <CANGgnMb5-cKT=PjxEF6yYAcUkcP29BRnHU+_xY3ASsT-GQ6qzQ@mail.gmail.com>
-Content-Language: en-US
+Received: from mail-wm0-f46.google.com ([74.125.82.46]:34931 "EHLO
+        mail-wm0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750707AbdIAESP (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 1 Sep 2017 00:18:15 -0400
+Received: by mail-wm0-f46.google.com with SMTP id v2so1452107wmf.0
+        for <linux-can@vger.kernel.org>; Thu, 31 Aug 2017 21:18:14 -0700 (PDT)
+In-Reply-To: <106C4230743D00439F3B474E2F2FC8CD53885BF7@SHSMSX101.ccr.corp.intel.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Austin Schuh <austin@peloton-tech.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
+To: "Shi, Zhongjie" <zhongjie.shi@intel.com>
+Cc: Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
 
-SGkgQXVzdGluLA0KDQpJdCdzIGFwcHJlY2lhdGVkIGZvciB5b3VyIHJldmlldyBhbmQgbGV0IG1l
-IGtub3cgeW91ciB1c2UgY2FzZXMhDQpKdXN0IGEgcXVpY2sgdGhvdWdodCwgZm9yIHlvdXIgY2Fz
-ZSwgaXMgaXQgT0sgdG8gc2V0IHRoZSBUWCB0byBzb21lIGJpZyB2YWx1ZSwgZWcuIFNvbWUgdmFs
-dWUgYXMgMTAgKiAxMDI0ICogMTAyND8NClBsZWFzZSBwb2ludCBvdXQgaWYgYW55dGhpbmcgSSBt
-aXNzZWQgaW4geW91ciBjb21tZW50L3BvaW50Lg0KDQpJdCB3aWxsIGJlIGFsc28gYXBwcmVjaWF0
-ZWQgaWYgeW91IG9yIE9saXZlciBjYW4gc2hhcmUgd2l0aCBtZSB0aGUgZGV0YWlscyBvZiBob3cg
-dG8gInVzZSBxdWV1aW5nIGRpc2NpcGxpbmUiIHRvIGFjaGlldmUgdGhpcy4NCg0KVGhhbmtzIQ0K
-DQpaaG9uZ2ppZQ0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBBdXN0aW4g
-U2NodWggW21haWx0bzphdXN0aW5AcGVsb3Rvbi10ZWNoLmNvbV0gDQpTZW50OiBGcmlkYXksIFNl
-cHRlbWJlciAwMSwgMjAxNyAxMTowMiBBTQ0KVG86IFNoaSwgWmhvbmdqaWUgPHpob25namllLnNo
-aUBpbnRlbC5jb20+DQpDYzogT2xpdmVyIEhhcnRrb3BwIDxzb2NrZXRjYW5AaGFydGtvcHAubmV0
-PjsgTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT47IGxpbnV4LWNhbiA8bGlu
-dXgtY2FuQHZnZXIua2VybmVsLm9yZz4NClN1YmplY3Q6IFJlOiBbUEFUQ0hdIEFkZCBUWCBsaW1p
-dCBmb3IgU29ja2V0Q0FOLg0KDQpPbiBUaHUsIEF1ZyAzMSwgMjAxNyBhdCA3OjE0IFBNLCAgPHpo
-b25namllLnNoaUBpbnRlbC5jb20+IHdyb3RlOg0KPiBGcm9tOiAiU2hpLCBaaG9uZ2ppZSIgPHpo
-b25namllLnNoaUBpbnRlbC5jb20+DQo+DQo+IFRoaXMgd2lsbCBiZSB1c2VkIHRvIHByZXZlbnQg
-bWFsaWNpb3VzIG9yIHVuaW50ZW50aW9uYWwgZmxvb2Rpbmcgb2YgDQo+IG1lc3NhZ2VzIHZpYSBT
-b2NrZXRDQU4uDQo+DQo+IENoYW5nZS1JZDogSTZjMmUxMjJlMTJhNTk0ZDlhZDdkYzRiZGVlYmUx
-NWExOTI5ZWI4OTMNCj4gVHJhY2tlZC1PbjogaHR0cHM6Ly9qaXJhMDEuZGV2dG9vbHMuaW50ZWwu
-Y29tL2Jyb3dzZS9PQU0tNDg0OTYNCj4gU2lnbmVkLW9mZi1ieTogU2hpLCBaaG9uZ2ppZSA8emhv
-bmdqaWUuc2hpQGludGVsLmNvbT4NCj4gLS0tDQo+ICBuZXQvY2FuL0tjb25maWcgIHwgMTMgKysr
-KysrKysrKysrKw0KPiAgbmV0L2Nhbi9hZl9jYW4uYyB8IDE1ICsrKysrKysrKysrKysrKyAgbmV0
-L2Nhbi9hZl9jYW4uaCB8ICA1ICsrKysrDQo+ICBuZXQvY2FuL3Byb2MuYyAgIHwgMTMgKysrKysr
-KysrKysrKw0KPiAgNCBmaWxlcyBjaGFuZ2VkLCA0NiBpbnNlcnRpb25zKCspDQo+DQo+IGRpZmYg
-LS1naXQgYS9uZXQvY2FuL0tjb25maWcgYi9uZXQvY2FuL0tjb25maWcgaW5kZXggYTE1YzBlMC4u
-YWViYTNkMCANCj4gMTAwNjQ0DQo+IC0tLSBhL25ldC9jYW4vS2NvbmZpZw0KPiArKysgYi9uZXQv
-Y2FuL0tjb25maWcNCj4gQEAgLTUxLDYgKzUxLDE5IEBAIGNvbmZpZyBDQU5fR1cNCj4gICAgICAg
-ICAgIFRoZXkgY2FuIGJlIG1vZGlmaWVkIHdpdGggQU5EL09SL1hPUi9TRVQgb3BlcmF0aW9ucyBh
-cyBjb25maWd1cmVkDQo+ICAgICAgICAgICBieSB0aGUgbmV0bGluayBjb25maWd1cmF0aW9uIGlu
-dGVyZmFjZSBrbm93biBlLmcuIGZyb20gaXB0YWJsZXMuDQo+DQo+ICtjb25maWcgQ0FOX1RYX0FU
-VEVNUFRfUkFURV9MSU1JVA0KPiArICAgICAgIGludCAiVHggYXR0ZW1wdCByYXRlIGxpbWl0Ig0K
-PiArICAgICAgIGRlZmF1bHQgIjUiDQo+ICsgICAgICAgLS0taGVscC0tLQ0KPiArICAgICAgICAg
-VGhpcyBUWCBhdHRlbXB0IHJhdGUgbGltaXQgY2FuIGJlIHVzZWQgdG8gcHJldmVudCBmbG9vZCBv
-ZiBtZXNzYWdlcw0KPiArICAgICAgICAgZnJvbSB1c2VyIHNwYWNlLiBJdCdzIFRYICJhdHRlbXB0
-IiByYXRlIGhlcmUgaW5zdGVhZCBvZiB0aGUgImFjdHVhbCINCj4gKyAgICAgICAgIFRYIHJhdGUg
-YmVjYXVzZSB3ZSBkbyB0aGUgc3RhdGlzdGljcyBmb3IgdGhlIFRYIGF0dGVtcHQgbm8gbWF0dGVy
-IGlmDQo+ICsgICAgICAgICB0aGUgbWVzc2FnZSBUWCBpcyBhY3R1YWxseSBzZW50IHN1Y2Nlc3Nm
-dWwgb3Igbm90LiBUaGUgY3VycmVudA0KPiArICAgICAgICAgZGVmYXVsdCB2YWx1ZSBpcyAiNSIg
-d2hpY2ggbWVhbnMgNSBtZXNzYWdlcyBwZXIgc2Vjb25kIHRoYXQgaXMgcHJvcGVyDQo+ICsgICAg
-ICAgICBmb3IgYW4gaW4tdmVoaWNsZSBpbmZvdGFpbm1lbnQgKElWSSkgc3lzdGVtLiBGb3IgdGhl
-IHVzZSBjYXNlcyBvdGhlcg0KPiArICAgICAgICAgdGhhbiBJVkksIHRoaXMgY2FuIGJlIHNldCB0
-byB0aGUgdmFsdWUgY29ycmVzcG9uZGluZyB0byB0aGUgc3BlY2lmaWMNCj4gKyAgICAgICAgIHJl
-cXVpcmVtZW50Lg0KPiArDQo+ICBzb3VyY2UgImRyaXZlcnMvbmV0L2Nhbi9LY29uZmlnIg0KPg0K
-PiAgZW5kaWYNCg0KVGhpcyBkZWZhdWx0IGJyZWFrcyBvdXIgc3lzdGVtcy4gIFdlIHNlbmQgaHVu
-ZHJlZHMgb2YgbWVzc2FnZXMvc2VjLCBhbmQgYXQgd29yc3QgY2FzZSB3aGVuIHB1c2hpbmcgYW4g
-dXBkYXRlIG91dCBvdmVyIENBTiB0byBvdGhlciBFQ1VzLCBzYXR1cmF0ZSB0aGUgYnVzLiAgVGhp
-cyBzaG91bGQgYmUgb3B0IGluLg0KDQpJIGhhdmUgdmFndWUgcmVjb2xsZWN0aW9ucyBmcm9tIE9s
-aXZlciBsb25nIGFnbyB0aGF0IHlvdSBjYW4gdXNlIHF1ZXVlaW5nIGRpc2NpcGxpbmVzIHRvIHJh
-dGUgbGltaXQgdGhlIGludGVyZmFjZSwgd2hpY2ggc2hvdWxkIGltcGxlbWVudCB0aGlzIHdpdGhv
-dXQgYW55IGtlcm5lbCBjaGFuZ2VzLg0KDQpBdXN0aW4NCg==
+This strikes me as something that should be configured via a sysctl,
+not a kernel config option.
+
+Isn't CAN itself robust against such a problem?  Low priority senders
+should be clobbered by higher priority ones.
+
+5 packets per second is also extremely slow.  Even on slow buses (eg
+250kbps in J1939) the bitrate supports thousands of packets per
+second.
+
+What are you trying to protect with this change?  There's no guarantee
+any other device on the bus will respect this, and an attacker using
+linux could just revert this change.
+
+
+Justin
+
+On Thu, Aug 31, 2017 at 8:22 PM, Shi, Zhongjie <zhongjie.shi@intel.com> wrote:
+> Hi Austin,
+>
+> It's appreciated for your review and let me know your use cases!
+> Just a quick thought, for your case, is it OK to set the TX to some big value, eg. Some value as 10 * 1024 * 1024?
+> Please point out if anything I missed in your comment/point.
+>
+> It will be also appreciated if you or Oliver can share with me the details of how to "use queuing discipline" to achieve this.
+>
+> Thanks!
+>
+> Zhongjie
+>
+>
+> -----Original Message-----
+> From: Austin Schuh [mailto:austin@peloton-tech.com]
+> Sent: Friday, September 01, 2017 11:02 AM
+> To: Shi, Zhongjie <zhongjie.shi@intel.com>
+> Cc: Oliver Hartkopp <socketcan@hartkopp.net>; Marc Kleine-Budde <mkl@pengutronix.de>; linux-can <linux-can@vger.kernel.org>
+> Subject: Re: [PATCH] Add TX limit for SocketCAN.
+>
+> On Thu, Aug 31, 2017 at 7:14 PM,  <zhongjie.shi@intel.com> wrote:
+>> From: "Shi, Zhongjie" <zhongjie.shi@intel.com>
+>>
+>> This will be used to prevent malicious or unintentional flooding of
+>> messages via SocketCAN.
+>>
+>> Change-Id: I6c2e122e12a594d9ad7dc4bdeebe15a1929eb893
+>> Tracked-On: https://jira01.devtools.intel.com/browse/OAM-48496
+>> Signed-off-by: Shi, Zhongjie <zhongjie.shi@intel.com>
+>> ---
+>>  net/can/Kconfig  | 13 +++++++++++++
+>>  net/can/af_can.c | 15 +++++++++++++++  net/can/af_can.h |  5 +++++
+>>  net/can/proc.c   | 13 +++++++++++++
+>>  4 files changed, 46 insertions(+)
+>>
+>> diff --git a/net/can/Kconfig b/net/can/Kconfig index a15c0e0..aeba3d0
+>> 100644
+>> --- a/net/can/Kconfig
+>> +++ b/net/can/Kconfig
+>> @@ -51,6 +51,19 @@ config CAN_GW
+>>           They can be modified with AND/OR/XOR/SET operations as configured
+>>           by the netlink configuration interface known e.g. from iptables.
+>>
+>> +config CAN_TX_ATTEMPT_RATE_LIMIT
+>> +       int "Tx attempt rate limit"
+>> +       default "5"
+>> +       ---help---
+>> +         This TX attempt rate limit can be used to prevent flood of messages
+>> +         from user space. It's TX "attempt" rate here instead of the "actual"
+>> +         TX rate because we do the statistics for the TX attempt no matter if
+>> +         the message TX is actually sent successful or not. The current
+>> +         default value is "5" which means 5 messages per second that is proper
+>> +         for an in-vehicle infotainment (IVI) system. For the use cases other
+>> +         than IVI, this can be set to the value corresponding to the specific
+>> +         requirement.
+>> +
+>>  source "drivers/net/can/Kconfig"
+>>
+>>  endif
+>
+> This default breaks our systems.  We send hundreds of messages/sec, and at worst case when pushing an update out over CAN to other ECUs, saturate the bus.  This should be opt in.
+>
+> I have vague recollections from Oliver long ago that you can use queueing disciplines to rate limit the interface, which should implement this without any kernel changes.
+>
+> Austin
+
+
+
+-- 
+Justin
