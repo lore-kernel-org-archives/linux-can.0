@@ -1,307 +1,193 @@
-From: Anna-Maria Gleixner <anna-maria@linutronix.de>
-Subject: [PATCH 19/25] can/bcm: Replace hrtimer_tasklet with softirq based
- hrtimer
-Date: Thu, 31 Aug 2017 12:23:43 -0000
-Message-ID: <20170831105827.099510718@linutronix.de>
-References: <20170831105725.809317030@linutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline;
- filename=canbcm_Replace_hrtimer_tasklet_with_softirq_based_hrtimer.patch
-Sender: linux-kernel-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Christoph Hellwig <hch@lst.org>, keescook@chromium.org, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+From: zhongjie.shi@intel.com
+Subject: [PATCH] Add TX limit for SocketCAN.
+Date: Fri,  1 Sep 2017 10:14:39 +0800
+Message-ID: <1504232079-2583-1-git-send-email-zhongjie.shi@intel.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mga11.intel.com ([192.55.52.93]:28398 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1750762AbdIACND (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 31 Aug 2017 22:13:03 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: socketcan@hartkopp.net, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: zhongjie.shi@intel.com
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: "Shi, Zhongjie" <zhongjie.shi@intel.com>
 
-Switch the timer to CLOCK_MONOTONIC_SOFT, which executed the timer
-callback in softirq context and remove the hrtimer_tasklet.
+This will be used to prevent malicious or unintentional
+flooding of messages via SocketCAN.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Anna-Maria Gleixner <anna-maria@linutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+Change-Id: I6c2e122e12a594d9ad7dc4bdeebe15a1929eb893
+Tracked-On: https://jira01.devtools.intel.com/browse/OAM-48496
+Signed-off-by: Shi, Zhongjie <zhongjie.shi@intel.com>
 ---
- net/can/bcm.c |  150 ++++++++++++++++++----------------------------------------
- 1 file changed, 49 insertions(+), 101 deletions(-)
+ net/can/Kconfig  | 13 +++++++++++++
+ net/can/af_can.c | 15 +++++++++++++++
+ net/can/af_can.h |  5 +++++
+ net/can/proc.c   | 13 +++++++++++++
+ 4 files changed, 46 insertions(+)
 
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -102,7 +102,6 @@ struct bcm_op {
- 	unsigned long frames_abs, frames_filtered;
- 	struct bcm_timeval ival1, ival2;
- 	struct hrtimer timer, thrtimer;
--	struct tasklet_struct tsklet, thrtsklet;
- 	ktime_t rx_stamp, kt_ival1, kt_ival2, kt_lastmsg;
- 	int rx_ifindex;
- 	int cfsiz;
-@@ -364,25 +363,34 @@ static void bcm_send_to_user(struct bcm_
- 	}
- }
+diff --git a/net/can/Kconfig b/net/can/Kconfig
+index a15c0e0..aeba3d0 100644
+--- a/net/can/Kconfig
++++ b/net/can/Kconfig
+@@ -51,6 +51,19 @@ config CAN_GW
+ 	  They can be modified with AND/OR/XOR/SET operations as configured
+ 	  by the netlink configuration interface known e.g. from iptables.
  
--static void bcm_tx_start_timer(struct bcm_op *op)
-+static bool bcm_tx_set_expiry(struct bcm_op *op, struct hrtimer *hrt)
- {
-+	ktime_t ival;
++config CAN_TX_ATTEMPT_RATE_LIMIT
++	int "Tx attempt rate limit"
++	default "5"
++	---help---
++	  This TX attempt rate limit can be used to prevent flood of messages
++	  from user space. It's TX "attempt" rate here instead of the "actual"
++	  TX rate because we do the statistics for the TX attempt no matter if
++	  the message TX is actually sent successful or not. The current
++	  default value is "5" which means 5 messages per second that is proper
++	  for an in-vehicle infotainment (IVI) system. For the use cases other
++	  than IVI, this can be set to the value corresponding to the specific
++	  requirement.
 +
- 	if (op->kt_ival1 && op->count)
--		hrtimer_start(&op->timer,
--			      ktime_add(ktime_get(), op->kt_ival1),
--			      HRTIMER_MODE_ABS);
-+		ival = op->kt_ival1;
- 	else if (op->kt_ival2)
--		hrtimer_start(&op->timer,
--			      ktime_add(ktime_get(), op->kt_ival2),
--			      HRTIMER_MODE_ABS);
-+		ival = op->kt_ival2;
-+	else
-+		return false;
+ source "drivers/net/can/Kconfig"
+ 
+ endif
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 88edac0..4981c15 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -83,6 +83,9 @@ static DEFINE_MUTEX(proto_tab_lock);
+ 
+ static atomic_t skbcounter = ATOMIC_INIT(0);
+ 
++#define SOCK_TX_ATTEMPT_RATE_LIMIT    (CONFIG_CAN_TX_ATTEMPT_RATE_LIMIT)
 +
-+	hrtimer_set_expires(hrt, ktime_add(ktime_get(), ival));
-+	return true;
- }
- 
--static void bcm_tx_timeout_tsklet(unsigned long data)
-+static void bcm_tx_start_timer(struct bcm_op *op)
- {
--	struct bcm_op *op = (struct bcm_op *)data;
-+	if (bcm_tx_set_expiry(op, &op->timer))
-+		hrtimer_start_expires(&op->timer, HRTIMER_MODE_ABS);
-+}
 +
-+/* bcm_tx_timeout_handler - performs cyclic CAN frame transmissions */
-+static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
-+{
-+	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
- 	struct bcm_msg_head msg_head;
- 
- 	if (op->kt_ival1 && (op->count > 0)) {
--
- 		op->count--;
- 		if (!op->count && (op->flags & TX_COUNTEVT)) {
- 
-@@ -399,22 +407,12 @@ static void bcm_tx_timeout_tsklet(unsign
- 		}
- 		bcm_can_tx(op);
- 
--	} else if (op->kt_ival2)
-+	} else if (op->kt_ival2) {
- 		bcm_can_tx(op);
-+	}
- 
--	bcm_tx_start_timer(op);
--}
--
--/*
-- * bcm_tx_timeout_handler - performs cyclic CAN frame transmissions
-- */
--static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
--{
--	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
--
--	tasklet_schedule(&op->tsklet);
--
--	return HRTIMER_NORESTART;
-+	return bcm_tx_set_expiry(op, &op->timer) ?
-+		HRTIMER_RESTART : HRTIMER_NORESTART;
- }
- 
  /*
-@@ -542,11 +540,18 @@ static void bcm_rx_starttimer(struct bcm
- 		hrtimer_start(&op->timer, op->kt_ival1, HRTIMER_MODE_REL);
- }
- 
--static void bcm_rx_timeout_tsklet(unsigned long data)
-+/* bcm_rx_timeout_handler - when the (cyclic) CAN frame reception timed out */
-+static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
+  * af_can socket functions
+  */
+@@ -212,6 +215,7 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
+  *  -EPERM when trying to send on a non-CAN interface
+  *  -EMSGSIZE CAN frame size is bigger than CAN interface MTU
+  *  -EINVAL when the skb->data does not contain a valid CAN frame
++ *  -EDQUOT when current tx rate reach its limit
+  */
+ int can_send(struct sk_buff *skb, int loop)
  {
--	struct bcm_op *op = (struct bcm_op *)data;
-+	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
- 	struct bcm_msg_head msg_head;
+@@ -251,6 +255,17 @@ int can_send(struct sk_buff *skb, int loop)
+ 		goto inval_skb;
+ 	}
  
-+	/* if user wants to be informed, when cyclic CAN-Messages come back */
-+	if ((op->flags & RX_ANNOUNCE_RESUME) && op->last_frames) {
-+		/* clear received CAN frames to indicate 'nothing received' */
-+		memset(op->last_frames, 0, op->nframes * op->cfsiz);
++	/* update statistics */
++	can_stats->tx_attempt_frames++;
++	can_stats->tx_frames_attempt_delta++;
++
++	/* throttle if needed */
++	if (can_stats->current_tx_attempt_rate > SOCK_TX_ATTEMPT_RATE_LIMIT) {
++		printk_ratelimited(KERN_WARNING "can: inhibit tx due to "
++			"attempt rate: %lu\n", can_stats->current_tx_attempt_rate);
++		return EDQUOT;
 +	}
 +
- 	/* create notification to user */
- 	msg_head.opcode  = RX_TIMEOUT;
- 	msg_head.flags   = op->flags;
-@@ -557,25 +562,6 @@ static void bcm_rx_timeout_tsklet(unsign
- 	msg_head.nframes = 0;
+ 	skb->ip_summed = CHECKSUM_UNNECESSARY;
  
- 	bcm_send_to_user(op, &msg_head, NULL, 0);
--}
--
--/*
-- * bcm_rx_timeout_handler - when the (cyclic) CAN frame reception timed out
-- */
--static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
--{
--	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
--
--	/* schedule before NET_RX_SOFTIRQ */
--	tasklet_hi_schedule(&op->tsklet);
--
--	/* no restart of the timer is done here! */
--
--	/* if user wants to be informed, when cyclic CAN-Messages come back */
--	if ((op->flags & RX_ANNOUNCE_RESUME) && op->last_frames) {
--		/* clear received CAN frames to indicate 'nothing received' */
--		memset(op->last_frames, 0, op->nframes * op->cfsiz);
--	}
+ 	skb_reset_mac_header(skb);
+diff --git a/net/can/af_can.h b/net/can/af_can.h
+index d0ef45b..6f50e82 100644
+--- a/net/can/af_can.h
++++ b/net/can/af_can.h
+@@ -83,22 +83,27 @@ struct s_stats {
  
- 	return HRTIMER_NORESTART;
- }
-@@ -583,14 +569,12 @@ static enum hrtimer_restart bcm_rx_timeo
- /*
-  * bcm_rx_do_flush - helper for bcm_rx_thr_flush
-  */
--static inline int bcm_rx_do_flush(struct bcm_op *op, int update,
--				  unsigned int index)
-+static inline int bcm_rx_do_flush(struct bcm_op *op, unsigned int index)
- {
- 	struct canfd_frame *lcf = op->last_frames + op->cfsiz * index;
+ 	unsigned long rx_frames;
+ 	unsigned long tx_frames;
++	unsigned long tx_attempt_frames;
+ 	unsigned long matches;
  
- 	if ((op->last_frames) && (lcf->flags & RX_THR)) {
--		if (update)
--			bcm_rx_changed(op, lcf);
-+		bcm_rx_changed(op, lcf);
- 		return 1;
- 	}
- 	return 0;
-@@ -598,11 +582,8 @@ static inline int bcm_rx_do_flush(struct
+ 	unsigned long total_rx_rate;
+ 	unsigned long total_tx_rate;
++	unsigned long total_tx_attempt_rate;
+ 	unsigned long total_rx_match_ratio;
  
- /*
-  * bcm_rx_thr_flush - Check for throttled data and send it to the userspace
-- *
-- * update == 0 : just check if throttled data is available  (any irq context)
-- * update == 1 : check and send throttled data to userspace (soft_irq context)
-  */
--static int bcm_rx_thr_flush(struct bcm_op *op, int update)
-+static int bcm_rx_thr_flush(struct bcm_op *op)
- {
- 	int updated = 0;
+ 	unsigned long current_rx_rate;
+ 	unsigned long current_tx_rate;
++	unsigned long current_tx_attempt_rate;
+ 	unsigned long current_rx_match_ratio;
  
-@@ -611,24 +592,16 @@ static int bcm_rx_thr_flush(struct bcm_o
+ 	unsigned long max_rx_rate;
+ 	unsigned long max_tx_rate;
++	unsigned long max_tx_attempt_rate;
+ 	unsigned long max_rx_match_ratio;
  
- 		/* for MUX filter we start at index 1 */
- 		for (i = 1; i < op->nframes; i++)
--			updated += bcm_rx_do_flush(op, update, i);
-+			updated += bcm_rx_do_flush(op, i);
+ 	unsigned long rx_frames_delta;
+ 	unsigned long tx_frames_delta;
++	unsigned long tx_frames_attempt_delta;
+ 	unsigned long matches_delta;
+ };
  
- 	} else {
- 		/* for RX_FILTER_ID and simple filter */
--		updated += bcm_rx_do_flush(op, update, 0);
-+		updated += bcm_rx_do_flush(op, 0);
- 	}
+diff --git a/net/can/proc.c b/net/can/proc.c
+index 83045f0..96eb745 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -148,6 +148,8 @@ void can_stat_update(unsigned long data)
  
- 	return updated;
- }
+ 	can_stats->total_tx_rate = calc_rate(can_stats->jiffies_init, j,
+ 					    can_stats->tx_frames);
++	can_stats->total_tx_attempt_rate = calc_rate(can_stats->jiffies_init, j,
++					    can_stats->tx_attempt_frames);
+ 	can_stats->total_rx_rate = calc_rate(can_stats->jiffies_init, j,
+ 					    can_stats->rx_frames);
  
--static void bcm_rx_thr_tsklet(unsigned long data)
--{
--	struct bcm_op *op = (struct bcm_op *)data;
--
--	/* push the changed data to the userspace */
--	bcm_rx_thr_flush(op, 1);
--}
--
- /*
-  * bcm_rx_thr_handler - the time for blocked content updates is over now:
-  *                      Check for throttled data and send it to the userspace
-@@ -637,9 +610,7 @@ static enum hrtimer_restart bcm_rx_thr_h
- {
- 	struct bcm_op *op = container_of(hrtimer, struct bcm_op, thrtimer);
+@@ -158,12 +160,16 @@ void can_stat_update(unsigned long data)
+ 			can_stats->rx_frames_delta;
  
--	tasklet_schedule(&op->thrtsklet);
--
--	if (bcm_rx_thr_flush(op, 0)) {
-+	if (bcm_rx_thr_flush(op)) {
- 		hrtimer_forward(hrtimer, ktime_get(), op->kt_ival2);
- 		return HRTIMER_RESTART;
- 	} else {
-@@ -735,23 +706,8 @@ static struct bcm_op *bcm_find_op(struct
+ 	can_stats->current_tx_rate = calc_rate(0, HZ, can_stats->tx_frames_delta);
++	can_stats->current_tx_attempt_rate = calc_rate(0, HZ, can_stats->tx_frames_attempt_delta);
+ 	can_stats->current_rx_rate = calc_rate(0, HZ, can_stats->rx_frames_delta);
  
- static void bcm_remove_op(struct bcm_op *op)
- {
--	if (op->tsklet.func) {
--		while (test_bit(TASKLET_STATE_SCHED, &op->tsklet.state) ||
--		       test_bit(TASKLET_STATE_RUN, &op->tsklet.state) ||
--		       hrtimer_active(&op->timer)) {
--			hrtimer_cancel(&op->timer);
--			tasklet_kill(&op->tsklet);
--		}
--	}
--
--	if (op->thrtsklet.func) {
--		while (test_bit(TASKLET_STATE_SCHED, &op->thrtsklet.state) ||
--		       test_bit(TASKLET_STATE_RUN, &op->thrtsklet.state) ||
--		       hrtimer_active(&op->thrtimer)) {
--			hrtimer_cancel(&op->thrtimer);
--			tasklet_kill(&op->thrtsklet);
--		}
--	}
-+	hrtimer_cancel(&op->timer);
-+	hrtimer_cancel(&op->thrtimer);
+ 	/* check / update maximum values */
+ 	if (can_stats->max_tx_rate < can_stats->current_tx_rate)
+ 		can_stats->max_tx_rate = can_stats->current_tx_rate;
  
- 	if ((op->frames) && (op->frames != &op->sframe))
- 		kfree(op->frames);
-@@ -979,15 +935,13 @@ static int bcm_tx_setup(struct bcm_msg_h
- 		op->ifindex = ifindex;
++	if (can_stats->max_tx_attempt_rate < can_stats->current_tx_attempt_rate)
++		can_stats->max_tx_attempt_rate = can_stats->current_tx_attempt_rate;
++
+ 	if (can_stats->max_rx_rate < can_stats->current_rx_rate)
+ 		can_stats->max_rx_rate = can_stats->current_rx_rate;
  
- 		/* initialize uninitialized (kzalloc) structure */
--		hrtimer_init(&op->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+		hrtimer_init(&op->timer, CLOCK_MONOTONIC_SOFT,
-+			     HRTIMER_MODE_REL);
- 		op->timer.function = bcm_tx_timeout_handler;
+@@ -172,6 +178,7 @@ void can_stat_update(unsigned long data)
  
--		/* initialize tasklet for tx countevent notification */
--		tasklet_init(&op->tsklet, bcm_tx_timeout_tsklet,
--			     (unsigned long) op);
--
- 		/* currently unused in tx_ops */
--		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC_SOFT,
-+			     HRTIMER_MODE_REL);
+ 	/* clear values for 'current rate' calculation */
+ 	can_stats->tx_frames_delta = 0;
++	can_stats->tx_frames_attempt_delta = 0;
+ 	can_stats->rx_frames_delta = 0;
+ 	can_stats->matches_delta   = 0;
  
- 		/* add this bcm_op to the list of the tx_ops */
- 		list_add(&op->list, &bo->tx_ops);
-@@ -1150,20 +1104,14 @@ static int bcm_rx_setup(struct bcm_msg_h
- 		op->rx_ifindex = ifindex;
+@@ -227,6 +234,8 @@ static int can_stats_proc_show(struct seq_file *m, void *v)
  
- 		/* initialize uninitialized (kzalloc) structure */
--		hrtimer_init(&op->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+		hrtimer_init(&op->timer, CLOCK_MONOTONIC_SOFT,
-+			     HRTIMER_MODE_REL);
- 		op->timer.function = bcm_rx_timeout_handler;
+ 		seq_printf(m, " %8ld frames/s total tx rate (TXR)\n",
+ 				can_stats->total_tx_rate);
++		seq_printf(m, " %8ld frames/s total attempt tx rate (ATXR)\n",
++				can_stats->total_tx_attempt_rate);
+ 		seq_printf(m, " %8ld frames/s total rx rate (RXR)\n",
+ 				can_stats->total_rx_rate);
  
--		/* initialize tasklet for rx timeout notification */
--		tasklet_init(&op->tsklet, bcm_rx_timeout_tsklet,
--			     (unsigned long) op);
--
--		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC_SOFT,
-+			     HRTIMER_MODE_REL);
- 		op->thrtimer.function = bcm_rx_thr_handler;
+@@ -237,6 +246,8 @@ static int can_stats_proc_show(struct seq_file *m, void *v)
  
--		/* initialize tasklet for rx throttle handling */
--		tasklet_init(&op->thrtsklet, bcm_rx_thr_tsklet,
--			     (unsigned long) op);
--
- 		/* add this bcm_op to the list of the rx_ops */
- 		list_add(&op->list, &bo->rx_ops);
+ 		seq_printf(m, " %8ld frames/s current tx rate (CTXR)\n",
+ 				can_stats->current_tx_rate);
++		seq_printf(m, " %8ld frames/s current attempt tx rate (CATXR)\n",
++				can_stats->current_tx_attempt_rate);
+ 		seq_printf(m, " %8ld frames/s current rx rate (CRXR)\n",
+ 				can_stats->current_rx_rate);
  
-@@ -1209,7 +1157,7 @@ static int bcm_rx_setup(struct bcm_msg_h
- 			 */
- 			op->kt_lastmsg = 0;
- 			hrtimer_cancel(&op->thrtimer);
--			bcm_rx_thr_flush(op, 1);
-+			bcm_rx_thr_flush(op);
- 		}
+@@ -247,6 +258,8 @@ static int can_stats_proc_show(struct seq_file *m, void *v)
  
- 		if ((op->flags & STARTTIMER) && op->kt_ival1)
+ 		seq_printf(m, " %8ld frames/s max tx rate (MTXR)\n",
+ 				can_stats->max_tx_rate);
++		seq_printf(m, " %8ld frames/s max attempt tx rate (MATXR)\n",
++				can_stats->max_tx_attempt_rate);
+ 		seq_printf(m, " %8ld frames/s max rx rate (MRXR)\n",
+ 				can_stats->max_rx_rate);
+ 
+-- 
+2.7.4
+
