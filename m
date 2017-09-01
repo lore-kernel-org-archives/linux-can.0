@@ -1,63 +1,67 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: [PATCH 4/6] can: flexcan: mitigate error interrupt flooding
-Date: Fri, 1 Sep 2017 06:58:48 +0000
-Message-ID: <d3b63dab2f9447e986e316e19736eaa5@SGPMBX1017.APAC.bosch.com>
-References: <9c55377c42d7481688123dd5fe3a775c@SGPMBX1017.APAC.bosch.com>
- <a1e82c3a-1632-7692-6014-c59ab4298883@grandegger.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: [PATCH] Add TX limit for SocketCAN.
+Date: Fri, 1 Sep 2017 09:52:43 +0200
+Message-ID: <20170901075243.GA30725@airbook.vandijck-laurijssen.be>
+References: <1504232079-2583-1-git-send-email-zhongjie.shi@intel.com>
+ <CANGgnMb5-cKT=PjxEF6yYAcUkcP29BRnHU+_xY3ASsT-GQ6qzQ@mail.gmail.com>
+ <106C4230743D00439F3B474E2F2FC8CD53885BF7@SHSMSX101.ccr.corp.intel.com>
+ <CANUzxrqNGZ7A_S=L66kZF_LVrkwks3jYjL0tYP173HRC8EnR4w@mail.gmail.com>
+ <106C4230743D00439F3B474E2F2FC8CD53885C62@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:32875 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751583AbdIAG6x (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 1 Sep 2017 02:58:53 -0400
-In-Reply-To: <a1e82c3a-1632-7692-6014-c59ab4298883@grandegger.com>
-Content-Language: en-US
+Received: from relay-b03.edpnet.be ([212.71.1.220]:51160 "EHLO
+        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751022AbdIAHxC (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 1 Sep 2017 03:53:02 -0400
+Content-Disposition: inline
+In-Reply-To: <106C4230743D00439F3B474E2F2FC8CD53885C62@SHSMSX101.ccr.corp.intel.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+To: "Shi, Zhongjie" <zhongjie.shi@intel.com>
+Cc: Justin Delegard <justin@samsara.com>, Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
 
-SGVsbG8gV29sZmdhbmcsDQoNCj4gRnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndn
-QGdyYW5kZWdnZXIuY29tXQ0KPiBTZW50OiBUaHVyc2RheSwgQXVndXN0IDMxLCAyMDE3IDg6MDYg
-UE0NCj4gDQo+IEhlbGxvLA0KPiANCj4gSSB0aGluayBwYXRjaCAzLi42IGNhbiBiZSBzcXVhc2hl
-ZC4gVGhleSBpbXBsZW1lbnQNCj4gRkxFWENBTl9RVUlSS19CUk9LRU5fUEVSUl9TVEFURS4NCk9L
-LiBGb3IgcGF0Y2ggNSwgZG8geW91IHRoaW5rIGlzIGl0IHdvcnRoIHRvIGJlIGEgc2VwYXJhdGUN
-CnBhdGNoPyBTaW5jZSBwYXRjaCAzLDQgYW5kIDYgYXJlIHJlbGF0ZWQgdG8gaW1wbGVtZW50DQpG
-TEVYQ0FOX1FVSVJLX0JST0tFTl9QRVJSX1NUQVRFLCBidXQgcGF0Y2ggNSBpcyBhY3R1YWxseQ0K
-bWFrZSB1c2Ugb2YgdGhpcyBxdWlyayAoaS5NWDYgb25seSkuDQoNCj4gDQo+IEFtIDMxLjA4LjIw
-MTcgdW0gMTA6MjYgc2NocmllYiBaSFUgWWkgKFNULUZJUi9FTkcxLVpodSk6DQo+IFsuLi5dDQo+
-ID4gKwkvKiBhdmFpbGFiaWxpdHkgb2YgZXJyb3IgaW50ZXJydXB0IGFtb25nIHN0YXRlIHRyYW5z
-aXRpb25zIGluIGNhc2UNCj4gPiArCSAqIGJ1cyBlcnJvciByZXBvcnRpbmcgaXMgZGUtYWN0aXZh
-dGVkIGFuZCBicm9rZW4gZXJyb3IgcGFzc2l2ZQ0KPiA+ICsJICogc3RhdGUgcXVpcmsgZml4IGlz
-IGVuYWJsZWQ6DQo+ID4gKwkgKiAgKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KPiA+ICsJICogIHwgKy0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rIFtzdG9wcGVkIC8gIHwNCj4gPiArCSAq
-ICB8IHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgc2xl
-ZXBpbmddIC0rDQo+ID4gKwkgKiAgKy0rLT4gYWN0aXZlIDwtPiB3YXJuaW5nIDwtPiBwYXNzaXZl
-IC0+IGJ1cyBvZmYgLSsNCj4gPiArCSAqICAgICAgICBeXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gPiArCSAqICAgICAgICAgICAgICAgIGVu
-YWJsZWQgICAgICAgICAgICAgICAgICAgICAgZGlzYWJsZWQNCj4gPiArCSAqLw0KPiA+ICsJaWYg
-KHN0YXRlX2NoYW5nZWQgJiYNCj4gPiArCSAgICAocHJpdi0+ZGV2dHlwZV9kYXRhLT5xdWlya3Mg
-JiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9QRVJSX1NUQVRFKSAmJg0KPiA+ICsJICAgIShwcml2LT5j
-YW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVfQkVSUl9SRVBPUlRJTkcpKSB7DQo+ID4gKwkJc3dp
-dGNoIChwcml2LT5jYW4uc3RhdGUpIHsNCj4gPiArCQljYXNlIENBTl9TVEFURV9FUlJPUl9QQVNT
-SVZFOg0KPiA+ICsJCWNhc2UgQ0FOX1NUQVRFX0JVU19PRkY6DQo+ID4gKwkJCXJlZ19jdHJsID0g
-ZmxleGNhbl9yZWFkKCZyZWdzLT5jdHJsKTsNCj4gPiArCQkJcmVnX2N0cmwgJj0gfkZMRVhDQU5f
-Q1RSTF9FUlJfTVNLOw0KPiA+ICsJCQlmbGV4Y2FuX3dyaXRlKHJlZ19jdHJsLCAmcmVncy0+Y3Ry
-bCk7DQo+ID4gKwkJCWJyZWFrOw0KPiA+ICsNCj4gPiArCQljYXNlIENBTl9TVEFURV9FUlJPUl9X
-QVJOSU5HOg0KPiA+ICsJCWNhc2UgQ0FOX1NUQVRFX0VSUk9SX0FDVElWRToNCj4gPiArCQkJcmVn
-X2N0cmwgPSBmbGV4Y2FuX3JlYWQoJnJlZ3MtPmN0cmwpOw0KPiA+ICsJCQlyZWdfY3RybCB8PSBG
-TEVYQ0FOX0NUUkxfRVJSX01TSzsNCj4gPiArCQkJZmxleGNhbl93cml0ZShyZWdfY3RybCwgJnJl
-Z3MtPmN0cmwpOw0KPiA+ICsJCQlicmVhazsNCj4gPiArDQo+ID4gKwkJZGVmYXVsdDoNCj4gPiAr
-CQkJYnJlYWs7DQo+ID4gKwkJfQ0KPiA+ICsJfQ0KPiANCj4gSSB0aGluayBpdCdzIGVub3VnaCBp
-ZiB3ZSAgZW5hYmxlIHRoZSBlcnJvciBpbnRlcnJ1cHQganVzdCBiZXR3ZWVuIGVycm9yDQo+IHdh
-cm5pbmcgYW5kIGVycm9yIHBhc3NpdmUuDQpZZXMuIEZvciBuZXcgY29yZSAod2l0aCBbVFJdV1JO
-X0lOVCBjb25uZWN0ZWQpLCB3ZSBvbmx5IG5lZWQgdG8gZW5hYmxlDQp0aGUgZXJyb3IgaW50ZXJy
-dXB0IGluIHJhbmdlIFtlcnJvciB3YXJuaW5nLCBlcnJvciBwYXNzaXZlKS4gQnV0IGZvcg0Kb2xk
-IGNvcmUgKHdpdGhvdXQgW1RSXVdSTl9JTlQgY29ubmVjdGVkKSwgd2UgbmVlZCB0byBlbmFibGUg
-aXQgaW4gcmFuZ2UNCltlcnJvciBhY3RpdmUsIGVycm9yIHBhc3NpdmUpLg0KDQpJIHRoaW5rIHRo
-aXMgcmVsYXRlZCB0byB0aGUgZGlzY3Vzc2lvbiBpbiBwYXRjaCAzIHRocmVhZCwgYWZ0ZXIgd2Ug
-Y29tZSB0bw0KYSBjb25jbHVzaW9uIHRoZXJlLCBJJ2xsIHVwZGF0ZSBoZXJlIGFzIHdlbGwuDQoN
-ClRoYW5rcyENCg0KQmVzdCByZWdhcmRzDQpZaQ0K
+Hey,
+
+I don't like the approach either.
+See my comments below.
+
+> Hi Justin,
+> 
+> Sorry for my late response. 
+> First, I need to clarify that this limit is just for user space programs.
+> And please let me try to clarify the requirement in more details on our side:
+> 
+> (1) The change will be used for some IVI product.
+
+That's a choice, not a justification for the patch.
+
+> (2) In IVI, there are hundreds of use space processes running which has network access which has more risk to be compromised.
+> (3) And for the IVI system, the TX rate isn't (or shouldn't be) that high as you mentioned. Only possible trigger of TX is from human: the user of IVI.
+> Please consider #2 and #3, once there are some malicious/buggy program send CAN messages frequently, then it will be harmful to the whole CAN network.
+
+Do you consider your IVI product having this patch as a safe ECU then?
+It's a very rough method, since packets are considered good or bad based
+on the number of recent packets.
+That's like protecting your email server by rate-limiting ethernet packets.
+It doesn't protect against spam, does it? It's just a rate limiter.
+
+> 
+> And by this logic in my patch, I'm trying to just to prevent the abnormal TX rate from user space on IVI product in the worst case:
+> either some bug in the user space programs;
+> or some compromised program by some hackers with certain zero day attack.
+
+It's up to userspace to decide when a tx rate is abnormal.
+
+> 
+> For the ECUs on the CAN bus, I'm not sure why is it not possible to set different config for their case.
+> I mean, e.g. 
+> (a) On the bus, for IVI, I can use it as 5/s,
+> (b) For the cases mentioned by Austin, the config could be 10M for their saturation work.
+> It's just configurable for every nodes on the bus.
+
+I looks like you set up a simple 'firewall' to CAN, with 1 hardcoded
+rule in kernel code.
+
+Kind regards,
+Kurt
