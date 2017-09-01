@@ -1,73 +1,70 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: [PATCH 1/6] can: flexcan: fix state transition regression
-Date: Fri, 1 Sep 2017 02:48:31 +0000
-Message-ID: <1943d84bc81b47368ce9b312f2d6ab11@SGPMBX1017.APAC.bosch.com>
-References: <1f925f5e8c9747cf92351ce2bc471bff@SGPMBX1017.APAC.bosch.com>
- <ea64fc2b-e94d-3fc0-35ad-3a70d94800e6@grandegger.com>
+From: Austin Schuh <austin@peloton-tech.com>
+Subject: Re: [PATCH] Add TX limit for SocketCAN.
+Date: Thu, 31 Aug 2017 20:01:31 -0700
+Message-ID: <CANGgnMb5-cKT=PjxEF6yYAcUkcP29BRnHU+_xY3ASsT-GQ6qzQ@mail.gmail.com>
+References: <1504232079-2583-1-git-send-email-zhongjie.shi@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:46328 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751109AbdIACsg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Aug 2017 22:48:36 -0400
-In-Reply-To: <ea64fc2b-e94d-3fc0-35ad-3a70d94800e6@grandegger.com>
-Content-Language: en-US
+Received: from mail-yw0-f172.google.com ([209.85.161.172]:36451 "EHLO
+        mail-yw0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751243AbdIADBx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Aug 2017 23:01:53 -0400
+Received: by mail-yw0-f172.google.com with SMTP id h127so6781318ywf.3
+        for <linux-can@vger.kernel.org>; Thu, 31 Aug 2017 20:01:52 -0700 (PDT)
+In-Reply-To: <1504232079-2583-1-git-send-email-zhongjie.shi@intel.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+To: zhongjie.shi@intel.com
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
 
-SGVsbG8gV29sZmdhbmcsDQoNCj4gRnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndn
-QGdyYW5kZWdnZXIuY29tXQ0KPiBTZW50OiBUaHVyc2RheSwgQXVndXN0IDMxLCAyMDE3IDc6Mzcg
-UE0NCj4gDQo+IEhlbGxvIFpIVSBZaSwNCj4gDQo+IHVzdWFsbHkgYSBbUEFUQ0ggMC94XSBpcyBj
-b21pbmcgZmlyc3QgdGVsbGluZyB3aGF0IHRoZSBzZXJpZXMgZG9lcy4gV2UNCj4gdXNlICJnaXQg
-Zm9ybWF0LXBhdGNoIC0tY292ZXItbGV0dGVyIC4uLiIgZm9yIHRoYXQgcHVycG9zZS4NCk9LLiBU
-aGFua3MgZm9yIHlvdXIgaGludCENCkknbGwgcHJlcGFyZSB0aGUgdXBkYXRlZCBwYXRjaCBzZXJp
-ZXMgd2l0aCBjb3ZlciBsZXR0ZXIgbGF0ZXIuDQoNCj4gDQo+IEFtIDMxLjA4LjIwMTcgdW0gMTA6
-MjQgc2NocmllYiBaSFUgWWkgKFNULUZJUi9FTkcxLVpodSk6DQo+IFsuLi5dDQo+ID4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNh
-bi5jDQo+ID4gaW5kZXggMTNmMGYyMS4uZGY0YmZiOCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJz
-L25ldC9jYW4vZmxleGNhbi5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0K
-PiA+IEBAIC03NjUsOCArNzY1LDkgQEAgc3RhdGljIGlycXJldHVybl90IGZsZXhjYW5faXJxKGlu
-dCBpcnEsIHZvaWQgKmRldl9pZCkNCj4gPiAgIAkJZmxleGNhbl93cml0ZShyZWdfZXNyICYgRkxF
-WENBTl9FU1JfQUxMX0lOVCwgJnJlZ3MtPmVzcik7DQo+ID4gICAJfQ0KPiA+DQo+ID4gLQkvKiBz
-dGF0ZSBjaGFuZ2UgaW50ZXJydXB0ICovDQo+ID4gLQlpZiAocmVnX2VzciAmIEZMRVhDQU5fRVNS
-X0VSUl9TVEFURSkNCj4gPiArCS8qIHN0YXRlIGNoYW5nZSBpbnRlcnJ1cHQgb3IgYnJva2VuIGVy
-cm9yIHN0YXRlIHF1aXJrIGZpeCBpcyBlbmFibGVkICovDQo+ID4gKwlpZiAoKHJlZ19lc3IgJiBG
-TEVYQ0FOX0VTUl9FUlJfU1RBVEUpIHx8DQo+ID4gKwkgICAgKHByaXYtPmRldnR5cGVfZGF0YS0+
-cXVpcmtzICYNCj4gRkxFWENBTl9RVUlSS19CUk9LRU5fRVJSX1NUQVRFKSkNCj4gPiAgIAkJZmxl
-eGNhbl9pcnFfc3RhdGUoZGV2LCByZWdfZXNyKTsNCj4gDQo+IFRoaXMgbWVhbnMgdGhhdCBmbGV4
-Y2FuX2lycV9zdGF0ZSgpIGlzIGNhbGxlZCBmb3IgYW55IGludGVycnVwdCBzb3VyY2UuDQo+IFRo
-YXQncyB3aGF0IHdlIGhhZCBpbiB0aGUgcHJlIHJ4LW9mZmxvYWQgdmVyc2lvbi4gVGhpbmtpbmcg
-YWJvdXQgaXQ6DQo+IGRvIHdlIG5lZWQgdGhhdCAob3ZlcmhlYWQgZm9yIFJYIGFuZCBUWCk/IE1h
-eWJlIHRoZSBmb2xsb3dpbmcgd29ya3MgYWxyZWFkeToNCj4gDQo+ICArCWlmICgocmVnX2VzciAm
-IEZMRVhDQU5fRVNSX0VSUl9TVEFURSkgfHwNCj4gICsJICAgICgocHJpdi0+ZGV2dHlwZV9kYXRh
-LT5xdWlya3MgJiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9FUlJfU1RBVEUpICYmDQo+ICArCQkocmVn
-X2VzciAmIEZMRVhDQU5fRVNSX0VSUl9TVEFURSkpKQ0KSSdtIG5vdCBzdXJlIHRoYXQgSSB1bmRl
-cnN0b29kIHlvdXIgcHJvcG9zYWwgY29ycmVjdGx5LCB0aGUgZ3Vlc3MgaXMNCnRoZSBzZWNvbmQg
-InJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9FUlJfU1RBVEUiIGlzIGEgdHlwbywgZG8geW91IG1lYW4N
-CiJyZWdfZXNyICYgRkxFWENBTl9FU1JfQlVTX0VSUiI/DQoNCklmIHdlIG9ubHkgY2FsbCBmbGV4
-Y2FuX2lycV9zdGF0ZSgpIHVwb24gc3RhdGUgKyBlcnJvciBpbnRlcnJ1cHQsIHRoZW46DQoobmV3
-IGNvcmU6IHdpdGggICAgW1RSXVdSTl9JTlQsIGUuZy4sIGkuTVg2LA0KIG9sZCBjb3JlOiB3aXRo
-b3V0IFtUUl1XUk5fSU5ULCBlLmcuLCBpLk1YNTMpDQoxLiBlcnJvciBzdGF0ZSBpbmNyZWFzZXMs
-IGVub3VnaCBmb3IgYm90aCBuZXcgYW5kIG9sZCBjb3Jlcy4NCiAgICBhY3RpdmUgLS0tPiB3YXJu
-aW5nIC0tLT4gcGFzc2l2ZSAtLS0+IGJ1cyBvZmYNCiAgICAgICAgICAgICAgICAgICBeICAgICAg
-ICAgICAgXiAgICAgICAgICAgIF4NCiAgICAgICAgICAgICAgICBXUk5fSU5ULyAgICAgRVJSX0lO
-VCAgICAgIEJPRkZfSU5UDQoJICAgICAgICBFUlJfSU5UKG9sZCBjb3JlKQ0KDQoyLiBlcnJvciBz
-dGF0ZSBkZWNyZWFzZXMsIG5vdCBlbm91Z2ggZm9yIGJvdGggbmV3IGFuZCBvbGQgY29yZXMuDQog
-ICAgYWN0aXZlIDwtLS0gd2FybmluZyA8LS0tIHBhc3NpdmUNCiAgICAgICBeICAgICAgICAgICBe
-DQogICAgW1RSXVggICAgICAgV1JOX0lOVC8NCgkgICAgICAgIFtUUl1YKG9sZCBjb3JlKQ0KVGhl
-IFtUUl1YIGludGVycnVwdCBpcyByZXF1aXJlZCBmb3IgdGhlIHN0YXRlIGRlY3JlYXNlcywgYW5k
-IHRoZQ0Kb3ZlcmhlYWQgb2YgdGhlbSBJTUhPIGlzIG5vdCBvdmVya2lsbDoNCjEuIElmIGZsZXhj
-YW5faXJxX3N0YXRlKCkgaXMgY2FsbGVkIHdoZW4gdGhlIHN0YXRlIGlzIG5vdCBjaGFuZ2UsDQog
-ICB0aGVuLCB0aGUgb3ZlcmhlYWQgaXMgcmVhZCBGTFRfQ09ORiBhbmQvb3IgcmVhZCBlcnJvciBj
-b3VudGVyLA0KICAgZG8gTygxKSBjYWxjdWxhdGlvbiBhbmQgY29tcGFyZSB0aGUgc3RhdGUsIHRo
-ZW4gcXVpdC4NCg0KMi4gSWYgZmxleGNhbl9pcnFfc3RhdGUoKSBpcyBjYWxsZWQgd2hlbiB0aGUg
-c3RhdGUgaXMgY2hhbmdlZCwNCiAgIHRoZW4sIHRoYXQncyB3aGF0IGhlbHAgdXMgdG8gcmVwb3J0
-IGNvcnJlY3Qgc3RhdGUgdHJhbnNpdGlvbnMuDQoNCk9mIGNvdXJzZSwgaWYgZmxleGNhbiBjb3Jl
-IGNhbiBnZW5lcmF0ZSBhcHByb3ByaWF0ZSBzdGF0ZSBpbnRlcnJ1cHRzDQppbiBpdHMgbmV4dCB2
-ZXJzaW9uIChGbGV4Q0FOND8pLCB0aGVuIHdlIGRvbid0IG5lZWQgc3VjaCBvdmVyaGVhZA0KYXQg
-YWxsLCBidXQgd2hlbiB3aWxsIHRoaXMgd2lzaCBjb21lIHRydWU/IDopDQoNCkJlc3QgcmVnYXJk
-cw0KWWkNCg==
+On Thu, Aug 31, 2017 at 7:14 PM,  <zhongjie.shi@intel.com> wrote:
+> From: "Shi, Zhongjie" <zhongjie.shi@intel.com>
+>
+> This will be used to prevent malicious or unintentional
+> flooding of messages via SocketCAN.
+>
+> Change-Id: I6c2e122e12a594d9ad7dc4bdeebe15a1929eb893
+> Tracked-On: https://jira01.devtools.intel.com/browse/OAM-48496
+> Signed-off-by: Shi, Zhongjie <zhongjie.shi@intel.com>
+> ---
+>  net/can/Kconfig  | 13 +++++++++++++
+>  net/can/af_can.c | 15 +++++++++++++++
+>  net/can/af_can.h |  5 +++++
+>  net/can/proc.c   | 13 +++++++++++++
+>  4 files changed, 46 insertions(+)
+>
+> diff --git a/net/can/Kconfig b/net/can/Kconfig
+> index a15c0e0..aeba3d0 100644
+> --- a/net/can/Kconfig
+> +++ b/net/can/Kconfig
+> @@ -51,6 +51,19 @@ config CAN_GW
+>           They can be modified with AND/OR/XOR/SET operations as configured
+>           by the netlink configuration interface known e.g. from iptables.
+>
+> +config CAN_TX_ATTEMPT_RATE_LIMIT
+> +       int "Tx attempt rate limit"
+> +       default "5"
+> +       ---help---
+> +         This TX attempt rate limit can be used to prevent flood of messages
+> +         from user space. It's TX "attempt" rate here instead of the "actual"
+> +         TX rate because we do the statistics for the TX attempt no matter if
+> +         the message TX is actually sent successful or not. The current
+> +         default value is "5" which means 5 messages per second that is proper
+> +         for an in-vehicle infotainment (IVI) system. For the use cases other
+> +         than IVI, this can be set to the value corresponding to the specific
+> +         requirement.
+> +
+>  source "drivers/net/can/Kconfig"
+>
+>  endif
+
+This default breaks our systems.  We send hundreds of messages/sec,
+and at worst case when pushing an update out over CAN to other ECUs,
+saturate the bus.  This should be opt in.
+
+I have vague recollections from Oliver long ago that you can use
+queueing disciplines to rate limit the interface, which should
+implement this without any kernel changes.
+
+Austin
