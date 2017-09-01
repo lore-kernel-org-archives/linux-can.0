@@ -1,109 +1,116 @@
-From: Justin Delegard <justin@samsara.com>
-Subject: Re: [PATCH] Add TX limit for SocketCAN.
-Date: Thu, 31 Aug 2017 21:17:53 -0700
-Message-ID: <CANUzxrqNGZ7A_S=L66kZF_LVrkwks3jYjL0tYP173HRC8EnR4w@mail.gmail.com>
+From: "Shi, Zhongjie" <zhongjie.shi@intel.com>
+Subject: RE: [PATCH] Add TX limit for SocketCAN.
+Date: Fri, 1 Sep 2017 05:29:47 +0000
+Message-ID: <106C4230743D00439F3B474E2F2FC8CD53885C62@SHSMSX101.ccr.corp.intel.com>
 References: <1504232079-2583-1-git-send-email-zhongjie.shi@intel.com>
- <CANGgnMb5-cKT=PjxEF6yYAcUkcP29BRnHU+_xY3ASsT-GQ6qzQ@mail.gmail.com> <106C4230743D00439F3B474E2F2FC8CD53885BF7@SHSMSX101.ccr.corp.intel.com>
+ <CANGgnMb5-cKT=PjxEF6yYAcUkcP29BRnHU+_xY3ASsT-GQ6qzQ@mail.gmail.com>
+ <106C4230743D00439F3B474E2F2FC8CD53885BF7@SHSMSX101.ccr.corp.intel.com>
+ <CANUzxrqNGZ7A_S=L66kZF_LVrkwks3jYjL0tYP173HRC8EnR4w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-wm0-f46.google.com ([74.125.82.46]:34931 "EHLO
-        mail-wm0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750707AbdIAESP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 1 Sep 2017 00:18:15 -0400
-Received: by mail-wm0-f46.google.com with SMTP id v2so1452107wmf.0
-        for <linux-can@vger.kernel.org>; Thu, 31 Aug 2017 21:18:14 -0700 (PDT)
-In-Reply-To: <106C4230743D00439F3B474E2F2FC8CD53885BF7@SHSMSX101.ccr.corp.intel.com>
+Received: from mga09.intel.com ([134.134.136.24]:60265 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1750981AbdIAF3v (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 1 Sep 2017 01:29:51 -0400
+In-Reply-To: <CANUzxrqNGZ7A_S=L66kZF_LVrkwks3jYjL0tYP173HRC8EnR4w@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Shi, Zhongjie" <zhongjie.shi@intel.com>
+To: Justin Delegard <justin@samsara.com>
 Cc: Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
 
-This strikes me as something that should be configured via a sysctl,
-not a kernel config option.
-
-Isn't CAN itself robust against such a problem?  Low priority senders
-should be clobbered by higher priority ones.
-
-5 packets per second is also extremely slow.  Even on slow buses (eg
-250kbps in J1939) the bitrate supports thousands of packets per
-second.
-
-What are you trying to protect with this change?  There's no guarantee
-any other device on the bus will respect this, and an attacker using
-linux could just revert this change.
-
-
-Justin
-
-On Thu, Aug 31, 2017 at 8:22 PM, Shi, Zhongjie <zhongjie.shi@intel.com> wrote:
-> Hi Austin,
->
-> It's appreciated for your review and let me know your use cases!
-> Just a quick thought, for your case, is it OK to set the TX to some big value, eg. Some value as 10 * 1024 * 1024?
-> Please point out if anything I missed in your comment/point.
->
-> It will be also appreciated if you or Oliver can share with me the details of how to "use queuing discipline" to achieve this.
->
-> Thanks!
->
-> Zhongjie
->
->
-> -----Original Message-----
-> From: Austin Schuh [mailto:austin@peloton-tech.com]
-> Sent: Friday, September 01, 2017 11:02 AM
-> To: Shi, Zhongjie <zhongjie.shi@intel.com>
-> Cc: Oliver Hartkopp <socketcan@hartkopp.net>; Marc Kleine-Budde <mkl@pengutronix.de>; linux-can <linux-can@vger.kernel.org>
-> Subject: Re: [PATCH] Add TX limit for SocketCAN.
->
-> On Thu, Aug 31, 2017 at 7:14 PM,  <zhongjie.shi@intel.com> wrote:
->> From: "Shi, Zhongjie" <zhongjie.shi@intel.com>
->>
->> This will be used to prevent malicious or unintentional flooding of
->> messages via SocketCAN.
->>
->> Change-Id: I6c2e122e12a594d9ad7dc4bdeebe15a1929eb893
->> Tracked-On: https://jira01.devtools.intel.com/browse/OAM-48496
->> Signed-off-by: Shi, Zhongjie <zhongjie.shi@intel.com>
->> ---
->>  net/can/Kconfig  | 13 +++++++++++++
->>  net/can/af_can.c | 15 +++++++++++++++  net/can/af_can.h |  5 +++++
->>  net/can/proc.c   | 13 +++++++++++++
->>  4 files changed, 46 insertions(+)
->>
->> diff --git a/net/can/Kconfig b/net/can/Kconfig index a15c0e0..aeba3d0
->> 100644
->> --- a/net/can/Kconfig
->> +++ b/net/can/Kconfig
->> @@ -51,6 +51,19 @@ config CAN_GW
->>           They can be modified with AND/OR/XOR/SET operations as configured
->>           by the netlink configuration interface known e.g. from iptables.
->>
->> +config CAN_TX_ATTEMPT_RATE_LIMIT
->> +       int "Tx attempt rate limit"
->> +       default "5"
->> +       ---help---
->> +         This TX attempt rate limit can be used to prevent flood of messages
->> +         from user space. It's TX "attempt" rate here instead of the "actual"
->> +         TX rate because we do the statistics for the TX attempt no matter if
->> +         the message TX is actually sent successful or not. The current
->> +         default value is "5" which means 5 messages per second that is proper
->> +         for an in-vehicle infotainment (IVI) system. For the use cases other
->> +         than IVI, this can be set to the value corresponding to the specific
->> +         requirement.
->> +
->>  source "drivers/net/can/Kconfig"
->>
->>  endif
->
-> This default breaks our systems.  We send hundreds of messages/sec, and at worst case when pushing an update out over CAN to other ECUs, saturate the bus.  This should be opt in.
->
-> I have vague recollections from Oliver long ago that you can use queueing disciplines to rate limit the interface, which should implement this without any kernel changes.
->
-> Austin
-
-
-
--- 
-Justin
+SGkgSnVzdGluLA0KDQpTb3JyeSBmb3IgbXkgbGF0ZSByZXNwb25zZS4gDQpGaXJzdCwgSSBuZWVk
+IHRvIGNsYXJpZnkgdGhhdCB0aGlzIGxpbWl0IGlzIGp1c3QgZm9yIHVzZXIgc3BhY2UgcHJvZ3Jh
+bXMuDQpBbmQgcGxlYXNlIGxldCBtZSB0cnkgdG8gY2xhcmlmeSB0aGUgcmVxdWlyZW1lbnQgaW4g
+bW9yZSBkZXRhaWxzIG9uIG91ciBzaWRlOg0KDQooMSkgVGhlIGNoYW5nZSB3aWxsIGJlIHVzZWQg
+Zm9yIHNvbWUgSVZJIHByb2R1Y3QuDQooMikgSW4gSVZJLCB0aGVyZSBhcmUgaHVuZHJlZHMgb2Yg
+dXNlIHNwYWNlIHByb2Nlc3NlcyBydW5uaW5nIHdoaWNoIGhhcyBuZXR3b3JrIGFjY2VzcyB3aGlj
+aCBoYXMgbW9yZSByaXNrIHRvIGJlIGNvbXByb21pc2VkLg0KKDMpIEFuZCBmb3IgdGhlIElWSSBz
+eXN0ZW0sIHRoZSBUWCByYXRlIGlzbid0IChvciBzaG91bGRuJ3QgYmUpIHRoYXQgaGlnaCBhcyB5
+b3UgbWVudGlvbmVkLiBPbmx5IHBvc3NpYmxlIHRyaWdnZXIgb2YgVFggaXMgZnJvbSBodW1hbjog
+dGhlIHVzZXIgb2YgSVZJLg0KUGxlYXNlIGNvbnNpZGVyICMyIGFuZCAjMywgb25jZSB0aGVyZSBh
+cmUgc29tZSBtYWxpY2lvdXMvYnVnZ3kgcHJvZ3JhbSBzZW5kIENBTiBtZXNzYWdlcyBmcmVxdWVu
+dGx5LCB0aGVuIGl0IHdpbGwgYmUgaGFybWZ1bCB0byB0aGUgd2hvbGUgQ0FOIG5ldHdvcmsuDQoN
+CkFuZCBieSB0aGlzIGxvZ2ljIGluIG15IHBhdGNoLCBJJ20gdHJ5aW5nIHRvIGp1c3QgdG8gcHJl
+dmVudCB0aGUgYWJub3JtYWwgVFggcmF0ZSBmcm9tIHVzZXIgc3BhY2Ugb24gSVZJIHByb2R1Y3Qg
+aW4gdGhlIHdvcnN0IGNhc2U6IGVpdGhlciBzb21lIGJ1ZyBpbiB0aGUgdXNlciBzcGFjZSBwcm9n
+cmFtczsgb3Igc29tZSBjb21wcm9taXNlZCBwcm9ncmFtIGJ5IHNvbWUgaGFja2VycyB3aXRoIGNl
+cnRhaW4gemVybyBkYXkgYXR0YWNrLg0KDQpGb3IgdGhlIEVDVXMgb24gdGhlIENBTiBidXMsIEkn
+bSBub3Qgc3VyZSB3aHkgaXMgaXQgbm90IHBvc3NpYmxlIHRvIHNldCBkaWZmZXJlbnQgY29uZmln
+IGZvciB0aGVpciBjYXNlLg0KSSBtZWFuLCBlLmcuIA0KKGEpIE9uIHRoZSBidXMsIGZvciBJVkks
+IEkgY2FuIHVzZSBpdCBhcyA1L3MsDQooYikgRm9yIHRoZSBjYXNlcyBtZW50aW9uZWQgYnkgQXVz
+dGluLCB0aGUgY29uZmlnIGNvdWxkIGJlIDEwTSBmb3IgdGhlaXIgc2F0dXJhdGlvbiB3b3JrLg0K
+SXQncyBqdXN0IGNvbmZpZ3VyYWJsZSBmb3IgZXZlcnkgbm9kZXMgb24gdGhlIGJ1cy4NCg0KUGxl
+YXNlIHBvaW50IG91dCBpZiBhbnkgZmFsbGFjaWVzIEkgbWFkZSBpbiBteSBjb21tZW50cyBhYm92
+ZS4NCg0KVGhhbmtzIQ0KDQpaaG9uZ2ppZQ0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+DQpGcm9tOiBKdXN0aW4gRGVsZWdhcmQgW21haWx0bzpqdXN0aW5Ac2Ftc2FyYS5jb21dIA0KU2Vu
+dDogRnJpZGF5LCBTZXB0ZW1iZXIgMDEsIDIwMTcgMTI6MTggUE0NClRvOiBTaGksIFpob25namll
+IDx6aG9uZ2ppZS5zaGlAaW50ZWwuY29tPg0KQ2M6IEF1c3RpbiBTY2h1aCA8YXVzdGluQHBlbG90
+b24tdGVjaC5jb20+OyBPbGl2ZXIgSGFydGtvcHAgPHNvY2tldGNhbkBoYXJ0a29wcC5uZXQ+OyBN
+YXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPjsgbGludXgtY2FuIDxsaW51eC1j
+YW5Admdlci5rZXJuZWwub3JnPg0KU3ViamVjdDogUmU6IFtQQVRDSF0gQWRkIFRYIGxpbWl0IGZv
+ciBTb2NrZXRDQU4uDQoNClRoaXMgc3RyaWtlcyBtZSBhcyBzb21ldGhpbmcgdGhhdCBzaG91bGQg
+YmUgY29uZmlndXJlZCB2aWEgYSBzeXNjdGwsIG5vdCBhIGtlcm5lbCBjb25maWcgb3B0aW9uLg0K
+DQpJc24ndCBDQU4gaXRzZWxmIHJvYnVzdCBhZ2FpbnN0IHN1Y2ggYSBwcm9ibGVtPyAgTG93IHBy
+aW9yaXR5IHNlbmRlcnMgc2hvdWxkIGJlIGNsb2JiZXJlZCBieSBoaWdoZXIgcHJpb3JpdHkgb25l
+cy4NCg0KNSBwYWNrZXRzIHBlciBzZWNvbmQgaXMgYWxzbyBleHRyZW1lbHkgc2xvdy4gIEV2ZW4g
+b24gc2xvdyBidXNlcyAoZWcgMjUwa2JwcyBpbiBKMTkzOSkgdGhlIGJpdHJhdGUgc3VwcG9ydHMg
+dGhvdXNhbmRzIG9mIHBhY2tldHMgcGVyIHNlY29uZC4NCg0KV2hhdCBhcmUgeW91IHRyeWluZyB0
+byBwcm90ZWN0IHdpdGggdGhpcyBjaGFuZ2U/ICBUaGVyZSdzIG5vIGd1YXJhbnRlZSBhbnkgb3Ro
+ZXIgZGV2aWNlIG9uIHRoZSBidXMgd2lsbCByZXNwZWN0IHRoaXMsIGFuZCBhbiBhdHRhY2tlciB1
+c2luZyBsaW51eCBjb3VsZCBqdXN0IHJldmVydCB0aGlzIGNoYW5nZS4NCg0KDQpKdXN0aW4NCg0K
+T24gVGh1LCBBdWcgMzEsIDIwMTcgYXQgODoyMiBQTSwgU2hpLCBaaG9uZ2ppZSA8emhvbmdqaWUu
+c2hpQGludGVsLmNvbT4gd3JvdGU6DQo+IEhpIEF1c3RpbiwNCj4NCj4gSXQncyBhcHByZWNpYXRl
+ZCBmb3IgeW91ciByZXZpZXcgYW5kIGxldCBtZSBrbm93IHlvdXIgdXNlIGNhc2VzIQ0KPiBKdXN0
+IGEgcXVpY2sgdGhvdWdodCwgZm9yIHlvdXIgY2FzZSwgaXMgaXQgT0sgdG8gc2V0IHRoZSBUWCB0
+byBzb21lIGJpZyB2YWx1ZSwgZWcuIFNvbWUgdmFsdWUgYXMgMTAgKiAxMDI0ICogMTAyND8NCj4g
+UGxlYXNlIHBvaW50IG91dCBpZiBhbnl0aGluZyBJIG1pc3NlZCBpbiB5b3VyIGNvbW1lbnQvcG9p
+bnQuDQo+DQo+IEl0IHdpbGwgYmUgYWxzbyBhcHByZWNpYXRlZCBpZiB5b3Ugb3IgT2xpdmVyIGNh
+biBzaGFyZSB3aXRoIG1lIHRoZSBkZXRhaWxzIG9mIGhvdyB0byAidXNlIHF1ZXVpbmcgZGlzY2lw
+bGluZSIgdG8gYWNoaWV2ZSB0aGlzLg0KPg0KPiBUaGFua3MhDQo+DQo+IFpob25namllDQo+DQo+
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEF1c3RpbiBTY2h1aCBbbWFp
+bHRvOmF1c3RpbkBwZWxvdG9uLXRlY2guY29tXQ0KPiBTZW50OiBGcmlkYXksIFNlcHRlbWJlciAw
+MSwgMjAxNyAxMTowMiBBTQ0KPiBUbzogU2hpLCBaaG9uZ2ppZSA8emhvbmdqaWUuc2hpQGludGVs
+LmNvbT4NCj4gQ2M6IE9saXZlciBIYXJ0a29wcCA8c29ja2V0Y2FuQGhhcnRrb3BwLm5ldD47IE1h
+cmMgS2xlaW5lLUJ1ZGRlIA0KPiA8bWtsQHBlbmd1dHJvbml4LmRlPjsgbGludXgtY2FuIDxsaW51
+eC1jYW5Admdlci5rZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBBZGQgVFggbGlt
+aXQgZm9yIFNvY2tldENBTi4NCj4NCj4gT24gVGh1LCBBdWcgMzEsIDIwMTcgYXQgNzoxNCBQTSwg
+IDx6aG9uZ2ppZS5zaGlAaW50ZWwuY29tPiB3cm90ZToNCj4+IEZyb206ICJTaGksIFpob25namll
+IiA8emhvbmdqaWUuc2hpQGludGVsLmNvbT4NCj4+DQo+PiBUaGlzIHdpbGwgYmUgdXNlZCB0byBw
+cmV2ZW50IG1hbGljaW91cyBvciB1bmludGVudGlvbmFsIGZsb29kaW5nIG9mIA0KPj4gbWVzc2Fn
+ZXMgdmlhIFNvY2tldENBTi4NCj4+DQo+PiBDaGFuZ2UtSWQ6IEk2YzJlMTIyZTEyYTU5NGQ5YWQ3
+ZGM0YmRlZWJlMTVhMTkyOWViODkzDQo+PiBUcmFja2VkLU9uOiBodHRwczovL2ppcmEwMS5kZXZ0
+b29scy5pbnRlbC5jb20vYnJvd3NlL09BTS00ODQ5Ng0KPj4gU2lnbmVkLW9mZi1ieTogU2hpLCBa
+aG9uZ2ppZSA8emhvbmdqaWUuc2hpQGludGVsLmNvbT4NCj4+IC0tLQ0KPj4gIG5ldC9jYW4vS2Nv
+bmZpZyAgfCAxMyArKysrKysrKysrKysrDQo+PiAgbmV0L2Nhbi9hZl9jYW4uYyB8IDE1ICsrKysr
+KysrKysrKysrKyAgbmV0L2Nhbi9hZl9jYW4uaCB8ICA1ICsrKysrDQo+PiAgbmV0L2Nhbi9wcm9j
+LmMgICB8IDEzICsrKysrKysrKysrKysNCj4+ICA0IGZpbGVzIGNoYW5nZWQsIDQ2IGluc2VydGlv
+bnMoKykNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvbmV0L2Nhbi9LY29uZmlnIGIvbmV0L2Nhbi9LY29u
+ZmlnIGluZGV4IGExNWMwZTAuLmFlYmEzZDANCj4+IDEwMDY0NA0KPj4gLS0tIGEvbmV0L2Nhbi9L
+Y29uZmlnDQo+PiArKysgYi9uZXQvY2FuL0tjb25maWcNCj4+IEBAIC01MSw2ICs1MSwxOSBAQCBj
+b25maWcgQ0FOX0dXDQo+PiAgICAgICAgICAgVGhleSBjYW4gYmUgbW9kaWZpZWQgd2l0aCBBTkQv
+T1IvWE9SL1NFVCBvcGVyYXRpb25zIGFzIGNvbmZpZ3VyZWQNCj4+ICAgICAgICAgICBieSB0aGUg
+bmV0bGluayBjb25maWd1cmF0aW9uIGludGVyZmFjZSBrbm93biBlLmcuIGZyb20gaXB0YWJsZXMu
+DQo+Pg0KPj4gK2NvbmZpZyBDQU5fVFhfQVRURU1QVF9SQVRFX0xJTUlUDQo+PiArICAgICAgIGlu
+dCAiVHggYXR0ZW1wdCByYXRlIGxpbWl0Ig0KPj4gKyAgICAgICBkZWZhdWx0ICI1Ig0KPj4gKyAg
+ICAgICAtLS1oZWxwLS0tDQo+PiArICAgICAgICAgVGhpcyBUWCBhdHRlbXB0IHJhdGUgbGltaXQg
+Y2FuIGJlIHVzZWQgdG8gcHJldmVudCBmbG9vZCBvZiBtZXNzYWdlcw0KPj4gKyAgICAgICAgIGZy
+b20gdXNlciBzcGFjZS4gSXQncyBUWCAiYXR0ZW1wdCIgcmF0ZSBoZXJlIGluc3RlYWQgb2YgdGhl
+ICJhY3R1YWwiDQo+PiArICAgICAgICAgVFggcmF0ZSBiZWNhdXNlIHdlIGRvIHRoZSBzdGF0aXN0
+aWNzIGZvciB0aGUgVFggYXR0ZW1wdCBubyBtYXR0ZXIgaWYNCj4+ICsgICAgICAgICB0aGUgbWVz
+c2FnZSBUWCBpcyBhY3R1YWxseSBzZW50IHN1Y2Nlc3NmdWwgb3Igbm90LiBUaGUgY3VycmVudA0K
+Pj4gKyAgICAgICAgIGRlZmF1bHQgdmFsdWUgaXMgIjUiIHdoaWNoIG1lYW5zIDUgbWVzc2FnZXMg
+cGVyIHNlY29uZCB0aGF0IGlzIHByb3Blcg0KPj4gKyAgICAgICAgIGZvciBhbiBpbi12ZWhpY2xl
+IGluZm90YWlubWVudCAoSVZJKSBzeXN0ZW0uIEZvciB0aGUgdXNlIGNhc2VzIG90aGVyDQo+PiAr
+ICAgICAgICAgdGhhbiBJVkksIHRoaXMgY2FuIGJlIHNldCB0byB0aGUgdmFsdWUgY29ycmVzcG9u
+ZGluZyB0byB0aGUgc3BlY2lmaWMNCj4+ICsgICAgICAgICByZXF1aXJlbWVudC4NCj4+ICsNCj4+
+ICBzb3VyY2UgImRyaXZlcnMvbmV0L2Nhbi9LY29uZmlnIg0KPj4NCj4+ICBlbmRpZg0KPg0KPiBU
+aGlzIGRlZmF1bHQgYnJlYWtzIG91ciBzeXN0ZW1zLiAgV2Ugc2VuZCBodW5kcmVkcyBvZiBtZXNz
+YWdlcy9zZWMsIGFuZCBhdCB3b3JzdCBjYXNlIHdoZW4gcHVzaGluZyBhbiB1cGRhdGUgb3V0IG92
+ZXIgQ0FOIHRvIG90aGVyIEVDVXMsIHNhdHVyYXRlIHRoZSBidXMuICBUaGlzIHNob3VsZCBiZSBv
+cHQgaW4uDQo+DQo+IEkgaGF2ZSB2YWd1ZSByZWNvbGxlY3Rpb25zIGZyb20gT2xpdmVyIGxvbmcg
+YWdvIHRoYXQgeW91IGNhbiB1c2UgcXVldWVpbmcgZGlzY2lwbGluZXMgdG8gcmF0ZSBsaW1pdCB0
+aGUgaW50ZXJmYWNlLCB3aGljaCBzaG91bGQgaW1wbGVtZW50IHRoaXMgd2l0aG91dCBhbnkga2Vy
+bmVsIGNoYW5nZXMuDQo+DQo+IEF1c3Rpbg0KDQoNCg0KLS0NCkp1c3Rpbg0K
