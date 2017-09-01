@@ -1,67 +1,100 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: [PATCH] Add TX limit for SocketCAN.
-Date: Fri, 1 Sep 2017 09:52:43 +0200
-Message-ID: <20170901075243.GA30725@airbook.vandijck-laurijssen.be>
+From: "Shi, Zhongjie" <zhongjie.shi@intel.com>
+Subject: RE: [PATCH] Add TX limit for SocketCAN.
+Date: Fri, 1 Sep 2017 08:15:43 +0000
+Message-ID: <106C4230743D00439F3B474E2F2FC8CD53885CC7@SHSMSX101.ccr.corp.intel.com>
 References: <1504232079-2583-1-git-send-email-zhongjie.shi@intel.com>
  <CANGgnMb5-cKT=PjxEF6yYAcUkcP29BRnHU+_xY3ASsT-GQ6qzQ@mail.gmail.com>
  <106C4230743D00439F3B474E2F2FC8CD53885BF7@SHSMSX101.ccr.corp.intel.com>
  <CANUzxrqNGZ7A_S=L66kZF_LVrkwks3jYjL0tYP173HRC8EnR4w@mail.gmail.com>
  <106C4230743D00439F3B474E2F2FC8CD53885C62@SHSMSX101.ccr.corp.intel.com>
+ <20170901075243.GA30725@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b03.edpnet.be ([212.71.1.220]:51160 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751022AbdIAHxC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 1 Sep 2017 03:53:02 -0400
-Content-Disposition: inline
-In-Reply-To: <106C4230743D00439F3B474E2F2FC8CD53885C62@SHSMSX101.ccr.corp.intel.com>
+Received: from mga06.intel.com ([134.134.136.31]:33515 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751022AbdIAIPs (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 1 Sep 2017 04:15:48 -0400
+In-Reply-To: <20170901075243.GA30725@airbook.vandijck-laurijssen.be>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Shi, Zhongjie" <zhongjie.shi@intel.com>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Cc: Justin Delegard <justin@samsara.com>, Austin Schuh <austin@peloton-tech.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
 
-Hey,
-
-I don't like the approach either.
-See my comments below.
-
-> Hi Justin,
-> 
-> Sorry for my late response. 
-> First, I need to clarify that this limit is just for user space programs.
-> And please let me try to clarify the requirement in more details on our side:
-> 
-> (1) The change will be used for some IVI product.
-
-That's a choice, not a justification for the patch.
-
-> (2) In IVI, there are hundreds of use space processes running which has network access which has more risk to be compromised.
-> (3) And for the IVI system, the TX rate isn't (or shouldn't be) that high as you mentioned. Only possible trigger of TX is from human: the user of IVI.
-> Please consider #2 and #3, once there are some malicious/buggy program send CAN messages frequently, then it will be harmful to the whole CAN network.
-
-Do you consider your IVI product having this patch as a safe ECU then?
-It's a very rough method, since packets are considered good or bad based
-on the number of recent packets.
-That's like protecting your email server by rate-limiting ethernet packets.
-It doesn't protect against spam, does it? It's just a rate limiter.
-
-> 
-> And by this logic in my patch, I'm trying to just to prevent the abnormal TX rate from user space on IVI product in the worst case:
-> either some bug in the user space programs;
-> or some compromised program by some hackers with certain zero day attack.
-
-It's up to userspace to decide when a tx rate is abnormal.
-
-> 
-> For the ECUs on the CAN bus, I'm not sure why is it not possible to set different config for their case.
-> I mean, e.g. 
-> (a) On the bus, for IVI, I can use it as 5/s,
-> (b) For the cases mentioned by Austin, the config could be 10M for their saturation work.
-> It's just configurable for every nodes on the bus.
-
-I looks like you set up a simple 'firewall' to CAN, with 1 hardcoded
-rule in kernel code.
-
-Kind regards,
-Kurt
+SGkgS3VydCwNCg0KSXQncyBhcHByZWNpYXRlZCB0byBnZXQgeW91ciBzdWdnZXN0aW9ucyBvbiB0
+aGlzLg0KDQpJbiBzaG9ydCwgSSB3b3VsZCBzYXkgdGhhdCB0aGlzIGlzIGEgc2ltcGxlIChvciBh
+cyB5b3Ugc2FpZCByb3VnaCkgcHJvdGVjdGlvbiBpbiB0aGUgbGF5ZXIgb2Yga2VybmVsLg0KSXQg
+aW50ZW50aW9uYWxseSB0byBtYWtlIGl0IGNvbmZpZ3VyYWJsZSBvbmx5IGF0IGJ1aWxkIHRpbWUg
+YW5kIGluIHRoZSBrZXJuZWwgcmF0aGVyIGNvbmZpZ3VyYWJsZSBpbiB0aGUgdXNlciBzcGFjZSBh
+dCBydW4vYnVpbGQgdGltZSBhcyBpdCdzIGp1c3QgZm9yIHRoYXQga2VybmVsIGxheWVyLg0KDQpU
+aGVyZSB3b3VsZCBiZSBtdWx0aSBsYXllcnMgcHJvdGVjdGlvbjogaW4gdGhlIHVzZXIgc3BhY2Us
+IGluIHRoZSBrZXJuZWwgcnVubmluZyBvbiB0aGUgYXBwbGljYXRpb24gcHJvY2Vzc29yLCBpbiB0
+aGUgRUNVIG9yIHNvbWUgSU8gY29udHJvbGxlciwgaW4gc29tZSBoYXJkd2FyZSBzZXR0aW5ncywg
+ZXRjLiBUaGlzIGNvdWxkIGJlIHBhcnQgb2YgdGhlIHdob2xlIHByb3RlY3Rpb24uDQoNCkJlc2lk
+ZXMsIHNvbWUgY29tbWVudHMgaW5saW5lIHdpdGggeW91ciBwcmV2aW91cyBlbWFpbC4NCkFnYWlu
+LCBpdCB3b3VsZCBiZSBhcHByZWNpYXRlZCBpZiBzb21lIG9mIHlvdSBleHBlcnRzIGNhbiBzaGFy
+ZSB3aXRoIHRoZSBkZXRhaWxzIG9mIHVzaW5nIHF1ZXVlaW5nIGRpc2NpcGxpbmUgdG8gYWNoaWV2
+ZSB0aGlzLg0KDQpUaGFua3MhDQoNCg0KWmhvbmdqaWUNCg0KDQotLS0tLU9yaWdpbmFsIE1lc3Nh
+Z2UtLS0tLQ0KRnJvbTogS3VydCBWYW4gRGlqY2sgW21haWx0bzpkZXYua3VydEB2YW5kaWpjay1s
+YXVyaWpzc2VuLmJlXSANClNlbnQ6IEZyaWRheSwgU2VwdGVtYmVyIDAxLCAyMDE3IDM6NTMgUE0N
+ClRvOiBTaGksIFpob25namllIDx6aG9uZ2ppZS5zaGlAaW50ZWwuY29tPg0KQ2M6IEp1c3RpbiBE
+ZWxlZ2FyZCA8anVzdGluQHNhbXNhcmEuY29tPjsgQXVzdGluIFNjaHVoIDxhdXN0aW5AcGVsb3Rv
+bi10ZWNoLmNvbT47IE9saXZlciBIYXJ0a29wcCA8c29ja2V0Y2FuQGhhcnRrb3BwLm5ldD47IE1h
+cmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9uaXguZGU+OyBsaW51eC1jYW4gPGxpbnV4LWNh
+bkB2Z2VyLmtlcm5lbC5vcmc+DQpTdWJqZWN0OiBSZTogW1BBVENIXSBBZGQgVFggbGltaXQgZm9y
+IFNvY2tldENBTi4NCg0KSGV5LA0KDQpJIGRvbid0IGxpa2UgdGhlIGFwcHJvYWNoIGVpdGhlci4N
+ClNlZSBteSBjb21tZW50cyBiZWxvdy4NCg0KPiBIaSBKdXN0aW4sDQo+IA0KPiBTb3JyeSBmb3Ig
+bXkgbGF0ZSByZXNwb25zZS4gDQo+IEZpcnN0LCBJIG5lZWQgdG8gY2xhcmlmeSB0aGF0IHRoaXMg
+bGltaXQgaXMganVzdCBmb3IgdXNlciBzcGFjZSBwcm9ncmFtcy4NCj4gQW5kIHBsZWFzZSBsZXQg
+bWUgdHJ5IHRvIGNsYXJpZnkgdGhlIHJlcXVpcmVtZW50IGluIG1vcmUgZGV0YWlscyBvbiBvdXIg
+c2lkZToNCj4gDQo+ICgxKSBUaGUgY2hhbmdlIHdpbGwgYmUgdXNlZCBmb3Igc29tZSBJVkkgcHJv
+ZHVjdC4NCg0KVGhhdCdzIGEgY2hvaWNlLCBub3QgYSBqdXN0aWZpY2F0aW9uIGZvciB0aGUgcGF0
+Y2guIA0KPj4+IFpob25namllOiBJJ20gc29ycnkgdGhhdCBJIGRpZG4ndCBtZWFuIHRvIG1ha2Ug
+aXQgYXMganVzdGlmaWNhdGlvbi4gSSBwdXQgaXQgaGVyZSBhcyBhIGZhY3QvY29udGV4dCBvZiB0
+aGlzIGNoYW5nZS4NCg0KPiAoMikgSW4gSVZJLCB0aGVyZSBhcmUgaHVuZHJlZHMgb2YgdXNlIHNw
+YWNlIHByb2Nlc3NlcyBydW5uaW5nIHdoaWNoIGhhcyBuZXR3b3JrIGFjY2VzcyB3aGljaCBoYXMg
+bW9yZSByaXNrIHRvIGJlIGNvbXByb21pc2VkLg0KPiAoMykgQW5kIGZvciB0aGUgSVZJIHN5c3Rl
+bSwgdGhlIFRYIHJhdGUgaXNuJ3QgKG9yIHNob3VsZG4ndCBiZSkgdGhhdCBoaWdoIGFzIHlvdSBt
+ZW50aW9uZWQuIE9ubHkgcG9zc2libGUgdHJpZ2dlciBvZiBUWCBpcyBmcm9tIGh1bWFuOiB0aGUg
+dXNlciBvZiBJVkkuDQo+IFBsZWFzZSBjb25zaWRlciAjMiBhbmQgIzMsIG9uY2UgdGhlcmUgYXJl
+IHNvbWUgbWFsaWNpb3VzL2J1Z2d5IHByb2dyYW0gc2VuZCBDQU4gbWVzc2FnZXMgZnJlcXVlbnRs
+eSwgdGhlbiBpdCB3aWxsIGJlIGhhcm1mdWwgdG8gdGhlIHdob2xlIENBTiBuZXR3b3JrLg0KDQpE
+byB5b3UgY29uc2lkZXIgeW91ciBJVkkgcHJvZHVjdCBoYXZpbmcgdGhpcyBwYXRjaCBhcyBhIHNh
+ZmUgRUNVIHRoZW4/DQo+Pj4gWmhvbmdqaWU6IE5vLiBJdCBjYW4gb25seSBwYXJ0IG9mIHRoZSB3
+aG9sZSBwcm90ZWN0aW9uLiBBcyBJIG1lbnRpb25lZCwgd2UgY2FuIGhhdmUgcHJvdGVjdGlvbiBp
+biBtdWx0aXBsZSBsYXllci4NCkl0J3MgYSB2ZXJ5IHJvdWdoIG1ldGhvZCwgc2luY2UgcGFja2V0
+cyBhcmUgY29uc2lkZXJlZCBnb29kIG9yIGJhZCBiYXNlZCBvbiB0aGUgbnVtYmVyIG9mIHJlY2Vu
+dCBwYWNrZXRzLg0KVGhhdCdzIGxpa2UgcHJvdGVjdGluZyB5b3VyIGVtYWlsIHNlcnZlciBieSBy
+YXRlLWxpbWl0aW5nIGV0aGVybmV0IHBhY2tldHMuDQpJdCBkb2Vzbid0IHByb3RlY3QgYWdhaW5z
+dCBzcGFtLCBkb2VzIGl0PyBJdCdzIGp1c3QgYSByYXRlIGxpbWl0ZXIuDQo+Pj4gWmhvbmdqaWU6
+IEkgYWdyZWUgaXQncyByb3VnaC9zaW1wbGUuIFRvIG1ha2UgaXQgdG8gaWRlbnRpZnkgdGhlIEdv
+b2QvQmFkIHRoaW5ncywgdGhlcmUgd2lsbCBiZSBtb3JlIHdvcmsgdG8gYmUgZG9uZS4gSSB0cmll
+ZCBhZGQgc29tZSBtb3JlIGNvbXBsaWNhdGVkIHN0YXRpc3RpY3MgaW4gdGhlIC9wcm9jL25ldC9j
+YW4vc3RhdHMgYW5kIGxhdW5jaCBzb21lIHVzZXIgc3BhY2Ugd2F0Y2hkb2cgdG8gZG8gdGhlIGF1
+ZGl0LiBJIG1heSBzaGFyZSB3aXRoIHRoYXQgc29tZXRpbWUgbGF0ZXIuIEl0J3MgZG9hYmxlIHRo
+YXQgd2F5IGJ1dCBtdWNoIG1vcmUgY29tcGxpY2F0ZWQuIFdpdGggdGhpcyBjaGFuZ2UsIEkganVz
+dCB3YW50IHRvIG1ha2UgaXQgd29yayBhcyBzaW1wbGUgYXMgcG9zc2libGUgd2hpbGUgZnVsZmls
+bCBvdXIgcmVxdWlyZW1lbnQuIFRoZSBsaW1pdCB0byB0aGUgcmF0ZSBqdXN0IHdvcmtzIGluIHRo
+ZSBsYXllciBvZiBrZXJuZWwgdG8gZG8gdGhlIHByb3RlY3Rpb24gYWdhaW5zdCB0aGUgd29yc3Qg
+Y2FzZSBvZiBkZW5pYWwgb2Ygc2VydmljZSBhdHRhY2suDQoNCj4gDQo+IEFuZCBieSB0aGlzIGxv
+Z2ljIGluIG15IHBhdGNoLCBJJ20gdHJ5aW5nIHRvIGp1c3QgdG8gcHJldmVudCB0aGUgYWJub3Jt
+YWwgVFggcmF0ZSBmcm9tIHVzZXIgc3BhY2Ugb24gSVZJIHByb2R1Y3QgaW4gdGhlIHdvcnN0IGNh
+c2U6DQo+IGVpdGhlciBzb21lIGJ1ZyBpbiB0aGUgdXNlciBzcGFjZSBwcm9ncmFtczsgb3Igc29t
+ZSBjb21wcm9taXNlZCANCj4gcHJvZ3JhbSBieSBzb21lIGhhY2tlcnMgd2l0aCBjZXJ0YWluIHpl
+cm8gZGF5IGF0dGFjay4NCg0KSXQncyB1cCB0byB1c2Vyc3BhY2UgdG8gZGVjaWRlIHdoZW4gYSB0
+eCByYXRlIGlzIGFibm9ybWFsLg0KPj4+IFpob25namllOiBBZ2FpbiwgSSB3b3VsZCBzdHJlc3Mg
+dGhhdCB0aGlzIGlzIGFub3RoZXIgbGF5ZXIgb2YgcHJvdGVjdGlvbiBpbiB0aGUga2VybmVsLiBX
+ZSBjYW4gaGF2ZSBkaWZmZXJlbnQgbGF5ZXJzIG9mIHByb3RlY3Rpb24gd2hpY2ggaW5jbHVkZSB0
+aGUgdXNlciBzcGFjZXMgYW5kIHRoZSBrZXJuZWwuDQoNCj4gDQo+IEZvciB0aGUgRUNVcyBvbiB0
+aGUgQ0FOIGJ1cywgSSdtIG5vdCBzdXJlIHdoeSBpcyBpdCBub3QgcG9zc2libGUgdG8gc2V0IGRp
+ZmZlcmVudCBjb25maWcgZm9yIHRoZWlyIGNhc2UuDQo+IEkgbWVhbiwgZS5nLiANCj4gKGEpIE9u
+IHRoZSBidXMsIGZvciBJVkksIEkgY2FuIHVzZSBpdCBhcyA1L3MsDQo+IChiKSBGb3IgdGhlIGNh
+c2VzIG1lbnRpb25lZCBieSBBdXN0aW4sIHRoZSBjb25maWcgY291bGQgYmUgMTBNIGZvciB0aGVp
+ciBzYXR1cmF0aW9uIHdvcmsuDQo+IEl0J3MganVzdCBjb25maWd1cmFibGUgZm9yIGV2ZXJ5IG5v
+ZGVzIG9uIHRoZSBidXMuDQoNCkkgbG9va3MgbGlrZSB5b3Ugc2V0IHVwIGEgc2ltcGxlICdmaXJl
+d2FsbCcgdG8gQ0FOLCB3aXRoIDEgaGFyZGNvZGVkIHJ1bGUgaW4ga2VybmVsIGNvZGUuDQo+Pj4g
+WmhvbmdqaWU6IFllcyA6RC4gSSB3b3VsZCBzYXkgaW1wbGVtZW50ZWQgaW4gYSBmZXcgbGluZSBj
+b2RlIGNoYW5nZXMgd2l0aCAxIGNvbmZpZ3VyYWJsZSBwYXJhbWV0ZXIuDQoNCg0KS2luZCByZWdh
+cmRzLA0KS3VydA0K
