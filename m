@@ -1,57 +1,322 @@
-From: "Shi, Zhongjie" <zhongjie.shi@intel.com>
-Subject: RE: [PATCH] Add TX limit for SocketCAN.
-Date: Sat, 2 Sep 2017 01:45:54 +0000
-Message-ID: <106C4230743D00439F3B474E2F2FC8CD538860B7@SHSMSX101.ccr.corp.intel.com>
-References: <1504232079-2583-1-git-send-email-zhongjie.shi@intel.com>
- <CANGgnMb5-cKT=PjxEF6yYAcUkcP29BRnHU+_xY3ASsT-GQ6qzQ@mail.gmail.com>
- <106C4230743D00439F3B474E2F2FC8CD53885BF7@SHSMSX101.ccr.corp.intel.com>
- <59A966AD.3030002@mothictech.com>
- <44327c45-1d78-84be-c2df-c256ee1e4c29@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 19/25] can/bcm: Replace hrtimer_tasklet with softirq based
+ hrtimer
+Date: Sat, 2 Sep 2017 19:56:36 +0200
+Message-ID: <b3aceee5-2ec4-90fb-bce9-b6ad6f17f458@hartkopp.net>
+References: <20170831105725.809317030@linutronix.de>
+ <20170831105827.099510718@linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mga06.intel.com ([134.134.136.31]:37820 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751023AbdIBBp6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 1 Sep 2017 21:45:58 -0400
-In-Reply-To: <44327c45-1d78-84be-c2df-c256ee1e4c29@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:13952 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752709AbdIBR5X (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 2 Sep 2017 13:57:23 -0400
+In-Reply-To: <20170831105827.099510718@linutronix.de>
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Brandon Martin <martinbv@mothictech.com>, Austin Schuh <austin@peloton-tech.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
+To: Anna-Maria Gleixner <anna-maria@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, keescook@chromium.org, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 
-SGkgT2xpdmVyIGFuZCBNYXJ0aW4sDQoNCk1hbnkgdGhhbmtzIGZvciB5b3VyIGtub3dsZWRnZSBz
-aGFyaW5nIQ0KSSdsbCBsb29rIGludG8gaXQgYXMgeW91ciBzdWdnZXN0aW9ucy4NCg0KV2l0aCBy
-ZWdhcmQgdG8gbXkgcGF0Y2gsIEknbGwgaG9sZCBvbiBhbmQgbWF5IGFiYW5kb24gaXQgbGF0ZXIg
-d2hlbiBJIGxlYXJuZWQgaG93IHRvIHVzZSBxdWV1aW5nIGRpc2NpcGxpbmUgdG8gcmVzb2x2ZSBt
-eSBwcm9ibGVtLg0KDQpUaGFua3MgYWdhaW4hDQoNCg0KWmhvbmdqaWUNCg0KLS0tLS1PcmlnaW5h
-bCBNZXNzYWdlLS0tLS0NCkZyb206IE9saXZlciBIYXJ0a29wcCBbbWFpbHRvOnNvY2tldGNhbkBo
-YXJ0a29wcC5uZXRdIA0KU2VudDogRnJpZGF5LCBTZXB0ZW1iZXIgMDEsIDIwMTcgMTE6MzkgUE0N
-ClRvOiBCcmFuZG9uIE1hcnRpbiA8bWFydGluYnZAbW90aGljdGVjaC5jb20+OyBTaGksIFpob25n
-amllIDx6aG9uZ2ppZS5zaGlAaW50ZWwuY29tPjsgQXVzdGluIFNjaHVoIDxhdXN0aW5AcGVsb3Rv
-bi10ZWNoLmNvbT4NCkNjOiBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPjsg
-bGludXgtY2FuIDxsaW51eC1jYW5Admdlci5rZXJuZWwub3JnPg0KU3ViamVjdDogUmU6IFtQQVRD
-SF0gQWRkIFRYIGxpbWl0IGZvciBTb2NrZXRDQU4uDQoNCkhpIGFsbCwNCg0KT24gMDkvMDEvMjAx
-NyAwMzo1NCBQTSwgQnJhbmRvbiBNYXJ0aW4gd3JvdGU6DQo+IE9uIDA4LzMxLzIwMTcgMTE6MjIg
-UE0sIFNoaSwgWmhvbmdqaWUgd3JvdGU6DQo+PiBJdCB3aWxsIGJlIGFsc28gYXBwcmVjaWF0ZWQg
-aWYgeW91IG9yIE9saXZlciBjYW4gc2hhcmUgd2l0aCBtZSB0aGUgDQo+PiBkZXRhaWxzIG9mIGhv
-dyB0byAidXNlIHF1ZXVpbmcgZGlzY2lwbGluZSIgdG8gYWNoaWV2ZSB0aGlzLg0KPiANCj4gUHJl
-c3VtYWJseSBpdCB3b3JrcyAob3IgaXMgc3VwcG9zZWQgdG8gd29yaykganVzdCBsaWtlIGFueSBv
-dGhlciANCj4gc29ja2V0L3BhY2tldCBpbnRlcmZhY2UuICBUaGUgInRjIiB1c2Vyc3BhY2UgY29t
-bWFuZCAoZnJpZW5kIG9mDQo+IGlwcm91dGUyKSB3b3VsZCBjb25maWd1cmUgaXQuICBXaGV0aGVy
-IHRoaXMgaXMgYWN0dWFsbHkgZnVuY3Rpb25hbCBhdCANCj4gdGhpcyB0aW1lIGlzIG5vdCBzb21l
-dGhpbmcgSSBjYW4gc3BlYWsgdG8uDQoNClllcywgaW4gZmFjdCB1c2luZyBxdWV1aW5nIGRpc2Np
-cGxpbmVzIGlzIHRoZSByaWdodCB3YXkgdG8gZG8uDQoNCllvdSB3YW50ZWQgdG8gY3JlYXRlIHNv
-bWUgJ2tpbmQgb2YnIGZpcmV3YWxsIHZpYSBiYW5kd2lkdGggbGltaXRhdGlvbiB3aGljaCBjb3Vs
-ZCBiZSBjcmVhdGVkIHdpdGggJ3RjJy4NCg0KVGhlIHBhcGVyIGFib3V0IHVzaW5nIENBTiB3aXRo
-IHF1ZXVpbmcgZGlzY2lwbGluZXMgY2FuIGJlIGZvdW5kIGhlcmU6DQpodHRwOi8vcnRpbWUuZmVs
-ay5jdnV0LmN6L2Nhbi8NCg0KaHR0cDovL3J0aW1lLmZlbGsuY3Z1dC5jei9jYW4vc29ja2V0Y2Fu
-LXFkaXNjLWZpbmFsLnBkZg0KDQpFc3BlY2lhbGx5IG9uIHRoaXMgbGV2ZWwgaXQgd291bGQgd29y
-ayB3aXRoIFBGX1BBQ0tFVCBzb2NrZXRzIHRvby4NCkxpbWl0aW5nIENBTiB0cmFmZmljIGluIHRo
-ZSBDQU4gbmV0d29yayBsYXllciBpbiBsaW51eC9uZXQvY2FuIGRvZXMgbm90IGxpbWl0IHRoZSBh
-Y2Nlc3MgdG8gQ0FOIG5ldHdvcmsgZGV2aWNlcyBlLmcuIHZpYSBwYWNrZXQgc29ja2V0cyBvciBp
-bi1rZXJuZWwgdHJhZmZpYyBnZW5lcmF0b3JzIChJIHRoaW5rIHRoZXJlIGlzIGEgdHJhZmZpYyBn
-ZW5lcmF0b3IgLSBidXQgSSBkaWRuJ3QgY2hlY2sgaWYgaXQga25vd3MgYWJvdXQgQ0FOIGludGVy
-ZmFjZXMpLg0KDQpSZWdhcmRzLA0KT2xpdmVyDQo=
+On 08/31/2017 02:23 PM, Anna-Maria Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> Switch the timer to CLOCK_MONOTONIC_SOFT, which executed the timer
+> callback in softirq context and remove the hrtimer_tasklet.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Anna-Maria Gleixner <anna-maria@linutronix.de>
+> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+
+Thanks,
+Oliver
+
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: linux-can@vger.kernel.org
+> ---
+>   net/can/bcm.c |  150 ++++++++++++++++++----------------------------------------
+>   1 file changed, 49 insertions(+), 101 deletions(-)
+> 
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+> @@ -102,7 +102,6 @@ struct bcm_op {
+>   	unsigned long frames_abs, frames_filtered;
+>   	struct bcm_timeval ival1, ival2;
+>   	struct hrtimer timer, thrtimer;
+> -	struct tasklet_struct tsklet, thrtsklet;
+>   	ktime_t rx_stamp, kt_ival1, kt_ival2, kt_lastmsg;
+>   	int rx_ifindex;
+>   	int cfsiz;
+> @@ -364,25 +363,34 @@ static void bcm_send_to_user(struct bcm_
+>   	}
+>   }
+>   
+> -static void bcm_tx_start_timer(struct bcm_op *op)
+> +static bool bcm_tx_set_expiry(struct bcm_op *op, struct hrtimer *hrt)
+>   {
+> +	ktime_t ival;
+> +
+>   	if (op->kt_ival1 && op->count)
+> -		hrtimer_start(&op->timer,
+> -			      ktime_add(ktime_get(), op->kt_ival1),
+> -			      HRTIMER_MODE_ABS);
+> +		ival = op->kt_ival1;
+>   	else if (op->kt_ival2)
+> -		hrtimer_start(&op->timer,
+> -			      ktime_add(ktime_get(), op->kt_ival2),
+> -			      HRTIMER_MODE_ABS);
+> +		ival = op->kt_ival2;
+> +	else
+> +		return false;
+> +
+> +	hrtimer_set_expires(hrt, ktime_add(ktime_get(), ival));
+> +	return true;
+>   }
+>   
+> -static void bcm_tx_timeout_tsklet(unsigned long data)
+> +static void bcm_tx_start_timer(struct bcm_op *op)
+>   {
+> -	struct bcm_op *op = (struct bcm_op *)data;
+> +	if (bcm_tx_set_expiry(op, &op->timer))
+> +		hrtimer_start_expires(&op->timer, HRTIMER_MODE_ABS);
+> +}
+> +
+> +/* bcm_tx_timeout_handler - performs cyclic CAN frame transmissions */
+> +static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
+> +{
+> +	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+>   	struct bcm_msg_head msg_head;
+>   
+>   	if (op->kt_ival1 && (op->count > 0)) {
+> -
+>   		op->count--;
+>   		if (!op->count && (op->flags & TX_COUNTEVT)) {
+>   
+> @@ -399,22 +407,12 @@ static void bcm_tx_timeout_tsklet(unsign
+>   		}
+>   		bcm_can_tx(op);
+>   
+> -	} else if (op->kt_ival2)
+> +	} else if (op->kt_ival2) {
+>   		bcm_can_tx(op);
+> +	}
+>   
+> -	bcm_tx_start_timer(op);
+> -}
+> -
+> -/*
+> - * bcm_tx_timeout_handler - performs cyclic CAN frame transmissions
+> - */
+> -static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
+> -{
+> -	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+> -
+> -	tasklet_schedule(&op->tsklet);
+> -
+> -	return HRTIMER_NORESTART;
+> +	return bcm_tx_set_expiry(op, &op->timer) ?
+> +		HRTIMER_RESTART : HRTIMER_NORESTART;
+>   }
+>   
+>   /*
+> @@ -542,11 +540,18 @@ static void bcm_rx_starttimer(struct bcm
+>   		hrtimer_start(&op->timer, op->kt_ival1, HRTIMER_MODE_REL);
+>   }
+>   
+> -static void bcm_rx_timeout_tsklet(unsigned long data)
+> +/* bcm_rx_timeout_handler - when the (cyclic) CAN frame reception timed out */
+> +static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
+>   {
+> -	struct bcm_op *op = (struct bcm_op *)data;
+> +	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+>   	struct bcm_msg_head msg_head;
+>   
+> +	/* if user wants to be informed, when cyclic CAN-Messages come back */
+> +	if ((op->flags & RX_ANNOUNCE_RESUME) && op->last_frames) {
+> +		/* clear received CAN frames to indicate 'nothing received' */
+> +		memset(op->last_frames, 0, op->nframes * op->cfsiz);
+> +	}
+> +
+>   	/* create notification to user */
+>   	msg_head.opcode  = RX_TIMEOUT;
+>   	msg_head.flags   = op->flags;
+> @@ -557,25 +562,6 @@ static void bcm_rx_timeout_tsklet(unsign
+>   	msg_head.nframes = 0;
+>   
+>   	bcm_send_to_user(op, &msg_head, NULL, 0);
+> -}
+> -
+> -/*
+> - * bcm_rx_timeout_handler - when the (cyclic) CAN frame reception timed out
+> - */
+> -static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
+> -{
+> -	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+> -
+> -	/* schedule before NET_RX_SOFTIRQ */
+> -	tasklet_hi_schedule(&op->tsklet);
+> -
+> -	/* no restart of the timer is done here! */
+> -
+> -	/* if user wants to be informed, when cyclic CAN-Messages come back */
+> -	if ((op->flags & RX_ANNOUNCE_RESUME) && op->last_frames) {
+> -		/* clear received CAN frames to indicate 'nothing received' */
+> -		memset(op->last_frames, 0, op->nframes * op->cfsiz);
+> -	}
+>   
+>   	return HRTIMER_NORESTART;
+>   }
+> @@ -583,14 +569,12 @@ static enum hrtimer_restart bcm_rx_timeo
+>   /*
+>    * bcm_rx_do_flush - helper for bcm_rx_thr_flush
+>    */
+> -static inline int bcm_rx_do_flush(struct bcm_op *op, int update,
+> -				  unsigned int index)
+> +static inline int bcm_rx_do_flush(struct bcm_op *op, unsigned int index)
+>   {
+>   	struct canfd_frame *lcf = op->last_frames + op->cfsiz * index;
+>   
+>   	if ((op->last_frames) && (lcf->flags & RX_THR)) {
+> -		if (update)
+> -			bcm_rx_changed(op, lcf);
+> +		bcm_rx_changed(op, lcf);
+>   		return 1;
+>   	}
+>   	return 0;
+> @@ -598,11 +582,8 @@ static inline int bcm_rx_do_flush(struct
+>   
+>   /*
+>    * bcm_rx_thr_flush - Check for throttled data and send it to the userspace
+> - *
+> - * update == 0 : just check if throttled data is available  (any irq context)
+> - * update == 1 : check and send throttled data to userspace (soft_irq context)
+>    */
+> -static int bcm_rx_thr_flush(struct bcm_op *op, int update)
+> +static int bcm_rx_thr_flush(struct bcm_op *op)
+>   {
+>   	int updated = 0;
+>   
+> @@ -611,24 +592,16 @@ static int bcm_rx_thr_flush(struct bcm_o
+>   
+>   		/* for MUX filter we start at index 1 */
+>   		for (i = 1; i < op->nframes; i++)
+> -			updated += bcm_rx_do_flush(op, update, i);
+> +			updated += bcm_rx_do_flush(op, i);
+>   
+>   	} else {
+>   		/* for RX_FILTER_ID and simple filter */
+> -		updated += bcm_rx_do_flush(op, update, 0);
+> +		updated += bcm_rx_do_flush(op, 0);
+>   	}
+>   
+>   	return updated;
+>   }
+>   
+> -static void bcm_rx_thr_tsklet(unsigned long data)
+> -{
+> -	struct bcm_op *op = (struct bcm_op *)data;
+> -
+> -	/* push the changed data to the userspace */
+> -	bcm_rx_thr_flush(op, 1);
+> -}
+> -
+>   /*
+>    * bcm_rx_thr_handler - the time for blocked content updates is over now:
+>    *                      Check for throttled data and send it to the userspace
+> @@ -637,9 +610,7 @@ static enum hrtimer_restart bcm_rx_thr_h
+>   {
+>   	struct bcm_op *op = container_of(hrtimer, struct bcm_op, thrtimer);
+>   
+> -	tasklet_schedule(&op->thrtsklet);
+> -
+> -	if (bcm_rx_thr_flush(op, 0)) {
+> +	if (bcm_rx_thr_flush(op)) {
+>   		hrtimer_forward(hrtimer, ktime_get(), op->kt_ival2);
+>   		return HRTIMER_RESTART;
+>   	} else {
+> @@ -735,23 +706,8 @@ static struct bcm_op *bcm_find_op(struct
+>   
+>   static void bcm_remove_op(struct bcm_op *op)
+>   {
+> -	if (op->tsklet.func) {
+> -		while (test_bit(TASKLET_STATE_SCHED, &op->tsklet.state) ||
+> -		       test_bit(TASKLET_STATE_RUN, &op->tsklet.state) ||
+> -		       hrtimer_active(&op->timer)) {
+> -			hrtimer_cancel(&op->timer);
+> -			tasklet_kill(&op->tsklet);
+> -		}
+> -	}
+> -
+> -	if (op->thrtsklet.func) {
+> -		while (test_bit(TASKLET_STATE_SCHED, &op->thrtsklet.state) ||
+> -		       test_bit(TASKLET_STATE_RUN, &op->thrtsklet.state) ||
+> -		       hrtimer_active(&op->thrtimer)) {
+> -			hrtimer_cancel(&op->thrtimer);
+> -			tasklet_kill(&op->thrtsklet);
+> -		}
+> -	}
+> +	hrtimer_cancel(&op->timer);
+> +	hrtimer_cancel(&op->thrtimer);
+>   
+>   	if ((op->frames) && (op->frames != &op->sframe))
+>   		kfree(op->frames);
+> @@ -979,15 +935,13 @@ static int bcm_tx_setup(struct bcm_msg_h
+>   		op->ifindex = ifindex;
+>   
+>   		/* initialize uninitialized (kzalloc) structure */
+> -		hrtimer_init(&op->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +		hrtimer_init(&op->timer, CLOCK_MONOTONIC_SOFT,
+> +			     HRTIMER_MODE_REL);
+>   		op->timer.function = bcm_tx_timeout_handler;
+>   
+> -		/* initialize tasklet for tx countevent notification */
+> -		tasklet_init(&op->tsklet, bcm_tx_timeout_tsklet,
+> -			     (unsigned long) op);
+> -
+>   		/* currently unused in tx_ops */
+> -		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC_SOFT,
+> +			     HRTIMER_MODE_REL);
+>   
+>   		/* add this bcm_op to the list of the tx_ops */
+>   		list_add(&op->list, &bo->tx_ops);
+> @@ -1150,20 +1104,14 @@ static int bcm_rx_setup(struct bcm_msg_h
+>   		op->rx_ifindex = ifindex;
+>   
+>   		/* initialize uninitialized (kzalloc) structure */
+> -		hrtimer_init(&op->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +		hrtimer_init(&op->timer, CLOCK_MONOTONIC_SOFT,
+> +			     HRTIMER_MODE_REL);
+>   		op->timer.function = bcm_rx_timeout_handler;
+>   
+> -		/* initialize tasklet for rx timeout notification */
+> -		tasklet_init(&op->tsklet, bcm_rx_timeout_tsklet,
+> -			     (unsigned long) op);
+> -
+> -		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +		hrtimer_init(&op->thrtimer, CLOCK_MONOTONIC_SOFT,
+> +			     HRTIMER_MODE_REL);
+>   		op->thrtimer.function = bcm_rx_thr_handler;
+>   
+> -		/* initialize tasklet for rx throttle handling */
+> -		tasklet_init(&op->thrtsklet, bcm_rx_thr_tsklet,
+> -			     (unsigned long) op);
+> -
+>   		/* add this bcm_op to the list of the rx_ops */
+>   		list_add(&op->list, &bo->rx_ops);
+>   
+> @@ -1209,7 +1157,7 @@ static int bcm_rx_setup(struct bcm_msg_h
+>   			 */
+>   			op->kt_lastmsg = 0;
+>   			hrtimer_cancel(&op->thrtimer);
+> -			bcm_rx_thr_flush(op, 1);
+> +			bcm_rx_thr_flush(op);
+>   		}
+>   
+>   		if ((op->flags & STARTTIMER) && op->kt_ival1)
+> 
+> 
