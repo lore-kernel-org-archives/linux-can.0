@@ -1,83 +1,145 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 1/2] can: bcm: increase tx cycle time precision
-Date: Sat, 2 Sep 2017 20:02:07 +0200
-Message-ID: <6e00d84b-967b-cf0a-f988-35b109265b89@hartkopp.net>
-References: <20170824115903.3661-1-socketcan@hartkopp.net>
+From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Subject: RE: [PATCH 3/6] can: flexcan: add error passive state quirk
+Date: Mon, 4 Sep 2017 10:00:08 +0000
+Message-ID: <a61de24480c0400ca438d4bcc974f7a7@SGPMBX1017.APAC.bosch.com>
+References: <3cbb306756434138b1c80fd76ecace8d@SGPMBX1017.APAC.bosch.com>
+ <f43242ea-ca7e-8d56-880f-cd629759d185@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:19786 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752723AbdIBSCJ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 2 Sep 2017 14:02:09 -0400
-In-Reply-To: <20170824115903.3661-1-socketcan@hartkopp.net>
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:46769 "EHLO
+        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753422AbdIDKA3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 4 Sep 2017 06:00:29 -0400
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-Hi Marc,
-
-as this patch set is not urgent, I'll send an update after the hrtimer 
-rework from Anna-Maria & tglx has hit the mainline kernel.
-
-Best regards,
-Oliver
-
-On 08/24/2017 01:59 PM, Oliver Hartkopp wrote:
-> When creating cyclic TX jobs with the broadcast manager the timer is re-armed
-> based on the current time. Due to the execution time of the timer handling and
-> the CAN frame transmission the fixed cycle time gets expanded over time.
-> 
-> Calculate the new expiration time based on the former expiration time to
-> remove this unpredictable delay and omit unnecessary ktime_get() calls.
-> 
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->   net/can/bcm.c | 19 ++++++++++++-------
->   1 file changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index 47a8748d953a..f1a8d9a5b1cb 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-> @@ -103,7 +103,7 @@ struct bcm_op {
->   	struct bcm_timeval ival1, ival2;
->   	struct hrtimer timer, thrtimer;
->   	struct tasklet_struct tsklet, thrtsklet;
-> -	ktime_t rx_stamp, kt_ival1, kt_ival2, kt_lastmsg;
-> +	ktime_t rx_stamp, kt_ival1, kt_ival2, kt_expire, kt_lastmsg;
->   	int rx_ifindex;
->   	int cfsiz;
->   	u32 count;
-> @@ -364,16 +364,21 @@ static void bcm_send_to_user(struct bcm_op *op, struct bcm_msg_head *head,
->   	}
->   }
->   
-> +static void bcm_tx_start_the_timer(struct bcm_op *op, ktime_t ival)
-> +{
-> +	if (!op->kt_expire)
-> +		op->kt_expire = ktime_get();
-> +
-> +	op->kt_expire = ktime_add(op->kt_expire, ival);
-> +	hrtimer_start(&op->timer, op->kt_expire, HRTIMER_MODE_ABS);
-> +}
-> +
->   static void bcm_tx_start_timer(struct bcm_op *op)
->   {
->   	if (op->kt_ival1 && op->count)
-> -		hrtimer_start(&op->timer,
-> -			      ktime_add(ktime_get(), op->kt_ival1),
-> -			      HRTIMER_MODE_ABS);
-> +		bcm_tx_start_the_timer(op, op->kt_ival1);
->   	else if (op->kt_ival2)
-> -		hrtimer_start(&op->timer,
-> -			      ktime_add(ktime_get(), op->kt_ival2),
-> -			      HRTIMER_MODE_ABS);
-> +		bcm_tx_start_the_timer(op, op->kt_ival2);
->   }
->   
->   static void bcm_tx_timeout_tsklet(unsigned long data)
-> 
+SGVsbG8gV29sZmdhbmcsDQoNCj4gPiBGcm9tOiBXb2xmZ2FuZyBHcmFuZGVnZ2VyIFttYWlsdG86
+d2dAZ3JhbmRlZ2dlci5jb21dDQo+ID4gU2VudDogVGh1cnNkYXksIEF1Z3VzdCAzMSwgMjAxNyA3
+OjQ0IFBNDQo+ID4NCj4gPiBbLi4uXQ0KPiA+DQo+ID4gRG8gd2Ugd2FudCB0byBlbmFibGUgdGhl
+IGVycm9yIGludGVycnVwdCBmcm9tIHRoZSBiZWdpbm5pbmc/IFdlIGNhbg0KPiA+IHdhaXQgZm9y
+IHRoZSBlcnJvciB3YXJuaW5nIGludGVycnVwdCE/DQo+IFRoYXQncyBhbm90aGVyIGdvb2QgY2F0
+Y2gsIGlmIG9ubHkgRkxFWENBTl9RVUlSS19CUk9LRU5fUEVSUl9TVEFURQ0KPiBiZWVuIHNldCwg
+dGhlbiBpdCBkb24ndCBuZWVkIHRvIGVuYWJsZSB0aGUgZXJyb3IgaW50ZXJydXB0IGZyb20gdGhl
+DQo+IGJlZ2lubmluZy4gVGhpcyBjYW4gc2F2ZSB1cyBhdCBtb3N0IDExIHRpbWVzIGVycm9yIGlu
+dGVycnVwdHMgb24NCj4gdGhlc2UgY29yZXMgd2hlbiB0aGVyZSBhcmUgYnVzIHByb2JsZW1zLg0K
+PiANCj4gSWYgRkxFWENBTl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURSBpcyBzZXQsIHRoZW4gdGhl
+IGVycm9yIGludGVycnVwdA0KPiBpcyBzdGlsbCBlbmFibGVkIGZyb20gdGhlIGJlZ2lubmluZyAo
+Zm9yIHRoZSBvbGQgY29yZSB3aGljaCBkbyBub3QNCj4gaGF2ZSBbVFJdV1JOX0lOVCBjb25uZWN0
+ZWQpLg0KPiANCj4gSG93ZXZlciwgdGhpcyBtYXkgY29tcGxpY2F0ZXMgdGhlIGhhbmRsaW5nIGlu
+c2lkZSBmbGV4Y2FuX2lycSgpLg0KPiANCj4gSW4gc3VubnkgZGF5IHNjZW5hcmlvLCBbLi4uXQ0K
+PiANCj4gSW4gcmFpbnkgZGF5IHNjZW5hcmlvLCB0aGF0IGlzIGR1ZSB0byBzb21lIHVuYmVsaWV2
+YWJsZSByZWFzb24sDQo+IGZsZXhjYW5faXJxX3N0YXRlKCkgbWF5YmUgY2FsbGVkIGp1bXBzIHNv
+bWUgc3RhdGUgdHJhbnNpdGlvbnMsDQo+IGhlbmNlIHdlIGFkZGVkOg0KPiAxLiBleHBsaWNpdGx5
+IGRpc2FibGUgZXJyb3IgaW50ZXJydXB0IGluIGJ1cyBvZmYsIHRvIHByZXZlbnQNCj4gICAgc3Vy
+cHJpc2Ugb2Ygc3RpbGwgZ2V0IGVycm9yIGludGVycnVwdHMgd2hlbiB0aGUgZXJyb3Igc3RhdGUN
+Cj4gICAganVtcCBmcm9tIGFjdGl2ZS93YXJuaW5nIHRvIGJ1cyBvZmYgKGFsdGhvdWdoIGluIHRo
+ZW9yeSwgYnVzDQo+ICAgIG9mZiBzaG91bGQgbm90IGdlbmVyYXRlIGFueSBpbnRlcnJ1cHRzLCBl
+dmVuIHRoZSBpbnRlcnJ1cHQNCj4gICAgYXJlIGVuYWJsZWQpLg0KPiAyLiBleHBsaWNpdGx5IGVu
+YWJsZSBlcnJvciBpbnRlcnJ1cHQgaW4gZXJyb3IgYWN0aXZlLCB0byBwcmV2ZW50DQo+ICAgIHRo
+ZSBlcnJvciBzdGF0ZSBqdW1wIGZyb20gZXJyb3IgcGFzc2l2ZSB0byBlcnJvciBhY3RpdmUgd2hp
+Y2gNCj4gICAgbGVhdmVzIGVycm9yIGludGVycnVwdCBzdGlsbCBkaXNhYmxlZCwgdGhlbiBvbiB0
+aGUgb2xkIGNvcmUsDQo+ICAgIGl0IGNhbm5vdCByZXBvcnQgY29ycmVjdCBzdGF0ZSB0cmFuc2l0
+aW9ucyBhZ2FpbiAoaW4gdGhlb3J5LA0KPiAgICB0aGlzIHNob3VsZCBub3QgaGFwcGVuIHRvbyku
+DQo+IA0KPiBJZiB3ZSB0YWtlIHRoZXNlIGRlZmVuc2l2ZSB0aGlua2luZyBpbnRvIGFjY291bnQs
+IHRoZW4gaXQgd2lsbA0KPiByZXN1bHRzIGEgY29tcGxpY2F0ZWQgbG9naWMgaGVyZSAtIHdlIG5l
+ZWQgdG8gZGlmZmVyZW50aWF0ZSB0aGUNCj4gb2xkIGFuZCBuZXcgY29yZSwgYW5kIGhhbmRsZSB0
+aGVtIHNlcGFyYXRlbHkuDQo+IA0KPiBNYXliZSB3ZSdyZSBhIGJpdCBwYXJhbm9pYyBoZXJlLCBi
+dXQgd2UgdGhpbmsgdGhlIGRlY2lzaW9uIHNob3VsZA0KPiBiZSBjb25zaWRlcmVkIGFtb25nIHBl
+cmZvcm1hbmNlLCByZWxpYWJpbGl0eSBhbmQgbWFpbnRhaW5hYmlsaXR5Lg0KPiANCj4gSGVyZSB3
+ZSB0aGluayB0aGUgcGVyZm9ybWFuY2UgZ2FpbiBpcyBsaW1pdGVkLCBiZWNhdXNlIGluIHdvcnN0
+IGNhc2UsDQo+IHdlIGdldCAxMSB0aW1lcyB1c2VsZXNzIGludGVycnVwdCBvbiB0aGUgbmV3IGNv
+cmUgd2hlbiBldmVyeSB0aW1lIHRoZQ0KPiBidXMgaGFzIHByb2JsZW0sIGFuZCB0aGlzIGlzIHRo
+ZSBiZXN0IGdhaW4gd2UgY2FuIGhhdmUuIEJ1dCBvbiB0aGUNCj4gb3RoZXIgaGFuZCwgaWYgd2Ug
+c2FjcmlmaWNlIHRoaXMgZ2Fpbiwgd2UgY2FuIGdldCBiZXR0ZXIgcmVsaWFiaWxpdHkNCj4gKHBl
+cmhhcHMpIGFuZCBtYWludGFpbmFiaWxpdHkgKHNhbWUgY29kZSBmb3IgbmV3IGFuZCBvbGQgY29y
+ZSkuDQo+IA0KPiBXaGF0IGRvIHlvdSB0aGluaz8NCkFmdGVyIHNvbWUgZGVlcCB0aGlua2luZywg
+d2UgcmVhbGl6ZWQgdGhhdCBhY3R1YWxseSB3ZSBjYW4gYWNoaWV2ZQ0KYWxsIGluc3RlYWQgb2Yg
+c2FjcmlmaWNlIGFueSBvbmUgb2YgYWZvcmVtZW50aW9uZWQgdGhyZWUgcG9pbnRzLg0KDQpUaGUg
+cHNldWRvIGNvZGUgbG9va3MgbGlrZSBiZWxvdzoNCmBgYA0KaWYgKHN0YXRlX2NoYW5nZWQgJiYN
+CiAgICAocHJpdi0+ZGV2dHlwZV9kYXRhLT5xdWlya3MgJiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9Q
+RVJSX1NUQVRFKSAmJg0KICAgIShwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVfQkVS
+Ul9SRVBPUlRJTkcpKSB7DQoJc3dpdGNoIChwcml2LT5jYW4uc3RhdGUpIHsNCgljYXNlIENBTl9T
+VEFURV9FUlJPUl9QQVNTSVZFOg0KCWNhc2UgQ0FOX1NUQVRFX0JVU19PRkY6DQoJCS8vIGRpc2Fi
+bGUgZXJyb3IgaW50ZXJydXB0DQoJCWJyZWFrOw0KDQoJY2FzZSBDQU5fU1RBVEVfRVJST1JfV0FS
+TklORzoNCgkJLy8gZW5hYmxlIGVycm9yIGludGVycnVwdA0KCQlicmVhazsNCg0KCWNhc2UgQ0FO
+X1NUQVRFX0VSUk9SX0FDVElWRToNCgkJaWYgKCEocHJpdi0+ZGV2dHlwZV9kYXRhLT5xdWlya3Mg
+JiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9XRVJSX1NUQVRFKSkNCgkJCS8vIGRpc2FibGUgZXJyb3Ig
+aW50ZXJydXB0DQoJCWVsc2UNCgkJCS8vIGVuYWJsZSBlcnJvciBpbnRlcnJ1cHQNCgkJYnJlYWs7
+DQoNCglkZWZhdWx0Og0KCQlicmVhazsNCgl9DQp9DQpgYGANCg0KSW4gdGhpcyB3YXksIHdlIGNh
+biBhY2hpZXZlIHRoZSBvcHRpbWl6YXRpb24gZm9yIHRoZSBuZXcgY29yZSwgYW5kIGFsc28NCnRh
+a2UgY2FyZSBvZiB0aGUgcGFyYW5vaWMgY2FzZXMsIGFuZCB0aGUgcmVhZGFiaWxpdHkgSU1ITyBs
+b29rcyBub3QgYmFkLiA6KQ0KDQpCZWxvdyBhcmUgdGhlIHRlc3QgcmVzdWx0cyAoYmFzZWQgb24g
+djQuMTEgd2l0aCB0aGUgcHJvcG9zZWQgcGF0Y2hlcykuDQoNClRlc3QgY2FzZToNCjEuIERpc2Nv
+bm5lY3QgdGhlIGNhYmxlDQoyLiAiaXAgbGluayBzZXQgeHh4IHR5cGUgY2FuIGJpdHJhdGUgNTAw
+MDAwIiBhbmQgImlwIGxpbmsgc2V0IHh4eCB1cCINCjMuICJjYW5zZW5kIHh4eCAxMjMjZmZmZmZm
+ZmZmZmZmZmZmZiINCg0KRW5hYmxlZCBbVFJdV1JOX0lOVCBhbmQgRkxFWENBTl9RVUlSS19CUk9L
+RU5fUEVSUl9TVEFURSBvbiBpLk1YNjoNCiMgZG1lc2cgfCBncmVwIGZsZXhjYW4NClsgICAgMS41
+NjEwMTNdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuOiAyMDkwMDAwLmZsZXhjYW4gc3VwcGx5IHhj
+ZWl2ZXIgbm90IGZvdW5kLCB1c2luZyBkdW1teSByZWd1bGF0b3INClsgICAgMS41NzAzOTNdIGZs
+ZXhjYW4gMjA5MDAwMC5mbGV4Y2FuOiBjYW5fcnhfb2ZmbG9hZF9pbml0X3F1ZXVlOiBza2JfcXVl
+dWVfbGVuX21heD01MTINClsgICAgMS41NzA5NzldIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuOiBk
+ZXZpY2UgcmVnaXN0ZXJlZCAocmVnX2Jhc2U9ZTBhNzgwMDAsIGlycT0zNCkNClsgICAgNi4wODUy
+ODddIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlbmFtZWQgZnJvbSBjYW4wDQpbICAg
+MzkuMTE4NzUxXSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiB3cml0aW5nIGN0cmw9MHgw
+MTNhMjAwNw0KWyAgIDM5LjExODc3OV0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogZmxl
+eGNhbl9zZXRfYml0dGltaW5nOiBtY3I9MHg1OTgwMDAwZiBjdHJsPTB4MDEzYTIwMDcNClsgICAz
+OS4xMTg3OTddIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IGZsZXhjYW5fY2hpcF9zdGFy
+dDogd3JpdGluZyBtY3I9MHg1OWEzMDIzZg0KWyAgIDM5LjExODgxM10gZmxleGNhbiAyMDkwMDAw
+LmZsZXhjYW4gbW9iMDogZmxleGNhbl9jaGlwX3N0YXJ0OiB3cml0aW5nIGN0cmw9MHgwMTNhMjA1
+Nw0KWyAgIDM5LjExODkxMF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogZmxleGNhbl9j
+aGlwX3N0YXJ0OiByZWFkaW5nIG1jcj0weDQwYTMwMjNmIGN0cmw9MHgwMTNhYWM1Nw0KWyAgIDUz
+Ljg3MzU5M10gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0weDAgcmVn
+X2Vzcj0weDYyMjQyDQpbICAgNTMuODczNjI0XSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2Iw
+OiBOZXcgZXJyb3Igc3RhdGU6IDENClsgICA1My44NzM4MzNdIGZsZXhjYW4gMjA5MDAwMC5mbGV4
+Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjI0Mg0KWyAgIDUzLjg3NDA4OV0g
+ZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0weDAgcmVnX2Vzcj0weDQy
+MjQyDQpbICAgNTMuODc0MzQ4XSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiByZWdfaWZs
+YWcxPTB4MCByZWdfZXNyPTB4NDIyNDINClsgICA1My44NzQ2MDhdIGZsZXhjYW4gMjA5MDAwMC5m
+bGV4Y2FuIG1vYjA6IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjI1Mg0KWyAgIDUzLjg3NDYy
+N10gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogTmV3IGVycm9yIHN0YXRlOiAyDQoNCkRp
+c2FibGVkIFtUUl1XUk5fSU5UIGFuZCBlbmFibGVkIEZMRVhDQU5fUVVJUktfQlJPS0VOX1BFUlJf
+U1RBVEUgKw0KRkxFWENBTl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURSBvbiBpLk1YNjoNCiMgZG1l
+c2cgfCBncmVwIGZsZXhjYW4NClsgICAgMS41NjEwNzFdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2Fu
+OiAyMDkwMDAwLmZsZXhjYW4gc3VwcGx5IHhjZWl2ZXIgbm90IGZvdW5kLCB1c2luZyBkdW1teSBy
+ZWd1bGF0b3INClsgICAgMS41NzA0NTJdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuOiBjYW5fcnhf
+b2ZmbG9hZF9pbml0X3F1ZXVlOiBza2JfcXVldWVfbGVuX21heD01MTINClsgICAgMS41NzEwMzdd
+IGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuOiBkZXZpY2UgcmVnaXN0ZXJlZCAocmVnX2Jhc2U9ZTBh
+NzgwMDAsIGlycT0zNCkNClsgICAgNi4xMjY5NDldIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1v
+YjA6IHJlbmFtZWQgZnJvbSBjYW4wDQpbICAgODEuOTI0MTk0XSBmbGV4Y2FuIDIwOTAwMDAuZmxl
+eGNhbiBtb2IwOiB3cml0aW5nIGN0cmw9MHgwMTNhMjAwNw0KWyAgIDgxLjkyNDIyNV0gZmxleGNh
+biAyMDkwMDAwLmZsZXhjYW4gbW9iMDogZmxleGNhbl9zZXRfYml0dGltaW5nOiBtY3I9MHg1OTgw
+MDAwZiBjdHJsPTB4MDEzYTIwMDcNClsgICA4MS45MjQyNDNdIGZsZXhjYW4gMjA5MDAwMC5mbGV4
+Y2FuIG1vYjA6IGZsZXhjYW5fY2hpcF9zdGFydDogd3JpdGluZyBtY3I9MHg1OTgzMDIzZg0KWyAg
+IDgxLjkyNDI1OF0gZmxleGNhbiAyMDkwMDAwLmZsZXhjYW4gbW9iMDogZmxleGNhbl9jaGlwX3N0
+YXJ0OiB3cml0aW5nIGN0cmw9MHgwMTNhMjA1Nw0KWyAgIDgxLjkyNDM2MV0gZmxleGNhbiAyMDkw
+MDAwLmZsZXhjYW4gbW9iMDogZmxleGNhbl9jaGlwX3N0YXJ0OiByZWFkaW5nIG1jcj0weDQwODMw
+MjNmIGN0cmw9MHgwMTNhZTA1Nw0KWyAgIDk4LjQyODkwMl0gZmxleGNhbiAyMDkwMDAwLmZsZXhj
+YW4gbW9iMDogcmVnX2lmbGFnMT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgOTguNDI5MTQ1XSBm
+bGV4Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIw
+NDINClsgICA5OC40Mjk0MDBdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxh
+ZzE9MHgwIHJlZ19lc3I9MHg0MjA0Mg0KWyAgIDk4LjQyOTY2Nl0gZmxleGNhbiAyMDkwMDAwLmZs
+ZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgOTguNDI5OTc1
+XSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4
+NDIwNDINClsgICA5OC40MzAxODNdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19p
+ZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjA0Mg0KWyAgIDk4LjQzMDQ0Ml0gZmxleGNhbiAyMDkwMDAw
+LmZsZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgOTguNDMw
+NzA2XSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNy
+PTB4NDIwNDINClsgICA5OC40MzA5NjJdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJl
+Z19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjA0Mg0KWyAgIDk4LjQzMTIyMV0gZmxleGNhbiAyMDkw
+MDAwLmZsZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0weDAgcmVnX2Vzcj0weDQyMDQyDQpbICAgOTgu
+NDMxNDg0XSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdf
+ZXNyPTB4NDIwNDINClsgICA5OC40MzE3NDZdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6
+IHJlZ19pZmxhZzE9MHgwIHJlZ19lc3I9MHg0MjI0Mg0KWyAgIDk4LjQzMTc3NV0gZmxleGNhbiAy
+MDkwMDAwLmZsZXhjYW4gbW9iMDogTmV3IGVycm9yIHN0YXRlOiAxDQpbICAgOTguNDMyMDAxXSBm
+bGV4Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4NDIy
+NDINClsgICA5OC40MzIyNjJdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19pZmxh
+ZzE9MHgwIHJlZ19lc3I9MHg0MjI0Mg0KWyAgIDk4LjQzMjUyM10gZmxleGNhbiAyMDkwMDAwLmZs
+ZXhjYW4gbW9iMDogcmVnX2lmbGFnMT0weDAgcmVnX2Vzcj0weDQyMjQyDQpbICAgOTguNDMyNzgx
+XSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbiBtb2IwOiByZWdfaWZsYWcxPTB4MCByZWdfZXNyPTB4
+NDIyNTINClsgICA5OC40MzI4MDZdIGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IE5ldyBl
+cnJvciBzdGF0ZTogMg0KDQpCZXN0IHJlZ2FyZHMNCllpDQo=
