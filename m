@@ -1,84 +1,41 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: [PATCH 1/6] can: flexcan: fix state transition regression
-Date: Mon, 4 Sep 2017 10:01:46 +0000
-Message-ID: <792529725893484b9254b6eed7b08d2e@SGPMBX1017.APAC.bosch.com>
-References: <1f925f5e8c9747cf92351ce2bc471bff@SGPMBX1017.APAC.bosch.com>
- <ea64fc2b-e94d-3fc0-35ad-3a70d94800e6@grandegger.com>
- <1943d84bc81b47368ce9b312f2d6ab11@SGPMBX1017.APAC.bosch.com>
- <1eed176d-c141-03aa-188a-83853aa9cc8a@grandegger.com>
+From: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>
+Subject: Newbie question on which kernel repository a patch should be based
+Date: Mon, 4 Sep 2017 11:51:29 +0200
+Message-ID: <c24071cd-52b5-1544-1521-e42a777acaee@esd.eu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:50400 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753422AbdIDKBu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 4 Sep 2017 06:01:50 -0400
-In-Reply-To: <1eed176d-c141-03aa-188a-83853aa9cc8a@grandegger.com>
+Received: from mxp01.htp-tel.de ([212.59.41.8]:43841 "EHLO mxpout01.htp-tel.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753422AbdIDKCC (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 4 Sep 2017 06:02:02 -0400
+Received: from mxpin02.htp-tel.de (a212594129.net-htp.de [212.59.41.29])
+        by mxpout01.htp-tel.de with ESMTPS id v849pX7L010064
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-can@vger.kernel.org>; Mon, 4 Sep 2017 11:51:33 +0200 (CEST)
+Received: from esd-s3.esd.local (a81-14-233-218.net-htp.de [81.14.233.218])
+        by mxpin02.htp-tel.de with ESMTPS id v849pW5v028719
+        (version=TLSv1 cipher=AES128-SHA bits=128 verify=FAIL)
+        for <linux-can@vger.kernel.org>; Mon, 4 Sep 2017 11:51:33 +0200 (CEST)
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-SGVsbG8gV29sZmdhbmcsDQoNCj4gRnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndn
-QGdyYW5kZWdnZXIuY29tXQ0KPiBTZW50OiBGcmlkYXksIFNlcHRlbWJlciAwMSwgMjAxNyAxMTox
-NSBQTQ0KPiANCj4gWy4uLl0NCj4gPj4gdXN1YWxseSBhIFtQQVRDSCAwL3hdIGlzIGNvbWluZyBm
-aXJzdCB0ZWxsaW5nIHdoYXQgdGhlIHNlcmllcyBkb2VzLiBXZQ0KPiA+PiB1c2UgImdpdCBmb3Jt
-YXQtcGF0Y2ggLS1jb3Zlci1sZXR0ZXIgLi4uIiBmb3IgdGhhdCBwdXJwb3NlLg0KPiA+IE9LLiBU
-aGFua3MgZm9yIHlvdXIgaGludCENCj4gPiBJJ2xsIHByZXBhcmUgdGhlIHVwZGF0ZWQgcGF0Y2gg
-c2VyaWVzIHdpdGggY292ZXIgbGV0dGVyIGxhdGVyLg0KPiANCj4gWW91IHBhdGNoZXMgYXJlIGFs
-c28gd2hpdGUtc3BhY2UgbWFuZ2xlZC4NClBlcmhhcHMgYmVjYXVzZSBvZiB0aGUgb3V0bG9vay4g
-QWx0aG91Z2ggSSd2ZSB0ZXN0ZWQgc2VuZCB0byBteXNlbGYgYW5kDQpjb3B5IHRoZSB0ZXh0IHRo
-ZW4gdXNlICJnaXQgYW0iIHRvIGFwcGx5LCBpdCB3b3JrcyBpbiBteSBsb2NhbCwgYnV0DQpzZWVt
-cyBjYW4gbm90IHdvcmsgd2hlbiBpdCBzZW5kIG91dC4gOigNCg0KQ2FuIHdlIHNlbmQgdGhlIHVw
-ZGF0ZWQgcGF0Y2hlcyBpbiBzZXBhcmF0ZSBlLW1haWxzLCB3aXRoIGF0dGFjaG1lbnRzDQppbnN0
-ZWFkIG9mIGlubGluZSB0ZXh0PyBCZWNhdXNlIHdlIGNhbm5vdCBlYXNpbHkgc3dpdGNoIHRvIG90
-aGVyDQptYWlsIGNsaWVudC4uLg0KDQpPciwgZG8geW91IGhhdmUgb3RoZXIgcHJvcG9zYWw/DQoN
-Cj4gDQo+IFsuLi5dDQo+ID4gSSdtIG5vdCBzdXJlIHRoYXQgSSB1bmRlcnN0b29kIHlvdXIgcHJv
-cG9zYWwgY29ycmVjdGx5LCB0aGUgZ3Vlc3MgaXMNCj4gPiB0aGUgc2Vjb25kICJyZWdfZXNyICYg
-RkxFWENBTl9FU1JfRVJSX1NUQVRFIiBpcyBhIHR5cG8sIGRvIHlvdSBtZWFuDQo+ID4gInJlZ19l
-c3IgJiBGTEVYQ0FOX0VTUl9CVVNfRVJSIg0KPiANCj4gVHlwbywgc29ycnksIEkgbWVhbiAiKHJl
-Z19lc3IgJiBGTEVYQ0FOX0VTUl9FUlJfQlVTKSIuDQpTb3JyeSBJIG1hZGUgYW5vdGhlciB0eXBv
-IHRvby4gOikNCg0KPiANCj4gPiBJZiB3ZSBvbmx5IGNhbGwgZmxleGNhbl9pcnFfc3RhdGUoKSB1
-cG9uIHN0YXRlICsgZXJyb3IgaW50ZXJydXB0LCB0aGVuOg0KPiA+IChuZXcgY29yZTogd2l0aCAg
-ICBbVFJdV1JOX0lOVCwgZS5nLiwgaS5NWDYsDQo+ID4gICBvbGQgY29yZTogd2l0aG91dCBbVFJd
-V1JOX0lOVCwgZS5nLiwgaS5NWDUzKQ0KPiANCj4gVGhlICJGTEVYQ0FOX1FVSVJLX0JST0tFTl9Q
-RVJSX1NUQVRFIiBpcyBmb3IgdGhlIGkuTVg2LiBPbmx5IHRoaW5raW5nDQo+IGFib3V0IHRoZSBj
-b3JlIGhlcmUuDQo+IA0KPiA+IDEuIGVycm9yIHN0YXRlIGluY3JlYXNlcywgZW5vdWdoIGZvciBi
-b3RoIG5ldyBhbmQgb2xkIGNvcmVzLg0KPiA+ICAgICAgYWN0aXZlIC0tLT4gd2FybmluZyAtLS0+
-IHBhc3NpdmUgLS0tPiBidXMgb2ZmDQo+ID4gICAgICAgICAgICAgICAgICAgICBeICAgICAgICAg
-ICAgXiAgICAgICAgICAgIF4NCj4gPiAgICAgICAgICAgICAgICAgIFdSTl9JTlQvICAgICBFUlJf
-SU5UICAgICAgQk9GRl9JTlQNCj4gPiAJICAgICAgICBFUlJfSU5UKG9sZCBjb3JlKQ0KPiA+DQo+
-ID4gMi4gZXJyb3Igc3RhdGUgZGVjcmVhc2VzLCBub3QgZW5vdWdoIGZvciBib3RoIG5ldyBhbmQg
-b2xkIGNvcmVzLg0KPiA+ICAgICAgYWN0aXZlIDwtLS0gd2FybmluZyA8LS0tIHBhc3NpdmUNCj4g
-PiAgICAgICAgIF4gICAgICAgICAgIF4NCj4gPiAgICAgIFtUUl1YICAgICAgIFdSTl9JTlQvDQo+
-ID4gCSAgICAgICAgW1RSXVgob2xkIGNvcmUpDQo+IA0KPiBJIHdhcyBvcGluZyB0aGF0IHRoZSBl
-cnJvciB3YXJuaW5nIGludGVycnVwdCBvY2N1cnMgd2hlbiB0aGUgZXJyb3INCj4gY291bnRlciBm
-YWxscyBhZ2FpbiBiZWxvdyBlcnJvciBwYXNzaXZlLiBUaGVuIHdlIGNvdWxkIGVuYWJsZSB0aGUg
-ZXJyb3INCj4gaW50ZXJydXB0IG9uICJhY3RpdmUgLT4gd2FuaW5nIiBhbmQgZGlzYWJsZSBpdCBv
-biAicGFzc2l2ZSAtPiB3YXJuaW5nIg0KPiBzdGF0ZSBjaGFuZ2VzLiBJZiB0aGF0IGRvZXMgd29y
-aywgdGhhbiB3ZSBjYW4gZGlzYWJsZSB0aGUgZXJyb3INCj4gaW50ZXJydXB0IG5vdCBiZWZvcmUg
-dGhlICJ3YXJuaW5nIC0+IGFjdGl2ZSIgY2hhbmdlLg0KRGlzYWJsZSBlcnJvciBpbnRlcnJ1cHQg
-b24gInBhc3NpdmUgLT4gd2FybmluZyIgY2Fubm90IGhhbmRsZSB0aGUgY2FzZToNCjEuIERpc2Nv
-bm5lY3QgdGhlIGNhYmxlLCB1bnRpbCBlcnJvciBwYXNzaXZlIHJlcG9ydGVkDQoyLiBDb25uZWN0
-IHRoZSBjYWJsZSwgYW5kIHdhaXQgZXJyb3Igd2FybmluZyByZXBvcnRlZA0KMy4gRGlzY29ubmVj
-dCB0aGUgY2FibGUgd2hpbGUgaXQgaXMgc3RpbGwgZXJyb3Igd2FybmluZw0KRHVlIHRvIHRoZSBl
-cnJvciBpbnRlcnJ1cHQgaXMgZGlzYWJsZWQsIHNvIGl0IGNhbm5vdCByZXBvcnQgZXJyb3INCnBh
-c3NpdmUgYWdhaW4uDQoNCj4gDQo+ID4gVGhlIFtUUl1YIGludGVycnVwdCBpcyByZXF1aXJlZCBm
-b3IgdGhlIHN0YXRlIGRlY3JlYXNlcywgYW5kIHRoZQ0KPiA+IG92ZXJoZWFkIG9mIHRoZW0gSU1I
-TyBpcyBub3Qgb3ZlcmtpbGw6DQo+ID4gMS4gSWYgZmxleGNhbl9pcnFfc3RhdGUoKSBpcyBjYWxs
-ZWQgd2hlbiB0aGUgc3RhdGUgaXMgbm90IGNoYW5nZSwNCj4gPiAgICAgdGhlbiwgdGhlIG92ZXJo
-ZWFkIGlzIHJlYWQgRkxUX0NPTkYgYW5kL29yIHJlYWQgZXJyb3IgY291bnRlciwNCj4gPiAgICAg
-ZG8gTygxKSBjYWxjdWxhdGlvbiBhbmQgY29tcGFyZSB0aGUgc3RhdGUsIHRoZW4gcXVpdC4NCj4g
-DQo+IFllcywgdGhlcmUgaXMganVzdCBhIGxpdHRsZSBvdmVyaGVhZC4NCj4gDQo+ID4gMi4gSWYg
-ZmxleGNhbl9pcnFfc3RhdGUoKSBpcyBjYWxsZWQgd2hlbiB0aGUgc3RhdGUgaXMgY2hhbmdlZCwN
-Cj4gPiAgICAgdGhlbiwgdGhhdCdzIHdoYXQgaGVscCB1cyB0byByZXBvcnQgY29ycmVjdCBzdGF0
-ZSB0cmFuc2l0aW9ucy4NCj4gDQo+IFRoZSBvbmx5IGRpZmZlcmVuY2UgYmV0d2VlbiAibmV3IGNv
-cmUiIGFuZCAib2xkIGNvcmUiOg0KPiANCj4gbmV3IGNvcmU6IGVycm9yIGludGVycnVwdCBlbmFi
-bGVkIGJldHdlZW4gZXJyb3Igd2FybmluZyBhbmQgcGFzc2l2ZS4NCj4gb2xkIGNvcmU6IGVycm9y
-IGludGVycnVwdCBlbmFibGVkIGJldHdlZW4gZXJyb3IgYWN0aXZlIGFuZCBwYXNzaXZlLg0KPiAN
-Cj4gTm90IHN1cmUgaXQgaXQncyB3b3J0aCB0aGUgZXh0cmEgY29kZS4NClllcywgaXQgaXMgd29y
-dGguIDopIFBsZWFzZSBzZWUgdGhlIHRlc3QgcmVzdWx0IGluIA0KaHR0cHM6Ly9tYXJjLmluZm8v
-P2w9bGludXgtY2FuJm09MTUwNDI0NjI2MjA2NTg2Jnc9Miwgd2hlcmUgd2UgY2FuDQpvcHRpbWl6
-ZSBmb3IgdGhlIG5ldyBjb3JlIGZ1cnRoZXIuDQoNCkJlc3QgcmVnYXJkcw0KWWkNCg==
+Hello,
+
+I would like to provide a small bug fix patch for the esd_usb2.c
+SocketCAN driver for the esd CAN-USB/2 CAN device.
+
+Should I base the patch on the linux-can or against the linux-can-next
+git repository?
+
+Also can you give me some advice whom I should include in the CC: list
+of the patch email?
+
+Thanks in advance for your assistance.
+
+Best regards,
+    Stefan Mätje
+
