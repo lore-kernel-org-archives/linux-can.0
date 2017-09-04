@@ -1,132 +1,175 @@
-From: Patrick Menschel <menschel.p@posteo.de>
-Subject: Re: Newbie question on which kernel repository a patch should be
- based
-Date: Mon, 4 Sep 2017 16:33:54 +0200
-Message-ID: <86595dab-d486-536b-fe7a-ae3e1dca1a26@posteo.de>
-References: <c24071cd-52b5-1544-1521-e42a777acaee@esd.eu>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH 3/6] can: flexcan: add error passive state quirk
+Date: Mon, 4 Sep 2017 21:57:01 +0200
+Message-ID: <6f1d4dbc-4f4d-ee10-00be-ab1fb3ec7a98@grandegger.com>
+References: <3cbb306756434138b1c80fd76ecace8d@SGPMBX1017.APAC.bosch.com>
+ <f43242ea-ca7e-8d56-880f-cd629759d185@grandegger.com>
+ <a61de24480c0400ca438d4bcc974f7a7@SGPMBX1017.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms040707050602080808090600"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout02.posteo.de ([185.67.36.66]:43836 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753669AbdIDOdr (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 4 Sep 2017 10:33:47 -0400
-Received: from submission (posteo.de [89.146.220.130])
-        by mout02.posteo.de (Postfix) with ESMTPS id E6CC620C90
-        for <linux-can@vger.kernel.org>; Mon,  4 Sep 2017 16:33:45 +0200 (CEST)
-In-Reply-To: <c24071cd-52b5-1544-1521-e42a777acaee@esd.eu>
+Received: from mailproxy03.manitu.net ([217.11.48.67]:41780 "EHLO
+        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753957AbdIDT5E (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 4 Sep 2017 15:57:04 -0400
+In-Reply-To: <a61de24480c0400ca438d4bcc974f7a7@SGPMBX1017.APAC.bosch.com>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>
-Cc: linux-can <linux-can@vger.kernel.org>
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-This is a cryptographically signed message in MIME format.
+Hello,
 
---------------ms040707050602080808090600
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: de-DE
+Am 04.09.2017 um 12:00 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
+> Hello Wolfgang,
+> 
+>>> From: Wolfgang Grandegger [mailto:wg@grandegger.com]
+>>> Sent: Thursday, August 31, 2017 7:44 PM
+>>>
+>>> [...]
+>>>
+>>> Do we want to enable the error interrupt from the beginning? We can
+>>> wait for the error warning interrupt!?
+>> That's another good catch, if only FLEXCAN_QUIRK_BROKEN_PERR_STATE
+>> been set, then it don't need to enable the error interrupt from the
+>> beginning. This can save us at most 11 times error interrupts on
+>> these cores when there are bus problems.
+>>
+>> If FLEXCAN_QUIRK_BROKEN_WERR_STATE is set, then the error interrupt
+>> is still enabled from the beginning (for the old core which do not
+>> have [TR]WRN_INT connected).
+>>
+>> However, this may complicates the handling inside flexcan_irq().
+>>
+>> In sunny day scenario, [...]
+>>
+>> In rainy day scenario, that is due to some unbelievable reason,
+>> flexcan_irq_state() maybe called jumps some state transitions,
+>> hence we added:
+>> 1. explicitly disable error interrupt in bus off, to prevent
+>>     surprise of still get error interrupts when the error state
+>>     jump from active/warning to bus off (although in theory, bus
+>>     off should not generate any interrupts, even the interrupt
+>>     are enabled).
+>> 2. explicitly enable error interrupt in error active, to prevent
+>>     the error state jump from error passive to error active which
+>>     leaves error interrupt still disabled, then on the old core,
+>>     it cannot report correct state transitions again (in theory,
+>>     this should not happen too).
+>>
+>> If we take these defensive thinking into account, then it will
+>> results a complicated logic here - we need to differentiate the
+>> old and new core, and handle them separately.
+>>
+>> Maybe we're a bit paranoic here, but we think the decision should
+>> be considered among performance, reliability and maintainability.
+>>
+>> Here we think the performance gain is limited, because in worst case,
+>> we get 11 times useless interrupt on the new core when every time the
+>> bus has problem, and this is the best gain we can have. But on the
+>> other hand, if we sacrifice this gain, we can get better reliability
+>> (perhaps) and maintainability (same code for new and old core).
+>>
+>> What do you think?
+> After some deep thinking, we realized that actually we can achieve
+> all instead of sacrifice any one of aforementioned three points.
+> 
+> The pseudo code looks like below:
+> ```
+> if (state_changed &&
+>      (priv->devtype_data->quirks & FLEXCAN_QUIRK_BROKEN_PERR_STATE) &&
+>     !(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)) {
+> 	switch (priv->can.state) {
+> 	case CAN_STATE_ERROR_PASSIVE:
+> 	case CAN_STATE_BUS_OFF:
+> 		// disable error interrupt
+> 		break;
+> 
+> 	case CAN_STATE_ERROR_WARNING:
+> 		// enable error interrupt
+> 		break;
+> 
+> 	case CAN_STATE_ERROR_ACTIVE:
+> 		if (!(priv->devtype_data->quirks & FLEXCAN_QUIRK_BROKEN_WERR_STATE))
 
-Am 04.09.2017 um 11:51 schrieb Stefan M=C3=A4tje:
-> Should I base the patch on the linux-can or against the linux-can-next
-> git repository?
-Hi,
-actually it depends on the subject of your patch since there might
-be other branches that are more advanced depending on the topic,
-devicetree for example.
+This means that you have both set, FLEXCAN_QUIRK_BROKEN_WERR_STATE and 
+FLEXCAN_QUIRK_BROKEN_PERR_STATE for the legacy cores.
 
-If you're patching a driver, linux-can-next is the safe way.
+> 			// disable error interrupt
+> 		else
+> 			// enable error interrupt
+> 		break;
+> 
+> 	default:
+> 		break;
+> 	}
+> }
+> ```
+> 
+> In this way, we can achieve the optimization for the new core, and also
+> take care of the paranoic cases, and the readability IMHO looks not bad. :)
+> 
+> Below are the test results (based on v4.11 with the proposed patches).
+> 
+> Test case:
+> 1. Disconnect the cable
+> 2. "ip link set xxx type can bitrate 500000" and "ip link set xxx up"
+> 3. "cansend xxx 123#ffffffffffffffff"
+> 
+> Enabled [TR]WRN_INT and FLEXCAN_QUIRK_BROKEN_PERR_STATE on i.MX6:
+> # dmesg | grep flexcan
+> [    1.561013] flexcan 2090000.flexcan: 2090000.flexcan supply xceiver not found, using dummy regulator
+> [    1.570393] flexcan 2090000.flexcan: can_rx_offload_init_queue: skb_queue_len_max=512
+> [    1.570979] flexcan 2090000.flexcan: device registered (reg_base=e0a78000, irq=34)
+> [    6.085287] flexcan 2090000.flexcan mob0: renamed from can0
+> [   39.118751] flexcan 2090000.flexcan mob0: writing ctrl=0x013a2007
+> [   39.118779] flexcan 2090000.flexcan mob0: flexcan_set_bittiming: mcr=0x5980000f ctrl=0x013a2007
+> [   39.118797] flexcan 2090000.flexcan mob0: flexcan_chip_start: writing mcr=0x59a3023f
+> [   39.118813] flexcan 2090000.flexcan mob0: flexcan_chip_start: writing ctrl=0x013a2057
+> [   39.118910] flexcan 2090000.flexcan mob0: flexcan_chip_start: reading mcr=0x40a3023f ctrl=0x013aac57
+> [   53.873593] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x62242
+> [   53.873624] flexcan 2090000.flexcan mob0: New error state: 1
+> [   53.873833] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   53.874089] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   53.874348] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   53.874608] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42252
+> [   53.874627] flexcan 2090000.flexcan mob0: New error state: 2
+> 
+> Disabled [TR]WRN_INT and enabled FLEXCAN_QUIRK_BROKEN_PERR_STATE +
+> FLEXCAN_QUIRK_BROKEN_WERR_STATE on i.MX6:
+> # dmesg | grep flexcan
+> [    1.561071] flexcan 2090000.flexcan: 2090000.flexcan supply xceiver not found, using dummy regulator
+> [    1.570452] flexcan 2090000.flexcan: can_rx_offload_init_queue: skb_queue_len_max=512
+> [    1.571037] flexcan 2090000.flexcan: device registered (reg_base=e0a78000, irq=34)
+> [    6.126949] flexcan 2090000.flexcan mob0: renamed from can0
+> [   81.924194] flexcan 2090000.flexcan mob0: writing ctrl=0x013a2007
+> [   81.924225] flexcan 2090000.flexcan mob0: flexcan_set_bittiming: mcr=0x5980000f ctrl=0x013a2007
+> [   81.924243] flexcan 2090000.flexcan mob0: flexcan_chip_start: writing mcr=0x5983023f
+> [   81.924258] flexcan 2090000.flexcan mob0: flexcan_chip_start: writing ctrl=0x013a2057
+> [   81.924361] flexcan 2090000.flexcan mob0: flexcan_chip_start: reading mcr=0x4083023f ctrl=0x013ae057
+> [   98.428902] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.429145] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.429400] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.429666] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.429975] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.430183] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.430442] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.430706] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.430962] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.431221] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.431484] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42042
+> [   98.431746] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   98.431775] flexcan 2090000.flexcan mob0: New error state: 1
+> [   98.432001] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   98.432262] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   98.432523] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42242
+> [   98.432781] flexcan 2090000.flexcan mob0: reg_iflag1=0x0 reg_esr=0x42252
+> [   98.432806] flexcan 2090000.flexcan mob0: New error state: 2
 
-https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/
+Could you please show the full trace when reconnecting the cable to see 
+how the state decreases. And then again unplug the cable. And send a 
+message.
 
-You may want to check this tutorial for reference on how to do the patch.=
-
-
-https://kernelnewbies.org/FirstKernelPatch
-
-Regards,
-Patrick
-
-
-
---------------ms040707050602080808090600
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-CyEwggUzMIIEG6ADAgECAhBp9PwZCVW98tnHAS3kOjLRMA0GCSqGSIb3DQEBCwUAMIGXMQsw
-CQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxm
-b3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJTQSBD
-bGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTAeFw0xNzA2MDYwMDAw
-MDBaFw0xODA2MDYyMzU5NTlaMCUxIzAhBgkqhkiG9w0BCQEWFG1lbnNjaGVsLnBAcG9zdGVv
-LmRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoNhDbc0RVWdVfJEhvKfjVPmY
-wnjbpn/YIWexSHoH3L65Gzj0+IHWdI56CvKzWniZYI8pjoCnVQU4gEfRWJqev9wijlagbfYe
-0yQQEUFigJEEzC6EoaC5JJfJcNr1qkYB9RSFeSuGnKOb4Z3NGXp0yXjLkY+jzNbRrOelKB6p
-AT5KGaAa6ESkucnPPNrMScHZBHznUxT0u0aGu8goQUw/SZVN3S3KvXIrQfXt2bZiCXCtw5go
-0+N/MI78KSU2uO9hlzEDq0tp30iWWs3zpt/vZjuojufw0ikUxz9tseFzhTIfRp5tYnE08h+z
-Tmc9w9ld8WA12YdK61P2HNHtsGDqZQIDAQABo4IB6jCCAeYwHwYDVR0jBBgwFoAUgq9sjPjF
-/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFJZcg7d5WiG3X5RR8+DRmSaH0kqCMA4GA1UdDwEB
-/wQEAwIFoDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZMBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMF
-AjARBglghkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAQEwKzApBggr
-BgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2g
-S4ZJaHR0cDovL2NybC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRp
-b25hbmRTZWN1cmVFbWFpbENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklo
-dHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFu
-ZFNlY3VyZUVtYWlsQ0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5j
-b20wHwYDVR0RBBgwFoEUbWVuc2NoZWwucEBwb3N0ZW8uZGUwDQYJKoZIhvcNAQELBQADggEB
-ACV8QT6dz5yYb5lItTyb1IrP7Tlc5Ri+eaki13Wlh62z3dYdC0C3GuOrKTVwwDAKpbuUm5g2
-OFDVXkAfZhw8DkCjB2bghH1xoUBXqJ5PhjsWvUgptgefvJ5z80dXPSkKTYgRQj2yDaBUl6mS
-dPIYYTvX9QIL3Ad1nSqZjkwY/Ingw6o3NlUQnAN3EeVQEarZ7X+T/COAQl50bNNY+3+ATEk+
-euma2T4CEiv9dJa5SkLCoLIAf3H5JcmaV9e32wxXKaS1yq8DZ57w1Jn7ZNULOOgVTMDuGdTL
-L9jcJe6fVdgKz5LwPHsSUveUrhAzp9zEWa/v9sjVHRJOXJERO7oNjvgwggXmMIIDzqADAgEC
-AhBqm+E4O/8ra58B1dm4p1JWMA0GCSqGSIb3DQEBDAUAMIGFMQswCQYDVQQGEwJHQjEbMBkG
-A1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFD
-T01PRE8gQ0EgTGltaXRlZDErMCkGA1UEAxMiQ09NT0RPIFJTQSBDZXJ0aWZpY2F0aW9uIEF1
-dGhvcml0eTAeFw0xMzAxMTAwMDAwMDBaFw0yODAxMDkyMzU5NTlaMIGXMQswCQYDVQQGEwJH
-QjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYD
-VQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJTQSBDbGllbnQgQXV0
-aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEP
-ADCCAQoCggEBAL6znlesKHZ1QBbHOAOY08YYdiFQ8yV5C0y1oNF9Olg+nKcxLqf2NHbZhGra
-0D00SOTq9bus3/mxgUsg/Wh/eXQ0pnp8tZ8XZWAnlyKMpjL+qUByRjXCA6RQyDMqVaVUkbIr
-5SU0RDX/kSsKwer3H1pT/HUrBN0X8sKtPTdGX8XAWt/VdMLBrZBlgvnkCos+KQWWCo63OTTq
-Rvaq8aWccm+KOMjTcE6s2mj6RkalweyDI7X+7U5lNo6jzC8RTXtVV4/Vwdax720YpMPJQaDa
-ElmOupyTf1Qib+cpukNJnQmwygjD8m046DQkLnpXNCAGjuJy1F5NATksUsbfJAr7FLUCAwEA
-AaOCATwwggE4MB8GA1UdIwQYMBaAFLuvfgI9+qbxPISOre44mOzZMjLUMB0GA1UdDgQWBBSC
-r2yM+MX+lmF86B89K3FIXsSLwDAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIB
-ADARBgNVHSAECjAIMAYGBFUdIAAwTAYDVR0fBEUwQzBBoD+gPYY7aHR0cDovL2NybC5jb21v
-ZG9jYS5jb20vQ09NT0RPUlNBQ2VydGlmaWNhdGlvbkF1dGhvcml0eS5jcmwwcQYIKwYBBQUH
-AQEEZTBjMDsGCCsGAQUFBzAChi9odHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FB
-ZGRUcnVzdENBLmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQB4XLKBKDRPPO5fVs6fl1bsj6JrF/bz9kkIBtTYLzXN30D+03Hj
-6OxCDBEaIeNmsBhrJmuubvyE7HtoSmR809AgcYboW+rcTNZ/8u/Hv+GTrNI/AhqX2/kiQNxm
-gUPt/eJPs92Qclj0HnVyy9TnSvGkSDU7I5Px+TbO+88G4zipA2psZaWeEykgzClZlPz1FjTC
-kk77ZXp5cQYYexE6zeeN4/0OqqoAloFrjAF4o50YJafX8mnahjp3I2Y2mkjhk0xQfhNqbzlL
-WPoT3m7j7U26u7zg6swjOq8hITYc3/np5tM5aVyu6t99p17bTbY7+1RTWBviN9YJzK8HxzOb
-XYWBf/L+VGOYNsQDTxAk0Hbvb1j6KjUhg7fO294F29QIhhmiNOr84JHoy+fNLpfvYc/Q9EtF
-OI5ISYgOxLk3nD/whbUe9rmEQXLp8MB933Ij474gwwCPUpwv9mj2PMnXoc7mbrS22XUSeTwx
-CTP9bcmUdp4jmIoWfhQm7X9w/Zgddg+JZ/YnIHOwsGsaTUgj7fIvxqith7DoJC91WJ8Lce3C
-VJqb1XWeKIJ84F7YLXZN0oa7TktYgDdmQVxYkZo1c5noaDKH9Oq9cbm/vOYRUM1cWcef20Wk
-yk5S/GFyyPJwG0fR1nRas3DqAf4cXxMiEKcff7PNa4M3RGTqH0pWR8p6EjGCBDUwggQxAgEB
-MIGsMIGXMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09N
-T0RPIFJTQSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQafT8
-GQlVvfLZxwEt5Doy0TANBglghkgBZQMEAgEFAKCCAlkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMTcwOTA0MTQzMzU0WjAvBgkqhkiG9w0BCQQxIgQgozXv
-3S9ibmAib54PS8qBiwmZZDmGJh1w1V0ccv9d1wgwbAYJKoZIhvcNAQkPMV8wXTALBglghkgB
-ZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG
-9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBvQYJKwYBBAGCNxAEMYGvMIGsMIGX
-MQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdT
-YWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJT
-QSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQafT8GQlVvfLZ
-xwEt5Doy0TCBvwYLKoZIhvcNAQkQAgsxga+ggawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQI
-ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
-TyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlv
-biBhbmQgU2VjdXJlIEVtYWlsIENBAhBp9PwZCVW98tnHAS3kOjLRMA0GCSqGSIb3DQEBAQUA
-BIIBAEnTbtx2K3YJeQTVeWIWfKX+M6crk9Ap9sC0ykiIkyC0CJhDm9h/4i6K3Fi1GgF2/moK
-WA9D8ZMCWK3+H3aKk31bBPL0tdCIKr8kRZuJW/Ycm1sQpbhYYJDBgPZ7C3WKQwu2wDaTwTRn
-sBIQlMApOPj++H6CU//miVGItC8PjLV3VtUJ7Cc9Q2LqBEOPGntSPL30jgj1pfpLtIV3aP7i
-ivmWFeIgR6xVNT0/magx9b0BXXgyAft30bxYMHk9+PapeiPsotir1bh9lVvr8aMb451z3TEn
-LermwFokx69RxXhfxZZHBNb4jA/aAatcc8Spf+v0CAwrQ0bQ03gxIlkiz0wAAAAAAAA=
---------------ms040707050602080808090600--
+Wolfgang.
