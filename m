@@ -1,263 +1,170 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: [PATCH 3/4] can: flexcan: implement error passive state quirk
-Date: Thu, 7 Sep 2017 06:01:07 +0000
-Message-ID: <dfb4fd69b6d0463ca565245f4c072b90@SGPMBX1017.APAC.bosch.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH 3/4] can: flexcan: implement error passive state quirk
+Date: Thu, 7 Sep 2017 09:26:42 +0200
+Message-ID: <1685670a-c87d-2204-7e46-c36ebb8b072f@grandegger.com>
 References: <87faf67d90a246938e0b51d2ddbc8b82@SGPMBX1017.APAC.bosch.com>
  <cc678b44-0aa8-ac91-567e-8b9c234ed024@grandegger.com>
  <ad3cf1da-ca4b-6149-876a-0c983f9d48c8@grandegger.com>
+ <dfb4fd69b6d0463ca565245f4c072b90@SGPMBX1017.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:59478 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753003AbdIGGBM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Sep 2017 02:01:12 -0400
-In-Reply-To: <ad3cf1da-ca4b-6149-876a-0c983f9d48c8@grandegger.com>
-Content-Language: en-US
+Received: from mailproxy02.manitu.net ([217.11.48.66]:34500 "EHLO
+        mailproxy02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751398AbdIGH0o (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Sep 2017 03:26:44 -0400
+In-Reply-To: <dfb4fd69b6d0463ca565245f4c072b90@SGPMBX1017.APAC.bosch.com>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-SGVsbG8gV29sZmdhbmcsDQoNCj5Gcm9tOiBXb2xmZ2FuZyBHcmFuZGVnZ2VyIFttYWlsdG86d2dA
-Z3JhbmRlZ2dlci5jb21dDQo+U2VudDogVGh1cnNkYXksIFNlcHRlbWJlciAwNywgMjAxNyA0OjE3
-IEFNDQo+SGVsbG8gWkhVIFlpLA0KPg0KPm5vdyB0ZXN0aW5nIG9uIGFuIGkuTVg1MyBib2FyZCAo
-cXVpcmtzPTIpOg0KPg0KPkFtIDA2LjA5LjIwMTcgdW0gMTM6NDcgc2NocmllYiBXb2xmZ2FuZyBH
-cmFuZGVnZ2VyOg0KPj4gSGVsbG8sDQo+Pg0KPj4gQW0gMDUuMDkuMjAxNyB1bSAxMDozOSBzY2hy
-aWViIFpIVSBZaSAoU1QtRklSL0VORzEtWmh1KToNCj4+Pj4gRnJvbSBhNDRiZjM3YTcyNzZkOGI5
-ODVmN2JkYzkyZjA5NGFmODBkYWViM2Y5IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KPj4+IEZy
-b206IFpodSBZaSA8eWkuemh1NUBjbi5ib3NjaC5jb20+DQo+Pj4gRGF0ZTogVGh1LCAzMSBBdWcg
-MjAxNyAwOToyMToyNCArMDgwMA0KPj4+IFN1YmplY3Q6IFtQQVRDSCAzLzRdIGNhbjogZmxleGNh
-bjogaW1wbGVtZW50IGVycm9yIHBhc3NpdmUgc3RhdGUgcXVpcmsNCj4+Pg0KPj4+IEFkZCBGTEVY
-Q0FOX1FVSVJLX0JST0tFTl9QRVJSX1NUQVRFIGZvciBiZXR0ZXIgZGVzY3JpcHRpb24NCj4+PiBv
-ZiB0aGUgbWlzc2luZyBlcnJvciBwYXNzaXZlIGludGVycnVwdCBxdWlyay4NCj4+Pg0KPj4+IEVy
-cm9yIGludGVycnVwdCBmbG9vZGluZyBtYXkgaGFwcGVuIGlmIHRoZSBicm9rZW4gZXJyb3Igc3Rh
-dGUgcXVpcmsNCj4+PiBmaXggaXMgZW5hYmxlZC4gRm9yIGV4YW1wbGUsIGluIGNhc2UgdGhlcmUg
-aXMgc2luZ2xlZCBvdXQgbm9kZSBvbg0KPj4+IHRoZSBidXMgYW5kIHRoZSBub2RlIHNlbmRzIGEg
-ZnJhbWUsIHRoZW4gZXJyb3IgaW50ZXJydXB0IGZsb29kaW5nDQo+Pj4gaGFwcGVucyBhbmQgd2ls
-bCBub3Qgc3RvcCBiZWNhdXNlIHRoZSBub2RlIGNhbm5vdCBnbyB0byBidXMgb2ZmLiBUaGUNCj4+
-PiBmbG9vZGluZyB3aWxsIHN0b3AgYWZ0ZXIgYW5vdGhlciBub2RlIGNvbm5lY3RlZCB0byB0aGUg
-YnVzIGFnYWluLg0KPj4+DQo+Pj4gSWYgaGlnaCBiaXRyYXRlIGNvbmZpZ3VyZWQgb24gdGhlIGxv
-dyBlbmQgc3lzdGVtLCB0aGVuIHRoZSBmbG9vZGluZw0KPj4+IG1heSBjYXVzZXMgcGVyZm9ybWFu
-Y2UgaXNzdWUsIGhlbmNlLCB0aGlzIHBhdGNoIG1pdGlnYXRlcyB0aGlzIGJ5Og0KPj4+IDEuIGRp
-c2FibGUgZXJyb3IgaW50ZXJydXB0IHVwb24gZXJyb3IgcGFzc2l2ZSBzdGF0ZSB0cmFuc2l0aW9u
-DQo+Pj4gMi4gcmUtZW5hYmxlIGVycm9yIGludGVycnVwdCB1cG9uIGVycm9yIHdhcm5pbmcgc3Rh
-dGUgdHJhbnNpdGlvbg0KPj4+IDMuIGRpc2FibGUvZW5hYmxlIGVycm9yIGludGVycnVwdCB1cG9u
-IGVycm9yIGFjdGl2ZSBzdGF0ZSB0cmFuc2l0aW9uDQo+Pj4gICAgIGRlcGVuZHMgb24gRkxFWENB
-Tl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURQ0KPj4+DQo+Pj4gSW4gdGhpcyB3YXksIHRoZSBkcml2
-ZXIgaXMgc3RpbGwgYWJsZSB0byByZXBvcnQgY29ycmVjdCBzdGF0ZQ0KPj4+IHRyYW5zaXRpb25z
-IHdpdGhvdXQgYWRkaXRpb25hbCBsYXRlbmN5LiBXaGVuIHRoZXJlIGFyZSBidXMgcHJvYmxlbXMs
-DQo+Pj4gZmxvb2Rpbmcgb2YgZXJyb3IgaW50ZXJydXB0cyBpcyBsaW1pdGVkIHRvIHRoZSBudW1i
-ZXIgb2YgZnJhbWVzDQo+Pj4gcmVxdWlyZWQgdG8gY2hhbmdlIHN0YXRlIGZyb20gZXJyb3Igd2Fy
-bmluZyB0byBlcnJvciBwYXNzaXZlIGlmIHRoZQ0KPj4+IGNvcmUgaGFzIFtUUl1XUk5fSU5UIGNv
-bm5lY3RlZCAoRkxFWENBTl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURSBpcw0KPj4+IG5vdCBlbmFi
-bGVkKSwgb3RoZXJ3aXNlLCB0aGUgZmxvb2RpbmcgaXMgbGltaXRlZCB0byB0aGUgbnVtYmVyIG9m
-DQo+Pj4gZnJhbWVzIHJlcXVpcmVkIHRvIGNoYW5nZSBzdGF0ZSBmcm9tIGVycm9yIGFjdGl2ZSB0
-byBlcnJvciBwYXNzaXZlLg0KPj4+DQo+Pj4gU2lnbmVkLW9mZi1ieTogWmh1IFlpIDx5aS56aHU1
-QGNuLmJvc2NoLmNvbT4NCj4+PiBTaWduZWQtb2ZmLWJ5OiBNYXJrIEpvbmFzIDxtYXJrLmpvbmFz
-QGRlLmJvc2NoLmNvbT4NCj4+PiAtLS0NCj4+PiAgIGRyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMg
-fCA3OQ0KPj4+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0t
-DQo+Pj4gICAxIGZpbGUgY2hhbmdlZCwgNzAgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkN
-Cj4+Pg0KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJpdmVy
-cy9uZXQvY2FuL2ZsZXhjYW4uYw0KPj4+IGluZGV4IGUxNjNjNTUuLjUyYjY5ZmMgMTAwNjQ0DQo+
-Pj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPj4+ICsrKyBiL2RyaXZlcnMvbmV0
-L2Nhbi9mbGV4Y2FuLmMNCj4+PiBAQCAtMTgyLDE0ICsxODIsMTQgQEANCj4+PiAgIC8qIEZMRVhD
-QU4gaGFyZHdhcmUgZmVhdHVyZSBmbGFncw0KPj4+ICAgICoNCj4+PiAgICAqIEJlbG93IGlzIHNv
-bWUgdmVyc2lvbiBpbmZvIHdlIGdvdDoNCj4+PiAtICogICAgU09DICAgVmVyc2lvbiAgIElQLVZl
-cnNpb24gIEdsaXRjaC0gW1RSXVdSTl9JTlQgTWVtb3J5IGVyciBSVFIgcmUtDQo+Pj4gLSAqICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBGaWx0ZXI/IGNvbm5lY3RlZD8gIGRldGVjdGlv
-bg0KPj4+IGNlcHRpb24gaW4gTUINCj4+PiAtICogICBNWDI1ICBGbGV4Q0FOMiAgMDMuMDAuMDAu
-MDAgICAgIG5vICAgICAgICBubyAgICAgICAgIG5vICAgICAgICBubw0KPj4+IC0gKiAgIE1YMjgg
-IEZsZXhDQU4yICAwMy4wMC4wNC4wMCAgICB5ZXMgICAgICAgeWVzICAgICAgICAgbm8gICAgICAg
-IG5vDQo+Pj4gLSAqICAgTVgzNSAgRmxleENBTjIgIDAzLjAwLjAwLjAwICAgICBubyAgICAgICAg
-bm8gICAgICAgICBubyAgICAgICAgbm8NCj4+PiAtICogICBNWDUzICBGbGV4Q0FOMiAgMDMuMDAu
-MDAuMDAgICAgeWVzICAgICAgICBubyAgICAgICAgIG5vICAgICAgICBubw0KPj4+IC0gKiAgIE1Y
-NnMgIEZsZXhDQU4zICAxMC4wMC4xMi4wMCAgICB5ZXMgICAgICAgeWVzICAgICAgICAgbm8gICAg
-ICAgeWVzDQo+Pj4gLSAqICAgVkY2MTAgRmxleENBTjMgID8gICAgICAgICAgICAgICBubyAgICAg
-ICB5ZXMgICAgICAgIHllcyAgICAgICB5ZXM/DQo+Pj4gKyAqICAgIFNPQyAgIFZlcnNpb24gICBJ
-UC1WZXJzaW9uICBHbGl0Y2gtIFtUUl1XUk5fSU5UIElSUSBFcnIgTWVtb3J5DQo+Pj4gZXJyIFJU
-UiByZS0NCj4+PiArICogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEZpbHRlcj8gY29u
-bmVjdGVkPyAgUGFzc2l2ZQ0KPj4+IGRldGVjdGlvbiAgY2VwdGlvbiBpbiBNQg0KPj4+ICsgKiAg
-IE1YMjUgIEZsZXhDQU4yICAwMy4wMC4wMC4wMCAgICAgbm8gICAgICAgIG5vICAgICAgICAgPw0K
-Pj4+IG5vICAgICAgICBubw0KPj4+ICsgKiAgIE1YMjggIEZsZXhDQU4yICAwMy4wMC4wNC4wMCAg
-ICB5ZXMgICAgICAgeWVzICAgICAgICAgPw0KPj4+IG5vICAgICAgICBubw0KPj4+ICsgKiAgIE1Y
-MzUgIEZsZXhDQU4yICAwMy4wMC4wMC4wMCAgICAgbm8gICAgICAgIG5vICAgICAgICAgPw0KPj4+
-IG5vICAgICAgICBubw0KPj4+ICsgKiAgIE1YNTMgIEZsZXhDQU4yICAwMy4wMC4wMC4wMCAgICB5
-ZXMgICAgICAgIG5vICAgICAgICBubz8NCj4+PiBubyAgICAgICAgbm8NCj4+PiArICogICBNWDZz
-ICBGbGV4Q0FOMyAgMTAuMDAuMTIuMDAgICAgeWVzICAgICAgIHllcyAgICAgICAgbm8NCj4+PiBu
-byAgICAgICB5ZXMNCj4+PiArICogICBWRjYxMCBGbGV4Q0FOMyAgPyAgICAgICAgICAgICAgIG5v
-ICAgICAgIHllcyAgICAgICAgID8NCj4+PiB5ZXMgICAgICAgeWVzPw0KPj4+ICAgICoNCj4+PiAg
-ICAqIFNvbWUgU09DcyBkbyBub3QgaGF2ZSB0aGUgUlhfV0FSTiAmIFRYX1dBUk4gaW50ZXJydXB0
-IGxpbmUNCj4+PiBjb25uZWN0ZWQuDQo+Pj4gICAgKi8NCj4+PiBAQCAtMTk4LDYgKzE5OCw3IEBA
-DQo+Pj4gICAjZGVmaW5lIEZMRVhDQU5fUVVJUktfRU5BQkxFX0VBQ0VOX1JSUyAgICBCSVQoMykg
-LyogRW5hYmxlIEVBQ0VOIGFuZA0KPj4+IFJSUyBiaXQgaW4gY3RybDIgKi8NCj4+PiAgICNkZWZp
-bmUgRkxFWENBTl9RVUlSS19ESVNBQkxFX01FQ1IgICAgQklUKDQpIC8qIERpc2FibGUgTWVtb3J5
-IGVycm9yDQo+Pj4gZGV0ZWN0aW9uICovDQo+Pj4gICAjZGVmaW5lIEZMRVhDQU5fUVVJUktfVVNF
-X09GRl9USU1FU1RBTVAgICAgQklUKDUpIC8qIFVzZSB0aW1lc3RhbXANCj4+PiBiYXNlZCBvZmZs
-b2FkaW5nICovDQo+Pj4gKyNkZWZpbmUgRkxFWENBTl9RVUlSS19CUk9LRU5fUEVSUl9TVEFURSAg
-ICBCSVQoNikgLyogTm8gaW50ZXJydXB0IGZvcg0KPj4+IGVycm9yIHBhc3NpdmUgKi8NCj4+PiAg
-IC8qIFN0cnVjdHVyZSBvZiB0aGUgbWVzc2FnZSBidWZmZXIgKi8NCj4+PiAgIHN0cnVjdCBmbGV4
-Y2FuX21iIHsNCj4+PiBAQCAtMzM1LDYgKzMzNiwyNiBAQCBzdGF0aWMgaW5saW5lIHZvaWQgZmxl
-eGNhbl93cml0ZSh1MzIgdmFsLCB2b2lkDQo+Pj4gX19pb21lbSAqYWRkcikNCj4+PiAgIH0NCj4+
-PiAgICNlbmRpZg0KPj4+ICtzdGF0aWMgaW5saW5lIHZvaWQgZmxleGNhbl9lcnJvcl9pcnFfZW5h
-YmxlKGNvbnN0IHN0cnVjdCBmbGV4Y2FuX3ByaXYNCj4+PiAqcHJpdikNCj4+PiArew0KPj4+ICsg
-ICAgc3RydWN0IGZsZXhjYW5fcmVncyBfX2lvbWVtICpyZWdzID0gcHJpdi0+cmVnczsNCj4+PiAr
-ICAgIHUzMiByZWdfY3RybDsNCj4+PiArDQo+Pj4gKyAgICByZWdfY3RybCA9IGZsZXhjYW5fcmVh
-ZCgmcmVncy0+Y3RybCk7DQo+Pj4gKyAgICByZWdfY3RybCB8PSBGTEVYQ0FOX0NUUkxfRVJSX01T
-SzsNCj4+PiArICAgIGZsZXhjYW5fd3JpdGUocmVnX2N0cmwsICZyZWdzLT5jdHJsKTsNCj4+PiAr
-fQ0KPj4+ICsNCj4+PiArc3RhdGljIGlubGluZSB2b2lkIGZsZXhjYW5fZXJyb3JfaXJxX2Rpc2Fi
-bGUoY29uc3Qgc3RydWN0DQo+Pj4gZmxleGNhbl9wcml2ICpwcml2KQ0KPj4+ICt7DQo+Pj4gKyAg
-ICBzdHJ1Y3QgZmxleGNhbl9yZWdzIF9faW9tZW0gKnJlZ3MgPSBwcml2LT5yZWdzOw0KPj4+ICsg
-ICAgdTMyIHJlZ19jdHJsOw0KPj4+ICsNCj4+PiArICAgIHJlZ19jdHJsID0gZmxleGNhbl9yZWFk
-KCZyZWdzLT5jdHJsKTsNCj4+PiArICAgIHJlZ19jdHJsICY9IH5GTEVYQ0FOX0NUUkxfRVJSX01T
-SzsNCj4+PiArICAgIGZsZXhjYW5fd3JpdGUocmVnX2N0cmwsICZyZWdzLT5jdHJsKTsNCj4+PiAr
-fQ0KPj4+ICsNCj4+PiAgIHN0YXRpYyBpbmxpbmUgaW50IGZsZXhjYW5fdHJhbnNjZWl2ZXJfZW5h
-YmxlKGNvbnN0IHN0cnVjdA0KPj4+IGZsZXhjYW5fcHJpdiAqcHJpdikNCj4+PiAgIHsNCj4+PiAg
-ICAgICBpZiAoIXByaXYtPnJlZ194Y2VpdmVyKQ0KPj4+IEBAIC03MTMsNiArNzM0LDcgQEAgc3Rh
-dGljIGlycXJldHVybl90IGZsZXhjYW5faXJxKGludCBpcnEsIHZvaWQgKmRldl9pZCkNCj4+PiAg
-ICAgICBzdHJ1Y3QgZmxleGNhbl9yZWdzIF9faW9tZW0gKnJlZ3MgPSBwcml2LT5yZWdzOw0KPj4+
-ICAgICAgIGlycXJldHVybl90IGhhbmRsZWQgPSBJUlFfTk9ORTsNCj4+PiAgICAgICB1MzIgcmVn
-X2lmbGFnMSwgcmVnX2VzcjsNCj4+PiArICAgIGVudW0gY2FuX3N0YXRlIGxhc3Rfc3RhdGUgPSBw
-cml2LT5jYW4uc3RhdGU7DQo+Pj4gICAgICAgcmVnX2lmbGFnMSA9IGZsZXhjYW5fcmVhZCgmcmVn
-cy0+aWZsYWcxKTsNCj4+PiBAQCAtNzY3LDcgKzc4OSw4IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBm
-bGV4Y2FuX2lycShpbnQgaXJxLCB2b2lkICpkZXZfaWQpDQo+Pj4gICAgICAgLyogc3RhdGUgY2hh
-bmdlIGludGVycnVwdCBvciBicm9rZW4gZXJyb3Igc3RhdGUgcXVpcmsgZml4IGlzDQo+Pj4gZW5h
-YmxlZCAqLw0KPj4+ICAgICAgIGlmICgocmVnX2VzciAmIEZMRVhDQU5fRVNSX0VSUl9TVEFURSkg
-fHwNCj4+PiAtICAgICAgICAocHJpdi0+ZGV2dHlwZV9kYXRhLT5xdWlya3MgJiBGTEVYQ0FOX1FV
-SVJLX0JST0tFTl9XRVJSX1NUQVRFKSkNCj4+PiArICAgICAgICAocHJpdi0+ZGV2dHlwZV9kYXRh
-LT5xdWlya3MgJiAoRkxFWENBTl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURSB8DQo+Pj4gKw0KPj4+
-IEZMRVhDQU5fUVVJUktfQlJPS0VOX1BFUlJfU1RBVEUpKSkNCj4+PiAgICAgICAgICAgZmxleGNh
-bl9pcnFfc3RhdGUoZGV2LCByZWdfZXNyKTsNCj4+PiAgICAgICAvKiBidXMgZXJyb3IgSVJRIC0g
-aGFuZGxlIGlmIGJ1cyBlcnJvciByZXBvcnRpbmcgaXMgYWN0aXZhdGVkICovDQo+Pj4gQEAgLTc3
-NSw2ICs3OTgsNDQgQEAgc3RhdGljIGlycXJldHVybl90IGZsZXhjYW5faXJxKGludCBpcnEsIHZv
-aWQNCj4+PiAqZGV2X2lkKQ0KPj4+ICAgICAgICAgICAocHJpdi0+Y2FuLmN0cmxtb2RlICYgQ0FO
-X0NUUkxNT0RFX0JFUlJfUkVQT1JUSU5HKSkNCj4+PiAgICAgICAgICAgZmxleGNhbl9pcnFfYnVz
-X2VycihkZXYsIHJlZ19lc3IpOw0KPg0KPkkgYWRkZWQgaGVyZToNCj4NCj4JLyogQ2xlYXIgaW50
-ZXJydXB0IGJpdHMgaW4gRVNSICovDQo+CWZsZXhjYW5fd3JpdGUocmVnX2VzciwgJnJlZ3MtPmVz
-cik7DQo+DQo+QnV0IGl0IHNlZW1zIG5vdCB0byBoYXZlIGFuIGVmZmVjdC4gQXQgbGVhc3QgdGhl
-IG1hbnVhbCB0ZWxscyB0aGF0IHRoZQ0KPmludGVycnVwdCBiaXRzIGNhbiAoc2hvdWxkPykgYmUg
-Y2xlYXJlZC4NClRoZSBFU1IgaW50ZXJydXB0IGJpdHMgYXJlIGFscmVhZHkgY2xlYXJlZCBhdA0K
-aHR0cDovL2VsaXhpci5mcmVlLWVsZWN0cm9ucy5jb20vbGludXgvbGF0ZXN0L3NvdXJjZS9kcml2
-ZXJzL25ldC9jYW4vZmxleGNhbi5jI0w3NjUNCmJ5ICJmbGV4Y2FuX3dyaXRlKHJlZ19lc3IgJiBG
-TEVYQ0FOX0VTUl9BTExfSU5ULCAmcmVncy0+ZXNyKTsiLg0KU28gY2xlYXIgaGVyZSBhZ2FpbiB3
-b24ndCBoYXZlIGVmZmVjdC4NCg0KPg0KPj4+ICsgICAgLyogYXZhaWxhYmlsaXR5IG9mIGVycm9y
-IGludGVycnVwdCBhbW9uZyBzdGF0ZSB0cmFuc2l0aW9ucyBpbiBjYXNlDQo+Pj4gKyAgICAgKiBi
-dXMgZXJyb3IgcmVwb3J0aW5nIGlzIGRlLWFjdGl2YXRlZCBhbmQNCj4+PiArICAgICAqIEZMRVhD
-QU5fUVVJUktfQlJPS0VOX1BFUlJfU1RBVEUgaXMgZW5hYmxlZDoNCj4+PiArICAgICAqICArLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0rDQo+Pj4gKyAgICAgKiAgfCArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLSsgW3N0b3BwZWQgLyAgfA0KPj4+ICsgICAgICogIHwgfCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICBzbGVlcGluZ10gLSsNCj4+PiArICAg
-ICAqICArLSstPiBhY3RpdmUgPC0+IHdhcm5pbmcgPC0+IHBhc3NpdmUgLT4gYnVzIG9mZiAtKw0K
-Pj4+ICsgICAgICogICAgICAgIF9fX19fX19fX19fXl5eXl5eXl5eXl5eX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXw0KPj4+ICsgICAgICogICAgICAgIGRpc2FibGVkKDEpICBlbmFibGVk
-ICAgICAgICAgICAgIGRpc2FibGVkDQo+Pj4gKyAgICAgKg0KPj4+ICsgICAgICogKDEpOiBlbmFi
-bGVkIGlmIEZMRVhDQU5fUVVJUktfQlJPS0VOX1dFUlJfU1RBVEUgaXMgZW5hYmxlZA0KPj4+ICsg
-ICAgICovDQo+Pj4gKyAgICBpZiAoKGxhc3Rfc3RhdGUgIT0gcHJpdi0+Y2FuLnN0YXRlKSAmJg0K
-Pj4+ICsgICAgICAgIChwcml2LT5kZXZ0eXBlX2RhdGEtPnF1aXJrcyAmDQo+Pj4gRkxFWENBTl9R
-VUlSS19CUk9LRU5fUEVSUl9TVEFURSkgJiYNCj4+PiArICAgICAgICEocHJpdi0+Y2FuLmN0cmxt
-b2RlICYgQ0FOX0NUUkxNT0RFX0JFUlJfUkVQT1JUSU5HKSkgew0KPj4NCj4+IFRoaXMgYmxvY2sg
-aXMgb25seSBlbnRlcmVkIHdoZW4gRkxFWENBTl9RVUlSS19CUk9LRU5fUEVSUl9TVEFURSBpcyBz
-ZXQNCj4+IGJ1dCBub3QgZm9yIGxlZ2FjeSBjb3Jlcy4gT3IgaGF2ZSBJIG1pc3NlZCBzb21ldGhp
-bmcuDQo+DQo+SSBuZWVkIGhlcmU6DQo+DQo+CSAgICAocHJpdi0+ZGV2dHlwZV9kYXRhLT5xdWly
-a3MgJiAoRkxFWENBTl9RVUlSS19CUk9LRU5fUEVSUl9TVEFURSB8DQo+CQkJCQkgICBGTEVYQ0FO
-X1FVSVJLX0JST0tFTl9XRVJSX1NUQVRFKSkgJiYNCj4NCj5PciBtYXliZSBiZXR0ZXIsIGFkZCBG
-TEVYQ0FOX1FVSVJLX0JST0tFTl9QRVJSX1NUQVRFIHRvIHRoZSBsZWdhY3kgY29yZXMNCj5hcyB3
-ZWxsLg0KVGhlIHJlYXNvbiB3aHkgbm90IGFkZCBGTEVYQ0FOX1FVSVJLX0JST0tFTl9XRVJSX1NU
-QVRFIGhlcmUgaXMgdG8gbGVhdmUNCnRoZSB1bnRlc3RlZCBjb3JlcyB3aGljaCBlbmFibGVkIGxl
-Z2FjeSBGTEVYQ0FOX1FVSVJLX0JST0tFTl9FUlJfU1RBVEUNCmJlZm9yZSB3aWxsIG5vdCBiZSBh
-ZmZlY3RlZCBieSB0aGlzIGNoYW5nZSwgZS5nLiwgcDEwMTAuIElmIHRoZXNlIGNvcmVzDQphcmUg
-dGVzdCBpbiBmdXR1cmUsIHRoZW4gdGhlIHF1aXJrcyBjYW4gYmUgdXBkYXRlZCB0byB0aHJvdHRs
-ZSB0aGUNCmludGVycnVwdCBmbG9vZGluZyBhcyB3ZWxsLg0KDQpBbmQgdG8gb3VyIHVuZGVyc3Rh
-bmRpbmcsIHRoZXJlIHNob3VsZCBiZSBubyBleGlzdGluZyBGbGV4Q0FOIGNvcmUNCndoaWNoIG1p
-c3NpbmcgW1RSXVdSTl9JTlQgYnV0IGhhdmluZyBlcnJvciBwYXNzaXZlIGludGVycnVwdCwgdGhh
-dA0KbWVhbnMgRkxFWENBTl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURSBzaG91bGQgbmV2ZXIgYmVl
-biBzZXQgYWxvbmUNCmlmIHNldCB0aGUgW1BXXUVSUl9TVEFURSBxdWlya3MgYWNjb3JkaW5nIHRv
-IHRoZSBoYXJkd2FyZSBmZWF0dXJlLg0KDQpUaGUgY29tYmluYXRpb24gb2YgdGhlc2UgdHdvIHF1
-aXJrcyBzaG91bGQgYmU6DQoxLiBGTEVYQ0FOX1FVSVJLX0JST0tFTl9QRVJSX1NUQVRFIGlzIHNl
-dCBmb3IgbmV3IGNvcmUNCjIuIEZMRVhDQU5fUVVJUktfQlJPS0VOX1dFUlJfU1RBVEUgfCBGTEVY
-Q0FOX1FVSVJLX0JST0tFTl9QRVJSX1NUQVRFDQogICBhcmUgc2V0IGZvciBvbGQgY29yZQ0KMy4g
-Tm9uZSBvZiB0aGVzZSBxdWlya3MgYmVlbiBzZXQgZm9yIHRoZSBmdXR1cmUgY29yZSB3aGljaCBj
-YXBhYmxlIG9mDQogICBnZW5lcmF0ZSBzdGF0ZSBpbnRlcnJ1cHQgZm9yIGFsbCBzdGF0ZSB0cmFu
-c2l0aW9ucw0KDQpJZiB3ZSBhZGQgdGhlIFdFUlJfU1RBVEUgaGVyZSwgdGhlIHByb3MgaXMgdGhl
-IG9sZCBjb3JlIHdpbGwgYXV0b21hdGljDQp0YWtlIGFkdmFudGFnZSBvZiB0aGlzIGNoYW5nZSwg
-dGhlIGNvbnMgaXMgdGhlIHF1aXJrcyBkbyBub3QgbmVlZCB0bw0KbWF0Y2ggdGhlIGV4YWN0IGhh
-cmR3YXJlIGZlYXR1cmUsIHdoaWNoIG1heSBsZWFkIHRvIGEgYml0IGNoYW9zIElNSE8uDQoNCldo
-YXQgZG8geW91IHRoaW5rPw0KDQo+DQo+Pg0KPj4+ICsgICAgICAgIHN3aXRjaCAocHJpdi0+Y2Fu
-LnN0YXRlKSB7DQo+Pj4gKyAgICAgICAgY2FzZSBDQU5fU1RBVEVfRVJST1JfQUNUSVZFOg0KPj4+
-ICsgICAgICAgICAgICBpZiAocHJpdi0+ZGV2dHlwZV9kYXRhLT5xdWlya3MgJg0KPj4+ICsgICAg
-ICAgICAgICAgICAgRkxFWENBTl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURSkNCj4+PiArICAgICAg
-ICAgICAgICAgIGZsZXhjYW5fZXJyb3JfaXJxX2VuYWJsZShwcml2KTsNCj4+PiArICAgICAgICAg
-ICAgZWxzZQ0KPj4+ICsgICAgICAgICAgICAgICAgZmxleGNhbl9lcnJvcl9pcnFfZGlzYWJsZShw
-cml2KTsNCj4+PiArICAgICAgICAgICAgYnJlYWs7DQo+Pj4gKw0KPj4+ICsgICAgICAgIGNhc2Ug
-Q0FOX1NUQVRFX0VSUk9SX1dBUk5JTkc6DQo+Pj4gKyAgICAgICAgICAgIGZsZXhjYW5fZXJyb3Jf
-aXJxX2VuYWJsZShwcml2KTsNCj4+PiArICAgICAgICAgICAgYnJlYWs7DQo+Pj4gKw0KPj4+ICsg
-ICAgICAgIGNhc2UgQ0FOX1NUQVRFX0VSUk9SX1BBU1NJVkU6DQo+Pj4gKyAgICAgICAgY2FzZSBD
-QU5fU1RBVEVfQlVTX09GRjoNCj4+PiArICAgICAgICAgICAgZmxleGNhbl9lcnJvcl9pcnFfZGlz
-YWJsZShwcml2KTsNCj4+PiArICAgICAgICAgICAgYnJlYWs7DQo+Pj4gKw0KPj4+ICsgICAgICAg
-IGRlZmF1bHQ6DQo+Pj4gKyAgICAgICAgICAgIGJyZWFrOw0KPj4+ICsgICAgICAgIH0NCj4+PiAr
-ICAgIH0NCj4+PiArDQo+Pj4gICAgICAgcmV0dXJuIGhhbmRsZWQ7DQo+Pj4gICB9DQo+Pg0KPj4g
-SG9wZSB0byBmaW5kIHNvbWUgdGltZSB0aGlzIHdlZWsgdG8gdGVzdCB0aGUgcGF0Y2hlcyBvbiBt
-eSBpLk1YNTMgYW5kDQo+PiBpLk1YMjggYm9hcmRzLg0KPg0KPkhlcmUgaXMgdGhlIGFubm90YXRl
-ZCB0cmFjZSB3aGVuIHVucGx1Z2dpbmcgYW5kIHJlY29ubmVjdGluZyB0aGUgY2FibGU6DQo+DQo+
-IyBpcCBsaW5rIHNldCBjYW4wIHR4cXVldWVsZW4gMTAwMCB1cCB0eXBlIGNhbiBiaXRyYXRlIDEw
-MDAwMDANCj4jIGNhbnNlbmQgY2FuMCAxMjMjYWJjZA0KPmZsZXhjYW4gNTNmYzgwMDAuY2FuIGNh
-bjA6IGN0cmw9MHgxMWFlYzUzIHJlZ19pZmxhZz0weDIwMCByZWdfZXNyPTB4ODAgZXJyPTAvMA0K
-Pg0KPioqKiBkaXNjb25uZWN0IENBTiBjYWJsZSAqKioNCj4NCj4jIGNhbnNlbmQgY2FuMCAxMjMj
-YWJjZA0KPmZsZXhjYW4gNTNmYzgwMDAuY2FuIGNhbjA6IGN0cmw9MHgxMWFlYzUzIHJlZ19pZmxh
-Zz0weDAgcmVnX2Vzcj0weDIwNDIgZXJyPTgvMA0KPmZsZXhjYW4gNTNmYzgwMDAuY2FuIGNhbjA6
-IGN0cmw9MHgxMWFlYzUzIHJlZ19pZmxhZz0weDAgcmVnX2Vzcj0weDIyMjUyIGVycj0xMjgvMA0K
-PmZsZXhjYW4gNTNmYzgwMDAuY2FuIGNhbjA6IHN0YXRlIDAtPjIgY3RybA0KPg0KPkl0IGp1bXBz
-IGltbWVkaWF0ZWx5IHRvIGVycm9yIHBhc3NpdmUhDQpPbiBpLk1YNiBpdCBkb2Vzbid0IGp1bXAs
-IHN1cHByaXNlIG9mIGkuTVg1MyA6KQ0KDQo+DQo+KioqIHJlY29ubmVjdCBDQU4gY2FibGUgKioq
-DQo+DQo+ZmxleGNhbiA1M2ZjODAwMC5jYW4gY2FuMDogY3RybD0weDExYWFjNTMgcmVnX2lmbGFn
-PTB4MjAwIHJlZ19lc3I9MHgyMjkyIGVycj0xMzUvMA0KPg0KPlRoZSBlcnJvciBjb3VudGVyIGp1
-bXBzIHRvIDEzNS4uLiB3ZWlyZCENCkEgcG9zc2libGUgZXhwbGFuYXRpb24gaXMsIHdoaWxlIHJl
-Y29ubmVjdGluZywgdGhlIGVycm9yIGNvdW50ZXIgZmlyc3QNCmRlY3JlYXNlIGJ5IDEsIGFuZCB0
-aGVuIGluY3JlYXNlIGJ5IDgsIHNvIHdlIGdldCAxMzUuIEJ1dCBpZiB0aGlzIGlzDQp0aGUgY2Fz
-ZSwgZHVlIHRvIHRoZSBhdXRvLXJldHJhbnNtaXNzaW9uIHdpbGwgb25seSBzZW50IG9uZSBmcmFt
-ZSwgdGhhdA0KbWVhbnMgaS5NWDUzIGRvZXNuJ3Qgc3RyaWN0IHRvIHRoZSBlcnJvciBjb3VudGVy
-IGRlY3JlYXNlIHJ1bGU6DQoxMi4xLjQuMiBFcnJvciBjb3VudGluZw0KZykgQWZ0ZXIgdGhlIHN1
-Y2Nlc3NmdWwgdHJhbnNtaXNzaW9uIG9mIGEgZnJhbWUgKGdldHRpbmcgQUNLIGFuZCBubw0KICAg
-ZXJyb3IgaGFzIGJlZW4gZGV0ZWN0ZWQgdW50aWwgRU9GIGlzIGZpbmlzaGVkKSwgdGhlIHRyYW5z
-bWl0IGVycm9yDQogICBjb3VudGVyIHNoYWxsIGJlIGRlY3JlbWVudGVkIGJ5IDEgdW5sZXNzIGl0
-IHdhcyBhbHJlYWR5IDAuDQpTbyB3ZSBzaG91bGQgZ2V0IGVpdGhlciAxMjcgaWYgc3VjY2VlZCwg
-b3IgMTI4IGlmIEFDSyBlcnJvciBkZXRlY3RlZC4NCg0KPg0KPiMgY2Fuc2VuZCBjYW4wIDEyMyNh
-YmNkDQo+ZmxleGNhbiA1M2ZjODAwMC5jYW4gY2FuMDogY3RybD0weDExYWFjNTMgcmVnX2lmbGFn
-PTB4MjAwIHJlZ19lc3I9MHgyOTAgZXJyPTEzNC8wDQo+Li4uDQo+IyBjYW5zZW5kIGNhbjAgMTIz
-I2FiY2QNCj5mbGV4Y2FuIDUzZmM4MDAwLmNhbiBjYW4wOiBjdHJsPTB4MTFhYWM1MyByZWdfaWZs
-YWc9MHgyMDAgcmVnX2Vzcj0weDI5MCBlcnI9MTI4LzANCj4jIGNhbnNlbmQgY2FuMCAxMjMjYWJj
-ZA0KPmZsZXhjYW4gNTNmYzgwMDAuY2FuIGNhbjA6IGN0cmw9MHgxMWFhYzUzIHJlZ19pZmxhZz0w
-eDIwMCByZWdfZXNyPTB4MjgwIGVycj0xMjcvMA0KPmZsZXhjYW4gNTNmYzgwMDAuY2FuIGNhbjA6
-IHN0YXRlIDItPjEgY3RybA0KPg0KPlRoZW4gaXQgdGFrZXMgc29tZSB0cmFuc2ZlcnMgYmVmb3Jl
-IGVycm9yIHdhcm5pbmcgaXMgcmVhY2hlZC4NCj4NCj4jIGNhbnNlbmQgY2FuMCAxMjMjYWJjZA0K
-PmZsZXhjYW4gNTNmYzgwMDAuY2FuIGNhbjA6IGN0cmw9MHgxMWFlYzUzIHJlZ19pZmxhZz0weDIw
-MCByZWdfZXNyPTB4MjgwIGVycj0xMjYvMA0KPi4uLg0KPiMgY2Fuc2VuZCBjYW4wIDEyMyNhYmNk
-DQo+ZmxleGNhbiA1M2ZjODAwMC5jYW4gY2FuMDogY3RybD0weDExYWVjNTMgcmVnX2lmbGFnPTB4
-MjAwIHJlZ19lc3I9MHgyODAgZXJyPTk3LzANCj4jIGNhbnNlbmQgY2FuMCAxMjMjYWJjZA0KPmZs
-ZXhjYW4gNTNmYzgwMDAuY2FuIGNhbjA6IGN0cmw9MHgxMWFlYzUzIHJlZ19pZmxhZz0weDIwMCBy
-ZWdfZXNyPTB4MjgwIGVycj05Ni8wDQo+IyBjYW5zZW5kIGNhbjAgMTIzI2FiY2QNCj5mbGV4Y2Fu
-IDUzZmM4MDAwLmNhbiBjYW4wOiBjdHJsPTB4MTFhZWM1MyByZWdfaWZsYWc9MHgyMDAgcmVnX2Vz
-cj0weDgwIGVycj05NS8wDQo+ZmxleGNhbiA1M2ZjODAwMC5jYW4gY2FuMDogc3RhdGUgMS0+MCBj
-dHJsDQo+IyBjYW5zZW5kIGNhbjAgMTIzI2FiY2QNCj5mbGV4Y2FuIDUzZmM4MDAwLmNhbiBjYW4w
-OiBjdHJsPTB4MTFhZWM1MyByZWdfaWZsYWc9MHgyMDAgcmVnX2Vzcj0weDgwIGVycj05NC8wDQo+
-DQo+KioqIGRpc2Nvbm5lY3QgQ0FOIGNhYmxlIGFnYWluICoqKg0KPg0KPiMgY2Fuc2VuZCBjYW4w
-IDEyMyNhYmNkDQo+ZmxleGNhbiA1M2ZjODAwMC5jYW4gY2FuMDogY3RybD0weDExYWVjNTMgcmVn
-X2lmbGFnPTB4MCByZWdfZXNyPTB4MjIyNDIgZXJyPTk4LzANCj5mbGV4Y2FuIDUzZmM4MDAwLmNh
-biBjYW4wOiBzdGF0ZSAwLT4xIGN0cmwNCj5mbGV4Y2FuIDUzZmM4MDAwLmNhbiBjYW4wOiBjdHJs
-PTB4MTFhZWM1MyByZWdfaWZsYWc9MHgwIHJlZ19lc3I9MHgyMjUyIGVycj0xMzAvMA0KPmZsZXhj
-YW4gNTNmYzgwMDAuY2FuIGNhbjA6IHN0YXRlIDEtPjIgY3RybA0KPg0KPlRoaXMgdGltZSBlcnJv
-ciB3YXJuaW5nIGlzIHNpZ25hbGxlZCIuIEFuZCBoZXJlIGlzIHdpdGggc2hvcnQtY2lyY3VpdGlu
-Zw0KPkNBTiBsb3cgYW5kIGhpZ2g6DQo+DQo+IyBjYW5zZW5kIGNhbjAgMTIzI2FiY2QNCj5mbGV4
-Y2FuIDUzZmM4MDAwLmNhbiBjYW4wOiBjdHJsPTB4MTFhZWM1MyByZWdfaWZsYWc9MHgwIHJlZ19l
-c3I9MHgyNDI1MiBlcnI9MTM2LzANCj5mbGV4Y2FuIDUzZmM4MDAwLmNhbiBjYW4wOiBzdGF0ZSAw
-LT4yIGN0cmwNCj5mbGV4Y2FuIDUzZmM4MDAwLmNhbiBjYW4wOiBjdHJsPTB4MTFhYWM1MyByZWdf
-aWZsYWc9MHgwIHJlZ19lc3I9MHg0MDM0IGVycj0wLzANCj5mbGV4Y2FuIDUzZmM4MDAwLmNhbiBj
-YW4wOiBzdGF0ZSAyLT4zIGN0cmwNCj4jIGlwIGxpbmsgc2V0IGNhbjAgdHlwZSBjYW4gcmVzdGFy
-dA0KPg0KPkV2ZW4gaWYgdGhlIHN0YXRlIHJlcG9ydGluZyBpcyBraW5kIG9mIHdlaXJkIHdpdGgg
-dGhhdCBjb3JlLCBpbnRlcnJ1cHQgZmxvb2RpbmcNCj5kb2VzIG5vdCBoYXBwZW4uDQpHcmVhdCEg
-VGhlIHBhdGNoIHNlZW1zIHdvcmsgb24gdGhpcyBjb3JlIHRvby4gOikNCg0KQlRXLCBkbyB5b3Ug
-YXBwbHkgdGhlIHBhdGNoIGZyb20gdGhlIGlubGluZSB0ZXh0IG9mIHRoZSBlLW1haWw/IFdlIGFy
-ZQ0KY3VyaW91cyBvZiB3aGV0aGVyIG91dGxvb2sgMjAxMyBpcyBhYmxlIHRvIHNlbmQgaW5saW5l
-IHBhdGNoIG9yIG5vdC4NCg0KVGhhbmtzIQ0KDQpCZXN0IHJlZ2FyZHMNCllpDQo=
+Hello ZHU Yi,
+
+Am 07.09.2017 um 08:01 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
+> Hello Wolfgang,
+> 
+>> From: Wolfgang Grandegger [mailto:wg@grandegger.com]
+>> Sent: Thursday, September 07, 2017 4:17 AM
+>> Hello ZHU Yi,
+>>
+>> now testing on an i.MX53 board (quirks=2):
+>>
+>> Am 06.09.2017 um 13:47 schrieb Wolfgang Grandegger:
+[snip]
+>> I need here:
+>> 
+>> 	    (priv->devtype_data->quirks & (FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+>> 					   FLEXCAN_QUIRK_BROKEN_WERR_STATE)) &&
+>> 
+>> Or maybe better, add FLEXCAN_QUIRK_BROKEN_PERR_STATE to the legacy cores
+>> as well.
+> The reason why not add FLEXCAN_QUIRK_BROKEN_WERR_STATE here is to leave
+> the untested cores which enabled legacy FLEXCAN_QUIRK_BROKEN_ERR_STATE
+> before will not be affected by this change, e.g., p1010. If these cores
+> are test in future, then the quirks can be updated to throttle the
+> interrupt flooding as well.
+
+I tested the i.MX53. The P1010 is an old PowerPC SOC. Can't tell if it's 
+error handling is different.
+
+> And to our understanding, there should be no existing FlexCAN core
+> which missing [TR]WRN_INT but having error passive interrupt, that
+> means FLEXCAN_QUIRK_BROKEN_WERR_STATE should never been set alone
+> if set the [PW]ERR_STATE quirks according to the hardware feature.
+
+Yep.
+
+> The combination of these two quirks should be:
+> 1. FLEXCAN_QUIRK_BROKEN_PERR_STATE is set for new core
+> 2. FLEXCAN_QUIRK_BROKEN_WERR_STATE | FLEXCAN_QUIRK_BROKEN_PERR_STATE
+>    are set for old core
+> 3. None of these quirks been set for the future core which capable of
+>    generate state interrupt for all state transitions
+
+Yep.
+
+> If we add the WERR_STATE here, the pros is the old core will automatic
+> take advantage of this change, the cons is the quirks do not need to
+> match the exact hardware feature, which may lead to a bit chaos IMHO.
+
+Well, it's not always possible to make it right for all hardware 
+variants. People will speak up in case of problems.
+
+> What do you think?
+
+I would set FLEXCAN_QUIRK_BROKEN_PERR_STATE for the legacy cores as 
+well. I have an i.MX28 board here as well. It should not need the 
+quirks. Will test it later this week.
+
+[snip]
+>> Here is the annotated trace when unplugging and reconnecting the cable:
+>>
+>> # ip link set can0 txqueuelen 1000 up type can bitrate 1000000
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x200 reg_esr=0x80 err=0/0
+>>
+>> *** disconnect CAN cable ***
+>>
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x0 reg_esr=0x2042 err=8/0
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x0 reg_esr=0x22252 err=128/0
+>> flexcan 53fc8000.can can0: state 0->2 ctrl
+>>
+>> It jumps immediately to error passive!
+> On i.MX6 it doesn't jump, supprise of i.MX53 :)
+> 
+>>
+>> *** reconnect CAN cable ***
+>>
+>> flexcan 53fc8000.can can0: ctrl=0x11aac53 reg_iflag=0x200 reg_esr=0x2292 err=135/0
+>>
+>> The error counter jumps to 135... weird!
+> A possible explanation is, while reconnecting, the error counter first
+> decrease by 1, and then increase by 8, so we get 135. But if this is
+> the case, due to the auto-retransmission will only sent one frame, that
+> means i.MX53 doesn't strict to the error counter decrease rule:
+> 12.1.4.2 Error counting
+> g) After the successful transmission of a frame (getting ACK and no
+>     error has been detected until EOF is finished), the transmit error
+>     counter shall be decremented by 1 unless it was already 0.
+> So we should get either 127 if succeed, or 128 if ACK error detected.
+
+Well, the error handling of that core is just buggy.
+
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aac53 reg_iflag=0x200 reg_esr=0x290 err=134/0
+>> ...
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aac53 reg_iflag=0x200 reg_esr=0x290 err=128/0
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aac53 reg_iflag=0x200 reg_esr=0x280 err=127/0
+>> flexcan 53fc8000.can can0: state 2->1 ctrl
+>>
+>> Then it takes some transfers before error warning is reached.
+>>
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x200 reg_esr=0x280 err=126/0
+>> ...
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x200 reg_esr=0x280 err=97/0
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x200 reg_esr=0x280 err=96/0
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x200 reg_esr=0x80 err=95/0
+>> flexcan 53fc8000.can can0: state 1->0 ctrl
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x200 reg_esr=0x80 err=94/0
+>>
+>> *** disconnect CAN cable again ***
+>>
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x0 reg_esr=0x22242 err=98/0
+>> flexcan 53fc8000.can can0: state 0->1 ctrl
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x0 reg_esr=0x2252 err=130/0
+>> flexcan 53fc8000.can can0: state 1->2 ctrl
+>>
+>> This time error warning is signalled". And here is with short-circuiting
+>> CAN low and high:
+>>
+>> # cansend can0 123#abcd
+>> flexcan 53fc8000.can can0: ctrl=0x11aec53 reg_iflag=0x0 reg_esr=0x24252 err=136/0
+>> flexcan 53fc8000.can can0: state 0->2 ctrl
+>> flexcan 53fc8000.can can0: ctrl=0x11aac53 reg_iflag=0x0 reg_esr=0x4034 err=0/0
+>> flexcan 53fc8000.can can0: state 2->3 ctrl
+>> # ip link set can0 type can restart
+>>
+>> Even if the state reporting is kind of weird with that core, interrupt flooding
+>> does not happen.
+> Great! The patch seems work on this core too. :)
+
+Yes, it works for the i.MX53, at least.
+
+> BTW, do you apply the patch from the inline text of the e-mail? We are
+> curious of whether outlook 2013 is able to send inline patch or not.
+
+No problem, "git am" worked like a charm.
+
+Wolfgang.
