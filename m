@@ -1,81 +1,84 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH 3/4] can: flexcan: implement error passive state quirk
-Date: Thu, 7 Sep 2017 20:17:17 +0200
-Message-ID: <20820cdf-afff-9d04-3c9c-511e45bd0853@grandegger.com>
+From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Subject: RE: [PATCH 3/4] can: flexcan: implement error passive state quirk
+Date: Fri, 8 Sep 2017 06:10:19 +0000
+Message-ID: <1ccdad7593e34103bd4d96f5b1e64ea7@SGPMBX1017.APAC.bosch.com>
 References: <87faf67d90a246938e0b51d2ddbc8b82@SGPMBX1017.APAC.bosch.com>
  <cc678b44-0aa8-ac91-567e-8b9c234ed024@grandegger.com>
  <ad3cf1da-ca4b-6149-876a-0c983f9d48c8@grandegger.com>
  <dfb4fd69b6d0463ca565245f4c072b90@SGPMBX1017.APAC.bosch.com>
  <1685670a-c87d-2204-7e46-c36ebb8b072f@grandegger.com>
  <bf6cad90aa9d4e8da439a5ac2e21eafd@SGPMBX1017.APAC.bosch.com>
+ <20820cdf-afff-9d04-3c9c-511e45bd0853@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy02.manitu.net ([217.11.48.66]:48576 "EHLO
-        mailproxy02.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755524AbdIGSRT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Sep 2017 14:17:19 -0400
-In-Reply-To: <bf6cad90aa9d4e8da439a5ac2e21eafd@SGPMBX1017.APAC.bosch.com>
-Content-Language: en-GB
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:51981 "EHLO
+        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752762AbdIHGKY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Sep 2017 02:10:24 -0400
+In-Reply-To: <20820cdf-afff-9d04-3c9c-511e45bd0853@grandegger.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-Hello ZHU Yi,
-
-Am 07.09.2017 um 10:11 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
-> Hello Wolfgang,
-> 
->> From: Wolfgang Grandegger [mailto:wg@grandegger.com]
->> Sent: Thursday, September 07, 2017 3:27 PM
->>
->> [snip]
->>>> I need here:
->>>>
->>>> 	    (priv->devtype_data->quirks & (FLEXCAN_QUIRK_BROKEN_PERR_STATE |
->>>> 					   FLEXCAN_QUIRK_BROKEN_WERR_STATE)) &&
->>>>
->>>> Or maybe better, add FLEXCAN_QUIRK_BROKEN_PERR_STATE to the legacy cores
->>>> as well.
->> [snip]
->>> If we add the WERR_STATE here, the pros is the old core will automatic
->>> take advantage of this change, the cons is the quirks do not need to
->>> match the exact hardware feature, which may lead to a bit chaos IMHO.
->>
->> Well, it's not always possible to make it right for all hardware
->> variants. People will speak up in case of problems.
-> Agree.
-> 
->>
->>> What do you think?
->>
->> I would set FLEXCAN_QUIRK_BROKEN_PERR_STATE for the legacy cores as
->> well. I have an i.MX28 board here as well. It should not need the
->> quirks. Will test it later this week.
-> Great! According to i.MX28's datasheet, the guess is it should need
-> the FLEXCAN_QUIRK_BROKEN_PERR_STATE enabled as well as i.MX6.
-> I'm looking forward to the results and hope it works! :)
-
-Yes, it needs:
-
-static const struct flexcan_devtype_data fsl_imx28_devtype_data = {
-	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE,
-};
-
-Error warning is always reported and with the quirk above also error
-passive. After reconnecting the cable the error counter also jumps to
-135. With bus-off, the device also reports 3->0 after bus error
-recovery:
-
-[  674.862816] flexcan 80032000.can can0: ctrl=0x11aac53 reg_iflag=0x0 reg_esr=0x24252 err=138/1
-[  674.871542] flexcan 80032000.can can0: state 0->2 ctrl
-[  674.877038] flexcan 80032000.can can0: ctrl=0x11aac53 reg_iflag=0x0 reg_esr=0x4034 err=0/0
-[  674.885837] flexcan 80032000.can can0: state 2->3 ctrl
-root@m28evk:~# [  674.985897] flexcan 80032000.can can0: ctrl=0x11aa053 reg_iflag=0x0 reg_esr=0x4 err=0/0
-[  674.994090] flexcan 80032000.can can0: state 3->0 ctrl
-
-That was missing on the i.MX53.
-
-Wolfgang.
+SGVsbG8gV29sZmdhbmcsDQoNCj5Gcm9tOiBXb2xmZ2FuZyBHcmFuZGVnZ2VyIFttYWlsdG86d2dA
+Z3JhbmRlZ2dlci5jb21dDQo+U2VudDogRnJpZGF5LCBTZXB0ZW1iZXIgMDgsIDIwMTcgMjoxNyBB
+TQ0KPg0KPiBbLi4uXQ0KPkVycm9yIHdhcm5pbmcgaXMgYWx3YXlzIHJlcG9ydGVkIGFuZCB3aXRo
+IHRoZSBxdWlyayBhYm92ZSBhbHNvIGVycm9yDQo+cGFzc2l2ZS4gQWZ0ZXIgcmVjb25uZWN0aW5n
+IHRoZSBjYWJsZSB0aGUgZXJyb3IgY291bnRlciBhbHNvIGp1bXBzIHRvDQo+MTM1LiBXaXRoIGJ1
+cy1vZmYsIHRoZSBkZXZpY2UgYWxzbyByZXBvcnRzIDMtPjAgYWZ0ZXIgYnVzIGVycm9yDQo+cmVj
+b3Zlcnk6DQoNCmkuTVg2IGRvbid0IHJlcG9ydCAzLT4wIGFmdGVyIGJ1cyBlcnJvciByZWNvdmVy
+eSAocmVtb3ZlIHNob3J0LWNpcmN1aXQhPyk6DQpbICAgNzQuMjIyMTM1XSBmbGV4Y2FuIDIwOTAw
+MDAuZmxleGNhbiBtb2IwOiBOZXcgZXJyb3Igc3RhdGU6IDINClsgICA3NC4yMjIxNzBdIGZsZXhj
+YW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19jdHJsPTB4MTNhYWM1NywgcmVnX2lmbGFnMT0w
+eDAsIHJlZ19lc3I9MHg2NDI1MiwgZXJyPTEzNi8wDQpbICAgNzQuMjIyOTE1XSBmbGV4Y2FuIDIw
+OTAwMDAuZmxleGNhbiBtb2IwOiBOZXcgZXJyb3Igc3RhdGU6IDMNClsgICA3NC4yMjI5MzNdIGZs
+ZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IGJ1cy1vZmYNClsgICA3NC4yMjI5NzldIGZsZXhj
+YW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19jdHJsPTB4MTNhYWM1NywgcmVnX2lmbGFnMT0w
+eDAsIHJlZ19lc3I9MHg0MDM2LCBlcnI9MC8wDQoNCkknbSB3b25kZXJpbmcgd2hhdCBpcyB0aGUg
+Y29ycmVjdCBiZWhhdmlvcj8NCg0KVGhlIGF1dG9tYXRpYyByZWNvdmVyaW5nIGZyb20gYnVzIG9m
+ZiBpcyBkaXNhYmxlZCBpbiBGbGV4Q0FOIGJ5IHdyaXRlDQoxIHRvIEJPRkZfUkVDIG9mIENUUkws
+IHNlZQ0KaHR0cDovL2VsaXhpci5mcmVlLWVsZWN0cm9ucy5jb20vbGludXgvbGF0ZXN0L3NvdXJj
+ZS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jI0w4ODMuDQoNCkhlbmNlIGFmdGVyIHRoZSBjb3Jl
+IGVudGVycyBidXMgb2ZmLCBpdCBuZWVkcyB0byBzdGF5IGluIHRoaXMgc3RhdGUNCnVudGlsICJy
+ZXN0YXJ0LW1zIiBvciBtYW51YWxseSByZXN0YXJ0LCBhY2NvcmRpbmcgdG86DQoxMi4xLjQuNCBC
+dXMtb2ZmIG1hbmFnZW1lbnQNClsuLi5dDQpVcG9uIGEgcmVzdGFydCByZXF1ZXN0LCBhIG5vZGUg
+d2hpY2ggaXMgaW4gdGhlIGJ1cy1vZmYgc3RhdGUgc2hhbGwgYmUNCmludGVncmF0aW5nIHRvIHRo
+ZSBDQU4gY29tbXVuaWNhdGlvbiAoc2VlIDEwLjkuNCkgYW5kIG1heSBiZWNvbWUNCmVycm9yLWFj
+dGl2ZSAobm8gbG9uZ2VyIGJ1cy1vZmYpIHdpdGggaXRzIGVycm9yIGNvdW50ZXJzIGJvdGggc2V0
+IHRvDQp6ZXJvIGFmdGVyIGhhdmluZyBtb25pdG9yZWQgMTI4IG9jY3VycmVuY2VzIG9mIHRoZSBp
+ZGxlIGNvbmRpdGlvbg0KKHNlZSA0LjI4KSBvbiB0aGUgYnVzIChzZWUgRmlndXJlIDI4KS4NCg0K
+QnV0IGFjY29yZGluZyB0byBiZWxvdyB0cmFjZSwgc2VlbXMgaS5NWDI4IHN0aWxsIGNoYW5nZSBz
+dGF0ZSB0byBlcnJvcg0KYWN0aXZlIGV2ZW4gdGhlcmUgaXMgbm8gcmVzdGFydCByZXF1ZXN0Lg0K
+DQo+DQo+WyAgNjc0Ljg2MjgxNl0gZmxleGNhbiA4MDAzMjAwMC5jYW4gY2FuMDogY3RybD0weDEx
+YWFjNTMgcmVnX2lmbGFnPTB4MCByZWdfZXNyPTB4MjQyNTIgZXJyPTEzOC8xDQpjdHJsOiBCT0ZG
+X01TSz0xYiwgRVJSX01TSz0wYiwgW1RSXVdSTl9NU0s9MTFiDQplc3I6ICBUV1JOX0lOVD0xYiwg
+RkxUX0NPTkY9MDFiDQpzbyB0aGUgc3RhdGUgY2hhbmdlIHRvIGVycm9yIHBhc3NpdmUgdXBvbiBh
+ICJ3YXJuaW5nIiBpbnRlcnJ1cHQuDQo+WyAgNjc0Ljg3MTU0Ml0gZmxleGNhbiA4MDAzMjAwMC5j
+YW4gY2FuMDogc3RhdGUgMC0+MiBjdHJsDQoNCj5bICA2NzQuODc3MDM4XSBmbGV4Y2FuIDgwMDMy
+MDAwLmNhbiBjYW4wOiBjdHJsPTB4MTFhYWM1MyByZWdfaWZsYWc9MHgwIHJlZ19lc3I9MHg0MDM0
+IGVycj0wLzANCmN0cmw6IEJPRkZfTVNLPTFiLCBFUlJfTVNLPTBiLCBbVFJdV1JOX01TSz0xMWIN
+CmVzcjogIEJPRkZfSU5UPTFiLCBGTFRfQ09ORj0xMWINCnNvIHRoZSBzdGF0ZSBjaGFuZ2UgdG8g
+YnVzIG9mZiB1cG9uIGEgImJ1cyBvZmYiIGludGVycnVwdC4NCj5bICA2NzQuODg1ODM3XSBmbGV4
+Y2FuIDgwMDMyMDAwLmNhbiBjYW4wOiBzdGF0ZSAyLT4zIGN0cmwNCg0KPnJvb3RAbTI4ZXZrOn4j
+IFsgIDY3NC45ODU4OTddIGZsZXhjYW4gODAwMzIwMDAuY2FuIGNhbjA6IGN0cmw9MHgxMWFhMDUz
+IHJlZ19pZmxhZz0weDAgcmVnX2Vzcj0weDQgZXJyPTAvMA0KY3RybDogQk9GRl9NU0s9MWIsIEVS
+Ul9NU0s9MGIsIFtUUl1XUk5fTVNLPTAwYg0KZXNyOiAgQk9GRl9JTlQ9MWIsIEZMVF9DT05GPTAw
+Yg0Kc28gdGhlIHN0YXRlIGNoYW5nZSB0byBlcnJvciBhY3RpdmUgdXBvbiBhICJidXMgb2ZmIiBp
+bnRlcnJ1cHQuDQo+WyAgNjc0Ljk5NDA5MF0gZmxleGNhbiA4MDAzMjAwMC5jYW4gY2FuMDogc3Rh
+dGUgMy0+MCBjdHJsDQoNClRoZSBzdHJhbmdlIHRoaW5nIGlzIHRoZSBCT0ZGX0lOVCBnZW5lcmF0
+ZWQgYWdhaW4gd2l0aG91dCByZXN0YXJ0LA0KYW5kIHRoZSBbVFJdV1JOX01TSyBhcmUgY2xlYXJl
+ZCB0byAwIHdoZW4gdGhpcyBoYXBwZW4uIEJlY2F1c2U6DQoxLiBpZiB0aGUgbm9kZSBlbnRlcnMg
+YnVzIG9mZiwgaXQgc2hvdWxkIG5vdCBnZW5lcmF0ZSBpcnEgYW55bW9yZSAocmlnaHQ/KQ0KMi4g
+ZHJpdmVyIGNvZGUgd29uJ3Qgb25seSBjbGVhciBbVFJdV1JOX01TSyBidXQgbGVhdmUgQk9GRl9N
+U0sgc2V0DQoNCkknbSBub3Qgc3VyZSBpcyB0aGUgY29yZSBzdGlsbCBhYmxlIHRvIHNlbmQvcmVj
+ZWl2ZSBmcmFtZSB3aGVuIGl0IGlzDQppbiB0aGlzICJlcnJvciBhY3RpdmUiIHN0YXRlICh3aXRo
+b3V0IHJlc3RhcnQpLg0KDQpJZiBpdCBzdGlsbCB3b3JrcywgdGhlbiB0aGUgY29yZSBqdXN0IHBl
+cmZvcm1zIHNvbWUgbWFnaWNhbA0KYXV0by1yZWNvdmVyeSB3aGljaCB2aW9sYXRlcyB0aGUgQk9G
+Rl9SRUMgc2V0dGluZy4NCg0KSWYgaXQgY2Fubm90IHdvcmssIHRoZW4gdGhhdCBtZWFucyB3cm9u
+ZyBzdGF0ZSBiZWVuIHJlcG9ydGVkLCBhbmQNCnBlcmhhcHMgYW5vdGhlciBxdWlyayBuZWVkZWQg
+Zm9yIGkuTVgyOCB0byByZXBvcnQgYnVzIG9mZiBpbnN0ZWFkDQpvZiBlcnJvciBhY3RpdmUgaW4g
+dGhpcyBjYXNlLg0KDQpXaGF0IGRvIHlvdSB0aGluaz8NCg0KQmVzdCByZWdhcmRzDQpZaQ0K
