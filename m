@@ -1,7 +1,7 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: [PATCH 3/4] can: flexcan: implement error passive state quirk
-Date: Fri, 8 Sep 2017 06:10:19 +0000
-Message-ID: <1ccdad7593e34103bd4d96f5b1e64ea7@SGPMBX1017.APAC.bosch.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH 3/4] can: flexcan: implement error passive state quirk
+Date: Fri, 8 Sep 2017 09:02:01 +0200
+Message-ID: <92d997b5-957e-7e0b-70aa-bff16e289e81@grandegger.com>
 References: <87faf67d90a246938e0b51d2ddbc8b82@SGPMBX1017.APAC.bosch.com>
  <cc678b44-0aa8-ac91-567e-8b9c234ed024@grandegger.com>
  <ad3cf1da-ca4b-6149-876a-0c983f9d48c8@grandegger.com>
@@ -9,76 +9,123 @@ References: <87faf67d90a246938e0b51d2ddbc8b82@SGPMBX1017.APAC.bosch.com>
  <1685670a-c87d-2204-7e46-c36ebb8b072f@grandegger.com>
  <bf6cad90aa9d4e8da439a5ac2e21eafd@SGPMBX1017.APAC.bosch.com>
  <20820cdf-afff-9d04-3c9c-511e45bd0853@grandegger.com>
+ <1ccdad7593e34103bd4d96f5b1e64ea7@SGPMBX1017.APAC.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:51981 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752762AbdIHGKY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Sep 2017 02:10:24 -0400
-In-Reply-To: <20820cdf-afff-9d04-3c9c-511e45bd0853@grandegger.com>
-Content-Language: en-US
+Received: from mailproxy01.manitu.net ([217.11.48.65]:45200 "EHLO
+        mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753126AbdIHHCD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Sep 2017 03:02:03 -0400
+In-Reply-To: <1ccdad7593e34103bd4d96f5b1e64ea7@SGPMBX1017.APAC.bosch.com>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-SGVsbG8gV29sZmdhbmcsDQoNCj5Gcm9tOiBXb2xmZ2FuZyBHcmFuZGVnZ2VyIFttYWlsdG86d2dA
-Z3JhbmRlZ2dlci5jb21dDQo+U2VudDogRnJpZGF5LCBTZXB0ZW1iZXIgMDgsIDIwMTcgMjoxNyBB
-TQ0KPg0KPiBbLi4uXQ0KPkVycm9yIHdhcm5pbmcgaXMgYWx3YXlzIHJlcG9ydGVkIGFuZCB3aXRo
-IHRoZSBxdWlyayBhYm92ZSBhbHNvIGVycm9yDQo+cGFzc2l2ZS4gQWZ0ZXIgcmVjb25uZWN0aW5n
-IHRoZSBjYWJsZSB0aGUgZXJyb3IgY291bnRlciBhbHNvIGp1bXBzIHRvDQo+MTM1LiBXaXRoIGJ1
-cy1vZmYsIHRoZSBkZXZpY2UgYWxzbyByZXBvcnRzIDMtPjAgYWZ0ZXIgYnVzIGVycm9yDQo+cmVj
-b3Zlcnk6DQoNCmkuTVg2IGRvbid0IHJlcG9ydCAzLT4wIGFmdGVyIGJ1cyBlcnJvciByZWNvdmVy
-eSAocmVtb3ZlIHNob3J0LWNpcmN1aXQhPyk6DQpbICAgNzQuMjIyMTM1XSBmbGV4Y2FuIDIwOTAw
-MDAuZmxleGNhbiBtb2IwOiBOZXcgZXJyb3Igc3RhdGU6IDINClsgICA3NC4yMjIxNzBdIGZsZXhj
-YW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19jdHJsPTB4MTNhYWM1NywgcmVnX2lmbGFnMT0w
-eDAsIHJlZ19lc3I9MHg2NDI1MiwgZXJyPTEzNi8wDQpbICAgNzQuMjIyOTE1XSBmbGV4Y2FuIDIw
-OTAwMDAuZmxleGNhbiBtb2IwOiBOZXcgZXJyb3Igc3RhdGU6IDMNClsgICA3NC4yMjI5MzNdIGZs
-ZXhjYW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IGJ1cy1vZmYNClsgICA3NC4yMjI5NzldIGZsZXhj
-YW4gMjA5MDAwMC5mbGV4Y2FuIG1vYjA6IHJlZ19jdHJsPTB4MTNhYWM1NywgcmVnX2lmbGFnMT0w
-eDAsIHJlZ19lc3I9MHg0MDM2LCBlcnI9MC8wDQoNCkknbSB3b25kZXJpbmcgd2hhdCBpcyB0aGUg
-Y29ycmVjdCBiZWhhdmlvcj8NCg0KVGhlIGF1dG9tYXRpYyByZWNvdmVyaW5nIGZyb20gYnVzIG9m
-ZiBpcyBkaXNhYmxlZCBpbiBGbGV4Q0FOIGJ5IHdyaXRlDQoxIHRvIEJPRkZfUkVDIG9mIENUUkws
-IHNlZQ0KaHR0cDovL2VsaXhpci5mcmVlLWVsZWN0cm9ucy5jb20vbGludXgvbGF0ZXN0L3NvdXJj
-ZS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jI0w4ODMuDQoNCkhlbmNlIGFmdGVyIHRoZSBjb3Jl
-IGVudGVycyBidXMgb2ZmLCBpdCBuZWVkcyB0byBzdGF5IGluIHRoaXMgc3RhdGUNCnVudGlsICJy
-ZXN0YXJ0LW1zIiBvciBtYW51YWxseSByZXN0YXJ0LCBhY2NvcmRpbmcgdG86DQoxMi4xLjQuNCBC
-dXMtb2ZmIG1hbmFnZW1lbnQNClsuLi5dDQpVcG9uIGEgcmVzdGFydCByZXF1ZXN0LCBhIG5vZGUg
-d2hpY2ggaXMgaW4gdGhlIGJ1cy1vZmYgc3RhdGUgc2hhbGwgYmUNCmludGVncmF0aW5nIHRvIHRo
-ZSBDQU4gY29tbXVuaWNhdGlvbiAoc2VlIDEwLjkuNCkgYW5kIG1heSBiZWNvbWUNCmVycm9yLWFj
-dGl2ZSAobm8gbG9uZ2VyIGJ1cy1vZmYpIHdpdGggaXRzIGVycm9yIGNvdW50ZXJzIGJvdGggc2V0
-IHRvDQp6ZXJvIGFmdGVyIGhhdmluZyBtb25pdG9yZWQgMTI4IG9jY3VycmVuY2VzIG9mIHRoZSBp
-ZGxlIGNvbmRpdGlvbg0KKHNlZSA0LjI4KSBvbiB0aGUgYnVzIChzZWUgRmlndXJlIDI4KS4NCg0K
-QnV0IGFjY29yZGluZyB0byBiZWxvdyB0cmFjZSwgc2VlbXMgaS5NWDI4IHN0aWxsIGNoYW5nZSBz
-dGF0ZSB0byBlcnJvcg0KYWN0aXZlIGV2ZW4gdGhlcmUgaXMgbm8gcmVzdGFydCByZXF1ZXN0Lg0K
-DQo+DQo+WyAgNjc0Ljg2MjgxNl0gZmxleGNhbiA4MDAzMjAwMC5jYW4gY2FuMDogY3RybD0weDEx
-YWFjNTMgcmVnX2lmbGFnPTB4MCByZWdfZXNyPTB4MjQyNTIgZXJyPTEzOC8xDQpjdHJsOiBCT0ZG
-X01TSz0xYiwgRVJSX01TSz0wYiwgW1RSXVdSTl9NU0s9MTFiDQplc3I6ICBUV1JOX0lOVD0xYiwg
-RkxUX0NPTkY9MDFiDQpzbyB0aGUgc3RhdGUgY2hhbmdlIHRvIGVycm9yIHBhc3NpdmUgdXBvbiBh
-ICJ3YXJuaW5nIiBpbnRlcnJ1cHQuDQo+WyAgNjc0Ljg3MTU0Ml0gZmxleGNhbiA4MDAzMjAwMC5j
-YW4gY2FuMDogc3RhdGUgMC0+MiBjdHJsDQoNCj5bICA2NzQuODc3MDM4XSBmbGV4Y2FuIDgwMDMy
-MDAwLmNhbiBjYW4wOiBjdHJsPTB4MTFhYWM1MyByZWdfaWZsYWc9MHgwIHJlZ19lc3I9MHg0MDM0
-IGVycj0wLzANCmN0cmw6IEJPRkZfTVNLPTFiLCBFUlJfTVNLPTBiLCBbVFJdV1JOX01TSz0xMWIN
-CmVzcjogIEJPRkZfSU5UPTFiLCBGTFRfQ09ORj0xMWINCnNvIHRoZSBzdGF0ZSBjaGFuZ2UgdG8g
-YnVzIG9mZiB1cG9uIGEgImJ1cyBvZmYiIGludGVycnVwdC4NCj5bICA2NzQuODg1ODM3XSBmbGV4
-Y2FuIDgwMDMyMDAwLmNhbiBjYW4wOiBzdGF0ZSAyLT4zIGN0cmwNCg0KPnJvb3RAbTI4ZXZrOn4j
-IFsgIDY3NC45ODU4OTddIGZsZXhjYW4gODAwMzIwMDAuY2FuIGNhbjA6IGN0cmw9MHgxMWFhMDUz
-IHJlZ19pZmxhZz0weDAgcmVnX2Vzcj0weDQgZXJyPTAvMA0KY3RybDogQk9GRl9NU0s9MWIsIEVS
-Ul9NU0s9MGIsIFtUUl1XUk5fTVNLPTAwYg0KZXNyOiAgQk9GRl9JTlQ9MWIsIEZMVF9DT05GPTAw
-Yg0Kc28gdGhlIHN0YXRlIGNoYW5nZSB0byBlcnJvciBhY3RpdmUgdXBvbiBhICJidXMgb2ZmIiBp
-bnRlcnJ1cHQuDQo+WyAgNjc0Ljk5NDA5MF0gZmxleGNhbiA4MDAzMjAwMC5jYW4gY2FuMDogc3Rh
-dGUgMy0+MCBjdHJsDQoNClRoZSBzdHJhbmdlIHRoaW5nIGlzIHRoZSBCT0ZGX0lOVCBnZW5lcmF0
-ZWQgYWdhaW4gd2l0aG91dCByZXN0YXJ0LA0KYW5kIHRoZSBbVFJdV1JOX01TSyBhcmUgY2xlYXJl
-ZCB0byAwIHdoZW4gdGhpcyBoYXBwZW4uIEJlY2F1c2U6DQoxLiBpZiB0aGUgbm9kZSBlbnRlcnMg
-YnVzIG9mZiwgaXQgc2hvdWxkIG5vdCBnZW5lcmF0ZSBpcnEgYW55bW9yZSAocmlnaHQ/KQ0KMi4g
-ZHJpdmVyIGNvZGUgd29uJ3Qgb25seSBjbGVhciBbVFJdV1JOX01TSyBidXQgbGVhdmUgQk9GRl9N
-U0sgc2V0DQoNCkknbSBub3Qgc3VyZSBpcyB0aGUgY29yZSBzdGlsbCBhYmxlIHRvIHNlbmQvcmVj
-ZWl2ZSBmcmFtZSB3aGVuIGl0IGlzDQppbiB0aGlzICJlcnJvciBhY3RpdmUiIHN0YXRlICh3aXRo
-b3V0IHJlc3RhcnQpLg0KDQpJZiBpdCBzdGlsbCB3b3JrcywgdGhlbiB0aGUgY29yZSBqdXN0IHBl
-cmZvcm1zIHNvbWUgbWFnaWNhbA0KYXV0by1yZWNvdmVyeSB3aGljaCB2aW9sYXRlcyB0aGUgQk9G
-Rl9SRUMgc2V0dGluZy4NCg0KSWYgaXQgY2Fubm90IHdvcmssIHRoZW4gdGhhdCBtZWFucyB3cm9u
-ZyBzdGF0ZSBiZWVuIHJlcG9ydGVkLCBhbmQNCnBlcmhhcHMgYW5vdGhlciBxdWlyayBuZWVkZWQg
-Zm9yIGkuTVgyOCB0byByZXBvcnQgYnVzIG9mZiBpbnN0ZWFkDQpvZiBlcnJvciBhY3RpdmUgaW4g
-dGhpcyBjYXNlLg0KDQpXaGF0IGRvIHlvdSB0aGluaz8NCg0KQmVzdCByZWdhcmRzDQpZaQ0K
+Hello ZHU Yi,
+
+Am 08.09.2017 um 08:10 schrieb ZHU Yi (ST-FIR/ENG1-Zhu):
+> Hello Wolfgang,
+> 
+>> From: Wolfgang Grandegger [mailto:wg@grandegger.com]
+>> Sent: Friday, September 08, 2017 2:17 AM
+>>
+>> [...]
+>> Error warning is always reported and with the quirk above also error
+>> passive. After reconnecting the cable the error counter also jumps to
+>> 135. With bus-off, the device also reports 3->0 after bus error
+>> recovery:
+> 
+> i.MX6 don't report 3->0 after bus error recovery (remove short-circuit!?):
+> [   74.222135] flexcan 2090000.flexcan mob0: New error state: 2
+> [   74.222170] flexcan 2090000.flexcan mob0: reg_ctrl=0x13aac57, reg_iflag1=0x0, reg_esr=0x64252, err=136/0
+> [   74.222915] flexcan 2090000.flexcan mob0: New error state: 3
+> [   74.222933] flexcan 2090000.flexcan mob0: bus-off
+> [   74.222979] flexcan 2090000.flexcan mob0: reg_ctrl=0x13aac57, reg_iflag1=0x0, reg_esr=0x4036, err=0/0
+> 
+> I'm wondering what is the correct behavior?
+> 
+> The automatic recovering from bus off is disabled in FlexCAN by write
+> 1 to BOFF_REC of CTRL, see
+> http://elixir.free-electrons.com/linux/latest/source/drivers/net/can/flexcan.c#L883.
+> 
+> Hence after the core enters bus off, it needs to stay in this state
+> until "restart-ms" or manually restart, according to:
+
+I forgot to mention, I used "restart-ms 100" for my tests with the i.MX28.
+
+> 12.1.4.4 Bus-off management
+> [...]
+> Upon a restart request, a node which is in the bus-off state shall be
+> integrating to the CAN communication (see 10.9.4) and may become
+> error-active (no longer bus-off) with its error counters both set to
+> zero after having monitored 128 occurrences of the idle condition
+> (see 4.28) on the bus (see Figure 28).
+
+On most controllers we do not use the hardware recovery procedure but
+just restart the controller. In the past I already had plans to change
+that:
+
+http://socket-can.996257.n3.nabble.com/RFC-improve-and-consolidate-state-change-and-bus-off-handling-td2755.html
+
+> But according to below trace, seems i.MX28 still change state to error
+> active even there is no restart request.
+
+Restart after 100ms was set. BTW: a restart message is always sent:
+
+http://elixir.free-electrons.com/linux/latest/source/drivers/net/can/dev.c#L545
+
+>> [  674.862816] flexcan 80032000.can can0: ctrl=0x11aac53 reg_iflag=0x0 reg_esr=0x24252 err=138/1
+> ctrl: BOFF_MSK=1b, ERR_MSK=0b, [TR]WRN_MSK=11b
+> esr:  TWRN_INT=1b, FLT_CONF=01b
+> so the state change to error passive upon a "warning" interrupt.
+>> [  674.871542] flexcan 80032000.can can0: state 0->2 ctrl
+> 
+>> [  674.877038] flexcan 80032000.can can0: ctrl=0x11aac53 reg_iflag=0x0 reg_esr=0x4034 err=0/0
+> ctrl: BOFF_MSK=1b, ERR_MSK=0b, [TR]WRN_MSK=11b
+> esr:  BOFF_INT=1b, FLT_CONF=11b
+> so the state change to bus off upon a "bus off" interrupt.
+>> [  674.885837] flexcan 80032000.can can0: state 2->3 ctrl
+> 
+>> root@m28evk:~# [  674.985897] flexcan 80032000.can can0: ctrl=0x11aa053 reg_iflag=0x0 reg_esr=0x4 err=0/0
+
+The log above is approx. 100ms after the previous one.
+
+> ctrl: BOFF_MSK=1b, ERR_MSK=0b, [TR]WRN_MSK=00b
+> esr:  BOFF_INT=1b, FLT_CONF=00b
+> so the state change to error active upon a "bus off" interrupt.
+
+No, after restart.
+
+>> [  674.994090] flexcan 80032000.can can0: state 3->0 ctrl
+> 
+> The strange thing is the BOFF_INT generated again without restart,
+> and the [TR]WRN_MSK are cleared to 0 when this happen. Because:
+> 1. if the node enters bus off, it should not generate irq anymore (right?)
+
+Yes, but some controller still do.
+
+> 2. driver code won't only clear [TR]WRN_MSK but leave BOFF_MSK set
+> 
+> I'm not sure is the core still able to send/receive frame when it is
+> in this "error active" state (without restart).
+> 
+> If it still works, then the core just performs some magical
+> auto-recovery which violates the BOFF_REC setting.
+
+Maybe.
+
+> If it cannot work, then that means wrong state been reported, and
+> perhaps another quirk needed for i.MX28 to report bus off instead
+> of error active in this case.
+> 
+> What do you think?
+
+As mentioned above, "restart 100" was used for the link. Unfortunately,
+bus-off handling is not consistent for all CAN controllers, as mentioned
+in the link above.
+
+Wolfgang.
