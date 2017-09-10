@@ -1,64 +1,27 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: check for null sk before deferencing it via the call
- to sock_net
-Date: Fri, 8 Sep 2017 19:46:13 +0200
-Message-ID: <f5ce1047-eb37-151a-c7b7-9b47b70789f7@hartkopp.net>
-References: <20170908150235.2931-1-colin.king@canonical.com>
+From: mackenzie <antoine.touze@univ-tours.fr>
+Subject: [SUSPECTED SPAM] Can you be our Supplier
+Date: Sun, 10 Sep 2017 11:40:40 +0200 (CEST)
+Message-ID: <450064904.45465003.1505036440025.JavaMail.zimbra__10986.275613732$1505037050$gmane$org@univ-tours.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170908150235.2931-1-colin.king@canonical.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin King <colin.king@canonical.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from angelia.univ-tours.fr ([193.52.209.20]:24041 "EHLO
+        angelia.univ-tours.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751422AbdIJJua (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 10 Sep 2017 05:50:30 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 
 
 
-On 09/08/2017 05:02 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The assignment of net via call sock_net will dereference sk. This
-> is performed before a sanity null check on sk, so there could be
-> a potential null dereference on the sock_net call if sk is null.
-> Fix this by assigning net after the sk null check. Also replace
-> the sk == NULL with the more usual !sk idiom.
-> 
-> Detected by CoverityScan CID#1431862 ("Dereference before null check")
-> 
-> Fixes: 384317ef4187 ("can: network namespace support for CAN_BCM protocol")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Dear Sir/Madam,
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+I am Becca MacKenzie, We are interested in your products and want to make you and your company our major suppliers but first we would like your to send us your best price list and Catalog if possible.
 
+We will be ordering in large quantity so we are looking forward in making a good relationship with you and your company.
 
-Thanks Collin!
+My contact email: becca.mackenzie100@outlook.com
 
-> ---
->   net/can/bcm.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index 47a8748d953a..a3791674b8ce 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-> @@ -1493,13 +1493,14 @@ static int bcm_init(struct sock *sk)
->   static int bcm_release(struct socket *sock)
->   {
->   	struct sock *sk = sock->sk;
-> -	struct net *net = sock_net(sk);
-> +	struct net *net;
->   	struct bcm_sock *bo;
->   	struct bcm_op *op, *next;
->   
-> -	if (sk == NULL)
-> +	if (!sk)
->   		return 0;
->   
-> +	net = sock_net(sk);
->   	bo = bcm_sk(sk);
->   
->   	/* remove bcm_ops, timer, rx_unregister(), etc. */
-> 
+Regards
+Becca MacKenzie
