@@ -1,33 +1,40 @@
-From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
-Subject: Setting CAN FD data bitrate with libsocketcan
-Date: Sat, 9 Sep 2017 20:08:02 +0200
-Message-ID: <68f4de55-c98a-3081-a2fe-084e01df73b8@gmx.de>
+From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Subject: RE: [PATCH 3/4] can: flexcan: implement error passive state quirk
+Date: Mon, 11 Sep 2017 02:29:27 +0000
+Message-ID: <6903931307914574bcc729ece55c0b0d@SGPMBX1017.APAC.bosch.com>
+References: <87faf67d90a246938e0b51d2ddbc8b82@SGPMBX1017.APAC.bosch.com>
+ <cc678b44-0aa8-ac91-567e-8b9c234ed024@grandegger.com>
+ <ad3cf1da-ca4b-6149-876a-0c983f9d48c8@grandegger.com>
+ <dfb4fd69b6d0463ca565245f4c072b90@SGPMBX1017.APAC.bosch.com>
+ <1685670a-c87d-2204-7e46-c36ebb8b072f@grandegger.com>
+ <bf6cad90aa9d4e8da439a5ac2e21eafd@SGPMBX1017.APAC.bosch.com>
+ <20820cdf-afff-9d04-3c9c-511e45bd0853@grandegger.com>
+ <1ccdad7593e34103bd4d96f5b1e64ea7@SGPMBX1017.APAC.bosch.com>
+ <92d997b5-957e-7e0b-70aa-bff16e289e81@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.15.19]:52139 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751166AbdIISIC (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 9 Sep 2017 14:08:02 -0400
-Received: from [192.168.2.107] ([46.90.120.169]) by mail.gmx.com (mrgmx002
- [212.227.17.190]) with ESMTPSA (Nemesis) id 0LwJFG-1dNlqJ1Dig-0181WJ for
- <linux-can@vger.kernel.org>; Sat, 09 Sep 2017 20:08:01 +0200
-Content-Language: en-GB
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:45456 "EHLO
+        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751918AbdIKC3d (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 10 Sep 2017 22:29:33 -0400
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
-Hi all,
-
-libsocketcan [1] allows to set the CAN bus bitrate from an application 
-with can_set_bitrate().
-
-However, I did not find a possibility to set the CAN FD data bitrate.
-Is there a way or does no such function exist yet? If it does not exist, 
-are there plans to support it?
-
-Thanks in advance,
-André
-
-[1] https://git.pengutronix.de/cgit/tools/libsocketcan/
+SGVsbG8gV29sZmdhbmcsDQoNClRoYW5rcyBhIGxvdCBmb3Igd29ya2VkIHdpdGggdXMgdG8gaW1w
+cm92ZSBhbmQgdGVzdCB0aGUgcGF0Y2hlcyBpbg0KdGhlc2UgZGF5cywgYW5kIGFwcHJlY2lhdGUg
+eW91ciB2YWx1YWJsZSBpbnB1dHMgZm9yIG1ha2luZyB0aGUNCnBhdGNoZXMgYmV0dGVyLiA6KQ0K
+DQpBY2NvcmRpbmcgdG8gdGhlIHRlc3QgcmVzdWx0cywgc2VlbXMgdGhlIHBhdGNoZXMgYXJlIHdv
+cmtlZCBmaW5lIHdpdGgNCmkuTVg2LCBpLk1YNTMgYW5kIGkuTVgyOCBhdCBsZWFzdCwgc28gd2Un
+cmUgd29uZGVyaW5nOg0KMS4gRG8geW91IHRoaW5rIHRoZSBwYXRjaGVzIGFyZSByZWFkeSBmb3Ig
+YWNjZXB0LCBvciB0aGVyZSdyZSBzb21ldGhpbmcNCiAgIGxlZnQgd2Ugc2hvdWxkIHdvcmsgb24/
+IEFuZCB3aGF0IGRvIHlvdSB0aGluayB3ZSBjYW4gaGVscCB3aXRoIHRvDQogICBtYWtlIHRoZSBw
+YXRjaGVzIGZpbmFsaXplPw0KDQoyLiBBZnRlciB0aGUgcGF0Y2hlcyBhcmUgcmVhZHksIGNvdWxk
+IHlvdSBwbGVhc2UgaGVscCB0byBjcmVhdGUgcGF0Y2hlcw0KICAgZm9yIGkuTVg1MyBhbmQgaS5N
+WDI4IGFzIHlvdSBhbHJlYWR5IHRlc3RlZCB0aGVtPyBTbyB0aGF0IHdlIGNhbiBmaXgNCiAgIHN0
+YXRlIHRyYW5zaXRpb25zIGFuZCB0aHJvdHRsZSBpbnRlcnJ1cHQgZmxvb2RpbmcgZm9yIHRoZXNl
+IDMgY29yZXMNCiAgIGF0IGxlYXN0Lg0KDQpCZXN0IHJlZ2FyZHMNCllpDQo=
