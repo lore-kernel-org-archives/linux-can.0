@@ -1,63 +1,41 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: [PATCH] can: gs_usb: fix busy loop if no more TX context is available
-Date: Thu, 14 Sep 2017 18:37:14 +0200
-Message-ID: <081cdc97-4633-f9b2-2c48-dd4f036c576f@grandegger.com>
+From: Lars Susaas <larssusaas@gmail.com>
+Subject: Re: Setting CAN FD data bitrate with libsocketcan
+Date: Thu, 14 Sep 2017 21:41:57 +0200
+Message-ID: <CALHGA=tafdy24Bz8uahCH5Ht+vGRJ1w1LyF1_STw4kK1zgX10Q@mail.gmail.com>
+References: <68f4de55-c98a-3081-a2fe-084e01df73b8@gmx.de> <CALHGA=tEn1r1XPW6hCSA0n_cHb-XVhZA9yT0e6FHVqP+vz0G9A@mail.gmail.com>
+ <5f0be713-a0e0-aadf-dad4-72a92ab31c4d@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy01.manitu.net ([217.11.48.65]:34892 "EHLO
-        mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751277AbdINQhQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 14 Sep 2017 12:37:16 -0400
-Content-Language: en-GB
+Received: from mail-vk0-f53.google.com ([209.85.213.53]:56289 "EHLO
+        mail-vk0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751739AbdINTl7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 14 Sep 2017 15:41:59 -0400
+Received: by mail-vk0-f53.google.com with SMTP id i1so163378vke.12
+        for <linux-can@vger.kernel.org>; Thu, 14 Sep 2017 12:41:58 -0700 (PDT)
+In-Reply-To: <5f0be713-a0e0-aadf-dad4-72a92ab31c4d@gmx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Maximilian Schneider <max@schneidersoft.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?Q?Andr=C3=A9_Hartmann?= <aha_1980@gmx.de>
+Cc: linux-can@vger.kernel.org
 
-If sending messages with no cable connected, it quickly happens that
-there is no more TX context available. Then "gs_can_start_xmit()"
-returns with "NETDEV_TX_BUSY" and the upper layer does retry
-immediately keeping the CPU busy. To fix that issue, I moved
-"atomic_dec(&dev->active_tx_urbs)" from "gs_usb_xmit_callback()" to
-the TX done handling in "gs_usb_receive_bulk_callback()". Renaming
-"active_tx_urbs" to "active_tx_contexts" and moving it into 
-"gs_[alloc|free]_tx_context()" would also make sense.
+Hi Andr=C3=A9,
 
-Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
----
- drivers/net/can/usb/gs_usb.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index afcc131..68ac3e8 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -375,6 +375,8 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
- 
- 		gs_free_tx_context(txc);
- 
-+		atomic_dec(&dev->active_tx_urbs);
-+
- 		netif_wake_queue(netdev);
- 	}
- 
-@@ -463,14 +465,6 @@ static void gs_usb_xmit_callback(struct urb *urb)
- 			  urb->transfer_buffer_length,
- 			  urb->transfer_buffer,
- 			  urb->transfer_dma);
--
--	atomic_dec(&dev->active_tx_urbs);
--
--	if (!netif_device_present(netdev))
--		return;
--
--	if (netif_queue_stopped(netdev))
--		netif_wake_queue(netdev);
- }
- 
- static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
--- 
-1.9.1
+On Tue, Sep 12, 2017 at 9:26 PM, Andr=C3=A9 Hartmann <aha_1980@gmx.de> wrot=
+e:
+> I will definitely have a look this weekend. Have you considered upstreami=
+ng
+> your changes back to libsocketcan?
 
+Very nice if you have the time to check it out.
+I definitely want to upstream, but i think it needs more testing and
+maybe a cleanup of comments and code before that time.
+
+My plan was first to get my changes to canFestival done and then turn
+my focus to libsocketcan, but if other people have the need for
+libsocketcan with can FD support i that will change :)
+
+Best regards
+Lars
