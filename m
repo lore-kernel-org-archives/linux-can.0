@@ -1,18 +1,18 @@
 From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: [PATCH 3/6] can: flexcan: implement error passive state quirk
-Date: Thu, 14 Sep 2017 08:26:50 +0000
-Message-ID: <5bb35ca21aa8460ba83c593ac29a0065@SGPMBX1017.APAC.bosch.com>
-References: <d69e202c5ff74516817f9e1e451eb357@SGPMBX1017.APAC.bosch.com>
- <7d6ec112-095c-c817-3d1c-6eb82ed78e1f@pengutronix.de>
+Subject: RE: [PATCH 5/6] can: flexcan: fix i.MX28 state transition issue
+Date: Thu, 14 Sep 2017 08:27:29 +0000
+Message-ID: <6c6626de8719436c965678c563951a7b@SGPMBX1017.APAC.bosch.com>
+References: <b1bfae3d42ca46ecaa83fe8a943da591@SGPMBX1017.APAC.bosch.com>
+ <cad7ad55-6c91-3b64-3479-9221d1b31346@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:51818 "EHLO
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:50128 "EHLO
         smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751174AbdINI0y (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 14 Sep 2017 04:26:54 -0400
-In-Reply-To: <7d6ec112-095c-c817-3d1c-6eb82ed78e1f@pengutronix.de>
+        with ESMTP id S1751174AbdINI1e (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 14 Sep 2017 04:27:34 -0400
+In-Reply-To: <cad7ad55-6c91-3b64-3479-9221d1b31346@pengutronix.de>
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -20,35 +20,17 @@ To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.c
 Cc: "hs@denx.de" <hs@denx.de>, "RUAN Tingquan (ST-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>, "Jonas Mark (ST-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 
 SGVsbG8gTWFyYywNCg0KPkZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1
-dHJvbml4LmRlXQ0KPlNlbnQ6IFdlZG5lc2RheSwgU2VwdGVtYmVyIDEzLCAyMDE3IDg6NDcgUE0N
-Cj4+IFsuLi5dDQo+PiArICogICAgU09DICAgVmVyc2lvbiAgIElQLVZlcnNpb24gIEdsaXRjaC0g
-W1RSXVdSTl9JTlQgSVJRIEVyciBNZW1vcnkgZXJyIFJUUiByZS0NCj4+ICsgKiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgRmlsdGVyPyBjb25uZWN0ZWQ/ICBQYXNzaXZlIGRldGVjdGlv
-biAgY2VwdGlvbiBpbiBNQg0KPj4gKyAqICAgTVgyNSAgRmxleENBTjIgIDAzLjAwLjAwLjAwICAg
-ICBubyAgICAgICAgbm8gICAgICAgICA/ICAgICAgIG5vICAgICAgICBubw0KPj4gKyAqICAgTVgy
-OCAgRmxleENBTjIgIDAzLjAwLjA0LjAwICAgIHllcyAgICAgICB5ZXMgICAgICAgICA/ICAgICAg
-IG5vICAgICAgICBubw0KPj4gKyAqICAgTVgzNSAgRmxleENBTjIgIDAzLjAwLjAwLjAwICAgICBu
-byAgICAgICAgbm8gICAgICAgICA/ICAgICAgIG5vICAgICAgICBubw0KPj4gKyAqICAgTVg1MyAg
-RmxleENBTjIgIDAzLjAwLjAwLjAwICAgIHllcyAgICAgICAgbm8gICAgICAgIG5vPyAgICAgIG5v
-ICAgICAgICBubw0KPj4gKyAqICAgTVg2cyAgRmxleENBTjMgIDEwLjAwLjEyLjAwICAgIHllcyAg
-ICAgICB5ZXMgICAgICAgIG5vICAgICAgIG5vICAgICAgIHllcw0KPj4gKyAqICAgVkY2MTAgRmxl
-eENBTjMgID8gICAgICAgICAgICAgICBubyAgICAgICB5ZXMgICAgICAgICA/ICAgICAgeWVzICAg
-ICAgIHllcz8NCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBeXl4NCj4NCj5JcyB0aGVyZSBuZXcgaW5mb3JtYXRpb24gb24gdGhpcyB0
-YWJsZSBhZnRlciB0aGUgdGVzdHMgb24gdGhlIG14NTMgYW5kIG14Mjg/DQpTb3JyeSwgSSBvdmVy
-bG9va2VkIHRoaXMuIEknbGwgZml4IHRoaXMgaW4gdGhlIHVwZGF0ZWQgcGF0Y2hlcy4gOikNCg0K
-Pg0KPj4gWy4uLl0NCj4+DQo+PiArc3RhdGljIGlubGluZSB2b2lkIGZsZXhjYW5fZXJyb3JfaXJx
-X2VuYWJsZShjb25zdCBzdHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2KQ0KPj4gK3sNCj4+ICsJc3Ry
-dWN0IGZsZXhjYW5fcmVncyBfX2lvbWVtICpyZWdzID0gcHJpdi0+cmVnczsNCj4+ICsJdTMyIHJl
-Z19jdHJsOw0KPj4gKw0KPj4gKwlyZWdfY3RybCA9IGZsZXhjYW5fcmVhZCgmcmVncy0+Y3RybCk7
-DQo+DQo+UGxlYXNlIG1ha2UgdXNlIG9mICJwcml2LT5yZWdfY3RybF9kZWZhdWx0IiwgdGhlcmUg
-c2hvdWxkIGJlIG5vIG5lZWQgdG8NCj5yZWFkIHJlZ3MtPmN0cmwgZHVyaW5nIHJ1bnRpbWUuDQpU
-aGF0J3MgYSBnb29kIGNhdGNoLiBUZXN0IHdpdGggaS5NWDYgd29ya3MgZmluZSBhZnRlciB0aGUg
-Y2hhbmdlLA0Kc28gd2UgY2FuIG9wdGltaXplIGZ1cnRoZXIgaGVyZS4NCg0KPg0KPj4gKwlyZWdf
-Y3RybCB8PSBGTEVYQ0FOX0NUUkxfRVJSX01TSzsNCj4+ICsJZmxleGNhbl93cml0ZShyZWdfY3Ry
-bCwgJnJlZ3MtPmN0cmwpOw0KPj4gK30NCj4+ICsNCj4+ICtzdGF0aWMgaW5saW5lIHZvaWQgZmxl
-eGNhbl9lcnJvcl9pcnFfZGlzYWJsZShjb25zdCBzdHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2KQ0K
-Pj4gK3sNCj4+ICsJc3RydWN0IGZsZXhjYW5fcmVncyBfX2lvbWVtICpyZWdzID0gcHJpdi0+cmVn
-czsNCj4+ICsJdTMyIHJlZ19jdHJsOw0KPj4gKw0KPj4gKwlyZWdfY3RybCA9IGZsZXhjYW5fcmVh
-ZCgmcmVncy0+Y3RybCk7DQo+PiArCXJlZ19jdHJsICY9IH5GTEVYQ0FOX0NUUkxfRVJSX01TSzsN
-Cj4NCj5zYW1lIGhlcmUNClllcywgdGhhbmtzIQ0KDQpCZXN0IHJlZ2FyZHMNCllpDQo=
+dHJvbml4LmRlXQ0KPlNlbnQ6IFdlZG5lc2RheSwgU2VwdGVtYmVyIDEzLCAyMDE3IDg6NTAgUE0N
+Cj4gWy4uLl0NCj5PbiAwOS8xMy8yMDE3IDExOjM5IEFNLCBaSFUgWWkgKFNULUZJUi9FTkcxLVpo
+dSkgd3JvdGU6DQo+PiBGcm9tIDE5YTJlOTY2ODNkZWJiNTE0YjI2NmQxNDM1MzI3YWI0ZWRkOGY4
+ODIgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxDQo+PiBGcm9tOiBXb2xmZ2FuZyBHcmFuZGVnZ2Vy
+IDx3Z0BncmFuZGVnZ2VyLmNvbT4NCj4+IERhdGU6IE1vbiwgMTEgU2VwIDIwMTcgMDg6NTk6NTMg
+KzAyMDANCj4+IFN1YmplY3Q6IFtQQVRDSCA1LzZdIGNhbjogZmxleGNhbjogZml4IGkuTVgyOCBz
+dGF0ZSB0cmFuc2l0aW9uIGlzc3VlDQo+Pg0KPj4gRW5hYmxlIEZMRVhDQU5fUVVJUktfQlJPS0VO
+X1BFUlJfU1RBVEUgZm9yIGkuTVgyOCB0byByZXBvcnQgY29ycmVjdA0KPj4gc3RhdGUgdHJhbnNp
+dGlvbnMsIGVzcGVjaWFsbHkgdG8gZXJyb3IgcGFzc2l2ZS4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5
+OiBXb2xmZ2FuZyBHcmFuZGVnZ2VyIDx3Z0BncmFuZGVnZ2VyLmNvbT4NCj4NCj5QbGVhc2UgYWRk
+IHlvdXIgUy1vLWIgd2hlbiBzZW5kaW5nIHBhdGNoZXMgZnJvbSBvdGhlciBwZW9wbGUuIElzIGl0
+IG9rIG8NCj5hZGQgeW91cidzIHdoaWxlIGFwcGx5aW5nIHRoZSBwYXRjaD8NClN1cmUsIHRoYW5r
+cyBmb3IgdGhlIGhpbnQhIEknbGwgYWRkIG91ciBzLW8tYiBoZXJlIHRvby4NCg0KQmVzdCByZWdh
+cmRzDQpZaQ0K
