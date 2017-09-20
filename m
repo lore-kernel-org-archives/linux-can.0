@@ -1,180 +1,142 @@
 From: =?UTF-8?Q?Mario_H=c3=bcttel?= <mario.huettel@gmx.net>
-Subject: Re: [RFC PATCH] can: m_can: Support higher speed CAN-FD bitrates
-Date: Wed, 20 Sep 2017 23:37:24 +0200
-Message-ID: <e3a7d9a1-d75c-a39e-f122-73fced02a1dc@gmx.net>
-References: <20170818193947.27862-1-fcooper@ti.com>
- <4f8f6b64-b2a2-b9dc-665c-f1c155daf994@ti.com>
- <a7e301a7-bc54-c348-bdb1-b6a0af41665f@ti.com>
- <532e09ae-775d-e8aa-e468-78e148c650da@Microchip.com>
- <88d4ddc4-b786-0205-6852-56e93182a1c9@ti.com>
+Subject: Re: [PATCH v2 1/3] can: m_can: Make hclk optional
+Date: Thu, 21 Sep 2017 00:00:01 +0200
+Message-ID: <096c73b1-eaa5-8c40-4486-e08a784c0897@gmx.net>
+References: <20170724225142.19975-1-fcooper@ti.com>
+ <20170724225142.19975-2-fcooper@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="MggJBlJBiVc2dgqIW4W4ta7v5GBckpevv"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <88d4ddc4-b786-0205-6852-56e93182a1c9@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Franklin S Cooper Jr <fcooper@ti.com>, "Yang, Wenyou" <Wenyou.Yang@Microchip.com>, Sekhar Nori <nsekhar@ti.com>, wg@grandegger.com, mkl@pengutronix.de, socketcan@hartkopp.net, quentin.schulz@free-electrons.com, edumazet@google.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Wenyou Yang <wenyou.yang@atmel.com>, Dong Aisheng <b29396@freescale.com>
-List-Id: linux-can.vger.kernel.org
+ boundary="wefDJUqxLH21jSrudeGjVQH84FqTTeP80"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mout.gmx.net ([212.227.17.20]:64945 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751408AbdITWAV (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 20 Sep 2017 18:00:21 -0400
+In-Reply-To: <20170724225142.19975-2-fcooper@ti.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Franklin S Cooper Jr <fcooper@ti.com>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MggJBlJBiVc2dgqIW4W4ta7v5GBckpevv
-Content-Type: multipart/mixed; boundary="obEpxdLknuvMKRT6JLc2FNTi7p2rSpit2";
+--wefDJUqxLH21jSrudeGjVQH84FqTTeP80
+Content-Type: multipart/mixed; boundary="aPHjf94lsGt7w3KL4fNvD97fIDMLNXMGn";
  protected-headers="v1"
 From: =?UTF-8?Q?Mario_H=c3=bcttel?= <mario.huettel@gmx.net>
-To: Franklin S Cooper Jr <fcooper@ti.com>,
- "Yang, Wenyou" <Wenyou.Yang@Microchip.com>, Sekhar Nori <nsekhar@ti.com>,
- wg@grandegger.com, mkl@pengutronix.de, socketcan@hartkopp.net,
- quentin.schulz@free-electrons.com, edumazet@google.com,
- linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Wenyou Yang <wenyou.yang@atmel.com>, Dong Aisheng <b29396@freescale.com>
-Message-ID: <e3a7d9a1-d75c-a39e-f122-73fced02a1dc@gmx.net>
-Subject: Re: [RFC PATCH] can: m_can: Support higher speed CAN-FD bitrates
-References: <20170818193947.27862-1-fcooper@ti.com>
- <4f8f6b64-b2a2-b9dc-665c-f1c155daf994@ti.com>
- <a7e301a7-bc54-c348-bdb1-b6a0af41665f@ti.com>
- <532e09ae-775d-e8aa-e468-78e148c650da@Microchip.com>
- <88d4ddc4-b786-0205-6852-56e93182a1c9@ti.com>
-In-Reply-To: <88d4ddc4-b786-0205-6852-56e93182a1c9@ti.com>
+To: Franklin S Cooper Jr <fcooper@ti.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, netdev@vger.kernel.org,
+ linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de,
+ robh+dt@kernel.org, quentin.schulz@free-electrons.com
+Message-ID: <096c73b1-eaa5-8c40-4486-e08a784c0897@gmx.net>
+Subject: Re: [PATCH v2 1/3] can: m_can: Make hclk optional
+References: <20170724225142.19975-1-fcooper@ti.com>
+ <20170724225142.19975-2-fcooper@ti.com>
+In-Reply-To: <20170724225142.19975-2-fcooper@ti.com>
 
---obEpxdLknuvMKRT6JLc2FNTi7p2rSpit2
+--aPHjf94lsGt7w3KL4fNvD97fIDMLNXMGn
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Content-Language: en-US
 
+> Hclk is the MCAN's interface clock. However, for OMAP based devices suc=
+h as
+> DRA7 SoC family the interface clock is handled by hwmod. Therefore, thi=
+s
+> interface clock is managed by hwmod driver via pm_runtime_get and
+> pm_runtime_put calls. Therefore, this interface clock isn't defined in =
+DT
+> and thus the driver shouldn't fail if this clock isn't found.
+I also agree in this point.
+However, there's a problem I want to point out:
 
+The M_CAN can only function correctly, if the condition
+'hclk >=3D cclk' holds true.
 
-On 09/20/2017 10:19 PM, Franklin S Cooper Jr wrote:
-> Hi Wenyou,
->
-> On 09/17/2017 10:47 PM, Yang, Wenyou wrote:
->>
->> On 2017/9/14 13:06, Sekhar Nori wrote:
->>> On Thursday 14 September 2017 03:28 AM, Franklin S Cooper Jr wrote:
->>>> On 08/18/2017 02:39 PM, Franklin S Cooper Jr wrote:
->>>>> During test transmitting using CAN-FD at high bitrates (4 Mbps) onl=
-y
->>>>> resulted in errors. Scoping the signals I noticed that only a singl=
-e
->>>>> bit
->>>>> was being transmitted and with a bit more investigation realized th=
-e
->>>>> actual
->>>>> MCAN IP would go back to initialization mode automatically.
->>>>>
->>>>> It appears this issue is due to the MCAN needing to use the Transmi=
-tter
->>>>> Delay Compensation Mode as defined in the MCAN User's Guide. When t=
-his
->>>>> mode is used the User's Guide indicates that the Transmitter Delay
->>>>> Compensation Offset register should be set. The document mentions
->>>>> that this
->>>>> register should be set to (1/dbitrate)/2*(Func Clk Freq).
->>>>>
->>>>> Additional CAN-CIA's "Bit Time Requirements for CAN FD" document
->>>>> indicates
->>>>> that this TDC mode is only needed for data bit rates above 2.5 Mbps=
-=2E
->>>>> Therefore, only enable this mode and only set TDCO when the data bi=
-t
->>>>> rate
->>>>> is above 2.5 Mbps.
->>>>>
->>>>> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
->>>>> ---
->>>>> I'm pretty surprised that this hasn't been implemented already sinc=
-e
->>>>> the primary purpose of CAN-FD is to go beyond 1 Mbps and the MCAN I=
-P
->>>>> supports up to 10 Mbps.
->>>>>
->>>>> So it will be nice to get comments from users of this driver to
->>>>> understand
->>>>> if they have been able to use CAN-FD beyond 2.5 Mbps without this
->>>>> patch.
->>>>> If they haven't what did they do to get around it if they needed hi=
-gher
->>>>> speeds.
->>>>>
->>>>> Meanwhile I plan on testing this using a more "realistic" CAN bus t=
-o
->>>>> insure
->>>>> everything still works at 5 Mbps which is the max speed of my CAN
->>>>> transceiver.
->>>> ping. Anyone has any thoughts on this?
->>> I added Dong who authored the m_can driver and Wenyou who added the o=
-nly
->>> in-kernel user of the driver for any help.
->> I tested it on SAMA5D2 Xplained board both with and without this patch=
-,=20
->> both work with the 4M bps data bit rate.
-> Thank you for testing this out. Its interesting that you have been able=
+The internal clock domain crossing can fail if this condition
+is violated.
 
-> to use higher speeds without this patch. What is the CAN transceiver
-> being used on the SAMA5D2 Xplained board? I tried looking at the
-> schematic but it seems the CAN signals are used on an extension board
-> which I can't find the schematic for. Also do you mind sharing your tes=
-t
-> setup? Were you doing a short point to point test?
->
-> Thank You,
-> Franklin
-Hello Franklin,
+I thought about adding the condition to the driver to ensure
+correct operation. But I had some problems:
 
-your patch definitely makes sense.
+1. Determine the clock rates:
+=C2=A0=C2=A0=C2=A0 The devices you've mentioned above don't have an assig=
+ned
+=C2=A0=C2=A0=C2=A0 hclk. Is there still a possibility to get the clock fr=
+equency?
 
-I forgot the TDC in my patches because it was not present in the
-previous driver versions and because I didn't encounter any
-problems when testing it myself.
+2. What to do if 'hclk < cclk'?
+=C2=A0=C2=A0=C2=A0 Is there a general way to process such an error? - I t=
+hink not.
+=C2=A0 =C2=A0 Is a simple warning in case of an error enough?
 
-The error is highly dependent on the hardware (transceiver) setup.
-So it is definitely possible that some people don't encounter errors
-without your patch.
+Is there a way of ensuring that the condition is always met at all?
 
-Could you clarify what you meant with
-> Scoping the signals I noticed that only a single bit was being transmit=
-ted=20
+I think it is quite unlikely that the condition is violated, because
+devices that actually run Linux usually have (bus) clock rates that
+are high enough to ensure the correct operation.
 
-Do you mean one data bit (high bit rate)=C2=A0 or did the core already fa=
-il
-in the arbitration phase?
+Would it be safe to just ignore this possible fault?
 
-There is also another aspect that can lead to errors:
-
-If the CAN clock 'cclk' is above the frequency of the interface/logic
-clock 'hclk', the clock domain crossing of the CAN messages can't
-work properly. However, I will throw this topic as an extra e-mail into
-the round.
+Regards
 
 Mario
+=C2=A0=C2=A0=C2=A0
+>
+> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> ---
+> Version 2 changes:
+> Used NULL instead of 0 for unused hclk handle
+>
+>  drivers/net/can/m_can/m_can.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_ca=
+n.c
+> index f4947a7..ea48e59 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -1568,8 +1568,13 @@ static int m_can_plat_probe(struct platform_devi=
+ce *pdev)
+>  	hclk =3D devm_clk_get(&pdev->dev, "hclk");
+>  	cclk =3D devm_clk_get(&pdev->dev, "cclk");
+> =20
+> -	if (IS_ERR(hclk) || IS_ERR(cclk)) {
+> -		dev_err(&pdev->dev, "no clock found\n");
+> +	if (IS_ERR(hclk)) {
+> +		dev_warn(&pdev->dev, "hclk could not be found\n");
+> +		hclk =3D NULL;
+> +	}
+> +
+> +	if (IS_ERR(cclk)) {
+> +		dev_err(&pdev->dev, "cclk could not be found\n");
+>  		ret =3D -ENODEV;
+>  		goto failed_ret;
+>  	}
 
-=C2=A0
 
 
---obEpxdLknuvMKRT6JLc2FNTi7p2rSpit2--
+--aPHjf94lsGt7w3KL4fNvD97fIDMLNXMGn--
 
---MggJBlJBiVc2dgqIW4W4ta7v5GBckpevv
+--wefDJUqxLH21jSrudeGjVQH84FqTTeP80
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEwjdBGUhyDYwF3W3ckaOeH7OEy/0FAlnC35kACgkQkaOeH7OE
-y/3Glg/8C/+1RQgj8zAiNnJaer6mi0FjanPoARSsnoP2qilve9hykIHrCVpZ8gsE
-OcDBA5FnOXBKgE0Ni/7XQmGivUu24ba0bSZTr8nzCEHQ3Hw9cciCWHNDIXt3UXXK
-gkXb5kjezuuDcItrXPz0HWDQLgwJGa3cgm7uzDRAOzuoc5xVBIIWc56BPUIzo2lm
-uvd5N+Y0hF20V/OYhcxEPUfJTPzSpjbpP0HFottXlvEKXCxDGKBpKz/HpLU3KhrY
-WisGxGENWhfE025b/TN8V3LT9ICz6qn7a3E06J9nRWG7pMdhj5z5n8LBLEgmU/L5
-KvF9dqM1j1uoVvUZw0zSYrmH3NBMpQ+YbiTCmuCSR+FcgbNcLshxQRvF7hTv8+5i
-6OX/aZLLiRwDsRqaz8AeQo+XLao9yeKdWhOSqxLN5rVuoMScCO1+2tlo0nzuVZLY
-k1Hz0uOBm7lmhvaz//9rAD+rAivklcbW3dtOyu9JG876tfEV0ZeDuUJNDn3yxfh8
-hWODDydEHdgSfa7d2qpV5FsW+opdgAh5rkLWe0+BaoTEHK7GYuuKdDXEn5e8OWjk
-BC8piykV+duzrFPK3FdQIc0IdKBOFb4FtgNBQe8WL6NelYIsDT+NrKy0xfCuyUA7
-f7UH2H4S6FjORkhKEfVGNRLdpv6akB8YQ+Z/A3EwHcdoDnOtxTQ=
-=bjyx
+iQIzBAEBCAAdFiEEwjdBGUhyDYwF3W3ckaOeH7OEy/0FAlnC5OEACgkQkaOeH7OE
+y/3bKg/9F/WWcKrRmarFRDObIc6o+EsV/Y6FnWtYVTPb5p9NszOkbSZ20OqGPvTX
+q4haOS6A3zZYHt8StKpnY7QtKjdxRw+X2LEsppNquvVuhYEuQya793d8NzW576fW
+LX7N7LKH7Ax/op8Xv+3vo3lI/2Bpc9out3BFnOTPrddlTk151+quG8fi1ssub8nG
+p2K4RMeaVhT9YCiszMlEl/nUHM8z5WoP0GFTS8llu1CygoXF1k94CbUXML4XmLlL
+kDkwJye4UqgZiFsJi0ZrKgUhnrXU3perYoouUtwyJcrAt1d7RLCRnCMvxxRI+8Ec
+wdFSXh2fZr2bgxHJfuN3+eb0VHmic5q9wiqW4SA2eDFXh9y6Tc/3U09EtAomuzD4
++bsmDP8p8TsUjMOt75f9IG6/1239VBVOQDsEThh8Ll0eFDWhvKgajnanRSIW/hea
+KIqg4zpKgwqFt/3T+weQO6zaHzxnjKJQPsg1V2gfeY14oe5QClTlfiyZQ8E0JXzP
+jMfiZPyEdBsQ/tZVFhNJ1z1YcS64LeTCXKOaMW/tSsM4c/TidtImBZmq4kd6yRKd
+xGRq8EyVLvrWcOaQh++uRahzpPV0sckW0EaRZYtgR89LocEC3L9604CEFYHKuAuN
+ubbEXbhkqfaEbo1wwO019MTiqUNPkLW4D0H0w+9hp4a09SuGUA8=
+=MTvU
 -----END PGP SIGNATURE-----
 
---MggJBlJBiVc2dgqIW4W4ta7v5GBckpevv--
+--wefDJUqxLH21jSrudeGjVQH84FqTTeP80--
