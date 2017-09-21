@@ -1,11 +1,11 @@
 From: Allen Pais <allen.lkml@gmail.com>
-Subject: [PATCH 48/64] drivers: net: amd: use setup_timer() helper.
-Date: Thu, 21 Sep 2017 22:35:09 +0530
-Message-ID: <1506013525-29291-49-git-send-email-allen.lkml@gmail.com>
+Subject: [PATCH 49/64] drivers: net: adi: use setup_timer() helper.
+Date: Thu, 21 Sep 2017 22:35:10 +0530
+Message-ID: <1506013525-29291-50-git-send-email-allen.lkml@gmail.com>
 References: <1506013525-29291-1-git-send-email-allen.lkml@gmail.com>
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1506013525-29291-1-git-send-email-allen.lkml@gmail.com>
-Sender: netdev-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: netdev@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, m.grzeschik@pengutronix.de, dmitry.tarnyagin@lockless.no, wg@grandegger.com, mkl@pengutronix.de, mark.einon@gmail.com, linux@armlinux.org.uk, pcnet32@frontier.com, f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com, venza@brownhat.org, ajk@comnets.uni-bremen.de, jes@trained-monkey.org, romieu@fr.zoreil.com, khc@pm.waw.pl, simon@thekelleys.org.uk, davem@davemloft.net, linux-can@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, Allen Pais <allen.lkml@gmail.com>
 List-Id: linux-can.vger.kernel.org
@@ -15,26 +15,24 @@ List-Id: linux-can.vger.kernel.org
 
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/net/ethernet/amd/a2065.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/adi/bfin_mac.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/amd/a2065.c b/drivers/net/ethernet/amd/a2065.c
-index e22f976..998d30e 100644
---- a/drivers/net/ethernet/amd/a2065.c
-+++ b/drivers/net/ethernet/amd/a2065.c
-@@ -733,10 +733,9 @@ static int a2065_init_one(struct zorro_dev *z,
- 	dev->watchdog_timeo = 5*HZ;
- 	dev->dma = 0;
+diff --git a/drivers/net/ethernet/adi/bfin_mac.c b/drivers/net/ethernet/adi/bfin_mac.c
+index a251de8..0658cde 100644
+--- a/drivers/net/ethernet/adi/bfin_mac.c
++++ b/drivers/net/ethernet/adi/bfin_mac.c
+@@ -1650,9 +1650,8 @@ static int bfin_mac_probe(struct platform_device *pdev)
+ 	ndev->netdev_ops = &bfin_mac_netdev_ops;
+ 	ndev->ethtool_ops = &bfin_mac_ethtool_ops;
  
--	init_timer(&priv->multicast_timer);
--	priv->multicast_timer.data = (unsigned long) dev;
--	priv->multicast_timer.function =
--		(void (*)(unsigned long))lance_set_multicast;
-+	setup_timer(&priv->multicast_timer,
-+		    (void(*)(unsigned long))lance_set_multicast,
-+		    (unsigned long)dev);
+-	init_timer(&lp->tx_reclaim_timer);
+-	lp->tx_reclaim_timer.data = (unsigned long)lp;
+-	lp->tx_reclaim_timer.function = tx_reclaim_skb_timeout;
++	setup_timer(&lp->tx_reclaim_timer, tx_reclaim_skb_timeout,
++		    (unsigned long)lp);
  
- 	err = register_netdev(dev);
- 	if (err) {
+ 	lp->flags = 0;
+ 	netif_napi_add(ndev, &lp->napi, bfin_mac_poll, CONFIG_BFIN_RX_DESC_NUM);
 -- 
 2.7.4
