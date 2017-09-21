@@ -1,7 +1,7 @@
 From: Allen Pais <allen.lkml@gmail.com>
-Subject: [PATCH 64/64] drivers: net: lmc: use setup_timer() helper.
-Date: Thu, 21 Sep 2017 22:35:25 +0530
-Message-ID: <1506013525-29291-65-git-send-email-allen.lkml@gmail.com>
+Subject: [PATCH 59/64] drivers: net: i40evf: use setup_timer() helper.
+Date: Thu, 21 Sep 2017 22:35:20 +0530
+Message-ID: <1506013525-29291-60-git-send-email-allen.lkml@gmail.com>
 References: <1506013525-29291-1-git-send-email-allen.lkml@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1506013525-29291-1-git-send-email-allen.lkml@gmail.com>
@@ -15,24 +15,24 @@ List-Id: linux-can.vger.kernel.org
 
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/net/wan/lmc/lmc_main.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wan/lmc/lmc_main.c b/drivers/net/wan/lmc/lmc_main.c
-index 4698450..ae69d65 100644
---- a/drivers/net/wan/lmc/lmc_main.c
-+++ b/drivers/net/wan/lmc/lmc_main.c
-@@ -1084,10 +1084,8 @@ static int lmc_open(struct net_device *dev)
-      * Setup a timer for the watchdog on probe, and start it running.
-      * Since lmc_ok == 0, it will be a NOP for now.
-      */
--    init_timer (&sc->timer);
-+    setup_timer(&sc->timer, lmc_watchdog, (unsigned long)dev);
-     sc->timer.expires = jiffies + HZ;
--    sc->timer.data = (unsigned long) dev;
--    sc->timer.function = lmc_watchdog;
-     add_timer (&sc->timer);
+diff --git a/drivers/net/ethernet/intel/i40evf/i40evf_main.c b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+index 1825d95..c243f9d 100644
+--- a/drivers/net/ethernet/intel/i40evf/i40evf_main.c
++++ b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+@@ -2686,9 +2686,8 @@ static void i40evf_init_task(struct work_struct *work)
+ 		ether_addr_copy(netdev->perm_addr, adapter->hw.mac.addr);
+ 	}
  
-     lmc_trace(dev, "lmc_open out");
+-	init_timer(&adapter->watchdog_timer);
+-	adapter->watchdog_timer.function = &i40evf_watchdog_timer;
+-	adapter->watchdog_timer.data = (unsigned long)adapter;
++	setup_timer(&adapter->watchdog_timer, &i40evf_watchdog_timer,
++		    (unsigned long)adapter);
+ 	mod_timer(&adapter->watchdog_timer, jiffies + 1);
+ 
+ 	adapter->tx_desc_count = I40EVF_DEFAULT_TXD;
 -- 
 2.7.4
