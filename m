@@ -1,67 +1,148 @@
-From: Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [v2,1/3] can: m_can: Make hclk optional
-Date: Thu, 21 Sep 2017 19:38:22 +0530
-Message-ID: <895ab55a-fede-3a67-27aa-1ac1af9843d7@ti.com>
-References: <20170724225142.19975-2-fcooper@ti.com>
- <6f574628-51cd-0db8-e5aa-e7ae4a9cf79a@ti.com>
- <eb45fe94-c476-3919-603d-ff2a6b13487c@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+From: Allen Pais <allen.lkml@gmail.com>
+Subject: [PATCH 00/64] use setup_timer() helper function.
+Date: Thu, 21 Sep 2017 22:34:21 +0530
+Message-ID: <1506013525-29291-1-git-send-email-allen.lkml@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <eb45fe94-c476-3919-603d-ff2a6b13487c@ti.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Franklin S Cooper Jr <fcooper@ti.com>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, quentin.schulz@free-electrons.com
-Cc: "Kristo, Tero" <t-kristo@ti.com>, Tony Lindgren <tony@atomide.com>, Linux OMAP List <linux-omap@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, m.grzeschik@pengutronix.de, dmitry.tarnyagin@lockless.no, wg@grandegger.com, mkl@pengutronix.de, mark.einon@gmail.com, linux@armlinux.org.uk, pcnet32@frontier.com, f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com, venza@brownhat.org, ajk@comnets.uni-bremen.de, jes@trained-monkey.org, romieu@fr.zoreil.com, khc@pm.waw.pl, simon@thekelleys.org.uk, davem@davemloft.net, linux-can@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, Allen Pais <allen.lkml@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
-On Thursday 21 September 2017 06:01 AM, Franklin S Cooper Jr wrote:
-> 
-> 
-> On 08/24/2017 03:00 AM, Sekhar Nori wrote:
->> + some OMAP folks and Linux OMAP list
->>
->> On Tuesday 25 July 2017 04:21 AM, Franklin Cooper wrote:
->>> Hclk is the MCAN's interface clock. However, for OMAP based devices such as
->>> DRA7 SoC family the interface clock is handled by hwmod. Therefore, this
->>> interface clock is managed by hwmod driver via pm_runtime_get and
->>> pm_runtime_put calls. Therefore, this interface clock isn't defined in DT
->>> and thus the driver shouldn't fail if this clock isn't found.
->>
->> I agree that hclk is defined as interface clock for M_CAN IP on DRA76x.
->>
->> However, there may be a need for the driver to know the value of hclk to
->> properly configure the RAM watchdog register which has a counter
->> counting down using hclk. Looks like the driver does not use the RAM
->> watchdog today. But if there is a need to configure it in future, it
->> might be a problem.
-> 
-> Honestly the RAM watchdog seems like a fundamental design problem.
-> This RAM watchdog seems to be used in case a request to access the
-> message ram is made but it hangs for what ever reason. Its even more
-> complicated since the Message RAM is external to the MCAN IP so its
-> implementation or how its handled probably differs from device to
-> device. From example say you do have this error it isn't clear how you
-> would recover from it. A logically answer would be to reset the entire
-> IP but that also assumes that Message RAM will be reset along with the
-> ip which likely depends on each SoC.
-> 
-> But if a readl/writel command hangs will the kernel eventually throw an
-> error on its on or will the driver just hang? If it does hang can a
-> driver in the ISR do something to properly terminate the driver or even
-> recover from it?
->>
->> Is there a restriction in OMAP architecture against passing the
->> interface clock also in the 'clocks' property in DT. I have not tried it
->> myself, but wonder if you hit an issue that led to this patch.
-> 
-> No but not passing the interface clock is typical.
+ This series uses setup_timer() helper function. The series
+addresses the files under drivers/net/*.
 
-Okay, then it sounds like it will just be easier to pass the hclk too?
 
-So it can be used if needed in future and also so that the driver can
-stay the same as today.
+Allen Pais (64):
+  drivers: net: de4x: use setup_timer() helper.
+  drivers: net: b44: use setup_timer() helper.
+  drivers: net: pcnet32: use setup_timer() helper.
+  drivers: net: brcm80211: use setup_timer() helper.
+  drivers : net: niu: use setup_timer() helper.
+  drivers: net: bcm63xx: use setup_timer() helper.
+  drivers: net: declance: use setup_timer() helper.
+  drivers: net: am79c961: use setup_timer() helper.
+  drivers: net: et131x: use setup_timer() helper.
+  drivers: net: appletalk: cops: use setup_timer() helper.
+  drivers: net: rsi_91x: use setup_timer() helper.
+  drivers: net: atp: use setup_timer() helper.
+  drivers: net: ns83820: use setup_timer() helper.
+  drivers: net: ixgb: use setup_timer() helper.
+  drivers: net: sundance: use setup_timer() helper.
+  drivers: net: tg3: use setup_timer() helper.
+  drivers: net: sdla: use setup_timer() helper.
+  drivers: net: cisco_hdlc: use setup_timer() helper.
+  drivers: net: slip: use setup_timer() helper.
+  drivers: net: spider_net: use setup_timer() helper.
+  drivers: net: sun: cassini: use setup_timer() helper.
+  drivers: net: natsemi: use setup_timer() helper.
+  drivers: net: winbond-840: use setup_timer() helper.
+  drivers: net: enic: use setup_timer() helper.
+  drivers: net: bnx2: use setup_timer() helper.
+  drivers: net: xen-netback: use setup_timer() helper.
+  drivers: net: atmel: use setup_timer() helper.
+  drivers: net: hippi: use setup_timer() helper.
+  drivers: net: smsc: use setup_timer() helper.
+  drivers: net: qlogic: use setup_timer() helper.
+  drivers: net: e1000e: use setup_timer() helper.
+  drivers: net: amd: use setup_timer() helper.
+  drivers: net: amd8111e: use setup_timer() helper.
+  drivers: net: eql: use setup_timer() helper.
+  drivers: net: can: usb: use setup_timer() helper.
+  drivers: net: can: use setup_timer() helper.
+  drivers: net: arcnet: use setup_timer() helper.
+  drivers: net: ath6kl: use setup_timer() helper.
+  drivers: net: sun: use setup_timer() helper.
+  drivers: net: sis900: use setup_timer() helper.
+  drivers: net: packetengines: use setup_timer() helper.
+  drivers: net: mlx5: use setup_timer() helper.
+  drivers: net: mlx4: use setup_timer() helper.
+  drivers: net: pxa168: use setup_timer() helper.
+  drivers: net: fealnx: use setup_timer() helper.
+  drivers: net: dmfe: use setup_timer() helper.
+  drivers: net: bnxt: use setup_timer() helper.
+  drivers: net: amd: use setup_timer() helper.
+  drivers: net: adi: use setup_timer() helper.
+  drivers: net: can: sja1000: use setup_timer() helper.
+  drivers: net: caif: use setup_timer() helper.
+  drivers: net: appletalk: use setup_timer() helper.
+  drivers: net: dscc: use setup_timer() helper.
+  drivers: net: hdlc_ppp: use setup_timer() helper.
+  drivers: net: hamradio: use setup_timer() helper.
+  drivers: net: cpsw_ale: use setup_timer() helper.
+  drivers: net: stmmac: use setup_timer() helper.
+  drivers: net: packetengines: use setup_timer() helper.
+  drivers: net: i40evf: use setup_timer() helper.
+  drivers: net: uli526x: use setup_timer() helper.
+  drivers: net: enic: use setup_timer() helper.
+  drivers: net: cxgb: use setup_timer() helper.
+  drivers: net: bnx2x: use setup_timer() helper.
+  drivers: net: lmc: use setup_timer() helper.
 
-Thanks,
-Sekhar
+ drivers/net/appletalk/cops.c                              |  4 +---
+ drivers/net/appletalk/ltpc.c                              |  4 +---
+ drivers/net/arcnet/arcnet.c                               |  4 +---
+ drivers/net/caif/caif_hsi.c                               | 15 ++++++---------
+ drivers/net/can/grcan.c                                   | 10 ++++------
+ drivers/net/can/sja1000/peak_pcmcia.c                     |  4 +---
+ drivers/net/can/usb/peak_usb/pcan_usb.c                   |  5 ++---
+ drivers/net/eql.c                                         |  4 +---
+ drivers/net/ethernet/adi/bfin_mac.c                       |  5 ++---
+ drivers/net/ethernet/agere/et131x.c                       |  5 ++---
+ drivers/net/ethernet/amd/a2065.c                          |  7 +++----
+ drivers/net/ethernet/amd/am79c961a.c                      |  4 +---
+ drivers/net/ethernet/amd/amd8111e.c                       |  5 ++---
+ drivers/net/ethernet/amd/declance.c                       |  6 +++---
+ drivers/net/ethernet/amd/pcnet32.c                        |  5 ++---
+ drivers/net/ethernet/amd/sunlance.c                       |  5 ++---
+ drivers/net/ethernet/broadcom/b44.c                       |  4 +---
+ drivers/net/ethernet/broadcom/bcm63xx_enet.c              |  5 ++---
+ drivers/net/ethernet/broadcom/bnx2.c                      |  4 +---
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c          |  4 +---
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c                 |  4 +---
+ drivers/net/ethernet/broadcom/tg3.c                       |  4 +---
+ drivers/net/ethernet/chelsio/cxgb/sge.c                   |  5 ++---
+ drivers/net/ethernet/cisco/enic/enic_clsf.h               |  5 ++---
+ drivers/net/ethernet/cisco/enic/enic_main.c               |  5 ++---
+ drivers/net/ethernet/dec/tulip/de4x5.c                    |  5 ++---
+ drivers/net/ethernet/dec/tulip/dmfe.c                     |  4 +---
+ drivers/net/ethernet/dec/tulip/uli526x.c                  |  4 +---
+ drivers/net/ethernet/dec/tulip/winbond-840.c              |  4 +---
+ drivers/net/ethernet/dlink/sundance.c                     |  4 +---
+ drivers/net/ethernet/fealnx.c                             |  8 ++------
+ drivers/net/ethernet/intel/e1000e/netdev.c                | 11 ++++-------
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c           |  5 ++---
+ drivers/net/ethernet/intel/ixgb/ixgb_main.c               |  5 ++---
+ drivers/net/ethernet/marvell/pxa168_eth.c                 |  5 ++---
+ drivers/net/ethernet/mellanox/mlx4/catas.c                |  4 +---
+ drivers/net/ethernet/mellanox/mlx5/core/health.c          |  4 +---
+ drivers/net/ethernet/natsemi/natsemi.c                    |  4 +---
+ drivers/net/ethernet/natsemi/ns83820.c                    |  4 +---
+ drivers/net/ethernet/packetengines/hamachi.c              |  4 +---
+ drivers/net/ethernet/packetengines/yellowfin.c            |  4 +---
+ drivers/net/ethernet/qlogic/qla3xxx.c                     |  4 +---
+ drivers/net/ethernet/realtek/atp.c                        |  4 +---
+ drivers/net/ethernet/sis/sis900.c                         |  4 +---
+ drivers/net/ethernet/smsc/epic100.c                       |  4 +---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c         |  4 +---
+ drivers/net/ethernet/sun/cassini.c                        |  5 +----
+ drivers/net/ethernet/sun/niu.c                            |  4 +---
+ drivers/net/ethernet/sun/sungem.c                         |  4 +---
+ drivers/net/ethernet/ti/cpsw_ale.c                        |  4 +---
+ drivers/net/ethernet/toshiba/spider_net.c                 | 12 +++++-------
+ drivers/net/hamradio/6pack.c                              |  4 +---
+ drivers/net/hippi/rrunner.c                               |  4 +---
+ drivers/net/slip/slip.c                                   |  8 ++------
+ drivers/net/wan/dscc4.c                                   |  4 +---
+ drivers/net/wan/hdlc_cisco.c                              |  4 +---
+ drivers/net/wan/hdlc_ppp.c                                |  4 +---
+ drivers/net/wan/lmc/lmc_main.c                            |  4 +---
+ drivers/net/wan/sdla.c                                    |  4 +---
+ drivers/net/wireless/ath/ath6kl/txrx.c                    |  4 +---
+ drivers/net/wireless/atmel/atmel.c                        |  5 ++---
+ .../net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c   |  5 ++---
+ drivers/net/wireless/rsi/rsi_91x_hal.c                    |  5 ++---
+ drivers/net/xen-netback/interface.c                       |  3 +--
+ 64 files changed, 102 insertions(+), 216 deletions(-)
+
+-- 
+2.7.4
