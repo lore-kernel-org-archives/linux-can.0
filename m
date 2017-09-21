@@ -1,43 +1,46 @@
 From: Allen Pais <allen.lkml@gmail.com>
-Subject: [PATCH 46/64] drivers: net: dmfe: use setup_timer() helper.
-Date: Thu, 21 Sep 2017 22:35:07 +0530
-Message-ID: <1506013525-29291-47-git-send-email-allen.lkml@gmail.com>
+Subject: [PATCH 45/64] drivers: net: fealnx: use setup_timer() helper.
+Date: Thu, 21 Sep 2017 22:35:06 +0530
+Message-ID: <1506013525-29291-46-git-send-email-allen.lkml@gmail.com>
 References: <1506013525-29291-1-git-send-email-allen.lkml@gmail.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pf0-f193.google.com ([209.85.192.193]:38012 "EHLO
-        mail-pf0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752872AbdIURKe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 21 Sep 2017 13:10:34 -0400
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1506013525-29291-1-git-send-email-allen.lkml@gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: netdev@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, m.grzeschik@pengutronix.de, dmitry.tarnyagin@lockless.no, wg@grandegger.com, mkl@pengutronix.de, mark.einon@gmail.com, linux@armlinux.org.uk, pcnet32@frontier.com, f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com, venza@brownhat.org, ajk@comnets.uni-bremen.de, jes@trained-monkey.org, romieu@fr.zoreil.com, khc@pm.waw.pl, simon@thekelleys.org.uk, davem@davemloft.net, linux-can@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, Allen Pais <allen.lkml@gmail.com>
+List-Id: linux-can.vger.kernel.org
 
     Use setup_timer function instead of initializing timer with the
     function and data fields.
 
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/net/ethernet/dec/tulip/dmfe.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/fealnx.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/dmfe.c b/drivers/net/ethernet/dec/tulip/dmfe.c
-index 07e10a4..6585f73 100644
---- a/drivers/net/ethernet/dec/tulip/dmfe.c
-+++ b/drivers/net/ethernet/dec/tulip/dmfe.c
-@@ -596,10 +596,8 @@ static int dmfe_open(struct net_device *dev)
- 	netif_wake_queue(dev);
+diff --git a/drivers/net/ethernet/fealnx.c b/drivers/net/ethernet/fealnx.c
+index e92859d..c898231 100644
+--- a/drivers/net/ethernet/fealnx.c
++++ b/drivers/net/ethernet/fealnx.c
+@@ -909,17 +909,13 @@ static int netdev_open(struct net_device *dev)
+ 		printk(KERN_DEBUG "%s: Done netdev_open().\n", dev->name);
  
- 	/* set and active a timer process */
--	init_timer(&db->timer);
-+	setup_timer(&db->timer, dmfe_timer, (unsigned long)dev);
- 	db->timer.expires = DMFE_TIMER_WUT + HZ * 2;
--	db->timer.data = (unsigned long)dev;
--	db->timer.function = dmfe_timer;
- 	add_timer(&db->timer);
+ 	/* Set the timer to check for link beat. */
+-	init_timer(&np->timer);
++	setup_timer(&np->timer, netdev_timer, (unsigned long)dev);
+ 	np->timer.expires = RUN_AT(3 * HZ);
+-	np->timer.data = (unsigned long) dev;
+-	np->timer.function = netdev_timer;
  
- 	return 0;
+ 	/* timer handler */
+ 	add_timer(&np->timer);
+ 
+-	init_timer(&np->reset_timer);
+-	np->reset_timer.data = (unsigned long) dev;
+-	np->reset_timer.function = reset_timer;
++	setup_timer(&np->reset_timer, reset_timer, (unsigned long)dev);
+ 	np->reset_timer_armed = 0;
+ 	return rc;
+ }
 -- 
 2.7.4
-
