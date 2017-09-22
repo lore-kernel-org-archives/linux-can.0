@@ -1,30 +1,25 @@
-From: Allen <allen.lkml@gmail.com>
-Subject: Re: [PATCH 00/64] use setup_timer() helper function.
-Date: Fri, 22 Sep 2017 11:52:28 +0530
-Message-ID: <CAOMdWSLwH0iCp3fLH=L0f-pRkBhpCXOnf43W=P7n2LqYFiU7sg@mail.gmail.com>
-References: <1506013525-29291-1-git-send-email-allen.lkml@gmail.com> <20170921.113927.1684139706973891956.davem@davemloft.net>
+From: Elenita Hinds <ecathinds@gmail.com>
+Subject: Re: Request-for-testing: j1939
+Date: Fri, 22 Sep 2017 18:23:12 -0500
+Message-ID: <CAHChkruproi2xM3HiCYSSqY019+0N=Tph-7O=cCDps1YqVbWSw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170921.113927.1684139706973891956.davem@davemloft.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, m.grzeschik@pengutronix.de, dmitry.tarnyagin@lockless.no, wg@grandegger.com, mkl@pengutronix.de, Mark Einon <mark.einon@gmail.com>, linux@armlinux.org.uk, pcnet32@frontier.com, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list@broadcom.com, venza@brownhat.org, ajk@comnets.uni-bremen.de, jes@trained-monkey.org, romieu@fr.zoreil.com, khc@pm.waw.pl, Simon Kelley <simon@thekelleys.org.uk>, linux-can@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-io0-f176.google.com ([209.85.223.176]:56512 "EHLO
+        mail-io0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751763AbdIVXXN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 22 Sep 2017 19:23:13 -0400
+Received: by mail-io0-f176.google.com with SMTP id m103so5789856iod.13
+        for <linux-can@vger.kernel.org>; Fri, 22 Sep 2017 16:23:13 -0700 (PDT)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
->
->>  This series uses setup_timer() helper function. The series
->> addresses the files under drivers/net/*.
->
-> I've reviewed this series and will apply it to net-next.
->
-> But please send out smaller chunks next time, maybe 10-15
-> in a bunch?  64 patches at once makes it really hard for
-> reviewiers.
+Hi Marc,
 
- My apologies. I'll make sure I break it into smaller chunks
-in the future.
+I'm new here.  I can help test the branch as well and will send
+feedback. I've been using Kurt's branch and will move to your branch.
 
+Regards,
 
--- 
-       - Allen
+Elenita Hinds
