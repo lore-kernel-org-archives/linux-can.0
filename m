@@ -1,42 +1,58 @@
-From: <Marcel.Birthelmer@microchip.com>
-Subject: RE: MCP2517FD Bus-Off recovery
-Date: Thu, 5 Oct 2017 15:55:59 +0000
-Message-ID: <883AF5B5924A484BBBA6684EAC878AEAC57F61@CHN-SV-EXMX02.mchp-main.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: MCP2517FD Bus-Off recovery
+Date: Thu, 5 Oct 2017 18:56:14 +0200
+Message-ID: <c18bbdc5-0ff4-0832-7cc8-ad9901a10952@grandegger.com>
 References: <883AF5B5924A484BBBA6684EAC878AEAC573DF@CHN-SV-EXMX02.mchp-main.com>
  <97b73ce1-4692-6d30-52b2-787e13d71bf9@grandegger.com>
  <c7d59770-af79-9846-538c-a4d39770b439@grandegger.com>
+ <883AF5B5924A484BBBA6684EAC878AEAC57F61@CHN-SV-EXMX02.mchp-main.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:27310 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751323AbdJEP4A (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2017 11:56:00 -0400
-In-Reply-To: <c7d59770-af79-9846-538c-a4d39770b439@grandegger.com>
-Content-Language: en-US
+Received: from mailproxy03.manitu.net ([217.11.48.67]:39436 "EHLO
+        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751335AbdJEQ4R (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2017 12:56:17 -0400
+In-Reply-To: <883AF5B5924A484BBBA6684EAC878AEAC57F61@CHN-SV-EXMX02.mchp-main.com>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, linux-can@vger.kernel.org
+To: Marcel.Birthelmer@microchip.com, linux-can@vger.kernel.org
 
-DQpXb2xmZ2FuZyB3cm90ZToNCj4gPg0KPiA+IEhhdmUgYSBsb29rIHRvIHRoZSAiYXQ5MV9jYW4i
-IGRyaXZlci4gSWYgInJlc3RhcnRfbXMiIGlzICIwIiwgdGhlDQo+ID4gYXV0b21hdGljIHJlY292
-ZXJ5IHdpbGwgYmUgdXNlZC4gSWYgbm90LCB0aGUgY29udHJvbGxlciB3aWxsIGJlIHN0b3BwZWQ6
-DQo+IA0KPiBUaGF0J3Mgbm90IGNvcnJlY3QuIElmICJyZXN0YXJ0X21zIiBpcyAiMCIgdGhlIGNv
-bnRyb2xsZXIgd2lsbCBiZSBzdG9wcGVkIHdhaXRpbmcNCj4gZm9yIG1hbnVhbCByZXN0YXJ0LiBP
-dGhlcndpc2UgYXV0b21hdGljIHJlY292ZXJ5IHdpbGwgYmUgdXNlZC4gVGhlICJncmNhbiINCj4g
-ZHJpdmVyIHVzZXMgdGhlIHNhbWUgbG9naWMuDQoNClNvIGl0IHNlZW1zIGxpa2UgdGhlIGJlaGF2
-aW9yIGJldHdlZW4gdGhlIHR3byBmbG93cyBpcyBzdWJzdGFudGlhbGx5IGRpZmZlcmVudCAtIG9u
-ZSBjb21wbGV0ZWx5IGRpc2FibGVzIHRoZSBoYXJkd2FyZSAoaW5jbHVkaW5nIHRoZSByZWNlaXZl
-IG1lY2hhbmlzbSBhbmQgcHJlc3VtYWJseSBBQ0snaW5nIG1lc3NhZ2VzKSwgd2hpbGUgdGhlIG90
-aGVyIGp1c3QgdGVtcG9yYXJpbHkgc3VzcGVuZHMgdHJhbnNtaXNzaW9uIG9mIG1lc3NhZ2VzLiBJ
-cyB0aGlzIHVuZGVyc3RhbmRpbmcgY29ycmVjdD8NCg0KPiA+IGh0dHA6Ly9lbGl4aXIuZnJlZS1l
-bGVjdHJvbnMuY29tL2xpbnV4L2xhdGVzdC9zb3VyY2UvZHJpdmVycy9uZXQvY2FuL2ENCj4gPiB0
-OTFfY2FuLmMjTDk2Mg0KPiA+DQo+ID4gSW4gY2FzZSBvZiBhdXRvbWF0aWMgcmVjb3ZlcnksIHRo
-ZSBDQU4gY29udHJvbGxlciB1c3VhbGx5IHNpZ25hbHMgYmFjaw0KPiA+IHRvIGVycm9yIHBhc3Np
-dmUgLT4gd2FybmluZyAtPiBhY3RpdmUuIFdoZW4gaXQncyBiYWNrIHRvIGVycm9yDQo+ID4gcGFz
-c2l2ZSwgbmV0aWZfd2FrZV9xdWV1ZSBldGMuIHNob3VsZCBiZSBjYWxsZWQ6DQo+ID4NCj4gPiBo
-dHRwOi8vZWxpeGlyLmZyZWUtZWxlY3Ryb25zLmNvbS9saW51eC9sYXRlc3Qvc291cmNlL2RyaXZl
-cnMvbmV0L2Nhbi9hDQo+ID4gdDkxX2Nhbi5jI0w5MjINCj4gPg0KPiA+IENhbiBhdXRvbWF0aWMg
-cmVjb3ZlcnkgYmUgc3dpdGNoZWQgb2ZmPw0KDQpObywgdGhlcmUncyBubyBzd2l0Y2ggZm9yIHRo
-aXMgZmVhdHVyZS4gDQoNClJlZ2FyZHMsDQotIE1hcmNlbA0K
+
+Am 05.10.2017 um 17:55 schrieb Marcel.Birthelmer@microchip.com:
+> 
+> Wolfgang wrote:
+>>>
+>>> Have a look to the "at91_can" driver. If "restart_ms" is "0", the
+>>> automatic recovery will be used. If not, the controller will be stopped:
+>>
+>> That's not correct. If "restart_ms" is "0" the controller will be stopped waiting
+>> for manual restart. Otherwise automatic recovery will be used. The "grcan"
+>> driver uses the same logic.
+> 
+> So it seems like the behavior between the two flows is substantially different - one completely disables the hardware (including the receive mechanism and presumably ACK'ing messages), while the other just temporarily suspends transmission of messages. Is this understanding correct?
+
+Yes, but while the controller is in bus-off, it will not receive or send 
+any messages. If we stop the controller brute-force, we must make sure 
+that no messages go out or come in. So hardware-wise, the behaviour is 
+the same. Well, a bus-off recovery by hardware is different.
+
+>>> http://elixir.free-electrons.com/linux/latest/source/drivers/net/can/a
+>>> t91_can.c#L962
+>>>
+>>> In case of automatic recovery, the CAN controller usually signals back
+>>> to error passive -> warning -> active. When it's back to error
+>>> passive, netif_wake_queue etc. should be called:
+>>>
+>>> http://elixir.free-electrons.com/linux/latest/source/drivers/net/can/a
+>>> t91_can.c#L922
+>>>
+>>> Can automatic recovery be switched off?
+> 
+> No, there's no switch for this feature.
+
+OK,
+
+Wolfgang.
