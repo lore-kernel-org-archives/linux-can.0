@@ -1,102 +1,97 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] net: can: Convert timers to use timer_setup()
-Date: Mon, 9 Oct 2017 20:10:50 +0200
-Message-ID: <1de2e034-debc-d356-2ea9-e5eecb15f397@pengutronix.de>
-References: <20171005005126.GA23416@beast>
- <04d30a39-3e88-e46b-ad94-686da16e571e@pengutronix.de>
- <CAGXu5jKcQ0ez7dEma5fJv3DjWABAoEm+9P_G6aMcdBv6MHnsdQ@mail.gmail.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: Request-for-testing: j1939
+Date: Tue, 10 Oct 2017 18:44:26 +0200
+Message-ID: <20171010164203.GA4297@airbook.vandijck-laurijssen.be>
+References: <9071ec9a-2b26-ed36-3b11-5f97f4b252d9@pengutronix.de>
+ <20171008131300.GA24772@airbook.vandijck-laurijssen.be>
+ <20171008134441.GA13065@airbook.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="D47cmVrcFt9L7S0u0kpXGn92epK8Efxx0"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAGXu5jKcQ0ez7dEma5fJv3DjWABAoEm+9P_G6aMcdBv6MHnsdQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kees Cook <keescook@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, Network Development <netdev@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-List-Id: linux-can.vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---D47cmVrcFt9L7S0u0kpXGn92epK8Efxx0
-Content-Type: multipart/mixed; boundary="3OCJTdNND5trGJVb54wJfpKatFEDDDBm8";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Kees Cook <keescook@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
- Network Development <netdev@vger.kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <1de2e034-debc-d356-2ea9-e5eecb15f397@pengutronix.de>
-Subject: Re: [PATCH] net: can: Convert timers to use timer_setup()
-References: <20171005005126.GA23416@beast>
- <04d30a39-3e88-e46b-ad94-686da16e571e@pengutronix.de>
- <CAGXu5jKcQ0ez7dEma5fJv3DjWABAoEm+9P_G6aMcdBv6MHnsdQ@mail.gmail.com>
-In-Reply-To: <CAGXu5jKcQ0ez7dEma5fJv3DjWABAoEm+9P_G6aMcdBv6MHnsdQ@mail.gmail.com>
-
---3OCJTdNND5trGJVb54wJfpKatFEDDDBm8
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from relay-b02.edpnet.be ([212.71.1.222]:47993 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S932075AbdJJQod (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 10 Oct 2017 12:44:33 -0400
+Content-Disposition: inline
+In-Reply-To: <20171008134441.GA13065@airbook.vandijck-laurijssen.be>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>, Elenita Hinds <ecathinds@gmail.com>
 
-On 10/09/2017 08:09 PM, Kees Cook wrote:
-> On Mon, Oct 9, 2017 at 10:53 AM, Marc Kleine-Budde <mkl@pengutronix.de>=
- wrote:
->> On 10/05/2017 02:51 AM, Kees Cook wrote:
->>> In preparation for unconditionally passing the struct timer_list poin=
-ter to
->>> all timer callbacks, switch to using the new timer_setup() and from_t=
-imer()
->>> to pass the timer pointer explicitly.
->>>
->>> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
->>> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
->>> Cc: "David S. Miller" <davem@davemloft.net>
->>> Cc: linux-can@vger.kernel.org
->>> Cc: netdev@vger.kernel.org
->>> Cc: Thomas Gleixner <tglx@linutronix.de>
->>> Signed-off-by: Kees Cook <keescook@chromium.org>
->>> ---
->>> This requires commit 686fef928bba ("timer: Prepare to change timer
->>> callback argument type") in v4.14-rc3, but should be otherwise
->>> stand-alone.
->>
->> Are you taking the patch or should I apply it?
->>
->> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
->=20
-> If you have -rc3 in your tree, please take it. If you want the timers
-> tree to carry it instead, we can do that too.
+Marc et al.,
 
-I think it will hit mainline faster via your tree, as it will go via
-net-next. You've my acked-by.
+I finalized a working branch (only static addressing tested so far).
+Device management behaves well at this point, transport protocol send &
+recv, ...
 
-Marc
+I pushed a new https://github.com/kurt-vd/linux/tree/can-next-j1939
+(well, I was a bit supprised I could push this one, without --force
+even).
+Unfortunately, I must postpone tests with dynamic addressing at least a
+week now.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+@Marc,
+I suppose that when the tiny bits are fixed, then this can easily be
+rebased to today's can-next without major impact, isn't it?
 
+Kind regards,
+Kurt
 
---3OCJTdNND5trGJVb54wJfpKatFEDDDBm8--
-
---D47cmVrcFt9L7S0u0kpXGn92epK8Efxx0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlnbu6oACgkQHv7KIOw4
-HPZG7ggAligHi21MQu+5erns0N1xXD/dp642K2tVhD56VtpSpLctbVvHNQU9rxpj
-WlcU0LTBcjjFSXCTSWHFEkCeT+ggstuQl3TOLMBfAuiqMcUxPp+6m8NNm4eAVFGq
-W38c+czLrBj0o2TDiVh++liH+Eqv0RxIUptdlAUiJg3rMSDHB4GbMxqV0/viriki
-xSDQT/ch+0IoC18N72lKjkFjYWJMQgwjdK6eXSPRhd4n9Xi3MrlziuFcd0ax1vge
-dJxmeBCFBa14C+ahOzPMu5xBibTbqSmtJxNAnrwNis5Y8/vjJPE+aIljXXSmZ7+2
-SVTq3SRa/za1yfHgDWtZQzEBaVbjGg==
-=KGSh
------END PGP SIGNATURE-----
-
---D47cmVrcFt9L7S0u0kpXGn92epK8Efxx0--
+--- Original message ---
+> Date:   Sun, 8 Oct 2017 15:44:41 +0200
+> From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+> To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org"
+>  <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>, Elenita
+>  Hinds <ecathinds@gmail.com>
+> Subject: Re: Request-for-testing: j1939
+> User-Agent: Mutt/1.5.22 (2013-10-16)
+> 
+> Small update: unplugging the hardware produces a problem with open
+> sockets. I think this is what you tried to solve, and I reverted since
+> it dealt with iface down ...
+> You probably needed to tests against 'ENODEV' rather than ENETDOWN to
+> satisfy my tests :-)
+> I'll work on this ...
+> 
+> Kurt
+> 
+> > > Hello,
+> > > 
+> > > I've worked my way a bit through the lower layers of the j1939 stack.
+> > > While there I cleaned up the livetime handling of the j1939 object and
+> > > the bind() and connect() functions. Unplugging a USB network device
+> > > while a application is running should now be possible.
+> > > 
+> > > The patch stack consists of ~100 patches, ~15 of them are cleanups for
+> > > the af_can. I'm not going to post the patches here for review, testing
+> > > is much more welcome. Maybe we can put together a testsuite.
+> > > 
+> > > The branch is available at my kernel.org linux-can-next repo in the
+> > > j1939 branch.
+> > > 
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/?h=j1939
+> > 
+> > Marc,
+> > 
+> > I completed some tests on your branch.
+> > I did amend some tiny patches, please find them
+> > at https://github.com/kurt-vd/linux/tree/can-next-j1939
+> > 
+> > I did revert 1 patch which I mentioned already some days ago,
+> > I did 2 optimizations, eliminating locks, and added 2 fixes.
+> > 
+> > I did take the effort to test with 2 CAN adapters this time, since
+> > Elenita had pointed me to a mistake that wasn't revealed doing tests
+> > locally using vcan :-)
+> > 
+> > The stack seems operational, ready for more tests.
+> > 
+> > Kurt
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-can" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
