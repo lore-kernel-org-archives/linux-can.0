@@ -1,125 +1,104 @@
-From: Elenita Hinds <elenita.hinds@climate.com>
-Subject: Re: Request-for-testing: j1939
-Date: Tue, 10 Oct 2017 16:54:42 -0500
-Message-ID: <D6ADCA1B-58FD-4037-BA08-2219BD96B4B6@climate.com>
-References: <9071ec9a-2b26-ed36-3b11-5f97f4b252d9@pengutronix.de>
- <20171008131300.GA24772@airbook.vandijck-laurijssen.be>
- <20171008134441.GA13065@airbook.vandijck-laurijssen.be>
- <20171010164203.GA4297@airbook.vandijck-laurijssen.be>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: check for null sk before deferencing it via the call
+ to sock_net
+Date: Wed, 11 Oct 2017 12:35:58 +0200
+Message-ID: <9fe54aa3-5f40-7df7-3ff4-f104f18c0f02@hartkopp.net>
+References: <20170908150235.2931-1-colin.king@canonical.com>
+ <f5ce1047-eb37-151a-c7b7-9b47b70789f7@hartkopp.net>
+ <CABATaM548q4dghmPgrh9qd7+q9Nq1UgA+ESXOrW+45gBWxdq3w@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from cluster-g.mailcontrol.com ([208.87.233.190]:55994 "EHLO
-        cluster-g.mailcontrol.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932209AbdJJWmA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 10 Oct 2017 18:42:00 -0400
-Received: from mail-it0-f72.google.com (mail-it0-f72.google.com [209.85.214.72])
-        by rly18g.srv.mailcontrol.com (MailControl) with ESMTPS id v9ALsi52111100
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=OK)
-        for <linux-can@vger.kernel.org>; Tue, 10 Oct 2017 22:54:45 +0100
-Received: by mail-it0-f72.google.com with SMTP id x187so241371itf.2
-        for <linux-can@vger.kernel.org>; Tue, 10 Oct 2017 14:54:45 -0700 (PDT)
-In-Reply-To: <20171010164203.GA4297@airbook.vandijck-laurijssen.be>
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:16794 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751462AbdJKKgS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 11 Oct 2017 06:36:18 -0400
+In-Reply-To: <CABATaM548q4dghmPgrh9qd7+q9Nq1UgA+ESXOrW+45gBWxdq3w@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>, Elenita Hinds <ecathinds@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Chunyu Hu <chuhu.ncepu@gmail.com>, linux-can@vger.kernel.org, Colin King <colin.king@canonical.com>, =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>
 
-Hi Kurt,
+Hi Marc,
 
-I’ve been testing on my end, including the latest commits below, and here are a couple of feedback:
+this fix from Colin still didn't make it into upstream.
 
-1) [Very minor]  In net/can/j1939/main.c, line 315: I wonder if the ‘printk’ statement is still necessary for a final release.
+Can you please push it to Dave along with this one:
+https://marc.info/?l=linux-can&m=150575760930022&w=2
 
-2) I’m currently encountering a problem where the receiving of packets stops at some point. My test source is still sending the J1939 packets and the device is receiving these packets (verified through an oscilloscope) but both ‘candump’ and ‘testj1939’ tools stop printing data at some point (same packet termination). If I run without the j1939 and just raw CAN using ‘candump', the tool runs infinitely. I’m still digging through the code but I wonder if this is something you’ve seen before and may have some advice.
+Many thanks,
+Oliver
 
-Thanks,
-Elenita
-
-
-
-> On Oct 10, 2017, at 11:44 AM, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be> wrote:
+On 10/11/2017 09:03 AM, Chunyu Hu wrote:
+> I hit this oops in real world when running trinity test in ppc64le
+> with a 4.14-rc3 kernel.
 > 
-> Marc et al.,
+> [  154.507777] NIP [d0000000065919fc] bcm_release+0x4c/0x320 [can_bcm]
+> [  154.508300] LR [c000000000a0e070] sock_close+0x50/0x110
+> [  154.508421] Call Trace:
+> [  154.508481] [c0000001ebe93c20] [00000001fffffbf7] 0x1fffffbf7 (unreliable)
+> [  154.508808] [c0000001ebe93cd0] [c000000000a0e070] sock_close+0x50/0x110
+> [  154.509015] [c0000001ebe93d40] [c000000000438104] __fput+0xe4/0x2f0
+> [  154.509168] [c0000001ebe93da0] [c000000000163790] task_work_run+0x140/0x1a0
+> [  154.509320] [c0000001ebe93e00] [c00000000001e8a8]
+> do_notify_resume+0x128/0x130
+> [  154.509504] [c0000001ebe93e30] [c00000000000b5c4]
+> ret_from_except_lite+0x70/0x74
+> [  154.509702] Instruction dump:
+> [  154.509793] fb61ffd8 fb81ffe0 fba1ffe8 fbc1fff0 fbe1fff8 f8010010
+> f821ff51 7c791b78
+> [  154.509978] 48000008 e8410018 ebb90020 2fbd0000 <eb9d0030> 419e0238
+> 387d02d0 7fbeeb78
 > 
-> I finalized a working branch (only static addressing tested so far).
-> Device management behaves well at this point, transport protocol send &
-> recv, ...
-> 
-> I pushed a new https://github.com/kurt-vd/linux/tree/can-next-j1939
-> (well, I was a bit supprised I could push this one, without --force
-> even).
-> Unfortunately, I must postpone tests with dynamic addressing at least a
-> week now.
-> 
-> @Marc,
-> I suppose that when the tiny bits are fixed, then this can easily be
-> rebased to today's can-next without major impact, isn't it?
-> 
-> Kind regards,
-> Kurt
-> 
-> --- Original message ---
->> Date:   Sun, 8 Oct 2017 15:44:41 +0200
->> From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
->> To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org"
->> <linux-can@vger.kernel.org>, David Jander <david@protonic.nl>, Elenita
->> Hinds <ecathinds@gmail.com>
->> Subject: Re: Request-for-testing: j1939
->> User-Agent: Mutt/1.5.22 (2013-10-16)
->> 
->> Small update: unplugging the hardware produces a problem with open
->> sockets. I think this is what you tried to solve, and I reverted since
->> it dealt with iface down ...
->> You probably needed to tests against 'ENODEV' rather than ENETDOWN to
->> satisfy my tests :-)
->> I'll work on this ...
->> 
->> Kurt
->> 
->>>> Hello,
->>>> 
->>>> I've worked my way a bit through the lower layers of the j1939 stack.
->>>> While there I cleaned up the livetime handling of the j1939 object and
->>>> the bind() and connect() functions. Unplugging a USB network device
->>>> while a application is running should now be possible.
->>>> 
->>>> The patch stack consists of ~100 patches, ~15 of them are cleanups for
->>>> the af_can. I'm not going to post the patches here for review, testing
->>>> is much more welcome. Maybe we can put together a testsuite.
->>>> 
->>>> The branch is available at my kernel.org linux-can-next repo in the
->>>> j1939 branch.
->>>> 
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/?h=j1939
->>> 
->>> Marc,
->>> 
->>> I completed some tests on your branch.
->>> I did amend some tiny patches, please find them
->>> at https://github.com/kurt-vd/linux/tree/can-next-j1939
->>> 
->>> I did revert 1 patch which I mentioned already some days ago,
->>> I did 2 optimizations, eliminating locks, and added 2 fixes.
->>> 
->>> I did take the effort to test with 2 CAN adapters this time, since
->>> Elenita had pointed me to a mistake that wasn't revealed doing tests
->>> locally using vcan :-)
->>> 
->>> The stack seems operational, ready for more tests.
->>> 
->>> Kurt
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+> On 9 September 2017 at 01:46, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+>>
+>>
+>> On 09/08/2017 05:02 PM, Colin King wrote:
+>>>
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> The assignment of net via call sock_net will dereference sk. This
+>>> is performed before a sanity null check on sk, so there could be
+>>> a potential null dereference on the sock_net call if sk is null.
+>>> Fix this by assigning net after the sk null check. Also replace
+>>> the sk == NULL with the more usual !sk idiom.
+>>>
+>>> Detected by CoverityScan CID#1431862 ("Dereference before null check")
+>>>
+>>> Fixes: 384317ef4187 ("can: network namespace support for CAN_BCM
+>>> protocol")
+>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>
+>>
+>> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>>
+>>
+>> Thanks Collin!
+>>
+>>
+>>> ---
+>>>    net/can/bcm.c | 5 +++--
+>>>    1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/net/can/bcm.c b/net/can/bcm.c
+>>> index 47a8748d953a..a3791674b8ce 100644
+>>> --- a/net/can/bcm.c
+>>> +++ b/net/can/bcm.c
+>>> @@ -1493,13 +1493,14 @@ static int bcm_init(struct sock *sk)
+>>>    static int bcm_release(struct socket *sock)
+>>>    {
+>>>          struct sock *sk = sock->sk;
+>>> -       struct net *net = sock_net(sk);
+>>> +       struct net *net;
+>>>          struct bcm_sock *bo;
+>>>          struct bcm_op *op, *next;
+>>>    -     if (sk == NULL)
+>>> +       if (!sk)
+>>>                  return 0;
+>>>    +     net = sock_net(sk);
+>>>          bo = bcm_sk(sk);
+>>>          /* remove bcm_ops, timer, rx_unregister(), etc. */
+>>>
+>>
