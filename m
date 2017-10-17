@@ -1,58 +1,91 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: check for null sk before deferencing it via the call
- to sock_net
-Date: Mon, 16 Oct 2017 19:32:25 +0200
-Message-ID: <c50ebff0-233c-7dcf-1b80-19ac0369803a@hartkopp.net>
-References: <20170908150235.2931-1-colin.king@canonical.com>
- <f5ce1047-eb37-151a-c7b7-9b47b70789f7@hartkopp.net>
- <CA+5PVA7fJfZmN-XLuqARGkWL6eY54HaRAj19K_Und3K7vAVfpg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <CA+5PVA7fJfZmN-XLuqARGkWL6eY54HaRAj19K_Und3K7vAVfpg@mail.gmail.com>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Josh Boyer <jwboyer@fedoraproject.org>
-Cc: Colin King <colin.king@canonical.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, kernel-janitors@vger.kernel.org, "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH 22/58] net: can: Convert timers to use timer_setup()
+Date: Mon, 16 Oct 2017 17:29:06 -0700
+Message-ID: <1508200182-104605-23-git-send-email-keescook@chromium.org>
+References: <1508200182-104605-1-git-send-email-keescook@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1508200182-104605-1-git-send-email-keescook@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "David S. Miller" <davem@davemloft.net>
+Cc: Kees Cook <keescook@chromium.org>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On 10/16/2017 06:37 PM, Josh Boyer wrote:
-> On Fri, Sep 8, 2017 at 1:46 PM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->>
->>
->> On 09/08/2017 05:02 PM, Colin King wrote:
->>>
->>> From: Colin Ian King <colin.king@canonical.com>
->>>
->>> The assignment of net via call sock_net will dereference sk. This
->>> is performed before a sanity null check on sk, so there could be
->>> a potential null dereference on the sock_net call if sk is null.
->>> Fix this by assigning net after the sk null check. Also replace
->>> the sk == NULL with the more usual !sk idiom.
->>>
->>> Detected by CoverityScan CID#1431862 ("Dereference before null check")
->>>
->>> Fixes: 384317ef4187 ("can: network namespace support for CAN_BCM
->>> protocol")
->>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->>
->>
->> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> 
-> I don't see this one queued up in the net or net-next trees.  Did it
-> fall through the cracks or did it get queued up elsewhere?  Seems like
-> it's a good candidate to get into 4.14?
+In preparation for unconditionally passing the struct timer_list pointer to
+all timer callbacks, switch to using the new timer_setup() and from_timer()
+to pass the timer pointer explicitly.
 
-It definitely is!
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ net/can/af_can.c | 4 ++--
+ net/can/af_can.h | 2 +-
+ net/can/proc.c   | 8 ++++----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-Marc is our responsible guy for CAN related upstreams - but he seems to 
-be busy as I already poked him here:
-
-https://marc.info/?l=linux-can&m=150771819505097&w=2
-
-If he doesn't send a pull request by beginning of next week, I would ask 
-Dave to grab these patches - to get them into 4.14.
-
-Best regards,
-Oliver
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 88edac0f3e36..1f75e11ac35a 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -882,8 +882,8 @@ static int can_pernet_init(struct net *net)
+ 	if (IS_ENABLED(CONFIG_PROC_FS)) {
+ 		/* the statistics are updated every second (timer triggered) */
+ 		if (stats_timer) {
+-			setup_timer(&net->can.can_stattimer, can_stat_update,
+-				    (unsigned long)net);
++			timer_setup(&net->can.can_stattimer, can_stat_update,
++				    0);
+ 			mod_timer(&net->can.can_stattimer,
+ 				  round_jiffies(jiffies + HZ));
+ 		}
+diff --git a/net/can/af_can.h b/net/can/af_can.h
+index d0ef45bb2a72..eca6463c6213 100644
+--- a/net/can/af_can.h
++++ b/net/can/af_can.h
+@@ -113,6 +113,6 @@ struct s_pstats {
+ /* function prototypes for the CAN networklayer procfs (proc.c) */
+ void can_init_proc(struct net *net);
+ void can_remove_proc(struct net *net);
+-void can_stat_update(unsigned long data);
++void can_stat_update(struct timer_list *t);
+ 
+ #endif /* AF_CAN_H */
+diff --git a/net/can/proc.c b/net/can/proc.c
+index 83045f00c63c..d979b3dc49a6 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -115,9 +115,9 @@ static unsigned long calc_rate(unsigned long oldjif, unsigned long newjif,
+ 	return rate;
+ }
+ 
+-void can_stat_update(unsigned long data)
++void can_stat_update(struct timer_list *t)
+ {
+-	struct net *net = (struct net *)data;
++	struct net *net = from_timer(net, t, can.can_stattimer);
+ 	struct s_stats *can_stats = net->can.can_stats;
+ 	unsigned long j = jiffies; /* snapshot */
+ 
+@@ -221,7 +221,7 @@ static int can_stats_proc_show(struct seq_file *m, void *v)
+ 
+ 	seq_putc(m, '\n');
+ 
+-	if (net->can.can_stattimer.function == can_stat_update) {
++	if (net->can.can_stattimer.function == (TIMER_FUNC_TYPE)can_stat_update) {
+ 		seq_printf(m, " %8ld %% total match ratio (RXMR)\n",
+ 				can_stats->total_rx_match_ratio);
+ 
+@@ -291,7 +291,7 @@ static int can_reset_stats_proc_show(struct seq_file *m, void *v)
+ 
+ 	user_reset = 1;
+ 
+-	if (net->can.can_stattimer.function == can_stat_update) {
++	if (net->can.can_stattimer.function == (TIMER_FUNC_TYPE)can_stat_update) {
+ 		seq_printf(m, "Scheduled statistic reset #%ld.\n",
+ 				can_pstats->stats_reset + 1);
+ 	} else {
+-- 
+2.7.4
