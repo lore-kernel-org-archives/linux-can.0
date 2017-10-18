@@ -1,49 +1,56 @@
 From: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>
-Subject: [PATCH 0/2] can: usb: esd_usb2: Small fixes to esd_usb2 driver
-Date: Wed, 18 Oct 2017 13:25:06 +0200
-Message-ID: <68c42b9c-138d-e4fe-1b6a-5cf7e1ece88c@esd.eu>
+Subject: [PATCH 2/2] can: usb: esd_usb2: Fix can_dlc value for received RTR,
+ frames
+Date: Wed, 18 Oct 2017 13:25:17 +0200
+Message-ID: <c66525cb-77bd-fa5f-d3ab-78db08bdd763@esd.eu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mxp01.htp-tel.de ([212.59.41.8]:41529 "EHLO mxpout01.htp-tel.de"
+Received: from mxp01.htp-tel.de ([212.59.41.8]:62558 "EHLO mxpout01.htp-tel.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753337AbdJRLZW (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 18 Oct 2017 07:25:22 -0400
+        id S1753337AbdJRLZ0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 18 Oct 2017 07:25:26 -0400
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-Hi,
+The dlc member of the struct rx_msg contains also the ESD_RTR flag to mark
+received RTR frames. Without the fix the can_dlc value for received RTR
+frames would always be set to 8 by get_can_dlc() instead of the received
+value.
 
-here are provided a bug fix for receiving RTR frames and an editorial
-change.
+Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
+---
+ drivers/net/can/usb/esd_usb2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The patches apply cleanly to linux-can and linux-can-next.
+diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
+index 6183b7707ad7..20f2aa21677f 100644
+--- a/drivers/net/can/usb/esd_usb2.c
++++ b/drivers/net/can/usb/esd_usb2.c
+@@ -49,7 +49,7 @@ MODULE_LICENSE("GPL v2");
+ #define CMD_IDADD              6 /* also used for IDADD_REPLY */
 
-REMARK: I tried to send these patches already on September, 04 but the
-kernel mailing list server seemed to put them in /dev/null. I'll
-try it again now.
+ /* esd CAN message flags - dlc field */
+-#define ESD_RTR                        0x10
++#define ESD_RTR                        0x10u
 
-REMARK2: My git send-email setup seems to be busted in some way and the
-mailing list server throws the emails away again and again. Therefore I
-now use Thunderbird and hope these mails go through.
+ /* esd CAN message flags - id field */
+ #define ESD_EXTID              0x20000000
+@@ -334,7 +334,7 @@ static void esd_usb2_rx_can_msg(struct
+esd_usb2_net_priv *priv,
+                }
 
-It would be great if these small patches could reach the upcoming 4.14
-kernel especially the fix for the can_dlc because that is the designated
-kernel for the next Ubuntu LTS release.
+                cf->can_id = id & ESD_IDMASK;
+-               cf->can_dlc = get_can_dlc(msg->msg.rx.dlc);
++               cf->can_dlc = get_can_dlc(msg->msg.rx.dlc & ~ESD_RTR);
 
-Thanks in advance.
-
-Stefan Mätje (2):
-  can: usb: esd_usb2: Replaced stale MODULE_AUTHOR tag
-  can: usb: esd_usb2: Fix can_dlc value for received RTR frames
-
- drivers/net/can/usb/esd_usb2.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
+                if (id & ESD_EXTID)
+                        cf->can_id |= CAN_EFF_FLAG;
 -- 
 2.11.0
+
 
