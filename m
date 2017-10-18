@@ -1,85 +1,49 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: check for null sk before deferencing it via the call
- to sock_net
-Date: Tue, 17 Oct 2017 07:49:58 +0200
-Message-ID: <8fdd94bd-da4e-784e-3832-6c1bb5e1f432@pengutronix.de>
-References: <20170908150235.2931-1-colin.king@canonical.com>
+From: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>
+Subject: [PATCH 0/2] can: usb: esd_usb2: Small fixes to esd_usb2 driver
+Date: Wed, 18 Oct 2017 13:25:06 +0200
+Message-ID: <68c42b9c-138d-e4fe-1b6a-5cf7e1ece88c@esd.eu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="kLkPTC453FQOl0tOSLf9lQ8J0w18CI4wj"
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20170908150235.2931-1-colin.king@canonical.com>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Colin King <colin.king@canonical.com>, Oliver Hartkopp <socketcan@hartkopp.net>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mxp01.htp-tel.de ([212.59.41.8]:41529 "EHLO mxpout01.htp-tel.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753337AbdJRLZW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 18 Oct 2017 07:25:22 -0400
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kLkPTC453FQOl0tOSLf9lQ8J0w18CI4wj
-Content-Type: multipart/mixed; boundary="DTmUVp86E7IrRQu3rUON4iV83LvAcU0Tu";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Colin King <colin.king@canonical.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <8fdd94bd-da4e-784e-3832-6c1bb5e1f432@pengutronix.de>
-Subject: Re: [PATCH] can: check for null sk before deferencing it via the call
- to sock_net
-References: <20170908150235.2931-1-colin.king@canonical.com>
-In-Reply-To: <20170908150235.2931-1-colin.king@canonical.com>
+Hi,
 
---DTmUVp86E7IrRQu3rUON4iV83LvAcU0Tu
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+here are provided a bug fix for receiving RTR frames and an editorial
+change.
 
-On 09/08/2017 05:02 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> The assignment of net via call sock_net will dereference sk. This
-> is performed before a sanity null check on sk, so there could be
-> a potential null dereference on the sock_net call if sk is null.
-> Fix this by assigning net after the sk null check. Also replace
-> the sk =3D=3D NULL with the more usual !sk idiom.
->=20
-> Detected by CoverityScan CID#1431862 ("Dereference before null check")
->=20
-> Fixes: 384317ef4187 ("can: network namespace support for CAN_BCM protoc=
-ol")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+The patches apply cleanly to linux-can and linux-can-next.
 
-Applied to can.
+REMARK: I tried to send these patches already on September, 04 but the
+kernel mailing list server seemed to put them in /dev/null. I'll
+try it again now.
 
-Tnx,
-Marc
+REMARK2: My git send-email setup seems to be busted in some way and the
+mailing list server throws the emails away again and again. Therefore I
+now use Thunderbird and hope these mails go through.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+It would be great if these small patches could reach the upcoming 4.14
+kernel especially the fix for the can_dlc because that is the designated
+kernel for the next Ubuntu LTS release.
 
+Thanks in advance.
 
---DTmUVp86E7IrRQu3rUON4iV83LvAcU0Tu--
+Stefan Mätje (2):
+  can: usb: esd_usb2: Replaced stale MODULE_AUTHOR tag
+  can: usb: esd_usb2: Fix can_dlc value for received RTR frames
 
---kLkPTC453FQOl0tOSLf9lQ8J0w18CI4wj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+ drivers/net/can/usb/esd_usb2.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.11.0
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlnlmgYACgkQHv7KIOw4
-HPaRYAf+JpN6F+2pNi5nsnzqsjCdyc2Y6/tYqy+mACthmqkjAeETg3XsTRC4lq8b
-Lk1llWrAY1CkgqJEZfP5YxUkPv/SKL00AoyCRYX3mfXCuLnsLRLSa42/A23as/rA
-+A/+ULdyLn+bs+6sNmRJoNuNJzxdgBR50Mbm0QKa9NcJDgGt83EY8PhUwj7j3Lp9
-MfLnKxPqe7e4EZP1zF1RaJ91s5pFXafZyExHLXRGaiiSDHJOQ8aiEPgE0V9e3pwa
-XXpISOyxQOxE/jdo+MAwxvbQ4mHO0fYbT4I+3sLj4cxlfZp7qATPIePa9rU1pf4g
-1+ZhNYPCPx/AJ4CKggtMx6Ob3QyKLg==
-=uA+7
------END PGP SIGNATURE-----
-
---kLkPTC453FQOl0tOSLf9lQ8J0w18CI4wj--
