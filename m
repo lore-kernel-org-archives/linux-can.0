@@ -1,105 +1,133 @@
-From: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>
-Subject: Re: [PATCH 1/2] can: usb: esd_usb2: Replaced stale MODULE_AUTHOR tag
-Date: Thu, 19 Oct 2017 13:50:22 +0200
-Message-ID: <d40533e5-4992-1455-b76a-3effd98b065f@esd.eu>
-References: <8cbd7f4c-cccb-d237-519d-030d82e8b8e9@esd.eu>
- <5726c394-aa99-5dae-3226-d111d7ff253a@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/2] can: sun4i: fix overrun
+Date: Thu, 19 Oct 2017 14:10:53 +0200
+Message-ID: <5511583c-37ac-c6b7-f88d-1fd740fae3f5@pengutronix.de>
+References: <cover.1502971879.git.info@gerhard-bertelsmann.de>
+ <4bd237f72c933953238738b1d12d11ff16a0b6b0.1502971879.git.info@gerhard-bertelsmann.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="TKb9vLXODggd54lgOuN3KAR3pwipeAmLp"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mxp02.htp-tel.de ([212.59.41.9]:39331 "EHLO mxpout02.htp-tel.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1752738AbdJSLul (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 19 Oct 2017 07:50:41 -0400
-In-Reply-To: <5726c394-aa99-5dae-3226-d111d7ff253a@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:57987 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752704AbdJSMK6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Oct 2017 08:10:58 -0400
+In-Reply-To: <4bd237f72c933953238738b1d12d11ff16a0b6b0.1502971879.git.info@gerhard-bertelsmann.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
+To: GBert <info@gerhard-bertelsmann.de>, linux-can@vger.kernel.org
 
-Am 19.10.2017 um 09:55 schrieb Marc Kleine-Budde:
-> On 10/18/2017 04:35 PM, Stefan Mätje wrote:
->> Am 18.10.2017 um 13:48 schrieb Marc Kleine-Budde:
->>> On 10/18/2017 01:25 PM, Stefan Mätje wrote:
->>>> The original author of the module left our company. Replaced the email
->>>> in the MODULE_AUTHOR() macro with a valid one.
->>>>
->>>> Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
->>>> ---
->>>>  drivers/net/can/usb/esd_usb2.c | 3 ++-
->>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
->>>> index be928ce62d32..6183b7707ad7 100644
->>>> --- a/drivers/net/can/usb/esd_usb2.c
->>>> +++ b/drivers/net/can/usb/esd_usb2.c
->>>> @@ -2,6 +2,7 @@
->>>>   * CAN driver for esd CAN-USB/2 and CAN-USB/Micro
->>>>   *
->>>>   * Copyright (C) 2010-2012 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
->>>> + * Copyright (C)      2017 Stefan Maetje <stefan.maetje@esd.eu>, esd gmbh
->>>
->>> Hmmm a copyright for a one liner?
->>
->> Yes, it's somewhat ridiculous but I only wanted to make it clear not to
->> use Matthias's address any more already at the top of the source file.
->>
->>>>   *
->>>>   * This program is free software; you can redistribute it and/or modify it
->>>>   * under the terms of the GNU General Public License as published
->>>> @@ -26,7 +27,7 @@
->>>>  #include <linux/can/dev.h>
->>>>  #include <linux/can/error.h>
->>>>
->>>> -MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd.eu>");
->>>> +MODULE_AUTHOR("Stefan Maetje <stefan.maetje@esd.eu>");
->>>
->>> Maybe you should create a roll email address at your company and change
->>> Matthias Fuchs's email to something like kernel@esd.eu. Think about
->>> adding you or that role email to the MAINTAINERS file.
->>
->> I would suggest an email address of "linux-kernel@esd.eu" which would
->> result then in
->>
->> MODULE_AUTHOR("<linux-kernel@esd.eu>")
->>
->> Would that be ok?
-> 
-> I was thinking of:
-> 
-> -MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd.eu>");
-> +MODULE_AUTHOR("Matthias Fuchs <linux-kernel@esd.eu>");
-> 
-> aswell as for the copyright.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--TKb9vLXODggd54lgOuN3KAR3pwipeAmLp
+Content-Type: multipart/mixed; boundary="Oq9AhsiPf0LIUJEicdqgR6DJMmjiGjDeF";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: GBert <info@gerhard-bertelsmann.de>, linux-can@vger.kernel.org
+Message-ID: <5511583c-37ac-c6b7-f88d-1fd740fae3f5@pengutronix.de>
+Subject: Re: [PATCH 1/2] can: sun4i: fix overrun
+References: <cover.1502971879.git.info@gerhard-bertelsmann.de>
+ <4bd237f72c933953238738b1d12d11ff16a0b6b0.1502971879.git.info@gerhard-bertelsmann.de>
+In-Reply-To: <4bd237f72c933953238738b1d12d11ff16a0b6b0.1502971879.git.info@gerhard-bertelsmann.de>
 
-That looks good for me.
+--Oq9AhsiPf0LIUJEicdqgR6DJMmjiGjDeF
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-> 
->> On the other hand I would hesitate to add that email address to the
->> kernel's MAINTAINER file. Then it would stand side by side to your and
->> Wolfgang Grandeggers email adresses under "CAN NETWORK DRIVERS".
->>
->> Or do you mean to create a new section only describing the esd driver
->> for the CAN-USB/2?
-> 
-> Yes.
-> 
->> Wouldn't that be overkill also?
-> 
-> No, that's what that file is used for. All automated scripts use this
-> file instead of the copyright line or the MODULE_AUTHOR.
-> 
-> Marc
+On 08/17/2017 03:59 PM, GBert wrote:
+> From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+>=20
+> SUN4Is CAN IP has a 64 byte deep FIFO buffer. If the buffer is not drai=
+ned
+> fast enough (overrun) it's getting mangled.
 
-But after discussing your proposal with the MODULE_AUTHOR stuff again
-with some other people in house I would like to recall this patch
-request and drop it entirely for the moment.
+What does that mean?
 
-I think we will come back later on this.
+> The fix resets the buffer for faster recovery - unrecoverable data in
+> the buffer will be ignored
+So already received CAN frames are dropped?
 
-Thank you for your effort.
+> Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+> ---
+>  drivers/net/can/sun4i_can.c |   15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+>=20
+> diff --git drivers/net/can/sun4i_can.c drivers/net/can/sun4i_can.c
+> index 68ef0a4..0d673ff 100644
+> --- drivers/net/can/sun4i_can.c
+> +++ drivers/net/can/sun4i_can.c
+> @@ -531,6 +531,7 @@ static int sun4i_can_err(struct net_device *dev, u8=
+ isrc, u8 status)
+>  	}
+> =20
+>  	if (isrc & SUN4I_INT_DATA_OR) {
+> +		int err;
+>  		/* data overrun interrupt */
+>  		netdev_dbg(dev, "data overrun interrupt\n");
+>  		if (likely(skb)) {
+> @@ -539,6 +540,15 @@ static int sun4i_can_err(struct net_device *dev, u=
+8 isrc, u8 status)
+>  		}
+>  		stats->rx_over_errors++;
+>  		stats->rx_errors++;
+> +
+> +		/* reset the CAN IP by entering reset mode */
+> +		err =3D set_reset_mode(dev);
+> +		if (err)
+> +			netdev_err(dev, "could not enter reset mode\n");
 
-Stefan
+No need to print an error here set_{reset,normal}_mode() already do this.=
 
+
+> +		err =3D set_normal_mode(dev);
+> +		if (err)
+> +			netdev_err(dev, "could not enter normal mode\n");
+> +
+>  		/* clear bit */
+>  		sun4i_can_write_cmdreg(priv, SUN4I_CMD_CLEAR_OR_FLAG);
+>  	}
+> @@ -653,8 +663,9 @@ static irqreturn_t sun4i_can_interrupt(int irq, voi=
+d *dev_id)
+>  			netif_wake_queue(dev);
+>  			can_led_event(dev, CAN_LED_EVENT_TX);
+>  		}
+> -		if (isrc & SUN4I_INT_RBUF_VLD) {
+> -			/* receive interrupt */
+> +		if ((isrc & SUN4I_INT_RBUF_VLD) &&
+> +		    !(isrc & SUN4I_INT_DATA_OR)) {
+> +			/* receive interrupt - don't read if overrun occurred */
+>  			while (status & SUN4I_STA_RBUF_RDY) {
+>  				/* RX buffer is not empty */
+>  				sun4i_can_rx(dev);
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--Oq9AhsiPf0LIUJEicdqgR6DJMmjiGjDeF--
+
+--TKb9vLXODggd54lgOuN3KAR3pwipeAmLp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlnolk0ACgkQHv7KIOw4
+HPZSDwf/d5hhg61ujYQ5Vs0Tv5Mu8JefYi1MPQJXcnneFmq3SOOOokKMSzg2U3bs
++5i3cy1wH/XaHyYl5WUMipAs3dsHyS9h/K1bbQjvL44y3aVjGGrl9BHdtCYiNOdY
+l0DIFlMAni6BmAw9wiq8XmQy7Sjqo6hQX1YxgRHKhRUwPkL2Ru/u/F7FJvEKFqXK
+ck4snNgAJ67SWIpiaoc3TjYHpYWF+X06yiOU108XOu8XCg2Cea+X5mT7LKtxYPDW
+Kr+ieE1RB5X6WzG5UnOVIFZGRo9mCKy+APS6qvaAMpVRJAtMrLHzur60s5aIIxi+
+rhIwSEqAhd0mwrN89E4GlWO8+FT8eA==
+=4Ogv
+-----END PGP SIGNATURE-----
+
+--TKb9vLXODggd54lgOuN3KAR3pwipeAmLp--
