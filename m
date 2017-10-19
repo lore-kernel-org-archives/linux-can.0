@@ -1,7 +1,7 @@
-From: Franklin S Cooper Jr <fcooper@ti.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [RFC PATCH] can: m_can: Support higher speed CAN-FD bitrates
-Date: Thu, 19 Oct 2017 10:40:10 -0500
-Message-ID: <dc88743d-309d-d710-b8fa-54f977d4c2a3@ti.com>
+Date: Thu, 19 Oct 2017 20:35:07 +0200
+Message-ID: <f651ffd4-826c-ee20-aebf-e3c2c1b89ecf@hartkopp.net>
 References: <20170818193947.27862-1-fcooper@ti.com>
  <4f8f6b64-b2a2-b9dc-665c-f1c155daf994@ti.com>
  <a7e301a7-bc54-c348-bdb1-b6a0af41665f@ti.com>
@@ -14,154 +14,85 @@ References: <20170818193947.27862-1-fcooper@ti.com>
  <848e965d-e6a1-8930-9064-0317563326c0@ti.com>
  <93c6d531-c38b-6f88-510f-59eb3e733b78@ti.com>
  <545ac690-10c8-b206-76dd-dbbe602eb6af@pengutronix.de>
- <4c5b5e9f-44dc-0bf5-5131-b3caf54f390e@ti.com>
- <da663b5a-5459-2e99-79a2-3fdc3daef70b@pengutronix.de>
- <74482aa8-7b65-bd3d-7160-0d515b8c7b27@ti.com>
- <48317843-b488-8ccb-c6c5-e8cbb90ff5e3@pengutronix.de>
+ <a972cec1-3386-3ca3-ace3-175e1cabd286@hartkopp.net>
+ <0099eefa-32c8-a818-761c-667239d9ec3b@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <48317843-b488-8ccb-c6c5-e8cbb90ff5e3@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <0099eefa-32c8-a818-761c-667239d9ec3b@pengutronix.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Sekhar Nori <nsekhar@ti.com>, =?UTF-8?Q?Mario_H=c3=bcttel?= <mario.huettel@gmx.net>, "Yang, Wenyou" <Wenyou.Yang@Microchip.com>, wg@grandegger.com, socketcan@hartkopp.net, quentin.schulz@free-electrons.com, edumazet@google.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Sekhar Nori <nsekhar@ti.com>, Franklin S Cooper Jr <fcooper@ti.com>, =?UTF-8?Q?Mario_H=c3=bcttel?= <mario.huettel@gmx.net>, "Yang, Wenyou" <Wenyou.Yang@Microchip.com>, wg@grandegger.com, quentin.schulz@free-electrons.com, edumazet@google.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: Wenyou Yang <wenyou.yang@atmel.com>, Dong Aisheng <b29396@freescale.com>, "Quadros, Roger" <rogerq@ti.com>
 List-Id: linux-can.vger.kernel.org
 
+Hi Marc,
 
-
-On 10/19/2017 09:55 AM, Marc Kleine-Budde wrote:
-> On 10/19/2017 03:54 PM, Franklin S Cooper Jr wrote:
->> On 10/19/2017 06:32 AM, Marc Kleine-Budde wrote:
->>> On 10/19/2017 01:09 PM, Sekhar Nori wrote:
->>>> On Thursday 19 October 2017 02:43 PM, Marc Kleine-Budde wrote:
->>>>> On 10/19/2017 07:07 AM, Sekhar Nori wrote:
->>>>>>>>> Sounds reasonable. What's the status of this series?
->>>>>>>>
->>>>>>>> I have had some offline discussions with Franklin on this, and I am not
->>>>>>>> fully convinced that DT is the way to go here (although I don't have the
->>>>>>>> agreement with Franklin there).
->>>>>>>
->>>>>>> Probably the fundamental area where we disagree is what "default" SSP
->>>>>>> value should be used. Based on a short (< 1 ft) point to point test
->>>>>>> using a SSP of 50% worked fine. However, I'm not convinced that this
->>>>>>> default value of 50% will work in a more "traditional" CAN bus at higher
->>>>>>> speeds. Nor am I convinced that a SSP of 50% will work on every MCAN
->>>>>>> board in even the simplest test cases.
->>>>>>>
->>>>>>> I believe that this default SSP should be a DT property that allows any
->>>>>>> board to determine what default value works best in general.
->>>>>>
->>>>>> With that, I think, we are taking DT from describing board/hardware
->>>>>> characteristics to providing default values that software should use.
->>>>>
->>>>> If the default value is board specific and cannot be calculated in
->>>>> general or from other values present in the DT, then it's from my point
->>>>> of view describing the hardware.
->>>>>
->>>>>> In any case, if Marc and/or Wolfgang are okay with it, binding
->>>>>> documentation for such a property should be sent to DT maintainers for
->>>>>> review.
->>>>>>
->>>>>>>>
->>>>>>>> There are two components in configuring the secondary sample point. It
->>>>>>>> is the transceiver loopback delay and an offset (example half of the bit
->>>>>>>> time in data phase).
->>>>>>>>
->>>>>>>> While the transceiver loopback delay is pretty board dependent (and thus
->>>>>>>> amenable to DT encoding), I am not quite sure the offset can be
->>>>>>>> configured in DT because its not really board dependent.
->>>>>>>>
->>>>>>>> Unfortunately, offset calculation does not seem to be an exact science.
->>>>>>>> There are recommendations ranging from using 50% of bit time to making
->>>>>>>> it same as the sample point configured. This means users who need to
->>>>>>>> change the SSP due to offset variations need to change  their DT even
->>>>>>>> without anything changing on their board.
->>>>>>>>
->>>>>>>> Since we have a netlink socket interface to configure sample point, I
->>>>>>>> wonder if that should be extended to configure SSP too (or at least the
->>>>>>>> offset part of SSP)?
->>>>>>>
->>>>>>> Sekhar is right that ideally the user should be able to set the SSP at
->>>>>>> runtime. However, my issue is that based on my experience CAN users
->>>>>>> expect the driver to just work the majority of times. For unique use
->>>>>>> cases where the driver calculated values don't work then the user should
->>>>>>> be able to override it. This should only be done for a very small
->>>>>>> percentage of CAN users. Unless you allow DT to provide a default SSP
->>>>>>> many users of MCAN may find that the default SSP doesn't work and must
->>>>>>> always use runtime overrides to get anything to work. I don't think that
->>>>>>> is a good user experience which is why I don't like the idea.
->>>>>>
->>>>>> Fair enough. But not quite sure if CAN users expect CAN-FD to "just
->>>>>> work" without doing any bittiming related setup.
->>>>>
->>>>> From my point of view I'd rather buy a board from a HW vendor where
->>>>> CAN-FD works, rather than a board where I have to tweak the bit-timing
->>>>> for a simple CAN-FD test setup.
->>>>>
->>>>> As far as I see for the m_can driver it's a single tuple: "bitrate > 2.5
->>>>> MBit/s -> 50%". Do we need an array of tuples in general?
+On 10/19/2017 01:26 PM, Marc Kleine-Budde wrote:
+> On 10/19/2017 01:14 PM, Oliver Hartkopp wrote:
+>>>>>> Since we have a netlink socket interface to configure sample point, I
+>>>>>> wonder if that should be extended to configure SSP too (or at least the
+>>>>>> offset part of SSP)?
 >>
->> Internally what I proposed was a binding that allowed you to pass in an
->> array of a range of baud rates and then a SSP for that baud rate range.
->> Therefore, if the baud rate being used impacted what SSP worked then it
->> allows someone to provide a range of defaults. Of course a person also
->> has the ability to use a single large range thus implementing a single
->> default SSP value.
+>> +1 too
 > 
-> A single tuple is just a special case of a list of tuples :)
+> The struct can_bittiming in defined in uapi, so we have to keep ABI
+> compatibility in mind.
 > 
-> I was thinking of something like this:
-> 
-> First we need a struct defining the bitrate spp relationship.
-> 
-> The driver provides default values by a sorted array of these structs
-> together with array length.
-> 
-> During device registration we assign these default values to the actual
-> driver instance.
-> 
-> The netlink code can read and overwrite the current values. Maybe it can
-> read the default values.
-> 
-> The bitrate calculation code calculates the to be used spp value.
-> 
-> The driver sets the value during the open callback.
-> 
->>> Do we need more than one tuple here?
->>>
->>>>> If good default values are transceiver and board specific, they can go
->>>>> into the DT. We need a generic (this means driver agnostic) binding for
->>>>> this. If this table needs to be tweaked for special purpose, then we can
->>>>> add a netlink interface for this as well.
->>>>>
->>>>> Comments?
->>>>
->>>> I dont know how a good default (other than 50% as the starting point)
->>>> can be arrived at without doing any actual measurements on the actual
->>>> network. Since we do know that the value has to be tweaked, agree that
->>>> netlink interface has to be provided.
->>
->> Now I have seen in non public documentations that setting SP to SSP also
->> works.
-> 
-> This can already by done now, without the need for new interfaces.
-> 
->> This makes a bit more sense to me and I'm alot more comfortable going
->> with this. However, since its based on non public information I can't
->> justify it beyond that "it works for me". But I'm alot more 
->> comfortable going with then saying "hey this default value works for 
->> TI's dra76 evm. Therefore, every MCAN board will be stuck by default
->> for a value that works for us". So if there is no push back with
->> going with SSP = db SP with no documentation to back up why that is
->> being used then I will try that out and send patches.
-> 
-> This means we postpone the whole add-new-interface-dance until the
-> SPP=SP approach doesn't work for some usecase?
 
-My justification behind using SSP = SP will be "it works during my
-test". If that is fine then I am ok with postponing any new bindings.
+Oh, this is fortunately NO problem ;-)
+
+struct can_bittiming {
+         __u32 bitrate;          /* Bit-rate in bits/second */
+         __u32 sample_point;     /* Sample point in one-tenth of a 
+percent */
+         __u32 tq;               /* Time quanta (TQ) in nanoseconds */
+         __u32 prop_seg;         /* Propagation segment in TQs */
+         __u32 phase_seg1;       /* Phase buffer segment 1 in TQs */
+         __u32 phase_seg2;       /* Phase buffer segment 2 in TQs */
+         __u32 sjw;              /* Synchronisation jump width in TQs */
+         __u32 brp;              /* Bit-rate prescaler */
+};
+
+So we have two of these: One for the arbitration bitrate and one 
+sample_point for the data bitrate -> the 'secondary' SP -> SSP
+
+:-)
+
+We already have this 'dsample-point' implemented in the ip tool:
+
+$ ip link set vcan0 type can help
+Usage: ip link set DEVICE type can
+	[ bitrate BITRATE [ sample-point SAMPLE-POINT] ] |
+	[ tq TQ prop-seg PROP_SEG phase-seg1 PHASE-SEG1
+  	  phase-seg2 PHASE-SEG2 [ sjw SJW ] ]
+
+	[ dbitrate BITRATE [ dsample-point SAMPLE-POINT] ] |  <<-- here!
+	[ dtq TQ dprop-seg PROP_SEG dphase-seg1 PHASE-SEG1
+  	  dphase-seg2 PHASE-SEG2 [ dsjw SJW ] ]
+
+But AFAIK m_can is not using that value in m_can_set_bittiming().
+
+>>> If good default values are transceiver and board specific, they can go
+>>> into the DT. We need a generic (this means driver agnostic) binding for
+>>> this. If this table needs to be tweaked for special purpose, then we can
+>>> add a netlink interface for this as well. >
+>>> Comments?
+>>
+>> By now we calculate reasonable default values (e.g. for SP and SJW), you
+>> can override by setting alternative values via netlink configuration.
+>>
+>> I would tend to stay on this approach and not hide these things in DTs -
+>> just because of someone wants to initialize his specific interface 'easier'.
 > 
-> Marc
-> 
+> If the values are not board specific, then it makes no sense to put them
+> into the DT.
+
+When they are NOT(?) board specific?
+
+Thinking about non-SoC CAN adapters with PCI and USB pushing the SSP to 
+the DT looks wrong to me.
+
+Best,
+Oliver
