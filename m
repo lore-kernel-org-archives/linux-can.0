@@ -1,146 +1,132 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/2] can: usb: esd_usb2: Replaced stale MODULE_AUTHOR tag
-Date: Thu, 19 Oct 2017 09:55:18 +0200
-Message-ID: <5726c394-aa99-5dae-3226-d111d7ff253a@pengutronix.de>
-References: <8cbd7f4c-cccb-d237-519d-030d82e8b8e9@esd.eu>
- <161fb16b-de6c-0eef-f908-1cb1e11d7f0e@pengutronix.de>
- <b7dc7929-f4b3-2b0b-cfd5-7c514166943d@esd.eu>
+From: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Subject: RE: [RFC PATCH] can: m_can: Support higher speed CAN-FD bitrates
+Date: Thu, 19 Oct 2017 08:04:48 +0000
+Message-ID: <KL1PR0601MB20386197BA2733930329257BC3420@KL1PR0601MB2038.apcprd06.prod.outlook.com>
+References: <20170818193947.27862-1-fcooper@ti.com>
+ <4f8f6b64-b2a2-b9dc-665c-f1c155daf994@ti.com>
+ <a7e301a7-bc54-c348-bdb1-b6a0af41665f@ti.com>
+ <532e09ae-775d-e8aa-e468-78e148c650da@Microchip.com>
+ <88d4ddc4-b786-0205-6852-56e93182a1c9@ti.com>
+ <e3a7d9a1-d75c-a39e-f122-73fced02a1dc@gmx.net>
+ <ed19ead3-d8f6-c027-74cf-8aee131c8a59@ti.com>
+ <08432016-e733-b827-b9aa-bc359dd837f5@pengutronix.de>
+ <7ba515d9-7710-c152-a55a-f995b7f3d49a@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="3awc7nsvbxS5tH0Hxorr91uTpLVR8uEVl"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:45503 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751827AbdJSHzg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Oct 2017 03:55:36 -0400
-In-Reply-To: <b7dc7929-f4b3-2b0b-cfd5-7c514166943d@esd.eu>
+Received: from relmlor3.renesas.com ([210.160.252.173]:12992 "EHLO
+        relmlie2.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1751779AbdJSIEy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Oct 2017 04:04:54 -0400
+In-Reply-To: <7ba515d9-7710-c152-a55a-f995b7f3d49a@ti.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
+To: Sekhar Nori <nsekhar@ti.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Franklin S Cooper Jr <fcooper@ti.com>, =?utf-8?B?TWFyaW8gSMO8dHRlbA==?= <mario.huettel@gmx.net>, "Yang, Wenyou" <Wenyou.Yang@Microchip.com>, "wg@grandegger.com" <wg@grandegger.com>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "quentin.schulz@free-electrons.com" <quentin.schulz@free-electrons.com>, "edumazet@google.com" <edumazet@google.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Wenyou Yang <wenyou.yang@atmel.com>, Dong Aisheng <b29396@freescale.com>, "Quadros, Roger" <rogerq@ti.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---3awc7nsvbxS5tH0Hxorr91uTpLVR8uEVl
-Content-Type: multipart/mixed; boundary="OTXFVw3kn5b0xTxKRAOIfUkDfMJVlOmF2";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Message-ID: <5726c394-aa99-5dae-3226-d111d7ff253a@pengutronix.de>
-Subject: Re: [PATCH 1/2] can: usb: esd_usb2: Replaced stale MODULE_AUTHOR tag
-References: <8cbd7f4c-cccb-d237-519d-030d82e8b8e9@esd.eu>
- <161fb16b-de6c-0eef-f908-1cb1e11d7f0e@pengutronix.de>
- <b7dc7929-f4b3-2b0b-cfd5-7c514166943d@esd.eu>
-In-Reply-To: <b7dc7929-f4b3-2b0b-cfd5-7c514166943d@esd.eu>
-
---OTXFVw3kn5b0xTxKRAOIfUkDfMJVlOmF2
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 10/18/2017 04:35 PM, Stefan M=C3=A4tje wrote:
-> Am 18.10.2017 um 13:48 schrieb Marc Kleine-Budde:
->> On 10/18/2017 01:25 PM, Stefan M=C3=A4tje wrote:
->>> The original author of the module left our company. Replaced the emai=
-l
->>> in the MODULE_AUTHOR() macro with a valid one.
->>>
->>> Signed-off-by: Stefan M=C3=A4tje <stefan.maetje@esd.eu>
->>> ---
->>>  drivers/net/can/usb/esd_usb2.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd=
-_usb2.c
->>> index be928ce62d32..6183b7707ad7 100644
->>> --- a/drivers/net/can/usb/esd_usb2.c
->>> +++ b/drivers/net/can/usb/esd_usb2.c
->>> @@ -2,6 +2,7 @@
->>>   * CAN driver for esd CAN-USB/2 and CAN-USB/Micro
->>>   *
->>>   * Copyright (C) 2010-2012 Matthias Fuchs <matthias.fuchs@esd.eu>, e=
-sd gmbh
->>> + * Copyright (C)      2017 Stefan Maetje <stefan.maetje@esd.eu>, esd=
- gmbh
->>
->> Hmmm a copyright for a one liner?
->=20
-> Yes, it's somewhat ridiculous but I only wanted to make it clear not to=
-
-> use Matthias's address any more already at the top of the source file.
->=20
->>>   *
->>>   * This program is free software; you can redistribute it and/or mod=
-ify it
->>>   * under the terms of the GNU General Public License as published
->>> @@ -26,7 +27,7 @@
->>>  #include <linux/can/dev.h>
->>>  #include <linux/can/error.h>
->>>
->>> -MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd.eu>");
->>> +MODULE_AUTHOR("Stefan Maetje <stefan.maetje@esd.eu>");
->>
->> Maybe you should create a roll email address at your company and chang=
-e
->> Matthias Fuchs's email to something like kernel@esd.eu. Think about
->> adding you or that role email to the MAINTAINERS file.
->=20
-> I would suggest an email address of "linux-kernel@esd.eu" which would
-> result then in
->=20
-> MODULE_AUTHOR("<linux-kernel@esd.eu>")
->=20
-> Would that be ok?
-
-I was thinking of:
-
--MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd.eu>");
-+MODULE_AUTHOR("Matthias Fuchs <linux-kernel@esd.eu>");
-
-aswell as for the copyright.
-
-> On the other hand I would hesitate to add that email address to the
-> kernel's MAINTAINER file. Then it would stand side by side to your and
-> Wolfgang Grandeggers email adresses under "CAN NETWORK DRIVERS".
->=20
-> Or do you mean to create a new section only describing the esd driver
-> for the CAN-USB/2?
-
-Yes.
-
-> Wouldn't that be overkill also?
-
-No, that's what that file is used for. All automated scripts use this
-file instead of the copyright line or the MODULE_AUTHOR.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---OTXFVw3kn5b0xTxKRAOIfUkDfMJVlOmF2--
-
---3awc7nsvbxS5tH0Hxorr91uTpLVR8uEVl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlnoWmYACgkQHv7KIOw4
-HPYgzQgAq+uWXPblJ75lLEpRQPcgb+AgnqHjgm09SlbqFLVhaupw9nIzM6oiaxlu
-5afQZiFBYQWCVdrEPwk2DQXiW9+zdDnxZH9ltWK8wukosfPLoom/S/e5wq/BF7e3
-rt8cG3o4Zw1CNNbpdGkWH0xzhliZoK4GT/RSIs9jGdmT4jjh4evDY7SMKtkQZh8l
-TCepbULv15ZPS70j+jWgkpcgrc7/98mgLNWjwyvasFbNuJ7DVTKcjNO1MmrcJUKV
-gb2Sx5TYs2lwCPbO50ujO+ZcLIMGnSM6cFjqUxsum24BzdVxsz61yabaLFzszgqo
-3qCAC2WAXOIfUnDZ4onJsl4lpKIrDQ==
-=SJjU
------END PGP SIGNATURE-----
-
---3awc7nsvbxS5tH0Hxorr91uTpLVR8uEVl--
+PiA+Pj4+Pj4+IE9uIDA4LzE4LzIwMTcgMDI6MzkgUE0sIEZyYW5rbGluIFMgQ29vcGVyIEpyIHdy
+b3RlOg0KPiA+Pj4+Pj4+PiBEdXJpbmcgdGVzdCB0cmFuc21pdHRpbmcgdXNpbmcgQ0FOLUZEIGF0
+IGhpZ2ggYml0cmF0ZXMgKDQgTWJwcykNCj4gPj4+Pj4+Pj4gb25seSByZXN1bHRlZCBpbiBlcnJv
+cnMuIFNjb3BpbmcgdGhlIHNpZ25hbHMgSSBub3RpY2VkIHRoYXQNCj4gPj4+Pj4+Pj4gb25seSBh
+IHNpbmdsZSBiaXQgd2FzIGJlaW5nIHRyYW5zbWl0dGVkIGFuZCB3aXRoIGEgYml0IG1vcmUNCj4g
+Pj4+Pj4+Pj4gaW52ZXN0aWdhdGlvbiByZWFsaXplZCB0aGUgYWN0dWFsIE1DQU4gSVAgd291bGQg
+Z28gYmFjayB0bw0KPiA+Pj4+Pj4+PiBpbml0aWFsaXphdGlvbiBtb2RlIGF1dG9tYXRpY2FsbHku
+DQo+ID4+Pj4+Pj4+DQo+ID4+Pj4+Pj4+IEl0IGFwcGVhcnMgdGhpcyBpc3N1ZSBpcyBkdWUgdG8g
+dGhlIE1DQU4gbmVlZGluZyB0byB1c2UgdGhlDQo+ID4+Pj4+Pj4+IFRyYW5zbWl0dGVyIERlbGF5
+IENvbXBlbnNhdGlvbiBNb2RlIGFzIGRlZmluZWQgaW4gdGhlIE1DQU4NCj4gPj4+Pj4+Pj4gVXNl
+cidzIEd1aWRlLiBXaGVuIHRoaXMgbW9kZSBpcyB1c2VkIHRoZSBVc2VyJ3MgR3VpZGUgaW5kaWNh
+dGVzDQo+ID4+Pj4+Pj4+IHRoYXQgdGhlIFRyYW5zbWl0dGVyIERlbGF5IENvbXBlbnNhdGlvbiBP
+ZmZzZXQgcmVnaXN0ZXIgc2hvdWxkDQo+ID4+Pj4+Pj4+IGJlIHNldC4gVGhlIGRvY3VtZW50IG1l
+bnRpb25zIHRoYXQgdGhpcyByZWdpc3RlciBzaG91bGQgYmUgc2V0DQo+ID4+Pj4+Pj4+IHRvICgx
+L2RiaXRyYXRlKS8yKihGdW5jIENsayBGcmVxKS4NCj4gPj4+Pj4+Pj4NCj4gPj4+Pj4+Pj4gQWRk
+aXRpb25hbCBDQU4tQ0lBJ3MgIkJpdCBUaW1lIFJlcXVpcmVtZW50cyBmb3IgQ0FOIEZEIg0KPiA+
+Pj4+Pj4+PiBkb2N1bWVudCBpbmRpY2F0ZXMgdGhhdCB0aGlzIFREQyBtb2RlIGlzIG9ubHkgbmVl
+ZGVkIGZvciBkYXRhDQo+ID4+Pj4+Pj4+IGJpdCByYXRlcyBhYm92ZSAyLjUgTWJwcy4NCj4gPj4+
+Pj4+Pj4gVGhlcmVmb3JlLCBvbmx5IGVuYWJsZSB0aGlzIG1vZGUgYW5kIG9ubHkgc2V0IFREQ08g
+d2hlbiB0aGUNCj4gPj4+Pj4+Pj4gZGF0YSBiaXQgcmF0ZSBpcyBhYm92ZSAyLjUgTWJwcy4NCj4g
+Pj4+Pj4+Pj4NCj4gPj4+Pj4+Pj4gU2lnbmVkLW9mZi1ieTogRnJhbmtsaW4gUyBDb29wZXIgSnIg
+PGZjb29wZXJAdGkuY29tPg0KPiA+Pj4+Pj4+PiAtLS0NCj4gPj4+Pj4+Pj4gSSdtIHByZXR0eSBz
+dXJwcmlzZWQgdGhhdCB0aGlzIGhhc24ndCBiZWVuIGltcGxlbWVudGVkIGFscmVhZHkNCj4gPj4+
+Pj4+Pj4gc2luY2UgdGhlIHByaW1hcnkgcHVycG9zZSBvZiBDQU4tRkQgaXMgdG8gZ28gYmV5b25k
+IDEgTWJwcyBhbmQNCj4gPj4+Pj4+Pj4gdGhlIE1DQU4gSVAgc3VwcG9ydHMgdXAgdG8gMTAgTWJw
+cy4NCj4gPj4+Pj4+Pj4NCj4gPj4+Pj4+Pj4gU28gaXQgd2lsbCBiZSBuaWNlIHRvIGdldCBjb21t
+ZW50cyBmcm9tIHVzZXJzIG9mIHRoaXMgZHJpdmVyIHRvDQo+ID4+Pj4+Pj4+IHVuZGVyc3RhbmQg
+aWYgdGhleSBoYXZlIGJlZW4gYWJsZSB0byB1c2UgQ0FOLUZEIGJleW9uZCAyLjUgTWJwcw0KPiA+
+Pj4+Pj4+PiB3aXRob3V0IHRoaXMgcGF0Y2guDQo+ID4+Pj4+Pj4+IElmIHRoZXkgaGF2ZW4ndCB3
+aGF0IGRpZCB0aGV5IGRvIHRvIGdldCBhcm91bmQgaXQgaWYgdGhleQ0KPiA+Pj4+Pj4+PiBuZWVk
+ZWQgaGlnaGVyIHNwZWVkcy4NCj4gPj4+Pj4+Pj4NCj4gPj4+Pj4+Pj4gTWVhbndoaWxlIEkgcGxh
+biBvbiB0ZXN0aW5nIHRoaXMgdXNpbmcgYSBtb3JlICJyZWFsaXN0aWMiIENBTg0KPiA+Pj4+Pj4+
+PiBidXMgdG8gaW5zdXJlIGV2ZXJ5dGhpbmcgc3RpbGwgd29ya3MgYXQgNSBNYnBzIHdoaWNoIGlz
+IHRoZSBtYXgNCj4gPj4+Pj4+Pj4gc3BlZWQgb2YgbXkgQ0FOIHRyYW5zY2VpdmVyLg0KPiA+Pj4+
+Pj4+IHBpbmcuIEFueW9uZSBoYXMgYW55IHRob3VnaHRzIG9uIHRoaXM/DQo+ID4+Pj4+PiBJIGFk
+ZGVkIERvbmcgd2hvIGF1dGhvcmVkIHRoZSBtX2NhbiBkcml2ZXIgYW5kIFdlbnlvdSB3aG8gYWRk
+ZWQNCj4gPj4+Pj4+IHRoZSBvbmx5IGluLWtlcm5lbCB1c2VyIG9mIHRoZSBkcml2ZXIgZm9yIGFu
+eSBoZWxwLg0KPiA+Pj4+PiBJIHRlc3RlZCBpdCBvbiBTQU1BNUQyIFhwbGFpbmVkIGJvYXJkIGJv
+dGggd2l0aCBhbmQgd2l0aG91dCB0aGlzDQo+ID4+Pj4+IHBhdGNoLCBib3RoIHdvcmsgd2l0aCB0
+aGUgNE0gYnBzIGRhdGEgYml0IHJhdGUuDQo+ID4+Pj4gVGhhbmsgeW91IGZvciB0ZXN0aW5nIHRo
+aXMgb3V0LiBJdHMgaW50ZXJlc3RpbmcgdGhhdCB5b3UgaGF2ZSBiZWVuDQo+ID4+Pj4gYWJsZSB0
+byB1c2UgaGlnaGVyIHNwZWVkcyB3aXRob3V0IHRoaXMgcGF0Y2guIFdoYXQgaXMgdGhlIENBTg0K
+PiA+Pj4+IHRyYW5zY2VpdmVyIGJlaW5nIHVzZWQgb24gdGhlIFNBTUE1RDIgWHBsYWluZWQgYm9h
+cmQ/IEkgdHJpZWQNCj4gPj4+PiBsb29raW5nIGF0IHRoZSBzY2hlbWF0aWMgYnV0IGl0IHNlZW1z
+IHRoZSBDQU4gc2lnbmFscyBhcmUgdXNlZCBvbg0KPiA+Pj4+IGFuIGV4dGVuc2lvbiBib2FyZCB3
+aGljaCBJIGNhbid0IGZpbmQgdGhlIHNjaGVtYXRpYyBmb3IuIEFsc28gZG8NCj4gPj4+PiB5b3Ug
+bWluZCBzaGFyaW5nIHlvdXIgdGVzdCBzZXR1cD8gV2VyZSB5b3UgZG9pbmcgYSBzaG9ydCBwb2lu
+dCB0bw0KPiBwb2ludCB0ZXN0Pw0KPiA+Pj4+DQo+ID4+Pj4gVGhhbmsgWW91LA0KPiA+Pj4+IEZy
+YW5rbGluDQo+ID4+PiBIZWxsbyBGcmFua2xpbiwNCj4gPj4+DQo+ID4+PiB5b3VyIHBhdGNoIGRl
+ZmluaXRlbHkgbWFrZXMgc2Vuc2UuDQo+ID4+Pg0KPiA+Pj4gSSBmb3Jnb3QgdGhlIFREQyBpbiBt
+eSBwYXRjaGVzIGJlY2F1c2UgaXQgd2FzIG5vdCBwcmVzZW50IGluIHRoZQ0KPiA+Pj4gcHJldmlv
+dXMgZHJpdmVyIHZlcnNpb25zIGFuZCBiZWNhdXNlIEkgZGlkbid0IGVuY291bnRlciBhbnkgcHJv
+YmxlbXMNCj4gPj4+IHdoZW4gdGVzdGluZyBpdCBteXNlbGYuDQo+ID4+Pg0KPiA+Pj4gVGhlIGVy
+cm9yIGlzIGhpZ2hseSBkZXBlbmRlbnQgb24gdGhlIGhhcmR3YXJlICh0cmFuc2NlaXZlcikgc2V0
+dXAuDQo+ID4+PiBTbyBpdCBpcyBkZWZpbml0ZWx5IHBvc3NpYmxlIHRoYXQgc29tZSBwZW9wbGUg
+ZG9uJ3QgZW5jb3VudGVyIGVycm9ycw0KPiA+Pj4gd2l0aG91dCB5b3VyIHBhdGNoLg0KPiA+Pg0K
+PiA+PiBTbyB0aGUgVHJhbnNtaXNzaW9uIERlbGF5IENvbXBlbnNhdGlvbiBmZWF0dXJlIFZhbHVl
+IHJlZ2lzdGVyIGlzDQo+ID4+IHN1cHBvc2UgdG8gdGFrZSBpbnRvIGNvbnNpZGVyYXRpb24gdGhl
+IHRyYW5zY2VpdmVyIGRlbGF5DQo+ID4+IGF1dG9tYXRpY2FsbHkgYW5kIGFkZCB0aGUgdmFsdWUg
+b2YgVERDTyBvbiB0b3Agb2YgdGhhdC4gU28gd2h5IHdvdWxkDQo+ID4+IFREQ08gYmUgZGVwZW5k
+ZW50IG9uIHRoZSB0cmFuc2NlaXZlcj8gSSd2ZSBoZWFyZCBjb25mbGljdGluZyB0aGluZ3MNCj4g
+Pj4gcmVnYXJkaW5nIFREQyBzbyBhbnkgY2xhcmlmaWNhdGlvbiBvbiB3aGF0IGFjdHVhbGx5IGlt
+cGFjdHMgaXQgd291bGQgYmUNCj4gYXBwcmVjaWF0ZWQuDQo+ID4+DQo+ID4+IEFsc28gcGFydCBv
+ZiB0aGUgaXNzdWUgSSdtIGhhdmluZyBpcyBob3cgY2FuIHdlIHByb3Blcmx5IGNvbmZpZ3VyZQ0K
+PiBURENPPw0KPiA+PiBDb25maWd1cmluZyBURENPIGlzIGVzc2VudGlhbGx5IGZpZ3VyaW5nIG91
+dCB3aGF0IFNlY29uZGFyeSBTYW1wbGUNCj4gPj4gUG9pbnQgdG8gdXNlLiBIb3dldmVyLCBpdCBp
+cyB1bmNsZWFyIHdoYXQgdmFsdWUgdG8gc2V0IFNTUCB0byBhbmQNCj4gPj4gd2hpY2ggdXNlIGNh
+c2VzIGEgZ2l2ZW4gU1NQIHdpbGwgd29yayBvciBkb2Vzbid0IHdvcmsuIEkndmUgc2Vlbg0KPiA+
+PiB2YXJpb3VzIHJlY29tbWVuZGF0aW9ucyBmcm9tIEJvc2NoIG9uIGNob29zaW5nIFNTUCBidXQg
+dWx0aW1hdGVseSBpdA0KPiA+PiBzZWVtcyB0aGV5IHN1Z2dlc3Rpb24gInJlYWwgd29ybGQgdGVz
+dGluZyIgdG8gY29tZSB1cCB3aXRoIGEgcHJvcGVyDQo+ID4+IHZhbHVlLiBOb3Qgc2V0dGluZyBU
+RENPIGNhdXNlcyBwcm9ibGVtcyBmb3IgbXkgZGV2aWNlIGFuZCBpbXByb3Blcmx5DQo+ID4+IHNl
+dHRpbmcgVERDTyBjYXVzZXMgcHJvYmxlbXMgZm9yIG15IGRldmljZS4gU28gaXRzIGxpa2VseSBh
+bnkgdmFsdWUgSQ0KPiA+PiB1c2UgY291bGQgZW5kIHVwIGJyZWFraW5nIHNvbWV0aGluZyBmb3Ig
+c29tZW9uZSBlbHNlLg0KPiA+Pg0KPiA+PiBDdXJyZW50bHkgSSBsZWFuaW5nIHRvIGEgRFQgcHJv
+cGVydHkgdGhhdCBjYW4gYmUgdXNlZCBmb3Igc2V0dGluZyBTU1AuDQo+ID4+IFBlcmhhcHMgdXNl
+IGEgZ2VuZXJpYyBkZWZhdWx0IHZhbHVlIGFuZCBhbGxvdyBpbmRpdmlkdWFscyB0byBvdmVycmlk
+ZQ0KPiA+PiBpdCB2aWEgRFQ/DQo+ID4NCj4gPiBTb3VuZHMgcmVhc29uYWJsZS4gV2hhdCdzIHRo
+ZSBzdGF0dXMgb2YgdGhpcyBzZXJpZXM/DQo+IA0KPiBJIGhhdmUgaGFkIHNvbWUgb2ZmbGluZSBk
+aXNjdXNzaW9ucyB3aXRoIEZyYW5rbGluIG9uIHRoaXMsIGFuZCBJIGFtIG5vdA0KPiBmdWxseSBj
+b252aW5jZWQgdGhhdCBEVCBpcyB0aGUgd2F5IHRvIGdvIGhlcmUgKGFsdGhvdWdoIEkgZG9uJ3Qg
+aGF2ZSB0aGUNCj4gYWdyZWVtZW50IHdpdGggRnJhbmtsaW4gdGhlcmUpLg0KPiANCj4gVGhlcmUg
+YXJlIHR3byBjb21wb25lbnRzIGluIGNvbmZpZ3VyaW5nIHRoZSBzZWNvbmRhcnkgc2FtcGxlIHBv
+aW50LiBJdCBpcw0KPiB0aGUgdHJhbnNjZWl2ZXIgbG9vcGJhY2sgZGVsYXkgYW5kIGFuIG9mZnNl
+dCAoZXhhbXBsZSBoYWxmIG9mIHRoZSBiaXQgdGltZQ0KPiBpbiBkYXRhIHBoYXNlKS4NCj4gDQo+
+IFdoaWxlIHRoZSB0cmFuc2NlaXZlciBsb29wYmFjayBkZWxheSBpcyBwcmV0dHkgYm9hcmQgZGVw
+ZW5kZW50IChhbmQgdGh1cw0KPiBhbWVuYWJsZSB0byBEVCBlbmNvZGluZyksIEkgYW0gbm90IHF1
+aXRlIHN1cmUgdGhlIG9mZnNldCBjYW4gYmUgY29uZmlndXJlZA0KPiBpbiBEVCBiZWNhdXNlIGl0
+cyBub3QgcmVhbGx5IGJvYXJkIGRlcGVuZGVudC4NCj4gDQo+IFVuZm9ydHVuYXRlbHksIG9mZnNl
+dCBjYWxjdWxhdGlvbiBkb2VzIG5vdCBzZWVtIHRvIGJlIGFuIGV4YWN0IHNjaWVuY2UuDQo+IFRo
+ZXJlIGFyZSByZWNvbW1lbmRhdGlvbnMgcmFuZ2luZyBmcm9tIHVzaW5nIDUwJSBvZiBiaXQgdGlt
+ZSB0byBtYWtpbmcgaXQNCj4gc2FtZSBhcyB0aGUgc2FtcGxlIHBvaW50IGNvbmZpZ3VyZWQuIFRo
+aXMgbWVhbnMgdXNlcnMgd2hvIG5lZWQgdG8gY2hhbmdlDQo+IHRoZSBTU1AgZHVlIHRvIG9mZnNl
+dCB2YXJpYXRpb25zIG5lZWQgdG8gY2hhbmdlICB0aGVpciBEVCBldmVuIHdpdGhvdXQNCj4gYW55
+dGhpbmcgY2hhbmdpbmcgb24gdGhlaXIgYm9hcmQuDQo+IA0KPiBTaW5jZSB3ZSBoYXZlIGEgbmV0
+bGluayBzb2NrZXQgaW50ZXJmYWNlIHRvIGNvbmZpZ3VyZSBzYW1wbGUgcG9pbnQsIEkNCj4gd29u
+ZGVyIGlmIHRoYXQgc2hvdWxkIGJlIGV4dGVuZGVkIHRvIGNvbmZpZ3VyZSBTU1AgdG9vIChvciBh
+dCBsZWFzdCB0aGUNCj4gb2Zmc2V0IHBhcnQgb2YgU1NQKT8NCg0KKzENCg0KSSBhbHNvIHdvbmRl
+ciBob3cgYSBkZWZhdWx0IFREQ08gc2V0dGluZyBpbiBEVCB3b3VsZCBoZWxwLiBJcyB0aGUgZHJp
+dmVyIGdvaW5nIHRvIGhhcmQgY29kZSB0aGUgVHEgc2V0dGluZ3MgYXMgd2VsbCBmb3IgdGhlIG1v
+c3QgY29tbW9ubHkgdXNlZCBiaXRyYXRlPyBBIGxpbmsgdXAgc3RhcnQtdXAgc2NyaXB0ICh1c2lu
+ZyBuZXRsaW5rKSB3b3VsZCBoZWxwIHNldHRpbmcgYSBkZWZhdWx0IFREQ08gYWxvbmcgd2l0aCBv
+dGhlciBwYXJhbXMgaWYgdGhpcyBpcyB0aGUgbWFpbiBjb25jZXJuLg0KDQpUaGFua3MsDQpSYW1l
+c2gNCg0K
