@@ -1,117 +1,52 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [RFC PATCH] can: m_can: Support higher speed CAN-FD bitrates
-Date: Thu, 19 Oct 2017 11:21:29 +0200
-Message-ID: <832feb2d-3712-c394-805a-1ddabd89890e@pengutronix.de>
-References: <20170818193947.27862-1-fcooper@ti.com>
- <4f8f6b64-b2a2-b9dc-665c-f1c155daf994@ti.com>
- <a7e301a7-bc54-c348-bdb1-b6a0af41665f@ti.com>
- <532e09ae-775d-e8aa-e468-78e148c650da@Microchip.com>
- <88d4ddc4-b786-0205-6852-56e93182a1c9@ti.com>
- <e3a7d9a1-d75c-a39e-f122-73fced02a1dc@gmx.net>
- <ed19ead3-d8f6-c027-74cf-8aee131c8a59@ti.com>
- <08432016-e733-b827-b9aa-bc359dd837f5@pengutronix.de>
- <7ba515d9-7710-c152-a55a-f995b7f3d49a@ti.com>
- <KL1PR0601MB20386197BA2733930329257BC3420@KL1PR0601MB2038.apcprd06.prod.outlook.com>
+Subject: Re: [PATCH] can: gs_usb: fix busy loop if no more TX context is
+ available
+Date: Thu, 19 Oct 2017 11:24:00 +0200
+Message-ID: <ce09e16e-85bc-d7ea-a0ae-39ebee9fc4bb@pengutronix.de>
+References: <081cdc97-4633-f9b2-2c48-dd4f036c576f@grandegger.com>
+ <7e8d89c3-b7af-81c1-cbed-04e83b396162@grandegger.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="n8BUERSsBe5CWEuwg4E2TnHfWkLmuTS1N"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <KL1PR0601MB20386197BA2733930329257BC3420@KL1PR0601MB2038.apcprd06.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Sekhar Nori <nsekhar@ti.com>, Franklin S Cooper Jr <fcooper@ti.com>, =?UTF-8?Q?Mario_H=c3=bcttel?= <mario.huettel@gmx.net>, "Yang, Wenyou" <Wenyou.Yang@Microchip.com>, "wg@grandegger.com" <wg@grandegger.com>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "quentin.schulz@free-electrons.com" <quentin.schulz@free-electrons.com>, "edumazet@google.com" <edumazet@google.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Wenyou Yang <wenyou.yang@atmel.com>, Dong Aisheng <b29396@freescale.com>, "Quadros, Roger" <rogerq@ti.com>
-List-Id: linux-can.vger.kernel.org
+ boundary="dJ5QaSPoxA6c5LESUpOQeXC2GX7svJSJP"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:57641 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751797AbdJSJYG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Oct 2017 05:24:06 -0400
+In-Reply-To: <7e8d89c3-b7af-81c1-cbed-04e83b396162@grandegger.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Maximilian Schneider <max@schneidersoft.net>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---n8BUERSsBe5CWEuwg4E2TnHfWkLmuTS1N
-Content-Type: multipart/mixed; boundary="rDlDCvUdepUFsCl5GElM3f6xTLBabsHPO";
+--dJ5QaSPoxA6c5LESUpOQeXC2GX7svJSJP
+Content-Type: multipart/mixed; boundary="d3UNtS7iIdrWIFpjIGsiC1FTRRsDneckD";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
- Sekhar Nori <nsekhar@ti.com>, Franklin S Cooper Jr <fcooper@ti.com>,
- =?UTF-8?Q?Mario_H=c3=bcttel?= <mario.huettel@gmx.net>,
- "Yang, Wenyou" <Wenyou.Yang@Microchip.com>,
- "wg@grandegger.com" <wg@grandegger.com>,
- "socketcan@hartkopp.net" <socketcan@hartkopp.net>,
- "quentin.schulz@free-electrons.com" <quentin.schulz@free-electrons.com>,
- "edumazet@google.com" <edumazet@google.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Wenyou Yang <wenyou.yang@atmel.com>, Dong Aisheng <b29396@freescale.com>,
- "Quadros, Roger" <rogerq@ti.com>
-Message-ID: <832feb2d-3712-c394-805a-1ddabd89890e@pengutronix.de>
-Subject: Re: [RFC PATCH] can: m_can: Support higher speed CAN-FD bitrates
-References: <20170818193947.27862-1-fcooper@ti.com>
- <4f8f6b64-b2a2-b9dc-665c-f1c155daf994@ti.com>
- <a7e301a7-bc54-c348-bdb1-b6a0af41665f@ti.com>
- <532e09ae-775d-e8aa-e468-78e148c650da@Microchip.com>
- <88d4ddc4-b786-0205-6852-56e93182a1c9@ti.com>
- <e3a7d9a1-d75c-a39e-f122-73fced02a1dc@gmx.net>
- <ed19ead3-d8f6-c027-74cf-8aee131c8a59@ti.com>
- <08432016-e733-b827-b9aa-bc359dd837f5@pengutronix.de>
- <7ba515d9-7710-c152-a55a-f995b7f3d49a@ti.com>
- <KL1PR0601MB20386197BA2733930329257BC3420@KL1PR0601MB2038.apcprd06.prod.outlook.com>
-In-Reply-To: <KL1PR0601MB20386197BA2733930329257BC3420@KL1PR0601MB2038.apcprd06.prod.outlook.com>
+To: Wolfgang Grandegger <wg@grandegger.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Maximilian Schneider <max@schneidersoft.net>
+Message-ID: <ce09e16e-85bc-d7ea-a0ae-39ebee9fc4bb@pengutronix.de>
+Subject: Re: [PATCH] can: gs_usb: fix busy loop if no more TX context is
+ available
+References: <081cdc97-4633-f9b2-2c48-dd4f036c576f@grandegger.com>
+ <7e8d89c3-b7af-81c1-cbed-04e83b396162@grandegger.com>
+In-Reply-To: <7e8d89c3-b7af-81c1-cbed-04e83b396162@grandegger.com>
 
---rDlDCvUdepUFsCl5GElM3f6xTLBabsHPO
+--d3UNtS7iIdrWIFpjIGsiC1FTRRsDneckD
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 10/19/2017 10:04 AM, Ramesh Shanmugasundaram wrote:
->>> Sounds reasonable. What's the status of this series?
->>
->> I have had some offline discussions with Franklin on this, and I am no=
-t
->> fully convinced that DT is the way to go here (although I don't have t=
-he
->> agreement with Franklin there).
->>
->> There are two components in configuring the secondary sample point. It=
- is
->> the transceiver loopback delay and an offset (example half of the bit =
-time
->> in data phase).
->>
->> While the transceiver loopback delay is pretty board dependent (and th=
-us
->> amenable to DT encoding), I am not quite sure the offset can be config=
-ured
->> in DT because its not really board dependent.
->>
->> Unfortunately, offset calculation does not seem to be an exact science=
-=2E
->> There are recommendations ranging from using 50% of bit time to making=
- it
->> same as the sample point configured. This means users who need to chan=
-ge
->> the SSP due to offset variations need to change  their DT even without=
-
->> anything changing on their board.
->>
->> Since we have a netlink socket interface to configure sample point, I
->> wonder if that should be extended to configure SSP too (or at least th=
-e
->> offset part of SSP)?
+On 10/19/2017 10:07 AM, Wolfgang Grandegger wrote:
+> Hello,
 >=20
-> +1
-> > I also wonder how a default TDCO setting in DT would help.
+> any comments/feedback about that issue? I wonder why it has not been=20
+> showed up earlier.
 
-For a given board with a given transceiver and layout and proper values
-in the supplied DT the higher bitrates would work out of the box.
-
-> Is the driver going to hard code the Tq settings as well for the
-> most commonly used bitrate?
-
-What's Tq in this context. Time Quanta?
-
-> A link up start-up script (using netlink) would help setting a
-> default TDCO along with other params if this is the main concern.
-
-There are various ways to setup these values. Plain old start-up scripts
-are one of them, systemd-networkd or network manager are others.
+Applied to can + added stable on Cc
 
 Marc
 
@@ -122,23 +57,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---rDlDCvUdepUFsCl5GElM3f6xTLBabsHPO--
+--d3UNtS7iIdrWIFpjIGsiC1FTRRsDneckD--
 
---n8BUERSsBe5CWEuwg4E2TnHfWkLmuTS1N
+--dJ5QaSPoxA6c5LESUpOQeXC2GX7svJSJP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlnobpkACgkQHv7KIOw4
-HPYDTwgA1ug5EHH2ReYHarXX8fLayWXxu96sl5baLCL8rGZAa69Hi9/exejWEQmq
-MF47+QFyqZIC4g9jTIf/yT9bGveExeIjPdMODTUZb1QLVnHY58RPWUepd8gE5QkY
-WNz66pw7Nqr+ZKsXRpayG8lVeaY8IXgYx7gER1UShe4IMP12iIL1xUG8FJyWr0tT
-AnxWIoXhoK4tiuGWvfKkvTvFRkN7FNotNRIgphdMxmV/rXa1pzjoeJrCOkPOzAQr
-Fj1etqtqGLNGH67Pc/IyqZZVzDUpgtJbvHa4xdh9DD+b+BR2LlbWDHuUvoV0OpWd
-WsEvndRPgguLIIwSGp0B01CNM/n3Jw==
-=0FTE
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlnobzAACgkQHv7KIOw4
+HPZtiAf/SwlavkHgGCF29bswpcnWNKbtwNbiQ9NtHaGZt3Q4FxElCyVfLsIEzD4a
++C0+KcnweLb1W4d3E8IFikKTER6XrfQGFLSBCC8Tt4769GkSim4LNG+eSWqAbgWR
+wl5jvLwGhKab6SkPhFo7Tfc7MmPTrQWNMEwWFjC7zt7gIdj5rWVReB20WxNf3Be2
+U6bPwl4iQeDu9Syrqon4HCDQ8jeEUYou8zqt+8WssvuzRshJmXKAFuUVbDWsKVFX
+U8Wj/NbySGQ40qNnvVJ+bECygOc7GmPI3uYXdWS3C2ChJ3KqehPh62AvVN63JTvW
+uqdLHXKey6VEbY9Jyp2eG37Lzh9VGw==
+=kFnO
 -----END PGP SIGNATURE-----
 
---n8BUERSsBe5CWEuwg4E2TnHfWkLmuTS1N--
+--dJ5QaSPoxA6c5LESUpOQeXC2GX7svJSJP--
