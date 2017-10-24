@@ -1,61 +1,76 @@
-From: Jimmy Assarsson <jimmyassarsson@gmail.com>
-Subject: [PATCH 2/2] can: kvaser_usb: Ignore CMD_FLUSH_QUEUE_REPLY messages
-Date: Tue, 24 Oct 2017 12:23:29 +0200
-Message-ID: <20171024102329.28526-3-jimmyassarsson@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/2] can: kvaser_usb: Small fixes
+Date: Tue, 24 Oct 2017 13:03:03 +0200
+Message-ID: <6bff85a5-ddbb-a88f-8114-9761d8abce09@pengutronix.de>
 References: <20171024102329.28526-1-jimmyassarsson@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="wPqctxXeNnJDvM6j6XdvlbLkc1pDW8UJ1"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf0-f65.google.com ([209.85.215.65]:49765 "EHLO
-        mail-lf0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932306AbdJXKY1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 24 Oct 2017 06:24:27 -0400
-Received: by mail-lf0-f65.google.com with SMTP id w21so23429296lfc.6
-        for <linux-can@vger.kernel.org>; Tue, 24 Oct 2017 03:24:26 -0700 (PDT)
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:46531 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751874AbdJXLDI (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 24 Oct 2017 07:03:08 -0400
 In-Reply-To: <20171024102329.28526-1-jimmyassarsson@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Jimmy Assarsson <jimmyassarsson@gmail.com>
+To: Jimmy Assarsson <jimmyassarsson@gmail.com>, linux-can@vger.kernel.org
 
-To avoid kernel warning "Unhandled message (68)", ignore the
-CMD_FLUSH_QUEUE_REPLY message for now.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--wPqctxXeNnJDvM6j6XdvlbLkc1pDW8UJ1
+Content-Type: multipart/mixed; boundary="0iLoukJNhGHaVtebDrCTFwpRPKFAEnNrg";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Jimmy Assarsson <jimmyassarsson@gmail.com>, linux-can@vger.kernel.org
+Message-ID: <6bff85a5-ddbb-a88f-8114-9761d8abce09@pengutronix.de>
+Subject: Re: [PATCH 0/2] can: kvaser_usb: Small fixes
+References: <20171024102329.28526-1-jimmyassarsson@gmail.com>
+In-Reply-To: <20171024102329.28526-1-jimmyassarsson@gmail.com>
 
-As of Leaf v2 firmware version v4.1.844 (2017-02-15), flush tx queue is
-synchronous. There is a capability bit indicating whether flushing tx queue
-is synchronous or asynchronous.
+--0iLoukJNhGHaVtebDrCTFwpRPKFAEnNrg
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-A proper solution would be to query the device for capabilities. If the
-synchronous tx flush capability bit is set, we should wait for
-CMD_FLUSH_QUEUE_REPLY message, while flushing the tx queue.
+On 10/24/2017 12:23 PM, Jimmy Assarsson wrote:
+> Fix two issues in the kvaser_usb driver.
+>=20
+> Jimmy Assarsson (2):
+>   can: kvaser_usb: Correct return value in printout
+>   can: kvaser_usb: Ignore CMD_FLUSH_QUEUE_REPLY messages
+>=20
+>  drivers/net/can/usb/kvaser_usb.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 
-Signed-off-by: Jimmy Assarsson <jimmyassarsson@gmail.com>
----
- drivers/net/can/usb/kvaser_usb.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Both applied to can and added stable on Cc.
 
-diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-index 861e90efab86..9b18d96ef526 100644
---- a/drivers/net/can/usb/kvaser_usb.c
-+++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -137,6 +137,7 @@ static inline bool kvaser_is_usbcan(const struct usb_device_id *id)
- #define CMD_RESET_ERROR_COUNTER		49
- #define CMD_TX_ACKNOWLEDGE		50
- #define CMD_CAN_ERROR_EVENT		51
-+#define CMD_FLUSH_QUEUE_REPLY		68
- 
- #define CMD_LEAF_USB_THROTTLE		77
- #define CMD_LEAF_LOG_MESSAGE		106
-@@ -1301,6 +1302,11 @@ static void kvaser_usb_handle_message(const struct kvaser_usb *dev,
- 			goto warn;
- 		break;
- 
-+	case CMD_FLUSH_QUEUE_REPLY:
-+		if (dev->family != KVASER_LEAF)
-+			goto warn;
-+		break;
-+
- 	default:
- warn:		dev_warn(dev->udev->dev.parent,
- 			 "Unhandled message (%d)\n", msg->id);
--- 
-2.14.2
+Marc
 
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--0iLoukJNhGHaVtebDrCTFwpRPKFAEnNrg--
+
+--wPqctxXeNnJDvM6j6XdvlbLkc1pDW8UJ1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlnvHecACgkQHv7KIOw4
+HPaeKAgAjVkB2Ri+qHCDik6QN2G75s+8+FM3Br+qTsqDfnkJMDRy3H7gJDwx/DBc
+YdzkGFWRJxkH43U9qEhinydNh7zhfBG+orgVhzzJMKd57grkrBQe/RstPb3RWje6
+truuTpLa1lvtJ6feDskh+2Ajs0TMCIdCe0Bd887Rq2uQC5YiO0uKbgR4F730FSpX
+16PMtNncxN6TGCm0EsJFHAGUFwNNwgK8lO6sQde68TgruX4hO1fd1xzZLqVogI/O
+Rl6bCeJbm1fixDcSO5Vg0hSy4cl6GBkFtiWaqdNS3I/YoMgBuavba9DRqOygC/Uc
+qcPy2f0WVAJexeKuhXtz7CjerwiWiQ==
+=/grB
+-----END PGP SIGNATURE-----
+
+--wPqctxXeNnJDvM6j6XdvlbLkc1pDW8UJ1--
