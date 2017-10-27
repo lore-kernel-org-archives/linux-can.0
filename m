@@ -1,35 +1,59 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] drivers/net: can: Convert timers to use timer_setup()
-Date: Fri, 27 Oct 2017 12:09:38 +0900 (KST)
-Message-ID: <20171027.120938.1299376855542654090.davem@davemloft.net>
-References: <20171025105114.GA146515@beast>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+From: GBert <info@gerhard-bertelsmann.de>
+Subject: [PATCH v2] can: sun4i: fix overrun
+Date: Fri, 27 Oct 2017 14:46:51 +0200
+Message-ID: <1509108411-9614-1-git-send-email-info@gerhard-bertelsmann.de>
+References: <5511583c-37ac-c6b7-f88d-1fd740fae3f5 () pengutronix ! de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([184.105.139.130]:43668 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751685AbdJ0DJl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 26 Oct 2017 23:09:41 -0400
-In-Reply-To: <20171025105114.GA146515@beast>
+Received: from mail.rdts.de ([195.243.153.28]:36804 "EHLO mail.rdts.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1752549AbdJ0MrE (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 27 Oct 2017 08:47:04 -0400
+In-Reply-To: <5511583c-37ac-c6b7-f88d-1fd740fae3f5 () pengutronix ! de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: keescook@chromium.org
-Cc: wg@grandegger.com, mkl@pengutronix.de, allen.lkml@gmail.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-From: Kees Cook <keescook@chromium.org>
-Date: Wed, 25 Oct 2017 03:51:14 -0700
+From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-> In preparation for unconditionally passing the struct timer_list pointer to
-> all timer callbacks, switch to using the new timer_setup() and from_timer()
-> to pass the timer pointer explicitly.
-> 
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Allen Pais <allen.lkml@gmail.com>
-> Cc: linux-can@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+SUN4Is CAN IP has a 64 byte deep FIFO buffer. If the buffer is not drained
+fast enough (overrun) it's getting mangled. Already received frames are
+dropped - the data can't be restored.
 
-Applied.
+V2: no duplicate error reporting
+
+---
+ drivers/net/can/sun4i_can.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index 68ef0a4..bcec511 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -539,6 +539,11 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
+ 		}
+ 		stats->rx_over_errors++;
+ 		stats->rx_errors++;
++
++		/* reset the CAN IP by entering reset mode */
++		err = set_reset_mode(dev);
++		err = set_normal_mode(dev);
++
+ 		/* clear bit */
+ 		sun4i_can_write_cmdreg(priv, SUN4I_CMD_CLEAR_OR_FLAG);
+ 	}
+@@ -653,8 +658,9 @@ static irqreturn_t sun4i_can_interrupt(int irq, void *dev_id)
+ 			netif_wake_queue(dev);
+ 			can_led_event(dev, CAN_LED_EVENT_TX);
+ 		}
+-		if (isrc & SUN4I_INT_RBUF_VLD) {
+-			/* receive interrupt */
++		if ((isrc & SUN4I_INT_RBUF_VLD) &&
++		    !(isrc & SUN4I_INT_DATA_OR)) {
++			/* receive interrupt - don't read if overrun occurred */
+ 			while (status & SUN4I_STA_RBUF_RDY) {
+ 				/* RX buffer is not empty */
+ 				sun4i_can_rx(dev);
+-- 
+1.7.9.5
+
