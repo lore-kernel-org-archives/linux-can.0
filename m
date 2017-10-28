@@ -1,7 +1,7 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
 Subject: Re: can: Use common error handling code in vxcan_newlink()
-Date: Sat, 28 Oct 2017 21:54:00 +0200
-Message-ID: <9d9b724b-229a-acab-54f8-6c45dda96f44@hartkopp.net>
+Date: Sat, 28 Oct 2017 22:13:32 +0200
+Message-ID: <8761e059-d33c-a157-4b2f-f01dbdf2a91e@users.sourceforge.net>
 References: <2e600d9a-faec-dd39-08f0-5a7fb260d7ca@users.sourceforge.net>
  <2ab5d794-7a5c-9036-835c-67cfcc541795@hartkopp.net>
  <d3bdd3c0-5a03-dd59-07ca-94b126c67f75@users.sourceforge.net>
@@ -9,45 +9,35 @@ References: <2e600d9a-faec-dd39-08f0-5a7fb260d7ca@users.sourceforge.net>
  <5a76bb36-4ae0-eca2-ae34-69c2bfddb634@users.sourceforge.net>
  <4d612668-5423-4ce3-a4f5-ee394d7ddd21@hartkopp.net>
  <19ca5f23-fbb0-aaae-bff5-d634af66c264@users.sourceforge.net>
+ <9d9b724b-229a-acab-54f8-6c45dda96f44@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <19ca5f23-fbb0-aaae-bff5-d634af66c264@users.sourceforge.net>
-Content-Language: en-US
-Sender: kernel-janitors-owner@vger.kernel.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mout.web.de ([217.72.192.78]:56448 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751283AbdJ1UOB (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 28 Oct 2017 16:14:01 -0400
+In-Reply-To: <9d9b724b-229a-acab-54f8-6c45dda96f44@hartkopp.net>
+Content-Language: en-GB
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
 
-On 10/28/2017 09:18 PM, SF Markus Elfring wrote:
->> If you want to change the semantic of the result check
+>> Are you interested in related adjustments for a bigger code base?
 > 
-> I am curious if another source code reduction (by the deletion of “ < 0”)
-> will become acceptable at similar places.
-> 
+> No. Definitely not.
 
-Source code reduction is not the main target.
-If you can simplify code without changing the wanted semantic you made 
-an improvement.
+You might have noticed that I am proposing similar changes already
+for other software modules.   ;-)
 
-> 
->> - this has to done consistently at all rtnl_configure_link() caller sites.
-> 
-> Are there any more functions to consider?
 
-Of course there are more callers of rtnl_configure_link() ...
+> If you aim for the the deletion of “ < 0” for all rtnl_configure_link() users
+> you would need to do this consistently.
 
->> And not only in vxcan.c
-> 
-> Are you interested in related adjustments for a bigger code base?
-
-No. Definitely not.
-
-If you aim for the the deletion of “ < 0” for all rtnl_configure_link() 
-users you would need to do this consistently.
-
-If you think you would like to do that. Feel free to do it.
+How do you see the software situation around a function
+like “register_netdevice”?
 
 Regards,
-Oliver
+Markus
