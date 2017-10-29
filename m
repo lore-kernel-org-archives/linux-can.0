@@ -1,53 +1,54 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: can: Use common error handling code in vxcan_newlink()
-Date: Sun, 29 Oct 2017 11:51:48 +0100
-Message-ID: <a76159d3-650e-5c2e-0f4a-dca394350473@hartkopp.net>
-References: <2e600d9a-faec-dd39-08f0-5a7fb260d7ca@users.sourceforge.net>
- <2ab5d794-7a5c-9036-835c-67cfcc541795@hartkopp.net>
- <d3bdd3c0-5a03-dd59-07ca-94b126c67f75@users.sourceforge.net>
- <264b3c2b-8354-5769-639c-ac8d2fcbe630@hartkopp.net>
- <5a76bb36-4ae0-eca2-ae34-69c2bfddb634@users.sourceforge.net>
- <4d612668-5423-4ce3-a4f5-ee394d7ddd21@hartkopp.net>
- <19ca5f23-fbb0-aaae-bff5-d634af66c264@users.sourceforge.net>
- <9d9b724b-229a-acab-54f8-6c45dda96f44@hartkopp.net>
- <8761e059-d33c-a157-4b2f-f01dbdf2a91e@users.sourceforge.net>
+From: =?UTF-8?q?Richard=20Sch=C3=BCtz?= <rschuetz@uni-koblenz.de>
+Subject: [PATCH] can: c_can: don't indicate triple sampling support for D_CAN
+Date: Sun, 29 Oct 2017 13:03:22 +0100
+Message-ID: <20171029120322.22197-1-rschuetz@uni-koblenz.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <8761e059-d33c-a157-4b2f-f01dbdf2a91e@users.sourceforge.net>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from nsmtp.uni-koblenz.de ([141.26.64.14]:50113 "EHLO
+        nsmtp.uni-koblenz.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750848AbdJ2MKF (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 29 Oct 2017 08:10:05 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: =?UTF-8?q?Richard=20Sch=C3=BCtz?= <rschuetz@uni-koblenz.de>
 
-Hi Markus,
+The D_CAN controller doesn't provide a triple sampling mode, so don't set
+the CAN_CTRLMODE_3_SAMPLES flag in ctrlmode_supported. Currently enabling
+triple sampling is a no-op.
 
-this discussion went far beyond the original posted patch for vxcan.c
+Signed-off-by: Richard Schütz <rschuetz@uni-koblenz.de>
+---
+ drivers/net/can/c_can/c_can_pci.c      | 1 -
+ drivers/net/can/c_can/c_can_platform.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-I would suggest you post your idea of the simplified error handling flow 
-in vxcan.c just on linux-can ML (which is the right mailing list for CAN 
-related stuff).
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index cf7c18947189..d065c0e2d18e 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -178,7 +178,6 @@ static int c_can_pci_probe(struct pci_dev *pdev,
+ 		break;
+ 	case BOSCH_D_CAN:
+ 		priv->regs = reg_map_d_can;
+-		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index 46a746ee80bb..b5145a7f874c 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -320,7 +320,6 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 		break;
+ 	case BOSCH_D_CAN:
+ 		priv->regs = reg_map_d_can;
+-		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+ 		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
+ 		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
+ 		priv->read_reg32 = d_can_plat_read_reg32;
+-- 
+2.14.3
 
-Thanks,
-Oliver
-
-On 10/28/2017 10:13 PM, SF Markus Elfring wrote:
->>> Are you interested in related adjustments for a bigger code base?
->>
->> No. Definitely not.
-> 
-> You might have noticed that I am proposing similar changes already
-> for other software modules.   ;-)
-> 
-> 
->> If you aim for the the deletion of “ < 0” for all rtnl_configure_link() users
->> you would need to do this consistently.
-> 
-> How do you see the software situation around a function
-> like “register_netdevice”?
-> 
-> Regards,
-> Markus
-> 
