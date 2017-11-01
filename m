@@ -1,115 +1,68 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2] can: Use common error handling code in vxcan_newlink()
-Date: Wed, 1 Nov 2017 20:09:31 +0100
-Message-ID: <08fd31d5-8677-81e7-65d6-40d501017db6@hartkopp.net>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: Re: [v2] can: Use common error handling code in vxcan_newlink()
+Date: Wed, 1 Nov 2017 20:37:11 +0100
+Message-ID: <2346609d-85f6-6eec-e492-d15ba1b6489a@users.sourceforge.net>
 References: <2e600d9a-faec-dd39-08f0-5a7fb260d7ca@users.sourceforge.net>
  <2ab5d794-7a5c-9036-835c-67cfcc541795@hartkopp.net>
  <d3bdd3c0-5a03-dd59-07ca-94b126c67f75@users.sourceforge.net>
  <264b3c2b-8354-5769-639c-ac8d2fcbe630@hartkopp.net>
  <23fbbdba-fb11-a6bc-7d6a-4af43ef79503@users.sourceforge.net>
+ <08fd31d5-8677-81e7-65d6-40d501017db6@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:19411 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932209AbdKATJy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 1 Nov 2017 15:09:54 -0400
-In-Reply-To: <23fbbdba-fb11-a6bc-7d6a-4af43ef79503@users.sourceforge.net>
-Content-Language: en-US
+Received: from mout.web.de ([212.227.15.4]:59095 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751587AbdKAThq (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 1 Nov 2017 15:37:46 -0400
+In-Reply-To: <08fd31d5-8677-81e7-65d6-40d501017db6@hartkopp.net>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: SF Markus Elfring <elfring@users.sourceforge.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 
+> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+
+Thanks for another positive feedback.
 
 
-On 11/01/2017 03:16 PM, SF Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Wed, 1 Nov 2017 14:56:15 +0100
+> Again: Posting such a patch on linux-can@vger.kernel.org is ENOUGH!
+
+I was informed in an other way for Linux software patches.
+
+
+> No need to cross post such a patch additionally on
 > 
-> Add a jump target so that a bit of exception handling can be better reused
-> at the end of this function.
-> 
-> This issue was detected by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> netdev@vger.kernel.org
+> linux-kernel@vger.kernel.org
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+These addresses were suggested (or recommended?) by the script “get_maintainer.pl”.
 
-Again: Posting such a patch on linux-can@vger.kernel.org is ENOUGH!
 
-No need to cross post such a patch additionally on
+> kernel-janitors@vger.kernel.org
 
-netdev@vger.kernel.org
-linux-kernel@vger.kernel.org
-kernel-janitors@vger.kernel.org
+I tend to add this address also for my update suggestions.
 
-and to each of the maintainers
 
-mkl@pengutronix.de
-wg@grandegger.com
-socketcan@hartkopp.net
+> and to each of the maintainers
+…
+> We all subscribed the mailing list and listen to it.
 
-We all subscribed the mailing list and listen to it.
-That's the intention of a mailing list ...
+This is generally fine. - But I do not know how long such subscriptions
+will be active.
 
-Cross posting is not appreciated in the community.
 
-Thanks,
-Oliver
+> That's the intention of a mailing list ...
 
-> ---
-> 
-> v2:
-> An approach to make two checks for a failure predicate a bit safer
-> was rejected on 2017-10-28.
-> The possibility remains to reconsider such an adjustment later again.
-> https://lkml.org/lkml/2017/10/28/125
-> https://lkml.kernel.org/r/<264b3c2b-8354-5769-639c-ac8d2fcbe630@hartkopp.net>
-> 
->   drivers/net/can/vxcan.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-> index 8404e8852a0f..5d1753cfacea 100644
-> --- a/drivers/net/can/vxcan.c
-> +++ b/drivers/net/can/vxcan.c
-> @@ -227,10 +227,8 @@ static int vxcan_newlink(struct net *net, struct net_device *dev,
->   	netif_carrier_off(peer);
->   
->   	err = rtnl_configure_link(peer, ifmp);
-> -	if (err < 0) {
-> -		unregister_netdevice(peer);
-> -		return err;
-> -	}
-> +	if (err < 0)
-> +		goto unregister_network_device;
->   
->   	/* register first device */
->   	if (tb[IFLA_IFNAME])
-> @@ -239,10 +237,8 @@ static int vxcan_newlink(struct net *net, struct net_device *dev,
->   		snprintf(dev->name, IFNAMSIZ, DRV_NAME "%%d");
->   
->   	err = register_netdevice(dev);
-> -	if (err < 0) {
-> -		unregister_netdevice(peer);
-> -		return err;
-> -	}
-> +	if (err < 0)
-> +		goto unregister_network_device;
->   
->   	netif_carrier_off(dev);
->   
-> @@ -254,6 +250,10 @@ static int vxcan_newlink(struct net *net, struct net_device *dev,
->   	rcu_assign_pointer(priv->peer, dev);
->   
->   	return 0;
-> +
-> +unregister_network_device:
-> +	unregister_netdevice(peer);
-> +	return err;
->   }
->   
->   static void vxcan_dellink(struct net_device *dev, struct list_head *head)
-> 
+I know …
+
+
+> Cross posting is not appreciated in the community.
+
+How does this view fit to the information in the section “5) Select
+the recipients for your patch” from the document “submitting-patches.rst”?
+
+Regards,
+Markus
