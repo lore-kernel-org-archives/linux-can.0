@@ -1,53 +1,55 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: c_can: don't indicate triple sampling support for
- D_CAN
-Date: Mon, 6 Nov 2017 14:39:43 +0100
-Message-ID: <a954f72a-725f-40f0-cf32-d9983f3d6c8c@pengutronix.de>
-References: <20171029120322.22197-1-rschuetz@uni-koblenz.de>
+Subject: Re: [PATCH 1/2] can: peak_usb: remove some 'struct timeval' users
+Date: Mon, 6 Nov 2017 16:01:23 +0100
+Message-ID: <4d541e16-c5a8-2c2a-c430-1daf5c8577cf@pengutronix.de>
+References: <20171103163220.3799742-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="BqHwhWwdx3E3FcT11kIrHxNQbAplFVb5q"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:59695 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S932126AbdKFNju (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Nov 2017 08:39:50 -0500
-In-Reply-To: <20171029120322.22197-1-rschuetz@uni-koblenz.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?Richard_Sch=c3=bctz?= <rschuetz@uni-koblenz.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
+ boundary="iCA7OMKMkrX7bMlhOcXNLorSsRpAasxJj"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20171103163220.3799742-1-arnd@arndb.de>
+Sender: netdev-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Kees Cook <keescook@chromium.org>, Allen Pais <allen.lkml@gmail.com>, Stephane Grosjean <s.grosjean@peak-system.com>, Johan Hovold <johan@kernel.org>, =?UTF-8?B?7LaU7KeA7Zi4?= <jiho.chu@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---BqHwhWwdx3E3FcT11kIrHxNQbAplFVb5q
-Content-Type: multipart/mixed; boundary="pIMnNm6MWETGIgJqCvFCLhMUsXqs9U0tg";
+--iCA7OMKMkrX7bMlhOcXNLorSsRpAasxJj
+Content-Type: multipart/mixed; boundary="kbt110tSQtscPRT1P1xgEax45JBqc74SU";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: =?UTF-8?Q?Richard_Sch=c3=bctz?= <rschuetz@uni-koblenz.de>,
- Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org
-Message-ID: <a954f72a-725f-40f0-cf32-d9983f3d6c8c@pengutronix.de>
-Subject: Re: [PATCH] can: c_can: don't indicate triple sampling support for
- D_CAN
-References: <20171029120322.22197-1-rschuetz@uni-koblenz.de>
-In-Reply-To: <20171029120322.22197-1-rschuetz@uni-koblenz.de>
+To: Arnd Bergmann <arnd@arndb.de>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Kees Cook
+ <keescook@chromium.org>, Allen Pais <allen.lkml@gmail.com>,
+ Stephane Grosjean <s.grosjean@peak-system.com>,
+ Johan Hovold <johan@kernel.org>, =?UTF-8?B?7LaU7KeA7Zi4?=
+ <jiho.chu@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <4d541e16-c5a8-2c2a-c430-1daf5c8577cf@pengutronix.de>
+Subject: Re: [PATCH 1/2] can: peak_usb: remove some 'struct timeval' users
+References: <20171103163220.3799742-1-arnd@arndb.de>
+In-Reply-To: <20171103163220.3799742-1-arnd@arndb.de>
 
---pIMnNm6MWETGIgJqCvFCLhMUsXqs9U0tg
+--kbt110tSQtscPRT1P1xgEax45JBqc74SU
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 10/29/2017 01:03 PM, Richard Sch=C3=BCtz wrote:
-> The D_CAN controller doesn't provide a triple sampling mode, so don't s=
-et
-> the CAN_CTRLMODE_3_SAMPLES flag in ctrlmode_supported. Currently enabli=
-ng
-> triple sampling is a no-op.
+On 11/03/2017 05:31 PM, Arnd Bergmann wrote:
+> We want to remove 'struct timeval' and related interfaces since this is=
+
+> generally not safe for use beyond 2038.
 >=20
-> Signed-off-by: Richard Sch=C3=BCtz <rschuetz@uni-koblenz.de>
+> For peak_usb, we can simplify the internal interface by using ktime_t
+> directly. This should not change any behavior, but it avoids a few
+> conversions.
+>=20
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Applied to can.
+Both applied to can-next.
 
-tnx,
+Tnx,
 Marc
 
 --=20
@@ -57,23 +59,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---pIMnNm6MWETGIgJqCvFCLhMUsXqs9U0tg--
+--kbt110tSQtscPRT1P1xgEax45JBqc74SU--
 
---BqHwhWwdx3E3FcT11kIrHxNQbAplFVb5q
+--iCA7OMKMkrX7bMlhOcXNLorSsRpAasxJj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloAZiAACgkQHv7KIOw4
-HPbKUwf6A7HYxYzznc2V6LZiIN/0ItogP9jSriEtEWrYUHybosSv4Wsth9zb1oGH
-GICEkopTAzoKYlCxbh8VJ3AsvPKCEsUTOf7gr8AfB2xdGH+mm8VwOK2nTHpqQKbY
-0QrYP/9DUYKsAYeEIzjRG2zowlhHiBiYnG19XaWrz5pIWJOdMZpsQXVsl5P606+b
-2tIY9M9/waDe70PCSZv99RYz47mO4QA7qAK3Tn1+Davo+tuV8bxZCWyxFXnsjomv
-YN+extYmQHiMb0OoHd0f+qHmgujGlEUtNLHxpARjexQZ32vlQdzcKWVA3TwIQFEM
-8VMUarzb5K+kpRWQmPwAKmYxkP3J7g==
-=+MIT
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloAeUQACgkQHv7KIOw4
+HPYCUwf+LBNjXlVBb6R6Q2fwI+uhniu/tHwUv78Sk4fTDRrbRo5+R79oWrv6b6Gj
+fsKukJdu02BQx07s8sCbi5Stx3ZPDPxqS6icTsMwVgey9UAj9i3vRpKPUAz08ylU
+Zx2tp+U2etQejE+192xUeZAuqviNEQeIASqGEIfxUsTRVvHmjIEYrOu+4kfkfCVy
+/pBzJBf3oXGDPDm2TvH2/EvQE0GoRUYqSe7mG8CFKmUyVOjS6kEOppUAVIzkRHgO
+yXcSugiW6Q3ip5S0RLtHeMnz+oq2+QUgOTjyA0FsVAw49Ztppn8QFHz+Fx5T6ySV
+/08RdsqPMBnRQufcDFxTYScruuf5aA==
+=TzmP
 -----END PGP SIGNATURE-----
 
---BqHwhWwdx3E3FcT11kIrHxNQbAplFVb5q--
+--iCA7OMKMkrX7bMlhOcXNLorSsRpAasxJj--
