@@ -1,55 +1,73 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/2] can: peak_usb: remove some 'struct timeval' users
-Date: Mon, 6 Nov 2017 16:01:23 +0100
-Message-ID: <4d541e16-c5a8-2c2a-c430-1daf5c8577cf@pengutronix.de>
-References: <20171103163220.3799742-1-arnd@arndb.de>
+Subject: Re: [PATCH v2] can: sun4i: fix overrun
+Date: Mon, 6 Nov 2017 16:03:18 +0100
+Message-ID: <d834a10b-414b-2555-a268-39304dd622f3@pengutronix.de>
+References: <5511583c-37ac-c6b7-f88d-1fd740fae3f5 () pengutronix ! de>
+ <1509108411-9614-1-git-send-email-info@gerhard-bertelsmann.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="iCA7OMKMkrX7bMlhOcXNLorSsRpAasxJj"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20171103163220.3799742-1-arnd@arndb.de>
-Sender: netdev-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Kees Cook <keescook@chromium.org>, Allen Pais <allen.lkml@gmail.com>, Stephane Grosjean <s.grosjean@peak-system.com>, Johan Hovold <johan@kernel.org>, =?UTF-8?B?7LaU7KeA7Zi4?= <jiho.chu@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+ boundary="RTrHG0Fx0L9CHAdSmbMmH5uQSgvnnFV5s"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:59265 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S932489AbdKFPDX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Nov 2017 10:03:23 -0500
+In-Reply-To: <1509108411-9614-1-git-send-email-info@gerhard-bertelsmann.de>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: GBert <info@gerhard-bertelsmann.de>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---iCA7OMKMkrX7bMlhOcXNLorSsRpAasxJj
-Content-Type: multipart/mixed; boundary="kbt110tSQtscPRT1P1xgEax45JBqc74SU";
+--RTrHG0Fx0L9CHAdSmbMmH5uQSgvnnFV5s
+Content-Type: multipart/mixed; boundary="uDuinMJdElax6oIGdkKmmhdXVIvI1WJFM";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Arnd Bergmann <arnd@arndb.de>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Kees Cook
- <keescook@chromium.org>, Allen Pais <allen.lkml@gmail.com>,
- Stephane Grosjean <s.grosjean@peak-system.com>,
- Johan Hovold <johan@kernel.org>, =?UTF-8?B?7LaU7KeA7Zi4?=
- <jiho.chu@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <4d541e16-c5a8-2c2a-c430-1daf5c8577cf@pengutronix.de>
-Subject: Re: [PATCH 1/2] can: peak_usb: remove some 'struct timeval' users
-References: <20171103163220.3799742-1-arnd@arndb.de>
-In-Reply-To: <20171103163220.3799742-1-arnd@arndb.de>
+To: GBert <info@gerhard-bertelsmann.de>, linux-can@vger.kernel.org
+Message-ID: <d834a10b-414b-2555-a268-39304dd622f3@pengutronix.de>
+Subject: Re: [PATCH v2] can: sun4i: fix overrun
+References: <5511583c-37ac-c6b7-f88d-1fd740fae3f5 () pengutronix ! de>
+ <1509108411-9614-1-git-send-email-info@gerhard-bertelsmann.de>
+In-Reply-To: <1509108411-9614-1-git-send-email-info@gerhard-bertelsmann.de>
 
---kbt110tSQtscPRT1P1xgEax45JBqc74SU
+--uDuinMJdElax6oIGdkKmmhdXVIvI1WJFM
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 11/03/2017 05:31 PM, Arnd Bergmann wrote:
-> We want to remove 'struct timeval' and related interfaces since this is=
-
-> generally not safe for use beyond 2038.
+On 10/27/2017 02:46 PM, GBert wrote:
+> From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 >=20
-> For peak_usb, we can simplify the internal interface by using ktime_t
-> directly. This should not change any behavior, but it avoids a few
-> conversions.
+> SUN4Is CAN IP has a 64 byte deep FIFO buffer. If the buffer is not drai=
+ned
+> fast enough (overrun) it's getting mangled. Already received frames are=
+
+> dropped - the data can't be restored.
 >=20
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> V2: no duplicate error reporting
 
-Both applied to can-next.
+Please don't forget your S-o-b.
 
-Tnx,
+> ---
+>  drivers/net/can/sun4i_can.c |   10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+> index 68ef0a4..bcec511 100644
+> --- a/drivers/net/can/sun4i_can.c
+> +++ b/drivers/net/can/sun4i_can.c
+> @@ -539,6 +539,11 @@ static int sun4i_can_err(struct net_device *dev, u=
+8 isrc, u8 status)
+>  		}
+>  		stats->rx_over_errors++;
+>  		stats->rx_errors++;
+> +
+> +		/* reset the CAN IP by entering reset mode */
+> +		err =3D set_reset_mode(dev);
+> +		err =3D set_normal_mode(dev);
+
+Please add the missing error handling here.
+
 Marc
 
 --=20
@@ -59,23 +77,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---kbt110tSQtscPRT1P1xgEax45JBqc74SU--
+--uDuinMJdElax6oIGdkKmmhdXVIvI1WJFM--
 
---iCA7OMKMkrX7bMlhOcXNLorSsRpAasxJj
+--RTrHG0Fx0L9CHAdSmbMmH5uQSgvnnFV5s
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloAeUQACgkQHv7KIOw4
-HPYCUwf+LBNjXlVBb6R6Q2fwI+uhniu/tHwUv78Sk4fTDRrbRo5+R79oWrv6b6Gj
-fsKukJdu02BQx07s8sCbi5Stx3ZPDPxqS6icTsMwVgey9UAj9i3vRpKPUAz08ylU
-Zx2tp+U2etQejE+192xUeZAuqviNEQeIASqGEIfxUsTRVvHmjIEYrOu+4kfkfCVy
-/pBzJBf3oXGDPDm2TvH2/EvQE0GoRUYqSe7mG8CFKmUyVOjS6kEOppUAVIzkRHgO
-yXcSugiW6Q3ip5S0RLtHeMnz+oq2+QUgOTjyA0FsVAw49Ztppn8QFHz+Fx5T6ySV
-/08RdsqPMBnRQufcDFxTYScruuf5aA==
-=TzmP
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloAebYACgkQHv7KIOw4
+HPbPUAf+M+QNdiuWIWRZ4YG2bLjBLkXogvlpYoONUamgdnOFLSE+vGdeTzDU52Xi
+CNapcB1wHTpLMeUYUCFwegg+PjA6OZ0YtwMSoze7YiiVWP0POOtxzRwnpRjyXtEq
+cEN99/nDGs1B667M1+XYu8fcixV9MWnowGwjbbtNK98k2qosrV0LRwgPqTScnMCX
+tLfpxCfp0FMVndNYXk57bSB0gcHL3uNh0zwicTbCTyv44TGO8zeIox6HBDeKzcoy
+t9b9dS0fQ05wQwSUKSCOH8HUfwvfNVyK5clGG96CnAsGezLKMgs56LKGSIp+zezp
+qO7YoCd/4brSfB6WbE6bNw2rAXyDFw==
+=Exz7
 -----END PGP SIGNATURE-----
 
---iCA7OMKMkrX7bMlhOcXNLorSsRpAasxJj--
+--RTrHG0Fx0L9CHAdSmbMmH5uQSgvnnFV5s--
