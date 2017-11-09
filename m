@@ -1,39 +1,71 @@
-From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: [PATCH 1/8] dt-bindings: can: rcar_can: document r8a774[35] can support
-Date: Tue, 7 Nov 2017 16:26:39 +0100
-Message-ID: <CAMuHMdVTVAP+dSAvJtoAuSrHo6ngKg=iz_DdxeHk1pp7s4i4Fg@mail.gmail.com>
-References: <1510067449-17017-1-git-send-email-fabrizio.castro@bp.renesas.com> <1510067449-17017-2-git-send-email-fabrizio.castro@bp.renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1510067449-17017-2-git-send-email-fabrizio.castro-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Fabrizio Castro <fabrizio.castro-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
-Cc: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Simon Horman <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Chris Paterson <Chris.Paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Biju Das <biju.das-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH] can: peak: Add support for new PCIe/M2 CAN FD interfaces
+Date: Thu,  9 Nov 2017 14:42:14 +0100
+Message-ID: <20171109134214.29503-1-s.grosjean@peak-system.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from smtp3-g21.free.fr ([212.27.42.3]:18668 "EHLO smtp3-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1754264AbdKINmj (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 9 Nov 2017 08:42:39 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
 
-On Tue, Nov 7, 2017 at 4:10 PM, Fabrizio Castro
-<fabrizio.castro-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org> wrote:
-> Document "renesas,can-r8a7743" and "renesas,can-r8a7745" compatible
-> strings. Since the fallback compatible string ("renesas,rcar-gen2-can")
-> activates the right code in the driver, no driver change is needed.
->
-> Signed-off-by: Fabrizio Castro <fabrizio.castro-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
-> Reviewed-by: Biju Das <biju.das-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
+This adds support for the following PEAK-System CAN FD interfaces:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
+PCAN-cPCIe FD         CAN FD Interface for cPCI Serial (2 or 4 channels)
+PCAN-PCIe/104-Express CAN FD Interface for PCIe/104-Express (1, 2 or 4 ch.)
+PCAN-miniPCIe FD      CAN FD Interface for PCIe Mini (1, 2 or 4 channels)
+PCAN-PCIe FD OEM      CAN FD Interface for PCIe OEM version (1, 2 or 4 ch.)
+PCAN-M.2              CAN FD Interface for M.2 (1 or 2 channels)
 
-Gr{oetje,eeting}s,
+Like the PCAN-PCIe FD interface, all of these boards run the same IP Core
+that is able to handle CAN FD (see also http://www.peak-system.com).
 
-                        Geert
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+---
+ drivers/net/can/peak_canfd/peak_pciefd_main.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
+diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+index 51c2d182a33a..b4efd711f824 100644
+--- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
++++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+@@ -29,14 +29,19 @@
+ #include "peak_canfd_user.h"
+ 
+ MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
+-MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCIe FD family cards");
+-MODULE_SUPPORTED_DEVICE("PEAK PCAN PCIe FD CAN cards");
++MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCIe/M.2 FD family cards");
++MODULE_SUPPORTED_DEVICE("PEAK PCAN PCIe/M.2 FD CAN cards");
+ MODULE_LICENSE("GPL v2");
+ 
+ #define PCIEFD_DRV_NAME		"peak_pciefd"
+ 
+ #define PEAK_PCI_VENDOR_ID	0x001c	/* The PCI device and vendor IDs */
+ #define PEAK_PCIEFD_ID		0x0013	/* for PCIe slot cards */
++#define PCAN_CPCIEFD_ID		0x0014	/* for Compact-PCI Serial slot cards */
++#define PCAN_PCIE104FD_ID	0x0017	/* for PCIe-104 Express slot cards */
++#define PCAN_MINIPCIEFD_ID      0x0018	/* for mini-PCIe slot cards */
++#define PCAN_PCIEFD_OEM_ID      0x0019	/* for PCIe slot OEM cards */
++#define PCAN_M2_ID		0x001a	/* for M2 slot cards */
+ 
+ /* PEAK PCIe board access description */
+ #define PCIEFD_BAR0_SIZE		(64 * 1024)
+@@ -203,6 +208,11 @@ struct pciefd_board {
+ /* supported device ids. */
+ static const struct pci_device_id peak_pciefd_tbl[] = {
+ 	{PEAK_PCI_VENDOR_ID, PEAK_PCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_CPCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_PCIE104FD_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_MINIPCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_PCIEFD_OEM_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_M2_ID, PCI_ANY_ID, PCI_ANY_ID,},
+ 	{0,}
+ };
+ 
+-- 
+2.14.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
