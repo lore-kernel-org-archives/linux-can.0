@@ -1,130 +1,46 @@
-From: Pankaj Bansal <pankaj.bansal@nxp.com>
-Subject: [PATCH 3/3] arm/dts: Add nodes for flexcan devices present on LS1021A-Rev2 SoC
-Date: Fri, 10 Nov 2017 15:47:23 +0530
-Message-ID: <1510309043-16777-3-git-send-email-pankaj.bansal@nxp.com>
-References: <1510309043-16777-1-git-send-email-pankaj.bansal@nxp.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Marek Vasut <marex@denx.de>
+Subject: [PATCH] can: ifi: Fix transmitter delay calculation
+Date: Fri, 10 Nov 2017 11:22:39 +0100
+Message-ID: <20171110102239.6864-1-marex@denx.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-sn1nam02on0041.outbound.protection.outlook.com ([104.47.36.41]:17708
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751223AbdKJKO0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 10 Nov 2017 05:14:26 -0500
-In-Reply-To: <1510309043-16777-1-git-send-email-pankaj.bansal@nxp.com>
+Received: from mail-out.m-online.net ([212.18.0.9]:50989 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752102AbdKJKWq (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 10 Nov 2017 05:22:46 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org
-Cc: V.Sethi@nxp.com, poonam.aggrwal@nxp.com, Pankaj Bansal <pankaj.bansal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>, Sakar Arora <Sakar.Arora@freescale.com>
+To: linux-can@vger.kernel.org
+Cc: Marek Vasut <marex@denx.de>, Markus Marb <markus@marb.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-This patch adds the device nodes for flexcan controller(s) present
-on LS1021A-Rev2 SoC.
+The CANFD transmitter delay calculation formula was updated in the
+latest software drop from IFI and improves the behavior of the IFI
+CANFD core during bitrate switching. Use the new formula to improve
+stability of the CANFD operation.
 
-Signed-off-by: Pankaj Bansal <pankaj.bansal@nxp.com>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
-Signed-off-by: Sakar Arora <Sakar.Arora@freescale.com>
-Reviewed-by: Zhengxiong Jin <Jason.Jin@freescale.com>
-Reviewed-by: Poonam Aggrwal <poonam.aggrwal@nxp.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Markus Marb <markus@marb.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- arch/arm/boot/dts/ls1021a-qds.dts | 16 +++++++++++++
- arch/arm/boot/dts/ls1021a-twr.dts | 16 +++++++++++++
- arch/arm/boot/dts/ls1021a.dtsi    | 36 +++++++++++++++++++++++++++++
- 3 files changed, 68 insertions(+)
+ drivers/net/can/ifi_canfd/ifi_canfd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/ls1021a-qds.dts b/arch/arm/boot/dts/ls1021a-qds.dts
-index 9408753..4f211e3 100644
---- a/arch/arm/boot/dts/ls1021a-qds.dts
-+++ b/arch/arm/boot/dts/ls1021a-qds.dts
-@@ -331,3 +331,19 @@
- &uart1 {
- 	status = "okay";
- };
-+
-+&can0 {
-+	status = "okay";
-+};
-+
-+&can1 {
-+	status = "okay";
-+};
-+
-+&can2 {
-+	status = "disabled";
-+};
-+
-+&can3 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm/boot/dts/ls1021a-twr.dts b/arch/arm/boot/dts/ls1021a-twr.dts
-index a8b148a..7202d9c 100644
---- a/arch/arm/boot/dts/ls1021a-twr.dts
-+++ b/arch/arm/boot/dts/ls1021a-twr.dts
-@@ -243,3 +243,19 @@
- &uart1 {
- 	status = "okay";
- };
-+
-+&can0 {
-+	status = "okay";
-+};
-+
-+&can1 {
-+	status = "okay";
-+};
-+
-+&can2 {
-+	status = "disabled";
-+};
-+
-+&can3 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index 9319e1f..7789031 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -730,5 +730,41 @@
- 					<0000 0 0 3 &gic GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>,
- 					<0000 0 0 4 &gic GIC_SPI 193 IRQ_TYPE_LEVEL_HIGH>;
- 		};
-+
-+		can0: can@2a70000 {
-+			compatible = "fsl,ls1021ar2-flexcan";
-+			reg = <0x0 0x2a70000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
-+			clock-names = "ipg", "per";
-+			big-endian;
-+		};
-+
-+		can1: can@2a80000 {
-+			compatible = "fsl,ls1021ar2-flexcan";
-+			reg = <0x0 0x2a80000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
-+			clock-names = "ipg", "per";
-+			big-endian;
-+		};
-+
-+		can2: can@2a90000 {
-+			compatible = "fsl,ls1021ar2-flexcan";
-+			reg = <0x0 0x2a90000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
-+			clock-names = "ipg", "per";
-+			big-endian;
-+		};
-+
-+		can3: can@2aa0000 {
-+			compatible = "fsl,ls1021ar2-flexcan";
-+			reg = <0x0 0x2aa0000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
-+			clock-names = "ipg", "per";
-+			big-endian;
-+		};
- 	};
- };
+diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+index 0e22599dfe4a..6c37f5d4fe7e 100644
+--- a/drivers/net/can/ifi_canfd/ifi_canfd.c
++++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+@@ -671,9 +671,9 @@ static void ifi_canfd_set_bittiming(struct net_device *ndev)
+ 	       priv->base + IFI_CANFD_FTIME);
+ 
+ 	/* Configure transmitter delay */
+-	tdc = (dbt->brp * (dbt->phase_seg1 + 1)) & IFI_CANFD_TDELAY_MASK;
+-	writel(IFI_CANFD_TDELAY_EN | IFI_CANFD_TDELAY_ABS | tdc,
+-	       priv->base + IFI_CANFD_TDELAY);
++	tdc = dbt->brp * (dbt->prop_seg + dbt->phase_seg1);
++	tdc &= IFI_CANFD_TDELAY_MASK;
++	writel(IFI_CANFD_TDELAY_EN | tdc, priv->base + IFI_CANFD_TDELAY);
+ }
+ 
+ static void ifi_canfd_set_filter(struct net_device *ndev, const u32 id,
 -- 
-2.7.4
+2.11.0
 
