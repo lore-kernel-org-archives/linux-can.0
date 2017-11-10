@@ -1,55 +1,51 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 1/4] can: c_can: don't indicate triple sampling support for D_CAN
-Date: Fri, 10 Nov 2017 14:07:27 +0100
-Message-ID: <20171110130730.6662-2-mkl@pengutronix.de>
+Subject: [PATCH 4/4] can: ifi: Fix transmitter delay calculation
+Date: Fri, 10 Nov 2017 14:07:30 +0100
+Message-ID: <20171110130730.6662-5-mkl@pengutronix.de>
 References: <20171110130730.6662-1-mkl@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:56845 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752943AbdKJNHl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 10 Nov 2017 08:07:41 -0500
 In-Reply-To: <20171110130730.6662-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, =?UTF-8?q?Richard=20Sch=C3=BCtz?= <rschuetz@uni-koblenz.de>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marek Vasut <marex@denx.de>, Markus Marb <markus@marb.org>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-From: Richard Schütz <rschuetz@uni-koblenz.de>
+From: Marek Vasut <marex@denx.de>
 
-The D_CAN controller doesn't provide a triple sampling mode, so don't set
-the CAN_CTRLMODE_3_SAMPLES flag in ctrlmode_supported. Currently enabling
-triple sampling is a no-op.
+The CANFD transmitter delay calculation formula was updated in the
+latest software drop from IFI and improves the behavior of the IFI
+CANFD core during bitrate switching. Use the new formula to improve
+stability of the CANFD operation.
 
-Signed-off-by: Richard Schütz <rschuetz@uni-koblenz.de>
-Cc: linux-stable <stable@vger.kernel.org> # >= v3.6
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Markus Marb <markus@marb.org>
+Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can_pci.c      | 1 -
- drivers/net/can/c_can/c_can_platform.c | 1 -
- 2 files changed, 2 deletions(-)
+ drivers/net/can/ifi_canfd/ifi_canfd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
-index cf7c18947189..d065c0e2d18e 100644
---- a/drivers/net/can/c_can/c_can_pci.c
-+++ b/drivers/net/can/c_can/c_can_pci.c
-@@ -178,7 +178,6 @@ static int c_can_pci_probe(struct pci_dev *pdev,
- 		break;
- 	case BOSCH_D_CAN:
- 		priv->regs = reg_map_d_can;
--		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
- 		break;
- 	default:
- 		ret = -EINVAL;
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index 46a746ee80bb..b5145a7f874c 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -320,7 +320,6 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 		break;
- 	case BOSCH_D_CAN:
- 		priv->regs = reg_map_d_can;
--		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
- 		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
- 		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
- 		priv->read_reg32 = d_can_plat_read_reg32;
+diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+index 4d1fe8d95042..2772d05ff11c 100644
+--- a/drivers/net/can/ifi_canfd/ifi_canfd.c
++++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+@@ -670,9 +670,9 @@ static void ifi_canfd_set_bittiming(struct net_device *ndev)
+ 	       priv->base + IFI_CANFD_FTIME);
+ 
+ 	/* Configure transmitter delay */
+-	tdc = (dbt->brp * (dbt->phase_seg1 + 1)) & IFI_CANFD_TDELAY_MASK;
+-	writel(IFI_CANFD_TDELAY_EN | IFI_CANFD_TDELAY_ABS | tdc,
+-	       priv->base + IFI_CANFD_TDELAY);
++	tdc = dbt->brp * (dbt->prop_seg + dbt->phase_seg1);
++	tdc &= IFI_CANFD_TDELAY_MASK;
++	writel(IFI_CANFD_TDELAY_EN | tdc, priv->base + IFI_CANFD_TDELAY);
+ }
+ 
+ static void ifi_canfd_set_filter(struct net_device *ndev, const u32 id,
 -- 
 2.15.0
+
