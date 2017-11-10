@@ -1,89 +1,102 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: peak: Add support for new PCIe/M2 CAN FD interfaces
-Date: Fri, 10 Nov 2017 14:08:14 +0100
-Message-ID: <234e490b-e065-ce26-e09d-81c0208be04c@pengutronix.de>
-References: <20171109134214.29503-1-s.grosjean@peak-system.com>
+From: Pankaj Bansal <pankaj.bansal@nxp.com>
+Subject: RE: [PATCH 1/2] can: flexcan: Remodel FlexCAN register r/w APIs for
+ big endian FlexCAN controllers.
+Date: Fri, 10 Nov 2017 16:32:11 +0000
+Message-ID: <AM0PR0402MB3940DE05B2BA456D0FF54498F1540@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <a08c34d0-5870-b4b3-f68d-3db33ba3e950@pengutronix.de>
+ <AM0PR0402MB3940A39D32C4725DE1B8C426F1540@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <e87441cc-3848-1125-f4f0-02f1a630c36b@pengutronix.de>
+ <AM0PR0402MB394051B0FAADBC45AF71439CF1540@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <b27d6e14-c6d7-5c4b-0588-093684cbe57b@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="aFaSscNN7lsGiHd1DeL3Efxg84cJKLhDF"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:34063 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752896AbdKJNIU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 10 Nov 2017 08:08:20 -0500
-In-Reply-To: <20171109134214.29503-1-s.grosjean@peak-system.com>
+Received: from mail-he1eur01on0043.outbound.protection.outlook.com ([104.47.0.43]:15136
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751541AbdKJQcP (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 10 Nov 2017 11:32:15 -0500
+In-Reply-To: <b27d6e14-c6d7-5c4b-0588-093684cbe57b@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---aFaSscNN7lsGiHd1DeL3Efxg84cJKLhDF
-Content-Type: multipart/mixed; boundary="7nuCO6tkirCtpCT8nQ0rvgkj0wIEVpJB7";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Stephane Grosjean <s.grosjean@peak-system.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can Mailing List <linux-can@vger.kernel.org>
-Message-ID: <234e490b-e065-ce26-e09d-81c0208be04c@pengutronix.de>
-Subject: Re: [PATCH] can: peak: Add support for new PCIe/M2 CAN FD interfaces
-References: <20171109134214.29503-1-s.grosjean@peak-system.com>
-In-Reply-To: <20171109134214.29503-1-s.grosjean@peak-system.com>
-
---7nuCO6tkirCtpCT8nQ0rvgkj0wIEVpJB7
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 11/09/2017 02:42 PM, Stephane Grosjean wrote:
-> This adds support for the following PEAK-System CAN FD interfaces:
->=20
-> PCAN-cPCIe FD         CAN FD Interface for cPCI Serial (2 or 4 channels=
-)
-> PCAN-PCIe/104-Express CAN FD Interface for PCIe/104-Express (1, 2 or 4 =
-ch.)
-> PCAN-miniPCIe FD      CAN FD Interface for PCIe Mini (1, 2 or 4 channel=
-s)
-> PCAN-PCIe FD OEM      CAN FD Interface for PCIe OEM version (1, 2 or 4 =
-ch.)
-> PCAN-M.2              CAN FD Interface for M.2 (1 or 2 channels)
->=20
-> Like the PCAN-PCIe FD interface, all of these boards run the same IP Co=
-re
-> that is able to handle CAN FD (see also http://www.peak-system.com).
->=20
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-
-Added to can.
-
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---7nuCO6tkirCtpCT8nQ0rvgkj0wIEVpJB7--
-
---aFaSscNN7lsGiHd1DeL3Efxg84cJKLhDF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloFpL4ACgkQHv7KIOw4
-HPaQNwf9H3lg/CI+0BDBGzKUnCKFTjsR+q7g5oX+IUlHMxX5Cchou9sTZsjHzncV
-k3uA1Y22X0oufj0MpG2t/XwK5rIBm2uQ5xDfrYNW34rQTyn/+Q3JR41Sfo438D5y
-Mb8vQifHslD4+BHIpapiwKhbHKJi4t67bByFFZ/Vs/iykqtcqDdtp6qSNXhqq0VP
-1JrV4+E1/athwHJ1ykHkjlYqFl+68pZFOzMfLEYGNnm6Ao9s9U7G6HYCZmDaK+az
-qsowdl6OQOB38FZDPQsi75M3Pi11q2zKMC4pkYZ4GKWdjD0dRmUk29BIhhQrzAQ8
-L7Wf0REUcYrZA5HwX6kPb85dW1cj6g==
-=+Idu
------END PGP SIGNATURE-----
-
---aFaSscNN7lsGiHd1DeL3Efxg84cJKLhDF--
+SGkgTWFyYywNCg0KVGhhbmtzIGZvciBzaGFyaW5nIHRoZSB2aWRlbyBhbmQgc2xpZGVzLiBJdCB3
+YXMgcmVhbGx5IGhlbHBmdWwuDQpCdXQgSSB3b3VsZCBzdGlsbCBsaWtlIHRvIHNvbHZlIHRoaXMg
+cHJvYmxlbSB1c2luZyBkZXZpY2UgdHJlZSBwcm9wZXJ0eS4NCk15IHJhdGlvbmFsZSBiZWhpbmQg
+aXQgaXMgdGhhdCwgaWYgYSBwbGF0Zm9ybSBkZXNpZ25lciB1c2VzIHNhbWUgSVAgYmxvY2sgd2hv
+c2Ugc3VwcG9ydCBpcyBwcmVzZW50IGlzIGxpbnV4IGtlcm5lbCwgYnV0IHdpdGggZGlmZmVyZW50
+IGVuZGlhbm5lc3MuDQpUaGVuIGhlIHdvdWxkIG5vdCBuZWVkIHRvIGFkZCBoaXMgcGxhdGZvcm0g
+ZGF0YSBpbiBlYWNoIGRyaXZlciB0byBzdXBwb3J0IGhpcyBwbGF0Zm9ybSBpbiBsaW51eC4NCkhl
+IGNhbiBqdXN0IGFkZCBlbmRpYW5uZXNzIHByb3BlcnR5IGluIGRldmljZSB0cmVlIGFuZCBjYW4g
+dXNlIGxhdGVzdCBsaW51eCBrZXJuZWwgcmlnaHQgb2ZmIHRoZSBiYXQuDQpUaGlzIGlzIGFsc28g
+bWVudGlvbmVkIGluICJEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVnbWFwL3Jl
+Z21hcC50eHQiLg0KDQpSZWdtYXAgZGVmYXVsdHMgdG8gbGl0dGxlLWVuZGlhbiByZWdpc3RlciBh
+Y2Nlc3Mgb24gTU1JTyBiYXNlZA0KZGV2aWNlcywgdGhpcyBpcyBieSBmYXIgdGhlIG1vc3QgY29t
+bW9uIHNldHRpbmcuIE9uIENQVQ0KYXJjaGl0ZWN0dXJlcyB0aGF0IHR5cGljYWxseSBydW4gYmln
+LWVuZGlhbiBvcGVyYXRpbmcgc3lzdGVtcw0KKGUuZy4gUG93ZXJQQyksIHJlZ2lzdGVycyBjYW4g
+YmUgZGVmaW5lZCBhcyBiaWctZW5kaWFuIGFuZCBtdXN0DQpiZSBtYXJrZWQgdGhhdCB3YXkgaW4g
+dGhlIGRldmljZXRyZWUuDQoNClRoaXMgcnVsZSB3YXMgYXBwYXJlbnRseSBub3QgZm9sbG93ZWQg
+aW4gUDEwMTBSREIgZmxleGNhbiBub2RlLg0KDQpUbyBzb2x2ZSB0aGlzIHByb2JsZW0sIEkgc3Vn
+Z2VzdCB0aGF0IHdlIGRlZmluZSAyIG9wdGlvbmFsIGRldmljZSB0cmVlIHByb3BlcnRpZXMgZm9y
+IGZsZXhjYW4uDQpsaXR0bGUtZW5kaWFuIDogZm9yIHBvd2VycGMgYXJjaGl0ZWN0dXJlLCBpZiB0
+aGlzIHByb3BlcnR5IGlzIGRlZmluZWQgdGhlbiBjb250cm9sbGVyIGlzIGxpdHRsZSBlbmRpYW4g
+b3RoZXJ3aXNlIGJpZyBlbmRpYW4gKGRlZmF1bHQpDQpiaWctZW5kaWFuIDogZm9yIG90aGVyIGFy
+Y2hpdGVjdHVyZXMsIGlmIHRoaXMgcHJvcGVydHkgaXMgZGVmaW5lZCB0aGVuIGNvbnRyb2xsZXIg
+aXMgYmlnIGVuZGlhbiBvdGhlcndpc2UgbGl0dGxlIGVuZGlhbiAoZGVmYXVsdCkNCg0KQWx0aG91
+Z2ggdGhlIGNvbnRyb2xsZXIgZHJpdmVycyBzaG91bGQgYmUgYXJjaGl0ZWN0dXJlIGluZGVwZW5k
+ZW50LCBidXQgYXBwYXJlbnRseSB0aGVyZSBpcyBubyB3YXkgYXJvdW5kIGl0IGluIGZsZXhjYW4u
+DQoNCmxldCBtZSBrbm93IHlvdXIgdGhvdWdodHMuDQoNClRoYW5rcyAmIFJlZ2FyZHMsDQpQYW5r
+YWogQmFuc2FsDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBNYXJjIEtsZWlu
+ZS1CdWRkZSBbbWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0gDQpTZW50OiBGcmlkYXksIE5vdmVt
+YmVyIDEwLCAyMDE3IDY6MTkgUE0NClRvOiBQYW5rYWogQmFuc2FsIDxwYW5rYWouYmFuc2FsQG54
+cC5jb20+OyB3Z0BncmFuZGVnZ2VyLmNvbTsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KQ2M6
+IFZhcnVuIFNldGhpIDxWLlNldGhpQG54cC5jb20+OyBQb29uYW0gQWdncndhbCA8cG9vbmFtLmFn
+Z3J3YWxAbnhwLmNvbT47IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSZTog
+W1BBVENIIDEvMl0gY2FuOiBmbGV4Y2FuOiBSZW1vZGVsIEZsZXhDQU4gcmVnaXN0ZXIgci93IEFQ
+SXMgZm9yIGJpZyBlbmRpYW4gRmxleENBTiBjb250cm9sbGVycy4NCg0KT24gMTEvMTAvMjAxNyAw
+MTozNSBQTSwgUGFua2FqIEJhbnNhbCB3cm90ZToNCj4+PiAzLiBSZWdhcmRpbmcgYmFja3dhcmQg
+Y29tcGF0aWJpbGl0eSB3aXRoIFBvd2VyUEMsIEkgc2VlIHRoYXQgdGhlcmUgaXMgb25seSBvbmUg
+cGxhdGZvcm0gaW4gUG93ZXJQQyBhcmNoaXRlY3R1cmUgdGhhdCBpcyB1c2luZyBmbGV4Y2FuLg0K
+Pj4+ICAgICBUaGVyZSBpcyBvbmx5IG9uZSBwbGF0Zm9ybSBpbiAiYXJjaC9wb3dlcnBjL2Jvb3Qv
+ZHRzLyIgaGF2aW5nIGZsZXhjYW4gbm9kZS4gcDEwMTBzaS1wb3N0LmR0c2kNCj4+PiAgICAgSSBo
+YXZlIGFkZGVkIHRoZSBiaWctZW5kaWFuIHByb3BlcnR5IGluIHRoYXQgcGxhdGZvcm0gYW5kIGhh
+dmUgdGVzdGVkIGl0IG9uIFAxMDEwIHBsYXRmb3JtIGFmdGVyIGJhY2twb3J0aW5nIHRoZSBwYXRj
+aCB0byBGcmVlc2NhbGUgU0RLIDEuNCBsaW51eC4NCj4+PiAgICAgSSBoYXZlIHNlbnQgdGhlIHBh
+dGNoIGZvciB0aGlzLiBTZWUgIltQQVRDSCAyLzNdIHBvd2VycGM6IGR0czogUDEwMTA6IEFkZCBl
+bmRpYW5uZXNzIHByb3BlcnR5IHRvIGZsZXhjYW4gbm9kZSINCj4+PiAgICAgSSBiZWxpZXZlIHRo
+ZXNlIGNoYW5nZXMgY2FuIGJlIGFjY2VwdGVkIGZvciBib3RoIHBvd2VycGMgYW5kIGFybSBhbmQg
+b3RoZXIgYXJjaGl0ZWN0dXJlcyB0aGF0IHVzZSBmbGV4Y2FuLg0KPj4NCj4+IE5vLCB0aGlzIGlz
+IG5vdCBhY2NlcHRhYmxlLiBZb3UgYnJlYWsgdGhlIGRldmljZSB0cmVlLiBQbGVhc2UgYWRkIHRo
+ZSBsZSwgYmUgaW5mb3JtYXRpb24gdG8gdGhlIGRldnR5cGUgZGF0YS4NCj4gDQo+IEkgZG9uJ3Qg
+dW5kZXJzdGFuZCBob3cgdGhpcyBicmVha3MgZGV2aWNlIHRyZWU/IGNhbiB5b3UgcGxlYXNlIGVs
+YWJvcmF0ZT8gVGhpcyBtZXRob2QgaXMgYWxyZWFkeSBiZWluZyB1c2VkIGluIG90aGVyIHNwZWNp
+ZmljYXRpb25zLg0KDQpCb290IGEgbmV3IGtlcm5lbCB3aXRoIGFuIG9sZCB0cmVlIG9uIGEgUFBD
+IGJvYXJkIC0+IGZsZXhjYW4gd2lsbCBub3Qgd29yay4NCg0KU2VlIHRoaXMgdGFsayBmb3IgbW9y
+ZSBpbmZvcm1hdGlvbiBmb3Igc3RhYmxlIGRldmljZSB0cmVlIEFCSToNCg0KaHR0cHM6Ly9lbGlu
+dXgub3JnL2ltYWdlcy8wLzBlL09TRUxBUy5QcmVzZW50YXRpb24tRUxDRTIwMTctRFQucGRmDQpo
+dHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PTZpZ3VLU0pKZnhvDQoNCj4gWW91IGNhbiBy
+ZWZlciAiRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi91c2ItZWhjaS50eHQi
+IG9yIA0KPiAiRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXV4LXJl
+Zy50eHQiIE9yIA0KPiAiRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3JlZ21hcC9y
+ZWdtYXAudHh0Ii4NCg0KPiBJbiBteSBvcGluaW9uLCBrZWVwaW5nIHRoaXMgaW5mbyBpbiBkZXZ0
+eXBlIGRhdGEgaXMgbm90IGdvb2QgaWRlYS4NCj4gRS5nLiBzYXkgdHdvIHBsYXRmb3JtcyB3aGlj
+aCBoYXZlIHNhbWUgRmxleENBTiBoYXJkd2FyZSByZXZpc2lvbiwgd2lsbCANCj4gaGF2ZSBzYW1l
+IHF1aXJrcy4gQlVUIHRoZXNlIHR3byBwbGF0Zm9ybXMgaW1wbGVtZW50IEZsZXhDQU4gaW4gbGUg
+YW5kIA0KPiBiZSBmYXNoaW9uIHJlc3BlY3RpdmVseS4NCg0KVGhlbiBpdCdzIHR3byBkaWZmZXJl
+bnQgcGxhdGZvcm1zLiBTaW1wbHkgYWRkIGFub3RoZXIgY29tcGF0aWJsZSB0byB0aGUgZHJpdmVy
+Lg0KDQo+IFdpdGggY3VycmVudCBGbGV4Q0FOIGRyaXZlciwgdGhlc2UgdHdvIHBsYXRmb3JtcyBj
+YW4gaGF2ZSBzYW1lIGRldnR5cGUgDQo+IGRhdGEuIEFuZCB3ZSBuZWVkIG5vdCB0byBjaGFuZ2Ug
+ZmxleGNhbi5jIGlmIHdlIHdhbnQgdG8gYWRkIHN1cHBvcnQgDQo+IGZvciBhIHNlY29uZCBwbGF0
+Zm9ybS4gV2UgY2FuIGp1c3QgYWRkIGRldmljZSB0cmVlIGZvciB0aGF0IHBsYXRmb3JtIA0KPiAo
+d2hpY2ggd291bGQgYmUgbmVlZGVkIGFueXdheSksIGFuZCBpdCBjYW4gd29yay4gV2UgY2FuIG1l
+bnRpb24gDQo+IGVuZGlhbm5lc3MgaW4gZGV2aWNlIHRyZWUuDQoNCk1hcmMNCg0KLS0gDQpQZW5n
+dXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAg
+ICAgfA0KSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEt
+MjgyNi05MjQgICAgIHwNClZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDog
+ICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQpBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4
+NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
