@@ -1,59 +1,54 @@
 From: Pankaj Bansal <pankaj.bansal@nxp.com>
-Subject: [PATCH 2/2] can: flexcan: adding platform specific details for LS1021A
-Date: Fri, 10 Nov 2017 15:29:50 +0530
-Message-ID: <1510307990-15418-2-git-send-email-pankaj.bansal@nxp.com>
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+Subject: [PATCH 1/3] Documentation : can : flexcan : Add big-endian property to device tree
+Date: Fri, 10 Nov 2017 15:47:21 +0530
+Message-ID: <1510309043-16777-1-git-send-email-pankaj.bansal@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-cys01nam02on0065.outbound.protection.outlook.com ([104.47.37.65]:49248
+Received: from mail-cys01nam02on0048.outbound.protection.outlook.com ([104.47.37.48]:19392
         "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751664AbdKJJ4n (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 10 Nov 2017 04:56:43 -0500
-In-Reply-To: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+        id S1751063AbdKJKOO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 10 Nov 2017 05:14:14 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: V.Sethi@nxp.com, poonam.aggrwal@nxp.com, Pankaj Bansal <pankaj.bansal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org
+Cc: V.Sethi@nxp.com, poonam.aggrwal@nxp.com, Pankaj Bansal <pankaj.bansal@nxp.com>
 
-This patch adds platform specific details for NXP SOC LS1021A
-to the flexcan driver code.
+The FlexCAN controller can be modelled as little or big endian
+depending on SOC design. This device tree property identifies the
+controller endianness and the driver reads/writes controller registers
+based on that.
+
+This is optional property. i.e. if this property is not present in
+device tree node then controller is assumed to be little endian. if
+this property is present then controller is assumed to be big endian.
 
 Signed-off-by: Pankaj Bansal <pankaj.bansal@nxp.com>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
-Reviewed-by: Zhengxiong Jin <Jason.Jin@freescale.com>
 Reviewed-by: Poonam Aggrwal <poonam.aggrwal@nxp.com>
 ---
- drivers/net/can/flexcan.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index d4ce2df..d8cac4c 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -304,6 +304,12 @@ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
- 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
- };
+diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+index 56d6cc3..b9693c7 100644
+--- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
++++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+@@ -18,6 +18,8 @@ Optional properties:
  
-+/* LS1021A-Rev2 has functional RX-FIFO mode
-+ */
-+static struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
-+	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_DISABLE_MECR,
-+};
+ - xceiver-supply: Regulator that powers the CAN transceiver
+ 
++- big-endian: This means the registers of FlexCAN controller are big endian
 +
- static const struct can_bittiming_const flexcan_bittiming_const = {
- 	.name = DRV_NAME,
- 	.tseg1_min = 4,
-@@ -1245,6 +1251,8 @@ static const struct of_device_id flexcan_of_match[] = {
- 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
- 	{ .compatible = "fsl,p1010-flexcan", .data = &fsl_p1010_devtype_data, },
- 	{ .compatible = "fsl,vf610-flexcan", .data = &fsl_vf610_devtype_data, },
-+	{ .compatible = "fsl,ls1021ar2-flexcan",
-+	  .data = &fsl_ls1021a_r2_devtype_data, },
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, flexcan_of_match);
+ Example:
+ 
+ 	can@1c000 {
+@@ -26,4 +28,5 @@ Example:
+ 		interrupts = <48 0x2>;
+ 		interrupt-parent = <&mpic>;
+ 		clock-frequency = <200000000>; // filled in by bootloader
++		big-endian;
+ 	};
 -- 
 2.7.4
 
