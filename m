@@ -1,51 +1,72 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/4] can: ifi: Fix transmitter delay calculation
-Date: Fri, 10 Nov 2017 14:07:30 +0100
-Message-ID: <20171110130730.6662-5-mkl@pengutronix.de>
+Subject: [PATCH 3/4] can: peak: Add support for new PCIe/M2 CAN FD interfaces
+Date: Fri, 10 Nov 2017 14:07:29 +0100
+Message-ID: <20171110130730.6662-4-mkl@pengutronix.de>
 References: <20171110130730.6662-1-mkl@pengutronix.de>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:56845 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752943AbdKJNHl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 10 Nov 2017 08:07:41 -0500
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20171110130730.6662-1-mkl@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marek Vasut <marex@denx.de>, Markus Marb <markus@marb.org>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Stephane Grosjean <s.grosjean@peak-system.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+List-Id: linux-can.vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-The CANFD transmitter delay calculation formula was updated in the
-latest software drop from IFI and improves the behavior of the IFI
-CANFD core during bitrate switching. Use the new formula to improve
-stability of the CANFD operation.
+This adds support for the following PEAK-System CAN FD interfaces:
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Markus Marb <markus@marb.org>
+PCAN-cPCIe FD         CAN FD Interface for cPCI Serial (2 or 4 channels)
+PCAN-PCIe/104-Express CAN FD Interface for PCIe/104-Express (1, 2 or 4 ch.)
+PCAN-miniPCIe FD      CAN FD Interface for PCIe Mini (1, 2 or 4 channels)
+PCAN-PCIe FD OEM      CAN FD Interface for PCIe OEM version (1, 2 or 4 ch.)
+PCAN-M.2              CAN FD Interface for M.2 (1 or 2 channels)
+
+Like the PCAN-PCIe FD interface, all of these boards run the same IP Core
+that is able to handle CAN FD (see also http://www.peak-system.com).
+
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ifi_canfd/ifi_canfd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/peak_canfd/peak_pciefd_main.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index 4d1fe8d95042..2772d05ff11c 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -670,9 +670,9 @@ static void ifi_canfd_set_bittiming(struct net_device *ndev)
- 	       priv->base + IFI_CANFD_FTIME);
+diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+index 51c2d182a33a..b4efd711f824 100644
+--- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
++++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+@@ -29,14 +29,19 @@
+ #include "peak_canfd_user.h"
  
- 	/* Configure transmitter delay */
--	tdc = (dbt->brp * (dbt->phase_seg1 + 1)) & IFI_CANFD_TDELAY_MASK;
--	writel(IFI_CANFD_TDELAY_EN | IFI_CANFD_TDELAY_ABS | tdc,
--	       priv->base + IFI_CANFD_TDELAY);
-+	tdc = dbt->brp * (dbt->prop_seg + dbt->phase_seg1);
-+	tdc &= IFI_CANFD_TDELAY_MASK;
-+	writel(IFI_CANFD_TDELAY_EN | tdc, priv->base + IFI_CANFD_TDELAY);
- }
+ MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
+-MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCIe FD family cards");
+-MODULE_SUPPORTED_DEVICE("PEAK PCAN PCIe FD CAN cards");
++MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCIe/M.2 FD family cards");
++MODULE_SUPPORTED_DEVICE("PEAK PCAN PCIe/M.2 FD CAN cards");
+ MODULE_LICENSE("GPL v2");
  
- static void ifi_canfd_set_filter(struct net_device *ndev, const u32 id,
+ #define PCIEFD_DRV_NAME		"peak_pciefd"
+ 
+ #define PEAK_PCI_VENDOR_ID	0x001c	/* The PCI device and vendor IDs */
+ #define PEAK_PCIEFD_ID		0x0013	/* for PCIe slot cards */
++#define PCAN_CPCIEFD_ID		0x0014	/* for Compact-PCI Serial slot cards */
++#define PCAN_PCIE104FD_ID	0x0017	/* for PCIe-104 Express slot cards */
++#define PCAN_MINIPCIEFD_ID      0x0018	/* for mini-PCIe slot cards */
++#define PCAN_PCIEFD_OEM_ID      0x0019	/* for PCIe slot OEM cards */
++#define PCAN_M2_ID		0x001a	/* for M2 slot cards */
+ 
+ /* PEAK PCIe board access description */
+ #define PCIEFD_BAR0_SIZE		(64 * 1024)
+@@ -203,6 +208,11 @@ struct pciefd_board {
+ /* supported device ids. */
+ static const struct pci_device_id peak_pciefd_tbl[] = {
+ 	{PEAK_PCI_VENDOR_ID, PEAK_PCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_CPCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_PCIE104FD_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_MINIPCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_PCIEFD_OEM_ID, PCI_ANY_ID, PCI_ANY_ID,},
++	{PEAK_PCI_VENDOR_ID, PCAN_M2_ID, PCI_ANY_ID, PCI_ANY_ID,},
+ 	{0,}
+ };
+ 
 -- 
 2.15.0
-
