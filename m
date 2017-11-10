@@ -1,63 +1,55 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2017-11-10
-Date: Fri, 10 Nov 2017 14:07:26 +0100
-Message-ID: <20171110130730.6662-1-mkl@pengutronix.de>
+Subject: [PATCH 1/4] can: c_can: don't indicate triple sampling support for D_CAN
+Date: Fri, 10 Nov 2017 14:07:27 +0100
+Message-ID: <20171110130730.6662-2-mkl@pengutronix.de>
+References: <20171110130730.6662-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20171110130730.6662-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, =?UTF-8?q?Richard=20Sch=C3=BCtz?= <rschuetz@uni-koblenz.de>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Richard Schütz <rschuetz@uni-koblenz.de>
 
-this is a pull request for net/master.
+The D_CAN controller doesn't provide a triple sampling mode, so don't set
+the CAN_CTRLMODE_3_SAMPLES flag in ctrlmode_supported. Currently enabling
+triple sampling is a no-op.
 
-The first patch by Richard Schütz for the c_can driver removes the false
-indication to support triple sampling for d_can. Gerhard Bertelsmann's
-patch for the sun4i driver improves the RX overrun handling. The patch
-by Stephane Grosjean for the peak_canfd driver adds the PCI ids for
-various new PCIe/M2 interfaces. Marek Vasut's patch for the ifi driver
-fix transmitter delay calculation.
-
-regards,
-Marc
-
+Signed-off-by: Richard Schütz <rschuetz@uni-koblenz.de>
+Cc: linux-stable <stable@vger.kernel.org> # >= v3.6
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/c_can/c_can_pci.c      | 1 -
+ drivers/net/can/c_can/c_can_platform.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-The following changes since commit 1cb483a5cc84b497afb51a6c5dfb5a38a0b67086:
-
-  rds: ib: Fix NULL pointer dereference in debug code (2017-11-10 14:54:47 +0900)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.14-20171110
-
-for you to fetch changes up to 4f7116757b4bd99e4ef2636c7d957a6d63035d11:
-
-  can: ifi: Fix transmitter delay calculation (2017-11-10 11:35:09 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-4.14-20171110
-
-----------------------------------------------------------------
-Gerhard Bertelsmann (1):
-      can: sun4i: handle overrun in RX FIFO
-
-Marek Vasut (1):
-      can: ifi: Fix transmitter delay calculation
-
-Richard Schütz (1):
-      can: c_can: don't indicate triple sampling support for D_CAN
-
-Stephane Grosjean (1):
-      can: peak: Add support for new PCIe/M2 CAN FD interfaces
-
- drivers/net/can/c_can/c_can_pci.c             |  1 -
- drivers/net/can/c_can/c_can_platform.c        |  1 -
- drivers/net/can/ifi_canfd/ifi_canfd.c         |  6 +++---
- drivers/net/can/peak_canfd/peak_pciefd_main.c | 14 ++++++++++++--
- drivers/net/can/sun4i_can.c                   | 12 ++++++++++--
- 5 files changed, 25 insertions(+), 9 deletions(-)
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index cf7c18947189..d065c0e2d18e 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -178,7 +178,6 @@ static int c_can_pci_probe(struct pci_dev *pdev,
+ 		break;
+ 	case BOSCH_D_CAN:
+ 		priv->regs = reg_map_d_can;
+-		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index 46a746ee80bb..b5145a7f874c 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -320,7 +320,6 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 		break;
+ 	case BOSCH_D_CAN:
+ 		priv->regs = reg_map_d_can;
+-		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+ 		priv->read_reg = c_can_plat_read_reg_aligned_to_16bit;
+ 		priv->write_reg = c_can_plat_write_reg_aligned_to_16bit;
+ 		priv->read_reg32 = d_can_plat_read_reg32;
+-- 
+2.15.0
