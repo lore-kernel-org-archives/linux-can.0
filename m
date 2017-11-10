@@ -1,72 +1,57 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/4] can: peak: Add support for new PCIe/M2 CAN FD interfaces
-Date: Fri, 10 Nov 2017 14:07:29 +0100
-Message-ID: <20171110130730.6662-4-mkl@pengutronix.de>
+Subject: [PATCH 2/4] can: sun4i: handle overrun in RX FIFO
+Date: Fri, 10 Nov 2017 14:07:28 +0100
+Message-ID: <20171110130730.6662-3-mkl@pengutronix.de>
 References: <20171110130730.6662-1-mkl@pengutronix.de>
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20171110130730.6662-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Stephane Grosjean <s.grosjean@peak-system.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Gerhard Bertelsmann <info@gerhard-bertelsmann.de>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-This adds support for the following PEAK-System CAN FD interfaces:
+SUN4Is CAN IP has a 64 byte deep FIFO buffer. If the buffer is not
+drained fast enough (overrun) it's getting mangled. Already received
+frames are dropped - the data can't be restored.
 
-PCAN-cPCIe FD         CAN FD Interface for cPCI Serial (2 or 4 channels)
-PCAN-PCIe/104-Express CAN FD Interface for PCIe/104-Express (1, 2 or 4 ch.)
-PCAN-miniPCIe FD      CAN FD Interface for PCIe Mini (1, 2 or 4 channels)
-PCAN-PCIe FD OEM      CAN FD Interface for PCIe OEM version (1, 2 or 4 ch.)
-PCAN-M.2              CAN FD Interface for M.2 (1 or 2 channels)
-
-Like the PCAN-PCIe FD interface, all of these boards run the same IP Core
-that is able to handle CAN FD (see also http://www.peak-system.com).
-
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/peak_canfd/peak_pciefd_main.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/net/can/sun4i_can.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-index 51c2d182a33a..b4efd711f824 100644
---- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
-+++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-@@ -29,14 +29,19 @@
- #include "peak_canfd_user.h"
- 
- MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
--MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCIe FD family cards");
--MODULE_SUPPORTED_DEVICE("PEAK PCAN PCIe FD CAN cards");
-+MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCIe/M.2 FD family cards");
-+MODULE_SUPPORTED_DEVICE("PEAK PCAN PCIe/M.2 FD CAN cards");
- MODULE_LICENSE("GPL v2");
- 
- #define PCIEFD_DRV_NAME		"peak_pciefd"
- 
- #define PEAK_PCI_VENDOR_ID	0x001c	/* The PCI device and vendor IDs */
- #define PEAK_PCIEFD_ID		0x0013	/* for PCIe slot cards */
-+#define PCAN_CPCIEFD_ID		0x0014	/* for Compact-PCI Serial slot cards */
-+#define PCAN_PCIE104FD_ID	0x0017	/* for PCIe-104 Express slot cards */
-+#define PCAN_MINIPCIEFD_ID      0x0018	/* for mini-PCIe slot cards */
-+#define PCAN_PCIEFD_OEM_ID      0x0019	/* for PCIe slot OEM cards */
-+#define PCAN_M2_ID		0x001a	/* for M2 slot cards */
- 
- /* PEAK PCIe board access description */
- #define PCIEFD_BAR0_SIZE		(64 * 1024)
-@@ -203,6 +208,11 @@ struct pciefd_board {
- /* supported device ids. */
- static const struct pci_device_id peak_pciefd_tbl[] = {
- 	{PEAK_PCI_VENDOR_ID, PEAK_PCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
-+	{PEAK_PCI_VENDOR_ID, PCAN_CPCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
-+	{PEAK_PCI_VENDOR_ID, PCAN_PCIE104FD_ID, PCI_ANY_ID, PCI_ANY_ID,},
-+	{PEAK_PCI_VENDOR_ID, PCAN_MINIPCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
-+	{PEAK_PCI_VENDOR_ID, PCAN_PCIEFD_OEM_ID, PCI_ANY_ID, PCI_ANY_ID,},
-+	{PEAK_PCI_VENDOR_ID, PCAN_M2_ID, PCI_ANY_ID, PCI_ANY_ID,},
- 	{0,}
- };
- 
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index b0c80859f746..1ac2090a1721 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -539,6 +539,13 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
+ 		}
+ 		stats->rx_over_errors++;
+ 		stats->rx_errors++;
++
++		/* reset the CAN IP by entering reset mode
++		 * ignoring timeout error
++		 */
++		set_reset_mode(dev);
++		set_normal_mode(dev);
++
+ 		/* clear bit */
+ 		sun4i_can_write_cmdreg(priv, SUN4I_CMD_CLEAR_OR_FLAG);
+ 	}
+@@ -653,8 +660,9 @@ static irqreturn_t sun4i_can_interrupt(int irq, void *dev_id)
+ 			netif_wake_queue(dev);
+ 			can_led_event(dev, CAN_LED_EVENT_TX);
+ 		}
+-		if (isrc & SUN4I_INT_RBUF_VLD) {
+-			/* receive interrupt */
++		if ((isrc & SUN4I_INT_RBUF_VLD) &&
++		    !(isrc & SUN4I_INT_DATA_OR)) {
++			/* receive interrupt - don't read if overrun occurred */
+ 			while (status & SUN4I_STA_RBUF_RDY) {
+ 				/* RX buffer is not empty */
+ 				sun4i_can_rx(dev);
 -- 
 2.15.0
