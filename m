@@ -1,102 +1,33 @@
-From: Pankaj Bansal <pankaj.bansal@nxp.com>
-Subject: RE: [PATCH 1/2] can: flexcan: Remodel FlexCAN register r/w APIs for
- big endian FlexCAN controllers.
-Date: Fri, 10 Nov 2017 16:32:11 +0000
-Message-ID: <AM0PR0402MB3940DE05B2BA456D0FF54498F1540@AM0PR0402MB3940.eurprd04.prod.outlook.com>
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <a08c34d0-5870-b4b3-f68d-3db33ba3e950@pengutronix.de>
- <AM0PR0402MB3940A39D32C4725DE1B8C426F1540@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <e87441cc-3848-1125-f4f0-02f1a630c36b@pengutronix.de>
- <AM0PR0402MB394051B0FAADBC45AF71439CF1540@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <b27d6e14-c6d7-5c4b-0588-093684cbe57b@pengutronix.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/8] dt-bindings: can: rcar_can: document r8a774[35] can
+ support
+Date: Fri, 10 Nov 2017 15:23:01 -0600
+Message-ID: <20171110212301.jbxti6n5ab5hs7xw@rob-hp-laptop>
+References: <1510067449-17017-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1510067449-17017-2-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-he1eur01on0043.outbound.protection.outlook.com ([104.47.0.43]:15136
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751541AbdKJQcP (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 10 Nov 2017 11:32:15 -0500
-In-Reply-To: <b27d6e14-c6d7-5c4b-0588-093684cbe57b@pengutronix.de>
-Content-Language: en-US
+Received: from mail-ot0-f195.google.com ([74.125.82.195]:49622 "EHLO
+        mail-ot0-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750896AbdKJVXC (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 10 Nov 2017 16:23:02 -0500
+Content-Disposition: inline
+In-Reply-To: <1510067449-17017-2-git-send-email-fabrizio.castro@bp.renesas.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>
 
-SGkgTWFyYywNCg0KVGhhbmtzIGZvciBzaGFyaW5nIHRoZSB2aWRlbyBhbmQgc2xpZGVzLiBJdCB3
-YXMgcmVhbGx5IGhlbHBmdWwuDQpCdXQgSSB3b3VsZCBzdGlsbCBsaWtlIHRvIHNvbHZlIHRoaXMg
-cHJvYmxlbSB1c2luZyBkZXZpY2UgdHJlZSBwcm9wZXJ0eS4NCk15IHJhdGlvbmFsZSBiZWhpbmQg
-aXQgaXMgdGhhdCwgaWYgYSBwbGF0Zm9ybSBkZXNpZ25lciB1c2VzIHNhbWUgSVAgYmxvY2sgd2hv
-c2Ugc3VwcG9ydCBpcyBwcmVzZW50IGlzIGxpbnV4IGtlcm5lbCwgYnV0IHdpdGggZGlmZmVyZW50
-IGVuZGlhbm5lc3MuDQpUaGVuIGhlIHdvdWxkIG5vdCBuZWVkIHRvIGFkZCBoaXMgcGxhdGZvcm0g
-ZGF0YSBpbiBlYWNoIGRyaXZlciB0byBzdXBwb3J0IGhpcyBwbGF0Zm9ybSBpbiBsaW51eC4NCkhl
-IGNhbiBqdXN0IGFkZCBlbmRpYW5uZXNzIHByb3BlcnR5IGluIGRldmljZSB0cmVlIGFuZCBjYW4g
-dXNlIGxhdGVzdCBsaW51eCBrZXJuZWwgcmlnaHQgb2ZmIHRoZSBiYXQuDQpUaGlzIGlzIGFsc28g
-bWVudGlvbmVkIGluICJEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVnbWFwL3Jl
-Z21hcC50eHQiLg0KDQpSZWdtYXAgZGVmYXVsdHMgdG8gbGl0dGxlLWVuZGlhbiByZWdpc3RlciBh
-Y2Nlc3Mgb24gTU1JTyBiYXNlZA0KZGV2aWNlcywgdGhpcyBpcyBieSBmYXIgdGhlIG1vc3QgY29t
-bW9uIHNldHRpbmcuIE9uIENQVQ0KYXJjaGl0ZWN0dXJlcyB0aGF0IHR5cGljYWxseSBydW4gYmln
-LWVuZGlhbiBvcGVyYXRpbmcgc3lzdGVtcw0KKGUuZy4gUG93ZXJQQyksIHJlZ2lzdGVycyBjYW4g
-YmUgZGVmaW5lZCBhcyBiaWctZW5kaWFuIGFuZCBtdXN0DQpiZSBtYXJrZWQgdGhhdCB3YXkgaW4g
-dGhlIGRldmljZXRyZWUuDQoNClRoaXMgcnVsZSB3YXMgYXBwYXJlbnRseSBub3QgZm9sbG93ZWQg
-aW4gUDEwMTBSREIgZmxleGNhbiBub2RlLg0KDQpUbyBzb2x2ZSB0aGlzIHByb2JsZW0sIEkgc3Vn
-Z2VzdCB0aGF0IHdlIGRlZmluZSAyIG9wdGlvbmFsIGRldmljZSB0cmVlIHByb3BlcnRpZXMgZm9y
-IGZsZXhjYW4uDQpsaXR0bGUtZW5kaWFuIDogZm9yIHBvd2VycGMgYXJjaGl0ZWN0dXJlLCBpZiB0
-aGlzIHByb3BlcnR5IGlzIGRlZmluZWQgdGhlbiBjb250cm9sbGVyIGlzIGxpdHRsZSBlbmRpYW4g
-b3RoZXJ3aXNlIGJpZyBlbmRpYW4gKGRlZmF1bHQpDQpiaWctZW5kaWFuIDogZm9yIG90aGVyIGFy
-Y2hpdGVjdHVyZXMsIGlmIHRoaXMgcHJvcGVydHkgaXMgZGVmaW5lZCB0aGVuIGNvbnRyb2xsZXIg
-aXMgYmlnIGVuZGlhbiBvdGhlcndpc2UgbGl0dGxlIGVuZGlhbiAoZGVmYXVsdCkNCg0KQWx0aG91
-Z2ggdGhlIGNvbnRyb2xsZXIgZHJpdmVycyBzaG91bGQgYmUgYXJjaGl0ZWN0dXJlIGluZGVwZW5k
-ZW50LCBidXQgYXBwYXJlbnRseSB0aGVyZSBpcyBubyB3YXkgYXJvdW5kIGl0IGluIGZsZXhjYW4u
-DQoNCmxldCBtZSBrbm93IHlvdXIgdGhvdWdodHMuDQoNClRoYW5rcyAmIFJlZ2FyZHMsDQpQYW5r
-YWogQmFuc2FsDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBNYXJjIEtsZWlu
-ZS1CdWRkZSBbbWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0gDQpTZW50OiBGcmlkYXksIE5vdmVt
-YmVyIDEwLCAyMDE3IDY6MTkgUE0NClRvOiBQYW5rYWogQmFuc2FsIDxwYW5rYWouYmFuc2FsQG54
-cC5jb20+OyB3Z0BncmFuZGVnZ2VyLmNvbTsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KQ2M6
-IFZhcnVuIFNldGhpIDxWLlNldGhpQG54cC5jb20+OyBQb29uYW0gQWdncndhbCA8cG9vbmFtLmFn
-Z3J3YWxAbnhwLmNvbT47IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSZTog
-W1BBVENIIDEvMl0gY2FuOiBmbGV4Y2FuOiBSZW1vZGVsIEZsZXhDQU4gcmVnaXN0ZXIgci93IEFQ
-SXMgZm9yIGJpZyBlbmRpYW4gRmxleENBTiBjb250cm9sbGVycy4NCg0KT24gMTEvMTAvMjAxNyAw
-MTozNSBQTSwgUGFua2FqIEJhbnNhbCB3cm90ZToNCj4+PiAzLiBSZWdhcmRpbmcgYmFja3dhcmQg
-Y29tcGF0aWJpbGl0eSB3aXRoIFBvd2VyUEMsIEkgc2VlIHRoYXQgdGhlcmUgaXMgb25seSBvbmUg
-cGxhdGZvcm0gaW4gUG93ZXJQQyBhcmNoaXRlY3R1cmUgdGhhdCBpcyB1c2luZyBmbGV4Y2FuLg0K
-Pj4+ICAgICBUaGVyZSBpcyBvbmx5IG9uZSBwbGF0Zm9ybSBpbiAiYXJjaC9wb3dlcnBjL2Jvb3Qv
-ZHRzLyIgaGF2aW5nIGZsZXhjYW4gbm9kZS4gcDEwMTBzaS1wb3N0LmR0c2kNCj4+PiAgICAgSSBo
-YXZlIGFkZGVkIHRoZSBiaWctZW5kaWFuIHByb3BlcnR5IGluIHRoYXQgcGxhdGZvcm0gYW5kIGhh
-dmUgdGVzdGVkIGl0IG9uIFAxMDEwIHBsYXRmb3JtIGFmdGVyIGJhY2twb3J0aW5nIHRoZSBwYXRj
-aCB0byBGcmVlc2NhbGUgU0RLIDEuNCBsaW51eC4NCj4+PiAgICAgSSBoYXZlIHNlbnQgdGhlIHBh
-dGNoIGZvciB0aGlzLiBTZWUgIltQQVRDSCAyLzNdIHBvd2VycGM6IGR0czogUDEwMTA6IEFkZCBl
-bmRpYW5uZXNzIHByb3BlcnR5IHRvIGZsZXhjYW4gbm9kZSINCj4+PiAgICAgSSBiZWxpZXZlIHRo
-ZXNlIGNoYW5nZXMgY2FuIGJlIGFjY2VwdGVkIGZvciBib3RoIHBvd2VycGMgYW5kIGFybSBhbmQg
-b3RoZXIgYXJjaGl0ZWN0dXJlcyB0aGF0IHVzZSBmbGV4Y2FuLg0KPj4NCj4+IE5vLCB0aGlzIGlz
-IG5vdCBhY2NlcHRhYmxlLiBZb3UgYnJlYWsgdGhlIGRldmljZSB0cmVlLiBQbGVhc2UgYWRkIHRo
-ZSBsZSwgYmUgaW5mb3JtYXRpb24gdG8gdGhlIGRldnR5cGUgZGF0YS4NCj4gDQo+IEkgZG9uJ3Qg
-dW5kZXJzdGFuZCBob3cgdGhpcyBicmVha3MgZGV2aWNlIHRyZWU/IGNhbiB5b3UgcGxlYXNlIGVs
-YWJvcmF0ZT8gVGhpcyBtZXRob2QgaXMgYWxyZWFkeSBiZWluZyB1c2VkIGluIG90aGVyIHNwZWNp
-ZmljYXRpb25zLg0KDQpCb290IGEgbmV3IGtlcm5lbCB3aXRoIGFuIG9sZCB0cmVlIG9uIGEgUFBD
-IGJvYXJkIC0+IGZsZXhjYW4gd2lsbCBub3Qgd29yay4NCg0KU2VlIHRoaXMgdGFsayBmb3IgbW9y
-ZSBpbmZvcm1hdGlvbiBmb3Igc3RhYmxlIGRldmljZSB0cmVlIEFCSToNCg0KaHR0cHM6Ly9lbGlu
-dXgub3JnL2ltYWdlcy8wLzBlL09TRUxBUy5QcmVzZW50YXRpb24tRUxDRTIwMTctRFQucGRmDQpo
-dHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PTZpZ3VLU0pKZnhvDQoNCj4gWW91IGNhbiBy
-ZWZlciAiRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi91c2ItZWhjaS50eHQi
-IG9yIA0KPiAiRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXV4LXJl
-Zy50eHQiIE9yIA0KPiAiRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3JlZ21hcC9y
-ZWdtYXAudHh0Ii4NCg0KPiBJbiBteSBvcGluaW9uLCBrZWVwaW5nIHRoaXMgaW5mbyBpbiBkZXZ0
-eXBlIGRhdGEgaXMgbm90IGdvb2QgaWRlYS4NCj4gRS5nLiBzYXkgdHdvIHBsYXRmb3JtcyB3aGlj
-aCBoYXZlIHNhbWUgRmxleENBTiBoYXJkd2FyZSByZXZpc2lvbiwgd2lsbCANCj4gaGF2ZSBzYW1l
-IHF1aXJrcy4gQlVUIHRoZXNlIHR3byBwbGF0Zm9ybXMgaW1wbGVtZW50IEZsZXhDQU4gaW4gbGUg
-YW5kIA0KPiBiZSBmYXNoaW9uIHJlc3BlY3RpdmVseS4NCg0KVGhlbiBpdCdzIHR3byBkaWZmZXJl
-bnQgcGxhdGZvcm1zLiBTaW1wbHkgYWRkIGFub3RoZXIgY29tcGF0aWJsZSB0byB0aGUgZHJpdmVy
-Lg0KDQo+IFdpdGggY3VycmVudCBGbGV4Q0FOIGRyaXZlciwgdGhlc2UgdHdvIHBsYXRmb3JtcyBj
-YW4gaGF2ZSBzYW1lIGRldnR5cGUgDQo+IGRhdGEuIEFuZCB3ZSBuZWVkIG5vdCB0byBjaGFuZ2Ug
-ZmxleGNhbi5jIGlmIHdlIHdhbnQgdG8gYWRkIHN1cHBvcnQgDQo+IGZvciBhIHNlY29uZCBwbGF0
-Zm9ybS4gV2UgY2FuIGp1c3QgYWRkIGRldmljZSB0cmVlIGZvciB0aGF0IHBsYXRmb3JtIA0KPiAo
-d2hpY2ggd291bGQgYmUgbmVlZGVkIGFueXdheSksIGFuZCBpdCBjYW4gd29yay4gV2UgY2FuIG1l
-bnRpb24gDQo+IGVuZGlhbm5lc3MgaW4gZGV2aWNlIHRyZWUuDQoNCk1hcmMNCg0KLS0gDQpQZW5n
-dXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAg
-ICAgfA0KSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEt
-MjgyNi05MjQgICAgIHwNClZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDog
-ICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQpBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4
-NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
+On Tue, Nov 07, 2017 at 03:10:42PM +0000, Fabrizio Castro wrote:
+> Document "renesas,can-r8a7743" and "renesas,can-r8a7745" compatible
+> strings. Since the fallback compatible string ("renesas,rcar-gen2-can")
+> activates the right code in the driver, no driver change is needed.
+> 
+> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das@bp.renesas.com>
+> ---
+>  Documentation/devicetree/bindings/net/can/rcar_can.txt | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+
+Acked-by: Rob Herring <robh@kernel.org>
