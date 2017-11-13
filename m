@@ -1,28 +1,26 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2017-11-10
-Date: Sat, 11 Nov 2017 21:52:48 +0900 (KST)
-Message-ID: <20171111.215248.1168618579941938559.davem@davemloft.net>
-References: <20171110130730.6662-1-mkl@pengutronix.de>
+From: Amos Kalonzo <daniel.basha.tg@gmail.com>
+Subject: Re:
+Date: Mon, 13 Nov 2017 15:55:00 +0100
+Message-ID: <CAKUwMNDfC9uOG95U5f-i17isa+BX5i3BsL5ROvpZbHGNaz4Q8w__28714.348251424$1510584916$gmane$org@mail.gmail.com>
+Reply-To: info@acalonzo.com
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20171110130730.6662-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-yw0-f194.google.com ([209.85.161.194]:45347 "EHLO
+        mail-yw0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753080AbdKMOzC (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Nov 2017 09:55:02 -0500
+Received: by mail-yw0-f194.google.com with SMTP id p74so3221753ywe.2
+        for <linux-can@vger.kernel.org>; Mon, 13 Nov 2017 06:55:01 -0800 (PST)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri, 10 Nov 2017 14:07:26 +0100
+Attn:
 
-> this is a pull request for net/master.
-> 
-> The first patch by Richard Schütz for the c_can driver removes the false
-> indication to support triple sampling for d_can. Gerhard Bertelsmann's
-> patch for the sun4i driver improves the RX overrun handling. The patch
-> by Stephane Grosjean for the peak_canfd driver adds the PCI ids for
-> various new PCIe/M2 interfaces. Marek Vasut's patch for the ifi driver
-> fix transmitter delay calculation.
+I am wondering why You haven't respond to my email for some days now.
+reference to my client's contract balance payment of (11.7M,USD)
+Kindly get back to me for more details.
 
-Pulled, thanks Marc.
+Best Regards
+
+Amos Kalonzo
