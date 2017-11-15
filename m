@@ -1,55 +1,50 @@
-From: " M,Shakour Rosarita" <hassanamira04@gmail.com>
-Subject: Hello Dear...
-Date: Wed, 15 Nov 2017 11:33:20 +0000
-Message-ID: <CADmkupha_3r2Y8xr4fgvwjRQCs5Nhk1joSVedw0g_m_15Usnxg__17038.8366714635$1510745611$gmane$org@mail.gmail.com>
-Reply-To: mshakourrosarita22@gmail.com
+From: Jan Glauber <jan.glauber-M3mlKVOIwJVv6pq1l3V1OdBPR1lH4CV8@public.gmane.org>
+Subject: Re: MCP251x SPI CAN controller on Cavium ThunderX
+Date: Wed, 15 Nov 2017 13:07:54 +0100
+Message-ID: <20171115120754.GC3011@hc>
+References: <CAJ+vNU3VK=NPKW+119t4MT7w5xs=FS2HWJTqbFb-HSeJhCvwWw@mail.gmail.com>
+ <20171114120207.xbee2cgsai4qka46@sirena.org.uk>
+ <bfa971bb-1217-ed86-d1d8-e353ecc506aa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qt0-f196.google.com ([209.85.216.196]:52700 "EHLO
-        mail-qt0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932294AbdKOLdV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 15 Nov 2017 06:33:21 -0500
-Received: by mail-qt0-f196.google.com with SMTP id 31so33516629qtz.9
-        for <linux-can@vger.kernel.org>; Wed, 15 Nov 2017 03:33:21 -0800 (PST)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <bfa971bb-1217-ed86-d1d8-e353ecc506aa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, linux-can <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-Hello Dear...
+On Wed, Nov 15, 2017 at 11:54:20AM +0100, Marc Kleine-Budde wrote:
+> On 11/14/2017 01:02 PM, Mark Brown wrote:
+> > On Mon, Nov 13, 2017 at 01:17:42PM -0800, Tim Harvey wrote:
+> > 
+> >> When a register is read from the mcp251x driver the
+> >> octeon_spi_do_transfer() gets a spi_message with a single spi_xfer of
+> >> len=3, a tx_buf, and an rx_buf which I believe is supposed to shift
+> >> out 3 bytes out MOSI and shift in 3 bytes from MISO where the last
+> >> byte shifted in would be the response.
+> > 
+> > No, that will simultaneously transmit and recieve three bytes.
+> 
+> That's what the driver supposed to do.
+> 
+> > If you want to transmit two bytes and then recieve one byte you need
+> > two xfers, one with a len of 2 and a tx_buf, the other with a len of
+> > 1 and a rx_buf.
+> To read a register (mcp251x_read_reg()) the mcp251x does a 3 byte full
+> duplex transfer. The first byte send is the command (read register) the
+> second byte the register number the third byte is a dummy. The first 2
+> bytes received are ignored the 3rd byte is the register contents.
 
-I know that this message will come to you as a surprise. I hoped that
-you will not expose or betray this trust and confident that I am about
-to repose on you, my name is M, Shakour Rosarita. I am 19 years old
-Girl, female, from Tartu Syria, (never married) 61 kg, white in
-complexion, and I am currently living in the refugee camp here in
-Abidjan Ivory Coast, My late beloved father M,Shakour Hassin was a
-renowned businessman and owner of Natour Petrol Station in Syria, he
-was killed in a stampede riot in Tartu, Syria.
-When I got the news about my parents. I fled to a nearby country
-Jordan before I joined a ferry to Africa and came to Abidjan capital
-city Ivory Coast West Africa find safety here.
-I came in 2015 to Abidjan and I now live in refugee camps here as
-refugees are allowed freely to enter here without, My late father
-deposited (US$6.200.000.00m) My late father kept the money at the bank
-of Africa, I want you to help me transfer the money to your hand so
-that you will help me bring me into your country for my continue
-education.
+To support this full duplex transfer the Cavium SPI controller needs
+to know the receive lenght before setting up the transaction.
 
-I sent my pictures here for you to see. Who I am seriously looking for
-a good-person in my life, so I want to hear from you soon and learn
-more about you.
+spi_transfer only includes the total length, so I don't see how this
+should work.
 
-I am an open-minded and friendly girl to share a good time with you
-and have fun and enjoy on the go, bird watching, the rest of our
-lives. My Hobbies, tourism books, dance, music, soccer, tennis,
-swimming and cinema.
-I would just think about you, including your dose and doesn=E2=80=99t .I
-believe we will do well together, and live like one family.
-Thank you and God bless you, for you in your promise to help me here,
-looking forward to your reply by the grace of God and have a good day.
-I hope you send me your photos as well? I await your next reply in
-faith please reply through my private email at
-(mshakourrosarita22@gmail.com):
-Thanks.
-Ms Rosarita
+--Jan
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
