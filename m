@@ -1,94 +1,112 @@
-From: Pankaj Bansal <pankaj.bansal@nxp.com>
-Subject: RE: [PATCH v2 2/2] can: flexcan: adding platform specific details for
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
  LS1021A
-Date: Thu, 16 Nov 2017 05:34:21 +0000
-Message-ID: <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+Date: Thu, 16 Nov 2017 08:05:31 +0100
+Message-ID: <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
 References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
  <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
  <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
  <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
+ <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ve1eur01on0045.outbound.protection.outlook.com ([104.47.1.45]:2155
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1758484AbdKPFeZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 16 Nov 2017 00:34:25 -0500
-In-Reply-To: <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
-Content-Language: en-US
+Received: from mailproxy03.manitu.net ([217.11.48.67]:44736 "EHLO
+        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1756730AbdKPHFd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Nov 2017 02:05:33 -0500
+In-Reply-To: <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Yi.Zhu5@cn.bosch.com" <Yi.Zhu5@cn.bosch.com>
+To: Pankaj Bansal <pankaj.bansal@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Yi.Zhu5@cn.bosch.com" <Yi.Zhu5@cn.bosch.com>
 Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyYyBLbGVpbmUtQnVk
-ZGUgW21haWx0bzpta2xAcGVuZ3V0cm9uaXguZGVdDQo+IFNlbnQ6IFR1ZXNkYXksIE5vdmVtYmVy
-IDE0LCAyMDE3IDY6MjkgUE0NCj4gVG86IFBhbmthaiBCYW5zYWwgPHBhbmthai5iYW5zYWxAbnhw
-LmNvbT47IHdnQGdyYW5kZWdnZXIuY29tOyBsaW51eC0NCj4gY2FuQHZnZXIua2VybmVsLm9yZw0K
-PiBDYzogVmFydW4gU2V0aGkgPFYuU2V0aGlAbnhwLmNvbT47IFBvb25hbSBBZ2dyd2FsDQo+IDxw
-b29uYW0uYWdncndhbEBueHAuY29tPjsgQmh1cGVzaCBTaGFybWENCj4gPGJodXBlc2guc2hhcm1h
-QGZyZWVzY2FsZS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIgMi8yXSBjYW46IGZsZXhj
-YW46IGFkZGluZyBwbGF0Zm9ybSBzcGVjaWZpYyBkZXRhaWxzIGZvcg0KPiBMUzEwMjFBDQo+IA0K
-PiBPbiAxMS8xNC8yMDE3IDEyOjU2IFBNLCBQYW5rYWogQmFuc2FsIHdyb3RlOg0KPiA+IFRoaXMg
-cGF0Y2ggYWRkcyBwbGF0Zm9ybSBzcGVjaWZpYyBkZXRhaWxzIGZvciBOWFAgU09DIExTMTAyMUEg
-dG8gdGhlDQo+ID4gZmxleGNhbiBkcml2ZXIgY29kZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
-IFBhbmthaiBCYW5zYWwgPHBhbmthai5iYW5zYWxAbnhwLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBCaHVwZXNoIFNoYXJtYSA8Ymh1cGVzaC5zaGFybWFAZnJlZXNjYWxlLmNvbT4NCj4gPiBSZXZp
-ZXdlZC1ieTogWmhlbmd4aW9uZyBKaW4gPEphc29uLkppbkBmcmVlc2NhbGUuY29tPg0KPiA+IFJl
-dmlld2VkLWJ5OiBQb29uYW0gQWdncndhbCA8cG9vbmFtLmFnZ3J3YWxAbnhwLmNvbT4NCj4gPiAt
-LS0NCj4gPiBDaGFuZ2VzIGluIHYyOg0KPiA+ICAgLSBObyBjaGFuZ2UuDQo+ID4NCj4gPiAgZHJp
-dmVycy9uZXQvY2FuL2ZsZXhjYW4uYyB8IDcgKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
-NyBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL2Zs
-ZXhjYW4uYyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiBpbmRleCAxMDBiNDUxLi5m
-YTJkNGM5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiAr
-KysgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4gQEAgLTMwNCw2ICszMDQsMTEgQEAg
-c3RhdGljIGNvbnN0IHN0cnVjdCBmbGV4Y2FuX2RldnR5cGVfZGF0YQ0KPiBmc2xfdmY2MTBfZGV2
-dHlwZV9kYXRhID0gew0KPiA+ICAJCUZMRVhDQU5fUVVJUktfRElTQUJMRV9NRUNSIHwNCj4gRkxF
-WENBTl9RVUlSS19VU0VfT0ZGX1RJTUVTVEFNUCwgIH07DQo+ID4NCj4gPiArLyogTFMxMDIxQS1S
-ZXYyIGhhcyBmdW5jdGlvbmFsIFJYLUZJRk8gbW9kZSAgKi8NCj4gDQo+IEhvdyBiaWcgaXMgdGhl
-IFJYLUZJRk8/IElmIHRoZSBub3JtYWwgbWFpbGJveGVzIGNhbiByZWNlaXZlIFJUUiBtZXNzYWdl
-cywNCj4gd2UgZGVmaW5pdGVseSB3YW50IHRvIHVzZSBGTEVYQ0FOX1FVSVJLX1VTRV9PRkZfVElN
-RVNUQU1QLiBBcyB5b3UNCj4gY2FuIGJ1ZmZlciA+IDYwIENBTiBmcmFtZXMgY29tcGFyZWQgdG8g
-b25seSA2IGluIEZJRk8gbW9kZS4NCj4gDQoNClRoZSBGSUZPIGluIExTMTAyMUEgaXMgNiBmcmFt
-ZXMuDQpJIHNhdyB0aGlzIHF1aXJrLiBCYXNpY2FsbHkgd2UgYXJlIGNyZWF0aW5nIGEgRklGTyBp
-biBzb2Z0d2FyZSB3aGljaCBpcyBzb3J0ZWQgYmFzZWQNCm9uIHRoZSByZWNlaXZlIHRpbWUgc3Rh
-bXAgdmFsdWUuIElNTyBMUzEwMjFBIHNob3VsZCBiZSBhYmxlIHRvIHN1cHBvcnQgdGhhdC4NCkJV
-VCBJIGhhdmUgbm90IHRlc3RlZCB0aGlzIHF1aXJrIHlldC4gUmlnaHQgbm93IEkgd29uJ3QgYmUg
-YWJsZSB0byB0ZXN0IHRoaXMgb24gTFMxMDIxQS4NCklmIHlvdSBjYW4gYWNjZXB0IHRoaXMgcGxh
-dGZvcm0gd2l0aCBGSUZPIG1vZGUgbm93LCB0aGVuIGxhdGVyIG9uIEkgY2FuIGFkZCB0aGlzIHF1
-aXJrIGFmdGVyIHRlc3RpbmcuDQoNCj4gUGxlYXNlIGFkZCB5b3VyIElQIGNvcmUgdG8gdGhlICJG
-TEVYQ0FOIGhhcmR3YXJlIGZlYXR1cmUgZmxhZ3MiIHRhYmxlIFsxXSBpbg0KPiB0aGUgZHJpdmVy
-LiBBbHNvIHBsZWFzZSB0ZXN0IHRoZSB0cmFuc2l0aW9uIGludGVycnVwdHMgZm9yIGNoYW5nZXMg
-aW4gdGhlIENBTg0KPiBlcnJvciBzdGF0ZSwgc2VlIHRoZSBjb21taXRzIG9mIFpIVSBZaQ0KPiAo
-U1QtRklSL0VORzEtWmh1KSA8WWkuWmh1NUBjbi5ib3NjaC5jb20+IG9uIHRoZSBkcml2ZXIuIFsy
-XQ0KPiANCg0KSSBkaWQgbm90IHVuZGVyc3RhbmQgdGhpcyBxdWlyayAoRkxFWENBTl9RVUlSS19C
-Uk9LRU5fUEVSUl9TVEFURSkuDQpXaGF0IGRvZXMgdGhpcyBxdWlyayBkbyA/IGhvdyBkbyBJIGNo
-ZWNrIGlmIG15IElQIHN1cHBvcnRzIGl0IG9yIG5vdCA/DQpIb3cgZG8gSSB0ZXN0IHRoaXMgPw0K
-DQpDYW4geW91IHBsZWFzZSBoZWxwIG1lIHRvIHVuZGVyc3RhbmQgPw0KDQo+ID4gK3N0YXRpYyBj
-b25zdCBzdHJ1Y3QgZmxleGNhbl9kZXZ0eXBlX2RhdGEgZnNsX2xzMTAyMWFfcjJfZGV2dHlwZV9k
-YXRhID0gew0KPiA+ICsJLnF1aXJrcyA9IEZMRVhDQU5fUVVJUktfRElTQUJMRV9SWEZHIHwNCj4g
-RkxFWENBTl9RVUlSS19ESVNBQkxFX01FQ1IsDQo+ID4gK307DQo+ID4gKw0KPiA+ICBzdGF0aWMg
-Y29uc3Qgc3RydWN0IGNhbl9iaXR0aW1pbmdfY29uc3QgZmxleGNhbl9iaXR0aW1pbmdfY29uc3Qg
-PSB7DQo+ID4gIAkubmFtZSA9IERSVl9OQU1FLA0KPiA+ICAJLnRzZWcxX21pbiA9IDQsDQo+ID4g
-QEAgLTEyNDUsNiArMTI1MCw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkDQo+
-IGZsZXhjYW5fb2ZfbWF0Y2hbXSA9IHsNCj4gPiAgCXsgLmNvbXBhdGlibGUgPSAiZnNsLGlteDI4
-LWZsZXhjYW4iLCAuZGF0YSA9DQo+ICZmc2xfaW14MjhfZGV2dHlwZV9kYXRhLCB9LA0KPiA+ICAJ
-eyAuY29tcGF0aWJsZSA9ICJmc2wscDEwMTAtZmxleGNhbiIsIC5kYXRhID0NCj4gJmZzbF9wMTAx
-MF9kZXZ0eXBlX2RhdGEsIH0sDQo+ID4gIAl7IC5jb21wYXRpYmxlID0gImZzbCx2ZjYxMC1mbGV4
-Y2FuIiwgLmRhdGEgPQ0KPiA+ICZmc2xfdmY2MTBfZGV2dHlwZV9kYXRhLCB9LA0KPiA+ICsJeyAu
-Y29tcGF0aWJsZSA9ICJmc2wsbHMxMDIxYXIyLWZsZXhjYW4iLA0KPiA+ICsJICAuZGF0YSA9ICZm
-c2xfbHMxMDIxYV9yMl9kZXZ0eXBlX2RhdGEsIH0sDQo+IA0KPiBQbGVhc2Uga2VlcCBpbiBpbiBv
-bmUgbGluZSwgZXZlbiBpZiBpdCdzIG1vcmUgdGhhbiA4MCBjaGFycy4NCj4gDQo+ID4gIAl7IC8q
-IHNlbnRpbmVsICovIH0sDQo+ID4gIH07DQo+ID4gIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIGZs
-ZXhjYW5fb2ZfbWF0Y2gpOw0KPiA+DQo+IA0KPiBNYXJjDQo+IA0KPiBbMV0NCj4gaHR0cHM6Ly9n
-aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0
-L3RyZWUvZHJpdmVyDQo+IHMvbmV0L2Nhbi9mbGV4Y2FuLmMjbjE4Mg0KPiBbMl0NCj4gaHR0cHM6
-Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXgu
-Z2l0L2xvZy9kcml2ZXJzDQo+IC9uZXQvY2FuL2ZsZXhjYW4uYw0KPiANCj4gLS0NCj4gUGVuZ3V0
-cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAg
-IHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEt
-MjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4
-OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJB
-IDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
+
+
+Am 16.11.2017 um 06:34 schrieb Pankaj Bansal:
+> 
+> 
+>> -----Original Message-----
+>> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
+>> Sent: Tuesday, November 14, 2017 6:29 PM
+>> To: Pankaj Bansal <pankaj.bansal@nxp.com>; wg@grandegger.com; linux-
+>> can@vger.kernel.org
+>> Cc: Varun Sethi <V.Sethi@nxp.com>; Poonam Aggrwal
+>> <poonam.aggrwal@nxp.com>; Bhupesh Sharma
+>> <bhupesh.sharma@freescale.com>
+>> Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
+>> LS1021A
+>>
+>> On 11/14/2017 12:56 PM, Pankaj Bansal wrote:
+>>> This patch adds platform specific details for NXP SOC LS1021A to the
+>>> flexcan driver code.
+>>>
+>>> Signed-off-by: Pankaj Bansal <pankaj.bansal@nxp.com>
+>>> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
+>>> Reviewed-by: Zhengxiong Jin <Jason.Jin@freescale.com>
+>>> Reviewed-by: Poonam Aggrwal <poonam.aggrwal@nxp.com>
+>>> ---
+>>> Changes in v2:
+>>>    - No change.
+>>>
+>>>   drivers/net/can/flexcan.c | 7 +++++++
+>>>   1 file changed, 7 insertions(+)
+>>>
+>>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+>>> index 100b451..fa2d4c9 100644
+>>> --- a/drivers/net/can/flexcan.c
+>>> +++ b/drivers/net/can/flexcan.c
+>>> @@ -304,6 +304,11 @@ static const struct flexcan_devtype_data
+>> fsl_vf610_devtype_data = {
+>>>   		FLEXCAN_QUIRK_DISABLE_MECR |
+>> FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,  };
+>>>
+>>> +/* LS1021A-Rev2 has functional RX-FIFO mode  */
+>>
+>> How big is the RX-FIFO? If the normal mailboxes can receive RTR messages,
+>> we definitely want to use FLEXCAN_QUIRK_USE_OFF_TIMESTAMP. As you
+>> can buffer > 60 CAN frames compared to only 6 in FIFO mode.
+>>
+> 
+> The FIFO in LS1021A is 6 frames.
+> I saw this quirk. Basically we are creating a FIFO in software which is sorted based
+> on the receive time stamp value. IMO LS1021A should be able to support that.
+> BUT I have not tested this quirk yet. Right now I won't be able to test this on LS1021A.
+> If you can accept this platform with FIFO mode now, then later on I can add this quirk after testing.
+> 
+>> Please add your IP core to the "FLEXCAN hardware feature flags" table [1] in
+>> the driver. Also please test the transition interrupts for changes in the CAN
+>> error state, see the commits of ZHU Yi
+>> (ST-FIR/ENG1-Zhu) <Yi.Zhu5@cn.bosch.com> on the driver. [2]
+>>
+> 
+> I did not understand this quirk (FLEXCAN_QUIRK_BROKEN_PERR_STATE).
+> What does this quirk do ? how do I check if my IP supports it or not ?
+> How do I test this ?
+> 
+> Can you please help me to understand ?
+
+It's about reporting CAN error state changes "error-active" -> "warning" 
+-> "error-passive" -> "bus-off" and back. The quirk might be required to 
+trigger the state-change to "error-passive".
+
+You can test such state changes by doing:
+
+1. Send messages without CAN cable connected
+
+2. Short-circuit the CAN low and high signals
+
+Then connect the cable and remove the short-circuit and send messages 
+using "cansend" or "cangen". Please also use "ip set link can0 ... 
+restart-ms 100" to recover from bus-off automatically.
+
+While testing watch the error messages with the command below and report 
+the results to the list.
+
+# candump -td -e any,0:0,#FFFFFFFF
+
+Thanks,
+
+Wolfgang.
