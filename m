@@ -1,112 +1,76 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
+From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Subject: RE: [PATCH v2 2/2] can: flexcan: adding platform specific details for
  LS1021A
-Date: Thu, 16 Nov 2017 08:05:31 +0100
-Message-ID: <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
+Date: Thu, 16 Nov 2017 07:23:00 +0000
+Message-ID: <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
 References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
  <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
  <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
  <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
  <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy03.manitu.net ([217.11.48.67]:44736 "EHLO
-        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756730AbdKPHFd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Nov 2017 02:05:33 -0500
-In-Reply-To: <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
-Content-Language: en-GB
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:56056 "EHLO
+        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1757173AbdKPHXF (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Nov 2017 02:23:05 -0500
+In-Reply-To: <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pankaj Bansal <pankaj.bansal@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "Yi.Zhu5@cn.bosch.com" <Yi.Zhu5@cn.bosch.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Pankaj Bansal <pankaj.bansal@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
 
-
-
-Am 16.11.2017 um 06:34 schrieb Pankaj Bansal:
-> 
-> 
->> -----Original Message-----
->> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
->> Sent: Tuesday, November 14, 2017 6:29 PM
->> To: Pankaj Bansal <pankaj.bansal@nxp.com>; wg@grandegger.com; linux-
->> can@vger.kernel.org
->> Cc: Varun Sethi <V.Sethi@nxp.com>; Poonam Aggrwal
->> <poonam.aggrwal@nxp.com>; Bhupesh Sharma
->> <bhupesh.sharma@freescale.com>
->> Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
->> LS1021A
->>
->> On 11/14/2017 12:56 PM, Pankaj Bansal wrote:
->>> This patch adds platform specific details for NXP SOC LS1021A to the
->>> flexcan driver code.
->>>
->>> Signed-off-by: Pankaj Bansal <pankaj.bansal@nxp.com>
->>> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
->>> Reviewed-by: Zhengxiong Jin <Jason.Jin@freescale.com>
->>> Reviewed-by: Poonam Aggrwal <poonam.aggrwal@nxp.com>
->>> ---
->>> Changes in v2:
->>>    - No change.
->>>
->>>   drivers/net/can/flexcan.c | 7 +++++++
->>>   1 file changed, 7 insertions(+)
->>>
->>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
->>> index 100b451..fa2d4c9 100644
->>> --- a/drivers/net/can/flexcan.c
->>> +++ b/drivers/net/can/flexcan.c
->>> @@ -304,6 +304,11 @@ static const struct flexcan_devtype_data
->> fsl_vf610_devtype_data = {
->>>   		FLEXCAN_QUIRK_DISABLE_MECR |
->> FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,  };
->>>
->>> +/* LS1021A-Rev2 has functional RX-FIFO mode  */
->>
->> How big is the RX-FIFO? If the normal mailboxes can receive RTR messages,
->> we definitely want to use FLEXCAN_QUIRK_USE_OFF_TIMESTAMP. As you
->> can buffer > 60 CAN frames compared to only 6 in FIFO mode.
->>
-> 
-> The FIFO in LS1021A is 6 frames.
-> I saw this quirk. Basically we are creating a FIFO in software which is sorted based
-> on the receive time stamp value. IMO LS1021A should be able to support that.
-> BUT I have not tested this quirk yet. Right now I won't be able to test this on LS1021A.
-> If you can accept this platform with FIFO mode now, then later on I can add this quirk after testing.
-> 
->> Please add your IP core to the "FLEXCAN hardware feature flags" table [1] in
->> the driver. Also please test the transition interrupts for changes in the CAN
->> error state, see the commits of ZHU Yi
->> (ST-FIR/ENG1-Zhu) <Yi.Zhu5@cn.bosch.com> on the driver. [2]
->>
-> 
-> I did not understand this quirk (FLEXCAN_QUIRK_BROKEN_PERR_STATE).
-> What does this quirk do ? how do I check if my IP supports it or not ?
-> How do I test this ?
-> 
-> Can you please help me to understand ?
-
-It's about reporting CAN error state changes "error-active" -> "warning" 
--> "error-passive" -> "bus-off" and back. The quirk might be required to 
-trigger the state-change to "error-passive".
-
-You can test such state changes by doing:
-
-1. Send messages without CAN cable connected
-
-2. Short-circuit the CAN low and high signals
-
-Then connect the cable and remove the short-circuit and send messages 
-using "cansend" or "cangen". Please also use "ip set link can0 ... 
-restart-ms 100" to recover from bus-off automatically.
-
-While testing watch the error messages with the command below and report 
-the results to the list.
-
-# candump -td -e any,0:0,#FFFFFFFF
-
-Thanks,
-
-Wolfgang.
+SGVsbG8gUGFua2FqLA0KDQo+RnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndnQGdy
+YW5kZWdnZXIuY29tXQ0KPlNlbnQ6IFRodXJzZGF5LCBOb3ZlbWJlciAxNiwgMjAxNyAzOjA2IFBN
+DQo+DQo+QW0gMTYuMTEuMjAxNyB1bSAwNjozNCBzY2hyaWViIFBhbmthaiBCYW5zYWw6DQo+PiBb
+Li4uXQ0KPj4+IFBsZWFzZSBhZGQgeW91ciBJUCBjb3JlIHRvIHRoZSAiRkxFWENBTiBoYXJkd2Fy
+ZSBmZWF0dXJlIGZsYWdzIiB0YWJsZSBbMV0gaW4NCj4+PiB0aGUgZHJpdmVyLiBBbHNvIHBsZWFz
+ZSB0ZXN0IHRoZSB0cmFuc2l0aW9uIGludGVycnVwdHMgZm9yIGNoYW5nZXMgaW4gdGhlIENBTg0K
+Pj4+IGVycm9yIHN0YXRlLCBzZWUgdGhlIGNvbW1pdHMgb2YgWkhVIFlpDQo+Pj4gKFNULUZJUi9F
+TkcxLVpodSkgPFlpLlpodTVAY24uYm9zY2guY29tPiBvbiB0aGUgZHJpdmVyLiBbMl0NCj4+Pg0K
+Pj4NCj4+IEkgZGlkIG5vdCB1bmRlcnN0YW5kIHRoaXMgcXVpcmsgKEZMRVhDQU5fUVVJUktfQlJP
+S0VOX1BFUlJfU1RBVEUpLg0KPj4gV2hhdCBkb2VzIHRoaXMgcXVpcmsgZG8gPyBob3cgZG8gSSBj
+aGVjayBpZiBteSBJUCBzdXBwb3J0cyBpdCBvciBub3QgPw0KPj4gSG93IGRvIEkgdGVzdCB0aGlz
+ID8NCj4+DQo+PiBDYW4geW91IHBsZWFzZSBoZWxwIG1lIHRvIHVuZGVyc3RhbmQgPw0KPg0KPkl0
+J3MgYWJvdXQgcmVwb3J0aW5nIENBTiBlcnJvciBzdGF0ZSBjaGFuZ2VzICJlcnJvci1hY3RpdmUi
+IC0+ICJ3YXJuaW5nIg0KPi0+ICJlcnJvci1wYXNzaXZlIiAtPiAiYnVzLW9mZiIgYW5kIGJhY2su
+IFRoZSBxdWlyayBtaWdodCBiZSByZXF1aXJlZCB0bw0KPnRyaWdnZXIgdGhlIHN0YXRlLWNoYW5n
+ZSB0byAiZXJyb3ItcGFzc2l2ZSIuDQoNClRoZSBGTEVYQ0FOX1FVSVJLX0JST0tFTl9QRVJSX1NU
+QVRFIGluIGNvbmp1bmN0aW9uIHdpdGggdGhlDQpGTEVYQ0FOX1FVSVJLX0JST0tFTl9XRVJSX1NU
+QVRFIHdlcmUgYWRkZWQgZm9yOg0KMS4gc29sdmUgZXJyb3Igc3RhdGUgdHJhbnNpdGlvbiBwcm9i
+bGVtcyBmb3VuZCBpbiBzb21lIGNvcmUNCjIuIHRocm90dGxlIGVycm9yIGludGVycnVwdCBmbG9v
+ZGluZyB3aGVuIGFwcGxpY2FibGUNCmR1ZSB0byBzb21lIGNvcmUgY2Fubm90IGdlbmVyYXRlIHN0
+YXRlIGludGVycnVwdCBmb3IgZXJyb3INCndhcm5pbmcgKHRoYXQncyB0aGUgV0VSUl9TVEFURSBz
+dGFuZHMgZm9yKSBhbmQvb3IgZXJyb3IgcGFzc2l2ZQ0KKHRoYXQncyB0aGUgUEVSUl9TVEFURSBz
+dGFuZHMgZm9yKSwgdGh1cyB0aGUgdXNlciBzcGFjZSBjYW5ub3QNCnJlY2VpdmUgY29ycmVjdCBz
+dGF0ZSB0cmFuc2l0aW9ucyB2aWEgbGlzdGVuaW5nIHRvIHRoZSBTb2NrZXRDQU4gc29ja2V0Lg0K
+DQpUaGUgd29ya2Fyb3VuZCBvdmVyY29tZXMgdGhlIGludGVycnVwdCBzdXBwb3J0IHNob3J0YWdl
+IGJ5Og0KMS4gZGVyaXZlIGNvcnJlY3Qgc3RhdGUgZnJvbSBlcnJvciBjb3VudGVycyB1cG9uIGFu
+eSBpbnRlcnJ1cHQuDQoyLiBkaXNhYmxlL2VuYWJsZSBlcnJvciBpbnRlcnJ1cHQgdG8gbWluaW1p
+emUgdGhlIHBvdGVudGlhbA0KICAgcGVyZm9ybWFuY2UgaW1wYWN0IGNhdXNlZCBieSBlcnJvciBp
+bnRlcnJ1cHQgZmxvb2RpbmcuDQoNClRoZXNlIHR3byBxdWlya3MgbmVlZCB0byBzZXQgYWNjb3Jk
+aW5nIHRvIGhhcmR3YXJlIGZlYXR1cmVzLCBlLmcuLA0KdGhlIGkuTVgyOCBhbmQgaS5NWDYgc2V0
+IHRoZSBQRVJSX1NUQVRFIHF1aXJrIGJlY2F1c2UgdGhleSBoYXZlIHRoZQ0KW1RSXVdSTl9JTlQg
+Y29ubmVjdGVkIGJ1dCBubyBpbnRlcnJ1cHQgZm9yIGVycm9yIHBhc3NpdmUuIElmIHRoZXkNCmRv
+bid0IGhhdmUgdGhlIFtUUl1XUk5fSU5UIHRvbywgdGhlbiBib3RoIHF1aXJrcyBhcmUgcmVxdWly
+ZWQuDQooUFM6IEFzIHdlIHVuZGVyc3RhbmQgc28gZmFyLCB0aGVyZSBpcyBubyBmbGV4Y2FuIGNv
+cmUgbGFjayBvZiBlcnJvcg0Kd2FybmluZyBpbnRlcnJ1cHQgYnV0IGhhdmUgZXJyb3IgcGFzc2l2
+ZSBpbnRlcnJ1cHQsIHNvIHRoZSBXRVJSX1NUQVRFDQpzaG91bGQgbmV2ZXIgYmVlbiBzZXQgYWxv
+bmUpLg0KDQo+DQo+WW91IGNhbiB0ZXN0IHN1Y2ggc3RhdGUgY2hhbmdlcyBieSBkb2luZzoNCj4N
+Cj4xLiBTZW5kIG1lc3NhZ2VzIHdpdGhvdXQgQ0FOIGNhYmxlIGNvbm5lY3RlZA0KPg0KPjIuIFNo
+b3J0LWNpcmN1aXQgdGhlIENBTiBsb3cgYW5kIGhpZ2ggc2lnbmFscw0KPg0KPlRoZW4gY29ubmVj
+dCB0aGUgY2FibGUgYW5kIHJlbW92ZSB0aGUgc2hvcnQtY2lyY3VpdCBhbmQgc2VuZCBtZXNzYWdl
+cw0KPnVzaW5nICJjYW5zZW5kIiBvciAiY2FuZ2VuIi4gUGxlYXNlIGFsc28gdXNlICJpcCBzZXQg
+bGluayBjYW4wIC4uLg0KPnJlc3RhcnQtbXMgMTAwIiB0byByZWNvdmVyIGZyb20gYnVzLW9mZiBh
+dXRvbWF0aWNhbGx5Lg0KPg0KPldoaWxlIHRlc3Rpbmcgd2F0Y2ggdGhlIGVycm9yIG1lc3NhZ2Vz
+IHdpdGggdGhlIGNvbW1hbmQgYmVsb3cgYW5kIHJlcG9ydA0KPnRoZSByZXN1bHRzIHRvIHRoZSBs
+aXN0Lg0KPg0KPiMgY2FuZHVtcCAtdGQgLWUgYW55LDA6MCwjRkZGRkZGRkYNCg0KVGhlIGZhc3Qg
+d2F5IHRvIGNoZWNrIHdoZXRoZXIgeW91ciBJUCBuZWVkcyB0aGUgcXVpcmsgb3Igbm90IGlzIGxv
+b2sNCmludG8gdGhlIHJlZmVyZW5jZSBhbmQgZmluZCB3aGV0aGVyIGl0IHN1cHBvcnRzIHRoZSBh
+Zm9yZW1lbnRpb25lZA0KaW50ZXJydXB0cywgaWYgYW55b25lIGlzIG1pc3NpbmcsIHRoZW4gdGhl
+IHF1aXJrIGlzIG5lZWRlZC4gUGxlYXNlDQpjb25zdWx0IHN1Z2dlc3Rpb24gZnJvbSBXb2xmZ2Fu
+ZyBhYm91dCBob3cgdG8gdGVzdC4NCg0KQmVzdCByZWdhcmRzDQpZaQ0K
