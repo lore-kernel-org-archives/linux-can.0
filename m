@@ -1,76 +1,112 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: [PATCH v2 2/2] can: flexcan: adding platform specific details for
- LS1021A
-Date: Thu, 16 Nov 2017 07:23:00 +0000
-Message-ID: <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2 1/2] can: flexcan: Remodel FlexCAN register r/w APIs
+ for big endian FlexCAN controllers.
+Date: Thu, 16 Nov 2017 13:04:38 +0100
+Message-ID: <6b02b1e1-df20-c615-b30a-a5a9cbfacdf3@pengutronix.de>
 References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
  <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
- <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
- <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
+ <26cf5587-3100-e681-b477-0f87ed58b872@pengutronix.de>
+ <AM0PR0402MB3940B601B1AB23500B2B49D0F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Sb0iPQjaooPxIRudEbnrm1ciHAgnhFLES"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:56056 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1757173AbdKPHXF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Nov 2017 02:23:05 -0500
-In-Reply-To: <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
-Content-Language: en-US
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41045 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S933668AbdKPMEx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Nov 2017 07:04:53 -0500
+In-Reply-To: <AM0PR0402MB3940B601B1AB23500B2B49D0F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Pankaj Bansal <pankaj.bansal@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
+To: Pankaj Bansal <pankaj.bansal@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>, Sakar Arora <Sakar.Arora@freescale.com>
 
-SGVsbG8gUGFua2FqLA0KDQo+RnJvbTogV29sZmdhbmcgR3JhbmRlZ2dlciBbbWFpbHRvOndnQGdy
-YW5kZWdnZXIuY29tXQ0KPlNlbnQ6IFRodXJzZGF5LCBOb3ZlbWJlciAxNiwgMjAxNyAzOjA2IFBN
-DQo+DQo+QW0gMTYuMTEuMjAxNyB1bSAwNjozNCBzY2hyaWViIFBhbmthaiBCYW5zYWw6DQo+PiBb
-Li4uXQ0KPj4+IFBsZWFzZSBhZGQgeW91ciBJUCBjb3JlIHRvIHRoZSAiRkxFWENBTiBoYXJkd2Fy
-ZSBmZWF0dXJlIGZsYWdzIiB0YWJsZSBbMV0gaW4NCj4+PiB0aGUgZHJpdmVyLiBBbHNvIHBsZWFz
-ZSB0ZXN0IHRoZSB0cmFuc2l0aW9uIGludGVycnVwdHMgZm9yIGNoYW5nZXMgaW4gdGhlIENBTg0K
-Pj4+IGVycm9yIHN0YXRlLCBzZWUgdGhlIGNvbW1pdHMgb2YgWkhVIFlpDQo+Pj4gKFNULUZJUi9F
-TkcxLVpodSkgPFlpLlpodTVAY24uYm9zY2guY29tPiBvbiB0aGUgZHJpdmVyLiBbMl0NCj4+Pg0K
-Pj4NCj4+IEkgZGlkIG5vdCB1bmRlcnN0YW5kIHRoaXMgcXVpcmsgKEZMRVhDQU5fUVVJUktfQlJP
-S0VOX1BFUlJfU1RBVEUpLg0KPj4gV2hhdCBkb2VzIHRoaXMgcXVpcmsgZG8gPyBob3cgZG8gSSBj
-aGVjayBpZiBteSBJUCBzdXBwb3J0cyBpdCBvciBub3QgPw0KPj4gSG93IGRvIEkgdGVzdCB0aGlz
-ID8NCj4+DQo+PiBDYW4geW91IHBsZWFzZSBoZWxwIG1lIHRvIHVuZGVyc3RhbmQgPw0KPg0KPkl0
-J3MgYWJvdXQgcmVwb3J0aW5nIENBTiBlcnJvciBzdGF0ZSBjaGFuZ2VzICJlcnJvci1hY3RpdmUi
-IC0+ICJ3YXJuaW5nIg0KPi0+ICJlcnJvci1wYXNzaXZlIiAtPiAiYnVzLW9mZiIgYW5kIGJhY2su
-IFRoZSBxdWlyayBtaWdodCBiZSByZXF1aXJlZCB0bw0KPnRyaWdnZXIgdGhlIHN0YXRlLWNoYW5n
-ZSB0byAiZXJyb3ItcGFzc2l2ZSIuDQoNClRoZSBGTEVYQ0FOX1FVSVJLX0JST0tFTl9QRVJSX1NU
-QVRFIGluIGNvbmp1bmN0aW9uIHdpdGggdGhlDQpGTEVYQ0FOX1FVSVJLX0JST0tFTl9XRVJSX1NU
-QVRFIHdlcmUgYWRkZWQgZm9yOg0KMS4gc29sdmUgZXJyb3Igc3RhdGUgdHJhbnNpdGlvbiBwcm9i
-bGVtcyBmb3VuZCBpbiBzb21lIGNvcmUNCjIuIHRocm90dGxlIGVycm9yIGludGVycnVwdCBmbG9v
-ZGluZyB3aGVuIGFwcGxpY2FibGUNCmR1ZSB0byBzb21lIGNvcmUgY2Fubm90IGdlbmVyYXRlIHN0
-YXRlIGludGVycnVwdCBmb3IgZXJyb3INCndhcm5pbmcgKHRoYXQncyB0aGUgV0VSUl9TVEFURSBz
-dGFuZHMgZm9yKSBhbmQvb3IgZXJyb3IgcGFzc2l2ZQ0KKHRoYXQncyB0aGUgUEVSUl9TVEFURSBz
-dGFuZHMgZm9yKSwgdGh1cyB0aGUgdXNlciBzcGFjZSBjYW5ub3QNCnJlY2VpdmUgY29ycmVjdCBz
-dGF0ZSB0cmFuc2l0aW9ucyB2aWEgbGlzdGVuaW5nIHRvIHRoZSBTb2NrZXRDQU4gc29ja2V0Lg0K
-DQpUaGUgd29ya2Fyb3VuZCBvdmVyY29tZXMgdGhlIGludGVycnVwdCBzdXBwb3J0IHNob3J0YWdl
-IGJ5Og0KMS4gZGVyaXZlIGNvcnJlY3Qgc3RhdGUgZnJvbSBlcnJvciBjb3VudGVycyB1cG9uIGFu
-eSBpbnRlcnJ1cHQuDQoyLiBkaXNhYmxlL2VuYWJsZSBlcnJvciBpbnRlcnJ1cHQgdG8gbWluaW1p
-emUgdGhlIHBvdGVudGlhbA0KICAgcGVyZm9ybWFuY2UgaW1wYWN0IGNhdXNlZCBieSBlcnJvciBp
-bnRlcnJ1cHQgZmxvb2RpbmcuDQoNClRoZXNlIHR3byBxdWlya3MgbmVlZCB0byBzZXQgYWNjb3Jk
-aW5nIHRvIGhhcmR3YXJlIGZlYXR1cmVzLCBlLmcuLA0KdGhlIGkuTVgyOCBhbmQgaS5NWDYgc2V0
-IHRoZSBQRVJSX1NUQVRFIHF1aXJrIGJlY2F1c2UgdGhleSBoYXZlIHRoZQ0KW1RSXVdSTl9JTlQg
-Y29ubmVjdGVkIGJ1dCBubyBpbnRlcnJ1cHQgZm9yIGVycm9yIHBhc3NpdmUuIElmIHRoZXkNCmRv
-bid0IGhhdmUgdGhlIFtUUl1XUk5fSU5UIHRvbywgdGhlbiBib3RoIHF1aXJrcyBhcmUgcmVxdWly
-ZWQuDQooUFM6IEFzIHdlIHVuZGVyc3RhbmQgc28gZmFyLCB0aGVyZSBpcyBubyBmbGV4Y2FuIGNv
-cmUgbGFjayBvZiBlcnJvcg0Kd2FybmluZyBpbnRlcnJ1cHQgYnV0IGhhdmUgZXJyb3IgcGFzc2l2
-ZSBpbnRlcnJ1cHQsIHNvIHRoZSBXRVJSX1NUQVRFDQpzaG91bGQgbmV2ZXIgYmVlbiBzZXQgYWxv
-bmUpLg0KDQo+DQo+WW91IGNhbiB0ZXN0IHN1Y2ggc3RhdGUgY2hhbmdlcyBieSBkb2luZzoNCj4N
-Cj4xLiBTZW5kIG1lc3NhZ2VzIHdpdGhvdXQgQ0FOIGNhYmxlIGNvbm5lY3RlZA0KPg0KPjIuIFNo
-b3J0LWNpcmN1aXQgdGhlIENBTiBsb3cgYW5kIGhpZ2ggc2lnbmFscw0KPg0KPlRoZW4gY29ubmVj
-dCB0aGUgY2FibGUgYW5kIHJlbW92ZSB0aGUgc2hvcnQtY2lyY3VpdCBhbmQgc2VuZCBtZXNzYWdl
-cw0KPnVzaW5nICJjYW5zZW5kIiBvciAiY2FuZ2VuIi4gUGxlYXNlIGFsc28gdXNlICJpcCBzZXQg
-bGluayBjYW4wIC4uLg0KPnJlc3RhcnQtbXMgMTAwIiB0byByZWNvdmVyIGZyb20gYnVzLW9mZiBh
-dXRvbWF0aWNhbGx5Lg0KPg0KPldoaWxlIHRlc3Rpbmcgd2F0Y2ggdGhlIGVycm9yIG1lc3NhZ2Vz
-IHdpdGggdGhlIGNvbW1hbmQgYmVsb3cgYW5kIHJlcG9ydA0KPnRoZSByZXN1bHRzIHRvIHRoZSBs
-aXN0Lg0KPg0KPiMgY2FuZHVtcCAtdGQgLWUgYW55LDA6MCwjRkZGRkZGRkYNCg0KVGhlIGZhc3Qg
-d2F5IHRvIGNoZWNrIHdoZXRoZXIgeW91ciBJUCBuZWVkcyB0aGUgcXVpcmsgb3Igbm90IGlzIGxv
-b2sNCmludG8gdGhlIHJlZmVyZW5jZSBhbmQgZmluZCB3aGV0aGVyIGl0IHN1cHBvcnRzIHRoZSBh
-Zm9yZW1lbnRpb25lZA0KaW50ZXJydXB0cywgaWYgYW55b25lIGlzIG1pc3NpbmcsIHRoZW4gdGhl
-IHF1aXJrIGlzIG5lZWRlZC4gUGxlYXNlDQpjb25zdWx0IHN1Z2dlc3Rpb24gZnJvbSBXb2xmZ2Fu
-ZyBhYm91dCBob3cgdG8gdGVzdC4NCg0KQmVzdCByZWdhcmRzDQpZaQ0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Sb0iPQjaooPxIRudEbnrm1ciHAgnhFLES
+Content-Type: multipart/mixed; boundary="WShiW2uMPrdH9Xs3U2kruoFbMwvSMDctm";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Pankaj Bansal <pankaj.bansal@nxp.com>,
+ "wg@grandegger.com" <wg@grandegger.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>,
+ Bhupesh Sharma <bhupesh.sharma@freescale.com>,
+ Sakar Arora <Sakar.Arora@freescale.com>
+Message-ID: <6b02b1e1-df20-c615-b30a-a5a9cbfacdf3@pengutronix.de>
+Subject: Re: [PATCH v2 1/2] can: flexcan: Remodel FlexCAN register r/w APIs
+ for big endian FlexCAN controllers.
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
+ <26cf5587-3100-e681-b477-0f87ed58b872@pengutronix.de>
+ <AM0PR0402MB3940B601B1AB23500B2B49D0F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+In-Reply-To: <AM0PR0402MB3940B601B1AB23500B2B49D0F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+
+--WShiW2uMPrdH9Xs3U2kruoFbMwvSMDctm
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 11/16/2017 06:24 AM, Pankaj Bansal wrote:
+>> What about this:
+>>
+>> 	/* set defaults */
+>> 	if (of_device_is_compatible(pdev->dev.of_node,
+>> 				    "fsl,p1010-flexcan")) {
+>> 		priv->read =3D flexcan_read_be;
+>> 		priv->write =3D flexcan_write_be;
+>> 	} else {
+>> 		priv->read =3D flexcan_read_le;
+>> 		priv->write =3D flexcan_write_le;
+>> 	}
+>>
+>> 	if (of_device_is_big_endian()) {
+>> 		priv->read =3D flexcan_read_be;
+>> 		priv->write =3D flexcan_write_be;
+>> 	} else {
+>> 		priv->read =3D flexcan_read_le;
+>> 		priv->write =3D flexcan_write_le;
+>> 	}
+>>
+>=20
+> native-endian : Use this if the hardware "self-adjusts"
+>    register endianness based on the CPU's configured endianness.
+
+If someone set the wrong endianess, be it native, litte or big, if it's
+wrong, it's wrong.
+
+> I don=E2=80=99t see FlexCAN hardware doing that. That is why we should =
+not use=20
+> of_device_is_big_endian, and only check for "big-endian".
+
+I don't mind.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--WShiW2uMPrdH9Xs3U2kruoFbMwvSMDctm--
+
+--Sb0iPQjaooPxIRudEbnrm1ciHAgnhFLES
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloNftYACgkQHv7KIOw4
+HPY1xwf9HQYFvV5i6lphDCEf7WRj/pz6zZr59SK5wSrHpSZLsR+oMNhdj0lANkQR
+rhwx35vKiS3+YIGYA9qAl+prNm+1O393QBy8eTEEseu3uKU7n+zGxY9SuFfxtl4p
+Fy55XCDyLugRP1E/B+oXv3AWLt899JvvnUR4AaTuYrpfOcuEp+CwPa4saU7WyNP+
+MfL+Qc8xnOMawXo+nOAfjHQgqWr/5D4bsRlJzdL06e6G2zGALoF8ucXE0sVmdcEi
+sWk19nTv1TUGjM2tIIdeTqS0Rgc9emCE+6L6D9AXJrl9t1VePj0WzLLMLBIRfeyM
+pdYupvxaDCx7TNEHN4b5Y1idW4O1pQ==
+=9Ern
+-----END PGP SIGNATURE-----
+
+--Sb0iPQjaooPxIRudEbnrm1ciHAgnhFLES--
