@@ -1,112 +1,43 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 1/2] can: flexcan: Remodel FlexCAN register r/w APIs
- for big endian FlexCAN controllers.
-Date: Thu, 16 Nov 2017 13:04:38 +0100
-Message-ID: <6b02b1e1-df20-c615-b30a-a5a9cbfacdf3@pengutronix.de>
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
- <26cf5587-3100-e681-b477-0f87ed58b872@pengutronix.de>
- <AM0PR0402MB3940B601B1AB23500B2B49D0F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Sb0iPQjaooPxIRudEbnrm1ciHAgnhFLES"
+From: Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
+Subject: [PATCH 0/7] R-Car D3 (r8a77995) CAN support
+Date: Fri, 17 Nov 2017 11:41:22 +0100
+Message-ID: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41045 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S933668AbdKPMEx (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Nov 2017 07:04:53 -0500
-In-Reply-To: <AM0PR0402MB3940B601B1AB23500B2B49D0F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+Received: from mail-wr0-f196.google.com ([209.85.128.196]:44565 "EHLO
+        mail-wr0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750828AbdKQKlj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Nov 2017 05:41:39 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pankaj Bansal <pankaj.bansal@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>, Sakar Arora <Sakar.Arora@freescale.com>
+To: linux-renesas-soc@vger.kernel.org
+Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org, wsa@the-dreams.de, horms@verge.net.au, geert@linux-m68k.org, magnus.damm@gmail.com, chris.paterson2@renesas.com, ramesh.shanmugasundaram@bp.renesas.com, Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Sb0iPQjaooPxIRudEbnrm1ciHAgnhFLES
-Content-Type: multipart/mixed; boundary="WShiW2uMPrdH9Xs3U2kruoFbMwvSMDctm";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Pankaj Bansal <pankaj.bansal@nxp.com>,
- "wg@grandegger.com" <wg@grandegger.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>,
- Bhupesh Sharma <bhupesh.sharma@freescale.com>,
- Sakar Arora <Sakar.Arora@freescale.com>
-Message-ID: <6b02b1e1-df20-c615-b30a-a5a9cbfacdf3@pengutronix.de>
-Subject: Re: [PATCH v2 1/2] can: flexcan: Remodel FlexCAN register r/w APIs
- for big endian FlexCAN controllers.
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
- <26cf5587-3100-e681-b477-0f87ed58b872@pengutronix.de>
- <AM0PR0402MB3940B601B1AB23500B2B49D0F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
-In-Reply-To: <AM0PR0402MB3940B601B1AB23500B2B49D0F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+Hi!
 
---WShiW2uMPrdH9Xs3U2kruoFbMwvSMDctm
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Here's CAN and CAN FD support for the R-Car D3. This is a by-the-datasheet
+implementation, with the datasheet missing some bits, namely the pin map.
+I filled in the gaps with frog DNA^W^W^Wby deducing the information from
+pin numbers already in the PFC driver, so careful scrutiny is advised.
 
-On 11/16/2017 06:24 AM, Pankaj Bansal wrote:
->> What about this:
->>
->> 	/* set defaults */
->> 	if (of_device_is_compatible(pdev->dev.of_node,
->> 				    "fsl,p1010-flexcan")) {
->> 		priv->read =3D flexcan_read_be;
->> 		priv->write =3D flexcan_write_be;
->> 	} else {
->> 		priv->read =3D flexcan_read_le;
->> 		priv->write =3D flexcan_write_le;
->> 	}
->>
->> 	if (of_device_is_big_endian()) {
->> 		priv->read =3D flexcan_read_be;
->> 		priv->write =3D flexcan_write_be;
->> 	} else {
->> 		priv->read =3D flexcan_read_le;
->> 		priv->write =3D flexcan_write_le;
->> 	}
->>
->=20
-> native-endian : Use this if the hardware "self-adjusts"
->    register endianness based on the CPU's configured endianness.
-
-If someone set the wrong endianess, be it native, litte or big, if it's
-wrong, it's wrong.
-
-> I don=E2=80=99t see FlexCAN hardware doing that. That is why we should =
-not use=20
-> of_device_is_big_endian, and only check for "big-endian".
-
-I don't mind.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+CU
+Uli
 
 
---WShiW2uMPrdH9Xs3U2kruoFbMwvSMDctm--
+Ulrich Hecht (7):
+  pinctrl: sh-pfc: r8a77995: Add CAN support
+  pinctrl: sh-pfc: r8a77995: Add CAN FD support
+  arm64: dts: r8a77995: Add CAN external clock support
+  arm64: dts: r8a77995: Add CAN support
+  arm64: dts: r8a77995: Add CAN FD support
+  can: rcar_can: document r8a77995 (R-Car D3) compatibility strings
+  can: rcar_canfd: document r8a77995 (R-Car D3) compatibility strings
 
---Sb0iPQjaooPxIRudEbnrm1ciHAgnhFLES
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+ .../devicetree/bindings/net/can/rcar_can.txt       | 13 ++--
+ .../devicetree/bindings/net/can/rcar_canfd.txt     | 13 ++--
+ arch/arm64/boot/dts/renesas/r8a77995.dtsi          | 64 ++++++++++++++++
+ drivers/pinctrl/sh-pfc/pfc-r8a77995.c              | 86 ++++++++++++++++++++++
+ 4 files changed, 164 insertions(+), 12 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.7.4
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloNftYACgkQHv7KIOw4
-HPY1xwf9HQYFvV5i6lphDCEf7WRj/pz6zZr59SK5wSrHpSZLsR+oMNhdj0lANkQR
-rhwx35vKiS3+YIGYA9qAl+prNm+1O393QBy8eTEEseu3uKU7n+zGxY9SuFfxtl4p
-Fy55XCDyLugRP1E/B+oXv3AWLt899JvvnUR4AaTuYrpfOcuEp+CwPa4saU7WyNP+
-MfL+Qc8xnOMawXo+nOAfjHQgqWr/5D4bsRlJzdL06e6G2zGALoF8ucXE0sVmdcEi
-sWk19nTv1TUGjM2tIIdeTqS0Rgc9emCE+6L6D9AXJrl9t1VePj0WzLLMLBIRfeyM
-pdYupvxaDCx7TNEHN4b5Y1idW4O1pQ==
-=9Ern
------END PGP SIGNATURE-----
-
---Sb0iPQjaooPxIRudEbnrm1ciHAgnhFLES--
