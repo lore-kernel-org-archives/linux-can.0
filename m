@@ -1,65 +1,55 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 6/7] can: rcar_can: document r8a77995 (R-Car D3)
- compatibility strings
-Date: Fri, 17 Nov 2017 07:39:01 -0800
-Message-ID: <20171117153900.7is6baf4wtb4acly@verge.net.au>
+From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+Subject: Re: [PATCH 0/7] R-Car D3 (r8a77995) CAN support
+Date: Fri, 17 Nov 2017 17:17:55 +0100
+Message-ID: <20171117161754.prbpvjwnsbvo7koz@tetsubishi>
 References: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas@gmail.com>
- <1510915289-15059-7-git-send-email-ulrich.hecht+renesas@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from kirsty.vergenet.net ([202.4.237.240]:58951 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S965045AbdKQPjF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Nov 2017 10:39:05 -0500
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="coerma7qxs32s5ev"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1510915289-15059-7-git-send-email-ulrich.hecht+renesas@gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
-Cc: linux-renesas-soc@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org, wsa@the-dreams.de, geert@linux-m68k.org, magnus.damm@gmail.com, chris.paterson2@renesas.com, ramesh.shanmugasundaram@bp.renesas.com
+In-Reply-To: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Ulrich Hecht <ulrich.hecht+renesas-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org, geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org, magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, chris.paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-On Fri, Nov 17, 2017 at 11:41:28AM +0100, Ulrich Hecht wrote:
-> Signed-off-by: Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
-> ---
->  Documentation/devicetree/bindings/net/can/rcar_can.txt | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> index 06bb7cc..f7d0358 100644
-> --- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> @@ -11,6 +11,7 @@ Required properties:
->  	      "renesas,can-r8a7794" if CAN controller is a part of R8A7794 SoC.
->  	      "renesas,can-r8a7795" if CAN controller is a part of R8A7795 SoC.
->  	      "renesas,can-r8a7796" if CAN controller is a part of R8A7796 SoC.
-> +	      "renesas,can-r8a77995" if CAN controller is a part of R8A77995 SoC.
->  	      "renesas,rcar-gen1-can" for a generic R-Car Gen1 compatible device.
->  	      "renesas,rcar-gen2-can" for a generic R-Car Gen2 compatible device.
->  	      "renesas,rcar-gen3-can" for a generic R-Car Gen3 compatible device.
-> @@ -25,12 +26,12 @@ Required properties:
->  - pinctrl-0: pin control group to be used for this controller.
->  - pinctrl-names: must be "default".
->  
-> -Required properties for "renesas,can-r8a7795" and "renesas,can-r8a7796"
-> -compatible:
-> -In R8A7795 and R8A7796 SoCs, "clkp2" can be CANFD clock. This is a div6 clock
-> -and can be used by both CAN and CAN FD controller at the same time. It needs to
-> -be scaled to maximum frequency if any of these controllers use it. This is done
-> -using the below properties:
-> +Required properties for "renesas,can-r8a7795", "renesas,can-r8a7796" and
-> +"renesas,can-r8a77995" compatible:
 
-Not strictly related to this patch, but aren't these requirements also
-applicable to "renesas,rcar-gen3-can"?
+--coerma7qxs32s5ev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +In R8A7795, R8A7796 and R8A77995 SoCs, "clkp2" can be CANFD clock. This is a
-> +div6 clock and can be used by both CAN and CAN FD controller at the same
-> +time. It needs to be scaled to maximum frequency if any of these
-> +controllers use it. This is done using the below properties:
->  
->  - assigned-clocks: phandle of clkp2(CANFD) clock.
->  - assigned-clock-rates: maximum frequency of this clock.
-> -- 
-> 2.7.4
-> 
+
+> Here's CAN and CAN FD support for the R-Car D3. This is a by-the-datasheet
+> implementation, with the datasheet missing some bits, namely the pin map.
+> I filled in the gaps with frog DNA^W^W^Wby deducing the information from
+> pin numbers already in the PFC driver, so careful scrutiny is advised.
+
+Did you have a chance to test one of the configurations?
+
+
+--coerma7qxs32s5ev
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAloPC6oACgkQFA3kzBSg
+KbaPdRAAgyZlc6q+G62VlXUyIQ9wX9/5BK5C6HouYMgfPwpkqsrqjPwqOEaSD5CP
+6NVjuIj5LcigYh0r9XW8iVTmoNPmAZAeEiYzaFIqdT+4X8tYOFiJ1UbE65K8v2OP
+6ZZ5bhkAxJH3d07gGdjDwixZWiyn4A15KYqT50UZH7MGELCVjvCGdHJnaLXkmiG6
+gxmFmb9+YIPcNJOYSHiffFBXtlEcyw1tpg0g5a4Ad6ddOZLUfN6N3rYYUzU7X3uf
+DZ9w/46CYYwfkv5zFjuctX4S5tNKSuzLGgHBxBHZwsruDlfAUXQXq2AWlUavG6u/
+NgyNolHGJ4oBnPKzS8nDV0AerhSGPxLNOOeUx3k3YYaUIsxrDvnh3+RlJ0Y5cz+m
+sVzgStaclAX1DOLjG3KYxpNAeZt2S7kJX/GywGd469SLr2nRERxDRCPF84dyegoV
+YVni07CFNSnJap4TvLTavbVxWWwIYQYwIaOYCy3u2KibNVZJUqY4UJ88AVR+MPBd
+d347C8mNFDhpd/FYV+nN0bOR5+gmcXgOHaIlMH1p/l4dPLgIU8IEYJ7OAvnOSrgU
+5dcjR6mfHerkOnlVrkNfJlI+kYyeFyvVzhmb2ZiL8eOJ07OkYyLzZzcJhFYgRVpO
+zQTADvaWWVH/4fI5sThUFI3C6DQJeZZZMREaPHRoBR3uDpyqxjI=
+=MQGL
+-----END PGP SIGNATURE-----
+
+--coerma7qxs32s5ev--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
