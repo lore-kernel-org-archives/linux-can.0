@@ -1,54 +1,106 @@
-From: Jimmy Assarsson <jimmyassarsson@gmail.com>
-Subject: [PATCH 3/3] can: kvaser_usb: ratelimit errors if incomplete messages are received
-Date: Tue, 21 Nov 2017 08:22:28 +0100
-Message-ID: <20171121072228.7570-4-jimmyassarsson@gmail.com>
-References: <20171121072228.7570-1-jimmyassarsson@gmail.com>
+From: Pankaj Bansal <pankaj.bansal@nxp.com>
+Subject: RE: [PATCH v2 2/2] can: flexcan: adding platform specific details for
+ LS1021A
+Date: Tue, 21 Nov 2017 10:01:37 +0000
+Message-ID: <AM0PR0402MB39409B1DD5ED9355F12EC85CF1230@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
+ <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
+ <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
+ <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
+ <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+ <AM0PR0402MB3940F2C5AEB0734DC8B79608F1230@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <63a0798d1f5b4fa6ada730c6ba03480c@SGPMBX1017.APAC.bosch.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf0-f68.google.com ([209.85.215.68]:44146 "EHLO
-        mail-lf0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753156AbdKUHWu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Nov 2017 02:22:50 -0500
-Received: by mail-lf0-f68.google.com with SMTP id w23so12884508lfd.11
-        for <linux-can@vger.kernel.org>; Mon, 20 Nov 2017 23:22:49 -0800 (PST)
-In-Reply-To: <20171121072228.7570-1-jimmyassarsson@gmail.com>
+Received: from mail-he1eur01on0063.outbound.protection.outlook.com ([104.47.0.63]:43072
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751356AbdKUKBn (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 21 Nov 2017 05:01:43 -0500
+In-Reply-To: <63a0798d1f5b4fa6ada730c6ba03480c@SGPMBX1017.APAC.bosch.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Jimmy Assarsson <jimmyassarsson@gmail.com>
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>
 
-Avoid flooding the kernel log with "Formate error", if incomplete message
-are received.
-
-Signed-off-by: Jimmy Assarsson <jimmyassarsson@gmail.com>
----
- drivers/net/can/usb/kvaser_usb.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-index d87e330a20b3..f95945915d20 100644
---- a/drivers/net/can/usb/kvaser_usb.c
-+++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -609,8 +609,8 @@ static int kvaser_usb_wait_msg(const struct kvaser_usb *dev, u8 id,
- 			}
- 
- 			if (pos + tmp->len > actual_len) {
--				dev_err(dev->udev->dev.parent,
--					"Format error\n");
-+				dev_err_ratelimited(dev->udev->dev.parent,
-+						    "Format error\n");
- 				break;
- 			}
- 
-@@ -1353,7 +1353,8 @@ static void kvaser_usb_read_bulk_callback(struct urb *urb)
- 		}
- 
- 		if (pos + msg->len > urb->actual_length) {
--			dev_err(dev->udev->dev.parent, "Format error\n");
-+			dev_err_ratelimited(dev->udev->dev.parent,
-+					    "Format error\n");
- 			break;
- 		}
- 
--- 
-2.15.0
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogWkhVIFlpIChTVC1GSVIv
+RU5HMS1aaHUpIFttYWlsdG86WWkuWmh1NUBjbi5ib3NjaC5jb21dDQo+IFNlbnQ6IFR1ZXNkYXks
+IE5vdmVtYmVyIDIxLCAyMDE3IDk6MDEgQU0NCj4gVG86IFBhbmthaiBCYW5zYWwgPHBhbmthai5i
+YW5zYWxAbnhwLmNvbT47IFdvbGZnYW5nIEdyYW5kZWdnZXINCj4gPHdnQGdyYW5kZWdnZXIuY29t
+PjsgTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT47IGxpbnV4LQ0KPiBjYW5A
+dmdlci5rZXJuZWwub3JnDQo+IENjOiBWYXJ1biBTZXRoaSA8Vi5TZXRoaUBueHAuY29tPjsgUG9v
+bmFtIEFnZ3J3YWwNCj4gPHBvb25hbS5hZ2dyd2FsQG54cC5jb20+OyBCaHVwZXNoIFNoYXJtYQ0K
+PiA8Ymh1cGVzaC5zaGFybWFAZnJlZXNjYWxlLmNvbT4NCj4gU3ViamVjdDogUkU6IFtQQVRDSCB2
+MiAyLzJdIGNhbjogZmxleGNhbjogYWRkaW5nIHBsYXRmb3JtIHNwZWNpZmljIGRldGFpbHMgZm9y
+DQo+IExTMTAyMUENCj4gDQo+IEhlbGxvIFBhbmthaiwNCj4gDQo+ID5Gcm9tOiBQYW5rYWogQmFu
+c2FsIFttYWlsdG86cGFua2FqLmJhbnNhbEBueHAuY29tXQ0KPiA+U2VudDogVHVlc2RheSwgTm92
+ZW1iZXIgMjEsIDIwMTcgMTA6MzggQU0gIFsuLi5dDQo+ID4NCj4gPlRoYW5rcyBaaHUgWWkuIElu
+IHRoYXQgY2FzZSBkbyB3ZSBldmVuIG5lZWQgdG8gcHV0IHRoZXNlIGNoYW5nZXMgaW4gYQ0KPiBx
+dWlyaz8NCj4gPlNob3VsZG4ndCB0aGlzIGNvZGUgYmUgZ2VuZXJpYyBmbGV4Y2FuIGNvZGUsIGly
+cmVzcGVjdGl2ZSBvZiB0aGUgcGxhdGZvcm0/DQo+IElmIGluIHRoZSBmdXR1cmUgdmVyc2lvbiBv
+ZiBmbGV4Y2FuIHN1cHBvcnRzIHRoZSBjb21wbGV0ZSBzZXQgb2Ygc3RhdGUNCj4gaW50ZXJydXB0
+cywgdGhlbiB0aGUgbmV3IGNvcmUgd2hpY2ggZG9uJ3QgbmVlZCB0aGUgd29ya2Fyb3VuZCBjYW4g
+c3dpdGNoIGl0DQo+IG9mZiBlYXNpbHkgdmlhIG5vdCBzcGVjaWZ5aW5nIHRoZXNlIHF1aXJrcy4N
+Cj4gDQo+IE1ha2UgaXQgaXJyZXNwZWN0aXZlIG9mIHRoZSBwbGF0Zm9ybSB3aWxsIGFkZCB0aGUg
+dW5uZWNlc3Nhcnkgb3ZlcmhlYWQgdG8gdGhlDQo+IG5ldyBjb3JlIChhbHRob3VnaCB0aGUgb3Zl
+cmhlYWQgaXMgbGl0dGxlKS4NCg0KSSB1bmRlcnN0YW5kLiBJdCdzIG5pY2UgdGhhdCB5b3UgaGF2
+ZSB0aG91Z2h0IG9mIGZ1dHVyZSBoYXJkd2FyZSBlbmhhbmNlbWVudHMuDQoNCj4gDQo+ID4NCj4g
+PiBbLi4uXQ0KPiA+DQo+ID5JIHdpbGwgdGVzdCB0aGlzIGFmdGVyIFBFUlJfU1RBVEUgcXVpcmsu
+IEJ1dCBhcyBJIG1lbnRpb25lZCBhYm92ZSwgaW4NCj4gPm15IG9waW5pb24gd2Ugc2hvdWxkIHJl
+bW92ZSBGTEVYQ0FOX1FVSVJLX0JST0tFTl9QRVJSX1NUQVRFLCBhbmQNCj4gbWFrZQ0KPiA+dGhl
+c2UgY2hhbmdlcyBjb21tb24gZm9yIGFsbCBwbGF0Zm9ybXMuDQo+IFRoYW5rcywgSSdtIGxvb2tp
+bmcgZm9yd2FyZCB0byB0aGUgdGVzdCByZXN1bHRzLiBBcyBleHBsYWluZWQgYWJvdmUsIHdlIGFy
+ZQ0KPiBzdGlsbCBpbiB0aGUgaG9wZSB0aGF0IEZMRVhDQU4gbWlnaHQgaW1wcm92ZSBpbiB0aGUg
+ZnV0dXJlLiA6KQ0KPiANCg0KV2l0aG91dCBQRVJSX1NUQVRFIDoNCg0Kcm9vdEBUaW55RGlzdHJv
+On4jIGlwIGxpbmsgc2V0IGNhbjAgdXAgdHlwZSBjYW4gYml0cmF0ZSAxMjUwMDAgcmVzdGFydC1t
+cyAxMDAgYmVyci1yZXBvcnRpbmcgb2ZmDQpbICAgMjIuNTA3MzQ1XSBJUHY2OiBBRERSQ09ORihO
+RVRERVZfQ0hBTkdFKTogY2FuMDogbGluayBiZWNvbWVzIHJlYWR5DQpyb290QFRpbnlEaXN0cm86
+fiMgaXAgbGluayBzZXQgY2FuMSB1cCB0eXBlIGNhbiBiaXRyYXRlIDEyNTAwMCByZXN0YXJ0LW1z
+IDEwMCBiZXJyLXJlcG9ydGluZyBvZmYNClsgICAzMC45MzQ2NjldIElQdjY6IEFERFJDT05GKE5F
+VERFVl9DSEFOR0UpOiBjYW4xOiBsaW5rIGJlY29tZXMgcmVhZHkNCnJvb3RAVGlueURpc3Rybzp+
+IyBjYW5kdW1wIC10ZCAtZSBhbnksMDowLCNGRkZGRkZGRiAmDQpbMV0gNjE3DQpyb290QFRpbnlE
+aXN0cm86fiMgY2FuZ2VuIGNhbjAgLUQgMTEyMjMzNDRERUFEQkVFRiAtTCA4DQpbICAgNDguNjg0
+ODM5XSBmbGV4Y2FuX2lycSA4MDQgcmVnX2Vzcj0weDAwMDYyMjQyLCByZWdfZWNyPTB4MDAwMDAw
+NjAsIHJlZ19jdHJsPTB4NGEzMWFjNTUNCiAoMDAwLjAwMDAwMCkgIGNhbjAgIDIwMDAwMDA0ICAg
+WzhdICAwMCAwOCAwMCAwMCAwMCAwMCAwMCAwMCAgIEVSUk9SRlJBTUUNCiAgICAgICAgY29udHJv
+bGxlci1wcm9ibGVte3R4LWVycm9yLXdhcm5pbmd9DQp3cml0ZTogTm8gYnVmZmVyIHNwYWNlIGF2
+YWlsYWJsZQ0KICAgICAgICAqKioqKioqKioqICBTaG9ydCBMIGFuZCBIIHNpZ25hbHMgb2YgQ0FO
+ICoqKioqKioqKioqKg0Kcm9vdEBUaW55RGlzdHJvOn4jIFsgIDIyOC4zMzgwMzhdIGZsZXhjYW5f
+aXJxIDgwNCByZWdfZXNyPTB4MDAwMDYwMzYsIHJlZ19lY3I9MHgwMDAwMDAwMCwgcmVnX2N0cmw9
+MHg0YTMxYWM1NQ0KICgxNzkuNjUzMjA0KSAgY2FuMCAgMjAwMDAwNDAgICBbOF0gIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwICAgRVJST1JGUkFNRQ0KICAgICAgICBidXMtb2ZmDQpbICAyMjguNDM4
+Mjg3XSBJUHY2OiBBRERSQ09ORihORVRERVZfQ0hBTkdFKTogY2FuMDogbGluayBiZWNvbWVzIHJl
+YWR5DQogKDAwMC4wOTIxMjIpICBjYW4wICAyMDAwMDEwMCAgIFs4XSAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgICBFUlJPUkZSQU1FDQogICAgICAgIHJlc3RhcnRlZC1hZnRlci1idXMtb2ZmDQoN
+CldpdGggUEVSUl9TVEFURSA6DQoNCnJvb3RAVGlueURpc3Rybzp+IyBpcCBsaW5rIHNldCBjYW4w
+IHVwIHR5cGUgY2FuIGJpdHJhdGUgMTI1MDAwIHJlc3RhcnQtbXMgMTAwIGJlcnItcmVwb3J0aW5n
+IG9mZg0KWyAgIDMxLjk5NzI4Nl0gSVB2NjogQUREUkNPTkYoTkVUREVWX0NIQU5HRSk6IGNhbjA6
+IGxpbmsgYmVjb21lcyByZWFkeQ0Kcm9vdEBUaW55RGlzdHJvOn4jIGlwIGxpbmsgc2V0IGNhbjEg
+dXAgdHlwZSBjYW4gYml0cmF0ZSAxMjUwMDAgcmVzdGFydC1tcyAxMDAgYmVyci1yZXBvcnRpbmcg
+b2ZmDQpbICAgNDAuOTM0ODI0XSBJUHY2OiBBRERSQ09ORihORVRERVZfQ0hBTkdFKTogY2FuMTog
+bGluayBiZWNvbWVzIHJlYWR5DQpyb290QFRpbnlEaXN0cm86fiMgY2FuZHVtcCAtdGQgLWUgYW55
+LDA6MCwjRkZGRkZGRkYgJg0KWzFdIDYyMA0Kcm9vdEBUaW55RGlzdHJvOn4jIGNhbmdlbiBjYW4w
+IC1EIDExMjIzMzQ0REVBREJFRUYgLUwgOA0KWyAgIDU5LjMxNDkyMF0gZmxleGNhbl9pcnEgODA1
+IHJlZ19lc3I9MHgwMDA2MjI0MiwgcmVnX2Vjcj0weDAwMDAwMDYwLCByZWdfY3RybD0weDRhMzFh
+YzU1DQogKDAwMC4wMDAwMDApICBbICAgNTkuMzIzODYyXSBmbGV4Y2FuX2lycSA4MDUgcmVnX2Vz
+cj0weDAwMDQyMjUyLCByZWdfZWNyPTB4MDAwMDAwODAsIHJlZ19jdHJsPTB4NGEzMWVjNTUNCmNh
+bjAgIDIwMDAwMDA0ICAgWzhdICAwMCAwOCAwMCAwMCAwMCAwMCAwMCAwMCAgIEVSUk9SRlJBTUUN
+CiAgICAgICAgY29udHJvbGxlci1wcm9ibGVte3R4LWVycm9yLXdhcm5pbmd9DQogKDAwMC4wMDk2
+NzMpICBjYW4wICAyMDAwMDAwNCAgIFs4XSAgMDAgMjAgMDAgMDAgMDAgMDAgMDAgMDAgICBFUlJP
+UkZSQU1FDQogICAgICAgIGNvbnRyb2xsZXItcHJvYmxlbXt0eC1lcnJvci1wYXNzaXZlfQ0Kd3Jp
+dGU6IE5vIGJ1ZmZlciBzcGFjZSBhdmFpbGFibGUNCiAgICAgICAgKioqKioqKioqKiAgU2hvcnQg
+TCBhbmQgSCBzaWduYWxzIG9mIENBTiAqKioqKioqKioqKioNCnJvb3RAVGlueURpc3Rybzp+IyBb
+ICAgODcuOTk1ODc4XSBmbGV4Y2FuX2lycSA4MDUgcmVnX2Vzcj0weDAwMDA2MDM2LCByZWdfZWNy
+PTB4MDAwMDAwMDAsIHJlZ19jdHJsPTB4NGEzMWFjNTUNCiAoMDI4LjY3MTI5MSkgIGNhbjAgIDIw
+MDAwMDQwICAgWzhdICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAgIEVSUk9SRlJBTUUNCiAgICAg
+ICAgYnVzLW9mZg0KICgwMDAuMDk0MzA1KSAgWyAgIDg4LjA5ODQ2NF0gSVB2NjogQUREUkNPTkYo
+TkVUREVWX0NIQU5HRSk6IGNhbjA6IGxpbmsgYmVjb21lcyByZWFkeQ0KY2FuMCAgMjAwMDAxMDAg
+ICBbOF0gIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAgRVJST1JGUkFNRQ0KICAgICAgICByZXN0
+YXJ0ZWQtYWZ0ZXItYnVzLW9mZg0KDQo+IEJlc3QgcmVnYXJkcw0KPiBZaQ0K
