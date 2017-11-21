@@ -1,103 +1,52 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
- LS1021A
-Date: Tue, 21 Nov 2017 13:43:53 +0100
-Message-ID: <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
- <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
- <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
- <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
- <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+Subject: Re: [PATCH 0/3] Fixes for kvaser_usb driver
+Date: Tue, 21 Nov 2017 14:14:14 +0100
+Message-ID: <448613d6-e9a5-d4f4-c6ce-eef31fbf4c56@pengutronix.de>
+References: <20171121072228.7570-1-jimmyassarsson@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="v1LPvpKWXm3nq941j80uG67beAp4pJF7S"
+ boundary="3ChPp62kGjtuUAShBk5GsfKUEkxO5LuND"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:40367 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:39965 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752097AbdKUMoE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Nov 2017 07:44:04 -0500
-In-Reply-To: <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+        by vger.kernel.org with ESMTP id S1750772AbdKUNOT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Nov 2017 08:14:19 -0500
+In-Reply-To: <20171121072228.7570-1-jimmyassarsson@gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Pankaj Bansal <pankaj.bansal@nxp.com>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
+To: Jimmy Assarsson <jimmyassarsson@gmail.com>, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---v1LPvpKWXm3nq941j80uG67beAp4pJF7S
-Content-Type: multipart/mixed; boundary="toWr30O5natA8L6hqfjiM3ej4ebkHtWWW";
+--3ChPp62kGjtuUAShBk5GsfKUEkxO5LuND
+Content-Type: multipart/mixed; boundary="36tEcFF0V5boaMQlCs6AQqQsEbduIeIvF";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>,
- Pankaj Bansal <pankaj.bansal@nxp.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>,
- Bhupesh Sharma <bhupesh.sharma@freescale.com>
-Message-ID: <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
-Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
- LS1021A
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
- <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
- <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
- <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
- <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
-In-Reply-To: <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+To: Jimmy Assarsson <jimmyassarsson@gmail.com>, linux-can@vger.kernel.org
+Message-ID: <448613d6-e9a5-d4f4-c6ce-eef31fbf4c56@pengutronix.de>
+Subject: Re: [PATCH 0/3] Fixes for kvaser_usb driver
+References: <20171121072228.7570-1-jimmyassarsson@gmail.com>
+In-Reply-To: <20171121072228.7570-1-jimmyassarsson@gmail.com>
 
---toWr30O5natA8L6hqfjiM3ej4ebkHtWWW
+--36tEcFF0V5boaMQlCs6AQqQsEbduIeIvF
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 11/21/2017 03:13 AM, ZHU Yi (ST-FIR/ENG1-Zhu) wrote:
-> Hello Pankaj,
->=20
->> From: Pankaj Bansal [mailto:pankaj.bansal@nxp.com]
->> Sent: Monday, November 20, 2017 7:11 PM
->> [...]
->> Thank you Zhu Yi for this explanation. This helped me in understanding=
- the quirks.
->> Is there any flexcan core which generates passive state interrupt ?
+On 11/21/2017 08:22 AM, Jimmy Assarsson wrote:
+> The first patch fix two missing free calls in error paths. The second p=
+atch
+> fix a bad comparison between signed and unsigned integer, causing undes=
+ired
+> behaviour. The third patch will ratelimit error prinouts, if incomplete=
+ USB
+> messages are received. My kernel log got flooded with these error messa=
+ges,
+> when I encountered the bug described in the previous patch.
 
-> I'm afraid so far no known flexcan core supports it.
+Applied to can.
 
-Should we update the table and add a "IRQ Err Passive" no for all cores?
-
->  * Below is some version info we got:
->  *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT IRQ Err Memory er=
-r RTR re-
->  *                                Filter? connected?  Passive detection=
-  ception in MB
->  *   MX25  FlexCAN2  03.00.00.00     no        no         ?       no   =
-     no
->  *   MX28  FlexCAN2  03.00.04.00    yes       yes        no       no   =
-     no
->  *   MX35  FlexCAN2  03.00.00.00     no        no         ?       no   =
-     no
->  *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no   =
-     no
->  *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no   =
-    yes
->  *   VF610 FlexCAN3  ?               no       yes         ?      yes   =
-    yes?
-
-And does it make sense to add "FLEXCAN_QUIRK_BROKEN_PERR_STATE" to the
-vf610, too?
-
-> static const struct flexcan_devtype_data fsl_vf610_devtype_data =3D {
-> 	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RR=
-S |
-> 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
-> };
-
+Tnx,
 Marc
 
 --=20
@@ -107,23 +56,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---toWr30O5natA8L6hqfjiM3ej4ebkHtWWW--
+--36tEcFF0V5boaMQlCs6AQqQsEbduIeIvF--
 
---v1LPvpKWXm3nq941j80uG67beAp4pJF7S
+--3ChPp62kGjtuUAShBk5GsfKUEkxO5LuND
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloUH4kACgkQHv7KIOw4
-HPavdQf+OIRCYRVUrsTto6CR37G60X6hYkM/kWuzE6Cbt1jQLS3SOApLDFc+7G5m
-LDocBqGMW069Demeeg38jXuW7kAMH0a8OMsAWVMqljvE1EfK5wu8UrTpQpzW6YA8
-23G2wmjE8loQlQmel56thpo8NOcPXM86XCkodr6fPn+fOMZgOYTjIrHQ1XQxMl7A
-D+PjffVozgkxqTqDVfLTlrCo1D5aCAYRBm1TA84RMbROfgX/1FAF0ZfQQNzku7du
-/hMLw/GuBXH55NIztfaUg+2aseQhdPcU5QoIbh5heHO+OxMFt5zYfPCtaru9+ZEp
-Cm9Qig4HU/U08C0y7WB3WavLrEzJgg==
-=1BSo
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloUJqYACgkQHv7KIOw4
+HPYB7ggAmKfj2slHThxGYClgKT3QtkfYJR9ExeLvPyQmHFr4X08rOXIs5hH4k95E
+L2ZCAol5hLESMLl8q43Qicj7XxbQYQAhC/YTnwxF38I6W7ZJTqdMlz+P/NXVJohM
+t48+p6p11000Jcb1Ef0ysetI553+A2ef5QfeJXDH0zEqOK26iMXMAAmBIeyX7c1F
+dBnDQz52FANmueVGU9IQE+jL/T4QAiuDppSRZA/lrKlvgGWMnzrpfUzS/Gi91rcE
+wvxBjPqlZZEB85j5TJq/7uFmL5MZuQ63Z6PZn83/riLeNMeuIa8BoXi1lmuCBffY
+Ymd+A11Mx4D7yAz5z1Co+SSjsNMJAA==
+=+sYW
 -----END PGP SIGNATURE-----
 
---v1LPvpKWXm3nq941j80uG67beAp4pJF7S--
+--3ChPp62kGjtuUAShBk5GsfKUEkxO5LuND--
