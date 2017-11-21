@@ -1,29 +1,71 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 7/7] can: rcar_canfd: document r8a77995 (R-Car D3)
- compatibility strings
-Date: Mon, 20 Nov 2017 14:43:27 -0600
-Message-ID: <20171120204327.q3mkdoyool7xjxks@rob-hp-laptop>
-References: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas@gmail.com>
- <1510915289-15059-8-git-send-email-ulrich.hecht+renesas@gmail.com>
+From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Subject: RE: [PATCH v2 2/2] can: flexcan: adding platform specific details for
+ LS1021A
+Date: Tue, 21 Nov 2017 02:13:29 +0000
+Message-ID: <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
+ <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
+ <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
+ <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
+ <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pf0-f195.google.com ([209.85.192.195]:39663 "EHLO
-        mail-pf0-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752660AbdKTUna (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 20 Nov 2017 15:43:30 -0500
-Content-Disposition: inline
-In-Reply-To: <1510915289-15059-8-git-send-email-ulrich.hecht+renesas@gmail.com>
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:44090 "EHLO
+        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751305AbdKUCNd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 20 Nov 2017 21:13:33 -0500
+In-Reply-To: <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
-Cc: linux-renesas-soc@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org, wsa@the-dreams.de, horms@verge.net.au, geert@linux-m68k.org, magnus.damm@gmail.com, chris.paterson2@renesas.com, ramesh.shanmugasundaram@bp.renesas.com
+To: Pankaj Bansal <pankaj.bansal@nxp.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
 
-On Fri, Nov 17, 2017 at 11:41:29AM +0100, Ulrich Hecht wrote:
-> Signed-off-by: Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
-> ---
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-
-Acked-by: Rob Herring <robh@kernel.org>
-
+SGVsbG8gUGFua2FqLA0KDQo+RnJvbTogUGFua2FqIEJhbnNhbCBbbWFpbHRvOnBhbmthai5iYW5z
+YWxAbnhwLmNvbV0NCj5TZW50OiBNb25kYXksIE5vdmVtYmVyIDIwLCAyMDE3IDc6MTEgUE0NCj4g
+Wy4uLl0NCj5UaGFuayB5b3UgWmh1IFlpIGZvciB0aGlzIGV4cGxhbmF0aW9uLiBUaGlzIGhlbHBl
+ZCBtZSBpbiB1bmRlcnN0YW5kaW5nIHRoZSBxdWlya3MuDQo+SXMgdGhlcmUgYW55IGZsZXhjYW4g
+Y29yZSB3aGljaCBnZW5lcmF0ZXMgcGFzc2l2ZSBzdGF0ZSBpbnRlcnJ1cHQgPw0KSSdtIGFmcmFp
+ZCBzbyBmYXIgbm8ga25vd24gZmxleGNhbiBjb3JlIHN1cHBvcnRzIGl0Lg0KDQo+VGhlIHJlYXNv
+biBJIGFzayB0aGlzIGlzIGJlY2F1c2UgSSBzZWUgaW4gZmxleGNhbiBkb2MgOg0KPg0KPlRoZSBt
+b2R1bGUgaGFzIG1hbnkgaW50ZXJydXB0IHNvdXJjZXM6IGludGVycnVwdHMgZHVlIHRvIG1lc3Nh
+Z2UgYnVmZmVycyBhbmQgaW50ZXJydXB0cw0KPmR1ZSB0byB0aGUgT1JlZCBpbnRlcnJ1cHRzIGZy
+b20gTUJzLCBCdXMgT2ZmLCBFcnJvciwgVHggV2FybmluZywgYW5kIFJ4IFdhcm5pbmcuDQo+DQo+
+QWxzbyBpbiBmbGV4Y2FuLmMgOg0KPiNkZWZpbmUgRkxFWENBTl9FU1JfQUxMX0lOVCBcDQo+CShG
+TEVYQ0FOX0VTUl9UV1JOX0lOVCB8IEZMRVhDQU5fRVNSX1JXUk5fSU5UIHwgXA0KPgkgRkxFWENB
+Tl9FU1JfQk9GRl9JTlQgfCBGTEVYQ0FOX0VTUl9FUlJfSU5UKQ0KPg0KPkkgZG9uJ3Qgc2VlIChp
+biBkb2N1bWVudCBvciBpbiBjb2RlKSwgaWYgcGFzc2l2ZSBzdGF0ZSBpbnRlcnJ1cHRzIGFyZSBl
+dmVuIGdlbmVyYXRlZCA/DQo+SSBzZWUgdGhhdCB3ZSBjYW4gZGV0ZWN0IHBhc3NpdmUgc3RhdGUg
+dXNpbmcgRVNSW0ZMVENPTkZdICA9IDAxLg0KPkJ1dCBJIHRoaW5rIHdlIG5lZWQgdG8gcmVseSBv
+biBFUlJPUiBpbnRlcnJ1cHRzIHRvIGRvIHRoYXQgKGV2ZW4gaWYgdGhlIEJFUlJfUkVQT1JUSU5H
+IGlzIG9mZikuDQo+DQo+UGxlYXNlIGNvcnJlY3QgbWUgaWYgSSBhbSB3cm9uZyBpbiBteSB1bmRl
+cnN0YW5kaW5nLg0KWWVzLCB5b3UncmUgcmlnaHQuIFdlIHVzZSB0aGUgZXJyb3IgaW50ZXJydXB0
+cyB0byByZXBvcnQgYWN0aXZlIC0+IHdhcm5pbmcgLT4gcGFzc2l2ZSwNCmFuZCB1c2UgdGhlIHR4
+L3J4IGludGVycnVwdHMgdG8gcmVwb3J0IHBhc3NpdmUgLT4gd2FybmluZyAtPiBhY3RpdmUuDQoN
+Cj4NCj4gWy4uLl0NCj5UaGFuayB5b3UgV29sZmdhbmcuIFdpdGggdGhlIHN0ZXBzIHlvdSBtZW50
+aW9uZWQgYW5kIHNvbWUgZGVidWcgbG9ncyBJIHNlZSB0aGF0IExTMTAyMUENCj5zdXBwb3J0cyBb
+VFJdV1JOX0lOVC4NCj4NCj5yb290QFRpbnlEaXN0cm86fiMgaXAgbGluayBzZXQgY2FuMCB1cCB0
+eXBlIGNhbiBiaXRyYXRlIDEyNTAwMCByZXN0YXJ0LW1zIDEwMCBiZXJyLXJlcG9ydGluZyBvZmYN
+Cj5bICA1OTYuMTE3MDY2XSBJUHY2OiBBRERSQ09ORihORVRERVZfQ0hBTkdFKTogY2FuMDogbGlu
+ayBiZWNvbWVzIHJlYWR5DQo+cm9vdEBUaW55RGlzdHJvOn4jIGlwIGxpbmsgc2V0IGNhbjEgdXAg
+dHlwZSBjYW4gYml0cmF0ZSAxMjUwMDAgcmVzdGFydC1tcyAxMDAgYmVyci1yZXBvcnRpbmcgb2Zm
+DQo+WyAgNjAwLjcyNDU0N10gSVB2NjogQUREUkNPTkYoTkVUREVWX0NIQU5HRSk6IGNhbjE6IGxp
+bmsgYmVjb21lcyByZWFkeQ0KPnJvb3RAVGlueURpc3Rybzp+IyBjYW5kdW1wIC10ZCAtZSBhbnks
+MDowLCNGRkZGRkZGRiAmDQo+WzFdIDYzMg0KPnJvb3RAVGlueURpc3Rybzp+IyBjYW5zZW5kIGNh
+bjAgNUExIzEyMzQxMjM0MTIzNA0KPnJvb3RAVGlueURpc3Rybzp+IyBbICA2NDcuNTIyOTQxXSBm
+bGV4Y2FuX2lycSA4MDQgcmVnX2Vzcj0weDAwMDYyMjQyLCByZWdfZWNyPTB4MDAwMDAwNjAsIHJl
+Z19jdHJsPTB4NGEzMWFjNTUNCj4gKDAwMC4wMDAwMDApICBjYW4wICAyMDAwMDAwNCAgIFs4XSAg
+MDAgMDggMDAgMDAgMDAgMDAgMDAgMDAgICBFUlJPUkZSQU1FDQo+ICAgICAgICBjb250cm9sbGVy
+LXByb2JsZW17dHgtZXJyb3Itd2FybmluZ30NClNlZW1zIGl0IG5lZWRzIHRoZSBGTEVYQ0FOX1FV
+SVJLX0JST0tFTl9QRVJSX1NUQVRFLiBBZnRlciB0aGF0LCBhYm92ZQ0Kc3RlcHMgc2hvdWxkIGJl
+IGFibGUgdG8gcmVwb3J0IHRoZSBjb3JyZWN0IHN0YXRlIC0gZXJyb3IgcGFzc2l2ZSwgYW5kDQph
+bGwgdGhlIHNjZW5hcmlvcyBXb2xmZ2FuZyBtZW50aW9uZWQgc2hvdWxkIGFsc28gd29ya3MgZmlu
+ZS4NCg0KUGxlYXNlIGJlIGF3YXJlIHRoYXQgeW91IG5lZWQgdG8gc2VuZCBtdWx0aXBsZSBjYW4g
+ZnJhbWVzIChtYW51YWxseQ0Kd2l0aCBjYW5zZW5kIG9yIGF1dG9tYXRpY2FsbHkgd2l0aCBjYW5n
+ZW4pIHRvIGdldCB0aGUgc3RhdGUgYmFjayB0bw0Kd2FybmluZyBhbmQgYWN0aXZlIGlmIHJlbW92
+ZWQgdGhlIGVycm9yIGNvbmRpdGlvbiBvbiB0aGUgYnVzLg0KDQpCZXN0IHJlZ2FyZHMNCllpDQo=
