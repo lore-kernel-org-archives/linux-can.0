@@ -1,78 +1,73 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/3] Fixes for kvaser_usb driver
-Date: Tue, 21 Nov 2017 14:14:14 +0100
-Message-ID: <448613d6-e9a5-d4f4-c6ce-eef31fbf4c56@pengutronix.de>
-References: <20171121072228.7570-1-jimmyassarsson@gmail.com>
+From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Subject: RE: [PATCH v2 2/2] can: flexcan: adding platform specific details for
+ LS1021A
+Date: Wed, 22 Nov 2017 02:56:57 +0000
+Message-ID: <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
+ <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
+ <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
+ <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
+ <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+ <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="3ChPp62kGjtuUAShBk5GsfKUEkxO5LuND"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:39965 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1750772AbdKUNOT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Nov 2017 08:14:19 -0500
-In-Reply-To: <20171121072228.7570-1-jimmyassarsson@gmail.com>
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:45051 "EHLO
+        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751651AbdKVC5C (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Nov 2017 21:57:02 -0500
+In-Reply-To: <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Jimmy Assarsson <jimmyassarsson@gmail.com>, linux-can@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Pankaj Bansal <pankaj.bansal@nxp.com>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---3ChPp62kGjtuUAShBk5GsfKUEkxO5LuND
-Content-Type: multipart/mixed; boundary="36tEcFF0V5boaMQlCs6AQqQsEbduIeIvF";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Jimmy Assarsson <jimmyassarsson@gmail.com>, linux-can@vger.kernel.org
-Message-ID: <448613d6-e9a5-d4f4-c6ce-eef31fbf4c56@pengutronix.de>
-Subject: Re: [PATCH 0/3] Fixes for kvaser_usb driver
-References: <20171121072228.7570-1-jimmyassarsson@gmail.com>
-In-Reply-To: <20171121072228.7570-1-jimmyassarsson@gmail.com>
-
---36tEcFF0V5boaMQlCs6AQqQsEbduIeIvF
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 11/21/2017 08:22 AM, Jimmy Assarsson wrote:
-> The first patch fix two missing free calls in error paths. The second p=
-atch
-> fix a bad comparison between signed and unsigned integer, causing undes=
-ired
-> behaviour. The third patch will ratelimit error prinouts, if incomplete=
- USB
-> messages are received. My kernel log got flooded with these error messa=
-ges,
-> when I encountered the bug described in the previous patch.
-
-Applied to can.
-
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---36tEcFF0V5boaMQlCs6AQqQsEbduIeIvF--
-
---3ChPp62kGjtuUAShBk5GsfKUEkxO5LuND
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloUJqYACgkQHv7KIOw4
-HPYB7ggAmKfj2slHThxGYClgKT3QtkfYJR9ExeLvPyQmHFr4X08rOXIs5hH4k95E
-L2ZCAol5hLESMLl8q43Qicj7XxbQYQAhC/YTnwxF38I6W7ZJTqdMlz+P/NXVJohM
-t48+p6p11000Jcb1Ef0ysetI553+A2ef5QfeJXDH0zEqOK26iMXMAAmBIeyX7c1F
-dBnDQz52FANmueVGU9IQE+jL/T4QAiuDppSRZA/lrKlvgGWMnzrpfUzS/Gi91rcE
-wvxBjPqlZZEB85j5TJq/7uFmL5MZuQ63Z6PZn83/riLeNMeuIa8BoXi1lmuCBffY
-Ymd+A11Mx4D7yAz5z1Co+SSjsNMJAA==
-=+sYW
------END PGP SIGNATURE-----
-
---3ChPp62kGjtuUAShBk5GsfKUEkxO5LuND--
+SGVsbG8gTWFyYywNCg0KPkZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1
+dHJvbml4LmRlXQ0KPlNlbnQ6IFR1ZXNkYXksIE5vdmVtYmVyIDIxLCAyMDE3IDg6NDQgUE0NCj4N
+Cj4gWy4uLl0NCj4+IEknbSBhZnJhaWQgc28gZmFyIG5vIGtub3duIGZsZXhjYW4gY29yZSBzdXBw
+b3J0cyBpdC4NCj4NCj5TaG91bGQgd2UgdXBkYXRlIHRoZSB0YWJsZSBhbmQgYWRkIGEgIklSUSBF
+cnIgUGFzc2l2ZSIgbm8gZm9yIGFsbCBjb3Jlcz8NCkJ5IGxvb2sgaW50byB0aGUgcmVmZXJlbmNl
+IG1hbnVhbCBvZiBNWDI1WzFdLCBNWDM1WzJdIGFuZCBWRjYxMFszXSwNCml0IHR1cm5zIG91dCB0
+aGF0IG5vbmUgb2YgdGhlbSBzdXBwb3J0IHRoZSBlcnJvciBwYXNzaXZlIGludGVycnVwdC4NClNv
+IHdlIHNob3VsZCB1cGRhdGUgdGhlICJJUlEgRXJyIFBhc3NpdmUiIHRvIG5vIGZvciBhbGwgY29y
+ZXMuDQoNCkludGVyZXN0aW5nbHksIHNlZW1zIHRoZSBuZXcgUk0gb2YgTVgyNSAoUmV2LjIpIGFu
+ZCBNWDM1IChSZXYuMykNCnN0YXRlcyB0aGF0IGJvdGggY29yZSBoYXZlIHRoZSBbVFJdV1JOX0lO
+VCBjb25uZWN0ZWQsIHNvIEkgZ3Vlc3MgdGhlDQpubyBpbiB0aGF0IGNvbHVtbiB3ZXJlIGFkZGVk
+IGZvciB0aGUgbGVnYWN5IGNvcmUuIEhvd2V2ZXIsIGFzIHRoZQ0KZHJpdmVyIGFsc28gbmVlZHMg
+dG8gd29yayB3aXRoIHRoZSBsZWdhY3kgY29yZSwgYW5kIHRoZXkgc2hhcmUgdGhlDQpzYW1lIGRl
+dnR5cGVfZGF0YSBhcyBwMTAxMCwgc28gSSB0aGluayB3ZSBzaG91bGQgbGVhdmUgaXQgYXMgaXQg
+aXMuDQoNCj4NCj4+ICAqIEJlbG93IGlzIHNvbWUgdmVyc2lvbiBpbmZvIHdlIGdvdDoNCj4+ICAq
+ICAgIFNPQyAgIFZlcnNpb24gICBJUC1WZXJzaW9uICBHbGl0Y2gtIFtUUl1XUk5fSU5UIElSUSBF
+cnIgTWVtb3J5IGVyciBSVFIgcmUtDQo+PiAgKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgRmlsdGVyPyBjb25uZWN0ZWQ/ICBQYXNzaXZlIGRldGVjdGlvbiAgY2VwdGlvbiBpbiBNQg0K
+Pj4gICogICBNWDI1ICBGbGV4Q0FOMiAgMDMuMDAuMDAuMDAgICAgIG5vICAgICAgICBubyAgICAg
+ICAgID8gICAgICAgbm8gICAgICAgIG5vDQo+PiAgKiAgIE1YMjggIEZsZXhDQU4yICAwMy4wMC4w
+NC4wMCAgICB5ZXMgICAgICAgeWVzICAgICAgICBubyAgICAgICBubyAgICAgICAgbm8NCj4+ICAq
+ICAgTVgzNSAgRmxleENBTjIgIDAzLjAwLjAwLjAwICAgICBubyAgICAgICAgbm8gICAgICAgICA/
+ICAgICAgIG5vICAgICAgICBubw0KPj4gICogICBNWDUzICBGbGV4Q0FOMiAgMDMuMDAuMDAuMDAg
+ICAgeWVzICAgICAgICBubyAgICAgICAgbm8gICAgICAgbm8gICAgICAgIG5vDQo+PiAgKiAgIE1Y
+NnMgIEZsZXhDQU4zICAxMC4wMC4xMi4wMCAgICB5ZXMgICAgICAgeWVzICAgICAgICBubyAgICAg
+ICBubyAgICAgICB5ZXMNCj4+ICAqICAgVkY2MTAgRmxleENBTjMgID8gICAgICAgICAgICAgICBu
+byAgICAgICB5ZXMgICAgICAgICA/ICAgICAgeWVzICAgICAgIHllcz8NCj4NCj5BbmQgZG9lcyBp
+dCBtYWtlIHNlbnNlIHRvIGFkZCAiRkxFWENBTl9RVUlSS19CUk9LRU5fUEVSUl9TVEFURSIgdG8g
+dGhlDQo+dmY2MTAsIHRvbz8NCkkgdGhpbmsgdmY2MTAgd2lsbCBuZWVkIHRoaXMgcXVpcmsgdG8g
+cmVwb3J0IGNvcnJlY3Qgc3RhdGUgdHJhbnNpdGlvbnMuDQpUaGUgcmVhc29uIGxhc3QgdGltZSB3
+ZSBkbyBub3QgdG91Y2ggdGhpcyBpcyBiZWNhdXNlIG5laXRoZXIgV29sZmdhbmcNCm5vciBJIGhh
+ZCBhY2Nlc3MgdG8gdmY2MTAsIHNvIHdlIGNhbiBvbmx5IHRlc3Qgd2l0aCBNWDI4LCBNWDUzIGFu
+ZCBNWDYuDQpXZSB0aG91Z2h0IHNvbWVvbmUgd2lsbCBzcGVhayBvdXQgaWYgdGhleSBtZWV0IHBy
+b2JsZW1zIHdpdGggdGhpcyBjb3JlLA0KYW5kIHRoZW4gdGhleSBjYW4gaGVscCB0byBmaXggYW5k
+IHRlc3QgaXQuDQoNCkBNYXJjLCBAV29sZmdhbmcsDQpXaGF0IGRvIHlvdSB0aGluaz8gT3Igc2hh
+bGwgd2UgZml4IGZpcnN0IGFuZCB0aGVuIHdhaXQ/DQoNCkBQYW5rYWosIGFzIHlvdSBhcmUgY3Vy
+cmVudGx5IHdvcmtpbmcgb24gcGF0Y2ggdGhpcyBkcml2ZXIsIGlzIGl0DQpwb3NzaWJsZSB0aGF0
+IHlvdSBjYW4gaGVscCB0byBjcmVhdGUgcGF0Y2ggZm9yIHRoZSB0YWJsZSBhbmQvb3IgdGhlDQpQ
+RVJSX1NUQVRFIHF1aXJrIGZpeCBmb3IgdmY2MTAgaW4gY2FzZSByZXF1aXJlZD8gVGhhbmtzIQ0K
+DQpCZXN0IHJlZ2FyZHMNCllpDQoNClsxXSBodHRwczovL3d3dy5ueHAuY29tL2RvY3MvZW4vcmVm
+ZXJlbmNlLW1hbnVhbC9JTVgyNVJNLnBkZg0KWzJdIGh0dHBzOi8vd3d3Lm54cC5jb20vZG9jcy9l
+bi9yZWZlcmVuY2UtbWFudWFsL0lNWDM1Uk0ucGRmDQpbM10gaHR0cHM6Ly93d3cubnhwLmNvbS9k
+b2NzL2VuL3JlZmVyZW5jZS1tYW51YWwvVkZYWFhSTS5wZGYNCg==
