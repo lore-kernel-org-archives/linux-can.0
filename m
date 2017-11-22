@@ -1,42 +1,39 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: flexcan: Update IRQ Err Passive information
-Date: Wed, 22 Nov 2017 13:53:51 +0100
-Message-ID: <20171122125351.8185-1-mkl@pengutronix.de>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:51267 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751244AbdKVMx4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 22 Nov 2017 07:53:56 -0500
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Subject: Re: [PATCH 3/7] arm64: dts: r8a77995: Add CAN external clock support
+Date: Wed, 22 Nov 2017 14:11:58 +0100
+Message-ID: <CAMuHMdUfY-0UvMzXdDVEZpP0Pk25+GVwdA=UD0UaOxoG0FgXjQ@mail.gmail.com>
+References: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas@gmail.com> <1510915289-15059-4-git-send-email-ulrich.hecht+renesas@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1510915289-15059-4-git-send-email-ulrich.hecht+renesas-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Ulrich Hecht <ulrich.hecht+renesas-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, Simon Horman <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Chris Paterson <chris.paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-The flexcan IP cores used on MX25 and MX35 do not generate Error Passive
-IRQs. Update the IP core overview table in the driver accordingly.
+On Fri, Nov 17, 2017 at 11:41 AM, Ulrich Hecht
+<ulrich.hecht+renesas-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> Adds external CAN clock node for r8a77995. This clock can be used as
+> fCAN clock of CAN and CAN FD controller.
+>
+> Based on a patch for r8a7796 by Chris Paterson.
+>
+> Signed-off-by: Ulrich Hecht <ulrich.hecht+renesas-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Suggested-by: ZHU Yi (ST-FIR/ENG1-Zhu) <Yi.Zhu5@cn.bosch.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/flexcan.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index a13a4896a8bd..eefddae2e99a 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -184,9 +184,9 @@
-  * Below is some version info we got:
-  *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT IRQ Err Memory err RTR re-
-  *                                Filter? connected?  Passive detection  ception in MB
-- *   MX25  FlexCAN2  03.00.00.00     no        no         ?       no        no
-+ *   MX25  FlexCAN2  03.00.00.00     no        no        no       no        no
-  *   MX28  FlexCAN2  03.00.04.00    yes       yes        no       no        no
-- *   MX35  FlexCAN2  03.00.00.00     no        no         ?       no        no
-+ *   MX35  FlexCAN2  03.00.00.00     no        no        no       no        no
-  *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no        no
-  *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no       yes
-  *   VF610 FlexCAN3  ?               no       yes         ?      yes       yes?
--- 
-2.15.0
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
