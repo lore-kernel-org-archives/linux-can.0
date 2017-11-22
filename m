@@ -1,8 +1,8 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+From: Pankaj Bansal <pankaj.bansal@nxp.com>
 Subject: RE: [PATCH v2 2/2] can: flexcan: adding platform specific details for
  LS1021A
-Date: Wed, 22 Nov 2017 02:56:57 +0000
-Message-ID: <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
+Date: Wed, 22 Nov 2017 06:27:16 +0000
+Message-ID: <DB3PR0402MB394710921822B0FFE6D827ECF1200@DB3PR0402MB3947.eurprd04.prod.outlook.com>
 References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
  <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
  <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
@@ -13,61 +13,28 @@ References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
  <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
  <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
  <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
+ <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:45051 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751651AbdKVC5C (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Nov 2017 21:57:02 -0500
-In-Reply-To: <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
+Received: from mail-ve1eur01on0079.outbound.protection.outlook.com ([104.47.1.79]:23501
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751216AbdKVG1U (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 22 Nov 2017 01:27:20 -0500
+In-Reply-To: <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Pankaj Bansal <pankaj.bansal@nxp.com>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
+To: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>
 
-SGVsbG8gTWFyYywNCg0KPkZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1
-dHJvbml4LmRlXQ0KPlNlbnQ6IFR1ZXNkYXksIE5vdmVtYmVyIDIxLCAyMDE3IDg6NDQgUE0NCj4N
-Cj4gWy4uLl0NCj4+IEknbSBhZnJhaWQgc28gZmFyIG5vIGtub3duIGZsZXhjYW4gY29yZSBzdXBw
-b3J0cyBpdC4NCj4NCj5TaG91bGQgd2UgdXBkYXRlIHRoZSB0YWJsZSBhbmQgYWRkIGEgIklSUSBF
-cnIgUGFzc2l2ZSIgbm8gZm9yIGFsbCBjb3Jlcz8NCkJ5IGxvb2sgaW50byB0aGUgcmVmZXJlbmNl
-IG1hbnVhbCBvZiBNWDI1WzFdLCBNWDM1WzJdIGFuZCBWRjYxMFszXSwNCml0IHR1cm5zIG91dCB0
-aGF0IG5vbmUgb2YgdGhlbSBzdXBwb3J0IHRoZSBlcnJvciBwYXNzaXZlIGludGVycnVwdC4NClNv
-IHdlIHNob3VsZCB1cGRhdGUgdGhlICJJUlEgRXJyIFBhc3NpdmUiIHRvIG5vIGZvciBhbGwgY29y
-ZXMuDQoNCkludGVyZXN0aW5nbHksIHNlZW1zIHRoZSBuZXcgUk0gb2YgTVgyNSAoUmV2LjIpIGFu
-ZCBNWDM1IChSZXYuMykNCnN0YXRlcyB0aGF0IGJvdGggY29yZSBoYXZlIHRoZSBbVFJdV1JOX0lO
-VCBjb25uZWN0ZWQsIHNvIEkgZ3Vlc3MgdGhlDQpubyBpbiB0aGF0IGNvbHVtbiB3ZXJlIGFkZGVk
-IGZvciB0aGUgbGVnYWN5IGNvcmUuIEhvd2V2ZXIsIGFzIHRoZQ0KZHJpdmVyIGFsc28gbmVlZHMg
-dG8gd29yayB3aXRoIHRoZSBsZWdhY3kgY29yZSwgYW5kIHRoZXkgc2hhcmUgdGhlDQpzYW1lIGRl
-dnR5cGVfZGF0YSBhcyBwMTAxMCwgc28gSSB0aGluayB3ZSBzaG91bGQgbGVhdmUgaXQgYXMgaXQg
-aXMuDQoNCj4NCj4+ICAqIEJlbG93IGlzIHNvbWUgdmVyc2lvbiBpbmZvIHdlIGdvdDoNCj4+ICAq
-ICAgIFNPQyAgIFZlcnNpb24gICBJUC1WZXJzaW9uICBHbGl0Y2gtIFtUUl1XUk5fSU5UIElSUSBF
-cnIgTWVtb3J5IGVyciBSVFIgcmUtDQo+PiAgKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgRmlsdGVyPyBjb25uZWN0ZWQ/ICBQYXNzaXZlIGRldGVjdGlvbiAgY2VwdGlvbiBpbiBNQg0K
-Pj4gICogICBNWDI1ICBGbGV4Q0FOMiAgMDMuMDAuMDAuMDAgICAgIG5vICAgICAgICBubyAgICAg
-ICAgID8gICAgICAgbm8gICAgICAgIG5vDQo+PiAgKiAgIE1YMjggIEZsZXhDQU4yICAwMy4wMC4w
-NC4wMCAgICB5ZXMgICAgICAgeWVzICAgICAgICBubyAgICAgICBubyAgICAgICAgbm8NCj4+ICAq
-ICAgTVgzNSAgRmxleENBTjIgIDAzLjAwLjAwLjAwICAgICBubyAgICAgICAgbm8gICAgICAgICA/
-ICAgICAgIG5vICAgICAgICBubw0KPj4gICogICBNWDUzICBGbGV4Q0FOMiAgMDMuMDAuMDAuMDAg
-ICAgeWVzICAgICAgICBubyAgICAgICAgbm8gICAgICAgbm8gICAgICAgIG5vDQo+PiAgKiAgIE1Y
-NnMgIEZsZXhDQU4zICAxMC4wMC4xMi4wMCAgICB5ZXMgICAgICAgeWVzICAgICAgICBubyAgICAg
-ICBubyAgICAgICB5ZXMNCj4+ICAqICAgVkY2MTAgRmxleENBTjMgID8gICAgICAgICAgICAgICBu
-byAgICAgICB5ZXMgICAgICAgICA/ICAgICAgeWVzICAgICAgIHllcz8NCj4NCj5BbmQgZG9lcyBp
-dCBtYWtlIHNlbnNlIHRvIGFkZCAiRkxFWENBTl9RVUlSS19CUk9LRU5fUEVSUl9TVEFURSIgdG8g
-dGhlDQo+dmY2MTAsIHRvbz8NCkkgdGhpbmsgdmY2MTAgd2lsbCBuZWVkIHRoaXMgcXVpcmsgdG8g
-cmVwb3J0IGNvcnJlY3Qgc3RhdGUgdHJhbnNpdGlvbnMuDQpUaGUgcmVhc29uIGxhc3QgdGltZSB3
-ZSBkbyBub3QgdG91Y2ggdGhpcyBpcyBiZWNhdXNlIG5laXRoZXIgV29sZmdhbmcNCm5vciBJIGhh
-ZCBhY2Nlc3MgdG8gdmY2MTAsIHNvIHdlIGNhbiBvbmx5IHRlc3Qgd2l0aCBNWDI4LCBNWDUzIGFu
-ZCBNWDYuDQpXZSB0aG91Z2h0IHNvbWVvbmUgd2lsbCBzcGVhayBvdXQgaWYgdGhleSBtZWV0IHBy
-b2JsZW1zIHdpdGggdGhpcyBjb3JlLA0KYW5kIHRoZW4gdGhleSBjYW4gaGVscCB0byBmaXggYW5k
-IHRlc3QgaXQuDQoNCkBNYXJjLCBAV29sZmdhbmcsDQpXaGF0IGRvIHlvdSB0aGluaz8gT3Igc2hh
-bGwgd2UgZml4IGZpcnN0IGFuZCB0aGVuIHdhaXQ/DQoNCkBQYW5rYWosIGFzIHlvdSBhcmUgY3Vy
-cmVudGx5IHdvcmtpbmcgb24gcGF0Y2ggdGhpcyBkcml2ZXIsIGlzIGl0DQpwb3NzaWJsZSB0aGF0
-IHlvdSBjYW4gaGVscCB0byBjcmVhdGUgcGF0Y2ggZm9yIHRoZSB0YWJsZSBhbmQvb3IgdGhlDQpQ
-RVJSX1NUQVRFIHF1aXJrIGZpeCBmb3IgdmY2MTAgaW4gY2FzZSByZXF1aXJlZD8gVGhhbmtzIQ0K
-DQpCZXN0IHJlZ2FyZHMNCllpDQoNClsxXSBodHRwczovL3d3dy5ueHAuY29tL2RvY3MvZW4vcmVm
-ZXJlbmNlLW1hbnVhbC9JTVgyNVJNLnBkZg0KWzJdIGh0dHBzOi8vd3d3Lm54cC5jb20vZG9jcy9l
-bi9yZWZlcmVuY2UtbWFudWFsL0lNWDM1Uk0ucGRmDQpbM10gaHR0cHM6Ly93d3cubnhwLmNvbS9k
-b2NzL2VuL3JlZmVyZW5jZS1tYW51YWwvVkZYWFhSTS5wZGYNCg==
+SGkgWkhVIFlpLA0KDQoNCj4gRnJvbTogWkhVIFlpIChTVC1GSVIvRU5HMS1aaHUpIFttYWlsdG86
+WWkuWmh1NUBjbi5ib3NjaC5jb21dDQo+IFNlbnQ6IFdlZG5lc2RheSwgTm92ZW1iZXIgMjIsIDIw
+MTcgODoyNyBBTQ0KPiA+IFsuLi5dDQo+IEBQYW5rYWosIGFzIHlvdSBhcmUgY3VycmVudGx5IHdv
+cmtpbmcgb24gcGF0Y2ggdGhpcyBkcml2ZXIsIGlzIGl0IHBvc3NpYmxlIHRoYXQNCj4geW91IGNh
+biBoZWxwIHRvIGNyZWF0ZSBwYXRjaCBmb3IgdGhlIHRhYmxlIGFuZC9vciB0aGUgUEVSUl9TVEFU
+RSBxdWlyayBmaXgNCj4gZm9yIHZmNjEwIGluIGNhc2UgcmVxdWlyZWQ/IFRoYW5rcyENCj4gDQoN
+CkkgYW0gYWZyYWlkIEkgYWxzbyBkbyBub3QgaGF2ZSBhY2Nlc3MgdG8gdmY2MTAuIEkgaGF2ZSBh
+Y2Nlc3MgdG8gcDEwMTAuDQoNClJlZ2FyZHMsDQpQYW5rYWogQmFuc2FsDQoNCg==
