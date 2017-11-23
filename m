@@ -1,83 +1,49 @@
-From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Subject: RE: [PATCH v2 2/2] can: flexcan: adding platform specific details for
- LS1021A
-Date: Thu, 23 Nov 2017 07:23:34 +0000
-Message-ID: <a14641c15c324e6d9450786d1dbc663b@SGPMBX1017.APAC.bosch.com>
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
- <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
- <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
- <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
- <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
- <AM0PR0402MB3940F2C5AEB0734DC8B79608F1230@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <63a0798d1f5b4fa6ada730c6ba03480c@SGPMBX1017.APAC.bosch.com>
- <AM0PR0402MB39409B1DD5ED9355F12EC85CF1230@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+From: Ulrich Hecht <ulrich.hecht+renesas-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 0/7] R-Car D3 (r8a77995) CAN support
+Date: Thu, 23 Nov 2017 08:43:18 +0100
+Message-ID: <CAO3366xk+Spa=z6bFW9TfqPk_8wUEd5scMK35JbXwpxZ2z7L2w@mail.gmail.com>
+References: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas@gmail.com> <20171122181045.5pstmikwp43idts5@verge.net.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:48972 "EHLO
-        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751129AbdKWHXj (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Nov 2017 02:23:39 -0500
-In-Reply-To: <AM0PR0402MB39409B1DD5ED9355F12EC85CF1230@AM0PR0402MB3940.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Pankaj Bansal <pankaj.bansal@nxp.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171122181045.5pstmikwp43idts5-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Simon Horman <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>
+Cc: Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Chris Paterson <chris.paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-SGVsbG8gUGFua2FqLA0KDQo+RnJvbTogUGFua2FqIEJhbnNhbCBbbWFpbHRvOnBhbmthai5iYW5z
-YWxAbnhwLmNvbV0NCj5TZW50OiBUdWVzZGF5LCBOb3ZlbWJlciAyMSwgMjAxNyA2OjAyIFBNDQo+
-IFsuLi5dDQo+V2l0aG91dCBQRVJSX1NUQVRFIDoNCj4NCj5yb290QFRpbnlEaXN0cm86fiMgaXAg
-bGluayBzZXQgY2FuMCB1cCB0eXBlIGNhbiBiaXRyYXRlIDEyNTAwMCByZXN0YXJ0LW1zIDEwMCBi
-ZXJyLXJlcG9ydGluZyBvZmYNCj5bICAgMjIuNTA3MzQ1XSBJUHY2OiBBRERSQ09ORihORVRERVZf
-Q0hBTkdFKTogY2FuMDogbGluayBiZWNvbWVzIHJlYWR5DQo+cm9vdEBUaW55RGlzdHJvOn4jIGlw
-IGxpbmsgc2V0IGNhbjEgdXAgdHlwZSBjYW4gYml0cmF0ZSAxMjUwMDAgcmVzdGFydC1tcyAxMDAg
-YmVyci1yZXBvcnRpbmcgb2ZmDQo+WyAgIDMwLjkzNDY2OV0gSVB2NjogQUREUkNPTkYoTkVUREVW
-X0NIQU5HRSk6IGNhbjE6IGxpbmsgYmVjb21lcyByZWFkeQ0KPnJvb3RAVGlueURpc3Rybzp+IyBj
-YW5kdW1wIC10ZCAtZSBhbnksMDowLCNGRkZGRkZGRiAmDQo+WzFdIDYxNw0KPnJvb3RAVGlueURp
-c3Rybzp+IyBjYW5nZW4gY2FuMCAtRCAxMTIyMzM0NERFQURCRUVGIC1MIDgNCj5bICAgNDguNjg0
-ODM5XSBmbGV4Y2FuX2lycSA4MDQgcmVnX2Vzcj0weDAwMDYyMjQyLCByZWdfZWNyPTB4MDAwMDAw
-NjAsIHJlZ19jdHJsPTB4NGEzMWFjNTUNCj4gKDAwMC4wMDAwMDApICBjYW4wICAyMDAwMDAwNCAg
-IFs4XSAgMDAgMDggMDAgMDAgMDAgMDAgMDAgMDAgICBFUlJPUkZSQU1FDQo+ICAgICAgICBjb250
-cm9sbGVyLXByb2JsZW17dHgtZXJyb3Itd2FybmluZ30NCj53cml0ZTogTm8gYnVmZmVyIHNwYWNl
-IGF2YWlsYWJsZQ0KPiAgICAgICAgKioqKioqKioqKiAgU2hvcnQgTCBhbmQgSCBzaWduYWxzIG9m
-IENBTiAqKioqKioqKioqKioNCj5yb290QFRpbnlEaXN0cm86fiMgWyAgMjI4LjMzODAzOF0gZmxl
-eGNhbl9pcnEgODA0IHJlZ19lc3I9MHgwMDAwNjAzNiwgcmVnX2Vjcj0weDAwMDAwMDAwLCByZWdf
-Y3RybD0weDRhMzFhYzU1DQo+ICgxNzkuNjUzMjA0KSAgY2FuMCAgMjAwMDAwNDAgICBbOF0gIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwICAgRVJST1JGUkFNRQ0KPiAgICAgICAgYnVzLW9mZg0KPlsg
-IDIyOC40MzgyODddIElQdjY6IEFERFJDT05GKE5FVERFVl9DSEFOR0UpOiBjYW4wOiBsaW5rIGJl
-Y29tZXMgcmVhZHkNCj4gKDAwMC4wOTIxMjIpICBjYW4wICAyMDAwMDEwMCAgIFs4XSAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgICBFUlJPUkZSQU1FDQo+ICAgICAgICByZXN0YXJ0ZWQtYWZ0ZXIt
-YnVzLW9mZg0KPg0KPldpdGggUEVSUl9TVEFURSA6DQo+DQo+cm9vdEBUaW55RGlzdHJvOn4jIGlw
-IGxpbmsgc2V0IGNhbjAgdXAgdHlwZSBjYW4gYml0cmF0ZSAxMjUwMDAgcmVzdGFydC1tcyAxMDAg
-YmVyci1yZXBvcnRpbmcgb2ZmDQo+WyAgIDMxLjk5NzI4Nl0gSVB2NjogQUREUkNPTkYoTkVUREVW
-X0NIQU5HRSk6IGNhbjA6IGxpbmsgYmVjb21lcyByZWFkeQ0KPnJvb3RAVGlueURpc3Rybzp+IyBp
-cCBsaW5rIHNldCBjYW4xIHVwIHR5cGUgY2FuIGJpdHJhdGUgMTI1MDAwIHJlc3RhcnQtbXMgMTAw
-IGJlcnItcmVwb3J0aW5nIG9mZg0KPlsgICA0MC45MzQ4MjRdIElQdjY6IEFERFJDT05GKE5FVERF
-Vl9DSEFOR0UpOiBjYW4xOiBsaW5rIGJlY29tZXMgcmVhZHkNCj5yb290QFRpbnlEaXN0cm86fiMg
-Y2FuZHVtcCAtdGQgLWUgYW55LDA6MCwjRkZGRkZGRkYgJg0KPlsxXSA2MjANCj5yb290QFRpbnlE
-aXN0cm86fiMgY2FuZ2VuIGNhbjAgLUQgMTEyMjMzNDRERUFEQkVFRiAtTCA4DQo+WyAgIDU5LjMx
-NDkyMF0gZmxleGNhbl9pcnEgODA1IHJlZ19lc3I9MHgwMDA2MjI0MiwgcmVnX2Vjcj0weDAwMDAw
-MDYwLCByZWdfY3RybD0weDRhMzFhYzU1DQo+ICgwMDAuMDAwMDAwKSAgWyAgIDU5LjMyMzg2Ml0g
-ZmxleGNhbl9pcnEgODA1IHJlZ19lc3I9MHgwMDA0MjI1MiwgcmVnX2Vjcj0weDAwMDAwMDgwLCBy
-ZWdfY3RybD0weDRhMzFlYzU1DQo+Y2FuMCAgMjAwMDAwMDQgICBbOF0gIDAwIDA4IDAwIDAwIDAw
-IDAwIDAwIDAwICAgRVJST1JGUkFNRQ0KPiAgICAgICAgY29udHJvbGxlci1wcm9ibGVte3R4LWVy
-cm9yLXdhcm5pbmd9DQo+ICgwMDAuMDA5NjczKSAgY2FuMCAgMjAwMDAwMDQgICBbOF0gIDAwIDIw
-IDAwIDAwIDAwIDAwIDAwIDAwICAgRVJST1JGUkFNRQ0KPiAgICAgICAgY29udHJvbGxlci1wcm9i
-bGVte3R4LWVycm9yLXBhc3NpdmV9DQo+d3JpdGU6IE5vIGJ1ZmZlciBzcGFjZSBhdmFpbGFibGUN
-Cj4gICAgICAgICoqKioqKioqKiogIFNob3J0IEwgYW5kIEggc2lnbmFscyBvZiBDQU4gKioqKioq
-KioqKioqDQo+cm9vdEBUaW55RGlzdHJvOn4jIFsgICA4Ny45OTU4NzhdIGZsZXhjYW5faXJxIDgw
-NSByZWdfZXNyPTB4MDAwMDYwMzYsIHJlZ19lY3I9MHgwMDAwMDAwMCwgcmVnX2N0cmw9MHg0YTMx
-YWM1NQ0KPiAoMDI4LjY3MTI5MSkgIGNhbjAgIDIwMDAwMDQwICAgWzhdICAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAgIEVSUk9SRlJBTUUNCj4gICAgICAgIGJ1cy1vZmYNCj4gKDAwMC4wOTQzMDUp
-ICBbICAgODguMDk4NDY0XSBJUHY2OiBBRERSQ09ORihORVRERVZfQ0hBTkdFKTogY2FuMDogbGlu
-ayBiZWNvbWVzIHJlYWR5DQo+Y2FuMCAgMjAwMDAxMDAgICBbOF0gIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwICAgRVJST1JGUkFNRQ0KPiAgICAgICAgcmVzdGFydGVkLWFmdGVyLWJ1cy1vZmYNCg0K
-U2VlbXMgdGhlIHN0YXRlIGluY3JlYXNlIGNhbiBiZSByZXBvcnRlZCBjb3JyZWN0bHksIGFuZCB0
-aGUgc3RhdGUNCmRlY3JlYXNlIHNob3VsZCBhbHNvIHdvcmtzIGZpbmUsIHRoYW5rcyBmb3IgdGhl
-IHRlc3QgcmVzdWx0cyENCg0KQmVzdCByZWdhcmRzDQpZaQ0KDQoNCg==
+On Wed, Nov 22, 2017 at 7:10 PM, Simon Horman <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org> wrote:
+> On Fri, Nov 17, 2017 at 11:41:22AM +0100, Ulrich Hecht wrote:
+>> Hi!
+>>
+>> Here's CAN and CAN FD support for the R-Car D3. This is a by-the-datasheet
+>> implementation, with the datasheet missing some bits, namely the pin map.
+>> I filled in the gaps with frog DNA^W^W^Wby deducing the information from
+>> pin numbers already in the PFC driver, so careful scrutiny is advised.
+>>
+>> CU
+>> Uli
+>>
+>>
+>> Ulrich Hecht (7):
+>>   pinctrl: sh-pfc: r8a77995: Add CAN support
+>>   pinctrl: sh-pfc: r8a77995: Add CAN FD support
+>>   arm64: dts: r8a77995: Add CAN external clock support
+>>   arm64: dts: r8a77995: Add CAN support
+>>   arm64: dts: r8a77995: Add CAN FD support
+>>   can: rcar_can: document r8a77995 (R-Car D3) compatibility strings
+>>   can: rcar_canfd: document r8a77995 (R-Car D3) compatibility strings
+>
+> Hi Ulrich,
+>
+> is it safe, from a regression point of view, to apply the dts patches
+> to a tree that does not have the other patches present?
+
+I believe it is.
+
+CU
+Uli
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
