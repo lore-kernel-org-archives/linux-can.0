@@ -1,7 +1,7 @@
 From: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
-Subject: [PATCH v2 2/4] powerpc: dts: P1010: Add endianness property to flexcan node
-Date: Thu, 23 Nov 2017 15:25:33 +0530
-Message-ID: <1511430935-29783-2-git-send-email-pankaj.bansal@nxp.com>
+Subject: [PATCH v2 4/4] arm: dts: Remove p1010-flexcan compatible from imx series dts
+Date: Thu, 23 Nov 2017 15:25:35 +0530
+Message-ID: <1511430935-29783-4-git-send-email-pankaj.bansal@nxp.com>
 References: <1511430935-29783-1-git-send-email-pankaj.bansal@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,46 +12,115 @@ To: wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@publi
 Cc: V.Sethi-3arQi8VN3Tc@public.gmane.org, poonam.aggrwal-3arQi8VN3Tc@public.gmane.org, Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
 List-Id: linux-can.vger.kernel.org
 
-The flexcan driver assumed that flexcan controller is big endian for
-powerpc architecture and little endian for other architectures.
+The flexcan driver has been modified to check for big-endian dts
+property for be read/write to flexcan registers/mb.
 
-But this is not universally true. flexcan controller can be little or
-big endian on any architecture.
+An exception to this rule is powerpc P1010RDB, which is always
+big-endian, even if big-endian is not present in dts. This is
+checked using p1010-flexcan compatible in dts.
 
-Therefore the flexcan driver has been modified to check for "big-endian"
-device tree property for controllers that are big endian.
-
-consequently add the property to freescale P1010 SOC device tree.
+Therefore, remove p1010-flexcan compatible from imx series dts,
+as their flexcan core is little endian.
 
 Signed-off-by: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
-Reviewed-by: Poonam Aggrwal <poonam.aggrwal-3arQi8VN3Tc@public.gmane.org>
 ---
 Changes in v2:
-  - No change.
-  - Added one more patch in series.
+  - Add this patch in series.
 
- arch/powerpc/boot/dts/fsl/p1010si-post.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/boot/dts/imx25.dtsi | 4 ++--
+ arch/arm/boot/dts/imx28.dtsi | 4 ++--
+ arch/arm/boot/dts/imx35.dtsi | 4 ++--
+ arch/arm/boot/dts/imx53.dtsi | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi b/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-index af12ead..1b4aafc 100644
---- a/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-+++ b/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-@@ -137,12 +137,14 @@
- 		compatible = "fsl,p1010-flexcan";
- 		reg = <0x1c000 0x1000>;
- 		interrupts = <48 0x2 0 0>;
-+		big-endian;
- 	};
+diff --git a/arch/arm/boot/dts/imx25.dtsi b/arch/arm/boot/dts/imx25.dtsi
+index 09ce8b8..fcaff1c 100644
+--- a/arch/arm/boot/dts/imx25.dtsi
++++ b/arch/arm/boot/dts/imx25.dtsi
+@@ -122,7 +122,7 @@
+ 			};
  
- 	can1: can@1d000 {
- 		compatible = "fsl,p1010-flexcan";
- 		reg = <0x1d000 0x1000>;
- 		interrupts = <61 0x2 0 0>;
-+		big-endian;
- 	};
+ 			can1: can@43f88000 {
+-				compatible = "fsl,imx25-flexcan", "fsl,p1010-flexcan";
++				compatible = "fsl,imx25-flexcan";
+ 				reg = <0x43f88000 0x4000>;
+ 				interrupts = <43>;
+ 				clocks = <&clks 75>, <&clks 75>;
+@@ -131,7 +131,7 @@
+ 			};
  
- 	L2: l2-cache-controller@20000 {
+ 			can2: can@43f8c000 {
+-				compatible = "fsl,imx25-flexcan", "fsl,p1010-flexcan";
++				compatible = "fsl,imx25-flexcan";
+ 				reg = <0x43f8c000 0x4000>;
+ 				interrupts = <44>;
+ 				clocks = <&clks 76>, <&clks 76>;
+diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
+index 2f4ebe0..e52e05c 100644
+--- a/arch/arm/boot/dts/imx28.dtsi
++++ b/arch/arm/boot/dts/imx28.dtsi
+@@ -1038,7 +1038,7 @@
+ 			};
+ 
+ 			can0: can@80032000 {
+-				compatible = "fsl,imx28-flexcan", "fsl,p1010-flexcan";
++				compatible = "fsl,imx28-flexcan";
+ 				reg = <0x80032000 0x2000>;
+ 				interrupts = <8>;
+ 				clocks = <&clks 58>, <&clks 58>;
+@@ -1047,7 +1047,7 @@
+ 			};
+ 
+ 			can1: can@80034000 {
+-				compatible = "fsl,imx28-flexcan", "fsl,p1010-flexcan";
++				compatible = "fsl,imx28-flexcan";
+ 				reg = <0x80034000 0x2000>;
+ 				interrupts = <9>;
+ 				clocks = <&clks 59>, <&clks 59>;
+diff --git a/arch/arm/boot/dts/imx35.dtsi b/arch/arm/boot/dts/imx35.dtsi
+index 6d5e6a6..1f0e220 100644
+--- a/arch/arm/boot/dts/imx35.dtsi
++++ b/arch/arm/boot/dts/imx35.dtsi
+@@ -303,7 +303,7 @@
+ 			};
+ 
+ 			can1: can@53fe4000 {
+-				compatible = "fsl,imx35-flexcan", "fsl,p1010-flexcan";
++				compatible = "fsl,imx35-flexcan";
+ 				reg = <0x53fe4000 0x1000>;
+ 				clocks = <&clks 33>, <&clks 33>;
+ 				clock-names = "ipg", "per";
+@@ -312,7 +312,7 @@
+ 			};
+ 
+ 			can2: can@53fe8000 {
+-				compatible = "fsl,imx35-flexcan", "fsl,p1010-flexcan";
++				compatible = "fsl,imx35-flexcan";
+ 				reg = <0x53fe8000 0x1000>;
+ 				clocks = <&clks 34>, <&clks 34>;
+ 				clock-names = "ipg", "per";
+diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
+index 8bf0d89..85573cf 100644
+--- a/arch/arm/boot/dts/imx53.dtsi
++++ b/arch/arm/boot/dts/imx53.dtsi
+@@ -545,7 +545,7 @@
+ 			};
+ 
+ 			can1: can@53fc8000 {
+-				compatible = "fsl,imx53-flexcan", "fsl,p1010-flexcan";
++				compatible = "fsl,imx53-flexcan";
+ 				reg = <0x53fc8000 0x4000>;
+ 				interrupts = <82>;
+ 				clocks = <&clks IMX5_CLK_CAN1_IPG_GATE>,
+@@ -555,7 +555,7 @@
+ 			};
+ 
+ 			can2: can@53fcc000 {
+-				compatible = "fsl,imx53-flexcan", "fsl,p1010-flexcan";
++				compatible = "fsl,imx53-flexcan";
+ 				reg = <0x53fcc000 0x4000>;
+ 				interrupts = <83>;
+ 				clocks = <&clks IMX5_CLK_CAN2_IPG_GATE>,
 -- 
 2.7.4
 
