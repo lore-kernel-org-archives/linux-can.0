@@ -1,128 +1,79 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v3 2/2] can: flexcan: adding platform specific details for
+From: Pankaj Bansal <pankaj.bansal@nxp.com>
+Subject: RE: [PATCH v3 2/2] can: flexcan: adding platform specific details for
  LS1021A
-Date: Thu, 23 Nov 2017 11:07:32 +0100
-Message-ID: <9c8816e4-5888-0b10-34c4-0f9fddb4bd53@pengutronix.de>
+Date: Thu, 23 Nov 2017 12:01:35 +0000
+Message-ID: <AM0PR0402MB39403E7EFEB9547234E25289F1210@AM0PR0402MB3940.eurprd04.prod.outlook.com>
 References: <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
  <1511428158-28710-1-git-send-email-pankaj.bansal@nxp.com>
  <1511428158-28710-2-git-send-email-pankaj.bansal@nxp.com>
  <f7413c59-978e-fad1-6df0-3226067e64fa@pengutronix.de>
  <AM0PR0402MB3940EB22177698DBA63A5F24F1210@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <9c8816e4-5888-0b10-34c4-0f9fddb4bd53@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Iv0w7xEhXJjwrQ5PctwoVf7S0E2ePg4Hc"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:53075 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751433AbdKWKHl (ORCPT
-        <rfc822;linux-can@vger.kernel.ORG>); Thu, 23 Nov 2017 05:07:41 -0500
-In-Reply-To: <AM0PR0402MB3940EB22177698DBA63A5F24F1210@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+Received: from mail-eopbgr10083.outbound.protection.outlook.com ([40.107.1.83]:19808
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751736AbdKWMBq (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 23 Nov 2017 07:01:46 -0500
+In-Reply-To: <9c8816e4-5888-0b10-34c4-0f9fddb4bd53@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pankaj Bansal <pankaj.bansal@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Iv0w7xEhXJjwrQ5PctwoVf7S0E2ePg4Hc
-Content-Type: multipart/mixed; boundary="hf5MgG7LBrddrmD0LHF4GtrMIbaAiMv23";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Pankaj Bansal <pankaj.bansal@nxp.com>,
- "wg@grandegger.com" <wg@grandegger.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>,
- Bhupesh Sharma <bhupesh.sharma@freescale.com>
-Message-ID: <9c8816e4-5888-0b10-34c4-0f9fddb4bd53@pengutronix.de>
-Subject: Re: [PATCH v3 2/2] can: flexcan: adding platform specific details for
- LS1021A
-References: <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
- <1511428158-28710-1-git-send-email-pankaj.bansal@nxp.com>
- <1511428158-28710-2-git-send-email-pankaj.bansal@nxp.com>
- <f7413c59-978e-fad1-6df0-3226067e64fa@pengutronix.de>
- <AM0PR0402MB3940EB22177698DBA63A5F24F1210@AM0PR0402MB3940.eurprd04.prod.outlook.com>
-In-Reply-To: <AM0PR0402MB3940EB22177698DBA63A5F24F1210@AM0PR0402MB3940.eurprd04.prod.outlook.com>
-
---hf5MgG7LBrddrmD0LHF4GtrMIbaAiMv23
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 11/23/2017 11:01 AM, Pankaj Bansal wrote:
->>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
->>> index 4c873fb..21d0dd8 100644
->>> --- a/drivers/net/can/flexcan.c
->>> +++ b/drivers/net/can/flexcan.c
->>> @@ -190,6 +190,7 @@
->>>   *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no=
-        no
->>>   *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no=
-       yes
->>>   *   VF610 FlexCAN3  ?               no       yes         ?      yes=
-       yes?
->>> + * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no=
-       yes
->>
->> Out of curiosity, where have you got the IP core version from?
-
-> I got this version from Bill Of Material details of LS1021A SOC.
-
-Oh, nice. Do you have access to the vf610 list to get the IP core version=
-?
-
-
->>>   *
->>>   * Some SOCs do not have the RX_WARN & TX_WARN interrupt line
->> connected.
->>>   */
->>> @@ -304,6 +305,13 @@ static const struct flexcan_devtype_data
->> fsl_vf610_devtype_data =3D {
->>>  		FLEXCAN_QUIRK_DISABLE_MECR |
->> FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,  };
->>>
->>> +/* LS1021A-Rev2 has functional RX-FIFO mode  */
->>
->> That comment is obsolete, isn't it? If it's a noteworthy feature, add =
-it to the
->> overview table above.
->=20
-> Actually in LS1021A Rev1 RX-FIFO mode is broken. Rev1 is initial releas=
-e, and Rev2
-> Is final release. Which is why this comment.
-
-Ahh, can you please add this to the table above.
-
-You're not using the mailbox mode anymore, right? This means the driver
-should work with the broken r1 silicon, too? Are any of these silicons
-out in the wild? Does it make sense to use "fsl,ls1021ar1-flexcan" for
-this compatible?
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---hf5MgG7LBrddrmD0LHF4GtrMIbaAiMv23--
-
---Iv0w7xEhXJjwrQ5PctwoVf7S0E2ePg4Hc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloWneUACgkQHv7KIOw4
-HPa/uQgAlCr513/MpEJjKKDBg7Q6eeLc9YnHXT7N7wm/UV5QpyhPn1ITyFTfOZFa
-QYKQFBQiTJD/3lEXxGZWoqF4cQdr6rt/5YyvzVTKlBE95/7tHvGG0axlKmSU6tNz
-p4vLKS7keb/CzOpuabUe90ypWa+rXXT5SsqTDq03n2syqI0RLa1alzBKCVMlR/iN
-N3q25DRZ60fYHvl/zL199gZxm2Abb9g4D3qMWht3Sh9kbQ0x0C2b3REu+1odN2k/
-/sQn0N4yrGYTABLSOzAEjalFv3HsEprkeX4rFCMjarKPv5I6DgzwljZWAXjZEIlv
-qhWcXFDEQCGUZGfnCOwggBVtgdjqaw==
-=YtUH
------END PGP SIGNATURE-----
-
---Iv0w7xEhXJjwrQ5PctwoVf7S0E2ePg4Hc--
+SEkgTWFyYywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEts
+ZWluZS1CdWRkZSBbbWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogVGh1cnNkYXks
+IE5vdmVtYmVyIDIzLCAyMDE3IDM6MzggUE0NCj4gVG86IFBhbmthaiBCYW5zYWwgPHBhbmthai5i
+YW5zYWxAbnhwLmNvbT47IHdnQGdyYW5kZWdnZXIuY29tOyBsaW51eC0NCj4gY2FuQHZnZXIua2Vy
+bmVsLm9yZw0KPiBDYzogVmFydW4gU2V0aGkgPFYuU2V0aGlAbnhwLmNvbT47IFBvb25hbSBBZ2dy
+d2FsDQo+IDxwb29uYW0uYWdncndhbEBueHAuY29tPjsgQmh1cGVzaCBTaGFybWENCj4gPGJodXBl
+c2guc2hhcm1hQGZyZWVzY2FsZS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjMgMi8yXSBj
+YW46IGZsZXhjYW46IGFkZGluZyBwbGF0Zm9ybSBzcGVjaWZpYyBkZXRhaWxzIGZvcg0KPiBMUzEw
+MjFBDQo+IA0KPiBPbiAxMS8yMy8yMDE3IDExOjAxIEFNLCBQYW5rYWogQmFuc2FsIHdyb3RlOg0K
+PiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2ZXJzL25l
+dC9jYW4vZmxleGNhbi5jDQo+ID4+PiBpbmRleCA0Yzg3M2ZiLi4yMWQwZGQ4IDEwMDY0NA0KPiA+
+Pj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiA+Pj4gKysrIGIvZHJpdmVycy9u
+ZXQvY2FuL2ZsZXhjYW4uYw0KPiA+Pj4gQEAgLTE5MCw2ICsxOTAsNyBAQA0KPiA+Pj4gICAqICAg
+TVg1MyAgRmxleENBTjIgIDAzLjAwLjAwLjAwICAgIHllcyAgICAgICAgbm8gICAgICAgIG5vICAg
+ICAgIG5vICAgICAgICBubw0KPiA+Pj4gICAqICAgTVg2cyAgRmxleENBTjMgIDEwLjAwLjEyLjAw
+ICAgIHllcyAgICAgICB5ZXMgICAgICAgIG5vICAgICAgIG5vICAgICAgIHllcw0KPiA+Pj4gICAq
+ICAgVkY2MTAgRmxleENBTjMgID8gICAgICAgICAgICAgICBubyAgICAgICB5ZXMgICAgICAgICA/
+ICAgICAgeWVzICAgICAgIHllcz8NCj4gPj4+ICsgKiBMUzEwMjFBIEZsZXhDQU4yICAwMy4wMC4w
+NC4wMCAgICAgbm8gICAgICAgeWVzICAgICAgICBubyAgICAgICBubyAgICAgICB5ZXMNCj4gPj4N
+Cj4gPj4gT3V0IG9mIGN1cmlvc2l0eSwgd2hlcmUgaGF2ZSB5b3UgZ290IHRoZSBJUCBjb3JlIHZl
+cnNpb24gZnJvbT8NCj4gDQo+ID4gSSBnb3QgdGhpcyB2ZXJzaW9uIGZyb20gQmlsbCBPZiBNYXRl
+cmlhbCBkZXRhaWxzIG9mIExTMTAyMUEgU09DLg0KPiANCj4gT2gsIG5pY2UuIERvIHlvdSBoYXZl
+IGFjY2VzcyB0byB0aGUgdmY2MTAgbGlzdCB0byBnZXQgdGhlIElQIGNvcmUgdmVyc2lvbj8NCj4g
+DQoNCkkgYW0gc29ycnkgYnV0IEkgZG9uJ3QgaGF2ZSBhY2Nlc3MgdG8gdmY2MTAgbGlzdC4NCg0K
+PiANCj4gPj4+ICAgKg0KPiA+Pj4gICAqIFNvbWUgU09DcyBkbyBub3QgaGF2ZSB0aGUgUlhfV0FS
+TiAmIFRYX1dBUk4gaW50ZXJydXB0IGxpbmUNCj4gPj4gY29ubmVjdGVkLg0KPiA+Pj4gICAqLw0K
+PiA+Pj4gQEAgLTMwNCw2ICszMDUsMTMgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGV4Y2FuX2Rl
+dnR5cGVfZGF0YQ0KPiA+PiBmc2xfdmY2MTBfZGV2dHlwZV9kYXRhID0gew0KPiA+Pj4gIAkJRkxF
+WENBTl9RVUlSS19ESVNBQkxFX01FQ1IgfA0KPiA+PiBGTEVYQ0FOX1FVSVJLX1VTRV9PRkZfVElN
+RVNUQU1QLCAgfTsNCj4gPj4+DQo+ID4+PiArLyogTFMxMDIxQS1SZXYyIGhhcyBmdW5jdGlvbmFs
+IFJYLUZJRk8gbW9kZSAgKi8NCj4gPj4NCj4gPj4gVGhhdCBjb21tZW50IGlzIG9ic29sZXRlLCBp
+c24ndCBpdD8gSWYgaXQncyBhIG5vdGV3b3J0aHkgZmVhdHVyZSwgYWRkDQo+ID4+IGl0IHRvIHRo
+ZSBvdmVydmlldyB0YWJsZSBhYm92ZS4NCj4gPg0KPiA+IEFjdHVhbGx5IGluIExTMTAyMUEgUmV2
+MSBSWC1GSUZPIG1vZGUgaXMgYnJva2VuLiBSZXYxIGlzIGluaXRpYWwNCj4gPiByZWxlYXNlLCBh
+bmQgUmV2MiBJcyBmaW5hbCByZWxlYXNlLiBXaGljaCBpcyB3aHkgdGhpcyBjb21tZW50Lg0KPiAN
+Cj4gQWhoLCBjYW4geW91IHBsZWFzZSBhZGQgdGhpcyB0byB0aGUgdGFibGUgYWJvdmUuDQoNCkkg
+aGF2ZSBhbHJlYWR5IGFkZGVkIExTMTAyMUEgaW4gdGFibGUuDQoNCj4gDQo+IFlvdSdyZSBub3Qg
+dXNpbmcgdGhlIG1haWxib3ggbW9kZSBhbnltb3JlLCByaWdodD8gDQoNCk5vLCB3ZSBhcmUgdXNp
+bmcgdGltZXN0YW1wIGJhc2VkIFJYIGZpZm8uDQoNCj4gVGhpcyBtZWFucyB0aGUgZHJpdmVyIHNo
+b3VsZCB3b3JrIHdpdGggdGhlIGJyb2tlbiByMSBzaWxpY29uLCB0b28/DQoNCkkgd291bGQgdGhp
+bmsgc28uIEJ1dCBhcyByMSBpcyBub3Qgb2ZmaWNpYWxseSBzdXBwb3J0ZWQgdmVyc2lvbiwgSSBo
+YXZlIG5vdCBjaGVja2VkIGl0Lg0KDQo+IEFyZSBhbnkgb2YgdGhlc2Ugc2lsaWNvbnMgb3V0IGlu
+DQo+IHRoZSB3aWxkPyBEb2VzIGl0IG1ha2Ugc2Vuc2UgdG8gdXNlICJmc2wsbHMxMDIxYXIxLWZs
+ZXhjYW4iIGZvciB0aGlzDQo+IGNvbXBhdGlibGU/DQoNCk5vLiByMSBzaWxpY29uIGhhcyBub3Qg
+YmVlbiBkZWxpdmVyZWQgdG8gYW55IGN1c3RvbWVyLiBXZSBuZWVkIG5vdCB0byBzdXBwb3J0DQpy
+MSBzaWxpY29uIGluIGNvbXBhdGlibGUsIGFzIGl0cyBub3Qgb2ZmaWNpYWwgc3VwcG9ydGVkIHZl
+cnNpb24uDQoNCj4gDQo+IE1hcmMNCj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAg
+ICAgICAgICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVzdHJpYWwg
+TGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+
+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5
+MTctNTU1NSB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93
+d3cucGVuZ3V0cm9uaXguZGUgICB8DQoNCg==
