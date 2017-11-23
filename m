@@ -1,134 +1,64 @@
 From: Pankaj Bansal <pankaj.bansal@nxp.com>
-Subject: [PATCH v2 3/4] arm/dts: Add nodes for flexcan devices present on LS1021A-Rev2 SoC
-Date: Thu, 23 Nov 2017 15:25:34 +0530
-Message-ID: <1511430935-29783-3-git-send-email-pankaj.bansal@nxp.com>
-References: <1511430935-29783-1-git-send-email-pankaj.bansal@nxp.com>
+Subject: RE: [PATCH v3 1/2] can: flexcan: Remodel FlexCAN register r/w APIs
+ for big endian FlexCAN controllers.
+Date: Thu, 23 Nov 2017 09:55:41 +0000
+Message-ID: <AM0PR0402MB39404CE0D842E3857235CE6EF1210@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+References: <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
+ <1511428158-28710-1-git-send-email-pankaj.bansal@nxp.com>
+ <7244fe2c-173f-be96-8ec5-1f5d78d8ec53@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-cys01nam02on0052.outbound.protection.outlook.com ([104.47.37.52]:2561
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+Received: from mail-ve1eur01on0085.outbound.protection.outlook.com ([104.47.1.85]:4192
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1752545AbdKWJwH (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 23 Nov 2017 04:52:07 -0500
-In-Reply-To: <1511430935-29783-1-git-send-email-pankaj.bansal@nxp.com>
+        id S1751906AbdKWJzp (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 23 Nov 2017 04:55:45 -0500
+In-Reply-To: <7244fe2c-173f-be96-8ec5-1f5d78d8ec53@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org
-Cc: V.Sethi@nxp.com, poonam.aggrwal@nxp.com, Pankaj Bansal <pankaj.bansal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>, Sakar Arora <Sakar.Arora@freescale.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>, Sakar Arora <Sakar.Arora@freescale.com>
 
-This patch adds the device nodes for flexcan controller(s) present on
-LS1021A-Rev2 SoC.
-
-Signed-off-by: Pankaj Bansal <pankaj.bansal@nxp.com>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
-Signed-off-by: Sakar Arora <Sakar.Arora@freescale.com>
-Reviewed-by: Zhengxiong Jin <Jason.Jin@freescale.com>
-Reviewed-by: Poonam Aggrwal <poonam.aggrwal@nxp.com>
----
-Changes in v2:
-  - No change.
-  - Added one more patch in series.
-
- arch/arm/boot/dts/ls1021a-qds.dts | 16 +++++++++++++
- arch/arm/boot/dts/ls1021a-twr.dts | 16 +++++++++++++
- arch/arm/boot/dts/ls1021a.dtsi    | 36 +++++++++++++++++++++++++++++
- 3 files changed, 68 insertions(+)
-
-diff --git a/arch/arm/boot/dts/ls1021a-qds.dts b/arch/arm/boot/dts/ls1021a-qds.dts
-index 9408753..4f211e3 100644
---- a/arch/arm/boot/dts/ls1021a-qds.dts
-+++ b/arch/arm/boot/dts/ls1021a-qds.dts
-@@ -331,3 +331,19 @@
- &uart1 {
- 	status = "okay";
- };
-+
-+&can0 {
-+	status = "okay";
-+};
-+
-+&can1 {
-+	status = "okay";
-+};
-+
-+&can2 {
-+	status = "disabled";
-+};
-+
-+&can3 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm/boot/dts/ls1021a-twr.dts b/arch/arm/boot/dts/ls1021a-twr.dts
-index a8b148a..7202d9c 100644
---- a/arch/arm/boot/dts/ls1021a-twr.dts
-+++ b/arch/arm/boot/dts/ls1021a-twr.dts
-@@ -243,3 +243,19 @@
- &uart1 {
- 	status = "okay";
- };
-+
-+&can0 {
-+	status = "okay";
-+};
-+
-+&can1 {
-+	status = "okay";
-+};
-+
-+&can2 {
-+	status = "disabled";
-+};
-+
-+&can3 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index 9319e1f..7789031 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -730,5 +730,41 @@
- 					<0000 0 0 3 &gic GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>,
- 					<0000 0 0 4 &gic GIC_SPI 193 IRQ_TYPE_LEVEL_HIGH>;
- 		};
-+
-+		can0: can@2a70000 {
-+			compatible = "fsl,ls1021ar2-flexcan";
-+			reg = <0x0 0x2a70000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
-+			clock-names = "ipg", "per";
-+			big-endian;
-+		};
-+
-+		can1: can@2a80000 {
-+			compatible = "fsl,ls1021ar2-flexcan";
-+			reg = <0x0 0x2a80000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
-+			clock-names = "ipg", "per";
-+			big-endian;
-+		};
-+
-+		can2: can@2a90000 {
-+			compatible = "fsl,ls1021ar2-flexcan";
-+			reg = <0x0 0x2a90000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
-+			clock-names = "ipg", "per";
-+			big-endian;
-+		};
-+
-+		can3: can@2aa0000 {
-+			compatible = "fsl,ls1021ar2-flexcan";
-+			reg = <0x0 0x2aa0000 0x0 0x1000>;
-+			interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
-+			clock-names = "ipg", "per";
-+			big-endian;
-+		};
- 	};
- };
--- 
-2.7.4
-
+SGkgTWFyYywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEts
+ZWluZS1CdWRkZSBbbWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogVGh1cnNkYXks
+IE5vdmVtYmVyIDIzLCAyMDE3IDI6NDggUE0NCj4gVG86IFBhbmthaiBCYW5zYWwgPHBhbmthai5i
+YW5zYWxAbnhwLmNvbT47IHdnQGdyYW5kZWdnZXIuY29tOyBsaW51eC0NCj4gY2FuQHZnZXIua2Vy
+bmVsLm9yZw0KPiBDYzogVmFydW4gU2V0aGkgPFYuU2V0aGlAbnhwLmNvbT47IFBvb25hbSBBZ2dy
+d2FsDQo+IDxwb29uYW0uYWdncndhbEBueHAuY29tPjsgQmh1cGVzaCBTaGFybWENCj4gPGJodXBl
+c2guc2hhcm1hQGZyZWVzY2FsZS5jb20+OyBTYWthciBBcm9yYQ0KPiA8U2FrYXIuQXJvcmFAZnJl
+ZXNjYWxlLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MyAxLzJdIGNhbjogZmxleGNhbjog
+UmVtb2RlbCBGbGV4Q0FOIHJlZ2lzdGVyIHIvdyBBUElzDQo+IGZvciBiaWcgZW5kaWFuIEZsZXhD
+QU4gY29udHJvbGxlcnMuDQo+IA0KPiBPbiAxMS8yMy8yMDE3IDEwOjA5IEFNLCBQYW5rYWogQmFu
+c2FsIHdyb3RlOg0KPiA+IFRoZSBGbGV4Q0FOIGRyaXZlciBhc3N1bWVkIHRoYXQgRmxleENBTiBj
+b250cm9sbGVyIGlzIGJpZyBlbmRpYW4gZm9yDQo+ID4gcG93ZXJwYyBhcmNoaXRlY3R1cmUgYW5k
+IGxpdHRsZSBlbmRpYW4gZm9yIG90aGVyIGFyY2hpdGVjdHVyZXMuDQo+ID4NCj4gPiBCdXQgdGhp
+cyBtYXkgbm90IGJlIHRoZSBjYXNlLiBGbGV4Q0FOIGNvbnRyb2xsZXIgY2FuIGJlIGxpdHRsZSBv
+ciBiaWcNCj4gPiBlbmRpYW4gb24gYW55IGFyY2hpdGVjdHVyZS4gRm9yIGUuZy4gTlhQIExTMTAy
+MUEgQVJNIGJhc2VkIFNPQyBoYXMgYmlnDQo+ID4gZW5kaWFuIEZsZXhDQU4gY29udHJvbGxlci4N
+Cj4gPg0KPiA+IFRoZXJlZm9yZSwgdGhlIGRyaXZlciBoYXMgYmVlbiBtb2RpZmllZCB0byBhZGQg
+YSBwcm92aXNpb24gZm9yIGJvdGgNCj4gPiB0eXBlcyBvZiBjb250cm9sbGVycyB1c2luZyBhbiBh
+ZGRpdGlvbmFsIGRldmljZSB0cmVlIHByb3BlcnR5LiBPbiBhDQo+ID4gImZzbCxwMTAxMC1mbGV4
+Y2FuIiBkZXZpY2UgQkUgaXMgZGVmYXVsdCwgb24gYWxsIG90aGVyIGRldmljZXMgTEUgaXMuDQo+
+ID4NCj4gPiBCaWcgRW5kaWFuIGNvbnRyb2xsZXJzIHNob3VsZCBoYXZlICJiaWctZW5kaWFuIiBz
+ZXQgaW4gdGhlIGRldmljZSB0cmVlLg0KPiA+IGNoZWNrICJEb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvbmV0L2Nhbi9mc2wtZmxleGNhbi50eHQiIGZvcg0KPiA+IHVzYWdlLg0KPiA+
+DQo+ID4gVGhpcyBpcyB0aGUgc3RhbmRhcmQgcHJhY3RpY2UgZm9sbG93ZWQgaW4gbGludXguIGZv
+ciBtb3JlIGluZm8gY2hlY2s6DQo+ID4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L2NvbW1vbi1wcm9wZXJ0aWVzLnR4dA0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUGFua2FqIEJh
+bnNhbCA8cGFua2FqLmJhbnNhbEBueHAuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEJodXBlc2gg
+U2hhcm1hIDxiaHVwZXNoLnNoYXJtYUBmcmVlc2NhbGUuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IFNha2FyIEFyb3JhIDxTYWthci5Bcm9yYUBmcmVlc2NhbGUuY29tPg0KPiA+IFJldmlld2VkLWJ5
+OiBaaGVuZ3hpb25nIEppbiA8SmFzb24uSmluQGZyZWVzY2FsZS5jb20+DQo+ID4gUmV2aWV3ZWQt
+Ynk6IFBvb25hbSBBZ2dyd2FsIDxwb29uYW0uYWdncndhbEBueHAuY29tPg0KPiANCj4gSSdtIG1p
+c3NpbmcgdGhlIHVwZGF0ZSBvZiB0aGUgZnNsLWZsZXhjYW4udHh0IGluIHRoaXMgc2VyaWVzLg0K
+PiANCg0KQXMgZnNsLWZsZXhjYW4udHh0IGlzIGEgY2hhbmdlIGluIGRldmljZS10cmVlLCBJIGhh
+dmUgc2VudCB0aGlzIGNoYW5nZSBpbiBhbm90aGVyIHNlcmllcyBvZiBwYXRjaGVzIHdoaWNoIGFy
+ZSBhbGwgaW4gZGV2aWNlIHRyZWUuDQoNCj4gTWFyYw0KPiANCj4gLS0NCj4gUGVuZ3V0cm9uaXgg
+ZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4g
+SW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05
+MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0
+OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYg
+IHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
