@@ -1,44 +1,95 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 0/7] R-Car D3 (r8a77995) CAN support
-Date: Wed, 22 Nov 2017 19:10:45 +0100
-Message-ID: <20171122181045.5pstmikwp43idts5@verge.net.au>
-References: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas@gmail.com>
+From: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Subject: RE: [PATCH v2 2/2] can: flexcan: adding platform specific details for
+ LS1021A
+Date: Thu, 23 Nov 2017 01:26:24 +0000
+Message-ID: <bf3379d209c34ed6ab17488c66b3054a@SGPMBX1017.APAC.bosch.com>
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
+ <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
+ <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
+ <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
+ <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+ <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
+ <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
+ <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from kirsty.vergenet.net ([202.4.237.240]:34872 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751796AbdKVSLP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 22 Nov 2017 13:11:15 -0500
-Content-Disposition: inline
-In-Reply-To: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas@gmail.com>
+Received: from smtp6-v.fe.bosch.de ([139.15.237.11]:52068 "EHLO
+        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751856AbdKWB03 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 22 Nov 2017 20:26:29 -0500
+In-Reply-To: <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
-Cc: linux-renesas-soc@vger.kernel.org, linux-can@vger.kernel.org, devicetree@vger.kernel.org, wsa@the-dreams.de, geert@linux-m68k.org, magnus.damm@gmail.com, chris.paterson2@renesas.com, ramesh.shanmugasundaram@bp.renesas.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Pankaj Bansal <pankaj.bansal@nxp.com>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Stefan Agner <stefan@agner.ch>
 
-On Fri, Nov 17, 2017 at 11:41:22AM +0100, Ulrich Hecht wrote:
-> Hi!
-> 
-> Here's CAN and CAN FD support for the R-Car D3. This is a by-the-datasheet
-> implementation, with the datasheet missing some bits, namely the pin map.
-> I filled in the gaps with frog DNA^W^W^Wby deducing the information from
-> pin numbers already in the PFC driver, so careful scrutiny is advised.
-> 
-> CU
-> Uli
-> 
-> 
-> Ulrich Hecht (7):
->   pinctrl: sh-pfc: r8a77995: Add CAN support
->   pinctrl: sh-pfc: r8a77995: Add CAN FD support
->   arm64: dts: r8a77995: Add CAN external clock support
->   arm64: dts: r8a77995: Add CAN support
->   arm64: dts: r8a77995: Add CAN FD support
->   can: rcar_can: document r8a77995 (R-Car D3) compatibility strings
->   can: rcar_canfd: document r8a77995 (R-Car D3) compatibility strings
-
-Hi Ulrich,
-
-is it safe, from a regression point of view, to apply the dts patches
-to a tree that does not have the other patches present?
+SGVsbG8gTWFyYywNCg0KPkZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86bWtsQHBlbmd1
+dHJvbml4LmRlXQ0KPlNlbnQ6IFdlZG5lc2RheSwgTm92ZW1iZXIgMjIsIDIwMTcgODowMCBQTQ0K
+Pg0KPk9uIDExLzIyLzIwMTcgMDM6NTYgQU0sIFpIVSBZaSAoU1QtRklSL0VORzEtWmh1KSB3cm90
+ZToNCj4+Pj4gSSdtIGFmcmFpZCBzbyBmYXIgbm8ga25vd24gZmxleGNhbiBjb3JlIHN1cHBvcnRz
+IGl0Lg0KPj4+DQo+Pj4gU2hvdWxkIHdlIHVwZGF0ZSB0aGUgdGFibGUgYW5kIGFkZCBhICJJUlEg
+RXJyIFBhc3NpdmUiIG5vIGZvciBhbGwNCj4+PiBjb3Jlcz8NCj4+IEJ5IGxvb2sgaW50byB0aGUg
+cmVmZXJlbmNlIG1hbnVhbCBvZiBNWDI1WzFdLCBNWDM1WzJdIGFuZCBWRjYxMFszXSwNCj4+IGl0
+IHR1cm5zIG91dCB0aGF0IG5vbmUgb2YgdGhlbSBzdXBwb3J0IHRoZSBlcnJvciBwYXNzaXZlIGlu
+dGVycnVwdC4NCj4+IFNvIHdlIHNob3VsZCB1cGRhdGUgdGhlICJJUlEgRXJyIFBhc3NpdmUiIHRv
+IG5vIGZvciBhbGwgY29yZXMuDQo+DQo+SSdsbCBjcmVhdGUgYSBwYXRjaC4NClRoYW5rcyEgOikN
+Cg0KPg0KPj4gSW50ZXJlc3RpbmdseSwgc2VlbXMgdGhlIG5ldyBSTSBvZiBNWDI1IChSZXYuMikg
+YW5kIE1YMzUgKFJldi4zKQ0KPj4gc3RhdGVzIHRoYXQgYm90aCBjb3JlIGhhdmUgdGhlIFtUUl1X
+Uk5fSU5UIGNvbm5lY3RlZCwgc28gSSBndWVzcyB0aGUNCj4+IG5vIGluIHRoYXQgY29sdW1uIHdl
+cmUgYWRkZWQgZm9yIHRoZSBsZWdhY3kgY29yZS4NCj4NCj5XaGF0IGRvIHlvdSBtZWFuIGJ5IGNv
+bm5lY3RlZCBleGFjdGx5Pw0KPg0KPkFzIGZhcyBhcyBJIGtub3cgdGhlc2UgSVAgY29yZXMgaGF2
+ZSB0aGVzZSBpbnRlcnJ1cHRzIGxpbmVzLCBidXQgdGhleQ0KPmFyZSBub3QgcHJvcGVybHkgd2ly
+ZWQgdG8gdGhlIElSUSBsaW5lIHRoYXQgbGVhdmVzIHRoZSBJUCBjb3JlLiBUbyBxdW90ZQ0KPlNo
+YXduIEd1byBmcm9tIHRoZSBkaXNjdXNzaW9uIGJhY2sgaW4gMjAxMjoNCj4NCj4+PiBGcm9tIHdo
+YXQgSSBjYW4gdGVsbCwgaS5NWDM1LCBpLk1YNTEgYW5kIGkuTVg1MyB1c2UgdGhlIHNhbWUgdmVy
+c2lvbiwNCj4+PiBzbyB0aGV5IHNob3VsZCBhbGwgaGF2ZSB0aGUgYnVnLiAgQW5kIGZvciBpLk1Y
+NlEsIHNpbmNlIGl0IHVzZXMgYSBuZXdlcg0KPj4+IHZlcnNpb24gZXZlbiB0aGFuIGkuTVgyOCwg
+SSB3b3VsZCBiZWxpZXZlIGl0J3MgYWZmZWN0ZWQgYnkgdGhlIGJ1Zy4NCj4+PiBCdXQgSSdtIGNv
+cHlpbmcgRG9uZyB3aG8gc2hvdWxkIGhhdmUgYmV0dGVyIGtub3dsZWRnZSBhYm91dCB0aGlzIHRv
+DQo+Pj4gY29uZmlybS4NCj4NCj5GdXJ0aGVyIERvbmcgQWlzaGVuZyBzYXlzOg0KPg0KPj4+IE91
+ciBJQyBvd25lciBkb3VibGUgY2hlY2tlZCB0aGUgTVgzNSBhbmQgTVg1MyBJUCBhbmQgZm91bmQg
+dGhlDQo+Pj4gUlhfV0FSTiAmIFRYX1dBUk4gSW50ZXJydXB0IHNvdXJjZSBhY3R1YWxseSBhcmUg
+bm90IGNvbm5lY3RlZCB0bw0KPj4+IEFSTS4gVGhhdCBtZWFucyBmbGV4Y2FuIHdpbGwgbm90IHRy
+aWdnZXIgaW50ZXJydXB0IHRvIEFSTSBjb3JlIGV2ZW4NCj4+PiBSWF9XQVJOIG9yIFRYX1dBUk4g
+SGFwcGVucy4gVGhpcyBtYXkgYmUgdGhlIHJvb3QgY2F1c2UgdGhhdCB3aHkgeW91DQo+Pj4gY2Fu
+bm90IHNlZSBSWF9XQVJOIGludGVycnVwdCBpZiBub3QgZW5hYmxlIGJ1cyBlcnJvciBpbnRlcnJ1
+cHQgb24NCj4+PiBteDM1LiBIZSBhbHNvIGNoZWNrZWQgdGhhdCBteDZxIGhhcyB0aGUgcngvdHgg
+d2FybmluZyBpbnRlcnJ1cHQNCj4+PiBjb25uZWN0ZWQgdG8gYXJtLiBTbyB3ZSBndWVzcyBteDZx
+IGRvZXMgbm90IGhhdmUgdGhpcyBpc3N1ZS4NCj4+PiBBbnl3YXksIHdlIGNhbiB0ZXN0IHRvIGNv
+bmZpcm0uDQo+DQpBaCwgdGhhdCdzIHRoZSByZWFzb24gYmVoaW5kLCB0aGFua3MgZm9yIGRpZyBp
+bnRvIHRoZSBoaXN0b3J5IGFuZA0Kc2hhcmluZyB0aGUga25vd2xlZGdlIHdpdGggdXMuIDopDQoN
+Cj4+IEhvd2V2ZXIsIGFzIHRoZSBkcml2ZXIgYWxzbyBuZWVkcyB0byB3b3JrIHdpdGggdGhlIGxl
+Z2FjeSBjb3JlLCBhbmQNCj4+IHRoZXkgc2hhcmUgdGhlIHNhbWUgZGV2dHlwZV9kYXRhIGFzIHAx
+MDEwLCBzbyBJIHRoaW5rIHdlIHNob3VsZCBsZWF2ZQ0KPj4gaXQgYXMgaXQgaXMuDQo+DQo+Pj4+
+ICAqIEJlbG93IGlzIHNvbWUgdmVyc2lvbiBpbmZvIHdlIGdvdDoNCj4+Pj4gICogICAgU09DICAg
+VmVyc2lvbiAgIElQLVZlcnNpb24gIEdsaXRjaC0gW1RSXVdSTl9JTlQgSVJRIEVyciBNZW1vcnkg
+ZXJyIFJUUiByZS0NCj4+Pj4gICogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEZpbHRl
+cj8gY29ubmVjdGVkPyAgUGFzc2l2ZSBkZXRlY3Rpb24gIGNlcHRpb24gaW4gTUINCj4+Pj4gICog
+ICBNWDI1ICBGbGV4Q0FOMiAgMDMuMDAuMDAuMDAgICAgIG5vICAgICAgICBubyAgICAgICAgID8g
+ICAgICAgbm8gICAgICAgIG5vDQo+Pj4+ICAqICAgTVgyOCAgRmxleENBTjIgIDAzLjAwLjA0LjAw
+ICAgIHllcyAgICAgICB5ZXMgICAgICAgIG5vICAgICAgIG5vICAgICAgICBubw0KPj4+PiAgKiAg
+IE1YMzUgIEZsZXhDQU4yICAwMy4wMC4wMC4wMCAgICAgbm8gICAgICAgIG5vICAgICAgICAgPyAg
+ICAgICBubyAgICAgICAgbm8NCj4+Pj4gICogICBNWDUzICBGbGV4Q0FOMiAgMDMuMDAuMDAuMDAg
+ICAgeWVzICAgICAgICBubyAgICAgICAgbm8gICAgICAgbm8gICAgICAgIG5vDQo+Pj4+ICAqICAg
+TVg2cyAgRmxleENBTjMgIDEwLjAwLjEyLjAwICAgIHllcyAgICAgICB5ZXMgICAgICAgIG5vICAg
+ICAgIG5vICAgICAgIHllcw0KPj4+PiAgKiAgIFZGNjEwIEZsZXhDQU4zICA/ICAgICAgICAgICAg
+ICAgbm8gICAgICAgeWVzICAgICAgICAgPyAgICAgIHllcyAgICAgICB5ZXM/DQo+Pj4NCj4+PiBB
+bmQgZG9lcyBpdCBtYWtlIHNlbnNlIHRvIGFkZCAiRkxFWENBTl9RVUlSS19CUk9LRU5fUEVSUl9T
+VEFURSIgdG8gdGhlDQo+Pj4gdmY2MTAsIHRvbz8NCj4NCj4+IEkgdGhpbmsgdmY2MTAgd2lsbCBu
+ZWVkIHRoaXMgcXVpcmsgdG8gcmVwb3J0IGNvcnJlY3Qgc3RhdGUgdHJhbnNpdGlvbnMuDQo+PiBU
+aGUgcmVhc29uIGxhc3QgdGltZSB3ZSBkbyBub3QgdG91Y2ggdGhpcyBpcyBiZWNhdXNlIG5laXRo
+ZXIgV29sZmdhbmcNCj4+IG5vciBJIGhhZCBhY2Nlc3MgdG8gdmY2MTAsIHNvIHdlIGNhbiBvbmx5
+IHRlc3Qgd2l0aCBNWDI4LCBNWDUzIGFuZCBNWDYuDQo+PiBXZSB0aG91Z2h0IHNvbWVvbmUgd2ls
+bCBzcGVhayBvdXQgaWYgdGhleSBtZWV0IHByb2JsZW1zIHdpdGggdGhpcyBjb3JlLA0KPj4gYW5k
+IHRoZW4gdGhleSBjYW4gaGVscCB0byBmaXggYW5kIHRlc3QgaXQuDQo+DQo+Q2MnZWQgU3RlZmFu
+IEFnbmVyIC0gbWF5YmUgaGUgaGFzIGFjY2VzcyB0byB0aGlzIFNvQy4NCj4NCj4+IEBNYXJjLCBA
+V29sZmdhbmcsDQo+PiBXaGF0IGRvIHlvdSB0aGluaz8gT3Igc2hhbGwgd2UgZml4IGZpcnN0IGFu
+ZCB0aGVuIHdhaXQ/DQo+DQo+TGV0J3Mgd2FpdCBpZiBTdGVmYW4gY2FuIHRlc3QsIG90aGVyd2lz
+ZSBqdXN0IGZpeC4NCk9LLg0KDQpCZXN0IHJlZ2FyZHMNCllpDQo=
