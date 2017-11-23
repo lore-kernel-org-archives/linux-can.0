@@ -1,49 +1,79 @@
-From: Ulrich Hecht <ulrich.hecht+renesas-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 0/7] R-Car D3 (r8a77995) CAN support
-Date: Thu, 23 Nov 2017 08:43:18 +0100
-Message-ID: <CAO3366xk+Spa=z6bFW9TfqPk_8wUEd5scMK35JbXwpxZ2z7L2w@mail.gmail.com>
-References: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas@gmail.com> <20171122181045.5pstmikwp43idts5@verge.net.au>
+From: Pankaj Bansal <pankaj.bansal@nxp.com>
+Subject: [PATCH v3 2/2] can: flexcan: adding platform specific details for LS1021A
+Date: Thu, 23 Nov 2017 14:39:18 +0530
+Message-ID: <1511428158-28710-2-git-send-email-pankaj.bansal@nxp.com>
+References: <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
+ <1511428158-28710-1-git-send-email-pankaj.bansal@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171122181045.5pstmikwp43idts5-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Simon Horman <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>
-Cc: Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Chris Paterson <chris.paterson2-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-by2nam03on0069.outbound.protection.outlook.com ([104.47.42.69]:18704
+        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1752273AbdKWJFq (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 23 Nov 2017 04:05:46 -0500
+In-Reply-To: <1511428158-28710-1-git-send-email-pankaj.bansal@nxp.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: V.Sethi@nxp.com, poonam.aggrwal@nxp.com, Pankaj Bansal <pankaj.bansal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
 
-On Wed, Nov 22, 2017 at 7:10 PM, Simon Horman <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org> wrote:
-> On Fri, Nov 17, 2017 at 11:41:22AM +0100, Ulrich Hecht wrote:
->> Hi!
->>
->> Here's CAN and CAN FD support for the R-Car D3. This is a by-the-datasheet
->> implementation, with the datasheet missing some bits, namely the pin map.
->> I filled in the gaps with frog DNA^W^W^Wby deducing the information from
->> pin numbers already in the PFC driver, so careful scrutiny is advised.
->>
->> CU
->> Uli
->>
->>
->> Ulrich Hecht (7):
->>   pinctrl: sh-pfc: r8a77995: Add CAN support
->>   pinctrl: sh-pfc: r8a77995: Add CAN FD support
->>   arm64: dts: r8a77995: Add CAN external clock support
->>   arm64: dts: r8a77995: Add CAN support
->>   arm64: dts: r8a77995: Add CAN FD support
->>   can: rcar_can: document r8a77995 (R-Car D3) compatibility strings
->>   can: rcar_canfd: document r8a77995 (R-Car D3) compatibility strings
->
-> Hi Ulrich,
->
-> is it safe, from a regression point of view, to apply the dts patches
-> to a tree that does not have the other patches present?
+This patch adds platform specific details for NXP SOC LS1021A to the
+flexcan driver code.
 
-I believe it is.
+Signed-off-by: Pankaj Bansal <pankaj.bansal@nxp.com>
+Signed-off-by: Bhupesh Sharma <bhupesh.sharma@freescale.com>
+Reviewed-by: Zhengxiong Jin <Jason.Jin@freescale.com>
+Reviewed-by: Poonam Aggrwal <poonam.aggrwal@nxp.com>
+---
+Changes in v3:
+  - Add LS1021 in FLEXCAN hardware feature flags table
+  - Kept LS1021 compatible in one line, even if it's more than 80
+    chars.
+  - Add PERR_STATE quirk and USE_OFF_TIMESTAMP quirk and
+    ENABLE_EACEN_RRS quirk for LS1021A.
+  - Tested on LS1021A using "cangen can0 -D 11223344DEADBEEF -L 8 -R"
+    and "cangen can0 -D 11223344DEADBEEF -L 8"
+Changes in v2:
+  - No change.
 
-CU
-Uli
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ drivers/net/can/flexcan.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 4c873fb..21d0dd8 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -190,6 +190,7 @@
+  *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no        no
+  *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no       yes
+  *   VF610 FlexCAN3  ?               no       yes         ?      yes       yes?
++ * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes
+  *
+  * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
+  */
+@@ -304,6 +305,13 @@ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
+ };
+ 
++/* LS1021A-Rev2 has functional RX-FIFO mode  */
++static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
++	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
++		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
++		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
++};
++
+ static const struct can_bittiming_const flexcan_bittiming_const = {
+ 	.name = DRV_NAME,
+ 	.tseg1_min = 4,
+@@ -1248,6 +1256,7 @@ static const struct of_device_id flexcan_of_match[] = {
+ 	{ .compatible = "fsl,imx25-flexcan", .data = &fsl_p1010_devtype_data, },
+ 	{ .compatible = "fsl,p1010-flexcan", .data = &fsl_p1010_devtype_data, },
+ 	{ .compatible = "fsl,vf610-flexcan", .data = &fsl_vf610_devtype_data, },
++	{ .compatible = "fsl,ls1021ar2-flexcan", .data = &fsl_ls1021a_r2_devtype_data, },
+ 	{ /* sentinel */ },
+ };
+ MODULE_DEVICE_TABLE(of, flexcan_of_match);
+-- 
+2.7.4
+
