@@ -1,94 +1,93 @@
-From: Pankaj Bansal <pankaj.bansal@nxp.com>
-Subject: RE: [PATCH v3 2/2] can: flexcan: adding platform specific details for
- LS1021A
-Date: Thu, 23 Nov 2017 10:01:07 +0000
-Message-ID: <AM0PR0402MB3940EB22177698DBA63A5F24F1210@AM0PR0402MB3940.eurprd04.prod.outlook.com>
-References: <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
- <1511428158-28710-1-git-send-email-pankaj.bansal@nxp.com>
- <1511428158-28710-2-git-send-email-pankaj.bansal@nxp.com>
- <f7413c59-978e-fad1-6df0-3226067e64fa@pengutronix.de>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v2 1/4] Documentation : can : flexcan : Add big-endian
+ property to device tree
+Date: Thu, 23 Nov 2017 11:02:15 +0100
+Message-ID: <f859951e-072f-499b-5e86-1aaeb789a549@pengutronix.de>
+References: <1511430935-29783-1-git-send-email-pankaj.bansal@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr10079.outbound.protection.outlook.com ([40.107.1.79]:62880
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751906AbdKWKBN (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 23 Nov 2017 05:01:13 -0500
-In-Reply-To: <f7413c59-978e-fad1-6df0-3226067e64fa@pengutronix.de>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Ogscwt4nAg39k395woW8ksMklEbQdvISA"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1511430935-29783-1-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: V.Sethi-3arQi8VN3Tc@public.gmane.org, poonam.aggrwal-3arQi8VN3Tc@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-SGkgTWFyYywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEts
-ZWluZS1CdWRkZSBbbWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogVGh1cnNkYXks
-IE5vdmVtYmVyIDIzLCAyMDE3IDI6NDcgUE0NCj4gVG86IFBhbmthaiBCYW5zYWwgPHBhbmthai5i
-YW5zYWxAbnhwLmNvbT47IHdnQGdyYW5kZWdnZXIuY29tOyBsaW51eC0NCj4gY2FuQHZnZXIua2Vy
-bmVsLm9yZw0KPiBDYzogVmFydW4gU2V0aGkgPFYuU2V0aGlAbnhwLmNvbT47IFBvb25hbSBBZ2dy
-d2FsDQo+IDxwb29uYW0uYWdncndhbEBueHAuY29tPjsgQmh1cGVzaCBTaGFybWENCj4gPGJodXBl
-c2guc2hhcm1hQGZyZWVzY2FsZS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjMgMi8yXSBj
-YW46IGZsZXhjYW46IGFkZGluZyBwbGF0Zm9ybSBzcGVjaWZpYyBkZXRhaWxzIGZvcg0KPiBMUzEw
-MjFBDQo+IA0KPiBPbiAxMS8yMy8yMDE3IDEwOjA5IEFNLCBQYW5rYWogQmFuc2FsIHdyb3RlOg0K
-PiA+IFRoaXMgcGF0Y2ggYWRkcyBwbGF0Zm9ybSBzcGVjaWZpYyBkZXRhaWxzIGZvciBOWFAgU09D
-IExTMTAyMUEgdG8gdGhlDQo+ID4gZmxleGNhbiBkcml2ZXIgY29kZS4NCj4gPg0KPiA+IFNpZ25l
-ZC1vZmYtYnk6IFBhbmthaiBCYW5zYWwgPHBhbmthai5iYW5zYWxAbnhwLmNvbT4NCj4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBCaHVwZXNoIFNoYXJtYSA8Ymh1cGVzaC5zaGFybWFAZnJlZXNjYWxlLmNvbT4N
-Cj4gPiBSZXZpZXdlZC1ieTogWmhlbmd4aW9uZyBKaW4gPEphc29uLkppbkBmcmVlc2NhbGUuY29t
-Pg0KPiA+IFJldmlld2VkLWJ5OiBQb29uYW0gQWdncndhbCA8cG9vbmFtLmFnZ3J3YWxAbnhwLmNv
-bT4NCj4gPiAtLS0NCj4gPiBDaGFuZ2VzIGluIHYzOg0KPiA+ICAgLSBBZGQgTFMxMDIxIGluIEZM
-RVhDQU4gaGFyZHdhcmUgZmVhdHVyZSBmbGFncyB0YWJsZQ0KPiA+ICAgLSBLZXB0IExTMTAyMSBj
-b21wYXRpYmxlIGluIG9uZSBsaW5lLCBldmVuIGlmIGl0J3MgbW9yZSB0aGFuIDgwDQo+ID4gICAg
-IGNoYXJzLg0KPiA+ICAgLSBBZGQgUEVSUl9TVEFURSBxdWlyayBhbmQgVVNFX09GRl9USU1FU1RB
-TVAgcXVpcmsgYW5kDQo+ID4gICAgIEVOQUJMRV9FQUNFTl9SUlMgcXVpcmsgZm9yIExTMTAyMUEu
-DQo+ID4gICAtIFRlc3RlZCBvbiBMUzEwMjFBIHVzaW5nICJjYW5nZW4gY2FuMCAtRCAxMTIyMzM0
-NERFQURCRUVGIC1MIDggLVIiDQo+ID4gICAgIGFuZCAiY2FuZ2VuIGNhbjAgLUQgMTEyMjMzNDRE
-RUFEQkVFRiAtTCA4Ig0KPiA+IENoYW5nZXMgaW4gdjI6DQo+ID4gICAtIE5vIGNoYW5nZS4NCj4g
-Pg0KPiA+ICBkcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIHwgOSArKysrKysrKysNCj4gPiAgMSBm
-aWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4gaW5k
-ZXggNGM4NzNmYi4uMjFkMGRkOCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxl
-eGNhbi5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiA+IEBAIC0xOTAs
-NiArMTkwLDcgQEANCj4gPiAgICogICBNWDUzICBGbGV4Q0FOMiAgMDMuMDAuMDAuMDAgICAgeWVz
-ICAgICAgICBubyAgICAgICAgbm8gICAgICAgbm8gICAgICAgIG5vDQo+ID4gICAqICAgTVg2cyAg
-RmxleENBTjMgIDEwLjAwLjEyLjAwICAgIHllcyAgICAgICB5ZXMgICAgICAgIG5vICAgICAgIG5v
-ICAgICAgIHllcw0KPiA+ICAgKiAgIFZGNjEwIEZsZXhDQU4zICA/ICAgICAgICAgICAgICAgbm8g
-ICAgICAgeWVzICAgICAgICAgPyAgICAgIHllcyAgICAgICB5ZXM/DQo+ID4gKyAqIExTMTAyMUEg
-RmxleENBTjIgIDAzLjAwLjA0LjAwICAgICBubyAgICAgICB5ZXMgICAgICAgIG5vICAgICAgIG5v
-ICAgICAgIHllcw0KPiANCj4gT3V0IG9mIGN1cmlvc2l0eSwgd2hlcmUgaGF2ZSB5b3UgZ290IHRo
-ZSBJUCBjb3JlIHZlcnNpb24gZnJvbT8NCj4gDQoNCkkgZ290IHRoaXMgdmVyc2lvbiBmcm9tIEJp
-bGwgT2YgTWF0ZXJpYWwgZGV0YWlscyBvZiBMUzEwMjFBIFNPQy4NCg0KPiA+ICAgKg0KPiA+ICAg
-KiBTb21lIFNPQ3MgZG8gbm90IGhhdmUgdGhlIFJYX1dBUk4gJiBUWF9XQVJOIGludGVycnVwdCBs
-aW5lDQo+IGNvbm5lY3RlZC4NCj4gPiAgICovDQo+ID4gQEAgLTMwNCw2ICszMDUsMTMgQEAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCBmbGV4Y2FuX2RldnR5cGVfZGF0YQ0KPiBmc2xfdmY2MTBfZGV2dHlw
-ZV9kYXRhID0gew0KPiA+ICAJCUZMRVhDQU5fUVVJUktfRElTQUJMRV9NRUNSIHwNCj4gRkxFWENB
-Tl9RVUlSS19VU0VfT0ZGX1RJTUVTVEFNUCwgIH07DQo+ID4NCj4gPiArLyogTFMxMDIxQS1SZXYy
-IGhhcyBmdW5jdGlvbmFsIFJYLUZJRk8gbW9kZSAgKi8NCj4gDQo+IFRoYXQgY29tbWVudCBpcyBv
-YnNvbGV0ZSwgaXNuJ3QgaXQ/IElmIGl0J3MgYSBub3Rld29ydGh5IGZlYXR1cmUsIGFkZCBpdCB0
-byB0aGUNCj4gb3ZlcnZpZXcgdGFibGUgYWJvdmUuDQoNCkFjdHVhbGx5IGluIExTMTAyMUEgUmV2
-MSBSWC1GSUZPIG1vZGUgaXMgYnJva2VuLiBSZXYxIGlzIGluaXRpYWwgcmVsZWFzZSwgYW5kIFJl
-djINCklzIGZpbmFsIHJlbGVhc2UuIFdoaWNoIGlzIHdoeSB0aGlzIGNvbW1lbnQuDQoNCj4gDQo+
-ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgZmxleGNhbl9kZXZ0eXBlX2RhdGEgZnNsX2xzMTAyMWFf
-cjJfZGV2dHlwZV9kYXRhID0gew0KPiA+ICsJLnF1aXJrcyA9IEZMRVhDQU5fUVVJUktfRElTQUJM
-RV9SWEZHIHwNCj4gRkxFWENBTl9RVUlSS19FTkFCTEVfRUFDRU5fUlJTIHwNCj4gPiArCQlGTEVY
-Q0FOX1FVSVJLX0RJU0FCTEVfTUVDUiB8DQo+IEZMRVhDQU5fUVVJUktfQlJPS0VOX1BFUlJfU1RB
-VEUgfA0KPiA+ICsJCUZMRVhDQU5fUVVJUktfVVNFX09GRl9USU1FU1RBTVAsDQo+ID4gK307DQo+
-ID4gKw0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IGNhbl9iaXR0aW1pbmdfY29uc3QgZmxleGNh
-bl9iaXR0aW1pbmdfY29uc3QgPSB7DQo+ID4gIAkubmFtZSA9IERSVl9OQU1FLA0KPiA+ICAJLnRz
-ZWcxX21pbiA9IDQsDQo+ID4gQEAgLTEyNDgsNiArMTI1Niw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
-Y3Qgb2ZfZGV2aWNlX2lkDQo+IGZsZXhjYW5fb2ZfbWF0Y2hbXSA9IHsNCj4gPiAgCXsgLmNvbXBh
-dGlibGUgPSAiZnNsLGlteDI1LWZsZXhjYW4iLCAuZGF0YSA9DQo+ICZmc2xfcDEwMTBfZGV2dHlw
-ZV9kYXRhLCB9LA0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJmc2wscDEwMTAtZmxleGNhbiIsIC5k
-YXRhID0NCj4gJmZzbF9wMTAxMF9kZXZ0eXBlX2RhdGEsIH0sDQo+ID4gIAl7IC5jb21wYXRpYmxl
-ID0gImZzbCx2ZjYxMC1mbGV4Y2FuIiwgLmRhdGEgPQ0KPiA+ICZmc2xfdmY2MTBfZGV2dHlwZV9k
-YXRhLCB9LA0KPiA+ICsJeyAuY29tcGF0aWJsZSA9ICJmc2wsbHMxMDIxYXIyLWZsZXhjYW4iLCAu
-ZGF0YSA9DQo+ID4gKyZmc2xfbHMxMDIxYV9yMl9kZXZ0eXBlX2RhdGEsIH0sDQo+ID4gIAl7IC8q
-IHNlbnRpbmVsICovIH0sDQo+ID4gIH07DQo+ID4gIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIGZs
-ZXhjYW5fb2ZfbWF0Y2gpOw0KPiA+DQo+IA0KPiBNYXJjDQo+IA0KPiAtLQ0KPiBQZW5ndXRyb25p
-eCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAgICAgfA0K
-PiBJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9ucyAgICAgICAgfCBQaG9uZTogKzQ5LTIzMS0yODI2
-LTkyNCAgICAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAgICAgfCBGYXg6ICAg
-KzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KPiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4
-NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Ogscwt4nAg39k395woW8ksMklEbQdvISA
+Content-Type: multipart/mixed; boundary="DdJV9KshpldM8fpdIvgMdOWkS8ErwTXBG";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+To: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org,
+ linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org,
+ devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: V.Sethi-3arQi8VN3Tc@public.gmane.org, poonam.aggrwal-3arQi8VN3Tc@public.gmane.org
+Message-ID: <f859951e-072f-499b-5e86-1aaeb789a549-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v2 1/4] Documentation : can : flexcan : Add big-endian
+ property to device tree
+References: <1511430935-29783-1-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+In-Reply-To: <1511430935-29783-1-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+
+--DdJV9KshpldM8fpdIvgMdOWkS8ErwTXBG
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+On 11/23/2017 10:55 AM, Pankaj Bansal wrote:
+> The FlexCAN controller can be modelled as little or big endian dependin=
+g
+> on SOC design. This device tree property identifies the controller
+> endianness and the driver reads/writes controller registers based on
+> that.
+>=20
+> This is optional property. i.e. if this property is not present in
+> device tree node then controller is assumed to be little endian. if thi=
+s
+> property is present then controller is assumed to be big endian.
+>=20
+> Signed-off-by: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+> Reviewed-by: Poonam Aggrwal <poonam.aggrwal-3arQi8VN3Tc@public.gmane.org>
+
+Please document the default behaviour in the bindings if the big-endian
+property is missing.
+
+This and the other series have to be applied in the correct order,
+otherwise you break bisectability when removing the "fsl,p1010-flexcan"
+from the mx{25,35,53} devicetree before adding the compatible to the
+driver. Maybe merge these two series?
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--DdJV9KshpldM8fpdIvgMdOWkS8ErwTXBG--
+
+--Ogscwt4nAg39k395woW8ksMklEbQdvISA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloWnKcACgkQHv7KIOw4
+HPa3vggAv0Wxn+wQQBbFfgZvDICa6Mi/HdeRjbTXr+BMsXKcXFLPFTqSTB96m38J
+ZYac5gU5LuN6Ae3JdLX22kNEl4aF4fbFRqkb5xrzIIaUqr8wfOKUoIETD4F+iW9n
+CjWV7UFv4Tl1VqhNVLVezWikXK14ZKkYGDNzbxm07hOhs24/YsbwypJx+vnyyPvN
+8R7sYGQ3VjMoO6gnseLu0ToGfge+A1xGIOoENFokvOgn9FsUDIFnZu1o+caGd//e
+DBYs5ul5bw82AyLHmHL64hNLik8hktTFi+G558j/fWdlsJPa6XU+lV9IKkPNVS5Z
+WAfJ/Q53L9/DfWbZCeobWUvgGWvwWA==
+=1rFh
+-----END PGP SIGNATURE-----
+
+--Ogscwt4nAg39k395woW8ksMklEbQdvISA--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
