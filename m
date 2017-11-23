@@ -1,52 +1,51 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 0/7] R-Car D3 (r8a77995) CAN support
-Date: Thu, 23 Nov 2017 09:43:47 +0000
-Message-ID: <20171123094336.h376j4iuewaqys4i@verge.net.au>
-References: <1510915289-15059-1-git-send-email-ulrich.hecht+renesas@gmail.com>
- <20171122181045.5pstmikwp43idts5@verge.net.au>
- <CAO3366xk+Spa=z6bFW9TfqPk_8wUEd5scMK35JbXwpxZ2z7L2w@mail.gmail.com>
+From: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+Subject: [PATCH v2 1/4] Documentation : can : flexcan : Add big-endian property to device tree
+Date: Thu, 23 Nov 2017 15:25:32 +0530
+Message-ID: <1511430935-29783-1-git-send-email-pankaj.bansal@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from kirsty.vergenet.net ([202.4.237.240]:45738 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751967AbdKWJoQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Nov 2017 04:44:16 -0500
-Content-Disposition: inline
-In-Reply-To: <CAO3366xk+Spa=z6bFW9TfqPk_8wUEd5scMK35JbXwpxZ2z7L2w@mail.gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
-Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>, linux-can@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Wolfram Sang <wsa@the-dreams.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Magnus Damm <magnus.damm@gmail.com>, Chris Paterson <chris.paterson2@renesas.com>, Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: V.Sethi-3arQi8VN3Tc@public.gmane.org, poonam.aggrwal-3arQi8VN3Tc@public.gmane.org, Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-On Thu, Nov 23, 2017 at 08:43:18AM +0100, Ulrich Hecht wrote:
-> On Wed, Nov 22, 2017 at 7:10 PM, Simon Horman <horms@verge.net.au> wrote:
-> > On Fri, Nov 17, 2017 at 11:41:22AM +0100, Ulrich Hecht wrote:
-> >> Hi!
-> >>
-> >> Here's CAN and CAN FD support for the R-Car D3. This is a by-the-datasheet
-> >> implementation, with the datasheet missing some bits, namely the pin map.
-> >> I filled in the gaps with frog DNA^W^W^Wby deducing the information from
-> >> pin numbers already in the PFC driver, so careful scrutiny is advised.
-> >>
-> >> CU
-> >> Uli
-> >>
-> >>
-> >> Ulrich Hecht (7):
-> >>   pinctrl: sh-pfc: r8a77995: Add CAN support
-> >>   pinctrl: sh-pfc: r8a77995: Add CAN FD support
-> >>   arm64: dts: r8a77995: Add CAN external clock support
-> >>   arm64: dts: r8a77995: Add CAN support
-> >>   arm64: dts: r8a77995: Add CAN FD support
-> >>   can: rcar_can: document r8a77995 (R-Car D3) compatibility strings
-> >>   can: rcar_canfd: document r8a77995 (R-Car D3) compatibility strings
-> >
-> > Hi Ulrich,
-> >
-> > is it safe, from a regression point of view, to apply the dts patches
-> > to a tree that does not have the other patches present?
-> 
-> I believe it is.
+The FlexCAN controller can be modelled as little or big endian depending
+on SOC design. This device tree property identifies the controller
+endianness and the driver reads/writes controller registers based on
+that.
 
-Thanks. I have applied them for v4.16.
+This is optional property. i.e. if this property is not present in
+device tree node then controller is assumed to be little endian. if this
+property is present then controller is assumed to be big endian.
+
+Signed-off-by: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+Reviewed-by: Poonam Aggrwal <poonam.aggrwal-3arQi8VN3Tc@public.gmane.org>
+---
+Changes in v2:
+  - No change.
+  - Added one more patch in series.
+
+ Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+index 56d6cc3..bb081ba 100644
+--- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
++++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+@@ -18,6 +18,8 @@ Optional properties:
+ 
+ - xceiver-supply: Regulator that powers the CAN transceiver
+ 
++- big-endian: This means the registers of FlexCAN controller are big endian
++
+ Example:
+ 
+ 	can@1c000 {
+-- 
+2.7.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
