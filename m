@@ -1,152 +1,149 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v4 1/6] can: flexcan: Remodel FlexCAN register r/w APIs
- for big endian FlexCAN controllers.
-Date: Fri, 24 Nov 2017 16:02:39 +0100
-Message-ID: <44f37aef-7f45-a7c7-7320-01a62e23fbde@pengutronix.de>
-References: <1511529733-27942-1-git-send-email-pankaj.bansal@nxp.com>
- <1511529733-27942-2-git-send-email-pankaj.bansal@nxp.com>
+From: Mirza Krak <mirza.krak@gmail.com>
+Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for LS1021A
+Date: Fri, 24 Nov 2017 17:02:31 +0100
+Message-ID: <CALw8SCWFDt58x6zrbnoXuX=DkG0+OZtXnCO5CdK+MQb2JyubuA@mail.gmail.com>
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com> <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
+ <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de> <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com> <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
+ <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+ <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de> <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
+ <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de> <CALw8SCUGuCmq+S_9-o-ZDYJuASveuj71WH97jYsEvNZX2N5ZXA@mail.gmail.com>
+ <CALw8SCWNXJYuNWDtAxS9iFkKjMhcwQ60Pi7Mq3ne=k0Oynr47w@mail.gmail.com> <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="PDI8LeSMroWtCLntkPlc8MCGN1meiSRmi"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1511529733-27942-2-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: V.Sethi-3arQi8VN3Tc@public.gmane.org, poonam.aggrwal-3arQi8VN3Tc@public.gmane.org, Bhupesh Sharma <bhupesh.sharma-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Sakar Arora <Sakar.Arora-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-qt0-f180.google.com ([209.85.216.180]:43458 "EHLO
+        mail-qt0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751838AbdKXQCd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Nov 2017 11:02:33 -0500
+Received: by mail-qt0-f180.google.com with SMTP id w10so19950793qtb.10
+        for <linux-can@vger.kernel.org>; Fri, 24 Nov 2017 08:02:32 -0800 (PST)
+In-Reply-To: <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Pankaj Bansal <pankaj.bansal@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Stefan Agner <stefan@agner.ch>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---PDI8LeSMroWtCLntkPlc8MCGN1meiSRmi
-Content-Type: multipart/mixed; boundary="i6UCxtNfCd4d3R9x15cpWIPrVrfb5HBp2";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-To: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org,
- linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org,
- devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: V.Sethi-3arQi8VN3Tc@public.gmane.org, poonam.aggrwal-3arQi8VN3Tc@public.gmane.org,
- Bhupesh Sharma <bhupesh.sharma-KZfg59tc24xl57MIdRCFDg@public.gmane.org>,
- Sakar Arora <Sakar.Arora-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Message-ID: <44f37aef-7f45-a7c7-7320-01a62e23fbde-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v4 1/6] can: flexcan: Remodel FlexCAN register r/w APIs
- for big endian FlexCAN controllers.
-References: <1511529733-27942-1-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
- <1511529733-27942-2-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
-In-Reply-To: <1511529733-27942-2-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+2017-11-23 22:05 GMT+01:00 Wolfgang Grandegger <wg@grandegger.com>:
+> Hello Mirza,
+>
+> Am 23.11.2017 um 21:17 schrieb Mirza Krak:
+>>
+>> 2017-11-23 21:12 GMT+01:00 Mirza Krak <mirza.krak@gmail.com>:
+>>>
+>>> On Nov 22, 2017 13:00, "Marc Kleine-Budde" <mkl@pengutronix.de> wrote:
+>>>
+>>
+>> < snip >
+>>
+>>>
+>>> Cc'ed Stefan Agner - maybe he has access to this SoC.
+>>>
+>>>> @Marc, @Wolfgang,
+>>>> What do you think? Or shall we fix first and then wait?
+>>>
+>>>
+>>> Let's wait if Stefan can test, otherwise just fix.
+>>>
+>>>
+>>> I have access to an vf610 and can test CAN stuff.
+>>>
+>>> What is it more specifically we want to test? I read the thread but not
+>>> completely clear to me.
+>
+>
+> We want to know how the reporting of CAN error state changes "error-active"
+> -> "warning" -> "error-passive" -> "bus-off" and back is working on that
+> hardware.
+>
+> You can test such state changes as show below. First setup the interface and
+> start a session calling "candump" to report the state changes:
+>
+>   # ip link set can0 up type can bitrate 500000 restart-ms 100
+>   # candump -td -e any,0:0,#FFFFFFFF
+>
+> Then
+>
+> 1. disconnect the cable and send messages with "cangen"
+>
+>    # cangen -i can0
+>
+> "candump" should then report the error state changes "error-active" ->
+> "warning" -> "error-passive". If you don't see "error-passive", the hardware
+> needs the FLEXCAN_QUIRK_BROKEN_PERR_STATE as well. Then reconnect the cable
+> and send messages till the "error active" state is reached (again with
+> "cangen").
 
---i6UCxtNfCd4d3R9x15cpWIPrVrfb5HBp2
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+This was the result of this test:
 
-On 11/24/2017 02:22 PM, Pankaj Bansal wrote:
-> The FlexCAN driver assumed that FlexCAN controller is big endian for
-> powerpc architecture and little endian for other architectures.
->=20
-> But this may not be the case. FlexCAN controller can be little or big
-> endian on any architecture. For e.g. NXP LS1021A ARM based SOC has big
-> endian FlexCAN controller.
->=20
-> Therefore, the driver has been modified to add a provision for both
-> types of controllers using an additional device tree property. On a
-> "fsl,p1010-flexcan" device BE is default, on all other devices LE is.
->=20
-> Big Endian controllers should have "big-endian" set in the device tree.=
+root@colibri-vf:~# ./candump -td -e can0,0:0,#FFFFFFFF
+ (000.000000)  can0  0C8   [8]  E7 D5 75 20 1C F8 AA 6D
+ (000.200201)  can0  7CD   [8]  58 5F B1 1E D7 AB 3C 15
+ (000.200123)  can0  7FD   [8]  EC 43 EF 11 BB 76 50 4F
+ (000.200119)  can0  20D   [8]  64 E0 A6 74 A2 A4 22 42
+ (000.200115)  can0  226   [7]  CB 4D 12 46 F3 37 F1
+ (000.200000)  can0  42F   [0]
+ (000.200245)  can0  0F9   [8]  AD 61 16 77 0A 64 50 5C
+ (000.199983)  can0  76E   [0]
+ (000.200206)  can0  3CB   [6]  53 28 03 34 98 43
+ (000.200152)  can0  230   [8]  70 EF 66 38 2D BA 5D 4D
+ (000.200106)  can0  568   [8]  E8 30 AE 1C 75 77 4E 5E
+ (000.200274)  can0  20000004   [8]  00 04 00 00 00 00 00 00   ERRORFRAME
+controller-problem{rx-error-warning}
 
-> check "Documentation/devicetree/bindings/net/can/fsl-flexcan.txt" for
-> usage.
->=20
-> This is the standard practice followed in linux. for more info check:
-> Documentation/devicetree/bindings/common-properties.txt
->=20
-> Signed-off-by: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-> Signed-off-by: Sakar Arora <Sakar.Arora-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-> Reviewed-by: Zhengxiong Jin <Jason.Jin-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-> Reviewed-by: Poonam Aggrwal <poonam.aggrwal-3arQi8VN3Tc@public.gmane.org>
-> ---
-> Changes in v4:
->   - Merged device tree changes and driver changes in one series
-> Changes in v3:
->   - Added fsl,imx25-flexcan, fsl,imx35-flexcan and fsl,imx53-flexcan
->     support to the driver.
->   - Modified patch deciption to state default endianness followed and
->     to include fsl-flexcan.txt referance.
-> Changes in v2:
->   - Modified patch deciption to include common-properties.txt reference=
-=2E
->   - Reorder the LE/BE read/write APIs for better readability of code
->   - Added an exception to force BE API selection, for powerpc based pla=
-tform
->     P1010. This ensures that new linux kernel works with old P1010
->     device-tree, while future powerpc platforms that use big endian
->     FlexCAN controller need to specify big-endian in device tree in
->     FlexCAN node.
->   - Tested on P1010 after backporting to freescale sdk 1.4 linux, witho=
-ut
->     any change in device-tree.
->   - Tested on NXP LS1021A arm based platform.
->=20
->  drivers/net/can/flexcan.c | 233 ++++++++++++++++++++----------------
->  1 file changed, 131 insertions(+), 102 deletions(-)
->=20
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index a13a489..4c873fb 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
+and the statistics
 
-[...]
-I think this will select LE for non DT devices, right?
+root@colibri-vf:~# ip -d -s link show can0
+2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state
+UNKNOWN mode DEFAULT group default qlen 10
+    link/can  promiscuity 0
+    can state ERROR-WARNING (berr-counter tx 0 rx 128) restart-ms 100
+ bitrate 496240 sample-point 0.857
+ tq 143 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+ flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+ clock 83368421
+ re-started bus-errors arbit-lost error-warn error-pass bus-off
+ 0          0          0          1          0          0         numtxqueues 1
+    RX: bytes  packets  errors  dropped overrun mcast
+    8          1        0       0       0       0
+    TX: bytes  packets  errors  dropped carrier collsns
+    69         11       0       0       0       0
 
-> +	if (of_property_read_bool(pdev->dev.of_node, "big-endian")) {
-> +		priv->read =3D flexcan_read_be;
-> +		priv->write =3D flexcan_write_be;
-> +	} else {
-> +		if (of_device_is_compatible(pdev->dev.of_node,
-> +					    "fsl,p1010-flexcan")) {
-> +			priv->read =3D flexcan_read_be;
-> +			priv->write =3D flexcan_write_be;
-> +		} else {
-> +			priv->read =3D flexcan_read_le;
-> +			priv->write =3D flexcan_write_le;
-> +		}
-> +	}
-> +
->  	priv->can.clock.freq =3D clock_freq;
->  	priv->can.bittiming_const =3D &flexcan_bittiming_const;
->  	priv->can.do_set_mode =3D flexcan_set_mode;
->=20
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+I ran out of time as wanted to test a bit more as I was confused that
+it is showing RX errors on the first test? I was not able to get it
+back to ERROR-ACTIVE from ERROR-WARNING either. But posted result
+anyway
 
 
---i6UCxtNfCd4d3R9x15cpWIPrVrfb5HBp2--
+> 2. The second test is quite similar. Instead of disconnecting the cable,
+> short-circuit the CAN low and high lines. The device should then go to
+> "bus-off".
 
---PDI8LeSMroWtCLntkPlc8MCGN1meiSRmi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+And this one:
 
------BEGIN PGP SIGNATURE-----
+root@colibri-vf:~# ./candump -td -e any,0:0,#FFFFFFFF
+ (000.000000)  can0  20000004   [8]  00 20 00 00 00 00 00 00   ERRORFRAME
+controller-problem{tx-error-passive}
+ (000.000809)  can0  20000040   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
+bus-off
+ (000.109797)  can0  20000100   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
+restarted-after-bus-off
+ (000.100551)  can0  20000004   [8]  00 20 00 00 00 00 00 00   ERRORFRAME
+controller-problem{tx-error-passive}
+ (000.000823)  can0  20000040   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
+bus-off
+ (000.108644)  can0  20000100   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
+restarted-after-bus-off
+ (000.090692)  can0  20000004   [8]  00 08 00 00 00 00 00 00   ERRORFRAME
+controller-problem{tx-error-warning}
+ (000.000797)  can0  20000040   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
+bus-off
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloYNI8ACgkQHv7KIOw4
-HPb9MggAqvDq1Jl+gu3c+ZuG/pcTruSoDVIoMXddfEYGSPHBTix1Ruhe89VmXyIX
-pIk53IY5NGx3STrvGJ/Gslai39Lxo6NAoBRSKHAWowu5VCanfKtwm5hwE0sHbzUy
-6xezNm25IA3DWNx9GRyoxO+jmdXn0fIg5DDhC4+c8554c3ueq2hBZCX4DKZFtPQB
-S4TOmy9HSPj1a0vWOppDbqDbsI1BOu0C4qUFZikPBA5cc2y9yFxlH1v6ef8RL/MR
-owGphc/X0uv6kmNbPj0gX7+n77uUCubc+bJO+6fos5eue3Log8pPTTiSbciqcjhA
-oWb9xFSEv+sUBU9GAdZzirgQmxf0yg==
-=oug8
------END PGP SIGNATURE-----
+Will try again next week when I am back at the office.
 
---PDI8LeSMroWtCLntkPlc8MCGN1meiSRmi--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I ran my tests on 4.14 kernel.
+
+Best Regards
+Mirza
