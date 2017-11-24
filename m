@@ -1,88 +1,57 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
- LS1021A
-Date: Thu, 23 Nov 2017 22:05:39 +0100
-Message-ID: <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com>
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
- <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
- <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
- <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
- <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
- <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
- <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
- <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de>
- <CALw8SCUGuCmq+S_9-o-ZDYJuASveuj71WH97jYsEvNZX2N5ZXA@mail.gmail.com>
- <CALw8SCWNXJYuNWDtAxS9iFkKjMhcwQ60Pi7Mq3ne=k0Oynr47w@mail.gmail.com>
+From: Pankaj Bansal <pankaj.bansal@nxp.com>
+Subject: [PATCH v4 0/6] Remodel FlexCAN register r/w APIs for big endian
+Date: Fri, 24 Nov 2017 18:52:07 +0530
+Message-ID: <1511529733-27942-1-git-send-email-pankaj.bansal@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy01.manitu.net ([217.11.48.65]:47854 "EHLO
-        mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752150AbdKWVFm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Nov 2017 16:05:42 -0500
-In-Reply-To: <CALw8SCWNXJYuNWDtAxS9iFkKjMhcwQ60Pi7Mq3ne=k0Oynr47w@mail.gmail.com>
-Content-Language: en-GB
+Received: from mail-by2nam03on0057.outbound.protection.outlook.com ([104.47.42.57]:30528
+        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1752058AbdKXNSf (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 24 Nov 2017 08:18:35 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mirza Krak <mirza.krak@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Pankaj Bansal <pankaj.bansal@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Stefan Agner <stefan@agner.ch>
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org
+Cc: V.Sethi@nxp.com, poonam.aggrwal@nxp.com, Pankaj Bansal <pankaj.bansal@nxp.com>
 
-Hello Mirza,
+This patch series remodels the FlexCAN register r/w APIs for big endian.
+The endianness is checked based on optional big-endian property in
+device tree. if this property is not present in device tree node then 
+controller is assumed to be little endian. if this property is present then
+controller is assumed to be big endian.
 
-Am 23.11.2017 um 21:17 schrieb Mirza Krak:
-> 2017-11-23 21:12 GMT+01:00 Mirza Krak <mirza.krak@gmail.com>:
->> On Nov 22, 2017 13:00, "Marc Kleine-Budde" <mkl@pengutronix.de> wrote:
->>
-> 
-> < snip >
-> 
->>
->> Cc'ed Stefan Agner - maybe he has access to this SoC.
->>
->>> @Marc, @Wolfgang,
->>> What do you think? Or shall we fix first and then wait?
->>
->> Let's wait if Stefan can test, otherwise just fix.
->>
->>
->> I have access to an vf610 and can test CAN stuff.
->>
->> What is it more specifically we want to test? I read the thread but not
->> completely clear to me.
+An exception to this rule is powerpc P1010RDB, which is always
+big-endian, even if big-endian is not present in dts. This is
+checked using p1010-flexcan compatible in dts.
 
-We want to know how the reporting of CAN error state changes 
-"error-active" -> "warning" -> "error-passive" -> "bus-off" and back is 
-working on that hardware.
+Therefore, remove p1010-flexcan compatible from imx series dts,
+as their flexcan core is little endian.
 
-You can test such state changes as show below. First setup the interface 
-and start a session calling "candump" to report the state changes:
+Finally this series adds support for NXP LS1021A SOC in flexcan,
+which is arm based SOC having big-endian FlexCAN controller.
 
-   # ip link set can0 up type can bitrate 500000 restart-ms 100
-   # candump -td -e any,0:0,#FFFFFFFF
+Pankaj Bansal (6):
+  can: flexcan: Remodel FlexCAN register r/w APIs for big endian FlexCAN
+    controllers.
+  can: flexcan: adding platform specific details for LS1021A
+  Documentation : can : flexcan : Add big-endian property to device tree
+  powerpc: dts: P1010: Add endianness property to flexcan node
+  arm: dts: Remove p1010-flexcan compatible from imx series dts
+  arm/dts: Add nodes for flexcan devices present on LS1021A-Rev2 SoC
 
-Then
+ .../bindings/net/can/fsl-flexcan.txt         |   6 +
+ arch/arm/boot/dts/imx25.dtsi                 |   4 +-
+ arch/arm/boot/dts/imx28.dtsi                 |   4 +-
+ arch/arm/boot/dts/imx35.dtsi                 |   4 +-
+ arch/arm/boot/dts/imx53.dtsi                 |   4 +-
+ arch/arm/boot/dts/ls1021a-qds.dts            |  16 ++
+ arch/arm/boot/dts/ls1021a-twr.dts            |  16 ++
+ arch/arm/boot/dts/ls1021a.dtsi               |  36 +++
+ arch/powerpc/boot/dts/fsl/p1010si-post.dtsi  |   2 +
+ drivers/net/can/flexcan.c                    | 241 ++++++++++-------
+ 10 files changed, 223 insertions(+), 110 deletions(-)
 
-1. disconnect the cable and send messages with "cangen"
-
-    # cangen -i can0
-
-"candump" should then report the error state changes "error-active" -> 
-"warning" -> "error-passive". If you don't see "error-passive", the 
-hardware needs the FLEXCAN_QUIRK_BROKEN_PERR_STATE as well. Then 
-reconnect the cable and send messages till the "error active" state is 
-reached (again with "cangen").
-
-2. The second test is quite similar. Instead of disconnecting the cable, 
-short-circuit the CAN low and high lines. The device should then go to 
-"bus-off".
-
-Thanks for testing,
-
-Wolfgang.
-
+-- 
+2.7.4
 
