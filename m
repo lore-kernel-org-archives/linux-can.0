@@ -1,149 +1,79 @@
-From: Mirza Krak <mirza.krak@gmail.com>
-Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for LS1021A
-Date: Fri, 24 Nov 2017 17:02:31 +0100
-Message-ID: <CALw8SCWFDt58x6zrbnoXuX=DkG0+OZtXnCO5CdK+MQb2JyubuA@mail.gmail.com>
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-1-git-send-email-pankaj.bansal@nxp.com> <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
- <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de> <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com> <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
- <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
- <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de> <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
- <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de> <CALw8SCUGuCmq+S_9-o-ZDYJuASveuj71WH97jYsEvNZX2N5ZXA@mail.gmail.com>
- <CALw8SCWNXJYuNWDtAxS9iFkKjMhcwQ60Pi7Mq3ne=k0Oynr47w@mail.gmail.com> <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qt0-f180.google.com ([209.85.216.180]:43458 "EHLO
-        mail-qt0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751838AbdKXQCd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Nov 2017 11:02:33 -0500
-Received: by mail-qt0-f180.google.com with SMTP id w10so19950793qtb.10
-        for <linux-can@vger.kernel.org>; Fri, 24 Nov 2017 08:02:32 -0800 (PST)
-In-Reply-To: <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Pankaj Bansal <pankaj.bansal@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Stefan Agner <stefan@agner.ch>
+From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
+Subject: [PATCH 0/2] Microchip mcp2517fd can controller driver
+Date: Fri, 24 Nov 2017 18:35:07 +0000
+Message-ID: <20171124183509.12810-1-kernel@martin.sperl.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-2017-11-23 22:05 GMT+01:00 Wolfgang Grandegger <wg@grandegger.com>:
-> Hello Mirza,
->
-> Am 23.11.2017 um 21:17 schrieb Mirza Krak:
->>
->> 2017-11-23 21:12 GMT+01:00 Mirza Krak <mirza.krak@gmail.com>:
->>>
->>> On Nov 22, 2017 13:00, "Marc Kleine-Budde" <mkl@pengutronix.de> wrote:
->>>
->>
->> < snip >
->>
->>>
->>> Cc'ed Stefan Agner - maybe he has access to this SoC.
->>>
->>>> @Marc, @Wolfgang,
->>>> What do you think? Or shall we fix first and then wait?
->>>
->>>
->>> Let's wait if Stefan can test, otherwise just fix.
->>>
->>>
->>> I have access to an vf610 and can test CAN stuff.
->>>
->>> What is it more specifically we want to test? I read the thread but not
->>> completely clear to me.
->
->
-> We want to know how the reporting of CAN error state changes "error-active"
-> -> "warning" -> "error-passive" -> "bus-off" and back is working on that
-> hardware.
->
-> You can test such state changes as show below. First setup the interface and
-> start a session calling "candump" to report the state changes:
->
->   # ip link set can0 up type can bitrate 500000 restart-ms 100
->   # candump -td -e any,0:0,#FFFFFFFF
->
-> Then
->
-> 1. disconnect the cable and send messages with "cangen"
->
->    # cangen -i can0
->
-> "candump" should then report the error state changes "error-active" ->
-> "warning" -> "error-passive". If you don't see "error-passive", the hardware
-> needs the FLEXCAN_QUIRK_BROKEN_PERR_STATE as well. Then reconnect the cable
-> and send messages till the "error active" state is reached (again with
-> "cangen").
+From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
 
-This was the result of this test:
+This patchset adds a driver for the mcp2517fd CanFD controller.
 
-root@colibri-vf:~# ./candump -td -e can0,0:0,#FFFFFFFF
- (000.000000)  can0  0C8   [8]  E7 D5 75 20 1C F8 AA 6D
- (000.200201)  can0  7CD   [8]  58 5F B1 1E D7 AB 3C 15
- (000.200123)  can0  7FD   [8]  EC 43 EF 11 BB 76 50 4F
- (000.200119)  can0  20D   [8]  64 E0 A6 74 A2 A4 22 42
- (000.200115)  can0  226   [7]  CB 4D 12 46 F3 37 F1
- (000.200000)  can0  42F   [0]
- (000.200245)  can0  0F9   [8]  AD 61 16 77 0A 64 50 5C
- (000.199983)  can0  76E   [0]
- (000.200206)  can0  3CB   [6]  53 28 03 34 98 43
- (000.200152)  can0  230   [8]  70 EF 66 38 2D BA 5D 4D
- (000.200106)  can0  568   [8]  E8 30 AE 1C 75 77 4E 5E
- (000.200274)  can0  20000004   [8]  00 04 00 00 00 00 00 00   ERRORFRAME
-controller-problem{rx-error-warning}
+Most of the features of the controller are supported by this driver release.
 
-and the statistics
+The controller includes a few features that the current core Can(FD)
+implementation does not support:
+* Transmit Bandwidth Sharing bits
+  - this waits for a configurable number of syncronization bits before
+    atempting to transmit the next frame - for the moment controllable
+    via a module parameter
+* SID11 with CanFD frames
+  - at this moment not supported by driver
+* 3 transmit attempts in addition to ONE_SHOT
+* transmitter delay compensation configurations
+* micro second exact transmission and reception timestamps
+  - used internally by driver
+* variable number of tx-fifos
+  - exposed via module parameter at this moment
 
-root@colibri-vf:~# ip -d -s link show can0
-2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state
-UNKNOWN mode DEFAULT group default qlen 10
-    link/can  promiscuity 0
-    can state ERROR-WARNING (berr-counter tx 0 rx 128) restart-ms 100
- bitrate 496240 sample-point 0.857
- tq 143 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
- flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
- clock 83368421
- re-started bus-errors arbit-lost error-warn error-pass bus-off
- 0          0          0          1          0          0         numtxqueues 1
-    RX: bytes  packets  errors  dropped overrun mcast
-    8          1        0       0       0       0
-    TX: bytes  packets  errors  dropped carrier collsns
-    69         11       0       0       0       0
+The driver has been heavily optimized so that it can handle
+a 100% utilized 1MHz Can-bus (with 11 bit can frames with DLC=0)
+even on less powerfull SOCs like the raspberry pi 1 without
+dropping frames due to driver/spi latencies (still dropps
+are observed in the can/network stack).
 
-I ran out of time as wanted to test a bit more as I was confused that
-it is showing RX errors on the first test? I was not able to get it
-back to ERROR-ACTIVE from ERROR-WARNING either. But posted result
-anyway
+To achive this the driver includes several code optimization
+Two of which prefers continuous long spi transfers over multiple
+small individual spi transfers of variable length.
+This is an optimization that would favour spi dma transfers instead
+of more expensive PIO in typical SPI controllers.
+Both of them can get explicitly enabled by the use of a module parameter.
+One of those is automatically used in the case of Can2.0 only bus
+configurations.
 
+Finer details of the implementation and rational is included with
+the driver code it self for future reference.
 
-> 2. The second test is quite similar. Instead of disconnecting the cable,
-> short-circuit the CAN low and high lines. The device should then go to
-> "bus-off".
+The driver has also been tested for basic CanFD transfers with
+BRS up to 5.7Mhz data bitrates - the available transceiver did
+not allow for faster rates...
 
-And this one:
+The driver itself exposes lots of internal data/statistics via
+debugfs.
 
-root@colibri-vf:~# ./candump -td -e any,0:0,#FFFFFFFF
- (000.000000)  can0  20000004   [8]  00 20 00 00 00 00 00 00   ERRORFRAME
-controller-problem{tx-error-passive}
- (000.000809)  can0  20000040   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
-bus-off
- (000.109797)  can0  20000100   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
-restarted-after-bus-off
- (000.100551)  can0  20000004   [8]  00 20 00 00 00 00 00 00   ERRORFRAME
-controller-problem{tx-error-passive}
- (000.000823)  can0  20000040   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
-bus-off
- (000.108644)  can0  20000100   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
-restarted-after-bus-off
- (000.090692)  can0  20000004   [8]  00 08 00 00 00 00 00 00   ERRORFRAME
-controller-problem{tx-error-warning}
- (000.000797)  can0  20000040   [8]  00 00 00 00 00 00 00 00   ERRORFRAME
-bus-off
+The driver implements a lock-less design for transmissions
+making use instead of prepared spi messages submitted via spi_async
+for transmission in the start_xmit_start code without requireing
+an extra workqueue and the corresponding latencies.
 
-Will try again next week when I am back at the office.
+Martin Sperl (2):
+  dt-binding: can: mcp2517fd: document device tree bindings
+  can: mcp2517fd: Add Microchip mcp2517fd CAN FD driver
 
-I ran my tests on 4.14 kernel.
+ .../bindings/net/can/microchip,mcp2517fd.txt       |   47 +
+ drivers/net/can/spi/Kconfig                        |    6 +
+ drivers/net/can/spi/Makefile                       |    1 +
+ drivers/net/can/spi/mcp2517fd.c                    | 3733 ++++++++++++++++++++
+ 4 files changed, 3787 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp2517fd.txt
+ create mode 100644 drivers/net/can/spi/mcp2517fd.c
 
-Best Regards
-Mirza
+--
+2.11.0
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
