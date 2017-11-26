@@ -1,196 +1,102 @@
-From: kernel@martin.sperl.org
-Subject: Re: [PATCH 0/2] Microchip mcp2517fd can controller driver
-Date: Sat, 25 Nov 2017 15:47:58 +0100
-Message-ID: <263BAF25-3F9A-4BE8-8E19-757B3C22A037@martin.sperl.org>
-References: <20171124183509.12810-1-kernel@martin.sperl.org> <3d355c51-09a3-40b8-46bf-8437e26a95f3@hartkopp.net>
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from 212-186-180-163.static.upcbusiness.at ([212.186.180.163]:41440
-        "EHLO cgate.sperl.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751583AbdKYOr7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 25 Nov 2017 09:47:59 -0500
-In-Reply-To: <3d355c51-09a3-40b8-46bf-8437e26a95f3@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org, devicetree@vger.kernel.org
+From: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+Subject: RE: [PATCH v4 1/6] can: flexcan: Remodel FlexCAN register r/w APIs
+ for big endian FlexCAN controllers.
+Date: Sun, 26 Nov 2017 02:20:32 +0000
+Message-ID: <AM0PR0402MB39405B9B5E5C04B2492221D6F1240@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+References: <1511529733-27942-1-git-send-email-pankaj.bansal@nxp.com>
+ <1511529733-27942-2-git-send-email-pankaj.bansal@nxp.com>
+ <44f37aef-7f45-a7c7-7320-01a62e23fbde@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <44f37aef-7f45-a7c7-7320-01a62e23fbde-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org" <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, "linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Cc: Varun Sethi <V.Sethi-3arQi8VN3Tc@public.gmane.org>, Poonam Aggrwal <poonam.aggrwal-3arQi8VN3Tc@public.gmane.org>, Bhupesh Sharma <bhupesh.sharma-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Sakar Arora <Sakar.Arora-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-Hi Oliver!
-
-> On 25.11.2017, at 13:03, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> 
-> Hello Martin,
-> 
-> thanks for the contribution!
-> 
-> Unfortunately [PATCH 2/2] only hit the devicetree mailing list but not the linux-can mailing list for the review.
-
-I have no idea why you have not received it, but I have sent all
-of them to the same  Recipient list!
-
-I even got a relayed confirmation for all 3 of them:
-19:35:28.689 2 DEQUEUER [7520159] SMTP(vger.kernel.org)linux-can@vger.kernel.org relayed: relayed via vger.kernel.org
-19:35:29.823 2 DEQUEUER [7520154] SMTP(vger.kernel.org)linux-can@vger.kernel.org relayed: relayed via vger.kernel.org
-19:35:31.902 2 DEQUEUER [7520160] SMTP(vger.kernel.org)linux-can@vger.kernel.org relayed: relayed via vger.kernel.org
-
-So they should all have arrived!
-
-> 
-> Btw. I already have two questions from the description:
-> 
-> On 11/24/2017 07:35 PM, kernel@martin.sperl.org wrote:
-> 
-> (..)
-> 
->> The driver has been heavily optimized so that it can handle
->> a 100% utilized 1MHz Can-bus (with 11 bit can frames with DLC=0)
->> even on less powerfull SOCs like the raspberry pi 1 without
->> dropping frames due to driver/spi latencies
-> 
-> (..)
-> 
-> > The driver implements a lock-less design for transmissions
-> > making use instead of prepared spi messages submitted via spi_async
-> > for transmission in the start_xmit_start code without requireing
-> > an extra workqueue and the corresponding latencies.
-> 
-> Seems you improved the SPI handling here. Would it make sense to separate the SPI-related part of the code to a separate C-file so that the existing mcp251x driver can benefit from these improvements too?
-
-The biggest problem is that the Register-design of the mcp2517fd is totally 
-different compared to mcp251x, so most of those “optimizations” for the 
-mcp2517 do not apply to the mcp251x (SPI-API wise IMO the mcp2515 is much
- more efficient - better still when having dedicated gpios for the RX lines
-to avoid having to query the status first via spi (reduces latencies
-and thus reduces packet loss/overflow on a saturated CAN bus).
-
-I have a spi_async only version of the mcp251x as well (which has been dormant
-for a long time, as the mcp251x stopped showing interrupt stopped issues...).
-
-> 
->> (still dropps are observed in the can/network stack).
-> 
-> Are you sure drops are taking place in the network layer? Can you give me some more details about this statement?
-Well - when I increase net->stat.rx_dropped there is always a 
-dev_warn_ratelimited that comes along. Also rx_errors is increased at the 
-same time. And I see the drops counters increase while there are no messages
-in dmesg.
-
-Also note that the driver is only incrementing rx_packets and rx_bytes only 
-when netif_rx_ni(skb) is called.
-
-So the setup is this:
-* raspberry pi 2 with the mcp2517fd
-* beagle bone black
-* 1MHz CAN2.0 bus
-
-Beagle bone black:
-root@beaglebone:~# cangen can0 -g0.0 -L0 -n 1000000 -p10 -Ii
-
-This saturates the CAN BUS to 100%
-
-on the RPI2 I have no consumer (candump or similar) and the module has
-just been reloaded (counters are reset).
-
-I see the following counters:
-7: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT group default qlen 10
-    link/can  promiscuity 0
-    can <ONE-SHOT,BERR-REPORTING> state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
-	  bitrate 1000000 sample-point 0.750
-	  tq 25 prop-seg 14 phase-seg1 15 phase-seg2 10 sjw 1
-	  mcp2517fd: tseg1 2..256 tseg2 1..128 sjw 1..128 brp 1..256 brp-inc 1
-	  mcp2517fd: dtseg1 1..32 dtseg2 1..16 dsjw 1..16 dbrp 1..256 dbrp-inc 1
-	  clock 40000000
-	  re-started bus-errors arbit-lost error-warn error-pass bus-off
-	  0          0          0          0          0          0         numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
-    RX: bytes  packets  errors  dropped overrun mcast
-    0          998774   703     4588    0       0
-    TX: bytes  packets  errors  dropped carrier collsns
-    0          0        0       0       0       0
-
-So you see that packets + dropped > transmitted (1000000).
-
-In a different setup with 4 bytes of data payload:
-root@beaglebone:~# cangen can0 -g0.0 -L0 -n 10000 -L4 -p10 -Ii
-root@beaglebone:~# cangen can0 -g0.0 -L0 -n 100000 -L4 -p10 -Ii
-
-I get the following statistics:
-root@rasp2a:~# ip -details -statistics link show can0
-8: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT group default qlen 10
-    link/can  promiscuity 0
-    can <ONE-SHOT,BERR-REPORTING> state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
-	  bitrate 1000000 sample-point 0.750
-	  tq 25 prop-seg 14 phase-seg1 15 phase-seg2 10 sjw 1
-	  mcp2517fd: tseg1 2..256 tseg2 1..128 sjw 1..128 brp 1..256 brp-inc 1
-	  mcp2517fd: dtseg1 1..32 dtseg2 1..16 dsjw 1..16 dbrp 1..256 dbrp-inc 1
-	  clock 40000000
-	  re-started bus-errors arbit-lost error-warn error-pass bus-off
-	  0          0          0          0          0          0         numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
-    RX: bytes  packets  errors  dropped overrun mcast
-    440000     110000   0       4343    0       0
-    TX: bytes  packets  errors  dropped carrier collsns
-    0          0        0       0       0       0
-Here 1 get 100% reception rates (bytes and packets are exactly what they 
-are supposed to be) but still 0.1% dropped.
-
-When CAN FD is configured on the mcp2517 then things look different
-even on a RPI2:
-root@beaglebone:~# cangen can0 -g0.0 -L0 -n 1000000 -L0 -p10 -Ii
-root@rasp2a:~# ip -details -statistics link show can0
-13: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 72 qdisc pfifo_fast state UNKNOWN mode DEFAULT group default qlen 10
-    link/can  promiscuity 0
-    can <ONE-SHOT,BERR-REPORTING,FD> state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
-	  bitrate 1000000 sample-point 0.750
-	  tq 25 prop-seg 14 phase-seg1 15 phase-seg2 10 sjw 1
-	  mcp2517fd: tseg1 2..256 tseg2 1..128 sjw 1..128 brp 1..256 brp-inc 1
-	  dbitrate 2000000 dsample-point 0.750
-	  dtq 25 dprop-seg 7 dphase-seg1 7 dphase-seg2 5 dsjw 1
-	  mcp2517fd: dtseg1 1..32 dtseg2 1..16 dsjw 1..16 dbrp 1..256 dbrp-inc 1
-	  clock 40000000
-	  re-started bus-errors arbit-lost error-warn error-pass bus-off
-	  0          0          0          0          0          0         numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
-    RX: bytes  packets  errors  dropped overrun mcast
-    0          999840   3       752028  0       0
-    TX: bytes  packets  errors  dropped carrier collsns
-    0          0        0       0       0       0
-
-In this case the number of packets actually lost on the controller is 0.01%
-But the number of dropped packets on the stack is 75%.
-
-The shorter the interval the lower the dropped count.
-
-Ciao,
-	Martin
-
-P.s: For the last test-case here the fifo utilization statistics:
-root@rasp2a:~# cat /sys/kernel/debug/mcp2517fd-can0/fifo_usage/* | awk '{ C=C+$1; printf "%8i %s\n",C,$0}’
-Total    Count/fifo
-  384401 384401
-  674306 289905
-  960133 285827
-  990117 29984
-  994351 4234
-  996745 2394
-  997668 923
-  998217 549
-  998593 376
-  998849 256
-  999059 210
-  999240 181
-  999385 145
-  999508 123
-  999604 96
-  999680 76
-  999745 65
-  999797 52
-  999840 43
-root@rasp2a:~# cat /sys/kernel/debug/mcp2517fd-can0/rx/fifo_count
-19
-root@rasp2a:~# dmesg
-[77843.229423] mcp2517fd spi0.0: RX MAB overflow
-[77856.329824] mcp2517fd spi0.0: RX MAB overflow
-[77883.299221] mcp2517fd spi0.0: RX MAB overflow
-
-These dmesg lines correspond with the errors (and would also increase “dropped” by 3)
-
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
+IFttYWlsdG86bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiBTZW50OiBGcmlkYXksIE5vdmVtYmVyIDI0
+LCAyMDE3IDg6MzMgUE0NCj4gVG86IFBhbmthaiBCYW5zYWwgPHBhbmthai5iYW5zYWxAbnhwLmNv
+bT47IHdnQGdyYW5kZWdnZXIuY29tOyBsaW51eC0NCj4gY2FuQHZnZXIua2VybmVsLm9yZzsgcm9i
+aCtkdEBrZXJuZWwub3JnOyBtYXJrLnJ1dGxhbmRAYXJtLmNvbTsNCj4gZGV2aWNldHJlZUB2Z2Vy
+Lmtlcm5lbC5vcmcNCj4gQ2M6IFZhcnVuIFNldGhpIDxWLlNldGhpQG54cC5jb20+OyBQb29uYW0g
+QWdncndhbA0KPiA8cG9vbmFtLmFnZ3J3YWxAbnhwLmNvbT47IEJodXBlc2ggU2hhcm1hDQo+IDxi
+aHVwZXNoLnNoYXJtYUBmcmVlc2NhbGUuY29tPjsgU2FrYXIgQXJvcmENCj4gPFNha2FyLkFyb3Jh
+QGZyZWVzY2FsZS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjQgMS82XSBjYW46IGZsZXhj
+YW46IFJlbW9kZWwgRmxleENBTiByZWdpc3RlciByL3cgQVBJcw0KPiBmb3IgYmlnIGVuZGlhbiBG
+bGV4Q0FOIGNvbnRyb2xsZXJzLg0KPiANCj4gT24gMTEvMjQvMjAxNyAwMjoyMiBQTSwgUGFua2Fq
+IEJhbnNhbCB3cm90ZToNCj4gPiBUaGUgRmxleENBTiBkcml2ZXIgYXNzdW1lZCB0aGF0IEZsZXhD
+QU4gY29udHJvbGxlciBpcyBiaWcgZW5kaWFuIGZvcg0KPiA+IHBvd2VycGMgYXJjaGl0ZWN0dXJl
+IGFuZCBsaXR0bGUgZW5kaWFuIGZvciBvdGhlciBhcmNoaXRlY3R1cmVzLg0KPiA+DQo+ID4gQnV0
+IHRoaXMgbWF5IG5vdCBiZSB0aGUgY2FzZS4gRmxleENBTiBjb250cm9sbGVyIGNhbiBiZSBsaXR0
+bGUgb3IgYmlnDQo+ID4gZW5kaWFuIG9uIGFueSBhcmNoaXRlY3R1cmUuIEZvciBlLmcuIE5YUCBM
+UzEwMjFBIEFSTSBiYXNlZCBTT0MgaGFzIGJpZw0KPiA+IGVuZGlhbiBGbGV4Q0FOIGNvbnRyb2xs
+ZXIuDQo+ID4NCj4gPiBUaGVyZWZvcmUsIHRoZSBkcml2ZXIgaGFzIGJlZW4gbW9kaWZpZWQgdG8g
+YWRkIGEgcHJvdmlzaW9uIGZvciBib3RoDQo+ID4gdHlwZXMgb2YgY29udHJvbGxlcnMgdXNpbmcg
+YW4gYWRkaXRpb25hbCBkZXZpY2UgdHJlZSBwcm9wZXJ0eS4gT24gYQ0KPiA+ICJmc2wscDEwMTAt
+ZmxleGNhbiIgZGV2aWNlIEJFIGlzIGRlZmF1bHQsIG9uIGFsbCBvdGhlciBkZXZpY2VzIExFIGlz
+Lg0KPiA+DQo+ID4gQmlnIEVuZGlhbiBjb250cm9sbGVycyBzaG91bGQgaGF2ZSAiYmlnLWVuZGlh
+biIgc2V0IGluIHRoZSBkZXZpY2UgdHJlZS4NCj4gPiBjaGVjayAiRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL25ldC9jYW4vZnNsLWZsZXhjYW4udHh0IiBmb3INCj4gPiB1c2FnZS4N
+Cj4gPg0KPiA+IFRoaXMgaXMgdGhlIHN0YW5kYXJkIHByYWN0aWNlIGZvbGxvd2VkIGluIGxpbnV4
+LiBmb3IgbW9yZSBpbmZvIGNoZWNrOg0KPiA+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9jb21tb24tcHJvcGVydGllcy50eHQNCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFBhbmth
+aiBCYW5zYWwgPHBhbmthai5iYW5zYWxAbnhwLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBCaHVw
+ZXNoIFNoYXJtYSA8Ymh1cGVzaC5zaGFybWFAZnJlZXNjYWxlLmNvbT4NCj4gPiBTaWduZWQtb2Zm
+LWJ5OiBTYWthciBBcm9yYSA8U2FrYXIuQXJvcmFAZnJlZXNjYWxlLmNvbT4NCj4gPiBSZXZpZXdl
+ZC1ieTogWmhlbmd4aW9uZyBKaW4gPEphc29uLkppbkBmcmVlc2NhbGUuY29tPg0KPiA+IFJldmll
+d2VkLWJ5OiBQb29uYW0gQWdncndhbCA8cG9vbmFtLmFnZ3J3YWxAbnhwLmNvbT4NCj4gPiAtLS0N
+Cj4gPiBDaGFuZ2VzIGluIHY0Og0KPiA+ICAgLSBNZXJnZWQgZGV2aWNlIHRyZWUgY2hhbmdlcyBh
+bmQgZHJpdmVyIGNoYW5nZXMgaW4gb25lIHNlcmllcw0KPiA+IENoYW5nZXMgaW4gdjM6DQo+ID4g
+ICAtIEFkZGVkIGZzbCxpbXgyNS1mbGV4Y2FuLCBmc2wsaW14MzUtZmxleGNhbiBhbmQgZnNsLGlt
+eDUzLWZsZXhjYW4NCj4gPiAgICAgc3VwcG9ydCB0byB0aGUgZHJpdmVyLg0KPiA+ICAgLSBNb2Rp
+ZmllZCBwYXRjaCBkZWNpcHRpb24gdG8gc3RhdGUgZGVmYXVsdCBlbmRpYW5uZXNzIGZvbGxvd2Vk
+IGFuZA0KPiA+ICAgICB0byBpbmNsdWRlIGZzbC1mbGV4Y2FuLnR4dCByZWZlcmFuY2UuDQo+ID4g
+Q2hhbmdlcyBpbiB2MjoNCj4gPiAgIC0gTW9kaWZpZWQgcGF0Y2ggZGVjaXB0aW9uIHRvIGluY2x1
+ZGUgY29tbW9uLXByb3BlcnRpZXMudHh0IHJlZmVyZW5jZS4NCj4gPiAgIC0gUmVvcmRlciB0aGUg
+TEUvQkUgcmVhZC93cml0ZSBBUElzIGZvciBiZXR0ZXIgcmVhZGFiaWxpdHkgb2YgY29kZQ0KPiA+
+ICAgLSBBZGRlZCBhbiBleGNlcHRpb24gdG8gZm9yY2UgQkUgQVBJIHNlbGVjdGlvbiwgZm9yIHBv
+d2VycGMgYmFzZWQNCj4gcGxhdGZvcm0NCj4gPiAgICAgUDEwMTAuIFRoaXMgZW5zdXJlcyB0aGF0
+IG5ldyBsaW51eCBrZXJuZWwgd29ya3Mgd2l0aCBvbGQgUDEwMTANCj4gPiAgICAgZGV2aWNlLXRy
+ZWUsIHdoaWxlIGZ1dHVyZSBwb3dlcnBjIHBsYXRmb3JtcyB0aGF0IHVzZSBiaWcgZW5kaWFuDQo+
+ID4gICAgIEZsZXhDQU4gY29udHJvbGxlciBuZWVkIHRvIHNwZWNpZnkgYmlnLWVuZGlhbiBpbiBk
+ZXZpY2UgdHJlZSBpbg0KPiA+ICAgICBGbGV4Q0FOIG5vZGUuDQo+ID4gICAtIFRlc3RlZCBvbiBQ
+MTAxMCBhZnRlciBiYWNrcG9ydGluZyB0byBmcmVlc2NhbGUgc2RrIDEuNCBsaW51eCwgd2l0aG91
+dA0KPiA+ICAgICBhbnkgY2hhbmdlIGluIGRldmljZS10cmVlLg0KPiA+ICAgLSBUZXN0ZWQgb24g
+TlhQIExTMTAyMUEgYXJtIGJhc2VkIHBsYXRmb3JtLg0KPiA+DQo+ID4gIGRyaXZlcnMvbmV0L2Nh
+bi9mbGV4Y2FuLmMgfCAyMzMgKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tDQo+
+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMzEgaW5zZXJ0aW9ucygrKSwgMTAyIGRlbGV0aW9ucygtKQ0K
+PiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2ZXJz
+L25ldC9jYW4vZmxleGNhbi5jDQo+ID4gaW5kZXggYTEzYTQ4OS4uNGM4NzNmYiAxMDA2NDQNCj4g
+PiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQv
+Y2FuL2ZsZXhjYW4uYw0KPiANCj4gWy4uLl0NCj4gSSB0aGluayB0aGlzIHdpbGwgc2VsZWN0IExF
+IGZvciBub24gRFQgZGV2aWNlcywgcmlnaHQ/DQo+IA0KDQpZZXMuICBBcyBwZXIgYmVsb3cgY29k
+ZSBzbmlwcGV0Og0KDQpzdGF0aWMgc3RydWN0IHByb3BlcnR5ICpfX29mX2ZpbmRfcHJvcGVydHko
+Y29uc3Qgc3RydWN0IGRldmljZV9ub2RlICpucCwNCgkJCQkJICAgY29uc3QgY2hhciAqbmFtZSwg
+aW50ICpsZW5wKQ0Kew0KCXN0cnVjdCBwcm9wZXJ0eSAqcHA7DQoNCglpZiAoIW5wKQ0KCQlyZXR1
+cm4gTlVMTDsNCiAgICAgICAgICAgICAgLi4uLg0KfQ0KDQpJZiBubyBkZXZpY2Ugbm9kZSBpcyBw
+cmVzZW50IG51bGwgaXMgcmV0dXJuZWQuDQpTbyB3ZSBzZWxlY3QgbGUgYXMgZGVmYXVsdC4NCg0K
+PiA+ICsJaWYgKG9mX3Byb3BlcnR5X3JlYWRfYm9vbChwZGV2LT5kZXYub2Zfbm9kZSwgImJpZy1l
+bmRpYW4iKSkgew0KPiA+ICsJCXByaXYtPnJlYWQgPSBmbGV4Y2FuX3JlYWRfYmU7DQo+ID4gKwkJ
+cHJpdi0+d3JpdGUgPSBmbGV4Y2FuX3dyaXRlX2JlOw0KPiA+ICsJfSBlbHNlIHsNCj4gPiArCQlp
+ZiAob2ZfZGV2aWNlX2lzX2NvbXBhdGlibGUocGRldi0+ZGV2Lm9mX25vZGUsDQo+ID4gKwkJCQkJ
+ICAgICJmc2wscDEwMTAtZmxleGNhbiIpKSB7DQo+ID4gKwkJCXByaXYtPnJlYWQgPSBmbGV4Y2Fu
+X3JlYWRfYmU7DQo+ID4gKwkJCXByaXYtPndyaXRlID0gZmxleGNhbl93cml0ZV9iZTsNCj4gPiAr
+CQl9IGVsc2Ugew0KPiA+ICsJCQlwcml2LT5yZWFkID0gZmxleGNhbl9yZWFkX2xlOw0KPiA+ICsJ
+CQlwcml2LT53cml0ZSA9IGZsZXhjYW5fd3JpdGVfbGU7DQo+ID4gKwkJfQ0KPiA+ICsJfQ0KPiA+
+ICsNCj4gPiAgCXByaXYtPmNhbi5jbG9jay5mcmVxID0gY2xvY2tfZnJlcTsNCj4gPiAgCXByaXYt
+PmNhbi5iaXR0aW1pbmdfY29uc3QgPSAmZmxleGNhbl9iaXR0aW1pbmdfY29uc3Q7DQo+ID4gIAlw
+cml2LT5jYW4uZG9fc2V0X21vZGUgPSBmbGV4Y2FuX3NldF9tb2RlOw0KPiA+DQo+IA0KPiBNYXJj
+DQo+IA0KPiAtLQ0KPiBQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEts
+ZWluZS1CdWRkZSAgICAgICAgICAgfA0KPiBJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9ucyAgICAg
+ICAgfCBQaG9uZTogKzQ5LTIzMS0yODI2LTkyNCAgICAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9y
+dG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KPiBBbXRzZ2Vy
+aWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAg
+fA0KDQo=
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
