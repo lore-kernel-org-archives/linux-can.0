@@ -1,73 +1,157 @@
-From: kernel@martin.sperl.org
-Subject: Re: [PATCH 0/2] Microchip mcp2517fd can controller driver
-Date: Sun, 26 Nov 2017 20:53:20 +0100
-Message-ID: <625AAD8B-80D4-46AF-8E00-7C9C0F10DE4F@martin.sperl.org>
-References: <20171124183509.12810-1-kernel@martin.sperl.org> <3d355c51-09a3-40b8-46bf-8437e26a95f3@hartkopp.net> <263BAF25-3F9A-4BE8-8E19-757B3C22A037@martin.sperl.org> <0c2f4a35-3b86-7ae6-ccc6-2751fa92f497@grandegger.com> <CEE8AB99-2B26-44C0-A8D1-DD339DC9FEF7@martin.sperl.org> <3b1c4778-b155-7aaf-e5b4-14061e687161@grandegger.com>
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
+From: Mirza Krak <mirza.krak@gmail.com>
+Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for LS1021A
+Date: Sun, 26 Nov 2017 22:11:51 +0100
+Message-ID: <CALw8SCWK55Byqackx3YQ_h8c5Jo5JFLtt3-WJryHwOEtP-Rtgw@mail.gmail.com>
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com> <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
+ <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com> <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
+ <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+ <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de> <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
+ <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de> <CALw8SCUGuCmq+S_9-o-ZDYJuASveuj71WH97jYsEvNZX2N5ZXA@mail.gmail.com>
+ <CALw8SCWNXJYuNWDtAxS9iFkKjMhcwQ60Pi7Mq3ne=k0Oynr47w@mail.gmail.com>
+ <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com> <CALw8SCWFDt58x6zrbnoXuX=DkG0+OZtXnCO5CdK+MQb2JyubuA@mail.gmail.com>
+ <d339bdc6-49c4-3184-6fa4-12521f491f20@grandegger.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from 212-186-180-163.static.upcbusiness.at ([212.186.180.163]:41566
-        "EHLO cgate.sperl.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751532AbdKZTxT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 26 Nov 2017 14:53:19 -0500
-In-Reply-To: <3b1c4778-b155-7aaf-e5b4-14061e687161@grandegger.com>
+Received: from mail-qk0-f182.google.com ([209.85.220.182]:38313 "EHLO
+        mail-qk0-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751662AbdKZVLx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 26 Nov 2017 16:11:53 -0500
+Received: by mail-qk0-f182.google.com with SMTP id a142so30113861qkb.5
+        for <linux-can@vger.kernel.org>; Sun, 26 Nov 2017 13:11:53 -0800 (PST)
+In-Reply-To: <d339bdc6-49c4-3184-6fa4-12521f491f20@grandegger.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org, devicetree@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Pankaj Bansal <pankaj.bansal@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Stefan Agner <stefan@agner.ch>
 
-Hi Wolfgang!
+2017-11-24 20:19 GMT+01:00 Wolfgang Grandegger <wg@grandegger.com>:
+> Hello Mirza,
+>
 
-> On 26.11.2017, at 20:05, Wolfgang Grandegger <wg@grandegger.com> wrote:
->> Test messages sent and received: 32
->> (I can not go to longer tests because I may hit a bug I am just
->> now trying to fix in the current code level).
-> 
-> This test does not load the bus a lot but uses burst of message to trigger out-of-order issues. Please run the test without "-v" and much longer.
+< snip >
 
-I agree, but as mentioned: I am debugging something else, which makes the
-system slightly unstable, so I refrained from running longer tests...
+>>>
+>>> You can test such state changes as show below. First setup the interfac=
+e
+>>> and
+>>> start a session calling "candump" to report the state changes:
+>>>
+>>>    # ip link set can0 up type can bitrate 500000 restart-ms 100
+>>>    # candump -td -e any,0:0,#FFFFFFFF
+>>>
+>>> Then
+>>>
+>>> 1. disconnect the cable and send messages with "cangen"
+>>>
+>>>     # cangen -i can0
+>>>
+>>> "candump" should then report the error state changes "error-active" ->
+>>> "warning" -> "error-passive". If you don't see "error-passive", the
+>>> hardware
+>>> needs the FLEXCAN_QUIRK_BROKEN_PERR_STATE as well. Then reconnect the
+>>> cable
+>>> and send messages till the "error active" state is reached (again with
+>>> "cangen").
+>>
+>>
+>> This was the result of this test:
+>>
+>> root@colibri-vf:~# ./candump -td -e can0,0:0,#FFFFFFFF
+>>   (000.000000)  can0  0C8   [8]  E7 D5 75 20 1C F8 AA 6D
+>>   (000.200201)  can0  7CD   [8]  58 5F B1 1E D7 AB 3C 15
+>>   (000.200123)  can0  7FD   [8]  EC 43 EF 11 BB 76 50 4F
+>>   (000.200119)  can0  20D   [8]  64 E0 A6 74 A2 A4 22 42
+>>   (000.200115)  can0  226   [7]  CB 4D 12 46 F3 37 F1
+>>   (000.200000)  can0  42F   [0]
+>>   (000.200245)  can0  0F9   [8]  AD 61 16 77 0A 64 50 5C
+>>   (000.199983)  can0  76E   [0]
+>>   (000.200206)  can0  3CB   [6]  53 28 03 34 98 43
+>>   (000.200152)  can0  230   [8]  70 EF 66 38 2D BA 5D 4D
+>>   (000.200106)  can0  568   [8]  E8 30 AE 1C 75 77 4E 5E
+>>   (000.200274)  can0  20000004   [8]  00 04 00 00 00 00 00 00   ERRORFRA=
+ME
+>> controller-problem{rx-error-warning}
+>>
+>> and the statistics
+>>
+>> root@colibri-vf:~# ip -d -s link show can0
+>> 2: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state
+>> UNKNOWN mode DEFAULT group default qlen 10
+>>      link/can  promiscuity 0
+>>      can state ERROR-WARNING (berr-counter tx 0 rx 128) restart-ms 100
+>>   bitrate 496240 sample-point 0.857
+>>   tq 143 prop-seg 5 phase-seg1 6 phase-seg2 2 sjw 1
+>>   flexcan: tseg1 4..16 tseg2 2..8 sjw 1..4 brp 1..256 brp-inc 1
+>>   clock 83368421
+>>   re-started bus-errors arbit-lost error-warn error-pass bus-off
+>>   0          0          0          1          0          0
+>> numtxqueues 1
+>>      RX: bytes  packets  errors  dropped overrun mcast
+>>      8          1        0       0       0       0
+>>      TX: bytes  packets  errors  dropped carrier collsns
+>>      69         11       0       0       0       0
+>>
+>> I ran out of time as wanted to test a bit more as I was confused that
+>> it is showing RX errors on the first test? I was not able to get it
+>> back to ERROR-ACTIVE from ERROR-WARNING either. But posted result
+>> anyway
+>
+>
+> The received error messages are counted as well.
+>
+>>> 2. The second test is quite similar. Instead of disconnecting the cable=
+,
+>>> short-circuit the CAN low and high lines. The device should then go to
+>>> "bus-off".
+>>
+>>
+>> And this one:
+>>
+>> root@colibri-vf:~# ./candump -td -e any,0:0,#FFFFFFFF
+>>   (000.000000)  can0  20000004   [8]  00 20 00 00 00 00 00 00   ERRORFRA=
+ME
+>> controller-problem{tx-error-passive}
+>>   (000.000809)  can0  20000040   [8]  00 00 00 00 00 00 00 00   ERRORFRA=
+ME
+>> bus-off
+>>   (000.109797)  can0  20000100   [8]  00 00 00 00 00 00 00 00   ERRORFRA=
+ME
+>> restarted-after-bus-off
+>>   (000.100551)  can0  20000004   [8]  00 20 00 00 00 00 00 00   ERRORFRA=
+ME
+>> controller-problem{tx-error-passive}
+>>   (000.000823)  can0  20000040   [8]  00 00 00 00 00 00 00 00   ERRORFRA=
+ME
+>> bus-off
+>>   (000.108644)  can0  20000100   [8]  00 00 00 00 00 00 00 00   ERRORFRA=
+ME
+>> restarted-after-bus-off
+>>   (000.090692)  can0  20000004   [8]  00 08 00 00 00 00 00 00   ERRORFRA=
+ME
+>> controller-problem{tx-error-warning}
+>>   (000.000797)  can0  20000040   [8]  00 00 00 00 00 00 00 00   ERRORFRA=
+ME
+>> bus-off
+>>
+>> Will try again next week when I am back at the office.
+>>
+>> I ran my tests on 4.14 kernel.
+>
+>
+> This Flexcan core needs the FLEXCAN_QUIRK_BROKEN_PERR_STATE as well, like
+> all other cores. Adding that quirk for the vf610 will cure the problems.
+>
 
+I will probably get some time during the coming week to test adding
+FLEXCAN_QUIRK_BROKEN_PERR_STATE and I can send a patch if it all looks
+good.
 
->> If you are interested in any more specific tests that I should
->>  be running, then please list those and I can report them
->> when submitting V2 of the patch set.
-> 
-> Other useful test are about bus error reporting and error state changes.
-> 
-> Can bus errors been disabled via interrupt? I do not see that CAN_CTRLMODE_BERR_REPORTING is handled. This means that bus error reporting is always on which may put heavy load on the system. e.g if no cable is connected and a message sent (at 1MB/s).
-> 
-> Concerning the error state changes, have a look to [1].
+--=20
+Med V=C3=A4nliga H=C3=A4lsningar / Best Regards
 
-Yes - it comes with the 9 (32-bit) register read on every interrupt.
-This is actually an optimization to avoid kernel latencies that would 
-occur when reading 3 sets of registers separately.
-Also longer reads means a higher likleyhood that DMA will be used
-by the spi-controller/driver.
-
-> 
->> Just to put everything into perspective:
->> The equipment available to me is:
->> * beagle bone black with c_can
->> * raspberry pi 3 with mcp2515
->> * raspberry pi CM3 with mcp2517fd
->> * raspberry pi 2 with mcp2517fd
->> * saleae logic analyzer
-> 
-> [1] https://marc.info/?l=linux-can&m=151147114323582&w=2
-> 
-I will try to run those and add them to the cover page for V2.
-
-
-> The driver has more than 3000 lines... a review will take some time.
-
-Please look mostly at the device-tree and the main comments about the
-rationale and performance optimizations at first.
-
-Feedback on these I could include with V2 of the patch that will
-fix also the above mentioned errors and MAB avoidance code.
-I should be able to post it later this week.
-
-Thanks,
-		Martin
+Mirza Krak
