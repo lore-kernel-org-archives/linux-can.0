@@ -1,71 +1,59 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v4 0/6] Remodel FlexCAN register r/w APIs for big endian
-Date: Mon, 27 Nov 2017 15:07:06 +0100
-Message-ID: <8f8c2093-35db-306b-d054-4c27299bfa7c@pengutronix.de>
-References: <1511529733-27942-1-git-send-email-pankaj.bansal@nxp.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: peak/pci: fix potential bug when probe() fails
+Date: Mon, 27 Nov 2017 15:16:25 +0100
+Message-ID: <1a5a00a0-e7a0-ec0d-2782-5ce68fb5fbda@pengutronix.de>
+References: <20171123144435.12282-1-s.grosjean@peak-system.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="W9J489nDTh2QNeMmkRT4kQxWCJ68wmGRq"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1511529733-27942-1-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: V.Sethi-3arQi8VN3Tc@public.gmane.org, poonam.aggrwal-3arQi8VN3Tc@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+ boundary="bFlCwSuSdpI4bOdDxVsvUjd2j7NkUkdpx"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:39049 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752682AbdK0OQd (ORCPT
+        <rfc822;linux-can@vger.kernel.ORG>); Mon, 27 Nov 2017 09:16:33 -0500
+In-Reply-To: <20171123144435.12282-1-s.grosjean@peak-system.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Stephane Grosjean <s.grosjean@peak-system.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---W9J489nDTh2QNeMmkRT4kQxWCJ68wmGRq
-Content-Type: multipart/mixed; boundary="Dvii0I7OuwxKclb6U3TTstTBmJWwOEfVO";
+--bFlCwSuSdpI4bOdDxVsvUjd2j7NkUkdpx
+Content-Type: multipart/mixed; boundary="LC4DvWq3Wg7uRL9jNrF1AQWSPwcr17P57";
  protected-headers="v1"
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-To: Pankaj Bansal <pankaj.bansal-3arQi8VN3Tc@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org,
- linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org,
- devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: V.Sethi-3arQi8VN3Tc@public.gmane.org, poonam.aggrwal-3arQi8VN3Tc@public.gmane.org
-Message-ID: <8f8c2093-35db-306b-d054-4c27299bfa7c-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v4 0/6] Remodel FlexCAN register r/w APIs for big endian
-References: <1511529733-27942-1-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
-In-Reply-To: <1511529733-27942-1-git-send-email-pankaj.bansal-3arQi8VN3Tc@public.gmane.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Stephane Grosjean <s.grosjean@peak-system.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>
+Message-ID: <1a5a00a0-e7a0-ec0d-2782-5ce68fb5fbda@pengutronix.de>
+Subject: Re: [PATCH] can: peak/pci: fix potential bug when probe() fails
+References: <20171123144435.12282-1-s.grosjean@peak-system.com>
+In-Reply-To: <20171123144435.12282-1-s.grosjean@peak-system.com>
 
---Dvii0I7OuwxKclb6U3TTstTBmJWwOEfVO
+--LC4DvWq3Wg7uRL9jNrF1AQWSPwcr17P57
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 11/24/2017 02:22 PM, Pankaj Bansal wrote:
-> This patch series remodels the FlexCAN register r/w APIs for big endian=
-=2E
-> The endianness is checked based on optional big-endian property in
-> device tree. if this property is not present in device tree node then=20
-> controller is assumed to be little endian. if this property is present =
-then
-> controller is assumed to be big endian.
->=20
-> An exception to this rule is powerpc P1010RDB, which is always
-> big-endian, even if big-endian is not present in dts. This is
-> checked using p1010-flexcan compatible in dts.
->=20
-> Therefore, remove p1010-flexcan compatible from imx series dts,
-> as their flexcan core is little endian.
->=20
-> Finally this series adds support for NXP LS1021A SOC in flexcan,
-> which is arm based SOC having big-endian FlexCAN controller.
->=20
-> Pankaj Bansal (6):
->   can: flexcan: Remodel FlexCAN register r/w APIs for big endian FlexCA=
-N
->     controllers.
->   can: flexcan: adding platform specific details for LS1021A
->   Documentation : can : flexcan : Add big-endian property to device tre=
+On 11/23/2017 03:44 PM, Stephane Grosjean wrote:
+> PCI/PCIe drivers for PEAK-System CAN/CAN-FD interfaces do some access t=
+o the
+> PCI config during probing. In case one of these accesses fails, a POSIT=
+IVE
+> PCIBIOS_xxx error code is returned back. This POSITIVE error code MUST =
+be
+> converted into a NEGATIVE errno for the probe() function to indicate it=
+
+> failed. Using the pcibios_err_to_errno() function, we make sure that th=
 e
->   powerpc: dts: P1010: Add endianness property to flexcan node
->   arm: dts: Remove p1010-flexcan compatible from imx series dts
->   arm/dts: Add nodes for flexcan devices present on LS1021A-Rev2 SoC
+> return code will always be negative.
+>=20
+> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Applied to can-next.
+Applied to can.
 
-Thanks,
+Tnx,
 Marc
 
 --=20
@@ -75,27 +63,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---Dvii0I7OuwxKclb6U3TTstTBmJWwOEfVO--
+--LC4DvWq3Wg7uRL9jNrF1AQWSPwcr17P57--
 
---W9J489nDTh2QNeMmkRT4kQxWCJ68wmGRq
+--bFlCwSuSdpI4bOdDxVsvUjd2j7NkUkdpx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlocHAoACgkQHv7KIOw4
-HPZ6pwgAhdUYsZa73eHRmsNhUiBOq1Jow9wH0tAr89HGh35id59SYES4Wg82WoE+
-rsGddhUy0JbjZ1Y8DyKaWFf8hoJtEtC1JrPs2wbxf1SGARRMTioFGZcbmnb8PEZP
-4St3cI9h2qWui7VglgUiX0H1vHA0fXK4lNbWvMoTfIBCxT3Z+2tU/aNffTtzP6RE
-cByAn+VfTKNCf2um6NG75DNyI5o3s535I5pNo9pJjtot5HFIIoc7L5vdUbnqeYBG
-1Km1AnvzoTZyeKvA7Y5eP2liRcZJAlwuJk/23ObSKhyZnVh+ap1LC4mRRN61LbsG
-2AsCTW4PS+c8UXYnm2ZIOTmynMzObA==
-=aZW9
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlocHjkACgkQHv7KIOw4
+HPaucQf/RSjLHhm9UoZgEQs2VTkkyttuhBXBLwBvdE8fVNtPL/2dxLWnCvKe3p84
+5gFe0W2WVKfqVV5SrfqcGxwRDNcffvzYmTq9q4ueFcnTiOAP3CjXUqrl/dkCpWKp
+my9az2X6ZBwPaZrpHpDAr1+HjYy/5WcU/lTjBFqhOEjQc5l1AAYCEa8X5dnJizLr
+kn7i97u51kgVz3yadnXg50aovYiX/9tJ1+fDtZVl4ZOMZQhbIz9F+1EYUrVn9YOL
+c97WUom2HVTHaHB1XxA5os35457sAn6TrLFdmYaDlIUHg+nYPtRSYUZEY7Ztn9Bw
+02NdSeIowSsyrc8cAZZ9QQPD+Qd/QQ==
+=dpMD
 -----END PGP SIGNATURE-----
 
---W9J489nDTh2QNeMmkRT4kQxWCJ68wmGRq--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--bFlCwSuSdpI4bOdDxVsvUjd2j7NkUkdpx--
