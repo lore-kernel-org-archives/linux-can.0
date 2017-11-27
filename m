@@ -1,99 +1,121 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] dt-binding: can: mcp2517fd: document device tree
- bindings
-Date: Sun, 26 Nov 2017 16:28:09 -0600
-Message-ID: <20171126222528.i6quueqdmuj6le6g@rob-hp-laptop>
-References: <20171124183509.12810-1-kernel@martin.sperl.org>
- <20171124183509.12810-2-kernel@martin.sperl.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
+ LS1021A
+Date: Mon, 27 Nov 2017 15:00:37 +0100
+Message-ID: <54c6924f-1aac-342e-d1f8-af175a33268e@pengutronix.de>
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
+ <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
+ <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+ <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
+ <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
+ <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de>
+ <CALw8SCUGuCmq+S_9-o-ZDYJuASveuj71WH97jYsEvNZX2N5ZXA@mail.gmail.com>
+ <CALw8SCWNXJYuNWDtAxS9iFkKjMhcwQ60Pi7Mq3ne=k0Oynr47w@mail.gmail.com>
+ <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com>
+ <CALw8SCWFDt58x6zrbnoXuX=DkG0+OZtXnCO5CdK+MQb2JyubuA@mail.gmail.com>
+ <d339bdc6-49c4-3184-6fa4-12521f491f20@grandegger.com>
+ <CALw8SCWK55Byqackx3YQ_h8c5Jo5JFLtt3-WJryHwOEtP-Rtgw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20171124183509.12810-2-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
-Cc: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="78B4QAx27FnoL3Ld818dfdgPmrQbLLJxx"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37773 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752301AbdK0OAt (ORCPT
+        <rfc822;linux-can@vger.kernel.ORG>); Mon, 27 Nov 2017 09:00:49 -0500
+In-Reply-To: <CALw8SCWK55Byqackx3YQ_h8c5Jo5JFLtt3-WJryHwOEtP-Rtgw@mail.gmail.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Mirza Krak <mirza.krak@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Pankaj Bansal <pankaj.bansal@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Stefan Agner <stefan@agner.ch>
 
-On Fri, Nov 24, 2017 at 06:35:08PM +0000, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org wrote:
-> From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-> 
-> Add device-tree bindings for Microcip CanFD Controller mcp2517fd
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--78B4QAx27FnoL3Ld818dfdgPmrQbLLJxx
+Content-Type: multipart/mixed; boundary="P8tBRn7xCI33Ah1dh6xPDD5hjTa4oGiKL";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Mirza Krak <mirza.krak@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>,
+ Pankaj Bansal <pankaj.bansal@nxp.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>,
+ Stefan Agner <stefan@agner.ch>
+Message-ID: <54c6924f-1aac-342e-d1f8-af175a33268e@pengutronix.de>
+Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
+ LS1021A
+References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
+ <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
+ <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
+ <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
+ <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
+ <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+ <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
+ <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
+ <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
+ <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de>
+ <CALw8SCUGuCmq+S_9-o-ZDYJuASveuj71WH97jYsEvNZX2N5ZXA@mail.gmail.com>
+ <CALw8SCWNXJYuNWDtAxS9iFkKjMhcwQ60Pi7Mq3ne=k0Oynr47w@mail.gmail.com>
+ <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com>
+ <CALw8SCWFDt58x6zrbnoXuX=DkG0+OZtXnCO5CdK+MQb2JyubuA@mail.gmail.com>
+ <d339bdc6-49c4-3184-6fa4-12521f491f20@grandegger.com>
+ <CALw8SCWK55Byqackx3YQ_h8c5Jo5JFLtt3-WJryHwOEtP-Rtgw@mail.gmail.com>
+In-Reply-To: <CALw8SCWK55Byqackx3YQ_h8c5Jo5JFLtt3-WJryHwOEtP-Rtgw@mail.gmail.com>
 
-s/Microcip/Microchip/
+--P8tBRn7xCI33Ah1dh6xPDD5hjTa4oGiKL
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Signed-off-by: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-> ---
->  .../bindings/net/can/microchip,mcp2517fd.txt       | 47 ++++++++++++++++++++++
->  1 file changed, 47 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp2517fd.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp2517fd.txt b/Documentation/devicetree/bindings/net/can/microchip,mcp2517fd.txt
-> new file mode 100644
-> index 000000000000..96cbf0c96895
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/microchip,mcp2517fd.txt
-> @@ -0,0 +1,47 @@
-> +* Microchip MCP2517 stand-alone CAN controller device tree bindings
-> +
-> +Required properties:
-> + - compatible: Should be one of the following:
-> +   - "microchip,mcp2517fd" for MCP2517fd.
-> + - reg: SPI chip select.
-> + - clocks: The clock feeding the CAN controller.
-> + - interrupt-parent: The parent interrupt controller.
-> + - interrupts: Should contain IRQ line for the CAN controller.
-> +
-> +Optional properties:
-> + - vdd-supply: Regulator that powers the CAN controller.
-> + - xceiver-supply: Regulator that powers the CAN transceiver.
-> + - microchip,clock_out_div = <0|1|2|4|10>: Clock output pin divider
+On 11/26/2017 10:11 PM, Mirza Krak wrote:
+>>> Will try again next week when I am back at the office.
+>>>
+>>> I ran my tests on 4.14 kernel.
+>>
+>> This Flexcan core needs the FLEXCAN_QUIRK_BROKEN_PERR_STATE as well, l=
+ike
+>> all other cores. Adding that quirk for the vf610 will cure the problem=
+s.
+>=20
+> I will probably get some time during the coming week to test adding
+> FLEXCAN_QUIRK_BROKEN_PERR_STATE and I can send a patch if it all looks
+> good.
 
-s/_/-/
+I've created a patch, waiting for your Tested-by.
 
-And on the rest. Don't use underscores...
+https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git/log/?h=3D=
+testing
 
-> +					   0 = Start of Frame output
-> +					   default: 10
-> + - microchip,clock_div = <1|2>: internal clock divider - default 1
-> + - microchip,gpio_opendrain: gpio (int0,1) in open drain mode
-> +			     instead of default push/pull
-> + - microchip,int_opendrain: int pin in open drain mode
-> +			    instead of default push/pull
+Marc
 
-IIRC, we have a standard property for this.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-> + - microchip,txcan_opendrain: txcan pin in open drain mode
-> +			      instead of default push/pull
-> + - microchip,gpio0_mode : gpio mode functionality
-> +			  0 = input
-> +			  1 = TX interrupt output - default
-> +			  2 = output default low
-> +			  3 = output default high
-> +			  4 = (tx) transceiver standby
-> + - microchip,gpio1_mode : gpio mode functionality
-> +			  0 = input - default
-> +			  1 = RX interrupt output - default
-> +			  2 = output default low
-> +			  3 = output default high
-> +
-> +Example:
-> +	can0: can@1 {
-> +		compatible = "microchip,mcp2515";
-> +		reg = <1>;
-> +		clocks = <&clk24m>;
-> +		interrupt-parent = <&gpio4>;
-> +		interrupts = <13 0x8>;
-> +		vdd-supply = <&reg5v0>;
-> +		xceiver-supply = <&reg5v0>;
-> +		microchip,gpio0_mode = <4>;
-> +		microchip,gpio0_mode = <1>;
-> +	};
-> -- 
-> 2.11.0
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--P8tBRn7xCI33Ah1dh6xPDD5hjTa4oGiKL--
+
+--78B4QAx27FnoL3Ld818dfdgPmrQbLLJxx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlocGoUACgkQHv7KIOw4
+HPbcfAf/aku0CEaNNWIapsv0WsPfsqIQ8trMF5p+bPuqVIK7HsPftbE+ukKcFT9N
+4KfAqz6NuoRNtVMfrUGZWB3pMquDGrAqAD8QtYzDOWIOtV6Bj9FjrHU06Z3foTlz
+bWE+NjNxI23e01Qx+btT1cxbEqOWMQpf+q6hx81SKzMD6H3lzBgGuntzDR0p7PKE
+JxGmQf/8Ep/ZR6JIkdGT1RgY7W5/abBy+oWJTy8MNNZi90voPCQ54QpKncLPKY/O
+O6he1rCWmizn+XhqwbIYCqBZu3Mc1c96LIbV4Pbgz2OfKDqAva/cbrJsU+99t+WI
+X7Fl4TFFPJ+V4Fk1GL1aU58MrCwZdg==
+=PH6u
+-----END PGP SIGNATURE-----
+
+--78B4QAx27FnoL3Ld818dfdgPmrQbLLJxx--
