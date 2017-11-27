@@ -1,94 +1,100 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
- LS1021A
-Date: Mon, 27 Nov 2017 15:00:37 +0100
-Message-ID: <54c6924f-1aac-342e-d1f8-af175a33268e@pengutronix.de>
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
- <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
- <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
- <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
- <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
- <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de>
- <CALw8SCUGuCmq+S_9-o-ZDYJuASveuj71WH97jYsEvNZX2N5ZXA@mail.gmail.com>
- <CALw8SCWNXJYuNWDtAxS9iFkKjMhcwQ60Pi7Mq3ne=k0Oynr47w@mail.gmail.com>
- <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com>
- <CALw8SCWFDt58x6zrbnoXuX=DkG0+OZtXnCO5CdK+MQb2JyubuA@mail.gmail.com>
- <d339bdc6-49c4-3184-6fa4-12521f491f20@grandegger.com>
- <CALw8SCWK55Byqackx3YQ_h8c5Jo5JFLtt3-WJryHwOEtP-Rtgw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/6] can: flexcan: Remodel FlexCAN register r/w APIs
+ for big endian FlexCAN controllers.
+Date: Mon, 27 Nov 2017 15:06:17 +0100
+Message-ID: <5b7085c4-650d-a12c-8e14-e2fdf3ad896a@pengutronix.de>
+References: <1511529733-27942-1-git-send-email-pankaj.bansal@nxp.com>
+ <1511529733-27942-2-git-send-email-pankaj.bansal@nxp.com>
+ <44f37aef-7f45-a7c7-7320-01a62e23fbde@pengutronix.de>
+ <AM0PR0402MB39405B9B5E5C04B2492221D6F1240@AM0PR0402MB3940.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="78B4QAx27FnoL3Ld818dfdgPmrQbLLJxx"
+ boundary="6vl9IqSvh5sgXdjoWgusmvcXg1lkPCuDq"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37773 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:41825 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752301AbdK0OAt (ORCPT
-        <rfc822;linux-can@vger.kernel.ORG>); Mon, 27 Nov 2017 09:00:49 -0500
-In-Reply-To: <CALw8SCWK55Byqackx3YQ_h8c5Jo5JFLtt3-WJryHwOEtP-Rtgw@mail.gmail.com>
+        by vger.kernel.org with ESMTP id S1752282AbdK0OGf (ORCPT
+        <rfc822;linux-can@vger.kernel.ORG>); Mon, 27 Nov 2017 09:06:35 -0500
+In-Reply-To: <AM0PR0402MB39405B9B5E5C04B2492221D6F1240@AM0PR0402MB3940.eurprd04.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Mirza Krak <mirza.krak@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, Pankaj Bansal <pankaj.bansal@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Stefan Agner <stefan@agner.ch>
+To: Pankaj Bansal <pankaj.bansal@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>, Bhupesh Sharma <bhupesh.sharma@freescale.com>, Sakar Arora <Sakar.Arora@freescale.com>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---78B4QAx27FnoL3Ld818dfdgPmrQbLLJxx
-Content-Type: multipart/mixed; boundary="P8tBRn7xCI33Ah1dh6xPDD5hjTa4oGiKL";
+--6vl9IqSvh5sgXdjoWgusmvcXg1lkPCuDq
+Content-Type: multipart/mixed; boundary="8jDoio6fuIRFOJFQWqkrlT1I8V3p80L5J";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Mirza Krak <mirza.krak@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: "ZHU Yi (ST-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>,
- Pankaj Bansal <pankaj.bansal@nxp.com>,
+To: Pankaj Bansal <pankaj.bansal@nxp.com>,
+ "wg@grandegger.com" <wg@grandegger.com>,
  "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>,
- Stefan Agner <stefan@agner.ch>
-Message-ID: <54c6924f-1aac-342e-d1f8-af175a33268e@pengutronix.de>
-Subject: Re: [PATCH v2 2/2] can: flexcan: adding platform specific details for
- LS1021A
-References: <1510307990-15418-1-git-send-email-pankaj.bansal@nxp.com>
- <1510660589-16125-2-git-send-email-pankaj.bansal@nxp.com>
- <828fba89-66dc-a2c5-e095-8554b9dce5d5@pengutronix.de>
- <AM0PR0402MB3940A4B29C67BAD85F461331F12E0@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <343d8c69-a01a-5ff7-75a2-99523391f97c@grandegger.com>
- <ff7b32a8bc694c92b10967bfd2de24fa@SGPMBX1017.APAC.bosch.com>
- <AM0PR0402MB394058F204ECA509D1ADB6AEF1220@AM0PR0402MB3940.eurprd04.prod.outlook.com>
- <cf35f42c513946918031b4c1cf6d8778@SGPMBX1017.APAC.bosch.com>
- <be8f51ff-8775-fe03-d299-2dc1f963ebcc@pengutronix.de>
- <3e201945af364c5a8a92dd6a931f4448@SGPMBX1017.APAC.bosch.com>
- <ced1aea2-144d-9bd5-8ab7-b19492512815@pengutronix.de>
- <CALw8SCUGuCmq+S_9-o-ZDYJuASveuj71WH97jYsEvNZX2N5ZXA@mail.gmail.com>
- <CALw8SCWNXJYuNWDtAxS9iFkKjMhcwQ60Pi7Mq3ne=k0Oynr47w@mail.gmail.com>
- <e318ca19-bb08-f537-ed7a-4f8008b9a341@grandegger.com>
- <CALw8SCWFDt58x6zrbnoXuX=DkG0+OZtXnCO5CdK+MQb2JyubuA@mail.gmail.com>
- <d339bdc6-49c4-3184-6fa4-12521f491f20@grandegger.com>
- <CALw8SCWK55Byqackx3YQ_h8c5Jo5JFLtt3-WJryHwOEtP-Rtgw@mail.gmail.com>
-In-Reply-To: <CALw8SCWK55Byqackx3YQ_h8c5Jo5JFLtt3-WJryHwOEtP-Rtgw@mail.gmail.com>
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Cc: Varun Sethi <V.Sethi@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>,
+ Bhupesh Sharma <bhupesh.sharma@freescale.com>,
+ Sakar Arora <Sakar.Arora@freescale.com>
+Message-ID: <5b7085c4-650d-a12c-8e14-e2fdf3ad896a@pengutronix.de>
+Subject: Re: [PATCH v4 1/6] can: flexcan: Remodel FlexCAN register r/w APIs
+ for big endian FlexCAN controllers.
+References: <1511529733-27942-1-git-send-email-pankaj.bansal@nxp.com>
+ <1511529733-27942-2-git-send-email-pankaj.bansal@nxp.com>
+ <44f37aef-7f45-a7c7-7320-01a62e23fbde@pengutronix.de>
+ <AM0PR0402MB39405B9B5E5C04B2492221D6F1240@AM0PR0402MB3940.eurprd04.prod.outlook.com>
+In-Reply-To: <AM0PR0402MB39405B9B5E5C04B2492221D6F1240@AM0PR0402MB3940.eurprd04.prod.outlook.com>
 
---P8tBRn7xCI33Ah1dh6xPDD5hjTa4oGiKL
+--8jDoio6fuIRFOJFQWqkrlT1I8V3p80L5J
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 11/26/2017 10:11 PM, Mirza Krak wrote:
->>> Will try again next week when I am back at the office.
->>>
->>> I ran my tests on 4.14 kernel.
+On 11/26/2017 03:20 AM, Pankaj Bansal wrote:
+>>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+>>> index a13a489..4c873fb 100644
+>>> --- a/drivers/net/can/flexcan.c
+>>> +++ b/drivers/net/can/flexcan.c
 >>
->> This Flexcan core needs the FLEXCAN_QUIRK_BROKEN_PERR_STATE as well, l=
-ike
->> all other cores. Adding that quirk for the vf610 will cure the problem=
-s.
+>> [...]
+>> I think this will select LE for non DT devices, right?
+>>
 >=20
-> I will probably get some time during the coming week to test adding
-> FLEXCAN_QUIRK_BROKEN_PERR_STATE and I can send a patch if it all looks
-> good.
+> Yes.  As per below code snippet:
+>=20
+> static struct property *__of_find_property(const struct device_node *np=
+,
+> 					   const char *name, int *lenp)
+> {
+> 	struct property *pp;
+>=20
+> 	if (!np)
+> 		return NULL;
+>               ....
+> }
+>=20
+> If no device node is present null is returned.
+> So we select le as default.
 
-I've created a patch, waiting for your Tested-by.
+This is what I found out, too.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git/log/?h=3D=
-testing
+>>> +	if (of_property_read_bool(pdev->dev.of_node, "big-endian")) {
+>>> +		priv->read =3D flexcan_read_be;
+>>> +		priv->write =3D flexcan_write_be;
+>>> +	} else {
+>>> +		if (of_device_is_compatible(pdev->dev.of_node,
+>>> +					    "fsl,p1010-flexcan")) {
+>>> +			priv->read =3D flexcan_read_be;
+>>> +			priv->write =3D flexcan_write_be;
+>>> +		} else {
+>>> +			priv->read =3D flexcan_read_le;
+>>> +			priv->write =3D flexcan_write_le;
+>>> +		}
+>>> +	}
+>>> +
+>>>  	priv->can.clock.freq =3D clock_freq;
+>>>  	priv->can.bittiming_const =3D &flexcan_bittiming_const;
+>>>  	priv->can.do_set_mode =3D flexcan_set_mode;
 
 Marc
 
@@ -99,23 +105,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---P8tBRn7xCI33Ah1dh6xPDD5hjTa4oGiKL--
+--8jDoio6fuIRFOJFQWqkrlT1I8V3p80L5J--
 
---78B4QAx27FnoL3Ld818dfdgPmrQbLLJxx
+--6vl9IqSvh5sgXdjoWgusmvcXg1lkPCuDq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlocGoUACgkQHv7KIOw4
-HPbcfAf/aku0CEaNNWIapsv0WsPfsqIQ8trMF5p+bPuqVIK7HsPftbE+ukKcFT9N
-4KfAqz6NuoRNtVMfrUGZWB3pMquDGrAqAD8QtYzDOWIOtV6Bj9FjrHU06Z3foTlz
-bWE+NjNxI23e01Qx+btT1cxbEqOWMQpf+q6hx81SKzMD6H3lzBgGuntzDR0p7PKE
-JxGmQf/8Ep/ZR6JIkdGT1RgY7W5/abBy+oWJTy8MNNZi90voPCQ54QpKncLPKY/O
-O6he1rCWmizn+XhqwbIYCqBZu3Mc1c96LIbV4Pbgz2OfKDqAva/cbrJsU+99t+WI
-X7Fl4TFFPJ+V4Fk1GL1aU58MrCwZdg==
-=PH6u
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlocG9kACgkQHv7KIOw4
+HPbTIwgAvXPBrkI75OxD3E3EG2S0bQ63WMQ76bxrdFQlv7XZm/F+dThE4pzIL2RG
+VOVGRm/aeWN4cZSkOPP27YWdJvd9STBMLrCxoNrueJyoRb8BPyT4x+mpEVO8ijOz
+iNUKXo++hnjf8zaMeIu6/PHm1l9bAjGhBSt9d6hMLWs46P2PDtwbyWPmcJHFPhWO
+UpKIiYhZhgUdh3knZ6bcyoqWGEywMwwhVcJl4hx7hXo1OMpcK1kwFxaY4RG/H6Yc
+qH4UOotLt4K81J8RoBMq72rFpEFEQXtPMmKJ1YSuk9dAyKParPiaPMBWA6LZTZKM
+KW8bWYMne95YJ3IiZ9HFF0IA46ensw==
+=TEZ4
 -----END PGP SIGNATURE-----
 
---78B4QAx27FnoL3Ld818dfdgPmrQbLLJxx--
+--6vl9IqSvh5sgXdjoWgusmvcXg1lkPCuDq--
