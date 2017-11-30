@@ -1,63 +1,139 @@
-From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
-Subject: Re: [PATCH 1/2] dt-binding: can: mcp2517fd: document device tree bindings
-Date: Thu, 30 Nov 2017 17:58:57 +0100
-Message-ID: <F6036A58-9E98-4A62-950E-3396C9EE636E@martin.sperl.org>
-References: <20171124183509.12810-1-kernel@martin.sperl.org> <20171124183509.12810-2-kernel@martin.sperl.org> <20171126222528.i6quueqdmuj6le6g@rob-hp-laptop> <6EBDD798-8632-4F42-A138-369BCD36DF68@martin.sperl.org> <0a7e4416-332a-5c23-bda3-8c7561410314@posteo.de> <612BB6CD-5330-40B8-A854-FD065E0A3331@martin.sperl.org> <6aea8071-dc21-4ba7-2b2f-5af41b5755a5@posteo.de>
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+From: Patrick Menschel <menschel.p@posteo.de>
+Subject: Re: [PATCH 1/2] dt-binding: can: mcp2517fd: document device tree
+ bindings
+Date: Thu, 30 Nov 2017 18:49:08 +0100
+Message-ID: <1ac487f7-17e3-c8a0-0f99-8138fe867373@posteo.de>
+References: <20171124183509.12810-1-kernel@martin.sperl.org>
+ <20171124183509.12810-2-kernel@martin.sperl.org>
+ <20171126222528.i6quueqdmuj6le6g@rob-hp-laptop>
+ <6EBDD798-8632-4F42-A138-369BCD36DF68@martin.sperl.org>
+ <0a7e4416-332a-5c23-bda3-8c7561410314@posteo.de>
+ <612BB6CD-5330-40B8-A854-FD065E0A3331@martin.sperl.org>
+ <6aea8071-dc21-4ba7-2b2f-5af41b5755a5@posteo.de>
+ <F6036A58-9E98-4A62-950E-3396C9EE636E@martin.sperl.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms020501000304060602040207"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mout01.posteo.de ([185.67.36.65]:43182 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753822AbdK3RtM (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 30 Nov 2017 12:49:12 -0500
+Received: from submission (posteo.de [89.146.220.130])
+        by mout01.posteo.de (Postfix) with ESMTPS id 9149D20F99
+        for <linux-can@vger.kernel.org>; Thu, 30 Nov 2017 18:49:10 +0100 (CET)
+In-Reply-To: <F6036A58-9E98-4A62-950E-3396C9EE636E@martin.sperl.org>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: kernel@martin.sperl.org
+Cc: linux-can@vger.kernel.org, devicetree <devicetree@vger.kernel.org>
+
+This is a cryptographically signed message in MIME format.
+
+--------------ms020501000304060602040207
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <6aea8071-dc21-4ba7-2b2f-5af41b5755a5-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Content-Language: de-DE
 
-Hi Patrick!
+Am 30.11.2017 um 17:58 schrieb kernel@martin.sperl.org:
+>
+>> drivers/tty/serial/max310x.c
+>> Documentation/devicetree/bindings/serial/maxim,max310x.txt
+>> Look for "#ifdef CONFIG_GPIOLIB=E2=80=9D.
+> This is a gpio-controller, for which this is what I would implement.
+>
+Hi,
 
-> On 30.11.2017, at 17:44, Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org> wrote:
->> How would you try to present that HW-configuration in the 
->> device tree instead?
->> How would it impact the driver design?
->> 
-> Hi,
-> I'm afraid I don't know what is best practice but you may want to look
-> at the max310x driver which declares it's GPIOs and GPIO based
-> interrupts in the regular driver.
-> 
-> drivers/tty/serial/max310x.c
-> Documentation/devicetree/bindings/serial/maxim,max310x.txt
-> Look for "#ifdef CONFIG_GPIOLIB”.
+you are mistaken about that, max310x chips are spi to uart bridges with
+strong ties to rs485 which is very similar to CAN except for the missing
+arbitration in hardware. Max14830 has GPIOs with clocking support, so
+this chip's driver also fused the main function with secondary gpio
+functions.
+https://datasheets.maximintegrated.com/en/ds/MAX14830.pdf
 
-This is a gpio-controller, for which this is what I would implement.
+Anyway I'm curious what is best practice for this sort of configuration.
 
-The problem comes more from the fact that the mcp2517fd is
-primarily a CAN controller, which has a few GPIO pins.
+Regards,
+Patrick
 
-So implementing a gpio-controller for those (rarely used) GPIOs
-in the same driver seems a bit of an overkill.
 
-The mcp2515 chip also supports 5 GPIO pins, but the driver
-does not really make use of them, so they are left out.
+--------------ms020501000304060602040207
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-The problem here is more the fact that the mcp2517fd supports
-also push-pull/open-drain on some of those gpios.
-
-And at least openDrain may be required on TXCan if used on a network
-without a transceiver…
-
-> My first try would be a single dt node like the max310x uses in the dt
-> example.
-> Imho it is better to make things useful before making them complicated.
-
-The settings as they are now are the “simple” version.
-implementing a separate GPIO-controller driver just to implement the same
-logic we have now would make it a much bigger driver without lots of extra
-benefits.
-
-So I hope the current proposal is ok...
-
-Martin--
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+CyEwggUzMIIEG6ADAgECAhBp9PwZCVW98tnHAS3kOjLRMA0GCSqGSIb3DQEBCwUAMIGXMQsw
+CQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxm
+b3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJTQSBD
+bGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTAeFw0xNzA2MDYwMDAw
+MDBaFw0xODA2MDYyMzU5NTlaMCUxIzAhBgkqhkiG9w0BCQEWFG1lbnNjaGVsLnBAcG9zdGVv
+LmRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoNhDbc0RVWdVfJEhvKfjVPmY
+wnjbpn/YIWexSHoH3L65Gzj0+IHWdI56CvKzWniZYI8pjoCnVQU4gEfRWJqev9wijlagbfYe
+0yQQEUFigJEEzC6EoaC5JJfJcNr1qkYB9RSFeSuGnKOb4Z3NGXp0yXjLkY+jzNbRrOelKB6p
+AT5KGaAa6ESkucnPPNrMScHZBHznUxT0u0aGu8goQUw/SZVN3S3KvXIrQfXt2bZiCXCtw5go
+0+N/MI78KSU2uO9hlzEDq0tp30iWWs3zpt/vZjuojufw0ikUxz9tseFzhTIfRp5tYnE08h+z
+Tmc9w9ld8WA12YdK61P2HNHtsGDqZQIDAQABo4IB6jCCAeYwHwYDVR0jBBgwFoAUgq9sjPjF
+/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFJZcg7d5WiG3X5RR8+DRmSaH0kqCMA4GA1UdDwEB
+/wQEAwIFoDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZMBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMF
+AjARBglghkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAQEwKzApBggr
+BgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2g
+S4ZJaHR0cDovL2NybC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRp
+b25hbmRTZWN1cmVFbWFpbENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklo
+dHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFu
+ZFNlY3VyZUVtYWlsQ0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5j
+b20wHwYDVR0RBBgwFoEUbWVuc2NoZWwucEBwb3N0ZW8uZGUwDQYJKoZIhvcNAQELBQADggEB
+ACV8QT6dz5yYb5lItTyb1IrP7Tlc5Ri+eaki13Wlh62z3dYdC0C3GuOrKTVwwDAKpbuUm5g2
+OFDVXkAfZhw8DkCjB2bghH1xoUBXqJ5PhjsWvUgptgefvJ5z80dXPSkKTYgRQj2yDaBUl6mS
+dPIYYTvX9QIL3Ad1nSqZjkwY/Ingw6o3NlUQnAN3EeVQEarZ7X+T/COAQl50bNNY+3+ATEk+
+euma2T4CEiv9dJa5SkLCoLIAf3H5JcmaV9e32wxXKaS1yq8DZ57w1Jn7ZNULOOgVTMDuGdTL
+L9jcJe6fVdgKz5LwPHsSUveUrhAzp9zEWa/v9sjVHRJOXJERO7oNjvgwggXmMIIDzqADAgEC
+AhBqm+E4O/8ra58B1dm4p1JWMA0GCSqGSIb3DQEBDAUAMIGFMQswCQYDVQQGEwJHQjEbMBkG
+A1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFD
+T01PRE8gQ0EgTGltaXRlZDErMCkGA1UEAxMiQ09NT0RPIFJTQSBDZXJ0aWZpY2F0aW9uIEF1
+dGhvcml0eTAeFw0xMzAxMTAwMDAwMDBaFw0yODAxMDkyMzU5NTlaMIGXMQswCQYDVQQGEwJH
+QjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYD
+VQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJTQSBDbGllbnQgQXV0
+aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBAL6znlesKHZ1QBbHOAOY08YYdiFQ8yV5C0y1oNF9Olg+nKcxLqf2NHbZhGra
+0D00SOTq9bus3/mxgUsg/Wh/eXQ0pnp8tZ8XZWAnlyKMpjL+qUByRjXCA6RQyDMqVaVUkbIr
+5SU0RDX/kSsKwer3H1pT/HUrBN0X8sKtPTdGX8XAWt/VdMLBrZBlgvnkCos+KQWWCo63OTTq
+Rvaq8aWccm+KOMjTcE6s2mj6RkalweyDI7X+7U5lNo6jzC8RTXtVV4/Vwdax720YpMPJQaDa
+ElmOupyTf1Qib+cpukNJnQmwygjD8m046DQkLnpXNCAGjuJy1F5NATksUsbfJAr7FLUCAwEA
+AaOCATwwggE4MB8GA1UdIwQYMBaAFLuvfgI9+qbxPISOre44mOzZMjLUMB0GA1UdDgQWBBSC
+r2yM+MX+lmF86B89K3FIXsSLwDAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIB
+ADARBgNVHSAECjAIMAYGBFUdIAAwTAYDVR0fBEUwQzBBoD+gPYY7aHR0cDovL2NybC5jb21v
+ZG9jYS5jb20vQ09NT0RPUlNBQ2VydGlmaWNhdGlvbkF1dGhvcml0eS5jcmwwcQYIKwYBBQUH
+AQEEZTBjMDsGCCsGAQUFBzAChi9odHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FB
+ZGRUcnVzdENBLmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQB4XLKBKDRPPO5fVs6fl1bsj6JrF/bz9kkIBtTYLzXN30D+03Hj
+6OxCDBEaIeNmsBhrJmuubvyE7HtoSmR809AgcYboW+rcTNZ/8u/Hv+GTrNI/AhqX2/kiQNxm
+gUPt/eJPs92Qclj0HnVyy9TnSvGkSDU7I5Px+TbO+88G4zipA2psZaWeEykgzClZlPz1FjTC
+kk77ZXp5cQYYexE6zeeN4/0OqqoAloFrjAF4o50YJafX8mnahjp3I2Y2mkjhk0xQfhNqbzlL
+WPoT3m7j7U26u7zg6swjOq8hITYc3/np5tM5aVyu6t99p17bTbY7+1RTWBviN9YJzK8HxzOb
+XYWBf/L+VGOYNsQDTxAk0Hbvb1j6KjUhg7fO294F29QIhhmiNOr84JHoy+fNLpfvYc/Q9EtF
+OI5ISYgOxLk3nD/whbUe9rmEQXLp8MB933Ij474gwwCPUpwv9mj2PMnXoc7mbrS22XUSeTwx
+CTP9bcmUdp4jmIoWfhQm7X9w/Zgddg+JZ/YnIHOwsGsaTUgj7fIvxqith7DoJC91WJ8Lce3C
+VJqb1XWeKIJ84F7YLXZN0oa7TktYgDdmQVxYkZo1c5noaDKH9Oq9cbm/vOYRUM1cWcef20Wk
+yk5S/GFyyPJwG0fR1nRas3DqAf4cXxMiEKcff7PNa4M3RGTqH0pWR8p6EjGCBDUwggQxAgEB
+MIGsMIGXMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09N
+T0RPIFJTQSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQafT8
+GQlVvfLZxwEt5Doy0TANBglghkgBZQMEAgEFAKCCAlkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMTcxMTMwMTc0OTA4WjAvBgkqhkiG9w0BCQQxIgQgOKa3
+5cNuOyCEuuXmVNe193kFzVsKCaheiSb80OPzPZswbAYJKoZIhvcNAQkPMV8wXTALBglghkgB
+ZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG
+9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBvQYJKwYBBAGCNxAEMYGvMIGsMIGX
+MQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdT
+YWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJT
+QSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQafT8GQlVvfLZ
+xwEt5Doy0TCBvwYLKoZIhvcNAQkQAgsxga+ggawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQI
+ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
+TyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlv
+biBhbmQgU2VjdXJlIEVtYWlsIENBAhBp9PwZCVW98tnHAS3kOjLRMA0GCSqGSIb3DQEBAQUA
+BIIBAIavSBGF9QjDutWS8WJ1Gz8NfVMxKcOHR+zxirj7cCvFx0gFBVbjyERvA6v8tbFUheJ/
+uFQrt315iek2ToHd9REZYvxjw+YfkkTcaiBATLrBI19Z1maOV0ewaRLhJVw4w+tz1k8Pa6rA
+KxWLLIHJpu0elgRpYrEJTN76zc6K4yJZQByzkUBpXQDvUODGoOdpzgkWrluuEbiTdHqk59CN
+AFk6IibWhHJ3azZOP24xj8Z8IO8/rChHXhPBDW88NDnwMLa988NvWBQaRFxTJRRVBPzoXd77
+ySgoPGZfs3EqlQi9UQ2pwv/xGj+f4DBbxJYSgii4hUeNvrfxhPM2wVK3MU8AAAAAAAA=
+--------------ms020501000304060602040207--
