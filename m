@@ -1,139 +1,113 @@
-From: Patrick Menschel <menschel.p@posteo.de>
-Subject: Re: [PATCH 1/2] dt-binding: can: mcp2517fd: document device tree
- bindings
-Date: Thu, 30 Nov 2017 18:49:08 +0100
-Message-ID: <1ac487f7-17e3-c8a0-0f99-8138fe867373@posteo.de>
-References: <20171124183509.12810-1-kernel@martin.sperl.org>
- <20171124183509.12810-2-kernel@martin.sperl.org>
- <20171126222528.i6quueqdmuj6le6g@rob-hp-laptop>
- <6EBDD798-8632-4F42-A138-369BCD36DF68@martin.sperl.org>
- <0a7e4416-332a-5c23-bda3-8c7561410314@posteo.de>
- <612BB6CD-5330-40B8-A854-FD065E0A3331@martin.sperl.org>
- <6aea8071-dc21-4ba7-2b2f-5af41b5755a5@posteo.de>
- <F6036A58-9E98-4A62-950E-3396C9EE636E@martin.sperl.org>
+From: Martin Kelly <mkelly@xevo.com>
+Subject: Re: CAN-USB adapter unplug
+Date: Thu, 30 Nov 2017 10:19:13 -0800
+Message-ID: <4f6687db-269d-d8ff-7a47-5094ad63043a@xevo.com>
+References: <20171127234916.25865-1-mkelly@xevo.com>
+ <48029f4a-5137-5f1f-6970-5668fb8da599@pengutronix.de>
+ <2f999f02-028e-1e6c-9020-beb5a76889cc@esd.eu>
+ <e5a2cbc8-f1be-1bed-a0af-9b5fa6fd35ca@xevo.com>
+ <d5820417-b818-e78e-d3f0-6c24eb0fecd0@kvaser.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms020501000304060602040207"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout01.posteo.de ([185.67.36.65]:43182 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753822AbdK3RtM (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 30 Nov 2017 12:49:12 -0500
-Received: from submission (posteo.de [89.146.220.130])
-        by mout01.posteo.de (Postfix) with ESMTPS id 9149D20F99
-        for <linux-can@vger.kernel.org>; Thu, 30 Nov 2017 18:49:10 +0100 (CET)
-In-Reply-To: <F6036A58-9E98-4A62-950E-3396C9EE636E@martin.sperl.org>
+Received: from mail-cys01nam02on0041.outbound.protection.outlook.com ([104.47.37.41]:7057
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751522AbdK3STV (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 30 Nov 2017 13:19:21 -0500
+In-Reply-To: <d5820417-b818-e78e-d3f0-6c24eb0fecd0@kvaser.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: kernel@martin.sperl.org
-Cc: linux-can@vger.kernel.org, devicetree <devicetree@vger.kernel.org>
+To: Jimmy Assarsson <extja@kvaser.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>, =?UTF-8?B?UmVtaWdpdXN6IEtvxYLFgsSFdGFq?= <remigiusz.kollataj@mobica.com>, Wolfgang Grandegger <wg@grandegger.com>
 
-This is a cryptographically signed message in MIME format.
+On 11/30/2017 02:18 AM, Jimmy Assarsson wrote:
+> On 2017-11-29 18:07, Martin Kelly wrote:
+>> On 11/29/2017 07:21 AM, Stefan Mätje wrote:
+>>> Am 29.11.2017 um 13:20 schrieb Marc Kleine-Budde:
+>>>> On 11/28/2017 10:09 PM, Martin Kelly wrote:
+>>>>>> Both applied to can.
+>>>>>
+>>>>> Thanks! By the way as far as I can tell from code inspection, it 
+>>>>> appears
+>>>>> that most of the other drivers in net/can/usb should have the same
+>>>>> disconnect bug. gs_usb appears to be clear, as it returns in its 
+>>>>> default
+>>>>> case. Unfortunately mcba_usb is the only device I have to test 
+>>>>> with, but
+>>>>> those with other devices may want to check for this.
+>>>>
+>>>> Can you create patches for the affected drivers and send them to the
+>>>> list and the maintainers of the driver on Cc?
+>>>>
+>>>> I don't have access to every USB adapter neither.
+>>>>
+>>>> Marc
+>>>>
+>>>
+>>> Hi,
+>>>
+>>> I have seen Martin's emails these days and tried to reproduce the 
+>>> error here
+>>> with an esd CAN-USB/2 device (handled by esd_usb2.c). The only thing 
+>>> I get
+>>> in the log are some messages like this:
+>>>
+>>> kernel: [14776.152459] usb 2-1: Rx URB aborted (-71)
+>>>
+>>> There is no endless loop. How could I reproduce the bad behavior? For 
+>>> the
+>>> quick test I used an Ubuntu 4.4.0-101-generic kernel.
+> 
+> Hi,
+> 
+> I got same result for kvaser_usb, a single "Rx URB aborted (-71)". When 
+> tested on Ubuntu with 4.4.0-93-generic.
+> 
+>> Interesting. Do you see just a few -71 RX URB aborted messages (one 
+>> per outstanding URB) rather than an endless loop? If so, then I think 
+>> everything is OK on that device, as the URBs are not being resubmitted.
+>>
+>> In case it helps, my test case for the mcba_usb is on a Raspberry Pi 
+>> 3. I don't know whether or not that could influence the USB error code 
+>> we see, since you are seeing EPROTO instead of EPIPE when the device 
+>> gets unplugged.
+> 
+> However, I do get lots of (500+) "Rx URB aborted (-71)" printouts, on 
+> Raspberry Pi 3, running Raspbian with kernel 4.9.35-v7. But no EPIPE seen.
+> 
 
---------------ms020501000304060602040207
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: de-DE
+Very interesting; this means that there are multiple possible error 
+codes from a USB disconnect. If that's the case, is it possible that the 
+best thing to do is what gs_usb does? In gs_usb's receive callback, we have:
 
-Am 30.11.2017 um 17:58 schrieb kernel@martin.sperl.org:
->
->> drivers/tty/serial/max310x.c
->> Documentation/devicetree/bindings/serial/maxim,max310x.txt
->> Look for "#ifdef CONFIG_GPIOLIB=E2=80=9D.
-> This is a gpio-controller, for which this is what I would implement.
->
-Hi,
+     switch (urb->status) {
+     case 0: /* success */
+         break;
+     case -ENOENT:
+     case -ESHUTDOWN:
+         return;
+     default:
+         /* do not resubmit aborted urbs. eg: when device goes down */
+         return;
+     }
 
-you are mistaken about that, max310x chips are spi to uart bridges with
-strong ties to rs485 which is very similar to CAN except for the missing
-arbitration in hardware. Max14830 has GPIOs with clocking support, so
-this chip's driver also fused the main function with secondary gpio
-functions.
-https://datasheets.maximintegrated.com/en/ds/MAX14830.pdf
+The default case is to *not* resubmit URBs, rather than to resubmit is a 
+default and try to catch all possible error codes in the non-default 
+case, as the other drivers are doing.
 
-Anyway I'm curious what is best practice for this sort of configuration.
+If we don't do something like this, then we need to understand all the 
+possible error codes that could occur and catch them all.
 
-Regards,
-Patrick
-
-
---------------ms020501000304060602040207
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-CyEwggUzMIIEG6ADAgECAhBp9PwZCVW98tnHAS3kOjLRMA0GCSqGSIb3DQEBCwUAMIGXMQsw
-CQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxm
-b3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJTQSBD
-bGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTAeFw0xNzA2MDYwMDAw
-MDBaFw0xODA2MDYyMzU5NTlaMCUxIzAhBgkqhkiG9w0BCQEWFG1lbnNjaGVsLnBAcG9zdGVv
-LmRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoNhDbc0RVWdVfJEhvKfjVPmY
-wnjbpn/YIWexSHoH3L65Gzj0+IHWdI56CvKzWniZYI8pjoCnVQU4gEfRWJqev9wijlagbfYe
-0yQQEUFigJEEzC6EoaC5JJfJcNr1qkYB9RSFeSuGnKOb4Z3NGXp0yXjLkY+jzNbRrOelKB6p
-AT5KGaAa6ESkucnPPNrMScHZBHznUxT0u0aGu8goQUw/SZVN3S3KvXIrQfXt2bZiCXCtw5go
-0+N/MI78KSU2uO9hlzEDq0tp30iWWs3zpt/vZjuojufw0ikUxz9tseFzhTIfRp5tYnE08h+z
-Tmc9w9ld8WA12YdK61P2HNHtsGDqZQIDAQABo4IB6jCCAeYwHwYDVR0jBBgwFoAUgq9sjPjF
-/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFJZcg7d5WiG3X5RR8+DRmSaH0kqCMA4GA1UdDwEB
-/wQEAwIFoDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZMBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMF
-AjARBglghkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAQEwKzApBggr
-BgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2g
-S4ZJaHR0cDovL2NybC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRp
-b25hbmRTZWN1cmVFbWFpbENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklo
-dHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFu
-ZFNlY3VyZUVtYWlsQ0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5j
-b20wHwYDVR0RBBgwFoEUbWVuc2NoZWwucEBwb3N0ZW8uZGUwDQYJKoZIhvcNAQELBQADggEB
-ACV8QT6dz5yYb5lItTyb1IrP7Tlc5Ri+eaki13Wlh62z3dYdC0C3GuOrKTVwwDAKpbuUm5g2
-OFDVXkAfZhw8DkCjB2bghH1xoUBXqJ5PhjsWvUgptgefvJ5z80dXPSkKTYgRQj2yDaBUl6mS
-dPIYYTvX9QIL3Ad1nSqZjkwY/Ingw6o3NlUQnAN3EeVQEarZ7X+T/COAQl50bNNY+3+ATEk+
-euma2T4CEiv9dJa5SkLCoLIAf3H5JcmaV9e32wxXKaS1yq8DZ57w1Jn7ZNULOOgVTMDuGdTL
-L9jcJe6fVdgKz5LwPHsSUveUrhAzp9zEWa/v9sjVHRJOXJERO7oNjvgwggXmMIIDzqADAgEC
-AhBqm+E4O/8ra58B1dm4p1JWMA0GCSqGSIb3DQEBDAUAMIGFMQswCQYDVQQGEwJHQjEbMBkG
-A1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFD
-T01PRE8gQ0EgTGltaXRlZDErMCkGA1UEAxMiQ09NT0RPIFJTQSBDZXJ0aWZpY2F0aW9uIEF1
-dGhvcml0eTAeFw0xMzAxMTAwMDAwMDBaFw0yODAxMDkyMzU5NTlaMIGXMQswCQYDVQQGEwJH
-QjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYD
-VQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJTQSBDbGllbnQgQXV0
-aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEP
-ADCCAQoCggEBAL6znlesKHZ1QBbHOAOY08YYdiFQ8yV5C0y1oNF9Olg+nKcxLqf2NHbZhGra
-0D00SOTq9bus3/mxgUsg/Wh/eXQ0pnp8tZ8XZWAnlyKMpjL+qUByRjXCA6RQyDMqVaVUkbIr
-5SU0RDX/kSsKwer3H1pT/HUrBN0X8sKtPTdGX8XAWt/VdMLBrZBlgvnkCos+KQWWCo63OTTq
-Rvaq8aWccm+KOMjTcE6s2mj6RkalweyDI7X+7U5lNo6jzC8RTXtVV4/Vwdax720YpMPJQaDa
-ElmOupyTf1Qib+cpukNJnQmwygjD8m046DQkLnpXNCAGjuJy1F5NATksUsbfJAr7FLUCAwEA
-AaOCATwwggE4MB8GA1UdIwQYMBaAFLuvfgI9+qbxPISOre44mOzZMjLUMB0GA1UdDgQWBBSC
-r2yM+MX+lmF86B89K3FIXsSLwDAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIB
-ADARBgNVHSAECjAIMAYGBFUdIAAwTAYDVR0fBEUwQzBBoD+gPYY7aHR0cDovL2NybC5jb21v
-ZG9jYS5jb20vQ09NT0RPUlNBQ2VydGlmaWNhdGlvbkF1dGhvcml0eS5jcmwwcQYIKwYBBQUH
-AQEEZTBjMDsGCCsGAQUFBzAChi9odHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FB
-ZGRUcnVzdENBLmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQB4XLKBKDRPPO5fVs6fl1bsj6JrF/bz9kkIBtTYLzXN30D+03Hj
-6OxCDBEaIeNmsBhrJmuubvyE7HtoSmR809AgcYboW+rcTNZ/8u/Hv+GTrNI/AhqX2/kiQNxm
-gUPt/eJPs92Qclj0HnVyy9TnSvGkSDU7I5Px+TbO+88G4zipA2psZaWeEykgzClZlPz1FjTC
-kk77ZXp5cQYYexE6zeeN4/0OqqoAloFrjAF4o50YJafX8mnahjp3I2Y2mkjhk0xQfhNqbzlL
-WPoT3m7j7U26u7zg6swjOq8hITYc3/np5tM5aVyu6t99p17bTbY7+1RTWBviN9YJzK8HxzOb
-XYWBf/L+VGOYNsQDTxAk0Hbvb1j6KjUhg7fO294F29QIhhmiNOr84JHoy+fNLpfvYc/Q9EtF
-OI5ISYgOxLk3nD/whbUe9rmEQXLp8MB933Ij474gwwCPUpwv9mj2PMnXoc7mbrS22XUSeTwx
-CTP9bcmUdp4jmIoWfhQm7X9w/Zgddg+JZ/YnIHOwsGsaTUgj7fIvxqith7DoJC91WJ8Lce3C
-VJqb1XWeKIJ84F7YLXZN0oa7TktYgDdmQVxYkZo1c5noaDKH9Oq9cbm/vOYRUM1cWcef20Wk
-yk5S/GFyyPJwG0fR1nRas3DqAf4cXxMiEKcff7PNa4M3RGTqH0pWR8p6EjGCBDUwggQxAgEB
-MIGsMIGXMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09N
-T0RPIFJTQSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQafT8
-GQlVvfLZxwEt5Doy0TANBglghkgBZQMEAgEFAKCCAlkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMTcxMTMwMTc0OTA4WjAvBgkqhkiG9w0BCQQxIgQgOKa3
-5cNuOyCEuuXmVNe193kFzVsKCaheiSb80OPzPZswbAYJKoZIhvcNAQkPMV8wXTALBglghkgB
-ZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG
-9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBvQYJKwYBBAGCNxAEMYGvMIGsMIGX
-MQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdT
-YWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJT
-QSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQafT8GQlVvfLZ
-xwEt5Doy0TCBvwYLKoZIhvcNAQkQAgsxga+ggawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQI
-ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
-TyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlv
-biBhbmQgU2VjdXJlIEVtYWlsIENBAhBp9PwZCVW98tnHAS3kOjLRMA0GCSqGSIb3DQEBAQUA
-BIIBAIavSBGF9QjDutWS8WJ1Gz8NfVMxKcOHR+zxirj7cCvFx0gFBVbjyERvA6v8tbFUheJ/
-uFQrt315iek2ToHd9REZYvxjw+YfkkTcaiBATLrBI19Z1maOV0ewaRLhJVw4w+tz1k8Pa6rA
-KxWLLIHJpu0elgRpYrEJTN76zc6K4yJZQByzkUBpXQDvUODGoOdpzgkWrluuEbiTdHqk59CN
-AFk6IibWhHJ3azZOP24xj8Z8IO8/rChHXhPBDW88NDnwMLa988NvWBQaRFxTJRRVBPzoXd77
-ySgoPGZfs3EqlQi9UQ2pwv/xGj+f4DBbxJYSgii4hUeNvrfxhPM2wVK3MU8AAAAAAAA=
---------------ms020501000304060602040207--
+> Regards,
+> Jimmy
+> 
+>>>
+>>> In any case I will add the patch handling EPIPE on a test system and 
+>>> have a
+>>> look what it might change.
+>>>
+>>> Regards,
+>>> Stefan Mätje
