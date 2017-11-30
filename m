@@ -1,70 +1,88 @@
-From: kernel@martin.sperl.org
-Subject: Re: [PATCH 1/2] dt-binding: can: mcp2517fd: document device tree bindings
-Date: Thu, 30 Nov 2017 08:24:45 +0100
-Message-ID: <612BB6CD-5330-40B8-A854-FD065E0A3331@martin.sperl.org>
-References: <20171124183509.12810-1-kernel@martin.sperl.org> <20171124183509.12810-2-kernel@martin.sperl.org> <20171126222528.i6quueqdmuj6le6g@rob-hp-laptop> <6EBDD798-8632-4F42-A138-369BCD36DF68@martin.sperl.org> <0a7e4416-332a-5c23-bda3-8c7561410314@posteo.de>
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+From: Jimmy Assarsson <extja@kvaser.com>
+Subject: Re: CAN-USB adapter unplug
+Date: Thu, 30 Nov 2017 11:18:22 +0100
+Message-ID: <d5820417-b818-e78e-d3f0-6c24eb0fecd0@kvaser.com>
+References: <20171127234916.25865-1-mkelly@xevo.com>
+ <48029f4a-5137-5f1f-6970-5668fb8da599@pengutronix.de>
+ <2f999f02-028e-1e6c-9020-beb5a76889cc@esd.eu>
+ <e5a2cbc8-f1be-1bed-a0af-9b5fa6fd35ca@xevo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from 212-186-180-163.static.upcbusiness.at ([212.186.180.163]:42140
-        "EHLO cgate.sperl.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751474AbdK3HYs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 30 Nov 2017 02:24:48 -0500
-In-Reply-To: <0a7e4416-332a-5c23-bda3-8c7561410314@posteo.de>
+Received: from mail-lf0-f48.google.com ([209.85.215.48]:45330 "EHLO
+        mail-lf0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750943AbdK3KSZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 30 Nov 2017 05:18:25 -0500
+Received: by mail-lf0-f48.google.com with SMTP id f13so7243420lff.12
+        for <linux-can@vger.kernel.org>; Thu, 30 Nov 2017 02:18:25 -0800 (PST)
+In-Reply-To: <e5a2cbc8-f1be-1bed-a0af-9b5fa6fd35ca@xevo.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Patrick Menschel <menschel.p@posteo.de>
-Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org
+To: Martin Kelly <mkelly@xevo.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>, =?UTF-8?B?UmVtaWdpdXN6IEtvxYLFgsSFdGFq?= <remigiusz.kollataj@mobica.com>, Wolfgang Grandegger <wg@grandegger.com>
 
-Hi Patrick!
+On 2017-11-29 18:07, Martin Kelly wrote:
+> On 11/29/2017 07:21 AM, Stefan Mätje wrote:
+>> Am 29.11.2017 um 13:20 schrieb Marc Kleine-Budde:
+>>> On 11/28/2017 10:09 PM, Martin Kelly wrote:
+>>>>> Both applied to can.
+>>>>
+>>>> Thanks! By the way as far as I can tell from code inspection, it 
+>>>> appears
+>>>> that most of the other drivers in net/can/usb should have the same
+>>>> disconnect bug. gs_usb appears to be clear, as it returns in its 
+>>>> default
+>>>> case. Unfortunately mcba_usb is the only device I have to test with, 
+>>>> but
+>>>> those with other devices may want to check for this.
+>>>
+>>> Can you create patches for the affected drivers and send them to the
+>>> list and the maintainers of the driver on Cc?
+>>>
+>>> I don't have access to every USB adapter neither.
+>>>
+>>> Marc
+>>>
+>>
+>> Hi,
+>>
+>> I have seen Martin's emails these days and tried to reproduce the 
+>> error here
+>> with an esd CAN-USB/2 device (handled by esd_usb2.c). The only thing I 
+>> get
+>> in the log are some messages like this:
+>>
+>> kernel: [14776.152459] usb 2-1: Rx URB aborted (-71)
+>>
+>> There is no endless loop. How could I reproduce the bad behavior? For the
+>> quick test I used an Ubuntu 4.4.0-101-generic kernel.
 
-> On 29.11.2017, at 21:35, Patrick Menschel <menschel.p@posteo.de> wrote:
+Hi,
+
+I got same result for kvaser_usb, a single "Rx URB aborted (-71)". When 
+tested on Ubuntu with 4.4.0-93-generic.
+
+> Interesting. Do you see just a few -71 RX URB aborted messages (one per 
+> outstanding URB) rather than an endless loop? If so, then I think 
+> everything is OK on that device, as the URBs are not being resubmitted.
 > 
-> Hello Martin,
-> 
-> 
-> I didn't catch the whole discussion but you may want to check
-> 
-> include/dt-bindings/gpio/gpio.h
-> 
->> #define GPIO_OPEN_DRAIN (GPIO_SINGLE_ENDED | GPIO_ACTIVE_LOW)
-> 
-> This corresponds to
-> 
-> Documentation/devicetree/bindings/gpio/gpio.txt
+> In case it helps, my test case for the mcba_usb is on a Raspberry Pi 3. 
+> I don't know whether or not that could influence the USB error code we 
+> see, since you are seeing EPROTO instead of EPIPE when the device gets 
+> unplugged.
 
-I understand, but the question still is: how to
-present the information in a valid way.
+However, I do get lots of (500+) "Rx URB aborted (-71)" printouts, on 
+Raspberry Pi 3, running Raspbian with kernel 4.9.35-v7. But no EPIPE seen.
 
-To use gpio propperly it would require that the driver
-implements a “sub-driver” pinctrl with all the extra
-(boilerplate) code overhead.
+Regards,
+Jimmy
 
-Also this would mean mixing different types of
-logical drivers into a single source - I doubt that
-would be easy to get accepted...
-
-Here again a summary of all the GPIOs that the mcp2517fd has:
-* TXCAN: dedicated GPIO with single function, 
-         individually conigurable as push/pull or open drain
-* INT: main interrupt line - configurable as push/pull or 
-         individually conigurable as push/pull or open drain
-* GPIO0: general GPIO with in/out option, but 2 special “cases”:
-         tx-irq and TX-disable
-         group configurable as push/pull or open drain
-* GPIO1: general GPIO with in/out potion, but 1 special “cases”:
-         rx-irq
-         group configurable as push/pull or open drain
-* CLKO/SOF: clock output at (1/10th, 1/5th, 1/2, 1 of the 
-            core frequency) or start of frame output
-            possibly group configurable as push/pull or open drain
-	    (not explicitly specified in datasheet)
-
-How would you try to present that HW-configuration in the 
-device tree instead?
-How would it impact the driver design?
-
-Thanks,
-	Martin
-
+>>
+>> In any case I will add the patch handling EPIPE on a test system and 
+>> have a
+>> look what it might change.
+>>
+>> Regards,
+>> Stefan Mätje
