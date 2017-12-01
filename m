@@ -1,80 +1,75 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull-request: can-next 2017-12-01
-Date: Fri, 1 Dec 2017 14:50:04 +0100
-Message-ID: <85177a44-2bf7-80f8-08c4-df133cd48917@pengutronix.de>
-References: <b2a795da-bde5-0527-ff07-762d5485ce45@pengutronix.de>
- <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
+Subject: pull-request: can 2017-12-01
+Date: Fri,  1 Dec 2017 15:17:30 +0100
+Message-ID: <20171201141739.5816-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="2AVgdLUBL6bcWNU2dGdQIORElfgsXtcJE"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:34557 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1753108AbdLANuR (ORCPT
-        <rfc822;linux-can@vger.kernel.ORG>); Fri, 1 Dec 2017 08:50:17 -0500
-In-Reply-To: <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2AVgdLUBL6bcWNU2dGdQIORElfgsXtcJE
-Content-Type: multipart/mixed; boundary="D6j35SbxKmr3X1X0vRrmG97IQ9jXT4nMq";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <85177a44-2bf7-80f8-08c4-df133cd48917@pengutronix.de>
-Subject: Re: pull-request: can-next 2017-12-01
-References: <b2a795da-bde5-0527-ff07-762d5485ce45@pengutronix.de>
- <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
-In-Reply-To: <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
+Hello David,
 
---D6j35SbxKmr3X1X0vRrmG97IQ9jXT4nMq
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+this is a pull for net consisting of nine patches.
 
-On 12/01/2017 02:37 PM, Marc Kleine-Budde wrote:
-> Doh, I had an error in my script which produced the wrong Linux version=
+The first three patches are by Jimmy Assarsson for the kvaser_usb driver
+and add the missing free()s in some error path, a signed/unsigned
+comparison and ratelimit the error messages in case of incomplete
+messages. Oliver Stäbler's patch for the ti_hecc driver fix the napi
+poll function's return value. The return values of the probe function of
+the peak_canfd and peak_pci PCI drivers are fixed by Stephane Grosjean's
+patch. Two patches by me for the flexcan driver update the
+bugs/features/quirks overview table and fix the error state transition
+for the VF610 SoC. The two patches by Martin Kelly for the mcba_usb
+driver fix a typo and a device disconnect bug.
 
-> in the tag. The correct name of the tag is:
-
-First test - than post - here's the correct tag:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
-tags/linux-can-next-for-4.16-20171201
-
+regards,
 Marc
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+---
 
+The following changes since commit 6fef90c6b3f6a2b52018e66c0886944ea0c03fcc:
 
---D6j35SbxKmr3X1X0vRrmG97IQ9jXT4nMq--
+  net: dsa: bcm_sf2: Set correct CHAIN_ID and slice number mask (2017-11-30 14:21:35 -0500)
 
---2AVgdLUBL6bcWNU2dGdQIORElfgsXtcJE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+are available in the Git repository at:
 
------BEGIN PGP SIGNATURE-----
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.15-20171201
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlohXgwACgkQHv7KIOw4
-HPZMlwgAv2t8bDC5N3PApt7eu46Jf0JPOilSElFus/N3EF5+CICTAPHR3MqZ8CtO
-FtUcQRDMN9hyRc0N06Wi38i8QwSey+PiiqiyxBxU2EGO1nd28pS77Taw5A5t8mzu
-gOgYG+gac8xTOanwhqdRi720mEzrnZ5v0798/S6Sag28rTW+pNmKVS1G05fPqq0B
-wWtBuUzL9I/U6e9YWbUEI9/HkVPlCwIyt4ltX7J4aQjH16zYFKgzimSQV9N31L28
-pXEbhh6gafe8NXihKoD/tW8DT/sV4I3eZJ8STFUpzakA997zSWW3VpzkGrOhRL27
-LWBSvruH7gHKMrX4L+Xx7/sHWsM9xg==
-=D+YI
------END PGP SIGNATURE-----
+for you to fetch changes up to 1cb35a33a28394fd711bb26ddf3a564f4e9d9125:
 
---2AVgdLUBL6bcWNU2dGdQIORElfgsXtcJE--
+  can: mcba_usb: fix device disconnect bug (2017-12-01 11:27:14 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.15-20171201
+
+----------------------------------------------------------------
+Jimmy Assarsson (3):
+      can: kvaser_usb: free buf in error paths
+      can: kvaser_usb: Fix comparison bug in kvaser_usb_read_bulk_callback()
+      can: kvaser_usb: ratelimit errors if incomplete messages are received
+
+Marc Kleine-Budde (2):
+      can: flexcan: Update IRQ Err Passive information
+      can: flexcan: fix VF610 state transition issue
+
+Martin Kelly (2):
+      can: mcba_usb: fix typo
+      can: mcba_usb: fix device disconnect bug
+
+Oliver Stäbler (1):
+      can: ti_hecc: Fix napi poll return value for repoll
+
+Stephane Grosjean (1):
+      can: peak/pci: fix potential bug when probe() fails
+
+ drivers/net/can/flexcan.c                     |  9 +++++----
+ drivers/net/can/peak_canfd/peak_pciefd_main.c |  5 ++++-
+ drivers/net/can/sja1000/peak_pci.c            |  5 ++++-
+ drivers/net/can/ti_hecc.c                     |  3 +++
+ drivers/net/can/usb/kvaser_usb.c              | 11 +++++++----
+ drivers/net/can/usb/mcba_usb.c                |  3 ++-
+ 6 files changed, 25 insertions(+), 11 deletions(-)
