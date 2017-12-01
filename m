@@ -1,44 +1,48 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/9] can: ti_hecc: Fix napi poll return value for repoll
-Date: Fri,  1 Dec 2017 15:17:34 +0100
-Message-ID: <20171201141739.5816-5-mkl@pengutronix.de>
+Subject: [PATCH 9/9] can: mcba_usb: fix device disconnect bug
+Date: Fri,  1 Dec 2017 15:17:39 +0100
+Message-ID: <20171201141739.5816-10-mkl@pengutronix.de>
 References: <20171201141739.5816-1-mkl@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20171201141739.5816-1-mkl@pengutronix.de>
 Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, =?UTF-8?q?Oliver=20St=C3=A4bler?= <oliver.staebler@bytesatwork.ch>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Martin Kelly <mkelly@xevo.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
+From: Martin Kelly <mkelly@xevo.com>
 
-After commit d75b1ade567f ("net: less interrupt masking in NAPI") napi
-repoll is done only when work_done == budget.
-So we need to return budget if there are still packets to receive.
+Currently, when you disconnect the device, the driver infinitely
+resubmits all URBs, so you see:
 
-Signed-off-by: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
+Rx URB aborted (-32)
+
+in an infinite loop.
+
+Fix this by catching -EPIPE (what we get in urb->status when the device
+disconnects) and not resubmitting.
+
+With this patch, I can plug and unplug many times and the driver
+recovers correctly.
+
+Signed-off-by: Martin Kelly <mkelly@xevo.com>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ti_hecc.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/can/usb/mcba_usb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 4d4941469cfc..db6ea936dc3f 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -637,6 +637,9 @@ static int ti_hecc_rx_poll(struct napi_struct *napi, int quota)
- 		mbx_mask = hecc_read(priv, HECC_CANMIM);
- 		mbx_mask |= HECC_TX_MBOX_MASK;
- 		hecc_write(priv, HECC_CANMIM, mbx_mask);
-+	} else {
-+		/* repoll is done only if whole budget is used */
-+		num_pkts = quota;
- 	}
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index c4355f0a20d5..ef417dcddbf7 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -592,6 +592,7 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
+ 		break;
  
- 	return num_pkts;
+ 	case -ENOENT:
++	case -EPIPE:
+ 	case -ESHUTDOWN:
+ 		return;
+ 
 -- 
 2.15.0
