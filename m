@@ -1,100 +1,138 @@
-From: Martin Kelly <mkelly@xevo.com>
-Subject: Re: CAN-USB adapter unplug
-Date: Thu, 30 Nov 2017 18:06:12 -0800
-Message-ID: <1afd47ef-c1ea-fb49-be33-fcb5568f54e5@xevo.com>
-References: <20171127234916.25865-1-mkelly@xevo.com>
- <48029f4a-5137-5f1f-6970-5668fb8da599@pengutronix.de>
- <2f999f02-028e-1e6c-9020-beb5a76889cc@esd.eu>
- <e5a2cbc8-f1be-1bed-a0af-9b5fa6fd35ca@xevo.com>
- <d5820417-b818-e78e-d3f0-6c24eb0fecd0@kvaser.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2017-12-01
+Date: Fri, 1 Dec 2017 10:57:43 +0100
+Message-ID: <b2a795da-bde5-0527-ff07-762d5485ce45@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="HfrkL3JbrTGJJNj1txCKfHtP7U3PiT8O0"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2nam02on0051.outbound.protection.outlook.com ([104.47.38.51]:22704
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751793AbdLACGW (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 30 Nov 2017 21:06:22 -0500
-In-Reply-To: <d5820417-b818-e78e-d3f0-6c24eb0fecd0@kvaser.com>
-Content-Language: en-US
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:48075 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751675AbdLAJ5w (ORCPT
+        <rfc822;linux-can@vger.kernel.ORG>); Fri, 1 Dec 2017 04:57:52 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Jimmy Assarsson <extja@kvaser.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>, =?UTF-8?B?UmVtaWdpdXN6IEtvxYLFgsSFdGFq?= <remigiusz.kollataj@mobica.com>, Wolfgang Grandegger <wg@grandegger.com>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 11/30/2017 02:18 AM, Jimmy Assarsson wrote:
-> On 2017-11-29 18:07, Martin Kelly wrote:
->> On 11/29/2017 07:21 AM, Stefan Mätje wrote:
->>> Am 29.11.2017 um 13:20 schrieb Marc Kleine-Budde:
->>>> On 11/28/2017 10:09 PM, Martin Kelly wrote:
->>>>>> Both applied to can.
->>>>>
->>>>> Thanks! By the way as far as I can tell from code inspection, it 
->>>>> appears
->>>>> that most of the other drivers in net/can/usb should have the same
->>>>> disconnect bug. gs_usb appears to be clear, as it returns in its 
->>>>> default
->>>>> case. Unfortunately mcba_usb is the only device I have to test 
->>>>> with, but
->>>>> those with other devices may want to check for this.
->>>>
->>>> Can you create patches for the affected drivers and send them to the
->>>> list and the maintainers of the driver on Cc?
->>>>
->>>> I don't have access to every USB adapter neither.
->>>>
->>>> Marc
->>>>
->>>
->>> Hi,
->>>
->>> I have seen Martin's emails these days and tried to reproduce the 
->>> error here
->>> with an esd CAN-USB/2 device (handled by esd_usb2.c). The only thing 
->>> I get
->>> in the log are some messages like this:
->>>
->>> kernel: [14776.152459] usb 2-1: Rx URB aborted (-71)
->>>
->>> There is no endless loop. How could I reproduce the bad behavior? For 
->>> the
->>> quick test I used an Ubuntu 4.4.0-101-generic kernel.
-> 
-> Hi,
-> 
-> I got same result for kvaser_usb, a single "Rx URB aborted (-71)". When 
-> tested on Ubuntu with 4.4.0-93-generic.
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--HfrkL3JbrTGJJNj1txCKfHtP7U3PiT8O0
+Content-Type: multipart/mixed; boundary="0CWCmPbNApqBSi4nHhuMA9mnMKWTkEIAq";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <b2a795da-bde5-0527-ff07-762d5485ce45@pengutronix.de>
+Subject: pull-request: can-next 2017-12-01
 
-I tried this same test with Debian 4.9.51-1 and get a stream of "Rx URB 
-aborted (-71)" messages, much as you saw on the Raspberry Pi 3. The 
-stream overloads the /dev/kmsg buffer, but eventually we do get "USB 
-disconnect", "device disconnected", and the messages stop.
+--0CWCmPbNApqBSi4nHhuMA9mnMKWTkEIAq
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 
-I think this is basically the same issue with EPROTO instead of EPIPE. 
-It appears that the exact error code you get and the timing between 
-disconnect and URB cancellations varies per system.
+Hello David,
 
->> Interesting. Do you see just a few -71 RX URB aborted messages (one 
->> per outstanding URB) rather than an endless loop? If so, then I think 
->> everything is OK on that device, as the URBs are not being resubmitted.
->>
->> In case it helps, my test case for the mcba_usb is on a Raspberry Pi 
->> 3. I don't know whether or not that could influence the USB error code 
->> we see, since you are seeing EPROTO instead of EPIPE when the device 
->> gets unplugged.
-> 
-> However, I do get lots of (500+) "Rx URB aborted (-71)" printouts, on 
-> Raspberry Pi 3, running Raspbian with kernel 4.9.35-v7. But no EPIPE seen.
-> 
-> Regards,
-> Jimmy
-> 
->>>
->>> In any case I will add the patch handling EPIPE on a test system and 
->>> have a
->>> look what it might change.
->>>
->>> Regards,
->>> Stefan Mätje
+this is a pull request of 10 patches for net-next/master.
+
+The first two patches are by Arnd Bergmann, they convert the peak_usb
+from using "struct timeval" to "ktime_t". The error handling in the
+vxcan driver is clean up by Markus Elfring's patch. Bhumika Goyal
+contributes a patch for the c_can_pci driver to make the pci data const.
+The six patches by Pankaj Bansal for the flexcan driver add LS1021A
+support by making the endianness of the driver configurable by the
+device tree.
+
+regards,
+Marc
+
+---
+
+The following changes since commit 201c78e05c5adaffa163b022c9b3a4d30debe1=
+00:
+
+  Merge branch 'macb-rx-packet-filtering' (2017-11-30 14:12:47 -0500)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-4.17-20171201
+
+for you to fetch changes up to fa2edcfb5f2e99e9f47f7ecba9abc5f192aa388b:
+
+  arm: dts: Add nodes for flexcan devices present on LS1021A-Rev2 SoC (20=
+17-12-01 09:14:23 +0100)
+
+----------------------------------------------------------------
+linux-can-next-for-4.17-20171201
+
+----------------------------------------------------------------
+Arnd Bergmann (2):
+      can: peak_usb: remove some 'struct timeval' users
+      can: peak_usb: use ktime_t consistently
+
+Bhumika Goyal (1):
+      can: c_can_pci: make c_can_pci_data const
+
+Markus Elfring (1):
+      can: vxcan: Use common error handling code in vxcan_newlink()
+
+Pankaj Bansal (6):
+      can: flexcan: Remodel FlexCAN register r/w APIs for big endian Flex=
+CAN controllers.
+      can: flexcan: adding platform specific details for LS1021A
+      Documentation: can: flexcan: Add big-endian property to device tree=
+
+      powerpc: dts: P1010: Add endianness property to flexcan node
+      arm: dts: Remove p1010-flexcan compatible from imx series dts
+      arm: dts: Add nodes for flexcan devices present on LS1021A-Rev2 SoC=
+
+
+ .../devicetree/bindings/net/can/fsl-flexcan.txt    |   6 +
+ arch/arm/boot/dts/imx25.dtsi                       |   4 +-
+ arch/arm/boot/dts/imx28.dtsi                       |   4 +-
+ arch/arm/boot/dts/imx35.dtsi                       |   4 +-
+ arch/arm/boot/dts/imx53.dtsi                       |   4 +-
+ arch/arm/boot/dts/ls1021a-qds.dts                  |  16 ++
+ arch/arm/boot/dts/ls1021a-twr.dts                  |  16 ++
+ arch/arm/boot/dts/ls1021a.dtsi                     |  36 +++
+ arch/powerpc/boot/dts/fsl/p1010si-post.dtsi        |   2 +
+ drivers/net/can/c_can/c_can_pci.c                  |   4 +-
+ drivers/net/can/flexcan.c                          | 241 ++++++++++++---=
+------
+ drivers/net/can/usb/peak_usb/pcan_usb.c            |   9 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c       |  53 ++---
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h       |   5 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c        |   9 +-
+ drivers/net/can/vxcan.c                            |  16 +-
+ 16 files changed, 258 insertions(+), 171 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--0CWCmPbNApqBSi4nHhuMA9mnMKWTkEIAq--
+
+--HfrkL3JbrTGJJNj1txCKfHtP7U3PiT8O0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlohJ5cACgkQHv7KIOw4
+HPY2YQf7Bbw30RyALKx1YOfwV22Nx982MBlESUZO6lH2WKu9bdby+pAtuEuCTT8b
+o/lfs911OqrI2XwK8n4PZgdUoTDJHDd4f0luVysM0TxC2L7xe9TpSH1PkTL1jRQr
+z6HC7HKTyoBghQ8I1hP8FmWFxwHimz6YMSO/ZOiePFAzO1kJgy9dnxz0jTlZOB5K
+RLZ5Tf73APhMHZt0iuePYrt4IEnPkxfLfXf1nrD6IanJCrh27diQ/CHt6kDef+5B
+lJ91oaoLxhCtOnvPdiJ66/mhq3nWEWdnWY3vzVDfOuSpLq6tKTeUXPwTrYL/fsat
+erMXpiZG+eruOP/clhs2BXCWa0UmKQ==
+=ofIL
+-----END PGP SIGNATURE-----
+
+--HfrkL3JbrTGJJNj1txCKfHtP7U3PiT8O0--
