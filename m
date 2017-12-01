@@ -1,7 +1,7 @@
 From: Martin Kelly <mkelly@xevo.com>
 Subject: Re: CAN-USB adapter unplug
-Date: Thu, 30 Nov 2017 10:19:13 -0800
-Message-ID: <4f6687db-269d-d8ff-7a47-5094ad63043a@xevo.com>
+Date: Thu, 30 Nov 2017 18:06:12 -0800
+Message-ID: <1afd47ef-c1ea-fb49-be33-fcb5568f54e5@xevo.com>
 References: <20171127234916.25865-1-mkelly@xevo.com>
  <48029f4a-5137-5f1f-6970-5668fb8da599@pengutronix.de>
  <2f999f02-028e-1e6c-9020-beb5a76889cc@esd.eu>
@@ -11,11 +11,11 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-cys01nam02on0041.outbound.protection.outlook.com ([104.47.37.41]:7057
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+Received: from mail-bl2nam02on0051.outbound.protection.outlook.com ([104.47.38.51]:22704
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751522AbdK3STV (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 30 Nov 2017 13:19:21 -0500
+        id S1751793AbdLACGW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 30 Nov 2017 21:06:22 -0500
 In-Reply-To: <d5820417-b818-e78e-d3f0-6c24eb0fecd0@kvaser.com>
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
@@ -66,6 +66,16 @@ On 11/30/2017 02:18 AM, Jimmy Assarsson wrote:
 > I got same result for kvaser_usb, a single "Rx URB aborted (-71)". When 
 > tested on Ubuntu with 4.4.0-93-generic.
 > 
+
+I tried this same test with Debian 4.9.51-1 and get a stream of "Rx URB 
+aborted (-71)" messages, much as you saw on the Raspberry Pi 3. The 
+stream overloads the /dev/kmsg buffer, but eventually we do get "USB 
+disconnect", "device disconnected", and the messages stop.
+
+I think this is basically the same issue with EPROTO instead of EPIPE. 
+It appears that the exact error code you get and the timing between 
+disconnect and URB cancellations varies per system.
+
 >> Interesting. Do you see just a few -71 RX URB aborted messages (one 
 >> per outstanding URB) rather than an endless loop? If so, then I think 
 >> everything is OK on that device, as the URBs are not being resubmitted.
@@ -78,29 +88,6 @@ On 11/30/2017 02:18 AM, Jimmy Assarsson wrote:
 > However, I do get lots of (500+) "Rx URB aborted (-71)" printouts, on 
 > Raspberry Pi 3, running Raspbian with kernel 4.9.35-v7. But no EPIPE seen.
 > 
-
-Very interesting; this means that there are multiple possible error 
-codes from a USB disconnect. If that's the case, is it possible that the 
-best thing to do is what gs_usb does? In gs_usb's receive callback, we have:
-
-     switch (urb->status) {
-     case 0: /* success */
-         break;
-     case -ENOENT:
-     case -ESHUTDOWN:
-         return;
-     default:
-         /* do not resubmit aborted urbs. eg: when device goes down */
-         return;
-     }
-
-The default case is to *not* resubmit URBs, rather than to resubmit is a 
-default and try to catch all possible error codes in the non-default 
-case, as the other drivers are doing.
-
-If we don't do something like this, then we need to understand all the 
-possible error codes that could occur and catch them all.
-
 > Regards,
 > Jimmy
 > 
