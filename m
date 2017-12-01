@@ -1,63 +1,54 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: pull-request: can-next 2017-12-01
-Date: Fri, 1 Dec 2017 14:37:00 +0100
-Message-ID: <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
+Date: Fri, 1 Dec 2017 14:50:04 +0100
+Message-ID: <85177a44-2bf7-80f8-08c4-df133cd48917@pengutronix.de>
 References: <b2a795da-bde5-0527-ff07-762d5485ce45@pengutronix.de>
+ <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="OIsTuUmvI8gMDdVM9lnHrXOMpVEKGNqua"
+ boundary="2AVgdLUBL6bcWNU2dGdQIORElfgsXtcJE"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:39333 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:34557 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752488AbdLANhH (ORCPT
-        <rfc822;linux-can@vger.kernel.ORG>); Fri, 1 Dec 2017 08:37:07 -0500
-In-Reply-To: <b2a795da-bde5-0527-ff07-762d5485ce45@pengutronix.de>
+        by vger.kernel.org with ESMTP id S1753108AbdLANuR (ORCPT
+        <rfc822;linux-can@vger.kernel.ORG>); Fri, 1 Dec 2017 08:50:17 -0500
+In-Reply-To: <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org
 Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---OIsTuUmvI8gMDdVM9lnHrXOMpVEKGNqua
-Content-Type: multipart/mixed; boundary="JhNlbGoorVBtFe19aH2DHd3Wj3k4C7Bcx";
+--2AVgdLUBL6bcWNU2dGdQIORElfgsXtcJE
+Content-Type: multipart/mixed; boundary="D6j35SbxKmr3X1X0vRrmG97IQ9jXT4nMq";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: David Miller <davem@davemloft.net>,
  "kernel@pengutronix.de" <kernel@pengutronix.de>,
  "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
+Message-ID: <85177a44-2bf7-80f8-08c4-df133cd48917@pengutronix.de>
 Subject: Re: pull-request: can-next 2017-12-01
 References: <b2a795da-bde5-0527-ff07-762d5485ce45@pengutronix.de>
-In-Reply-To: <b2a795da-bde5-0527-ff07-762d5485ce45@pengutronix.de>
+ <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
+In-Reply-To: <40a21f74-a30c-7af6-9892-2fac4d15bf94@pengutronix.de>
 
---JhNlbGoorVBtFe19aH2DHd3Wj3k4C7Bcx
+--D6j35SbxKmr3X1X0vRrmG97IQ9jXT4nMq
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 12/01/2017 10:57 AM, Marc Kleine-Budde wrote:
-> Hello David,
+On 12/01/2017 02:37 PM, Marc Kleine-Budde wrote:
+> Doh, I had an error in my script which produced the wrong Linux version=
 
-[...]
+> in the tag. The correct name of the tag is:
 
-> ---
->=20
-> The following changes since commit 201c78e05c5adaffa163b022c9b3a4d30deb=
-e100:
->=20
->   Merge branch 'macb-rx-packet-filtering' (2017-11-30 14:12:47 -0500)
->=20
-> are available in the Git repository at:
+First test - than post - here's the correct tag:
 
-Doh, I had an error in my script which produced the wrong Linux version
-in the tag. The correct name of the tag is:
+git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
+tags/linux-can-next-for-4.16-20171201
 
-git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags=
-/linux-can-next-for-v4.16-20171201
-
-regards,
 Marc
 
 --=20
@@ -67,23 +58,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---JhNlbGoorVBtFe19aH2DHd3Wj3k4C7Bcx--
+--D6j35SbxKmr3X1X0vRrmG97IQ9jXT4nMq--
 
---OIsTuUmvI8gMDdVM9lnHrXOMpVEKGNqua
+--2AVgdLUBL6bcWNU2dGdQIORElfgsXtcJE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlohWvwACgkQHv7KIOw4
-HPb+DAf/ZOkatA1Ypzr3xSx3wTE1k9ZDFqwJSGLJz7xTgUw309rxbCl2BVrXAU5Y
-507kf5Kjzqaw7E8kShxa9kHAbIHMAIg7HBcnOef3MUeRqcr1cuFyh9EJt067IBsu
-I0D2wgogd8KUkW1cL6DPclb3vgKJopXlUxIo4bfVHksTZDp9XHJWeYE1/JaWXvV7
-FjW3A5rvILMwm8EfrlgXquoceR6Lc7OSQhA8Con2g9vqah1pHxT4GOwF4HAYoYkq
-bIRfWy19oiimLs1aXHvC+R80qlgm3xdajw/ohsbQBP3bl+qlApk1xHs/CEy9Ime1
-cR354ikLvb5EYM2p3DwfrW7OBSLb1Q==
-=pxUo
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlohXgwACgkQHv7KIOw4
+HPZMlwgAv2t8bDC5N3PApt7eu46Jf0JPOilSElFus/N3EF5+CICTAPHR3MqZ8CtO
+FtUcQRDMN9hyRc0N06Wi38i8QwSey+PiiqiyxBxU2EGO1nd28pS77Taw5A5t8mzu
+gOgYG+gac8xTOanwhqdRi720mEzrnZ5v0798/S6Sag28rTW+pNmKVS1G05fPqq0B
+wWtBuUzL9I/U6e9YWbUEI9/HkVPlCwIyt4ltX7J4aQjH16zYFKgzimSQV9N31L28
+pXEbhh6gafe8NXihKoD/tW8DT/sV4I3eZJ8STFUpzakA997zSWW3VpzkGrOhRL27
+LWBSvruH7gHKMrX4L+Xx7/sHWsM9xg==
+=D+YI
 -----END PGP SIGNATURE-----
 
---OIsTuUmvI8gMDdVM9lnHrXOMpVEKGNqua--
+--2AVgdLUBL6bcWNU2dGdQIORElfgsXtcJE--
