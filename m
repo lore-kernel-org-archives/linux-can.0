@@ -1,39 +1,50 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 6/9] can: flexcan: Update IRQ Err Passive information
-Date: Fri,  1 Dec 2017 15:17:36 +0100
-Message-ID: <20171201141739.5816-7-mkl@pengutronix.de>
+Subject: [PATCH 1/9] can: kvaser_usb: free buf in error paths
+Date: Fri,  1 Dec 2017 15:17:31 +0100
+Message-ID: <20171201141739.5816-2-mkl@pengutronix.de>
 References: <20171201141739.5816-1-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37931 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752881AbdLAORs (ORCPT
+        <rfc822;linux-can@vger.kernel.ORG>); Fri, 1 Dec 2017 09:17:48 -0500
 In-Reply-To: <20171201141739.5816-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Jimmy Assarsson <jimmyassarsson@gmail.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-The flexcan IP cores used on MX25 and MX35 do not generate Error Passive
-IRQs. Update the IP core overview table in the driver accordingly.
+From: Jimmy Assarsson <jimmyassarsson@gmail.com>
 
-Suggested-by: ZHU Yi (ST-FIR/ENG1-Zhu) <Yi.Zhu5@cn.bosch.com>
+The allocated buffer was not freed if usb_submit_urb() failed.
+
+Signed-off-by: Jimmy Assarsson <jimmyassarsson@gmail.com>
+Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/kvaser_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index a13a4896a8bd..eefddae2e99a 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -184,9 +184,9 @@
-  * Below is some version info we got:
-  *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT IRQ Err Memory err RTR re-
-  *                                Filter? connected?  Passive detection  ception in MB
-- *   MX25  FlexCAN2  03.00.00.00     no        no         ?       no        no
-+ *   MX25  FlexCAN2  03.00.00.00     no        no        no       no        no
-  *   MX28  FlexCAN2  03.00.04.00    yes       yes        no       no        no
-- *   MX35  FlexCAN2  03.00.00.00     no        no         ?       no        no
-+ *   MX35  FlexCAN2  03.00.00.00     no        no        no       no        no
-  *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no        no
-  *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no       yes
-  *   VF610 FlexCAN3  ?               no       yes         ?      yes       yes?
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index 9b18d96ef526..075644591498 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -813,6 +813,7 @@ static int kvaser_usb_simple_msg_async(struct kvaser_usb_net_priv *priv,
+ 	if (err) {
+ 		netdev_err(netdev, "Error transmitting URB\n");
+ 		usb_unanchor_urb(urb);
++		kfree(buf);
+ 		usb_free_urb(urb);
+ 		return err;
+ 	}
+@@ -1768,6 +1769,7 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 		spin_unlock_irqrestore(&priv->tx_contexts_lock, flags);
+ 
+ 		usb_unanchor_urb(urb);
++		kfree(buf);
+ 
+ 		stats->tx_dropped++;
+ 
 -- 
 2.15.0
+
