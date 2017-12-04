@@ -1,105 +1,123 @@
-From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
-Subject: Re: [PATCH 2/2] can: mcp2517fd: Add Microchip mcp2517fd CAN FD driver
-Date: Sun, 3 Dec 2017 19:34:35 +0100
-Message-ID: <78D816B0-7EBE-4C2A-ACFA-246C527AEB3A@martin.sperl.org>
-References: <20171124183509.12810-1-kernel@martin.sperl.org> <20171124183509.12810-3-kernel@martin.sperl.org> <ff920dd7-4535-dcaa-27f9-57844ce66c7b@pengutronix.de>
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <ff920dd7-4535-dcaa-27f9-57844ce66c7b-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+From: Jimmy Assarsson <extja@kvaser.com>
+Subject: Re: CAN-USB adapter unplug
+Date: Mon, 4 Dec 2017 09:39:46 +0100
+Message-ID: <29dbc892-e468-e828-3f5b-78153930d540@kvaser.com>
+References: <20171127234916.25865-1-mkelly@xevo.com>
+ <48029f4a-5137-5f1f-6970-5668fb8da599@pengutronix.de>
+ <2f999f02-028e-1e6c-9020-beb5a76889cc@esd.eu>
+ <e5a2cbc8-f1be-1bed-a0af-9b5fa6fd35ca@xevo.com>
+ <d5820417-b818-e78e-d3f0-6c24eb0fecd0@kvaser.com>
+ <4f6687db-269d-d8ff-7a47-5094ad63043a@xevo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-lf0-f45.google.com ([209.85.215.45]:39819 "EHLO
+        mail-lf0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751205AbdLDIjt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 4 Dec 2017 03:39:49 -0500
+Received: by mail-lf0-f45.google.com with SMTP id l81so18160147lfl.6
+        for <linux-can@vger.kernel.org>; Mon, 04 Dec 2017 00:39:49 -0800 (PST)
+In-Reply-To: <4f6687db-269d-d8ff-7a47-5094ad63043a@xevo.com>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Martin Kelly <mkelly@xevo.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>, =?UTF-8?B?UmVtaWdpdXN6IEtvxYLFgsSFdGFq?= <remigiusz.kollataj@mobica.com>, Wolfgang Grandegger <wg@grandegger.com>
 
-H Marc!
-
-
-> On 30.11.2017, at 14:04, Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org> wrote:
+On 2017-11-30 19:19, Martin Kelly wrote:
+> On 11/30/2017 02:18 AM, Jimmy Assarsson wrote:
+>> On 2017-11-29 18:07, Martin Kelly wrote:
+>>> On 11/29/2017 07:21 AM, Stefan Mätje wrote:
+>>>> Am 29.11.2017 um 13:20 schrieb Marc Kleine-Budde:
+>>>>> On 11/28/2017 10:09 PM, Martin Kelly wrote:
+>>>>>>> Both applied to can.
+>>>>>>
+>>>>>> Thanks! By the way as far as I can tell from code inspection, it 
+>>>>>> appears
+>>>>>> that most of the other drivers in net/can/usb should have the same
+>>>>>> disconnect bug. gs_usb appears to be clear, as it returns in its 
+>>>>>> default
+>>>>>> case. Unfortunately mcba_usb is the only device I have to test 
+>>>>>> with, but
+>>>>>> those with other devices may want to check for this.
+>>>>>
+>>>>> Can you create patches for the affected drivers and send them to the
+>>>>> list and the maintainers of the driver on Cc?
+>>>>>
+>>>>> I don't have access to every USB adapter neither.
+>>>>>
+>>>>> Marc
+>>>>>
+>>>>
+>>>> Hi,
+>>>>
+>>>> I have seen Martin's emails these days and tried to reproduce the 
+>>>> error here
+>>>> with an esd CAN-USB/2 device (handled by esd_usb2.c). The only thing 
+>>>> I get
+>>>> in the log are some messages like this:
+>>>>
+>>>> kernel: [14776.152459] usb 2-1: Rx URB aborted (-71)
+>>>>
+>>>> There is no endless loop. How could I reproduce the bad behavior? 
+>>>> For the
+>>>> quick test I used an Ubuntu 4.4.0-101-generic kernel.
+>>
+>> Hi,
+>>
+>> I got same result for kvaser_usb, a single "Rx URB aborted (-71)". 
+>> When tested on Ubuntu with 4.4.0-93-generic.
+>>
+>>> Interesting. Do you see just a few -71 RX URB aborted messages (one 
+>>> per outstanding URB) rather than an endless loop? If so, then I think 
+>>> everything is OK on that device, as the URBs are not being resubmitted.
+>>>
+>>> In case it helps, my test case for the mcba_usb is on a Raspberry Pi 
+>>> 3. I don't know whether or not that could influence the USB error 
+>>> code we see, since you are seeing EPROTO instead of EPIPE when the 
+>>> device gets unplugged.
+>>
+>> However, I do get lots of (500+) "Rx URB aborted (-71)" printouts, on 
+>> Raspberry Pi 3, running Raspbian with kernel 4.9.35-v7. But no EPIPE 
+>> seen.
+>>
 > 
-> On 11/24/2017 07:35 PM, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org wrote:
->> From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
->> 
->> This patch adds support for the Microchip mcp2517fd CAN-FD controller.
->> The mcp2517fd is capable of transmitting and receiving standard data
->> frames, extended data frames, remote frames and Can-FD frames.
->> The mcp2517fd interfaces with the host over SPI.
+> Very interesting; this means that there are multiple possible error 
+> codes from a USB disconnect. If that's the case, is it possible that the 
+> best thing to do is what gs_usb does? In gs_usb's receive callback, we 
+> have:
 > 
-> I've review about the last 1/3 of the driver. See comments inline.
-
-Thanks for all the feedback!
-
-I shall incorporate those into V2.
-
->> +	switch (priv->config.gpio0_mode) {
->> +	case gpio_mode_standby:
->> +	case gpio_mode_int: /* asserted low on TXIF */
->> +	case gpio_mode_out_low:
->> +	case gpio_mode_out_high:
->> +	case gpio_mode_in:
+>      switch (urb->status) {
+>      case 0: /* success */
+>          break;
+>      case -ENOENT:
+>      case -ESHUTDOWN:
+>          return;
+>      default:
+>          /* do not resubmit aborted urbs. eg: when device goes down */
+>          return;
+>      }
 > 
-> Please add comments for fallthrough for all your switch-case.
-
-
-I thought /* fall through */ is only needed for the cases
-where there is code involved in each case block and you want
-to fall through to the next block - checkpatch only  complains 
-in such conditions (there is one location in the driver -
-in mcp2517fd_can_ist_handle_status - that requires /* fall through */).
-
-Also Documentation/process/coding-style.rst shows such an example
-in the “indentation” section, so I would assume this is valid code.
-
->> 
->> +int mcp2517fd_of_parse(struct mcp2517fd_priv *priv)
->> +{
->> +#ifdef CONFIG_OF_DYNAMIC
+> The default case is to *not* resubmit URBs, rather than to resubmit is a 
+> default and try to catch all possible error codes in the non-default 
+> case, as the other drivers are doing.
 > 
-> Why does this code depend on OF_DYNAMIC?
-> 
+> If we don't do something like this, then we need to understand all the 
+> possible error codes that could occur and catch them all.
 
-Well - this is only in case of Device Tree - no need to include
-all the DT-parsing in case that there is no DT support in the
-first place…
+Well, gs_usb never resubmit any URBs if urb->status is non-zero. As long 
+as any error (urb->status != 0) is the result of a disconnect, it should 
+be safe to never resubmit? I doubt this is the case, but I really don't 
+know.
 
-I may arrange it as a #ifdef outside of the function 
-(like the other case you have mentioned).
-
->> 
->> +	if (!IS_ERR(clk)) {
->> +		ret = clk_prepare_enable(clk);
->> +		if (ret)
->> +			goto out_free;
->> +	}
-> 
-> Why do you keep the clock running after the device has been probed?
-> Usually we enable the clock during open().
-
-I took the mcp251x as a blue-print and I believe it follows the
-same pattern… 
-But I may have simplified things during early driver development, 
-so I will recheck it.
-
-> 
->> +
->> +	/* check in device tree for overrrides */
->> +	ret = mcp2517fd_of_parse(priv);
->> +	if (ret)
->> +		return ret;
-> 
-> You're keeping the clock running.
-See above - I shall look into it...
-
->> +			dev_err(&spi->dev,
->> +				"PLL clock frequency %i would exceed limit\n",
->> +				priv->can.clock.freq
->> +				);
->> +			return -EINVAL;
-> 
-> same here
-
-Thanks, Martin--
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>> Regards,
+>> Jimmy
+>>
+>>>>
+>>>> In any case I will add the patch handling EPIPE on a test system and 
+>>>> have a
+>>>> look what it might change.
+>>>>
+>>>> Regards,
+>>>> Stefan Mätje
