@@ -1,64 +1,44 @@
-From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Subject: Re: [PATCH 1/2] dt-binding: can: mcp2517fd: document device tree
- bindings
-Date: Tue, 5 Dec 2017 11:26:59 +0100
-Message-ID: <f83be38e-1a44-79cc-4cdb-f26d8c8a5c61@martin.sperl.org>
-References: <20171124183509.12810-1-kernel@martin.sperl.org>
- <20171124183509.12810-2-kernel@martin.sperl.org>
- <20171126222528.i6quueqdmuj6le6g@rob-hp-laptop>
- <6EBDD798-8632-4F42-A138-369BCD36DF68@martin.sperl.org>
- <0a7e4416-332a-5c23-bda3-8c7561410314@posteo.de>
- <612BB6CD-5330-40B8-A854-FD065E0A3331@martin.sperl.org>
- <6aea8071-dc21-4ba7-2b2f-5af41b5755a5@posteo.de>
- <F6036A58-9E98-4A62-950E-3396C9EE636E@martin.sperl.org>
- <1ac487f7-17e3-c8a0-0f99-8138fe867373@posteo.de>
+From: Martin Kelly <mkelly@xevo.com>
+Subject: [PATCH] can: mcba_usb: cancel urb on -EPROTO
+Date: Tue,  5 Dec 2017 10:34:03 -0800
+Message-ID: <20171205183403.27955-1-mkelly@xevo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1ac487f7-17e3-c8a0-0f99-8138fe867373-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-co1nam03on0068.outbound.protection.outlook.com ([104.47.40.68]:43442
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1752310AbdLESeX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 5 Dec 2017 13:34:23 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: =?UTF-8?q?Remigiusz=20Ko=C5=82=C5=82=C4=85taj?= <remigiusz.kollataj@mobica.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Martin Kelly <mkelly@xevo.com>
 
-Hi Patrick!
+When we unplug the device, we can see both -EPIPE and -EPROTO depending
+on exact timing and what system we run on. If we continue to resubmit
+URBs, they will immediately fail, and they can cause stalls, especially
+on slower CPUs.
 
+Fix this by not resubmitting on -EPROTO, as we already do on -EPIPE.
 
-I had a quick look starting to implement gpiolib,
+Signed-off-by: Martin Kelly <mkelly@xevo.com>
+---
+ drivers/net/can/usb/mcba_usb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-but I believe I would need to implement pin-ctrl on top to
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index ef417dcddbf7..8d8c2086424d 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -593,6 +593,7 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
+ 
+ 	case -ENOENT:
+ 	case -EPIPE:
++	case -EPROTO:
+ 	case -ESHUTDOWN:
+ 		return;
+ 
+-- 
+2.11.0
 
-make the Alternate functions work propperly.
-
-I wonder if this effort is really worth it.
-
-Martin
-
-On 11/30/2017 06:49 PM, Patrick Menschel wrote:
-> Am 30.11.2017 um 17:58 schriebkernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org:
->>> drivers/tty/serial/max310x.c
->>> Documentation/devicetree/bindings/serial/maxim,max310x.txt
->>> Look for "#ifdef CONFIG_GPIOLIB”.
->> This is a gpio-controller, for which this is what I would implement.
->>
-> Hi,
->
-> you are mistaken about that, max310x chips are spi to uart bridges with
-> strong ties to rs485 which is very similar to CAN except for the missing
-> arbitration in hardware. Max14830 has GPIOs with clocking support, so
-> this chip's driver also fused the main function with secondary gpio
-> functions.
-> https://datasheets.maximintegrated.com/en/ds/MAX14830.pdf
->
-> Anyway I'm curious what is best practice for this sort of configuration.
->
-> Regards,
-> Patrick
->
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
