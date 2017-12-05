@@ -1,7 +1,7 @@
 From: Martin Kelly <mkelly@xevo.com>
-Subject: [PATCH 1/4] can: ems_usb: cancel urb on -EPIPE and -EPROTO
-Date: Tue,  5 Dec 2017 11:15:47 -0800
-Message-ID: <20171205191550.703-2-mkelly@xevo.com>
+Subject: [PATCH 2/4] can: esd_usb2: cancel urb on -EPIPE and -EPROTO
+Date: Tue,  5 Dec 2017 11:15:48 -0800
+Message-ID: <20171205191550.703-3-mkelly@xevo.com>
 References: <20171205191550.703-1-mkelly@xevo.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -9,8 +9,8 @@ Return-path: <linux-can-owner@vger.kernel.org>
 Received: from mail-bl2nam02on0049.outbound.protection.outlook.com ([104.47.38.49]:29120
         "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751394AbdLETQI (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 5 Dec 2017 14:16:08 -0500
+        id S1751718AbdLETQJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 5 Dec 2017 14:16:09 -0500
 In-Reply-To: <20171205191550.703-1-mkelly@xevo.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -27,16 +27,16 @@ in the same way.
 
 Signed-off-by: Martin Kelly <mkelly@xevo.com>
 ---
- drivers/net/can/usb/ems_usb.c | 2 ++
+ drivers/net/can/usb/esd_usb2.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index b3d02759c226..b00358297424 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -288,6 +288,8 @@ static void ems_usb_read_interrupt_callback(struct urb *urb)
+diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
+index 9fdb0f0bfa06..c6dcf93675c0 100644
+--- a/drivers/net/can/usb/esd_usb2.c
++++ b/drivers/net/can/usb/esd_usb2.c
+@@ -393,6 +393,8 @@ static void esd_usb2_read_bulk_callback(struct urb *urb)
+ 		break;
  
- 	case -ECONNRESET: /* unlink */
  	case -ENOENT:
 +	case -EPIPE:
 +	case -EPROTO:
