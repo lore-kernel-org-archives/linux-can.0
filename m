@@ -1,40 +1,44 @@
 From: Martin Kelly <mkelly@xevo.com>
-Subject: [PATCH] can: mcba_usb: cancel urb on -EPROTO
-Date: Tue,  5 Dec 2017 10:34:03 -0800
-Message-ID: <20171205183403.27955-1-mkelly@xevo.com>
+Subject: [PATCH 1/4] can: ems_usb: cancel urb on -EPIPE and -EPROTO
+Date: Tue,  5 Dec 2017 11:15:47 -0800
+Message-ID: <20171205191550.703-2-mkelly@xevo.com>
+References: <20171205191550.703-1-mkelly@xevo.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-co1nam03on0068.outbound.protection.outlook.com ([104.47.40.68]:43442
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-bl2nam02on0049.outbound.protection.outlook.com ([104.47.38.49]:29120
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1752310AbdLESeX (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 5 Dec 2017 13:34:23 -0500
+        id S1751394AbdLETQI (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 5 Dec 2017 14:16:08 -0500
+In-Reply-To: <20171205191550.703-1-mkelly@xevo.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org
-Cc: =?UTF-8?q?Remigiusz=20Ko=C5=82=C5=82=C4=85taj?= <remigiusz.kollataj@mobica.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Martin Kelly <mkelly@xevo.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, =?UTF-8?q?Stefan=20M=C3=A4tje?= <Stefan.Maetje@esd.eu>, Jimmy Assarsson <jimmyassarsson@gmail.com>, Martin Kelly <mkelly@xevo.com>
 
-When we unplug the device, we can see both -EPIPE and -EPROTO depending
-on exact timing and what system we run on. If we continue to resubmit
-URBs, they will immediately fail, and they can cause stalls, especially
-on slower CPUs.
+In mcba_usb, we have observed that when you unplug the device, the driver will
+endlessly resubmit failing URBs, which can cause CPU stalls. This issue
+is fixed in mcba_usb by catching the codes seen on device disconnect
+(-EPIPE and -EPROTO).
 
-Fix this by not resubmitting on -EPROTO, as we already do on -EPIPE.
+This driver also resubmits in the case of -EPIPE and -EPROTO, so fix it
+in the same way.
 
 Signed-off-by: Martin Kelly <mkelly@xevo.com>
 ---
- drivers/net/can/usb/mcba_usb.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/usb/ems_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index ef417dcddbf7..8d8c2086424d 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -593,6 +593,7 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
+diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+index b3d02759c226..b00358297424 100644
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -288,6 +288,8 @@ static void ems_usb_read_interrupt_callback(struct urb *urb)
  
+ 	case -ECONNRESET: /* unlink */
  	case -ENOENT:
- 	case -EPIPE:
++	case -EPIPE:
 +	case -EPROTO:
  	case -ESHUTDOWN:
  		return;
