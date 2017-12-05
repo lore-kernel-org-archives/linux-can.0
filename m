@@ -1,16 +1,16 @@
 From: Martin Kelly <mkelly@xevo.com>
-Subject: [PATCH 3/4] can: kvaser_usb: cancel urb on -EPIPE and -EPROTO
-Date: Tue,  5 Dec 2017 11:15:49 -0800
-Message-ID: <20171205191550.703-4-mkelly@xevo.com>
+Subject: [PATCH 4/4] can: usb_8dev: cancel urb on -EPIPE and -EPROTO
+Date: Tue,  5 Dec 2017 11:15:50 -0800
+Message-ID: <20171205191550.703-5-mkelly@xevo.com>
 References: <20171205191550.703-1-mkelly@xevo.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-bl2nam02on0054.outbound.protection.outlook.com ([104.47.38.54]:27091
+Received: from mail-bl2nam02on0089.outbound.protection.outlook.com ([104.47.38.89]:35227
         "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751815AbdLETQL (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 5 Dec 2017 14:16:11 -0500
+        id S1751847AbdLETQX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 5 Dec 2017 14:16:23 -0500
 In-Reply-To: <20171205191550.703-1-mkelly@xevo.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
@@ -27,22 +27,22 @@ in the same way.
 
 Signed-off-by: Martin Kelly <mkelly@xevo.com>
 ---
- drivers/net/can/usb/kvaser_usb.c | 2 ++
+ drivers/net/can/usb/usb_8dev.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
-index f95945915d20..63587b8e6825 100644
---- a/drivers/net/can/usb/kvaser_usb.c
-+++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -1326,6 +1326,8 @@ static void kvaser_usb_read_bulk_callback(struct urb *urb)
- 	case 0:
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index d000cb62d6ae..27861c417c94 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -524,6 +524,8 @@ static void usb_8dev_read_bulk_callback(struct urb *urb)
  		break;
+ 
  	case -ENOENT:
 +	case -EPIPE:
 +	case -EPROTO:
  	case -ESHUTDOWN:
  		return;
- 	default:
+ 
 -- 
 2.11.0
 
