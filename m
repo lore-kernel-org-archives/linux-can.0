@@ -1,93 +1,135 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/4] URB disconnect bug fixes
-Date: Wed, 6 Dec 2017 10:20:02 +0100
-Message-ID: <6e61f760-67af-f4b0-0cc5-97ede53216f1@pengutronix.de>
-References: <20171205191550.703-1-mkelly@xevo.com>
+From: Jimmy Assarsson <extja@kvaser.com>
+Subject: Re: CAN-USB adapter unplug
+Date: Wed, 6 Dec 2017 10:30:39 +0100
+Message-ID: <73c73798-f17f-5758-bf25-105c9dbdd366@kvaser.com>
+References: <20171127234916.25865-1-mkelly@xevo.com>
+ <48029f4a-5137-5f1f-6970-5668fb8da599@pengutronix.de>
+ <2f999f02-028e-1e6c-9020-beb5a76889cc@esd.eu>
+ <e5a2cbc8-f1be-1bed-a0af-9b5fa6fd35ca@xevo.com>
+ <d5820417-b818-e78e-d3f0-6c24eb0fecd0@kvaser.com>
+ <4f6687db-269d-d8ff-7a47-5094ad63043a@xevo.com>
+ <29dbc892-e468-e828-3f5b-78153930d540@kvaser.com>
+ <f28efe8a-e700-d6e8-6b2a-f95e92396bb6@xevo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="mjuuQ7d7M5fVGCIWWVoOw5R2emIpx78b6"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:60335 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1753656AbdLFJUK (ORCPT
-        <rfc822;linux-can@vger.kernel.ORG>); Wed, 6 Dec 2017 04:20:10 -0500
-In-Reply-To: <20171205191550.703-1-mkelly@xevo.com>
+Received: from mail-lf0-f43.google.com ([209.85.215.43]:42790 "EHLO
+        mail-lf0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753998AbdLFJam (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 6 Dec 2017 04:30:42 -0500
+Received: by mail-lf0-f43.google.com with SMTP id i2so3464120lfe.9
+        for <linux-can@vger.kernel.org>; Wed, 06 Dec 2017 01:30:41 -0800 (PST)
+In-Reply-To: <f28efe8a-e700-d6e8-6b2a-f95e92396bb6@xevo.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Martin Kelly <mkelly@xevo.com>, linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>, Jimmy Assarsson <jimmyassarsson@gmail.com>
+To: Martin Kelly <mkelly@xevo.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>, =?UTF-8?B?UmVtaWdpdXN6IEtvxYLFgsSFdGFq?= <remigiusz.kollataj@mobica.com>, Wolfgang Grandegger <wg@grandegger.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mjuuQ7d7M5fVGCIWWVoOw5R2emIpx78b6
-Content-Type: multipart/mixed; boundary="adpd4erE0cTeXOVVuwlUqqlNGbf7MrToq";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Martin Kelly <mkelly@xevo.com>, linux-can@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>,
- =?UTF-8?Q?Stefan_M=c3=a4tje?= <Stefan.Maetje@esd.eu>,
- Jimmy Assarsson <jimmyassarsson@gmail.com>
-Message-ID: <6e61f760-67af-f4b0-0cc5-97ede53216f1@pengutronix.de>
-Subject: Re: [PATCH 0/4] URB disconnect bug fixes
-References: <20171205191550.703-1-mkelly@xevo.com>
-In-Reply-To: <20171205191550.703-1-mkelly@xevo.com>
+On 2017-12-06 00:42, Martin Kelly wrote:
+> On 12/04/2017 12:39 AM, Jimmy Assarsson wrote:
+>> On 2017-11-30 19:19, Martin Kelly wrote:
+>>> On 11/30/2017 02:18 AM, Jimmy Assarsson wrote:
+>>>> On 2017-11-29 18:07, Martin Kelly wrote:
+>>>>> On 11/29/2017 07:21 AM, Stefan Mätje wrote:
+>>>>>> Am 29.11.2017 um 13:20 schrieb Marc Kleine-Budde:
+>>>>>>> On 11/28/2017 10:09 PM, Martin Kelly wrote:
+>>>>>>>>> Both applied to can.
+>>>>>>>>
+>>>>>>>> Thanks! By the way as far as I can tell from code inspection, it 
+>>>>>>>> appears
+>>>>>>>> that most of the other drivers in net/can/usb should have the same
+>>>>>>>> disconnect bug. gs_usb appears to be clear, as it returns in its 
+>>>>>>>> default
+>>>>>>>> case. Unfortunately mcba_usb is the only device I have to test 
+>>>>>>>> with, but
+>>>>>>>> those with other devices may want to check for this.
+>>>>>>>
+>>>>>>> Can you create patches for the affected drivers and send them to the
+>>>>>>> list and the maintainers of the driver on Cc?
+>>>>>>>
+>>>>>>> I don't have access to every USB adapter neither.
+>>>>>>>
+>>>>>>> Marc
+>>>>>>>
+>>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> I have seen Martin's emails these days and tried to reproduce the 
+>>>>>> error here
+>>>>>> with an esd CAN-USB/2 device (handled by esd_usb2.c). The only 
+>>>>>> thing I get
+>>>>>> in the log are some messages like this:
+>>>>>>
+>>>>>> kernel: [14776.152459] usb 2-1: Rx URB aborted (-71)
+>>>>>>
+>>>>>> There is no endless loop. How could I reproduce the bad behavior? 
+>>>>>> For the
+>>>>>> quick test I used an Ubuntu 4.4.0-101-generic kernel.
+>>>>
+>>>> Hi,
+>>>>
+>>>> I got same result for kvaser_usb, a single "Rx URB aborted (-71)". 
+>>>> When tested on Ubuntu with 4.4.0-93-generic.
+>>>>
+>>>>> Interesting. Do you see just a few -71 RX URB aborted messages (one 
+>>>>> per outstanding URB) rather than an endless loop? If so, then I 
+>>>>> think everything is OK on that device, as the URBs are not being 
+>>>>> resubmitted.
+>>>>>
+>>>>> In case it helps, my test case for the mcba_usb is on a Raspberry 
+>>>>> Pi 3. I don't know whether or not that could influence the USB 
+>>>>> error code we see, since you are seeing EPROTO instead of EPIPE 
+>>>>> when the device gets unplugged.
+>>>>
+>>>> However, I do get lots of (500+) "Rx URB aborted (-71)" printouts, 
+>>>> on Raspberry Pi 3, running Raspbian with kernel 4.9.35-v7. But no 
+>>>> EPIPE seen.
+>>>>
+>>>
+>>> Very interesting; this means that there are multiple possible error 
+>>> codes from a USB disconnect. If that's the case, is it possible that 
+>>> the best thing to do is what gs_usb does? In gs_usb's receive 
+>>> callback, we have:
+>>>
+>>>      switch (urb->status) {
+>>>      case 0: /* success */
+>>>          break;
+>>>      case -ENOENT:
+>>>      case -ESHUTDOWN:
+>>>          return;
+>>>      default:
+>>>          /* do not resubmit aborted urbs. eg: when device goes down */
+>>>          return;
+>>>      }
+>>>
+>>> The default case is to *not* resubmit URBs, rather than to resubmit 
+>>> is a default and try to catch all possible error codes in the 
+>>> non-default case, as the other drivers are doing.
+>>>
+>>> If we don't do something like this, then we need to understand all 
+>>> the possible error codes that could occur and catch them all.
+>>
+>> Well, gs_usb never resubmit any URBs if urb->status is non-zero. As 
+>> long as any error (urb->status != 0) is the result of a disconnect, it 
+>> should be safe to never resubmit? I doubt this is the case, but I 
+>> really don't know.
+>>
+> 
+> Yeah, it's unclear to me whether what gs_usb does is safe. I have kept 
+> my patches just using -EPIPE/-EPROTO rather than a catch-all default, 
+> just to be safe.
 
---adpd4erE0cTeXOVVuwlUqqlNGbf7MrToq
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Sounds good :)
 
-On 12/05/2017 08:15 PM, Martin Kelly wrote:
-> This patch series is to fix a common bug I found in mcba_usb that appea=
-rs to
-> also exist in these drivers. Because I don't own the hardware, I cannot=
- test the
-> changes, but I wanted to send the change so that others could do so.
->=20
-> The bug is that, when you disconnect the device, you get -EPIPE and -EP=
-ROTO
-> error codes (exactly which depends on the timing and the system) in the=
- URB read
-> callback. The driver then resubmits the URB, which immediately fails be=
-cause the
-> device is unplugged. On a slower system like a Raspberry Pi, this can c=
-ause a
-> kernel stall, while on a desktop, the disconnect code runs fast enough =
-to
-> prevent a stall and it's easy not to notice the issue.
->=20
-> Fix this by not resubmitting an URB that receives an -EPIPE/-EPROTO cod=
-e.
-
-Applied this series and the mcba patch.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---adpd4erE0cTeXOVVuwlUqqlNGbf7MrToq--
-
---mjuuQ7d7M5fVGCIWWVoOw5R2emIpx78b6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlontkIACgkQHv7KIOw4
-HPZhTAf/bWnVpuuCSqJ0yLNVgAzKndEjrRDtQ95ppUiCniBis88x22p5h5iA21gA
-5W5gfRMC9pVVXfMHNrdR+bXEqbcpcKS/5CNIeAVG9n7o2dwNYEvGtzR+zhdprPWq
-5isvyzypXHEHJ0p85MPKqt3fkXqoYADYtdk2eqkR1CcEZqo69zobYAU19/mBVRPF
-siJd6bsCADGAXAbuqmcEzArIPcjfBk5FePn6EUe+wgzuzSRdX+1LpQ3NUsR877Gv
-LpQrTDqY3EwC6QWbdG5yVclExiAteUEWCkZsEoMNy6/DrnmejPm4J25x04UPQ0lp
-lckBkteY6UW9luO0fuAe4zjMNbC99A==
-=FRMD
------END PGP SIGNATURE-----
-
---mjuuQ7d7M5fVGCIWWVoOw5R2emIpx78b6--
+>>>> Regards,
+>>>> Jimmy
+>>>>
+>>>>>>
+>>>>>> In any case I will add the patch handling EPIPE on a test system 
+>>>>>> and have a
+>>>>>> look what it might change.
+>>>>>>
+>>>>>> Regards,
+>>>>>> Stefan Mätje
