@@ -1,46 +1,55 @@
-From: =?utf-8?B?U3TDqXBoYW5lIEdyb3NqZWFu?= <s.grosjean@peak-system.com>
-Subject: RE: peak-usb: peak_usb_netif_rx() ts_high ununsed
-Date: Wed, 6 Dec 2017 15:04:55 +0000
-Message-ID: <VI1PR0302MB33255A4E1224FB34C7B70572D6320@VI1PR0302MB3325.eurprd03.prod.outlook.com>
-References: <ee2e4702-5d2d-b6fc-a90c-5fc9b0d3f362@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH] can: peak/pcie_fd: fix potential bug in restarting tx queue
+Date: Thu,  7 Dec 2017 16:13:43 +0100
+Message-ID: <20171207151343.26923-1-s.grosjean@peak-system.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ve1eur01on0058.outbound.protection.outlook.com ([104.47.1.58]:2622
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1752085AbdLFPE7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 6 Dec 2017 10:04:59 -0500
-In-Reply-To: <ee2e4702-5d2d-b6fc-a90c-5fc9b0d3f362@pengutronix.de>
-Content-Language: en-US
+Received: from smtp3-g21.free.fr ([212.27.42.3]:25492 "EHLO smtp3-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753308AbdLGPPC (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 7 Dec 2017 10:15:02 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can Mailing List <linux-can@vger.kernel.org>, Stephane Grosjean <s.grosjean@peak-system.com>
 
-SGVsbG8sDQoNClllcCwgeW91J3JlIHJpZ2h0OiBwZWFrX3VzYl9nZXRfdHNfdGltZSgpIGhhbmRs
-ZXMgMzItYml0IHdyYXBwaW5nIHdoZW4gY29tcHV0aW5nIGRlbGF5IGJldHdlZW4gdHdvIGNvbnNl
-Y3V0aXZlcyBldmVudHMsIHNvIHRoZSB0c19oaWdoIGFyZ3VtZW50IGlzIHVzZWxlc3MuDQoNCkNv
-bnNlcXVlbnRseSwgZWFjaCBjYWxsIHRvICJwZWFrX3VzYl9uZXRpZl9yeChhLCBiLCBjLCBkKTsi
-IGluIHBjYW5fdXNiX2ZkLmMgY2FuIGJlIGNoYW5nZWQgaW50byAicGVha191c2JfbmV0aWZfcngo
-YSwgYiwgYyk7Ig0KDQpTdMOpcGhhbmUuDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpG
-cm9tOiBNYXJjIEtsZWluZS1CdWRkZSBbbWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NClNlbnQ6
-IG1lcmNyZWRpIDYgZMOpY2VtYnJlIDIwMTcgMTU6MDkNClRvOiBsaW51eC1jYW4gPGxpbnV4LWNh
-bkB2Z2VyLmtlcm5lbC5vcmc+OyBTdMOpcGhhbmUgR3Jvc2plYW4gPHMuZ3Jvc2plYW5AcGVhay1z
-eXN0ZW0uY29tPg0KU3ViamVjdDogcGVhay11c2I6IHBlYWtfdXNiX25ldGlmX3J4KCkgdHNfaGln
-aCB1bnVuc2VkDQoNCkhlbGxvLA0KDQp3ZSBqdXN0IGZvdW5kIG91dCB0aGF0IHRzX2hpZ2ggaXMg
-bmV2ZXIgdXNlZDoNCg0KPiAvKg0KPiAgKiBwb3N0IHJlY2VpdmVkIHNrYiBhZnRlciBoYXZpbmcg
-c2V0IGFueSBodyB0aW1lc3RhbXAgICovIGludA0KPiBwZWFrX3VzYl9uZXRpZl9yeChzdHJ1Y3Qg
-c2tfYnVmZiAqc2tiLA0KPiAgICAgICBzdHJ1Y3QgcGVha190aW1lX3JlZiAqdGltZV9yZWYsIHUz
-MiB0c19sb3csIHUzMiB0c19oaWdoKSB7DQo+IHN0cnVjdCBza2Jfc2hhcmVkX2h3dHN0YW1wcyAq
-aHd0cyA9IHNrYl9od3RzdGFtcHMoc2tiKTsNCj4NCj4gcGVha191c2JfZ2V0X3RzX3RpbWUodGlt
-ZV9yZWYsIHRzX2xvdywgJmh3dHMtPmh3dHN0YW1wKTsNCj4NCj4gcmV0dXJuIG5ldGlmX3J4KHNr
-Yik7DQo+IH0NCg0KSXMgdGhhdCBleHBlY3RlZD8gSWYgeWVzLCBsZXQncyByZW1vdmUgdHNfaGln
-aC4NCg0KTWFyYw0KDQotLQ0KUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFy
-YyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCkluZHVzdHJpYWwgTGludXggU29sdXRpb25zICAg
-ICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQpWZXJ0cmV0dW5nIFdlc3QvRG9y
-dG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KQW10c2dlcmlj
-aHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwN
-Cg0KDQotLQ0KUEVBSy1TeXN0ZW0gVGVjaG5payBHbWJIDQpTaXR6IGRlciBHZXNlbGxzY2hhZnQg
-RGFybXN0YWR0IC0gSFJCIDkxODMNCkdlc2NoYWVmdHNmdWVocnVuZzogQWxleGFuZGVyIEdhY2gg
-LyBVd2UgV2lsaGVsbQ0KLS0NCg==
+Don't rely on can_get_echo_skb() return value to wake the network tx
+queue up: can_get_echo_skb() returns 0 if the echo array slot was not
+occupied, but also when the DLC of the released echo frame was 0.
+
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+---
+ drivers/net/can/peak_canfd/peak_canfd.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
+index 85268be0c913..55513411a82e 100644
+--- a/drivers/net/can/peak_canfd/peak_canfd.c
++++ b/drivers/net/can/peak_canfd/peak_canfd.c
+@@ -258,21 +258,18 @@ static int pucan_handle_can_rx(struct peak_canfd_priv *priv,
+ 	/* if this frame is an echo, */
+ 	if ((rx_msg_flags & PUCAN_MSG_LOOPED_BACK) &&
+ 	    !(rx_msg_flags & PUCAN_MSG_SELF_RECEIVE)) {
+-		int n;
+ 		unsigned long flags;
+ 
+ 		spin_lock_irqsave(&priv->echo_lock, flags);
+-		n = can_get_echo_skb(priv->ndev, msg->client);
++		can_get_echo_skb(priv->ndev, msg->client);
+ 		spin_unlock_irqrestore(&priv->echo_lock, flags);
+ 
+ 		/* count bytes of the echo instead of skb */
+ 		stats->tx_bytes += cf_len;
+ 		stats->tx_packets++;
+ 
+-		if (n) {
+-			/* restart tx queue only if a slot is free */
+-			netif_wake_queue(priv->ndev);
+-		}
++		/* restart tx queue (a slot is free) */
++		netif_wake_queue(priv->ndev);
+ 
+ 		return 0;
+ 	}
+-- 
+2.14.1
+
