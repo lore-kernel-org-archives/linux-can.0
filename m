@@ -1,53 +1,80 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: peak-usb: peak_usb_netif_rx() ts_high ununsed
-Date: Fri, 8 Dec 2017 10:59:32 +0100
-Message-ID: <d5e60605-6d3f-a7a1-7c8a-4a8c9766c3c9@pengutronix.de>
-References: <ee2e4702-5d2d-b6fc-a90c-5fc9b0d3f362@pengutronix.de>
- <VI1PR0302MB33255A4E1224FB34C7B70572D6320@VI1PR0302MB3325.eurprd03.prod.outlook.com>
+Subject: Re: [PATCH] slip: sl_alloc(): remove unused parameter "dev_t line"
+Date: Fri, 8 Dec 2017 12:22:55 +0100
+Message-ID: <39d83463-b20d-3739-7e84-f1f51919e9e5@pengutronix.de>
+References: <20171208111859.6090-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="2AD9s3EggV74c9gGQQIKX4edWIMiFi6NL"
+ boundary="lAUhpgCv4ewKbt1HGmKRucgfKHNOtqXL9"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:33833 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:37961 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1753791AbdLHJ7j (ORCPT
-        <rfc822;linux-can@vger.kernel.ORG>); Fri, 8 Dec 2017 04:59:39 -0500
-In-Reply-To: <VI1PR0302MB33255A4E1224FB34C7B70572D6320@VI1PR0302MB3325.eurprd03.prod.outlook.com>
+        by vger.kernel.org with ESMTP id S1753330AbdLHLXB (ORCPT
+        <rfc822;linux-can@vger.kernel.ORG>); Fri, 8 Dec 2017 06:23:01 -0500
+In-Reply-To: <20171208111859.6090-1-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>, linux-can <linux-can@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: kernel@pengutronix.de, linux-can <linux-can@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2AD9s3EggV74c9gGQQIKX4edWIMiFi6NL
-Content-Type: multipart/mixed; boundary="koGOFdrJFoDe2DCQDSTd0M2goCfVh5l4c";
+--lAUhpgCv4ewKbt1HGmKRucgfKHNOtqXL9
+Content-Type: multipart/mixed; boundary="IjKN1Xk4p4D5jMOhqsBPvnfQE8j5HhVwB";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>,
- linux-can <linux-can@vger.kernel.org>
-Message-ID: <d5e60605-6d3f-a7a1-7c8a-4a8c9766c3c9@pengutronix.de>
-Subject: Re: peak-usb: peak_usb_netif_rx() ts_high ununsed
-References: <ee2e4702-5d2d-b6fc-a90c-5fc9b0d3f362@pengutronix.de>
- <VI1PR0302MB33255A4E1224FB34C7B70572D6320@VI1PR0302MB3325.eurprd03.prod.outlook.com>
-In-Reply-To: <VI1PR0302MB33255A4E1224FB34C7B70572D6320@VI1PR0302MB3325.eurprd03.prod.outlook.com>
+To: netdev@vger.kernel.org
+Cc: kernel@pengutronix.de, linux-can <linux-can@vger.kernel.org>,
+ Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <39d83463-b20d-3739-7e84-f1f51919e9e5@pengutronix.de>
+Subject: Re: [PATCH] slip: sl_alloc(): remove unused parameter "dev_t line"
+References: <20171208111859.6090-1-mkl@pengutronix.de>
+In-Reply-To: <20171208111859.6090-1-mkl@pengutronix.de>
 
---koGOFdrJFoDe2DCQDSTd0M2goCfVh5l4c
+--IjKN1Xk4p4D5jMOhqsBPvnfQE8j5HhVwB
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 12/06/2017 04:04 PM, St=C3=A9phane Grosjean wrote:
-> Yep, you're right: peak_usb_get_ts_time() handles 32-bit wrapping
-> when computing delay between two consecutives events, so the ts_high
-> argument is useless.
+Hello Oliver,
 
-ts_high is never used in the driver now.
-
-> Consequently, each call to "peak_usb_netif_rx(a, b, c, d);" in
-> pcan_usb_fd.c can be changed into "peak_usb_netif_rx(a, b, c);"
-ACK.
+I've the corresponding slcan patch already in my queue.
 
 Marc
+
+On 12/08/2017 12:18 PM, Marc Kleine-Budde wrote:
+> The first and only parameter of sl_alloc() is unused, so remove it.
+>=20
+> Fixes: 5342b77c4123 slip: ("Clean up create and destroy")
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/net/slip/slip.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/slip/slip.c b/drivers/net/slip/slip.c
+> index cc63102ca96e..8940417c30e5 100644
+> --- a/drivers/net/slip/slip.c
+> +++ b/drivers/net/slip/slip.c
+> @@ -731,7 +731,7 @@ static void sl_sync(void)
+> =20
+> =20
+>  /* Find a free SLIP channel, and link in this `tty' line. */
+> -static struct slip *sl_alloc(dev_t line)
+> +static struct slip *sl_alloc(void)
+>  {
+>  	int i;
+>  	char name[IFNAMSIZ];
+> @@ -809,7 +809,7 @@ static int slip_open(struct tty_struct *tty)
+> =20
+>  	/* OK.  Find a free SLIP channel to use. */
+>  	err =3D -ENFILE;
+> -	sl =3D sl_alloc(tty_devnum(tty));
+> +	sl =3D sl_alloc();
+>  	if (sl =3D=3D NULL)
+>  		goto err_exit;
+> =20
+>=20
+
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -56,23 +83,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---koGOFdrJFoDe2DCQDSTd0M2goCfVh5l4c--
+--IjKN1Xk4p4D5jMOhqsBPvnfQE8j5HhVwB--
 
---2AD9s3EggV74c9gGQQIKX4edWIMiFi6NL
+--lAUhpgCv4ewKbt1HGmKRucgfKHNOtqXL9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloqYoQACgkQHv7KIOw4
-HPbYawgAq5i7JnPicDAz3vpWTVZSpYKzv74LO3kN57KMGS+gHkTi2UyI/+bDgL9p
-3wIxXfLH/xTQTzWeXn00Qq0ZY5KnBo/SaIESTnpJsjzOq9C3lrfmvy/NGIx0oD4/
-OyxbtggpTnYes5zxfdrbIgNKPEptUAfePDelYAMNjc0XdUYO9kg6bXsjyutmg+iX
-eHbLD5m9uIQ3oNS7xWeNz3Im7C10K9QUhZ3dQBQ0mosXfaNnPcTYTu26cb0VUVnr
-8nOBlL4imIB0+wAeBm9jCqMNbXBHX4DhX+kbN6FDrUe1ZbE+oer8WCEi1zr7Kg9L
-w4zIzISdAJMmgvccQ75oxglkp2qGhw==
-=bsT/
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloqdg8ACgkQHv7KIOw4
+HPbjPAf7BLAe4SAYmtBqqTK4JuKwmBDlb63uTTMSVKSsN1Gl6G/NN1ZT694RBJAq
+HLTNZuN8VfiNWPUEU/kkT1yycQ7kaFSb0F75JJX+PhIQtJ+djoQNyya+d3R19skJ
+RBm/46NE2jeWIRm54h8fmuknnjl9dR9BzgLpJy/ZsGw2Ig8xTBjqlH+TEG4AWBAF
+ss4DWtXqVXRqGVUz6n/0poUq6l4Z6YToY3gnxawIH7OyJcYsccJSHzW+0znXtkKV
+EdWalDSvBLniSpjREPfTB9h77vV65Fb4f5JpqBmnG4p3n+zdXPMvz/TFCbmGw18V
+uiZS4UoowP/3zQHHsHTkXXZMHWF10Q==
+=efPK
 -----END PGP SIGNATURE-----
 
---2AD9s3EggV74c9gGQQIKX4edWIMiFi6NL--
+--lAUhpgCv4ewKbt1HGmKRucgfKHNOtqXL9--
