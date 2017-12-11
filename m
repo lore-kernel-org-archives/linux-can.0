@@ -1,97 +1,83 @@
-From: Martin Sperl <kernel@martin.sperl.org>
-Subject: Re: Can: FD: configure transmitter delay
-Date: Sat, 9 Dec 2017 19:48:17 +0100
-Message-ID: <651BC098-5F9A-4B1A-961F-13240ACFE666@martin.sperl.org>
-References: <B4DF4571-1790-4F09-8DEC-C0812D0F34B1@martin.sperl.org> <eb6253a6-706b-db3b-9701-3eef2e408d9c@hartkopp.net>
-Mime-Version: 1.0 (1.0)
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: 8BIT
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] vxcan: improve handling of missing peer name attribute
+Date: Mon, 11 Dec 2017 14:45:52 +0100
+Message-ID: <ae0989b0-3ee7-9938-255b-59c1a9a0d8a8@pengutronix.de>
+References: <20171202174852.9618-1-socketcan@hartkopp.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="9EictA64eIFaGCgnV0eFve6TpGgWWM3Ub"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from 212-186-180-163.static.upcbusiness.at ([212.186.180.163]:43718
-        "EHLO cgate.sperl.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750998AbdLISsU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 9 Dec 2017 13:48:20 -0500
-In-Reply-To: <eb6253a6-706b-db3b-9701-3eef2e408d9c@hartkopp.net>
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:35021 "EHLO
+        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1753067AbdLKNp5 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 11 Dec 2017 08:45:57 -0500
+In-Reply-To: <20171202174852.9618-1-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: Serhey Popovych <serhe.popovych@gmail.com>
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--9EictA64eIFaGCgnV0eFve6TpGgWWM3Ub
+Content-Type: multipart/mixed; boundary="pC1Ue181dm7aqojp8e6tiwAKOGDBNN6gb";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: Serhey Popovych <serhe.popovych@gmail.com>
+Message-ID: <ae0989b0-3ee7-9938-255b-59c1a9a0d8a8@pengutronix.de>
+Subject: Re: [PATCH] vxcan: improve handling of missing peer name attribute
+References: <20171202174852.9618-1-socketcan@hartkopp.net>
+In-Reply-To: <20171202174852.9618-1-socketcan@hartkopp.net>
+
+--pC1Ue181dm7aqojp8e6tiwAKOGDBNN6gb
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 12/02/2017 06:48 PM, Oliver Hartkopp wrote:
+> Picking up the patch from Serhey Popovych (commit 191cdb3822e5df6b3c8,
+> "veth: Be more robust on network device creation when no attributes").
+>=20
+> When the peer name attribute is not provided the former implementation =
+tries
+> to register the given device name twice ... which leads to -EEXIST.
+> If only one device name is given apply an automatic generated and valid=
+ name
+> for the peer.
+>=20
+> CC: Serhey Popovych <serhe.popovych@gmail.com>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+
+Applied to can.
+
+tnx,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-As far as I can tell dsample-point is the definition of the first
-sample point of a data bit (in % of the bit length). It would not 
-define the 2nd sample point that would be defined by 
-transmitter delay.
+--pC1Ue181dm7aqojp8e6tiwAKOGDBNN6gb--
 
-Also how would one parametrize: off, fixed or auto with this
-parameter(where with auto part of the parameter would be
-Automatic, but parts would be fixed?
+--9EictA64eIFaGCgnV0eFve6TpGgWWM3Ub
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I understand we need to come to a common denominator.
+-----BEGIN PGP SIGNATURE-----
 
-So maybe it would help summarize the parameters for each
-Device to figure out what is common.
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAloujBEACgkQHv7KIOw4
+HPYfSgf/SqmYAjq50lLx/GzqZ1QQhtGxINphsBznUYhevY7QI/c9+f5Vk2ysaVlz
+IChdAieQBN6BhQVwlVK5VcBSypkYMiueSK6G6zhus1wLZvOtrYHkquU8dP1kZ1aN
+Rcd6khr87FGe0X4hkRz87FqXBxEvYr92H3g2GglPBt4sb4t4uv48efNGRoj2xAeY
+gDGRbqS1wCRZizcWLrWUf+H7wGwLY3QdyjVoDjMYcUbBlSUoVLvPTGooMIT5ViHd
+EHpvhe/FVxUNC92/I+xFi3SD8qKEfpLo9f2jbqpLK89F7w1P2mDVPb0Y9vYynpgP
+zm+vi08RCIznYkLhvh0BvDWsU2iT9A==
+=gr3d
+-----END PGP SIGNATURE-----
 
-Here the info for the mcp2517fd:
-
-bit 17-16 TDCMOD<1:0>: Transmitter Delay Compensation Mode bits; Secondary Sample Point (SSP) 10-11 = Auto; measure delay and add TDCO. 01 = Manual; Don't measure, use TDCV + TDCO from register 00 = TDC Disabled 
-bit 14-8 TDCO<6:0>: Transmitter Delay Compensation Offset bits; Secondary Sample Point (SSP) Two's complement; offset can be positive, zero, or negative. 011 1111 =  63 x TSYSCLK ... 000 0000 =  0 x TSYSCLK ... 111 1111 =  –64 x TSYSCLK 
-bit 5-0 TDCV<5:0>: Transmitter Delay Compensation Value bits; Secondary Sample Point (SSP) 11 1111 =  63 x TSYSCLK ... 00 0000 =  0 x TSYSCLK
-
-What the microchip reference implementation does is define auto
- and setting vdco while keeping vdcv=0
-
-My initial implementation did set tdc to disabled, but then the 
-communication with (for example) PCAN-usb is failing -  have 
-this information from someone who has access to this (which 
-makes it hard for me to reproduce...)
-
-Martin
-
-> On 09.12.2017, at 19:01, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> 
-> Hello Martin,
-> 
-> we had a discussion on this topic recently which ended here:
-> 
-> https://marc.info/?l=linux-can&m=150850171310828&w=2
-> 
-> There was no further discussion since then.
-> 
-> What is you opinion about using the 'data sample-point' aka dsample-point for transmitter delay configuration?
-> 
->   $ ip link set can0 type can help
->    Usage: ip link set DEVICE type can
->        [ bitrate BITRATE [ sample-point SAMPLE-POINT] ] |
->        [ tq TQ prop-seg PROP_SEG phase-seg1 PHASE-SEG1
->          phase-seg2 PHASE-SEG2 [ sjw SJW ] ]
-> 
->        [ dbitrate BITRATE [ dsample-point SAMPLE-POINT] ] | <<---
->        [ dtq TQ dprop-seg PROP_SEG dphase-seg1 PHASE-SEG1
->          dphase-seg2 PHASE-SEG2 [ dsjw SJW ] ]
-> 
-> Best regards,
-> Oliver
-> 
->> On 12/09/2017 06:01 PM, Martin Sperl wrote:
->> Hi!
->> The mcp2517fd that I am finishing the driver for has some specific
->> settings to configure the transmitter delay which is used with can fd
->> frames (essentially it configures 2nd sample point that takes the
->> delay /latency of the transceiver into account -  can be off, fixed, or
->> automatic).
->> Compatibility tests have already shown that some can fd communication
->> is quite sensitive to these settings - especially between different types
->> of devices - which may result in BUS off situations...
->> So I am wondering how to best allow for configuration of these
->> parameters - module parameters is ugly similarly debugfs or sysfs.
->> I guess there must be other fd devices with similar requirements,
->> so I wonder how it is handled there...
->> Thanks,
->>              Martin
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+--9EictA64eIFaGCgnV0eFve6TpGgWWM3Ub--
