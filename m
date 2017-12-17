@@ -1,157 +1,105 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Can: FD: configure transmitter delay
-Date: Sat, 16 Dec 2017 21:15:34 +0100
-Message-ID: <d3ea11b9-d800-e88b-f29f-b81f0e574a38@hartkopp.net>
-References: <B4DF4571-1790-4F09-8DEC-C0812D0F34B1@martin.sperl.org>
- <eb6253a6-706b-db3b-9701-3eef2e408d9c@hartkopp.net>
- <651BC098-5F9A-4B1A-961F-13240ACFE666@martin.sperl.org>
- <CABC43F0-0119-483E-BBBC-8693946036A9@martin.sperl.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:14828 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1757152AbdLPUPw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 16 Dec 2017 15:15:52 -0500
-In-Reply-To: <CABC43F0-0119-483E-BBBC-8693946036A9@martin.sperl.org>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: kernel@martin.sperl.org
-Cc: linux-can@vger.kernel.org
+From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
+Subject: Re: [PATCH 1/2] dt-binding: can: mcp2517fd: document device tree bindings
+Date: Sun, 17 Dec 2017 15:34:28 +0100
+Message-ID: <4E2DB518-A148-46CE-8267-73D292991BD2@martin.sperl.org>
+References: <20171124183509.12810-1-kernel@martin.sperl.org> <20171124183509.12810-2-kernel@martin.sperl.org> <20171126222528.i6quueqdmuj6le6g@rob-hp-laptop> <6EBDD798-8632-4F42-A138-369BCD36DF68@martin.sperl.org> <0a7e4416-332a-5c23-bda3-8c7561410314@posteo.de> <612BB6CD-5330-40B8-A854-FD065E0A3331@martin.sperl.org> <6aea8071-dc21-4ba7-2b2f-5af41b5755a5@posteo.de> <F6036A58-9E98-4A62-950E-3396C9EE636E@martin.sperl.org> <1ac487f7-17e3-c8a0-0f99-8138fe867373@posteo.de> <f83be38e-1a44-79cc-4cdb-f26d8c8a5c61@martin.sperl.org> <d79ee9eb-8b36-0086-8d76-ec6bca224fe5@posteo.de>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <d79ee9eb-8b36-0086-8d76-ec6bca224fe5-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org>
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-Id: linux-can.vger.kernel.org
 
-Hello Martin,
+Hi Patrick!
 
-I took a look at the M_CAN manual e.g. at
+So I started implementing the GPIO_LIB implementation but
+I have hit an issue where I would like to get some feedback.
 
-https://github.com/hartkopp/M_CAN-User-Manual-History/blob/master/mcan_users_manual_v3212.pdf
+So in principle the gpiolib works, but only if the device is
+not asleep and the clock is enabled, which at this very moment means
+that the can interface has to be up and running.
 
-and there's a switch in register Data Bit Timing & Prescaler Register 
-(DBTP) on PDF page 16 and some Transmitter Delay Compensation Offset in 
-the TDCR register (PDF page 27).
+So at this very moment the only option that I see would be to
+disable the sleep mode which the device enters after probing until
+the can-network interface is enabled (which enables the clock and
+start the oscillator) - with SLEEP enabled when GPIOLIB support
+is disabled.
 
-So IMO it looks like we need to introduce some additional netlink 
-attribute for the Transmitter Delay Compensation in 
-linux/include/uapi/linux/can/netlink.h , e.g.:
+This is obviously not optimal from the power perspective…
 
-struct can_trx_delay_compensation {
-	__u8 mode; /* enum off=0, on=1 , auto=2 */
-	__u8 offset; /* 0 to 127 mtq */
-	__u8 filter_window_length; /* 0 to 127 mtq */
-}
+The other option would be starting the clock and oscillator
+as soon as a set_direction* (or reques/free) function is called.
+(where I would need to start using locks to avoid race conditions
+as well as clock usage counters...).
 
-and introduce a new
+Which of the above is the preferred solution? Are there other ideas
+how I could solve this dilemma?
 
-	IFLA_CAN_TRX_DELAY_COMPENSATION,
 
-netlink command.
+Martin
 
-The idea for struct can_trx_delay_compensation is roughly picked from 
-the M_CAN register API as I personally would prefer unsigned values to 
-signed offsets that are suggested in the TDCO value from mcp2517fd.
-
-But this would be just a suggestion.
-
-Any comments/ideas on this?
-
-Best regards,
-Oliver
-
-On 12/15/2017 07:31 PM, kernel@martin.sperl.org wrote:
-> Maybe one observation that I have made that may be of interest is
-> that changing the sample-point from .75 to .80 makes the reception work
-> again.
+> On 05.12.2017, at 19:28, Patrick Menschel <menschel.p-1KBjaw7Xf1+zQB+pC5nmwQ@public.gmane.org> wrote:
 > 
-> But that only works when the sample points are changed to the same value!
-> e.g: sample-point .8 dsample-point .8
+> Hi Martin,
 > 
-> Otherwise things show errors and the message is eventually received.
+> it depends on the daily usage of those alternate functions.
+> I just took a quick glimpse on the datasheet and if you check appendix B table 9-1 , you'll see that some functions are optional because ISO suggested them, not because there is a practical reason for it.
 > 
-> So it seems that the sample-points really becomes sensitive
-> (at least on the mcp2517fd) and a different default than .75 may be
-> “recommended” when using CanFD.
+> CLKO/SOF does make little to no sense with a higher grade embedded system. CLKO is meant to share the osc with the microcontroller.
+>> The CLKO pin provides the clock to the
+>> microcontroller.
+> SOF makes sense for testing in lab configuration, not for regular operation.
 > 
-> Martin
+> TXCAN also does make little sense as you can only use it in the lab.
+>> TXCANOD: TXCAN can be configured as Push-
+>> Pull or as Open Drain out
+>> put. Open Drain outputs
+>> allows the user to connect multiple controllers
+>> together to build a CAN network without using a
+>> transceiver.
 > 
+> INTOD is initialized as Push/Pull. Configuring it open drain would be processor specific when the microcontroller has limited options for pin-ctrl, e.g. some PICs.
+>> INTOD:
+>> Interrupt pins Open Drain Mode
+>> 1
+>> = Open Drain Output
+>> 0
+>> = Push/Pull Output
 > 
+> To sum it up, I would drop:
+> - CLKO/SOF
+> - TXCAN
+> - INTOD
 > 
->> On 09.12.2017, at 19:48, Martin Sperl <kernel@martin.sperl.org> wrote:
->>
->>
->> As far as I can tell dsample-point is the definition of the first
->> sample point of a data bit (in % of the bit length). It would not
->> define the 2nd sample point that would be defined by
->> transmitter delay.
->>
->> Also how would one parametrize: off, fixed or auto with this
->> parameter(where with auto part of the parameter would be
->> Automatic, but parts would be fixed?
->>
->> I understand we need to come to a common denominator.
->>
->> So maybe it would help summarize the parameters for each
->> Device to figure out what is common.
->>
->> Here the info for the mcp2517fd:
->>
->> bit 17-16 TDCMOD<1:0>: Transmitter Delay Compensation Mode bits; Secondary Sample Point (SSP) 10-11 = Auto; measure delay and add TDCO. 01 = Manual; Don't measure, use TDCV + TDCO from register 00 = TDC Disabled
->> bit 14-8 TDCO<6:0>: Transmitter Delay Compensation Offset bits; Secondary Sample Point (SSP) Two's complement; offset can be positive, zero, or negative. 011 1111 =  63 x TSYSCLK ... 000 0000 =  0 x TSYSCLK ... 111 1111 =  –64 x TSYSCLK
->> bit 5-0 TDCV<5:0>: Transmitter Delay Compensation Value bits; Secondary Sample Point (SSP) 11 1111 =  63 x TSYSCLK ... 00 0000 =  0 x TSYSCLK
->>
->> What the microchip reference implementation does is define auto
->> and setting vdco while keeping vdcv=0
->>
->> My initial implementation did set tdc to disabled, but then the
->> communication with (for example) PCAN-usb is failing -  have
->> this information from someone who has access to this (which
->> makes it hard for me to reproduce...)
->>
->> Martin
->>
->>> On 09.12.2017, at 19:01, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->>>
->>> Hello Martin,
->>>
->>> we had a discussion on this topic recently which ended here:
->>>
->>> https://marc.info/?l=linux-can&m=150850171310828&w=2
->>>
->>> There was no further discussion since then.
->>>
->>> What is you opinion about using the 'data sample-point' aka dsample-point for transmitter delay configuration?
->>>
->>>   $ ip link set can0 type can help
->>>    Usage: ip link set DEVICE type can
->>>        [ bitrate BITRATE [ sample-point SAMPLE-POINT] ] |
->>>        [ tq TQ prop-seg PROP_SEG phase-seg1 PHASE-SEG1
->>>          phase-seg2 PHASE-SEG2 [ sjw SJW ] ]
->>>
->>>        [ dbitrate BITRATE [ dsample-point SAMPLE-POINT] ] | <<---
->>>        [ dtq TQ dprop-seg PROP_SEG dphase-seg1 PHASE-SEG1
->>>          dphase-seg2 PHASE-SEG2 [ dsjw SJW ] ]
->>>
->>> Best regards,
->>> Oliver
->>>
->>>> On 12/09/2017 06:01 PM, Martin Sperl wrote:
->>>> Hi!
->>>> The mcp2517fd that I am finishing the driver for has some specific
->>>> settings to configure the transmitter delay which is used with can fd
->>>> frames (essentially it configures 2nd sample point that takes the
->>>> delay /latency of the transceiver into account -  can be off, fixed, or
->>>> automatic).
->>>> Compatibility tests have already shown that some can fd communication
->>>> is quite sensitive to these settings - especially between different types
->>>> of devices - which may result in BUS off situations...
->>>> So I am wondering how to best allow for configuration of these
->>>> parameters - module parameters is ugly similarly debugfs or sysfs.
->>>> I guess there must be other fd devices with similar requirements,
->>>> so I wonder how it is handled there...
->>>> Thanks,
->>>>              Martin
->>>> --
->>>> To unsubscribe from this list: send the line "unsubscribe linux-can" in
->>>> the body of a message to majordomo@vger.kernel.org
->>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> I would implement higher level functions in a second step for INT0/GPIO0/XSTBY and INT1/GPIO1.
+> Such functions can be:
+> - power saving via XSTBY
+> - RX / TX LEDs via INT0 / INT1
 > 
+> Actually this second step would wait until a request for feature arises.
+> 
+> Regards,
+> Patrick
+> 
+> Am 05.12.2017 um 11:26 schrieb Martin Sperl:
+>> Hi Patrick! 
+>> 
+>> 
+>> I had a quick look starting to implement gpiolib, 
+>> 
+>> but I believe I would need to implement pin-ctrl on top to 
+>> 
+>> make the Alternate functions work propperly. 
+>> 
+>> I wonder if this effort is really worth it. 
+>> 
+>> Martin 
+>> 
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
