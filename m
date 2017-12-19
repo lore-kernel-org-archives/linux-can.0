@@ -1,31 +1,53 @@
-From: Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
-Subject: [PATCH v2 0/2] R-Car D3 (r8a77995) CAN support
-Date: Mon, 18 Dec 2017 16:51:35 +0100
-Message-ID: <1513612297-10173-1-git-send-email-ulrich.hecht+renesas@gmail.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: linux-renesas-soc@vger.kernel.org
-Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org, wsa@the-dreams.de, horms@verge.net.au, geert@linux-m68k.org, magnus.damm@gmail.com, chris.paterson2@renesas.com, ramesh.shanmugasundaram@bp.renesas.com, robh@kernel.org, Ulrich Hecht <ulrich.hecht+renesas@gmail.com>
-List-Id: linux-can.vger.kernel.org
+From: Luu An Phu <phu.luuan@nxp.com>
+Subject: [PATCH] flex_can: Fix checking can_dlc
+Date: Tue, 19 Dec 2017 15:40:33 +0700
+Message-ID: <1513672833-28402-1-git-send-email-phu.luuan@nxp.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-eopbgr30060.outbound.protection.outlook.com ([40.107.3.60]:25824
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S936960AbdLSIuc (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 19 Dec 2017 03:50:32 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, stefan-gabriel.mirea@nxp.com, "phu.luuan" <phu.luuan@nxp.com>
 
-Hi!
+From: "phu.luuan" <phu.luuan@nxp.com>
 
-These two patches are the leftovers of the "CAN for D3" series; as far
-as I can tell, everything else has been picked up.
+flexcan_start_xmit should write data to register when can_dlc > 4.
+Because can_dlc is data length and it has value from 1 to 8. But CAN data
+index has value from 0 to 7. So in case we have data in cf->data[4],
+the can_dlc has value is more than 4.
 
-This revision fixes a copy/paste error and adds Acks and Reviewed-Bys.
+Signed-off-by: Luu An Phu <phu.luuan@nxp.com>
+---
+ drivers/net/can/flexcan.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-CU
-Uli
-
-
-Ulrich Hecht (2):
-  can: rcar_can: document r8a77995 (R-Car D3) compatibility strings
-  can: rcar_canfd: document r8a77995 (R-Car D3) compatibility strings
-
- Documentation/devicetree/bindings/net/can/rcar_can.txt   | 13 +++++++------
- Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 13 +++++++------
- 2 files changed, 14 insertions(+), 12 deletions(-)
-
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 0626dcf..0e3ff13 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -5,6 +5,7 @@
+  * Copyright (c) 2009 Sascha Hauer, Pengutronix
+  * Copyright (c) 2010-2017 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
+  * Copyright (c) 2014 David Jander, Protonic Holland
++ * Copyright 2017 NXP
+  *
+  * Based on code originally by Andrey Volkov <avolkov@varma-el.com>
+  *
+@@ -526,7 +527,7 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		data = be32_to_cpup((__be32 *)&cf->data[0]);
+ 		flexcan_write(data, &priv->tx_mb->data[0]);
+ 	}
+-	if (cf->can_dlc > 3) {
++	if (cf->can_dlc > 4) {
+ 		data = be32_to_cpup((__be32 *)&cf->data[4]);
+ 		flexcan_write(data, &priv->tx_mb->data[1]);
+ 	}
 -- 
-2.7.4
+1.9.1
+
