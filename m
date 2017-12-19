@@ -1,61 +1,54 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 1/8] dt-bindings: can: rcar_can: document r8a774[35] can
- support
-Date: Tue, 19 Dec 2017 11:47:18 +0100
-Message-ID: <64f340ec-42e4-36d1-9902-7e15dbc8577c@pengutronix.de>
-References: <1510067449-17017-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1510067449-17017-2-git-send-email-fabrizio.castro@bp.renesas.com>
- <TY1PR06MB08953B33F245840430CD3DABC00F0@TY1PR06MB0895.apcprd06.prod.outlook.com>
+Subject: Re: [mkl-can-next:j1939 89/121] net/can/j1939/transport.c:1309
+ j1939_session_fresh_new() error: use kfree_skb() here instead of kfree(skb)
+Date: Tue, 19 Dec 2017 12:53:17 +0100
+Message-ID: <434e7f6d-011e-3baf-e470-6c45534c31c4@pengutronix.de>
+References: <20171216120827.ztws3ez5maqox7hx@mwanda>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="kEBiJ5ErOkCrqaedtx5QaeP4N5OgbPfh1"
+ boundary="IlvU4opktcuk8T9JE3jGc1o1Kf24VWtFF"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:54515 "EHLO
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:54141 "EHLO
         metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751152AbdLSKrl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Dec 2017 05:47:41 -0500
-In-Reply-To: <TY1PR06MB08953B33F245840430CD3DABC00F0@TY1PR06MB0895.apcprd06.prod.outlook.com>
+        by vger.kernel.org with ESMTP id S1751198AbdLSLx0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Dec 2017 06:53:26 -0500
+In-Reply-To: <20171216120827.ztws3ez5maqox7hx@mwanda>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>, kbuild@01.org, Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: kbuild-all@01.org, linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kEBiJ5ErOkCrqaedtx5QaeP4N5OgbPfh1
-Content-Type: multipart/mixed; boundary="AedCBdxFJ217NNaCT70eHj5omrmpJHQvr";
+--IlvU4opktcuk8T9JE3jGc1o1Kf24VWtFF
+Content-Type: multipart/mixed; boundary="ATF6KDDsdBWxbqLVUVBH1hFcnNjOjeFg8";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Simon Horman <horms@verge.net.au>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
- Chris Paterson <Chris.Paterson2@renesas.com>,
- Biju Das <biju.das@bp.renesas.com>, Wolfgang Grandegger <wg@grandegger.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Message-ID: <64f340ec-42e4-36d1-9902-7e15dbc8577c@pengutronix.de>
-Subject: Re: [PATCH 1/8] dt-bindings: can: rcar_can: document r8a774[35] can
- support
-References: <1510067449-17017-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1510067449-17017-2-git-send-email-fabrizio.castro@bp.renesas.com>
- <TY1PR06MB08953B33F245840430CD3DABC00F0@TY1PR06MB0895.apcprd06.prod.outlook.com>
-In-Reply-To: <TY1PR06MB08953B33F245840430CD3DABC00F0@TY1PR06MB0895.apcprd06.prod.outlook.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>, kbuild@01.org,
+ Kurt Van Dijck <kurt.van.dijck@eia.be>
+Cc: kbuild-all@01.org, linux-can@vger.kernel.org
+Message-ID: <434e7f6d-011e-3baf-e470-6c45534c31c4@pengutronix.de>
+Subject: Re: [mkl-can-next:j1939 89/121] net/can/j1939/transport.c:1309
+ j1939_session_fresh_new() error: use kfree_skb() here instead of kfree(skb)
+References: <20171216120827.ztws3ez5maqox7hx@mwanda>
+In-Reply-To: <20171216120827.ztws3ez5maqox7hx@mwanda>
 
---AedCBdxFJ217NNaCT70eHj5omrmpJHQvr
+--ATF6KDDsdBWxbqLVUVBH1hFcnNjOjeFg8
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 12/19/2017 11:17 AM, Fabrizio Castro wrote:
-> Hello Marc,
->=20
-> does this patch look ok to you?
+On 12/16/2017 01:08 PM, Dan Carpenter wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-n=
+ext.git j1939
+> head:   31a3a5b6afa815d144da2d01940e493fb7b625f2
+> commit: dbdee3fe09a691eb4ddfedd349be5ffe5e866fb9 [89/121] j1939: transp=
+ort: use common prefix j1939_session{,list}_ for all session{,list} relat=
+ed functions
 
-Yes, Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixed.
 
+Tnx,
 Marc
 
 --=20
@@ -65,23 +58,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---AedCBdxFJ217NNaCT70eHj5omrmpJHQvr--
+--ATF6KDDsdBWxbqLVUVBH1hFcnNjOjeFg8--
 
---kEBiJ5ErOkCrqaedtx5QaeP4N5OgbPfh1
+--IlvU4opktcuk8T9JE3jGc1o1Kf24VWtFF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlo47jYACgkQHv7KIOw4
-HPZaawgApNNKe+XNFS3M3yvf86OKqqEQrSO9Q9XtE7xczMmWaJXQWX4F8vcfCyaL
-ZEcYAdIaFkbu7TqAel9kIK+F/d0kysuwWx/t5dBkZX14SZaHibPcmuhC9w5ey2UQ
-jGG5MC8KjAhnkXay3Tk9j8nU16oYnAVizjscHYglEaWyNY3ZhEh3VGU8at1Ud+P+
-ED6mRX26nx2ddctO1yYAlb6kJwN6I9pIHvhPYirTVyU6YefWp9s3KanBjfDVcNIB
-OgHQpwm1yVTRqB2kFf6ujH9xIKfhabu/HNxwJuNrBqJGem4ZGfCcn1H0NMEw6x4v
-CFSzEjzl6K1PhgGc5lcZbVM4o8Y7fg==
-=CPyw
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlo4/a0ACgkQHv7KIOw4
+HPboZwgAw4Wt2oULcjf5Y0Xo9DwpEQHDoXcyR1Hi9pzeq82EEpfTSEWHANuOcfJv
+AtE3TIKMWTpcU8NvFQ5VM4d3NhmFNTC7KTOMvtV1yV+IBw/Ekkn3ytP04TEblYjh
+9pDyS7L2g8qzH1RpIq7CA/mOetImTb0RqK7VVBPnb14UmiTR4mIXKBylXUhh/GSv
+PDQcFLsxY0xZEOSZvoO/GgpKh8ZCYFV54plZaZjbEUyJbkYK2vCP/KTsmY6H5qcD
+Di/r982kanB4sI4DPaCKGdPhMPDrLHRPC9yKn7KWsOdGLn09il1x1gMaHjb1EnsF
+8MLdOsvImO1BUOtMNNqZpYSxzY8OJw==
+=bqO3
 -----END PGP SIGNATURE-----
 
---kEBiJ5ErOkCrqaedtx5QaeP4N5OgbPfh1--
+--IlvU4opktcuk8T9JE3jGc1o1Kf24VWtFF--
