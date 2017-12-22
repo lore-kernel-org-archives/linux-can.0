@@ -1,142 +1,127 @@
-From: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH v6 1/6] can: dev: Add support for limiting configured bitrate
-Date: Fri, 22 Dec 2017 19:01:23 +0530
-Message-ID: <1513949488-13026-2-git-send-email-faiz_abbas@ti.com>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: [PATCH v6 3/6] can: m_can: Add PM Runtime
+Date: Fri, 22 Dec 2017 19:01:25 +0530
+Message-ID: <1513949488-13026-4-git-send-email-faiz_abbas@ti.com>
 References: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1513949488-13026-1-git-send-email-faiz_abbas-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, faiz_abbas-l0cyMroinI0@public.gmane.org, nsekhar-l0cyMroinI0@public.gmane.org, fcooper-l0cyMroinI0@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Wenyou.Yang-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, faiz_abbas@ti.com, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com, sergei.shtylyov@cogentembedded.com
 List-Id: linux-can.vger.kernel.org
 
-From: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
+From: Franklin S Cooper Jr <fcooper@ti.com>
 
-Various CAN or CAN-FD IP may be able to run at a faster rate than
-what the transceiver the CAN node is connected to. This can lead to
-unexpected errors. However, CAN transceivers typically have fixed
-limitations and provide no means to discover these limitations at
-runtime. Therefore, add support for a can-transceiver node that
-can be reused by other CAN peripheral drivers to determine for both
-CAN and CAN-FD what the max bitrate that can be used. If the user
-tries to configure CAN to pass these maximum bitrates it will throw
-an error.
+Add support for PM Runtime which is the new way to handle managing clocks.
+However, to avoid breaking SoCs not using PM_RUNTIME leave the old clk
+management approach in place.
 
-Signed-off-by: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
-[nsekhar-l0cyMroinI0@public.gmane.org: fix build error with !CONFIG_OF]
-Signed-off-by: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
-Signed-off-by: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>
+PM_RUNTIME is required by OMAP based devices to handle clock management.
+Therefore, this allows future Texas Instruments SoCs that have the MCAN IP
+to work with this driver.
+
+Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+[nsekhar@ti.com: handle pm_runtime_get_sync() failure, fix some bugs]
+Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 ---
-v6 changes:
-fix build error with !CONFIG_OF
+ drivers/net/can/m_can/m_can.c | 38 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 34 insertions(+), 4 deletions(-)
 
- drivers/net/can/dev.c   | 39 +++++++++++++++++++++++++++++++++++++++
- include/linux/can/dev.h |  8 ++++++++
- 2 files changed, 47 insertions(+)
-
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 365a8cc..007cfc0 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -27,6 +27,7 @@
- #include <linux/can/skb.h>
- #include <linux/can/netlink.h>
- #include <linux/can/led.h>
-+#include <linux/of.h>
- #include <net/rtnetlink.h>
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index f72116e..53e764f 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -23,6 +23,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/iopoll.h>
+ #include <linux/can/dev.h>
  
- #define MOD_DESC "CAN device driver interface"
-@@ -814,6 +815,30 @@ int open_candev(struct net_device *dev)
+@@ -625,19 +626,33 @@ static int m_can_clk_start(struct m_can_priv *priv)
+ {
+ 	int err;
+ 
++	err = pm_runtime_get_sync(priv->device);
++	if (err) {
++		pm_runtime_put_noidle(priv->device);
++		return err;
++	}
++
+ 	err = clk_prepare_enable(priv->hclk);
+ 	if (err)
+-		return err;
++		goto pm_runtime_put;
+ 
+ 	err = clk_prepare_enable(priv->cclk);
+ 	if (err)
+-		clk_disable_unprepare(priv->hclk);
++		goto disable_hclk;
+ 
+ 	return err;
++
++disable_hclk:
++	clk_disable_unprepare(priv->hclk);
++pm_runtime_put:
++	pm_runtime_put_sync(priv->device);
++	return err;
  }
- EXPORT_SYMBOL_GPL(open_candev);
  
-+#ifdef CONFIG_OF
-+/*
-+ * Common function that can be used to understand the limitation of
-+ * a transceiver when it provides no means to determine these limitations
-+ * at runtime.
-+ */
-+void of_can_transceiver(struct net_device *dev)
-+{
-+	struct device_node *dn;
-+	struct can_priv *priv = netdev_priv(dev);
-+	struct device_node *np = dev->dev.parent->of_node;
-+	int ret;
+ static void m_can_clk_stop(struct m_can_priv *priv)
+ {
++	pm_runtime_put_sync(priv->device);
 +
-+	dn = of_get_child_by_name(np, "can-transceiver");
-+	if (!dn)
-+		return;
+ 	clk_disable_unprepare(priv->cclk);
+ 	clk_disable_unprepare(priv->hclk);
+ }
+@@ -1577,13 +1592,20 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 	/* Enable clocks. Necessary to read Core Release in order to determine
+ 	 * M_CAN version
+ 	 */
++	pm_runtime_enable(&pdev->dev);
++	ret = pm_runtime_get_sync(&pdev->dev);
++	if (ret)  {
++		pm_runtime_put_noidle(&pdev->dev);
++		goto pm_runtime_fail;
++	}
 +
-+	ret = of_property_read_u32(dn, "max-bitrate", &priv->max_bitrate);
-+	if ((ret && ret != -EINVAL) || (!ret && !priv->max_bitrate))
-+		netdev_warn(dev, "Invalid value for transceiver max bitrate. Ignoring bitrate limit.\n");
-+}
-+EXPORT_SYMBOL_GPL(of_can_transceiver);
-+#endif
-+
- /*
-  * Common close function for cleanup before the device gets closed.
-  *
-@@ -913,6 +938,13 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 					priv->bitrate_const_cnt);
- 		if (err)
- 			return err;
-+
-+		if (priv->max_bitrate && bt.bitrate > priv->max_bitrate) {
-+			netdev_err(dev, "arbitration bitrate surpasses transceiver capabilities of %d bps\n",
-+				   priv->max_bitrate);
-+			return -EINVAL;
-+		}
-+
- 		memcpy(&priv->bittiming, &bt, sizeof(bt));
+ 	ret = clk_prepare_enable(hclk);
+ 	if (ret)
+-		goto disable_hclk_ret;
++		goto pm_runtime_put;
  
- 		if (priv->do_set_bittiming) {
-@@ -997,6 +1029,13 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 					priv->data_bitrate_const_cnt);
- 		if (err)
- 			return err;
-+
-+		if (priv->max_bitrate && dbt.bitrate > priv->max_bitrate) {
-+			netdev_err(dev, "canfd data bitrate surpasses transceiver capabilities of %d bps\n",
-+				   priv->max_bitrate);
-+			return -EINVAL;
-+		}
-+
- 		memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
+ 	ret = clk_prepare_enable(cclk);
+ 	if (ret)
+-		goto disable_cclk_ret;
++		goto disable_hclk_ret;
  
- 		if (priv->do_set_data_bittiming) {
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 61f1cf2..fbb7810 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -48,6 +48,8 @@ struct can_priv {
- 	unsigned int data_bitrate_const_cnt;
- 	struct can_clock clock;
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "m_can");
+ 	addr = devm_ioremap_resource(&pdev->dev, res);
+@@ -1666,6 +1688,11 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 	clk_disable_unprepare(cclk);
+ disable_hclk_ret:
+ 	clk_disable_unprepare(hclk);
++pm_runtime_put:
++	pm_runtime_put_sync(&pdev->dev);
++pm_runtime_fail:
++	if (ret)
++		pm_runtime_disable(&pdev->dev);
+ failed_ret:
+ 	return ret;
+ }
+@@ -1723,6 +1750,9 @@ static int m_can_plat_remove(struct platform_device *pdev)
+ 	struct net_device *dev = platform_get_drvdata(pdev);
  
-+	unsigned int max_bitrate;
+ 	unregister_m_can_dev(dev);
 +
- 	enum can_state state;
- 
- 	/* CAN controller features - see include/uapi/linux/can/netlink.h */
-@@ -166,6 +168,12 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
- void can_free_echo_skb(struct net_device *dev, unsigned int idx);
- 
-+#ifdef CONFIG_OF
-+void of_can_transceiver(struct net_device *dev);
-+#else
-+static inline void of_can_transceiver(struct net_device *dev) { }
-+#endif
++	pm_runtime_disable(&pdev->dev);
 +
- struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf);
- struct sk_buff *alloc_canfd_skb(struct net_device *dev,
- 				struct canfd_frame **cfd);
+ 	platform_set_drvdata(pdev, NULL);
+ 
+ 	free_m_can_dev(dev);
 -- 
 2.7.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
