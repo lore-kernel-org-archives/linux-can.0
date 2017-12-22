@@ -1,60 +1,122 @@
-From: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH v6 5/6] dt-bindings: can: m_can: Document new can transceiver binding
-Date: Fri, 22 Dec 2017 19:01:27 +0530
-Message-ID: <1513949488-13026-6-git-send-email-faiz_abbas@ti.com>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: [PATCH v6 4/6] can: m_can: Support higher speed CAN-FD bitrates
+Date: Fri, 22 Dec 2017 19:01:26 +0530
+Message-ID: <1513949488-13026-5-git-send-email-faiz_abbas@ti.com>
 References: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1513949488-13026-1-git-send-email-faiz_abbas-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
-Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, faiz_abbas-l0cyMroinI0@public.gmane.org, nsekhar-l0cyMroinI0@public.gmane.org, fcooper-l0cyMroinI0@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Wenyou.Yang-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lelnx194.ext.ti.com ([198.47.27.80]:49172 "EHLO
+        lelnx194.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755982AbdLVNbU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 22 Dec 2017 08:31:20 -0500
+In-Reply-To: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, faiz_abbas@ti.com, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com, sergei.shtylyov@cogentembedded.com
 
-From: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
+From: Franklin S Cooper Jr <fcooper@ti.com>
 
-Add information regarding can-transceiver binding. This is especially
-important for MCAN since the IP allows CAN FD mode to run significantly
-faster than what most transceivers are capable of.
+During test transmitting using CAN-FD at high bitrates (> 2 Mbps)
+would fail. Scoping the signals I noticed that only a single bit
+was being transmitted and with a bit more investigation realized the actual
+MCAN IP would go back to initialization mode automatically.
 
-Signed-off-by: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
-Signed-off-by: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Signed-off-by: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>
+It appears this issue is due to the MCAN needing to use the Transmitter
+Delay Compensation Mode with the correct value for the transmitter delay
+compensation offset (tdco). What impacts the tdco value isn't 100% clear
+but to calculate it you use an equation defined in the MCAN User's Guide.
+
+The user guide mentions that this register needs to be set based on clock
+values, secondary sample point and the data bitrate. One of the key
+variables that can't automatically be determined is the secondary
+sample point (ssp). This ssp is similar to the sp but is specific to this
+transmitter delay compensation mode. The guidelines for configuring
+ssp is rather vague but via some CAN test it appears for DRA76x that putting
+the value same as data sampling point works.
+
+The CAN-CIA's "Bit Time Requirements for CAN FD" paper presented at
+the International CAN Conference 2013 indicates that this TDC mode is
+only needed for data bit rates above 2.5 Mbps. Therefore, only enable
+this mode when the data bit rate is above 2.5 Mbps.
+
+Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 ---
- Documentation/devicetree/bindings/net/can/m_can.txt | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/can/m_can/m_can.c | 41 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 40 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
-index 63e9042..ed61438 100644
---- a/Documentation/devicetree/bindings/net/can/m_can.txt
-+++ b/Documentation/devicetree/bindings/net/can/m_can.txt
-@@ -43,6 +43,11 @@ Required properties:
- 			  Please refer to 2.4.1 Message RAM Configuration in
- 			  Bosch M_CAN user manual for details.
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 53e764f..371ffc1 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -127,6 +127,12 @@ enum m_can_mram_cfg {
+ #define DBTP_DSJW_SHIFT		0
+ #define DBTP_DSJW_MASK		(0xf << DBTP_DSJW_SHIFT)
  
-+Optional Subnode:
-+- can-transceiver	: Can-transceiver subnode describing maximum speed
-+			  that can be used for CAN/CAN-FD modes. See
-+			  Documentation/devicetree/bindings/net/can/can-transceiver.txt
-+			  for details.
- Example:
- SoC dtsi:
- m_can1: can@20e8000 {
-@@ -63,4 +68,8 @@ Board dts:
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_m_can1>;
- 	status = "enabled";
++/* Transmitter Delay Compensation Register (TDCR) */
++#define TDCR_TDCO_SHIFT		8
++#define TDCR_TDCO_MASK		(0x7F << TDCR_TDCO_SHIFT)
++#define TDCR_TDCF_SHIFT		0
++#define TDCR_TDCF_MASK		(0x7F << TDCR_TDCF_SHIFT)
 +
-+	can-transceiver {
-+		max-bitrate = <5000000>;
-+	};
- };
+ /* Test Register (TEST) */
+ #define TEST_LBCK		BIT(4)
+ 
+@@ -991,7 +997,8 @@ static int m_can_set_bittiming(struct net_device *dev)
+ 	const struct can_bittiming *bt = &priv->can.bittiming;
+ 	const struct can_bittiming *dbt = &priv->can.data_bittiming;
+ 	u16 brp, sjw, tseg1, tseg2;
+-	u32 reg_btp;
++	u32 reg_btp, tdco, ssp;
++	bool enable_tdc = false;
+ 
+ 	brp = bt->brp - 1;
+ 	sjw = bt->sjw - 1;
+@@ -1006,9 +1013,41 @@ static int m_can_set_bittiming(struct net_device *dev)
+ 		sjw = dbt->sjw - 1;
+ 		tseg1 = dbt->prop_seg + dbt->phase_seg1 - 1;
+ 		tseg2 = dbt->phase_seg2 - 1;
++
++		/* TDC is only needed for bitrates beyond 2.5 MBit/s.
++		 * This is mentioned in the "Bit Time Requirements for CAN FD"
++		 * paper presented at the International CAN Conference 2013
++		 */
++		if (dbt->bitrate > 2500000) {
++			/* Use the same value of secondary sampling point
++			 * as the data sampling point
++			 */
++			ssp = dbt->sample_point;
++
++			/* Equation based on Bosch's M_CAN User Manual's
++			 * Transmitter Delay Compensation Section
++			 */
++			tdco = (priv->can.clock.freq / 1000) *
++			       ssp / dbt->bitrate;
++
++			/* Max valid TDCO value is 127 */
++			if (tdco > 127) {
++				netdev_warn(dev, "TDCO value of %u is beyond maximum limit. Disabling Transmitter Delay Compensation mode\n",
++					    tdco);
++			} else {
++				enable_tdc = true;
++				m_can_write(priv, M_CAN_TDCR,
++					    tdco << TDCR_TDCO_SHIFT);
++			}
++		}
++
+ 		reg_btp = (brp << DBTP_DBRP_SHIFT) | (sjw << DBTP_DSJW_SHIFT) |
+ 			(tseg1 << DBTP_DTSEG1_SHIFT) |
+ 			(tseg2 << DBTP_DTSEG2_SHIFT);
++
++		if (enable_tdc)
++			reg_btp |= DBTP_TDC;
++
+ 		m_can_write(priv, M_CAN_DBTP, reg_btp);
+ 	}
+ 
 -- 
 2.7.4
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
