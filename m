@@ -1,73 +1,67 @@
-From: Yisheng Xie <xieyisheng1@huawei.com>
-Subject: Re: [PATCH v3 27/27] devres: kill devm_ioremap_nocache
-Date: Mon, 25 Dec 2017 09:43:40 +0800
-Message-ID: <4d0991ec-9cd4-0c33-5560-ae9c2c762765@huawei.com>
-References: <1514026979-33838-1-git-send-email-xieyisheng1@huawei.com>
- <20171223134532.GA10103@kroah.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] flex_can: Fix checking can_dlc
+Date: Mon, 25 Dec 2017 12:38:11 +0100
+Message-ID: <486344fc-f4cf-6311-ab83-ecf9958d16e9@hartkopp.net>
+References: <1513672833-28402-1-git-send-email-phu.luuan@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <20171223134532.GA10103@kroah.com>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-mips@linux-mips.org, ulf.hansson@linaro.org, jakub.kicinski@netronome.com, lgirdwood@gmail.com, airlied@linux.ie, linux-pci@vger.kernel.org, linus.walleij@linaro.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, platform-driver-x86@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, daniel.vetter@intel.com, tglx@linutronix.de, linux-watchdog@vger.kernel.org, linux-rtc@vger.kernel.org, boris.brezillon@free-electrons.com, andriy.shevchenko@linux.intel.com, vinod.koul@intel.com, richard@nod.at, alexandre.belloni@free-electrons.com, marek.vasut@gmail.com, industrypack-devel@lists.sourceforge.net, jslaby@suse.com, dvhart@infradead.org, linux@roeck-us.net, linux-media@vger.kernel.org, devel@driverdev.osuosl.org, jason@lakedaemon.net, arnd@arndb.de, b.zolnierkie@samsung.com, marc.zyngier@arm.com, linux-mmc@vger.kernel.org, jani.niku
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1513672833-28402-1-git-send-email-phu.luuan@nxp.com>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Luu An Phu <phu.luuan@nxp.com>, wg@grandegger.com, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, stefan-gabriel.mirea@nxp.com
 List-Id: linux-can.vger.kernel.org
 
+This patch looks wrong to me.
 
-
-On 2017/12/23 21:45, Greg KH wrote:
-> On Sat, Dec 23, 2017 at 07:02:59PM +0800, Yisheng Xie wrote:
->> --- a/lib/devres.c
->> +++ b/lib/devres.c
->> @@ -44,35 +44,6 @@ void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
->>  EXPORT_SYMBOL(devm_ioremap);
->>  
->>  /**
->> - * devm_ioremap_nocache - Managed ioremap_nocache()
->> - * @dev: Generic device to remap IO address for
->> - * @offset: Resource address to map
->> - * @size: Size of map
->> - *
->> - * Managed ioremap_nocache().  Map is automatically unmapped on driver
->> - * detach.
->> - */
->> -void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
->> -				   resource_size_t size)
->> -{
->> -	void __iomem **ptr, *addr;
->> -
->> -	ptr = devres_alloc(devm_ioremap_release, sizeof(*ptr), GFP_KERNEL);
->> -	if (!ptr)
->> -		return NULL;
->> -
->> -	addr = ioremap_nocache(offset, size);
+On 12/19/2017 09:40 AM, Luu An Phu wrote:
+> From: "phu.luuan" <phu.luuan@nxp.com>
 > 
-> Wait, devm_ioremap() calls ioremap(), not ioremap_nocache(), are you
-> _SURE_ that these are all identical?  For all arches?  If so, then
-> ioremap_nocache() can also be removed, right?
+> flexcan_start_xmit should write data to register when can_dlc > 4.
+> Because can_dlc is data length and it has value from 1 to 8.
 
-Yeah, As Christophe pointed out, that 4 archs do not have the same function.
-But I do not why they do not want do the same thing. Driver may no know about
-this? right?
+No. can_dlc can contain values from 0 to 8. Even 0 is a valid DLC.
 
+> But CAN data
+> index has value from 0 to 7. So in case we have data in cf->data[4],
+> the can_dlc has value is more than 4.
 > 
-> In my quick glance, I don't think you can do this series at all :(
+> Signed-off-by: Luu An Phu <phu.luuan@nxp.com>
+> ---
+>   drivers/net/can/flexcan.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index 0626dcf..0e3ff13 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -5,6 +5,7 @@
+>    * Copyright (c) 2009 Sascha Hauer, Pengutronix
+>    * Copyright (c) 2010-2017 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
+>    * Copyright (c) 2014 David Jander, Protonic Holland
+> + * Copyright 2017 NXP
+>    *
+>    * Based on code originally by Andrey Volkov <avolkov@varma-el.com>
+>    *
+> @@ -526,7 +527,7 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+>   		data = be32_to_cpup((__be32 *)&cf->data[0]);
+>   		flexcan_write(data, &priv->tx_mb->data[0]);
+>   	}
+> -	if (cf->can_dlc > 3) {
 
-Yes, maybe should take Christophe suggestion and use a bool or enum to distinguish them?
+This is correct as data[0 .. 3] are filled from the code above. And if 
+can_dlc is greater than 3 (== 4 .. 8) the following 4 bytes are copied 
+into the registers.
 
-Thanks
-Yisheng
+So everything is correct with the current code.
+
+> +	if (cf->can_dlc > 4) {
+>   		data = be32_to_cpup((__be32 *)&cf->data[4]);
+>   		flexcan_write(data, &priv->tx_mb->data[1]);
+>   	}
 > 
-> greg k-h
-> 
-> .
-> 
+
+Regards,
+Oliver
