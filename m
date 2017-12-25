@@ -1,67 +1,47 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [PATCH] flex_can: Fix checking can_dlc
-Date: Mon, 25 Dec 2017 12:38:11 +0100
-Message-ID: <486344fc-f4cf-6311-ab83-ecf9958d16e9@hartkopp.net>
+Date: Mon, 25 Dec 2017 12:58:56 +0100
+Message-ID: <24ad57a6-bee8-1dad-8e74-7f68918aa81e@hartkopp.net>
 References: <1513672833-28402-1-git-send-email-phu.luuan@nxp.com>
+ <486344fc-f4cf-6311-ab83-ecf9958d16e9@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1513672833-28402-1-git-send-email-phu.luuan@nxp.com>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.179]:31245 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750807AbdLYL67 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Dec 2017 06:58:59 -0500
+In-Reply-To: <486344fc-f4cf-6311-ab83-ecf9958d16e9@hartkopp.net>
 Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: Luu An Phu <phu.luuan@nxp.com>, wg@grandegger.com, mkl@pengutronix.de
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, stefan-gabriel.mirea@nxp.com
-List-Id: linux-can.vger.kernel.org
 
-This patch looks wrong to me.
+Answering myself after reading my own comment once more:
 
-On 12/19/2017 09:40 AM, Luu An Phu wrote:
-> From: "phu.luuan" <phu.luuan@nxp.com>
-> 
-> flexcan_start_xmit should write data to register when can_dlc > 4.
-> Because can_dlc is data length and it has value from 1 to 8.
+In fact the code fix seems to be correct but the commit comment was 
+completely wrong which lead to my answer ...
 
-No. can_dlc can contain values from 0 to 8. Even 0 is a valid DLC.
+can_dlc can hold values from 0 .. 8.
 
-> But CAN data
-> index has value from 0 to 7. So in case we have data in cf->data[4],
-> the can_dlc has value is more than 4.
-> 
-> Signed-off-by: Luu An Phu <phu.luuan@nxp.com>
-> ---
->   drivers/net/can/flexcan.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index 0626dcf..0e3ff13 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -5,6 +5,7 @@
->    * Copyright (c) 2009 Sascha Hauer, Pengutronix
->    * Copyright (c) 2010-2017 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
->    * Copyright (c) 2014 David Jander, Protonic Holland
-> + * Copyright 2017 NXP
->    *
->    * Based on code originally by Andrey Volkov <avolkov@varma-el.com>
->    *
-> @@ -526,7 +527,7 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
->   		data = be32_to_cpup((__be32 *)&cf->data[0]);
->   		flexcan_write(data, &priv->tx_mb->data[0]);
->   	}
-> -	if (cf->can_dlc > 3) {
+The first 4 bytes are placed in data[0..3]. When we have more(!) than 4 
+bytes in can_dlc, the bytes 5..8 are placed in data[4..7].
 
-This is correct as data[0 .. 3] are filled from the code above. And if 
-can_dlc is greater than 3 (== 4 .. 8) the following 4 bytes are copied 
-into the registers.
+The good thing was, that the current check was more conservative than 
+your suggestion so that we did not detect any data loss.
 
-So everything is correct with the current code.
+Please send a V2 patch with corrected commit message.
 
-> +	if (cf->can_dlc > 4) {
->   		data = be32_to_cpup((__be32 *)&cf->data[4]);
->   		flexcan_write(data, &priv->tx_mb->data[1]);
->   	}
-> 
-
-Regards,
+Thanks,
 Oliver
+
+ps.
+
+>> From: "phu.luuan" <phu.luuan@nxp.com>
+>> + * Copyright 2017 NXP
+
+A one-liner contribution like this tiny fix usually does not lead to an 
+attribution in the copyrights. Your contribution is already perfectly 
+recorded by the Signed-off-by tag.
