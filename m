@@ -1,47 +1,32 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] flex_can: Fix checking can_dlc
-Date: Mon, 25 Dec 2017 12:58:56 +0100
-Message-ID: <24ad57a6-bee8-1dad-8e74-7f68918aa81e@hartkopp.net>
-References: <1513672833-28402-1-git-send-email-phu.luuan@nxp.com>
- <486344fc-f4cf-6311-ab83-ecf9958d16e9@hartkopp.net>
+From: "Sra. Angel Rania" <sra.angelrania83@gmail.com>
+Subject: Re: You will definetely be interested...
+Date: Wed, 27 Dec 2017 10:16:53 +0000
+Message-ID: <CAKx+QTsL6tbExobjfKn2Kvd+VURLikaeJ+JuuxF8mixxBiriEQ__45051.6214398251$1514369838$gmane$org@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.179]:31245 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750807AbdLYL67 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Dec 2017 06:58:59 -0500
-In-Reply-To: <486344fc-f4cf-6311-ab83-ecf9958d16e9@hartkopp.net>
-Content-Language: en-US
+Received: from mail-qt0-f195.google.com ([209.85.216.195]:42882 "EHLO
+        mail-qt0-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751895AbdL0KQ6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Dec 2017 05:16:58 -0500
+Received: by mail-qt0-f195.google.com with SMTP id g9so47404981qth.9
+        for <linux-can@vger.kernel.org>; Wed, 27 Dec 2017 02:16:57 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Luu An Phu <phu.luuan@nxp.com>, wg@grandegger.com, mkl@pengutronix.de
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, stefan-gabriel.mirea@nxp.com
 
-Answering myself after reading my own comment once more:
+Hi Dear,
 
-In fact the code fix seems to be correct but the commit comment was 
-completely wrong which lead to my answer ...
-
-can_dlc can hold values from 0 .. 8.
-
-The first 4 bytes are placed in data[0..3]. When we have more(!) than 4 
-bytes in can_dlc, the bytes 5..8 are placed in data[4..7].
-
-The good thing was, that the current check was more conservative than 
-your suggestion so that we did not detect any data loss.
-
-Please send a V2 patch with corrected commit message.
+Reading your profile has given me courage in search of a reasponsable
+and trust worthy Fellow. The past has treated me so awfully but now I
+am ready to move on despite of my health condition. I will like to
+have a sincere and important discussion with you that will be in your
+favor likewise to you and your environment especially to your close
+family. Endeavor to reply me and I have attached my picture in case
+you long to know who emailed you. I will be waiting to hear from you
+as soon as possble.
+Thanks for paying attention to my mail and will appreciate so much if
+I receive a reply from you for understable details.
 
 Thanks,
-Oliver
 
-ps.
-
->> From: "phu.luuan" <phu.luuan@nxp.com>
->> + * Copyright 2017 NXP
-
-A one-liner contribution like this tiny fix usually does not lead to an 
-attribution in the copyrights. Your contribution is already perfectly 
-recorded by the Signed-off-by tag.
+Mrs. Rania Hassan
