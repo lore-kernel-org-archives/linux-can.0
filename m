@@ -1,32 +1,63 @@
-From: "Sra. Angel Rania" <sra.angelrania83@gmail.com>
-Subject: Re: You will definetely be interested...
-Date: Wed, 27 Dec 2017 10:16:53 +0000
-Message-ID: <CAKx+QTsL6tbExobjfKn2Kvd+VURLikaeJ+JuuxF8mixxBiriEQ__45051.6214398251$1514369838$gmane$org@mail.gmail.com>
+From: "Yang, Wenyou" <Wenyou.Yang@Microchip.com>
+Subject: Re: [PATCH v6 0/6] Add M_CAN Support for Dra76 platform
+Date: Fri, 29 Dec 2017 11:38:10 +0800
+Message-ID: <667c651b-cb9b-4e71-437f-2cd3be39f491@Microchip.com>
+References: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-qt0-f195.google.com ([209.85.216.195]:42882 "EHLO
-        mail-qt0-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751895AbdL0KQ6 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Dec 2017 05:16:58 -0500
-Received: by mail-qt0-f195.google.com with SMTP id g9so47404981qth.9
-        for <linux-can@vger.kernel.org>; Wed, 27 Dec 2017 02:16:57 -0800 (PST)
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:15189 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753732AbdL2DiR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 28 Dec 2017 22:38:17 -0500
+In-Reply-To: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
+To: Faiz Abbas <faiz_abbas@ti.com>, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, sergei.shtylyov@cogentembedded.com
 
-Hi Dear,
 
-Reading your profile has given me courage in search of a reasponsable
-and trust worthy Fellow. The past has treated me so awfully but now I
-am ready to move on despite of my health condition. I will like to
-have a sincere and important discussion with you that will be in your
-favor likewise to you and your environment especially to your close
-family. Endeavor to reply me and I have attached my picture in case
-you long to know who emailed you. I will be waiting to hear from you
-as soon as possble.
-Thanks for paying attention to my mail and will appreciate so much if
-I receive a reply from you for understable details.
 
-Thanks,
+On 2017/12/22 21:31, Faiz Abbas wrote:
+> This patch series adds support for M_CAN on the TI Dra76
+> platform. Device tree patches will be sent separately.
+> A bunch of patches were sent before by
+> Franklin Cooper <fcooper@ti.com>. I have clubbed the
+> series together and rebased to the latest kernel.
+Tested this series on SAMA5D2 Xplained board.
 
-Mrs. Rania Hassan
+Tested-by: Wenyou Yang <wenyou.yang@microchip.com>
+
+>
+> v6 changes:
+> Dropped the patches to make hclk optional. Drivers
+> which enable hclk as the interface clock using
+> pm_runtime calls must still provide a hclk in the
+> clocks property.
+>
+> Support higher speed CAN-FD bitrate:
+> The community decided that data sampling point be used
+> for the secondary sampling point here
+> https://patchwork.kernel.org/patch/9909845/
+>
+> Franklin S Cooper Jr (6):
+>    can: dev: Add support for limiting configured bitrate
+>    can: m_can: Add call to of_can_transceiver
+>    can: m_can: Add PM Runtime
+>    can: m_can: Support higher speed CAN-FD bitrates
+>    dt-bindings: can: m_can: Document new can transceiver binding
+>    dt-bindings: can: can-transceiver: Document new binding
+>
+>   .../bindings/net/can/can-transceiver.txt           | 24 +++++++
+>   .../devicetree/bindings/net/can/m_can.txt          |  9 +++
+>   drivers/net/can/dev.c                              | 39 +++++++++++
+>   drivers/net/can/m_can/m_can.c                      | 81 ++++++++++++++++++++--
+>   include/linux/can/dev.h                            |  8 +++
+>   5 files changed, 156 insertions(+), 5 deletions(-)
+>   create mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.txt
+>
+
+Best Regards,
+Wenyou Yang
