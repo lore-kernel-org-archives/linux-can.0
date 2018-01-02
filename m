@@ -1,63 +1,47 @@
-From: "Yang, Wenyou" <Wenyou.Yang@Microchip.com>
-Subject: Re: [PATCH v6 0/6] Add M_CAN Support for Dra76 platform
-Date: Fri, 29 Dec 2017 11:38:10 +0800
-Message-ID: <667c651b-cb9b-4e71-437f-2cd3be39f491@Microchip.com>
-References: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
+From: Luu An Phu <phu.luuan@nxp.com>
+Subject: [PATCH] flex_can: Correct the checking for frame length in flexcan_start_xmit()
+Date: Tue,  2 Jan 2018 10:44:18 +0700
+Message-ID: <1514864658-13194-1-git-send-email-phu.luuan@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:15189 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753732AbdL2DiR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 28 Dec 2017 22:38:17 -0500
-In-Reply-To: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
-Content-Language: en-US
+Received: from mail-eopbgr60061.outbound.protection.outlook.com ([40.107.6.61]:37887
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751274AbeABDyQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 1 Jan 2018 22:54:16 -0500
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Faiz Abbas <faiz_abbas@ti.com>, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, sergei.shtylyov@cogentembedded.com
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, stefan-gabriel.mirea@nxp.com, "phu.luuan" <phu.luuan@nxp.com>
 
+From: "phu.luuan" <phu.luuan@nxp.com>
 
+The flexcan_start_xmit() function compares the frame length with data register
+length to write frame content into data[0] and data[1] register. Data register
+length is 4 bytes and frame maximum length is 8 bytes.
 
-On 2017/12/22 21:31, Faiz Abbas wrote:
-> This patch series adds support for M_CAN on the TI Dra76
-> platform. Device tree patches will be sent separately.
-> A bunch of patches were sent before by
-> Franklin Cooper <fcooper@ti.com>. I have clubbed the
-> series together and rebased to the latest kernel.
-Tested this series on SAMA5D2 Xplained board.
+Fix the check that compares frame length with 3. Because the register length
+is 4.
 
-Tested-by: Wenyou Yang <wenyou.yang@microchip.com>
+Signed-off-by: Luu An Phu <phu.luuan@nxp.com>
+---
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> v6 changes:
-> Dropped the patches to make hclk optional. Drivers
-> which enable hclk as the interface clock using
-> pm_runtime calls must still provide a hclk in the
-> clocks property.
->
-> Support higher speed CAN-FD bitrate:
-> The community decided that data sampling point be used
-> for the secondary sampling point here
-> https://patchwork.kernel.org/patch/9909845/
->
-> Franklin S Cooper Jr (6):
->    can: dev: Add support for limiting configured bitrate
->    can: m_can: Add call to of_can_transceiver
->    can: m_can: Add PM Runtime
->    can: m_can: Support higher speed CAN-FD bitrates
->    dt-bindings: can: m_can: Document new can transceiver binding
->    dt-bindings: can: can-transceiver: Document new binding
->
->   .../bindings/net/can/can-transceiver.txt           | 24 +++++++
->   .../devicetree/bindings/net/can/m_can.txt          |  9 +++
->   drivers/net/can/dev.c                              | 39 +++++++++++
->   drivers/net/can/m_can/m_can.c                      | 81 ++++++++++++++++++++--
->   include/linux/can/dev.h                            |  8 +++
->   5 files changed, 156 insertions(+), 5 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.txt
->
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 0626dcf..760d2c0 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -526,7 +526,7 @@ static int flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		data = be32_to_cpup((__be32 *)&cf->data[0]);
+ 		flexcan_write(data, &priv->tx_mb->data[0]);
+ 	}
+-	if (cf->can_dlc > 3) {
++	if (cf->can_dlc > 4) {
+ 		data = be32_to_cpup((__be32 *)&cf->data[4]);
+ 		flexcan_write(data, &priv->tx_mb->data[1]);
+ 	}
+-- 
+1.9.1
 
-Best Regards,
-Wenyou Yang
