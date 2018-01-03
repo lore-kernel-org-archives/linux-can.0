@@ -1,92 +1,135 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v6 1/6] can: dev: Add support for limiting configured
- bitrate
-Date: Tue, 2 Jan 2018 17:15:57 +0100
-Message-ID: <8d973da8-df40-e37e-377f-50666db382fe@pengutronix.de>
-References: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
- <1513949488-13026-2-git-send-email-faiz_abbas@ti.com>
+From: Yisheng Xie <xieyisheng1-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+Date: Wed, 3 Jan 2018 14:42:14 +0800
+Message-ID: <e9f6805c-2dd7-f9c6-d615-5e25cff241a3@huawei.com>
+References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
+ <20171223134831.GB10103@kroah.com>
+ <f7632cf5-2bcc-4d74-b912-3999937a1269@roeck-us.net>
+ <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
+ <6c0ade63-f4d3-d44d-c622-b091eb2ba902@huawei.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="1gfRHrEAPVF2DlVztWY0ZNDXwHqjpbCIq"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35]:51959 "EHLO
-        metis.ext.4.pengutronix.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1750945AbeABQQT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 2 Jan 2018 11:16:19 -0500
-In-Reply-To: <1513949488-13026-2-git-send-email-faiz_abbas@ti.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Faiz Abbas <faiz_abbas@ti.com>, wg@grandegger.com, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com, sergei.shtylyov@cogentembedded.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <6c0ade63-f4d3-d44d-c622-b091eb2ba902-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: christophe leroy <christophe.leroy-GgN8y9CXRhA@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, starvik-VrBV9hrLPhE@public.gmane.org, jesper.nilsson-VrBV9hrLPhE@public.gmane.org, tony.luck-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, fenghua.yu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, jonas-A9uVI2HLR7kOP4wsBPIw7w@public.gmane.org, shorne-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ysxie-H32Fclmsjq1BDgjK7y7TUQ@public.gmane.org, ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, richard-/L3Ra7n9ekc@public.gmane.org, marek.vasut-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cyrille.pitchen-yU5RGvR974pGWvitb5QawA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, wim-IQzOog9fTRqzQB+pC5nmwQ@public.gmane.org, linux-watchdog-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ralf-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org, marc.zyngier-5wv7dgnIgG8@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, industrypack-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1gfRHrEAPVF2DlVztWY0ZNDXwHqjpbCIq
-Content-Type: multipart/mixed; boundary="dFnOBra85TLH5uMqywCjrc5oBMrdKMIuM";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Faiz Abbas <faiz_abbas@ti.com>, wg@grandegger.com, robh+dt@kernel.org,
- mark.rutland@arm.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, nsekhar@ti.com,
- fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com,
- sergei.shtylyov@cogentembedded.com
-Message-ID: <8d973da8-df40-e37e-377f-50666db382fe@pengutronix.de>
-Subject: Re: [PATCH v6 1/6] can: dev: Add support for limiting configured
- bitrate
-References: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
- <1513949488-13026-2-git-send-email-faiz_abbas@ti.com>
-In-Reply-To: <1513949488-13026-2-git-send-email-faiz_abbas@ti.com>
++ cris/ia64/mn10300/openrisc maintainers
 
---dFnOBra85TLH5uMqywCjrc5oBMrdKMIuM
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+On 2017/12/25 9:09, Yisheng Xie wrote:
+> hi Christophe and Greg,
+> 
+> On 2017/12/24 16:55, christophe leroy wrote:
+>>
+>>
+>> Le 23/12/2017 à 16:57, Guenter Roeck a écrit :
+>>> On 12/23/2017 05:48 AM, Greg KH wrote:
+>>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> When I tried to use devm_ioremap function and review related code, I found
+>>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+>>>>> except one use ioremap while the other use ioremap_nocache.
+>>>>
+>>>> For all arches?  Really?  Look at MIPS, and x86, they have different
+>>>> functions.
+>>>>
+>>>
+>>> Both mips and x86 end up mapping the same function, but other arches don't.
+>>> mn10300 is one where ioremap and ioremap_nocache are definitely different.
+>>
+>> alpha: identical
+>> arc: identical
+>> arm: identical
+>> arm64: identical
+>> cris: different        <==
+>> frv: identical
+>> hexagone: identical
+>> ia64: different        <==
+>> m32r: identical
+>> m68k: identical
+>> metag: identical
+>> microblaze: identical
+>> mips: identical
+>> mn10300: different     <==
+>> nios: identical
+>> openrisc: different    <==
+>> parisc: identical
+>> riscv: identical
+>> s390: identical
+>> sh: identical
+>> sparc: identical
+>> tile: identical
+>> um: rely on asm/generic
+>> unicore32: identical
+>> x86: identical
+>> asm/generic (no mmu): identical
+> 
+> Wow, that's correct, sorry for I have just checked the main archs, I means
+> x86,arm, arm64, mips.
+> 
+> However, I stall have no idea about why these 4 archs want different ioremap
+> function with others. Drivers seems cannot aware this? If driver call ioremap
+> want he really want for there 4 archs, cache or nocache?
 
-On 12/22/2017 02:31 PM, Faiz Abbas wrote:
-> From: Franklin S Cooper Jr <fcooper@ti.com>
->=20
-> Various CAN or CAN-FD IP may be able to run at a faster rate than
-> what the transceiver the CAN node is connected to. This can lead to
-> unexpected errors. However, CAN transceivers typically have fixed
-> limitations and provide no means to discover these limitations at
-> runtime. Therefore, add support for a can-transceiver node that
-> can be reused by other CAN peripheral drivers to determine for both
-> CAN and CAN-FD what the max bitrate that can be used. If the user
-> tries to configure CAN to pass these maximum bitrates it will throw
-> an error.
+Could you please help about this? it is out of my knowledge.
 
-Please add support to read the maximum bitrate via netlink. Have a look
-at 12a6075cabc0 ("can: dev: add CAN interface termination API"). I think
-you need to extend the following functions: can_get_size() and
-can_fill_info().
+Thanks
+Yisheng
 
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---dFnOBra85TLH5uMqywCjrc5oBMrdKMIuM--
-
---1gfRHrEAPVF2DlVztWY0ZNDXwHqjpbCIq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpLsD0ACgkQHv7KIOw4
-HPbBjAf/bOJRFYHJIk88I58vTH20FS36dHkmYNPjJoQ2gqI5/QK446crK9Rw2Dwi
-t467KHEcDx3gThkGjcWNr2s2eu+e61wIFbOwS8epegEeUFRFdaG3VPPFK4Z8rvbl
-cGJZ68ZPXBA0MdnJqE5tXvCadmIsikDbfh0NQtRd1Egv/9L8R42gqkFfHrsq5xs/
-e7ZTLbI24+eOGRldyh/JMEGkGGIctrkd1iHNo3OfV3U+aLnJBvQCnQx5rPdUf0Gm
-27nyaZqZZgTx8925iOEhA1/h/o/gRaQS4HpSm8lJNw0UMuRPAy3WPW+/N5PE7vRK
-3D0/P+Bt1CVGKJSmaXNr4FjnHgHATw==
-=OkNx
------END PGP SIGNATURE-----
-
---1gfRHrEAPVF2DlVztWY0ZNDXwHqjpbCIq--
+> 
+>>
+>> So 4 among all arches seems to have ioremap() and ioremap_nocache() being different.
+>>
+>> Could we have a define set by the 4 arches on which ioremap() and ioremap_nocache() are different, something like HAVE_DIFFERENT_IOREMAP_NOCACHE ?
+> 
+> Then, what the HAVE_DIFFERENT_IOREMAP_NOCACHE is uesed for ?
+> 
+> Thanks
+> Yisheng
+>>
+>> Christophe
+>>
+>>>
+>>> Guenter
+>>>
+>>>>> While ioremap's
+>>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
+>>>>> same function with devm_ioremap, which can just be killed to reduce the size
+>>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
+>>>>>
+>>>>> I have posted two versions, which use macro instead of function for
+>>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+>>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
+>>>>> thing. So here comes v3 and please help to review.
+>>>>
+>>>> I don't think this can be done, what am I missing?  These functions are
+>>>> not identical, sorry for missing that before.
+> 
+> Never mind, I should checked all the arches, sorry about that.
+> 
+>>>>
+>>>> thanks,
+>>>>
+>>>> greg k-h
+>>>>
+>>>
+>>> -- 
+>>> To unsubscribe from this list: send the line "unsubscribe linux-watchdog" in
+>>> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+>> ---
+>> L'absence de virus dans ce courrier électronique a été vérifiée par le logiciel antivirus Avast.
+>> https://www.avast.com/antivirus
+>>
+>>
+>> .
+>>
+> 
+> 
+> .
+> 
