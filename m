@@ -1,56 +1,113 @@
-From: David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
-Date: Thu, 04 Jan 2018 14:52:54 +0000
-Message-ID: <20289.1515077574@warthog.procyon.org.uk>
-References: <CAK8P3a3i0bKvG56ha9_hzO=z80sVxCQhaeFn6QW3AwbwZs3HPg@mail.gmail.com>
- <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
- <20171223134831.GB10103@kroah.com>
- <f7632cf5-2bcc-4d74-b912-3999937a1269@roeck-us.net>
- <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
+From: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH v6 3/6] can: m_can: Add PM Runtime
+Date: Thu, 4 Jan 2018 20:47:00 +0530
+Message-ID: <6bdaab16-cb16-e039-473c-52dd295bd4ba@ti.com>
+References: <1513949488-13026-1-git-send-email-faiz_abbas@ti.com>
+ <1513949488-13026-4-git-send-email-faiz_abbas@ti.com>
+ <aea8638a-c847-b55e-ff2d-37999980ba7b@pengutronix.de>
+ <1308ee81-a1e9-ac5a-2d97-334fa825ef8d@ti.com>
+ <7d857263-14a7-6001-8f13-42d80f757573@pengutronix.de>
+ <a45431f2-d262-39a1-9152-a2ff75560d21@ti.com>
+ <cb306ae5-87c5-f6ef-0c40-3b47e208d256@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <CAK8P3a3i0bKvG56ha9_hzO=z80sVxCQhaeFn6QW3AwbwZs3HPg@mail.gmail.com>
-Content-ID: <20288.1515077574.1@warthog.procyon.org.uk>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Yisheng Xie <xieyisheng1@huawei.com>, linux-mips@linux-mips.org, Ulf Hansson <ulf.hansson@linaro.org>, Jakub Kicinski <jakub.kicinski@netronome.com>, Platform Driver <platform-driver-x86@vger.kernel.org>, David Airlie <airlied@linux.ie>, linux-wireless <linux-wireless@vger.kernel.org>, alsa-devel@alsa-project.org, dri-devel <dri-devel@lists.freedesktop.org>, Liam Girdwood <lgirdwood@gmail.com>, dhowells@redhat.com, IDE-ML <linux-ide@vger.kernel.org>, Wim Van Sebroeck <wim@iguana.be>, Networking <netdev@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>, Daniel Vetter <daniel.vetter@intel.com>, Dan Williams <dan.j.williams@intel.com>, Jason Cooper <jason@lakedaemon.net>, linux-rtc@vger.kernel.org, Boris Brezillon <boris.brezillon@free-electrons.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, dmaengine@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Richar
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cb306ae5-87c5-f6ef-0c40-3b47e208d256-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nsekhar-l0cyMroinI0@public.gmane.org, fcooper-l0cyMroinI0@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Wenyou.Yang-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-QXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4gd3JvdGU6Cgo+IC0gbW4xMDMwMCBhcHBlYXJz
-IHRvIGJlIHdyb25nLCBicm9rZW4gYnkgRGF2aWQgSG93ZWxscyBpbgo+ICAgY29tbWl0IDgzYzJk
-YzE1Y2U4MiAoIk1OMTAzMDA6IEhhbmRsZSBjYWNoZWFibGUgUENJIHJlZ2lvbnMKPiAgIGluIHBj
-aV9pb21hcCgpIikgZm9yIGFueSBkcml2ZXIgY2FsbGluZyBpb3JlbWFwKCkgYnkgdG8gZ2V0IHVu
-Y2FjaGVkCj4gICBtZW1vcnksCgpJdCdzIG5vdCBjbGVhciB3aGF0IHRoZSByaWdodCB0aGluZyB0
-byBkbyB3YXMsIGdpdmVuIHRoYXQgdGhlcmUncyBhbiBpb3JlbWFwKCkKYW5kIGFuIGlvcmVtYXBf
-dW5jYWNoZWQoKS4KCkJ1dCB0aGUgYXNiMjMwNSdzIHBjaV9pb21hcCgpIHdpbGwgdXNlIGlvcmVt
-YXAoKSAodGhlIGNhY2hlYWJsZSB3aW5kb3cpIGlmCklPUkVTT1VSQ0VfQ0FDSEVBQkxFIGlzIHNl
-dCwgYnV0IElPUkVTT1VSQ0VfSU8gaXMgbm90IGFuZCBpb3JlbWFwX3VuY2FjaGVkKCkKb3RoZXJ3
-aXNlLgoKVGhlIG90aGVyIHN1cHBvcnRlZCB1bml0cyBkb24ndCBoYXZlIFBDSSBidXNlcy4KCj4g
-aWYgSSB1bmRlcnN0YW5kIHRoZSBjb21tZW50IGZvciBjb21taXQgMzRmMWJkZWUxOTEwICgibW4x
-MDMwMDogc3dpdGNoIHRvCj4gR0VORVJJQ19QQ0lfSU9NQVAiKSBjb3JyZWN0bHk6IGl0IHNlZW1z
-IHRoYXQgUENJIGFkZHJlc3NlcyBpbmNsdWRlIHRoZQo+ICd1bmNhY2hlZCcgYml0IGJ5IGRlZmF1
-bHQgdG8gZ2V0IHRoZSByaWdodCBiZWhhdmlvciwgYnV0IGRyb3BwaW5nIHRoYXQgYml0Cj4gYnJl
-YWtzIGl0LgoKTm90IGV4YWN0bHkuICBUaGUgQ1BVIGhhcyBhIHdpbmRvdyBpbiB0aGUgcmFuZ2Ug
-MHhhMDAwMDAwMC0weGJmZmZmZmZmIHdoaWNoIGlzCmFuIHVuY2FjaGVkIHZpZXcgb2YgaXRzIGhh
-cmR3YXJlIGJ1c2VzLiAgSXQgaGFzIGFub3RoZXIgd2luZG93IGluIHRoZSByYW5nZQoweDgwMDAw
-MDAwLTB4OWZmZmZmZmYgd2hpY2ggaXMgYSBjYWNoZWQgdmlldyBvZiB0aGF0IHJlZ2lvbi4gIFRo
-ZXNlIHdpbmRvd3MKY2Fubm90IGJlIGNoYW5nZWQgYW5kIGFkZHJlc3NlcyBhYm92ZSAweDgwMDAw
-MDAwIGFyZSBzdGF0aWNhbGx5IG1hcHBlZCBhbmQgYXJlCm9ubHkgYWNjZXNzaWJsZSBieSB0aGUg
-a2VybmVsICh0aGlzIGlzIGhhcmR3aXJlZCBpbiB0aGUgTU1VKS4KClNvIHRoZSBhcmNoIGhhcyB0
-d28gc3Vid2luZG93cyB0byB0aGUgUENJIGJ1cywgb25lIGNhY2hlZCBhbmQgb25lIHVuY2FjaGVk
-LgpUaGVzZSBzdWJ3aW5kb3dzIGFyZSBmdXJ0aGVyIHN1YmRpdmlkZWQgaW50byBpb3BvcnQgYW5k
-IGlvbWVtIHNwYWNlcywgYW4gU1JBTQphbmQgc29tZSBjb250cm9sIHJlZ2lzdGVycyBmb3IgdGhl
-IENQVS1QQ0kgYnJpZGdlLgoKRGF2aWQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
-Zm8vZHJpLWRldmVsCg==
+Hi,
+
+On Wednesday 03 January 2018 08:47 PM, Marc Kleine-Budde wrote:
+> On 01/03/2018 04:06 PM, Faiz Abbas wrote:
+>> Hi,
+>>
+>> On Wednesday 03 January 2018 07:55 PM, Marc Kleine-Budde wrote:
+>>> On 01/03/2018 01:39 PM, Faiz Abbas wrote:
+>>>> On Tuesday 02 January 2018 09:37 PM, Marc Kleine-Budde wrote:
+>>>>> On 12/22/2017 02:31 PM, Faiz Abbas wrote:
+>>>>>> From: Franklin S Cooper Jr <fcooper-l0cyMroinI0@public.gmane.org>
+>>>>>>
+>>>>>> Add support for PM Runtime which is the new way to handle managing clocks.
+>>>>>> However, to avoid breaking SoCs not using PM_RUNTIME leave the old clk
+>>>>>> management approach in place.
+>>>>>
+>>>>> There is no PM_RUNTIME anymore since 464ed18ebdb6 ("PM: Eliminate
+>>>>> CONFIG_PM_RUNTIME")
+>>>>
+>>>> Ok. Will change the commit message.
+>>>>
+>>>>>
+>>>>> Have a look at the discussion: https://patchwork.kernel.org/patch/9436507/ :
+>>>>>
+>>>>>>> Well, I admit it would be nicer if drivers didn't have to worry about 
+>>>>>>> whether or not CONFIG_PM was enabled.  A slightly cleaner approach 
+>>>>>>> from the one outlined above would have the probe routine do this:
+>>>>>>>
+>>>>>>> 	my_power_up(dev);
+>>>>>>> 	pm_runtime_set_active(dev);
+>>>>>>> 	pm_runtime_get_noresume(dev);
+>>>>>>> 	pm_runtime_enable(dev);
+>>>>
+>>>> This discussion seems to be about cases in which CONFIG_PM is not
+>>>> enabled. CONFIG_PM is always selected in the case of omap devices.
+>>>
+>>> Yes, but in the commit message you state that you need to support
+>>> systems that don't have PM_RUNTIME enabled. The only mainline SoCs I see
+>>> is "arch/arm/boot/dts/sama5d2.dtsi" so far. Please check if they select
+>>> CONFIG_PM, then we can make the driver much simpler.
+>>
+>> Actually the old clock management (for hclk which is the interface
+>> clock) is still required as mentioned in the cover letter. Will change
+>> the rather misleading description.
+> 
+> Ok. So you can use the code as discussed on
+> https://patchwork.kernel.org/patch/9436507/ ?
+
+Looking at the kernel configuration, it seems like SAMA5D2 platform
+selects CONFIG_PM (Wenyou, please confirm). So, it seems like the only
+users of this driver always have CONFIG_PM enabled.
+
+So I guess the best way is to maintain the current code for pm_runtime_*
+and move the clock enable/disable to pm_runtime callbacks.
+
+Something like this:
+
+m_can_runtime_resume()
+{
+	clk_prepare_enable(cclk);
+	clk_prepare_enable(hclk);
+}
+
+m_can_runtime_suspend()
+{
+	clk_disable_unprepare(cclk);
+	clk_disable_unprepare(hclk);
+}
+
+SET_RUNTIME_PM_OPS(m_can_runtime_suspend, m_can_runtime_resume, NULL)
+
+static void m_can_start(struct net_device *dev)
+{
+	pm_runtime_get_sync(dev)
+	...
+}
+
+static void m_can_stop(struct net_device *dev)
+{
+	...
+	pm_runtime_put_sync(dev)
+}
+
+Does that sound okay? If yes, I will go work on the implementation.
+
+Thanks,
+Faiz
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
