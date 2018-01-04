@@ -1,60 +1,45 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2018-01-04
-Date: Thu,  4 Jan 2018 16:33:51 +0100
-Message-ID: <20180104153355.11243-1-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Subject: [PATCH 1/4] can: vxcan: improve handling of missing peer name attribute
+Date: Thu,  4 Jan 2018 16:33:52 +0100
+Message-ID: <20180104153355.11243-2-mkl@pengutronix.de>
+References: <20180104153355.11243-1-mkl@pengutronix.de>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180104153355.11243-1-mkl@pengutronix.de>
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, Serhey Popovych <serhe.popovych@gmail.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-this is a pull request for net/master consisting of 4 patches.
+Picking up the patch from Serhey Popovych (commit 191cdb3822e5df6b3c8,
+"veth: Be more robust on network device creation when no attributes").
 
-The first patch is by Oliver Hartkopp, it improves the error checking
-during the creation of a vxcan link. Wolfgang Grandegger's patch for the
-gs_usb driver fixes the return value of the "set_bittiming" callback.
-Luu An Phu provides a patch for the flexcan driver to fix the frame
-length check in the flexcan_start_xmit() function. The last patch is by
-Martin Lederhilger for the ems_usb driver and improves the error
-reporting for error warning and passive frames.
+When the peer name attribute is not provided the former implementation tries
+to register the given device name twice ... which leads to -EEXIST.
+If only one device name is given apply an automatic generated and valid name
+for the peer.
 
-regards,
-Marc
-
+Cc: Serhey Popovych <serhe.popovych@gmail.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/vxcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The following changes since commit 820d1d5eba5e0db88432f4b19149d87523ee193c:
-
-  Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/jkirsher/net-queue (2018-01-03 13:49:24 -0500)
-
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.15-20180104
-
-for you to fetch changes up to 6ebc5e8fe85286c7392f1777a3dba9e1fd6d0253:
-
-  can: ems_usb: improve error reporting for error warning and error passive (2018-01-04 16:14:38 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-4.15-20180104
-
-----------------------------------------------------------------
-Luu An Phu (1):
-      can: flex_can: Correct the checking for frame length in flexcan_start_xmit()
-
-Martin Lederhilger (1):
-      can: ems_usb: improve error reporting for error warning and error passive
-
-Oliver Hartkopp (1):
-      can: vxcan: improve handling of missing peer name attribute
-
-Wolfgang Grandegger (1):
-      can: gs_usb: fix return value of the "set_bittiming" callback
-
- drivers/net/can/flexcan.c     | 2 +-
- drivers/net/can/usb/ems_usb.c | 1 +
- drivers/net/can/usb/gs_usb.c  | 2 +-
- drivers/net/can/vxcan.c       | 2 +-
- 4 files changed, 4 insertions(+), 3 deletions(-)
+diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
+index 8404e8852a0f..b4c4a2c76437 100644
+--- a/drivers/net/can/vxcan.c
++++ b/drivers/net/can/vxcan.c
+@@ -194,7 +194,7 @@ static int vxcan_newlink(struct net *net, struct net_device *dev,
+ 		tbp = peer_tb;
+ 	}
+ 
+-	if (tbp[IFLA_IFNAME]) {
++	if (ifmp && tbp[IFLA_IFNAME]) {
+ 		nla_strlcpy(ifname, tbp[IFLA_IFNAME], IFNAMSIZ);
+ 		name_assign_type = NET_NAME_USER;
+ 	} else {
+-- 
+2.15.1
