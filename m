@@ -1,108 +1,62 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull-request: can 2018-01-04
-Date: Sun, 7 Jan 2018 13:32:21 +0100
-Message-ID: <a3b0d7d8-e5df-5b88-87d7-1c73c60dbc37@pengutronix.de>
-References: <20180104153355.11243-1-mkl@pengutronix.de>
- <20180105.134839.941290778276014203.davem@davemloft.net>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: [PATCH v7 0/8] Add MCAN Support for Dra76 platform
+Date: Wed, 10 Jan 2018 16:25:17 +0530
+Message-ID: <1515581725-29242-1-git-send-email-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="bHjmXybWlLBqzEOPCCE4uu6DT8kcg9F0C"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180105.134839.941290778276014203.davem@davemloft.net>
-Sender: netdev-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, faiz_abbas@ti.com, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, b29396@freescale.com
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---bHjmXybWlLBqzEOPCCE4uu6DT8kcg9F0C
-Content-Type: multipart/mixed; boundary="bUoQXH8Igpv3HIWM2h1uZVHlt35DOf5qL";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-Message-ID: <a3b0d7d8-e5df-5b88-87d7-1c73c60dbc37@pengutronix.de>
-Subject: Re: pull-request: can 2018-01-04
-References: <20180104153355.11243-1-mkl@pengutronix.de>
- <20180105.134839.941290778276014203.davem@davemloft.net>
-In-Reply-To: <20180105.134839.941290778276014203.davem@davemloft.net>
+This patch series adds support for M_CAN on the TI Dra76
+platform. Device tree patches will be sent separately.
+A bunch of patches were sent before by
+Franklin Cooper <fcooper@ti.com>. I have clubbed the
+series together and rebased to the latest kernel.
 
---bUoQXH8Igpv3HIWM2h1uZVHlt35DOf5qL
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+v7 changes:
+Added support for bitrate_max to be read from the netlink
+interface.
+Moved allocation of netdevice to probe. Cleaned up the
+allocator function.
+Moved enabling/disabling of clocks to pm_runtime callbacks.
+Minor format changes.
 
-On 01/05/2018 07:48 PM, David Miller wrote:
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> Date: Thu,  4 Jan 2018 16:33:51 +0100
->=20
->> this is a pull request for net/master consisting of 4 patches.
->>
->> The first patch is by Oliver Hartkopp, it improves the error checking
->> during the creation of a vxcan link. Wolfgang Grandegger's patch for t=
-he
->> gs_usb driver fixes the return value of the "set_bittiming" callback.
->> Luu An Phu provides a patch for the flexcan driver to fix the frame
->> length check in the flexcan_start_xmit() function. The last patch is b=
-y
->> Martin Lederhilger for the ems_usb driver and improves the error
->> reporting for error warning and passive frames.
->  ...
->>   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can=
-=2Egit tags/linux-can-fixes-for-4.15-20180104
->=20
-> I think you meant:
->=20
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/l=
-inux-can-fixes-for-4.15-20180104
+patch 5 depends on patch 4 which in turn depends on patch 3.
 
-No, that was intentional.
+v6 changes:
+Dropped the patches to make hclk optional. Drivers
+which enable hclk as the interface clock using
+pm_runtime calls must still provide a hclk in the
+clocks property.
 
-> Otherwise can I please have all of your private SSH keys? :-)
+Support higher speed CAN-FD bitrate:
+The community decided that data sampling point be used
+for the secondary sampling point here
+https://patchwork.kernel.org/patch/9909845/
 
-As long as you have your SSH keys, you have read only access to my (and
-the git repos of the other kernel developers) on git.kernel.org. I'm
-already fetching from net and net-next via ssh:
+Faiz Abbas (2):
+  can: m_can: Remove check for version when allocating m_can net device
+  can: m_can: Move allocation of net device to probe
 
-> $ git fetch net =20
-> remote: Counting objects: 70, done.
-> remote: Compressing objects: 100% (70/70), done.
-> remote: Total 70 (delta 59), reused 0 (delta 0)
-> Unpacking objects: 100% (70/70), done.
-> From ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/davem/net
->    6926e041a892..5133550296d4  master     -> net/master
+Franklin S Cooper Jr (6):
+  can: dev: Add support for limiting configured bitrate
+  can: m_can: Add call to of_can_transceiver
+  can: m_can: Add PM Support
+  can: m_can: Support higher speed CAN-FD bitrates
+  dt-bindings: can: m_can: Document new can transceiver binding
+  dt-bindings: can: can-transceiver: Document new binding
 
-See Konstantin Ryabitsev's mail "[kernel.org users] Forcing git to
-always use gitolite.kernel.org" for more details.
+ .../bindings/net/can/can-transceiver.txt           |  24 +++
+ .../devicetree/bindings/net/can/m_can.txt          |   9 ++
+ drivers/net/can/dev.c                              |  45 +++++-
+ drivers/net/can/m_can/m_can.c                      | 169 ++++++++++++++-------
+ include/linux/can/dev.h                            |   8 +
+ include/uapi/linux/can/netlink.h                   |   1 +
+ 6 files changed, 202 insertions(+), 54 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.txt
 
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---bUoQXH8Igpv3HIWM2h1uZVHlt35DOf5qL--
-
---bHjmXybWlLBqzEOPCCE4uu6DT8kcg9F0C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpSE1UACgkQHv7KIOw4
-HPYQ9Qf/Zl8x6DtzYD6fxw4RSKDfnjZ4VV/1uvZOcDHrl1DrEfToOgyAts/bkgvc
-4+LNzOmSuwqV/erXxzCtm+8r3Ejoc5GiXmhyQLde2nXGAydiInQRJwZ9jM3S1R56
-hFrtEjq5A7FHM+6taOM/WNOtxIcBRfw8K/TkgtlU22DRJNfPVgLwc1Irb6EjrwyZ
-OjQM6oax8KpMcz874qyd2JzSzXRA/QcSImltuRBgGGNQXrUoZPEEg/ni82Knlj+M
-CXSXSuEBzUVqOdnl1lmTkbigIijF0puVAMF/RWr55zJCC693kalUyA2xgYUuhPtG
-LNnk7scT66HaEVmJ+21ri1zGMamYcA==
-=n9qi
------END PGP SIGNATURE-----
-
---bHjmXybWlLBqzEOPCCE4uu6DT8kcg9F0C--
+-- 
+2.7.4
