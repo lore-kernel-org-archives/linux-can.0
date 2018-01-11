@@ -1,42 +1,36 @@
-From: Faiz Abbas <faiz_abbas@ti.com>
-Subject: [PATCH v7 2/8] can: m_can: Add call to of_can_transceiver
-Date: Wed, 10 Jan 2018 16:25:19 +0530
-Message-ID: <1515581725-29242-3-git-send-email-faiz_abbas@ti.com>
-References: <1515581725-29242-1-git-send-email-faiz_abbas@ti.com>
+From: Yousof Ebneddin Hamidi <youebned@gmail.com>
+Subject: Any thing against non-blocking socketCan?
+Date: Thu, 11 Jan 2018 09:03:57 +0100
+Message-ID: <CAM=RW1+MsQt=Qz6bJdokBXB3A_CRcqnVPMXeFRRtXKbJt-84xw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1515581725-29242-1-git-send-email-faiz_abbas@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, faiz_abbas@ti.com, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, b29396@freescale.com
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-lf0-f48.google.com ([209.85.215.48]:45032 "EHLO
+        mail-lf0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752747AbeAKIEA (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 11 Jan 2018 03:04:00 -0500
+Received: by mail-lf0-f48.google.com with SMTP id w23so1698898lfd.11
+        for <linux-can@vger.kernel.org>; Thu, 11 Jan 2018 00:03:59 -0800 (PST)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can <linux-can@vger.kernel.org>
 
-From: Franklin S Cooper Jr <fcooper@ti.com>
+Hi
 
-Add call to new generic functions that provides support via a binding
-to limit the arbitration rate and/or data rate imposed by the physical
-transceiver connected to the MCAN peripheral.
+Thank you for your support.
 
-Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-Signed-off-by: Sekhar Nori <nsekhar@ti.com>
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
----
- drivers/net/can/m_can/m_can.c | 2 ++
- 1 file changed, 2 insertions(+)
+I was trying to use signal driven socket CAN which as far as I
+understood it is not a good idea. Because the correct way of doing it
+is similar to reading the flags of the fd.
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index f4947a7..f72116e 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1649,6 +1649,8 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 
- 	devm_can_led_init(dev);
- 
-+	of_can_transceiver(dev);
-+
- 	dev_info(&pdev->dev, "%s device registered (irq=%d, version=%d)\n",
- 		 KBUILD_MODNAME, dev->irq, priv->version);
- 
--- 
-2.7.4
+Just I want to check with you if it is ok to make a non-blocking
+socket and reads it always and when the read was successful, the data
+is being processed.
+OR
+I should use the socketCan exactly like what is happening in candump?
+
+the non-blocking socketCan seems to work nicely. but I want to know
+your opinion if there is something against it.
+
+Best regards
+Yousof
