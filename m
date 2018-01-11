@@ -1,45 +1,32 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Any thing against non-blocking socketCan?
-Date: Thu, 11 Jan 2018 20:47:05 +0100
-Message-ID: <b56731fe-4b3b-5bc2-8a35-c72ac0f96723@hartkopp.net>
-References: <CAM=RW1+MsQt=Qz6bJdokBXB3A_CRcqnVPMXeFRRtXKbJt-84xw@mail.gmail.com>
+From: Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v7 7/8] dt-bindings: can: m_can: Document new can
+ transceiver binding
+Date: Thu, 11 Jan 2018 14:20:01 -0600
+Message-ID: <CAL_JsqJs2Xi=LX3A=AYzBiOy3OPZCP0KRi=uHwiMK45fAGtODQ@mail.gmail.com>
+References: <1515581725-29242-1-git-send-email-faiz_abbas@ti.com> <1515581725-29242-8-git-send-email-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:16785 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S934582AbeAKTrI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 11 Jan 2018 14:47:08 -0500
-In-Reply-To: <CAM=RW1+MsQt=Qz6bJdokBXB3A_CRcqnVPMXeFRRtXKbJt-84xw@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Yousof Ebneddin Hamidi <youebned@gmail.com>, linux-can <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1515581725-29242-8-git-send-email-faiz_abbas@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Faiz Abbas <faiz_abbas@ti.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>, "Franklin S Cooper Jr." <fcooper@ti.com>, Wenyou Yang <Wenyou.Yang@microchip.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-omap <linux-omap@vger.kernel.org>, Dong Aisheng <b29396@freescale.com>
+List-Id: linux-can.vger.kernel.org
 
-Hi Yousof,
+On Wed, Jan 10, 2018 at 4:55 AM, Faiz Abbas <faiz_abbas@ti.com> wrote:
+> From: Franklin S Cooper Jr <fcooper@ti.com>
+>
+> Add information regarding can-transceiver binding. This is especially
+> important for MCAN since the IP allows CAN FD mode to run significantly
+> faster than what most transceivers are capable of.
+>
+> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> ---
+>  Documentation/devicetree/bindings/net/can/m_can.txt | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 
-On 01/11/2018 09:03 AM, Yousof Ebneddin Hamidi wrote:
+Why did you drop my ack from v6?
 
-> I was trying to use signal driven socket CAN which as far as I
-> understood it is not a good idea. Because the correct way of doing it
-> is similar to reading the flags of the fd.
-> 
-> Just I want to check with you if it is ok to make a non-blocking
-> socket and reads it always and when the read was successful, the data
-> is being processed.
-> OR
-> I should use the socketCan exactly like what is happening in candump?
-> 
-> the non-blocking socketCan seems to work nicely. but I want to know
-> your opinion if there is something against it.
-
-No - you can do it either way.
-
-Using select() as it can be seen in candump allows more options to read 
-from several different file descriptors and/or specify timeouts.
-
-If you don't need that functionality there's no need to use select().
-
-Best regards
-Oliver
+Rob
