@@ -1,129 +1,92 @@
-From: Yisheng Xie <xieyisheng1@huawei.com>
-Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
-Date: Fri, 12 Jan 2018 17:12:12 +0800
-Message-ID: <ff498c83-d1ee-7553-e20c-a07369f8dad6@huawei.com>
-References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
- <20171223134831.GB10103@kroah.com>
- <b8ff7f17-7f2c-f220-9833-7ae5bd7343d5@c-s.fr>
- <8dd19411-5b06-0aa4-fd0e-e5b112c25dcb@huawei.com>
- <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
+From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
+Subject: Re: Getting manufacturer/product name for CAN interface
+Date: Sat, 13 Jan 2018 16:54:43 +0100
+Message-ID: <baddf3da-d44b-d326-1289-7cd6d0f387a4@gmx.de>
+References: <c3904508-14b9-1ffb-8507-9196fa193f56@gmx.de>
+ <955344be-5991-5de9-a705-5f2e480c765d@grandegger.com>
+ <5c9a4542-aa3d-c54f-7f83-d7cd3f594a65@gmx.de>
+ <18d6c6fc-fcc2-34d9-a98a-1d2ae4d1e0b1@pengutronix.de>
+ <q10u44.otcmiv.1hge1d1-qmf@gmx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Christophe LEROY <christophe.leroy@c-s.fr>, Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, ysxie@foxmail.com, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, boris.brezillon@free-electrons.com, richard@nod.at, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, wim@iguana.be, linux@roeck-us.net, linux-watchdog@vger.kernel.org, b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, ralf@linux-mips.org, linux-mips@linux-mips.org, lgirdwood@gmail.com, broonie@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, arnd@arndb.de, andriy.shevchenko@linux.intel.com, industrypack-devel@lists.sourceforge.net, wg@grandegger.com, mkl@pengutronix.deli
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mout.gmx.net ([212.227.15.18]:60448 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1755044AbeAMPzK (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 13 Jan 2018 10:55:10 -0500
+In-Reply-To: <q10u44.otcmiv.1hge1d1-qmf@gmx.com>
+Content-Language: en-GB
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, Marcel.Birthelmer@microchip.com, wg@grandegger.com
 
-Hi Christophe ，
+Hi all,
 
-On 2018/1/4 16:05, Christophe LEROY wrote:
-> 
-> 
-> Le 25/12/2017 à 02:34, Yisheng Xie a écrit :
->>
->>
->> On 2017/12/24 17:05, christophe leroy wrote:
->>>
->>>
->>> Le 23/12/2017 à 14:48, Greg KH a écrit :
->>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
->>>>> Hi all,
->>>>>
->>>>> When I tried to use devm_ioremap function and review related code, I found
->>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
->>>>> except one use ioremap while the other use ioremap_nocache.
->>>>
->>>> For all arches?  Really?  Look at MIPS, and x86, they have different
->>>> functions.
->>>>
->>>>> While ioremap's
->>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
->>>>> same function with devm_ioremap, which can just be killed to reduce the size
->>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
->>>>>
->>>>> I have posted two versions, which use macro instead of function for
->>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
->>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
->>>>> thing. So here comes v3 and please help to review.
->>>>
->>>> I don't think this can be done, what am I missing?  These functions are
->>>> not identical, sorry for missing that before.
->>>
->>> devm_ioremap() and devm_ioremap_nocache() are quite similar, both use devm_ioremap_release() for the release, why not just defining:
->>>
->>> static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
->>>                 resource_size_t size, bool nocache)
->>> {
->>> [...]
->>>      if (nocache)
->>>          addr = ioremap_nocache(offset, size);
->>>      else
->>>          addr = ioremap(offset, size);
->>> [...]
->>> }
->>>
->>> then in include/linux/io.h
->>>
->>> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
->>>                 resource_size_t size)
->>> {return __devm_ioremap(dev, offset, size, false);}
->>>
->>> static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
->>>                     resource_size_t size);
->>> {return __devm_ioremap(dev, offset, size, true);}
->>
->> Yeah, this seems good to me, right now we have devm_ioremap, devm_ioremap_wc, devm_ioremap_nocache
->> May be we can use an enum like:
->> typedef enum {
->>     DEVM_IOREMAP = 0,
->>     DEVM_IOREMAP_NOCACHE,
->>     DEVM_IOREMAP_WC,
->> } devm_ioremap_type;
->>
->> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
->>                  resource_size_t size)
->>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP);}
->>
->>   static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
->>                      resource_size_t size);
->>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_NOCACHE);}
->>
->>   static inline void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
->>                      resource_size_t size);
->>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_WC);}
->>
->>   static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
->>                  resource_size_t size, devm_ioremap_type type)
->>   {
->>       void __iomem **ptr, *addr = NULL;
->>   [...]
->>       switch (type){
->>       case DEVM_IOREMAP:
->>           addr = ioremap(offset, size);
->>           break;
->>       case DEVM_IOREMAP_NOCACHE:
->>           addr = ioremap_nocache(offset, size);
->>           break;
->>       case DEVM_IOREMAP_WC:
->>           addr = ioremap_wc(offset, size);
->>           break;
->>       }
->>   [...]
->>   }
-> 
-> 
-> That looks good to me, will you submit a v4 ?
+and a (late) Happy New Year!
 
-Sorry for late response. And I will submit the v4 as your suggestion.
+I finally managed to finish my patch over christmas, which is now 
+included in QtSerialBus [1]. Thanks for all your help on this topic!
 
-Thanks
-Yisheng
+To summarize, I was able to get the CAN adapter description and the CAN 
+channel by parsing the SysFS.
 
+It would have been nice to extract the adapters serial number and/or an 
+user-programmable device ID too (I know that Peak and SYS-TEC have such 
+features), but I did not find such a property in the SysFS tree.
+
+So if you have one more hot tip for me ... I'd appreciate it.
+
+Thanks again, and best regards,
+André
+
+[1] 
+http://code.qt.io/cgit/qt/qtserialbus.git/commit/?h=dev&id=44a449ff8f0b7cdb71e67385e1bd9a098209045e
+
+Am 19.07.2017 um 19:42 schrieb aha_1980@gmx.de:
+> Hi Marc,
 > 
-> Christophe
-> 
+> Am Dienstag 18. Juli 2017 schrieb Marc Kleine-Budde:
+>> On 07/17/2017 09:36 PM, André Hartmann wrote:
+>>> thanks for your hints! I've investigated a bit (with PEAK and SYSTEC
+>>> adapters) and I'm partly satisfied.
+>>>
+>>> Wolfgangs tip with ip -d gives me indeed the driver associated to a
+>>> CAN interface. And in /sys/class/net/can0/subsystem/can0/device/
+>>> interface I found the device string, thanks Marcel. (Full logs are
+>>> appended).
+>>>
+>>> However, the most important infos are still only visible in dmesg.
+>>> It's the drivers output which CAN channel is associated with each
+>>> hardware interface, e.g.:
+>>>
+>>> peak_usb 2-1.4:1.0: PEAK-System PCAN-USB Pro [...] (2 channels)
+>>> peak_usb 2-1.4:1.0 can0: attached to PCAN-USB Pro channel 0 (device 1)
+>>> peak_usb 2-1.4:1.0 can1: attached to PCAN-USB Pro channel 1 (device 0)
+>>>
+>>> So if there is no way to get these infos from userspace now, I think it
+>>> would be a good addition to have this possibility. Especially if there
+>>> is more than one CAN adapter connected.
 >>
+>> Does the udev property dev_id help? See
+>> http://permalink.gmane.org/gmane.linux.can/5227 for more information.
+> 
+> That looks indeed interesting. My Google-foo tells me the patch was included in a pull request, so it should be merged to mainline Kernel.
+> 
+> Let's see what I can achive.
+> 
+> Thanks, Andre
+>   
+>> regards,
+>> Marc
+>>
+>> -- 
+>> Pengutronix e.K.                  | Marc Kleine-Budde           |
+>> Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+>> Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+>> Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+>>
+>>
+> 
 
