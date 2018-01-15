@@ -1,114 +1,226 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull-request: can-next 2017-12-01
-Date: Mon, 15 Jan 2018 14:02:23 +0100
-Message-ID: <be945e20-d5d5-f786-c9d4-3a3ef97a0292@pengutronix.de>
-References: <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
+Subject: Re: [PATCH v7 1/8] can: dev: Add support for limiting configured
+ bitrate
+Date: Mon, 15 Jan 2018 14:40:59 +0100
+Message-ID: <d82752f1-657f-b07e-5d91-b39ea0b6984d@pengutronix.de>
+References: <1515581725-29242-1-git-send-email-faiz_abbas@ti.com>
+ <1515581725-29242-2-git-send-email-faiz_abbas@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="hqhGpcBVMxM5OBtyj5TrHv8x6teX1SgWF"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:32975 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S967261AbeAONCs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Jan 2018 08:02:48 -0500
-In-Reply-To: <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+ boundary="ZxzHiZ5fqlE97kubpqVPApySj5MnCSqft"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1515581725-29242-2-git-send-email-faiz_abbas@ti.com>
+Sender: netdev-owner@vger.kernel.org
+To: Faiz Abbas <faiz_abbas@ti.com>, wg@grandegger.com, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, b29396@freescale.com
+List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---hqhGpcBVMxM5OBtyj5TrHv8x6teX1SgWF
-Content-Type: multipart/mixed; boundary="WOG7jrIcVpfiaUGmwuG8PovDr8T1gziDq";
+--ZxzHiZ5fqlE97kubpqVPApySj5MnCSqft
+Content-Type: multipart/mixed; boundary="P0AcwNiSf30O1HYpeA3Ier7twBlCFFmhH";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <be945e20-d5d5-f786-c9d4-3a3ef97a0292@pengutronix.de>
-Subject: Re: pull-request: can-next 2017-12-01
-References: <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
-In-Reply-To: <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
+To: Faiz Abbas <faiz_abbas@ti.com>, wg@grandegger.com, robh+dt@kernel.org,
+ mark.rutland@arm.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, nsekhar@ti.com,
+ fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com,
+ sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org,
+ b29396@freescale.com
+Message-ID: <d82752f1-657f-b07e-5d91-b39ea0b6984d@pengutronix.de>
+Subject: Re: [PATCH v7 1/8] can: dev: Add support for limiting configured
+ bitrate
+References: <1515581725-29242-1-git-send-email-faiz_abbas@ti.com>
+ <1515581725-29242-2-git-send-email-faiz_abbas@ti.com>
+In-Reply-To: <1515581725-29242-2-git-send-email-faiz_abbas@ti.com>
 
---WOG7jrIcVpfiaUGmwuG8PovDr8T1gziDq
+--P0AcwNiSf30O1HYpeA3Ier7twBlCFFmhH
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-Hello David,
-
-
-On 01/05/2018 12:08 PM, Marc Kleine-Budde wrote:
-> Hello David,
+On 01/10/2018 11:55 AM, Faiz Abbas wrote:
+> From: Franklin S Cooper Jr <fcooper@ti.com>
 >=20
-> this is a pull request of 7 patches for net-next/master.
+> Various CAN or CAN-FD IP may be able to run at a faster rate than
+> what the transceiver the CAN node is connected to. This can lead to
+> unexpected errors. However, CAN transceivers typically have fixed
+> limitations and provide no means to discover these limitations at
+> runtime. Therefore, add support for a can-transceiver node that
+> can be reused by other CAN peripheral drivers to determine for both
+> CAN and CAN-FD what the max bitrate that can be used. If the user
+> tries to configure CAN to pass these maximum bitrates it will throw
+> an error.
 >=20
-> All patches are by me. Patch 6 is for the "can_raw" protocol and add
-> error checking to the bind() function. All other patches clean up the
-> coding style and remove unused parameters in various CAN drivers and
-> infrastructure.
+> Also add support for reading bitrate_max via the netlink interface.
 
-this pull request is still open. Any objections to pull this?
+added to can-next with some minor changes. See inline.
 
-regards,
-Marc
-
+> Reviewed-by: Suman Anna <s-anna@ti.com>
+> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> [nsekhar@ti.com: fix build error with !CONFIG_OF]
+> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 > ---
+>  drivers/net/can/dev.c            | 45 ++++++++++++++++++++++++++++++++=
++++++++-
+>  include/linux/can/dev.h          |  8 +++++++
+>  include/uapi/linux/can/netlink.h |  1 +
+>  3 files changed, 53 insertions(+), 1 deletion(-)
 >=20
-> The following changes since commit 72deacce011bde7475c90e6ee7d4c7d28c38=
-4873:
->=20
->   Merge tag 'mac80211-next-for-davem-2018-01-04' of git://git.kernel.or=
-g/pub/scm/linux/kernel/git/jberg/mac80211-next (2018-01-04 14:33:29 -0500=
-)
->=20
-> are available in the Git repository at:
->=20
->   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-=
-next.git tags/linux-can-next-for-4.16-20180105
->=20
-> for you to fetch changes up to ff847ee47be27621f978921919f035fcd87d6d08=
-:
->=20
->   can: af_can: give struct holding the CAN per device receive lists a s=
-ensible name (2018-01-05 11:12:08 +0100)
->=20
-> ----------------------------------------------------------------
-> linux-can-next-for-4.16-20180105
->=20
-> ----------------------------------------------------------------
-> Marc Kleine-Budde (7):
->       can: rx-offload: can_rx_offload_add_timestamp: remove duplicate s=
-emicolon at return statement
->       can: gs_usb: gs_cmd_reset(): remove unused parameter "struct gs_u=
-sb *gsusb"
->       can: mcp251x: mcp251x_setup(): remove unused parameter "struct mc=
-p251x_priv *priv"
->       can: peak_usb: peak_usb_netif_rx(): remove unused parameter "u32 =
-ts_high"
->       can: slcan: slc_alloc(): remove unused parameter "dev_t line"
->       can: raw: raw_bind(): bail out if can_family is not AF_CAN
->       can: af_can: give struct holding the CAN per device receive lists=
- a sensible name
->=20
->  drivers/net/can/rx-offload.c                 |  2 +-
->  drivers/net/can/slcan.c                      |  4 ++--
->  drivers/net/can/spi/mcp251x.c                |  7 +++----
->  drivers/net/can/usb/gs_usb.c                 |  4 ++--
->  drivers/net/can/usb/peak_usb/pcan_usb_core.c |  2 +-
->  drivers/net/can/usb/peak_usb/pcan_usb_core.h |  2 +-
->  drivers/net/can/usb/peak_usb/pcan_usb_fd.c   |  9 +++------
->  include/net/netns/can.h                      |  4 ++--
->  net/can/af_can.c                             | 20 ++++++++++----------=
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index 365a8cc..c5bc33f 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/can/skb.h>
+>  #include <linux/can/netlink.h>
+>  #include <linux/can/led.h>
+> +#include <linux/of.h>
+>  #include <net/rtnetlink.h>
+> =20
+>  #define MOD_DESC "CAN device driver interface"
+> @@ -814,6 +815,29 @@ int open_candev(struct net_device *dev)
+>  }
+>  EXPORT_SYMBOL_GPL(open_candev);
+> =20
+> +#ifdef CONFIG_OF
+> +/* Common function that can be used to understand the limitation of
+> + * a transceiver when it provides no means to determine these limitati=
+ons
+> + * at runtime.
+> + */
+> +void of_can_transceiver(struct net_device *dev)
+> +{
+> +	struct device_node *dn;
+> +	struct can_priv *priv =3D netdev_priv(dev);
+> +	struct device_node *np =3D dev->dev.parent->of_node;
+> +	int ret;
+> +
+> +	dn =3D of_get_child_by_name(np, "can-transceiver");
+> +	if (!dn)
+> +		return;
+> +
+> +	ret =3D of_property_read_u32(dn, "max-bitrate", &priv->bitrate_max);
+> +	if ((ret && ret !=3D -EINVAL) || (!ret && !priv->bitrate_max))
+> +		netdev_warn(dev, "Invalid value for transceiver max bitrate. Ignorin=
+g bitrate limit.\n");
+> +}
+> +EXPORT_SYMBOL_GPL(of_can_transceiver);
+> +#endif
+> +
+>  /*
+>   * Common close function for cleanup before the device gets closed.
+>   *
+> @@ -913,6 +937,13 @@ static int can_changelink(struct net_device *dev, =
+struct nlattr *tb[],
+>  					priv->bitrate_const_cnt);
+>  		if (err)
+>  			return err;
+> +
+> +		if (priv->bitrate_max && bt.bitrate > priv->bitrate_max) {
+> +			netdev_err(dev, "arbitration bitrate surpasses transceiver capabili=
+ties of %d bps\n",
+> +				   priv->bitrate_max);
+> +			return -EINVAL;
+> +		}
+> +
+>  		memcpy(&priv->bittiming, &bt, sizeof(bt));
+> =20
+>  		if (priv->do_set_bittiming) {
+> @@ -997,6 +1028,13 @@ static int can_changelink(struct net_device *dev,=
+ struct nlattr *tb[],
+>  					priv->data_bitrate_const_cnt);
+>  		if (err)
+>  			return err;
+> +
+> +		if (priv->bitrate_max && dbt.bitrate > priv->bitrate_max) {
+> +			netdev_err(dev, "canfd data bitrate surpasses transceiver capabilit=
+ies of %d bps\n",
+> +				   priv->bitrate_max);
+> +			return -EINVAL;
+> +		}
+> +
+>  		memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
+> =20
+>  		if (priv->do_set_data_bittiming) {
+> @@ -1064,6 +1102,7 @@ static size_t can_get_size(const struct net_devic=
+e *dev)
+>  	if (priv->data_bitrate_const)				/* IFLA_CAN_DATA_BITRATE_CONST */
+>  		size +=3D nla_total_size(sizeof(*priv->data_bitrate_const) *
+>  				       priv->data_bitrate_const_cnt);
+> +	size +=3D sizeof(priv->bitrate_max);
 
->  net/can/af_can.h                             |  2 +-
->  net/can/proc.c                               |  8 ++++----
->  net/can/raw.c                                |  2 ++
->  12 files changed, 32 insertions(+), 34 deletions(-)
+Added "mising" comment: /* IFLA_CAN_BITRATE_MAX */
+
+> =20
+>  	return size;
+>  }
+> @@ -1121,7 +1160,11 @@ static int can_fill_info(struct sk_buff *skb, co=
+nst struct net_device *dev)
+>  	     nla_put(skb, IFLA_CAN_DATA_BITRATE_CONST,
+>  		     sizeof(*priv->data_bitrate_const) *
+>  		     priv->data_bitrate_const_cnt,
+> -		     priv->data_bitrate_const))
+> +		     priv->data_bitrate_const)) ||
+> +
+> +	    (nla_put(skb, IFLA_CAN_BITRATE_MAX,
+> +		     sizeof(priv->bitrate_max),
+> +		     &priv->bitrate_max))
+>  	    )
+> =20
+>  		return -EMSGSIZE;
+> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+> index 61f1cf2..a199423 100644
+> --- a/include/linux/can/dev.h
+> +++ b/include/linux/can/dev.h
+> @@ -46,8 +46,10 @@ struct can_priv {
+>  	unsigned int bitrate_const_cnt;
+>  	const u32 *data_bitrate_const;
+>  	unsigned int data_bitrate_const_cnt;
+> +	u32 bitrate_max;
+>  	struct can_clock clock;
+> =20
+> +
+
+I've removed this.
+
+>  	enum can_state state;
+> =20
+>  	/* CAN controller features - see include/uapi/linux/can/netlink.h */
+> @@ -166,6 +168,12 @@ void can_put_echo_skb(struct sk_buff *skb, struct =
+net_device *dev,
+>  unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx=
+);
+>  void can_free_echo_skb(struct net_device *dev, unsigned int idx);
+> =20
+> +#ifdef CONFIG_OF
+> +void of_can_transceiver(struct net_device *dev);
+> +#else
+> +static inline void of_can_transceiver(struct net_device *dev) { }
+> +#endif
+> +
+>  struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame=
+ **cf);
+>  struct sk_buff *alloc_canfd_skb(struct net_device *dev,
+>  				struct canfd_frame **cfd);
+> diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/=
+netlink.h
+> index 96710e7..9f56fad4 100644
+> --- a/include/uapi/linux/can/netlink.h
+> +++ b/include/uapi/linux/can/netlink.h
+> @@ -132,6 +132,7 @@ enum {
+>  	IFLA_CAN_TERMINATION_CONST,
+>  	IFLA_CAN_BITRATE_CONST,
+>  	IFLA_CAN_DATA_BITRATE_CONST,
+> +	IFLA_CAN_BITRATE_MAX,
+>  	__IFLA_CAN_MAX
+>  };
+> =20
 >=20
 
+Marc
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -117,23 +229,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---WOG7jrIcVpfiaUGmwuG8PovDr8T1gziDq--
+--P0AcwNiSf30O1HYpeA3Ier7twBlCFFmhH--
 
---hqhGpcBVMxM5OBtyj5TrHv8x6teX1SgWF
+--ZxzHiZ5fqlE97kubpqVPApySj5MnCSqft
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpcpl8ACgkQHv7KIOw4
-HPbrCAf/ab1+nzgNvLiDbyK43LXJ9qDiJsk2olYDjRuhBURF2a5e9cmt+Qi9uT0z
-pzq+YT+61w20/CsOB5ylM1Rc0CSPEgD/eVebZpCy+XGT2/7t2SE/naBo5FYxvnSd
-XwTyhPkkr5qtF+xX0Mqorn2xqaWWWNeWWFDYciDCffFYmGQZ7TbVUwz8U/niDzVh
-cG6SF4Hbojp/VmBmBWcqCoxsTicvmiwFMhwxstsdxqLInn3qNzbrGjfU9274cS9X
-uLZp6lpOa/70wSxPW0X8T8HabfSnrLiEuiaFpjC7A9en1vuJoxEl+zchSJPcN9x2
-+DY8oI7+tVO9PbPJnTP1zgbs3B81xg==
-=sZDD
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpcr2sACgkQHv7KIOw4
+HPYL7ggAtTPTto9K2d3nWZFUvQipdz64GUsOi96NNE8XWCm5WknPKA3PbtfDqV+J
+xoJPR7ItKZZN3531JKjKoG1xunVXMOPUUZkuLszANmd0iDcXlc2vI9bCGuCw7No4
+9fvk2YcIyKsv/efKPxxmmpePhC72R/mWXgM3S1v6cKyxEcTG6yr/cAWI24e4lbcL
+Ir6NkOBz/aTUm6oKXlSCmxeeCaVU2fASVSeMP/PIlf5Jdxxznsjs2CFzJUWi8Fr4
++C+i/n6Aw+9IUtsYpj96u3kmpdEcRMxFxP/96GAn2uBuSnZ/fIMImrsy9js6RiX+
+LV9vpLInTb81BZZZ05wcM81t5kOkWg==
+=f3Ig
 -----END PGP SIGNATURE-----
 
---hqhGpcBVMxM5OBtyj5TrHv8x6teX1SgWF--
+--ZxzHiZ5fqlE97kubpqVPApySj5MnCSqft--
