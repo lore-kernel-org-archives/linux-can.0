@@ -1,74 +1,52 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: peak/usb: fix potential bug in packet fragmentation
-Date: Mon, 15 Jan 2018 15:41:07 +0100
-Message-ID: <be6ef351-664d-81d2-80f8-bc4215f147ae@pengutronix.de>
-References: <20180115104141.4352-1-s.grosjean@peak-system.com>
- <51f04cfe-cb9f-b6f8-25a3-8d6df20dfbad@pengutronix.de>
- <VI1PR0302MB332549CCF19F5E36A661F7FFD6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
- <c5907a33-a653-a2d3-61ea-ac5c64d06318@pengutronix.de>
- <VI1PR0302MB3325B674EB5235EEFC303D9ED6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
- <d7e89bb0-b0ec-8c0d-c3db-7f448c6cc17c@pengutronix.de>
- <VI1PR0302MB3325F6935A768304A38526A2D6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v7 0/8] Add MCAN Support for Dra76 platform
+Date: Mon, 15 Jan 2018 15:44:54 +0100
+Message-ID: <fa6ed3c7-980f-fc65-e7d0-e085c201a8f9@pengutronix.de>
+References: <1515581725-29242-1-git-send-email-faiz_abbas@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="DWStm3aBtLHQTef5reiHQWubjiyKWffvn"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:47393 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S933679AbeAOOla (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Jan 2018 09:41:30 -0500
-In-Reply-To: <VI1PR0302MB3325F6935A768304A38526A2D6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>, linux-can Mailing List <linux-can@vger.kernel.org>
+ boundary="BScf6tjhFppgQSnMwIpwgAHu4d7xFcptN"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1515581725-29242-1-git-send-email-faiz_abbas-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nsekhar-l0cyMroinI0@public.gmane.org, fcooper-l0cyMroinI0@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Wenyou.Yang-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, b29396-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DWStm3aBtLHQTef5reiHQWubjiyKWffvn
-Content-Type: multipart/mixed; boundary="W6lqN7Fb8Cf7YwyIR0G1kGRRPkczGVuxa";
+--BScf6tjhFppgQSnMwIpwgAHu4d7xFcptN
+Content-Type: multipart/mixed; boundary="ZIcM16ZCezMnDgMkMOPFCVPWJkdyktE6p";
  protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>,
- linux-can Mailing List <linux-can@vger.kernel.org>
-Message-ID: <be6ef351-664d-81d2-80f8-bc4215f147ae@pengutronix.de>
-Subject: Re: [PATCH] can: peak/usb: fix potential bug in packet fragmentation
-References: <20180115104141.4352-1-s.grosjean@peak-system.com>
- <51f04cfe-cb9f-b6f8-25a3-8d6df20dfbad@pengutronix.de>
- <VI1PR0302MB332549CCF19F5E36A661F7FFD6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
- <c5907a33-a653-a2d3-61ea-ac5c64d06318@pengutronix.de>
- <VI1PR0302MB3325B674EB5235EEFC303D9ED6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
- <d7e89bb0-b0ec-8c0d-c3db-7f448c6cc17c@pengutronix.de>
- <VI1PR0302MB3325F6935A768304A38526A2D6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
-In-Reply-To: <VI1PR0302MB3325F6935A768304A38526A2D6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+To: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
+ mark.rutland-5wv7dgnIgG8@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nsekhar-l0cyMroinI0@public.gmane.org,
+ fcooper-l0cyMroinI0@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Wenyou.Yang-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org,
+ sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ b29396-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+Message-ID: <fa6ed3c7-980f-fc65-e7d0-e085c201a8f9-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v7 0/8] Add MCAN Support for Dra76 platform
+References: <1515581725-29242-1-git-send-email-faiz_abbas-l0cyMroinI0@public.gmane.org>
+In-Reply-To: <1515581725-29242-1-git-send-email-faiz_abbas-l0cyMroinI0@public.gmane.org>
 
---W6lqN7Fb8Cf7YwyIR0G1kGRRPkczGVuxa
+--ZIcM16ZCezMnDgMkMOPFCVPWJkdyktE6p
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-On 01/15/2018 03:20 PM, St=C3=A9phane Grosjean wrote:
->>>> Yes... like this:
->>>>
->>>>>> +       if (unlikely(dev->udev->speed !=3D USB_SPEED_HIGH))
->>>>>> +               packet_len =3D min(packet_len,
->>>>>> + PCAN_UFD_LOSPD_PKT_SIZE);
->>>>
->>>
->>> Yep! Ok. But for my personal knowledge, what could be the reason? Is
->> there any kinda gcc optimization behind?
->>
->> There is this macro in the kernel, it's easier to read and it does typ=
-e checking,
->> see
->> http://elixir.free-
->> electrons.com/linux/latest/source/include/linux/kernel.h#L799
->=20
-> Ok. But don't we lose the unlikey() optimization, when using the
-> min() macro? I mean that the size of the cmds sent by this way is
-> generally less than 64 B...
+On 01/10/2018 11:55 AM, Faiz Abbas wrote:
+> This patch series adds support for M_CAN on the TI Dra76
+> platform. Device tree patches will be sent separately.
+> A bunch of patches were sent before by
+> Franklin Cooper <fcooper-l0cyMroinI0@public.gmane.org>. I have clubbed the
+> series together and rebased to the latest kernel.
 
-Yes, the unlikely for the size. But a USB transfer will take a lot of
-cycles anyway :)
+I've added patches 1-3 to linux-can-next/testing. But stopped at 4, due
+to the problems with the error handling. You can include 1-3 in your
+next posting if you like, otherwise I'll takes the ones I've already
+applied.
 
 Marc
 
@@ -79,23 +57,27 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---W6lqN7Fb8Cf7YwyIR0G1kGRRPkczGVuxa--
+--ZIcM16ZCezMnDgMkMOPFCVPWJkdyktE6p--
 
---DWStm3aBtLHQTef5reiHQWubjiyKWffvn
+--BScf6tjhFppgQSnMwIpwgAHu4d7xFcptN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpcvYMACgkQHv7KIOw4
-HPaaQQgA1fVMe9ft9zbeRDVP84xg5t8MoPXAuYKsLXvlaVuLlJzpV9TN/Evv4bG/
-o/lWZu9iJAWYZ6eIeZ4UJxOCaS1HzclcAfXWmmUInue/f2kcnUqYY32VLJwv3K8D
-sOYTz+AEnUEC7ZKOU6j44zRyg6TLjzA69kuoed0DtOLQ3K2M+vZzdr+1XtgFoy3E
-I5+xl1KrknPJ16RdOjdkHtlnTyeFyzIzpD9tEBKlJ+0xTaalLHHwjRhqAAbckQ6V
-Rq/r/ngr8BcVQjhiDk57T2IlnaUz6OneiGX85pmJw2fh8JifWyPCntpMAlCSGbxP
-H57zNBh6kzab806Vs4vcZoUXW6HtKw==
-=Bgbj
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpcvmYACgkQHv7KIOw4
+HPZUAQf9FJLjMUT/SVkH10O3O8DStSa3JRUSNJaIzNgxV/qbcOZYD4BQrPq015D7
+UXXHIF8dHpDYYlrX7TVQSc5diCY+WQ8RwSS1JBEJyijsh/h5Bww4/2xnai0yz3CF
+EFhbU8Y/4xUwd6YzwknetoccspRYJXomCld59Woneo1C3looaZs0DtiVaulPTfRN
+vZXUzAyf106BhsdMBWGWJACOpWQVIpaWNGuDbLZ08U+b5c3xynZCuHWWHfw9G849
+1ruQyqfgdZ8vvr3usj9UJvsIjjRyuiddJBnBTfIdmgDh8xzall3EhIUVwuYTztNK
+MxXmlnn3uUxN+gNTQ859nuAT9Kc1jw==
+=sXFh
 -----END PGP SIGNATURE-----
 
---DWStm3aBtLHQTef5reiHQWubjiyKWffvn--
+--BScf6tjhFppgQSnMwIpwgAHu4d7xFcptN--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
