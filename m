@@ -1,151 +1,86 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: peak/usb: fix potential bug in packet fragmentation
-Date: Mon, 15 Jan 2018 14:57:46 +0100
-Message-ID: <c5907a33-a653-a2d3-61ea-ac5c64d06318@pengutronix.de>
+From: =?utf-8?B?U3TDqXBoYW5lIEdyb3NqZWFu?= <s.grosjean@peak-system.com>
+Subject: RE: [PATCH] can: peak/usb: fix potential bug in packet fragmentation
+Date: Mon, 15 Jan 2018 14:00:46 +0000
+Message-ID: <VI1PR0302MB3325B674EB5235EEFC303D9ED6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
 References: <20180115104141.4352-1-s.grosjean@peak-system.com>
  <51f04cfe-cb9f-b6f8-25a3-8d6df20dfbad@pengutronix.de>
  <VI1PR0302MB332549CCF19F5E36A661F7FFD6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
+ <c5907a33-a653-a2d3-61ea-ac5c64d06318@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="BYAYDzzciYBFbcXn2Ovrn9w8kjZglJXdY"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:33449 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S967614AbeAON6I (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Jan 2018 08:58:08 -0500
-In-Reply-To: <VI1PR0302MB332549CCF19F5E36A661F7FFD6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
+Received: from mail-eopbgr80063.outbound.protection.outlook.com ([40.107.8.63]:49184
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S965247AbeAOOAu (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 15 Jan 2018 09:00:50 -0500
+In-Reply-To: <c5907a33-a653-a2d3-61ea-ac5c64d06318@pengutronix.de>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>, linux-can Mailing List <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can Mailing List <linux-can@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---BYAYDzzciYBFbcXn2Ovrn9w8kjZglJXdY
-Content-Type: multipart/mixed; boundary="bg87yyN6211dC8nL1vI9xrQKrRgYY3YIV";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>,
- linux-can Mailing List <linux-can@vger.kernel.org>
-Message-ID: <c5907a33-a653-a2d3-61ea-ac5c64d06318@pengutronix.de>
-Subject: Re: [PATCH] can: peak/usb: fix potential bug in packet fragmentation
-References: <20180115104141.4352-1-s.grosjean@peak-system.com>
- <51f04cfe-cb9f-b6f8-25a3-8d6df20dfbad@pengutronix.de>
- <VI1PR0302MB332549CCF19F5E36A661F7FFD6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
-In-Reply-To: <VI1PR0302MB332549CCF19F5E36A661F7FFD6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
-
---bg87yyN6211dC8nL1vI9xrQKrRgYY3YIV
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 01/15/2018 02:50 PM, St=C3=A9phane Grosjean wrote:
->=20
->=20
->> -----Original Message-----
->> From: Marc Kleine-Budde [mailto:mkl@pengutronix.de]
->> Sent: lundi 15 janvier 2018 13:53
->> To: St=C3=A9phane Grosjean <s.grosjean@peak-system.com>; linux-can Mai=
-ling
->> List <linux-can@vger.kernel.org>
->> Subject: Re: [PATCH] can: peak/usb: fix potential bug in packet
->> fragmentation
->>
->> On 01/15/2018 11:41 AM, Stephane Grosjean wrote:
->>> In some rare conditions when running one PCAN USB FD interface other =
-a
->>> non high-speed USB controller, one useless USB fragment might be sent=
-=2E
->>> This patch fixes the way an USB command is fragmented when its length=
-
->>> if greater than 64 bytes and when the underlying USB controller is no=
-t
->>> a high-speed one.
->>>
->>> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
->>> ---
->>>  drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 20 +++++++++++---------=
-
->>>  1 file changed, 11 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
->>> b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
->>> index 7ccdc3e30c98..2b03ef0e655d 100644
->>> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
->>> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
->>> @@ -184,7 +184,7 @@ static int pcan_usb_fd_send_cmd(struct
->> peak_usb_device *dev, void *cmd_tail)
->>>  void *cmd_head =3D pcan_usb_fd_cmd_buffer(dev);
->>>  int err =3D 0;
->>>  u8 *packet_ptr;
->>> -int i, n =3D 1, packet_len;
->>> +int packet_len;
->>>  ptrdiff_t cmd_len;
->>>
->>>  /* usb device unregistered? */
->>> @@ -201,17 +201,14 @@ static int pcan_usb_fd_send_cmd(struct
->> peak_usb_device *dev, void *cmd_tail)
->>>  }
->>>
->>>  packet_ptr =3D cmd_head;
->>> +packet_len =3D cmd_len;
->>>
->>>  /* firmware is not able to re-assemble 512 bytes buffer in full-spee=
-d
->> */
->>> -if ((dev->udev->speed !=3D USB_SPEED_HIGH) &&
->>> -    (cmd_len > PCAN_UFD_LOSPD_PKT_SIZE)) {
->>> +if (unlikely(dev->udev->speed !=3D USB_SPEED_HIGH &&
->>> +     packet_len > PCAN_UFD_LOSPD_PKT_SIZE))
->>>  packet_len =3D PCAN_UFD_LOSPD_PKT_SIZE;
->>> -n +=3D cmd_len / packet_len;
->>> -} else {
->>> -packet_len =3D cmd_len;
->>> -}
->>
->> What about using min() instead of open coding it?
->=20
-> The test is:
->=20
-> If (a && (p > K)) then p =3D k;
->=20
-> And you'd like me to change it into:
->=20
-> If (a) then p =3D min(p, K);
->=20
-> Right?
-
-Yes... like this:
-
->> +       if (unlikely(dev->udev->speed !=3D USB_SPEED_HIGH))
->> +               packet_len =3D min(packet_len, PCAN_UFD_LOSPD_PKT_SIZE=
-);
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---bg87yyN6211dC8nL1vI9xrQKrRgYY3YIV--
-
---BYAYDzzciYBFbcXn2Ovrn9w8kjZglJXdY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpcs1oACgkQHv7KIOw4
-HPbtzwf8COhyPeqIlspLGQjLw9PZZkEtpZ3kH4za3wX2G915QMq1UGt2Mj8drDj1
-9BIMMEP2X7sd+zSnxdxWj7Qp9WpNcbtkH1TeslbbBCNkF2DLU7+q9Q2JQEfuBPQr
-/5ZHv0Vpz+tlM4iPKjdE9n9/DH38pSg7JfaoPxWMXNSdIJM+FadOqtcls/bi2u7D
-QILrCrNNZKSeW9cHy76Qn1FaGo704X3V+uANd19XLf5oo817EyhJVn3XusdXl8c0
-cnoDQkM7nY82Q/r78M1ffmVfxGsSGxNGKNxI5CoLHGF+RfUnQ+WSatxw4mhhAva+
-+AhaZaqVxAiwDSbYyOQLC6brp8Tavw==
-=/Y0I
------END PGP SIGNATURE-----
-
---BYAYDzzciYBFbcXn2Ovrn9w8kjZglJXdY--
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyYyBLbGVpbmUtQnVk
+ZGUgW21haWx0bzpta2xAcGVuZ3V0cm9uaXguZGVdDQo+IFNlbnQ6IGx1bmRpIDE1IGphbnZpZXIg
+MjAxOCAxNDo1OA0KPiBUbzogU3TDqXBoYW5lIEdyb3NqZWFuIDxzLmdyb3NqZWFuQHBlYWstc3lz
+dGVtLmNvbT47IGxpbnV4LWNhbiBNYWlsaW5nDQo+IExpc3QgPGxpbnV4LWNhbkB2Z2VyLmtlcm5l
+bC5vcmc+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGNhbjogcGVhay91c2I6IGZpeCBwb3RlbnRp
+YWwgYnVnIGluIHBhY2tldA0KPiBmcmFnbWVudGF0aW9uDQo+DQo+IE9uIDAxLzE1LzIwMTggMDI6
+NTAgUE0sIFN0w6lwaGFuZSBHcm9zamVhbiB3cm90ZToNCj4gPg0KPiA+DQo+ID4+IC0tLS0tT3Jp
+Z2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRlIFttYWlsdG86
+bWtsQHBlbmd1dHJvbml4LmRlXQ0KPiA+PiBTZW50OiBsdW5kaSAxNSBqYW52aWVyIDIwMTggMTM6
+NTMNCj4gPj4gVG86IFN0w6lwaGFuZSBHcm9zamVhbiA8cy5ncm9zamVhbkBwZWFrLXN5c3RlbS5j
+b20+OyBsaW51eC1jYW4NCj4gTWFpbGluZw0KPiA+PiBMaXN0IDxsaW51eC1jYW5Admdlci5rZXJu
+ZWwub3JnPg0KPiA+PiBTdWJqZWN0OiBSZTogW1BBVENIXSBjYW46IHBlYWsvdXNiOiBmaXggcG90
+ZW50aWFsIGJ1ZyBpbiBwYWNrZXQNCj4gPj4gZnJhZ21lbnRhdGlvbg0KPiA+Pg0KPiA+PiBPbiAw
+MS8xNS8yMDE4IDExOjQxIEFNLCBTdGVwaGFuZSBHcm9zamVhbiB3cm90ZToNCj4gPj4+IEluIHNv
+bWUgcmFyZSBjb25kaXRpb25zIHdoZW4gcnVubmluZyBvbmUgUENBTiBVU0IgRkQgaW50ZXJmYWNl
+IG90aGVyDQo+ID4+PiBhIG5vbiBoaWdoLXNwZWVkIFVTQiBjb250cm9sbGVyLCBvbmUgdXNlbGVz
+cyBVU0IgZnJhZ21lbnQgbWlnaHQgYmUNCj4gc2VudC4NCj4gPj4+IFRoaXMgcGF0Y2ggZml4ZXMg
+dGhlIHdheSBhbiBVU0IgY29tbWFuZCBpcyBmcmFnbWVudGVkIHdoZW4gaXRzDQo+ID4+PiBsZW5n
+dGggaWYgZ3JlYXRlciB0aGFuIDY0IGJ5dGVzIGFuZCB3aGVuIHRoZSB1bmRlcmx5aW5nIFVTQg0K
+PiA+Pj4gY29udHJvbGxlciBpcyBub3QgYSBoaWdoLXNwZWVkIG9uZS4NCj4gPj4+DQo+ID4+PiBT
+aWduZWQtb2ZmLWJ5OiBTdGVwaGFuZSBHcm9zamVhbiA8cy5ncm9zamVhbkBwZWFrLXN5c3RlbS5j
+b20+DQo+ID4+PiAtLS0NCj4gPj4+ICBkcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5f
+dXNiX2ZkLmMgfCAyMA0KPiA+Pj4gKysrKysrKysrKystLS0tLS0tLS0NCj4gPj4+ICAxIGZpbGUg
+Y2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkNCj4gPj4+DQo+ID4+PiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9mZC5jDQo+
+ID4+PiBiL2RyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfZmQuYw0KPiA+Pj4g
+aW5kZXggN2NjZGMzZTMwYzk4Li4yYjAzZWYwZTY1NWQgMTAwNjQ0DQo+ID4+PiAtLS0gYS9kcml2
+ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiX2ZkLmMNCj4gPj4+ICsrKyBiL2RyaXZl
+cnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfZmQuYw0KPiA+Pj4gQEAgLTE4NCw3ICsx
+ODQsNyBAQCBzdGF0aWMgaW50IHBjYW5fdXNiX2ZkX3NlbmRfY21kKHN0cnVjdA0KPiA+PiBwZWFr
+X3VzYl9kZXZpY2UgKmRldiwgdm9pZCAqY21kX3RhaWwpDQo+ID4+PiAgdm9pZCAqY21kX2hlYWQg
+PSBwY2FuX3VzYl9mZF9jbWRfYnVmZmVyKGRldik7ICBpbnQgZXJyID0gMDsNCj4gPj4+ICB1OCAq
+cGFja2V0X3B0cjsNCj4gPj4+IC1pbnQgaSwgbiA9IDEsIHBhY2tldF9sZW47DQo+ID4+PiAraW50
+IHBhY2tldF9sZW47DQo+ID4+PiAgcHRyZGlmZl90IGNtZF9sZW47DQo+ID4+Pg0KPiA+Pj4gIC8q
+IHVzYiBkZXZpY2UgdW5yZWdpc3RlcmVkPyAqLw0KPiA+Pj4gQEAgLTIwMSwxNyArMjAxLDE0IEBA
+IHN0YXRpYyBpbnQgcGNhbl91c2JfZmRfc2VuZF9jbWQoc3RydWN0DQo+ID4+IHBlYWtfdXNiX2Rl
+dmljZSAqZGV2LCB2b2lkICpjbWRfdGFpbCkNCj4gPj4+ICB9DQo+ID4+Pg0KPiA+Pj4gIHBhY2tl
+dF9wdHIgPSBjbWRfaGVhZDsNCj4gPj4+ICtwYWNrZXRfbGVuID0gY21kX2xlbjsNCj4gPj4+DQo+
+ID4+PiAgLyogZmlybXdhcmUgaXMgbm90IGFibGUgdG8gcmUtYXNzZW1ibGUgNTEyIGJ5dGVzIGJ1
+ZmZlciBpbg0KPiA+Pj4gZnVsbC1zcGVlZA0KPiA+PiAqLw0KPiA+Pj4gLWlmICgoZGV2LT51ZGV2
+LT5zcGVlZCAhPSBVU0JfU1BFRURfSElHSCkgJiYNCj4gPj4+IC0gICAgKGNtZF9sZW4gPiBQQ0FO
+X1VGRF9MT1NQRF9QS1RfU0laRSkpIHsNCj4gPj4+ICtpZiAodW5saWtlbHkoZGV2LT51ZGV2LT5z
+cGVlZCAhPSBVU0JfU1BFRURfSElHSCAmJg0KPiA+Pj4gKyAgICAgcGFja2V0X2xlbiA+IFBDQU5f
+VUZEX0xPU1BEX1BLVF9TSVpFKSkNCj4gPj4+ICBwYWNrZXRfbGVuID0gUENBTl9VRkRfTE9TUERf
+UEtUX1NJWkU7IC1uICs9IGNtZF9sZW4gLw0KPiBwYWNrZXRfbGVuOw0KPiA+Pj4gLX0gZWxzZSB7
+IC1wYWNrZXRfbGVuID0gY21kX2xlbjsgLX0NCj4gPj4NCj4gPj4gV2hhdCBhYm91dCB1c2luZyBt
+aW4oKSBpbnN0ZWFkIG9mIG9wZW4gY29kaW5nIGl0Pw0KPiA+DQo+ID4gVGhlIHRlc3QgaXM6DQo+
+ID4NCj4gPiBJZiAoYSAmJiAocCA+IEspKSB0aGVuIHAgPSBrOw0KPiA+DQo+ID4gQW5kIHlvdSdk
+IGxpa2UgbWUgdG8gY2hhbmdlIGl0IGludG86DQo+ID4NCj4gPiBJZiAoYSkgdGhlbiBwID0gbWlu
+KHAsIEspOw0KPiA+DQo+ID4gUmlnaHQ/DQo+DQo+IFllcy4uLiBsaWtlIHRoaXM6DQo+DQo+ID4+
+ICsgICAgICAgaWYgKHVubGlrZWx5KGRldi0+dWRldi0+c3BlZWQgIT0gVVNCX1NQRUVEX0hJR0gp
+KQ0KPiA+PiArICAgICAgICAgICAgICAgcGFja2V0X2xlbiA9IG1pbihwYWNrZXRfbGVuLA0KPiA+
+PiArIFBDQU5fVUZEX0xPU1BEX1BLVF9TSVpFKTsNCj4NCg0KWWVwISBPay4gQnV0IGZvciBteSBw
+ZXJzb25hbCBrbm93bGVkZ2UsIHdoYXQgY291bGQgYmUgdGhlIHJlYXNvbj8gSXMgdGhlcmUgYW55
+IGtpbmRhIGdjYyBvcHRpbWl6YXRpb24gYmVoaW5kPw0KDQo+IE1hcmMNCj4NCj4gLS0NCj4gUGVu
+Z3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAg
+ICAgIHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0y
+MzEtMjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwg
+RmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwg
+SFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0KDQotLQ0KUEVBSy1T
+eXN0ZW0gVGVjaG5payBHbWJIDQpTaXR6IGRlciBHZXNlbGxzY2hhZnQgRGFybXN0YWR0IC0gSFJC
+IDkxODMNCkdlc2NoYWVmdHNmdWVocnVuZzogQWxleGFuZGVyIEdhY2ggLyBVd2UgV2lsaGVsbQ0K
+LS0NCg==
