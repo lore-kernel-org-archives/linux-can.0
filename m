@@ -1,80 +1,91 @@
-From: =?utf-8?B?U3TDqXBoYW5lIEdyb3NqZWFu?= <s.grosjean@peak-system.com>
-Subject: RE: [PATCH] can: peak/usb: fix potential bug in packet fragmentation
-Date: Mon, 15 Jan 2018 13:50:18 +0000
-Message-ID: <VI1PR0302MB332549CCF19F5E36A661F7FFD6EB0@VI1PR0302MB3325.eurprd03.prod.outlook.com>
-References: <20180115104141.4352-1-s.grosjean@peak-system.com>
- <51f04cfe-cb9f-b6f8-25a3-8d6df20dfbad@pengutronix.de>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v7 4/8] can: m_can: Move allocation of net device to probe
+Date: Mon, 15 Jan 2018 14:52:35 +0100
+Message-ID: <480602fa-db66-d5c3-056c-e61e5d0f2afa@pengutronix.de>
+References: <1515581725-29242-1-git-send-email-faiz_abbas@ti.com>
+ <1515581725-29242-5-git-send-email-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-he1eur01on0062.outbound.protection.outlook.com ([104.47.0.62]:31064
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S932872AbeAONuW (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 15 Jan 2018 08:50:22 -0500
-In-Reply-To: <51f04cfe-cb9f-b6f8-25a3-8d6df20dfbad@pengutronix.de>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can Mailing List <linux-can@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="akSF5ruHBbcT5gKyb02X5q7S53CezsxV5"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1515581725-29242-5-git-send-email-faiz_abbas-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nsekhar-l0cyMroinI0@public.gmane.org, fcooper-l0cyMroinI0@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Wenyou.Yang-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, b29396-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyYyBLbGVpbmUtQnVk
-ZGUgW21haWx0bzpta2xAcGVuZ3V0cm9uaXguZGVdDQo+IFNlbnQ6IGx1bmRpIDE1IGphbnZpZXIg
-MjAxOCAxMzo1Mw0KPiBUbzogU3TDqXBoYW5lIEdyb3NqZWFuIDxzLmdyb3NqZWFuQHBlYWstc3lz
-dGVtLmNvbT47IGxpbnV4LWNhbiBNYWlsaW5nDQo+IExpc3QgPGxpbnV4LWNhbkB2Z2VyLmtlcm5l
-bC5vcmc+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGNhbjogcGVhay91c2I6IGZpeCBwb3RlbnRp
-YWwgYnVnIGluIHBhY2tldA0KPiBmcmFnbWVudGF0aW9uDQo+DQo+IE9uIDAxLzE1LzIwMTggMTE6
-NDEgQU0sIFN0ZXBoYW5lIEdyb3NqZWFuIHdyb3RlOg0KPiA+IEluIHNvbWUgcmFyZSBjb25kaXRp
-b25zIHdoZW4gcnVubmluZyBvbmUgUENBTiBVU0IgRkQgaW50ZXJmYWNlIG90aGVyIGENCj4gPiBu
-b24gaGlnaC1zcGVlZCBVU0IgY29udHJvbGxlciwgb25lIHVzZWxlc3MgVVNCIGZyYWdtZW50IG1p
-Z2h0IGJlIHNlbnQuDQo+ID4gVGhpcyBwYXRjaCBmaXhlcyB0aGUgd2F5IGFuIFVTQiBjb21tYW5k
-IGlzIGZyYWdtZW50ZWQgd2hlbiBpdHMgbGVuZ3RoDQo+ID4gaWYgZ3JlYXRlciB0aGFuIDY0IGJ5
-dGVzIGFuZCB3aGVuIHRoZSB1bmRlcmx5aW5nIFVTQiBjb250cm9sbGVyIGlzIG5vdA0KPiA+IGEg
-aGlnaC1zcGVlZCBvbmUuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTdGVwaGFuZSBHcm9zamVh
-biA8cy5ncm9zamVhbkBwZWFrLXN5c3RlbS5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbmV0
-L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2JfZmQuYyB8IDIwICsrKysrKysrKysrLS0tLS0tLS0t
-DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQ0K
-PiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91
-c2JfZmQuYw0KPiA+IGIvZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9mZC5j
-DQo+ID4gaW5kZXggN2NjZGMzZTMwYzk4Li4yYjAzZWYwZTY1NWQgMTAwNjQ0DQo+ID4gLS0tIGEv
-ZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9mZC5jDQo+ID4gKysrIGIvZHJp
-dmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYl9mZC5jDQo+ID4gQEAgLTE4NCw3ICsx
-ODQsNyBAQCBzdGF0aWMgaW50IHBjYW5fdXNiX2ZkX3NlbmRfY21kKHN0cnVjdA0KPiBwZWFrX3Vz
-Yl9kZXZpY2UgKmRldiwgdm9pZCAqY21kX3RhaWwpDQo+ID4gIHZvaWQgKmNtZF9oZWFkID0gcGNh
-bl91c2JfZmRfY21kX2J1ZmZlcihkZXYpOw0KPiA+ICBpbnQgZXJyID0gMDsNCj4gPiAgdTggKnBh
-Y2tldF9wdHI7DQo+ID4gLWludCBpLCBuID0gMSwgcGFja2V0X2xlbjsNCj4gPiAraW50IHBhY2tl
-dF9sZW47DQo+ID4gIHB0cmRpZmZfdCBjbWRfbGVuOw0KPiA+DQo+ID4gIC8qIHVzYiBkZXZpY2Ug
-dW5yZWdpc3RlcmVkPyAqLw0KPiA+IEBAIC0yMDEsMTcgKzIwMSwxNCBAQCBzdGF0aWMgaW50IHBj
-YW5fdXNiX2ZkX3NlbmRfY21kKHN0cnVjdA0KPiBwZWFrX3VzYl9kZXZpY2UgKmRldiwgdm9pZCAq
-Y21kX3RhaWwpDQo+ID4gIH0NCj4gPg0KPiA+ICBwYWNrZXRfcHRyID0gY21kX2hlYWQ7DQo+ID4g
-K3BhY2tldF9sZW4gPSBjbWRfbGVuOw0KPiA+DQo+ID4gIC8qIGZpcm13YXJlIGlzIG5vdCBhYmxl
-IHRvIHJlLWFzc2VtYmxlIDUxMiBieXRlcyBidWZmZXIgaW4gZnVsbC1zcGVlZA0KPiAqLw0KPiA+
-IC1pZiAoKGRldi0+dWRldi0+c3BlZWQgIT0gVVNCX1NQRUVEX0hJR0gpICYmDQo+ID4gLSAgICAo
-Y21kX2xlbiA+IFBDQU5fVUZEX0xPU1BEX1BLVF9TSVpFKSkgew0KPiA+ICtpZiAodW5saWtlbHko
-ZGV2LT51ZGV2LT5zcGVlZCAhPSBVU0JfU1BFRURfSElHSCAmJg0KPiA+ICsgICAgIHBhY2tldF9s
-ZW4gPiBQQ0FOX1VGRF9MT1NQRF9QS1RfU0laRSkpDQo+ID4gIHBhY2tldF9sZW4gPSBQQ0FOX1VG
-RF9MT1NQRF9QS1RfU0laRTsNCj4gPiAtbiArPSBjbWRfbGVuIC8gcGFja2V0X2xlbjsNCj4gPiAt
-fSBlbHNlIHsNCj4gPiAtcGFja2V0X2xlbiA9IGNtZF9sZW47DQo+ID4gLX0NCj4NCj4gV2hhdCBh
-Ym91dCB1c2luZyBtaW4oKSBpbnN0ZWFkIG9mIG9wZW4gY29kaW5nIGl0Pw0KDQpUaGUgdGVzdCBp
-czoNCg0KSWYgKGEgJiYgKHAgPiBLKSkgdGhlbiBwID0gazsNCg0KQW5kIHlvdSdkIGxpa2UgbWUg
-dG8gY2hhbmdlIGl0IGludG86DQoNCklmIChhKSB0aGVuIHAgPSBtaW4ocCwgSyk7DQoNClJpZ2h0
-Pw0KDQo+DQo+ICsgICAgICAgaWYgKHVubGlrZWx5KGRldi0+dWRldi0+c3BlZWQgIT0gVVNCX1NQ
-RUVEX0hJR0gpKQ0KPiArICAgICAgICAgICAgICAgcGFja2V0X2xlbiA9IG1pbihwYWNrZXRfbGVu
-LCBQQ0FOX1VGRF9MT1NQRF9QS1RfU0laRSk7DQo+DQo+ID4NCj4gPiAtZm9yIChpID0gMDsgaSA8
-IG47IGkrKykgew0KPiA+ICtkbyB7DQo+ID4gIGVyciA9IHVzYl9idWxrX21zZyhkZXYtPnVkZXYs
-DQo+ID4gICAgIHVzYl9zbmRidWxrcGlwZShkZXYtPnVkZXYsDQo+ID4NCj4gUENBTl9VU0JQUk9f
-RVBfQ01ET1VUKSwNCj4gPiBAQCAtMjI0LDcgKzIyMSwxMiBAQCBzdGF0aWMgaW50IHBjYW5fdXNi
-X2ZkX3NlbmRfY21kKHN0cnVjdA0KPiBwZWFrX3VzYl9kZXZpY2UgKmRldiwgdm9pZCAqY21kX3Rh
-aWwpDQo+ID4gIH0NCj4gPg0KPiA+ICBwYWNrZXRfcHRyICs9IHBhY2tldF9sZW47DQo+ID4gLX0N
-Cj4gPiArY21kX2xlbiAtPSBwYWNrZXRfbGVuOw0KPiA+ICsNCj4gPiAraWYgKGNtZF9sZW4gPCBQ
-Q0FOX1VGRF9MT1NQRF9QS1RfU0laRSkNCj4gPiArcGFja2V0X2xlbiA9IGNtZF9sZW47DQo+ID4g
-Kw0KPiA+ICt9IHdoaWxlIChwYWNrZXRfbGVuID4gMCk7DQo+ID4NCj4gPiAgcmV0dXJuIGVycjsN
-Cj4gPiAgfQ0KPiA+DQo+DQo+IE1hcmMNCj4NCj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAgICAg
-ICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gSW5kdXN0cmlh
-bCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwN
-Cj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0OS01MTIxLTIw
-NjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDov
-L3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0KDQotLQ0KUEVBSy1TeXN0ZW0gVGVjaG5payBHbWJI
-DQpTaXR6IGRlciBHZXNlbGxzY2hhZnQgRGFybXN0YWR0IC0gSFJCIDkxODMNCkdlc2NoYWVmdHNm
-dWVocnVuZzogQWxleGFuZGVyIEdhY2ggLyBVd2UgV2lsaGVsbQ0KLS0NCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--akSF5ruHBbcT5gKyb02X5q7S53CezsxV5
+Content-Type: multipart/mixed; boundary="fXzetqdQFUxgwEebKAG2vX8pQTe08WApW";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+To: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
+ mark.rutland-5wv7dgnIgG8@public.gmane.org
+Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nsekhar-l0cyMroinI0@public.gmane.org,
+ fcooper-l0cyMroinI0@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Wenyou.Yang-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org,
+ sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ b29396-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+Message-ID: <480602fa-db66-d5c3-056c-e61e5d0f2afa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v7 4/8] can: m_can: Move allocation of net device to probe
+References: <1515581725-29242-1-git-send-email-faiz_abbas-l0cyMroinI0@public.gmane.org>
+ <1515581725-29242-5-git-send-email-faiz_abbas-l0cyMroinI0@public.gmane.org>
+In-Reply-To: <1515581725-29242-5-git-send-email-faiz_abbas-l0cyMroinI0@public.gmane.org>
+
+--fXzetqdQFUxgwEebKAG2vX8pQTe08WApW
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 01/10/2018 11:55 AM, Faiz Abbas wrote:
+> With the version no longer required to allocate the net device, it can
+> be moved to probe and the alloc_m_can_dev() function can be simplified.=
+
+>=20
+> Therefore, move the allocation of net device to probe and change
+> alloc_m_can_dev() to setup_m_can_dev().
+
+The error handling is broken with this patch,
+
+Have a look at the switch (priv->version) in setup_m_can_dev(), you free
+the m_can_dev in case of error, but exit with -EINVAL in the beginning
+of the function. setup_m_can_dev() should not free if it doesn't allocate=
+=2E
+
+The error handling in m_can_plat_probe() is broken, too. If
+pm_runtime_get_sync(&pdev->dev) fails, you don't free the candev.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--fXzetqdQFUxgwEebKAG2vX8pQTe08WApW--
+
+--akSF5ruHBbcT5gKyb02X5q7S53CezsxV5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpcsiMACgkQHv7KIOw4
+HPapVggAhxFcJN45S8L15Q5gq5GFHKDUqlHAHfH9J5f7VvfyVBRyejJVduT+UX27
+vgSoGnPaqb5VENFSytlrEwVIWEu1d81m4y58wtdJo2yo0MW3A/ln0QDd+cIVP4CJ
+q9Yfmc2o0/Cb2oNojxjNQWPPAHkc1S20o9TLFoStGOk+Fe2Un32bg7iLfPWAx1z6
+yqsceEu8aidvt9WenHttxuS2KJHp9XyCVVwMCyDDL5vLMwl78HH2NkZR+u3uLzqy
+Z0vwgTVrEGocrDwREVsuFESO9LcTSlRtVYo1kz0PdAMY+liCXwNDYGyi1zyLiNfy
+ncS8Rrd2XTgHf0mTYElLWusWCHBdkg==
+=eFGr
+-----END PGP SIGNATURE-----
+
+--akSF5ruHBbcT5gKyb02X5q7S53CezsxV5--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
