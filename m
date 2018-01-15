@@ -1,116 +1,114 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: peak/usb: fix potential bug in packet fragmentation
-Date: Mon, 15 Jan 2018 13:53:27 +0100
-Message-ID: <51f04cfe-cb9f-b6f8-25a3-8d6df20dfbad@pengutronix.de>
-References: <20180115104141.4352-1-s.grosjean@peak-system.com>
+Subject: Re: pull-request: can-next 2017-12-01
+Date: Mon, 15 Jan 2018 14:02:23 +0100
+Message-ID: <be945e20-d5d5-f786-c9d4-3a3ef97a0292@pengutronix.de>
+References: <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="kxkaU7ItJhkivBJq7SQeEeAhSkFfBtHiq"
+ boundary="hqhGpcBVMxM5OBtyj5TrHv8x6teX1SgWF"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:50491 "EHLO
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:32975 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S966285AbeAOMxu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Jan 2018 07:53:50 -0500
-In-Reply-To: <20180115104141.4352-1-s.grosjean@peak-system.com>
+        with ESMTP id S967261AbeAONCs (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Jan 2018 08:02:48 -0500
+In-Reply-To: <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Stephane Grosjean <s.grosjean@peak-system.com>, linux-can Mailing List <linux-can@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kxkaU7ItJhkivBJq7SQeEeAhSkFfBtHiq
-Content-Type: multipart/mixed; boundary="9HztJf9JeIFUJVhYBpNLcQA8F02D6vqmU";
+--hqhGpcBVMxM5OBtyj5TrHv8x6teX1SgWF
+Content-Type: multipart/mixed; boundary="WOG7jrIcVpfiaUGmwuG8PovDr8T1gziDq";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Stephane Grosjean <s.grosjean@peak-system.com>,
- linux-can Mailing List <linux-can@vger.kernel.org>
-Message-ID: <51f04cfe-cb9f-b6f8-25a3-8d6df20dfbad@pengutronix.de>
-Subject: Re: [PATCH] can: peak/usb: fix potential bug in packet fragmentation
-References: <20180115104141.4352-1-s.grosjean@peak-system.com>
-In-Reply-To: <20180115104141.4352-1-s.grosjean@peak-system.com>
+To: netdev@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <be945e20-d5d5-f786-c9d4-3a3ef97a0292@pengutronix.de>
+Subject: Re: pull-request: can-next 2017-12-01
+References: <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
+In-Reply-To: <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
 
---9HztJf9JeIFUJVhYBpNLcQA8F02D6vqmU
+--WOG7jrIcVpfiaUGmwuG8PovDr8T1gziDq
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 01/15/2018 11:41 AM, Stephane Grosjean wrote:
-> In some rare conditions when running one PCAN USB FD interface other
-> a non high-speed USB controller, one useless USB fragment might be sent=
-=2E
-> This patch fixes the way an USB command is fragmented when its length
-> if greater than 64 bytes and when the underlying USB controller is not =
-a
-> high-speed one.
+Hello David,
+
+
+On 01/05/2018 12:08 PM, Marc Kleine-Budde wrote:
+> Hello David,
 >=20
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-> ---
->  drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 20 +++++++++++---------
->  1 file changed, 11 insertions(+), 9 deletions(-)
+> this is a pull request of 7 patches for net-next/master.
 >=20
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/c=
-an/usb/peak_usb/pcan_usb_fd.c
-> index 7ccdc3e30c98..2b03ef0e655d 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> @@ -184,7 +184,7 @@ static int pcan_usb_fd_send_cmd(struct peak_usb_dev=
-ice *dev, void *cmd_tail)
->  	void *cmd_head =3D pcan_usb_fd_cmd_buffer(dev);
->  	int err =3D 0;
->  	u8 *packet_ptr;
-> -	int i, n =3D 1, packet_len;
-> +	int packet_len;
->  	ptrdiff_t cmd_len;
-> =20
->  	/* usb device unregistered? */
-> @@ -201,17 +201,14 @@ static int pcan_usb_fd_send_cmd(struct peak_usb_d=
-evice *dev, void *cmd_tail)
->  	}
-> =20
->  	packet_ptr =3D cmd_head;
-> +	packet_len =3D cmd_len;
-> =20
->  	/* firmware is not able to re-assemble 512 bytes buffer in full-speed=
- */
-> -	if ((dev->udev->speed !=3D USB_SPEED_HIGH) &&
-> -	    (cmd_len > PCAN_UFD_LOSPD_PKT_SIZE)) {
-> +	if (unlikely(dev->udev->speed !=3D USB_SPEED_HIGH &&
-> +		     packet_len > PCAN_UFD_LOSPD_PKT_SIZE))
->  		packet_len =3D PCAN_UFD_LOSPD_PKT_SIZE;
-> -		n +=3D cmd_len / packet_len;
-> -	} else {
-> -		packet_len =3D cmd_len;
-> -	}
+> All patches are by me. Patch 6 is for the "can_raw" protocol and add
+> error checking to the bind() function. All other patches clean up the
+> coding style and remove unused parameters in various CAN drivers and
+> infrastructure.
 
-What about using min() instead of open coding it?
+this pull request is still open. Any objections to pull this?
 
-+       if (unlikely(dev->udev->speed !=3D USB_SPEED_HIGH))
-+               packet_len =3D min(packet_len, PCAN_UFD_LOSPD_PKT_SIZE);
-
-> =20
-> -	for (i =3D 0; i < n; i++) {
-> +	do {
->  		err =3D usb_bulk_msg(dev->udev,
->  				   usb_sndbulkpipe(dev->udev,
->  						   PCAN_USBPRO_EP_CMDOUT),
-> @@ -224,7 +221,12 @@ static int pcan_usb_fd_send_cmd(struct peak_usb_de=
-vice *dev, void *cmd_tail)
->  		}
-> =20
->  		packet_ptr +=3D packet_len;
-> -	}
-> +		cmd_len -=3D packet_len;
-> +
-> +		if (cmd_len < PCAN_UFD_LOSPD_PKT_SIZE)
-> +			packet_len =3D cmd_len;
-> +
-> +	} while (packet_len > 0);
-> =20
->  	return err;
->  }
->=20
-
+regards,
 Marc
+
+> ---
+>=20
+> The following changes since commit 72deacce011bde7475c90e6ee7d4c7d28c38=
+4873:
+>=20
+>   Merge tag 'mac80211-next-for-davem-2018-01-04' of git://git.kernel.or=
+g/pub/scm/linux/kernel/git/jberg/mac80211-next (2018-01-04 14:33:29 -0500=
+)
+>=20
+> are available in the Git repository at:
+>=20
+>   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-=
+next.git tags/linux-can-next-for-4.16-20180105
+>=20
+> for you to fetch changes up to ff847ee47be27621f978921919f035fcd87d6d08=
+:
+>=20
+>   can: af_can: give struct holding the CAN per device receive lists a s=
+ensible name (2018-01-05 11:12:08 +0100)
+>=20
+> ----------------------------------------------------------------
+> linux-can-next-for-4.16-20180105
+>=20
+> ----------------------------------------------------------------
+> Marc Kleine-Budde (7):
+>       can: rx-offload: can_rx_offload_add_timestamp: remove duplicate s=
+emicolon at return statement
+>       can: gs_usb: gs_cmd_reset(): remove unused parameter "struct gs_u=
+sb *gsusb"
+>       can: mcp251x: mcp251x_setup(): remove unused parameter "struct mc=
+p251x_priv *priv"
+>       can: peak_usb: peak_usb_netif_rx(): remove unused parameter "u32 =
+ts_high"
+>       can: slcan: slc_alloc(): remove unused parameter "dev_t line"
+>       can: raw: raw_bind(): bail out if can_family is not AF_CAN
+>       can: af_can: give struct holding the CAN per device receive lists=
+ a sensible name
+>=20
+>  drivers/net/can/rx-offload.c                 |  2 +-
+>  drivers/net/can/slcan.c                      |  4 ++--
+>  drivers/net/can/spi/mcp251x.c                |  7 +++----
+>  drivers/net/can/usb/gs_usb.c                 |  4 ++--
+>  drivers/net/can/usb/peak_usb/pcan_usb_core.c |  2 +-
+>  drivers/net/can/usb/peak_usb/pcan_usb_core.h |  2 +-
+>  drivers/net/can/usb/peak_usb/pcan_usb_fd.c   |  9 +++------
+>  include/net/netns/can.h                      |  4 ++--
+>  net/can/af_can.c                             | 20 ++++++++++----------=
+
+>  net/can/af_can.h                             |  2 +-
+>  net/can/proc.c                               |  8 ++++----
+>  net/can/raw.c                                |  2 ++
+>  12 files changed, 32 insertions(+), 34 deletions(-)
+>=20
+
 
 --=20
 Pengutronix e.K.                  | Marc Kleine-Budde           |
@@ -119,23 +117,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---9HztJf9JeIFUJVhYBpNLcQA8F02D6vqmU--
+--WOG7jrIcVpfiaUGmwuG8PovDr8T1gziDq--
 
---kxkaU7ItJhkivBJq7SQeEeAhSkFfBtHiq
+--hqhGpcBVMxM5OBtyj5TrHv8x6teX1SgWF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpcpEcACgkQHv7KIOw4
-HPYfdQf+Lx7IjeBa/Hoq36Js4bw99rjSupCr+hfkOLwlMQOUe3OW10w43Shf6Zid
-OhCYQAPxUDY4GLU/i+zEo8Xuqvlx+k8K+9RbXuajKn6Cy/Ucjg/ZjFlSUF7jLKma
-ixkwqQL9Is0VzpvVE73yk0I277ziHNg9G0FuTxrxTc/uLL43F8BEhtDPmJMIEsjv
-AOgrXDzd0JM1SSX2tikblB4RPpaSnboTCxzm46/tSCmomNtrUC8AXlOosFyjQZnf
-jsJbq6vniDxl35nljL9Blxp61s2Rs2qAR9gPFb7M8IXqLPPLSl1KBWIvW6FpXXDX
-OaI4o0vSUP8eNZjLdueXQxFPU9x/Dg==
-=nC4I
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpcpl8ACgkQHv7KIOw4
+HPbrCAf/ab1+nzgNvLiDbyK43LXJ9qDiJsk2olYDjRuhBURF2a5e9cmt+Qi9uT0z
+pzq+YT+61w20/CsOB5ylM1Rc0CSPEgD/eVebZpCy+XGT2/7t2SE/naBo5FYxvnSd
+XwTyhPkkr5qtF+xX0Mqorn2xqaWWWNeWWFDYciDCffFYmGQZ7TbVUwz8U/niDzVh
+cG6SF4Hbojp/VmBmBWcqCoxsTicvmiwFMhwxstsdxqLInn3qNzbrGjfU9274cS9X
+uLZp6lpOa/70wSxPW0X8T8HabfSnrLiEuiaFpjC7A9en1vuJoxEl+zchSJPcN9x2
++DY8oI7+tVO9PbPJnTP1zgbs3B81xg==
+=sZDD
 -----END PGP SIGNATURE-----
 
---kxkaU7ItJhkivBJq7SQeEeAhSkFfBtHiq--
+--hqhGpcBVMxM5OBtyj5TrHv8x6teX1SgWF--
