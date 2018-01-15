@@ -1,77 +1,45 @@
-From: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH v2] can: peak/usb: fix potential bug in packet fragmentation
-Date: Mon, 15 Jan 2018 16:31:19 +0100
-Message-ID: <20180115153119.18847-1-s.grosjean@peak-system.com>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from smtp4-g21.free.fr ([212.27.42.4]:8742 "EHLO smtp4-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S932887AbeAOPb3 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 15 Jan 2018 10:31:29 -0500
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can Mailing List <linux-can@vger.kernel.org>
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can-next 2017-12-01,Re: pull-request: can-next
+ 2017-12-01
+Date: Mon, 15 Jan 2018 12:55:29 -0500 (EST)
+Message-ID: <20180115.125529.1662730568101394452.davem@davemloft.net>
+References: <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
+        <fa3b4f70-3f87-936a-4bbb-fdd0ef97a095@pengutronix.de>
+        <be945e20-d5d5-f786-c9d4-3a3ef97a0292@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <be945e20-d5d5-f786-c9d4-3a3ef97a0292@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-In some rare conditions when running one PEAK USB-FD interface over
-a non high-speed USB controller, one useless USB fragment might be sent.
-This patch fixes the way a USB command is fragmented when its length is
-greater than 64 bytes and when the underlying USB controller is not a
-high-speed one.
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Mon, 15 Jan 2018 14:02:23 +0100
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
----
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+> Hello David,
+> 
+> 
+> On 01/05/2018 12:08 PM, Marc Kleine-Budde wrote:
+>> Hello David,
+>> 
+>> this is a pull request of 7 patches for net-next/master.
+>> 
+>> All patches are by me. Patch 6 is for the "can_raw" protocol and add
+>> error checking to the bind() function. All other patches clean up the
+>> coding style and remove unused parameters in various CAN drivers and
+>> infrastructure.
+> 
+> this pull request is still open. Any objections to pull this?
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 7ccdc3e30c98..53d6bb045e9e 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -184,7 +184,7 @@ static int pcan_usb_fd_send_cmd(struct peak_usb_device *dev, void *cmd_tail)
- 	void *cmd_head = pcan_usb_fd_cmd_buffer(dev);
- 	int err = 0;
- 	u8 *packet_ptr;
--	int i, n = 1, packet_len;
-+	int packet_len;
- 	ptrdiff_t cmd_len;
- 
- 	/* usb device unregistered? */
-@@ -201,17 +201,13 @@ static int pcan_usb_fd_send_cmd(struct peak_usb_device *dev, void *cmd_tail)
- 	}
- 
- 	packet_ptr = cmd_head;
-+	packet_len = cmd_len;
- 
- 	/* firmware is not able to re-assemble 512 bytes buffer in full-speed */
--	if ((dev->udev->speed != USB_SPEED_HIGH) &&
--	    (cmd_len > PCAN_UFD_LOSPD_PKT_SIZE)) {
--		packet_len = PCAN_UFD_LOSPD_PKT_SIZE;
--		n += cmd_len / packet_len;
--	} else {
--		packet_len = cmd_len;
--	}
-+	if (unlikely(dev->udev->speed != USB_SPEED_HIGH))
-+		packet_len = min(packet_len, PCAN_UFD_LOSPD_PKT_SIZE);
- 
--	for (i = 0; i < n; i++) {
-+	do {
- 		err = usb_bulk_msg(dev->udev,
- 				   usb_sndbulkpipe(dev->udev,
- 						   PCAN_USBPRO_EP_CMDOUT),
-@@ -224,7 +220,12 @@ static int pcan_usb_fd_send_cmd(struct peak_usb_device *dev, void *cmd_tail)
- 		}
- 
- 		packet_ptr += packet_len;
--	}
-+		cmd_len -= packet_len;
-+
-+		if (cmd_len < PCAN_UFD_LOSPD_PKT_SIZE)
-+			packet_len = cmd_len;
-+
-+	} while (packet_len > 0);
- 
- 	return err;
- }
--- 
-2.14.1
+You gave me an SSH URL:
 
+	ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-4.16-20180105
+
+Or did you plan to give my your SSH password so that I can pull this? :-)
+
+Please resubmit with a proper git:// URL I can actually pull from.
+
+Thank you.
