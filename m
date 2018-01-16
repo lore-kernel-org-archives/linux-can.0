@@ -1,55 +1,96 @@
-From: Faiz Abbas <faiz_abbas@ti.com>
-Subject: [PATCH v8 1/5] dt-bindings: can: m_can: Document new can transceiver binding
-Date: Tue, 16 Jan 2018 17:07:10 +0530
-Message-ID: <1516102634-6771-2-git-send-email-faiz_abbas@ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v8 4/5] can: m_can: Add PM Support
+Date: Tue, 16 Jan 2018 13:57:40 +0100
+Message-ID: <1b879e98-27a9-8117-c159-5473917a20cb@pengutronix.de>
 References: <1516102634-6771-1-git-send-email-faiz_abbas@ti.com>
+ <1516102634-6771-5-git-send-email-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1516102634-6771-1-git-send-email-faiz_abbas@ti.com>
-Sender: netdev-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, faiz_abbas@ti.com, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, b29396@freescale.com
-List-Id: linux-can.vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="fQSy1vzTJjVNAfH6cYSVa7y0OuKculnJY"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:58815 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751390AbeAPM6Q (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Jan 2018 07:58:16 -0500
+In-Reply-To: <1516102634-6771-5-git-send-email-faiz_abbas@ti.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Faiz Abbas <faiz_abbas@ti.com>, wg@grandegger.com, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, nsekhar@ti.com, fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com, sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org, b29396@freescale.com
 
-From: Franklin S Cooper Jr <fcooper@ti.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--fQSy1vzTJjVNAfH6cYSVa7y0OuKculnJY
+Content-Type: multipart/mixed; boundary="4OZu2jG835O6G0odgoyMGDSztj1ZXGCuF";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Faiz Abbas <faiz_abbas@ti.com>, wg@grandegger.com, robh+dt@kernel.org,
+ mark.rutland@arm.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, nsekhar@ti.com,
+ fcooper@ti.com, robh@kernel.org, Wenyou.Yang@microchip.com,
+ sergei.shtylyov@cogentembedded.com, linux-omap@vger.kernel.org,
+ b29396@freescale.com
+Message-ID: <1b879e98-27a9-8117-c159-5473917a20cb@pengutronix.de>
+Subject: Re: [PATCH v8 4/5] can: m_can: Add PM Support
+References: <1516102634-6771-1-git-send-email-faiz_abbas@ti.com>
+ <1516102634-6771-5-git-send-email-faiz_abbas@ti.com>
+In-Reply-To: <1516102634-6771-5-git-send-email-faiz_abbas@ti.com>
 
-Add information regarding can-transceiver binding. This is especially
-important for MCAN since the IP allows CAN FD mode to run significantly
-faster than what most transceivers are capable of.
+--4OZu2jG835O6G0odgoyMGDSztj1ZXGCuF
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-Signed-off-by: Sekhar Nori <nsekhar@ti.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
----
- Documentation/devicetree/bindings/net/can/m_can.txt | 9 +++++++++
- 1 file changed, 9 insertions(+)
+On 01/16/2018 12:37 PM, Faiz Abbas wrote:
+> Add support for CONFIG_PM which is the new way to handle managing clock=
+s.
+>=20
+> Move the clock management to pm_runtime_resume() and pm_runtime_suspend=
+()
+> callbacks for the driver.
+>=20
+> CONFIG_PM is required by OMAP based devices to handle clock management.=
 
-diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
-index 63e9042..ed61438 100644
---- a/Documentation/devicetree/bindings/net/can/m_can.txt
-+++ b/Documentation/devicetree/bindings/net/can/m_can.txt
-@@ -43,6 +43,11 @@ Required properties:
- 			  Please refer to 2.4.1 Message RAM Configuration in
- 			  Bosch M_CAN user manual for details.
- 
-+Optional Subnode:
-+- can-transceiver	: Can-transceiver subnode describing maximum speed
-+			  that can be used for CAN/CAN-FD modes. See
-+			  Documentation/devicetree/bindings/net/can/can-transceiver.txt
-+			  for details.
- Example:
- SoC dtsi:
- m_can1: can@20e8000 {
-@@ -63,4 +68,8 @@ Board dts:
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_m_can1>;
- 	status = "enabled";
-+
-+	can-transceiver {
-+		max-bitrate = <5000000>;
-+	};
- };
--- 
-2.7.4
+> Therefore, this allows future Texas Instruments SoCs that have the MCAN=
+ IP
+> to work with this driver.
+>=20
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+
+Fixed this while applying:
+
+drivers/net/can/m_can/m_can.c:1752:5: warning: symbol
+'m_can_runtime_suspend' was not declared. Should it be static?
+drivers/net/can/m_can/m_can.c:1763:5: warning: symbol
+'m_can_runtime_resume' was not declared. Should it be static?
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--4OZu2jG835O6G0odgoyMGDSztj1ZXGCuF--
+
+--fQSy1vzTJjVNAfH6cYSVa7y0OuKculnJY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpd9sQACgkQHv7KIOw4
+HPZA1AgAlnOPlE2m2BYrMFtembhrq6db/OpAeDdbmoJZqz3FHhKXx6dT7YMqfQhE
+/PYFvJOgqScwWOpvx+KCW8B4URx9lQfvqbCGPFpQUu2+R4SvEL/0doLmG9GZZFAf
+pY3fjzuDKOfTzjTjopXFpEzfZiAB4Y2dqdm2X0RuCsfw9odzOCbYzxxKY/JKGgvo
+gxtEA82IzhjBktjRVA774p8+DPR2rVaXaBLE6ZZ+T0Bm0FaOuSUtMN2rAOqlcO/v
+QDmA+CBU7ljsnWRNWchnCWdnZ4Axi5zkv37c0dfMrzmWpzz+UlJjcQWGt6K/+d9C
+0IOsrDxH0JgC+9SvxbSTFhCSZ0sj1A==
+=/3d8
+-----END PGP SIGNATURE-----
+
+--fQSy1vzTJjVNAfH6cYSVa7y0OuKculnJY--
