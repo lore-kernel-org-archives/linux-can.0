@@ -1,48 +1,64 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: WARNING in can_rcv
-Date: Tue, 16 Jan 2018 19:11:07 +0100
-Message-ID: <CACT4Y+b0oUPVr7f973ZgBm9rUog=-mRWDFpcr-EzKaGYRnn8mQ@mail.gmail.com>
-References: <001a11c16b40d795350562e878cc@google.com> <a48197ff-9270-8af7-a814-56af53093b3c@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a48197ff-9270-8af7-a814-56af53093b3c@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: syzbot <syzbot+4386709c0c1284dca827@syzkaller.appspotmail.com>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, syzkaller-bugs@googlegroups.com
-List-Id: linux-can.vger.kernel.org
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 1/2] can: af_can: can_rcv(): replace WARN_ONCE by pr_warn_once
+Date: Tue, 16 Jan 2018 19:42:14 +0100
+Message-ID: <20180116184215.8456-1-mkl@pengutronix.de>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:60823 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751070AbeAPSmh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Jan 2018 13:42:37 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: syzkaller-bugs@googlegroups.com, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 
-On Tue, Jan 16, 2018 at 7:07 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 01/16/2018 06:58 PM, syzbot wrote:
->> Hello,
->>
->> syzkaller hit the following crash on
->> a8750ddca918032d6349adbf9a4b6555e7db20da
->> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/master
->> compiler: gcc (GCC) 7.1.1 20170620
->> .config is attached
->> Raw console output is attached.
->> C reproducer is attached
->> syzkaller reproducer is attached. See https://goo.gl/kgGztJ
->> for information about syzkaller reproducers
->>
->>
->> IMPORTANT: if you fix the bug, please add the following tag to the commit:
->> Reported-by: syzbot+4386709c0c1284dca827@syzkaller.appspotmail.com
->> It will help syzbot understand when the bug is fixed. See footer for
->> details.
->> If you forward the report, please keep this part and the footer.
->>
->> device eql entered promiscuous mode
->> ------------[ cut here ]------------
->> PF_CAN: dropped non conform CAN skbuf: dev type 65534, len 42, datalen 0
->> WARNING: CPU: 0 PID: 3650 at net/can/af_can.c:729 can_rcv+0x1c5/0x200
->> net/can/af_can.c:724
->> Kernel panic - not syncing: panic_on_warn set ...
->
-> Invalid packages generate a warning (WARN_ONCE()), and you have
-> panic_on_warn active. Should we better silently drop these CAN packages?
+If an invalid CAN frame is received, from a driver or from a tun
+interface, a Kernel warning is generated.
 
-Hi,
+This patch replaces the WARN_ONCE by a simple pr_warn_once, so that a
+kernel, bootet with panic_on_warn, does not panic. A printk seems to be
+more appropriate here.
 
-pr_warn_once() will be more appropriate. It prints a single line.
+Reported-by: syzbot+4386709c0c1284dca827@syzkaller.appspotmail.com
+Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ net/can/af_can.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
+
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 003b2d6d655f..ae835382e678 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -721,20 +721,16 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
+ {
+ 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 
+-	if (WARN_ONCE(dev->type != ARPHRD_CAN ||
+-		      skb->len != CAN_MTU ||
+-		      cfd->len > CAN_MAX_DLEN,
+-		      "PF_CAN: dropped non conform CAN skbuf: "
+-		      "dev type %d, len %d, datalen %d\n",
+-		      dev->type, skb->len, cfd->len))
+-		goto drop;
++	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU ||
++		     cfd->len > CAN_MAX_DLEN)) {
++		pr_warn_once("PF_CAN: dropped non conform CAN skbuf: dev type %d, len %d, datalen %d\n",
++			     dev->type, skb->len, cfd->len);
++		kfree_skb(skb);
++		return NET_RX_DROP;
++	}
+ 
+ 	can_receive(skb, dev);
+ 	return NET_RX_SUCCESS;
+-
+-drop:
+-	kfree_skb(skb);
+-	return NET_RX_DROP;
+ }
+ 
+ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+-- 
+2.15.1
+
