@@ -1,76 +1,103 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] Add Travis-CI support
-Date: Wed, 17 Jan 2018 16:48:00 +0100
-Message-ID: <8d22bec6-d0f7-78c1-c005-1779bef4e07e@pengutronix.de>
-References: <1516203414-17498-1-git-send-email-yegorslists@googlemail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: WARNING in can_rcv
+Date: Wed, 17 Jan 2018 17:29:05 +0100
+Message-ID: <c26d5474-d990-65cb-c7dc-27a694ae5245@hartkopp.net>
+References: <001a11c16b40d795350562e878cc@google.com>
+ <a48197ff-9270-8af7-a814-56af53093b3c@pengutronix.de>
+ <CACT4Y+b0oUPVr7f973ZgBm9rUog=-mRWDFpcr-EzKaGYRnn8mQ@mail.gmail.com>
+ <48c5623e-de78-5cfa-b537-2acf9a44ae51@hartkopp.net>
+ <20180117071204.GG15527@zzz.localdomain>
+ <dd50dd71-d552-1955-ebab-de1982ec9298@hartkopp.net>
+ <359313e4-6280-8c97-a424-4f962b11c907@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="NovmwAjzANbrI9hw78AyTsCQzrb9SXeVU"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:44597 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751559AbeAQPsZ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 17 Jan 2018 10:48:25 -0500
-In-Reply-To: <1516203414-17498-1-git-send-email-yegorslists@googlemail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: yegorslists@googlemail.com, linux-can@vger.kernel.org
-Cc: o.rempel@pengutronix.de, socketcan@hartkopp.net
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---NovmwAjzANbrI9hw78AyTsCQzrb9SXeVU
-Content-Type: multipart/mixed; boundary="d94AozIL3Gx6jozUC9s7XPXqysovC3BX7";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: yegorslists@googlemail.com, linux-can@vger.kernel.org
-Cc: o.rempel@pengutronix.de, socketcan@hartkopp.net
-Message-ID: <8d22bec6-d0f7-78c1-c005-1779bef4e07e@pengutronix.de>
-Subject: Re: [PATCH v2] Add Travis-CI support
-References: <1516203414-17498-1-git-send-email-yegorslists@googlemail.com>
-In-Reply-To: <1516203414-17498-1-git-send-email-yegorslists@googlemail.com>
-
---d94AozIL3Gx6jozUC9s7XPXqysovC3BX7
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 01/17/2018 04:36 PM, yegorslists@googlemail.com wrote:
-> From: Yegor Yefremov <yegorslists@googlemail.com>
->=20
-> This configuration performs build tests for GCC and Clang
-> compilers.
->=20
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-
-tnx, applied.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <359313e4-6280-8c97-a424-4f962b11c907@pengutronix.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Eric Biggers <ebiggers3@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>, syzbot <syzbot+4386709c0c1284dca827@syzkaller.appspotmail.com>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>, syzkaller-bugs@googlegroups.com
+List-Id: linux-can.vger.kernel.org
 
 
---d94AozIL3Gx6jozUC9s7XPXqysovC3BX7--
 
---NovmwAjzANbrI9hw78AyTsCQzrb9SXeVU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+On 01/17/2018 10:43 AM, Marc Kleine-Budde wrote:
+> On 01/17/2018 09:07 AM, Oliver Hartkopp wrote:
+>>
+>>
+>> On 01/17/2018 08:12 AM, Eric Biggers wrote:
+>>> On Wed, Jan 17, 2018 at 07:39:24AM +0100, Oliver Hartkopp wrote:
+>>>>
+>>>>
+>>>> On 01/16/2018 07:11 PM, Dmitry Vyukov wrote:
+>>>>> On Tue, Jan 16, 2018 at 7:07 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+>>>>>> On 01/16/2018 06:58 PM, syzbot wrote:
+>>>>>>> Hello,
+>>>>>>>
+>>>>>>> syzkaller hit the following crash on
+>>>>>>> a8750ddca918032d6349adbf9a4b6555e7db20da
+>>>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/master
+>>>>>>> compiler: gcc (GCC) 7.1.1 20170620
+>>>>>>> .config is attached
+>>>>>>> Raw console output is attached.
+>>>>>>> C reproducer is attached
+>>>>>>> syzkaller reproducer is attached. See https://goo.gl/kgGztJ
+>>>>>>> for information about syzkaller reproducers
+>>>>>>>
+>>>>>>>
+>>>>>>> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+>>>>>>> Reported-by: syzbot+4386709c0c1284dca827@syzkaller.appspotmail.com
+>>>>>>> It will help syzbot understand when the bug is fixed. See footer for
+>>>>>>> details.
+>>>>>>> If you forward the report, please keep this part and the footer.
+>>>>>>>
+>>>>>>> device eql entered promiscuous mode
+>>>>>>> ------------[ cut here ]------------
+>>>>>>> PF_CAN: dropped non conform CAN skbuf: dev type 65534, len 42, datalen 0
+>>>>>>> WARNING: CPU: 0 PID: 3650 at net/can/af_can.c:729 can_rcv+0x1c5/0x200
+>>>>>>> net/can/af_can.c:724
+>>>>>>> Kernel panic - not syncing: panic_on_warn set ...
+>>>>>>
+>>>>>> Invalid packages generate a warning (WARN_ONCE()), and you have
+>>>>>> panic_on_warn active. Should we better silently drop these CAN packages?
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> pr_warn_once() will be more appropriate. It prints a single line.
+>>>>>
+>>>>
+>>>> The idea behind this WARN() is to detect really bad things that might have
+>>>> happen on network driver level:
+>>>>
+>>>> The CAN subsystem registers with dev_add_pack() for ETH_P_CAN and
+>>>> ETH_P_CANFD only. These ETH_P_ types are only allowed to be created by CAN
+>>>> network devices (like vcan, vxcan, and real CAN drivers).
+>>>>
+>>>> I don't have any strong opinion on using WARN() or pr_warn_once().
+>>>> Is this detected violation worth using WARN(), as something already must
+>>>> have gone really wrong to trigger this issue?
+>>>>
+>>>
+>>> WARN() indicates a kernel bug.  If it's instead "userspace did something
+>>> stupid", or "someone sent some unexpected network packet", it needs to be
+>>> pr_warn_once(), pr_warn_ratelimited(), or removed entirely.
+>>
+>> Ok. Thanks for the explanation!
+>> It is "some bogus network driver sent something unexpected" - but that
+>> does not harm the entire system.
+>>
+>> pr_warn_once() seems the right way to go then.
+> 
+> Is this an Acked-by for both patches?
+> 
 
------BEGIN PGP SIGNATURE-----
+Yes :-)
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpfcDAACgkQHv7KIOw4
-HPZ1jwf+K/LBsE8KTak010Zar4Bv7igti/8gugvjub9BaO9sZo6XSp47msf6da28
-r0cEi2Hb0jRZ2Jz9mePMphLTTkeAxz+0j53sJmGIpMIhGb/bX/fANKOi5pB41V3Q
-C/qbgoFzy9q60MUjMauv+xHAE9SjWR1XODtKqAFvYCO5fV4TD6kl/RqYh+6hz0XZ
-cRDFVDsRcD1te02JTRn5y4aLZlB3MSU2O2AJwdK8n0Z6b8lzfueqHsKhgxj88BK5
-X5WnAFcG71HsMY0Weuv3yCd81rX6x2WLPDg822IEkIv5xpVWzKP33LOazPSQBK+y
-BGGIjDmow7jYx2zuZiwNmA8yu/mFoQ==
-=tHCf
------END PGP SIGNATURE-----
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
---NovmwAjzANbrI9hw78AyTsCQzrb9SXeVU--
+I just did not expect that you wanted to update the patches before 
+sending ...
+
+Thanks,
+Oliver
