@@ -1,60 +1,119 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: [PATCH v2 1/3] can: cc770: Remove redundant IRQ ack
-Date: Tue, 30 Jan 2018 16:56:47 +0000
-Message-ID: <20180130165649.22732-1-andri.yngvason@marel.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] Add Travis-CI support
+Date: Wed, 17 Jan 2018 15:57:53 +0100
+Message-ID: <1221aaf3-b884-6467-90c6-cff7beacf58c@pengutronix.de>
+References: <1516199605-28980-1-git-send-email-yegorslists@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="7dltW6X0024Ga3coQSFJka2726wHUmi9I"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ve1eur01on0089.outbound.protection.outlook.com ([104.47.1.89]:31424
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1752104AbeA3Q50 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 30 Jan 2018 11:57:26 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:33733 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753142AbeAQO6S (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 17 Jan 2018 09:58:18 -0500
+In-Reply-To: <1516199605-28980-1-git-send-email-yegorslists@googlemail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: mkl@pengutronix.de, wg@grandegger.com, sigurbjorn.narfason@marel.com, hrafnkell.eiriksson@marel.com, patric.thysell@br-automation.com, Andri Yngvason <andri.yngvason@marel.com>
+To: yegorslists@googlemail.com, linux-can@vger.kernel.org
+Cc: o.rempel@pengutronix.de, socketcan@hartkopp.net
 
-This has been reported to cause stalls on rt-linux.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7dltW6X0024Ga3coQSFJka2726wHUmi9I
+Content-Type: multipart/mixed; boundary="Z833ic0XWtsufpKX93wcWKSWxLgJX1UjZ";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: yegorslists@googlemail.com, linux-can@vger.kernel.org
+Cc: o.rempel@pengutronix.de, socketcan@hartkopp.net
+Message-ID: <1221aaf3-b884-6467-90c6-cff7beacf58c@pengutronix.de>
+Subject: Re: [PATCH] Add Travis-CI support
+References: <1516199605-28980-1-git-send-email-yegorslists@googlemail.com>
+In-Reply-To: <1516199605-28980-1-git-send-email-yegorslists@googlemail.com>
 
-Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
----
- drivers/net/can/cc770/cc770.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+--Z833ic0XWtsufpKX93wcWKSWxLgJX1UjZ
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index 1e37313..9fed163 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -447,15 +447,6 @@ static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 
- 	stats->tx_bytes += dlc;
- 
--
--	/*
--	 * HM: We had some cases of repeated IRQs so make sure the
--	 * INT is acknowledged I know it's already further up, but
--	 * doing again fixed the issue
--	 */
--	cc770_write_reg(priv, msgobj[mo].ctrl0,
--			MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
--
- 	return NETDEV_TX_OK;
- }
- 
-@@ -684,12 +675,6 @@ static void cc770_tx_interrupt(struct net_device *dev, unsigned int o)
- 	/* Nothing more to send, switch off interrupts */
- 	cc770_write_reg(priv, msgobj[mo].ctrl0,
- 			MSGVAL_RES | TXIE_RES | RXIE_RES | INTPND_RES);
--	/*
--	 * We had some cases of repeated IRQ so make sure the
--	 * INT is acknowledged
--	 */
--	cc770_write_reg(priv, msgobj[mo].ctrl0,
--			MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
- 
- 	stats->tx_packets++;
- 	can_get_echo_skb(dev, 0);
--- 
-1.9.1
+On 01/17/2018 03:33 PM, yegorslists@googlemail.com wrote:
+> From: Yegor Yefremov <yegorslists@googlemail.com>
+>=20
+> This configuration performs build tests for GCC and Clang
+> compilers.
+>=20
+> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
 
+Nice!
+
+For reasons we have non autotools based compilation, too. Can you use
+this one, too?
+
+It's just "make" without prior autogen.sh && configure
+
+> ---
+>  .travis.yml | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>  create mode 100644 .travis.yml
+>=20
+> diff --git a/.travis.yml b/.travis.yml
+> new file mode 100644
+> index 0000000..0a7cfc4
+> --- /dev/null
+> +++ b/.travis.yml
+> @@ -0,0 +1,24 @@
+> +language: c
+> +
+> +matrix:
+> +    include:
+> +        - os: linux
+> +          dist: trusty
+> +          sudo: required
+> +          compiler: gcc
+> +        - os: linux
+> +          dist: trusty
+> +          sudo: required
+> +          compiler: clang
+> +
+> +addons:
+> +    apt:
+> +        packages:
+> +            - autoconf
+> +            - automake
+> +            - libtool
+> +            - m4
+> +        sources:
+> +            - ubuntu-toolchain-r-test
+> +
+> +script: ./autogen.sh && ./configure && make
+
+make distcheck
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--Z833ic0XWtsufpKX93wcWKSWxLgJX1UjZ--
+
+--7dltW6X0024Ga3coQSFJka2726wHUmi9I
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpfZHEACgkQHv7KIOw4
+HPYOQwgAnBmDf4zF9vb7ouE8Fp9zK7EelXoszZ+yBHWxOE52oaZSRKzjY4kbKmKy
+YOeppd5r8oqSm6SvXsAh3rk4mhSsRTZ/wjqj3NPt8fLrP7YhbapcjeZIlUQ4f52k
+wfSFwlAIGjdIDj5XAYYPmQcG4YCROKizDaiiApCsvf4UAszqJlLZkLY3ZLtwEXYf
+Uk0Rp+9SNLyKqJohsBW037/KYPAW0pKH/pySv3FoykxrXIJGU7w1BBzAD/dH8jby
+jrccnsns/Y4uXkukY+CLSUdZq9ByacSFv+dnjyZ1g+GSUqg4UdgYaKPtoRKZC96A
+DEKvQFH9QnF6M2JapfKeyVyiQqVqwA==
+=NCJa
+-----END PGP SIGNATURE-----
+
+--7dltW6X0024Ga3coQSFJka2726wHUmi9I--
