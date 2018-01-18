@@ -1,49 +1,66 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2018-01-18
-Date: Thu, 18 Jan 2018 11:15:05 +0100
-Message-ID: <20180118101507.17943-1-mkl@pengutronix.de>
+From: =?UTF-8?Q?R=c3=a9my_Dziemiaszko?= <remy.dziemiaszko@smile.fr>
+Subject: Re: j1939 ACL
+Date: Thu, 18 Jan 2018 13:01:51 +0100
+Message-ID: <a27d8272-a796-2261-449e-1407158566c3@smile.fr>
+References: <20180118094040.tkfgprblq5zxrzin@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:49055 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755495AbeARKPf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 18 Jan 2018 05:15:35 -0500
+Received: from idris.smile.fr ([91.216.209.19]:52085 "EHLO idris.smile.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1755137AbeARMBx (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 18 Jan 2018 07:01:53 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by idris.smile.fr (Postfix) with ESMTP id 2356C1EE174B
+        for <linux-can@vger.kernel.org>; Thu, 18 Jan 2018 13:01:52 +0100 (CET)
+Received: from idris.smile.fr ([127.0.0.1])
+        by localhost (bluemind-mta.prod.vitry.intranet [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id nXnUcDREvcwa for <linux-can@vger.kernel.org>;
+        Thu, 18 Jan 2018 13:01:52 +0100 (CET)
+Received: from [192.168.0.48] (lep60-1-78-225-8-236.fbx.proxad.net [78.225.8.236])
+        by idris.smile.fr (Postfix) with ESMTPSA id E9B241EE16E1
+        for <linux-can@vger.kernel.org>; Thu, 18 Jan 2018 13:01:51 +0100 (CET)
+In-Reply-To: <20180118094040.tkfgprblq5zxrzin@pengutronix.de>
+Content-Language: fr
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: linux-can@vger.kernel.org
 
-Hello David,
+> Hi all,
+Hi Oleksij,
+> what is the proper or expected way for j1939 ACL (address claiming)?
+>
+> Should it be done by automatically by kernel? Are there any existing
+> examples?
+The address claiming is not under the responsibility of the kernel but 
+under responsibility of user space.
+You should have a look and play with the jacd daemon that implements the 
+Address Claiming procedure for you (see [1]).
+> Is this a correct ACL message?
+> source address: for example 0x80
+> PGN: 0xee00
+> DATA: NAME
+Yes that is correct but do not forget to set the destination adresse to 
+"everybody" (0xFF)
 
-this is a pull reqeust of two patches for net/master:
+Here is an example of Address Claim sequence where device 
+AAAAAAAAAAAAAAAA enters the network and device BBBBBBBBBBBBBBBB already 
+have address 0xAA:
 
-The syzkaller project triggered two WARN_ONCE() in the af_can code from
-userspace and we decided to replace it by a pr_warn_once().
+(1516110467.317706) can0 18EAFFFE#00EE00 ------------> Device 
+AAAAAAAAAAAAAAAA asks for addresses of all other devices on the network
+(1516110467.329943) can0 18EEFFAA#BBBBBBBBBBBBBBBB --> Device 
+BBBBBBBBBBBBBBBB says it has address 0xAA
+(1516110468.568107) can0 18EEFFAA#AAAAAAAAAAAAAAAA --> Device 
+AAAAAAAAAAAAAAAA claims address 0xAA. That is allowed because his device 
+name has an higher priority.
+(1516110468.576132) can0 18EEFFAB#BBBBBBBBBBBBBBBB --> Device 
+BBBBBBBBBBBBBBBB claims another address.
 
-regards,
-Marc
+Regards
 
----
+Rémy
 
-The following changes since commit ad9294dbc227cbc8e173b3b963e7dd9af5314f77:
-
-  bpf: fix cls_bpf on filter replace (2018-01-17 17:14:06 -0500)
-
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.15-20180118
-
-for you to fetch changes up to d4689846881d160a4d12a514e991a740bcb5d65a:
-
-  can: af_can: canfd_rcv(): replace WARN_ONCE by pr_warn_once (2018-01-18 09:32:54 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-4.15-20180118
-
-----------------------------------------------------------------
-Marc Kleine-Budde (2):
-      can: af_can: can_rcv(): replace WARN_ONCE by pr_warn_once
-      can: af_can: canfd_rcv(): replace WARN_ONCE by pr_warn_once
-
- net/can/af_can.c | 36 ++++++++++++++----------------------
- 1 file changed, 14 insertions(+), 22 deletions(-)
+[1] https://github.com/kurt-vd/can-utils/blob/j1939-v6/jacd.c
 
