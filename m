@@ -1,43 +1,67 @@
-From: Oleksij Rempel <ore@pengutronix.de>
-Subject: j1939 ACL
-Date: Thu, 18 Jan 2018 10:40:40 +0100
-Message-ID: <20180118094040.tkfgprblq5zxrzin@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 2/2] can: af_can: canfd_rcv(): replace WARN_ONCE by pr_warn_once
+Date: Thu, 18 Jan 2018 11:15:07 +0100
+Message-ID: <20180118101507.17943-3-mkl@pengutronix.de>
+References: <20180118101507.17943-1-mkl@pengutronix.de>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:41055 "EHLO
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:35645 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755002AbeARJkm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 18 Jan 2018 04:40:42 -0500
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1ec6ga-0005M2-Ov
-        for linux-can@vger.kernel.org; Thu, 18 Jan 2018 10:40:40 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1ec6ga-0003BL-GR
-        for linux-can@vger.kernel.org; Thu, 18 Jan 2018 10:40:40 +0100
-Content-Disposition: inline
+        with ESMTP id S1755577AbeARKPg (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 Jan 2018 05:15:36 -0500
+In-Reply-To: <20180118101507.17943-1-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 
-Hi all,
+If an invalid CANFD frame is received, from a driver or from a tun
+interface, a Kernel warning is generated.
 
-what is the proper or expected way for j1939 ACL (address claiming)?
+This patch replaces the WARN_ONCE by a simple pr_warn_once, so that a
+kernel, bootet with panic_on_warn, does not panic. A printk seems to be
+more appropriate here.
 
-Should it be done by automatically by kernel? Are there any existing
-examples?
+Reported-by: syzbot+e3b775f40babeff6e68b@syzkaller.appspotmail.com
+Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ net/can/af_can.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-Is this a correct ACL message?
-source address: for example 0x80
-PGN: 0xee00
-DATA: NAME
-
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index ae835382e678..4d7f988a3130 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -738,20 +738,16 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+ {
+ 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 
+-	if (WARN_ONCE(dev->type != ARPHRD_CAN ||
+-		      skb->len != CANFD_MTU ||
+-		      cfd->len > CANFD_MAX_DLEN,
+-		      "PF_CAN: dropped non conform CAN FD skbuf: "
+-		      "dev type %d, len %d, datalen %d\n",
+-		      dev->type, skb->len, cfd->len))
+-		goto drop;
++	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU ||
++		     cfd->len > CANFD_MAX_DLEN)) {
++		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuf: dev type %d, len %d, datalen %d\n",
++			     dev->type, skb->len, cfd->len);
++		kfree_skb(skb);
++		return NET_RX_DROP;
++	}
+ 
+ 	can_receive(skb, dev);
+ 	return NET_RX_SUCCESS;
+-
+-drop:
+-	kfree_skb(skb);
+-	return NET_RX_DROP;
+ }
+ 
+ /*
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.15.1
+
