@@ -1,24 +1,43 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2018-01-16
-Date: Wed, 17 Jan 2018 16:10:16 -0500 (EST)
-Message-ID: <20180117.161016.291563924944308590.davem@davemloft.net>
-References: <20180116143911.20783-1-mkl@pengutronix.de>
+From: Oleksij Rempel <ore@pengutronix.de>
+Subject: j1939 ACL
+Date: Thu, 18 Jan 2018 10:40:40 +0100
+Message-ID: <20180118094040.tkfgprblq5zxrzin@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180116143911.20783-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:41055 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755002AbeARJkm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 Jan 2018 04:40:42 -0500
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1ec6ga-0005M2-Ov
+        for linux-can@vger.kernel.org; Thu, 18 Jan 2018 10:40:40 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1ec6ga-0003BL-GR
+        for linux-can@vger.kernel.org; Thu, 18 Jan 2018 10:40:40 +0100
+Content-Disposition: inline
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Tue, 16 Jan 2018 15:39:10 +0100
+Hi all,
 
-> this is a pull reqeust of a single patch for net/master:
-> 
-> This patch by Stephane Grosjean fixes a potential bug in the packet
-> fragmentation in the peak USB driver.
+what is the proper or expected way for j1939 ACL (address claiming)?
 
-Pulled, thanks.
+Should it be done by automatically by kernel? Are there any existing
+examples?
+
+Is this a correct ACL message?
+source address: for example 0x80
+PGN: 0xee00
+DATA: NAME
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
