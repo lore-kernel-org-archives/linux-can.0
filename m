@@ -1,94 +1,70 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2018-01-16
-Date: Fri, 19 Jan 2018 10:48:11 +0100
-Message-ID: <b75aff2f-96a5-8bce-b4a8-cf1e9b1df8ad@pengutronix.de>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: Re: j1939 ACL
+Date: Fri, 19 Jan 2018 12:14:09 +0100
+Message-ID: <dee45c8c-6816-aa18-4fde-fd5f2239c62d@pengutronix.de>
+References: <20180118094040.tkfgprblq5zxrzin@pengutronix.de>
+ <53295b55-bf98-4a59-08d2-ce19516e9084@smile.fr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="VjGw25ublRgcCiXkO0D8NYk1EnIkBVkx9"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---VjGw25ublRgcCiXkO0D8NYk1EnIkBVkx9
-Content-Type: multipart/mixed; boundary="xJ8mw5kQZlv9h0O8AQ7EMFy2khLIwi77d";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org
-Message-ID: <b75aff2f-96a5-8bce-b4a8-cf1e9b1df8ad@pengutronix.de>
-Subject: pull-request: can-next 2018-01-16
-
---xJ8mw5kQZlv9h0O8AQ7EMFy2khLIwi77d
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:46951 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754070AbeASLOL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 19 Jan 2018 06:14:11 -0500
+In-Reply-To: <53295b55-bf98-4a59-08d2-ce19516e9084@smile.fr>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: =?UTF-8?Q?R=c3=a9my_Dziemiaszko?= <remy.dziemiaszko@smile.fr>, Oleksij Rempel <ore@pengutronix.de>, linux-can@vger.kernel.org
 
-Hello David,
+Hi
 
-this is a pull request for net-next/master consisting of 1 patch.
+thank you all!
 
-This patch by Arnd Bergmann for the m_can driver silences a compiler
-warning if CONFIG_PM is not selected.
+after playing with jacd i have a bit more questions:
+- do any one already using kernel j1939? any suggestions or request for
+changes?
+- is jacd used for productions systems? is it enough to have it in the
+usersapce? timing issues?
+- how address and naming are synced between applications?
 
-regards,
-Marc
-
----
-
-The following changes since commit ef58ca38dbda0642e293bcaa2e05edc79677c6=
-17:
-
-  net/sched/sch_prio.c: work around gcc-4.4.4 union initializer issues (2=
-018-01-18 21:11:31 -0500)
-
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-ne=
-xt.git tags/linux-can-next-for-4.16-20180119
-
-for you to fetch changes up to 58359193193c4261d340b2f7f028e5096d4e4d15:
-
-  can: m_can: mark runtime-PM handlers as __maybe_unused (2018-01-19 10:4=
-1:15 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-4.16-20180119
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      can: m_can: mark runtime-PM handlers as __maybe_unused
-
- drivers/net/can/m_can/m_can.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---xJ8mw5kQZlv9h0O8AQ7EMFy2khLIwi77d--
-
---VjGw25ublRgcCiXkO0D8NYk1EnIkBVkx9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlphvtsACgkQHv7KIOw4
-HPat8Qf/XRMpc1SeDJeq6aRg6IHqQaNdC4AWZ+sulMJgeNw1JHsa1n5JmjfIEIB5
-vj6AqO0SwF6JU/H4vNXjMkl1VfjrsDwcQHf22SNt8U369Je2dq9cDe42uulmrfug
-pgz656oZy6caAAn6qr1u5RHLC+UPGKAgHoXB+o69RY84JHnsPGux8zaLjmmLbvG/
-9oga4D+MIHwV/Sgc7xK5xqmVQNLwEjWPceR2jiGrDivUAFU/0XQ6qfAiEwpGpm86
-cl1wU9iutepGHyDpS2wEuecFt8j4RBRGxSntQroMgEl0b6SI3stkkkffz0tLhK9u
-g9oZdy9tV2EnFLqJY//XqvAED/fhpw==
-=BMeJ
------END PGP SIGNATURE-----
-
---VjGw25ublRgcCiXkO0D8NYk1EnIkBVkx9--
+On 18.01.2018 12:49, Rémy Dziemiaszko wrote:
+> Le 18/01/2018 à 10:40, Oleksij Rempel a écrit :
+>> Hi all,
+> Hi Oleksij,
+>> what is the proper or expected way for j1939 ACL (address claiming)?
+>>
+>> Should it be done by automatically by kernel? Are there any existing
+>> examples?
+> The address claiming is not under the responsibility of the kernel but
+> under responsibility of user space.
+> You should have a look and play with the jacd daemon that implements the
+> Address Claiming procedure for you (see [1]).
+>> Is this a correct ACL message?
+>> source address: for example 0x80
+>> PGN: 0xee00
+>> DATA: NAME
+> Yes that is correct but do not forget to set the destination adresse to
+> "everybody" (0xFF)
+> 
+> Here is an example of Address Claim sequence where device
+> AAAAAAAAAAAAAAAA enters the network and device BBBBBBBBBBBBBBBB already
+> have address 0xAA:
+> 
+> (1516110467.317706) can0 18EAFFFE#00EE00 ------------> Device
+> AAAAAAAAAAAAAAAA asks for addresses of all other devices on the network
+> (1516110467.329943) can0 18EEFFAA#BBBBBBBBBBBBBBBB --> Device
+> BBBBBBBBBBBBBBBB says it has address 0xAA
+> (1516110468.568107) can0 18EEFFAA#AAAAAAAAAAAAAAAA --> Device
+> AAAAAAAAAAAAAAAA claims address 0xAA. That is allowed because his device
+> name has an higher priority.   
+> (1516110468.576132) can0 18EEFFAB#BBBBBBBBBBBBBBBB --> Device
+> BBBBBBBBBBBBBBBB claims another address.
+> 
+> Regards
+> 
+> Rémy
+> 
+> [1] https://github.com/kurt-vd/can-utils/blob/j1939-v6/jacd.c
+> 
