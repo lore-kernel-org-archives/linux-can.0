@@ -1,45 +1,69 @@
-From: Austin Schuh <austin@peloton-tech.com>
-Subject: Re: j1939 ACL
-Date: Fri, 19 Jan 2018 09:49:34 -0800
-Message-ID: <CANGgnMauq7P1JbOF0jRksC1whJF9u4Cu=AuMVDoK6-wVEdgGSw@mail.gmail.com>
-References: <20180118094040.tkfgprblq5zxrzin@pengutronix.de>
- <53295b55-bf98-4a59-08d2-ce19516e9084@smile.fr> <dee45c8c-6816-aa18-4fde-fd5f2239c62d@pengutronix.de>
+From: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Subject: Re: [PATCH V2 0/3] Microchip mcp25xxfd can controller driver
+Date: Sat, 20 Jan 2018 09:44:01 +0100
+Message-ID: <11b290bb586b37cde79599293a5ef0f4@gerhard-bertelsmann.de>
+References: <20180119074140.25931-1-kernel@martin.sperl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-yw0-f172.google.com ([209.85.161.172]:44145 "EHLO
-        mail-yw0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932305AbeASRt4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 19 Jan 2018 12:49:56 -0500
-Received: by mail-yw0-f172.google.com with SMTP id x62so919366ywg.11
-        for <linux-can@vger.kernel.org>; Fri, 19 Jan 2018 09:49:55 -0800 (PST)
-In-Reply-To: <dee45c8c-6816-aa18-4fde-fd5f2239c62d@pengutronix.de>
+Received: from mail.rdts.de ([195.243.153.28]:38470 "EHLO mail.rdts.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751055AbeATIw0 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 20 Jan 2018 03:52:26 -0500
+In-Reply-To: <20180119074140.25931-1-kernel@martin.sperl.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: =?UTF-8?Q?R=C3=A9my_Dziemiaszko?= <remy.dziemiaszko@smile.fr>, Oleksij Rempel <ore@pengutronix.de>, linux-can <linux-can@vger.kernel.org>
+To: Linux Can <linux-can@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>, Mark Kleine-Budde <mkl@pengutronix.de>
+Cc: kernel@martin.sperl.org
 
-On Fri, Jan 19, 2018 at 3:14 AM, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> Hi
->
-> thank you all!
->
-> after playing with jacd i have a bit more questions:
-> - do any one already using kernel j1939? any suggestions or request for
-> changes?
+Hi,
 
-We've got a userspace version which predates the kernel version.  At
-this point, it's too hard for us to change.
+many thanks Martin for the update. The code works flawlesly here
+in a mixed environment with a manual setup of the timing parameters.
+I had to setup the timing by hand to get it working with all my CAN
+bus members (250kb):
 
-> - is jacd used for productions systems? is it enough to have it in the
-> usersapce? timing issues?
+ip link set can0 up type can tq 250 prop-seg 6 phase-seg1 7 phase-seg2 2 
+sjw 1
 
-It's been a couple years since I read the relevant parts of the
-standard in detail, but IIRC, you are supposed to send out a RQST for
-the ACL to the source address you are trying to claim.  You then wait
-1.25 seconds and send out your ACL.  You then have the address if
-nobody sends back an ACL within 0.25 seconds.
+I need to do this because the kernel CAN bit timing calculation has
+imho a problem with wide range timing parameters. Here the calculation
+based on the Kernel algorithm (used an extended can-calc-bit-timnig):
 
-Those timeouts are very long.  Userspace can hit them without any issue.
+Bit timing parameters for mcp2517fd with 40.000000 MHz ref clock
+nominal                                 real Bitrt   nom  real SampP
+Bitrate TQ[ns] PrS PhS1 PhS2 SJW BRP Bitrate Error SampP SampP Error 
+CiNBTCFG
+1000000     25  14   15   10   1   1 1000000  0.0% 75.0% 75.0%  0.0% 
+0x001c0900
+  800000     25  19   20   10   1   1  800000  0.0% 80.0% 80.0%  0.0% 
+0x00260900
+  500000     25  34   35   10   1   1  500000  0.0% 87.5% 87.5%  0.0% 
+0x00440900
+  250000     25  69   70   20   1   1  250000  0.0% 87.5% 87.5%  0.0% 
+0x008a1300
+  125000     50  69   70   20   1   2  125000  0.0% 87.5% 87.5%  0.0% 
+0x018a1300
+  100000     50  87   87   25   1   2  100000  0.0% 87.5% 87.5%  0.0% 
+0x01ad1800
+   50000    100  87   87   25   1   4   50000  0.0% 87.5% 87.5%  0.0% 
+0x03ad1800
+   20000    250  87   87   25   1  10   20000  0.0% 87.5% 87.5%  0.0% 
+0x09ad1800
+   10000    500  87   87   25   1  20   10000  0.0% 87.5% 87.5%  0.0% 
+0x13ad1800
 
-Austin
+The kernel algorithm try to use the smallest SYNC_SEG (-> SJW) to
+calculate the other values. But a tq of 25 ns seems to be to small
+for the synchonization segment on a mixed 50kb environment.
+I've read a bunch of different CAN bit timing docs and they are talking
+about 16 or 20 time quantas.
+
+Anyway the mcp25xxfd kernel module works:
+
+Tested-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+
+
+
