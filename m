@@ -1,63 +1,68 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: j1939 ACL
-Date: Mon, 22 Jan 2018 10:12:37 +0100
-Message-ID: <239f9ce7-9a1d-1907-e714-c6a9cade80fe@pengutronix.de>
-References: <20180118094040.tkfgprblq5zxrzin@pengutronix.de>
- <53295b55-bf98-4a59-08d2-ce19516e9084@smile.fr>
- <dee45c8c-6816-aa18-4fde-fd5f2239c62d@pengutronix.de>
- <20180120212809.GB3515@airbook.vandijck-laurijssen.be>
+Subject: Re: [PATCH 1/2] [stable pre-4.12] can: af_can: can_rcv(): replace
+ WARN_ONCE by pr_warn_once
+Date: Mon, 22 Jan 2018 14:48:06 +0100
+Message-ID: <0c937dd9-8b39-adf0-1495-a50bc71c1012@pengutronix.de>
+References: <20180122134447.4533-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="I20UOdR0WdRhfHyLDVfMXjPKontXEw5Ml"
+ boundary="HrhCPDHGRu0a4txmhhNYeKMbWlsYu4n8r"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:54979 "EHLO
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:48901 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752267AbeAVJNE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 22 Jan 2018 04:13:04 -0500
-In-Reply-To: <20180120212809.GB3515@airbook.vandijck-laurijssen.be>
+        with ESMTP id S1751004AbeAVNsf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 22 Jan 2018 08:48:35 -0500
+In-Reply-To: <20180122134447.4533-1-socketcan@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oleksij Rempel <o.rempel@pengutronix.de>, =?UTF-8?Q?R=c3=a9my_Dziemiaszko?= <remy.dziemiaszko@smile.fr>, Oleksij Rempel <ore@pengutronix.de>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can <linux-can@vger.kernel.org>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---I20UOdR0WdRhfHyLDVfMXjPKontXEw5Ml
-Content-Type: multipart/mixed; boundary="ckfqSENpZbZirYZEHC6ZwXst33zyHjsZE";
+--HrhCPDHGRu0a4txmhhNYeKMbWlsYu4n8r
+Content-Type: multipart/mixed; boundary="HOPVsLHAJOcWYbqClDDuFy8OqouPbgZqf";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oleksij Rempel <o.rempel@pengutronix.de>,
- =?UTF-8?Q?R=c3=a9my_Dziemiaszko?= <remy.dziemiaszko@smile.fr>,
- Oleksij Rempel <ore@pengutronix.de>, linux-can@vger.kernel.org
-Message-ID: <239f9ce7-9a1d-1907-e714-c6a9cade80fe@pengutronix.de>
-Subject: Re: j1939 ACL
-References: <20180118094040.tkfgprblq5zxrzin@pengutronix.de>
- <53295b55-bf98-4a59-08d2-ce19516e9084@smile.fr>
- <dee45c8c-6816-aa18-4fde-fd5f2239c62d@pengutronix.de>
- <20180120212809.GB3515@airbook.vandijck-laurijssen.be>
-In-Reply-To: <20180120212809.GB3515@airbook.vandijck-laurijssen.be>
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
+ linux-can <linux-can@vger.kernel.org>
+Message-ID: <0c937dd9-8b39-adf0-1495-a50bc71c1012@pengutronix.de>
+Subject: Re: [PATCH 1/2] [stable pre-4.12] can: af_can: can_rcv(): replace
+ WARN_ONCE by pr_warn_once
+References: <20180122134447.4533-1-socketcan@hartkopp.net>
+In-Reply-To: <20180122134447.4533-1-socketcan@hartkopp.net>
 
---ckfqSENpZbZirYZEHC6ZwXst33zyHjsZE
+--HOPVsLHAJOcWYbqClDDuFy8OqouPbgZqf
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 01/20/2018 10:28 PM, Kurt Van Dijck wrote:
->> after playing with jacd i have a bit more questions:
->> - do any one already using kernel j1939? any suggestions or request fo=
-r
->> changes?
+On 01/22/2018 02:44 PM, Oliver Hartkopp wrote:
+> In Linux 4.12 commit 8e8cda6d737d356054c ("can: initial support for net=
+work
+> namespaces") removed a namespace check which affected this patch:
 >=20
-> A linux 3.10 version runs in production. Since then, a few changes were=
+> upstream commit 8cb68751c115d176ec851ca56ecfbb411568c9e8
+>=20
+> can: af_can: can_rcv(): replace WARN_ONCE by pr_warn_once
+>=20
+> If an invalid CAN frame is received, from a driver or from a tun
+> interface, a Kernel warning is generated.
+>=20
+> This patch replaces the WARN_ONCE by a simple pr_warn_once, so that a
+> kernel, bootet with panic_on_warn, does not panic. A printk seems to be=
 
-> requested and implemented.
-> Recently, the stack had some serious retesting, you will find the
-> latest state in my github (only a few minor commits from Marc's
-> version).
+> more appropriate here.
+>=20
+> Reported-by: syzbot+4386709c0c1284dca827@syzkaller.appspotmail.com
+> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Cc: linux-stable <stable@vger.kernel.org> [pre 4.12]
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Oleksij and Basti are now working on the j1939 kernel and userspace. I'd
-like to have top of development on the linux-can-next/j1939 branch.
-Which branch in your linux repo is the newest one?
+nice!
 
+thnx,
 Marc
 
 --=20
@@ -67,23 +72,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---ckfqSENpZbZirYZEHC6ZwXst33zyHjsZE--
+--HOPVsLHAJOcWYbqClDDuFy8OqouPbgZqf--
 
---I20UOdR0WdRhfHyLDVfMXjPKontXEw5Ml
+--HrhCPDHGRu0a4txmhhNYeKMbWlsYu4n8r
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlplqwUACgkQHv7KIOw4
-HPZUZQgAyAVGR+MIG+opX6KWo1twaLCQAgY30Z8C825QN4Oiar4akCXEzvV8qfqS
-q4b8w8OEWGGWSu5KnJ0q1jmEJnNI0E6OWE7Eik2mcwfeCCrLirDoj7bJ537Xjrh8
-5ENJ+0iXxwl9Z9fI0T125PjOM5At00gxQRJyTbr8VEXo/1asNXZIrXi33aUhqT24
-pew2kTCL8xWlbdcx88enLQ//rg9w92xqWm7Jc62Zjftdln4S5B7GTUcc4yPzh7DW
-YsiA8NnO4dXTBNCelXlKbb3DWjvrlAjYCw/c3jDD/1IFD5fNWDcck21PH70NTzp2
-cFRtXSdbwJOpuq3xRhAYnCPSAXFIvQ==
-=iHlG
+iQEzBAEBCgAdFiEE4bay/IylYqM/npjQHv7KIOw4HPYFAlpl65YACgkQHv7KIOw4
+HPbGqAgAqjoHX+sxmDXz3O/ljfrRsjrhy9Ct+Yuldx2OHUSXmEzx3F46Rma64IE+
+Q3qX62qh0Cga03T5b1bv87FXEIQ+3hW8RUGXJzOQlq0UdlkPA8s2nhS4LKqjow68
+z7bm0WmJeBOc3Z/L7bneh1FFtqNoKNyHcP6r1oFa+sJHlVWZUcEnmkgfmv471dtR
+sK9qm40CMWNNuqyn+qSuLzUuIg2KXwdpLPqitvbKe1QdJnkHmbW9G91NVoF/fUtZ
+lZViL9634TEYhqrvXze7OpS2pFhWuESGzzbvYvTK3pb9h7K/+fEYYCmgRP6oUKv0
+TntupXECHlfuhGpNS+OK+fP4Sr8ibg==
+=rt2p
 -----END PGP SIGNATURE-----
 
---I20UOdR0WdRhfHyLDVfMXjPKontXEw5Ml--
+--HrhCPDHGRu0a4txmhhNYeKMbWlsYu4n8r--
