@@ -1,343 +1,107 @@
 From: Anssi Hannula <anssi.hannula@bitwise.fi>
-Subject: [PATCH 5/5 v3] can: xilinx_can: keep only 1-2 frames in TX FIFO to fix TX accounting
-Date: Fri, 26 Jan 2018 16:27:23 +0200
-Message-ID: <20180126142723.3212-6-anssi.hannula@bitwise.fi>
+Subject: [PATCH 2/5] can: xilinx_can: fix RX loop if RXNEMP is asserted without RXOK
+Date: Fri, 26 Jan 2018 16:27:20 +0200
+Message-ID: <20180126142723.3212-3-anssi.hannula@bitwise.fi>
 References: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.bitwise.fi ([109.204.228.163]:60706 "EHLO mail.bitwise.fi"
+Received: from mail.bitwise.fi ([109.204.228.163]:60712 "EHLO mail.bitwise.fi"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1752021AbeAZOhs (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 26 Jan 2018 09:37:48 -0500
+        id S1752386AbeAZOht (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 26 Jan 2018 09:37:49 -0500
 In-Reply-To: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Michal Simek <michal.simek@xilinx.com>, stable@vger.kernel.org
 
-The xilinx_can driver assumes that the TXOK interrupt only clears after
-it has been acknowledged as many times as there have been successfully
-sent frames.
+If the device gets into a state where RXNEMP (RX FIFO not empty)
+interrupt is asserted without RXOK (new frame received successfully)
+interrupt being asserted, xcan_rx_poll() will continue to try to clear
+RXNEMP without actually reading frames from RX FIFO. If the RX FIFO is
+not empty, the interrupt will not be cleared and napi_schedule() will
+just be called again.
 
-However, the documentation does not mention such behavior, instead
-saying just that the interrupt is cleared when the clear bit is set.
+This situation can occur when:
 
-Similarly, testing seems to also suggest that it is immediately cleared
-regardless of the amount of frames having been sent. Performing some
-heavy TX load and then going back to idle has the tx_head drifting
-further away from tx_tail over time, steadily reducing the amount of
-frames the driver keeps in the TX FIFO (but not to zero, as the TXOK
-interrupt always frees up space for 1 frame from the driver's
-perspective, so frames continue to be sent) and delaying the local echo
-frames.
+(a) xcan_rx() returns without reading RX FIFO due to an error condition.
+The code tries to clear both RXOK and RXNEMP but RXNEMP will not clear
+due to a frame still being in the FIFO. The frame will never be read
+from the FIFO as RXOK is no longer set.
 
-The TX FIFO tracking is also otherwise buggy as it does not account for
-TX FIFO being cleared after software resets, causing
-  BUG!, TX FIFO full when queue awake!
-messages to be output.
+(b) A frame is received between xcan_rx_poll() reading interrupt status
+and clearing RXOK. RXOK will be cleared, but RXNEMP will again remain
+set as the new message is still in the FIFO.
 
-There does not seem to be any way to accurately track the state of the
-TX FIFO for local echo support while using the full TX FIFO.
+I'm able to trigger case (b) by flooding the bus with frames under load.
 
-The Zynq version of the HW (but not the soft-AXI version) has watermark
-programming support and with it an additional TX-FIFO-empty interrupt
-bit.
+There does not seem to be any benefit in using both RXNEMP and RXOK in
+the way the driver does, and the polling example in the reference manual
+(UG585 v1.10 18.3.7 Read Messages from RxFIFO) also says that either
+RXOK or RXNEMP can be used for detecting incoming messages.
 
-Modify the driver to only put 1 frame into TX FIFO at a time on soft-AXI
-and 2 frames at a time on Zynq. On Zynq the TXFEMP interrupt bit is used
-to detect whether 1 or 2 frames have been sent at interrupt processing
-time.
+Fix the issue and simplify the RX processing by only using RXNEMP
+without RXOK.
 
-Tested with the integrated CAN on Zynq-7000 SoC. The 1-frame-FIFO mode
-was also tested.
-
-An alternative way to solve this would be to drop local echo support but
-keep using the full TX FIFO.
-
-v2: Add FIFO space check before TX queue wake with locking to
-synchronize with queue stop. This avoids waking the queue when xmit()
-had just filled it.
-
-v3: Keep local echo support and reduce the amount of frames in FIFO
-instead as suggested by Marc Kleine-Budde.
+Tested with the integrated CAN on Zynq-7000 SoC.
 
 Fixes: b1201e44f50b ("can: xilinx CAN controller support")
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Cc: <stable@vger.kernel.org>
 ---
- drivers/net/can/xilinx_can.c | 139 ++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 123 insertions(+), 16 deletions(-)
+ drivers/net/can/xilinx_can.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 862c12bb..26754e9 100644
+index 389a960..1bda47a 100644
 --- a/drivers/net/can/xilinx_can.c
 +++ b/drivers/net/can/xilinx_can.c
-@@ -26,8 +26,10 @@
- #include <linux/module.h>
- #include <linux/netdevice.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/skbuff.h>
-+#include <linux/spinlock.h>
- #include <linux/string.h>
- #include <linux/types.h>
- #include <linux/can/dev.h>
-@@ -119,6 +121,7 @@ enum xcan_reg {
- /**
-  * struct xcan_priv - This definition define CAN driver instance
-  * @can:			CAN private data structure.
-+ * @tx_lock:			Lock for synchronizing TX interrupt handling
-  * @tx_head:			Tx CAN packets ready to send on the queue
-  * @tx_tail:			Tx CAN packets successfully sended on the queue
-  * @tx_max:			Maximum number packets the driver can send
-@@ -133,6 +136,7 @@ enum xcan_reg {
-  */
- struct xcan_priv {
- 	struct can_priv can;
-+	spinlock_t tx_lock;
- 	unsigned int tx_head;
- 	unsigned int tx_tail;
- 	unsigned int tx_max;
-@@ -160,6 +164,11 @@ static const struct can_bittiming_const xcan_bittiming_const = {
- 	.brp_inc = 1,
- };
+@@ -101,7 +101,7 @@ enum xcan_reg {
+ #define XCAN_INTR_ALL		(XCAN_IXR_TXOK_MASK | XCAN_IXR_BSOFF_MASK |\
+ 				 XCAN_IXR_WKUP_MASK | XCAN_IXR_SLP_MASK | \
+ 				 XCAN_IXR_RXNEMP_MASK | XCAN_IXR_ERROR_MASK | \
+-				 XCAN_IXR_ARBLST_MASK | XCAN_IXR_RXOK_MASK)
++				 XCAN_IXR_ARBLST_MASK)
  
-+#define XCAN_CAP_WATERMARK	0x0001
-+struct xcan_devtype_data {
-+	unsigned int caps;
-+};
-+
- /**
-  * xcan_write_reg_le - Write a value to the device register little endian
-  * @priv:	Driver private data structure
-@@ -239,6 +248,10 @@ static int set_reset_mode(struct net_device *ndev)
- 		usleep_range(500, 10000);
+ /* CAN register bit shift - XCAN_<REG>_<BIT>_SHIFT */
+ #define XCAN_BTR_SJW_SHIFT		7  /* Synchronous jump width */
+@@ -708,15 +708,7 @@ static int xcan_rx_poll(struct napi_struct *napi, int quota)
+ 
+ 	isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
+ 	while ((isr & XCAN_IXR_RXNEMP_MASK) && (work_done < quota)) {
+-		if (isr & XCAN_IXR_RXOK_MASK) {
+-			priv->write_reg(priv, XCAN_ICR_OFFSET,
+-				XCAN_IXR_RXOK_MASK);
+-			work_done += xcan_rx(ndev);
+-		} else {
+-			priv->write_reg(priv, XCAN_ICR_OFFSET,
+-				XCAN_IXR_RXNEMP_MASK);
+-			break;
+-		}
++		work_done += xcan_rx(ndev);
+ 		priv->write_reg(priv, XCAN_ICR_OFFSET, XCAN_IXR_RXNEMP_MASK);
+ 		isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
+ 	}
+@@ -727,7 +719,7 @@ static int xcan_rx_poll(struct napi_struct *napi, int quota)
+ 	if (work_done < quota) {
+ 		napi_complete_done(napi, work_done);
+ 		ier = priv->read_reg(priv, XCAN_IER_OFFSET);
+-		ier |= (XCAN_IXR_RXOK_MASK | XCAN_IXR_RXNEMP_MASK);
++		ier |= XCAN_IXR_RXNEMP_MASK;
+ 		priv->write_reg(priv, XCAN_IER_OFFSET, ier);
+ 	}
+ 	return work_done;
+@@ -799,9 +791,9 @@ static irqreturn_t xcan_interrupt(int irq, void *dev_id)
  	}
  
-+	/* reset clears FIFOs */
-+	priv->tx_head = 0;
-+	priv->tx_tail = 0;
-+
- 	return 0;
- }
- 
-@@ -393,6 +406,7 @@ static int xcan_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	struct net_device_stats *stats = &ndev->stats;
- 	struct can_frame *cf = (struct can_frame *)skb->data;
- 	u32 id, dlc, data[2] = {0, 0};
-+	unsigned long flags;
- 
- 	if (can_dropped_invalid_skb(ndev, skb))
- 		return NETDEV_TX_OK;
-@@ -440,6 +454,9 @@ static int xcan_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 		data[1] = be32_to_cpup((__be32 *)(cf->data + 4));
- 
- 	can_put_echo_skb(skb, ndev, priv->tx_head % priv->tx_max);
-+
-+	spin_lock_irqsave(&priv->tx_lock, flags);
-+
- 	priv->tx_head++;
- 
- 	/* Write the Frame to Xilinx CAN TX FIFO */
-@@ -455,10 +472,16 @@ static int xcan_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 		stats->tx_bytes += cf->can_dlc;
+ 	/* Check for the type of receive interrupt and Processing it */
+-	if (isr & (XCAN_IXR_RXNEMP_MASK | XCAN_IXR_RXOK_MASK)) {
++	if (isr & XCAN_IXR_RXNEMP_MASK) {
+ 		ier = priv->read_reg(priv, XCAN_IER_OFFSET);
+-		ier &= ~(XCAN_IXR_RXNEMP_MASK | XCAN_IXR_RXOK_MASK);
++		ier &= ~XCAN_IXR_RXNEMP_MASK;
+ 		priv->write_reg(priv, XCAN_IER_OFFSET, ier);
+ 		napi_schedule(&priv->napi);
  	}
- 
-+	/* Clear TX-FIFO-empty interrupt for xcan_tx_interrupt() */
-+	if (priv->tx_max > 1)
-+		priv->write_reg(priv, XCAN_ICR_OFFSET, XCAN_IXR_TXFEMP_MASK);
-+
- 	/* Check if the TX buffer is full */
- 	if ((priv->tx_head - priv->tx_tail) == priv->tx_max)
- 		netif_stop_queue(ndev);
- 
-+	spin_unlock_irqrestore(&priv->tx_lock, flags);
-+
- 	return NETDEV_TX_OK;
- }
- 
-@@ -833,19 +856,71 @@ static void xcan_tx_interrupt(struct net_device *ndev, u32 isr)
- {
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	struct net_device_stats *stats = &ndev->stats;
-+	unsigned int frames_in_fifo;
-+	int frames_sent = 1; /* TXOK => at least 1 frame was sent */
-+	unsigned long flags;
-+	int retries = 0;
-+
-+	/* Synchronize with xmit as we need to know the exact number
-+	 * of frames in the FIFO to stay in sync due to the TXFEMP
-+	 * handling.
-+	 * This also prevents a race between netif_wake_queue() and
-+	 * netif_stop_queue().
-+	 */
-+	spin_lock_irqsave(&priv->tx_lock, flags);
-+
-+	frames_in_fifo = priv->tx_head - priv->tx_tail;
- 
--	while ((priv->tx_head - priv->tx_tail > 0) &&
--			(isr & XCAN_IXR_TXOK_MASK)) {
-+	if (WARN_ON_ONCE(frames_in_fifo == 0)) {
-+		/* clear TXOK anyway to avoid getting back here */
- 		priv->write_reg(priv, XCAN_ICR_OFFSET, XCAN_IXR_TXOK_MASK);
-+		spin_unlock_irqrestore(&priv->tx_lock, flags);
-+		return;
-+	}
-+
-+	/* Check if 2 frames were sent (TXOK only means that at least 1
-+	 * frame was sent).
-+	 */
-+	if (frames_in_fifo > 1) {
-+		WARN_ON(frames_in_fifo > priv->tx_max);
-+
-+		/* Synchronize TXOK and isr so that after the loop:
-+		 * (1) isr variable is up-to-date at least up to TXOK clear
-+		 *     time. This avoids us clearing a TXOK of a second frame
-+		 *     but not noticing that the FIFO is now empty and thus
-+		 *     marking only a single frame as sent.
-+		 * (2) No TXOK is left. Having one could mean leaving a
-+		 *     stray TXOK as we might process the associated frame
-+		 *     via TXFEMP handling as we read TXFEMP *after* TXOK
-+		 *     clear to satisfy (1).
-+		 */
-+		while ((isr & XCAN_IXR_TXOK_MASK) && !WARN_ON(++retries == 100)) {
-+			priv->write_reg(priv, XCAN_ICR_OFFSET, XCAN_IXR_TXOK_MASK);
-+			isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
-+		}
-+
-+		if (isr & XCAN_IXR_TXFEMP_MASK) {
-+			/* nothing in FIFO anymore */
-+			frames_sent = frames_in_fifo;
-+		}
-+	} else {
-+		/* single frame in fifo, just clear TXOK */
-+		priv->write_reg(priv, XCAN_ICR_OFFSET, XCAN_IXR_TXOK_MASK);
-+	}
-+
-+	while (frames_sent--) {
- 		can_get_echo_skb(ndev, priv->tx_tail %
- 					priv->tx_max);
- 		priv->tx_tail++;
- 		stats->tx_packets++;
--		isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
- 	}
-+
-+	netif_wake_queue(ndev);
-+
-+	spin_unlock_irqrestore(&priv->tx_lock, flags);
-+
- 	can_led_event(ndev, CAN_LED_EVENT_TX);
- 	xcan_update_error_state_after_rxtx(ndev);
--	netif_wake_queue(ndev);
- }
- 
- /**
-@@ -1152,6 +1227,18 @@ static const struct dev_pm_ops xcan_dev_pm_ops = {
- 	SET_RUNTIME_PM_OPS(xcan_runtime_suspend, xcan_runtime_resume, NULL)
- };
- 
-+static const struct xcan_devtype_data xcan_zynq_data = {
-+	.caps = XCAN_CAP_WATERMARK,
-+};
-+
-+/* Match table for OF platform binding */
-+static const struct of_device_id xcan_of_match[] = {
-+	{ .compatible = "xlnx,zynq-can-1.0", .data = &xcan_zynq_data },
-+	{ .compatible = "xlnx,axi-can-1.00.a", },
-+	{ /* end of list */ },
-+};
-+MODULE_DEVICE_TABLE(of, xcan_of_match);
-+
- /**
-  * xcan_probe - Platform registration call
-  * @pdev:	Handle to the platform device structure
-@@ -1166,8 +1253,10 @@ static int xcan_probe(struct platform_device *pdev)
- 	struct resource *res; /* IO mem resources */
- 	struct net_device *ndev;
- 	struct xcan_priv *priv;
-+	const struct of_device_id *of_id;
-+	int caps = 0;
- 	void __iomem *addr;
--	int ret, rx_max, tx_max;
-+	int ret, rx_max, tx_max, tx_fifo_depth;
- 
- 	/* Get the virtual base address for the device */
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -1177,7 +1266,8 @@ static int xcan_probe(struct platform_device *pdev)
- 		goto err;
- 	}
- 
--	ret = of_property_read_u32(pdev->dev.of_node, "tx-fifo-depth", &tx_max);
-+	ret = of_property_read_u32(pdev->dev.of_node, "tx-fifo-depth",
-+				   &tx_fifo_depth);
- 	if (ret < 0)
- 		goto err;
- 
-@@ -1185,6 +1275,30 @@ static int xcan_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		goto err;
- 
-+	of_id = of_match_device(xcan_of_match, &pdev->dev);
-+	if (of_id) {
-+		const struct xcan_devtype_data *devtype_data = of_id->data;
-+
-+		if (devtype_data)
-+			caps = devtype_data->caps;
-+	}
-+
-+	/* There is no way to directly figure out how many frames have been
-+	 * sent when the TXOK interrupt is processed. If watermark programming
-+	 * is supported, we can have 2 frames in the FIFO and use TXFEMP
-+	 * to determine if 1 or 2 frames have been sent.
-+	 * Theoretically we should be able to use TXFWMEMP to determine up
-+	 * to 3 frames, but it seems that after putting a second frame in the
-+	 * FIFO, with watermark at 2 frames, it can happen that TXFWMEMP (less
-+	 * than 2 frames in FIFO) is set anyway with no TXOK (a frame was
-+	 * sent), which is not a sensible state - possibly TXFWMEMP is not
-+	 * completely synchronized with the rest of the bits?
-+	 */
-+	if (caps & XCAN_CAP_WATERMARK)
-+		tx_max = min(tx_fifo_depth, 2);
-+	else
-+		tx_max = 1;
-+
- 	/* Create a CAN device instance */
- 	ndev = alloc_candev(sizeof(struct xcan_priv), tx_max);
- 	if (!ndev)
-@@ -1199,6 +1313,7 @@ static int xcan_probe(struct platform_device *pdev)
- 					CAN_CTRLMODE_BERR_REPORTING;
- 	priv->reg_base = addr;
- 	priv->tx_max = tx_max;
-+	spin_lock_init(&priv->tx_lock);
- 
- 	/* Get IRQ for the device */
- 	ndev->irq = platform_get_irq(pdev, 0);
-@@ -1263,9 +1378,9 @@ static int xcan_probe(struct platform_device *pdev)
- 
- 	pm_runtime_put(&pdev->dev);
- 
--	netdev_dbg(ndev, "reg_base=0x%p irq=%d clock=%d, tx fifo depth:%d\n",
-+	netdev_dbg(ndev, "reg_base=0x%p irq=%d clock=%d, tx fifo depth: actual %d, using %d\n",
- 			priv->reg_base, ndev->irq, priv->can.clock.freq,
--			priv->tx_max);
-+			tx_fifo_depth, priv->tx_max);
- 
- 	return 0;
- 
-@@ -1299,14 +1414,6 @@ static int xcan_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--/* Match table for OF platform binding */
--static const struct of_device_id xcan_of_match[] = {
--	{ .compatible = "xlnx,zynq-can-1.0", },
--	{ .compatible = "xlnx,axi-can-1.00.a", },
--	{ /* end of list */ },
--};
--MODULE_DEVICE_TABLE(of, xcan_of_match);
--
- static struct platform_driver xcan_driver = {
- 	.probe = xcan_probe,
- 	.remove	= xcan_remove,
 -- 
 2.8.3
 
