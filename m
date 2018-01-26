@@ -1,50 +1,45 @@
 From: Anssi Hannula <anssi.hannula@bitwise.fi>
-Subject: [PATCH 4/5] can: xilinx_can: only report warning and passive states on state changes
-Date: Fri, 26 Jan 2018 16:27:22 +0200
-Message-ID: <20180126142723.3212-5-anssi.hannula@bitwise.fi>
+Subject: [PATCH 1/5] can: xilinx_can: fix device dropping off bus on RX overrun
+Date: Fri, 26 Jan 2018 16:27:19 +0200
+Message-ID: <20180126142723.3212-2-anssi.hannula@bitwise.fi>
 References: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.bitwise.fi ([109.204.228.163]:60714 "EHLO mail.bitwise.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1752382AbeAZOhs (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 26 Jan 2018 09:37:48 -0500
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
 To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Michal Simek <michal.simek@xilinx.com>, stable@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-The xilinx_can driver currently increments error-warning and
-error-passive statistics on every error interrupt regardless of whether
-the interface was already in the same state. Similarly, the error frame
-sent on error interrupts is always sent with
-CAN_ERR_CRTL_(RX|TX)_(PASSIVE|WARNING) bit set.
+The xilinx_can driver performs a software reset when an RX overrun is
+detected. This causes the device to enter Configuration mode where no
+messages are received or transmitted.
 
-To make the error-warning and error-passive statistics more useful, add
-a check to only set the error state when the state has actually been
-changed.
+The documentation does not mention any need to perform a reset on an RX
+overrun, and testing by inducing an RX overflow also indicated that the
+device continues to work just fine without a reset.
+
+Remove the software reset.
 
 Tested with the integrated CAN on Zynq-7000 SoC.
 
+Fixes: b1201e44f50b ("can: xilinx CAN controller support")
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Cc: <stable@vger.kernel.org>
 ---
- drivers/net/can/xilinx_can.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/xilinx_can.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 763408a..862c12bb 100644
+index 89aec07..389a960 100644
 --- a/drivers/net/can/xilinx_can.c
 +++ b/drivers/net/can/xilinx_can.c
-@@ -680,7 +680,8 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
- 	} else {
- 		enum can_state new_state = xcan_current_error_state(ndev);
- 
--		xcan_set_error_state(ndev, new_state, skb ? cf : NULL);
-+		if (new_state != priv->can.state)
-+			xcan_set_error_state(ndev, new_state, skb ? cf : NULL);
- 	}
- 
- 	/* Check for Arbitration lost interrupt */
+@@ -600,7 +600,6 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
+ 	if (isr & XCAN_IXR_RXOFLW_MASK) {
+ 		stats->rx_over_errors++;
+ 		stats->rx_errors++;
+-		priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_RESET_MASK);
+ 		if (skb) {
+ 			cf->can_id |= CAN_ERR_CRTL;
+ 			cf->data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
 -- 
 2.8.3
-
