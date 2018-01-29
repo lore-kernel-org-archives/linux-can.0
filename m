@@ -1,74 +1,112 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] j1939: add SPDX-License-Identifier
-Date: Mon, 29 Jan 2018 11:43:38 +0100
-Message-ID: <388b72c7-9311-a8ae-57d4-9106493c68be@pengutronix.de>
-References: <20180124111808.8374-1-mkl@pengutronix.de>
- <CAA-_v_kTmRd38M=zjRLwaM9KO09pBvi3w-kk4QQk03H6ePTWcg@mail.gmail.com>
+From: Andri Yngvason <andri.yngvason@marel.com>
+Subject: Re: [PATCH 3/5] can: xilinx_can: fix recovery from error states not being
+ propagated
+Date: Mon, 29 Jan 2018 10:44:50 +0000
+Message-ID: <151722269077.27204.8452699005718607415@maxwell>
+References: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
+ <20180126142723.3212-4-anssi.hannula@bitwise.fi>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="XJEzB9LkOuY81sHYPf6IF4POUyJjewcf8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:34831 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751251AbeA2KoM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 29 Jan 2018 05:44:12 -0500
-In-Reply-To: <CAA-_v_kTmRd38M=zjRLwaM9KO09pBvi3w-kk4QQk03H6ePTWcg@mail.gmail.com>
+Received: from mail-ve1eur01on0083.outbound.protection.outlook.com ([104.47.1.83]:43008
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1751337AbeA2Koz (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 29 Jan 2018 05:44:55 -0500
+In-Reply-To: <20180126142723.3212-4-anssi.hannula@bitwise.fi>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Pieter Beyens <pieter.beyens@gmail.com>
-Cc: linux-can@vger.kernel.org, dev.kurt@vandijck-laurijssen.be, kernel@pengutronix.de
+To: Anssi Hannula <anssi.hannula@bitwise.fi>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Michal Simek <michal.simek@xilinx.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XJEzB9LkOuY81sHYPf6IF4POUyJjewcf8
-Content-Type: multipart/mixed; boundary="ICZZ6RGhVtb5mhp21XckvaX7CrIQfuED8";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Pieter Beyens <pieter.beyens@gmail.com>
-Cc: linux-can@vger.kernel.org, dev.kurt@vandijck-laurijssen.be,
- kernel@pengutronix.de
-Message-ID: <388b72c7-9311-a8ae-57d4-9106493c68be@pengutronix.de>
-Subject: Re: [PATCH] j1939: add SPDX-License-Identifier
-References: <20180124111808.8374-1-mkl@pengutronix.de>
- <CAA-_v_kTmRd38M=zjRLwaM9KO09pBvi3w-kk4QQk03H6ePTWcg@mail.gmail.com>
-In-Reply-To: <CAA-_v_kTmRd38M=zjRLwaM9KO09pBvi3w-kk4QQk03H6ePTWcg@mail.gmail.com>
+Hello Anssi
 
---ICZZ6RGhVtb5mhp21XckvaX7CrIQfuED8
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Quoting Anssi Hannula (2018-01-26 14:27:21)
+> The xilinx_can driver contains no mechanism for propagating recovery
+> from CAN_STATE_ERROR_WARNING and CAN_STATE_ERROR_PASSIVE.
+> =
 
-On 01/29/2018 11:37 AM, Pieter Beyens wrote:
-> Acked-by: Pieter Beyens <pieter.beyens@gmail.com>
+> Add such a mechanism by factoring the handling of
+> XCAN_STATE_ERROR_PASSIVE and XCAN_STATE_ERROR_WARNING out of
+> xcan_err_interrupt and checking for recovery after RX and TX if the
+> interface is in one of those states.
+> =
 
-Tnx.
+> Tested with the integrated CAN on Zynq-7000 SoC.
+> =
 
-Marc
+> Fixes: b1201e44f50b ("can: xilinx CAN controller support")
+> Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+> ---
+>  drivers/net/can/xilinx_can.c | 155 +++++++++++++++++++++++++++++++++++--=
+------
+>  1 file changed, 127 insertions(+), 28 deletions(-)
+> =
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+> index 1bda47a..763408a 100644
+> --- a/drivers/net/can/xilinx_can.c
+> +++ b/drivers/net/can/xilinx_can.c
+...
 
+There is a function in drivers/net/can/dev.c that does this:
+> +
+> +/**
+> + * xcan_set_error_state - Set new CAN error state
+> + * @ndev:      Pointer to net_device structure
+> + * @new_state: The new CAN state to be set
+> + * @cf:                Error frame to be populated or NULL
+> + *
+> + * Set new CAN error state for the device, updating statistics and
+> + * populating the error frame if given.
+> + */
+> +static void xcan_set_error_state(struct net_device *ndev,
+> +                                enum can_state new_state,
+> +                                struct can_frame *cf)
+> +{
+> +       struct xcan_priv *priv =3D netdev_priv(ndev);
+> +       u32 ecr =3D priv->read_reg(priv, XCAN_ECR_OFFSET);
+> +       u32 txerr =3D ecr & XCAN_ECR_TEC_MASK;
+> +       u32 rxerr =3D (ecr & XCAN_ECR_REC_MASK) >> XCAN_ESR_REC_SHIFT;
+> +
+> +       priv->can.state =3D new_state;
+> +
+> +       if (cf) {
+> +               cf->can_id |=3D CAN_ERR_CRTL;
+> +               cf->data[6] =3D txerr;
+> +               cf->data[7] =3D rxerr;
+> +       }
+> +
+> +       switch (new_state) {
+> +       case CAN_STATE_ERROR_PASSIVE:
+> +               priv->can.can_stats.error_passive++;
+> +               if (cf)
+> +                       cf->data[1] =3D (rxerr > 127) ?
+> +                                       CAN_ERR_CRTL_RX_PASSIVE :
+> +                                       CAN_ERR_CRTL_TX_PASSIVE;
+> +               break;
+> +       case CAN_STATE_ERROR_WARNING:
+> +               priv->can.can_stats.error_warning++;
+> +               if (cf)
+> +                       cf->data[1] |=3D (txerr > rxerr) ?
+> +                                       CAN_ERR_CRTL_TX_WARNING :
+> +                                       CAN_ERR_CRTL_RX_WARNING;
+> +               break;
+> +       case CAN_STATE_ERROR_ACTIVE:
+> +               if (cf)
+> +                       cf->data[1] |=3D CAN_ERR_CRTL_ACTIVE;
+> +               break;
+> +       default:
+> +               /* non-ERROR states are handled elsewhere */
+> +               WARN_ON(1);
+> +               break;
+> +       }
+> +}
+...
 
---ICZZ6RGhVtb5mhp21XckvaX7CrIQfuED8--
+It's not a big function, but the idea was to try to make this behaviour
+consistent between drivers by putting it into a function.
 
---XJEzB9LkOuY81sHYPf6IF4POUyJjewcf8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlpu+toACgkQk9IU1zQo
-ZfGlcAf/Uuu5LVYaAftLWbs3ygnak5h7fZCQBRIErCcmDAQJ2Vwj/ThoKoZtp2c2
-AkH4gnPJCdqACYNoCFo+8mZDN6kYq3swf2TERiXWvUTiIp+4FQDQCHylZHqnUwto
-o6Dzks+Vi3AiotRMqYu/JupinttpzgRjoQmky3q6OmCe5Nte69MGl5lEgX8QevtY
-HTCellqT+vdhxeCVCeantwx5X5gRGHW7C+UHWjozKJ9Ik5h6SdLVvBQlU3bPFbTw
-862/t9KkCEFJTQfmIG51N6KyUIuid5exDt7/1Kr2hyO9dTba5LflcmR5E6okmTFn
-iMxxg1WOxSdo+UQvqr63RnV/KxpfuA==
-=mR8O
------END PGP SIGNATURE-----
-
---XJEzB9LkOuY81sHYPf6IF4POUyJjewcf8--
+Regards,
+Andri
