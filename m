@@ -1,125 +1,144 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 4/5] can: xilinx_can: only report warning and passive
- states on state changes
-Date: Mon, 29 Jan 2018 11:02:34 +0100
-Message-ID: <89673f1a-32f7-71d5-6636-1dc59e3e2038@pengutronix.de>
-References: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
- <20180126142723.3212-5-anssi.hannula@bitwise.fi>
- <87c7662b-0a49-cf90-10cc-b7aaee44a543@pengutronix.de>
- <b2ae0a20-984c-956b-072b-64921719e41d@bitwise.fi>
+From: Pieter Beyens <pieter.beyens@gmail.com>
+Subject: Re: [PATCH] j1939: add SPDX-License-Identifier
+Date: Mon, 29 Jan 2018 11:37:02 +0100
+Message-ID: <CAA-_v_kTmRd38M=zjRLwaM9KO09pBvi3w-kk4QQk03H6ePTWcg@mail.gmail.com>
+References: <20180124111808.8374-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="2FhKjVsvsVz2ALPZMffnrAYeZkNEJwhq7"
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:56011 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751251AbeA2KDK (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 29 Jan 2018 05:03:10 -0500
-In-Reply-To: <b2ae0a20-984c-956b-072b-64921719e41d@bitwise.fi>
+Received: from mail-wm0-f48.google.com ([74.125.82.48]:54602 "EHLO
+        mail-wm0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751505AbeA2KhD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 29 Jan 2018 05:37:03 -0500
+Received: by mail-wm0-f48.google.com with SMTP id i186so13167972wmi.4
+        for <linux-can@vger.kernel.org>; Mon, 29 Jan 2018 02:37:03 -0800 (PST)
+In-Reply-To: <20180124111808.8374-1-mkl@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Anssi Hannula <anssi.hannula@bitwise.fi>, linux-can@vger.kernel.org
-Cc: Michal Simek <michal.simek@xilinx.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, dev.kurt@vandijck-laurijssen.be, kernel@pengutronix.de
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2FhKjVsvsVz2ALPZMffnrAYeZkNEJwhq7
-Content-Type: multipart/mixed; boundary="3tr6vAJ42n10EwecBqANgN923VVpt1ZST";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Anssi Hannula <anssi.hannula@bitwise.fi>, linux-can@vger.kernel.org
-Cc: Michal Simek <michal.simek@xilinx.com>
-Message-ID: <89673f1a-32f7-71d5-6636-1dc59e3e2038@pengutronix.de>
-Subject: Re: [PATCH 4/5] can: xilinx_can: only report warning and passive
- states on state changes
-References: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
- <20180126142723.3212-5-anssi.hannula@bitwise.fi>
- <87c7662b-0a49-cf90-10cc-b7aaee44a543@pengutronix.de>
- <b2ae0a20-984c-956b-072b-64921719e41d@bitwise.fi>
-In-Reply-To: <b2ae0a20-984c-956b-072b-64921719e41d@bitwise.fi>
+Acked-by: Pieter Beyens <pieter.beyens@gmail.com>
 
---3tr6vAJ42n10EwecBqANgN923VVpt1ZST
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jan 24, 2018 at 12:18 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+> Hello,
+>
+> I added a bnush of SPDX-License-Identifier to the files introduced in
+> the j1939 patches.
+>
+> I marked include/uapi/linux/can/j1939.h as "GPL-2.0 WITH
+> Linux-syscall-note" all other files as GPL-2.0.
+>
+> I'd like to have the Acked-by and or Signed-of by by Kurt and
+> Pieter Beyens.
+>
+> regards,
+> Marc
+>
+>  include/uapi/linux/can/j1939.h | 1 +
+>  net/can/j1939/Kconfig          | 1 +
+>  net/can/j1939/Makefile         | 2 ++
+>  net/can/j1939/address-claim.c  | 1 +
+>  net/can/j1939/bus.c            | 1 +
+>  net/can/j1939/j1939-priv.h     | 1 +
+>  net/can/j1939/main.c           | 1 +
+>  net/can/j1939/socket.c         | 1 +
+>  net/can/j1939/transport.c      | 1 +
+>  9 files changed, 10 insertions(+)
+>
+> diff --git a/include/uapi/linux/can/j1939.h b/include/uapi/linux/can/j1939.h
+> index cd4661a97906..306380656c03 100644
+> --- a/include/uapi/linux/can/j1939.h
+> +++ b/include/uapi/linux/can/j1939.h
+> @@ -1,3 +1,4 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>  /*
+>   * j1939.h
+>   *
+> diff --git a/net/can/j1939/Kconfig b/net/can/j1939/Kconfig
+> index 74d2a863bc16..ff0b08a8af3f 100644
+> --- a/net/can/j1939/Kconfig
+> +++ b/net/can/j1939/Kconfig
+> @@ -1,3 +1,4 @@
+> +# SPDX-License-Identifier: GPL-2.0
+>  #
+>  # SAE J1939 network layer core configuration
+>  #
+> diff --git a/net/can/j1939/Makefile b/net/can/j1939/Makefile
+> index dda03af263f8..46e6c6ed221d 100644
+> --- a/net/can/j1939/Makefile
+> +++ b/net/can/j1939/Makefile
+> @@ -1,3 +1,5 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+>  cppflags-$(CONFIG_CAN_J1939_DEBUG) += -DDEBUG
+>
+>  obj-$(CONFIG_CAN_J1939) += can-j1939.o
+> diff --git a/net/can/j1939/address-claim.c b/net/can/j1939/address-claim.c
+> index ab538e1c4906..19e0bcf3e91f 100644
+> --- a/net/can/j1939/address-claim.c
+> +++ b/net/can/j1939/address-claim.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * Copyright (c) 2010-2011 EIA Electronics
+>   *
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> index fb6b701562c8..2d963cbdb0c7 100644
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * Copyright (c) 2010-2011 EIA Electronics
+>   *
+> diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+> index da37056ba5e5..e78420a99607 100644
+> --- a/net/can/j1939/j1939-priv.h
+> +++ b/net/can/j1939/j1939-priv.h
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * j1939-priv.h
+>   *
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index 86cdcc18338a..4693c263ccd6 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * Copyright (c) 2010-2011 EIA Electronics
+>   *
+> diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+> index ae5357510623..506ef86a9f7f 100644
+> --- a/net/can/j1939/socket.c
+> +++ b/net/can/j1939/socket.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * Copyright (c) 2010-2011 EIA Electronics
+>   *
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 6001901c8db3..646efce90668 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * Copyright (c) 2010-2011 EIA Electronics
+>   *
+> --
+> 2.15.1
+>
+>
+>
 
-On 01/29/2018 10:45 AM, Anssi Hannula wrote:
-> On 29.1.2018 10:35, Marc Kleine-Budde wrote:
->> On 01/26/2018 03:27 PM, Anssi Hannula wrote:
->>> The xilinx_can driver currently increments error-warning and
->>> error-passive statistics on every error interrupt regardless of wheth=
-er
->>> the interface was already in the same state. Similarly, the error fra=
-me
->>> sent on error interrupts is always sent with
->>> CAN_ERR_CRTL_(RX|TX)_(PASSIVE|WARNING) bit set.
->>>
->>> To make the error-warning and error-passive statistics more useful, a=
-dd
->>> a check to only set the error state when the state has actually been
->>> changed.
->>>
->>> Tested with the integrated CAN on Zynq-7000 SoC.
->>>
->>> Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
->>> ---
->>>  drivers/net/can/xilinx_can.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_ca=
-n.c
->>> index 763408a..862c12bb 100644
->>> --- a/drivers/net/can/xilinx_can.c
->>> +++ b/drivers/net/can/xilinx_can.c
->>> @@ -680,7 +680,8 @@ static void xcan_err_interrupt(struct net_device =
-*ndev, u32 isr)
->>>  	} else {
->>>  		enum can_state new_state =3D xcan_current_error_state(ndev);
->>> =20
->>> -		xcan_set_error_state(ndev, new_state, skb ? cf : NULL);
->>> +		if (new_state !=3D priv->can.state)
->>> +			xcan_set_error_state(ndev, new_state, skb ? cf : NULL);
->>>  	}
->> Are you changing a piece of code, that you've introduced in patch 3? I=
-f
->> so, I'm going to squash these two patches together.
->=20
-> Yes, patch 3 keeps the state change reporting behavior (always vs. on
-> state change) like it was before, only introducing reporting recovery
-> from error states.
-
-OK I see - then better leave it as two separate patches.
-
-> But I'm OK with squashing, as long as the commit message is updated to
-> say it changes that behavior, too.
-
-tnx,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---3tr6vAJ42n10EwecBqANgN923VVpt1ZST--
-
---2FhKjVsvsVz2ALPZMffnrAYeZkNEJwhq7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlpu8ToACgkQk9IU1zQo
-ZfE5Rgf9HQsyIK+3pbt5mes2VjX7prLN5ofpLtFf+Dv15EnfGK17Cukz8TPToj+i
-2huEg9THvzkKaod6oOg3Z1uZrNVx8BJRvXCAxYUXQXsL493l7tJZP/7rNUguFB01
-fNOZOO+AAhTJ/hpSrfIqkBBz7yXSFmZNfkObx7DQgCHYDpPJ66RUw+r7UIYQ5rcu
-CuzHUbECkqQjKAE8Tse5vSmEaxnDzPu8PoCEUIxu+14RKx/sJ4J6OqjCz3Ai4lyq
-vKnKtgQvGlUnOFjA1ygjdMAnpXfLFTS30MZuCapMBsCW07psMAf/xHEVmS7AEr7d
-dXJydeGIUA6aWpHv8lbHqYjkbiFEdQ==
-=2R8l
------END PGP SIGNATURE-----
-
---2FhKjVsvsVz2ALPZMffnrAYeZkNEJwhq7--
+-- 
+A designer knows he has achieved perfection not when there is nothing
+left to add, but when there is nothing left to take away.
+- Antoine de Saint-Exup'ery
