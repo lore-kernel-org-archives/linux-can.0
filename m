@@ -1,183 +1,160 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: [PATCH 4/4] can: cc770: Fix dropped RTR frames
-Date: Mon, 29 Jan 2018 16:07:59 +0000
-Message-ID: <20180129160759.29661-1-andri.yngvason@marel.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
+Subject: [PATCH] can: xilinx_can: use can_change_state()
+Date: Mon, 29 Jan 2018 18:49:53 +0200
+Message-ID: <20180129164953.6596-1-anssi.hannula@bitwise.fi>
+References: <151722269077.27204.8452699005718607415@maxwell>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr50083.outbound.protection.outlook.com ([40.107.5.83]:63136
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1750959AbeA2QIX (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 29 Jan 2018 11:08:23 -0500
+Received: from mail.bitwise.fi ([109.204.228.163]:49680 "EHLO mail.bitwise.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751072AbeA2QwJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 29 Jan 2018 11:52:09 -0500
+In-Reply-To: <151722269077.27204.8452699005718607415@maxwell>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: mkl@pengutronix.de, wg@grandegger.com, sigurbjorn.narfason@marel.com, hrafnkell.eiriksson@marel.com, patric.thysell@br-automation.com, Andri Yngvason <andri.yngvason@marel.com>
+To: Andri Yngvason <andri.yngvason@marel.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can @ vger . kernel . org" <linux-can@vger.kernel.org>, Michal Simek <michal.simek@xilinx.com>
 
-Instead of counting lost tx RTR as dropped, it is re-transmitted.
+Replace some custom code with a call to can_change_state().
 
-Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
+This subtly changes the error reporting behavior in some cases.
+
+Previously, if both RX and TX error counters indicated the same state,
+and the status register agreed:
+- if overall state is PASSIVE, report CAN_ERR_CRTL_RX_PASSIVE
+- if overall state is WARNING, report CAN_ERR_CRTL_TX_WARNING or
+  CAN_ERR_CRTL_RX_WARNING depending on which counter is higher.
+
+Previously, if status registers indicated a different state than the
+worst state indicated by the RX/TX error counters (I have not observed
+this to happen, though):
+- if status register says PASSIVE, report CAN_ERR_CRTL_RX_PASSIVE if
+  RX error counter indicates PASSIVE as well, otherwise report
+  CAN_ERR_CRTL_TX_PASSIVE
+- if status register says WARNING, report CAN_ERR_CRTL_TX_WARNING
+  or CAN_ERR_CRTL_RX_WARNING depending on which counter is higher.
+
+After this commit, in both of the above scenarios:
+- if overall state is PASSIVE, report
+  CAN_ERR_CRTL_RX_PASSIVE | CAN_ERR_CRTL_TX_PASSIVE
+- if overall state is WARNING, report
+  CAN_ERR_CRTL_RX_WARNING | CAN_ERR_CRTL_TX_WARNING.
+
+Tested with the integrated CAN on Zynq-7000 SoC.
+
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 ---
-Re-sent because format-patch didn't put the correct subject.
-Should I maybe squash this into the last one?
 
- drivers/net/can/cc770/cc770.c | 80 +++++++++++++++++++++++++++----------------
- drivers/net/can/cc770/cc770.h |  2 ++
- 2 files changed, 52 insertions(+), 30 deletions(-)
+Andri Yngvason wrote:
+> There is a function in drivers/net/can/dev.c that does this:
+[...]
+> It's not a big function, but the idea was to try to make this behaviour
+> consistent between drivers by putting it into a function.
 
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index 8f32357..8fc4667 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -390,38 +390,23 @@ static int cc770_get_berr_counter(const struct net_device *dev,
- 	return 0;
+I didn't use it because I didn't have separate TX and RX states
+available, and if I calculated them based on RX/TX error counters the
+behavior would still be subtly different.
+
+So I opted to just keep the previous error frame generation code as-is
+to make sure the only behavior changed was the recovery from error
+states being fixed, like the commit message said.
+
+But here is a patch that makes it use can_change_state(), on top of the
+posted patchset.
+
+If wanted, I can squash this one into patch 3 (and 4), though I'd prefer
+it to be kept separate as it introduces subtle behavior changes
+unrelated to the actual fix in patch 3.
+
+
+ drivers/net/can/xilinx_can.c | 63 +++++++++++++++++++++++++-------------------
+ 1 file changed, 36 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 26754e9..9525016 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -578,6 +578,27 @@ static enum can_state xcan_current_error_state(struct net_device *ndev)
  }
  
--static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
-+static void cc770_tx(struct net_device *dev, int mo)
- {
- 	struct cc770_priv *priv = netdev_priv(dev);
--	struct net_device_stats *stats = &dev->stats;
--	struct can_frame *cf = (struct can_frame *)skb->data;
--	unsigned int mo = obj2msgobj(CC770_OBJ_TX);
-+	struct can_frame *cf = (struct can_frame *)priv->tx_skb->data;
- 	u8 dlc, rtr;
- 	u32 id;
- 	int i;
- 
--	if (can_dropped_invalid_skb(dev, skb))
--		return NETDEV_TX_OK;
--
--	if ((cc770_read_reg(priv,
--			    msgobj[mo].ctrl1) & TXRQST_UNC) == TXRQST_SET) {
--		netif_stop_queue(dev);
--		netdev_err(dev, "TX register is still occupied!\n");
--		return NETDEV_TX_BUSY;
--	}
--
--	netif_stop_queue(dev);
--
- 	dlc = cf->can_dlc;
- 	id = cf->can_id;
--	if (cf->can_id & CAN_RTR_FLAG)
--		rtr = 0;
--	else
--		rtr = MSGCFG_DIR;
-+	rtr = cf->can_id & CAN_RTR_FLAG ? 0 : MSGCFG_DIR;
-+
- 	cc770_write_reg(priv, msgobj[mo].ctrl0,
- 			MSGVAL_RES | TXIE_RES | RXIE_RES | INTPND_RES);
- 	cc770_write_reg(priv, msgobj[mo].ctrl1,
- 			RMTPND_RES | TXRQST_RES | CPUUPD_SET | NEWDAT_SET);
-+
- 	if (id & CAN_EFF_FLAG) {
- 		id &= CAN_EFF_MASK;
- 		cc770_write_reg(priv, msgobj[mo].config,
-@@ -440,15 +425,31 @@ static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	for (i = 0; i < dlc; i++)
- 		cc770_write_reg(priv, msgobj[mo].data[i], cf->data[i]);
- 
--	/* Store echo skb before starting the transfer */
--	can_put_echo_skb(skb, dev, 0);
--
- 	cc770_write_reg(priv, msgobj[mo].ctrl1,
- 			RMTPND_UNC | TXRQST_SET | CPUUPD_RES | NEWDAT_UNC);
- 	cc770_write_reg(priv, msgobj[mo].ctrl0,
- 			MSGVAL_SET | TXIE_SET | RXIE_SET | INTPND_UNC);
-+}
- 
--	stats->tx_bytes += dlc;
-+static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ /**
++ * xcan_errcounter_to_state - Get state based on error counter
++ * @err:	RX/TX error counter
++ *
++ * Get the CAN error state based on just the error counter. This is useful
++ * for determining RX and TX states separately as we only get a single global
++ * state from the device.
++ *
++ * Return:
++ * The CAN state based on the error counter.
++ */
++static enum can_state xcan_errcounter_to_state(u32 err)
 +{
-+	struct cc770_priv *priv = netdev_priv(dev);
-+	unsigned int mo = obj2msgobj(CC770_OBJ_TX);
++	if (err >= 128)
++		return CAN_STATE_ERROR_PASSIVE;
++	else if (err >= 96)
++		return CAN_STATE_ERROR_WARNING;
 +
-+	if (can_dropped_invalid_skb(dev, skb))
-+		return NETDEV_TX_OK;
++	return CAN_STATE_ERROR_ACTIVE;
++}
 +
-+	if ((cc770_read_reg(priv,
-+			    msgobj[mo].ctrl1) & TXRQST_UNC) == TXRQST_SET) {
-+		netif_stop_queue(dev);
-+		netdev_err(dev, "TX register is still occupied!\n");
-+		return NETDEV_TX_BUSY;
++/**
+  * xcan_set_error_state - Set new CAN error state
+  * @ndev:	Pointer to net_device structure
+  * @new_state:	The new CAN state to be set
+@@ -595,38 +616,26 @@ static void xcan_set_error_state(struct net_device *ndev,
+ 	u32 txerr = ecr & XCAN_ECR_TEC_MASK;
+ 	u32 rxerr = (ecr & XCAN_ECR_REC_MASK) >> XCAN_ESR_REC_SHIFT;
+ 
+-	priv->can.state = new_state;
++	enum can_state tx_state = xcan_errcounter_to_state(txerr);
++	enum can_state rx_state = xcan_errcounter_to_state(rxerr);
++
++	/* non-ERROR states are handled elsewhere */
++	if (WARN_ON(new_state > CAN_STATE_ERROR_PASSIVE))
++		return;
++
++	if (max(rx_state, tx_state) != new_state) {
++		/* hw has a different idea of the state, just set both
++		 * tx and rx states to the same value
++		 */
++		rx_state = tx_state = new_state;
 +	}
 +
-+	netif_stop_queue(dev);
-+
-+	priv->tx_skb = skb;
-+	cc770_tx(dev, mo);
++	can_change_state(ndev, cf, tx_state, rx_state);
  
- 	return NETDEV_TX_OK;
- }
-@@ -674,6 +675,7 @@ static void cc770_tx_interrupt(struct net_device *dev, unsigned int o)
- 	struct cc770_priv *priv = netdev_priv(dev);
- 	struct net_device_stats *stats = &dev->stats;
- 	unsigned int mo = obj2msgobj(o);
-+	struct can_frame *cf;
- 	u8 ctrl1;
- 
- 	ctrl1 = cc770_read_reg(priv, msgobj[mo].ctrl1);
-@@ -683,15 +685,32 @@ static void cc770_tx_interrupt(struct net_device *dev, unsigned int o)
- 	cc770_write_reg(priv, msgobj[mo].ctrl1,
- 			RMTPND_RES | TXRQST_RES | MSGLST_RES | NEWDAT_RES);
- 
--	if (ctrl1 & MSGLST_RES) {
--		can_get_echo_skb(dev, 0);
--		stats->tx_packets++;
--	} else {
--		can_free_echo_skb(dev, 0);
-+	if (unlikely(!priv->tx_skb)) {
-+		netdev_err(dev, "missing tx skb in tx interrupt\n");
-+		return;
-+	}
-+
-+	/* When the CC770 is sending an RTR message and it receives a regular
-+	 * message that matches the id of the RTR message, it will overwrite the
-+	 * outgoing message in the TX register. When this happens we must
-+	 * process the received message and try to transmit the outgoing skb
-+	 * again.
-+	 */
-+	if (unlikely(ctrl1 & MSGLST_SET)) {
- 		cc770_rx(dev, mo, ctrl1);
--		stats->tx_dropped++;
-+		cc770_tx(dev, mo);
-+		return;
+ 	if (cf) {
+-		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[6] = txerr;
+ 		cf->data[7] = rxerr;
  	}
- 
-+	can_put_echo_skb(priv->tx_skb, dev, 0);
-+	can_get_echo_skb(dev, 0);
-+
-+	cf = (struct can_frame *)priv->tx_skb->data;
-+	stats->tx_bytes += cf->can_dlc;
-+	stats->tx_packets++;
-+
-+	priv->tx_skb = NULL;
-+
- 	netif_wake_queue(dev);
+-
+-	switch (new_state) {
+-	case CAN_STATE_ERROR_PASSIVE:
+-		priv->can.can_stats.error_passive++;
+-		if (cf)
+-			cf->data[1] = (rxerr > 127) ?
+-					CAN_ERR_CRTL_RX_PASSIVE :
+-					CAN_ERR_CRTL_TX_PASSIVE;
+-		break;
+-	case CAN_STATE_ERROR_WARNING:
+-		priv->can.can_stats.error_warning++;
+-		if (cf)
+-			cf->data[1] |= (txerr > rxerr) ?
+-					CAN_ERR_CRTL_TX_WARNING :
+-					CAN_ERR_CRTL_RX_WARNING;
+-		break;
+-	case CAN_STATE_ERROR_ACTIVE:
+-		if (cf)
+-			cf->data[1] |= CAN_ERR_CRTL_ACTIVE;
+-		break;
+-	default:
+-		/* non-ERROR states are handled elsewhere */
+-		WARN_ON(1);
+-		break;
+-	}
  }
  
-@@ -803,6 +822,7 @@ struct net_device *alloc_cc770dev(int sizeof_priv)
- 	priv->can.do_set_bittiming = cc770_set_bittiming;
- 	priv->can.do_set_mode = cc770_set_mode;
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
-+	priv->tx_skb = NULL;
- 
- 	memcpy(priv->obj_flags, cc770_obj_flags, sizeof(cc770_obj_flags));
- 
-diff --git a/drivers/net/can/cc770/cc770.h b/drivers/net/can/cc770/cc770.h
-index a1739db..95752e1 100644
---- a/drivers/net/can/cc770/cc770.h
-+++ b/drivers/net/can/cc770/cc770.h
-@@ -193,6 +193,8 @@ struct cc770_priv {
- 	u8 cpu_interface;	/* CPU interface register */
- 	u8 clkout;		/* Clock out register */
- 	u8 bus_config;		/* Bus conffiguration register */
-+
-+	struct sk_buff *tx_skb;
- };
- 
- struct net_device *alloc_cc770dev(int sizeof_priv);
+ /**
 -- 
-1.9.1
+2.8.3
 
