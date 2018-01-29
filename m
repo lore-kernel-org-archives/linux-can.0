@@ -1,74 +1,85 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH] can: xilinx_can: use can_change_state()
-Date: Mon, 29 Jan 2018 17:50:06 +0000
-Message-ID: <151724820628.13021.14620062197722880179@maxwell>
-References: <151722269077.27204.8452699005718607415@maxwell>
- <20180129164953.6596-1-anssi.hannula@bitwise.fi>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH V2 1/3] dt-binding: can: mcp25xxfd: document device tree
+ bindings
+Date: Mon, 29 Jan 2018 13:36:55 -0600
+Message-ID: <20180129193655.ybu5cttt6z6mitmp@rob-hp-laptop>
+References: <20180119074140.25931-1-kernel@martin.sperl.org>
+ <20180119074140.25931-2-kernel@martin.sperl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr20047.outbound.protection.outlook.com ([40.107.2.47]:7025
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1751438AbeA2RuN (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 29 Jan 2018 12:50:13 -0500
-In-Reply-To: <20180129164953.6596-1-anssi.hannula@bitwise.fi>
+Received: from mail-ot0-f196.google.com ([74.125.82.196]:38823 "EHLO
+        mail-ot0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751322AbeA2Tg6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 29 Jan 2018 14:36:58 -0500
+Content-Disposition: inline
+In-Reply-To: <20180119074140.25931-2-kernel@martin.sperl.org>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Anssi Hannula <anssi.hannula@bitwise.fi>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can @ vger . kernel . org" <linux-can@vger.kernel.org>, Michal Simek <michal.simek@xilinx.com>
+To: kernel@martin.sperl.org
+Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Mark Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Marcel Birthelmer <Marcel.Birthelmer@microchip.com>, Sukkin Pang <skp@skpang.co.uk>, Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
 
-Hi Anssi
+On Fri, Jan 19, 2018 at 07:41:38AM +0000, kernel@martin.sperl.org wrote:
+> From: Martin Sperl <kernel@martin.sperl.org>
+> 
+> Add device-tree bindings for Microcip CanFD Controller mcp2517fd
+> 
+> Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
+> 
+> ---
+> Changelog:
+>   V1 -> V2: new more generic name based on feedback from microchip
+>             cleanup of dt custom properties removing (most) gpio functions
+> ---
+>  .../bindings/net/can/microchip,mcp25xxfd.txt       | 29 ++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.txt b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.txt
+> new file mode 100644
+> index 000000000000..691dd6220bd7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.txt
+> @@ -0,0 +1,29 @@
+> +* Microchip MCP2517 stand-alone CAN controller device tree bindings
+> +
+> +Required properties:
+> + - compatible: Should be one of the following:
+> +   - "microchip,mcp2517fd" for MCP2517fd.
+> + - reg: SPI chip select.
+> + - clocks: The clock feeding the CAN controller.
+> + - interrupt-parent: The parent interrupt controller.
+> + - interrupts: Should contain IRQ line for the CAN controller.
+> +
+> +Optional properties:
+> + - vdd-supply: Regulator that powers the CAN controller.
+> + - xceiver-supply: Regulator that powers the CAN transceiver.
 
-I wasn't sure you knew about can_change_state(). I didn't mean to say that =
-you
-_should_ use it, just that you could.
+> + - microchip,clock_out_div = <0|1|2|4|10>: Clock output pin divider
+> +					   0 = Start of Frame output
+> +					   default: 10
+> + - microchip,clock_div2: bool: divide the internal clock by 2
 
-Quoting Anssi Hannula (2018-01-29 16:49:53)
-> Replace some custom code with a call to can_change_state().
-> =
+s/_/-/
 
-> This subtly changes the error reporting behavior in some cases.
-> =
+> + - gpio_opendrain: bool: enable open-drain for all pins (except cantx)
 
-> Previously, if both RX and TX error counters indicated the same state,
-> and the status register agreed:
-> - if overall state is PASSIVE, report CAN_ERR_CRTL_RX_PASSIVE
-> - if overall state is WARNING, report CAN_ERR_CRTL_TX_WARNING or
->   CAN_ERR_CRTL_RX_WARNING depending on which counter is higher.
-If you look at sja1000.c, you'll see that it does this:
-tx_state =3D txerr >=3D rxerr ? state : 0
-rx_state =3D txerr <=3D rxerr ? state : 0;
-can_change_state(dev, cf, tx_state, rx_state);
+Needs a vendor prefix.
 
-Maybe something similar could work for this?
-> =
-
-> Previously, if status registers indicated a different state than the
-> worst state indicated by the RX/TX error counters (I have not observed
-> this to happen, though):
-> - if status register says PASSIVE, report CAN_ERR_CRTL_RX_PASSIVE if
->   RX error counter indicates PASSIVE as well, otherwise report
->   CAN_ERR_CRTL_TX_PASSIVE
-> - if status register says WARNING, report CAN_ERR_CRTL_TX_WARNING
->   or CAN_ERR_CRTL_RX_WARNING depending on which counter is higher.
-> =
-
-> After this commit, in both of the above scenarios:
-> - if overall state is PASSIVE, report
->   CAN_ERR_CRTL_RX_PASSIVE | CAN_ERR_CRTL_TX_PASSIVE
-> - if overall state is WARNING, report
->   CAN_ERR_CRTL_RX_WARNING | CAN_ERR_CRTL_TX_WARNING.
-> =
-
-> Tested with the integrated CAN on Zynq-7000 SoC.
-> =
-
-
-Anyway, the use of this API function is a somewhat superfluous issue, so I =
-think
-we shouldn't worry too much about it.
-
-Best regards,
-Andri
+> +
+> +Example:
+> +	can0: can@1 {
+> +		compatible = "microchip,mcp2515";
+> +		reg = <1>;
+> +		clocks = <&clk24m>;
+> +		interrupt-parent = <&gpio4>;
+> +		interrupts = <13 0x8>;
+> +		vdd-supply = <&reg5v0>;
+> +		xceiver-supply = <&reg5v0>;
+> +	};
+> --
+> 2.11.0
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
