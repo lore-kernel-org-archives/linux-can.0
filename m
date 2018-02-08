@@ -1,49 +1,90 @@
-From: Jimmy Assarsson <extja@kvaser.com>
-Subject: Re: Associate physical device with device name
-Date: Thu, 8 Feb 2018 14:04:08 +0100
-Message-ID: <f1dbf319-eda5-6901-c5e4-d08651e2c1fe@kvaser.com>
-References: <e8998556-5e13-1cec-f404-70c4679ca9c3@kvaser.com>
- <87ddf56f-c829-6aad-5b86-474359d282d4@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/5 resend] can: various fixes to xilinx_can driver
+Date: Thu, 8 Feb 2018 15:28:27 +0100
+Message-ID: <e3bb96a4-810e-9591-4193-dbbc45a93a8b@pengutronix.de>
+References: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="0PaPMjd6uScW57MzTWaIIzRJXbwUSe2YB"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf0-f42.google.com ([209.85.215.42]:43873 "EHLO
-        mail-lf0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751317AbeBHNEO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Feb 2018 08:04:14 -0500
-Received: by mail-lf0-f42.google.com with SMTP id o89so6277076lfg.10
-        for <linux-can@vger.kernel.org>; Thu, 08 Feb 2018 05:04:14 -0800 (PST)
-In-Reply-To: <87ddf56f-c829-6aad-5b86-474359d282d4@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:34657 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751963AbeBHO3I (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Feb 2018 09:29:08 -0500
+In-Reply-To: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Anssi Hannula <anssi.hannula@bitwise.fi>, linux-can@vger.kernel.org
+Cc: Michal Simek <michal.simek@xilinx.com>
 
-On 2018-02-08 13:45, Marc Kleine-Budde wrote:
-> On 01/26/2018 03:38 PM, Jimmy Assarsson wrote:
->> We would like to be able to associate physical (Kvaser) USB devices with
->> their device names (can0 etc.).
->> The interface's EAN (article number) combined with serial number, form a
->> unique identifier.
->>
->> It is not possible to do this from the USB descriptor. Since the serial
->> number is not provided in the USB descriptor. And the same PID is reused
->> for multiple EAN numbers. It is preferable with a solution that is
->> independent of interface type (USB etc.), since we may support other
->> devices in the future.
->>
->> This is somewhat similar to '"user id" for can usb adapters',
->> https://marc.info/?l=linux-can&m=146565019622100
->>
->> What is the preferable way of solving this kind of problem? Is sysfs
->> suitable?
-> 
-> Are your adaptors 100% idential? Then there is no way to tell them apart
-> in software. However you should be possible to write a custom udev rule
-> to rename the adapter depending on the physical USB-Port you are using.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0PaPMjd6uScW57MzTWaIIzRJXbwUSe2YB
+Content-Type: multipart/mixed; boundary="DLqLxAfz0sDToiDkmy0Z449Rzv1jGBy23";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Anssi Hannula <anssi.hannula@bitwise.fi>, linux-can@vger.kernel.org
+Cc: Michal Simek <michal.simek@xilinx.com>
+Message-ID: <e3bb96a4-810e-9591-4193-dbbc45a93a8b@pengutronix.de>
+Subject: Re: [PATCH 0/5 resend] can: various fixes to xilinx_can driver
+References: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
+In-Reply-To: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
 
-No, they are not identical. The EAN and serial number is stored on the
-device. Which makes a single device unique. It is possible to fetch
-these from the device. And same applies to all Kvaser CAN interfaces,
-regardless if they are connected via USB, PCI-express or ethernet.
+--DLqLxAfz0sDToiDkmy0Z449Rzv1jGBy23
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 01/26/2018 03:27 PM, Anssi Hannula wrote:
+> Hi all,
+>=20
+> I submitted a few bugfixes in Feb 2017 ("can: various fixes to
+> xilinx_can driver") but they were not applied, so here they are again.
+>=20
+> I seem to have missed CCing Michal Simek (the maintainer per
+> MAINTAINERS) last time, but I've included him in the loop now so he can=
+
+> comment.
+>=20
+> The last patch saw several revisions after comments from Marc, the one =
+here
+> is the same as the last version posted back then.
+>=20
+> I've rebased them on top of linux-can/master and tested on Zynq-7000 HW=
+=2E
+
+I've taken patches 1-3 to linux-can. Patches 3, 4, [PATCH v2] can:
+xilinx_can: use can_change_state(), 5 to linux-can-next.
+
+Once net/master will be merged to net-next/master, patch 3 will fall
+away and I'll send a pull reqeust upstream.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--DLqLxAfz0sDToiDkmy0Z449Rzv1jGBy23--
+
+--0PaPMjd6uScW57MzTWaIIzRJXbwUSe2YB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlp8XosACgkQk9IU1zQo
+ZfHG+ggAozoDuuNmkQfngMzGsJ0KWC39IS6z6ZtkUhscYAG7gBNw2Uw3bbPe+M+6
+zUq+RPdnBj+W3j6Es93NkRIJbjVdD/ZTca0hg3EZvsUUHks3HvprRmFEUrki4ggu
+aGR0IKemSjtN+h5R/HY4KxuyzvU7cFWMnsXVqT9+oPT9nG/FEzLXqmb4NfdccNf5
+/1ND1cMbg1h6SOD1c2DXUasT8QlRJzkD7RLtJnRvmSwCM07Fyz29g7y9RQ1Xp869
+uZjLh1GhajF9FQC3UZ2SVK7IpTegoLFKGY7UWDOc868CnnKI55qeCEFTStEIhq0i
+SMht4aGAr977Tw3FzOVHZ3bsc3xsYQ==
+=RX+e
+-----END PGP SIGNATURE-----
+
+--0PaPMjd6uScW57MzTWaIIzRJXbwUSe2YB--
