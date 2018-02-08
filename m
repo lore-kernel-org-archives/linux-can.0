@@ -1,50 +1,56 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: m_can: change comparison to bitshift when dealing
- with a mask
-Date: Thu, 8 Feb 2018 15:42:55 +0100
-Message-ID: <f76988fc-db62-576c-7cba-58259cf9edf9@pengutronix.de>
-References: <20180206085207.3882-1-wsa+renesas@sang-engineering.com>
+Subject: Re: [PATCH v2 1/2] net, can, ifi: fix "write buffer full" error
+Date: Thu, 8 Feb 2018 15:46:27 +0100
+Message-ID: <59322f7d-4207-a5a4-89b5-dff1634e4183@pengutronix.de>
+References: <20180208064748.17985-1-hs@denx.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="L3QZrDHeHWdmduPP8K6NTogOucdTWDtx4"
+ boundary="IgjQZx4c8IMbn8rd8W8kueTZeypshVxNq"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180206085207.3882-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20180208064748.17985-1-hs@denx.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-kernel@vger.kernel.org
-Cc: linux-renesas-soc@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Heiko Schocher <hs@denx.de>, linux-can@vger.kernel.org
+Cc: Markus Marb <markus@marb.org>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>, Wolfgang Grandegger <wg@grandegger.com>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---L3QZrDHeHWdmduPP8K6NTogOucdTWDtx4
-Content-Type: multipart/mixed; boundary="glwg4TysMLh9Tqp1Gw8ayyXwr3iIaA7fQ";
+--IgjQZx4c8IMbn8rd8W8kueTZeypshVxNq
+Content-Type: multipart/mixed; boundary="MIZtyo0ovlOiyelZbmtVEAFouL0Lq30pA";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- linux-kernel@vger.kernel.org
-Cc: linux-renesas-soc@vger.kernel.org, Wolfgang Grandegger
- <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Message-ID: <f76988fc-db62-576c-7cba-58259cf9edf9@pengutronix.de>
-Subject: Re: [PATCH] can: m_can: change comparison to bitshift when dealing
- with a mask
-References: <20180206085207.3882-1-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20180206085207.3882-1-wsa+renesas@sang-engineering.com>
+To: Heiko Schocher <hs@denx.de>, linux-can@vger.kernel.org
+Cc: Markus Marb <markus@marb.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>,
+ Wolfgang Grandegger <wg@grandegger.com>
+Message-ID: <59322f7d-4207-a5a4-89b5-dff1634e4183@pengutronix.de>
+Subject: Re: [PATCH v2 1/2] net, can, ifi: fix "write buffer full" error
+References: <20180208064748.17985-1-hs@denx.de>
+In-Reply-To: <20180208064748.17985-1-hs@denx.de>
 
---glwg4TysMLh9Tqp1Gw8ayyXwr3iIaA7fQ
+--MIZtyo0ovlOiyelZbmtVEAFouL0Lq30pA
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 02/06/2018 09:52 AM, Wolfram Sang wrote:
-> Due to a typo, the mask was destroyed by a comparison instead of a bit
-> shift.
+On 02/08/2018 07:47 AM, Heiko Schocher wrote:
+> the driver reads in the ISR first the IRQpending register,
+> and clears after that in a write *all* bits in it.
 >=20
-> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
-> Only build tested.
+> It could happen that the isr register raise bits between
+> this 2 register accesses, which leads in lost bits ...
+>=20
+> In case it clears "TX message sent successfully", the driver
+> never sends any Tx data, and buffers to userspace run over.
+>=20
+> Fixed this:
+> clear only the bits in the IRQpending register, the
+> driver had read.
+>=20
+> Signed-off-by: Heiko Schocher <hs@denx.de>
+> Reviewed-by: Marek Vasut <marex@denx.de>
 
-Applied to can. Luckily that define is not used :)
+Applied both to linux-can.
 
 Tnx,
 Marc
@@ -56,23 +62,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---glwg4TysMLh9Tqp1Gw8ayyXwr3iIaA7fQ--
+--MIZtyo0ovlOiyelZbmtVEAFouL0Lq30pA--
 
---L3QZrDHeHWdmduPP8K6NTogOucdTWDtx4
+--IgjQZx4c8IMbn8rd8W8kueTZeypshVxNq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlp8Ye8ACgkQk9IU1zQo
-ZfE5ngf9FfC2VYJ1KD8HcsAYc0Hh9ByscFKRPNMGoAPeLKG5EMvDI8CN0oZXUZCg
-CxZfqEXjcrzHor9YaJAX/mAKNcoPGrypXEtS6jQ1KCNh6mnSNUXGlueLgZ9N8a7c
-rAVey3wSfQA0c2vlZH0u5eoFC9pCDIAai1TXn+wrvolQPcYVBpmOyqNJGwlERF0Q
-SPEXCCHCn3tO+BR2vc4vJYRvTkqGyPUKF5b+dlaBWncbRo64E0TCpAmjfiToPt3o
-Fpp8YCO42IY2cdXFM7tEN4LHzC/TJFggWQyccba7CwtwR3vf93keFGiMlor53wCn
-4RwxobFxSvBypIqy1s9lh50Ky0XLkg==
-=jnP7
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlp8YsMACgkQk9IU1zQo
+ZfHnQQgApJa10e389jp6bHp3E6cB6bCLIqQ5LDunEeJ0Nlk2OCObXdZEtdcHFJvG
+zNe33zZP+wr+x+oSXplEkfhMrzuLjc4BmVNba58ZYKDdIa+NtuG4lvNbGKPBgE/i
+9KWphlslpj+Ew8sBGBQWQjJCNqM1cZYk9EM4O1ila42kK99TmZQr7l7Tn2FqdWdR
+Mt8y81Dc7Y/AVe+zqxmhdWfFBcvnn00x2wTmoLVQ0kFA40qL2doKokh3m9NcUyGV
+BTLAy1KYGuoPk16hy/pgwuJFN2v2KwdV9CUdWX6wkZWkRGmpHySZyE9Umt0GIsJ/
+uX2cDaNM1a6cooTBVk0NBq02uV5tiA==
+=3kXY
 -----END PGP SIGNATURE-----
 
---L3QZrDHeHWdmduPP8K6NTogOucdTWDtx4--
+--IgjQZx4c8IMbn8rd8W8kueTZeypshVxNq--
