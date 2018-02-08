@@ -1,64 +1,54 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/5 resend] can: various fixes to xilinx_can driver
-Date: Thu, 8 Feb 2018 15:28:27 +0100
-Message-ID: <e3bb96a4-810e-9591-4193-dbbc45a93a8b@pengutronix.de>
-References: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
+Subject: Re: [PATCH] can: m_can: change comparison to bitshift when dealing
+ with a mask
+Date: Thu, 8 Feb 2018 15:39:30 +0100
+Message-ID: <a15c4dbc-0f62-b4af-9dbd-49b599c873fe@pengutronix.de>
+References: <20180206085207.3882-1-wsa+renesas@sang-engineering.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="0PaPMjd6uScW57MzTWaIIzRJXbwUSe2YB"
+ boundary="eMziEACJF3HIaxgX3ChwiNv7cnMJ08KCv"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:34657 "EHLO
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:35375 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751963AbeBHO3I (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Feb 2018 09:29:08 -0500
-In-Reply-To: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
+        with ESMTP id S1751343AbeBHOkM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Feb 2018 09:40:12 -0500
+In-Reply-To: <20180206085207.3882-1-wsa+renesas@sang-engineering.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Anssi Hannula <anssi.hannula@bitwise.fi>, linux-can@vger.kernel.org
-Cc: Michal Simek <michal.simek@xilinx.com>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-kernel@vger.kernel.org
+Cc: linux-renesas-soc@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---0PaPMjd6uScW57MzTWaIIzRJXbwUSe2YB
-Content-Type: multipart/mixed; boundary="DLqLxAfz0sDToiDkmy0Z449Rzv1jGBy23";
+--eMziEACJF3HIaxgX3ChwiNv7cnMJ08KCv
+Content-Type: multipart/mixed; boundary="u523Bk4iYEMvFScKxGSQWBDbg4gSbO1gO";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Anssi Hannula <anssi.hannula@bitwise.fi>, linux-can@vger.kernel.org
-Cc: Michal Simek <michal.simek@xilinx.com>
-Message-ID: <e3bb96a4-810e-9591-4193-dbbc45a93a8b@pengutronix.de>
-Subject: Re: [PATCH 0/5 resend] can: various fixes to xilinx_can driver
-References: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
-In-Reply-To: <20180126142723.3212-1-anssi.hannula@bitwise.fi>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ linux-kernel@vger.kernel.org
+Cc: linux-renesas-soc@vger.kernel.org, Wolfgang Grandegger
+ <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <a15c4dbc-0f62-b4af-9dbd-49b599c873fe@pengutronix.de>
+Subject: Re: [PATCH] can: m_can: change comparison to bitshift when dealing
+ with a mask
+References: <20180206085207.3882-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20180206085207.3882-1-wsa+renesas@sang-engineering.com>
 
---DLqLxAfz0sDToiDkmy0Z449Rzv1jGBy23
+--u523Bk4iYEMvFScKxGSQWBDbg4gSbO1gO
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 01/26/2018 03:27 PM, Anssi Hannula wrote:
-> Hi all,
+On 02/06/2018 09:52 AM, Wolfram Sang wrote:
+> Due to a typo, the mask was destroyed by a comparison instead of a bit
+> shift.
 >=20
-> I submitted a few bugfixes in Feb 2017 ("can: various fixes to
-> xilinx_can driver") but they were not applied, so here they are again.
->=20
-> I seem to have missed CCing Michal Simek (the maintainer per
-> MAINTAINERS) last time, but I've included him in the loop now so he can=
+> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-> comment.
->=20
-> The last patch saw several revisions after comments from Marc, the one =
-here
-> is the same as the last version posted back then.
->=20
-> I've rebased them on top of linux-can/master and tested on Zynq-7000 HW=
-=2E
+Applied to can.
 
-I've taken patches 1-3 to linux-can. Patches 3, 4, [PATCH v2] can:
-xilinx_can: use can_change_state(), 5 to linux-can-next.
-
-Once net/master will be merged to net-next/master, patch 3 will fall
-away and I'll send a pull reqeust upstream.
-
+tnx,
 Marc
 
 --=20
@@ -68,23 +58,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---DLqLxAfz0sDToiDkmy0Z449Rzv1jGBy23--
+--u523Bk4iYEMvFScKxGSQWBDbg4gSbO1gO--
 
---0PaPMjd6uScW57MzTWaIIzRJXbwUSe2YB
+--eMziEACJF3HIaxgX3ChwiNv7cnMJ08KCv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlp8XosACgkQk9IU1zQo
-ZfHG+ggAozoDuuNmkQfngMzGsJ0KWC39IS6z6ZtkUhscYAG7gBNw2Uw3bbPe+M+6
-zUq+RPdnBj+W3j6Es93NkRIJbjVdD/ZTca0hg3EZvsUUHks3HvprRmFEUrki4ggu
-aGR0IKemSjtN+h5R/HY4KxuyzvU7cFWMnsXVqT9+oPT9nG/FEzLXqmb4NfdccNf5
-/1ND1cMbg1h6SOD1c2DXUasT8QlRJzkD7RLtJnRvmSwCM07Fyz29g7y9RQ1Xp869
-uZjLh1GhajF9FQC3UZ2SVK7IpTegoLFKGY7UWDOc868CnnKI55qeCEFTStEIhq0i
-SMht4aGAr977Tw3FzOVHZ3bsc3xsYQ==
-=RX+e
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlp8YSIACgkQk9IU1zQo
+ZfFhHwf/QUaAQJJGrBh1eAPA15MIV0S4p9VZXF3+YzJaQsu96Ptjr5j0o9RnbVxE
+VFxp5HuDEoPfbkbOUeaNrD/Ct+IjgqJxH2pBHQCshXUC+kvCYxhkiypWxQGnTTkC
+CCekQBIKut191s8TE8Sk1FZxI9VC0e7VxN3bvBOax7Syzjiby5kImnjBjwLARRhW
+0GBnEjZg63gQORX5K90EXndmCtuNb6hJxJ72ZNLhRobk7Ts79s25j5x04IenMM9k
+bwrGBA8j3uoYBMMBTbcFr5asKwmwVsFt6OCm/HOW4hryDs8hR4LcPkoQxsP9SD7t
+aEzWO2C6nshi1uYLPy7mNVK6dn+ueg==
+=FEKQ
 -----END PGP SIGNATURE-----
 
---0PaPMjd6uScW57MzTWaIIzRJXbwUSe2YB--
+--eMziEACJF3HIaxgX3ChwiNv7cnMJ08KCv--
