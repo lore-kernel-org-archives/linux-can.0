@@ -1,86 +1,43 @@
-From: Heiko Schocher <hs@denx.de>
-Subject: [PATCH v2 2/2] net, can, ifi: loopback Tx message in IFI block
-Date: Thu,  8 Feb 2018 07:47:48 +0100
-Message-ID: <20180208064748.17985-2-hs@denx.de>
-References: <20180208064748.17985-1-hs@denx.de>
+From: Jimmy Assarsson <extja@kvaser.com>
+Subject: Re: Associate physical device with device name
+Date: Thu, 8 Feb 2018 13:05:07 +0100
+Message-ID: <33aac663-0a1a-9176-5fa0-cf7c2f84ce53@kvaser.com>
+References: <e8998556-5e13-1cec-f404-70c4679ca9c3@kvaser.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:53628 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750793AbeBHGsO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Feb 2018 01:48:14 -0500
-In-Reply-To: <20180208064748.17985-1-hs@denx.de>
+Received: from mail-lf0-f45.google.com ([209.85.215.45]:44123 "EHLO
+        mail-lf0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752053AbeBHMFM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Feb 2018 07:05:12 -0500
+Received: by mail-lf0-f45.google.com with SMTP id u20so3858166lff.11
+        for <linux-can@vger.kernel.org>; Thu, 08 Feb 2018 04:05:11 -0800 (PST)
+In-Reply-To: <e8998556-5e13-1cec-f404-70c4679ca9c3@kvaser.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: Heiko Schocher <hs@denx.de>, Markus Marb <markus@marb.org>, netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>, Wolfgang Grandegger <wg@grandegger.com>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Current ifi driver reads first Rx messages, than loopback
-the Tx message, if the IFI_CANFD_INTERRUPT_TXFIFO_REMOVE
-bit is set. This can lead into the case, that Rx messages
-overhelm Tx messages!
+On 2018-01-26 15:38, Jimmy Assarsson wrote:
+> We would like to be able to associate physical (Kvaser) USB devices with
+> their device names (can0 etc.).
+> The interface's EAN (article number) combined with serial number, form a
+> unique identifier.
+> 
+> It is not possible to do this from the USB descriptor. Since the serial
+> number is not provided in the USB descriptor. And the same PID is reused
+> for multiple EAN numbers. It is preferable with a solution that is
+> independent of interface type (USB etc.), since we may support other
+> devices in the future.
+> 
+> This is somewhat similar to '"user id" for can usb adapters',
+> https://marc.info/?l=linux-can&m=146565019622100
+> 
+> What is the preferable way of solving this kind of problem? Is sysfs
+> suitable?
 
-Fixed this in the following way:
+No suggestions or opinions on this?
 
-Set in the IFI_CANFD_TXFIFO_DLC register the FN value to
-1, so the IFI block loopsback itself the Tx message when
-sended correctly on the canfd bus. Only the IFI block can
-insert the Tx message in the correct place.
-
-The linux driver now needs only to free the skb, when
-the Tx message was sended correctly.
-
-Signed-off-by: Heiko Schocher <hs@denx.de>
-Reviewed-by: Marek Vasut <marex@denx.de>
----
-
-Changes in v2:
-- add Reviewed-by from Marek, fixed comment into one liner
-
- drivers/net/can/ifi_canfd/ifi_canfd.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index 05feb8177936..ee74ee8f9b38 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -211,6 +211,7 @@ struct ifi_canfd_priv {
- 	struct napi_struct	napi;
- 	struct net_device	*ndev;
- 	void __iomem		*base;
-+	unsigned int		tx_len;
- };
- 
- static void ifi_canfd_irq_enable(struct net_device *ndev, bool enable)
-@@ -617,8 +618,10 @@ static irqreturn_t ifi_canfd_isr(int irq, void *dev_id)
- 
- 	/* TX IRQ */
- 	if (isr & IFI_CANFD_INTERRUPT_TXFIFO_REMOVE) {
--		stats->tx_bytes += can_get_echo_skb(ndev, 0);
-+		can_free_echo_skb(ndev, 0);
-+		stats->tx_bytes += priv->tx_len;
- 		stats->tx_packets++;
-+		priv->tx_len = 0;
- 		can_led_event(ndev, CAN_LED_EVENT_TX);
- 	}
- 
-@@ -889,6 +892,7 @@ static netdev_tx_t ifi_canfd_start_xmit(struct sk_buff *skb,
- 	}
- 
- 	txdlc = can_len2dlc(cf->len);
-+	priv->tx_len = txdlc;
- 	if ((priv->can.ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
- 		txdlc |= IFI_CANFD_TXFIFO_DLC_EDL;
- 		if (cf->flags & CANFD_BRS)
-@@ -898,6 +902,9 @@ static netdev_tx_t ifi_canfd_start_xmit(struct sk_buff *skb,
- 	if (cf->can_id & CAN_RTR_FLAG)
- 		txdlc |= IFI_CANFD_TXFIFO_DLC_RTR;
- 
-+	/* set FNR to 1, so we get our Tx Message looped back into RxFIFO */
-+	txdlc += (1 << IFI_CANFD_TXFIFO_DLC_FNR_OFFSET);
-+
- 	/* message ram configuration */
- 	writel(txid, priv->base + IFI_CANFD_TXFIFO_ID);
- 	writel(txdlc, priv->base + IFI_CANFD_TXFIFO_DLC);
--- 
-2.14.3
-
+Regards,
+Jimmy
