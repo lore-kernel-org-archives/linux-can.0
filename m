@@ -1,77 +1,98 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: j1939: Attempt to make j1939 network namespace-aware
-Date: Thu, 8 Feb 2018 22:13:25 +0100
-Message-ID: <6972f543-2bfe-e082-a82e-8e66f64a361d@hartkopp.net>
-References: <CAHChkrvE+uczdhu66snkAt8p2AfgM=sKraaxFJTRDCSXjdS24g@mail.gmail.com>
- <480B3397-A3D5-4B24-901A-AA9C23DC43C1@vandijck-laurijssen.be>
- <CAHChkrtVGAUG=xwcD6c3YLZ8kvGi9EoucbtvY4H2_GU=i8Q7wg@mail.gmail.com>
- <b42195d6-7d59-edce-1eef-0e3d272e5495@hartkopp.net>
- <20180206201650.GD1198@airbook.vandijck-laurijssen.be>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2 1/2] net, can, ifi: fix "write buffer full" error
+Date: Thu, 8 Feb 2018 22:33:54 +0100
+Message-ID: <ca1b9134-1e5a-ea83-146f-693ba38be413@pengutronix.de>
+References: <20180208064748.17985-1-hs@denx.de>
+ <59322f7d-4207-a5a4-89b5-dff1634e4183@pengutronix.de>
+ <dfae1bda-9ccd-6a48-95f9-e061c1bd3828@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="AjzWQDiH4BTjT9M1jcvMMIAvLcuVe9UvA"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.161]:26866 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751756AbeBHVNl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Feb 2018 16:13:41 -0500
-In-Reply-To: <20180206201650.GD1198@airbook.vandijck-laurijssen.be>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:36579 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751756AbeBHVek (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Feb 2018 16:34:40 -0500
+In-Reply-To: <dfae1bda-9ccd-6a48-95f9-e061c1bd3828@denx.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: Elenita Hinds <ecathinds@gmail.com>, linux-can@vger.kernel.org
+To: Marek Vasut <marex@denx.de>, Heiko Schocher <hs@denx.de>, linux-can@vger.kernel.org
+Cc: Markus Marb <markus@marb.org>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 
-Hi Kurt,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--AjzWQDiH4BTjT9M1jcvMMIAvLcuVe9UvA
+Content-Type: multipart/mixed; boundary="O3JBU05ZpuhadwbMSXPFnpyaJSgR8MAI1";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Marek Vasut <marex@denx.de>, Heiko Schocher <hs@denx.de>,
+ linux-can@vger.kernel.org
+Cc: Markus Marb <markus@marb.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+Message-ID: <ca1b9134-1e5a-ea83-146f-693ba38be413@pengutronix.de>
+Subject: Re: [PATCH v2 1/2] net, can, ifi: fix "write buffer full" error
+References: <20180208064748.17985-1-hs@denx.de>
+ <59322f7d-4207-a5a4-89b5-dff1634e4183@pengutronix.de>
+ <dfae1bda-9ccd-6a48-95f9-e061c1bd3828@denx.de>
+In-Reply-To: <dfae1bda-9ccd-6a48-95f9-e061c1bd3828@denx.de>
 
-On 02/06/2018 09:16 PM, Kurt Van Dijck wrote:
+--O3JBU05ZpuhadwbMSXPFnpyaJSgR8MAI1
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-> So absolutely nothing is/should be shared between the namespaces
-> from the userspace point of view?
+On 02/08/2018 08:22 PM, Marek Vasut wrote:
+> On 02/08/2018 03:46 PM, Marc Kleine-Budde wrote:
+>> On 02/08/2018 07:47 AM, Heiko Schocher wrote:
+>>> the driver reads in the ISR first the IRQpending register,
+>>> and clears after that in a write *all* bits in it.
+>>>
+>>> It could happen that the isr register raise bits between
+>>> this 2 register accesses, which leads in lost bits ...
+>>>
+>>> In case it clears "TX message sent successfully", the driver
+>>> never sends any Tx data, and buffers to userspace run over.
+>>>
+>>> Fixed this:
+>>> clear only the bits in the IRQpending register, the
+>>> driver had read.
+>>>
+>>> Signed-off-by: Heiko Schocher <hs@denx.de>
+>>> Reviewed-by: Marek Vasut <marex@denx.de>
+>>
+>> Applied both to linux-can.
+>=20
+> Can you also apply them to stable, so they get into 4.9.x etc ?
 
-The network interfaces and the created sockets are only working and 
-visible in one specific namespace.
-Before making the CAN subsystem namespace aware, it was only able to 
-work in the root aka init namespace.
+I've already added stable on Cc, so they will be picked up by the stable
+maintainers.
 
-When you have a single vcan0 in a namespace the application that 
-executes inside this namespace can only see this single interface.
+Marc
 
-> So the ideal j1939 implementation that shares nothing between
-> interfaces only needs to forward an extra namespace parameter?
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Yes. Each interface has a namespace and an ifindex. And each socket has 
-a namespace.
 
-All relevant data structures need to be per-namespace.
-The initial namespace support from Mario gives an idea about the changes 
-for the CAN subsystem (and CAN RAW):
+--O3JBU05ZpuhadwbMSXPFnpyaJSgR8MAI1--
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/net/can?id=8e8cda6d737d356054c9eeef642aec0e8ae7e6bc
+--AjzWQDiH4BTjT9M1jcvMMIAvLcuVe9UvA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-> How about ... /proc parameters?
+-----BEGIN PGP SIGNATURE-----
 
-per-namespace:
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlp8wkMACgkQk9IU1zQo
+ZfE7FggAr/8DWqoGIVzkjlBsFruOMFUvtM/nKU3cFX6DwndYf7m9Z1LTk2WdpC3J
+EgdfbDLms/CtGEoTCApVMxVcvAQwoQyyrd8QJYefJrBBQKenYATi8xX4pkpU0P9S
+cNL7jVYPpDnFECM/OZR222tU6yy90W5Aw7ZG29S5jcf4skqVC189khTTgwlhks0B
+j+TLHDUKEJbk/pGzz/pWG/dvK7r7dnlpdB5EyR/0zhMdi54WPtQ0QRnaFU/ImYL5
+e8EUX/sQYSGcQfPEUZIKQSAv6Dht6h3CNfzipc1JvvTFs+W7FWTDfc5hg+nNTlbP
+fFU+r2FZ2pRJ3LTPDHYd68DXCRMdUQ==
+=G2Z6
+-----END PGP SIGNATURE-----
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/net/can?id=cb5635a3677679666e4e81ecbb209d32f13dedcd
-
-> or Module parameters?
-
-Hm - we only have module_param(stats_timer, int, S_IRUGO) in af_can.c
-
-This is just one module parameter for the module - which is not 
-application relevant (like addressing or filters).
-
-> or is that the main argument against them?
-
-Don't know. I think netlink and sockopts should cover most of the 
-configuration stuff. procfs and sysfs need to be namespace aware.
-
-> Can different namespaces re-use interface numbers (ifindex)?
-
-As written above every interface has a namespace and an ifindex.
-So you may have the same ifindex value in different namespaces.
-
-Best,
-Oliver
-
+--AjzWQDiH4BTjT9M1jcvMMIAvLcuVe9UvA--
