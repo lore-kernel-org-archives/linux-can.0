@@ -1,88 +1,78 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Framework for hardware filter support?
-Date: Sun, 11 Feb 2018 13:32:28 +0100
-Message-ID: <eabc4877-8f50-7246-32da-1f5bbb2e507e@hartkopp.net>
-References: <98bcd448-4d2a-bf2f-ae5a-4db7f1eac896@pobox.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: Bug#890090: can-utils: Please update, new features and tools in
+ upstream
+Date: Sun, 11 Feb 2018 14:45:34 +0100
+Message-ID: <1928b968-0bc9-beaf-abd9-7158ab6b4f4b@pengutronix.de>
+References: <151831023087.7397.10489186056134209003.reportbug@debian>
+ <20180211125303.152ca358@brick.gerasiov.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="UWOU80F57p52SQ2DHh3myEchDidvnuFen"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.220]:36122 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752691AbeBKMcf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 11 Feb 2018 07:32:35 -0500
-In-Reply-To: <98bcd448-4d2a-bf2f-ae5a-4db7f1eac896@pobox.com>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:33563 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751897AbeBKNq2 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 11 Feb 2018 08:46:28 -0500
+In-Reply-To: <20180211125303.152ca358@brick.gerasiov.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Daniel Santos <daniel.santos@pobox.com>
-Cc: linux-can <linux-can@vger.kernel.org>
+To: Alexander Gerasiov <gq@cs.msu.su>, Fabian Inostroza <soulsonceonfire@gmail.com>
+Cc: 890090@bugs.debian.org, linux-can <linux-can@vger.kernel.org>
 
-Hello Daniel,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UWOU80F57p52SQ2DHh3myEchDidvnuFen
+Content-Type: multipart/mixed; boundary="QDJWCT2f1TPKAExWL6lbnajbyOhebAf05";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Alexander Gerasiov <gq@cs.msu.su>,
+ Fabian Inostroza <soulsonceonfire@gmail.com>
+Cc: 890090@bugs.debian.org, linux-can <linux-can@vger.kernel.org>
+Message-ID: <1928b968-0bc9-beaf-abd9-7158ab6b4f4b@pengutronix.de>
+Subject: Re: Bug#890090: can-utils: Please update, new features and tools in
+ upstream
+References: <151831023087.7397.10489186056134209003.reportbug@debian>
+ <20180211125303.152ca358@brick.gerasiov.net>
+In-Reply-To: <20180211125303.152ca358@brick.gerasiov.net>
 
-On 02/11/2018 03:38 AM, Daniel Santos wrote:
-> Hello.  I'm doing a project where hardware filters will pretty much be
-> required unless we change the hardware.  I can just hack up the mcp251x
-> driver and add some sysfs nodes to modify the filters, but it would be
-> much nicer to implement using some type of standard framework that I
-> could submit back upstream.
+--QDJWCT2f1TPKAExWL6lbnajbyOhebAf05
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-Definitely a better approach :-)
+On 02/11/2018 10:53 AM, Alexander Gerasiov wrote:
+> Once again I recommend you to tag releases in git. This automatically
+> pings package maintainers in various Linux distributions to update
+> their packages. =3D)
 
-> My current project uses an MCP2515 (with only two rx buffers) connected
-> via an MCP2210 USB-to-SPI bridge and that introduces a lot of latency
-> and interrupts may not be serviced for as much as 20-30 ms and w/o
-> hardware filters, we'll be missing a lot of messages we want to sniff.
-> 
-> I've read some of the arguments against it, such is it being a
-> multi-user environment.  To me that just means that hardware filters
-> should be configured at the interface level and not at the socket level.
+Done, I've created a tag and pushed it to github.
 
-Correct for your use-case.
+Marc
 
-As you already pointed out in the user in a multi-user environment 
-expects to be able to access the entire CAN traffic on that bus.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-You want to reduce bandwidth and system load on the path from the 
-controller into the system to cope with hardware limitations.
 
-IMO this can be a valid requirement BUT we always have to keep in mind 
-that the filters on that (CAN controller) level affect all users.
+--QDJWCT2f1TPKAExWL6lbnajbyOhebAf05--
 
-> So is there no such framework already in place?  If not, where would be
-> the most logical place to add it? netfilter in the kernel and iproute2
-> in userland?
+--UWOU80F57p52SQ2DHh3myEchDidvnuFen
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-A hardware filter support needs to be placed in hardware ;-)
+-----BEGIN PGP SIGNATURE-----
 
-The netfilter stuff comes into action when the network packets are 
-already processed inside the network layer - so it's too late.
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqASP4ACgkQk9IU1zQo
+ZfFcuAf9F0++Q2aKtBNnTQ5g02FPnp7uAwkiMR1xyP09dkmXHVVmpKwCDZ75jrB+
+p0ok5QVCnt0UFJeQVoFcbwz0oy0m6bYEvWnicRTSMjbHuYWRPAtCMR0GK3sBoGIl
+NyFgsmGmeCxkEnHL4I2QJpJlGDVr7WhND94ZHsw8c4AF1qRG97SL/VRdibk/7I2m
+jIj+c6Y8BdbBvC/UWgV06yDFxtNb3vypRIo7/Da5kdXLfV7X8SacCqzIjSEOt1/Y
++0Mjmfk+4PiCNA7PDhvY4QUBEjmB7ORVBwFbA89IvlbiD45Jq7Z02M0ciAubLCqC
+JCXIUZ9mQqOkaPR6SxczCPb/in7dGA==
+=nUhR
+-----END PGP SIGNATURE-----
 
-I would suggest to create an add-on to the existing netlink 
-configuration interface for CAN controllers (the iproute2 stuff).
-
-The question is, how to build a common configuration interface for CAN 
-hardware filters that fits the design of the CAN controllers hardware 
-filters?!?
-
-Would it make sense to implement a similar interface like CAN_RAW filters
-
-http://elixir.free-electrons.com/linux/v4.15.2/source/Documentation/networking/can.txt#L446
-
-for the configuration of hardware filters?
-
-E.g. the SJA1000 controller only has exactly ONE of these filters
-
-http://elixir.free-electrons.com/linux/v4.15.2/source/drivers/net/can/sja1000/sja1000.c#L190
-
-where the CAN_RAW filter design would easily fit.
-
-E.g. the MCP2515 filters look a bit different on page 33:
-http://ww1.microchip.com/downloads/en/DeviceDoc/21801e.pdf
-
-but the CAN_RAW filter set idea seems to be applicable too.
-
-Would this approach match your requirements?
-
-Best regards,
-Oliver
+--UWOU80F57p52SQ2DHh3myEchDidvnuFen--
