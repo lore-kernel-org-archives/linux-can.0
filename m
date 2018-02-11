@@ -1,87 +1,54 @@
-From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
-Subject: Re: Associate physical device with device name
-Date: Sat, 10 Feb 2018 12:01:04 +0100
-Message-ID: <748430cb-e826-a442-09ef-c2382a9916bc@gmx.de>
-References: <e8998556-5e13-1cec-f404-70c4679ca9c3@kvaser.com>
- <87ddf56f-c829-6aad-5b86-474359d282d4@pengutronix.de>
- <f1dbf319-eda5-6901-c5e4-d08651e2c1fe@kvaser.com>
- <464f89e6-82c8-a2fd-25e2-f847508b41a3@pengutronix.de>
- <35989d02-3134-1a84-8bec-61a863fa0bf3@kvaser.com>
- <771a0c6e-c94c-7dc2-ffa0-06507aab077d@pengutronix.de>
- <e5b62163-2ec7-eb89-e2a3-d8269292595f@kvaser.com>
- <16bc3c4c-4013-9d9c-4afe-4cbffc2d8ad7@hartkopp.net>
+From: Daniel Santos <daniel.santos@pobox.com>
+Subject: Framework for hardware filter support?
+Date: Sat, 10 Feb 2018 20:38:15 -0600
+Message-ID: <98bcd448-4d2a-bf2f-ae5a-4db7f1eac896@pobox.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.17.20]:45769 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750832AbeBJLBJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 10 Feb 2018 06:01:09 -0500
-In-Reply-To: <16bc3c4c-4013-9d9c-4afe-4cbffc2d8ad7@hartkopp.net>
-Content-Language: en-GB
+Received: from pb-smtp1.pobox.com ([64.147.108.70]:63299 "EHLO
+        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751050AbeBKCiK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 10 Feb 2018 21:38:10 -0500
+Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 39662D9070
+        for <linux-can@vger.kernel.org>; Sat, 10 Feb 2018 21:38:10 -0500 (EST)
+Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 2B6E8D906F
+        for <linux-can@vger.kernel.org>; Sat, 10 Feb 2018 21:38:10 -0500 (EST)
+Received: from [192.168.1.4] (unknown [76.215.41.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id 06F91D906E
+        for <linux-can@vger.kernel.org>; Sat, 10 Feb 2018 21:38:08 -0500 (EST)
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Jimmy Assarsson <extja@kvaser.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can <linux-can@vger.kernel.org>
 
-Hi Oliver,
+Hello.=C2=A0 I'm doing a project where hardware filters will pretty much =
+be
+required unless we change the hardware.=C2=A0 I can just hack up the mcp2=
+51x
+driver and add some sysfs nodes to modify the filters, but it would be
+much nicer to implement using some type of standard framework that I
+could submit back upstream.
 
-Am 09.02.2018 um 18:09 schrieb Oliver Hartkopp:
-> 
-> 
-> On 02/09/2018 04:35 PM, Jimmy Assarsson wrote:
->> On 2018-02-09 14:24, Marc Kleine-Budde wrote:
->>> On 02/09/2018 12:21 PM, Jimmy Assarsson wrote:
->>>> All devices with the same EAN look identical, since we do not set 
->>>> serial
->>>> number in the USB descriptor.
->>>
->>> That should be done on the next FW revision.
->>
->> It is left out on purpose. I don't remember the details, but it had
->> something to do with Windows reinstalling the driver whenever a device
->> with different serial number is connected to the same USB port.
->>
->>> Ok - I see two possibilities.
->>>
->>> 1) sysfs file
->>> Add a file to sysfs that contains the serial number, see:
->>> http://lxr.bootlin.com/linux/latest/source/drivers/net/can/softing/softing_main.c#L718 
->>>
->>>
->>> 2) ethtool eeprom
->>> You can export the serial number via ethtool's dump eeprom 
->>> functionality.
->>>
->>> Better try 1).
->>
->> Great :) Will try this next week.
-> 
-> Would it make sense to provide a common sysfs infrastructure in
-> 
->      linux/drivers/net/can/dev.c
-> 
-> to populate
-> 
->      /sys/class/net/<can-interface-name>/<serial-num-whatever>
-> 
-> instead of maintaining this stuff in each single driver?
-> 
-> We have this requirement in the softing/kvaser/peak adapters so far.
-> 
-> We could provide some pointer in struct can_priv which points to a 
-> struct which contains the sysfs content - or something like this.
+My current project uses an MCP2515 (with only two rx buffers) connected
+via an MCP2210 USB-to-SPI bridge and that introduces a lot of latency
+and interrupts may not be serviced for as much as 20-30 ms and w/o
+hardware filters, we'll be missing a lot of messages we want to sniff.
 
-+1. A general solution to read a serial number from sysfs would be very 
-welcome.
+I've read some of the arguments against it, such is it being a
+multi-user environment.=C2=A0 To me that just means that hardware filters
+should be configured at the interface level and not at the socket level.
 
-> Any thoughts?
-> 
-> Best,
-> Oliver
-> 
-> -- 
-> To unsubscribe from this list: send the line "unsubscribe linux-can" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+So is there no such framework already in place?=C2=A0 If not, where would=
+ be
+the most logical place to add it? netfilter in the kernel and iproute2
+in userland?
+
+Thanks,
+Daniel
+
 
