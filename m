@@ -1,128 +1,98 @@
-From: Andri Yngvason <andri.yngvason@marel.com>
-Subject: Re: [PATCH v2 2/3] can: cc770: Stop queue on NETDEV_TX_BUSY
-Date: Tue, 13 Feb 2018 10:32:33 +0000
-Message-ID: <151851795369.10946.7788373784181887753@maxwell>
-References: <20180130165649.22732-1-andri.yngvason@marel.com>
- <d62fdd54-4d06-db35-a0a0-b69759286bb5@grandegger.com>
- <8cd354eb-b610-b309-2a3f-a345f56aaecf@grandegger.com>
- <1798644.r6m8FyMpzN@blindfold>
- <bba8155f-4865-d457-4d8d-56ffc71acd59@grandegger.com>
- <1bccaf3c-faab-33ae-e1d8-8344d5d9a537@grandegger.com>
+From: Richard Weinberger <richard@sigma-star.at>
+Subject: Re: [PATCH v2 1/3] can: cc770: Remove redundant IRQ ack
+Date: Tue, 13 Feb 2018 11:35:49 +0100
+Message-ID: <13808474.RQEnJ19omo@blindfold>
+References: <20180130165649.22732-1-andri.yngvason@marel.com> <2795059.IeN8S1rsHy@blindfold> <151851733257.10946.11726494714017260046@maxwell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr10051.outbound.protection.outlook.com ([40.107.1.51]:23955
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S933849AbeBMKcl (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 13 Feb 2018 05:32:41 -0500
-In-Reply-To: <1bccaf3c-faab-33ae-e1d8-8344d5d9a537@grandegger.com>
+Received: from lilium.sigma-star.at ([109.75.188.150]:48488 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S933865AbeBMKef (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 13 Feb 2018 05:34:35 -0500
+In-Reply-To: <151851733257.10946.11726494714017260046@maxwell>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Wolfgang Grandegger <wg@grandegger.com>, Richard Weinberger <richard@sigma-star.at>
-Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, sigurbjorn.narfason@marel.com, hrafnkell.eiriksson@marel.com, patric.thysell@br-automation.com
+To: Andri Yngvason <andri.yngvason@marel.com>
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, wg@grandegger.com, sigurbjorn.narfason@marel.com, hrafnkell.eiriksson@marel.com, patric.thysell@br-automation.com
 
-Hello Wolfgang, Richard,
+Andri,
 
-Quoting Wolfgang Grandegger (2018-02-12 21:36:37)
-> Am 12.02.2018 um 22:28 schrieb Wolfgang Grandegger:
-> > Am 12.02.2018 um 21:55 schrieb Richard Weinberger:
-> >> Am Montag, 12. Februar 2018, 21:44:11 CET schrieb Wolfgang Grandegger:
-> >>> Am 12.02.2018 um 21:37 schrieb Wolfgang Grandegger:
-> >>>> Hello,
-> >>>>
-> >>>> Am 12.02.2018 um 20:40 schrieb Richard Weinberger:
-> >>>>> Andri,
-> >>>>>
-> >>>>> Am Dienstag, 30. Januar 2018, 17:56:48 CET schrieb Andri Yngvason:
-> >>>>>> If the queue is not stopped, the start_xmit function will continue =
+Am Dienstag, 13. Februar 2018, 11:22:12 CET schrieb Andri Yngvason:
+> Hi Richard,
+> 
+> Quoting Richard Weinberger (2018-02-12 19:41:48)
+> 
+> > Andri,
+> > 
+> > Am Dienstag, 30. Januar 2018, 17:56:47 CET schrieb Andri Yngvason:
+> > > This has been reported to cause stalls on rt-linux.
+> > > 
+> > > Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
+> > > ---
+> > > 
+> > >  drivers/net/can/cc770/cc770.c | 15 ---------------
+> > >  1 file changed, 15 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/can/cc770/cc770.c
+> > > b/drivers/net/can/cc770/cc770.c
+> > > index 1e37313..9fed163 100644
+> > > --- a/drivers/net/can/cc770/cc770.c
+> > > +++ b/drivers/net/can/cc770/cc770.c
+> > > @@ -447,15 +447,6 @@ static netdev_tx_t cc770_start_xmit(struct sk_buff
+> > > *skb, struct net_device *dev)
+> > > 
+> > >       stats->tx_bytes += dlc;
+> > > 
+> > > -
+> > > -     /*
+> > > -      * HM: We had some cases of repeated IRQs so make sure the
+> > > -      * INT is acknowledged I know it's already further up, but
+> > > -      * doing again fixed the issue
+> > > -      */
+> > > -     cc770_write_reg(priv, msgobj[mo].ctrl0,
+> > > -                     MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
+> > > -
+> > > 
+> > >       return NETDEV_TX_OK;
+> > >  
+> > >  }
+> > > 
+> > > @@ -684,12 +675,6 @@ static void cc770_tx_interrupt(struct net_device
+> > > *dev,
+> > > unsigned int o) /* Nothing more to send, switch off interrupts */
+> > > 
+> > >       cc770_write_reg(priv, msgobj[mo].ctrl0,
+> > >       
+> > >                       MSGVAL_RES | TXIE_RES | RXIE_RES | INTPND_RES);
+> > > 
+> > > -     /*
+> > > -      * We had some cases of repeated IRQ so make sure the
+> > > -      * INT is acknowledged
+> > > -      */
+> > > -     cc770_write_reg(priv, msgobj[mo].ctrl0,
+> > > -                     MSGVAL_UNC | TXIE_UNC | RXIE_UNC | INTPND_RES);
+> > > 
+> > >       stats->tx_packets++;
+> > >       can_get_echo_skb(dev, 0);
+> > 
+> > I saw that stalls too.
+> > But instead of just removing these writes I suggest adding a quirk for the
+> > can card where they cause trouble.
+> > Maybe Wolfgang can give more details why they are here.
+> 
+> I did not run into this issue myself, I just included this because Patric
+> sent me this patch for an issue that you were having. I did not know the
+> original author, otherwise I would have added a "Suggested-by".
 
-> >>>>>> to be
-> >>>>>> called until the driver or the system is reset.
-> >>>>>>
-> >>>>>> Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
-> >>>>>> ---
-> >>>>>> =C2=A0=C2=A0 drivers/net/can/cc770/cc770.c | 1 +
-> >>>>>> =C2=A0=C2=A0 1 file changed, 1 insertion(+)
-> >>>>>>
-> >>>>>> diff --git a/drivers/net/can/cc770/cc770.c
-> >>>>>> b/drivers/net/can/cc770/cc770.c
-> >>>>>> index 9fed163..12d3b89 100644
-> >>>>>> --- a/drivers/net/can/cc770/cc770.c
-> >>>>>> +++ b/drivers/net/can/cc770/cc770.c
-> >>>>>> @@ -405,6 +405,7 @@ static netdev_tx_t cc770_start_xmit(struct
-> >>>>>> sk_buff *skb,
-> >>>>>> struct net_device *dev)
-> >>>>>>
-> >>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((cc770_read_reg(priv,
-> >>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 msgobj[mo].ctrl1) & TXRQST_UNC) =
-=3D=3D TXRQST_SET) {
-> >>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 netif_stop_queue(dev);
-> >>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 netde=
-v_err(dev, "TX register is still occupied!\n");
-> >>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retur=
-n NETDEV_TX_BUSY;
-> >>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >>>>>
-> >>>>> I see that some can drivers stop the queue, others not.
-> >>>>> What exactly is the problem in this case?
-> >>>>
-> >>>> Stopping the queue and returning NETDEV_TX_BUSY does make little sen=
-se.
-> >>>> NETDEV_TX_BUSY will tell the upper layer to retry asap. In general t=
-hat
-> >>>> case should be avoided by stopping the queue earlier. Actually,
-> >>>> netif_stop_queue(dev) is called directly after the if block above,
-> >>>> which means that "TX register is still occupied" indicates an =
+I'm the author of that debug patch. :-)
+While reviewing the driver these acks alerted me and after removing them the 
+can card no longer stopped working after some time.
 
-> >>>> error/bug.
-> >>>> I think there is a race somewhere.
-> >>>
-> >>> If you run on "-rt", the IRQ is threaded. This would explain the issu=
-e.
-> >>>
-> >>> Wolfgang.
-> >>
-> >> Andri, do you see the "TX register is still occupied!" error message?
-> >> In my case, I never saw it while working on the rt-related stalls =
+Thanks,
+//richard
 
-> >> during my
-> >> tests.
-> > =
-
-> > At a closer look I cannot identify a race. Anyway, the message should =
-
-> > never show up.
-> =
-
-> You could try to get a function trace by enabling functions tracing and =
-
-> stopping it with "tracing_off" when the if block above is entered. A =
-
-> filter for "cc770_*" and "netif_*" might be useful as well.
-> =
-
-> Wolfgang.
-
-There is no issue currently that will cause NETDEV_TX_BUSY to be returned. I
-included this patch because while I was working on PATCH 3, this return wou=
-ld
-stall the system when I ran into the race condition which I subsequently fi=
-xed.
-
-Also, according to include/linux/netdevice.h:
- * netdev_tx_t (*ndo_start_xmit)(struct sk_buff *skb,
- *                               struct net_device *dev);
- *	Called when a packet needs to be transmitted.
- *	Returns NETDEV_TX_OK.  Can return NETDEV_TX_BUSY, but you should stop
- *	the queue before that can happen; it's for obsolete devices and weird
- *	corner cases, but the stack really does a non-trivial amount
- *	of useless work if you return NETDEV_TX_BUSY.
- *	Required; cannot be NULL.
-
-All netdevs should stop the queue before returning NETDEV_TX_BUSY.
-
-Best regards,
-Andri
+-- 
+sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
+ATU66964118 - FN 374287y
