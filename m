@@ -1,81 +1,55 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [mkl-can-next:j1939 16/142] net/can/j1939/socket.c:789:20:
- sparse: incorrect type in initializer (incompatible argument 3 (different
- base types))
-Date: Thu, 15 Feb 2018 09:44:27 +0100
-Message-ID: <148c13b8-1f28-93c6-e1c1-61d90b9acb08@pengutronix.de>
-References: <201802151457.cPtB0nDc%fengguang.wu@intel.com>
+Subject: Re: [PATCH] j1939: Fix to softirq tasklet race condition when session
+ is destroyed
+Date: Thu, 15 Feb 2018 09:45:58 +0100
+Message-ID: <ba246a16-4f9a-d247-a5c4-86a91ddc05df@pengutronix.de>
+References: <CAHChkrvWdUN6KYg9fbnfA2Mg3ie=PNOPuaSvEwqOzj7uG8xJ3A@mail.gmail.com>
+ <6674d322-c632-d1de-793e-694e51b706fc@pengutronix.de>
+ <CAHChkrs7_=t5Dgz4b19BSO1sFxAzG0cqsJRiJFMfPVbUe8Zbuw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="MrmiNMRN7pvc6s6iFcjTRaGE0c2e0bQOs"
+ boundary="GHPijpFtlRGjjTHpobeLceEoZETawFnI2"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:54125 "EHLO
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:35837 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754825AbeBOIpX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Feb 2018 03:45:23 -0500
-In-Reply-To: <201802151457.cPtB0nDc%fengguang.wu@intel.com>
+        with ESMTP id S966555AbeBOIqr (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Feb 2018 03:46:47 -0500
+In-Reply-To: <CAHChkrs7_=t5Dgz4b19BSO1sFxAzG0cqsJRiJFMfPVbUe8Zbuw@mail.gmail.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: kbuild test robot <fengguang.wu@intel.com>, Kurt Van Dijck <kurt.van.dijck@eia.be>
-Cc: kbuild-all@01.org, linux-can@vger.kernel.org
+To: Elenita Hinds <ecathinds@gmail.com>
+Cc: linux-can@vger.kernel.org, dev.kurt@vandijck-laurijssen.be, o.rempel@pengutronix.de
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MrmiNMRN7pvc6s6iFcjTRaGE0c2e0bQOs
-Content-Type: multipart/mixed; boundary="tP2u3HKJ68Th50Ka1pjs3CgFp2OYjhRaS";
+--GHPijpFtlRGjjTHpobeLceEoZETawFnI2
+Content-Type: multipart/mixed; boundary="B6s3LrWDiPzo8kunaa1E0zxK6PlGaiOpa";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: kbuild test robot <fengguang.wu@intel.com>,
- Kurt Van Dijck <kurt.van.dijck@eia.be>
-Cc: kbuild-all@01.org, linux-can@vger.kernel.org
-Message-ID: <148c13b8-1f28-93c6-e1c1-61d90b9acb08@pengutronix.de>
-Subject: Re: [mkl-can-next:j1939 16/142] net/can/j1939/socket.c:789:20:
- sparse: incorrect type in initializer (incompatible argument 3 (different
- base types))
-References: <201802151457.cPtB0nDc%fengguang.wu@intel.com>
-In-Reply-To: <201802151457.cPtB0nDc%fengguang.wu@intel.com>
+To: Elenita Hinds <ecathinds@gmail.com>
+Cc: linux-can@vger.kernel.org, dev.kurt@vandijck-laurijssen.be,
+ o.rempel@pengutronix.de
+Message-ID: <ba246a16-4f9a-d247-a5c4-86a91ddc05df@pengutronix.de>
+Subject: Re: [PATCH] j1939: Fix to softirq tasklet race condition when session
+ is destroyed
+References: <CAHChkrvWdUN6KYg9fbnfA2Mg3ie=PNOPuaSvEwqOzj7uG8xJ3A@mail.gmail.com>
+ <6674d322-c632-d1de-793e-694e51b706fc@pengutronix.de>
+ <CAHChkrs7_=t5Dgz4b19BSO1sFxAzG0cqsJRiJFMfPVbUe8Zbuw@mail.gmail.com>
+In-Reply-To: <CAHChkrs7_=t5Dgz4b19BSO1sFxAzG0cqsJRiJFMfPVbUe8Zbuw@mail.gmail.com>
 
---tP2u3HKJ68Th50Ka1pjs3CgFp2OYjhRaS
+--B6s3LrWDiPzo8kunaa1E0zxK6PlGaiOpa
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-On 02/15/2018 07:40 AM, kbuild test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-n=
-ext.git j1939
-> head:   3849d25ff0e2c0a6fa5ecfcf649661aa3dc371a2
-> commit: 434d073b7e77f77c072253b03ab0e6ca3668e8a6 [16/142] can-j1939: Im=
-port SAE J1939
-> reproduce:
->         # apt-get install sparse
->         git checkout 434d073b7e77f77c072253b03ab0e6ca3668e8a6
->         make ARCH=3Dx86_64 allmodconfig
->         make C=3D1 CF=3D-D__CHECK_ENDIAN__
->=20
->=20
-> sparse warnings: (new ones prefixed by >>)
->=20
->    net/can/j1939/j1939-priv.h:271:41: sparse: using member 'j1939_priv'=
- in incomplete struct dev_rcv_lists
->    net/can/j1939/j1939-priv.h:271:41: sparse: using member 'j1939_priv'=
- in incomplete struct dev_rcv_lists
->    net/can/j1939/j1939-priv.h:271:41: sparse: using member 'j1939_priv'=
- in incomplete struct dev_rcv_lists
->    net/can/j1939/j1939-priv.h:271:41: sparse: using member 'j1939_priv'=
- in incomplete struct dev_rcv_lists
->    net/can/j1939/socket.c:707:32: sparse: incorrect type in argument 2 =
-(different base types) @@ expected unsigned short tsflags @@ got ed] tsfl=
-ags @@
->    net/can/j1939/socket.c:707:32: expected unsigned short tsflags
->    net/can/j1939/socket.c:707:32: got unsigned char
->    net/can/j1939/socket.c:707:26: sparse: not enough arguments for func=
-tion sock_tx_timestamp
->>> net/can/j1939/socket.c:789:20: sparse: incorrect type in initializer =
-(incompatible argument 3 (different base types)) @@ expected int ( )( ...=
- ) @@ got int ( )( ... ) @@
+On 02/14/2018 10:20 PM, Elenita Hinds wrote:
+> Thanks, Kurt and Oliver, for the feedback. The newest bcm changes look =
+better.
 
-Fixed.
+Do you or anyone else care porting the new hrtimer-softirq approach to
+j1939? Patches are welcome!
 
+regards,
 Marc
 
 --=20
@@ -85,23 +59,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---tP2u3HKJ68Th50Ka1pjs3CgFp2OYjhRaS--
+--B6s3LrWDiPzo8kunaa1E0zxK6PlGaiOpa--
 
---MrmiNMRN7pvc6s6iFcjTRaGE0c2e0bQOs
+--GHPijpFtlRGjjTHpobeLceEoZETawFnI2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqFSGsACgkQk9IU1zQo
-ZfFb2Qf/UGRbYo3dnaobwUD7kPAtrrGkWON3d0LNiTexbTQvxmiR2DK3sCwVqhlK
-lnuMDw7yYcpF1IwaEpXZ6R0wIchHhWOFYYW+nlZMkTtVrGNx+0ndaNmxBosR88/W
-yW4GYo0Czl6IkLw4s24NLP8U2AyEQHxn0wwtWP6m9OMAym7iSGk2eNC1+iXvUdFP
-+f1wskKdwgl3TFalimXnOkqNQZkHJzMy1Y7GSqlRlnQ74HNLsJY1ysD4rAGkAxnV
-hOCTp22r1Lm8BLF1BIRZMFht8Bb8svUEBlRWBgJdcwBEL6nSRtiT6QXOpmRpLuNP
-g7SmglpC+Z5qS/DO9w58oYIVB4dsTQ==
-=CnVu
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqFSMYACgkQk9IU1zQo
+ZfGl4ggAgZ8uzhKA71KyYvB6TDWXsZ8j+HxS8x+8wPdNuiy3V+865A6I/LHwbjEP
+FmhG11KtAcm59kaENocar/RaFElBdtANrVZYjIeS/83WEt95tmo5LesgzA1WzQGc
+nUY1iyGlZm0M87Er6uVixQP1mOJ1l1xgkOWT+g/wcwSHofyWRiajvFfLbLvQHlIk
+HEfzWmRoXJcSBDovo326cAGKSlNxwtJY6FeM0UD5L+CUlnPB45oM7PING3Fg3hW4
+zr77CnAr/qb5ouq5tY4xf7LMAxlWYLXVAO2Ir0TdI1OlQ3+okMtr9faZaF3dgxSm
+oicWbHF5e0WvDYeQu1YbarGMkMuzZw==
+=675o
 -----END PGP SIGNATURE-----
 
---MrmiNMRN7pvc6s6iFcjTRaGE0c2e0bQOs--
+--GHPijpFtlRGjjTHpobeLceEoZETawFnI2--
