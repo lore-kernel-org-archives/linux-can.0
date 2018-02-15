@@ -1,192 +1,111 @@
-From: Jimmy Assarsson <extja@kvaser.com>
-Subject: Re: [PATCH] can: kvaser_usb: Expose EAN and serial number via sysfs
-Date: Thu, 15 Feb 2018 17:49:09 +0100
-Message-ID: <a89fd5a7-786f-0069-55d1-310df0137a0c@kvaser.com>
-References: <20180215155851.7584-1-jimmyassarsson@gmail.com>
- <0749979a-a060-6057-b8e1-3cbd8c24834a@pengutronix.de>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: Framework for hardware filter support?
+Date: Fri, 16 Feb 2018 00:03:58 +0100
+Message-ID: <3BDADFD0-AACB-45F6-A8EA-72D1C9EA5DDF@vandijck-laurijssen.be>
+References: <98bcd448-4d2a-bf2f-ae5a-4db7f1eac896@pobox.com> <eabc4877-8f50-7246-32da-1f5bbb2e507e@hartkopp.net> <6c112388-5dcb-2dca-06c6-eac56d470fbb@pobox.com> <20180213194203.GA15640@airbook.vandijck-laurijssen.be> <55e3a0ef-82ea-b62d-34f7-ca7518b9d534@pobox.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf0-f65.google.com ([209.85.215.65]:35179 "EHLO
-        mail-lf0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1426505AbeBOQtO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Feb 2018 11:49:14 -0500
-Received: by mail-lf0-f65.google.com with SMTP id a204so431404lfa.2
-        for <linux-can@vger.kernel.org>; Thu, 15 Feb 2018 08:49:13 -0800 (PST)
-In-Reply-To: <0749979a-a060-6057-b8e1-3cbd8c24834a@pengutronix.de>
-Content-Language: en-US
+Received: from relay-b01.edpnet.be ([212.71.1.221]:46090 "EHLO
+        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1756361AbeBOXEE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Feb 2018 18:04:04 -0500
+In-Reply-To: <55e3a0ef-82ea-b62d-34f7-ca7518b9d534@pobox.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Jimmy Assarsson <jimmyassarsson@gmail.com>, linux-can@vger.kernel.org
+To: Daniel Santos <daniel.santos@pobox.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can <linux-can@vger.kernel.org>
 
-On 2018-02-15 17:28, Marc Kleine-Budde wrote:
-> On 02/15/2018 04:58 PM, Jimmy Assarsson wrote:
->> The EAN (article number) combined with serial number form a unique
->> identifier for any Kvaser device. This makes it possible to map netdevice
->> with physical Kvaser device.
+
+
+On 14 February 2018 23:40:19 CET, Daniel Santos <daniel.santos@pobox.com> wrote:
+>Thanks for your response, Kurt.
+>
+>
+>On 02/13/2018 01:42 PM, Kurt Van Dijck wrote:
+>> On zo, 11 feb 2018 16:33:43 -0600, Daniel Santos wrote:
+>>>> where the CAN_RAW filter design would easily fit.
+>>> This is what I mean by a framework.  So the driver should inform the
+>>> core CAN driver what it's filtering capabilities are -- again, I
+>would
+>>> have to study a number of devices to design this sanely.  It would
+>seem
+>>> that iproute2 would be the best userland mechanism to specify them,
+>and
+>>> it could pass an array of struct can_filter objects.  Then based
+>upon
+>>> the hardware, it can apply or reject them.  It would also be nice
+>for
+>>> iproute2 to query the driver and be able to report those
+>capabilities.
+>> I remember this discussion has passed a few times already.
+>> The end result has always been to:
+>> 1. give the kernel/driver a list of id/masks.
+>> 2. The driver does no aggregation, the root operator should know
+>>    what to do.
+>
+>I don't understand what driver aggregation means.  But yes, this makes
+>good sense.
+
+I meant with aggregation: any form of accumulation across different calls
+
+>> Maybe some day this will become limited for hardware that can do
+>special
+>> tricks, like having a random list of identifiers.
+>> This can most probable be addressed in some clever way that is
+>specific
+>> for the driver (like adding a list of id/masks where mask is always
+>> 0x7ff for a random canid list).
+>> Due to the driver doing smart things, the driver may not be capable
+>of
+>> informing filtering capabilities in a static way. I would start
+>without
+>> it.
 >>
->> The struct kvaser_msg_cardinfo can be simplified, since serial_number_high
->> is never used in firmware, for USBcan II devices.
-> 
-> Please make this a separate patch -> 1/2.
-
-Sure.
-
+>> The support of hardware filters is hardware specific anyway, and
+>> intersects the multi-user principle. The only justification is ....
+>> that the root operator knows the hardware and the application.
+>
+>Yes, perfect!
+>
+>> What matters for a generic implementation is that the API is simple,
+>> clear and usable. That is where the id/mask list pops in.
+>> Operators that don't understand the id/mask list will probably fail
+>> anyway to use hardware filters on CAN. No framework can prevent that.
 >>
->> Example output for USBcan Light 2xHS:
->> $ cat /sys/class/net/can0/device/ean
->> 7330130007147
->> $ cat /sys/class/net/can0/device/serial
->> 10659
+>> Kurt
 >>
->> Tested with the following Kvaser devices:
->> Leaf Light HS, Leaf Light HS v2, USBcan Light 2xHS, USBcan II,
->> Memorator Professional HS/HS and Memorator HS/HS.
->>
->> Signed-off-by: Jimmy Assarsson <jimmyassarsson@gmail.com>
->> ---
->>   drivers/net/can/usb/kvaser_usb.c | 63 ++++++++++++++++++++++++++++++++--------
->>   1 file changed, 51 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
->> index 63587b8e6825..b03f5723a343 100644
->> --- a/drivers/net/can/usb/kvaser_usb.c
->> +++ b/drivers/net/can/usb/kvaser_usb.c
->> @@ -196,19 +196,11 @@ struct kvaser_msg_simple {
->>   struct kvaser_msg_cardinfo {
->>   	u8 tid;
->>   	u8 nchannels;
->> -	union {
->> -		struct {
->> -			__le32 serial_number;
->> -			__le32 padding;
->> -		} __packed leaf0;
->> -		struct {
->> -			__le32 serial_number_low;
->> -			__le32 serial_number_high;
->> -		} __packed usbcan0;
->> -	} __packed;
->> +	__le32 serial_number;
->> +	__le32 padding0;
->>   	__le32 clock_resolution;
->>   	__le32 mfgdate;
->> -	u8 ean[8];
->> +	u32 ean[2];
->>   	u8 hw_revision;
->>   	union {
->>   		struct {
->> @@ -218,7 +210,7 @@ struct kvaser_msg_cardinfo {
->>   			u8 padding;
->>   		} __packed usbcan1;
->>   	} __packed;
->> -	__le16 padding;
->> +	__le16 padding1;
->>   } __packed;
->>   
->>   struct kvaser_msg_cardinfo2 {
->> @@ -465,6 +457,8 @@ struct kvaser_usb {
->>   	 * also used as a sentinel for marking free tx contexts.
->>   	 */
->>   	u32 fw_version;
->> +	u32 serial;
->> +	u32 ean[2];
-> u64?
->>   	unsigned int nchannels;
->>   	unsigned int max_tx_urbs;
->>   	enum kvaser_usb_family family;
->> @@ -700,6 +694,10 @@ static int kvaser_usb_get_card_info(struct kvaser_usb *dev)
->>   	     dev->nchannels > MAX_USBCAN_NET_DEVICES))
->>   		return -EINVAL;
->>   
->> +	dev->serial = le32_to_cpu(msg.u.cardinfo.serial_number);
->> +	dev->ean[0] = le32_to_cpu(msg.u.cardinfo.ean[0]);
->> +	dev->ean[1] = le32_to_cpu(msg.u.cardinfo.ean[1]);
->> +
->>   	return 0;
->>   }
->>   
->> @@ -1985,6 +1983,38 @@ static int kvaser_usb_get_endpoints(const struct usb_interface *intf,
->>   	return -ENODEV;
->>   }
->>   
->> +static ssize_t serial_show(struct device *dev,
->> +			   struct device_attribute *attr, char *buf)
->> +{
->> +	struct usb_interface *intf = to_usb_interface(dev);
->> +	struct kvaser_usb *kvaser_dev = usb_get_intfdata(intf);
->> +
->> +	return sprintf(buf, "%u\n", kvaser_dev->serial);
->> +}
->> +
->> +static ssize_t ean_show(struct device *dev,
->> +			struct device_attribute *attr, char *buf)
->> +{
->> +	struct usb_interface *intf = to_usb_interface(dev);
->> +	struct kvaser_usb *kvaser_dev = usb_get_intfdata(intf);
->> +
->> +	return sprintf(buf, "%x%x\n", kvaser_dev->ean[1], kvaser_dev->ean[0]);
-> 
-> What happens if there are leading '0' in ean[0]? Using a u64 would fix
-> this, too.
+>
+>Yes, this makes great sense. And the driver (I presume) can always
+>reject the filter configuration if it can't do what is asked.  In the
 
-True. Will change to u64.
+Yep, that's it
 
->> +}
->> +
->> +static DEVICE_ATTR_RO(serial);
->> +static DEVICE_ATTR_RO(ean);
->> +
->> +static struct attribute *kvaser_usb_dev_attrs[] = {
->> +	&dev_attr_serial.attr,
->> +	&dev_attr_ean.attr,
->> +	NULL,
->> +};
->> +
->> +static const struct attribute_group kvaser_usb_dev_group = {
->> +	.name = NULL,
->> +	.attrs = kvaser_usb_dev_attrs,
->> +};
->> +
->>   static int kvaser_usb_probe(struct usb_interface *intf,
->>   			    const struct usb_device_id *id)
->>   {
->> @@ -2048,10 +2078,18 @@ static int kvaser_usb_probe(struct usb_interface *intf,
->>   		return err;
->>   	}
->>   
->> +	err = sysfs_create_group(&intf->dev.kobj, &kvaser_usb_dev_group);
->> +	if (err) {
->> +		dev_err(&intf->dev, "Cannot create sysfs group %d\n", err);
->> +		return err;
->> +	}
->> +
-> 
-> Why don't you use the existing dev->sysfs_groups[0]?
-> 
-> See the at91 driver for example:
-> 
-> http://lxr.bootlin.com/linux/latest/source/drivers/net/can/at91_can.c#L1341
+>case of the MCP2210, however, there is one small hole; it has a bit
+>that
+>decides rather or not to rollover messages from it's first rx buffer to
+>it's second (and it only has two).  I'm wondering about some free-form,
+>driver specific configuration string to handle any loose ends of the
+>device?  Too ugly?
+>
+>Then again, it supports 6 filters.  Perhaps a 7th filter could be
+>passed
+>to specify the rollover configuration.  Uglier still? :)
+>
+>And actually, the device has bits to en/disable filtering for each rx
+>buffer that can be changed (along with the rollover) while the link is
+>up.  I'm probably *really* reaching here.  I can't think of many
+>reasons
+>to have to change this while the link is up and rather or not they are
+>enabled can be implied by the filter/mask array.
 
-Much nicer. Thanks!
+A driver, and for sure an API, does not necessarily export all dirty bits to userspace. There will be things that are possible in hardware that simply cannot be exported in a comprehensible way.
+The need for hardware filters does not imply a need to modify them in runtime.
+Roll-over and other silicon magic is IMHO best preset to a default that makes most sense, or addressed in sysfs attributes, if you think that it must be accessible.
 
->>   	for (i = 0; i < dev->nchannels; i++) {
->>   		err = kvaser_usb_init_one(intf, id, i);
->>   		if (err) {
->>   			kvaser_usb_remove_interfaces(dev);
->> +			sysfs_remove_group(&intf->dev.kobj,
->> +					   &kvaser_usb_dev_group);
->>   			return err;
->>   		}
->>   	}
->> @@ -2063,6 +2101,7 @@ static void kvaser_usb_disconnect(struct usb_interface *intf)
->>   {
->>   	struct kvaser_usb *dev = usb_get_intfdata(intf);
->>   
->> +	sysfs_remove_group(&intf->dev.kobj, &kvaser_usb_dev_group);
->>   	usb_set_intfdata(intf, NULL);
->>   
->>   	if (!dev)
->>
-> 
-> Marc
+>
+>Thanks,
+>Daniel
+Kurt
