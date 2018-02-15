@@ -1,81 +1,163 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] j1939: Fix to softirq tasklet race condition when session
- is destroyed
-Date: Thu, 15 Feb 2018 09:45:58 +0100
-Message-ID: <ba246a16-4f9a-d247-a5c4-86a91ddc05df@pengutronix.de>
-References: <CAHChkrvWdUN6KYg9fbnfA2Mg3ie=PNOPuaSvEwqOzj7uG8xJ3A@mail.gmail.com>
- <6674d322-c632-d1de-793e-694e51b706fc@pengutronix.de>
- <CAHChkrs7_=t5Dgz4b19BSO1sFxAzG0cqsJRiJFMfPVbUe8Zbuw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="GHPijpFtlRGjjTHpobeLceEoZETawFnI2"
+From: Jimmy Assarsson <jimmyassarsson@gmail.com>
+Subject: [PATCH] can: kvaser_usb: Expose EAN and serial number via sysfs
+Date: Thu, 15 Feb 2018 16:58:51 +0100
+Message-ID: <20180215155851.7584-1-jimmyassarsson@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:35837 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S966555AbeBOIqr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Feb 2018 03:46:47 -0500
-In-Reply-To: <CAHChkrs7_=t5Dgz4b19BSO1sFxAzG0cqsJRiJFMfPVbUe8Zbuw@mail.gmail.com>
+Received: from mail-lf0-f68.google.com ([209.85.215.68]:43887 "EHLO
+        mail-lf0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1424460AbeBOP7T (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Feb 2018 10:59:19 -0500
+Received: by mail-lf0-f68.google.com with SMTP id q69so164441lfi.10
+        for <linux-can@vger.kernel.org>; Thu, 15 Feb 2018 07:59:18 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Elenita Hinds <ecathinds@gmail.com>
-Cc: linux-can@vger.kernel.org, dev.kurt@vandijck-laurijssen.be, o.rempel@pengutronix.de
+To: linux-can@vger.kernel.org
+Cc: Jimmy Assarsson <jimmyassarsson@gmail.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GHPijpFtlRGjjTHpobeLceEoZETawFnI2
-Content-Type: multipart/mixed; boundary="B6s3LrWDiPzo8kunaa1E0zxK6PlGaiOpa";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Elenita Hinds <ecathinds@gmail.com>
-Cc: linux-can@vger.kernel.org, dev.kurt@vandijck-laurijssen.be,
- o.rempel@pengutronix.de
-Message-ID: <ba246a16-4f9a-d247-a5c4-86a91ddc05df@pengutronix.de>
-Subject: Re: [PATCH] j1939: Fix to softirq tasklet race condition when session
- is destroyed
-References: <CAHChkrvWdUN6KYg9fbnfA2Mg3ie=PNOPuaSvEwqOzj7uG8xJ3A@mail.gmail.com>
- <6674d322-c632-d1de-793e-694e51b706fc@pengutronix.de>
- <CAHChkrs7_=t5Dgz4b19BSO1sFxAzG0cqsJRiJFMfPVbUe8Zbuw@mail.gmail.com>
-In-Reply-To: <CAHChkrs7_=t5Dgz4b19BSO1sFxAzG0cqsJRiJFMfPVbUe8Zbuw@mail.gmail.com>
+The EAN (article number) combined with serial number form a unique
+identifier for any Kvaser device. This makes it possible to map netdevice
+with physical Kvaser device.
 
---B6s3LrWDiPzo8kunaa1E0zxK6PlGaiOpa
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+The struct kvaser_msg_cardinfo can be simplified, since serial_number_high
+is never used in firmware, for USBcan II devices.
 
-On 02/14/2018 10:20 PM, Elenita Hinds wrote:
-> Thanks, Kurt and Oliver, for the feedback. The newest bcm changes look =
-better.
+Example output for USBcan Light 2xHS:
+$ cat /sys/class/net/can0/device/ean
+7330130007147
+$ cat /sys/class/net/can0/device/serial
+10659
 
-Do you or anyone else care porting the new hrtimer-softirq approach to
-j1939? Patches are welcome!
+Tested with the following Kvaser devices:
+Leaf Light HS, Leaf Light HS v2, USBcan Light 2xHS, USBcan II,
+Memorator Professional HS/HS and Memorator HS/HS.
 
-regards,
-Marc
+Signed-off-by: Jimmy Assarsson <jimmyassarsson@gmail.com>
+---
+ drivers/net/can/usb/kvaser_usb.c | 63 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 51 insertions(+), 12 deletions(-)
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index 63587b8e6825..b03f5723a343 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -196,19 +196,11 @@ struct kvaser_msg_simple {
+ struct kvaser_msg_cardinfo {
+ 	u8 tid;
+ 	u8 nchannels;
+-	union {
+-		struct {
+-			__le32 serial_number;
+-			__le32 padding;
+-		} __packed leaf0;
+-		struct {
+-			__le32 serial_number_low;
+-			__le32 serial_number_high;
+-		} __packed usbcan0;
+-	} __packed;
++	__le32 serial_number;
++	__le32 padding0;
+ 	__le32 clock_resolution;
+ 	__le32 mfgdate;
+-	u8 ean[8];
++	u32 ean[2];
+ 	u8 hw_revision;
+ 	union {
+ 		struct {
+@@ -218,7 +210,7 @@ struct kvaser_msg_cardinfo {
+ 			u8 padding;
+ 		} __packed usbcan1;
+ 	} __packed;
+-	__le16 padding;
++	__le16 padding1;
+ } __packed;
+ 
+ struct kvaser_msg_cardinfo2 {
+@@ -465,6 +457,8 @@ struct kvaser_usb {
+ 	 * also used as a sentinel for marking free tx contexts.
+ 	 */
+ 	u32 fw_version;
++	u32 serial;
++	u32 ean[2];
+ 	unsigned int nchannels;
+ 	unsigned int max_tx_urbs;
+ 	enum kvaser_usb_family family;
+@@ -700,6 +694,10 @@ static int kvaser_usb_get_card_info(struct kvaser_usb *dev)
+ 	     dev->nchannels > MAX_USBCAN_NET_DEVICES))
+ 		return -EINVAL;
+ 
++	dev->serial = le32_to_cpu(msg.u.cardinfo.serial_number);
++	dev->ean[0] = le32_to_cpu(msg.u.cardinfo.ean[0]);
++	dev->ean[1] = le32_to_cpu(msg.u.cardinfo.ean[1]);
++
+ 	return 0;
+ }
+ 
+@@ -1985,6 +1983,38 @@ static int kvaser_usb_get_endpoints(const struct usb_interface *intf,
+ 	return -ENODEV;
+ }
+ 
++static ssize_t serial_show(struct device *dev,
++			   struct device_attribute *attr, char *buf)
++{
++	struct usb_interface *intf = to_usb_interface(dev);
++	struct kvaser_usb *kvaser_dev = usb_get_intfdata(intf);
++
++	return sprintf(buf, "%u\n", kvaser_dev->serial);
++}
++
++static ssize_t ean_show(struct device *dev,
++			struct device_attribute *attr, char *buf)
++{
++	struct usb_interface *intf = to_usb_interface(dev);
++	struct kvaser_usb *kvaser_dev = usb_get_intfdata(intf);
++
++	return sprintf(buf, "%x%x\n", kvaser_dev->ean[1], kvaser_dev->ean[0]);
++}
++
++static DEVICE_ATTR_RO(serial);
++static DEVICE_ATTR_RO(ean);
++
++static struct attribute *kvaser_usb_dev_attrs[] = {
++	&dev_attr_serial.attr,
++	&dev_attr_ean.attr,
++	NULL,
++};
++
++static const struct attribute_group kvaser_usb_dev_group = {
++	.name = NULL,
++	.attrs = kvaser_usb_dev_attrs,
++};
++
+ static int kvaser_usb_probe(struct usb_interface *intf,
+ 			    const struct usb_device_id *id)
+ {
+@@ -2048,10 +2078,18 @@ static int kvaser_usb_probe(struct usb_interface *intf,
+ 		return err;
+ 	}
+ 
++	err = sysfs_create_group(&intf->dev.kobj, &kvaser_usb_dev_group);
++	if (err) {
++		dev_err(&intf->dev, "Cannot create sysfs group %d\n", err);
++		return err;
++	}
++
+ 	for (i = 0; i < dev->nchannels; i++) {
+ 		err = kvaser_usb_init_one(intf, id, i);
+ 		if (err) {
+ 			kvaser_usb_remove_interfaces(dev);
++			sysfs_remove_group(&intf->dev.kobj,
++					   &kvaser_usb_dev_group);
+ 			return err;
+ 		}
+ 	}
+@@ -2063,6 +2101,7 @@ static void kvaser_usb_disconnect(struct usb_interface *intf)
+ {
+ 	struct kvaser_usb *dev = usb_get_intfdata(intf);
+ 
++	sysfs_remove_group(&intf->dev.kobj, &kvaser_usb_dev_group);
+ 	usb_set_intfdata(intf, NULL);
+ 
+ 	if (!dev)
+-- 
+2.16.1
 
-
---B6s3LrWDiPzo8kunaa1E0zxK6PlGaiOpa--
-
---GHPijpFtlRGjjTHpobeLceEoZETawFnI2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqFSMYACgkQk9IU1zQo
-ZfGl4ggAgZ8uzhKA71KyYvB6TDWXsZ8j+HxS8x+8wPdNuiy3V+865A6I/LHwbjEP
-FmhG11KtAcm59kaENocar/RaFElBdtANrVZYjIeS/83WEt95tmo5LesgzA1WzQGc
-nUY1iyGlZm0M87Er6uVixQP1mOJ1l1xgkOWT+g/wcwSHofyWRiajvFfLbLvQHlIk
-HEfzWmRoXJcSBDovo326cAGKSlNxwtJY6FeM0UD5L+CUlnPB45oM7PING3Fg3hW4
-zr77CnAr/qb5ouq5tY4xf7LMAxlWYLXVAO2Ir0TdI1OlQ3+okMtr9faZaF3dgxSm
-oicWbHF5e0WvDYeQu1YbarGMkMuzZw==
-=675o
------END PGP SIGNATURE-----
-
---GHPijpFtlRGjjTHpobeLceEoZETawFnI2--
