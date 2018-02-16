@@ -1,89 +1,69 @@
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: Re: [PATCH] j1939: initial namespace support
-Date: Fri, 16 Feb 2018 12:44:28 +0100
-Message-ID: <20180216114428.y5hcujary2ystj3k@pengutronix.de>
-References: <20180216073137.17509-1-o.rempel@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Jimmy Assarsson <jimmyassarsson@gmail.com>
+Subject: [PATCH v3 1/2] can: kvaser_usb: Simplify struct kvaser_msg_cardinfo
+Date: Fri, 16 Feb 2018 14:21:24 +0100
+Message-ID: <20180216132125.13232-1-jimmyassarsson@gmail.com>
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:41215 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S965215AbeBPLob (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 16 Feb 2018 06:44:31 -0500
-Content-Disposition: inline
-In-Reply-To: <20180216073137.17509-1-o.rempel@pengutronix.de>
+Received: from mail-lf0-f67.google.com ([209.85.215.67]:33255 "EHLO
+        mail-lf0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1030766AbeBPNVu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 16 Feb 2018 08:21:50 -0500
+Received: by mail-lf0-f67.google.com with SMTP id j193so4051047lfe.0
+        for <linux-can@vger.kernel.org>; Fri, 16 Feb 2018 05:21:49 -0800 (PST)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: ecathinds@gmail.com, linux-can@vger.kernel.org
-Cc: Oleksij Rempel <linux@rempel-privat.de>
+To: linux-can@vger.kernel.org
+Cc: Jimmy Assarsson <jimmyassarsson@gmail.com>
 
-On Fri, Feb 16, 2018 at 08:31:37AM +0100, Oleksij Rempel wrote:
-> From: Oleksij Rempel <linux@rempel-privat.de>
-> 
-> move all transport local variables to can_j1939 namespace
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  include/net/net_namespace.h   |   4 +
->  include/net/netns/can_j1939.h |  22 +++
->  net/can/j1939/address-claim.c |   8 +-
->  net/can/j1939/bus.c           |   8 +-
->  net/can/j1939/j1939-priv.h    |  14 +-
->  net/can/j1939/main.c          |  27 ++--
->  net/can/j1939/socket.c        |  12 +-
->  net/can/j1939/transport.c     | 320 ++++++++++++++++++++++--------------------
->  8 files changed, 232 insertions(+), 183 deletions(-)
->  create mode 100644 include/net/netns/can_j1939.h
+serial_number_high can be removed from the struct since it is never used in
+the USBcan II firmware.
 
-Some comments about this patch. My mistake i needed to include it in to
-the changelog.
-This patch moves all per module/local variables, locks and workqueues in to a
-name space. So, it should be configurable per interface, not per module.
+Signed-off-by: Jimmy Assarsson <jimmyassarsson@gmail.com>
+---
+Changes in v3:
+  - Change data type of ean, from u32 to __le32.
 
-Here is one example which I used as test case:
-#create peer pars. vcan* will go in to name space. vxcan* will go
-# in to root name space.
-ip link add dev vcan0 type vxcan peer name vxcan0
-ip link add dev vcan1 type vxcan peer name vxcan1
+Changes in v2:
+  - Made this a separate patch.
 
-#add can gateway rules for routing between can0 and vxcan* peers.
-cangw -A -s can0 -d vxcan0 -e
-cangw -A -d can0 -s vxcan0 -e
-cangw -A -s can0 -d vxcan1 -e
-cangw -A -d can0 -s vxcan1 -e
-# set this to allow communication between red and blue name spaces.
-cangw -A -d vxcan0 -s vxcan1 -e
-cangw -A -s vxcan0 -d vxcan1 -e
+ drivers/net/can/usb/kvaser_usb.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-# create name spaces
-ip netns add blue
-ip netns add red
-
-# move vcan*s to separate name spaces.
-ip link set vcan0 netns blue
-ip link set vcan1 netns red
-
-# bring up vxcans in root name space.
-ip link set up vxcan0
-ip link set up vxcan1
-
-# bring up interfaces in name spaces
-ip netns exec blue ip link set up vcan0
-ip netns exec red ip link set up vcan1
-
-# start to capture on can0 and send from name spaces.
-# this should work.
-candump vcan0 &
-ip netns exec blue testj1939 -s20 vcan0:0x80 :0x90,0x12300
-ip netns exec red testj1939 -s20 vcan1:0x80 :0x90,0x12300
-
-# if cangw not configured to pass packets between vxcan0 and vxcan1
-# this should fail
-ip netns exec blue candump vcan0 &
-ip netns exec red testj1939 -s20 vcan1:0x80 :0x90,0x12300
-
+diff --git a/drivers/net/can/usb/kvaser_usb.c b/drivers/net/can/usb/kvaser_usb.c
+index 63587b8e6825..3c17bb3b1588 100644
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -196,19 +196,11 @@ struct kvaser_msg_simple {
+ struct kvaser_msg_cardinfo {
+ 	u8 tid;
+ 	u8 nchannels;
+-	union {
+-		struct {
+-			__le32 serial_number;
+-			__le32 padding;
+-		} __packed leaf0;
+-		struct {
+-			__le32 serial_number_low;
+-			__le32 serial_number_high;
+-		} __packed usbcan0;
+-	} __packed;
++	__le32 serial_number;
++	__le32 padding0;
+ 	__le32 clock_resolution;
+ 	__le32 mfgdate;
+-	u8 ean[8];
++	__le32 ean[2];
+ 	u8 hw_revision;
+ 	union {
+ 		struct {
+@@ -218,7 +210,7 @@ struct kvaser_msg_cardinfo {
+ 			u8 padding;
+ 		} __packed usbcan1;
+ 	} __packed;
+-	__le16 padding;
++	__le16 padding1;
+ } __packed;
+ 
+ struct kvaser_msg_cardinfo2 {
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.16.1
+
