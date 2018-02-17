@@ -1,99 +1,137 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v2 2/3] can: cc770: Stop queue on NETDEV_TX_BUSY
-Date: Fri, 16 Feb 2018 16:20:45 +0100
-Message-ID: <a85004a1-d390-e2cd-d8a2-ed15f03cd3c2@grandegger.com>
-References: <20180130165649.22732-1-andri.yngvason@marel.com>
- <d62fdd54-4d06-db35-a0a0-b69759286bb5@grandegger.com>
- <8cd354eb-b610-b309-2a3f-a345f56aaecf@grandegger.com>
- <1798644.r6m8FyMpzN@blindfold>
- <bba8155f-4865-d457-4d8d-56ffc71acd59@grandegger.com>
- <1bccaf3c-faab-33ae-e1d8-8344d5d9a537@grandegger.com>
- <c1141307-fb16-3b0b-882b-c09376875cee@pengutronix.de>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v4 2/2] can: kvaser_usb: Expose EAN and serial number via
+ sysfs
+Date: Sat, 17 Feb 2018 19:56:49 +0100
+Message-ID: <eed7b7fd-5303-7e8d-02fb-8ce1b6d85444@hartkopp.net>
+References: <20180216134107.9096-1-jimmyassarsson@gmail.com>
+ <20180216134107.9096-2-jimmyassarsson@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mailproxy03.manitu.net ([217.11.48.67]:42780 "EHLO
-        mailproxy03.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752602AbeBPPUs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 16 Feb 2018 10:20:48 -0500
-In-Reply-To: <c1141307-fb16-3b0b-882b-c09376875cee@pengutronix.de>
-Content-Language: en-GB
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:34933 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751049AbeBQS5A (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 17 Feb 2018 13:57:00 -0500
+In-Reply-To: <20180216134107.9096-2-jimmyassarsson@gmail.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Richard Weinberger <richard@sigma-star.at>
-Cc: Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org, sigurbjorn.narfason@marel.com, hrafnkell.eiriksson@marel.com, patric.thysell@br-automation.com
+To: Jimmy Assarsson <jimmyassarsson@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
 
-Hello Marc,
+Hi Jimmy, Marc,
 
-Am 16.02.2018 um 15:22 schrieb Marc Kleine-Budde:
-> On 02/12/2018 10:36 PM, Wolfgang Grandegger wrote:
->> Am 12.02.2018 um 22:28 schrieb Wolfgang Grandegger:
->>> Am 12.02.2018 um 21:55 schrieb Richard Weinberger:
->>>> Am Montag, 12. Februar 2018, 21:44:11 CET schrieb Wolfgang Grandegger:
->>>>> Am 12.02.2018 um 21:37 schrieb Wolfgang Grandegger:
->>>>>> Hello,
->>>>>>
->>>>>> Am 12.02.2018 um 20:40 schrieb Richard Weinberger:
->>>>>>> Andri,
->>>>>>>
->>>>>>> Am Dienstag, 30. Januar 2018, 17:56:48 CET schrieb Andri Yngvason:
->>>>>>>> If the queue is not stopped, the start_xmit function will continue
->>>>>>>> to be
->>>>>>>> called until the driver or the system is reset.
->>>>>>>>
->>>>>>>> Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
->>>>>>>> ---
->>>>>>>>     drivers/net/can/cc770/cc770.c | 1 +
->>>>>>>>     1 file changed, 1 insertion(+)
->>>>>>>>
->>>>>>>> diff --git a/drivers/net/can/cc770/cc770.c
->>>>>>>> b/drivers/net/can/cc770/cc770.c
->>>>>>>> index 9fed163..12d3b89 100644
->>>>>>>> --- a/drivers/net/can/cc770/cc770.c
->>>>>>>> +++ b/drivers/net/can/cc770/cc770.c
->>>>>>>> @@ -405,6 +405,7 @@ static netdev_tx_t cc770_start_xmit(struct
->>>>>>>> sk_buff *skb,
->>>>>>>> struct net_device *dev)
->>>>>>>>
->>>>>>>>         if ((cc770_read_reg(priv,
->>>>>>>>                     msgobj[mo].ctrl1) & TXRQST_UNC) == TXRQST_SET) {
->>>>>>>> +        netif_stop_queue(dev);
->>>>>>>>             netdev_err(dev, "TX register is still occupied!\n");
->>>>>>>>             return NETDEV_TX_BUSY;
->>>>>>>>         }
->>>>>>>
->>>>>>> I see that some can drivers stop the queue, others not.
->>>>>>> What exactly is the problem in this case?
->>>>>>
->>>>>> Stopping the queue and returning NETDEV_TX_BUSY does make little sense.
->>>>>> NETDEV_TX_BUSY will tell the upper layer to retry asap. In general that
->>>>>> case should be avoided by stopping the queue earlier. Actually,
->>>>>> netif_stop_queue(dev) is called directly after the if block above,
->>>>>> which means that "TX register is still occupied" indicates an
->>>>>> error/bug.
->>>>>> I think there is a race somewhere.
->>>>>
->>>>> If you run on "-rt", the IRQ is threaded. This would explain the issue.
->>>>>
->>>>> Wolfgang.
->>>>
->>>> Andri, do you see the "TX register is still occupied!" error message?
->>>> In my case, I never saw it while working on the rt-related stalls
->>>> during my
->>>> tests.
->>>
->>> At a closer look I cannot identify a race. Anyway, the message should
->>> never show up.
->>
->> You could try to get a function trace by enabling functions tracing and
->> stopping it with "tracing_off" when the if block above is entered. A
->> filter for "cc770_*" and "netif_*" might be useful as well.
-> 
-> It seems to me these patches are still WIP, right? Or should I take some
-> to into my git-tree?
+IMO this patch does not solve the general requirement for exposing 
+serial numbers.
 
-Richard? My comment was about "TX register is still occupied!, which in 
-fact seems not to happen.
+Additionally the 'ean' attribute is obsolete due to the unique USB 
+vendor and product id.
 
-Wolfgang.
+E.g. attaching a USB Pro FD adapter in my Laptop creates this dmesg output:
+
+[ 5210.858742] usb 3-6: new high-speed USB device number 6 using xhci_hcd
+[ 5211.007608] usb 3-6: config 1 interface 0 altsetting 0 bulk endpoint 
+0x83 has invalid maxpacket 64
+[ 5211.007627] usb 3-6: config 1 interface 1 altsetting 0 bulk endpoint 
+0x84 has invalid maxpacket 64
+[ 5211.007633] usb 3-6: config 1 interface 1 altsetting 0 bulk endpoint 
+0x4 has invalid maxpacket 64
+[ 5211.007638] usb 3-6: config 1 interface 1 altsetting 0 bulk endpoint 
+0x85 has invalid maxpacket 64
+[ 5211.007643] usb 3-6: config 1 interface 1 altsetting 0 bulk endpoint 
+0x5 has invalid maxpacket 64
+[ 5211.007648] usb 3-6: config 1 interface 1 altsetting 0 bulk endpoint 
+0x86 has invalid maxpacket 64
+[ 5211.007653] usb 3-6: config 1 interface 1 altsetting 0 bulk endpoint 
+0x6 has invalid maxpacket 64
+[ 5211.008447] usb 3-6: New USB device found, idVendor=0c72, idProduct=0011
+[ 5211.008454] usb 3-6: New USB device strings: Mfr=1, Product=2, 
+SerialNumber=0
+[ 5211.008459] usb 3-6: Product: PCAN-USB Pro FD
+[ 5211.008463] usb 3-6: Manufacturer: PEAK-System Technik GmbH
+[ 5211.036944] CAN device driver interface
+[ 5211.048600] peak_usb 3-6:1.0: PEAK-System PCAN-USB Pro FD v1 fw 
+v2.1.0 (2 channels)
+[ 5211.048916] peak_usb 3-6:1.0 can0: attached to PCAN-USB Pro FD 
+channel 0 (device 1334)
+[ 5211.050056] peak_usb 3-6:1.0 can1: attached to PCAN-USB Pro FD 
+channel 1 (device 4294967295)
+[ 5211.050247] usbcore: registered new interface driver peak_usb
+
+$ cat /sys/class/net/can0/device/modalias
+usb:v0C72p0011d0000dc00dsc00dp00ic00isc00ip00in00
+     ^^^^^^^^^^
+
+Vendor ID 0C72
+Product ID 0011
+
+-> this is as unique as the EAN, right?
+
+For PCI devices this is similar:
+$ cat /sys/class/net/can2/device/modalias
+pci:v0000001Cd00000002sv0000001Csd00000004bc02sc80i00
+     ^^^^^^^^^^^^^^^^^^
+
+001C -> PEAK System
+0002 -> PEAK_PCIEC_DEVICE_ID    0x0002  /* for ExpressCard slot cards */
+
+So no need for an EAN ?!!
+
+The other thing may be hardware or firmware revisions and the unique 
+device ID (aka serial number)
+
+For these I would suggest attibutes like
+
+hw_rev
+fw_rev
+dev_uid
+
+to be provided by drivers/net/can/dev.c and filled with content from the 
+driver when calling alloc_candev() - e.g. by passing a pointer to a 
+struct which contains the content.
+
+e.g.
+
+struct can_sysfs_info {
+	u16 hw_rev_major;
+	u16 hw_rev_minor;
+	u16 fw_rev_major;
+	u16 fw_rev_minor;
+	u32 uid;
+}
+
+
+The code with
+
+On 02/16/2018 02:41 PM, Jimmy Assarsson wrote:
+> +
+> +static DEVICE_ATTR_RO(serial);
+> +static DEVICE_ATTR_RO(ean);
+> +
+> +static struct attribute *kvaser_usb_dev_attrs[] = {
+> +	&dev_attr_serial.attr,
+> +	&dev_attr_ean.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group kvaser_usb_dev_group = {
+> +	.attrs = kvaser_usb_dev_attrs,
+> +};
+> +
+
+(..)
+
+> +	netdev->sysfs_groups[0] = &kvaser_usb_dev_group;
+>   
+>   	SET_NETDEV_DEV(netdev, &intf->dev);
+>   	netdev->dev_id = channel;
+
+looks great - but needs to be moved to ../can/dev.c IMHO.
+
+Best regards,
+Oliver
+
+ps. I would like to move the Softing driver and the PEAK USB to that 
+common approach too - once it is available.
+I have to look for an old Softing PCMCIA card for testing then ;-)
