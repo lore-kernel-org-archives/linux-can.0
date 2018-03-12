@@ -1,59 +1,203 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5/6] can: peak/pcie_fd: remove useless code when interface starts
-Date: Mon, 12 Mar 2018 11:04:09 +0100
-Message-ID: <20180312100410.10404-6-mkl@pengutronix.de>
+Subject: [PATCH 3/6] can: ifi: Repair the error handling
+Date: Mon, 12 Mar 2018 11:04:07 +0100
+Message-ID: <20180312100410.10404-4-mkl@pengutronix.de>
 References: <20180312100410.10404-1-mkl@pengutronix.de>
 Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20180312100410.10404-1-mkl@pengutronix.de>
 Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Stephane Grosjean <s.grosjean@peak-system.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marek Vasut <marex@denx.de>, Heiko Schocher <hs@denx.de>, Markus Marb <markus@marb.org>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Marek Vasut <marex@denx.de>
 
-When an interface starts, the echo_skb array is empty and the network
-queue should be started only. This patch replaces useless code and locks
-when the internal RX_BARRIER message is received from the IP core, telling
-the driver that tx may start.
+The new version of the IFI CANFD core has significantly less complex
+error state indication logic. In particular, the warning/error state
+bits are no longer all over the place, but are all present in the
+STATUS register. Moreover, there is a new IRQ register bit indicating
+transition between error states (active/warning/passive/busoff).
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+This patch makes use of this bit to weed out the obscure selective
+INTERRUPT register clearing, which was used to carry over the error
+state indication into the poll function. While at it, this patch
+fixes the handling of the ACTIVE state, since the hardware provides
+indication of the core being in ACTIVE state and that in turn fixes
+the state transition indication toward userspace. Finally, register
+reads in the poll function are moved to the matching subfunctions
+since those are also no longer needed in the poll function.
+
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Heiko Schocher <hs@denx.de>
+Cc: Markus Marb <markus@marb.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/peak_canfd/peak_canfd.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/net/can/ifi_canfd/ifi_canfd.c | 64 ++++++++++++++++++++---------------
+ 1 file changed, 37 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
-index 6fa66231ed8e..ed8561d4a90f 100644
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -333,7 +333,6 @@ static int pucan_handle_status(struct peak_canfd_priv *priv,
+diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+index 9fd396c3569a..fedd927ba6ed 100644
+--- a/drivers/net/can/ifi_canfd/ifi_canfd.c
++++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+@@ -30,6 +30,7 @@
+ #define IFI_CANFD_STCMD_ERROR_ACTIVE		BIT(2)
+ #define IFI_CANFD_STCMD_ERROR_PASSIVE		BIT(3)
+ #define IFI_CANFD_STCMD_BUSOFF			BIT(4)
++#define IFI_CANFD_STCMD_ERROR_WARNING		BIT(5)
+ #define IFI_CANFD_STCMD_BUSMONITOR		BIT(16)
+ #define IFI_CANFD_STCMD_LOOPBACK		BIT(18)
+ #define IFI_CANFD_STCMD_DISABLE_CANFD		BIT(24)
+@@ -52,7 +53,10 @@
+ #define IFI_CANFD_TXSTCMD_OVERFLOW		BIT(13)
  
- 	/* this STATUS is the CNF of the RX_BARRIER: Tx path can be setup */
- 	if (pucan_status_is_rx_barrier(msg)) {
--		unsigned long flags;
+ #define IFI_CANFD_INTERRUPT			0xc
++#define IFI_CANFD_INTERRUPT_ERROR_BUSOFF	BIT(0)
+ #define IFI_CANFD_INTERRUPT_ERROR_WARNING	BIT(1)
++#define IFI_CANFD_INTERRUPT_ERROR_STATE_CHG	BIT(2)
++#define IFI_CANFD_INTERRUPT_ERROR_REC_TEC_INC	BIT(3)
+ #define IFI_CANFD_INTERRUPT_ERROR_COUNTER	BIT(10)
+ #define IFI_CANFD_INTERRUPT_TXFIFO_EMPTY	BIT(16)
+ #define IFI_CANFD_INTERRUPT_TXFIFO_REMOVE	BIT(22)
+@@ -61,6 +65,10 @@
+ #define IFI_CANFD_INTERRUPT_SET_IRQ		((u32)BIT(31))
  
- 		if (priv->enable_tx_path) {
- 			int err = priv->enable_tx_path(priv);
-@@ -342,16 +341,8 @@ static int pucan_handle_status(struct peak_canfd_priv *priv,
- 				return err;
- 		}
+ #define IFI_CANFD_IRQMASK			0x10
++#define IFI_CANFD_IRQMASK_ERROR_BUSOFF		BIT(0)
++#define IFI_CANFD_IRQMASK_ERROR_WARNING		BIT(1)
++#define IFI_CANFD_IRQMASK_ERROR_STATE_CHG	BIT(2)
++#define IFI_CANFD_IRQMASK_ERROR_REC_TEC_INC	BIT(3)
+ #define IFI_CANFD_IRQMASK_SET_ERR		BIT(7)
+ #define IFI_CANFD_IRQMASK_SET_TS		BIT(15)
+ #define IFI_CANFD_IRQMASK_TXFIFO_EMPTY		BIT(16)
+@@ -222,7 +230,10 @@ static void ifi_canfd_irq_enable(struct net_device *ndev, bool enable)
  
--		/* restart network queue only if echo skb array is free */
--		spin_lock_irqsave(&priv->echo_lock, flags);
--
--		if (!priv->can.echo_skb[priv->echo_idx]) {
--			spin_unlock_irqrestore(&priv->echo_lock, flags);
--
--			netif_wake_queue(ndev);
--		} else {
--			spin_unlock_irqrestore(&priv->echo_lock, flags);
--		}
-+		/* start network queue (echo_skb array is empty) */
-+		netif_start_queue(ndev);
- 
- 		return 0;
+ 	if (enable) {
+ 		enirq = IFI_CANFD_IRQMASK_TXFIFO_EMPTY |
+-			IFI_CANFD_IRQMASK_RXFIFO_NEMPTY;
++			IFI_CANFD_IRQMASK_RXFIFO_NEMPTY |
++			IFI_CANFD_IRQMASK_ERROR_STATE_CHG |
++			IFI_CANFD_IRQMASK_ERROR_WARNING |
++			IFI_CANFD_IRQMASK_ERROR_BUSOFF;
+ 		if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+ 			enirq |= IFI_CANFD_INTERRUPT_ERROR_COUNTER;
  	}
+@@ -363,12 +374,13 @@ static int ifi_canfd_handle_lost_msg(struct net_device *ndev)
+ 	return 1;
+ }
+ 
+-static int ifi_canfd_handle_lec_err(struct net_device *ndev, const u32 errctr)
++static int ifi_canfd_handle_lec_err(struct net_device *ndev)
+ {
+ 	struct ifi_canfd_priv *priv = netdev_priv(ndev);
+ 	struct net_device_stats *stats = &ndev->stats;
+ 	struct can_frame *cf;
+ 	struct sk_buff *skb;
++	u32 errctr = readl(priv->base + IFI_CANFD_ERROR_CTR);
+ 	const u32 errmask = IFI_CANFD_ERROR_CTR_OVERLOAD_FIRST |
+ 			    IFI_CANFD_ERROR_CTR_ACK_ERROR_FIRST |
+ 			    IFI_CANFD_ERROR_CTR_BIT0_ERROR_FIRST |
+@@ -451,6 +463,11 @@ static int ifi_canfd_handle_state_change(struct net_device *ndev,
+ 
+ 	switch (new_state) {
+ 	case CAN_STATE_ERROR_ACTIVE:
++		/* error active state */
++		priv->can.can_stats.error_warning++;
++		priv->can.state = CAN_STATE_ERROR_ACTIVE;
++		break;
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		priv->can.can_stats.error_warning++;
+ 		priv->can.state = CAN_STATE_ERROR_WARNING;
+@@ -479,7 +496,7 @@ static int ifi_canfd_handle_state_change(struct net_device *ndev,
+ 	ifi_canfd_get_berr_counter(ndev, &bec);
+ 
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[1] = (bec.txerr > bec.rxerr) ?
+@@ -512,22 +529,21 @@ static int ifi_canfd_handle_state_change(struct net_device *ndev,
+ 	return 1;
+ }
+ 
+-static int ifi_canfd_handle_state_errors(struct net_device *ndev, u32 stcmd)
++static int ifi_canfd_handle_state_errors(struct net_device *ndev)
+ {
+ 	struct ifi_canfd_priv *priv = netdev_priv(ndev);
++	u32 stcmd = readl(priv->base + IFI_CANFD_STCMD);
+ 	int work_done = 0;
+-	u32 isr;
+ 
+-	/*
+-	 * The ErrWarn condition is a little special, since the bit is
+-	 * located in the INTERRUPT register instead of STCMD register.
+-	 */
+-	isr = readl(priv->base + IFI_CANFD_INTERRUPT);
+-	if ((isr & IFI_CANFD_INTERRUPT_ERROR_WARNING) &&
++	if ((stcmd & IFI_CANFD_STCMD_ERROR_ACTIVE) &&
++	    (priv->can.state != CAN_STATE_ERROR_ACTIVE)) {
++		netdev_dbg(ndev, "Error, entered active state\n");
++		work_done += ifi_canfd_handle_state_change(ndev,
++						CAN_STATE_ERROR_ACTIVE);
++	}
++
++	if ((stcmd & IFI_CANFD_STCMD_ERROR_WARNING) &&
+ 	    (priv->can.state != CAN_STATE_ERROR_WARNING)) {
+-		/* Clear the interrupt */
+-		writel(IFI_CANFD_INTERRUPT_ERROR_WARNING,
+-		       priv->base + IFI_CANFD_INTERRUPT);
+ 		netdev_dbg(ndev, "Error, entered warning state\n");
+ 		work_done += ifi_canfd_handle_state_change(ndev,
+ 						CAN_STATE_ERROR_WARNING);
+@@ -554,18 +570,11 @@ static int ifi_canfd_poll(struct napi_struct *napi, int quota)
+ {
+ 	struct net_device *ndev = napi->dev;
+ 	struct ifi_canfd_priv *priv = netdev_priv(ndev);
+-	const u32 stcmd_state_mask = IFI_CANFD_STCMD_ERROR_PASSIVE |
+-				     IFI_CANFD_STCMD_BUSOFF;
+-	int work_done = 0;
+-
+-	u32 stcmd = readl(priv->base + IFI_CANFD_STCMD);
+ 	u32 rxstcmd = readl(priv->base + IFI_CANFD_RXSTCMD);
+-	u32 errctr = readl(priv->base + IFI_CANFD_ERROR_CTR);
++	int work_done = 0;
+ 
+ 	/* Handle bus state changes */
+-	if ((stcmd & stcmd_state_mask) ||
+-	    ((stcmd & IFI_CANFD_STCMD_ERROR_ACTIVE) == 0))
+-		work_done += ifi_canfd_handle_state_errors(ndev, stcmd);
++	work_done += ifi_canfd_handle_state_errors(ndev);
+ 
+ 	/* Handle lost messages on RX */
+ 	if (rxstcmd & IFI_CANFD_RXSTCMD_OVERFLOW)
+@@ -573,7 +582,7 @@ static int ifi_canfd_poll(struct napi_struct *napi, int quota)
+ 
+ 	/* Handle lec errors on the bus */
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+-		work_done += ifi_canfd_handle_lec_err(ndev, errctr);
++		work_done += ifi_canfd_handle_lec_err(ndev);
+ 
+ 	/* Handle normal messages on RX */
+ 	if (!(rxstcmd & IFI_CANFD_RXSTCMD_EMPTY))
+@@ -594,12 +603,13 @@ static irqreturn_t ifi_canfd_isr(int irq, void *dev_id)
+ 	struct net_device_stats *stats = &ndev->stats;
+ 	const u32 rx_irq_mask = IFI_CANFD_INTERRUPT_RXFIFO_NEMPTY |
+ 				IFI_CANFD_INTERRUPT_RXFIFO_NEMPTY_PER |
++				IFI_CANFD_INTERRUPT_ERROR_COUNTER |
++				IFI_CANFD_INTERRUPT_ERROR_STATE_CHG |
+ 				IFI_CANFD_INTERRUPT_ERROR_WARNING |
+-				IFI_CANFD_INTERRUPT_ERROR_COUNTER;
++				IFI_CANFD_INTERRUPT_ERROR_BUSOFF;
+ 	const u32 tx_irq_mask = IFI_CANFD_INTERRUPT_TXFIFO_EMPTY |
+ 				IFI_CANFD_INTERRUPT_TXFIFO_REMOVE;
+-	const u32 clr_irq_mask = ~((u32)(IFI_CANFD_INTERRUPT_SET_IRQ |
+-					 IFI_CANFD_INTERRUPT_ERROR_WARNING));
++	const u32 clr_irq_mask = ~((u32)IFI_CANFD_INTERRUPT_SET_IRQ);
+ 	u32 isr;
+ 
+ 	isr = readl(priv->base + IFI_CANFD_INTERRUPT);
 -- 
 2.16.1
