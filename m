@@ -1,92 +1,67 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/6] can: peak/pcie_fd: fix echo_skb is occupied! bug
-Date: Mon, 12 Mar 2018 11:04:08 +0100
-Message-ID: <20180312100410.10404-5-mkl@pengutronix.de>
+Subject: [PATCH 2/6] can: ifi: Check core revision upon probe
+Date: Mon, 12 Mar 2018 11:04:06 +0100
+Message-ID: <20180312100410.10404-3-mkl@pengutronix.de>
 References: <20180312100410.10404-1-mkl@pengutronix.de>
 Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20180312100410.10404-1-mkl@pengutronix.de>
 Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Stephane Grosjean <s.grosjean@peak-system.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marek Vasut <marex@denx.de>, Heiko Schocher <hs@denx.de>, Markus Marb <markus@marb.org>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Marek Vasut <marex@denx.de>
 
-This patch makes atomic the handling of the linux-can echo_skb array and
-the network tx queue. This prevents from the "BUG! echo_skb is occupied!"
-message to be printed by the linux-can core, in SMP environments.
+Older versions of the core are not compatible with the driver due
+to various intrusive fixes of the core. Read out the VER register,
+check the core revision bitfield and verify if the core in use is
+new enough (rev 2.1 or newer) to work correctly with this driver.
 
-Reported-by: Diana Burgess <diana@peloton-tech.com>
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Heiko Schocher <hs@denx.de>
+Cc: Markus Marb <markus@marb.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/peak_canfd/peak_canfd.c       | 12 ++++++------
- drivers/net/can/peak_canfd/peak_pciefd_main.c |  8 ++++++--
- 2 files changed, 12 insertions(+), 8 deletions(-)
+ drivers/net/can/ifi_canfd/ifi_canfd.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
-index 55513411a82e..6fa66231ed8e 100644
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -262,7 +262,6 @@ static int pucan_handle_can_rx(struct peak_canfd_priv *priv,
+diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+index 2772d05ff11c..9fd396c3569a 100644
+--- a/drivers/net/can/ifi_canfd/ifi_canfd.c
++++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+@@ -136,6 +136,8 @@
+ #define IFI_CANFD_SYSCLOCK			0x50
  
- 		spin_lock_irqsave(&priv->echo_lock, flags);
- 		can_get_echo_skb(priv->ndev, msg->client);
--		spin_unlock_irqrestore(&priv->echo_lock, flags);
+ #define IFI_CANFD_VER				0x54
++#define IFI_CANFD_VER_REV_MASK			0xff
++#define IFI_CANFD_VER_REV_MIN_SUPPORTED		0x15
  
- 		/* count bytes of the echo instead of skb */
- 		stats->tx_bytes += cf_len;
-@@ -271,6 +270,7 @@ static int pucan_handle_can_rx(struct peak_canfd_priv *priv,
- 		/* restart tx queue (a slot is free) */
- 		netif_wake_queue(priv->ndev);
+ #define IFI_CANFD_IP_ID				0x58
+ #define IFI_CANFD_IP_ID_VALUE			0xD073CAFD
+@@ -933,7 +935,7 @@ static int ifi_canfd_plat_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	void __iomem *addr;
+ 	int irq, ret;
+-	u32 id;
++	u32 id, rev;
  
-+		spin_unlock_irqrestore(&priv->echo_lock, flags);
- 		return 0;
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	addr = devm_ioremap_resource(dev, res);
+@@ -947,6 +949,13 @@ static int ifi_canfd_plat_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  	}
  
-@@ -726,11 +726,6 @@ static netdev_tx_t peak_canfd_start_xmit(struct sk_buff *skb,
- 	 */
- 	should_stop_tx_queue = !!(priv->can.echo_skb[priv->echo_idx]);
- 
--	spin_unlock_irqrestore(&priv->echo_lock, flags);
--
--	/* write the skb on the interface */
--	priv->write_tx_msg(priv, msg);
--
- 	/* stop network tx queue if not enough room to save one more msg too */
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
- 		should_stop_tx_queue |= (room_left <
-@@ -742,6 +737,11 @@ static netdev_tx_t peak_canfd_start_xmit(struct sk_buff *skb,
- 	if (should_stop_tx_queue)
- 		netif_stop_queue(ndev);
- 
-+	spin_unlock_irqrestore(&priv->echo_lock, flags);
++	rev = readl(addr + IFI_CANFD_VER) & IFI_CANFD_VER_REV_MASK;
++	if (rev < IFI_CANFD_VER_REV_MIN_SUPPORTED) {
++		dev_err(dev, "This block is too old (rev %i), minimum supported is rev %i\n",
++			rev, IFI_CANFD_VER_REV_MIN_SUPPORTED);
++		return -EINVAL;
++	}
 +
-+	/* write the skb on the interface */
-+	priv->write_tx_msg(priv, msg);
-+
- 	return NETDEV_TX_OK;
- }
- 
-diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-index 788c3464a3b0..3c51a884db87 100644
---- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
-+++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-@@ -349,8 +349,12 @@ static irqreturn_t pciefd_irq_handler(int irq, void *arg)
- 		priv->tx_pages_free++;
- 		spin_unlock_irqrestore(&priv->tx_lock, flags);
- 
--		/* wake producer up */
--		netif_wake_queue(priv->ucan.ndev);
-+		/* wake producer up (only if enough room in echo_skb array) */
-+		spin_lock_irqsave(&priv->ucan.echo_lock, flags);
-+		if (!priv->ucan.can.echo_skb[priv->ucan.echo_idx])
-+			netif_wake_queue(priv->ucan.ndev);
-+
-+		spin_unlock_irqrestore(&priv->ucan.echo_lock, flags);
- 	}
- 
- 	/* re-enable Rx DMA transfer for this CAN */
+ 	ndev = alloc_candev(sizeof(*priv), 1);
+ 	if (!ndev)
+ 		return -ENOMEM;
 -- 
 2.16.1
