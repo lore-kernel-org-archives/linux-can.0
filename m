@@ -1,91 +1,56 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 1/1] can: ucan: add driver for Theobroma Systems UCAN
- devices
-Date: Tue, 13 Mar 2018 18:56:25 +0100
-Message-ID: <00db8dc8-682c-cbcb-d264-d563a854a8c1@pengutronix.de>
-References: <20180313173520.21257-1-jakob.unterwurzacher@theobroma-systems.com>
- <20180313173520.21257-2-jakob.unterwurzacher@theobroma-systems.com>
- <e6864131-adab-382b-617b-35e9329f00d0@pengutronix.de>
- <872c1fca-df7c-84c1-e14b-0f7d60d0bafe@theobroma-systems.com>
+From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+Subject: [bug, bisected] pfifo_fast causes packet reordering
+Date: Tue, 13 Mar 2018 19:24:44 +0100
+Message-ID: <946dbe16-a2eb-eca8-8069-468859ccc78d@theobroma-systems.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="pPUTzALaltl3BbymtuEFzSVd0pTGzPoUE"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <872c1fca-df7c-84c1-e14b-0f7d60d0bafe@theobroma-systems.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>, "David S. Miller" <davem@davemloft.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Martin Elshuber <martin.elshuber@theobroma-systems.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pPUTzALaltl3BbymtuEFzSVd0pTGzPoUE
-Content-Type: multipart/mixed; boundary="NYbVJuDv885Aasn3fB7hsVjrHObwKj64x";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>,
- Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
- Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <00db8dc8-682c-cbcb-d264-d563a854a8c1@pengutronix.de>
-Subject: Re: [PATCH v2 1/1] can: ucan: add driver for Theobroma Systems UCAN
- devices
-References: <20180313173520.21257-1-jakob.unterwurzacher@theobroma-systems.com>
- <20180313173520.21257-2-jakob.unterwurzacher@theobroma-systems.com>
- <e6864131-adab-382b-617b-35e9329f00d0@pengutronix.de>
- <872c1fca-df7c-84c1-e14b-0f7d60d0bafe@theobroma-systems.com>
-In-Reply-To: <872c1fca-df7c-84c1-e14b-0f7d60d0bafe@theobroma-systems.com>
+During stress-testing our "ucan" USB/CAN adapter SocketCAN driver on 
+Linux v4.16-rc4-383-ged58d66f60b3 we observed that a small fraction of 
+packets are delivered out-of-order.
 
---NYbVJuDv885Aasn3fB7hsVjrHObwKj64x
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+We have tracked the problem down to the driver interface level, and it 
+seems that the driver's net_device_ops.ndo_start_xmit() function gets 
+the packets handed over in the wrong order.
 
-On 03/13/2018 06:53 PM, Jakob Unterwurzacher wrote:
-> On 13.03.18 18:44, Marc Kleine-Budde wrote:
->> On 03/13/2018 06:35 PM, Jakob Unterwurzacher wrote:
->>
->> [...]
->>
->> Please mark all multibyte values going over the USB as either le or be=
-=2E
->=20
-> This is documented in can_ucan_protocol.rst,
->=20
->      All multi-byte integers are encoded as Little Endian.
->=20
-> but it's probably worth mentioning here as well.
+This behavior was not observed on Linux v4.15 and I have bisected the 
+problem down to this patch:
 
-Yes, but in the code, use "__le16" and "__le32" instead of "u16" and "u32=
-"
+> commit c5ad119fb6c09b0297446be05bd66602fa564758
+> Author: John Fastabend <john.fastabend@gmail.com>
+> Date:   Thu Dec 7 09:58:19 2017 -0800
+> 
+>    net: sched: pfifo_fast use skb_array
+> 
+>    This converts the pfifo_fast qdisc to use the skb_array data structure
+>    and set the lockless qdisc bit. pfifo_fast is the first qdisc to support
+>    the lockless bit that can be a child of a qdisc requiring locking. So
+>    we add logic to clear the lock bit on initialization in these cases when
+>    the qdisc graft operation occurs.
+> 
+>    This also removes the logic used to pick the next band to dequeue from
+>    and instead just checks a per priority array for packets from top priority
+>    to lowest. This might need to be a bit more clever but seems to work
+>    for now.
+> 
+>    Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+>    Signed-off-by: David S. Miller <davem@davemloft.net>
 
-Marc
+The patch does not revert cleanly, but moving to one commit earlier 
+makes the problem go away.
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Selecting the "fq" scheduler instead of "pfifo_fast" makes the problem 
+go away as well.
 
+Is this an unintended side-effect of the patch or is there something the 
+driver has to do to request in-order delivery?
 
---NYbVJuDv885Aasn3fB7hsVjrHObwKj64x--
-
---pPUTzALaltl3BbymtuEFzSVd0pTGzPoUE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqoEMkACgkQk9IU1zQo
-ZfHLGwf/SMrbGogp4+J45Hi6UxyeQry/Q/2gYwP49YjAfBV4zWtHmsWkTJSWrh0X
-qwRSBYO1mmNun1MTnmunjQ8ik2coZk6KZMXUV7pq63JLNRrWXS5YdIP9LJQOAEUN
-hVDg70AtOAfZrOk+kACl8sKcl+xeaCS1IdG3v9vWqOGmFQymCK0qxob9tGt3wKQN
-p26yChMhG17Rb2XXTB2ZIrdTkPidccPM5OW9OyyWWoOWQ5vYf6UJV3UrRzgQvzxW
-mSn1e2xk/3NsEo+w+QIWR8DOQZgkU0XavdHEdjUI0IfaOkWSfLaCRZdQE87oVbDu
-r7w/V0lIKth8055QgyhLfijotRzWJA==
-=kJkx
------END PGP SIGNATURE-----
-
---pPUTzALaltl3BbymtuEFzSVd0pTGzPoUE--
+Thanks,
+Jakob
