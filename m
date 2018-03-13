@@ -1,88 +1,49 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 0/1] Open questions
-Date: Tue, 13 Mar 2018 18:48:40 +0100
-Message-ID: <ba3f53b1-e8bb-4c61-b486-19b9865d6e22@pengutronix.de>
+From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+Subject: Re: [PATCH v2 1/1] can: ucan: add driver for Theobroma Systems UCAN
+ devices
+Date: Tue, 13 Mar 2018 18:53:43 +0100
+Message-ID: <872c1fca-df7c-84c1-e14b-0f7d60d0bafe@theobroma-systems.com>
 References: <20180313173520.21257-1-jakob.unterwurzacher@theobroma-systems.com>
- <e0c8c001-f66b-2e8e-d9ec-89a0db9c5853@theobroma-systems.com>
- <06378497-1ACE-4333-810F-4E3E4706CCD5@theobroma-systems.com>
+ <20180313173520.21257-2-jakob.unterwurzacher@theobroma-systems.com>
+ <e6864131-adab-382b-617b-35e9329f00d0@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="49paDp0mhg3MWsTipV1DAfxyZPFq7FpeI"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <06378497-1ACE-4333-810F-4E3E4706CCD5@theobroma-systems.com>
+In-Reply-To: <e6864131-adab-382b-617b-35e9329f00d0@pengutronix.de>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Dr. Philipp Tomsich" <philipp.tomsich@theobroma-systems.com>, Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---49paDp0mhg3MWsTipV1DAfxyZPFq7FpeI
-Content-Type: multipart/mixed; boundary="bQcAFp41XHCNHrKJW2aC1AyjzBG8tsgzM";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "Dr. Philipp Tomsich" <philipp.tomsich@theobroma-systems.com>,
- Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>,
- Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <ba3f53b1-e8bb-4c61-b486-19b9865d6e22@pengutronix.de>
-Subject: Re: [PATCH v2 0/1] Open questions
-References: <20180313173520.21257-1-jakob.unterwurzacher@theobroma-systems.com>
- <e0c8c001-f66b-2e8e-d9ec-89a0db9c5853@theobroma-systems.com>
- <06378497-1ACE-4333-810F-4E3E4706CCD5@theobroma-systems.com>
-In-Reply-To: <06378497-1ACE-4333-810F-4E3E4706CCD5@theobroma-systems.com>
+On 13.03.18 18:44, Marc Kleine-Budde wrote:
+> On 03/13/2018 06:35 PM, Jakob Unterwurzacher wrote:
+> 
+> [...]
+> 
+> Please mark all multibyte values going over the USB as either le or be.
 
---bQcAFp41XHCNHrKJW2aC1AyjzBG8tsgzM
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+This is documented in can_ucan_protocol.rst,
 
-On 03/13/2018 06:42 PM, Dr. Philipp Tomsich wrote:
->=20
->> On 13 Mar 2018, at 18:40, Jakob Unterwurzacher
->> <jakob.unterwurzacher@theobroma-systems.com
->> <mailto:jakob.unterwurzacher@theobroma-systems.com>> wrote:
->>
->> >> + =C2=A0=C2=A0=C2=A0/* get the urb context */
->> >> + =C2=A0=C2=A0=C2=A0if (WARN_ON(!context))
->> >> + =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return;
->> >
->> > Can this happen?
->>
->> Not unless there is a bug in the code. But we want to get a message
->> before dereferencing a pointer.
->=20
-> Why not use BUG_ON(!context)?
+     All multi-byte integers are encoded as Little Endian.
 
-As this will halt the whole system.
+but it's probably worth mentioning here as well.
 
-Marc
+> 
+> Please use standard 'net' comment style:
+> 
+>  /* this is a multiline
+>   * comment
+>   */
+> 
+>> +	struct ucan_ctl_cmd_start cmd_start;
+>> +	/***************************************************
+>> +	 * Setup Bittiming
+>> +	 * bmRequest == UCAN_COMMAND_SET_BITTIMING
+>> +	 ***************************************************/
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+Understood.
 
-
---bQcAFp41XHCNHrKJW2aC1AyjzBG8tsgzM--
-
---49paDp0mhg3MWsTipV1DAfxyZPFq7FpeI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqoDvgACgkQk9IU1zQo
-ZfGnxAf/bHqg0zD/R0v3M1dsYUGCcDfamzj4iot5GBPbKNvxaLZCC6SRVKZG87zM
-TP6htWEymi+Dq+ouJfXSQXk231A56JSeyNuF1Q6Ao5e+gzRHfOCKKJnC91vAqMCc
-YSmBYDI9Fwi33I7C8AyNl/l4jH+0sCQUcSrr4CzcSs7YrOB9RKAKa129oId/y33s
-bM9NEjGMIULCshYk2yDHkVInIrHq3VM1+c63GC3RgnL0j/c9oIm+9IVC+eCmKqRU
-sb3IW+clqFeX6cvxsXxn4iOGYc47ns5I+REqEa9FyDf14zsuadhOMHleM4TBoHX4
-XXataKvoS+cktczHg4NBe9HRxssxLg==
-=25Mo
------END PGP SIGNATURE-----
-
---49paDp0mhg3MWsTipV1DAfxyZPFq7FpeI--
+Thanks,
+Jakob
