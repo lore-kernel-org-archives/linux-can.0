@@ -1,199 +1,45 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/2] can: cc770: Fix queue stall & dropped RTR reply
-Date: Wed, 14 Mar 2018 13:05:23 +0100
-Message-ID: <20180314120523.2295-3-mkl@pengutronix.de>
-References: <20180314120523.2295-1-mkl@pengutronix.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180314120523.2295-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Andri Yngvason <andri.yngvason@marel.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+From: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
+Date: Wed, 14 Mar 2018 12:26:58 +0000
+Message-ID: <9ce65a3a1535456dbad7120c5775a8f9@de.bosch.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: de-DE
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Andri Yngvason <andri.yngvason@marel.com>
-
-While waiting for the TX object to send an RTR, an external message with a
-matching id can overwrite the TX data. In this case we must call the rx
-routine and then try transmitting the message that was overwritten again.
-
-The queue was being stalled because the RX event did not generate an
-interrupt to wake up the queue again and the TX event did not happen
-because the TXRQST flag is reset by the chip when new data is received.
-
-According to the CC770 datasheet the id of a message object should not be
-changed while the MSGVAL bit is set. This has been fixed by resetting the
-MSGVAL bit before modifying the object in the transmit function and setting
-it after. It is not enough to set & reset CPUUPD.
-
-It is important to keep the MSGVAL bit reset while the message object is
-being modified. Otherwise, during RTR transmission, a frame with matching
-id could trigger an rx-interrupt, which would cause a race condition
-between the interrupt routine and the transmit function.
-
-Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
-Tested-by: Richard Weinberger <richard@nod.at>
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/cc770/cc770.c | 94 ++++++++++++++++++++++++++++++-------------
- drivers/net/can/cc770/cc770.h |  2 +
- 2 files changed, 68 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index 9fed163262e0..2743d82d4424 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -390,37 +390,23 @@ static int cc770_get_berr_counter(const struct net_device *dev,
- 	return 0;
- }
- 
--static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
-+static void cc770_tx(struct net_device *dev, int mo)
- {
- 	struct cc770_priv *priv = netdev_priv(dev);
--	struct net_device_stats *stats = &dev->stats;
--	struct can_frame *cf = (struct can_frame *)skb->data;
--	unsigned int mo = obj2msgobj(CC770_OBJ_TX);
-+	struct can_frame *cf = (struct can_frame *)priv->tx_skb->data;
- 	u8 dlc, rtr;
- 	u32 id;
- 	int i;
- 
--	if (can_dropped_invalid_skb(dev, skb))
--		return NETDEV_TX_OK;
--
--	if ((cc770_read_reg(priv,
--			    msgobj[mo].ctrl1) & TXRQST_UNC) == TXRQST_SET) {
--		netdev_err(dev, "TX register is still occupied!\n");
--		return NETDEV_TX_BUSY;
--	}
--
--	netif_stop_queue(dev);
--
- 	dlc = cf->can_dlc;
- 	id = cf->can_id;
--	if (cf->can_id & CAN_RTR_FLAG)
--		rtr = 0;
--	else
--		rtr = MSGCFG_DIR;
-+	rtr = cf->can_id & CAN_RTR_FLAG ? 0 : MSGCFG_DIR;
-+
-+	cc770_write_reg(priv, msgobj[mo].ctrl0,
-+			MSGVAL_RES | TXIE_RES | RXIE_RES | INTPND_RES);
- 	cc770_write_reg(priv, msgobj[mo].ctrl1,
- 			RMTPND_RES | TXRQST_RES | CPUUPD_SET | NEWDAT_RES);
--	cc770_write_reg(priv, msgobj[mo].ctrl0,
--			MSGVAL_SET | TXIE_SET | RXIE_RES | INTPND_RES);
-+
- 	if (id & CAN_EFF_FLAG) {
- 		id &= CAN_EFF_MASK;
- 		cc770_write_reg(priv, msgobj[mo].config,
-@@ -439,13 +425,30 @@ static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	for (i = 0; i < dlc; i++)
- 		cc770_write_reg(priv, msgobj[mo].data[i], cf->data[i]);
- 
--	/* Store echo skb before starting the transfer */
--	can_put_echo_skb(skb, dev, 0);
--
- 	cc770_write_reg(priv, msgobj[mo].ctrl1,
--			RMTPND_RES | TXRQST_SET | CPUUPD_RES | NEWDAT_UNC);
-+			RMTPND_UNC | TXRQST_SET | CPUUPD_RES | NEWDAT_UNC);
-+	cc770_write_reg(priv, msgobj[mo].ctrl0,
-+			MSGVAL_SET | TXIE_SET | RXIE_SET | INTPND_UNC);
-+}
-+
-+static netdev_tx_t cc770_start_xmit(struct sk_buff *skb, struct net_device *dev)
-+{
-+	struct cc770_priv *priv = netdev_priv(dev);
-+	unsigned int mo = obj2msgobj(CC770_OBJ_TX);
-+
-+	if (can_dropped_invalid_skb(dev, skb))
-+		return NETDEV_TX_OK;
- 
--	stats->tx_bytes += dlc;
-+	netif_stop_queue(dev);
-+
-+	if ((cc770_read_reg(priv,
-+			    msgobj[mo].ctrl1) & TXRQST_UNC) == TXRQST_SET) {
-+		netdev_err(dev, "TX register is still occupied!\n");
-+		return NETDEV_TX_BUSY;
-+	}
-+
-+	priv->tx_skb = skb;
-+	cc770_tx(dev, mo);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -671,13 +674,47 @@ static void cc770_tx_interrupt(struct net_device *dev, unsigned int o)
- 	struct cc770_priv *priv = netdev_priv(dev);
- 	struct net_device_stats *stats = &dev->stats;
- 	unsigned int mo = obj2msgobj(o);
-+	struct can_frame *cf;
-+	u8 ctrl1;
-+
-+	ctrl1 = cc770_read_reg(priv, msgobj[mo].ctrl1);
- 
--	/* Nothing more to send, switch off interrupts */
- 	cc770_write_reg(priv, msgobj[mo].ctrl0,
- 			MSGVAL_RES | TXIE_RES | RXIE_RES | INTPND_RES);
-+	cc770_write_reg(priv, msgobj[mo].ctrl1,
-+			RMTPND_RES | TXRQST_RES | MSGLST_RES | NEWDAT_RES);
- 
--	stats->tx_packets++;
-+	if (unlikely(!priv->tx_skb)) {
-+		netdev_err(dev, "missing tx skb in tx interrupt\n");
-+		return;
-+	}
-+
-+	if (unlikely(ctrl1 & MSGLST_SET)) {
-+		stats->rx_over_errors++;
-+		stats->rx_errors++;
-+	}
-+
-+	/* When the CC770 is sending an RTR message and it receives a regular
-+	 * message that matches the id of the RTR message, it will overwrite the
-+	 * outgoing message in the TX register. When this happens we must
-+	 * process the received message and try to transmit the outgoing skb
-+	 * again.
-+	 */
-+	if (unlikely(ctrl1 & NEWDAT_SET)) {
-+		cc770_rx(dev, mo, ctrl1);
-+		cc770_tx(dev, mo);
-+		return;
-+	}
-+
-+	can_put_echo_skb(priv->tx_skb, dev, 0);
- 	can_get_echo_skb(dev, 0);
-+
-+	cf = (struct can_frame *)priv->tx_skb->data;
-+	stats->tx_bytes += cf->can_dlc;
-+	stats->tx_packets++;
-+
-+	priv->tx_skb = NULL;
-+
- 	netif_wake_queue(dev);
- }
- 
-@@ -789,6 +826,7 @@ struct net_device *alloc_cc770dev(int sizeof_priv)
- 	priv->can.do_set_bittiming = cc770_set_bittiming;
- 	priv->can.do_set_mode = cc770_set_mode;
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
-+	priv->tx_skb = NULL;
- 
- 	memcpy(priv->obj_flags, cc770_obj_flags, sizeof(cc770_obj_flags));
- 
-diff --git a/drivers/net/can/cc770/cc770.h b/drivers/net/can/cc770/cc770.h
-index a1739db98d91..95752e1d1283 100644
---- a/drivers/net/can/cc770/cc770.h
-+++ b/drivers/net/can/cc770/cc770.h
-@@ -193,6 +193,8 @@ struct cc770_priv {
- 	u8 cpu_interface;	/* CPU interface register */
- 	u8 clkout;		/* Clock out register */
- 	u8 bus_config;		/* Bus conffiguration register */
-+
-+	struct sk_buff *tx_skb;
- };
- 
- struct net_device *alloc_cc770dev(int sizeof_priv);
--- 
-2.16.1
+SGVsbG8gTWFyYywNCg0KPiA+IFRoZSBleGlzdGluZyBTb2NrZXRDQU4gaW1wbGVtZW50YXRpb24g
+cHJvdmlkZXMgYWxsb2NfY2FuZGV2KCkgdG8NCj4gPiBhbGxvY2F0ZSBhIENBTiBkZXZpY2UgdXNp
+bmcgYSBzaW5nbGUgVHggYW5kIFJ4IHF1ZXVlLiBUaGlzIGNhbiBsZWFkIHRvDQo+ID4gcHJpb3Jp
+dHkgaW52ZXJzaW9uIGluIGNhc2UgdGhlIHNpbmdsZSBUeCBxdWV1ZSBpcyBhbHJlYWR5IGZ1bGwg
+d2l0aCBsb3cNCj4gPiBwcmlvcml0eSBtZXNzYWdlcyBhbmQgYSBoaWdoIHByaW9yaXR5IG1lc3Nh
+Z2UgbmVlZHMgdG8gYmUgc2VudCB3aGlsZSB0aGUNCj4gPiBidXMgaXMgZnVsbHkgbG9hZGVkIHdp
+dGggbWVkaXVtIHByaW9yaXR5IG1lc3NhZ2VzLg0KPiA+DQo+ID4gVGhpcyBwcm9ibGVtIGNhbiBi
+ZSBzb2x2ZWQgYnkgdXNpbmcgdGhlIGV4aXN0aW5nIG11bHRpLXF1ZXVlIHN1cHBvcnQgb2YNCj4g
+PiB0aGUgbmV0d29yayBzdWJzeXN0ZW0uIFRoZSBjb21taXQgbWFrZXMgaXQgcG9zc2libGUgdG8g
+dXNlIG11bHRpLXF1ZXVlIGluDQo+ID4gdGhlIENBTiBzdWJzeXN0ZW0gaW4gdGhlIHNhbWUgd2F5
+IGl0IGlzIHVzZWQgaW4gdGhlIEV0aGVybmV0IHN1YnN5c3RlbQ0KPiA+IGJ5IGFkZGluZyBhbiBh
+bGxvY19jYW5kZXZfbXFzKCkgY2FsbCBhbmQgYWNjb21wYW55aW5nIG1hY3Jvcy4gV2l0aCB0aGlz
+DQo+ID4gc3VwcG9ydCBhIENBTiBkZXZpY2UgY2FuIHVzZSBtdWx0aS1xdWV1ZSBxZGlzYyAoZS5n
+LiBtcXByaW8pIHRvIGF2b2lkDQo+ID4gdGhlIGFmb3JlbWVudGlvbmVkIHByaW9yaXR5IGludmVy
+c2lvbi4NCj4gPg0KPiA+IFRoZSBleGlzdGluZyBmdW5jdGlvbmFsaXR5IG9mIGFsbG9jX2NhbmRl
+digpIGlzIHRoZSBzYW1lIGFzIGJlZm9yZS4NCj4gPg0KPiA+IENBTiBkZXZpY2VzIG5lZWQgdG8g
+aGF2ZSBwcmlvcml0aXplZCBtdWx0aXBsZSBoYXJkd2FyZSBxdWV1ZXMgb3IgYXJlDQo+ID4gYWJs
+ZSB0byBhYm9ydCB3YWl0aW5nIGZvciBhcmJpdHJhdGlvbiB0byBtYWtlIHNlbnNpYmxlIHVzZSBv
+Zg0KPiA+IG11bHRpLXF1ZXVlcy4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFpodSBZaSA8eWku
+emh1NUBjbi5ib3NjaC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogTWFyayBKb25hcyA8bWFyay5q
+b25hc0BkZS5ib3NjaC5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IEhlaWtvIFNjaG9jaGVyIDxoc0Bk
+ZW54LmRlPg0KPiANCj4gRG8geW91IGhhdmUgYSBkcml2ZXIgb3IgYSBwYXRjaCB0byBtYWtlIGEg
+ZHJpdmVyIG1xIGF3YXJlPw0KDQpZZXMsIHdlIGhhdmUgQ0FOIGhhcmR3YXJlIHdpdGggbXVsdGlw
+bGUgcXVldWVzIGFuZCB3ZSBhbHNvIGhhdmUgYSBTb2NrZXRDQU4gZHJpdmVyIGZvciBpdC4NCg0K
+SU1ITyB0aGUgZHJpdmVyIHdpbGwgYmUgb2YgdmVyeSBsaXR0bGUgdXNlIGZvciB0aGUgTGludXgg
+Y29tbXVuaXR5IGJlY2F1c2UgdGhlIEhXIGlzIHByb3ByaWV0YXJ5Lg0KDQpPdXIgbW90aXZhdGlv
+biB0byBzZXBhcmF0ZSB0aGlzIHBhdGNoIGZyb20gdGhlIHByb3ByaWV0YXJ5IFNvY2tldENBTiBk
+cml2ZXIgaXMgdGhhdCB3ZSBmZWx0IGl0IHdhcyBvZGQgdGhhdCB0aGUgbXVsdGktcXVldWUgaW5m
+cmFzdHJ1Y3R1cmUgaXMgaW4gcGxhY2UgYW5kIG9ubHkgdmVyeSBmZXcgbGluZXMgb2YgY29kZSBh
+cmUgbWlzc2luZyB0byBvZmZlciBpdCB0byB0aGUgQ0FOIG5ldHdvcmtpbmcgc3Vic3lzdGVtIGFz
+IHdlbGwuDQoNCkdyZWV0aW5ncywNCk1hcmsNCg==
