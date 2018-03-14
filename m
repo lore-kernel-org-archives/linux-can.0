@@ -1,40 +1,40 @@
 From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
 Subject: Re: [PATCH v2 1/1] can: ucan: add driver for Theobroma Systems UCAN
  devices
-Date: Wed, 14 Mar 2018 10:09:52 +0100
-Message-ID: <6c1b7482-2cde-40e3-eff4-e4b94794a63e@theobroma-systems.com>
+Date: Wed, 14 Mar 2018 10:14:25 +0100
+Message-ID: <03024ab7-5386-3bcf-76f2-ef2e0e9e7a78@theobroma-systems.com>
 References: <20180313173520.21257-1-jakob.unterwurzacher@theobroma-systems.com>
  <20180313173520.21257-2-jakob.unterwurzacher@theobroma-systems.com>
- <b4f644dc-265e-01e0-acaa-88cc8f3f69f5@pengutronix.de>
+ <d7986f8f-6c52-bf39-93f0-7a837bd85241@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <b4f644dc-265e-01e0-acaa-88cc8f3f69f5@pengutronix.de>
+In-Reply-To: <d7986f8f-6c52-bf39-93f0-7a837bd85241@grandegger.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On 14.03.18 08:51, Marc Kleine-Budde wrote:
->> +		memcpy(cf->data, m->msg.can_msg.data, cf->can_dlc);
->> +
->> +	/* don't count error frames as real packets */
->> +	if (!(canid & CAN_ERR_FLAG)) {
->> +		stats->rx_packets++;
->> +		stats->rx_bytes += cf->can_dlc;
->> +	}
-> Please count them, too.
+On 14.03.18 10:11, Wolfgang Grandegger wrote:
+>> +    /* handle error frames */
+>> +    canid = le32_to_cpu(m->msg.can_msg.id);
+>> +    if (canid & CAN_ERR_FLAG) {
+>> +        ucan_handle_error_frame(up, m, canid);
+>> +        /* drop frame if berr-reporting is off */
+>> +        if (!(up->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+>> +            return;
+>> +    }
+> 
+> You still do not generate error messages for state changes, IIUC.
 
-We do count them, as errors!
+The hardware generates error frames on state changes - is that what you 
+mean?
 
-This is what happens when you transmit a single CAN frame with nothing 
-connected: "TX errors" shoots up but "RX packets" stays zero.
+In our testing, the state shows up (and updates) correctly in
 
-> root@rk3399-q7:~# ip -details -statistics link show can0
-[...]
->     RX: bytes  packets  errors  dropped overrun mcast
->     0          0        0       0       0       0
->     TX: bytes  packets  errors  dropped carrier collsns
->     0          0        20425   0       0       0
+	ip -details -statistics link show can0
+
+Best regards,
+Jakob
