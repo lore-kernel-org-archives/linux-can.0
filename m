@@ -1,91 +1,50 @@
-From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Subject: Re: [PATCH v2 1/1] can: ucan: add driver for Theobroma Systems UCAN
- devices
-Date: Wed, 14 Mar 2018 20:07:46 +0100
-Message-ID: <1bd41545-facb-9314-005b-4e742c4c61da@theobroma-systems.com>
-References: <20180313173520.21257-1-jakob.unterwurzacher@theobroma-systems.com>
- <20180313173520.21257-2-jakob.unterwurzacher@theobroma-systems.com>
- <d7986f8f-6c52-bf39-93f0-7a837bd85241@grandegger.com>
- <03024ab7-5386-3bcf-76f2-ef2e0e9e7a78@theobroma-systems.com>
- <68564c40-396b-9081-8534-67fe96a6fb3f@grandegger.com>
- <92e559b1-d392-015e-1aa1-0497cbd4c071@grandegger.com>
- <5b3df9d5-3e65-1114-4b51-9dcc329cbc31@theobroma-systems.com>
- <b5bf52e2-0843-a2b3-b039-c39fb9c634e3@grandegger.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 00/47] arch-removal: device drivers
+Date: Wed, 14 Mar 2018 23:45:54 +0100
+Message-ID: <CAJZ5v0jsoxWRiwPOCJH6AAz-MiccOuicD8peCevLRMbTfc7LEg@mail.gmail.com>
+References: <20180314153603.3127932-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <b5bf52e2-0843-a2b3-b039-c39fb9c634e3@grandegger.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
+In-Reply-To: <20180314153603.3127932-1-arnd@arndb.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" <linux-usb@vger.kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-iio@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, alexandre.belloni@bootlin.com, linux-ide@vger.kernel.org, netdev <netdev@vger.kernel.org>, linux-mtd@lists.infradead.org, linux-i2c <linux-i2c@vger.kernel.org>, linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Herbert Xu <herbert@gondor.apana.org.au>, Jonathan Corbet <corbet@lwn.net>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>, linux-mmc <linux-mmc@vger.kernel.org>, shli@kernel.org, wg@grandegger.com, linux-crypto@vger.kernel.org, Linux PWM List <linux-pwm@vger.kernel.org>, linux-watchdog@vger.k
 List-Id: linux-can.vger.kernel.org
 
-On 14.03.18 11:04, Wolfgang Grandegger wrote:
->>>  (000.000443)  can0  20000034   [8]  00 0C 00 00 00 00 78 00   ERRORFRAME
->>>     controller-problem{rx-error-warning,tx-error-warning}
->>>     transceiver-status
->>>     no-acknowledgement-on-tx
->>>     error-counter-tx-rx{{120}{0}}
->>>  (000.000444)  can0  20000034   [8]  00 3C 00 00 00 00 80 00   ERRORFRAME
->>>     controller-problem{rx-error-warning,tx-error-warning,rx-error-passive,tx-error-passive} 
-> 
-> Just,
-> 
->        controller-problem{rx-error-passive,tx-error-passive} 
->[...]
-> 
-> Back to error active is missing!?
+On Wed, Mar 14, 2018 at 4:35 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> Hi driver maintainers,
+>
+> I just posted one series with the removal of eight architectures,
+> see https://lkml.org/lkml/2018/3/14/505 for details, or
+> https://lwn.net/Articles/748074/ for more background.
+>
+> These are the device drivers that go along with them. I have already
+> picked up the drivers for arch/metag/ into my tree, they were reviewed
+> earlier.
+>
+> Please let me know if you have any concerns with the patch, or if you
+> prefer to pick up the patches in your respective trees.  I created
+> the patches with 'git format-patch -D', so they will not apply without
+> manually removing those files.
+>
+> For anything else, I'd keep the removal patches in my asm-generic tree
+> and will send a pull request for 4.17 along with the actual arch removal.
 
-That was indeed missing. We have fixed the missing back-to-error-active 
-in our firmware.
+Please include the cpufreq patches into that and you can add ACKs from
+me on them if that helps.
 
-Also, we no longer send the controller status in every error frame, but 
-only on state changes (see below) which seems to be how other drivers 
-are handling things.
+Thanks!
 
-Thanks,
-Jakob
-
-*** test output ***
-
-Disconnect cable, send one frame
-
-> root@rk3399-q7:~# candump -td -e any,0:0,#FFFFFFFF | head -n 100
->  (000.000000)  can0  6E7   [2]  7A F9
->  (000.000558)  can0  20000030   [8]  00 00 00 00 00 00 08 00   ERRORFRAME
-> 	transceiver-status
-> 	no-acknowledgement-on-tx
-> 	error-counter-tx-rx{{8}{0}}
-[...]
->  (000.000567)  can0  20000034   [8]  00 0C 00 00 00 00 60 00   ERRORFRAME
-> 	controller-problem{rx-error-warning,tx-error-warning}
-> 	transceiver-status
-> 	no-acknowledgement-on-tx
-> 	error-counter-tx-rx{{96}{0}}
-[...]
->  (000.000527)  can0  20000034   [8]  00 30 00 00 00 00 80 00   ERRORFRAME
-> 	controller-problem{rx-error-passive,tx-error-passive}
-> 	transceiver-status
-> 	no-acknowledgement-on-tx
-> 	error-counter-tx-rx{{128}{0}}
-[...]
-
-Reconnect cable
-
->  (000.000687)  can1  6E7   [2]  7A F9
->  (000.000015)  can0  20000004   [8]  00 0C 00 00 00 00 7F 00   ERRORFRAME
-> 	controller-problem{rx-error-warning,tx-error-warning}
-> 	error-counter-tx-rx{{127}{0}}
-
-Send more frames
-
->  (046.485245)  can0  61B   [2]  E2 D8
->  (000.000621)  can1  61B   [2]  E2 D8
-[...]
->  (000.199224)  can0  3E6   [0]
->  (000.000477)  can1  3E6   [0]
->  (000.000044)  can0  20000004   [8]  00 40 00 00 00 00 5F 00   ERRORFRAME
-> 	controller-problem{back-to-error-active}
-> 	error-counter-tx-rx{{95}{0}}
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
