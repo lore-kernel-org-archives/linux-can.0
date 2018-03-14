@@ -1,59 +1,111 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v2 1/1] can: ucan: add driver for Theobroma Systems UCAN
- devices
-Date: Thu, 15 Mar 2018 07:58:35 +0100
-Message-ID: <7f0bd797-64d4-ae96-00ae-5e11cf74d28e@grandegger.com>
-References: <20180313173520.21257-1-jakob.unterwurzacher@theobroma-systems.com>
- <20180313173520.21257-2-jakob.unterwurzacher@theobroma-systems.com>
- <d7986f8f-6c52-bf39-93f0-7a837bd85241@grandegger.com>
- <03024ab7-5386-3bcf-76f2-ef2e0e9e7a78@theobroma-systems.com>
- <68564c40-396b-9081-8534-67fe96a6fb3f@grandegger.com>
- <92e559b1-d392-015e-1aa1-0497cbd4c071@grandegger.com>
- <5b3df9d5-3e65-1114-4b51-9dcc329cbc31@theobroma-systems.com>
- <b5bf52e2-0843-a2b3-b039-c39fb9c634e3@grandegger.com>
- <1bd41545-facb-9314-005b-4e742c4c61da@theobroma-systems.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
+Date: Wed, 14 Mar 2018 23:17:32 +0100
+Message-ID: <dcf8cd60-e3ce-d8b0-2163-a5ecc3f00fb9@pengutronix.de>
+References: <1e51047cd14048e99989ffcf9e10ffa8@de.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Ku0VHNd9b4UrSULZDqfkhOkhm18hQltzr"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1bd41545-facb-9314-005b-4e742c4c61da@theobroma-systems.com>
-Content-Language: en-GB
+In-Reply-To: <1e51047cd14048e99989ffcf9e10ffa8@de.bosch.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
 List-Id: linux-can.vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Ku0VHNd9b4UrSULZDqfkhOkhm18hQltzr
+Content-Type: multipart/mixed; boundary="yGJN0iw2500eSBlBrWTseytT0ZonzHrMI";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>,
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Message-ID: <dcf8cd60-e3ce-d8b0-2163-a5ecc3f00fb9@pengutronix.de>
+Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
+References: <1e51047cd14048e99989ffcf9e10ffa8@de.bosch.com>
+In-Reply-To: <1e51047cd14048e99989ffcf9e10ffa8@de.bosch.com>
+
+--yGJN0iw2500eSBlBrWTseytT0ZonzHrMI
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 03/14/2018 05:51 PM, Jonas Mark (BT-FIR/ENG1) wrote:
+>> That doesn't matter. It would be the first driver that makes use of th=
+e
+>> feature, so we can learn from it. And you might get a free review of
+>> your driver.
+>=20
+> Of course we would be happy if somebody was volunteering to review
+> our driver for free.
+
+If my time permits, I'll throw some eyeballs on the driver.
+
+> The driver consists of two layers because the HW is accessed via SPI.
+
+Normal SPI?
+
+> So there is a SPI driver of 1000 lines. On top of that is the CAN
+> driver and it has 600 lines. Because the HW does more than just
+> CAN there is another driver which implements a char device with
+> additional 300 lines.
+>=20
+> Are there still volunteers?
+
+The SPI and the CAN driver would be the most interesting ones.
+
+>>> Our motivation to separate this patch from the proprietary SocketCAN
+>>> driver
+>>
+>> Looking at your email address I assume your employer sells devices wit=
+h
+>> this hardware and the driver. So someone has to provide the sources fo=
+r
+>> it anyways to fulfil the GPL license requirements. :)
+>=20
+> I will have to check but I am pretty confident that we would be willing=
+
+> to publish the driver on these mailing lists as well. We will anyhow
+> ship the source code (or a written offer) with every distribution.
+
+Sure - can I find your devices used and low priced on ebay :) ?
+
+> If you are really serious about the review I will get the process
+> rolling for an early publication of our driver.
+
+Yes, please go ahead!
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-Am 14.03.2018 um 20:07 schrieb Jakob Unterwurzacher:
-> On 14.03.18 11:04, Wolfgang Grandegger wrote:
->>>>  (000.000443)  can0  20000034   [8]  00 0C 00 00 00 00 78 00   
->>>> ERRORFRAME
->>>>     controller-problem{rx-error-warning,tx-error-warning}
->>>>     transceiver-status
->>>>     no-acknowledgement-on-tx
->>>>     error-counter-tx-rx{{120}{0}}
->>>>  (000.000444)  can0  20000034   [8]  00 3C 00 00 00 00 80 00   
->>>> ERRORFRAME
->>>>     
->>>> controller-problem{rx-error-warning,tx-error-warning,rx-error-passive,tx-error-passive} 
->>
->>
->> Just,
->>
->>        controller-problem{rx-error-passive,tx-error-passive} [...]
->>
->> Back to error active is missing!?
-> 
-> That was indeed missing. We have fixed the missing back-to-error-active 
-> in our firmware.
-> 
-> Also, we no longer send the controller status in every error frame, but 
-> only on state changes (see below) which seems to be how other drivers 
-> are handling things.
+--yGJN0iw2500eSBlBrWTseytT0ZonzHrMI--
 
-Good, it would also be useful, if berr-reporting could be enabled by the 
-firmware. This avoids a lot of traffic and load, especially if no cable 
-is connected.
+--Ku0VHNd9b4UrSULZDqfkhOkhm18hQltzr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Wolfgang.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqpn3wACgkQk9IU1zQo
+ZfFqvAgAw3raVlx0A2ua9tfxKuNVwH48Mu8hAGlHCVvSf5tU+Yaebh12+Oa9v2QC
+zVgopTOjYbD6PaEvAk2VEzq/W642D16A+xFSJo8RtsqOnkrsTMoUa+vYUm6OwVw/
+trb+/xcHld8WQeoquYC13mSWe+QAapUFvywt4ncOVCbtnzK68gKzbRT6meO1QPlI
+GB0e5ncanN5oqOhL1G70eQSoCFtUeBoNEQCFdpxMMgSRBDa90xMfLbDx2WgnQQqc
+lkYIj8bRatXDyIxzRqRdXQVVWt+Ynha/7J8CQxUKmRpwoPnS1tUTJpnGEbQK4loi
+Gk9FwVVOJ9fcnwMAZ3oAfSBoX6MYPQ==
+=4XXL
+-----END PGP SIGNATURE-----
+
+--Ku0VHNd9b4UrSULZDqfkhOkhm18hQltzr--
