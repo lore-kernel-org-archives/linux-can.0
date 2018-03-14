@@ -1,59 +1,48 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 30/47] can: remove bfin_can driver
-Date: Wed, 14 Mar 2018 16:35:43 +0100
-Message-ID: <20180314153603.3127932-31-arnd@arndb.de>
-References: <20180314153603.3127932-1-arnd@arndb.de>
+From: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
+Date: Wed, 14 Mar 2018 16:51:38 +0000
+Message-ID: <1e51047cd14048e99989ffcf9e10ffa8@de.bosch.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180314153603.3127932-1-arnd@arndb.de>
+Content-Language: de-DE
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 List-Id: linux-can.vger.kernel.org
 
-The blackfin architecture is getting removed, so this one is now obsolete.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/can/Kconfig    |   9 -
- drivers/net/can/Makefile   |   1 -
- drivers/net/can/bfin_can.c | 784 ---------------------------------------------
- 3 files changed, 794 deletions(-)
- delete mode 100644 drivers/net/can/bfin_can.c
-
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index ac4ff394bc56..2cb75988b328 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -88,15 +88,6 @@ config CAN_AT91
- 	  This is a driver for the SoC CAN controller in Atmel's AT91SAM9263
- 	  and AT91SAM9X5 processors.
- 
--config CAN_BFIN
--	depends on BF534 || BF536 || BF537 || BF538 || BF539 || BF54x
--	tristate "Analog Devices Blackfin on-chip CAN"
--	---help---
--	  Driver for the Analog Devices Blackfin on-chip CAN controllers
--
--	  To compile this driver as a module, choose M here: the
--	  module will be called bfin_can.
--
- config CAN_FLEXCAN
- 	tristate "Support for Freescale FLEXCAN based chips"
- 	depends on ARM || PPC
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index 02b8ed794564..44922bf29b6a 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -19,7 +19,6 @@ obj-y				+= usb/
- obj-y				+= softing/
- 
- obj-$(CONFIG_CAN_AT91)		+= at91_can.o
--obj-$(CONFIG_CAN_BFIN)		+= bfin_can.o
- obj-$(CONFIG_CAN_CC770)		+= cc770/
- obj-$(CONFIG_CAN_C_CAN)		+= c_can/
- obj-$(CONFIG_CAN_FLEXCAN)	+= flexcan.o
-diff --git a/drivers/net/can/bfin_can.c b/drivers/net/can/bfin_can.c
-deleted file mode 100644
-index 1deb8ff90a89..000000000000
--- 
-2.9.0
+SGVsbG8gTWFyYywNCg0KPiA+PiBEbyB5b3UgaGF2ZSBhIGRyaXZlciBvciBhIHBhdGNoIHRvIG1h
+a2UgYSBkcml2ZXIgbXEgYXdhcmU/DQo+ID4NCj4gPiBZZXMsIHdlIGhhdmUgQ0FOIGhhcmR3YXJl
+IHdpdGggbXVsdGlwbGUgcXVldWVzIGFuZCB3ZSBhbHNvIGhhdmUgYQ0KPiA+IFNvY2tldENBTiBk
+cml2ZXIgZm9yIGl0Lg0KPiA+DQo+ID4gSU1ITyB0aGUgZHJpdmVyIHdpbGwgYmUgb2YgdmVyeSBs
+aXR0bGUgdXNlIGZvciB0aGUgTGludXggY29tbXVuaXR5DQo+ID4gYmVjYXVzZSB0aGUgSFcgaXMg
+cHJvcHJpZXRhcnkuDQo+IA0KPiBUaGF0IGRvZXNuJ3QgbWF0dGVyLiBJdCB3b3VsZCBiZSB0aGUg
+Zmlyc3QgZHJpdmVyIHRoYXQgbWFrZXMgdXNlIG9mIHRoZQ0KPiBmZWF0dXJlLCBzbyB3ZSBjYW4g
+bGVhcm4gZnJvbSBpdC4gQW5kIHlvdSBtaWdodCBnZXQgYSBmcmVlIHJldmlldyBvZg0KPiB5b3Vy
+IGRyaXZlci4NCg0KT2YgY291cnNlIHdlIHdvdWxkIGJlIGhhcHB5IGlmIHNvbWVib2R5IHdhcyB2
+b2x1bnRlZXJpbmcgdG8gcmV2aWV3DQpvdXIgZHJpdmVyIGZvciBmcmVlLg0KDQpUaGUgZHJpdmVy
+IGNvbnNpc3RzIG9mIHR3byBsYXllcnMgYmVjYXVzZSB0aGUgSFcgaXMgYWNjZXNzZWQgdmlhIFNQ
+SS4NClNvIHRoZXJlIGlzIGEgU1BJIGRyaXZlciBvZiAxMDAwIGxpbmVzLiBPbiB0b3Agb2YgdGhh
+dCBpcyB0aGUgQ0FODQpkcml2ZXIgYW5kIGl0IGhhcyA2MDAgbGluZXMuIEJlY2F1c2UgdGhlIEhX
+IGRvZXMgbW9yZSB0aGFuIGp1c3QNCkNBTiB0aGVyZSBpcyBhbm90aGVyIGRyaXZlciB3aGljaCBp
+bXBsZW1lbnRzIGEgY2hhciBkZXZpY2Ugd2l0aA0KYWRkaXRpb25hbCAzMDAgbGluZXMuDQoNCkFy
+ZSB0aGVyZSBzdGlsbCB2b2x1bnRlZXJzPw0KDQo+ID4gT3VyIG1vdGl2YXRpb24gdG8gc2VwYXJh
+dGUgdGhpcyBwYXRjaCBmcm9tIHRoZSBwcm9wcmlldGFyeSBTb2NrZXRDQU4NCj4gPiBkcml2ZXIN
+Cj4gDQo+IExvb2tpbmcgYXQgeW91ciBlbWFpbCBhZGRyZXNzIEkgYXNzdW1lIHlvdXIgZW1wbG95
+ZXIgc2VsbHMgZGV2aWNlcyB3aXRoDQo+IHRoaXMgaGFyZHdhcmUgYW5kIHRoZSBkcml2ZXIuIFNv
+IHNvbWVvbmUgaGFzIHRvIHByb3ZpZGUgdGhlIHNvdXJjZXMgZm9yDQo+IGl0IGFueXdheXMgdG8g
+ZnVsZmlsIHRoZSBHUEwgbGljZW5zZSByZXF1aXJlbWVudHMuIDopDQoNCkkgd2lsbCBoYXZlIHRv
+IGNoZWNrIGJ1dCBJIGFtIHByZXR0eSBjb25maWRlbnQgdGhhdCB3ZSB3b3VsZCBiZSB3aWxsaW5n
+DQp0byBwdWJsaXNoIHRoZSBkcml2ZXIgb24gdGhlc2UgbWFpbGluZyBsaXN0cyBhcyB3ZWxsLiBX
+ZSB3aWxsIGFueWhvdw0Kc2hpcCB0aGUgc291cmNlIGNvZGUgKG9yIGEgd3JpdHRlbiBvZmZlcikg
+d2l0aCBldmVyeSBkaXN0cmlidXRpb24uDQoNCklmIHlvdSBhcmUgcmVhbGx5IHNlcmlvdXMgYWJv
+dXQgdGhlIHJldmlldyBJIHdpbGwgZ2V0IHRoZSBwcm9jZXNzDQpyb2xsaW5nIGZvciBhbiBlYXJs
+eSBwdWJsaWNhdGlvbiBvZiBvdXIgZHJpdmVyLg0KDQpHcmVldGluZ3MsDQpNYXJrDQoNCkJvc2No
+IEJ1aWxkaW5nIFRlY2hub2xvZ2llcywgUGFuZWwgU29mdHdhcmUgRmlyZSAoU1QtRklSL0VORzEp
+IA0KQm9zY2ggU2ljaGVyaGVpdHNzeXN0ZW1lIEdtYkggfCBQb3N0ZmFjaCAxMSAxMSB8IDg1NjI2
+IEdyYXNicnVubiB8IEdFUk1BTlkgfCB3d3cuYm9zY2hzZWN1cml0eS5jb20gDQoNClNpdHo6IFN0
+dXR0Z2FydCwgUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBTdHV0dGdhcnQgSFJCIDIzMTE4
+DQpBdWZzaWNodHNyYXRzdm9yc2l0emVuZGVyOiBTdGVmYW4gSGFydHVuZzsgR2VzY2jDpGZ0c2bD
+vGhydW5nOiBHZXJ0IHZhbiBJcGVyZW4sIEFuZHJlYXMgQmFydHosIFRob21hcyBRdWFudGUsIEJl
+cm5oYXJkIFNjaHVzdGVyDQo=
