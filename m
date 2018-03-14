@@ -1,53 +1,165 @@
-From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Subject: Re: [PATCH v2 1/1] can: ucan: add driver for Theobroma Systems UCAN
- devices
-Date: Wed, 14 Mar 2018 11:19:51 +0100
-Message-ID: <ed41c2d8-b231-fa8f-9802-b18382dde32e@theobroma-systems.com>
-References: <20180313173520.21257-1-jakob.unterwurzacher@theobroma-systems.com>
- <20180313173520.21257-2-jakob.unterwurzacher@theobroma-systems.com>
- <d7986f8f-6c52-bf39-93f0-7a837bd85241@grandegger.com>
- <03024ab7-5386-3bcf-76f2-ef2e0e9e7a78@theobroma-systems.com>
- <68564c40-396b-9081-8534-67fe96a6fb3f@grandegger.com>
- <92e559b1-d392-015e-1aa1-0497cbd4c071@grandegger.com>
- <5b3df9d5-3e65-1114-4b51-9dcc329cbc31@theobroma-systems.com>
- <b5bf52e2-0843-a2b3-b039-c39fb9c634e3@grandegger.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
+Date: Wed, 14 Mar 2018 12:11:27 +0100
+Message-ID: <2968f7d1-771b-a605-9c66-62228fe5398e@pengutronix.de>
+References: <1521023596-30108-1-git-send-email-mark.jonas@de.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Hc1ebqjVRUtvmTqiGyNKBGUk26qCATLWv"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <b5bf52e2-0843-a2b3-b039-c39fb9c634e3@grandegger.com>
-Content-Language: en-US
+In-Reply-To: <1521023596-30108-1-git-send-email-mark.jonas@de.bosch.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Mark Jonas <mark.jonas@de.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, hs@denx.de, Zhu Yi <yi.zhu5@cn.bosch.com>
 List-Id: linux-can.vger.kernel.org
 
-On 14.03.18 11:04, Wolfgang Grandegger wrote:
->>>      controller-problem{rx-error-warning,tx-error-warning,rx-error-passive,tx-error-passive}
-> 
-> Just,
-> 
->         controller-problem{rx-error-passive,tx-error-passive}
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Hc1ebqjVRUtvmTqiGyNKBGUk26qCATLWv
+Content-Type: multipart/mixed; boundary="I0wyz6tAdU2M30FF9Oubq9SxDoncV9lgL";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Mark Jonas <mark.jonas@de.bosch.com>,
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hs@denx.de, Zhu Yi <yi.zhu5@cn.bosch.com>
+Message-ID: <2968f7d1-771b-a605-9c66-62228fe5398e@pengutronix.de>
+Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
+References: <1521023596-30108-1-git-send-email-mark.jonas@de.bosch.com>
+In-Reply-To: <1521023596-30108-1-git-send-email-mark.jonas@de.bosch.com>
 
-Ok.
+--I0wyz6tAdU2M30FF9Oubq9SxDoncV9lgL
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
->> (1b) cable gets connected:
->>
->>>   (000.000883)  can0  20000034   [8]  00 3C 00 00 00 00 80 00   ERRORFRAME
->>>      controller-problem{rx-error-warning,tx-error-warning,rx-error-passive,tx-error-passive}
->>>
->>>      transceiver-status
->>>      no-acknowledgement-on-tx
->>>      error-counter-tx-rx{{128}{0}}
->>>   (000.000996)  can0  20000004   [8]  00 0C 00 00 00 00 7F 00   ERRORFRAME
->>>      controller-problem{rx-error-warning,tx-error-warning}
->>>      error-counter-tx-rx{{127}{0}}
-> 
-> Back to error active is missing!? Have a look to:
-> 
-> https://elixir.bootlin.com/linux/latest/source/drivers/net/can/dev.c#L364
+On 03/14/2018 11:33 AM, Mark Jonas wrote:
+> From: Zhu Yi <yi.zhu5@cn.bosch.com>
+>=20
+> The existing SocketCAN implementation provides alloc_candev() to
+> allocate a CAN device using a single Tx and Rx queue. This can lead to
+> priority inversion in case the single Tx queue is already full with low=
 
-Should be sent out once the error counter drops further, will check.
+> priority messages and a high priority message needs to be sent while th=
+e
+> bus is fully loaded with medium priority messages.
+>=20
+> This problem can be solved by using the existing multi-queue support of=
 
-Thanks,
-Jakob
+> the network subsystem. The commit makes it possible to use multi-queue =
+in
+> the CAN subsystem in the same way it is used in the Ethernet subsystem
+> by adding an alloc_candev_mqs() call and accompanying macros. With this=
+
+> support a CAN device can use multi-queue qdisc (e.g. mqprio) to avoid
+> the aforementioned priority inversion.
+>=20
+> The existing functionality of alloc_candev() is the same as before.
+>=20
+> CAN devices need to have prioritized multiple hardware queues or are
+> able to abort waiting for arbitration to make sensible use of
+> multi-queues.
+>=20
+> Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
+> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+> Reviewed-by: Heiko Schocher <hs@denx.de>
+
+Do you have a driver or a patch to make a driver mq aware?
+
+> ---
+>  drivers/net/can/dev.c   | 8 +++++---
+>  include/linux/can/dev.h | 7 ++++++-
+>  2 files changed, 11 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> index b177956..636f853 100644
+> --- a/drivers/net/can/dev.c
+> +++ b/drivers/net/can/dev.c
+> @@ -703,7 +703,8 @@ EXPORT_SYMBOL_GPL(alloc_can_err_skb);
+>  /*
+>   * Allocate and setup space for the CAN network device
+>   */
+> -struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb=
+_max)
+> +struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo=
+_skb_max,
+> +				    unsigned int txqs, unsigned int rxqs)
+>  {
+>  	struct net_device *dev;
+>  	struct can_priv *priv;
+> @@ -715,7 +716,8 @@ struct net_device *alloc_candev(int sizeof_priv, un=
+signed int echo_skb_max)
+>  	else
+>  		size =3D sizeof_priv;
+> =20
+> -	dev =3D alloc_netdev(size, "can%d", NET_NAME_UNKNOWN, can_setup);
+> +	dev =3D alloc_netdev_mqs(size, "can%d", NET_NAME_UNKNOWN, can_setup,
+> +			       txqs, rxqs);
+>  	if (!dev)
+>  		return NULL;
+> =20
+> @@ -734,7 +736,7 @@ struct net_device *alloc_candev(int sizeof_priv, un=
+signed int echo_skb_max)
+> =20
+>  	return dev;
+>  }
+> -EXPORT_SYMBOL_GPL(alloc_candev);
+> +EXPORT_SYMBOL_GPL(alloc_candev_mqs);
+> =20
+>  /*
+>   * Free space of the CAN network device
+> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+> index 055aaf5..a83e1f6 100644
+> --- a/include/linux/can/dev.h
+> +++ b/include/linux/can/dev.h
+> @@ -143,7 +143,12 @@ u8 can_dlc2len(u8 can_dlc);
+>  /* map the sanitized data length to an appropriate data length code */=
+
+>  u8 can_len2dlc(u8 len);
+> =20
+> -struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb=
+_max);
+> +struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo=
+_skb_max,
+> +				    unsigned int txqs, unsigned int rxqs);
+> +#define alloc_candev(sizeof_priv, echo_skb_max) \
+> +	alloc_candev_mqs(sizeof_priv, echo_skb_max, 1, 1)
+> +#define alloc_candev_mq(sizeof_priv, echo_skb_max, count) \
+> +	alloc_candev_mqs(sizeof_priv, echo_skb_max, count, count)
+
+Can you make this a static inline function.
+
+>  void free_candev(struct net_device *dev);
+> =20
+>  /* a candev safe wrapper around netdev_priv */
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--I0wyz6tAdU2M30FF9Oubq9SxDoncV9lgL--
+
+--Hc1ebqjVRUtvmTqiGyNKBGUk26qCATLWv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqpA18ACgkQk9IU1zQo
+ZfEkRwf/T+3A1w04OquAomIXZR24YFHHonytYQVBB5S+ani6ndKW0b1IO+c5WTzi
+Ua1Pdj4M1iKvhsdBz3dtbBS+hL1yGU2hz1Vw930jZhSpxZB0jOXbFSEGH8KjHW4o
+10PjRgwnyh3zuOr4skrCw+qaY7HKn0zzvzRhHN8lOZzA4oY02bs5snl5MMw0E1Iv
+ctSkdCmBaUS5Qm3mJvZc4+GqNKFQzevc59aovahxAisegX0vLE/MW6MWDJp045LJ
+8yxxfnKWeWJNSGymKQWK1hFktRCIm2S+691SPJT44w032pdQyVqA3fRPdWNOVyMk
+Cg1QDd00K+xjc3m4K7CN8FbvRGolcQ==
+=HAjX
+-----END PGP SIGNATURE-----
+
+--Hc1ebqjVRUtvmTqiGyNKBGUk26qCATLWv--
