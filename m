@@ -1,67 +1,99 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 00/47] arch-removal: device drivers
-Date: Thu, 15 Mar 2018 10:09:43 +0100
-Message-ID: <CAK8P3a151M35ywHyABt2KFypPaiZROYuL10ztChwjSwqS9haHg@mail.gmail.com>
-References: <20180314153603.3127932-1-arnd@arndb.de>
- <20180315063238.3303b8d1@bbrezillon>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
+Date: Thu, 15 Mar 2018 10:53:44 +0100
+Message-ID: <3c417f16-b04c-c769-c021-44e69e0e4729@pengutronix.de>
+References: <d2afad3064f6458390ad692bec0edff9@de.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
-In-Reply-To: <20180315063238.3303b8d1@bbrezillon>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>, linux-iio@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Belloni <alexandre.belloni@bootlin.com>, IDE-ML <linux-ide@vger.kernel.org>, Networking <netdev@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>, linux-i2c@vger.kernel.org, linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Herbert Xu <herbert@gondor.apana.org.au>, Jonathan Corbet <corbet@lwn.net>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>, linux-mmc <linux-mmc@vger.kernel.org>, Shaohua Li <shli@kernel.org>, wg@grandegger.com, "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" <linux-crypto@vger.kernel.org>, linux-pwm@vger
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="s3IlhwiyDNYRgnFvebZSvL7kKQASEPi7i"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <d2afad3064f6458390ad692bec0edff9@de.bosch.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
 List-Id: linux-can.vger.kernel.org
 
-On Thu, Mar 15, 2018 at 6:32 AM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> Hi Arnd,
->
-> On Wed, 14 Mar 2018 16:35:13 +0100
-> Arnd Bergmann <arnd@arndb.de> wrote:
->
->> Hi driver maintainers,
->>
->> I just posted one series with the removal of eight architectures,
->> see https://lkml.org/lkml/2018/3/14/505 for details, or
->> https://lwn.net/Articles/748074/ for more background.
->>
->> These are the device drivers that go along with them. I have already
->> picked up the drivers for arch/metag/ into my tree, they were reviewed
->> earlier.
->>
->> Please let me know if you have any concerns with the patch, or if you
->> prefer to pick up the patches in your respective trees.  I created
->> the patches with 'git format-patch -D', so they will not apply without
->> manually removing those files.
->>
->> For anything else, I'd keep the removal patches in my asm-generic tree
->> and will send a pull request for 4.17 along with the actual arch removal.
->>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--s3IlhwiyDNYRgnFvebZSvL7kKQASEPi7i
+Content-Type: multipart/mixed; boundary="1irmHvUwZTR12lrR6jyKHdkTYYvJ1hUt4";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>,
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Message-ID: <3c417f16-b04c-c769-c021-44e69e0e4729@pengutronix.de>
+Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
+References: <d2afad3064f6458390ad692bec0edff9@de.bosch.com>
+In-Reply-To: <d2afad3064f6458390ad692bec0edff9@de.bosch.com>
 
+--1irmHvUwZTR12lrR6jyKHdkTYYvJ1hUt4
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 03/15/2018 10:08 AM, Jonas Mark (BT-FIR/ENG1) wrote:
+>> Normal SPI?
+>=20
+> Yes, normal SPI (CLK, MOSI, MISO, SEL) plus two GPIOs for flow control.=
+
+> The CAN peripheral (SPI slave) asserts the additional signals to
+> request a transfer and to signal that it is busy.
+
+Sounds interesting.
+
+>>> I will have to check but I am pretty confident that we would be willi=
+ng
+>>> to publish the driver on these mailing lists as well. We will anyhow
+>>> ship the source code (or a written offer) with every distribution.
+>>
+>> Sure - can I find your devices used and low priced on ebay :) ?
 >
-> If you don't mind, I'd like to take the mtd patches through the MTD
-> tree. As you've probably noticed, nand code has been moved around and
-> it's easier for me to carry those 2 simple changes in my tree than
-> creating an immutable branch.
->
-> Let me know if this is a problem.
+> That is rather unlikely. Though, you could buy a building containing
+> one.
 
-Sounds good, I've removed the two patches from my tree now.
-I've already sent a version of those that is based on your latest tree to
-you for inclusion.
+One building one device sounds like a bad deal to me :)
 
-      Arnd
+>>> If you are really serious about the review I will get the process
+>>> rolling for an early publication of our driver.
+>>
+>> Yes, please go ahead!
+>=20
+> Ok, I'll kick off the process and start to collect the required signatu=
+res.
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Tnx.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--1irmHvUwZTR12lrR6jyKHdkTYYvJ1hUt4--
+
+--s3IlhwiyDNYRgnFvebZSvL7kKQASEPi7i
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqqQqgACgkQk9IU1zQo
+ZfH9wwf/ULcPmAqjouCiyOmP4N7N/EVzHGSNg0bLoSdNbzsQUdAOjxVIPEJwsONF
+LlGhye3zFprQnMrdr7CtCMMBwJ0oeyFSVcp0BknqGaWLCO7qAwgCgn5yk5XKaHEY
+6E7tjqaBLbMKWz9fiOyfickbrPz0briSR2gTzMWNs848jSD1LDxvIWulurR3qnsD
+acN9pc4YUURlGyOiyRfRrwgHy5speIjDwqeFS6k+82P8ypmcDimUhqoUNbvSW4lt
+7bpeSE+MMEWmZtUNXnyeJh3B6Dg9xnXtwUNmMPW4tb7YI99+KIX9U0aAABJz8g9l
+MjVUh9Gsglp+0X7RpQebvZDsef03/A==
+=Imta
+-----END PGP SIGNATURE-----
+
+--s3IlhwiyDNYRgnFvebZSvL7kKQASEPi7i--
