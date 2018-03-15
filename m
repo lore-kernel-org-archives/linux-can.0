@@ -1,37 +1,67 @@
-From: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
-Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
-Date: Thu, 15 Mar 2018 09:08:49 +0000
-Message-ID: <d2afad3064f6458390ad692bec0edff9@de.bosch.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 00/47] arch-removal: device drivers
+Date: Thu, 15 Mar 2018 10:09:43 +0100
+Message-ID: <CAK8P3a151M35ywHyABt2KFypPaiZROYuL10ztChwjSwqS9haHg@mail.gmail.com>
+References: <20180314153603.3127932-1-arnd@arndb.de>
+ <20180315063238.3303b8d1@bbrezillon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: de-DE
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
+In-Reply-To: <20180315063238.3303b8d1@bbrezillon>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>, linux-iio@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Belloni <alexandre.belloni@bootlin.com>, IDE-ML <linux-ide@vger.kernel.org>, Networking <netdev@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>, linux-i2c@vger.kernel.org, linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Herbert Xu <herbert@gondor.apana.org.au>, Jonathan Corbet <corbet@lwn.net>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>, linux-mmc <linux-mmc@vger.kernel.org>, Shaohua Li <shli@kernel.org>, wg@grandegger.com, "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" <linux-crypto@vger.kernel.org>, linux-pwm@vger
 List-Id: linux-can.vger.kernel.org
 
-SGVsbG8gTWFyYywNCg0KPiA+IFRoZSBkcml2ZXIgY29uc2lzdHMgb2YgdHdvIGxheWVycyBiZWNh
-dXNlIHRoZSBIVyBpcyBhY2Nlc3NlZCB2aWEgU1BJLg0KPiANCj4gTm9ybWFsIFNQST8NCg0KWWVz
-LCBub3JtYWwgU1BJIChDTEssIE1PU0ksIE1JU08sIFNFTCkgcGx1cyB0d28gR1BJT3MgZm9yIGZs
-b3cgY29udHJvbC4NClRoZSBDQU4gcGVyaXBoZXJhbCAoU1BJIHNsYXZlKSBhc3NlcnRzIHRoZSBh
-ZGRpdGlvbmFsIHNpZ25hbHMgdG8NCnJlcXVlc3QgYSB0cmFuc2ZlciBhbmQgdG8gc2lnbmFsIHRo
-YXQgaXQgaXMgYnVzeS4NCg0KPiA+IEkgd2lsbCBoYXZlIHRvIGNoZWNrIGJ1dCBJIGFtIHByZXR0
-eSBjb25maWRlbnQgdGhhdCB3ZSB3b3VsZCBiZSB3aWxsaW5nDQo+ID4gdG8gcHVibGlzaCB0aGUg
-ZHJpdmVyIG9uIHRoZXNlIG1haWxpbmcgbGlzdHMgYXMgd2VsbC4gV2Ugd2lsbCBhbnlob3cNCj4g
-PiBzaGlwIHRoZSBzb3VyY2UgY29kZSAob3IgYSB3cml0dGVuIG9mZmVyKSB3aXRoIGV2ZXJ5IGRp
-c3RyaWJ1dGlvbi4NCj4gDQo+IFN1cmUgLSBjYW4gSSBmaW5kIHlvdXIgZGV2aWNlcyB1c2VkIGFu
-ZCBsb3cgcHJpY2VkIG9uIGViYXkgOikgPw0KDQpUaGF0IGlzIHJhdGhlciB1bmxpa2VseS4gVGhv
-dWdoLCB5b3UgY291bGQgYnV5IGEgYnVpbGRpbmcgY29udGFpbmluZw0Kb25lLg0KDQo+ID4gSWYg
-eW91IGFyZSByZWFsbHkgc2VyaW91cyBhYm91dCB0aGUgcmV2aWV3IEkgd2lsbCBnZXQgdGhlIHBy
-b2Nlc3MNCj4gPiByb2xsaW5nIGZvciBhbiBlYXJseSBwdWJsaWNhdGlvbiBvZiBvdXIgZHJpdmVy
-Lg0KPiANCj4gWWVzLCBwbGVhc2UgZ28gYWhlYWQhDQoNCk9rLCBJJ2xsIGtpY2sgb2ZmIHRoZSBw
-cm9jZXNzIGFuZCBzdGFydCB0byBjb2xsZWN0IHRoZSByZXF1aXJlZCBzaWduYXR1cmVzLg0KDQpH
-cmVldGluZ3MsDQpNYXJrDQoNCkJvc2NoIEJ1aWxkaW5nIFRlY2hub2xvZ2llcywgUGFuZWwgU29m
-dHdhcmUgRmlyZSAoU1QtRklSL0VORzEpIA0KQm9zY2ggU2ljaGVyaGVpdHNzeXN0ZW1lIEdtYkgg
-fCBQb3N0ZmFjaCAxMSAxMSB8IDg1NjI2IEdyYXNicnVubiB8IEdFUk1BTlkgfCB3d3cuYm9zY2hz
-ZWN1cml0eS5jb20NCg0KU2l0ejogU3R1dHRnYXJ0LCBSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJp
-Y2h0IFN0dXR0Z2FydCBIUkIgMjMxMTggDQpBdWZzaWNodHNyYXRzdm9yc2l0emVuZGVyOiBTdGVm
-YW4gSGFydHVuZzsgR2VzY2jDpGZ0c2bDvGhydW5nOiBHZXJ0IHZhbiBJcGVyZW4sIEFuZHJlYXMg
-QmFydHosIFRob21hcyBRdWFudGUsIEJlcm5oYXJkIFNjaHVzdGVyDQo=
+On Thu, Mar 15, 2018 at 6:32 AM, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+> Hi Arnd,
+>
+> On Wed, 14 Mar 2018 16:35:13 +0100
+> Arnd Bergmann <arnd@arndb.de> wrote:
+>
+>> Hi driver maintainers,
+>>
+>> I just posted one series with the removal of eight architectures,
+>> see https://lkml.org/lkml/2018/3/14/505 for details, or
+>> https://lwn.net/Articles/748074/ for more background.
+>>
+>> These are the device drivers that go along with them. I have already
+>> picked up the drivers for arch/metag/ into my tree, they were reviewed
+>> earlier.
+>>
+>> Please let me know if you have any concerns with the patch, or if you
+>> prefer to pick up the patches in your respective trees.  I created
+>> the patches with 'git format-patch -D', so they will not apply without
+>> manually removing those files.
+>>
+>> For anything else, I'd keep the removal patches in my asm-generic tree
+>> and will send a pull request for 4.17 along with the actual arch removal.
+>>
+
+>
+> If you don't mind, I'd like to take the mtd patches through the MTD
+> tree. As you've probably noticed, nand code has been moved around and
+> it's easier for me to carry those 2 simple changes in my tree than
+> creating an immutable branch.
+>
+> Let me know if this is a problem.
+
+Sounds good, I've removed the two patches from my tree now.
+I've already sent a version of those that is based on your latest tree to
+you for inclusion.
+
+      Arnd
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
