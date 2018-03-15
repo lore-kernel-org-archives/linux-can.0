@@ -1,111 +1,37 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
 Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
-Date: Wed, 14 Mar 2018 23:17:32 +0100
-Message-ID: <dcf8cd60-e3ce-d8b0-2163-a5ecc3f00fb9@pengutronix.de>
-References: <1e51047cd14048e99989ffcf9e10ffa8@de.bosch.com>
+Date: Thu, 15 Mar 2018 09:08:49 +0000
+Message-ID: <d2afad3064f6458390ad692bec0edff9@de.bosch.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Ku0VHNd9b4UrSULZDqfkhOkhm18hQltzr"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1e51047cd14048e99989ffcf9e10ffa8@de.bosch.com>
+Content-Language: de-DE
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Ku0VHNd9b4UrSULZDqfkhOkhm18hQltzr
-Content-Type: multipart/mixed; boundary="yGJN0iw2500eSBlBrWTseytT0ZonzHrMI";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>,
- Wolfgang Grandegger <wg@grandegger.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
-Message-ID: <dcf8cd60-e3ce-d8b0-2163-a5ecc3f00fb9@pengutronix.de>
-Subject: Re: [PATCH] can: enable multi-queue for SocketCAN devices
-References: <1e51047cd14048e99989ffcf9e10ffa8@de.bosch.com>
-In-Reply-To: <1e51047cd14048e99989ffcf9e10ffa8@de.bosch.com>
-
---yGJN0iw2500eSBlBrWTseytT0ZonzHrMI
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 03/14/2018 05:51 PM, Jonas Mark (BT-FIR/ENG1) wrote:
->> That doesn't matter. It would be the first driver that makes use of th=
-e
->> feature, so we can learn from it. And you might get a free review of
->> your driver.
->=20
-> Of course we would be happy if somebody was volunteering to review
-> our driver for free.
-
-If my time permits, I'll throw some eyeballs on the driver.
-
-> The driver consists of two layers because the HW is accessed via SPI.
-
-Normal SPI?
-
-> So there is a SPI driver of 1000 lines. On top of that is the CAN
-> driver and it has 600 lines. Because the HW does more than just
-> CAN there is another driver which implements a char device with
-> additional 300 lines.
->=20
-> Are there still volunteers?
-
-The SPI and the CAN driver would be the most interesting ones.
-
->>> Our motivation to separate this patch from the proprietary SocketCAN
->>> driver
->>
->> Looking at your email address I assume your employer sells devices wit=
-h
->> this hardware and the driver. So someone has to provide the sources fo=
-r
->> it anyways to fulfil the GPL license requirements. :)
->=20
-> I will have to check but I am pretty confident that we would be willing=
-
-> to publish the driver on these mailing lists as well. We will anyhow
-> ship the source code (or a written offer) with every distribution.
-
-Sure - can I find your devices used and low priced on ebay :) ?
-
-> If you are really serious about the review I will get the process
-> rolling for an early publication of our driver.
-
-Yes, please go ahead!
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---yGJN0iw2500eSBlBrWTseytT0ZonzHrMI--
-
---Ku0VHNd9b4UrSULZDqfkhOkhm18hQltzr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlqpn3wACgkQk9IU1zQo
-ZfFqvAgAw3raVlx0A2ua9tfxKuNVwH48Mu8hAGlHCVvSf5tU+Yaebh12+Oa9v2QC
-zVgopTOjYbD6PaEvAk2VEzq/W642D16A+xFSJo8RtsqOnkrsTMoUa+vYUm6OwVw/
-trb+/xcHld8WQeoquYC13mSWe+QAapUFvywt4ncOVCbtnzK68gKzbRT6meO1QPlI
-GB0e5ncanN5oqOhL1G70eQSoCFtUeBoNEQCFdpxMMgSRBDa90xMfLbDx2WgnQQqc
-lkYIj8bRatXDyIxzRqRdXQVVWt+Ynha/7J8CQxUKmRpwoPnS1tUTJpnGEbQK4loi
-Gk9FwVVOJ9fcnwMAZ3oAfSBoX6MYPQ==
-=4XXL
------END PGP SIGNATURE-----
-
---Ku0VHNd9b4UrSULZDqfkhOkhm18hQltzr--
+SGVsbG8gTWFyYywNCg0KPiA+IFRoZSBkcml2ZXIgY29uc2lzdHMgb2YgdHdvIGxheWVycyBiZWNh
+dXNlIHRoZSBIVyBpcyBhY2Nlc3NlZCB2aWEgU1BJLg0KPiANCj4gTm9ybWFsIFNQST8NCg0KWWVz
+LCBub3JtYWwgU1BJIChDTEssIE1PU0ksIE1JU08sIFNFTCkgcGx1cyB0d28gR1BJT3MgZm9yIGZs
+b3cgY29udHJvbC4NClRoZSBDQU4gcGVyaXBoZXJhbCAoU1BJIHNsYXZlKSBhc3NlcnRzIHRoZSBh
+ZGRpdGlvbmFsIHNpZ25hbHMgdG8NCnJlcXVlc3QgYSB0cmFuc2ZlciBhbmQgdG8gc2lnbmFsIHRo
+YXQgaXQgaXMgYnVzeS4NCg0KPiA+IEkgd2lsbCBoYXZlIHRvIGNoZWNrIGJ1dCBJIGFtIHByZXR0
+eSBjb25maWRlbnQgdGhhdCB3ZSB3b3VsZCBiZSB3aWxsaW5nDQo+ID4gdG8gcHVibGlzaCB0aGUg
+ZHJpdmVyIG9uIHRoZXNlIG1haWxpbmcgbGlzdHMgYXMgd2VsbC4gV2Ugd2lsbCBhbnlob3cNCj4g
+PiBzaGlwIHRoZSBzb3VyY2UgY29kZSAob3IgYSB3cml0dGVuIG9mZmVyKSB3aXRoIGV2ZXJ5IGRp
+c3RyaWJ1dGlvbi4NCj4gDQo+IFN1cmUgLSBjYW4gSSBmaW5kIHlvdXIgZGV2aWNlcyB1c2VkIGFu
+ZCBsb3cgcHJpY2VkIG9uIGViYXkgOikgPw0KDQpUaGF0IGlzIHJhdGhlciB1bmxpa2VseS4gVGhv
+dWdoLCB5b3UgY291bGQgYnV5IGEgYnVpbGRpbmcgY29udGFpbmluZw0Kb25lLg0KDQo+ID4gSWYg
+eW91IGFyZSByZWFsbHkgc2VyaW91cyBhYm91dCB0aGUgcmV2aWV3IEkgd2lsbCBnZXQgdGhlIHBy
+b2Nlc3MNCj4gPiByb2xsaW5nIGZvciBhbiBlYXJseSBwdWJsaWNhdGlvbiBvZiBvdXIgZHJpdmVy
+Lg0KPiANCj4gWWVzLCBwbGVhc2UgZ28gYWhlYWQhDQoNCk9rLCBJJ2xsIGtpY2sgb2ZmIHRoZSBw
+cm9jZXNzIGFuZCBzdGFydCB0byBjb2xsZWN0IHRoZSByZXF1aXJlZCBzaWduYXR1cmVzLg0KDQpH
+cmVldGluZ3MsDQpNYXJrDQoNCkJvc2NoIEJ1aWxkaW5nIFRlY2hub2xvZ2llcywgUGFuZWwgU29m
+dHdhcmUgRmlyZSAoU1QtRklSL0VORzEpIA0KQm9zY2ggU2ljaGVyaGVpdHNzeXN0ZW1lIEdtYkgg
+fCBQb3N0ZmFjaCAxMSAxMSB8IDg1NjI2IEdyYXNicnVubiB8IEdFUk1BTlkgfCB3d3cuYm9zY2hz
+ZWN1cml0eS5jb20NCg0KU2l0ejogU3R1dHRnYXJ0LCBSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJp
+Y2h0IFN0dXR0Z2FydCBIUkIgMjMxMTggDQpBdWZzaWNodHNyYXRzdm9yc2l0emVuZGVyOiBTdGVm
+YW4gSGFydHVuZzsgR2VzY2jDpGZ0c2bDvGhydW5nOiBHZXJ0IHZhbiBJcGVyZW4sIEFuZHJlYXMg
+QmFydHosIFRob21hcyBRdWFudGUsIEJlcm5oYXJkIFNjaHVzdGVyDQo=
