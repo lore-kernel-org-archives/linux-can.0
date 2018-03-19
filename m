@@ -1,45 +1,46 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [bug, bisected] pfifo_fast causes packet reordering
-Date: Mon, 19 Mar 2018 07:07:05 +0100
-Message-ID: <1950329.Eot9n0FZxY@ws-stein>
-References: <946dbe16-a2eb-eca8-8069-468859ccc78d@theobroma-systems.com> <5aeb54ba-2d96-4ab5-53c4-2d3691be7acc@gmail.com> <340a6c54-6031-5522-98f5-eafdd3a37a38@theobroma-systems.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <340a6c54-6031-5522-98f5-eafdd3a37a38@theobroma-systems.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: John Fastabend <john.fastabend@gmail.com>, Dave Taht <dave.taht@gmail.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Martin Elshuber <martin.elshuber@theobroma-systems.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] can: cc770: Fix use after free in cc770_tx_interrupt()
+Date: Mon, 19 Mar 2018 11:14:31 +0100
+Message-ID: <20180319101431.11032-2-mkl@pengutronix.de>
+References: <20180319101431.11032-1-mkl@pengutronix.de>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180319101431.11032-1-mkl@pengutronix.de>
+Sender: stable-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Andri Yngvason <andri.yngvason@marel.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-On Friday, March 16, 2018, 11:26:47 AM CET Jakob Unterwurzacher wrote:
-> On 15.03.18 23:30, John Fastabend wrote:
-> >> I have reproduced it using two USB network cards connected to each other. The test tool sends UDP packets containing a counter and listens on the other interface, it is available at
-> >> https://github.com/jakob-tsd/pfifo_stress/blob/master/pfifo_stress.py
-> >>
-> > 
-> > Great thanks, can you also run this with taskset to bind to
-> > a single CPU,
-> > 
-> >   # taskset 0x1 ./pifof_stress.py
-> > 
-> > And let me know if you still see the OOO.
-> 
-> Interesting. Looks like it depends on which core it runs on. CPU0 is 
-> clean, CPU1 is not.
-> 
-> Clean:	taskset --cpu-list 0 ./pfifo_stress.py
-> 
-> Broken:	taskset --cpu-list 1 ./pfifo_stress.py
-> 
-> Maybe related: CPU0 is where USB interrupts are handled:
-> 
-> > root@rk3399-q7:~# cat /proc/interrupts           
-> >            CPU0       CPU1       CPU2       CPU3       CPU4       CPU5
-> > 217:    2175353          0          0          0          0          0     GICv3 142 Level     xhci-hcd:usb5
+From: Andri Yngvason <andri.yngvason@marel.com>
 
-This reminds me somewhat of this thread: https://marc.info/?l=linux-can&m=148007442317274&w=2
+This fixes use after free introduced by the last cc770 patch.
 
-Best regards,
-Alexander
+Signed-off-by: Andri Yngvason <andri.yngvason@marel.com>
+Fixes: 746201235b3f ("can: cc770: Fix queue stall & dropped RTR reply")
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/cc770/cc770.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
+index 2743d82d4424..6da69af103e6 100644
+--- a/drivers/net/can/cc770/cc770.c
++++ b/drivers/net/can/cc770/cc770.c
+@@ -706,13 +706,12 @@ static void cc770_tx_interrupt(struct net_device *dev, unsigned int o)
+ 		return;
+ 	}
+ 
+-	can_put_echo_skb(priv->tx_skb, dev, 0);
+-	can_get_echo_skb(dev, 0);
+-
+ 	cf = (struct can_frame *)priv->tx_skb->data;
+ 	stats->tx_bytes += cf->can_dlc;
+ 	stats->tx_packets++;
+ 
++	can_put_echo_skb(priv->tx_skb, dev, 0);
++	can_get_echo_skb(dev, 0);
+ 	priv->tx_skb = NULL;
+ 
+ 	netif_wake_queue(dev);
+-- 
+2.16.2
