@@ -1,89 +1,51 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH v3 1/1] can: ucan: add driver for Theobroma Systems UCAN
- devices
-Date: Sat, 24 Mar 2018 19:43:47 +0800
-Message-ID: <201803241907.upf6wIeD%fengguang.wu@intel.com>
-References: <20180322135338.60923-2-jakob.unterwurzacher@theobroma-systems.com>
+From: John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [bug, bisected] pfifo_fast causes packet reordering
+Date: Sat, 24 Mar 2018 07:26:25 -0700
+Message-ID: <456f45a6-43b5-2ee5-bdcc-859f8d7d4a9a@gmail.com>
+References: <946dbe16-a2eb-eca8-8069-468859ccc78d@theobroma-systems.com>
+ <CAA93jw5FSbvg8AZ=EmneW8juqd8LCgp=xUrSxYm2GBEucKkT3w@mail.gmail.com>
+ <95844480-d020-9000-53ef-0da8b965ce6e@gmail.com>
+ <3a959e50-8656-5d9c-97b9-227d733948f8@theobroma-systems.com>
+ <5aeb54ba-2d96-4ab5-53c4-2d3691be7acc@gmail.com>
+ <340a6c54-6031-5522-98f5-eafdd3a37a38@theobroma-systems.com>
+ <00cc2d41-6861-9a9c-603f-ba8013b2e2ce@theobroma-systems.com>
+ <4e33aae4-9e87-22b4-7f09-008183ea553a@gmail.com>
+ <983427eb-2e25-f201-c953-4cff22569deb@theobroma-systems.com>
+ <ffdc6ca9-bf64-5514-bac9-7b107f9b443b@gmail.com>
+ <9cf7a278-7269-9571-c378-ad98a5cd281b@theobroma-systems.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180322135338.60923-2-jakob.unterwurzacher@theobroma-systems.com>
+In-Reply-To: <9cf7a278-7269-9571-c378-ad98a5cd281b@theobroma-systems.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: kbuild-all@01.org, jakob.unterwurzacher@theobroma-systems.com, Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>, Dave Taht <dave.taht@gmail.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Martin Elshuber <martin.elshuber@theobroma-systems.com>
 List-Id: linux-can.vger.kernel.org
 
-Hi Jakob,
+On 03/22/2018 03:16 AM, Jakob Unterwurzacher wrote:
+> On 21.03.18 21:52, John Fastabend wrote:
+>> Can you try this,
+>>
+>> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+>> index d4907b5..1e596bd 100644
+>> --- a/include/net/sch_generic.h
+>> +++ b/include/net/sch_generic.h
+>> @@ -30,6 +30,7 @@ struct qdisc_rate_table {
+>>   enum qdisc_state_t {
+>>          __QDISC_STATE_SCHED,
+>>          __QDISC_STATE_DEACTIVATED,
+>> +       __QDISC_STATE_RUNNING,
+>>   };
+>> [...]
+> 
+> Tested, looks good. No OOO observed, no side effects observed, iperf
+> numbers on Gigabit Ethernet look the same.
+> 
+> Thanks,
+> Jakob
 
-Thank you for the patch! Perhaps something to improve:
+Thanks, I'll send out an official patch today.
 
-[auto build test WARNING on net-next/master]
-[also build test WARNING on v4.16-rc6]
-[cannot apply to next-20180323]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Jakob-Unterwurzacher/can-ucan-add-driver-for-Theobroma-Systems-UCAN-devices/20180324-164143
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
-
-
-sparse warnings: (new ones prefixed by >>)
-
->> drivers/net/can/usb/ucan.c:301:16: sparse: restricted __le32 degrades to integer
-   drivers/net/can/usb/ucan.c:414:32: sparse: incorrect type in argument 5 (different base types) @@    expected unsigned short [unsigned] [usertype] value @@    got  short [unsigned] [usertype] value @@
-   drivers/net/can/usb/ucan.c:414:32:    expected unsigned short [unsigned] [usertype] value
-   drivers/net/can/usb/ucan.c:414:32:    got restricted __le16 [usertype] <noident>
-   drivers/net/can/usb/ucan.c:428:32: sparse: incorrect type in argument 5 (different base types) @@    expected unsigned short [unsigned] [usertype] value @@    got  short [unsigned] [usertype] value @@
-   drivers/net/can/usb/ucan.c:428:32:    expected unsigned short [unsigned] [usertype] value
-   drivers/net/can/usb/ucan.c:428:32:    got restricted __le16 [usertype] <noident>
-   drivers/net/can/usb/ucan.c:683:44: sparse: incorrect type in argument 2 (different base types) @@    expected unsigned long [unsigned] [usertype] size @@    got d long [unsigned] [usertype] size @@
-   drivers/net/can/usb/ucan.c:683:44:    expected unsigned long [unsigned] [usertype] size
-   drivers/net/can/usb/ucan.c:683:44:    got restricted __le16 [usertype] wMaxPacketSize
-   drivers/net/can/usb/ucan.c:700:44: sparse: incorrect type in argument 2 (different base types) @@    expected unsigned long [unsigned] [usertype] size @@    got d long [unsigned] [usertype] size @@
-   drivers/net/can/usb/ucan.c:700:44:    expected unsigned long [unsigned] [usertype] size
-   drivers/net/can/usb/ucan.c:700:44:    got restricted __le16 [usertype] wMaxPacketSize
-   drivers/net/can/usb/ucan.c:752:25: sparse: cast to restricted __le16
-   drivers/net/can/usb/ucan.c:779:36: sparse: incorrect type in argument 5 (different base types) @@    expected int [signed] buffer_length @@    got restricted __le1int [signed] buffer_length @@
-   drivers/net/can/usb/ucan.c:779:36:    expected int [signed] buffer_length
-   drivers/net/can/usb/ucan.c:779:36:    got restricted __le16 [usertype] wMaxPacketSize
-   drivers/net/can/usb/ucan.c:793:54: sparse: incorrect type in argument 2 (different base types) @@    expected unsigned long [unsigned] [usertype] size @@    got d long [unsigned] [usertype] size @@
-   drivers/net/can/usb/ucan.c:793:54:    expected unsigned long [unsigned] [usertype] size
-   drivers/net/can/usb/ucan.c:793:54:    got restricted __le16 [usertype] wMaxPacketSize
-   drivers/net/can/usb/ucan.c:853:62: sparse: incorrect type in argument 2 (different base types) @@    expected unsigned long [unsigned] [usertype] size @@    got d long [unsigned] [usertype] size @@
-   drivers/net/can/usb/ucan.c:853:62:    expected unsigned long [unsigned] [usertype] size
-   drivers/net/can/usb/ucan.c:853:62:    got restricted __le16 [usertype] wMaxPacketSize
-   drivers/net/can/usb/ucan.c:877:61: sparse: incorrect type in argument 2 (different base types) @@    expected unsigned long [unsigned] [usertype] size @@    got d long [unsigned] [usertype] size @@
-   drivers/net/can/usb/ucan.c:877:61:    expected unsigned long [unsigned] [usertype] size
-   drivers/net/can/usb/ucan.c:877:61:    got restricted __le16 [usertype] wMaxPacketSize
-   drivers/net/can/usb/ucan.c:891:44: sparse: incorrect type in argument 5 (different base types) @@    expected int [signed] buffer_length @@    got restricted __le1int [signed] buffer_length @@
-   drivers/net/can/usb/ucan.c:891:44:    expected int [signed] buffer_length
-   drivers/net/can/usb/ucan.c:891:44:    got restricted __le16 [usertype] wMaxPacketSize
->> drivers/net/can/usb/ucan.c:1238:41: sparse: incorrect type in assignment (different base types) @@    expected restricted __le16 [usertype] sample_point @@    got restricted __le16 [usertype] sample_point @@
-   drivers/net/can/usb/ucan.c:1238:41:    expected restricted __le16 [usertype] sample_point
-   drivers/net/can/usb/ucan.c:1238:41:    got restricted __le32 [usertype] <noident>
-   drivers/net/can/usb/ucan.c:1368:18: sparse: restricted __le16 degrades to integer
-   drivers/net/can/usb/ucan.c:1373:19: sparse: restricted __le16 degrades to integer
-   drivers/net/can/usb/ucan.c:1407:31: sparse: incorrect type in argument 5 (different base types) @@    expected unsigned short [unsigned] [usertype] value @@    got  short [unsigned] [usertype] value @@
-   drivers/net/can/usb/ucan.c:1407:31:    expected unsigned short [unsigned] [usertype] value
-   drivers/net/can/usb/ucan.c:1407:31:    got restricted __le16 [usertype] <noident>
-   drivers/net/can/usb/ucan.c:1448:31: sparse: incorrect type in argument 5 (different base types) @@    expected unsigned short [unsigned] [usertype] value @@    got  short [unsigned] [usertype] value @@
-   drivers/net/can/usb/ucan.c:1448:31:    expected unsigned short [unsigned] [usertype] value
-   drivers/net/can/usb/ucan.c:1448:31:    got restricted __le16 [usertype] <noident>
-
-vim +301 drivers/net/can/usb/ucan.c
-
-   298	
-   299	static u8 ucan_get_can_dlc(struct ucan_can_msg *msg, u16 len)
-   300	{
- > 301		if (msg->id & CAN_RTR_FLAG)
-   302			return get_can_dlc(msg->dlc);
-   303		else
-   304			return get_can_dlc(len - (UCAN_IN_HDR_SIZE + sizeof(msg->id)));
-   305	}
-   306	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+.John
