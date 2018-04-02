@@ -1,212 +1,50 @@
-From: Martin Elshuber <martin.elshuber@theobroma-systems.com>
-Subject: Re: [PATCH v3 1/1] can: ucan: add driver for Theobroma Systems UCAN
- devices
-Date: Tue, 27 Mar 2018 12:20:24 +0200
-Message-ID: <f7c6d781-f21a-a6be-8f08-9f20ef894ca3@theobroma-systems.com>
-References: <20180322135338.60923-2-jakob.unterwurzacher@theobroma-systems.com>
- <201803241907.upf6wIeD%fengguang.wu@intel.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [BUG/Q] can_pernet_exit() leaves devices on dead net
+Date: Mon, 2 Apr 2018 17:28:15 +0200
+Message-ID: <377fbd8a-cd7e-2650-8efd-907cea0a0aee@hartkopp.net>
+References: <8c941b2d-0c90-ba6c-6020-23530b146fd9@virtuozzo.com>
+ <38145688-1c15-3df4-c127-591959a759ff@hartkopp.net>
+ <21bafe4a-984f-2897-b092-270ccda136f0@virtuozzo.com>
+ <9f3585bb-4cf9-b0e1-3069-37fbae2ce54b@hartkopp.net>
+ <d97f5629-6de5-0d24-8a48-01a612a39bc9@virtuozzo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="01tdxIkAqKbT1KwfpqHebZ2qvoOP2qH7u"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <201803241907.upf6wIeD%fengguang.wu@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: kbuild test robot <lkp@intel.com>, Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: kbuild-all@01.org, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <d97f5629-6de5-0d24-8a48-01a612a39bc9@virtuozzo.com>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Kirill Tkhai <ktkhai@virtuozzo.com>, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, dev@kicherer.org
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---01tdxIkAqKbT1KwfpqHebZ2qvoOP2qH7u
-Content-Type: multipart/mixed; boundary="lLsR4B87ko5jN409ukahbqyzReDlj37IA";
- protected-headers="v1"
-From: Martin Elshuber <martin.elshuber@theobroma-systems.com>
-To: kbuild test robot <lkp@intel.com>,
- Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: kbuild-all@01.org, Philipp Tomsich
- <philipp.tomsich@theobroma-systems.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <f7c6d781-f21a-a6be-8f08-9f20ef894ca3@theobroma-systems.com>
-Subject: Re: [PATCH v3 1/1] can: ucan: add driver for Theobroma Systems UCAN
- devices
-References: <20180322135338.60923-2-jakob.unterwurzacher@theobroma-systems.com>
- <201803241907.upf6wIeD%fengguang.wu@intel.com>
-In-Reply-To: <201803241907.upf6wIeD%fengguang.wu@intel.com>
+Hi Kirill, Marc,
 
---lLsR4B87ko5jN409ukahbqyzReDlj37IA
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: de-AT
+I checked the code once more and added some debug output to the other 
+parts in CAN notifier code.
 
-fixed and rechecked again with sparse
-
-Am 24.03.18 um 12:43 schrieb kbuild test robot:
-> Hi Jakob,
->
-> Thank you for the patch! Perhaps something to improve:
->
-> [auto build test WARNING on net-next/master]
-> [also build test WARNING on v4.16-rc6]
-> [cannot apply to next-20180323]
-> [if your patch is applied to the wrong git tree, please drop us a note =
-to help improve the system]
->
-> url:    https://github.com/0day-ci/linux/commits/Jakob-Unterwurzacher/c=
-an-ucan-add-driver-for-Theobroma-Systems-UCAN-devices/20180324-164143
-> reproduce:
->         # apt-get install sparse
->         make ARCH=3Dx86_64 allmodconfig
->         make C=3D1 CF=3D-D__CHECK_ENDIAN__
->
->
-> sparse warnings: (new ones prefixed by >>)
->
->>> drivers/net/can/usb/ucan.c:301:16: sparse: restricted __le32 degrades=
- to integer
->    drivers/net/can/usb/ucan.c:414:32: sparse: incorrect type in argumen=
-t 5 (different base types) @@    expected unsigned short [unsigned] [user=
-type] value @@    got  short [unsigned] [usertype] value @@
->    drivers/net/can/usb/ucan.c:414:32:    expected unsigned short [unsig=
-ned] [usertype] value
->    drivers/net/can/usb/ucan.c:414:32:    got restricted __le16 [usertyp=
-e] <noident>
->    drivers/net/can/usb/ucan.c:428:32: sparse: incorrect type in argumen=
-t 5 (different base types) @@    expected unsigned short [unsigned] [user=
-type] value @@    got  short [unsigned] [usertype] value @@
->    drivers/net/can/usb/ucan.c:428:32:    expected unsigned short [unsig=
-ned] [usertype] value
->    drivers/net/can/usb/ucan.c:428:32:    got restricted __le16 [usertyp=
-e] <noident>
->    drivers/net/can/usb/ucan.c:683:44: sparse: incorrect type in argumen=
-t 2 (different base types) @@    expected unsigned long [unsigned] [usert=
-ype] size @@    got d long [unsigned] [usertype] size @@
->    drivers/net/can/usb/ucan.c:683:44:    expected unsigned long [unsign=
-ed] [usertype] size
->    drivers/net/can/usb/ucan.c:683:44:    got restricted __le16 [usertyp=
-e] wMaxPacketSize
->    drivers/net/can/usb/ucan.c:700:44: sparse: incorrect type in argumen=
-t 2 (different base types) @@    expected unsigned long [unsigned] [usert=
-ype] size @@    got d long [unsigned] [usertype] size @@
->    drivers/net/can/usb/ucan.c:700:44:    expected unsigned long [unsign=
-ed] [usertype] size
->    drivers/net/can/usb/ucan.c:700:44:    got restricted __le16 [usertyp=
-e] wMaxPacketSize
->    drivers/net/can/usb/ucan.c:752:25: sparse: cast to restricted __le16=
-
->    drivers/net/can/usb/ucan.c:779:36: sparse: incorrect type in argumen=
-t 5 (different base types) @@    expected int [signed] buffer_length @@  =
-  got restricted __le1int [signed] buffer_length @@
->    drivers/net/can/usb/ucan.c:779:36:    expected int [signed] buffer_l=
-ength
->    drivers/net/can/usb/ucan.c:779:36:    got restricted __le16 [usertyp=
-e] wMaxPacketSize
->    drivers/net/can/usb/ucan.c:793:54: sparse: incorrect type in argumen=
-t 2 (different base types) @@    expected unsigned long [unsigned] [usert=
-ype] size @@    got d long [unsigned] [usertype] size @@
->    drivers/net/can/usb/ucan.c:793:54:    expected unsigned long [unsign=
-ed] [usertype] size
->    drivers/net/can/usb/ucan.c:793:54:    got restricted __le16 [usertyp=
-e] wMaxPacketSize
->    drivers/net/can/usb/ucan.c:853:62: sparse: incorrect type in argumen=
-t 2 (different base types) @@    expected unsigned long [unsigned] [usert=
-ype] size @@    got d long [unsigned] [usertype] size @@
->    drivers/net/can/usb/ucan.c:853:62:    expected unsigned long [unsign=
-ed] [usertype] size
->    drivers/net/can/usb/ucan.c:853:62:    got restricted __le16 [usertyp=
-e] wMaxPacketSize
->    drivers/net/can/usb/ucan.c:877:61: sparse: incorrect type in argumen=
-t 2 (different base types) @@    expected unsigned long [unsigned] [usert=
-ype] size @@    got d long [unsigned] [usertype] size @@
->    drivers/net/can/usb/ucan.c:877:61:    expected unsigned long [unsign=
-ed] [usertype] size
->    drivers/net/can/usb/ucan.c:877:61:    got restricted __le16 [usertyp=
-e] wMaxPacketSize
->    drivers/net/can/usb/ucan.c:891:44: sparse: incorrect type in argumen=
-t 5 (different base types) @@    expected int [signed] buffer_length @@  =
-  got restricted __le1int [signed] buffer_length @@
->    drivers/net/can/usb/ucan.c:891:44:    expected int [signed] buffer_l=
-ength
->    drivers/net/can/usb/ucan.c:891:44:    got restricted __le16 [usertyp=
-e] wMaxPacketSize
->>> drivers/net/can/usb/ucan.c:1238:41: sparse: incorrect type in assignm=
-ent (different base types) @@    expected restricted __le16 [usertype] sa=
-mple_point @@    got restricted __le16 [usertype] sample_point @@
->    drivers/net/can/usb/ucan.c:1238:41:    expected restricted __le16 [u=
-sertype] sample_point
->    drivers/net/can/usb/ucan.c:1238:41:    got restricted __le32 [userty=
-pe] <noident>
->    drivers/net/can/usb/ucan.c:1368:18: sparse: restricted __le16 degrad=
-es to integer
->    drivers/net/can/usb/ucan.c:1373:19: sparse: restricted __le16 degrad=
-es to integer
->    drivers/net/can/usb/ucan.c:1407:31: sparse: incorrect type in argume=
-nt 5 (different base types) @@    expected unsigned short [unsigned] [use=
-rtype] value @@    got  short [unsigned] [usertype] value @@
->    drivers/net/can/usb/ucan.c:1407:31:    expected unsigned short [unsi=
-gned] [usertype] value
->    drivers/net/can/usb/ucan.c:1407:31:    got restricted __le16 [userty=
-pe] <noident>
->    drivers/net/can/usb/ucan.c:1448:31: sparse: incorrect type in argume=
-nt 5 (different base types) @@    expected unsigned short [unsigned] [use=
-rtype] value @@    got  short [unsigned] [usertype] value @@
->    drivers/net/can/usb/ucan.c:1448:31:    expected unsigned short [unsi=
-gned] [usertype] value
->    drivers/net/can/usb/ucan.c:1448:31:    got restricted __le16 [userty=
-pe] <noident>
->
-> vim +301 drivers/net/can/usb/ucan.c
->
->    298=09
->    299	static u8 ucan_get_can_dlc(struct ucan_can_msg *msg, u16 len)
->    300	{
->  > 301		if (msg->id & CAN_RTR_FLAG)
->    302			return get_can_dlc(msg->dlc);
->    303		else
->    304			return get_can_dlc(len - (UCAN_IN_HDR_SIZE + sizeof(msg->id)))=
-;
->    305	}
->    306=09
->
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology =
-Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel Corpo=
-ration
-
---=20
-Martin Elshuber
-Theobroma Systems Design und Consulting GmbH
-Seestadtstra=C3=9Fe 27 (Aspern IQ), 1220 Wien, Austria
-Phone: +43 1 236 98 93-405, Fax: +43 1 236 98 93-9
-http://www.theobroma-systems.com
+In fact the code pointed to by both of you seems to be obsolete as I 
+only wanted to be 'really sure' that no leftovers of the CAN filters at 
+module unloading.
 
 
+> Yes, this one looks good:
+> https://marc.info/?l=linux-can&m=150169589119335&w=2
+> 
+> Regards,
+> Kirill
+> 
 
---lLsR4B87ko5jN409ukahbqyzReDlj37IA--
+I was obviously too cautious ;-)
 
---01tdxIkAqKbT1KwfpqHebZ2qvoOP2qH7u
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+All tests I made resulted in the function iterating through all the CAN 
+netdevices doing exactly nothing.
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - https://gpgtools.org
+I'm fine with removing that stuff - but I'm not sure whether it's worth 
+to push that patch to stable 4.12+ or even before 4.12 (without 
+namespace support - and removing rcu_barrier() too).
 
-iQIcBAEBCgAGBQJauhrpAAoJENNzc6lDjKRXhhsP/RoDa/3Jbz041e/f450OG2ws
-Xt0/aIxwNNPnxEDBonPas0RcNzE0TltjUWI0T52anIG0Ctllm3SXhkPSJMPSamq3
-3b2XlnHv+M/7LKV84YaXpQSfRDjxtSiJoeoTGwawFL2H16fTn9D5UqQtcpV9dvZz
-S4xe9fROFA+ggBwNEMv8ZBFL2mD4JuG1wEgfxvDJkqdRAPB1tJdOOI61qyBOXRdm
-vT4ikOW8MJZ/o8ixUiyJsjZu3f7iAS9GJbX8/mmQCr9bxNtPTeyat71NibQyH7Ta
-R0P3mPuQw8BCCpdXU3g+SraMpSqYhuBOKYUWm7e+JG60q+jZ4AJvl+TPReb5b0oF
-gbrADFxOwfmx48fYF2pHUwJ5BkEcbKw2EE9EEdZYXsPrsNHPEsTH4k3/LyHDkmCu
-2ChZW/8EAiItTSd8xjA1K/GBgBVd12Tp5vT+80iHgNPc8GoPhyVMim9ed1nqwxFC
-2K4UCoto+9JvzAEwzgajPfWWhS8DMbt+c4j2D4Eh6aBq8l1OftWc4HwKTu3MozzZ
-rqMTwyajuUOu1bH7rV40socGbSptS9SOIjTQTXuRt7KGwMTrCkdlg/MDX9yQqJ7b
-R9KZzKWhoVSZ1IzR1OMyB5zdGLJ3IRwSaDtqx1AaAny0LpXFRl3/k9cTOVvTPvUW
-HxuVwZBqe/xJjt0FYy85
-=cdZ+
------END PGP SIGNATURE-----
+Any opinions?
 
---01tdxIkAqKbT1KwfpqHebZ2qvoOP2qH7u--
+Best regards,
+Oliver
