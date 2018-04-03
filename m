@@ -1,49 +1,58 @@
-From: Kirill Tkhai <ktkhai@virtuozzo.com>
-Subject: Re: [BUG/Q] can_pernet_exit() leaves devices on dead net
-Date: Mon, 2 Apr 2018 18:36:44 +0300
-Message-ID: <e61dd003-0ef0-77e1-d689-a1c5ae5ea524@virtuozzo.com>
-References: <8c941b2d-0c90-ba6c-6020-23530b146fd9@virtuozzo.com>
- <38145688-1c15-3df4-c127-591959a759ff@hartkopp.net>
- <21bafe4a-984f-2897-b092-270ccda136f0@virtuozzo.com>
- <9f3585bb-4cf9-b0e1-3069-37fbae2ce54b@hartkopp.net>
- <d97f5629-6de5-0d24-8a48-01a612a39bc9@virtuozzo.com>
- <377fbd8a-cd7e-2650-8efd-907cea0a0aee@hartkopp.net>
+From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+Subject: [PATCH v4 0/1] can: ucan: add driver for Theobroma Systems UCAN devices
+Date: Tue,  3 Apr 2018 16:35:13 +0200
+Message-ID: <20180403143514.24200-1-jakob.unterwurzacher@theobroma-systems.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <377fbd8a-cd7e-2650-8efd-907cea0a0aee@hartkopp.net>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, mkl@pengutronix.de
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, dev@kicherer.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: jakob.unterwurzacher@theobroma-systems.com
+Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hi, Oliver,
+This is v4 of the Theobroma Systems CAN/USB "UCAN" adapter driver
+upstreaming effort.
 
-On 02.04.2018 18:28, Oliver Hartkopp wrote:
-> Hi Kirill, Marc,
-> 
-> I checked the code once more and added some debug output to the other parts in CAN notifier code.
-> 
-> In fact the code pointed to by both of you seems to be obsolete as I only wanted to be 'really sure' that no leftovers of the CAN filters at module unloading.
-> 
-> 
->> Yes, this one looks good:
->> https://marc.info/?l=linux-can&m=150169589119335&w=2
->>
->> Regards,
->> Kirill
->>
-> 
-> I was obviously too cautious ;-)
-> 
-> All tests I made resulted in the function iterating through all the CAN netdevices doing exactly nothing.
-> 
-> I'm fine with removing that stuff - but I'm not sure whether it's worth to push that patch to stable 4.12+ or even before 4.12 (without namespace support - and removing rcu_barrier() too).
-> 
-> Any opinions?
+v3 -> v4 changes:
+* get rid of a few repeated le16_to_cpu casts by storing the value once
+* fix canid masking logic
+* drop __func__ from log messages. Use netdev_* where possible,
+  use UCAN_DRIVER_NAME where not.
+* drop device report log output (data is available via ip)
+* fix issues catched by sparse
 
-I think the same -- it's not need for stable as there is just iteration over empty list, i.e., noop.
+v2 -> v3 changes:
+* count error frames as data packets
+* use canid_t for all can ids
+* use BIT(x) instead of (1 << x)
+* use __le16 / __le32 for little-endian fields
+* add spinlock around context allocation (fixes a possible race)
+* fix comment style
+* use WARN_ON return value
+* fix state logic bug that did not allow return to ERROR_ACTIVE
+* drop echo_index from context_array (not needed)
+* rename "tx_contexts" -> "context_array" to prevent confusion
+* add __func__ to all errors and warnings, and to info where it made sense
 
-Kirill
+Jakob Unterwurzacher (1):
+  can: ucan: add driver for Theobroma Systems UCAN devices
+
+ Documentation/networking/can_ucan_protocol.rst |  315 +++++
+ Documentation/networking/index.rst             |    1 +
+ drivers/net/can/usb/Kconfig                    |   10 +
+ drivers/net/can/usb/Makefile                   |    1 +
+ drivers/net/can/usb/ucan.c                     | 1596 ++++++++++++++++++++++++
+ 5 files changed, 1923 insertions(+)
+ create mode 100644 Documentation/networking/can_ucan_protocol.rst
+ create mode 100644 drivers/net/can/usb/ucan.c
+
+-- 
+2.11.0
+
+Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>
+Cc: Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
