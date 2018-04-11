@@ -1,95 +1,42 @@
-From: Martin Elshuber <martin.elshuber@theobroma-systems.com>
-Subject: Re: [PATCH v4 1/1] can: ucan: add driver for Theobroma Systems UCAN
- devices
-Date: Mon, 9 Apr 2018 18:43:28 +0200
-Message-ID: <bb575aba-3f5c-c27c-6421-6ae4d4564271@theobroma-systems.com>
-References: <20180403143514.24200-1-jakob.unterwurzacher@theobroma-systems.com>
- <20180403143514.24200-2-jakob.unterwurzacher@theobroma-systems.com>
- <b887637b-6e15-ac2a-1dac-385167595beb@grandegger.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH 1/2] net: can: sja1000: Replace mdelay with usleep_range in peak_pci_probe
+Date: Wed, 11 Apr 2018 09:42:58 +0800
+Message-ID: <1523410978-1834-1-git-send-email-baijiaju1990@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <b887637b-6e15-ac2a-1dac-385167595beb@grandegger.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
-Hallo Wolfgang,
+peak_pci_probe() is never called in atomic context.
 
-thank you for the review, we have the update ready but we will test a
-while it before sending V5.
+peak_pci_probe() is set as ".probe" in struct pci_driver.
 
-Regarding your question on the firmware behavior, find the answer inline
-below.
-> Hello Jacob,
->
-> just a few minor issues and a question about bus-off handling...
->
-> Am 03.04.2018 um 16:35 schrieb Jakob Unterwurzacher:
->> The UCAN driver supports the microcontroller-based USB/CAN
->> adapters from Theobroma Systems. There are two form-factors
->> that run essentially the same firmware:
->>
->> * Seal: standalone USB stick ( https://www.theobroma-systems.com/seal )
->>
->> * Mule: integrated on the PCB of various System-on-Modules from
->>   Theobroma Systems like the A31-µQ7 and the RK3399-Q7
->>   ( https://www.theobroma-systems.com/rk3399-q7 )
->>
-[..snip..]
->> +
->> +	/* we switched into a worse state */
->> +	up->can.state = new_state;
->> +	switch (new_state) {
->> +	case CAN_STATE_BUS_OFF:
->> +		can_stats->bus_off++;
->> +		can_bus_off(up->netdev);
-> How does the CAN controller firmware handle bus-off? Does it recover
-> automatically? "can_bus_off()" will restart the CAN controller after
-> "restart-ms" or manually via netlink "restart" command by calling
-> "ucan_set_mode(CAN_START_MODE)":
->
->   # ip link set canX type can restart-ms 100
->   # ip link set canX type can restart
->
-> See also:
->
->   https://elixir.bootlin.com/linux/latest/source/drivers/net/can/dev.c#L597
-1) Once a bus-off condition is detected, the device sends an error
-   message do indicate the bus state change (the same happens
-   also for bus state changes into ERROR_ACTIVE/WARNING/PASSIVE).
-2) The device will not restart the bus itself (to give application
-   control how to handle this event).
-3) The device initiates a bus of recovery upon receiving the control
-   message UCAN_COMMAND_RESTART (see ucan_set_mode())
-4) The Linux CAN framework handles sending a CAN_ERR_RESTARTED message
-   and calling ucan_set_mode().
-5) Once the device completes the recovery, it sends a state change
-   message indicating that it is in ERROR_ACTIVE state (see 1).
-6) During BUS-OFF no error frames or normal frames are set from the
-   device to the host.
-7) If the device receives a frame from the host when in bus-off (e.g.:
-   just after detecting the condition) the device confirms reception by
-   sending an TX_COMPLETE with and error indicator and drops the frame.
-   Finally the driver calls can_free_echo_skb() upon reception of the
-   TX_COMPLETE message (see ucan_tx_complete_msg()).
+Despite never getting called from atomic context, peak_pci_probe()
+calls mdelay() to busily wait.
+This is not necessary and can be replaced with usleep_range() to
+avoid busy waiting.
 
-The protocol documentation will be updated accordingly
+This is found by a static analysis tool named DCNS written by myself.
+And I also manually check it.
 
-[..snip..]
-> Thanks for your contribution!
->
-> Wolfgang.
->
-Best regards
-Martin
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/net/can/sja1000/peak_pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
+index 131026f..48cf821 100644
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -608,7 +608,7 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	writeb(0x00, cfg_base + PITA_GPIOICR);
+ 	/* Toggle reset */
+ 	writeb(0x05, cfg_base + PITA_MISC + 3);
+-	mdelay(5);
++	usleep_range(5000, 6000);
+ 	/* Leave parport mux mode */
+ 	writeb(0x04, cfg_base + PITA_MISC + 3);
+ 
 -- 
-Martin Elshuber
-Theobroma Systems Design und Consulting GmbH
-Seestadtstraße 27 (Aspern IQ), 1220 Wien, Austria
-Phone: +43 1 236 98 93-405, Fax: +43 1 236 98 93-9
-http://www.theobroma-systems.com
+1.9.1
