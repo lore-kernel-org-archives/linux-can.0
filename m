@@ -1,90 +1,83 @@
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH 1/2] can: flexcan: fix endianess detection
-Date: Wed, 25 Apr 2018 16:50:39 +0200
-Message-ID: <20180425145040.22031-2-u.kleine-koenig@pengutronix.de>
-References: <20180425145040.22031-1-u.kleine-koenig@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/2] net: can: sja1000: Replace mdelay with usleep_range
+ in peak_pci_probe
+Date: Wed, 25 Apr 2018 16:53:10 +0200
+Message-ID: <82c41390-982e-c05f-79ba-9bf14697df18@pengutronix.de>
+References: <1523410978-1834-1-git-send-email-baijiaju1990@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180425145040.22031-1-u.kleine-koenig@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Gavin Schenk <g.schenk@eckelmann.de>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, linux-can@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="kzscgHpQcq2btGk02eClp5JxUqeKLEMOF"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1523410978-1834-1-git-send-email-baijiaju1990@gmail.com>
+Sender: netdev-owner@vger.kernel.org
+To: Jia-Ju Bai <baijiaju1990@gmail.com>, wg@grandegger.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-SW4gY29tbWl0IDg4NDYyZDJhNzgzMCAoImNhbjogZmxleGNhbjogUmVtb2RlbCBGbGV4Q0FOIHJl
-Z2lzdGVyIHIvdyBBUElzCmZvciBiaWcgZW5kaWFuIEZsZXhDQU4gY29udHJvbGxlcnMuIikgdGhl
-IGZvbGxvd2luZyBsb2dpYyB3YXMKaW1wbGVtZW50ZWQ6CgoJaWYgdGhlIGR0IHByb3BlcnR5ICJi
-aWctZW5kaWFuIiBpcyBnaXZlbiBvcgoJICAgdGhlIGRldmljZSBpcyBjb21wYXRpYmxlIHRvICJm
-c2wscDEwMTAtZmxleGNhbiI6CgkJdXNlIGJpZy1lbmRpYW4gbW9kZTsKCWVsc2UKCQl1c2UgbGl0
-dGxlLWVuZGlhbiBtb2RlOwoKVGhpcyByZWxpZXMgb24gY29tbWl0IGQ1MGY0NjMwYzJlMSAoImFy
-bTogZHRzOiBSZW1vdmUgcDEwMTAtZmxleGNhbgpjb21wYXRpYmxlIGZyb20gaW14IHNlcmllcyBk
-dHMiKSB3aGljaCB3YXMgYXBwbGllZCBhIGZldyBjb21taXRzIGxhdGVyLgpXaXRob3V0IHRoaXMg
-Y29tbWl0IChvciBhbiBvbGQgZGV2aWNlIHRyZWUgdXNlZCBmb3IgYm9vdGluZyBhIG5ldwprZXJu
-ZWwpIHRoZSBmbGV4Y2FuIGRldmljZXMgb24gaS5NWDI1LCBpLk1YMjgsIGkuTVgzNSBhbmQgaS5N
-WDUzIG1hdGNoCnRoZSAndGhlIGRldmljZSBpcyBjb21wYXRpYmxlIHRvICJmc2wscDEwMTAtZmxl
-eGNhbiInIHRlc3QgYW5kIHNvIGFyZQpzd2l0Y2hlZCBlcnJvbmVvdXNseSB0byBiaWcgZW5kaWFu
-IG1vZGUuCgpJbnN0ZWFkIG9mIHRoZSBjaGVjayBhYm92ZSBwdXQgYSBmbGFnIGludG8gZGV2dHlw
-ZSBkYXRhIGFuZCByZWx5IG9uCm9mX21hdGNoX2RldmljZSB5aWVsZGluZyB0aGUgbW9zdCBjb21w
-YXRpYmxlIG1hdGNoCgpGaXhlczogODg0NjJkMmE3ODMwICgiY2FuOiBmbGV4Y2FuOiBSZW1vZGVs
-IEZsZXhDQU4gcmVnaXN0ZXIgci93IEFQSXMgZm9yIGJpZyBlbmRpYW4gRmxleENBTiBjb250cm9s
-bGVycy4iKQpTaWduZWQtb2ZmLWJ5OiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmln
-QHBlbmd1dHJvbml4LmRlPgotLS0KIGRyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgfCAyNiArKysr
-KysrKysrKysrKy0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyks
-IDEyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMg
-Yi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jCmluZGV4IDYzNGM1MWU2YjhhZS4uYTZjYmJlNjg5
-ZWFiIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jCisrKyBiL2RyaXZlcnMv
-bmV0L2Nhbi9mbGV4Y2FuLmMKQEAgLTI2Miw2ICsyNjIsNyBAQCBzdHJ1Y3QgZmxleGNhbl9yZWdz
-IHsKIAogc3RydWN0IGZsZXhjYW5fZGV2dHlwZV9kYXRhIHsKIAl1MzIgcXVpcmtzOwkJLyogcXVp
-cmtzIG5lZWRlZCBmb3IgZGlmZmVyZW50IElQIGNvcmVzICovCisJYm9vbCBkZWZhdWx0X2JlOwog
-fTsKIAogc3RydWN0IGZsZXhjYW5fcHJpdiB7CkBAIC0yODksNiArMjkwLDEyIEBAIHN0cnVjdCBm
-bGV4Y2FuX3ByaXYgewogc3RhdGljIGNvbnN0IHN0cnVjdCBmbGV4Y2FuX2RldnR5cGVfZGF0YSBm
-c2xfcDEwMTBfZGV2dHlwZV9kYXRhID0gewogCS5xdWlya3MgPSBGTEVYQ0FOX1FVSVJLX0JST0tF
-Tl9XRVJSX1NUQVRFIHwKIAkJRkxFWENBTl9RVUlSS19CUk9LRU5fUEVSUl9TVEFURSwKKwkuZGVm
-YXVsdF9iZSA9IHRydWUsCit9OworCitzdGF0aWMgY29uc3Qgc3RydWN0IGZsZXhjYW5fZGV2dHlw
-ZV9kYXRhIGZzbF9pbXgyNV9kZXZ0eXBlX2RhdGEgPSB7CisJLnF1aXJrcyA9IEZMRVhDQU5fUVVJ
-UktfQlJPS0VOX1dFUlJfU1RBVEUgfAorCQlGTEVYQ0FOX1FVSVJLX0JST0tFTl9QRVJSX1NUQVRF
-LAogfTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBmbGV4Y2FuX2RldnR5cGVfZGF0YSBmc2xfaW14
-MjhfZGV2dHlwZV9kYXRhID0gewpAQCAtMTI1MSw5ICsxMjU4LDkgQEAgc3RhdGljIHZvaWQgdW5y
-ZWdpc3Rlcl9mbGV4Y2FuZGV2KHN0cnVjdCBuZXRfZGV2aWNlICpkZXYpCiBzdGF0aWMgY29uc3Qg
-c3RydWN0IG9mX2RldmljZV9pZCBmbGV4Y2FuX29mX21hdGNoW10gPSB7CiAJeyAuY29tcGF0aWJs
-ZSA9ICJmc2wsaW14NnEtZmxleGNhbiIsIC5kYXRhID0gJmZzbF9pbXg2cV9kZXZ0eXBlX2RhdGEs
-IH0sCiAJeyAuY29tcGF0aWJsZSA9ICJmc2wsaW14MjgtZmxleGNhbiIsIC5kYXRhID0gJmZzbF9p
-bXgyOF9kZXZ0eXBlX2RhdGEsIH0sCi0JeyAuY29tcGF0aWJsZSA9ICJmc2wsaW14NTMtZmxleGNh
-biIsIC5kYXRhID0gJmZzbF9wMTAxMF9kZXZ0eXBlX2RhdGEsIH0sCi0JeyAuY29tcGF0aWJsZSA9
-ICJmc2wsaW14MzUtZmxleGNhbiIsIC5kYXRhID0gJmZzbF9wMTAxMF9kZXZ0eXBlX2RhdGEsIH0s
-Ci0JeyAuY29tcGF0aWJsZSA9ICJmc2wsaW14MjUtZmxleGNhbiIsIC5kYXRhID0gJmZzbF9wMTAx
-MF9kZXZ0eXBlX2RhdGEsIH0sCisJeyAuY29tcGF0aWJsZSA9ICJmc2wsaW14NTMtZmxleGNhbiIs
-IC5kYXRhID0gJmZzbF9pbXgyNV9kZXZ0eXBlX2RhdGEsIH0sCisJeyAuY29tcGF0aWJsZSA9ICJm
-c2wsaW14MzUtZmxleGNhbiIsIC5kYXRhID0gJmZzbF9pbXgyNV9kZXZ0eXBlX2RhdGEsIH0sCisJ
-eyAuY29tcGF0aWJsZSA9ICJmc2wsaW14MjUtZmxleGNhbiIsIC5kYXRhID0gJmZzbF9pbXgyNV9k
-ZXZ0eXBlX2RhdGEsIH0sCiAJeyAuY29tcGF0aWJsZSA9ICJmc2wscDEwMTAtZmxleGNhbiIsIC5k
-YXRhID0gJmZzbF9wMTAxMF9kZXZ0eXBlX2RhdGEsIH0sCiAJeyAuY29tcGF0aWJsZSA9ICJmc2ws
-dmY2MTAtZmxleGNhbiIsIC5kYXRhID0gJmZzbF92ZjYxMF9kZXZ0eXBlX2RhdGEsIH0sCiAJeyAu
-Y29tcGF0aWJsZSA9ICJmc2wsbHMxMDIxYXIyLWZsZXhjYW4iLCAuZGF0YSA9ICZmc2xfbHMxMDIx
-YV9yMl9kZXZ0eXBlX2RhdGEsIH0sCkBAIC0xMzM3LDE4ICsxMzQ0LDEzIEBAIHN0YXRpYyBpbnQg
-ZmxleGNhbl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCiAJcHJpdiA9IG5l
-dGRldl9wcml2KGRldik7CiAKLQlpZiAob2ZfcHJvcGVydHlfcmVhZF9ib29sKHBkZXYtPmRldi5v
-Zl9ub2RlLCAiYmlnLWVuZGlhbiIpKSB7CisJaWYgKG9mX3Byb3BlcnR5X3JlYWRfYm9vbChwZGV2
-LT5kZXYub2Zfbm9kZSwgImJpZy1lbmRpYW4iKSB8fAorCSAgICBkZXZ0eXBlX2RhdGEtPmRlZmF1
-bHRfYmUpIHsKIAkJcHJpdi0+cmVhZCA9IGZsZXhjYW5fcmVhZF9iZTsKIAkJcHJpdi0+d3JpdGUg
-PSBmbGV4Y2FuX3dyaXRlX2JlOwogCX0gZWxzZSB7Ci0JCWlmIChvZl9kZXZpY2VfaXNfY29tcGF0
-aWJsZShwZGV2LT5kZXYub2Zfbm9kZSwKLQkJCQkJICAgICJmc2wscDEwMTAtZmxleGNhbiIpKSB7
-Ci0JCQlwcml2LT5yZWFkID0gZmxleGNhbl9yZWFkX2JlOwotCQkJcHJpdi0+d3JpdGUgPSBmbGV4
-Y2FuX3dyaXRlX2JlOwotCQl9IGVsc2UgewotCQkJcHJpdi0+cmVhZCA9IGZsZXhjYW5fcmVhZF9s
-ZTsKLQkJCXByaXYtPndyaXRlID0gZmxleGNhbl93cml0ZV9sZTsKLQkJfQorCQlwcml2LT5yZWFk
-ID0gZmxleGNhbl9yZWFkX2xlOworCQlwcml2LT53cml0ZSA9IGZsZXhjYW5fd3JpdGVfbGU7CiAJ
-fQogCiAJcHJpdi0+Y2FuLmNsb2NrLmZyZXEgPSBjbG9ja19mcmVxOwotLSAKMi4xNy4wCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtYXJtLWtl
-cm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5l
-bAo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--kzscgHpQcq2btGk02eClp5JxUqeKLEMOF
+Content-Type: multipart/mixed; boundary="f6c4iPjbmcY8z6dkBMGsFlLbFXrQfqfTq";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Jia-Ju Bai <baijiaju1990@gmail.com>, wg@grandegger.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <82c41390-982e-c05f-79ba-9bf14697df18@pengutronix.de>
+Subject: Re: [PATCH 1/2] net: can: sja1000: Replace mdelay with usleep_range
+ in peak_pci_probe
+References: <1523410978-1834-1-git-send-email-baijiaju1990@gmail.com>
+In-Reply-To: <1523410978-1834-1-git-send-email-baijiaju1990@gmail.com>
+
+--f6c4iPjbmcY8z6dkBMGsFlLbFXrQfqfTq
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 04/11/2018 03:42 AM, Jia-Ju Bai wrote:
+> peak_pci_probe() is never called in atomic context.
+>=20
+> peak_pci_probe() is set as ".probe" in struct pci_driver.
+>=20
+> Despite never getting called from atomic context, peak_pci_probe()
+> calls mdelay() to busily wait.
+> This is not necessary and can be replaced with usleep_range() to
+> avoid busy waiting.
+>=20
+> This is found by a static analysis tool named DCNS written by myself.
+> And I also manually check it.
+>=20
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+
+Applied both to linux-can-next.
+
+tnx,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--f6c4iPjbmcY8z6dkBMGsFlLbFXrQfqfTq--
+
+--kzscgHpQcq2btGk02eClp5JxUqeKLEMOF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlrgllYACgkQk9IU1zQo
+ZfG9RwgAhMCquisobaLm20AhILqPj2qfpZ2zNmipP1hzKcrBZT2cRb8WYteG6V23
+CQVJ2+C1RASY7B4jLNaJt2y7lh6589HtBcjHDj3cISyzHg47RGwO5lqktrYzgwVP
+pPnquQpUpn5bRPssahLH64Mm7Wa7WYb6gZHaBg6r4xi+ERFiDf1UIHAX+wvaTMwt
+923HyvBD8j/McPxvl4GBGAz3jclgl0FlogGLgTpcY0kK16xv2w6l96hfx/Kxs7R6
+VSgVDmakNwK4CYsT25MDGZUidYpYQlrKyLLUEuEZl5ytuLIHONGrv4MOZZMsDAg/
+COS4dQR7JStsclEvHPHMg1SP1jSNqw==
+=/ejb
+-----END PGP SIGNATURE-----
+
+--kzscgHpQcq2btGk02eClp5JxUqeKLEMOF--
