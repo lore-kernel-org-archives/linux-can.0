@@ -1,12 +1,10 @@
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH 2/2] arm: dts: imx[35]*: declare flexcan devices to be
- compatible to imx25's flexcan
-Date: Wed, 25 Apr 2018 16:50:40 +0200
-Message-ID: <20180425145040.22031-3-u.kleine-koenig@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/2] can: flexcan: fix regression from v4.16-rc1
+Date: Wed, 25 Apr 2018 17:07:28 +0200
+Message-ID: <0ab617ff-c650-b1f9-7fb4-8940fec42c07@pengutronix.de>
 References: <20180425145040.22031-1-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============7874560083812162223=="
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <20180425145040.22031-1-u.kleine-koenig@pengutronix.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
@@ -18,45 +16,90 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>
 Cc: Gavin Schenk <g.schenk@eckelmann.de>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Q29tbWl0IGQ1MGY0NjMwYzJlMSAoImFybTogZHRzOiBSZW1vdmUgcDEwMTAtZmxleGNhbiBjb21w
-YXRpYmxlIGZyb20gaW14CnNlcmllcyBkdHMiKSByZW1vdmVkIHRoZSBmYWxsYmFjayBjb21wYXRp
-YmxlICJmc2wscDEwMTAtZmxleGNhbiIgZnJvbQp0aGUgaW14IGRldmljZSB0cmVlcy4gQXMgdGhl
-IGZsZXhjYW4gY29yZXMgb24gaS5NWDI1LCBpLk1YMzUgYW5kIGkuTVg1MwphcmUgaWRlbnRpY2Fs
-LCBpbnRyb2R1Y2UgdGhlIGZpcnN0IGFzIGZhbGxiYWNrIGZvciB0aGUgdHdvIGxhdHRlciBvbmVz
-LgoKRml4ZXM6IGQ1MGY0NjMwYzJlMSAoImFybTogZHRzOiBSZW1vdmUgcDEwMTAtZmxleGNhbiBj
-b21wYXRpYmxlIGZyb20gaW14IHNlcmllcyBkdHMiKQpTaWduZWQtb2ZmLWJ5OiBVd2UgS2xlaW5l
-LUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlPgotLS0KIGFyY2gvYXJtL2Jv
-b3QvZHRzL2lteDM1LmR0c2kgfCA0ICsrLS0KIGFyY2gvYXJtL2Jvb3QvZHRzL2lteDUzLmR0c2kg
-fCA0ICsrLS0KIDIgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygt
-KQoKZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDM1LmR0c2kgYi9hcmNoL2FybS9i
-b290L2R0cy9pbXgzNS5kdHNpCmluZGV4IGJmMzQzMTk1Njk3ZS4uNTQxMTFlZDIxOGIxIDEwMDY0
-NAotLS0gYS9hcmNoL2FybS9ib290L2R0cy9pbXgzNS5kdHNpCisrKyBiL2FyY2gvYXJtL2Jvb3Qv
-ZHRzL2lteDM1LmR0c2kKQEAgLTMwMyw3ICszMDMsNyBAQAogCQkJfTsKIAogCQkJY2FuMTogY2Fu
-QDUzZmU0MDAwIHsKLQkJCQljb21wYXRpYmxlID0gImZzbCxpbXgzNS1mbGV4Y2FuIjsKKwkJCQlj
-b21wYXRpYmxlID0gImZzbCxpbXgzNS1mbGV4Y2FuIiwgImZzbCxpbXgyNS1mbGV4Y2FuIjsKIAkJ
-CQlyZWcgPSA8MHg1M2ZlNDAwMCAweDEwMDA+OwogCQkJCWNsb2NrcyA9IDwmY2xrcyAzMz4sIDwm
-Y2xrcyAzMz47CiAJCQkJY2xvY2stbmFtZXMgPSAiaXBnIiwgInBlciI7CkBAIC0zMTIsNyArMzEy
-LDcgQEAKIAkJCX07CiAKIAkJCWNhbjI6IGNhbkA1M2ZlODAwMCB7Ci0JCQkJY29tcGF0aWJsZSA9
-ICJmc2wsaW14MzUtZmxleGNhbiI7CisJCQkJY29tcGF0aWJsZSA9ICJmc2wsaW14MzUtZmxleGNh
-biIsICJmc2wsaW14MjUtZmxleGNhbiI7CiAJCQkJcmVnID0gPDB4NTNmZTgwMDAgMHgxMDAwPjsK
-IAkJCQljbG9ja3MgPSA8JmNsa3MgMzQ+LCA8JmNsa3MgMzQ+OwogCQkJCWNsb2NrLW5hbWVzID0g
-ImlwZyIsICJwZXIiOwpkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvaW14NTMuZHRzaSBi
-L2FyY2gvYXJtL2Jvb3QvZHRzL2lteDUzLmR0c2kKaW5kZXggN2Q2NDdkMDQzZjUyLi4zZDY1YzAx
-OTJmNjkgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDUzLmR0c2kKKysrIGIvYXJj
-aC9hcm0vYm9vdC9kdHMvaW14NTMuZHRzaQpAQCAtNTUxLDcgKzU1MSw3IEBACiAJCQl9OwogCiAJ
-CQljYW4xOiBjYW5ANTNmYzgwMDAgewotCQkJCWNvbXBhdGlibGUgPSAiZnNsLGlteDUzLWZsZXhj
-YW4iOworCQkJCWNvbXBhdGlibGUgPSAiZnNsLGlteDUzLWZsZXhjYW4iLCAiZnNsLGlteDI1LWZs
-ZXhjYW4iOwogCQkJCXJlZyA9IDwweDUzZmM4MDAwIDB4NDAwMD47CiAJCQkJaW50ZXJydXB0cyA9
-IDw4Mj47CiAJCQkJY2xvY2tzID0gPCZjbGtzIElNWDVfQ0xLX0NBTjFfSVBHX0dBVEU+LApAQCAt
-NTYxLDcgKzU2MSw3IEBACiAJCQl9OwogCiAJCQljYW4yOiBjYW5ANTNmY2MwMDAgewotCQkJCWNv
-bXBhdGlibGUgPSAiZnNsLGlteDUzLWZsZXhjYW4iOworCQkJCWNvbXBhdGlibGUgPSAiZnNsLGlt
-eDUzLWZsZXhjYW4iLCAiZnNsLGlteDI1LWZsZXhjYW4iOwogCQkJCXJlZyA9IDwweDUzZmNjMDAw
-IDB4NDAwMD47CiAJCQkJaW50ZXJydXB0cyA9IDw4Mz47CiAJCQkJY2xvY2tzID0gPCZjbGtzIElN
-WDVfQ0xLX0NBTjJfSVBHX0dBVEU+LAotLSAKMi4xNy4wCgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QK
-bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============7874560083812162223==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="BL9mCFSFckz1eCraAzEVmaVBUMngEAR5v"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BL9mCFSFckz1eCraAzEVmaVBUMngEAR5v
+Content-Type: multipart/mixed; boundary="Op0KnAWGmAtex8NOVTTBCwDKn7OBWUn9w";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Gavin Schenk <g.schenk@eckelmann.de>
+Message-ID: <0ab617ff-c650-b1f9-7fb4-8940fec42c07@pengutronix.de>
+Subject: Re: [PATCH 0/2] can: flexcan: fix regression from v4.16-rc1
+References: <20180425145040.22031-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20180425145040.22031-1-u.kleine-koenig@pengutronix.de>
+
+--Op0KnAWGmAtex8NOVTTBCwDKn7OBWUn9w
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 04/25/2018 04:50 PM, Uwe Kleine-K=C3=B6nig wrote:
+> Hello,
+>=20
+> when porting the kernel from a i.MX25 based machine to 4.17-rc1 (but
+> still using the old dtb) can failed to probe. After some research we
+> noticed that a commit that was merged in the v4.16 merge window
+> introduced a change that broke using an older device tree.
+>=20
+> This series first commit fixes the issue.
+> The second patch introduces a fallback compatible which matches the
+> usual dt-style on i.MX. (Before v4.16-rc1 there was a wrong fallback
+> compatible that was removed.)
+
+Applied both to linux-can + added stable on Cc.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--Op0KnAWGmAtex8NOVTTBCwDKn7OBWUn9w--
+
+--BL9mCFSFckz1eCraAzEVmaVBUMngEAR5v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlrgmbAACgkQk9IU1zQo
+ZfF00gf+KsB5txQNrO80onC09GGurSojs3NOL9vQmc7baOsHwdCCDmu04kK3PHoo
+7y+OEeWpm5LnZ0YwaLq0EqtBrY45d3S3/TBLOETNctnE3YdLodyiCktD6J4qrbXT
+GFgtU+hC8VDTDL7Ha0k+wYeD7OCK43+jVaQMHPHoSfqD5akuV5XzVxe+EgmZyzwM
+sZIkBKROPqN7wQ1hhsh2WaRfAQ5RNtKrUq7YweVlOkZEvk9/PUwvFGutalsBVmfd
+hzHAkdZ8/ckJQSTfSIcFWDlbbVmd0zXAm80zIdlheuQmyCBXngbZB5tKYfL+kPqZ
+Wse+a5+9cS5L33wxX8DipWDEckcUug==
+=2sEQ
+-----END PGP SIGNATURE-----
+
+--BL9mCFSFckz1eCraAzEVmaVBUMngEAR5v--
+
+
+--===============7874560083812162223==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============7874560083812162223==--
