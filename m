@@ -1,37 +1,39 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH] DT: net: can: rcar_canfd: document R8A77970 bindings
-Date: Thu, 26 Apr 2018 22:41:14 +0300
-Message-ID: <7a3d170f-1d3a-a807-9256-15fe1a78ca4e@cogentembedded.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Language: en-MW
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Mark Rutland <mark.rutland@arm.com>, linux-renesas-soc@vger.kernel.org
+From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: [PATCH 1/3] can: janz-ican3: fix ican3_xmit()'s return type
+Date: Thu, 26 Apr 2018 23:13:36 +0200
+Message-ID: <20180426211339.30821-2-luc.vanoostenryck@gmail.com>
+References: <20180426211339.30821-1-luc.vanoostenryck@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180426211339.30821-1-luc.vanoostenryck@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Michal Simek <michal.simek@xilinx.com>, "open list:CAN NETWORK DRIVERS" <linux-can@vger.kernel.org>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "moderated list:ARM/Allwinner
+        sunXi SoC support" <linux-arm-kernel@lists.infradead.org>
 List-Id: linux-can.vger.kernel.org
 
-Document the R-Car V3M (R8A77970) SoC support in the R-Car CAN-FD bindings.
+The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
+which is a typedef for an enum type, but the implementation in this
+driver returns an 'int'.
 
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Fix this by returning 'netdev_tx_t' in this driver too.
 
+Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 ---
-The patch is against the 'linux-can-next.git' repo but I wouldn't object if
-it's merged to the 'linux-can.git' repo instead. :-)
+ drivers/net/can/janz-ican3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- Documentation/devicetree/bindings/net/can/rcar_canfd.txt |    1 +
- 1 file changed, 1 insertion(+)
-
-Index: linux-can-next/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-===================================================================
---- linux-can-next.orig/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-+++ linux-can-next/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-@@ -6,6 +6,7 @@ Required properties:
-   - "renesas,rcar-gen3-canfd" for R-Car Gen3 compatible controller.
-   - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller.
-   - "renesas,r8a7796-canfd" for R8A7796 (R-Car M3) compatible controller.
-+  - "renesas,r8a77970-canfd" for R8A77970 (R-Car V3M) compatible controller.
+diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
+index adfdb66a4..02042cb09 100644
+--- a/drivers/net/can/janz-ican3.c
++++ b/drivers/net/can/janz-ican3.c
+@@ -1684,7 +1684,7 @@ static int ican3_stop(struct net_device *ndev)
+ 	return 0;
+ }
  
-   When compatible with the generic version, nodes must list the
-   SoC-specific version corresponding to the platform first, followed by the
+-static int ican3_xmit(struct sk_buff *skb, struct net_device *ndev)
++static netdev_tx_t ican3_xmit(struct sk_buff *skb, struct net_device *ndev)
+ {
+ 	struct ican3_dev *mod = netdev_priv(ndev);
+ 	struct can_frame *cf = (struct can_frame *)skb->data;
+-- 
+2.17.0
