@@ -1,39 +1,38 @@
 From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH 3/3] can: xilinx: fix xcan_start_xmit()'s return type
-Date: Thu, 26 Apr 2018 23:13:38 +0200
-Message-ID: <20180426211339.30821-4-luc.vanoostenryck@gmail.com>
-References: <20180426211339.30821-1-luc.vanoostenryck@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180426211339.30821-1-luc.vanoostenryck@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 0/3] can: fix ndo_start_xmit()'s return type
+Date: Thu, 26 Apr 2018 23:13:35 +0200
+Message-ID: <20180426211339.30821-1-luc.vanoostenryck@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Michal Simek <michal.simek@xilinx.com>, "open list:CAN NETWORK DRIVERS" <linux-can@vger.kernel.org>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "moderated list:ARM/Allwinner
-        sunXi SoC support" <linux-arm-kernel@lists.infradead.org>
+Cc: "moderated list:ARM/Allwinner sunXi SoC support" <linux-arm-kernel@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, Michal Simek <michal.simek@xilinx.com>, "open list:CAN NETWORK DRIVERS" <linux-can@vger.kernel.org>, Chen-Yu Tsai <wens@csie.org>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>
 List-Id: linux-can.vger.kernel.org
 
-The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
-which is a typedef for an enum type, but the implementation in this
-driver returns an 'int'.
+ndo_start_xmit() is defined as returing an 'netdev_tx_t'.
+However, several can drivers use 'int' as the return type
+of their start_xmit() method.
+This series contains the fix for all three of them.
 
-Fix this by returning 'netdev_tx_t' in this driver too.
+Luc Van Oostenryck (3):
+  can: janz-ican3: fix ican3_xmit()'s return type
+  can: sun4i: fix sun4ican_start_xmit()'s return type
+  can: xilinx: fix xcan_start_xmit()'s return type
 
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
+ drivers/net/can/janz-ican3.c | 2 +-
+ drivers/net/can/sun4i_can.c  | 2 +-
  drivers/net/can/xilinx_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 89aec07c2..a19648606 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -386,7 +386,7 @@ static int xcan_do_set_mode(struct net_device *ndev, enum can_mode mode)
-  *
-  * Return: 0 on success and failure value on error
-  */
--static int xcan_start_xmit(struct sk_buff *skb, struct net_device *ndev)
-+static netdev_tx_t xcan_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- {
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	struct net_device_stats *stats = &ndev->stats;
 -- 
 2.17.0
