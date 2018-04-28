@@ -1,38 +1,45 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH] DT: net: can: rcar_canfd: document R8A77980 bindings
-Date: Fri, 27 Apr 2018 21:53:33 +0300
-Message-ID: <556f1f23-19bc-e7bd-47b1-f22e086e2b69@cogentembedded.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] can: dev:  use skb_put_zero to simplfy code
+Date: Sat, 28 Apr 2018 15:49:57 +0800
+Message-ID: <20180428074957.17084-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Language: en-MW
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Mark Rutland <mark.rutland@arm.com>, linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, davem@davemloft.net, linux-kernel@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: linux-can.vger.kernel.org
 
-Document the R-Car V3H (R8A77980) SoC support in the R-Car CAN-FD bindings.
+use helper skb_put_zero to replace the pattern of skb_put() && memset()
 
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
-The patch is against the 'linux-can-next.git' repo plus the R8A77970 bindings
-patch posted yesterday. Although I wouldn't object if they're both merged to
-the 'linux-can.git' repo instead. :-)
+ drivers/net/can/dev.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
- Documentation/devicetree/bindings/net/can/rcar_canfd.txt |    1 +
- 1 file changed, 1 insertion(+)
-
-Index: linux-can-next/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-===================================================================
---- linux-can-next.orig/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-+++ linux-can-next/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-@@ -7,6 +7,7 @@ Required properties:
-   - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller.
-   - "renesas,r8a7796-canfd" for R8A7796 (R-Car M3) compatible controller.
-   - "renesas,r8a77970-canfd" for R8A77970 (R-Car V3M) compatible controller.
-+  - "renesas,r8a77980-canfd" for R8A77980 (R-Car V3H) compatible controller.
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index b177956..d8140a9 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -649,8 +649,7 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
+ 	can_skb_prv(skb)->ifindex = dev->ifindex;
+ 	can_skb_prv(skb)->skbcnt = 0;
  
-   When compatible with the generic version, nodes must list the
-   SoC-specific version corresponding to the platform first, followed by the
+-	*cf = skb_put(skb, sizeof(struct can_frame));
+-	memset(*cf, 0, sizeof(struct can_frame));
++	*cf = skb_put_zero(skb, sizeof(struct can_frame));
+ 
+ 	return skb;
+ }
+@@ -678,8 +677,7 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
+ 	can_skb_prv(skb)->ifindex = dev->ifindex;
+ 	can_skb_prv(skb)->skbcnt = 0;
+ 
+-	*cfd = skb_put(skb, sizeof(struct canfd_frame));
+-	memset(*cfd, 0, sizeof(struct canfd_frame));
++	*cfd = skb_put_zero(skb, sizeof(struct canfd_frame));
+ 
+ 	return skb;
+ }
+-- 
+2.7.0
