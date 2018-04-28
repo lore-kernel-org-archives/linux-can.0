@@ -1,45 +1,37 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] can: dev:  use skb_put_zero to simplfy code
-Date: Sat, 28 Apr 2018 15:49:57 +0800
-Message-ID: <20180428074957.17084-1-yuehaibing@huawei.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] can: cc770: fix spelling mistake: "comptibility" -> "compatibility"
+Date: Sat, 28 Apr 2018 23:16:00 +0100
+Message-ID: <20180428221600.20039-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, davem@davemloft.net, linux-kernel@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-use helper skb_put_zero to replace the pattern of skb_put() && memset()
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Trivial fix to spelling mistake in module parameter description text
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/net/can/dev.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/can/cc770/cc770.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index b177956..d8140a9 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -649,8 +649,7 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
- 	can_skb_prv(skb)->ifindex = dev->ifindex;
- 	can_skb_prv(skb)->skbcnt = 0;
+diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
+index d4dd4da23997..da636a22c542 100644
+--- a/drivers/net/can/cc770/cc770.c
++++ b/drivers/net/can/cc770/cc770.c
+@@ -73,7 +73,7 @@ MODULE_PARM_DESC(msgobj15_eff, "Extended 29-bit frames for message object 15 "
  
--	*cf = skb_put(skb, sizeof(struct can_frame));
--	memset(*cf, 0, sizeof(struct can_frame));
-+	*cf = skb_put_zero(skb, sizeof(struct can_frame));
+ static int i82527_compat;
+ module_param(i82527_compat, int, 0444);
+-MODULE_PARM_DESC(i82527_compat, "Strict Intel 82527 comptibility mode "
++MODULE_PARM_DESC(i82527_compat, "Strict Intel 82527 compatibility mode "
+ 		 "without using additional functions");
  
- 	return skb;
- }
-@@ -678,8 +677,7 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
- 	can_skb_prv(skb)->ifindex = dev->ifindex;
- 	can_skb_prv(skb)->skbcnt = 0;
- 
--	*cfd = skb_put(skb, sizeof(struct canfd_frame));
--	memset(*cfd, 0, sizeof(struct canfd_frame));
-+	*cfd = skb_put_zero(skb, sizeof(struct canfd_frame));
- 
- 	return skb;
- }
+ /*
 -- 
-2.7.0
+2.17.0
