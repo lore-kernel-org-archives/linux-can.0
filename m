@@ -1,44 +1,77 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH] DT: net: can: rcar_canfd: document R8A77980 bindings
-Date: Mon, 30 Apr 2018 09:37:22 +0200
-Message-ID: <20180430073722.tbrd5y3bs5hpq724@verge.net.au>
-References: <556f1f23-19bc-e7bd-47b1-f22e086e2b69@cogentembedded.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: cc770: fix spelling mistake: "comptibility" ->
+ "compatibility"
+Date: Sun, 29 Apr 2018 18:26:51 +0200
+Message-ID: <68f69d7c-b437-831e-b466-6d699c0000ee@pengutronix.de>
+References: <20180428221600.20039-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <556f1f23-19bc-e7bd-47b1-f22e086e2b69@cogentembedded.com>
-Sender: netdev-owner@vger.kernel.org
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Mark Rutland <mark.rutland@arm.com>, linux-renesas-soc@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="lmPQESVjH3ez8IxUCxopcQu78NJMGezfp"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180428221600.20039-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin King <colin.king@canonical.com>, Wolfgang Grandegger <wg@grandegger.com>, Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Fri, Apr 27, 2018 at 09:53:33PM +0300, Sergei Shtylyov wrote:
-> Document the R-Car V3H (R8A77980) SoC support in the R-Car CAN-FD bindings.
-> 
-> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> 
-> ---
-> The patch is against the 'linux-can-next.git' repo plus the R8A77970 bindings
-> patch posted yesterday. Although I wouldn't object if they're both merged to
-> the 'linux-can.git' repo instead. :-)
-> 
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt |    1 +
->  1 file changed, 1 insertion(+)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--lmPQESVjH3ez8IxUCxopcQu78NJMGezfp
+Content-Type: multipart/mixed; boundary="lovmR6k3y1lLUeXXVsgLT1ligOlx6Ojsn";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Colin King <colin.king@canonical.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ Andri Yngvason <andri.yngvason@marel.com>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <68f69d7c-b437-831e-b466-6d699c0000ee@pengutronix.de>
+Subject: Re: [PATCH] can: cc770: fix spelling mistake: "comptibility" ->
+ "compatibility"
+References: <20180428221600.20039-1-colin.king@canonical.com>
+In-Reply-To: <20180428221600.20039-1-colin.king@canonical.com>
 
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+--lovmR6k3y1lLUeXXVsgLT1ligOlx6Ojsn
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Index: linux-can-next/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> ===================================================================
-> --- linux-can-next.orig/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> +++ linux-can-next/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> @@ -7,6 +7,7 @@ Required properties:
->    - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller.
->    - "renesas,r8a7796-canfd" for R8A7796 (R-Car M3) compatible controller.
->    - "renesas,r8a77970-canfd" for R8A77970 (R-Car V3M) compatible controller.
-> +  - "renesas,r8a77980-canfd" for R8A77980 (R-Car V3H) compatible controller.
->  
->    When compatible with the generic version, nodes must list the
->    SoC-specific version corresponding to the platform first, followed by the
-> 
+On 04/29/2018 12:16 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> Trivial fix to spelling mistake in module parameter description text
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Added to linux-can-next.
+
+Thnx,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--lovmR6k3y1lLUeXXVsgLT1ligOlx6Ojsn--
+
+--lmPQESVjH3ez8IxUCxopcQu78NJMGezfp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlrl8kwACgkQk9IU1zQo
+ZfF7KQgAnMzozpwBqRFqe6cA73ufgvrk6aZZ2JOiy/405yQUBJnZAKXwpchTgH+N
+jwHHZMVcua5ku5vDuaK/ZvoQvditXqc+tX4uYk4T2XJtv8tqZkNh/5QmRn6g0N7I
+vZwuUXKOi4PvtwaI0Lg09VEPHPPQ3C+a9gI6EUUOTiqx23HOcc/UhKjk8hfIeUNP
+Ur8StQLIQdhsQc0mmjfSAlzrFfaBtDEVeNZ+s7Ru+U5eyg8AcDYaYTNfS2xHGVld
+VdDDnVfmLhNgvSTUSgBbuxprU37xe+LBJeHBzGE5pONhOqg5GrT2MxIx1heMD98+
+VqXRgH9bg2gDK42/hu/7GIQWKGOB5Q==
+=mn+N
+-----END PGP SIGNATURE-----
+
+--lmPQESVjH3ez8IxUCxopcQu78NJMGezfp--
