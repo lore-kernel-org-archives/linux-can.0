@@ -1,46 +1,63 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH net-next] can: dev: use skb_put_zero to simplfy code
-Date: Sun, 29 Apr 2018 18:24:19 +0200
-Message-ID: <0f0a2623-da07-d102-8bed-d2034c41520a@pengutronix.de>
-References: <20180428074957.17084-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH] DT: net: can: rcar_canfd: document R8A77970 bindings
+Date: Mon, 30 Apr 2018 10:16:58 +0200
+Message-ID: <bea94b38-0dba-33c6-46af-9d42ebff3b29@pengutronix.de>
+References: <7a3d170f-1d3a-a807-9256-15fe1a78ca4e@cogentembedded.com>
+ <TY2PR01MB1962E2336D20499CF27134EBC38D0@TY2PR01MB1962.jpnprd01.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="h7VF7kDEiHZCpqK4hmtA9O6mLmnTRpLUk"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180428074957.17084-1-yuehaibing@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>, wg@grandegger.com
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, davem@davemloft.net, linux-kernel@vger.kernel.org
+ boundary="wa2jzPKmo6SKRBgH8Gbw3kwCSyxSUY90y"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <TY2PR01MB1962E2336D20499CF27134EBC38D0@TY2PR01MB1962.jpnprd01.prod.outlook.com>
+Sender: netdev-owner@vger.kernel.org
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Rob Herring <robh+dt@kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Mark Rutland <mark.rutland@arm.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---h7VF7kDEiHZCpqK4hmtA9O6mLmnTRpLUk
-Content-Type: multipart/mixed; boundary="ZT4sclf9KRnlyTZZdDcm5VvmZvDJrrFkk";
+--wa2jzPKmo6SKRBgH8Gbw3kwCSyxSUY90y
+Content-Type: multipart/mixed; boundary="tZL5NCDBARHzfiwcm4mxT6EYyUjN1DMNP";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: YueHaibing <yuehaibing@huawei.com>, wg@grandegger.com
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, davem@davemloft.net,
- linux-kernel@vger.kernel.org
-Message-ID: <0f0a2623-da07-d102-8bed-d2034c41520a@pengutronix.de>
-Subject: Re: [PATCH net-next] can: dev: use skb_put_zero to simplfy code
-References: <20180428074957.17084-1-yuehaibing@huawei.com>
-In-Reply-To: <20180428074957.17084-1-yuehaibing@huawei.com>
+To: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
+Message-ID: <bea94b38-0dba-33c6-46af-9d42ebff3b29@pengutronix.de>
+Subject: Re: [PATCH] DT: net: can: rcar_canfd: document R8A77970 bindings
+References: <7a3d170f-1d3a-a807-9256-15fe1a78ca4e@cogentembedded.com>
+ <TY2PR01MB1962E2336D20499CF27134EBC38D0@TY2PR01MB1962.jpnprd01.prod.outlook.com>
+In-Reply-To: <TY2PR01MB1962E2336D20499CF27134EBC38D0@TY2PR01MB1962.jpnprd01.prod.outlook.com>
 
---ZT4sclf9KRnlyTZZdDcm5VvmZvDJrrFkk
+--tZL5NCDBARHzfiwcm4mxT6EYyUjN1DMNP
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 04/28/2018 09:49 AM, YueHaibing wrote:
-> use helper skb_put_zero to replace the pattern of skb_put() && memset()=
-
+On 04/27/2018 01:33 PM, Ramesh Shanmugasundaram wrote:
+> Hello Sergei,
 >=20
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Thanks for your patch.
+>=20
+>> Subject: [PATCH] DT: net: can: rcar_canfd: document R8A77970 bindings
+>>
+>> Document the R-Car V3M (R8A77970) SoC support in the R-Car CAN-FD
+>> bindings.
+>>
+>> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+>=20
+> Reviewed-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesa=
+s.com>
 
-Applied to linux-can-next.
+Applied to linux-can.
 
-Tnx,
+tnx,
 Marc
 
 --=20
@@ -50,23 +67,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---ZT4sclf9KRnlyTZZdDcm5VvmZvDJrrFkk--
+--tZL5NCDBARHzfiwcm4mxT6EYyUjN1DMNP--
 
---h7VF7kDEiHZCpqK4hmtA9O6mLmnTRpLUk
+--wa2jzPKmo6SKRBgH8Gbw3kwCSyxSUY90y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlrl8bMACgkQk9IU1zQo
-ZfGfIAgAw59vA9/t8GsiIehpDjmL+RTT9WQpYqLCQZSnWkYfV1YZ1OiHpbKiPUrI
-+F+mxDzMPrjQE1Z+uxSzvjxUmdKq2EcEek0zgNetd+kLjzJnifeVCt2dH8/pdtNY
-fmObXrvvV4xXMf10EBo44CQo7PYpBi2VE0nUVrqSd3PhVMpnV5l6LEkb+7inyftH
-KLqC/kZsOqT4aj+fFYkMycExqoPT7c0ud+zr4jvqsavRwOZNm62t6gZgMRQPfW1M
-V3vXDv+aG6UlzCqZu634Eujb55yhHZEgIBRRUDekzGo/3AI+ZzDEatIK+sWNSNvs
-3+Rsv2r9J+cfQUFfGdp72bsc3vhpVg==
-=bZ5U
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlrm0PoACgkQk9IU1zQo
+ZfHzbQgAoKEsQJvBYjjsNX87jY6XnSg1jnYJQo7/pSa1kE1JpoXgYCvKBW7aQjVZ
+cbNLifFwIG32hg3DBkCCN1RakFZSZ8jmo52iHW4cw2L+FzheVDmWZsxuBnPr2CrL
+YMAHbDsaruaZmQ4oN+CoftZqfo+NrwZyCi9mGDPc77KEsEQvmqm+Qy/yn6oI/Vjd
+QSPZacE52ZuquiFnPcz7rXbKe/h+eOzNZBbq552AfzfxVCgpwiHVndM5FS9E9cjC
+9e7it4K8SJI3go/t44+qFrVtZ0C6JZUmB4WhLJbw0aJmXF9klAOomFKZCkfQ6yMZ
+fbCMYeXVvY01rKYmArF+QMAe2P9WjQ==
+=ef5E
 -----END PGP SIGNATURE-----
 
---h7VF7kDEiHZCpqK4hmtA9O6mLmnTRpLUk--
+--wa2jzPKmo6SKRBgH8Gbw3kwCSyxSUY90y--
