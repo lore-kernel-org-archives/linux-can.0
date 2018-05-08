@@ -1,69 +1,109 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH 01/18] docs: can.rst: fix a footnote reference
-Date: Mon, 7 May 2018 20:41:43 +0200
-Message-ID: <8e12e344-0b16-fd92-8a5d-d40aca501c7b@hartkopp.net>
-References: <cover.1525684985.git.mchehab+samsung@kernel.org>
- <2a04ab24f302a0802572c4c80c4d416b953f213d.1525684985.git.mchehab+samsung@kernel.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 2/7] can: flexcan: fix endianess detection
+Date: Tue,  8 May 2018 11:28:26 +0200
+Message-ID: <20180508092831.28247-3-mkl@pengutronix.de>
+References: <20180508092831.28247-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <2a04ab24f302a0802572c4c80c4d416b953f213d.1525684985.git.mchehab+samsung@kernel.org>
-Content-Language: en-US
+In-Reply-To: <20180508092831.28247-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, Robert Schwebel <r.schwebel@pengutronix.de>
-Cc: Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-+ Robert Schwebel (who thankfully did the txt -> rst conversion for can.txt)
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-On 05/07/2018 11:35 AM, Mauro Carvalho Chehab wrote:
-> As stated at:
-> 	http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#footnotes
-> 
-> A footnote should contain either a number, a reference or
-> an auto number, e. g.:
-> 	[1], [#f1] or [#].
-> 
-> While using [*] accidentaly works for html, it fails for other
-> document outputs. In particular, it causes an error with LaTeX
-> output, causing all books after networking to not be built.
-> 
-> So, replace it by a valid syntax.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+In commit 88462d2a7830 ("can: flexcan: Remodel FlexCAN register r/w APIs
+for big endian FlexCAN controllers.") the following logic was
+implemented:
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+	if the dt property "big-endian" is given or
+	   the device is compatible to "fsl,p1010-flexcan":
+		use big-endian mode;
+	else
+		use little-endian mode;
 
-Thanks Mauro!
+This relies on commit d50f4630c2e1 ("arm: dts: Remove p1010-flexcan
+compatible from imx series dts") which was applied a few commits later.
+Without this commit (or an old device tree used for booting a new
+kernel) the flexcan devices on i.MX25, i.MX28, i.MX35 and i.MX53 match
+the 'the device is compatible to "fsl,p1010-flexcan"' test and so are
+switched erroneously to big endian mode.
 
-Best regards,
-Oliver
+Instead of the check above put a quirk in devtype data and rely on
+of_match_device yielding the most compatible match
 
-> ---
->  Documentation/networking/can.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-> index d23c51abf8c6..2fd0b51a8c52 100644
-> --- a/Documentation/networking/can.rst
-> +++ b/Documentation/networking/can.rst
-> @@ -164,7 +164,7 @@ The Linux network devices (by default) just can handle the
->  transmission and reception of media dependent frames. Due to the
->  arbitration on the CAN bus the transmission of a low prio CAN-ID
->  may be delayed by the reception of a high prio CAN frame. To
-> -reflect the correct [*]_ traffic on the node the loopback of the sent
-> +reflect the correct [#f1]_ traffic on the node the loopback of the sent
->  data has to be performed right after a successful transmission. If
->  the CAN network interface is not capable of performing the loopback for
->  some reason the SocketCAN core can do this task as a fallback solution.
-> @@ -175,7 +175,7 @@ networking behaviour for CAN applications. Due to some requests from
->  the RT-SocketCAN group the loopback optionally may be disabled for each
->  separate socket. See sockopts from the CAN RAW sockets in :ref:`socketcan-raw-sockets`.
->  
-> -.. [*] you really like to have this when you're running analyser
-> +.. [#f1] you really like to have this when you're running analyser
->         tools like 'candump' or 'cansniffer' on the (same) node.
->  
->  
-> 
+Fixes: 88462d2a7830 ("can: flexcan: Remodel FlexCAN register r/w APIs for big endian FlexCAN controllers.")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Tested-by: Gavin Schenk <g.schenk@eckelmann.de>
+Cc: linux-stable <stable@vger.kernel.org> # >= v4.16
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/flexcan.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 634c51e6b8ae..d53a45bf2a72 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -200,6 +200,7 @@
+ #define FLEXCAN_QUIRK_DISABLE_MECR	BIT(4) /* Disable Memory error detection */
+ #define FLEXCAN_QUIRK_USE_OFF_TIMESTAMP	BIT(5) /* Use timestamp based offloading */
+ #define FLEXCAN_QUIRK_BROKEN_PERR_STATE	BIT(6) /* No interrupt for error passive */
++#define FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN	BIT(7) /* default to BE register access */
+ 
+ /* Structure of the message buffer */
+ struct flexcan_mb {
+@@ -287,6 +288,12 @@ struct flexcan_priv {
+ };
+ 
+ static const struct flexcan_devtype_data fsl_p1010_devtype_data = {
++	.quirks = FLEXCAN_QUIRK_BROKEN_WERR_STATE |
++		FLEXCAN_QUIRK_BROKEN_PERR_STATE |
++		FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN,
++};
++
++static const struct flexcan_devtype_data fsl_imx25_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_BROKEN_WERR_STATE |
+ 		FLEXCAN_QUIRK_BROKEN_PERR_STATE,
+ };
+@@ -1251,9 +1258,9 @@ static void unregister_flexcandev(struct net_device *dev)
+ static const struct of_device_id flexcan_of_match[] = {
+ 	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, },
+ 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
+-	{ .compatible = "fsl,imx53-flexcan", .data = &fsl_p1010_devtype_data, },
+-	{ .compatible = "fsl,imx35-flexcan", .data = &fsl_p1010_devtype_data, },
+-	{ .compatible = "fsl,imx25-flexcan", .data = &fsl_p1010_devtype_data, },
++	{ .compatible = "fsl,imx53-flexcan", .data = &fsl_imx25_devtype_data, },
++	{ .compatible = "fsl,imx35-flexcan", .data = &fsl_imx25_devtype_data, },
++	{ .compatible = "fsl,imx25-flexcan", .data = &fsl_imx25_devtype_data, },
+ 	{ .compatible = "fsl,p1010-flexcan", .data = &fsl_p1010_devtype_data, },
+ 	{ .compatible = "fsl,vf610-flexcan", .data = &fsl_vf610_devtype_data, },
+ 	{ .compatible = "fsl,ls1021ar2-flexcan", .data = &fsl_ls1021a_r2_devtype_data, },
+@@ -1337,18 +1344,13 @@ static int flexcan_probe(struct platform_device *pdev)
+ 
+ 	priv = netdev_priv(dev);
+ 
+-	if (of_property_read_bool(pdev->dev.of_node, "big-endian")) {
++	if (of_property_read_bool(pdev->dev.of_node, "big-endian") ||
++	    devtype_data->quirks & FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN) {
+ 		priv->read = flexcan_read_be;
+ 		priv->write = flexcan_write_be;
+ 	} else {
+-		if (of_device_is_compatible(pdev->dev.of_node,
+-					    "fsl,p1010-flexcan")) {
+-			priv->read = flexcan_read_be;
+-			priv->write = flexcan_write_be;
+-		} else {
+-			priv->read = flexcan_read_le;
+-			priv->write = flexcan_write_le;
+-		}
++		priv->read = flexcan_read_le;
++		priv->write = flexcan_write_le;
+ 	}
+ 
+ 	priv->can.clock.freq = clock_freq;
+-- 
+2.17.0
