@@ -1,69 +1,77 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2018-05-08
-Date: Tue,  8 May 2018 11:28:24 +0200
-Message-ID: <20180508092831.28247-1-mkl@pengutronix.de>
+Subject: [PATCH 3/7] arm: dts: imx[35]*: declare flexcan devices to be compatible to imx25's flexcan
+Date: Tue,  8 May 2018 11:28:27 +0200
+Message-ID: <20180508092831.28247-4-mkl@pengutronix.de>
+References: <20180508092831.28247-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180508092831.28247-1-mkl@pengutronix.de>
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-this is a pull request for 7 patches for net/master.
+Commit d50f4630c2e1 ("arm: dts: Remove p1010-flexcan compatible from imx
+series dts") removed the fallback compatible "fsl,p1010-flexcan" from
+the imx device trees. As the flexcan cores on i.MX25, i.MX35 and i.MX53
+are identical, introduce the first as fallback for the two latter ones.
 
-The first patch is by Jakob Unterwurzacher and increases the severity of
-bus-off messages in the generic CAN device infrastructure. The next two patches
-are by Uwe Kleine-König and fix the endianess detection in the flexcan driver.
-Jimmy Assarsson's patch for the kvaser driver corrects the stats counter for
-dropped tx-messages. Geert Uytterhoeven provides one patch and Sergei Shtylyov
-two patches for the rcan_canfd device tree binding description.
-
-regards,
-Marc
-
+Fixes: d50f4630c2e1 ("arm: dts: Remove p1010-flexcan compatible from imx series dts")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Cc: linux-stable <stable@vger.kernel.org> # >= v4.16
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ arch/arm/boot/dts/imx35.dtsi | 4 ++--
+ arch/arm/boot/dts/imx53.dtsi | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-The following changes since commit 2c5d5b13c6eb79f5677e206b8aad59b3a2097f60:
-
-  llc: better deal with too small mtu (2018-05-08 00:11:40 -0400)
-
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.17-20180508
-
-for you to fetch changes up to 7a25ac2f71a409e77dd5c85cf3cbe1cbf2ae77f3:
-
-  DT: net: can: rcar_canfd: document R8A77980 bindings (2018-05-08 10:41:38 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-4.17-20180508
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      dt-bindings: can: rcar_can: Fix R8A7796 SoC name
-
-Jakob Unterwurzacher (1):
-      can: dev: increase bus-off message severity
-
-Jimmy Assarsson (1):
-      can: kvaser_usb: Increase correct stats counter in kvaser_usb_rx_can_msg()
-
-Sergei Shtylyov (2):
-      DT: net: can: rcar_canfd: document R8A77970 bindings
-      DT: net: can: rcar_canfd: document R8A77980 bindings
-
-Uwe Kleine-König (2):
-      can: flexcan: fix endianess detection
-      arm: dts: imx[35]*: declare flexcan devices to be compatible to imx25's flexcan
-
- .../devicetree/bindings/net/can/rcar_canfd.txt     |  4 +++-
- arch/arm/boot/dts/imx35.dtsi                       |  4 ++--
- arch/arm/boot/dts/imx53.dtsi                       |  4 ++--
- drivers/net/can/dev.c                              |  2 +-
- drivers/net/can/flexcan.c                          | 26 ++++++++++++----------
- drivers/net/can/usb/kvaser_usb.c                   |  2 +-
- 6 files changed, 23 insertions(+), 19 deletions(-)
+diff --git a/arch/arm/boot/dts/imx35.dtsi b/arch/arm/boot/dts/imx35.dtsi
+index bf343195697e..54111ed218b1 100644
+--- a/arch/arm/boot/dts/imx35.dtsi
++++ b/arch/arm/boot/dts/imx35.dtsi
+@@ -303,7 +303,7 @@
+ 			};
+ 
+ 			can1: can@53fe4000 {
+-				compatible = "fsl,imx35-flexcan";
++				compatible = "fsl,imx35-flexcan", "fsl,imx25-flexcan";
+ 				reg = <0x53fe4000 0x1000>;
+ 				clocks = <&clks 33>, <&clks 33>;
+ 				clock-names = "ipg", "per";
+@@ -312,7 +312,7 @@
+ 			};
+ 
+ 			can2: can@53fe8000 {
+-				compatible = "fsl,imx35-flexcan";
++				compatible = "fsl,imx35-flexcan", "fsl,imx25-flexcan";
+ 				reg = <0x53fe8000 0x1000>;
+ 				clocks = <&clks 34>, <&clks 34>;
+ 				clock-names = "ipg", "per";
+diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
+index 7d647d043f52..3d65c0192f69 100644
+--- a/arch/arm/boot/dts/imx53.dtsi
++++ b/arch/arm/boot/dts/imx53.dtsi
+@@ -551,7 +551,7 @@
+ 			};
+ 
+ 			can1: can@53fc8000 {
+-				compatible = "fsl,imx53-flexcan";
++				compatible = "fsl,imx53-flexcan", "fsl,imx25-flexcan";
+ 				reg = <0x53fc8000 0x4000>;
+ 				interrupts = <82>;
+ 				clocks = <&clks IMX5_CLK_CAN1_IPG_GATE>,
+@@ -561,7 +561,7 @@
+ 			};
+ 
+ 			can2: can@53fcc000 {
+-				compatible = "fsl,imx53-flexcan";
++				compatible = "fsl,imx53-flexcan", "fsl,imx25-flexcan";
+ 				reg = <0x53fcc000 0x4000>;
+ 				interrupts = <83>;
+ 				clocks = <&clks IMX5_CLK_CAN2_IPG_GATE>,
+-- 
+2.17.0
