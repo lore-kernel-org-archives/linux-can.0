@@ -1,91 +1,70 @@
 From: Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH] can: hi311x: Acquire SPI lock on ->do_get_berr_counter
-Date: Wed, 9 May 2018 14:38:43 +0200
-Message-ID: <b1518690dd293a008959b56cc52f3f29f52be25e.1525869191.git.lukas@wunner.de>
+Subject: [PATCH] can: hi311x: Work around TX complete interrupt erratum
+Date: Wed, 9 May 2018 14:43:43 +0200
+Message-ID: <dc7901c96bed90724bb372f4d3eead82bd22ac37.1525869303.git.lukas@wunner.de>
 Return-path: <netdev-owner@vger.kernel.org>
 Sender: netdev-owner@vger.kernel.org
 To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: Mathias Duckeck <m.duckeck@kunbus.de>, Akshay Bhat <akshay.bhat@timesys.com>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>, Stef Walter <stefw@redhat.com>, Karel Zak <kzak@redhat.com>
+Cc: Mathias Duckeck <m.duckeck@kunbus.de>, Akshay Bhat <akshay.bhat@timesys.com>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
 List-Id: linux-can.vger.kernel.org
 
-hi3110_get_berr_counter() may run concurrently to the rest of the driver
-but neglects to acquire the lock protecting access to the SPI device.
-As a result, it and the rest of the driver may clobber each other's tx
-and rx buffers.
+When sending packets as fast as possible using "cangen -g 0 -i -x", the
+HI-3110 occasionally latches the interrupt pin high on completion of a
+packet, but doesn't set the TXCPLT bit in the INTF register.  The INTF
+register contains 0x00 as if no interrupt has occurred.  Even waiting
+for a few milliseconds after the interrupt doesn't help.
 
-We became aware of this issue because transmission of packets with
-"cangen -g 0 -i -x" frequently hung.  It turns out that agetty executes
-->do_get_berr_counter every few seconds via the following call stack:
+Work around this apparent erratum by instead checking the TXMTY bit in
+the STATF register ("TX FIFO empty").  We know that we've queued up a
+packet for transmission if priv->tx_len is nonzero.  If the TX FIFO is
+empty, transmission of that packet must have completed.
 
-    CPU: 2 PID: 1605 Comm: agetty
-    [<7f3f7500>] (hi3110_get_berr_counter [hi311x])
-    [<7f130204>] (can_fill_info [can_dev])
-    [<80693bc0>] (rtnl_fill_ifinfo)
-    [<806949ec>] (rtnl_dump_ifinfo)
-    [<806b4834>] (netlink_dump)
-    [<806b4bc8>] (netlink_recvmsg)
-    [<8065f180>] (sock_recvmsg)
-    [<80660f90>] (___sys_recvmsg)
-    [<80661e7c>] (__sys_recvmsg)
-    [<80661ec0>] (SyS_recvmsg)
-    [<80108b20>] (ret_fast_syscall+0x0/0x1c)
-
-agetty listens to netlink messages in order to update the login prompt
-when IP addresses change (if /etc/issue contains \4 or \6 escape codes):
-https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/commit/?id=e36deb6424e8
-
-It's a useful feature, though it seems questionable that it causes CAN
-bit error statistics to be queried.
-
-Be that as it may, if hi3110_get_berr_counter() is invoked while a frame
-is sent by hi3110_hw_tx(), bogus SPI transfers like the following may
-occur:
-
-    => 12 00             (hi3110_get_berr_counter() wanted to transmit
-                          EC 00 to query the transmit error counter,
-                          but the first byte was overwritten by
-                          hi3110_hw_tx_frame())
-
-    => EA 00 3E 80 01 FB (hi3110_hw_tx_frame() wanted to transmit a
-                          frame, but the first byte was overwritten by
-                          hi3110_get_berr_counter() because it wanted
-                          to query the receive error counter)
-
-This sequence hangs the transmission because the driver believes it has
-sent a frame and waits for the interrupt signaling completion, but in
-reality the chip has never sent away the frame since the commands it
-received were malformed.
-
-Fix by acquiring the SPI lock in hi3110_get_berr_counter().
-
-I've scrutinized the entire driver for further unlocked SPI accesses but
-found no others.
+Note that this is congruent with our handling of received packets, which
+likewise gleans from the STATF register whether a packet is waiting in
+the RX FIFO, instead of looking at the INTF register.
 
 Cc: Mathias Duckeck <m.duckeck@kunbus.de>
 Cc: Akshay Bhat <akshay.bhat@timesys.com>
 Cc: Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
-Cc: Stef Walter <stefw@redhat.com>
-Cc: Karel Zak <kzak@redhat.com>
 Cc: stable@vger.kernel.org # v4.12+
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
 ---
- drivers/net/can/spi/hi311x.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/spi/hi311x.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index 5590c559a8ca..c2cf254e4e95 100644
+index c2cf254e4e95..53e320c92a8b 100644
 --- a/drivers/net/can/spi/hi311x.c
 +++ b/drivers/net/can/spi/hi311x.c
-@@ -427,8 +427,10 @@ static int hi3110_get_berr_counter(const struct net_device *net,
- 	struct hi3110_priv *priv = netdev_priv(net);
- 	struct spi_device *spi = priv->spi;
+@@ -91,6 +91,7 @@
+ #define HI3110_STAT_BUSOFF BIT(2)
+ #define HI3110_STAT_ERRP BIT(3)
+ #define HI3110_STAT_ERRW BIT(4)
++#define HI3110_STAT_TXMTY BIT(7)
  
-+	mutex_lock(&priv->hi3110_lock);
- 	bec->txerr = hi3110_read(spi, HI3110_READ_TEC);
- 	bec->rxerr = hi3110_read(spi, HI3110_READ_REC);
-+	mutex_unlock(&priv->hi3110_lock);
+ #define HI3110_BTR0_SJW_SHIFT 6
+ #define HI3110_BTR0_BRP_SHIFT 0
+@@ -737,10 +738,7 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
+ 			}
+ 		}
  
- 	return 0;
- }
+-		if (intf == 0)
+-			break;
+-
+-		if (intf & HI3110_INT_TXCPLT) {
++		if (priv->tx_len && statf & HI3110_STAT_TXMTY) {
+ 			net->stats.tx_packets++;
+ 			net->stats.tx_bytes += priv->tx_len - 1;
+ 			can_led_event(net, CAN_LED_EVENT_TX);
+@@ -750,6 +748,9 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
+ 			}
+ 			netif_wake_queue(net);
+ 		}
++
++		if (intf == 0)
++			break;
+ 	}
+ 	mutex_unlock(&priv->hi3110_lock);
+ 	return IRQ_HANDLED;
 -- 
 2.17.0
