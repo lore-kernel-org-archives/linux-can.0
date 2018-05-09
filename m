@@ -1,70 +1,57 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH] can: hi311x: Work around TX complete interrupt erratum
-Date: Wed, 9 May 2018 14:43:43 +0200
-Message-ID: <dc7901c96bed90724bb372f4d3eead82bd22ac37.1525869303.git.lukas@wunner.de>
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: [PATCH v2 01/11] docs: can.rst: fix a footnote reference
+Date: Wed,  9 May 2018 10:18:44 -0300
+Message-ID: <d2f616d096addfe5bc8d561831b832cb1fcbb397.1525870886.git.mchehab+samsung@kernel.org>
+References: <cover.1525870886.git.mchehab+samsung@kernel.org>
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <cover.1525870886.git.mchehab+samsung@kernel.org>
+In-Reply-To: <cover.1525870886.git.mchehab+samsung@kernel.org>
+References: <cover.1525870886.git.mchehab+samsung@kernel.org>
 Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: Mathias Duckeck <m.duckeck@kunbus.de>, Akshay Bhat <akshay.bhat@timesys.com>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-When sending packets as fast as possible using "cangen -g 0 -i -x", the
-HI-3110 occasionally latches the interrupt pin high on completion of a
-packet, but doesn't set the TXCPLT bit in the INTF register.  The INTF
-register contains 0x00 as if no interrupt has occurred.  Even waiting
-for a few milliseconds after the interrupt doesn't help.
+As stated at:
+	http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#footnotes
 
-Work around this apparent erratum by instead checking the TXMTY bit in
-the STATF register ("TX FIFO empty").  We know that we've queued up a
-packet for transmission if priv->tx_len is nonzero.  If the TX FIFO is
-empty, transmission of that packet must have completed.
+A footnote should contain either a number, a reference or
+an auto number, e. g.:
+        [1], [#f1] or [#].
 
-Note that this is congruent with our handling of received packets, which
-likewise gleans from the STATF register whether a packet is waiting in
-the RX FIFO, instead of looking at the INTF register.
+While using [*] accidentaly works for html, it fails for other
+document outputs. In particular, it causes an error with LaTeX
+output, causing all books after networking to not be built.
 
-Cc: Mathias Duckeck <m.duckeck@kunbus.de>
-Cc: Akshay Bhat <akshay.bhat@timesys.com>
-Cc: Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
-Cc: stable@vger.kernel.org # v4.12+
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
+So, replace it by a valid syntax.
+
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 ---
- drivers/net/can/spi/hi311x.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ Documentation/networking/can.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index c2cf254e4e95..53e320c92a8b 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -91,6 +91,7 @@
- #define HI3110_STAT_BUSOFF BIT(2)
- #define HI3110_STAT_ERRP BIT(3)
- #define HI3110_STAT_ERRW BIT(4)
-+#define HI3110_STAT_TXMTY BIT(7)
+diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
+index d23c51abf8c6..2fd0b51a8c52 100644
+--- a/Documentation/networking/can.rst
++++ b/Documentation/networking/can.rst
+@@ -164,7 +164,7 @@ The Linux network devices (by default) just can handle the
+ transmission and reception of media dependent frames. Due to the
+ arbitration on the CAN bus the transmission of a low prio CAN-ID
+ may be delayed by the reception of a high prio CAN frame. To
+-reflect the correct [*]_ traffic on the node the loopback of the sent
++reflect the correct [#f1]_ traffic on the node the loopback of the sent
+ data has to be performed right after a successful transmission. If
+ the CAN network interface is not capable of performing the loopback for
+ some reason the SocketCAN core can do this task as a fallback solution.
+@@ -175,7 +175,7 @@ networking behaviour for CAN applications. Due to some requests from
+ the RT-SocketCAN group the loopback optionally may be disabled for each
+ separate socket. See sockopts from the CAN RAW sockets in :ref:`socketcan-raw-sockets`.
  
- #define HI3110_BTR0_SJW_SHIFT 6
- #define HI3110_BTR0_BRP_SHIFT 0
-@@ -737,10 +738,7 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
- 			}
- 		}
+-.. [*] you really like to have this when you're running analyser
++.. [#f1] you really like to have this when you're running analyser
+        tools like 'candump' or 'cansniffer' on the (same) node.
  
--		if (intf == 0)
--			break;
--
--		if (intf & HI3110_INT_TXCPLT) {
-+		if (priv->tx_len && statf & HI3110_STAT_TXMTY) {
- 			net->stats.tx_packets++;
- 			net->stats.tx_bytes += priv->tx_len - 1;
- 			can_led_event(net, CAN_LED_EVENT_TX);
-@@ -750,6 +748,9 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
- 			}
- 			netif_wake_queue(net);
- 		}
-+
-+		if (intf == 0)
-+			break;
- 	}
- 	mutex_unlock(&priv->hi3110_lock);
- 	return IRQ_HANDLED;
+ 
 -- 
 2.17.0
