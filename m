@@ -1,57 +1,82 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH v2 01/11] docs: can.rst: fix a footnote reference
-Date: Wed,  9 May 2018 10:18:44 -0300
-Message-ID: <d2f616d096addfe5bc8d561831b832cb1fcbb397.1525870886.git.mchehab+samsung@kernel.org>
-References: <cover.1525870886.git.mchehab+samsung@kernel.org>
+From: Akshay Bhat <akshay.bhat@timesys.com>
+Subject: Re: [PATCH] can: hi311x: Acquire SPI lock on ->do_get_berr_counter
+Date: Wed, 9 May 2018 13:58:39 -0400
+Message-ID: <5d3bfbc8-4715-112b-d59f-4f809260942b@timesys.com>
+References: <b1518690dd293a008959b56cc52f3f29f52be25e.1525869191.git.lukas@wunner.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <cover.1525870886.git.mchehab+samsung@kernel.org>
-In-Reply-To: <cover.1525870886.git.mchehab+samsung@kernel.org>
-References: <cover.1525870886.git.mchehab+samsung@kernel.org>
+In-Reply-To: <b1518690dd293a008959b56cc52f3f29f52be25e.1525869191.git.lukas@wunner.de>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Lukas Wunner <lukas@wunner.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Mathias Duckeck <m.duckeck@kunbus.de>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>, Stef Walter <stefw@redhat.com>, Karel Zak <kzak@redhat.com>
 List-Id: linux-can.vger.kernel.org
 
-As stated at:
-	http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#footnotes
 
-A footnote should contain either a number, a reference or
-an auto number, e. g.:
-        [1], [#f1] or [#].
 
-While using [*] accidentaly works for html, it fails for other
-document outputs. In particular, it causes an error with LaTeX
-output, causing all books after networking to not be built.
+On 05/09/2018 08:38 AM, Lukas Wunner wrote:
+> hi3110_get_berr_counter() may run concurrently to the rest of the driver
+> but neglects to acquire the lock protecting access to the SPI device.
+> As a result, it and the rest of the driver may clobber each other's tx
+> and rx buffers.
+> 
+> We became aware of this issue because transmission of packets with
+> "cangen -g 0 -i -x" frequently hung.  It turns out that agetty executes
+> ->do_get_berr_counter every few seconds via the following call stack:
+> 
+>     CPU: 2 PID: 1605 Comm: agetty
+>     [<7f3f7500>] (hi3110_get_berr_counter [hi311x])
+>     [<7f130204>] (can_fill_info [can_dev])
+>     [<80693bc0>] (rtnl_fill_ifinfo)
+>     [<806949ec>] (rtnl_dump_ifinfo)
+>     [<806b4834>] (netlink_dump)
+>     [<806b4bc8>] (netlink_recvmsg)
+>     [<8065f180>] (sock_recvmsg)
+>     [<80660f90>] (___sys_recvmsg)
+>     [<80661e7c>] (__sys_recvmsg)
+>     [<80661ec0>] (SyS_recvmsg)
+>     [<80108b20>] (ret_fast_syscall+0x0/0x1c)
+> 
+> agetty listens to netlink messages in order to update the login prompt
+> when IP addresses change (if /etc/issue contains \4 or \6 escape codes):
+> https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/commit/?id=e36deb6424e8
+> 
+> It's a useful feature, though it seems questionable that it causes CAN
+> bit error statistics to be queried.
+> 
+> Be that as it may, if hi3110_get_berr_counter() is invoked while a frame
+> is sent by hi3110_hw_tx(), bogus SPI transfers like the following may
+> occur:
+> 
+>     => 12 00             (hi3110_get_berr_counter() wanted to transmit
+>                           EC 00 to query the transmit error counter,
+>                           but the first byte was overwritten by
+>                           hi3110_hw_tx_frame())
+> 
+>     => EA 00 3E 80 01 FB (hi3110_hw_tx_frame() wanted to transmit a
+>                           frame, but the first byte was overwritten by
+>                           hi3110_get_berr_counter() because it wanted
+>                           to query the receive error counter)
+> 
+> This sequence hangs the transmission because the driver believes it has
+> sent a frame and waits for the interrupt signaling completion, but in
+> reality the chip has never sent away the frame since the commands it
+> received were malformed.
+> 
+> Fix by acquiring the SPI lock in hi3110_get_berr_counter().
+> 
+> I've scrutinized the entire driver for further unlocked SPI accesses but
+> found no others.
+> 
+> Cc: Mathias Duckeck <m.duckeck@kunbus.de>
+> Cc: Akshay Bhat <akshay.bhat@timesys.com>
+> Cc: Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
+> Cc: Stef Walter <stefw@redhat.com>
+> Cc: Karel Zak <kzak@redhat.com>
+> Cc: stable@vger.kernel.org # v4.12+
+> Signed-off-by: Lukas Wunner <lukas@wunner.de>
+> ---
 
-So, replace it by a valid syntax.
-
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
----
- Documentation/networking/can.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index d23c51abf8c6..2fd0b51a8c52 100644
---- a/Documentation/networking/can.rst
-+++ b/Documentation/networking/can.rst
-@@ -164,7 +164,7 @@ The Linux network devices (by default) just can handle the
- transmission and reception of media dependent frames. Due to the
- arbitration on the CAN bus the transmission of a low prio CAN-ID
- may be delayed by the reception of a high prio CAN frame. To
--reflect the correct [*]_ traffic on the node the loopback of the sent
-+reflect the correct [#f1]_ traffic on the node the loopback of the sent
- data has to be performed right after a successful transmission. If
- the CAN network interface is not capable of performing the loopback for
- some reason the SocketCAN core can do this task as a fallback solution.
-@@ -175,7 +175,7 @@ networking behaviour for CAN applications. Due to some requests from
- the RT-SocketCAN group the loopback optionally may be disabled for each
- separate socket. See sockopts from the CAN RAW sockets in :ref:`socketcan-raw-sockets`.
- 
--.. [*] you really like to have this when you're running analyser
-+.. [#f1] you really like to have this when you're running analyser
-        tools like 'candump' or 'cansniffer' on the (same) node.
- 
- 
--- 
-2.17.0
+Reviewed-by: Akshay Bhat <akshay.bhat@timesys.com>
