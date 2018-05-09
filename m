@@ -1,61 +1,91 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
-        <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v3 1/3] leds: triggers: provide
- led_trigger_register_format()
-Date: Tue, 8 May 2018 22:17:25 +0200
-Message-ID: <20180508201725.3alpkcpaxebupzqv@pengutronix.de>
-References: <20180508100543.12559-1-u.kleine-koenig@pengutronix.de>
- <20180508100543.12559-2-u.kleine-koenig@pengutronix.de>
- <ea34ce99-d446-03d2-b38d-d40a22480337@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <ea34ce99-d446-03d2-b38d-d40a22480337@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jacek Anaszewski <jacek.anaszewski@gmail.com>, Marc Kleine-Budde <m.kleine-budde@pengutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>, Johan Hovold <johan@kernel.org>, Pavel Machek <pavel@ucw.cz>, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Florian Fainelli <f.fainelli@gmail.com>, linux-serial@vger.kernel.org, Mathieu Poirier <mathieu.poirier@linaro.org>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Robin Murphy <robin.murphy@arm.com>, linux-leds@vger.kernel.org
+From: Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH] can: hi311x: Acquire SPI lock on ->do_get_berr_counter
+Date: Wed, 9 May 2018 14:38:43 +0200
+Message-ID: <b1518690dd293a008959b56cc52f3f29f52be25e.1525869191.git.lukas@wunner.de>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Mathias Duckeck <m.duckeck@kunbus.de>, Akshay Bhat <akshay.bhat@timesys.com>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>, Stef Walter <stefw@redhat.com>, Karel Zak <kzak@redhat.com>
 List-Id: linux-can.vger.kernel.org
 
-Hello Jacek,
+hi3110_get_berr_counter() may run concurrently to the rest of the driver
+but neglects to acquire the lock protecting access to the SPI device.
+As a result, it and the rest of the driver may clobber each other's tx
+and rx buffers.
 
-On Tue, May 08, 2018 at 09:33:14PM +0200, Jacek Anaszewski wrote:
-> Thank you for the patch. It looks fine, but please split
-> the drivers/net/can/led.c related changes into a separate one.
+We became aware of this issue because transmission of packets with
+"cangen -g 0 -i -x" frequently hung.  It turns out that agetty executes
+->do_get_berr_counter every few seconds via the following call stack:
 
-I renamed led_trigger_rename_static() to led_trigger_rename() (and
-changed the parameters). The can change just adapts the only user of
-led_trigger_rename_static() to use the new one.
+    CPU: 2 PID: 1605 Comm: agetty
+    [<7f3f7500>] (hi3110_get_berr_counter [hi311x])
+    [<7f130204>] (can_fill_info [can_dev])
+    [<80693bc0>] (rtnl_fill_ifinfo)
+    [<806949ec>] (rtnl_dump_ifinfo)
+    [<806b4834>] (netlink_dump)
+    [<806b4bc8>] (netlink_recvmsg)
+    [<8065f180>] (sock_recvmsg)
+    [<80660f90>] (___sys_recvmsg)
+    [<80661e7c>] (__sys_recvmsg)
+    [<80661ec0>] (SyS_recvmsg)
+    [<80108b20>] (ret_fast_syscall+0x0/0x1c)
 
-It's not impossible to separate this patches, but I wonder if it's worth
-the effort.
+agetty listens to netlink messages in order to update the login prompt
+when IP addresses change (if /etc/issue contains \4 or \6 escape codes):
+https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/commit/?id=e36deb6424e8
 
-The first patch would be like the patch under discussion, just without
-the can bits and introducing something like:
+It's a useful feature, though it seems questionable that it causes CAN
+bit error statistics to be queried.
 
-	/*
-	 * compat stuff to be removed once the only caller is converted
-	 */
-	static inline led_trigger_rename_static(const char *name, struct led_trigger *trig)
-	{
-		(void)led_trigger_rename(trig, "%s", name);
-	}
+Be that as it may, if hi3110_get_berr_counter() is invoked while a frame
+is sent by hi3110_hw_tx(), bogus SPI transfers like the following may
+occur:
 
-Then the second patch would just be the 6-line can hunk. And a third
-patch would remove the compat function. (Maybe I'd choose to squash the
-two can patches together then, but this doesn't reduce the overhead
-considerably.) The only upside I can see here is that it increases my
-patch count, but it's otherwise not worth the effort for such an easy
-change. Further more as there is a strict dependency on these three
-patches this either delays the cleanup or (IMHO more likely) the can
-change would go in via the led tree anyhow.  (Mark already acked patch 2
-of this series and in private confirmed that the agrees to let this
-change go in via the led tree, too.)
+    => 12 00             (hi3110_get_berr_counter() wanted to transmit
+                          EC 00 to query the transmit error counter,
+                          but the first byte was overwritten by
+                          hi3110_hw_tx_frame())
 
-Best regards
-Uwe
+    => EA 00 3E 80 01 FB (hi3110_hw_tx_frame() wanted to transmit a
+                          frame, but the first byte was overwritten by
+                          hi3110_get_berr_counter() because it wanted
+                          to query the receive error counter)
 
+This sequence hangs the transmission because the driver believes it has
+sent a frame and waits for the interrupt signaling completion, but in
+reality the chip has never sent away the frame since the commands it
+received were malformed.
+
+Fix by acquiring the SPI lock in hi3110_get_berr_counter().
+
+I've scrutinized the entire driver for further unlocked SPI accesses but
+found no others.
+
+Cc: Mathias Duckeck <m.duckeck@kunbus.de>
+Cc: Akshay Bhat <akshay.bhat@timesys.com>
+Cc: Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
+Cc: Stef Walter <stefw@redhat.com>
+Cc: Karel Zak <kzak@redhat.com>
+Cc: stable@vger.kernel.org # v4.12+
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+---
+ drivers/net/can/spi/hi311x.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index 5590c559a8ca..c2cf254e4e95 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -427,8 +427,10 @@ static int hi3110_get_berr_counter(const struct net_device *net,
+ 	struct hi3110_priv *priv = netdev_priv(net);
+ 	struct spi_device *spi = priv->spi;
+ 
++	mutex_lock(&priv->hi3110_lock);
+ 	bec->txerr = hi3110_read(spi, HI3110_READ_TEC);
+ 	bec->rxerr = hi3110_read(spi, HI3110_READ_REC);
++	mutex_unlock(&priv->hi3110_lock);
+ 
+ 	return 0;
+ }
 -- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+2.17.0
