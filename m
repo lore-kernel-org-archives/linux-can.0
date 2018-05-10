@@ -1,48 +1,44 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: hi311x: Work around TX complete interrupt erratum
-Date: Thu, 10 May 2018 18:27:23 +0200
-Message-ID: <660b3216-6319-58d0-c715-ef308690d9fb@pengutronix.de>
-References: <dc7901c96bed90724bb372f4d3eead82bd22ac37.1525869303.git.lukas@wunner.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Subject: pull-request: can 2018-05-10
+Date: Thu, 10 May 2018 18:47:47 +0200
+Message-ID: <20180510164749.20481-1-mkl@pengutronix.de>
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <dc7901c96bed90724bb372f4d3eead82bd22ac37.1525869303.git.lukas@wunner.de>
-Content-Language: de-DE
 Sender: netdev-owner@vger.kernel.org
-To: Lukas Wunner <lukas@wunner.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: Mathias Duckeck <m.duckeck@kunbus.de>, Akshay Bhat <akshay.bhat@timesys.com>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 List-Id: linux-can.vger.kernel.org
 
-On 05/09/2018 02:43 PM, Lukas Wunner wrote:
-> When sending packets as fast as possible using "cangen -g 0 -i -x", the
-> HI-3110 occasionally latches the interrupt pin high on completion of a
-> packet, but doesn't set the TXCPLT bit in the INTF register.  The INTF
-> register contains 0x00 as if no interrupt has occurred.  Even waiting
-> for a few milliseconds after the interrupt doesn't help.
-> 
-> Work around this apparent erratum by instead checking the TXMTY bit in
-> the STATF register ("TX FIFO empty").  We know that we've queued up a
-> packet for transmission if priv->tx_len is nonzero.  If the TX FIFO is
-> empty, transmission of that packet must have completed.
-> 
-> Note that this is congruent with our handling of received packets, which
-> likewise gleans from the STATF register whether a packet is waiting in
-> the RX FIFO, instead of looking at the INTF register.
-> 
-> Cc: Mathias Duckeck <m.duckeck@kunbus.de>
-> Cc: Akshay Bhat <akshay.bhat@timesys.com>
-> Cc: Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
-> Cc: stable@vger.kernel.org # v4.12+
-> Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Hello David,
 
-Applied to can.
+this is a pull request for net/master consisting of 2 patches.
 
-Tnx,
+Both patches are from Lukas Wunner and fix two problems found in the hi311x CAN
+driver under high load situations.
+
+regards,
 Marc
 
--- 
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+---
+
+The following changes since commit 4a026da91caaa36004a53a844dd00959370ea8fc:
+
+  net/9p: correct some comment errors in 9p file system code (2018-05-10 08:21:53 -0400)
+
+are available in the Git repository at:
+
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.17-20180510
+
+for you to fetch changes up to 32bee8f48fa048a3198109de50e51c092507ff52:
+
+  can: hi311x: Work around TX complete interrupt erratum (2018-05-10 18:25:30 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.17-20180510
+
+----------------------------------------------------------------
+Lukas Wunner (2):
+      can: hi311x: Acquire SPI lock on ->do_get_berr_counter
+      can: hi311x: Work around TX complete interrupt erratum
+
+ drivers/net/can/spi/hi311x.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
