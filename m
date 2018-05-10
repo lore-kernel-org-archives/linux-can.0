@@ -1,88 +1,88 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v3 1/3] leds: triggers: provide
- led_trigger_register_format()
-Date: Thu, 10 May 2018 13:22:29 +0200
-Message-ID: <20180510112229.GE6977@amd>
-References: <20180508100543.12559-1-u.kleine-koenig@pengutronix.de>
- <20180508100543.12559-2-u.kleine-koenig@pengutronix.de>
- <20180510112101.GD6977@amd>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: hi311x: Acquire SPI lock on ->do_get_berr_counter
+Date: Thu, 10 May 2018 18:23:37 +0200
+Message-ID: <5fef7d7f-77d4-e2c9-3f55-bd2ae48b0f83@pengutronix.de>
+References: <b1518690dd293a008959b56cc52f3f29f52be25e.1525869191.git.lukas@wunner.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="maH1Gajj2nflutpK"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180510112101.GD6977@amd>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>, Johan Hovold <johan@kernel.org>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, linux-serial@vger.kernel.org, linux-leds@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Florian Fainelli <f.fainelli@gmail.com>, Mathieu Poirier <mathieu.poirier@linaro.org>, linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <b1518690dd293a008959b56cc52f3f29f52be25e.1525869191.git.lukas@wunner.de>
+Content-Language: de-DE
+Sender: netdev-owner@vger.kernel.org
+To: Lukas Wunner <lukas@wunner.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Mathias Duckeck <m.duckeck@kunbus.de>, Akshay Bhat <akshay.bhat@timesys.com>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>, Stef Walter <stefw@redhat.com>, Karel Zak <kzak@redhat.com>
 List-Id: linux-can.vger.kernel.org
 
+On 05/09/2018 02:38 PM, Lukas Wunner wrote:
+> hi3110_get_berr_counter() may run concurrently to the rest of the driver
+> but neglects to acquire the lock protecting access to the SPI device.
+> As a result, it and the rest of the driver may clobber each other's tx
+> and rx buffers.
+> 
+> We became aware of this issue because transmission of packets with
+> "cangen -g 0 -i -x" frequently hung.  It turns out that agetty executes
+> ->do_get_berr_counter every few seconds via the following call stack:
+> 
+>     CPU: 2 PID: 1605 Comm: agetty
+>     [<7f3f7500>] (hi3110_get_berr_counter [hi311x])
+>     [<7f130204>] (can_fill_info [can_dev])
+>     [<80693bc0>] (rtnl_fill_ifinfo)
+>     [<806949ec>] (rtnl_dump_ifinfo)
+>     [<806b4834>] (netlink_dump)
+>     [<806b4bc8>] (netlink_recvmsg)
+>     [<8065f180>] (sock_recvmsg)
+>     [<80660f90>] (___sys_recvmsg)
+>     [<80661e7c>] (__sys_recvmsg)
+>     [<80661ec0>] (SyS_recvmsg)
+>     [<80108b20>] (ret_fast_syscall+0x0/0x1c)
+> 
+> agetty listens to netlink messages in order to update the login prompt
+> when IP addresses change (if /etc/issue contains \4 or \6 escape codes):
+> https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/commit/?id=e36deb6424e8
+> 
+> It's a useful feature, though it seems questionable that it causes CAN
+> bit error statistics to be queried.
+> 
+> Be that as it may, if hi3110_get_berr_counter() is invoked while a frame
+> is sent by hi3110_hw_tx(), bogus SPI transfers like the following may
+> occur:
+> 
+>     => 12 00             (hi3110_get_berr_counter() wanted to transmit
+>                           EC 00 to query the transmit error counter,
+>                           but the first byte was overwritten by
+>                           hi3110_hw_tx_frame())
+> 
+>     => EA 00 3E 80 01 FB (hi3110_hw_tx_frame() wanted to transmit a
+>                           frame, but the first byte was overwritten by
+>                           hi3110_get_berr_counter() because it wanted
+>                           to query the receive error counter)
+> 
+> This sequence hangs the transmission because the driver believes it has
+> sent a frame and waits for the interrupt signaling completion, but in
+> reality the chip has never sent away the frame since the commands it
+> received were malformed.
+> 
+> Fix by acquiring the SPI lock in hi3110_get_berr_counter().
+> 
+> I've scrutinized the entire driver for further unlocked SPI accesses but
+> found no others.
+> 
+> Cc: Mathias Duckeck <m.duckeck@kunbus.de>
+> Cc: Akshay Bhat <akshay.bhat@timesys.com>
+> Cc: Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
+> Cc: Stef Walter <stefw@redhat.com>
+> Cc: Karel Zak <kzak@redhat.com>
+> Cc: stable@vger.kernel.org # v4.12+
+> Signed-off-by: Lukas Wunner <lukas@wunner.de>
 
---maH1Gajj2nflutpK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to can.
 
-On Thu 2018-05-10 13:21:01, Pavel Machek wrote:
-> Hi!
->=20
-> > This allows one to simplify drivers that provide a trigger with a
-> > non-constant name (e.g. one trigger per device with the trigger name
-> > depending on the device's name).
-> >=20
-> > Internally the memory the name member of struct led_trigger points to
-> > now always allocated dynamically instead of just taken from the caller.
-> >=20
-> > The function led_trigger_rename_static() must be changed accordingly and
-> > was renamed to led_trigger_rename() for consistency, with the only user
-> > adapted.
->=20
-> Well, I'm not sure if we want to have _that_ many trigger. Trigger
-> interface is going to become.. "interesting".
->=20
-> We have 4K limit on total number of triggers. We use rather strange
-> interface to select trigger.
->=20
-> > @@ -115,13 +115,13 @@ static int can_led_notifier(struct notifier_block=
- *nb, unsigned long msg,
-> > =20
-> >  	if (msg =3D=3D NETDEV_CHANGENAME) {
-> >  		snprintf(name, sizeof(name), "%s-tx", netdev->name);
-> > -		led_trigger_rename_static(name, priv->tx_led_trig);
-> > +		led_trigger_rename(priv->tx_led_trig, name);
-> > =20
-> >  		snprintf(name, sizeof(name), "%s-rx", netdev->name);
-> > -		led_trigger_rename_static(name, priv->rx_led_trig);
-> > +		led_trigger_rename(priv->rx_led_trig, name);
-> > =20
-> >  		snprintf(name, sizeof(name), "%s-rxtx", netdev->name);
-> > -		led_trigger_rename_static(name, priv->rxtx_led_trig);
-> > +		led_trigger_rename(priv->rxtx_led_trig, name);
-> >  	}
-> > =20
->=20
-> I know this is not your fault, but if you have a space or "[]" in
-> netdev names, confusing things will happen.
+Tnx,
+Marc
 
-Hmm. If we are doing this we really should check trigger names for
-forbidden characters. At least "[] " should be forbidden.
-								Pavel
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---maH1Gajj2nflutpK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlr0K3UACgkQMOfwapXb+vKCHQCeIzCRd6sZWya59FEb/WCapyef
-ChwAoLknzNtCk/JAfalkPnkseQxKoshk
-=BEdK
------END PGP SIGNATURE-----
-
---maH1Gajj2nflutpK--
+-- 
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
