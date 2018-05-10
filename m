@@ -1,44 +1,97 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2018-05-10
-Date: Thu, 10 May 2018 18:47:47 +0200
-Message-ID: <20180510164749.20481-1-mkl@pengutronix.de>
+Subject: [PATCH 1/2] can: hi311x: Acquire SPI lock on ->do_get_berr_counter
+Date: Thu, 10 May 2018 18:47:48 +0200
+Message-ID: <20180510164749.20481-2-mkl@pengutronix.de>
+References: <20180510164749.20481-1-mkl@pengutronix.de>
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20180510164749.20481-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Lukas Wunner <lukas@wunner.de>, Mathias Duckeck <m.duckeck@kunbus.de>, Akshay Bhat <akshay.bhat@timesys.com>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>, Stef Walter <stefw@redhat.com>, Karel Zak <kzak@redhat.com>, stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Lukas Wunner <lukas@wunner.de>
 
-this is a pull request for net/master consisting of 2 patches.
+hi3110_get_berr_counter() may run concurrently to the rest of the driver
+but neglects to acquire the lock protecting access to the SPI device.
+As a result, it and the rest of the driver may clobber each other's tx
+and rx buffers.
 
-Both patches are from Lukas Wunner and fix two problems found in the hi311x CAN
-driver under high load situations.
+We became aware of this issue because transmission of packets with
+"cangen -g 0 -i -x" frequently hung.  It turns out that agetty executes
+->do_get_berr_counter every few seconds via the following call stack:
 
-regards,
-Marc
+    CPU: 2 PID: 1605 Comm: agetty
+    [<7f3f7500>] (hi3110_get_berr_counter [hi311x])
+    [<7f130204>] (can_fill_info [can_dev])
+    [<80693bc0>] (rtnl_fill_ifinfo)
+    [<806949ec>] (rtnl_dump_ifinfo)
+    [<806b4834>] (netlink_dump)
+    [<806b4bc8>] (netlink_recvmsg)
+    [<8065f180>] (sock_recvmsg)
+    [<80660f90>] (___sys_recvmsg)
+    [<80661e7c>] (__sys_recvmsg)
+    [<80661ec0>] (SyS_recvmsg)
+    [<80108b20>] (ret_fast_syscall+0x0/0x1c)
 
+agetty listens to netlink messages in order to update the login prompt
+when IP addresses change (if /etc/issue contains \4 or \6 escape codes):
+https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/commit/?id=e36deb6424e8
+
+It's a useful feature, though it seems questionable that it causes CAN
+bit error statistics to be queried.
+
+Be that as it may, if hi3110_get_berr_counter() is invoked while a frame
+is sent by hi3110_hw_tx(), bogus SPI transfers like the following may
+occur:
+
+    => 12 00             (hi3110_get_berr_counter() wanted to transmit
+                          EC 00 to query the transmit error counter,
+                          but the first byte was overwritten by
+                          hi3110_hw_tx_frame())
+
+    => EA 00 3E 80 01 FB (hi3110_hw_tx_frame() wanted to transmit a
+                          frame, but the first byte was overwritten by
+                          hi3110_get_berr_counter() because it wanted
+                          to query the receive error counter)
+
+This sequence hangs the transmission because the driver believes it has
+sent a frame and waits for the interrupt signaling completion, but in
+reality the chip has never sent away the frame since the commands it
+received were malformed.
+
+Fix by acquiring the SPI lock in hi3110_get_berr_counter().
+
+I've scrutinized the entire driver for further unlocked SPI accesses but
+found no others.
+
+Cc: Mathias Duckeck <m.duckeck@kunbus.de>
+Cc: Akshay Bhat <akshay.bhat@timesys.com>
+Cc: Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
+Cc: Stef Walter <stefw@redhat.com>
+Cc: Karel Zak <kzak@redhat.com>
+Cc: stable@vger.kernel.org # v4.12+
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Reviewed-by: Akshay Bhat <akshay.bhat@timesys.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/spi/hi311x.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The following changes since commit 4a026da91caaa36004a53a844dd00959370ea8fc:
-
-  net/9p: correct some comment errors in 9p file system code (2018-05-10 08:21:53 -0400)
-
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.17-20180510
-
-for you to fetch changes up to 32bee8f48fa048a3198109de50e51c092507ff52:
-
-  can: hi311x: Work around TX complete interrupt erratum (2018-05-10 18:25:30 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-4.17-20180510
-
-----------------------------------------------------------------
-Lukas Wunner (2):
-      can: hi311x: Acquire SPI lock on ->do_get_berr_counter
-      can: hi311x: Work around TX complete interrupt erratum
-
- drivers/net/can/spi/hi311x.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index 5590c559a8ca..c2cf254e4e95 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -427,8 +427,10 @@ static int hi3110_get_berr_counter(const struct net_device *net,
+ 	struct hi3110_priv *priv = netdev_priv(net);
+ 	struct spi_device *spi = priv->spi;
+ 
++	mutex_lock(&priv->hi3110_lock);
+ 	bec->txerr = hi3110_read(spi, HI3110_READ_TEC);
+ 	bec->rxerr = hi3110_read(spi, HI3110_READ_REC);
++	mutex_unlock(&priv->hi3110_lock);
+ 
+ 	return 0;
+ }
+-- 
+2.17.0
