@@ -1,64 +1,51 @@
-From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: Re: [PATCH v3 1/3] leds: triggers: provide
- led_trigger_register_format()
-Date: Wed, 9 May 2018 21:57:15 +0200
-Message-ID: <906d2b27-2e8b-92a9-13ff-2676f48142f4@gmail.com>
-References: <20180508100543.12559-1-u.kleine-koenig@pengutronix.de>
- <20180508100543.12559-2-u.kleine-koenig@pengutronix.de>
- <ea34ce99-d446-03d2-b38d-d40a22480337@gmail.com>
- <20180508201725.3alpkcpaxebupzqv@pengutronix.de>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH] can: hi311x: Work around TX complete interrupt erratum
+Date: Thu, 10 May 2018 06:38:43 +0200
+Message-ID: <20180510043843.GA14936@wunner.de>
+References: <dc7901c96bed90724bb372f4d3eead82bd22ac37.1525869303.git.lukas@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180508201725.3alpkcpaxebupzqv@pengutronix.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>, Marc Kleine-Budde <m.kleine-budde@pengutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>, Johan Hovold <johan@kernel.org>, Pavel Machek <pavel@ucw.cz>, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Florian Fainelli <f.fainelli@gmail.com>, linux-serial@vger.kernel.org, Mathieu Poirier <mathieu.poirier@linaro.org>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Robin Murphy <robin.murphy@arm.com>, linux-leds@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <dc7901c96bed90724bb372f4d3eead82bd22ac37.1525869303.git.lukas@wunner.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Mathias Duckeck <m.duckeck@kunbus.de>, Akshay Bhat <akshay.bhat@timesys.com>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
 List-Id: linux-can.vger.kernel.org
 
-Hi Uwe,
+On Wed, May 09, 2018 at 02:43:43PM +0200, Lukas Wunner wrote:
+> When sending packets as fast as possible using "cangen -g 0 -i -x", the
+> HI-3110 occasionally latches the interrupt pin high on completion of a
+> packet, but doesn't set the TXCPLT bit in the INTF register.  The INTF
+> register contains 0x00 as if no interrupt has occurred.  Even waiting
+> for a few milliseconds after the interrupt doesn't help.
+> 
+> Work around this apparent erratum by instead checking the TXMTY bit in
+> the STATF register ("TX FIFO empty").  We know that we've queued up a
+> packet for transmission if priv->tx_len is nonzero.  If the TX FIFO is
+> empty, transmission of that packet must have completed.
+> 
+> Note that this is congruent with our handling of received packets, which
+> likewise gleans from the STATF register whether a packet is waiting in
+> the RX FIFO, instead of looking at the INTF register.
 
-On 05/08/2018 10:17 PM, Uwe Kleine-König wrote:
-> Hello Jacek,
-> 
-> On Tue, May 08, 2018 at 09:33:14PM +0200, Jacek Anaszewski wrote:
->> Thank you for the patch. It looks fine, but please split
->> the drivers/net/can/led.c related changes into a separate one.
-> 
-> I renamed led_trigger_rename_static() to led_trigger_rename() (and
-> changed the parameters). The can change just adapts the only user of
-> led_trigger_rename_static() to use the new one.
-> 
-> It's not impossible to separate this patches, but I wonder if it's worth
-> the effort.
-> 
-> The first patch would be like the patch under discussion, just without
-> the can bits and introducing something like:
-> 
-> 	/*
-> 	 * compat stuff to be removed once the only caller is converted
-> 	 */
-> 	static inline led_trigger_rename_static(const char *name, struct led_trigger *trig)
-> 	{
-> 		(void)led_trigger_rename(trig, "%s", name);
-> 	}
-> 
-> Then the second patch would just be the 6-line can hunk. And a third
-> patch would remove the compat function. (Maybe I'd choose to squash the
-> two can patches together then, but this doesn't reduce the overhead
-> considerably.) The only upside I can see here is that it increases my
-> patch count, but it's otherwise not worth the effort for such an easy
-> change. Further more as there is a strict dependency on these three
-> patches this either delays the cleanup or (IMHO more likely) the can
-> change would go in via the led tree anyhow.  (Mark already acked patch 2
-> of this series and in private confirmed that the agrees to let this
-> change go in via the led tree, too.)
+I should have mentioned, to verify the existence of the erratum and the
+validity of the patch, you can apply the little debug patch below, then
+run "cangen -g 0 -i -x".  You should see error messages in dmesg within
+a few minutes.
 
-OK, makes sense. I'll wait also for ack on 3/3 since it should
-go through the LED tree as well - uses a new led_trigger_register_format().
-
--- 
-Best regards,
-Jacek Anaszewski
+-- >8 --
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index 53e320c..48b5c63 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -739,6 +739,9 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
+ 		}
+ 
+ 		if (priv->tx_len && statf & HI3110_STAT_TXMTY) {
++			if (!(intf & HI3110_INT_TXCPLT))
++				dev_err(&spi->dev, "TX FIFO empty and TX was queued but TXCPLT not set\n");
++
+ 			net->stats.tx_packets++;
+ 			net->stats.tx_bytes += priv->tx_len - 1;
+ 			can_led_event(net, CAN_LED_EVENT_TX);
