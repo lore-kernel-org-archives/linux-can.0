@@ -1,62 +1,37 @@
-From: Faiz Abbas <faiz_abbas@ti.com>
-Subject: [PATCH] can: m_can: Move acessing of message ram to after clocks are enabled
-Date: Tue, 29 May 2018 19:49:40 +0530
-Message-ID: <20180529141940.1682-1-faiz_abbas@ti.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH] can.h: Fix can error class mask dir path
+Date: Tue, 29 May 2018 15:26:12 -0500
+Message-ID: <20180529202612.4873-1-dmurphy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: mkl@pengutronix.de, wg@grandegger.com, faiz_abbas@ti.com
+To: socketcan@hartkopp.net, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-MCAN message ram should only be accessed once clocks are enabled.
-Therefore, move the call to parse/init the message ram to after
-clocks are enabled.
+The CAN error masks header file is in the
+include/uapi directory.
 
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+Fix the path in the header to the correct location.
+
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- drivers/net/can/m_can/m_can.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ include/uapi/linux/can.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index b397a33f3d32..a9fbf81ac3d4 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1642,8 +1642,6 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 	priv->can.clock.freq = clk_get_rate(cclk);
- 	priv->mram_base = mram_addr;
- 
--	m_can_of_parse_mram(priv, mram_config_vals);
--
- 	platform_set_drvdata(pdev, dev);
- 	SET_NETDEV_DEV(dev, &pdev->dev);
- 
-@@ -1666,6 +1664,8 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 		goto clk_disable;
- 	}
- 
-+	m_can_of_parse_mram(priv, mram_config_vals);
-+
- 	devm_can_led_init(dev);
- 
- 	of_can_transceiver(dev);
-@@ -1715,8 +1715,6 @@ static __maybe_unused int m_can_resume(struct device *dev)
- 
- 	pinctrl_pm_select_default_state(dev);
- 
--	m_can_init_ram(priv);
--
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
- 	if (netif_running(ndev)) {
-@@ -1726,6 +1724,7 @@ static __maybe_unused int m_can_resume(struct device *dev)
- 		if (ret)
- 			return ret;
- 
-+		m_can_init_ram(priv);
- 		m_can_start(ndev);
- 		netif_device_attach(ndev);
- 		netif_start_queue(ndev);
+diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
+index d7f97ac197a9..0afb7d8e867f 100644
+--- a/include/uapi/linux/can.h
++++ b/include/uapi/linux/can.h
+@@ -77,7 +77,7 @@ typedef __u32 canid_t;
+ /*
+  * Controller Area Network Error Message Frame Mask structure
+  *
+- * bit 0-28	: error class mask (see include/linux/can/error.h)
++ * bit 0-28	: error class mask (see include/uapi/linux/can/error.h)
+  * bit 29-31	: set to zero
+  */
+ typedef __u32 can_err_mask_t;
 -- 
-2.17.0
+2.17.0.582.gccdcbd54c
