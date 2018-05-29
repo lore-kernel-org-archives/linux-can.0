@@ -1,30 +1,56 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v3 1/3] leds: triggers: provide led_trigger_register_format()
-Date: Sun, 13 May 2018 17:34:42 +0300
-Message-ID: <CAHp75VeWsbT+XuacdrKM6drzcxwx0inAUjtyU0WBX_SUTg6Lbg@mail.gmail.com>
-References: <20180508100543.12559-1-u.kleine-koenig@pengutronix.de>
- <20180508100543.12559-2-u.kleine-koenig@pengutronix.de> <20180510112101.GD6977@amd>
- <20180510112229.GE6977@amd>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: [PATCH] can: m_can: Fix runtime resume call
+Date: Tue, 29 May 2018 18:54:26 +0530
+Message-ID: <20180529132426.31216-1-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180510112229.GE6977@amd>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>, Johan Hovold <johan@kernel.org>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>, Linux LED Subsystem <linux-leds@vger.kernel.org>, linux-can@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Florian Fainelli <f.fainelli@gmail.com>, Mathieu Poirier <mathieu.poirier@linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Robin Murphy <robin.murphy@arm.com>, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: mkl@pengutronix.de, wg@grandegger.com, faiz_abbas@ti.com
 List-Id: linux-can.vger.kernel.org
 
-On Thu, May 10, 2018 at 2:22 PM, Pavel Machek <pavel@ucw.cz> wrote:
-> On Thu 2018-05-10 13:21:01, Pavel Machek wrote:
+pm_runtime_get_sync() returns a 1 if the state of the device is already
+'active'. This is not a failure case and should return a success.
 
->> I know this is not your fault, but if you have a space or "[]" in
->> netdev names, confusing things will happen.
->
-> Hmm. If we are doing this we really should check trigger names for
-> forbidden characters. At least "[] " should be forbidden.
+Therefore fix error handling for pm_runtime_get_sync() call such that
+it returns success when the value is 1.
 
-So, string_escape_mem() is your helper here.
+Also cleanup the TODO for using runtime PM for sleep mode as that is
+implemented.
 
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+---
+ drivers/net/can/m_can/m_can.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index a9fbf81ac3d4..04c48371ab2a 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -634,10 +634,12 @@ static int m_can_clk_start(struct m_can_priv *priv)
+ 	int err;
+ 
+ 	err = pm_runtime_get_sync(priv->device);
+-	if (err)
++	if (err < 0) {
+ 		pm_runtime_put_noidle(priv->device);
++		return err;
++	}
+ 
+-	return err;
++	return 0;
+ }
+ 
+ static void m_can_clk_stop(struct m_can_priv *priv)
+@@ -1687,8 +1689,6 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-/* TODO: runtime PM with power down or sleep mode  */
+-
+ static __maybe_unused int m_can_suspend(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.0
