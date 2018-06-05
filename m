@@ -1,37 +1,109 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH] can.h: Fix can error class mask dir path
-Date: Tue, 29 May 2018 15:26:12 -0500
-Message-ID: <20180529202612.4873-1-dmurphy@ti.com>
+From: Mark Jonas <mark.jonas@de.bosch.com>
+Subject: [PATCH 0/5] can: enable multi-queue for SocketCAN devices
+Date: Tue, 5 Jun 2018 20:43:55 +0200
+Message-ID: <1528224240-30786-1-git-send-email-mark.jonas@de.bosch.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: socketcan@hartkopp.net, mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, hs@denx.de, yi.zhu5@cn.bosch.com, Mark Jonas <mark.jonas@de.bosch.com>
 List-Id: linux-can.vger.kernel.org
 
-The CAN error masks header file is in the
-include/uapi directory.
+Upon request by Marc Kleine-Budde this patch series does not only
+contain our patch to enable enable multi-queue for SocketCAN devices
+but also a driver (Companion driver suite) which makes active use of
+this feature.
 
-Fix the path in the header to the correct location.
+The driver suite implements
+  - two CAN interfaces
+  - one generic command interfaces
+and offers a SocketCAN as well as a char device interface. The
+SocketCAN interface supports multi-queue.
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- include/uapi/linux/can.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The functionality bases on an external peripheral chip named Companion.
+It offers two CAN interfaces, each has 8 prioritized transmit FIFOs as
+well as one receive FIFO. Besides CAN, undisclosed additional functions
+can be accessed through the char device.
 
-diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
-index d7f97ac197a9..0afb7d8e867f 100644
---- a/include/uapi/linux/can.h
-+++ b/include/uapi/linux/can.h
-@@ -77,7 +77,7 @@ typedef __u32 canid_t;
- /*
-  * Controller Area Network Error Message Frame Mask structure
-  *
-- * bit 0-28	: error class mask (see include/linux/can/error.h)
-+ * bit 0-28	: error class mask (see include/uapi/linux/can/error.h)
-  * bit 29-31	: set to zero
-  */
- typedef __u32 can_err_mask_t;
+A standard SPI interface with two additional lines for flow control is
+used. The Companion chip is the SPI slave.
+
+The driver suite consists of three separate drivers. The following
+diagram illustrates the dependencies in layers.
+
+           /dev/companion       SocketCAN                User Space
+-------------------------------------------------------------------
+         +----------------+ +---------------+
+         | companion-char | | companion-can |
+         +----------------+ +---------------+
+         +----------------------------------+
+         |          companion-spi           |
+         +----------------------------------+
+         +----------------------------------+
+         |     standard SPI subsystem       |
+         +----------------------------------+          Linux Kernel
+-------------------------------------------------------------------
+               | | | |      | |                            Hardware
+            CS-+ | | |      | +-BUSY
+            CLK--+ | |      +---REQUEST
+            MOSI---+ |
+            MISO-----+
+
+companion-spi
+   core.c: handles SPI, sysfs entry and interface to upper layer
+   protocol-manager.c: handles protocol with the SPI HW
+   queue-manager.c: handles buffering and packets scheduling
+
+companion-can
+   makes use of multi-queue support and allows to use tc to configure
+   the queuing discipline (e.g. mqprio). Together with the SO_PRIORITY
+   socket option this allows to specify the FIFO a CAN frame shall be
+   sent to.
+
+companion-char
+   handles messages to other undisclosed functionality beyond CAN.
+
+Zhu Yi (5):
+  can: enable multi-queue for SocketCAN devices
+  spi: implement companion-spi driver
+  char: implement companion-char driver
+  can: implement companion-can driver
+  spi,can,char: add companion DT binding documentation
+
+ .../devicetree/bindings/spi/bosch,companion.txt    |   82 ++
+ drivers/char/Kconfig                               |    7 +
+ drivers/char/Makefile                              |    2 +
+ drivers/char/companion-char.c                      |  367 ++++++
+ drivers/net/can/Kconfig                            |    8 +
+ drivers/net/can/Makefile                           |    1 +
+ drivers/net/can/companion-can.c                    |  694 ++++++++++++
+ drivers/net/can/dev.c                              |    8 +-
+ drivers/spi/Kconfig                                |    2 +
+ drivers/spi/Makefile                               |    2 +
+ drivers/spi/companion/Kconfig                      |    5 +
+ drivers/spi/companion/Makefile                     |    2 +
+ drivers/spi/companion/core.c                       | 1189 ++++++++++++++++++++
+ drivers/spi/companion/protocol-manager.c           | 1035 +++++++++++++++++
+ drivers/spi/companion/protocol-manager.h           |  348 ++++++
+ drivers/spi/companion/protocol.h                   |  273 +++++
+ drivers/spi/companion/queue-manager.c              |  146 +++
+ drivers/spi/companion/queue-manager.h              |  245 ++++
+ include/linux/can/dev.h                            |    7 +-
+ include/linux/companion.h                          |  258 +++++
+ 20 files changed, 4677 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/bosch,companion.txt
+ create mode 100644 drivers/char/companion-char.c
+ create mode 100644 drivers/net/can/companion-can.c
+ create mode 100644 drivers/spi/companion/Kconfig
+ create mode 100644 drivers/spi/companion/Makefile
+ create mode 100644 drivers/spi/companion/core.c
+ create mode 100644 drivers/spi/companion/protocol-manager.c
+ create mode 100644 drivers/spi/companion/protocol-manager.h
+ create mode 100644 drivers/spi/companion/protocol.h
+ create mode 100644 drivers/spi/companion/queue-manager.c
+ create mode 100644 drivers/spi/companion/queue-manager.h
+ create mode 100644 include/linux/companion.h
+
 -- 
-2.17.0.582.gccdcbd54c
+2.7.4
