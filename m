@@ -1,109 +1,96 @@
 From: Mark Jonas <mark.jonas@de.bosch.com>
-Subject: [PATCH 0/5] can: enable multi-queue for SocketCAN devices
-Date: Tue, 5 Jun 2018 20:43:55 +0200
-Message-ID: <1528224240-30786-1-git-send-email-mark.jonas@de.bosch.com>
+Subject: [PATCH 1/5] can: enable multi-queue for SocketCAN devices
+Date: Tue, 5 Jun 2018 20:43:56 +0200
+Message-ID: <1528224240-30786-2-git-send-email-mark.jonas@de.bosch.com>
+References: <1528224240-30786-1-git-send-email-mark.jonas@de.bosch.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1528224240-30786-1-git-send-email-mark.jonas@de.bosch.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, hs@denx.de, yi.zhu5@cn.bosch.com, Mark Jonas <mark.jonas@de.bosch.com>
 List-Id: linux-can.vger.kernel.org
 
-Upon request by Marc Kleine-Budde this patch series does not only
-contain our patch to enable enable multi-queue for SocketCAN devices
-but also a driver (Companion driver suite) which makes active use of
-this feature.
+From: Zhu Yi <yi.zhu5@cn.bosch.com>
 
-The driver suite implements
-  - two CAN interfaces
-  - one generic command interfaces
-and offers a SocketCAN as well as a char device interface. The
-SocketCAN interface supports multi-queue.
+The existing SocketCAN implementation provides alloc_candev() to
+allocate a CAN device using a single Tx and Rx queue. This can lead to
+priority inversion in case the single Tx queue is already full with low
+priority messages and a high priority message needs to be sent while the
+bus is fully loaded with medium priority messages.
 
-The functionality bases on an external peripheral chip named Companion.
-It offers two CAN interfaces, each has 8 prioritized transmit FIFOs as
-well as one receive FIFO. Besides CAN, undisclosed additional functions
-can be accessed through the char device.
+This problem can be solved by using the existing multi-queue support of
+the network subsytem. The commit makes it possible to use multi-queue in
+the CAN subsystem in the same way it is used in the Ethernet subsystem
+by adding an alloc_candev_mqs() call and accompanying macros. With this
+support a CAN device can use multi-queue qdisc (e.g. mqprio) to avoid
+the aforementioned priority inversion.
 
-A standard SPI interface with two additional lines for flow control is
-used. The Companion chip is the SPI slave.
+The exisiting functionality of alloc_candev() is the same as before.
 
-The driver suite consists of three separate drivers. The following
-diagram illustrates the dependencies in layers.
+CAN devices need to have prioritized multiple hardware queues or are
+able to abort waiting for arbitration to make sensible use of
+multi-queues.
 
-           /dev/companion       SocketCAN                User Space
--------------------------------------------------------------------
-         +----------------+ +---------------+
-         | companion-char | | companion-can |
-         +----------------+ +---------------+
-         +----------------------------------+
-         |          companion-spi           |
-         +----------------------------------+
-         +----------------------------------+
-         |     standard SPI subsystem       |
-         +----------------------------------+          Linux Kernel
--------------------------------------------------------------------
-               | | | |      | |                            Hardware
-            CS-+ | | |      | +-BUSY
-            CLK--+ | |      +---REQUEST
-            MOSI---+ |
-            MISO-----+
+Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
+Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+Reviewed-by: Heiko Schocher <hs@denx.de>
+---
+ drivers/net/can/dev.c   | 8 +++++---
+ include/linux/can/dev.h | 7 ++++++-
+ 2 files changed, 11 insertions(+), 4 deletions(-)
 
-companion-spi
-   core.c: handles SPI, sysfs entry and interface to upper layer
-   protocol-manager.c: handles protocol with the SPI HW
-   queue-manager.c: handles buffering and packets scheduling
-
-companion-can
-   makes use of multi-queue support and allows to use tc to configure
-   the queuing discipline (e.g. mqprio). Together with the SO_PRIORITY
-   socket option this allows to specify the FIFO a CAN frame shall be
-   sent to.
-
-companion-char
-   handles messages to other undisclosed functionality beyond CAN.
-
-Zhu Yi (5):
-  can: enable multi-queue for SocketCAN devices
-  spi: implement companion-spi driver
-  char: implement companion-char driver
-  can: implement companion-can driver
-  spi,can,char: add companion DT binding documentation
-
- .../devicetree/bindings/spi/bosch,companion.txt    |   82 ++
- drivers/char/Kconfig                               |    7 +
- drivers/char/Makefile                              |    2 +
- drivers/char/companion-char.c                      |  367 ++++++
- drivers/net/can/Kconfig                            |    8 +
- drivers/net/can/Makefile                           |    1 +
- drivers/net/can/companion-can.c                    |  694 ++++++++++++
- drivers/net/can/dev.c                              |    8 +-
- drivers/spi/Kconfig                                |    2 +
- drivers/spi/Makefile                               |    2 +
- drivers/spi/companion/Kconfig                      |    5 +
- drivers/spi/companion/Makefile                     |    2 +
- drivers/spi/companion/core.c                       | 1189 ++++++++++++++++++++
- drivers/spi/companion/protocol-manager.c           | 1035 +++++++++++++++++
- drivers/spi/companion/protocol-manager.h           |  348 ++++++
- drivers/spi/companion/protocol.h                   |  273 +++++
- drivers/spi/companion/queue-manager.c              |  146 +++
- drivers/spi/companion/queue-manager.h              |  245 ++++
- include/linux/can/dev.h                            |    7 +-
- include/linux/companion.h                          |  258 +++++
- 20 files changed, 4677 insertions(+), 4 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/spi/bosch,companion.txt
- create mode 100644 drivers/char/companion-char.c
- create mode 100644 drivers/net/can/companion-can.c
- create mode 100644 drivers/spi/companion/Kconfig
- create mode 100644 drivers/spi/companion/Makefile
- create mode 100644 drivers/spi/companion/core.c
- create mode 100644 drivers/spi/companion/protocol-manager.c
- create mode 100644 drivers/spi/companion/protocol-manager.h
- create mode 100644 drivers/spi/companion/protocol.h
- create mode 100644 drivers/spi/companion/queue-manager.c
- create mode 100644 drivers/spi/companion/queue-manager.h
- create mode 100644 include/linux/companion.h
-
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 365a8cc..ac8270c 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -702,7 +702,8 @@ EXPORT_SYMBOL_GPL(alloc_can_err_skb);
+ /*
+  * Allocate and setup space for the CAN network device
+  */
+-struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
++struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
++				    unsigned int txqs, unsigned int rxqs)
+ {
+ 	struct net_device *dev;
+ 	struct can_priv *priv;
+@@ -714,7 +715,8 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
+ 	else
+ 		size = sizeof_priv;
+ 
+-	dev = alloc_netdev(size, "can%d", NET_NAME_UNKNOWN, can_setup);
++	dev = alloc_netdev_mqs(size, "can%d", NET_NAME_UNKNOWN, can_setup,
++			       txqs, rxqs);
+ 	if (!dev)
+ 		return NULL;
+ 
+@@ -733,7 +735,7 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
+ 
+ 	return dev;
+ }
+-EXPORT_SYMBOL_GPL(alloc_candev);
++EXPORT_SYMBOL_GPL(alloc_candev_mqs);
+ 
+ /*
+  * Free space of the CAN network device
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 61f1cf2..07b73d2 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -142,7 +142,12 @@ u8 can_dlc2len(u8 can_dlc);
+ /* map the sanitized data length to an appropriate data length code */
+ u8 can_len2dlc(u8 len);
+ 
+-struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max);
++struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
++				    unsigned int txqs, unsigned int rxqs);
++#define alloc_candev(sizeof_priv, echo_skb_max) \
++	alloc_candev_mqs(sizeof_priv, echo_skb_max, 1, 1)
++#define alloc_candev_mq(sizeof_priv, echo_skb_max, count) \
++	alloc_candev_mqs(sizeof_priv, echo_skb_max, count, count)
+ void free_candev(struct net_device *dev);
+ 
+ /* a candev safe wrapper around netdev_priv */
 -- 
 2.7.4
