@@ -1,113 +1,74 @@
-From: Mark Jonas <mark.jonas@de.bosch.com>
-Subject: [PATCH 5/5] spi,can,char: add companion DT binding documentation
-Date: Tue, 5 Jun 2018 20:44:00 +0200
-Message-ID: <1528224240-30786-6-git-send-email-mark.jonas@de.bosch.com>
-References: <1528224240-30786-1-git-send-email-mark.jonas@de.bosch.com>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: Re: [PATCH] can: m_can: Move acessing of message ram to after clocks
+ are enabled
+Date: Wed, 6 Jun 2018 13:22:43 +0530
+Message-ID: <19e1af1d-047e-3acf-3ba3-71811f30f50e@ti.com>
+References: <20180529141940.1682-1-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1528224240-30786-1-git-send-email-mark.jonas@de.bosch.com>
+In-Reply-To: <20180529141940.1682-1-faiz_abbas@ti.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, hs@denx.de, yi.zhu5@cn.bosch.com, Mark Jonas <mark.jonas@de.bosch.com>
+To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: mkl@pengutronix.de, wg@grandegger.com
 List-Id: linux-can.vger.kernel.org
 
-From: Zhu Yi <yi.zhu5@cn.bosch.com>
+Hi,
 
-Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
-Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
----
- .../devicetree/bindings/spi/bosch,companion.txt    | 82 ++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/spi/bosch,companion.txt
+On Tuesday 29 May 2018 07:49 PM, Faiz Abbas wrote:
+> MCAN message ram should only be accessed once clocks are enabled.
+> Therefore, move the call to parse/init the message ram to after
+> clocks are enabled.
+> 
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> ---
+>  drivers/net/can/m_can/m_can.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> index b397a33f3d32..a9fbf81ac3d4 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -1642,8 +1642,6 @@ static int m_can_plat_probe(struct platform_device *pdev)
+>  	priv->can.clock.freq = clk_get_rate(cclk);
+>  	priv->mram_base = mram_addr;
+>  
+> -	m_can_of_parse_mram(priv, mram_config_vals);
+> -
+>  	platform_set_drvdata(pdev, dev);
+>  	SET_NETDEV_DEV(dev, &pdev->dev);
+>  
+> @@ -1666,6 +1664,8 @@ static int m_can_plat_probe(struct platform_device *pdev)
+>  		goto clk_disable;
+>  	}
+>  
+> +	m_can_of_parse_mram(priv, mram_config_vals);
+> +
+>  	devm_can_led_init(dev);
+>  
+>  	of_can_transceiver(dev);
+> @@ -1715,8 +1715,6 @@ static __maybe_unused int m_can_resume(struct device *dev)
+>  
+>  	pinctrl_pm_select_default_state(dev);
+>  
+> -	m_can_init_ram(priv);
+> -
+>  	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+>  
+>  	if (netif_running(ndev)) {
+> @@ -1726,6 +1724,7 @@ static __maybe_unused int m_can_resume(struct device *dev)
+>  		if (ret)
+>  			return ret;
+>  
+> +		m_can_init_ram(priv);
+>  		m_can_start(ndev);
+>  		netif_device_attach(ndev);
+>  		netif_start_queue(ndev);
+> 
 
-diff --git a/Documentation/devicetree/bindings/spi/bosch,companion.txt b/Documentation/devicetree/bindings/spi/bosch,companion.txt
-new file mode 100644
-index 0000000..5ded325
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/bosch,companion.txt
-@@ -0,0 +1,82 @@
-+Bosch Companion SPI slave device
-+
-+The functionality bases on an external peripheral chip named Companion.
-+It offers two CAN interfaces, each has 8 prioritized transmit FIFOs as
-+well as one receive FIFO. Besides CAN, undisclosed additional functions
-+can be accessed through the char device.
-+
-+A standard SPI interface with two additional lines for flow control is
-+used. The Companion chip is the SPI slave.
-+
-+The driver suite consists of three separate drivers. The following
-+diagram illustrates the dependencies in layers.
-+
-+           /dev/companion       SocketCAN                User Space
-+-------------------------------------------------------------------
-+         +----------------+ +---------------+
-+         | companion-char | | companion-can |
-+         +----------------+ +---------------+
-+         +----------------------------------+
-+         |          companion-spi           |
-+         +----------------------------------+
-+         +----------------------------------+
-+         |     standard SPI subsystem       |
-+         +----------------------------------+          Linux Kernel
-+-------------------------------------------------------------------
-+               | | | |      | |                            Hardware
-+            CS-+ | | |      | +-BUSY
-+            CLK--+ | |      +---REQUEST
-+            MOSI---+ |
-+            MISO-----+
-+
-+Required properties:
-+
-+- compatible       : must be "bosch,companion-spi"
-+- interrupt-parent : the phandle of the GPIO controller
-+- interrupts       : (GPIO) interrupt to which 'request-gpios' is
-+                     connected to
-+- request-gpios    : GPIO pin to request SPI master to receive data
-+- busy-gpios       : GPIO pin to indicate SPI slave is busy
-+- cs-gpios         : GPIO pin to select SPI slave
-+
-+Optional properties:
-+
-+The controller supports at most 2 CAN and 1 char device subnodes. When
-+optionally specify the subnodes, the following properties are required:
-+
-+- CAN subnode
-+  - compatible     : must be "bosch,companion-can"
-+  - clock-frequency: CAN device clock in Hz
-+  - port           : must be 0 or 1
-+
-+- Char device subnode
-+  - compatible     : must be "bosch,companion-char"
-+
-+Example:
-+
-+&ecspi1 {
-+	companion-spi@0 {
-+		compatible = "bosch,companion-spi";
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <26 IRQ_TYPE_EDGE_FALLING>;
-+		request-gpios = <&gpio1 26 GPIO_ACTIVE_LOW>;
-+		busy-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
-+		cs-gpios = <&gpio4 9 GPIO_ACTIVE_LOW>;
-+
-+		companion-can0 {
-+			compatible = "bosch,companion-can";
-+			clock-frequency = <28000000>;
-+			port = <0>;
-+		};
-+
-+		companion-can1 {
-+			compatible = "bosch,companion-can";
-+			clock-frequency = <28000000>;
-+			port = <1>;
-+		};
-+
-+		companion-char {
-+			compatible = "bosch,companion-char";
-+		};
-+	};
-+};
--- 
-2.7.4
+Gentle ping.
+
+Thanks,
+Faiz
