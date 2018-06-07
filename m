@@ -1,104 +1,165 @@
-From: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [PATCH 0/5] can: enable multi-queue for SocketCAN devices
-Date: Thu, 7 Jun 2018 08:06:17 +0000
-Message-ID: <e8c47bca2ea64b5ab900f4f1e98bb405@de.bosch.com>
+Date: Thu, 7 Jun 2018 11:49:53 +0200
+Message-ID: <bb1b5a1c-9f62-a35b-040f-d212d88ffa6c@hartkopp.net>
+References: <e8c47bca2ea64b5ab900f4f1e98bb405@de.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: de-DE
+In-Reply-To: <e8c47bca2ea64b5ab900f4f1e98bb405@de.bosch.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>
 List-Id: linux-can.vger.kernel.org
 
-SGkgT2xpdmVyLA0KDQo+ID4gVGhlIGRyaXZlciBzdWl0ZSBjb25zaXN0cyBvZiB0aHJlZSBzZXBh
-cmF0ZSBkcml2ZXJzLiBUaGUgZm9sbG93aW5nDQo+ID4gZGlhZ3JhbSBpbGx1c3RyYXRlcyB0aGUg
-ZGVwZW5kZW5jaWVzIGluIGxheWVycy4NCj4gPg0KPiA+ICAgICAgICAgICAgIC9kZXYvY29tcGFu
-aW9uICAgICAgIFNvY2tldENBTiAgICAgICAgICAgICAgICBVc2VyIFNwYWNlDQo+ID4gLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQ0KPiA+ICAgICAgICAgICArLS0tLS0tLS0tLS0tLS0tLSsgKy0tLS0tLS0tLS0tLS0tLSsN
-Cj4gPiAgICAgICAgICAgfCBjb21wYW5pb24tY2hhciB8IHwgY29tcGFuaW9uLWNhbiB8DQo+ID4g
-ICAgICAgICAgICstLS0tLS0tLS0tLS0tLS0tKyArLS0tLS0tLS0tLS0tLS0tKw0KPiA+ICAgICAg
-ICAgICArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsNCj4gPiAgICAgICAgICAg
-fCAgICAgICAgICBjb21wYW5pb24tc3BpICAgICAgICAgICB8DQo+ID4gICAgICAgICAgICstLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KPiA+ICAgICAgICAgICArLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsNCj4gPiAgICAgICAgICAgfCAgICAgc3RhbmRhcmQg
-U1BJIHN1YnN5c3RlbSAgICAgICB8DQo+ID4gICAgICAgICAgICstLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tKyAgICAgICAgICBMaW51eCBLZXJuZWwNCj4gPiAtLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+
-ID4gICAgICAgICAgICAgICAgIHwgfCB8IHwgICAgICB8IHwgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgSGFyZHdhcmUNCj4gPiAgICAgICAgICAgICAgQ1MtKyB8IHwgfCAgICAgIHwgKy1CVVNZ
-DQo+ID4gICAgICAgICAgICAgIENMSy0tKyB8IHwgICAgICArLS0tUkVRVUVTVA0KPiA+ICAgICAg
-ICAgICAgICBNT1NJLS0tKyB8DQo+ID4gICAgICAgICAgICAgIE1JU08tLS0tLSsNCj4gPg0KPiA+
-IGNvbXBhbmlvbi1zcGkNCj4gPiAgICAgY29yZS5jOiBoYW5kbGVzIFNQSSwgc3lzZnMgZW50cnkg
-YW5kIGludGVyZmFjZSB0byB1cHBlciBsYXllcg0KPiA+ICAgICBwcm90b2NvbC1tYW5hZ2VyLmM6
-IGhhbmRsZXMgcHJvdG9jb2wgd2l0aCB0aGUgU1BJIEhXDQo+ID4gICAgIHF1ZXVlLW1hbmFnZXIu
-YzogaGFuZGxlcyBidWZmZXJpbmcgYW5kIHBhY2tldHMgc2NoZWR1bGluZw0KPiA+DQo+ID4gY29t
-cGFuaW9uLWNhbg0KPiA+ICAgICBtYWtlcyB1c2Ugb2YgbXVsdGktcXVldWUgc3VwcG9ydCBhbmQg
-YWxsb3dzIHRvIHVzZSB0YyB0byBjb25maWd1cmUNCj4gPiAgICAgdGhlIHF1ZXVpbmcgZGlzY2lw
-bGluZSAoZS5nLiBtcXByaW8pLiBUb2dldGhlciB3aXRoIHRoZSBTT19QUklPUklUWQ0KPiA+ICAg
-ICBzb2NrZXQgb3B0aW9uIHRoaXMgYWxsb3dzIHRvIHNwZWNpZnkgdGhlIEZJRk8gYSBDQU4gZnJh
-bWUgc2hhbGwgYmUNCj4gPiAgICAgc2VudCB0by4NCj4gPg0KPiA+IGNvbXBhbmlvbi1jaGFyDQo+
-ID4gICAgIGhhbmRsZXMgbWVzc2FnZXMgdG8gb3RoZXIgdW5kaXNjbG9zZWQgZnVuY3Rpb25hbGl0
-eSBiZXlvbmQgQ0FOLg0KDQo+ID4gICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvYm9zY2gs
-Y29tcGFuaW9uLnR4dCAgICB8ICAgODIgKysNCj4gPiAgIGRyaXZlcnMvY2hhci9LY29uZmlnICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNyArDQo+ID4gICBkcml2ZXJzL2NoYXIv
-TWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgKw0KPiA+ICAgZHJp
-dmVycy9jaGFyL2NvbXBhbmlvbi1jaGFyLmMgICAgICAgICAgICAgICAgICAgICAgfCAgMzY3ICsr
-KysrKw0KPiA+ICAgZHJpdmVycy9uZXQvY2FuL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgICA4ICsNCj4gPiAgIGRyaXZlcnMvbmV0L2Nhbi9NYWtlZmlsZSAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgICAgMSArDQo+ID4gICBkcml2ZXJzL25ldC9jYW4vY29tcGFuaW9u
-LWNhbi5jICAgICAgICAgICAgICAgICAgICB8ICA2OTQgKysrKysrKysrKysrDQo+IA0KPiBQbGVh
-c2UgcGxhY2UgdGhlIGNvbXBhbmlvbiBkcml2ZXIgaW4NCj4gDQo+IGRyaXZlcnMvbmV0L2Nhbi9z
-cGkvY29tcGFuaW9uLmMNCj4gDQo+IEl0IGFsc28gbWFrZXMgbW9yZSBzZW5zZSBpbiB0aGUgS2Nv
-bmZpZyBzdHJ1Y3R1cmUuDQo+IA0KPiBQcm9iYWJseSB0aGlzIG5hbWluZyBzY2hlbWUgYWxzbyBt
-YWtlcyBzZW5zZSBmb3INCj4gDQo+IGxpbnV4L2RyaXZlcnMvY2hhci9zcGkvY29tcGFuaW9uLmMN
-Cj4gDQo+IHRoZW4gLi4uDQo+IA0KPiBJZiBub3QgaXQgc2hvdWxkIGJlIG5hbWVkIGF0IGxlYXN0
-DQo+IA0KPiBkcml2ZXJzL2NoYXIvY29tcGFuaW9uLXNwaS5jDQo+IA0KPiBvcg0KPiANCj4gZHJp
-dmVycy9jaGFyL3NwaS1jb21wYW5pb24uYw0KDQpXZSBpbnRlbnRpb25hbGx5IGxlZnQgb3V0IHRo
-ZSBzcGkgaW4gdGhlIGRyaXZlciBwYXRoIC8gbmFtZSBiZWNhdXNlDQpvbmx5IHRoZSBkcml2ZXJz
-L3NwaS9jb21wYW5pb24vKiBkcml2ZXIga25vd3MgdGhhdCB0aGF0IGl0IGlzIGNvbm5lY3RlZA0K
-dG8gU1BJLiBUaGUgb3RoZXJzIChkcml2ZXJzL25ldC9jYW4vY29tcGFuaW9uLWNhbi5jIGFuZA0K
-ZHJpdmVycy9jaGFyL2NvbXBhbmlvbi1jaGFyLmMpIG9ubHkga25vdyB0aGUgQVBJLiBUaGlzIGNv
-dWxkIGFsc28gYmUNCnN1cHBsaWVkIGJ5IGEgZHJpdmVyIHdoaWNoIHRhbGtzIHRvIHRoZSBDb21w
-YW5pb24gdmlhIGEgZGlmZmVyZW50DQppbnRlcmZhY2UuIEFjdHVhbGx5LCB3ZSBzdGFydGVkIHdp
-dGggYSBVQVJUIGNvbm5lY3Rpb24gYnV0IHN3aXRjaGVkIHRvDQpTUEkgZHVlIHRvIGxhdGVuY3kg
-aXNzdWVzLg0KDQpTaG91bGQgd2Ugc3RpbGwgY2hhbmdlIGl0Pw0KDQo+ID4gICBkcml2ZXJzL25l
-dC9jYW4vZGV2LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDggKy0NCj4gPiAg
-IGRyaXZlcnMvc3BpL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAg
-MiArDQo+ID4gICBkcml2ZXJzL3NwaS9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgIDIgKw0KPiA+ICAgZHJpdmVycy9zcGkvY29tcGFuaW9uL0tjb25maWcgICAgICAg
-ICAgICAgICAgICAgICAgfCAgICA1ICsNCj4gPiAgIGRyaXZlcnMvc3BpL2NvbXBhbmlvbi9NYWtl
-ZmlsZSAgICAgICAgICAgICAgICAgICAgIHwgICAgMiArDQo+ID4gICBkcml2ZXJzL3NwaS9jb21w
-YW5pb24vY29yZS5jICAgICAgICAgICAgICAgICAgICAgICB8IDExODkgKysrKysrKysrKysrKysr
-KysrKysNCj4gPiAgIGRyaXZlcnMvc3BpL2NvbXBhbmlvbi9wcm90b2NvbC1tYW5hZ2VyLmMgICAg
-ICAgICAgIHwgMTAzNSArKysrKysrKysrKysrKysrKw0KPiA+ICAgZHJpdmVycy9zcGkvY29tcGFu
-aW9uL3Byb3RvY29sLW1hbmFnZXIuaCAgICAgICAgICAgfCAgMzQ4ICsrKysrKw0KPiA+ICAgZHJp
-dmVycy9zcGkvY29tcGFuaW9uL3Byb3RvY29sLmggICAgICAgICAgICAgICAgICAgfCAgMjczICsr
-KysrDQo+ID4gICBkcml2ZXJzL3NwaS9jb21wYW5pb24vcXVldWUtbWFuYWdlci5jICAgICAgICAg
-ICAgICB8ICAxNDYgKysrDQo+ID4gICBkcml2ZXJzL3NwaS9jb21wYW5pb24vcXVldWUtbWFuYWdl
-ci5oICAgICAgICAgICAgICB8ICAyNDUgKysrKw0KPiA+ICAgaW5jbHVkZS9saW51eC9jYW4vZGV2
-LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA3ICstDQo+ID4gICBpbmNsdWRlL2xp
-bnV4L2NvbXBhbmlvbi5oICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyNTggKysrKysNCj4g
-PiAgIDIwIGZpbGVzIGNoYW5nZWQsIDQ2NzcgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkN
-Cj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NA0KPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3Mvc3BpL2Jvc2NoLGNvbXBhbmlvbi50eHQNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBk
-cml2ZXJzL2NoYXIvY29tcGFuaW9uLWNoYXIuYw0KPiA+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
-aXZlcnMvbmV0L2Nhbi9jb21wYW5pb24tY2FuLmMNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBk
-cml2ZXJzL3NwaS9jb21wYW5pb24vS2NvbmZpZw0KPiA+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
-aXZlcnMvc3BpL2NvbXBhbmlvbi9NYWtlZmlsZQ0KPiA+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
-aXZlcnMvc3BpL2NvbXBhbmlvbi9jb3JlLmMNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2
-ZXJzL3NwaS9jb21wYW5pb24vcHJvdG9jb2wtbWFuYWdlci5jDQo+ID4gICBjcmVhdGUgbW9kZSAx
-MDA2NDQgZHJpdmVycy9zcGkvY29tcGFuaW9uL3Byb3RvY29sLW1hbmFnZXIuaA0KPiA+ICAgY3Jl
-YXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvc3BpL2NvbXBhbmlvbi9wcm90b2NvbC5oDQo+ID4gICBj
-cmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zcGkvY29tcGFuaW9uL3F1ZXVlLW1hbmFnZXIuYw0K
-PiA+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvc3BpL2NvbXBhbmlvbi9xdWV1ZS1tYW5h
-Z2VyLmgNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L2NvbXBhbmlvbi5o
-DQoNCkdyZWV0aW5ncywNCk1hcmsNCg0KQnVpbGRpbmcgVGVjaG5vbG9naWVzLCBQYW5lbCBTb2Z0
-d2FyZSBGaXJlIChCVC1GSVIvRU5HMSkgDQpCb3NjaCBTaWNoZXJoZWl0c3N5c3RlbWUgR21iSCB8
-IFBvc3RmYWNoIDExIDExIHwgODU2MjYgR3Jhc2JydW5uIHwgR0VSTUFOWSB8IHd3dy5ib3NjaHNl
-Y3VyaXR5LmNvbQ0KDQpTaXR6OiBTdHV0dGdhcnQsIFJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmlj
-aHQgU3R1dHRnYXJ0IEhSQiAyMzExOCANCkF1ZnNpY2h0c3JhdHN2b3JzaXR6ZW5kZXI6IFN0ZWZh
-biBIYXJ0dW5nOyBHZXNjaMOkZnRzZsO8aHJ1bmc6IEdlcnQgdmFuIElwZXJlbiwgQW5kcmVhcyBC
-YXJ0eiwgVGhvbWFzIFF1YW50ZSwgQmVybmhhcmQgU2NodXN0ZXINCg==
+
+
+On 06/07/2018 10:06 AM, Jonas Mark (BT-FIR/ENG1) wrote:
+> Hi Oliver,
+> 
+>>> The driver suite consists of three separate drivers. The following
+>>> diagram illustrates the dependencies in layers.
+>>>
+>>>              /dev/companion       SocketCAN                User Space
+>>> -------------------------------------------------------------------
+>>>            +----------------+ +---------------+
+>>>            | companion-char | | companion-can |
+>>>            +----------------+ +---------------+
+>>>            +----------------------------------+
+>>>            |          companion-spi           |
+>>>            +----------------------------------+
+>>>            +----------------------------------+
+>>>            |     standard SPI subsystem       |
+>>>            +----------------------------------+          Linux Kernel
+>>> -------------------------------------------------------------------
+>>>                  | | | |      | |                            Hardware
+>>>               CS-+ | | |      | +-BUSY
+>>>               CLK--+ | |      +---REQUEST
+>>>               MOSI---+ |
+>>>               MISO-----+
+>>>
+>>> companion-spi
+>>>      core.c: handles SPI, sysfs entry and interface to upper layer
+>>>      protocol-manager.c: handles protocol with the SPI HW
+>>>      queue-manager.c: handles buffering and packets scheduling
+>>>
+>>> companion-can
+>>>      makes use of multi-queue support and allows to use tc to configure
+>>>      the queuing discipline (e.g. mqprio). Together with the SO_PRIORITY
+>>>      socket option this allows to specify the FIFO a CAN frame shall be
+>>>      sent to.
+>>>
+>>> companion-char
+>>>      handles messages to other undisclosed functionality beyond CAN.
+> 
+>>>    .../devicetree/bindings/spi/bosch,companion.txt    |   82 ++
+>>>    drivers/char/Kconfig                               |    7 +
+>>>    drivers/char/Makefile                              |    2 +
+>>>    drivers/char/companion-char.c                      |  367 ++++++
+>>>    drivers/net/can/Kconfig                            |    8 +
+>>>    drivers/net/can/Makefile                           |    1 +
+>>>    drivers/net/can/companion-can.c                    |  694 ++++++++++++
+>>
+>> Please place the companion driver in
+>>
+>> drivers/net/can/spi/companion.c
+>>
+>> It also makes more sense in the Kconfig structure.
+>>
+>> Probably this naming scheme also makes sense for
+>>
+>> linux/drivers/char/spi/companion.c
+>>
+>> then ...
+>>
+>> If not it should be named at least
+>>
+>> drivers/char/companion-spi.c
+>>
+>> or
+>>
+>> drivers/char/spi-companion.c
+> 
+> We intentionally left out the spi in the driver path / name because
+> only the drivers/spi/companion/* driver knows that that it is connected
+> to SPI. The others (drivers/net/can/companion-can.c and
+> drivers/char/companion-char.c) only know the API. This could also be
+> supplied by a driver which talks to the Companion via a different
+> interface. Actually, we started with a UART connection but switched to
+> SPI due to latency issues.
+
+Ok, got it.
+
+> Should we still change it?
+
+At least I would then vote for
+
+drivers/char/companion.c
+drivers/net/can/companion.c
+
+instead of
+
+drivers/char/companion-char.c
+drivers/net/can/companion-can.c
+
+as you would have companion-users in different driver subsystems that 
+are already clearly referenced by their path.
+
+The modules itself should still be named with companion-can of course 
+(as-is right now).
+
+Btw.
+
++#define DRIVER_NAME     "bosch,companion-can"
+
++static const struct can_bittiming_const companion_can_bittiming_const = {
++	.name      = "bosch,companion",
+
+
+Is there any reason why it's not only "companion-can" or "companion"?
+The fact that the driver is provided by Bosch is visible in the source code.
+
+Best regards,
+Oliver
+
+
+> 
+>>>    drivers/net/can/dev.c                              |    8 +-
+>>>    drivers/spi/Kconfig                                |    2 +
+>>>    drivers/spi/Makefile                               |    2 +
+>>>    drivers/spi/companion/Kconfig                      |    5 +
+>>>    drivers/spi/companion/Makefile                     |    2 +
+>>>    drivers/spi/companion/core.c                       | 1189 ++++++++++++++++++++
+>>>    drivers/spi/companion/protocol-manager.c           | 1035 +++++++++++++++++
+>>>    drivers/spi/companion/protocol-manager.h           |  348 ++++++
+>>>    drivers/spi/companion/protocol.h                   |  273 +++++
+>>>    drivers/spi/companion/queue-manager.c              |  146 +++
+>>>    drivers/spi/companion/queue-manager.h              |  245 ++++
+>>>    include/linux/can/dev.h                            |    7 +-
+>>>    include/linux/companion.h                          |  258 +++++
+>>>    20 files changed, 4677 insertions(+), 4 deletions(-)
+>>>    create mode 100644
+>> Documentation/devicetree/bindings/spi/bosch,companion.txt
+>>>    create mode 100644 drivers/char/companion-char.c
+>>>    create mode 100644 drivers/net/can/companion-can.c
+>>>    create mode 100644 drivers/spi/companion/Kconfig
+>>>    create mode 100644 drivers/spi/companion/Makefile
+>>>    create mode 100644 drivers/spi/companion/core.c
+>>>    create mode 100644 drivers/spi/companion/protocol-manager.c
+>>>    create mode 100644 drivers/spi/companion/protocol-manager.h
+>>>    create mode 100644 drivers/spi/companion/protocol.h
+>>>    create mode 100644 drivers/spi/companion/queue-manager.c
+>>>    create mode 100644 drivers/spi/companion/queue-manager.h
+>>>    create mode 100644 include/linux/companion.h
+> 
+> Greetings,
+> Mark
+> 
+> Building Technologies, Panel Software Fire (BT-FIR/ENG1)
+> Bosch Sicherheitssysteme GmbH | Postfach 11 11 | 85626 Grasbrunn | GERMANY | www.boschsecurity.com
+> 
+> Sitz: Stuttgart, Registergericht: Amtsgericht Stuttgart HRB 23118
+> Aufsichtsratsvorsitzender: Stefan Hartung; Geschäftsführung: Gert van Iperen, Andreas Bartz, Thomas Quante, Bernhard Schuster
+> 
