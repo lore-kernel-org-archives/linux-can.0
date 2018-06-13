@@ -1,7 +1,7 @@
 From: Mark Jonas <mark.jonas@de.bosch.com>
-Subject: [PATCH v2 1/5] can: enable multi-queue for SocketCAN devices
-Date: Wed, 13 Jun 2018 16:37:17 +0200
-Message-ID: <1528900641-18677-2-git-send-email-mark.jonas@de.bosch.com>
+Subject: [PATCH v2 5/5] spi,can,char: add companion DT binding documentation
+Date: Wed, 13 Jun 2018 16:37:21 +0200
+Message-ID: <1528900641-18677-6-git-send-email-mark.jonas@de.bosch.com>
 References: <1528224240-30786-1-git-send-email-mark.jonas@de.bosch.com>
  <1528900641-18677-1-git-send-email-mark.jonas@de.bosch.com>
 Mime-Version: 1.0
@@ -15,83 +15,100 @@ List-Id: linux-can.vger.kernel.org
 
 From: Zhu Yi <yi.zhu5@cn.bosch.com>
 
-The existing SocketCAN implementation provides alloc_candev() to
-allocate a CAN device using a single Tx and Rx queue. This can lead to
-priority inversion in case the single Tx queue is already full with low
-priority messages and a high priority message needs to be sent while the
-bus is fully loaded with medium priority messages.
-
-This problem can be solved by using the existing multi-queue support of
-the network subsytem. The commit makes it possible to use multi-queue in
-the CAN subsystem in the same way it is used in the Ethernet subsystem
-by adding an alloc_candev_mqs() call and accompanying macros. With this
-support a CAN device can use multi-queue qdisc (e.g. mqprio) to avoid
-the aforementioned priority inversion.
-
-The exisiting functionality of alloc_candev() is the same as before.
-
-CAN devices need to have prioritized multiple hardware queues or are
-able to abort waiting for arbitration to make sensible use of
-multi-queues.
-
 Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
 Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
-Reviewed-by: Heiko Schocher <hs@denx.de>
 ---
- drivers/net/can/dev.c   | 8 +++++---
- include/linux/can/dev.h | 7 ++++++-
- 2 files changed, 11 insertions(+), 4 deletions(-)
+ .../devicetree/bindings/spi/bosch,companion.txt    | 82 ++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/bosch,companion.txt
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 365a8cc..ac8270c 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -702,7 +702,8 @@ EXPORT_SYMBOL_GPL(alloc_can_err_skb);
- /*
-  * Allocate and setup space for the CAN network device
-  */
--struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
-+struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
-+				    unsigned int txqs, unsigned int rxqs)
- {
- 	struct net_device *dev;
- 	struct can_priv *priv;
-@@ -714,7 +715,8 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
- 	else
- 		size = sizeof_priv;
- 
--	dev = alloc_netdev(size, "can%d", NET_NAME_UNKNOWN, can_setup);
-+	dev = alloc_netdev_mqs(size, "can%d", NET_NAME_UNKNOWN, can_setup,
-+			       txqs, rxqs);
- 	if (!dev)
- 		return NULL;
- 
-@@ -733,7 +735,7 @@ struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max)
- 
- 	return dev;
- }
--EXPORT_SYMBOL_GPL(alloc_candev);
-+EXPORT_SYMBOL_GPL(alloc_candev_mqs);
- 
- /*
-  * Free space of the CAN network device
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 61f1cf2..07b73d2 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -142,7 +142,12 @@ u8 can_dlc2len(u8 can_dlc);
- /* map the sanitized data length to an appropriate data length code */
- u8 can_len2dlc(u8 len);
- 
--struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max);
-+struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
-+				    unsigned int txqs, unsigned int rxqs);
-+#define alloc_candev(sizeof_priv, echo_skb_max) \
-+	alloc_candev_mqs(sizeof_priv, echo_skb_max, 1, 1)
-+#define alloc_candev_mq(sizeof_priv, echo_skb_max, count) \
-+	alloc_candev_mqs(sizeof_priv, echo_skb_max, count, count)
- void free_candev(struct net_device *dev);
- 
- /* a candev safe wrapper around netdev_priv */
+diff --git a/Documentation/devicetree/bindings/spi/bosch,companion.txt b/Documentation/devicetree/bindings/spi/bosch,companion.txt
+new file mode 100644
+index 0000000..5ded325
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/bosch,companion.txt
+@@ -0,0 +1,82 @@
++Bosch Companion SPI slave device
++
++The functionality bases on an external peripheral chip named Companion.
++It offers two CAN interfaces, each has 8 prioritized transmit FIFOs as
++well as one receive FIFO. Besides CAN, undisclosed additional functions
++can be accessed through the char device.
++
++A standard SPI interface with two additional lines for flow control is
++used. The Companion chip is the SPI slave.
++
++The driver suite consists of three separate drivers. The following
++diagram illustrates the dependencies in layers.
++
++           /dev/companion       SocketCAN                User Space
++-------------------------------------------------------------------
++         +----------------+ +---------------+
++         | companion-char | | companion-can |
++         +----------------+ +---------------+
++         +----------------------------------+
++         |          companion-spi           |
++         +----------------------------------+
++         +----------------------------------+
++         |     standard SPI subsystem       |
++         +----------------------------------+          Linux Kernel
++-------------------------------------------------------------------
++               | | | |      | |                            Hardware
++            CS-+ | | |      | +-BUSY
++            CLK--+ | |      +---REQUEST
++            MOSI---+ |
++            MISO-----+
++
++Required properties:
++
++- compatible       : must be "bosch,companion-spi"
++- interrupt-parent : the phandle of the GPIO controller
++- interrupts       : (GPIO) interrupt to which 'request-gpios' is
++                     connected to
++- request-gpios    : GPIO pin to request SPI master to receive data
++- busy-gpios       : GPIO pin to indicate SPI slave is busy
++- cs-gpios         : GPIO pin to select SPI slave
++
++Optional properties:
++
++The controller supports at most 2 CAN and 1 char device subnodes. When
++optionally specify the subnodes, the following properties are required:
++
++- CAN subnode
++  - compatible     : must be "bosch,companion-can"
++  - clock-frequency: CAN device clock in Hz
++  - port           : must be 0 or 1
++
++- Char device subnode
++  - compatible     : must be "bosch,companion-char"
++
++Example:
++
++&ecspi1 {
++	companion-spi@0 {
++		compatible = "bosch,companion-spi";
++		interrupt-parent = <&gpio1>;
++		interrupts = <26 IRQ_TYPE_EDGE_FALLING>;
++		request-gpios = <&gpio1 26 GPIO_ACTIVE_LOW>;
++		busy-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
++		cs-gpios = <&gpio4 9 GPIO_ACTIVE_LOW>;
++
++		companion-can0 {
++			compatible = "bosch,companion-can";
++			clock-frequency = <28000000>;
++			port = <0>;
++		};
++
++		companion-can1 {
++			compatible = "bosch,companion-can";
++			clock-frequency = <28000000>;
++			port = <1>;
++		};
++
++		companion-char {
++			compatible = "bosch,companion-char";
++		};
++	};
++};
 -- 
 2.7.4
