@@ -1,57 +1,71 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH v4 01/26] docs: can.rst: fix a footnote reference
-Date: Fri, 15 Jun 2018 13:30:29 -0300
-Message-ID: <e0771171120947b2a88d54e881a1f0d8ade4aaa9.1529079119.git.mchehab+samsung@kernel.org>
-References: <cover.1529079119.git.mchehab+samsung@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1529079119.git.mchehab+samsung@kernel.org>
-In-Reply-To: <cover.1529079119.git.mchehab+samsung@kernel.org>
-References: <cover.1529079119.git.mchehab+samsung@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: Re: [PATCH 0/2] leds: drop led_trigger_rename_static()
+Date: Fri, 15 Jun 2018 22:49:48 +0200
+Message-ID: <ca250930-59ac-6b41-dda5-b9ce3285de0d@gmail.com>
+References: <20180518085333.26187-1-u.kleine-koenig@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20180518085333.26187-1-u.kleine-koenig@pengutronix.de>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>, Pavel Machek <pavel@ucw.cz>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Cc: linux-leds@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 List-Id: linux-can.vger.kernel.org
 
-As stated at:
-	http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#footnotes
+Hi,
 
-A footnote should contain either a number, a reference or
-an auto number, e. g.:
-        [1], [#f1] or [#].
+I need can or net maintainer's ack for merging this
+set via LED tree. It's been awaiting feedback for a few weeks
+now and it is blocking another set depending on it.
 
-While using [*] accidentaly works for html, it fails for other
-document outputs. In particular, it causes an error with LaTeX
-output, causing all books after networking to not be built.
 
-So, replace it by a valid syntax.
+On 05/18/2018 10:53 AM, Uwe Kleine-König wrote:
+> Hello,
+> 
+> initially I prepared a patch to fix the broken things in
+> led_trigger_rename_static(), but given that there is only the
+> can-trigger driver that makes use of this function and the netdev
+> trigger implements a super set of the can-trigger, removing both the
+> can-trigger and the broken function seems sensible.
+> 
+> Best regards
+> Uwe
+> 
+> Uwe Kleine-König (2):
+>    can: drop led trigger support
+>    leds: remove unused function led_trigger_rename_static()
+> 
+>   drivers/leds/led-triggers.c           |  13 ---
+>   drivers/net/can/Kconfig               |  11 --
+>   drivers/net/can/Makefile              |   2 -
+>   drivers/net/can/at91_can.c            |  10 --
+>   drivers/net/can/c_can/c_can.c         |  11 --
+>   drivers/net/can/dev.c                 |   5 -
+>   drivers/net/can/flexcan.c             |   8 --
+>   drivers/net/can/ifi_canfd/ifi_canfd.c |   9 --
+>   drivers/net/can/led.c                 | 143 --------------------------
+>   drivers/net/can/m_can/m_can.c         |   9 --
+>   drivers/net/can/rcar/rcar_can.c       |   8 --
+>   drivers/net/can/rcar/rcar_canfd.c     |   7 --
+>   drivers/net/can/rx-offload.c          |   2 -
+>   drivers/net/can/sja1000/sja1000.c     |  15 +--
+>   drivers/net/can/spi/hi311x.c          |   8 --
+>   drivers/net/can/spi/mcp251x.c         |  10 --
+>   drivers/net/can/sun4i_can.c           |   7 --
+>   drivers/net/can/ti_hecc.c             |   9 --
+>   drivers/net/can/usb/mcba_usb.c        |   7 --
+>   drivers/net/can/usb/usb_8dev.c        |  11 --
+>   drivers/net/can/xilinx_can.c          |   9 --
+>   include/linux/can/dev.h               |  10 --
+>   include/linux/can/led.h               |  54 ----------
+>   include/linux/leds.h                  |  18 ----
+>   24 files changed, 1 insertion(+), 395 deletions(-)
+>   delete mode 100644 drivers/net/can/led.c
+>   delete mode 100644 include/linux/can/led.h
+> 
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
----
- Documentation/networking/can.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index d23c51abf8c6..2fd0b51a8c52 100644
---- a/Documentation/networking/can.rst
-+++ b/Documentation/networking/can.rst
-@@ -164,7 +164,7 @@ The Linux network devices (by default) just can handle the
- transmission and reception of media dependent frames. Due to the
- arbitration on the CAN bus the transmission of a low prio CAN-ID
- may be delayed by the reception of a high prio CAN frame. To
--reflect the correct [*]_ traffic on the node the loopback of the sent
-+reflect the correct [#f1]_ traffic on the node the loopback of the sent
- data has to be performed right after a successful transmission. If
- the CAN network interface is not capable of performing the loopback for
- some reason the SocketCAN core can do this task as a fallback solution.
-@@ -175,7 +175,7 @@ networking behaviour for CAN applications. Due to some requests from
- the RT-SocketCAN group the loopback optionally may be disabled for each
- separate socket. See sockopts from the CAN RAW sockets in :ref:`socketcan-raw-sockets`.
- 
--.. [*] you really like to have this when you're running analyser
-+.. [#f1] you really like to have this when you're running analyser
-        tools like 'candump' or 'cansniffer' on the (same) node.
- 
- 
 -- 
-2.17.1
+Best regards,
+Jacek Anaszewski
