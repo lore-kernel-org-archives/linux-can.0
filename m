@@ -1,15 +1,15 @@
 From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH v3 01/27] docs: can.rst: fix a footnote reference
-Date: Thu, 14 Jun 2018 13:08:46 -0300
-Message-ID: <48cb3cb3e5095d5a0193cee8213a94042122f772.1528990947.git.mchehab+samsung@kernel.org>
-References: <cover.1528990947.git.mchehab+samsung@kernel.org>
+Subject: [PATCH v4 01/26] docs: can.rst: fix a footnote reference
+Date: Fri, 15 Jun 2018 13:30:29 -0300
+Message-ID: <e0771171120947b2a88d54e881a1f0d8ade4aaa9.1529079119.git.mchehab+samsung@kernel.org>
+References: <cover.1529079119.git.mchehab+samsung@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1528990947.git.mchehab+samsung@kernel.org>
-In-Reply-To: <cover.1528990947.git.mchehab+samsung@kernel.org>
-References: <cover.1528990947.git.mchehab+samsung@kernel.org>
+In-Reply-To: <cover.1529079119.git.mchehab+samsung@kernel.org>
+In-Reply-To: <cover.1529079119.git.mchehab+samsung@kernel.org>
+References: <cover.1529079119.git.mchehab+samsung@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 As stated at:
