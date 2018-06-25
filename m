@@ -1,58 +1,39 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.14 133/189] can: dev: increase bus-off message severity
-Date: Mon, 18 Jun 2018 10:13:49 +0200
-Message-ID: <20180618081214.568513882@linuxfoundation.org>
-References: <20180618081209.254234434@linuxfoundation.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Marcel Ziswiler <marcel@ziswiler.com>
+Subject: [PATCH] apalis_t30: fix can2
+Date: Mon, 25 Jun 2018 09:59:48 +0200
+Message-ID: <20180625075948.32040-1-marcel@ziswiler.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180618081209.254234434@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <alexander.levin@microsoft.com>
+To: linux-tegra@vger.kernel.org, linux-can@vger.kernel.org
+Cc: Marcel Ziswiler <marcel.ziswiler@toradex.com>, devicetree@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
 List-Id: linux-can.vger.kernel.org
 
-4.14-stable review patch.  If anyone has any objections, please let me know.
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-------------------
+CAN2 currently fails on probe as follows:
 
-From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+mcp251x spi1.1: Probe failed, err=19
 
-[ Upstream commit 71c23a821c6bcacba71a094efe49ee689605906b ]
+Fix this by enabling input on pin mux of resp. SPI4 pins.
 
-bus-off is usually caused by hardware malfunction or configuration error
-(baud rate mismatch) and causes a complete loss of communication.
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-Increase the "bus-off" message's severity from netdev_dbg() to
-netdev_info() to make it visible to the user.
-
-A can interface going into bus-off is similar in severity to ethernet's
-"Link is Down" message, which is also printed at info level.
-
-It is debatable whether the the "restarted" message should also be
-changed to netdev_info() to make the interface state changes
-comprehensible from the kernel log. I have chosen to keep the
-"restarted" message at dbg for now as the "bus-off" message should be
-enough for the user to notice and investigate the problem.
-
-Signed-off-by: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: linux-can@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/dev.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -604,7 +604,7 @@ void can_bus_off(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 
--	netdev_dbg(dev, "bus-off\n");
-+	netdev_info(dev, "bus-off\n");
- 
- 	netif_carrier_off(dev);
- 
+ arch/arm/boot/dts/tegra30-apalis.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/tegra30-apalis.dtsi b/arch/arm/boot/dts/tegra30-apalis.dtsi
+index d1d21ec2a844..9ff6aafd72b3 100644
+--- a/arch/arm/boot/dts/tegra30-apalis.dtsi
++++ b/arch/arm/boot/dts/tegra30-apalis.dtsi
+@@ -118,6 +118,7 @@
+ 				nvidia,function = "spi4";
+ 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+ 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
++				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
+ 			};
+ 			/* CAN_INT2 */
+ 			spi2_cs2_n_pw3 {
+-- 
+2.14.4
