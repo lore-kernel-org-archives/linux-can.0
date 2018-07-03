@@ -1,66 +1,40 @@
-From: Faiz Abbas <faiz_abbas@ti.com>
-Subject: [PATCH v2] can: m_can: Move accessing of message ram to after clocks are enabled
-Date: Tue, 3 Jul 2018 16:47:10 +0530
-Message-ID: <20180703111710.27084-1-faiz_abbas@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Marcel Ziswiler <marcel@ziswiler.com>
+Subject: [RESEND PATCH] apalis_t30: fix can2
+Date: Tue,  3 Jul 2018 17:03:39 +0200
+Message-ID: <20180703150340.29580-1-marcel@ziswiler.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, faiz_abbas@ti.com
+To: linux-tegra@vger.kernel.org, linux-can@vger.kernel.org
+Cc: Marcel Ziswiler <marcel.ziswiler@toradex.com>, Marcel Ziswiler <marcel@ziswiler.com>, devicetree@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
 List-Id: linux-can.vger.kernel.org
 
-MCAN message ram should only be accessed once clocks are enabled.
-Therefore, move the call to parse/init the message ram to after
-clocks are enabled.
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+CAN2 currently fails on probe as follows:
+
+mcp251x spi1.1: Probe failed, err=19
+
+Fix this by enabling input on pin mux of resp. SPI4 pins.
+
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+
+Signed-off-by: Marcel Ziswiler <marcel@ziswiler.com>
 ---
-Changes in v2:
 
-rebased to latest mainline
+ arch/arm/boot/dts/tegra30-apalis.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
- drivers/net/can/m_can/m_can.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index ac4c6dc2f8c8..04c48371ab2a 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1644,8 +1644,6 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 	priv->can.clock.freq = clk_get_rate(cclk);
- 	priv->mram_base = mram_addr;
- 
--	m_can_of_parse_mram(priv, mram_config_vals);
--
- 	platform_set_drvdata(pdev, dev);
- 	SET_NETDEV_DEV(dev, &pdev->dev);
- 
-@@ -1668,6 +1666,8 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 		goto clk_disable;
- 	}
- 
-+	m_can_of_parse_mram(priv, mram_config_vals);
-+
- 	devm_can_led_init(dev);
- 
- 	of_can_transceiver(dev);
-@@ -1715,8 +1715,6 @@ static __maybe_unused int m_can_resume(struct device *dev)
- 
- 	pinctrl_pm_select_default_state(dev);
- 
--	m_can_init_ram(priv);
--
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
- 	if (netif_running(ndev)) {
-@@ -1726,6 +1724,7 @@ static __maybe_unused int m_can_resume(struct device *dev)
- 		if (ret)
- 			return ret;
- 
-+		m_can_init_ram(priv);
- 		m_can_start(ndev);
- 		netif_device_attach(ndev);
- 		netif_start_queue(ndev);
+diff --git a/arch/arm/boot/dts/tegra30-apalis.dtsi b/arch/arm/boot/dts/tegra30-apalis.dtsi
+index d1d21ec2a844..9ff6aafd72b3 100644
+--- a/arch/arm/boot/dts/tegra30-apalis.dtsi
++++ b/arch/arm/boot/dts/tegra30-apalis.dtsi
+@@ -118,6 +118,7 @@
+ 				nvidia,function = "spi4";
+ 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+ 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
++				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
+ 			};
+ 			/* CAN_INT2 */
+ 			spi2_cs2_n_pw3 {
 -- 
-2.17.0
+2.14.4
