@@ -1,58 +1,61 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 3.18 27/85] can: dev: increase bus-off message severity
-Date: Sun,  1 Jul 2018 18:01:45 +0200
-Message-ID: <20180701153123.451550070@linuxfoundation.org>
-References: <20180701153122.365061142@linuxfoundation.org>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: [PATCH v2] can: m_can: Fix runtime resume call
+Date: Tue, 3 Jul 2018 16:41:02 +0530
+Message-ID: <20180703111102.26502-1-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180701153122.365061142@linuxfoundation.org>
-Sender: stable-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>, linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <alexander.levin@microsoft.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, faiz_abbas@ti.com
 List-Id: linux-can.vger.kernel.org
 
-3.18-stable review patch.  If anyone has any objections, please let me know.
+pm_runtime_get_sync() returns a 1 if the state of the device is already
+'active'. This is not a failure case and should return a success.
 
-------------------
+Therefore fix error handling for pm_runtime_get_sync() call such that
+it returns success when the value is 1.
 
-From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+Also cleanup the TODO for using runtime PM for sleep mode as that is
+implemented.
 
-[ Upstream commit 71c23a821c6bcacba71a094efe49ee689605906b ]
-
-bus-off is usually caused by hardware malfunction or configuration error
-(baud rate mismatch) and causes a complete loss of communication.
-
-Increase the "bus-off" message's severity from netdev_dbg() to
-netdev_info() to make it visible to the user.
-
-A can interface going into bus-off is similar in severity to ethernet's
-"Link is Down" message, which is also printed at info level.
-
-It is debatable whether the the "restarted" message should also be
-changed to netdev_info() to make the interface state changes
-comprehensible from the kernel log. I have chosen to keep the
-"restarted" message at dbg for now as the "bus-off" message should be
-enough for the user to notice and investigate the problem.
-
-Signed-off-by: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: linux-can@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 ---
- drivers/net/can/dev.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -471,7 +471,7 @@ void can_bus_off(struct net_device *dev)
+Changes in v2:
+
+rebased to latest mainline
+
+ drivers/net/can/m_can/m_can.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index b397a33f3d32..ac4c6dc2f8c8 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -634,10 +634,12 @@ static int m_can_clk_start(struct m_can_priv *priv)
+ 	int err;
+ 
+ 	err = pm_runtime_get_sync(priv->device);
+-	if (err)
++	if (err < 0) {
+ 		pm_runtime_put_noidle(priv->device);
++		return err;
++	}
+ 
+-	return err;
++	return 0;
+ }
+ 
+ static void m_can_clk_stop(struct m_can_priv *priv)
+@@ -1687,8 +1689,6 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-/* TODO: runtime PM with power down or sleep mode  */
+-
+ static __maybe_unused int m_can_suspend(struct device *dev)
  {
- 	struct can_priv *priv = netdev_priv(dev);
- 
--	netdev_dbg(dev, "bus-off\n");
-+	netdev_info(dev, "bus-off\n");
- 
- 	netif_carrier_off(dev);
- 	priv->can_stats.bus_off++;
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+-- 
+2.17.0
