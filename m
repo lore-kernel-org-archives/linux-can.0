@@ -1,64 +1,47 @@
-From: Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [RESEND PATCH] apalis_t30: fix can2
-Date: Mon, 9 Jul 2018 17:08:34 +0200
-Message-ID: <20180709150834.GC18353@ulmo>
-References: <20180703150340.29580-1-marcel@ziswiler.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7gGkHNMELEOhSGF6"
+From: Nicholas Mc Guire <hofrat@osadl.org>
+Subject: [PATCH] can: mpc5xxx_can: check of_iomap return before use
+Date: Mon,  9 Jul 2018 21:16:40 +0200
+Message-ID: <1531163800-12111-1-git-send-email-hofrat@osadl.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180703150340.29580-1-marcel@ziswiler.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Marcel Ziswiler <marcel@ziswiler.com>
-Cc: linux-tegra@vger.kernel.org, linux-can@vger.kernel.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, devicetree@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
 List-Id: linux-can.vger.kernel.org
 
+ of_iompa() can return NULL so that return needs to be checked and NULL
+treated as failure. While at it also take care of the missing
+of_node_put() in the error path.
 
---7gGkHNMELEOhSGF6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+Fixes: commit afa17a500a36 ("net/can: add driver for mscan family & mpc52xx_mscan")
+---
 
-On Tue, Jul 03, 2018 at 05:03:39PM +0200, Marcel Ziswiler wrote:
-> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
->=20
-> CAN2 currently fails on probe as follows:
->=20
-> mcp251x spi1.1: Probe failed, err=3D19
->=20
-> Fix this by enabling input on pin mux of resp. SPI4 pins.
->=20
-> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
->=20
-> Signed-off-by: Marcel Ziswiler <marcel@ziswiler.com>
-> ---
->=20
->  arch/arm/boot/dts/tegra30-apalis.dtsi | 1 +
->  1 file changed, 1 insertion(+)
+Problem was found by an experimental coccinelle script
 
-Applied to for-4.19/arm/dt, thanks.
+Patch was compiletested with: mpc5200_defconfig + CONFIG_CAN=y,
+CONFIG_CAN_MSCAN=y, CONFIG_CAN_MPC5XXX=y
+(with a number of sparse warnings not related to the proposed change)
 
-Thierry
+Patch is against 4.18-rc3 (localversion-next is next-20180706)
 
---7gGkHNMELEOhSGF6
-Content-Type: application/pgp-signature; name="signature.asc"
+ drivers/net/can/mscan/mpc5xxx_can.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAltDem8ACgkQ3SOs138+
-s6FatA//Q3UsiK6S5OcpY2UDUoYQ8QzjfrGpvdIuFNXKQc1SOqme3oCTDaWwgRrU
-j3B+9NXTG1NMrm7/sB/1J6CwEM4B0Hz3d08AF88D9G/xNElzBtH8N23VMthRRprZ
-8a5wZ2gnQ7a6K6/X2apx3XRXExmQeDFyQqe/WCW0w+0ieVz1lrcxsn+QtFmc7URJ
-1MvFxGUyIsChXVJyXOUeAAvLypQxopkOvonMMg0Nbamav/blFZ0VzcKGLduQUptH
-Bxd7qPNAQ6cImWPMrsuWEMUK8Y+EjG8Lhc89eVQ3DNFfb0xUMWigp2eXa5Wzhh+h
-+53ITy4uSwVqh9MqEWcC8t02dBiHpBIi5V0odYMT3vLgaL9paQ6m9q/gcJa9Lswr
-sLAyxVqtqDOfrjxl0prV7cYIlZoOffUhTKPIEB72GNcXUGORPzf6obtoRUblyEL6
-Cs7mi3GX38XqnxJZzF43wuY8pRh/9ehhTYc2BrtZUW8frc5zy/527ZdK1xa6QZLS
-PsfYDI9CbPfzGSwdQUFNj+uAQR5P6nh4sNZbnd1YzHAqcprCHLNbrhZKyQywpBpm
-zxtlw2fSZMCTyBHLlnigGnGCea9Xz0OVc16gLpXXPA6atNiMXsViLKTcTgQ3RzSu
-ilIDzgh1yYE16QgP/OpD2PR88uSNoWBqV4jv16hcYxO0CeBtus4=
-=v0+e
------END PGP SIGNATURE-----
-
---7gGkHNMELEOhSGF6--
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+index c7427bd..2949a38 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -86,6 +86,11 @@ static u32 mpc52xx_can_get_clock(struct platform_device *ofdev,
+ 		return 0;
+ 	}
+ 	cdm = of_iomap(np_cdm, 0);
++	if (!cdm) {
++		of_node_put(np_cdm);
++		dev_err(&ofdev->dev, "can't map clock node!\n");
++		return 0;
++	}
+ 
+ 	if (in_8(&cdm->ipb_clk_sel) & 0x1)
+ 		freq *= 2;
+-- 
+2.1.4
