@@ -1,26 +1,78 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] can: mpc5xxx_can: check of_iomap return before use
-Date: Mon, 9 Jul 2018 16:35:36 -0300
-Message-ID: <CAOMZO5BD+jgwz+X6vs=AiprQJ_-EtT6M_Nm1MoUUT2bBQKDTKQ@mail.gmail.com>
-References: <1531163800-12111-1-git-send-email-hofrat@osadl.org>
- <CAOMZO5CPVx_3kj5xKaoNbYP14cgPk9aSniyu44oWF-0jbSx91g@mail.gmail.com> <20180709193157.GB17865@osadl.at>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: Re: [PATCH v2] can: m_can: Move accessing of message ram to after
+ clocks are enabled
+Date: Tue, 10 Jul 2018 17:06:33 +0530
+Message-ID: <6e702a44-c2c3-30ff-58cd-761b667a1e56@ti.com>
+References: <20180703111710.27084-1-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180709193157.GB17865@osadl.at>
+In-Reply-To: <20180703111710.27084-1-faiz_abbas@ti.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicholas Mc Guire <der.herr@hofr.at>
-Cc: Nicholas Mc Guire <hofrat@osadl.org>, Wolfram Sang <w.sang@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
 List-Id: linux-can.vger.kernel.org
 
-On Mon, Jul 9, 2018 at 4:31 PM, Nicholas Mc Guire <der.herr@hofr.at> wrote:
+Hi,
 
-> I don=C2=B4t think so the code above this part return 0 on error and a
-> valid frequency on success so returning -ENOMEM would probably be
-> mistaken as a frequency !
+On Tuesday 03 July 2018 04:47 PM, Faiz Abbas wrote:
+> MCAN message ram should only be accessed once clocks are enabled.
+> Therefore, move the call to parse/init the message ram to after
+> clocks are enabled.
+> 
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> ---
+> Changes in v2:
+> 
+> rebased to latest mainline
+> 
+>  drivers/net/can/m_can/m_can.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> index ac4c6dc2f8c8..04c48371ab2a 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -1644,8 +1644,6 @@ static int m_can_plat_probe(struct platform_device *pdev)
+>  	priv->can.clock.freq = clk_get_rate(cclk);
+>  	priv->mram_base = mram_addr;
+>  
+> -	m_can_of_parse_mram(priv, mram_config_vals);
+> -
+>  	platform_set_drvdata(pdev, dev);
+>  	SET_NETDEV_DEV(dev, &pdev->dev);
+>  
+> @@ -1668,6 +1666,8 @@ static int m_can_plat_probe(struct platform_device *pdev)
+>  		goto clk_disable;
+>  	}
+>  
+> +	m_can_of_parse_mram(priv, mram_config_vals);
+> +
+>  	devm_can_led_init(dev);
+>  
+>  	of_can_transceiver(dev);
+> @@ -1715,8 +1715,6 @@ static __maybe_unused int m_can_resume(struct device *dev)
+>  
+>  	pinctrl_pm_select_default_state(dev);
+>  
+> -	m_can_init_ram(priv);
+> -
+>  	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+>  
+>  	if (netif_running(ndev)) {
+> @@ -1726,6 +1724,7 @@ static __maybe_unused int m_can_resume(struct device *dev)
+>  		if (ret)
+>  			return ret;
+>  
+> +		m_can_init_ram(priv);
+>  		m_can_start(ndev);
+>  		netif_device_attach(ndev);
+>  		netif_start_queue(ndev);
+> 
 
-Now that I looked closely in the function context I see it makes sense
-to return 0 :-)
+Gentle ping.
 
-Thanks
+Thanks,
+Faiz
