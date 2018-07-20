@@ -1,76 +1,57 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 1/5] can: enable multi-queue for SocketCAN devices
-Date: Fri, 20 Jul 2018 16:34:48 +0200
-Message-ID: <d61c82a6-3120-5c32-3264-238d2b964ced@pengutronix.de>
-References: <1528224240-30786-1-git-send-email-mark.jonas@de.bosch.com>
- <1528900641-18677-1-git-send-email-mark.jonas@de.bosch.com>
- <1528900641-18677-2-git-send-email-mark.jonas@de.bosch.com>
+Subject: Re: [PATCH v2 0/5] can: enable multi-queue for SocketCAN devices
+Date: Fri, 20 Jul 2018 16:36:23 +0200
+Message-ID: <06646b4d-52c3-4839-0bbe-a782db42ce7c@pengutronix.de>
+References: <f858e62c59754a0c9f785b3dfc7aa50f@de.bosch.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="jbXFFXKZbFVcsboz6oQVC153hDdHp2VLd"
+ boundary="9bDmvbzgCcCXDjfJWWuAEMSF5yOsHje1N"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1528900641-18677-2-git-send-email-mark.jonas@de.bosch.com>
+In-Reply-To: <f858e62c59754a0c9f785b3dfc7aa50f@de.bosch.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Jonas <mark.jonas@de.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, hs@denx.de, yi.zhu5@cn.bosch.com, petar.petrovic2@de.bosch.com, stephan.baetge@de.bosch.com, andy.shevchenko@gmail.com, socketcan@hartkopp.net, o.rempel@pengutronix.de
+To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, "Petrovic Petar (CM-CI1/ENP1)" <Petar.Petrovic2@de.bosch.com>, "Baetge Stephan (CM-CI1/ENP1)" <Stephan.Baetge@de.bosch.com>, "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---jbXFFXKZbFVcsboz6oQVC153hDdHp2VLd
-Content-Type: multipart/mixed; boundary="7MK7jnJhyZ4l2uhqvePK7WjHpVWhtGZiP";
+--9bDmvbzgCcCXDjfJWWuAEMSF5yOsHje1N
+Content-Type: multipart/mixed; boundary="F6ycatdmei4JAPqsla2oUHKy1kNKHejbW";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Mark Jonas <mark.jonas@de.bosch.com>,
+To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>,
  Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, hs@denx.de, yi.zhu5@cn.bosch.com,
- petar.petrovic2@de.bosch.com, stephan.baetge@de.bosch.com,
- andy.shevchenko@gmail.com, socketcan@hartkopp.net, o.rempel@pengutronix.de
-Message-ID: <d61c82a6-3120-5c32-3264-238d2b964ced@pengutronix.de>
-Subject: Re: [PATCH v2 1/5] can: enable multi-queue for SocketCAN devices
-References: <1528224240-30786-1-git-send-email-mark.jonas@de.bosch.com>
- <1528900641-18677-1-git-send-email-mark.jonas@de.bosch.com>
- <1528900641-18677-2-git-send-email-mark.jonas@de.bosch.com>
-In-Reply-To: <1528900641-18677-2-git-send-email-mark.jonas@de.bosch.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)"
+ <Yi.Zhu5@cn.bosch.com>,
+ "Petrovic Petar (CM-CI1/ENP1)" <Petar.Petrovic2@de.bosch.com>,
+ "Baetge Stephan (CM-CI1/ENP1)" <Stephan.Baetge@de.bosch.com>,
+ "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+ "socketcan@hartkopp.net" <socketcan@hartkopp.net>,
+ "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>
+Message-ID: <06646b4d-52c3-4839-0bbe-a782db42ce7c@pengutronix.de>
+Subject: Re: [PATCH v2 0/5] can: enable multi-queue for SocketCAN devices
+References: <f858e62c59754a0c9f785b3dfc7aa50f@de.bosch.com>
+In-Reply-To: <f858e62c59754a0c9f785b3dfc7aa50f@de.bosch.com>
 
---7MK7jnJhyZ4l2uhqvePK7WjHpVWhtGZiP
+--F6ycatdmei4JAPqsla2oUHKy1kNKHejbW
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 06/13/2018 04:37 PM, Mark Jonas wrote:
-> From: Zhu Yi <yi.zhu5@cn.bosch.com>
+On 07/11/2018 07:00 PM, Jonas Mark (BT-FIR/ENG1) wrote:
+> Hi Marc,
 >=20
-> The existing SocketCAN implementation provides alloc_candev() to
-> allocate a CAN device using a single Tx and Rx queue. This can lead to
-> priority inversion in case the single Tx queue is already full with low=
+>> Betreff: [PATCH v2 0/5] can: enable multi-queue for SocketCAN devices
+>=20
+> You have been interested in seeing the reason why we are proposing the
+> "can: enable multi-queue for SocketCAN devices" patch for the Linux
+> mainline. So far I have not heard from you. Do you now see a chance of
+> getting the patch accepted?
 
-> priority messages and a high priority message needs to be sent while th=
-e
-> bus is fully loaded with medium priority messages.
->=20
-> This problem can be solved by using the existing multi-queue support of=
-
-> the network subsytem. The commit makes it possible to use multi-queue i=
-n
-> the CAN subsystem in the same way it is used in the Ethernet subsystem
-> by adding an alloc_candev_mqs() call and accompanying macros. With this=
-
-> support a CAN device can use multi-queue qdisc (e.g. mqprio) to avoid
-> the aforementioned priority inversion.
->=20
-> The exisiting functionality of alloc_candev() is the same as before.
->=20
-> CAN devices need to have prioritized multiple hardware queues or are
-> able to abort waiting for arbitration to make sensible use of
-> multi-queues.
->=20
-> Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
-> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
-> Reviewed-by: Heiko Schocher <hs@denx.de>
-
-Applied to linux-can-next.
+I've applied patch 1.
 
 Marc
 
@@ -81,23 +62,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---7MK7jnJhyZ4l2uhqvePK7WjHpVWhtGZiP--
+--F6ycatdmei4JAPqsla2oUHKy1kNKHejbW--
 
---jbXFFXKZbFVcsboz6oQVC153hDdHp2VLd
+--9bDmvbzgCcCXDjfJWWuAEMSF5yOsHje1N
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAltR8wgACgkQk9IU1zQo
-ZfGT2Af/XqAfR3SHb7SAJg0jrQmWyc4F+OlKl5yNM06LfV/eXnf9Wy9AS81RtANV
-ZODGx6T5qsqm8XCv3Ve4GD71A5uCv1Sh8UaGSq+9fFZDyhJnxSVwq4lLIWLKHs9X
-wN6/OIgE+iit0JNMyaGYLHNWK8gvFA/i6ptTdDukyXcDUu2IXe2yU+Od2SMKfRTL
-c6HU/0gtR/ySOf8OUqCnUn5ZcVCpoOEs931GmAZwQmai3Hvk1kK4j0QPFoCBWmkC
-jcjAMbTPxlO3qL4og3omHpvzh/KkBZ1gn8EnVoPtIPvsm5vnveTPNqGEG33CQ7Ni
-rnqvJrtyo+6ffHt1aBzYLag40R8Rzg==
-=TugX
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAltR82cACgkQk9IU1zQo
+ZfFc7Qf/WOevY2KunZKlIUs49lIgWJGta/xB+sdrSidNnNo1J/1C2DBoTh2KtG8J
+V7VNxMj6guJ9FMkUCtLrWJwobtzr4NJr9VjfrwAbssJwMJxwYdV9/JaQiieiwLZ9
+0VdjxjpurDSh3t2ltb2txXYwKfwzo5IzA3kxg3MgV0hYs9EpdPryg+72EaJuaoGT
+pqn9bFhsiiO5Klf3oJc4eRxklTLdElZUq/7LuGMC7zZm6K2YqKPXaLBFr9RAsPGu
+Xe4VopR8SF5WAF3l6FMpc6g7JNsxV2CA0CGB1c0hRnSpfVeZwuc2AQrv+LbVB4c4
+hV68zgspjhcAR3+lqlF4mjlJaTZXKA==
+=09iI
 -----END PGP SIGNATURE-----
 
---jbXFFXKZbFVcsboz6oQVC153hDdHp2VLd--
+--9bDmvbzgCcCXDjfJWWuAEMSF5yOsHje1N--
