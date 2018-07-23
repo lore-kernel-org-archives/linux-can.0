@@ -1,46 +1,51 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: peak_usb: mark expected switch fall-throughs
-Date: Mon, 23 Jul 2018 10:14:50 +0200
-Message-ID: <f6f0bf83-84b1-0cf0-3c78-828b56694b92@pengutronix.de>
-References: <20180628174142.GA17081@embeddedor.com>
+Subject: Re: [PATCH v2] can: m_can: Fix runtime resume call
+Date: Mon, 23 Jul 2018 10:05:42 +0200
+Message-ID: <a4e20283-7581-9d29-5b51-66fef7433cb7@pengutronix.de>
+References: <20180703111102.26502-1-faiz_abbas@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="GtZDdLRzLjn81QO2ovso2LYLDRpa9X8R0"
+ boundary="rmBPG1Cwvpk7gHex6hdbx0OFwCnLWt1bb"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180628174142.GA17081@embeddedor.com>
+In-Reply-To: <20180703111102.26502-1-faiz_abbas@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Faiz Abbas <faiz_abbas@ti.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: wg@grandegger.com, davem@davemloft.net
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GtZDdLRzLjn81QO2ovso2LYLDRpa9X8R0
-Content-Type: multipart/mixed; boundary="xT716j30djcJ5nwgAp2Vk31O1hyjm5C7G";
+--rmBPG1Cwvpk7gHex6hdbx0OFwCnLWt1bb
+Content-Type: multipart/mixed; boundary="pU0Z7r7fAwCLRjctdul6c10dS0bUkou14";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <f6f0bf83-84b1-0cf0-3c78-828b56694b92@pengutronix.de>
-Subject: Re: [PATCH] can: peak_usb: mark expected switch fall-throughs
-References: <20180628174142.GA17081@embeddedor.com>
-In-Reply-To: <20180628174142.GA17081@embeddedor.com>
+To: Faiz Abbas <faiz_abbas@ti.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: wg@grandegger.com, davem@davemloft.net
+Message-ID: <a4e20283-7581-9d29-5b51-66fef7433cb7@pengutronix.de>
+Subject: Re: [PATCH v2] can: m_can: Fix runtime resume call
+References: <20180703111102.26502-1-faiz_abbas@ti.com>
+In-Reply-To: <20180703111102.26502-1-faiz_abbas@ti.com>
 
---xT716j30djcJ5nwgAp2Vk31O1hyjm5C7G
+--pU0Z7r7fAwCLRjctdul6c10dS0bUkou14
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 06/28/2018 07:41 PM, Gustavo A. R. Silva wrote:
-> In preparation to enabling -Wimplicit-fallthrough, mark switch cases
-> where we are expecting to fall through.
->=20
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+On 07/03/2018 01:11 PM, Faiz Abbas wrote:
+> pm_runtime_get_sync() returns a 1 if the state of the device is already=
 
-applied to linux-can-next.
+> 'active'. This is not a failure case and should return a success.
+>=20
+> Therefore fix error handling for pm_runtime_get_sync() call such that
+> it returns success when the value is 1.
+>=20
+> Also cleanup the TODO for using runtime PM for sleep mode as that is
+> implemented.
+>=20
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+
+Applied to linux-can.
 
 Tnx,
 Marc
@@ -52,23 +57,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---xT716j30djcJ5nwgAp2Vk31O1hyjm5C7G--
+--pU0Z7r7fAwCLRjctdul6c10dS0bUkou14--
 
---GtZDdLRzLjn81QO2ovso2LYLDRpa9X8R0
+--rmBPG1Cwvpk7gHex6hdbx0OFwCnLWt1bb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAltVjnoACgkQk9IU1zQo
-ZfGelAf5AfQeNzehZW/bovXlJpiWRLU8epG4YOmZG+2xHcsMtidTq7jpJQNhfp3M
-qYJ/7alelstX5GAWT6RYlONZo8IqJ4ps3efKvKidd+D8fQfTAjVDeC7jkRzqt9na
-9+FUF9BSwI7Z0G8bdAcErsre2CJFR5DDABEbrqe3Sn1APeKnDm4S5soMR1EHw3TG
-Z4Cb/N4Lo5nApLTmOcDFSWCAGxHvD8DiPF4QPSsG5MHcjcs8Mv9rfmsxSPqYIlaO
-xtB+iUpqqfuySeBXFusLFDBki+6K+RHqK3bo3Kp+eb3ZAG6xuep2I0PLbN3I5aXo
-8gThfUTp11Te4xKxc7PFh2O3qu+xgQ==
-=R8kB
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAltVjFkACgkQk9IU1zQo
+ZfHmtgf/Zyl2db60KctC3jXzxQ+vMOXNgxhugQML8FK7+FIU9RMj1KDOeIxP8j78
+3GeUrJaEtlS0iCR4VVbW2Gn8vuv/E4TYSq/ZbFSOr19noih0HHYNzF2sdEZHgV4J
+ruNuMKLB2TrjIgOrd3yVTP5dBvZxYnzphWETq+CQA60Wvda0rD84CGpaXw0vKiwU
+6EN4LqRZfysanUplFFAmUGRBk0ghLF7/MczBqn6gGHNkMSBEdlVBq5YU2C/BB7TW
+HOsjB2FzxTPAnUSq15BdckWnWK8aLl6T8IFjADjU5WP7yl96zeIXMVxZLOFA8Tg3
+hl5YcevAYS5utba8VC+AKQ4kFXddFw==
+=EFT5
 -----END PGP SIGNATURE-----
 
---GtZDdLRzLjn81QO2ovso2LYLDRpa9X8R0--
+--rmBPG1Cwvpk7gHex6hdbx0OFwCnLWt1bb--
