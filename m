@@ -1,44 +1,185 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 10/12] can: xilinx_can: fix RX overflow interrupt not being enabled
-Date: Mon, 23 Jul 2018 14:58:41 +0200
-Message-ID: <20180723125843.391-11-mkl@pengutronix.de>
+Subject: [PATCH 12/12] can: xilinx_can: fix power management handling
+Date: Mon, 23 Jul 2018 14:58:43 +0200
+Message-ID: <20180723125843.391-13-mkl@pengutronix.de>
 References: <20180723125843.391-1-mkl@pengutronix.de>
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20180723125843.391-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Anssi Hannula <anssi.hannula@bitwise.fi>, Michal Simek <michal.simek@xilinx.com>, stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
 From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-RX overflow interrupt (RXOFLW) is disabled even though xcan_interrupt()
-processes it. This means that an RX overflow interrupt will only be
-processed when another interrupt gets asserted (e.g. for RX/TX).
+There are several issues with the suspend/resume handling code of the
+driver:
 
-Fix that by enabling the RXOFLW interrupt.
+- The device is attached and detached in the runtime_suspend() and
+  runtime_resume() callbacks if the interface is running. However,
+  during xcan_chip_start() the interface is considered running,
+  causing the resume handler to incorrectly call netif_start_queue()
+  at the beginning of xcan_chip_start(), and on xcan_chip_start() error
+  return the suspend handler detaches the device leaving the user
+  unable to bring-up the device anymore.
 
-Fixes: b1201e44f50b ("can: xilinx CAN controller support")
+- The device is not brought properly up on system resume. A reset is
+  done and the code tries to determine the bus state after that.
+  However, after reset the device is always in Configuration mode
+  (down), so the state checking code does not make sense and
+  communication will also not work.
+
+- The suspend callback tries to set the device to sleep mode (low-power
+  mode which monitors the bus and brings the device back to normal mode
+  on activity), but then immediately disables the clocks (possibly
+  before the device reaches the sleep mode), which does not make sense
+  to me. If a clean shutdown is wanted before disabling clocks, we can
+  just bring it down completely instead of only sleep mode.
+
+Reorganize the PM code so that only the clock logic remains in the
+runtime PM callbacks and the system PM callbacks contain the device
+bring-up/down logic. This makes calling the runtime PM callbacks during
+e.g. xcan_chip_start() safe.
+
+The system PM callbacks now simply call common code to start/stop the
+HW if the interface was running, replacing the broken code from before.
+
+xcan_chip_stop() is updated to use the common reset code so that it will
+wait for the reset to complete. Reset also disables all interrupts so do
+not do that separately.
+
+Also, the device_may_wakeup() checks are removed as the driver does not
+have wakeup support.
+
+Tested on Zynq-7000 integrated CAN.
+
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 Cc: Michal Simek <michal.simek@xilinx.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/xilinx_can.c | 69 +++++++++++++++---------------------
+ 1 file changed, 28 insertions(+), 41 deletions(-)
 
 diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index dcbdc3cd651c..ea9f9d1a5ba7 100644
+index cb80a9aa7281..5a24039733ef 100644
 --- a/drivers/net/can/xilinx_can.c
 +++ b/drivers/net/can/xilinx_can.c
-@@ -104,7 +104,7 @@ enum xcan_reg {
- #define XCAN_INTR_ALL		(XCAN_IXR_TXOK_MASK | XCAN_IXR_BSOFF_MASK |\
- 				 XCAN_IXR_WKUP_MASK | XCAN_IXR_SLP_MASK | \
- 				 XCAN_IXR_RXNEMP_MASK | XCAN_IXR_ERROR_MASK | \
--				 XCAN_IXR_ARBLST_MASK)
-+				 XCAN_IXR_RXOFLW_MASK | XCAN_IXR_ARBLST_MASK)
+@@ -984,13 +984,9 @@ static irqreturn_t xcan_interrupt(int irq, void *dev_id)
+ static void xcan_chip_stop(struct net_device *ndev)
+ {
+ 	struct xcan_priv *priv = netdev_priv(ndev);
+-	u32 ier;
  
- /* CAN register bit shift - XCAN_<REG>_<BIT>_SHIFT */
- #define XCAN_BTR_SJW_SHIFT		7  /* Synchronous jump width */
+ 	/* Disable interrupts and leave the can in configuration mode */
+-	ier = priv->read_reg(priv, XCAN_IER_OFFSET);
+-	ier &= ~XCAN_INTR_ALL;
+-	priv->write_reg(priv, XCAN_IER_OFFSET, ier);
+-	priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_RESET_MASK);
++	set_reset_mode(ndev);
+ 	priv->can.state = CAN_STATE_STOPPED;
+ }
+ 
+@@ -1123,10 +1119,15 @@ static const struct net_device_ops xcan_netdev_ops = {
+  */
+ static int __maybe_unused xcan_suspend(struct device *dev)
+ {
+-	if (!device_may_wakeup(dev))
+-		return pm_runtime_force_suspend(dev);
++	struct net_device *ndev = dev_get_drvdata(dev);
+ 
+-	return 0;
++	if (netif_running(ndev)) {
++		netif_stop_queue(ndev);
++		netif_device_detach(ndev);
++		xcan_chip_stop(ndev);
++	}
++
++	return pm_runtime_force_suspend(dev);
+ }
+ 
+ /**
+@@ -1138,11 +1139,27 @@ static int __maybe_unused xcan_suspend(struct device *dev)
+  */
+ static int __maybe_unused xcan_resume(struct device *dev)
+ {
+-	if (!device_may_wakeup(dev))
+-		return pm_runtime_force_resume(dev);
++	struct net_device *ndev = dev_get_drvdata(dev);
++	int ret;
+ 
+-	return 0;
++	ret = pm_runtime_force_resume(dev);
++	if (ret) {
++		dev_err(dev, "pm_runtime_force_resume failed on resume\n");
++		return ret;
++	}
++
++	if (netif_running(ndev)) {
++		ret = xcan_chip_start(ndev);
++		if (ret) {
++			dev_err(dev, "xcan_chip_start failed on resume\n");
++			return ret;
++		}
+ 
++		netif_device_attach(ndev);
++		netif_start_queue(ndev);
++	}
++
++	return 0;
+ }
+ 
+ /**
+@@ -1157,14 +1174,6 @@ static int __maybe_unused xcan_runtime_suspend(struct device *dev)
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct xcan_priv *priv = netdev_priv(ndev);
+ 
+-	if (netif_running(ndev)) {
+-		netif_stop_queue(ndev);
+-		netif_device_detach(ndev);
+-	}
+-
+-	priv->write_reg(priv, XCAN_MSR_OFFSET, XCAN_MSR_SLEEP_MASK);
+-	priv->can.state = CAN_STATE_SLEEPING;
+-
+ 	clk_disable_unprepare(priv->bus_clk);
+ 	clk_disable_unprepare(priv->can_clk);
+ 
+@@ -1183,7 +1192,6 @@ static int __maybe_unused xcan_runtime_resume(struct device *dev)
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct xcan_priv *priv = netdev_priv(ndev);
+ 	int ret;
+-	u32 isr, status;
+ 
+ 	ret = clk_prepare_enable(priv->bus_clk);
+ 	if (ret) {
+@@ -1197,27 +1205,6 @@ static int __maybe_unused xcan_runtime_resume(struct device *dev)
+ 		return ret;
+ 	}
+ 
+-	priv->write_reg(priv, XCAN_SRR_OFFSET, XCAN_SRR_RESET_MASK);
+-	isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
+-	status = priv->read_reg(priv, XCAN_SR_OFFSET);
+-
+-	if (netif_running(ndev)) {
+-		if (isr & XCAN_IXR_BSOFF_MASK) {
+-			priv->can.state = CAN_STATE_BUS_OFF;
+-			priv->write_reg(priv, XCAN_SRR_OFFSET,
+-					XCAN_SRR_RESET_MASK);
+-		} else if ((status & XCAN_SR_ESTAT_MASK) ==
+-					XCAN_SR_ESTAT_MASK) {
+-			priv->can.state = CAN_STATE_ERROR_PASSIVE;
+-		} else if (status & XCAN_SR_ERRWRN_MASK) {
+-			priv->can.state = CAN_STATE_ERROR_WARNING;
+-		} else {
+-			priv->can.state = CAN_STATE_ERROR_ACTIVE;
+-		}
+-		netif_device_attach(ndev);
+-		netif_start_queue(ndev);
+-	}
+-
+ 	return 0;
+ }
+ 
 -- 
 2.18.0
