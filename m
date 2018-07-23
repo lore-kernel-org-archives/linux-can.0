@@ -1,58 +1,48 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 0/5] can: enable multi-queue for SocketCAN devices
-Date: Fri, 20 Jul 2018 16:36:23 +0200
-Message-ID: <06646b4d-52c3-4839-0bbe-a782db42ce7c@pengutronix.de>
-References: <f858e62c59754a0c9f785b3dfc7aa50f@de.bosch.com>
+Subject: Re: [PATCH] can: peak_usb: mark expected switch fall-throughs
+Date: Mon, 23 Jul 2018 10:14:50 +0200
+Message-ID: <f6f0bf83-84b1-0cf0-3c78-828b56694b92@pengutronix.de>
+References: <20180628174142.GA17081@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="9bDmvbzgCcCXDjfJWWuAEMSF5yOsHje1N"
+ boundary="GtZDdLRzLjn81QO2ovso2LYLDRpa9X8R0"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f858e62c59754a0c9f785b3dfc7aa50f@de.bosch.com>
+In-Reply-To: <20180628174142.GA17081@embeddedor.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)" <Yi.Zhu5@cn.bosch.com>, "Petrovic Petar (CM-CI1/ENP1)" <Petar.Petrovic2@de.bosch.com>, "Baetge Stephan (CM-CI1/ENP1)" <Stephan.Baetge@de.bosch.com>, "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>, "socketcan@hartkopp.net" <socketcan@hartkopp.net>, "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9bDmvbzgCcCXDjfJWWuAEMSF5yOsHje1N
-Content-Type: multipart/mixed; boundary="F6ycatdmei4JAPqsla2oUHKy1kNKHejbW";
+--GtZDdLRzLjn81QO2ovso2LYLDRpa9X8R0
+Content-Type: multipart/mixed; boundary="xT716j30djcJ5nwgAp2Vk31O1hyjm5C7G";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "Jonas Mark (BT-FIR/ENG1)" <Mark.Jonas@de.bosch.com>,
- Wolfgang Grandegger <wg@grandegger.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "hs@denx.de" <hs@denx.de>, "ZHU Yi (BT-FIR/ENG1-Zhu)"
- <Yi.Zhu5@cn.bosch.com>,
- "Petrovic Petar (CM-CI1/ENP1)" <Petar.Petrovic2@de.bosch.com>,
- "Baetge Stephan (CM-CI1/ENP1)" <Stephan.Baetge@de.bosch.com>,
- "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
- "socketcan@hartkopp.net" <socketcan@hartkopp.net>,
- "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>
-Message-ID: <06646b4d-52c3-4839-0bbe-a782db42ce7c@pengutronix.de>
-Subject: Re: [PATCH v2 0/5] can: enable multi-queue for SocketCAN devices
-References: <f858e62c59754a0c9f785b3dfc7aa50f@de.bosch.com>
-In-Reply-To: <f858e62c59754a0c9f785b3dfc7aa50f@de.bosch.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ "David S. Miller" <davem@davemloft.net>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <f6f0bf83-84b1-0cf0-3c78-828b56694b92@pengutronix.de>
+Subject: Re: [PATCH] can: peak_usb: mark expected switch fall-throughs
+References: <20180628174142.GA17081@embeddedor.com>
+In-Reply-To: <20180628174142.GA17081@embeddedor.com>
 
---F6ycatdmei4JAPqsla2oUHKy1kNKHejbW
+--xT716j30djcJ5nwgAp2Vk31O1hyjm5C7G
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 07/11/2018 07:00 PM, Jonas Mark (BT-FIR/ENG1) wrote:
-> Hi Marc,
+On 06/28/2018 07:41 PM, Gustavo A. R. Silva wrote:
+> In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+> where we are expecting to fall through.
 >=20
->> Betreff: [PATCH v2 0/5] can: enable multi-queue for SocketCAN devices
->=20
-> You have been interested in seeing the reason why we are proposing the
-> "can: enable multi-queue for SocketCAN devices" patch for the Linux
-> mainline. So far I have not heard from you. Do you now see a chance of
-> getting the patch accepted?
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-I've applied patch 1.
+applied to linux-can-next.
 
+Tnx,
 Marc
 
 --=20
@@ -62,23 +52,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---F6ycatdmei4JAPqsla2oUHKy1kNKHejbW--
+--xT716j30djcJ5nwgAp2Vk31O1hyjm5C7G--
 
---9bDmvbzgCcCXDjfJWWuAEMSF5yOsHje1N
+--GtZDdLRzLjn81QO2ovso2LYLDRpa9X8R0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAltR82cACgkQk9IU1zQo
-ZfFc7Qf/WOevY2KunZKlIUs49lIgWJGta/xB+sdrSidNnNo1J/1C2DBoTh2KtG8J
-V7VNxMj6guJ9FMkUCtLrWJwobtzr4NJr9VjfrwAbssJwMJxwYdV9/JaQiieiwLZ9
-0VdjxjpurDSh3t2ltb2txXYwKfwzo5IzA3kxg3MgV0hYs9EpdPryg+72EaJuaoGT
-pqn9bFhsiiO5Klf3oJc4eRxklTLdElZUq/7LuGMC7zZm6K2YqKPXaLBFr9RAsPGu
-Xe4VopR8SF5WAF3l6FMpc6g7JNsxV2CA0CGB1c0hRnSpfVeZwuc2AQrv+LbVB4c4
-hV68zgspjhcAR3+lqlF4mjlJaTZXKA==
-=09iI
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAltVjnoACgkQk9IU1zQo
+ZfGelAf5AfQeNzehZW/bovXlJpiWRLU8epG4YOmZG+2xHcsMtidTq7jpJQNhfp3M
+qYJ/7alelstX5GAWT6RYlONZo8IqJ4ps3efKvKidd+D8fQfTAjVDeC7jkRzqt9na
+9+FUF9BSwI7Z0G8bdAcErsre2CJFR5DDABEbrqe3Sn1APeKnDm4S5soMR1EHw3TG
+Z4Cb/N4Lo5nApLTmOcDFSWCAGxHvD8DiPF4QPSsG5MHcjcs8Mv9rfmsxSPqYIlaO
+xtB+iUpqqfuySeBXFusLFDBki+6K+RHqK3bo3Kp+eb3ZAG6xuep2I0PLbN3I5aXo
+8gThfUTp11Te4xKxc7PFh2O3qu+xgQ==
+=R8kB
 -----END PGP SIGNATURE-----
 
---9bDmvbzgCcCXDjfJWWuAEMSF5yOsHje1N--
+--GtZDdLRzLjn81QO2ovso2LYLDRpa9X8R0--
