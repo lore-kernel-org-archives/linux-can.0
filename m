@@ -1,43 +1,28 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/12] can: mpc5xxx_can: check of_iomap return before use
-Date: Mon, 23 Jul 2018 14:58:34 +0200
-Message-ID: <20180723125843.391-4-mkl@pengutronix.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2018-07-23
+Date: Mon, 23 Jul 2018 11:02:41 -0700 (PDT)
+Message-ID: <20180723.110241.1700809256849434700.davem@davemloft.net>
 References: <20180723125843.391-1-mkl@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20180723125843.391-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Nicholas Mc Guire <hofrat@osadl.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 List-Id: linux-can.vger.kernel.org
 
-From: Nicholas Mc Guire <hofrat@osadl.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Mon, 23 Jul 2018 14:58:31 +0200
 
-of_iomap() can return NULL so that return needs to be checked and NULL
-treated as failure. While at it also take care of the missing
-of_node_put() in the error path.
+> this is a pull request of 12 patches for net/master.
+> 
+> The patch by Stephane Grosjean for the peak_canfd CAN driver fixes a problem
+> with older firmware. The next patch is by Roman Fietze and fixes the setup of
+> the CCCR register in the m_can driver. Nicholas Mc Guire's patch for the
+> mpc5xxx_can driver adds missing error checking. The two patches by Faiz Abbas
+> fix the runtime resume and clean up the probe function in the m_can driver. The
+> last 7 patches by Anssi Hannula fix several problem in the xilinx_can driver.
 
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-Fixes: commit afa17a500a36 ("net/can: add driver for mscan family & mpc52xx_mscan")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/mscan/mpc5xxx_can.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
-index c7427bdd3a4b..2949a381a94d 100644
---- a/drivers/net/can/mscan/mpc5xxx_can.c
-+++ b/drivers/net/can/mscan/mpc5xxx_can.c
-@@ -86,6 +86,11 @@ static u32 mpc52xx_can_get_clock(struct platform_device *ofdev,
- 		return 0;
- 	}
- 	cdm = of_iomap(np_cdm, 0);
-+	if (!cdm) {
-+		of_node_put(np_cdm);
-+		dev_err(&ofdev->dev, "can't map clock node!\n");
-+		return 0;
-+	}
- 
- 	if (in_8(&cdm->ipb_clk_sel) & 0x1)
- 		freq *= 2;
--- 
-2.18.0
+Pulled, thanks Marc.
