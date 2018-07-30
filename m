@@ -1,37 +1,26 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][can-next] can: ucan: fix spelling mistake: "resumbmitting" -> "resubmitting"
-Date: Mon, 30 Jul 2018 14:40:37 +0100
-Message-ID: <20180730134037.8240-1-colin.king@canonical.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2018-07-30
+Date: Mon, 30 Jul 2018 09:16:28 -0700 (PDT)
+Message-ID: <20180730.091628.2180063281807636490.davem@davemloft.net>
+References: <20180730090822.16919-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20180730090822.16919-1-mkl@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 List-Id: linux-can.vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Mon, 30 Jul 2018 11:08:21 +0200
 
-Trivial fix to spelling mistake in netdev_dbg error message
+> Hello David,
+> 
+> this is a pull request of one patch for net/master.
+> 
+> The patch by Anton Vasilyev and the Linux Driver Verification project
+> fixes a memory leak in the ems_usb driver's disconnect function.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/can/usb/ucan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
-index 0678a38b1af4..b9b5f6ef5bb2 100644
---- a/drivers/net/can/usb/ucan.c
-+++ b/drivers/net/can/usb/ucan.c
-@@ -719,7 +719,7 @@ static void ucan_read_bulk_callback(struct urb *urb)
- 				  up->in_ep_size,
- 				  urb->transfer_buffer,
- 				  urb->transfer_dma);
--		netdev_dbg(up->netdev, "not resumbmitting urb; status: %d\n",
-+		netdev_dbg(up->netdev, "not resubmitting urb; status: %d\n",
- 			   urb->status);
- 		return;
- 	default:
--- 
-2.17.1
+Where is the GIT URL you want me to pull from? :)
