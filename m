@@ -1,10 +1,12 @@
 From: Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH] can: sja1000: plx_pci: add support for ASEM CAN raw device
-Date: Mon, 6 Aug 2018 14:00:50 +0200
-Message-ID: <1533556850-4297-1-git-send-email-f.suligoi@asem.it>
+Subject: [PATCH v2] can: sja1000: plx_pci: add support for ASEM CAN raw device
+Date: Mon, 6 Aug 2018 15:17:12 +0200
+Message-ID: <1533561432-27034-1-git-send-email-f.suligoi@asem.it>
+References: <a6b6906d-6f53-9bf2-d87e-49ae3f208f00@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <a6b6906d-6f53-9bf2-d87e-49ae3f208f00@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Flavio Suligoi <f.suligoi@asem.it>
@@ -15,9 +17,14 @@ CAN raw device (http://www.asem.it)
 
 Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 ---
+
+v2: - renamed ASEM_... constants to reduce space size;
+    - remove "else" in "plx_pci_reset_asem_dual_can_raw" function to avoid 
+      strings breaking
+
  drivers/net/can/sja1000/Kconfig   |  1 +
- drivers/net/can/sja1000/plx_pci.c | 68 ++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 68 insertions(+), 1 deletion(-)
+ drivers/net/can/sja1000/plx_pci.c | 67 ++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 67 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
 index 1e65cb6..f6dc899 100644
@@ -32,7 +39,7 @@ index 1e65cb6..f6dc899 100644
  config CAN_TSCAN1
  	tristate "TS-CAN1 PC104 boards"
 diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
-index f8ff25c..864fe8d 100644
+index f8ff25c..d8dfa06 100644
 --- a/drivers/net/can/sja1000/plx_pci.c
 +++ b/drivers/net/can/sja1000/plx_pci.c
 @@ -46,7 +46,8 @@ MODULE_SUPPORTED_DEVICE("Adlink PCI-7841/cPCI-7841, "
@@ -69,14 +76,14 @@ index f8ff25c..864fe8d 100644
  #define MOXA_PCI_VENDOR_ID		0x1393
  #define MOXA_PCI_DEVICE_ID		0x0100
  
-+#define ASEM_DUAL_CAN_VENDOR_ID		0x10b5
-+#define ASEM_DUAL_CAN_DEVICE_ID		0x9030
-+#define ASEM_DUAL_CAN_SUB_VENDOR_ID	0x3000
-+#define ASEM_DUAL_CAN_SUB_DEVICE_ID	0x1001
-+#define ASEM_DUAL_CAN_SUB_DEVICE_ID_BIS	0x1002
-+#define ASEM_DUAL_CAN_RESET_REGISTER	0x54
-+#define ASEM_DUAL_CAN_RESET_MASK_CAN1	0x20
-+#define ASEM_DUAL_CAN_RESET_MASK_CAN2	0x04
++#define ASEM_RAW_CAN_VENDOR_ID		0x10b5
++#define ASEM_RAW_CAN_DEVICE_ID		0x9030
++#define ASEM_RAW_CAN_SUB_VENDOR_ID	0x3000
++#define ASEM_RAW_CAN_SUB_DEVICE_ID	0x1001
++#define ASEM_RAW_CAN_SUB_DEVICE_ID_BIS	0x1002
++#define ASEM_RAW_CAN_RST_REGISTER	0x54
++#define ASEM_RAW_CAN_RST_MASK_CAN1	0x20
++#define ASEM_RAW_CAN_RST_MASK_CAN2	0x04
 +
  static void plx_pci_reset_common(struct pci_dev *pdev);
  static void plx9056_pci_reset_common(struct pci_dev *pdev);
@@ -107,22 +114,22 @@ index f8ff25c..864fe8d 100644
  	},
 +	{
 +		/* ASEM Dual CAN raw */
-+		ASEM_DUAL_CAN_VENDOR_ID, ASEM_DUAL_CAN_DEVICE_ID,
-+		ASEM_DUAL_CAN_SUB_VENDOR_ID, ASEM_DUAL_CAN_SUB_DEVICE_ID,
++		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
++		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID,
 +		0, 0,
 +		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
 +	},
 +	{
 +		/* ASEM Dual CAN raw -new model */
-+		ASEM_DUAL_CAN_VENDOR_ID, ASEM_DUAL_CAN_DEVICE_ID,
-+		ASEM_DUAL_CAN_SUB_VENDOR_ID, ASEM_DUAL_CAN_SUB_DEVICE_ID_BIS,
++		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
++		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS,
 +		0, 0,
 +		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
 +	},
  	{ 0,}
  };
  MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
-@@ -524,6 +562,34 @@ static void plx_pci_reset_marathon_pcie(struct pci_dev *pdev)
+@@ -524,6 +562,33 @@ static void plx_pci_reset_marathon_pcie(struct pci_dev *pdev)
  	}
  }
  
@@ -139,19 +146,18 @@ index f8ff25c..864fe8d 100644
 +	if (!bar0_addr) {
 +		dev_err(&pdev->dev, "Failed to remap reset "
 +		"space %d (BAR%d)\n", 0, reset_bar);
-+	} else {
-+		/* reset the two SJA1000 chips */
-+		tmpval = ioread8(bar0_addr + ASEM_DUAL_CAN_RESET_REGISTER);
-+		tmpval &= ~(ASEM_DUAL_CAN_RESET_MASK_CAN1 |
-+			ASEM_DUAL_CAN_RESET_MASK_CAN2);
-+		iowrite8(tmpval, bar0_addr + ASEM_DUAL_CAN_RESET_REGISTER);
-+		usleep_range(300, 400);
-+		tmpval |= ASEM_DUAL_CAN_RESET_MASK_CAN1 |
-+			ASEM_DUAL_CAN_RESET_MASK_CAN2;
-+		iowrite8(tmpval, bar0_addr + ASEM_DUAL_CAN_RESET_REGISTER);
-+		usleep_range(300, 400);
-+		pci_iounmap(pdev, bar0_addr);
++		return;
 +	}
++
++	/* reset the two SJA1000 chips */
++	tmpval = ioread8(bar0_addr + ASEM_RAW_CAN_RST_REGISTER);
++	tmpval &= ~(ASEM_RAW_CAN_RST_MASK_CAN1 | ASEM_RAW_CAN_RST_MASK_CAN2);
++	iowrite8(tmpval, bar0_addr + ASEM_RAW_CAN_RST_REGISTER);
++	usleep_range(300, 400);
++	tmpval |= ASEM_RAW_CAN_RST_MASK_CAN1 | ASEM_RAW_CAN_RST_MASK_CAN2;
++	iowrite8(tmpval, bar0_addr + ASEM_RAW_CAN_RST_REGISTER);
++	usleep_range(300, 400);
++	pci_iounmap(pdev, bar0_addr);
 +}
 +
  static void plx_pci_del_card(struct pci_dev *pdev)
