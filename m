@@ -1,76 +1,55 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH][can-next] can: ucan: fix spelling mistake:
- "resumbmitting" -> "resubmitting"
-Date: Wed, 8 Aug 2018 17:47:27 +0200
-Message-ID: <2c5a77d3-9a45-aad1-b5ab-15ae4c875d36@pengutronix.de>
-References: <20180730134037.8240-1-colin.king@canonical.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="2bM044yOZQjicv5teLBGcoJ0DscvULEKY"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180730134037.8240-1-colin.king@canonical.com>
-Sender: netdev-owner@vger.kernel.org
-To: Colin King <colin.king@canonical.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Subject: [PATCH] dt-bindings: can: rcar_can: Add r8a774a1 support
+Date: Fri, 17 Aug 2018 15:38:23 +0100
+Message-ID: <1534516703-11448-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2bM044yOZQjicv5teLBGcoJ0DscvULEKY
-Content-Type: multipart/mixed; boundary="MGpDIgP7qkwvbUSgKuvSGOtYhz46GiJTE";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Colin King <colin.king@canonical.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <2c5a77d3-9a45-aad1-b5ab-15ae4c875d36@pengutronix.de>
-Subject: Re: [PATCH][can-next] can: ucan: fix spelling mistake:
- "resumbmitting" -> "resubmitting"
-References: <20180730134037.8240-1-colin.king@canonical.com>
-In-Reply-To: <20180730134037.8240-1-colin.king@canonical.com>
+Document RZ/G2M (r8a774a1) SoC bindings.
 
---MGpDIgP7qkwvbUSgKuvSGOtYhz46GiJTE
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das@bp.renesas.com>
+---
+This patch applies on top of next-20180817
 
-On 07/30/2018 03:40 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> Trivial fix to spelling mistake in netdev_dbg error message
->=20
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+ Documentation/devicetree/bindings/net/can/rcar_can.txt | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Applied to can-next.
-
-Tnx,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---MGpDIgP7qkwvbUSgKuvSGOtYhz46GiJTE--
-
---2bM044yOZQjicv5teLBGcoJ0DscvULEKY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAltrEI8ACgkQk9IU1zQo
-ZfGqnggAloJVgXivJ9glL9Gbzqg4WcGalugDlcsrQltZgytKZFulDDouncmWxOHK
-ics1oLBfjTCyImLHUhK+7PJDDbUBLm2TtJ0sjhYG7/pC2pahu90wlWZRcV2prAdB
-GAr9UEu8l3QDX9g63aaFVuiuVSlA1G9j/O3RJjwJzarPjlPdq2vM+p5MH+0oldpU
-NlJ0mFd93Fis1+gQtprwTcY0mT7bWolJb2SEdXTyrk9+oCJ8czSrksOab6FV8gjU
-ref0cyQGg7MB9Y+U97+EXm0iawwmNSRXYkV9CgcjU9tbJbKuejO9x9k389cCP6zt
-aWL0yDrZ9tyK1nLgvW0MK5o45ycMZw==
-=Q4BW
------END PGP SIGNATURE-----
-
---2bM044yOZQjicv5teLBGcoJ0DscvULEKY--
+diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+index 94a7f33..84afc78 100644
+--- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
++++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+@@ -4,6 +4,7 @@ Renesas R-Car CAN controller Device Tree Bindings
+ Required properties:
+ - compatible: "renesas,can-r8a7743" if CAN controller is a part of R8A7743 SoC.
+ 	      "renesas,can-r8a7745" if CAN controller is a part of R8A7745 SoC.
++	      "renesas,can-r8a774a1" if CAN controller is a part of R8A774A1 SoC.
+ 	      "renesas,can-r8a7778" if CAN controller is a part of R8A7778 SoC.
+ 	      "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
+ 	      "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
+@@ -16,7 +17,8 @@ Required properties:
+ 	      "renesas,rcar-gen1-can" for a generic R-Car Gen1 compatible device.
+ 	      "renesas,rcar-gen2-can" for a generic R-Car Gen2 or RZ/G1
+ 	      compatible device.
+-	      "renesas,rcar-gen3-can" for a generic R-Car Gen3 compatible device.
++	      "renesas,rcar-gen3-can" for a generic R-Car Gen3 or RZ/G2
++	      compatible device.
+ 	      When compatible with the generic version, nodes must list the
+ 	      SoC-specific version corresponding to the platform first
+ 	      followed by the generic version.
+@@ -24,7 +26,9 @@ Required properties:
+ - reg: physical base address and size of the R-Car CAN register map.
+ - interrupts: interrupt specifier for the sole interrupt.
+ - clocks: phandles and clock specifiers for 3 CAN clock inputs.
+-- clock-names: 3 clock input name strings: "clkp1", "clkp2", "can_clk".
++- clock-names: 2 clock input name strings for RZ/G2: "clkp1", "can_clk", and
++	       3 clock input name strings for every other SoC: "clkp1", "clkp2",
++	       "can_clk".
+ - pinctrl-0: pin control group to be used for this controller.
+ - pinctrl-names: must be "default".
+ 
+-- 
+2.7.4
