@@ -1,55 +1,65 @@
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: [PATCH] dt-bindings: can: rcar_can: Add r8a774a1 support
-Date: Fri, 17 Aug 2018 15:38:23 +0100
-Message-ID: <1534516703-11448-1-git-send-email-fabrizio.castro@bp.renesas.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Eugeniu Rosca <erosca@de.adit-jv.com>
+Subject: [PATCH v3 net-next] dt-bindings: can: rcar_can: document r8a77965 support
+Date: Mon, 20 Aug 2018 16:49:10 +0200
+Message-ID: <20180820144910.13210-1-erosca@de.adit-jv.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Simon Horman <horms+renesas@verge.net.au>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, Magnus Damm <damm+renesas@opensource.se>, linux-renesas-soc@vger.kernel.org
+Cc: Eugeniu Rosca <erosca@de.adit-jv.com>, Eugeniu Rosca <rosca.eugeniu@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
-Document RZ/G2M (r8a774a1) SoC bindings.
+From: Eugeniu Rosca <rosca.eugeniu@gmail.com>
 
-Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das@bp.renesas.com>
+Document the support for rcar_can on R8A77965 SoC devices.
+Add R8A77965 to the list of SoCs which require the "assigned-clocks" and
+"assigned-clock-rates" properties (thanks, Sergei).
+
+Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 ---
-This patch applies on top of next-20180817
-
- Documentation/devicetree/bindings/net/can/rcar_can.txt | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Changes in v3:
+ - [Simon Horman] Added more recipients.
+ - [Simon Horman] Dropped redundant "can" word in summary line.
+ - [Simon Horman] Added Reviewed-by.
+ - [Kieran Bingham] Added Reviewed-by.
+Changes in v2:
+ - [Kieran Bingham] Simplified commit description. Rewrapped text.
+ - [Sergei Shtylyov] Replaced footnotes with inline text.
+ - Pushed all dt-bindings patches to the beginning of the series.
+---
+ Documentation/devicetree/bindings/net/can/rcar_can.txt | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-index 94a7f33..84afc78 100644
+index 94a7f33ac5e9..60daa878c9a2 100644
 --- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
 +++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-@@ -4,6 +4,7 @@ Renesas R-Car CAN controller Device Tree Bindings
- Required properties:
- - compatible: "renesas,can-r8a7743" if CAN controller is a part of R8A7743 SoC.
- 	      "renesas,can-r8a7745" if CAN controller is a part of R8A7745 SoC.
-+	      "renesas,can-r8a774a1" if CAN controller is a part of R8A774A1 SoC.
- 	      "renesas,can-r8a7778" if CAN controller is a part of R8A7778 SoC.
- 	      "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
- 	      "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
-@@ -16,7 +17,8 @@ Required properties:
+@@ -13,6 +13,7 @@ Required properties:
+ 	      "renesas,can-r8a7794" if CAN controller is a part of R8A7794 SoC.
+ 	      "renesas,can-r8a7795" if CAN controller is a part of R8A7795 SoC.
+ 	      "renesas,can-r8a7796" if CAN controller is a part of R8A7796 SoC.
++	      "renesas,can-r8a77965" if CAN controller is a part of R8A77965 SoC.
  	      "renesas,rcar-gen1-can" for a generic R-Car Gen1 compatible device.
  	      "renesas,rcar-gen2-can" for a generic R-Car Gen2 or RZ/G1
  	      compatible device.
--	      "renesas,rcar-gen3-can" for a generic R-Car Gen3 compatible device.
-+	      "renesas,rcar-gen3-can" for a generic R-Car Gen3 or RZ/G2
-+	      compatible device.
- 	      When compatible with the generic version, nodes must list the
- 	      SoC-specific version corresponding to the platform first
- 	      followed by the generic version.
-@@ -24,7 +26,9 @@ Required properties:
- - reg: physical base address and size of the R-Car CAN register map.
- - interrupts: interrupt specifier for the sole interrupt.
- - clocks: phandles and clock specifiers for 3 CAN clock inputs.
--- clock-names: 3 clock input name strings: "clkp1", "clkp2", "can_clk".
-+- clock-names: 2 clock input name strings for RZ/G2: "clkp1", "can_clk", and
-+	       3 clock input name strings for every other SoC: "clkp1", "clkp2",
-+	       "can_clk".
+@@ -28,11 +29,10 @@ Required properties:
  - pinctrl-0: pin control group to be used for this controller.
  - pinctrl-names: must be "default".
  
+-Required properties for "renesas,can-r8a7795" and "renesas,can-r8a7796"
+-compatible:
+-In R8A7795 and R8A7796 SoCs, "clkp2" can be CANFD clock. This is a div6 clock
+-and can be used by both CAN and CAN FD controller at the same time. It needs to
+-be scaled to maximum frequency if any of these controllers use it. This is done
++Required properties for R8A7795, R8A7796 and R8A77965:
++For the denoted SoCs, "clkp2" can be CANFD clock. This is a div6 clock and can
++be used by both CAN and CAN FD controller at the same time. It needs to be
++scaled to maximum frequency if any of these controllers use it. This is done
+ using the below properties:
+ 
+ - assigned-clocks: phandle of clkp2(CANFD) clock.
 -- 
-2.7.4
+2.18.0
