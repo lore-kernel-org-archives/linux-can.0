@@ -1,65 +1,30 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH 05/11] can: rcar: use SPDX identifier for Renesas drivers
-Date: Wed, 22 Aug 2018 21:36:03 +0200
-Message-ID: <20180822193603.e27diao5nhuiarv6@katana>
-References: <20180821220233.9202-1-wsa+renesas@sang-engineering.com>
- <20180821220233.9202-6-wsa+renesas@sang-engineering.com>
- <CAOMZO5AkVNiYMGdED9erL=YMaKcmtS5BzZxw2gO1KLXEaPnD7A@mail.gmail.com>
- <20180822063005.535lytz7hl32rsha@katana>
- <CAOMZO5BiAyDMSR=2Y-4-1ftNuVtRS59sSJd_cdFmzX=0kgF0Bw@mail.gmail.com>
- <CAOFm3uF9_rbELx0aYLDXpDnZfi2Z11V1Z4Ktw+DDJT62o2S1kQ@mail.gmail.com>
- <20180822193133.GA1613@kroah.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cuvtzae5euf5uwje"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180822193133.GA1613@kroah.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Philippe Ombredanne <pombredanne@nexb.com>, Fabio Estevam <festevam@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Subject: [PATCH 0/3] Add CAN support to rcar_can driver
+Date: Thu, 23 Aug 2018 14:07:30 +0100
+Message-ID: <1535029653-7418-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
+Dear All,
 
---cuvtzae5euf5uwje
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+RZ/G2 is slightly different from other R-Car and RZ/G1 SoCs as clkp2
+isn't available on RZ/G2 devices. Changes to driver and documentation
+are therefore necessary and taken care of here.
 
+Thanks,
+Fab
 
-> > IMHO we should always treat and use the
-> > Documentation/process/license-rules.rst as the reference and not SPDX
-> > proper who moves at its own pace and evolves its specs and license ids
-> > independently of where we stand in the kernel.
-> > If this is not right Doc patches are welcomed!
-> > In this is very specific case this has been discussed on list a few
-> > times. If I recall correctly Thomas also had an opinion on this...
-> > So you are correct and this should be for now:
-> > // SPDX-License-Identifier: GPL-2.0+
->=20
-> That is correct, stick with that format/version for now please.
+Fabrizio Castro (3):
+  can: rcar_can: Fix erroneous registration
+  can: rcar_can: Add RZ/G2 support
+  dt-bindings: can: rcar_can: Add r8a774a1 support
 
-OK, will fix.
+ .../devicetree/bindings/net/can/rcar_can.txt       | 11 +++--
+ drivers/net/can/rcar/rcar_can.c                    | 48 ++++++++++++++++++----
+ 2 files changed, 48 insertions(+), 11 deletions(-)
 
-
---cuvtzae5euf5uwje
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlt9ux8ACgkQFA3kzBSg
-KbbiRxAAlhkmV25yoF3Y+2aYMAerBVNfqJI43ETS9UoOoOEhr40sD6ER5DeYEd5A
-SppRU23pFHEGhALZOZJ6seB7h9aOIr97POfCuvPJltUw4NOd9Bh/Vz+M3yDHpYv0
-giWuF+i+UOUDl9TF83Q536xL+UFyS27oNSk3S5WAM+9KFk1Krr92oZZQz46X/NqA
-K8WUcEdF4bloQ6AhV1IWX4goCq+/v0OV94QVYdh3EoYICY6S905sY+angWu5ap89
-QLKxAeNbsvqN4CMod0D2to3MvOtL9UkJn4YTi/tJTY+qc7WPuK1LmNwHcy5ZyS9b
-qp3LID7GjWGQ+aPYhhnldyLm1fgtWAoqTjeMw8mKTP9Phi01A6q0HguW+WNfYY1u
-ZU9XMa2pwZKP00gkNZ6X0HqQAWQv6qhUVD+YaLBNL6WNA3Q2lsPVaEqTfY88lLkO
-F/+CQbjpnUM92u/FUOB7gEHafdL1Svx3Ay7o2dtnlBqwx6R3SMP/r8uOmjUoLl1V
-gbZFjXhygkK+hcXEcdWi/NfYSsnfb9rZaqOLqEfjg9GCFSPmxqD+CKR6lWEVrXN7
-7q97N3LfHsy5ghz3VCkefCfffbOCBigcrNCN2+QQepu8MRb5Lz4iKGV/Cg/mbcgC
-2+tdecT4t2NHlxIvybfrLna1bTIteWss9P6Sx4NdtU+nzL8Q2E0=
-=IaDB
------END PGP SIGNATURE-----
-
---cuvtzae5euf5uwje--
+-- 
+2.7.4
