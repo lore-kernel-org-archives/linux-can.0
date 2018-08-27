@@ -1,63 +1,75 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/3][can-next] can: rcar_can: Add RZ/G2 support
-Date: Mon, 27 Aug 2018 14:30:14 +0200
-Message-ID: <CAMuHMdWEPwG6=MEtYKREfqyow=bz__p+Qj28kXufbXc37u8p9A@mail.gmail.com>
-References: <1535029653-7418-1-git-send-email-fabrizio.castro@bp.renesas.com> <1535029653-7418-3-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2 2/2] can: rcar: use SPDX identifier for Renesas drivers
+Date: Mon, 27 Aug 2018 12:00:03 +0200
+Message-ID: <89e744d5-8739-5215-1b37-fbd2f4be7aee@pengutronix.de>
+References: <20180823133456.4748-1-wsa+renesas@sang-engineering.com>
+ <20180823133456.4748-3-wsa+renesas@sang-engineering.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1535029653-7418-3-git-send-email-fabrizio.castro@bp.renesas.com>
-Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="G2iTwuV0UANMH3XyAu9tp9rHB9KUEGXR2"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180823133456.4748-3-wsa+renesas@sang-engineering.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-renesas-soc@vger.kernel.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hi Fabrizio,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--G2iTwuV0UANMH3XyAu9tp9rHB9KUEGXR2
+Content-Type: multipart/mixed; boundary="0NxWczXz8t5d6QTdhSrgxet4tpRa0hh4O";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ linux-renesas-soc@vger.kernel.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <89e744d5-8739-5215-1b37-fbd2f4be7aee@pengutronix.de>
+Subject: Re: [PATCH v2 2/2] can: rcar: use SPDX identifier for Renesas drivers
+References: <20180823133456.4748-1-wsa+renesas@sang-engineering.com>
+ <20180823133456.4748-3-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20180823133456.4748-3-wsa+renesas@sang-engineering.com>
 
-(Usually the DT patch goes before the driver patch)
+--0NxWczXz8t5d6QTdhSrgxet4tpRa0hh4O
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 23, 2018 at 3:08 PM Fabrizio Castro
-<fabrizio.castro@bp.renesas.com> wrote:
-> RZ/G2 devices don't have clkp2, therefore this commit adds a
-> generic compatible string for them to allow for proper checking
-> during probe.
->
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Signed-off-by: Chris Paterson <Chris.Paterson2@renesas.com>
+On 08/23/2018 03:34 PM, Wolfram Sang wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Thanks for your patch!
+Applied to linux-can-next. Please add a patch description to the patch.
+My $UPSTREAM doesn't like empty patch descriptions :) I've shamelessly
+used Fabio Estevam patch description from his flexcan SPDX patch.
 
-> --- a/drivers/net/can/rcar/rcar_can.c
-> +++ b/drivers/net/can/rcar/rcar_can.c
-> @@ -27,6 +27,7 @@
->
->  #define RCAR_SUPPORTED_CLOCKS  (BIT(CLKR_CLKP1) | BIT(CLKR_CLKP2) | \
->                                  BIT(CLKR_CLKEXT))
-> +#define RZG2_SUPPORTED_CLOCKS  (BIT(CLKR_CLKP1) | BIT(CLKR_CLKEXT))
->
->  /* Mailbox configuration:
->   * mailbox 60 - 63 - Rx FIFO mailboxes
-> @@ -933,6 +934,10 @@ static const struct of_device_id rcar_can_of_table[] __maybe_unused = {
->                 .compatible = "renesas,rcar-gen3-can",
->                 .data = (void *)RCAR_SUPPORTED_CLOCKS,
->         },
-> +       {
-> +               .compatible = "renesas,rzg-gen2-can",
-> +               .data = (void *)RZG2_SUPPORTED_CLOCKS,
-> +       },
->         { }
+Marc
 
-I think this patch is not needed, cfr. my reply to the
-first^H^H^H^H^Hthird patch
-in your series.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Gr{oetje,eeting}s,
 
-                        Geert
+--0NxWczXz8t5d6QTdhSrgxet4tpRa0hh4O--
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--G2iTwuV0UANMH3XyAu9tp9rHB9KUEGXR2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAluDy6MACgkQk9IU1zQo
+ZfEsNAf+PMNVA840Fl4Tx3mHiyNiNMEEyywL5XHdDcg2cHba2J2ax+gZdkQm9BBX
+nWK0qXcvPw2un31rXYt0Oh9DLGVrxdmNMcwNADQKiGQYFpm0QRgrbvgWqvfS6R+W
+P9OQZOVfzCss3dRXQwAN++jR40rFM2anFEGWWCwC263b5aKL4c4eBEe70O6F6y8O
+D4XfFMZIm2Twb6hIEH/7HbNjcP1hj8K/dLrJhm8UxmH6sGcVYXVkaIenSCWwbPWm
+A3Il8HKuf3JsleB0VTfkZQY/a4r8o8VKOZ29PrpPhf1VIDAh3WyuuOlJfsDyUgKm
+90wlDTvgoqxfb8/SHLv1QM/4o8Prbw==
+=zbO9
+-----END PGP SIGNATURE-----
+
+--G2iTwuV0UANMH3XyAu9tp9rHB9KUEGXR2--
