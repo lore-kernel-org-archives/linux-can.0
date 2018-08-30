@@ -1,44 +1,52 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] can: ucan: remove redundant pointer 'udev'
-Date: Thu, 30 Aug 2018 11:27:27 +0100
-Message-ID: <20180830102727.30818-1-colin.king@canonical.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Subject: Re: [PATCH net-next 1/3] net: rework SIOCGSTAMP ioctl handling
+Date: Thu, 30 Aug 2018 16:09:31 -0400
+Message-ID: <CAF=yD-J7-GumUmonrZt7s44e3bsjY2DCD6ZpmhtCx6FOBV5BNA@mail.gmail.com>
+References: <20180829130308.3504560-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180829130308.3504560-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Network Development <netdev@vger.kernel.org>, David Miller <davem@davemloft.net>, linux-arch@vger.kernel.org, y2038 Mailman List <y2038@lists.linaro.org>, Eric Dumazet <edumazet@google.com>, Willem de Bruijn <willemb@google.com>, LKML <linux-kernel@vger.kernel.org>, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org, linux-x25@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Aug 29, 2018 at 9:05 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> The SIOCGSTAMP/SIOCGSTAMPNS ioctl commands are implemented by many
+> socket protocol handlers, and all of those end up calling the same
+> sock_get_timestamp()/sock_get_timestampns() helper functions, which
+> results in a lot of duplicate code.
+>
+> With the introduction of 64-bit time_t on 32-bit architectures, this
+> gets worse, as we then need four different ioctl commands in each
+> socket protocol implementation.
+>
+> To simplify that, let's add a new .gettstamp() operation in
+> struct proto_ops, and move ioctl implementation into the common
+> sock_ioctl()/compat_sock_ioctl_trans() functions that these all go
+> through.
+>
+> We can reuse the sock_get_timestamp() implementation, but generalize
+> it so it can deal with both native and compat mode, as well as
+> timeval and timespec structures.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Pointer 'udev' is being assigned but is never used hence it is
-redundant and can be removed.
+This also will simplify fixing a recently reported race condition with
+sock_get_timestamp [1]. That calls sock_enable_timestamp, which
+modifies sk->sk_flags, without taking the socket lock. Currently some
+callers of sock_get_timestamp hold the lock (ax25, netrom, qrtr), many
+don't. See also how this patch removes the lock_sock in the netrom
+case. Moving the call to sock_gettstamp outside the protocol handlers
+will allow taking the lock inside the function.
 
-Cleans up clang warning:
-variable 'udev' set but not used [-Wunused-but-set-variable]
+If this is the only valid implementation of .gettstamp, the indirect
+call could be avoided in favor of a simple branch.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/can/usb/ucan.c | 3 ---
- 1 file changed, 3 deletions(-)
+Thanks,
 
-diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
-index 0678a38b1af4..c9fd83e8d947 100644
---- a/drivers/net/can/usb/ucan.c
-+++ b/drivers/net/can/usb/ucan.c
-@@ -1575,11 +1575,8 @@ static int ucan_probe(struct usb_interface *intf,
- /* disconnect the device */
- static void ucan_disconnect(struct usb_interface *intf)
- {
--	struct usb_device *udev;
- 	struct ucan_priv *up = usb_get_intfdata(intf);
- 
--	udev = interface_to_usbdev(intf);
--
- 	usb_set_intfdata(intf, NULL);
- 
- 	if (up) {
--- 
-2.17.1
+Acked-by: Willem de Bruijn <willemb@google.com>
+
+[1] http://lkml.kernel.org/r/20180518080308.GA28587@dragonet.kaist.ac.kr
