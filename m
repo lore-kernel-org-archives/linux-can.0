@@ -1,85 +1,65 @@
-From: <shubhrajyoti.datta@gmail.com>
-Subject: [PATCH] can: xilinx: Enable clocks even when CONFIG_PM is disabled
-Date: Tue, 4 Sep 2018 17:57:58 +0530
-Message-ID: <1536064078-21539-1-git-send-email-shubhrajyoti.datta@gmail.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH] can: at91_can: fix fall-through annotations
+Date: Tue, 4 Sep 2018 17:29:33 +0200
+Message-ID: <20180904152933.GJ13888@piout.net>
+References: <20180903183618.GA6905@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180903183618.GA6905@embeddedor.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-can@vger.kernel.org
-Cc: shubhrajyoti.datta@gmail.com, netdev@vger.kernel.org, davem@davemloft.net, mkl@pengutronix.de, wg@grandegger.com, michal.simek@xilinx.com, linux-kernel@vger.kernel.org, Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Nicolas Ferre <nicolas.ferre@microchip.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+On 03/09/2018 13:36:18-0500, Gustavo A. R. Silva wrote:
+> Properly place the "fall through" annotations at the bottom of the case,
+> which is what GCC is expecting to find.
+> 
+> This fix is part of the ongoing efforts to enabling -Wimplicit-fallthrough
+> 
+> Addresses-Coverity-ID: 1222851 ("Missing break in switch")
+> Addresses-Coverity-ID: 402011 ("Missing break in switch")
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-Currently the clocks are enabled only in the runtime calls.
-When CONFIG_PM is disabled the driver does not work as the
-clocks are disabled.
-Fix the same by enabling the clocks in probe.
+Seems good to me (but I preferred the previous annotation ;))
 
-Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
----
- drivers/net/can/xilinx_can.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 131cce1..bf39b52 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1550,14 +1550,21 @@ static int xcan_probe(struct platform_device *pdev)
- 	priv->write_reg = xcan_write_reg_le;
- 	priv->read_reg = xcan_read_reg_le;
- 
--	pm_runtime_enable(&pdev->dev);
--	ret = pm_runtime_get_sync(&pdev->dev);
--	if (ret < 0) {
--		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
--			__func__, ret);
--		goto err_pmdisable;
-+	ret = clk_prepare_enable(priv->bus_clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Cannot enable clock.\n");
-+		goto err_free;
-+	}
-+
-+	ret = clk_prepare_enable(priv->can_clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Cannot enable clock.\n");
-+		goto err_clk;
- 	}
- 
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+
- 	if (priv->read_reg(priv, XCAN_SR_OFFSET) != XCAN_SR_CONFIG_MASK) {
- 		priv->write_reg = xcan_write_reg_be;
- 		priv->read_reg = xcan_read_reg_be;
-@@ -1584,9 +1591,11 @@ static int xcan_probe(struct platform_device *pdev)
- 	return 0;
- 
- err_disableclks:
--	pm_runtime_put(priv->dev);
--err_pmdisable:
- 	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
-+	clk_disable_unprepare(priv->can_clk);
-+err_clk:
-+	clk_disable_unprepare(priv->bus_clk);
- err_free:
- 	free_candev(ndev);
- err:
-@@ -1606,6 +1615,12 @@ static int xcan_remove(struct platform_device *pdev)
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 
- 	unregister_candev(ndev);
-+
-+	if (!pm_runtime_suspended(&pdev->dev)) {
-+		clk_disable_unprepare(priv->bus_clk);
-+		clk_disable_unprepare(priv->can_clk);
-+	}
-+
- 	pm_runtime_disable(&pdev->dev);
- 	netif_napi_del(&priv->napi);
- 	free_candev(ndev);
+> ---
+>  drivers/net/can/at91_can.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+> index d98c690..1718c20 100644
+> --- a/drivers/net/can/at91_can.c
+> +++ b/drivers/net/can/at91_can.c
+> @@ -902,7 +902,8 @@ static void at91_irq_err_state(struct net_device *dev,
+>  				CAN_ERR_CRTL_TX_WARNING :
+>  				CAN_ERR_CRTL_RX_WARNING;
+>  		}
+> -	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
+> +		/* fall through */
+> +	case CAN_STATE_ERROR_WARNING:
+>  		/*
+>  		 * from: ERROR_ACTIVE, ERROR_WARNING
+>  		 * to  : ERROR_PASSIVE, BUS_OFF
+> @@ -951,7 +952,8 @@ static void at91_irq_err_state(struct net_device *dev,
+>  		netdev_dbg(dev, "Error Active\n");
+>  		cf->can_id |= CAN_ERR_PROT;
+>  		cf->data[2] = CAN_ERR_PROT_ACTIVE;
+> -	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
+> +		/* fall through */
+> +	case CAN_STATE_ERROR_WARNING:
+>  		reg_idr = AT91_IRQ_ERRA | AT91_IRQ_WARN | AT91_IRQ_BOFF;
+>  		reg_ier = AT91_IRQ_ERRP;
+>  		break;
+> -- 
+> 2.7.4
+> 
+
 -- 
-2.1.1
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
