@@ -1,35 +1,54 @@
 From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: [PATCH v2 0/3] Add can support to RZ/G2M
-Date: Mon, 10 Sep 2018 11:43:12 +0100
-Message-ID: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Chris Paterson <Chris.Paterson2@renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>, Biju Das <biju.das@bp.renesas.com>
+Subject: [PATCH v2 1/3][can-next] can: rcar_can: Fix erroneous registration
+Date: Mon, 10 Sep 2018 11:43:13 +0100
+Message-ID: <1536576195-11520-2-git-send-email-fabrizio.castro@bp.renesas.com>
+References: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Chris Paterson <Chris.Paterson2@renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Dear All,
+Assigning 2 to "renesas,can-clock-select" tricks the driver into
+registering the CAN interface, even though we don't want that.
+This patch improves one of the checks to prevent that from happening.
 
-this series contains all that's necessary to add CAN support
-for RZ/G2M (a.k.a. r8a774a1).
+Fixes: 862e2b6af9413b43 ("can: rcar_can: support all input clocks")
+Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Signed-off-by: Chris Paterson <Chris.Paterson2@renesas.com>
+---
 
-v1-v2:
-* applied Geert's comments
+v1->v2:
+* dropped id specific data as per Geert's comments
 
-Thanks,
-Fab
+This patch applies on top of linux-can-next-for-4.19-20180727.
 
-Chris Paterson (1):
-  arm64: dts: renesas: r8a774a1: Add CAN nodes
+ drivers/net/can/rcar/rcar_can.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Fabrizio Castro (2):
-  can: rcar_can: Fix erroneous registration
-  dt-bindings: can: rcar_can: Add r8a774a1 support
-
- .../devicetree/bindings/net/can/rcar_can.txt       | 18 +++++++++++-----
- arch/arm64/boot/dts/renesas/r8a774a1.dtsi          | 24 ++++++++++++++++++++++
- drivers/net/can/rcar/rcar_can.c                    |  5 ++++-
- 3 files changed, 41 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index 11662f4..771a460 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -24,6 +24,9 @@
+ 
+ #define RCAR_CAN_DRV_NAME	"rcar_can"
+ 
++#define RCAR_SUPPORTED_CLOCKS	(BIT(CLKR_CLKP1) | BIT(CLKR_CLKP2) | \
++				 BIT(CLKR_CLKEXT))
++
+ /* Mailbox configuration:
+  * mailbox 60 - 63 - Rx FIFO mailboxes
+  * mailbox 56 - 59 - Tx FIFO mailboxes
+@@ -789,7 +792,7 @@ static int rcar_can_probe(struct platform_device *pdev)
+ 		goto fail_clk;
+ 	}
+ 
+-	if (clock_select >= ARRAY_SIZE(clock_names)) {
++	if (!(BIT(clock_select) & RCAR_SUPPORTED_CLOCKS)) {
+ 		err = -EINVAL;
+ 		dev_err(&pdev->dev, "invalid CAN clock selected\n");
+ 		goto fail_clk;
 -- 
 2.7.4
