@@ -1,96 +1,61 @@
-From: Martin Elshuber <martin.elshuber@theobroma-systems.com>
-Subject: Re: [PATCH can-next] can: ucan: remove duplicated include from ucan.c
-Date: Mon, 10 Sep 2018 20:10:44 +0200
-Message-ID: <8044e179-fdba-3da5-c474-405f661b3389@theobroma-systems.com>
-References: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 1/2] dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+Date: Mon, 10 Sep 2018 15:12:40 -0500
+Message-ID: <20180910201241.24092-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Nm7msZHDmTvHj6aakUa2Toknt0ZMl5WD3"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
-Sender: netdev-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Nm7msZHDmTvHj6aakUa2Toknt0ZMl5WD3
-Content-Type: multipart/mixed; boundary="GVLmqNM6dREqQ75qdkAR4McKa37QeA3H7";
- protected-headers="v1"
-From: Martin Elshuber <martin.elshuber@theobroma-systems.com>
-To: YueHaibing <yuehaibing@huawei.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller"
- <davem@davemloft.net>,
- Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>,
- Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Message-ID: <8044e179-fdba-3da5-c474-405f661b3389@theobroma-systems.com>
-Subject: Re: [PATCH can-next] can: ucan: remove duplicated include from ucan.c
-References: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
-In-Reply-To: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
+DT binding documentation for TI TCAN4x5x driver.
 
---GVLmqNM6dREqQ75qdkAR4McKa37QeA3H7
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-AT
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../devicetree/bindings/net/can/tcan4x5x.txt  | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
 
-Thank you for the fix
-
-Reviewed-by: Martin Elshuber <martin.elshuber@theobroma-systems.com>
-
-Am 29.08.18 um 03:25 schrieb YueHaibing:
-> Remove duplicated include.
->=20
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/net/can/usb/ucan.c | 4 ----
->  1 file changed, 4 deletions(-)
->=20
-> diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
-> index 0678a38..c6f4b41 100644
-> --- a/drivers/net/can/usb/ucan.c
-> +++ b/drivers/net/can/usb/ucan.c
-> @@ -35,10 +35,6 @@
->  #include <linux/slab.h>
->  #include <linux/usb.h>
-> =20
-> -#include <linux/can.h>
-> -#include <linux/can/dev.h>
-> -#include <linux/can/error.h>
-> -
->  #define UCAN_DRIVER_NAME "ucan"
->  #define UCAN_MAX_RX_URBS 8
->  /* the CAN controller needs a while to enable/disable the bus */
->=20
-
-
-
---GVLmqNM6dREqQ75qdkAR4McKa37QeA3H7--
-
---Nm7msZHDmTvHj6aakUa2Toknt0ZMl5WD3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - https://gpgtools.org
-
-iQIcBAEBCgAGBQJblrOmAAoJENNzc6lDjKRXq1IQAJH0qAu6QLSSalo09ohMX1u6
-PjSlBQUslvDqX7rH7XWuRtC4Twwd3fL2gCR8ipTLZjvCws3TckRPZhtJR+/6mgoP
-t7KBX4pM6Ia3jJMc7+1X7fZpYijOLBQ4iuCGR7eAOtP+lhbZn/MHfFJDQ7pKGZqK
-bMGicq4hKKzlmZN3awWb3lognPaboyFlvtdpOkPnnOlpRO6QXPKnkrqGjjSMGUmP
-2pY4F1C8quVXLsNa0tpT9sLiKCvmYJ7lyB6ccmmcP7cJjecIBKptjkPYdULPObiK
-PnT7btSEwGJo+WJv2iRo54+dZMDW4YraiMxPxoJ8OaYXOTOLombTvnsbOhk2PxCu
-gcob2qkCVRNWDlDLr/wI9s10x2VhXJoW9/CTLqxIVzKTlBRr3G1Mqhexsww7E4y0
-qCbU/Cfy57ePuQhemAbAV3WiDzchgUNJiJnaiwiMwZefxS+vI17QXJ1YzjgSxsU7
-rZCi1ULy9xr4LUtZbP18qULjtkjda8CtaSuSPOC+kkf5KgiZbKb70cbMd8HX5iXv
-sn0EF9BjAmiamRIWYdRqAlLyba5yIg3ts0sx5bhkpxd+CQt011HhyvF6UaXIhhP4
-87oh6jFImkgoe3/H/wX+fUH/tkwvqCh2dlZYvWHz9nLYGi8yPZVLzSJAHioOnUqQ
-+v0r5CZt4oz+/1fGdmVx
-=E4n2
------END PGP SIGNATURE-----
-
---Nm7msZHDmTvHj6aakUa2Toknt0ZMl5WD3--
+diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+new file mode 100644
+index 000000000000..3eea2f2bb8a7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -0,0 +1,33 @@
++Texas Instruments TCAN4x5x CAN Controller
++================================================
++
++This file provides device node information for the TCAN4x5x interface contains.
++
++Required properties:
++	- compatible: "ti,tcan4x5x"
++	- reg: 0
++	- #address-cells : 1
++	- #size-cells : 0
++	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
++			     operate at should be less than or equal to 18 MHz.
++	- data-ready-gpios: Interrupt GPIO for data and error reporting. 
++	- wake-up-gpios: Wake up GPIO to wake up the TCAN device
++
++Optional properties:
++	- clocks: Processor clock phandles (see clock bindings for details)
++		  If no clock is defined then the default 40MHz freq is set.
++	- reset-gpios: Hardwired output GPIO. If not defined then software
++		       reset.
++
++Example:
++tcan4x5x: tcan4x5x@0 {
++		compatible = "ti,tcan4x5x";
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		clocks = <&tclkin_ck>;
++		spi-max-frequency = <10000000>;
++		data-ready-gpios = <&gpio1 16 GPIO_ACTIVE_LOW>;
++		wake-up-gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
++		reset-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
++	};
+-- 
+2.17.0.1855.g63749b2dea
