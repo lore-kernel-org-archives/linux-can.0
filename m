@@ -1,68 +1,80 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH net-next 17/22] hv_netvsc: fix return type of
- ndo_start_xmit function
-Date: Fri, 21 Sep 2018 09:37:50 +0800
-Message-ID: <b9b170c4-caba-928e-4c6f-eb51cb5e4707@huawei.com>
-References: <20180920123306.14772-1-yuehaibing@huawei.com>
- <20180920123306.14772-18-yuehaibing@huawei.com>
- <20180920074341.3acef75c@xeon-e3>
+From: Stefan Schmidt <stefan@datenfreihafen.org>
+Subject: Re: [PATCH net-next 1/3] net: rework SIOCGSTAMP ioctl handling
+Date: Fri, 21 Sep 2018 11:14:36 +0200
+Message-ID: <5cca03b6-8d3d-5f18-778f-a5d5e70c2218@datenfreihafen.org>
+References: <20180829130308.3504560-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180920074341.3acef75c@xeon-e3>
+In-Reply-To: <20180829130308.3504560-1-arnd@arndb.de>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Stephen Hemminger <stephen@networkplumber.org>
-Cc: davem@davemloft.net, dmitry.tarnyagin@lockless.no, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, hsweeten@visionengravers.com, madalin.bucur@nxp.com, pantelis.antoniou@gmail.com, claudiu.manoil@nxp.com, leoyang.li@nxp.com, linux@armlinux.org.uk, sammy@sammy.net, ralf@linux-mips.org, nico@fluxnic.net, steve.glendinning@shawell.net, f.fainelli@gmail.com, grygorii.strashko@ti.com, w-kwok2@ti.com, m-karicheri2@ti.com, t.sailer@alumni.ethz.ch, jreuter@yaina.de, kys@microsoft.com, haiyangz@microsoft.com, wei.liu2@citrix.com, paul.durrant@citrix.com, arvid.brodin@alten.se, pshelar@ovn.org, dev@openvswitch.org, linux-mips@linux-mips.org, xen-devel@lists.xenproject.org, netdev@vger.kernel.org, linux-usb@vger.ke
+To: Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>
+Cc: linux-arch@vger.kernel.org, y2038@lists.linaro.org, Eric Dumazet <edumazet@google.com>, Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org, linux-x25@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On 2018/9/20 22:43, Stephen Hemminger wrote:
-> On Thu, 20 Sep 2018 20:33:01 +0800
-> YueHaibing <yuehaibing@huawei.com> wrote:
-> 
->> The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
->> which is a typedef for an enum type, so make sure the implementation in
->> this driver has returns 'netdev_tx_t' value, and change the function
->> return type to netdev_tx_t.
->>
->> Found by coccinelle.
->>
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>  drivers/net/hyperv/netvsc_drv.c | 10 +++++++---
->>  1 file changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
->> index 3af6d8d..056c472 100644
->> --- a/drivers/net/hyperv/netvsc_drv.c
->> +++ b/drivers/net/hyperv/netvsc_drv.c
->> @@ -511,7 +511,8 @@ static int netvsc_vf_xmit(struct net_device *net, struct net_device *vf_netdev,
->>  	return rc;
->>  }
->>  
->> -static int netvsc_start_xmit(struct sk_buff *skb, struct net_device *net)
->> +static netdev_tx_t
->> +netvsc_start_xmit(struct sk_buff *skb, struct net_device *net)
->>  {
->>  	struct net_device_context *net_device_ctx = netdev_priv(net);
->>  	struct hv_netvsc_packet *packet = NULL;
->> @@ -528,8 +529,11 @@ static int netvsc_start_xmit(struct sk_buff *skb, struct net_device *net)
->>  	 */
->>  	vf_netdev = rcu_dereference_bh(net_device_ctx->vf_netdev);
->>  	if (vf_netdev && netif_running(vf_netdev) &&
->> -	    !netpoll_tx_running(net))
->> -		return netvsc_vf_xmit(net, vf_netdev, skb);
->> +	    !netpoll_tx_running(net)) {
->> +		ret = netvsc_vf_xmit(net, vf_netdev, skb);
->> +		if (ret)
->> +			return NETDEV_TX_BUSY;
->> +	}
-> 
-> Sorry, the new code is wrong. It will fall through if ret == 0 (NETDEV_TX_OK)
-> Please review and test your patches.
+Hello Arnd.
 
-I'm sorry for this, will correct it as Haiyang's suggestion.
+On 8/29/18 2:59 PM, Arnd Bergmann wrote:
+> The SIOCGSTAMP/SIOCGSTAMPNS ioctl commands are implemented by many
+> socket protocol handlers, and all of those end up calling the same
+> sock_get_timestamp()/sock_get_timestampns() helper functions, which
+> results in a lot of duplicate code.
+> 
+> With the introduction of 64-bit time_t on 32-bit architectures, this
+> gets worse, as we then need four different ioctl commands in each
+> socket protocol implementation.
+> 
+> To simplify that, let's add a new .gettstamp() operation in
+> struct proto_ops, and move ioctl implementation into the common
+> sock_ioctl()/compat_sock_ioctl_trans() functions that these all go
+> through.
+> 
+> We can reuse the sock_get_timestamp() implementation, but generalize
+> it so it can deal with both native and compat mode, as well as
+> timeval and timespec structures.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  include/linux/net.h          |  2 ++
+>  include/net/compat.h         |  3 --
+>  include/net/sock.h           |  4 +--
+>  net/appletalk/ddp.c          |  7 +----
+>  net/atm/ioctl.c              | 16 -----------
+>  net/atm/pvc.c                |  1 +
+>  net/atm/svc.c                |  1 +
+>  net/ax25/af_ax25.c           |  9 +-----
+>  net/bluetooth/af_bluetooth.c |  8 ------
+>  net/bluetooth/l2cap_sock.c   |  1 +
+>  net/bluetooth/rfcomm/sock.c  |  1 +
+>  net/bluetooth/sco.c          |  1 +
+>  net/can/af_can.c             |  6 ----
+>  net/can/bcm.c                |  1 +
+>  net/can/raw.c                |  1 +
+>  net/compat.c                 | 54 ------------------------------------
+>  net/core/sock.c              | 38 +++++++++++--------------
+>  net/dccp/ipv4.c              |  1 +
+>  net/dccp/ipv6.c              |  1 +
+>  net/ieee802154/socket.c      |  6 ++--
+>  net/ipv4/af_inet.c           |  9 ++----
+>  net/ipv6/af_inet6.c          |  8 ++----
+>  net/ipv6/raw.c               |  1 +
+>  net/l2tp/l2tp_ip.c           |  1 +
+>  net/l2tp/l2tp_ip6.c          |  1 +
+>  net/netrom/af_netrom.c       | 14 +---------
+>  net/packet/af_packet.c       |  7 ++---
+>  net/qrtr/qrtr.c              |  4 +--
+>  net/rose/af_rose.c           |  7 +----
+>  net/sctp/ipv6.c              |  1 +
+>  net/sctp/protocol.c          |  1 +
+>  net/socket.c                 | 48 ++++++++++----------------------
+>  net/x25/af_x25.c             | 27 +-----------------
+>  33 files changed, 63 insertions(+), 228 deletions(-)
 
-> 
-> .
-> 
+For the net/ieee802154/socket. part I am fine with this change.
+
+Acked-by: Stefan Schmidt <stefan@datenfreihafen.org>
+
+regards
+Stefan Schmidt
