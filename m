@@ -1,78 +1,44 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH resend] can: rcar_can: convert to SPDX identifiers
-Date: Thu, 27 Sep 2018 11:05:02 +0200
-Message-ID: <1bfdc10a-41e9-2a1f-b944-a8816186e998@pengutronix.de>
-References: <874ledyrc6.wl-kuninori.morimoto.gx@renesas.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [PATCH can-next] can: ucan: remove duplicated include from ucan.c
+Date: Thu, 27 Sep 2018 17:38:25 +0800
+Message-ID: <9a25f947-21f0-75ec-b6de-8fdbc8c93542@huawei.com>
+References: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="LqXYgdV2Ll4ppqwzzQQulY2r8c3HCiq2v"
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <874ledyrc6.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
 Sender: netdev-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Wolfgang Grandegger <wg@grandegger.com>
-Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-Net <netdev@vger.kernel.org>, linux-can@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Martin Elshuber <martin.elshuber@theobroma-systems.com>, Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LqXYgdV2Ll4ppqwzzQQulY2r8c3HCiq2v
-Content-Type: multipart/mixed; boundary="WOHXJ4MorcyPPMh23GJt5evmFzzmmPdHx";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Wolfgang Grandegger <wg@grandegger.com>
-Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Linux-Net <netdev@vger.kernel.org>, linux-can@vger.kernel.org
-Message-ID: <1bfdc10a-41e9-2a1f-b944-a8816186e998@pengutronix.de>
-Subject: Re: [PATCH resend] can: rcar_can: convert to SPDX identifiers
-References: <874ledyrc6.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <874ledyrc6.wl-kuninori.morimoto.gx@renesas.com>
+ping.
 
---WOHXJ4MorcyPPMh23GJt5evmFzzmmPdHx
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 09/26/2018 03:41 AM, Kuninori Morimoto wrote:
->=20
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> This patch updates license to use SPDX-License-Identifier
-> instead of verbose license text.
->=20
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
-
-Wolfram Sang has already supplied a similar patch, but not for Makefile
-and Kconfig. I've applied your patch for Makefile and Kconfig and
-adjusted the commit message accordingly.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---WOHXJ4MorcyPPMh23GJt5evmFzzmmPdHx--
-
---LqXYgdV2Ll4ppqwzzQQulY2r8c3HCiq2v
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlusnT4ACgkQk9IU1zQo
-ZfGUEggA2BrO340zbi8ZLpi6HoLj7omJuz4WpENUgGU2vmFQF5b4d3Ir8XdNEz+W
-HyYIhFicj+8z1sEAg/4dsQa4LghuQGOmUdN6Wo+F5LOtkaREI2WRV+lXSY/jOES4
-VfXfcm80fIorwIVNMGopgreEzACrJZYFl71erWnT9lgAkttkAlF//vIlYJkklPDd
-t4NpSDiKoxFNQg7fIXRIjDUAkTnLFWwO8V0LvCD0kiG2vBIfwf6hGnAfRwBMzNRa
-Z6jxKMGoURVGqHGDErSCQyuL/CDFJvZjPmJY5NxR3gdPqlQ4fokNZV30qeA6LrPY
-FS/OojcQOuUNuApS+fXFeeVwHSYkdg==
-=gZqz
------END PGP SIGNATURE-----
-
---LqXYgdV2Ll4ppqwzzQQulY2r8c3HCiq2v--
+On 2018/8/29 9:25, YueHaibing wrote:
+> Remove duplicated include.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/net/can/usb/ucan.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+> index 0678a38..c6f4b41 100644
+> --- a/drivers/net/can/usb/ucan.c
+> +++ b/drivers/net/can/usb/ucan.c
+> @@ -35,10 +35,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/usb.h>
+>  
+> -#include <linux/can.h>
+> -#include <linux/can/dev.h>
+> -#include <linux/can/error.h>
+> -
+>  #define UCAN_DRIVER_NAME "ucan"
+>  #define UCAN_MAX_RX_URBS 8
+>  /* the CAN controller needs a while to enable/disable the bus */
+> 
+> 
+> .
+> 
