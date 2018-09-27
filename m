@@ -1,55 +1,80 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH 2/2] can: tcan4x5x: Add tcan4x5x driver to the kernel
-Date: Wed, 26 Sep 2018 20:34:47 +0200
-Message-ID: <f7bde33a-894b-9b27-6475-d69aaf19df1a@grandegger.com>
-References: <20180910201241.24092-1-dmurphy@ti.com>
- <20180910201241.24092-2-dmurphy@ti.com>
- <631340c2-78a6-eec3-0ab2-713dddd8e84f@ti.com>
- <45621ef7-bc87-3d1e-efca-e6387fdebf9a@grandegger.com>
- <4c9396a4-4028-f013-b22b-a181ef4278c7@ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH net-next] can: xilinx: fix return type of ndo_start_xmit
+ function
+Date: Thu, 27 Sep 2018 10:58:37 +0200
+Message-ID: <b364d678-98ea-2822-624d-3d65cccfc386@pengutronix.de>
+References: <20180926103229.13204-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="etIPrS7ePKkPT95zhIwNnsgLGnVR6CKgb"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4c9396a4-4028-f013-b22b-a181ef4278c7@ti.com>
-Content-Language: en-GB
+In-Reply-To: <20180926103229.13204-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net, wg@grandegger.com, michal.simek@xilinx.com
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: linux-can.vger.kernel.org
 
-Hello Dan,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--etIPrS7ePKkPT95zhIwNnsgLGnVR6CKgb
+Content-Type: multipart/mixed; boundary="gL8wFpgAPHrRfSYD6YAmIahW2lVVA9IzS";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net,
+ wg@grandegger.com, michal.simek@xilinx.com
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Message-ID: <b364d678-98ea-2822-624d-3d65cccfc386@pengutronix.de>
+Subject: Re: [PATCH net-next] can: xilinx: fix return type of ndo_start_xmit
+ function
+References: <20180926103229.13204-1-yuehaibing@huawei.com>
+In-Reply-To: <20180926103229.13204-1-yuehaibing@huawei.com>
 
-Am 26.09.2018 um 20:00 schrieb Dan Murphy:
-> Wolfgang
-> 
-> On 09/26/2018 12:54 PM, Wolfgang Grandegger wrote:
->> Hello,
->>
->> I wonder why you do not extend the existing MCAN driver by implementing
->> an interface to access the hardware. Would that be feasible?
->>
-> 
-> That did cross my mind. The issue is I have no way of testing the existing
-> driver to make sure I did not break anything.
+--gL8wFpgAPHrRfSYD6YAmIahW2lVVA9IzS
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I can imagine, but we should try to avoid duplicated code in the
-first place. I personally do not have a MCAN device at hand either, but
-we should be able to manage that.
+On 09/26/2018 12:32 PM, YueHaibing wrote:
+> The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
+> which is a typedef for an enum type, so make sure the implementation in=
 
-> My thought was to create a basic MCAN framework and attach the devices to it.
-> So, like in this case, if there is a special way to talk to the device it can 
-> be handled in the device driver.
+> this driver has returns 'netdev_tx_t' value, and change the function
+> return type to netdev_tx_t.
+>=20
+> Found by coccinelle.
+>=20
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Basically, that's what I have in mind. The "mcan" driver uses it's own
-directory with just one file in it. Maybe the idea behind that was to
-extend it sooner than later like the "c_can" driver.
+applied to can-next.
 
-> If thats what is needed then I will have to re-write the driver.
+Tnx,
+Marc
 
-Let's have a closer look first. If it's just about accessing one
-register at a time, like with memory mapped io, the interface should be
-trivial but with SPI we may want to read/write a bulk of data to speed
-up the register accesses, use a work queue or thread, etc.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
-Wolfgang
+
+--gL8wFpgAPHrRfSYD6YAmIahW2lVVA9IzS--
+
+--etIPrS7ePKkPT95zhIwNnsgLGnVR6CKgb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlusm70ACgkQk9IU1zQo
+ZfH1YAf7BNtGXD8lZ3bkheKFgFtccVKqERrBKMQuP9yn8k2CwJWIp+cC1e1ZzwY8
+63eUcLrYv3uNwvItM/iBydCpmM1KVz4YlTtYEPDOi0RfX0kb6DMC0ms0KMO3CKBe
+TmSX52gU6Ht31hvztG1fO6qcx65EByczUk67l4Gq0PR2BQ/gr2hijv5/yuD3H6zh
+k3vwNQhCr3bR/RvFM1BSoTFEyvdmss9vf/V8z/zT9T3Ur31d8en+7Gh3YuhT9dMx
+FzOYvQ13WzaaIN8JNkJaoL2EJp2G2G8MmNrhaOP8Mw+WddS7u1bJQsfAyOZUieeA
+XbfGCe/dg66YmoJ0NiYHBfxXe8yv3Q==
+=zier
+-----END PGP SIGNATURE-----
+
+--etIPrS7ePKkPT95zhIwNnsgLGnVR6CKgb--
