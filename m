@@ -1,54 +1,52 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH net-next] can: xilinx: fix return type of ndo_start_xmit
- function
-Date: Thu, 27 Sep 2018 10:58:37 +0200
-Message-ID: <b364d678-98ea-2822-624d-3d65cccfc386@pengutronix.de>
-References: <20180926103229.13204-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH resend] can: rcar_can: convert to SPDX identifiers
+Date: Thu, 27 Sep 2018 11:05:02 +0200
+Message-ID: <1bfdc10a-41e9-2a1f-b944-a8816186e998@pengutronix.de>
+References: <874ledyrc6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="etIPrS7ePKkPT95zhIwNnsgLGnVR6CKgb"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180926103229.13204-1-yuehaibing@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net, wg@grandegger.com, michal.simek@xilinx.com
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+ boundary="LqXYgdV2Ll4ppqwzzQQulY2r8c3HCiq2v"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <874ledyrc6.wl-kuninori.morimoto.gx@renesas.com>
+Sender: netdev-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-Net <netdev@vger.kernel.org>, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---etIPrS7ePKkPT95zhIwNnsgLGnVR6CKgb
-Content-Type: multipart/mixed; boundary="gL8wFpgAPHrRfSYD6YAmIahW2lVVA9IzS";
+--LqXYgdV2Ll4ppqwzzQQulY2r8c3HCiq2v
+Content-Type: multipart/mixed; boundary="WOHXJ4MorcyPPMh23GJt5evmFzzmmPdHx";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net,
- wg@grandegger.com, michal.simek@xilinx.com
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Message-ID: <b364d678-98ea-2822-624d-3d65cccfc386@pengutronix.de>
-Subject: Re: [PATCH net-next] can: xilinx: fix return type of ndo_start_xmit
- function
-References: <20180926103229.13204-1-yuehaibing@huawei.com>
-In-Reply-To: <20180926103229.13204-1-yuehaibing@huawei.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Linux-Net <netdev@vger.kernel.org>, linux-can@vger.kernel.org
+Message-ID: <1bfdc10a-41e9-2a1f-b944-a8816186e998@pengutronix.de>
+Subject: Re: [PATCH resend] can: rcar_can: convert to SPDX identifiers
+References: <874ledyrc6.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <874ledyrc6.wl-kuninori.morimoto.gx@renesas.com>
 
---gL8wFpgAPHrRfSYD6YAmIahW2lVVA9IzS
+--WOHXJ4MorcyPPMh23GJt5evmFzzmmPdHx
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 09/26/2018 12:32 PM, YueHaibing wrote:
-> The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
-> which is a typedef for an enum type, so make sure the implementation in=
-
-> this driver has returns 'netdev_tx_t' value, and change the function
-> return type to netdev_tx_t.
+On 09/26/2018 03:41 AM, Kuninori Morimoto wrote:
 >=20
-> Found by coccinelle.
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> This patch updates license to use SPDX-License-Identifier
+> instead of verbose license text.
+>=20
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
 
-applied to can-next.
+Wolfram Sang has already supplied a similar patch, but not for Makefile
+and Kconfig. I've applied your patch for Makefile and Kconfig and
+adjusted the commit message accordingly.
 
-Tnx,
 Marc
 
 --=20
@@ -58,23 +56,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---gL8wFpgAPHrRfSYD6YAmIahW2lVVA9IzS--
+--WOHXJ4MorcyPPMh23GJt5evmFzzmmPdHx--
 
---etIPrS7ePKkPT95zhIwNnsgLGnVR6CKgb
+--LqXYgdV2Ll4ppqwzzQQulY2r8c3HCiq2v
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlusm70ACgkQk9IU1zQo
-ZfH1YAf7BNtGXD8lZ3bkheKFgFtccVKqERrBKMQuP9yn8k2CwJWIp+cC1e1ZzwY8
-63eUcLrYv3uNwvItM/iBydCpmM1KVz4YlTtYEPDOi0RfX0kb6DMC0ms0KMO3CKBe
-TmSX52gU6Ht31hvztG1fO6qcx65EByczUk67l4Gq0PR2BQ/gr2hijv5/yuD3H6zh
-k3vwNQhCr3bR/RvFM1BSoTFEyvdmss9vf/V8z/zT9T3Ur31d8en+7Gh3YuhT9dMx
-FzOYvQ13WzaaIN8JNkJaoL2EJp2G2G8MmNrhaOP8Mw+WddS7u1bJQsfAyOZUieeA
-XbfGCe/dg66YmoJ0NiYHBfxXe8yv3Q==
-=zier
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlusnT4ACgkQk9IU1zQo
+ZfGUEggA2BrO340zbi8ZLpi6HoLj7omJuz4WpENUgGU2vmFQF5b4d3Ir8XdNEz+W
+HyYIhFicj+8z1sEAg/4dsQa4LghuQGOmUdN6Wo+F5LOtkaREI2WRV+lXSY/jOES4
+VfXfcm80fIorwIVNMGopgreEzACrJZYFl71erWnT9lgAkttkAlF//vIlYJkklPDd
+t4NpSDiKoxFNQg7fIXRIjDUAkTnLFWwO8V0LvCD0kiG2vBIfwf6hGnAfRwBMzNRa
+Z6jxKMGoURVGqHGDErSCQyuL/CDFJvZjPmJY5NxR3gdPqlQ4fokNZV30qeA6LrPY
+FS/OojcQOuUNuApS+fXFeeVwHSYkdg==
+=gZqz
 -----END PGP SIGNATURE-----
 
---etIPrS7ePKkPT95zhIwNnsgLGnVR6CKgb--
+--LqXYgdV2Ll4ppqwzzQQulY2r8c3HCiq2v--
