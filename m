@@ -1,50 +1,57 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can-next] can: ucan: remove duplicated include from ucan.c
-Date: Thu, 27 Sep 2018 12:39:39 +0200
-Message-ID: <2027cad1-d02f-c646-5683-29febd5699a2@pengutronix.de>
-References: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
+Subject: Re: [PATCH v2 0/3] Add can support to RZ/G2M
+Date: Thu, 27 Sep 2018 12:45:01 +0200
+Message-ID: <cf75b506-f63c-0689-900f-6bfb11caff30@pengutronix.de>
+References: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="nWDw1VuV3ctXkoHZxrODo8MsoObIw7r4s"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
-Sender: netdev-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Martin Elshuber <martin.elshuber@theobroma-systems.com>, Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
+ boundary="m0iQ2IPV8OBaGyAPQoOUNmfhIgqQ66gYg"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Chris Paterson <Chris.Paterson2@renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>, Biju Das <biju.das@bp.renesas.com>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---nWDw1VuV3ctXkoHZxrODo8MsoObIw7r4s
-Content-Type: multipart/mixed; boundary="sxNVx2JGGTzK3gvVDo9xTMyoCBj8e33Pm";
+--m0iQ2IPV8OBaGyAPQoOUNmfhIgqQ66gYg
+Content-Type: multipart/mixed; boundary="us9iOL7kiYRQy0r1oTb9vTZJ0sFVXFgpH";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: YueHaibing <yuehaibing@huawei.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>,
- Martin Elshuber <martin.elshuber@theobroma-systems.com>,
- Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>,
- Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Message-ID: <2027cad1-d02f-c646-5683-29febd5699a2@pengutronix.de>
-Subject: Re: [PATCH can-next] can: ucan: remove duplicated include from ucan.c
-References: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
-In-Reply-To: <1535505945-143347-1-git-send-email-yuehaibing@huawei.com>
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
+ Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
+ Chris Paterson <Chris.Paterson2@renesas.com>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Biju Das <biju.das@bp.renesas.com>
+Message-ID: <cf75b506-f63c-0689-900f-6bfb11caff30@pengutronix.de>
+Subject: Re: [PATCH v2 0/3] Add can support to RZ/G2M
+References: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
 
---sxNVx2JGGTzK3gvVDo9xTMyoCBj8e33Pm
+--us9iOL7kiYRQy0r1oTb9vTZJ0sFVXFgpH
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 08/29/2018 03:25 AM, YueHaibing wrote:
-> Remove duplicated include.
+On 09/10/2018 12:43 PM, Fabrizio Castro wrote:
+> Dear All,
 >=20
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> this series contains all that's necessary to add CAN support
+> for RZ/G2M (a.k.a. r8a774a1).
+>=20
+> v1-v2:
+> * applied Geert's comments
 
-Applied to linux-can.
+Added 1/3 and 2/3 to linux-can.
 
-Tnx,
+Tnx.
 Marc
 
 --=20
@@ -54,23 +61,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---sxNVx2JGGTzK3gvVDo9xTMyoCBj8e33Pm--
+--us9iOL7kiYRQy0r1oTb9vTZJ0sFVXFgpH--
 
---nWDw1VuV3ctXkoHZxrODo8MsoObIw7r4s
+--m0iQ2IPV8OBaGyAPQoOUNmfhIgqQ66gYg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAluss2wACgkQk9IU1zQo
-ZfFKHwf/bwgWz8mlL9hBbtbo6kpchKhEHdfGEzVVcmFZRHvh6NTOwyruk5RC7LlR
-TDqoAzFRk0quqa+dE8/yHPKiry1wul8gKimY487o/VMnII/G3HCJb973Ih/TD6IC
-5kO6m7m/7vmUyo7gcfTkel+BXcjP4tOQiEQ+Dr7o2atFKPC8KbgqesAz/B/CjRow
-gmxre86e7euK56Fq9AlK578JbgTx5DmFa33obnY9v8JRFTQeMXPrcBLdcMG/tnpI
-DmInvDmBSxAor1ByvoqUroPmrNQE38TkqVYFKO/wMWTxYmq1SzelreeyboyVHJEk
-au1SSKvCYA8bq+20vXjlhb19YvtJyA==
-=hVvC
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlustK0ACgkQk9IU1zQo
+ZfGiXwgAysK8Givh2HTxAHe03Sn2ivUgDrR5z0fNERlaYvXUm1mD2x1+4ZNSOqSH
+z4XORv1mNOhuOwTnNdVUxQWnIsslnWFpN77OHOEakNJ3JBkWI4G4zNQYjjYbvfes
+688KUDYs5GdM5k1Bo9Wl7kyrDFZRUYUFLPAqeFaOx6vtBcHCCvNWXLFWCZ9MaU89
+yoMFPK9VaF6lj57XkFQh6M9bMdvHNuMpJyqjBptNl8CdPfUEyckznLodM11mqndy
+LGrrt1JER35n/tu7DYOfzjgSaaSq+wYFUjshrjTdq/6RKuyVlZ/I8+XXJwzs7FpQ
+25bnt1pj3RKT+HshbEGwxH6Fti8spA==
+=t7Pr
 -----END PGP SIGNATURE-----
 
---nWDw1VuV3ctXkoHZxrODo8MsoObIw7r4s--
+--m0iQ2IPV8OBaGyAPQoOUNmfhIgqQ66gYg--
