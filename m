@@ -1,57 +1,79 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 0/3] Add can support to RZ/G2M
-Date: Thu, 27 Sep 2018 12:45:01 +0200
-Message-ID: <cf75b506-f63c-0689-900f-6bfb11caff30@pengutronix.de>
-References: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Subject: Re: [PATCH v3 net-next] dt-bindings: can: rcar_can: document r8a77965
+ support
+Date: Thu, 27 Sep 2018 12:46:28 +0200
+Message-ID: <129e18fd-8161-0f79-d17a-9bb73c3ed717@pengutronix.de>
+References: <20180820144910.13210-1-erosca@de.adit-jv.com>
+ <50048177-96ad-cbda-6845-20ffc32d025a@pengutronix.de>
+ <20180921194833.GA28500@vmlxhi-102.adit-jv.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="m0iQ2IPV8OBaGyAPQoOUNmfhIgqQ66gYg"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Chris Paterson <Chris.Paterson2@renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>, Biju Das <biju.das@bp.renesas.com>
+ boundary="vejwY6kMxSSax3MYakY7MtDbDzeZymlzE"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20180921194833.GA28500@vmlxhi-102.adit-jv.com>
+Sender: netdev-owner@vger.kernel.org
+To: Eugeniu Rosca <erosca@de.adit-jv.com>
+Cc: Simon Horman <horms+renesas@verge.net.au>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S . Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, Magnus Damm <damm+renesas@opensource.se>, linux-renesas-soc@vger.kernel.org, Eugeniu Rosca <rosca.eugeniu@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---m0iQ2IPV8OBaGyAPQoOUNmfhIgqQ66gYg
-Content-Type: multipart/mixed; boundary="us9iOL7kiYRQy0r1oTb9vTZJ0sFVXFgpH";
+--vejwY6kMxSSax3MYakY7MtDbDzeZymlzE
+Content-Type: multipart/mixed; boundary="ddrS4jMJFRRubP9HSO5wb4GKW9I50qh2d";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
- Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
+To: Eugeniu Rosca <erosca@de.adit-jv.com>
+Cc: Simon Horman <horms+renesas@verge.net.au>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
  Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
- Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
- Chris Paterson <Chris.Paterson2@renesas.com>, linux-can@vger.kernel.org,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ "David S . Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org,
  netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Biju Das <biju.das@bp.renesas.com>
-Message-ID: <cf75b506-f63c-0689-900f-6bfb11caff30@pengutronix.de>
-Subject: Re: [PATCH v2 0/3] Add can support to RZ/G2M
-References: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
-In-Reply-To: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ Magnus Damm <damm+renesas@opensource.se>, linux-renesas-soc@vger.kernel.org,
+ Eugeniu Rosca <rosca.eugeniu@gmail.com>
+Message-ID: <129e18fd-8161-0f79-d17a-9bb73c3ed717@pengutronix.de>
+Subject: Re: [PATCH v3 net-next] dt-bindings: can: rcar_can: document r8a77965
+ support
+References: <20180820144910.13210-1-erosca@de.adit-jv.com>
+ <50048177-96ad-cbda-6845-20ffc32d025a@pengutronix.de>
+ <20180921194833.GA28500@vmlxhi-102.adit-jv.com>
+In-Reply-To: <20180921194833.GA28500@vmlxhi-102.adit-jv.com>
 
---us9iOL7kiYRQy0r1oTb9vTZJ0sFVXFgpH
+--ddrS4jMJFRRubP9HSO5wb4GKW9I50qh2d
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 09/10/2018 12:43 PM, Fabrizio Castro wrote:
-> Dear All,
+On 09/21/2018 09:48 PM, Eugeniu Rosca wrote:
+> Hi Marc,
 >=20
-> this series contains all that's necessary to add CAN support
-> for RZ/G2M (a.k.a. r8a774a1).
+> On Mon, Aug 27, 2018 at 12:08:48PM +0200, Marc Kleine-Budde wrote:
+>> On 08/20/2018 04:49 PM, Eugeniu Rosca wrote:
+>>> From: Eugeniu Rosca <rosca.eugeniu@gmail.com>
+>>>
+>>> Document the support for rcar_can on R8A77965 SoC devices.
+>>> Add R8A77965 to the list of SoCs which require the "assigned-clocks" =
+and
+>>> "assigned-clock-rates" properties (thanks, Sergei).
+>>>
+>>> Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+>>> Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+>>> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>=
+
+>>
+>> Added to linux-can.
 >=20
-> v1-v2:
-> * applied Geert's comments
+> I can't find the patch in below repositories:
+>  - https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git
+>  - https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.g=
+it
+>=20
+> Could you please let me know what "linux-can" means?
 
-Added 1/3 and 2/3 to linux-can.
+I haven't pushed it yet, it will be in the testing branch of linux-can.gi=
+t
 
-Tnx.
 Marc
 
 --=20
@@ -61,23 +83,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---us9iOL7kiYRQy0r1oTb9vTZJ0sFVXFgpH--
+--ddrS4jMJFRRubP9HSO5wb4GKW9I50qh2d--
 
---m0iQ2IPV8OBaGyAPQoOUNmfhIgqQ66gYg
+--vejwY6kMxSSax3MYakY7MtDbDzeZymlzE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlustK0ACgkQk9IU1zQo
-ZfGiXwgAysK8Givh2HTxAHe03Sn2ivUgDrR5z0fNERlaYvXUm1mD2x1+4ZNSOqSH
-z4XORv1mNOhuOwTnNdVUxQWnIsslnWFpN77OHOEakNJ3JBkWI4G4zNQYjjYbvfes
-688KUDYs5GdM5k1Bo9Wl7kyrDFZRUYUFLPAqeFaOx6vtBcHCCvNWXLFWCZ9MaU89
-yoMFPK9VaF6lj57XkFQh6M9bMdvHNuMpJyqjBptNl8CdPfUEyckznLodM11mqndy
-LGrrt1JER35n/tu7DYOfzjgSaaSq+wYFUjshrjTdq/6RKuyVlZ/I8+XXJwzs7FpQ
-25bnt1pj3RKT+HshbEGwxH6Fti8spA==
-=t7Pr
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlustQQACgkQk9IU1zQo
+ZfF0Cwf/WiJgT7kjKDkGGinIWCmidTQiO5yX26s30pAmfRNRgDIHNax0rtb9A6Lm
+BQ2uv/AAHwXrEhTdM02qGLLEsrVbBIexnjb6ArtCYgFU5hOHzl1LXrPWcFA+2IKW
+Scvum80ttnWW3KZNdsFn1YZ9yPyg213roe9l+FHJghced6YPQN18AVSHrTMjG81a
+mGnzRkAL4qMnd3LqdA39Cm4unyJioY0JHEp1YApXeXsaYCo3thoAHTrvTI0YaIUt
+uGTYlZx9UZ9n0A8QH6mJm/ceM4EEJrY9NTz8w+H5SJOalDE0wG4qNsE/yfxfeFET
+vm3RItkfuquP6uGNY4IGyoIxF2remQ==
+=TvQ0
 -----END PGP SIGNATURE-----
 
---m0iQ2IPV8OBaGyAPQoOUNmfhIgqQ66gYg--
+--vejwY6kMxSSax3MYakY7MtDbDzeZymlzE--
