@@ -1,64 +1,39 @@
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH v1 0/5] can: add SAE J1939 protocol
-Date: Mon,  8 Oct 2018 11:48:31 +0200
-Message-ID: <20181008094836.14080-1-o.rempel@pengutronix.de>
+Subject: [PATCH v1 3/5] can: add socket type for CAN_J1939
+Date: Mon,  8 Oct 2018 11:48:34 +0200
+Message-ID: <20181008094836.14080-4-o.rempel@pengutronix.de>
+References: <20181008094836.14080-1-o.rempel@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20181008094836.14080-1-o.rempel@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
 Cc: Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-This series adds SAE J1939 support to the current kernel v4.19-rc6.
+This patch is a preparation for SAE J1939 and adds CAN_J1939
+socket type.
 
-This stack has long history, starting back in 27 Apr 2011, if not
-earlier:
-https://lists.openwall.net/netdev/2011/04/27/45
+Signed-off-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ include/uapi/linux/can.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-After major rework and testing it is a time to send it mainline.
-
-Kurt Van Dijck (2):
-  mailmap: update email address
-  can: introduce REQUIRED_SIZE macro
-
-Oleksij Rempel (2):
-  can: add socket type for CAN_J1939
-  can: extend sockaddr_can to include j1939 members
-
-The j1939 authors (1):
-  can: add support of SAE J1939 protocol.
-
- .mailmap                           |    1 +
- Documentation/networking/j1939.txt |  468 ++++++++++
- MAINTAINERS                        |   10 +
- include/linux/can/can-ml.h         |    3 +
- include/linux/can/core.h           |    8 +
- include/uapi/linux/can.h           |   20 +-
- include/uapi/linux/can/j1939.h     |   83 ++
- net/can/Kconfig                    |    2 +
- net/can/Makefile                   |    2 +
- net/can/bcm.c                      |    4 +-
- net/can/j1939/Kconfig              |   23 +
- net/can/j1939/Makefile             |   12 +
- net/can/j1939/address-claim.c      |  224 +++++
- net/can/j1939/bus.c                |  309 +++++++
- net/can/j1939/j1939-priv.h         |  176 ++++
- net/can/j1939/main.c               |  371 ++++++++
- net/can/j1939/socket.c             |  781 ++++++++++++++++
- net/can/j1939/transport.c          | 1333 ++++++++++++++++++++++++++++
- net/can/raw.c                      |    4 +-
- 19 files changed, 3829 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/networking/j1939.txt
- create mode 100644 include/uapi/linux/can/j1939.h
- create mode 100644 net/can/j1939/Kconfig
- create mode 100644 net/can/j1939/Makefile
- create mode 100644 net/can/j1939/address-claim.c
- create mode 100644 net/can/j1939/bus.c
- create mode 100644 net/can/j1939/j1939-priv.h
- create mode 100644 net/can/j1939/main.c
- create mode 100644 net/can/j1939/socket.c
- create mode 100644 net/can/j1939/transport.c
-
+diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
+index 0afb7d8e867f..06d92d6be6e6 100644
+--- a/include/uapi/linux/can.h
++++ b/include/uapi/linux/can.h
+@@ -157,7 +157,8 @@ struct canfd_frame {
+ #define CAN_TP20	4 /* VAG Transport Protocol v2.0 */
+ #define CAN_MCNET	5 /* Bosch MCNet */
+ #define CAN_ISOTP	6 /* ISO 15765-2 Transport Protocol */
+-#define CAN_NPROTO	7
++#define CAN_J1939	7 /* SAE J1939 */
++#define CAN_NPROTO	8
+ 
+ #define SOL_CAN_BASE 100
+ 
 -- 
 2.19.0
