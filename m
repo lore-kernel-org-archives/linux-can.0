@@ -1,76 +1,64 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH 2/2] can: tcan4x5x: Add tcan4x5x driver to the kernel
-Date: Fri, 5 Oct 2018 06:45:38 -0500
-Message-ID: <5e0d5a5b-dfe0-a2b5-8ca2-733579bda216@ti.com>
-References: <20180910201241.24092-1-dmurphy@ti.com>
- <20180910201241.24092-2-dmurphy@ti.com>
- <631340c2-78a6-eec3-0ab2-713dddd8e84f@ti.com>
- <45621ef7-bc87-3d1e-efca-e6387fdebf9a@grandegger.com>
- <7a75a096-d07f-693e-74b6-74a76c00acf5@ti.com>
- <6f055cd9-9452-0b4c-2df2-3d0cc06f9e68@grandegger.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: [PATCH v1 0/5] can: add SAE J1939 protocol
+Date: Mon,  8 Oct 2018 11:48:31 +0200
+Message-ID: <20181008094836.14080-1-o.rempel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6f055cd9-9452-0b4c-2df2-3d0cc06f9e68@grandegger.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "Mario.Huettel" <Mario.Huettel@de.bosch.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Wolfgang
+This series adds SAE J1939 support to the current kernel v4.19-rc6.
 
-On 10/05/2018 12:56 AM, Wolfgang Grandegger wrote:
-> Hello Dan,
-> 
-> Am 04.10.2018 um 22:26 schrieb Dan Murphy:
->> Wolfgang
->>
->> On 09/26/2018 12:54 PM, Wolfgang Grandegger wrote:
->>> Hello,
->>>
->>> I wonder why you do not extend the existing MCAN driver by implementing
->>> an interface to access the hardware. Would that be feasible?
->>>
->>
->> I have created a m_can_core code base that can be used by other hardware that
->> have special needs.
->>
->> So I have created the m_can_core, m_can and the tcan4x5x drivers.
-> 
-> Great, I still think it's a good idea to have just one "m_can" driver.
+This stack has long history, starting back in 27 Apr 2011, if not
+earlier:
+https://lists.openwall.net/netdev/2011/04/27/45
 
-The m_can and tcan4x5x provide the device level implementations.  The m_can_core
-deals specifically with handling of the m_can IP and protocol.
+After major rework and testing it is a time to send it mainline.
 
-> 
->> I can RFC the code to see if this is what is expected.
->> It is not 100% working but it is close enough for a directional call.
-> 
-> That would be nice! Most of the SPI accesses are pure register accesses.
-> A few read/write more bytes at a time (for data, etc.) but that could be
-> handled by appropriate interface functions. One general problem is that
-> SPI accesses are not possible from interrupt context requiring threads
-> or work queues. Also NAPI is usually not used.
-> 
-> Other opinions?
+Kurt Van Dijck (2):
+  mailmap: update email address
+  can: introduce REQUIRED_SIZE macro
 
-agreed. Is there any issue with moving the request_irq to a threaded_irq?
-Not sure how that would affect the timing.
+Oleksij Rempel (2):
+  can: add socket type for CAN_J1939
+  can: extend sockaddr_can to include j1939 members
 
-> 
-> Wolfgang.
-> 
-> PS: I have added Mario to the CC. Maybe he could test a common driver on
-> his M_CAN hardware.
-> 
+The j1939 authors (1):
+  can: add support of SAE J1939 protocol.
 
-I found that our am5/dra76 EVM also uses this IP stack.  So I am working with
-our experts there to test and review the code as well.
-
-Dan
+ .mailmap                           |    1 +
+ Documentation/networking/j1939.txt |  468 ++++++++++
+ MAINTAINERS                        |   10 +
+ include/linux/can/can-ml.h         |    3 +
+ include/linux/can/core.h           |    8 +
+ include/uapi/linux/can.h           |   20 +-
+ include/uapi/linux/can/j1939.h     |   83 ++
+ net/can/Kconfig                    |    2 +
+ net/can/Makefile                   |    2 +
+ net/can/bcm.c                      |    4 +-
+ net/can/j1939/Kconfig              |   23 +
+ net/can/j1939/Makefile             |   12 +
+ net/can/j1939/address-claim.c      |  224 +++++
+ net/can/j1939/bus.c                |  309 +++++++
+ net/can/j1939/j1939-priv.h         |  176 ++++
+ net/can/j1939/main.c               |  371 ++++++++
+ net/can/j1939/socket.c             |  781 ++++++++++++++++
+ net/can/j1939/transport.c          | 1333 ++++++++++++++++++++++++++++
+ net/can/raw.c                      |    4 +-
+ 19 files changed, 3829 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/networking/j1939.txt
+ create mode 100644 include/uapi/linux/can/j1939.h
+ create mode 100644 net/can/j1939/Kconfig
+ create mode 100644 net/can/j1939/Makefile
+ create mode 100644 net/can/j1939/address-claim.c
+ create mode 100644 net/can/j1939/bus.c
+ create mode 100644 net/can/j1939/j1939-priv.h
+ create mode 100644 net/can/j1939/main.c
+ create mode 100644 net/can/j1939/socket.c
+ create mode 100644 net/can/j1939/transport.c
 
 -- 
-------------------
-Dan Murphy
+2.19.0
