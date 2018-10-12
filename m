@@ -1,108 +1,71 @@
-From: <shubhrajyoti.datta@gmail.com>
-Subject: [PATCHv2 1/2] can: xilinx: add can 2.0 support
-Date: Fri, 12 Oct 2018 09:55:08 +0530
-Message-ID: <1539318309-13715-1-git-send-email-shubhrajyoti.datta@gmail.com>
+From: Martin Kepplinger <martink@posteo.de>
+Subject: [PATCH] can: ucan: fix some typos in comments
+Date: Fri, 12 Oct 2018 13:00:24 +0200
+Message-ID: <20181012110024.17067-1-martink@posteo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org
-Cc: robh+dt@kernel.org, michal.simek@xilinx.com, davem@davemloft.net, mkl@pengutronix.de, wg@grandegger.com, Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: martin.elshuber@theobroma-systems.com, jakob.unterwurzacher@theobroma-systems.com
+Cc: philipp.tomsich@theobroma-systems.com, mkl@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Martin Kepplinger <martink@posteo.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+This fixes some double-word and trivial typos in the ucan driver comments.
 
-Add support for can 2.0.
-
-Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Signed-off-by: Martin Kepplinger <martink@posteo.de>
 ---
- drivers/net/can/xilinx_can.c | 34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+hi guys,
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 045f084..7c4f5ad 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -63,6 +63,7 @@ enum xcan_reg {
- 	XCAN_FSR_OFFSET		= 0x00E8, /* RX FIFO Status */
- 	XCAN_TXMSG_BASE_OFFSET	= 0x0100, /* TX Message Space */
- 	XCAN_RXMSG_BASE_OFFSET	= 0x1100, /* RX Message Space */
-+	XCAN_RXMSG_2_BASE_OFFSET	= 0x2100, /* RX Message Space */
- };
+The Seal looks very nice. Since I'm doing CAN work right now, I could totally
+use one of these instead of old gear from PEAK.
+
+I hope you're doing fine. Best regards,
+
+                                martin
+
+
+ drivers/net/can/usb/ucan.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+index 0678a38b1af4..8c680fb9fdc8 100644
+--- a/drivers/net/can/usb/ucan.c
++++ b/drivers/net/can/usb/ucan.c
+@@ -64,7 +64,7 @@
+  *    the following way:
+  *
+  *	m[n].len <=> the length if message n(including the header in bytes)
+- *	m[n] is is aligned to a 4 byte boundary, hence
++ *	m[n] is aligned to a 4 byte boundary, hence
+  *	  offset(m[0])	 := 0;
+  *	  offset(m[n+1]) := offset(m[n]) + (m[n].len + 3) & 3
+  *
+@@ -288,7 +288,7 @@ struct ucan_priv {
+ 	 */
+ 	spinlock_t echo_skb_lock;
  
- #define XCAN_FRAME_ID_OFFSET(frame_base)	((frame_base) + 0x00)
-@@ -75,6 +76,8 @@ enum xcan_reg {
- 					 XCAN_CANFD_FRAME_SIZE * (n))
- #define XCAN_RXMSG_FRAME_OFFSET(n)	(XCAN_RXMSG_BASE_OFFSET + \
- 					 XCAN_CANFD_FRAME_SIZE * (n))
-+#define XCAN_RXMSG_2_FRAME_OFFSET(n)	(XCAN_RXMSG_2_BASE_OFFSET + \
-+					 XCAN_CANFD_FRAME_SIZE * (n))
+-	/* usb device information information */
++	/* usb device information */
+ 	u8 intf_index;
+ 	u8 in_ep_addr;
+ 	u8 out_ep_addr;
+@@ -1449,7 +1449,7 @@ static int ucan_probe(struct usb_interface *intf,
  
- /* the single TX mailbox used by this driver on CAN FD HW */
- #define XCAN_TX_MAILBOX_IDX		0
-@@ -152,6 +155,7 @@ enum xcan_reg {
-  * instead of the regular FIFO at 0x50
-  */
- #define XCAN_FLAG_RX_FIFO_MULTI	0x0010
-+#define XCAN_FLAG_CANFD_2	0x0020
+ 	/* request the device information and store it in ctl_msg_buffer
+ 	 *
+-	 * note: ucan_ctrl_command_* wrappers connot be used yet
++	 * note: ucan_ctrl_command_* wrappers cannot be used yet
+ 	 * because `up` is initialised in Stage 3
+ 	 */
+ 	ret = usb_control_msg(udev,
+@@ -1498,7 +1498,7 @@ static int ucan_probe(struct usb_interface *intf,
  
- struct xcan_devtype_data {
- 	unsigned int flags;
-@@ -221,6 +225,18 @@ static const struct can_bittiming_const xcan_bittiming_const_canfd = {
- 	.brp_inc = 1,
- };
+ 	up = netdev_priv(netdev);
  
-+static const struct can_bittiming_const xcan_bittiming_const_canfd2 = {
-+	.name = DRIVER_NAME,
-+	.tseg1_min = 1,
-+	.tseg1_max = 256,
-+	.tseg2_min = 1,
-+	.tseg2_max = 128,
-+	.sjw_max = 128,
-+	.brp_min = 1,
-+	.brp_max = 256,
-+	.brp_inc = 1,
-+};
-+
- /**
-  * xcan_write_reg_le - Write a value to the device register little endian
-  * @priv:	Driver private data structure
-@@ -973,7 +989,10 @@ static int xcan_rx_fifo_get_next_frame(struct xcan_priv *priv)
- 		if (!(fsr & XCAN_FSR_FL_MASK))
- 			return -ENOENT;
- 
--		offset = XCAN_RXMSG_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
-+		if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
-+			offset = XCAN_RXMSG_2_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
-+		else
-+			offset = XCAN_RXMSG_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
- 
- 	} else {
- 		/* check if RX FIFO is empty */
-@@ -1430,11 +1449,24 @@ static const struct xcan_devtype_data xcan_canfd_data = {
- 	.bus_clk_name = "s_axi_aclk",
- };
- 
-+static const struct xcan_devtype_data xcan_canfd2_data = {
-+	.flags = XCAN_FLAG_EXT_FILTERS |
-+		 XCAN_FLAG_RXMNF |
-+		 XCAN_FLAG_TX_MAILBOXES |
-+		 XCAN_FLAG_CANFD_2 |
-+		 XCAN_FLAG_RX_FIFO_MULTI,
-+	.bittiming_const = &xcan_bittiming_const_canfd2,
-+	.btr_ts2_shift = XCAN_BTR_TS2_SHIFT_CANFD,
-+	.btr_sjw_shift = XCAN_BTR_SJW_SHIFT_CANFD,
-+	.bus_clk_name = "s_axi_aclk",
-+};
-+
- /* Match table for OF platform binding */
- static const struct of_device_id xcan_of_match[] = {
- 	{ .compatible = "xlnx,zynq-can-1.0", .data = &xcan_zynq_data },
- 	{ .compatible = "xlnx,axi-can-1.00.a", .data = &xcan_axi_data },
- 	{ .compatible = "xlnx,canfd-1.0", .data = &xcan_canfd_data },
-+	{ .compatible = "xlnx,canfd-2.0", .data = &xcan_canfd2_data },
- 	{ /* end of list */ },
- };
- MODULE_DEVICE_TABLE(of, xcan_of_match);
+-	/* initialze data */
++	/* initialize data */
+ 	up->udev = udev;
+ 	up->intf = intf;
+ 	up->netdev = netdev;
 -- 
-2.1.1
+2.19.0
