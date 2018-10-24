@@ -1,116 +1,99 @@
-From: Pankaj Bansal <pankaj.bansal@nxp.com>
-Subject: [PATCH] arm64: dts: Add flexcan nodes in LX2160A
-Date: Wed, 24 Oct 2018 10:49:20 +0000
-Message-ID: <20181024161509.14200-1-pankaj.bansal@nxp.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [RFC PATCH 0/3] M_CAN Framework rework
+Date: Wed, 24 Oct 2018 06:36:10 -0500
+Message-ID: <1db25e4b-9b83-a234-b98f-e3c0c72d5e31@ti.com>
+References: <20181010142055.25271-1-dmurphy@ti.com>
+ <e8485e2e-df04-0905-7055-c2228c0f1fa4@ti.com>
+ <8d7fcd11-b537-97c1-ee50-ba30f236b5ec@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <8d7fcd11-b537-97c1-ee50-ba30f236b5ec@grandegger.com>
 Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Pankaj Bansal <pankaj.bansal@nxp.com>, Rob Herring <robh+dt@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-The FlexCAN module in LX2160A is a communication controller implementing
-the CAN protocol according to the ISO 11898-1 standard and CAN 2.0 B
-protocol specifications.
+Wolfgang
 
--Flexible mailboxes configurable to store 0 to 8, 16, 32 or 64 bytes
-data length
--Each mailbox configurable as receive or transmit, all supporting
-standard and extended messages
+On 10/24/2018 02:43 AM, Wolfgang Grandegger wrote:
+> Hallo Dan,
+> 
+> I will have a closer look later this week. Unfortunately you already
+> renamed file names and structs making the patch almost unreadable. More
+> soon..
+> 
 
-Signed-off-by: Pankaj Bansal <pankaj.bansal@nxp.com>
----
+I tried to format the patch to eliminate the massive change but format patch kept 
+giving me the same result.
 
-Notes:
-    This patch depends on below patches:
-    [1] https://lore.kernel.org/patchwork/project/lkml/list/?series=369563
-    [2] https://patchwork.kernel.org/patch/10645287/
-    
-    This patch is used by below patches:
-    [1] https://www.spinics.net/lists/linux-can/msg00348.html
+It is a massive change regardless not sure how else to make is smaller.
 
- .../boot/dts/freescale/fsl-lx2160a-qds.dts   |  8 ++++++++
- .../boot/dts/freescale/fsl-lx2160a-rdb.dts   |  8 ++++++++
- .../boot/dts/freescale/fsl-lx2160a.dtsi      | 18 ++++++++++++++++++
- 3 files changed, 34 insertions(+)
+I guess this is why I opt'd to just create the dedicated TCAN driver.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts
-index 99a22abbe725..8a0305a2b778 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts
-@@ -31,6 +31,14 @@
- 	};
- };
- 
-+&can0 {
-+	status = "okay";
-+};
-+
-+&can1 {
-+	status = "okay";
-+};
-+
- &crypto {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-index 6481e5f20e69..f8c95fc6de27 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-@@ -31,6 +31,14 @@
- 	};
- };
- 
-+&can0 {
-+	status = "okay";
-+};
-+
-+&can1 {
-+	status = "okay";
-+};
-+
- &crypto {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-index 56f846c55812..23ea8776b55a 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-@@ -566,6 +566,24 @@
- 			status = "disabled";
- 		};
- 
-+		can0: can@2180000 {
-+			compatible = "fsl,lx2160ar1-flexcan";
-+			reg = <0x0 0x2180000 0x0 0x10000>;
-+			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 7>, <&clockgen 4 7>;
-+			clock-names = "ipg", "per";
-+			status = "disabled";
-+		};
-+
-+		can1: can@2190000 {
-+			compatible = "fsl,lx2160ar1-flexcan";
-+			reg = <0x0 0x2190000 0x0 0x10000>;
-+			interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clockgen 4 7>, <&clockgen 4 7>;
-+			clock-names = "ipg", "per";
-+			status = "disabled";
-+		};
-+
- 		uart0: serial@21c0000 {
- 			compatible = "arm,sbsa-uart","arm,pl011";
- 			reg = <0x0 0x21c0000 0x0 0x1000>;
+Dan
+
+
+> Thanks for you patience,
+> 
+> Wolfgang.
+> 
+> Am 17.10.2018 um 22:21 schrieb Dan Murphy:
+>> Bump
+>>
+>> On 10/10/2018 09:20 AM, Dan Murphy wrote:
+>>> All
+>>>
+>>> This patch series creates a m_can core framework that devices can register
+>>> to.  The m_can core manages the Bosch IP and CAN frames.  Each device that
+>>> is registered is responsible for managing device specific functions.
+>>>
+>>> This rewrite was suggested in a device driver submission for the TCAN4x5x
+>>> device
+>>> Reference upstream post:
+>>> https://lore.kernel.org/patchwork/patch/984163/
+>>>
+>>> For instance the TCAN device is a SPI device that uses a specific data payload to
+>>> determine writes and reads.  In addition the device has a reset input as well
+>>> as a wakeup pin.  The register offset of the m_can registers differs and must
+>>> be set by the device attached to the core.
+>>>
+>>> The m_can core will use iomapped writes and reads as the default mechanism for
+>>> writing and reading.  The device driver can provide over rides for this.
+>>>
+>>> This patch series is not complete as it does not handle the CAN interrupts
+>>> nor can perform a CAN write.  If this patch series is deemed acceptable I will
+>>> finish debugging the driver and post a non RFC series.
+>>>
+>>> Finally I did attempt to reduce the first patch with various git format patch
+>>> directives but none seemed to reduce the patch.
+>>>
+>>> Dan
+>>>
+>>> Dan Murphy (3):
+>>>   can: m_can: Create m_can core to leverage common code
+>>>   dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+>>>   can: tcan4x5x: Add tcan4x5x driver to the kernel
+>>>
+>>>  .../devicetree/bindings/net/can/tcan4x5x.txt  |   34 +
+>>>  drivers/net/can/m_can/Kconfig                 |   18 +
+>>>  drivers/net/can/m_can/Makefile                |    4 +-
+>>>  drivers/net/can/m_can/m_can.c                 | 1683 +----------------
+>>>  .../net/can/m_can/{m_can.c => m_can_core.c}   |  479 +++--
+>>>  drivers/net/can/m_can/m_can_core.h            |  100 +
+>>>  drivers/net/can/m_can/tcan4x5x.c              |  321 ++++
+>>>  7 files changed, 722 insertions(+), 1917 deletions(-)
+>>>  create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+>>>  copy drivers/net/can/m_can/{m_can.c => m_can_core.c} (83%)
+>>>  create mode 100644 drivers/net/can/m_can/m_can_core.h
+>>>  create mode 100644 drivers/net/can/m_can/tcan4x5x.c
+>>>
+>>
+>>
+
+
 -- 
-2.17.1
+------------------
+Dan Murphy
