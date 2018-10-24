@@ -1,36 +1,77 @@
-From: zhong jiang <zhongjiang@huawei.com>
-Subject: [PATCH] can: usb: Remove some duplicated includes from ucan.c
-Date: Wed, 24 Oct 2018 13:58:58 +0800
-Message-ID: <1540360738-65328-1-git-send-email-zhongjiang@huawei.com>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: Re: [RFC PATCH 0/3] M_CAN Framework rework
+Date: Wed, 24 Oct 2018 13:03:52 +0530
+Message-ID: <8247a28f-ae33-1ab1-b6d1-c89b839d357c@ti.com>
+References: <20181010142055.25271-1-dmurphy@ti.com>
+ <e8485e2e-df04-0905-7055-c2228c0f1fa4@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <e8485e2e-df04-0905-7055-c2228c0f1fa4@ti.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: davem@davemloft.net
-Cc: wg@grandegger.com, mkl@pengutronix.de, martin.elshuber@theobroma-systems.com, philipp.tomsich@theobroma-systems.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Just remove same duplicated includes.
+Hi Dan,
 
-Signed-off-by: zhong jiang <zhongjiang@huawei.com>
----
- drivers/net/can/usb/ucan.c | 4 ----
- 1 file changed, 4 deletions(-)
+On Thursday 18 October 2018 01:51 AM, Dan Murphy wrote:
+> Bump
+> 
+> On 10/10/2018 09:20 AM, Dan Murphy wrote:
+>> All
+>>
+>> This patch series creates a m_can core framework that devices can register
+>> to.  The m_can core manages the Bosch IP and CAN frames.  Each device that
+>> is registered is responsible for managing device specific functions.
+>>
+>> This rewrite was suggested in a device driver submission for the TCAN4x5x
+>> device
+>> Reference upstream post:
+>> https://lore.kernel.org/patchwork/patch/984163/
+>>
+>> For instance the TCAN device is a SPI device that uses a specific data payload to
+>> determine writes and reads.  In addition the device has a reset input as well
+>> as a wakeup pin.  The register offset of the m_can registers differs and must
+>> be set by the device attached to the core.
+>>
+>> The m_can core will use iomapped writes and reads as the default mechanism for
+>> writing and reading.  The device driver can provide over rides for this.
+>>
+>> This patch series is not complete as it does not handle the CAN interrupts
+>> nor can perform a CAN write.  If this patch series is deemed acceptable I will
+>> finish debugging the driver and post a non RFC series.
+>>
+>> Finally I did attempt to reduce the first patch with various git format patch
+>> directives but none seemed to reduce the patch.
+>>
+>> Dan
+>>
+>> Dan Murphy (3):
+>>   can: m_can: Create m_can core to leverage common code
+>>   dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+>>   can: tcan4x5x: Add tcan4x5x driver to the kernel
+>>
+>>  .../devicetree/bindings/net/can/tcan4x5x.txt  |   34 +
+>>  drivers/net/can/m_can/Kconfig                 |   18 +
+>>  drivers/net/can/m_can/Makefile                |    4 +-
+>>  drivers/net/can/m_can/m_can.c                 | 1683 +----------------
+>>  .../net/can/m_can/{m_can.c => m_can_core.c}   |  479 +++--
+>>  drivers/net/can/m_can/m_can_core.h            |  100 +
+>>  drivers/net/can/m_can/tcan4x5x.c              |  321 ++++
+>>  7 files changed, 722 insertions(+), 1917 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+>>  copy drivers/net/can/m_can/{m_can.c => m_can_core.c} (83%)
+>>  create mode 100644 drivers/net/can/m_can/m_can_core.h
+>>  create mode 100644 drivers/net/can/m_can/tcan4x5x.c
+>>
 
-diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
-index 0678a38..c6f4b41 100644
---- a/drivers/net/can/usb/ucan.c
-+++ b/drivers/net/can/usb/ucan.c
-@@ -35,10 +35,6 @@
- #include <linux/slab.h>
- #include <linux/usb.h>
- 
--#include <linux/can.h>
--#include <linux/can/dev.h>
--#include <linux/can/error.h>
--
- #define UCAN_DRIVER_NAME "ucan"
- #define UCAN_MAX_RX_URBS 8
- /* the CAN controller needs a while to enable/disable the bus */
--- 
-1.7.12.4
+Patch 1/3 never arrived for me. Its not there on lkml either.
+https://lkml.org/lkml/2018/10/10/611
+
+Can you resend the complete series?
+
+Thanks,
+Faiz
