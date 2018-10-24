@@ -1,46 +1,25 @@
 From: Dan Murphy <dmurphy@ti.com>
 Subject: Re: [RFC PATCH 0/3] M_CAN Framework rework
-Date: Wed, 24 Oct 2018 06:36:10 -0500
-Message-ID: <1db25e4b-9b83-a234-b98f-e3c0c72d5e31@ti.com>
+Date: Wed, 24 Oct 2018 06:39:33 -0500
+Message-ID: <8b793f8a-6ffb-9e23-1965-9e7c631031a1@ti.com>
 References: <20181010142055.25271-1-dmurphy@ti.com>
  <e8485e2e-df04-0905-7055-c2228c0f1fa4@ti.com>
- <8d7fcd11-b537-97c1-ee50-ba30f236b5ec@grandegger.com>
+ <8247a28f-ae33-1ab1-b6d1-c89b839d357c@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8d7fcd11-b537-97c1-ee50-ba30f236b5ec@grandegger.com>
+In-Reply-To: <8247a28f-ae33-1ab1-b6d1-c89b839d357c@ti.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
+To: Faiz Abbas <faiz_abbas@ti.com>, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Wolfgang
-
-On 10/24/2018 02:43 AM, Wolfgang Grandegger wrote:
-> Hallo Dan,
+On 10/24/2018 02:33 AM, Faiz Abbas wrote:
+> Hi Dan,
 > 
-> I will have a closer look later this week. Unfortunately you already
-> renamed file names and structs making the patch almost unreadable. More
-> soon..
-> 
-
-I tried to format the patch to eliminate the massive change but format patch kept 
-giving me the same result.
-
-It is a massive change regardless not sure how else to make is smaller.
-
-I guess this is why I opt'd to just create the dedicated TCAN driver.
-
-Dan
-
-
-> Thanks for you patience,
-> 
-> Wolfgang.
-> 
-> Am 17.10.2018 um 22:21 schrieb Dan Murphy:
+> On Thursday 18 October 2018 01:51 AM, Dan Murphy wrote:
 >> Bump
 >>
 >> On 10/10/2018 09:20 AM, Dan Murphy wrote:
@@ -90,8 +69,23 @@ Dan
 >>>  create mode 100644 drivers/net/can/m_can/m_can_core.h
 >>>  create mode 100644 drivers/net/can/m_can/tcan4x5x.c
 >>>
->>
->>
+> 
+> Patch 1/3 never arrived for me. Its not there on lkml either.
+> https://lkml.org/lkml/2018/10/10/611
+> 
+
+LKML seems to have issue with 1/3.  Here they were posted.
+Maybe the patch is to large but I received all 3 + the cover letter.
+
+https://lore.kernel.org/patchwork/patch/998019/
+https://lore.kernel.org/patchwork/patch/998017/
+https://lore.kernel.org/patchwork/patch/998020/
+
+> Can you resend the complete series?
+> 
+> Thanks,
+> Faiz
+> 
 
 
 -- 
