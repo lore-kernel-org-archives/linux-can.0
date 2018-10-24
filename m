@@ -1,51 +1,36 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH V1 2/2] Documentation: can: flexcan: Add stop-mode property to
- device tree
-Date: Tue, 23 Oct 2018 05:17:10 +0000
-Message-ID: <20181023051449.2116-3-qiangqing.zhang@nxp.com>
-References: <20181023051449.2116-1-qiangqing.zhang@nxp.com>
+From: zhong jiang <zhongjiang@huawei.com>
+Subject: [PATCH] can: usb: Remove some duplicated includes from ucan.c
+Date: Wed, 24 Oct 2018 13:58:58 +0800
+Message-ID: <1540360738-65328-1-git-send-email-zhongjiang@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181023051449.2116-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "A.s. Dong" <aisheng.dong@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
+To: davem@davemloft.net
+Cc: wg@grandegger.com, mkl@pengutronix.de, martin.elshuber@theobroma-systems.com, philipp.tomsich@theobroma-systems.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Dong Aisheng <aisheng.dong@nxp.com>
+Just remove same duplicated includes.
 
-The FlexCAN controller can parse the stop-mode property to enable CAN
-self wakeup feature.
-
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: zhong jiang <zhongjiang@huawei.com>
 ---
- Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/can/usb/ucan.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Do=
-cumentation/devicetree/bindings/net/can/fsl-flexcan.txt
-index bfc0c433654f..b5ccfc9c14fb 100644
---- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-+++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-@@ -24,6 +24,14 @@ Optional properties:
-               if this property is present then controller is assumed to be=
- big
-               endian.
-=20
-+- stop-mode: register bits of stop mode control, the format is
-+			<&gpr req_gpr req_bit ack_gpr ack_bit>.
-+			gpr is the phandle to general purpose register node.
-+			req_gpr is the gpr register offset of CAN stop request.
-+			req_bit is the bit offset of CAN stop request.
-+			ack_gpr is the gpr register offset of CAN stop acknowledge.
-+			ack_bit is the bit offset of CAN stop acknowledge.
-+
- Example:
-=20
- 	can@1c000 {
---=20
-2.17.1
+diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+index 0678a38..c6f4b41 100644
+--- a/drivers/net/can/usb/ucan.c
++++ b/drivers/net/can/usb/ucan.c
+@@ -35,10 +35,6 @@
+ #include <linux/slab.h>
+ #include <linux/usb.h>
+ 
+-#include <linux/can.h>
+-#include <linux/can/dev.h>
+-#include <linux/can/error.h>
+-
+ #define UCAN_DRIVER_NAME "ucan"
+ #define UCAN_MAX_RX_URBS 8
+ /* the CAN controller needs a while to enable/disable the bus */
+-- 
+1.7.12.4
