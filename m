@@ -1,23 +1,31 @@
-From: Faiz Abbas <faiz_abbas@ti.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
 Subject: Re: [RFC PATCH 0/3] M_CAN Framework rework
-Date: Wed, 24 Oct 2018 13:03:52 +0530
-Message-ID: <8247a28f-ae33-1ab1-b6d1-c89b839d357c@ti.com>
+Date: Wed, 24 Oct 2018 09:43:19 +0200
+Message-ID: <8d7fcd11-b537-97c1-ee50-ba30f236b5ec@grandegger.com>
 References: <20181010142055.25271-1-dmurphy@ti.com>
  <e8485e2e-df04-0905-7055-c2228c0f1fa4@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <e8485e2e-df04-0905-7055-c2228c0f1fa4@ti.com>
-Content-Language: en-US
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hi Dan,
+Hallo Dan,
 
-On Thursday 18 October 2018 01:51 AM, Dan Murphy wrote:
+I will have a closer look later this week. Unfortunately you already
+renamed file names and structs making the patch almost unreadable. More
+soon..
+
+Thanks for you patience,
+
+Wolfgang.
+
+Am 17.10.2018 um 22:21 schrieb Dan Murphy:
 > Bump
 > 
 > On 10/10/2018 09:20 AM, Dan Murphy wrote:
@@ -67,11 +75,5 @@ On Thursday 18 October 2018 01:51 AM, Dan Murphy wrote:
 >>  create mode 100644 drivers/net/can/m_can/m_can_core.h
 >>  create mode 100644 drivers/net/can/m_can/tcan4x5x.c
 >>
-
-Patch 1/3 never arrived for me. Its not there on lkml either.
-https://lkml.org/lkml/2018/10/10/611
-
-Can you resend the complete series?
-
-Thanks,
-Faiz
+> 
+> 
