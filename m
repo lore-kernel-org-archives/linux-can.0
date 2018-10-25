@@ -1,54 +1,54 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH V1 2/2] Documentation: can: flexcan: Add stop-mode
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V1 2/2] Documentation: can: flexcan: Add stop-mode
  property to device tree
-Date: Wed, 24 Oct 2018 18:57:06 -0500
-Message-ID: <20181024235706.GA22938@bogus>
+Date: Thu, 25 Oct 2018 00:40:47 +0000
+Message-ID: <DB7PR04MB4618F0289926D923EB908A14E6F70@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20181023051449.2116-1-qiangqing.zhang@nxp.com>
  <20181023051449.2116-3-qiangqing.zhang@nxp.com>
+ <20181024235706.GA22938@bogus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20181023051449.2116-3-qiangqing.zhang@nxp.com>
+In-Reply-To: <20181024235706.GA22938@bogus>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>
+To: Rob Herring <robh@kernel.org>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "A.s. Dong" <aisheng.dong@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-On Tue, Oct 23, 2018 at 05:17:10AM +0000, Joakim Zhang wrote:
-> From: Dong Aisheng <aisheng.dong@nxp.com>
-> 
-> The FlexCAN controller can parse the stop-mode property to enable CAN
-> self wakeup feature.
-> 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
->  Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-> index bfc0c433654f..b5ccfc9c14fb 100644
-> --- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-> +++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-> @@ -24,6 +24,14 @@ Optional properties:
->                if this property is present then controller is assumed to be big
->                endian.
->  
-> +- stop-mode: register bits of stop mode control, the format is
-
-Should have a vendor prefix: fsl,stop-mode
-
-> +			<&gpr req_gpr req_bit ack_gpr ack_bit>.
-> +			gpr is the phandle to general purpose register node.
-> +			req_gpr is the gpr register offset of CAN stop request.
-> +			req_bit is the bit offset of CAN stop request.
-> +			ack_gpr is the gpr register offset of CAN stop acknowledge.
-> +			ack_bit is the bit offset of CAN stop acknowledge.
-> +
->  Example:
->  
->  	can@1c000 {
-> -- 
-> 2.17.1
-> 
+DQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogUm9iIEhlcnJpbmcgW21haWx0bzpy
+b2JoQGtlcm5lbC5vcmddIA0KU2VudDogMjAxOMTqMTDUwjI1yNUgNzo1Nw0KVG86IEpvYWtpbSBa
+aGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQpDYzogbGludXgtY2FuQHZnZXIua2VybmVs
+Lm9yZzsgd2dAZ3JhbmRlZ2dlci5jb207IG1rbEBwZW5ndXRyb25peC5kZTsgbWFyay5ydXRsYW5k
+QGFybS5jb207IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5r
+ZXJuZWwub3JnOyBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsgQS5zLiBEb25nIDxh
+aXNoZW5nLmRvbmdAbnhwLmNvbT4NClN1YmplY3Q6IFJlOiBbUEFUQ0ggVjEgMi8yXSBEb2N1bWVu
+dGF0aW9uOiBjYW46IGZsZXhjYW46IEFkZCBzdG9wLW1vZGUgcHJvcGVydHkgdG8gZGV2aWNlIHRy
+ZWUNCg0KT24gVHVlLCBPY3QgMjMsIDIwMTggYXQgMDU6MTc6MTBBTSArMDAwMCwgSm9ha2ltIFpo
+YW5nIHdyb3RlOg0KPiBGcm9tOiBEb25nIEFpc2hlbmcgPGFpc2hlbmcuZG9uZ0BueHAuY29tPg0K
+PiANCj4gVGhlIEZsZXhDQU4gY29udHJvbGxlciBjYW4gcGFyc2UgdGhlIHN0b3AtbW9kZSBwcm9w
+ZXJ0eSB0byBlbmFibGUgQ0FOIA0KPiBzZWxmIHdha2V1cCBmZWF0dXJlLg0KPiANCj4gU2lnbmVk
+LW9mZi1ieTogRG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4NCj4gU2lnbmVkLW9m
+Zi1ieTogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gLS0tDQo+ICBE
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L2Nhbi9mc2wtZmxleGNhbi50eHQg
+fCA4IA0KPiArKysrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKQ0KPiAN
+Cj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvY2Fu
+L2ZzbC1mbGV4Y2FuLnR4dCANCj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bmV0L2Nhbi9mc2wtZmxleGNhbi50eHQNCj4gaW5kZXggYmZjMGM0MzM2NTRmLi5iNWNjZmM5YzE0
+ZmIgMTAwNjQ0DQo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQv
+Y2FuL2ZzbC1mbGV4Y2FuLnR4dA0KPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvbmV0L2Nhbi9mc2wtZmxleGNhbi50eHQNCj4gQEAgLTI0LDYgKzI0LDE0IEBAIE9wdGlv
+bmFsIHByb3BlcnRpZXM6DQo+ICAgICAgICAgICAgICAgIGlmIHRoaXMgcHJvcGVydHkgaXMgcHJl
+c2VudCB0aGVuIGNvbnRyb2xsZXIgaXMgYXNzdW1lZCB0byBiZSBiaWcNCj4gICAgICAgICAgICAg
+ICAgZW5kaWFuLg0KPiAgDQo+ICstIHN0b3AtbW9kZTogcmVnaXN0ZXIgYml0cyBvZiBzdG9wIG1v
+ZGUgY29udHJvbCwgdGhlIGZvcm1hdCBpcw0KDQpTaG91bGQgaGF2ZSBhIHZlbmRvciBwcmVmaXg6
+IGZzbCxzdG9wLW1vZGUNCg0KT2theSwgSSB3aWxsIGFkZCBpdC4gVGhhbmtzIGEgbG90IQ0KDQpC
+ZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCg0KPiArCQkJPCZncHIgcmVxX2dwciByZXFfYml0
+IGFja19ncHIgYWNrX2JpdD4uDQo+ICsJCQlncHIgaXMgdGhlIHBoYW5kbGUgdG8gZ2VuZXJhbCBw
+dXJwb3NlIHJlZ2lzdGVyIG5vZGUuDQo+ICsJCQlyZXFfZ3ByIGlzIHRoZSBncHIgcmVnaXN0ZXIg
+b2Zmc2V0IG9mIENBTiBzdG9wIHJlcXVlc3QuDQo+ICsJCQlyZXFfYml0IGlzIHRoZSBiaXQgb2Zm
+c2V0IG9mIENBTiBzdG9wIHJlcXVlc3QuDQo+ICsJCQlhY2tfZ3ByIGlzIHRoZSBncHIgcmVnaXN0
+ZXIgb2Zmc2V0IG9mIENBTiBzdG9wIGFja25vd2xlZGdlLg0KPiArCQkJYWNrX2JpdCBpcyB0aGUg
+Yml0IG9mZnNldCBvZiBDQU4gc3RvcCBhY2tub3dsZWRnZS4NCj4gKw0KPiAgRXhhbXBsZToNCj4g
+IA0KPiAgCWNhbkAxYzAwMCB7DQo+IC0tDQo+IDIuMTcuMQ0KPiANCg==
