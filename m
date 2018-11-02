@@ -1,88 +1,54 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [RFC PATCH 1/3] can: m_can: Create m_can core to leverage common
- code
-Date: Wed, 31 Oct 2018 15:15:56 -0500
-Message-ID: <349ef8be-f4c7-25cc-2c33-7ce1fd0b0f40@ti.com>
-References: <20181010142055.25271-1-dmurphy@ti.com>
- <20181010142055.25271-2-dmurphy@ti.com>
- <52811b27-00c0-f5e2-2b18-608ccf846723@grandegger.com>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: [PATCH 1/6] phy: Add max_bitrate attribute & phy_get_max_bitrate()
+Date: Sat, 3 Nov 2018 00:56:11 +0530
+Message-ID: <20181102192616.28291-2-faiz_abbas@ti.com>
+References: <20181102192616.28291-1-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <52811b27-00c0-f5e2-2b18-608ccf846723@grandegger.com>
-Content-Language: en-US
+In-Reply-To: <20181102192616.28291-1-faiz_abbas@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
+Cc: wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, mark.rutland@arm.com, kishon@ti.com, faiz_abbas@ti.com
 List-Id: linux-can.vger.kernel.org
 
-Wolfgang
+In some subsystems (eg. CAN) the physical layer capabilities are
+the limiting factor in the datarate of the device. Typically, the
+physical layer transceiver does not provide a way to discover this
+limitation at runtime. Thus this information needs to be represented as
+a phy attribute which is read from the device tree.
 
-Thanks for the review
+Therefore, add an optional max_bitrate attribute to the generic phy
+sybsystem. Also add the complementary API which enables the consumer
+to get max_bitrate.
 
-On 10/27/2018 09:19 AM, Wolfgang Grandegger wrote:
-> Hello Dan,
-> 
-> for the RFC, could you please just do the necessary changes to the
-> existing code. We can discuss about better names, etc. later. For
-> the review if the common code I quickly did:
-> 
->   mv m_can.c m_can_platform.c
->   mv m_can_core.c m_can.c
-> 
-> The file names are similar to what we have for the C_CAN driver.
-> 
->   s/classdev/priv/
->   variable name s/m_can_dev/priv/
-> 
-> Then your patch 1/3 looks as shown below. I'm going to comment on that
-> one. The comments start with "***"....
-> 
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+---
+ include/linux/phy/phy.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-So you would like me to align the names with the c_can driver?
-
-<snip>
-> 
-> *** I didn't review the rest of the patch for now.
-> 
-
-snipped the code to reply to the comment.
-
-> Looking to the generic code, you didn't really change the way
-> the driver is accessing the registers. Also the interrupt handling
-> and rx polling is as it was before. Does that work properly using
-> the SPI interface of the TCAN4x5x?
-
-I don't want to change any of that yet.  Maybe my cover letter was not clear
-or did not go through.
-
-But the intention was just to break out the functionality to create a MCAN framework
-that can be used by devices that contain the Bosch MCAN core and provider their own protocal to access
-the registers in the device.
-
-I don't want to do any functional changes at this time on the IP code itself until we have a framework.
-There should be no regression in the io mapped code.
-
-I did comment on the interrupt handling and asked if a threaded work queue would affect CAN timing.
-For the original TCAN driver this was the way it was implemented.
-
-> 
-> I was also thinking about optimized read/write functions handling
-> more than 4 bytes of data, e.g. for the CAN payload data. That
-> would speed-up SPI transfers, I think. But that could also be
-> introduced later-on.
-
-That would be the plan.
-
-> 
-> Wolfgang.
-> 
-> 
-> 
-> 
-
-
+diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+index 03b319f89a34..31574464f09f 100644
+--- a/include/linux/phy/phy.h
++++ b/include/linux/phy/phy.h
+@@ -72,6 +72,7 @@ struct phy_ops {
+  */
+ struct phy_attrs {
+ 	u32			bus_width;
++	u32			max_bitrate;
+ 	enum phy_mode		mode;
+ };
+ 
+@@ -179,6 +180,10 @@ static inline void phy_set_bus_width(struct phy *phy, int bus_width)
+ {
+ 	phy->attrs.bus_width = bus_width;
+ }
++static inline int phy_get_max_bitrate(struct phy *phy)
++{
++	return phy->attrs.max_bitrate;
++}
+ struct phy *phy_get(struct device *dev, const char *string);
+ struct phy *phy_optional_get(struct device *dev, const char *string);
+ struct phy *devm_phy_get(struct device *dev, const char *string);
 -- 
-------------------
-Dan Murphy
+2.18.0
