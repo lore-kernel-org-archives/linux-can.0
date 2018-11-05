@@ -1,130 +1,60 @@
-From: Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH] arm64: dts: Add flexcan nodes in LX2160A
-Date: Sun, 4 Nov 2018 16:34:37 +0800
-Message-ID: <20181104083435.GE26016@tiger>
-References: <20181024161509.14200-1-pankaj.bansal@nxp.com>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: Re: [PATCH 1/6] phy: Add max_bitrate attribute &
+ phy_get_max_bitrate()
+Date: Mon, 5 Nov 2018 11:57:41 +0530
+Message-ID: <d75c9e3c-e12b-e0b8-832c-ad117dcbe990@ti.com>
+References: <20181102192616.28291-1-faiz_abbas@ti.com>
+ <20181102192616.28291-2-faiz_abbas@ti.com>
+ <5e1a0b67-510a-5512-d477-0b363e4733fe@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20181024161509.14200-1-pankaj.bansal@nxp.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Pankaj Bansal <pankaj.bansal@nxp.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Leo Li <leoyang.li@nxp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5e1a0b67-510a-5512-d477-0b363e4733fe@pengutronix.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
+Cc: wg@grandegger.com, robh+dt@kernel.org, mark.rutland@arm.com, kishon@ti.com
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Oct 24, 2018 at 10:49:20AM +0000, Pankaj Bansal wrote:
-> The FlexCAN module in LX2160A is a communication controller implementing
-> the CAN protocol according to the ISO 11898-1 standard and CAN 2.0 B
-> protocol specifications.
-> 
-> -Flexible mailboxes configurable to store 0 to 8, 16, 32 or 64 bytes
-> data length
-> -Each mailbox configurable as receive or transmit, all supporting
-> standard and extended messages
-> 
-> Signed-off-by: Pankaj Bansal <pankaj.bansal@nxp.com>
-> ---
-> 
-> Notes:
->     This patch depends on below patches:
->     [1] https://lore.kernel.org/patchwork/project/lkml/list/?series=369563
->     [2] https://patchwork.kernel.org/patch/10645287/
->     
->     This patch is used by below patches:
->     [1] https://www.spinics.net/lists/linux-can/msg00348.html
-> 
->  .../boot/dts/freescale/fsl-lx2160a-qds.dts   |  8 ++++++++
->  .../boot/dts/freescale/fsl-lx2160a-rdb.dts   |  8 ++++++++
->  .../boot/dts/freescale/fsl-lx2160a.dtsi      | 18 ++++++++++++++++++
->  3 files changed, 34 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts
-> index 99a22abbe725..8a0305a2b778 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts
-> @@ -31,6 +31,14 @@
->  	};
->  };
->  
-> +&can0 {
-> +	status = "okay";
-> +};
-> +
-> +&can1 {
-> +	status = "okay";
-> +};
-> +
->  &crypto {
->  	status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> index 6481e5f20e69..f8c95fc6de27 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> @@ -31,6 +31,14 @@
->  	};
->  };
->  
-> +&can0 {
-> +	status = "okay";
-> +};
-> +
-> +&can1 {
-> +	status = "okay";
-> +};
-> +
->  &crypto {
->  	status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> index 56f846c55812..23ea8776b55a 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> @@ -566,6 +566,24 @@
->  			status = "disabled";
->  		};
->  
-> +		can0: can@2180000 {
-> +			compatible = "fsl,lx2160ar1-flexcan";
+Hi Marc,
 
-Is the compatible documented somewhere?
-
-Shawn
-
-> +			reg = <0x0 0x2180000 0x0 0x10000>;
-> +			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clockgen 4 7>, <&clockgen 4 7>;
-> +			clock-names = "ipg", "per";
-> +			status = "disabled";
-> +		};
-> +
-> +		can1: can@2190000 {
-> +			compatible = "fsl,lx2160ar1-flexcan";
-> +			reg = <0x0 0x2190000 0x0 0x10000>;
-> +			interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clockgen 4 7>, <&clockgen 4 7>;
-> +			clock-names = "ipg", "per";
-> +			status = "disabled";
-> +		};
-> +
->  		uart0: serial@21c0000 {
->  			compatible = "arm,sbsa-uart","arm,pl011";
->  			reg = <0x0 0x21c0000 0x0 0x1000>;
-> -- 
-> 2.17.1
+On Saturday 03 November 2018 03:06 PM, Marc Kleine-Budde wrote:
+> On 11/02/2018 08:26 PM, Faiz Abbas wrote:
+>> In some subsystems (eg. CAN) the physical layer capabilities are
+>> the limiting factor in the datarate of the device. Typically, the
+>> physical layer transceiver does not provide a way to discover this
+>> limitation at runtime. Thus this information needs to be represented as
+>> a phy attribute which is read from the device tree.
+>>
+>> Therefore, add an optional max_bitrate attribute to the generic phy
+>> sybsystem. Also add the complementary API which enables the consumer
+>> to get max_bitrate.
+>>
+>> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 > 
+> NACK - We already have such a functionality in the CAN subsystem.
+> Please have a look at the patches:
 > 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> e759c626d826 can: m_can: Support higher speed CAN-FD bitrates
+> b54f9eea7667 dt-bindings: can: m_can: Document new can transceiver binding
+> 2290aefa2e90 can: dev: Add support for limiting configured bitrate
+> 54a7fbcc17bc dt-bindings: can: can-transceiver: Document new binding
+> 
+
+I remove the transceiver child node binding documentation in patch 5/6.
+
+The existing implementation is pretty limiting as it just has a child
+node with no associated device. What if a transceiver requires its own
+configurations before it can start sending/receiving messages (for
+example, my usecase requires it to pull the standby line low)?
+
+I think that can be solved by implementing the transceiver as a phy and
+exposing a generic get_max_bitrate API. That way, the transceiver device
+can do all its startup configuration in the phy probe function.
+
+In any case, do suggest if you have a better idea on how to implement
+pull gpio low requirement.
+
+Thanks,
+Faiz
