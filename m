@@ -1,102 +1,75 @@
 From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: RE: [PATCH v2 2/3] dt-bindings: can: rcar_can: Add r8a774a1 support
-Date: Thu, 8 Nov 2018 11:25:23 +0000
-Message-ID: <TY1PR01MB17709C158FEAC53383231CB7C0C50@TY1PR01MB1770.jpnprd01.prod.outlook.com>
+Subject: RE: [PATCH v2 1/3][can-next] can: rcar_can: Fix erroneous
+ registration
+Date: Thu, 8 Nov 2018 12:39:00 +0000
+Message-ID: <TY1PR01MB17709CF3F3391728480C26B2C0C50@TY1PR01MB1770.jpnprd01.prod.outlook.com>
 References: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1536576195-11520-3-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1536576195-11520-2-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1536576195-11520-3-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <1536576195-11520-2-git-send-email-fabrizio.castro@bp.renesas.com>
 Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Chris Paterson <Chris.Paterson2@renesas.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Biju Das <biju.das@bp.renesas.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
 Dear All,
 
-Who is the best person to take this patch?
+Is this patch ok?
 
 Thanks,
 Fab
 
 > From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
 > Sent: 10 September 2018 11:43
-> Subject: [PATCH v2 2/3] dt-bindings: can: rcar_can: Add r8a774a1 support
+> Subject: [PATCH v2 1/3][can-next] can: rcar_can: Fix erroneous registrati=
+on
 >
-> Document RZ/G2M (r8a774a1) SoC specific bindings.
+> Assigning 2 to "renesas,can-clock-select" tricks the driver into
+> registering the CAN interface, even though we don't want that.
+> This patch improves one of the checks to prevent that from happening.
 >
+> Fixes: 862e2b6af9413b43 ("can: rcar_can: support all input clocks")
 > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
 > Signed-off-by: Chris Paterson <Chris.Paterson2@renesas.com>
-> Reviewed-by: Biju Das <biju.das@bp.renesas.com>
 > ---
+>
 > v1->v2:
-> * dropped "renesas,rzg-gen2-can" and fixed "clocks" property description
->   as per Geert's comments.
+> * dropped id specific data as per Geert's comments
 >
-> This patch applies on top of next-20180910.
+> This patch applies on top of linux-can-next-for-4.19-20180727.
 >
->  Documentation/devicetree/bindings/net/can/rcar_can.txt | 18 ++++++++++++=
-+-----
->  1 file changed, 13 insertions(+), 5 deletions(-)
+>  drivers/net/can/rcar/rcar_can.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Doc=
-umentation/devicetree/bindings/net/can/rcar_can.txt
-> index 94a7f33..f3b160c 100644
-> --- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> @@ -4,6 +4,7 @@ Renesas R-Car CAN controller Device Tree Bindings
->  Required properties:
->  - compatible: "renesas,can-r8a7743" if CAN controller is a part of R8A77=
-43 SoC.
->        "renesas,can-r8a7745" if CAN controller is a part of R8A7745 SoC.
-> +      "renesas,can-r8a774a1" if CAN controller is a part of R8A774A1 SoC=
-.
->        "renesas,can-r8a7778" if CAN controller is a part of R8A7778 SoC.
->        "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
->        "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
-> @@ -16,15 +17,21 @@ Required properties:
->        "renesas,rcar-gen1-can" for a generic R-Car Gen1 compatible device=
-.
->        "renesas,rcar-gen2-can" for a generic R-Car Gen2 or RZ/G1
->        compatible device.
-> -      "renesas,rcar-gen3-can" for a generic R-Car Gen3 compatible device=
-.
-> +      "renesas,rcar-gen3-can" for a generic R-Car Gen3 or RZ/G2
-> +      compatible device.
->        When compatible with the generic version, nodes must list the
->        SoC-specific version corresponding to the platform first
->        followed by the generic version.
+> diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_=
+can.c
+> index 11662f4..771a460 100644
+> --- a/drivers/net/can/rcar/rcar_can.c
+> +++ b/drivers/net/can/rcar/rcar_can.c
+> @@ -24,6 +24,9 @@
 >
->  - reg: physical base address and size of the R-Car CAN register map.
->  - interrupts: interrupt specifier for the sole interrupt.
-> -- clocks: phandles and clock specifiers for 3 CAN clock inputs.
-> -- clock-names: 3 clock input name strings: "clkp1", "clkp2", "can_clk".
-> +- clocks: phandles and clock specifiers for 2 CAN clock inputs for RZ/G2
-> +  devices.
-> +  phandles and clock specifiers for 3 CAN clock inputs for every other
-> +  SoC.
-> +- clock-names: 2 clock input name strings for RZ/G2: "clkp1", "can_clk".
-> +       3 clock input name strings for every other SoC: "clkp1", "clkp2",
-> +       "can_clk".
->  - pinctrl-0: pin control group to be used for this controller.
->  - pinctrl-names: must be "default".
+>  #define RCAR_CAN_DRV_NAME"rcar_can"
 >
-> @@ -41,8 +48,9 @@ using the below properties:
->  Optional properties:
->  - renesas,can-clock-select: R-Car CAN Clock Source Select. Valid values =
-are:
->      <0x0> (default) : Peripheral clock (clkp1)
-> -    <0x1> : Peripheral clock (clkp2)
-> -    <0x3> : Externally input clock
-> +    <0x1> : Peripheral clock (clkp2) (not supported by
-> +    RZ/G2 devices)
-> +    <0x3> : External input clock
+> +#define RCAR_SUPPORTED_CLOCKS(BIT(CLKR_CLKP1) | BIT(CLKR_CLKP2) | \
+> + BIT(CLKR_CLKEXT))
+> +
+>  /* Mailbox configuration:
+>   * mailbox 60 - 63 - Rx FIFO mailboxes
+>   * mailbox 56 - 59 - Tx FIFO mailboxes
+> @@ -789,7 +792,7 @@ static int rcar_can_probe(struct platform_device *pde=
+v)
+>  goto fail_clk;
+>  }
 >
->  Example
->  -------
+> -if (clock_select >=3D ARRAY_SIZE(clock_names)) {
+> +if (!(BIT(clock_select) & RCAR_SUPPORTED_CLOCKS)) {
+>  err =3D -EINVAL;
+>  dev_err(&pdev->dev, "invalid CAN clock selected\n");
+>  goto fail_clk;
 > --
 > 2.7.4
 
