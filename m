@@ -1,141 +1,102 @@
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: RE: [PATCH v2 2/3] dt-bindings: can: rcar_can: Add r8a774a1 support
-Date: Thu, 8 Nov 2018 14:05:29 +0000
-Message-ID: <TY1PR01MB1770EA27994C36DD1595BEAFC0C50@TY1PR01MB1770.jpnprd01.prod.outlook.com>
-References: <1536576195-11520-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1536576195-11520-3-git-send-email-fabrizio.castro@bp.renesas.com>
- <TY1PR01MB17709C158FEAC53383231CB7C0C50@TY1PR01MB1770.jpnprd01.prod.outlook.com>
- <20181108124632.fd52533ws7l7j2r2@verge.net.au>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [RFC PATCH 1/3] can: m_can: Create m_can core to leverage common
+ code
+Date: Fri, 9 Nov 2018 09:14:10 -0600
+Message-ID: <6bd6596d-bdcb-512d-dc6c-0e4309c39a66@ti.com>
+References: <20181010142055.25271-1-dmurphy@ti.com>
+ <20181010142055.25271-2-dmurphy@ti.com>
+ <52811b27-00c0-f5e2-2b18-608ccf846723@grandegger.com>
+ <349ef8be-f4c7-25cc-2c33-7ce1fd0b0f40@ti.com>
+ <9003a544-83cf-7dce-7f14-4abd292d470e@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181108124632.fd52533ws7l7j2r2@verge.net.au>
+In-Reply-To: <9003a544-83cf-7dce-7f14-4abd292d470e@grandegger.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Simon Horman <horms@verge.net.au>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Mark Rutland <mark.rutland@arm.com>, "David S. Miller" <davem@davemloft.net>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Thank you Simon for getting back to me.
+Wolfgang
 
-Marc, does this patch look ok to you?
+On 11/03/2018 05:45 AM, Wolfgang Grandegger wrote:
+> Hello Dan,
+> 
+> Am 31.10.2018 um 21:15 schrieb Dan Murphy:
+>> Wolfgang
+>>
+>> Thanks for the review
+>>
+>> On 10/27/2018 09:19 AM, Wolfgang Grandegger wrote:
+>>> Hello Dan,
+>>>
+>>> for the RFC, could you please just do the necessary changes to the
+>>> existing code. We can discuss about better names, etc. later. For
+>>> the review if the common code I quickly did:
+>>>
+>>>   mv m_can.c m_can_platform.c
+>>>   mv m_can_core.c m_can.c
+>>>
+>>> The file names are similar to what we have for the C_CAN driver.
+>>>
+>>>   s/classdev/priv/
+>>>   variable name s/m_can_dev/priv/
+>>>
+>>> Then your patch 1/3 looks as shown below. I'm going to comment on that
+>>> one. The comments start with "***"....
+>>>
+>>
+>> So you would like me to align the names with the c_can driver?
+> 
+> That would be the obvious choice.
+>> <snip>
+>>>
+>>> *** I didn't review the rest of the patch for now.
+>>>
+>>
+>> snipped the code to reply to the comment.
+>>
+>>> Looking to the generic code, you didn't really change the way
+>>> the driver is accessing the registers. Also the interrupt handling
+>>> and rx polling is as it was before. Does that work properly using
+>>> the SPI interface of the TCAN4x5x?
+>>
+>> I don't want to change any of that yet.  Maybe my cover letter was not clear
+>> or did not go through.
+>>
+>> But the intention was just to break out the functionality to create a MCAN framework
+>> that can be used by devices that contain the Bosch MCAN core and provider their own protocal to access
+>> the registers in the device.
+>>
+>> I don't want to do any functional changes at this time on the IP code itself until we have a framework.
+>> There should be no regression in the io mapped code.
+>>
+>> I did comment on the interrupt handling and asked if a threaded work queue would affect CAN timing.
+>> For the original TCAN driver this was the way it was implemented.
+> 
+> Do threaded interrupts with RX polling make sense? I think we need a
+> common interface allowing to select hard-irqs+napi or threaded-irqs.
+> 
 
-Thanks,
-Fab
+Sorry for the late reply I have been dealing with personal issues.
 
-> Subject: Re: [PATCH v2 2/3] dt-bindings: can: rcar_can: Add r8a774a1 supp=
-ort
->
-> On Thu, Nov 08, 2018 at 11:25:23AM +0000, Fabrizio Castro wrote:
-> > Dear All,
-> >
-> > Who is the best person to take this patch?
->
-> I believe this one is for Marc.
->
-> > Thanks,
-> > Fab
-> >
-> > > From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> > > Sent: 10 September 2018 11:43
-> > > Subject: [PATCH v2 2/3] dt-bindings: can: rcar_can: Add r8a774a1 supp=
-ort
-> > >
-> > > Document RZ/G2M (r8a774a1) SoC specific bindings.
-> > >
-> > > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> > > Signed-off-by: Chris Paterson <Chris.Paterson2@renesas.com>
-> > > Reviewed-by: Biju Das <biju.das@bp.renesas.com>
-> > > ---
-> > > v1->v2:
-> > > * dropped "renesas,rzg-gen2-can" and fixed "clocks" property descript=
-ion
-> > >   as per Geert's comments.
-> > >
-> > > This patch applies on top of next-20180910.
-> > >
-> > >  Documentation/devicetree/bindings/net/can/rcar_can.txt | 18 ++++++++=
-+++++-----
-> > >  1 file changed, 13 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> > > index 94a7f33..f3b160c 100644
-> > > --- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> > > +++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-> > > @@ -4,6 +4,7 @@ Renesas R-Car CAN controller Device Tree Bindings
-> > >  Required properties:
-> > >  - compatible: "renesas,can-r8a7743" if CAN controller is a part of R=
-8A7743 SoC.
-> > >        "renesas,can-r8a7745" if CAN controller is a part of R8A7745 S=
-oC.
-> > > +      "renesas,can-r8a774a1" if CAN controller is a part of R8A774A1=
- SoC.
-> > >        "renesas,can-r8a7778" if CAN controller is a part of R8A7778 S=
-oC.
-> > >        "renesas,can-r8a7779" if CAN controller is a part of R8A7779 S=
-oC.
-> > >        "renesas,can-r8a7790" if CAN controller is a part of R8A7790 S=
-oC.
-> > > @@ -16,15 +17,21 @@ Required properties:
-> > >        "renesas,rcar-gen1-can" for a generic R-Car Gen1 compatible de=
-vice.
-> > >        "renesas,rcar-gen2-can" for a generic R-Car Gen2 or RZ/G1
-> > >        compatible device.
-> > > -      "renesas,rcar-gen3-can" for a generic R-Car Gen3 compatible de=
-vice.
-> > > +      "renesas,rcar-gen3-can" for a generic R-Car Gen3 or RZ/G2
-> > > +      compatible device.
-> > >        When compatible with the generic version, nodes must list the
-> > >        SoC-specific version corresponding to the platform first
-> > >        followed by the generic version.
-> > >
-> > >  - reg: physical base address and size of the R-Car CAN register map.
-> > >  - interrupts: interrupt specifier for the sole interrupt.
-> > > -- clocks: phandles and clock specifiers for 3 CAN clock inputs.
-> > > -- clock-names: 3 clock input name strings: "clkp1", "clkp2", "can_cl=
-k".
-> > > +- clocks: phandles and clock specifiers for 2 CAN clock inputs for R=
-Z/G2
-> > > +  devices.
-> > > +  phandles and clock specifiers for 3 CAN clock inputs for every oth=
-er
-> > > +  SoC.
-> > > +- clock-names: 2 clock input name strings for RZ/G2: "clkp1", "can_c=
-lk".
-> > > +       3 clock input name strings for every other SoC: "clkp1", "clk=
-p2",
-> > > +       "can_clk".
-> > >  - pinctrl-0: pin control group to be used for this controller.
-> > >  - pinctrl-names: must be "default".
-> > >
-> > > @@ -41,8 +48,9 @@ using the below properties:
-> > >  Optional properties:
-> > >  - renesas,can-clock-select: R-Car CAN Clock Source Select. Valid val=
-ues are:
-> > >      <0x0> (default) : Peripheral clock (clkp1)
-> > > -    <0x1> : Peripheral clock (clkp2)
-> > > -    <0x3> : Externally input clock
-> > > +    <0x1> : Peripheral clock (clkp2) (not supported by
-> > > +    RZ/G2 devices)
-> > > +    <0x3> : External input clock
-> > >
-> > >  Example
-> > >  -------
-> > > --
-> > > 2.7.4
-> >
-> >
-> >
-> >
-> > Renesas Electronics Europe Ltd, Dukes Meadow, Millboard Road, Bourne En=
-d, Buckinghamshire, SL8 5FH, UK. Registered in England
-> & Wales under Registered No. 04586709.
-> >
+I guess it would only make sense if the IRQ was edge trigger and not level.
+
+If the message is being processed and the interrupt is not cleared until later the
+device may produce another interrupt which may be missed by the processor for external
+devices.  Or when coming out of suspend the edge may be missed.
+
+Otherwise if it was a level only then they do not make sense to support both and having to
+be able to select between the two would be good.
+
+Dan
+
+> Wolfgang.
+> 
 
 
-
-Renesas Electronics Europe Ltd, Dukes Meadow, Millboard Road, Bourne End, B=
-uckinghamshire, SL8 5FH, UK. Registered in England & Wales under Registered=
- No. 04586709.
+-- 
+------------------
+Dan Murphy
