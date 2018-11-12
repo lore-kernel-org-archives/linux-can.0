@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 17/20] can: rx-offload: introduce can_rx_offload_get_echo_skb() and can_rx_offload_queue_sorted() functions
-Date: Mon, 12 Nov 2018 12:57:25 +0100
-Message-ID: <20181112115728.18331-18-mkl@pengutronix.de>
+Subject: [PATCH 15/20] can: dev: __can_get_echo_skb(): Don't crash the kernel if can_priv::echo_skb is accessed out of bounds
+Date: Mon, 12 Nov 2018 12:57:23 +0100
+Message-ID: <20181112115728.18331-16-mkl@pengutronix.de>
 References: <20181112115728.18331-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,94 +9,35 @@ Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20181112115728.18331-1-mkl@pengutronix.de>
 Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+If the "struct can_priv::echo_skb" is accessed out of bounds would lead
+to a kernel crash. Better print a sensible warning message instead and
+try to recover.
 
-Current CAN framework can't guarantee proper/chronological order
-of RX and TX-ECHO messages. To make this possible, drivers should use
-this functions instead of can_get_echo_skb().
-
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rx-offload.c   | 46 ++++++++++++++++++++++++++++++++++
- include/linux/can/rx-offload.h |  4 +++
- 2 files changed, 50 insertions(+)
+ drivers/net/can/dev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
-index c7d05027a7a0..c368686e2164 100644
---- a/drivers/net/can/rx-offload.c
-+++ b/drivers/net/can/rx-offload.c
-@@ -211,6 +211,52 @@ int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload)
- }
- EXPORT_SYMBOL_GPL(can_rx_offload_irq_offload_fifo);
- 
-+int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
-+				struct sk_buff *skb, u32 timestamp)
-+{
-+	struct can_rx_offload_cb *cb;
-+	unsigned long flags;
-+
-+	if (skb_queue_len(&offload->skb_queue) >
-+	    offload->skb_queue_len_max)
-+		return -ENOMEM;
-+
-+	cb = can_rx_offload_get_cb(skb);
-+	cb->timestamp = timestamp;
-+
-+	spin_lock_irqsave(&offload->skb_queue.lock, flags);
-+	__skb_queue_add_sort(&offload->skb_queue, skb, can_rx_offload_compare);
-+	spin_unlock_irqrestore(&offload->skb_queue.lock, flags);
-+
-+	can_rx_offload_schedule(offload);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_offload_queue_sorted);
-+
-+unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
-+					 unsigned int idx, u32 timestamp)
-+{
-+	struct net_device *dev = offload->dev;
-+	struct net_device_stats *stats = &dev->stats;
-+	struct sk_buff *skb;
-+	u8 len;
-+	int err;
-+
-+	skb = __can_get_echo_skb(dev, idx, &len);
-+	if (!skb)
-+		return 0;
-+
-+	err = can_rx_offload_queue_sorted(offload, skb, timestamp);
-+	if (err) {
-+		stats->rx_errors++;
-+		stats->tx_fifo_errors++;
-+	}
-+
-+	return len;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_offload_get_echo_skb);
-+
- int can_rx_offload_irq_queue_err_skb(struct can_rx_offload *offload, struct sk_buff *skb)
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 46cc5fec4043..c05e4d50d43d 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -481,7 +481,11 @@ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8
  {
- 	if (skb_queue_len(&offload->skb_queue) >
-diff --git a/include/linux/can/rx-offload.h b/include/linux/can/rx-offload.h
-index cb31683bbe15..01a7c9e5d8d8 100644
---- a/include/linux/can/rx-offload.h
-+++ b/include/linux/can/rx-offload.h
-@@ -41,6 +41,10 @@ int can_rx_offload_add_timestamp(struct net_device *dev, struct can_rx_offload *
- int can_rx_offload_add_fifo(struct net_device *dev, struct can_rx_offload *offload, unsigned int weight);
- int can_rx_offload_irq_offload_timestamp(struct can_rx_offload *offload, u64 reg);
- int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload);
-+int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
-+				struct sk_buff *skb, u32 timestamp);
-+unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
-+					 unsigned int idx, u32 timestamp);
- int can_rx_offload_irq_queue_err_skb(struct can_rx_offload *offload, struct sk_buff *skb);
- void can_rx_offload_reset(struct can_rx_offload *offload);
- void can_rx_offload_del(struct can_rx_offload *offload);
+ 	struct can_priv *priv = netdev_priv(dev);
+ 
+-	BUG_ON(idx >= priv->echo_skb_max);
++	if (idx >= priv->echo_skb_max) {
++		netdev_err(dev, "%s: BUG! Trying to access can_priv::echo_skb out of bounds (%u/max %u)\n",
++			   __func__, idx, priv->echo_skb_max);
++		return NULL;
++	}
+ 
+ 	if (priv->echo_skb[idx]) {
+ 		/* Using "struct canfd_frame::len" for the frame
 -- 
 2.19.1
