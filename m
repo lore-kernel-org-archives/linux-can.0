@@ -1,131 +1,97 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 12/20] can: flexcan: remove not needed struct flexcan_priv::tx_mb and struct flexcan_priv::tx_mb_idx
-Date: Mon, 12 Nov 2018 12:57:20 +0100
-Message-ID: <20181112115728.18331-13-mkl@pengutronix.de>
+Subject: [PATCH 13/20] can: dev: can_get_echo_skb(): factor out non sending code to __can_get_echo_skb()
+Date: Mon, 12 Nov 2018 12:57:21 +0100
+Message-ID: <20181112115728.18331-14-mkl@pengutronix.de>
 References: <20181112115728.18331-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20181112115728.18331-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-The previous patch changes the TX path to always use the last mailbox
-regardless of the used offload scheme (rx-fifo or timestamp based). This
-means members "tx_mb" and "tx_mb_idx" of the struct flexcan_priv don't
-depend on the offload scheme, so replace them by compile time constants.
+This patch factors out all non sending parts of can_get_echo_skb() into
+a seperate function __can_get_echo_skb(), so that it can be re-used in
+an upcoming patch.
 
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
+ drivers/net/can/dev.c   | 36 +++++++++++++++++++++++++-----------
+ include/linux/can/dev.h |  1 +
+ 2 files changed, 26 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 677c41701cf3..68b46395c580 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -258,9 +258,7 @@ struct flexcan_priv {
- 	struct can_rx_offload offload;
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 49163570a63a..80530ab37b1e 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -477,14 +477,7 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ }
+ EXPORT_SYMBOL_GPL(can_put_echo_skb);
  
- 	struct flexcan_regs __iomem *regs;
--	struct flexcan_mb __iomem *tx_mb;
- 	struct flexcan_mb __iomem *tx_mb_reserved;
--	u8 tx_mb_idx;
- 	u32 reg_ctrl_default;
- 	u32 reg_imask1_default;
- 	u32 reg_imask2_default;
-@@ -514,6 +512,7 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
- static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+-/*
+- * Get the skb from the stack and loop it back locally
+- *
+- * The function is typically called when the TX done interrupt
+- * is handled in the device driver. The driver must protect
+- * access to priv->echo_skb, if necessary.
+- */
+-unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
++struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
  {
- 	const struct flexcan_priv *priv = netdev_priv(dev);
-+	struct flexcan_regs __iomem *regs = priv->regs;
- 	struct can_frame *cf = (struct can_frame *)skb->data;
- 	u32 can_id;
- 	u32 data;
-@@ -536,17 +535,17 @@ static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *de
+ 	struct can_priv *priv = netdev_priv(dev);
  
- 	if (cf->can_dlc > 0) {
- 		data = be32_to_cpup((__be32 *)&cf->data[0]);
--		priv->write(data, &priv->tx_mb->data[0]);
-+		priv->write(data, &regs->mb[FLEXCAN_TX_MB].data[0]);
- 	}
- 	if (cf->can_dlc > 4) {
- 		data = be32_to_cpup((__be32 *)&cf->data[4]);
--		priv->write(data, &priv->tx_mb->data[1]);
-+		priv->write(data, &regs->mb[FLEXCAN_TX_MB].data[1]);
+@@ -495,13 +488,34 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
+ 		struct can_frame *cf = (struct can_frame *)skb->data;
+ 		u8 dlc = cf->can_dlc;
+ 
+-		netif_rx(priv->echo_skb[idx]);
++		*len_ptr = dlc;
+ 		priv->echo_skb[idx] = NULL;
+ 
+-		return dlc;
++		return skb;
  	}
  
- 	can_put_echo_skb(skb, dev, 0);
+-	return 0;
++	return NULL;
++}
++
++/*
++ * Get the skb from the stack and loop it back locally
++ *
++ * The function is typically called when the TX done interrupt
++ * is handled in the device driver. The driver must protect
++ * access to priv->echo_skb, if necessary.
++ */
++unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
++{
++	struct sk_buff *skb;
++	u8 len;
++
++	skb = __can_get_echo_skb(dev, idx, &len);
++	if (!skb)
++		return 0;
++
++	netif_rx(skb);
++
++	return len;
+ }
+ EXPORT_SYMBOL_GPL(can_get_echo_skb);
  
--	priv->write(can_id, &priv->tx_mb->can_id);
--	priv->write(ctrl, &priv->tx_mb->can_ctrl);
-+	priv->write(can_id, &regs->mb[FLEXCAN_TX_MB].can_id);
-+	priv->write(ctrl, &regs->mb[FLEXCAN_TX_MB].can_ctrl);
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index a83e1f632eb7..f01623aef2f7 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -169,6 +169,7 @@ void can_change_state(struct net_device *dev, struct can_frame *cf,
  
- 	/* Errata ERR005829 step8:
- 	 * Write twice INACTIVE(0x8) code to first MB.
-@@ -737,7 +736,7 @@ static inline u64 flexcan_read_reg_iflag_rx(struct flexcan_priv *priv)
- 	u32 iflag1, iflag2;
- 
- 	iflag2 = priv->read(&regs->iflag2) & priv->reg_imask2_default &
--		~FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
-+		~FLEXCAN_IFLAG_MB(FLEXCAN_TX_MB);
- 	iflag1 = priv->read(&regs->iflag1) & priv->reg_imask1_default;
- 
- 	return (u64)iflag2 << 32 | iflag1;
-@@ -787,7 +786,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
- 	reg_iflag2 = priv->read(&regs->iflag2);
- 
- 	/* transmission complete interrupt */
--	if (reg_iflag2 & FLEXCAN_IFLAG_MB(priv->tx_mb_idx)) {
-+	if (reg_iflag2 & FLEXCAN_IFLAG_MB(FLEXCAN_TX_MB)) {
- 		handled = IRQ_HANDLED;
- 		stats->tx_bytes += can_get_echo_skb(dev, 0);
- 		stats->tx_packets++;
-@@ -795,8 +794,8 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
- 
- 		/* after sending a RTR frame MB is in RX mode */
- 		priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
--			    &priv->tx_mb->can_ctrl);
--		priv->write(FLEXCAN_IFLAG_MB(priv->tx_mb_idx), &regs->iflag2);
-+			    &regs->mb[FLEXCAN_TX_MB].can_ctrl);
-+		priv->write(FLEXCAN_IFLAG_MB(FLEXCAN_TX_MB), &regs->iflag2);
- 		netif_wake_queue(dev);
- 	}
- 
-@@ -938,7 +937,7 @@ static int flexcan_chip_start(struct net_device *dev)
- 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
- 	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT | FLEXCAN_MCR_SUPV |
- 		FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_SRX_DIS | FLEXCAN_MCR_IRMQ |
--		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
-+		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(FLEXCAN_TX_MB);
- 
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP)
- 		reg_mcr &= ~FLEXCAN_MCR_FEN;
-@@ -1006,7 +1005,7 @@ static int flexcan_chip_start(struct net_device *dev)
- 
- 	/* mark TX mailbox as INACTIVE */
- 	priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
--		    &priv->tx_mb->can_ctrl);
-+		    &regs->mb[FLEXCAN_TX_MB].can_ctrl);
- 
- 	/* acceptance mask/acceptance code (accept everything) */
- 	priv->write(0x0, &regs->rxgmask);
-@@ -1365,11 +1364,9 @@ static int flexcan_probe(struct platform_device *pdev)
- 		priv->tx_mb_reserved = &regs->mb[FLEXCAN_TX_MB_RESERVED_OFF_TIMESTAMP];
- 	else
- 		priv->tx_mb_reserved = &regs->mb[FLEXCAN_TX_MB_RESERVED_OFF_FIFO];
--	priv->tx_mb_idx = FLEXCAN_TX_MB;
--	priv->tx_mb = &regs->mb[priv->tx_mb_idx];
- 
- 	priv->reg_imask1_default = 0;
--	priv->reg_imask2_default = FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
-+	priv->reg_imask2_default = FLEXCAN_IFLAG_MB(FLEXCAN_TX_MB);
- 
- 	priv->offload.mailbox_read = flexcan_mailbox_read;
+ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 		      unsigned int idx);
++struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr);
+ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
+ void can_free_echo_skb(struct net_device *dev, unsigned int idx);
  
 -- 
 2.19.1
