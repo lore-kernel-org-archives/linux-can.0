@@ -1,97 +1,70 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 13/20] can: dev: can_get_echo_skb(): factor out non sending code to __can_get_echo_skb()
-Date: Mon, 12 Nov 2018 12:57:21 +0100
-Message-ID: <20181112115728.18331-14-mkl@pengutronix.de>
+Subject: [PATCH 09/20] can: hi311x: Use level-triggered interrupt
+Date: Mon, 12 Nov 2018 12:57:17 +0100
+Message-ID: <20181112115728.18331-10-mkl@pengutronix.de>
 References: <20181112115728.18331-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20181112115728.18331-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Lukas Wunner <lukas@wunner.de>, Mathias Duckeck <m.duckeck@kunbus.de>, Akshay Bhat <akshay.bhat@timesys.com>, Casey Fitzpatrick <casey.fitzpatrick@timesys.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-This patch factors out all non sending parts of can_get_echo_skb() into
-a seperate function __can_get_echo_skb(), so that it can be re-used in
-an upcoming patch.
+From: Lukas Wunner <lukas@wunner.de>
 
+If the hi3110 shares the SPI bus with another traffic-intensive device
+and packets are received in high volume (by a separate machine sending
+with "cangen -g 0 -i -x"), reception stops after a few minutes and the
+counter in /proc/interrupts stops incrementing.  Bus state is "active".
+Bringing the interface down and back up reconvenes the reception.  The
+issue is not observed when the hi3110 is the sole device on the SPI bus.
+
+Using a level-triggered interrupt makes the issue go away and lets the
+hi3110 successfully receive 2 GByte over the course of 5 days while a
+ks8851 Ethernet chip on the same SPI bus handles 6 GByte of traffic.
+
+Unfortunately the hi3110 datasheet is mum on the trigger type.  The pin
+description on page 3 only specifies the polarity (active high):
+http://www.holtic.com/documents/371-hi-3110_v-rev-kpdf.do
+
+Cc: Mathias Duckeck <m.duckeck@kunbus.de>
+Cc: Akshay Bhat <akshay.bhat@timesys.com>
+Cc: Casey Fitzpatrick <casey.fitzpatrick@timesys.com>
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c   | 36 +++++++++++++++++++++++++-----------
- include/linux/can/dev.h |  1 +
- 2 files changed, 26 insertions(+), 11 deletions(-)
+ Documentation/devicetree/bindings/net/can/holt_hi311x.txt | 2 +-
+ drivers/net/can/spi/hi311x.c                              | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 49163570a63a..80530ab37b1e 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -477,14 +477,7 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- }
- EXPORT_SYMBOL_GPL(can_put_echo_skb);
- 
--/*
-- * Get the skb from the stack and loop it back locally
-- *
-- * The function is typically called when the TX done interrupt
-- * is handled in the device driver. The driver must protect
-- * access to priv->echo_skb, if necessary.
-- */
--unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
-+struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
+diff --git a/Documentation/devicetree/bindings/net/can/holt_hi311x.txt b/Documentation/devicetree/bindings/net/can/holt_hi311x.txt
+index 903a78da65be..3a9926f99937 100644
+--- a/Documentation/devicetree/bindings/net/can/holt_hi311x.txt
++++ b/Documentation/devicetree/bindings/net/can/holt_hi311x.txt
+@@ -17,7 +17,7 @@ Example:
+ 		reg = <1>;
+ 		clocks = <&clk32m>;
+ 		interrupt-parent = <&gpio4>;
+-		interrupts = <13 IRQ_TYPE_EDGE_RISING>;
++		interrupts = <13 IRQ_TYPE_LEVEL_HIGH>;
+ 		vdd-supply = <&reg5v0>;
+ 		xceiver-supply = <&reg5v0>;
+ 	};
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index 53e320c92a8b..ddaf46239e39 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -760,7 +760,7 @@ static int hi3110_open(struct net_device *net)
  {
- 	struct can_priv *priv = netdev_priv(dev);
+ 	struct hi3110_priv *priv = netdev_priv(net);
+ 	struct spi_device *spi = priv->spi;
+-	unsigned long flags = IRQF_ONESHOT | IRQF_TRIGGER_RISING;
++	unsigned long flags = IRQF_ONESHOT | IRQF_TRIGGER_HIGH;
+ 	int ret;
  
-@@ -495,13 +488,34 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
- 		struct can_frame *cf = (struct can_frame *)skb->data;
- 		u8 dlc = cf->can_dlc;
- 
--		netif_rx(priv->echo_skb[idx]);
-+		*len_ptr = dlc;
- 		priv->echo_skb[idx] = NULL;
- 
--		return dlc;
-+		return skb;
- 	}
- 
--	return 0;
-+	return NULL;
-+}
-+
-+/*
-+ * Get the skb from the stack and loop it back locally
-+ *
-+ * The function is typically called when the TX done interrupt
-+ * is handled in the device driver. The driver must protect
-+ * access to priv->echo_skb, if necessary.
-+ */
-+unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
-+{
-+	struct sk_buff *skb;
-+	u8 len;
-+
-+	skb = __can_get_echo_skb(dev, idx, &len);
-+	if (!skb)
-+		return 0;
-+
-+	netif_rx(skb);
-+
-+	return len;
- }
- EXPORT_SYMBOL_GPL(can_get_echo_skb);
- 
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index a83e1f632eb7..f01623aef2f7 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -169,6 +169,7 @@ void can_change_state(struct net_device *dev, struct can_frame *cf,
- 
- void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 		      unsigned int idx);
-+struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr);
- unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
- void can_free_echo_skb(struct net_device *dev, unsigned int idx);
- 
+ 	ret = open_candev(net);
 -- 
 2.19.1
