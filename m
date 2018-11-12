@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 18/20] can: flexcan: handle tx-complete CAN frames via rx-offload infrastructure
-Date: Mon, 12 Nov 2018 12:57:26 +0100
-Message-ID: <20181112115728.18331-19-mkl@pengutronix.de>
+Subject: [PATCH 16/20] can: dev: __can_get_echo_skb(): print error message, if trying to echo non existing skb
+Date: Mon, 12 Nov 2018 12:57:24 +0100
+Message-ID: <20181112115728.18331-17-mkl@pengutronix.de>
 References: <20181112115728.18331-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,40 +9,69 @@ Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20181112115728.18331-1-mkl@pengutronix.de>
 Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+Prior to echoing a successfully transmitted CAN frame (by calling
+can_get_echo_skb()), CAN drivers have to put the CAN frame (by calling
+can_put_echo_skb() in the transmit function). These put and get function
+take an index as parameter, which is used to identify the CAN frame.
 
-Current flexcan driver will put TX-ECHO in regular unsorted way, in
-this case TX-ECHO can come after the response to the same TXed message.
-In some cases, for example for J1939 stack, things will break.
-This patch is using new rx-offload API to put the messages just in the
-right place.
+A driver calling can_get_echo_skb() with a index not pointing to a skb
+is a BUG, so add an appropriate error message.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/dev.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 68b46395c580..41a175f80c4b 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -787,8 +787,11 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index c05e4d50d43d..3b3f88ffab53 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -480,6 +480,8 @@ EXPORT_SYMBOL_GPL(can_put_echo_skb);
+ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
++	struct sk_buff *skb = priv->echo_skb[idx];
++	struct canfd_frame *cf;
  
- 	/* transmission complete interrupt */
- 	if (reg_iflag2 & FLEXCAN_IFLAG_MB(FLEXCAN_TX_MB)) {
-+		u32 reg_ctrl = priv->read(&regs->mb[FLEXCAN_TX_MB].can_ctrl);
+ 	if (idx >= priv->echo_skb_max) {
+ 		netdev_err(dev, "%s: BUG! Trying to access can_priv::echo_skb out of bounds (%u/max %u)\n",
+@@ -487,21 +489,20 @@ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8
+ 		return NULL;
+ 	}
+ 
+-	if (priv->echo_skb[idx]) {
+-		/* Using "struct canfd_frame::len" for the frame
+-		 * length is supported on both CAN and CANFD frames.
+-		 */
+-		struct sk_buff *skb = priv->echo_skb[idx];
+-		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+-		u8 len = cf->len;
+-
+-		*len_ptr = len;
+-		priv->echo_skb[idx] = NULL;
+-
+-		return skb;
++	if (!skb) {
++		netdev_err(dev, "%s: BUG! Trying to echo non existing skb: can_priv::echo_skb[%u]\n",
++			   __func__, idx);
++		return NULL;
+ 	}
+ 
+-	return NULL;
++	/* Using "struct canfd_frame::len" for the frame
++	 * length is supported on both CAN and CANFD frames.
++	 */
++	cf = (struct canfd_frame *)skb->data;
++	*len_ptr = cf->len;
++	priv->echo_skb[idx] = NULL;
 +
- 		handled = IRQ_HANDLED;
--		stats->tx_bytes += can_get_echo_skb(dev, 0);
-+		stats->tx_bytes += can_rx_offload_get_echo_skb(&priv->offload,
-+							       0, reg_ctrl << 16);
- 		stats->tx_packets++;
- 		can_led_event(dev, CAN_LED_EVENT_TX);
++	return skb;
+ }
  
+ /*
 -- 
 2.19.1
