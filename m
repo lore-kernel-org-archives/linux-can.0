@@ -1,50 +1,131 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 10/20] can: flexcan: Unlock the MB unconditionally
-Date: Mon, 12 Nov 2018 12:57:18 +0100
-Message-ID: <20181112115728.18331-11-mkl@pengutronix.de>
+Subject: [PATCH 12/20] can: flexcan: remove not needed struct flexcan_priv::tx_mb and struct flexcan_priv::tx_mb_idx
+Date: Mon, 12 Nov 2018 12:57:20 +0100
+Message-ID: <20181112115728.18331-13-mkl@pengutronix.de>
 References: <20181112115728.18331-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20181112115728.18331-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Pankaj Bansal <pankaj.bansal@nxp.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-From: Pankaj Bansal <pankaj.bansal@nxp.com>
+The previous patch changes the TX path to always use the last mailbox
+regardless of the used offload scheme (rx-fifo or timestamp based). This
+means members "tx_mb" and "tx_mb_idx" of the struct flexcan_priv don't
+depend on the offload scheme, so replace them by compile time constants.
 
-Unlock the MB irrespective of reception method being FIFO or timestamp
-based. It is optional but recommended to unlock Mailbox as soon as
-possible and make it available for reception.
-
-Reported-by: Alexander Stein <alexander.stein@systec-electronic.com>
-Signed-off-by: Pankaj Bansal <pankaj.bansal@nxp.com>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 8e972ef08637..0431f8d05518 100644
+index 677c41701cf3..68b46395c580 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -720,9 +720,14 @@ static unsigned int flexcan_mailbox_read(struct can_rx_offload *offload,
- 			priv->write(BIT(n - 32), &regs->iflag2);
- 	} else {
- 		priv->write(FLEXCAN_IFLAG_RX_FIFO_AVAILABLE, &regs->iflag1);
--		priv->read(&regs->timer);
+@@ -258,9 +258,7 @@ struct flexcan_priv {
+ 	struct can_rx_offload offload;
+ 
+ 	struct flexcan_regs __iomem *regs;
+-	struct flexcan_mb __iomem *tx_mb;
+ 	struct flexcan_mb __iomem *tx_mb_reserved;
+-	u8 tx_mb_idx;
+ 	u32 reg_ctrl_default;
+ 	u32 reg_imask1_default;
+ 	u32 reg_imask2_default;
+@@ -514,6 +512,7 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
+ static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	const struct flexcan_priv *priv = netdev_priv(dev);
++	struct flexcan_regs __iomem *regs = priv->regs;
+ 	struct can_frame *cf = (struct can_frame *)skb->data;
+ 	u32 can_id;
+ 	u32 data;
+@@ -536,17 +535,17 @@ static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *de
+ 
+ 	if (cf->can_dlc > 0) {
+ 		data = be32_to_cpup((__be32 *)&cf->data[0]);
+-		priv->write(data, &priv->tx_mb->data[0]);
++		priv->write(data, &regs->mb[FLEXCAN_TX_MB].data[0]);
+ 	}
+ 	if (cf->can_dlc > 4) {
+ 		data = be32_to_cpup((__be32 *)&cf->data[4]);
+-		priv->write(data, &priv->tx_mb->data[1]);
++		priv->write(data, &regs->mb[FLEXCAN_TX_MB].data[1]);
  	}
  
-+	/* Read the Free Running Timer. It is optional but recommended
-+	 * to unlock Mailbox as soon as possible and make it available
-+	 * for reception.
-+	 */
-+	priv->read(&regs->timer);
-+
- 	return 1;
- }
+ 	can_put_echo_skb(skb, dev, 0);
+ 
+-	priv->write(can_id, &priv->tx_mb->can_id);
+-	priv->write(ctrl, &priv->tx_mb->can_ctrl);
++	priv->write(can_id, &regs->mb[FLEXCAN_TX_MB].can_id);
++	priv->write(ctrl, &regs->mb[FLEXCAN_TX_MB].can_ctrl);
+ 
+ 	/* Errata ERR005829 step8:
+ 	 * Write twice INACTIVE(0x8) code to first MB.
+@@ -737,7 +736,7 @@ static inline u64 flexcan_read_reg_iflag_rx(struct flexcan_priv *priv)
+ 	u32 iflag1, iflag2;
+ 
+ 	iflag2 = priv->read(&regs->iflag2) & priv->reg_imask2_default &
+-		~FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
++		~FLEXCAN_IFLAG_MB(FLEXCAN_TX_MB);
+ 	iflag1 = priv->read(&regs->iflag1) & priv->reg_imask1_default;
+ 
+ 	return (u64)iflag2 << 32 | iflag1;
+@@ -787,7 +786,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	reg_iflag2 = priv->read(&regs->iflag2);
+ 
+ 	/* transmission complete interrupt */
+-	if (reg_iflag2 & FLEXCAN_IFLAG_MB(priv->tx_mb_idx)) {
++	if (reg_iflag2 & FLEXCAN_IFLAG_MB(FLEXCAN_TX_MB)) {
+ 		handled = IRQ_HANDLED;
+ 		stats->tx_bytes += can_get_echo_skb(dev, 0);
+ 		stats->tx_packets++;
+@@ -795,8 +794,8 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 
+ 		/* after sending a RTR frame MB is in RX mode */
+ 		priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
+-			    &priv->tx_mb->can_ctrl);
+-		priv->write(FLEXCAN_IFLAG_MB(priv->tx_mb_idx), &regs->iflag2);
++			    &regs->mb[FLEXCAN_TX_MB].can_ctrl);
++		priv->write(FLEXCAN_IFLAG_MB(FLEXCAN_TX_MB), &regs->iflag2);
+ 		netif_wake_queue(dev);
+ 	}
+ 
+@@ -938,7 +937,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
+ 	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT | FLEXCAN_MCR_SUPV |
+ 		FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_SRX_DIS | FLEXCAN_MCR_IRMQ |
+-		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
++		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(FLEXCAN_TX_MB);
+ 
+ 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP)
+ 		reg_mcr &= ~FLEXCAN_MCR_FEN;
+@@ -1006,7 +1005,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 
+ 	/* mark TX mailbox as INACTIVE */
+ 	priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
+-		    &priv->tx_mb->can_ctrl);
++		    &regs->mb[FLEXCAN_TX_MB].can_ctrl);
+ 
+ 	/* acceptance mask/acceptance code (accept everything) */
+ 	priv->write(0x0, &regs->rxgmask);
+@@ -1365,11 +1364,9 @@ static int flexcan_probe(struct platform_device *pdev)
+ 		priv->tx_mb_reserved = &regs->mb[FLEXCAN_TX_MB_RESERVED_OFF_TIMESTAMP];
+ 	else
+ 		priv->tx_mb_reserved = &regs->mb[FLEXCAN_TX_MB_RESERVED_OFF_FIFO];
+-	priv->tx_mb_idx = FLEXCAN_TX_MB;
+-	priv->tx_mb = &regs->mb[priv->tx_mb_idx];
+ 
+ 	priv->reg_imask1_default = 0;
+-	priv->reg_imask2_default = FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
++	priv->reg_imask2_default = FLEXCAN_IFLAG_MB(FLEXCAN_TX_MB);
+ 
+ 	priv->offload.mailbox_read = flexcan_mailbox_read;
  
 -- 
 2.19.1
