@@ -1,326 +1,126 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH V3 1/1] can: flexcan: Add self wakeup support
-Date: Mon, 12 Nov 2018 01:53:03 +0000
-Message-ID: <20181112015047.4252-2-qiangqing.zhang@nxp.com>
-References: <20181112015047.4252-1-qiangqing.zhang@nxp.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can 2018-11-09
+Date: Mon, 12 Nov 2018 12:57:08 +0100
+Message-ID: <20181112115728.18331-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181112015047.4252-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "mkl@pengutronix.de" <mkl@pengutronix.de>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "A.s. Dong" <aisheng.dong@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 List-Id: linux-can.vger.kernel.org
 
-From: Dong Aisheng <aisheng.dong@nxp.com>
+Hello David,
 
-If wakeup is enabled, enter stop mode, else enter disabled mode.Self wake
-can only work on stop mode.
+this is a pull request of 20 patches for net/master.
 
-Starting from IMX6, the flexcan stop mode control bits is SoC specific,
-move it out of IP driver and parse it from devicetree.
+First we have a patch by Oliver Hartkopp which changes the raw socket's
+raw_sendmsg() to return an error value if the user tries to send a CANFD
+frame to a CAN-2.0 device.
 
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+The next two patches are by Jimmy Assarsson and fix potential problems
+in the kvaser_usb driver.
+
+YueHaibing's patches for the ucan driver fix a compile time warning and
+remove a duplicate include.
+
+Eugeniu Rosca patch adds more binding documentation to the rcar_can
+driver bindings. The next two patches are by Fabrizio Castro for the
+rcar_can driver and fixes a problem in the driver's probe function and
+document the r8a774a1 binding.
+
+Lukas Wunner's patch fixes a recpetion problem in hi311x driver by
+switching from edge to level triggered interruts.
+
+The next three patches all target the flexcan driver. Pankaj Bansal's
+patch unconditionally unlocks the last mailbox used for RX. Alexander
+Stein provides a better workaround for a hardware limitation when
+sending RTR frames, by using the last mailbox for TX, resulting in fewer
+lost frames. The patch by me simplyfies the driver, by making a runtime
+value a compile time constant.
+
+The following 4 patches are by me and provide the groundwork for the
+next patches by Oleksij Rempel. To avoid code duplication common code in
+the common CAN driver infrastructure is factured out and error handling
+is cleaned up.
+
+The next 4 patches are by Oleksij Rempel and fix the problem in the
+flexcan driver that other processes see TX frames arrive out of order
+with ragards to a RX'ed frame (which are send by a different system on
+the CAN bus as the result of our TX frame).
+
+regards,
+Marc
+
 ---
- drivers/net/can/flexcan.c | 175 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 163 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 3813f6708201..d21d0db8c83e 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -19,12 +19,17 @@
- #include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/list.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/regmap.h>
-=20
- #define DRV_NAME			"flexcan"
-=20
-@@ -132,7 +137,8 @@
- 	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
- #define FLEXCAN_ESR_ALL_INT \
- 	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
--	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
-+	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT | \
-+	 FLEXCAN_ESR_WAK_INT)
-=20
- /* FLEXCAN interrupt flag register (IFLAG) bits */
- /* Errata ERR005829 step7: Reserve first valid MB */
-@@ -191,6 +197,7 @@
- #define FLEXCAN_QUIRK_USE_OFF_TIMESTAMP	BIT(5) /* Use timestamp based offl=
-oading */
- #define FLEXCAN_QUIRK_BROKEN_PERR_STATE	BIT(6) /* No interrupt for error p=
-assive */
- #define FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN	BIT(7) /* default to BE register =
-access */
-+#define FLEXCAN_QUIRK_SETUP_STOP_MODE	BIT(8) /* Setup stop mode to support=
- wakeup */
-=20
- /* Structure of the message buffer */
- struct flexcan_mb {
-@@ -255,6 +262,14 @@ struct flexcan_devtype_data {
- 	u32 quirks;		/* quirks needed for different IP cores */
- };
-=20
-+struct flexcan_stop_mode {
-+	struct regmap *gpr;
-+	u8 req_gpr;
-+	u8 req_bit;
-+	u8 ack_gpr;
-+	u8 ack_bit;
-+};
-+
- struct flexcan_priv {
- 	struct can_priv can;
- 	struct can_rx_offload offload;
-@@ -272,6 +287,7 @@ struct flexcan_priv {
- 	struct clk *clk_per;
- 	const struct flexcan_devtype_data *devtype_data;
- 	struct regulator *reg_xceiver;
-+	struct flexcan_stop_mode stm;
-=20
- 	/* Read and Write APIs */
- 	u32 (*read)(void __iomem *addr);
-@@ -295,7 +311,8 @@ static const struct flexcan_devtype_data fsl_imx28_devt=
-ype_data =3D {
-=20
- static const struct flexcan_devtype_data fsl_imx6q_devtype_data =3D {
- 	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
--		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE,
-+		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
-+		FLEXCAN_QUIRK_SETUP_STOP_MODE,
- };
-=20
- static const struct flexcan_devtype_data fsl_vf610_devtype_data =3D {
-@@ -392,6 +409,40 @@ static void flexcan_clks_disable(const struct flexcan_=
-priv *priv)
- 	clk_disable_unprepare(priv->clk_per);
- }
-=20
-+static void flexcan_wake_mask_enable(struct flexcan_priv *priv)
-+{
-+	struct flexcan_regs __iomem *regs =3D priv->regs;
-+	u32 reg_mcr;
-+
-+	reg_mcr =3D priv->read(&regs->mcr);
-+	reg_mcr |=3D FLEXCAN_MCR_WAK_MSK;
-+	priv->write(reg_mcr, &regs->mcr);
-+}
-+
-+static void flexcan_wake_mask_disable(struct flexcan_priv *priv)
-+{
-+	struct flexcan_regs __iomem *regs =3D priv->regs;
-+	u32 reg_mcr;
-+
-+	reg_mcr =3D priv->read(&regs->mcr);
-+	reg_mcr &=3D ~FLEXCAN_MCR_WAK_MSK;
-+	priv->write(reg_mcr, &regs->mcr);
-+}
-+
-+static inline void flexcan_enter_stop_mode(struct flexcan_priv *priv)
-+{
-+	/* enable stop request */
-+	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
-+						1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
-+}
-+
-+static inline void flexcan_exit_stop_mode(struct flexcan_priv *priv)
-+{
-+	/* remove stop request */
-+	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
-+						1 << priv->stm.req_bit, 0);
-+}
-+
- static inline int flexcan_transceiver_enable(const struct flexcan_priv *pr=
-iv)
- {
- 	if (!priv->reg_xceiver)
-@@ -955,6 +1006,10 @@ static int flexcan_chip_start(struct net_device *dev)
- 		reg_mcr |=3D FLEXCAN_MCR_FEN |
- 			FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
- 	}
-+
-+	/* enable self wakeup */
-+	reg_mcr |=3D FLEXCAN_MCR_SLF_WAK;
-+
- 	netdev_dbg(dev, "%s: writing mcr=3D0x%08x", __func__, reg_mcr);
- 	priv->write(reg_mcr, &regs->mcr);
-=20
-@@ -1240,6 +1295,60 @@ static void unregister_flexcandev(struct net_device =
-*dev)
- 	unregister_candev(dev);
- }
-=20
-+static int flexcan_setup_stop_mode(struct platform_device *pdev)
-+{
-+	struct net_device *dev =3D platform_get_drvdata(pdev);
-+	struct device_node *np =3D pdev->dev.of_node;
-+	struct device_node *node;
-+	struct flexcan_priv *priv;
-+	bool wakeup =3D true;
-+	phandle phandle;
-+	u32 out_val[5];
-+	int ret;
-+
-+	if (!np)
-+		return -EINVAL;
-+
-+	/* stop mode property format is:
-+	 * <&gpr req_gpr req_bit ack_gpr ack_bit>.
-+	 */
-+	ret =3D of_property_read_u32_array(np, "fsl,stop-mode", out_val, 5);
-+	if (ret) {
-+		dev_dbg(&pdev->dev, "no stop-mode property\n");
-+		return ret;
-+	}
-+	phandle =3D *out_val;
-+
-+	node =3D of_find_node_by_phandle(phandle);
-+	if (!node) {
-+		dev_dbg(&pdev->dev, "could not find gpr node by phandle\n");
-+		return PTR_ERR(node);
-+	}
-+
-+	priv =3D netdev_priv(dev);
-+	priv->stm.gpr =3D syscon_node_to_regmap(node);
-+	if (IS_ERR(priv->stm.gpr)) {
-+		dev_dbg(&pdev->dev, "could not find gpr regmap\n");
-+		return PTR_ERR(priv->stm.gpr);
-+	}
-+
-+	of_node_put(node);
-+
-+	priv->stm.req_gpr =3D out_val[1];
-+	priv->stm.req_bit =3D out_val[2];
-+	priv->stm.ack_gpr =3D out_val[3];
-+	priv->stm.ack_bit =3D out_val[4];
-+
-+	dev_dbg(&pdev->dev, "gpr %s req_gpr 0x%x req_bit %u ack_gpr 0x%x ack_bit =
-%u\n",
-+			node->full_name, priv->stm.req_gpr,
-+			priv->stm.req_bit, priv->stm.ack_gpr,
-+			priv->stm.ack_bit);
-+
-+	device_set_wakeup_capable(&pdev->dev, wakeup);
-+
-+	return 0;
-+}
-+
- static const struct of_device_id flexcan_of_match[] =3D {
- 	{ .compatible =3D "fsl,imx6q-flexcan", .data =3D &fsl_imx6q_devtype_data,=
- },
- 	{ .compatible =3D "fsl,imx28-flexcan", .data =3D &fsl_imx28_devtype_data,=
- },
-@@ -1400,6 +1509,12 @@ static int flexcan_probe(struct platform_device *pde=
-v)
-=20
- 	devm_can_led_init(dev);
-=20
-+	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE) {
-+		err =3D flexcan_setup_stop_mode(pdev);
-+		if (err)
-+			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
-+	}
-+
- 	pm_runtime_put(&pdev->dev);
-=20
- 	dev_info(&pdev->dev, "device registered (reg_base=3D%p, irq=3D%d)\n",
-@@ -1437,10 +1552,18 @@ static int __maybe_unused flexcan_suspend(struct de=
-vice *device)
- 	int err =3D 0;
-=20
- 	if (netif_running(dev)) {
--		err =3D flexcan_chip_disable(priv);
--		if (err)
--			return err;
--		err =3D pm_runtime_force_suspend(device);
-+		/* if wakeup is enabled, enter stop mode
-+		 * else enter disabled mode.
-+		 */
-+		if (device_may_wakeup(device)) {
-+			enable_irq_wake(dev->irq);
-+			flexcan_enter_stop_mode(priv);
-+		} else {
-+			err =3D flexcan_chip_disable(priv);
-+			if (err)
-+				return err;
-+			err =3D pm_runtime_force_suspend(device);
-+		}
-=20
- 		netif_stop_queue(dev);
- 		netif_device_detach(dev);
-@@ -1461,10 +1584,14 @@ static int __maybe_unused flexcan_resume(struct dev=
-ice *device)
- 		netif_device_attach(dev);
- 		netif_start_queue(dev);
-=20
--		err =3D pm_runtime_force_resume(device);
--		if (err)
--			return err;
--		err =3D flexcan_chip_enable(priv);
-+		if (device_may_wakeup(device)) {
-+			flexcan_wake_mask_disable(priv);
-+		} else {
-+			err =3D pm_runtime_force_resume(device);
-+			if (err)
-+				return err;
-+			err =3D flexcan_chip_enable(priv);
-+		}
- 	}
- 	return err;
- }
-@@ -1489,10 +1616,34 @@ static int __maybe_unused flexcan_runtime_resume(st=
-ruct device *device)
- 	return 0;
- }
-=20
-+static int __maybe_unused flexcan_noirq_suspend(struct device *device)
-+{
-+	struct net_device *dev =3D dev_get_drvdata(device);
-+	struct flexcan_priv *priv =3D netdev_priv(dev);
-+
-+	if (netif_running(dev) && device_may_wakeup(device))
-+		flexcan_wake_mask_enable(priv);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused flexcan_noirq_resume(struct device *device)
-+{
-+	struct net_device *dev =3D dev_get_drvdata(device);
-+	struct flexcan_priv *priv =3D netdev_priv(dev);
-+
-+	if (netif_running(dev) && device_may_wakeup(device)) {
-+		disable_irq_wake(dev->irq);
-+		flexcan_exit_stop_mode(priv);
-+	}
-+
-+	return 0;
-+}
-+
- static const struct dev_pm_ops flexcan_pm_ops =3D {
- 	SET_SYSTEM_SLEEP_PM_OPS(flexcan_suspend, flexcan_resume)
--	SET_RUNTIME_PM_OPS(flexcan_runtime_suspend, flexcan_runtime_resume,
--						NULL)
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(flexcan_noirq_suspend, flexcan_noirq_resume=
-)
-+	SET_RUNTIME_PM_OPS(flexcan_runtime_suspend, flexcan_runtime_resume, NULL)
- };
-=20
- static struct platform_driver flexcan_driver =3D {
---=20
-2.17.1
+The following changes since commit 85b18b0237ce9986a81a1b9534b5e2ee116f5504:
+
+  net: smsc95xx: Fix MTU range (2018-11-08 19:54:49 -0800)
+
+are available in the Git repository at:
+
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-4.20-20181109
+
+for you to fetch changes up to d788905f68fd4714c82936f6f7f1d3644d7ae7ef:
+
+  can: flexcan: use can_rx_offload_queue_sorted() for flexcan_irq_bus_*() (2018-11-09 17:33:33 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-4.20-20181109
+
+----------------------------------------------------------------
+Alexander Stein (1):
+      can: flexcan: Always use last mailbox for TX
+
+Eugeniu Rosca (1):
+      dt-bindings: can: rcar_can: document r8a77965 support
+
+Fabrizio Castro (2):
+      can: rcar_can: Fix erroneous registration
+      dt-bindings: can: rcar_can: Add r8a774a1 support
+
+Jimmy Assarsson (2):
+      can: kvaser_usb: Fix potential uninitialized variable use
+      can: kvaser_usb: Fix accessing freed memory in kvaser_usb_start_xmit()
+
+Lukas Wunner (1):
+      can: hi311x: Use level-triggered interrupt
+
+Marc Kleine-Budde (5):
+      can: flexcan: remove not needed struct flexcan_priv::tx_mb and struct flexcan_priv::tx_mb_idx
+      can: dev: can_get_echo_skb(): factor out non sending code to __can_get_echo_skb()
+      can: dev: __can_get_echo_skb(): replace struct can_frame by canfd_frame to access frame length
+      can: dev: __can_get_echo_skb(): Don't crash the kernel if can_priv::echo_skb is accessed out of bounds
+      can: dev: __can_get_echo_skb(): print error message, if trying to echo non existing skb
+
+Oleksij Rempel (4):
+      can: rx-offload: introduce can_rx_offload_get_echo_skb() and can_rx_offload_queue_sorted() functions
+      can: flexcan: handle tx-complete CAN frames via rx-offload infrastructure
+      can: rx-offload: rename can_rx_offload_irq_queue_err_skb() to can_rx_offload_queue_tail()
+      can: flexcan: use can_rx_offload_queue_sorted() for flexcan_irq_bus_*()
+
+Oliver Hartkopp (1):
+      can: raw: check for CAN FD capable netdev in raw_sendmsg()
+
+Pankaj Bansal (1):
+      can: flexcan: Unlock the MB unconditionally
+
+YueHaibing (2):
+      can: ucan: remove set but not used variable 'udev'
+      can: ucan: remove duplicated include from ucan.c
+
+ .../devicetree/bindings/net/can/holt_hi311x.txt    |   2 +-
+ .../devicetree/bindings/net/can/rcar_can.txt       |  28 ++++--
+ drivers/net/can/dev.c                              |  48 ++++++---
+ drivers/net/can/flexcan.c                          | 108 ++++++++++++---------
+ drivers/net/can/rcar/rcar_can.c                    |   5 +-
+ drivers/net/can/rx-offload.c                       |  51 +++++++++-
+ drivers/net/can/spi/hi311x.c                       |   2 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   |   4 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c  |  10 +-
+ drivers/net/can/usb/ucan.c                         |   7 --
+ include/linux/can/dev.h                            |   1 +
+ include/linux/can/rx-offload.h                     |   7 +-
+ net/can/raw.c                                      |  15 +--
+ 13 files changed, 190 insertions(+), 98 deletions(-)
