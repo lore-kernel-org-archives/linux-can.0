@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 14/20] can: dev: __can_get_echo_skb(): replace struct can_frame by canfd_frame to access frame length
-Date: Mon, 12 Nov 2018 12:57:22 +0100
-Message-ID: <20181112115728.18331-15-mkl@pengutronix.de>
+Subject: [PATCH 17/20] can: rx-offload: introduce can_rx_offload_get_echo_skb() and can_rx_offload_queue_sorted() functions
+Date: Mon, 12 Nov 2018 12:57:25 +0100
+Message-ID: <20181112115728.18331-18-mkl@pengutronix.de>
 References: <20181112115728.18331-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,42 +9,94 @@ Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20181112115728.18331-1-mkl@pengutronix.de>
 Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-This patch replaces the use of "struct can_frame::can_dlc" by "struct
-canfd_frame::len" to access the frame's length. As it is ensured that
-both structures have a compatible memory layout for this member this is
-no functional change. Futher, this compatibility is documented in a
-comment.
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
+Current CAN framework can't guarantee proper/chronological order
+of RX and TX-ECHO messages. To make this possible, drivers should use
+this functions instead of can_get_echo_skb().
+
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/can/rx-offload.c   | 46 ++++++++++++++++++++++++++++++++++
+ include/linux/can/rx-offload.h |  4 +++
+ 2 files changed, 50 insertions(+)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 80530ab37b1e..46cc5fec4043 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -484,11 +484,14 @@ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8
- 	BUG_ON(idx >= priv->echo_skb_max);
+diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
+index c7d05027a7a0..c368686e2164 100644
+--- a/drivers/net/can/rx-offload.c
++++ b/drivers/net/can/rx-offload.c
+@@ -211,6 +211,52 @@ int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload)
+ }
+ EXPORT_SYMBOL_GPL(can_rx_offload_irq_offload_fifo);
  
- 	if (priv->echo_skb[idx]) {
-+		/* Using "struct canfd_frame::len" for the frame
-+		 * length is supported on both CAN and CANFD frames.
-+		 */
- 		struct sk_buff *skb = priv->echo_skb[idx];
--		struct can_frame *cf = (struct can_frame *)skb->data;
--		u8 dlc = cf->can_dlc;
-+		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
-+		u8 len = cf->len;
- 
--		*len_ptr = dlc;
-+		*len_ptr = len;
- 		priv->echo_skb[idx] = NULL;
- 
- 		return skb;
++int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
++				struct sk_buff *skb, u32 timestamp)
++{
++	struct can_rx_offload_cb *cb;
++	unsigned long flags;
++
++	if (skb_queue_len(&offload->skb_queue) >
++	    offload->skb_queue_len_max)
++		return -ENOMEM;
++
++	cb = can_rx_offload_get_cb(skb);
++	cb->timestamp = timestamp;
++
++	spin_lock_irqsave(&offload->skb_queue.lock, flags);
++	__skb_queue_add_sort(&offload->skb_queue, skb, can_rx_offload_compare);
++	spin_unlock_irqrestore(&offload->skb_queue.lock, flags);
++
++	can_rx_offload_schedule(offload);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(can_rx_offload_queue_sorted);
++
++unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
++					 unsigned int idx, u32 timestamp)
++{
++	struct net_device *dev = offload->dev;
++	struct net_device_stats *stats = &dev->stats;
++	struct sk_buff *skb;
++	u8 len;
++	int err;
++
++	skb = __can_get_echo_skb(dev, idx, &len);
++	if (!skb)
++		return 0;
++
++	err = can_rx_offload_queue_sorted(offload, skb, timestamp);
++	if (err) {
++		stats->rx_errors++;
++		stats->tx_fifo_errors++;
++	}
++
++	return len;
++}
++EXPORT_SYMBOL_GPL(can_rx_offload_get_echo_skb);
++
+ int can_rx_offload_irq_queue_err_skb(struct can_rx_offload *offload, struct sk_buff *skb)
+ {
+ 	if (skb_queue_len(&offload->skb_queue) >
+diff --git a/include/linux/can/rx-offload.h b/include/linux/can/rx-offload.h
+index cb31683bbe15..01a7c9e5d8d8 100644
+--- a/include/linux/can/rx-offload.h
++++ b/include/linux/can/rx-offload.h
+@@ -41,6 +41,10 @@ int can_rx_offload_add_timestamp(struct net_device *dev, struct can_rx_offload *
+ int can_rx_offload_add_fifo(struct net_device *dev, struct can_rx_offload *offload, unsigned int weight);
+ int can_rx_offload_irq_offload_timestamp(struct can_rx_offload *offload, u64 reg);
+ int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload);
++int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
++				struct sk_buff *skb, u32 timestamp);
++unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
++					 unsigned int idx, u32 timestamp);
+ int can_rx_offload_irq_queue_err_skb(struct can_rx_offload *offload, struct sk_buff *skb);
+ void can_rx_offload_reset(struct can_rx_offload *offload);
+ void can_rx_offload_del(struct can_rx_offload *offload);
 -- 
 2.19.1
