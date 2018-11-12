@@ -1,63 +1,59 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 01/20] can: raw: check for CAN FD capable netdev in raw_sendmsg()
-Date: Mon, 12 Nov 2018 12:57:09 +0100
-Message-ID: <20181112115728.18331-2-mkl@pengutronix.de>
+Subject: [PATCH 06/20] dt-bindings: can: rcar_can: document r8a77965 support
+Date: Mon, 12 Nov 2018 12:57:14 +0100
+Message-ID: <20181112115728.18331-7-mkl@pengutronix.de>
 References: <20181112115728.18331-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20181112115728.18331-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Eugeniu Rosca <rosca.eugeniu@gmail.com>, Eugeniu Rosca <erosca@de.adit-jv.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Eugeniu Rosca <rosca.eugeniu@gmail.com>
 
-When the socket is CAN FD enabled it can handle CAN FD frame
-transmissions.  Add an additional check in raw_sendmsg() as a CAN2.0 CAN
-driver (non CAN FD) should never see a CAN FD frame. Due to the commonly
-used can_dropped_invalid_skb() function the CAN 2.0 driver would drop
-that CAN FD frame anyway - but with this patch the user gets a proper
--EINVAL return code.
+Document the support for rcar_can on R8A77965 SoC devices.
+Add R8A77965 to the list of SoCs which require the "assigned-clocks" and
+"assigned-clock-rates" properties (thanks, Sergei).
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/raw.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ Documentation/devicetree/bindings/net/can/rcar_can.txt | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 1051eee82581..3aab7664933f 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -745,18 +745,19 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	} else
- 		ifindex = ro->ifindex;
+diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+index cc4372842bf3..47fc68148f38 100644
+--- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
++++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+@@ -14,6 +14,7 @@ Required properties:
+ 	      "renesas,can-r8a7794" if CAN controller is a part of R8A7794 SoC.
+ 	      "renesas,can-r8a7795" if CAN controller is a part of R8A7795 SoC.
+ 	      "renesas,can-r8a7796" if CAN controller is a part of R8A7796 SoC.
++	      "renesas,can-r8a77965" if CAN controller is a part of R8A77965 SoC.
+ 	      "renesas,rcar-gen1-can" for a generic R-Car Gen1 compatible device.
+ 	      "renesas,rcar-gen2-can" for a generic R-Car Gen2 or RZ/G1
+ 	      compatible device.
+@@ -29,11 +30,10 @@ Required properties:
+ - pinctrl-0: pin control group to be used for this controller.
+ - pinctrl-names: must be "default".
  
--	if (ro->fd_frames) {
-+	dev = dev_get_by_index(sock_net(sk), ifindex);
-+	if (!dev)
-+		return -ENXIO;
-+
-+	err = -EINVAL;
-+	if (ro->fd_frames && dev->mtu == CANFD_MTU) {
- 		if (unlikely(size != CANFD_MTU && size != CAN_MTU))
--			return -EINVAL;
-+			goto put_dev;
- 	} else {
- 		if (unlikely(size != CAN_MTU))
--			return -EINVAL;
-+			goto put_dev;
- 	}
+-Required properties for "renesas,can-r8a7795" and "renesas,can-r8a7796"
+-compatible:
+-In R8A7795 and R8A7796 SoCs, "clkp2" can be CANFD clock. This is a div6 clock
+-and can be used by both CAN and CAN FD controller at the same time. It needs to
+-be scaled to maximum frequency if any of these controllers use it. This is done
++Required properties for R8A7795, R8A7796 and R8A77965:
++For the denoted SoCs, "clkp2" can be CANFD clock. This is a div6 clock and can
++be used by both CAN and CAN FD controller at the same time. It needs to be
++scaled to maximum frequency if any of these controllers use it. This is done
+ using the below properties:
  
--	dev = dev_get_by_index(sock_net(sk), ifindex);
--	if (!dev)
--		return -ENXIO;
--
- 	skb = sock_alloc_send_skb(sk, size + sizeof(struct can_skb_priv),
- 				  msg->msg_flags & MSG_DONTWAIT, &err);
- 	if (!skb)
+ - assigned-clocks: phandle of clkp2(CANFD) clock.
 -- 
 2.19.1
