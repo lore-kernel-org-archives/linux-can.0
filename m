@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 16/20] can: dev: __can_get_echo_skb(): print error message, if trying to echo non existing skb
-Date: Mon, 12 Nov 2018 12:57:24 +0100
-Message-ID: <20181112115728.18331-17-mkl@pengutronix.de>
+Subject: [PATCH 14/20] can: dev: __can_get_echo_skb(): replace struct can_frame by canfd_frame to access frame length
+Date: Mon, 12 Nov 2018 12:57:22 +0100
+Message-ID: <20181112115728.18331-15-mkl@pengutronix.de>
 References: <20181112115728.18331-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,66 +12,39 @@ To: netdev@vger.kernel.org
 Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Prior to echoing a successfully transmitted CAN frame (by calling
-can_get_echo_skb()), CAN drivers have to put the CAN frame (by calling
-can_put_echo_skb() in the transmit function). These put and get function
-take an index as parameter, which is used to identify the CAN frame.
-
-A driver calling can_get_echo_skb() with a index not pointing to a skb
-is a BUG, so add an appropriate error message.
+This patch replaces the use of "struct can_frame::can_dlc" by "struct
+canfd_frame::len" to access the frame's length. As it is ensured that
+both structures have a compatible memory layout for this member this is
+no functional change. Futher, this compatibility is documented in a
+comment.
 
 Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ drivers/net/can/dev.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index c05e4d50d43d..3b3f88ffab53 100644
+index 80530ab37b1e..46cc5fec4043 100644
 --- a/drivers/net/can/dev.c
 +++ b/drivers/net/can/dev.c
-@@ -480,6 +480,8 @@ EXPORT_SYMBOL_GPL(can_put_echo_skb);
- struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
- {
- 	struct can_priv *priv = netdev_priv(dev);
-+	struct sk_buff *skb = priv->echo_skb[idx];
-+	struct canfd_frame *cf;
+@@ -484,11 +484,14 @@ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8
+ 	BUG_ON(idx >= priv->echo_skb_max);
  
- 	if (idx >= priv->echo_skb_max) {
- 		netdev_err(dev, "%s: BUG! Trying to access can_priv::echo_skb out of bounds (%u/max %u)\n",
-@@ -487,21 +489,20 @@ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8
- 		return NULL;
- 	}
+ 	if (priv->echo_skb[idx]) {
++		/* Using "struct canfd_frame::len" for the frame
++		 * length is supported on both CAN and CANFD frames.
++		 */
+ 		struct sk_buff *skb = priv->echo_skb[idx];
+-		struct can_frame *cf = (struct can_frame *)skb->data;
+-		u8 dlc = cf->can_dlc;
++		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
++		u8 len = cf->len;
  
--	if (priv->echo_skb[idx]) {
--		/* Using "struct canfd_frame::len" for the frame
--		 * length is supported on both CAN and CANFD frames.
--		 */
--		struct sk_buff *skb = priv->echo_skb[idx];
--		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
--		u8 len = cf->len;
--
--		*len_ptr = len;
--		priv->echo_skb[idx] = NULL;
--
--		return skb;
-+	if (!skb) {
-+		netdev_err(dev, "%s: BUG! Trying to echo non existing skb: can_priv::echo_skb[%u]\n",
-+			   __func__, idx);
-+		return NULL;
- 	}
+-		*len_ptr = dlc;
++		*len_ptr = len;
+ 		priv->echo_skb[idx] = NULL;
  
--	return NULL;
-+	/* Using "struct canfd_frame::len" for the frame
-+	 * length is supported on both CAN and CANFD frames.
-+	 */
-+	cf = (struct canfd_frame *)skb->data;
-+	*len_ptr = cf->len;
-+	priv->echo_skb[idx] = NULL;
-+
-+	return skb;
- }
- 
- /*
+ 		return skb;
 -- 
 2.19.1
