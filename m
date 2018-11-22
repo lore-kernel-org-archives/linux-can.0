@@ -1,54 +1,67 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH] can: flexcan: Implement CAN Runtime PM
-Date: Thu, 22 Nov 2018 01:39:20 +0000
-Message-ID: <DB7PR04MB461837E511EEF64497EB4A83E6DB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20181019094326.28185-1-qiangqing.zhang@nxp.com>
- <24a43a20-7302-c449-06b3-5ee8f6c051a0@pengutronix.de>
+From: Aisheng DONG <aisheng.dong@nxp.com>
+Subject: RE: [PATCH V4 1/1] can: flexcan: add self wakeup support
+Date: Thu, 22 Nov 2018 02:30:46 +0000
+Message-ID: <AM0PR04MB4211B8283948F8DB63115DD580DB0@AM0PR04MB4211.eurprd04.prod.outlook.com>
+References: <20181121122957.2684-1-qiangqing.zhang@nxp.com>
+ <20181121122957.2684-2-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <24a43a20-7302-c449-06b3-5ee8f6c051a0@pengutronix.de>
+In-Reply-To: <20181121122957.2684-2-qiangqing.zhang@nxp.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng DONG <aisheng.dong@nxp.com>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "mkl@pengutronix.de" <mkl@pengutronix.de>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-SGkgTWFyYywNCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQoNCj4gLS0tLS1PcmlnaW5h
-bCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25p
-eC5kZT4NCj4gU2VudDogMjAxOOW5tDEx5pyIMjHml6UgMjI6MzYNCj4gVG86IEpvYWtpbSBaaGFu
-ZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyB3Z0BncmFuZGVnZ2VyLmNvbTsNCj4gZGF2ZW1A
-ZGF2ZW1sb2Z0Lm5ldA0KPiBDYzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgbmV0ZGV2QHZn
-ZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgZGwtbGludXgt
-aW14IDxsaW51eC1pbXhAbnhwLmNvbT47IEFpc2hlbmcNCj4gRE9ORyA8YWlzaGVuZy5kb25nQG54
-cC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGNhbjogZmxleGNhbjogSW1wbGVtZW50IENB
-TiBSdW50aW1lIFBNDQo+IA0KPiBPbiAxMC8xOS8xOCAxMTo0NSBBTSwgSm9ha2ltIFpoYW5nIHdy
-b3RlOg0KPiA+IEZyb206IERvbmcgQWlzaGVuZyA8YWlzaGVuZy5kb25nQG54cC5jb20+DQo+ID4N
-Cj4gPiBGbGV4Y2FuIHdpbGwgYmUgZGlzYWJsZWQgZHVyaW5nIHN1c3BlbmQgaWYgbm8gd2FrZXVw
-IGZ1bmN0aW9uIHJlcXVpcmVkDQo+ID4gYW5kIGVuYWJsZWQgYWZ0ZXIgcmVzdW1lIGFjY29yZGlu
-Z2x5LiBEdXJpbmcgdGhpcyBwZXJpb2QsIHdlIGNvdWxkDQo+ID4gZXhwbGljaXRseSBkaXNhYmxl
-IGNsb2Nrcy4NCj4gPg0KPiA+IEltcGxlbWVudCBSdW50aW1lIFBNIHdoaWNoIHdpbGw6DQo+ID4g
-MSkgS2VlcCBkZXZpY2UgaW4gc3VzcGVuZCBzdGF0ZSAoY2xvY2tzIGRpc2FibGVkKSBpZiBpdCdz
-IG5vdCBvcGVubmVkDQo+ID4gMikgTWFrZSBQb3dlciBEb21haW4gZnJhbWV3b3JrIGJlIGFibGUg
-dG8gc2h1dGRvd24gdGhlIGNvcnJlc3BvbmRpbmcNCj4gPiBwb3dlciBkb21haW4gb2YgdGhpcyBk
-ZXZpY2UuDQo+IA0KPiBXaXRob3V0IENPTkZJR19QTSB0aGUgZGV2aWNlIGZhaWxzIHRvIHByb2Jl
-Og0KPiANCj4gPiBbICAyMTQuNDIwNjA2XSBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbjogMjA5MDAw
-MC5mbGV4Y2FuIHN1cHBseSB4Y2VpdmVyDQo+ID4gbm90IGZvdW5kLCB1c2luZyBkdW1teSByZWd1
-bGF0b3IgWyAgMjE0LjQ0NTk1Ml0gZmxleGNhbg0KPiA+IDIwOTAwMDAuZmxleGNhbjogTGlua2Vk
-IGFzIGEgY29uc3VtZXIgdG8gcmVndWxhdG9yLjAgWyAgMjE0LjQ1MzQ0OF0NCj4gPiBmbGV4Y2Fu
-IDIwOTAwMDAuZmxleGNhbjogcmVnaXN0ZXJpbmcgbmV0ZGV2IGZhaWxlZCBbICAyMTQuNDU5NjY2
-XQ0KPiA+IGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuOiBEcm9wcGluZyB0aGUgbGluayB0byByZWd1
-bGF0b3IuMCBbDQo+ID4gMjE0LjQ3MjA2Nl0gZmxleGNhbjogcHJvYmUgb2YgMjA5MDAwMC5mbGV4
-Y2FuIGZhaWxlZCB3aXRoIGVycm9yIC0xMTANCg0KSSB3aWxsIGZpcnN0bHkgc2VuZCB0aGUgcGF0
-Y2ggdG8gZG8gRmxleENBTiB3YWtldXAgdXBzdHJlYW0sIHlvdSBjb3VsZCByZXZpZXcgdGhlIHBh
-dGNoICJjYW46IGZsZXhjYW46IGFkZCBzZWxmIHdha2V1cCBzdXBwb3J0IiB3aGVuIHlvdSBhcmUg
-ZnJlZS4NCkFmdGVyIHlvdSBoYXZlIHJldmlld2VkLCB0aGVuIEkgd2lsbCBzZW5kIHBhdGNoIHRv
-IGRvIEZsZXhDQU4gcnVudGltZSBQTSB1cHN0cmVhbS4gSXQgd2lsbCBiZSBjb252ZW5pZW50IGZv
-ciB5b3UgdG8gcmV2aWV3IHRoZSBwYXRjaC4NCg0KVGhhbmtzIGEgbG90IGZvciB5b3VyIHJldmll
-dy4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQoNCj4gTWFyYw0KPiANCj4gLS0NCj4g
-UGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAg
-ICAgICAgIHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0
-OS0yMzEtMjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAg
-IHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVp
-bSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
+[...]
+
+> +
+> +static int __maybe_unused flexcan_noirq_suspend(struct device *device)
+> +{
+> +	struct net_device *dev =3D dev_get_drvdata(device);
+> +	struct flexcan_priv *priv =3D netdev_priv(dev);
+> +
+> +	if (netif_running(dev) && device_may_wakeup(device))
+> +		flexcan_enable_wakeup_irq(priv, true);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused flexcan_noirq_resume(struct device *device) {
+> +	struct net_device *dev =3D dev_get_drvdata(device);
+> +	struct flexcan_priv *priv =3D netdev_priv(dev);
+> +
+> +	if (netif_running(dev) && device_may_wakeup(device)) {
+> +		disable_irq_wake(dev->irq);
+
+A bit more thinking:
+Can we put flexcan_enable_wakeup_irq(priv, false) here and move disable_irq=
+_wake
+to resume function?
+Then it looks better on pairs for those functions.
+
+I'm not sure if irq will be lost or we may even not need wakeup irq.
+Please help check it.
+
+Regards
+Dong Aisheng
+
+> +		flexcan_exit_stop_mode(priv);
+>  	}
+> +
+>  	return 0;
+>  }
+>=20
+> -static SIMPLE_DEV_PM_OPS(flexcan_pm_ops, flexcan_suspend,
+> flexcan_resume);
+> +static const struct dev_pm_ops flexcan_pm_ops =3D {
+> +	SET_SYSTEM_SLEEP_PM_OPS(flexcan_suspend, flexcan_resume)
+> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(flexcan_noirq_suspend,
+> +flexcan_noirq_resume) };
+>=20
+>  static struct platform_driver flexcan_driver =3D {
+>  	.driver =3D {
+> --
+> 2.17.1
