@@ -1,113 +1,322 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V3 1/1] can: flexcan: Add self wakeup support
-Date: Thu, 22 Nov 2018 12:07:14 +0100
-Message-ID: <c5a6da81-74d1-b336-8ad7-60050496ae22@pengutronix.de>
-References: <20181112015047.4252-1-qiangqing.zhang@nxp.com>
- <20181112015047.4252-2-qiangqing.zhang@nxp.com>
- <AM0PR04MB4211BE08EADBACBEC809067E80DA0@AM0PR04MB4211.eurprd04.prod.outlook.com>
- <af4e2030-c54d-d613-972a-25769bdff199@pengutronix.de>
- <AM0PR04MB4211E93B707BEBADD5E5B63E80DB0@AM0PR04MB4211.eurprd04.prod.outlook.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH V5] can: flexcan: add self wakeup support
+Date: Fri, 23 Nov 2018 07:19:54 +0000
+Message-ID: <20181123071733.18142-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="ERpgqWgxr5VJrbcpFct8L5phrDYn1I1t7"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <AM0PR04MB4211E93B707BEBADD5E5B63E80DB0@AM0PR04MB4211.eurprd04.prod.outlook.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Aisheng DONG <aisheng.dong@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "mkl@pengutronix.de" <mkl@pengutronix.de>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng DONG <aisheng.dong@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ERpgqWgxr5VJrbcpFct8L5phrDYn1I1t7
-Content-Type: multipart/mixed; boundary="SZWQNOERS4WQ2YBukapsjK00Qji2kUZFi";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Aisheng DONG <aisheng.dong@nxp.com>,
- Joakim Zhang <qiangqing.zhang@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- dl-linux-imx <linux-imx@nxp.com>
-Message-ID: <c5a6da81-74d1-b336-8ad7-60050496ae22@pengutronix.de>
-Subject: Re: [PATCH V3 1/1] can: flexcan: Add self wakeup support
-References: <20181112015047.4252-1-qiangqing.zhang@nxp.com>
- <20181112015047.4252-2-qiangqing.zhang@nxp.com>
- <AM0PR04MB4211BE08EADBACBEC809067E80DA0@AM0PR04MB4211.eurprd04.prod.outlook.com>
- <af4e2030-c54d-d613-972a-25769bdff199@pengutronix.de>
- <AM0PR04MB4211E93B707BEBADD5E5B63E80DB0@AM0PR04MB4211.eurprd04.prod.outlook.com>
-In-Reply-To: <AM0PR04MB4211E93B707BEBADD5E5B63E80DB0@AM0PR04MB4211.eurprd04.prod.outlook.com>
+From: Aisheng Dong <aisheng.dong@nxp.com>
 
---SZWQNOERS4WQ2YBukapsjK00Qji2kUZFi
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+If wakeup is enabled, enter stop mode, else enter disabled mode. Self wake
+can only work on stop mode.
 
-On 11/22/18 12:01 PM, Aisheng DONG wrote:
-> [...]
->>>> @@
->>>> -1437,10 +1552,18 @@ static int __maybe_unused flexcan_suspend(struc=
-t
->>>> device *device)
->>>>  	int err =3D 0;
->>>>
->>>>  	if (netif_running(dev)) {
->>>> -		err =3D flexcan_chip_disable(priv);
->>>> -		if (err)
->>>> -			return err;
->>>> -		err =3D pm_runtime_force_suspend(device);
->>>> +		/* if wakeup is enabled, enter stop mode
->>>> +		 * else enter disabled mode.
->>>> +		 */
->>>> +		if (device_may_wakeup(device)) {
->>>> +			enable_irq_wake(dev->irq);
->>>> +			flexcan_enter_stop_mode(priv);
->>>> +		} else {
->>>> +			err =3D flexcan_chip_disable(priv);
->>>> +			if (err)
->>>> +				return err;
->>>> +			err =3D pm_runtime_force_suspend(device);
->>>
->>> This is mixed with runtime pm.
->>> I would suggestion you first upstream wakeup support.
->>> Then runtime pm later separately.
->>
->> In fact this patch is based on the patch "can: flexcan: Implement CAN =
-Runtime
->> PM", which is still under review, too.
->=20
-> Yes, please ignore rpm patch first.
-> This patch will be re-made and not depends on rpm for easy review.
-> After wakeup is ready, rpm patch will rebase on it.
+Starting from IMX6, the flexcan stop mode control bits is SoC specific,
+move it out of IP driver and parse it from devicetree.
 
-ok.
+Signed-off-by: Aisheng Dong <aisheng.dong@nxp.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+---
+ChangeLog:
+V1->V2:
+	*add a vendor prefix in property (stop-mode -> fsl,stop-mode).
+V2->V3:
+	*add FLEXCAN_QUIRK_SETUP_STOP_MODE quirk.
+	*rename function.
+	*fix system can't be wakeuped during suspend.
+V3->V4:
+	*normalize the code following Aisheng Dong's comments.
+V4->V5:
+	*move enable/disable self wakeup feature into
+	 enter/exit_stop_mode() function.
+---
+ drivers/net/can/flexcan.c | 172 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 163 insertions(+), 9 deletions(-)
 
-Marc
-
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 8e972ef08637..e6dc51d4d1ee 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -19,11 +19,14 @@
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
++#include <linux/mfd/syscon.h>
++#include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/regmap.h>
+=20
+ #define DRV_NAME			"flexcan"
+=20
+@@ -131,7 +134,8 @@
+ 	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
+ #define FLEXCAN_ESR_ALL_INT \
+ 	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
+-	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
++	FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT | \
++	FLEXCAN_ESR_WAK_INT)
+=20
+ /* FLEXCAN interrupt flag register (IFLAG) bits */
+ /* Errata ERR005829 step7: Reserve first valid MB */
+@@ -190,6 +194,7 @@
+ #define FLEXCAN_QUIRK_USE_OFF_TIMESTAMP	BIT(5) /* Use timestamp based offl=
+oading */
+ #define FLEXCAN_QUIRK_BROKEN_PERR_STATE	BIT(6) /* No interrupt for error p=
+assive */
+ #define FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN	BIT(7) /* default to BE register =
+access */
++#define FLEXCAN_QUIRK_SETUP_STOP_MODE		BIT(8) /* Setup stop mode to suppor=
+t wakeup */
+=20
+ /* Structure of the message buffer */
+ struct flexcan_mb {
+@@ -254,6 +259,14 @@ struct flexcan_devtype_data {
+ 	u32 quirks;		/* quirks needed for different IP cores */
+ };
+=20
++struct flexcan_stop_mode {
++	struct regmap *gpr;
++	u8 req_gpr;
++	u8 req_bit;
++	u8 ack_gpr;
++	u8 ack_bit;
++};
++
+ struct flexcan_priv {
+ 	struct can_priv can;
+ 	struct can_rx_offload offload;
+@@ -270,6 +283,7 @@ struct flexcan_priv {
+ 	struct clk *clk_per;
+ 	const struct flexcan_devtype_data *devtype_data;
+ 	struct regulator *reg_xceiver;
++	struct flexcan_stop_mode stm;
+=20
+ 	/* Read and Write APIs */
+ 	u32 (*read)(void __iomem *addr);
+@@ -293,7 +307,8 @@ static const struct flexcan_devtype_data fsl_imx28_devt=
+ype_data =3D {
+=20
+ static const struct flexcan_devtype_data fsl_imx6q_devtype_data =3D {
+ 	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+-		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE,
++		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
++		FLEXCAN_QUIRK_SETUP_STOP_MODE,
+ };
+=20
+ static const struct flexcan_devtype_data fsl_vf610_devtype_data =3D {
+@@ -353,6 +368,49 @@ static inline void flexcan_write_le(u32 val, void __io=
+mem *addr)
+ 	iowrite32(val, addr);
+ }
+=20
++static void flexcan_enable_wakeup_irq(struct flexcan_priv *priv, bool enab=
+le)
++{
++	struct flexcan_regs __iomem *regs =3D priv->regs;
++	u32 reg_mcr;
++
++	reg_mcr =3D priv->read(&regs->mcr);
++
++	if (enable)
++		reg_mcr |=3D FLEXCAN_MCR_WAK_MSK;
++	else
++		reg_mcr &=3D ~FLEXCAN_MCR_WAK_MSK;
++
++	priv->write(reg_mcr, &regs->mcr);
++}
++
++static inline void flexcan_enter_stop_mode(struct flexcan_priv *priv)
++{
++	struct flexcan_regs __iomem *regs =3D priv->regs;
++	u32 reg_mcr;
++
++	reg_mcr =3D priv->read(&regs->mcr);
++	reg_mcr |=3D FLEXCAN_MCR_SLF_WAK;
++	priv->write(reg_mcr, &regs->mcr);
++
++	/* enable stop request */
++	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
++			   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
++}
++
++static inline void flexcan_exit_stop_mode(struct flexcan_priv *priv)
++{
++	struct flexcan_regs __iomem *regs =3D priv->regs;
++	u32 reg_mcr;
++
++	/* remove stop request */
++	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
++			   1 << priv->stm.req_bit, 0);
++
++	reg_mcr =3D priv->read(&regs->mcr);
++	reg_mcr &=3D ~FLEXCAN_MCR_SLF_WAK;
++	priv->write(reg_mcr, &regs->mcr);
++}
++
+ static inline void flexcan_error_irq_enable(const struct flexcan_priv *pri=
+v)
+ {
+ 	struct flexcan_regs __iomem *regs =3D priv->regs;
+@@ -1244,6 +1302,57 @@ static void unregister_flexcandev(struct net_device =
+*dev)
+ 	unregister_candev(dev);
+ }
+=20
++static int flexcan_setup_stop_mode(struct platform_device *pdev)
++{
++	struct net_device *dev =3D platform_get_drvdata(pdev);
++	struct device_node *np =3D pdev->dev.of_node;
++	struct device_node *gpr_np;
++	struct flexcan_priv *priv;
++	phandle phandle;
++	u32 out_val[5];
++	int ret;
++
++	if (!np)
++		return -EINVAL;
++
++	/* stop mode property format is:
++	 * <&gpr req_gpr req_bit ack_gpr ack_bit>.
++	 */
++	ret =3D of_property_read_u32_array(np, "fsl,stop-mode", out_val, 5);
++	if (ret) {
++		dev_dbg(&pdev->dev, "no stop-mode property\n");
++		return ret;
++	}
++	phandle =3D *out_val;
++
++	gpr_np =3D of_find_node_by_phandle(phandle);
++	if (!gpr_np) {
++		dev_dbg(&pdev->dev, "could not find gpr node by phandle\n");
++		return PTR_ERR(gpr_np);
++	}
++
++	priv =3D netdev_priv(dev);
++	priv->stm.gpr =3D syscon_node_to_regmap(gpr_np);
++	of_node_put(gpr_np);
++	if (IS_ERR(priv->stm.gpr)) {
++		dev_dbg(&pdev->dev, "could not find gpr regmap\n");
++		return PTR_ERR(priv->stm.gpr);
++	}
++
++	priv->stm.req_gpr =3D out_val[1];
++	priv->stm.req_bit =3D out_val[2];
++	priv->stm.ack_gpr =3D out_val[3];
++	priv->stm.ack_bit =3D out_val[4];
++
++	dev_dbg(&pdev->dev, "gpr %s req_gpr 0x%x req_bit %u ack_gpr 0x%x ack_bit =
+%u\n",
++		gpr_np->full_name, priv->stm.req_gpr, priv->stm.req_bit, priv->stm.ack_g=
+pr,
++		priv->stm.ack_bit);
++
++	device_set_wakeup_capable(&pdev->dev, true);
++
++	return 0;
++}
++
+ static const struct of_device_id flexcan_of_match[] =3D {
+ 	{ .compatible =3D "fsl,imx6q-flexcan", .data =3D &fsl_imx6q_devtype_data,=
+ },
+ 	{ .compatible =3D "fsl,imx28-flexcan", .data =3D &fsl_imx28_devtype_data,=
+ },
+@@ -1396,6 +1505,12 @@ static int flexcan_probe(struct platform_device *pde=
+v)
+=20
+ 	devm_can_led_init(dev);
+=20
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE) {
++		err =3D flexcan_setup_stop_mode(pdev);
++		if (err)
++			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
++	}
++
+ 	dev_info(&pdev->dev, "device registered (reg_base=3D%p, irq=3D%d)\n",
+ 		 priv->regs, dev->irq);
+=20
+@@ -1426,9 +1541,17 @@ static int __maybe_unused flexcan_suspend(struct dev=
+ice *device)
+ 	int err;
+=20
+ 	if (netif_running(dev)) {
+-		err =3D flexcan_chip_disable(priv);
+-		if (err)
+-			return err;
++		/* if wakeup is enabled, enter stop mode
++		 * else enter disabled mode.
++		 */
++		if (device_may_wakeup(device)) {
++			enable_irq_wake(dev->irq);
++			flexcan_enter_stop_mode(priv);
++		} else {
++			err =3D flexcan_chip_disable(priv);
++			if (err)
++				return err;
++		}
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+ 	}
+@@ -1447,14 +1570,45 @@ static int __maybe_unused flexcan_resume(struct dev=
+ice *device)
+ 	if (netif_running(dev)) {
+ 		netif_device_attach(dev);
+ 		netif_start_queue(dev);
+-		err =3D flexcan_chip_enable(priv);
+-		if (err)
+-			return err;
++		if (device_may_wakeup(device)) {
++			flexcan_enable_wakeup_irq(priv, false);
++		} else {
++			err =3D flexcan_chip_enable(priv);
++			if (err)
++				return err;
++		}
+ 	}
+ 	return 0;
+ }
+=20
+-static SIMPLE_DEV_PM_OPS(flexcan_pm_ops, flexcan_suspend, flexcan_resume);
++static int __maybe_unused flexcan_noirq_suspend(struct device *device)
++{
++	struct net_device *dev =3D dev_get_drvdata(device);
++	struct flexcan_priv *priv =3D netdev_priv(dev);
++
++	if (netif_running(dev) && device_may_wakeup(device))
++		flexcan_enable_wakeup_irq(priv, true);
++
++	return 0;
++}
++
++static int __maybe_unused flexcan_noirq_resume(struct device *device)
++{
++	struct net_device *dev =3D dev_get_drvdata(device);
++	struct flexcan_priv *priv =3D netdev_priv(dev);
++
++	if (netif_running(dev) && device_may_wakeup(device)) {
++		flexcan_exit_stop_mode(priv);
++		disable_irq_wake(dev->irq);
++	}
++
++	return 0;
++}
++
++static const struct dev_pm_ops flexcan_pm_ops =3D {
++	SET_SYSTEM_SLEEP_PM_OPS(flexcan_suspend, flexcan_resume)
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(flexcan_noirq_suspend, flexcan_noirq_resume=
+)
++};
+=20
+ static struct platform_driver flexcan_driver =3D {
+ 	.driver =3D {
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---SZWQNOERS4WQ2YBukapsjK00Qji2kUZFi--
-
---ERpgqWgxr5VJrbcpFct8L5phrDYn1I1t7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlv2jeIACgkQk9IU1zQo
-ZfG6CwgAk/KEnW95PtS6qzdZj9BVGHNpacvvRgeKAj1FzxW7pgRTw4iw2ucwQ/cL
-xIcGufK68ZfonoSXVn1Fz1209yfobVbWhh5o0PYwMdnZcrpSSdC3PNmhACy5Rvin
-hhi61uuGVgmOcoruwAeiuZCRxekOXl0QVIoZIFVrUgmT4lHvo/QmnwGnpA+Erykv
-ROW/t6o8jbfUX7TtBJxG48cri2DXvRKE8acX6OJM1RnIt8HJ5gpo0SG5LoOrQhIz
-4wnWhmmELhvScyn1iPKUMFoX+ZFOez7Dw3C165IIPaQozr3pjqhMjv8LaSELOhI4
-G17cYTkQGUMznRivDHR6Monc6j2Lng==
-=M2RZ
------END PGP SIGNATURE-----
-
---ERpgqWgxr5VJrbcpFct8L5phrDYn1I1t7--
+2.17.1
