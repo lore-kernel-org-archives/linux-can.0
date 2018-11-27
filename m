@@ -1,57 +1,74 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: Implement CAN Runtime PM
-Date: Tue, 27 Nov 2018 08:52:10 +0100
-Message-ID: <7449a067-e9b2-5cdf-7fae-9b9d5acdac87@pengutronix.de>
+From: Aisheng DONG <aisheng.dong@nxp.com>
+Subject: RE: [PATCH] can: flexcan: Implement CAN Runtime PM
+Date: Tue, 27 Nov 2018 08:07:43 +0000
+Message-ID: <AM0PR04MB421185C8A83EE9549052A91180D00@AM0PR04MB4211.eurprd04.prod.outlook.com>
 References: <20181019094326.28185-1-qiangqing.zhang@nxp.com>
  <24a43a20-7302-c449-06b3-5ee8f6c051a0@pengutronix.de>
  <DB7PR04MB461851E4A4C494E8AC91AAEEE6D00@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <7449a067-e9b2-5cdf-7fae-9b9d5acdac87@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <DB7PR04MB461851E4A4C494E8AC91AAEEE6D00@DB7PR04MB4618.eurprd04.prod.outlook.com>
-Content-Language: de-DE
+In-Reply-To: <7449a067-e9b2-5cdf-7fae-9b9d5acdac87@pengutronix.de>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng DONG <aisheng.dong@nxp.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Joakim Zhang <qiangqing.zhang@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-On 11/27/18 8:44 AM, Joakim Zhang wrote:
->>> Flexcan will be disabled during suspend if no wakeup function required
->>> and enabled after resume accordingly. During this period, we could
->>> explicitly disable clocks.
->>>
->>> Implement Runtime PM which will:
->>> 1) Keep device in suspend state (clocks disabled) if it's not openned
->>> 2) Make Power Domain framework be able to shutdown the corresponding
->>> power domain of this device.
->>
->> Without CONFIG_PM the device fails to probe:
->>
->>> [  214.420606] flexcan 2090000.flexcan: 2090000.flexcan supply xceiver
->>> not found, using dummy regulator [  214.445952] flexcan
->>> 2090000.flexcan: Linked as a consumer to regulator.0 [  214.453448]
->>> flexcan 2090000.flexcan: registering netdev failed [  214.459666]
->>> flexcan 2090000.flexcan: Dropping the link to regulator.0 [
->>> 214.472066] flexcan: probe of 2090000.flexcan failed with error -110
-
-> I would sent V2 rebased on patch "can: flexcan: add self wakeup
-> support", and runtime pm works normally on MX6SX-SDB and MX7D-SDB.
-> So, could you tell me which board you tested on that causes the
-> device probe failed?
-
-I tested on an imx6dl riotboard
-(https://elixir.bootlin.com/linux/latest/source/arch/arm/boot/dts/imx6dl-riotboard.dts
-+ patches to enable CAN1) with an external PHY.
-
-> And that CONFIG_PM has set in imx_v6_v7_defconfig which config file I used.
-
-I disabled CONFIG_PM on purpose.
-
-Marc
-
--- 
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSBb
+bWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogVHVlc2RheSwgTm92ZW1iZXIgMjcs
+IDIwMTggMzo1MiBQTQ0KPiBUbzogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNv
+bT47IHdnQGdyYW5kZWdnZXIuY29tOw0KPiBkYXZlbUBkYXZlbWxvZnQubmV0DQo+IENjOiBsaW51
+eC1jYW5Admdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsg
+QWlzaGVuZw0KPiBET05HIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQ
+QVRDSF0gY2FuOiBmbGV4Y2FuOiBJbXBsZW1lbnQgQ0FOIFJ1bnRpbWUgUE0NCj4gDQo+IE9uIDEx
+LzI3LzE4IDg6NDQgQU0sIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4gPj4+IEZsZXhjYW4gd2lsbCBi
+ZSBkaXNhYmxlZCBkdXJpbmcgc3VzcGVuZCBpZiBubyB3YWtldXAgZnVuY3Rpb24NCj4gPj4+IHJl
+cXVpcmVkIGFuZCBlbmFibGVkIGFmdGVyIHJlc3VtZSBhY2NvcmRpbmdseS4gRHVyaW5nIHRoaXMg
+cGVyaW9kLA0KPiA+Pj4gd2UgY291bGQgZXhwbGljaXRseSBkaXNhYmxlIGNsb2Nrcy4NCj4gPj4+
+DQo+ID4+PiBJbXBsZW1lbnQgUnVudGltZSBQTSB3aGljaCB3aWxsOg0KPiA+Pj4gMSkgS2VlcCBk
+ZXZpY2UgaW4gc3VzcGVuZCBzdGF0ZSAoY2xvY2tzIGRpc2FibGVkKSBpZiBpdCdzIG5vdA0KPiA+
+Pj4gb3Blbm5lZA0KPiA+Pj4gMikgTWFrZSBQb3dlciBEb21haW4gZnJhbWV3b3JrIGJlIGFibGUg
+dG8gc2h1dGRvd24gdGhlIGNvcnJlc3BvbmRpbmcNCj4gPj4+IHBvd2VyIGRvbWFpbiBvZiB0aGlz
+IGRldmljZS4NCj4gPj4NCj4gPj4gV2l0aG91dCBDT05GSUdfUE0gdGhlIGRldmljZSBmYWlscyB0
+byBwcm9iZToNCj4gPj4NCj4gPj4+IFsgIDIxNC40MjA2MDZdIGZsZXhjYW4gMjA5MDAwMC5mbGV4
+Y2FuOiAyMDkwMDAwLmZsZXhjYW4gc3VwcGx5DQo+ID4+PiB4Y2VpdmVyIG5vdCBmb3VuZCwgdXNp
+bmcgZHVtbXkgcmVndWxhdG9yIFsgIDIxNC40NDU5NTJdIGZsZXhjYW4NCj4gPj4+IDIwOTAwMDAu
+ZmxleGNhbjogTGlua2VkIGFzIGEgY29uc3VtZXIgdG8gcmVndWxhdG9yLjAgWyAgMjE0LjQ1MzQ0
+OF0NCj4gPj4+IGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuOiByZWdpc3RlcmluZyBuZXRkZXYgZmFp
+bGVkIFsgIDIxNC40NTk2NjZdDQo+ID4+PiBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbjogRHJvcHBp
+bmcgdGhlIGxpbmsgdG8gcmVndWxhdG9yLjAgWw0KPiA+Pj4gMjE0LjQ3MjA2Nl0gZmxleGNhbjog
+cHJvYmUgb2YgMjA5MDAwMC5mbGV4Y2FuIGZhaWxlZCB3aXRoIGVycm9yIC0xMTANCj4gDQo+ID4g
+SSB3b3VsZCBzZW50IFYyIHJlYmFzZWQgb24gcGF0Y2ggImNhbjogZmxleGNhbjogYWRkIHNlbGYg
+d2FrZXVwDQo+ID4gc3VwcG9ydCIsIGFuZCBydW50aW1lIHBtIHdvcmtzIG5vcm1hbGx5IG9uIE1Y
+NlNYLVNEQiBhbmQgTVg3RC1TREIuDQo+ID4gU28sIGNvdWxkIHlvdSB0ZWxsIG1lIHdoaWNoIGJv
+YXJkIHlvdSB0ZXN0ZWQgb24gdGhhdCBjYXVzZXMgdGhlIGRldmljZQ0KPiA+IHByb2JlIGZhaWxl
+ZD8NCj4gDQo+IEkgdGVzdGVkIG9uIGFuIGlteDZkbCByaW90Ym9hcmQNCj4gKGh0dHBzOi8vZW1l
+YTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZl
+bGl4aXIuDQo+IGJvb3RsaW4uY29tJTJGbGludXglMkZsYXRlc3QlMkZzb3VyY2UlMkZhcmNoJTJG
+YXJtJTJGYm9vdCUyRmR0cyUyRmkNCj4gbXg2ZGwtcmlvdGJvYXJkLmR0cyZhbXA7ZGF0YT0wMiU3
+QzAxJTdDYWlzaGVuZy5kb25nJTQwbnhwLmNvbSU3QzgNCj4gNGNmZDNmM2EwOGI0Yzc5NTNmZDA4
+ZDY1NDNkNDJjMSU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5YzVjMzAxNg0KPiAzNSU3QzAlN0Mw
+JTdDNjM2Nzg5MDE5NDIwNTY5NTM0JmFtcDtzZGF0YT1ydWdLcG1WYU5uMGFqVGRjdHlpJQ0KPiAy
+RiUyQm53ciUyRnFxSUJjaWtBUDdlWExwNmZjQSUzRCZhbXA7cmVzZXJ2ZWQ9MA0KPiArIHBhdGNo
+ZXMgdG8gZW5hYmxlIENBTjEpIHdpdGggYW4gZXh0ZXJuYWwgUEhZLg0KPiANCj4gPiBBbmQgdGhh
+dCBDT05GSUdfUE0gaGFzIHNldCBpbiBpbXhfdjZfdjdfZGVmY29uZmlnIHdoaWNoIGNvbmZpZyBm
+aWxlIEkNCj4gdXNlZC4NCj4gDQo+IEkgZGlzYWJsZWQgQ09ORklHX1BNIG9uIHB1cnBvc2UuDQoN
+CkpvYWtpbSwNCllvdSBuZWVkIHJ1biB0aGUgc2FtZSB0ZXN0IGFzIE1hcmMuDQoNCkkgZ3Vlc3Mg
+SXQgbWlnaHQgYmVjYXVzZSB3aXRob3V0IENPTkZJR19QTSwgUnVudGltZSBQTSBBUEkNClNpbXBs
+eSByZXR1cm4gcG9zaXRpdmUgYnV0IHRoZSBjbG9jayBtYXkgc3RpbGwgbm90IGVuYWJsZWQsIHRo
+dXMgY2F1c2UNCmEgQ0FOIGVuYWJsZSB0aW1lb3V0Lg0KDQpZb3UgY2FuIGNoZWNrIGl0Lg0KDQpS
+ZWdhcmRzDQpEb25nIEFpc2hlbmcNCg0KPiANCj4gTWFyYw0KPiANCj4gLS0NCj4gUGVuZ3V0cm9u
+aXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwN
+Cj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgy
+Ni05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAg
+ICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2
+ODYgIHwNCj4gaHR0cHM6Ly9lbWVhMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20v
+P3VybD1odHRwJTNBJTJGJTJGd3d3Lg0KPiBwZW5ndXRyb25peC5kZSZhbXA7ZGF0YT0wMiU3QzAx
+JTdDYWlzaGVuZy5kb25nJTQwbnhwLmNvbSU3Qzg0Y2ZkMw0KPiBmM2EwOGI0Yzc5NTNmZDA4ZDY1
+NDNkNDJjMSU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5YzVjMzAxNjM1JTcNCj4gQzAlN0MwJTdD
+NjM2Nzg5MDE5NDIwNTY5NTM0JmFtcDtzZGF0YT1VczZjTzlRZllrdyUyQjZOaGo2OHpMcg0KPiB3
+ck54VUNSamNDMFdEZG1yOU1PekhNJTNEJmFtcDtyZXNlcnZlZD0wICAgfA0K
