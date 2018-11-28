@@ -1,74 +1,94 @@
-From: Aisheng DONG <aisheng.dong@nxp.com>
-Subject: RE: [PATCH] can: flexcan: Implement CAN Runtime PM
-Date: Tue, 27 Nov 2018 08:07:43 +0000
-Message-ID: <AM0PR04MB421185C8A83EE9549052A91180D00@AM0PR04MB4211.eurprd04.prod.outlook.com>
-References: <20181019094326.28185-1-qiangqing.zhang@nxp.com>
- <24a43a20-7302-c449-06b3-5ee8f6c051a0@pengutronix.de>
- <DB7PR04MB461851E4A4C494E8AC91AAEEE6D00@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <7449a067-e9b2-5cdf-7fae-9b9d5acdac87@pengutronix.de>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH][resend] can: rcar_can: convert to SPDX identifiers
+Date: Wed, 28 Nov 2018 06:12:16 +0000
+Message-ID: <87ftvl20z9.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <7449a067-e9b2-5cdf-7fae-9b9d5acdac87@pengutronix.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Joakim Zhang <qiangqing.zhang@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
+Content-ID: <EA3538D2414FF343888A730D2954EE2C@jpnprd01.prod.outlook.com>
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
+Cc: Chris Paterson <Chris.Paterson2@renesas.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSBb
-bWFpbHRvOm1rbEBwZW5ndXRyb25peC5kZV0NCj4gU2VudDogVHVlc2RheSwgTm92ZW1iZXIgMjcs
-IDIwMTggMzo1MiBQTQ0KPiBUbzogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNv
-bT47IHdnQGdyYW5kZWdnZXIuY29tOw0KPiBkYXZlbUBkYXZlbWxvZnQubmV0DQo+IENjOiBsaW51
-eC1jYW5Admdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsg
-QWlzaGVuZw0KPiBET05HIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQ
-QVRDSF0gY2FuOiBmbGV4Y2FuOiBJbXBsZW1lbnQgQ0FOIFJ1bnRpbWUgUE0NCj4gDQo+IE9uIDEx
-LzI3LzE4IDg6NDQgQU0sIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4gPj4+IEZsZXhjYW4gd2lsbCBi
-ZSBkaXNhYmxlZCBkdXJpbmcgc3VzcGVuZCBpZiBubyB3YWtldXAgZnVuY3Rpb24NCj4gPj4+IHJl
-cXVpcmVkIGFuZCBlbmFibGVkIGFmdGVyIHJlc3VtZSBhY2NvcmRpbmdseS4gRHVyaW5nIHRoaXMg
-cGVyaW9kLA0KPiA+Pj4gd2UgY291bGQgZXhwbGljaXRseSBkaXNhYmxlIGNsb2Nrcy4NCj4gPj4+
-DQo+ID4+PiBJbXBsZW1lbnQgUnVudGltZSBQTSB3aGljaCB3aWxsOg0KPiA+Pj4gMSkgS2VlcCBk
-ZXZpY2UgaW4gc3VzcGVuZCBzdGF0ZSAoY2xvY2tzIGRpc2FibGVkKSBpZiBpdCdzIG5vdA0KPiA+
-Pj4gb3Blbm5lZA0KPiA+Pj4gMikgTWFrZSBQb3dlciBEb21haW4gZnJhbWV3b3JrIGJlIGFibGUg
-dG8gc2h1dGRvd24gdGhlIGNvcnJlc3BvbmRpbmcNCj4gPj4+IHBvd2VyIGRvbWFpbiBvZiB0aGlz
-IGRldmljZS4NCj4gPj4NCj4gPj4gV2l0aG91dCBDT05GSUdfUE0gdGhlIGRldmljZSBmYWlscyB0
-byBwcm9iZToNCj4gPj4NCj4gPj4+IFsgIDIxNC40MjA2MDZdIGZsZXhjYW4gMjA5MDAwMC5mbGV4
-Y2FuOiAyMDkwMDAwLmZsZXhjYW4gc3VwcGx5DQo+ID4+PiB4Y2VpdmVyIG5vdCBmb3VuZCwgdXNp
-bmcgZHVtbXkgcmVndWxhdG9yIFsgIDIxNC40NDU5NTJdIGZsZXhjYW4NCj4gPj4+IDIwOTAwMDAu
-ZmxleGNhbjogTGlua2VkIGFzIGEgY29uc3VtZXIgdG8gcmVndWxhdG9yLjAgWyAgMjE0LjQ1MzQ0
-OF0NCj4gPj4+IGZsZXhjYW4gMjA5MDAwMC5mbGV4Y2FuOiByZWdpc3RlcmluZyBuZXRkZXYgZmFp
-bGVkIFsgIDIxNC40NTk2NjZdDQo+ID4+PiBmbGV4Y2FuIDIwOTAwMDAuZmxleGNhbjogRHJvcHBp
-bmcgdGhlIGxpbmsgdG8gcmVndWxhdG9yLjAgWw0KPiA+Pj4gMjE0LjQ3MjA2Nl0gZmxleGNhbjog
-cHJvYmUgb2YgMjA5MDAwMC5mbGV4Y2FuIGZhaWxlZCB3aXRoIGVycm9yIC0xMTANCj4gDQo+ID4g
-SSB3b3VsZCBzZW50IFYyIHJlYmFzZWQgb24gcGF0Y2ggImNhbjogZmxleGNhbjogYWRkIHNlbGYg
-d2FrZXVwDQo+ID4gc3VwcG9ydCIsIGFuZCBydW50aW1lIHBtIHdvcmtzIG5vcm1hbGx5IG9uIE1Y
-NlNYLVNEQiBhbmQgTVg3RC1TREIuDQo+ID4gU28sIGNvdWxkIHlvdSB0ZWxsIG1lIHdoaWNoIGJv
-YXJkIHlvdSB0ZXN0ZWQgb24gdGhhdCBjYXVzZXMgdGhlIGRldmljZQ0KPiA+IHByb2JlIGZhaWxl
-ZD8NCj4gDQo+IEkgdGVzdGVkIG9uIGFuIGlteDZkbCByaW90Ym9hcmQNCj4gKGh0dHBzOi8vZW1l
-YTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZl
-bGl4aXIuDQo+IGJvb3RsaW4uY29tJTJGbGludXglMkZsYXRlc3QlMkZzb3VyY2UlMkZhcmNoJTJG
-YXJtJTJGYm9vdCUyRmR0cyUyRmkNCj4gbXg2ZGwtcmlvdGJvYXJkLmR0cyZhbXA7ZGF0YT0wMiU3
-QzAxJTdDYWlzaGVuZy5kb25nJTQwbnhwLmNvbSU3QzgNCj4gNGNmZDNmM2EwOGI0Yzc5NTNmZDA4
-ZDY1NDNkNDJjMSU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5YzVjMzAxNg0KPiAzNSU3QzAlN0Mw
-JTdDNjM2Nzg5MDE5NDIwNTY5NTM0JmFtcDtzZGF0YT1ydWdLcG1WYU5uMGFqVGRjdHlpJQ0KPiAy
-RiUyQm53ciUyRnFxSUJjaWtBUDdlWExwNmZjQSUzRCZhbXA7cmVzZXJ2ZWQ9MA0KPiArIHBhdGNo
-ZXMgdG8gZW5hYmxlIENBTjEpIHdpdGggYW4gZXh0ZXJuYWwgUEhZLg0KPiANCj4gPiBBbmQgdGhh
-dCBDT05GSUdfUE0gaGFzIHNldCBpbiBpbXhfdjZfdjdfZGVmY29uZmlnIHdoaWNoIGNvbmZpZyBm
-aWxlIEkNCj4gdXNlZC4NCj4gDQo+IEkgZGlzYWJsZWQgQ09ORklHX1BNIG9uIHB1cnBvc2UuDQoN
-CkpvYWtpbSwNCllvdSBuZWVkIHJ1biB0aGUgc2FtZSB0ZXN0IGFzIE1hcmMuDQoNCkkgZ3Vlc3Mg
-SXQgbWlnaHQgYmVjYXVzZSB3aXRob3V0IENPTkZJR19QTSwgUnVudGltZSBQTSBBUEkNClNpbXBs
-eSByZXR1cm4gcG9zaXRpdmUgYnV0IHRoZSBjbG9jayBtYXkgc3RpbGwgbm90IGVuYWJsZWQsIHRo
-dXMgY2F1c2UNCmEgQ0FOIGVuYWJsZSB0aW1lb3V0Lg0KDQpZb3UgY2FuIGNoZWNrIGl0Lg0KDQpS
-ZWdhcmRzDQpEb25nIEFpc2hlbmcNCg0KPiANCj4gTWFyYw0KPiANCj4gLS0NCj4gUGVuZ3V0cm9u
-aXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwN
-Cj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgy
-Ni05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAg
-ICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2
-ODYgIHwNCj4gaHR0cHM6Ly9lbWVhMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20v
-P3VybD1odHRwJTNBJTJGJTJGd3d3Lg0KPiBwZW5ndXRyb25peC5kZSZhbXA7ZGF0YT0wMiU3QzAx
-JTdDYWlzaGVuZy5kb25nJTQwbnhwLmNvbSU3Qzg0Y2ZkMw0KPiBmM2EwOGI0Yzc5NTNmZDA4ZDY1
-NDNkNDJjMSU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5YzVjMzAxNjM1JTcNCj4gQzAlN0MwJTdD
-NjM2Nzg5MDE5NDIwNTY5NTM0JmFtcDtzZGF0YT1VczZjTzlRZllrdyUyQjZOaGo2OHpMcg0KPiB3
-ck54VUNSamNDMFdEZG1yOU1PekhNJTNEJmFtcDtyZXNlcnZlZD0wICAgfA0K
+
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+This patch updates license to use SPDX-License-Identifier
+instead of verbose license text.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Acked-by: Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>
+---
+ drivers/net/can/rcar/Kconfig      | 1 +
+ drivers/net/can/rcar/Makefile     | 1 +
+ drivers/net/can/rcar/rcar_can.c   | 6 +-----
+ drivers/net/can/rcar/rcar_canfd.c | 6 +-----
+ 4 files changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/can/rcar/Kconfig b/drivers/net/can/rcar/Kconfig
+index 7b03a3a..bd5a8fc 100644
+--- a/drivers/net/can/rcar/Kconfig
++++ b/drivers/net/can/rcar/Kconfig
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
+ config CAN_RCAR
+ 	tristate "Renesas R-Car CAN controller"
+ 	depends on ARCH_RENESAS || ARM
+diff --git a/drivers/net/can/rcar/Makefile b/drivers/net/can/rcar/Makefile
+index 08de36a..c9185b0 100644
+--- a/drivers/net/can/rcar/Makefile
++++ b/drivers/net/can/rcar/Makefile
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
+ #
+ #  Makefile for the Renesas R-Car CAN & CAN FD controller drivers
+ #
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_ca=
+n.c
+index 11662f4..06f90a0 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -1,12 +1,8 @@
++// SPDX-License-Identifier: GPL-2.0+
+ /* Renesas R-Car CAN device driver
+  *
+  * Copyright (C) 2013 Cogent Embedded, Inc. <source@cogentembedded.com>
+  * Copyright (C) 2013 Renesas Solutions Corp.
+- *
+- * This program is free software; you can redistribute  it and/or modify i=
+t
+- * under  the terms of  the GNU General  Public License as published by th=
+e
+- * Free Software Foundation;  either version 2 of the  License, or (at you=
+r
+- * option) any later version.
+  */
+=20
+ #include <linux/module.h>
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_=
+canfd.c
+index 602c19e..0541000 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -1,11 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0+
+ /* Renesas R-Car CAN FD device driver
+  *
+  * Copyright (C) 2015 Renesas Electronics Corp.
+- *
+- * This program is free software; you can redistribute  it and/or modify i=
+t
+- * under  the terms of  the GNU General  Public License as published by th=
+e
+- * Free Software Foundation;  either version 2 of the  License, or (at you=
+r
+- * option) any later version.
+  */
+=20
+ /* The R-Car CAN FD controller can operate in either one of the below two =
+modes
+--=20
+2.7.4
