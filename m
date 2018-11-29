@@ -1,10 +1,10 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 11/68] can: rcar_can: Fix erroneous registration
-Date: Thu, 29 Nov 2018 00:55:02 -0500
-Message-ID: <20181129055559.159228-11-sashal@kernel.org>
-References: <20181129055559.159228-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 05/35] can: rcar_can: Fix erroneous registration
+Date: Thu, 29 Nov 2018 01:00:39 -0500
+Message-ID: <20181129060110.159878-5-sashal@kernel.org>
+References: <20181129060110.159878-1-sashal@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181129055559.159228-1-sashal@kernel.org>
+In-Reply-To: <20181129060110.159878-1-sashal@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: stable@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Chris Paterson <Chris.Paterson2@renesas.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
