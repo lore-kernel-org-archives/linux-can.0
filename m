@@ -1,10 +1,10 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 05/35] can: rcar_can: Fix erroneous registration
-Date: Thu, 29 Nov 2018 01:00:39 -0500
-Message-ID: <20181129060110.159878-5-sashal@kernel.org>
-References: <20181129060110.159878-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 05/18] can: rcar_can: Fix erroneous registration
+Date: Thu, 29 Nov 2018 01:03:17 -0500
+Message-ID: <20181129060331.160224-5-sashal@kernel.org>
+References: <20181129060331.160224-1-sashal@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181129060110.159878-1-sashal@kernel.org>
+In-Reply-To: <20181129060331.160224-1-sashal@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: stable@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Chris Paterson <Chris.Paterson2@renesas.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
@@ -29,7 +29,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index 11662f479e76..771a46083739 100644
+index 788459f6bf5c..9b2c3bd00f8b 100644
 --- a/drivers/net/can/rcar/rcar_can.c
 +++ b/drivers/net/can/rcar/rcar_can.c
 @@ -24,6 +24,9 @@
