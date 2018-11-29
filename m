@@ -1,11 +1,11 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 03/13] can: rcar_can: Fix erroneous registration
-Date: Thu, 29 Nov 2018 01:04:34 -0500
-Message-ID: <20181129060444.160434-3-sashal@kernel.org>
-References: <20181129060444.160434-1-sashal@kernel.org>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20181129060444.160434-1-sashal@kernel.org>
-Sender: stable-owner@vger.kernel.org
+Subject: [PATCH AUTOSEL 3.18 2/6] can: rcar_can: Fix erroneous registration
+Date: Thu, 29 Nov 2018 01:05:31 -0500
+Message-ID: <20181129060535.160592-2-sashal@kernel.org>
+References: <20181129060535.160592-1-sashal@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181129060535.160592-1-sashal@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: stable@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Chris Paterson <Chris.Paterson2@renesas.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
@@ -29,7 +29,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/rcar_can.c b/drivers/net/can/rcar_can.c
-index bc46be39549d..9d93492ddfcc 100644
+index 9718248e55f1..16144e7d0c8f 100644
 --- a/drivers/net/can/rcar_can.c
 +++ b/drivers/net/can/rcar_can.c
 @@ -24,6 +24,9 @@
@@ -42,7 +42,7 @@ index bc46be39549d..9d93492ddfcc 100644
  /* Mailbox configuration:
   * mailbox 60 - 63 - Rx FIFO mailboxes
   * mailbox 56 - 59 - Tx FIFO mailboxes
-@@ -789,7 +792,7 @@ static int rcar_can_probe(struct platform_device *pdev)
+@@ -785,7 +788,7 @@ static int rcar_can_probe(struct platform_device *pdev)
  		goto fail_clk;
  	}
  
