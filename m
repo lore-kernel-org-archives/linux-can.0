@@ -1,30 +1,49 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can-next 2018-11-28,pull-request: can-next
- 2018-11-28
-Date: Wed, 28 Nov 2018 11:21:57 -0800 (PST)
-Message-ID: <20181128.112157.1875553528431620394.davem@davemloft.net>
-References: <98eab65a-24c5-aba6-d4f0-746d7758d5ce@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <98eab65a-24c5-aba6-d4f0-746d7758d5ce@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 10/68] can: ucan: remove set but not used variable 'udev'
+Date: Thu, 29 Nov 2018 00:55:01 -0500
+Message-ID: <20181129055559.159228-10-sashal@kernel.org>
+References: <20181129055559.159228-1-sashal@kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20181129055559.159228-1-sashal@kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: YueHaibing <yuehaibing@huawei.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 28 Nov 2018 17:01:13 +0100
+From: YueHaibing <yuehaibing@huawei.com>
 
->   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-4.21-20181128
+[ Upstream commit 207681fc5f3d5d398f106d1ae0080fc2373f707a ]
 
-This doesn't work for me at all.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-I'm not adding a custom .ssh config entry to point gitolite.kernel.org
-to the same SSH key that I use for gitolite@ra.kernel.org, no way.
+drivers/net/can/usb/ucan.c: In function 'ucan_disconnect':
+drivers/net/can/usb/ucan.c:1578:21: warning:
+ variable 'udev' set but not used [-Wunused-but-set-variable]
+  struct usb_device *udev;
 
-I don't want to see these SSH based URLs any more, they are a pain and
-add overhead to my workflow.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Martin Elshuber <martin.elshuber@theobroma-systems.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/can/usb/ucan.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Please just use plain git:// URLs, thank you.
+diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+index 0678a38b1af4..c9fd83e8d947 100644
+--- a/drivers/net/can/usb/ucan.c
++++ b/drivers/net/can/usb/ucan.c
+@@ -1575,11 +1575,8 @@ static int ucan_probe(struct usb_interface *intf,
+ /* disconnect the device */
+ static void ucan_disconnect(struct usb_interface *intf)
+ {
+-	struct usb_device *udev;
+ 	struct ucan_priv *up = usb_get_intfdata(intf);
+ 
+-	udev = interface_to_usbdev(intf);
+-
+ 	usb_set_intfdata(intf, NULL);
+ 
+ 	if (up) {
+-- 
+2.17.1
