@@ -1,49 +1,55 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 10/68] can: ucan: remove set but not used variable 'udev'
-Date: Thu, 29 Nov 2018 00:55:01 -0500
-Message-ID: <20181129055559.159228-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 11/68] can: rcar_can: Fix erroneous registration
+Date: Thu, 29 Nov 2018 00:55:02 -0500
+Message-ID: <20181129055559.159228-11-sashal@kernel.org>
 References: <20181129055559.159228-1-sashal@kernel.org>
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20181129055559.159228-1-sashal@kernel.org>
-Sender: stable-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: YueHaibing <yuehaibing@huawei.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Chris Paterson <Chris.Paterson2@renesas.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
 
-[ Upstream commit 207681fc5f3d5d398f106d1ae0080fc2373f707a ]
+[ Upstream commit 68c8d209cd4337da4fa04c672f0b62bb735969bc ]
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Assigning 2 to "renesas,can-clock-select" tricks the driver into
+registering the CAN interface, even though we don't want that.
+This patch improves one of the checks to prevent that from happening.
 
-drivers/net/can/usb/ucan.c: In function 'ucan_disconnect':
-drivers/net/can/usb/ucan.c:1578:21: warning:
- variable 'udev' set but not used [-Wunused-but-set-variable]
-  struct usb_device *udev;
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Reviewed-by: Martin Elshuber <martin.elshuber@theobroma-systems.com>
+Fixes: 862e2b6af9413b43 ("can: rcar_can: support all input clocks")
+Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Signed-off-by: Chris Paterson <Chris.Paterson2@renesas.com>
+Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/ucan.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/can/rcar/rcar_can.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
-index 0678a38b1af4..c9fd83e8d947 100644
---- a/drivers/net/can/usb/ucan.c
-+++ b/drivers/net/can/usb/ucan.c
-@@ -1575,11 +1575,8 @@ static int ucan_probe(struct usb_interface *intf,
- /* disconnect the device */
- static void ucan_disconnect(struct usb_interface *intf)
- {
--	struct usb_device *udev;
- 	struct ucan_priv *up = usb_get_intfdata(intf);
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index 11662f479e76..771a46083739 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -24,6 +24,9 @@
  
--	udev = interface_to_usbdev(intf);
--
- 	usb_set_intfdata(intf, NULL);
+ #define RCAR_CAN_DRV_NAME	"rcar_can"
  
- 	if (up) {
++#define RCAR_SUPPORTED_CLOCKS	(BIT(CLKR_CLKP1) | BIT(CLKR_CLKP2) | \
++				 BIT(CLKR_CLKEXT))
++
+ /* Mailbox configuration:
+  * mailbox 60 - 63 - Rx FIFO mailboxes
+  * mailbox 56 - 59 - Tx FIFO mailboxes
+@@ -789,7 +792,7 @@ static int rcar_can_probe(struct platform_device *pdev)
+ 		goto fail_clk;
+ 	}
+ 
+-	if (clock_select >= ARRAY_SIZE(clock_names)) {
++	if (!(BIT(clock_select) & RCAR_SUPPORTED_CLOCKS)) {
+ 		err = -EINVAL;
+ 		dev_err(&pdev->dev, "invalid CAN clock selected\n");
+ 		goto fail_clk;
 -- 
 2.17.1
