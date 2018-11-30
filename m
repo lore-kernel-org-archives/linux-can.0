@@ -1,221 +1,333 @@
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH V3] can: flexcan: implement can Runtime PM
-Date: Thu, 29 Nov 2018 10:17:16 +0000
-Message-ID: <DB7PR04MB4618E5D19D47A960EB2A37E6E6D20@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20181129080559.18572-1-qiangqing.zhang@nxp.com>
- <873ce967-5e94-28f0-608d-dc55d77ab182@pengutronix.de>
+Subject: [PATCH V4] can: flexcan: implement can Runtime PM
+Date: Fri, 30 Nov 2018 08:53:26 +0000
+Message-ID: <20181130085119.7948-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <873ce967-5e94-28f0-608d-dc55d77ab182@pengutronix.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng DONG <aisheng.dong@nxp.com>
+Sender: netdev-owner@vger.kernel.org
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng DONG <aisheng.dong@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
-IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTjlubQxMeaciDI55pelIDE3OjQ0DQo+
-IFRvOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsgbGludXgtY2FuQHZn
-ZXIua2VybmVsLm9yZw0KPiBDYzogd2dAZ3JhbmRlZ2dlci5jb207IG5ldGRldkB2Z2VyLmtlcm5l
-bC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteCA8bGlu
-dXgtaW14QG54cC5jb20+OyBBaXNoZW5nDQo+IERPTkcgPGFpc2hlbmcuZG9uZ0BueHAuY29tPg0K
-PiBTdWJqZWN0OiBSZTogW1BBVENIIFYzXSBjYW46IGZsZXhjYW46IGltcGxlbWVudCBjYW4gUnVu
-dGltZSBQTQ0KPiANCj4gT24gMTEvMjkvMTggOTowOCBBTSwgSm9ha2ltIFpoYW5nIHdyb3RlOg0K
-PiA+IEZyb206IEFpc2hlbmcgRG9uZyA8YWlzaGVuZy5kb25nQG54cC5jb20+DQo+ID4NCj4gPiBG
-bGV4Y2FuIHdpbGwgYmUgZGlzYWJsZWQgZHVyaW5nIHN1c3BlbmQgaWYgbm8gd2FrZXVwIGZ1bmN0
-aW9uIHJlcXVpcmVkDQo+ID4gYW5kIGVuYWJsZWQgYWZ0ZXIgcmVzdW1lIGFjY29yZGluZ2x5LiBE
-dXJpbmcgdGhpcyBwZXJpb2QsIHdlIGNvdWxkDQo+ID4gZXhwbGljaXRseSBkaXNhYmxlIGNsb2Nr
-cy4NCj4gPiBTaW5jZSBQTSBpcyBvcHRpb25hbCwgdGhlIGNsb2NrIGlzIGVuYWJsZWQgYXQgcHJv
-YmUgdG8gZ3VhcmFudGUgdGhlDQo+ID4gY2xvY2sgaXMgcnVubmluZyB3aGVuIFBNIGlzIG5vdCBl
-bmFibGVkIGluIHRoZSBrZXJuZWwuDQo+ID4NCj4gPiBJbXBsZW1lbnQgUnVudGltZSBQTSB3aGlj
-aCB3aWxsOg0KPiA+IDEpIFdpdGhvdXQgQ09ORklHX1BNLCBjbG9jayBpcyBydW5uaW5nIHdoZXRo
-ZXIgRmxleGNhbiBvcGVuZWQgb3IgY2xvc2VkLg0KPiANCj4gQUNLDQo+IA0KPiA+IDIpIFdpdGgg
-Q09ORklHX1BNLCBjbG9jayBlbmFibGVkIHdoaWxlIEZsZXhjYW4gb3BlbmVkIGFuZCBkaXNhYmxl
-ZA0KPiA+IHdoZW4NCj4gDQo+IC4uLndoZW4gY2xvc2VkPw0KPiANCj4gSSB0aGluayB0aGUgc2Vu
-dGVuY2UgbWlzc2VzIHNvbWV0aGluZyBhdCB0aGUgZW5kLg0KPiANCj4gQW5kIGl0IGRvZXNuJ3Qg
-d29yazoNCj4gDQo+ID4gcm9vdEBEaXN0cm9LaXQ6fiBpZmNvbmZpZyBjYW4wDQo+ID4gY2FuMCAg
-ICAgIExpbmsgZW5jYXA6VU5TUEVDICBIV2FkZHINCj4gMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAt
-MDAtMDAtMDAtMDAtMDAtMDAtMDAtMDANCj4gPiAgICAgICAgICAgTk9BUlAgIE1UVToxNiAgTWV0
-cmljOjENCj4gPiAgICAgICAgICAgUlggcGFja2V0czowIGVycm9yczowIGRyb3BwZWQ6MCBvdmVy
-cnVuczowIGZyYW1lOjANCj4gPiAgICAgICAgICAgVFggcGFja2V0czowIGVycm9yczowIGRyb3Bw
-ZWQ6MCBvdmVycnVuczowIGNhcnJpZXI6MA0KPiA+ICAgICAgICAgICBjb2xsaXNpb25zOjAgdHhx
-dWV1ZWxlbjoxMA0KPiA+ICAgICAgICAgICBSWCBieXRlczowICgwLjAgQikgIFRYIGJ5dGVzOjAg
-KDAuMCBCKQ0KPiA+ICAgICAgICAgICBJbnRlcnJ1cHQ6MzQNCj4gPg0KPiA+IHJvb3RARGlzdHJv
-S2l0On4gZ3JlcCBjYW4gL3N5cy9rZXJuZWwvZGVidWcvY2xrL2Nsa19zdW1tYXJ5DQo+ID4gICAg
-ICAgICAgICAgICAgIGNhbl9yb290ICAgICAgICAgICAgICAxICAgICAgICAxICAgICAgICAwDQo+
-IDMwMDAwMDAwICAgICAgICAgIDAgICAgIDAgIDUwMDAwDQo+ID4gICAgICAgICAgICAgICAgICAg
-IGNhbjJfc2VyaWFsICAgICAgICAwICAgICAgICAwICAgICAgICAwDQo+IDMwMDAwMDAwICAgICAg
-ICAgIDAgICAgIDAgIDUwMDAwDQo+ID4gICAgICAgICAgICAgICAgICAgIGNhbjFfc2VyaWFsICAg
-ICAgICAxICAgICAgICAxICAgICAgICAwDQo+IDMwMDAwMDAwICAgICAgICAgIDAgICAgIDAgIDUw
-MDAwDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNhbjJfaXBnICAgICAgIDAgICAg
-ICAgIDAgICAgICAgIDANCj4gNjYwMDAwMDAgICAgICAgICAgMCAgICAgMCAgNTAwMDANCj4gPiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgY2FuMV9pcGcgICAgICAgMSAgICAgICAgMSAgICAg
-ICAgMA0KPiA2NjAwMDAwMCAgICAgICAgICAwICAgICAwICA1MDAwMA0KPiANCj4gY2FuMCBpcyBk
-b3duLCB3aGlsZSB0aGUgY2FuMV97c2VyaWFsLGlwZ30gYXJlIGVuYWJsZWQuDQoNCkhpIE1hcmMs
-DQoNClRoYW5rcyBmb3IgcmV2aWV3aW5nIHRoZSBwYXRjaCwgYW5kIHRoZW4gSSB3aWxsIHRlc3Qg
-YW5kIGZpeCB0aGUgaXNzdWUuDQoNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KDQo+ID4g
-MykgUmVnYXJkbGVzcyBvZiBDT05GSUdfUE0gZW5hYmxlZCBvciBub3QsIEZsZXhjYW4gcnVudGlt
-ZSBzdGF0dXMgaXMNCj4gPiAgICBTVVNQRU5ERUQgZHVyaW5nIEZsZXhjYW4gY2xvc2VkIGFuZCBB
-Q1RJVkUgd2hlbiBGbGV4Y2FuIG9wZW5lZC4NCj4gPiA0KSBNYWtlIFBvd2VyIERvbWFpbiBmcmFt
-ZXdvcmsgYmUgYWJsZSB0byBzaHV0ZG93biB0aGUgY29ycmVzcG9uZGluZw0KPiBwb3dlcg0KPiA+
-ICAgIGRvbWFpbiBvZiB0aGlzIGRldmljZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEFpc2hl
-bmcgRG9uZyA8YWlzaGVuZy5kb25nQG54cC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogSm9ha2lt
-IFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiBDaGFuZ2VMb2c6
-DQo+ID4gVjEtPlYyOg0KPiA+IAkqcmViYXNlZCBvbiBwYXRjaCAiY2FuOiBmbGV4Y2FuOiBhZGQg
-c2VsZiB3YWtldXAgc3VwcG9ydCIuDQo+ID4gVjItPlYzOg0KPiA+IAkqZml4IGRldmljZSBmYWls
-cyB0byBwcm9iZSB3aXRob3V0IENPTkZJR19QTS4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9uZXQv
-Y2FuL2ZsZXhjYW4uYyB8IDEwNw0KPiA+ICsrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0t
-LS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA3MCBpbnNlcnRpb25zKCspLCAzNyBkZWxldGlv
-bnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIv
-ZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiA+IGluZGV4IDBmMzZlYWZlM2FjMS4uY2M2MmE5
-NzIzN2RiIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiAr
-KysgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4gQEAgLTI0LDYgKzI0LDcgQEANCj4g
-PiAgI2luY2x1ZGUgPGxpbnV4L29mLmg+DQo+ID4gICNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2Uu
-aD4NCj4gPiAgI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPg0KPiA+ICsjaW5jbHVk
-ZSA8bGludXgvcG1fcnVudGltZS5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvcmVndWxhdG9yL2Nv
-bnN1bWVyLmg+ICAjaW5jbHVkZSA8bGludXgvcmVnbWFwLmg+DQo+ID4NCj4gPiBAQCAtMjc3LDYg
-KzI3OCw3IEBAIHN0cnVjdCBmbGV4Y2FuX3ByaXYgew0KPiA+ICAJdTMyIHJlZ19pbWFzazFfZGVm
-YXVsdDsNCj4gPiAgCXUzMiByZWdfaW1hc2syX2RlZmF1bHQ7DQo+ID4NCj4gPiArCXN0cnVjdCBk
-ZXZpY2UgKmRldjsNCj4gPiAgCXN0cnVjdCBjbGsgKmNsa19pcGc7DQo+ID4gIAlzdHJ1Y3QgY2xr
-ICpjbGtfcGVyOw0KPiA+ICAJY29uc3Qgc3RydWN0IGZsZXhjYW5fZGV2dHlwZV9kYXRhICpkZXZ0
-eXBlX2RhdGE7IEBAIC00NDQsNiArNDQ2LDI3DQo+ID4gQEAgc3RhdGljIGlubGluZSB2b2lkIGZs
-ZXhjYW5fZXJyb3JfaXJxX2Rpc2FibGUoY29uc3Qgc3RydWN0IGZsZXhjYW5fcHJpdg0KPiAqcHJp
-dikNCj4gPiAgCXByaXYtPndyaXRlKHJlZ19jdHJsLCAmcmVncy0+Y3RybCk7DQo+ID4gIH0NCj4g
-Pg0KPiA+ICtzdGF0aWMgaW50IGZsZXhjYW5fY2xrc19lbmFibGUoY29uc3Qgc3RydWN0IGZsZXhj
-YW5fcHJpdiAqcHJpdikgew0KPiA+ICsJaW50IGVycjsNCj4gPiArDQo+ID4gKwllcnIgPSBjbGtf
-cHJlcGFyZV9lbmFibGUocHJpdi0+Y2xrX2lwZyk7DQo+ID4gKwlpZiAoZXJyKQ0KPiA+ICsJCXJl
-dHVybiBlcnI7DQo+ID4gKw0KPiA+ICsJZXJyID0gY2xrX3ByZXBhcmVfZW5hYmxlKHByaXYtPmNs
-a19wZXIpOw0KPiA+ICsJaWYgKGVycikNCj4gPiArCQljbGtfZGlzYWJsZV91bnByZXBhcmUocHJp
-di0+Y2xrX2lwZyk7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIGVycjsNCj4gPiArfQ0KPiA+ICsNCj4g
-PiArc3RhdGljIHZvaWQgZmxleGNhbl9jbGtzX2Rpc2FibGUoY29uc3Qgc3RydWN0IGZsZXhjYW5f
-cHJpdiAqcHJpdikgew0KPiA+ICsJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHByaXYtPmNsa19pcGcp
-Ow0KPiA+ICsJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHByaXYtPmNsa19wZXIpOw0KPiA+ICt9DQo+
-ID4gKw0KPiA+ICBzdGF0aWMgaW5saW5lIGludCBmbGV4Y2FuX3RyYW5zY2VpdmVyX2VuYWJsZShj
-b25zdCBzdHJ1Y3QNCj4gPiBmbGV4Y2FuX3ByaXYgKnByaXYpICB7DQo+ID4gIAlpZiAoIXByaXYt
-PnJlZ194Y2VpdmVyKQ0KPiA+IEBAIC01NzAsMTkgKzU5MywxMyBAQCBzdGF0aWMgaW50IGZsZXhj
-YW5fZ2V0X2JlcnJfY291bnRlcihjb25zdCBzdHJ1Y3QNCj4gbmV0X2RldmljZSAqZGV2LA0KPiA+
-ICAJY29uc3Qgc3RydWN0IGZsZXhjYW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQo+
-ID4gIAlpbnQgZXJyOw0KPiA+DQo+ID4gLQllcnIgPSBjbGtfcHJlcGFyZV9lbmFibGUocHJpdi0+
-Y2xrX2lwZyk7DQo+ID4gLQlpZiAoZXJyKQ0KPiA+ICsJZXJyID0gcG1fcnVudGltZV9nZXRfc3lu
-Yyhwcml2LT5kZXYpOw0KPiA+ICsJaWYgKGVyciA8IDApDQo+ID4gIAkJcmV0dXJuIGVycjsNCj4g
-Pg0KPiA+IC0JZXJyID0gY2xrX3ByZXBhcmVfZW5hYmxlKHByaXYtPmNsa19wZXIpOw0KPiA+IC0J
-aWYgKGVycikNCj4gPiAtCQlnb3RvIG91dF9kaXNhYmxlX2lwZzsNCj4gPiAtDQo+ID4gIAllcnIg
-PSBfX2ZsZXhjYW5fZ2V0X2JlcnJfY291bnRlcihkZXYsIGJlYyk7DQo+ID4NCj4gPiAtCWNsa19k
-aXNhYmxlX3VucHJlcGFyZShwcml2LT5jbGtfcGVyKTsNCj4gPiAtIG91dF9kaXNhYmxlX2lwZzoN
-Cj4gPiAtCWNsa19kaXNhYmxlX3VucHJlcGFyZShwcml2LT5jbGtfaXBnKTsNCj4gPiArCXBtX3J1
-bnRpbWVfcHV0KHByaXYtPmRldik7DQo+ID4NCj4gPiAgCXJldHVybiBlcnI7DQo+ID4gIH0NCj4g
-PiBAQCAtMTIxNSwxNyArMTIzMiwxMyBAQCBzdGF0aWMgaW50IGZsZXhjYW5fb3BlbihzdHJ1Y3Qg
-bmV0X2RldmljZSAqZGV2KQ0KPiA+ICAJc3RydWN0IGZsZXhjYW5fcHJpdiAqcHJpdiA9IG5ldGRl
-dl9wcml2KGRldik7DQo+ID4gIAlpbnQgZXJyOw0KPiA+DQo+ID4gLQllcnIgPSBjbGtfcHJlcGFy
-ZV9lbmFibGUocHJpdi0+Y2xrX2lwZyk7DQo+ID4gLQlpZiAoZXJyKQ0KPiA+ICsJZXJyID0gcG1f
-cnVudGltZV9nZXRfc3luYyhwcml2LT5kZXYpOw0KPiA+ICsJaWYgKGVyciA8IDApDQo+ID4gIAkJ
-cmV0dXJuIGVycjsNCj4gPg0KPiA+IC0JZXJyID0gY2xrX3ByZXBhcmVfZW5hYmxlKHByaXYtPmNs
-a19wZXIpOw0KPiA+IC0JaWYgKGVycikNCj4gPiAtCQlnb3RvIG91dF9kaXNhYmxlX2lwZzsNCj4g
-PiAtDQo+ID4gIAllcnIgPSBvcGVuX2NhbmRldihkZXYpOw0KPiA+ICAJaWYgKGVycikNCj4gPiAt
-CQlnb3RvIG91dF9kaXNhYmxlX3BlcjsNCj4gPiArCQlnb3RvIG91dF9kaXNhYmxlX2Nsa3M7DQo+
-ID4NCj4gPiAgCWVyciA9IHJlcXVlc3RfaXJxKGRldi0+aXJxLCBmbGV4Y2FuX2lycSwgSVJRRl9T
-SEFSRUQsIGRldi0+bmFtZSwgZGV2KTsNCj4gPiAgCWlmIChlcnIpDQo+ID4gQEAgLTEyODgsMTAg
-KzEzMDEsOCBAQCBzdGF0aWMgaW50IGZsZXhjYW5fb3BlbihzdHJ1Y3QgbmV0X2RldmljZSAqZGV2
-KQ0KPiA+ICAJZnJlZV9pcnEoZGV2LT5pcnEsIGRldik7DQo+ID4gICBvdXRfY2xvc2U6DQo+ID4g
-IAljbG9zZV9jYW5kZXYoZGV2KTsNCj4gPiAtIG91dF9kaXNhYmxlX3BlcjoNCj4gPiAtCWNsa19k
-aXNhYmxlX3VucHJlcGFyZShwcml2LT5jbGtfcGVyKTsNCj4gPiAtIG91dF9kaXNhYmxlX2lwZzoN
-Cj4gPiAtCWNsa19kaXNhYmxlX3VucHJlcGFyZShwcml2LT5jbGtfaXBnKTsNCj4gPiArIG91dF9k
-aXNhYmxlX2Nsa3M6DQo+ID4gKwlwbV9ydW50aW1lX3B1dChwcml2LT5kZXYpOw0KPiA+DQo+ID4g
-IAlyZXR1cm4gZXJyOw0KPiA+ICB9DQo+ID4gQEAgLTEzMDYsMTAgKzEzMTcsOSBAQCBzdGF0aWMg
-aW50IGZsZXhjYW5fY2xvc2Uoc3RydWN0IG5ldF9kZXZpY2UNCj4gPiAqZGV2KQ0KPiA+DQo+ID4g
-IAljYW5fcnhfb2ZmbG9hZF9kZWwoJnByaXYtPm9mZmxvYWQpOw0KPiA+ICAJZnJlZV9pcnEoZGV2
-LT5pcnEsIGRldik7DQo+ID4gLQljbGtfZGlzYWJsZV91bnByZXBhcmUocHJpdi0+Y2xrX3Blcik7
-DQo+ID4gLQljbGtfZGlzYWJsZV91bnByZXBhcmUocHJpdi0+Y2xrX2lwZyk7DQo+ID4NCj4gPiAg
-CWNsb3NlX2NhbmRldihkZXYpOw0KPiA+ICsJcG1fcnVudGltZV9wdXQocHJpdi0+ZGV2KTsNCj4g
-Pg0KPiA+ICAJY2FuX2xlZF9ldmVudChkZXYsIENBTl9MRURfRVZFTlRfU1RPUCk7DQo+ID4NCj4g
-PiBAQCAtMTM0OSwxOCArMTM1OSwxNCBAQCBzdGF0aWMgaW50IHJlZ2lzdGVyX2ZsZXhjYW5kZXYo
-c3RydWN0IG5ldF9kZXZpY2UNCj4gKmRldikNCj4gPiAgCXN0cnVjdCBmbGV4Y2FuX3JlZ3MgX19p
-b21lbSAqcmVncyA9IHByaXYtPnJlZ3M7DQo+ID4gIAl1MzIgcmVnLCBlcnI7DQo+ID4NCj4gPiAt
-CWVyciA9IGNsa19wcmVwYXJlX2VuYWJsZShwcml2LT5jbGtfaXBnKTsNCj4gPiArCWVyciA9IGZs
-ZXhjYW5fY2xrc19lbmFibGUocHJpdik7DQo+ID4gIAlpZiAoZXJyKQ0KPiA+ICAJCXJldHVybiBl
-cnI7DQo+ID4NCj4gPiAtCWVyciA9IGNsa19wcmVwYXJlX2VuYWJsZShwcml2LT5jbGtfcGVyKTsN
-Cj4gPiAtCWlmIChlcnIpDQo+ID4gLQkJZ290byBvdXRfZGlzYWJsZV9pcGc7DQo+ID4gLQ0KPiA+
-ICAJLyogc2VsZWN0ICJidXMgY2xvY2siLCBjaGlwIG11c3QgYmUgZGlzYWJsZWQgKi8NCj4gPiAg
-CWVyciA9IGZsZXhjYW5fY2hpcF9kaXNhYmxlKHByaXYpOw0KPiA+ICAJaWYgKGVycikNCj4gPiAt
-CQlnb3RvIG91dF9kaXNhYmxlX3BlcjsNCj4gPiArCQlnb3RvIG91dF9kaXNhYmxlX2Nsa3M7DQo+
-ID4gIAlyZWcgPSBwcml2LT5yZWFkKCZyZWdzLT5jdHJsKTsNCj4gPiAgCXJlZyB8PSBGTEVYQ0FO
-X0NUUkxfQ0xLX1NSQzsNCj4gPiAgCXByaXYtPndyaXRlKHJlZywgJnJlZ3MtPmN0cmwpOw0KPiA+
-IEBAIC0xMzg5LDEzICsxMzk1LDEyIEBAIHN0YXRpYyBpbnQgcmVnaXN0ZXJfZmxleGNhbmRldihz
-dHJ1Y3QNCj4gPiBuZXRfZGV2aWNlICpkZXYpDQo+ID4NCj4gPiAgCWVyciA9IHJlZ2lzdGVyX2Nh
-bmRldihkZXYpOw0KPiA+DQo+ID4gLQkvKiBkaXNhYmxlIGNvcmUgYW5kIHR1cm4gb2ZmIGNsb2Nr
-cyAqLw0KPiANCj4gUGxlYXNlIGRpc2FibGUgdGhlIGRldmljZSwgZXZlbiBpZiBrZWVwaW5nIHRo
-ZSBjbG9ja3Mgb24uDQo+IA0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gKw0KPiA+ICAgb3V0X2NoaXBf
-ZGlzYWJsZToNCj4gPiAgCWZsZXhjYW5fY2hpcF9kaXNhYmxlKHByaXYpOw0KPiA+IC0gb3V0X2Rp
-c2FibGVfcGVyOg0KPiA+IC0JY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHByaXYtPmNsa19wZXIpOw0K
-PiA+IC0gb3V0X2Rpc2FibGVfaXBnOg0KPiA+IC0JY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHByaXYt
-PmNsa19pcGcpOw0KPiA+ICsgb3V0X2Rpc2FibGVfY2xrczoNCj4gPiArCWZsZXhjYW5fY2xrc19k
-aXNhYmxlKHByaXYpOw0KPiA+DQo+ID4gIAlyZXR1cm4gZXJyOw0KPiA+ICB9DQo+ID4gQEAgLTE1
-NTYsNiArMTU2MSw3IEBAIHN0YXRpYyBpbnQgZmxleGNhbl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1f
-ZGV2aWNlDQo+ICpwZGV2KQ0KPiA+ICAJCXByaXYtPndyaXRlID0gZmxleGNhbl93cml0ZV9sZTsN
-Cj4gPiAgCX0NCj4gPg0KPiA+ICsJcHJpdi0+ZGV2ID0gJnBkZXYtPmRldjsNCj4gPiAgCXByaXYt
-PmNhbi5jbG9jay5mcmVxID0gY2xvY2tfZnJlcTsNCj4gPiAgCXByaXYtPmNhbi5iaXR0aW1pbmdf
-Y29uc3QgPSAmZmxleGNhbl9iaXR0aW1pbmdfY29uc3Q7DQo+ID4gIAlwcml2LT5jYW4uZG9fc2V0
-X21vZGUgPSBmbGV4Y2FuX3NldF9tb2RlOyBAQCAtMTU4Niw2ICsxNTkyLDkgQEANCj4gPiBzdGF0
-aWMgaW50IGZsZXhjYW5fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAg
-CWRldl9pbmZvKCZwZGV2LT5kZXYsICJkZXZpY2UgcmVnaXN0ZXJlZCAocmVnX2Jhc2U9JXAsIGly
-cT0lZClcbiIsDQo+ID4gIAkJIHByaXYtPnJlZ3MsIGRldi0+aXJxKTsNCj4gPg0KPiA+ICsJcG1f
-cnVudGltZV9lbmFibGUoJnBkZXYtPmRldik7DQo+ID4gKwlwbV9ydW50aW1lX3B1dCgmcGRldi0+
-ZGV2KTsNCj4gPiArDQo+ID4gIAlyZXR1cm4gMDsNCj4gPg0KPiA+ICAgZmFpbGVkX3JlZ2lzdGVy
-Og0KPiA+IEBAIC0xNTk4LDYgKzE2MDcsNyBAQCBzdGF0aWMgaW50IGZsZXhjYW5fcmVtb3ZlKHN0
-cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4gIAlzdHJ1Y3QgbmV0X2RldmljZSAq
-ZGV2ID0gcGxhdGZvcm1fZ2V0X2RydmRhdGEocGRldik7DQo+ID4NCj4gPiAgCXVucmVnaXN0ZXJf
-ZmxleGNhbmRldihkZXYpOw0KPiA+ICsJcG1fcnVudGltZV9kaXNhYmxlKCZwZGV2LT5kZXYpOw0K
-PiA+ICAJZnJlZV9jYW5kZXYoZGV2KTsNCj4gPg0KPiA+ICAJcmV0dXJuIDA7DQo+ID4gQEAgLTE2
-MDcsNyArMTYxNyw3IEBAIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQNCj4gZmxleGNhbl9zdXNw
-ZW5kKHN0cnVjdA0KPiA+IGRldmljZSAqZGV2aWNlKSAgew0KPiA+ICAJc3RydWN0IG5ldF9kZXZp
-Y2UgKmRldiA9IGRldl9nZXRfZHJ2ZGF0YShkZXZpY2UpOw0KPiA+ICAJc3RydWN0IGZsZXhjYW5f
-cHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQo+ID4gLQlpbnQgZXJyOw0KPiA+ICsJaW50
-IGVyciA9IDA7DQo+ID4NCj4gPiAgCWlmIChuZXRpZl9ydW5uaW5nKGRldikpIHsNCj4gPiAgCQkv
-KiBpZiB3YWtldXAgaXMgZW5hYmxlZCwgZW50ZXIgc3RvcCBtb2RlIEBAIC0xNjIwLDIwICsxNjMw
-LDIyDQo+IEBADQo+ID4gc3RhdGljIGludCBfX21heWJlX3VudXNlZCBmbGV4Y2FuX3N1c3BlbmQo
-c3RydWN0IGRldmljZSAqZGV2aWNlKQ0KPiA+ICAJCQllcnIgPSBmbGV4Y2FuX2NoaXBfZGlzYWJs
-ZShwcml2KTsNCj4gPiAgCQkJaWYgKGVycikNCj4gPiAgCQkJCXJldHVybiBlcnI7DQo+ID4gKw0K
-PiA+ICsJCQllcnIgPSBwbV9ydW50aW1lX2ZvcmNlX3N1c3BlbmQoZGV2aWNlKTsNCj4gPiAgCQl9
-DQo+ID4gIAkJbmV0aWZfc3RvcF9xdWV1ZShkZXYpOw0KPiA+ICAJCW5ldGlmX2RldmljZV9kZXRh
-Y2goZGV2KTsNCj4gPiAgCX0NCj4gPiAgCXByaXYtPmNhbi5zdGF0ZSA9IENBTl9TVEFURV9TTEVF
-UElORzsNCj4gPg0KPiA+IC0JcmV0dXJuIDA7DQo+ID4gKwlyZXR1cm4gZXJyOw0KPiA+ICB9DQo+
-ID4NCj4gPiAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBmbGV4Y2FuX3Jlc3VtZShzdHJ1Y3Qg
-ZGV2aWNlICpkZXZpY2UpICB7DQo+ID4gIAlzdHJ1Y3QgbmV0X2RldmljZSAqZGV2ID0gZGV2X2dl
-dF9kcnZkYXRhKGRldmljZSk7DQo+ID4gIAlzdHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2ID0gbmV0
-ZGV2X3ByaXYoZGV2KTsNCj4gPiAtCWludCBlcnI7DQo+ID4gKwlpbnQgZXJyID0gMDsNCj4gPg0K
-PiA+ICAJcHJpdi0+Y2FuLnN0YXRlID0gQ0FOX1NUQVRFX0VSUk9SX0FDVElWRTsNCj4gPiAgCWlm
-IChuZXRpZl9ydW5uaW5nKGRldikpIHsNCj4gPiBAQCAtMTY0MiwxNCArMTY1NCwzNCBAQCBzdGF0
-aWMgaW50IF9fbWF5YmVfdW51c2VkDQo+IGZsZXhjYW5fcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRl
-dmljZSkNCj4gPiAgCQlpZiAoZGV2aWNlX21heV93YWtldXAoZGV2aWNlKSkgew0KPiA+ICAJCQlk
-aXNhYmxlX2lycV93YWtlKGRldi0+aXJxKTsNCj4gPiAgCQl9IGVsc2Ugew0KPiA+IC0JCQllcnIg
-PSBmbGV4Y2FuX2NoaXBfZW5hYmxlKHByaXYpOw0KPiA+ICsJCQllcnIgPSBwbV9ydW50aW1lX2Zv
-cmNlX3Jlc3VtZShkZXZpY2UpOw0KPiA+ICAJCQlpZiAoZXJyKQ0KPiA+ICAJCQkJcmV0dXJuIGVy
-cjsNCj4gPiArDQo+ID4gKwkJCWVyciA9IGZsZXhjYW5fY2hpcF9lbmFibGUocHJpdik7DQo+ID4g
-IAkJfQ0KPiA+ICAJfQ0KPiA+ICsJcmV0dXJuIGVycjsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3Rh
-dGljIGludCBfX21heWJlX3VudXNlZCBmbGV4Y2FuX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2
-aWNlDQo+ID4gKypkZXZpY2UpIHsNCj4gPiArCXN0cnVjdCBuZXRfZGV2aWNlICpkZXYgPSBkZXZf
-Z2V0X2RydmRhdGEoZGV2aWNlKTsNCj4gPiArCXN0cnVjdCBmbGV4Y2FuX3ByaXYgKnByaXYgPSBu
-ZXRkZXZfcHJpdihkZXYpOw0KPiA+ICsNCj4gPiArCWZsZXhjYW5fY2xrc19kaXNhYmxlKHByaXYp
-Ow0KPiA+ICsNCj4gPiAgCXJldHVybiAwOw0KPiA+ICB9DQo+ID4NCj4gPiArc3RhdGljIGludCBf
-X21heWJlX3VudXNlZCBmbGV4Y2FuX3J1bnRpbWVfcmVzdW1lKHN0cnVjdCBkZXZpY2UNCj4gPiAr
-KmRldmljZSkgew0KPiA+ICsJc3RydWN0IG5ldF9kZXZpY2UgKmRldiA9IGRldl9nZXRfZHJ2ZGF0
-YShkZXZpY2UpOw0KPiA+ICsJc3RydWN0IGZsZXhjYW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2
-KGRldik7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIGZsZXhjYW5fY2xrc19lbmFibGUocHJpdik7DQo+
-ID4gK30NCj4gPiArDQo+ID4gIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgZmxleGNhbl9ub2ly
-cV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UNCj4gPiAqZGV2aWNlKSAgew0KPiA+ICAJc3RydWN0IG5l
-dF9kZXZpY2UgKmRldiA9IGRldl9nZXRfZHJ2ZGF0YShkZXZpY2UpOyBAQCAtMTY3Niw2ICsxNzA4
-LDcNCj4gPiBAQCBzdGF0aWMgaW50IF9fbWF5YmVfdW51c2VkIGZsZXhjYW5fbm9pcnFfcmVzdW1l
-KHN0cnVjdCBkZXZpY2UNCj4gPiAqZGV2aWNlKQ0KPiA+DQo+ID4gIHN0YXRpYyBjb25zdCBzdHJ1
-Y3QgZGV2X3BtX29wcyBmbGV4Y2FuX3BtX29wcyA9IHsNCj4gPiAgCVNFVF9TWVNURU1fU0xFRVBf
-UE1fT1BTKGZsZXhjYW5fc3VzcGVuZCwgZmxleGNhbl9yZXN1bWUpDQo+ID4gKwlTRVRfUlVOVElN
-RV9QTV9PUFMoZmxleGNhbl9ydW50aW1lX3N1c3BlbmQsDQo+IGZsZXhjYW5fcnVudGltZV9yZXN1
-bWUsDQo+ID4gK05VTEwpDQo+ID4gIAlTRVRfTk9JUlFfU1lTVEVNX1NMRUVQX1BNX09QUyhmbGV4
-Y2FuX25vaXJxX3N1c3BlbmQsDQo+ID4gZmxleGNhbl9ub2lycV9yZXN1bWUpICB9Ow0KPiA+DQo+
-ID4NCj4gDQo+IE1hcmMNCj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAg
-ICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVzdHJpYWwgTGludXgg
-U29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IFZlcnRy
-ZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1
-NSB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93d3cucGVu
-Z3V0cm9uaXguZGUgICB8DQoNCg==
+From: Aisheng Dong <aisheng.dong@nxp.com>
+
+Flexcan will be disabled during suspend if no wakeup function required and
+enabled after resume accordingly. During this period, we could explicitly
+disable clocks.
+Since PM is optional, the clock is enabled at probe to guarante the
+clock is running when PM is not enabled in the kernel.
+
+Implement Runtime PM which will:
+1) Without CONFIG_PM, clock is running whether Flexcan up or down.
+2) With CONFIG_PM, clock enabled while Flexcan up and disabled when
+   Flexcan down.
+3) Disable clock when do system suspend and enable clock while system
+   resume.
+4) Make Power Domain framework be able to shutdown the corresponding
+   power domain of this device.
+
+Signed-off-by: Aisheng Dong <aisheng.dong@nxp.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+---
+ChangeLog:
+V1->V2:
+	*rebased on patch "can: flexcan: add self wakeup support".
+V2->V3:
+	*fix device fails to probe without CONFIG_PM.
+V3->V4:
+	*runtime pm enable should ahead of registering device.
+	*disable device even if keeping the clocks on.
+---
+ drivers/net/can/flexcan.c | 111 +++++++++++++++++++++++++-------------
+ 1 file changed, 73 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 0f36eafe3ac1..cad42f20cfe5 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -24,6 +24,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/regmap.h>
+=20
+@@ -277,6 +278,7 @@ struct flexcan_priv {
+ 	u32 reg_imask1_default;
+ 	u32 reg_imask2_default;
+=20
++	struct device *dev;
+ 	struct clk *clk_ipg;
+ 	struct clk *clk_per;
+ 	const struct flexcan_devtype_data *devtype_data;
+@@ -444,6 +446,27 @@ static inline void flexcan_error_irq_disable(const str=
+uct flexcan_priv *priv)
+ 	priv->write(reg_ctrl, &regs->ctrl);
+ }
+=20
++static int flexcan_clks_enable(const struct flexcan_priv *priv)
++{
++	int err;
++
++	err =3D clk_prepare_enable(priv->clk_ipg);
++	if (err)
++		return err;
++
++	err =3D clk_prepare_enable(priv->clk_per);
++	if (err)
++		clk_disable_unprepare(priv->clk_ipg);
++
++	return err;
++}
++
++static void flexcan_clks_disable(const struct flexcan_priv *priv)
++{
++	clk_disable_unprepare(priv->clk_ipg);
++	clk_disable_unprepare(priv->clk_per);
++}
++
+ static inline int flexcan_transceiver_enable(const struct flexcan_priv *pr=
+iv)
+ {
+ 	if (!priv->reg_xceiver)
+@@ -570,19 +593,13 @@ static int flexcan_get_berr_counter(const struct net_=
+device *dev,
+ 	const struct flexcan_priv *priv =3D netdev_priv(dev);
+ 	int err;
+=20
+-	err =3D clk_prepare_enable(priv->clk_ipg);
+-	if (err)
++	err =3D pm_runtime_get_sync(priv->dev);
++	if (err < 0)
+ 		return err;
+=20
+-	err =3D clk_prepare_enable(priv->clk_per);
+-	if (err)
+-		goto out_disable_ipg;
+-
+ 	err =3D __flexcan_get_berr_counter(dev, bec);
+=20
+-	clk_disable_unprepare(priv->clk_per);
+- out_disable_ipg:
+-	clk_disable_unprepare(priv->clk_ipg);
++	pm_runtime_put(priv->dev);
+=20
+ 	return err;
+ }
+@@ -1215,17 +1232,13 @@ static int flexcan_open(struct net_device *dev)
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+ 	int err;
+=20
+-	err =3D clk_prepare_enable(priv->clk_ipg);
+-	if (err)
++	err =3D pm_runtime_get_sync(priv->dev);
++	if (err < 0)
+ 		return err;
+=20
+-	err =3D clk_prepare_enable(priv->clk_per);
+-	if (err)
+-		goto out_disable_ipg;
+-
+ 	err =3D open_candev(dev);
+ 	if (err)
+-		goto out_disable_per;
++		goto out_disable_clks;
+=20
+ 	err =3D request_irq(dev->irq, flexcan_irq, IRQF_SHARED, dev->name, dev);
+ 	if (err)
+@@ -1288,10 +1301,8 @@ static int flexcan_open(struct net_device *dev)
+ 	free_irq(dev->irq, dev);
+  out_close:
+ 	close_candev(dev);
+- out_disable_per:
+-	clk_disable_unprepare(priv->clk_per);
+- out_disable_ipg:
+-	clk_disable_unprepare(priv->clk_ipg);
++ out_disable_clks:
++	pm_runtime_put(priv->dev);
+=20
+ 	return err;
+ }
+@@ -1306,10 +1317,9 @@ static int flexcan_close(struct net_device *dev)
+=20
+ 	can_rx_offload_del(&priv->offload);
+ 	free_irq(dev->irq, dev);
+-	clk_disable_unprepare(priv->clk_per);
+-	clk_disable_unprepare(priv->clk_ipg);
+=20
+ 	close_candev(dev);
++	pm_runtime_put(priv->dev);
+=20
+ 	can_led_event(dev, CAN_LED_EVENT_STOP);
+=20
+@@ -1349,18 +1359,14 @@ static int register_flexcandev(struct net_device *d=
+ev)
+ 	struct flexcan_regs __iomem *regs =3D priv->regs;
+ 	u32 reg, err;
+=20
+-	err =3D clk_prepare_enable(priv->clk_ipg);
++	err =3D flexcan_clks_enable(priv);
+ 	if (err)
+ 		return err;
+=20
+-	err =3D clk_prepare_enable(priv->clk_per);
+-	if (err)
+-		goto out_disable_ipg;
+-
+ 	/* select "bus clock", chip must be disabled */
+ 	err =3D flexcan_chip_disable(priv);
+ 	if (err)
+-		goto out_disable_per;
++		goto out_disable_clks;
+ 	reg =3D priv->read(&regs->ctrl);
+ 	reg |=3D FLEXCAN_CTRL_CLK_SRC;
+ 	priv->write(reg, &regs->ctrl);
+@@ -1389,14 +1395,13 @@ static int register_flexcandev(struct net_device *d=
+ev)
+=20
+ 	err =3D register_candev(dev);
+=20
+-	/* disable core and turn off clocks */
+- out_chip_disable:
+ 	flexcan_chip_disable(priv);
+- out_disable_per:
+-	clk_disable_unprepare(priv->clk_per);
+- out_disable_ipg:
+-	clk_disable_unprepare(priv->clk_ipg);
++	return 0;
+=20
++ out_chip_disable:
++	flexcan_chip_disable(priv);
++ out_disable_clks:
++	flexcan_clks_disable(priv);
+ 	return err;
+ }
+=20
+@@ -1556,6 +1561,7 @@ static int flexcan_probe(struct platform_device *pdev=
+)
+ 		priv->write =3D flexcan_write_le;
+ 	}
+=20
++	priv->dev =3D &pdev->dev;
+ 	priv->can.clock.freq =3D clock_freq;
+ 	priv->can.bittiming_const =3D &flexcan_bittiming_const;
+ 	priv->can.do_set_mode =3D flexcan_set_mode;
+@@ -1569,6 +1575,10 @@ static int flexcan_probe(struct platform_device *pde=
+v)
+ 	priv->devtype_data =3D devtype_data;
+ 	priv->reg_xceiver =3D reg_xceiver;
+=20
++	pm_runtime_get_noresume(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++
+ 	err =3D register_flexcandev(dev);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "registering netdev failed\n");
+@@ -1586,6 +1596,7 @@ static int flexcan_probe(struct platform_device *pdev=
+)
+ 	dev_info(&pdev->dev, "device registered (reg_base=3D%p, irq=3D%d)\n",
+ 		 priv->regs, dev->irq);
+=20
++	pm_runtime_put(&pdev->dev);
+ 	return 0;
+=20
+  failed_register:
+@@ -1598,6 +1609,7 @@ static int flexcan_remove(struct platform_device *pde=
+v)
+ 	struct net_device *dev =3D platform_get_drvdata(pdev);
+=20
+ 	unregister_flexcandev(dev);
++	pm_runtime_disable(&pdev->dev);
+ 	free_candev(dev);
+=20
+ 	return 0;
+@@ -1607,7 +1619,7 @@ static int __maybe_unused flexcan_suspend(struct devi=
+ce *device)
+ {
+ 	struct net_device *dev =3D dev_get_drvdata(device);
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+-	int err;
++	int err =3D 0;
+=20
+ 	if (netif_running(dev)) {
+ 		/* if wakeup is enabled, enter stop mode
+@@ -1620,20 +1632,22 @@ static int __maybe_unused flexcan_suspend(struct de=
+vice *device)
+ 			err =3D flexcan_chip_disable(priv);
+ 			if (err)
+ 				return err;
++
++			err =3D pm_runtime_force_suspend(device);
+ 		}
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+ 	}
+ 	priv->can.state =3D CAN_STATE_SLEEPING;
+=20
+-	return 0;
++	return err;
+ }
+=20
+ static int __maybe_unused flexcan_resume(struct device *device)
+ {
+ 	struct net_device *dev =3D dev_get_drvdata(device);
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+-	int err;
++	int err =3D 0;
+=20
+ 	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+ 	if (netif_running(dev)) {
+@@ -1642,14 +1656,34 @@ static int __maybe_unused flexcan_resume(struct dev=
+ice *device)
+ 		if (device_may_wakeup(device)) {
+ 			disable_irq_wake(dev->irq);
+ 		} else {
+-			err =3D flexcan_chip_enable(priv);
++			err =3D pm_runtime_force_resume(device);
+ 			if (err)
+ 				return err;
++
++			err =3D flexcan_chip_enable(priv);
+ 		}
+ 	}
++	return err;
++}
++
++static int __maybe_unused flexcan_runtime_suspend(struct device *device)
++{
++	struct net_device *dev =3D dev_get_drvdata(device);
++	struct flexcan_priv *priv =3D netdev_priv(dev);
++
++	flexcan_clks_disable(priv);
++
+ 	return 0;
+ }
+=20
++static int __maybe_unused flexcan_runtime_resume(struct device *device)
++{
++	struct net_device *dev =3D dev_get_drvdata(device);
++	struct flexcan_priv *priv =3D netdev_priv(dev);
++
++	return flexcan_clks_enable(priv);
++}
++
+ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
+ {
+ 	struct net_device *dev =3D dev_get_drvdata(device);
+@@ -1676,6 +1710,7 @@ static int __maybe_unused flexcan_noirq_resume(struct=
+ device *device)
+=20
+ static const struct dev_pm_ops flexcan_pm_ops =3D {
+ 	SET_SYSTEM_SLEEP_PM_OPS(flexcan_suspend, flexcan_resume)
++	SET_RUNTIME_PM_OPS(flexcan_runtime_suspend, flexcan_runtime_resume, NULL)
+ 	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(flexcan_noirq_suspend, flexcan_noirq_resume=
+)
+ };
+=20
+--=20
+2.17.1
