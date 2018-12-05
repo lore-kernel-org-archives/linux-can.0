@@ -1,48 +1,64 @@
 From: Dan Murphy <dmurphy@ti.com>
-Subject: [[RFC] PATCH v2 0/4] M_CAN framework patches
-Date: Wed, 5 Dec 2018 13:28:21 -0600
-Message-ID: <20181205192825.11555-1-dmurphy@ti.com>
+Subject: [[RFC] PATCH v2 3/4] dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+Date: Wed, 5 Dec 2018 13:28:24 -0600
+Message-ID: <20181205192825.11555-4-dmurphy@ti.com>
+References: <20181205192825.11555-1-dmurphy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181205192825.11555-1-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-All
+DT binding documentation for TI TCAN4x5x driver.
 
-This patch series contains no code modifications.  Based on Wolfgangs advice
-I moved the files to different names and committe them independently so they
-can be reviewed easier.
-
-The first patch create the framework code abstracted from the main m_can.c.
-The second patch adapts the m_can.c to use the framework code
-The final patches add the TCAN device to the use the m_can framework.
-
-Again these patches are RFC and no code modifications were made in v2.
-I will be updating the code based on this version.
-
-Dan
-
-Dan Murphy (4):
-  can: m_can: Create a m_can platform framework
-  can: m_can: Migrate the m_can code to use the framework
-  dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
-  can: tcan4x5x: Add tcan4x5x driver to the kernel
-
- .../devicetree/bindings/net/can/tcan4x5x.txt  |  34 ++
- drivers/net/can/m_can/Kconfig                 |  18 +
- drivers/net/can/m_can/Makefile                |   4 +-
- drivers/net/can/m_can/m_can.c                 | 479 +++++++++---------
- drivers/net/can/m_can/m_can_platform.c        | 168 ++++++
- drivers/net/can/m_can/m_can_platform.h        | 100 ++++
- drivers/net/can/m_can/tcan4x5x.c              | 321 ++++++++++++
- 7 files changed, 870 insertions(+), 254 deletions(-)
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../devicetree/bindings/net/can/tcan4x5x.txt  | 34 +++++++++++++++++++
+ 1 file changed, 34 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
- create mode 100644 drivers/net/can/m_can/m_can_platform.c
- create mode 100644 drivers/net/can/m_can/m_can_platform.h
- create mode 100644 drivers/net/can/m_can/tcan4x5x.c
 
+diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+new file mode 100644
+index 000000000000..c742d0f10861
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -0,0 +1,34 @@
++Texas Instruments TCAN4x5x CAN Controller
++================================================
++
++This file provides device node information for the TCAN4x5x interface contains.
++
++Required properties:
++	- compatible: "ti,tcan4x5x"
++	- reg: 0
++	- #address-cells : 1
++	- #size-cells : 0
++	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
++			     operate at should be less than or equal to 18 MHz.
++	- data-ready-gpios: Interrupt GPIO for data and error reporting.
++	- wake-up-gpios: Wake up GPIO to wake up the TCAN device
++
++See Documentation/devicetree/bindings/net/can/m_can.txt for additional
++required property details.
++
++Optional properties:
++	- reset-gpios: Hardwired output GPIO. If not defined then software
++		       reset.
++
++Example:
++tcan4x5x: tcan4x5x@0 {
++		compatible = "ti,tcan4x5x";
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		clocks = <&tclkin_ck>;
++		spi-max-frequency = <10000000>;
++		data-ready-gpios = <&gpio1 16 GPIO_ACTIVE_LOW>;
++		wake-up-gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
++		reset-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
++	};
 -- 
 2.20.0.rc2.7.g965798d1f2
