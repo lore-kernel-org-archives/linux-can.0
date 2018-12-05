@@ -1,59 +1,48 @@
-From: Aisheng DONG <aisheng.dong@nxp.com>
-Subject: RE: [PATCH net-next] can: flexcan: flexcan_chip_start(): fix the
- error return code in flexcan_setup_stop_mode()
-Date: Tue, 4 Dec 2018 12:35:06 +0000
-Message-ID: <AM0PR04MB4211A1D868406816D7AB570A80AF0@AM0PR04MB4211.eurprd04.prod.outlook.com>
-References: <1543904780-30235-1-git-send-email-weiyongjun1@huawei.com>
- <AM0PR04MB42112B975149B031A0ECA71F80AF0@AM0PR04MB4211.eurprd04.prod.outlook.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [[RFC] PATCH v2 0/4] M_CAN framework patches
+Date: Wed, 5 Dec 2018 13:28:21 -0600
+Message-ID: <20181205192825.11555-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <AM0PR04MB42112B975149B031A0ECA71F80AF0@AM0PR04MB4211.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-Copy Joakim.
+All
 
-> > From: Wei Yongjun [mailto:weiyongjun1@huawei.com]
-[...]
-> > Subject: [PATCH net-next] can: flexcan: flexcan_chip_start(): fix the
-> > error return code in flexcan_setup_stop_mode()
-> >
-> > The error return code PTR_ERR(gpr_np) is always 0 since gpr_np is
-> > equal to NULL in this error handling case. Fix it by return -ENOENT.
-> >
-> > Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-> > Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> > ---
-> >  drivers/net/can/flexcan.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> > index
-> > 0f36eaf..f412d84 100644
-> > --- a/drivers/net/can/flexcan.c
-> > +++ b/drivers/net/can/flexcan.c
-> > @@ -1432,7 +1432,7 @@ static int flexcan_setup_stop_mode(struct
-> > platform_device *pdev)
-> >  	gpr_np =3D of_find_node_by_phandle(phandle);
-> >  	if (!gpr_np) {
-> >  		dev_dbg(&pdev->dev, "could not find gpr node by phandle\n");
-> > -		return PTR_ERR(gpr_np);
-> > +		return -ENOENT;
->=20
-> Good catch.
->=20
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
->=20
-> Regards
-> Dong Aisheng
->=20
-> >  	}
-> >
-> >  	priv =3D netdev_priv(dev);
-> >
-> >
+This patch series contains no code modifications.  Based on Wolfgangs advice
+I moved the files to different names and committe them independently so they
+can be reviewed easier.
+
+The first patch create the framework code abstracted from the main m_can.c.
+The second patch adapts the m_can.c to use the framework code
+The final patches add the TCAN device to the use the m_can framework.
+
+Again these patches are RFC and no code modifications were made in v2.
+I will be updating the code based on this version.
+
+Dan
+
+Dan Murphy (4):
+  can: m_can: Create a m_can platform framework
+  can: m_can: Migrate the m_can code to use the framework
+  dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+  can: tcan4x5x: Add tcan4x5x driver to the kernel
+
+ .../devicetree/bindings/net/can/tcan4x5x.txt  |  34 ++
+ drivers/net/can/m_can/Kconfig                 |  18 +
+ drivers/net/can/m_can/Makefile                |   4 +-
+ drivers/net/can/m_can/m_can.c                 | 479 +++++++++---------
+ drivers/net/can/m_can/m_can_platform.c        | 168 ++++++
+ drivers/net/can/m_can/m_can_platform.h        | 100 ++++
+ drivers/net/can/m_can/tcan4x5x.c              | 321 ++++++++++++
+ 7 files changed, 870 insertions(+), 254 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+ create mode 100644 drivers/net/can/m_can/m_can_platform.c
+ create mode 100644 drivers/net/can/m_can/m_can_platform.h
+ create mode 100644 drivers/net/can/m_can/tcan4x5x.c
+
+-- 
+2.20.0.rc2.7.g965798d1f2
