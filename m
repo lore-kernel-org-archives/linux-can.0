@@ -1,309 +1,119 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: [[RFC] PATCH v2 1/4] can: m_can: Create a m_can platform framework
-Date: Wed, 5 Dec 2018 13:28:22 -0600
-Message-ID: <20181205192825.11555-2-dmurphy@ti.com>
-References: <20181205192825.11555-1-dmurphy@ti.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH] can: flexcan: add TX support for variable payload size
+Date: Wed, 12 Dec 2018 06:46:34 +0000
+Message-ID: <20181212064419.18613-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181205192825.11555-1-dmurphy@ti.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-Create a m_can platform framework that peripherial
-devices can register to and use common code and register sets.
-The peripherial devices may provide read/write and configuration
-support of the IP.
+Now the FlexCAN driver always use last mailbox for TX, it will work well
+when MB payload size is 8/16 bytes.
+TX mailbox would change to 13 when MB payload size is 64 bytes to
+support CANFD. So we may need to set iflag register to add support for
+variable payload size.
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- drivers/net/can/m_can/m_can_platform.c | 168 +++++++++++++++++++++++++
- drivers/net/can/m_can/m_can_platform.h | 100 +++++++++++++++
- 2 files changed, 268 insertions(+)
- create mode 100644 drivers/net/can/m_can/m_can_platform.c
- create mode 100644 drivers/net/can/m_can/m_can_platform.h
+ drivers/net/can/flexcan.c | 42 +++++++++++++++++++++++++++++----------
+ 1 file changed, 32 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-new file mode 100644
-index 000000000000..261846f9c4e8
---- /dev/null
-+++ b/drivers/net/can/m_can/m_can_platform.c
-@@ -0,0 +1,168 @@
-+/*
-+ * CAN bus driver for Bosch M_CAN controller
-+ *
-+ * Copyright (C) 2014 Freescale Semiconductor, Inc.
-+ *	Dong Aisheng <b29396@freescale.com>
-+ *
-+ * Bosch M_CAN user manual can be obtained from:
-+ * http://www.bosch-semiconductors.de/media/pdf_1/ipmodules_1/m_can/
-+ * mcan_users_manual_v302.pdf
-+ *
-+ * This file is licensed under the terms of the GNU General Public
-+ * License version 2. This program is licensed "as is" without any
-+ * warranty of any kind, whether express or implied.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/netdevice.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/can/dev.h>
-+#include <linux/pinctrl/consumer.h>
-+
-+#include "m_can_platform.h"
-+
-+static int m_can_plat_probe(struct platform_device *pdev)
-+{
-+	struct m_can_classdev *mcan_class;
-+	struct net_device *dev;
-+	struct m_can_priv *priv;
-+	struct resource *res;
-+	void __iomem *addr;
-+	void __iomem *mram_addr;
-+	int irq, ret = 0;
-+
-+	mcan_class = m_can_core_allocate_dev(&pdev->dev);
-+	m_can_core_get_clocks(mcan_class);
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "m_can");
-+	addr = devm_ioremap_resource(&pdev->dev, res);
-+	irq = platform_get_irq_byname(pdev, "int0");
-+	if (IS_ERR(addr) || irq < 0) {
-+		ret = -EINVAL;
-+		goto failed_ret;
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 0f36eafe3ac1..13fd085fcf84 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -141,7 +141,9 @@
+ #define FLEXCAN_TX_MB_RESERVED_OFF_FIFO		8
+ #define FLEXCAN_TX_MB_RESERVED_OFF_TIMESTAMP	0
+ #define FLEXCAN_RX_MB_OFF_TIMESTAMP_FIRST	(FLEXCAN_TX_MB_RESERVED_OFF_TIME=
+STAMP + 1)
+-#define FLEXCAN_IFLAG_MB(x)		BIT((x) & 0x1f)
++#define FLEXCAN_IFLAG1_MB_NUM		32
++#define FLEXCAN_IFLAG1_MB(x)		BIT(x)
++#define FLEXCAN_IFLAG2_MB(x)		BIT((x) & 0x1f)
+ #define FLEXCAN_IFLAG_RX_FIFO_OVERFLOW	BIT(7)
+ #define FLEXCAN_IFLAG_RX_FIFO_WARN	BIT(6)
+ #define FLEXCAN_IFLAG_RX_FIFO_AVAILABLE	BIT(5)
+@@ -822,9 +824,15 @@ static inline u64 flexcan_read_reg_iflag_rx(struct fle=
+xcan_priv *priv)
+ 	struct flexcan_regs __iomem *regs =3D priv->regs;
+ 	u32 iflag1, iflag2;
+=20
+-	iflag2 =3D priv->read(&regs->iflag2) & priv->reg_imask2_default &
+-		~FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
+-	iflag1 =3D priv->read(&regs->iflag1) & priv->reg_imask1_default;
++	if (priv->tx_mb_idx >=3D FLEXCAN_IFLAG1_MB_NUM) {
++		iflag2 =3D priv->read(&regs->iflag2) & priv->reg_imask2_default &
++			~FLEXCAN_IFLAG2_MB(priv->tx_mb_idx);
++		iflag1 =3D priv->read(&regs->iflag1) & priv->reg_imask1_default;
++	} else {
++		iflag2 =3D priv->read(&regs->iflag2) & priv->reg_imask2_default;
++		iflag1 =3D priv->read(&regs->iflag1) & priv->reg_imask1_default &
++			~FLEXCAN_IFLAG1_MB(priv->tx_mb_idx);
 +	}
-+
-+	/* message ram could be shared */
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "message_ram");
-+	if (!res) {
-+		ret = -ENODEV;
-+		goto failed_ret;
+=20
+ 	return (u64)iflag2 << 32 | iflag1;
+ }
+@@ -836,7 +844,8 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs =3D priv->regs;
+ 	irqreturn_t handled =3D IRQ_NONE;
+-	u32 reg_iflag2, reg_esr;
++	u32 reg_tx_iflag, tx_iflag_idx, reg_esr;
++	void __iomem *reg_iflag;
+ 	enum can_state last_state =3D priv->can.state;
+=20
+ 	/* reception interrupt */
+@@ -870,10 +879,18 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 		}
+ 	}
+=20
+-	reg_iflag2 =3D priv->read(&regs->iflag2);
++	if (priv->tx_mb_idx >=3D FLEXCAN_IFLAG1_MB_NUM) {
++		reg_tx_iflag =3D priv->read(&regs->iflag2);
++		tx_iflag_idx =3D FLEXCAN_IFLAG2_MB(priv->tx_mb_idx);
++		reg_iflag =3D &regs->iflag2;
++	} else {
++		reg_tx_iflag =3D priv->read(&regs->iflag1);
++		tx_iflag_idx =3D FLEXCAN_IFLAG1_MB(priv->tx_mb_idx);
++		reg_iflag =3D &regs->iflag1;
 +	}
-+
-+	mram_addr = devm_ioremap(&pdev->dev, res->start, resource_size(res));
-+	if (!mram_addr) {
-+		ret = -ENOMEM;
-+		goto failed_ret;
+=20
+ 	/* transmission complete interrupt */
+-	if (reg_iflag2 & FLEXCAN_IFLAG_MB(priv->tx_mb_idx)) {
++	if (reg_tx_iflag & tx_iflag_idx) {
+ 		u32 reg_ctrl =3D priv->read(&priv->tx_mb->can_ctrl);
+=20
+ 		handled =3D IRQ_HANDLED;
+@@ -885,7 +902,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 		/* after sending a RTR frame MB is in RX mode */
+ 		priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
+ 			    &priv->tx_mb->can_ctrl);
+-		priv->write(FLEXCAN_IFLAG_MB(priv->tx_mb_idx), &regs->iflag2);
++		priv->write(tx_iflag_idx, reg_iflag);
+ 		netif_wake_queue(dev);
+ 	}
+=20
+@@ -1244,8 +1261,13 @@ static int flexcan_open(struct net_device *dev)
+ 	priv->tx_mb_idx =3D priv->mb_count - 1;
+ 	priv->tx_mb =3D flexcan_get_mb(priv, priv->tx_mb_idx);
+=20
+-	priv->reg_imask1_default =3D 0;
+-	priv->reg_imask2_default =3D FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
++	if (priv->tx_mb_idx >=3D FLEXCAN_IFLAG1_MB_NUM) {
++		priv->reg_imask1_default =3D 0;
++		priv->reg_imask2_default =3D FLEXCAN_IFLAG2_MB(priv->tx_mb_idx);
++	} else {
++		priv->reg_imask1_default =3D FLEXCAN_IFLAG1_MB(priv->tx_mb_idx);
++		priv->reg_imask2_default =3D 0;
 +	}
-+
-+	mcan_class->net->irq = irq;
-+	mcan_class->pm_clock_support = 1;
-+	mcan_class->mram_base = mram_addr;
-+	mcan_class->can.clock.freq = clk_get_rate(mcan_class->cclk);
-+	mcan_class->dev = &pdev->dev;
-+
-+	platform_set_drvdata(pdev, mcan_class->dev);
-+
-+	m_can_init_ram(mcan_class);
-+
-+	m_can_core_register(mcan_class);
-+
-+failed_ret:
-+/*	m_can_clk_stop(mcan_class);*/
-+	if (ret) {
-+		pm_runtime_disable(&pdev->dev);
-+		free_candev(mcan_class->net);
-+	}
-+	return ret;
-+}
-+
-+static __maybe_unused int m_can_suspend(struct device *dev)
-+{
-+	return m_can_core_suspend(dev);
-+}
-+
-+static __maybe_unused int m_can_resume(struct device *dev)
-+{
-+	return m_can_core_resume(dev);
-+}
-+
-+static void unregister_m_can_dev(struct net_device *dev)
-+{
-+	unregister_candev(dev);
-+}
-+
-+static int m_can_plat_remove(struct platform_device *pdev)
-+{
-+	struct net_device *dev = platform_get_drvdata(pdev);
-+
-+	unregister_m_can_dev(dev);
-+
-+	pm_runtime_disable(&pdev->dev);
-+
-+	platform_set_drvdata(pdev, NULL);
-+
-+	free_candev(dev);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused m_can_runtime_suspend(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct m_can_classdev *priv = netdev_priv(ndev);
-+
-+	clk_disable_unprepare(priv->cclk);
-+	clk_disable_unprepare(priv->hclk);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused m_can_runtime_resume(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct m_can_classdev *priv = netdev_priv(ndev);
-+	int err;
-+
-+	err = clk_prepare_enable(priv->hclk);
-+	if (err)
-+		return err;
-+
-+	err = clk_prepare_enable(priv->cclk);
-+	if (err)
-+		clk_disable_unprepare(priv->hclk);
-+
-+	return err;
-+}
-+
-+static const struct dev_pm_ops m_can_pmops = {
-+	SET_RUNTIME_PM_OPS(m_can_runtime_suspend,
-+			   m_can_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(m_can_suspend, m_can_resume)
-+};
-+
-+static const struct of_device_id m_can_of_table[] = {
-+	{ .compatible = "bosch,m_can", .data = NULL },
-+	{ /* sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, m_can_of_table);
-+
-+static struct platform_driver m_can_plat_driver = {
-+	.driver = {
-+		.name = KBUILD_MODNAME,
-+		.of_match_table = m_can_of_table,
-+		.pm     = &m_can_pmops,
-+	},
-+	.probe = m_can_plat_probe,
-+	.remove = m_can_plat_remove,
-+};
-+
-+module_platform_driver(m_can_plat_driver);
-+
-+MODULE_AUTHOR("Dong Aisheng <b29396@freescale.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("CAN bus driver for Bosch M_CAN controller");
-diff --git a/drivers/net/can/m_can/m_can_platform.h b/drivers/net/can/m_can/m_can_platform.h
-new file mode 100644
-index 000000000000..2a83aff323e9
---- /dev/null
-+++ b/drivers/net/can/m_can/m_can_platform.h
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
-+
-+#ifndef _CAN_M_CAN_CORE_H_
-+#define _CAN_M_CAN_CORE_H_
-+
-+#include <linux/can/core.h>
-+#include <linux/can/led.h>
-+#include <linux/completion.h>
-+#include <linux/device.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/freezer.h>
-+#include <linux/slab.h>
-+#include <linux/uaccess.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/netdevice.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/iopoll.h>
-+#include <linux/can/dev.h>
-+#include <linux/pinctrl/consumer.h>
-+
-+/* m_can lec values */
-+enum m_can_lec_type {
-+	LEC_NO_ERROR = 0,
-+	LEC_STUFF_ERROR,
-+	LEC_FORM_ERROR,
-+	LEC_ACK_ERROR,
-+	LEC_BIT1_ERROR,
-+	LEC_BIT0_ERROR,
-+	LEC_CRC_ERROR,
-+	LEC_UNUSED,
-+};
-+
-+enum m_can_mram_cfg {
-+	MRAM_SIDF = 0,
-+	MRAM_XIDF,
-+	MRAM_RXF0,
-+	MRAM_RXF1,
-+	MRAM_RXB,
-+	MRAM_TXE,
-+	MRAM_TXB,
-+	MRAM_CFG_NUM,
-+};
-+
-+/* address offset and element number for each FIFO/Buffer in the Message RAM */
-+struct mram_cfg {
-+	u16 off;
-+	u8  num;
-+};
-+
-+struct m_can_classdev {
-+	struct can_priv can;
-+	struct napi_struct napi;
-+	struct net_device *net;
-+	struct device *dev;
-+	struct clk *hclk;
-+	struct clk *cclk;
-+
-+	void *device_data;
-+
-+	int version;
-+	int freq;
-+	u32 irqstatus;
-+
-+	u32 (*m_can_read) (const struct m_can_classdev *m_can_class, int reg);
-+	int (*m_can_write) (const struct m_can_classdev *m_can_class, int reg, int val);
-+	u32 (*m_can_fifo_read) (const struct m_can_classdev *m_can_class, int reg);
-+	int (*m_can_fifo_write) (const struct m_can_classdev *m_can_class, int reg, int val);
-+	u32 (*m_can_txe_fifo_read) (const struct m_can_classdev *m_can_class);
-+
-+	/* Memory mapped ip */
-+	void __iomem *base;
-+	void __iomem *mram_addr;
-+	void __iomem *mram_base;
-+
-+	/* Register based ip */
-+	int reg_offset;
-+	int mram_start;
-+	int pm_clock_support;
-+
-+	struct mram_cfg mcfg[MRAM_CFG_NUM];
-+};
-+
-+struct m_can_classdev *m_can_core_allocate_dev(struct device *dev);
-+int m_can_core_register(struct m_can_classdev *m_can_dev);
-+int m_can_core_get_clocks(struct m_can_classdev *m_can_dev);
-+void m_can_init_ram(struct m_can_classdev *priv);
-+void m_can_config_endisable(const struct m_can_classdev *priv, bool enable);
-+
-+int m_can_core_suspend(struct device *dev);
-+int m_can_core_resume(struct device *dev);
-+
-+#endif	/* _CAN_M_CAN_CORE_H_ */
--- 
-2.20.0.rc2.7.g965798d1f2
+=20
+ 	priv->offload.mailbox_read =3D flexcan_mailbox_read;
+=20
+--=20
+2.17.1
