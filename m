@@ -1,36 +1,29 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] can: flexcan: fix 'passing zero to ERR_PTR()' warning
-Date: Wed, 12 Dec 2018 17:24:01 +0800
-Message-ID: <20181212092401.25612-1-yuehaibing@huawei.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH 0/2] can: flexcan: add PE clock source select support
+Date: Thu, 13 Dec 2018 07:07:53 +0000
+Message-ID: <20181213070537.25095-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: davem@davemloft.net, wg@grandegger.com, mkl@pengutronix.de
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "robh@kernel.org" <robh@kernel.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-Fix a static code checker warning:
-drivers/net/can/flexcan.c:1435 flexcan_setup_stop_mode() warn: passing zero to 'PTR_ERR'
+The patch set intends to add support for PE clock source select. The
+FlexCAN controller can parse "fsl,clk-source" property from device tree
+to select clock source.
 
-Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/can/flexcan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Dong Aisheng (2):
+  Documentation: can: flexcan: add PE clock source property to device
+    tree
+  can: flexcan: add support for PE clock source select
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 0f36eaf..5f09764 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1432,7 +1432,7 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
- 	gpr_np = of_find_node_by_phandle(phandle);
- 	if (!gpr_np) {
- 		dev_dbg(&pdev->dev, "could not find gpr node by phandle\n");
--		return PTR_ERR(gpr_np);
-+		return -ENODEV;
- 	}
- 
- 	priv = netdev_priv(dev);
--- 
-2.7.0
+ .../bindings/net/can/fsl-flexcan.txt           |  8 ++++++++
+ drivers/net/can/flexcan.c                      | 18 ++++++++++++++----
+ 2 files changed, 22 insertions(+), 4 deletions(-)
+
+--=20
+2.17.1
