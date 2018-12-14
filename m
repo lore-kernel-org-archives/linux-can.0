@@ -1,31 +1,37 @@
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: [PATCH] dt-bindings: can: rcar_can: Add r8a774c0 support
-Date: Thu, 13 Dec 2018 20:19:38 +0000
-Message-ID: <1544732378-6268-1-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Alexander Dahl <ada@thorsis.com>
+Subject: [PATCH] can: usb: Kconfig: Remove duplicate menu entry
+Date: Fri, 14 Dec 2018 10:35:08 +0100
+Message-ID: <20181214093508.4825-1-ada@thorsis.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Document RZ/G2E (r8a774c0) SoC specific bindings.
+This seems to have slipped in by accident when sorting the entries.
 
-Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Fixes: ffbdd9172ee2f53020f763574b4cdad8d9760a4f
+Signed-off-by: Alexander Dahl <ada@thorsis.com>
 ---
- Documentation/devicetree/bindings/net/can/rcar_can.txt | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/usb/Kconfig | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-index 9936b9e..7fcf501 100644
---- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-+++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-@@ -6,6 +6,7 @@ Required properties:
- 	      "renesas,can-r8a7744" if CAN controller is a part of R8A7744 SoC.
- 	      "renesas,can-r8a7745" if CAN controller is a part of R8A7745 SoC.
- 	      "renesas,can-r8a774a1" if CAN controller is a part of R8A774A1 SoC.
-+	      "renesas,can-r8a774c0" if CAN controller is a part of R8A774C0 SoC.
- 	      "renesas,can-r8a7778" if CAN controller is a part of R8A7778 SoC.
- 	      "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
- 	      "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
+diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
+index 750d04d9e2ae..928bf083f8d2 100644
+--- a/drivers/net/can/usb/Kconfig
++++ b/drivers/net/can/usb/Kconfig
+@@ -101,12 +101,6 @@ config CAN_PEAK_USB
+ 
+ 	  (see also http://www.peak-system.com).
+ 
+-config CAN_MCBA_USB
+-	tristate "Microchip CAN BUS Analyzer interface"
+-	---help---
+-	  This driver supports the CAN BUS Analyzer interface
+-	  from Microchip (http://www.microchip.com/development-tools/).
+-
+ config CAN_UCAN
+ 	tristate "Theobroma Systems UCAN interface"
+ 	---help---
 -- 
-2.7.4
+2.11.0
