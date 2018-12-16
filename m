@@ -1,21 +1,42 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH] dt-bindings: can: rcar_can: Add r8a774c0 support
-Date: Sat, 15 Dec 2018 14:52:22 +0100
-Message-ID: <20181215135222.aarjedojr7ntd5ut@verge.net.au>
-References: <1544732378-6268-1-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] can: m_can: fix overly indented if statement
+Date: Sun, 16 Dec 2018 13:37:49 +0000
+Message-ID: <20181216133749.5478-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1544732378-6268-1-git-send-email-fabrizio.castro@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Thu, Dec 13, 2018 at 08:19:38PM +0000, Fabrizio Castro wrote:
-> Document RZ/G2E (r8a774c0) SoC specific bindings.
-> 
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+There is an if statement that is indented too much by one level,
+remove the extra tab to fix this.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/can/m_can/m_can.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 9b449400376b..a5d22a022f41 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1492,9 +1492,9 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+ 		m_can_write(priv, M_CAN_TXBAR, (1 << putidx));
+ 
+ 		/* stop network queue if fifo full */
+-			if (m_can_tx_fifo_full(priv) ||
+-			    m_can_next_echo_skb_occupied(dev, putidx))
+-				netif_stop_queue(dev);
++		if (m_can_tx_fifo_full(priv) ||
++		    m_can_next_echo_skb_occupied(dev, putidx))
++			netif_stop_queue(dev);
+ 	}
+ 
+ 	return NETDEV_TX_OK;
+-- 
+2.19.1
