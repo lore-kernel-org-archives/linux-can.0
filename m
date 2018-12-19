@@ -1,42 +1,32 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] can: m_can: fix overly indented if statement
-Date: Sun, 16 Dec 2018 13:37:49 +0000
-Message-ID: <20181216133749.5478-1-colin.king@canonical.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH 0/3] can: flexcan: add imx8qm support
+Date: Wed, 19 Dec 2018 08:38:57 +0000
+Message-ID: <20181219083637.641-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+This patch set intends to add Flexcan support for i.MX8QM platform which
+defaultly supports CAN FD protocol. Although BRS enabled by system reset
+when the driver sets CAN FD mode, now this patch serial does not support
+BRS in the driver. And then I will send patch to enable BRS by changing the
+register to set bit timing.
 
-There is an if statement that is indented too much by one level,
-remove the extra tab to fix this.
+Dong Aisheng (3):
+  can: rx-offload: add CANFD support based on offload
+  can: flexcan: add CAN FD mode support
+  can: flexcan: add imx8qm support
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/can/m_can/m_can.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/flexcan.c      | 114 ++++++++++++++++++++++++++++++---
+ drivers/net/can/rx-offload.c   |  16 +++--
+ include/linux/can/rx-offload.h |   4 +-
+ 3 files changed, 117 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 9b449400376b..a5d22a022f41 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1492,9 +1492,9 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 		m_can_write(priv, M_CAN_TXBAR, (1 << putidx));
- 
- 		/* stop network queue if fifo full */
--			if (m_can_tx_fifo_full(priv) ||
--			    m_can_next_echo_skb_occupied(dev, putidx))
--				netif_stop_queue(dev);
-+		if (m_can_tx_fifo_full(priv) ||
-+		    m_can_next_echo_skb_occupied(dev, putidx))
-+			netif_stop_queue(dev);
- 	}
- 
- 	return NETDEV_TX_OK;
--- 
-2.19.1
+--=20
+2.17.1
