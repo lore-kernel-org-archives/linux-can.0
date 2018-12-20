@@ -1,61 +1,24 @@
 From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/2] Documentation: can: flexcan: add PE clock source
- property to device tree
-Date: Thu, 20 Dec 2018 14:22:47 -0600
-Message-ID: <20181220202247.GA26362@bogus>
-References: <20181213070537.25095-1-qiangqing.zhang@nxp.com>
- <20181213070537.25095-2-qiangqing.zhang@nxp.com>
+Subject: Re: [PATCH] dt-bindings: can: rcar_can: Add r8a774c0 support
+Date: Thu, 20 Dec 2018 14:35:52 -0600
+Message-ID: <20181220203552.GA17852@bogus>
+References: <1544732378-6268-1-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20181213070537.25095-2-qiangqing.zhang@nxp.com>
+In-Reply-To: <1544732378-6268-1-git-send-email-fabrizio.castro@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Thu, Dec 13, 2018 at 07:07:57AM +0000, Joakim Zhang wrote:
-> From: Dong Aisheng <aisheng.dong@nxp.com>
+On Thu, 13 Dec 2018 20:19:38 +0000, Fabrizio Castro wrote:
+> Document RZ/G2E (r8a774c0) SoC specific bindings.
 > 
-> The FlexCAN controller can parse clock source property from DTS file to
-> select PE clock source.
-> 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
 > ---
->  Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  Documentation/devicetree/bindings/net/can/rcar_can.txt | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-> index bc77477c6878..a04168605998 100644
-> --- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-> +++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-> @@ -32,6 +32,13 @@ Optional properties:
->  		 ack_gpr is the gpr register offset of CAN stop acknowledge.
->  		 ack_bit is the bit offset of CAN stop acknowledge.
->  
-> +- fsl,clk-source: Select the clock source to the CAN Protocol Engine (PE).
-> +		  It's SoC Implementation dependent. Refer to RM for detailed
 
-If SoC dependent, then it should be implied by the SoC specific 
-compatible. Also, seems like you should add clock binding support here 
-if you need more clock control.
-
-> +		  definition. If this property is not set in device tree node
-> +		  then driver selects clock source 1 by default.
-> +		  0: clock source 0 (oscillator clock)
-> +		  1: clock source 1 (peripheral clock)
-> +
->  Example:
->  
->  	can@1c000 {
-> @@ -40,4 +47,5 @@ Example:
->  		interrupts = <48 0x2>;
->  		interrupt-parent = <&mpic>;
->  		clock-frequency = <200000000>; // filled in by bootloader
-> +		fsl,clk-source = <0>; // select clock source 0 for PE
->  	};
-> -- 
-> 2.17.1
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
