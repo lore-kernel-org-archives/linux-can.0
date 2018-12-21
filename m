@@ -1,65 +1,55 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH 1/2] Documentation: can: flexcan: add PE clock source
- property to device tree
-Date: Fri, 21 Dec 2018 04:28:16 +0000
-Message-ID: <DB7PR04MB46185ACEDA227BEFCED6971DE6B80@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20181213070537.25095-1-qiangqing.zhang@nxp.com>
- <20181213070537.25095-2-qiangqing.zhang@nxp.com>
- <20181220202247.GA26362@bogus>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] can: af_can: Fix Spectre v1 vulnerability
+Date: Fri, 21 Dec 2018 15:22:29 -0600
+Message-ID: <20181221212229.GA32635@embeddedor>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181220202247.GA26362@bogus>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netdev-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFJvYiBIZXJyaW5nIDxyb2Jo
-QGtlcm5lbC5vcmc+DQo+IFNlbnQ6IDIwMTjE6jEy1MIyMcjVIDQ6MjMNCj4gVG86IEpvYWtpbSBa
-aGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IENjOiBta2xAcGVuZ3V0cm9uaXguZGU7
-IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7DQo+IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3Jn
-OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXgNCj4gPGxpbnV4LWlt
-eEBueHAuY29tPjsgQWlzaGVuZyBEb25nIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4NCj4gU3ViamVj
-dDogUmU6IFtQQVRDSCAxLzJdIERvY3VtZW50YXRpb246IGNhbjogZmxleGNhbjogYWRkIFBFIGNs
-b2NrIHNvdXJjZQ0KPiBwcm9wZXJ0eSB0byBkZXZpY2UgdHJlZQ0KPiANCj4gT24gVGh1LCBEZWMg
-MTMsIDIwMTggYXQgMDc6MDc6NTdBTSArMDAwMCwgSm9ha2ltIFpoYW5nIHdyb3RlOg0KPiA+IEZy
-b206IERvbmcgQWlzaGVuZyA8YWlzaGVuZy5kb25nQG54cC5jb20+DQo+ID4NCj4gPiBUaGUgRmxl
-eENBTiBjb250cm9sbGVyIGNhbiBwYXJzZSBjbG9jayBzb3VyY2UgcHJvcGVydHkgZnJvbSBEVFMg
-ZmlsZQ0KPiA+IHRvIHNlbGVjdCBQRSBjbG9jayBzb3VyY2UuDQo+ID4NCj4gPiBTaWduZWQtb2Zm
-LWJ5OiBEb25nIEFpc2hlbmcgPGFpc2hlbmcuZG9uZ0BueHAuY29tPg0KPiA+IFNpZ25lZC1vZmYt
-Ynk6IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+ID4gLS0tDQo+ID4g
-IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvY2FuL2ZzbC1mbGV4Y2FuLnR4
-dCB8IDgNCj4gPiArKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCsp
-DQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L25ldC9jYW4vZnNsLWZsZXhjYW4udHh0DQo+ID4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvbmV0L2Nhbi9mc2wtZmxleGNhbi50eHQNCj4gPiBpbmRleCBiYzc3NDc3YzY4Nzgu
-LmEwNDE2ODYwNTk5OCAxMDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvbmV0L2Nhbi9mc2wtZmxleGNhbi50eHQNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvbmV0L2Nhbi9mc2wtZmxleGNhbi50eHQNCj4gPiBAQCAtMzIs
-NiArMzIsMTMgQEAgT3B0aW9uYWwgcHJvcGVydGllczoNCj4gPiAgCQkgYWNrX2dwciBpcyB0aGUg
-Z3ByIHJlZ2lzdGVyIG9mZnNldCBvZiBDQU4gc3RvcCBhY2tub3dsZWRnZS4NCj4gPiAgCQkgYWNr
-X2JpdCBpcyB0aGUgYml0IG9mZnNldCBvZiBDQU4gc3RvcCBhY2tub3dsZWRnZS4NCj4gPg0KPiA+
-ICstIGZzbCxjbGstc291cmNlOiBTZWxlY3QgdGhlIGNsb2NrIHNvdXJjZSB0byB0aGUgQ0FOIFBy
-b3RvY29sIEVuZ2luZSAoUEUpLg0KPiA+ICsJCSAgSXQncyBTb0MgSW1wbGVtZW50YXRpb24gZGVw
-ZW5kZW50LiBSZWZlciB0byBSTSBmb3IgZGV0YWlsZWQNCj4gDQo+IElmIFNvQyBkZXBlbmRlbnQs
-IHRoZW4gaXQgc2hvdWxkIGJlIGltcGxpZWQgYnkgdGhlIFNvQyBzcGVjaWZpYyBjb21wYXRpYmxl
-Lg0KPiBBbHNvLCBzZWVtcyBsaWtlIHlvdSBzaG91bGQgYWRkIGNsb2NrIGJpbmRpbmcgc3VwcG9y
-dCBoZXJlIGlmIHlvdSBuZWVkIG1vcmUNCj4gY2xvY2sgY29udHJvbC4NCg0KSGksDQoNCk15IGV4
-cHJlc3Npb24gaGVyZSBtaWdodCBub3QgYmUgdmVyeSBhY2N1cmF0ZSwgdGhpcyBwcm9wZXJ0eSBq
-dXN0IGhlbHAgdG8gc2VsZWN0IHRoZSBjbG9jayBzb3VyY2UgZm9yDQpQcm90b2NvbCBFbmdpbmUg
-KFBFKS4gRmxleENBTiBpcCBzdXBwb3J0IHR3byBQRSBjbG9jayBzb3VyY2VzLCBzbyB3ZSBoYXZl
-IHRvIGFkZCB0aGlzIHByb3BlcnR5IHRvDQpsZXQgZHJpdmVyIGtub3cgdGhhdCBTb0MgaGFzIHNl
-bGVjdGVkIHdoaWNoIG9uZS4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQoNCj4gPiAr
-CQkgIGRlZmluaXRpb24uIElmIHRoaXMgcHJvcGVydHkgaXMgbm90IHNldCBpbiBkZXZpY2UgdHJl
-ZSBub2RlDQo+ID4gKwkJICB0aGVuIGRyaXZlciBzZWxlY3RzIGNsb2NrIHNvdXJjZSAxIGJ5IGRl
-ZmF1bHQuDQo+ID4gKwkJICAwOiBjbG9jayBzb3VyY2UgMCAob3NjaWxsYXRvciBjbG9jaykNCj4g
-PiArCQkgIDE6IGNsb2NrIHNvdXJjZSAxIChwZXJpcGhlcmFsIGNsb2NrKQ0KPiA+ICsNCj4gPiAg
-RXhhbXBsZToNCj4gPg0KPiA+ICAJY2FuQDFjMDAwIHsNCj4gPiBAQCAtNDAsNCArNDcsNSBAQCBF
-eGFtcGxlOg0KPiA+ICAJCWludGVycnVwdHMgPSA8NDggMHgyPjsNCj4gPiAgCQlpbnRlcnJ1cHQt
-cGFyZW50ID0gPCZtcGljPjsNCj4gPiAgCQljbG9jay1mcmVxdWVuY3kgPSA8MjAwMDAwMDAwPjsg
-Ly8gZmlsbGVkIGluIGJ5IGJvb3Rsb2FkZXINCj4gPiArCQlmc2wsY2xrLXNvdXJjZSA9IDwwPjsg
-Ly8gc2VsZWN0IGNsb2NrIHNvdXJjZSAwIGZvciBQRQ0KPiA+ICAJfTsNCj4gPiAtLQ0KPiA+IDIu
-MTcuMQ0KPiA+DQo=
+protocol is indirectly controlled by user-space, hence leading to
+a potential exploitation of the Spectre variant 1 vulnerability.
+
+This issue was detected with the help of Smatch:
+
+net/can/af_can.c:115 can_get_proto() warn: potential spectre issue 'proto_tab' [w]
+
+Fix this by sanitizing protocol before using it to index proto_tab.
+
+Notice that given that speculation windows are large, the policy is
+to kill the speculation on the first load and not worry if it can be
+completed with a dependent load/store [1].
+
+[1] https://marc.info/?l=linux-kernel&m=152449131114778&w=2
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ net/can/af_can.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 1684ba5b51eb..cade7250c6d4 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -59,6 +59,7 @@
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/ratelimit.h>
++#include <linux/nospec.h>
+ #include <net/net_namespace.h>
+ #include <net/sock.h>
+ 
+@@ -136,6 +137,7 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
+ 
+ 	if (protocol < 0 || protocol >= CAN_NPROTO)
+ 		return -EINVAL;
++	protocol = array_index_nospec(protocol, CAN_NPROTO);
+ 
+ 	cp = can_get_proto(protocol);
+ 
+-- 
+2.20.1
