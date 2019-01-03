@@ -1,71 +1,46 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: af_can: Fix Spectre v1 vulnerability
-Date: Sun, 23 Dec 2018 20:02:18 +0100
-Message-ID: <f0c42e0b-7d10-be7e-4b52-82567cf747eb@hartkopp.net>
-References: <20181221212229.GA32635@embeddedor>
+Subject: [PATCH] can: gw: ensure DLC boundaries after CAN frame modification
+Date: Thu,  3 Jan 2019 13:26:34 +0100
+Message-ID: <20190103122634.2530-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20181221212229.GA32635@embeddedor>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: davem@davemloft.net, netdev@vger.kernel.org
+Cc: ieatmuttonchuan@gmail.com, meissner@suse.de, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-After *trying* to follow the discussion on ...
+The CAN frame modification rules allow bitwise logical operations which can
+be also applied to the can_dlc field. Ensure the manipulation result to
+maintain the can_dlc boundaries so that the CAN drivers do not accidently
+write arbitrary content beyond the data registers in the CAN controllers
+I/O mem when processing can-gw manipulated outgoing frames. When passing these
+frames to user space this issue did not have any effect to the kernel or any
+leaked data as we always strictly copy sizeof(struct can_frame) bytes.
 
-https://marc.info/?l=linux-kernel&m=154554485324143&w=2
-[PATCH] net: core: Fix Spectre v1 vulnerability
+Reported-by: Muyu Yu <ieatmuttonchuan@gmail.com>
+Reported-by: Marcus Meissner <meissner@suse.de>
+Tested-by: Muyu Yu <ieatmuttonchuan@gmail.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-stable <stable@vger.kernel.org> # >= v3.2
+---
+ net/can/gw.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-... I'm still not sure whether af_can.c needs this enhancement or not.
-
-Just waiting for the end of the discussion :-)
-
-Thanks to the experts!
-
-Oliver
-
-On 12/21/18 10:22 PM, Gustavo A. R. Silva wrote:
-> protocol is indirectly controlled by user-space, hence leading to
-> a potential exploitation of the Spectre variant 1 vulnerability.
-> 
-> This issue was detected with the help of Smatch:
-> 
-> net/can/af_can.c:115 can_get_proto() warn: potential spectre issue 'proto_tab' [w]
-> 
-> Fix this by sanitizing protocol before using it to index proto_tab.
-> 
-> Notice that given that speculation windows are large, the policy is
-> to kill the speculation on the first load and not worry if it can be
-> completed with a dependent load/store [1].
-> 
-> [1] https://marc.info/?l=linux-kernel&m=152449131114778&w=2
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> ---
->   net/can/af_can.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/can/af_can.c b/net/can/af_can.c
-> index 1684ba5b51eb..cade7250c6d4 100644
-> --- a/net/can/af_can.c
-> +++ b/net/can/af_can.c
-> @@ -59,6 +59,7 @@
->   #include <linux/can/core.h>
->   #include <linux/can/skb.h>
->   #include <linux/ratelimit.h>
-> +#include <linux/nospec.h>
->   #include <net/net_namespace.h>
->   #include <net/sock.h>
->   
-> @@ -136,6 +137,7 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
->   
->   	if (protocol < 0 || protocol >= CAN_NPROTO)
->   		return -EINVAL;
-> +	protocol = array_index_nospec(protocol, CAN_NPROTO);
->   
->   	cp = can_get_proto(protocol);
->   
-> 
+diff --git a/net/can/gw.c b/net/can/gw.c
+index faa3da88a127..9000d9b8a133 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -418,6 +418,10 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 
+ 	/* check for checksum updates when the CAN frame has been modified */
+ 	if (modidx) {
++		/* ensure DLC boundaries after the different mods */
++		if (cf->can_dlc > 8)
++			cf->can_dlc = 8;
++
+ 		if (gwj->mod.csumfunc.crc8)
+ 			(*gwj->mod.csumfunc.crc8)(cf, &gwj->mod.csum.crc8);
+ 
+-- 
+2.19.2
