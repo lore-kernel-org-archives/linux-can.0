@@ -1,109 +1,76 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v3] can: gw: ensure DLC boundaries after CAN frame modification
-Date: Fri,  4 Jan 2019 15:55:26 +0100
-Message-ID: <20190104145526.28492-1-mkl@pengutronix.de>
+Subject: Re: [PATCH net-next] can: flexcan: fix 'passing zero to ERR_PTR()'
+ warning
+Date: Fri, 4 Jan 2019 16:21:49 +0100
+Message-ID: <0e7e2e17-01b7-e3bb-4bf1-ed73e7e92133@pengutronix.de>
+References: <20181212092401.25612-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de, David Miller <davem@davemloft.net>, netdev@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Muyu Yu <ieatmuttonchuan@gmail.com>, Marcus Meissner <meissner@suse.de>, Michal Kubecek <mkubecek@suse.cz>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="598KjyuwFUg2LDEwTQFwVi9wnxPcY3pKj"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181212092401.25612-1-yuehaibing@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net, wg@grandegger.com
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--598KjyuwFUg2LDEwTQFwVi9wnxPcY3pKj
+Content-Type: multipart/mixed; boundary="gUmdRbaa1hO8NMK5WjD97YrD3pYkjgn3J";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net, wg@grandegger.com
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-can@vger.kernel.org
+Message-ID: <0e7e2e17-01b7-e3bb-4bf1-ed73e7e92133@pengutronix.de>
+Subject: Re: [PATCH net-next] can: flexcan: fix 'passing zero to ERR_PTR()'
+ warning
+References: <20181212092401.25612-1-yuehaibing@huawei.com>
+In-Reply-To: <20181212092401.25612-1-yuehaibing@huawei.com>
 
-Muyu Yu provided a POC where user root with CAP_NET_ADMIN can create a CAN
-frame modification rule that makes the data length code a higher value than
-the available CAN frame data size. In combination with a configured checksum
-calculation where the result is stored relatively to the end of the data
-(e.g. cgw_csum_xor_rel) the tail of the skb (e.g. frag_list pointer in
-skb_shared_info) can be rewritten which finally can cause a system crash.
+--gUmdRbaa1hO8NMK5WjD97YrD3pYkjgn3J
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-Michael Kubecek suggested to drop frames that have a DLC exceeding the
-available space after the modification process and provided a patch that can
-handle CAN FD frames too. Within this patch we also limit the length for the
-checksum calculations to the maximum of Classic CAN data length (8).
+On 12/12/18 10:24 AM, YueHaibing wrote:
+> Fix a static code checker warning:
+> drivers/net/can/flexcan.c:1435 flexcan_setup_stop_mode() warn: passing =
+zero to 'PTR_ERR'
+>=20
+> Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-CAN frames that are dropped by these additional checks are counted with the
-CGW_DELETED counter which indicates misconfigurations in can-gw rules.
+Applied to linux-can.
 
-This fixes CVE-2019-3701.
-
-Reported-by: Muyu Yu <ieatmuttonchuan@gmail.com>
-Reported-by: Marcus Meissner <meissner@suse.de>
-Suggested-by: Michal Kubecek <mkubecek@suse.cz>
-Tested-by: Muyu Yu <ieatmuttonchuan@gmail.com>
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-stable <stable@vger.kernel.org> # >= v3.2
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Hello,
-
-I've removed the else from dlc length check. Keeps the code and the
-patch more readable.
-
+tnx,
 Marc
 
-Changes since v2:
-- add newline after goto (Tnx, Oliver)
-Changes since v1:
-- remove else from dlc length check.
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
- net/can/gw.c | 30 +++++++++++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index faa3da88a127..53859346dc9a 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -416,13 +416,29 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 	while (modidx < MAX_MODFUNCTIONS && gwj->mod.modfunc[modidx])
- 		(*gwj->mod.modfunc[modidx++])(cf, &gwj->mod);
- 
--	/* check for checksum updates when the CAN frame has been modified */
-+	/* Has the CAN frame been modified? */
- 	if (modidx) {
--		if (gwj->mod.csumfunc.crc8)
-+		/* get available space for the processed CAN frame type */
-+		int max_len = nskb->len - offsetof(struct can_frame, data);
-+
-+		/* dlc may have changed, make sure it fits to the CAN frame */
-+		if (cf->can_dlc > max_len)
-+			goto out_delete;
-+
-+		/* check for checksum updates in classic CAN length only */
-+		if (gwj->mod.csumfunc.crc8) {
-+			if (cf->can_dlc > 8)
-+				goto out_delete;
-+
- 			(*gwj->mod.csumfunc.crc8)(cf, &gwj->mod.csum.crc8);
-+		}
-+
-+		if (gwj->mod.csumfunc.xor) {
-+			if (cf->can_dlc > 8)
-+				goto out_delete;
- 
--		if (gwj->mod.csumfunc.xor)
- 			(*gwj->mod.csumfunc.xor)(cf, &gwj->mod.csum.xor);
-+		}
- 	}
- 
- 	/* clear the skb timestamp if not configured the other way */
-@@ -434,6 +450,14 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 		gwj->dropped_frames++;
- 	else
- 		gwj->handled_frames++;
-+
-+	return;
-+
-+ out_delete:
-+	/* delete frame due to misconfiguration */
-+	gwj->deleted_frames++;
-+	kfree_skb(nskb);
-+	return;
- }
- 
- static inline int cgw_register_filter(struct net *net, struct cgw_job *gwj)
--- 
-2.20.1
+--gUmdRbaa1hO8NMK5WjD97YrD3pYkjgn3J--
+
+--598KjyuwFUg2LDEwTQFwVi9wnxPcY3pKj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlwveg4ACgkQk9IU1zQo
+ZfEMoAf/cX8z/ngCxPNd/v6nW/5WJccNxg4CK866HkWE8OqZZeqwTEDEMp3pOaMc
+TwLjePxSX+Dp28DmcMA828gp1LHArfnP85miTAtqwxYz+CvTLSIdeWvzTCcBGUSU
+TtghNGF5ZTyn0GCO52jXGBhzzZeM6OXkoE4wHQ27PuRX4skiczMeYAgCgizx5Ggw
+Kpr8cdRQJ18StxJirlvT9FG35PSBsQQca6ZGKM+HdbwQ5biKyuQgMexzTZEc89Ha
+SeSOEE5sZAKxg2wIYGuI2yc9VV1stjI/qlislofBSjBzbqp2L9KHVf6nA+A9BVjP
+4MkGC1yLqcRRjBGwubHlYB2+ECLIXQ==
+=P//S
+-----END PGP SIGNATURE-----
+
+--598KjyuwFUg2LDEwTQFwVi9wnxPcY3pKj--
