@@ -1,98 +1,50 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] can: gw: ensure DLC boundaries after CAN frame modification
-Date: Fri,  4 Jan 2019 10:13:53 +0100
-Message-ID: <20190104091353.2438-1-socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: gw: ensure DLC boundaries after CAN frame
+ modification
+Date: Fri, 4 Jan 2019 10:28:35 +0100
+Message-ID: <734c27f9-f39e-3cbc-6cc3-2c805fed4922@hartkopp.net>
+References: <20190103122634.2530-1-socketcan@hartkopp.net>
+ <20190103140121.GB28932@unicorn.suse.cz>
+ <9e4dfe7c-42cc-3dba-763a-23ce4e10389b@hartkopp.net>
+ <20190103203347.GC28932@unicorn.suse.cz>
+ <715d1d82-af65-9344-dcce-0ddcace50274@hartkopp.net>
+ <20190104090143.GD28932@unicorn.suse.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190104090143.GD28932@unicorn.suse.cz>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: davem@davemloft.net, netdev@vger.kernel.org
-Cc: ieatmuttonchuan@gmail.com, meissner@suse.de, mkubecek@suse.cz, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, linux-stable <stable@vger.kernel.org>
+To: Michal Kubecek <mkubecek@suse.cz>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, ieatmuttonchuan@gmail.com, meissner@suse.de, linux-can@vger.kernel.org, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Muyu Yu provided a POC where user root with CAP_NET_ADMIN can create a CAN
-frame modification rule that makes the data length code a higher value than
-the available CAN frame data size. In combination with a configured checksum
-calculation where the result is stored relatively to the end of the data
-(e.g. cgw_csum_xor_rel) the tail of the skb (e.g. frag_list pointer in
-skb_shared_info) can be rewritten which finally can cause a system crash.
+Hi Michal,
 
-Michael Kubecek suggested to drop frames that have a DLC exceeding the
-available space after the modification process and provided a patch that can
-handle CAN FD frames too. Within this patch we also limit the length for the
-checksum calculations to the maximum of Classic CAN data length (8).
+On 1/4/19 10:01 AM, Michal Kubecek wrote:
+> On Thu, Jan 03, 2019 at 10:03:47PM +0100, Oliver Hartkopp wrote:
+>> 1. I'm still using the test "if (cf->can_dlc > 8)" with a proper comment as
+>> CAN_MAX_DLC and CAN_MAX_DLEN are not defined in Linux stable 3.2 - so that
+>> we can apply the patch to all versions of gw.c
+> 
+> I may be biased as substantial part of my work consists of trying to
+> understand unfamiliar code written by other people but I believe
+> readability of the code is more important than avoiding a bit of work
+> with backport to older stable branches.
 
-CAN frames that are dropped by these additional checks are counted with the
-CGW_DELETED counter which indicates misconfigurations in can-gw rules.
+I am with you.
+Please take a look into the new patch. I think either the comment and 
+the commit message make it very clear where the value comes from.
 
-This fixes CVE-2019-3701.
+E.g. in cgw_chk_csum_parms() we have tons of fixed constants that have 
+been introduced when CAN FD was far away from thinking. I introduced 
+CAN_MAX_DLC and CAN_MAX_DLEN myself when I started the CAN FD support in 
+Linux. gw.c would need a rework for full CAN FD support - where these 
+defines then definitely would be introduced.
 
-Reported-by: Muyu Yu <ieatmuttonchuan@gmail.com>
-Reported-by: Marcus Meissner <meissner@suse.de>
-Suggested-by: Michal Kubecek <mkubecek@suse.cz>
-Tested-by: Muyu Yu <ieatmuttonchuan@gmail.com>
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-stable <stable@vger.kernel.org> # >= v3.2
----
- net/can/gw.c | 36 +++++++++++++++++++++++++++++++-----
- 1 file changed, 31 insertions(+), 5 deletions(-)
+In this single case the simple applying to stable kernels weighted more 
+to me.
 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index faa3da88a127..180c389af5b1 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -416,13 +416,31 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 	while (modidx < MAX_MODFUNCTIONS && gwj->mod.modfunc[modidx])
- 		(*gwj->mod.modfunc[modidx++])(cf, &gwj->mod);
- 
--	/* check for checksum updates when the CAN frame has been modified */
-+	/* Has the CAN frame been modified? */
- 	if (modidx) {
--		if (gwj->mod.csumfunc.crc8)
--			(*gwj->mod.csumfunc.crc8)(cf, &gwj->mod.csum.crc8);
-+		/* get available space for the processed CAN frame type */
-+		int max_len = nskb->len - offsetof(struct can_frame, data);
- 
--		if (gwj->mod.csumfunc.xor)
--			(*gwj->mod.csumfunc.xor)(cf, &gwj->mod.csum.xor);
-+		/* dlc may have changed, make sure it fits to the CAN frame */
-+		if (cf->can_dlc > max_len)
-+			goto out_delete;
-+
-+		/* check for checksum updates in classic CAN length only */
-+		if (gwj->mod.csumfunc.crc8) {
-+			if (cf->can_dlc > 8)
-+				goto out_delete;
-+			else
-+				(*gwj->mod.csumfunc.crc8)
-+					(cf, &gwj->mod.csum.crc8);
-+		}
-+
-+		if (gwj->mod.csumfunc.xor) {
-+			if (cf->can_dlc > 8)
-+				goto out_delete;
-+			else
-+				(*gwj->mod.csumfunc.xor)
-+					(cf, &gwj->mod.csum.xor);
-+		}
- 	}
- 
- 	/* clear the skb timestamp if not configured the other way */
-@@ -434,6 +452,14 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 		gwj->dropped_frames++;
- 	else
- 		gwj->handled_frames++;
-+
-+	return;
-+
-+out_delete:
-+	/* delete frame due to misconfiguration */
-+	gwj->deleted_frames++;
-+	kfree_skb(nskb);
-+	return;
- }
- 
- static inline int cgw_register_filter(struct net *net, struct cgw_job *gwj)
--- 
-2.19.2
+Regards,
+Oliver
