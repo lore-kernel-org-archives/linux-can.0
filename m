@@ -1,142 +1,97 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [RFC PATCH 1/3] can: m_can: Create m_can core to leverage common
- code
-Date: Thu, 10 Jan 2019 06:54:22 -0600
-Message-ID: <0fb5e9a8-614b-44db-0d89-e675e28bbe92@ti.com>
-References: <20181010142055.25271-1-dmurphy@ti.com>
- <20181010142055.25271-2-dmurphy@ti.com>
- <52811b27-00c0-f5e2-2b18-608ccf846723@grandegger.com>
- <349ef8be-f4c7-25cc-2c33-7ce1fd0b0f40@ti.com>
- <9003a544-83cf-7dce-7f14-4abd292d470e@grandegger.com>
- <b73e200c-8a6b-00e0-dabc-af3245cc36fd@ti.com>
- <69d3a046-2d55-06e0-fba7-c9a0d20e6daa@grandegger.com>
- <62dd2f40-3ef6-fa6d-dc53-6896b52020ca@ti.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH 1/3] can: gw: ensure DLC boundaries after CAN frame modification
+Date: Thu, 10 Jan 2019 22:02:53 +0100
+Message-ID: <20190110210255.4291-2-socketcan@hartkopp.net>
+References: <20190110210255.4291-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <62dd2f40-3ef6-fa6d-dc53-6896b52020ca@ti.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Rizvi, Mohammad Faiz Abbas" <faiz_abbas@ti.com>, Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190110210255.4291-1-socketcan@hartkopp.net>
+Sender: netdev-owner@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: ieatmuttonchuan@gmail.com, meissner@suse.de, mkubecek@suse.cz, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Faiz
+Muyu Yu provided a POC where user root with CAP_NET_ADMIN can create a CAN
+frame modification rule that makes the data length code a higher value than
+the available CAN frame data size. In combination with a configured checksum
+calculation where the result is stored relatively to the end of the data
+(e.g. cgw_csum_xor_rel) the tail of the skb (e.g. frag_list pointer in
+skb_shared_info) can be rewritten which finally can cause a system crash.
 
-On 1/10/19 1:57 AM, Rizvi, Mohammad Faiz Abbas wrote:
-> Hi Dan, Wolfgang,
-> 
-> On 1/10/2019 1:14 PM, Wolfgang Grandegger wrote:
->> Hello Dan,
->>
->> sorry for my late response on that topic...
->>
->> Am 09.01.19 um 21:58 schrieb Dan Murphy:
->>> Wolfgang
->>>
->>> On 11/3/18 5:45 AM, Wolfgang Grandegger wrote:
->>>> Hello Dan,
->>>>
->>>> Am 31.10.2018 um 21:15 schrieb Dan Murphy:
->>>>> Wolfgang
->>>>>
->>>>> Thanks for the review
->>>>>
->>>>> On 10/27/2018 09:19 AM, Wolfgang Grandegger wrote:
->>>>>> Hello Dan,
->>>>>>
->>>>>> for the RFC, could you please just do the necessary changes to the
->>>>>> existing code. We can discuss about better names, etc. later. For
->>>>>> the review if the common code I quickly did:
->>>>>>
->>>>>>    mv m_can.c m_can_platform.c
->>>>>>    mv m_can_core.c m_can.c
->>>>>>
->>>>>> The file names are similar to what we have for the C_CAN driver.
->>>>>>
->>>>>>    s/classdev/priv/
->>>>>>    variable name s/m_can_dev/priv/
->>>>>>
->>>>>> Then your patch 1/3 looks as shown below. I'm going to comment on that
->>>>>> one. The comments start with "***"....
->>>>>>
->>>>>
->>>>> So you would like me to align the names with the c_can driver?
->>>>
->>>> That would be the obvious choice.
->>>>> <snip>
->>>>>>
->>>>>> *** I didn't review the rest of the patch for now.
->>>>>>
->>>>>
->>>>> snipped the code to reply to the comment.
->>>>>
->>>>>> Looking to the generic code, you didn't really change the way
->>>>>> the driver is accessing the registers. Also the interrupt handling
->>>>>> and rx polling is as it was before. Does that work properly using
->>>>>> the SPI interface of the TCAN4x5x?
->>>>>
->>>>> I don't want to change any of that yet.  Maybe my cover letter was not clear
->>>>> or did not go through.
->>>>>
->>>>> But the intention was just to break out the functionality to create a MCAN framework
->>>>> that can be used by devices that contain the Bosch MCAN core and provider their own protocal to access
->>>>> the registers in the device.
->>>>>
->>>>> I don't want to do any functional changes at this time on the IP code itself until we have a framework.
->>>>> There should be no regression in the io mapped code.
->>>>>
->>>>> I did comment on the interrupt handling and asked if a threaded work queue would affect CAN timing.
->>>>> For the original TCAN driver this was the way it was implemented.
->>>>
->>>> Do threaded interrupts with RX polling make sense? I think we need a
->>>> common interface allowing to select hard-irqs+napi or threaded-irqs.
->>>>
->>>
->>> I have been working on this code for about a month now and I am *not happy* with the amount of change that needs
->>> to be done to make the m_can a framework.
->>>
->>> I can tx/rx frames from another CAN device to the TCAN part but I have not even touched the iomapped code.
->>>
->>> The challenging part is that the m_can code that is currently available does not have to worry about atomic context because
->>> there is no peripheral waiting.  Since the TCAN is a peripheral device we need to take into about the hard waits in IRQ context
->>> as well as the atomic context.  Doing this creates many deltas in the base code that may break iomapped devices.  I have had to
->>> add the thread_irqs and now I am in the midst of the issue you brought up with napi.  I would have to schedule a queue for perp devices
->>> and leave the non-threaded iomapped irq.
->>>
->>> At this point I think it may be wise to leave the m_can code alone as it is working and stable and just work on the TCAN driver as
->>> a standalone driver.  A framework would be nice but I think it would destablize the m_can driver which is embedded in many SoC's and
->>> we cannot possibly test everyone of them.
->>
->> Unfortunately, I do not have m_can hardware at hand.
-> 
-> There are exactly 3 platforms in mainline that use the m_can driver. I can help Dan test it on a dra76x. I haven't had a chance to look at the changes in depth, but just testing for regressions on existing platforms shouldn't be too hard once we have it working on one.
-> 
+Michael Kubecek suggested to drop frames that have a DLC exceeding the
+available space after the modification process and provided a patch that can
+handle CAN FD frames too. Within this patch we also limit the length for the
+checksum calculations to the maximum of Classic CAN data length (8).
 
-Thanks Faiz.  Once I have the TCAN fully working I will post the branch to my repo.
+CAN frames that are dropped by these additional checks are counted with the
+CGW_DELETED counter which indicates misconfigurations in can-gw rules.
 
-Dan
+This fixes CVE-2019-3701.
 
-> Thanks,
-> Faiz
-> 
->>
->>> What are your thoughts?
->>
->> What we need is a common set of functions doing tx, rx, error and state
->> handling. This will requires substantial changes to the existing
->> io-mapped m_can driver, of course. I still believe it's worth the
->> effort, but I agree that it's difficult for you to re-write and test the
->> existing m_can driver.
->>
->> What about implementing such a set of common functions plus the SPI
->> specific part for your TCAN device. What do you/others think?
->>
->> Wolfgang.
->>
+Reported-by: Muyu Yu <ieatmuttonchuan@gmail.com>
+Reported-by: Marcus Meissner <meissner@suse.de>
+Suggested-by: Michal Kubecek <mkubecek@suse.cz>
+Tested-by: Muyu Yu <ieatmuttonchuan@gmail.com>
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-stable <stable@vger.kernel.org> # >= v3.2
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ net/can/gw.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-
+diff --git a/net/can/gw.c b/net/can/gw.c
+index faa3da88a127..53859346dc9a 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -416,13 +416,29 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 	while (modidx < MAX_MODFUNCTIONS && gwj->mod.modfunc[modidx])
+ 		(*gwj->mod.modfunc[modidx++])(cf, &gwj->mod);
+ 
+-	/* check for checksum updates when the CAN frame has been modified */
++	/* Has the CAN frame been modified? */
+ 	if (modidx) {
+-		if (gwj->mod.csumfunc.crc8)
++		/* get available space for the processed CAN frame type */
++		int max_len = nskb->len - offsetof(struct can_frame, data);
++
++		/* dlc may have changed, make sure it fits to the CAN frame */
++		if (cf->can_dlc > max_len)
++			goto out_delete;
++
++		/* check for checksum updates in classic CAN length only */
++		if (gwj->mod.csumfunc.crc8) {
++			if (cf->can_dlc > 8)
++				goto out_delete;
++
+ 			(*gwj->mod.csumfunc.crc8)(cf, &gwj->mod.csum.crc8);
++		}
++
++		if (gwj->mod.csumfunc.xor) {
++			if (cf->can_dlc > 8)
++				goto out_delete;
+ 
+-		if (gwj->mod.csumfunc.xor)
+ 			(*gwj->mod.csumfunc.xor)(cf, &gwj->mod.csum.xor);
++		}
+ 	}
+ 
+ 	/* clear the skb timestamp if not configured the other way */
+@@ -434,6 +450,14 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 		gwj->dropped_frames++;
+ 	else
+ 		gwj->handled_frames++;
++
++	return;
++
++ out_delete:
++	/* delete frame due to misconfiguration */
++	gwj->deleted_frames++;
++	kfree_skb(nskb);
++	return;
+ }
+ 
+ static inline int cgw_register_filter(struct net *net, struct cgw_job *gwj)
 -- 
-------------------
-Dan Murphy
+2.20.1
