@@ -1,97 +1,36 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 1/3] can: gw: ensure DLC boundaries after CAN frame modification
-Date: Thu, 10 Jan 2019 22:02:53 +0100
-Message-ID: <20190110210255.4291-2-socketcan@hartkopp.net>
-References: <20190110210255.4291-1-socketcan@hartkopp.net>
+Subject: [PATCH 0/3] RFC/RFT: CAN FD support for can-gw
+Date: Thu, 10 Jan 2019 22:02:52 +0100
+Message-ID: <20190110210255.4291-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190110210255.4291-1-socketcan@hartkopp.net>
 Sender: netdev-owner@vger.kernel.org
 To: linux-can@vger.kernel.org
 Cc: ieatmuttonchuan@gmail.com, meissner@suse.de, mkubecek@suse.cz, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Muyu Yu provided a POC where user root with CAP_NET_ADMIN can create a CAN
-frame modification rule that makes the data length code a higher value than
-the available CAN frame data size. In combination with a configured checksum
-calculation where the result is stored relatively to the end of the data
-(e.g. cgw_csum_xor_rel) the tail of the skb (e.g. frag_list pointer in
-skb_shared_info) can be rewritten which finally can cause a system crash.
+As a follow-up to the discussion about CVE-2019-3701 I walked through the
+can-gw code to add the support for handling CAN FD frames.
 
-Michael Kubecek suggested to drop frames that have a DLC exceeding the
-available space after the modification process and provided a patch that can
-handle CAN FD frames too. Within this patch we also limit the length for the
-checksum calculations to the maximum of Classic CAN data length (8).
+Patch 1/3 is still the CVE fix and can be omitted when a recent Linux tree
+is used that is already patched.
 
-CAN frames that are dropped by these additional checks are counted with the
-CGW_DELETED counter which indicates misconfigurations in can-gw rules.
+Patch 2/3 and 3/3 introduce the CAN FD support.
 
-This fixes CVE-2019-3701.
+The updated user space tool 'cangw' can be found in the 'cangwfd' branch of
+my can-utils fork at https://github.com/hartkopp/can-utils .
 
-Reported-by: Muyu Yu <ieatmuttonchuan@gmail.com>
-Reported-by: Marcus Meissner <meissner@suse.de>
-Suggested-by: Michal Kubecek <mkubecek@suse.cz>
-Tested-by: Muyu Yu <ieatmuttonchuan@gmail.com>
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-stable <stable@vger.kernel.org> # >= v3.2
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/gw.c | 30 +++++++++++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
+Feedback and testing is welcome!
 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index faa3da88a127..53859346dc9a 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -416,13 +416,29 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 	while (modidx < MAX_MODFUNCTIONS && gwj->mod.modfunc[modidx])
- 		(*gwj->mod.modfunc[modidx++])(cf, &gwj->mod);
- 
--	/* check for checksum updates when the CAN frame has been modified */
-+	/* Has the CAN frame been modified? */
- 	if (modidx) {
--		if (gwj->mod.csumfunc.crc8)
-+		/* get available space for the processed CAN frame type */
-+		int max_len = nskb->len - offsetof(struct can_frame, data);
-+
-+		/* dlc may have changed, make sure it fits to the CAN frame */
-+		if (cf->can_dlc > max_len)
-+			goto out_delete;
-+
-+		/* check for checksum updates in classic CAN length only */
-+		if (gwj->mod.csumfunc.crc8) {
-+			if (cf->can_dlc > 8)
-+				goto out_delete;
-+
- 			(*gwj->mod.csumfunc.crc8)(cf, &gwj->mod.csum.crc8);
-+		}
-+
-+		if (gwj->mod.csumfunc.xor) {
-+			if (cf->can_dlc > 8)
-+				goto out_delete;
- 
--		if (gwj->mod.csumfunc.xor)
- 			(*gwj->mod.csumfunc.xor)(cf, &gwj->mod.csum.xor);
-+		}
- 	}
- 
- 	/* clear the skb timestamp if not configured the other way */
-@@ -434,6 +450,14 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 		gwj->dropped_frames++;
- 	else
- 		gwj->handled_frames++;
-+
-+	return;
-+
-+ out_delete:
-+	/* delete frame due to misconfiguration */
-+	gwj->deleted_frames++;
-+	kfree_skb(nskb);
-+	return;
- }
- 
- static inline int cgw_register_filter(struct net *net, struct cgw_job *gwj)
+Oliver Hartkopp (3):
+  can: gw: ensure DLC boundaries after CAN frame modification
+  can: gw: use struct canfd_frame as internal data structure
+  can: gw: add support for CAN FD frames
+
+ include/uapi/linux/can/gw.h |  17 +-
+ net/can/gw.c                | 424 +++++++++++++++++++++++++++---------
+ 2 files changed, 333 insertions(+), 108 deletions(-)
+
 -- 
 2.20.1
