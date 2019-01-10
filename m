@@ -1,8 +1,8 @@
-From: "Rizvi, Mohammad Faiz Abbas" <faiz_abbas@ti.com>
+From: Dan Murphy <dmurphy@ti.com>
 Subject: Re: [RFC PATCH 1/3] can: m_can: Create m_can core to leverage common
  code
-Date: Thu, 10 Jan 2019 13:27:49 +0530
-Message-ID: <62dd2f40-3ef6-fa6d-dc53-6896b52020ca@ti.com>
+Date: Thu, 10 Jan 2019 06:53:24 -0600
+Message-ID: <06e0146a-5f96-5f60-1ab3-be21b854932a@ti.com>
 References: <20181010142055.25271-1-dmurphy@ti.com>
  <20181010142055.25271-2-dmurphy@ti.com>
  <52811b27-00c0-f5e2-2b18-608ccf846723@grandegger.com>
@@ -11,19 +11,19 @@ References: <20181010142055.25271-1-dmurphy@ti.com>
  <b73e200c-8a6b-00e0-dabc-af3245cc36fd@ti.com>
  <69d3a046-2d55-06e0-fba7-c9a0d20e6daa@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <69d3a046-2d55-06e0-fba7-c9a0d20e6daa@grandegger.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net
+To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hi Dan, Wolfgang,
+Wolfgang
 
-On 1/10/2019 1:14 PM, Wolfgang Grandegger wrote:
+On 1/10/19 1:44 AM, Wolfgang Grandegger wrote:
 > Hello Dan,
 > 
 > sorry for my late response on that topic...
@@ -46,13 +46,13 @@ On 1/10/2019 1:14 PM, Wolfgang Grandegger wrote:
 >>>>> existing code. We can discuss about better names, etc. later. For
 >>>>> the review if the common code I quickly did:
 >>>>>
->>>>>    mv m_can.c m_can_platform.c
->>>>>    mv m_can_core.c m_can.c
+>>>>>   mv m_can.c m_can_platform.c
+>>>>>   mv m_can_core.c m_can.c
 >>>>>
 >>>>> The file names are similar to what we have for the C_CAN driver.
 >>>>>
->>>>>    s/classdev/priv/
->>>>>    variable name s/m_can_dev/priv/
+>>>>>   s/classdev/priv/
+>>>>>   variable name s/m_can_dev/priv/
 >>>>>
 >>>>> Then your patch 1/3 looks as shown below. I'm going to comment on that
 >>>>> one. The comments start with "***"....
@@ -97,7 +97,7 @@ On 1/10/2019 1:14 PM, Wolfgang Grandegger wrote:
 >>
 >> The challenging part is that the m_can code that is currently available does not have to worry about atomic context because
 >> there is no peripheral waiting.  Since the TCAN is a peripheral device we need to take into about the hard waits in IRQ context
->> as well as the atomic context.  Doing this creates many deltas in the base code that may break iomapped devices.  I have had to
+>> as well as the atomic context.  Doing this creates many deltas in the base code that may break iomapped devices.  I have had to 
 >> add the thread_irqs and now I am in the midst of the issue you brought up with napi.  I would have to schedule a queue for perp devices
 >> and leave the non-threaded iomapped irq.
 >>
@@ -106,15 +106,6 @@ On 1/10/2019 1:14 PM, Wolfgang Grandegger wrote:
 >> we cannot possibly test everyone of them.
 > 
 > Unfortunately, I do not have m_can hardware at hand.
-
-There are exactly 3 platforms in mainline that use the m_can driver. I 
-can help Dan test it on a dra76x. I haven't had a chance to look at the 
-changes in depth, but just testing for regressions on existing platforms 
-shouldn't be too hard once we have it working on one.
-
-Thanks,
-Faiz
-
 > 
 >> What are your thoughts?
 > 
@@ -123,9 +114,28 @@ Faiz
 > io-mapped m_can driver, of course. I still believe it's worth the
 > effort, but I agree that it's difficult for you to re-write and test the
 > existing m_can driver.
+
+OK I will keep working on it.  What you are describing is what I have done.
+I have abstracted the register reads and writes away and I am in the process
+of abstracting away the device specific initialization.
+
 > 
 > What about implementing such a set of common functions plus the SPI
 > specific part for your TCAN device. What do you/others think?
+
+As stated above this is what I have.  But the m_can driver was written for io-mapped that has no delays
+so we need to take into about peripheral wait time in IRQ and atomic context.
+
+This is where the issues are stemming from mainly in the atomic context.
+
+Dan
+
+
 > 
 > Wolfgang.
 > 
+
+
+-- 
+------------------
+Dan Murphy
