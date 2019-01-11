@@ -1,455 +1,140 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 2/3] can: gw: use struct canfd_frame as internal data structure
-Date: Thu, 10 Jan 2019 22:02:54 +0100
-Message-ID: <20190110210255.4291-3-socketcan@hartkopp.net>
-References: <20190110210255.4291-1-socketcan@hartkopp.net>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [RFC PATCH 1/3] can: m_can: Create m_can core to leverage common
+ code
+Date: Fri, 11 Jan 2019 09:27:12 +0100
+Message-ID: <ed8717c2-5de3-a9f5-57c4-093496a0d5f1@grandegger.com>
+References: <20181010142055.25271-1-dmurphy@ti.com>
+ <20181010142055.25271-2-dmurphy@ti.com>
+ <52811b27-00c0-f5e2-2b18-608ccf846723@grandegger.com>
+ <349ef8be-f4c7-25cc-2c33-7ce1fd0b0f40@ti.com>
+ <9003a544-83cf-7dce-7f14-4abd292d470e@grandegger.com>
+ <b73e200c-8a6b-00e0-dabc-af3245cc36fd@ti.com>
+ <69d3a046-2d55-06e0-fba7-c9a0d20e6daa@grandegger.com>
+ <06e0146a-5f96-5f60-1ab3-be21b854932a@ti.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190110210255.4291-1-socketcan@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: linux-can@vger.kernel.org
-Cc: ieatmuttonchuan@gmail.com, meissner@suse.de, mkubecek@suse.cz, netdev@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <06e0146a-5f96-5f60-1ab3-be21b854932a@ti.com>
+Content-Language: en-GB
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-To prepare the CAN FD support this patch splits the first adaptions to
-CAN FD without changing the current functionality. Additionally some code
-is moved or indented to simplify the review of the next step.
+Hello Dan,
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- include/uapi/linux/can/gw.h |   5 +-
- net/can/gw.c                | 217 +++++++++++++++++++-----------------
- 2 files changed, 115 insertions(+), 107 deletions(-)
+Am 10.01.19 um 13:53 schrieb Dan Murphy:
+> Wolfgang
+> 
+> On 1/10/19 1:44 AM, Wolfgang Grandegger wrote:
+>> Hello Dan,
+>>
+>> sorry for my late response on that topic...
+>>
+>> Am 09.01.19 um 21:58 schrieb Dan Murphy:
+>>> Wolfgang
+>>>
+>>> On 11/3/18 5:45 AM, Wolfgang Grandegger wrote:
+>>>> Hello Dan,
+>>>>
+>>>> Am 31.10.2018 um 21:15 schrieb Dan Murphy:
+>>>>> Wolfgang
+>>>>>
+>>>>> Thanks for the review
+>>>>>
+>>>>> On 10/27/2018 09:19 AM, Wolfgang Grandegger wrote:
+>>>>>> Hello Dan,
+>>>>>>
+>>>>>> for the RFC, could you please just do the necessary changes to the
+>>>>>> existing code. We can discuss about better names, etc. later. For
+>>>>>> the review if the common code I quickly did:
+>>>>>>
+>>>>>>   mv m_can.c m_can_platform.c
+>>>>>>   mv m_can_core.c m_can.c
+>>>>>>
+>>>>>> The file names are similar to what we have for the C_CAN driver.
+>>>>>>
+>>>>>>   s/classdev/priv/
+>>>>>>   variable name s/m_can_dev/priv/
+>>>>>>
+>>>>>> Then your patch 1/3 looks as shown below. I'm going to comment on that
+>>>>>> one. The comments start with "***"....
+>>>>>>
+>>>>>
+>>>>> So you would like me to align the names with the c_can driver?
+>>>>
+>>>> That would be the obvious choice.
+>>>>> <snip>
+>>>>>>
+>>>>>> *** I didn't review the rest of the patch for now.
+>>>>>>
+>>>>>
+>>>>> snipped the code to reply to the comment.
+>>>>>
+>>>>>> Looking to the generic code, you didn't really change the way
+>>>>>> the driver is accessing the registers. Also the interrupt handling
+>>>>>> and rx polling is as it was before. Does that work properly using
+>>>>>> the SPI interface of the TCAN4x5x?
+>>>>>
+>>>>> I don't want to change any of that yet.  Maybe my cover letter was not clear
+>>>>> or did not go through.
+>>>>>
+>>>>> But the intention was just to break out the functionality to create a MCAN framework
+>>>>> that can be used by devices that contain the Bosch MCAN core and provider their own protocal to access
+>>>>> the registers in the device.
+>>>>>
+>>>>> I don't want to do any functional changes at this time on the IP code itself until we have a framework.
+>>>>> There should be no regression in the io mapped code.
+>>>>>
+>>>>> I did comment on the interrupt handling and asked if a threaded work queue would affect CAN timing.
+>>>>> For the original TCAN driver this was the way it was implemented.
+>>>>
+>>>> Do threaded interrupts with RX polling make sense? I think we need a
+>>>> common interface allowing to select hard-irqs+napi or threaded-irqs.
+>>>>
+>>>
+>>> I have been working on this code for about a month now and I am *not happy* with the amount of change that needs
+>>> to be done to make the m_can a framework.
+>>>
+>>> I can tx/rx frames from another CAN device to the TCAN part but I have not even touched the iomapped code.
+>>>
+>>> The challenging part is that the m_can code that is currently available does not have to worry about atomic context because
+>>> there is no peripheral waiting.  Since the TCAN is a peripheral device we need to take into about the hard waits in IRQ context
+>>> as well as the atomic context.  Doing this creates many deltas in the base code that may break iomapped devices.  I have had to 
+>>> add the thread_irqs and now I am in the midst of the issue you brought up with napi.  I would have to schedule a queue for perp devices
+>>> and leave the non-threaded iomapped irq.
+>>>
+>>> At this point I think it may be wise to leave the m_can code alone as it is working and stable and just work on the TCAN driver as
+>>> a standalone driver.  A framework would be nice but I think it would destablize the m_can driver which is embedded in many SoC's and
+>>> we cannot possibly test everyone of them.
+>>
+>> Unfortunately, I do not have m_can hardware at hand.
+>>
+>>> What are your thoughts?
+>>
+>> What we need is a common set of functions doing tx, rx, error and state
+>> handling. This will requires substantial changes to the existing
+>> io-mapped m_can driver, of course. I still believe it's worth the
+>> effort, but I agree that it's difficult for you to re-write and test the
+>> existing m_can driver.
+> 
+> OK I will keep working on it.  What you are describing is what I have done.
+> I have abstracted the register reads and writes away and I am in the process
+> of abstracting away the device specific initialization.
 
-diff --git a/include/uapi/linux/can/gw.h b/include/uapi/linux/can/gw.h
-index 7bee7a0b9800..ed811bc463b5 100644
---- a/include/uapi/linux/can/gw.h
-+++ b/include/uapi/linux/can/gw.h
-@@ -93,10 +93,11 @@ enum {
- 
- /* CAN frame elements that are affected by curr. 3 CAN frame modifications */
- #define CGW_MOD_ID	0x01
--#define CGW_MOD_DLC	0x02
-+#define CGW_MOD_DLC	0x02		/* contains the data length in bytes */
-+#define CGW_MOD_LEN	CGW_MOD_DLC	/* CAN FD length representation */
- #define CGW_MOD_DATA	0x04
- 
--#define CGW_FRAME_MODS 3 /* ID DLC DATA */
-+#define CGW_FRAME_MODS 3 /* ID DLC/LEN DATA */
- 
- #define MAX_MODFUNCTIONS (CGW_MOD_FUNCS * CGW_FRAME_MODS)
- 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 53859346dc9a..609527b7e357 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -85,10 +85,10 @@ static struct kmem_cache *cgw_cache __read_mostly;
- /* structure that contains the (on-the-fly) CAN frame modifications */
- struct cf_mod {
- 	struct {
--		struct can_frame and;
--		struct can_frame or;
--		struct can_frame xor;
--		struct can_frame set;
-+		struct canfd_frame and;
-+		struct canfd_frame or;
-+		struct canfd_frame xor;
-+		struct canfd_frame set;
- 	} modframe;
- 	struct {
- 		u8 and;
-@@ -96,7 +96,7 @@ struct cf_mod {
- 		u8 xor;
- 		u8 set;
- 	} modtype;
--	void (*modfunc[MAX_MODFUNCTIONS])(struct can_frame *cf,
-+	void (*modfunc[MAX_MODFUNCTIONS])(struct canfd_frame *cf,
- 					  struct cf_mod *mod);
- 
- 	/* CAN frame checksum calculation after CAN frame modifications */
-@@ -105,8 +105,8 @@ struct cf_mod {
- 		struct cgw_csum_crc8 crc8;
- 	} csum;
- 	struct {
--		void (*xor)(struct can_frame *cf, struct cgw_csum_xor *xor);
--		void (*crc8)(struct can_frame *cf, struct cgw_csum_crc8 *crc8);
-+		void (*xor)(struct canfd_frame *cf, struct cgw_csum_xor *xor);
-+		void (*crc8)(struct canfd_frame *cf, struct cgw_csum_crc8 *crc8);
- 	} csumfunc;
- 	u32 uid;
- };
-@@ -151,23 +151,23 @@ struct cgw_job {
- 
- /* modification functions that are invoked in the hot path in can_can_gw_rcv */
- 
--#define MODFUNC(func, op) static void func(struct can_frame *cf, \
-+#define MODFUNC(func, op) static void func(struct canfd_frame *cf, \
- 					   struct cf_mod *mod) { op ; }
- 
- MODFUNC(mod_and_id, cf->can_id &= mod->modframe.and.can_id)
--MODFUNC(mod_and_dlc, cf->can_dlc &= mod->modframe.and.can_dlc)
-+MODFUNC(mod_and_len, cf->len &= mod->modframe.and.len)
- MODFUNC(mod_and_data, *(u64 *)cf->data &= *(u64 *)mod->modframe.and.data)
- MODFUNC(mod_or_id, cf->can_id |= mod->modframe.or.can_id)
--MODFUNC(mod_or_dlc, cf->can_dlc |= mod->modframe.or.can_dlc)
-+MODFUNC(mod_or_len, cf->len |= mod->modframe.or.len)
- MODFUNC(mod_or_data, *(u64 *)cf->data |= *(u64 *)mod->modframe.or.data)
- MODFUNC(mod_xor_id, cf->can_id ^= mod->modframe.xor.can_id)
--MODFUNC(mod_xor_dlc, cf->can_dlc ^= mod->modframe.xor.can_dlc)
-+MODFUNC(mod_xor_len, cf->len ^= mod->modframe.xor.len)
- MODFUNC(mod_xor_data, *(u64 *)cf->data ^= *(u64 *)mod->modframe.xor.data)
- MODFUNC(mod_set_id, cf->can_id = mod->modframe.set.can_id)
--MODFUNC(mod_set_dlc, cf->can_dlc = mod->modframe.set.can_dlc)
-+MODFUNC(mod_set_len, cf->len = mod->modframe.set.len)
- MODFUNC(mod_set_data, *(u64 *)cf->data = *(u64 *)mod->modframe.set.data)
- 
--static inline void canframecpy(struct can_frame *dst, struct can_frame *src)
-+static void canframecpy(struct canfd_frame *dst, struct can_frame *src)
- {
- 	/*
- 	 * Copy the struct members separately to ensure that no uninitialized
-@@ -176,12 +176,14 @@ static inline void canframecpy(struct can_frame *dst, struct can_frame *src)
- 	 */
- 
- 	dst->can_id = src->can_id;
--	dst->can_dlc = src->can_dlc;
-+	dst->len = src->can_dlc;
- 	*(u64 *)dst->data = *(u64 *)src->data;
- }
- 
- static int cgw_chk_csum_parms(s8 fr, s8 to, s8 re)
- {
-+	s8 dlen = CAN_MAX_DLEN;
-+
- 	/*
- 	 * absolute dlc values 0 .. 7 => 0 .. 7, e.g. data [0]
- 	 * relative to received dlc -1 .. -8 :
-@@ -191,27 +193,27 @@ static int cgw_chk_csum_parms(s8 fr, s8 to, s8 re)
- 	 * -8 => index = 0 (data[0])
- 	 */
- 
--	if (fr > -9 && fr < 8 &&
--	    to > -9 && to < 8 &&
--	    re > -9 && re < 8)
-+	if (fr >= -dlen && fr < dlen &&
-+	    to >= -dlen && to < dlen &&
-+	    re >= -dlen && re < dlen)
- 		return 0;
- 	else
- 		return -EINVAL;
- }
- 
--static inline int calc_idx(int idx, int rx_dlc)
-+static inline int calc_idx(int idx, int rx_len)
- {
- 	if (idx < 0)
--		return rx_dlc + idx;
-+		return rx_len + idx;
- 	else
- 		return idx;
- }
- 
--static void cgw_csum_xor_rel(struct can_frame *cf, struct cgw_csum_xor *xor)
-+static void cgw_csum_xor_rel(struct canfd_frame *cf, struct cgw_csum_xor *xor)
- {
--	int from = calc_idx(xor->from_idx, cf->can_dlc);
--	int to = calc_idx(xor->to_idx, cf->can_dlc);
--	int res = calc_idx(xor->result_idx, cf->can_dlc);
-+	int from = calc_idx(xor->from_idx, cf->len);
-+	int to = calc_idx(xor->to_idx, cf->len);
-+	int res = calc_idx(xor->result_idx, cf->len);
- 	u8 val = xor->init_xor_val;
- 	int i;
- 
-@@ -229,7 +231,7 @@ static void cgw_csum_xor_rel(struct can_frame *cf, struct cgw_csum_xor *xor)
- 	cf->data[res] = val;
- }
- 
--static void cgw_csum_xor_pos(struct can_frame *cf, struct cgw_csum_xor *xor)
-+static void cgw_csum_xor_pos(struct canfd_frame *cf, struct cgw_csum_xor *xor)
- {
- 	u8 val = xor->init_xor_val;
- 	int i;
-@@ -240,7 +242,7 @@ static void cgw_csum_xor_pos(struct can_frame *cf, struct cgw_csum_xor *xor)
- 	cf->data[xor->result_idx] = val;
- }
- 
--static void cgw_csum_xor_neg(struct can_frame *cf, struct cgw_csum_xor *xor)
-+static void cgw_csum_xor_neg(struct canfd_frame *cf, struct cgw_csum_xor *xor)
- {
- 	u8 val = xor->init_xor_val;
- 	int i;
-@@ -251,11 +253,11 @@ static void cgw_csum_xor_neg(struct can_frame *cf, struct cgw_csum_xor *xor)
- 	cf->data[xor->result_idx] = val;
- }
- 
--static void cgw_csum_crc8_rel(struct can_frame *cf, struct cgw_csum_crc8 *crc8)
-+static void cgw_csum_crc8_rel(struct canfd_frame *cf, struct cgw_csum_crc8 *crc8)
- {
--	int from = calc_idx(crc8->from_idx, cf->can_dlc);
--	int to = calc_idx(crc8->to_idx, cf->can_dlc);
--	int res = calc_idx(crc8->result_idx, cf->can_dlc);
-+	int from = calc_idx(crc8->from_idx, cf->len);
-+	int to = calc_idx(crc8->to_idx, cf->len);
-+	int res = calc_idx(crc8->result_idx, cf->len);
- 	u8 crc = crc8->init_crc_val;
- 	int i;
- 
-@@ -290,7 +292,7 @@ static void cgw_csum_crc8_rel(struct can_frame *cf, struct cgw_csum_crc8 *crc8)
- 	cf->data[crc8->result_idx] = crc^crc8->final_xor_val;
- }
- 
--static void cgw_csum_crc8_pos(struct can_frame *cf, struct cgw_csum_crc8 *crc8)
-+static void cgw_csum_crc8_pos(struct canfd_frame *cf, struct cgw_csum_crc8 *crc8)
- {
- 	u8 crc = crc8->init_crc_val;
- 	int i;
-@@ -317,7 +319,7 @@ static void cgw_csum_crc8_pos(struct can_frame *cf, struct cgw_csum_crc8 *crc8)
- 	cf->data[crc8->result_idx] = crc^crc8->final_xor_val;
- }
- 
--static void cgw_csum_crc8_neg(struct can_frame *cf, struct cgw_csum_crc8 *crc8)
-+static void cgw_csum_crc8_neg(struct canfd_frame *cf, struct cgw_csum_crc8 *crc8)
- {
- 	u8 crc = crc8->init_crc_val;
- 	int i;
-@@ -348,7 +350,7 @@ static void cgw_csum_crc8_neg(struct can_frame *cf, struct cgw_csum_crc8 *crc8)
- static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- {
- 	struct cgw_job *gwj = (struct cgw_job *)data;
--	struct can_frame *cf;
-+	struct canfd_frame *cf;
- 	struct sk_buff *nskb;
- 	int modidx = 0;
- 
-@@ -410,7 +412,7 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 	nskb->dev = gwj->dst.dev;
- 
- 	/* pointer to modifiable CAN frame */
--	cf = (struct can_frame *)nskb->data;
-+	cf = (struct canfd_frame *)nskb->data;
- 
- 	/* perform preprocessed modification functions if there are any */
- 	while (modidx < MAX_MODFUNCTIONS && gwj->mod.modfunc[modidx])
-@@ -419,22 +421,22 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 	/* Has the CAN frame been modified? */
- 	if (modidx) {
- 		/* get available space for the processed CAN frame type */
--		int max_len = nskb->len - offsetof(struct can_frame, data);
-+		int max_len = nskb->len - offsetof(struct canfd_frame, data);
- 
- 		/* dlc may have changed, make sure it fits to the CAN frame */
--		if (cf->can_dlc > max_len)
-+		if (cf->len > max_len)
- 			goto out_delete;
- 
- 		/* check for checksum updates in classic CAN length only */
- 		if (gwj->mod.csumfunc.crc8) {
--			if (cf->can_dlc > 8)
-+			if (cf->len > 8)
- 				goto out_delete;
- 
- 			(*gwj->mod.csumfunc.crc8)(cf, &gwj->mod.csum.crc8);
- 		}
- 
- 		if (gwj->mod.csumfunc.xor) {
--			if (cf->can_dlc > 8)
-+			if (cf->len > 8)
- 				goto out_delete;
- 
- 			(*gwj->mod.csumfunc.xor)(cf, &gwj->mod.csum.xor);
-@@ -505,7 +507,6 @@ static int cgw_notifier(struct notifier_block *nb,
- static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj, int type,
- 		       u32 pid, u32 seq, int flags)
- {
--	struct cgw_frame_mod mb;
- 	struct rtcanmsg *rtcan;
- 	struct nlmsghdr *nlh;
- 
-@@ -542,32 +543,36 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj, int type,
- 			goto cancel;
- 	}
- 
--	if (gwj->mod.modtype.and) {
--		memcpy(&mb.cf, &gwj->mod.modframe.and, sizeof(mb.cf));
--		mb.modtype = gwj->mod.modtype.and;
--		if (nla_put(skb, CGW_MOD_AND, sizeof(mb), &mb) < 0)
--			goto cancel;
--	}
-+	if (1) {
-+		struct cgw_frame_mod mb;
- 
--	if (gwj->mod.modtype.or) {
--		memcpy(&mb.cf, &gwj->mod.modframe.or, sizeof(mb.cf));
--		mb.modtype = gwj->mod.modtype.or;
--		if (nla_put(skb, CGW_MOD_OR, sizeof(mb), &mb) < 0)
--			goto cancel;
--	}
-+		if (gwj->mod.modtype.and) {
-+			memcpy(&mb.cf, &gwj->mod.modframe.and, sizeof(mb.cf));
-+			mb.modtype = gwj->mod.modtype.and;
-+			if (nla_put(skb, CGW_MOD_AND, sizeof(mb), &mb) < 0)
-+				goto cancel;
-+		}
- 
--	if (gwj->mod.modtype.xor) {
--		memcpy(&mb.cf, &gwj->mod.modframe.xor, sizeof(mb.cf));
--		mb.modtype = gwj->mod.modtype.xor;
--		if (nla_put(skb, CGW_MOD_XOR, sizeof(mb), &mb) < 0)
--			goto cancel;
--	}
-+		if (gwj->mod.modtype.or) {
-+			memcpy(&mb.cf, &gwj->mod.modframe.or, sizeof(mb.cf));
-+			mb.modtype = gwj->mod.modtype.or;
-+			if (nla_put(skb, CGW_MOD_OR, sizeof(mb), &mb) < 0)
-+				goto cancel;
-+		}
- 
--	if (gwj->mod.modtype.set) {
--		memcpy(&mb.cf, &gwj->mod.modframe.set, sizeof(mb.cf));
--		mb.modtype = gwj->mod.modtype.set;
--		if (nla_put(skb, CGW_MOD_SET, sizeof(mb), &mb) < 0)
--			goto cancel;
-+		if (gwj->mod.modtype.xor) {
-+			memcpy(&mb.cf, &gwj->mod.modframe.xor, sizeof(mb.cf));
-+			mb.modtype = gwj->mod.modtype.xor;
-+			if (nla_put(skb, CGW_MOD_XOR, sizeof(mb), &mb) < 0)
-+				goto cancel;
-+		}
-+
-+		if (gwj->mod.modtype.set) {
-+			memcpy(&mb.cf, &gwj->mod.modframe.set, sizeof(mb.cf));
-+			mb.modtype = gwj->mod.modtype.set;
-+			if (nla_put(skb, CGW_MOD_SET, sizeof(mb), &mb) < 0)
-+				goto cancel;
-+		}
- 	}
- 
- 	if (gwj->mod.uid) {
-@@ -655,7 +660,6 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
- 			  u8 gwtype, void *gwtypeattr, u8 *limhops)
- {
- 	struct nlattr *tb[CGW_MAX+1];
--	struct cgw_frame_mod mb;
- 	int modidx = 0;
- 	int err = 0;
- 
-@@ -675,69 +679,72 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
- 	}
- 
- 	/* check for AND/OR/XOR/SET modifications */
-+	if (1) {
-+		struct cgw_frame_mod mb;
- 
--	if (tb[CGW_MOD_AND]) {
--		nla_memcpy(&mb, tb[CGW_MOD_AND], CGW_MODATTR_LEN);
-+		if (tb[CGW_MOD_AND]) {
-+			nla_memcpy(&mb, tb[CGW_MOD_AND], CGW_MODATTR_LEN);
- 
--		canframecpy(&mod->modframe.and, &mb.cf);
--		mod->modtype.and = mb.modtype;
-+			canframecpy(&mod->modframe.and, &mb.cf);
-+			mod->modtype.and = mb.modtype;
- 
--		if (mb.modtype & CGW_MOD_ID)
--			mod->modfunc[modidx++] = mod_and_id;
-+			if (mb.modtype & CGW_MOD_ID)
-+				mod->modfunc[modidx++] = mod_and_id;
- 
--		if (mb.modtype & CGW_MOD_DLC)
--			mod->modfunc[modidx++] = mod_and_dlc;
-+			if (mb.modtype & CGW_MOD_LEN)
-+				mod->modfunc[modidx++] = mod_and_len;
- 
--		if (mb.modtype & CGW_MOD_DATA)
--			mod->modfunc[modidx++] = mod_and_data;
--	}
-+			if (mb.modtype & CGW_MOD_DATA)
-+				mod->modfunc[modidx++] = mod_and_data;
-+		}
- 
--	if (tb[CGW_MOD_OR]) {
--		nla_memcpy(&mb, tb[CGW_MOD_OR], CGW_MODATTR_LEN);
-+		if (tb[CGW_MOD_OR]) {
-+			nla_memcpy(&mb, tb[CGW_MOD_OR], CGW_MODATTR_LEN);
- 
--		canframecpy(&mod->modframe.or, &mb.cf);
--		mod->modtype.or = mb.modtype;
-+			canframecpy(&mod->modframe.or, &mb.cf);
-+			mod->modtype.or = mb.modtype;
- 
--		if (mb.modtype & CGW_MOD_ID)
--			mod->modfunc[modidx++] = mod_or_id;
-+			if (mb.modtype & CGW_MOD_ID)
-+				mod->modfunc[modidx++] = mod_or_id;
- 
--		if (mb.modtype & CGW_MOD_DLC)
--			mod->modfunc[modidx++] = mod_or_dlc;
-+			if (mb.modtype & CGW_MOD_LEN)
-+				mod->modfunc[modidx++] = mod_or_len;
- 
--		if (mb.modtype & CGW_MOD_DATA)
--			mod->modfunc[modidx++] = mod_or_data;
--	}
-+			if (mb.modtype & CGW_MOD_DATA)
-+				mod->modfunc[modidx++] = mod_or_data;
-+		}
- 
--	if (tb[CGW_MOD_XOR]) {
--		nla_memcpy(&mb, tb[CGW_MOD_XOR], CGW_MODATTR_LEN);
-+		if (tb[CGW_MOD_XOR]) {
-+			nla_memcpy(&mb, tb[CGW_MOD_XOR], CGW_MODATTR_LEN);
- 
--		canframecpy(&mod->modframe.xor, &mb.cf);
--		mod->modtype.xor = mb.modtype;
-+			canframecpy(&mod->modframe.xor, &mb.cf);
-+			mod->modtype.xor = mb.modtype;
- 
--		if (mb.modtype & CGW_MOD_ID)
--			mod->modfunc[modidx++] = mod_xor_id;
-+			if (mb.modtype & CGW_MOD_ID)
-+				mod->modfunc[modidx++] = mod_xor_id;
- 
--		if (mb.modtype & CGW_MOD_DLC)
--			mod->modfunc[modidx++] = mod_xor_dlc;
-+			if (mb.modtype & CGW_MOD_LEN)
-+				mod->modfunc[modidx++] = mod_xor_len;
- 
--		if (mb.modtype & CGW_MOD_DATA)
--			mod->modfunc[modidx++] = mod_xor_data;
--	}
-+			if (mb.modtype & CGW_MOD_DATA)
-+				mod->modfunc[modidx++] = mod_xor_data;
-+		}
- 
--	if (tb[CGW_MOD_SET]) {
--		nla_memcpy(&mb, tb[CGW_MOD_SET], CGW_MODATTR_LEN);
-+		if (tb[CGW_MOD_SET]) {
-+			nla_memcpy(&mb, tb[CGW_MOD_SET], CGW_MODATTR_LEN);
- 
--		canframecpy(&mod->modframe.set, &mb.cf);
--		mod->modtype.set = mb.modtype;
-+			canframecpy(&mod->modframe.set, &mb.cf);
-+			mod->modtype.set = mb.modtype;
- 
--		if (mb.modtype & CGW_MOD_ID)
--			mod->modfunc[modidx++] = mod_set_id;
-+			if (mb.modtype & CGW_MOD_ID)
-+				mod->modfunc[modidx++] = mod_set_id;
- 
--		if (mb.modtype & CGW_MOD_DLC)
--			mod->modfunc[modidx++] = mod_set_dlc;
-+			if (mb.modtype & CGW_MOD_LEN)
-+				mod->modfunc[modidx++] = mod_set_len;
- 
--		if (mb.modtype & CGW_MOD_DATA)
--			mod->modfunc[modidx++] = mod_set_data;
-+			if (mb.modtype & CGW_MOD_DATA)
-+				mod->modfunc[modidx++] = mod_set_data;
-+		}
- 	}
- 
- 	/* check for checksum operations after CAN frame modifications */
--- 
-2.20.1
+Would be nice if you could show your current implementation...
+
+>>
+>> What about implementing such a set of common functions plus the SPI
+>> specific part for your TCAN device. What do you/others think?
+> 
+> As stated above this is what I have.  But the m_can driver was written for io-mapped that has no delays
+> so we need to take into about peripheral wait time in IRQ and atomic context.
+> 
+> This is where the issues are stemming from mainly in the atomic context.
+
+... to understand a bit better what you exactly mean. Or does the last
+patch you sent already highlight them.
+
+Wolfgang.
