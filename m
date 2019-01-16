@@ -1,40 +1,57 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2] can: bcm: check timer values before ktime conversion
-Date: Wed, 16 Jan 2019 16:54:25 +0100
-Message-ID: <922cc9ad-4c62-8b52-b3a2-06c262d4e6dd@hartkopp.net>
-References: <20190113183143.10612-1-socketcan@hartkopp.net>
- <20190116133603.25A5A20873@mail.kernel.org>
- <a0bd40cb-3668-6407-85b3-902fab13c8df@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <a0bd40cb-3668-6407-85b3-902fab13c8df@hartkopp.net>
-Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Sasha Levin <sashal@kernel.org>, davem@davemloft.net, netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, lifeasageek@gmail.com, stable@vger.kernel.org
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Subject: [PATCH 00/11] Add basic EK874 support
+Date: Wed, 16 Jan 2019 18:37:43 +0000
+Message-ID: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>
+Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Ben Whitten <ben.whitten@gmail.com>, Chris Paterson <Chris.Paterson2@renesas.com>, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.orglinux-
 List-Id: linux-can.vger.kernel.org
 
-Hi Sasha,
+Dear All,
 
-some more details ...
+The EK874 is an evaluation kit for the RZ/G2E SoC (a.k.a. r8a774c0)
+from Silicon Linux Corporation. It is made of two boards: cat874
+(the main board) and cat875 (the sub board).
 
-> On 1/16/19 2:36 PM, Sasha Levin wrote:
+This series adds the device trees to describe the HW configuration
+of the EK874, with some basic support.
 
->> This commit has been processed because it contains a -stable tag.
->> The stable tag indicates that it's relevant for the following trees: 
->> 2.6.26+
->>
+This applies onto next-20190116
 
->> v4.9.150: Build OK!
->> v4.4.170: Failed to apply! Possible dependencies:
+Thanks,
+Fab
 
-This patch introduced in 4.8 leads to the problem:
->>      6f3b911d5f29 ("can: bcm: add support for CAN FD frames")
+Biju Das (6):
+  dt-bindings: Add vendor prefix for Silicon Linux.
+  arm64: dts: renesas: Add Si-Linux CAT874 board support
+  arm64: dts: renesas: Add Si-Linux EK874 board support
+  arm64: dts: renesas: r8a774c0-cat874: Add pincontrol support to scif2
+  arm64: dts: renesas: r8a774c0-cat874: Add uSD support
+  arm64: dts: renesas: cat875: Add ethernet support
 
-I will provide a patch which applies to all Linux pre-4.8 kernels once 
-we have an upstream commit hash.
+Fabrizio Castro (5):
+  dt-bindings: arm: renesas: Add si-linux cat87[45] boards
+  clk: renesas: r8a774c0: Add missing CANFD clock
+  dt-bindings: can: rcar_can: Fix RZ/G2 CAN clocks
+  arm64: dts: renesas: r8a774c0: Add clkp2 clock to CAN nodes
+  dt-bindings: can: rcar_canfd: document r8a774c0 support
 
-Best regards,
-Oliver
+ Documentation/devicetree/bindings/arm/renesas.yaml |  8 ++
+ .../devicetree/bindings/net/can/rcar_can.txt       | 12 +--
+ .../devicetree/bindings/net/can/rcar_canfd.txt     | 16 ++--
+ .../devicetree/bindings/vendor-prefixes.txt        |  1 +
+ arch/arm64/boot/dts/renesas/Makefile               |  1 +
+ arch/arm64/boot/dts/renesas/cat875.dtsi            | 40 +++++++++
+ arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts    | 97 ++++++++++++++++++++++
+ arch/arm64/boot/dts/renesas/r8a774c0-ek874.dts     | 14 ++++
+ arch/arm64/boot/dts/renesas/r8a774c0.dtsi          | 12 ++-
+ drivers/clk/renesas/r8a774c0-cpg-mssr.c            |  4 +
+ include/dt-bindings/clock/r8a774c0-cpg-mssr.h      | 17 ++--
+ 11 files changed, 194 insertions(+), 28 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/renesas/cat875.dtsi
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a774c0-ek874.dts
+
+-- 
+2.7.4
