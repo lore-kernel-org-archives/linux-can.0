@@ -1,7 +1,7 @@
 From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: [PATCH 06/11] arm64: dts: renesas: r8a774c0-cat874: Add uSD support
-Date: Wed, 16 Jan 2019 18:37:49 +0000
-Message-ID: <1547663874-29411-7-git-send-email-fabrizio.castro@bp.renesas.com>
+Subject: [PATCH 07/11] arm64: dts: renesas: cat875: Add ethernet support
+Date: Wed, 16 Jan 2019 18:37:50 +0000
+Message-ID: <1547663874-29411-8-git-send-email-fabrizio.castro@bp.renesas.com>
 References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
@@ -12,93 +12,53 @@ List-Id: linux-can.vger.kernel.org
 
 From: Biju Das <biju.das@bp.renesas.com>
 
-This patch adds uSD card support.
+This patch adds ethernet support to the sub board.
 
 Signed-off-by: Biju Das <biju.das@bp.renesas.com>
-Reviewed-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
 Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 ---
- arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts | 50 +++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ arch/arm64/boot/dts/renesas/cat875.dtsi | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts b/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
-index c545ce5..477a56b 100644
---- a/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
-+++ b/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
-@@ -7,6 +7,7 @@
- 
- /dts-v1/;
- #include "r8a774c0.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
+diff --git a/arch/arm64/boot/dts/renesas/cat875.dtsi b/arch/arm64/boot/dts/renesas/cat875.dtsi
+index a41d0d8..805ffa7 100644
+--- a/arch/arm64/boot/dts/renesas/cat875.dtsi
++++ b/arch/arm64/boot/dts/renesas/cat875.dtsi
+@@ -7,4 +7,34 @@
  
  / {
- 	model = "Silicon Linux RZ/G2E 96board platform (CAT874)";
-@@ -26,6 +27,29 @@
- 		/* first 128MB is reserved for secure area. */
- 		reg = <0x0 0x48000000 0x0 0x78000000>;
- 	};
+ 	model = "Silicon Linux sub board for CAT874 (CAT875)";
 +
-+	vcc_sdhi0: regulator-vcc-sdhi0 {
-+		compatible = "regulator-fixed";
-+
-+		regulator-name = "SDHI0 Vcc";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		regulator-boot-on;
++	aliases {
++		ethernet0 = &avb;
 +	};
-+
-+	vccq_sdhi0: regulator-vccq-sdhi0 {
-+		compatible = "regulator-gpio";
-+
-+		regulator-name = "SDHI0 VccQ";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		gpios = <&gpio3 13 GPIO_ACTIVE_HIGH>;
-+		gpios-states = <1>;
-+		states = <3300000 1
-+			  1800000 0>;
-+	};
- };
- 
- &extal_clk {
-@@ -37,6 +61,18 @@
- 		groups = "scif2_data_a";
- 		function = "scif2";
- 	};
-+
-+	sdhi0_pins: sd0 {
-+		groups = "sdhi0_data4", "sdhi0_ctrl";
-+		function = "sdhi0";
-+		power-source = <3300>;
-+	};
-+
-+	sdhi0_pins_uhs: sd0_uhs {
-+		groups = "sdhi0_data4", "sdhi0_ctrl";
-+		function = "sdhi0";
-+		power-source = <1800>;
-+	};
- };
- 
- &scif2 {
-@@ -45,3 +81,17 @@
- 
- 	status = "okay";
- };
-+
-+&sdhi0 {
-+	pinctrl-0 = <&sdhi0_pins>;
-+	pinctrl-1 = <&sdhi0_pins_uhs>;
-+	pinctrl-names = "default", "state_uhs";
-+
-+	vmmc-supply = <&vcc_sdhi0>;
-+	vqmmc-supply = <&vccq_sdhi0>;
-+	cd-gpios = <&gpio3 12 GPIO_ACTIVE_LOW>;
-+	bus-width = <4>;
-+	sd-uhs-sdr50;
-+	sd-uhs-sdr104;
-+	status = "okay";
 +};
++
++&avb {
++	pinctrl-0 = <&avb_pins>;
++	pinctrl-names = "default";
++	renesas,no-ether-link;
++	phy-handle = <&phy0>;
++	phy-mode = "rgmii";
++	status = "okay";
++
++	phy0: ethernet-phy@0 {
++		rxc-skew-ps = <1500>;
++		reg = <0>;
++		interrupt-parent = <&gpio2>;
++		interrupts = <21 IRQ_TYPE_LEVEL_LOW>;
++		reset-gpios = <&gpio1 20 GPIO_ACTIVE_LOW>;
++	};
++};
++
++&pfc {
++	avb_pins: avb {
++		mux {
++			groups = "avb_mii";
++			function = "avb";
++		};
++	};
+ };
 -- 
 2.7.4
