@@ -1,7 +1,7 @@
 From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: [PATCH 04/11] arm64: dts: renesas: Add Si-Linux EK874 board support
-Date: Wed, 16 Jan 2019 18:37:47 +0000
-Message-ID: <1547663874-29411-5-git-send-email-fabrizio.castro@bp.renesas.com>
+Subject: [PATCH 05/11] arm64: dts: renesas: r8a774c0-cat874: Add pincontrol support to scif2
+Date: Wed, 16 Jan 2019 18:37:48 +0000
+Message-ID: <1547663874-29411-6-git-send-email-fabrizio.castro@bp.renesas.com>
 References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
@@ -12,66 +12,35 @@ List-Id: linux-can.vger.kernel.org
 
 From: Biju Das <biju.das@bp.renesas.com>
 
-The EK874 development kit from Silicon Linux is made of CAT874 (the main
-board) and CAT875 (the sub board that goes on top of CAT874).
+This patch adds pincontrol support to scif2.
 
 Signed-off-by: Biju Das <biju.das@bp.renesas.com>
-Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Reviewed-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
 Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 ---
- arch/arm64/boot/dts/renesas/Makefile           |  2 +-
- arch/arm64/boot/dts/renesas/cat875.dtsi        | 10 ++++++++++
- arch/arm64/boot/dts/renesas/r8a774c0-ek874.dts | 14 ++++++++++++++
- 3 files changed, 25 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/boot/dts/renesas/cat875.dtsi
- create mode 100644 arch/arm64/boot/dts/renesas/r8a774c0-ek874.dts
+ arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
-index 11997d7..6cde526 100644
---- a/arch/arm64/boot/dts/renesas/Makefile
-+++ b/arch/arm64/boot/dts/renesas/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--dtb-$(CONFIG_ARCH_R8A774C0) += r8a774c0-cat874.dtb
-+dtb-$(CONFIG_ARCH_R8A774C0) += r8a774c0-cat874.dtb r8a774c0-ek874.dtb
- dtb-$(CONFIG_ARCH_R8A7795) += r8a7795-salvator-x.dtb r8a7795-h3ulcb.dtb
- dtb-$(CONFIG_ARCH_R8A7795) += r8a7795-h3ulcb-kf.dtb
- dtb-$(CONFIG_ARCH_R8A7795) += r8a7795-salvator-xs.dtb
-diff --git a/arch/arm64/boot/dts/renesas/cat875.dtsi b/arch/arm64/boot/dts/renesas/cat875.dtsi
-new file mode 100644
-index 0000000..a41d0d8
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/cat875.dtsi
-@@ -0,0 +1,10 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree Source for the Silicon Linux sub board for CAT874 (CAT875)
-+ *
-+ * Copyright (C) 2019 Renesas Electronics Corp.
-+ */
-+
-+/ {
-+	model = "Silicon Linux sub board for CAT874 (CAT875)";
+diff --git a/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts b/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
+index 6eababc..c545ce5 100644
+--- a/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
++++ b/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
+@@ -32,6 +32,16 @@
+ 	clock-frequency = <48000000>;
+ };
+ 
++&pfc {
++	scif2_pins: scif2 {
++		groups = "scif2_data_a";
++		function = "scif2";
++	};
 +};
-diff --git a/arch/arm64/boot/dts/renesas/r8a774c0-ek874.dts b/arch/arm64/boot/dts/renesas/r8a774c0-ek874.dts
-new file mode 100644
-index 0000000..e7b6619
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/r8a774c0-ek874.dts
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree Source for the Silicon Linux RZ/G2E evaluation kit (EK874)
-+ *
-+ * Copyright (C) 2019 Renesas Electronics Corp.
-+ */
 +
-+#include "r8a774c0-cat874.dts"
-+#include "cat875.dtsi"
+ &scif2 {
++	pinctrl-0 = <&scif2_pins>;
++	pinctrl-names = "default";
 +
-+/ {
-+	model = "Silicon Linux RZ/G2E evaluation kit EK874 (CAT874 + CAT875)";
-+	compatible = "si-linux,cat875", "si-linux,cat874", "renesas,r8a774c0";
-+};
+ 	status = "okay";
+ };
 -- 
 2.7.4
