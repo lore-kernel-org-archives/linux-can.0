@@ -1,71 +1,76 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 08/11] clk: renesas: r8a774c0: Add missing CANFD clock
-Date: Wed, 16 Jan 2019 20:05:31 +0100
-Message-ID: <CAMuHMdWG6m11eAjvPeFXjsu3jhYnfsxN-EUXw5_SQZ6qMrebYw@mail.gmail.com>
-References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com> <1547663874-29411-9-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Subject: RE: [PATCH 08/11] clk: renesas: r8a774c0: Add missing CANFD clock
+Date: Wed, 16 Jan 2019 19:24:54 +0000
+Message-ID: <TY1PR01MB17704CFDBA8A1C2D920B763DC0820@TY1PR01MB1770.jpnprd01.prod.outlook.com>
+References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1547663874-29411-9-git-send-email-fabrizio.castro@bp.renesas.com>
+ <CAMuHMdWG6m11eAjvPeFXjsu3jhYnfsxN-EUXw5_SQZ6qMrebYw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1547663874-29411-9-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <CAMuHMdWG6m11eAjvPeFXjsu3jhYnfsxN-EUXw5_SQZ6qMrebYw@mail.gmail.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, =?utf-8?B?QW5kcmVhcyBGw6RyYmVy?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, =?utf-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin>
 List-Id: linux-can.vger.kernel.org
 
-Hi Fabrizio,
-
-Thanks for your patch!
-
-On Wed, Jan 16, 2019 at 7:39 PM Fabrizio Castro
-<fabrizio.castro@bp.renesas.com> wrote:
-> This patch adds the missing CANFD clock to the r8a774c0 specific
-> clock driver.
-
-Are you sure the CANFD clock exists on RZ/G2E?
-
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-
-> --- a/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-> +++ b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-
-> --- a/include/dt-bindings/clock/r8a774c0-cpg-mssr.h
-> +++ b/include/dt-bindings/clock/r8a774c0-cpg-mssr.h
-> @@ -48,13 +48,14 @@
->  #define R8A774C0_CLK_ZA2               37
->  #define R8A774C0_CLK_ZA8               38
->  #define R8A774C0_CLK_Z2D               39
-> -#define R8A774C0_CLK_MSO               40
-> -#define R8A774C0_CLK_R                 41
-> -#define R8A774C0_CLK_OSC               42
-> -#define R8A774C0_CLK_LV0               43
-> -#define R8A774C0_CLK_LV1               44
-> -#define R8A774C0_CLK_CSI0              45
-> -#define R8A774C0_CLK_CP                        46
-> -#define R8A774C0_CLK_CPEX              47
-> +#define R8A774C0_CLK_CANFD             40
-> +#define R8A774C0_CLK_MSO               41
-> +#define R8A774C0_CLK_R                 42
-> +#define R8A774C0_CLK_OSC               43
-> +#define R8A774C0_CLK_LV0               44
-> +#define R8A774C0_CLK_LV1               45
-> +#define R8A774C0_CLK_CSI0              46
-> +#define R8A774C0_CLK_CP                        47
-> +#define R8A774C0_CLK_CPEX              48
-
-This file is part of the DT ABI, hence list of definitions is append-only.
-
-Please add R8A774C0_CLK_CANFD at the end, i.e.
-
-    #define R8A774C0_CLK_CANFD              48
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SGkgR2VlcnQsDQoNClRoYW5rIHlvdSBmb3IgeW91ciBmZWVkYmFjayENCg0KPiBGcm9tOiBHZWVy
+dCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsub3JnPg0KPiBTZW50OiAxNiBKYW51YXJ5
+IDIwMTkgMTk6MDYNCj4gU3ViamVjdDogUmU6IFtQQVRDSCAwOC8xMV0gY2xrOiByZW5lc2FzOiBy
+OGE3NzRjMDogQWRkIG1pc3NpbmcgQ0FORkQgY2xvY2sNCj4NCj4gSGkgRmFicml6aW8sDQo+DQo+
+IFRoYW5rcyBmb3IgeW91ciBwYXRjaCENCj4NCj4gT24gV2VkLCBKYW4gMTYsIDIwMTkgYXQgNzoz
+OSBQTSBGYWJyaXppbyBDYXN0cm8NCj4gPGZhYnJpemlvLmNhc3Ryb0BicC5yZW5lc2FzLmNvbT4g
+d3JvdGU6DQo+ID4gVGhpcyBwYXRjaCBhZGRzIHRoZSBtaXNzaW5nIENBTkZEIGNsb2NrIHRvIHRo
+ZSByOGE3NzRjMCBzcGVjaWZpYw0KPiA+IGNsb2NrIGRyaXZlci4NCj4NCj4gQXJlIHlvdSBzdXJl
+IHRoZSBDQU5GRCBjbG9jayBleGlzdHMgb24gUlovRzJFPw0KDQpJIHlldCBoYXZlIHRvIHJ1biB0
+ZXN0cyBvbiB0aGUgYm9hcmQgc3BlY2lmaWMgdG8gQ0FORkQsIGJ1dCB3ZSBrbm93IGZvciBzdXJl
+IHRoYXQncw0KZ29pbmcgdG8gYXBwZWFyIG9uIHRoZSBSWi9HMkUgKGlmIGl0J3Mgbm90IGluIHRo
+ZSByZXZpc2lvbiBvZiB0aGUgU29DIHdlIGhhdmUgYWxyZWFkeSkuDQpKYXBhbiBoYXZlIGNvbmZp
+cm1lZCB0aGF0IGV2ZXJ5dGhpbmcgQ0FORkQtd2lzZSBzaG91bGQgYmUgdGhlIHNhbWUgYXMgcGVy
+IHRoZQ0KY29ycmVzcG9uZGluZyBHZW4zIHBhcnRzLCBhbmQgdGhhdCdzIHdoeSBhcmUgcHVzaGlu
+ZyB0aGlzIHBhdGNoIChhbmQgc2hvcnRseQ0Kc29tZXRoaW5nIHNpbWlsYXIgZm9yIHRoZSByOGE3
+NzRhMSkgZm9yIGl0IGFzIGl0J3Mgb24gb3VyIGNyaXRpY2FsIHBhdGguIEFueXdheXMsIHRoZQ0K
+SFcgb2YgdGhlIEVLODc0IHNob3VsZCBzdXBwb3J0IENBTkZEIHByb3Blcmx5LCB0aGVyZWZvcmUg
+SSBhbSBnb2luZyB0byB0cnkgYW5kDQpydW4gc29tZSB0ZXN0cyAoYXMgc29vbiBhcyBJIHNvcnQg
+b3V0IHRoZSBjYWJsZXMpLCBzbyB0aGF0IHdlIGNsZWFyIGFueSBkb3VidHMuDQoNCldvdWxkIHlv
+dSByYXRoZXIgd2UgaGVsZCBiYWNrIGFsbCBvZiB0aGUgQ0FOIHJlbGF0ZWQgY2hhbmdlcyBmb3Ig
+bm93Pw0KDQo+DQo+ID4gU2lnbmVkLW9mZi1ieTogRmFicml6aW8gQ2FzdHJvIDxmYWJyaXppby5j
+YXN0cm9AYnAucmVuZXNhcy5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IENocmlzIFBhdGVyc29uIDxD
+aHJpcy5QYXRlcnNvbjJAcmVuZXNhcy5jb20+DQo+DQo+ID4gLS0tIGEvZHJpdmVycy9jbGsvcmVu
+ZXNhcy9yOGE3NzRjMC1jcGctbXNzci5jDQo+ID4gKysrIGIvZHJpdmVycy9jbGsvcmVuZXNhcy9y
+OGE3NzRjMC1jcGctbXNzci5jDQo+DQo+ID4gLS0tIGEvaW5jbHVkZS9kdC1iaW5kaW5ncy9jbG9j
+ay9yOGE3NzRjMC1jcGctbXNzci5oDQo+ID4gKysrIGIvaW5jbHVkZS9kdC1iaW5kaW5ncy9jbG9j
+ay9yOGE3NzRjMC1jcGctbXNzci5oDQo+ID4gQEAgLTQ4LDEzICs0OCwxNCBAQA0KPiA+ICAjZGVm
+aW5lIFI4QTc3NEMwX0NMS19aQTIgICAgICAgICAgICAgICAzNw0KPiA+ICAjZGVmaW5lIFI4QTc3
+NEMwX0NMS19aQTggICAgICAgICAgICAgICAzOA0KPiA+ICAjZGVmaW5lIFI4QTc3NEMwX0NMS19a
+MkQgICAgICAgICAgICAgICAzOQ0KPiA+IC0jZGVmaW5lIFI4QTc3NEMwX0NMS19NU08gICAgICAg
+ICAgICAgICA0MA0KPiA+IC0jZGVmaW5lIFI4QTc3NEMwX0NMS19SICAgICAgICAgICAgICAgICA0
+MQ0KPiA+IC0jZGVmaW5lIFI4QTc3NEMwX0NMS19PU0MgICAgICAgICAgICAgICA0Mg0KPiA+IC0j
+ZGVmaW5lIFI4QTc3NEMwX0NMS19MVjAgICAgICAgICAgICAgICA0Mw0KPiA+IC0jZGVmaW5lIFI4
+QTc3NEMwX0NMS19MVjEgICAgICAgICAgICAgICA0NA0KPiA+IC0jZGVmaW5lIFI4QTc3NEMwX0NM
+S19DU0kwICAgICAgICAgICAgICA0NQ0KPiA+IC0jZGVmaW5lIFI4QTc3NEMwX0NMS19DUCAgICAg
+ICAgICAgICAgICAgICAgICAgIDQ2DQo+ID4gLSNkZWZpbmUgUjhBNzc0QzBfQ0xLX0NQRVggICAg
+ICAgICAgICAgIDQ3DQo+ID4gKyNkZWZpbmUgUjhBNzc0QzBfQ0xLX0NBTkZEICAgICAgICAgICAg
+IDQwDQo+ID4gKyNkZWZpbmUgUjhBNzc0QzBfQ0xLX01TTyAgICAgICAgICAgICAgIDQxDQo+ID4g
+KyNkZWZpbmUgUjhBNzc0QzBfQ0xLX1IgICAgICAgICAgICAgICAgIDQyDQo+ID4gKyNkZWZpbmUg
+UjhBNzc0QzBfQ0xLX09TQyAgICAgICAgICAgICAgIDQzDQo+ID4gKyNkZWZpbmUgUjhBNzc0QzBf
+Q0xLX0xWMCAgICAgICAgICAgICAgIDQ0DQo+ID4gKyNkZWZpbmUgUjhBNzc0QzBfQ0xLX0xWMSAg
+ICAgICAgICAgICAgIDQ1DQo+ID4gKyNkZWZpbmUgUjhBNzc0QzBfQ0xLX0NTSTAgICAgICAgICAg
+ICAgIDQ2DQo+ID4gKyNkZWZpbmUgUjhBNzc0QzBfQ0xLX0NQICAgICAgICAgICAgICAgICAgICAg
+ICAgNDcNCj4gPiArI2RlZmluZSBSOEE3NzRDMF9DTEtfQ1BFWCAgICAgICAgICAgICAgNDgNCj4N
+Cj4gVGhpcyBmaWxlIGlzIHBhcnQgb2YgdGhlIERUIEFCSSwgaGVuY2UgbGlzdCBvZiBkZWZpbml0
+aW9ucyBpcyBhcHBlbmQtb25seS4NCg0KV2lsbCBmaXggdGhpcyB3aXRoIGEgdjINCg0KVGhhbmtz
+LA0KRmFiDQoNCj4NCj4gUGxlYXNlIGFkZCBSOEE3NzRDMF9DTEtfQ0FORkQgYXQgdGhlIGVuZCwg
+aS5lLg0KPg0KPiAgICAgI2RlZmluZSBSOEE3NzRDMF9DTEtfQ0FORkQgICAgICAgICAgICAgIDQ4
+DQo+DQo+IEdye29ldGplLGVldGluZ31zLA0KPg0KPiAgICAgICAgICAgICAgICAgICAgICAgICBH
+ZWVydA0KPg0KPiAtLQ0KPiBHZWVydCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExp
+bnV4IGJleW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4LW02OGsub3JnDQo+DQo+IEluIHBlcnNvbmFs
+IGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFj
+a2VyLiBCdXQNCj4gd2hlbiBJJ20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJw
+cm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlrZSB0aGF0Lg0KPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRzDQoNCg0KDQpSZW5lc2FzIEVsZWN0cm9uaWNz
+IEV1cm9wZSBMdGQsIER1a2VzIE1lYWRvdywgTWlsbGJvYXJkIFJvYWQsIEJvdXJuZSBFbmQsIEJ1
+Y2tpbmdoYW1zaGlyZSwgU0w4IDVGSCwgVUsuIFJlZ2lzdGVyZWQgaW4gRW5nbGFuZCAmIFdhbGVz
+IHVuZGVyIFJlZ2lzdGVyZWQgTm8uIDA0NTg2NzA5Lg0K
