@@ -1,105 +1,70 @@
-From: Andre Naujoks <nautsch2@gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: [PATCH v2] can: bcm: check timer values before ktime conversion
-Date: Wed, 16 Jan 2019 14:31:11 +0100
-Message-ID: <b0c40e9b-9c18-a8b0-c52b-0e6618eb7f9d@gmail.com>
+Date: Wed, 16 Jan 2019 16:05:19 +0100
+Message-ID: <a0bd40cb-3668-6407-85b3-902fab13c8df@hartkopp.net>
 References: <20190113183143.10612-1-socketcan@hartkopp.net>
+ <20190116133603.25A5A20873@mail.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190113183143.10612-1-socketcan@hartkopp.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20190116133603.25A5A20873@mail.kernel.org>
 Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, davem@davemloft.net, netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, lifeasageek@gmail.com, threeearcat@gmail.com, syzkaller@googlegroups.com, Kyungtae Kim <kt0755@gmail.com>, linux-stable <stable@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Sasha Levin <sashal@kernel.org>, davem@davemloft.net, netdev@vger.kernel.org
+Cc: linux-can@vger.kernel.org, lifeasageek@gmail.com, stable@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Am 13.01.19 um 19:31 schrieb Oliver Hartkopp:
-> Kyungtae Kim detected a potential integer overflow in bcm_[rx|tx]_setup()
-> when the conversion into ktime multiplies the given value with NSEC_PER_USEC
-> (1000).
-> 
-> Reference: https://marc.info/?l=linux-can&m=154732118819828&w=2
-> 
-> Add a check for the given tv_usec, so that the value stays below one second.
-> Additionally limit the tv_sec value to a reasonable value for CAN related
-> use-cases of 400 days and ensure all values to be positive.
-> 
-> Reported-by: Kyungtae Kim <kt0755@gmail.com>
-> Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> Cc: linux-stable <stable@vger.kernel.org> # >= 2.6.26
+Hi Sasha,
 
-Acked-by: Andre Naujoks <nautsch2@gmail.com>
-
-Sorry for the late reply, but I seem to have missed the initial send of
-v2 of this. I wanted to at least ack it, since I made such a fuss about
-the timeouts. :-)
-
-Regards
-  Andre
-
-> ---
->  net/can/bcm.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
+On 1/16/19 2:36 PM, Sasha Levin wrote:
+> Hi,
 > 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index 0af8f0db892a..d4ae0a1471f3 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-> @@ -67,6 +67,9 @@
->   */
->  #define MAX_NFRAMES 256
->  
-> +/* limit timers to 400 days for sending/timeouts */
-> +#define BCM_TIMER_SEC_MAX (400*24*60*60)
-> +
->  /* use of last_frames[index].flags */
->  #define RX_RECV    0x40 /* received data for this element */
->  #define RX_THR     0x80 /* element not been sent due to throttle feature */
-> @@ -140,6 +143,22 @@ static inline ktime_t bcm_timeval_to_ktime(struct bcm_timeval tv)
->  	return ktime_set(tv.tv_sec, tv.tv_usec * NSEC_PER_USEC);
->  }
->  
-> +/* check limitations for timeval provided by user */
-> +static int bcm_is_invalid_tv(struct bcm_msg_head *msg_head)
-> +{
-> +	if ((msg_head->ival1.tv_sec < 0) ||
-> +	    (msg_head->ival1.tv_sec > BCM_TIMER_SEC_MAX) ||
-> +	    (msg_head->ival1.tv_usec < 0) ||
-> +	    (msg_head->ival1.tv_usec >= USEC_PER_SEC) ||
-> +	    (msg_head->ival2.tv_sec < 0) ||
-> +	    (msg_head->ival2.tv_sec > BCM_TIMER_SEC_MAX) ||
-> +	    (msg_head->ival2.tv_usec < 0) ||
-> +	    (msg_head->ival2.tv_usec >= USEC_PER_SEC))
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
->  #define CFSIZ(flags) ((flags & CAN_FD_FRAME) ? CANFD_MTU : CAN_MTU)
->  #define OPSIZ sizeof(struct bcm_op)
->  #define MHSIZ sizeof(struct bcm_msg_head)
-> @@ -873,6 +892,10 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->  	if (msg_head->nframes < 1 || msg_head->nframes > MAX_NFRAMES)
->  		return -EINVAL;
->  
-> +	/* check timeval limitations */
-> +	if ((msg_head->flags & SETTIMER) && bcm_is_invalid_tv(msg_head))
-> +		return -EINVAL;
-> +
->  	/* check the given can_id */
->  	op = bcm_find_op(&bo->tx_ops, msg_head, ifindex);
->  	if (op) {
-> @@ -1053,6 +1076,10 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->  	     (!(msg_head->can_id & CAN_RTR_FLAG))))
->  		return -EINVAL;
->  
-> +	/* check timeval limitations */
-> +	if ((msg_head->flags & SETTIMER) && bcm_is_invalid_tv(msg_head))
-> +		return -EINVAL;
-> +
->  	/* check the given can_id */
->  	op = bcm_find_op(&bo->rx_ops, msg_head, ifindex);
->  	if (op) {
+> [This is an automated email]
 > 
+> This commit has been processed because it contains a -stable tag.
+> The stable tag indicates that it's relevant for the following trees: 2.6.26+
+> 
+> The bot has tested the following trees: v4.20.2, v4.19.15, v4.14.93, v4.9.150, v4.4.170, v3.18.132.
+> 
+> v4.20.2: Build OK!
+> v4.19.15: Build OK!
+> v4.14.93: Build OK!
+> v4.9.150: Build OK!
+> v4.4.170: Failed to apply! Possible dependencies:
+>      2b5f5f5dc114 ("can: bcm: unify bcm_msg_head handling and prepare function parameters")
+>      6f3b911d5f29 ("can: bcm: add support for CAN FD frames")
+>      72c8a89ad2e4 ("can: bcm: use CAN frame instead of can_frame in comments")
+>      95acb490ec51 ("can: bcm: fix indention and other minor style issues")
+> 
+> v3.18.132: Failed to apply! Possible dependencies:
+>      069f8457ae52 ("can: fix spelling errors")
+>      2b5f5f5dc114 ("can: bcm: unify bcm_msg_head handling and prepare function parameters")
+>      6ce8e9ce5989 ("new helper: memcpy_from_msg()")
+>      6f3b911d5f29 ("can: bcm: add support for CAN FD frames")
+>      72c8a89ad2e4 ("can: bcm: use CAN frame instead of can_frame in comments")
+>      95acb490ec51 ("can: bcm: fix indention and other minor style issues")
+>      ba61a8d9d780 ("can: avoid using timeval for uapi")
+> 
+> 
+> How should we proceed with this patch?
+
+Applying the patch on e.g. 3.2.102 also leads to
+
+patching file net/can/bcm.c
+Hunk #1 FAILED at 67.
+Hunk #2 FAILED at 140.
+Hunk #3 succeeded at 847 with fuzz 2 (offset -26 lines).
+Hunk #4 succeeded at 1018 with fuzz 2 (offset -39 lines).
+2 out of 4 hunks FAILED -- saving rejects to file net/can/bcm.c.rej
+
+The first two hunks just adding a define and and function *somewhere* at 
+the top of the C file.
+
+I can provide patches for the requested stable kernels once we have a 
+reference for the upstream commit hash.
+
+Would that be ok for you?
+
+Best regards,
+Oliver
