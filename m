@@ -1,65 +1,44 @@
-From: Chris Paterson <Chris.Paterson2@renesas.com>
-Subject: RE: [PATCH 01/11] dt-bindings: Add vendor prefix for Silicon Linux.
-Date: Thu, 17 Jan 2019 12:23:55 +0000
-Message-ID: <TYAPR01MB228595A79ABDB0D7826FED0FB7830@TYAPR01MB2285.jpnprd01.prod.outlook.com>
-References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1547663874-29411-2-git-send-email-fabrizio.castro@bp.renesas.com>
- <bb5b27ed-a077-f639-b97b-4da22c9bb3ad@suse.de>
- <20190117121919.c5u66sorut5a5nib@verge.net.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 08/11] clk: renesas: r8a774c0: Add missing CANFD clock
+Date: Thu, 17 Jan 2019 13:29:12 +0100
+Message-ID: <CAMuHMdV=47sdu53EXViCBL5OKGxKHQmxg34dNr_cvdeZVNkKVQ@mail.gmail.com>
+References: <1547667945-5588-1-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190117121919.c5u66sorut5a5nib@verge.net.au>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Simon Horman <horms@verge.net.au>, =?utf-8?B?QW5kcmVhcyBGw6RyYmVy?= <afaerber@suse.de>
-Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Biju Das <biju.das@bp.renesas.com>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, =?utf-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.b>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1547667945-5588-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Sender: netdev-owner@vger.kernel.org
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.>
 List-Id: linux-can.vger.kernel.org
 
-SGVsbG8gQW5kcmVhcywgU2ltb24sDQoNClRoYW5rIHlvdSBmb3IgeW91ciByZXZpZXdzLg0KDQo+
-IEZyb206IFNpbW9uIEhvcm1hbiA8aG9ybXNAdmVyZ2UubmV0LmF1Pg0KPiBTZW50OiAxNyBKYW51
-YXJ5IDIwMTkgMTI6MTkNCj4gDQo+IE9uIFRodSwgSmFuIDE3LCAyMDE5IGF0IDEyOjE3OjU2UE0g
-KzAxMDAsIEFuZHJlYXMgRsOkcmJlciB3cm90ZToNCj4gPiBIaSBGYWJyaXppbywNCj4gPg0KPiA+
-IEFtIDE2LjAxLjE5IHVtIDE5OjM3IHNjaHJpZWIgRmFicml6aW8gQ2FzdHJvOg0KPiA+ID4gRnJv
-bTogQmlqdSBEYXMgPGJpanUuZGFzQGJwLnJlbmVzYXMuY29tPg0KPiA+ID4NCj4gPiA+IEFkZCBT
-aWxpY29uIExpbnV4IHRvIHRoZSBsaXN0IG9mIGRldmljZXRyZWUgdmVuZG9yIHByZWZpeGVzLg0K
-PiA+ID4NCj4gPiA+IFdlYnNpdGU6IGh0dHA6Ly93d3cuc2ktbGludXguY28uanANCj4gPiA+DQo+
-ID4gPiBTaWduZWQtb2ZmLWJ5OiBCaWp1IERhcyA8YmlqdS5kYXNAYnAucmVuZXNhcy5jb20+DQo+
-ID4gPiBTaWduZWQtb2ZmLWJ5OiBGYWJyaXppbyBDYXN0cm8gPGZhYnJpemlvLmNhc3Ryb0BicC5y
-ZW5lc2FzLmNvbT4NCj4gPiA+IFJldmlld2VkLWJ5OiBDaHJpcyBQYXRlcnNvbiA8Q2hyaXMuUGF0
-ZXJzb24yQHJlbmVzYXMuY29tPg0KPiA+ID4gLS0tDQo+ID4gPiAgRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL3ZlbmRvci1wcmVmaXhlcy50eHQgfCAxICsNCj4gPiA+ICAxIGZpbGUg
-Y2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gPiA+DQo+ID4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3ZlbmRvci1wcmVmaXhlcy50eHQNCj4gYi9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnR4dA0KPiA+ID4g
-aW5kZXggNGIxYTJhOC4uMDJhNzAzNyAxMDA2NDQNCj4gPiA+IC0tLSBhL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy92ZW5kb3ItcHJlZml4ZXMudHh0DQo+ID4gPiArKysgYi9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnR4dA0KPiA+ID4g
-QEAgLTM0NCw2ICszNDQsNyBAQCBzZ3gJU0dYIFNlbnNvcnRlY2gNCj4gPiA+ICBzaGFycAlTaGFy
-cCBDb3Jwb3JhdGlvbg0KPiA+ID4gIHNoaW1hZnVqaQlTaGltYWZ1amkgRWxlY3RyaWMsIEluYy4N
-Cj4gPiA+ICBzaS1lbglTaS1FbiBUZWNobm9sb2d5IEx0ZC4NCj4gPiA+ICtzaS1saW51eAlTaWxp
-Y29uIExpbnV4IENvcnBvcmF0aW9uDQo+ID4NCj4gPiBXaXRoIHRoZSB3ZWJzaXRlIGJlaW5nIEph
-cGFuZXNlIG9ubHksIEkgaGF2ZW4ndCBiZWVuIGFibGUgdG8gY29uZmlybSB0aGUNCj4gPiBzcGVs
-bGluZyBvZiB0aGUgY29tcGFueSBuYW1lLiBMb29rcyBzZW5zaWJsZSB0aG91Z2guDQo+IA0KPiBB
-Y2NvcmRpbmcgdG8gdGhlIGNvbXBhbnkgd2ViIHNpdGUNCj4gKGh0dHA6Ly9zaS0NCj4gbGludXgu
-Y28uanAvaW5kZXgucGhwPyVFNCVCQyU5QSVFNyVBNCVCRSVFNiVBMSU4OCVFNSU4NiU4NSkNCj4g
-dGhlIGNvbXBhbnkgbmFtZSBpcy4NCj4gDQo+IEphcGFuZXNlOiDjgrfjg6rjgrPjg7Pjg6rjg4rj
-g4Pjgq/jgrnmoKrlvI/kvJrnpL4NCj4gRW5nbGlzaDogIFNpbGljb24gTGludXggQ29ycG9yYXRp
-b24NCg0KSSBjYW4gYWxzbyBjb25maXJtIHRoYXQgdGhpcyBpcyB3aGF0IHdlJ3ZlIGJlZW4gdG9s
-ZCBieSBTaS1MaW51eCB0aGVtc2VsdmVzIPCfmIoNCg0KS2luZCByZWdhcmRzLCBDaHJpcw0KDQo+
-IA0KPiBBbmQgaW4gbXkgb3BpbmlvbiB0aGVzZSBhcmUgZXF1aXZhbGVudCAoYWx0aG91Z2ggb3Ro
-ZXIgdHJhbnNsYXRpb25zIG9mDQo+IHRoZSBjb3Jwb3JhdGlvbiBiaXQgYXJlIHBvc3NpYmxlKS4N
-Cj4gDQo+ID4gRHVlIHRvICJlbiIgY29taW5nIGJlZm9yZSAiZml2ZSIgSSd2ZSBkb3VibGUtY2hl
-Y2tlZCB0aGF0IGVsc2V3aGVyZSB3ZQ0KPiA+IGRvIG9yZGVyIGRhc2hlcyBiZWZvcmUgbGV0dGVy
-cywgc28gcGxhY2VtZW50IGluIGZpbGUgYW5kIHRhYi1pbmRlbnRhdGlvbg0KPiA+IGlzIGZpbmUs
-IHRvby4NCj4gPg0KPiA+ID4gIHNpZml2ZQlTaUZpdmUsIEluYy4NCj4gPiA+ICBzaWdtYQlTaWdt
-YSBEZXNpZ25zLCBJbmMuDQo+ID4gPiAgc2lpCVNlaWtvIEluc3RydW1lbnRzLCBJbmMuDQo+ID4N
-Cj4gPiBQZXJzb25hbGx5IEkgd291bGQgZHJvcCB0aGUgZnVsbCBzdG9wIGF0IHRoZSBlbmQgb2Yg
-dGhlIHN1YmplY3QsIGJ1dCBhbnl3YXk6DQo+ID4NCj4gPiBSZXZpZXdlZC1ieTogQW5kcmVhcyBG
-w6RyYmVyIDxhZmFlcmJlckBzdXNlLmRlPg0KPiA+DQo+ID4gVGhhbmtzLA0KPiA+IEFuZHJlYXMN
-Cj4gPg0KPiA+IFAuUy4gUGxlYXNlIGRvdWJsZS1jaGVjayBob3cgdGhpcyBleGNlc3NpdmUgQ0Mg
-bGlzdCBjYW1lIHRvIGxpZmUhDQo+ID4NCj4gPiAtLQ0KPiA+IFNVU0UgTGludXggR21iSCwgTWF4
-ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQo+ID4gR0Y6IEZlbGl4IEltZW5k
-w7ZyZmZlciwgSmFuZSBTbWl0aGFyZCwgR3JhaGFtIE5vcnRvbg0KPiA+IEhSQiAyMTI4NCAoQUcg
-TsO8cm5iZXJnKQ0KPiA+DQo=
+On Wed, Jan 16, 2019 at 8:45 PM Fabrizio Castro
+<fabrizio.castro@bp.renesas.com> wrote:
+> This patch adds the missing CANFD clock to the r8a774c0 specific
+> clock driver.
+>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+>
+> ---
+> The relevant documentation should appear in the next version
+> of the HW User's manual
+>
+> v1->v2:
+> * appended R8A774C0_CLK_CANFD as per Geert's comment
+
+Thanks for the update!
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in clk-renesas-for-v5.1.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
