@@ -1,58 +1,52 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 02/11] dt-bindings: arm: renesas: Add si-linux cat87[45]
- boards
-Date: Thu, 17 Jan 2019 11:51:07 +0100
-Message-ID: <20190117105107.dtuttem7x7ovaey2@verge.net.au>
-References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1547663874-29411-3-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 03/11] arm64: dts: renesas: Add Si-Linux CAT874 board support
+Date: Thu, 17 Jan 2019 12:04:51 +0100
+Message-ID: <CAMuHMdWhcH2=FS62jawZrMeSc_qKBS_SpDTMoVvhP2o736wtgg@mail.gmail.com>
+References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com> <1547663874-29411-4-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1547663874-29411-3-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <1547663874-29411-4-git-send-email-fabrizio.castro@bp.renesas.com>
 Sender: netdev-owner@vger.kernel.org
 To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Ben
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Biju Das <biju.das@bp.renesas.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysof>
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Jan 16, 2019 at 06:37:45PM +0000, Fabrizio Castro wrote:
-> This patch adds board cat874 (powered by the RZ/G2E) and board
-> cat875 (that sits on top of cat874). Both boards are made by
-> Silicon Linux.
-> 
+On Wed, Jan 16, 2019 at 7:38 PM Fabrizio Castro
+<fabrizio.castro@bp.renesas.com> wrote:
+> From: Biju Das <biju.das@bp.renesas.com>
+>
+> Basic support for the Si-Linux board based on RZ/G2E:
+>   - Memory,
+>   - Main crystal,
+>   - Serial console
+>
+> Signed-off-by: Biju Das <biju.das@bp.renesas.com>
 > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
 > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-> ---
->  Documentation/devicetree/bindings/arm/renesas.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/renesas.yaml b/Documentation/devicetree/bindings/arm/renesas.yaml
-> index 5e9d486..9e1e07b 100644
-> --- a/Documentation/devicetree/bindings/arm/renesas.yaml
-> +++ b/Documentation/devicetree/bindings/arm/renesas.yaml
-> @@ -108,6 +108,14 @@ properties:
->  
->        - description: RZ/G2E (R8A774C0)
->          items:
-> +          - enum:
-> +              - si-linux,cat874 # Silicon Linux RZ/G2E 96board platform (CAT874)
 
-Can I confirm that "96board platform" is correct for this board - I don't
-see it in the documentation I have, but that may not mean much.
+Pending acceptance of the DT bindings
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
 
-That aside, I'd like to wait for Rob to indicate if he will accept
-patch 1, which adds si-linux as a vendor, before I apply this patch.
+> +       chosen {
+> +               bootargs = "ignore_loglevel rw root=/dev/nfs ip=dhcp";
 
-> +          - const: renesas,r8a774c0
-> +
-> +      - items:
-> +          - enum:
-> +              - si-linux,cat875 # Silicon Linux sub board for CAT874 (CAT875)
-> +          - const: si-linux,cat874
->            - const: renesas,r8a774c0
->  
->        - description: R-Car M1A (R8A77781)
-> -- 
-> 2.7.4
-> 
+FWIW, the root and ip parameters won't do anything, until you add network
+support.
+
+> +               stdout-path = "serial0:115200n8";
+> +       };
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
