@@ -1,70 +1,80 @@
 From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 11/11] dt-bindings: can: rcar_canfd: document r8a774c0
- support
-Date: Thu, 17 Jan 2019 13:11:37 +0100
-Message-ID: <20190117121137.riri7nzwegkocnxc@verge.net.au>
+Subject: Re: [PATCH 01/11] dt-bindings: Add vendor prefix for Silicon Linux.
+Date: Thu, 17 Jan 2019 13:19:19 +0100
+Message-ID: <20190117121919.c5u66sorut5a5nib@verge.net.au>
 References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1547663874-29411-12-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1547663874-29411-2-git-send-email-fabrizio.castro@bp.renesas.com>
+ <bb5b27ed-a077-f639-b97b-4da22c9bb3ad@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1547663874-29411-12-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <bb5b27ed-a077-f639-b97b-4da22c9bb3ad@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Ben
+To: Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>
+Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Biju Das <biju.das@bp.renesas.com>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.bl>
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Jan 16, 2019 at 06:37:54PM +0000, Fabrizio Castro wrote:
-> Document the support for rcar_canfd on R8A774C0 SoC devices.
+On Thu, Jan 17, 2019 at 12:17:56PM +0100, Andreas Färber wrote:
+> Hi Fabrizio,
 > 
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-> ---
-> This patch depends on:
-> https://patchwork.kernel.org/patch/10687999/
-> https://patchwork.kernel.org/patch/10688001/
+> Am 16.01.19 um 19:37 schrieb Fabrizio Castro:
+> > From: Biju Das <biju.das@bp.renesas.com>
+> > 
+> > Add Silicon Linux to the list of devicetree vendor prefixes.
+> > 
+> > Website: http://www.si-linux.co.jp
+> > 
+> > Signed-off-by: Biju Das <biju.das@bp.renesas.com>
+> > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+> > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> > ---
+> >  Documentation/devicetree/bindings/vendor-prefixes.txt | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Documentation/devicetree/bindings/vendor-prefixes.txt
+> > index 4b1a2a8..02a7037 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.txt
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
+> > @@ -344,6 +344,7 @@ sgx	SGX Sensortech
+> >  sharp	Sharp Corporation
+> >  shimafuji	Shimafuji Electric, Inc.
+> >  si-en	Si-En Technology Ltd.
+> > +si-linux	Silicon Linux Corporation
 > 
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 16 +++++++++-------
+> With the website being Japanese only, I haven't been able to confirm the
+> spelling of the company name. Looks sensible though.
 
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+According to the company web site
+(http://si-linux.co.jp/index.php?%E4%BC%9A%E7%A4%BE%E6%A1%88%E5%86%85)
+the company name is.
 
->  1 file changed, 9 insertions(+), 7 deletions(-)
+Japanese: シリコンリナックス株式会社
+English:  Silicon Linux Corporation
+
+And in my opinion these are equivalent (although other translations of
+the corporation bit are possible).
+
+> Due to "en" coming before "five" I've double-checked that elsewhere we
+> do order dashes before letters, so placement in file and tab-indentation
+> is fine, too.
 > 
-> diff --git a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> index 41049fe..32f051f 100644
-> --- a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> @@ -3,7 +3,8 @@ Renesas R-Car CAN FD controller Device Tree Bindings
->  
->  Required properties:
->  - compatible: Must contain one or more of the following:
-> -  - "renesas,rcar-gen3-canfd" for R-Car Gen3 compatible controller.
-> +  - "renesas,rcar-gen3-canfd" for R-Car Gen3 and RZ/G2 compatible controllers.
-> +  - "renesas,r8a774c0-canfd" for R8A774C0 (RZ/G2E) compatible controller.
->    - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller.
->    - "renesas,r8a7796-canfd" for R8A7796 (R-Car M3-W) compatible controller.
->    - "renesas,r8a77965-canfd" for R8A77965 (R-Car M3-N) compatible controller.
-> @@ -28,12 +29,13 @@ The name of the child nodes are "channel0" and "channel1" respectively. Each
->  child node supports the "status" property only, which is used to
->  enable/disable the respective channel.
->  
-> -Required properties for "renesas,r8a7795-canfd", "renesas,r8a7796-canfd",
-> -"renesas,r8a77965-canfd" and "renesas,r8a77990-canfd" compatible:
-> -In R8A7795, R8A7796, R8A77965 and R8A77990 SoCs, canfd clock is a div6 clock
-> -and can be used by both CAN and CAN FD controller at the same time. It needs
-> -to be scaled to maximum frequency if any of these controllers use it. This is
-> -done using the below properties:
-> +Required properties for "renesas,r8a774c0-canfd", "renesas,r8a7795-canfd",
-> +"renesas,r8a7796-canfd", "renesas,r8a77965-canfd", and "renesas,r8a77990-canfd"
-> +compatible:
-> +In R8A774C0, R8A7795, R8A7796, R8A77965, and R8A77990 SoCs, canfd clock is a
-> +div6 clock and can be used by both CAN and CAN FD controller at the same time.
-> +It needs to be scaled to maximum frequency if any of these controllers use it.
-> +This is done using the below properties:
->  
->  - assigned-clocks: phandle of canfd clock.
->  - assigned-clock-rates: maximum frequency of this clock.
+> >  sifive	SiFive, Inc.
+> >  sigma	Sigma Designs, Inc.
+> >  sii	Seiko Instruments, Inc.
+> 
+> Personally I would drop the full stop at the end of the subject, but anyway:
+> 
+> Reviewed-by: Andreas Färber <afaerber@suse.de>
+> 
+> Thanks,
+> Andreas
+> 
+> P.S. Please double-check how this excessive CC list came to life!
+> 
 > -- 
-> 2.7.4
+> SUSE Linux GmbH, Maxfeldstr. 5, 90409 Nürnberg, Germany
+> GF: Felix Imendörffer, Jane Smithard, Graham Norton
+> HRB 21284 (AG Nürnberg)
 > 
