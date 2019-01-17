@@ -1,37 +1,48 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH 0/3] can: flexcan: add imx8qm support
-Date: Thu, 17 Jan 2019 06:28:28 +0000
-Message-ID: <DB7PR04MB46187B4AABF3607876DA30D4E6830@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20181219083637.641-1-qiangqing.zhang@nxp.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 01/11] dt-bindings: Add vendor prefix for Silicon Linux.
+Date: Thu, 17 Jan 2019 11:44:48 +0100
+Message-ID: <20190117104448.zc53d3z6sl3x2mjo@verge.net.au>
+References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1547663874-29411-2-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181219083637.641-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1547663874-29411-2-git-send-email-fabrizio.castro@bp.renesas.com>
+Sender: netdev-owner@vger.kernel.org
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Biju Das <biju.das@bp.renesas.com>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.>
 List-Id: linux-can.vger.kernel.org
 
-DQpLaW5kbHkgUGluZy4uLg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCg0KPiAtLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2FraW0gWmhhbmcNCj4gU2VudDogMjAx
-OMTqMTLUwjE5yNUgMTY6MzkNCj4gVG86IG1rbEBwZW5ndXRyb25peC5kZTsgbGludXgtY2FuQHZn
-ZXIua2VybmVsLm9yZw0KPiBDYzogd2dAZ3JhbmRlZ2dlci5jb207IG5ldGRldkB2Z2VyLmtlcm5l
-bC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteCA8bGlu
-dXgtaW14QG54cC5jb20+OyBKb2FraW0NCj4gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29t
-Pg0KPiBTdWJqZWN0OiBbUEFUQ0ggMC8zXSBjYW46IGZsZXhjYW46IGFkZCBpbXg4cW0gc3VwcG9y
-dA0KPiANCj4gVGhpcyBwYXRjaCBzZXQgaW50ZW5kcyB0byBhZGQgRmxleGNhbiBzdXBwb3J0IGZv
-ciBpLk1YOFFNIHBsYXRmb3JtIHdoaWNoDQo+IGRlZmF1bHRseSBzdXBwb3J0cyBDQU4gRkQgcHJv
-dG9jb2wuIEFsdGhvdWdoIEJSUyBlbmFibGVkIGJ5IHN5c3RlbSByZXNldA0KPiB3aGVuIHRoZSBk
-cml2ZXIgc2V0cyBDQU4gRkQgbW9kZSwgbm93IHRoaXMgcGF0Y2ggc2VyaWFsIGRvZXMgbm90IHN1
-cHBvcnQgQlJTDQo+IGluIHRoZSBkcml2ZXIuIEFuZCB0aGVuIEkgd2lsbCBzZW5kIHBhdGNoIHRv
-IGVuYWJsZSBCUlMgYnkgY2hhbmdpbmcgdGhlIHJlZ2lzdGVyDQo+IHRvIHNldCBiaXQgdGltaW5n
-Lg0KPiANCj4gRG9uZyBBaXNoZW5nICgzKToNCj4gICBjYW46IHJ4LW9mZmxvYWQ6IGFkZCBDQU5G
-RCBzdXBwb3J0IGJhc2VkIG9uIG9mZmxvYWQNCj4gICBjYW46IGZsZXhjYW46IGFkZCBDQU4gRkQg
-bW9kZSBzdXBwb3J0DQo+ICAgY2FuOiBmbGV4Y2FuOiBhZGQgaW14OHFtIHN1cHBvcnQNCj4gDQo+
-ICBkcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jICAgICAgfCAxMTQgKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLS0tDQo+ICBkcml2ZXJzL25ldC9jYW4vcngtb2ZmbG9hZC5jICAgfCAgMTYg
-KysrLS0NCj4gIGluY2x1ZGUvbGludXgvY2FuL3J4LW9mZmxvYWQuaCB8ICAgNCArLQ0KPiAgMyBm
-aWxlcyBjaGFuZ2VkLCAxMTcgaW5zZXJ0aW9ucygrKSwgMTcgZGVsZXRpb25zKC0pDQo+IA0KPiAt
-LQ0KPiAyLjE3LjENCg0K
+On Wed, Jan 16, 2019 at 06:37:44PM +0000, Fabrizio Castro wrote:
+> From: Biju Das <biju.das@bp.renesas.com>
+> 
+> Add Silicon Linux to the list of devicetree vendor prefixes.
+> 
+> Website: http://www.si-linux.co.jp
+> 
+> Signed-off-by: Biju Das <biju.das@bp.renesas.com>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+
+Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Documentation/devicetree/bindings/vendor-prefixes.txt
+> index 4b1a2a8..02a7037 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.txt
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
+> @@ -344,6 +344,7 @@ sgx	SGX Sensortech
+>  sharp	Sharp Corporation
+>  shimafuji	Shimafuji Electric, Inc.
+>  si-en	Si-En Technology Ltd.
+> +si-linux	Silicon Linux Corporation
+>  sifive	SiFive, Inc.
+>  sigma	Sigma Designs, Inc.
+>  sii	Seiko Instruments, Inc.
+> -- 
+> 2.7.4
+> 
