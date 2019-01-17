@@ -1,118 +1,67 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 06/11] arm64: dts: renesas: r8a774c0-cat874: Add uSD
- support
-Date: Thu, 17 Jan 2019 12:11:47 +0100
-Message-ID: <20190117111147.vb3lkdmgx24zusjx@verge.net.au>
+From: =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Subject: Re: [PATCH 01/11] dt-bindings: Add vendor prefix for Silicon Linux.
+Date: Thu, 17 Jan 2019 12:17:56 +0100
+Message-ID: <bb5b27ed-a077-f639-b97b-4da22c9bb3ad@suse.de>
 References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1547663874-29411-7-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1547663874-29411-2-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1547663874-29411-7-git-send-email-fabrizio.castro@bp.renesas.com>
-Sender: netdev-owner@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1547663874-29411-2-git-send-email-fabrizio.castro@bp.renesas.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
 To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Biju Das <biju.das@bp.renesas.com>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Biju Das <biju.das@bp.renesas.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.blumenstingl@goo>
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Jan 16, 2019 at 06:37:49PM +0000, Fabrizio Castro wrote:
+Hi Fabrizio,
+
+Am 16.01.19 um 19:37 schrieb Fabrizio Castro:
 > From: Biju Das <biju.das@bp.renesas.com>
 > 
-> This patch adds uSD card support.
-
-Can I confirm that SDHI0 is wired up to a uSD slot?
-
-I ask because if that is the case then this patch looks good to me.
-But if it is wired up to a full-size SD slot then I believe
-a wp-gpio (write protect) should be described.
-
+> Add Silicon Linux to the list of devicetree vendor prefixes.
+> 
+> Website: http://www.si-linux.co.jp
 > 
 > Signed-off-by: Biju Das <biju.das@bp.renesas.com>
-> Reviewed-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
 > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 > ---
->  arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts | 50 +++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
+>  Documentation/devicetree/bindings/vendor-prefixes.txt | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts b/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
-> index c545ce5..477a56b 100644
-> --- a/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
-> +++ b/arch/arm64/boot/dts/renesas/r8a774c0-cat874.dts
-> @@ -7,6 +7,7 @@
->  
->  /dts-v1/;
->  #include "r8a774c0.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
->  
->  / {
->  	model = "Silicon Linux RZ/G2E 96board platform (CAT874)";
-> @@ -26,6 +27,29 @@
->  		/* first 128MB is reserved for secure area. */
->  		reg = <0x0 0x48000000 0x0 0x78000000>;
->  	};
-> +
-> +	vcc_sdhi0: regulator-vcc-sdhi0 {
-> +		compatible = "regulator-fixed";
-> +
-> +		regulator-name = "SDHI0 Vcc";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +	};
-> +
-> +	vccq_sdhi0: regulator-vccq-sdhi0 {
-> +		compatible = "regulator-gpio";
-> +
-> +		regulator-name = "SDHI0 VccQ";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <3300000>;
-> +
-> +		gpios = <&gpio3 13 GPIO_ACTIVE_HIGH>;
-> +		gpios-states = <1>;
-> +		states = <3300000 1
-> +			  1800000 0>;
-> +	};
->  };
->  
->  &extal_clk {
-> @@ -37,6 +61,18 @@
->  		groups = "scif2_data_a";
->  		function = "scif2";
->  	};
-> +
-> +	sdhi0_pins: sd0 {
-> +		groups = "sdhi0_data4", "sdhi0_ctrl";
-> +		function = "sdhi0";
-> +		power-source = <3300>;
-> +	};
-> +
-> +	sdhi0_pins_uhs: sd0_uhs {
-> +		groups = "sdhi0_data4", "sdhi0_ctrl";
-> +		function = "sdhi0";
-> +		power-source = <1800>;
-> +	};
->  };
->  
->  &scif2 {
-> @@ -45,3 +81,17 @@
->  
->  	status = "okay";
->  };
-> +
-> +&sdhi0 {
-> +	pinctrl-0 = <&sdhi0_pins>;
-> +	pinctrl-1 = <&sdhi0_pins_uhs>;
-> +	pinctrl-names = "default", "state_uhs";
-> +
-> +	vmmc-supply = <&vcc_sdhi0>;
-> +	vqmmc-supply = <&vccq_sdhi0>;
-> +	cd-gpios = <&gpio3 12 GPIO_ACTIVE_LOW>;
-> +	bus-width = <4>;
-> +	sd-uhs-sdr50;
-> +	sd-uhs-sdr104;
-> +	status = "okay";
-> +};
-> -- 
-> 2.7.4
-> 
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Documentation/devicetree/bindings/vendor-prefixes.txt
+> index 4b1a2a8..02a7037 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.txt
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
+> @@ -344,6 +344,7 @@ sgx	SGX Sensortech
+>  sharp	Sharp Corporation
+>  shimafuji	Shimafuji Electric, Inc.
+>  si-en	Si-En Technology Ltd.
+> +si-linux	Silicon Linux Corporation
+
+With the website being Japanese only, I haven't been able to confirm the
+spelling of the company name. Looks sensible though.
+
+Due to "en" coming before "five" I've double-checked that elsewhere we
+do order dashes before letters, so placement in file and tab-indentation
+is fine, too.
+
+>  sifive	SiFive, Inc.
+>  sigma	Sigma Designs, Inc.
+>  sii	Seiko Instruments, Inc.
+
+Personally I would drop the full stop at the end of the subject, but anyway:
+
+Reviewed-by: Andreas Färber <afaerber@suse.de>
+
+Thanks,
+Andreas
+
+P.S. Please double-check how this excessive CC list came to life!
+
+-- 
+SUSE Linux GmbH, Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer, Jane Smithard, Graham Norton
+HRB 21284 (AG Nürnberg)
