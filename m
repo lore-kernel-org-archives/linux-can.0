@@ -1,7 +1,7 @@
 From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock to CAN nodes
-Date: Thu, 17 Jan 2019 14:54:15 +0000
-Message-ID: <1547736856-16539-3-git-send-email-fabrizio.castro@bp.renesas.com>
+Subject: [PATCH 3/3] dt-bindings: can: rcar_canfd: Document r8a774a1 support
+Date: Thu, 17 Jan 2019 14:54:16 +0000
+Message-ID: <1547736856-16539-4-git-send-email-fabrizio.castro@bp.renesas.com>
 References: <1547736856-16539-1-git-send-email-fabrizio.castro@bp.renesas.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1547736856-16539-1-git-send-email-fabrizio.castro@bp.renesas.com>
@@ -10,44 +10,49 @@ To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.
 Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-According to the latest information, clkp2 is available on RZ/G2.
-Modify CAN0 and CAN1 nodes accordingly.
+Document support for rcar_canfd on R8A774A1 SoC devices.
 
 Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
 Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 ---
- arch/arm64/boot/dts/renesas/r8a774a1.dtsi | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+This patch depends on:
+https://patchwork.kernel.org/patch/10766781/
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-index 46a8fd2..71066d4 100644
---- a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-@@ -879,8 +879,10 @@
- 				     "renesas,rcar-gen3-can";
- 			reg = <0 0xe6c30000 0 0x1000>;
- 			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&cpg CPG_MOD 916>, <&can_clk>;
--			clock-names = "clkp1", "can_clk";
-+			clocks = <&cpg CPG_MOD 916>,
-+				 <&cpg CPG_CORE R8A774A1_CLK_CANFD>,
-+				 <&can_clk>;
-+			clock-names = "clkp1", "clkp2", "can_clk";
- 			power-domains = <&sysc R8A774A1_PD_ALWAYS_ON>;
- 			resets = <&cpg 916>;
- 			status = "disabled";
-@@ -891,8 +893,10 @@
- 				     "renesas,rcar-gen3-can";
- 			reg = <0 0xe6c38000 0 0x1000>;
- 			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&cpg CPG_MOD 915>, <&can_clk>;
--			clock-names = "clkp1", "can_clk";
-+			clocks = <&cpg CPG_MOD 915>,
-+				 <&cpg CPG_CORE R8A774A1_CLK_CANFD>,
-+				 <&can_clk>;
-+			clock-names = "clkp1", "clkp2", "can_clk";
- 			power-domains = <&sysc R8A774A1_PD_ALWAYS_ON>;
- 			resets = <&cpg 915>;
- 			status = "disabled";
+ Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+index 32f051f..fd353a9 100644
+--- a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
++++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+@@ -4,6 +4,7 @@ Renesas R-Car CAN FD controller Device Tree Bindings
+ Required properties:
+ - compatible: Must contain one or more of the following:
+   - "renesas,rcar-gen3-canfd" for R-Car Gen3 and RZ/G2 compatible controllers.
++  - "renesas,r8a774a1-canfd" for R8A774A1 (RZ/G2M) compatible controller.
+   - "renesas,r8a774c0-canfd" for R8A774C0 (RZ/G2E) compatible controller.
+   - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller.
+   - "renesas,r8a7796-canfd" for R8A7796 (R-Car M3-W) compatible controller.
+@@ -29,13 +30,13 @@ The name of the child nodes are "channel0" and "channel1" respectively. Each
+ child node supports the "status" property only, which is used to
+ enable/disable the respective channel.
+ 
+-Required properties for "renesas,r8a774c0-canfd", "renesas,r8a7795-canfd",
+-"renesas,r8a7796-canfd", "renesas,r8a77965-canfd", and "renesas,r8a77990-canfd"
+-compatible:
+-In R8A774C0, R8A7795, R8A7796, R8A77965, and R8A77990 SoCs, canfd clock is a
+-div6 clock and can be used by both CAN and CAN FD controller at the same time.
+-It needs to be scaled to maximum frequency if any of these controllers use it.
+-This is done using the below properties:
++Required properties for "renesas,r8a774a1-canfd", "renesas,r8a774c0-canfd",
++"renesas,r8a7795-canfd", "renesas,r8a7796-canfd", "renesas,r8a77965-canfd", and
++"renesas,r8a77990-canfd" compatible:
++In R8A774A1, R8A774C0, R8A7795, R8A7796, R8A77965, and R8A77990 SoCs, canfd
++clock is a div6 clock and can be used by both CAN and CAN FD controller at the
++same time. It needs to be scaled to maximum frequency if any of these
++controllers use it. This is done using the below properties:
+ 
+ - assigned-clocks: phandle of canfd clock.
+ - assigned-clock-rates: maximum frequency of this clock.
 -- 
 2.7.4
