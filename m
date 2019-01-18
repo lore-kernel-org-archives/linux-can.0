@@ -1,54 +1,24 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v4 1/4] can: m_can: Create a m_can platform framework
-Date: Fri, 18 Jan 2019 07:56:24 +0100
-Message-ID: <641ae2ce-def9-6032-b8dc-cc71311bc993@grandegger.com>
-References: <20190117200601.16416-1-dmurphy@ti.com>
- <aa72c1a7-ee16-dbde-0b75-96f9632ec431@ti.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 3/3] dt-bindings: can: rcar_canfd: Document r8a774a1
+ support
+Date: Fri, 18 Jan 2019 13:13:45 +0100
+Message-ID: <20190118121345.w75cjaz7yg6sc4a4@verge.net.au>
+References: <1547736856-16539-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1547736856-16539-4-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <aa72c1a7-ee16-dbde-0b75-96f9632ec431@ti.com>
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <1547736856-16539-4-git-send-email-fabrizio.castro@bp.renesas.com>
 Sender: netdev-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, "David S. Miller" <davem@davemloft.net>, Magnus Damm <magnus.damm@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hello Dan,
-
-Am 17.01.19 um 21:08 schrieb Dan Murphy:
-> Wolfgang
+On Thu, Jan 17, 2019 at 02:54:16PM +0000, Fabrizio Castro wrote:
+> Document support for rcar_canfd on R8A774A1 SoC devices.
 > 
-> On 1/17/19 2:05 PM, Dan Murphy wrote:
->> Create a m_can platform framework that peripherial
->> devices can register to and use common code and register sets.
->> The peripherial devices may provide read/write and configuration
->> support of the IP.
->>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>  drivers/net/can/m_can/m_can.c          |   6 +
->>  drivers/net/can/m_can/m_can_platform.c | 209 +++++++++++++++++++++++++
->>  drivers/net/can/m_can/m_can_platform.h | 163 +++++++++++++++++++
->>  3 files changed, 378 insertions(+)
->>  create mode 100644 drivers/net/can/m_can/m_can_platform.c
->>  create mode 100644 drivers/net/can/m_can/m_can_platform.h
->>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 
-... snip ...
-
-> This patch set is working for the TCAN and at least boots on io-mapped devices.
-> We have a couple of customers who are looking at using this implementation and we would like to
-> start moving this patch set along in the review.
-> 
-> I did not put a change log in here as there have been no comments for the last 3 patch sets I sent.
-> 
-> This v4 squashes a few bugs I found during testing across all the files.
-
-OK, after a very busy week I will try to find time for the review...
-finally.
-
-Thanks,
-
-Wolfgang.
+Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
