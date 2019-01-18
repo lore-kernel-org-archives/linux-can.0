@@ -1,24 +1,69 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 1/3] clk: renesas: r8a774a1: Add missing CANFD clock
-Date: Fri, 18 Jan 2019 13:14:01 +0100
-Message-ID: <20190118121401.w36igfibeyfm26wv@verge.net.au>
-References: <1547736856-16539-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1547736856-16539-2-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v4 1/4] can: m_can: Create a m_can platform framework
+Date: Fri, 18 Jan 2019 06:55:28 -0600
+Message-ID: <82d9f82c-1da6-2374-062b-538840afcc44@ti.com>
+References: <20190117200601.16416-1-dmurphy@ti.com>
+ <aa72c1a7-ee16-dbde-0b75-96f9632ec431@ti.com>
+ <641ae2ce-def9-6032-b8dc-cc71311bc993@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1547736856-16539-2-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <641ae2ce-def9-6032-b8dc-cc71311bc993@grandegger.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, "David S. Miller" <davem@davemloft.net>, Magnus Damm <magnus.damm@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Thu, Jan 17, 2019 at 02:54:14PM +0000, Fabrizio Castro wrote:
-> This patch adds the missing CANFD clock to the r8a774a1 specific
-> clock driver.
-> 
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+Wolfgang
 
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+On 1/18/19 12:56 AM, Wolfgang Grandegger wrote:
+> Hello Dan,
+> 
+> Am 17.01.19 um 21:08 schrieb Dan Murphy:
+>> Wolfgang
+>>
+>> On 1/17/19 2:05 PM, Dan Murphy wrote:
+>>> Create a m_can platform framework that peripherial
+>>> devices can register to and use common code and register sets.
+>>> The peripherial devices may provide read/write and configuration
+>>> support of the IP.
+>>>
+>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>> ---
+>>>  drivers/net/can/m_can/m_can.c          |   6 +
+>>>  drivers/net/can/m_can/m_can_platform.c | 209 +++++++++++++++++++++++++
+>>>  drivers/net/can/m_can/m_can_platform.h | 163 +++++++++++++++++++
+>>>  3 files changed, 378 insertions(+)
+>>>  create mode 100644 drivers/net/can/m_can/m_can_platform.c
+>>>  create mode 100644 drivers/net/can/m_can/m_can_platform.h
+>>>
+> 
+> ... snip ...
+> 
+>> This patch set is working for the TCAN and at least boots on io-mapped devices.
+>> We have a couple of customers who are looking at using this implementation and we would like to
+>> start moving this patch set along in the review.
+>>
+>> I did not put a change log in here as there have been no comments for the last 3 patch sets I sent.
+>>
+>> This v4 squashes a few bugs I found during testing across all the files.
+> 
+> OK, after a very busy week I will try to find time for the review...
+> finally.
+> 
+
+Thanks.  I anticipate a v5 as we debug the io mapped code and continue to test the TCAN code.
+
+Dan
+
+> Thanks,
+> 
+> Wolfgang.
+> 
+
+
+-- 
+------------------
+Dan Murphy
