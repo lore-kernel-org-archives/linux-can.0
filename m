@@ -1,65 +1,56 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2019-01-22
-Date: Tue, 22 Jan 2019 14:21:12 +0100
-Message-ID: <20190122132116.7074-1-mkl@pengutronix.de>
+Subject: [PATCH 4/4] can: flexcan: fix NULL pointer exception during bringup
+Date: Tue, 22 Jan 2019 14:21:16 +0100
+Message-ID: <20190122132116.7074-5-mkl@pengutronix.de>
+References: <20190122132116.7074-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190122132116.7074-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-this is a pull request of 4 patches for net/master.
+Commit cbffaf7aa09e ("can: flexcan: Always use last mailbox for TX")
+introduced a loop letting i run up to (including) ARRAY_SIZE(regs->mb)
+and in the body accessed regs->mb[i] which is an out-of-bounds array
+access that then resulted in an access to an reserved register area.
 
-The first patch by is by Manfred Schlaegl and reverts a patch that caused wrong
-warning messages in certain use cases. The next patch is by Oliver Hartkopp for
-the bcm that adds sanity checks for the timer value before using it to detect
-potential interger overflows. The last two patches are for the flexcan driver,
-YueHaibing's patch fixes the the return value in the error path of the
-flexcan_setup_stop_mode() function. The second patch is by Uwe Kleine-König and
-fixes a NULL pointer deref on older flexcan cores in flexcan_chip_start().
+Later this was changed by commit 0517961ccdf1 ("can: flexcan: Add
+provision for variable payload size") to iterate a bit differently but
+still runs one iteration too much resulting to call
 
-regards,
-Marc
+	flexcan_get_mb(priv, priv->mb_count)
 
+which results in a WARN_ON and then a NULL pointer exception. This
+only affects devices compatible with "fsl,p1010-flexcan",
+"fsl,imx53-flexcan", "fsl,imx35-flexcan", "fsl,imx25-flexcan",
+"fsl,imx28-flexcan", so newer i.MX SoCs are not affected.
+
+Fixes: cbffaf7aa09e ("can: flexcan: Always use last mailbox for TX")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Cc: linux-stable <stable@vger.kernel.org> # >= 4.20
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The following changes since commit 49a57857aeea06ca831043acbb0fa5e0f50602fd:
-
-  Linux 5.0-rc3 (2019-01-21 13:14:44 +1300)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.0-20190122
-
-for you to fetch changes up to a55234dabe1f72cf22f9197980751d37e38ba020:
-
-  can: flexcan: fix NULL pointer exception during bringup (2019-01-22 11:35:33 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.0-20190122
-
-----------------------------------------------------------------
-Manfred Schlaegl (1):
-      can: dev: __can_get_echo_skb(): fix bogous check for non-existing skb by removing it
-
-Oliver Hartkopp (1):
-      can: bcm: check timer values before ktime conversion
-
-Uwe Kleine-König (1):
-      can: flexcan: fix NULL pointer exception during bringup
-
-YueHaibing (1):
-      can: flexcan: fix 'passing zero to ERR_PTR()' warning
-
- drivers/net/can/dev.c     | 27 +++++++++++++--------------
- drivers/net/can/flexcan.c |  4 ++--
- net/can/bcm.c             | 27 +++++++++++++++++++++++++++
- 3 files changed, 42 insertions(+), 16 deletions(-)
-
-regards,
-Marc
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 5f097648d12d..1c66fb2ad76b 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1106,7 +1106,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 		}
+ 	} else {
+ 		/* clear and invalidate unused mailboxes first */
+-		for (i = FLEXCAN_TX_MB_RESERVED_OFF_FIFO; i <= priv->mb_count; i++) {
++		for (i = FLEXCAN_TX_MB_RESERVED_OFF_FIFO; i < priv->mb_count; i++) {
+ 			mb = flexcan_get_mb(priv, i);
+ 			priv->write(FLEXCAN_MB_CODE_RX_INACTIVE,
+ 				    &mb->can_ctrl);
+-- 
+2.20.1
