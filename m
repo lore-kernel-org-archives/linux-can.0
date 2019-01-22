@@ -1,594 +1,131 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v4 4/4] can: tcan4x5x: Add tcan4x5x driver to the kernel
-Date: Tue, 22 Jan 2019 11:03:54 +0100
-Message-ID: <037720c9-4846-eb11-1d6a-b99d647d21d6@grandegger.com>
-References: <20190117200601.16416-1-dmurphy@ti.com>
- <20190117200601.16416-4-dmurphy@ti.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v2] can: bcm: check timer values before ktime conversion
+Date: Tue, 22 Jan 2019 11:16:58 +0100
+Message-ID: <967d04b4-e749-2e8c-debd-46dd8c323751@hartkopp.net>
+References: <20190113183143.10612-1-socketcan@hartkopp.net>
+ <b0c40e9b-9c18-a8b0-c52b-0e6618eb7f9d@gmail.com>
+ <58b41bb6-dbcb-3e6b-899a-18666b05489d@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190117200601.16416-4-dmurphy@ti.com>
-Content-Language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net, b29396@freescale.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <58b41bb6-dbcb-3e6b-899a-18666b05489d@hartkopp.net>
+Content-Language: en-US
+Sender: stable-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Kyungtae Kim <kt0755@gmail.com>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Hello,
+Ping?
 
-Am 17.01.19 um 21:06 schrieb Dan Murphy:
-> Add the TCAN4x5x SPI CAN driver.  This device
-> uses the Bosch MCAN IP core along with a SPI
-> interface map.  Leverage the MCAN common core
-> code to manage the MCAN IP.
+If you have no time I can just ask Dave. But please drop me a short note.
+
+Thanks,
+Oliver
+
+On 17.01.19 17:04, Oliver Hartkopp wrote:
+> Hello Marc,
 > 
-> This device has a special method to indicate a
-> write/read operation on the data payload.
+> I would like to provide a stable patch for pre-4.18 kernels and need a 
+> commit hash as reference.
 > 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->  drivers/net/can/m_can/Kconfig    |   6 +
->  drivers/net/can/m_can/tcan4x5x.c | 529 +++++++++++++++++++++++++++++++
->  2 files changed, 535 insertions(+)
->  create mode 100644 drivers/net/can/m_can/tcan4x5x.c
+> Would you like to take that patch into upstream?
 > 
-> diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
-> index b1a9358b7660..b38959b3b8f1 100644
-> --- a/drivers/net/can/m_can/Kconfig
-> +++ b/drivers/net/can/m_can/Kconfig
-> @@ -15,3 +15,9 @@ config CAN_M_CAN_PLATFORM
->  	tristate "Bosch M_CAN devices"
->  	---help---
->  	  Say Y here if you want to support for Bosch M_CAN controller.
-> +
-> +config CAN_M_CAN_TCAN4X5X
-> +	depends on CAN_M_CAN
-> +	tristate "TCAN4X5X M_CAN device"
-> +	---help---
-> +	  Say Y here if you want to support for TI M_CAN controller.
-> diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-> new file mode 100644
-> index 000000000000..3cd6cd5052b6
-> --- /dev/null
-> +++ b/drivers/net/can/m_can/tcan4x5x.c
-> @@ -0,0 +1,529 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// SPI to CAN driver for the Texas Instruments TCAN4x5x
-> +// Copyright (C) 2018-19 Texas Instruments Incorporated - http://www.ti.com/
-> +
-> +#include <linux/regmap.h>
-> +#include <linux/spi/spi.h>
-> +
-> +#include <linux/regulator/consumer.h>
-> +#include <linux/gpio/consumer.h>
-> +
-> +#include "m_can_platform.h"
-> +
-> +#define DEVICE_NAME "tcan4x5x"
-> +#define TCAN4X5X_EXT_CLK_DEF	40000000
-> +
-> +#define TCAN4X5X_DEV_ID0	0x00
-> +#define TCAN4X5X_DEV_ID1	0x04
-> +#define TCAN4X5X_REV		0x08
-> +#define TCAN4X5X_STATUS		0x0C
-> +#define TCAN4X5X_ERROR_STATUS	0x10
-> +#define TCAN4X5X_CONTROL	0x14
-> +
-> +#define TCAN4X5X_CONFIG		0x800
-> +#define TCAN4X5X_TS_PRESCALE	0x804
-> +#define TCAN4X5X_TEST_REG	0x808
-> +#define TCAN4X5X_INT_FLAGS	0x820
-> +#define TCAN4X5X_MCAN_INT_REG	0x824
-> +#define TCAN4X5X_INT_EN		0x830
-> +
-> +
-> +/* Interrupt bits */
-> +#define TCAN4X5X_CANBUSTERMOPEN_INT_EN	BIT(30)
-> +#define TCAN4X5X_CANHCANL_INT_EN	BIT(29)
-> +#define TCAN4X5X_CANHBAT_INT_EN		BIT(28)
-> +#define TCAN4X5X_CANLGND_INT_EN		BIT(27)
-> +#define TCAN4X5X_CANBUSOPEN_INT_EN	BIT(26)
-> +#define TCAN4X5X_CANBUSGND_INT_EN	BIT(25)
-> +#define TCAN4X5X_CANBUSBAT_INT_EN	BIT(24)
-> +#define TCAN4X5X_UVSUP_INT_EN		BIT(22)
-> +#define TCAN4X5X_UVIO_INT_EN		BIT(21)
-> +#define TCAN4X5X_TSD_INT_EN		BIT(19)
-> +#define TCAN4X5X_ECCERR_INT_EN		BIT(16)
-> +#define TCAN4X5X_CANINT_INT_EN		BIT(15)
-> +#define TCAN4X5X_LWU_INT_EN		BIT(14)
-> +#define TCAN4X5X_CANSLNT_INT_EN		BIT(10)
-> +#define TCAN4X5X_CANDOM_INT_EN		BIT(8)
-> +#define TCAN4X5X_CANBUS_ERR_INT_EN	BIT(5)
-> +#define TCAN4X5X_BUS_FAULT		BIT(4)
-> +#define TCAN4X5X_MCAN_INT		BIT(1)
-> +#define TCAN4X5X_ENABLE_TCAN_INT	(TCAN4X5X_MCAN_INT | \
-> +					TCAN4X5X_BUS_FAULT | \
-> +					TCAN4X5X_CANBUS_ERR_INT_EN | \
-> +					TCAN4X5X_CANINT_INT_EN)
-> +
-> +/* MCAN Interrupt bits */
-> +#define TCAN4X5X_MCAN_IR_ARA		BIT(29)
-> +#define TCAN4X5X_MCAN_IR_PED		BIT(28)
-> +#define TCAN4X5X_MCAN_IR_PEA		BIT(27)
-> +#define TCAN4X5X_MCAN_IR_WD		BIT(26)
-> +#define TCAN4X5X_MCAN_IR_BO		BIT(25)
-> +#define TCAN4X5X_MCAN_IR_EW		BIT(24)
-> +#define TCAN4X5X_MCAN_IR_EP		BIT(23)
-> +#define TCAN4X5X_MCAN_IR_ELO		BIT(22)
-> +#define TCAN4X5X_MCAN_IR_BEU		BIT(21)
-> +#define TCAN4X5X_MCAN_IR_BEC		BIT(20)
-> +#define TCAN4X5X_MCAN_IR_DRX		BIT(19)
-> +#define TCAN4X5X_MCAN_IR_TOO		BIT(18)
-> +#define TCAN4X5X_MCAN_IR_MRAF		BIT(17)
-> +#define TCAN4X5X_MCAN_IR_TSW		BIT(16)
-> +#define TCAN4X5X_MCAN_IR_TEFL		BIT(15)
-> +#define TCAN4X5X_MCAN_IR_TEFF		BIT(14)
-> +#define TCAN4X5X_MCAN_IR_TEFW		BIT(13)
-> +#define TCAN4X5X_MCAN_IR_TEFN		BIT(12)
-> +#define TCAN4X5X_MCAN_IR_TFE		BIT(11)
-> +#define TCAN4X5X_MCAN_IR_TCF		BIT(10)
-> +#define TCAN4X5X_MCAN_IR_TC		BIT(9)
-> +#define TCAN4X5X_MCAN_IR_HPM		BIT(8)
-> +#define TCAN4X5X_MCAN_IR_RF1L		BIT(7)
-> +#define TCAN4X5X_MCAN_IR_RF1F		BIT(6)
-> +#define TCAN4X5X_MCAN_IR_RF1W		BIT(5)
-> +#define TCAN4X5X_MCAN_IR_RF1N		BIT(4)
-> +#define TCAN4X5X_MCAN_IR_RF0L		BIT(3)
-> +#define TCAN4X5X_MCAN_IR_RF0F		BIT(2)
-> +#define TCAN4X5X_MCAN_IR_RF0W		BIT(1)
-> +#define TCAN4X5X_MCAN_IR_RF0N		BIT(0)
-
-These bits are already defined in the common header file.
-
-> +#define TCAN4X5X_ENABLE_MCAN_INT	(TCAN4X5X_MCAN_IR_TC | \
-> +					TCAN4X5X_MCAN_IR_RF0N | \
-> +					TCAN4X5X_MCAN_IR_RF1N | \
-> +					TCAN4X5X_MCAN_IR_RF0F | \
-> +					TCAN4X5X_MCAN_IR_RF1F)
-> +#define TCAN4X5X_MRAM_START	0x8000
-> +#define TCAN4X5X_MCAN_OFFSET	0x1000
-> +#define TCAN4X5X_MAX_REGISTER	0x8fff
-> +
-> +#define TCAN4X5X_CLEAR_ALL_INT	0xffffffff
-> +#define TCAN4X5X_SET_ALL_INT	0xffffffff
-> +
-> +#define TCAN4X5X_WRITE_CMD	(0x61 << 24)
-> +#define TCAN4X5X_READ_CMD	(0x41 << 24)
-> +
-> +#define TCAN4X5X_MODE_SEL_MASK		(BIT(7) | BIT(6))
-> +#define TCAN4X5X_MODE_SLEEP		0x00
-> +#define TCAN4X5X_MODE_STANDBY		BIT(6)
-> +#define TCAN4X5X_MODE_NORMAL		BIT(7)
-> +
-> +#define TCAN4X5X_SW_RESET	BIT(2)
-> +
-> +#define TCAN4X5X_MCAN_CONFIGURED	BIT(5)
-> +#define TCAN4X5X_WATCHDOG_EN		BIT(3)
-> +#define TCAN4X5X_WD_60_MS_TIMER		0
-> +#define TCAN4X5X_WD_600_MS_TIMER	BIT(28)
-> +#define TCAN4X5X_WD_3_S_TIMER		BIT(29)
-> +#define TCAN4X5X_WD_6_S_TIMER		(BIT(28) | BIT(29))
-> +
-> +struct tcan4x5x_priv {
-> +	struct regmap *regmap;
-> +	struct spi_device *spi;
-> +	struct mutex tcan4x5x_lock; /* SPI device lock */
-> +
-> +	struct m_can_classdev *mcan_dev;
-> +
-> +	struct gpio_desc *reset_gpio;
-> +	struct gpio_desc *interrupt_gpio;
-> +	struct gpio_desc *device_wake_gpio;
-> +	struct gpio_desc *device_state_gpio;
-> +	struct regulator *power;
-> +
-> +	/* Register based ip */
-> +	int mram_start;
-> +	int reg_offset;
-> +};
-> +
-> +static struct can_bittiming_const tcan4x5x_bittiming_const = {
-> +	.name = DEVICE_NAME,
-> +	.tseg1_min = 2,
-> +	.tseg1_max = 31,
-> +	.tseg2_min = 2,
-> +	.tseg2_max = 16,
-> +	.sjw_max = 16,
-> +	.brp_min = 1,
-> +	.brp_max = 32,
-> +	.brp_inc = 1,
-> +};
-> +
-> +static struct can_bittiming_const tcan4x5x_data_bittiming_const = {
-> +	.name = DEVICE_NAME,
-> +	.tseg1_min = 1,
-> +	.tseg1_max = 32,
-> +	.tseg2_min = 1,
-> +	.tseg2_max = 16,
-> +	.sjw_max = 16,
-> +	.brp_min = 1,
-> +	.brp_max = 32,
-> +	.brp_inc = 1,
-> +};
-> +
-> +static void tcan4x5x_check_wake(struct tcan4x5x_priv *priv)
-> +{
-> +	int wake_state = 0;
-> +
-> +	if (priv->device_state_gpio)
-> +		wake_state = gpiod_get_value(priv->device_state_gpio);
-> +
-> +	if (priv->device_wake_gpio && wake_state) {
-> +		gpiod_set_value(priv->device_wake_gpio, 1);
-> +		udelay(100);
-> +		gpiod_set_value(priv->device_wake_gpio, 0);
-> +		udelay(100);
-> +		gpiod_set_value(priv->device_wake_gpio, 1);
-> +	}
-> +}
-> +
-> +static int regmap_spi_gather_write(void *context, const void *reg,
-> +				   size_t reg_len, const void *val,
-> +				   size_t val_len)
-> +{
-> +	struct device *dev = context;
-> +	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_message m;
-> +	u32 addr;
-> +	struct spi_transfer t[2] = {{ .tx_buf = &addr, .len = reg_len, .cs_change = 0,},
-> +				   { .tx_buf = val, .len = val_len, },};
-> +
-> +	addr = TCAN4X5X_WRITE_CMD | (*((u16 *)reg) << 8) | val_len >> 3;
-> +
-> +	spi_message_init(&m);
-> +	spi_message_add_tail(&t[0], &m);
-> +	spi_message_add_tail(&t[1], &m);
-> +
-> +	return spi_sync(spi, &m);
-> +}
-> +
-> +static int tcan4x5x_regmap_write(void *context, const void *data, size_t count)
-> +{
-> +	u16 *reg = (u16 *)(data);
-> +	const u32 *val = data + 4;
-> +
-> +	return regmap_spi_gather_write(context, reg, 4, val, count);
-> +}
-> +
-> +static int regmap_spi_async_write(void *context,
-> +				  const void *reg, size_t reg_len,
-> +				  const void *val, size_t val_len,
-> +				  struct regmap_async *a)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
-> +static struct regmap_async *regmap_spi_async_alloc(void)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static int tcan4x5x_regmap_read(void *context,
-> +				const void *reg, size_t reg_size,
-> +				void *val, size_t val_size)
-> +{
-> +	struct device *dev = context;
-> +	struct spi_device *spi = to_spi_device(dev);
-> +
-> +	u32 addr = TCAN4X5X_READ_CMD | (*((u16 *)reg) << 8) | val_size >> 2;
-> +
-> +	return spi_write_then_read(spi, &addr, reg_size, (u32 *)val, val_size);
-> +}
-> +
-> +static struct regmap_bus tcan4x5x_bus = {
-> +	.write = tcan4x5x_regmap_write,
-> +	.gather_write = regmap_spi_gather_write,
-> +	.async_write = regmap_spi_async_write,
-> +	.async_alloc = regmap_spi_async_alloc,
-> +	.read = tcan4x5x_regmap_read,
-> +	.read_flag_mask = 0x00,
-> +	.reg_format_endian_default = REGMAP_ENDIAN_NATIVE,
-> +	.val_format_endian_default = REGMAP_ENDIAN_NATIVE,
-> +};
-> +
-> +static u32 tcan4x5x_read_reg(struct m_can_classdev *m_can_class, int reg)
-> +{
-> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
-> +	u32 val;
-> +
-> +	tcan4x5x_check_wake(priv);
-> +
-> +	regmap_read(priv->regmap, priv->reg_offset + reg, &val);
-> +
-> +	return val;
-> +}
-> +
-> +static u32 tcan4x5x_read_fifo(struct m_can_classdev *m_can_class,
-> +			      int addr_offset)
-> +{
-> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
-> +	u32 val;
-> +
-> +	tcan4x5x_check_wake(priv);
-> +
-> +	regmap_read(priv->regmap, priv->mram_start + addr_offset, &val);
-> +
-> +	return val;
-> +}
-> +
-> +static int tcan4x5x_write_reg(struct m_can_classdev *m_can_class,
-> +			      int reg, int val)
-> +{
-> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
-> +
-> +	tcan4x5x_check_wake(priv);
-> +
-> +	return regmap_write(priv->regmap, priv->reg_offset + reg, val);
-> +}
-> +
-> +static int tcan4x5x_write_fifo(struct m_can_classdev *m_can_class,
-> +			       int addr_offset, int val)
-> +{
-> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
-> +
-> +	tcan4x5x_check_wake(priv);
-> +
-> +	return regmap_write(priv->regmap, priv->mram_start + addr_offset, val);
-> +}
-> +
-> +static int tcan4x5x_power_enable(struct regulator *reg, int enable)
-> +{
-> +	if (IS_ERR_OR_NULL(reg))
-> +		return 0;
-> +
-> +	if (enable)
-> +		return regulator_enable(reg);
-> +	else
-> +		return regulator_disable(reg);
-> +}
-> +
-> +static int tcan4x5x_write_tcan_reg(struct m_can_classdev *m_can_class,
-> +				   int reg, int val)
-> +{
-> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
-> +
-> +	tcan4x5x_check_wake(priv);
-> +
-> +	return regmap_write(priv->regmap, reg, val);
-> +}
-> +
-> +static int tcan4x5x_clear_interrupts(struct m_can_classdev *class_dev)
-> +{
-> +	struct tcan4x5x_priv *tcan4x5x = (struct tcan4x5x_priv *)class_dev->device_data;
-> +	int ret;
-> +
-> +	tcan4x5x_check_wake(tcan4x5x);
-> +
-> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_STATUS,
-> +				      TCAN4X5X_CLEAR_ALL_INT);
-> +	if (ret)
-> +		return -EIO;
-> +
-> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_MCAN_INT_REG,
-> +				      TCAN4X5X_ENABLE_MCAN_INT);
-> +	if (ret)
-> +		return -EIO;
-> +
-> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_INT_FLAGS,
-> +				      TCAN4X5X_CLEAR_ALL_INT);
-> +	if (ret)
-> +		return -EIO;
-> +
-> +
-> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_ERROR_STATUS,
-> +				      TCAN4X5X_CLEAR_ALL_INT);
-> +	if (ret)
-> +		return -EIO;
-> +
-> +	return ret;
-> +}
-> +
-> +static int tcan4x5x_init(struct m_can_classdev *class_dev)
-> +{
-> +	struct tcan4x5x_priv *tcan4x5x = (struct tcan4x5x_priv *)class_dev->device_data;
-> +	int ret;
-> +
-> +	tcan4x5x_check_wake(tcan4x5x);
-> +
-> +	ret = tcan4x5x_clear_interrupts(class_dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_INT_EN,
-> +				      TCAN4X5X_ENABLE_TCAN_INT);
-> +	if (ret)
-> +		return -EIO;
-> +
-> +	ret = regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
-> +				 TCAN4X5X_MODE_SEL_MASK, TCAN4X5X_MODE_NORMAL);
-> +	if (ret)
-> +		return -EIO;
-> +
-> +	/* Zero out the MCAN buffers */
-> +	m_can_init_ram(class_dev);
-> +
-> +	return ret;
-> +}
-> +
-> +static int tcan4x5x_parse_config(struct m_can_classdev *class_dev)
-> +{
-> +	struct tcan4x5x_priv *tcan4x5x = (struct tcan4x5x_priv *)class_dev->device_data;
-> +
-> +	tcan4x5x->reset_gpio = devm_gpiod_get_optional(class_dev->dev,
-> +						       "reset", GPIOD_OUT_LOW);
-> +	if (IS_ERR(tcan4x5x->reset_gpio))
-> +		tcan4x5x->reset_gpio = NULL;
-> +
-> +	tcan4x5x->device_wake_gpio = devm_gpiod_get_optional(class_dev->dev,
-> +							     "device-wake",
-> +							     GPIOD_OUT_HIGH);
-> +	if (IS_ERR(tcan4x5x->device_wake_gpio))
-> +		tcan4x5x->device_wake_gpio = NULL;
-> +
-> +	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(class_dev->dev,
-> +							      "device-state",
-> +							      GPIOD_IN);
-> +	if (IS_ERR(tcan4x5x->device_state_gpio))
-> +		tcan4x5x->device_state_gpio = NULL;
-> +
-> +	tcan4x5x->interrupt_gpio = devm_gpiod_get(class_dev->dev,
-> +						  "data-ready", GPIOD_IN);
-> +	if (IS_ERR(tcan4x5x->interrupt_gpio)) {
-> +		dev_err(class_dev->dev, "data-ready gpio not defined\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	class_dev->net->irq = gpiod_to_irq(tcan4x5x->interrupt_gpio);
-> +
-> +	tcan4x5x->power = devm_regulator_get_optional(class_dev->dev,
-> +						      "vsup");
-> +	if (PTR_ERR(tcan4x5x->power) == -EPROBE_DEFER)
-> +		return -EPROBE_DEFER;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct regmap_config tcan4x5x_regmap = {
-> +	.reg_bits = 32,
-> +	.val_bits = 32,
-> +	.cache_type = REGCACHE_NONE,
-> +	.max_register = TCAN4X5X_MAX_REGISTER,
-> +};
-> +
-> +static int tcan4x5x_can_probe(struct spi_device *spi)
-> +{
-> +	struct tcan4x5x_priv *priv;
-> +	struct m_can_classdev *mcan_class;
-> +	int freq, ret;
-> +
-> +	mcan_class = m_can_core_allocate_dev(&spi->dev);
-> +	priv = devm_kzalloc(&spi->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	mcan_class->device_data = priv;
-> +
-> +	m_can_core_get_clocks(mcan_class);
-> +	if (IS_ERR(mcan_class->cclk)) {
-> +		dev_err(&spi->dev, "no CAN clock source defined\n");
-> +		freq = TCAN4X5X_EXT_CLK_DEF;
-> +	} else {
-> +		freq = clk_get_rate(mcan_class->cclk);
-> +	}
-> +
-> +	/* Sanity check */
-> +	if (freq < 20000000 || freq > TCAN4X5X_EXT_CLK_DEF)
-> +		return -ERANGE;
-> +
-> +	priv->reg_offset = TCAN4X5X_MCAN_OFFSET;
-> +	priv->mram_start = TCAN4X5X_MRAM_START;
-> +	priv->spi = spi;
-> +	priv->mcan_dev = mcan_class;
-> +
-> +	mcan_class->pm_clock_support = 0;
-> +	mcan_class->can.clock.freq = freq;
-> +	mcan_class->dev = &spi->dev;
-> +
-> +	mcan_class->device_init = &tcan4x5x_init;
-> +	mcan_class->read_reg = &tcan4x5x_read_reg;
-> +	mcan_class->write_reg = &tcan4x5x_write_reg;
-> +	mcan_class->write_fifo = &tcan4x5x_write_fifo;
-> +	mcan_class->read_fifo = &tcan4x5x_read_fifo;
-> +	mcan_class->clr_dev_interrupts = &tcan4x5x_clear_interrupts;
-> +	mcan_class->is_peripherial = true;
-> +
-> +	mcan_class->bit_timing = &tcan4x5x_bittiming_const;
-> +	mcan_class->data_timing = &tcan4x5x_data_bittiming_const;
-> +
-> +	spi_set_drvdata(spi, priv);
-> +
-> +	ret = tcan4x5x_parse_config(mcan_class);
-> +	if (ret)
-> +		goto out_clk;
-> +
-> +	/* Configure the SPI bus */
-> +	spi->bits_per_word = 32;
-> +	ret = spi_setup(spi);
-> +	if (ret)
-> +		goto out_clk;
-> +
-> +	priv->regmap = devm_regmap_init(&spi->dev, &tcan4x5x_bus,
-> +					&spi->dev, &tcan4x5x_regmap);
-> +
-> +	mutex_init(&priv->tcan4x5x_lock);
-> +
-> +	tcan4x5x_power_enable(priv->power, 1);
-> +
-> +	ret = m_can_core_register(mcan_class);
-> +	if (ret)
-> +		goto reg_err;
-> +
-> +	netdev_info(mcan_class->net, "TCAN4X5X successfully initialized.\n");
-> +	return 0;
-> +
-> +reg_err:
-> +	tcan4x5x_power_enable(priv->power, 0);
-> +out_clk:
-> +	if (!IS_ERR(mcan_class->cclk)) {
-> +		clk_disable_unprepare(mcan_class->cclk);
-> +		clk_disable_unprepare(mcan_class->hclk);
-> +	}
-> +
-> +	dev_err(&spi->dev, "Probe failed, err=%d\n", -ret);
-> +	return ret;
-> +}
-> +
-> +static int tcan4x5x_can_remove(struct spi_device *spi)
-> +{
-> +	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
-> +
-> +	tcan4x5x_power_enable(priv->power, 0);
-> +
-> +	m_can_core_unregister(priv->mcan_dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id tcan4x5x_of_match[] = {
-> +	{ .compatible = "ti,tcan4x5x", },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, tcan4x5x_of_match);
-> +
-> +static const struct spi_device_id tcan4x5x_id_table[] = {
-> +	{
-> +		.name		= "tcan4x5x",
-> +		.driver_data	= 0,
-> +	},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(spi, tcan4x5x_id_table);
-> +
-> +static struct spi_driver tcan4x5x_can_driver = {
-> +	.driver = {
-> +		.name = DEVICE_NAME,
-> +		.of_match_table = tcan4x5x_of_match,
-> +		.pm = NULL,
-> +	},
-> +	.id_table = tcan4x5x_id_table,
-> +	.probe = tcan4x5x_can_probe,
-> +	.remove = tcan4x5x_can_remove,
-> +};
-> +module_spi_driver(tcan4x5x_can_driver);
-> +
-> +MODULE_AUTHOR("Dan Murphy <dmurphy@ti.com>");
-> +MODULE_DESCRIPTION("Texas Instruments TCAN4x5x CAN driver");
-> +MODULE_LICENSE("GPL v2");
-
-Curious to hear about the performance of M_CAN connected via SPI. Does
-it miss or drop messages?
-
-Thanks for your patience,
-
-Wolfgang.
+> Best regards,
+> Oliver
+> 
+> On 1/16/19 2:31 PM, Andre Naujoks wrote:
+>> Am 13.01.19 um 19:31 schrieb Oliver Hartkopp:
+>>> Kyungtae Kim detected a potential integer overflow in 
+>>> bcm_[rx|tx]_setup()
+>>> when the conversion into ktime multiplies the given value with 
+>>> NSEC_PER_USEC
+>>> (1000).
+>>>
+>>> Reference: https://marc.info/?l=linux-can&m=154732118819828&w=2
+>>>
+>>> Add a check for the given tv_usec, so that the value stays below one 
+>>> second.
+>>> Additionally limit the tv_sec value to a reasonable value for CAN 
+>>> related
+>>> use-cases of 400 days and ensure all values to be positive.
+>>>
+>>> Reported-by: Kyungtae Kim <kt0755@gmail.com>
+>>> Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>>> Cc: linux-stable <stable@vger.kernel.org> # >= 2.6.26
+>>
+>> Acked-by: Andre Naujoks <nautsch2@gmail.com>
+>>
+>> Sorry for the late reply, but I seem to have missed the initial send of
+>> v2 of this. I wanted to at least ack it, since I made such a fuss about
+>> the timeouts. :-)
+>>
+>> Regards
+>>    Andre
+>>
+>>> ---
+>>>   net/can/bcm.c | 27 +++++++++++++++++++++++++++
+>>>   1 file changed, 27 insertions(+)
+>>>
+>>> diff --git a/net/can/bcm.c b/net/can/bcm.c
+>>> index 0af8f0db892a..d4ae0a1471f3 100644
+>>> --- a/net/can/bcm.c
+>>> +++ b/net/can/bcm.c
+>>> @@ -67,6 +67,9 @@
+>>>    */
+>>>   #define MAX_NFRAMES 256
+>>> +/* limit timers to 400 days for sending/timeouts */
+>>> +#define BCM_TIMER_SEC_MAX (400*24*60*60)
+>>> +
+>>>   /* use of last_frames[index].flags */
+>>>   #define RX_RECV    0x40 /* received data for this element */
+>>>   #define RX_THR     0x80 /* element not been sent due to throttle 
+>>> feature */
+>>> @@ -140,6 +143,22 @@ static inline ktime_t 
+>>> bcm_timeval_to_ktime(struct bcm_timeval tv)
+>>>       return ktime_set(tv.tv_sec, tv.tv_usec * NSEC_PER_USEC);
+>>>   }
+>>> +/* check limitations for timeval provided by user */
+>>> +static int bcm_is_invalid_tv(struct bcm_msg_head *msg_head)
+>>> +{
+>>> +    if ((msg_head->ival1.tv_sec < 0) ||
+>>> +        (msg_head->ival1.tv_sec > BCM_TIMER_SEC_MAX) ||
+>>> +        (msg_head->ival1.tv_usec < 0) ||
+>>> +        (msg_head->ival1.tv_usec >= USEC_PER_SEC) ||
+>>> +        (msg_head->ival2.tv_sec < 0) ||
+>>> +        (msg_head->ival2.tv_sec > BCM_TIMER_SEC_MAX) ||
+>>> +        (msg_head->ival2.tv_usec < 0) ||
+>>> +        (msg_head->ival2.tv_usec >= USEC_PER_SEC))
+>>> +        return 1;
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>>   #define CFSIZ(flags) ((flags & CAN_FD_FRAME) ? CANFD_MTU : CAN_MTU)
+>>>   #define OPSIZ sizeof(struct bcm_op)
+>>>   #define MHSIZ sizeof(struct bcm_msg_head)
+>>> @@ -873,6 +892,10 @@ static int bcm_tx_setup(struct bcm_msg_head 
+>>> *msg_head, struct msghdr *msg,
+>>>       if (msg_head->nframes < 1 || msg_head->nframes > MAX_NFRAMES)
+>>>           return -EINVAL;
+>>> +    /* check timeval limitations */
+>>> +    if ((msg_head->flags & SETTIMER) && bcm_is_invalid_tv(msg_head))
+>>> +        return -EINVAL;
+>>> +
+>>>       /* check the given can_id */
+>>>       op = bcm_find_op(&bo->tx_ops, msg_head, ifindex);
+>>>       if (op) {
+>>> @@ -1053,6 +1076,10 @@ static int bcm_rx_setup(struct bcm_msg_head 
+>>> *msg_head, struct msghdr *msg,
+>>>            (!(msg_head->can_id & CAN_RTR_FLAG))))
+>>>           return -EINVAL;
+>>> +    /* check timeval limitations */
+>>> +    if ((msg_head->flags & SETTIMER) && bcm_is_invalid_tv(msg_head))
+>>> +        return -EINVAL;
+>>> +
+>>>       /* check the given can_id */
+>>>       op = bcm_find_op(&bo->rx_ops, msg_head, ifindex);
+>>>       if (op) {
+>>>
+>>
