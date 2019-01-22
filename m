@@ -1,138 +1,63 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] can: bcm: check timer values before ktime conversion
-Date: Tue, 22 Jan 2019 11:26:55 +0100
-Message-ID: <1b29b1df-82c5-6c5a-a558-b73a0a1166b4@pengutronix.de>
-References: <20190113183143.10612-1-socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: flexcan: fix NULL pointer exception during bringup
+Date: Tue, 22 Jan 2019 11:38:43 +0100
+Message-ID: <141795e7-3b20-0297-fad7-96feb247f4b3@pengutronix.de>
+References: <20190111105619.gkf2735zlpe6qbxv@pengutronix.de>
+ <20190111112041.10710-1-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="rvgqE9VqRFhzNL7PG4i8iyOLkZR0Y5bYs"
+ boundary="pL4gJIA5sr5svXurq5pWOFZYrzvEqc8js"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190113183143.10612-1-socketcan@hartkopp.net>
+In-Reply-To: <20190111112041.10710-1-u.kleine-koenig@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, davem@davemloft.net, netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, lifeasageek@gmail.com, threeearcat@gmail.com, syzkaller@googlegroups.com, nautsch2@gmail.com, Kyungtae Kim <kt0755@gmail.com>, linux-stable <stable@vger.kernel.org>
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: netdev@vger.kernel.org, linux-stable <stable@vger.kernel.org>, linux-can@vger.kernel.org, kernel@pengutronix.de, davem@davemloft.net, Alexander Stein <alexander.stein@systec-electronic.com>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rvgqE9VqRFhzNL7PG4i8iyOLkZR0Y5bYs
-Content-Type: multipart/mixed; boundary="7qAQq7gyWHSmv7jcStgnG3EEbMF61COxX";
+--pL4gJIA5sr5svXurq5pWOFZYrzvEqc8js
+Content-Type: multipart/mixed; boundary="a5oDNiJJFSQoCUgOJJhfiXSLJXcLQNUPp";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, davem@davemloft.net,
- netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, lifeasageek@gmail.com, threeearcat@gmail.com,
- syzkaller@googlegroups.com, nautsch2@gmail.com,
- Kyungtae Kim <kt0755@gmail.com>, linux-stable <stable@vger.kernel.org>
-Message-ID: <1b29b1df-82c5-6c5a-a558-b73a0a1166b4@pengutronix.de>
-Subject: Re: [PATCH v2] can: bcm: check timer values before ktime conversion
-References: <20190113183143.10612-1-socketcan@hartkopp.net>
-In-Reply-To: <20190113183143.10612-1-socketcan@hartkopp.net>
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: netdev@vger.kernel.org, linux-stable <stable@vger.kernel.org>,
+ linux-can@vger.kernel.org, kernel@pengutronix.de, davem@davemloft.net,
+ Alexander Stein <alexander.stein@systec-electronic.com>
+Message-ID: <141795e7-3b20-0297-fad7-96feb247f4b3@pengutronix.de>
+Subject: Re: [PATCH] can: flexcan: fix NULL pointer exception during bringup
+References: <20190111105619.gkf2735zlpe6qbxv@pengutronix.de>
+ <20190111112041.10710-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20190111112041.10710-1-u.kleine-koenig@pengutronix.de>
 
---7qAQq7gyWHSmv7jcStgnG3EEbMF61COxX
+--a5oDNiJJFSQoCUgOJJhfiXSLJXcLQNUPp
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 1/13/19 7:31 PM, Oliver Hartkopp wrote:
-> Kyungtae Kim detected a potential integer overflow in bcm_[rx|tx]_setup=
-()
-> when the conversion into ktime multiplies the given value with NSEC_PER=
-_USEC
-> (1000).
+On 1/11/19 12:20 PM, Uwe Kleine-K=C3=B6nig wrote:
+> Commit cbffaf7aa09e ("can: flexcan: Always use last mailbox for TX")
+> introduced a loop letting i run up to (including) ARRAY_SIZE(regs->mb)
+> and in the body accessed regs->mb[i] which is an out-of-bounds array
+> access that then resulted in an access to an reserved register area.
 >=20
-> Reference: https://marc.info/?l=3Dlinux-can&m=3D154732118819828&w=3D2
+> Later this was changed by commit 0517961ccdf1 ("can: flexcan: Add
+> provision for variable payload size") to iterate a bit differently but
+> still runs one iteration too much resulting to call
 >=20
-> Add a check for the given tv_usec, so that the value stays below one se=
-cond.
-> Additionally limit the tv_sec value to a reasonable value for CAN relat=
-ed
-> use-cases of 400 days and ensure all values to be positive.
+> 	flexcan_get_mb(priv, priv->mb_count)
 >=20
-> Reported-by: Kyungtae Kim <kt0755@gmail.com>
-> Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> Cc: linux-stable <stable@vger.kernel.org> # >=3D 2.6.26
-> ---
->  net/can/bcm.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
+> which results in a WARN_ON and then a NULL pointer exception. This
+> only affects devices compatible with "fsl,p1010-flexcan",
+> "fsl,imx53-flexcan", "fsl,imx35-flexcan", "fsl,imx25-flexcan",
+> "fsl,imx28-flexcan", so newer i.MX SoCs are not affected.
 >=20
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index 0af8f0db892a..d4ae0a1471f3 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-> @@ -67,6 +67,9 @@
->   */
->  #define MAX_NFRAMES 256
-> =20
-> +/* limit timers to 400 days for sending/timeouts */
-> +#define BCM_TIMER_SEC_MAX (400*24*60*60)
+> Fixes: cbffaf7aa09e ("can: flexcan: Always use last mailbox for TX")
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-I've added spaces around the * while applying the patch.
+Applied to linux-can
 
-> +
->  /* use of last_frames[index].flags */
->  #define RX_RECV    0x40 /* received data for this element */
->  #define RX_THR     0x80 /* element not been sent due to throttle featu=
-re */
-> @@ -140,6 +143,22 @@ static inline ktime_t bcm_timeval_to_ktime(struct =
-bcm_timeval tv)
->  	return ktime_set(tv.tv_sec, tv.tv_usec * NSEC_PER_USEC);
->  }
-> =20
-> +/* check limitations for timeval provided by user */
-> +static int bcm_is_invalid_tv(struct bcm_msg_head *msg_head)
-
-I've converted this into a bool function.
-
-> +{
-> +	if ((msg_head->ival1.tv_sec < 0) ||
-> +	    (msg_head->ival1.tv_sec > BCM_TIMER_SEC_MAX) ||
-> +	    (msg_head->ival1.tv_usec < 0) ||
-> +	    (msg_head->ival1.tv_usec >=3D USEC_PER_SEC) ||
-> +	    (msg_head->ival2.tv_sec < 0) ||
-> +	    (msg_head->ival2.tv_sec > BCM_TIMER_SEC_MAX) ||
-> +	    (msg_head->ival2.tv_usec < 0) ||
-> +	    (msg_head->ival2.tv_usec >=3D USEC_PER_SEC))
-> +		return 1;
-
-return true;
-> +
-> +	return 0;
-
-return false;
-
-> +}
-> +
->  #define CFSIZ(flags) ((flags & CAN_FD_FRAME) ? CANFD_MTU : CAN_MTU)
->  #define OPSIZ sizeof(struct bcm_op)
->  #define MHSIZ sizeof(struct bcm_msg_head)
-> @@ -873,6 +892,10 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_h=
-ead, struct msghdr *msg,
->  	if (msg_head->nframes < 1 || msg_head->nframes > MAX_NFRAMES)
->  		return -EINVAL;
-> =20
-> +	/* check timeval limitations */
-> +	if ((msg_head->flags & SETTIMER) && bcm_is_invalid_tv(msg_head))
-> +		return -EINVAL;
-> +
->  	/* check the given can_id */
->  	op =3D bcm_find_op(&bo->tx_ops, msg_head, ifindex);
->  	if (op) {
-> @@ -1053,6 +1076,10 @@ static int bcm_rx_setup(struct bcm_msg_head *msg=
-_head, struct msghdr *msg,
->  	     (!(msg_head->can_id & CAN_RTR_FLAG))))
->  		return -EINVAL;
-> =20
-> +	/* check timeval limitations */
-> +	if ((msg_head->flags & SETTIMER) && bcm_is_invalid_tv(msg_head))
-> +		return -EINVAL;
-> +
->  	/* check the given can_id */
->  	op =3D bcm_find_op(&bo->rx_ops, msg_head, ifindex);
->  	if (op) {
->=20
-
+Tnx,
 Marc
 
 --=20
@@ -142,23 +67,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---7qAQq7gyWHSmv7jcStgnG3EEbMF61COxX--
+--a5oDNiJJFSQoCUgOJJhfiXSLJXcLQNUPp--
 
---rvgqE9VqRFhzNL7PG4i8iyOLkZR0Y5bYs
+--pL4gJIA5sr5svXurq5pWOFZYrzvEqc8js
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlxG7+8ACgkQk9IU1zQo
-ZfHZxQf/U9VJx5/wD7gdU+gyT78e5HafJhHB8lX/VS/uAOTuujzyEeNRoyi6DYKJ
-TypcX+VCuCwZaNpGeaxuOmHl7ek9D5W5UtPM0Ujg4IuJIBBeNZqy2k5vSOFetrty
-i6WIP5QW/Ymihf9lp1lkMfI64ffBAithd4uF934OKSV5fI08WPWsPhXzcOypwxRM
-Q8Z1n+z1DwVqAH2qoTJ5lmY3riZ1aJlaiVlwR1Xh1he9u61qBOqLOAnG5DHiu/+n
-cL2a47rYrqTURZYg9G/u/9IaA6GI5/vMo7xAYKroZ8hpVtKxlBAQDgtPM96uC/gK
-2zvsA2veVwkRPPSXMEwqbybsLIMPZg==
-=hVD1
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlxG8rMACgkQk9IU1zQo
+ZfG0RggAljpkkk2AH+HcY2JBVGcH7S9kxDCWHUneS0Zx9j+NdWEIeDIwUv/K259H
+hTzhbb1dPupE0UnDv6ysP6ZR2AqmYqrLL8eg0Bq3fRtu7P0h4IS2XnoZDXxJ6dwm
+D0aL782/ROUclK+3QM5tUSsJCYcjiVyI322Frt0xXv+nBBhX28w5u/UvbrE7BIUz
+LpkJ/X/KhV32KRPolDs387Jut23IqeLxOLNI+U74Bp7qDvDtb+Jco9iubsPMzmGl
+7YUZGOqmZlhXOJKG16WENTrmDIxoU+r+wBFImOrL6+TOe9vQpV8tqd+N1VsVsVBU
+6DJyrEUN+e/CWiTlj7yO3Adkmk9Zwg==
+=yamr
 -----END PGP SIGNATURE-----
 
---rvgqE9VqRFhzNL7PG4i8iyOLkZR0Y5bYs--
+--pL4gJIA5sr5svXurq5pWOFZYrzvEqc8js--
