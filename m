@@ -1,65 +1,70 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock to CAN nodes
-Date: Wed, 23 Jan 2019 13:07:55 +0100
-Message-ID: <CAMuHMdVkFJ7Cy-+tNHsOcYaxDj82WjMynuFuPRXa4k=DH2fGCQ@mail.gmail.com>
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Subject: RE: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock to CAN
+ nodes
+Date: Wed, 23 Jan 2019 12:18:45 +0000
+Message-ID: <TYXPR01MB1775B75CED683E38B9171EA8C0990@TYXPR01MB1775.jpnprd01.prod.outlook.com>
 References: <1547736856-16539-1-git-send-email-fabrizio.castro@bp.renesas.com>
  <1547736856-16539-3-git-send-email-fabrizio.castro@bp.renesas.com>
- <20190118121353.3mb44a7rmmp2ru5d@verge.net.au> <20190123095122.l3engeuwx6qr5lzc@verge.net.au>
- <20190123113812.e3nojtxjxywmg4gn@verge.net.au> <TYXPR01MB1775ABDCFD939F91F1053534C0990@TYXPR01MB1775.jpnprd01.prod.outlook.com>
+ <20190118121353.3mb44a7rmmp2ru5d@verge.net.au>
+ <20190123095122.l3engeuwx6qr5lzc@verge.net.au>
+ <20190123113812.e3nojtxjxywmg4gn@verge.net.au>
+ <TYXPR01MB1775ABDCFD939F91F1053534C0990@TYXPR01MB1775.jpnprd01.prod.outlook.com>
+ <CAMuHMdVkFJ7Cy-+tNHsOcYaxDj82WjMynuFuPRXa4k=DH2fGCQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <TYXPR01MB1775ABDCFD939F91F1053534C0990@TYXPR01MB1775.jpnprd01.prod.outlook.com>
+In-Reply-To: <CAMuHMdVkFJ7Cy-+tNHsOcYaxDj82WjMynuFuPRXa4k=DH2fGCQ@mail.gmail.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Simon Horman <horms@verge.net.au>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, "David S. Miller" <davem@davemloft.net>, Magnus Damm <magnus.damm@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "linux-clk@vger.kernel.org" <linux-clk@vger.kern>
 List-Id: linux-can.vger.kernel.org
 
-Hi Fabrizio,
-
-On Wed, Jan 23, 2019 at 1:01 PM Fabrizio Castro
-<fabrizio.castro@bp.renesas.com> wrote:
-> > From: Simon Horman <horms@verge.net.au>
-> > Sent: 23 January 2019 11:38
-> > Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock to CAN nodes
-> >
-> > On Wed, Jan 23, 2019 at 10:51:23AM +0100, Simon Horman wrote:
-> > > On Fri, Jan 18, 2019 at 01:13:53PM +0100, Simon Horman wrote:
-> > > > On Thu, Jan 17, 2019 at 02:54:15PM +0000, Fabrizio Castro wrote:
-> > > > > According to the latest information, clkp2 is available on RZ/G2.
-> > > > > Modify CAN0 and CAN1 nodes accordingly.
-> > > > >
-> > > > > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> > > > > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-
-> > > Thanks again, applied for v5.1.
-> >
-> > Sorry, I was a little hasty there.
-> >
-> > This patch depends on the presence of R8A774A1_CLK_CANFD which
-> > (rightly) is added in a different patch in this series which is to
-> > go upstream via a different tree.
-> >
-> > I have dropped this patch for now. I think there are two solution to this
-> > problem.
-> >
-> > 1. Provide a version of this patch which uses a numeric index instead of
-> >    R8A774A1_CLK_CANFD. And then, once R8A774A1_CLK_CANFD is present in an
-> >    RC release provide a patch to switch to using R8A774A1_CLK_CANFD.
-> >
-> > 2. Defer this patch until R8A774A1_CLK_CANFD is present in an RC release.
->
-> Yeah, my personal preference is solution 2.
-
-Note that solution 2 will probably defer the DT patch to v5.2.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SGVsbG8gR2VlcnQsDQoNClRoYW5rIHlvdSBmb3IgeW91ciBmZWVkYmFjayENCg0KPiBGcm9tOiBH
+ZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsub3JnPg0KPiBTZW50OiAyMyBKYW51
+YXJ5IDIwMTkgMTI6MDgNCj4gU3ViamVjdDogUmU6IFtQQVRDSCAyLzNdIGFybTY0OiBkdHM6IHJl
+bmVzYXM6IHI4YTc3NGExOiBBZGQgY2xrcDIgY2xvY2sgdG8gQ0FOIG5vZGVzDQo+DQo+IEhpIEZh
+YnJpemlvLA0KPg0KPiBPbiBXZWQsIEphbiAyMywgMjAxOSBhdCAxOjAxIFBNIEZhYnJpemlvIENh
+c3Rybw0KPiA8ZmFicml6aW8uY2FzdHJvQGJwLnJlbmVzYXMuY29tPiB3cm90ZToNCj4gPiA+IEZy
+b206IFNpbW9uIEhvcm1hbiA8aG9ybXNAdmVyZ2UubmV0LmF1Pg0KPiA+ID4gU2VudDogMjMgSmFu
+dWFyeSAyMDE5IDExOjM4DQo+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIIDIvM10gYXJtNjQ6IGR0
+czogcmVuZXNhczogcjhhNzc0YTE6IEFkZCBjbGtwMiBjbG9jayB0byBDQU4gbm9kZXMNCj4gPiA+
+DQo+ID4gPiBPbiBXZWQsIEphbiAyMywgMjAxOSBhdCAxMDo1MToyM0FNICswMTAwLCBTaW1vbiBI
+b3JtYW4gd3JvdGU6DQo+ID4gPiA+IE9uIEZyaSwgSmFuIDE4LCAyMDE5IGF0IDAxOjEzOjUzUE0g
+KzAxMDAsIFNpbW9uIEhvcm1hbiB3cm90ZToNCj4gPiA+ID4gPiBPbiBUaHUsIEphbiAxNywgMjAx
+OSBhdCAwMjo1NDoxNVBNICswMDAwLCBGYWJyaXppbyBDYXN0cm8gd3JvdGU6DQo+ID4gPiA+ID4g
+PiBBY2NvcmRpbmcgdG8gdGhlIGxhdGVzdCBpbmZvcm1hdGlvbiwgY2xrcDIgaXMgYXZhaWxhYmxl
+IG9uIFJaL0cyLg0KPiA+ID4gPiA+ID4gTW9kaWZ5IENBTjAgYW5kIENBTjEgbm9kZXMgYWNjb3Jk
+aW5nbHkuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogRmFicml6aW8g
+Q2FzdHJvIDxmYWJyaXppby5jYXN0cm9AYnAucmVuZXNhcy5jb20+DQo+ID4gPiA+ID4gPiBSZXZp
+ZXdlZC1ieTogQ2hyaXMgUGF0ZXJzb24gPENocmlzLlBhdGVyc29uMkByZW5lc2FzLmNvbT4NCj4N
+Cj4gPiA+ID4gVGhhbmtzIGFnYWluLCBhcHBsaWVkIGZvciB2NS4xLg0KPiA+ID4NCj4gPiA+IFNv
+cnJ5LCBJIHdhcyBhIGxpdHRsZSBoYXN0eSB0aGVyZS4NCj4gPiA+DQo+ID4gPiBUaGlzIHBhdGNo
+IGRlcGVuZHMgb24gdGhlIHByZXNlbmNlIG9mIFI4QTc3NEExX0NMS19DQU5GRCB3aGljaA0KPiA+
+ID4gKHJpZ2h0bHkpIGlzIGFkZGVkIGluIGEgZGlmZmVyZW50IHBhdGNoIGluIHRoaXMgc2VyaWVz
+IHdoaWNoIGlzIHRvDQo+ID4gPiBnbyB1cHN0cmVhbSB2aWEgYSBkaWZmZXJlbnQgdHJlZS4NCj4g
+PiA+DQo+ID4gPiBJIGhhdmUgZHJvcHBlZCB0aGlzIHBhdGNoIGZvciBub3cuIEkgdGhpbmsgdGhl
+cmUgYXJlIHR3byBzb2x1dGlvbiB0byB0aGlzDQo+ID4gPiBwcm9ibGVtLg0KPiA+ID4NCj4gPiA+
+IDEuIFByb3ZpZGUgYSB2ZXJzaW9uIG9mIHRoaXMgcGF0Y2ggd2hpY2ggdXNlcyBhIG51bWVyaWMg
+aW5kZXggaW5zdGVhZCBvZg0KPiA+ID4gICAgUjhBNzc0QTFfQ0xLX0NBTkZELiBBbmQgdGhlbiwg
+b25jZSBSOEE3NzRBMV9DTEtfQ0FORkQgaXMgcHJlc2VudCBpbiBhbg0KPiA+ID4gICAgUkMgcmVs
+ZWFzZSBwcm92aWRlIGEgcGF0Y2ggdG8gc3dpdGNoIHRvIHVzaW5nIFI4QTc3NEExX0NMS19DQU5G
+RC4NCj4gPiA+DQo+ID4gPiAyLiBEZWZlciB0aGlzIHBhdGNoIHVudGlsIFI4QTc3NEExX0NMS19D
+QU5GRCBpcyBwcmVzZW50IGluIGFuIFJDIHJlbGVhc2UuDQo+ID4NCj4gPiBZZWFoLCBteSBwZXJz
+b25hbCBwcmVmZXJlbmNlIGlzIHNvbHV0aW9uIDIuDQo+DQo+IE5vdGUgdGhhdCBzb2x1dGlvbiAy
+IHdpbGwgcHJvYmFibHkgZGVmZXIgdGhlIERUIHBhdGNoIHRvIHY1LjIuDQoNClllYWgsIG15IHVu
+ZGVyc3RhbmRpbmcgaXMgdGhhdCBldmVuIGlmIHdlIGNob3NlIHNvbHV0aW9uIDEgd2Ugd291bGQg
+c3RpbGwgbmVlZCB0byBiZQ0Kd2FpdGluZyBmb3IgdjUuMiBmb3IgdGhlIHBhdGNoIHRvIHN3aXRj
+aCB0byB1c2luZyBSOEE3NzRBMV9DTEtfQ0FORkQgdG8gYXBwZWFyIGluDQphIHJjLCB0aGVyZWZv
+cmUgSSB0aGluayBzb2x1dGlvbiAyIGlzIGZpbmUuDQoNClRoYW5rcywNCkZhYg0KDQo+DQo+IEdy
+e29ldGplLGVldGluZ31zLA0KPg0KPiAgICAgICAgICAgICAgICAgICAgICAgICBHZWVydA0KPg0K
+PiAtLQ0KPiBHZWVydCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4IGJleW9u
+ZCBpYTMyIC0tIGdlZXJ0QGxpbnV4LW02OGsub3JnDQo+DQo+IEluIHBlcnNvbmFsIGNvbnZlcnNh
+dGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQN
+Cj4gd2hlbiBJJ20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVy
+IiBvciBzb21ldGhpbmcgbGlrZSB0aGF0Lg0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIC0tIExpbnVzIFRvcnZhbGRzDQoNCg0KDQpSZW5lc2FzIEVsZWN0cm9uaWNzIEV1cm9wZSBM
+dGQsIER1a2VzIE1lYWRvdywgTWlsbGJvYXJkIFJvYWQsIEJvdXJuZSBFbmQsIEJ1Y2tpbmdoYW1z
+aGlyZSwgU0w4IDVGSCwgVUsuIFJlZ2lzdGVyZWQgaW4gRW5nbGFuZCAmIFdhbGVzIHVuZGVyIFJl
+Z2lzdGVyZWQgTm8uIDA0NTg2NzA5Lg0K
