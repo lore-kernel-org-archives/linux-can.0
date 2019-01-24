@@ -1,58 +1,96 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
-        <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 4/4] can: flexcan: fix NULL pointer exception during
- bringup
-Date: Thu, 24 Jan 2019 08:26:10 +0100
-Message-ID: <20190124072610.7n2wzwiexdtvvh5p@pengutronix.de>
-References: <20190122132116.7074-5-mkl@pengutronix.de>
- <20190123225745.3D239218A2@mail.kernel.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH] [stable pre-4.8] can: bcm: check timer values before ktime conversion
+Date: Thu, 24 Jan 2019 10:08:42 +0100
+Message-ID: <20190124090842.2938-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190123225745.3D239218A2@mail.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: Sasha Levin <sashal@kernel.org>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, davem@davemloft.net, linux-can@vger.kernel.org, stable@vger.kernel.org
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: davem@davemloft.net, netdev@vger.kernel.org, stable@vger.kernel.org
+Cc: linux-can@vger.kernel.org, lifeasageek@gmail.com, threeearcat@gmail.com, syzkaller@googlegroups.com, nautsch2@gmail.com, Oliver Hartkopp <socketcan@hartkopp.net>, Kyungtae Kim <kt0755@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello Sasha,
+Kyungtae Kim detected a potential integer overflow in bcm_[rx|tx]_setup()
+when the conversion into ktime multiplies the given value with NSEC_PER_USEC
+(1000).
 
-On Wed, Jan 23, 2019 at 10:57:44PM +0000, Sasha Levin wrote:
-> [This is an automated email]
+Reference: https://marc.info/?l=linux-can&m=154732118819828&w=2
 
-Not sure if I only state the obvious that was just missed by your
-automation.
-> 
-> This commit has been processed because it contains a "Fixes:" tag,
-> fixing commit: cbffaf7aa09e can: flexcan: Always use last mailbox for TX.
-> 
-> The bot has tested the following trees: v4.20.3, v4.19.16.
-> 
-> v4.20.3: Failed to apply! Possible dependencies:
->     0517961ccdf1 ("can: flexcan: Add provision for variable payload size")
->     22233f7bf2c9 ("can: flexcan: FLEXCAN_IFLAG_MB: add () around macro argument")
->     5156c7b11f35 ("can: flexcan: move rx_offload_add() from flexcan_probe() to flexcan_open()")
->     7ad0f53a394b ("can: flexcan: flexcan_chip_start(): enable loopback mode in flexcan")
->     de3578c198c6 ("can: flexcan: add self wakeup support")
-> 
-> v4.19.16: Failed to apply! Possible dependencies:
->     0517961ccdf1 ("can: flexcan: Add provision for variable payload size")
->     22233f7bf2c9 ("can: flexcan: FLEXCAN_IFLAG_MB: add () around macro argument")
->     5156c7b11f35 ("can: flexcan: move rx_offload_add() from flexcan_probe() to flexcan_open()")
->     7ad0f53a394b ("can: flexcan: flexcan_chip_start(): enable loopback mode in flexcan")
->     de3578c198c6 ("can: flexcan: add self wakeup support")
-> 
-> 
-> How should we proceed with this patch?
+Add a check for the given tv_usec, so that the value stays below one second.
+Additionally limit the tv_sec value to a reasonable value for CAN related
+use-cases of 400 days and ensure all values to be positive.
 
-When I posted the commit I also posted one that fits on top of v4.19.x.
-I would expect that the same also fits on v4.20.x. If not, tell me.
+This patch is the pre-4.8 version of upstream commit 93171ba6f1deffd8
 
-Best regards
-Uwe
+Reported-by: Kyungtae Kim <kt0755@gmail.com>
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-stable <stable@vger.kernel.org> # versions 2.6.26 to 4.7
+Tested-by: Kyungtae Kim <kt0755@gmail.com>
+Acked-by: Andre Naujoks <nautsch2@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ net/can/bcm.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 6863310d6973..01d489d0a3de 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -67,6 +67,9 @@
+  */
+ #define MAX_NFRAMES 256
+ 
++/* limit timers to 400 days for sending/timeouts */
++#define BCM_TIMER_SEC_MAX (400 * 24 * 60 * 60)
++
+ /* use of last_frames[index].can_dlc */
+ #define RX_RECV    0x40 /* received data for this element */
+ #define RX_THR     0x80 /* element not been sent due to throttle feature */
+@@ -136,6 +139,22 @@ static inline ktime_t bcm_timeval_to_ktime(struct bcm_timeval tv)
+ 	return ktime_set(tv.tv_sec, tv.tv_usec * NSEC_PER_USEC);
+ }
+ 
++/* check limitations for timeval provided by user */
++static bool bcm_is_invalid_tv(struct bcm_msg_head *msg_head)
++{
++	if ((msg_head->ival1.tv_sec < 0) ||
++	    (msg_head->ival1.tv_sec > BCM_TIMER_SEC_MAX) ||
++	    (msg_head->ival1.tv_usec < 0) ||
++	    (msg_head->ival1.tv_usec >= USEC_PER_SEC) ||
++	    (msg_head->ival2.tv_sec < 0) ||
++	    (msg_head->ival2.tv_sec > BCM_TIMER_SEC_MAX) ||
++	    (msg_head->ival2.tv_usec < 0) ||
++	    (msg_head->ival2.tv_usec >= USEC_PER_SEC))
++		return true;
++
++	return false;
++}
++
+ #define CFSIZ sizeof(struct can_frame)
+ #define OPSIZ sizeof(struct bcm_op)
+ #define MHSIZ sizeof(struct bcm_msg_head)
+@@ -846,6 +865,10 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 	if (msg_head->nframes < 1 || msg_head->nframes > MAX_NFRAMES)
+ 		return -EINVAL;
+ 
++	/* check timeval limitations */
++	if ((msg_head->flags & SETTIMER) && bcm_is_invalid_tv(msg_head))
++		return -EINVAL;
++
+ 	/* check the given can_id */
+ 	op = bcm_find_op(&bo->tx_ops, msg_head->can_id, ifindex);
+ 
+@@ -1011,6 +1034,10 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 	     (!(msg_head->can_id & CAN_RTR_FLAG))))
+ 		return -EINVAL;
+ 
++	/* check timeval limitations */
++	if ((msg_head->flags & SETTIMER) && bcm_is_invalid_tv(msg_head))
++		return -EINVAL;
++
+ 	/* check the given can_id */
+ 	op = bcm_find_op(&bo->rx_ops, msg_head->can_id, ifindex);
+ 	if (op) {
 -- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+2.20.1
