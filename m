@@ -1,80 +1,139 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 10/11] arm64: dts: renesas: r8a774c0: Add clkp2 clock to
- CAN nodes
-Date: Mon, 28 Jan 2019 14:02:38 +0100
-Message-ID: <20190128130238.gork4cep3qonghwz@verge.net.au>
-References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1547663874-29411-11-git-send-email-fabrizio.castro@bp.renesas.com>
- <20190117120541.slymsz47fjkzz3kg@verge.net.au>
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Subject: RE: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock to CAN
+ nodes
+Date: Mon, 28 Jan 2019 14:49:21 +0000
+Message-ID: <TY1PR01MB177071330C7BD433A701F728C0960@TY1PR01MB1770.jpnprd01.prod.outlook.com>
+References: <1547736856-16539-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1547736856-16539-3-git-send-email-fabrizio.castro@bp.renesas.com>
+ <20190118121353.3mb44a7rmmp2ru5d@verge.net.au>
+ <20190123095122.l3engeuwx6qr5lzc@verge.net.au>
+ <20190123113812.e3nojtxjxywmg4gn@verge.net.au>
+ <TYXPR01MB1775ABDCFD939F91F1053534C0990@TYXPR01MB1775.jpnprd01.prod.outlook.com>
+ <CAMuHMdVkFJ7Cy-+tNHsOcYaxDj82WjMynuFuPRXa4k=DH2fGCQ@mail.gmail.com>
+ <TYXPR01MB1775B75CED683E38B9171EA8C0990@TYXPR01MB1775.jpnprd01.prod.outlook.com>
+ <20190124100123.a2gvucnnwrxibulf@verge.net.au>
+ <TY1PR01MB177085C4C1DF3D9827EB769BC09B0@TY1PR01MB1770.jpnprd01.prod.outlook.com>
+ <20190128130111.t54jbcyx35fiymq6@verge.net.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190117120541.slymsz47fjkzz3kg@verge.net.au>
+In-Reply-To: <20190128130111.t54jbcyx35fiymq6@verge.net.au>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Ben
+To: Simon Horman <horms@verge.net.au>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, "David S. Miller" <davem@davemloft.net>, Magnus Damm <magnus.damm@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "linux-clk@vger.kernel.org" <linux-clk@v>
 List-Id: linux-can.vger.kernel.org
 
-On Thu, Jan 17, 2019 at 01:05:42PM +0100, Simon Horman wrote:
-> On Wed, Jan 16, 2019 at 06:37:53PM +0000, Fabrizio Castro wrote:
-> > According to the latest information, clkp2 is available on RZ/G2.
-> > Modify CAN0 and CAN1 nodes accordingly.
-> > 
-> > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-> 
-> Taking your word for the motivation for this change,
-> this patch seems fine to me but I would like to wait for review
-> from others.
-> 
-> Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+> From: Simon Horman <horms@verge.net.au>
+> Sent: 28 January 2019 13:01
+> Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock t=
+o CAN nodes
+>
+> On Fri, Jan 25, 2019 at 11:33:41AM +0000, Fabrizio Castro wrote:
+> > Hello Simon,
+> >
+> > Thank you for your feedback!
+> >
+> > > From: Simon Horman <horms@verge.net.au>
+> > > Sent: 24 January 2019 10:01
+> > > Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clo=
+ck to CAN nodes
+> > >
+> > > On Wed, Jan 23, 2019 at 12:18:45PM +0000, Fabrizio Castro wrote:
+> > > > Hello Geert,
+> > > >
+> > > > Thank you for your feedback!
+> > > >
+> > > > > From: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > > > Sent: 23 January 2019 12:08
+> > > > > Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2=
+ clock to CAN nodes
+> > > > >
+> > > > > Hi Fabrizio,
+> > > > >
+> > > > > On Wed, Jan 23, 2019 at 1:01 PM Fabrizio Castro
+> > > > > <fabrizio.castro@bp.renesas.com> wrote:
+> > > > > > > From: Simon Horman <horms@verge.net.au>
+> > > > > > > Sent: 23 January 2019 11:38
+> > > > > > > Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add c=
+lkp2 clock to CAN nodes
+> > > > > > >
+> > > > > > > On Wed, Jan 23, 2019 at 10:51:23AM +0100, Simon Horman wrote:
+> > > > > > > > On Fri, Jan 18, 2019 at 01:13:53PM +0100, Simon Horman wrot=
+e:
+> > > > > > > > > On Thu, Jan 17, 2019 at 02:54:15PM +0000, Fabrizio Castro=
+ wrote:
+> > > > > > > > > > According to the latest information, clkp2 is available=
+ on RZ/G2.
+> > > > > > > > > > Modify CAN0 and CAN1 nodes accordingly.
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.rene=
+sas.com>
+> > > > > > > > > > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.co=
+m>
+> > > > >
+> > > > > > > > Thanks again, applied for v5.1.
+> > > > > > >
+> > > > > > > Sorry, I was a little hasty there.
+> > > > > > >
+> > > > > > > This patch depends on the presence of R8A774A1_CLK_CANFD whic=
+h
+> > > > > > > (rightly) is added in a different patch in this series which =
+is to
+> > > > > > > go upstream via a different tree.
+> > > > > > >
+> > > > > > > I have dropped this patch for now. I think there are two solu=
+tion to this
+> > > > > > > problem.
+> > > > > > >
+> > > > > > > 1. Provide a version of this patch which uses a numeric index=
+ instead of
+> > > > > > >    R8A774A1_CLK_CANFD. And then, once R8A774A1_CLK_CANFD is p=
+resent in an
+> > > > > > >    RC release provide a patch to switch to using R8A774A1_CLK=
+_CANFD.
+> > > > > > >
+> > > > > > > 2. Defer this patch until R8A774A1_CLK_CANFD is present in an=
+ RC release.
+> > > > > >
+> > > > > > Yeah, my personal preference is solution 2.
+> > > > >
+> > > > > Note that solution 2 will probably defer the DT patch to v5.2.
+> > > >
+> > > > Yeah, my understanding is that even if we chose solution 1 we would=
+ still
+> > > > need to be waiting for v5.2 for the patch to switch to using
+> > > > R8A774A1_CLK_CANFD to appear in a rc, therefore I think solution 2 =
+is
+> > > > fine.
+> > >
+> > > Your understanding is the same as mine.
+> > >
+> > > I do seem some slight value in option 1 in terms of getting the chang=
+e,
+> > > less the minor issue of using an index rather than a symbol, upstream
+> > > earlier. But I do not feel strongly about this.
+> > >
+> > > I am marking this patch as deferred. Please repost or otherwise ping =
+me
+> > > when you would like to revisit this topic.
+> >
+> > Thank you. Will do.
+>
+> Thanks.
+>
+> I believe "[10/11] arm64: dts: renesas: r8a774c0: Add clkp2 clock to CAN =
+nodes"
+> falls into the same category. I have marked it as deferred accordingly.
 
-I am marking this as deferred until R8A774C0_CLK_CANFD
-shows up in an rc release.
+Ok, thank you Simon
 
-Alternatively I'd be happy to take a version that uses
-numeric values, followed up by a patch to switching to R8A774C0_CLK_CANFD
-once it is available in an rc release.
+Fab
 
-Please repost or otherwise ping me as appropriate.
 
-> 
-> > ---
-> >  arch/arm64/boot/dts/renesas/r8a774c0.dtsi | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
-> > index 3970aaf..326ab3a 100644
-> > --- a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
-> > +++ b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
-> > @@ -809,8 +809,10 @@
-> >  				     "renesas,rcar-gen3-can";
-> >  			reg = <0 0xe6c30000 0 0x1000>;
-> >  			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
-> > -			clocks = <&cpg CPG_MOD 916>, <&can_clk>;
-> > -			clock-names = "clkp1", "can_clk";
-> > +			clocks = <&cpg CPG_MOD 916>,
-> > +				 <&cpg CPG_CORE R8A774C0_CLK_CANFD>,
-> > +				 <&can_clk>;
-> > +			clock-names = "clkp1", "clkp2", "can_clk";
-> >  			power-domains = <&sysc R8A774C0_PD_ALWAYS_ON>;
-> >  			resets = <&cpg 916>;
-> >  			status = "disabled";
-> > @@ -821,8 +823,10 @@
-> >  				     "renesas,rcar-gen3-can";
-> >  			reg = <0 0xe6c38000 0 0x1000>;
-> >  			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-> > -			clocks = <&cpg CPG_MOD 915>, <&can_clk>;
-> > -			clock-names = "clkp1", "can_clk";
-> > +			clocks = <&cpg CPG_MOD 915>,
-> > +				 <&cpg CPG_CORE R8A774C0_CLK_CANFD>,
-> > +				 <&can_clk>;
-> > +			clock-names = "clkp1", "clkp2", "can_clk";
-> >  			power-domains = <&sysc R8A774C0_PD_ALWAYS_ON>;
-> >  			resets = <&cpg 915>;
-> >  			status = "disabled";
-> > -- 
-> > 2.7.4
-> > 
-> 
+
+
+Renesas Electronics Europe Ltd, Dukes Meadow, Millboard Road, Bourne End, B=
+uckinghamshire, SL8 5FH, UK. Registered in England & Wales under Registered=
+ No. 04586709.
