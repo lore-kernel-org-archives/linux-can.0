@@ -1,52 +1,101 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: [PATCH] [stable pre-4.8] can: bcm: check timer values before
- ktime conversion
-Date: Sun, 27 Jan 2019 20:34:11 +0100
-Message-ID: <20190127193411.GB25051@kroah.com>
-References: <20190124090842.2938-1-socketcan@hartkopp.net>
- <20190126181718.GE30183@sasha-vm>
- <8a72ffa5-dac5-6de8-f01e-dfbb98b1f024@hartkopp.net>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock to
+ CAN nodes
+Date: Mon, 28 Jan 2019 14:01:12 +0100
+Message-ID: <20190128130111.t54jbcyx35fiymq6@verge.net.au>
+References: <1547736856-16539-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1547736856-16539-3-git-send-email-fabrizio.castro@bp.renesas.com>
+ <20190118121353.3mb44a7rmmp2ru5d@verge.net.au>
+ <20190123095122.l3engeuwx6qr5lzc@verge.net.au>
+ <20190123113812.e3nojtxjxywmg4gn@verge.net.au>
+ <TYXPR01MB1775ABDCFD939F91F1053534C0990@TYXPR01MB1775.jpnprd01.prod.outlook.com>
+ <CAMuHMdVkFJ7Cy-+tNHsOcYaxDj82WjMynuFuPRXa4k=DH2fGCQ@mail.gmail.com>
+ <TYXPR01MB1775B75CED683E38B9171EA8C0990@TYXPR01MB1775.jpnprd01.prod.outlook.com>
+ <20190124100123.a2gvucnnwrxibulf@verge.net.au>
+ <TY1PR01MB177085C4C1DF3D9827EB769BC09B0@TY1PR01MB1770.jpnprd01.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <8a72ffa5-dac5-6de8-f01e-dfbb98b1f024@hartkopp.net>
-Sender: stable-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Sasha Levin <sashal@kernel.org>, davem@davemloft.net, netdev@vger.kernel.org, stable@vger.kernel.org, linux-can@vger.kernel.org, lifeasageek@gmail.com, threeearcat@gmail.com, syzkaller@googlegroups.com, nautsch2@gmail.com, Kyungtae Kim <kt0755@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+In-Reply-To: <TY1PR01MB177085C4C1DF3D9827EB769BC09B0@TY1PR01MB1770.jpnprd01.prod.outlook.com>
+Sender: netdev-owner@vger.kernel.org
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, "David S. Miller" <davem@davemloft.net>, Magnus Damm <magnus.damm@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "linux-clk@vger.kernel.org" <linux-clk@v>
 List-Id: linux-can.vger.kernel.org
 
-On Sun, Jan 27, 2019 at 07:22:38PM +0100, Oliver Hartkopp wrote:
-> Hi Sasha,
+On Fri, Jan 25, 2019 at 11:33:41AM +0000, Fabrizio Castro wrote:
+> Hello Simon,
 > 
-> On 26.01.19 19:17, Sasha Levin wrote:
-> > On Thu, Jan 24, 2019 at 10:08:42AM +0100, Oliver Hartkopp wrote:
-> > > Kyungtae Kim detected a potential integer overflow in bcm_[rx|tx]_setup()
-> > > when the conversion into ktime multiplies the given value with
-> > > NSEC_PER_USEC
-> > > (1000).
-> > > 
-> > > Reference: https://marc.info/?l=linux-can&m=154732118819828&w=2
-> > > 
-> > > Add a check for the given tv_usec, so that the value stays below one
-> > > second.
-> > > Additionally limit the tv_sec value to a reasonable value for CAN related
-> > > use-cases of 400 days and ensure all values to be positive.
-> > > 
-> > > This patch is the pre-4.8 version of upstream commit 93171ba6f1deffd8
-> > 
-> > I can't find this commit id upstream, there's nothing with the same
-> > subject name, nor does this code exist upstream. What's going on?
+> Thank you for your feedback!
 > 
-> Here we are (pulled by Linus some minutes ago):
+> > From: Simon Horman <horms@verge.net.au>
+> > Sent: 24 January 2019 10:01
+> > Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock to CAN nodes
+> >
+> > On Wed, Jan 23, 2019 at 12:18:45PM +0000, Fabrizio Castro wrote:
+> > > Hello Geert,
+> > >
+> > > Thank you for your feedback!
+> > >
+> > > > From: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > > Sent: 23 January 2019 12:08
+> > > > Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock to CAN nodes
+> > > >
+> > > > Hi Fabrizio,
+> > > >
+> > > > On Wed, Jan 23, 2019 at 1:01 PM Fabrizio Castro
+> > > > <fabrizio.castro@bp.renesas.com> wrote:
+> > > > > > From: Simon Horman <horms@verge.net.au>
+> > > > > > Sent: 23 January 2019 11:38
+> > > > > > Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774a1: Add clkp2 clock to CAN nodes
+> > > > > >
+> > > > > > On Wed, Jan 23, 2019 at 10:51:23AM +0100, Simon Horman wrote:
+> > > > > > > On Fri, Jan 18, 2019 at 01:13:53PM +0100, Simon Horman wrote:
+> > > > > > > > On Thu, Jan 17, 2019 at 02:54:15PM +0000, Fabrizio Castro wrote:
+> > > > > > > > > According to the latest information, clkp2 is available on RZ/G2.
+> > > > > > > > > Modify CAN0 and CAN1 nodes accordingly.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+> > > > > > > > > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> > > >
+> > > > > > > Thanks again, applied for v5.1.
+> > > > > >
+> > > > > > Sorry, I was a little hasty there.
+> > > > > >
+> > > > > > This patch depends on the presence of R8A774A1_CLK_CANFD which
+> > > > > > (rightly) is added in a different patch in this series which is to
+> > > > > > go upstream via a different tree.
+> > > > > >
+> > > > > > I have dropped this patch for now. I think there are two solution to this
+> > > > > > problem.
+> > > > > >
+> > > > > > 1. Provide a version of this patch which uses a numeric index instead of
+> > > > > >    R8A774A1_CLK_CANFD. And then, once R8A774A1_CLK_CANFD is present in an
+> > > > > >    RC release provide a patch to switch to using R8A774A1_CLK_CANFD.
+> > > > > >
+> > > > > > 2. Defer this patch until R8A774A1_CLK_CANFD is present in an RC release.
+> > > > >
+> > > > > Yeah, my personal preference is solution 2.
+> > > >
+> > > > Note that solution 2 will probably defer the DT patch to v5.2.
+> > >
+> > > Yeah, my understanding is that even if we chose solution 1 we would still
+> > > need to be waiting for v5.2 for the patch to switch to using
+> > > R8A774A1_CLK_CANFD to appear in a rc, therefore I think solution 2 is
+> > > fine.
+> >
+> > Your understanding is the same as mine.
+> >
+> > I do seem some slight value in option 1 in terms of getting the change,
+> > less the minor issue of using an index rather than a symbol, upstream
+> > earlier. But I do not feel strongly about this.
+> >
+> > I am marking this patch as deferred. Please repost or otherwise ping me
+> > when you would like to revisit this topic.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=93171ba6f1deffd82f381d36cb13177872d023f6
-> 
-> Can you go with this pre-4.8 version now?
+> Thank you. Will do.
 
-Let me get the others into the newer kernels first please :)
-Should be a day or so at most...
+Thanks.
 
-thanks,
-
-greg k-h
+I believe "[10/11] arm64: dts: renesas: r8a774c0: Add clkp2 clock to CAN nodes"
+falls into the same category. I have marked it as deferred accordingly.
