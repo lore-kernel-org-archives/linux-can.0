@@ -1,54 +1,116 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: [PATCH 4/4] can: flexcan: fix NULL pointer exception during
- bringup
-Date: Mon, 28 Jan 2019 17:12:09 +0100
-Message-ID: <20190128161209.GA29530@kroah.com>
-References: <20190122132116.7074-5-mkl@pengutronix.de>
- <20190123225745.3D239218A2@mail.kernel.org>
- <20190124072610.7n2wzwiexdtvvh5p@pengutronix.de>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] can: mark expected switch fall-throughs
+Date: Tue, 29 Jan 2019 12:06:12 -0600
+Message-ID: <20190129180612.GA28650@embeddedor>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190124072610.7n2wzwiexdtvvh5p@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Sasha Levin <sashal@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, davem@davemloft.net, linux-can@vger.kernel.org, stable@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: linux-can.vger.kernel.org
 
-On Thu, Jan 24, 2019 at 08:26:10AM +0100, Uwe Kleine-K�nig wrote:
-> Hello Sasha,
-> 
-> On Wed, Jan 23, 2019 at 10:57:44PM +0000, Sasha Levin wrote:
-> > [This is an automated email]
-> 
-> Not sure if I only state the obvious that was just missed by your
-> automation.
-> > 
-> > This commit has been processed because it contains a "Fixes:" tag,
-> > fixing commit: cbffaf7aa09e can: flexcan: Always use last mailbox for TX.
-> > 
-> > The bot has tested the following trees: v4.20.3, v4.19.16.
-> > 
-> > v4.20.3: Failed to apply! Possible dependencies:
-> >     0517961ccdf1 ("can: flexcan: Add provision for variable payload size")
-> >     22233f7bf2c9 ("can: flexcan: FLEXCAN_IFLAG_MB: add () around macro argument")
-> >     5156c7b11f35 ("can: flexcan: move rx_offload_add() from flexcan_probe() to flexcan_open()")
-> >     7ad0f53a394b ("can: flexcan: flexcan_chip_start(): enable loopback mode in flexcan")
-> >     de3578c198c6 ("can: flexcan: add self wakeup support")
-> > 
-> > v4.19.16: Failed to apply! Possible dependencies:
-> >     0517961ccdf1 ("can: flexcan: Add provision for variable payload size")
-> >     22233f7bf2c9 ("can: flexcan: FLEXCAN_IFLAG_MB: add () around macro argument")
-> >     5156c7b11f35 ("can: flexcan: move rx_offload_add() from flexcan_probe() to flexcan_open()")
-> >     7ad0f53a394b ("can: flexcan: flexcan_chip_start(): enable loopback mode in flexcan")
-> >     de3578c198c6 ("can: flexcan: add self wakeup support")
-> > 
-> > 
-> > How should we proceed with this patch?
-> 
-> When I posted the commit I also posted one that fits on top of v4.19.x.
-> I would expect that the same also fits on v4.20.x. If not, tell me.
+In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+where we are expecting to fall through.
 
-Ah, I see that now, sorry for the noise of the FAILED email...
+This patch fixes the following warnings:
+
+drivers/net/can/peak_canfd/peak_pciefd_main.c:668:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
+drivers/net/can/spi/mcp251x.c:875:7: warning: this statement may fall through [-Wimplicit-fallthrough=]
+drivers/net/can/usb/peak_usb/pcan_usb.c:422:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
+drivers/net/can/at91_can.c:895:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
+drivers/net/can/at91_can.c:953:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+drivers/net/can/usb/peak_usb/pcan_usb.c: In function ‘pcan_usb_decode_error’:
+drivers/net/can/usb/peak_usb/pcan_usb.c:422:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   if (n & PCAN_USB_ERROR_BUS_LIGHT) {
+      ^
+drivers/net/can/usb/peak_usb/pcan_usb.c:428:2: note: here
+  case CAN_STATE_ERROR_WARNING:
+  ^~~~
+
+Warning level 3 was used: -Wimplicit-fallthrough=3
+
+This patch is part of the ongoing efforts to enabling
+-Wimplicit-fallthrough.
+
+Notice that in some cases spelling mistakes were fixed.
+In other cases, the /* fall through */ comment is placed
+at the bottom of the case statement, which is what GCC
+is expecting to find.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/net/can/at91_can.c                    | 6 ++++--
+ drivers/net/can/peak_canfd/peak_pciefd_main.c | 2 +-
+ drivers/net/can/spi/mcp251x.c                 | 3 ++-
+ drivers/net/can/usb/peak_usb/pcan_usb.c       | 2 +-
+ 4 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index d98c69045b17..1718c20f9c99 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -902,7 +902,8 @@ static void at91_irq_err_state(struct net_device *dev,
+ 				CAN_ERR_CRTL_TX_WARNING :
+ 				CAN_ERR_CRTL_RX_WARNING;
+ 		}
+-	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
++		/* fall through */
++	case CAN_STATE_ERROR_WARNING:
+ 		/*
+ 		 * from: ERROR_ACTIVE, ERROR_WARNING
+ 		 * to  : ERROR_PASSIVE, BUS_OFF
+@@ -951,7 +952,8 @@ static void at91_irq_err_state(struct net_device *dev,
+ 		netdev_dbg(dev, "Error Active\n");
+ 		cf->can_id |= CAN_ERR_PROT;
+ 		cf->data[2] = CAN_ERR_PROT_ACTIVE;
+-	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
++		/* fall through */
++	case CAN_STATE_ERROR_WARNING:
+ 		reg_idr = AT91_IRQ_ERRA | AT91_IRQ_WARN | AT91_IRQ_BOFF;
+ 		reg_ier = AT91_IRQ_ERRP;
+ 		break;
+diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+index c458d5fdc8d3..e4f4d65a76b4 100644
+--- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
++++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+@@ -668,7 +668,7 @@ static int pciefd_can_probe(struct pciefd_board *pciefd)
+ 		pciefd_can_writereg(priv, CANFD_CLK_SEL_80MHZ,
+ 				    PCIEFD_REG_CAN_CLK_SEL);
+ 
+-		/* fallthough */
++		/* fall through */
+ 	case CANFD_CLK_SEL_80MHZ:
+ 		priv->ucan.can.clock.freq = 80 * 1000 * 1000;
+ 		break;
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index e90817608645..17257c73c302 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -875,7 +875,8 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
+ 			if (new_state >= CAN_STATE_ERROR_WARNING &&
+ 			    new_state <= CAN_STATE_BUS_OFF)
+ 				priv->can.can_stats.error_warning++;
+-		case CAN_STATE_ERROR_WARNING:	/* fallthrough */
++			/* fall through */
++		case CAN_STATE_ERROR_WARNING:
+ 			if (new_state >= CAN_STATE_ERROR_PASSIVE &&
+ 			    new_state <= CAN_STATE_BUS_OFF)
+ 				priv->can.can_stats.error_passive++;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 13238a72a338..eca785532b6b 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -423,7 +423,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ 			new_state = CAN_STATE_ERROR_WARNING;
+ 			break;
+ 		}
+-		/* else: fall through */
++		/* fall through */
+ 
+ 	case CAN_STATE_ERROR_WARNING:
+ 		if (n & PCAN_USB_ERROR_BUS_HEAVY) {
+-- 
+2.20.1
