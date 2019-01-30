@@ -1,632 +1,101 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v4 4/4] can: tcan4x5x: Add tcan4x5x driver to the kernel
-Date: Tue, 29 Jan 2019 13:27:36 -0600
-Message-ID: <4a888fab-85d3-3b15-4e15-f11ccb266bfb@ti.com>
-References: <20190117200601.16416-1-dmurphy@ti.com>
- <20190117200601.16416-4-dmurphy@ti.com>
- <037720c9-4846-eb11-1d6a-b99d647d21d6@grandegger.com>
+From: <Nicolas.Ferre@microchip.com>
+Subject: Re: [PATCH] can: mark expected switch fall-throughs
+Date: Wed, 30 Jan 2019 08:11:59 +0000
+Message-ID: <432a9399-95f4-e988-5cd2-93340f155fa1@microchip.com>
+References: <20190129180612.GA28650@embeddedor>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <037720c9-4846-eb11-1d6a-b99d647d21d6@grandegger.com>
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190129180612.GA28650@embeddedor>
 Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net, b29396@freescale.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-ID: <92A2D6A9DA81A24DB2EC2D0260FDF749@namprd11.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: gustavo@embeddedor.com, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Wolfgang
-
-Sorry for the late reply
-
-On 1/22/19 4:03 AM, Wolfgang Grandegger wrote:
-> Hello,
-> 
-> Am 17.01.19 um 21:06 schrieb Dan Murphy:
->> Add the TCAN4x5x SPI CAN driver.  This device
->> uses the Bosch MCAN IP core along with a SPI
->> interface map.  Leverage the MCAN common core
->> code to manage the MCAN IP.
->>
->> This device has a special method to indicate a
->> write/read operation on the data payload.
->>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>  drivers/net/can/m_can/Kconfig    |   6 +
->>  drivers/net/can/m_can/tcan4x5x.c | 529 +++++++++++++++++++++++++++++++
->>  2 files changed, 535 insertions(+)
->>  create mode 100644 drivers/net/can/m_can/tcan4x5x.c
->>
->> diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
->> index b1a9358b7660..b38959b3b8f1 100644
->> --- a/drivers/net/can/m_can/Kconfig
->> +++ b/drivers/net/can/m_can/Kconfig
->> @@ -15,3 +15,9 @@ config CAN_M_CAN_PLATFORM
->>  	tristate "Bosch M_CAN devices"
->>  	---help---
->>  	  Say Y here if you want to support for Bosch M_CAN controller.
->> +
->> +config CAN_M_CAN_TCAN4X5X
->> +	depends on CAN_M_CAN
->> +	tristate "TCAN4X5X M_CAN device"
->> +	---help---
->> +	  Say Y here if you want to support for TI M_CAN controller.
->> diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
->> new file mode 100644
->> index 000000000000..3cd6cd5052b6
->> --- /dev/null
->> +++ b/drivers/net/can/m_can/tcan4x5x.c
->> @@ -0,0 +1,529 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +// SPI to CAN driver for the Texas Instruments TCAN4x5x
->> +// Copyright (C) 2018-19 Texas Instruments Incorporated - http://www.ti.com/
->> +
->> +#include <linux/regmap.h>
->> +#include <linux/spi/spi.h>
->> +
->> +#include <linux/regulator/consumer.h>
->> +#include <linux/gpio/consumer.h>
->> +
->> +#include "m_can_platform.h"
->> +
->> +#define DEVICE_NAME "tcan4x5x"
->> +#define TCAN4X5X_EXT_CLK_DEF	40000000
->> +
->> +#define TCAN4X5X_DEV_ID0	0x00
->> +#define TCAN4X5X_DEV_ID1	0x04
->> +#define TCAN4X5X_REV		0x08
->> +#define TCAN4X5X_STATUS		0x0C
->> +#define TCAN4X5X_ERROR_STATUS	0x10
->> +#define TCAN4X5X_CONTROL	0x14
->> +
->> +#define TCAN4X5X_CONFIG		0x800
->> +#define TCAN4X5X_TS_PRESCALE	0x804
->> +#define TCAN4X5X_TEST_REG	0x808
->> +#define TCAN4X5X_INT_FLAGS	0x820
->> +#define TCAN4X5X_MCAN_INT_REG	0x824
->> +#define TCAN4X5X_INT_EN		0x830
->> +
->> +
->> +/* Interrupt bits */
->> +#define TCAN4X5X_CANBUSTERMOPEN_INT_EN	BIT(30)
->> +#define TCAN4X5X_CANHCANL_INT_EN	BIT(29)
->> +#define TCAN4X5X_CANHBAT_INT_EN		BIT(28)
->> +#define TCAN4X5X_CANLGND_INT_EN		BIT(27)
->> +#define TCAN4X5X_CANBUSOPEN_INT_EN	BIT(26)
->> +#define TCAN4X5X_CANBUSGND_INT_EN	BIT(25)
->> +#define TCAN4X5X_CANBUSBAT_INT_EN	BIT(24)
->> +#define TCAN4X5X_UVSUP_INT_EN		BIT(22)
->> +#define TCAN4X5X_UVIO_INT_EN		BIT(21)
->> +#define TCAN4X5X_TSD_INT_EN		BIT(19)
->> +#define TCAN4X5X_ECCERR_INT_EN		BIT(16)
->> +#define TCAN4X5X_CANINT_INT_EN		BIT(15)
->> +#define TCAN4X5X_LWU_INT_EN		BIT(14)
->> +#define TCAN4X5X_CANSLNT_INT_EN		BIT(10)
->> +#define TCAN4X5X_CANDOM_INT_EN		BIT(8)
->> +#define TCAN4X5X_CANBUS_ERR_INT_EN	BIT(5)
->> +#define TCAN4X5X_BUS_FAULT		BIT(4)
->> +#define TCAN4X5X_MCAN_INT		BIT(1)
->> +#define TCAN4X5X_ENABLE_TCAN_INT	(TCAN4X5X_MCAN_INT | \
->> +					TCAN4X5X_BUS_FAULT | \
->> +					TCAN4X5X_CANBUS_ERR_INT_EN | \
->> +					TCAN4X5X_CANINT_INT_EN)
->> +
->> +/* MCAN Interrupt bits */
->> +#define TCAN4X5X_MCAN_IR_ARA		BIT(29)
->> +#define TCAN4X5X_MCAN_IR_PED		BIT(28)
->> +#define TCAN4X5X_MCAN_IR_PEA		BIT(27)
->> +#define TCAN4X5X_MCAN_IR_WD		BIT(26)
->> +#define TCAN4X5X_MCAN_IR_BO		BIT(25)
->> +#define TCAN4X5X_MCAN_IR_EW		BIT(24)
->> +#define TCAN4X5X_MCAN_IR_EP		BIT(23)
->> +#define TCAN4X5X_MCAN_IR_ELO		BIT(22)
->> +#define TCAN4X5X_MCAN_IR_BEU		BIT(21)
->> +#define TCAN4X5X_MCAN_IR_BEC		BIT(20)
->> +#define TCAN4X5X_MCAN_IR_DRX		BIT(19)
->> +#define TCAN4X5X_MCAN_IR_TOO		BIT(18)
->> +#define TCAN4X5X_MCAN_IR_MRAF		BIT(17)
->> +#define TCAN4X5X_MCAN_IR_TSW		BIT(16)
->> +#define TCAN4X5X_MCAN_IR_TEFL		BIT(15)
->> +#define TCAN4X5X_MCAN_IR_TEFF		BIT(14)
->> +#define TCAN4X5X_MCAN_IR_TEFW		BIT(13)
->> +#define TCAN4X5X_MCAN_IR_TEFN		BIT(12)
->> +#define TCAN4X5X_MCAN_IR_TFE		BIT(11)
->> +#define TCAN4X5X_MCAN_IR_TCF		BIT(10)
->> +#define TCAN4X5X_MCAN_IR_TC		BIT(9)
->> +#define TCAN4X5X_MCAN_IR_HPM		BIT(8)
->> +#define TCAN4X5X_MCAN_IR_RF1L		BIT(7)
->> +#define TCAN4X5X_MCAN_IR_RF1F		BIT(6)
->> +#define TCAN4X5X_MCAN_IR_RF1W		BIT(5)
->> +#define TCAN4X5X_MCAN_IR_RF1N		BIT(4)
->> +#define TCAN4X5X_MCAN_IR_RF0L		BIT(3)
->> +#define TCAN4X5X_MCAN_IR_RF0F		BIT(2)
->> +#define TCAN4X5X_MCAN_IR_RF0W		BIT(1)
->> +#define TCAN4X5X_MCAN_IR_RF0N		BIT(0)
-> 
-> These bits are already defined in the common header file.
-> 
-
-These are TCAN specific interrupt enable bits there are not in the Bosch register set
-
->> +#define TCAN4X5X_ENABLE_MCAN_INT	(TCAN4X5X_MCAN_IR_TC | \
->> +					TCAN4X5X_MCAN_IR_RF0N | \
->> +					TCAN4X5X_MCAN_IR_RF1N | \
->> +					TCAN4X5X_MCAN_IR_RF0F | \
->> +					TCAN4X5X_MCAN_IR_RF1F)
->> +#define TCAN4X5X_MRAM_START	0x8000
->> +#define TCAN4X5X_MCAN_OFFSET	0x1000
->> +#define TCAN4X5X_MAX_REGISTER	0x8fff
->> +
->> +#define TCAN4X5X_CLEAR_ALL_INT	0xffffffff
->> +#define TCAN4X5X_SET_ALL_INT	0xffffffff
->> +
->> +#define TCAN4X5X_WRITE_CMD	(0x61 << 24)
->> +#define TCAN4X5X_READ_CMD	(0x41 << 24)
->> +
->> +#define TCAN4X5X_MODE_SEL_MASK		(BIT(7) | BIT(6))
->> +#define TCAN4X5X_MODE_SLEEP		0x00
->> +#define TCAN4X5X_MODE_STANDBY		BIT(6)
->> +#define TCAN4X5X_MODE_NORMAL		BIT(7)
->> +
->> +#define TCAN4X5X_SW_RESET	BIT(2)
->> +
->> +#define TCAN4X5X_MCAN_CONFIGURED	BIT(5)
->> +#define TCAN4X5X_WATCHDOG_EN		BIT(3)
->> +#define TCAN4X5X_WD_60_MS_TIMER		0
->> +#define TCAN4X5X_WD_600_MS_TIMER	BIT(28)
->> +#define TCAN4X5X_WD_3_S_TIMER		BIT(29)
->> +#define TCAN4X5X_WD_6_S_TIMER		(BIT(28) | BIT(29))
->> +
->> +struct tcan4x5x_priv {
->> +	struct regmap *regmap;
->> +	struct spi_device *spi;
->> +	struct mutex tcan4x5x_lock; /* SPI device lock */
->> +
->> +	struct m_can_classdev *mcan_dev;
->> +
->> +	struct gpio_desc *reset_gpio;
->> +	struct gpio_desc *interrupt_gpio;
->> +	struct gpio_desc *device_wake_gpio;
->> +	struct gpio_desc *device_state_gpio;
->> +	struct regulator *power;
->> +
->> +	/* Register based ip */
->> +	int mram_start;
->> +	int reg_offset;
->> +};
->> +
->> +static struct can_bittiming_const tcan4x5x_bittiming_const = {
->> +	.name = DEVICE_NAME,
->> +	.tseg1_min = 2,
->> +	.tseg1_max = 31,
->> +	.tseg2_min = 2,
->> +	.tseg2_max = 16,
->> +	.sjw_max = 16,
->> +	.brp_min = 1,
->> +	.brp_max = 32,
->> +	.brp_inc = 1,
->> +};
->> +
->> +static struct can_bittiming_const tcan4x5x_data_bittiming_const = {
->> +	.name = DEVICE_NAME,
->> +	.tseg1_min = 1,
->> +	.tseg1_max = 32,
->> +	.tseg2_min = 1,
->> +	.tseg2_max = 16,
->> +	.sjw_max = 16,
->> +	.brp_min = 1,
->> +	.brp_max = 32,
->> +	.brp_inc = 1,
->> +};
->> +
->> +static void tcan4x5x_check_wake(struct tcan4x5x_priv *priv)
->> +{
->> +	int wake_state = 0;
->> +
->> +	if (priv->device_state_gpio)
->> +		wake_state = gpiod_get_value(priv->device_state_gpio);
->> +
->> +	if (priv->device_wake_gpio && wake_state) {
->> +		gpiod_set_value(priv->device_wake_gpio, 1);
->> +		udelay(100);
->> +		gpiod_set_value(priv->device_wake_gpio, 0);
->> +		udelay(100);
->> +		gpiod_set_value(priv->device_wake_gpio, 1);
->> +	}
->> +}
->> +
->> +static int regmap_spi_gather_write(void *context, const void *reg,
->> +				   size_t reg_len, const void *val,
->> +				   size_t val_len)
->> +{
->> +	struct device *dev = context;
->> +	struct spi_device *spi = to_spi_device(dev);
->> +	struct spi_message m;
->> +	u32 addr;
->> +	struct spi_transfer t[2] = {{ .tx_buf = &addr, .len = reg_len, .cs_change = 0,},
->> +				   { .tx_buf = val, .len = val_len, },};
->> +
->> +	addr = TCAN4X5X_WRITE_CMD | (*((u16 *)reg) << 8) | val_len >> 3;
->> +
->> +	spi_message_init(&m);
->> +	spi_message_add_tail(&t[0], &m);
->> +	spi_message_add_tail(&t[1], &m);
->> +
->> +	return spi_sync(spi, &m);
->> +}
->> +
->> +static int tcan4x5x_regmap_write(void *context, const void *data, size_t count)
->> +{
->> +	u16 *reg = (u16 *)(data);
->> +	const u32 *val = data + 4;
->> +
->> +	return regmap_spi_gather_write(context, reg, 4, val, count);
->> +}
->> +
->> +static int regmap_spi_async_write(void *context,
->> +				  const void *reg, size_t reg_len,
->> +				  const void *val, size_t val_len,
->> +				  struct regmap_async *a)
->> +{
->> +	return -ENOTSUPP;
->> +}
->> +
->> +static struct regmap_async *regmap_spi_async_alloc(void)
->> +{
->> +	return NULL;
->> +}
->> +
->> +static int tcan4x5x_regmap_read(void *context,
->> +				const void *reg, size_t reg_size,
->> +				void *val, size_t val_size)
->> +{
->> +	struct device *dev = context;
->> +	struct spi_device *spi = to_spi_device(dev);
->> +
->> +	u32 addr = TCAN4X5X_READ_CMD | (*((u16 *)reg) << 8) | val_size >> 2;
->> +
->> +	return spi_write_then_read(spi, &addr, reg_size, (u32 *)val, val_size);
->> +}
->> +
->> +static struct regmap_bus tcan4x5x_bus = {
->> +	.write = tcan4x5x_regmap_write,
->> +	.gather_write = regmap_spi_gather_write,
->> +	.async_write = regmap_spi_async_write,
->> +	.async_alloc = regmap_spi_async_alloc,
->> +	.read = tcan4x5x_regmap_read,
->> +	.read_flag_mask = 0x00,
->> +	.reg_format_endian_default = REGMAP_ENDIAN_NATIVE,
->> +	.val_format_endian_default = REGMAP_ENDIAN_NATIVE,
->> +};
->> +
->> +static u32 tcan4x5x_read_reg(struct m_can_classdev *m_can_class, int reg)
->> +{
->> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
->> +	u32 val;
->> +
->> +	tcan4x5x_check_wake(priv);
->> +
->> +	regmap_read(priv->regmap, priv->reg_offset + reg, &val);
->> +
->> +	return val;
->> +}
->> +
->> +static u32 tcan4x5x_read_fifo(struct m_can_classdev *m_can_class,
->> +			      int addr_offset)
->> +{
->> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
->> +	u32 val;
->> +
->> +	tcan4x5x_check_wake(priv);
->> +
->> +	regmap_read(priv->regmap, priv->mram_start + addr_offset, &val);
->> +
->> +	return val;
->> +}
->> +
->> +static int tcan4x5x_write_reg(struct m_can_classdev *m_can_class,
->> +			      int reg, int val)
->> +{
->> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
->> +
->> +	tcan4x5x_check_wake(priv);
->> +
->> +	return regmap_write(priv->regmap, priv->reg_offset + reg, val);
->> +}
->> +
->> +static int tcan4x5x_write_fifo(struct m_can_classdev *m_can_class,
->> +			       int addr_offset, int val)
->> +{
->> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
->> +
->> +	tcan4x5x_check_wake(priv);
->> +
->> +	return regmap_write(priv->regmap, priv->mram_start + addr_offset, val);
->> +}
->> +
->> +static int tcan4x5x_power_enable(struct regulator *reg, int enable)
->> +{
->> +	if (IS_ERR_OR_NULL(reg))
->> +		return 0;
->> +
->> +	if (enable)
->> +		return regulator_enable(reg);
->> +	else
->> +		return regulator_disable(reg);
->> +}
->> +
->> +static int tcan4x5x_write_tcan_reg(struct m_can_classdev *m_can_class,
->> +				   int reg, int val)
->> +{
->> +	struct tcan4x5x_priv *priv = (struct tcan4x5x_priv *)m_can_class->device_data;
->> +
->> +	tcan4x5x_check_wake(priv);
->> +
->> +	return regmap_write(priv->regmap, reg, val);
->> +}
->> +
->> +static int tcan4x5x_clear_interrupts(struct m_can_classdev *class_dev)
->> +{
->> +	struct tcan4x5x_priv *tcan4x5x = (struct tcan4x5x_priv *)class_dev->device_data;
->> +	int ret;
->> +
->> +	tcan4x5x_check_wake(tcan4x5x);
->> +
->> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_STATUS,
->> +				      TCAN4X5X_CLEAR_ALL_INT);
->> +	if (ret)
->> +		return -EIO;
->> +
->> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_MCAN_INT_REG,
->> +				      TCAN4X5X_ENABLE_MCAN_INT);
->> +	if (ret)
->> +		return -EIO;
->> +
->> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_INT_FLAGS,
->> +				      TCAN4X5X_CLEAR_ALL_INT);
->> +	if (ret)
->> +		return -EIO;
->> +
->> +
->> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_ERROR_STATUS,
->> +				      TCAN4X5X_CLEAR_ALL_INT);
->> +	if (ret)
->> +		return -EIO;
->> +
->> +	return ret;
->> +}
->> +
->> +static int tcan4x5x_init(struct m_can_classdev *class_dev)
->> +{
->> +	struct tcan4x5x_priv *tcan4x5x = (struct tcan4x5x_priv *)class_dev->device_data;
->> +	int ret;
->> +
->> +	tcan4x5x_check_wake(tcan4x5x);
->> +
->> +	ret = tcan4x5x_clear_interrupts(class_dev);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = tcan4x5x_write_tcan_reg(class_dev, TCAN4X5X_INT_EN,
->> +				      TCAN4X5X_ENABLE_TCAN_INT);
->> +	if (ret)
->> +		return -EIO;
->> +
->> +	ret = regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
->> +				 TCAN4X5X_MODE_SEL_MASK, TCAN4X5X_MODE_NORMAL);
->> +	if (ret)
->> +		return -EIO;
->> +
->> +	/* Zero out the MCAN buffers */
->> +	m_can_init_ram(class_dev);
->> +
->> +	return ret;
->> +}
->> +
->> +static int tcan4x5x_parse_config(struct m_can_classdev *class_dev)
->> +{
->> +	struct tcan4x5x_priv *tcan4x5x = (struct tcan4x5x_priv *)class_dev->device_data;
->> +
->> +	tcan4x5x->reset_gpio = devm_gpiod_get_optional(class_dev->dev,
->> +						       "reset", GPIOD_OUT_LOW);
->> +	if (IS_ERR(tcan4x5x->reset_gpio))
->> +		tcan4x5x->reset_gpio = NULL;
->> +
->> +	tcan4x5x->device_wake_gpio = devm_gpiod_get_optional(class_dev->dev,
->> +							     "device-wake",
->> +							     GPIOD_OUT_HIGH);
->> +	if (IS_ERR(tcan4x5x->device_wake_gpio))
->> +		tcan4x5x->device_wake_gpio = NULL;
->> +
->> +	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(class_dev->dev,
->> +							      "device-state",
->> +							      GPIOD_IN);
->> +	if (IS_ERR(tcan4x5x->device_state_gpio))
->> +		tcan4x5x->device_state_gpio = NULL;
->> +
->> +	tcan4x5x->interrupt_gpio = devm_gpiod_get(class_dev->dev,
->> +						  "data-ready", GPIOD_IN);
->> +	if (IS_ERR(tcan4x5x->interrupt_gpio)) {
->> +		dev_err(class_dev->dev, "data-ready gpio not defined\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	class_dev->net->irq = gpiod_to_irq(tcan4x5x->interrupt_gpio);
->> +
->> +	tcan4x5x->power = devm_regulator_get_optional(class_dev->dev,
->> +						      "vsup");
->> +	if (PTR_ERR(tcan4x5x->power) == -EPROBE_DEFER)
->> +		return -EPROBE_DEFER;
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct regmap_config tcan4x5x_regmap = {
->> +	.reg_bits = 32,
->> +	.val_bits = 32,
->> +	.cache_type = REGCACHE_NONE,
->> +	.max_register = TCAN4X5X_MAX_REGISTER,
->> +};
->> +
->> +static int tcan4x5x_can_probe(struct spi_device *spi)
->> +{
->> +	struct tcan4x5x_priv *priv;
->> +	struct m_can_classdev *mcan_class;
->> +	int freq, ret;
->> +
->> +	mcan_class = m_can_core_allocate_dev(&spi->dev);
->> +	priv = devm_kzalloc(&spi->dev, sizeof(*priv), GFP_KERNEL);
->> +	if (!priv)
->> +		return -ENOMEM;
->> +
->> +	mcan_class->device_data = priv;
->> +
->> +	m_can_core_get_clocks(mcan_class);
->> +	if (IS_ERR(mcan_class->cclk)) {
->> +		dev_err(&spi->dev, "no CAN clock source defined\n");
->> +		freq = TCAN4X5X_EXT_CLK_DEF;
->> +	} else {
->> +		freq = clk_get_rate(mcan_class->cclk);
->> +	}
->> +
->> +	/* Sanity check */
->> +	if (freq < 20000000 || freq > TCAN4X5X_EXT_CLK_DEF)
->> +		return -ERANGE;
->> +
->> +	priv->reg_offset = TCAN4X5X_MCAN_OFFSET;
->> +	priv->mram_start = TCAN4X5X_MRAM_START;
->> +	priv->spi = spi;
->> +	priv->mcan_dev = mcan_class;
->> +
->> +	mcan_class->pm_clock_support = 0;
->> +	mcan_class->can.clock.freq = freq;
->> +	mcan_class->dev = &spi->dev;
->> +
->> +	mcan_class->device_init = &tcan4x5x_init;
->> +	mcan_class->read_reg = &tcan4x5x_read_reg;
->> +	mcan_class->write_reg = &tcan4x5x_write_reg;
->> +	mcan_class->write_fifo = &tcan4x5x_write_fifo;
->> +	mcan_class->read_fifo = &tcan4x5x_read_fifo;
->> +	mcan_class->clr_dev_interrupts = &tcan4x5x_clear_interrupts;
->> +	mcan_class->is_peripherial = true;
->> +
->> +	mcan_class->bit_timing = &tcan4x5x_bittiming_const;
->> +	mcan_class->data_timing = &tcan4x5x_data_bittiming_const;
->> +
->> +	spi_set_drvdata(spi, priv);
->> +
->> +	ret = tcan4x5x_parse_config(mcan_class);
->> +	if (ret)
->> +		goto out_clk;
->> +
->> +	/* Configure the SPI bus */
->> +	spi->bits_per_word = 32;
->> +	ret = spi_setup(spi);
->> +	if (ret)
->> +		goto out_clk;
->> +
->> +	priv->regmap = devm_regmap_init(&spi->dev, &tcan4x5x_bus,
->> +					&spi->dev, &tcan4x5x_regmap);
->> +
->> +	mutex_init(&priv->tcan4x5x_lock);
->> +
->> +	tcan4x5x_power_enable(priv->power, 1);
->> +
->> +	ret = m_can_core_register(mcan_class);
->> +	if (ret)
->> +		goto reg_err;
->> +
->> +	netdev_info(mcan_class->net, "TCAN4X5X successfully initialized.\n");
->> +	return 0;
->> +
->> +reg_err:
->> +	tcan4x5x_power_enable(priv->power, 0);
->> +out_clk:
->> +	if (!IS_ERR(mcan_class->cclk)) {
->> +		clk_disable_unprepare(mcan_class->cclk);
->> +		clk_disable_unprepare(mcan_class->hclk);
->> +	}
->> +
->> +	dev_err(&spi->dev, "Probe failed, err=%d\n", -ret);
->> +	return ret;
->> +}
->> +
->> +static int tcan4x5x_can_remove(struct spi_device *spi)
->> +{
->> +	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
->> +
->> +	tcan4x5x_power_enable(priv->power, 0);
->> +
->> +	m_can_core_unregister(priv->mcan_dev);
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct of_device_id tcan4x5x_of_match[] = {
->> +	{ .compatible = "ti,tcan4x5x", },
->> +	{ }
->> +};
->> +MODULE_DEVICE_TABLE(of, tcan4x5x_of_match);
->> +
->> +static const struct spi_device_id tcan4x5x_id_table[] = {
->> +	{
->> +		.name		= "tcan4x5x",
->> +		.driver_data	= 0,
->> +	},
->> +	{ }
->> +};
->> +MODULE_DEVICE_TABLE(spi, tcan4x5x_id_table);
->> +
->> +static struct spi_driver tcan4x5x_can_driver = {
->> +	.driver = {
->> +		.name = DEVICE_NAME,
->> +		.of_match_table = tcan4x5x_of_match,
->> +		.pm = NULL,
->> +	},
->> +	.id_table = tcan4x5x_id_table,
->> +	.probe = tcan4x5x_can_probe,
->> +	.remove = tcan4x5x_can_remove,
->> +};
->> +module_spi_driver(tcan4x5x_can_driver);
->> +
->> +MODULE_AUTHOR("Dan Murphy <dmurphy@ti.com>");
->> +MODULE_DESCRIPTION("Texas Instruments TCAN4x5x CAN driver");
->> +MODULE_LICENSE("GPL v2");
-> 
-> Curious to hear about the performance of M_CAN connected via SPI. Does
-> it miss or drop messages?
-> 
-
-Here is some cangen data we have.
-
-We can probably speed it up but we want to get the code functional first.
-
-/home/root/can/ip link set can0 up type can bitrate 1000000 dbitrate 10000000 fd on
-root@am335x-evm:~/can# cat /proc/net/can/stats 
-     5681 transmitted frames (TXF)
-     5681 received frames (RXF)
-        0 matched frames (RXMF)
-
-        0 % total match ratio (RXMR)
-      167 frames/s total tx rate (TXR)
-      167 frames/s total rx rate (RXR)
-
-        0 % current match ratio (CRXMR)
-        0 frames/s current tx rate (CTXR)
-        0 frames/s current rx rate (CRXR)
-
-        0 % max match ratio (MRXMR)
-      224 frames/s max tx rate (MTXR)
-      222 frames/s max rx rate (MRXR)
-
-> Thanks for your patience,
-> 
-> Wolfgang.
-> 
-
-
--- 
-------------------
-Dan Murphy
+T24gMjkvMDEvMjAxOSBhdCAxOTowNiwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToNCj4gSW4g
+cHJlcGFyYXRpb24gdG8gZW5hYmxpbmcgLVdpbXBsaWNpdC1mYWxsdGhyb3VnaCwgbWFyayBzd2l0
+Y2ggY2FzZXMNCj4gd2hlcmUgd2UgYXJlIGV4cGVjdGluZyB0byBmYWxsIHRocm91Z2guDQo+IA0K
+PiBUaGlzIHBhdGNoIGZpeGVzIHRoZSBmb2xsb3dpbmcgd2FybmluZ3M6DQo+IA0KPiBkcml2ZXJz
+L25ldC9jYW4vcGVha19jYW5mZC9wZWFrX3BjaWVmZF9tYWluLmM6NjY4OjM6IHdhcm5pbmc6IHRo
+aXMgc3RhdGVtZW50IG1heSBmYWxsIHRocm91Z2ggWy1XaW1wbGljaXQtZmFsbHRocm91Z2g9XQ0K
+PiBkcml2ZXJzL25ldC9jYW4vc3BpL21jcDI1MXguYzo4NzU6Nzogd2FybmluZzogdGhpcyBzdGF0
+ZW1lbnQgbWF5IGZhbGwgdGhyb3VnaCBbLVdpbXBsaWNpdC1mYWxsdGhyb3VnaD1dDQo+IGRyaXZl
+cnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2IuYzo0MjI6Njogd2FybmluZzogdGhpcyBz
+dGF0ZW1lbnQgbWF5IGZhbGwgdGhyb3VnaCBbLVdpbXBsaWNpdC1mYWxsdGhyb3VnaD1dDQo+IGRy
+aXZlcnMvbmV0L2Nhbi9hdDkxX2Nhbi5jOjg5NTo2OiB3YXJuaW5nOiB0aGlzIHN0YXRlbWVudCBt
+YXkgZmFsbCB0aHJvdWdoIFstV2ltcGxpY2l0LWZhbGx0aHJvdWdoPV0NCj4gZHJpdmVycy9uZXQv
+Y2FuL2F0OTFfY2FuLmM6OTUzOjE1OiB3YXJuaW5nOiB0aGlzIHN0YXRlbWVudCBtYXkgZmFsbCB0
+aHJvdWdoIFstV2ltcGxpY2l0LWZhbGx0aHJvdWdoPV0NCj4gZHJpdmVycy9uZXQvY2FuL3VzYi9w
+ZWFrX3VzYi9wY2FuX3VzYi5jOiBJbiBmdW5jdGlvbiDigJhwY2FuX3VzYl9kZWNvZGVfZXJyb3Li
+gJk6DQo+IGRyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2IuYzo0MjI6Njogd2Fy
+bmluZzogdGhpcyBzdGF0ZW1lbnQgbWF5IGZhbGwgdGhyb3VnaCBbLVdpbXBsaWNpdC1mYWxsdGhy
+b3VnaD1dDQo+ICAgICBpZiAobiAmIFBDQU5fVVNCX0VSUk9SX0JVU19MSUdIVCkgew0KPiAgICAg
+ICAgXg0KPiBkcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiLmM6NDI4OjI6IG5v
+dGU6IGhlcmUNCj4gICAgY2FzZSBDQU5fU1RBVEVfRVJST1JfV0FSTklORzoNCj4gICAgXn5+fg0K
+PiANCj4gV2FybmluZyBsZXZlbCAzIHdhcyB1c2VkOiAtV2ltcGxpY2l0LWZhbGx0aHJvdWdoPTMN
+Cj4gDQo+IFRoaXMgcGF0Y2ggaXMgcGFydCBvZiB0aGUgb25nb2luZyBlZmZvcnRzIHRvIGVuYWJs
+aW5nDQo+IC1XaW1wbGljaXQtZmFsbHRocm91Z2guDQo+IA0KPiBOb3RpY2UgdGhhdCBpbiBzb21l
+IGNhc2VzIHNwZWxsaW5nIG1pc3Rha2VzIHdlcmUgZml4ZWQuDQo+IEluIG90aGVyIGNhc2VzLCB0
+aGUgLyogZmFsbCB0aHJvdWdoICovIGNvbW1lbnQgaXMgcGxhY2VkDQo+IGF0IHRoZSBib3R0b20g
+b2YgdGhlIGNhc2Ugc3RhdGVtZW50LCB3aGljaCBpcyB3aGF0IEdDQw0KPiBpcyBleHBlY3Rpbmcg
+dG8gZmluZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEd1c3Rhdm8gQS4gUi4gU2lsdmEgPGd1c3Rh
+dm9AZW1iZWRkZWRvci5jb20+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvbmV0L2Nhbi9hdDkxX2Nhbi5j
+ICAgICAgICAgICAgICAgICAgICB8IDYgKysrKy0tDQoNCkZvciB0aGlzIG9uZToNCkFja2VkLWJ5
+OiBOaWNvbGFzIEZlcnJlIDxuaWNvbGFzLmZlcnJlQG1pY3JvY2hpcC5jb20+DQoNCj4gICBkcml2
+ZXJzL25ldC9jYW4vcGVha19jYW5mZC9wZWFrX3BjaWVmZF9tYWluLmMgfCAyICstDQo+ICAgZHJp
+dmVycy9uZXQvY2FuL3NwaS9tY3AyNTF4LmMgICAgICAgICAgICAgICAgIHwgMyArKy0NCj4gICBk
+cml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiLmMgICAgICAgfCAyICstDQo+ICAg
+NCBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+IA0KPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL2F0OTFfY2FuLmMgYi9kcml2ZXJzL25ldC9jYW4v
+YXQ5MV9jYW4uYw0KPiBpbmRleCBkOThjNjkwNDViMTcuLjE3MThjMjBmOWM5OSAxMDA2NDQNCj4g
+LS0tIGEvZHJpdmVycy9uZXQvY2FuL2F0OTFfY2FuLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvY2Fu
+L2F0OTFfY2FuLmMNCj4gQEAgLTkwMiw3ICs5MDIsOCBAQCBzdGF0aWMgdm9pZCBhdDkxX2lycV9l
+cnJfc3RhdGUoc3RydWN0IG5ldF9kZXZpY2UgKmRldiwNCj4gICAJCQkJQ0FOX0VSUl9DUlRMX1RY
+X1dBUk5JTkcgOg0KPiAgIAkJCQlDQU5fRVJSX0NSVExfUlhfV0FSTklORzsNCj4gICAJCX0NCj4g
+LQljYXNlIENBTl9TVEFURV9FUlJPUl9XQVJOSU5HOgkvKiBmYWxsdGhyb3VnaCAqLw0KPiArCQkv
+KiBmYWxsIHRocm91Z2ggKi8NCj4gKwljYXNlIENBTl9TVEFURV9FUlJPUl9XQVJOSU5HOg0KPiAg
+IAkJLyoNCj4gICAJCSAqIGZyb206IEVSUk9SX0FDVElWRSwgRVJST1JfV0FSTklORw0KPiAgIAkJ
+ICogdG8gIDogRVJST1JfUEFTU0lWRSwgQlVTX09GRg0KPiBAQCAtOTUxLDcgKzk1Miw4IEBAIHN0
+YXRpYyB2b2lkIGF0OTFfaXJxX2Vycl9zdGF0ZShzdHJ1Y3QgbmV0X2RldmljZSAqZGV2LA0KPiAg
+IAkJbmV0ZGV2X2RiZyhkZXYsICJFcnJvciBBY3RpdmVcbiIpOw0KPiAgIAkJY2YtPmNhbl9pZCB8
+PSBDQU5fRVJSX1BST1Q7DQo+ICAgCQljZi0+ZGF0YVsyXSA9IENBTl9FUlJfUFJPVF9BQ1RJVkU7
+DQo+IC0JY2FzZSBDQU5fU1RBVEVfRVJST1JfV0FSTklORzoJLyogZmFsbHRocm91Z2ggKi8NCj4g
+KwkJLyogZmFsbCB0aHJvdWdoICovDQo+ICsJY2FzZSBDQU5fU1RBVEVfRVJST1JfV0FSTklORzoN
+Cj4gICAJCXJlZ19pZHIgPSBBVDkxX0lSUV9FUlJBIHwgQVQ5MV9JUlFfV0FSTiB8IEFUOTFfSVJR
+X0JPRkY7DQo+ICAgCQlyZWdfaWVyID0gQVQ5MV9JUlFfRVJSUDsNCj4gICAJCWJyZWFrOw0KPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL3BlYWtfY2FuZmQvcGVha19wY2llZmRfbWFpbi5j
+IGIvZHJpdmVycy9uZXQvY2FuL3BlYWtfY2FuZmQvcGVha19wY2llZmRfbWFpbi5jDQo+IGluZGV4
+IGM0NThkNWZkYzhkMy4uZTRmNGQ2NWE3NmI0IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25ldC9j
+YW4vcGVha19jYW5mZC9wZWFrX3BjaWVmZF9tYWluLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvY2Fu
+L3BlYWtfY2FuZmQvcGVha19wY2llZmRfbWFpbi5jDQo+IEBAIC02NjgsNyArNjY4LDcgQEAgc3Rh
+dGljIGludCBwY2llZmRfY2FuX3Byb2JlKHN0cnVjdCBwY2llZmRfYm9hcmQgKnBjaWVmZCkNCj4g
+ICAJCXBjaWVmZF9jYW5fd3JpdGVyZWcocHJpdiwgQ0FORkRfQ0xLX1NFTF84ME1IWiwNCj4gICAJ
+CQkJICAgIFBDSUVGRF9SRUdfQ0FOX0NMS19TRUwpOw0KPiAgIA0KPiAtCQkvKiBmYWxsdGhvdWdo
+ICovDQo+ICsJCS8qIGZhbGwgdGhyb3VnaCAqLw0KPiAgIAljYXNlIENBTkZEX0NMS19TRUxfODBN
+SFo6DQo+ICAgCQlwcml2LT51Y2FuLmNhbi5jbG9jay5mcmVxID0gODAgKiAxMDAwICogMTAwMDsN
+Cj4gICAJCWJyZWFrOw0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL3NwaS9tY3AyNTF4
+LmMgYi9kcml2ZXJzL25ldC9jYW4vc3BpL21jcDI1MXguYw0KPiBpbmRleCBlOTA4MTc2MDg2NDUu
+LjE3MjU3YzczYzMwMiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL3NwaS9tY3AyNTF4
+LmMNCj4gKysrIGIvZHJpdmVycy9uZXQvY2FuL3NwaS9tY3AyNTF4LmMNCj4gQEAgLTg3NSw3ICs4
+NzUsOCBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgbWNwMjUxeF9jYW5faXN0KGludCBpcnEsIHZvaWQg
+KmRldl9pZCkNCj4gICAJCQlpZiAobmV3X3N0YXRlID49IENBTl9TVEFURV9FUlJPUl9XQVJOSU5H
+ICYmDQo+ICAgCQkJICAgIG5ld19zdGF0ZSA8PSBDQU5fU1RBVEVfQlVTX09GRikNCj4gICAJCQkJ
+cHJpdi0+Y2FuLmNhbl9zdGF0cy5lcnJvcl93YXJuaW5nKys7DQo+IC0JCWNhc2UgQ0FOX1NUQVRF
+X0VSUk9SX1dBUk5JTkc6CS8qIGZhbGx0aHJvdWdoICovDQo+ICsJCQkvKiBmYWxsIHRocm91Z2gg
+Ki8NCj4gKwkJY2FzZSBDQU5fU1RBVEVfRVJST1JfV0FSTklORzoNCj4gICAJCQlpZiAobmV3X3N0
+YXRlID49IENBTl9TVEFURV9FUlJPUl9QQVNTSVZFICYmDQo+ICAgCQkJICAgIG5ld19zdGF0ZSA8
+PSBDQU5fU1RBVEVfQlVTX09GRikNCj4gICAJCQkJcHJpdi0+Y2FuLmNhbl9zdGF0cy5lcnJvcl9w
+YXNzaXZlKys7DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3Bj
+YW5fdXNiLmMgYi9kcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiLmMNCj4gaW5k
+ZXggMTMyMzhhNzJhMzM4Li5lY2E3ODU1MzJiNmIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0
+L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2IuYw0KPiArKysgYi9kcml2ZXJzL25ldC9jYW4vdXNi
+L3BlYWtfdXNiL3BjYW5fdXNiLmMNCj4gQEAgLTQyMyw3ICs0MjMsNyBAQCBzdGF0aWMgaW50IHBj
+YW5fdXNiX2RlY29kZV9lcnJvcihzdHJ1Y3QgcGNhbl91c2JfbXNnX2NvbnRleHQgKm1jLCB1OCBu
+LA0KPiAgIAkJCW5ld19zdGF0ZSA9IENBTl9TVEFURV9FUlJPUl9XQVJOSU5HOw0KPiAgIAkJCWJy
+ZWFrOw0KPiAgIAkJfQ0KPiAtCQkvKiBlbHNlOiBmYWxsIHRocm91Z2ggKi8NCj4gKwkJLyogZmFs
+bCB0aHJvdWdoICovDQo+ICAgDQo+ICAgCWNhc2UgQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkc6DQo+
+ICAgCQlpZiAobiAmIFBDQU5fVVNCX0VSUk9SX0JVU19IRUFWWSkgew0KPiANCg0KDQotLSANCk5p
+Y29sYXMgRmVycmUNCg==
