@@ -1,116 +1,68 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: fix timeout when set small bitrate
-Date: Thu, 31 Jan 2019 08:34:24 +0100
-Message-ID: <1902c81b-86fa-469e-b495-c37dca744cb9@pengutronix.de>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH] can: flexcan: fix timeout when set small bitrate
+Date: Thu, 31 Jan 2019 08:48:55 +0000
+Message-ID: <DB7PR04MB46189FE45531AA8FD65D5327E6910@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20190131065619.7298-1-qiangqing.zhang@nxp.com>
+ <1902c81b-86fa-469e-b495-c37dca744cb9@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="iLonVwgznhAG5kZLa30zCunLPJk4hftas"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190131065619.7298-1-qiangqing.zhang@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1902c81b-86fa-469e-b495-c37dca744cb9@pengutronix.de>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---iLonVwgznhAG5kZLa30zCunLPJk4hftas
-Content-Type: multipart/mixed; boundary="Yppa9ejr8tEgmk3gRDD5A3n1I8iT984sD";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- dl-linux-imx <linux-imx@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>
-Message-ID: <1902c81b-86fa-469e-b495-c37dca744cb9@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: fix timeout when set small bitrate
-References: <20190131065619.7298-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20190131065619.7298-1-qiangqing.zhang@nxp.com>
-
---Yppa9ejr8tEgmk3gRDD5A3n1I8iT984sD
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 1/31/19 7:58 AM, Joakim Zhang wrote:
-> From: Dong Aisheng <aisheng.dong@nxp.com>
->=20
-> Current we can meet timeout issue when setting a small bitrate
-> like 10000 as follows:
-> root@imx6qdlsolo:~# ip link set can0 up type can bitrate 10000
-> A link change request failed with some changes committed already.
-> Interface can0 may have been left with an inconsistent configuration,
-> please check.
-> RTNETLINK answers: Connection timed out
-
-Which SoC are you using? Which clock rate has the flexcan IP core?
-
-> It is caused by calling of flexcan_chip_unfreeze() timeout.
->=20
-> Originally the code is using usleep_range(10, 20) for unfreeze operatio=
-n,
-> but the patch (8badd65 can: flexcan: avoid calling usleep_range from
-> interrupt context) changed it into udelay(10) which is only a half dela=
-y
-> of before, there're also some other delay changes.
->=20
-> After only changed unfreeze delay back to udelay(20), the issue is gone=
-=2E
-> So other timeout values are kept the same as 8badd65 changed.
-
-Can you change FLEXCAN_TIMEOUT_US instead?
-
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
->  drivers/net/can/flexcan.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index 2bca867bcfaa..1d3a9053bbeb 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -530,7 +530,7 @@ static int flexcan_chip_unfreeze(struct flexcan_pri=
-v *priv)
->  	priv->write(reg, &regs->mcr);
-> =20
->  	while (timeout-- && (priv->read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
-> -		udelay(10);
-> +		udelay(20);
-> =20
->  	if (priv->read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK)
->  		return -ETIMEDOUT;
->=20
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Yppa9ejr8tEgmk3gRDD5A3n1I8iT984sD--
-
---iLonVwgznhAG5kZLa30zCunLPJk4hftas
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlxSpQAACgkQk9IU1zQo
-ZfEM9wgAlgeJI/sa+IgA/dhYW9a8/YPX9d6CjwiDZaus6Jn/nqQJUlNdrOYjEDQL
-oBKXl9cnRhbF3HMBGVGoEuT3IIIZwsNOBroKI0pCyKzKUkqUfJTVQUIiqxBf8spT
-b6GsrjCx0CnKo/0plB1NtPT5ZVyvTW8DedUEaKG9iEbZpFzEVHv2KQUJES8eX2Jg
-t/vq88ka8VG1F7N5IGjsPfml1g6xTMo5CIF/AW7nLnLJ9c7hnJtWSzfC2YakFSwh
-DiidkubLmtV6OVkEqprf8bNSph3PZLit7aHdRmUZN3C5Ozb8/FyZVcSSYL0l5/5Q
-ZAj1TZY+ubB07QvO0jsLF1K+fz8Llw==
-=rW4Y
------END PGP SIGNATURE-----
-
---iLonVwgznhAG5kZLa30zCunLPJk4hftas--
+DQpIaSBNYXJjLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMg
+S2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQx5pyIMzHm
+l6UgMTU6MzQNCj4gVG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBs
+aW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+IENjOiB3Z0BncmFuZGVnZ2VyLmNvbTsgbmV0ZGV2
+QHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgZGwtbGlu
+dXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47IEFpc2hlbmcNCj4gRG9uZyA8YWlzaGVuZy5kb25n
+QG54cC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGNhbjogZmxleGNhbjogZml4IHRpbWVv
+dXQgd2hlbiBzZXQgc21hbGwgYml0cmF0ZQ0KPiANCj4gT24gMS8zMS8xOSA3OjU4IEFNLCBKb2Fr
+aW0gWmhhbmcgd3JvdGU6DQo+ID4gRnJvbTogRG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdAbnhw
+LmNvbT4NCj4gPg0KPiA+IEN1cnJlbnQgd2UgY2FuIG1lZXQgdGltZW91dCBpc3N1ZSB3aGVuIHNl
+dHRpbmcgYSBzbWFsbCBiaXRyYXRlIGxpa2UNCj4gPiAxMDAwMCBhcyBmb2xsb3dzOg0KPiA+IHJv
+b3RAaW14NnFkbHNvbG86fiMgaXAgbGluayBzZXQgY2FuMCB1cCB0eXBlIGNhbiBiaXRyYXRlIDEw
+MDAwIEEgbGluaw0KPiA+IGNoYW5nZSByZXF1ZXN0IGZhaWxlZCB3aXRoIHNvbWUgY2hhbmdlcyBj
+b21taXR0ZWQgYWxyZWFkeS4NCj4gPiBJbnRlcmZhY2UgY2FuMCBtYXkgaGF2ZSBiZWVuIGxlZnQg
+d2l0aCBhbiBpbmNvbnNpc3RlbnQgY29uZmlndXJhdGlvbiwNCj4gPiBwbGVhc2UgY2hlY2suDQo+
+ID4gUlRORVRMSU5LIGFuc3dlcnM6IENvbm5lY3Rpb24gdGltZWQgb3V0DQo+IA0KPiBXaGljaCBT
+b0MgYXJlIHlvdSB1c2luZz8gV2hpY2ggY2xvY2sgcmF0ZSBoYXMgdGhlIGZsZXhjYW4gSVAgY29y
+ZT8NCg0KICBXZSB0ZXN0ZWQgb24gaS5NWDYgc2VyaWVzIGJvYXJkcyBhbmQgYWxsIG1ldCB0aGlz
+IGlzc3VlLiBBbmQgaXBnIGNsb2NrIHJhdGUgaXMgNjZNSFosIHBlciBjbG9jayByYXRlIGlzIDMw
+TUhaLg0KDQo+ID4gSXQgaXMgY2F1c2VkIGJ5IGNhbGxpbmcgb2YgZmxleGNhbl9jaGlwX3VuZnJl
+ZXplKCkgdGltZW91dC4NCj4gPg0KPiA+IE9yaWdpbmFsbHkgdGhlIGNvZGUgaXMgdXNpbmcgdXNs
+ZWVwX3JhbmdlKDEwLCAyMCkgZm9yIHVuZnJlZXplDQo+ID4gb3BlcmF0aW9uLCBidXQgdGhlIHBh
+dGNoICg4YmFkZDY1IGNhbjogZmxleGNhbjogYXZvaWQgY2FsbGluZw0KPiA+IHVzbGVlcF9yYW5n
+ZSBmcm9tIGludGVycnVwdCBjb250ZXh0KSBjaGFuZ2VkIGl0IGludG8gdWRlbGF5KDEwKSB3aGlj
+aA0KPiA+IGlzIG9ubHkgYSBoYWxmIGRlbGF5IG9mIGJlZm9yZSwgdGhlcmUncmUgYWxzbyBzb21l
+IG90aGVyIGRlbGF5IGNoYW5nZXMuDQo+ID4NCj4gPiBBZnRlciBvbmx5IGNoYW5nZWQgdW5mcmVl
+emUgZGVsYXkgYmFjayB0byB1ZGVsYXkoMjApLCB0aGUgaXNzdWUgaXMgZ29uZS4NCj4gPiBTbyBv
+dGhlciB0aW1lb3V0IHZhbHVlcyBhcmUga2VwdCB0aGUgc2FtZSBhcyA4YmFkZDY1IGNoYW5nZWQu
+DQo+IA0KPiBDYW4geW91IGNoYW5nZSBGTEVYQ0FOX1RJTUVPVVRfVVMgaW5zdGVhZD8NCg0KICBP
+ZiBjb3Vyc2UsIHdlIGNhbiBjaGFuZ2UgRkxFWENBTl9USU1FT1VUX1VTIHRvIDEwMCwgYnV0IHRo
+aXMgd2lsbCBleHRlbmQgdGhlIHRpbWUgb2YgZW5hYmxlL2Rpc2FibGUvc29mdHJlc2V0Lg0KV2hp
+Y2ggbWV0aG9kIGRvIHlvdSB0aGluayBpcyBiZXR0ZXI/DQoNCkJlc3QgUmVnYXJkcywNCkpvYWtp
+bSBaaGFuZw0KDQo+ID4gU2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdA
+bnhwLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFu
+Z0BueHAuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIHwgMiAr
+LQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4g
+Pg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJpdmVycy9u
+ZXQvY2FuL2ZsZXhjYW4uYw0KPiA+IGluZGV4IDJiY2E4NjdiY2ZhYS4uMWQzYTkwNTNiYmViIDEw
+MDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiArKysgYi9kcml2
+ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4gQEAgLTUzMCw3ICs1MzAsNyBAQCBzdGF0aWMgaW50
+IGZsZXhjYW5fY2hpcF91bmZyZWV6ZShzdHJ1Y3QgZmxleGNhbl9wcml2DQo+ICpwcml2KQ0KPiA+
+ICAJcHJpdi0+d3JpdGUocmVnLCAmcmVncy0+bWNyKTsNCj4gPg0KPiA+ICAJd2hpbGUgKHRpbWVv
+dXQtLSAmJiAocHJpdi0+cmVhZCgmcmVncy0+bWNyKSAmIEZMRVhDQU5fTUNSX0ZSWl9BQ0spKQ0K
+PiA+IC0JCXVkZWxheSgxMCk7DQo+ID4gKwkJdWRlbGF5KDIwKTsNCj4gPg0KPiA+ICAJaWYgKHBy
+aXYtPnJlYWQoJnJlZ3MtPm1jcikgJiBGTEVYQ0FOX01DUl9GUlpfQUNLKQ0KPiA+ICAJCXJldHVy
+biAtRVRJTUVET1VUOw0KPiA+DQo+IA0KPiBNYXJjDQo+IA0KPiAtLQ0KPiBQZW5ndXRyb25peCBl
+LksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAgICAgfA0KPiBJ
+bmR1c3RyaWFsIExpbnV4IFNvbHV0aW9ucyAgICAgICAgfCBQaG9uZTogKzQ5LTIzMS0yODI2LTky
+NCAgICAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5
+LTUxMjEtMjA2OTE3LTU1NTUgfA0KPiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiAg
+fCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
