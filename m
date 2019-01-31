@@ -1,68 +1,112 @@
-From: Aisheng Dong <aisheng.dong@nxp.com>
-Subject: RE: [PATCH] can: flexcan: fix timeout when set small bitrate
-Date: Thu, 31 Jan 2019 09:09:44 +0000
-Message-ID: <AM0PR04MB4211359EA705CE196D13A5BB80910@AM0PR04MB4211.eurprd04.prod.outlook.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: flexcan: fix timeout when set small bitrate
+Date: Thu, 31 Jan 2019 10:11:33 +0100
+Message-ID: <0b660fc9-0b02-0b3f-46f5-1d194a52628c@pengutronix.de>
 References: <20190131065619.7298-1-qiangqing.zhang@nxp.com>
  <1902c81b-86fa-469e-b495-c37dca744cb9@pengutronix.de>
  <DB7PR04MB46189FE45531AA8FD65D5327E6910@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="a35Q4ybFde09PFXDzp7IM6FwIQVzZ04Tr"
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <DB7PR04MB46189FE45531AA8FD65D5327E6910@DB7PR04MB4618.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
+Sender: netdev-owner@vger.kernel.org
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-PiBGcm9tOiBKb2FraW0gWmhhbmcNCj4gU2VudDogVGh1cnNkYXksIEphbnVhcnkgMzEsIDIwMTkg
-NDo0OSBQTQ0KWy4uLl0NCj4gPiA+IEN1cnJlbnQgd2UgY2FuIG1lZXQgdGltZW91dCBpc3N1ZSB3
-aGVuIHNldHRpbmcgYSBzbWFsbCBiaXRyYXRlIGxpa2UNCj4gPiA+IDEwMDAwIGFzIGZvbGxvd3M6
-DQo+ID4gPiByb290QGlteDZxZGxzb2xvOn4jIGlwIGxpbmsgc2V0IGNhbjAgdXAgdHlwZSBjYW4g
-Yml0cmF0ZSAxMDAwMCBBDQo+ID4gPiBsaW5rIGNoYW5nZSByZXF1ZXN0IGZhaWxlZCB3aXRoIHNv
-bWUgY2hhbmdlcyBjb21taXR0ZWQgYWxyZWFkeS4NCj4gPiA+IEludGVyZmFjZSBjYW4wIG1heSBo
-YXZlIGJlZW4gbGVmdCB3aXRoIGFuIGluY29uc2lzdGVudA0KPiA+ID4gY29uZmlndXJhdGlvbiwg
-cGxlYXNlIGNoZWNrLg0KPiA+ID4gUlRORVRMSU5LIGFuc3dlcnM6IENvbm5lY3Rpb24gdGltZWQg
-b3V0DQo+ID4NCj4gPiBXaGljaCBTb0MgYXJlIHlvdSB1c2luZz8gV2hpY2ggY2xvY2sgcmF0ZSBo
-YXMgdGhlIGZsZXhjYW4gSVAgY29yZT8NCj4gDQo+ICAgV2UgdGVzdGVkIG9uIGkuTVg2IHNlcmll
-cyBib2FyZHMgYW5kIGFsbCBtZXQgdGhpcyBpc3N1ZS4gQW5kIGlwZyBjbG9jayByYXRlIGlzDQo+
-IDY2TUhaLCBwZXIgY2xvY2sgcmF0ZSBpcyAzME1IWi4NCj4gDQo+ID4gPiBJdCBpcyBjYXVzZWQg
-YnkgY2FsbGluZyBvZiBmbGV4Y2FuX2NoaXBfdW5mcmVlemUoKSB0aW1lb3V0Lg0KPiA+ID4NCj4g
-PiA+IE9yaWdpbmFsbHkgdGhlIGNvZGUgaXMgdXNpbmcgdXNsZWVwX3JhbmdlKDEwLCAyMCkgZm9y
-IHVuZnJlZXplDQo+ID4gPiBvcGVyYXRpb24sIGJ1dCB0aGUgcGF0Y2ggKDhiYWRkNjUgY2FuOiBm
-bGV4Y2FuOiBhdm9pZCBjYWxsaW5nDQo+ID4gPiB1c2xlZXBfcmFuZ2UgZnJvbSBpbnRlcnJ1cHQg
-Y29udGV4dCkgY2hhbmdlZCBpdCBpbnRvIHVkZWxheSgxMCkNCj4gPiA+IHdoaWNoIGlzIG9ubHkg
-YSBoYWxmIGRlbGF5IG9mIGJlZm9yZSwgdGhlcmUncmUgYWxzbyBzb21lIG90aGVyIGRlbGF5DQo+
-IGNoYW5nZXMuDQo+ID4gPg0KPiA+ID4gQWZ0ZXIgb25seSBjaGFuZ2VkIHVuZnJlZXplIGRlbGF5
-IGJhY2sgdG8gdWRlbGF5KDIwKSwgdGhlIGlzc3VlIGlzIGdvbmUuDQo+ID4gPiBTbyBvdGhlciB0
-aW1lb3V0IHZhbHVlcyBhcmUga2VwdCB0aGUgc2FtZSBhcyA4YmFkZDY1IGNoYW5nZWQuDQo+ID4N
-Cj4gPiBDYW4geW91IGNoYW5nZSBGTEVYQ0FOX1RJTUVPVVRfVVMgaW5zdGVhZD8NCj4gDQo+ICAg
-T2YgY291cnNlLCB3ZSBjYW4gY2hhbmdlIEZMRVhDQU5fVElNRU9VVF9VUyB0byAxMDAsIGJ1dCB0
-aGlzIHdpbGwNCj4gZXh0ZW5kIHRoZSB0aW1lIG9mIGVuYWJsZS9kaXNhYmxlL3NvZnRyZXNldC4N
-Cj4gV2hpY2ggbWV0aG9kIGRvIHlvdSB0aGluayBpcyBiZXR0ZXI/DQo+IA0KDQpUaGF0IHNlZW1z
-IG5vdCBhIGJpZyBkZWFsIGZvciBhbiBlcnJvciBjYXNlLg0KU28gY2hhbmdlIEZMRVhDQU5fVElN
-RU9VVF9VUyBzZWVtcyBsaWtlIGEgZ29vZCBzdWdnZXN0aW9uIHRvIG1lLg0KWW91IGNhbiBjb29r
-IGEgcGF0Y2ggd2l0aCBjb21taXQgbWVzc2FnZSB1cGRhdGVkLiBObyBuZWVkIGtlZXAgbXkgYXV0
-aG9yIG5hbWUNCmFzIGl0J3MgYSBkaWZmZXJlbnQgc29sdXRpb24uDQoNClJlZ2FyZHMNCkRvbmcg
-QWlzaGVuZw0KDQo+IEJlc3QgUmVnYXJkcywNCj4gSm9ha2ltIFpoYW5nDQo+IA0KPiA+ID4gU2ln
-bmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4NCj4gPiA+IFNp
-Z25lZC1vZmYtYnk6IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+ID4g
-PiAtLS0NCj4gPiA+ICBkcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIHwgMiArLQ0KPiA+ID4gIDEg
-ZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiA+ID4NCj4gPiA+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJpdmVycy9uZXQvY2Fu
-L2ZsZXhjYW4uYw0KPiA+ID4gaW5kZXggMmJjYTg2N2JjZmFhLi4xZDNhOTA1M2JiZWIgMTAwNjQ0
-DQo+ID4gPiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4gPiArKysgYi9kcml2
-ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4gPiBAQCAtNTMwLDcgKzUzMCw3IEBAIHN0YXRpYyBp
-bnQgZmxleGNhbl9jaGlwX3VuZnJlZXplKHN0cnVjdA0KPiA+ID4gZmxleGNhbl9wcml2DQo+ID4g
-KnByaXYpDQo+ID4gPiAgCXByaXYtPndyaXRlKHJlZywgJnJlZ3MtPm1jcik7DQo+ID4gPg0KPiA+
-ID4gIAl3aGlsZSAodGltZW91dC0tICYmIChwcml2LT5yZWFkKCZyZWdzLT5tY3IpICYNCj4gRkxF
-WENBTl9NQ1JfRlJaX0FDSykpDQo+ID4gPiAtCQl1ZGVsYXkoMTApOw0KPiA+ID4gKwkJdWRlbGF5
-KDIwKTsNCj4gPiA+DQo+ID4gPiAgCWlmIChwcml2LT5yZWFkKCZyZWdzLT5tY3IpICYgRkxFWENB
-Tl9NQ1JfRlJaX0FDSykNCj4gPiA+ICAJCXJldHVybiAtRVRJTUVET1VUOw0KPiA+ID4NCj4gPg0K
-PiA+IE1hcmMNCj4gPg0KPiA+IC0tDQo+ID4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAg
-ICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gPiBJbmR1c3RyaWFsIExpbnV4
-IFNvbHV0aW9ucyAgICAgICAgfCBQaG9uZTogKzQ5LTIzMS0yODI2LTkyNCAgICAgfA0KPiA+IFZl
-cnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTct
-NTU1NSB8DQo+ID4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3
-dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--a35Q4ybFde09PFXDzp7IM6FwIQVzZ04Tr
+Content-Type: multipart/mixed; boundary="HOXq45g63QKyFmXXHiCYyaccCGtcrR19d";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ dl-linux-imx <linux-imx@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>
+Message-ID: <0b660fc9-0b02-0b3f-46f5-1d194a52628c@pengutronix.de>
+Subject: Re: [PATCH] can: flexcan: fix timeout when set small bitrate
+References: <20190131065619.7298-1-qiangqing.zhang@nxp.com>
+ <1902c81b-86fa-469e-b495-c37dca744cb9@pengutronix.de>
+ <DB7PR04MB46189FE45531AA8FD65D5327E6910@DB7PR04MB4618.eurprd04.prod.outlook.com>
+In-Reply-To: <DB7PR04MB46189FE45531AA8FD65D5327E6910@DB7PR04MB4618.eurprd04.prod.outlook.com>
+
+--HOXq45g63QKyFmXXHiCYyaccCGtcrR19d
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+On 1/31/19 9:48 AM, Joakim Zhang wrote:
+>> Which SoC are you using? Which clock rate has the flexcan IP core?
+>=20
+>   We tested on i.MX6 series boards and all met this issue. And ipg cloc=
+k rate is 66MHZ, per clock rate is 30MHZ.
+
+ok
+
+>=20
+>>> It is caused by calling of flexcan_chip_unfreeze() timeout.
+>>>
+>>> Originally the code is using usleep_range(10, 20) for unfreeze
+>>> operation, but the patch (8badd65 can: flexcan: avoid calling
+>>> usleep_range from interrupt context) changed it into udelay(10) which=
+
+>>> is only a half delay of before, there're also some other delay change=
+s.
+>>>
+>>> After only changed unfreeze delay back to udelay(20), the issue is go=
+ne.
+>>> So other timeout values are kept the same as 8badd65 changed.
+>>
+>> Can you change FLEXCAN_TIMEOUT_US instead?
+>=20
+>   Of course, we can change FLEXCAN_TIMEOUT_US to 100, but this will ext=
+end the time of enable/disable/softreset.
+> Which method do you think is better?
+
+If you double to FLEXCAN_TIMEOUT_US to 100, the loops in question will
+spin at maximum the double time. But the loops are left as soon as the
+condition is satisfied.
+
+It will fix your problem with the 10 kbit/s bitrate. But if there is
+some kind of problem with the IP core it will still fail, it just takes
+double amount of time (100 =C2=B5s + overhead) until the function returns=
+=2E
+
+I don't see any harm in looping longer:
+- The previous good case is unchanged.
+- The error case takes double amount of time.
+- Your problem is hopefully fixed.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--HOXq45g63QKyFmXXHiCYyaccCGtcrR19d--
+
+--a35Q4ybFde09PFXDzp7IM6FwIQVzZ04Tr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEENrCndlB/VnAEWuH5k9IU1zQoZfEFAlxSu8UACgkQk9IU1zQo
+ZfE6IggAo2YOtz8gIlCbQMMv9cNbO5BVRqS2YXurU7plQV8u4/ze4QnFw4ZNs6oU
+lOmJcCWvWauaQzwiFvX7fg/W5NxgNR5o32z0tlx/C/kZSY8EngHA/NhbwN9Qs2A0
+azgNrbySv5pIZt3DC9BXR0ulrAQ97qGaBz4oD89S3/6hvJdNe+FbpxzKXY/63wjE
+TD8wZwJA2BW8QOCedTTQ/bRvsg38lw0MZKmaMmdVa7n77NsAljP5E1cK2ZUcZlHx
+Lu1MojqEJu8hUBt0NHXlBl5TYavR6QkTz9Ixro+lasIOi/PDiMNcGGZF2TZinKcz
+6rCjHkyRcdIyz4YAwk4J0ebQLWXSZw==
+=udOe
+-----END PGP SIGNATURE-----
+
+--a35Q4ybFde09PFXDzp7IM6FwIQVzZ04Tr--
