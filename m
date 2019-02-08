@@ -1,52 +1,52 @@
-From: Aisheng Dong <aisheng.dong@nxp.com>
-Subject: RE: [PATCH] can: flexcan: fix timeout when set small bitrate
-Date: Thu, 31 Jan 2019 10:09:15 +0000
-Message-ID: <AM0PR04MB42118221E7FEC6EC2503A72B80910@AM0PR04MB4211.eurprd04.prod.outlook.com>
-References: <20190131093509.12613-1-qiangqing.zhang@nxp.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH net-next] can: kvaser_usb: Use struct_size() in alloc_candev()
+Date: Thu, 7 Feb 2019 21:10:35 -0600
+Message-ID: <20190208031035.GA2665@embeddedor>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190131093509.12613-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: linux-can.vger.kernel.org
 
-> -----Original Message-----
-> From: Joakim Zhang
-> Sent: Thursday, January 31, 2019 5:37 PM
-> To: mkl@pengutronix.de; linux-can@vger.kernel.org
-> Cc: wg@grandegger.com; netdev@vger.kernel.org;
-> linux-kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>; Joakim
-> Zhang <qiangqing.zhang@nxp.com>
-> Subject: [PATCH] can: flexcan: fix timeout when set small bitrate
->=20
-> Current we can meet timeout issue when setting a small bitrate like 10000=
- as
-> follows on i.MX6UL EVK board (ipg clock =3D 66MHZ, per clock =3D 30MHZ):
-> root@imx6ul7d:~# ip link set can0 up type can bitrate 10000 A link change
-> request failed with some changes committed already.
-> Interface can0 may have been left with an inconsistent configuration, ple=
-ase
-> check.
-> RTNETLINK answers: Connection timed out
->=20
-> It is caused by calling of flexcan_chip_unfreeze() timeout.
->=20
-> Originally the code is using usleep_range(10, 20) for unfreeze operation,=
- but
-> the patch (8badd65 can: flexcan: avoid calling usleep_range from interrup=
-t
-> context) changed it into udelay(10) which is only a half delay of before,
-> there're also some other delay changes.
->=20
-> After double to FLEXCAN_TIMEOUT_US to 100 can fix the issue.
->=20
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+One of the more common cases of allocation size calculations is finding
+the size of a structure that has a zero-sized array at the end, along
+with memory for some number of elements for that array. For example:
 
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+struct foo {
+    int stuff;
+    void *entry[];
+};
 
-Regards
-Dong Aisheng
+instance = alloc(sizeof(struct foo) + count * sizeof(void *));
+
+Instead of leaving these open-coded and prone to type mistakes, we can
+now use the new struct_size() helper:
+
+instance = alloc(struct_size(instance, entry, count));
+
+This code was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index c89c7d4900d7..0f1d3e807d63 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -643,8 +643,7 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev,
+ 			return err;
+ 	}
+ 
+-	netdev = alloc_candev(sizeof(*priv) +
+-			      dev->max_tx_urbs * sizeof(*priv->tx_contexts),
++	netdev = alloc_candev(struct_size(priv, tx_contexts, dev->max_tx_urbs),
+ 			      dev->max_tx_urbs);
+ 	if (!netdev) {
+ 		dev_err(&dev->intf->dev, "Cannot alloc candev\n");
+-- 
+2.20.1
