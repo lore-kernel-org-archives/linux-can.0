@@ -1,70 +1,48 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+From: <Nicolas.Ferre@microchip.com>
 Subject: Re: [PATCH][next] can: at91_can: mark expected switch fall-throughs
-Date: Sat, 9 Feb 2019 22:17:14 +0300
-Message-ID: <1db2edde-5e21-6eab-d643-ae257ecb311b@cogentembedded.com>
+Date: Mon, 11 Feb 2019 09:03:13 +0000
+Message-ID: <8119fbe8-5f4b-e45c-6687-ec42aceb3428@microchip.com>
 References: <20190208184444.GA28484@embeddedor>
- <8402d6f6-dff1-eb99-3bd1-051b4f6f24f0@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8402d6f6-dff1-eb99-3bd1-051b4f6f24f0@cogentembedded.com>
-Content-Language: en-MW
+In-Reply-To: <20190208184444.GA28484@embeddedor>
+Content-Language: en-US
+Content-ID: <20C0511DD1579446A467767CDC4922FE@namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Ludovic Desroches <ludovic.desroches@microchip.com>
+To: gustavo@embeddedor.com, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On 02/08/2019 09:55 PM, Sergei Shtylyov wrote:
-
->> In preparation to enabling -Wimplicit-fallthrough, mark switch
->> cases where we are expecting to fall through.
->>
->> Notice that, in this particular case, the /* fall through */
->> comments are placed at the bottom of the case statement, which
->> is what GCC is expecting to find.
->>
->> Warning level 3 was used: -Wimplicit-fallthrough=3
->>
->> This patch is part of the ongoing efforts to enabling
->> -Wimplicit-fallthrough.
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
->> ---
->>  drivers/net/can/at91_can.c | 6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
->> index d98c69045b17..1718c20f9c99 100644
->> --- a/drivers/net/can/at91_can.c
->> +++ b/drivers/net/can/at91_can.c
->> @@ -902,7 +902,8 @@ static void at91_irq_err_state(struct net_device *dev,
->>  				CAN_ERR_CRTL_TX_WARNING :
->>  				CAN_ERR_CRTL_RX_WARNING;
->>  		}
->> -	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
->> +		/* fall through */
-> 
->    Why do we need this comment at all? Just remove it, that's all.
-> 
->> +	case CAN_STATE_ERROR_WARNING:
->>  		/*
->>  		 * from: ERROR_ACTIVE, ERROR_WARNING
->>  		 * to  : ERROR_PASSIVE, BUS_OFF
->> @@ -951,7 +952,8 @@ static void at91_irq_err_state(struct net_device *dev,
->>  		netdev_dbg(dev, "Error Active\n");
->>  		cf->can_id |= CAN_ERR_PROT;
->>  		cf->data[2] = CAN_ERR_PROT_ACTIVE;
->> -	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
->> +		/* fall through */
-> 
->    Again, we don;t need it here.
-> 
->> +	case CAN_STATE_ERROR_WARNING:
->>  		reg_idr = AT91_IRQ_ERRA | AT91_IRQ_WARN | AT91_IRQ_BOFF;
->>  		reg_ier = AT91_IRQ_ERRP;
->>  		break;
-
-   Ignore me, I misread the code...
-
-MBR, Sergei
+T24gMDgvMDIvMjAxOSBhdCAxOTo0NCwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToNCj4gSW4g
+cHJlcGFyYXRpb24gdG8gZW5hYmxpbmcgLVdpbXBsaWNpdC1mYWxsdGhyb3VnaCwgbWFyayBzd2l0
+Y2gNCj4gY2FzZXMgd2hlcmUgd2UgYXJlIGV4cGVjdGluZyB0byBmYWxsIHRocm91Z2guDQo+IA0K
+PiBOb3RpY2UgdGhhdCwgaW4gdGhpcyBwYXJ0aWN1bGFyIGNhc2UsIHRoZSAvKiBmYWxsIHRocm91
+Z2ggKi8NCj4gY29tbWVudHMgYXJlIHBsYWNlZCBhdCB0aGUgYm90dG9tIG9mIHRoZSBjYXNlIHN0
+YXRlbWVudCwgd2hpY2gNCj4gaXMgd2hhdCBHQ0MgaXMgZXhwZWN0aW5nIHRvIGZpbmQuDQo+IA0K
+PiBXYXJuaW5nIGxldmVsIDMgd2FzIHVzZWQ6IC1XaW1wbGljaXQtZmFsbHRocm91Z2g9Mw0KPiAN
+Cj4gVGhpcyBwYXRjaCBpcyBwYXJ0IG9mIHRoZSBvbmdvaW5nIGVmZm9ydHMgdG8gZW5hYmxpbmcN
+Cj4gLVdpbXBsaWNpdC1mYWxsdGhyb3VnaC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEd1c3Rhdm8g
+QS4gUi4gU2lsdmEgPGd1c3Rhdm9AZW1iZWRkZWRvci5jb20+DQoNCkxvb2tzIGdvb2QgdG8gbWU6
+DQpBY2tlZC1ieTogTmljb2xhcyBGZXJyZSA8bmljb2xhcy5mZXJyZUBtaWNyb2NoaXAuY29tPg0K
+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvbmV0L2Nhbi9hdDkxX2Nhbi5jIHwgNiArKysrLS0NCj4gICAx
+IGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9hdDkxX2Nhbi5jIGIvZHJpdmVycy9uZXQvY2FuL2F0
+OTFfY2FuLmMNCj4gaW5kZXggZDk4YzY5MDQ1YjE3Li4xNzE4YzIwZjljOTkgMTAwNjQ0DQo+IC0t
+LSBhL2RyaXZlcnMvbmV0L2Nhbi9hdDkxX2Nhbi5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi9h
+dDkxX2Nhbi5jDQo+IEBAIC05MDIsNyArOTAyLDggQEAgc3RhdGljIHZvaWQgYXQ5MV9pcnFfZXJy
+X3N0YXRlKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsDQo+ICAgCQkJCUNBTl9FUlJfQ1JUTF9UWF9X
+QVJOSU5HIDoNCj4gICAJCQkJQ0FOX0VSUl9DUlRMX1JYX1dBUk5JTkc7DQo+ICAgCQl9DQo+IC0J
+Y2FzZSBDQU5fU1RBVEVfRVJST1JfV0FSTklORzoJLyogZmFsbHRocm91Z2ggKi8NCj4gKwkJLyog
+ZmFsbCB0aHJvdWdoICovDQo+ICsJY2FzZSBDQU5fU1RBVEVfRVJST1JfV0FSTklORzoNCj4gICAJ
+CS8qDQo+ICAgCQkgKiBmcm9tOiBFUlJPUl9BQ1RJVkUsIEVSUk9SX1dBUk5JTkcNCj4gICAJCSAq
+IHRvICA6IEVSUk9SX1BBU1NJVkUsIEJVU19PRkYNCj4gQEAgLTk1MSw3ICs5NTIsOCBAQCBzdGF0
+aWMgdm9pZCBhdDkxX2lycV9lcnJfc3RhdGUoc3RydWN0IG5ldF9kZXZpY2UgKmRldiwNCj4gICAJ
+CW5ldGRldl9kYmcoZGV2LCAiRXJyb3IgQWN0aXZlXG4iKTsNCj4gICAJCWNmLT5jYW5faWQgfD0g
+Q0FOX0VSUl9QUk9UOw0KPiAgIAkJY2YtPmRhdGFbMl0gPSBDQU5fRVJSX1BST1RfQUNUSVZFOw0K
+PiAtCWNhc2UgQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkc6CS8qIGZhbGx0aHJvdWdoICovDQo+ICsJ
+CS8qIGZhbGwgdGhyb3VnaCAqLw0KPiArCWNhc2UgQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkc6DQo+
+ICAgCQlyZWdfaWRyID0gQVQ5MV9JUlFfRVJSQSB8IEFUOTFfSVJRX1dBUk4gfCBBVDkxX0lSUV9C
+T0ZGOw0KPiAgIAkJcmVnX2llciA9IEFUOTFfSVJRX0VSUlA7DQo+ICAgCQlicmVhazsNCj4gDQoN
+Cg0KLS0gDQpOaWNvbGFzIEZlcnJlDQo=
