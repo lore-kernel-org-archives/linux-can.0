@@ -1,45 +1,58 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH 0/3] can: flexcan: add imx8qm support
-Date: Thu, 14 Feb 2019 09:58:00 +0000
-Message-ID: <DB7PR04MB4618806ABA32BAC905DD6C49E6670@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20181219083637.641-1-qiangqing.zhang@nxp.com>
- <DB7PR04MB46187B4AABF3607876DA30D4E6830@DB7PR04MB4618.eurprd04.prod.outlook.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v5 0/5]  M_CAN Framework re-write
+Date: Thu, 14 Feb 2019 12:27:49 -0600
+Message-ID: <20190214182754.30721-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <DB7PR04MB46187B4AABF3607876DA30D4E6830@DB7PR04MB4618.eurprd04.prod.outlook.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-DQpLaW5kbHkgUGluZy4uLg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCg0KPiAtLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2FraW0gWmhhbmcNCj4gU2VudDogMjAx
-OcTqMdTCMTfI1SAxNDoyOA0KPiBUbzogbWtsQHBlbmd1dHJvbml4LmRlOyBsaW51eC1jYW5Admdl
-ci5rZXJuZWwub3JnDQo+IENjOiB3Z0BncmFuZGVnZ2VyLmNvbTsgbmV0ZGV2QHZnZXIua2VybmVs
-Lm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgZGwtbGludXgtaW14IDxsaW51
-eC1pbXhAbnhwLmNvbT4NCj4gU3ViamVjdDogUkU6IFtQQVRDSCAwLzNdIGNhbjogZmxleGNhbjog
-YWRkIGlteDhxbSBzdXBwb3J0DQo+IA0KPiANCj4gS2luZGx5IFBpbmcuLi4NCj4gDQo+IEJlc3Qg
-UmVnYXJkcywNCj4gSm9ha2ltIFpoYW5nDQo+IA0KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
-LS0tDQo+ID4gRnJvbTogSm9ha2ltIFpoYW5nDQo+ID4gU2VudDogMjAxOMTqMTLUwjE5yNUgMTY6
-MzkNCj4gPiBUbzogbWtsQHBlbmd1dHJvbml4LmRlOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3Jn
-DQo+ID4gQ2M6IHdnQGdyYW5kZWdnZXIuY29tOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOw0KPiA+
-IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteCA8bGludXgtaW14QG54
-cC5jb20+OyBKb2FraW0NCj4gPiBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+ID4g
-U3ViamVjdDogW1BBVENIIDAvM10gY2FuOiBmbGV4Y2FuOiBhZGQgaW14OHFtIHN1cHBvcnQNCj4g
-Pg0KPiA+IFRoaXMgcGF0Y2ggc2V0IGludGVuZHMgdG8gYWRkIEZsZXhjYW4gc3VwcG9ydCBmb3Ig
-aS5NWDhRTSBwbGF0Zm9ybQ0KPiA+IHdoaWNoIGRlZmF1bHRseSBzdXBwb3J0cyBDQU4gRkQgcHJv
-dG9jb2wuIEFsdGhvdWdoIEJSUyBlbmFibGVkIGJ5DQo+ID4gc3lzdGVtIHJlc2V0IHdoZW4gdGhl
-IGRyaXZlciBzZXRzIENBTiBGRCBtb2RlLCBub3cgdGhpcyBwYXRjaCBzZXJpYWwNCj4gPiBkb2Vz
-IG5vdCBzdXBwb3J0IEJSUyBpbiB0aGUgZHJpdmVyLiBBbmQgdGhlbiBJIHdpbGwgc2VuZCBwYXRj
-aCB0bw0KPiA+IGVuYWJsZSBCUlMgYnkgY2hhbmdpbmcgdGhlIHJlZ2lzdGVyIHRvIHNldCBiaXQg
-dGltaW5nLg0KPiA+DQo+ID4gRG9uZyBBaXNoZW5nICgzKToNCj4gPiAgIGNhbjogcngtb2ZmbG9h
-ZDogYWRkIENBTkZEIHN1cHBvcnQgYmFzZWQgb24gb2ZmbG9hZA0KPiA+ICAgY2FuOiBmbGV4Y2Fu
-OiBhZGQgQ0FOIEZEIG1vZGUgc3VwcG9ydA0KPiA+ICAgY2FuOiBmbGV4Y2FuOiBhZGQgaW14OHFt
-IHN1cHBvcnQNCj4gPg0KPiA+ICBkcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jICAgICAgfCAxMTQN
-Cj4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2Nh
-bi9yeC1vZmZsb2FkLmMgICB8ICAxNiArKystLQ0KPiA+ICBpbmNsdWRlL2xpbnV4L2Nhbi9yeC1v
-ZmZsb2FkLmggfCAgIDQgKy0NCj4gPiAgMyBmaWxlcyBjaGFuZ2VkLCAxMTcgaW5zZXJ0aW9ucygr
-KSwgMTcgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiAtLQ0KPiA+IDIuMTcuMQ0KDQo=
+Hello
+
+OK I did not give up on this patch series just got a little preoccupied with
+some other kernel work.  But here is the update per the comments.
+
+It should be understood I broke these out for reviewability.
+For instance the first patch does not compile on its own as including this
+patch should not change the current functionality and it pulls all the io-mapped
+code from the m_can base file to a platfrom file.
+
+The next patch "Migrate the m_can code to use the framework"
+is the change to the kernel for the io-mapped conversion from a flat file to use
+the framework.  Finally the rename patch just renames the m_can_priv to 
+m_can_classdev.  I broke this change out specifically for readability of the
+migration patch per comments on the code.
+
+AFAIC the first 3 patches can all be squashed into a single patch.  Or the
+first 2 patches in the series can be re-arranged but then m_can functionality is
+affected in the migration patch.
+
+Again the first 3 patches here are all just for readability and review purposes.
+
+Dan
+
+Dan Murphy (5):
+  can: m_can: Create a m_can platform framework
+  can: m_can: Migrate the m_can code to use the framework
+  can: m_can: Rename m_can_priv to m_can_classdev
+  dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+  can: tcan4x5x: Add tcan4x5x driver to the kernel
+
+ .../devicetree/bindings/net/can/tcan4x5x.txt  |  37 +
+ drivers/net/can/m_can/Kconfig                 |  14 +-
+ drivers/net/can/m_can/Makefile                |   2 +
+ drivers/net/can/m_can/m_can.c                 | 788 +++++++++---------
+ drivers/net/can/m_can/m_can.h                 | 159 ++++
+ drivers/net/can/m_can/m_can_platform.c        | 198 +++++
+ drivers/net/can/m_can/tcan4x5x.c              | 531 ++++++++++++
+ 7 files changed, 1320 insertions(+), 409 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+ create mode 100644 drivers/net/can/m_can/m_can.h
+ create mode 100644 drivers/net/can/m_can/m_can_platform.c
+ create mode 100644 drivers/net/can/m_can/tcan4x5x.c
+
+-- 
+2.20.1.390.gb5101f9297
