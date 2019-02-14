@@ -1,139 +1,94 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Subject: Re: [PATCH] can: mark expected switch fall-throughs
-Date: Thu, 14 Feb 2019 15:37:26 -0600
-Message-ID: <daae008e-35fd-7553-fcb2-7932fe53b959@embeddedor.com>
+Date: Thu, 14 Feb 2019 23:17:03 +0100
+Message-ID: <20190214221703.GQ10129@piout.net>
 References: <20190129180612.GA28650@embeddedor>
  <432a9399-95f4-e988-5cd2-93340f155fa1@microchip.com>
+ <daae008e-35fd-7553-fcb2-7932fe53b959@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <432a9399-95f4-e988-5cd2-93340f155fa1@microchip.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolas.Ferre@microchip.com, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <daae008e-35fd-7553-fcb2-7932fe53b959@embeddedor.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, Ludovic.Desroches@microchip.com, mkl@pengutronix.de, linux-arm-kernel@lists.infradead.org, davem@davemloft.net, wg@grandegger.com
 List-Id: linux-can.vger.kernel.org
 
-
-
-On 1/30/19 2:11 AM, Nicolas.Ferre@microchip.com wrote:
-> On 29/01/2019 at 19:06, Gustavo A. R. Silva wrote:
->> In preparation to enabling -Wimplicit-fallthrough, mark switch cases
->> where we are expecting to fall through.
->>
->> This patch fixes the following warnings:
->>
->> drivers/net/can/peak_canfd/peak_pciefd_main.c:668:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/spi/mcp251x.c:875:7: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/usb/peak_usb/pcan_usb.c:422:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/at91_can.c:895:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/at91_can.c:953:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/usb/peak_usb/pcan_usb.c: In function ‘pcan_usb_decode_error’:
->> drivers/net/can/usb/peak_usb/pcan_usb.c:422:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
->>     if (n & PCAN_USB_ERROR_BUS_LIGHT) {
->>        ^
->> drivers/net/can/usb/peak_usb/pcan_usb.c:428:2: note: here
->>    case CAN_STATE_ERROR_WARNING:
->>    ^~~~
->>
->> Warning level 3 was used: -Wimplicit-fallthrough=3
->>
->> This patch is part of the ongoing efforts to enabling
->> -Wimplicit-fallthrough.
->>
->> Notice that in some cases spelling mistakes were fixed.
->> In other cases, the /* fall through */ comment is placed
->> at the bottom of the case statement, which is what GCC
->> is expecting to find.
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
->> ---
->>   drivers/net/can/at91_can.c                    | 6 ++++--
-> 
-> For this one:
-> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> 
-
-Thanks, Nicolas.
-
-Dave:
-
-I wonder if you can take this patch.
-
-Thanks
---
-Gustavo
-
->>   drivers/net/can/peak_canfd/peak_pciefd_main.c | 2 +-
->>   drivers/net/can/spi/mcp251x.c                 | 3 ++-
->>   drivers/net/can/usb/peak_usb/pcan_usb.c       | 2 +-
->>   4 files changed, 8 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
->> index d98c69045b17..1718c20f9c99 100644
->> --- a/drivers/net/can/at91_can.c
->> +++ b/drivers/net/can/at91_can.c
->> @@ -902,7 +902,8 @@ static void at91_irq_err_state(struct net_device *dev,
->>   				CAN_ERR_CRTL_TX_WARNING :
->>   				CAN_ERR_CRTL_RX_WARNING;
->>   		}
->> -	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
->> +		/* fall through */
->> +	case CAN_STATE_ERROR_WARNING:
->>   		/*
->>   		 * from: ERROR_ACTIVE, ERROR_WARNING
->>   		 * to  : ERROR_PASSIVE, BUS_OFF
->> @@ -951,7 +952,8 @@ static void at91_irq_err_state(struct net_device *dev,
->>   		netdev_dbg(dev, "Error Active\n");
->>   		cf->can_id |= CAN_ERR_PROT;
->>   		cf->data[2] = CAN_ERR_PROT_ACTIVE;
->> -	case CAN_STATE_ERROR_WARNING:	/* fallthrough */
->> +		/* fall through */
->> +	case CAN_STATE_ERROR_WARNING:
->>   		reg_idr = AT91_IRQ_ERRA | AT91_IRQ_WARN | AT91_IRQ_BOFF;
->>   		reg_ier = AT91_IRQ_ERRP;
->>   		break;
->> diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
->> index c458d5fdc8d3..e4f4d65a76b4 100644
->> --- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
->> +++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
->> @@ -668,7 +668,7 @@ static int pciefd_can_probe(struct pciefd_board *pciefd)
->>   		pciefd_can_writereg(priv, CANFD_CLK_SEL_80MHZ,
->>   				    PCIEFD_REG_CAN_CLK_SEL);
->>   
->> -		/* fallthough */
->> +		/* fall through */
->>   	case CANFD_CLK_SEL_80MHZ:
->>   		priv->ucan.can.clock.freq = 80 * 1000 * 1000;
->>   		break;
->> diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
->> index e90817608645..17257c73c302 100644
->> --- a/drivers/net/can/spi/mcp251x.c
->> +++ b/drivers/net/can/spi/mcp251x.c
->> @@ -875,7 +875,8 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
->>   			if (new_state >= CAN_STATE_ERROR_WARNING &&
->>   			    new_state <= CAN_STATE_BUS_OFF)
->>   				priv->can.can_stats.error_warning++;
->> -		case CAN_STATE_ERROR_WARNING:	/* fallthrough */
->> +			/* fall through */
->> +		case CAN_STATE_ERROR_WARNING:
->>   			if (new_state >= CAN_STATE_ERROR_PASSIVE &&
->>   			    new_state <= CAN_STATE_BUS_OFF)
->>   				priv->can.can_stats.error_passive++;
->> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
->> index 13238a72a338..eca785532b6b 100644
->> --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
->> +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
->> @@ -423,7 +423,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
->>   			new_state = CAN_STATE_ERROR_WARNING;
->>   			break;
->>   		}
->> -		/* else: fall through */
->> +		/* fall through */
->>   
->>   	case CAN_STATE_ERROR_WARNING:
->>   		if (n & PCAN_USB_ERROR_BUS_HEAVY) {
->>
-> 
-> 
+SGksCgpPbiAxNC8wMi8yMDE5IDE1OjM3OjI2LTA2MDAsIEd1c3Rhdm8gQS4gUi4gU2lsdmEgd3Jv
+dGU6Cj4gCj4gCj4gT24gMS8zMC8xOSAyOjExIEFNLCBOaWNvbGFzLkZlcnJlQG1pY3JvY2hpcC5j
+b20gd3JvdGU6Cj4gPiBPbiAyOS8wMS8yMDE5IGF0IDE5OjA2LCBHdXN0YXZvIEEuIFIuIFNpbHZh
+IHdyb3RlOgo+ID4+IEluIHByZXBhcmF0aW9uIHRvIGVuYWJsaW5nIC1XaW1wbGljaXQtZmFsbHRo
+cm91Z2gsIG1hcmsgc3dpdGNoIGNhc2VzCj4gPj4gd2hlcmUgd2UgYXJlIGV4cGVjdGluZyB0byBm
+YWxsIHRocm91Z2guCj4gPj4KPiA+PiBUaGlzIHBhdGNoIGZpeGVzIHRoZSBmb2xsb3dpbmcgd2Fy
+bmluZ3M6Cj4gPj4KPiA+PiBkcml2ZXJzL25ldC9jYW4vcGVha19jYW5mZC9wZWFrX3BjaWVmZF9t
+YWluLmM6NjY4OjM6IHdhcm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBmYWxsIHRocm91Z2ggWy1X
+aW1wbGljaXQtZmFsbHRocm91Z2g9XQo+ID4+IGRyaXZlcnMvbmV0L2Nhbi9zcGkvbWNwMjUxeC5j
+Ojg3NTo3OiB3YXJuaW5nOiB0aGlzIHN0YXRlbWVudCBtYXkgZmFsbCB0aHJvdWdoIFstV2ltcGxp
+Y2l0LWZhbGx0aHJvdWdoPV0KPiA+PiBkcml2ZXJzL25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5f
+dXNiLmM6NDIyOjY6IHdhcm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBmYWxsIHRocm91Z2ggWy1X
+aW1wbGljaXQtZmFsbHRocm91Z2g9XQo+ID4+IGRyaXZlcnMvbmV0L2Nhbi9hdDkxX2Nhbi5jOjg5
+NTo2OiB3YXJuaW5nOiB0aGlzIHN0YXRlbWVudCBtYXkgZmFsbCB0aHJvdWdoIFstV2ltcGxpY2l0
+LWZhbGx0aHJvdWdoPV0KPiA+PiBkcml2ZXJzL25ldC9jYW4vYXQ5MV9jYW4uYzo5NTM6MTU6IHdh
+cm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBmYWxsIHRocm91Z2ggWy1XaW1wbGljaXQtZmFsbHRo
+cm91Z2g9XQo+ID4+IGRyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2IuYzogSW4g
+ZnVuY3Rpb24g4oCYcGNhbl91c2JfZGVjb2RlX2Vycm9y4oCZOgo+ID4+IGRyaXZlcnMvbmV0L2Nh
+bi91c2IvcGVha191c2IvcGNhbl91c2IuYzo0MjI6Njogd2FybmluZzogdGhpcyBzdGF0ZW1lbnQg
+bWF5IGZhbGwgdGhyb3VnaCBbLVdpbXBsaWNpdC1mYWxsdGhyb3VnaD1dCj4gPj4gICAgIGlmIChu
+ICYgUENBTl9VU0JfRVJST1JfQlVTX0xJR0hUKSB7Cj4gPj4gICAgICAgIF4KPiA+PiBkcml2ZXJz
+L25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiLmM6NDI4OjI6IG5vdGU6IGhlcmUKPiA+PiAg
+ICBjYXNlIENBTl9TVEFURV9FUlJPUl9XQVJOSU5HOgo+ID4+ICAgIF5+fn4KPiA+Pgo+ID4+IFdh
+cm5pbmcgbGV2ZWwgMyB3YXMgdXNlZDogLVdpbXBsaWNpdC1mYWxsdGhyb3VnaD0zCj4gPj4KPiA+
+PiBUaGlzIHBhdGNoIGlzIHBhcnQgb2YgdGhlIG9uZ29pbmcgZWZmb3J0cyB0byBlbmFibGluZwo+
+ID4+IC1XaW1wbGljaXQtZmFsbHRocm91Z2guCj4gPj4KPiA+PiBOb3RpY2UgdGhhdCBpbiBzb21l
+IGNhc2VzIHNwZWxsaW5nIG1pc3Rha2VzIHdlcmUgZml4ZWQuCj4gPj4gSW4gb3RoZXIgY2FzZXMs
+IHRoZSAvKiBmYWxsIHRocm91Z2ggKi8gY29tbWVudCBpcyBwbGFjZWQKPiA+PiBhdCB0aGUgYm90
+dG9tIG9mIHRoZSBjYXNlIHN0YXRlbWVudCwgd2hpY2ggaXMgd2hhdCBHQ0MKPiA+PiBpcyBleHBl
+Y3RpbmcgdG8gZmluZC4KPiA+Pgo+ID4+IFNpZ25lZC1vZmYtYnk6IEd1c3Rhdm8gQS4gUi4gU2ls
+dmEgPGd1c3Rhdm9AZW1iZWRkZWRvci5jb20+Cj4gPj4gLS0tCj4gPj4gICBkcml2ZXJzL25ldC9j
+YW4vYXQ5MV9jYW4uYyAgICAgICAgICAgICAgICAgICAgfCA2ICsrKystLQo+ID4gCj4gPiBGb3Ig
+dGhpcyBvbmU6Cj4gPiBBY2tlZC1ieTogTmljb2xhcyBGZXJyZSA8bmljb2xhcy5mZXJyZUBtaWNy
+b2NoaXAuY29tPgo+ID4gCj4gCj4gVGhhbmtzLCBOaWNvbGFzLgo+IAoKSSB0aG91Z2ggSSBoYWQg
+YSBkw6lqw6AgdnUgYnV0IHlvdSBhY3R1YWxseSBzZW50IHRoZSBhdDkxIHBhcnQgdHdpY2UuCgo+
+IERhdmU6Cj4gCj4gSSB3b25kZXIgaWYgeW91IGNhbiB0YWtlIHRoaXMgcGF0Y2guCj4gCj4gVGhh
+bmtzCj4gLS0KPiBHdXN0YXZvCj4gCj4gPj4gICBkcml2ZXJzL25ldC9jYW4vcGVha19jYW5mZC9w
+ZWFrX3BjaWVmZF9tYWluLmMgfCAyICstCj4gPj4gICBkcml2ZXJzL25ldC9jYW4vc3BpL21jcDI1
+MXguYyAgICAgICAgICAgICAgICAgfCAzICsrLQo+ID4+ICAgZHJpdmVycy9uZXQvY2FuL3VzYi9w
+ZWFrX3VzYi9wY2FuX3VzYi5jICAgICAgIHwgMiArLQo+ID4+ICAgNCBmaWxlcyBjaGFuZ2VkLCA4
+IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4gPj4KPiA+PiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9uZXQvY2FuL2F0OTFfY2FuLmMgYi9kcml2ZXJzL25ldC9jYW4vYXQ5MV9jYW4uYwo+ID4+
+IGluZGV4IGQ5OGM2OTA0NWIxNy4uMTcxOGMyMGY5Yzk5IDEwMDY0NAo+ID4+IC0tLSBhL2RyaXZl
+cnMvbmV0L2Nhbi9hdDkxX2Nhbi5jCj4gPj4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2F0OTFfY2Fu
+LmMKPiA+PiBAQCAtOTAyLDcgKzkwMiw4IEBAIHN0YXRpYyB2b2lkIGF0OTFfaXJxX2Vycl9zdGF0
+ZShzdHJ1Y3QgbmV0X2RldmljZSAqZGV2LAo+ID4+ICAgCQkJCUNBTl9FUlJfQ1JUTF9UWF9XQVJO
+SU5HIDoKPiA+PiAgIAkJCQlDQU5fRVJSX0NSVExfUlhfV0FSTklORzsKPiA+PiAgIAkJfQo+ID4+
+IC0JY2FzZSBDQU5fU1RBVEVfRVJST1JfV0FSTklORzoJLyogZmFsbHRocm91Z2ggKi8KPiA+PiAr
+CQkvKiBmYWxsIHRocm91Z2ggKi8KPiA+PiArCWNhc2UgQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkc6
+Cj4gPj4gICAJCS8qCj4gPj4gICAJCSAqIGZyb206IEVSUk9SX0FDVElWRSwgRVJST1JfV0FSTklO
+Rwo+ID4+ICAgCQkgKiB0byAgOiBFUlJPUl9QQVNTSVZFLCBCVVNfT0ZGCj4gPj4gQEAgLTk1MSw3
+ICs5NTIsOCBAQCBzdGF0aWMgdm9pZCBhdDkxX2lycV9lcnJfc3RhdGUoc3RydWN0IG5ldF9kZXZp
+Y2UgKmRldiwKPiA+PiAgIAkJbmV0ZGV2X2RiZyhkZXYsICJFcnJvciBBY3RpdmVcbiIpOwo+ID4+
+ICAgCQljZi0+Y2FuX2lkIHw9IENBTl9FUlJfUFJPVDsKPiA+PiAgIAkJY2YtPmRhdGFbMl0gPSBD
+QU5fRVJSX1BST1RfQUNUSVZFOwo+ID4+IC0JY2FzZSBDQU5fU1RBVEVfRVJST1JfV0FSTklORzoJ
+LyogZmFsbHRocm91Z2ggKi8KClNlcmlvdXNseSwgZm9yIHRoYXQgb25lLCB5b3Ugc2hvdWxkIGZp
+eCB0aGUgY29tcGlsZXIuIFRoZSBmYWxsIHRocm91Z2gKaXMgbm90IGltcGxpY2l0LCBpdCBpcyBh
+Y3R1YWxseSBxdWl0ZSBleHBsaWNpdCBhbmQgdGhlIHdhcm5pbmcgaXMgc2ltcGx5Cndyb25nLgoK
+QWxzbywgdGhlIGdjYyBkb2N1bWVudGF0aW9uIHNheXMgdGhhdCAtV2ltcGxpY2l0LWZhbGx0aHJv
+dWdoPTMKcmVjb2duaXplcyAvKiBmYWxsdGhyb3VnaCAqLyBhcyBhIHByb3BlciBmYWxsIHRocm91
+Z2ggY29tbWVudCAoYW5kIEkKdGVzdGVkIHdpdGggZ2NjIDguMikuCgpUaGUgbWF0Y2hpbmcgcmVn
+ZXggaXMgWyBcdC4hXSooW0VlXWxzZSw/IHxbSWldbnRlbnRpb25hbChseSk/ICk/CmZhbGwocyB8
+IHwtKT90aHIob3VnaHx1KVsgXHQuIV0qKC1bXlxuXHJdKik/CgotLSAKQWxleGFuZHJlIEJlbGxv
+bmksIEJvb3RsaW4KRW1iZWRkZWQgTGludXggYW5kIEtlcm5lbCBlbmdpbmVlcmluZwpodHRwczov
+L2Jvb3RsaW4uY29tCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0ta2VybmVsQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1hcm0ta2VybmVsCg==
