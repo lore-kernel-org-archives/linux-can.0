@@ -1,138 +1,115 @@
-From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Subject: [PATCH] dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
-Date: Fri, 22 Feb 2019 14:20:05 +0100
-Message-ID: <201902221420.05267.pisa@cmp.felk.cvut.cz>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v5 0/5] M_CAN Framework re-write
+Date: Fri, 22 Feb 2019 11:05:39 -0600
+Message-ID: <d1a71f1f-55b8-0ff1-1507-75d7c6237d90@ti.com>
+References: <20190214182754.30721-1-dmurphy@ti.com>
+ <52148371-16aa-b87a-02f0-9037d5d34988@ti.com>
+ <43e01edf-9b9a-c68d-ec1a-218a8117f59e@grandegger.com>
+ <50a3a5d6-9b83-f0aa-095c-13b6361236ab@grandegger.com>
+ <b60b8781-d979-24e7-805a-95f9237c816e@ti.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Martin Jerabek <martin.jerabek01@gmail.com>, Ondrej Ille <ondrej.ille@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <b60b8781-d979-24e7-805a-95f9237c816e@ti.com>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From 3e19a7f5c33e5fb50f52c9df05bf00022e3f3dd5 Mon Sep 17 00:00:00 2001
-From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Date: Fri, 22 Feb 2019 14:11:11 +0100
-Subject: [PATCH] dt-bindings: net: can: binding for CTU CAN FD open-source IP
- core.
+Wolfgang
 
-Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
----
- .../devicetree/bindings/net/can/ctu,ctucanfd.txt   | 102 +++++++++++++++++++++
- 1 file changed, 102 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt
+On 2/22/19 6:50 AM, Dan Murphy wrote:
+> Wolfgang
+> 
+> On 2/22/19 3:38 AM, Wolfgang Grandegger wrote:
+>> Hello Dan,
+>>
+>> what kernel version is that patch series for. I have problems to apply it!
+>>
+> 
+> It is based off of Master
+> 
+> commit 2137397c92aec3713fa10be3c9b830f9a1674e60 (linux_master/master)
+> 
+> And I successfully rebased on top of
+> 
+> commit 8a61716ff2ab23eddd1f7a05a075a374e4d0c3d4 (linux_master/master)
+> Merge tag 'ceph-for-5.0-rc8' of git://github.com/ceph/ceph-client
+> 
 
-diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt 
-b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt
-new file mode 100644
-index 000000000000..6c75e5850904
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt
-@@ -0,0 +1,102 @@
-+Memory mapped CTU CAN FD open-source IP core
-+
-+The core sources and documentation on project page
-+
-+  https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
-+  http://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
-+
-+Integration in Xilinx Zynq SoC based system together with
-+OpenCores SJA1000 compatible controllers
-+
-+  https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top
-+
-+Martin Jerabek's dimploma thesis with integration and testing
-+framework description
-+
-+ 
-https://dspace.cvut.cz/bitstream/handle/10467/80366/F3-DP-2019-Jerabek-Martin-Jerabek-thesis-2019-canfd.pdf
-+
-+Required properties:
-+
-+- compatible : should be one of "ctu,ctucanfd", "ctu,canfd-2".
-+
-+- reg = <(baseaddr) (size)> : specify mapping into physical address
-+      space of the processor system.
-+
-+- interrupts : property with a value describing the interrupt source
-+      required for the CTU CAN FD. For Zynq SoC system format is
-+      <(is_spi) (number) (type)> where is_spi defines if it is SPI
-+      (shared peripheral) interrupt, the second number is translated
-+      to the vector by addition of 32 on Zynq-7000 systems and type
-+      is IRQ_TYPE_LEVEL_HIGH (4) for Zynq.
-+
-+- interrupt-parent = <&interrupt-controller-phandle> :
-+      is required for Zynq SoC to find map interrupt
-+      to the correct controller
-+
-+- clocks: phandle of reference clock (100 MHz is appropriate
-+      for FPGA implementation on Zynq-7000 system).
-+
-+Example when integrated to Zynq-7000 system DTS:
-+
-+        / {
-+            /* ... */
-+            amba: amba {
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+                compatible = "simple-bus";
-+
-+                CTU_CAN_FD_0: CTU_CAN_FD@43c30000 {
-+                    compatible = "ctu,ctucanfd";
-+                    interrupt-parent = <&intc>;
-+                    interrupts = <0 30 4>;
-+                    clocks = <&clkc 15>;
-+                    reg = <0x43c30000 0x10000>;
-+                };
-+            };
-+        };
-+
-+
-+Example when used as DTS overlay on Zynq-7000 system:
-+
-+
-+// Device Tree Example: Full Reconfiguration without Bridges
-+/dts-v1/;
-+/plugin/;
-+
-+/ {
-+    fragment@0 {
-+        target-path = "/fpga-full";
-+
-+        __overlay__ {
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+
-+            firmware-name = "system.bit.bin";
-+        };
-+    };
-+
-+    fragment@1 {
-+        target-path = "/amba";
-+        __overlay__ {
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+
-+            CTU_CAN_FD_0: CTU_CAN_FD@43c30000 {
-+                compatible = "ctu,ctucanfd";
-+                interrupt-parent = <&intc>;
-+                interrupts = <0 30 4>;
-+                clocks = <&clkc 15>;
-+                //clock-names = "can_clk";
-+                reg = <0x43c30000 0x10000>;
-+            };
-+            CTU_CAN_FD_1: CTU_CAN_FD@43c70000 {
-+                compatible = "ctu,ctucanfd";
-+                interrupt-parent = <&intc>;
-+                interrupts = <0 31 4>;
-+                clocks = <&clkc 15>;
-+                //clock-names = "can_clk";
-+                reg = <0x43c70000 0x10000>;
-+            };
-+        };
-+    };
-+};
+I just pulled these patches and they applied fine to the top commit of linux master
+
+Do I need to rebase on top of a for-next branch for you?
+
+Dan
+
+> Dan
+> 
+>> Wolfgang.
+>>
+>> Am 21.02.19 um 17:41 schrieb Wolfgang Grandegger:
+>>> Hello Dan,
+>>>
+>>> I will have a closer look end of this week!
+>>>
+>>> Wolfgang.
+>>>
+>>> Am 21.02.19 um 17:24 schrieb Dan Murphy:
+>>>> Bump
+>>>>
+>>>> On 2/14/19 12:27 PM, Dan Murphy wrote:
+>>>>> Hello
+>>>>>
+>>>>> OK I did not give up on this patch series just got a little preoccupied with
+>>>>> some other kernel work.  But here is the update per the comments.
+>>>>>
+>>>>> It should be understood I broke these out for reviewability.
+>>>>> For instance the first patch does not compile on its own as including this
+>>>>> patch should not change the current functionality and it pulls all the io-mapped
+>>>>> code from the m_can base file to a platfrom file.
+>>>>>
+>>>>> The next patch "Migrate the m_can code to use the framework"
+>>>>> is the change to the kernel for the io-mapped conversion from a flat file to use
+>>>>> the framework.  Finally the rename patch just renames the m_can_priv to 
+>>>>> m_can_classdev.  I broke this change out specifically for readability of the
+>>>>> migration patch per comments on the code.
+>>>>>
+>>>>> AFAIC the first 3 patches can all be squashed into a single patch.  Or the
+>>>>> first 2 patches in the series can be re-arranged but then m_can functionality is
+>>>>> affected in the migration patch.
+>>>>>
+>>>>> Again the first 3 patches here are all just for readability and review purposes.
+>>>>>
+>>>>> Dan
+>>>>>
+>>>>> Dan Murphy (5):
+>>>>>   can: m_can: Create a m_can platform framework
+>>>>>   can: m_can: Migrate the m_can code to use the framework
+>>>>>   can: m_can: Rename m_can_priv to m_can_classdev
+>>>>>   dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+>>>>>   can: tcan4x5x: Add tcan4x5x driver to the kernel
+>>>>>
+>>>>>  .../devicetree/bindings/net/can/tcan4x5x.txt  |  37 +
+>>>>>  drivers/net/can/m_can/Kconfig                 |  14 +-
+>>>>>  drivers/net/can/m_can/Makefile                |   2 +
+>>>>>  drivers/net/can/m_can/m_can.c                 | 788 +++++++++---------
+>>>>>  drivers/net/can/m_can/m_can.h                 | 159 ++++
+>>>>>  drivers/net/can/m_can/m_can_platform.c        | 198 +++++
+>>>>>  drivers/net/can/m_can/tcan4x5x.c              | 531 ++++++++++++
+>>>>>  7 files changed, 1320 insertions(+), 409 deletions(-)
+>>>>>  create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+>>>>>  create mode 100644 drivers/net/can/m_can/m_can.h
+>>>>>  create mode 100644 drivers/net/can/m_can/m_can_platform.c
+>>>>>  create mode 100644 drivers/net/can/m_can/tcan4x5x.c
+>>>>>
+>>>>
+>>>>
+> 
+> 
+
+
 -- 
-2.11.0
+------------------
+Dan Murphy
