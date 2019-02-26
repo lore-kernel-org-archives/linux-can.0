@@ -1,52 +1,66 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v5 0/5] M_CAN Framework re-write
-Date: Sun, 24 Feb 2019 12:27:34 +0100
-Message-ID: <61d7c2c4-396c-b0a2-68d5-ace48e56c269@grandegger.com>
-References: <20190214182754.30721-1-dmurphy@ti.com>
- <52148371-16aa-b87a-02f0-9037d5d34988@ti.com>
- <43e01edf-9b9a-c68d-ec1a-218a8117f59e@grandegger.com>
- <50a3a5d6-9b83-f0aa-095c-13b6361236ab@grandegger.com>
- <b60b8781-d979-24e7-805a-95f9237c816e@ti.com>
- <d1a71f1f-55b8-0ff1-1507-75d7c6237d90@ti.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH net-next] can: kvaser_usb: Use struct_size() in
+ alloc_candev()
+Date: Mon, 25 Feb 2019 18:48:21 -0600
+Message-ID: <1220cd8d-913f-934b-9c4d-26f4012c3150@embeddedor.com>
+References: <20190208031035.GA2665@embeddedor>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d1a71f1f-55b8-0ff1-1507-75d7c6237d90@ti.com>
-Content-Language: en-GB
+In-Reply-To: <20190208031035.GA2665@embeddedor>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hello Dan,
+Hi all,
 
-Am 22.02.19 um 18:05 schrieb Dan Murphy:
-> Wolfgang
-> 
-> On 2/22/19 6:50 AM, Dan Murphy wrote:
->> Wolfgang
->>
->> On 2/22/19 3:38 AM, Wolfgang Grandegger wrote:
->>> Hello Dan,
->>>
->>> what kernel version is that patch series for. I have problems to apply it!
->>>
->>
->> It is based off of Master
->>
->> commit 2137397c92aec3713fa10be3c9b830f9a1674e60 (linux_master/master)
->>
->> And I successfully rebased on top of
->>
->> commit 8a61716ff2ab23eddd1f7a05a075a374e4d0c3d4 (linux_master/master)
->> Merge tag 'ceph-for-5.0-rc8' of git://github.com/ceph/ceph-client
->>
-> 
-> I just pulled these patches and they applied fine to the top commit of linux master
-> 
-> Do I need to rebase on top of a for-next branch for you?
+Friendly ping:
 
-No, I can apply the series now as well.
+Who can take this?
 
-Wolfgang,
+Thanks
+--
+Gustavo
+
+On 2/7/19 9:10 PM, Gustavo A. R. Silva wrote:
+> One of the more common cases of allocation size calculations is finding
+> the size of a structure that has a zero-sized array at the end, along
+> with memory for some number of elements for that array. For example:
+> 
+> struct foo {
+>     int stuff;
+>     void *entry[];
+> };
+> 
+> instance = alloc(sizeof(struct foo) + count * sizeof(void *));
+> 
+> Instead of leaving these open-coded and prone to type mistakes, we can
+> now use the new struct_size() helper:
+> 
+> instance = alloc(struct_size(instance, entry, count));
+> 
+> This code was detected with the help of Coccinelle.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
+>  drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+> index c89c7d4900d7..0f1d3e807d63 100644
+> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+> @@ -643,8 +643,7 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev,
+>  			return err;
+>  	}
+>  
+> -	netdev = alloc_candev(sizeof(*priv) +
+> -			      dev->max_tx_urbs * sizeof(*priv->tx_contexts),
+> +	netdev = alloc_candev(struct_size(priv, tx_contexts, dev->max_tx_urbs),
+>  			      dev->max_tx_urbs);
+>  	if (!netdev) {
+>  		dev_err(&dev->intf->dev, "Cannot alloc candev\n");
+> 
