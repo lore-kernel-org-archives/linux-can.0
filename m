@@ -1,48 +1,60 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH net-next] can: kvaser_usb: Use struct_size() in
- alloc_candev()
-Date: Tue, 26 Feb 2019 08:52:15 +0100
-Message-ID: <b736a7b3-819a-a471-c767-2997354e70e4@pengutronix.de>
-References: <20190208031035.GA2665@embeddedor>
+Subject: Re: [PATCH] can: mark expected switch fall-throughs
+Date: Tue, 26 Feb 2019 09:02:17 +0100
+Message-ID: <31d206cd-65f2-66be-ed79-583210a88d57@pengutronix.de>
+References: <20190129180612.GA28650@embeddedor>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190208031035.GA2665@embeddedor>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190129180612.GA28650@embeddedor>
 Content-Language: de-DE
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On 2/8/19 4:10 AM, Gustavo A. R. Silva wrote:
-> One of the more common cases of allocation size calculations is finding
-> the size of a structure that has a zero-sized array at the end, along
-> with memory for some number of elements for that array. For example:
-> 
-> struct foo {
->     int stuff;
->     void *entry[];
-> };
-> 
-> instance = alloc(sizeof(struct foo) + count * sizeof(void *));
-> 
-> Instead of leaving these open-coded and prone to type mistakes, we can
-> now use the new struct_size() helper:
-> 
-> instance = alloc(struct_size(instance, entry, count));
-> 
-> This code was detected with the help of Coccinelle.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-
-Applied to linux-can-next.
-
-Tnx,
-Marc
-
--- 
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+T24gMS8yOS8xOSA3OjA2IFBNLCBHdXN0YXZvIEEuIFIuIFNpbHZhIHdyb3RlOgo+IEluIHByZXBh
+cmF0aW9uIHRvIGVuYWJsaW5nIC1XaW1wbGljaXQtZmFsbHRocm91Z2gsIG1hcmsgc3dpdGNoIGNh
+c2VzCj4gd2hlcmUgd2UgYXJlIGV4cGVjdGluZyB0byBmYWxsIHRocm91Z2guCj4gCj4gVGhpcyBw
+YXRjaCBmaXhlcyB0aGUgZm9sbG93aW5nIHdhcm5pbmdzOgo+IAo+IGRyaXZlcnMvbmV0L2Nhbi9w
+ZWFrX2NhbmZkL3BlYWtfcGNpZWZkX21haW4uYzo2Njg6Mzogd2FybmluZzogdGhpcyBzdGF0ZW1l
+bnQgbWF5IGZhbGwgdGhyb3VnaCBbLVdpbXBsaWNpdC1mYWxsdGhyb3VnaD1dCj4gZHJpdmVycy9u
+ZXQvY2FuL3NwaS9tY3AyNTF4LmM6ODc1Ojc6IHdhcm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBm
+YWxsIHRocm91Z2ggWy1XaW1wbGljaXQtZmFsbHRocm91Z2g9XQo+IGRyaXZlcnMvbmV0L2Nhbi91
+c2IvcGVha191c2IvcGNhbl91c2IuYzo0MjI6Njogd2FybmluZzogdGhpcyBzdGF0ZW1lbnQgbWF5
+IGZhbGwgdGhyb3VnaCBbLVdpbXBsaWNpdC1mYWxsdGhyb3VnaD1dCj4gZHJpdmVycy9uZXQvY2Fu
+L2F0OTFfY2FuLmM6ODk1OjY6IHdhcm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBmYWxsIHRocm91
+Z2ggWy1XaW1wbGljaXQtZmFsbHRocm91Z2g9XQo+IGRyaXZlcnMvbmV0L2Nhbi9hdDkxX2Nhbi5j
+Ojk1MzoxNTogd2FybmluZzogdGhpcyBzdGF0ZW1lbnQgbWF5IGZhbGwgdGhyb3VnaCBbLVdpbXBs
+aWNpdC1mYWxsdGhyb3VnaD1dCj4gZHJpdmVycy9uZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3Vz
+Yi5jOiBJbiBmdW5jdGlvbiDigJhwY2FuX3VzYl9kZWNvZGVfZXJyb3LigJk6Cj4gZHJpdmVycy9u
+ZXQvY2FuL3VzYi9wZWFrX3VzYi9wY2FuX3VzYi5jOjQyMjo2OiB3YXJuaW5nOiB0aGlzIHN0YXRl
+bWVudCBtYXkgZmFsbCB0aHJvdWdoIFstV2ltcGxpY2l0LWZhbGx0aHJvdWdoPV0KPiAgICBpZiAo
+biAmIFBDQU5fVVNCX0VSUk9SX0JVU19MSUdIVCkgewo+ICAgICAgIF4KPiBkcml2ZXJzL25ldC9j
+YW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiLmM6NDI4OjI6IG5vdGU6IGhlcmUKPiAgIGNhc2UgQ0FO
+X1NUQVRFX0VSUk9SX1dBUk5JTkc6Cj4gICBefn5+Cj4gCj4gV2FybmluZyBsZXZlbCAzIHdhcyB1
+c2VkOiAtV2ltcGxpY2l0LWZhbGx0aHJvdWdoPTMKPiAKPiBUaGlzIHBhdGNoIGlzIHBhcnQgb2Yg
+dGhlIG9uZ29pbmcgZWZmb3J0cyB0byBlbmFibGluZwo+IC1XaW1wbGljaXQtZmFsbHRocm91Z2gu
+Cj4gCj4gTm90aWNlIHRoYXQgaW4gc29tZSBjYXNlcyBzcGVsbGluZyBtaXN0YWtlcyB3ZXJlIGZp
+eGVkLgo+IEluIG90aGVyIGNhc2VzLCB0aGUgLyogZmFsbCB0aHJvdWdoICovIGNvbW1lbnQgaXMg
+cGxhY2VkCj4gYXQgdGhlIGJvdHRvbSBvZiB0aGUgY2FzZSBzdGF0ZW1lbnQsIHdoaWNoIGlzIHdo
+YXQgR0NDCj4gaXMgZXhwZWN0aW5nIHRvIGZpbmQuCj4gCj4gU2lnbmVkLW9mZi1ieTogR3VzdGF2
+byBBLiBSLiBTaWx2YSA8Z3VzdGF2b0BlbWJlZGRlZG9yLmNvbT4KCkFkZGVkIHRvIGxpbnV4LWNh
+bi1uZXh0LgoKVG54Ck1hcmMKCi0tIApQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAg
+fCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAgICAgfApJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9u
+cyAgICAgICAgfCBQaG9uZTogKzQ5LTIzMS0yODI2LTkyNCAgICAgfApWZXJ0cmV0dW5nIFdlc3Qv
+RG9ydG11bmQgICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfApBbXRzZ2Vy
+aWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAg
+fAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgt
+YXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJt
+LWtlcm5lbAo=
