@@ -1,58 +1,102 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] can: mark expected switch fall-throughs
-Date: Tue, 26 Feb 2019 09:24:05 -0600
-Message-ID: <a28b3d4f-e489-50be-0a96-766566e3f046@embeddedor.com>
-References: <20190129180612.GA28650@embeddedor>
- <31d206cd-65f2-66be-ed79-583210a88d57@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/2] can: flexcan: add PE clock source select support
+Date: Wed, 27 Feb 2019 12:00:37 +0100
+Message-ID: <d0d2d140-0453-77a5-db6a-88c27f47bbc4@pengutronix.de>
+References: <20181213070537.25095-1-qiangqing.zhang@nxp.com>
+ <47070f2a-4500-4b48-3718-66569a7cc89e@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <31d206cd-65f2-66be-ed79-583210a88d57@pengutronix.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Kcug6F25JDkYZwVmrN2h99Cy94Xjf6sJR"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <47070f2a-4500-4b48-3718-66569a7cc89e@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "robh@kernel.org" <robh@kernel.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-CgpPbiAyLzI2LzE5IDI6MDIgQU0sIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOgo+IE9uIDEvMjkv
-MTkgNzowNiBQTSwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToKPj4gSW4gcHJlcGFyYXRpb24g
-dG8gZW5hYmxpbmcgLVdpbXBsaWNpdC1mYWxsdGhyb3VnaCwgbWFyayBzd2l0Y2ggY2FzZXMKPj4g
-d2hlcmUgd2UgYXJlIGV4cGVjdGluZyB0byBmYWxsIHRocm91Z2guCj4+Cj4+IFRoaXMgcGF0Y2gg
-Zml4ZXMgdGhlIGZvbGxvd2luZyB3YXJuaW5nczoKPj4KPj4gZHJpdmVycy9uZXQvY2FuL3BlYWtf
-Y2FuZmQvcGVha19wY2llZmRfbWFpbi5jOjY2ODozOiB3YXJuaW5nOiB0aGlzIHN0YXRlbWVudCBt
-YXkgZmFsbCB0aHJvdWdoIFstV2ltcGxpY2l0LWZhbGx0aHJvdWdoPV0KPj4gZHJpdmVycy9uZXQv
-Y2FuL3NwaS9tY3AyNTF4LmM6ODc1Ojc6IHdhcm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBmYWxs
-IHRocm91Z2ggWy1XaW1wbGljaXQtZmFsbHRocm91Z2g9XQo+PiBkcml2ZXJzL25ldC9jYW4vdXNi
-L3BlYWtfdXNiL3BjYW5fdXNiLmM6NDIyOjY6IHdhcm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBm
-YWxsIHRocm91Z2ggWy1XaW1wbGljaXQtZmFsbHRocm91Z2g9XQo+PiBkcml2ZXJzL25ldC9jYW4v
-YXQ5MV9jYW4uYzo4OTU6Njogd2FybmluZzogdGhpcyBzdGF0ZW1lbnQgbWF5IGZhbGwgdGhyb3Vn
-aCBbLVdpbXBsaWNpdC1mYWxsdGhyb3VnaD1dCj4+IGRyaXZlcnMvbmV0L2Nhbi9hdDkxX2Nhbi5j
-Ojk1MzoxNTogd2FybmluZzogdGhpcyBzdGF0ZW1lbnQgbWF5IGZhbGwgdGhyb3VnaCBbLVdpbXBs
-aWNpdC1mYWxsdGhyb3VnaD1dCj4+IGRyaXZlcnMvbmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91
-c2IuYzogSW4gZnVuY3Rpb24g4oCYcGNhbl91c2JfZGVjb2RlX2Vycm9y4oCZOgo+PiBkcml2ZXJz
-L25ldC9jYW4vdXNiL3BlYWtfdXNiL3BjYW5fdXNiLmM6NDIyOjY6IHdhcm5pbmc6IHRoaXMgc3Rh
-dGVtZW50IG1heSBmYWxsIHRocm91Z2ggWy1XaW1wbGljaXQtZmFsbHRocm91Z2g9XQo+PiAgICBp
-ZiAobiAmIFBDQU5fVVNCX0VSUk9SX0JVU19MSUdIVCkgewo+PiAgICAgICBeCj4+IGRyaXZlcnMv
-bmV0L2Nhbi91c2IvcGVha191c2IvcGNhbl91c2IuYzo0Mjg6Mjogbm90ZTogaGVyZQo+PiAgIGNh
-c2UgQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkc6Cj4+ICAgXn5+fgo+Pgo+PiBXYXJuaW5nIGxldmVs
-IDMgd2FzIHVzZWQ6IC1XaW1wbGljaXQtZmFsbHRocm91Z2g9Mwo+Pgo+PiBUaGlzIHBhdGNoIGlz
-IHBhcnQgb2YgdGhlIG9uZ29pbmcgZWZmb3J0cyB0byBlbmFibGluZwo+PiAtV2ltcGxpY2l0LWZh
-bGx0aHJvdWdoLgo+Pgo+PiBOb3RpY2UgdGhhdCBpbiBzb21lIGNhc2VzIHNwZWxsaW5nIG1pc3Rh
-a2VzIHdlcmUgZml4ZWQuCj4+IEluIG90aGVyIGNhc2VzLCB0aGUgLyogZmFsbCB0aHJvdWdoICov
-IGNvbW1lbnQgaXMgcGxhY2VkCj4+IGF0IHRoZSBib3R0b20gb2YgdGhlIGNhc2Ugc3RhdGVtZW50
-LCB3aGljaCBpcyB3aGF0IEdDQwo+PiBpcyBleHBlY3RpbmcgdG8gZmluZC4KPj4KPj4gU2lnbmVk
-LW9mZi1ieTogR3VzdGF2byBBLiBSLiBTaWx2YSA8Z3VzdGF2b0BlbWJlZGRlZG9yLmNvbT4KPiAK
-PiBBZGRlZCB0byBsaW51eC1jYW4tbmV4dC4KPiAKClRoYW5rcywgTWFyYy4KCi0tCkd1c3Rhdm8K
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LWFy
-bS1rZXJuZWwgbWFpbGluZyBsaXN0CmxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LWFybS1r
-ZXJuZWwK
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Kcug6F25JDkYZwVmrN2h99Cy94Xjf6sJR
+Content-Type: multipart/mixed; boundary="PPyq47czujGXEMXn9BDlDbhDedtpO02Vw";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "robh@kernel.org"
+ <robh@kernel.org>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ dl-linux-imx <linux-imx@nxp.com>
+Message-ID: <d0d2d140-0453-77a5-db6a-88c27f47bbc4@pengutronix.de>
+Subject: Re: [PATCH 0/2] can: flexcan: add PE clock source select support
+References: <20181213070537.25095-1-qiangqing.zhang@nxp.com>
+ <47070f2a-4500-4b48-3718-66569a7cc89e@pengutronix.de>
+In-Reply-To: <47070f2a-4500-4b48-3718-66569a7cc89e@pengutronix.de>
+
+--PPyq47czujGXEMXn9BDlDbhDedtpO02Vw
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 2/27/19 9:46 AM, Marc Kleine-Budde wrote:
+> On 12/13/18 8:07 AM, Joakim Zhang wrote:
+>> The patch set intends to add support for PE clock source select. The
+>> FlexCAN controller can parse "fsl,clk-source" property from device tre=
+e
+>> to select clock source.
+>>
+>> Dong Aisheng (2):
+>>   Documentation: can: flexcan: add PE clock source property to device
+>>     tree
+>>   can: flexcan: add support for PE clock source select
+>>
+>>  .../bindings/net/can/fsl-flexcan.txt           |  8 ++++++++
+>>  drivers/net/can/flexcan.c                      | 18 ++++++++++++++---=
+-
+>>  2 files changed, 22 insertions(+), 4 deletions(-)
+>=20
+> Added to linux-can-next.
+
+With one change:
+
+> @@ -1369,7 +1371,10 @@ static int register_flexcandev(struct net_device=
+ *dev)
+>                 goto out_clks_disable;
+>=20
+>         reg =3D priv->read(&regs->ctrl);
+> -       reg |=3D FLEXCAN_CTRL_CLK_SRC;
+> +       if (priv->clk_src)
+> +               reg |=3D FLEXCAN_CTRL_CLK_SRC;
+> +       else
+> +               reg &=3D ~FLEXCAN_CTRL_CLK_SRC;
+
+=2E..the FLEXCAN_CTRL_CLK_SRC bit is cleared now.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--PPyq47czujGXEMXn9BDlDbhDedtpO02Vw--
+
+--Kcug6F25JDkYZwVmrN2h99Cy94Xjf6sJR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlx2bdUACgkQWsYho5Hk
+nSCvnQf+OJMQWmTLRfW26pt70KNd+D/JXgssLgfCeOx2ex0LgXF0bjmlL9ISU+yy
+lGJLTprbPInXoOOaFpU2Ni8Z1727g+OhdnRtczrhSwEerEFB9397VcpDLD4u7ie6
+VfLavjBqsTKfrg2ORd5CDp8gcmgUBq3b5rACMzYV7d0kXpLxGL8ybQ1jU3yciv7y
+o51DTAh5RpGgd/S1ydhP4UtdN1ke8Aj9G9gcfyf0ehylkL8+qkXEAGA/KihtpdWd
+WvIvAsvghj8ZYAgBywU5sVbPCOG7j3tUrg9aK0cVyc/vh0+QiRsNT5yPwBMxlpVL
+AUmcksgZqgJb5YqBl6xXzLJ0b3kcYQ==
+=/aeG
+-----END PGP SIGNATURE-----
+
+--Kcug6F25JDkYZwVmrN2h99Cy94Xjf6sJR--
