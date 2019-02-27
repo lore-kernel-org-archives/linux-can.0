@@ -1,162 +1,198 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: add TX support for variable payload size
-Date: Wed, 27 Feb 2019 15:03:25 +0100
-Message-ID: <cb0bf438-e3c3-5591-dcf7-8802346feefc@pengutronix.de>
-References: <20181212064419.18613-1-qiangqing.zhang@nxp.com>
+Subject: Re: [PATCH] dt-bindings: net: can: binding for CTU CAN FD open-source
+ IP core.
+Date: Wed, 27 Feb 2019 15:47:03 +0100
+Message-ID: <b8a48659-6b82-87e4-08cb-1420463dbded@pengutronix.de>
+References: <201902221420.05267.pisa@cmp.felk.cvut.cz>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="rHzSW3w6iy4aDzcweX6WrcfMFAxHWKe9Q"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181212064419.18613-1-qiangqing.zhang@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
+ boundary="zXEJeE1ITuIOqdCWX0TUTCelucyuEsGc3"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <201902221420.05267.pisa@cmp.felk.cvut.cz>
+Sender: netdev-owner@vger.kernel.org
+To: Pavel Pisa <pisa@cmp.felk.cvut.cz>, devicetree@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Martin Jerabek <martin.jerabek01@gmail.com>, Ondrej Ille <ondrej.ille@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rHzSW3w6iy4aDzcweX6WrcfMFAxHWKe9Q
-Content-Type: multipart/mixed; boundary="zgwkDLGLmV2tiDDHkTxnm9pBa7hK27aPF";
+--zXEJeE1ITuIOqdCWX0TUTCelucyuEsGc3
+Content-Type: multipart/mixed; boundary="QnSscz5Zs0qqsxAkkiEaKOvhQZGotQDuG";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- dl-linux-imx <linux-imx@nxp.com>
-Message-ID: <cb0bf438-e3c3-5591-dcf7-8802346feefc@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: add TX support for variable payload size
-References: <20181212064419.18613-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20181212064419.18613-1-qiangqing.zhang@nxp.com>
+To: Pavel Pisa <pisa@cmp.felk.cvut.cz>, devicetree@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>,
+ "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Martin Jerabek <martin.jerabek01@gmail.com>,
+ Ondrej Ille <ondrej.ille@gmail.com>
+Message-ID: <b8a48659-6b82-87e4-08cb-1420463dbded@pengutronix.de>
+Subject: Re: [PATCH] dt-bindings: net: can: binding for CTU CAN FD open-source
+ IP core.
+References: <201902221420.05267.pisa@cmp.felk.cvut.cz>
+In-Reply-To: <201902221420.05267.pisa@cmp.felk.cvut.cz>
 
---zgwkDLGLmV2tiDDHkTxnm9pBa7hK27aPF
+--QnSscz5Zs0qqsxAkkiEaKOvhQZGotQDuG
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-On 12/12/18 7:46 AM, Joakim Zhang wrote:
-> Now the FlexCAN driver always use last mailbox for TX, it will work wel=
-l
-> when MB payload size is 8/16 bytes.
-> TX mailbox would change to 13 when MB payload size is 64 bytes to
-> support CANFD. So we may need to set iflag register to add support for
-> variable payload size.
->=20
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+On 2/22/19 2:20 PM, Pavel Pisa wrote:
+> From 3e19a7f5c33e5fb50f52c9df05bf00022e3f3dd5 Mon Sep 17 00:00:00 2001
+> From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+> Date: Fri, 22 Feb 2019 14:11:11 +0100
+> Subject: [PATCH] dt-bindings: net: can: binding for CTU CAN FD open-sou=
+rce IP
+>  core.
+
+Nice! I appreciate open-source hardware!
+
+Please send the patch via git send-email, it's a bit broken:
+
+Applying: dt-bindings: net: can: binding for CTU CAN FD open-source IP co=
+re.
+=2Egit/rebase-apply/patch:29: trailing whitespace.
+
+error: corrupt patch at line 30
+Patch failed at 0001 dt-bindings: net: can: binding for CTU CAN FD
+open-source IP core.
+hint: Use 'git am --show-current-patch' to see the failed patch
+
+
+> Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 > ---
->  drivers/net/can/flexcan.c | 42 +++++++++++++++++++++++++++++----------=
-
->  1 file changed, 32 insertions(+), 10 deletions(-)
+>  .../devicetree/bindings/net/can/ctu,ctucanfd.txt   | 102 +++++++++++++=
+++++++++
+>  1 file changed, 102 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctuca=
+nfd.txt
 >=20
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index 0f36eafe3ac1..13fd085fcf84 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -141,7 +141,9 @@
->  #define FLEXCAN_TX_MB_RESERVED_OFF_FIFO		8
->  #define FLEXCAN_TX_MB_RESERVED_OFF_TIMESTAMP	0
->  #define FLEXCAN_RX_MB_OFF_TIMESTAMP_FIRST	(FLEXCAN_TX_MB_RESERVED_OFF_=
-TIMESTAMP + 1)
-> -#define FLEXCAN_IFLAG_MB(x)		BIT((x) & 0x1f)
-> +#define FLEXCAN_IFLAG1_MB_NUM		32
-> +#define FLEXCAN_IFLAG1_MB(x)		BIT(x)
-> +#define FLEXCAN_IFLAG2_MB(x)		BIT((x) & 0x1f)
->  #define FLEXCAN_IFLAG_RX_FIFO_OVERFLOW	BIT(7)
->  #define FLEXCAN_IFLAG_RX_FIFO_WARN	BIT(6)
->  #define FLEXCAN_IFLAG_RX_FIFO_AVAILABLE	BIT(5)
-> @@ -822,9 +824,15 @@ static inline u64 flexcan_read_reg_iflag_rx(struct=
- flexcan_priv *priv)
->  	struct flexcan_regs __iomem *regs =3D priv->regs;
->  	u32 iflag1, iflag2;
-> =20
-> -	iflag2 =3D priv->read(&regs->iflag2) & priv->reg_imask2_default &
-> -		~FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
-> -	iflag1 =3D priv->read(&regs->iflag1) & priv->reg_imask1_default;
-> +	if (priv->tx_mb_idx >=3D FLEXCAN_IFLAG1_MB_NUM) {
-> +		iflag2 =3D priv->read(&regs->iflag2) & priv->reg_imask2_default &
-> +			~FLEXCAN_IFLAG2_MB(priv->tx_mb_idx);
-> +		iflag1 =3D priv->read(&regs->iflag1) & priv->reg_imask1_default;
-> +	} else {
-> +		iflag2 =3D priv->read(&regs->iflag2) & priv->reg_imask2_default;
-> +		iflag1 =3D priv->read(&regs->iflag1) & priv->reg_imask1_default &
-> +			~FLEXCAN_IFLAG1_MB(priv->tx_mb_idx);
-> +	}
+> diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt=
+=20
+> b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt
+> new file mode 100644
+> index 000000000000..6c75e5850904
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt
+> @@ -0,0 +1,102 @@
+> +Memory mapped CTU CAN FD open-source IP core
+> +
+> +The core sources and documentation on project page
+> +
+> +  https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
+> +  http://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
+> +
+> +Integration in Xilinx Zynq SoC based system together with
+> +OpenCores SJA1000 compatible controllers
+> +
+> +  https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top
+> +
+> +Martin Jerabek's dimploma thesis with integration and testing
+> +framework description
+> +
+> +=20
+> https://dspace.cvut.cz/bitstream/handle/10467/80366/F3-DP-2019-Jerabek-=
+Martin-Jerabek-thesis-2019-canfd.pdf
+> +
+> +Required properties:
+> +
+> +- compatible : should be one of "ctu,ctucanfd", "ctu,canfd-2".
+> +
+> +- reg =3D <(baseaddr) (size)> : specify mapping into physical address
+> +      space of the processor system.
+> +
+> +- interrupts : property with a value describing the interrupt source
+> +      required for the CTU CAN FD. For Zynq SoC system format is
+> +      <(is_spi) (number) (type)> where is_spi defines if it is SPI
+> +      (shared peripheral) interrupt, the second number is translated
+> +      to the vector by addition of 32 on Zynq-7000 systems and type
+> +      is IRQ_TYPE_LEVEL_HIGH (4) for Zynq.
+> +
+> +- interrupt-parent =3D <&interrupt-controller-phandle> :
+> +      is required for Zynq SoC to find map interrupt
+> +      to the correct controller
+> +
+> +- clocks: phandle of reference clock (100 MHz is appropriate
+> +      for FPGA implementation on Zynq-7000 system).
+> +
+> +Example when integrated to Zynq-7000 system DTS:
+> +
+> +        / {
+> +            /* ... */
+> +            amba: amba {
+> +                #address-cells =3D <1>;
+> +                #size-cells =3D <1>;
+> +                compatible =3D "simple-bus";
+> +
+> +                CTU_CAN_FD_0: CTU_CAN_FD@43c30000 {
 
-I just noticed, that FLEXCAN_IFLAGx_MB(priv->tx_mb_idx) should already
-be part of the corresponding imaskx_default. See flexcan_open(). So we
-can remove it completely here, right?
+It's unusual to have uppercase letters here.
 
-> =20
->  	return (u64)iflag2 << 32 | iflag1;
->  }
-> @@ -836,7 +844,8 @@ static irqreturn_t flexcan_irq(int irq, void *dev_i=
-d)
->  	struct flexcan_priv *priv =3D netdev_priv(dev);
->  	struct flexcan_regs __iomem *regs =3D priv->regs;
->  	irqreturn_t handled =3D IRQ_NONE;
-> -	u32 reg_iflag2, reg_esr;
-> +	u32 reg_tx_iflag, tx_iflag_idx, reg_esr;
+> +                    compatible =3D "ctu,ctucanfd";
 
-"tx_iflag_idx" is not an index (going from 0...63) but a bit-mask.
+Is ctu already registered in
+Documentation/devicetree/bindings/vendor-prefixes.txt ?
 
-> +	void __iomem *reg_iflag;
+> +                    interrupt-parent =3D <&intc>;
+> +                    interrupts =3D <0 30 4>;
+> +                    clocks =3D <&clkc 15>;
+> +                    reg =3D <0x43c30000 0x10000>;
+> +                };
+> +            };
+> +        };
+> +
+> +
+> +Example when used as DTS overlay on Zynq-7000 system:
+> +
+> +
+> +// Device Tree Example: Full Reconfiguration without Bridges
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +/ {
+> +    fragment@0 {
+> +        target-path =3D "/fpga-full";
+> +
+> +        __overlay__ {
+> +            #address-cells =3D <1>;
+> +            #size-cells =3D <1>;
+> +
+> +            firmware-name =3D "system.bit.bin";
+> +        };
+> +    };
+> +
+> +    fragment@1 {
+> +        target-path =3D "/amba";
+> +        __overlay__ {
+> +            #address-cells =3D <1>;
+> +            #size-cells =3D <1>;
+> +
+> +            CTU_CAN_FD_0: CTU_CAN_FD@43c30000 {
+> +                compatible =3D "ctu,ctucanfd";
+> +                interrupt-parent =3D <&intc>;
+> +                interrupts =3D <0 30 4>;
+> +                clocks =3D <&clkc 15>;
+> +                //clock-names =3D "can_clk";
 
-"reg_iflag" is not a register but a pointer to a register, better rename
-it. There is a "u64 reg_iflag" in the same function already, but in a
-different scope. Why not make it a u32 instead of a void?
+Is this needed or not?
 
->  	enum can_state last_state =3D priv->can.state;
-> =20
->  	/* reception interrupt */
-> @@ -870,10 +879,18 @@ static irqreturn_t flexcan_irq(int irq, void *dev=
-_id)
->  		}
->  	}
-> =20
-> -	reg_iflag2 =3D priv->read(&regs->iflag2);
-> +	if (priv->tx_mb_idx >=3D FLEXCAN_IFLAG1_MB_NUM) {
-> +		reg_tx_iflag =3D priv->read(&regs->iflag2);
-> +		tx_iflag_idx =3D FLEXCAN_IFLAG2_MB(priv->tx_mb_idx);
-> +		reg_iflag =3D &regs->iflag2;
-> +	} else {
-> +		reg_tx_iflag =3D priv->read(&regs->iflag1);
-> +		tx_iflag_idx =3D FLEXCAN_IFLAG1_MB(priv->tx_mb_idx);
-> +		reg_iflag =3D &regs->iflag1;
-> +	}
-> =20
->  	/* transmission complete interrupt */
-> -	if (reg_iflag2 & FLEXCAN_IFLAG_MB(priv->tx_mb_idx)) {
-> +	if (reg_tx_iflag & tx_iflag_idx) {
->  		u32 reg_ctrl =3D priv->read(&priv->tx_mb->can_ctrl);
-> =20
->  		handled =3D IRQ_HANDLED;
-> @@ -885,7 +902,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_i=
-d)
->  		/* after sending a RTR frame MB is in RX mode */
->  		priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
->  			    &priv->tx_mb->can_ctrl);
-> -		priv->write(FLEXCAN_IFLAG_MB(priv->tx_mb_idx), &regs->iflag2);
-> +		priv->write(tx_iflag_idx, reg_iflag);
->  		netif_wake_queue(dev);
->  	}
-> =20
-> @@ -1244,8 +1261,13 @@ static int flexcan_open(struct net_device *dev)
->  	priv->tx_mb_idx =3D priv->mb_count - 1;
->  	priv->tx_mb =3D flexcan_get_mb(priv, priv->tx_mb_idx);
-> =20
-> -	priv->reg_imask1_default =3D 0;
-> -	priv->reg_imask2_default =3D FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
-> +	if (priv->tx_mb_idx >=3D FLEXCAN_IFLAG1_MB_NUM) {
-> +		priv->reg_imask1_default =3D 0;
-> +		priv->reg_imask2_default =3D FLEXCAN_IFLAG2_MB(priv->tx_mb_idx);
-> +	} else {
-> +		priv->reg_imask1_default =3D FLEXCAN_IFLAG1_MB(priv->tx_mb_idx);
-> +		priv->reg_imask2_default =3D 0;
-> +	}
-> =20
->  	priv->offload.mailbox_read =3D flexcan_mailbox_read;
-> =20
+> +                reg =3D <0x43c30000 0x10000>;
+> +            };
+> +            CTU_CAN_FD_1: CTU_CAN_FD@43c70000 {
+> +                compatible =3D "ctu,ctucanfd";
+> +                interrupt-parent =3D <&intc>;
+> +                interrupts =3D <0 31 4>;
+> +                clocks =3D <&clkc 15>;
+> +                //clock-names =3D "can_clk";
+
+Is this needed or not?
+
+> +                reg =3D <0x43c70000 0x10000>;
+> +            };
+> +        };
+> +    };
+> +};
 >=20
 
 Marc
@@ -168,23 +204,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---zgwkDLGLmV2tiDDHkTxnm9pBa7hK27aPF--
+--QnSscz5Zs0qqsxAkkiEaKOvhQZGotQDuG--
 
---rHzSW3w6iy4aDzcweX6WrcfMFAxHWKe9Q
+--zXEJeE1ITuIOqdCWX0TUTCelucyuEsGc3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlx2mK0ACgkQWsYho5Hk
-nSDItAf/Tatpm6THsskAxHwTjMqsWpGTrRfXyNO7aYTMa4m7Td0IEjmxQ3TLguN7
-Zfuo4zdLHI0iEJQrA5tyxHHmtJLhztV58l/ZTZG8yzL05R1pklxfDFxL8/+5gxjm
-T2bTcKJN/kKDYTYQloklUaTEQqZLt5RPIYNW3ByyAcEyDS21vhDq8aQ2JoAY9+VF
-bvOQmmTBzFG+GMj8vm4u3B6Y7FYYu2F4/IRa3BtMdIV+ZpB6LlOLWEMCa+sCQp56
-50YeFAXbHq+22CX8VnzPwL6xz3w41xfGbBVDD2PeC6pFR1PUiPwnpOpHJ8n7lRbk
-tjTySTzgzp9jDVCS9XPjWH/kGeLi0g==
-=KmaZ
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlx2oucACgkQWsYho5Hk
+nSCZyggAmrE02FBYWH32e+Zyq4jzyQDmdlA1USNSxc6FgBIwTbeJKEnTTyYccuXt
+9UVc7bmeqReE09pUALucpwb0icP7fTETNl7CIVivh+DF4IHkOLcu1qmf42DuLEwf
+RNoAfOXB/70XbuN1TDffI97YtAMxfxBDE0ZRSv1MnFL2Pb+oO7EvX852bLt7PO54
+yIMQU6PzeM11W1SXAJnoDGDYU5Clo5SD+p35bcSFzui+h8fdh7Sr3Kc+HmDZ6iZ9
+5v3jMhTi710D6LxrRttQ4DshX5zxH4Uqk2Y6Cttdh/UYXMfQUwRroBjSeBclxVs3
+pSv/37EWnlKSlmuGTnXDQKKE8Awsyw==
+=fyDO
 -----END PGP SIGNATURE-----
 
---rHzSW3w6iy4aDzcweX6WrcfMFAxHWKe9Q--
+--zXEJeE1ITuIOqdCWX0TUTCelucyuEsGc3--
