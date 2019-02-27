@@ -1,22 +1,22 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V4] can: flexcan: implement can Runtime PM
-Date: Wed, 27 Feb 2019 11:35:16 +0100
-Message-ID: <433080fe-4266-c140-1a1f-078480b8bf7b@pengutronix.de>
-References: <20181130085119.7948-1-qiangqing.zhang@nxp.com>
+Subject: Re: [PATCH] can: flexcan: add TX support for variable payload size
+Date: Wed, 27 Feb 2019 15:03:25 +0100
+Message-ID: <cb0bf438-e3c3-5591-dcf7-8802346feefc@pengutronix.de>
+References: <20181212064419.18613-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="LucLFBBEh0yyiadEaVzkNGtzk8ZvF9HYd"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20181130085119.7948-1-qiangqing.zhang@nxp.com>
-Sender: netdev-owner@vger.kernel.org
+ boundary="rHzSW3w6iy4aDzcweX6WrcfMFAxHWKe9Q"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181212064419.18613-1-qiangqing.zhang@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Aisheng DONG <aisheng.dong@nxp.com>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LucLFBBEh0yyiadEaVzkNGtzk8ZvF9HYd
-Content-Type: multipart/mixed; boundary="dO1zM7kpYBVUYxlJzM6hyzrGfWmF8vsRr";
+--rHzSW3w6iy4aDzcweX6WrcfMFAxHWKe9Q
+Content-Type: multipart/mixed; boundary="zgwkDLGLmV2tiDDHkTxnm9pBa7hK27aPF";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: Joakim Zhang <qiangqing.zhang@nxp.com>,
@@ -24,364 +24,138 @@ To: Joakim Zhang <qiangqing.zhang@nxp.com>,
 Cc: "wg@grandegger.com" <wg@grandegger.com>,
  "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- dl-linux-imx <linux-imx@nxp.com>, Aisheng DONG <aisheng.dong@nxp.com>
-Message-ID: <433080fe-4266-c140-1a1f-078480b8bf7b@pengutronix.de>
-Subject: Re: [PATCH V4] can: flexcan: implement can Runtime PM
-References: <20181130085119.7948-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20181130085119.7948-1-qiangqing.zhang@nxp.com>
+ dl-linux-imx <linux-imx@nxp.com>
+Message-ID: <cb0bf438-e3c3-5591-dcf7-8802346feefc@pengutronix.de>
+Subject: Re: [PATCH] can: flexcan: add TX support for variable payload size
+References: <20181212064419.18613-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20181212064419.18613-1-qiangqing.zhang@nxp.com>
 
---dO1zM7kpYBVUYxlJzM6hyzrGfWmF8vsRr
+--zgwkDLGLmV2tiDDHkTxnm9pBa7hK27aPF
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-On 11/30/18 9:53 AM, Joakim Zhang wrote:
-> From: Aisheng Dong <aisheng.dong@nxp.com>
+On 12/12/18 7:46 AM, Joakim Zhang wrote:
+> Now the FlexCAN driver always use last mailbox for TX, it will work wel=
+l
+> when MB payload size is 8/16 bytes.
+> TX mailbox would change to 13 when MB payload size is 64 bytes to
+> support CANFD. So we may need to set iflag register to add support for
+> variable payload size.
 >=20
-> Flexcan will be disabled during suspend if no wakeup function required =
-and
-> enabled after resume accordingly. During this period, we could explicit=
-ly
-> disable clocks.
-> Since PM is optional, the clock is enabled at probe to guarante the
-> clock is running when PM is not enabled in the kernel.
->=20
-> Implement Runtime PM which will:
-> 1) Without CONFIG_PM, clock is running whether Flexcan up or down.
-> 2) With CONFIG_PM, clock enabled while Flexcan up and disabled when
->    Flexcan down.
-> 3) Disable clock when do system suspend and enable clock while system
->    resume.
-> 4) Make Power Domain framework be able to shutdown the corresponding
->    power domain of this device.
->=20
-> Signed-off-by: Aisheng Dong <aisheng.dong@nxp.com>
 > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 > ---
-> ChangeLog:
-> V1->V2:
-> 	*rebased on patch "can: flexcan: add self wakeup support".
-> V2->V3:
-> 	*fix device fails to probe without CONFIG_PM.
-> V3->V4:
-> 	*runtime pm enable should ahead of registering device.
-> 	*disable device even if keeping the clocks on.
-> ---
->  drivers/net/can/flexcan.c | 111 +++++++++++++++++++++++++-------------=
+>  drivers/net/can/flexcan.c | 42 +++++++++++++++++++++++++++++----------=
 
->  1 file changed, 73 insertions(+), 38 deletions(-)
+>  1 file changed, 32 insertions(+), 10 deletions(-)
 >=20
 > diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index 0f36eafe3ac1..cad42f20cfe5 100644
+> index 0f36eafe3ac1..13fd085fcf84 100644
 > --- a/drivers/net/can/flexcan.c
 > +++ b/drivers/net/can/flexcan.c
-> @@ -24,6 +24,7 @@
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/regmap.h>
-> =20
-> @@ -277,6 +278,7 @@ struct flexcan_priv {
->  	u32 reg_imask1_default;
->  	u32 reg_imask2_default;
-> =20
-> +	struct device *dev;
->  	struct clk *clk_ipg;
->  	struct clk *clk_per;
->  	const struct flexcan_devtype_data *devtype_data;
-> @@ -444,6 +446,27 @@ static inline void flexcan_error_irq_disable(const=
- struct flexcan_priv *priv)
->  	priv->write(reg_ctrl, &regs->ctrl);
->  }
-> =20
-> +static int flexcan_clks_enable(const struct flexcan_priv *priv)
-> +{
-> +	int err;
-> +
-> +	err =3D clk_prepare_enable(priv->clk_ipg);
-> +	if (err)
-> +		return err;
-> +
-> +	err =3D clk_prepare_enable(priv->clk_per);
-> +	if (err)
-> +		clk_disable_unprepare(priv->clk_ipg);
-> +
-> +	return err;
-> +}
-> +
-> +static void flexcan_clks_disable(const struct flexcan_priv *priv)
-> +{
-> +	clk_disable_unprepare(priv->clk_ipg);
-> +	clk_disable_unprepare(priv->clk_per);
-
-The original code first disabled the per then the ipg.
-
-> +}
-> +
->  static inline int flexcan_transceiver_enable(const struct flexcan_priv=
- *priv)
->  {
->  	if (!priv->reg_xceiver)
-> @@ -570,19 +593,13 @@ static int flexcan_get_berr_counter(const struct =
-net_device *dev,
->  	const struct flexcan_priv *priv =3D netdev_priv(dev);
->  	int err;
-> =20
-> -	err =3D clk_prepare_enable(priv->clk_ipg);
-> -	if (err)
-> +	err =3D pm_runtime_get_sync(priv->dev);
-> +	if (err < 0)
->  		return err;
-> =20
-> -	err =3D clk_prepare_enable(priv->clk_per);
-> -	if (err)
-> -		goto out_disable_ipg;
-> -
->  	err =3D __flexcan_get_berr_counter(dev, bec);
-> =20
-> -	clk_disable_unprepare(priv->clk_per);
-> - out_disable_ipg:
-> -	clk_disable_unprepare(priv->clk_ipg);
-> +	pm_runtime_put(priv->dev);
-> =20
->  	return err;
->  }
-> @@ -1215,17 +1232,13 @@ static int flexcan_open(struct net_device *dev)=
-
->  	struct flexcan_priv *priv =3D netdev_priv(dev);
->  	int err;
-> =20
-> -	err =3D clk_prepare_enable(priv->clk_ipg);
-> -	if (err)
-> +	err =3D pm_runtime_get_sync(priv->dev);
-> +	if (err < 0)
->  		return err;
-> =20
-> -	err =3D clk_prepare_enable(priv->clk_per);
-> -	if (err)
-> -		goto out_disable_ipg;
-> -
->  	err =3D open_candev(dev);
->  	if (err)
-> -		goto out_disable_per;
-> +		goto out_disable_clks;
-
-nitpick: you do a pm_runtime_put, so rename the label...
-
-> =20
->  	err =3D request_irq(dev->irq, flexcan_irq, IRQF_SHARED, dev->name, de=
-v);
->  	if (err)
-> @@ -1288,10 +1301,8 @@ static int flexcan_open(struct net_device *dev)
->  	free_irq(dev->irq, dev);
->   out_close:
->  	close_candev(dev);
-> - out_disable_per:
-> -	clk_disable_unprepare(priv->clk_per);
-> - out_disable_ipg:
-> -	clk_disable_unprepare(priv->clk_ipg);
-> + out_disable_clks:
-> +	pm_runtime_put(priv->dev);
-
-=2E..to out_runtime_put
-
-> =20
->  	return err;
->  }
-> @@ -1306,10 +1317,9 @@ static int flexcan_close(struct net_device *dev)=
-
-> =20
->  	can_rx_offload_del(&priv->offload);
->  	free_irq(dev->irq, dev);
-> -	clk_disable_unprepare(priv->clk_per);
-> -	clk_disable_unprepare(priv->clk_ipg);
-> =20
->  	close_candev(dev);
-> +	pm_runtime_put(priv->dev);
-> =20
->  	can_led_event(dev, CAN_LED_EVENT_STOP);
-> =20
-> @@ -1349,18 +1359,14 @@ static int register_flexcandev(struct net_devic=
-e *dev)
+> @@ -141,7 +141,9 @@
+>  #define FLEXCAN_TX_MB_RESERVED_OFF_FIFO		8
+>  #define FLEXCAN_TX_MB_RESERVED_OFF_TIMESTAMP	0
+>  #define FLEXCAN_RX_MB_OFF_TIMESTAMP_FIRST	(FLEXCAN_TX_MB_RESERVED_OFF_=
+TIMESTAMP + 1)
+> -#define FLEXCAN_IFLAG_MB(x)		BIT((x) & 0x1f)
+> +#define FLEXCAN_IFLAG1_MB_NUM		32
+> +#define FLEXCAN_IFLAG1_MB(x)		BIT(x)
+> +#define FLEXCAN_IFLAG2_MB(x)		BIT((x) & 0x1f)
+>  #define FLEXCAN_IFLAG_RX_FIFO_OVERFLOW	BIT(7)
+>  #define FLEXCAN_IFLAG_RX_FIFO_WARN	BIT(6)
+>  #define FLEXCAN_IFLAG_RX_FIFO_AVAILABLE	BIT(5)
+> @@ -822,9 +824,15 @@ static inline u64 flexcan_read_reg_iflag_rx(struct=
+ flexcan_priv *priv)
 >  	struct flexcan_regs __iomem *regs =3D priv->regs;
->  	u32 reg, err;
+>  	u32 iflag1, iflag2;
 > =20
-> -	err =3D clk_prepare_enable(priv->clk_ipg);
-> +	err =3D flexcan_clks_enable(priv);
->  	if (err)
->  		return err;
-> =20
-> -	err =3D clk_prepare_enable(priv->clk_per);
-> -	if (err)
-> -		goto out_disable_ipg;
-> -
->  	/* select "bus clock", chip must be disabled */
->  	err =3D flexcan_chip_disable(priv);
->  	if (err)
-> -		goto out_disable_per;
-> +		goto out_disable_clks;
+> -	iflag2 =3D priv->read(&regs->iflag2) & priv->reg_imask2_default &
+> -		~FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
+> -	iflag1 =3D priv->read(&regs->iflag1) & priv->reg_imask1_default;
+> +	if (priv->tx_mb_idx >=3D FLEXCAN_IFLAG1_MB_NUM) {
+> +		iflag2 =3D priv->read(&regs->iflag2) & priv->reg_imask2_default &
+> +			~FLEXCAN_IFLAG2_MB(priv->tx_mb_idx);
+> +		iflag1 =3D priv->read(&regs->iflag1) & priv->reg_imask1_default;
+> +	} else {
+> +		iflag2 =3D priv->read(&regs->iflag2) & priv->reg_imask2_default;
+> +		iflag1 =3D priv->read(&regs->iflag1) & priv->reg_imask1_default &
+> +			~FLEXCAN_IFLAG1_MB(priv->tx_mb_idx);
+> +	}
 
-nitpick: The function is called lexcan_clks_disable(), so let's rename
-the label accordingly.
-
->  	reg =3D priv->read(&regs->ctrl);
->  	reg |=3D FLEXCAN_CTRL_CLK_SRC;
->  	priv->write(reg, &regs->ctrl);
-> @@ -1389,14 +1395,13 @@ static int register_flexcandev(struct net_devic=
-e *dev)
-> =20
->  	err =3D register_candev(dev);
-
-No error handling?
+I just noticed, that FLEXCAN_IFLAGx_MB(priv->tx_mb_idx) should already
+be part of the corresponding imaskx_default. See flexcan_open(). So we
+can remove it completely here, right?
 
 > =20
-> -	/* disable core and turn off clocks */
-
-Better move the pm_runtime_put() here and adjust the comment.
-
-> - out_chip_disable:
->  	flexcan_chip_disable(priv);
-> - out_disable_per:
-> -	clk_disable_unprepare(priv->clk_per);
-> - out_disable_ipg:
-> -	clk_disable_unprepare(priv->clk_ipg);
-> +	return 0;
-> =20
-> + out_chip_disable:
-> +	flexcan_chip_disable(priv);
-> + out_disable_clks:
-> +	flexcan_clks_disable(priv);
->  	return err;
+>  	return (u64)iflag2 << 32 | iflag1;
 >  }
-> =20
-> @@ -1556,6 +1561,7 @@ static int flexcan_probe(struct platform_device *=
-pdev)
->  		priv->write =3D flexcan_write_le;
->  	}
-> =20
-> +	priv->dev =3D &pdev->dev;
->  	priv->can.clock.freq =3D clock_freq;
->  	priv->can.bittiming_const =3D &flexcan_bittiming_const;
->  	priv->can.do_set_mode =3D flexcan_set_mode;
-> @@ -1569,6 +1575,10 @@ static int flexcan_probe(struct platform_device =
-*pdev)
->  	priv->devtype_data =3D devtype_data;
->  	priv->reg_xceiver =3D reg_xceiver;
-> =20
-> +	pm_runtime_get_noresume(&pdev->dev);
-> +	pm_runtime_set_active(&pdev->dev);
-> +	pm_runtime_enable(&pdev->dev);
-> +
->  	err =3D register_flexcandev(dev);
->  	if (err) {
->  		dev_err(&pdev->dev, "registering netdev failed\n");
-> @@ -1586,6 +1596,7 @@ static int flexcan_probe(struct platform_device *=
-pdev)
->  	dev_info(&pdev->dev, "device registered (reg_base=3D%p, irq=3D%d)\n",=
+> @@ -836,7 +844,8 @@ static irqreturn_t flexcan_irq(int irq, void *dev_i=
+d)
+>  	struct flexcan_priv *priv =3D netdev_priv(dev);
+>  	struct flexcan_regs __iomem *regs =3D priv->regs;
+>  	irqreturn_t handled =3D IRQ_NONE;
+> -	u32 reg_iflag2, reg_esr;
+> +	u32 reg_tx_iflag, tx_iflag_idx, reg_esr;
 
->  		 priv->regs, dev->irq);
+"tx_iflag_idx" is not an index (going from 0...63) but a bit-mask.
+
+> +	void __iomem *reg_iflag;
+
+"reg_iflag" is not a register but a pointer to a register, better rename
+it. There is a "u64 reg_iflag" in the same function already, but in a
+different scope. Why not make it a u32 instead of a void?
+
+>  	enum can_state last_state =3D priv->can.state;
 > =20
-> +	pm_runtime_put(&pdev->dev);
->  	return 0;
-> =20
->   failed_register:
-> @@ -1598,6 +1609,7 @@ static int flexcan_remove(struct platform_device =
-*pdev)
->  	struct net_device *dev =3D platform_get_drvdata(pdev);
-> =20
->  	unregister_flexcandev(dev);
-> +	pm_runtime_disable(&pdev->dev);
->  	free_candev(dev);
-> =20
->  	return 0;
-> @@ -1607,7 +1619,7 @@ static int __maybe_unused flexcan_suspend(struct =
-device *device)
->  {
->  	struct net_device *dev =3D dev_get_drvdata(device);
->  	struct flexcan_priv *priv =3D netdev_priv(dev);
-> -	int err;
-> +	int err =3D 0;
-> =20
->  	if (netif_running(dev)) {
->  		/* if wakeup is enabled, enter stop mode
-> @@ -1620,20 +1632,22 @@ static int __maybe_unused flexcan_suspend(struc=
-t device *device)
->  			err =3D flexcan_chip_disable(priv);
->  			if (err)
->  				return err;
-> +
-> +			err =3D pm_runtime_force_suspend(device);
->  		}
->  		netif_stop_queue(dev);
->  		netif_device_detach(dev);
->  	}
->  	priv->can.state =3D CAN_STATE_SLEEPING;
-> =20
-> -	return 0;
-> +	return err;
->  }
-> =20
->  static int __maybe_unused flexcan_resume(struct device *device)
->  {
->  	struct net_device *dev =3D dev_get_drvdata(device);
->  	struct flexcan_priv *priv =3D netdev_priv(dev);
-> -	int err;
-> +	int err =3D 0;
-> =20
->  	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
->  	if (netif_running(dev)) {
-> @@ -1642,14 +1656,34 @@ static int __maybe_unused flexcan_resume(struct=
- device *device)
->  		if (device_may_wakeup(device)) {
->  			disable_irq_wake(dev->irq);
->  		} else {
-> -			err =3D flexcan_chip_enable(priv);
-> +			err =3D pm_runtime_force_resume(device);
->  			if (err)
->  				return err;
-> +
-> +			err =3D flexcan_chip_enable(priv);
+>  	/* reception interrupt */
+> @@ -870,10 +879,18 @@ static irqreturn_t flexcan_irq(int irq, void *dev=
+_id)
 >  		}
 >  	}
-> +	return err;
-> +}
-> +
-> +static int __maybe_unused flexcan_runtime_suspend(struct device *devic=
-e)
-> +{
-> +	struct net_device *dev =3D dev_get_drvdata(device);
-> +	struct flexcan_priv *priv =3D netdev_priv(dev);
-> +
-> +	flexcan_clks_disable(priv);
-> +
->  	return 0;
->  }
 > =20
-> +static int __maybe_unused flexcan_runtime_resume(struct device *device=
-)
-> +{
-> +	struct net_device *dev =3D dev_get_drvdata(device);
-> +	struct flexcan_priv *priv =3D netdev_priv(dev);
-> +
-> +	return flexcan_clks_enable(priv);
-> +}
-> +
->  static int __maybe_unused flexcan_noirq_suspend(struct device *device)=
-
->  {
->  	struct net_device *dev =3D dev_get_drvdata(device);
-> @@ -1676,6 +1710,7 @@ static int __maybe_unused flexcan_noirq_resume(st=
-ruct device *device)
+> -	reg_iflag2 =3D priv->read(&regs->iflag2);
+> +	if (priv->tx_mb_idx >=3D FLEXCAN_IFLAG1_MB_NUM) {
+> +		reg_tx_iflag =3D priv->read(&regs->iflag2);
+> +		tx_iflag_idx =3D FLEXCAN_IFLAG2_MB(priv->tx_mb_idx);
+> +		reg_iflag =3D &regs->iflag2;
+> +	} else {
+> +		reg_tx_iflag =3D priv->read(&regs->iflag1);
+> +		tx_iflag_idx =3D FLEXCAN_IFLAG1_MB(priv->tx_mb_idx);
+> +		reg_iflag =3D &regs->iflag1;
+> +	}
 > =20
->  static const struct dev_pm_ops flexcan_pm_ops =3D {
->  	SET_SYSTEM_SLEEP_PM_OPS(flexcan_suspend, flexcan_resume)
-> +	SET_RUNTIME_PM_OPS(flexcan_runtime_suspend, flexcan_runtime_resume, N=
-ULL)
->  	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(flexcan_noirq_suspend, flexcan_noirq_re=
-sume)
->  };
+>  	/* transmission complete interrupt */
+> -	if (reg_iflag2 & FLEXCAN_IFLAG_MB(priv->tx_mb_idx)) {
+> +	if (reg_tx_iflag & tx_iflag_idx) {
+>  		u32 reg_ctrl =3D priv->read(&priv->tx_mb->can_ctrl);
+> =20
+>  		handled =3D IRQ_HANDLED;
+> @@ -885,7 +902,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_i=
+d)
+>  		/* after sending a RTR frame MB is in RX mode */
+>  		priv->write(FLEXCAN_MB_CODE_TX_INACTIVE,
+>  			    &priv->tx_mb->can_ctrl);
+> -		priv->write(FLEXCAN_IFLAG_MB(priv->tx_mb_idx), &regs->iflag2);
+> +		priv->write(tx_iflag_idx, reg_iflag);
+>  		netif_wake_queue(dev);
+>  	}
+> =20
+> @@ -1244,8 +1261,13 @@ static int flexcan_open(struct net_device *dev)
+>  	priv->tx_mb_idx =3D priv->mb_count - 1;
+>  	priv->tx_mb =3D flexcan_get_mb(priv, priv->tx_mb_idx);
+> =20
+> -	priv->reg_imask1_default =3D 0;
+> -	priv->reg_imask2_default =3D FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
+> +	if (priv->tx_mb_idx >=3D FLEXCAN_IFLAG1_MB_NUM) {
+> +		priv->reg_imask1_default =3D 0;
+> +		priv->reg_imask2_default =3D FLEXCAN_IFLAG2_MB(priv->tx_mb_idx);
+> +	} else {
+> +		priv->reg_imask1_default =3D FLEXCAN_IFLAG1_MB(priv->tx_mb_idx);
+> +		priv->reg_imask2_default =3D 0;
+> +	}
+> =20
+>  	priv->offload.mailbox_read =3D flexcan_mailbox_read;
 > =20
 >=20
 
@@ -394,23 +168,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---dO1zM7kpYBVUYxlJzM6hyzrGfWmF8vsRr--
+--zgwkDLGLmV2tiDDHkTxnm9pBa7hK27aPF--
 
---LucLFBBEh0yyiadEaVzkNGtzk8ZvF9HYd
+--rHzSW3w6iy4aDzcweX6WrcfMFAxHWKe9Q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlx2Z+QACgkQWsYho5Hk
-nSBa8wgAgaakeXyJ4+SfYMRKR37iNb2mMGZPj545mI66fqFo+TzZDxvaG0QHFTha
-jO9HReg9Y+8v186vWtFzsNxuQ3ZJQFFqoC0KiPciD2kYJpjfK5lbxMuvA7MMadod
-Xrqn2NLrwSpdm4OYH4ocu/AC/wqBhD0+IO+jvr1y0zJRjoMRxidkOo54tp74Z0Fd
-P+G5mdM7+SwfKdgT1WbV2bVlPnS/Z8TGfPMP572kwnvXV+L3/13mRdSw5ofXA9I4
-IjXkHhdoVd/Add8aV74V4lX/hFmymdDLvyC4nmtLdoGmWQbRDrPeO/pZxW3z7QSd
-EwSj6dTpWdJ6cGRuktRmPIdM4ACZSQ==
-=OAgi
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlx2mK0ACgkQWsYho5Hk
+nSDItAf/Tatpm6THsskAxHwTjMqsWpGTrRfXyNO7aYTMa4m7Td0IEjmxQ3TLguN7
+Zfuo4zdLHI0iEJQrA5tyxHHmtJLhztV58l/ZTZG8yzL05R1pklxfDFxL8/+5gxjm
+T2bTcKJN/kKDYTYQloklUaTEQqZLt5RPIYNW3ByyAcEyDS21vhDq8aQ2JoAY9+VF
+bvOQmmTBzFG+GMj8vm4u3B6Y7FYYu2F4/IRa3BtMdIV+ZpB6LlOLWEMCa+sCQp56
+50YeFAXbHq+22CX8VnzPwL6xz3w41xfGbBVDD2PeC6pFR1PUiPwnpOpHJ8n7lRbk
+tjTySTzgzp9jDVCS9XPjWH/kGeLi0g==
+=KmaZ
 -----END PGP SIGNATURE-----
 
---LucLFBBEh0yyiadEaVzkNGtzk8ZvF9HYd--
+--rHzSW3w6iy4aDzcweX6WrcfMFAxHWKe9Q--
