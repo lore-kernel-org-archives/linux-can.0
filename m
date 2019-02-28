@@ -1,79 +1,35 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH 2/2] can: flexcan: add ISO CAN FD feature support
-Date: Thu, 28 Feb 2019 06:57:18 +0000
-Message-ID: <20190228065506.3488-3-qiangqing.zhang@nxp.com>
-References: <20190228065506.3488-1-qiangqing.zhang@nxp.com>
+From: =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: net: can: binding for CTU CAN FD
+ open-source IP core.
+Date: Thu, 28 Feb 2019 11:13:39 +0100
+Message-ID: <e0cbca72-d30a-c4e5-a935-30933a09ed5f@ysoft.com>
+References: <cover.1551287365.git.pisa@cmp.felk.cvut.cz>
+ <2b529d1574916b50e7647281af87df33442b7549.1551287365.git.pisa@cmp.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190228065506.3488-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <2b529d1574916b50e7647281af87df33442b7549.1551287365.git.pisa@cmp.felk.cvut.cz>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
+To: pisa@cmp.felk.cvut.cz
+Cc: devicetree@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org, wg@grandegger.com, davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com, ondrej.ille@gmail.com
 List-Id: linux-can.vger.kernel.org
 
-ISO CAN FD is introduced to increase the failture detection capability
-than non-ISO CAN FD. The non-ISO CAN FD is still supported by FlexCAN so
-that it can be used mainly during an intermediate phase, for evaluation
-and development purposes.
+On 27. 02. 19 18:26, pisa@cmp.felk.cvut.cz wrote:
+> From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 
-Therefore, it is strongly recommended to configure FlexCAN to the ISO
-CAN FD protocol by setting the ISOCANFDEN field in the CTRL2 register.
+Ahoj Pavle,
 
-Test Command:
-ISO FD MODE:
-ip link set can0 type can bitrate 1000000 dbitrate 4000000 fd on
-fd-non-iso off
+I can not comment on the content of the binding but it is a good
+practice to add at least a short description to each commit even
+if it should be the subject said differently.
 
-non-ISO FD MODE:
-ip link set can0 type can bitrate 1000000 dbitrate 4000000 fd on
-fd-non-iso on
+Anyway, hats off to all of you, great work!
 
-NOTE: if you only set "fd on", driver will use ISO FD MODE by default.
+Greetings back to my alma mater,
+Michal
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- drivers/net/can/flexcan.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 4ba35f9eb515..25e077a68db9 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -91,6 +91,7 @@
- #define FLEXCAN_CTRL2_MRP		BIT(18)
- #define FLEXCAN_CTRL2_RRS		BIT(17)
- #define FLEXCAN_CTRL2_EACEN		BIT(16)
-+#define FLEXCAN_CTRL2_ISOCANFDEN	BIT(12)
-=20
- /* FLEXCAN memory error control register (MECR) bits */
- #define FLEXCAN_MECR_ECRWRDIS		BIT(31)
-@@ -1227,6 +1228,12 @@ static int flexcan_chip_start(struct net_device *dev=
-)
- 		priv->write(reg_fdctrl, &regs->fdctrl);
- 		reg_mcr =3D priv->read(&regs->mcr);
- 		priv->write(reg_mcr | FLEXCAN_MCR_FDEN, &regs->mcr);
-+
-+		reg_ctrl2 =3D flexcan_read(&regs->ctrl2);
-+		if (!(priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO))
-+			flexcan_write(reg_ctrl2 | FLEXCAN_CTRL2_ISOCANFDEN, &regs->ctrl2);
-+		else
-+			flexcan_write(reg_ctrl2 & ~FLEXCAN_CTRL2_ISOCANFDEN, &regs->ctrl2);
- 	}
-=20
- 	if ((priv->can.ctrlmode_supported & CAN_CTRLMODE_FD) &&
-@@ -1729,7 +1736,7 @@ static int flexcan_probe(struct platform_device *pdev=
-)
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_TIMESTAMP_SUPPORT_FD) {
- 		if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP) {
- 			priv->offload.is_canfd =3D true;
--			priv->can.ctrlmode_supported |=3D CAN_CTRLMODE_FD;
-+			priv->can.ctrlmode_supported |=3D CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON=
-_ISO;
- 			priv->can.bittiming_const =3D &flexcan_fd_bittiming_const;
- 			priv->can.data_bittiming_const =3D &flexcan_fd_data_bittiming_const;
- 		} else {
---=20
-2.17.1
+> 
+> Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+> ---
