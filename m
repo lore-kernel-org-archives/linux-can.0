@@ -1,53 +1,70 @@
-From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-Subject: Re: [PATCH] can: ti_hecc: fix close when napi poll is active
-Date: Fri, 01 Mar 2019 15:04:09 +0000
-Message-ID: <yw1xef7q63h2.fsf@mansr.com>
-References: <1523132500-26070-1-git-send-email-jhofstee@victronenergy.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v6 3/4] dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+Date: Fri, 1 Mar 2019 12:50:42 -0600
+Message-ID: <20190301185043.9037-3-dmurphy@ti.com>
+References: <20190301185043.9037-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1523132500-26070-1-git-send-email-jhofstee@victronenergy.com>
-        (Jeroen Hofstee's message of "Sat, 7 Apr 2018 22:21:39 +0200")
-Sender: netdev-owner@vger.kernel.org
-To: Jeroen Hofstee <jhofstee@victronenergy.com>
-Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190301185043.9037-1-dmurphy@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-Jeroen Hofstee <jhofstee@victronenergy.com> writes:
+DT binding documentation for TI TCAN4x5x driver.
 
-> When closing this CAN interface while napi poll is active, for example with:
-> `ip link set can0 down` several interfaces freeze. This seemed to be caused
-> by napi_disable called from ti_hecc_close expecting the scheduled probe to
-> either return quota or call napi_complete. Since the poll functions has a
-> check for netif_running it returns 0 and doesn't call napi_complete and hence
-> violates the napi its expectation.
->
-> So remove this check, so either napi_complete is called or quota is returned.
->
-> Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
-> ---
->  drivers/net/can/ti_hecc.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-> index db6ea93..42813d3 100644
-> --- a/drivers/net/can/ti_hecc.c
-> +++ b/drivers/net/can/ti_hecc.c
-> @@ -603,9 +603,6 @@ static int ti_hecc_rx_poll(struct napi_struct *napi, int quota)
->  	u32 mbx_mask;
->  	unsigned long pending_pkts, flags;
->
-> -	if (!netif_running(ndev))
-> -		return 0;
-> -
->  	while ((pending_pkts = hecc_read(priv, HECC_CANRMP)) &&
->  		num_pkts < quota) {
->  		mbx_mask = BIT(priv->rx_next); /* next rx mailbox to process */
-> -- 
-> 2.7.4
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
 
-This seems to have been lost or forgotten.
+v6 - No changes - https://lore.kernel.org/patchwork/patch/1042445/
 
+ .../devicetree/bindings/net/can/tcan4x5x.txt  | 37 +++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+
+diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+new file mode 100644
+index 000000000000..781c19887538
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -0,0 +1,37 @@
++Texas Instruments TCAN4x5x CAN Controller
++================================================
++
++This file provides device node information for the TCAN4x5x interface contains.
++
++Required properties:
++	- compatible: "ti,tcan4x5x"
++	- reg: 0
++	- #address-cells: 1
++	- #size-cells: 0
++	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
++			     operate at should be less than or equal to 18 MHz.
++	- data-ready-gpios: Interrupt GPIO for data and error reporting.
++	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
++	- device-state-gpios: Input GPIO that indicates if the device is in
++			      a sleep state or if the device is active.
++
++See Documentation/devicetree/bindings/net/can/m_can.txt for additional
++required property details.
++
++Optional properties:
++	- reset-gpios: Hardwired output GPIO. If not defined then software
++		       reset.
++
++Example:
++tcan4x5x: tcan4x5x@0 {
++		compatible = "ti,tcan4x5x";
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		spi-max-frequency = <10000000>;
++		bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
++		data-ready-gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
++		device-state-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
++		device-wake-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
++};
 -- 
-Måns Rullgård
+2.20.1.390.gb5101f9297
