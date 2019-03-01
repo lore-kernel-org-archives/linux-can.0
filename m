@@ -1,94 +1,53 @@
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: RE: [PATCH 3/3] dt-bindings: can: rcar_canfd: Document r8a774a1
- support
-Date: Fri, 1 Mar 2019 12:06:26 +0000
-Message-ID: <TYXPR01MB1775BCD55E8E4A66D1EBCADDC0760@TYXPR01MB1775.jpnprd01.prod.outlook.com>
-References: <1547736856-16539-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1547736856-16539-4-git-send-email-fabrizio.castro@bp.renesas.com>
+From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+Subject: Re: [PATCH] can: ti_hecc: fix close when napi poll is active
+Date: Fri, 01 Mar 2019 15:04:09 +0000
+Message-ID: <yw1xef7q63h2.fsf@mansr.com>
+References: <1523132500-26070-1-git-send-email-jhofstee@victronenergy.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1547736856-16539-4-git-send-email-fabrizio.castro@bp.renesas.com>
-Content-Language: en-US
+In-Reply-To: <1523132500-26070-1-git-send-email-jhofstee@victronenergy.com>
+        (Jeroen Hofstee's message of "Sat, 7 Apr 2018 22:21:39 +0200")
 Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Wolfgang Grandegger <wg@grandegger.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+To: Jeroen Hofstee <jhofstee@victronenergy.com>
+Cc: linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hello Marc,
+Jeroen Hofstee <jhofstee@victronenergy.com> writes:
 
-I am sorry to bother you.
-Do you think you can take this patch?
-
-Thanks,
-Fab
-
-> From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Sent: 17 January 2019 14:54
-> Subject: [PATCH 3/3] dt-bindings: can: rcar_canfd: Document r8a774a1 supp=
-ort
->=20
-> Document support for rcar_canfd on R8A774A1 SoC devices.
->=20
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> When closing this CAN interface while napi poll is active, for example with:
+> `ip link set can0 down` several interfaces freeze. This seemed to be caused
+> by napi_disable called from ti_hecc_close expecting the scheduled probe to
+> either return quota or call napi_complete. Since the poll functions has a
+> check for netif_running it returns 0 and doesn't call napi_complete and hence
+> violates the napi its expectation.
+>
+> So remove this check, so either napi_complete is called or quota is returned.
+>
+> Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
 > ---
-> This patch depends on:
-> https://patchwork.kernel.org/patch/10766781/
->=20
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 15 ++++++++--=
------
->  1 file changed, 8 insertions(+), 7 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> index 32f051f..fd353a9 100644
-> --- a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> @@ -4,6 +4,7 @@ Renesas R-Car CAN FD controller Device Tree Bindings
->  Required properties:
->  - compatible: Must contain one or more of the following:
->    - "renesas,rcar-gen3-canfd" for R-Car Gen3 and RZ/G2 compatible contro=
-llers.
-> +  - "renesas,r8a774a1-canfd" for R8A774A1 (RZ/G2M) compatible controller=
-.
->    - "renesas,r8a774c0-canfd" for R8A774C0 (RZ/G2E) compatible controller=
-.
->    - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller=
-.
->    - "renesas,r8a7796-canfd" for R8A7796 (R-Car M3-W) compatible controll=
-er.
-> @@ -29,13 +30,13 @@ The name of the child nodes are "channel0" and "chann=
-el1" respectively. Each
->  child node supports the "status" property only, which is used to
->  enable/disable the respective channel.
->=20
-> -Required properties for "renesas,r8a774c0-canfd", "renesas,r8a7795-canfd=
-",
-> -"renesas,r8a7796-canfd", "renesas,r8a77965-canfd", and "renesas,r8a77990=
--canfd"
-> -compatible:
-> -In R8A774C0, R8A7795, R8A7796, R8A77965, and R8A77990 SoCs, canfd clock =
-is a
-> -div6 clock and can be used by both CAN and CAN FD controller at the same=
- time.
-> -It needs to be scaled to maximum frequency if any of these controllers u=
-se it.
-> -This is done using the below properties:
-> +Required properties for "renesas,r8a774a1-canfd", "renesas,r8a774c0-canf=
-d",
-> +"renesas,r8a7795-canfd", "renesas,r8a7796-canfd", "renesas,r8a77965-canf=
-d", and
-> +"renesas,r8a77990-canfd" compatible:
-> +In R8A774A1, R8A774C0, R8A7795, R8A7796, R8A77965, and R8A77990 SoCs, ca=
-nfd
-> +clock is a div6 clock and can be used by both CAN and CAN FD controller =
-at the
-> +same time. It needs to be scaled to maximum frequency if any of these
-> +controllers use it. This is done using the below properties:
->=20
->  - assigned-clocks: phandle of canfd clock.
->  - assigned-clock-rates: maximum frequency of this clock.
-> --
+>  drivers/net/can/ti_hecc.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+> index db6ea93..42813d3 100644
+> --- a/drivers/net/can/ti_hecc.c
+> +++ b/drivers/net/can/ti_hecc.c
+> @@ -603,9 +603,6 @@ static int ti_hecc_rx_poll(struct napi_struct *napi, int quota)
+>  	u32 mbx_mask;
+>  	unsigned long pending_pkts, flags;
+>
+> -	if (!netif_running(ndev))
+> -		return 0;
+> -
+>  	while ((pending_pkts = hecc_read(priv, HECC_CANRMP)) &&
+>  		num_pkts < quota) {
+>  		mbx_mask = BIT(priv->rx_next); /* next rx mailbox to process */
+> -- 
 > 2.7.4
+
+This seems to have been lost or forgotten.
+
+-- 
+Måns Rullgård
