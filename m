@@ -1,7 +1,7 @@
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH RESEND 4/5] can: flexcan: add ISO CAN FD feature support
-Date: Wed, 6 Mar 2019 10:01:04 +0000
-Message-ID: <20190306095833.20922-5-qiangqing.zhang@nxp.com>
+Subject: [PATCH RESEND 5/5] can: flexcan: add imx8qm support
+Date: Wed, 6 Mar 2019 10:01:07 +0000
+Message-ID: <20190306095833.20922-6-qiangqing.zhang@nxp.com>
 References: <20190306095833.20922-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -11,60 +11,49 @@ In-Reply-To: <20190306095833.20922-1-qiangqing.zhang@nxp.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Aisheng Dong <aisheng.dong@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-ISO CAN FD is introduced to increase the failture detection capability
-than non-ISO CAN FD. The non-ISO CAN FD is still supported by FlexCAN so
-that it can be used mainly during an intermediate phase, for evaluation
-and development purposes.
+From: Dong Aisheng <aisheng.dong@nxp.com>
 
-Therefore, it is strongly recommended to configure FlexCAN to the ISO
-CAN FD protocol by setting the ISOCANFDEN field in the CTRL2 register.
+The Flexcan on i.MX8QM supports CAN FD protocol.
 
-NOTE: if you only set "fd on", driver will use ISO FD MODE by default.
-
+Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- drivers/net/can/flexcan.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 688bb09b8123..fca014bc530a 100644
+index fca014bc530a..49615cc42436 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -92,6 +92,7 @@
- #define FLEXCAN_CTRL2_MRP		BIT(18)
- #define FLEXCAN_CTRL2_RRS		BIT(17)
- #define FLEXCAN_CTRL2_EACEN		BIT(16)
-+#define FLEXCAN_CTRL2_ISOCANFDEN	BIT(12)
+@@ -346,6 +346,12 @@ static const struct flexcan_devtype_data fsl_imx6q_dev=
+type_data =3D {
+ 		FLEXCAN_QUIRK_SETUP_STOP_MODE,
+ };
 =20
- /* FLEXCAN memory error control register (MECR) bits */
- #define FLEXCAN_MECR_ECRWRDIS		BIT(31)
-@@ -1254,6 +1255,12 @@ static int flexcan_chip_start(struct net_device *dev=
-)
- 		priv->write(reg_fdctrl, &regs->fdctrl);
- 		reg_mcr =3D priv->read(&regs->mcr);
- 		priv->write(reg_mcr | FLEXCAN_MCR_FDEN, &regs->mcr);
++static struct flexcan_devtype_data fsl_imx8qm_devtype_data =3D {
++	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
++		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
++		FLEXCAN_QUIRK_TIMESTAMP_SUPPORT_FD,
++};
 +
-+		reg_ctrl2 =3D flexcan_read(&regs->ctrl2);
-+		if (!(priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO))
-+			flexcan_write(reg_ctrl2 | FLEXCAN_CTRL2_ISOCANFDEN, &regs->ctrl2);
-+		else
-+			flexcan_write(reg_ctrl2 & ~FLEXCAN_CTRL2_ISOCANFDEN, &regs->ctrl2);
- 	}
+ static const struct flexcan_devtype_data fsl_vf610_devtype_data =3D {
+ 	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
+@@ -1633,6 +1639,7 @@ static int flexcan_setup_stop_mode(struct platform_de=
+vice *pdev)
+ }
 =20
- 	if ((priv->can.ctrlmode_supported & CAN_CTRLMODE_FD) &&
-@@ -1746,7 +1753,7 @@ static int flexcan_probe(struct platform_device *pdev=
-)
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_TIMESTAMP_SUPPORT_FD) {
- 		if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP) {
- 			priv->offload.is_canfd =3D true;
--			priv->can.ctrlmode_supported |=3D CAN_CTRLMODE_FD;
-+			priv->can.ctrlmode_supported |=3D CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON=
-_ISO;
- 			priv->can.bittiming_const =3D &flexcan_fd_bittiming_const;
- 			priv->can.data_bittiming_const =3D &flexcan_fd_data_bittiming_const;
- 		} else {
+ static const struct of_device_id flexcan_of_match[] =3D {
++	{ .compatible =3D "fsl,imx8qm-flexcan", .data =3D &fsl_imx8qm_devtype_dat=
+a, },
+ 	{ .compatible =3D "fsl,imx6q-flexcan", .data =3D &fsl_imx6q_devtype_data,=
+ },
+ 	{ .compatible =3D "fsl,imx28-flexcan", .data =3D &fsl_imx28_devtype_data,=
+ },
+ 	{ .compatible =3D "fsl,imx53-flexcan", .data =3D &fsl_imx25_devtype_data,=
+ },
 --=20
 2.17.1
