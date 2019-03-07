@@ -1,59 +1,39 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH RESEND 5/5] can: flexcan: add imx8qm support
-Date: Wed, 6 Mar 2019 10:01:07 +0000
-Message-ID: <20190306095833.20922-6-qiangqing.zhang@nxp.com>
-References: <20190306095833.20922-1-qiangqing.zhang@nxp.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] peak_usb: fix clang build warning
+Date: Thu,  7 Mar 2019 11:31:55 +0100
+Message-ID: <20190307103219.1539316-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190306095833.20922-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Aisheng Dong <aisheng.dong@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
+Cc: Nick Desaulniers <ndesaulniers@google.com>, Arnd Bergmann <arnd@arndb.de>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Dong Aisheng <aisheng.dong@nxp.com>
+Clang points out undefined behavior when building the pcan_usb_pro driver:
 
-The Flexcan on i.MX8QM supports CAN FD protocol.
+drivers/net/can/usb/peak_usb/pcan_usb_pro.c:136:15: error: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Werror,-Wvarargs]
 
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Changing the function prototype to avoid argument promotion in the
+varargs call avoids the warning, and should make this well-defined.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/can/flexcan.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index fca014bc530a..49615cc42436 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -346,6 +346,12 @@ static const struct flexcan_devtype_data fsl_imx6q_dev=
-type_data =3D {
- 		FLEXCAN_QUIRK_SETUP_STOP_MODE,
- };
-=20
-+static struct flexcan_devtype_data fsl_imx8qm_devtype_data =3D {
-+	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
-+		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
-+		FLEXCAN_QUIRK_TIMESTAMP_SUPPORT_FD,
-+};
-+
- static const struct flexcan_devtype_data fsl_vf610_devtype_data =3D {
- 	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
- 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
-@@ -1633,6 +1639,7 @@ static int flexcan_setup_stop_mode(struct platform_de=
-vice *pdev)
- }
-=20
- static const struct of_device_id flexcan_of_match[] =3D {
-+	{ .compatible =3D "fsl,imx8qm-flexcan", .data =3D &fsl_imx8qm_devtype_dat=
-a, },
- 	{ .compatible =3D "fsl,imx6q-flexcan", .data =3D &fsl_imx6q_devtype_data,=
- },
- 	{ .compatible =3D "fsl,imx28-flexcan", .data =3D &fsl_imx28_devtype_data,=
- },
- 	{ .compatible =3D "fsl,imx53-flexcan", .data =3D &fsl_imx25_devtype_data,=
- },
---=20
-2.17.1
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+index d516def846ab..b388406ac0f5 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+@@ -127,7 +127,7 @@ static u8 *pcan_msg_init_empty(struct pcan_usb_pro_msg *pm,
+ /*
+  * add one record to a message being built
+  */
+-static int pcan_msg_add_rec(struct pcan_usb_pro_msg *pm, u8 id, ...)
++static int pcan_msg_add_rec(struct pcan_usb_pro_msg *pm, int id, ...)
+ {
+ 	int len, i;
+ 	u8 *pc;
+-- 
+2.20.0
