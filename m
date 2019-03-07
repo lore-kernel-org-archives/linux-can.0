@@ -1,39 +1,44 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] peak_usb: fix clang build warning
-Date: Thu,  7 Mar 2019 11:31:55 +0100
-Message-ID: <20190307103219.1539316-1-arnd@arndb.de>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: [PATCH] can: flexcan: bump FLEXCAN_TIMEOUT_US to 250
+Date: Thu, 7 Mar 2019 15:00:33 +0000
+Message-ID: <20190307150024.23628-1-rasmus.villemoes@prevas.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
-Cc: Nick Desaulniers <ndesaulniers@google.com>, Arnd Bergmann <arnd@arndb.de>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Thomas Winding <twi@deif.com>, Fabio Estevam <festevam@gmail.com>, Per Christensen <pnc@deif.com>, Rasmus Villemoes <Rasmus.Villemoes@prevas.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Clang points out undefined behavior when building the pcan_usb_pro driver:
+While trying to add support for the Flexcan modules on the MPC8309,
+I'm hitting ETIMEDOUT in flexcan_chip_disable(). With this, probing
+succeeds. Checking the leftover value of timeout with a primitive
 
-drivers/net/can/usb/peak_usb/pcan_usb_pro.c:136:15: error: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Werror,-Wvarargs]
+  pr_err("%s: timeout=3D=3D%d\n", __func__, timeout);
 
-Changing the function prototype to avoid argument promotion in the
-varargs call avoids the warning, and should make this well-defined.
+after the loop in chip_disable() typically shows values around 12-14,
+i.e. suggesting that it takes about 110-130 us for the LPM_ACK bit to
+appear. So a timeout value of about twice that seems reasonable.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 2 +-
+ drivers/net/can/flexcan.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index d516def846ab..b388406ac0f5 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -127,7 +127,7 @@ static u8 *pcan_msg_init_empty(struct pcan_usb_pro_msg *pm,
- /*
-  * add one record to a message being built
-  */
--static int pcan_msg_add_rec(struct pcan_usb_pro_msg *pm, u8 id, ...)
-+static int pcan_msg_add_rec(struct pcan_usb_pro_msg *pm, int id, ...)
- {
- 	int len, i;
- 	u8 *pc;
--- 
-2.20.0
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 75ce11395ee8..5f32053f78de 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -165,7 +165,7 @@
+ #define FLEXCAN_MB_CNT_LENGTH(x)	(((x) & 0xf) << 16)
+ #define FLEXCAN_MB_CNT_TIMESTAMP(x)	((x) & 0xffff)
+=20
+-#define FLEXCAN_TIMEOUT_US		(50)
++#define FLEXCAN_TIMEOUT_US		(250)
+=20
+ /* FLEXCAN hardware feature flags
+  *
+--=20
+2.20.1
