@@ -1,42 +1,86 @@
-From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
-Subject: RE: [PATCH] net: can: Increase tx queue length
-Date: Sat, 9 Mar 2019 14:40:32 +0000
-Message-ID: <CY4PR02MB2183E0667CF67DEE6A297FF8DC4E0@CY4PR02MB2183.namprd02.prod.outlook.com>
+From: Andre Naujoks <nautsch2@gmail.com>
+Subject: Re: [PATCH] net: can: Increase tx queue length
+Date: Sat, 9 Mar 2019 15:56:29 +0100
+Message-ID: <bed965ce-0af5-ef0e-4f13-296064cede72@gmail.com>
 References: <1552140446-31535-1-git-send-email-appana.durga.rao@xilinx.com>
  <cd71079c-664f-b1b6-bb21-ecda639ecbed@gmail.com>
+ <CY4PR02MB2183E0667CF67DEE6A297FF8DC4E0@CY4PR02MB2183.namprd02.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cd71079c-664f-b1b6-bb21-ecda639ecbed@gmail.com>
+In-Reply-To: <CY4PR02MB2183E0667CF67DEE6A297FF8DC4E0@CY4PR02MB2183.namprd02.prod.outlook.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andre Naujoks <nautsch2@gmail.com>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>
+To: Appana Durga Kedareswara Rao <appanad@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>, Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-SGkgQW5kcmUsDQoNCjxTbmlwPiANCj4gDQo+IE9uIDMvOS8xOSAzOjA3IFBNLCBBcHBhbmEgRHVy
-Z2EgS2VkYXJlc3dhcmEgcmFvIHdyb3RlOg0KPiA+IFdoaWxlIHN0cmVzcyB0ZXN0aW5nIHRoZSBD
-QU4gaW50ZXJmYWNlIG9uIHhpbGlueCBheGkgY2FuIGluIGxvb3BiYWNrDQo+ID4gbW9kZSBnZXR0
-aW5nIG1lc3NhZ2UgIndyaXRlOiBubyBidWZmZXIgc3BhY2UgYXZhaWxhYmxlIg0KPiA+IEluY3Jl
-YXNpbmcgZGV2aWNlIHR4IHF1ZXVlIGxlbmd0aCByZXNvbHZlZCB0aGUgYWJvdmUgbWVudGlvbmVk
-IGlzc3VlLg0KPiANCj4gTm8gbmVlZCB0byBwYXRjaCB0aGUga2VybmVsOg0KPiANCj4gJCBpcCBs
-aW5rIHNldCA8ZGV2LW5hbWU+IHR4cXVldWVsZW4gNTAwDQo+IA0KPiBkb2VzIHRoZSBzYW1lIHRo
-aW5nLg0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXcuLi4gDQpBZ3JlZSBidXQgaXQgaXMgbm90IGFu
-IG91dCBvZiBib3ggc29sdXRpb24gcmlnaHQ/PyANCkRvIHlvdSBoYXZlIGFueSBpZGVhIGZvciBz
-b2NrZXQgY2FuIGRldmljZXMgd2h5IHRoZSB0eCBxdWV1ZSBsZW5ndGggaXMgMTAgd2hlcmVhcw0K
-Zm9yIG90aGVyIG5ldHdvcmsgZGV2aWNlcyAoZXg6IGV0aGVybmV0KSBpdCBpcyAxMDAwID8/IA0K
-DQpSZWdhcmRzLA0KS2VkYXIuDQo+IA0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQXBwYW5hIER1
-cmdhIEtlZGFyZXN3YXJhIHJhbw0KPiA+IDxhcHBhbmEuZHVyZ2EucmFvQHhpbGlueC5jb20+DQo+
-ID4gLS0tDQo+ID4gLS0+IE5ldHdvcmsgZGV2aWNlcyBkZWZhdWx0IHR4X3F1ZXVlX2xlbiBpcyAx
-MDAwIGJ1dCBmb3Igc29ja2V0DQo+ID4gY2FuIGRldmljZSBpdCBpcyAxMCBhbnkgcmVhc29uIGZv
-ciBpdD8/DQo+ID4NCj4gPiAgZHJpdmVycy9uZXQvY2FuL2Rldi5jIHwgMiArLQ0KPiA+ICAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gPg0KPiA+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZGV2LmMgYi9kcml2ZXJzL25ldC9jYW4vZGV2LmMgaW5k
-ZXgNCj4gPiBjMDVlNGQ1Li4zMmJkNWJlIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nh
-bi9kZXYuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi9kZXYuYw0KPiA+IEBAIC02NDIsNyAr
-NjQyLDcgQEAgc3RhdGljIHZvaWQgY2FuX3NldHVwKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYpDQo+
-ID4gIAlkZXYtPm10dSA9IENBTl9NVFU7DQo+ID4gIAlkZXYtPmhhcmRfaGVhZGVyX2xlbiA9IDA7
-DQo+ID4gIAlkZXYtPmFkZHJfbGVuID0gMDsNCj4gPiAtCWRldi0+dHhfcXVldWVfbGVuID0gMTA7
-DQo+ID4gKwlkZXYtPnR4X3F1ZXVlX2xlbiA9IDUwMDsNCj4gPg0KPiA+ICAJLyogTmV3LXN0eWxl
-IGZsYWdzLiAqLw0KPiA+ICAJZGV2LT5mbGFncyA9IElGRl9OT0FSUDsNCj4gPg0KDQo=
+On 3/9/19 3:40 PM, Appana Durga Kedareswara Rao wrote:
+> Hi Andre,
+> 
+> <Snip> 
+>>
+>> On 3/9/19 3:07 PM, Appana Durga Kedareswara rao wrote:
+>>> While stress testing the CAN interface on xilinx axi can in loopback
+>>> mode getting message "write: no buffer space available"
+>>> Increasing device tx queue length resolved the above mentioned issue.
+>>
+>> No need to patch the kernel:
+>>
+>> $ ip link set <dev-name> txqueuelen 500
+>>
+>> does the same thing.
+> 
+> Thanks for the review... 
+> Agree but it is not an out of box solution right?? 
+> Do you have any idea for socket can devices why the tx queue length is 10 whereas
+> for other network devices (ex: ethernet) it is 1000 ?? 
+
+I think the 1000 queue length is the system default and CAN just
+overwrites that (a vcan does curiously does not). There probably is a
+reason for the short queue for CAN. But I don't know why it was set so
+low. My guess is as good as yours.
+
+I ran into your problem multiple times, too, when replaying recorded CAN
+traces. We worked around it, by adding the txqueuelen to the setup
+parameters for the CAN devices. If you use ifupdown (we use a different
+solution), then you could probably put it in there somewhere.
+
+I'd be reluctant to change that default without knowing why it was set
+in the first place.
+
+Maybe Oliver can help here?
+
+Regards
+  Andre
+
+> 
+> Regards,
+> Kedar.
+>>
+>>>
+>>> Signed-off-by: Appana Durga Kedareswara rao
+>>> <appana.durga.rao@xilinx.com>
+>>> ---
+>>> --> Network devices default tx_queue_len is 1000 but for socket
+>>> can device it is 10 any reason for it??
+>>>
+>>>  drivers/net/can/dev.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c index
+>>> c05e4d5..32bd5be 100644
+>>> --- a/drivers/net/can/dev.c
+>>> +++ b/drivers/net/can/dev.c
+>>> @@ -642,7 +642,7 @@ static void can_setup(struct net_device *dev)
+>>>  	dev->mtu = CAN_MTU;
+>>>  	dev->hard_header_len = 0;
+>>>  	dev->addr_len = 0;
+>>> -	dev->tx_queue_len = 10;
+>>> +	dev->tx_queue_len = 500;
+>>>
+>>>  	/* New-style flags. */
+>>>  	dev->flags = IFF_NOARP;
+>>>
+> 
