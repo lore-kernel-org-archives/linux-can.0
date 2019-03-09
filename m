@@ -1,247 +1,116 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v7 1/4] can: m_can: Create a m_can platform framework
-Date: Fri, 8 Mar 2019 14:36:02 -0600
-Message-ID: <56edf2e9-1229-5b8d-f477-13efab207cd8@ti.com>
-References: <20190305155220.14037-1-dmurphy@ti.com>
- <5065d6ba-f195-a695-77b1-b837cac1a199@grandegger.com>
- <bbc9db2f-0702-4f24-db64-a41dc0607d2d@ti.com>
- <bf2613ae-67f6-661d-0faa-786308c249a0@grandegger.com>
- <cea76d80-d85c-2963-2745-4509450e2ea9@grandegger.com>
- <6016c8aa-01b6-38d5-0e1f-3a999aae6a13@ti.com>
- <1f6f77c6-dcf2-6212-5d4e-1eb699e603f1@grandegger.com>
- <1e9acd4e-97ad-1d9c-44b6-1b2d1bbe8c0e@ti.com>
- <2026f4ff-31de-3040-0872-5e9d01cc5aa5@grandegger.com>
- <a2538a05-a03f-06f8-99e3-c7c72287613c@ti.com>
- <e8782172-5156-6704-8ddb-b7d4d670e3c9@grandegger.com>
+From: Yue Haibing <yuehaibing@huawei.com>
+Subject: [PATCH] can: af_can: Fix possible NULL pointer dereference in can_exit
+Date: Sat, 9 Mar 2019 11:43:31 +0800
+Message-ID: <20190309034331.17944-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e8782172-5156-6704-8ddb-b7d4d670e3c9@grandegger.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: davem@davemloft.net, socketcan@hartkopp.net, mkl@pengutronix.de
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: linux-can.vger.kernel.org
 
-On 3/8/19 12:06 PM, Wolfgang Grandegger wrote:
-> 
-> 
-> Am 08.03.19 um 18:52 schrieb Dan Murphy:
->> On 3/8/19 11:40 AM, Wolfgang Grandegger wrote:
->>> Hello Dan,
->>>
->>> Am 08.03.19 um 18:25 schrieb Dan Murphy:
->>>> On 3/8/19 11:08 AM, Wolfgang Grandegger wrote:
->>>>> Hello,
->>>>>
->>>>> Am 08.03.19 um 16:48 schrieb Dan Murphy:
->>>>>> Wolfgang
->>>>>>
->>>>>> On 3/8/19 8:41 AM, Wolfgang Grandegger wrote:
->>>>>>> Hello Dan,
->>>>>>>
->>>>>>> thinking more about it...
->>>>>>>
->>>>>>> Am 08.03.19 um 14:29 schrieb Wolfgang Grandegger:
->>>>>>>> Hello Dan,
->>>>>>>>
->>>>>>>> Am 08.03.19 um 13:44 schrieb Dan Murphy:
->>>>>>>>> Wolfgang
->>>>>>>>>
->>>>>>>>> On 3/8/19 4:10 AM, Wolfgang Grandegger wrote:
->>>>>>>>>> Hallo Dan,
->>>>>>>>>>
->>>>>>>>>> Am 05.03.19 um 16:52 schrieb Dan Murphy:
->>>>>>>>>>> Create a m_can platform framework that peripherial
->>>>>>>>>>> devices can register to and use common code and register sets.
->>>>>>>>>>> The peripherial devices may provide read/write and configuration
->>>>>>>>>>> support of the IP.
->>>>>>>>>>>
->>>>>>>>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->>>>>>>>>>> ---
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> v7 - Fixed remaining new checkpatch issues, removed CSR setting, fixed tx hard
->>>>>>>>>>> start function to return tx_busy, and renamed device callbacks - https://lore.kernel.org/patchwork/patch/1047220/
->>>>>>>>>>>
->>>>>>>>>>> v6 - Squashed platform patch to this patch for bissectablity, fixed coding style
->>>>>>>>>>> issues, updated Kconfig help, placed mcan reg offsets back into c file, renamed
->>>>>>>>>>> priv->skb to priv->tx_skb and cleared perp interrupts at ISR start -
->>>>>>>>>>> Patch 1 comments - https://lore.kernel.org/patchwork/patch/1042446/
->>>>>>>>>>> Patch 2 comments - https://lore.kernel.org/patchwork/patch/1042442/
->>>>>>>>>>>
->>>>>>>>>>>  drivers/net/can/m_can/Kconfig          |  13 +-
->>>>>>>>>>>  drivers/net/can/m_can/Makefile         |   1 +
->>>>>>>>>>>  drivers/net/can/m_can/m_can.c          | 700 +++++++++++++------------
->>>>>>>>>>>  drivers/net/can/m_can/m_can.h          | 110 ++++
->>>>>>>>>>>  drivers/net/can/m_can/m_can_platform.c | 202 +++++++
->>>>>>>>>>>  5 files changed, 682 insertions(+), 344 deletions(-)
->>>>>>>>>>>  create mode 100644 drivers/net/can/m_can/m_can.h
->>>>>>>>>>>  create mode 100644 drivers/net/can/m_can/m_can_platform.c
->>>>>>>>>>>
->>>>>>>>>>> diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
->>>>>>>>>>> index 04f20dd39007..f7119fd72df4 100644
->>>>>>>>>>> --- a/drivers/net/can/m_can/Kconfig
->>>>>>>>>>> +++ b/drivers/net/can/m_can/Kconfig
->>>>>>>>>>> @@ -1,5 +1,14 @@
->>>>>>>>>>>  config CAN_M_CAN
->>>>>>>>>>> +	tristate "Bosch M_CAN support"
->>>>>>>>>>> +	---help---
->>>>>>>>>>> +	  Say Y here if you want support for Bosch M_CAN controller framework.
->>>>>>>>>>> +	  This is common support for devices that embed the Bosch M_CAN IP.
->>>>>>>>>>> +
->>>>>>>>>>> +config CAN_M_CAN_PLATFORM
->>>>>>>>>>> +	tristate "Bosch M_CAN support for io-mapped devices"
->>>>>>>>>>>  	depends on HAS_IOMEM
->>>>>>>>>>> -	tristate "Bosch M_CAN devices"
->>>>>>>>>>> +	depends on CAN_M_CAN
->>>>>>>>>>>  	---help---
->>>>>>>>>>> -	  Say Y here if you want to support for Bosch M_CAN controller.
->>>>>>>>>>> +	  Say Y here if you want support for IO Mapped Bosch M_CAN controller.
->>>>>>>>>>> +	  This support is for devices that have the Bosch M_CAN controller
->>>>>>>>>>> +	  IP embedded into the device and the IP is IO Mapped to the processor.
->>>>>>>>>>> diff --git a/drivers/net/can/m_can/Makefile b/drivers/net/can/m_can/Makefile
->>>>>>>>>>> index 8bbd7f24f5be..057bbcdb3c74 100644
->>>>>>>>>>> --- a/drivers/net/can/m_can/Makefile
->>>>>>>>>>> +++ b/drivers/net/can/m_can/Makefile
->>>>>>>>>>> @@ -3,3 +3,4 @@
->>>>>>>>>>>  #
->>>>>>>>>>>  
->>>>>>>>>>>  obj-$(CONFIG_CAN_M_CAN) += m_can.o
->>>>>>>>>>> +obj-$(CONFIG_CAN_M_CAN_PLATFORM) += m_can_platform.o
->>>>>>>>>>> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
->>>>>>>>>>> index 9b449400376b..a60278d94126 100644
->>>>>>>>>>> --- a/drivers/net/can/m_can/m_can.c
->>>>>>>>>>> +++ b/drivers/net/can/m_can/m_can.c
->>>>>>>>>>
->>>>>>>>>> ... snip...
->>>>>>>>>>
->>>>>>>>>>> +static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
->>>>>>>>>>> +				    struct net_device *dev)
->>>>>>>>>>> +{
->>>>>>>>>>> +	struct m_can_priv *priv = netdev_priv(dev);
->>>>>>>>>>> +
->>>>>>>>>>> +	if (can_dropped_invalid_skb(dev, skb))
->>>>>>>>>>> +		return NETDEV_TX_OK;
->>>>>>>>>>> +
->>>>>>>>>>> +	if (priv->is_peripherial) {
->>>>>>>>>>> +		if (priv->tx_skb) {
->>>>>>>>>>> +			netdev_err(dev, "hard_xmit called while tx busy\n");
->>>>>>>>>>> +			return NETDEV_TX_BUSY;
->>>>>>>>>>> +		}
->>>>>>>>>>
->>>>>>>>>> The problem with that approach is, that the upper layer will try to
->>>>>>>>>> resubmit the current "skb" but not the previous "tx_skb". And the
->>>>>>>>>> previous "tx_skb" has not been freed yet. I would just drop and free the
->>>>>>>>>> skb and return NETDEV_TX_OK in m_can_tx_handler() for peripheral devices
->>>>>>>>>> (like can_dropped_invalid_skb() does).
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> OK.
->>>>>>>>>
->>>>>>>>> So would this also be a bug in the hi3110 and mcp251x drivers (line 521) as well because besides checking tx_length
->>>>>>>>> this is how these drivers are written.
->>>>>>>>
->>>>>>>> This is different. When entering the "start_xmit" routine, the previous
->>>>>>>> TX is still in progress. It will (hopefully) complete soon. Therefore
->>>>>>>> returning NETDEV_TX_BUSY is OK. The "start_xmit" routine will be
->>>>>>>> recalled soon with the same "skb". That scenario should/could also not
->>>>>>>> happen.
->>>>>>>
->>>>>>> In principle, this also applies to the m_can peripheral devices. If
->>>>>>> tx_skb is not NULL, the TX is still in progress and returning
->>>>>>> NETDEV_TX_BUSY is just fine.
->>>>>>>
->>>>>>>>
->>>>>>>> In contrast, in "m_can_tx_handler()", the skb could not be handled
->>>>>>>> because the FIFO is full. The "start_xmit" routine for peripheral
->>>>>>>> devices for that skb already returned NETDEV_TX_OK. Therefore the only
->>>>>>>> meaningful action is to drop the skb. Also this error should not happen
->>>>>>>> and if, something is going really wrong. Therefore I think, a
->>>>>>>> WARN_ONCE() would be even more appropriate. But that should be a
->>>>>>>> separate patch.
->>>>>>>
->>>>>>> But that's a different issue/error. The tx_skb cannot be processed in
->>>>>>> "m_can_tx_handler()". Either we drop it or we re-queue it (retry later).
->>>>>>>
->>>>>>
->>>>>> OK I am a bit confused on this.  Are you saying this is not an issue?
->>>>>> Or are you saying I need to check for tx_len like the other code?
->>>>>
->>>>> If you check for tx_skb in the "start_xmit" routine like the hi3110 and
->>>>> mcp251x, it will work the same way. But only, if the "tx_handler()" has
->>>>> fully processed the message. It simple means, the TX is still in
->>>>> progress and will complete soon. But in "m_can_tx_handler()" we return
->>>>> without handling the message! It will never be sent and freed. Or will
->>>>> the "m_can_tx_handler()" retry?
->>>>>
->>>>
->>>> I am not seeing where we are not handling the message in the m_can_tx_handler()
->>>
->>> static void m_can_tx_handler(struct m_can_classdev *priv)
->>> {
->>> 		...
->>> 		/* Check if FIFO full */
->>> 		if (m_can_tx_fifo_full(priv)) {
->>> 			/* This shouldn't happen */
->>> 			netif_stop_queue(dev);
->>> 			netdev_warn(dev,
->>> 				    "TX queue active although FIFO is full.");
->>> 			return;
->>> 		}
->>>
->>> We simply return here. When is the message (tx_skb) processed (sent or freed)?
->>> What happens with tx_skb?
->>>
->>
->> Are you sure you are looking at the right code?
->>
->> For patch version v7 I have the following
->>
->> 		/* Check if FIFO full */
->> 		if (m_can_tx_fifo_full(cdev)) {
->> 			/* This shouldn't happen */
->> 			netif_stop_queue(dev);
->> 			netdev_warn(dev,
->> 				    "TX queue active although FIFO is full.");
->> 			return NETDEV_TX_BUSY;
->> 		}
->>
->> Which is no change from the original source code.
-> 
-> I know,  but for the peripheral devices you have:
-> 
->   static void m_can_tx_work_queue(struct work_struct *ws)
->   {
-> 	struct m_can_priv *priv = container_of(ws, struct m_can_priv,
-> 						tx_work);
-> 	netdev_tx_t ret;
-> 
-> 	ret = m_can_tx_handler(priv);
-> 	if (ret == NETDEV_TX_OK)
-> 		priv->tx_skb = NULL;
->   }
-> 
-> What will happen with tx_skb if NETDEV_TX_BUSY? It has not been
-> dropped/freed yet?
-> 
+From: YueHaibing <yuehaibing@huawei.com>
 
-OK I think I see the issue there.
+Syzkaller report this:
 
-I should probably add can_put_echo_skb if NETDEV_TX_BUSY and always NULL out the SKB.
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] SMP KASAN PTI
+CPU: 0 PID: 9400 Comm: syz-executor.0 Tainted: G         C        5.0.0-rc8+ #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+RIP: 0010:__list_del include/linux/list.h:105 [inline]
+RIP: 0010:__list_del_entry include/linux/list.h:120 [inline]
+RIP: 0010:list_del include/linux/list.h:125 [inline]
+RIP: 0010:__unregister_pernet_operations net/core/net_namespace.c:1075 [inline]
+RIP: 0010:unregister_pernet_operations+0x124/0x540 net/core/net_namespace.c:1137
+Code: 89 c1 48 c1 e9 03 80 3c 11 00 0f 85 38 03 00 00 48 8d 7d 08 48 ba 00 00 00 00 00 fc ff df 4d 8b 7c 24 08 48 89 f9 48 c1 e9 03 <80> 3c 11 00 0f 85 02 03 00 00 48 8d 9c 24 b8 00 00 00 48 ba 00 00
+RSP: 0018:ffff8881b871fbb0 EFLAGS: 00010a06
+RAX: ffffffffc198c4c8 RBX: dffffc0000000000 RCX: 1bd5a00000000021
+RDX: dffffc0000000000 RSI: ffffc900014c4000 RDI: dead000000000108
+RBP: dead000000000100 R08: 0000000000000001 R09: 0000000000000000
+R10: ffff8881b871fb30 R11: 0000000000000000 R12: ffffffffc198c4c0
+R13: ffff8881b871fbe8 R14: 1ffff110370e3f79 R15: dead000000000200
+FS:  00007f029df32700(0000) GS:ffff8881f7000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc85454218 CR3: 00000001e0ff4004 CR4: 00000000007606f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ unregister_pernet_subsys+0x1d/0x30 net/core/net_namespace.c:1184
+ can_exit+0x3f/0x56 [can]
+ __do_sys_delete_module kernel/module.c:1018 [inline]
+ __se_sys_delete_module kernel/module.c:961 [inline]
+ __x64_sys_delete_module+0x3dc/0x5e0 kernel/module.c:961
+ do_syscall_64+0x147/0x600 arch/x86/entry/common.c:290
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x462e99
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f029df31c58 EFLAGS: 00000246 ORIG_RAX: 00000000000000b0
+RAX: ffffffffffffffda RBX: 000000000073bf00 RCX: 0000000000462e99
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f029df326bc
+R13: 00000000004bcca9 R14: 00000000006f6b48 R15: 00000000ffffffff
 
-This appears to be the way the other perp drivers do it as they just put and null the skb
-regardless of the return of the handlers.
+register_pernet_subsys may fails in can_init,then can_exit calls
+unregister_pernet_subsys when unloading, it can trigger a NULL
+pointer dereference while doing list_del.This patch fix error
+cleanup path of can_init to avoid this.
 
-And clean is called when the BUS is off or coming out of suspend.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ net/can/af_can.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-Dan
-
-> Wolfgang.
-> 
-
-
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 1684ba5..5d75685 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -958,6 +958,8 @@ static struct pernet_operations can_pernet_ops __read_mostly = {
+ 
+ static __init int can_init(void)
+ {
++	int rc;
++
+ 	/* check for correct padding to be able to use the structs similarly */
+ 	BUILD_BUG_ON(offsetof(struct can_frame, can_dlc) !=
+ 		     offsetof(struct canfd_frame, len) ||
+@@ -971,15 +973,31 @@ static __init int can_init(void)
+ 	if (!rcv_cache)
+ 		return -ENOMEM;
+ 
+-	register_pernet_subsys(&can_pernet_ops);
++	rc = register_pernet_subsys(&can_pernet_ops);
++	if (rc)
++		goto free_cache;
+ 
+ 	/* protocol register */
+-	sock_register(&can_family_ops);
+-	register_netdevice_notifier(&can_netdev_notifier);
++	rc = sock_register(&can_family_ops);
++	if (rc)
++		goto unregister_pernet;
++
++	rc = register_netdevice_notifier(&can_netdev_notifier);
++	if (rc)
++		goto sock_unregister;
++
+ 	dev_add_pack(&can_packet);
+ 	dev_add_pack(&canfd_packet);
+ 
+ 	return 0;
++
++sock_unregister:
++	sock_unregister(PF_CAN);
++unregister_pernet:
++	unregister_pernet_subsys(&can_pernet_ops);
++free_cache:
++	kmem_cache_destroy(rcv_cache);
++	return rc;
+ }
+ 
+ static __exit void can_exit(void)
 -- 
-------------------
-Dan Murphy
+2.7.0
