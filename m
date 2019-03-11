@@ -1,124 +1,284 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] net: can: Increase tx queue length
-Date: Sun, 10 Mar 2019 18:30:39 +0100
-Message-ID: <9adf2fbb-7b0b-6821-98fb-2ddcdf5c0edd@hartkopp.net>
-References: <1552140446-31535-1-git-send-email-appana.durga.rao@xilinx.com>
- <cd71079c-664f-b1b6-bb21-ecda639ecbed@gmail.com>
- <CY4PR02MB2183E0667CF67DEE6A297FF8DC4E0@CY4PR02MB2183.namprd02.prod.outlook.com>
- <87zhq43v4m.fsf@toke.dk> <87sgvvnwqf.fsf@taht.net>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH v7 1/4] can: m_can: Create a m_can platform framework
+Date: Mon, 11 Mar 2019 12:19:58 +0100
+Message-ID: <afd9eece-49a0-1ee5-5ffc-ff9b92f4f80c@grandegger.com>
+References: <20190305155220.14037-1-dmurphy@ti.com>
+ <5065d6ba-f195-a695-77b1-b837cac1a199@grandegger.com>
+ <bbc9db2f-0702-4f24-db64-a41dc0607d2d@ti.com>
+ <bf2613ae-67f6-661d-0faa-786308c249a0@grandegger.com>
+ <cea76d80-d85c-2963-2745-4509450e2ea9@grandegger.com>
+ <6016c8aa-01b6-38d5-0e1f-3a999aae6a13@ti.com>
+ <1f6f77c6-dcf2-6212-5d4e-1eb699e603f1@grandegger.com>
+ <1e9acd4e-97ad-1d9c-44b6-1b2d1bbe8c0e@ti.com>
+ <2026f4ff-31de-3040-0872-5e9d01cc5aa5@grandegger.com>
+ <a2538a05-a03f-06f8-99e3-c7c72287613c@ti.com>
+ <e8782172-5156-6704-8ddb-b7d4d670e3c9@grandegger.com>
+ <56edf2e9-1229-5b8d-f477-13efab207cd8@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87sgvvnwqf.fsf@taht.net>
-Content-Language: en-US
+In-Reply-To: <56edf2e9-1229-5b8d-f477-13efab207cd8@ti.com>
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dave Taht <dave@taht.net>, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>, Appana Durga Kedareswara Rao <appanad@xilinx.com>, Andre Naujoks <nautsch2@gmail.com>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hi all,
+Hello Dan,
 
-On 3/10/19 6:07 AM, Dave Taht wrote:
-> Toke Høiland-Jørgensen <toke@redhat.com> writes:
-> 
->> Appana Durga Kedareswara Rao <appanad@xilinx.com> writes:
+Am 08.03.19 um 21:36 schrieb Dan Murphy:
+> On 3/8/19 12:06 PM, Wolfgang Grandegger wrote:
 >>
->>> Hi Andre,
+>>
+>> Am 08.03.19 um 18:52 schrieb Dan Murphy:
+>>> On 3/8/19 11:40 AM, Wolfgang Grandegger wrote:
+>>>> Hello Dan,
+>>>>
+>>>> Am 08.03.19 um 18:25 schrieb Dan Murphy:
+>>>>> On 3/8/19 11:08 AM, Wolfgang Grandegger wrote:
+>>>>>> Hello,
+>>>>>>
+>>>>>> Am 08.03.19 um 16:48 schrieb Dan Murphy:
+>>>>>>> Wolfgang
+>>>>>>>
+>>>>>>> On 3/8/19 8:41 AM, Wolfgang Grandegger wrote:
+>>>>>>>> Hello Dan,
+>>>>>>>>
+>>>>>>>> thinking more about it...
+>>>>>>>>
+>>>>>>>> Am 08.03.19 um 14:29 schrieb Wolfgang Grandegger:
+>>>>>>>>> Hello Dan,
+>>>>>>>>>
+>>>>>>>>> Am 08.03.19 um 13:44 schrieb Dan Murphy:
+>>>>>>>>>> Wolfgang
+>>>>>>>>>>
+>>>>>>>>>> On 3/8/19 4:10 AM, Wolfgang Grandegger wrote:
+>>>>>>>>>>> Hallo Dan,
+>>>>>>>>>>>
+>>>>>>>>>>> Am 05.03.19 um 16:52 schrieb Dan Murphy:
+>>>>>>>>>>>> Create a m_can platform framework that peripherial
+>>>>>>>>>>>> devices can register to and use common code and register sets.
+>>>>>>>>>>>> The peripherial devices may provide read/write and configuration
+>>>>>>>>>>>> support of the IP.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>>>>>>>>>>> ---
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> v7 - Fixed remaining new checkpatch issues, removed CSR setting, fixed tx hard
+>>>>>>>>>>>> start function to return tx_busy, and renamed device callbacks - https://lore.kernel.org/patchwork/patch/1047220/
+>>>>>>>>>>>>
+>>>>>>>>>>>> v6 - Squashed platform patch to this patch for bissectablity, fixed coding style
+>>>>>>>>>>>> issues, updated Kconfig help, placed mcan reg offsets back into c file, renamed
+>>>>>>>>>>>> priv->skb to priv->tx_skb and cleared perp interrupts at ISR start -
+>>>>>>>>>>>> Patch 1 comments - https://lore.kernel.org/patchwork/patch/1042446/
+>>>>>>>>>>>> Patch 2 comments - https://lore.kernel.org/patchwork/patch/1042442/
+>>>>>>>>>>>>
+>>>>>>>>>>>>  drivers/net/can/m_can/Kconfig          |  13 +-
+>>>>>>>>>>>>  drivers/net/can/m_can/Makefile         |   1 +
+>>>>>>>>>>>>  drivers/net/can/m_can/m_can.c          | 700 +++++++++++++------------
+>>>>>>>>>>>>  drivers/net/can/m_can/m_can.h          | 110 ++++
+>>>>>>>>>>>>  drivers/net/can/m_can/m_can_platform.c | 202 +++++++
+>>>>>>>>>>>>  5 files changed, 682 insertions(+), 344 deletions(-)
+>>>>>>>>>>>>  create mode 100644 drivers/net/can/m_can/m_can.h
+>>>>>>>>>>>>  create mode 100644 drivers/net/can/m_can/m_can_platform.c
+>>>>>>>>>>>>
+>>>>>>>>>>>> diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
+>>>>>>>>>>>> index 04f20dd39007..f7119fd72df4 100644
+>>>>>>>>>>>> --- a/drivers/net/can/m_can/Kconfig
+>>>>>>>>>>>> +++ b/drivers/net/can/m_can/Kconfig
+>>>>>>>>>>>> @@ -1,5 +1,14 @@
+>>>>>>>>>>>>  config CAN_M_CAN
+>>>>>>>>>>>> +	tristate "Bosch M_CAN support"
+>>>>>>>>>>>> +	---help---
+>>>>>>>>>>>> +	  Say Y here if you want support for Bosch M_CAN controller framework.
+>>>>>>>>>>>> +	  This is common support for devices that embed the Bosch M_CAN IP.
+>>>>>>>>>>>> +
+>>>>>>>>>>>> +config CAN_M_CAN_PLATFORM
+>>>>>>>>>>>> +	tristate "Bosch M_CAN support for io-mapped devices"
+>>>>>>>>>>>>  	depends on HAS_IOMEM
+>>>>>>>>>>>> -	tristate "Bosch M_CAN devices"
+>>>>>>>>>>>> +	depends on CAN_M_CAN
+>>>>>>>>>>>>  	---help---
+>>>>>>>>>>>> -	  Say Y here if you want to support for Bosch M_CAN controller.
+>>>>>>>>>>>> +	  Say Y here if you want support for IO Mapped Bosch M_CAN controller.
+>>>>>>>>>>>> +	  This support is for devices that have the Bosch M_CAN controller
+>>>>>>>>>>>> +	  IP embedded into the device and the IP is IO Mapped to the processor.
+>>>>>>>>>>>> diff --git a/drivers/net/can/m_can/Makefile b/drivers/net/can/m_can/Makefile
+>>>>>>>>>>>> index 8bbd7f24f5be..057bbcdb3c74 100644
+>>>>>>>>>>>> --- a/drivers/net/can/m_can/Makefile
+>>>>>>>>>>>> +++ b/drivers/net/can/m_can/Makefile
+>>>>>>>>>>>> @@ -3,3 +3,4 @@
+>>>>>>>>>>>>  #
+>>>>>>>>>>>>  
+>>>>>>>>>>>>  obj-$(CONFIG_CAN_M_CAN) += m_can.o
+>>>>>>>>>>>> +obj-$(CONFIG_CAN_M_CAN_PLATFORM) += m_can_platform.o
+>>>>>>>>>>>> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+>>>>>>>>>>>> index 9b449400376b..a60278d94126 100644
+>>>>>>>>>>>> --- a/drivers/net/can/m_can/m_can.c
+>>>>>>>>>>>> +++ b/drivers/net/can/m_can/m_can.c
+>>>>>>>>>>>
+>>>>>>>>>>> ... snip...
+>>>>>>>>>>>
+>>>>>>>>>>>> +static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
+>>>>>>>>>>>> +				    struct net_device *dev)
+>>>>>>>>>>>> +{
+>>>>>>>>>>>> +	struct m_can_priv *priv = netdev_priv(dev);
+>>>>>>>>>>>> +
+>>>>>>>>>>>> +	if (can_dropped_invalid_skb(dev, skb))
+>>>>>>>>>>>> +		return NETDEV_TX_OK;
+>>>>>>>>>>>> +
+>>>>>>>>>>>> +	if (priv->is_peripherial) {
+>>>>>>>>>>>> +		if (priv->tx_skb) {
+>>>>>>>>>>>> +			netdev_err(dev, "hard_xmit called while tx busy\n");
+>>>>>>>>>>>> +			return NETDEV_TX_BUSY;
+>>>>>>>>>>>> +		}
+>>>>>>>>>>>
+>>>>>>>>>>> The problem with that approach is, that the upper layer will try to
+>>>>>>>>>>> resubmit the current "skb" but not the previous "tx_skb". And the
+>>>>>>>>>>> previous "tx_skb" has not been freed yet. I would just drop and free the
+>>>>>>>>>>> skb and return NETDEV_TX_OK in m_can_tx_handler() for peripheral devices
+>>>>>>>>>>> (like can_dropped_invalid_skb() does).
+>>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> OK.
+>>>>>>>>>>
+>>>>>>>>>> So would this also be a bug in the hi3110 and mcp251x drivers (line 521) as well because besides checking tx_length
+>>>>>>>>>> this is how these drivers are written.
+>>>>>>>>>
+>>>>>>>>> This is different. When entering the "start_xmit" routine, the previous
+>>>>>>>>> TX is still in progress. It will (hopefully) complete soon. Therefore
+>>>>>>>>> returning NETDEV_TX_BUSY is OK. The "start_xmit" routine will be
+>>>>>>>>> recalled soon with the same "skb". That scenario should/could also not
+>>>>>>>>> happen.
+>>>>>>>>
+>>>>>>>> In principle, this also applies to the m_can peripheral devices. If
+>>>>>>>> tx_skb is not NULL, the TX is still in progress and returning
+>>>>>>>> NETDEV_TX_BUSY is just fine.
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> In contrast, in "m_can_tx_handler()", the skb could not be handled
+>>>>>>>>> because the FIFO is full. The "start_xmit" routine for peripheral
+>>>>>>>>> devices for that skb already returned NETDEV_TX_OK. Therefore the only
+>>>>>>>>> meaningful action is to drop the skb. Also this error should not happen
+>>>>>>>>> and if, something is going really wrong. Therefore I think, a
+>>>>>>>>> WARN_ONCE() would be even more appropriate. But that should be a
+>>>>>>>>> separate patch.
+>>>>>>>>
+>>>>>>>> But that's a different issue/error. The tx_skb cannot be processed in
+>>>>>>>> "m_can_tx_handler()". Either we drop it or we re-queue it (retry later).
+>>>>>>>>
+>>>>>>>
+>>>>>>> OK I am a bit confused on this.  Are you saying this is not an issue?
+>>>>>>> Or are you saying I need to check for tx_len like the other code?
+>>>>>>
+>>>>>> If you check for tx_skb in the "start_xmit" routine like the hi3110 and
+>>>>>> mcp251x, it will work the same way. But only, if the "tx_handler()" has
+>>>>>> fully processed the message. It simple means, the TX is still in
+>>>>>> progress and will complete soon. But in "m_can_tx_handler()" we return
+>>>>>> without handling the message! It will never be sent and freed. Or will
+>>>>>> the "m_can_tx_handler()" retry?
+>>>>>>
+>>>>>
+>>>>> I am not seeing where we are not handling the message in the m_can_tx_handler()
+>>>>
+>>>> static void m_can_tx_handler(struct m_can_classdev *priv)
+>>>> {
+>>>> 		...
+>>>> 		/* Check if FIFO full */
+>>>> 		if (m_can_tx_fifo_full(priv)) {
+>>>> 			/* This shouldn't happen */
+>>>> 			netif_stop_queue(dev);
+>>>> 			netdev_warn(dev,
+>>>> 				    "TX queue active although FIFO is full.");
+>>>> 			return;
+>>>> 		}
+>>>>
+>>>> We simply return here. When is the message (tx_skb) processed (sent or freed)?
+>>>> What happens with tx_skb?
+>>>>
 >>>
->>> <Snip>
->>>>
->>>> On 3/9/19 3:07 PM, Appana Durga Kedareswara rao wrote:
->>>>> While stress testing the CAN interface on xilinx axi can in loopback
->>>>> mode getting message "write: no buffer space available"
->>>>> Increasing device tx queue length resolved the above mentioned issue.
->>>>
->>>> No need to patch the kernel:
->>>>
->>>> $ ip link set <dev-name> txqueuelen 500
->>>>
->>>> does the same thing.
+>>> Are you sure you are looking at the right code?
 >>>
->>> Thanks for the review...
->>> Agree but it is not an out of box solution right??
->>> Do you have any idea for socket can devices why the tx queue length is 10 whereas
->>> for other network devices (ex: ethernet) it is 1000 ??
+>>> For patch version v7 I have the following
+>>>
+>>> 		/* Check if FIFO full */
+>>> 		if (m_can_tx_fifo_full(cdev)) {
+>>> 			/* This shouldn't happen */
+>>> 			netif_stop_queue(dev);
+>>> 			netdev_warn(dev,
+>>> 				    "TX queue active although FIFO is full.");
+>>> 			return NETDEV_TX_BUSY;
+>>> 		}
+>>>
+>>> Which is no change from the original source code.
 >>
->> Probably because you don't generally want a long queue adding latency on
->> a CAN interface? The default 1000 is already way too much even for an
->> Ethernet device in a lot of cases.
+>> I know,  but for the peripheral devices you have:
 >>
->> If you get "out of buffer" errors it means your application is sending
->> things faster than the receiver (or device) can handle them. If you
->> solve this by increasing the queue length you are just papering over the
->> underlying issue, and trading latency for fewer errors. This tradeoff
->> *may* be appropriate for your particular application, but I can imagine
->> it would not be appropriate as a default. Keeping the buffer size small
->> allows errors to propagate up to the application, which can then back
->> off, or do something smarter, as appropriate.
+>>   static void m_can_tx_work_queue(struct work_struct *ws)
+>>   {
+>> 	struct m_can_priv *priv = container_of(ws, struct m_can_priv,
+>> 						tx_work);
+>> 	netdev_tx_t ret;
 >>
->> I don't know anything about the actual discussions going on when the
->> defaults were set, but I can imagine something along the lines of the
->> above was probably a part of it :)
+>> 	ret = m_can_tx_handler(priv);
+>> 	if (ret == NETDEV_TX_OK)
+>> 		priv->tx_skb = NULL;
+>>   }
 >>
->> -Toke
+>> What will happen with tx_skb if NETDEV_TX_BUSY? It has not been
+>> dropped/freed yet?
+>>
 > 
-> In a related discussion, loud and often difficult, over here on the can bus,
-> 
-> https://github.com/systemd/systemd/issues/9194#issuecomment-469403685
-> 
-> we found that applying fq_codel as the default via sysctl qdisc a bad
-> idea for systems for at least one model of can device.
-> 
-> If you scroll back on the bug, a good description of what the can
-> subsystem expects from the qdisc is therein - it mandates an in-order
-> fifo qdisc or no queue at all. the CAN protocol expects each packet to
-> be transmitted successfully or rejected, and if so, passes the error up
-> to userspace and is supposed to stop for further input.
-> 
-> As this was the first serious bug ever reported against using fq_codel
-> as the default in 5+ years of systemd and 7 of openwrt deployment I've
-> been taking it very seriously. It's worse than just systemd - openwrt
-> patches out pfifo_fast entirely. pfifo_fast is the wrong qdisc - the
-> right choices are noqueue and possibly pfifo.
-> 
-> However, the vcan device exposes noqueue, and so far it has been only
-> the one device ( a 8Devices socketcan USB2CAN ) that did not do this in
-> their driver that was misbehaving.
-> 
-> Which was just corrected with a simple:
-> 
-> static int usb_8dev_probe(struct usb_interface *intf,
-> 			 const struct usb_device_id *id)
-> {
->       ...
->       netdev->netdev_ops = &usb_8dev_netdev_ops;
-> 
->       netdev->flags |= IFF_ECHO; /* we support local echo */
-> +    netdev->priv_flags |= IFF_NO_QUEUE;
->       ...
-> }
-> 
-> and successfully tested on that bug report.
-> 
-> So at the moment, my thought is that all can devices should default to
-> noqueue, if they are not already. I think a pfifo_fast and a qlen of any
-> size is the wrong thing, but I still don't know enough about what other
-> can devices do or did to be certain.
-> 
+> OK I think I see the issue there.
 
-Having about 10 elements in a CAN driver tx queue allows to work with 
-queueing disciplines 
-(http://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf) and also to 
-maintain a nearly real-time behaviour with outgoing traffic.
+The key point is that the "skb" entered by the "start_xmit" must be
+released/free when it's processed (with NETDEV_TX_OK). This is more
+tricky for perp devices because the "skb" is handled deferred.
 
-When the CAN interface is not able to cope with the (intened) outgoing 
-traffic load, the applications should get an instant feedback about it.
+> 
+> I should probably add can_put_echo_skb if NETDEV_TX_BUSY and always NULL out the SKB.
 
-There is a difference between running CAN applications in the real world 
-and doing performance tests, where it makes sense to increase the 
-tx-queue-len to e.g. 1000 and dump 1000 frames into the driver to check 
-the hardware performance.
+can_put_echo_skb() should only be called after the TX has been
+initiated. The normal flow for the skb is:
 
-Best regards,
-Oliver
+ start-xmit -> initiate tx -> can_put_echo_skb -> return NETDEV_TX_OK...
+   tx done interrupt -> can_get_echo_skb -> free skb
+
+I would just drop the message/skb:
+
+		/* Check if FIFO full */
+		if (m_can_tx_fifo_full(cdev)) {
+			/* This shouldn't happen */
+			netif_stop_queue(dev);
+			netdev_warn(dev,
+				    "TX queue active although FIFO is full.");
+			if (cdev->is_peripherial) {
+				kfree_skb(skb);
+				dev->stats.tx_dropped++;
+				return NETDEV_TX_OK;
+			} else {
+				return NETDEV_TX_BUSY;
+			}
+		}
+
+> This appears to be the way the other perp drivers do it as they just put and null the skb
+> regardless of the return of the handlers.
+
+You can also use:
+
+		if (cdev->tx_skb) {
+			netdev_err(dev, "hard_xmit called while tx busy\n");
+			return NETDEV_TX_BUSY;
+		}
+
+to check for "hard_xmit called while tx busy". But you still need to
+handle the "m_can_tx_fifo_full(cdev)" case properly. See above.
+
+> And clean is called when the BUS is off or coming out of suspend.
+
+Probably we need that as well even if other drivers don't care if
+the device goes bus-off while TX messages are pending.
+
+Wolfgang
