@@ -1,18 +1,18 @@
 From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: WARNING in hsr_addr_subst_dest
-Date: Tue, 12 Mar 2019 17:09:08 +0100
-Message-ID: <CACT4Y+ajX4nQVe-UEKCud87-bBhqL7Xaw9Gxh=JAGDg08q3Hyw@mail.gmail.com>
-References: <000000000000d7206e0583dfc6b3@google.com> <11a39c4b-9ac1-e55e-1773-534248a1d1d8@hartkopp.net>
+Subject: Re: WARNING in hsr_forward_skb
+Date: Tue, 12 Mar 2019 17:09:38 +0100
+Message-ID: <CACT4Y+ZoDc=_a_W=wVMYj+VLW8WFBDbQJGB17dZTSvYinWhebA@mail.gmail.com>
+References: <0000000000004cfa120583e1dfc3@google.com> <7dd5ffca-803d-9d5e-7fa4-f9eed2249d26@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <11a39c4b-9ac1-e55e-1773-534248a1d1d8@hartkopp.net>
+In-Reply-To: <7dd5ffca-803d-9d5e-7fa4-f9eed2249d26@hartkopp.net>
 Sender: netdev-owner@vger.kernel.org
 To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: syzbot <syzbot+b92e4f1472a54e1c7dec@syzkaller.appspotmail.com>, arvid.brodin@alten.se, Jens Axboe <axboe@fb.com>, Jens Axboe <axboe@kernel.dk>, David Miller <davem@davemloft.net>, Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Ming Lei <ming.lei@redhat.com>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev <netdev@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Cc: syzbot <syzbot+fdce8f2a8903f3ba0e6b@syzkaller.appspotmail.com>, arvid.brodin@alten.se, Jens Axboe <axboe@fb.com>, Jens Axboe <axboe@kernel.dk>, David Miller <davem@davemloft.net>, Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Ming Lei <ming.lei@redhat.com>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev <netdev@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 List-Id: linux-can.vger.kernel.org
 
-On Tue, Mar 12, 2019 at 1:03 PM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+On Tue, Mar 12, 2019 at 1:02 PM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
 >
 > Hi all,
 >
@@ -23,9 +23,7 @@ On Tue, Mar 12, 2019 at 1:03 PM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
 > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit?id=74b7b490886852582d986a33443c2ffa50970169
 >
 > fixes the problem.
->
-> Best regards,
-> Oliver
+
 
 Hi Oliver,
 
@@ -47,29 +45,32 @@ completely random commit.
 =====
 
 
+> On 3/12/19 9:57 AM, syzbot wrote:
+> > syzbot has bisected this bug to:
+> >
 > > commit ab42f35d9cb5ac49b5a2a11f940e74f58f207280
 > > Author: Ming Lei <ming.lei@redhat.com>
 > > Date:   Fri May 26 11:53:19 2017 +0000
 > >
 > >      blk-mq: merge bio into sw queue before plugging
 > >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1681996f200000
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16e68713200000
 > > start commit:   ab42f35d blk-mq: merge bio into sw queue before plugging
 > > git tree:       upstream
-> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=1581996f200000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1181996f200000
+> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=15e68713200000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=11e68713200000
 > > kernel config:  https://syzkaller.appspot.com/x/.config?x=5e7dc790609552d7
 > > dashboard link:
-> > https://syzkaller.appspot.com/bug?extid=b92e4f1472a54e1c7dec
+> > https://syzkaller.appspot.com/bug?extid=fdce8f2a8903f3ba0e6b
 > > userspace arch: amd64
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=107db700c00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12304827400000
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f6d1fd400000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17290fdd400000
 > >
-> > Reported-by: syzbot+b92e4f1472a54e1c7dec@syzkaller.appspotmail.com
+> > Reported-by: syzbot+fdce8f2a8903f3ba0e6b@syzkaller.appspotmail.com
 > > Fixes: ab42f35d ("blk-mq: merge bio into sw queue before plugging")
 >
 > --
 > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
 > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/11a39c4b-9ac1-e55e-1773-534248a1d1d8%40hartkopp.net.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/7dd5ffca-803d-9d5e-7fa4-f9eed2249d26%40hartkopp.net.
 > For more options, visit https://groups.google.com/d/optout.
