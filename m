@@ -1,51 +1,73 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: WARNING in hsr_addr_subst_dest
-Date: Tue, 12 Mar 2019 13:02:47 +0100
-Message-ID: <11a39c4b-9ac1-e55e-1773-534248a1d1d8@hartkopp.net>
-References: <000000000000d7206e0583dfc6b3@google.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v8 3/4] dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+Date: Tue, 12 Mar 2019 07:12:53 -0500
+Message-ID: <20190312121254.8043-3-dmurphy@ti.com>
+References: <20190312121254.8043-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <000000000000d7206e0583dfc6b3@google.com>
-Content-Language: en-US
+In-Reply-To: <20190312121254.8043-1-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: syzbot <syzbot+b92e4f1472a54e1c7dec@syzkaller.appspotmail.com>, arvid.brodin@alten.se, axboe@fb.com, axboe@kernel.dk, davem@davemloft.net, hch@lst.de, linux-block@vger.kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, ming.lei@redhat.com, mkl@pengutronix.de, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-Hi all,
+DT binding documentation for TI TCAN4x5x driver.
 
-I'm not sure why a Kernel 4.12.0-rc2+ is used here, but I do not get any 
-problems on the my latest 5.0.0-06622-g1fc1cd8399ab tree and I strongly 
-assume this patch showing up in 4.12-rc6
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit?id=74b7b490886852582d986a33443c2ffa50970169
+v8 - No Changes - https://lore.kernel.org/patchwork/patch/1047981/
 
-fixes the problem.
+v7 - Made device state optional - https://lore.kernel.org/patchwork/patch/1047218/
+v6 - No changes - https://lore.kernel.org/patchwork/patch/1042445/
 
-Best regards,
-Oliver
+ .../devicetree/bindings/net/can/tcan4x5x.txt  | 37 +++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
 
-On 3/12/19 7:27 AM, syzbot wrote:
-> syzbot has bisected this bug to:
-> 
-> commit ab42f35d9cb5ac49b5a2a11f940e74f58f207280
-> Author: Ming Lei <ming.lei@redhat.com>
-> Date:   Fri May 26 11:53:19 2017 +0000
-> 
->      blk-mq: merge bio into sw queue before plugging
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1681996f200000
-> start commit:   ab42f35d blk-mq: merge bio into sw queue before plugging
-> git tree:       upstream
-> final crash:    https://syzkaller.appspot.com/x/report.txt?x=1581996f200000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1181996f200000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5e7dc790609552d7
-> dashboard link: 
-> https://syzkaller.appspot.com/bug?extid=b92e4f1472a54e1c7dec
-> userspace arch: amd64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=107db700c00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12304827400000
-> 
-> Reported-by: syzbot+b92e4f1472a54e1c7dec@syzkaller.appspotmail.com
-> Fixes: ab42f35d ("blk-mq: merge bio into sw queue before plugging")
+diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+new file mode 100644
+index 000000000000..c388f7d9feb1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -0,0 +1,37 @@
++Texas Instruments TCAN4x5x CAN Controller
++================================================
++
++This file provides device node information for the TCAN4x5x interface contains.
++
++Required properties:
++	- compatible: "ti,tcan4x5x"
++	- reg: 0
++	- #address-cells: 1
++	- #size-cells: 0
++	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
++			     operate at should be less than or equal to 18 MHz.
++	- data-ready-gpios: Interrupt GPIO for data and error reporting.
++	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
++
++See Documentation/devicetree/bindings/net/can/m_can.txt for additional
++required property details.
++
++Optional properties:
++	- reset-gpios: Hardwired output GPIO. If not defined then software
++		       reset.
++	- device-state-gpios: Input GPIO that indicates if the device is in
++			      a sleep state or if the device is active.
++
++Example:
++tcan4x5x: tcan4x5x@0 {
++		compatible = "ti,tcan4x5x";
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		spi-max-frequency = <10000000>;
++		bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
++		data-ready-gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
++		device-state-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
++		device-wake-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
++};
+-- 
+2.20.1.390.gb5101f9297
