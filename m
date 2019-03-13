@@ -1,49 +1,130 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: WARNING in hsr_forward_skb
-Date: Wed, 13 Mar 2019 19:22:54 +0100
-Message-ID: <cc1224f9-8fdc-ed08-3004-ae528dbeadb8@hartkopp.net>
-References: <0000000000004cfa120583e1dfc3@google.com>
- <7dd5ffca-803d-9d5e-7fa4-f9eed2249d26@hartkopp.net>
- <CACT4Y+ZoDc=_a_W=wVMYj+VLW8WFBDbQJGB17dZTSvYinWhebA@mail.gmail.com>
- <CACT4Y+ayyFe6oek8MdnUd1LsB_+1kpJatBLnmF_jCttQPyCK0g@mail.gmail.com>
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH 4/4] leds: netdev trigger: allow setting initial values in device tree
+Date: Wed, 13 Mar 2019 21:26:15 +0100
+Message-ID: <20190313202615.22883-5-linux@rasmusvillemoes.dk>
+References: <20190311144227.GA4404@amd>
+ <20190313202615.22883-1-linux@rasmusvillemoes.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <CACT4Y+ayyFe6oek8MdnUd1LsB_+1kpJatBLnmF_jCttQPyCK0g@mail.gmail.com>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: syzbot <syzbot+fdce8f2a8903f3ba0e6b@syzkaller.appspotmail.com>, arvid.brodin@alten.se, Jens Axboe <axboe@fb.com>, Jens Axboe <axboe@kernel.dk>, David Miller <davem@davemloft.net>, Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Ming Lei <ming.lei@redhat.com>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev <netdev@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190313202615.22883-1-linux@rasmusvillemoes.dk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-leds@vger.kernel.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hi Dimitry,
+It can be quite convenient to initialize a netdev-triggered LED with a
+device name and setting the rx,tx,link properties from device tree,
+instead of having to do that in an init script in userspace.
 
-On 3/12/19 5:21 PM, Dmitry Vyukov wrote:
+My main motivation for this is to be able to switch away from the
+deprecated CONFIG_CAN_LEDS, so add an example based on that and add a
+pointer in the net/can/Kconfig file.
 
->> You can see how bisection progressed and got to 4.12.0-rc2+ in the
->> bisection log.
->>
->> The commit that it come up with looks unrelated.
->> I've started collecting such cases at:
->> https://github.com/google/syzkaller/issues/1051
->> and added for this case:
->>
->> =====
->> Bisected to wrong commit.
->> Root cause: broken kernel boots, bugs that happen on all tests.
->> Boot is broken for several releases with "WARNING in hsr_forward_skb",
->> this switches to a bug that happens during every test "INFO: trying to
->> register non-static key in can_notifier", which then leads to a
->> completely random commit.
->> =====
-> 
-> Broken boots did not happen here. "WARNING in hsr_forward_skb" is the
-> crash that we pursued, so it started correctly. But then diverged to
-> an unrelated "INFO: trying to register non-static key in
-> can_notifier".
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ .../devicetree/bindings/leds/common.txt       | 17 ++++++++++
+ drivers/leds/trigger/ledtrig-netdev.c         | 31 +++++++++++++++++++
+ drivers/net/can/Kconfig                       |  3 +-
+ 3 files changed, 50 insertions(+), 1 deletion(-)
 
-Thanks for the clarification! I really appreciate your effort with syzbot!
-
-Best,
-Oliver
+diff --git a/Documentation/devicetree/bindings/leds/common.txt b/Documentation/devicetree/bindings/leds/common.txt
+index 7cb88460a47c..4f3a97e73417 100644
+--- a/Documentation/devicetree/bindings/leds/common.txt
++++ b/Documentation/devicetree/bindings/leds/common.txt
+@@ -43,6 +43,23 @@ Optional properties for child nodes:
+                 Documentation/ABI/testing/sysfs-class-led-trigger-netdev)
+                 to reflect the state and activity of a net device.
+ 
++                The optional child node netdev can be used to
++                configure initial values for the link, rx, tx and
++                device_name properties. For example, setting
++                linux,default-trigger = "netdev" and adding the child
++                node
++
++                netdev {
++                    rx;
++                    tx;
++                    link;
++                    device-name = "can0";
++                };
++
++                can be used to replace 'linux,default-trigger =
++                "can0-rxtx"' that relies on the deprecated
++                CONFIG_CAN_LEDS.
++
+ - led-pattern : Array of integers with default pattern for certain triggers.
+                 Each trigger may parse this property differently:
+                 - one-shot : two numbers specifying delay on and delay off (in ms),
+diff --git a/drivers/leds/trigger/ledtrig-netdev.c b/drivers/leds/trigger/ledtrig-netdev.c
+index 55153a7e8433..1f7c86df1e91 100644
+--- a/drivers/leds/trigger/ledtrig-netdev.c
++++ b/drivers/leds/trigger/ledtrig-netdev.c
+@@ -20,6 +20,7 @@
+ #include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
++#include <linux/of.h>
+ #include <linux/spinlock.h>
+ #include <linux/timer.h>
+ #include "../leds.h"
+@@ -395,6 +396,35 @@ static void netdev_trig_work(struct work_struct *work)
+ 			(atomic_read(&trigger_data->interval)*2));
+ }
+ 
++static void netdev_trig_of_init(struct led_classdev *led_cdev,
++				struct led_netdev_data *trigger_data)
++{
++	struct device_node *np = led_cdev->dev->of_node;
++	const char *device_name;
++
++	if (!np)
++		return;
++	np = of_get_child_by_name(np, "netdev");
++	if (!np)
++		return;
++
++	if (of_property_read_bool(np, "link"))
++		__set_bit(NETDEV_LED_LINK, &trigger_data->mode);
++	if (of_property_read_bool(np, "tx"))
++		__set_bit(NETDEV_LED_TX, &trigger_data->mode);
++	if (of_property_read_bool(np, "rx"))
++		__set_bit(NETDEV_LED_RX, &trigger_data->mode);
++	if (!of_property_read_string(np, "device-name", &device_name)) {
++		unsigned len = strlen(device_name);
++
++		if (len < IFNAMSIZ)
++			set_device(trigger_data, device_name, len);
++	}
++	set_baseline_state(trigger_data);
++
++	of_node_put(np);
++}
++
+ static int netdev_trig_activate(struct led_classdev *led_cdev)
+ {
+ 	struct led_netdev_data *trigger_data;
+@@ -418,6 +448,7 @@ static int netdev_trig_activate(struct led_classdev *led_cdev)
+ 	trigger_data->mode = 0;
+ 	atomic_set(&trigger_data->interval, msecs_to_jiffies(50));
+ 	trigger_data->last_activity = 0;
++	netdev_trig_of_init(led_cdev, trigger_data);
+ 
+ 	led_set_trigger_data(led_cdev, trigger_data);
+ 
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index e0f0ad7a550a..91703a96b636 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -77,7 +77,8 @@ config CAN_LEDS
+ 	# everything that this driver is doing. This is marked as broken
+ 	# because it uses stuff that is intended to be changed or removed.
+ 	# Please consider switching to the netdev trigger and confirm it
+-	# fulfills your needs instead of fixing this driver.
++	# fulfills your needs instead of fixing this driver. See e.g.
++	# Documentation/devicetree/bindings/leds/common.txt
+ 	depends on BROKEN
+ 	select LEDS_TRIGGERS
+ 	---help---
+-- 
+2.20.1
