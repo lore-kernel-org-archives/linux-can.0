@@ -1,67 +1,73 @@
-From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH] can: rcar_canfd: fix possible IRQ storm on high load
-Date: Wed, 13 Mar 2019 18:49:28 +0300
-Message-ID: <20190313154928.24331-1-nikita.yoush@cogentembedded.com>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Artemi Ivanov <artemi.ivanov@cogentembedded.com>, Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v9 3/4] dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
+Date: Wed, 13 Mar 2019 11:26:28 -0500
+Message-ID: <20190313162629.11937-3-dmurphy@ti.com>
+References: <20190313162629.11937-1-dmurphy@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190313162629.11937-1-dmurphy@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-We have observed rcar_canfd driver entering IRQ storm under high load,
-with following scenario:
-- rcar_canfd_global_interrupt() in entered due to Rx available,
-- napi_schedule_prep() is called, and sets NAPIF_STATE_SCHED in state
-- Rx fifo interrupts are masked,
-- rcar_canfd_global_interrupt() is entered again, this time due to
-  error interrupt (e.g. due to overflow),
-- since scheduled napi poller has not yet executed, condition for calling
-  napi_schedule_prep() from rcar_canfd_global_interrupt() remains true,
-  thus napi_schedule_prep() gets called and sets NAPIF_STATE_MISSED flag
-  in state,
-- later, napi poller function rcar_canfd_rx_poll() gets executed, and
-  calls napi_complete_done(),
-- due to NAPIF_STATE_MISSED flag in state, this call does not clear
-  NAPIF_STATE_SCHED flag from state,
-- on return from napi_complete_done(), rcar_canfd_rx_poll() unmasks Rx
-  interrutps,
-- Rx interrupt happens, rcar_canfd_global_interrupt() gets called
-  and calls napi_schedule_prep(),
-- since NAPIF_STATE_SCHED is set in state at this time, this call
-  returns false,
-- due to that false return, rcar_canfd_global_interrupt() returns
-  without masking Rx interrupt
-- and this results into IRQ storm: unmasked Rx interrupt happens again
-  and again is misprocessed in the same way.
+DT binding documentation for TI TCAN4x5x driver.
 
-This patch fixes that scenario by unmasking Rx interrupts only when
-napi_complete_done() returns true, which means it has cleared
-NAPIF_STATE_SCHED in state.
-
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 05410008aa6b..de34a4b82d4a 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -1508,10 +1508,11 @@ static int rcar_canfd_rx_poll(struct napi_struct *napi, int quota)
- 
- 	/* All packets processed */
- 	if (num_pkts < quota) {
--		napi_complete_done(napi, num_pkts);
--		/* Enable Rx FIFO interrupts */
--		rcar_canfd_set_bit(priv->base, RCANFD_RFCC(ridx),
--				   RCANFD_RFCC_RFIE);
-+		if (napi_complete_done(napi, num_pkts)) {
-+			/* Enable Rx FIFO interrupts */
-+			rcar_canfd_set_bit(priv->base, RCANFD_RFCC(ridx),
-+					   RCANFD_RFCC_RFIE);
-+		}
- 	}
- 	return num_pkts;
- }
+v9 - No Changes - https://lore.kernel.org/patchwork/patch/1050118/
+v8 - No Changes - https://lore.kernel.org/patchwork/patch/1047981/
+v7 - Made device state optional - https://lore.kernel.org/patchwork/patch/1047218/
+v6 - No changes - https://lore.kernel.org/patchwork/patch/1042445/
+
+ .../devicetree/bindings/net/can/tcan4x5x.txt  | 37 +++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+
+diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+new file mode 100644
+index 000000000000..c388f7d9feb1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -0,0 +1,37 @@
++Texas Instruments TCAN4x5x CAN Controller
++================================================
++
++This file provides device node information for the TCAN4x5x interface contains.
++
++Required properties:
++	- compatible: "ti,tcan4x5x"
++	- reg: 0
++	- #address-cells: 1
++	- #size-cells: 0
++	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
++			     operate at should be less than or equal to 18 MHz.
++	- data-ready-gpios: Interrupt GPIO for data and error reporting.
++	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
++
++See Documentation/devicetree/bindings/net/can/m_can.txt for additional
++required property details.
++
++Optional properties:
++	- reset-gpios: Hardwired output GPIO. If not defined then software
++		       reset.
++	- device-state-gpios: Input GPIO that indicates if the device is in
++			      a sleep state or if the device is active.
++
++Example:
++tcan4x5x: tcan4x5x@0 {
++		compatible = "ti,tcan4x5x";
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		spi-max-frequency = <10000000>;
++		bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
++		data-ready-gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
++		device-state-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
++		device-wake-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
++};
 -- 
-2.11.0
+2.20.1.390.gb5101f9297
