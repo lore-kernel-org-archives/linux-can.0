@@ -1,154 +1,106 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v9 1/4] can: m_can: Create a m_can platform framework
-Date: Thu, 14 Mar 2019 15:38:23 +0100
-Message-ID: <470e0028-7e4c-b1ba-7c50-7464f4904801@grandegger.com>
-References: <20190313162629.11937-1-dmurphy@ti.com>
- <87f14a09-244e-c698-1372-f8b49e60faee@grandegger.com>
- <a578dd22-a581-8421-fac4-605fa8f63d1a@ti.com>
+From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
+Subject: RE: [PATCH] net: can: Increase tx queue length
+Date: Fri, 15 Mar 2019 10:04:27 +0000
+Message-ID: <DM5PR02MB2187A422962182382358B916DC440@DM5PR02MB2187.namprd02.prod.outlook.com>
+References: <1552140446-31535-1-git-send-email-appana.durga.rao@xilinx.com>
+ <cd71079c-664f-b1b6-bb21-ecda639ecbed@gmail.com>
+ <CY4PR02MB2183E0667CF67DEE6A297FF8DC4E0@CY4PR02MB2183.namprd02.prod.outlook.com>
+ <87zhq43v4m.fsf@toke.dk> <87sgvvnwqf.fsf@taht.net>
+ <9adf2fbb-7b0b-6821-98fb-2ddcdf5c0edd@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a578dd22-a581-8421-fac4-605fa8f63d1a@ti.com>
-Content-Language: en-GB
+In-Reply-To: <9adf2fbb-7b0b-6821-98fb-2ddcdf5c0edd@hartkopp.net>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Dave Taht <dave@taht.net>, =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, Andre Naujoks <nautsch2@gmail.com>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Hello,
-
-Am 14.03.19 um 15:04 schrieb Dan Murphy:
-> Hello
-> 
-> On 3/14/19 2:26 AM, Wolfgang Grandegger wrote:
->> Hello Dan,
->>
->> we are close...
->>
->> Am 13.03.19 um 17:26 schrieb Dan Murphy:
->>> Create a m_can platform framework that peripherial
->>> devices can register to and use common code and register sets.
->>> The peripherial devices may provide read/write and configuration
->>> support of the IP.
->>>
->>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->>> ---
->>>
->>> v9 - Added back the CSR clearing as this is needed for TCAN device, fixed clean
->>> function to clean index for version > 30, removed extra skb free and fixed work
->>> handler to handle FIFO full for perpheral devices - https://lore.kernel.org/patchwork/patch/1050120/
->>>
->>> v8 - Added a clean function for the tx_skb, cleaned up skb on BUS_OFF and on xmit
->>> BUSY - https://lore.kernel.org/patchwork/patch/1047980/
->>> v7 - Fixed remaining new checkpatch issues, removed CSR setting, fixed tx hard
->>> start function to return tx_busy, and renamed device callbacks - https://lore.kernel.org/patchwork/patch/1047220/
->>> v6 - Squashed platform patch to this patch for bissectablity, fixed coding style
->>> issues, updated Kconfig help, placed mcan reg offsets back into c file, renamed
->>> priv->skb to priv->tx_skb and cleared perp interrupts at ISR start -
->>> Patch 1 comments - https://lore.kernel.org/patchwork/patch/1042446/
->>> Patch 2 comments - https://lore.kernel.org/patchwork/patch/1042442/
->>>
->>>  drivers/net/can/m_can/Kconfig          |  13 +-
->>>  drivers/net/can/m_can/Makefile         |   1 +
->>>  drivers/net/can/m_can/m_can.c          | 733 +++++++++++++------------
->>>  drivers/net/can/m_can/m_can.h          | 110 ++++
->>>  drivers/net/can/m_can/m_can_platform.c | 202 +++++++
->>>  5 files changed, 714 insertions(+), 345 deletions(-)
->>>  create mode 100644 drivers/net/can/m_can/m_can.h
->>>  create mode 100644 drivers/net/can/m_can/m_can_platform.c
->>>
->>> diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
->>> index 04f20dd39007..f7119fd72df4 100644
->>> --- a/drivers/net/can/m_can/Kconfig
->>> +++ b/drivers/net/can/m_can/Kconfig
->>> @@ -1,5 +1,14 @@
->>>  config CAN_M_CAN
->>> +	tristate "Bosch M_CAN support"
->>> +	---help---
->>> +	  Say Y here if you want support for Bosch M_CAN controller framework.
->>> +	  This is common support for devices that embed the Bosch M_CAN IP.
->>> +
->>> +config CAN_M_CAN_PLATFORM
->>> +	tristate "Bosch M_CAN support for io-mapped devices"
->>>  	depends on HAS_IOMEM
->>> -	tristate "Bosch M_CAN devices"
->>> +	depends on CAN_M_CAN
->>>  	---help---
->>> -	  Say Y here if you want to support for Bosch M_CAN controller.
->>> +	  Say Y here if you want support for IO Mapped Bosch M_CAN controller.
->>> +	  This support is for devices that have the Bosch M_CAN controller
->>> +	  IP embedded into the device and the IP is IO Mapped to the processor.
->>> diff --git a/drivers/net/can/m_can/Makefile b/drivers/net/can/m_can/Makefile
->>> index 8bbd7f24f5be..057bbcdb3c74 100644
->>> --- a/drivers/net/can/m_can/Makefile
->>> +++ b/drivers/net/can/m_can/Makefile
->>> @@ -3,3 +3,4 @@
->>>  #
->>>  
->>>  obj-$(CONFIG_CAN_M_CAN) += m_can.o
->>> +obj-$(CONFIG_CAN_M_CAN_PLATFORM) += m_can_platform.o
->>> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
->>> index 9b449400376b..56336aefc567 100644
->>> --- a/drivers/net/can/m_can/m_can.c
->>> +++ b/drivers/net/can/m_can/m_can.c
-...  snip ...
-
->>> +static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
->>> +				    struct net_device *dev)
->>> +{
->>> +	struct m_can_priv *priv = netdev_priv(dev);
->>> +
->>> +	if (can_dropped_invalid_skb(dev, skb))
->>> +		return NETDEV_TX_OK;
->>> +
->>> +	if (priv->is_peripherial) {
->>> +		if (priv->tx_skb) {
->>> +			netdev_err(dev, "hard_xmit called while tx busy\n");
->>> +			return NETDEV_TX_BUSY;
->>> +		}
->>> +
->>> +		if (priv->can.state == CAN_STATE_BUS_OFF) {
->>> +			m_can_clean(dev);
->>> +		} else {
->>> +			priv->tx_skb = skb;
->>> +			queue_work(priv->tx_wq, &priv->tx_work);
->>
->> You removed "netif_stop_queue(cdev->net)" here. Does that work with just
->> *one* "tx_skb"? I think you need an array then!? I'm afraid, this will
->> require quite some changes and you should also measure the benefit of
->> queuing outgoing messages first. For the time being, it would be fine
->> for me to stop the queue here and add an appropriate comment.
->>
-> 
-> Yes I removed this in favor of allowing the work handler to stop the queue.
-> 
-> If the version is < 30 then the queue is stopped immediately.  If the version > 30 then the queue is
-> only stopped if FIFO is full.
-
-Yes, and the next call to m_can_start_xmit() will probably return with
-NETDEV_TX_BUSY. You should at least add a "netif_stop_queue(cdev->net)"
-before returning NETDEV_TX_BUSY, otherwice the upper layer will retry
-immediately resulting in high CPU load. Anyway, the purpose of this
-return code is to signal errors/bugs in the start/stop flow control:
-
-https://elixir.bootlin.com/linux/latest/source/Documentation/networking/netdevices.txt#L81
-
-> 
-> I did see the message "tcan4x5x spi1.0 can0: hard_xmit called while tx busy" 
-> more with no gap and no polling in the cangen request.
-
-You usually should never see that message.
-
-> 
->> BTW, how big is the FIFO size on your system:
->>
-> 
-> This value is set to 1.
-> 
->>   tx_fifo_size = mram_config_vals[7];
-
-Then I'm surprised that you see "hard_xmit called while tx busy" at all.
-Are you sure that "cdev->version" is 32 on the tcan4x5?
-
-Wolfgang
+SGkgQWxsLA0KDQo8U25pcD4gDQo+IEhpIGFsbCwNCj4gDQo+IE9uIDMvMTAvMTkgNjowNyBBTSwg
+RGF2ZSBUYWh0IHdyb3RlOg0KPiA+IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUByZWRo
+YXQuY29tPiB3cml0ZXM6DQo+ID4NCj4gPj4gQXBwYW5hIER1cmdhIEtlZGFyZXN3YXJhIFJhbyA8
+YXBwYW5hZEB4aWxpbnguY29tPiB3cml0ZXM6DQo+ID4+DQo+ID4+PiBIaSBBbmRyZSwNCj4gPj4+
+DQo+ID4+PiA8U25pcD4NCj4gPj4+Pg0KPiA+Pj4+IE9uIDMvOS8xOSAzOjA3IFBNLCBBcHBhbmEg
+RHVyZ2EgS2VkYXJlc3dhcmEgcmFvIHdyb3RlOg0KPiA+Pj4+PiBXaGlsZSBzdHJlc3MgdGVzdGlu
+ZyB0aGUgQ0FOIGludGVyZmFjZSBvbiB4aWxpbnggYXhpIGNhbiBpbg0KPiA+Pj4+PiBsb29wYmFj
+ayBtb2RlIGdldHRpbmcgbWVzc2FnZSAid3JpdGU6IG5vIGJ1ZmZlciBzcGFjZSBhdmFpbGFibGUi
+DQo+ID4+Pj4+IEluY3JlYXNpbmcgZGV2aWNlIHR4IHF1ZXVlIGxlbmd0aCByZXNvbHZlZCB0aGUg
+YWJvdmUgbWVudGlvbmVkIGlzc3VlLg0KPiA+Pj4+DQo+ID4+Pj4gTm8gbmVlZCB0byBwYXRjaCB0
+aGUga2VybmVsOg0KPiA+Pj4+DQo+ID4+Pj4gJCBpcCBsaW5rIHNldCA8ZGV2LW5hbWU+IHR4cXVl
+dWVsZW4gNTAwDQo+ID4+Pj4NCj4gPj4+PiBkb2VzIHRoZSBzYW1lIHRoaW5nLg0KPiA+Pj4NCj4g
+Pj4+IFRoYW5rcyBmb3IgdGhlIHJldmlldy4uLg0KPiA+Pj4gQWdyZWUgYnV0IGl0IGlzIG5vdCBh
+biBvdXQgb2YgYm94IHNvbHV0aW9uIHJpZ2h0Pz8NCj4gPj4+IERvIHlvdSBoYXZlIGFueSBpZGVh
+IGZvciBzb2NrZXQgY2FuIGRldmljZXMgd2h5IHRoZSB0eCBxdWV1ZSBsZW5ndGgNCj4gPj4+IGlz
+IDEwIHdoZXJlYXMgZm9yIG90aGVyIG5ldHdvcmsgZGV2aWNlcyAoZXg6IGV0aGVybmV0KSBpdCBp
+cyAxMDAwID8/DQo+ID4+DQo+ID4+IFByb2JhYmx5IGJlY2F1c2UgeW91IGRvbid0IGdlbmVyYWxs
+eSB3YW50IGEgbG9uZyBxdWV1ZSBhZGRpbmcgbGF0ZW5jeQ0KPiA+PiBvbiBhIENBTiBpbnRlcmZh
+Y2U/IFRoZSBkZWZhdWx0IDEwMDAgaXMgYWxyZWFkeSB3YXkgdG9vIG11Y2ggZXZlbiBmb3INCj4g
+Pj4gYW4gRXRoZXJuZXQgZGV2aWNlIGluIGEgbG90IG9mIGNhc2VzLg0KPiA+Pg0KPiA+PiBJZiB5
+b3UgZ2V0ICJvdXQgb2YgYnVmZmVyIiBlcnJvcnMgaXQgbWVhbnMgeW91ciBhcHBsaWNhdGlvbiBp
+cw0KPiA+PiBzZW5kaW5nIHRoaW5ncyBmYXN0ZXIgdGhhbiB0aGUgcmVjZWl2ZXIgKG9yIGRldmlj
+ZSkgY2FuIGhhbmRsZSB0aGVtLg0KPiA+PiBJZiB5b3Ugc29sdmUgdGhpcyBieSBpbmNyZWFzaW5n
+IHRoZSBxdWV1ZSBsZW5ndGggeW91IGFyZSBqdXN0DQo+ID4+IHBhcGVyaW5nIG92ZXIgdGhlIHVu
+ZGVybHlpbmcgaXNzdWUsIGFuZCB0cmFkaW5nIGxhdGVuY3kgZm9yIGZld2VyDQo+ID4+IGVycm9y
+cy4gVGhpcyB0cmFkZW9mZg0KPiA+PiAqbWF5KiBiZSBhcHByb3ByaWF0ZSBmb3IgeW91ciBwYXJ0
+aWN1bGFyIGFwcGxpY2F0aW9uLCBidXQgSSBjYW4NCj4gPj4gaW1hZ2luZSBpdCB3b3VsZCBub3Qg
+YmUgYXBwcm9wcmlhdGUgYXMgYSBkZWZhdWx0LiBLZWVwaW5nIHRoZSBidWZmZXINCj4gPj4gc2l6
+ZSBzbWFsbCBhbGxvd3MgZXJyb3JzIHRvIHByb3BhZ2F0ZSB1cCB0byB0aGUgYXBwbGljYXRpb24s
+IHdoaWNoDQo+ID4+IGNhbiB0aGVuIGJhY2sgb2ZmLCBvciBkbyBzb21ldGhpbmcgc21hcnRlciwg
+YXMgYXBwcm9wcmlhdGUuDQo+ID4+DQo+ID4+IEkgZG9uJ3Qga25vdyBhbnl0aGluZyBhYm91dCB0
+aGUgYWN0dWFsIGRpc2N1c3Npb25zIGdvaW5nIG9uIHdoZW4gdGhlDQo+ID4+IGRlZmF1bHRzIHdl
+cmUgc2V0LCBidXQgSSBjYW4gaW1hZ2luZSBzb21ldGhpbmcgYWxvbmcgdGhlIGxpbmVzIG9mIHRo
+ZQ0KPiA+PiBhYm92ZSB3YXMgcHJvYmFibHkgYSBwYXJ0IG9mIGl0IDopDQo+ID4+DQo+ID4+IC1U
+b2tlDQo+ID4NCj4gPiBJbiBhIHJlbGF0ZWQgZGlzY3Vzc2lvbiwgbG91ZCBhbmQgb2Z0ZW4gZGlm
+ZmljdWx0LCBvdmVyIGhlcmUgb24gdGhlDQo+ID4gY2FuIGJ1cywNCj4gPg0KPiA+IGh0dHBzOi8v
+Z2l0aHViLmNvbS9zeXN0ZW1kL3N5c3RlbWQvaXNzdWVzLzkxOTQjaXNzdWVjb21tZW50LQ0KPiA0
+Njk0MDM2ODUNCj4gPg0KPiA+IHdlIGZvdW5kIHRoYXQgYXBwbHlpbmcgZnFfY29kZWwgYXMgdGhl
+IGRlZmF1bHQgdmlhIHN5c2N0bCBxZGlzYyBhIGJhZA0KPiA+IGlkZWEgZm9yIHN5c3RlbXMgZm9y
+IGF0IGxlYXN0IG9uZSBtb2RlbCBvZiBjYW4gZGV2aWNlLg0KPiA+DQo+ID4gSWYgeW91IHNjcm9s
+bCBiYWNrIG9uIHRoZSBidWcsIGEgZ29vZCBkZXNjcmlwdGlvbiBvZiB3aGF0IHRoZSBjYW4NCj4g
+PiBzdWJzeXN0ZW0gZXhwZWN0cyBmcm9tIHRoZSBxZGlzYyBpcyB0aGVyZWluIC0gaXQgbWFuZGF0
+ZXMgYW4gaW4tb3JkZXINCj4gPiBmaWZvIHFkaXNjIG9yIG5vIHF1ZXVlIGF0IGFsbC4gdGhlIENB
+TiBwcm90b2NvbCBleHBlY3RzIGVhY2ggcGFja2V0IHRvDQo+ID4gYmUgdHJhbnNtaXR0ZWQgc3Vj
+Y2Vzc2Z1bGx5IG9yIHJlamVjdGVkLCBhbmQgaWYgc28sIHBhc3NlcyB0aGUgZXJyb3INCj4gPiB1
+cCB0byB1c2Vyc3BhY2UgYW5kIGlzIHN1cHBvc2VkIHRvIHN0b3AgZm9yIGZ1cnRoZXIgaW5wdXQu
+DQo+ID4NCj4gPiBBcyB0aGlzIHdhcyB0aGUgZmlyc3Qgc2VyaW91cyBidWcgZXZlciByZXBvcnRl
+ZCBhZ2FpbnN0IHVzaW5nIGZxX2NvZGVsDQo+ID4gYXMgdGhlIGRlZmF1bHQgaW4gNSsgeWVhcnMg
+b2Ygc3lzdGVtZCBhbmQgNyBvZiBvcGVud3J0IGRlcGxveW1lbnQgSSd2ZQ0KPiA+IGJlZW4gdGFr
+aW5nIGl0IHZlcnkgc2VyaW91c2x5LiBJdCdzIHdvcnNlIHRoYW4ganVzdCBzeXN0ZW1kIC0gb3Bl
+bndydA0KPiA+IHBhdGNoZXMgb3V0IHBmaWZvX2Zhc3QgZW50aXJlbHkuIHBmaWZvX2Zhc3QgaXMg
+dGhlIHdyb25nIHFkaXNjIC0gdGhlDQo+ID4gcmlnaHQgY2hvaWNlcyBhcmUgbm9xdWV1ZSBhbmQg
+cG9zc2libHkgcGZpZm8uDQo+ID4NCj4gPiBIb3dldmVyLCB0aGUgdmNhbiBkZXZpY2UgZXhwb3Nl
+cyBub3F1ZXVlLCBhbmQgc28gZmFyIGl0IGhhcyBiZWVuIG9ubHkNCj4gPiB0aGUgb25lIGRldmlj
+ZSAoIGEgOERldmljZXMgc29ja2V0Y2FuIFVTQjJDQU4gKSB0aGF0IGRpZCBub3QgZG8gdGhpcw0K
+PiA+IGluIHRoZWlyIGRyaXZlciB0aGF0IHdhcyBtaXNiZWhhdmluZy4NCj4gPg0KPiA+IFdoaWNo
+IHdhcyBqdXN0IGNvcnJlY3RlZCB3aXRoIGEgc2ltcGxlOg0KPiA+DQo+ID4gc3RhdGljIGludCB1
+c2JfOGRldl9wcm9iZShzdHJ1Y3QgdXNiX2ludGVyZmFjZSAqaW50ZiwNCj4gPiAJCQkgY29uc3Qg
+c3RydWN0IHVzYl9kZXZpY2VfaWQgKmlkKQ0KPiA+IHsNCj4gPiAgICAgICAuLi4NCj4gPiAgICAg
+ICBuZXRkZXYtPm5ldGRldl9vcHMgPSAmdXNiXzhkZXZfbmV0ZGV2X29wczsNCj4gPg0KPiA+ICAg
+ICAgIG5ldGRldi0+ZmxhZ3MgfD0gSUZGX0VDSE87IC8qIHdlIHN1cHBvcnQgbG9jYWwgZWNobyAq
+Lw0KPiA+ICsgICAgbmV0ZGV2LT5wcml2X2ZsYWdzIHw9IElGRl9OT19RVUVVRTsNCj4gPiAgICAg
+ICAuLi4NCj4gPiB9DQo+ID4NCj4gPiBhbmQgc3VjY2Vzc2Z1bGx5IHRlc3RlZCBvbiB0aGF0IGJ1
+ZyByZXBvcnQuDQo+ID4NCj4gPiBTbyBhdCB0aGUgbW9tZW50LCBteSB0aG91Z2h0IGlzIHRoYXQg
+YWxsIGNhbiBkZXZpY2VzIHNob3VsZCBkZWZhdWx0IHRvDQo+ID4gbm9xdWV1ZSwgaWYgdGhleSBh
+cmUgbm90IGFscmVhZHkuIEkgdGhpbmsgYSBwZmlmb19mYXN0IGFuZCBhIHFsZW4gb2YNCj4gPiBh
+bnkgc2l6ZSBpcyB0aGUgd3JvbmcgdGhpbmcsIGJ1dCBJIHN0aWxsIGRvbid0IGtub3cgZW5vdWdo
+IGFib3V0IHdoYXQNCj4gPiBvdGhlciBjYW4gZGV2aWNlcyBkbyBvciBkaWQgdG8gYmUgY2VydGFp
+bi4NCj4gPg0KPiANCj4gSGF2aW5nIGFib3V0IDEwIGVsZW1lbnRzIGluIGEgQ0FOIGRyaXZlciB0
+eCBxdWV1ZSBhbGxvd3MgdG8gd29yayB3aXRoDQo+IHF1ZXVlaW5nIGRpc2NpcGxpbmVzDQo+ICho
+dHRwOi8vcnRpbWUuZmVsay5jdnV0LmN6L2Nhbi9zb2NrZXRjYW4tcWRpc2MtZmluYWwucGRmKSBh
+bmQgYWxzbyB0byBtYWludGFpbiBhDQo+IG5lYXJseSByZWFsLXRpbWUgYmVoYXZpb3VyIHdpdGgg
+b3V0Z29pbmcgdHJhZmZpYy4NCj4gDQo+IFdoZW4gdGhlIENBTiBpbnRlcmZhY2UgaXMgbm90IGFi
+bGUgdG8gY29wZSB3aXRoIHRoZSAoaW50ZW5lZCkgb3V0Z29pbmcgdHJhZmZpYw0KPiBsb2FkLCB0
+aGUgYXBwbGljYXRpb25zIHNob3VsZCBnZXQgYW4gaW5zdGFudCBmZWVkYmFjayBhYm91dCBpdC4N
+Cj4gDQo+IFRoZXJlIGlzIGEgZGlmZmVyZW5jZSBiZXR3ZWVuIHJ1bm5pbmcgQ0FOIGFwcGxpY2F0
+aW9ucyBpbiB0aGUgcmVhbCB3b3JsZCBhbmQNCj4gZG9pbmcgcGVyZm9ybWFuY2UgdGVzdHMsIHdo
+ZXJlIGl0IG1ha2VzIHNlbnNlIHRvIGluY3JlYXNlIHRoZSB0eC1xdWV1ZS1sZW4gdG8NCj4gZS5n
+LiAxMDAwIGFuZCBkdW1wIDEwMDAgZnJhbWVzIGludG8gdGhlIGRyaXZlciB0byBjaGVjayB0aGUg
+aGFyZHdhcmUNCj4gcGVyZm9ybWFuY2UuDQoNClRoYW5rcywgT2xpdmVyLCBNYXJ0aW4sIEFuZHJl
+LCBUb2tlLCBEYXZlIGZvciB5b3VyIGlucHV0cy4uLg0KU28gdG8gY29uY2x1ZGUgdGhpcyB0aGUg
+ZGVmYXVsdCB0eHF1ZXVlbGVuIDEwIGlzIGlkZWFsIGZvciByZWFsLXRpbWUgQ0FOIHRyYWZmaWMs
+DQpGb3IgU3RyZXNzL1BlcmZvcm1hbmNlIHRlc3RzIHVzZXIgbWFudWFsbHkgbmVlZCB0byBpbmNy
+ZWFzZSB0aGUgdHhxdWV1ZWxlbiBiYXNlZCBvbiBoaXMgcmVxdWlyZW1lbnRzLg0KDQpQbGVhc2Ug
+Y29ycmVjdCBtZSBpZiBteSB1bmRlcnN0YW5kaW5nIGlzIHdyb25nLiANCg0KUmVnYXJkcywNCktl
+ZGFyLg0KDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IE9saXZlcg0K
