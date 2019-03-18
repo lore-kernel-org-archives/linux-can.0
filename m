@@ -1,7 +1,7 @@
 From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: [PATCH 1/6] net: can: xilinx_can: Fix style issues
-Date: Mon, 18 Mar 2019 17:02:41 +0530
-Message-ID: <1552908766-26753-2-git-send-email-appana.durga.rao@xilinx.com>
+Subject: [PATCH 3/6] net: can: xilinx_can: Add cantype parameter in xcan_devtype_data struct
+Date: Mon, 18 Mar 2019 17:02:43 +0530
+Message-ID: <1552908766-26753-4-git-send-email-appana.durga.rao@xilinx.com>
 References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,232 +12,65 @@ To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, michal.simek@xil
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 List-Id: linux-can.vger.kernel.org
 
-This patch fixes below checkpatch warnings and checks in the driver.
-
-CHECK: Alignment should match open parenthesis
-+       void (*write_reg)(const struct xcan_priv *priv, enum xcan_reg reg,
-+                       u32 val);
-
-CHECK: Alignment should match open parenthesis
-+static void xcan_write_reg_le(const struct xcan_priv *priv, enum xcan_reg reg,
-+                       u32 val)
-
-CHECK: Alignment should match open parenthesis
-+static void xcan_write_reg_be(const struct xcan_priv *priv, enum xcan_reg reg,
-+                       u32 val)
-
-CHECK: Alignment should match open parenthesis
-+       netdev_dbg(ndev, "BRPR=0x%08x, BTR=0x%08x\n",
-+                       priv->read_reg(priv, XCAN_BRPR_OFFSET),
-
-CHECK: Alignment should match open parenthesis
-+                       netdev_warn(ndev,
-+                               "timed out for correct mode\n");
-
-CHECK: Alignment should match open parenthesis
-+       netdev_dbg(ndev, "status:#x%08x\n",
-+                       priv->read_reg(priv, XCAN_SR_OFFSET));
-
-CHECK: spaces preferred around that '-' (ctx:VxV)
-+                       (CAN_EFF_ID_BITS-CAN_SFF_ID_BITS)) <<
-                                        ^
-
-CHECK: Alignment should match open parenthesis
-+       netdev_dbg(ndev, "%s: error status register:0x%x\n",
-+                       __func__, priv->read_reg(priv, XCAN_ESR_OFFSET));
-
-WARNING: line over 80 characters
-+                       offset = XCAN_RXMSG_2_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
-
-WARNING: line over 80 characters
-+                       offset = XCAN_RXMSG_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
-
-WARNING: line over 80 characters
-+               while ((isr & XCAN_IXR_TXOK_MASK) && !WARN_ON(++retries == 100)) {
-
-WARNING: line over 80 characters
-+                       priv->write_reg(priv, XCAN_ICR_OFFSET, XCAN_IXR_TXOK_MASK);
-
-CHECK: Alignment should match open parenthesis
-+               netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-+                               __func__, ret);
-
-CHECK: Alignment should match open parenthesis
-+       ret = request_irq(ndev->irq, xcan_interrupt, priv->irq_flags,
-+                       ndev->name, ndev);
-
-CHECK: Alignment should match open parenthesis
-+static int xcan_get_berr_counter(const struct net_device *ndev,
-+                                       struct can_berr_counter *bec)
-
-CHECK: Alignment should match open parenthesis
-+               netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-+                               __func__, ret);
-
-CHECK: Please don't use multiple blank lines
-+
-+
-
-CHECK: Alignment should match open parenthesis
-+               netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-+                       __func__, ret);`
+To differentiate between different CAN IP's this patch adds
+cantype enum variable in the xcan_devtype_data structure
 
 Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 ---
- drivers/net/can/xilinx_can.c | 41 ++++++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 19 deletions(-)
+ drivers/net/can/xilinx_can.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 97d0933..2de51ac 100644
+index 22569ef..b45ece9 100644
 --- a/drivers/net/can/xilinx_can.c
 +++ b/drivers/net/can/xilinx_can.c
-@@ -191,7 +191,7 @@ struct xcan_priv {
- 	struct napi_struct napi;
- 	u32 (*read_reg)(const struct xcan_priv *priv, enum xcan_reg reg);
- 	void (*write_reg)(const struct xcan_priv *priv, enum xcan_reg reg,
--			u32 val);
-+			  u32 val);
- 	struct device *dev;
- 	void __iomem *reg_base;
- 	unsigned long irq_flags;
-@@ -246,7 +246,7 @@ static const struct can_bittiming_const xcan_bittiming_const_canfd2 = {
-  * Write data to the paricular CAN register
-  */
- static void xcan_write_reg_le(const struct xcan_priv *priv, enum xcan_reg reg,
--			u32 val)
-+			      u32 val)
- {
- 	iowrite32(val, priv->reg_base + reg);
- }
-@@ -273,7 +273,7 @@ static u32 xcan_read_reg_le(const struct xcan_priv *priv, enum xcan_reg reg)
-  * Write data to the paricular CAN register
-  */
- static void xcan_write_reg_be(const struct xcan_priv *priv, enum xcan_reg reg,
--			u32 val)
-+			      u32 val)
- {
- 	iowrite32be(val, priv->reg_base + reg);
- }
-@@ -381,8 +381,8 @@ static int xcan_set_bittiming(struct net_device *ndev)
- 	priv->write_reg(priv, XCAN_BTR_OFFSET, btr1);
+@@ -157,7 +157,15 @@ enum xcan_reg {
+ #define XCAN_FLAG_RX_FIFO_MULTI	0x0010
+ #define XCAN_FLAG_CANFD_2	0x0020
  
- 	netdev_dbg(ndev, "BRPR=0x%08x, BTR=0x%08x\n",
--			priv->read_reg(priv, XCAN_BRPR_OFFSET),
--			priv->read_reg(priv, XCAN_BTR_OFFSET));
-+		   priv->read_reg(priv, XCAN_BRPR_OFFSET),
-+		   priv->read_reg(priv, XCAN_BTR_OFFSET));
++enum xcan_ip_type {
++	XAXI_CAN = 0,
++	XZYNQ_CANPS,
++	XAXI_CANFD,
++	XAXI_CANFD_2_0,
++};
++
+ struct xcan_devtype_data {
++	enum xcan_ip_type cantype;
+ 	unsigned int flags;
+ 	const struct can_bittiming_const *bittiming_const;
+ 	const char *bus_clk_name;
+@@ -1428,6 +1436,7 @@ static const struct dev_pm_ops xcan_dev_pm_ops = {
+ };
  
- 	return 0;
- }
-@@ -447,12 +447,12 @@ static int xcan_chip_start(struct net_device *ndev)
- 	while (!(priv->read_reg(priv, XCAN_SR_OFFSET) & reg_sr_mask)) {
- 		if (time_after(jiffies, timeout)) {
- 			netdev_warn(ndev,
--				"timed out for correct mode\n");
-+				    "timed out for correct mode\n");
- 			return -ETIMEDOUT;
- 		}
- 	}
- 	netdev_dbg(ndev, "status:#x%08x\n",
--			priv->read_reg(priv, XCAN_SR_OFFSET));
-+		   priv->read_reg(priv, XCAN_SR_OFFSET));
+ static const struct xcan_devtype_data xcan_zynq_data = {
++	.cantype = XZYNQ_CANPS,
+ 	.flags = XCAN_FLAG_TXFEMP,
+ 	.bittiming_const = &xcan_bittiming_const,
+ 	.btr_ts2_shift = XCAN_BTR_TS2_SHIFT,
+@@ -1436,6 +1445,7 @@ static const struct xcan_devtype_data xcan_zynq_data = {
+ };
  
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 	return 0;
-@@ -506,7 +506,7 @@ static void xcan_write_frame(struct xcan_priv *priv, struct sk_buff *skb,
- 		id = ((cf->can_id & CAN_EFF_MASK) << XCAN_IDR_ID2_SHIFT) &
- 			XCAN_IDR_ID2_MASK;
- 		id |= (((cf->can_id & CAN_EFF_MASK) >>
--			(CAN_EFF_ID_BITS-CAN_SFF_ID_BITS)) <<
-+			(CAN_EFF_ID_BITS - CAN_SFF_ID_BITS)) <<
- 			XCAN_IDR_ID1_SHIFT) & XCAN_IDR_ID1_MASK;
+ static const struct xcan_devtype_data xcan_axi_data = {
++	.cantype = XAXI_CAN,
+ 	.flags = XCAN_FLAG_TXFEMP,
+ 	.bittiming_const = &xcan_bittiming_const,
+ 	.btr_ts2_shift = XCAN_BTR_TS2_SHIFT,
+@@ -1444,6 +1454,7 @@ static const struct xcan_devtype_data xcan_axi_data = {
+ };
  
- 		/* The substibute remote TX request bit should be "1"
-@@ -942,7 +942,7 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
- 	}
+ static const struct xcan_devtype_data xcan_canfd_data = {
++	.cantype = XAXI_CANFD,
+ 	.flags = XCAN_FLAG_EXT_FILTERS |
+ 		 XCAN_FLAG_RXMNF |
+ 		 XCAN_FLAG_TX_MAILBOXES |
+@@ -1455,6 +1466,7 @@ static const struct xcan_devtype_data xcan_canfd_data = {
+ };
  
- 	netdev_dbg(ndev, "%s: error status register:0x%x\n",
--			__func__, priv->read_reg(priv, XCAN_ESR_OFFSET));
-+		   __func__, priv->read_reg(priv, XCAN_ESR_OFFSET));
- }
- 
- /**
-@@ -990,9 +990,11 @@ static int xcan_rx_fifo_get_next_frame(struct xcan_priv *priv)
- 			return -ENOENT;
- 
- 		if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
--			offset = XCAN_RXMSG_2_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
-+			offset =
-+			  XCAN_RXMSG_2_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
- 		else
--			offset = XCAN_RXMSG_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
-+			offset =
-+			  XCAN_RXMSG_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
- 
- 	} else {
- 		/* check if RX FIFO is empty */
-@@ -1102,8 +1104,10 @@ static void xcan_tx_interrupt(struct net_device *ndev, u32 isr)
- 		 *     via TXFEMP handling as we read TXFEMP *after* TXOK
- 		 *     clear to satisfy (1).
- 		 */
--		while ((isr & XCAN_IXR_TXOK_MASK) && !WARN_ON(++retries == 100)) {
--			priv->write_reg(priv, XCAN_ICR_OFFSET, XCAN_IXR_TXOK_MASK);
-+		while ((isr & XCAN_IXR_TXOK_MASK) &&
-+		       !WARN_ON(++retries == 100)) {
-+			priv->write_reg(priv, XCAN_ICR_OFFSET,
-+					XCAN_IXR_TXOK_MASK);
- 			isr = priv->read_reg(priv, XCAN_ISR_OFFSET);
- 		}
- 
-@@ -1216,12 +1220,12 @@ static int xcan_open(struct net_device *ndev)
- 	ret = pm_runtime_get_sync(priv->dev);
- 	if (ret < 0) {
- 		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
--				__func__, ret);
-+			   __func__, ret);
- 		return ret;
- 	}
- 
- 	ret = request_irq(ndev->irq, xcan_interrupt, priv->irq_flags,
--			ndev->name, ndev);
-+			  ndev->name, ndev);
- 	if (ret < 0) {
- 		netdev_err(ndev, "irq allocation for CAN failed\n");
- 		goto err;
-@@ -1292,7 +1296,7 @@ static int xcan_close(struct net_device *ndev)
-  * Return: 0 on success and failure value on error
-  */
- static int xcan_get_berr_counter(const struct net_device *ndev,
--					struct can_berr_counter *bec)
-+				 struct can_berr_counter *bec)
- {
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	int ret;
-@@ -1300,7 +1304,7 @@ static int xcan_get_berr_counter(const struct net_device *ndev,
- 	ret = pm_runtime_get_sync(priv->dev);
- 	if (ret < 0) {
- 		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
--				__func__, ret);
-+			   __func__, ret);
- 		return ret;
- 	}
- 
-@@ -1313,7 +1317,6 @@ static int xcan_get_berr_counter(const struct net_device *ndev,
- 	return 0;
- }
- 
--
- static const struct net_device_ops xcan_netdev_ops = {
- 	.ndo_open	= xcan_open,
- 	.ndo_stop	= xcan_close,
-@@ -1597,7 +1600,7 @@ static int xcan_probe(struct platform_device *pdev)
- 	ret = pm_runtime_get_sync(&pdev->dev);
- 	if (ret < 0) {
- 		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
--			__func__, ret);
-+			   __func__, ret);
- 		goto err_pmdisable;
- 	}
- 
+ static const struct xcan_devtype_data xcan_canfd2_data = {
++	.cantype = XAXI_CANFD_2_0,
+ 	.flags = XCAN_FLAG_EXT_FILTERS |
+ 		 XCAN_FLAG_RXMNF |
+ 		 XCAN_FLAG_TX_MAILBOXES |
 -- 
 2.7.4
