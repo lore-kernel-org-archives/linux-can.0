@@ -1,105 +1,101 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v10 1/4] can: m_can: Create a m_can platform framework
-Date: Tue, 19 Mar 2019 06:29:23 -0500
-Message-ID: <455ea343-818a-e647-6315-e8855ca43ad2@ti.com>
-References: <20190315170257.12847-1-dmurphy@ti.com>
- <0b9fc85a-25bc-d85e-83c9-bc974e0b44e5@grandegger.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 10/11] arm64: dts: renesas: r8a774c0: Add clkp2 clock to
+ CAN nodes
+Date: Tue, 19 Mar 2019 12:54:50 +0100
+Message-ID: <20190319115450.4ez7e4sajzanszr6@verge.net.au>
+References: <1547663874-29411-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1547663874-29411-11-git-send-email-fabrizio.castro@bp.renesas.com>
+ <20190117120541.slymsz47fjkzz3kg@verge.net.au>
+ <20190128130238.gork4cep3qonghwz@verge.net.au>
+ <TY1PR01MB1770DDAB8A6FBC79DF91F600C0400@TY1PR01MB1770.jpnprd01.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0b9fc85a-25bc-d85e-83c9-bc974e0b44e5@grandegger.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <TY1PR01MB1770DDAB8A6FBC79DF91F600C0400@TY1PR01MB1770.jpnprd01.prod.outlook.com>
+Sender: netdev-owner@vger.kernel.org
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert+renesas@glider.be>, Thierry Reding <treding@nvidia.com>, Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Johan Hovold <johan@kernel.org>, Lukasz Majewski <lukma@denx.de>, Michal Simek <monstr@monstr.eu>, Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Ben
 List-Id: linux-can.vger.kernel.org
 
-Hello
-
-On 3/19/19 1:24 AM, Wolfgang Grandegger wrote:
-> Hello Dan,
+On Tue, Mar 19, 2019 at 11:12:33AM +0000, Fabrizio Castro wrote:
+> Hello Simon,
 > 
-> checkpatch still reports one "line over 80 characters".
+> > From: Simon Horman <horms@verge.net.au>
+> > Sent: 28 January 2019 13:03
+> > Subject: Re: [PATCH 10/11] arm64: dts: renesas: r8a774c0: Add clkp2 clock to CAN nodes
+> > 
+> > On Thu, Jan 17, 2019 at 01:05:42PM +0100, Simon Horman wrote:
+> > > On Wed, Jan 16, 2019 at 06:37:53PM +0000, Fabrizio Castro wrote:
+> > > > According to the latest information, clkp2 is available on RZ/G2.
+> > > > Modify CAN0 and CAN1 nodes accordingly.
+> > > >
+> > > > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+> > > > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> > >
+> > > Taking your word for the motivation for this change,
+> > > this patch seems fine to me but I would like to wait for review
+> > > from others.
+> > >
+> > > Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+> > 
+> > I am marking this as deferred until R8A774C0_CLK_CANFD
+> > shows up in an rc release.
+> > 
+> > Alternatively I'd be happy to take a version that uses
+> > numeric values, followed up by a patch to switching to R8A774C0_CLK_CANFD
+> > once it is available in an rc release.
+> > 
+> > Please repost or otherwise ping me as appropriate.
 > 
+> It seems like this patch still applies without conflicts, do you mind taking it now
+> as R8A774C0_CLK_CANFD is finally available?
 
-Yes I saw that one before I submitted I was not happy with how it was to be resolved.
-It made the line unreadable I will see how to fix it.
+Thanks, I agree this should be ready now.
+I've applied it for v5.2.
 
-<snip>
-
->> +
->> +	if (priv->is_peripheral) {
->> +		if (priv->tx_skb) {
->> +			netdev_err(dev, "hard_xmit called while tx busy\n");
->> +			return NETDEV_TX_BUSY;
->> +		}
->> +
->> +		if (priv->can.state == CAN_STATE_BUS_OFF) {
->> +			m_can_clean(dev);
->> +		} else {
 > 
-> Could you please add a comment here about stopping the queue early. I
-> would also mention that an improved version may use an array of tx_skbs
->  to support queueing of outgoing messages.
+> Thanks,
+> Fab
 > 
-
-Ack
-
->> +			priv->tx_skb = skb;
->> +			netif_stop_queue(priv->net);
->> +			queue_work(priv->tx_wq, &priv->tx_work);
->> +		}
->> +	} else {
->> +		priv->tx_skb = skb;
->> +		return m_can_tx_handler(priv);
->>  	}
->>  
->>  	return NETDEV_TX_OK;
->>  }
+> > 
+> > >
+> > > > ---
+> > > >  arch/arm64/boot/dts/renesas/r8a774c0.dtsi | 12 ++++++++----
+> > > >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
+> > > > index 3970aaf..326ab3a 100644
+> > > > --- a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
+> > > > +++ b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
+> > > > @@ -809,8 +809,10 @@
+> > > >  				     "renesas,rcar-gen3-can";
+> > > >  			reg = <0 0xe6c30000 0 0x1000>;
+> > > >  			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
+> > > > -			clocks = <&cpg CPG_MOD 916>, <&can_clk>;
+> > > > -			clock-names = "clkp1", "can_clk";
+> > > > +			clocks = <&cpg CPG_MOD 916>,
+> > > > +				 <&cpg CPG_CORE R8A774C0_CLK_CANFD>,
+> > > > +				 <&can_clk>;
+> > > > +			clock-names = "clkp1", "clkp2", "can_clk";
+> > > >  			power-domains = <&sysc R8A774C0_PD_ALWAYS_ON>;
+> > > >  			resets = <&cpg 916>;
+> > > >  			status = "disabled";
+> > > > @@ -821,8 +823,10 @@
+> > > >  				     "renesas,rcar-gen3-can";
+> > > >  			reg = <0 0xe6c38000 0 0x1000>;
+> > > >  			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
+> > > > -			clocks = <&cpg CPG_MOD 915>, <&can_clk>;
+> > > > -			clock-names = "clkp1", "can_clk";
+> > > > +			clocks = <&cpg CPG_MOD 915>,
+> > > > +				 <&cpg CPG_CORE R8A774C0_CLK_CANFD>,
+> > > > +				 <&can_clk>;
+> > > > +			clock-names = "clkp1", "clkp2", "can_clk";
+> > > >  			power-domains = <&sysc R8A774C0_PD_ALWAYS_ON>;
+> > > >  			resets = <&cpg 915>;
+> > > >  			status = "disabled";
+> > > > --
+> > > > 2.7.4
+> > > >
+> > >
 > 
-> At the next respin, you can then add my
-> 
->   Acked-by: Wolfgang Grandegger <wg@grandegger.com>
-> 
-> to the Patch 1/1, 1/2 and 1/4.
-> 
-> Thanks for your contribution and patience.
-> 
-
-No worries.  I am wrapping up tests on our side and see if there is any customer
-feedback on this version.  So far the tests look fine no changes.
-
-I should have v11 out by the end of the week.
-
-Latest cangen data for tcan is below.
-
-bitrate 500000 dbitrate 2000000
-cangen can0 -g 0 -i  -f &
-
-    11118 transmitted frames (TXF)                                                                                                                                
-    11118 received frames (RXF)                                                                                                                                   
-        0 matched frames (RXMF)                                                                                                                                   
-                                                                                                                                                                  
-        0 % total match ratio (RXMR)                                                                                                                              
-      442 frames/s total tx rate (TXR)                                                                                                                            
-      442 frames/s total rx rate (RXR)                                                                                                                            
-                                                                                                                                                                  
-        0 % current match ratio (CRXMR)                                                                                                                           
-      117 frames/s current tx rate (CTXR)                                                                                                                         
-      123 frames/s current rx rate (CRXR)                                                                                                                         
-                                                                                                                                                                  
-        0 % max match ratio (MRXMR)                                                                                                                               
-      498 frames/s max tx rate (MTXR)                                                                                                                             
-      488 frames/s max rx rate (MRXR)                                                                                                                             
-                                                                                                                                                                  
-        0 current receive list entries (CRCV)                                                                                                                     
-        0 maximum receive list entries (MRCV)   
-
-> Wolfgang
-> 
-
-
--- 
-------------------
-Dan Murphy
