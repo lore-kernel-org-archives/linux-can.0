@@ -1,49 +1,32 @@
-From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: [PATCH 5/6] net: can: xilinx_can: Add SPDX license
-Date: Mon, 18 Mar 2019 17:02:45 +0530
-Message-ID: <1552908766-26753-6-git-send-email-appana.durga.rao@xilinx.com>
-References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH V2 0/5] can: flexcan: add CAN FD support on i.MX8QM
+Date: Tue, 19 Mar 2019 05:17:16 +0000
+Message-ID: <20190319051512.14950-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, michal.simek@xilinx.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-Update driver to have SPDX identifiers.
+This patch set intends to add fd mode support on i.MX8QM platform.
 
-Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
----
- drivers/net/can/xilinx_can.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+Dong Aisheng (4):
+  can: rx-offload: add CANFD support based on offload
+  can: flexcan: add CAN FD mode support
+  can: flexcan: add CANFD BRS support and improve bittiming setting
+  can: flexcan: add imx8qm support
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 3d75a28..e1544e0 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1,20 +1,10 @@
-+// SPDX-License-Identifier: GPL-2.0+
- /* Xilinx CAN device driver
-  *
-  * Copyright (C) 2012 - 2014 Xilinx, Inc.
-  * Copyright (C) 2009 PetaLogix. All rights reserved.
-  * Copyright (C) 2017 - 2018 Sandvik Mining and Construction Oy
-  *
-- * Description:
-- * This driver is developed for Axi CAN IP and for Zynq CANPS Controller.
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation, either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-  */
- 
- #include <linux/clk.h>
--- 
-2.7.4
+Joakim Zhang (1):
+  can: flexcan: add ISO CAN FD feature support
+
+ drivers/net/can/flexcan.c      | 222 ++++++++++++++++++++++++++++-----
+ drivers/net/can/rx-offload.c   |  16 ++-
+ include/linux/can/rx-offload.h |   4 +-
+ 3 files changed, 206 insertions(+), 36 deletions(-)
+
+--=20
+2.17.1
