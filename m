@@ -1,68 +1,61 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/6] net: can: xilinx_can: Bug fixes and Enhancements
-Date: Wed, 20 Mar 2019 14:08:59 +0100
-Message-ID: <d1cd73cc-e200-7c06-dd6e-3c5e2e35709c@pengutronix.de>
-References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
+Subject: Re: [PATCH] can: flexcan: bump FLEXCAN_TIMEOUT_US to 250
+Date: Wed, 20 Mar 2019 14:18:02 +0100
+Message-ID: <a418bbc9-186c-174a-20d8-18cedeaf0089@pengutronix.de>
+References: <20190307150024.23628-1-rasmus.villemoes@prevas.dk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="AtCO4ESIZlZit0M7VDN0gsU3QqTrfNlYZ"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
-Sender: netdev-owner@vger.kernel.org
-To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>, wg@grandegger.com, davem@davemloft.net, michal.simek@xilinx.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+ boundary="HOQiaJuxXLuWF7i853A7jJVMy071Yx6Gh"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190307150024.23628-1-rasmus.villemoes@prevas.dk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>
+Cc: Thomas Winding <twi@deif.com>, Fabio Estevam <festevam@gmail.com>, Per Christensen <pnc@deif.com>, Rasmus Villemoes <Rasmus.Villemoes@prevas.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---AtCO4ESIZlZit0M7VDN0gsU3QqTrfNlYZ
-Content-Type: multipart/mixed; boundary="uAr2Tcv5uPxh5vG5HR99EbCyN4MgocTEB";
+--HOQiaJuxXLuWF7i853A7jJVMy071Yx6Gh
+Content-Type: multipart/mixed; boundary="c6b8qNbceyTBn9WImJL7AixlYa2v8Vx1l";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
- wg@grandegger.com, davem@davemloft.net, michal.simek@xilinx.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Message-ID: <d1cd73cc-e200-7c06-dd6e-3c5e2e35709c@pengutronix.de>
-Subject: Re: [PATCH 0/6] net: can: xilinx_can: Bug fixes and Enhancements
-References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
-In-Reply-To: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
+To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ "David S. Miller" <davem@davemloft.net>
+Cc: Thomas Winding <twi@deif.com>, Fabio Estevam <festevam@gmail.com>,
+ Per Christensen <pnc@deif.com>, Rasmus Villemoes
+ <Rasmus.Villemoes@prevas.se>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <a418bbc9-186c-174a-20d8-18cedeaf0089@pengutronix.de>
+Subject: Re: [PATCH] can: flexcan: bump FLEXCAN_TIMEOUT_US to 250
+References: <20190307150024.23628-1-rasmus.villemoes@prevas.dk>
+In-Reply-To: <20190307150024.23628-1-rasmus.villemoes@prevas.dk>
 
---uAr2Tcv5uPxh5vG5HR99EbCyN4MgocTEB
+--c6b8qNbceyTBn9WImJL7AixlYa2v8Vx1l
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 3/18/19 12:32 PM, Appana Durga Kedareswara rao wrote:
-> This patch series does the below
-> --> Added support for CANFD FD frames
-> --> Fix Checkpatch reported warnings and checks
+On 3/7/19 4:00 PM, Rasmus Villemoes wrote:
+> While trying to add support for the Flexcan modules on the MPC8309,
+> I'm hitting ETIMEDOUT in flexcan_chip_disable(). With this, probing
+> succeeds. Checking the leftover value of timeout with a primitive
 >=20
-> Appana Durga Kedareswara rao (6):
->   net: can: xilinx_can: Fix style issues
->   net: can: xilinx_can: Fix flags field initialization for axi can and
->     canps
->   net: can: xilinx_can: Add cantype parameter in xcan_devtype_data
->     struct
->   net: can: xilinx_can: Add support for CANFD FD frames
->   net: can: xilinx_can: Add SPDX license
->   net: can: xilinx_can: Fix kernel doc warnings
+>   pr_err("%s: timeout=3D=3D%d\n", __func__, timeout);
 >=20
->  drivers/net/can/xilinx_can.c | 303 +++++++++++++++++++++++++++++++++++=
-+-------
->  1 file changed, 257 insertions(+), 46 deletions(-)
+> after the loop in chip_disable() typically shows values around 12-14,
+> i.e. suggesting that it takes about 110-130 us for the LPM_ACK bit to
+> appear. So a timeout value of about twice that seems reasonable.
+>=20
+> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 
-Applied to linux-can-next/testing, but in order. First fixes than
-enhancements:
+I've scheduled the patch by Joakim Zhang:
 
-> 241826302854 net: can: xilinx_can: Fix style issues
-> 70fb26fadc27 net: can: xilinx_can: Fix kernel doc warnings
-> 7beb64351ff1 net: can: xilinx_can: Add SPDX license
-> dd94910bceae net: can: xilinx_can: Fix flags field initialization for a=
-xi can and canps
-> 6bd05cece567 net: can: xilinx_can: Add cantype parameter in xcan_devtyp=
-e_data struct
-> 34e280170736 net: can: xilinx_can: Add support for CANFD FD frames
+    9daed89ae8a3 can: flexcan: fix timeout when set small bitrate
+
+that doubles the timeout to 100.
 
 Marc
 
@@ -73,23 +66,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---uAr2Tcv5uPxh5vG5HR99EbCyN4MgocTEB--
+--c6b8qNbceyTBn9WImJL7AixlYa2v8Vx1l--
 
---AtCO4ESIZlZit0M7VDN0gsU3QqTrfNlYZ
+--HOQiaJuxXLuWF7i853A7jJVMy071Yx6Gh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlySO2sACgkQWsYho5Hk
-nSAO5wf/TRVP/ca1hbKAMEXeNGULYHXPsAylwWq8dvb/PG9OVMK6WdC60jCkbax2
-lRRsxy1gXSjCtV3CGCQAKKDiZSLr5INsAVieVUn07WlNdaBugILb7gD31vK+ql5w
-foHe6Tez+njY5BwbMShk0br4k4U23ja9gc/OIONT/3H9OATI/IGP0UTTIzXRlk0U
-VZD7Ifv1TGsRcbyTfiX8WpU5iEUUqsMrxfTzSIop6rhpZ0Snfbw678dWYx5+5sgy
-telZEt+6WwVYMG980hZVFGPx1uo+YeXS7MirQ0a4ElkonvQTVtmZcCkjs3BNdnlc
-V7gTUhZeKQMHVqFwyc6Dm4sg4JT3fg==
-=bBPD
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlySPYoACgkQWsYho5Hk
+nSAzYwf/SeXbgOsP9YUiKjhwj4QT0d1mTt0+E5w2mm/dBit9CDiTBTW/K6feY+I4
+AkXMlDxTDNWXKLc5NIVMsTzSwNOvIzCTGBJjpB7xq8BET54/WJkdpItf3EocDXQw
+wmHolVlg7gja5+NNYTCLVbqp44Q8cAHZkEOi4klnEj0XvgtJF/x5AoZCROWpYFkE
+bMdH9aAIOkWRThFPIydE1IYTfZdOmvGDlS0DLmlDP/aPjCp6vJzGVHY/K1H5I7vy
+mxgBVz3aEjX6u4ohtcfDXs31/T6eZTgGfSrJLoXUGNfSQAZ9H1nDjPnOymzy/UOp
+rhaSzPcjmfeeNtCy0zX0MXwHXwxzQw==
+=Mwed
 -----END PGP SIGNATURE-----
 
---AtCO4ESIZlZit0M7VDN0gsU3QqTrfNlYZ--
+--HOQiaJuxXLuWF7i853A7jJVMy071Yx6Gh--
