@@ -1,33 +1,58 @@
-From: syzbot <syzbot+6c0effb5877f6b0344e2@syzkaller.appspotmail.com>
-Subject: Re: kernel BUG at arch/x86/mm/physaddr.c:LINE! (2)
-Date: Wed, 20 Mar 2019 13:35:00 -0700
-Message-ID: <000000000000462a4105848c8e12@google.com>
-References: <0000000000001c2b95057ad0935b@google.com>
+From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
+Subject: RE: [PATCH 0/6] net: can: xilinx_can: Bug fixes and Enhancements
+Date: Thu, 21 Mar 2019 06:36:09 +0000
+Message-ID: <DM5PR02MB21875918C65EF8757E34C574DC420@DM5PR02MB2187.namprd02.prod.outlook.com>
+References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
+ <d1cd73cc-e200-7c06-dd6e-3c5e2e35709c@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0000000000001c2b95057ad0935b@google.com>
+In-Reply-To: <d1cd73cc-e200-7c06-dd6e-3c5e2e35709c@pengutronix.de>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: davem@davemloft.net, hverkuil@xs4all.nl, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, mchehab@kernel.org, mchehab@s-opensource.com, mkl@pengutronix.de, netdev@vger.kernel.org, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-syzbot has bisected this bug to:
-
-commit 6d469a202ee73196d0df76025af80bd6a379e658
-Author: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Date:   Sun May 14 17:07:21 2017 +0000
-
-     Merge tag 'v4.12-rc1' into patchwork
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12639fd7200000
-start commit:   6d469a20 Merge tag 'v4.12-rc1' into patchwork
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=15639fd7200000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11639fd7200000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d86f24333880b605
-dashboard link: https://syzkaller.appspot.com/bug?extid=6c0effb5877f6b0344e2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1312062b400000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=131bd093400000
-
-Reported-by: syzbot+6c0effb5877f6b0344e2@syzkaller.appspotmail.com
-Fixes: 6d469a20 ("Merge tag 'v4.12-rc1' into patchwork")
+SGkgTWFyYywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEts
+ZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPg0KPiBTZW50OiBXZWRuZXNkYXksIE1hcmNo
+IDIwLCAyMDE5IDY6MzkgUE0NCj4gVG86IEFwcGFuYSBEdXJnYSBLZWRhcmVzd2FyYSBSYW8gPGFw
+cGFuYWRAeGlsaW54LmNvbT47DQo+IHdnQGdyYW5kZWdnZXIuY29tOyBkYXZlbUBkYXZlbWxvZnQu
+bmV0OyBNaWNoYWwgU2ltZWsNCj4gPG1pY2hhbHNAeGlsaW54LmNvbT4NCj4gQ2M6IGxpbnV4LWNh
+bkB2Z2VyLmtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWFybS0NCj4g
+a2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcN
+Cj4gU3ViamVjdDogUmU6IFtQQVRDSCAwLzZdIG5ldDogY2FuOiB4aWxpbnhfY2FuOiBCdWcgZml4
+ZXMgYW5kIEVuaGFuY2VtZW50cw0KPiANCj4gT24gMy8xOC8xOSAxMjozMiBQTSwgQXBwYW5hIER1
+cmdhIEtlZGFyZXN3YXJhIHJhbyB3cm90ZToNCj4gPiBUaGlzIHBhdGNoIHNlcmllcyBkb2VzIHRo
+ZSBiZWxvdw0KPiA+IC0tPiBBZGRlZCBzdXBwb3J0IGZvciBDQU5GRCBGRCBmcmFtZXMNCj4gPiAt
+LT4gRml4IENoZWNrcGF0Y2ggcmVwb3J0ZWQgd2FybmluZ3MgYW5kIGNoZWNrcw0KPiA+DQo+ID4g
+QXBwYW5hIER1cmdhIEtlZGFyZXN3YXJhIHJhbyAoNik6DQo+ID4gICBuZXQ6IGNhbjogeGlsaW54
+X2NhbjogRml4IHN0eWxlIGlzc3Vlcw0KPiA+ICAgbmV0OiBjYW46IHhpbGlueF9jYW46IEZpeCBm
+bGFncyBmaWVsZCBpbml0aWFsaXphdGlvbiBmb3IgYXhpIGNhbiBhbmQNCj4gPiAgICAgY2FucHMN
+Cj4gPiAgIG5ldDogY2FuOiB4aWxpbnhfY2FuOiBBZGQgY2FudHlwZSBwYXJhbWV0ZXIgaW4geGNh
+bl9kZXZ0eXBlX2RhdGENCj4gPiAgICAgc3RydWN0DQo+ID4gICBuZXQ6IGNhbjogeGlsaW54X2Nh
+bjogQWRkIHN1cHBvcnQgZm9yIENBTkZEIEZEIGZyYW1lcw0KPiA+ICAgbmV0OiBjYW46IHhpbGlu
+eF9jYW46IEFkZCBTUERYIGxpY2Vuc2UNCj4gPiAgIG5ldDogY2FuOiB4aWxpbnhfY2FuOiBGaXgg
+a2VybmVsIGRvYyB3YXJuaW5ncw0KPiA+DQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi94aWxpbnhfY2Fu
+LmMgfCAzMDMNCj4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0t
+DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyNTcgaW5zZXJ0aW9ucygrKSwgNDYgZGVsZXRpb25zKC0p
+DQo+IA0KPiBBcHBsaWVkIHRvIGxpbnV4LWNhbi1uZXh0L3Rlc3RpbmcsIGJ1dCBpbiBvcmRlci4g
+Rmlyc3QgZml4ZXMgdGhhbg0KPiBlbmhhbmNlbWVudHM6DQoNClRoYW5rcy4uLg0KSSBjb3VsZG4n
+dCBmaW5kIHRoZSBwYXRjaGVzIGhlcmUgaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xp
+bnV4L2tlcm5lbC9naXQvbWtsL2xpbnV4LWNhbi1uZXh0LmdpdC9sb2cvZHJpdmVycy9uZXQvY2Fu
+L3hpbGlueF9jYW4uYz9oPXRlc3RpbmcgDQpBbSBJIHJlZmVycmluZyB3cm9uZyByZXBvL2JyYW5j
+aD8/IA0KDQpSZWdhcmRzLA0KS2VkYXIuDQo+IA0KPiA+IDI0MTgyNjMwMjg1NCBuZXQ6IGNhbjog
+eGlsaW54X2NhbjogRml4IHN0eWxlIGlzc3Vlcw0KPiA+IDcwZmIyNmZhZGMyNyBuZXQ6IGNhbjog
+eGlsaW54X2NhbjogRml4IGtlcm5lbCBkb2Mgd2FybmluZ3MNCj4gPiA3YmViNjQzNTFmZjEgbmV0
+OiBjYW46IHhpbGlueF9jYW46IEFkZCBTUERYIGxpY2Vuc2UgZGQ5NDkxMGJjZWFlIG5ldDoNCj4g
+PiBjYW46IHhpbGlueF9jYW46IEZpeCBmbGFncyBmaWVsZCBpbml0aWFsaXphdGlvbiBmb3IgYXhp
+IGNhbiBhbmQgY2FucHMNCj4gPiA2YmQwNWNlY2U1NjcgbmV0OiBjYW46IHhpbGlueF9jYW46IEFk
+ZCBjYW50eXBlIHBhcmFtZXRlciBpbg0KPiA+IHhjYW5fZGV2dHlwZV9kYXRhIHN0cnVjdA0KPiA+
+IDM0ZTI4MDE3MDczNiBuZXQ6IGNhbjogeGlsaW54X2NhbjogQWRkIHN1cHBvcnQgZm9yIENBTkZE
+IEZEIGZyYW1lcw0KPiANCj4gTWFyYw0KPiANCj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAgICAg
+ICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gSW5kdXN0cmlh
+bCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwN
+Cj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0OS01MTIxLTIw
+NjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgIHwgaHR0cDov
+L3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
