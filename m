@@ -1,42 +1,54 @@
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: KASAN: slab-out-of-bounds Read in _decode_session6 (2)
-Date: Fri, 22 Mar 2019 00:21:51 +0100
-Message-ID: <CAJZ5v0jVquKnFHrQ+=AyZM2rwOx3CkdGng1z2g2UX30+PJaKDQ@mail.gmail.com>
-References: <000000000000c4ba820579737025@google.com> <000000000000461a4c0584a2cfd2@google.com>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: Re: [PATCH] can: flexcan: bump FLEXCAN_TIMEOUT_US to 250
+Date: Fri, 22 Mar 2019 07:45:35 +0000
+Message-ID: <4471c611-1a58-6365-2ab6-1b39c310265a@prevas.dk>
+References: <20190307150024.23628-1-rasmus.villemoes@prevas.dk>
+ <a418bbc9-186c-174a-20d8-18cedeaf0089@pengutronix.de>
+ <5615c217-8ba6-e452-1aaa-1e3b32eb4cca@prevas.dk>
+ <f1fb86fb-1b6b-1860-899d-820d4bc672cf@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <000000000000461a4c0584a2cfd2@google.com>
+In-Reply-To: <f1fb86fb-1b6b-1860-899d-820d4bc672cf@pengutronix.de>
+Content-Language: en-US
+Content-ID: <40D531D7E441FA478805BD354C2CF6EF@EURPRD10.PROD.OUTLOOK.COM>
 Sender: linux-kernel-owner@vger.kernel.org
-To: syzbot <syzbot+240f9766d6be3d69431e@syzkaller.appspotmail.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, daniel@iogearbox.net, David Miller <davem@davemloft.net>, devel@acpica.org, Herbert Xu <herbert@gondor.apana.org.au>, kuznet@ms2.inr.ac.ru, Len Brown <lenb@kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, linux-can@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux PCI <linux-pci@vger.kernel.org>, Lv <lv.zheng@intel.com>, mkl@pengutronix.de, netdev <netdev@vger.kernel.org>, Rafael Wysocki <rafael.j.wysocki@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Robert Moore <robert.moore@intel.com>, socketcan@hartkopp.net, steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>
+Cc: Thomas Winding <twi@deif.com>, Fabio Estevam <festevam@gmail.com>, Per Christensen <pnc@deif.com>, Rasmus Villemoes <Rasmus.Villemoes@prevas.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-On Fri, Mar 22, 2019 at 12:08 AM syzbot
-<syzbot+240f9766d6be3d69431e@syzkaller.appspotmail.com> wrote:
->
-> syzbot has bisected this bug to:
->
-> commit 64fd1c7040880292710e6592ddc88d0d73cfb6fb
-> Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Date:   Mon Jun 12 20:48:41 2017 +0000
->
->      ACPI / PM: Run wakeup notify handlers synchronously
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1555b12b200000
-> start commit:   64fd1c70 ACPI / PM: Run wakeup notify handlers synchronously
-> git tree:       upstream
-> final crash:    https://syzkaller.appspot.com/x/report.txt?x=1755b12b200000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1355b12b200000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=93932074d01b4a5
-> dashboard link: https://syzkaller.appspot.com/bug?extid=240f9766d6be3d69431e
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13f35e4d400000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1280edbd400000
->
-> Reported-by: syzbot+240f9766d6be3d69431e@syzkaller.appspotmail.com
-> Fixes: 64fd1c704088 ("ACPI / PM: Run wakeup notify handlers synchronously")
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-I don't see how the commit turned up by the bisection can be related
-to the reported crash.
+T24gMjEvMDMvMjAxOSAxNi4zMCwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IE9uIDMvMjEv
+MTkgMzozNCBQTSwgUmFzbXVzIFZpbGxlbW9lcyB3cm90ZToNCj4+IE9uIDIwLzAzLzIwMTkgMTQu
+MTgsIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOg0KPj4+IE9uIDMvNy8xOSA0OjAwIFBNLCBSYXNt
+dXMgVmlsbGVtb2VzIHdyb3RlOg0KPj4+PiBXaGlsZSB0cnlpbmcgdG8gYWRkIHN1cHBvcnQgZm9y
+IHRoZSBGbGV4Y2FuIG1vZHVsZXMgb24gdGhlIE1QQzgzMDksDQo+Pj4+IEknbSBoaXR0aW5nIEVU
+SU1FRE9VVCBpbiBmbGV4Y2FuX2NoaXBfZGlzYWJsZSgpLiBXaXRoIHRoaXMsIHByb2JpbmcNCj4+
+Pj4gc3VjY2VlZHMuIENoZWNraW5nIHRoZSBsZWZ0b3ZlciB2YWx1ZSBvZiB0aW1lb3V0IHdpdGgg
+YSBwcmltaXRpdmUNCj4+Pj4NCj4+Pj4gICBwcl9lcnIoIiVzOiB0aW1lb3V0PT0lZFxuIiwgX19m
+dW5jX18sIHRpbWVvdXQpOw0KPj4+Pg0KPj4+PiBhZnRlciB0aGUgbG9vcCBpbiBjaGlwX2Rpc2Fi
+bGUoKSB0eXBpY2FsbHkgc2hvd3MgdmFsdWVzIGFyb3VuZCAxMi0xNCwNCj4+Pj4gaS5lLiBzdWdn
+ZXN0aW5nIHRoYXQgaXQgdGFrZXMgYWJvdXQgMTEwLTEzMCB1cyBmb3IgdGhlIExQTV9BQ0sgYml0
+IHRvDQo+Pj4+IGFwcGVhci4gU28gYSB0aW1lb3V0IHZhbHVlIG9mIGFib3V0IHR3aWNlIHRoYXQg
+c2VlbXMgcmVhc29uYWJsZS4NCj4+Pj4NCj4+Pj4gU2lnbmVkLW9mZi1ieTogUmFzbXVzIFZpbGxl
+bW9lcyA8cmFzbXVzLnZpbGxlbW9lc0BwcmV2YXMuZGs+DQo+Pj4NCj4+PiBJJ3ZlIHNjaGVkdWxl
+ZCB0aGUgcGF0Y2ggYnkgSm9ha2ltIFpoYW5nOg0KPj4+DQo+Pj4gICAgIDlkYWVkODlhZThhMyBj
+YW46IGZsZXhjYW46IGZpeCB0aW1lb3V0IHdoZW4gc2V0IHNtYWxsIGJpdHJhdGUNCj4+Pg0KPj4+
+IHRoYXQgZG91YmxlcyB0aGUgdGltZW91dCB0byAxMDAuDQo+Pg0KPj4gRWgsIG9rLCBidXQgdGhh
+dCdzIG5vdCBzdWZmaWNpZW50IGZvciB0aGUgTVBDODMwOSAoSSB0cmllZCB3aXRoIDEwMCBhdA0K
+Pj4gZmlyc3QsIGJ1dCBhcyBJIHdyaXRlIHRoZSBtaW5pbWFsbHkgd29ya2luZyB0aW1lb3V0IHZh
+bHVlIHR1cm5zIG91dCB0bw0KPj4gYmUgYWJvdXQgMTQwIHVzKS4gRG8geW91IHdhbnQgbWUgdG8g
+c2VuZCBhbm90aGVyIHBhdGNoIG9uIHRvcCBvZg0KPj4gOWRhZWQ4OWFlOGEzLCBvciBob3cgc2hv
+dWxkIEkgaW50ZXJwcmV0IHRoZSBhYm92ZT8NCj4gDQo+IENhbiB5b3UgcHJvcG9zZSBhbiB1cGRh
+dGVkIGNvbW1pdCBtZXNzYWdlIGZvciBKb2FraW0gWmhhbmcncyBwYXRjaD8NCj4gDQo+IGh0dHBz
+Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L21rbC9saW51eC1jYW4u
+Z2l0L2NvbW1pdC8/aD10ZXN0aW5nJmlkPTlkYWVkODlhZThhM2ZjNDRjY2QyYjJiYjljM2M0ZDNl
+MzQzMTkwNGQNCj4gDQo+IEknbGwgYWRkIGl0IGJ5IGhhbmQgYW5kIGluY3JlYXNlIHRoZSB0aW1l
+b3V0IHRvIDI1MC4gT2s/DQoNClNvdW5kcyBmaW5lLiBJbiBvcmRlciBub3QgdG8gY2hhbmdlIEpv
+YWtpbSdzIGNvbW1pdCBsb2cgdG9vIG11Y2gsIGhvdw0KYWJvdXQgYWRkaW5nIHNvbWV0aGluZyBs
+aWtlICh3aXRoIHlvdXIgaW5pdGlhbHMsIHNpbmNlIHlvdSdyZSBuZXh0IGluDQp0aGUgc2lnbi1v
+ZmYgY2hhaW4pDQoNCltta2w6IE1lYW53aGlsZSwgUmFzbXVzIFZpbGxlbW9lcyByZXBvcnRlZCB0
+aGF0IGV2ZW4gd2l0aCBhIHRpbWVvdXQgb2YNCjEwMCwgZmxleGNhbl9wcm9iZSgpIGZhaWxzIG9u
+IHRoZSBNUEM4MzA5LCB3aGljaCByZXF1aXJlcyBhIHZhbHVlIG9mIGF0DQpsZWFzdCAxNDAgdG8g
+d29yayByZWxpYWJseS4gMjUwIHdvcmtzIGZvciBldmVyeW9uZS5dDQoNCj8gRmVlbCBmcmVlIHRv
+IGVkaXQgYXMgeW91IHdpc2guDQoNClRoYW5rcywNClJhc211cw0K
