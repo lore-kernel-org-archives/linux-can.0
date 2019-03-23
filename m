@@ -1,36 +1,55 @@
-From: syzbot <syzbot+06283a66a648cd073885@syzkaller.appspotmail.com>
-Subject: Re: INFO: task hung in vivid_stop_generating_vid_cap
-Date: Fri, 22 Mar 2019 15:45:00 -0700
-Message-ID: <000000000000e1f98d0584b69aa6@google.com>
-References: <00000000000080601805795ada2e@google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <00000000000080601805795ada2e@google.com>
-Sender: netdev-owner@vger.kernel.org
-To: andy@greyhouse.net, davem@davemloft.net, dvyukov@google.com, hans.verkuil@cisco.com, helen.koike@collabora.com, hverkuil@xs4all.nl, j.vosburgh@gmail.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, maheshb@google.com, mchehab@kernel.org, mchehab@s-opensource.com, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com, vfalico@gmail.com
+From: Kangjie Lu <kjlu@umn.edu>
+Subject: Re: [PATCH] net: spi: fix a potential NULL pointer dereference
+Date: Fri, 22 Mar 2019 22:10:36 -0500
+Message-ID: <5465C285-BE0C-4FEF-B732-18B5A8F44C8D@umn.edu>
+References: <20190310075735.3392-1-kjlu@umn.edu>
+Mime-Version: 1.0 (Mac OS X Mail 12.2 \(3445.102.3\))
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190310075735.3392-1-kjlu@umn.edu>
+Sender: linux-kernel-owner@vger.kernel.org
+To: kjlu@umn.edu
+Cc: pakki001@umn.edu, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Wei Liu <wei.liu2@citrix.com>, Joe Perches <joe@perches.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-syzbot has bisected this bug to:
 
-commit f2fe89061d79706eca5c47e4efdc09bbc171e74a
-Author: Helen Koike <helen.koike@collabora.com>
-Date:   Fri Apr 7 17:55:19 2017 +0000
 
-     [media] vimc: Virtual Media Controller core, capture and sensor
+> On Mar 10, 2019, at 1:57 AM, Kangjie Lu <kjlu@umn.edu> wrote:
+> 
+> In case alloc_workqueue fails to allocate the work queue and
+> returns NULL, the fix releases the resources and returns
+> -ENOMEM.
+> 
+> Signed-off-by: Kangjie Lu <kjlu@umn.edu>
+> ---
+> drivers/net/can/spi/mcp251x.c | 8 ++++++++
+> 1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+> index e90817608645..2737b9a20dfe 100644
+> --- a/drivers/net/can/spi/mcp251x.c
+> +++ b/drivers/net/can/spi/mcp251x.c
+> @@ -962,6 +962,14 @@ static int mcp251x_open(struct net_device *net)
+> 
+> 	priv->wq = alloc_workqueue("mcp251x_wq", WQ_FREEZABLE | WQ_MEM_RECLAIM,
+> 				   0);
+> +	if (unlikely(!priv->wq)) {
+> +		dev_err(&spi->dev, "failed to allocate work queue\n");
+> +		mcp251x_power_enable(priv->transceiver, 0);
+> +		close_candev(net);
+> +		ret = -ENOMEM;
+> +		goto open_unlock;
+> +	}
+> +
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12ea247d200000
-start commit:   9f51ae62 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=11ea247d200000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16ea247d200000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=62118286bb772a24
-dashboard link: https://syzkaller.appspot.com/bug?extid=06283a66a648cd073885
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15701a33400000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154c8e4d400000
+Can someone review this patch?
 
-Reported-by: syzbot+06283a66a648cd073885@syzkaller.appspotmail.com
-Fixes: f2fe89061d79 ("[media] vimc: Virtual Media Controller core, capture  
-and sensor")
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 	INIT_WORK(&priv->tx_work, mcp251x_tx_work_handler);
+> 	INIT_WORK(&priv->restart_work, mcp251x_restart_work_handler);
+> 
+> -- 
+> 2.17.1
+> 
