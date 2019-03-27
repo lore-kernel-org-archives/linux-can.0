@@ -1,47 +1,50 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH 1/2] net: sch_generic: add flag IFF_FIFO_QUEUE to use
  pfifo_fast as default scheduler
-Date: Wed, 27 Mar 2019 20:27:51 +0100
-Message-ID: <a3deee8b-f1de-a9f2-339f-523022c502e6@pengutronix.de>
+Date: Wed, 27 Mar 2019 21:11:02 +0100
+Message-ID: <7a25d800-aed1-bec6-0ff8-38c06c3b8fb5@pengutronix.de>
 References: <20190327165632.10711-1-mkl@pengutronix.de>
  <20190327165632.10711-2-mkl@pengutronix.de>
- <20190327185332.s3cq6ttscyk7234v@pengutronix.de>
+ <CAM_iQpWVOeJ7JNnFyrnvVVimfO=nn4z2FsCGHcDxgeDYQKoYgQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="2w8mUSPIHG1MHRq714Bgq4jmpYYNj8uvE"
+ boundary="q6VZhPsvsIxZNhfozWL3PZh8kaOmYrAFm"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190327185332.s3cq6ttscyk7234v@pengutronix.de>
+In-Reply-To: <CAM_iQpWVOeJ7JNnFyrnvVVimfO=nn4z2FsCGHcDxgeDYQKoYgQ@mail.gmail.com>
 Sender: netdev-owner@vger.kernel.org
-To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: netdev@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>, Dave Taht <dave.taht@gmail.com>, Jamal Hadi Salim <jhs@mojatatu.com>, kernel@pengutronix.de, Cong Wang <xiyou.wangcong@gmail.com>, linux-can@vger.kernel.org, davem@davemloft.net
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Jiri Pirko <jiri@resnulli.us>, Linux Kernel Network Developers <netdev@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, Jamal Hadi Salim <jhs@mojatatu.com>, kernel@pengutronix.de, linux-can@vger.kernel.org, David Miller <davem@davemloft.net>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2w8mUSPIHG1MHRq714Bgq4jmpYYNj8uvE
-Content-Type: multipart/mixed; boundary="rSQWSJ8Rfmi2EJ3IM04ej2BiTmPuc87Cc";
+--q6VZhPsvsIxZNhfozWL3PZh8kaOmYrAFm
+Content-Type: multipart/mixed; boundary="xjg0BCi14C39uMYDPAuKvLMIbuCUp2G4y";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: netdev@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Jiri Pirko <jiri@resnulli.us>,
+ Linux Kernel Network Developers <netdev@vger.kernel.org>,
  Dave Taht <dave.taht@gmail.com>, Jamal Hadi Salim <jhs@mojatatu.com>,
- kernel@pengutronix.de, Cong Wang <xiyou.wangcong@gmail.com>,
- linux-can@vger.kernel.org, davem@davemloft.net
-Message-ID: <a3deee8b-f1de-a9f2-339f-523022c502e6@pengutronix.de>
+ kernel@pengutronix.de, linux-can@vger.kernel.org,
+ David Miller <davem@davemloft.net>
+Message-ID: <7a25d800-aed1-bec6-0ff8-38c06c3b8fb5@pengutronix.de>
 Subject: Re: [PATCH 1/2] net: sch_generic: add flag IFF_FIFO_QUEUE to use
  pfifo_fast as default scheduler
 References: <20190327165632.10711-1-mkl@pengutronix.de>
  <20190327165632.10711-2-mkl@pengutronix.de>
- <20190327185332.s3cq6ttscyk7234v@pengutronix.de>
-In-Reply-To: <20190327185332.s3cq6ttscyk7234v@pengutronix.de>
+ <CAM_iQpWVOeJ7JNnFyrnvVVimfO=nn4z2FsCGHcDxgeDYQKoYgQ@mail.gmail.com>
+In-Reply-To: <CAM_iQpWVOeJ7JNnFyrnvVVimfO=nn4z2FsCGHcDxgeDYQKoYgQ@mail.gmail.com>
 
---rSQWSJ8Rfmi2EJ3IM04ej2BiTmPuc87Cc
+--xjg0BCi14C39uMYDPAuKvLMIbuCUp2G4y
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-On 3/27/19 7:53 PM, Uwe Kleine-K=C3=B6nig wrote:
-> On Wed, Mar 27, 2019 at 05:56:31PM +0100, Marc Kleine-Budde wrote:
+On 3/27/19 6:14 PM, Cong Wang wrote:
+> On Wed, Mar 27, 2019 at 9:56 AM Marc Kleine-Budde <mkl@pengutronix.de> =
+wrote:
+>>
 >> There is networking hardware that isn't based on Ethernet for layers 1=
  and 2.
 >>
@@ -69,11 +72,6 @@ d length,
 ever
 >> TCP's flow control algorithm will detect dropped packages and adjust t=
 he
->=20
-> s/package/packet/ here and in a few more locations in this commit log.
-
-Thanks, fixed.
-
 >> bandwidth accordingly.
 >>
 >> When using fq_codel and sending raw frames over CAN, which is the comm=
@@ -111,43 +109,38 @@ g
 sc() to
 >> attach the pfifo_fast (pfifo_fast_ops) if the "IFF_FIFO_QUEUE" flag is=
  set.
->>
->> [1] https://github.com/systemd/systemd/issues/9194
->>
->> Cc: Dave Taht <dave.taht@gmail.com>
->> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
->> Cc: Cong Wang <xiyou.wangcong@gmail.com>
->> Cc: Jiri Pirko <jiri@resnulli.us>
->> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
->> ---
->>  include/linux/netdevice.h | 3 +++
->>  net/sched/sch_generic.c   | 3 +++
->>  2 files changed, 6 insertions(+)
->>
->> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->> index 166fdc0a78b4..1867e27e3369 100644
->> --- a/include/linux/netdevice.h
->> +++ b/include/linux/netdevice.h
->> @@ -1498,6 +1498,7 @@ struct net_device_ops {
->>   * @IFF_FAILOVER: device is a failover master device
->>   * @IFF_FAILOVER_SLAVE: device is lower dev of a failover master devi=
-ce
->>   * @IFF_L3MDEV_RX_HANDLER: only invoke the rx handler of L3 master de=
-vice
->> + * @IFF_FIFO_QUEUE: device must run with FIFO qdisc attached. skb dro=
-p without NET_XMIT_DROP is fatal
 >=20
-> Do you need the FIFO property or only that the qdisc doesn't silently
-> drop packets? I don't know which other qdiscs are around, but depending=
+> I wonder if we just need to allow arbitrary default qdisc per netdevice=
 
-> on the answer to this question other than pfifo_fast might be suitable?=
+> while you are on it. A private flag is simply a boolean, perhaps in the=
 
+> future other type of devices wants other default qdiscs, so that could
+> make it more flexible.
 
-No silent dropping is mandatory. No reordering of outgoing packets (if
-not configured to do so) is mandatory.
+=46rom my point of view there is networking hardware that use protocols
+that work with (i.e. benefit from) fq_codel (hash flow/queue/head drop).
 
-Maybe there are other qdiscs that work on CAN, but pfifo_fast is a sane
-default.
+The silent head drop is the most prominent reason why it doesn't work on
+CAN. I haven't dug deep enough into the code to see if skb->hash is used
+or what the flow dissector will do on CAN frames. So reordering of CAN
+frames (if something else than skb->priority is used) might be a
+problem, too.
+
+=46rom my point of view, if your networking hardware and the protocols on=
+
+top don't like re-ordering or silent head drop, than pfifo_fast is
+probably a good default choice.
+
+I discussed the problem a bit at netdev 0x13 and one point someone
+mentioned is that if there is a generic set this qdisc function people
+might start to add this to network drivers to "optimize" them for their
+special workflow or test case.
+
+Doubts aside, how should an arbitrary default qdisc per netdevice look
+like? Add a string "default_qdisc" to the netdev? Lookup qdisc by string
+during DOWN->UP transition? What do if that qdisc is not compiled into
+the kernel? Or rather use an array of qdiscs with one of sch_generic
+defaults?
 
 Marc
 
@@ -158,23 +151,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---rSQWSJ8Rfmi2EJ3IM04ej2BiTmPuc87Cc--
+--xjg0BCi14C39uMYDPAuKvLMIbuCUp2G4y--
 
---2w8mUSPIHG1MHRq714Bgq4jmpYYNj8uvE
+--q6VZhPsvsIxZNhfozWL3PZh8kaOmYrAFm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlybzrcACgkQWsYho5Hk
-nSDBcgf/YFGrVj1sbkkBHg9BRRsrwtXpULbxPfyIKnowudDefwjSpoIUaVuSuHAZ
-z1F+ZVapUor2ODsjmVWvUJ5hLpHw6hhojDxlHOwZl9l6jfIdnTdpfQykUpKixZQM
-lCLBekR3MYUeSLq65yxcyyflyF47UO//+501GQw9Dd2vIpSKtFzDTy8tK1D3sVaJ
-/Un2ta36y+ltR/F0iwCWIl69ZV+BgrkHcSpA1KVZ1DVf4XDxfNlXqWNgwKjStEHs
-RA1I4HbaHcXZbkCQ/yQutnK/PpFM1GVPCELPoh/7VbRNqg5yf5Y87odovkEX6eVQ
-BmNHQM5mHUTw9qXrq+xy+iNb8fpkyA==
-=YPiT
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlyb2NYACgkQWsYho5Hk
+nSDTkgf+O47Vm/J3p0yXQFYRp6m1TBBbJw0pMa+52ShLZU1nxP1nA+l/ZhfzMmlw
+ZteO6PHpDf37VpCSrAG739v417xxIincVwULGa7aRMMxP/HPqEP7WEaKyRXOAboN
+lWfACxOCzAWLcXj/FpOS0OLRA0jN5GI0FY5P6IJIhnXMpGPwniEugO+H+lMcC5bR
+Dd9Of0w3WF3nzQrkkjEj+MS/1NBGWiiKvs4xP2ykPGc0piaRO4hk6PL1/i1Rsuen
+TvNqG3etEqGecri65W5yPVQ0cBdp8TlM9108hLbpSMlrtLMYTu0bON6vwlnx8nOo
+2dDC4hQi4q6RcT+vhIHjxhLwAZlAJg==
+=uGS2
 -----END PGP SIGNATURE-----
 
---2w8mUSPIHG1MHRq714Bgq4jmpYYNj8uvE--
+--q6VZhPsvsIxZNhfozWL3PZh8kaOmYrAFm--
