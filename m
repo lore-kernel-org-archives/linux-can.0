@@ -1,37 +1,52 @@
-From: Cong Wang <xiyou.wangcong@gmail.com>
-Subject: Re: [PATCH 1/2] net: sch_generic: add flag IFF_FIFO_QUEUE to use
- pfifo_fast as default scheduler
-Date: Wed, 27 Mar 2019 13:53:40 -0700
-Message-ID: <CAM_iQpVVJVXGLmEWfNj-MG6j4pyYp3TOV7gcnBZ0-9OrMWEa=A@mail.gmail.com>
-References: <20190327165632.10711-1-mkl@pengutronix.de> <20190327165632.10711-2-mkl@pengutronix.de>
- <CAM_iQpWVOeJ7JNnFyrnvVVimfO=nn4z2FsCGHcDxgeDYQKoYgQ@mail.gmail.com> <7a25d800-aed1-bec6-0ff8-38c06c3b8fb5@pengutronix.de>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH net-next] can: kvaser_usb: Use struct_size() in
+ alloc_candev()
+Date: Thu, 28 Mar 2019 12:58:48 -0500
+Message-ID: <5760e0a4-101d-9ff4-b5e8-046b7dd38d1b@embeddedor.com>
+References: <20190208031035.GA2665@embeddedor>
+ <b736a7b3-819a-a471-c767-2997354e70e4@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <7a25d800-aed1-bec6-0ff8-38c06c3b8fb5@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Jiri Pirko <jiri@resnulli.us>, Linux Kernel Network Developers <netdev@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, Jamal Hadi Salim <jhs@mojatatu.com>, kernel@pengutronix.de, linux-can@vger.kernel.org, David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <b736a7b3-819a-a471-c767-2997354e70e4@pengutronix.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Mar 27, 2019 at 1:11 PM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> Doubts aside, how should an arbitrary default qdisc per netdevice look
-> like? Add a string "default_qdisc" to the netdev? Lookup qdisc by string
-> during DOWN->UP transition? What do if that qdisc is not compiled into
-> the kernel? Or rather use an array of qdiscs with one of sch_generic
-> defaults?
+Hi Marc,
 
-I think you can just save a Qdisc_ops pointer in netdevice,
-like how we install the default qdisc:
+On 2/26/19 1:52 AM, Marc Kleine-Budde wrote:
+> On 2/8/19 4:10 AM, Gustavo A. R. Silva wrote:
+>> One of the more common cases of allocation size calculations is finding
+>> the size of a structure that has a zero-sized array at the end, along
+>> with memory for some number of elements for that array. For example:
+>>
+>> struct foo {
+>>     int stuff;
+>>     void *entry[];
+>> };
+>>
+>> instance = alloc(sizeof(struct foo) + count * sizeof(void *));
+>>
+>> Instead of leaving these open-coded and prone to type mistakes, we can
+>> now use the new struct_size() helper:
+>>
+>> instance = alloc(struct_size(instance, entry, count));
+>>
+>> This code was detected with the help of Coccinelle.
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> 
+> Applied to linux-can-next.
+> 
 
-  38 const struct Qdisc_ops *default_qdisc_ops = &pfifo_fast_ops;
-  39 EXPORT_SYMBOL(default_qdisc_ops);
+I noticed this patch is not in linux-next.
 
-And hard-code whatever default into your netdevice init code.
+I wonder if you actually applied it to your tree.
 
-At least for pfifo_fast, you don't need to worry about module
-loading. If you really do, you can call qdisc_lookup_default()
-and request_module() like what qdisc_set_default() does.
-Of course, you can refactor qdisc_set_default() and call it too.
-
-Thanks.
+Thanks
+--
+Gustavo
