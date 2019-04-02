@@ -1,38 +1,63 @@
-From: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v11 1/5] can: m_can: Create a m_can platform framework
-Date: Tue, 2 Apr 2019 14:17:55 +0200
-Message-ID: <c05a6a22-c162-518d-683a-18731bd67e38@grandegger.com>
-References: <20190319172651.10012-1-dmurphy@ti.com>
- <3ce79402-00f1-d7e6-955e-1ad7eb00d0de@ti.com>
+From: <Eugen.Hristev@microchip.com>
+Subject: [PATCH RESEND] can: m_can: implement errata "Needless activation of
+ MRAF irq"
+Date: Tue, 2 Apr 2019 12:56:18 +0000
+Message-ID: <1554209445-19879-1-git-send-email-eugen.hristev@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <3ce79402-00f1-d7e6-955e-1ad7eb00d0de@ti.com>
-Content-Language: en-GB
-Sender: netdev-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Content-ID: <91BD978EDD9B304FB76BE35694252BD2@namprd11.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Nicolas.Ferre@microchip.com, Eugen.Hristev@microchip.com
 List-Id: linux-can.vger.kernel.org
 
-Hello Dan,
-
-Am 02.04.19 um 14:03 schrieb Dan Murphy:
-> Wolfgang
-> 
-> On 3/19/19 12:26 PM, Dan Murphy wrote:
->> Create a m_can platform framework that peripheral
->> devices can register to and use common code and register sets.
->> The peripheral devices may provide read/write and configuration
->> support of the IP.
->>
->> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>
-> 
-> Wondering if this will be going into 5.1 PR?
-
-it's Marc who is doing the upstreaming ... and maybe a final review as well.
-
-Wolfgang.
+RnJvbTogRXVnZW4gSHJpc3RldiA8ZXVnZW4uaHJpc3RldkBtaWNyb2NoaXAuY29tPg0KDQpEdXJp
+bmcgZnJhbWUgcmVjZXB0aW9uIHdoaWxlIHRoZSBNQ0FOIGlzIGluIEVycm9yIFBhc3NpdmUgc3Rh
+dGUNCmFuZCB0aGUgUmVjZWl2ZSBFcnJvciBDb3VudGVyIGhhcyB0aGV2YWx1ZSBNQ0FOX0VDUi5S
+RUMgPSAxMjcsIGl0IG1heSBoYXBwZW4NCnRoYXQgTUNBTl9JUi5NUkFGIGlzIHNldCBhbHRob3Vn
+aCB0aGVyZSB3YXMgbm8gTWVzc2FnZSBSQU0gYWNjZXNzIGZhaWx1cmUuDQpJZiBNQ0FOX0lSLk1S
+QUYgaXMgZW5hYmxlZCwgYW4gaW50ZXJydXB0IHRvIHRoZSBIb3N0IENQVSBpcyBnZW5lcmF0ZWQu
+DQpXb3JrIGFyb3VuZDoNClRoZSBNZXNzYWdlIFJBTSBBY2Nlc3MgRmFpbHVyZSBpbnRlcnJ1cHQg
+cm91dGluZSBuZWVkcyB0byBjaGVjayB3aGV0aGVyDQogTUNBTl9FQ1IuUlAgPSAnMScgYW5kIE1D
+QU5fRUNSLlJFQyA9ICcxMjcnLg0KSW4gdGhpcyBjYXNlLCByZXNldCBNQ0FOX0lSLk1SQUYuIE5v
+IGZ1cnRoZXIgYWN0aW9uIGlzIHJlcXVpcmVkLg0KVGhpcyBhZmZlY3RzIHZlcnNpb25zIG9sZGVy
+IHRoYW4gMy4yLjANCg0KRXJyYXRhIGV4cGxhaW5lZCBvbiBTYW1hNWQyIFNvQyB3aGljaCBpbmNs
+dWRlcyB0aGlzIGhhcmR3YXJlIGJsb2NrOg0KaHR0cDovL3d3MS5taWNyb2NoaXAuY29tL2Rvd25s
+b2Fkcy9lbi9EZXZpY2VEb2MvU0FNQTVEMi1GYW1pbHktU2lsaWNvbi1FcnJhdGEtYW5kLURhdGEt
+U2hlZXQtQ2xhcmlmaWNhdGlvbi1EUzgwMDAwODAzQi5wZGYgY2hhcHRlciA2LjINCg0KUmVwcm9k
+dWNpYmlsaXR5OiBJZiAyIGRldmljZXMgd2l0aCBtX2NhbiBhcmUgY29ubmVjdGVkIGJhY2sgdG8g
+YmFjaywNCmNvbmZpZ3VyaW5nIGRpZmZlcmVudCBiaXRyYXRlIG9uIHRoZW0gd2lsbCBsZWFkIHRv
+IGludGVycnVwdCBzdG9ybSBvbiB0aGUNCnJlY2VpdmluZyBzaWRlLCB3aXRoIGVycm9yICJNZXNz
+YWdlIFJBTSBhY2Nlc3MgZmFpbHVyZSBvY2N1cnJlZCIuDQpBbm90aGVyIHdheSBpcyB0byBoYXZl
+IGEgYmFkIGhhcmR3YXJlIGNvbm5lY3Rpb24uIEJhZCB3aXJlIGNvbm5lY3Rpb24gY2FuIGxlYWQN
+CnRvIHRoaXMgaXNzdWUgYXMgd2VsbC4NCg0KVGhpcyBwYXRjaCBmaXhlcyB0aGUgaXNzdWUgYWNj
+b3JkaW5nIHRvIHByb3ZpZGVkIHdvcmthcm91bmQuDQoNClNpZ25lZC1vZmYtYnk6IEV1Z2VuIEhy
+aXN0ZXYgPGV1Z2VuLmhyaXN0ZXZAbWljcm9jaGlwLmNvbT4NCi0tLQ0KIGRyaXZlcnMvbmV0L2Nh
+bi9tX2Nhbi9tX2Nhbi5jIHwgMjEgKysrKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNoYW5n
+ZWQsIDIxIGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9tX2Nh
+bi9tX2Nhbi5jIGIvZHJpdmVycy9uZXQvY2FuL21fY2FuL21fY2FuLmMNCmluZGV4IDliNDQ5NDAu
+LmRlYjI3NGEgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL25ldC9jYW4vbV9jYW4vbV9jYW4uYw0KKysr
+IGIvZHJpdmVycy9uZXQvY2FuL21fY2FuL21fY2FuLmMNCkBAIC04MjIsNiArODIyLDI3IEBAIHN0
+YXRpYyBpbnQgbV9jYW5fcG9sbChzdHJ1Y3QgbmFwaV9zdHJ1Y3QgKm5hcGksIGludCBxdW90YSkN
+CiAJaWYgKCFpcnFzdGF0dXMpDQogCQlnb3RvIGVuZDsNCiANCisJLyogRXJyYXRhIHdvcmthcm91
+bmQgZm9yIGlzc3VlICJOZWVkbGVzcyBhY3RpdmF0aW9uIG9mIE1SQUYgaXJxIg0KKwkgKiBEdXJp
+bmcgZnJhbWUgcmVjZXB0aW9uIHdoaWxlIHRoZSBNQ0FOIGlzIGluIEVycm9yIFBhc3NpdmUgc3Rh
+dGUNCisJICogYW5kIHRoZSBSZWNlaXZlIEVycm9yIENvdW50ZXIgaGFzIHRoZSB2YWx1ZSBNQ0FO
+X0VDUi5SRUMgPSAxMjcsDQorCSAqIGl0IG1heSBoYXBwZW4gdGhhdCBNQ0FOX0lSLk1SQUYgaXMg
+c2V0IGFsdGhvdWdoIHRoZXJlIHdhcyBubw0KKwkgKiBNZXNzYWdlIFJBTSBhY2Nlc3MgZmFpbHVy
+ZS4NCisJICogSWYgTUNBTl9JUi5NUkFGIGlzIGVuYWJsZWQsIGFuIGludGVycnVwdCB0byB0aGUg
+SG9zdCBDUFUgaXMgZ2VuZXJhdGVkDQorCSAqIFRoZSBNZXNzYWdlIFJBTSBBY2Nlc3MgRmFpbHVy
+ZSBpbnRlcnJ1cHQgcm91dGluZSBuZWVkcyB0byBjaGVjaw0KKwkgKiB3aGV0aGVyIE1DQU5fRUNS
+LlJQID0g4oCZMeKAmSBhbmQgTUNBTl9FQ1IuUkVDID0gMTI3Lg0KKwkgKiBJbiB0aGlzIGNhc2Us
+IHJlc2V0IE1DQU5fSVIuTVJBRi4gTm8gZnVydGhlciBhY3Rpb24gaXMgcmVxdWlyZWQuDQorCSAq
+Lw0KKwlpZiAoKHByaXYtPnZlcnNpb24gPD0gMzEpICYmIChpcnFzdGF0dXMgJiBJUl9NUkFGKSAm
+Jg0KKwkgICAgKG1fY2FuX3JlYWQocHJpdiwgTV9DQU5fRUNSKSAmIEVDUl9SUCkpIHsNCisJCXN0
+cnVjdCBjYW5fYmVycl9jb3VudGVyIGJlYzsNCisNCisJCV9fbV9jYW5fZ2V0X2JlcnJfY291bnRl
+cihkZXYsICZiZWMpOw0KKwkJaWYgKGJlYy5yeGVyciA9PSAxMjcpIHsNCisJCQltX2Nhbl93cml0
+ZShwcml2LCBNX0NBTl9JUiwgSVJfTVJBRik7DQorCQkJaXJxc3RhdHVzICY9IH5JUl9NUkFGOw0K
+KwkJfQ0KKwl9DQorDQogCXBzciA9IG1fY2FuX3JlYWQocHJpdiwgTV9DQU5fUFNSKTsNCiAJaWYg
+KGlycXN0YXR1cyAmIElSX0VSUl9TVEFURSkNCiAJCXdvcmtfZG9uZSArPSBtX2Nhbl9oYW5kbGVf
+c3RhdGVfZXJyb3JzKGRldiwgcHNyKTsNCi0tIA0KMi43LjQNCg0K
