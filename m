@@ -1,52 +1,38 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH net-next] can: kvaser_usb: Use struct_size() in
- alloc_candev()
-Date: Thu, 28 Mar 2019 12:58:48 -0500
-Message-ID: <5760e0a4-101d-9ff4-b5e8-046b7dd38d1b@embeddedor.com>
-References: <20190208031035.GA2665@embeddedor>
- <b736a7b3-819a-a471-c767-2997354e70e4@pengutronix.de>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v11 1/5] can: m_can: Create a m_can platform framework
+Date: Tue, 2 Apr 2019 07:03:02 -0500
+Message-ID: <3ce79402-00f1-d7e6-955e-1ad7eb00d0de@ti.com>
+References: <20190319172651.10012-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <b736a7b3-819a-a471-c767-2997354e70e4@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190319172651.10012-1-dmurphy@ti.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>
+Sender: netdev-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hi Marc,
+Wolfgang
 
-On 2/26/19 1:52 AM, Marc Kleine-Budde wrote:
-> On 2/8/19 4:10 AM, Gustavo A. R. Silva wrote:
->> One of the more common cases of allocation size calculations is finding
->> the size of a structure that has a zero-sized array at the end, along
->> with memory for some number of elements for that array. For example:
->>
->> struct foo {
->>     int stuff;
->>     void *entry[];
->> };
->>
->> instance = alloc(sizeof(struct foo) + count * sizeof(void *));
->>
->> Instead of leaving these open-coded and prone to type mistakes, we can
->> now use the new struct_size() helper:
->>
->> instance = alloc(struct_size(instance, entry, count));
->>
->> This code was detected with the help of Coccinelle.
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+On 3/19/19 12:26 PM, Dan Murphy wrote:
+> Create a m_can platform framework that peripheral
+> devices can register to and use common code and register sets.
+> The peripheral devices may provide read/write and configuration
+> support of the IP.
 > 
-> Applied to linux-can-next.
+> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
 > 
 
-I noticed this patch is not in linux-next.
+Wondering if this will be going into 5.1 PR?
 
-I wonder if you actually applied it to your tree.
+Dan
 
-Thanks
---
-Gustavo
+<snip>
+
+-- 
+------------------
+Dan Murphy
