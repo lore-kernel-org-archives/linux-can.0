@@ -1,86 +1,52 @@
-From: Alexander Potapenko <glider@google.com>
-Subject: Re: kernel BUG at arch/x86/mm/physaddr.c:LINE! (2)
-Date: Thu, 4 Apr 2019 16:54:43 +0200
-Message-ID: <CAG_fn=UGc2_CpLG0c8Ppv7X7ss6-wmXtEX76=yLow=5_DNCH2g@mail.gmail.com>
-References: <0000000000001c2b95057ad0935b@google.com> <000000000000462a4105848c8e12@google.com>
- <CAG_fn=VnXmDSc_QNqyEv7f7iwHXC6taBq1t55fHWZpLZ0EdiNw@mail.gmail.com> <be750b12-ba3d-ecb4-541a-ca3669bb75d7@xs4all.nl>
+From: Stefan-gabriel Mirea <stefan-gabriel.mirea@nxp.com>
+Subject: Re: [PATCH V2 2/5] can: flexcan: add CAN FD mode support
+Date: Mon, 8 Apr 2019 17:46:02 +0000
+Message-ID: <385f7948-d12b-1fc2-2ed2-23d1e76034a0@nxp.com>
+References: <20190319051512.14950-3-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <be750b12-ba3d-ecb4-541a-ca3669bb75d7@xs4all.nl>
-Sender: netdev-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: syzbot <syzbot+6c0effb5877f6b0344e2@syzkaller.appspotmail.com>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org, mchehab@kernel.org, mchehab@s-opensource.com, mkl@pengutronix.de, Networking <netdev@vger.kernel.org>, socketcan@hartkopp.net, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190319051512.14950-3-qiangqing.zhang@nxp.com>
+Content-Language: en-US
+Content-ID: <FBD65A23CD1BED428B72C287AF2E9DFA@eurprd04.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-On Thu, Apr 4, 2019 at 4:51 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> On 4/4/19 4:47 PM, Alexander Potapenko wrote:
-> > On Wed, Mar 20, 2019 at 9:35 PM syzbot
-> > <syzbot+6c0effb5877f6b0344e2@syzkaller.appspotmail.com> wrote:
-> >>
-> >> syzbot has bisected this bug to:
-> >>
-> >> commit 6d469a202ee73196d0df76025af80bd6a379e658
-> >> Author: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-> >> Date:   Sun May 14 17:07:21 2017 +0000
-> >>
-> >>      Merge tag 'v4.12-rc1' into patchwork
-> >>
-> >> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D12639fd=
-7200000
-> >> start commit:   6d469a20 Merge tag 'v4.12-rc1' into patchwork
-> >> git tree:       upstream
-> >> final crash:    https://syzkaller.appspot.com/x/report.txt?x=3D15639fd=
-7200000
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=3D11639fd720=
-0000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dd86f243338=
-80b605
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=3D6c0effb5877f=
-6b0344e2
-> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1312062b=
-400000
-> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D131bd09340=
-0000
-> >>
-> >> Reported-by: syzbot+6c0effb5877f6b0344e2@syzkaller.appspotmail.com
-> >> Fixes: 6d469a20 ("Merge tag 'v4.12-rc1' into patchwork")
-> >>
-> >> --
-> >> You received this message because you are subscribed to the Google Gro=
-ups "syzkaller-bugs" group.
-> >> To unsubscribe from this group and stop receiving emails from it, send=
- an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> >> To view this discussion on the web visit https://groups.google.com/d/m=
-sgid/syzkaller-bugs/000000000000462a4105848c8e12%40google.com.
-> >> For more options, visit https://groups.google.com/d/optout.
-> >
-> > I believe this bug is caused by vivid_vid_cap_s_selection() calling
-> > kfree(dev->bitmap_cap).
-> > This makes little sense, as dev->bitmap_cap seems to be allocated
-> > using vzalloc().
-> >
->
-> Yup, that should be vfree. There was a similar problem with bitmap_out th=
-at
-> I fixed, but it looks I missed this one. Can you make a patch?
-Yes, I've almost hit the send button :)
-> Thanks,
->
->         Hans
+Hello Joakim,
 
+I successfully validated your CAN FD support on an S32V234 based board.
+Here are some points which are not very clear to me:
 
+Joakim Zhang <qiangqing.zhang@nxp.com> writes:
+> +		priv->write(reg_mcr | FLEXCAN_MCR_FDEN, &regs->mcr);
 
---=20
-Alexander Potapenko
-Software Engineer
+According to the S32V234 reference manual (not sure if this applies to
+i.MX8QM as well), CAN_CTRL1[SMP] cannot be asserted when CAN FD is
+enabled. Is it safe to configure the interface with both "fd on" and
+"triple-sampling on"? If not, flexcan_open should return an error when
+both CAN_CTRLMODE_FD and CAN_CTRLMODE_3_SAMPLES are set in ctrlmode.
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+Joakim Zhang <qiangqing.zhang@nxp.com> writes:
+> +		priv->offload.is_canfd =3D true;
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+Shouldn't is_canfd be assigned false in the "else" branch? Otherwise,
+is_canfd will stay true after the following sequence:
+
+root@s32v234evb:~# ip link set can0 type can bitrate 500000 dbitrate
+2000000 fd on
+root@s32v234evb:~# ip link set can0 up
+root@s32v234evb:~# ip link set can0 down
+root@s32v234evb:~# ip link set can0 type can bitrate 500000 fd off
+root@s32v234evb:~# ip link set can0 up
+
+Moreover, I wonder if we even need is_canfd, because frames should be
+fed to the kernel as classic or FD based only on the EDL bit in the C/S
+word of the Rx MB, to keep their original format. That is, you may
+either read EDL from within a new callback (but I think that
+mailbox_read should remain the only one which both locks and unlocks the
+mailboxes) or let mailbox_read call alloc_can(fd)_skb itself.
+
+Regards,
+Stefan
