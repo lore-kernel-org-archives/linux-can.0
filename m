@@ -1,64 +1,79 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Stefan-gabriel Mirea <stefan-gabriel.mirea@nxp.com>
 Subject: RE: [PATCH V2 2/5] can: flexcan: add CAN FD mode support
-Date: Tue, 9 Apr 2019 02:07:20 +0000
-Message-ID: <DB7PR04MB46181D2AC261EAB6DEECEFCCE62D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+Date: Tue, 9 Apr 2019 07:04:53 +0000
+Message-ID: <VI1PR0402MB286355821F5C81122A7C86E2DF2D0@VI1PR0402MB2863.eurprd04.prod.outlook.com>
 References: <20190319051512.14950-3-qiangqing.zhang@nxp.com>
  <385f7948-d12b-1fc2-2ed2-23d1e76034a0@nxp.com>
+ <DB7PR04MB46181D2AC261EAB6DEECEFCCE62D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <385f7948-d12b-1fc2-2ed2-23d1e76034a0@nxp.com>
+In-Reply-To: <DB7PR04MB46181D2AC261EAB6DEECEFCCE62D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Stefan-gabriel Mirea <stefan-gabriel.mirea@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQpIaSBTdGVmYW4sDQoNClRoYW5rcyBmb3IgeW91ciB2YWxpZGF0aW9uISBDb3VsZCB5b3UgYWRk
-IHlvdXIgdGVzdCB0YWcgaWYgeW91IGNhbiBzdWNjZXNzZnVsbHkgdmFsaWRhdGVkPw0KDQpDb21t
-ZW50cyBpbi1saW5lZCBhYm91dCB5b3VyIHBvaW50cy4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2lt
-IFpoYW5nDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU3RlZmFuLWdh
-YnJpZWwgTWlyZWENCj4gU2VudDogMjAxOcTqNNTCOcjVIDE6NDYNCj4gVG86IEpvYWtpbSBaaGFu
-ZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOw0K
-PiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+
-IFN1YmplY3Q6IFJlOiBbUEFUQ0ggVjIgMi81XSBjYW46IGZsZXhjYW46IGFkZCBDQU4gRkQgbW9k
-ZSBzdXBwb3J0DQo+IA0KPiBIZWxsbyBKb2FraW0sDQo+IA0KPiBJIHN1Y2Nlc3NmdWxseSB2YWxp
-ZGF0ZWQgeW91ciBDQU4gRkQgc3VwcG9ydCBvbiBhbiBTMzJWMjM0IGJhc2VkIGJvYXJkLg0KPiBI
-ZXJlIGFyZSBzb21lIHBvaW50cyB3aGljaCBhcmUgbm90IHZlcnkgY2xlYXIgdG8gbWU6DQo+IA0K
-PiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPiB3cml0ZXM6DQo+ID4gKwkJ
-cHJpdi0+d3JpdGUocmVnX21jciB8IEZMRVhDQU5fTUNSX0ZERU4sICZyZWdzLT5tY3IpOw0KPiAN
-Cj4gQWNjb3JkaW5nIHRvIHRoZSBTMzJWMjM0IHJlZmVyZW5jZSBtYW51YWwgKG5vdCBzdXJlIGlm
-IHRoaXMgYXBwbGllcyB0bw0KPiBpLk1YOFFNIGFzIHdlbGwpLCBDQU5fQ1RSTDFbU01QXSBjYW5u
-b3QgYmUgYXNzZXJ0ZWQgd2hlbiBDQU4gRkQgaXMNCj4gZW5hYmxlZC4gSXMgaXQgc2FmZSB0byBj
-b25maWd1cmUgdGhlIGludGVyZmFjZSB3aXRoIGJvdGggImZkIG9uIiBhbmQNCj4gInRyaXBsZS1z
-YW1wbGluZyBvbiI/IElmIG5vdCwgZmxleGNhbl9vcGVuIHNob3VsZCByZXR1cm4gYW4gZXJyb3Ig
-d2hlbiBib3RoDQo+IENBTl9DVFJMTU9ERV9GRCBhbmQgQ0FOX0NUUkxNT0RFXzNfU0FNUExFUyBh
-cmUgc2V0IGluIGN0cmxtb2RlLg0KIA0KIFtKb2FraW0gWmhhbmddIFllcywgeW91IGFyZSByaWdo
-dC4gSSBjaGVja2VkIGluIGkuTVg4UU0gcmVmZXJlbmNlIG1hbnVhbCwgQ0FOX0NUUkxNT0RFX0ZE
-IGFuZCBDQU5fQ1RSTE1PREVfM19TQU1QTEVTIHNob3VsZCBub3Qgc2V0IHRvZ2V0aGVyLiBJIHdp
-bGwgZml4IGl0IGluIFYzLg0KDQo+IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5j
-b20+IHdyaXRlczoNCj4gPiArCQlwcml2LT5vZmZsb2FkLmlzX2NhbmZkID0gdHJ1ZTsNCj4gDQo+
-IFNob3VsZG4ndCBpc19jYW5mZCBiZSBhc3NpZ25lZCBmYWxzZSBpbiB0aGUgImVsc2UiIGJyYW5j
-aD8gT3RoZXJ3aXNlLCBpc19jYW5mZA0KPiB3aWxsIHN0YXkgdHJ1ZSBhZnRlciB0aGUgZm9sbG93
-aW5nIHNlcXVlbmNlOg0KPiANCj4gcm9vdEBzMzJ2MjM0ZXZiOn4jIGlwIGxpbmsgc2V0IGNhbjAg
-dHlwZSBjYW4gYml0cmF0ZSA1MDAwMDAgZGJpdHJhdGUNCj4gMjAwMDAwMCBmZCBvbg0KPiByb290
-QHMzMnYyMzRldmI6fiMgaXAgbGluayBzZXQgY2FuMCB1cA0KPiByb290QHMzMnYyMzRldmI6fiMg
-aXAgbGluayBzZXQgY2FuMCBkb3duIHJvb3RAczMydjIzNGV2Yjp+IyBpcCBsaW5rIHNldA0KPiBj
-YW4wIHR5cGUgY2FuIGJpdHJhdGUgNTAwMDAwIGZkIG9mZiByb290QHMzMnYyMzRldmI6fiMgaXAg
-bGluayBzZXQgY2FuMCB1cA0KIA0KIFtKb2FraW0gWmhhbmddIEdvb2QgY2F0Y2ghIEkgd2lsbCBm
-aXggaXQgaW4gVjMuDQoNCj4gTW9yZW92ZXIsIEkgd29uZGVyIGlmIHdlIGV2ZW4gbmVlZCBpc19j
-YW5mZCwgYmVjYXVzZSBmcmFtZXMgc2hvdWxkIGJlIGZlZCB0bw0KPiB0aGUga2VybmVsIGFzIGNs
-YXNzaWMgb3IgRkQgYmFzZWQgb25seSBvbiB0aGUgRURMIGJpdCBpbiB0aGUgQy9TIHdvcmQgb2Yg
-dGhlIFJ4DQo+IE1CLCB0byBrZWVwIHRoZWlyIG9yaWdpbmFsIGZvcm1hdC4gVGhhdCBpcywgeW91
-IG1heSBlaXRoZXIgcmVhZCBFREwgZnJvbSB3aXRoaW4NCj4gYSBuZXcgY2FsbGJhY2sgKGJ1dCBJ
-IHRoaW5rIHRoYXQgbWFpbGJveF9yZWFkIHNob3VsZCByZW1haW4gdGhlIG9ubHkgb25lDQo+IHdo
-aWNoIGJvdGggbG9ja3MgYW5kIHVubG9ja3MgdGhlDQo+IG1haWxib3hlcykgb3IgbGV0IG1haWxi
-b3hfcmVhZCBjYWxsIGFsbG9jX2NhbihmZClfc2tiIGl0c2VsZi4NCg0KIFtKb2FraW0gWmhhbmdd
-IFdlIGFkZGVkIGNhbiBmZCBzdXBwb3J0IGluIDQuOSBrZXJuZWwgd2hpY2ggbGV0IG1haWxib3hf
-cmVhZCBjYWxsIGFsbG9jX2NhbihmZClfc2tiIGluIHRoZSBwYXN0LiBOb3cgdGhlIGRyaXZlciBh
-bGxvY2F0ZSBza2IgYmVmb3JlIG1haWxib3hfcmVhZCBpbiByeF9vZmZsb2FkIGFuZCBhbHNvIHJl
-YWQgdGhlIG92ZXJmbG93IGZyYW1lcy4NCiAgICAgICAgICAgICAgSSBhZGQgdGhlICJpc19jYW5m
-ZCIgc2luY2UgSSBkb24ndCB3YW50IHRvIGNoYW5nZSB0aGUgcnhfb2ZmbG9hZCBmcmFtZXdvcmsg
-dG9vIG11Y2guIEBta2xAcGVuZ3V0cm9uaXguZGUsIGNvdWxkIHlvdSBnaXZlIHNvbWUgYWR2aWNl
-LCB3aGljaCBzb2x1dGlvbiBpcyBiZXR0ZXI/DQogICAgICAgICAgICAgIA0KPiBSZWdhcmRzLA0K
-PiBTdGVmYW4NCg==
+> From: Joakim Zhang
+> Sent: Tuesday, April 9, 2019 5:07 AM
+> Hi Stefan,
+>=20
+> Thanks for your validation! Could you add your test tag if you can=20
+> successfully validated?
+
+Sure, no problem. Please note that I needed to replace "flexcan_read" and "=
+flexcan_write" with "priv->read" and "priv->write" respectively, in PATCH V=
+2 4/5.
+
+>  [Joakim Zhang] We added can fd support in 4.9 kernel which let=20
+> mailbox_read call alloc_can(fd)_skb in the past. Now the driver=20
+> allocate skb before mailbox_read in rx_offload and also read the overflow=
+ frames.
+>               I add the "is_canfd" since I don't want to change the=20
+> rx_offload framework too much. @mkl@pengutronix.de, could you give=20
+> some advice, which solution is better?
+
+This is more of a functionality issue. For example, candump from canutils 4=
+.0.6 never shows CAN FD frames, but should still be able to show the CAN 2.=
+0 ones regardless of whether "fd on" was supplied. I suggest the following =
+separation:
+
+can_rx_offload_offload_one:
+	struct sk_buff *skb =3D NULL;
+	...
+	bool drop =3D unlikely(skb_queue_len(&offload->skb_queue) >
+			     offload->skb_queue_len_max);
+
+	if (offload->mailbox_read(offload, drop, &skb, &timestamp, n) && !skb)
+		offload->dev->stats.rx_dropped++;
+
+	if (skb) {
+		struct can_rx_offload_cb *cb =3D can_rx_offload_get_cb(skb);
+
+		cb->timestamp =3D timestamp;
+	}
+
+	return skb;
+
+flexcan_mailbox_read:
+	...
+	if (!drop) {
+		if (reg_ctrl & FLEXCAN_MB_CNT_EDL)
+			*skb =3D alloc_canfd_skb(offload->dev, &cf);
+		else
+			*skb =3D alloc_can_skb(offload->dev,
+					     (struct can_frame **)&cf);
+	}
+	if (*skb) {
+		/* use cf */
+		...
+	}
+	/* mark as read */
+
+Although not visible in the FlexCAN case, the socket buffers would be also =
+freed from inside mailbox_read if errors were encountered after allocation.
+
+Regards,
+Stefan
