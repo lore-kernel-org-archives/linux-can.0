@@ -1,63 +1,36 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH V2 2/5] can: flexcan: add CAN FD mode support
-Date: Tue, 9 Apr 2019 07:36:29 +0000
-Message-ID: <DB7PR04MB46185B04DA6F714FF120A3A8E62D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20190319051512.14950-3-qiangqing.zhang@nxp.com>
- <385f7948-d12b-1fc2-2ed2-23d1e76034a0@nxp.com>
- <DB7PR04MB46181D2AC261EAB6DEECEFCCE62D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <VI1PR0402MB286355821F5C81122A7C86E2DF2D0@VI1PR0402MB2863.eurprd04.prod.outlook.com>
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: [PATCH 2/2] dt-bindings: can: flexcan: add can wakeup property
+Date: Tue,  9 Apr 2019 10:39:49 +0200
+Message-ID: <20190409083949.27917-2-sean@geanix.com>
+References: <20190409083949.27917-1-sean@geanix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <VI1PR0402MB286355821F5C81122A7C86E2DF2D0@VI1PR0402MB2863.eurprd04.prod.outlook.com>
-Content-Language: en-US
+In-Reply-To: <20190409083949.27917-1-sean@geanix.com>
 Sender: netdev-owner@vger.kernel.org
-To: Stefan-gabriel Mirea <stefan-gabriel.mirea@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: netdev@vger.kernel.org, linux-can@vger.kernel.org, mkl@pengutronix.de, robh+dt@kernel.org
+Cc: Sean Nyekjaer <sean@geanix.com>, devicetree@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFN0ZWZhbi1nYWJyaWVsIE1p
-cmVhDQo+IFNlbnQ6IDIwMTnE6jTUwjnI1SAxNTowNQ0KPiBUbzogSm9ha2ltIFpoYW5nIDxxaWFu
-Z3FpbmcuemhhbmdAbnhwLmNvbT47IE1hcmMgS2xlaW5lLUJ1ZGRlDQo+IDxta2xAcGVuZ3V0cm9u
-aXguZGU+DQo+IENjOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJu
-ZWwub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJFOiBb
-UEFUQ0ggVjIgMi81XSBjYW46IGZsZXhjYW46IGFkZCBDQU4gRkQgbW9kZSBzdXBwb3J0DQo+IA0K
-PiA+IEZyb206IEpvYWtpbSBaaGFuZw0KPiA+IFNlbnQ6IFR1ZXNkYXksIEFwcmlsIDksIDIwMTkg
-NTowNyBBTQ0KPiA+IEhpIFN0ZWZhbiwNCj4gPg0KPiA+IFRoYW5rcyBmb3IgeW91ciB2YWxpZGF0
-aW9uISBDb3VsZCB5b3UgYWRkIHlvdXIgdGVzdCB0YWcgaWYgeW91IGNhbg0KPiA+IHN1Y2Nlc3Nm
-dWxseSB2YWxpZGF0ZWQ/DQo+IA0KPiBTdXJlLCBubyBwcm9ibGVtLiBQbGVhc2Ugbm90ZSB0aGF0
-IEkgbmVlZGVkIHRvIHJlcGxhY2UgImZsZXhjYW5fcmVhZCIgYW5kDQo+ICJmbGV4Y2FuX3dyaXRl
-IiB3aXRoICJwcml2LT5yZWFkIiBhbmQgInByaXYtPndyaXRlIiByZXNwZWN0aXZlbHksIGluIFBB
-VENIIFYyDQo+IDQvNS4NCg0KICBIaSBTdGVmYW4sDQoNCiAgSSBtYWRlIGEgbWlzdGFrZSBoZXJl
-LCB0aGFuayB5b3UgZm9yIHBvaW50aW5nIG91dC4gSSB3aWxsIGZpeCBpdCBpbiBWMy4NCg0KPiA+
-ICBbSm9ha2ltIFpoYW5nXSBXZSBhZGRlZCBjYW4gZmQgc3VwcG9ydCBpbiA0Ljkga2VybmVsIHdo
-aWNoIGxldA0KPiA+IG1haWxib3hfcmVhZCBjYWxsIGFsbG9jX2NhbihmZClfc2tiIGluIHRoZSBw
-YXN0LiBOb3cgdGhlIGRyaXZlcg0KPiA+IGFsbG9jYXRlIHNrYiBiZWZvcmUgbWFpbGJveF9yZWFk
-IGluIHJ4X29mZmxvYWQgYW5kIGFsc28gcmVhZCB0aGUgb3ZlcmZsb3cNCj4gZnJhbWVzLg0KPiA+
-ICAgICAgICAgICAgICAgSSBhZGQgdGhlICJpc19jYW5mZCIgc2luY2UgSSBkb24ndCB3YW50IHRv
-IGNoYW5nZSB0aGUNCj4gPiByeF9vZmZsb2FkIGZyYW1ld29yayB0b28gbXVjaC4gQG1rbEBwZW5n
-dXRyb25peC5kZSwgY291bGQgeW91IGdpdmUNCj4gPiBzb21lIGFkdmljZSwgd2hpY2ggc29sdXRp
-b24gaXMgYmV0dGVyPw0KPiANCj4gVGhpcyBpcyBtb3JlIG9mIGEgZnVuY3Rpb25hbGl0eSBpc3N1
-ZS4gRm9yIGV4YW1wbGUsIGNhbmR1bXAgZnJvbSBjYW51dGlscyA0LjAuNg0KPiBuZXZlciBzaG93
-cyBDQU4gRkQgZnJhbWVzLCBidXQgc2hvdWxkIHN0aWxsIGJlIGFibGUgdG8gc2hvdyB0aGUgQ0FO
-IDIuMCBvbmVzDQo+IHJlZ2FyZGxlc3Mgb2Ygd2hldGhlciAiZmQgb24iIHdhcyBzdXBwbGllZC4g
-SSBzdWdnZXN0IHRoZSBmb2xsb3dpbmcgc2VwYXJhdGlvbjoNCj4gDQo+IGNhbl9yeF9vZmZsb2Fk
-X29mZmxvYWRfb25lOg0KPiAJc3RydWN0IHNrX2J1ZmYgKnNrYiA9IE5VTEw7DQo+IAkuLi4NCj4g
-CWJvb2wgZHJvcCA9IHVubGlrZWx5KHNrYl9xdWV1ZV9sZW4oJm9mZmxvYWQtPnNrYl9xdWV1ZSkg
-Pg0KPiAJCQkgICAgIG9mZmxvYWQtPnNrYl9xdWV1ZV9sZW5fbWF4KTsNCj4gDQo+IAlpZiAob2Zm
-bG9hZC0+bWFpbGJveF9yZWFkKG9mZmxvYWQsIGRyb3AsICZza2IsICZ0aW1lc3RhbXAsIG4pICYm
-ICFza2IpDQo+IAkJb2ZmbG9hZC0+ZGV2LT5zdGF0cy5yeF9kcm9wcGVkKys7DQo+IA0KPiAJaWYg
-KHNrYikgew0KPiAJCXN0cnVjdCBjYW5fcnhfb2ZmbG9hZF9jYiAqY2IgPSBjYW5fcnhfb2ZmbG9h
-ZF9nZXRfY2Ioc2tiKTsNCj4gDQo+IAkJY2ItPnRpbWVzdGFtcCA9IHRpbWVzdGFtcDsNCj4gCX0N
-Cj4gDQo+IAlyZXR1cm4gc2tiOw0KPiANCj4gZmxleGNhbl9tYWlsYm94X3JlYWQ6DQo+IAkuLi4N
-Cj4gCWlmICghZHJvcCkgew0KPiAJCWlmIChyZWdfY3RybCAmIEZMRVhDQU5fTUJfQ05UX0VETCkN
-Cj4gCQkJKnNrYiA9IGFsbG9jX2NhbmZkX3NrYihvZmZsb2FkLT5kZXYsICZjZik7DQo+IAkJZWxz
-ZQ0KPiAJCQkqc2tiID0gYWxsb2NfY2FuX3NrYihvZmZsb2FkLT5kZXYsDQo+IAkJCQkJICAgICAo
-c3RydWN0IGNhbl9mcmFtZSAqKikmY2YpOw0KPiAJfQ0KPiAJaWYgKCpza2IpIHsNCj4gCQkvKiB1
-c2UgY2YgKi8NCj4gCQkuLi4NCj4gCX0NCj4gCS8qIG1hcmsgYXMgcmVhZCAqLw0KPiANCj4gQWx0
-aG91Z2ggbm90IHZpc2libGUgaW4gdGhlIEZsZXhDQU4gY2FzZSwgdGhlIHNvY2tldCBidWZmZXJz
-IHdvdWxkIGJlIGFsc28NCj4gZnJlZWQgZnJvbSBpbnNpZGUgbWFpbGJveF9yZWFkIGlmIGVycm9y
-cyB3ZXJlIGVuY291bnRlcmVkIGFmdGVyIGFsbG9jYXRpb24uDQogIA0KIFRoaXMgaXMgYSBnb29k
-IHNvbHV0aW9uLCBJIHdpbGwgYWRkIGl0IGluIFYzLiBUaGFuayB5b3UgdmVyeSBtdWNoLg0KDQpC
-ZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCg0KPiBSZWdhcmRzLA0KPiBTdGVmYW4NCg==
+add wakeup-source boolean property.
+
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
+ Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+index bc77477c6878..17453be840d8 100644
+--- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
++++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+@@ -32,6 +32,8 @@ Optional properties:
+ 		 ack_gpr is the gpr register offset of CAN stop acknowledge.
+ 		 ack_bit is the bit offset of CAN stop acknowledge.
+ 
++- wakeup-source: enable CAN remote wakeup
++
+ Example:
+ 
+ 	can@1c000 {
+-- 
+2.21.0
