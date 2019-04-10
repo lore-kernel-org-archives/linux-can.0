@@ -1,112 +1,63 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN device
-Date: Wed, 10 Apr 2019 09:19:02 +0200
-Message-ID: <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [EXT] Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN
+ device
+Date: Wed, 10 Apr 2019 07:55:40 +0000
+Message-ID: <DB7PR04MB4618D14BE595F3BDE46CBE17E62E0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
+ <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="yuYaA4LNFs4dLu7PPGHBRcN4mxJ3VATnB"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
 Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---yuYaA4LNFs4dLu7PPGHBRcN4mxJ3VATnB
-Content-Type: multipart/mixed; boundary="u5NSCvlf1hqqom14kB7IbQaDkoNpzzjQz";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>,
- "wg@grandegger.com" <wg@grandegger.com>,
- "davem@davemloft.net" <davem@davemloft.net>
-Cc: dl-linux-imx <linux-imx@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
-Subject: Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN device
-References: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
-
---u5NSCvlf1hqqom14kB7IbQaDkoNpzzjQz
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-
-On 4/10/19 8:27 AM, Joakim Zhang wrote:
-> CAN driver always writes registers according to "ctrlmode", and now CAN=
-
-> framework will keep CAN ctrlmode after device closed.
->=20
-> e.g. with following sequences:
-> 1)ip link set can0 type can bitrate 1000000 loopback on
-> 2)ip link set can0 up
-> 3)ip link set can0 down
-> 4)ip link set can0 type can bitrate 1000000
-> 5)ip link set can0 up
->=20
-> After this sequence, we may want to test loopback for the first time an=
-d
-> not to test loopback second time. However, CAN device still keep
-> "ctrlmode" as loopback on.
-
-Then you should configure loopback off in userspace.
-
-> This patch intends to clean up CAN ctrlmode when close CAN device. We
-> can set which ctrlmode we need when open CAN device again.
-
-Consider a CANFD device, where CANFD has been enabled. It will feel very
-weird if the interface looses the CANFD property by just a ifdown; ifup.
-
->=20
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
->  drivers/net/can/dev.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> index c05e4d50d43d..4f69a8f16ba3 100644
-> --- a/drivers/net/can/dev.c
-> +++ b/drivers/net/can/dev.c
-> @@ -870,6 +870,7 @@ void close_candev(struct net_device *dev)
->  	struct can_priv *priv =3D netdev_priv(dev);
-> =20
->  	cancel_delayed_work_sync(&priv->restart_work);
-> +	priv->ctrlmode =3D 0;
->  	can_flush_echo_skb(dev);
->  }
->  EXPORT_SYMBOL_GPL(close_candev);
->=20
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---u5NSCvlf1hqqom14kB7IbQaDkoNpzzjQz--
-
---yuYaA4LNFs4dLu7PPGHBRcN4mxJ3VATnB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlytmOYACgkQWsYho5Hk
-nSC0pwf+IfMYDBoYWMGGo1TCfFJ1+QS4i4Uy+mJn7O75U2vvzDSWSiQcr+0i6fbx
-mxGGpdKvfLSjZRbMbcMrlEDSz+/SMnaVfWapGCZ+ZjWu4TqopbIjkcnP5tjQld/d
-XAkhyVRL8zlr4nJQeJbMwKoHP1TUHOIXjDGcKWuaQMiuhbqOz999K5CssYivI3MP
-7USy5urt264gphIvPS9T/k7Xl8tL2Mf+MqecYUJIB4MN8dZf8edVClAiK04V8jjj
-pi1LmDdbquND/PInJNogEqynoCABL4BI45TS16qcfJlpLHRIhJ3nbBEoVcGbdyVQ
-h94tjdWn5P0S/jphUlicISEGGXooQw==
-=gEjw
------END PGP SIGNATURE-----
-
---yuYaA4LNFs4dLu7PPGHBRcN4mxJ3VATnB--
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
+IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQ05pyIMTDml6UgMTU6MTkNCj4g
+VG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyB3Z0BncmFuZGVnZ2Vy
+LmNvbTsNCj4gZGF2ZW1AZGF2ZW1sb2Z0Lm5ldA0KPiBDYzogZGwtbGludXgtaW14IDxsaW51eC1p
+bXhAbnhwLmNvbT47IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7DQo+IG5ldGRldkB2Z2VyLmtl
+cm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogW0VYVF0g
+UmU6IFtQQVRDSF0gY2FuOiBkZXY6IGNsZWFuIHVwIENBTiBjdHJsbW9kZSB3aGVuIGNsb3NlIENB
+Tg0KPiBkZXZpY2UNCj4gDQo+IE9uIDQvMTAvMTkgODoyNyBBTSwgSm9ha2ltIFpoYW5nIHdyb3Rl
+Og0KPiA+IENBTiBkcml2ZXIgYWx3YXlzIHdyaXRlcyByZWdpc3RlcnMgYWNjb3JkaW5nIHRvICJj
+dHJsbW9kZSIsIGFuZCBub3cNCj4gPiBDQU4gZnJhbWV3b3JrIHdpbGwga2VlcCBDQU4gY3RybG1v
+ZGUgYWZ0ZXIgZGV2aWNlIGNsb3NlZC4NCj4gPg0KPiA+IGUuZy4gd2l0aCBmb2xsb3dpbmcgc2Vx
+dWVuY2VzOg0KPiA+IDEpaXAgbGluayBzZXQgY2FuMCB0eXBlIGNhbiBiaXRyYXRlIDEwMDAwMDAg
+bG9vcGJhY2sgb24gMilpcCBsaW5rIHNldA0KPiA+IGNhbjAgdXAgMylpcCBsaW5rIHNldCBjYW4w
+IGRvd24gNClpcCBsaW5rIHNldCBjYW4wIHR5cGUgY2FuIGJpdHJhdGUNCj4gPiAxMDAwMDAwIDUp
+aXAgbGluayBzZXQgY2FuMCB1cA0KPiA+DQo+ID4gQWZ0ZXIgdGhpcyBzZXF1ZW5jZSwgd2UgbWF5
+IHdhbnQgdG8gdGVzdCBsb29wYmFjayBmb3IgdGhlIGZpcnN0IHRpbWUNCj4gPiBhbmQgbm90IHRv
+IHRlc3QgbG9vcGJhY2sgc2Vjb25kIHRpbWUuIEhvd2V2ZXIsIENBTiBkZXZpY2Ugc3RpbGwga2Vl
+cA0KPiA+ICJjdHJsbW9kZSIgYXMgbG9vcGJhY2sgb24uDQo+IA0KPiBUaGVuIHlvdSBzaG91bGQg
+Y29uZmlndXJlIGxvb3BiYWNrIG9mZiBpbiB1c2Vyc3BhY2UuDQoNCiBHb3QgaXQuIFRoYW5rIHlv
+dS4NCg0KPiA+IFRoaXMgcGF0Y2ggaW50ZW5kcyB0byBjbGVhbiB1cCBDQU4gY3RybG1vZGUgd2hl
+biBjbG9zZSBDQU4gZGV2aWNlLiBXZQ0KPiA+IGNhbiBzZXQgd2hpY2ggY3RybG1vZGUgd2UgbmVl
+ZCB3aGVuIG9wZW4gQ0FOIGRldmljZSBhZ2Fpbi4NCj4gDQo+IENvbnNpZGVyIGEgQ0FORkQgZGV2
+aWNlLCB3aGVyZSBDQU5GRCBoYXMgYmVlbiBlbmFibGVkLiBJdCB3aWxsIGZlZWwgdmVyeQ0KPiB3
+ZWlyZCBpZiB0aGUgaW50ZXJmYWNlIGxvb3NlcyB0aGUgQ0FORkQgcHJvcGVydHkgYnkganVzdCBh
+IGlmZG93bjsgaWZ1cC4NCg0KWWVzLCB5b3UgYXJlIHJpZ2h0LiBCdXQgZmQgbW9kZSBzaG91bGQg
+Y29tcGF0aWJsZSB3aXRoIG5vcm1hbCBjYW4uIFdoZW4gSSB3YW50IHRvIHN3aXRjaCB0byBub3Jt
+YWwgY2FuIGZyb20gZmQgbW9kZS4NCllvdSBtZWFuIHRoYXQgd2Ugc2hvdWxkIGNvbmZpZ3VyZSBm
+ZCBvZmYgaW4gdXNlcnNwYWNlIGFzIHdlIG1heSB3cml0ZSBzb21lIHNwZWNpZmljIHJlZ2lzdGVy
+cyBvbmx5IGJ5IGZkIG1vZGU/DQoNCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+ID4N
+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29t
+Pg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL25ldC9jYW4vZGV2LmMgfCAxICsNCj4gPiAgMSBmaWxl
+IGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9u
+ZXQvY2FuL2Rldi5jIGIvZHJpdmVycy9uZXQvY2FuL2Rldi5jIGluZGV4DQo+ID4gYzA1ZTRkNTBk
+NDNkLi40ZjY5YThmMTZiYTMgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2Rldi5j
+DQo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2Rldi5jDQo+ID4gQEAgLTg3MCw2ICs4NzAsNyBA
+QCB2b2lkIGNsb3NlX2NhbmRldihzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQ0KPiA+ICAJc3RydWN0
+IGNhbl9wcml2ICpwcml2ID0gbmV0ZGV2X3ByaXYoZGV2KTsNCj4gPg0KPiA+ICAJY2FuY2VsX2Rl
+bGF5ZWRfd29ya19zeW5jKCZwcml2LT5yZXN0YXJ0X3dvcmspOw0KPiA+ICsJcHJpdi0+Y3RybG1v
+ZGUgPSAwOw0KPiA+ICAJY2FuX2ZsdXNoX2VjaG9fc2tiKGRldik7DQo+ID4gIH0NCj4gPiAgRVhQ
+T1JUX1NZTUJPTF9HUEwoY2xvc2VfY2FuZGV2KTsNCj4gPg0KPiANCj4gTWFyYw0KPiANCj4gLS0N
+Cj4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUg
+ICAgICAgICAgIHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6
+ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAg
+ICAgIHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVz
+aGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
