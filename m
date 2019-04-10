@@ -1,63 +1,46 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [EXT] Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN
- device
-Date: Wed, 10 Apr 2019 07:55:40 +0000
-Message-ID: <DB7PR04MB4618D14BE595F3BDE46CBE17E62E0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
- <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v11 1/5] can: m_can: Create a m_can platform framework
+Date: Wed, 10 Apr 2019 08:24:09 -0500
+Message-ID: <9f33353d-c82f-a117-17de-9b57693bef27@ti.com>
+References: <20190319172651.10012-1-dmurphy@ti.com>
+ <3ce79402-00f1-d7e6-955e-1ad7eb00d0de@ti.com>
+ <c05a6a22-c162-518d-683a-18731bd67e38@grandegger.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <c05a6a22-c162-518d-683a-18731bd67e38@grandegger.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
-IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQ05pyIMTDml6UgMTU6MTkNCj4g
-VG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyB3Z0BncmFuZGVnZ2Vy
-LmNvbTsNCj4gZGF2ZW1AZGF2ZW1sb2Z0Lm5ldA0KPiBDYzogZGwtbGludXgtaW14IDxsaW51eC1p
-bXhAbnhwLmNvbT47IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7DQo+IG5ldGRldkB2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogW0VYVF0g
-UmU6IFtQQVRDSF0gY2FuOiBkZXY6IGNsZWFuIHVwIENBTiBjdHJsbW9kZSB3aGVuIGNsb3NlIENB
-Tg0KPiBkZXZpY2UNCj4gDQo+IE9uIDQvMTAvMTkgODoyNyBBTSwgSm9ha2ltIFpoYW5nIHdyb3Rl
-Og0KPiA+IENBTiBkcml2ZXIgYWx3YXlzIHdyaXRlcyByZWdpc3RlcnMgYWNjb3JkaW5nIHRvICJj
-dHJsbW9kZSIsIGFuZCBub3cNCj4gPiBDQU4gZnJhbWV3b3JrIHdpbGwga2VlcCBDQU4gY3RybG1v
-ZGUgYWZ0ZXIgZGV2aWNlIGNsb3NlZC4NCj4gPg0KPiA+IGUuZy4gd2l0aCBmb2xsb3dpbmcgc2Vx
-dWVuY2VzOg0KPiA+IDEpaXAgbGluayBzZXQgY2FuMCB0eXBlIGNhbiBiaXRyYXRlIDEwMDAwMDAg
-bG9vcGJhY2sgb24gMilpcCBsaW5rIHNldA0KPiA+IGNhbjAgdXAgMylpcCBsaW5rIHNldCBjYW4w
-IGRvd24gNClpcCBsaW5rIHNldCBjYW4wIHR5cGUgY2FuIGJpdHJhdGUNCj4gPiAxMDAwMDAwIDUp
-aXAgbGluayBzZXQgY2FuMCB1cA0KPiA+DQo+ID4gQWZ0ZXIgdGhpcyBzZXF1ZW5jZSwgd2UgbWF5
-IHdhbnQgdG8gdGVzdCBsb29wYmFjayBmb3IgdGhlIGZpcnN0IHRpbWUNCj4gPiBhbmQgbm90IHRv
-IHRlc3QgbG9vcGJhY2sgc2Vjb25kIHRpbWUuIEhvd2V2ZXIsIENBTiBkZXZpY2Ugc3RpbGwga2Vl
-cA0KPiA+ICJjdHJsbW9kZSIgYXMgbG9vcGJhY2sgb24uDQo+IA0KPiBUaGVuIHlvdSBzaG91bGQg
-Y29uZmlndXJlIGxvb3BiYWNrIG9mZiBpbiB1c2Vyc3BhY2UuDQoNCiBHb3QgaXQuIFRoYW5rIHlv
-dS4NCg0KPiA+IFRoaXMgcGF0Y2ggaW50ZW5kcyB0byBjbGVhbiB1cCBDQU4gY3RybG1vZGUgd2hl
-biBjbG9zZSBDQU4gZGV2aWNlLiBXZQ0KPiA+IGNhbiBzZXQgd2hpY2ggY3RybG1vZGUgd2UgbmVl
-ZCB3aGVuIG9wZW4gQ0FOIGRldmljZSBhZ2Fpbi4NCj4gDQo+IENvbnNpZGVyIGEgQ0FORkQgZGV2
-aWNlLCB3aGVyZSBDQU5GRCBoYXMgYmVlbiBlbmFibGVkLiBJdCB3aWxsIGZlZWwgdmVyeQ0KPiB3
-ZWlyZCBpZiB0aGUgaW50ZXJmYWNlIGxvb3NlcyB0aGUgQ0FORkQgcHJvcGVydHkgYnkganVzdCBh
-IGlmZG93bjsgaWZ1cC4NCg0KWWVzLCB5b3UgYXJlIHJpZ2h0LiBCdXQgZmQgbW9kZSBzaG91bGQg
-Y29tcGF0aWJsZSB3aXRoIG5vcm1hbCBjYW4uIFdoZW4gSSB3YW50IHRvIHN3aXRjaCB0byBub3Jt
-YWwgY2FuIGZyb20gZmQgbW9kZS4NCllvdSBtZWFuIHRoYXQgd2Ugc2hvdWxkIGNvbmZpZ3VyZSBm
-ZCBvZmYgaW4gdXNlcnNwYWNlIGFzIHdlIG1heSB3cml0ZSBzb21lIHNwZWNpZmljIHJlZ2lzdGVy
-cyBvbmx5IGJ5IGZkIG1vZGU/DQoNCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+ID4N
-Cj4gPiBTaWduZWQtb2ZmLWJ5OiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29t
-Pg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL25ldC9jYW4vZGV2LmMgfCAxICsNCj4gPiAgMSBmaWxl
-IGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9u
-ZXQvY2FuL2Rldi5jIGIvZHJpdmVycy9uZXQvY2FuL2Rldi5jIGluZGV4DQo+ID4gYzA1ZTRkNTBk
-NDNkLi40ZjY5YThmMTZiYTMgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2Rldi5j
-DQo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2Rldi5jDQo+ID4gQEAgLTg3MCw2ICs4NzAsNyBA
-QCB2b2lkIGNsb3NlX2NhbmRldihzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQ0KPiA+ICAJc3RydWN0
-IGNhbl9wcml2ICpwcml2ID0gbmV0ZGV2X3ByaXYoZGV2KTsNCj4gPg0KPiA+ICAJY2FuY2VsX2Rl
-bGF5ZWRfd29ya19zeW5jKCZwcml2LT5yZXN0YXJ0X3dvcmspOw0KPiA+ICsJcHJpdi0+Y3RybG1v
-ZGUgPSAwOw0KPiA+ICAJY2FuX2ZsdXNoX2VjaG9fc2tiKGRldik7DQo+ID4gIH0NCj4gPiAgRVhQ
-T1JUX1NZTUJPTF9HUEwoY2xvc2VfY2FuZGV2KTsNCj4gPg0KPiANCj4gTWFyYw0KPiANCj4gLS0N
-Cj4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUg
-ICAgICAgICAgIHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6
-ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAg
-ICAgIHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVz
-aGVpbSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
+Marc
+
+On 4/2/19 7:17 AM, Wolfgang Grandegger wrote:
+> Hello Dan,
+>
+> Am 02.04.19 um 14:03 schrieb Dan Murphy:
+>> Wolfgang
+>>
+>> On 3/19/19 12:26 PM, Dan Murphy wrote:
+>>> Create a m_can platform framework that peripheral
+>>> devices can register to and use common code and register sets.
+>>> The peripheral devices may provide read/write and configuration
+>>> support of the IP.
+>>>
+>>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>> ---
+>>>
+>> Wondering if this will be going into 5.1 PR?
+> it's Marc who is doing the upstreaming ... and maybe a final review as well.
+
+Don't know if the original message went through.
+
+But wondering if this will make it into v5.2
+
+Dan
+
+> Wolfgang.
