@@ -1,37 +1,35 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: [PATCH 1/2] can: flexcan: add support for DT property 'wakeup-source'
-Date: Tue,  9 Apr 2019 10:39:48 +0200
-Message-ID: <20190409083949.27917-1-sean@geanix.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH] can: dev: clean up CAN ctrlmode when close CAN device
+Date: Wed, 10 Apr 2019 06:27:37 +0000
+Message-ID: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org, linux-can@vger.kernel.org, mkl@pengutronix.de, robh+dt@kernel.org
-Cc: Sean Nyekjaer <sean@geanix.com>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-The flexcan controller can be forced as a wakeup source by
-stating that explicitly in the device's .dts file using the
-"wakeup-source" boolean property.
-
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
- drivers/net/can/flexcan.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index c46e6ce22701..df3d2abd98e4 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1373,6 +1373,9 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
- 
- 	device_set_wakeup_capable(&pdev->dev, true);
- 
-+	if (of_property_read_bool(np, "wakeup-source"))
-+		device_set_wakeup_enable(&pdev->dev, true);
-+
- 	return 0;
- }
- 
--- 
-2.21.0
+Q0FOIGRyaXZlciBhbHdheXMgd3JpdGVzIHJlZ2lzdGVycyBhY2NvcmRpbmcgdG8gImN0cmxtb2Rl
+IiwgYW5kIG5vdyBDQU4NCmZyYW1ld29yayB3aWxsIGtlZXAgQ0FOIGN0cmxtb2RlIGFmdGVyIGRl
+dmljZSBjbG9zZWQuDQoNCmUuZy4gd2l0aCBmb2xsb3dpbmcgc2VxdWVuY2VzOg0KMSlpcCBsaW5r
+IHNldCBjYW4wIHR5cGUgY2FuIGJpdHJhdGUgMTAwMDAwMCBsb29wYmFjayBvbg0KMilpcCBsaW5r
+IHNldCBjYW4wIHVwDQozKWlwIGxpbmsgc2V0IGNhbjAgZG93bg0KNClpcCBsaW5rIHNldCBjYW4w
+IHR5cGUgY2FuIGJpdHJhdGUgMTAwMDAwMA0KNSlpcCBsaW5rIHNldCBjYW4wIHVwDQoNCkFmdGVy
+IHRoaXMgc2VxdWVuY2UsIHdlIG1heSB3YW50IHRvIHRlc3QgbG9vcGJhY2sgZm9yIHRoZSBmaXJz
+dCB0aW1lIGFuZA0Kbm90IHRvIHRlc3QgbG9vcGJhY2sgc2Vjb25kIHRpbWUuIEhvd2V2ZXIsIENB
+TiBkZXZpY2Ugc3RpbGwga2VlcA0KImN0cmxtb2RlIiBhcyBsb29wYmFjayBvbi4NCg0KVGhpcyBw
+YXRjaCBpbnRlbmRzIHRvIGNsZWFuIHVwIENBTiBjdHJsbW9kZSB3aGVuIGNsb3NlIENBTiBkZXZp
+Y2UuIFdlDQpjYW4gc2V0IHdoaWNoIGN0cmxtb2RlIHdlIG5lZWQgd2hlbiBvcGVuIENBTiBkZXZp
+Y2UgYWdhaW4uDQoNClNpZ25lZC1vZmYtYnk6IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5n
+QG54cC5jb20+DQotLS0NCiBkcml2ZXJzL25ldC9jYW4vZGV2LmMgfCAxICsNCiAxIGZpbGUgY2hh
+bmdlZCwgMSBpbnNlcnRpb24oKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9kZXYu
+YyBiL2RyaXZlcnMvbmV0L2Nhbi9kZXYuYw0KaW5kZXggYzA1ZTRkNTBkNDNkLi40ZjY5YThmMTZi
+YTMgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL25ldC9jYW4vZGV2LmMNCisrKyBiL2RyaXZlcnMvbmV0
+L2Nhbi9kZXYuYw0KQEAgLTg3MCw2ICs4NzAsNyBAQCB2b2lkIGNsb3NlX2NhbmRldihzdHJ1Y3Qg
+bmV0X2RldmljZSAqZGV2KQ0KIAlzdHJ1Y3QgY2FuX3ByaXYgKnByaXYgPSBuZXRkZXZfcHJpdihk
+ZXYpOw0KIA0KIAljYW5jZWxfZGVsYXllZF93b3JrX3N5bmMoJnByaXYtPnJlc3RhcnRfd29yayk7
+DQorCXByaXYtPmN0cmxtb2RlID0gMDsNCiAJY2FuX2ZsdXNoX2VjaG9fc2tiKGRldik7DQogfQ0K
+IEVYUE9SVF9TWU1CT0xfR1BMKGNsb3NlX2NhbmRldik7DQotLSANCjIuMTcuMQ0KDQo=
