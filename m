@@ -1,82 +1,76 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN device
-Date: Wed, 10 Apr 2019 20:11:49 +0200
-Message-ID: <baad1868-d5aa-b4f4-0065-c6963b441403@hartkopp.net>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [EXT] Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN
+ device
+Date: Thu, 11 Apr 2019 01:16:43 +0000
+Message-ID: <DB7PR04MB4618D30C746B397F8C5308BAE62F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
  <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
+ <DB7PR04MB4618D14BE595F3BDE46CBE17E62E0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <ad4c0921-3275-b466-95b4-a63944d5b71f@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
+In-Reply-To: <ad4c0921-3275-b466-95b4-a63944d5b71f@pengutronix.de>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Joakim Zhang <qiangqing.zhang@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
 Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-
-
-On 10.04.19 09:19, Marc Kleine-Budde wrote:
-> On 4/10/19 8:27 AM, Joakim Zhang wrote:
->> CAN driver always writes registers according to "ctrlmode", and now CAN
->> framework will keep CAN ctrlmode after device closed.
->>
->> e.g. with following sequences:
->> 1)ip link set can0 type can bitrate 1000000 loopback on
->> 2)ip link set can0 up
->> 3)ip link set can0 down
->> 4)ip link set can0 type can bitrate 1000000
->> 5)ip link set can0 up
->>
->> After this sequence, we may want to test loopback for the first time and
->> not to test loopback second time. However, CAN device still keep
->> "ctrlmode" as loopback on.
-> 
-> Then you should configure loopback off in userspace.
-
-ACK!
-
-The idea is that you can set a CAN interface like this:
-
-ip link set can0 type can bitrate 1000000 loopback on
-
-(..)
-
-ip link set can0 down
-ip link set can0 up
-
-and none of the configuration changes in the meanwhile.
-
-Regards,
-Oliver
-
-> 
->> This patch intends to clean up CAN ctrlmode when close CAN device. We
->> can set which ctrlmode we need when open CAN device again.
-> 
-> Consider a CANFD device, where CANFD has been enabled. It will feel very
-> weird if the interface looses the CANFD property by just a ifdown; ifup.
-> 
->>
->> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
->> ---
->>   drivers/net/can/dev.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
->> index c05e4d50d43d..4f69a8f16ba3 100644
->> --- a/drivers/net/can/dev.c
->> +++ b/drivers/net/can/dev.c
->> @@ -870,6 +870,7 @@ void close_candev(struct net_device *dev)
->>   	struct can_priv *priv = netdev_priv(dev);
->>   
->>   	cancel_delayed_work_sync(&priv->restart_work);
->> +	priv->ctrlmode = 0;
->>   	can_flush_echo_skb(dev);
->>   }
->>   EXPORT_SYMBOL_GPL(close_candev);
->>
-> 
-> Marc
-> 
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
+IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQ05pyIMTHml6UgMTo1MA0KPiBU
+bzogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT47IHdnQGdyYW5kZWdnZXIu
+Y29tOw0KPiBkYXZlbUBkYXZlbWxvZnQubmV0DQo+IENjOiBkbC1saW51eC1pbXggPGxpbnV4LWlt
+eEBueHAuY29tPjsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsNCj4gbmV0ZGV2QHZnZXIua2Vy
+bmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW0VY
+VF0gUmU6IFtQQVRDSF0gY2FuOiBkZXY6IGNsZWFuIHVwIENBTiBjdHJsbW9kZSB3aGVuIGNsb3Nl
+DQo+IENBTiBkZXZpY2UNCj4gDQo+IE9uIDQvMTAvMTkgOTo1NSBBTSwgSm9ha2ltIFpoYW5nIHdy
+b3RlOg0KPiA+DQo+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+IEZyb206IE1h
+cmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+ID4+IFNlbnQ6IDIwMTnlubQ0
+5pyIMTDml6UgMTU6MTkNCj4gPj4gVG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54
+cC5jb20+OyB3Z0BncmFuZGVnZ2VyLmNvbTsNCj4gPj4gZGF2ZW1AZGF2ZW1sb2Z0Lm5ldA0KPiA+
+PiBDYzogZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47IGxpbnV4LWNhbkB2Z2VyLmtl
+cm5lbC5vcmc7DQo+ID4+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmcNCj4gPj4gU3ViamVjdDogW0VYVF0gUmU6IFtQQVRDSF0gY2FuOiBkZXY6IGNs
+ZWFuIHVwIENBTiBjdHJsbW9kZSB3aGVuIGNsb3NlDQo+ID4+IENBTiBkZXZpY2UNCj4gPj4NCj4g
+Pj4gT24gNC8xMC8xOSA4OjI3IEFNLCBKb2FraW0gWmhhbmcgd3JvdGU6DQo+ID4+PiBDQU4gZHJp
+dmVyIGFsd2F5cyB3cml0ZXMgcmVnaXN0ZXJzIGFjY29yZGluZyB0byAiY3RybG1vZGUiLCBhbmQg
+bm93DQo+ID4+PiBDQU4gZnJhbWV3b3JrIHdpbGwga2VlcCBDQU4gY3RybG1vZGUgYWZ0ZXIgZGV2
+aWNlIGNsb3NlZC4NCj4gPj4+DQo+ID4+PiBlLmcuIHdpdGggZm9sbG93aW5nIHNlcXVlbmNlczoN
+Cj4gPj4+IDEpaXAgbGluayBzZXQgY2FuMCB0eXBlIGNhbiBiaXRyYXRlIDEwMDAwMDAgbG9vcGJh
+Y2sgb24gMilpcCBsaW5rDQo+ID4+PiBzZXQNCj4gPj4+IGNhbjAgdXAgMylpcCBsaW5rIHNldCBj
+YW4wIGRvd24gNClpcCBsaW5rIHNldCBjYW4wIHR5cGUgY2FuIGJpdHJhdGUNCj4gPj4+IDEwMDAw
+MDAgNSlpcCBsaW5rIHNldCBjYW4wIHVwDQo+ID4+Pg0KPiA+Pj4gQWZ0ZXIgdGhpcyBzZXF1ZW5j
+ZSwgd2UgbWF5IHdhbnQgdG8gdGVzdCBsb29wYmFjayBmb3IgdGhlIGZpcnN0IHRpbWUNCj4gPj4+
+IGFuZCBub3QgdG8gdGVzdCBsb29wYmFjayBzZWNvbmQgdGltZS4gSG93ZXZlciwgQ0FOIGRldmlj
+ZSBzdGlsbCBrZWVwDQo+ID4+PiAiY3RybG1vZGUiIGFzIGxvb3BiYWNrIG9uLg0KPiA+Pg0KPiA+
+PiBUaGVuIHlvdSBzaG91bGQgY29uZmlndXJlIGxvb3BiYWNrIG9mZiBpbiB1c2Vyc3BhY2UuDQo+
+ID4NCj4gPiAgR290IGl0LiBUaGFuayB5b3UuDQo+ID4NCj4gPj4+IFRoaXMgcGF0Y2ggaW50ZW5k
+cyB0byBjbGVhbiB1cCBDQU4gY3RybG1vZGUgd2hlbiBjbG9zZSBDQU4gZGV2aWNlLg0KPiA+Pj4g
+V2UgY2FuIHNldCB3aGljaCBjdHJsbW9kZSB3ZSBuZWVkIHdoZW4gb3BlbiBDQU4gZGV2aWNlIGFn
+YWluLg0KPiA+Pg0KPiA+PiBDb25zaWRlciBhIENBTkZEIGRldmljZSwgd2hlcmUgQ0FORkQgaGFz
+IGJlZW4gZW5hYmxlZC4gSXQgd2lsbCBmZWVsDQo+ID4+IHZlcnkgd2VpcmQgaWYgdGhlIGludGVy
+ZmFjZSBsb29zZXMgdGhlIENBTkZEIHByb3BlcnR5IGJ5IGp1c3QgYSBpZmRvd247IGlmdXAuDQo+
+ID4NCj4gPiBZZXMsIHlvdSBhcmUgcmlnaHQuIEJ1dCBmZCBtb2RlIHNob3VsZCBjb21wYXRpYmxl
+IHdpdGggbm9ybWFsIGNhbi4NCj4gDQo+IENBTkZEIHdhcyBqdXN0IGFuIGV4YW1wbGUuIFRha2Ug
+Q0FOX0NUUkxNT0RFX09ORV9TSE9UIGFzIGFub3RoZXINCj4gZXhhbXBsZS4gWW91IGRvbid0IHdh
+bnQgeW91ciBuZXR3b3JrIGRldmljZSBzZXR0aW5ncyB0byB2YW5pc2ggaWYgeW91IHN3aXRjaA0K
+PiB0aGUgaW50ZXJmYWNlIG9mZiBhbmQgb24gYWdhaW4uDQo+IA0KPiA+IFdoZW4gSSB3YW50IHRv
+IHN3aXRjaCB0byBub3JtYWwgY2FuIGZyb20gZmQgbW9kZS4gWW91IG1lYW4gdGhhdCB3ZQ0KPiA+
+IHNob3VsZCBjb25maWd1cmUgZmQgb2ZmIGluIHVzZXJzcGFjZSBhcyB3ZSBtYXkgd3JpdGUgc29t
+ZSBzcGVjaWZpYw0KPiA+IHJlZ2lzdGVycyBvbmx5IGJ5IGZkIG1vZGU/DQo+IA0KPiBXaGF0ZXZl
+ciBtb2RlIHlvdSBlbmFibGUgdmlhIHVzZXIgc3BhY2UgdXNlIHVzZXIgc3BhY2UgdG8gZGlzYWJs
+ZSB0aGVtDQo+IGFnYWluLg0KDQpUaGFuayB5b3UgZm9yIHlvdXIgZGV0YWlsZWQgZXhwbGFuYXRp
+b24uIEJ1dCBpbiBmbGV4Y2FuIGRyaXZlciwgaXQganVzdCBzZXQgcmVnaXN0ZXIgYml0IHdoZW4g
+bW9kZSBvbiBhbmQgZG8gbm90IGNsZWFyDQpyZWdpc3RlciBiaXQgd2hlbiBtb2RlIG9mZiwgZS5n
+LiBsb29wYmFjaywgbGlzdGVubm9seSwgMyBzYW1wbGVzLi4uLg0KV2hlbiB3ZSBjb25maWd1cmUg
+bW9kZSBvZmYgYWZ0ZXIgY29uZmlndXJlZCBtb2RlIG9uIGluIHRoZSB1c2VyIHNwYWNlLCBjb3Jy
+ZXNwb25kaW5nIGJpdCB3aWxsIG5vdCBjaGFuZ2UuIElzIHRoaXMgc2hvdWxkIGJlIGltcHJvdmVk
+IGluIGZsZXhjYW4gZHJpdmVyPw0KIA0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IE1h
+cmMNCj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgICB8IE1hcmMg
+S2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVzdHJpYWwgTGludXggU29sdXRpb25zICAg
+ICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9E
+b3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQo+IEFtdHNn
+ZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93d3cucGVuZ3V0cm9uaXguZGUg
+ICB8DQoNCg==
