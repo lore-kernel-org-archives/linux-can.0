@@ -1,133 +1,68 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [EXT] Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [EXT] Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN
  device
-Date: Thu, 11 Apr 2019 08:38:45 +0200
-Message-ID: <35c15351-5ae1-0826-1b05-95fe53272244@pengutronix.de>
+Date: Thu, 11 Apr 2019 08:12:10 +0000
+Message-ID: <DB7PR04MB461835BC43470079FE72BF38E62F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
  <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
  <DB7PR04MB4618D14BE595F3BDE46CBE17E62E0@DB7PR04MB4618.eurprd04.prod.outlook.com>
  <ad4c0921-3275-b466-95b4-a63944d5b71f@pengutronix.de>
  <DB7PR04MB4618D30C746B397F8C5308BAE62F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <35c15351-5ae1-0826-1b05-95fe53272244@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Mw8JsGkOUkVm7EENA0gbDYPdtFyBtXOT4"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <DB7PR04MB4618D30C746B397F8C5308BAE62F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+In-Reply-To: <35c15351-5ae1-0826-1b05-95fe53272244@pengutronix.de>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
 Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Mw8JsGkOUkVm7EENA0gbDYPdtFyBtXOT4
-Content-Type: multipart/mixed; boundary="PblQydVdEdfzsawluoFlTtk65ZIlGeMdZ";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>,
- "wg@grandegger.com" <wg@grandegger.com>,
- "davem@davemloft.net" <davem@davemloft.net>
-Cc: dl-linux-imx <linux-imx@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <35c15351-5ae1-0826-1b05-95fe53272244@pengutronix.de>
-Subject: Re: [EXT] Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN
- device
-References: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
- <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
- <DB7PR04MB4618D14BE595F3BDE46CBE17E62E0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <ad4c0921-3275-b466-95b4-a63944d5b71f@pengutronix.de>
- <DB7PR04MB4618D30C746B397F8C5308BAE62F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-In-Reply-To: <DB7PR04MB4618D30C746B397F8C5308BAE62F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-
---PblQydVdEdfzsawluoFlTtk65ZIlGeMdZ
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 4/11/19 3:16 AM, Joakim Zhang wrote:
->> Whatever mode you enable via user space use user space to disable them=
-
->> again.
->=20
-> Thank you for your detailed explanation. But in flexcan driver, it
-> just set register bit when mode on and do not clear register bit when
-> mode off, e.g. loopback, listennoly, 3 samples....
-
-Let's see:
-
-> 	reg =3D priv->read(&regs->ctrl);
-
-The ctrl reg is read
-
-> 	reg &=3D ~(FLEXCAN_CTRL_PRESDIV(0xff) |
-> 		 FLEXCAN_CTRL_RJW(0x3) |
-> 		 FLEXCAN_CTRL_PSEG1(0x7) |
-> 		 FLEXCAN_CTRL_PSEG2(0x7) |
-> 		 FLEXCAN_CTRL_PROPSEG(0x7) |
-> 		 FLEXCAN_CTRL_LPB |
-> 		 FLEXCAN_CTRL_SMP |
-> 		 FLEXCAN_CTRL_LOM);
-
-=2E...the loopback mode, 3 sample mode and listen only mode bits are
-masked out....
-
-> 	reg |=3D FLEXCAN_CTRL_PRESDIV(bt->brp - 1) |
-> 		FLEXCAN_CTRL_PSEG1(bt->phase_seg1 - 1) |
-> 		FLEXCAN_CTRL_PSEG2(bt->phase_seg2 - 1) |
-> 		FLEXCAN_CTRL_RJW(bt->sjw - 1) |
-> 		FLEXCAN_CTRL_PROPSEG(bt->prop_seg - 1);
->=20
-> 	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
-> 		reg |=3D FLEXCAN_CTRL_LPB;
-> 	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
-> 		reg |=3D FLEXCAN_CTRL_LOM;
-> 	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
-> 		reg |=3D FLEXCAN_CTRL_SMP;
-
-=2E..and the bits are set, if enabled by user space...
-
-> 	netdev_dbg(dev, "writing ctrl=3D0x%08x\n", reg);
-> 	priv->write(reg, &regs->ctrl);
-
-=2E..and written to the register.
-
-So all three bits will be unset, if unset by user space, right?
-
-> When we configure mode off after configured mode on in the user
-> space, corresponding bit will not change. Is this should be improved
-> in flexcan driver?
-
-That should work. If it doesn't work, we need a fix.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---PblQydVdEdfzsawluoFlTtk65ZIlGeMdZ--
-
---Mw8JsGkOUkVm7EENA0gbDYPdtFyBtXOT4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlyu4PUACgkQWsYho5Hk
-nSAM/wf/VLZ2Jptfd/XQecKar70GhTJJOm1fXo1LU35G1IKeOiTOlbWZYOxXiro8
-V79OzEcXezHtGJ6uoPyKfWf4uksZ3EQ+6W21TFecZFID9vAU/rsH7mKhc2I8Zd0N
-gI0k7GyzErFFFdGFDBju2RtIodeUp8Ql3O6vsSwmHko5Hh7fy8Tr8dpN8sLCWtUN
-8nOPmwu6++HAvQWOVBg170Js6FcQzHZGlQBFZu+xVWqRaEgRfEtG8fjqHQueI0Ka
-/eQJltcp6wE8HVQbMxBKj0GTTP24Vwzaxm4Ol1K3BO5toyjaD2opRtgRB1OBXrHS
-b2SyoEIzcBPk7RmbOs8qWRbKg96ikA==
-=gOIv
------END PGP SIGNATURE-----
-
---Mw8JsGkOUkVm7EENA0gbDYPdtFyBtXOT4--
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
+IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQ05pyIMTHml6UgMTQ6MzkNCj4g
+VG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyB3Z0BncmFuZGVnZ2Vy
+LmNvbTsNCj4gZGF2ZW1AZGF2ZW1sb2Z0Lm5ldA0KPiBDYzogZGwtbGludXgtaW14IDxsaW51eC1p
+bXhAbnhwLmNvbT47IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7DQo+IG5ldGRldkB2Z2VyLmtl
+cm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtF
+WFRdIFJlOiBbUEFUQ0hdIGNhbjogZGV2OiBjbGVhbiB1cCBDQU4gY3RybG1vZGUgd2hlbiBjbG9z
+ZQ0KPiBDQU4gZGV2aWNlDQo+IA0KPiBPbiA0LzExLzE5IDM6MTYgQU0sIEpvYWtpbSBaaGFuZyB3
+cm90ZToNCj4gPj4gV2hhdGV2ZXIgbW9kZSB5b3UgZW5hYmxlIHZpYSB1c2VyIHNwYWNlIHVzZSB1
+c2VyIHNwYWNlIHRvIGRpc2FibGUNCj4gPj4gdGhlbSBhZ2Fpbi4NCj4gPg0KPiA+IFRoYW5rIHlv
+dSBmb3IgeW91ciBkZXRhaWxlZCBleHBsYW5hdGlvbi4gQnV0IGluIGZsZXhjYW4gZHJpdmVyLCBp
+dA0KPiA+IGp1c3Qgc2V0IHJlZ2lzdGVyIGJpdCB3aGVuIG1vZGUgb24gYW5kIGRvIG5vdCBjbGVh
+ciByZWdpc3RlciBiaXQgd2hlbg0KPiA+IG1vZGUgb2ZmLCBlLmcuIGxvb3BiYWNrLCBsaXN0ZW5u
+b2x5LCAzIHNhbXBsZXMuLi4uDQo+IA0KPiBMZXQncyBzZWU6DQo+IA0KPiA+IAlyZWcgPSBwcml2
+LT5yZWFkKCZyZWdzLT5jdHJsKTsNCj4gDQo+IFRoZSBjdHJsIHJlZyBpcyByZWFkDQo+IA0KPiA+
+IAlyZWcgJj0gfihGTEVYQ0FOX0NUUkxfUFJFU0RJVigweGZmKSB8DQo+ID4gCQkgRkxFWENBTl9D
+VFJMX1JKVygweDMpIHwNCj4gPiAJCSBGTEVYQ0FOX0NUUkxfUFNFRzEoMHg3KSB8DQo+ID4gCQkg
+RkxFWENBTl9DVFJMX1BTRUcyKDB4NykgfA0KPiA+IAkJIEZMRVhDQU5fQ1RSTF9QUk9QU0VHKDB4
+NykgfA0KPiA+IAkJIEZMRVhDQU5fQ1RSTF9MUEIgfA0KPiA+IAkJIEZMRVhDQU5fQ1RSTF9TTVAg
+fA0KPiA+IAkJIEZMRVhDQU5fQ1RSTF9MT00pOw0KPiANCj4gLi4uLnRoZSBsb29wYmFjayBtb2Rl
+LCAzIHNhbXBsZSBtb2RlIGFuZCBsaXN0ZW4gb25seSBtb2RlIGJpdHMgYXJlIG1hc2tlZA0KPiBv
+dXQuLi4uDQo+IA0KPiA+IAlyZWcgfD0gRkxFWENBTl9DVFJMX1BSRVNESVYoYnQtPmJycCAtIDEp
+IHwNCj4gPiAJCUZMRVhDQU5fQ1RSTF9QU0VHMShidC0+cGhhc2Vfc2VnMSAtIDEpIHwNCj4gPiAJ
+CUZMRVhDQU5fQ1RSTF9QU0VHMihidC0+cGhhc2Vfc2VnMiAtIDEpIHwNCj4gPiAJCUZMRVhDQU5f
+Q1RSTF9SSlcoYnQtPnNqdyAtIDEpIHwNCj4gPiAJCUZMRVhDQU5fQ1RSTF9QUk9QU0VHKGJ0LT5w
+cm9wX3NlZyAtIDEpOw0KPiA+DQo+ID4gCWlmIChwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RS
+TE1PREVfTE9PUEJBQ0spDQo+ID4gCQlyZWcgfD0gRkxFWENBTl9DVFJMX0xQQjsNCj4gPiAJaWYg
+KHByaXYtPmNhbi5jdHJsbW9kZSAmIENBTl9DVFJMTU9ERV9MSVNURU5PTkxZKQ0KPiA+IAkJcmVn
+IHw9IEZMRVhDQU5fQ1RSTF9MT007DQo+ID4gCWlmIChwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5f
+Q1RSTE1PREVfM19TQU1QTEVTKQ0KPiA+IAkJcmVnIHw9IEZMRVhDQU5fQ1RSTF9TTVA7DQo+IA0K
+PiAuLi5hbmQgdGhlIGJpdHMgYXJlIHNldCwgaWYgZW5hYmxlZCBieSB1c2VyIHNwYWNlLi4uDQo+
+IA0KPiA+IAluZXRkZXZfZGJnKGRldiwgIndyaXRpbmcgY3RybD0weCUwOHhcbiIsIHJlZyk7DQo+
+ID4gCXByaXYtPndyaXRlKHJlZywgJnJlZ3MtPmN0cmwpOw0KPiANCj4gLi4uYW5kIHdyaXR0ZW4g
+dG8gdGhlIHJlZ2lzdGVyLg0KPiANCj4gU28gYWxsIHRocmVlIGJpdHMgd2lsbCBiZSB1bnNldCwg
+aWYgdW5zZXQgYnkgdXNlciBzcGFjZSwgcmlnaHQ/DQoNCk9oLCBJIHNlZS4gVGhhbmsgeW91IQ0K
+DQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gDQo+ID4gV2hlbiB3ZSBjb25maWd1cmUg
+bW9kZSBvZmYgYWZ0ZXIgY29uZmlndXJlZCBtb2RlIG9uIGluIHRoZSB1c2VyIHNwYWNlLA0KPiA+
+IGNvcnJlc3BvbmRpbmcgYml0IHdpbGwgbm90IGNoYW5nZS4gSXMgdGhpcyBzaG91bGQgYmUgaW1w
+cm92ZWQgaW4NCj4gPiBmbGV4Y2FuIGRyaXZlcj8NCj4gDQo+IFRoYXQgc2hvdWxkIHdvcmsuIElm
+IGl0IGRvZXNuJ3Qgd29yaywgd2UgbmVlZCBhIGZpeC4NCj4gDQo+IHJlZ2FyZHMsDQo+IE1hcmMN
+Cj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgICB8IE1hcmMgS2xl
+aW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAg
+ICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0
+bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQo+IEFtdHNnZXJp
+Y2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93d3cucGVuZ3V0cm9uaXguZGUgICB8
+DQoNCg==
