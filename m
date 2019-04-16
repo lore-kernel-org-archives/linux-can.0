@@ -1,68 +1,56 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [EXT] Re: [PATCH] can: dev: clean up CAN ctrlmode when close CAN
- device
-Date: Thu, 11 Apr 2019 08:12:10 +0000
-Message-ID: <DB7PR04MB461835BC43470079FE72BF38E62F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20190410062533.31535-1-qiangqing.zhang@nxp.com>
- <39d8ef33-50c3-9b7a-88e1-8ef3a7fbac70@pengutronix.de>
- <DB7PR04MB4618D14BE595F3BDE46CBE17E62E0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <ad4c0921-3275-b466-95b4-a63944d5b71f@pengutronix.de>
- <DB7PR04MB4618D30C746B397F8C5308BAE62F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <35c15351-5ae1-0826-1b05-95fe53272244@pengutronix.de>
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: [PATCH] can: flexcan: fix deadlock when using self wakeup
+Date: Tue, 16 Apr 2019 16:35:11 +0200
+Message-ID: <20190416143512.17735-1-sean@geanix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <35c15351-5ae1-0826-1b05-95fe53272244@pengutronix.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org, linux-can@vger.kernel.org, mkl@pengutronix.de
+Cc: Sean Nyekjaer <sean@geanix.com>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
-IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQ05pyIMTHml6UgMTQ6MzkNCj4g
-VG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyB3Z0BncmFuZGVnZ2Vy
-LmNvbTsNCj4gZGF2ZW1AZGF2ZW1sb2Z0Lm5ldA0KPiBDYzogZGwtbGludXgtaW14IDxsaW51eC1p
-bXhAbnhwLmNvbT47IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7DQo+IG5ldGRldkB2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtF
-WFRdIFJlOiBbUEFUQ0hdIGNhbjogZGV2OiBjbGVhbiB1cCBDQU4gY3RybG1vZGUgd2hlbiBjbG9z
-ZQ0KPiBDQU4gZGV2aWNlDQo+IA0KPiBPbiA0LzExLzE5IDM6MTYgQU0sIEpvYWtpbSBaaGFuZyB3
-cm90ZToNCj4gPj4gV2hhdGV2ZXIgbW9kZSB5b3UgZW5hYmxlIHZpYSB1c2VyIHNwYWNlIHVzZSB1
-c2VyIHNwYWNlIHRvIGRpc2FibGUNCj4gPj4gdGhlbSBhZ2Fpbi4NCj4gPg0KPiA+IFRoYW5rIHlv
-dSBmb3IgeW91ciBkZXRhaWxlZCBleHBsYW5hdGlvbi4gQnV0IGluIGZsZXhjYW4gZHJpdmVyLCBp
-dA0KPiA+IGp1c3Qgc2V0IHJlZ2lzdGVyIGJpdCB3aGVuIG1vZGUgb24gYW5kIGRvIG5vdCBjbGVh
-ciByZWdpc3RlciBiaXQgd2hlbg0KPiA+IG1vZGUgb2ZmLCBlLmcuIGxvb3BiYWNrLCBsaXN0ZW5u
-b2x5LCAzIHNhbXBsZXMuLi4uDQo+IA0KPiBMZXQncyBzZWU6DQo+IA0KPiA+IAlyZWcgPSBwcml2
-LT5yZWFkKCZyZWdzLT5jdHJsKTsNCj4gDQo+IFRoZSBjdHJsIHJlZyBpcyByZWFkDQo+IA0KPiA+
-IAlyZWcgJj0gfihGTEVYQ0FOX0NUUkxfUFJFU0RJVigweGZmKSB8DQo+ID4gCQkgRkxFWENBTl9D
-VFJMX1JKVygweDMpIHwNCj4gPiAJCSBGTEVYQ0FOX0NUUkxfUFNFRzEoMHg3KSB8DQo+ID4gCQkg
-RkxFWENBTl9DVFJMX1BTRUcyKDB4NykgfA0KPiA+IAkJIEZMRVhDQU5fQ1RSTF9QUk9QU0VHKDB4
-NykgfA0KPiA+IAkJIEZMRVhDQU5fQ1RSTF9MUEIgfA0KPiA+IAkJIEZMRVhDQU5fQ1RSTF9TTVAg
-fA0KPiA+IAkJIEZMRVhDQU5fQ1RSTF9MT00pOw0KPiANCj4gLi4uLnRoZSBsb29wYmFjayBtb2Rl
-LCAzIHNhbXBsZSBtb2RlIGFuZCBsaXN0ZW4gb25seSBtb2RlIGJpdHMgYXJlIG1hc2tlZA0KPiBv
-dXQuLi4uDQo+IA0KPiA+IAlyZWcgfD0gRkxFWENBTl9DVFJMX1BSRVNESVYoYnQtPmJycCAtIDEp
-IHwNCj4gPiAJCUZMRVhDQU5fQ1RSTF9QU0VHMShidC0+cGhhc2Vfc2VnMSAtIDEpIHwNCj4gPiAJ
-CUZMRVhDQU5fQ1RSTF9QU0VHMihidC0+cGhhc2Vfc2VnMiAtIDEpIHwNCj4gPiAJCUZMRVhDQU5f
-Q1RSTF9SSlcoYnQtPnNqdyAtIDEpIHwNCj4gPiAJCUZMRVhDQU5fQ1RSTF9QUk9QU0VHKGJ0LT5w
-cm9wX3NlZyAtIDEpOw0KPiA+DQo+ID4gCWlmIChwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RS
-TE1PREVfTE9PUEJBQ0spDQo+ID4gCQlyZWcgfD0gRkxFWENBTl9DVFJMX0xQQjsNCj4gPiAJaWYg
-KHByaXYtPmNhbi5jdHJsbW9kZSAmIENBTl9DVFJMTU9ERV9MSVNURU5PTkxZKQ0KPiA+IAkJcmVn
-IHw9IEZMRVhDQU5fQ1RSTF9MT007DQo+ID4gCWlmIChwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5f
-Q1RSTE1PREVfM19TQU1QTEVTKQ0KPiA+IAkJcmVnIHw9IEZMRVhDQU5fQ1RSTF9TTVA7DQo+IA0K
-PiAuLi5hbmQgdGhlIGJpdHMgYXJlIHNldCwgaWYgZW5hYmxlZCBieSB1c2VyIHNwYWNlLi4uDQo+
-IA0KPiA+IAluZXRkZXZfZGJnKGRldiwgIndyaXRpbmcgY3RybD0weCUwOHhcbiIsIHJlZyk7DQo+
-ID4gCXByaXYtPndyaXRlKHJlZywgJnJlZ3MtPmN0cmwpOw0KPiANCj4gLi4uYW5kIHdyaXR0ZW4g
-dG8gdGhlIHJlZ2lzdGVyLg0KPiANCj4gU28gYWxsIHRocmVlIGJpdHMgd2lsbCBiZSB1bnNldCwg
-aWYgdW5zZXQgYnkgdXNlciBzcGFjZSwgcmlnaHQ/DQoNCk9oLCBJIHNlZS4gVGhhbmsgeW91IQ0K
-DQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gDQo+ID4gV2hlbiB3ZSBjb25maWd1cmUg
-bW9kZSBvZmYgYWZ0ZXIgY29uZmlndXJlZCBtb2RlIG9uIGluIHRoZSB1c2VyIHNwYWNlLA0KPiA+
-IGNvcnJlc3BvbmRpbmcgYml0IHdpbGwgbm90IGNoYW5nZS4gSXMgdGhpcyBzaG91bGQgYmUgaW1w
-cm92ZWQgaW4NCj4gPiBmbGV4Y2FuIGRyaXZlcj8NCj4gDQo+IFRoYXQgc2hvdWxkIHdvcmsuIElm
-IGl0IGRvZXNuJ3Qgd29yaywgd2UgbmVlZCBhIGZpeC4NCj4gDQo+IHJlZ2FyZHMsDQo+IE1hcmMN
-Cj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgICB8IE1hcmMgS2xl
-aW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAg
-ICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0
-bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQo+IEFtdHNnZXJp
-Y2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93d3cucGVuZ3V0cm9uaXguZGUgICB8
-DQoNCg==
+When suspending, when there is still can traffic on the
+interfaces the flexcan immediately wakes the platform again.
+As it should :-)
+But it throws this error msg:
+[ 3169.378661] PM: noirq suspend of devices failed
+
+On the way down to suspend the interface that throws the error
+message does call flexcan_suspend but fails to call
+flexcan_noirq_suspend.
+That means the flexcan_enter_stop_mode is called, but on the way
+out of suspend the driver only calls flexcan_resume and skips
+flexcan_noirq_resume, thus it doesn't call flexcan_exit_stop_mode.
+This leaves the flexcan in stop mode, and with the current driver
+it can't recover from this even with a soft reboot, it requires a
+hard reboot.
+
+Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 78f67f59b165..3fbce94e7ee5 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1588,6 +1588,7 @@ static int __maybe_unused flexcan_resume(struct device *device)
+ 		netif_start_queue(dev);
+ 		if (device_may_wakeup(device)) {
+ 			disable_irq_wake(dev->irq);
++			flexcan_exit_stop_mode(priv);
+ 		} else {
+ 			err = flexcan_chip_enable(priv);
+ 			if (err)
+@@ -1615,7 +1616,6 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
+ 
+ 	if (netif_running(dev) && device_may_wakeup(device)) {
+ 		flexcan_enable_wakeup_irq(priv, false);
+-		flexcan_exit_stop_mode(priv);
+ 	}
+ 
+ 	return 0;
+-- 
+2.21.0
