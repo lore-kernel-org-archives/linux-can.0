@@ -1,41 +1,48 @@
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Subject: Re: [PATCH v3 1/3] net: rework SIOCGSTAMP ioctl handling
-Date: Wed, 17 Apr 2019 17:56:43 -0400
-Message-ID: <CAF=yD-KkUveFFj_j721kML0rMJF=uDcVQv+RQO4N6xjorHCtZg@mail.gmail.com>
-References: <20190417205404.1877560-1-arnd@arndb.de>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v11 1/5] can: m_can: Create a m_can platform framework
+Date: Thu, 18 Apr 2019 09:36:27 -0500
+Message-ID: <2d594ba8-e4e4-14f9-1eb0-8f753c79eb54@ti.com>
+References: <20190319172651.10012-1-dmurphy@ti.com>
+ <3ce79402-00f1-d7e6-955e-1ad7eb00d0de@ti.com>
+ <c05a6a22-c162-518d-683a-18731bd67e38@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190417205404.1877560-1-arnd@arndb.de>
+In-Reply-To: <c05a6a22-c162-518d-683a-18731bd67e38@grandegger.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Network Development <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, y2038 Mailman List <y2038@lists.linaro.org>, Deepa Dinamani <deepa.kernel@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>, Neil Horman <nhorman@tuxdriver.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Eric Dumazet <edumazet@google.com>, Willem de Bruijn <willemb@google.com>, LKML <linux-kernel@vger.kernel.org>, linux-hams@vger.kernel.org, Bluez mailing list <linux-bluetooth@vger.kernel.org>, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org, linux-x25@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Apr 17, 2019 at 4:54 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> The SIOCGSTAMP/SIOCGSTAMPNS ioctl commands are implemented by many
-> socket protocol handlers, and all of those end up calling the same
-> sock_get_timestamp()/sock_get_timestampns() helper functions, which
-> results in a lot of duplicate code.
->
-> With the introduction of 64-bit time_t on 32-bit architectures, this
-> gets worse, as we then need four different ioctl commands in each
-> socket protocol implementation.
->
-> To simplify that, let's add a new .gettstamp() operation in
-> struct proto_ops, and move ioctl implementation into the common
-> sock_ioctl()/compat_sock_ioctl_trans() functions that these all go
-> through.
->
-> We can reuse the sock_get_timestamp() implementation, but generalize
-> it so it can deal with both native and compat mode, as well as
-> timeval and timespec structures.
->
-> Acked-by: Stefan Schmidt <stefan@datenfreihafen.org>
-> Acked-by: Neil Horman <nhorman@tuxdriver.com>
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> Link: https://lore.kernel.org/lkml/CAK8P3a038aDQQotzua_QtKGhq8O9n+rdiz2=WDCp82ys8eUT+A@mail.gmail.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Marc
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+On 4/2/19 7:17 AM, Wolfgang Grandegger wrote:
+> Hello Dan,
+> 
+> Am 02.04.19 um 14:03 schrieb Dan Murphy:
+>> Wolfgang
+>>
+>> On 3/19/19 12:26 PM, Dan Murphy wrote:
+>>> Create a m_can platform framework that peripheral
+>>> devices can register to and use common code and register sets.
+>>> The peripheral devices may provide read/write and configuration
+>>> support of the IP.
+>>>
+>>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>> ---
+>>>
+>>
+>> Wondering if this will be going into 5.1 PR?
+> 
+> it's Marc who is doing the upstreaming ... and maybe a final review as well.
+> 
+
+Can you tell me if this will be taken?
+
+Dan
+
+> Wolfgang.
+> 
