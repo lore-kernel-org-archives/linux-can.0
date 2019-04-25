@@ -1,73 +1,91 @@
-From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
-Subject: RE: [PATCH 0/6] net: can: xilinx_can: Bug fixes and Enhancements
-Date: Tue, 23 Apr 2019 06:38:20 +0000
-Message-ID: <DM5PR02MB2187137A63481B2BB2E12920DC230@DM5PR02MB2187.namprd02.prod.outlook.com>
-References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
- <d1cd73cc-e200-7c06-dd6e-3c5e2e35709c@pengutronix.de>
- <DM5PR02MB21875918C65EF8757E34C574DC420@DM5PR02MB2187.namprd02.prod.outlook.com>
+From: Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH RESEND] can: m_can: implement errata "Needless activation
+ of MRAF irq"
+Date: Thu, 25 Apr 2019 08:34:16 +0200
+Message-ID: <20190425063416.iuwbtqdhffuidaju@M43218.corp.atmel.com>
+References: <1554209445-19879-1-git-send-email-eugen.hristev@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <DM5PR02MB21875918C65EF8757E34C574DC420@DM5PR02MB2187.namprd02.prod.outlook.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <1554209445-19879-1-git-send-email-eugen.hristev@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Eugen.Hristev@microchip.com
+Cc: wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: linux-can.vger.kernel.org
 
-SGkgTWFyYywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcHBhbmEg
-RHVyZ2EgS2VkYXJlc3dhcmEgUmFvDQo+IFNlbnQ6IFRodXJzZGF5LCBNYXJjaCAyMSwgMjAxOSAx
-MjowNiBQTQ0KPiBUbzogJ01hcmMgS2xlaW5lLUJ1ZGRlJyA8bWtsQHBlbmd1dHJvbml4LmRlPjsg
-d2dAZ3JhbmRlZ2dlci5jb207DQo+IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IE1pY2hhbCBTaW1layA8
-bWljaGFsc0B4aWxpbnguY29tPg0KPiBDYzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsgbmV0
-ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgtYXJtLQ0KPiBrZXJuZWxAbGlzdHMuaW5mcmFkZWFk
-Lm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSRTogW1BBVENI
-IDAvNl0gbmV0OiBjYW46IHhpbGlueF9jYW46IEJ1ZyBmaXhlcyBhbmQgRW5oYW5jZW1lbnRzDQo+
-IA0KPiBIaSBNYXJjLA0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZy
-b206IE1hcmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+ID4gU2VudDogV2Vk
-bmVzZGF5LCBNYXJjaCAyMCwgMjAxOSA2OjM5IFBNDQo+ID4gVG86IEFwcGFuYSBEdXJnYSBLZWRh
-cmVzd2FyYSBSYW8gPGFwcGFuYWRAeGlsaW54LmNvbT47DQo+ID4gd2dAZ3JhbmRlZ2dlci5jb207
-IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IE1pY2hhbCBTaW1law0KPiA+IDxtaWNoYWxzQHhpbGlueC5j
-b20+DQo+ID4gQ2M6IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5l
-bC5vcmc7IGxpbnV4LWFybS0NCj4gPiBrZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgt
-a2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMC82XSBuZXQ6
-IGNhbjogeGlsaW54X2NhbjogQnVnIGZpeGVzIGFuZA0KPiA+IEVuaGFuY2VtZW50cw0KPiA+DQo+
-ID4gT24gMy8xOC8xOSAxMjozMiBQTSwgQXBwYW5hIER1cmdhIEtlZGFyZXN3YXJhIHJhbyB3cm90
-ZToNCj4gPiA+IFRoaXMgcGF0Y2ggc2VyaWVzIGRvZXMgdGhlIGJlbG93DQo+ID4gPiAtLT4gQWRk
-ZWQgc3VwcG9ydCBmb3IgQ0FORkQgRkQgZnJhbWVzIEZpeCBDaGVja3BhdGNoIHJlcG9ydGVkDQo+
-ID4gPiAtLT4gd2FybmluZ3MgYW5kIGNoZWNrcw0KPiA+ID4NCj4gPiA+IEFwcGFuYSBEdXJnYSBL
-ZWRhcmVzd2FyYSByYW8gKDYpOg0KPiA+ID4gICBuZXQ6IGNhbjogeGlsaW54X2NhbjogRml4IHN0
-eWxlIGlzc3Vlcw0KPiA+ID4gICBuZXQ6IGNhbjogeGlsaW54X2NhbjogRml4IGZsYWdzIGZpZWxk
-IGluaXRpYWxpemF0aW9uIGZvciBheGkgY2FuIGFuZA0KPiA+ID4gICAgIGNhbnBzDQo+ID4gPiAg
-IG5ldDogY2FuOiB4aWxpbnhfY2FuOiBBZGQgY2FudHlwZSBwYXJhbWV0ZXIgaW4geGNhbl9kZXZ0
-eXBlX2RhdGENCj4gPiA+ICAgICBzdHJ1Y3QNCj4gPiA+ICAgbmV0OiBjYW46IHhpbGlueF9jYW46
-IEFkZCBzdXBwb3J0IGZvciBDQU5GRCBGRCBmcmFtZXMNCj4gPiA+ICAgbmV0OiBjYW46IHhpbGlu
-eF9jYW46IEFkZCBTUERYIGxpY2Vuc2UNCj4gPiA+ICAgbmV0OiBjYW46IHhpbGlueF9jYW46IEZp
-eCBrZXJuZWwgZG9jIHdhcm5pbmdzDQo+ID4gPg0KPiA+ID4gIGRyaXZlcnMvbmV0L2Nhbi94aWxp
-bnhfY2FuLmMgfCAzMDMNCj4gPiA+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-Ky0tLS0tLS0NCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMjU3IGluc2VydGlvbnMoKyksIDQ2IGRl
-bGV0aW9ucygtKQ0KPiA+DQo+ID4gQXBwbGllZCB0byBsaW51eC1jYW4tbmV4dC90ZXN0aW5nLCBi
-dXQgaW4gb3JkZXIuIEZpcnN0IGZpeGVzIHRoYW4NCj4gPiBlbmhhbmNlbWVudHM6DQo+IA0KPiBU
-aGFua3MuLi4NCj4gSSBjb3VsZG4ndCBmaW5kIHRoZSBwYXRjaGVzIGhlcmUNCj4gaHR0cHM6Ly9n
-aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbWtsL2xpbnV4LWNhbi0NCj4g
-bmV4dC5naXQvbG9nL2RyaXZlcnMvbmV0L2Nhbi94aWxpbnhfY2FuLmM/aD10ZXN0aW5nDQo+IEFt
-IEkgcmVmZXJyaW5nIHdyb25nIHJlcG8vYnJhbmNoPz8NCg0KVGhlcmUgYXJlIGEgY291cGxlIG9m
-IGJ1ZyBmaXhlcyBhdmFpbGFibGUgZm9yIHRoaXMgZHJpdmVyIG9uIHRvcCBvZiB0aGlzIHBhdGNo
-IHNlcmllcy4NClBsZWFzZSBsZXQgbWUga25vdyB0aGUgYnJhbmNoIHdoZXJlIHRoaXMgcGF0Y2gg
-c2VyaWVzIGdvdCBhcHBsaWVkLCB3aWxsIHNlbmQgdGhlIGJ1ZyBmaXhlcyBvbiB0b3Agb2YgdGhh
-dCBicmFuY2guIA0KDQpSZWdhcmRzLA0KS2VkYXIuDQo+IA0KPiBSZWdhcmRzLA0KPiBLZWRhci4N
-Cj4gPg0KPiA+ID4gMjQxODI2MzAyODU0IG5ldDogY2FuOiB4aWxpbnhfY2FuOiBGaXggc3R5bGUg
-aXNzdWVzDQo+ID4gPiA3MGZiMjZmYWRjMjcgbmV0OiBjYW46IHhpbGlueF9jYW46IEZpeCBrZXJu
-ZWwgZG9jIHdhcm5pbmdzDQo+ID4gPiA3YmViNjQzNTFmZjEgbmV0OiBjYW46IHhpbGlueF9jYW46
-IEFkZCBTUERYIGxpY2Vuc2UgZGQ5NDkxMGJjZWFlIG5ldDoNCj4gPiA+IGNhbjogeGlsaW54X2Nh
-bjogRml4IGZsYWdzIGZpZWxkIGluaXRpYWxpemF0aW9uIGZvciBheGkgY2FuIGFuZA0KPiA+ID4g
-Y2FucHMNCj4gPiA+IDZiZDA1Y2VjZTU2NyBuZXQ6IGNhbjogeGlsaW54X2NhbjogQWRkIGNhbnR5
-cGUgcGFyYW1ldGVyIGluDQo+ID4gPiB4Y2FuX2RldnR5cGVfZGF0YSBzdHJ1Y3QNCj4gPiA+IDM0
-ZTI4MDE3MDczNiBuZXQ6IGNhbjogeGlsaW54X2NhbjogQWRkIHN1cHBvcnQgZm9yIENBTkZEIEZE
-IGZyYW1lcw0KPiA+DQo+ID4gTWFyYw0KPiA+DQo+ID4gLS0NCj4gPiBQZW5ndXRyb25peCBlLksu
-ICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1CdWRkZSAgICAgICAgICAgfA0KPiA+IElu
-ZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0
-ICAgICB8DQo+ID4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgIHwgRmF4OiAgICs0
-OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gPiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4
-NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
+On Tue, Apr 02, 2019 at 12:56:18PM +0000, Eugen.Hristev@microchip.com wrote:
+> 
+> From: Eugen Hristev <eugen.hristev@microchip.com>
+> 
+> During frame reception while the MCAN is in Error Passive state
+> and the Receive Error Counter has thevalue MCAN_ECR.REC = 127, it may happen
+> that MCAN_IR.MRAF is set although there was no Message RAM access failure.
+> If MCAN_IR.MRAF is enabled, an interrupt to the Host CPU is generated.
+> Work around:
+> The Message RAM Access Failure interrupt routine needs to check whether
+>  MCAN_ECR.RP = '1' and MCAN_ECR.REC = '127'.
+> In this case, reset MCAN_IR.MRAF. No further action is required.
+> This affects versions older than 3.2.0
+> 
+> Errata explained on Sama5d2 SoC which includes this hardware block:
+> http://ww1.microchip.com/downloads/en/DeviceDoc/SAMA5D2-Family-Silicon-Errata-and-Data-Sheet-Clarification-DS80000803B.pdf chapter 6.2
+> 
+> Reproducibility: If 2 devices with m_can are connected back to back,
+> configuring different bitrate on them will lead to interrupt storm on the
+> receiving side, with error "Message RAM access failure occurred".
+> Another way is to have a bad hardware connection. Bad wire connection can lead
+> to this issue as well.
+> 
+> This patch fixes the issue according to provided workaround.
+> 
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+
+Sounds good.
+
+Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+
+> ---
+>  drivers/net/can/m_can/m_can.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> index 9b44940..deb274a 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -822,6 +822,27 @@ static int m_can_poll(struct napi_struct *napi, int quota)
+>  	if (!irqstatus)
+>  		goto end;
+>  
+> +	/* Errata workaround for issue "Needless activation of MRAF irq"
+> +	 * During frame reception while the MCAN is in Error Passive state
+> +	 * and the Receive Error Counter has the value MCAN_ECR.REC = 127,
+> +	 * it may happen that MCAN_IR.MRAF is set although there was no
+> +	 * Message RAM access failure.
+> +	 * If MCAN_IR.MRAF is enabled, an interrupt to the Host CPU is generated
+> +	 * The Message RAM Access Failure interrupt routine needs to check
+> +	 * whether MCAN_ECR.RP = ’1’ and MCAN_ECR.REC = 127.
+> +	 * In this case, reset MCAN_IR.MRAF. No further action is required.
+> +	 */
+> +	if ((priv->version <= 31) && (irqstatus & IR_MRAF) &&
+> +	    (m_can_read(priv, M_CAN_ECR) & ECR_RP)) {
+> +		struct can_berr_counter bec;
+> +
+> +		__m_can_get_berr_counter(dev, &bec);
+> +		if (bec.rxerr == 127) {
+> +			m_can_write(priv, M_CAN_IR, IR_MRAF);
+> +			irqstatus &= ~IR_MRAF;
+> +		}
+> +	}
+> +
+>  	psr = m_can_read(priv, M_CAN_PSR);
+>  	if (irqstatus & IR_ERR_STATE)
+>  		work_done += m_can_handle_state_errors(dev, psr);
+> -- 
+> 2.7.4
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
