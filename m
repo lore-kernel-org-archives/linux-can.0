@@ -1,43 +1,38 @@
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: Re: [PATCH] can: flexcan: bump FLEXCAN_TIMEOUT_US to 250
-Date: Mon, 29 Apr 2019 08:53:19 +0000
-Message-ID: <e9b2b895-aa65-72be-5e6e-d38365ff2624@prevas.dk>
-References: <20190307150024.23628-1-rasmus.villemoes@prevas.dk>
- <a418bbc9-186c-174a-20d8-18cedeaf0089@pengutronix.de>
- <5615c217-8ba6-e452-1aaa-1e3b32eb4cca@prevas.dk>
- <f1fb86fb-1b6b-1860-899d-820d4bc672cf@pengutronix.de>
- <4471c611-1a58-6365-2ab6-1b39c310265a@prevas.dk>
- <b03e9868-3070-ce35-3477-3119d691baec@pengutronix.de>
+From: Aisheng Dong <aisheng.dong@nxp.com>
+Subject: RE: [PATCH] can: flexcan: change .tseg1_min value to 2 in bittiming
+ const
+Date: Mon, 29 Apr 2019 10:36:24 +0000
+Message-ID: <AM0PR04MB42119D481BD7A6494E4F364F80390@AM0PR04MB4211.eurprd04.prod.outlook.com>
+References: <20190429074551.25754-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <b03e9868-3070-ce35-3477-3119d691baec@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190429074551.25754-1-qiangqing.zhang@nxp.com>
 Content-Language: en-US
-Content-ID: <9689F66843FFC84F9F2B01A6B923C809@EURPRD10.PROD.OUTLOOK.COM>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>
-Cc: Thomas Winding <twi@deif.com>, Fabio Estevam <festevam@gmail.com>, Per Christensen <pnc@deif.com>, Rasmus Villemoes <Rasmus.Villemoes@prevas.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
+Sender: netdev-owner@vger.kernel.org
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-T24gMjIvMDMvMjAxOSAwOC41MSwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IE9uIDMvMjIv
-MTkgODo0NSBBTSwgUmFzbXVzIFZpbGxlbW9lcyB3cm90ZToNCj4+IE9uIDIxLzAzLzIwMTkgMTYu
-MzAsIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOg0KPj4+IE9uIDMvMjEvMTkgMzozNCBQTSwgUmFz
-bXVzIFZpbGxlbW9lcyB3cm90ZToNCj4+Pj4gT24gMjAvMDMvMjAxOSAxNC4xOCwgTWFyYyBLbGVp
-bmUtQnVkZGUgd3JvdGU6DQo+Pj4NCj4+PiBDYW4geW91IHByb3Bvc2UgYW4gdXBkYXRlZCBjb21t
-aXQgbWVzc2FnZSBmb3IgSm9ha2ltIFpoYW5nJ3MgcGF0Y2g/DQo+Pj4NCj4+PiBodHRwczovL2dp
-dC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9ta2wvbGludXgtY2FuLmdpdC9j
-b21taXQvP2g9dGVzdGluZyZpZD05ZGFlZDg5YWU4YTNmYzQ0Y2NkMmIyYmI5YzNjNGQzZTM0MzE5
-MDRkDQo+Pj4NCj4+PiBJJ2xsIGFkZCBpdCBieSBoYW5kIGFuZCBpbmNyZWFzZSB0aGUgdGltZW91
-dCB0byAyNTAuIE9rPw0KPj4NCj4+IFNvdW5kcyBmaW5lLiBJbiBvcmRlciBub3QgdG8gY2hhbmdl
-IEpvYWtpbSdzIGNvbW1pdCBsb2cgdG9vIG11Y2gsIGhvdw0KPj4gYWJvdXQgYWRkaW5nIHNvbWV0
-aGluZyBsaWtlICh3aXRoIHlvdXIgaW5pdGlhbHMsIHNpbmNlIHlvdSdyZSBuZXh0IGluDQo+PiB0
-aGUgc2lnbi1vZmYgY2hhaW4pDQo+Pg0KPj4gW21rbDogTWVhbndoaWxlLCBSYXNtdXMgVmlsbGVt
-b2VzIHJlcG9ydGVkIHRoYXQgZXZlbiB3aXRoIGEgdGltZW91dCBvZg0KPj4gMTAwLCBmbGV4Y2Fu
-X3Byb2JlKCkgZmFpbHMgb24gdGhlIE1QQzgzMDksIHdoaWNoIHJlcXVpcmVzIGEgdmFsdWUgb2Yg
-YXQNCj4+IGxlYXN0IDE0MCB0byB3b3JrIHJlbGlhYmx5LiAyNTAgd29ya3MgZm9yIGV2ZXJ5b25l
-Ll0NCj4+DQo+PiA/IEZlZWwgZnJlZSB0byBlZGl0IGFzIHlvdSB3aXNoLg0KPiANCj4gVGhhbmtz
-LCBJJ3ZlIGFkZGVkIHRoYXQgdG8gdGhlIGNvbW1pdCBtZXNzYWdlIGl0c2VsZi4NCg0KV2hhdCdz
-IHRoZSBzdGF0dXMgb2YgdGhpcz8gSSBjYW4ndCBmaW5kIGFueXRoaW5nIGluIC1uZXh0IChhcyBv
-Zg0KbmV4dC0yMDE5MDQyNiksIG5laXRoZXIgSm9ha2ltJ3Mgb3JpZ2luYWwgb3IgdGhlIGFtZW5k
-ZWQgcGF0Y2guDQoNClRoYW5rcywNClJhc211cw0K
+PiBGcm9tOiBKb2FraW0gWmhhbmcNCj4gU2VudDogTW9uZGF5LCBBcHJpbCAyOSwgMjAxOSAzOjQ4
+IFBNDQo+IA0KPiBUaW1lIFNlZ21lbnQxKHRzZWcxKSBpcyBjb21wb3NlZCBvZiBQcm9wYWdhdGUg
+U2VnbWVudChwcm9wX3NlZykgYW5kDQo+IFBoYXNlIFNlZ21lbmcxKHBoYXNlX3NlZzEpLiBUaGUg
+cmFuZ2Ugb2YgVGltZSBTZWdtZW50MShwbHVzIDIpIGlzIDIgdXAgdG8NCj4gMTYgYWNjb3JkaW5n
+IHRvIGxhdGVzdCByZWZlcmVuY2UgbWFudWFsLiBUaGF0IG1lYW5zIHRoZSBtaW5pbXVtIHZhbHVl
+IG9mDQo+IFBST1BTRUcgYW5kIFBTRUcxIGJpdCBmaWVsZCBpcyAwLiBTbyBjaGFuZ2UgLnRzZWcx
+IG1pbiB2YWx1ZSB0byAyLg0KPiANCg0KSSBzYXcgbGF0ZXN0IE1YNlEgUk0gc3RpbGwgaW5kaWNh
+dGVzIGl0J3MgNC0xNi4NCkNhbiB5b3UgaGVscCBkb3VibGUgY2hlY2sgd2l0aCBJQyBndXlzIHdo
+ZXRoZXIgYWxsIFJNIG9mIHJlbGF0ZWQgY2hpcHMNCm5lZWQgdXBkYXRlPw0KDQpSZWdhcmRzDQpE
+b25nIEFpc2hlbmcNCg0KPiBTaWduZWQtb2ZmLWJ5OiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56
+aGFuZ0BueHAuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgfCAyICst
+DQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJpdmVycy9uZXQvY2Fu
+L2ZsZXhjYW4uYyBpbmRleA0KPiBlMzUwODNmZjMxZWUuLjJlYTM1ZWY0YWEyNyAxMDA2NDQNCj4g
+LS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiArKysgYi9kcml2ZXJzL25ldC9jYW4v
+ZmxleGNhbi5jDQo+IEBAIC0zMjcsNyArMzI3LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGV4
+Y2FuX2RldnR5cGVfZGF0YQ0KPiBmc2xfbHMxMDIxYV9yMl9kZXZ0eXBlX2RhdGEgPSB7DQo+IA0K
+PiAgc3RhdGljIGNvbnN0IHN0cnVjdCBjYW5fYml0dGltaW5nX2NvbnN0IGZsZXhjYW5fYml0dGlt
+aW5nX2NvbnN0ID0gew0KPiAgCS5uYW1lID0gRFJWX05BTUUsDQo+IC0JLnRzZWcxX21pbiA9IDQs
+DQo+ICsJLnRzZWcxX21pbiA9IDIsDQo+ICAJLnRzZWcxX21heCA9IDE2LA0KPiAgCS50c2VnMl9t
+aW4gPSAyLA0KPiAgCS50c2VnMl9tYXggPSA4LA0KPiAtLQ0KPiAyLjE3LjENCg0K
