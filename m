@@ -1,62 +1,78 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v11 1/5] can: m_can: Create a m_can platform framework
-Date: Wed, 1 May 2019 09:10:27 -0500
-Message-ID: <a8b9fcca-dc35-3ca4-e3eb-109bc534e804@ti.com>
-References: <20190319172651.10012-1-dmurphy@ti.com>
- <3ce79402-00f1-d7e6-955e-1ad7eb00d0de@ti.com>
- <c05a6a22-c162-518d-683a-18731bd67e38@grandegger.com>
- <2d594ba8-e4e4-14f9-1eb0-8f753c79eb54@ti.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH net-next] can: kvaser_usb: Use struct_size() in
+ alloc_candev()
+Date: Wed, 1 May 2019 12:42:03 -0500
+Message-ID: <524a265c-21fb-72e1-e077-dd51d8807751@embeddedor.com>
+References: <20190208031035.GA2665@embeddedor>
+ <1220cd8d-913f-934b-9c4d-26f4012c3150@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <2d594ba8-e4e4-14f9-1eb0-8f753c79eb54@ti.com>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1220cd8d-913f-934b-9c4d-26f4012c3150@embeddedor.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, mkl@pengutronix.de, davem@davemloft.net
+Sender: netdev-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hello
+Hi all,
 
-On 4/18/19 9:36 AM, Dan Murphy wrote:
-> Marc
+Friendly ping(second one):
+
+Who can take this?
+
+Thanks
+--
+Gustavo
+
+On 2/25/19 6:48 PM, Gustavo A. R. Silva wrote:
+> Hi all,
 > 
-> On 4/2/19 7:17 AM, Wolfgang Grandegger wrote:
->> Hello Dan,
+> Friendly ping:
+> 
+> Who can take this?
+> 
+> Thanks
+> --
+> Gustavo
+> 
+> On 2/7/19 9:10 PM, Gustavo A. R. Silva wrote:
+>> One of the more common cases of allocation size calculations is finding
+>> the size of a structure that has a zero-sized array at the end, along
+>> with memory for some number of elements for that array. For example:
 >>
->> Am 02.04.19 um 14:03 schrieb Dan Murphy:
->>> Wolfgang
->>>
->>> On 3/19/19 12:26 PM, Dan Murphy wrote:
->>>> Create a m_can platform framework that peripheral
->>>> devices can register to and use common code and register sets.
->>>> The peripheral devices may provide read/write and configuration
->>>> support of the IP.
->>>>
->>>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
->>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->>>> ---
->>>>
->>>
->>> Wondering if this will be going into 5.1 PR?
+>> struct foo {
+>>     int stuff;
+>>     void *entry[];
+>> };
 >>
->> it's Marc who is doing the upstreaming ... and maybe a final review as well.
+>> instance = alloc(sizeof(struct foo) + count * sizeof(void *));
 >>
-> 
-> Can you tell me if this will be taken?
-
-This patchset has gone unresponded to from the maintainers for quite some time.
-
-I have numerous customers using this patchset from my public repo and they want the
-driver in the mainline kernel.
-
-Is there any help or anything needed to get this merged for 5.2?
-
-Dan
-
-> 
-> Dan
-> 
->> Wolfgang.
+>> Instead of leaving these open-coded and prone to type mistakes, we can
+>> now use the new struct_size() helper:
+>>
+>> instance = alloc(struct_size(instance, entry, count));
+>>
+>> This code was detected with the help of Coccinelle.
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+>> ---
+>>  drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+>> index c89c7d4900d7..0f1d3e807d63 100644
+>> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+>> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+>> @@ -643,8 +643,7 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev,
+>>  			return err;
+>>  	}
+>>  
+>> -	netdev = alloc_candev(sizeof(*priv) +
+>> -			      dev->max_tx_urbs * sizeof(*priv->tx_contexts),
+>> +	netdev = alloc_candev(struct_size(priv, tx_contexts, dev->max_tx_urbs),
+>>  			      dev->max_tx_urbs);
+>>  	if (!netdev) {
+>>  		dev_err(&dev->intf->dev, "Cannot alloc candev\n");
 >>
