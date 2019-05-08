@@ -1,57 +1,92 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] can: mark expected switch fall-throughs
-Date: Wed, 8 May 2019 12:30:50 -0500
-Message-ID: <0527d7c5-78f8-d581-1960-7ceda8bc3f49@embeddedor.com>
-References: <20190129180612.GA28650@embeddedor>
- <31d206cd-65f2-66be-ed79-583210a88d57@pengutronix.de>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v11 1/5] can: m_can: Create a m_can platform framework
+Date: Wed, 8 May 2019 14:54:56 -0500
+Message-ID: <35d179a7-2682-111e-638b-903559f0974a@ti.com>
+References: <20190319172651.10012-1-dmurphy@ti.com>
+ <8b53474d-9dbf-4b81-defd-1587e022990b@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <31d206cd-65f2-66be-ed79-583210a88d57@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <8b53474d-9dbf-4b81-defd-1587e022990b@pengutronix.de>
 Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hi Marc,
+Marc
 
-On 2/26/19 2:02 AM, Marc Kleine-Budde wrote:
-> On 1/29/19 7:06 PM, Gustavo A. R. Silva wrote:
->> In preparation to enabling -Wimplicit-fallthrough, mark switch cases
->> where we are expecting to fall through.
+Thanks for the comments
+
+On 5/8/19 9:35 AM, Marc Kleine-Budde wrote:
+> On 3/19/19 6:26 PM, Dan Murphy wrote:
+>> Create a m_can platform framework that peripheral
+>> devices can register to and use common code and register sets.
+>> The peripheral devices may provide read/write and configuration
+>> support of the IP.
 >>
->> This patch fixes the following warnings:
->>
->> drivers/net/can/peak_canfd/peak_pciefd_main.c:668:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/spi/mcp251x.c:875:7: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/usb/peak_usb/pcan_usb.c:422:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/at91_can.c:895:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/at91_can.c:953:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
->> drivers/net/can/usb/peak_usb/pcan_usb.c: In function ‘pcan_usb_decode_error’:
->> drivers/net/can/usb/peak_usb/pcan_usb.c:422:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
->>    if (n & PCAN_USB_ERROR_BUS_LIGHT) {
->>       ^
->> drivers/net/can/usb/peak_usb/pcan_usb.c:428:2: note: here
->>   case CAN_STATE_ERROR_WARNING:
->>   ^~~~
->>
->> Warning level 3 was used: -Wimplicit-fallthrough=3
->>
->> This patch is part of the ongoing efforts to enabling
->> -Wimplicit-fallthrough.
->>
->> Notice that in some cases spelling mistakes were fixed.
->> In other cases, the /* fall through */ comment is placed
->> at the bottom of the case statement, which is what GCC
->> is expecting to find.
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
 > 
-> Added to linux-can-next.
+> [...]
+> 
+>> -/* m_can private data structure */
+>> -struct m_can_priv {
+>> -	struct can_priv can;	/* must be the first member */
+>> -	struct napi_struct napi;
+>> -	struct net_device *dev;
+>> -	struct device *device;
+>> -	struct clk *hclk;
+>> -	struct clk *cclk;
+>> -	void __iomem *base;
+>> -	u32 irqstatus;
+>> -	int version;
+>> -
+>> -	/* message ram configuration */
+>> -	void __iomem *mram_base;
+>> -	struct mram_cfg mcfg[MRAM_CFG_NUM];
+>> -};
+>> +static u32 m_can_read(struct m_can_priv *priv, enum m_can_reg reg)
+>> +{
+>> +	if (priv->ops->read_reg)
+>> +		return priv->ops->read_reg(priv, reg);
+>> +	else
+>> +		return -EINVAL;
+>> +}
+> 
+> How do you plan to check the return value here?
+> What's the difference between a register value of 0xffffffe9 and
+> returning -EINVAL?
 > 
 
-I wonder if there is any chance for this patch to be queued up for 5.2-rc1.
+Good point.  I could just inline this and return whatever is sent from the callback
+and as you said allow a backtrace to happen if read_reg is invalid.
 
-Thanks
+>>  
+>> -static inline u32 m_can_read(const struct m_can_priv *priv, enum m_can_reg reg)
+>> +static int m_can_write(struct m_can_priv *priv, enum m_can_reg reg, u32 val)
+>>  {
+>> -	return readl(priv->base + reg);
+>> +	if (priv->ops->write_reg)
+>> +		return priv->ops->write_reg(priv, reg, val);
+>> +	else
+>> +		return -EINVAL;
+>>  }
+> 
+> I don't see anyone checking the return value. Better just dereference
+> the pointer and the kernel will produce a nice backtrace.
+> 
+> Same should be done for all read and write variants.
+> 
+
+I will need to go through this and see if there is any caller checking the return.  But
+I think you are correct.  If thats true I will just change this to a void, inline the function
+and allow a backtrace if the callback is null
+
+Dan
+
+
+
+> Marc
+> 
