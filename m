@@ -1,139 +1,75 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v11 1/5] can: m_can: Create a m_can platform framework
-Date: Thu, 9 May 2019 08:38:29 +0200
-Message-ID: <b6d6daab-ff49-76d1-e363-6179100be560@pengutronix.de>
-References: <20190319172651.10012-1-dmurphy@ti.com>
- <8b53474d-9dbf-4b81-defd-1587e022990b@pengutronix.de>
- <35d179a7-2682-111e-638b-903559f0974a@ti.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v12 5/5] can: m_can: Fix checkpatch issues on existing code
+Date: Thu, 9 May 2019 11:11:09 -0500
+Message-ID: <20190509161109.10499-5-dmurphy@ti.com>
+References: <20190509161109.10499-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="a3xXgYU38s46hzqdXcmCpGMtxhdaaPBt4"
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <35d179a7-2682-111e-638b-903559f0974a@ti.com>
+In-Reply-To: <20190509161109.10499-1-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, wg@grandegger.com, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---a3xXgYU38s46hzqdXcmCpGMtxhdaaPBt4
-Content-Type: multipart/mixed; boundary="VQj2Tbcz15jDp4XUoPDDM0DRxRoZdHHvZ";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Dan Murphy <dmurphy@ti.com>, wg@grandegger.com, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <b6d6daab-ff49-76d1-e363-6179100be560@pengutronix.de>
-Subject: Re: [PATCH v11 1/5] can: m_can: Create a m_can platform framework
-References: <20190319172651.10012-1-dmurphy@ti.com>
- <8b53474d-9dbf-4b81-defd-1587e022990b@pengutronix.de>
- <35d179a7-2682-111e-638b-903559f0974a@ti.com>
-In-Reply-To: <35d179a7-2682-111e-638b-903559f0974a@ti.com>
+Fix checkpatch issues found during the m_can framework creation.
+The code the issues were in, was in untouched code and these
+changes should be done separately as to not be confused with the
+framework changes.
 
---VQj2Tbcz15jDp4XUoPDDM0DRxRoZdHHvZ
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Fix these 3 check issues:
+CHECK: Unnecessary parentheses around 'cdev->can.state != CAN_STATE_ERROR_WARNING'
+	if (psr & PSR_EW &&
+	    (cdev->can.state != CAN_STATE_ERROR_WARNING)) {
 
-On 5/8/19 9:54 PM, Dan Murphy wrote:
->>> -/* m_can private data structure */
->>> -struct m_can_priv {
->>> -	struct can_priv can;	/* must be the first member */
->>> -	struct napi_struct napi;
->>> -	struct net_device *dev;
->>> -	struct device *device;
->>> -	struct clk *hclk;
->>> -	struct clk *cclk;
->>> -	void __iomem *base;
->>> -	u32 irqstatus;
->>> -	int version;
->>> -
->>> -	/* message ram configuration */
->>> -	void __iomem *mram_base;
->>> -	struct mram_cfg mcfg[MRAM_CFG_NUM];
->>> -};
->>> +static u32 m_can_read(struct m_can_priv *priv, enum m_can_reg reg)
->>> +{
->>> +	if (priv->ops->read_reg)
->>> +		return priv->ops->read_reg(priv, reg);
->>> +	else
->>> +		return -EINVAL;
->>> +}
->>
->> How do you plan to check the return value here?
->> What's the difference between a register value of 0xffffffe9 and
->> returning -EINVAL?
->=20
-> Good point.  I could just inline this and return whatever is sent
-> from the callback and as you said allow a backtrace to happen if
-> read_reg is invalid.
+CHECK: Unnecessary parentheses around 'cdev->can.state != CAN_STATE_ERROR_PASSIVE'
+	if ((psr & PSR_EP) &&
+	    (cdev->can.state != CAN_STATE_ERROR_PASSIVE)) {
 
-ACK.
-A minimal function will look like this:
+CHECK: Unnecessary parentheses around 'cdev->can.state != CAN_STATE_BUS_OFF'
+	if ((psr & PSR_BO) &&
+	    (cdev->can.state != CAN_STATE_BUS_OFF)) {
 
-static inline u32 m_can_read(struct m_can_priv *priv, enum m_can_reg reg)=
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
 
-{
-	return priv->ops->read_reg(priv, reg);
-}
+v12 - No Changes - https://lore.kernel.org/patchwork/patch/1052304/
 
-And of ops or read_reg is NULL, the kernel will access a NULL pointer
-that would then generate a backtrace.
+v11 - New change to clean up last remaining checkpatch issues on original code.
 
->>> -static inline u32 m_can_read(const struct m_can_priv *priv, enum m_c=
-an_reg reg)
->>> +static int m_can_write(struct m_can_priv *priv, enum m_can_reg reg, =
-u32 val)
->>>  {
->>> -	return readl(priv->base + reg);
->>> +	if (priv->ops->write_reg)
->>> +		return priv->ops->write_reg(priv, reg, val);
->>> +	else
->>> +		return -EINVAL;
->>>  }
->>
->> I don't see anyone checking the return value. Better just dereference
->> the pointer and the kernel will produce a nice backtrace.
->>
->> Same should be done for all read and write variants.
->>
->=20
-> I will need to go through this and see if there is any caller checking =
-the return.  But
-> I think you are correct.  If thats true I will just change this to a vo=
-id, inline the function
-> and allow a backtrace if the callback is null
+ drivers/net/can/m_can/m_can.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-ok
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---VQj2Tbcz15jDp4XUoPDDM0DRxRoZdHHvZ--
-
---a3xXgYU38s46hzqdXcmCpGMtxhdaaPBt4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlzTyuUACgkQWsYho5Hk
-nSBiEQgAomIXBCvMCBf188HH8++++IsfVDErPHlwIp+jyLFokfKE8bEUwxRR/U4R
-oa7B9WgfoejxfrLsN0AnmhW4lIZPwCWjbSUcVnS/FxQfHBG3L37xwD/qr5hz7Wtx
-CigXUeuKEQwH5phx7Ht+hDZNi1NCoAwuISekww7wTLlXGMRsJdmhrVFFaPk51S4o
-LnQALH2bcuwJB0VAAjGdIg05X+VQcdISRYlqydol7uVdPbvvE7UuHvUZMzg59AzQ
-wRT3s5nN5z+8d+41xtWYiFJgPQoUfFfIgrE+DppxaNxAbj9EqDVok1cylRmLiAcS
-K6sbNLefiU1uhw9UusZgFjYuWu8PaA==
-=7e44
------END PGP SIGNATURE-----
-
---a3xXgYU38s46hzqdXcmCpGMtxhdaaPBt4--
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 923c53204d7d..ef4282a98fe1 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -733,22 +733,19 @@ static int m_can_handle_state_errors(struct net_device *dev, u32 psr)
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	int work_done = 0;
+ 
+-	if ((psr & PSR_EW) &&
+-	    (cdev->can.state != CAN_STATE_ERROR_WARNING)) {
++	if (psr & PSR_EW && cdev->can.state != CAN_STATE_ERROR_WARNING) {
+ 		netdev_dbg(dev, "entered error warning state\n");
+ 		work_done += m_can_handle_state_change(dev,
+ 						       CAN_STATE_ERROR_WARNING);
+ 	}
+ 
+-	if ((psr & PSR_EP) &&
+-	    (cdev->can.state != CAN_STATE_ERROR_PASSIVE)) {
++	if (psr & PSR_EP && cdev->can.state != CAN_STATE_ERROR_PASSIVE) {
+ 		netdev_dbg(dev, "entered error passive state\n");
+ 		work_done += m_can_handle_state_change(dev,
+ 						       CAN_STATE_ERROR_PASSIVE);
+ 	}
+ 
+-	if ((psr & PSR_BO) &&
+-	    (cdev->can.state != CAN_STATE_BUS_OFF)) {
++	if (psr & PSR_BO && cdev->can.state != CAN_STATE_BUS_OFF) {
+ 		netdev_dbg(dev, "entered error bus off state\n");
+ 		work_done += m_can_handle_state_change(dev,
+ 						       CAN_STATE_BUS_OFF);
+-- 
+2.21.0.5.gaeb582a983
