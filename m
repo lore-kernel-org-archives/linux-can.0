@@ -1,58 +1,30 @@
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: [PATCH repost 5/5] dt-bindings: can: rcar_canfd: document r8a774c0 support
-Date: Thu,  9 May 2019 20:20:22 +0100
-Message-ID: <1557429622-31676-6-git-send-email-fabrizio.castro@bp.renesas.com>
-References: <1557429622-31676-1-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH V3 0/7] can: flexcan: add CAN FD support for i.MX8
+Date: Fri, 10 May 2019 10:49:53 +0000
+Message-ID: <20190510104639.15170-1-qiangqing.zhang@nxp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1557429622-31676-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Stefan-gabriel Mirea <stefan-gabriel.mirea@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-Document the support for rcar_canfd on R8A774C0 SoC devices.
-
-Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-index 41049fe..32f051f 100644
---- a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-+++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-@@ -3,7 +3,8 @@ Renesas R-Car CAN FD controller Device Tree Bindings
- 
- Required properties:
- - compatible: Must contain one or more of the following:
--  - "renesas,rcar-gen3-canfd" for R-Car Gen3 compatible controller.
-+  - "renesas,rcar-gen3-canfd" for R-Car Gen3 and RZ/G2 compatible controllers.
-+  - "renesas,r8a774c0-canfd" for R8A774C0 (RZ/G2E) compatible controller.
-   - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller.
-   - "renesas,r8a7796-canfd" for R8A7796 (R-Car M3-W) compatible controller.
-   - "renesas,r8a77965-canfd" for R8A77965 (R-Car M3-N) compatible controller.
-@@ -28,12 +29,13 @@ The name of the child nodes are "channel0" and "channel1" respectively. Each
- child node supports the "status" property only, which is used to
- enable/disable the respective channel.
- 
--Required properties for "renesas,r8a7795-canfd", "renesas,r8a7796-canfd",
--"renesas,r8a77965-canfd" and "renesas,r8a77990-canfd" compatible:
--In R8A7795, R8A7796, R8A77965 and R8A77990 SoCs, canfd clock is a div6 clock
--and can be used by both CAN and CAN FD controller at the same time. It needs
--to be scaled to maximum frequency if any of these controllers use it. This is
--done using the below properties:
-+Required properties for "renesas,r8a774c0-canfd", "renesas,r8a7795-canfd",
-+"renesas,r8a7796-canfd", "renesas,r8a77965-canfd", and "renesas,r8a77990-canfd"
-+compatible:
-+In R8A774C0, R8A7795, R8A7796, R8A77965, and R8A77990 SoCs, canfd clock is a
-+div6 clock and can be used by both CAN and CAN FD controller at the same time.
-+It needs to be scaled to maximum frequency if any of these controllers use it.
-+This is done using the below properties:
- 
- - assigned-clocks: phandle of canfd clock.
- - assigned-clock-rates: maximum frequency of this clock.
--- 
-2.7.4
+SGkgTWFyYywNCg0KU3RlZmFuLWdhYnJpZWwgTWlyZWEgd2FzIHN1Y2Nlc3NmdWxseSB2YWxpZGF0
+ZWQgdGhpcyBwYXRjaCBzZXQgb24gYW4gUzMyVjIzNA0KYmFzZWQgYm9hcmQsIGFuZCBJIGhhdmUg
+aW1wcm92ZWQgdGhlIGRyaXZlciB3aXRoIGhpcyB2YWx1YWJsZSBmZWVkYmFjay4NCg0KSSBhbHNv
+IHNwbGl0IHRoZSBwYXRjaCBzZXQgaW50byBzbWFsbCBwYXJ0aWNsZSBzaXplIHRoYXQgd2lsbCBl
+YXN5IHlvdXINCnBhdGNoIHJldmlldy4NCg0KUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KDQpEb25n
+IEFpc2hlbmcgKDMpOg0KICBjYW46IGZsZXhjYW46IGltcHJvdmUgYml0dGltaW5nIHNldHRpbmcg
+Zm9yIGZkIG1vZGUNCiAgY2FuOiBmbGV4Y2FuOiBhZGQgQ0FORkQgQlJTIHN1cHBvcnQNCiAgY2Fu
+OiBmbGV4Y2FuOiBhZGQgaW14OHFtIHN1cHBvcnQNCg0KSm9ha2ltIFpoYW5nICg0KToNCiAgY2Fu
+OiBmbGV4Y2FuOiBhbGxvY2F0ZSBza2IgaW4gbWFpbGJveF9yZWFkDQogIGNhbjogZmxleGNhbjog
+dXNlIHN0cnVjdCBjYW5mZF9mcmFtZSBmb3Igbm9ybWFsIENBTiBmcmFtZQ0KICBjYW46IGZsZXhj
+YW46IGFkZCBDQU4gRkQgbW9kZSBzdXBwb3J0DQogIGNhbjogZmxleGNhbjogYWRkIElTTyBDQU4g
+RkQgZmVhdHVyZSBzdXBwb3J0DQoNCiBkcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jICAgICAgfCAy
+ODMgKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tDQogZHJpdmVycy9uZXQvY2FuL3J4
+LW9mZmxvYWQuYyAgIHwgIDMzICsrLS0NCiBpbmNsdWRlL2xpbnV4L2Nhbi9yeC1vZmZsb2FkLmgg
+fCAgIDUgKy0NCiAzIGZpbGVzIGNoYW5nZWQsIDI1NSBpbnNlcnRpb25zKCspLCA2NiBkZWxldGlv
+bnMoLSkNCg0KLS0gDQoyLjE3LjENCg0K
