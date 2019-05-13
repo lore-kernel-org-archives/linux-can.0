@@ -1,45 +1,44 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH V3 7/7] can: flexcan: add imx8qm support
-Date: Fri, 10 May 2019 10:50:14 +0000
-Message-ID: <20190510104639.15170-8-qiangqing.zhang@nxp.com>
-References: <20190510104639.15170-1-qiangqing.zhang@nxp.com>
+From: Pankaj Bansal <pankaj.bansal@nxp.com>
+Subject: [PATCH 0/2] arm64: dts: fsl: add flexcan nodes in layerscape SOCs
+Date: Mon, 13 May 2019 06:02:45 +0000
+Message-ID: <20190513112612.11036-1-pankaj.bansal@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190510104639.15170-1-qiangqing.zhang@nxp.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Stefan-gabriel Mirea <stefan-gabriel.mirea@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>
+Cc: Pankaj Bansal <pankaj.bansal@nxp.com>, Varun Sethi <V.Sethi@nxp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-RnJvbTogRG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4NCg0KVGhlIEZsZXhjYW4g
-b24gaS5NWDhRTSBzdXBwb3J0cyBDQU4gRkQgcHJvdG9jb2wuDQoNClNpZ25lZC1vZmYtYnk6IERv
-bmcgQWlzaGVuZyA8YWlzaGVuZy5kb25nQG54cC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBKb2FraW0g
-WmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPg0KDQpDaGFuZ2VMb2c6DQotLS0tLS0tLS0t
-DQpWMS0+VjI6DQoJKk5vbmUNClYyLT5WMzoNCgkqTm9uZQ0KLS0tDQogZHJpdmVycy9uZXQvY2Fu
-L2ZsZXhjYW4uYyB8IDcgKysrKysrKw0KIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKykN
-Cg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2ZXJzL25ldC9j
-YW4vZmxleGNhbi5jDQppbmRleCBlZDM0NjM1ODJkYzEuLmZiMGNhOTIxYWY0MSAxMDA2NDQNCi0t
-LSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCisrKyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4
-Y2FuLmMNCkBAIC0zNDYsNiArMzQ2LDEyIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZmxleGNhbl9k
-ZXZ0eXBlX2RhdGEgZnNsX2lteDZxX2RldnR5cGVfZGF0YSA9IHsNCiAJCUZMRVhDQU5fUVVJUktf
-U0VUVVBfU1RPUF9NT0RFLA0KIH07DQogDQorc3RhdGljIHN0cnVjdCBmbGV4Y2FuX2RldnR5cGVf
-ZGF0YSBmc2xfaW14OHFtX2RldnR5cGVfZGF0YSA9IHsNCisJLnF1aXJrcyA9IEZMRVhDQU5fUVVJ
-UktfRElTQUJMRV9SWEZHIHwgRkxFWENBTl9RVUlSS19FTkFCTEVfRUFDRU5fUlJTIHwNCisJCUZM
-RVhDQU5fUVVJUktfVVNFX09GRl9USU1FU1RBTVAgfCBGTEVYQ0FOX1FVSVJLX0JST0tFTl9QRVJS
-X1NUQVRFIHwNCisJCUZMRVhDQU5fUVVJUktfVElNRVNUQU1QX1NVUFBPUlRfRkQsDQorfTsNCisN
-CiBzdGF0aWMgY29uc3Qgc3RydWN0IGZsZXhjYW5fZGV2dHlwZV9kYXRhIGZzbF92ZjYxMF9kZXZ0
-eXBlX2RhdGEgPSB7DQogCS5xdWlya3MgPSBGTEVYQ0FOX1FVSVJLX0RJU0FCTEVfUlhGRyB8IEZM
-RVhDQU5fUVVJUktfRU5BQkxFX0VBQ0VOX1JSUyB8DQogCQlGTEVYQ0FOX1FVSVJLX0RJU0FCTEVf
-TUVDUiB8IEZMRVhDQU5fUVVJUktfVVNFX09GRl9USU1FU1RBTVAgfA0KQEAgLTE2NjcsNiArMTY3
-Myw3IEBAIHN0YXRpYyBpbnQgZmxleGNhbl9zZXR1cF9zdG9wX21vZGUoc3RydWN0IHBsYXRmb3Jt
-X2RldmljZSAqcGRldikNCiB9DQogDQogc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQg
-ZmxleGNhbl9vZl9tYXRjaFtdID0gew0KKwl7IC5jb21wYXRpYmxlID0gImZzbCxpbXg4cW0tZmxl
-eGNhbiIsIC5kYXRhID0gJmZzbF9pbXg4cW1fZGV2dHlwZV9kYXRhLCB9LA0KIAl7IC5jb21wYXRp
-YmxlID0gImZzbCxpbXg2cS1mbGV4Y2FuIiwgLmRhdGEgPSAmZnNsX2lteDZxX2RldnR5cGVfZGF0
-YSwgfSwNCiAJeyAuY29tcGF0aWJsZSA9ICJmc2wsaW14MjgtZmxleGNhbiIsIC5kYXRhID0gJmZz
-bF9pbXgyOF9kZXZ0eXBlX2RhdGEsIH0sDQogCXsgLmNvbXBhdGlibGUgPSAiZnNsLGlteDUzLWZs
-ZXhjYW4iLCAuZGF0YSA9ICZmc2xfaW14MjVfZGV2dHlwZV9kYXRhLCB9LA0KLS0gDQoyLjE3LjEN
-Cg0K
+NXP Layerscape SOCs LX2160A and LS1028A both contain flexcan node capable
+of FD mode.
+
+Cc: Varun Sethi <V.Sethi@nxp.com>
+
+Dependencies:
+ - https://www.spinics.net/lists/linux-can/msg01562.html
+
+Pankaj Bansal (2):
+  arm64: dts: fsl: lx2160a: add flexcan node
+  arm64: dts: fsl: ls1028a: add flexcan node
+
+ .../boot/dts/freescale/fsl-ls1028a-qds.dts    | 10 ++++++++-
+ .../boot/dts/freescale/fsl-ls1028a-rdb.dts    | 18 ++++++++++++++-
+ .../arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 22 ++++++++++++++++++-
+ .../boot/dts/freescale/fsl-lx2160a-qds.dts    | 10 ++++++++-
+ .../boot/dts/freescale/fsl-lx2160a-rdb.dts    | 18 ++++++++++++++-
+ .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 20 ++++++++++++++++-
+ 6 files changed, 92 insertions(+), 6 deletions(-)
+
+-- 
+2.17.1
