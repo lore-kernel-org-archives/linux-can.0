@@ -1,37 +1,71 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v12 1/5] can: m_can: Create a m_can platform framework
-Date: Wed, 15 May 2019 15:54:12 -0500
-Message-ID: <dbb7bdef-820d-5dcc-d7b5-a82bc1b076fb@ti.com>
-References: <20190509161109.10499-1-dmurphy@ti.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] can: Fix error path of can_init
+Date: Thu, 16 May 2019 22:36:26 +0800
+Message-ID: <20190516143626.27636-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190509161109.10499-1-dmurphy@ti.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: davem@davemloft.net, socketcan@hartkopp.net, mkl@pengutronix.de
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: linux-can.vger.kernel.org
 
-Marc
+This patch add error path for can_init to
+avoid possible crash if some error occurs.
 
-On 5/9/19 11:11 AM, Dan Murphy wrote:
-> Create a m_can platform framework that peripheral
-> devices can register to and use common code and register sets.
-> The peripheral devices may provide read/write and configuration
-> support of the IP.
-> 
-> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
-> 
-> v12 - Update the m_can_read/write functions to create a backtrace if the callback
-> pointer is NULL. - https://lore.kernel.org/patchwork/patch/1052302/
-> 
+Fixes: 0d66548a10cb ("[CAN]: Add PF_CAN core module")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ net/can/af_can.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-Is this able to be merged now?
-
-Dan
-
-<snip>
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 1684ba5..a1781ea 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -958,6 +958,8 @@ static void can_pernet_exit(struct net *net)
+ 
+ static __init int can_init(void)
+ {
++	int rc;
++
+ 	/* check for correct padding to be able to use the structs similarly */
+ 	BUILD_BUG_ON(offsetof(struct can_frame, can_dlc) !=
+ 		     offsetof(struct canfd_frame, len) ||
+@@ -971,15 +973,31 @@ static __init int can_init(void)
+ 	if (!rcv_cache)
+ 		return -ENOMEM;
+ 
+-	register_pernet_subsys(&can_pernet_ops);
++	rc = register_pernet_subsys(&can_pernet_ops);
++	if (rc)
++		goto out_pernet;
+ 
+ 	/* protocol register */
+-	sock_register(&can_family_ops);
+-	register_netdevice_notifier(&can_netdev_notifier);
++	rc = sock_register(&can_family_ops);
++	if (rc)
++		goto out_sock;
++	rc = register_netdevice_notifier(&can_netdev_notifier);
++	if (rc)
++		goto out_notifier;
++
+ 	dev_add_pack(&can_packet);
+ 	dev_add_pack(&canfd_packet);
+ 
+ 	return 0;
++
++out_notifier:
++	sock_unregister(PF_CAN);
++out_sock:
++	unregister_pernet_subsys(&can_pernet_ops);
++out_pernet:
++	kmem_cache_destroy(rcv_cache);
++
++	return rc;
+ }
+ 
+ static __exit void can_exit(void)
+-- 
+1.8.3.1
