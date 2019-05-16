@@ -1,91 +1,81 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] can: gw: Fix error path of cgw_module_init
-Date: Thu, 16 May 2019 23:54:35 +0800
-Message-ID: <20190516155435.42376-1-yuehaibing@huawei.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: Fix error path of can_init
+Date: Thu, 16 May 2019 18:25:49 +0200
+Message-ID: <70bc346c-9328-d0a2-bd7e-af8dff748061@hartkopp.net>
+References: <20190516143626.27636-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190516143626.27636-1-yuehaibing@huawei.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: davem@davemloft.net, socketcan@hartkopp.net, mkl@pengutronix.de
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
+To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net, mkl@pengutronix.de
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-This patch fix error path for cgw_module_init
-to avoid possible crash if some error occurs.
 
-Fixes: c1aabdf379bc ("can-gw: add netlink based CAN routing")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- net/can/gw.c | 46 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 31 insertions(+), 15 deletions(-)
 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 53859346..8b53ec7 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -1046,32 +1046,48 @@ static __init int cgw_module_init(void)
- 	pr_info("can: netlink gateway (rev " CAN_GW_VERSION ") max_hops=%d\n",
- 		max_hops);
- 
--	register_pernet_subsys(&cangw_pernet_ops);
-+	ret = register_pernet_subsys(&cangw_pernet_ops);
-+	if (ret)
-+		return ret;
-+
-+	ret = -ENOMEM;
- 	cgw_cache = kmem_cache_create("can_gw", sizeof(struct cgw_job),
- 				      0, 0, NULL);
--
- 	if (!cgw_cache)
--		return -ENOMEM;
-+		goto out_cache_create;
- 
- 	/* set notifier */
- 	notifier.notifier_call = cgw_notifier;
--	register_netdevice_notifier(&notifier);
-+	ret = register_netdevice_notifier(&notifier);
-+	if (ret)
-+		goto out_register_notifier;
- 
- 	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_GETROUTE,
- 				   NULL, cgw_dump_jobs, 0);
--	if (ret) {
--		unregister_netdevice_notifier(&notifier);
--		kmem_cache_destroy(cgw_cache);
--		return -ENOBUFS;
--	}
--
--	/* Only the first call to rtnl_register_module can fail */
--	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
--			     cgw_create_job, NULL, 0);
--	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
--			     cgw_remove_job, NULL, 0);
-+	if (ret)
-+		goto out_rtnl_register1;
-+
-+	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
-+				   cgw_create_job, NULL, 0);
-+	if (ret)
-+		goto out_rtnl_register2;
-+	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
-+				   cgw_remove_job, NULL, 0);
-+	if (ret)
-+		goto out_rtnl_register2;
- 
- 	return 0;
-+
-+out_rtnl_register2:
-+	rtnl_unregister_all(PF_CAN);
-+out_rtnl_register1:
-+	unregister_netdevice_notifier(&notifier);
-+out_register_notifier:
-+	kmem_cache_destroy(cgw_cache);
-+out_cache_create:
-+	unregister_pernet_subsys(&cangw_pernet_ops);
-+
-+	return ret;
- }
- 
- static __exit void cgw_module_exit(void)
--- 
-1.8.3.1
+On 16.05.19 16:36, YueHaibing wrote:
+> This patch add error path for can_init to
+> avoid possible crash if some error occurs.
+> 
+> Fixes: 0d66548a10cb ("[CAN]: Add PF_CAN core module")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+
+Thanks!
+
+> ---
+>   net/can/af_can.c | 24 +++++++++++++++++++++---
+>   1 file changed, 21 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/can/af_can.c b/net/can/af_can.c
+> index 1684ba5..a1781ea 100644
+> --- a/net/can/af_can.c
+> +++ b/net/can/af_can.c
+> @@ -958,6 +958,8 @@ static void can_pernet_exit(struct net *net)
+>   
+>   static __init int can_init(void)
+>   {
+> +	int rc;
+> +
+>   	/* check for correct padding to be able to use the structs similarly */
+>   	BUILD_BUG_ON(offsetof(struct can_frame, can_dlc) !=
+>   		     offsetof(struct canfd_frame, len) ||
+> @@ -971,15 +973,31 @@ static __init int can_init(void)
+>   	if (!rcv_cache)
+>   		return -ENOMEM;
+>   
+> -	register_pernet_subsys(&can_pernet_ops);
+> +	rc = register_pernet_subsys(&can_pernet_ops);
+> +	if (rc)
+> +		goto out_pernet;
+>   
+>   	/* protocol register */
+> -	sock_register(&can_family_ops);
+> -	register_netdevice_notifier(&can_netdev_notifier);
+> +	rc = sock_register(&can_family_ops);
+> +	if (rc)
+> +		goto out_sock;
+> +	rc = register_netdevice_notifier(&can_netdev_notifier);
+> +	if (rc)
+> +		goto out_notifier;
+> +
+>   	dev_add_pack(&can_packet);
+>   	dev_add_pack(&canfd_packet);
+>   
+>   	return 0;
+> +
+> +out_notifier:
+> +	sock_unregister(PF_CAN);
+> +out_sock:
+> +	unregister_pernet_subsys(&can_pernet_ops);
+> +out_pernet:
+> +	kmem_cache_destroy(rcv_cache);
+> +
+> +	return rc;
+>   }
+>   
+>   static __exit void can_exit(void)
+> 
