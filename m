@@ -1,102 +1,73 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: gw: Fix error path of cgw_module_init
-Date: Thu, 16 May 2019 18:24:40 +0200
-Message-ID: <5e833f8b-537b-f4b0-4d7d-489936026cca@hartkopp.net>
-References: <20190516155435.42376-1-yuehaibing@huawei.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH] can: flexcan: fix deadlock when using self wakeup
+Date: Fri, 17 May 2019 02:39:10 +0000
+Message-ID: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190516155435.42376-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net, mkl@pengutronix.de
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-
-
-On 16.05.19 17:54, YueHaibing wrote:
-> This patch fix error path for cgw_module_init
-> to avoid possible crash if some error occurs.
-> 
-> Fixes: c1aabdf379bc ("can-gw: add netlink based CAN routing")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
-Thanks!
-
-> ---
->   net/can/gw.c | 46 +++++++++++++++++++++++++++++++---------------
->   1 file changed, 31 insertions(+), 15 deletions(-)
-> 
-> diff --git a/net/can/gw.c b/net/can/gw.c
-> index 53859346..8b53ec7 100644
-> --- a/net/can/gw.c
-> +++ b/net/can/gw.c
-> @@ -1046,32 +1046,48 @@ static __init int cgw_module_init(void)
->   	pr_info("can: netlink gateway (rev " CAN_GW_VERSION ") max_hops=%d\n",
->   		max_hops);
->   
-> -	register_pernet_subsys(&cangw_pernet_ops);
-> +	ret = register_pernet_subsys(&cangw_pernet_ops);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = -ENOMEM;
->   	cgw_cache = kmem_cache_create("can_gw", sizeof(struct cgw_job),
->   				      0, 0, NULL);
-> -
->   	if (!cgw_cache)
-> -		return -ENOMEM;
-> +		goto out_cache_create;
->   
->   	/* set notifier */
->   	notifier.notifier_call = cgw_notifier;
-> -	register_netdevice_notifier(&notifier);
-> +	ret = register_netdevice_notifier(&notifier);
-> +	if (ret)
-> +		goto out_register_notifier;
->   
->   	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_GETROUTE,
->   				   NULL, cgw_dump_jobs, 0);
-> -	if (ret) {
-> -		unregister_netdevice_notifier(&notifier);
-> -		kmem_cache_destroy(cgw_cache);
-> -		return -ENOBUFS;
-> -	}
-> -
-> -	/* Only the first call to rtnl_register_module can fail */
-> -	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
-> -			     cgw_create_job, NULL, 0);
-> -	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
-> -			     cgw_remove_job, NULL, 0);
-> +	if (ret)
-> +		goto out_rtnl_register1;
-> +
-> +	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
-> +				   cgw_create_job, NULL, 0);
-> +	if (ret)
-> +		goto out_rtnl_register2;
-> +	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
-> +				   cgw_remove_job, NULL, 0);
-> +	if (ret)
-> +		goto out_rtnl_register2;
->   
->   	return 0;
-> +
-> +out_rtnl_register2:
-> +	rtnl_unregister_all(PF_CAN);
-> +out_rtnl_register1:
-> +	unregister_netdevice_notifier(&notifier);
-> +out_register_notifier:
-> +	kmem_cache_destroy(cgw_cache);
-> +out_cache_create:
-> +	unregister_pernet_subsys(&cangw_pernet_ops);
-> +
-> +	return ret;
->   }
->   
->   static __exit void cgw_module_exit(void)
-> 
+QXMgcmVwcm90ZWQgYnkgU2VhbiBOeWVramFlciBiZWxsb3c6DQpXaGVuIHN1c3BlbmRpbmcsIHdo
+ZW4gdGhlcmUgaXMgc3RpbGwgY2FuIHRyYWZmaWMgb24gdGhlDQppbnRlcmZhY2VzIHRoZSBmbGV4
+Y2FuIGltbWVkaWF0ZWx5IHdha2VzIHRoZSBwbGF0Zm9ybSBhZ2Fpbi4NCkFzIGl0IHNob3VsZCA6
+LSkNCkJ1dCBpdCB0aHJvd3MgdGhpcyBlcnJvciBtc2c6DQpbIDMxNjkuMzc4NjYxXSBQTTogbm9p
+cnEgc3VzcGVuZCBvZiBkZXZpY2VzIGZhaWxlZA0KDQpPbiB0aGUgd2F5IGRvd24gdG8gc3VzcGVu
+ZCB0aGUgaW50ZXJmYWNlIHRoYXQgdGhyb3dzIHRoZSBlcnJvcg0KbWVzc2FnZSBkb2VzIGNhbGwg
+ZmxleGNhbl9zdXNwZW5kIGJ1dCBmYWlscyB0byBjYWxsDQpmbGV4Y2FuX25vaXJxX3N1c3BlbmQu
+DQpUaGF0IG1lYW5zIHRoZSBmbGV4Y2FuX2VudGVyX3N0b3BfbW9kZSBpcyBjYWxsZWQsIGJ1dCBv
+biB0aGUgd2F5DQpvdXQgb2Ygc3VzcGVuZCB0aGUgZHJpdmVyIG9ubHkgY2FsbHMgZmxleGNhbl9y
+ZXN1bWUgYW5kIHNraXBzDQpmbGV4Y2FuX25vaXJxX3Jlc3VtZSwgdGh1cyBpdCBkb2Vzbid0IGNh
+bGwgZmxleGNhbl9leGl0X3N0b3BfbW9kZS4NClRoaXMgbGVhdmVzIHRoZSBmbGV4Y2FuIGluIHN0
+b3AgbW9kZSwgYW5kIHdpdGggdGhlIGN1cnJlbnQgZHJpdmVyDQppdCBjYW4ndCByZWNvdmVyIGZy
+b20gdGhpcyBldmVuIHdpdGggYSBzb2Z0IHJlYm9vdCwgaXQgcmVxdWlyZXMgYQ0KaGFyZCByZWJv
+b3QuDQoNCkZpeGVzOiBkZTM1NzhjMTk4YzYgKCJjYW46IGZsZXhjYW46IGFkZCBzZWxmIHdha2V1
+cCBzdXBwb3J0IikNCg0KVGhpcyBwYXRjaCBpbnRlbmRzIHRvIGZpeCB0aGUgaXNzdWUsIGFuZCBh
+bHNvIGFkZCBjb21tZW50IHRvIGV4cGxhaW4gdGhlDQp3YWtldXAgZmxvdy4NCg0KU2lnbmVkLW9m
+Zi1ieTogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCi0tLQ0KIGRyaXZl
+cnMvbmV0L2Nhbi9mbGV4Y2FuLmMgfCAxNyArKysrKysrKysrKysrKysrKw0KIDEgZmlsZSBjaGFu
+Z2VkLCAxNyBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxl
+eGNhbi5jIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KaW5kZXggZTM1MDgzZmYzMWVlLi42
+ZmJjZTQ3M2E4YzcgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQorKysg
+Yi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQpAQCAtMjg2LDYgKzI4Niw3IEBAIHN0cnVjdCBm
+bGV4Y2FuX3ByaXYgew0KIAljb25zdCBzdHJ1Y3QgZmxleGNhbl9kZXZ0eXBlX2RhdGEgKmRldnR5
+cGVfZGF0YTsNCiAJc3RydWN0IHJlZ3VsYXRvciAqcmVnX3hjZWl2ZXI7DQogCXN0cnVjdCBmbGV4
+Y2FuX3N0b3BfbW9kZSBzdG07DQorCWJvb2wgaW5fc3RvcF9tb2RlOw0KIA0KIAkvKiBSZWFkIGFu
+ZCBXcml0ZSBBUElzICovDQogCXUzMiAoKnJlYWQpKHZvaWQgX19pb21lbSAqYWRkcik7DQpAQCAt
+MTY1Myw2ICsxNjU0LDcgQEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBmbGV4Y2FuX3N1c3Bl
+bmQoc3RydWN0IGRldmljZSAqZGV2aWNlKQ0KIAkJaWYgKGRldmljZV9tYXlfd2FrZXVwKGRldmlj
+ZSkpIHsNCiAJCQllbmFibGVfaXJxX3dha2UoZGV2LT5pcnEpOw0KIAkJCWZsZXhjYW5fZW50ZXJf
+c3RvcF9tb2RlKHByaXYpOw0KKwkJCXByaXYtPmluX3N0b3BfbW9kZSA9IHRydWU7DQogCQl9IGVs
+c2Ugew0KIAkJCWVyciA9IGZsZXhjYW5fY2hpcF9kaXNhYmxlKHByaXYpOw0KIAkJCWlmIChlcnIp
+DQpAQCAtMTY3OSw2ICsxNjgxLDExIEBAIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgZmxleGNh
+bl9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2aWNlKQ0KIAkJbmV0aWZfZGV2aWNlX2F0dGFjaChk
+ZXYpOw0KIAkJbmV0aWZfc3RhcnRfcXVldWUoZGV2KTsNCiAJCWlmIChkZXZpY2VfbWF5X3dha2V1
+cChkZXZpY2UpKSB7DQorCQkJaWYgKHByaXYtPmluX3N0b3BfbW9kZSkgew0KKwkJCQlmbGV4Y2Fu
+X2VuYWJsZV93YWtldXBfaXJxKHByaXYsIGZhbHNlKTsNCisJCQkJZmxleGNhbl9leGl0X3N0b3Bf
+bW9kZShwcml2KTsNCisJCQkJcHJpdi0+aW5fc3RvcF9tb2RlID0gZmFsc2U7DQorCQkJfQ0KIAkJ
+CWRpc2FibGVfaXJxX3dha2UoZGV2LT5pcnEpOw0KIAkJfSBlbHNlIHsNCiAJCQllcnIgPSBwbV9y
+dW50aW1lX2ZvcmNlX3Jlc3VtZShkZXZpY2UpOw0KQEAgLTE3MTUsNiArMTcyMiwxMSBAQCBzdGF0
+aWMgaW50IF9fbWF5YmVfdW51c2VkIGZsZXhjYW5fbm9pcnFfc3VzcGVuZChzdHJ1Y3QgZGV2aWNl
+ICpkZXZpY2UpDQogCXN0cnVjdCBuZXRfZGV2aWNlICpkZXYgPSBkZXZfZ2V0X2RydmRhdGEoZGV2
+aWNlKTsNCiAJc3RydWN0IGZsZXhjYW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQog
+DQorCS8qIE5lZWQgZW5hYmxlIHdha2V1cCBpbnRlcnJ1cHQgaW4gbm9pcnEgc3VzcGVuZCBzdGFn
+ZS4gT3RoZXJ3aXNlLA0KKwkgKiBpdCB3aWxsIHRyaWdnZXIgY29udGludW91c2x5IHdha2V1cCBp
+bnRlcnJ1cHQgaWYgdGhlIHdha2V1cCBldmVudA0KKwkgKiBjb21lcyBiZWZvcmUgbm9pcnEgc3Vz
+cGVuZCBzdGFnZSwgYW5kIHNpbXVsdGFuZW91c2x5IGluIGhhcyBlbnRlcg0KKwkgKiB0aGUgc3Rv
+cCBtb2RlLg0KKwkgKi8NCiAJaWYgKG5ldGlmX3J1bm5pbmcoZGV2KSAmJiBkZXZpY2VfbWF5X3dh
+a2V1cChkZXZpY2UpKQ0KIAkJZmxleGNhbl9lbmFibGVfd2FrZXVwX2lycShwcml2LCB0cnVlKTsN
+CiANCkBAIC0xNzI2LDkgKzE3MzgsMTQgQEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBmbGV4
+Y2FuX25vaXJxX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXZpY2UpDQogCXN0cnVjdCBuZXRfZGV2
+aWNlICpkZXYgPSBkZXZfZ2V0X2RydmRhdGEoZGV2aWNlKTsNCiAJc3RydWN0IGZsZXhjYW5fcHJp
+diAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQogDQorCS8qIE5lZWQgZXhpdCBzdG9wIG1vZGUg
+aW4gbm9pcnEgcmVzdW1lIHN0YWdlLiBPdGhlcndpc2UsIGl0IHdpbGwNCisJICogdHJpZ2dlciBj
+b250aW51b3VzbHkgd2FrZXVwIGludGVycnVwdCBpZiB0aGUgd2FrZXVwIGV2ZW50IGNvbWVzLA0K
+KwkgKiBhbmQgc2ltdWx0YW5lb3VzbHkgaXQgaGFzIHN0aWxsIGluIHN0b3AgbW9kZS4NCisJICov
+DQogCWlmIChuZXRpZl9ydW5uaW5nKGRldikgJiYgZGV2aWNlX21heV93YWtldXAoZGV2aWNlKSkg
+ew0KIAkJZmxleGNhbl9lbmFibGVfd2FrZXVwX2lycShwcml2LCBmYWxzZSk7DQogCQlmbGV4Y2Fu
+X2V4aXRfc3RvcF9tb2RlKHByaXYpOw0KKwkJcHJpdi0+aW5fc3RvcF9tb2RlID0gZmFsc2U7DQog
+CX0NCiANCiAJcmV0dXJuIDA7DQotLSANCjIuMTcuMQ0KDQo=
