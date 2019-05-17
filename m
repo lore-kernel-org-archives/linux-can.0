@@ -1,90 +1,150 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH] can: flexcan: fix deadlock when using self wakeup
-Date: Fri, 17 May 2019 02:47:24 +0000
-Message-ID: <DB7PR04MB46182799A768197CC7CEA9D0E60B0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: gw: Fix error path of cgw_module_init
+Date: Fri, 17 May 2019 12:40:28 +0200
+Message-ID: <80ca1430-da86-42c3-75c7-eadf91b20220@pengutronix.de>
+References: <20190516155435.42376-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="cPuBWzThF7gPhGlulF8GCMJHLe8C2T2Qq"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190516155435.42376-1-yuehaibing@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net, socketcan@hartkopp.net
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-DQpIaSBNYXJjLA0KDQpTZWFuIE55ZWtqYWVyIHJlcG9ydGVkIHRoZSBpc3N1ZSwgYnV0IHRoZSBm
-aXggaXMgaW5jb3JyZWN0Lg0KaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvbGludXgtY2Fu
-L21zZzAxNDQ3Lmh0bWwNCg0KQ291bGQgeW91IGhlbHAgdG8gYWRkIFNlYW4gTnlla2phZXIgdG8g
-dGhpcyB0aHJlYWQgYXMgSSBjYW4ndCBnZXQgdGhlIGVtYWlsIGFkZHJlc3MuDQpZb3UgY2FuIGFk
-ZCB0aGUgIlJlcG9ydGVkLWJ5IiB0YWcgaWYgeW91IHBpY2sgdXAgdGhlIHBhdGNoLg0KDQpUaGFu
-a3MgYSBsb3QhDQoNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KDQo+IC0tLS0tT3JpZ2lu
-YWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBaaGFuZw0KPiBTZW50OiAyMDE55bm0Neac
-iDE35pelIDEwOjM5DQo+IFRvOiBta2xAcGVuZ3V0cm9uaXguZGU7IGxpbnV4LWNhbkB2Z2VyLmtl
-cm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlteCA8bGludXgtaW14QG54cC5jb20+OyB3Z0BncmFu
-ZGVnZ2VyLmNvbTsNCj4gbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgSm9ha2ltIFpoYW5nIDxxaWFu
-Z3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gU3ViamVjdDogW1BBVENIXSBjYW46IGZsZXhjYW46IGZp
-eCBkZWFkbG9jayB3aGVuIHVzaW5nIHNlbGYgd2FrZXVwDQo+IA0KPiBBcyByZXByb3RlZCBieSBT
-ZWFuIE55ZWtqYWVyIGJlbGxvdzoNCj4gV2hlbiBzdXNwZW5kaW5nLCB3aGVuIHRoZXJlIGlzIHN0
-aWxsIGNhbiB0cmFmZmljIG9uIHRoZSBpbnRlcmZhY2VzIHRoZSBmbGV4Y2FuDQo+IGltbWVkaWF0
-ZWx5IHdha2VzIHRoZSBwbGF0Zm9ybSBhZ2Fpbi4NCj4gQXMgaXQgc2hvdWxkIDotKQ0KPiBCdXQg
-aXQgdGhyb3dzIHRoaXMgZXJyb3IgbXNnOg0KPiBbIDMxNjkuMzc4NjYxXSBQTTogbm9pcnEgc3Vz
-cGVuZCBvZiBkZXZpY2VzIGZhaWxlZA0KPiANCj4gT24gdGhlIHdheSBkb3duIHRvIHN1c3BlbmQg
-dGhlIGludGVyZmFjZSB0aGF0IHRocm93cyB0aGUgZXJyb3IgbWVzc2FnZSBkb2VzDQo+IGNhbGwg
-ZmxleGNhbl9zdXNwZW5kIGJ1dCBmYWlscyB0byBjYWxsIGZsZXhjYW5fbm9pcnFfc3VzcGVuZC4N
-Cj4gVGhhdCBtZWFucyB0aGUgZmxleGNhbl9lbnRlcl9zdG9wX21vZGUgaXMgY2FsbGVkLCBidXQg
-b24gdGhlIHdheSBvdXQgb2YNCj4gc3VzcGVuZCB0aGUgZHJpdmVyIG9ubHkgY2FsbHMgZmxleGNh
-bl9yZXN1bWUgYW5kIHNraXBzIGZsZXhjYW5fbm9pcnFfcmVzdW1lLA0KPiB0aHVzIGl0IGRvZXNu
-J3QgY2FsbCBmbGV4Y2FuX2V4aXRfc3RvcF9tb2RlLg0KPiBUaGlzIGxlYXZlcyB0aGUgZmxleGNh
-biBpbiBzdG9wIG1vZGUsIGFuZCB3aXRoIHRoZSBjdXJyZW50IGRyaXZlciBpdCBjYW4ndA0KPiBy
-ZWNvdmVyIGZyb20gdGhpcyBldmVuIHdpdGggYSBzb2Z0IHJlYm9vdCwgaXQgcmVxdWlyZXMgYSBo
-YXJkIHJlYm9vdC4NCj4gDQo+IEZpeGVzOiBkZTM1NzhjMTk4YzYgKCJjYW46IGZsZXhjYW46IGFk
-ZCBzZWxmIHdha2V1cCBzdXBwb3J0IikNCj4gDQo+IFRoaXMgcGF0Y2ggaW50ZW5kcyB0byBmaXgg
-dGhlIGlzc3VlLCBhbmQgYWxzbyBhZGQgY29tbWVudCB0byBleHBsYWluIHRoZQ0KPiB3YWtldXAg
-Zmxvdy4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5n
-QG54cC5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyB8IDE3ICsrKysr
-KysrKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKQ0KPiANCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2ZXJzL25ldC9jYW4v
-ZmxleGNhbi5jIGluZGV4DQo+IGUzNTA4M2ZmMzFlZS4uNmZiY2U0NzNhOGM3IDEwMDY0NA0KPiAt
-LS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi9m
-bGV4Y2FuLmMNCj4gQEAgLTI4Niw2ICsyODYsNyBAQCBzdHJ1Y3QgZmxleGNhbl9wcml2IHsNCj4g
-IAljb25zdCBzdHJ1Y3QgZmxleGNhbl9kZXZ0eXBlX2RhdGEgKmRldnR5cGVfZGF0YTsNCj4gIAlz
-dHJ1Y3QgcmVndWxhdG9yICpyZWdfeGNlaXZlcjsNCj4gIAlzdHJ1Y3QgZmxleGNhbl9zdG9wX21v
-ZGUgc3RtOw0KPiArCWJvb2wgaW5fc3RvcF9tb2RlOw0KPiANCj4gIAkvKiBSZWFkIGFuZCBXcml0
-ZSBBUElzICovDQo+ICAJdTMyICgqcmVhZCkodm9pZCBfX2lvbWVtICphZGRyKTsNCj4gQEAgLTE2
-NTMsNiArMTY1NCw3IEBAIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgZmxleGNhbl9zdXNwZW5k
-KHN0cnVjdA0KPiBkZXZpY2UgKmRldmljZSkNCj4gIAkJaWYgKGRldmljZV9tYXlfd2FrZXVwKGRl
-dmljZSkpIHsNCj4gIAkJCWVuYWJsZV9pcnFfd2FrZShkZXYtPmlycSk7DQo+ICAJCQlmbGV4Y2Fu
-X2VudGVyX3N0b3BfbW9kZShwcml2KTsNCj4gKwkJCXByaXYtPmluX3N0b3BfbW9kZSA9IHRydWU7
-DQo+ICAJCX0gZWxzZSB7DQo+ICAJCQllcnIgPSBmbGV4Y2FuX2NoaXBfZGlzYWJsZShwcml2KTsN
-Cj4gIAkJCWlmIChlcnIpDQo+IEBAIC0xNjc5LDYgKzE2ODEsMTEgQEAgc3RhdGljIGludCBfX21h
-eWJlX3VudXNlZCBmbGV4Y2FuX3Jlc3VtZShzdHJ1Y3QNCj4gZGV2aWNlICpkZXZpY2UpDQo+ICAJ
-CW5ldGlmX2RldmljZV9hdHRhY2goZGV2KTsNCj4gIAkJbmV0aWZfc3RhcnRfcXVldWUoZGV2KTsN
-Cj4gIAkJaWYgKGRldmljZV9tYXlfd2FrZXVwKGRldmljZSkpIHsNCj4gKwkJCWlmIChwcml2LT5p
-bl9zdG9wX21vZGUpIHsNCj4gKwkJCQlmbGV4Y2FuX2VuYWJsZV93YWtldXBfaXJxKHByaXYsIGZh
-bHNlKTsNCj4gKwkJCQlmbGV4Y2FuX2V4aXRfc3RvcF9tb2RlKHByaXYpOw0KPiArCQkJCXByaXYt
-PmluX3N0b3BfbW9kZSA9IGZhbHNlOw0KPiArCQkJfQ0KPiAgCQkJZGlzYWJsZV9pcnFfd2FrZShk
-ZXYtPmlycSk7DQo+ICAJCX0gZWxzZSB7DQo+ICAJCQllcnIgPSBwbV9ydW50aW1lX2ZvcmNlX3Jl
-c3VtZShkZXZpY2UpOyBAQCAtMTcxNSw2DQo+ICsxNzIyLDExIEBAIHN0YXRpYyBpbnQgX19tYXli
-ZV91bnVzZWQgZmxleGNhbl9ub2lycV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UNCj4gKmRldmljZSkN
-Cj4gIAlzdHJ1Y3QgbmV0X2RldmljZSAqZGV2ID0gZGV2X2dldF9kcnZkYXRhKGRldmljZSk7DQo+
-ICAJc3RydWN0IGZsZXhjYW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQo+IA0KPiAr
-CS8qIE5lZWQgZW5hYmxlIHdha2V1cCBpbnRlcnJ1cHQgaW4gbm9pcnEgc3VzcGVuZCBzdGFnZS4g
-T3RoZXJ3aXNlLA0KPiArCSAqIGl0IHdpbGwgdHJpZ2dlciBjb250aW51b3VzbHkgd2FrZXVwIGlu
-dGVycnVwdCBpZiB0aGUgd2FrZXVwIGV2ZW50DQo+ICsJICogY29tZXMgYmVmb3JlIG5vaXJxIHN1
-c3BlbmQgc3RhZ2UsIGFuZCBzaW11bHRhbmVvdXNseSBpbiBoYXMgZW50ZXINCj4gKwkgKiB0aGUg
-c3RvcCBtb2RlLg0KPiArCSAqLw0KPiAgCWlmIChuZXRpZl9ydW5uaW5nKGRldikgJiYgZGV2aWNl
-X21heV93YWtldXAoZGV2aWNlKSkNCj4gIAkJZmxleGNhbl9lbmFibGVfd2FrZXVwX2lycShwcml2
-LCB0cnVlKTsNCj4gDQo+IEBAIC0xNzI2LDkgKzE3MzgsMTQgQEAgc3RhdGljIGludCBfX21heWJl
-X3VudXNlZA0KPiBmbGV4Y2FuX25vaXJxX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXZpY2UpDQo+
-ICAJc3RydWN0IG5ldF9kZXZpY2UgKmRldiA9IGRldl9nZXRfZHJ2ZGF0YShkZXZpY2UpOw0KPiAg
-CXN0cnVjdCBmbGV4Y2FuX3ByaXYgKnByaXYgPSBuZXRkZXZfcHJpdihkZXYpOw0KPiANCj4gKwkv
-KiBOZWVkIGV4aXQgc3RvcCBtb2RlIGluIG5vaXJxIHJlc3VtZSBzdGFnZS4gT3RoZXJ3aXNlLCBp
-dCB3aWxsDQo+ICsJICogdHJpZ2dlciBjb250aW51b3VzbHkgd2FrZXVwIGludGVycnVwdCBpZiB0
-aGUgd2FrZXVwIGV2ZW50IGNvbWVzLA0KPiArCSAqIGFuZCBzaW11bHRhbmVvdXNseSBpdCBoYXMg
-c3RpbGwgaW4gc3RvcCBtb2RlLg0KPiArCSAqLw0KPiAgCWlmIChuZXRpZl9ydW5uaW5nKGRldikg
-JiYgZGV2aWNlX21heV93YWtldXAoZGV2aWNlKSkgew0KPiAgCQlmbGV4Y2FuX2VuYWJsZV93YWtl
-dXBfaXJxKHByaXYsIGZhbHNlKTsNCj4gIAkJZmxleGNhbl9leGl0X3N0b3BfbW9kZShwcml2KTsN
-Cj4gKwkJcHJpdi0+aW5fc3RvcF9tb2RlID0gZmFsc2U7DQo+ICAJfQ0KPiANCj4gIAlyZXR1cm4g
-MDsNCj4gLS0NCj4gMi4xNy4xDQoNCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cPuBWzThF7gPhGlulF8GCMJHLe8C2T2Qq
+Content-Type: multipart/mixed; boundary="7HyhubOsnI1bfLTM2ueTvbWhCyzvAY2W1";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net,
+ socketcan@hartkopp.net
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-can@vger.kernel.org
+Message-ID: <80ca1430-da86-42c3-75c7-eadf91b20220@pengutronix.de>
+Subject: Re: [PATCH] can: gw: Fix error path of cgw_module_init
+References: <20190516155435.42376-1-yuehaibing@huawei.com>
+In-Reply-To: <20190516155435.42376-1-yuehaibing@huawei.com>
+
+--7HyhubOsnI1bfLTM2ueTvbWhCyzvAY2W1
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 5/16/19 5:54 PM, YueHaibing wrote:
+> This patch fix error path for cgw_module_init
+> to avoid possible crash if some error occurs.
+>=20
+> Fixes: c1aabdf379bc ("can-gw: add netlink based CAN routing")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  net/can/gw.c | 46 +++++++++++++++++++++++++++++++---------------
+>  1 file changed, 31 insertions(+), 15 deletions(-)
+>=20
+> diff --git a/net/can/gw.c b/net/can/gw.c
+> index 53859346..8b53ec7 100644
+> --- a/net/can/gw.c
+> +++ b/net/can/gw.c
+> @@ -1046,32 +1046,48 @@ static __init int cgw_module_init(void)
+>  	pr_info("can: netlink gateway (rev " CAN_GW_VERSION ") max_hops=3D%d\=
+n",
+>  		max_hops);
+> =20
+> -	register_pernet_subsys(&cangw_pernet_ops);
+> +	ret =3D register_pernet_subsys(&cangw_pernet_ops);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret =3D -ENOMEM;
+>  	cgw_cache =3D kmem_cache_create("can_gw", sizeof(struct cgw_job),
+>  				      0, 0, NULL);
+> -
+>  	if (!cgw_cache)
+> -		return -ENOMEM;
+> +		goto out_cache_create;
+> =20
+>  	/* set notifier */
+>  	notifier.notifier_call =3D cgw_notifier;
+> -	register_netdevice_notifier(&notifier);
+> +	ret =3D register_netdevice_notifier(&notifier);
+> +	if (ret)
+> +		goto out_register_notifier;
+> =20
+>  	ret =3D rtnl_register_module(THIS_MODULE, PF_CAN, RTM_GETROUTE,
+>  				   NULL, cgw_dump_jobs, 0);
+> -	if (ret) {
+> -		unregister_netdevice_notifier(&notifier);
+> -		kmem_cache_destroy(cgw_cache);
+> -		return -ENOBUFS;
+> -	}
+> -
+> -	/* Only the first call to rtnl_register_module can fail */
+> -	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
+> -			     cgw_create_job, NULL, 0);
+> -	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
+> -			     cgw_remove_job, NULL, 0);
+> +	if (ret)
+> +		goto out_rtnl_register1;
+> +
+> +	ret =3D rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
+> +				   cgw_create_job, NULL, 0);
+> +	if (ret)
+> +		goto out_rtnl_register2;
+> +	ret =3D rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
+> +				   cgw_remove_job, NULL, 0);
+> +	if (ret)
+> +		goto out_rtnl_register2;
+> =20
+>  	return 0;
+> +
+> +out_rtnl_register2:
+> +	rtnl_unregister_all(PF_CAN);
+
+Currently gw.c is the only user of rtnl_register_module(PF_CAN), but
+PF_CAN is not specific to gw. Better change this to individual
+rtnl_unregister(int protocol, int msgtype).
+
+> +out_rtnl_register1:
+> +	unregister_netdevice_notifier(&notifier);
+> +out_register_notifier:
+> +	kmem_cache_destroy(cgw_cache);
+> +out_cache_create:
+> +	unregister_pernet_subsys(&cangw_pernet_ops);
+> +
+> +	return ret;
+>  }
+> =20
+>  static __exit void cgw_module_exit(void)
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--7HyhubOsnI1bfLTM2ueTvbWhCyzvAY2W1--
+
+--cPuBWzThF7gPhGlulF8GCMJHLe8C2T2Qq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlzej5wACgkQWsYho5Hk
+nSDWnQgAiSTwIP05LGuj4vDQprzUDrSIm12iNB+pwMUbKo12heT6NLYMjcMlqwDl
+LsYodfTBT4jqKsT4EwmVr9voAa78VbUyCPrCyovs1uVj8zehSqoh1m0unR26tNEh
+N/7rhJUByPi9E0z00xFUsmlLzcybJmX2sEccbf0djNkP3No2Xfl3C5sEpmfIEl9W
+M/+RedUAx7eTKh+Tv4Czp7Lma3DLGV43c2CoTmzXCB4E5oJUiw36zRk29hYKUmUP
+NszCTwJfFpHFJg9AepFHWUFOeG3razNSm9b39kl3xQ+CahpdHV8cNAG4AyrmROTl
+rB8jHWIb5gbi5Gk3W8msD4cKIMNtdQ==
+=l9WC
+-----END PGP SIGNATURE-----
+
+--cPuBWzThF7gPhGlulF8GCMJHLe8C2T2Qq--
