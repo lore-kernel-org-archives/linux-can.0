@@ -1,113 +1,73 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: fix deadlock when using self wakeup
-Date: Fri, 17 May 2019 19:18:43 +0200
-Message-ID: <39410a95-0eb9-d266-7210-920fa5198a23@pengutronix.de>
-References: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] can: mark expected switch fall-throughs
+Date: Tue, 21 May 2019 14:06:55 -0500
+Message-ID: <0f2d0366-d384-c247-e144-32a2480e0817@embeddedor.com>
+References: <20190129180612.GA28650@embeddedor>
+ <31d206cd-65f2-66be-ed79-583210a88d57@pengutronix.de>
+ <0527d7c5-78f8-d581-1960-7ceda8bc3f49@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Go4NWz52i4MJ57IbARzPbBbqTrUyn2OAk"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
-Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Aisheng Dong <aisheng.dong@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0527d7c5-78f8-d581-1960-7ceda8bc3f49@embeddedor.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Go4NWz52i4MJ57IbARzPbBbqTrUyn2OAk
-Content-Type: multipart/mixed; boundary="Jv1LKUKsFIPlukbQg0P091Jh5uZXhkcE7";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com"
- <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- Aisheng Dong <aisheng.dong@nxp.com>
-Message-ID: <39410a95-0eb9-d266-7210-920fa5198a23@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: fix deadlock when using self wakeup
-References: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
+Hi Marc,
 
---Jv1LKUKsFIPlukbQg0P091Jh5uZXhkcE7
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+This patch has been in linux-can-next since February, but for some reason
+it hasn't been merged into net yet, not even once into linux-next.
 
-On 5/17/19 4:39 AM, Joakim Zhang wrote:
-> As reproted by Sean Nyekjaer bellow:
-> When suspending, when there is still can traffic on the
-> interfaces the flexcan immediately wakes the platform again.
-> As it should :-)
-> But it throws this error msg:
-> [ 3169.378661] PM: noirq suspend of devices failed
->=20
-> On the way down to suspend the interface that throws the error
-> message does call flexcan_suspend but fails to call
-> flexcan_noirq_suspend.
-> That means the flexcan_enter_stop_mode is called, but on the way
-> out of suspend the driver only calls flexcan_resume and skips
-> flexcan_noirq_resume, thus it doesn't call flexcan_exit_stop_mode.
-> This leaves the flexcan in stop mode, and with the current driver
-> it can't recover from this even with a soft reboot, it requires a
-> hard reboot.
->=20
-> Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
->=20
-> This patch intends to fix the issue, and also add comment to explain th=
-e
-> wakeup flow.
->=20
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+I can add it to my tree if you don't mind.
 
-The existing self wakeup support:
+Thanks
+--
+Gustavo
 
-| de3578c198c6 ("can: flexcan: add self wakeup support")
-
-looks broken to me.
-
-According to the data sheet:
-
-> To enter stop mode, the CPU should manually assert a global Stop Mode
-> request (see the CAN1_STOP_REQ and CAN2_STOP_REQ bit in the register
-> IOMUXC_GPR4) and check the acknowledgement asserted by the FlexCAN
-> (see the CAN1_STOP_ACK and CAN2_STOP_ACK in the register
-> IOMUXC_GPR4). The CPU must only consider the FlexCAN in Stop Mode
-> when both request and acknowledgement conditions are satisfied.
-you have to poll for the acknowledgement, which is not done in the
-driver. Please fix that first.
-
-As far as I understand the documentation the suspend() and resume
-functions should be symmetric. If they are, you shouldn't need the
-in_stop_mode hack.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---Jv1LKUKsFIPlukbQg0P091Jh5uZXhkcE7--
-
---Go4NWz52i4MJ57IbARzPbBbqTrUyn2OAk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAlze7PMACgkQWsYho5Hk
-nSDxPgf/f6dRbgpAnPasidRj//IFjHpbV5QV76Sfq0jpxJhRtmHbfdKs0z6Ww2cI
-dR0YZilm0+5WSvRR58DzVO/JXep6cwbgr/vvYeSf7LFAXiF8+HIatsmf+//XygyS
-YNb8CIZDvFGwcSdFqqjkyO51+QSNB/ZjoLya2TauqveMBZCuyGp7r0toZN1a0MXY
-Lhcn8SXgye4sVXrePnXDuiTbirKRH4UYjXaV27Ej4iA+kCXo+bX4NxMgm7jD7nkN
-lSs/xD578w/dLd7C0Fpdn38MNXNBB86TSQL1M/HEGazbzcA56gdb70+9SfpEjxsw
-5lGoSwAOkFOQsHE19x2826vU2kN+mg==
-=c7E1
------END PGP SIGNATURE-----
-
---Go4NWz52i4MJ57IbARzPbBbqTrUyn2OAk--
+On 5/8/19 12:30 PM, Gustavo A. R. Silva wrote:
+> Hi Marc,
+> 
+> On 2/26/19 2:02 AM, Marc Kleine-Budde wrote:
+>> On 1/29/19 7:06 PM, Gustavo A. R. Silva wrote:
+>>> In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+>>> where we are expecting to fall through.
+>>>
+>>> This patch fixes the following warnings:
+>>>
+>>> drivers/net/can/peak_canfd/peak_pciefd_main.c:668:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>>> drivers/net/can/spi/mcp251x.c:875:7: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>>> drivers/net/can/usb/peak_usb/pcan_usb.c:422:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>>> drivers/net/can/at91_can.c:895:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>>> drivers/net/can/at91_can.c:953:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>>> drivers/net/can/usb/peak_usb/pcan_usb.c: In function ‘pcan_usb_decode_error’:
+>>> drivers/net/can/usb/peak_usb/pcan_usb.c:422:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>>>    if (n & PCAN_USB_ERROR_BUS_LIGHT) {
+>>>       ^
+>>> drivers/net/can/usb/peak_usb/pcan_usb.c:428:2: note: here
+>>>   case CAN_STATE_ERROR_WARNING:
+>>>   ^~~~
+>>>
+>>> Warning level 3 was used: -Wimplicit-fallthrough=3
+>>>
+>>> This patch is part of the ongoing efforts to enabling
+>>> -Wimplicit-fallthrough.
+>>>
+>>> Notice that in some cases spelling mistakes were fixed.
+>>> In other cases, the /* fall through */ comment is placed
+>>> at the bottom of the case statement, which is what GCC
+>>> is expecting to find.
+>>>
+>>> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+>>
+>> Added to linux-can-next.
+>>
+> 
+> I wonder if there is any chance for this patch to be queued up for 5.2-rc1.
+> 
+> Thanks
+> --
+> Gustavo
+> 
