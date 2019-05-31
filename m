@@ -1,70 +1,43 @@
-From: <Eugen.Hristev@microchip.com>
-Subject: [PATCH RESEND RESEND] can: m_can: implement errata "Needless
- activation of MRAF irq"
-Date: Fri, 24 May 2019 07:11:25 +0000
-Message-ID: <1558681595-15736-1-git-send-email-eugen.hristev@microchip.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v12 1/5] can: m_can: Create a m_can platform framework
+Date: Fri, 31 May 2019 06:51:25 -0500
+Message-ID: <a8e3f2d3-18c3-3bdb-1318-8964afc7e032@ti.com>
+References: <20190509161109.10499-1-dmurphy@ti.com>
+ <dbb7bdef-820d-5dcc-d7b5-a82bc1b076fb@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <dbb7bdef-820d-5dcc-d7b5-a82bc1b076fb@ti.com>
 Content-Language: en-US
-Content-ID: <097912EB2D7BE74C9D3E6CCA42B7A573@namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: b29396@freescale.com, Nicolas.Ferre@microchip.com, mkl@pengutronix.de, davem@davemloft.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, wg@grandegger.com, linux-arm-kernel@lists.infradead.org, Ludovic.Desroches@microchip.com, alexandre.belloni@bootlin.com
-Cc: Eugen.Hristev@microchip.com
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-RnJvbTogRXVnZW4gSHJpc3RldiA8ZXVnZW4uaHJpc3RldkBtaWNyb2NoaXAuY29tPg0KDQpEdXJp
-bmcgZnJhbWUgcmVjZXB0aW9uIHdoaWxlIHRoZSBNQ0FOIGlzIGluIEVycm9yIFBhc3NpdmUgc3Rh
-dGUNCmFuZCB0aGUgUmVjZWl2ZSBFcnJvciBDb3VudGVyIGhhcyB0aGV2YWx1ZSBNQ0FOX0VDUi5S
-RUMgPSAxMjcsIGl0IG1heSBoYXBwZW4NCnRoYXQgTUNBTl9JUi5NUkFGIGlzIHNldCBhbHRob3Vn
-aCB0aGVyZSB3YXMgbm8gTWVzc2FnZSBSQU0gYWNjZXNzIGZhaWx1cmUuDQpJZiBNQ0FOX0lSLk1S
-QUYgaXMgZW5hYmxlZCwgYW4gaW50ZXJydXB0IHRvIHRoZSBIb3N0IENQVSBpcyBnZW5lcmF0ZWQu
-DQpXb3JrIGFyb3VuZDoNClRoZSBNZXNzYWdlIFJBTSBBY2Nlc3MgRmFpbHVyZSBpbnRlcnJ1cHQg
-cm91dGluZSBuZWVkcyB0byBjaGVjayB3aGV0aGVyDQogTUNBTl9FQ1IuUlAgPSAnMScgYW5kIE1D
-QU5fRUNSLlJFQyA9ICcxMjcnLg0KSW4gdGhpcyBjYXNlLCByZXNldCBNQ0FOX0lSLk1SQUYuIE5v
-IGZ1cnRoZXIgYWN0aW9uIGlzIHJlcXVpcmVkLg0KVGhpcyBhZmZlY3RzIHZlcnNpb25zIG9sZGVy
-IHRoYW4gMy4yLjANCg0KRXJyYXRhIGV4cGxhaW5lZCBvbiBTYW1hNWQyIFNvQyB3aGljaCBpbmNs
-dWRlcyB0aGlzIGhhcmR3YXJlIGJsb2NrOg0KaHR0cDovL3d3MS5taWNyb2NoaXAuY29tL2Rvd25s
-b2Fkcy9lbi9EZXZpY2VEb2MvU0FNQTVEMi1GYW1pbHktU2lsaWNvbi1FcnJhdGEtYW5kLURhdGEt
-U2hlZXQtQ2xhcmlmaWNhdGlvbi1EUzgwMDAwODAzQi5wZGYgY2hhcHRlciA2LjINCg0KUmVwcm9k
-dWNpYmlsaXR5OiBJZiAyIGRldmljZXMgd2l0aCBtX2NhbiBhcmUgY29ubmVjdGVkIGJhY2sgdG8g
-YmFjaywNCmNvbmZpZ3VyaW5nIGRpZmZlcmVudCBiaXRyYXRlIG9uIHRoZW0gd2lsbCBsZWFkIHRv
-IGludGVycnVwdCBzdG9ybSBvbiB0aGUNCnJlY2VpdmluZyBzaWRlLCB3aXRoIGVycm9yICJNZXNz
-YWdlIFJBTSBhY2Nlc3MgZmFpbHVyZSBvY2N1cnJlZCIuDQpBbm90aGVyIHdheSBpcyB0byBoYXZl
-IGEgYmFkIGhhcmR3YXJlIGNvbm5lY3Rpb24uIEJhZCB3aXJlIGNvbm5lY3Rpb24gY2FuIGxlYWQN
-CnRvIHRoaXMgaXNzdWUgYXMgd2VsbC4NCg0KVGhpcyBwYXRjaCBmaXhlcyB0aGUgaXNzdWUgYWNj
-b3JkaW5nIHRvIHByb3ZpZGVkIHdvcmthcm91bmQuDQoNClJldmlld2VkLWJ5OiBMdWRvdmljIERl
-c3JvY2hlcyA8bHVkb3ZpYy5kZXNyb2NoZXNAbWljcm9jaGlwLmNvbT4NClNpZ25lZC1vZmYtYnk6
-IEV1Z2VuIEhyaXN0ZXYgPGV1Z2VuLmhyaXN0ZXZAbWljcm9jaGlwLmNvbT4NCi0tLQ0KDQpIZWxs
-bywNCg0KVGhpcyBwYXRjaCB3YXMgaW5pdGlhbGx5IHNlbnQgb24gTWFyY2ggNHRoOg0KaHR0cHM6
-Ly9tYXJjLmluZm8vP2w9bGludXgtY2FuJm09MTU1MTcxMDY2MDAzNzIzJnc9Mg0KUmVzZW5kIG9u
-IEFwcmlsIDJuZDoNCmh0dHBzOi8vbWFyYy5pbmZvLz9sPWxpbnV4LWNhbiZtPTE1NTYxNzQwOTgy
-NjI3MSZ3PTINCg0KSXMgdGhlcmUgYW55IHJlYXNvbiB3aHkgdGhlcmUgaXMgbm8gYW5zd2VyID8g
-QW0gSSBub3Qgc2VuZGluZyB0aGlzIHBhdGNoDQp0byB0aGUgcmlnaHQgcGVvcGxlPw0KDQpUaGFu
-ayB5b3UsDQpFdWdlbg0KDQogZHJpdmVycy9uZXQvY2FuL21fY2FuL21fY2FuLmMgfCAyMSArKysr
-KysrKysrKysrKysrKysrKysNCiAxIGZpbGUgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygrKQ0KDQpk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL21fY2FuL21fY2FuLmMgYi9kcml2ZXJzL25ldC9j
-YW4vbV9jYW4vbV9jYW4uYw0KaW5kZXggOWI0NDk0MC4uZGViMjc0YSAxMDA2NDQNCi0tLSBhL2Ry
-aXZlcnMvbmV0L2Nhbi9tX2Nhbi9tX2Nhbi5jDQorKysgYi9kcml2ZXJzL25ldC9jYW4vbV9jYW4v
-bV9jYW4uYw0KQEAgLTgyMiw2ICs4MjIsMjcgQEAgc3RhdGljIGludCBtX2Nhbl9wb2xsKHN0cnVj
-dCBuYXBpX3N0cnVjdCAqbmFwaSwgaW50IHF1b3RhKQ0KIAlpZiAoIWlycXN0YXR1cykNCiAJCWdv
-dG8gZW5kOw0KIA0KKwkvKiBFcnJhdGEgd29ya2Fyb3VuZCBmb3IgaXNzdWUgIk5lZWRsZXNzIGFj
-dGl2YXRpb24gb2YgTVJBRiBpcnEiDQorCSAqIER1cmluZyBmcmFtZSByZWNlcHRpb24gd2hpbGUg
-dGhlIE1DQU4gaXMgaW4gRXJyb3IgUGFzc2l2ZSBzdGF0ZQ0KKwkgKiBhbmQgdGhlIFJlY2VpdmUg
-RXJyb3IgQ291bnRlciBoYXMgdGhlIHZhbHVlIE1DQU5fRUNSLlJFQyA9IDEyNywNCisJICogaXQg
-bWF5IGhhcHBlbiB0aGF0IE1DQU5fSVIuTVJBRiBpcyBzZXQgYWx0aG91Z2ggdGhlcmUgd2FzIG5v
-DQorCSAqIE1lc3NhZ2UgUkFNIGFjY2VzcyBmYWlsdXJlLg0KKwkgKiBJZiBNQ0FOX0lSLk1SQUYg
-aXMgZW5hYmxlZCwgYW4gaW50ZXJydXB0IHRvIHRoZSBIb3N0IENQVSBpcyBnZW5lcmF0ZWQNCisJ
-ICogVGhlIE1lc3NhZ2UgUkFNIEFjY2VzcyBGYWlsdXJlIGludGVycnVwdCByb3V0aW5lIG5lZWRz
-IHRvIGNoZWNrDQorCSAqIHdoZXRoZXIgTUNBTl9FQ1IuUlAgPSDigJkx4oCZIGFuZCBNQ0FOX0VD
-Ui5SRUMgPSAxMjcuDQorCSAqIEluIHRoaXMgY2FzZSwgcmVzZXQgTUNBTl9JUi5NUkFGLiBObyBm
-dXJ0aGVyIGFjdGlvbiBpcyByZXF1aXJlZC4NCisJICovDQorCWlmICgocHJpdi0+dmVyc2lvbiA8
-PSAzMSkgJiYgKGlycXN0YXR1cyAmIElSX01SQUYpICYmDQorCSAgICAobV9jYW5fcmVhZChwcml2
-LCBNX0NBTl9FQ1IpICYgRUNSX1JQKSkgew0KKwkJc3RydWN0IGNhbl9iZXJyX2NvdW50ZXIgYmVj
-Ow0KKw0KKwkJX19tX2Nhbl9nZXRfYmVycl9jb3VudGVyKGRldiwgJmJlYyk7DQorCQlpZiAoYmVj
-LnJ4ZXJyID09IDEyNykgew0KKwkJCW1fY2FuX3dyaXRlKHByaXYsIE1fQ0FOX0lSLCBJUl9NUkFG
-KTsNCisJCQlpcnFzdGF0dXMgJj0gfklSX01SQUY7DQorCQl9DQorCX0NCisNCiAJcHNyID0gbV9j
-YW5fcmVhZChwcml2LCBNX0NBTl9QU1IpOw0KIAlpZiAoaXJxc3RhdHVzICYgSVJfRVJSX1NUQVRF
-KQ0KIAkJd29ya19kb25lICs9IG1fY2FuX2hhbmRsZV9zdGF0ZV9lcnJvcnMoZGV2LCBwc3IpOw0K
-LS0gDQoyLjcuNA0KDQo=
+Marc
+
+On 5/15/19 3:54 PM, Dan Murphy wrote:
+> Marc
+>
+> On 5/9/19 11:11 AM, Dan Murphy wrote:
+>> Create a m_can platform framework that peripheral
+>> devices can register to and use common code and register sets.
+>> The peripheral devices may provide read/write and configuration
+>> support of the IP.
+>>
+>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>
+>> v12 - Update the m_can_read/write functions to create a backtrace if the callback
+>> pointer is NULL. - https://lore.kernel.org/patchwork/patch/1052302/
+>>
+> Is this able to be merged now?
+
+ping
+
+
+> Dan
+>
+> <snip>
