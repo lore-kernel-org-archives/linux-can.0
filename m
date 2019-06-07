@@ -1,55 +1,84 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 8/9] can: flexcan: Remove unneeded registration message
-Date: Fri,  7 Jun 2019 23:15:40 +0200
-Message-ID: <20190607211541.16095-9-mkl@pengutronix.de>
+Subject: [PATCH 6/9] can: m_can: implement errata "Needless activation of MRAF irq"
+Date: Fri,  7 Jun 2019 23:15:38 +0200
+Message-ID: <20190607211541.16095-7-mkl@pengutronix.de>
 References: <20190607211541.16095-1-mkl@pengutronix.de>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20190607211541.16095-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Eugen Hristev <eugen.hristev@microchip.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Eugen Hristev <eugen.hristev@microchip.com>
 
-Currently the following message is observed when the flexcan
-driver is probed:
+During frame reception while the MCAN is in Error Passive state and the
+Receive Error Counter has thevalue MCAN_ECR.REC = 127, it may happen
+that MCAN_IR.MRAF is set although there was no Message RAM access
+failure. If MCAN_IR.MRAF is enabled, an interrupt to the Host CPU is
+generated.
 
-flexcan 2090000.flexcan: device registered (reg_base=(ptrval), irq=23)
+Work around:
+The Message RAM Access Failure interrupt routine needs to check whether
 
-The reason for printing 'ptrval' is explained at
-Documentation/core-api/printk-formats.rst:
+    MCAN_ECR.RP = '1' and MCAN_ECR.REC = '127'.
 
-"Pointers printed without a specifier extension (i.e unadorned %p) are
-hashed to prevent leaking information about the kernel memory layout. This
-has the added benefit of providing a unique identifier. On 64-bit machines
-the first 32 bits are zeroed. The kernel will print ``(ptrval)`` until it
-gathers enough entropy."
+In this case, reset MCAN_IR.MRAF. No further action is required.
+This affects versions older than 3.2.0
 
-Instead of passing %pK, which can print the correct address, simply
-remove the entire message as it is not really that useful.
+Errata explained on Sama5d2 SoC which includes this hardware block:
+http://ww1.microchip.com/downloads/en/DeviceDoc/SAMA5D2-Family-Silicon-Errata-and-Data-Sheet-Clarification-DS80000803B.pdf
+chapter 6.2
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Reproducibility: If 2 devices with m_can are connected back to back,
+configuring different bitrate on them will lead to interrupt storm on
+the receiving side, with error "Message RAM access failure occurred".
+Another way is to have a bad hardware connection. Bad wire connection
+can lead to this issue as well.
+
+This patch fixes the issue according to provided workaround.
+
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/can/m_can/m_can.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index f97c628eb2ad..f2fe344593d5 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1583,9 +1583,6 @@ static int flexcan_probe(struct platform_device *pdev)
- 			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
- 	}
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 9b449400376b..deb274a19ba0 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -822,6 +822,27 @@ static int m_can_poll(struct napi_struct *napi, int quota)
+ 	if (!irqstatus)
+ 		goto end;
  
--	dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%d)\n",
--		 priv->regs, dev->irq);
--
- 	return 0;
- 
-  failed_register:
++	/* Errata workaround for issue "Needless activation of MRAF irq"
++	 * During frame reception while the MCAN is in Error Passive state
++	 * and the Receive Error Counter has the value MCAN_ECR.REC = 127,
++	 * it may happen that MCAN_IR.MRAF is set although there was no
++	 * Message RAM access failure.
++	 * If MCAN_IR.MRAF is enabled, an interrupt to the Host CPU is generated
++	 * The Message RAM Access Failure interrupt routine needs to check
++	 * whether MCAN_ECR.RP = ’1’ and MCAN_ECR.REC = 127.
++	 * In this case, reset MCAN_IR.MRAF. No further action is required.
++	 */
++	if ((priv->version <= 31) && (irqstatus & IR_MRAF) &&
++	    (m_can_read(priv, M_CAN_ECR) & ECR_RP)) {
++		struct can_berr_counter bec;
++
++		__m_can_get_berr_counter(dev, &bec);
++		if (bec.rxerr == 127) {
++			m_can_write(priv, M_CAN_IR, IR_MRAF);
++			irqstatus &= ~IR_MRAF;
++		}
++	}
++
+ 	psr = m_can_read(priv, M_CAN_PSR);
+ 	if (irqstatus & IR_ERR_STATE)
+ 		work_done += m_can_handle_state_errors(dev, psr);
 -- 
 2.20.1
