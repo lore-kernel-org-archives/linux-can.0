@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/9] can: flexcan: fix timeout when set small bitrate
-Date: Fri,  7 Jun 2019 23:15:34 +0200
-Message-ID: <20190607211541.16095-3-mkl@pengutronix.de>
+Subject: [PATCH 5/9] can: mcp251x: add support for mcp25625
+Date: Fri,  7 Jun 2019 23:15:37 +0200
+Message-ID: <20190607211541.16095-6-mkl@pengutronix.de>
 References: <20190607211541.16095-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,56 +9,133 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20190607211541.16095-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>, Dong Aisheng <aisheng.dong@nxp.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Sean Nyekjaer <sean@geanix.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Sean Nyekjaer <sean@geanix.com>
 
-Current we can meet timeout issue when setting a small bitrate like
-10000 as follows on i.MX6UL EVK board (ipg clock = 66MHZ, per clock =
-30MHZ):
+Fully compatible with mcp2515, the mcp25625 have integrated transceiver.
 
-| root@imx6ul7d:~# ip link set can0 up type can bitrate 10000
+This patch adds support for the mcp25625 to the existing mcp251x driver.
 
-A link change request failed with some changes committed already.
-Interface can0 may have been left with an inconsistent configuration,
-please check.
-
-| RTNETLINK answers: Connection timed out
-
-It is caused by calling of flexcan_chip_unfreeze() timeout.
-
-Originally the code is using usleep_range(10, 20) for unfreeze
-operation, but the patch (8badd65 can: flexcan: avoid calling
-usleep_range from interrupt context) changed it into udelay(10) which is
-only a half delay of before, there're also some other delay changes.
-
-After double to FLEXCAN_TIMEOUT_US to 100 can fix the issue.
-
-Meanwhile, Rasmus Villemoes reported that even with a timeout of 100,
-flexcan_probe() fails on the MPC8309, which requires a value of at least
-140 to work reliably. 250 works for everyone.
-
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/spi/Kconfig   |  5 +++--
+ drivers/net/can/spi/mcp251x.c | 25 ++++++++++++++++---------
+ 2 files changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 1c66fb2ad76b..f97c628eb2ad 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -166,7 +166,7 @@
- #define FLEXCAN_MB_CNT_LENGTH(x)	(((x) & 0xf) << 16)
- #define FLEXCAN_MB_CNT_TIMESTAMP(x)	((x) & 0xffff)
+diff --git a/drivers/net/can/spi/Kconfig b/drivers/net/can/spi/Kconfig
+index 2e7e535e9237..1c50788055cb 100644
+--- a/drivers/net/can/spi/Kconfig
++++ b/drivers/net/can/spi/Kconfig
+@@ -9,9 +9,10 @@ config CAN_HI311X
+ 	  Driver for the Holt HI311x SPI CAN controllers.
  
--#define FLEXCAN_TIMEOUT_US		(50)
-+#define FLEXCAN_TIMEOUT_US		(250)
+ config CAN_MCP251X
+-	tristate "Microchip MCP251x SPI CAN controllers"
++	tristate "Microchip MCP251x and MCP25625 SPI CAN controllers"
+ 	depends on HAS_DMA
+ 	---help---
+-	  Driver for the Microchip MCP251x SPI CAN controllers.
++	  Driver for the Microchip MCP251x and MCP25625 SPI CAN
++	  controllers.
  
- /* FLEXCAN hardware feature flags
+ endmenu
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index e90817608645..da64e71a62ee 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -1,5 +1,5 @@
+ /*
+- * CAN bus driver for Microchip 251x CAN Controller with SPI Interface
++ * CAN bus driver for Microchip 251x/25625 CAN Controller with SPI Interface
   *
+  * MCP2510 support and bug fixes by Christian Pellegrin
+  * <chripell@evolware.org>
+@@ -41,7 +41,7 @@
+  * static struct spi_board_info spi_board_info[] = {
+  *         {
+  *                 .modalias = "mcp2510",
+- *			// or "mcp2515" depending on your controller
++ *			// "mcp2515" or "mcp25625" depending on your controller
+  *                 .platform_data = &mcp251x_info,
+  *                 .irq = IRQ_EINT13,
+  *                 .max_speed_hz = 2*1000*1000,
+@@ -238,6 +238,7 @@ static const struct can_bittiming_const mcp251x_bittiming_const = {
+ enum mcp251x_model {
+ 	CAN_MCP251X_MCP2510	= 0x2510,
+ 	CAN_MCP251X_MCP2515	= 0x2515,
++	CAN_MCP251X_MCP25625	= 0x25625,
+ };
+ 
+ struct mcp251x_priv {
+@@ -280,7 +281,6 @@ static inline int mcp251x_is_##_model(struct spi_device *spi) \
+ }
+ 
+ MCP251X_IS(2510);
+-MCP251X_IS(2515);
+ 
+ static void mcp251x_clean(struct net_device *net)
+ {
+@@ -639,7 +639,7 @@ static int mcp251x_hw_reset(struct spi_device *spi)
+ 
+ 	/* Wait for oscillator startup timer after reset */
+ 	mdelay(MCP251X_OST_DELAY_MS);
+-	
++
+ 	reg = mcp251x_read_reg(spi, CANSTAT);
+ 	if ((reg & CANCTRL_REQOP_MASK) != CANCTRL_REQOP_CONF)
+ 		return -ENODEV;
+@@ -820,9 +820,8 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
+ 		/* receive buffer 0 */
+ 		if (intf & CANINTF_RX0IF) {
+ 			mcp251x_hw_rx(spi, 0);
+-			/*
+-			 * Free one buffer ASAP
+-			 * (The MCP2515 does this automatically.)
++			/* Free one buffer ASAP
++			 * (The MCP2515/25625 does this automatically.)
+ 			 */
+ 			if (mcp251x_is_2510(spi))
+ 				mcp251x_write_bits(spi, CANINTF, CANINTF_RX0IF, 0x00);
+@@ -831,7 +830,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
+ 		/* receive buffer 1 */
+ 		if (intf & CANINTF_RX1IF) {
+ 			mcp251x_hw_rx(spi, 1);
+-			/* the MCP2515 does this automatically */
++			/* The MCP2515/25625 does this automatically. */
+ 			if (mcp251x_is_2510(spi))
+ 				clear_intf |= CANINTF_RX1IF;
+ 		}
+@@ -1006,6 +1005,10 @@ static const struct of_device_id mcp251x_of_match[] = {
+ 		.compatible	= "microchip,mcp2515",
+ 		.data		= (void *)CAN_MCP251X_MCP2515,
+ 	},
++	{
++		.compatible	= "microchip,mcp25625",
++		.data		= (void *)CAN_MCP251X_MCP25625,
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, mcp251x_of_match);
+@@ -1019,6 +1022,10 @@ static const struct spi_device_id mcp251x_id_table[] = {
+ 		.name		= "mcp2515",
+ 		.driver_data	= (kernel_ulong_t)CAN_MCP251X_MCP2515,
+ 	},
++	{
++		.name		= "mcp25625",
++		.driver_data	= (kernel_ulong_t)CAN_MCP251X_MCP25625,
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(spi, mcp251x_id_table);
+@@ -1259,5 +1266,5 @@ module_spi_driver(mcp251x_can_driver);
+ 
+ MODULE_AUTHOR("Chris Elston <celston@katalix.com>, "
+ 	      "Christian Pellegrin <chripell@evolware.org>");
+-MODULE_DESCRIPTION("Microchip 251x CAN driver");
++MODULE_DESCRIPTION("Microchip 251x/25625 CAN driver");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.20.1
