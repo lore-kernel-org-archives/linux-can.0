@@ -1,51 +1,55 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/9] can: xilinx_can: use correct bittiming_const for CAN FD core
-Date: Fri,  7 Jun 2019 23:15:35 +0200
-Message-ID: <20190607211541.16095-4-mkl@pengutronix.de>
+Subject: [PATCH 8/9] can: flexcan: Remove unneeded registration message
+Date: Fri,  7 Jun 2019 23:15:40 +0200
+Message-ID: <20190607211541.16095-9-mkl@pengutronix.de>
 References: <20190607211541.16095-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20190607211541.16095-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Anssi Hannula <anssi.hannula@bitwise.fi>, Shubhrajyoti Datta <shubhrajyoti.datta@gmail.com>, Michal Simek <michal.simek@xilinx.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Anssi Hannula <anssi.hannula@bitwise.fi>
+From: Fabio Estevam <festevam@gmail.com>
 
-Commit 9e5f1b273e6a ("can: xilinx_can: add support for Xilinx CAN FD
-core") added a new can_bittiming_const structure for CAN FD cores that
-support larger values for tseg1, tseg2, and sjw than previous Xilinx CAN
-cores, but the commit did not actually take that into use.
+Currently the following message is observed when the flexcan
+driver is probed:
 
-Fix that.
+flexcan 2090000.flexcan: device registered (reg_base=(ptrval), irq=23)
 
-Tested with CAN FD core on a ZynqMP board.
+The reason for printing 'ptrval' is explained at
+Documentation/core-api/printk-formats.rst:
 
-Fixes: 9e5f1b273e6a ("can: xilinx_can: add support for Xilinx CAN FD core")
-Reported-by: Shubhrajyoti Datta <shubhrajyoti.datta@gmail.com>
-Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Reviewed-by: Shubhrajyoti Datta <shubhrajyoti.datta@gmail.com>
-Cc: linux-stable <stable@vger.kernel.org>
+"Pointers printed without a specifier extension (i.e unadorned %p) are
+hashed to prevent leaking information about the kernel memory layout. This
+has the added benefit of providing a unique identifier. On 64-bit machines
+the first 32 bits are zeroed. The kernel will print ``(ptrval)`` until it
+gathers enough entropy."
+
+Instead of passing %pK, which can print the correct address, simply
+remove the entire message as it is not really that useful.
+
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index f2024404b8d6..63203ff452b5 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1435,7 +1435,7 @@ static const struct xcan_devtype_data xcan_canfd_data = {
- 		 XCAN_FLAG_RXMNF |
- 		 XCAN_FLAG_TX_MAILBOXES |
- 		 XCAN_FLAG_RX_FIFO_MULTI,
--	.bittiming_const = &xcan_bittiming_const,
-+	.bittiming_const = &xcan_bittiming_const_canfd,
- 	.btr_ts2_shift = XCAN_BTR_TS2_SHIFT_CANFD,
- 	.btr_sjw_shift = XCAN_BTR_SJW_SHIFT_CANFD,
- 	.bus_clk_name = "s_axi_aclk",
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index f97c628eb2ad..f2fe344593d5 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1583,9 +1583,6 @@ static int flexcan_probe(struct platform_device *pdev)
+ 			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
+ 	}
+ 
+-	dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%d)\n",
+-		 priv->regs, dev->irq);
+-
+ 	return 0;
+ 
+  failed_register:
 -- 
 2.20.1
