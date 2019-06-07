@@ -1,54 +1,38 @@
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: RE: [PATCH repost 0/5] Repost CAN and CANFD dt-bindings
-Date: Fri, 7 Jun 2019 10:02:13 +0000
-Message-ID: <TY1PR01MB1770D2AAF2ED748575CA4CBFC0100@TY1PR01MB1770.jpnprd01.prod.outlook.com>
-References: <1557429622-31676-1-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Subject: [PATCH net] can: purge socket error queue on sock destruct
+Date: Fri,  7 Jun 2019 16:46:07 -0400
+Message-ID: <20190607204607.250375-1-willemdebruijn.kernel@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1557429622-31676-1-git-send-email-fabrizio.castro@bp.renesas.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: "David S. Miller" <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, mkl@pengutronix.de, wg@grandegger.com, patrick.ohly@intel.com, Willem de Bruijn <willemb@google.com>, syzbot+a90604060cb40f5bdd16@syzkaller.appspotmail.com
 List-Id: linux-can.vger.kernel.org
 
-Dear All,
+From: Willem de Bruijn <willemb@google.com>
 
-These patches have been around for a very long time now, is anybody willing=
- to take them?
+CAN supports software tx timestamps as of the below commit. Purge
+any queued timestamp packets on socket destroy.
 
-Cheers,
-Fab
-
-> From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Sent: 09 May 2019 20:20
-> Subject: [PATCH repost 0/5] Repost CAN and CANFD dt-bindings
->=20
-> Dear All,
->=20
-> I am reposting some CAN and CANFD related dt-bindings changes for
-> Renesas' R-Car and RZ/G devices that have been originally sent
-> end of last year and beginning of this year.
->=20
-> Thanks,
-> Fab
->=20
-> Fabrizio Castro (3):
->   dt-bindings: can: rcar_can: Fix RZ/G2 CAN clocks
->   dt-bindings: can: rcar_can: Add r8a774c0 support
->   dt-bindings: can: rcar_canfd: document r8a774c0 support
->=20
-> Marek Vasut (2):
->   dt-bindings: can: rcar_canfd: document r8a77965 support
->   dt-bindings: can: rcar_canfd: document r8a77990 support
->=20
->  Documentation/devicetree/bindings/net/can/rcar_can.txt   | 13 ++++------=
+Fixes: 51f31cabe3ce ("ip: support for TX timestamps on UDP and RAW sockets")
+Reported-by: syzbot+a90604060cb40f5bdd16@syzkaller.appspotmail.com
+Signed-off-by: Willem de Bruijn <willemb@google.com>
 ---
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 16 ++++++++++=
-------
->  2 files changed, 14 insertions(+), 15 deletions(-)
->=20
-> --
-> 2.7.4
+ net/can/af_can.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index e8fd5dc1780ae..189a6bf8f829c 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -99,6 +99,7 @@ EXPORT_SYMBOL(can_ioctl);
+ static void can_sock_destruct(struct sock *sk)
+ {
+ 	skb_queue_purge(&sk->sk_receive_queue);
++	skb_queue_purge(&sk->sk_error_queue);
+ }
+ 
+ static const struct can_proto *can_get_proto(int protocol)
+-- 
+2.22.0.rc2.383.gf4fbbf30c2-goog
