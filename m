@@ -1,46 +1,32 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH] can: flexcan: fix deadlock when using self wakeup
-Date: Sat, 8 Jun 2019 19:41:30 +0200
-Message-ID: <fbbe474f-bdf7-a97a-543d-da17dfd2a114@geanix.com>
-References: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2019-06-07
+Date: Sun, 09 Jun 2019 19:44:19 -0700 (PDT)
+Message-ID: <20190609.194419.1092823681840105677.davem@davemloft.net>
+References: <20190607211541.16095-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US-large
+In-Reply-To: <20190607211541.16095-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 List-Id: linux-can.vger.kernel.org
 
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Fri,  7 Jun 2019 23:15:32 +0200
 
-
-On 17/05/2019 04.39, Joakim Zhang wrote:
-> As reproted by Sean Nyekjaer bellow:
-> When suspending, when there is still can traffic on the
-> interfaces the flexcan immediately wakes the platform again.
-> As it should :-)
-> But it throws this error msg:
-> [ 3169.378661] PM: noirq suspend of devices failed
+> this is a pull reqeust of 9 patches for net/master.
 > 
-> On the way down to suspend the interface that throws the error
-> message does call flexcan_suspend but fails to call
-> flexcan_noirq_suspend.
-> That means the flexcan_enter_stop_mode is called, but on the way
-> out of suspend the driver only calls flexcan_resume and skips
-> flexcan_noirq_resume, thus it doesn't call flexcan_exit_stop_mode.
-> This leaves the flexcan in stop mode, and with the current driver
-> it can't recover from this even with a soft reboot, it requires a
-> hard reboot.
-> 
-> Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-> 
-> This patch intends to fix the issue, and also add comment to explain the
-> wakeup flow.
-> Reported-by: Sean Nyekjaer <sean@geanix.com>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> The first patch is by Alexander Dahl and removes a duplicate menu entry from
+> the Kconfig. The next patch by Joakim Zhang fixes the timeout in the flexcan
+> driver when setting small bit rates. Anssi Hannula's patch for the xilinx_can
+> driver fixes the bittiming_const for CAN FD core. The two patches by Sean
+> Nyekjaer bring mcp25625 to the existing mcp251x driver. The patch by Eugen
+> Hristev implements an errata for the m_can driver. YueHaibing's patch fixes the
+> error handling ing can_init(). The patch by Fabio Estevam for the flexcan
+> driver removes an unneeded registration message during flexcan_probe(). And the
+> last patch is by Willem de Bruijn and adds the missing purging the  socket
+> error queue on sock destruct.
 
-How is it going with the updated patch?
-
-/Sean
+Pulled, thanks Marc.
