@@ -1,32 +1,54 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2019-06-07
-Date: Sun, 09 Jun 2019 19:44:19 -0700 (PDT)
-Message-ID: <20190609.194419.1092823681840105677.davem@davemloft.net>
-References: <20190607211541.16095-1-mkl@pengutronix.de>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v12 1/5] can: m_can: Create a m_can platform framework
+Date: Mon, 10 Jun 2019 11:35:36 -0500
+Message-ID: <0f6c41c8-0071-ed3a-9e65-caf02a0fbefe@ti.com>
+References: <20190509161109.10499-1-dmurphy@ti.com>
+ <dbb7bdef-820d-5dcc-d7b5-a82bc1b076fb@ti.com>
+ <a8e3f2d3-18c3-3bdb-1318-8964afc7e032@ti.com>
+ <93530d94-ec65-de82-448e-f2460dd39fb9@ti.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190607211541.16095-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <93530d94-ec65-de82-448e-f2460dd39fb9@ti.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri,  7 Jun 2019 23:15:32 +0200
+Bump
 
-> this is a pull reqeust of 9 patches for net/master.
-> 
-> The first patch is by Alexander Dahl and removes a duplicate menu entry from
-> the Kconfig. The next patch by Joakim Zhang fixes the timeout in the flexcan
-> driver when setting small bit rates. Anssi Hannula's patch for the xilinx_can
-> driver fixes the bittiming_const for CAN FD core. The two patches by Sean
-> Nyekjaer bring mcp25625 to the existing mcp251x driver. The patch by Eugen
-> Hristev implements an errata for the m_can driver. YueHaibing's patch fixes the
-> error handling ing can_init(). The patch by Fabio Estevam for the flexcan
-> driver removes an unneeded registration message during flexcan_probe(). And the
-> last patch is by Willem de Bruijn and adds the missing purging the  socket
-> error queue on sock destruct.
-
-Pulled, thanks Marc.
+On 6/6/19 8:16 AM, Dan Murphy wrote:
+> Marc
+>
+> Bump
+>
+> On 5/31/19 6:51 AM, Dan Murphy wrote:
+>> Marc
+>>
+>> On 5/15/19 3:54 PM, Dan Murphy wrote:
+>>> Marc
+>>>
+>>> On 5/9/19 11:11 AM, Dan Murphy wrote:
+>>>> Create a m_can platform framework that peripheral
+>>>> devices can register to and use common code and register sets.
+>>>> The peripheral devices may provide read/write and configuration
+>>>> support of the IP.
+>>>>
+>>>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>>> ---
+>>>>
+>>>> v12 - Update the m_can_read/write functions to create a backtrace 
+>>>> if the callback
+>>>> pointer is NULL. - https://lore.kernel.org/patchwork/patch/1052302/
+>>>>
+>>> Is this able to be merged now?
+>>
+>> ping
+>>
+>>
+>>> Dan
+>>>
+>>> <snip>
