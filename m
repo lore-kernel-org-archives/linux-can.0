@@ -1,46 +1,35 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH] can: flexcan: fix deadlock when using self wakeup
-Date: Tue, 11 Jun 2019 06:58:31 +0000
-Message-ID: <DB7PR04MB46181EE74BF030D728042FD6E6ED0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: Re: [PATCH] can: flexcan: fix deadlock when using self wakeup
+Date: Tue, 11 Jun 2019 09:08:17 +0200
+Message-ID: <23fcfa1b-a664-7768-a793-26627b14463e@geanix.com>
 References: <20190517023652.19285-1-qiangqing.zhang@nxp.com>
  <fbbe474f-bdf7-a97a-543d-da17dfd2a114@geanix.com>
+ <DB7PR04MB46181EE74BF030D728042FD6E6ED0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <fbbe474f-bdf7-a97a-543d-da17dfd2a114@geanix.com>
-Content-Language: en-US
+In-Reply-To: <DB7PR04MB46181EE74BF030D728042FD6E6ED0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+Content-Language: en-US-large
 Sender: netdev-owner@vger.kernel.org
-To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
-YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOeW5tDbmnIg55pelIDE6NDINCj4gVG86IEpvYWtp
-bSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBta2xAcGVuZ3V0cm9uaXguZGU7DQo+
-IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlteCA8bGludXgtaW14
-QG54cC5jb20+OyB3Z0BncmFuZGVnZ2VyLmNvbTsNCj4gbmV0ZGV2QHZnZXIua2VybmVsLm9yZw0K
-PiBTdWJqZWN0OiBSZTogW1BBVENIXSBjYW46IGZsZXhjYW46IGZpeCBkZWFkbG9jayB3aGVuIHVz
-aW5nIHNlbGYgd2FrZXVwDQo+IA0KPiANCj4gDQo+IE9uIDE3LzA1LzIwMTkgMDQuMzksIEpvYWtp
-bSBaaGFuZyB3cm90ZToNCj4gPiBBcyByZXByb3RlZCBieSBTZWFuIE55ZWtqYWVyIGJlbGxvdzoN
-Cj4gPiBXaGVuIHN1c3BlbmRpbmcsIHdoZW4gdGhlcmUgaXMgc3RpbGwgY2FuIHRyYWZmaWMgb24g
-dGhlIGludGVyZmFjZXMgdGhlDQo+ID4gZmxleGNhbiBpbW1lZGlhdGVseSB3YWtlcyB0aGUgcGxh
-dGZvcm0gYWdhaW4uDQo+ID4gQXMgaXQgc2hvdWxkIDotKQ0KPiA+IEJ1dCBpdCB0aHJvd3MgdGhp
-cyBlcnJvciBtc2c6DQo+ID4gWyAzMTY5LjM3ODY2MV0gUE06IG5vaXJxIHN1c3BlbmQgb2YgZGV2
-aWNlcyBmYWlsZWQNCj4gPg0KPiA+IE9uIHRoZSB3YXkgZG93biB0byBzdXNwZW5kIHRoZSBpbnRl
-cmZhY2UgdGhhdCB0aHJvd3MgdGhlIGVycm9yIG1lc3NhZ2UNCj4gPiBkb2VzIGNhbGwgZmxleGNh
-bl9zdXNwZW5kIGJ1dCBmYWlscyB0byBjYWxsIGZsZXhjYW5fbm9pcnFfc3VzcGVuZC4NCj4gPiBU
-aGF0IG1lYW5zIHRoZSBmbGV4Y2FuX2VudGVyX3N0b3BfbW9kZSBpcyBjYWxsZWQsIGJ1dCBvbiB0
-aGUgd2F5IG91dA0KPiA+IG9mIHN1c3BlbmQgdGhlIGRyaXZlciBvbmx5IGNhbGxzIGZsZXhjYW5f
-cmVzdW1lIGFuZCBza2lwcw0KPiA+IGZsZXhjYW5fbm9pcnFfcmVzdW1lLCB0aHVzIGl0IGRvZXNu
-J3QgY2FsbCBmbGV4Y2FuX2V4aXRfc3RvcF9tb2RlLg0KPiA+IFRoaXMgbGVhdmVzIHRoZSBmbGV4
-Y2FuIGluIHN0b3AgbW9kZSwgYW5kIHdpdGggdGhlIGN1cnJlbnQgZHJpdmVyIGl0DQo+ID4gY2Fu
-J3QgcmVjb3ZlciBmcm9tIHRoaXMgZXZlbiB3aXRoIGEgc29mdCByZWJvb3QsIGl0IHJlcXVpcmVz
-IGEgaGFyZA0KPiA+IHJlYm9vdC4NCj4gPg0KPiA+IEZpeGVzOiBkZTM1NzhjMTk4YzYgKCJjYW46
-IGZsZXhjYW46IGFkZCBzZWxmIHdha2V1cCBzdXBwb3J0IikNCj4gPg0KPiA+IFRoaXMgcGF0Y2gg
-aW50ZW5kcyB0byBmaXggdGhlIGlzc3VlLCBhbmQgYWxzbyBhZGQgY29tbWVudCB0byBleHBsYWlu
-DQo+ID4gdGhlIHdha2V1cCBmbG93Lg0KPiA+IFJlcG9ydGVkLWJ5OiBTZWFuIE55ZWtqYWVyIDxz
-ZWFuQGdlYW5peC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogSm9ha2ltIFpoYW5nIDxxaWFuZ3Fp
-bmcuemhhbmdAbnhwLmNvbT4NCj4gDQo+IEhvdyBpcyBpdCBnb2luZyB3aXRoIHRoZSB1cGRhdGVk
-IHBhdGNoPw0KDQpIaSBTZWFuLA0KDQoJSSBzdGlsbCBuZWVkIGRpc2N1c3Mgd2l0aCBNYXJjIGFi
-b3V0IHRoZSBzb2x1dGlvbi4NCg0KSm9ha2ltIFpoYW5nDQo+IC9TZWFuDQo=
+
+
+On 11/06/2019 08.58, Joakim Zhang wrote:
+>>
+>> How is it going with the updated patch?
+> 
+> Hi Sean,
+> 
+> 	I still need discuss with Marc about the solution.
+> 
+> Joakim Zhang
+
+Hi, Joakim
+
+Please include me in the loop :-)
+
+/Sean
