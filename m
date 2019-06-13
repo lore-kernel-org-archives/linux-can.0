@@ -1,35 +1,36 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH repost 0/5] Repost CAN and CANFD dt-bindings
-Date: Thu, 13 Jun 2019 11:26:37 +0200
-Message-ID: <20190613092635.ztm4k34o5jrxmadd@verge.net.au>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH repost 3/5] dt-bindings: can: rcar_canfd: document
+ r8a77965 support
+Date: Thu, 13 Jun 2019 14:10:49 -0600
+Message-ID: <20190613201049.GA21426@bogus>
 References: <1557429622-31676-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <TY1PR01MB1770D2AAF2ED748575CA4CBFC0100@TY1PR01MB1770.jpnprd01.prod.outlook.com>
- <20190612122020.sgp5q427ilh6bbbg@verge.net.au>
- <20190612.094908.1957141510166169801.davem@davemloft.net>
+ <1557429622-31676-4-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190612.094908.1957141510166169801.davem@davemloft.net>
+In-Reply-To: <1557429622-31676-4-git-send-email-fabrizio.castro@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: fabrizio.castro@bp.renesas.com, wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org, mark.rutland@arm.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, geert+renesas@glider.be, Chris.Paterson2@renesas.com, biju.das@bp.renesas.com, linux-renesas-soc@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marek.vasut@gmail.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, linux-renesas-soc@vger.kernel.org, Marek Vasut <marek.vasut+renesas@gmail.com>, Eugeniu Rosca <erosca@de.adit-jv.com>, Simon Horman <horms+renesas@verge.net.au>, Wolfram Sang <wsa+renesas@sang-engineering.com>
 List-Id: linux-can.vger.kernel.org
 
-On Wed, Jun 12, 2019 at 09:49:08AM -0700, David Miller wrote:
-> From: Simon Horman <horms@verge.net.au>
-> Date: Wed, 12 Jun 2019 14:20:20 +0200
+On Thu,  9 May 2019 20:20:20 +0100, Fabrizio Castro wrote:
+> From: Marek Vasut <marek.vasut@gmail.com>
 > 
-> > are you comfortable with me taking these patches
-> > through the renesas tree? Or perhaps should they be reposted
-> > to you for inclusion in net-next?
-> > 
-> > They have been stuck for a long time now.
+> Document the support for rcar_canfd on R8A77965 SoC devices.
 > 
-> They can go through the renesas tree, no problem.
+> Signed-off-by: Marek Vasut <marek.vasut+renesas@gmail.com>
+> Cc: Eugeniu Rosca <erosca@de.adit-jv.com>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Simon Horman <horms+renesas@verge.net.au>
+> Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Cc: linux-renesas-soc@vger.kernel.org
+> Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+> ---
+>  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
 > 
-> Acked-by: David S. Miller <davem@davemloft.net>
 
-Thanks Dave,
-
-I have applied these to the renesas tree for inclusion in v5.3.
+Reviewed-by: Rob Herring <robh@kernel.org>
