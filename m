@@ -1,37 +1,43 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH repost 4/5] dt-bindings: can: rcar_canfd: document
- r8a77990 support
-Date: Thu, 13 Jun 2019 14:11:14 -0600
-Message-ID: <20190613201114.GA22253@bogus>
-References: <1557429622-31676-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1557429622-31676-5-git-send-email-fabrizio.castro@bp.renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1557429622-31676-5-git-send-email-fabrizio.castro@bp.renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marek.vasut@gmail.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, linux-renesas-soc@vger.kernel.org, Marek Vasut <marek.vasut+renesas@gmail.com>, Eugeniu Rosca <erosca@de.adit-jv.com>, Simon Horman <horms+renesas@verge.net.au>, Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Subject: [PATCH 0/6] More CAN support for RZ/G2 devices
+Date: Fri, 14 Jun 2019 12:53:28 +0100
+Message-ID: <1560513214-28031-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, xu_shunji@hoperun.com
 List-Id: linux-can.vger.kernel.org
 
-On Thu,  9 May 2019 20:20:21 +0100, Fabrizio Castro wrote:
-> From: Marek Vasut <marek.vasut@gmail.com>
-> 
-> Document the support for rcar_canfd on R8A77990 SoC devices.
-> 
-> Signed-off-by: Marek Vasut <marek.vasut+renesas@gmail.com>
-> Cc: Eugeniu Rosca <erosca@de.adit-jv.com>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Simon Horman <horms+renesas@verge.net.au>
-> Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Cc: linux-renesas-soc@vger.kernel.org
-> To: devicetree@vger.kernel.org
-> Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
-> ---
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
+Dear All,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This series adds CAN and CANFD support to the HiHope RZ/G2M, and also
+improves SoC support for the RZ/G2E.
+Please note that I wasn't able to test CAN-FD mode but only classical
+CAN mode with the CANFD IP, my unit unfortunately comes with CAN-FD
+mode disabled in HW, but the CANFD IP is working and responding
+correctly while in classical mode.
+
+Please note that this work depends on:
+https://patchwork.kernel.org/cover/10986911/
+https://patchwork.kernel.org/cover/10990113/
+
+Thanks,
+Fab
+
+Fabrizio Castro (6):
+  dt-bindings: can: rcar_canfd: document r8a774a1 support
+  dt-bindings: can: rcar_can: Complete documentation for RZ/G2[EM]
+  arm64: dts: renesas: r8a774c0: Add missing assigned-clocks for CAN[01]
+  arm64: dts: renesas: r8a774a1: Add missing assigned-clocks for CAN[01]
+  arm64: dts: renesas: r8a774a1: Add CANFD support
+  arm64: dts: renesas: hihope-rzg2-ex: Enable CAN interfaces
+
+ .../devicetree/bindings/net/can/rcar_can.txt       |  2 +-
+ .../devicetree/bindings/net/can/rcar_canfd.txt     |  9 ++++---
+ arch/arm64/boot/dts/renesas/hihope-rzg2-ex.dtsi    | 22 ++++++++++++++++
+ arch/arm64/boot/dts/renesas/r8a774a1.dtsi          | 29 ++++++++++++++++++++++
+ arch/arm64/boot/dts/renesas/r8a774c0.dtsi          |  4 +++
+ 5 files changed, 61 insertions(+), 5 deletions(-)
+
+-- 
+2.7.4
