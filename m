@@ -1,73 +1,107 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 1/6] dt-bindings: can: rcar_canfd: document r8a774a1
- support
-Date: Mon, 17 Jun 2019 11:30:25 +0200
-Message-ID: <20190617093023.nhvrvujg52gcglko@verge.net.au>
-References: <1560513214-28031-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1560513214-28031-2-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: flexcan: fix stop mode acknowledgment
+Date: Mon, 17 Jun 2019 14:57:31 +0200
+Message-ID: <c24b0982-13af-ecdd-c3a2-7ec62863483c@pengutronix.de>
+References: <20190611064458.1477-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="cvAjkbgjtIBPFXtwAZGsZw2EolaY2hBIx"
 Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1560513214-28031-2-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <20190611064458.1477-1-qiangqing.zhang@nxp.com>
 Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, "David S. Miller" <davem@davemloft.net>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-On Fri, Jun 14, 2019 at 12:53:29PM +0100, Fabrizio Castro wrote:
-> Document the support for rcar_canfd on R8A774A1 SoC devices.
-> 
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cvAjkbgjtIBPFXtwAZGsZw2EolaY2hBIx
+Content-Type: multipart/mixed; boundary="UiByezooILPcSPJ4wew7Ay0aqL1JqGCw1";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com"
+ <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Message-ID: <c24b0982-13af-ecdd-c3a2-7ec62863483c@pengutronix.de>
+Subject: Re: [PATCH] can: flexcan: fix stop mode acknowledgment
+References: <20190611064458.1477-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20190611064458.1477-1-qiangqing.zhang@nxp.com>
+
+--UiByezooILPcSPJ4wew7Ay0aqL1JqGCw1
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 6/11/19 8:47 AM, Joakim Zhang wrote:
+> To enter stop mode, the CPU should manually assert a global Stop Mode
+> request and check the acknowledgment asserted by FlexCAN. The CPU must
+> only consider the FlexCAN in stop mode when both request and
+> acknowledgment conditions are satisfied.
+>=20
+> Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
+> Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 > ---
-> Hello Simon,
-> 
-> I think it would make more sense if this patch went through you as it
-> sits on series:
-> https://lkml.org/lkml/2019/5/9/941
-> 
-> Do you think that's doable?
+>  drivers/net/can/flexcan.c | 47 ++++++++++++++++++++++++++++++++-------=
 
-That seems reasonable to me.
+>  1 file changed, 39 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index e35083ff31ee..282dac1d8f5c 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -404,9 +404,11 @@ static void flexcan_enable_wakeup_irq(struct flexc=
+an_priv *priv, bool enable)
+>  	priv->write(reg_mcr, &regs->mcr);
+>  }
+> =20
+> -static inline void flexcan_enter_stop_mode(struct flexcan_priv *priv)
+> +static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
+>  {
+>  	struct flexcan_regs __iomem *regs =3D priv->regs;
+> +	unsigned int timeout =3D FLEXCAN_TIMEOUT_US / 10;
+> +	unsigned int ackval;
+>  	u32 reg_mcr;
+> =20
+>  	reg_mcr =3D priv->read(&regs->mcr);
+> @@ -416,20 +418,48 @@ static inline void flexcan_enter_stop_mode(struct=
+ flexcan_priv *priv)
+>  	/* enable stop request */
+>  	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+>  			   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
+> +
+> +	/* get stop acknowledgment */
+> +	regmap_read(priv->stm.gpr, priv->stm.ack_gpr, &ackval);
 
-Dave are you happy with me taking this, and 2/6, through
-the renesas tree?
+Please make use of regmap_read_poll_timeout().
 
-> 
-> Thanks,
-> Fab
-> 
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> index 32f051f..00afaff 100644
-> --- a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> @@ -4,6 +4,7 @@ Renesas R-Car CAN FD controller Device Tree Bindings
->  Required properties:
->  - compatible: Must contain one or more of the following:
->    - "renesas,rcar-gen3-canfd" for R-Car Gen3 and RZ/G2 compatible controllers.
-> +  - "renesas,r8a774a1-canfd" for R8A774A1 (RZ/G2M) compatible controller.
->    - "renesas,r8a774c0-canfd" for R8A774C0 (RZ/G2E) compatible controller.
->    - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller.
->    - "renesas,r8a7796-canfd" for R8A7796 (R-Car M3-W) compatible controller.
-> @@ -32,10 +33,10 @@ enable/disable the respective channel.
->  Required properties for "renesas,r8a774c0-canfd", "renesas,r8a7795-canfd",
->  "renesas,r8a7796-canfd", "renesas,r8a77965-canfd", and "renesas,r8a77990-canfd"
->  compatible:
-> -In R8A774C0, R8A7795, R8A7796, R8A77965, and R8A77990 SoCs, canfd clock is a
-> -div6 clock and can be used by both CAN and CAN FD controller at the same time.
-> -It needs to be scaled to maximum frequency if any of these controllers use it.
-> -This is done using the below properties:
-> +In R8A774A1, R8A774C0, R8A7795, R8A7796, R8A77965, and R8A77990 SoCs, canfd
-> +clock is a div6 clock and can be used by both CAN and CAN FD controller at the
-> +same time. It needs to be scaled to maximum frequency if any of these
-> +controllers use it. This is done using the below properties:
->  
->  - assigned-clocks: phandle of canfd clock.
->  - assigned-clock-rates: maximum frequency of this clock.
-> -- 
-> 2.7.4
-> 
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--UiByezooILPcSPJ4wew7Ay0aqL1JqGCw1--
+
+--cvAjkbgjtIBPFXtwAZGsZw2EolaY2hBIx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl0HjjsACgkQWsYho5Hk
+nSAc6Af/SC6IZIEi3x800dtNiFzZK5yxPBNrJYiloomQ0SXnnLugf2+aF3A4xteR
+iNYGimTyvKfKYuccbADp9PVhfmvAwoPPssMLMWoThB3yaOyW6EDQz0sx9nvngEQY
+u0eWIkmSzFj3fAVeVXpWXUh+40GudQk0gDCPpB05DCOhlS0CRbl91wcUAchSd9rX
+zOtt0z08lDcsTgDkqWoP8FULcv56/L9S8gmsg438W0zdHXp71vS3UG3ePl8bvKpD
+IQ8I1U/dvZYgFJuaP9/hjiNMDPi64aTfn/h9mUnH6AYIjzgcBuSlVhpny9It0WjJ
+gVwAx97DVegOWC51NQxmpEL5vRfg/A==
+=5lfw
+-----END PGP SIGNATURE-----
+
+--cvAjkbgjtIBPFXtwAZGsZw2EolaY2hBIx--
