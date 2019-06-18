@@ -1,67 +1,74 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v12 1/5] can: m_can: Create a m_can platform framework
-Date: Mon, 17 Jun 2019 10:09:25 -0500
-Message-ID: <6fa79302-ad32-7f43-f9d5-af70aa789284@ti.com>
-References: <20190509161109.10499-1-dmurphy@ti.com>
- <dbb7bdef-820d-5dcc-d7b5-a82bc1b076fb@ti.com>
- <a8e3f2d3-18c3-3bdb-1318-8964afc7e032@ti.com>
- <93530d94-ec65-de82-448e-f2460dd39fb9@ti.com>
- <0f6c41c8-0071-ed3a-9e65-caf02a0fbefe@ti.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH V2] can: flexcan: fix stop mode acknowledgment
+Date: Tue, 18 Jun 2019 05:02:53 +0000
+Message-ID: <20190618050046.4966-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0f6c41c8-0071-ed3a-9e65-caf02a0fbefe@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-Marc
-
-On 6/10/19 11:35 AM, Dan Murphy wrote:
-> Bump
->
-> On 6/6/19 8:16 AM, Dan Murphy wrote:
->> Marc
->>
->> Bump
->>
->> On 5/31/19 6:51 AM, Dan Murphy wrote:
->>> Marc
->>>
->>> On 5/15/19 3:54 PM, Dan Murphy wrote:
->>>> Marc
->>>>
->>>> On 5/9/19 11:11 AM, Dan Murphy wrote:
->>>>> Create a m_can platform framework that peripheral
->>>>> devices can register to and use common code and register sets.
->>>>> The peripheral devices may provide read/write and configuration
->>>>> support of the IP.
->>>>>
->>>>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
->>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->>>>> ---
->>>>>
->>>>> v12 - Update the m_can_read/write functions to create a backtrace 
->>>>> if the callback
->>>>> pointer is NULL. - https://lore.kernel.org/patchwork/patch/1052302/
->>>>>
->>>> Is this able to be merged now?
->>>
->>> ping
-
-Wondering if there is anything else we need to do?
-
-The part has officially shipped and we had hoped to have driver support 
-in Linux as part of the announcement.
-
-Dan
-
-
->>>
->>>
->>>> Dan
->>>>
->>>> <snip>
+VG8gZW50ZXIgc3RvcCBtb2RlLCB0aGUgQ1BVIHNob3VsZCBtYW51YWxseSBhc3NlcnQgYSBnbG9i
+YWwgU3RvcCBNb2RlDQpyZXF1ZXN0IGFuZCBjaGVjayB0aGUgYWNrbm93bGVkZ21lbnQgYXNzZXJ0
+ZWQgYnkgRmxleENBTi4gVGhlIENQVSBtdXN0DQpvbmx5IGNvbnNpZGVyIHRoZSBGbGV4Q0FOIGlu
+IHN0b3AgbW9kZSB3aGVuIGJvdGggcmVxdWVzdCBhbmQNCmFja25vd2xlZGdtZW50IGNvbmRpdGlv
+bnMgYXJlIHNhdGlzZmllZC4NCg0KRml4ZXM6IGRlMzU3OGMxOThjNiAoImNhbjogZmxleGNhbjog
+YWRkIHNlbGYgd2FrZXVwIHN1cHBvcnQiKQ0KUmVwb3J0ZWQtYnk6IE1hcmMgS2xlaW5lLUJ1ZGRl
+IDxta2xAcGVuZ3V0cm9uaXguZGU+DQpTaWduZWQtb2ZmLWJ5OiBKb2FraW0gWmhhbmcgPHFpYW5n
+cWluZy56aGFuZ0BueHAuY29tPg0KDQpDaGFuZ2VMb2c6DQpWMS0+VjI6DQoJKiByZWdtYXBfcmVh
+ZCgpLS0+cmVnbWFwX3JlYWRfcG9sbF90aW1lb3V0KCkNCi0tLQ0KIGRyaXZlcnMvbmV0L2Nhbi9m
+bGV4Y2FuLmMgfCAzNSArKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLQ0KIDEgZmls
+ZSBjaGFuZ2VkLCAyNyBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMN
+CmluZGV4IGUzNTA4M2ZmMzFlZS4uNDMyNDVhNTY1NWM3IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9u
+ZXQvY2FuL2ZsZXhjYW4uYw0KKysrIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KQEAgLTQw
+NCw5ICs0MDQsMTAgQEAgc3RhdGljIHZvaWQgZmxleGNhbl9lbmFibGVfd2FrZXVwX2lycShzdHJ1
+Y3QgZmxleGNhbl9wcml2ICpwcml2LCBib29sIGVuYWJsZSkNCiAJcHJpdi0+d3JpdGUocmVnX21j
+ciwgJnJlZ3MtPm1jcik7DQogfQ0KIA0KLXN0YXRpYyBpbmxpbmUgdm9pZCBmbGV4Y2FuX2VudGVy
+X3N0b3BfbW9kZShzdHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2KQ0KK3N0YXRpYyBpbmxpbmUgaW50
+IGZsZXhjYW5fZW50ZXJfc3RvcF9tb2RlKHN0cnVjdCBmbGV4Y2FuX3ByaXYgKnByaXYpDQogew0K
+IAlzdHJ1Y3QgZmxleGNhbl9yZWdzIF9faW9tZW0gKnJlZ3MgPSBwcml2LT5yZWdzOw0KKwl1bnNp
+Z25lZCBpbnQgYWNrdmFsOw0KIAl1MzIgcmVnX21jcjsNCiANCiAJcmVnX21jciA9IHByaXYtPnJl
+YWQoJnJlZ3MtPm1jcik7DQpAQCAtNDE2LDIwICs0MTcsMzcgQEAgc3RhdGljIGlubGluZSB2b2lk
+IGZsZXhjYW5fZW50ZXJfc3RvcF9tb2RlKHN0cnVjdCBmbGV4Y2FuX3ByaXYgKnByaXYpDQogCS8q
+IGVuYWJsZSBzdG9wIHJlcXVlc3QgKi8NCiAJcmVnbWFwX3VwZGF0ZV9iaXRzKHByaXYtPnN0bS5n
+cHIsIHByaXYtPnN0bS5yZXFfZ3ByLA0KIAkJCSAgIDEgPDwgcHJpdi0+c3RtLnJlcV9iaXQsIDEg
+PDwgcHJpdi0+c3RtLnJlcV9iaXQpOw0KKw0KKwkvKiBnZXQgc3RvcCBhY2tub3dsZWRnbWVudCAq
+Lw0KKwlpZiAocmVnbWFwX3JlYWRfcG9sbF90aW1lb3V0KHByaXYtPnN0bS5ncHIsIHByaXYtPnN0
+bS5hY2tfZ3ByLA0KKwkJCQkgICAgIGFja3ZhbCwgYWNrdmFsICYgKDEgPDwgcHJpdi0+c3RtLmFj
+a19iaXQpLA0KKwkJCQkgICAgIDAsIEZMRVhDQU5fVElNRU9VVF9VUykpDQorCQlyZXR1cm4gLUVU
+SU1FRE9VVDsNCisNCisJcmV0dXJuIDA7DQogfQ0KIA0KLXN0YXRpYyBpbmxpbmUgdm9pZCBmbGV4
+Y2FuX2V4aXRfc3RvcF9tb2RlKHN0cnVjdCBmbGV4Y2FuX3ByaXYgKnByaXYpDQorc3RhdGljIGlu
+bGluZSBpbnQgZmxleGNhbl9leGl0X3N0b3BfbW9kZShzdHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2
+KQ0KIHsNCiAJc3RydWN0IGZsZXhjYW5fcmVncyBfX2lvbWVtICpyZWdzID0gcHJpdi0+cmVnczsN
+CisJdW5zaWduZWQgaW50IGFja3ZhbDsNCiAJdTMyIHJlZ19tY3I7DQogDQorCXJlZ19tY3IgPSBw
+cml2LT5yZWFkKCZyZWdzLT5tY3IpOw0KKwlyZWdfbWNyICY9IH5GTEVYQ0FOX01DUl9TTEZfV0FL
+Ow0KKwlwcml2LT53cml0ZShyZWdfbWNyLCAmcmVncy0+bWNyKTsNCisNCiAJLyogcmVtb3ZlIHN0
+b3AgcmVxdWVzdCAqLw0KIAlyZWdtYXBfdXBkYXRlX2JpdHMocHJpdi0+c3RtLmdwciwgcHJpdi0+
+c3RtLnJlcV9ncHIsDQogCQkJICAgMSA8PCBwcml2LT5zdG0ucmVxX2JpdCwgMCk7DQogDQotCXJl
+Z19tY3IgPSBwcml2LT5yZWFkKCZyZWdzLT5tY3IpOw0KLQlyZWdfbWNyICY9IH5GTEVYQ0FOX01D
+Ul9TTEZfV0FLOw0KLQlwcml2LT53cml0ZShyZWdfbWNyLCAmcmVncy0+bWNyKTsNCisJLyogZ2V0
+IHN0b3AgYWNrbm93bGVkZ21lbnQgKi8NCisJaWYgKHJlZ21hcF9yZWFkX3BvbGxfdGltZW91dChw
+cml2LT5zdG0uZ3ByLCBwcml2LT5zdG0uYWNrX2dwciwNCisJCQkJICAgICBhY2t2YWwsICEoYWNr
+dmFsICYgKDEgPDwgcHJpdi0+c3RtLmFja19iaXQpKSwNCisJCQkJICAgICAwLCBGTEVYQ0FOX1RJ
+TUVPVVRfVVMpKQ0KKwkJcmV0dXJuIC1FVElNRURPVVQ7DQorDQorCXJldHVybiAwOw0KIH0NCiAN
+CiBzdGF0aWMgaW5saW5lIHZvaWQgZmxleGNhbl9lcnJvcl9pcnFfZW5hYmxlKGNvbnN0IHN0cnVj
+dCBmbGV4Y2FuX3ByaXYgKnByaXYpDQpAQCAtMTY1Miw3ICsxNjcwLDcgQEAgc3RhdGljIGludCBf
+X21heWJlX3VudXNlZCBmbGV4Y2FuX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2aWNlKQ0KIAkJ
+ICovDQogCQlpZiAoZGV2aWNlX21heV93YWtldXAoZGV2aWNlKSkgew0KIAkJCWVuYWJsZV9pcnFf
+d2FrZShkZXYtPmlycSk7DQotCQkJZmxleGNhbl9lbnRlcl9zdG9wX21vZGUocHJpdik7DQorCQkJ
+ZXJyID0gZmxleGNhbl9lbnRlcl9zdG9wX21vZGUocHJpdik7DQogCQl9IGVsc2Ugew0KIAkJCWVy
+ciA9IGZsZXhjYW5fY2hpcF9kaXNhYmxlKHByaXYpOw0KIAkJCWlmIChlcnIpDQpAQCAtMTcyNSwx
+MyArMTc0MywxNCBAQCBzdGF0aWMgaW50IF9fbWF5YmVfdW51c2VkIGZsZXhjYW5fbm9pcnFfcmVz
+dW1lKHN0cnVjdCBkZXZpY2UgKmRldmljZSkNCiB7DQogCXN0cnVjdCBuZXRfZGV2aWNlICpkZXYg
+PSBkZXZfZ2V0X2RydmRhdGEoZGV2aWNlKTsNCiAJc3RydWN0IGZsZXhjYW5fcHJpdiAqcHJpdiA9
+IG5ldGRldl9wcml2KGRldik7DQorCWludCBlcnIgPSAwOw0KIA0KIAlpZiAobmV0aWZfcnVubmlu
+ZyhkZXYpICYmIGRldmljZV9tYXlfd2FrZXVwKGRldmljZSkpIHsNCiAJCWZsZXhjYW5fZW5hYmxl
+X3dha2V1cF9pcnEocHJpdiwgZmFsc2UpOw0KLQkJZmxleGNhbl9leGl0X3N0b3BfbW9kZShwcml2
+KTsNCisJCWVyciA9IGZsZXhjYW5fZXhpdF9zdG9wX21vZGUocHJpdik7DQogCX0NCiANCi0JcmV0
+dXJuIDA7DQorCXJldHVybiBlcnI7DQogfQ0KIA0KIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZGV2X3Bt
+X29wcyBmbGV4Y2FuX3BtX29wcyA9IHsNCi0tIA0KMi4xNy4xDQoNCg==
