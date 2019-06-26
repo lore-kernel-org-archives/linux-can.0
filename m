@@ -1,30 +1,46 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH] can: mcp251x: add error check when wq alloc failed
-Date: Wed, 26 Jun 2019 08:26:03 +0200
-Message-ID: <6a678bc9-648e-e566-9781-2b42a678ed86@geanix.com>
-References: <20190625125048.28849-1-houweitaoo@gmail.com>
- <CA+FuTSegsUvPSWX+CZuafSD32Sx+xJmYPiQ92geDNqAe8_JGrQ@mail.gmail.com>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: Re: [PATCH net-next] can: dev: call netif_carrier_off() in
+ register_candev()
+Date: Wed, 26 Jun 2019 09:31:39 +0000
+Message-ID: <ff8160d4-3357-9b4f-1840-bbe46195da5a@prevas.dk>
+References: <20190624083352.29257-1-rasmus.villemoes@prevas.dk>
+ <CA+FuTSeHhz1kntLyeUfAB4ZbtYjO1=Ornwse-yQbPwo5c-_2=g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+FuTSegsUvPSWX+CZuafSD32Sx+xJmYPiQ92geDNqAe8_JGrQ@mail.gmail.com>
-Content-Language: en-US-large
-Sender: linux-kernel-owner@vger.kernel.org
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Weitao Hou <houweitaoo@gmail.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, David Miller <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, allison@lohutok.net, tglx@linutronix.de, linux-can@vger.kernel.org, Network Development <netdev@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <CA+FuTSeHhz1kntLyeUfAB4ZbtYjO1=Ornwse-yQbPwo5c-_2=g@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <1038AA6E0DD7FA4689BDA53C0FEA4596@EURPRD10.PROD.OUTLOOK.COM>
+Sender: netdev-owner@vger.kernel.org
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Rasmus Villemoes <Rasmus.Villemoes@prevas.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-
-
-On 25/06/2019 16.03, Willem de Bruijn wrote:
-> On Tue, Jun 25, 2019 at 8:51 AM Weitao Hou <houweitaoo@gmail.com> wrote:
->>
->> add error check when workqueue alloc failed, and remove
->> redundant code to make it clear
->>
->> Signed-off-by: Weitao Hou <houweitaoo@gmail.com>
-> 
-> Acked-by: Willem de Bruijn <willemb@google.com>
-> 
-Tested-by: Sean Nyekjaer <sean@geanix.com>
+T24gMjQvMDYvMjAxOSAxOS4yNiwgV2lsbGVtIGRlIEJydWlqbiB3cm90ZToNCj4gT24gTW9uLCBK
+dW4gMjQsIDIwMTkgYXQgNDozNCBBTSBSYXNtdXMgVmlsbGVtb2VzDQo+IDxyYXNtdXMudmlsbGVt
+b2VzQHByZXZhcy5kaz4gd3JvdGU6DQo+Pg0KPj4gQ09ORklHX0NBTl9MRURTIGlzIGRlcHJlY2F0
+ZWQuIFdoZW4gdHJ5aW5nIHRvIHVzZSB0aGUgZ2VuZXJpYyBuZXRkZXYNCj4+IHRyaWdnZXIgYXMg
+c3VnZ2VzdGVkLCB0aGVyZSdzIGEgc21hbGwgaW5jb25zaXN0ZW5jeSB3aXRoIHRoZSBsaW5rDQo+
+PiBwcm9wZXJ0eTogVGhlIExFRCBpcyBvbiBpbml0aWFsbHksIHN0YXlzIG9uIHdoZW4gdGhlIGRl
+dmljZSBpcyBicm91Z2h0DQo+PiB1cCwgYW5kIHRoZW4gdHVybnMgb2ZmIChhcyBleHBlY3RlZCkg
+d2hlbiB0aGUgZGV2aWNlIGlzIGJyb3VnaHQgZG93bi4NCj4+DQo+PiBNYWtlIHN1cmUgdGhlIExF
+RCBhbHdheXMgcmVmbGVjdHMgdGhlIHN0YXRlIG9mIHRoZSBDQU4gZGV2aWNlLg0KPj4NCj4+IFNp
+Z25lZC1vZmYtYnk6IFJhc211cyBWaWxsZW1vZXMgPHJhc211cy52aWxsZW1vZXNAcHJldmFzLmRr
+Pg0KPiANCj4gU2hvdWxkIHRoaXMgdGFyZ2V0IG5ldD8NCg0KTm8sIEkgdGhpbmsgdGhpcyBzaG91
+bGQgZ28gdGhyb3VnaCB0aGUgQ0FOIHRyZWUuIFBlcmhhcHMgSSd2ZQ0KbWlzdW5kZXJzdG9vZCB3
+aGVuIHRvIHVzZSB0aGUgbmV0LW5leHQgcHJlZml4IC0gaXMgdGhhdCBvbmx5IGZvciB0aGluZ3MN
+CnRoYXQgc2hvdWxkIGJlIGFwcGxpZWQgZGlyZWN0bHkgdG8gdGhlIG5ldC1uZXh0IHRyZWU/IElm
+IHNvLCBzb3JyeS4NCg0KPiBSZWdhcmRsZXNzIG9mIENPTkZJR19DQU5fTEVEUyBkZXByZWNhdGlv
+biwNCj4gdGhpcyBpcyBhbHJlYWR5IG5vdCBpbml0aWFsaXplZCBwcm9wZXJseSBpZiB0aGF0IENP
+TkZJRyBpcyBkaXNhYmxlZA0KPiBhbmQgYSBjYW5fbGVkX2V2ZW50IGNhbGwgYXQgZGV2aWNlIHBy
+b2JlIGlzIGEgbm9vcC4NCg0KSSdtIG5vdCBzdXJlIEkgdW5kZXJzdGFuZCB0aGlzIHBhcnQuIFRo
+ZSBDT05GSUdfQ0FOX0xFRFMgc3VwcG9ydCBmb3INCnNob3dpbmcgdGhlIHN0YXRlIG9mIHRoZSBp
+bnRlcmZhY2UgaXMgaW1wbGVtZW50ZWQgdmlhIGhvb2tpbmcgaW50byB0aGUNCm5kb19vcGVuL25k
+b19zdG9wIGNhbGxiYWNrcywgYW5kIGRvZXMgbm90IGxvb2sgYXQgb3IgdG91Y2ggdGhlDQpfX0xJ
+TktfU1RBVEVfTk9DQVJSSUVSIGJpdCBhdCBhbGwuDQoNCk90aGVyIHRoYW4gdmlhIHRoZSBuZXRk
+ZXYgTEVEIHRyaWdnZXIgSSBkb24ndCB0aGluayBvbmUgY2FuIGV2ZW4gb2JzZXJ2ZQ0KdGhlIHNs
+aWdodGx5IG9kZCBpbml0aWFsIHN0YXRlIG9mIHRoZSBfX0xJTktfU1RBVEVfTk9DQVJSSUVSIGJp
+dCBmb3IgQ0FODQpkZXZpY2VzLCB3aGljaCBpcyB3aHkgSSBmcmFtZWQgdGhpcyBhcyBhIGZpeCBw
+dXJlbHkgdG8gYWxsb3cgdGhlIG5ldGRldg0KdHJpZ2dlciB0byBiZSBhIGNsb3NlciBkcm9wLWlu
+IHJlcGxhY2VtZW50IGZvciBDT05GSUdfQ0FOX0xFRFMuDQoNClJhc211cw0K
