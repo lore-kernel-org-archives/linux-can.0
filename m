@@ -1,46 +1,67 @@
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: Re: [PATCH net-next] can: dev: call netif_carrier_off() in
- register_candev()
-Date: Wed, 26 Jun 2019 09:31:39 +0000
-Message-ID: <ff8160d4-3357-9b4f-1840-bbe46195da5a@prevas.dk>
-References: <20190624083352.29257-1-rasmus.villemoes@prevas.dk>
- <CA+FuTSeHhz1kntLyeUfAB4ZbtYjO1=Ornwse-yQbPwo5c-_2=g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Subject: [PATCH resend] can: rcar_canfd: fix possible IRQ storm on high load
+Date: Wed, 26 Jun 2019 16:08:48 +0300
+Message-ID: <20190626130848.6671-1-nikita.yoush@cogentembedded.com>
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <CA+FuTSeHhz1kntLyeUfAB4ZbtYjO1=Ornwse-yQbPwo5c-_2=g@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <1038AA6E0DD7FA4689BDA53C0FEA4596@EURPRD10.PROD.OUTLOOK.COM>
 Sender: netdev-owner@vger.kernel.org
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Rasmus Villemoes <Rasmus.Villemoes@prevas.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Simon Horman <horms+renesas@verge.net.au>, Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Artemi Ivanov <artemi.ivanov@cogentembedded.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 List-Id: linux-can.vger.kernel.org
 
-T24gMjQvMDYvMjAxOSAxOS4yNiwgV2lsbGVtIGRlIEJydWlqbiB3cm90ZToNCj4gT24gTW9uLCBK
-dW4gMjQsIDIwMTkgYXQgNDozNCBBTSBSYXNtdXMgVmlsbGVtb2VzDQo+IDxyYXNtdXMudmlsbGVt
-b2VzQHByZXZhcy5kaz4gd3JvdGU6DQo+Pg0KPj4gQ09ORklHX0NBTl9MRURTIGlzIGRlcHJlY2F0
-ZWQuIFdoZW4gdHJ5aW5nIHRvIHVzZSB0aGUgZ2VuZXJpYyBuZXRkZXYNCj4+IHRyaWdnZXIgYXMg
-c3VnZ2VzdGVkLCB0aGVyZSdzIGEgc21hbGwgaW5jb25zaXN0ZW5jeSB3aXRoIHRoZSBsaW5rDQo+
-PiBwcm9wZXJ0eTogVGhlIExFRCBpcyBvbiBpbml0aWFsbHksIHN0YXlzIG9uIHdoZW4gdGhlIGRl
-dmljZSBpcyBicm91Z2h0DQo+PiB1cCwgYW5kIHRoZW4gdHVybnMgb2ZmIChhcyBleHBlY3RlZCkg
-d2hlbiB0aGUgZGV2aWNlIGlzIGJyb3VnaHQgZG93bi4NCj4+DQo+PiBNYWtlIHN1cmUgdGhlIExF
-RCBhbHdheXMgcmVmbGVjdHMgdGhlIHN0YXRlIG9mIHRoZSBDQU4gZGV2aWNlLg0KPj4NCj4+IFNp
-Z25lZC1vZmYtYnk6IFJhc211cyBWaWxsZW1vZXMgPHJhc211cy52aWxsZW1vZXNAcHJldmFzLmRr
-Pg0KPiANCj4gU2hvdWxkIHRoaXMgdGFyZ2V0IG5ldD8NCg0KTm8sIEkgdGhpbmsgdGhpcyBzaG91
-bGQgZ28gdGhyb3VnaCB0aGUgQ0FOIHRyZWUuIFBlcmhhcHMgSSd2ZQ0KbWlzdW5kZXJzdG9vZCB3
-aGVuIHRvIHVzZSB0aGUgbmV0LW5leHQgcHJlZml4IC0gaXMgdGhhdCBvbmx5IGZvciB0aGluZ3MN
-CnRoYXQgc2hvdWxkIGJlIGFwcGxpZWQgZGlyZWN0bHkgdG8gdGhlIG5ldC1uZXh0IHRyZWU/IElm
-IHNvLCBzb3JyeS4NCg0KPiBSZWdhcmRsZXNzIG9mIENPTkZJR19DQU5fTEVEUyBkZXByZWNhdGlv
-biwNCj4gdGhpcyBpcyBhbHJlYWR5IG5vdCBpbml0aWFsaXplZCBwcm9wZXJseSBpZiB0aGF0IENP
-TkZJRyBpcyBkaXNhYmxlZA0KPiBhbmQgYSBjYW5fbGVkX2V2ZW50IGNhbGwgYXQgZGV2aWNlIHBy
-b2JlIGlzIGEgbm9vcC4NCg0KSSdtIG5vdCBzdXJlIEkgdW5kZXJzdGFuZCB0aGlzIHBhcnQuIFRo
-ZSBDT05GSUdfQ0FOX0xFRFMgc3VwcG9ydCBmb3INCnNob3dpbmcgdGhlIHN0YXRlIG9mIHRoZSBp
-bnRlcmZhY2UgaXMgaW1wbGVtZW50ZWQgdmlhIGhvb2tpbmcgaW50byB0aGUNCm5kb19vcGVuL25k
-b19zdG9wIGNhbGxiYWNrcywgYW5kIGRvZXMgbm90IGxvb2sgYXQgb3IgdG91Y2ggdGhlDQpfX0xJ
-TktfU1RBVEVfTk9DQVJSSUVSIGJpdCBhdCBhbGwuDQoNCk90aGVyIHRoYW4gdmlhIHRoZSBuZXRk
-ZXYgTEVEIHRyaWdnZXIgSSBkb24ndCB0aGluayBvbmUgY2FuIGV2ZW4gb2JzZXJ2ZQ0KdGhlIHNs
-aWdodGx5IG9kZCBpbml0aWFsIHN0YXRlIG9mIHRoZSBfX0xJTktfU1RBVEVfTk9DQVJSSUVSIGJp
-dCBmb3IgQ0FODQpkZXZpY2VzLCB3aGljaCBpcyB3aHkgSSBmcmFtZWQgdGhpcyBhcyBhIGZpeCBw
-dXJlbHkgdG8gYWxsb3cgdGhlIG5ldGRldg0KdHJpZ2dlciB0byBiZSBhIGNsb3NlciBkcm9wLWlu
-IHJlcGxhY2VtZW50IGZvciBDT05GSUdfQ0FOX0xFRFMuDQoNClJhc211cw0K
+We have observed rcar_canfd driver entering IRQ storm under high load,
+with following scenario:
+- rcar_canfd_global_interrupt() in entered due to Rx available,
+- napi_schedule_prep() is called, and sets NAPIF_STATE_SCHED in state
+- Rx fifo interrupts are masked,
+- rcar_canfd_global_interrupt() is entered again, this time due to
+  error interrupt (e.g. due to overflow),
+- since scheduled napi poller has not yet executed, condition for calling
+  napi_schedule_prep() from rcar_canfd_global_interrupt() remains true,
+  thus napi_schedule_prep() gets called and sets NAPIF_STATE_MISSED flag
+  in state,
+- later, napi poller function rcar_canfd_rx_poll() gets executed, and
+  calls napi_complete_done(),
+- due to NAPIF_STATE_MISSED flag in state, this call does not clear
+  NAPIF_STATE_SCHED flag from state,
+- on return from napi_complete_done(), rcar_canfd_rx_poll() unmasks Rx
+  interrutps,
+- Rx interrupt happens, rcar_canfd_global_interrupt() gets called
+  and calls napi_schedule_prep(),
+- since NAPIF_STATE_SCHED is set in state at this time, this call
+  returns false,
+- due to that false return, rcar_canfd_global_interrupt() returns
+  without masking Rx interrupt
+- and this results into IRQ storm: unmasked Rx interrupt happens again
+  and again is misprocessed in the same way.
+
+This patch fixes that scenario by unmasking Rx interrupts only when
+napi_complete_done() returns true, which means it has cleared
+NAPIF_STATE_SCHED in state.
+
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+---
+ drivers/net/can/rcar/rcar_canfd.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 05410008aa6b..de34a4b82d4a 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -1508,10 +1508,11 @@ static int rcar_canfd_rx_poll(struct napi_struct *napi, int quota)
+ 
+ 	/* All packets processed */
+ 	if (num_pkts < quota) {
+-		napi_complete_done(napi, num_pkts);
+-		/* Enable Rx FIFO interrupts */
+-		rcar_canfd_set_bit(priv->base, RCANFD_RFCC(ridx),
+-				   RCANFD_RFCC_RFIE);
++		if (napi_complete_done(napi, num_pkts)) {
++			/* Enable Rx FIFO interrupts */
++			rcar_canfd_set_bit(priv->base, RCANFD_RFCC(ridx),
++					   RCANFD_RFCC_RFIE);
++		}
+ 	}
+ 	return num_pkts;
+ }
+-- 
+2.11.0
