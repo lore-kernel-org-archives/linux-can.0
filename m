@@ -1,85 +1,64 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH resend] can: rcar_canfd: fix possible IRQ storm on high
- load
-Date: Wed, 26 Jun 2019 15:32:20 +0200
-Message-ID: <20190626133220.GK801@ninjato>
-References: <20190626130848.6671-1-nikita.yoush@cogentembedded.com>
- <20190626131251.GB801@ninjato>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Subject: Re: [PATCH net-next] can: dev: call netif_carrier_off() in register_candev()
+Date: Wed, 26 Jun 2019 10:17:03 -0400
+Message-ID: <CAF=yD-KyWJwdESFmY=CvbkTBT8yey2atKDY-tgd19yAeMf525g@mail.gmail.com>
+References: <20190624083352.29257-1-rasmus.villemoes@prevas.dk>
+ <CA+FuTSeHhz1kntLyeUfAB4ZbtYjO1=Ornwse-yQbPwo5c-_2=g@mail.gmail.com> <ff8160d4-3357-9b4f-1840-bbe46195da5a@prevas.dk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ogUXNSQj4OI1q3LQ"
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190626131251.GB801@ninjato>
+In-Reply-To: <ff8160d4-3357-9b4f-1840-bbe46195da5a@prevas.dk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Simon Horman <horms+renesas@verge.net.au>, Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Artemi Ivanov <artemi.ivanov@cogentembedded.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Rasmus Villemoes <Rasmus.Villemoes@prevas.se>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
+On Wed, Jun 26, 2019 at 5:31 AM Rasmus Villemoes
+<rasmus.villemoes@prevas.dk> wrote:
+>
+> On 24/06/2019 19.26, Willem de Bruijn wrote:
+> > On Mon, Jun 24, 2019 at 4:34 AM Rasmus Villemoes
+> > <rasmus.villemoes@prevas.dk> wrote:
+> >>
+> >> CONFIG_CAN_LEDS is deprecated. When trying to use the generic netdev
+> >> trigger as suggested, there's a small inconsistency with the link
+> >> property: The LED is on initially, stays on when the device is brought
+> >> up, and then turns off (as expected) when the device is brought down.
+> >>
+> >> Make sure the LED always reflects the state of the CAN device.
+> >>
+> >> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+> >
+> > Should this target net?
+>
+> No, I think this should go through the CAN tree. Perhaps I've
+> misunderstood when to use the net-next prefix - is that only for things
+> that should be applied directly to the net-next tree? If so, sorry.
 
---ogUXNSQj4OI1q3LQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't see consistent behavior on the list, so this is probably fine.
+It would probably help to target can (for fixes) or can-next (for new
+features).
 
-On Wed, Jun 26, 2019 at 03:12:51PM +0200, Wolfram Sang wrote:
-> On Wed, Jun 26, 2019 at 04:08:48PM +0300, Nikita Yushchenko wrote:
-> > We have observed rcar_canfd driver entering IRQ storm under high load,
-> > with following scenario:
-> > - rcar_canfd_global_interrupt() in entered due to Rx available,
-> > - napi_schedule_prep() is called, and sets NAPIF_STATE_SCHED in state
-> > - Rx fifo interrupts are masked,
-> > - rcar_canfd_global_interrupt() is entered again, this time due to
-> >   error interrupt (e.g. due to overflow),
-> > - since scheduled napi poller has not yet executed, condition for calli=
-ng
-> >   napi_schedule_prep() from rcar_canfd_global_interrupt() remains true,
-> >   thus napi_schedule_prep() gets called and sets NAPIF_STATE_MISSED flag
-> >   in state,
-> > - later, napi poller function rcar_canfd_rx_poll() gets executed, and
-> >   calls napi_complete_done(),
-> > - due to NAPIF_STATE_MISSED flag in state, this call does not clear
-> >   NAPIF_STATE_SCHED flag from state,
-> > - on return from napi_complete_done(), rcar_canfd_rx_poll() unmasks Rx
-> >   interrutps,
-> > - Rx interrupt happens, rcar_canfd_global_interrupt() gets called
-> >   and calls napi_schedule_prep(),
-> > - since NAPIF_STATE_SCHED is set in state at this time, this call
-> >   returns false,
-> > - due to that false return, rcar_canfd_global_interrupt() returns
-> >   without masking Rx interrupt
-> > - and this results into IRQ storm: unmasked Rx interrupt happens again
-> >   and again is misprocessed in the same way.
-> >=20
-> > This patch fixes that scenario by unmasking Rx interrupts only when
-> > napi_complete_done() returns true, which means it has cleared
-> > NAPIF_STATE_SCHED in state.
-> >=20
-> > Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
->=20
-> CCing the driver author...
+Let me reframe the question: should this target can, instead of can-next?
 
-Bounced :(
+> > Regardless of CONFIG_CAN_LEDS deprecation,
+> > this is already not initialized properly if that CONFIG is disabled
+> > and a can_led_event call at device probe is a noop.
+>
+> I'm not sure I understand this part. The CONFIG_CAN_LEDS support for
+> showing the state of the interface is implemented via hooking into the
+> ndo_open/ndo_stop callbacks, and does not look at or touch the
+> __LINK_STATE_NOCARRIER bit at all.
+>
+> Other than via the netdev LED trigger I don't think one can even observe
+> the slightly odd initial state of the __LINK_STATE_NOCARRIER bit for CAN
+> devices,
 
+it's still incorrect, though I guess that's moot in practice.
 
---ogUXNSQj4OI1q3LQ
-Content-Type: application/pgp-signature; name="signature.asc"
+> which is why I framed this as a fix purely to allow the netdev
+> trigger to be a closer drop-in replacement for CONFIG_CAN_LEDS.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl0Tc+QACgkQFA3kzBSg
-Kbb75BAAhLltyFkBZdASqi3rHjdUTq/5x4rdFSNMulB8Cf9rrTMAt091eREUWO/f
-0aks7VxUHsBR3ojRJkzO90kB4Ep/6ph5KksO951YYCfRec4m5kMwLSl6aIDI+i9S
-ECa/PF9BYLVFi8WqreaFobkMf60pJrJ0505PBSFEEqM2be5AEuJqTuB51UN+6VEG
-BvTx8d3AEQLnvVsfWF+zKfR3YjDmmTHLqwe8KzwqTOmJ8DFhQCtQLQdQyeWNwkug
-KNvWA/Epo4XpxsY2IV0gElZhY1tFPJUpjlkFwWgKTONeXQywAdEaoMIaMD/5mQKV
-mlKrq5Mi+ZHGmTVikJJs1xUlG6P7s2aPlj3TqYtpmkXK2ySSBULTmvJxkzyZEYWv
-BLs7mGZsKT2sqkHk68GcIcPSElof+hkBruJMRZDpW+4XSsarU05/U3i2XG2J2bM3
-xCfIlTpEr1X8jkXCwGCfw+aRa7/7rbWv2yeOyKb89MW6U8Z9oXlwaKnwdg1GJVF5
-u/Y3kuYtmYtJN6KlOioWSymDn12H3q4Dex+FWUfALknKJvjUFggpjOBp+HmYulr7
-LY6AqdLEYEKyG+BsW+xfLuZELUwJdbIU96dEZBli3QvYAxuguhenKFJ93Sy6Qhfg
-oJhl7OvQsmKnpmJOe1vHKaBTwqdP0a5uzzJ64zflQCsSE8ItQ1I=
-=/Yw0
------END PGP SIGNATURE-----
-
---ogUXNSQj4OI1q3LQ--
+So the entire CONFIG_CAN_LEDS code is to be removed? What exactly is
+this netdev trigger replacement, if not can_led_event? Sorry, I
+probably miss some context.
