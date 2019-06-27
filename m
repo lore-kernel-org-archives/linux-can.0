@@ -1,87 +1,80 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.1 39/95] can: m_can: implement errata "Needless activation of MRAF irq"
-Date: Wed, 26 Jun 2019 20:29:24 -0400
-Message-ID: <20190627003021.19867-39-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 40/95] can: af_can: Fix error path of can_init()
+Date: Wed, 26 Jun 2019 20:29:25 -0400
+Message-ID: <20190627003021.19867-40-sashal@kernel.org>
 References: <20190627003021.19867-1-sashal@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20190627003021.19867-1-sashal@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: stable-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Eugen Hristev <eugen.hristev@microchip.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: YueHaibing <yuehaibing@huawei.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Eugen Hristev <eugen.hristev@microchip.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 3e82f2f34c930a2a0a9e69fdc2de2f2f1388b442 ]
+[ Upstream commit c5a3aed1cd3152429348ee1fe5cdcca65fe901ce ]
 
-During frame reception while the MCAN is in Error Passive state and the
-Receive Error Counter has thevalue MCAN_ECR.REC = 127, it may happen
-that MCAN_IR.MRAF is set although there was no Message RAM access
-failure. If MCAN_IR.MRAF is enabled, an interrupt to the Host CPU is
-generated.
+This patch add error path for can_init() to avoid possible crash if some
+error occurs.
 
-Work around:
-The Message RAM Access Failure interrupt routine needs to check whether
-
-    MCAN_ECR.RP = '1' and MCAN_ECR.REC = '127'.
-
-In this case, reset MCAN_IR.MRAF. No further action is required.
-This affects versions older than 3.2.0
-
-Errata explained on Sama5d2 SoC which includes this hardware block:
-http://ww1.microchip.com/downloads/en/DeviceDoc/SAMA5D2-Family-Silicon-Errata-and-Data-Sheet-Clarification-DS80000803B.pdf
-chapter 6.2
-
-Reproducibility: If 2 devices with m_can are connected back to back,
-configuring different bitrate on them will lead to interrupt storm on
-the receiving side, with error "Message RAM access failure occurred".
-Another way is to have a bad hardware connection. Bad wire connection
-can lead to this issue as well.
-
-This patch fixes the issue according to provided workaround.
-
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+Fixes: 0d66548a10cb ("[CAN]: Add PF_CAN core module")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/m_can/m_can.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ net/can/af_can.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 9b449400376b..deb274a19ba0 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -822,6 +822,27 @@ static int m_can_poll(struct napi_struct *napi, int quota)
- 	if (!irqstatus)
- 		goto end;
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 1684ba5b51eb..80d0ec599439 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -958,6 +958,8 @@ static struct pernet_operations can_pernet_ops __read_mostly = {
  
-+	/* Errata workaround for issue "Needless activation of MRAF irq"
-+	 * During frame reception while the MCAN is in Error Passive state
-+	 * and the Receive Error Counter has the value MCAN_ECR.REC = 127,
-+	 * it may happen that MCAN_IR.MRAF is set although there was no
-+	 * Message RAM access failure.
-+	 * If MCAN_IR.MRAF is enabled, an interrupt to the Host CPU is generated
-+	 * The Message RAM Access Failure interrupt routine needs to check
-+	 * whether MCAN_ECR.RP = ’1’ and MCAN_ECR.REC = 127.
-+	 * In this case, reset MCAN_IR.MRAF. No further action is required.
-+	 */
-+	if ((priv->version <= 31) && (irqstatus & IR_MRAF) &&
-+	    (m_can_read(priv, M_CAN_ECR) & ECR_RP)) {
-+		struct can_berr_counter bec;
+ static __init int can_init(void)
+ {
++	int err;
 +
-+		__m_can_get_berr_counter(dev, &bec);
-+		if (bec.rxerr == 127) {
-+			m_can_write(priv, M_CAN_IR, IR_MRAF);
-+			irqstatus &= ~IR_MRAF;
-+		}
-+	}
+ 	/* check for correct padding to be able to use the structs similarly */
+ 	BUILD_BUG_ON(offsetof(struct can_frame, can_dlc) !=
+ 		     offsetof(struct canfd_frame, len) ||
+@@ -971,15 +973,31 @@ static __init int can_init(void)
+ 	if (!rcv_cache)
+ 		return -ENOMEM;
+ 
+-	register_pernet_subsys(&can_pernet_ops);
++	err = register_pernet_subsys(&can_pernet_ops);
++	if (err)
++		goto out_pernet;
+ 
+ 	/* protocol register */
+-	sock_register(&can_family_ops);
+-	register_netdevice_notifier(&can_netdev_notifier);
++	err = sock_register(&can_family_ops);
++	if (err)
++		goto out_sock;
++	err = register_netdevice_notifier(&can_netdev_notifier);
++	if (err)
++		goto out_notifier;
 +
- 	psr = m_can_read(priv, M_CAN_PSR);
- 	if (irqstatus & IR_ERR_STATE)
- 		work_done += m_can_handle_state_errors(dev, psr);
+ 	dev_add_pack(&can_packet);
+ 	dev_add_pack(&canfd_packet);
+ 
+ 	return 0;
++
++out_notifier:
++	sock_unregister(PF_CAN);
++out_sock:
++	unregister_pernet_subsys(&can_pernet_ops);
++out_pernet:
++	kmem_cache_destroy(rcv_cache);
++
++	return err;
+ }
+ 
+ static __exit void can_exit(void)
 -- 
 2.20.1
