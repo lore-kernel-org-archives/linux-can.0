@@ -1,84 +1,43 @@
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: Re: [PATCH net-next] can: dev: call netif_carrier_off() in
- register_candev()
-Date: Wed, 26 Jun 2019 21:19:32 +0000
-Message-ID: <838ce911-7205-f828-4fc5-79cebc32322a@prevas.dk>
-References: <20190624083352.29257-1-rasmus.villemoes@prevas.dk>
- <CA+FuTSeHhz1kntLyeUfAB4ZbtYjO1=Ornwse-yQbPwo5c-_2=g@mail.gmail.com>
- <ff8160d4-3357-9b4f-1840-bbe46195da5a@prevas.dk>
- <CAF=yD-KyWJwdESFmY=CvbkTBT8yey2atKDY-tgd19yAeMf525g@mail.gmail.com>
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 37/95] dt-bindings: can: mcp251x: add mcp25625 support
+Date: Wed, 26 Jun 2019 20:29:22 -0400
+Message-ID: <20190627003021.19867-37-sashal@kernel.org>
+References: <20190627003021.19867-1-sashal@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAF=yD-KyWJwdESFmY=CvbkTBT8yey2atKDY-tgd19yAeMf525g@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <769FE66E4A783C46AB6C56A20A0F0A58@EURPRD10.PROD.OUTLOOK.COM>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190627003021.19867-1-sashal@kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sean Nyekjaer <sean@geanix.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-T24gMjYvMDYvMjAxOSAxNi4xNywgV2lsbGVtIGRlIEJydWlqbiB3cm90ZToNCj4gT24gV2VkLCBK
-dW4gMjYsIDIwMTkgYXQgNTozMSBBTSBSYXNtdXMgVmlsbGVtb2VzDQo+IDxyYXNtdXMudmlsbGVt
-b2VzQHByZXZhcy5kaz4gd3JvdGU6DQo+Pg0KPj4gT24gMjQvMDYvMjAxOSAxOS4yNiwgV2lsbGVt
-IGRlIEJydWlqbiB3cm90ZToNCj4+PiBPbiBNb24sIEp1biAyNCwgMjAxOSBhdCA0OjM0IEFNIFJh
-c211cyBWaWxsZW1vZXMNCj4+PiA8cmFzbXVzLnZpbGxlbW9lc0BwcmV2YXMuZGs+IHdyb3RlOg0K
-Pj4+Pg0KPj4+PiBNYWtlIHN1cmUgdGhlIExFRCBhbHdheXMgcmVmbGVjdHMgdGhlIHN0YXRlIG9m
-IHRoZSBDQU4gZGV2aWNlLg0KPj4+DQo+Pj4gU2hvdWxkIHRoaXMgdGFyZ2V0IG5ldD8NCj4+DQo+
-PiBObywgSSB0aGluayB0aGlzIHNob3VsZCBnbyB0aHJvdWdoIHRoZSBDQU4gdHJlZS4gUGVyaGFw
-cyBJJ3ZlDQo+PiBtaXN1bmRlcnN0b29kIHdoZW4gdG8gdXNlIHRoZSBuZXQtbmV4dCBwcmVmaXgg
-LSBpcyB0aGF0IG9ubHkgZm9yIHRoaW5ncw0KPj4gdGhhdCBzaG91bGQgYmUgYXBwbGllZCBkaXJl
-Y3RseSB0byB0aGUgbmV0LW5leHQgdHJlZT8gSWYgc28sIHNvcnJ5Lg0KPiANCj4gSSBkb24ndCBz
-ZWUgY29uc2lzdGVudCBiZWhhdmlvciBvbiB0aGUgbGlzdCwgc28gdGhpcyBpcyBwcm9iYWJseSBm
-aW5lLg0KPiBJdCB3b3VsZCBwcm9iYWJseSBoZWxwIHRvIHRhcmdldCBjYW4gKGZvciBmaXhlcykg
-b3IgY2FuLW5leHQgKGZvciBuZXcNCj4gZmVhdHVyZXMpLg0KPiANCj4gTGV0IG1lIHJlZnJhbWUg
-dGhlIHF1ZXN0aW9uOiBzaG91bGQgdGhpcyB0YXJnZXQgY2FuLCBpbnN0ZWFkIG9mIGNhbi1uZXh0
-Pw0KDQpBaCwgbm93IEkgc2VlIHdoYXQgeW91IG1lYW50LCBidXQgYXQgbGVhc3QgSSBsZWFybmVk
-IHdoZW4gdG8gdXNlDQpuZXQvbmV0LW5leHQuDQoNCkkgdGhpbmsgY2FuLW5leHQgaXMgZmluZSwg
-ZXNwZWNpYWxseSB0aGlzIGxhdGUgaW4gdGhlIHJjIGN5Y2xlLiBCdXQgSSdsbA0KbGVhdmUgaXQg
-dG8gdGhlIENBTiBtYWludGFpbmVyKHMpLg0KDQo+Pj4gUmVnYXJkbGVzcyBvZiBDT05GSUdfQ0FO
-X0xFRFMgZGVwcmVjYXRpb24sDQo+Pj4gdGhpcyBpcyBhbHJlYWR5IG5vdCBpbml0aWFsaXplZCBw
-cm9wZXJseSBpZiB0aGF0IENPTkZJRyBpcyBkaXNhYmxlZA0KPj4+IGFuZCBhIGNhbl9sZWRfZXZl
-bnQgY2FsbCBhdCBkZXZpY2UgcHJvYmUgaXMgYSBub29wLg0KPj4NCj4+IEknbSBub3Qgc3VyZSBJ
-IHVuZGVyc3RhbmQgdGhpcyBwYXJ0LiBUaGUgQ09ORklHX0NBTl9MRURTIHN1cHBvcnQgZm9yDQo+
-PiBzaG93aW5nIHRoZSBzdGF0ZSBvZiB0aGUgaW50ZXJmYWNlIGlzIGltcGxlbWVudGVkIHZpYSBo
-b29raW5nIGludG8gdGhlDQo+PiBuZG9fb3Blbi9uZG9fc3RvcCBjYWxsYmFja3MsIGFuZCBkb2Vz
-IG5vdCBsb29rIGF0IG9yIHRvdWNoIHRoZQ0KPj4gX19MSU5LX1NUQVRFX05PQ0FSUklFUiBiaXQg
-YXQgYWxsLg0KPj4NCj4+IE90aGVyIHRoYW4gdmlhIHRoZSBuZXRkZXYgTEVEIHRyaWdnZXIgSSBk
-b24ndCB0aGluayBvbmUgY2FuIGV2ZW4gb2JzZXJ2ZQ0KPj4gdGhlIHNsaWdodGx5IG9kZCBpbml0
-aWFsIHN0YXRlIG9mIHRoZSBfX0xJTktfU1RBVEVfTk9DQVJSSUVSIGJpdCBmb3IgQ0FODQo+PiBk
-ZXZpY2VzLA0KPiANCj4gaXQncyBzdGlsbCBpbmNvcnJlY3QsIHRob3VnaCBJIGd1ZXNzIHRoYXQn
-cyBtb290IGluIHByYWN0aWNlLg0KRXhhY3RseS4NCg0KPj4gd2hpY2ggaXMgd2h5IEkgZnJhbWVk
-IHRoaXMgYXMgYSBmaXggcHVyZWx5IHRvIGFsbG93IHRoZSBuZXRkZXYNCj4+IHRyaWdnZXIgdG8g
-YmUgYSBjbG9zZXIgZHJvcC1pbiByZXBsYWNlbWVudCBmb3IgQ09ORklHX0NBTl9MRURTLg0KPiAN
-Cj4gU28gdGhlIGVudGlyZSBDT05GSUdfQ0FOX0xFRFMgY29kZSBpcyB0byBiZSByZW1vdmVkPyBX
-aGF0IGV4YWN0bHkgaXMNCj4gdGhpcyBuZXRkZXYgdHJpZ2dlciByZXBsYWNlbWVudCwgaWYgbm90
-IGNhbl9sZWRfZXZlbnQ/IFNvcnJ5LCBJDQo+IHByb2JhYmx5IG1pc3Mgc29tZSBjb250ZXh0Lg0K
-DQpkcml2ZXJzL25ldC9jYW4vS2NvbmZpZyBjb250YWlucyB0aGVzZSBjb21tZW50cw0KDQogICAg
-ICAgICMgVGhlIG5ldGRldiB0cmlnZ2VyIChMRURTX1RSSUdHRVJfTkVUREVWKSBzaG91bGQgYmUg
-YWJsZSB0byBkbw0KICAgICAgICAjIGV2ZXJ5dGhpbmcgdGhhdCB0aGlzIGRyaXZlciBpcyBkb2lu
-Zy4gVGhpcyBpcyBtYXJrZWQgYXMgYnJva2VuDQogICAgICAgICMgYmVjYXVzZSBpdCB1c2VzIHN0
-dWZmIHRoYXQgaXMgaW50ZW5kZWQgdG8gYmUgY2hhbmdlZCBvciByZW1vdmVkLg0KICAgICAgICAj
-IFBsZWFzZSBjb25zaWRlciBzd2l0Y2hpbmcgdG8gdGhlIG5ldGRldiB0cmlnZ2VyIGFuZCBjb25m
-aXJtIGl0DQogICAgICAgICMgZnVsZmlsbHMgeW91ciBuZWVkcyBpbnN0ZWFkIG9mIGZpeGluZyB0
-aGlzIGRyaXZlci4NCg0KaW50cm9kdWNlZCBieSB0aGUgY29tbWl0IDMwZjNiNDIxNDdiYTYgd2hp
-Y2ggYWxzbyBtYXJrZWQgQ09ORklHX0NBTl9MRURTDQphcyAoZGVwZW5kcyBvbikgQlJPS0VOLiBT
-byB3aGlsZSBhIC5kdHMgZm9yIHVzaW5nIHRoZSBDQU4gbGVkIHRyaWdnZXINCm1pZ2h0IGJlDQoN
-CiAgICAgICAgICAgICAgICBjYW5hIHsNCiAgICAgICAgICAgICAgICAgICAgICAgIGxhYmVsID0g
-ImNhbmE6Z3JlZW46YWN0aXZpdHkiOw0KICAgICAgICAgICAgICAgICAgICAgICAgZ3Bpb3MgPSA8
-JmdwaW8wIDEwIDA+Ow0KICAgICAgICAgICAgICAgICAgICAgICAgZGVmYXVsdC1zdGF0ZSA9ICJv
-ZmYiOw0KICAgICAgICAgICAgICAgICAgICAgICAgbGludXgsZGVmYXVsdC10cmlnZ2VyID0gImNh
-bjAtcnh0eCI7DQogICAgICAgICAgICAgICAgfTsNCg0Kb25lIGNhbiBhY2hpZXZlIG1vc3RseSB0
-aGUgc2FtZSB0aGluZyB3aXRoIENBTl9MRURTPW4sDQpMRURTX1RSSUdHRVJfTkVUREVWPXkgc2V0
-dGluZyBsaW51eCxkZWZhdWx0LXRyaWdnZXIgPSAibmV0ZGV2IiBwbHVzIGENCnNtYWxsIGluaXQg
-c2NyaXB0IChvciB1ZGV2IHJ1bGUgb3Igd2hhdGV2ZXIgd29ya3MpIHRoYXQgZG9lcw0KDQpkPS9z
-eXMvY2xhc3MvbGVkcy9jYW5hOmdyZWVuOmFjdGl2aXR5DQplY2hvIGNhbjAgPiAkZC9kZXZpY2Vf
-bmFtZQ0KZWNobyAxID4gJGQvbGluaw0KZWNobyAxID4gJGQvcngNCmVjaG8gMSA+ICRkL3R4DQoN
-CnRvIHRpZSB0aGUgY2FuYSBMRUQgdG8gdGhlIGNhbjAgZGV2aWNlLCBwbHVzIGNvbmZpZ3VyZSBp
-dCB0byBzaG93ICJsaW5rIg0Kc3RhdGUgYXMgd2VsbCBhcyBibGluayBvbiByeCBhbmQgdHguDQoN
-ClRoaXMgd29ya3MganVzdCBmaW5lLCBleGNlcHQgZm9yIHRoZSBpbml0aWFsIHN0YXRlIG9mIHRo
-ZSBMRUQuIEFGQUlVLA0KdGhlIG5ldGRldiB0cmlnZ2VyIGRvZXNuJ3QgbmVlZCBjb29wZXJhdGlv
-biBmcm9tIGVhY2ggZGV2aWNlIGRyaXZlcg0Kc2luY2UgaXQgc2ltcGx5IHdvcmtzIG9mIGEgdGlt
-ZXIgdGhhdCBwZXJpb2RpY2FsbHkgY2hlY2tzIGZvciBjaGFuZ2VzIGluDQpkZXZfZ2V0X3N0YXRz
-KCkuDQoNClJhc211cw0K
+From: Sean Nyekjaer <sean@geanix.com>
+
+[ Upstream commit 0df82dcd55832a99363ab7f9fab954fcacdac3ae ]
+
+Fully compatible with mcp2515, the mcp25625 have integrated transceiver.
+
+This patch add the mcp25625 to the device tree bindings documentation.
+
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
+index 188c8bd4eb67..5a0111d4de58 100644
+--- a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
++++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
+@@ -4,6 +4,7 @@ Required properties:
+  - compatible: Should be one of the following:
+    - "microchip,mcp2510" for MCP2510.
+    - "microchip,mcp2515" for MCP2515.
++   - "microchip,mcp25625" for MCP25625.
+  - reg: SPI chip select.
+  - clocks: The clock feeding the CAN controller.
+  - interrupts: Should contain IRQ line for the CAN controller.
+-- 
+2.20.1
