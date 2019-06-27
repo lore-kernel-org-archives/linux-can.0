@@ -1,80 +1,43 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 24/60] can: af_can: Fix error path of can_init()
-Date: Wed, 26 Jun 2019 20:35:39 -0400
-Message-ID: <20190627003616.20767-24-sashal@kernel.org>
-References: <20190627003616.20767-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 13/35] dt-bindings: can: mcp251x: add mcp25625 support
+Date: Wed, 26 Jun 2019 20:39:01 -0400
+Message-ID: <20190627003925.21330-13-sashal@kernel.org>
+References: <20190627003925.21330-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190627003616.20767-1-sashal@kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190627003925.21330-1-sashal@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: YueHaibing <yuehaibing@huawei.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Sean Nyekjaer <sean@geanix.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Sean Nyekjaer <sean@geanix.com>
 
-[ Upstream commit c5a3aed1cd3152429348ee1fe5cdcca65fe901ce ]
+[ Upstream commit 0df82dcd55832a99363ab7f9fab954fcacdac3ae ]
 
-This patch add error path for can_init() to avoid possible crash if some
-error occurs.
+Fully compatible with mcp2515, the mcp25625 have integrated transceiver.
 
-Fixes: 0d66548a10cb ("[CAN]: Add PF_CAN core module")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+This patch add the mcp25625 to the device tree bindings documentation.
+
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/af_can.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 1684ba5b51eb..80d0ec599439 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -958,6 +958,8 @@ static struct pernet_operations can_pernet_ops __read_mostly = {
- 
- static __init int can_init(void)
- {
-+	int err;
-+
- 	/* check for correct padding to be able to use the structs similarly */
- 	BUILD_BUG_ON(offsetof(struct can_frame, can_dlc) !=
- 		     offsetof(struct canfd_frame, len) ||
-@@ -971,15 +973,31 @@ static __init int can_init(void)
- 	if (!rcv_cache)
- 		return -ENOMEM;
- 
--	register_pernet_subsys(&can_pernet_ops);
-+	err = register_pernet_subsys(&can_pernet_ops);
-+	if (err)
-+		goto out_pernet;
- 
- 	/* protocol register */
--	sock_register(&can_family_ops);
--	register_netdevice_notifier(&can_netdev_notifier);
-+	err = sock_register(&can_family_ops);
-+	if (err)
-+		goto out_sock;
-+	err = register_netdevice_notifier(&can_netdev_notifier);
-+	if (err)
-+		goto out_notifier;
-+
- 	dev_add_pack(&can_packet);
- 	dev_add_pack(&canfd_packet);
- 
- 	return 0;
-+
-+out_notifier:
-+	sock_unregister(PF_CAN);
-+out_sock:
-+	unregister_pernet_subsys(&can_pernet_ops);
-+out_pernet:
-+	kmem_cache_destroy(rcv_cache);
-+
-+	return err;
- }
- 
- static __exit void can_exit(void)
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
+index ee3723beb701..33b38716b77f 100644
+--- a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
++++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
+@@ -4,6 +4,7 @@ Required properties:
+  - compatible: Should be one of the following:
+    - "microchip,mcp2510" for MCP2510.
+    - "microchip,mcp2515" for MCP2515.
++   - "microchip,mcp25625" for MCP25625.
+  - reg: SPI chip select.
+  - clocks: The clock feeding the CAN controller.
+  - interrupt-parent: The parent interrupt controller.
 -- 
 2.20.1
