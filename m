@@ -1,80 +1,58 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.1 40/95] can: af_can: Fix error path of can_init()
-Date: Wed, 26 Jun 2019 20:29:25 -0400
-Message-ID: <20190627003021.19867-40-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 41/95] can: flexcan: Remove unneeded registration message
+Date: Wed, 26 Jun 2019 20:29:26 -0400
+Message-ID: <20190627003021.19867-41-sashal@kernel.org>
 References: <20190627003021.19867-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190627003021.19867-1-sashal@kernel.org>
-Sender: stable-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: YueHaibing <yuehaibing@huawei.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Fabio Estevam <festevam@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Fabio Estevam <festevam@gmail.com>
 
-[ Upstream commit c5a3aed1cd3152429348ee1fe5cdcca65fe901ce ]
+[ Upstream commit eb503004a7e563d543c9cb869907156de7efe720 ]
 
-This patch add error path for can_init() to avoid possible crash if some
-error occurs.
+Currently the following message is observed when the flexcan
+driver is probed:
 
-Fixes: 0d66548a10cb ("[CAN]: Add PF_CAN core module")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+flexcan 2090000.flexcan: device registered (reg_base=(ptrval), irq=23)
+
+The reason for printing 'ptrval' is explained at
+Documentation/core-api/printk-formats.rst:
+
+"Pointers printed without a specifier extension (i.e unadorned %p) are
+hashed to prevent leaking information about the kernel memory layout. This
+has the added benefit of providing a unique identifier. On 64-bit machines
+the first 32 bits are zeroed. The kernel will print ``(ptrval)`` until it
+gathers enough entropy."
+
+Instead of passing %pK, which can print the correct address, simply
+remove the entire message as it is not really that useful.
+
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/af_can.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+ drivers/net/can/flexcan.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 1684ba5b51eb..80d0ec599439 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -958,6 +958,8 @@ static struct pernet_operations can_pernet_ops __read_mostly = {
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 1c66fb2ad76b..05e5609f87f8 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1583,9 +1583,6 @@ static int flexcan_probe(struct platform_device *pdev)
+ 			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
+ 	}
  
- static __init int can_init(void)
- {
-+	int err;
-+
- 	/* check for correct padding to be able to use the structs similarly */
- 	BUILD_BUG_ON(offsetof(struct can_frame, can_dlc) !=
- 		     offsetof(struct canfd_frame, len) ||
-@@ -971,15 +973,31 @@ static __init int can_init(void)
- 	if (!rcv_cache)
- 		return -ENOMEM;
- 
--	register_pernet_subsys(&can_pernet_ops);
-+	err = register_pernet_subsys(&can_pernet_ops);
-+	if (err)
-+		goto out_pernet;
- 
- 	/* protocol register */
--	sock_register(&can_family_ops);
--	register_netdevice_notifier(&can_netdev_notifier);
-+	err = sock_register(&can_family_ops);
-+	if (err)
-+		goto out_sock;
-+	err = register_netdevice_notifier(&can_netdev_notifier);
-+	if (err)
-+		goto out_notifier;
-+
- 	dev_add_pack(&can_packet);
- 	dev_add_pack(&canfd_packet);
- 
+-	dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%d)\n",
+-		 priv->regs, dev->irq);
+-
  	return 0;
-+
-+out_notifier:
-+	sock_unregister(PF_CAN);
-+out_sock:
-+	unregister_pernet_subsys(&can_pernet_ops);
-+out_pernet:
-+	kmem_cache_destroy(rcv_cache);
-+
-+	return err;
- }
  
- static __exit void can_exit(void)
+  failed_register:
 -- 
 2.20.1
