@@ -1,37 +1,76 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/6] dt-bindings: can: rcar_can: Complete documentation
- for RZ/G2[EM]
-Date: Mon, 8 Jul 2019 14:56:35 +0200
-Message-ID: <CAMuHMdWULgX2E2CzEkp1_0_hab6YYk5kuuSdEVEOJN_X9OAKNw@mail.gmail.com>
-References: <1560513214-28031-1-git-send-email-fabrizio.castro@bp.renesas.com> <1560513214-28031-3-git-send-email-fabrizio.castro@bp.renesas.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v12 1/5] can: m_can: Create a m_can platform framework
+Date: Wed, 10 Jul 2019 07:08:00 -0500
+Message-ID: <f236a88a-485c-9002-1e4a-9a5ad0e1c81f@ti.com>
+References: <20190509161109.10499-1-dmurphy@ti.com>
+ <dbb7bdef-820d-5dcc-d7b5-a82bc1b076fb@ti.com>
+ <a8e3f2d3-18c3-3bdb-1318-8964afc7e032@ti.com>
+ <93530d94-ec65-de82-448e-f2460dd39fb9@ti.com>
+ <0f6c41c8-0071-ed3a-9e65-caf02a0fbefe@ti.com>
+ <6fa79302-ad32-7f43-f9d5-af70aa789284@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1560513214-28031-3-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <6fa79302-ad32-7f43-f9d5-af70aa789284@ti.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert+renesas@glider.be>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On Fri, Jun 14, 2019 at 1:53 PM Fabrizio Castro
-<fabrizio.castro@bp.renesas.com> wrote:
-> Add missing RZ/G2[EM] CANFD clock specific documentation.
+Hello
+
+On 6/17/19 10:09 AM, Dan Murphy wrote:
+> Marc
 >
-> Fixes: 868b7c0f43e6 ("dt-bindings: can: rcar_can: Add r8a774a1 support")
-> Fixes: 0c11e7d0f51c ("dt-bindings: can: rcar_can: Add r8a774c0 support")
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> On 6/10/19 11:35 AM, Dan Murphy wrote:
+>> Bump
+>>
+>> On 6/6/19 8:16 AM, Dan Murphy wrote:
+>>> Marc
+>>>
+>>> Bump
+>>>
+>>> On 5/31/19 6:51 AM, Dan Murphy wrote:
+>>>> Marc
+>>>>
+>>>> On 5/15/19 3:54 PM, Dan Murphy wrote:
+>>>>> Marc
+>>>>>
+>>>>> On 5/9/19 11:11 AM, Dan Murphy wrote:
+>>>>>> Create a m_can platform framework that peripheral
+>>>>>> devices can register to and use common code and register sets.
+>>>>>> The peripheral devices may provide read/write and configuration
+>>>>>> support of the IP.
+>>>>>>
+>>>>>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+>>>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>>>>> ---
+>>>>>>
+>>>>>> v12 - Update the m_can_read/write functions to create a backtrace 
+>>>>>> if the callback
+>>>>>> pointer is NULL. - https://lore.kernel.org/patchwork/patch/1052302/
+>>>>>>
+>>>>> Is this able to be merged now?
+>>>>
+>>>> ping
+>
+> Wondering if there is anything else we need to do?
+>
+> The part has officially shipped and we had hoped to have driver 
+> support in Linux as part of the announcement.
+>
+Is this being sent in a PR for 5.3?
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-I.e. applied and queued for v5.4.
+Dan
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Dan
+>
+>
+>>>>
+>>>>
+>>>>> Dan
+>>>>>
+>>>>> <snip>
