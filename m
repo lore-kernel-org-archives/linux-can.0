@@ -1,7 +1,8 @@
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH 1/8] can: flexcan: allocate skb in flexcan_mailbox_read
-Date: Fri, 12 Jul 2019 08:02:38 +0000
-Message-ID: <20190712075926.7357-2-qiangqing.zhang@nxp.com>
+Subject: [PATCH 2/8] can: flexcan: use struct canfd_frame for CAN classic
+ frame
+Date: Fri, 12 Jul 2019 08:02:41 +0000
+Message-ID: <20190712075926.7357-3-qiangqing.zhang@nxp.com>
 References: <20190712075926.7357-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,147 +15,123 @@ To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linu
 Cc: "wg@grandegger.com" <wg@grandegger.com>, dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-We need to use alloc_canfd_skb() for CAN FD frames and alloc_can_skb()
-for CAN classic frames. So we have to alloc skb in flexcan_mailbox_read().
+This patch prepares for CAN FD mode, using struct canfd_frame can both
+for classic format frame and fd format frame.
 
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- drivers/net/can/flexcan.c      | 38 ++++++++++++++++++++--------------
- drivers/net/can/rx-offload.c   | 29 +++++++-------------------
- include/linux/can/rx-offload.h |  5 +++--
- 3 files changed, 33 insertions(+), 39 deletions(-)
+ drivers/net/can/flexcan.c    | 34 +++++++++++++++++-----------------
+ drivers/net/can/rx-offload.c |  4 ++--
+ 2 files changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index e35083ff31ee..7e12f3db0915 100644
+index 7e12f3db0915..5b0a159daa38 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -789,14 +789,15 @@ static inline struct flexcan_priv *rx_offload_to_priv=
-(struct can_rx_offload *off
- 	return container_of(offload, struct flexcan_priv, offload);
- }
-=20
--static unsigned int flexcan_mailbox_read(struct can_rx_offload *offload,
--					 struct can_frame *cf,
--					 u32 *timestamp, unsigned int n)
-+static unsigned int flexcan_mailbox_read(struct can_rx_offload *offload, b=
-ool drop,
-+					 struct sk_buff **skb, u32 *timestamp,
-+					 unsigned int n)
+@@ -609,10 +609,10 @@ static int flexcan_get_berr_counter(const struct net_=
+device *dev,
+ static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_devi=
+ce *dev)
  {
- 	struct flexcan_priv *priv =3D rx_offload_to_priv(offload);
+ 	const struct flexcan_priv *priv =3D netdev_priv(dev);
+-	struct can_frame *cf =3D (struct can_frame *)skb->data;
++	struct canfd_frame *cfd =3D (struct canfd_frame *)skb->data;
+ 	u32 can_id;
+ 	u32 data;
+-	u32 ctrl =3D FLEXCAN_MB_CODE_TX_DATA | (cf->can_dlc << 16);
++	u32 ctrl =3D FLEXCAN_MB_CODE_TX_DATA | (cfd->len << 16);
+ 	int i;
+=20
+ 	if (can_dropped_invalid_skb(dev, skb))
+@@ -620,18 +620,18 @@ static netdev_tx_t flexcan_start_xmit(struct sk_buff =
+*skb, struct net_device *de
+=20
+ 	netif_stop_queue(dev);
+=20
+-	if (cf->can_id & CAN_EFF_FLAG) {
+-		can_id =3D cf->can_id & CAN_EFF_MASK;
++	if (cfd->can_id & CAN_EFF_FLAG) {
++		can_id =3D cfd->can_id & CAN_EFF_MASK;
+ 		ctrl |=3D FLEXCAN_MB_CNT_IDE | FLEXCAN_MB_CNT_SRR;
+ 	} else {
+-		can_id =3D (cf->can_id & CAN_SFF_MASK) << 18;
++		can_id =3D (cfd->can_id & CAN_SFF_MASK) << 18;
+ 	}
+=20
+-	if (cf->can_id & CAN_RTR_FLAG)
++	if (cfd->can_id & CAN_RTR_FLAG)
+ 		ctrl |=3D FLEXCAN_MB_CNT_RTR;
+=20
+-	for (i =3D 0; i < cf->can_dlc; i +=3D sizeof(u32)) {
+-		data =3D be32_to_cpup((__be32 *)&cf->data[i]);
++	for (i =3D 0; i < cfd->len; i +=3D sizeof(u32)) {
++		data =3D be32_to_cpup((__be32 *)&cfd->data[i]);
+ 		priv->write(data, &priv->tx_mb->data[i / sizeof(u32)]);
+ 	}
+=20
+@@ -797,7 +797,7 @@ static unsigned int flexcan_mailbox_read(struct can_rx_=
+offload *offload, bool dr
  	struct flexcan_regs __iomem *regs =3D priv->regs;
  	struct flexcan_mb __iomem *mb;
  	u32 reg_ctrl, reg_id, reg_iflag1;
-+	struct can_frame *cf =3D NULL;
+-	struct can_frame *cf =3D NULL;
++	struct canfd_frame *cfd =3D NULL;
  	int i;
 =20
  	mb =3D flexcan_get_mb(priv, n);
-@@ -827,22 +828,27 @@ static unsigned int flexcan_mailbox_read(struct can_r=
-x_offload *offload,
- 		reg_ctrl =3D priv->read(&mb->can_ctrl);
+@@ -829,25 +829,25 @@ static unsigned int flexcan_mailbox_read(struct can_r=
+x_offload *offload, bool dr
  	}
 =20
--	/* increase timstamp to full 32 bit */
--	*timestamp =3D reg_ctrl << 16;
-+	if (!drop)
-+		*skb =3D alloc_can_skb(offload->dev, &cf);
+ 	if (!drop)
+-		*skb =3D alloc_can_skb(offload->dev, &cf);
++		*skb =3D alloc_can_skb(offload->dev, (struct can_frame **)&cfd);
 =20
--	reg_id =3D priv->read(&mb->can_id);
--	if (reg_ctrl & FLEXCAN_MB_CNT_IDE)
--		cf->can_id =3D ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
--	else
--		cf->can_id =3D (reg_id >> 18) & CAN_SFF_MASK;
-+	if (*skb && cf) {
-+		/* increase timstamp to full 32 bit */
-+		*timestamp =3D reg_ctrl << 16;
+-	if (*skb && cf) {
++	if (*skb && cfd) {
+ 		/* increase timstamp to full 32 bit */
+ 		*timestamp =3D reg_ctrl << 16;
 =20
--	if (reg_ctrl & FLEXCAN_MB_CNT_RTR)
--		cf->can_id |=3D CAN_RTR_FLAG;
--	cf->can_dlc =3D get_can_dlc((reg_ctrl >> 16) & 0xf);
-+		reg_id =3D priv->read(&mb->can_id);
-+		if (reg_ctrl & FLEXCAN_MB_CNT_IDE)
-+			cf->can_id =3D ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
-+		else
-+			cf->can_id =3D (reg_id >> 18) & CAN_SFF_MASK;
+ 		reg_id =3D priv->read(&mb->can_id);
+ 		if (reg_ctrl & FLEXCAN_MB_CNT_IDE)
+-			cf->can_id =3D ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
++			cfd->can_id =3D ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
+ 		else
+-			cf->can_id =3D (reg_id >> 18) & CAN_SFF_MASK;
++			cfd->can_id =3D (reg_id >> 18) & CAN_SFF_MASK;
 =20
--	for (i =3D 0; i < cf->can_dlc; i +=3D sizeof(u32)) {
--		__be32 data =3D cpu_to_be32(priv->read(&mb->data[i / sizeof(u32)]));
--		*(__be32 *)(cf->data + i) =3D data;
-+		if (reg_ctrl & FLEXCAN_MB_CNT_RTR)
-+			cf->can_id |=3D CAN_RTR_FLAG;
-+		cf->can_dlc =3D get_can_dlc((reg_ctrl >> 16) & 0xf);
-+
-+		for (i =3D 0; i < cf->can_dlc; i +=3D sizeof(u32)) {
-+			__be32 data =3D cpu_to_be32(priv->read(&mb->data[i / sizeof(u32)]));
-+			*(__be32 *)(cf->data + i) =3D data;
-+		}
+ 		if (reg_ctrl & FLEXCAN_MB_CNT_RTR)
+-			cf->can_id |=3D CAN_RTR_FLAG;
+-		cf->can_dlc =3D get_can_dlc((reg_ctrl >> 16) & 0xf);
++			cfd->can_id |=3D CAN_RTR_FLAG;
++		cfd->len =3D get_can_dlc((reg_ctrl >> 16) & 0x0F);
+=20
+-		for (i =3D 0; i < cf->can_dlc; i +=3D sizeof(u32)) {
++		for (i =3D 0; i < cfd->len; i +=3D sizeof(u32)) {
+ 			__be32 data =3D cpu_to_be32(priv->read(&mb->data[i / sizeof(u32)]));
+-			*(__be32 *)(cf->data + i) =3D data;
++			*(__be32 *)(cfd->data + i) =3D data;
+ 		}
  	}
 =20
- 	/* mark as read */
 diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
-index 2ce4fa8698c7..632919484ff7 100644
+index 632919484ff7..9f8c8410e19e 100644
 --- a/drivers/net/can/rx-offload.c
 +++ b/drivers/net/can/rx-offload.c
-@@ -121,32 +121,19 @@ static int can_rx_offload_compare(struct sk_buff *a, =
-struct sk_buff *b)
- static struct sk_buff *can_rx_offload_offload_one(struct can_rx_offload *o=
-ffload, unsigned int n)
- {
- 	struct sk_buff *skb =3D NULL;
--	struct can_rx_offload_cb *cb;
--	struct can_frame *cf;
--	int ret;
-+	u32 timestamp;
+@@ -55,11 +55,11 @@ static int can_rx_offload_napi_poll(struct napi_struct =
+*napi, int quota)
 =20
- 	/* If queue is full or skb not available, read to discard mailbox */
--	if (likely(skb_queue_len(&offload->skb_queue) <=3D
--		   offload->skb_queue_len_max))
--		skb =3D alloc_can_skb(offload->dev, &cf);
-+	bool drop =3D unlikely(skb_queue_len(&offload->skb_queue) >
-+			     offload->skb_queue_len_max);
+ 	while ((work_done < quota) &&
+ 	       (skb =3D skb_dequeue(&offload->skb_queue))) {
+-		struct can_frame *cf =3D (struct can_frame *)skb->data;
++		struct canfd_frame *cfd =3D (struct canfd_frame *)skb->data;
 =20
--	if (!skb) {
--		struct can_frame cf_overflow;
--		u32 timestamp;
-+	if (offload->mailbox_read(offload, drop, &skb, &timestamp, n) && !skb)
-+		offload->dev->stats.rx_dropped++;
-=20
--		ret =3D offload->mailbox_read(offload, &cf_overflow,
--					    &timestamp, n);
--		if (ret)
--			offload->dev->stats.rx_dropped++;
-+	if (skb) {
-+		struct can_rx_offload_cb *cb =3D can_rx_offload_get_cb(skb);
-=20
--		return NULL;
--	}
--
--	cb =3D can_rx_offload_get_cb(skb);
--	ret =3D offload->mailbox_read(offload, cf, &cb->timestamp, n);
--	if (!ret) {
--		kfree_skb(skb);
--		return NULL;
-+		cb->timestamp =3D timestamp;
+ 		work_done++;
+ 		stats->rx_packets++;
+-		stats->rx_bytes +=3D cf->can_dlc;
++		stats->rx_bytes +=3D cfd->len;
+ 		netif_receive_skb(skb);
  	}
 =20
- 	return skb;
-diff --git a/include/linux/can/rx-offload.h b/include/linux/can/rx-offload.=
-h
-index 8268811a697e..c54d80ef4314 100644
---- a/include/linux/can/rx-offload.h
-+++ b/include/linux/can/rx-offload.h
-@@ -23,8 +23,9 @@
- struct can_rx_offload {
- 	struct net_device *dev;
-=20
--	unsigned int (*mailbox_read)(struct can_rx_offload *offload, struct can_f=
-rame *cf,
--				     u32 *timestamp, unsigned int mb);
-+	unsigned int (*mailbox_read)(struct can_rx_offload *offload, bool drop,
-+				     struct sk_buff **skb, u32 *timestamp,
-+				     unsigned int mb);
-=20
- 	struct sk_buff_head skb_queue;
- 	u32 skb_queue_len_max;
 --=20
 2.17.1
