@@ -1,76 +1,47 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v12 1/5] can: m_can: Create a m_can platform framework
-Date: Wed, 10 Jul 2019 07:08:00 -0500
-Message-ID: <f236a88a-485c-9002-1e4a-9a5ad0e1c81f@ti.com>
-References: <20190509161109.10499-1-dmurphy@ti.com>
- <dbb7bdef-820d-5dcc-d7b5-a82bc1b076fb@ti.com>
- <a8e3f2d3-18c3-3bdb-1318-8964afc7e032@ti.com>
- <93530d94-ec65-de82-448e-f2460dd39fb9@ti.com>
- <0f6c41c8-0071-ed3a-9e65-caf02a0fbefe@ti.com>
- <6fa79302-ad32-7f43-f9d5-af70aa789284@ti.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH 0/8] can: flexcan: add CAN FD support for NXP Flexcan
+Date: Fri, 12 Jul 2019 08:02:35 +0000
+Message-ID: <20190712075926.7357-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <6fa79302-ad32-7f43-f9d5-af70aa789284@ti.com>
 Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-Hello
+Hi Marc,
 
-On 6/17/19 10:09 AM, Dan Murphy wrote:
-> Marc
->
-> On 6/10/19 11:35 AM, Dan Murphy wrote:
->> Bump
->>
->> On 6/6/19 8:16 AM, Dan Murphy wrote:
->>> Marc
->>>
->>> Bump
->>>
->>> On 5/31/19 6:51 AM, Dan Murphy wrote:
->>>> Marc
->>>>
->>>> On 5/15/19 3:54 PM, Dan Murphy wrote:
->>>>> Marc
->>>>>
->>>>> On 5/9/19 11:11 AM, Dan Murphy wrote:
->>>>>> Create a m_can platform framework that peripheral
->>>>>> devices can register to and use common code and register sets.
->>>>>> The peripheral devices may provide read/write and configuration
->>>>>> support of the IP.
->>>>>>
->>>>>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
->>>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->>>>>> ---
->>>>>>
->>>>>> v12 - Update the m_can_read/write functions to create a backtrace 
->>>>>> if the callback
->>>>>> pointer is NULL. - https://lore.kernel.org/patchwork/patch/1052302/
->>>>>>
->>>>> Is this able to be merged now?
->>>>
->>>> ping
->
-> Wondering if there is anything else we need to do?
->
-> The part has officially shipped and we had hoped to have driver 
-> support in Linux as part of the announcement.
->
-Is this being sent in a PR for 5.3?
+This patch set intends to add support for NXP Flexcan CAN FD, it has
+been validated on three NXP platform(i.MX8QM/QXP, S32V234, LX2160AR1).
+After discussed with another two Fexcan owner, we sorted out this
+version.
 
-Dan
+I hope you can pick up the patch set as it can fully meet requirement of
+above three platform. And after that, we can start to do upstream about
+CAN FD.
 
+Thanks a lot!
 
-> Dan
->
->
->>>>
->>>>
->>>>> Dan
->>>>>
->>>>> <snip>
+BRs,
+Joakim Zhang
+
+Joakim Zhang (8):
+  can: flexcan: allocate skb in flexcan_mailbox_read
+  can: flexcan: use struct canfd_frame for CAN classic frame
+  can: flexcan: add CAN FD mode support
+  can: flexcan: add CANFD BRS support
+  can: flexcan: add ISO CAN FD feature support
+  can: flexcan: add Transceiver Delay Compensation suopport
+  can: flexcan: add imx8qm support
+  can: flexcan: add lx2160ar1 support
+
+ drivers/net/can/flexcan.c      | 340 ++++++++++++++++++++++++++++-----
+ drivers/net/can/rx-offload.c   |  33 +---
+ include/linux/can/rx-offload.h |   5 +-
+ 3 files changed, 305 insertions(+), 73 deletions(-)
+
+--=20
+2.17.1
