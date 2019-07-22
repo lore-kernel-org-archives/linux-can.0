@@ -1,117 +1,43 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V2 1/1] can: sja1000: f81601: add Fintek F81601 support
-Date: Mon, 22 Jul 2019 11:45:24 +0200
-Message-ID: <cdd3a9dd-ae1d-1874-d51b-a88ba5500588@pengutronix.de>
-References: <1563776521-28317-1-git-send-email-hpeter+linux_kernel@gmail.com>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: [PATCH v2] can: dev: call netif_carrier_off() in register_candev()
+Date: Mon, 22 Jul 2019 14:04:50 +0000
+Message-ID: <20190722140429.19782-1-rasmus.villemoes@prevas.dk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="SQ1hHwJqs3kmaI9kCNm0ke1xmkiBVsj8i"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1563776521-28317-1-git-send-email-hpeter+linux_kernel@gmail.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Ji-Ze Hong (Peter Hong)" <hpeter@gmail.com>, wg@grandegger.com, peter_hong@fintek.com.tw
-Cc: davem@davemloft.net, f.suligoi@asem.it, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, "Ji-Ze Hong (Peter Hong)" <hpeter+linux_kernel@gmail.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rasmus Villemoes <Rasmus.Villemoes@prevas.se>, Willem de Bruijn <willemb@google.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SQ1hHwJqs3kmaI9kCNm0ke1xmkiBVsj8i
-Content-Type: multipart/mixed; boundary="DFwssp55hssuGeQuD7seBDiCZ2gvxuav9";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "Ji-Ze Hong (Peter Hong)" <hpeter@gmail.com>, wg@grandegger.com,
- peter_hong@fintek.com.tw
-Cc: davem@davemloft.net, f.suligoi@asem.it, linux-kernel@vger.kernel.org,
- linux-can@vger.kernel.org, netdev@vger.kernel.org,
- "Ji-Ze Hong (Peter Hong)" <hpeter+linux_kernel@gmail.com>
-Message-ID: <cdd3a9dd-ae1d-1874-d51b-a88ba5500588@pengutronix.de>
-Subject: Re: [PATCH V2 1/1] can: sja1000: f81601: add Fintek F81601 support
-References: <1563776521-28317-1-git-send-email-hpeter+linux_kernel@gmail.com>
-In-Reply-To: <1563776521-28317-1-git-send-email-hpeter+linux_kernel@gmail.com>
+CONFIG_CAN_LEDS is deprecated. When trying to use the generic netdev
+trigger as suggested, there's a small inconsistency with the link
+property: The LED is on initially, stays on when the device is brought
+up, and then turns off (as expected) when the device is brought down.
 
---DFwssp55hssuGeQuD7seBDiCZ2gvxuav9
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Make sure the LED always reflects the state of the CAN device.
 
-On 7/22/19 8:22 AM, Ji-Ze Hong (Peter Hong) wrote:
-> This patch add support for Fintek PCIE to 2 CAN controller support
->=20
-> Signed-off-by: Ji-Ze Hong (Peter Hong) <hpeter+linux_kernel@gmail.com>
-> ---
-> Changelog:
-> v2:
-> 	1: Fix comment on the spinlock with write access.
-> 	2: Use ARRAY_SIZE instead of F81601_PCI_MAX_CHAN.
-> 	3: Check the strap pin outside the loop.
-> 	4: Fix the cleanup issue in f81601_pci_add_card().
-> 	5: Remove unused "channels" in struct f81601_pci_card.
->=20
->  drivers/net/can/sja1000/Kconfig  |   8 ++
->  drivers/net/can/sja1000/Makefile |   1 +
->  drivers/net/can/sja1000/f81601.c | 215 +++++++++++++++++++++++++++++++=
-++++++++
->  3 files changed, 224 insertions(+)
->  create mode 100644 drivers/net/can/sja1000/f81601.c
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Acked-by: Willem de Bruijn <willemb@google.com>
+---
+v2: resending with proper subject (no net-next) and Willem's ack.
 
-> diff --git a/drivers/net/can/sja1000/f81601.c b/drivers/net/can/sja1000=
-/f81601.c
-> new file mode 100644
-> index 000000000000..3c378de8764d
-> --- /dev/null
-> +++ b/drivers/net/can/sja1000/f81601.c
+ drivers/net/can/dev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-[...]
-
-> +static void f81601_pci_del_card(struct pci_dev *pdev)
-> +{
-> +	struct f81601_pci_card *card =3D pci_get_drvdata(pdev);
-> +	struct net_device *dev;
-> +	int i =3D 0;
-> +
-> +	for (i =3D 0; i < ARRAY_SIZE(card->net_dev); i++) {
-> +		dev =3D card->net_dev[i];
-> +		if (!dev)
-> +			continue;
-> +
-> +		dev_info(&pdev->dev, "%s: Removing %s\n", __func__, dev->name);
-> +
-> +		unregister_sja1000dev(dev);
-> +		free_sja1000dev(dev);
-> +	}
-> +
-> +	pcim_iounmap(pdev, card->addr);
-
-Why do you need iounmap()?
-
-> +}
-
-Marc
-
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index c05e4d50d43d..fad27ace6248 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -1260,6 +1260,7 @@ int register_candev(struct net_device *dev)
+ 		return -EINVAL;
+=20
+ 	dev->rtnl_link_ops =3D &can_link_ops;
++	netif_carrier_off(dev);
+ 	return register_netdev(dev);
+ }
+ EXPORT_SYMBOL_GPL(register_candev);
 --=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---DFwssp55hssuGeQuD7seBDiCZ2gvxuav9--
-
---SQ1hHwJqs3kmaI9kCNm0ke1xmkiBVsj8i
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl01hbQACgkQWsYho5Hk
-nSCHaAgAmONUlMqvO6vrt/ghYTMHy9dSuFoPjVxzUAeNCH5kmSkxy/N0jilGB1Fi
-WrF8lvpCKR2XAHbxYm7cPXWEEU4JolyvBYJfHfS6roPwXiSoohcBymLXjElcxHA7
-VGC6WliaRJJFG0b7w3VBIhyWObI6pLoQAtoxL7nxKD0Qh6Ftntok9y6klqCrl7a+
-3xwOOESWPPJUkwBDqQW8QimSIfJpv8mJpjZWOOYHjNgJ4bSa38JuGxWOE+GdtCcg
-xW8bZciDv/ZHOT2w2L7gyXhwKMejhh8ruiZ9Vujlqu1nO0amgons0mHCVsT693zu
-l2/O6apd8Rt9+BGxWaWVavA912I4jg==
-=2/Oh
------END PGP SIGNATURE-----
-
---SQ1hHwJqs3kmaI9kCNm0ke1xmkiBVsj8i--
+2.20.1
