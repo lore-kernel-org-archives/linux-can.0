@@ -1,168 +1,305 @@
-From: Saeed Mahameed <saeedm@mellanox.com>
+From: "Ji-Ze Hong (Peter Hong)" <hpeter@gmail.com>
 Subject: Re: [PATCH V2 1/1] can: sja1000: f81601: add Fintek F81601 support
-Date: Tue, 23 Jul 2019 21:38:50 +0000
-Message-ID: <bb38703fa94f19578ac67f763bb1a0ad34196757.camel@mellanox.com>
+Date: Wed, 24 Jul 2019 13:19:33 +0800
+Message-ID: <37a8be8d-3ce7-e983-93da-35413cfb5da1@gmail.com>
 References: <1563776521-28317-1-git-send-email-hpeter+linux_kernel@gmail.com>
+ <bb38703fa94f19578ac67f763bb1a0ad34196757.camel@mellanox.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1563776521-28317-1-git-send-email-hpeter+linux_kernel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <bb38703fa94f19578ac67f763bb1a0ad34196757.camel@mellanox.com>
 Content-Language: en-US
-Content-ID: <164D160C44722D40969F815CB6A3273F@eurprd05.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "peter_hong@fintek.com.tw" <peter_hong@fintek.com.tw>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "hpeter@gmail.com" <hpeter@gmail.com>
+Sender: netdev-owner@vger.kernel.org
+To: Saeed Mahameed <saeedm@mellanox.com>, "peter_hong@fintek.com.tw" <peter_hong@fintek.com.tw>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>
 Cc: "hpeter+linux_kernel@gmail.com" <hpeter+linux_kernel@gmail.com>, "f.suligoi@asem.it" <f.suligoi@asem.it>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-T24gTW9uLCAyMDE5LTA3LTIyIGF0IDE0OjIyICswODAwLCBKaS1aZSBIb25nIChQZXRlciBIb25n
-KSB3cm90ZToNCj4gVGhpcyBwYXRjaCBhZGQgc3VwcG9ydCBmb3IgRmludGVrIFBDSUUgdG8gMiBD
-QU4gY29udHJvbGxlciBzdXBwb3J0DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBKaS1aZSBIb25nIChQ
-ZXRlciBIb25nKSA8aHBldGVyK2xpbnV4X2tlcm5lbEBnbWFpbC5jb20NCj4gPg0KPiAtLS0NCj4g
-Q2hhbmdlbG9nOg0KPiB2MjoNCj4gCTE6IEZpeCBjb21tZW50IG9uIHRoZSBzcGlubG9jayB3aXRo
-IHdyaXRlIGFjY2Vzcy4NCj4gCTI6IFVzZSBBUlJBWV9TSVpFIGluc3RlYWQgb2YgRjgxNjAxX1BD
-SV9NQVhfQ0hBTi4NCj4gCTM6IENoZWNrIHRoZSBzdHJhcCBwaW4gb3V0c2lkZSB0aGUgbG9vcC4N
-Cj4gCTQ6IEZpeCB0aGUgY2xlYW51cCBpc3N1ZSBpbiBmODE2MDFfcGNpX2FkZF9jYXJkKCkuDQo+
-IAk1OiBSZW1vdmUgdW51c2VkICJjaGFubmVscyIgaW4gc3RydWN0IGY4MTYwMV9wY2lfY2FyZC4N
-Cj4gDQo+ICBkcml2ZXJzL25ldC9jYW4vc2phMTAwMC9LY29uZmlnICB8ICAgOCArKw0KPiAgZHJp
-dmVycy9uZXQvY2FuL3NqYTEwMDAvTWFrZWZpbGUgfCAgIDEgKw0KPiAgZHJpdmVycy9uZXQvY2Fu
-L3NqYTEwMDAvZjgxNjAxLmMgfCAyMTUNCj4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrDQo+ICAzIGZpbGVzIGNoYW5nZWQsIDIyNCBpbnNlcnRpb25zKCspDQo+ICBjcmVh
-dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9uZXQvY2FuL3NqYTEwMDAvZjgxNjAxLmMNCj4gDQo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vc2phMTAwMC9LY29uZmlnDQo+IGIvZHJpdmVycy9u
-ZXQvY2FuL3NqYTEwMDAvS2NvbmZpZw0KPiBpbmRleCBmNmRjODk5MjdlY2UuLjg1ODgzMjNjNTEz
-OCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL3NqYTEwMDAvS2NvbmZpZw0KPiArKysg
-Yi9kcml2ZXJzL25ldC9jYW4vc2phMTAwMC9LY29uZmlnDQo+IEBAIC0xMDEsNCArMTAxLDEyIEBA
-IGNvbmZpZyBDQU5fVFNDQU4xDQo+ICAJICBJUlEgbnVtYmVycyBhcmUgcmVhZCBmcm9tIGp1bXBl
-cnMgSlA0IGFuZCBKUDUsDQo+ICAJICBTSkExMDAwIElPIGJhc2UgYWRkcmVzc2VzIGFyZSBjaG9z
-ZW4gaGV1cmlzdGljYWxseSAoZmlyc3QNCj4gdGhhdCB3b3JrcykuDQo+ICANCj4gK2NvbmZpZyBD
-QU5fRjgxNjAxDQo+ICsJdHJpc3RhdGUgIkZpbnRlayBGODE2MDEgUENJRSB0byAyIENBTiBDb250
-cm9sbGVyIg0KPiArCWRlcGVuZHMgb24gUENJDQo+ICsJaGVscA0KPiArCSAgVGhpcyBkcml2ZXIg
-YWRkcyBzdXBwb3J0IGZvciBGaW50ZWsgRjgxNjAxIFBDSUUgdG8gMiBDQU4NCj4gQ29udHJvbGxl
-ci4NCj4gKwkgIEl0IGhhZCBpbnRlcm5hbCAyNE1IeiBjbG9jayBzb3VyY2UsIGJ1dCBpdCBjYW4g
-YmUgY2hhbmdlZCBieQ0KPiArCSAgbWFudWZhY3R1cmVyLiBXZSBjYW4gdXNlIG1vZGluZm8gdG8g
-Z2V0IHVzYWdlIGZvciBwYXJhbWV0ZXJzLg0KPiArCSAgVmlzaXQgaHR0cDovL3d3dy5maW50ZWsu
-Y29tLnR3IHRvIGdldCBtb3JlIGluZm9ybWF0aW9uLg0KPiAgZW5kaWYNCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbmV0L2Nhbi9zamExMDAwL01ha2VmaWxlDQo+IGIvZHJpdmVycy9uZXQvY2FuL3Nq
-YTEwMDAvTWFrZWZpbGUNCj4gaW5kZXggOTI1M2FhZjllNzM5Li42ZjYyNjg1NDNiZDkgMTAwNjQ0
-DQo+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9zamExMDAwL01ha2VmaWxlDQo+ICsrKyBiL2RyaXZl
-cnMvbmV0L2Nhbi9zamExMDAwL01ha2VmaWxlDQo+IEBAIC0xMywzICsxMyw0IEBAIG9iai0kKENP
-TkZJR19DQU5fUEVBS19QQ01DSUEpICs9IHBlYWtfcGNtY2lhLm8NCj4gIG9iai0kKENPTkZJR19D
-QU5fUEVBS19QQ0kpICs9IHBlYWtfcGNpLm8NCj4gIG9iai0kKENPTkZJR19DQU5fUExYX1BDSSkg
-Kz0gcGx4X3BjaS5vDQo+ICBvYmotJChDT05GSUdfQ0FOX1RTQ0FOMSkgKz0gdHNjYW4xLm8NCj4g
-K29iai0kKENPTkZJR19DQU5fRjgxNjAxKSArPSBmODE2MDEubw0KPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9uZXQvY2FuL3NqYTEwMDAvZjgxNjAxLmMNCj4gYi9kcml2ZXJzL25ldC9jYW4vc2phMTAw
-MC9mODE2MDEuYw0KPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiBpbmRleCAwMDAwMDAwMDAwMDAu
-LjNjMzc4ZGU4NzY0ZA0KPiAtLS0gL2Rldi9udWxsDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi9z
-amExMDAwL2Y4MTYwMS5jDQo+IEBAIC0wLDAgKzEsMjE1IEBADQo+ICsvLyBTUERYLUxpY2Vuc2Ut
-SWRlbnRpZmllcjogR1BMLTIuMA0KPiArLyogRmludGVrIEY4MTYwMSBQQ0lFIHRvIDIgQ0FOIGNv
-bnRyb2xsZXIgZHJpdmVyDQo+ICsgKg0KPiArICogQ29weXJpZ2h0IChDKSAyMDE5IFBldGVyIEhv
-bmcgPHBldGVyX2hvbmdAZmludGVrLmNvbS50dz4NCj4gKyAqIENvcHlyaWdodCAoQykgMjAxOSBM
-aW51eCBGb3VuZGF0aW9uDQo+ICsgKi8NCj4gKw0KPiArI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5o
-Pg0KPiArI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L2ludGVy
-cnVwdC5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L25ldGRldmljZS5oPg0KPiArI2luY2x1ZGUgPGxp
-bnV4L2RlbGF5Lmg+DQo+ICsjaW5jbHVkZSA8bGludXgvc2xhYi5oPg0KPiArI2luY2x1ZGUgPGxp
-bnV4L3BjaS5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L2Nhbi9kZXYuaD4NCj4gKyNpbmNsdWRlIDxs
-aW51eC9pby5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L3ZlcnNpb24uaD4NCj4gKw0KPiArI2luY2x1
-ZGUgInNqYTEwMDAuaCINCj4gKw0KPiArI2RlZmluZSBGODE2MDFfUENJX01BWF9DSEFOCQkyDQo+
-ICsNCj4gKyNkZWZpbmUgRjgxNjAxX0RFQ09ERV9SRUcJCTB4MjA5DQo+ICsjZGVmaW5lIEY4MTYw
-MV9JT19NT0RFCQkJQklUKDcpDQo+ICsjZGVmaW5lIEY4MTYwMV9NRU1fTU9ERQkJCUJJVCg2KQ0K
-PiArI2RlZmluZSBGODE2MDFfQ0ZHX01PREUJCQlCSVQoNSkNCj4gKyNkZWZpbmUgRjgxNjAxX0NB
-TjJfSU5URVJOQUxfQ0xLCUJJVCgzKQ0KPiArI2RlZmluZSBGODE2MDFfQ0FOMV9JTlRFUk5BTF9D
-TEsJQklUKDIpDQo+ICsjZGVmaW5lIEY4MTYwMV9DQU4yX0VOCQkJQklUKDEpDQo+ICsjZGVmaW5l
-IEY4MTYwMV9DQU4xX0VOCQkJQklUKDApDQo+ICsNCj4gKyNkZWZpbmUgRjgxNjAxX1RSQVBfUkVH
-CQkJMHgyMGENCj4gKyNkZWZpbmUgRjgxNjAxX0NBTjJfSEFTX0VOCQlCSVQoNCkNCj4gKw0KPiAr
-c3RydWN0IGY4MTYwMV9wY2lfY2FyZCB7DQo+ICsJdm9pZCBfX2lvbWVtICphZGRyOw0KPiArCXNw
-aW5sb2NrX3QgbG9jazsJLyogdXNlIHRoaXMgc3BpbiBsb2NrIG9ubHkgZm9yIHdyaXRlIGFjY2Vz
-cw0KPiAqLw0KPiArCXN0cnVjdCBwY2lfZGV2ICpkZXY7DQo+ICsJc3RydWN0IG5ldF9kZXZpY2Ug
-Km5ldF9kZXZbRjgxNjAxX1BDSV9NQVhfQ0hBTl07DQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgY29u
-c3Qgc3RydWN0IHBjaV9kZXZpY2VfaWQgZjgxNjAxX3BjaV90YmxbXSA9IHsNCj4gKwl7IFBDSV9E
-RVZJQ0UoMHgxYzI5LCAweDE3MDMpIH0sDQo+ICsJe30sDQo+ICt9Ow0KPiArDQo+ICtNT0RVTEVf
-REVWSUNFX1RBQkxFKHBjaSwgZjgxNjAxX3BjaV90YmwpOw0KPiArDQo+ICtzdGF0aWMgYm9vbCBp
-bnRlcm5hbF9jbGsgPSAxOw0KPiArbW9kdWxlX3BhcmFtKGludGVybmFsX2NsaywgYm9vbCwgMDQ0
-NCk7DQo+ICtNT0RVTEVfUEFSTV9ERVNDKGludGVybmFsX2NsaywgIlVzZSBpbnRlcm5hbCBjbG9j
-aywgZGVmYXVsdCAxDQo+ICgyNE1IeikiKTsNCj4gKw0KPiArc3RhdGljIHVuc2lnbmVkIGludCBl
-eHRlcm5hbF9jbGs7DQo+ICttb2R1bGVfcGFyYW0oZXh0ZXJuYWxfY2xrLCB1aW50LCAwNDQ0KTsN
-Cj4gK01PRFVMRV9QQVJNX0RFU0MoZXh0ZXJuYWxfY2xrLCAiRXh0ZXJuYWwgQ2xvY2ssIG11c3Qg
-c3BlYyB3aGVuDQo+IGludGVybmFsX2NsayA9IDAiKTsNCj4gKw0KPiArc3RhdGljIHU4IGY4MTYw
-MV9wY2lfcmVhZF9yZWcoY29uc3Qgc3RydWN0IHNqYTEwMDBfcHJpdiAqcHJpdiwgaW50DQo+IHBv
-cnQpDQo+ICt7DQo+ICsJcmV0dXJuIHJlYWRiKHByaXYtPnJlZ19iYXNlICsgcG9ydCk7DQo+ICt9
-DQo+ICsNCj4gK3N0YXRpYyB2b2lkIGY4MTYwMV9wY2lfd3JpdGVfcmVnKGNvbnN0IHN0cnVjdCBz
-amExMDAwX3ByaXYgKnByaXYsDQo+IGludCBwb3J0LA0KPiArCQkJCSB1OCB2YWwpDQo+ICt7DQo+
-ICsJc3RydWN0IGY4MTYwMV9wY2lfY2FyZCAqY2FyZCA9IHByaXYtPnByaXY7DQo+ICsJdW5zaWdu
-ZWQgbG9uZyBmbGFnczsNCj4gKw0KPiArCXNwaW5fbG9ja19pcnFzYXZlKCZjYXJkLT5sb2NrLCBm
-bGFncyk7DQo+ICsJd3JpdGViKHZhbCwgcHJpdi0+cmVnX2Jhc2UgKyBwb3J0KTsNCj4gKwlyZWFk
-Yihwcml2LT5yZWdfYmFzZSk7DQo+ICsJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmY2FyZC0+bG9j
-aywgZmxhZ3MpOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgdm9pZCBmODE2MDFfcGNpX2RlbF9jYXJk
-KHN0cnVjdCBwY2lfZGV2ICpwZGV2KQ0KPiArew0KPiArCXN0cnVjdCBmODE2MDFfcGNpX2NhcmQg
-KmNhcmQgPSBwY2lfZ2V0X2RydmRhdGEocGRldik7DQo+ICsJc3RydWN0IG5ldF9kZXZpY2UgKmRl
-djsNCj4gKwlpbnQgaSA9IDA7DQo+ICsNCj4gKwlmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShj
-YXJkLT5uZXRfZGV2KTsgaSsrKSB7DQo+ICsJCWRldiA9IGNhcmQtPm5ldF9kZXZbaV07DQo+ICsJ
-CWlmICghZGV2KQ0KPiArCQkJY29udGludWU7DQo+ICsNCj4gKwkJZGV2X2luZm8oJnBkZXYtPmRl
-diwgIiVzOiBSZW1vdmluZyAlc1xuIiwgX19mdW5jX18sDQo+IGRldi0+bmFtZSk7DQo+ICsNCj4g
-KwkJdW5yZWdpc3Rlcl9zamExMDAwZGV2KGRldik7DQo+ICsJCWZyZWVfc2phMTAwMGRldihkZXYp
-Ow0KPiArCX0NCj4gKw0KPiArCXBjaW1faW91bm1hcChwZGV2LCBjYXJkLT5hZGRyKTsNCj4gK30N
-Cj4gKw0KPiArLyogUHJvYmUgRjgxNjAxIGJhc2VkIGRldmljZSBmb3IgdGhlIFNKQTEwMDAgY2hp
-cHMgYW5kIHJlZ2lzdGVyIGVhY2gNCj4gKyAqIGF2YWlsYWJsZSBDQU4gY2hhbm5lbCB0byBTSkEx
-MDAwIFNvY2tldC1DQU4gc3Vic3lzdGVtLg0KPiArICovDQo+ICtzdGF0aWMgaW50IGY4MTYwMV9w
-Y2lfYWRkX2NhcmQoc3RydWN0IHBjaV9kZXYgKnBkZXYsDQo+ICsJCQkgICAgICAgY29uc3Qgc3Ry
-dWN0IHBjaV9kZXZpY2VfaWQgKmVudCkNCj4gK3sNCj4gKwlzdHJ1Y3Qgc2phMTAwMF9wcml2ICpw
-cml2Ow0KPiArCXN0cnVjdCBuZXRfZGV2aWNlICpkZXY7DQo+ICsJc3RydWN0IGY4MTYwMV9wY2lf
-Y2FyZCAqY2FyZDsNCg0Kbml0LCByZXZlcnNlIHhtYXMgdHJlZS4NCg0KPiArCWludCBlcnIsIGks
-IGNvdW50Ow0KPiArCXU4IHRtcDsNCj4gKw0KPiArCWlmIChwY2ltX2VuYWJsZV9kZXZpY2UocGRl
-dikgPCAwKSB7DQo+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgIkZhaWxlZCB0byBlbmFibGUgUENJ
-IGRldmljZVxuIik7DQo+ICsJCXJldHVybiAtRU5PREVWOw0KPiArCX0NCj4gKw0KPiArCWRldl9p
-bmZvKCZwZGV2LT5kZXYsICJEZXRlY3RlZCBjYXJkIGF0IHNsb3QgIyVpXG4iLA0KPiArCQkgUENJ
-X1NMT1QocGRldi0+ZGV2Zm4pKTsNCj4gKw0KPiArCWNhcmQgPSBkZXZtX2t6YWxsb2MoJnBkZXYt
-PmRldiwgc2l6ZW9mKCpjYXJkKSwgR0ZQX0tFUk5FTCk7DQo+ICsJaWYgKCFjYXJkKQ0KPiArCQly
-ZXR1cm4gLUVOT01FTTsNCj4gKw0KPiArCWNhcmQtPmRldiA9IHBkZXY7DQo+ICsJc3Bpbl9sb2Nr
-X2luaXQoJmNhcmQtPmxvY2spOw0KPiArDQo+ICsJcGNpX3NldF9kcnZkYXRhKHBkZXYsIGNhcmQp
-Ow0KPiArDQo+ICsJdG1wID0gRjgxNjAxX0lPX01PREUgfCBGODE2MDFfTUVNX01PREUgfCBGODE2
-MDFfQ0ZHX01PREUgfA0KPiArCQlGODE2MDFfQ0FOMl9FTiB8IEY4MTYwMV9DQU4xX0VOOw0KPiAr
-DQo+ICsJaWYgKGludGVybmFsX2Nsaykgew0KPiArCQl0bXAgfD0gRjgxNjAxX0NBTjJfSU5URVJO
-QUxfQ0xLIHwNCj4gRjgxNjAxX0NBTjFfSU5URVJOQUxfQ0xLOw0KPiArDQo+ICsJCWRldl9pbmZv
-KCZwZGV2LT5kZXYsDQo+ICsJCQkgIkY4MTYwMSBydW5uaW5nIHdpdGggaW50ZXJuYWwgY2xvY2s6
-DQo+IDI0TWh6XG4iKTsNCj4gKwl9IGVsc2Ugew0KPiArCQlkZXZfaW5mbygmcGRldi0+ZGV2LA0K
-PiArCQkJICJGODE2MDEgcnVubmluZyB3aXRoIGV4dGVybmFsIGNsb2NrOiAlZE1oelxuIiwNCj4g
-KwkJCSBleHRlcm5hbF9jbGsgLyAxMDAwMDAwKTsNCj4gKwl9DQo+ICsNCj4gKwlwY2lfd3JpdGVf
-Y29uZmlnX2J5dGUocGRldiwgRjgxNjAxX0RFQ09ERV9SRUcsIHRtcCk7DQo+ICsNCj4gKwljYXJk
-LT5hZGRyID0gcGNpbV9pb21hcChwZGV2LCAwLCBwY2lfcmVzb3VyY2VfbGVuKHBkZXYsIDApKTsN
-Cj4gKw0KPiArCWlmICghY2FyZC0+YWRkcikgew0KPiArCQllcnIgPSAtRU5PTUVNOw0KPiArCQlk
-ZXZfZXJyKCZwZGV2LT5kZXYsICIlczogRmFpbGVkIHRvIHJlbWFwIEJBUlxuIiwNCj4gX19mdW5j
-X18pOw0KPiArCQlnb3RvIGZhaWx1cmVfY2xlYW51cDsNCj4gKwl9DQo+ICsNCj4gKwkvKiByZWFk
-IENBTjJfSFdfRU4gc3RyYXAgcGluIHRvIGRldGVjdCBob3cgbWFueSBDQU5CVVMgZG8gd2UNCj4g
-aGF2ZSAqLw0KPiArCWNvdW50ID0gQVJSQVlfU0laRShjYXJkLT5uZXRfZGV2KTsNCj4gKwlwY2lf
-cmVhZF9jb25maWdfYnl0ZShwZGV2LCBGODE2MDFfVFJBUF9SRUcsICZ0bXApOw0KPiArCWlmICgh
-KHRtcCAmIEY4MTYwMV9DQU4yX0hBU19FTikpDQo+ICsJCWNvdW50ID0gMTsNCj4gKw0KPiArCS8q
-IERldGVjdCBhdmFpbGFibGUgY2hhbm5lbHMgKi8NCj4gKwlmb3IgKGkgPSAwOyBpIDwgY291bnQ7
-IGkrKykgew0KPiArCQlkZXYgPSBhbGxvY19zamExMDAwZGV2KDApOw0KPiArCQlpZiAoIWRldikg
-ew0KPiArCQkJZXJyID0gLUVOT01FTTsNCj4gKwkJCWdvdG8gZmFpbHVyZV9jbGVhbnVwOw0KPiAr
-CQl9DQo+ICsNCg0KZG9uJ3QgeW91IG5lZWQgdG8gcm9sbGJhY2sgYW5kIGNsZWFudXAvdW5yZWdp
-c3RlciBwcmV2aW91c2x5IGFsbG9jYXRlZA0KZGV2cyA/DQoNCj4gKwkJcHJpdiA9IG5ldGRldl9w
-cml2KGRldik7DQo+ICsJCXByaXYtPnByaXYgPSBjYXJkOw0KPiArCQlwcml2LT5pcnFfZmxhZ3Mg
-PSBJUlFGX1NIQVJFRDsNCj4gKwkJcHJpdi0+cmVnX2Jhc2UgPSBjYXJkLT5hZGRyICsgMHg4MCAq
-IGk7DQo+ICsJCXByaXYtPnJlYWRfcmVnID0gZjgxNjAxX3BjaV9yZWFkX3JlZzsNCj4gKwkJcHJp
-di0+d3JpdGVfcmVnID0gZjgxNjAxX3BjaV93cml0ZV9yZWc7DQo+ICsNCj4gKwkJaWYgKGludGVy
-bmFsX2NsaykNCj4gKwkJCXByaXYtPmNhbi5jbG9jay5mcmVxID0gMjQwMDAwMDAgLyAyOw0KPiAr
-CQllbHNlDQo+ICsJCQlwcml2LT5jYW4uY2xvY2suZnJlcSA9IGV4dGVybmFsX2NsayAvIDI7DQo+
-ICsNCj4gKwkJcHJpdi0+b2NyID0gT0NSX1RYMF9QVVNIUFVMTCB8IE9DUl9UWDFfUFVTSFBVTEw7
-DQo+ICsJCXByaXYtPmNkciA9IENEUl9DQlA7DQo+ICsNCj4gKwkJU0VUX05FVERFVl9ERVYoZGV2
-LCAmcGRldi0+ZGV2KTsNCj4gKwkJZGV2LT5kZXZfaWQgPSBpOw0KPiArCQlkZXYtPmlycSA9IHBk
-ZXYtPmlycTsNCj4gKw0KPiArCQkvKiBSZWdpc3RlciBTSkExMDAwIGRldmljZSAqLw0KPiArCQll
-cnIgPSByZWdpc3Rlcl9zamExMDAwZGV2KGRldik7DQo+ICsJCWlmIChlcnIpIHsNCj4gKwkJCWRl
-dl9lcnIoJnBkZXYtPmRldiwNCj4gKwkJCQkiJXM6IFJlZ2lzdGVyaW5nIGRldmljZSBmYWlsZWQ6
-ICV4XG4iLA0KPiBfX2Z1bmNfXywNCj4gKwkJCQllcnIpOw0KPiArCQkJZnJlZV9zamExMDAwZGV2
-KGRldik7DQo+ICsJCQlnb3RvIGZhaWx1cmVfY2xlYW51cDsNCj4gKwkJfQ0KPiArDQo+ICsJCWNh
-cmQtPm5ldF9kZXZbaV0gPSBkZXY7DQo+ICsJCWRldl9pbmZvKCZwZGV2LT5kZXYsICJDaGFubmVs
-ICMlZCwgJXMgYXQgMHglcCwgaXJxDQo+ICVkXG4iLCBpLA0KPiArCQkJIGRldi0+bmFtZSwgcHJp
-di0+cmVnX2Jhc2UsIGRldi0+aXJxKTsNCj4gKwl9DQo+ICsNCj4gKwlyZXR1cm4gMDsNCj4gKw0K
-PiArZmFpbHVyZV9jbGVhbnVwOg0KPiArCWRldl9lcnIoJnBkZXYtPmRldiwgIiVzOiBmYWlsZWQ6
-ICVkLiBDbGVhbmluZyBVcC5cbiIsIF9fZnVuY19fLA0KPiBlcnIpOw0KPiArCWY4MTYwMV9wY2lf
-ZGVsX2NhcmQocGRldik7DQo+ICsNCj4gKwlyZXR1cm4gZXJyOw0KPiArfQ0KPiArDQo+ICtzdGF0
-aWMgc3RydWN0IHBjaV9kcml2ZXIgZjgxNjAxX3BjaV9kcml2ZXIgPSB7DQo+ICsJLm5hbWUgPQkJ
-ImY4MTYwMSIsDQo+ICsJLmlkX3RhYmxlID0JZjgxNjAxX3BjaV90YmwsDQo+ICsJLnByb2JlID0J
-ZjgxNjAxX3BjaV9hZGRfY2FyZCwNCj4gKwkucmVtb3ZlID0JZjgxNjAxX3BjaV9kZWxfY2FyZCwN
-Cj4gK307DQo+ICsNCj4gK01PRFVMRV9ERVNDUklQVElPTigiRmludGVrIEY4MTYwMSBQQ0lFIHRv
-IDIgQ0FOQlVTIGFkYXB0b3IgZHJpdmVyIik7DQo+ICtNT0RVTEVfQVVUSE9SKCJQZXRlciBIb25n
-IDxwZXRlcl9ob25nQGZpbnRlay5jb20udHc+Iik7DQo+ICtNT0RVTEVfTElDRU5TRSgiR1BMIHYy
-Iik7DQo+ICsNCj4gK21vZHVsZV9wY2lfZHJpdmVyKGY4MTYwMV9wY2lfZHJpdmVyKTsNCg==
+Hi,
+
+Saeed Mahameed 於 2019/7/24 上午 05:38 寫道:
+> On Mon, 2019-07-22 at 14:22 +0800, Ji-Ze Hong (Peter Hong) wrote:
+>> This patch add support for Fintek PCIE to 2 CAN controller support
+>>
+>> Signed-off-by: Ji-Ze Hong (Peter Hong) <hpeter+linux_kernel@gmail.com
+>>>
+>> ---
+>> Changelog:
+>> v2:
+>> 	1: Fix comment on the spinlock with write access.
+>> 	2: Use ARRAY_SIZE instead of F81601_PCI_MAX_CHAN.
+>> 	3: Check the strap pin outside the loop.
+>> 	4: Fix the cleanup issue in f81601_pci_add_card().
+>> 	5: Remove unused "channels" in struct f81601_pci_card.
+>>
+>>   drivers/net/can/sja1000/Kconfig  |   8 ++
+>>   drivers/net/can/sja1000/Makefile |   1 +
+>>   drivers/net/can/sja1000/f81601.c | 215
+>> +++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 224 insertions(+)
+>>   create mode 100644 drivers/net/can/sja1000/f81601.c
+>>
+>> diff --git a/drivers/net/can/sja1000/Kconfig
+>> b/drivers/net/can/sja1000/Kconfig
+>> index f6dc89927ece..8588323c5138 100644
+>> --- a/drivers/net/can/sja1000/Kconfig
+>> +++ b/drivers/net/can/sja1000/Kconfig
+>> @@ -101,4 +101,12 @@ config CAN_TSCAN1
+>>   	  IRQ numbers are read from jumpers JP4 and JP5,
+>>   	  SJA1000 IO base addresses are chosen heuristically (first
+>> that works).
+>>   
+>> +config CAN_F81601
+>> +	tristate "Fintek F81601 PCIE to 2 CAN Controller"
+>> +	depends on PCI
+>> +	help
+>> +	  This driver adds support for Fintek F81601 PCIE to 2 CAN
+>> Controller.
+>> +	  It had internal 24MHz clock source, but it can be changed by
+>> +	  manufacturer. We can use modinfo to get usage for parameters.
+>> +	  Visit http://www.fintek.com.tw to get more information.
+>>   endif
+>> diff --git a/drivers/net/can/sja1000/Makefile
+>> b/drivers/net/can/sja1000/Makefile
+>> index 9253aaf9e739..6f6268543bd9 100644
+>> --- a/drivers/net/can/sja1000/Makefile
+>> +++ b/drivers/net/can/sja1000/Makefile
+>> @@ -13,3 +13,4 @@ obj-$(CONFIG_CAN_PEAK_PCMCIA) += peak_pcmcia.o
+>>   obj-$(CONFIG_CAN_PEAK_PCI) += peak_pci.o
+>>   obj-$(CONFIG_CAN_PLX_PCI) += plx_pci.o
+>>   obj-$(CONFIG_CAN_TSCAN1) += tscan1.o
+>> +obj-$(CONFIG_CAN_F81601) += f81601.o
+>> diff --git a/drivers/net/can/sja1000/f81601.c
+>> b/drivers/net/can/sja1000/f81601.c
+>> new file mode 100644
+>> index 000000000000..3c378de8764d
+>> --- /dev/null
+>> +++ b/drivers/net/can/sja1000/f81601.c
+>> @@ -0,0 +1,215 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Fintek F81601 PCIE to 2 CAN controller driver
+>> + *
+>> + * Copyright (C) 2019 Peter Hong <peter_hong@fintek.com.tw>
+>> + * Copyright (C) 2019 Linux Foundation
+>> + */
+>> +
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/interrupt.h>
+>> +#include <linux/netdevice.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/pci.h>
+>> +#include <linux/can/dev.h>
+>> +#include <linux/io.h>
+>> +#include <linux/version.h>
+>> +
+>> +#include "sja1000.h"
+>> +
+>> +#define F81601_PCI_MAX_CHAN		2
+>> +
+>> +#define F81601_DECODE_REG		0x209
+>> +#define F81601_IO_MODE			BIT(7)
+>> +#define F81601_MEM_MODE			BIT(6)
+>> +#define F81601_CFG_MODE			BIT(5)
+>> +#define F81601_CAN2_INTERNAL_CLK	BIT(3)
+>> +#define F81601_CAN1_INTERNAL_CLK	BIT(2)
+>> +#define F81601_CAN2_EN			BIT(1)
+>> +#define F81601_CAN1_EN			BIT(0)
+>> +
+>> +#define F81601_TRAP_REG			0x20a
+>> +#define F81601_CAN2_HAS_EN		BIT(4)
+>> +
+>> +struct f81601_pci_card {
+>> +	void __iomem *addr;
+>> +	spinlock_t lock;	/* use this spin lock only for write access
+>> */
+>> +	struct pci_dev *dev;
+>> +	struct net_device *net_dev[F81601_PCI_MAX_CHAN];
+>> +};
+>> +
+>> +static const struct pci_device_id f81601_pci_tbl[] = {
+>> +	{ PCI_DEVICE(0x1c29, 0x1703) },
+>> +	{},
+>> +};
+>> +
+>> +MODULE_DEVICE_TABLE(pci, f81601_pci_tbl);
+>> +
+>> +static bool internal_clk = 1;
+>> +module_param(internal_clk, bool, 0444);
+>> +MODULE_PARM_DESC(internal_clk, "Use internal clock, default 1
+>> (24MHz)");
+>> +
+>> +static unsigned int external_clk;
+>> +module_param(external_clk, uint, 0444);
+>> +MODULE_PARM_DESC(external_clk, "External Clock, must spec when
+>> internal_clk = 0");
+>> +
+>> +static u8 f81601_pci_read_reg(const struct sja1000_priv *priv, int
+>> port)
+>> +{
+>> +	return readb(priv->reg_base + port);
+>> +}
+>> +
+>> +static void f81601_pci_write_reg(const struct sja1000_priv *priv,
+>> int port,
+>> +				 u8 val)
+>> +{
+>> +	struct f81601_pci_card *card = priv->priv;
+>> +	unsigned long flags;
+>> +
+>> +	spin_lock_irqsave(&card->lock, flags);
+>> +	writeb(val, priv->reg_base + port);
+>> +	readb(priv->reg_base);
+>> +	spin_unlock_irqrestore(&card->lock, flags);
+>> +}
+>> +
+>> +static void f81601_pci_del_card(struct pci_dev *pdev)
+>> +{
+>> +	struct f81601_pci_card *card = pci_get_drvdata(pdev);
+>> +	struct net_device *dev;
+>> +	int i = 0;
+>> +
+>> +	for (i = 0; i < ARRAY_SIZE(card->net_dev); i++) {
+>> +		dev = card->net_dev[i];
+>> +		if (!dev)
+>> +			continue;
+>> +
+>> +		dev_info(&pdev->dev, "%s: Removing %s\n", __func__,
+>> dev->name);
+>> +
+>> +		unregister_sja1000dev(dev);
+>> +		free_sja1000dev(dev);
+>> +	}
+>> +
+>> +	pcim_iounmap(pdev, card->addr);
+>> +}
+>> +
+>> +/* Probe F81601 based device for the SJA1000 chips and register each
+>> + * available CAN channel to SJA1000 Socket-CAN subsystem.
+>> + */
+>> +static int f81601_pci_add_card(struct pci_dev *pdev,
+>> +			       const struct pci_device_id *ent)
+>> +{
+>> +	struct sja1000_priv *priv;
+>> +	struct net_device *dev;
+>> +	struct f81601_pci_card *card;
+> 
+> nit, reverse xmas tree.
+> 
+>> +	int err, i, count;
+>> +	u8 tmp;
+>> +
+>> +	if (pcim_enable_device(pdev) < 0) {
+>> +		dev_err(&pdev->dev, "Failed to enable PCI device\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	dev_info(&pdev->dev, "Detected card at slot #%i\n",
+>> +		 PCI_SLOT(pdev->devfn));
+>> +
+>> +	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
+>> +	if (!card)
+>> +		return -ENOMEM;
+>> +
+>> +	card->dev = pdev;
+>> +	spin_lock_init(&card->lock);
+>> +
+>> +	pci_set_drvdata(pdev, card);
+>> +
+>> +	tmp = F81601_IO_MODE | F81601_MEM_MODE | F81601_CFG_MODE |
+>> +		F81601_CAN2_EN | F81601_CAN1_EN;
+>> +
+>> +	if (internal_clk) {
+>> +		tmp |= F81601_CAN2_INTERNAL_CLK |
+>> F81601_CAN1_INTERNAL_CLK;
+>> +
+>> +		dev_info(&pdev->dev,
+>> +			 "F81601 running with internal clock:
+>> 24Mhz\n");
+>> +	} else {
+>> +		dev_info(&pdev->dev,
+>> +			 "F81601 running with external clock: %dMhz\n",
+>> +			 external_clk / 1000000);
+>> +	}
+>> +
+>> +	pci_write_config_byte(pdev, F81601_DECODE_REG, tmp);
+>> +
+>> +	card->addr = pcim_iomap(pdev, 0, pci_resource_len(pdev, 0));
+>> +
+>> +	if (!card->addr) {
+>> +		err = -ENOMEM;
+>> +		dev_err(&pdev->dev, "%s: Failed to remap BAR\n",
+>> __func__);
+>> +		goto failure_cleanup;
+>> +	}
+>> +
+>> +	/* read CAN2_HW_EN strap pin to detect how many CANBUS do we
+>> have */
+>> +	count = ARRAY_SIZE(card->net_dev);
+>> +	pci_read_config_byte(pdev, F81601_TRAP_REG, &tmp);
+>> +	if (!(tmp & F81601_CAN2_HAS_EN))
+>> +		count = 1;
+>> +
+>> +	/* Detect available channels */
+>> +	for (i = 0; i < count; i++) {
+>> +		dev = alloc_sja1000dev(0);
+>> +		if (!dev) {
+>> +			err = -ENOMEM;
+>> +			goto failure_cleanup;
+>> +		}
+>> +
+> 
+> don't you need to rollback and cleanup/unregister previously allocated
+> devs ?
+> 
+
+I'll do cleanup when errors jump to failure_cleanup label and do
+f81601_pci_del_card().
+
+>> +		priv = netdev_priv(dev);
+>> +		priv->priv = card;
+>> +		priv->irq_flags = IRQF_SHARED;
+>> +		priv->reg_base = card->addr + 0x80 * i;
+>> +		priv->read_reg = f81601_pci_read_reg;
+>> +		priv->write_reg = f81601_pci_write_reg;
+>> +
+>> +		if (internal_clk)
+>> +			priv->can.clock.freq = 24000000 / 2;
+>> +		else
+>> +			priv->can.clock.freq = external_clk / 2;
+>> +
+>> +		priv->ocr = OCR_TX0_PUSHPULL | OCR_TX1_PUSHPULL;
+>> +		priv->cdr = CDR_CBP;
+>> +
+>> +		SET_NETDEV_DEV(dev, &pdev->dev);
+>> +		dev->dev_id = i;
+>> +		dev->irq = pdev->irq;
+>> +
+>> +		/* Register SJA1000 device */
+>> +		err = register_sja1000dev(dev);
+>> +		if (err) {
+>> +			dev_err(&pdev->dev,
+>> +				"%s: Registering device failed: %x\n",
+>> __func__,
+>> +				err);
+>> +			free_sja1000dev(dev);
+>> +			goto failure_cleanup;
+>> +		}
+>> +
+>> +		card->net_dev[i] = dev;
+>> +		dev_info(&pdev->dev, "Channel #%d, %s at 0x%p, irq
+>> %d\n", i,
+>> +			 dev->name, priv->reg_base, dev->irq);
+>> +	}
+>> +
+>> +	return 0;
+>> +
+>> +failure_cleanup:
+>> +	dev_err(&pdev->dev, "%s: failed: %d. Cleaning Up.\n", __func__,
+>> err);
+>> +	f81601_pci_del_card(pdev);
+
+-- 
+With Best Regards,
+Peter Hong
