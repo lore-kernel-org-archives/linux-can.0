@@ -1,99 +1,103 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 7/7] can: gw: Fix error path of cgw_module_init
-Date: Wed, 24 Jul 2019 15:03:22 +0200
-Message-ID: <20190724130322.31702-8-mkl@pengutronix.de>
-References: <20190724130322.31702-1-mkl@pengutronix.de>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v12 1/5] can: m_can: Create a m_can platform framework
+Date: Wed, 24 Jul 2019 10:36:02 -0500
+Message-ID: <443fe5e5-5e5c-f669-1f4b-565d9f3dd6c8@ti.com>
+References: <20190509161109.10499-1-dmurphy@ti.com>
+ <dbb7bdef-820d-5dcc-d7b5-a82bc1b076fb@ti.com>
+ <a8e3f2d3-18c3-3bdb-1318-8964afc7e032@ti.com>
+ <93530d94-ec65-de82-448e-f2460dd39fb9@ti.com>
+ <0f6c41c8-0071-ed3a-9e65-caf02a0fbefe@ti.com>
+ <6fa79302-ad32-7f43-f9d5-af70aa789284@ti.com>
+ <f236a88a-485c-9002-1e4a-9a5ad0e1c81f@ti.com>
+ <437b6371-8488-a0ff-fa68-d1fb5a81bb8b@ti.com>
+ <20190724064754.GC22447@kroah.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190724130322.31702-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, YueHaibing <yuehaibing@huawei.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190724064754.GC22447@kroah.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+Hello
 
-This patch add error path for cgw_module_init to avoid possible crash if
-some error occurs.
+On 7/24/19 1:47 AM, Greg KH wrote:
+> On Tue, Jul 23, 2019 at 10:14:14AM -0500, Dan Murphy wrote:
+>> Hello
+>>
+>> On 7/10/19 7:08 AM, Dan Murphy wrote:
+>>> Hello
+>>>
+>>> On 6/17/19 10:09 AM, Dan Murphy wrote:
+>>>> Marc
+>>>>
+>>>> On 6/10/19 11:35 AM, Dan Murphy wrote:
+>>>>> Bump
+>>>>>
+>>>>> On 6/6/19 8:16 AM, Dan Murphy wrote:
+>>>>>> Marc
+>>>>>>
+>>>>>> Bump
+>>>>>>
+>>>>>> On 5/31/19 6:51 AM, Dan Murphy wrote:
+>>>>>>> Marc
+>>>>>>>
+>>>>>>> On 5/15/19 3:54 PM, Dan Murphy wrote:
+>>>>>>>> Marc
+>>>>>>>>
+>>>>>>>> On 5/9/19 11:11 AM, Dan Murphy wrote:
+>>>>>>>>> Create a m_can platform framework that peripheral
+>>>>>>>>> devices can register to and use common code and register sets.
+>>>>>>>>> The peripheral devices may provide read/write and configuration
+>>>>>>>>> support of the IP.
+>>>>>>>>>
+>>>>>>>>> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+>>>>>>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>>>>>>>> ---
+>>>>>>>>>
+>>>>>>>>> v12 - Update the m_can_read/write functions to
+>>>>>>>>> create a backtrace if the callback
+>>>>>>>>> pointer is NULL. - https://lore.kernel.org/patchwork/patch/1052302/
+>>>>>>>>>
+>>>>>>>> Is this able to be merged now?
+>>>>>>> ping
+>>>> Wondering if there is anything else we need to do?
+>>>>
+>>>> The part has officially shipped and we had hoped to have driver
+>>>> support in Linux as part of the announcement.
+>>>>
+>>> Is this being sent in a PR for 5.3?
+>>>
+>>> Dan
+>>>
+>> Adding Greg to this thread as I have no idea what is going on with this.
+> Why me?  What am I supposed to do here?  I see no patches at all to do
+> anything with :(
 
-Fixes: c1aabdf379bc ("can-gw: add netlink based CAN routing")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/gw.c | 48 +++++++++++++++++++++++++++++++++---------------
- 1 file changed, 33 insertions(+), 15 deletions(-)
+I am not sure who to email. The maintainer seems to be on hiatus or 
+super busy with other work.
 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 5275ddf580bc..72711053ebe6 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -1046,32 +1046,50 @@ static __init int cgw_module_init(void)
- 	pr_info("can: netlink gateway (rev " CAN_GW_VERSION ") max_hops=%d\n",
- 		max_hops);
- 
--	register_pernet_subsys(&cangw_pernet_ops);
-+	ret = register_pernet_subsys(&cangw_pernet_ops);
-+	if (ret)
-+		return ret;
-+
-+	ret = -ENOMEM;
- 	cgw_cache = kmem_cache_create("can_gw", sizeof(struct cgw_job),
- 				      0, 0, NULL);
--
- 	if (!cgw_cache)
--		return -ENOMEM;
-+		goto out_cache_create;
- 
- 	/* set notifier */
- 	notifier.notifier_call = cgw_notifier;
--	register_netdevice_notifier(&notifier);
-+	ret = register_netdevice_notifier(&notifier);
-+	if (ret)
-+		goto out_register_notifier;
- 
- 	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_GETROUTE,
- 				   NULL, cgw_dump_jobs, 0);
--	if (ret) {
--		unregister_netdevice_notifier(&notifier);
--		kmem_cache_destroy(cgw_cache);
--		return -ENOBUFS;
--	}
--
--	/* Only the first call to rtnl_register_module can fail */
--	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
--			     cgw_create_job, NULL, 0);
--	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
--			     cgw_remove_job, NULL, 0);
-+	if (ret)
-+		goto out_rtnl_register1;
-+
-+	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
-+				   cgw_create_job, NULL, 0);
-+	if (ret)
-+		goto out_rtnl_register2;
-+	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
-+				   cgw_remove_job, NULL, 0);
-+	if (ret)
-+		goto out_rtnl_register3;
- 
- 	return 0;
-+
-+out_rtnl_register3:
-+	rtnl_unregister(PF_CAN, RTM_NEWROUTE);
-+out_rtnl_register2:
-+	rtnl_unregister(PF_CAN, RTM_GETROUTE);
-+out_rtnl_register1:
-+	unregister_netdevice_notifier(&notifier);
-+out_register_notifier:
-+	kmem_cache_destroy(cgw_cache);
-+out_cache_create:
-+	unregister_pernet_subsys(&cangw_pernet_ops);
-+
-+	return ret;
- }
- 
- static __exit void cgw_module_exit(void)
--- 
-2.20.1
+So I added you to see if you know how to handle this.  Wolfgang Acked it 
+but he said Marc needs to pull
+
+it in.  We have quite a few users of this patchset. I have been hosting 
+the patchset in a different tree.
+
+These users keep pinging us for upstream status and all we can do is 
+point them to the
+
+LKML to show we are continuing to pursue inclusion.
+
+https://lore.kernel.org/patchwork/project/lkml/list/?series=393454
+
+Thanks
+Dan
+
+
+>
+> thanks,
+>
+> greg "not a miracle worker" k-h
