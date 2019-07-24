@@ -1,45 +1,83 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 1/7] can: dev: call netif_carrier_off() in register_candev()
-Date: Wed, 24 Jul 2019 15:03:16 +0200
-Message-ID: <20190724130322.31702-2-mkl@pengutronix.de>
-References: <20190724130322.31702-1-mkl@pengutronix.de>
+Subject: pull-request: can 2019-07-24
+Date: Wed, 24 Jul 2019 15:03:15 +0200
+Message-ID: <20190724130322.31702-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190724130322.31702-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Rasmus Villemoes <rasmus.villemoes@prevas.dk>, Willem de Bruijn <willemb@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 List-Id: linux-can.vger.kernel.org
 
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Hello David,
 
-CONFIG_CAN_LEDS is deprecated. When trying to use the generic netdev
-trigger as suggested, there's a small inconsistency with the link
-property: The LED is on initially, stays on when the device is brought
-up, and then turns off (as expected) when the device is brought down.
+this is a pull reqeust of 7 patches for net/master.
 
-Make sure the LED always reflects the state of the CAN device.
+The first patch is by Rasmus Villemoes add a missing netif_carrier_off() to
+register_candev() so that generic netdev trigger based LEDs are initially off.
 
-Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Nikita Yushchenko's patch for the rcar_canfd driver fixes a possible IRQ storm
+on high load.
+
+The patch by Weitao Hou for the mcp251x driver add missing error checking to
+the work queue allocation.
+
+Both Wen Yang's and Joakim Zhang's patch for the flexcan driver fix a problem
+with the stop-mode.
+
+Stephane Grosjean contributes a patch for the peak_usb driver to fix a
+potential double kfree_skb().
+
+The last patch is by YueHaibing and fixes the error path in can-gw's
+cgw_module_init() function.
+
+regards,
+Marc
+
 ---
- drivers/net/can/dev.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index b6b93a2d93a5..483d270664cc 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -1249,6 +1249,8 @@ int register_candev(struct net_device *dev)
- 		return -EINVAL;
- 
- 	dev->rtnl_link_ops = &can_link_ops;
-+	netif_carrier_off(dev);
-+
- 	return register_netdev(dev);
- }
- EXPORT_SYMBOL_GPL(register_candev);
--- 
-2.20.1
+The following changes since commit d86afb89305de205b0d2f20c2160adf039e9508d:
+
+  net: thunderx: Use fwnode_get_mac_address() (2019-07-23 14:09:21 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.3-20190724
+
+for you to fetch changes up to b7a14297f102b6e2ce6f16feffebbb9bde1e9b55:
+
+  can: gw: Fix error path of cgw_module_init (2019-07-24 11:19:03 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-5.3-20190724
+
+----------------------------------------------------------------
+Joakim Zhang (1):
+      can: flexcan: fix stop mode acknowledgment
+
+Nikita Yushchenko (1):
+      can: rcar_canfd: fix possible IRQ storm on high load
+
+Rasmus Villemoes (1):
+      can: dev: call netif_carrier_off() in register_candev()
+
+Stephane Grosjean (1):
+      can: peak_usb: fix potential double kfree_skb()
+
+Weitao Hou (1):
+      can: mcp251x: add error check when wq alloc failed
+
+Wen Yang (1):
+      can: flexcan: fix an use-after-free in flexcan_setup_stop_mode()
+
+YueHaibing (1):
+      can: gw: Fix error path of cgw_module_init
+
+ drivers/net/can/dev.c                        |  2 ++
+ drivers/net/can/flexcan.c                    | 39 ++++++++++++++++++----
+ drivers/net/can/rcar/rcar_canfd.c            |  9 ++---
+ drivers/net/can/spi/mcp251x.c                | 49 +++++++++++++---------------
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |  8 ++---
+ net/can/gw.c                                 | 48 ++++++++++++++++++---------
+ 6 files changed, 98 insertions(+), 57 deletions(-)
