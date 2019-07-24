@@ -1,53 +1,68 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: pull-request: can-next 2019-07-24
-Date: Wed, 24 Jul 2019 11:31:21 +0200
-Message-ID: <67ed4f04-ff9c-2924-6928-a453fdbb82cc@pengutronix.de>
-References: <93540cba-184a-a9c5-f9d2-b1779a69a36f@pengutronix.de>
- <AM6PR03MB4006F834B65943E49F485FA6D6C60@AM6PR03MB4006.eurprd03.prod.outlook.com>
+Subject: Re: [PATCH 1/2] can: c_can: support 64 message objects for D_CAN
+Date: Wed, 24 Jul 2019 11:48:19 +0200
+Message-ID: <080346c5-eace-f0bc-ef3a-0354988b9fb4@pengutronix.de>
+References: <20190208131738.27668-1-andrejs.cainikovs@netmodule.com>
+ <20190208131738.27668-2-andrejs.cainikovs@netmodule.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="oTuJRwd8PHLSlkXGfMoKzzmSJ5Gnef7nr"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <AM6PR03MB4006F834B65943E49F485FA6D6C60@AM6PR03MB4006.eurprd03.prod.outlook.com>
-Sender: netdev-owner@vger.kernel.org
-To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc: "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+ boundary="L8Cw1XMGI72qJhJ4eicrbChBaG8O2hc47"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190208131738.27668-2-andrejs.cainikovs@netmodule.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrejs Cainikovs <Andrejs.Cainikovs@netmodule.com>, Wolfgang Grandegger <wg@grandegger.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Patrick Zysset <Patrick.Zysset@netmodule.com>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oTuJRwd8PHLSlkXGfMoKzzmSJ5Gnef7nr
-Content-Type: multipart/mixed; boundary="kghNMmVKFdA1joiupcmkcC56KkUYc0BJq";
+--L8Cw1XMGI72qJhJ4eicrbChBaG8O2hc47
+Content-Type: multipart/mixed; boundary="v1QXW5jEeOizdY2Gf64dDD33bLn4mSlJh";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc: "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Message-ID: <67ed4f04-ff9c-2924-6928-a453fdbb82cc@pengutronix.de>
-Subject: Re: pull-request: can-next 2019-07-24
-References: <93540cba-184a-a9c5-f9d2-b1779a69a36f@pengutronix.de>
- <AM6PR03MB4006F834B65943E49F485FA6D6C60@AM6PR03MB4006.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB4006F834B65943E49F485FA6D6C60@AM6PR03MB4006.eurprd03.prod.outlook.com>
+To: Andrejs Cainikovs <Andrejs.Cainikovs@netmodule.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Patrick Zysset <Patrick.Zysset@netmodule.com>
+Message-ID: <080346c5-eace-f0bc-ef3a-0354988b9fb4@pengutronix.de>
+Subject: Re: [PATCH 1/2] can: c_can: support 64 message objects for D_CAN
+References: <20190208131738.27668-1-andrejs.cainikovs@netmodule.com>
+ <20190208131738.27668-2-andrejs.cainikovs@netmodule.com>
+In-Reply-To: <20190208131738.27668-2-andrejs.cainikovs@netmodule.com>
 
---kghNMmVKFdA1joiupcmkcC56KkUYc0BJq
+--v1QXW5jEeOizdY2Gf64dDD33bLn4mSlJh
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-On 7/24/19 11:24 AM, St=C3=A9phane Grosjean wrote:
-> I hope you're fine.
+On 2/8/19 2:17 PM, Andrejs Cainikovs wrote:
+> D_CAN supports up to 128 message objects, comparing to 32 on C_CAN.
+> However, some CPUs with D_CAN controller have their own limits:
+> TI AM335x Sitara CPU, for example, supports max of 64 message objects.
+>=20
+> This patch extends max D_CAN message objects up to 64.
 
-Yes, the summer holidays of our $CUSTOMERS gave me a bit more time for CA=
-N.
+Please don't make this a kconfig option.
 
-> Did you see the attached patch I've sent earlier this month?
-Yes, it will be included in "linux-can-fixes-for-5.3-20190724".
+According to you description this is a HW feature, so please add the max
+number of messe objects to "struct c_can_driver_data" and adjust the
+drvdata accordingly.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git/log/?h=3D=
-linux-can-fixes-for-5.3-20190724
+> static const struct of_device_id c_can_of_table[] =3D {
+> 	{ .compatible =3D "bosch,c_can", .data =3D &c_can_drvdata },
+> 	{ .compatible =3D "bosch,d_can", .data =3D &d_can_drvdata },
+> 	{ .compatible =3D "ti,dra7-d_can", .data =3D &dra7_dcan_drvdata },
+> 	{ .compatible =3D "ti,am3352-d_can", .data =3D &am3352_dcan_drvdata },=
 
-regards,
+> 	{ .compatible =3D "ti,am4372-d_can", .data =3D &am3352_dcan_drvdata },=
+
+> 	{ /* sentinel */ },
+> };
+
+You probably have to pass it via "struct c_can_priv" so that it's
+available in the c_can.c
+
 Marc
 
 --=20
@@ -57,23 +72,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---kghNMmVKFdA1joiupcmkcC56KkUYc0BJq--
+--v1QXW5jEeOizdY2Gf64dDD33bLn4mSlJh--
 
---oTuJRwd8PHLSlkXGfMoKzzmSJ5Gnef7nr
+--L8Cw1XMGI72qJhJ4eicrbChBaG8O2hc47
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl04JWoACgkQWsYho5Hk
-nSD+NQf/UWiQqehxUO5Isfu4LKrS877a8N5nBVPszq8Iki4JU4WSGRtkpC0cVDLk
-RA0k2WaYH7R/CvHC/nCE/q7P1If/oCApUkjMsBth1H36URpQ1W4dPZ7u8k8QWdQ2
-hAwnxu/kDH6J+5MHc3Dd1O7J0pECJ7vmlSsq+cWYxNbFXvFiLp+NE4LJwDrFPBpE
-+FDiNoZ3YyHYFepbusTQxyS6FhXEYBBA4E1CP4+PLU7TY9jFmyWR/6vaOGOg71fB
-ahiP5ZmZKw6AnChmeYgnZxY3qO6Op+BES6XegBnia15ATpFKSxRA2Jidhu2aIjmU
-XUiV+uXSVTy1z+vvf5rRJQCfxB7oKg==
-=dsz6
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl04KWMACgkQWsYho5Hk
+nSBWkgf/ewd8pvUqq2juUWx2Y5InHfSxIly9r0t5CyhJUYiBGy6etdKBVK6BUQTn
+hAqK6D+NVLOweN95M9IOA5h721FYtN/5f4T7FbahooZFgHWWapwOETBX2q9Nipby
+Fobu45M/ZBu4t5vkHAAXl3nHPat/gqpA0t19zz6eZzgAP7mze0GTIJZyfyfcMk54
+LvrKBxSv0XxBKS+fSBLIDV/QLyuXngGG/wZRELpY9gHdND3pvu0d/eipxVovVDPj
+mgMdDC+fJRhgNmnisPtpLLgqfdL5GCenFxQtTxB/y5i+d5HINTGjYy6yNdwqrmJ8
+CVkYqFNxFFD10Zis4v0pQrAbDzpXgA==
+=vEUi
 -----END PGP SIGNATURE-----
 
---oTuJRwd8PHLSlkXGfMoKzzmSJ5Gnef7nr--
+--L8Cw1XMGI72qJhJ4eicrbChBaG8O2hc47--
