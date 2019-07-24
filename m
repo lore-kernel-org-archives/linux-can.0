@@ -1,223 +1,133 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can-next 2019-07-24
-Date: Wed, 24 Jul 2019 11:00:24 +0200
-Message-ID: <93540cba-184a-a9c5-f9d2-b1779a69a36f@pengutronix.de>
+From: Jeroen Hofstee <jhofstee@victronenergy.com>
+Subject: Re: [PATCH] can: ti_hecc: use timestamp based rx-offloading
+Date: Wed, 24 Jul 2019 09:13:30 +0000
+Message-ID: <ea314ae5-f063-394a-6105-2f5ab4614e1d@victronenergy.com>
+References: <1556539376-20932-1-git-send-email-jhofstee@victronenergy.com>
+ <5881cb80-883b-a96b-2939-973150cfc196@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="mcwcQRZcymoRCEPFj9qin1ccxdXCla9Fm"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5881cb80-883b-a96b-2939-973150cfc196@pengutronix.de>
+Content-Language: en-US
+Content-ID: <368B2A57D103B44DABA3D02E15BC8EFD@eurprd07.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Anant Gole <anantgole@ti.com>, AnilKumar Ch <anilkumar@ti.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mcwcQRZcymoRCEPFj9qin1ccxdXCla9Fm
-Content-Type: multipart/mixed; boundary="Ny076OquJ5tQUUcfzJ1ODEqRkRFUVdKW8";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org
-Message-ID: <93540cba-184a-a9c5-f9d2-b1779a69a36f@pengutronix.de>
-Subject: pull-request: can-next 2019-07-24
-
---Ny076OquJ5tQUUcfzJ1ODEqRkRFUVdKW8
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-
-Hello David,
-
-this is a pull request for net-next/master consisting of 26 patches.
-
-The first two patches are by me. One adds missing files of the CAN
-subsystem to the MAINTAINERS file, while the other sorts the
-Makefile/Kconfig of the sja1000 drivers sub directory. In the next patch
-Ji-Ze Hong (Peter Hong) provides a driver for the "Fintek PCIE to 2 CAN"
-controller, based on the the sja1000 IP core.
-
-Gustavo A. R. Silva's patch for the kvaser_usb driver introduces the use
-of struct_size() instead of open coding it. Henning Colliander's patch
-adds a driver for the "Kvaser PCIEcan" devices.
-
-Another patch by Gustavo A. R. Silva marks expected switch fall-throughs
-properly.
-
-Dan Murphy provides 5 patches for the m_can. After cleanups a framework
-is introduced so that the driver can be used from memory mapped IO as
-well as SPI attached devices. Finally he adds a driver for the tcan4x5x
-which uses this framework.
-
-A series of 5 patches by Appana Durga Kedareswara rao for the xilinx_can
-driver, first clean up,then add support for CANFD. Colin Ian King
-contributes another cleanup for the xilinx_can driver.
-
-Robert P. J. Day's patch corrects the brief history of the CAN protocol
-given in the Kconfig menu entry.
-
-2 patches by Dong Aisheng for the flexcan driver provide PE clock source
-select support and dt-bindings description.
-2 patches by Sean Nyekjaer for the flexcan driver provide add CAN
-wakeup-source property and dt-bindings description.
-
-Jeroen Hofstee's patch converts the ti_hecc driver to make use of the
-rx-offload helper fixing a number of outstanding bugs.
-
-The first patch of Oliver Hartkopp removes the now obsolete empty
-ioctl() handler for the CAN protocols. The second patch adds SPDX
-license identifiers for CAN subsystem.
-
-regards,
-Marc
-
----
-
-The following changes since commit 3e3bb69589e482e0783f28d4cd1d8e56fda0bc=
-bb:
-
-  tc-testing: added tdc tests for [b|p]fifo qdisc (2019-07-23 14:08:15 -0=
-700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
-gs/linux-can-next-for-5.4-20190724
-
-for you to fetch changes up to fba76a58452694b9b13c07e48839fa84c75f57af:
-
-  can: Add SPDX license identifiers for CAN subsystem (2019-07-24 10:31:5=
-5 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-5.4-20190724
-
-----------------------------------------------------------------
-Aisheng Dong (1):
-      can: flexcan: implement can Runtime PM
-
-Appana Durga Kedareswara rao (5):
-      can: xilinx_can: Fix style issues
-      can: xilinx_can: Fix kernel doc warnings
-      can: xilinx_can: Fix flags field initialization for axi can and can=
-ps
-      can: xilinx_can: Add cantype parameter in xcan_devtype_data struct
-      can: xilinx_can: Add support for CANFD FD frames
-
-Colin Ian King (1):
-      can: xilinx_can: clean up indentation issue
-
-Dan Murphy (5):
-      can: m_can: Fix checkpatch issues on existing code
-      can: m_can: Create a m_can platform framework
-      can: m_can: Rename m_can_priv to m_can_classdev
-      dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver
-      can: tcan4x5x: Add tcan4x5x driver to the kernel
-
-Dong Aisheng (2):
-      dt-bindings: can: flexcan: add PE clock source property to device t=
-ree
-      can: flexcan: add support for PE clock source select
-
-Gustavo A. R. Silva (2):
-      can: kvaser_usb: Use struct_size() in alloc_candev()
-      can: mark expected switch fall-throughs
-
-Henning Colliander (1):
-      can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices
-
-Jeroen Hofstee (1):
-      can: ti_hecc: use timestamp based rx-offloading
-
-Ji-Ze Hong (Peter Hong) (1):
-      can: sja1000: f81601: add Fintek F81601 support
-
-Marc Kleine-Budde (2):
-      MAINTAINERS: can: add missing files to CAN NETWORK DRIVERS and CAN =
-NETWORK LAYER
-      can: sja1000: Makefile/Kconfig: sort alphabetically
-
-Oliver Hartkopp (2):
-      can: remove obsolete empty ioctl() handler
-      can: Add SPDX license identifiers for CAN subsystem
-
-Robert P. J. Day (1):
-      can: Kconfig: correct history of the CAN protocol
-
-Sean Nyekjaer (2):
-      dt-bindings: can: flexcan: add can wakeup property
-      can: flexcan: add support for DT property 'wakeup-source'
-
- .../devicetree/bindings/net/can/fsl-flexcan.txt    |   10 +
- .../devicetree/bindings/net/can/tcan4x5x.txt       |   37 +
- MAINTAINERS                                        |    5 +
- drivers/net/can/Kconfig                            |   13 +
- drivers/net/can/Makefile                           |    1 +
- drivers/net/can/at91_can.c                         |    6 +-
- drivers/net/can/flexcan.c                          |  136 +-
- drivers/net/can/kvaser_pciefd.c                    | 1912 ++++++++++++++=
-++++++
- drivers/net/can/m_can/Kconfig                      |   22 +-
- drivers/net/can/m_can/Makefile                     |    2 +
- drivers/net/can/m_can/m_can.c                      | 1079 +++++------
- drivers/net/can/m_can/m_can.h                      |  110 ++
- drivers/net/can/m_can/m_can_platform.c             |  202 +++
- drivers/net/can/m_can/tcan4x5x.c                   |  532 ++++++
- drivers/net/can/peak_canfd/peak_pciefd_main.c      |    2 +-
- drivers/net/can/sja1000/Kconfig                    |   79 +-
- drivers/net/can/sja1000/Makefile                   |   11 +-
- drivers/net/can/sja1000/f81601.c                   |  212 +++
- drivers/net/can/spi/mcp251x.c                      |    3 +-
- drivers/net/can/ti_hecc.c                          |  191 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   |    3 +-
- drivers/net/can/usb/peak_usb/pcan_usb.c            |    2 +-
- drivers/net/can/xilinx_can.c                       |  293 ++-
- include/linux/can/core.h                           |    3 +-
- include/linux/can/skb.h                            |    2 +-
- net/can/Kconfig                                    |   11 +-
- net/can/af_can.c                                   |   10 +-
- net/can/af_can.h                                   |    1 +
- net/can/bcm.c                                      |    3 +-
- net/can/gw.c                                       |    1 +
- net/can/proc.c                                     |    1 +
- net/can/raw.c                                      |    3 +-
- 32 files changed, 4098 insertions(+), 800 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.tx=
-t
- create mode 100644 drivers/net/can/kvaser_pciefd.c
- create mode 100644 drivers/net/can/m_can/m_can.h
- create mode 100644 drivers/net/can/m_can/m_can_platform.c
- create mode 100644 drivers/net/can/m_can/tcan4x5x.c
- create mode 100644 drivers/net/can/sja1000/f81601.c
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |-
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-
-
-
-
---Ny076OquJ5tQUUcfzJ1ODEqRkRFUVdKW8--
-
---mcwcQRZcymoRCEPFj9qin1ccxdXCla9Fm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl04HigACgkQWsYho5Hk
-nSBEdQf/f1itwIrD0OxlTvEXBspSy9dVCFphyt2sWUe3VU5wOd8HD65QzEGJde7I
-Ny/BBbyNpeXcyUKtBcCsDGH0IRodm+kxXhdFEb0QiT5UTLXgMvYQSqnIvqx8CwWb
-Ux5fGMwv77vqtdVfwGYTpj55gIuB2ufWRZylioq9TEp0AYqE+YWKA3OEAYb0D6MT
-FVxorSCqEXi6FxNlslc+OeeyjIP/7NqiIG8bxfxonheZUbkp9uoJo1wzq4cEOgb2
-yaOTGb+w3RA5tud5Kj+Rm7rYys6DER5T9z2s/L6R3+DuR3T53iqNRddxZid0M5jo
-CYfK5OpmfCetszPH9Pdl7bKo7mn9Mw==
-=Wgs/
------END PGP SIGNATURE-----
-
---mcwcQRZcymoRCEPFj9qin1ccxdXCla9Fm--
+SGVsbG8gTWFyYywNCg0KT24gNy8yNC8xOSAxMDoyNiBBTSwgTWFyYyBLbGVpbmUtQnVkZGUgd3Jv
+dGU6DQo+IE9uIDQvMjkvMTkgMjowMyBQTSwgSmVyb2VuIEhvZnN0ZWUgd3JvdGU6DQo+PiBBcyBh
+bHJlYWR5IG1lbnRpb25lZCBpbiBbMV0gYW5kIGluY2x1ZGVkIGluIFsyXSwgdGhlcmUgaXMgYW4g
+b2ZmIGJ5IG9uZQ0KPj4gaXNzdWUgc2luY2UgdGhlIGhpZ2ggYmFuayBpcyBhbHJlYWR5IGVuYWJs
+ZWQgd2hlbiB0aGUgX25leHRfIG1haWxib3ggdG8NCj4+IGJlIHJlYWQgaGFzIGluZGV4IDEyLCBz
+byB0aGUgbWFpbGJveCBiZWluZyByZWFkIHdhcyAxMy4gVGhlIG1lc3NhZ2UgY2FuDQo+PiB0aGVy
+ZWZvcmUgZ28gaW50byBtYWlsYm94IDMxIGFuZCB0aGUgZHJpdmVyIHdpbGwgYmUgcmVwb2xsZWQg
+dW50aWwgdGhlDQo+PiBtYWlsYm94IDEyIGV2ZW50dWFsbHkgcmVjZWl2ZXMgYSBtc2cuIE9yIHRo
+ZSBtZXNzYWdlIG1pZ2h0IGVuZCB1cCBpbiB0aGUNCj4+IDEydGggbWFpbGJveCwgYnV0IHRoZW4g
+aXQgd291bGQgYmVjb21lIGRpc2FibGVkIGFmdGVyIHJlYWRpbmcgaXQgYW5kIG9ubHkNCj4+IGJl
+IGVuYWJsZWQgYWdhaW4gaW4gdGhlIG5leHQgInJvdW5kIiBhZnRlciBtYWlsYm94IDEzIHdhcyBy
+ZWFkLCB3aGljaCBjYW4NCj4+IGNhdXNlIG91dCBvZiBvcmRlciBtZXNzYWdlcywgc2luY2UgdGhl
+IGxvd2VyIHByaW9yaXR5IG1haWxib3hlcyBjYW4NCj4+IGFjY2VwdCBtZXNzYWdlcyBpbiB0aGUg
+bWVhbnRpbWUuDQo+Pg0KPj4gQXMgbWVudGlvbmVkIGluIFszXSB0aGVyZSBpcyBhIGhhcmR3YXJl
+IHJhY2UgY29uZGl0aW9uIHdoZW4gY2hhbmdpbmcgdGhlDQo+PiBDQU5NRSByZWdpc3RlciB3aGls
+ZSBtZXNzYWdlcyBhcmUgYmVpbmcgcmVjZWl2ZWQuIEV2ZW4gd2hlbiBpbmNsdWRpbmcgYQ0KPj4g
+YnVzeSBwb2xsIG9uIHJlY2VwdGlvbiwgbGlrZSBpbiBbMl0gdGhlcmUgYXJlIHN0aWxsIG92ZXJm
+bG93cyBhbmQgb3V0IG9mDQo+PiBvcmRlciBtZXNzYWdlcyBhdCB0aW1lcywgYnV0IGxlc3MgdGhl
+biB3aXRob3V0IHRoZSBidXN5IGxvb3AgcG9sbGluZy4NCj4+IFVubGlrZSB3aGF0IHRoZSBwYXRj
+aCBzdWdnZXN0cywgdGhlIHBvbGxpbmcgdGltZSBpcyBub3QgaW4gdGhlIG1pY3Jvc2Vjb25kDQo+
+PiByYW5nZSwgYnV0IHRha2VzIGFzIGxvbmcgYXMgYSBjdXJyZW50IENBTiBidXMgcmVjZXB0aW9u
+IG5lZWRzIHRvIGZpbmlzaCwNCj4+IHNvIHR5cGljYWxseSBtb3JlIGluIHRoZSBmcmFjdGlvbiBv
+ZiBtaWxsaXNlY29uZCByYW5nZS4gU2luY2UgdGhlIHRpbWVvdXQNCj4+IGlzIGluIGppZmZpZXMg
+aXQgd29uJ3QgdGltZW91dC4NCj4+DQo+PiBFdmVuIHdpdGggdGhlc2UgYWRkaXRpb25hbCBmaXhl
+cyB0aGUgZHJpdmVyIGlzIHN0aWxsIG5vdCBhYmxlIHRvIHByb3ZpZGUgYQ0KPj4gcHJvcGVyIEZJ
+Rk8gd2hpY2ggZG9lc24ndCBkcm9wIHBhY2thZ2VzLiBTbyBjaGFuZ2UgdGhlIGRyaXZlciB0byB1
+c2UNCj4+IHJ4LW9mZmxvYWQgYW5kIGJhc2Ugb3JkZXIgb24gdGltZXN0YW1wIGluc3RlYWQgb2Yg
+bWVzc2FnZSBib3ggbnVtYmVycy4gQXMNCj4+IGEgc2lkZSBhZmZlY3QsIHRoaXMgYWxzbyBmaXhl
+cyBbNF0gYW5kIFs1XS4NCj4+DQo+PiBCZWZvcmUgdGhpcyBjaGFuZ2UgbWVzc2FnZXMgd2l0aCBh
+IHNpbmdsZSBieXRlIGNvdW50ZXIgd2VyZSBkcm9wcGVkIC8NCj4+IHJlY2VpdmVkIG91dCBvZiBv
+cmRlciBhdCBhIGJpdHJhdGUgb2YgMjUwa2JpdC9zIG9uIGFuIGFtMzUxNy4gV2l0aCB0aGlzDQo+
+PiBwYXRjaCB0aGF0IG5vIGxvbmdlciBvY2N1cnMgdXAgdG8gYW5kIGluY2x1ZGluZyAxTWJpdC9z
+Lg0KPj4NCj4+IFsxXSBodHRwczovL2xpbnV4LWNhbi52Z2VyLmtlcm5lbC5uYXJraXZlLmNvbS96
+Z085aW5WaS9wYXRjaC1jYW4tdGktaGVjYy1maXgtcngtd3Jvbmctc2VxdWVuY2UtaXNzdWUjcG9z
+dDYNCj4+IFsyXSBodHRwOi8vYXJhZ28tcHJvamVjdC5vcmcvZ2l0L3Byb2plY3RzLz9wPWxpbnV4
+LW9tYXAzLmdpdDthPWNvbW1pdDtoPTAyMzQ2ODkyNzc3ZjA3MjQ1ZGU0ZDVhZjY5MjUxM2ViZDg1
+MmRjYjINCj4+IFszXSBodHRwczovL2xpbnV4LWNhbi52Z2VyLmtlcm5lbC5uYXJraXZlLmNvbS96
+Z085aW5WaS9wYXRjaC1jYW4tdGktaGVjYy1maXgtcngtd3Jvbmctc2VxdWVuY2UtaXNzdWUjcG9z
+dDUNCj4+IFs0XSBodHRwczovL3BhdGNod29yay5vemxhYnMub3JnL3BhdGNoLzg5NTk1Ni8NCj4+
+IFs1XSBodHRwczovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9uZXRkZXYvbXNnNDk0OTcxLmh0bWwN
+Cj4+DQo+PiBDYzogQW5hbnQgR29sZSA8YW5hbnRnb2xlQHRpLmNvbT4NCj4+IENjOiBBbmlsS3Vt
+YXIgQ2ggPGFuaWxrdW1hckB0aS5jb20+DQo+PiBTaWduZWQtb2ZmLWJ5OiBKZXJvZW4gSG9mc3Rl
+ZSA8amhvZnN0ZWVAdmljdHJvbmVuZXJneS5jb20+DQo+PiAtLS0NCj4+ICAgZHJpdmVycy9uZXQv
+Y2FuL3RpX2hlY2MuYyB8IDE4OSArKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tDQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCA1MyBpbnNlcnRpb25zKCspLCAxMzYgZGVs
+ZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi90aV9oZWNjLmMg
+Yi9kcml2ZXJzL25ldC9jYW4vdGlfaGVjYy5jDQo+PiBpbmRleCBkYjZlYTkzLi5mZTdmZmZmIDEw
+MDY0NA0KPj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL3RpX2hlY2MuYw0KPj4gKysrIGIvZHJpdmVy
+cy9uZXQvY2FuL3RpX2hlY2MuYw0KPj4gQEAgLTUsNiArNSw3IEBADQo+PiAgICAqIHNwZWNzIGZv
+ciB0aGUgc2FtZSBpcyBhdmFpbGFibGUgYXQgPGh0dHA6Ly93d3cudGkuY29tPg0KPj4gICAgKg0K
+Pj4gICAgKiBDb3B5cmlnaHQgKEMpIDIwMDkgVGV4YXMgSW5zdHJ1bWVudHMgSW5jb3Jwb3JhdGVk
+IC0gaHR0cDovL3d3dy50aS5jb20vDQo+PiArICogQ29weXJpZ2h0IChDKSAyMDE5IEplcm9lbiBI
+b2ZzdGVlIDxqaG9mc3RlZUB2aWN0cm9uZW5lcmd5LmNvbT4NCj4+ICAgICoNCj4+ICAgICogVGhp
+cyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9v
+cg0KPj4gICAgKiBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQ
+dWJsaWMgTGljZW5zZSBhcw0KPj4gQEAgLTM0LDYgKzM1LDcgQEANCj4+ICAgI2luY2x1ZGUgPGxp
+bnV4L2Nhbi9kZXYuaD4NCj4+ICAgI2luY2x1ZGUgPGxpbnV4L2Nhbi9lcnJvci5oPg0KPj4gICAj
+aW5jbHVkZSA8bGludXgvY2FuL2xlZC5oPg0KPj4gKyNpbmNsdWRlIDxsaW51eC9jYW4vcngtb2Zm
+bG9hZC5oPg0KPj4gICANCj4+ICAgI2RlZmluZSBEUlZfTkFNRSAidGlfaGVjYyINCj4+ICAgI2Rl
+ZmluZSBIRUNDX01PRFVMRV9WRVJTSU9OICAgICAiMC43Ig0KPj4gQEAgLTYzLDI5ICs2NSwxNiBA
+QCBNT0RVTEVfVkVSU0lPTihIRUNDX01PRFVMRV9WRVJTSU9OKTsNCj4+ICAgI2RlZmluZSBIRUND
+X1RYX1BSSU9fTUFTSwkoTUFYX1RYX1BSSU8gPDwgSEVDQ19NQl9UWF9TSElGVCkNCj4+ICAgI2Rl
+ZmluZSBIRUNDX1RYX01CX01BU0sJCShIRUNDX01BWF9UWF9NQk9YIC0gMSkNCj4+ICAgI2RlZmlu
+ZSBIRUNDX1RYX01BU0sJCSgoSEVDQ19NQVhfVFhfTUJPWCAtIDEpIHwgSEVDQ19UWF9QUklPX01B
+U0spDQo+PiAtI2RlZmluZSBIRUNDX1RYX01CT1hfTUFTSwkofihCSVQoSEVDQ19NQVhfVFhfTUJP
+WCkgLSAxKSkNCj4+IC0jZGVmaW5lIEhFQ0NfREVGX05BUElfV0VJR0hUCUhFQ0NfTUFYX1JYX01C
+T1gNCj4+ICAgDQo+PiAgIC8qDQo+PiAtICogSW1wb3J0YW50IE5vdGU6IFJYIG1haWxib3ggY29u
+ZmlndXJhdGlvbg0KPj4gLSAqIFJYIG1haWxib3hlcyBhcmUgZnVydGhlciBsb2dpY2FsbHkgc3Bs
+aXQgaW50byB0d28gLSBtYWluIGFuZCBidWZmZXINCj4+IC0gKiBtYWlsYm94ZXMuIFRoZSBnb2Fs
+IGlzIHRvIGdldCBhbGwgcGFja2V0cyBpbnRvIG1haW4gbWFpbGJveGVzIGFzDQo+PiAtICogZHJp
+dmVuIGJ5IG1haWxib3ggbnVtYmVyIGFuZCByZWNlaXZlIHByaW9yaXR5IChoaWdoZXIgdG8gbG93
+ZXIpIGFuZA0KPj4gLSAqIGJ1ZmZlciBtYWlsYm94ZXMgYXJlIHVzZWQgdG8gcmVjZWl2ZSBwa3Rz
+IHdoaWxlIG1haW4gbWFpbGJveGVzIGFyZSBiZWluZw0KPj4gLSAqIHByb2Nlc3NlZC4gVGhpcyBl
+bnN1cmVzIGluLW9yZGVyIHBhY2tldCByZWNlcHRpb24uDQo+PiAtICoNCj4+IC0gKiBIZXJlIGFy
+ZSB0aGUgcmVjb21tZW5kZWQgdmFsdWVzIGZvciBidWZmZXIgbWFpbGJveC4gTm90ZSB0aGF0IFJY
+IG1haWxib3hlcw0KPj4gLSAqIHN0YXJ0IGFmdGVyIFRYIG1haWxib3hlczoNCj4+IC0gKg0KPj4g
+LSAqIEhFQ0NfTUFYX1JYX01CT1gJCUhFQ0NfUlhfQlVGRkVSX01CT1gJTm8gb2YgYnVmZmVyIG1h
+aWxib3hlcw0KPj4gLSAqIDI4CQkJCTEyCQkJOA0KPj4gLSAqIDE2CQkJCTIwCQkJNA0KPj4gKyAq
+IFJYIG1haWxib3ggY29uZmlndXJhdGlvbg0KPj4gKyAqIFRoZSByZW1haW5pbmcgbWFpbGJveGVz
+IGFyZSB1c2VkIGZvciByZWNlcHRpb24gYW5kIGFyZSBkZWxpdmVyZWQgYmFzZWQgb24NCj4+ICsg
+KiB0aGVpciB0aW1lc3RhbXAsIHRvIGF2b2lkIGEgaGFyZHdhcmUgcmFjZSB3aGVuIENBTk1FIGlz
+IGNoYW5nZWQgd2hpbGUNCj4+ICsgKiBDQU4tYnVzIHRyYWZmaXggaXMgYmVpbmcgcmVjZWl2ZWQu
+DQo+PiAgICAqLw0KPj4gICANCj4+ICAgI2RlZmluZSBIRUNDX01BWF9SWF9NQk9YCShIRUNDX01B
+WF9NQUlMQk9YRVMgLSBIRUNDX01BWF9UWF9NQk9YKQ0KPj4gLSNkZWZpbmUgSEVDQ19SWF9CVUZG
+RVJfTUJPWAkxMiAvKiBhcyBwZXIgdGFibGUgYWJvdmUgKi8NCj4+ICAgI2RlZmluZSBIRUNDX1JY
+X0ZJUlNUX01CT1gJKEhFQ0NfTUFYX01BSUxCT1hFUyAtIDEpDQo+PiAtI2RlZmluZSBIRUNDX1JY
+X0hJR0hfTUJPWF9NQVNLCSh+KEJJVChIRUNDX1JYX0JVRkZFUl9NQk9YKSAtIDEpKQ0KPj4gICAN
+Cj4+ICAgLyogVEkgSEVDQyBtb2R1bGUgcmVnaXN0ZXJzICovDQo+PiAgICNkZWZpbmUgSEVDQ19D
+QU5NRQkJMHgwCS8qIE1haWxib3ggZW5hYmxlICovDQo+PiBAQCAtMTIzLDYgKzExMiw4IEBAIE1P
+RFVMRV9WRVJTSU9OKEhFQ0NfTU9EVUxFX1ZFUlNJT04pOw0KPj4gICAjZGVmaW5lIEhFQ0NfQ0FO
+TURMCQkweDgNCj4+ICAgI2RlZmluZSBIRUNDX0NBTk1ESAkJMHhDDQo+PiAgIA0KPj4gKyNkZWZp
+bmUgSEVDQ19DQU5NT1RTCQkweDEwMA0KPiBJdCdzIGFjdHVhbGx5IDB4ODANCj4NCj4+ICsNCj4+
+ICAgI2RlZmluZSBIRUNDX1NFVF9SRUcJCTB4RkZGRkZGRkYNCj4+ICAgI2RlZmluZSBIRUNDX0NB
+TklEX01BU0sJCTB4M0ZGCS8qIDE4IGJpdHMgbWFzayBmb3IgZXh0ZW5kZWQgaWQncyAqLw0KPj4g
+ICAjZGVmaW5lIEhFQ0NfQ0NFX1dBSVRfQ09VTlQgICAgIDEwMAkvKiBXYWl0IGZvciB+MSBzZWMg
+Zm9yIENDRSBiaXQgKi8NCj4+IEBAIC0xOTMsNyArMTg0LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVj
+dCBjYW5fYml0dGltaW5nX2NvbnN0IHRpX2hlY2NfYml0dGltaW5nX2NvbnN0ID0gew0KPj4gICAN
+Cj4+ICAgc3RydWN0IHRpX2hlY2NfcHJpdiB7DQo+PiAgIAlzdHJ1Y3QgY2FuX3ByaXYgY2FuOwkv
+KiBNVVNUIGJlIGZpcnN0IG1lbWJlci9maWVsZCAqLw0KPj4gLQlzdHJ1Y3QgbmFwaV9zdHJ1Y3Qg
+bmFwaTsNCj4+ICsJc3RydWN0IGNhbl9yeF9vZmZsb2FkIG9mZmxvYWQ7DQo+PiAgIAlzdHJ1Y3Qg
+bmV0X2RldmljZSAqbmRldjsNCj4+ICAgCXN0cnVjdCBjbGsgKmNsazsNCj4+ICAgCXZvaWQgX19p
+b21lbSAqYmFzZTsNCj4+IEBAIC0yMDMsNyArMTk0LDYgQEAgc3RydWN0IHRpX2hlY2NfcHJpdiB7
+DQo+PiAgIAlzcGlubG9ja190IG1ieF9sb2NrOyAvKiBDQU5NRSByZWdpc3RlciBuZWVkcyBwcm90
+ZWN0aW9uICovDQo+PiAgIAl1MzIgdHhfaGVhZDsNCj4+ICAgCXUzMiB0eF90YWlsOw0KPj4gLQl1
+MzIgcnhfbmV4dDsNCj4+ICAgCXN0cnVjdCByZWd1bGF0b3IgKnJlZ194Y2VpdmVyOw0KPj4gICB9
+Ow0KPj4gICANCj4+IEBAIC0yNjUsNiArMjU1LDExIEBAIHN0YXRpYyBpbmxpbmUgdTMyIGhlY2Nf
+Z2V0X2JpdChzdHJ1Y3QgdGlfaGVjY19wcml2ICpwcml2LCBpbnQgcmVnLCB1MzIgYml0X21hc2sp
+DQo+PiAgIAlyZXR1cm4gKGhlY2NfcmVhZChwcml2LCByZWcpICYgYml0X21hc2spID8gMSA6IDA7
+DQo+PiAgIH0NCj4+ICAgDQo+PiArc3RhdGljIGlubGluZSB1MzIgaGVjY19yZWFkX3N0YW1wKHN0
+cnVjdCB0aV9oZWNjX3ByaXYgKnByaXYsIHUzMiBtYnhubykNCj4+ICt7DQo+PiArCXJldHVybiBf
+X3Jhd19yZWFkbChwcml2LT5oZWNjX3JhbSArIDB4ODAgKyA0ICogbWJ4bm8pOw0KPiBJJ3ZlIGNo
+YW5nZWQgdGhpcyBmdW5jdGlvbiB0byB1c2UgSEVDQ19DQU5NT1RTLg0KPg0KDQpUaGF0IGlzIGNv
+cnJlY3QuIEZvciBjb21wbGV0ZW5lc3MgdGhlIEhFQ0NfQ0FOTU9UUyB3YXNuJ3QNCmV2ZW4gdXNl
+ZCBpbiB0aGUgb3JpZ2luYWwgcGF0Y2gsIHNvIHRoZXJlIGlzIG5vIGZ1bmN0aW9uYWwgZGlmZmVy
+ZW5jZS4NCg0KVGhhbmtzLA0KDQpKZXJvZW4NCg0KDQo=
