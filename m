@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/7] can: flexcan: fix an use-after-free in flexcan_setup_stop_mode()
-Date: Wed, 24 Jul 2019 15:03:19 +0200
-Message-ID: <20190724130322.31702-5-mkl@pengutronix.de>
+Subject: [PATCH 6/7] can: peak_usb: fix potential double kfree_skb()
+Date: Wed, 24 Jul 2019 15:03:21 +0200
+Message-ID: <20190724130322.31702-7-mkl@pengutronix.de>
 References: <20190724130322.31702-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,49 +9,49 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20190724130322.31702-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Wen Yang <wen.yang99@zte.com.cn>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Stephane Grosjean <s.grosjean@peak-system.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Wen Yang <wen.yang99@zte.com.cn>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-The gpr_np variable is still being used in dev_dbg() after the
-of_node_put() call, which may result in use-after-free.
+When closing the CAN device while tx skbs are inflight, echo skb could
+be released twice. By calling close_candev() before unlinking all
+pending tx urbs, then the internal echo_skb[] array is fully and
+correctly cleared before the USB write callback and, therefore,
+can_get_echo_skb() are called, for each aborted URB.
 
-Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.0
+Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver core")
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index f2fe344593d5..33ce45d51e15 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1437,10 +1437,10 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 458154c9b482..22b9c8e6d040 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -568,16 +568,16 @@ static int peak_usb_ndo_stop(struct net_device *netdev)
+ 	dev->state &= ~PCAN_USB_STATE_STARTED;
+ 	netif_stop_queue(netdev);
  
- 	priv = netdev_priv(dev);
- 	priv->stm.gpr = syscon_node_to_regmap(gpr_np);
--	of_node_put(gpr_np);
- 	if (IS_ERR(priv->stm.gpr)) {
- 		dev_dbg(&pdev->dev, "could not find gpr regmap\n");
--		return PTR_ERR(priv->stm.gpr);
-+		ret = PTR_ERR(priv->stm.gpr);
-+		goto out_put_node;
- 	}
++	close_candev(netdev);
++
++	dev->can.state = CAN_STATE_STOPPED;
++
+ 	/* unlink all pending urbs and free used memory */
+ 	peak_usb_unlink_all_urbs(dev);
  
- 	priv->stm.req_gpr = out_val[1];
-@@ -1455,7 +1455,9 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
+ 	if (dev->adapter->dev_stop)
+ 		dev->adapter->dev_stop(dev);
  
- 	device_set_wakeup_capable(&pdev->dev, true);
- 
--	return 0;
-+out_put_node:
-+	of_node_put(gpr_np);
-+	return ret;
- }
- 
- static const struct of_device_id flexcan_of_match[] = {
+-	close_candev(netdev);
+-
+-	dev->can.state = CAN_STATE_STOPPED;
+-
+ 	/* can set bus off now */
+ 	if (dev->adapter->dev_set_bus) {
+ 		int err = dev->adapter->dev_set_bus(dev, 0);
 -- 
 2.20.1
