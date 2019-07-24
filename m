@@ -1,83 +1,112 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2019-07-24
-Date: Wed, 24 Jul 2019 15:03:15 +0200
-Message-ID: <20190724130322.31702-1-mkl@pengutronix.de>
+Subject: [PATCH 3/7] can: mcp251x: add error check when wq alloc failed
+Date: Wed, 24 Jul 2019 15:03:18 +0200
+Message-ID: <20190724130322.31702-4-mkl@pengutronix.de>
+References: <20190724130322.31702-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190724130322.31702-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Weitao Hou <houweitaoo@gmail.com>, Willem de Bruijn <willemb@google.com>, Sean Nyekjaer <sean@geanix.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Weitao Hou <houweitaoo@gmail.com>
 
-this is a pull reqeust of 7 patches for net/master.
+add error check when workqueue alloc failed, and remove redundant code
+to make it clear.
 
-The first patch is by Rasmus Villemoes add a missing netif_carrier_off() to
-register_candev() so that generic netdev trigger based LEDs are initially off.
-
-Nikita Yushchenko's patch for the rcar_canfd driver fixes a possible IRQ storm
-on high load.
-
-The patch by Weitao Hou for the mcp251x driver add missing error checking to
-the work queue allocation.
-
-Both Wen Yang's and Joakim Zhang's patch for the flexcan driver fix a problem
-with the stop-mode.
-
-Stephane Grosjean contributes a patch for the peak_usb driver to fix a
-potential double kfree_skb().
-
-The last patch is by YueHaibing and fixes the error path in can-gw's
-cgw_module_init() function.
-
-regards,
-Marc
-
+Fixes: e0000163e30e ("can: Driver for the Microchip MCP251x SPI CAN controllers")
+Signed-off-by: Weitao Hou <houweitaoo@gmail.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Tested-by: Sean Nyekjaer <sean@geanix.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/spi/mcp251x.c | 49 ++++++++++++++++-------------------
+ 1 file changed, 22 insertions(+), 27 deletions(-)
 
-The following changes since commit d86afb89305de205b0d2f20c2160adf039e9508d:
-
-  net: thunderx: Use fwnode_get_mac_address() (2019-07-23 14:09:21 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.3-20190724
-
-for you to fetch changes up to b7a14297f102b6e2ce6f16feffebbb9bde1e9b55:
-
-  can: gw: Fix error path of cgw_module_init (2019-07-24 11:19:03 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.3-20190724
-
-----------------------------------------------------------------
-Joakim Zhang (1):
-      can: flexcan: fix stop mode acknowledgment
-
-Nikita Yushchenko (1):
-      can: rcar_canfd: fix possible IRQ storm on high load
-
-Rasmus Villemoes (1):
-      can: dev: call netif_carrier_off() in register_candev()
-
-Stephane Grosjean (1):
-      can: peak_usb: fix potential double kfree_skb()
-
-Weitao Hou (1):
-      can: mcp251x: add error check when wq alloc failed
-
-Wen Yang (1):
-      can: flexcan: fix an use-after-free in flexcan_setup_stop_mode()
-
-YueHaibing (1):
-      can: gw: Fix error path of cgw_module_init
-
- drivers/net/can/dev.c                        |  2 ++
- drivers/net/can/flexcan.c                    | 39 ++++++++++++++++++----
- drivers/net/can/rcar/rcar_canfd.c            |  9 ++---
- drivers/net/can/spi/mcp251x.c                | 49 +++++++++++++---------------
- drivers/net/can/usb/peak_usb/pcan_usb_core.c |  8 ++---
- net/can/gw.c                                 | 48 ++++++++++++++++++---------
- 6 files changed, 98 insertions(+), 57 deletions(-)
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index 44e99e3d7134..2aec934fab0c 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -664,17 +664,6 @@ static int mcp251x_power_enable(struct regulator *reg, int enable)
+ 		return regulator_disable(reg);
+ }
+ 
+-static void mcp251x_open_clean(struct net_device *net)
+-{
+-	struct mcp251x_priv *priv = netdev_priv(net);
+-	struct spi_device *spi = priv->spi;
+-
+-	free_irq(spi->irq, priv);
+-	mcp251x_hw_sleep(spi);
+-	mcp251x_power_enable(priv->transceiver, 0);
+-	close_candev(net);
+-}
+-
+ static int mcp251x_stop(struct net_device *net)
+ {
+ 	struct mcp251x_priv *priv = netdev_priv(net);
+@@ -940,37 +929,43 @@ static int mcp251x_open(struct net_device *net)
+ 				   flags | IRQF_ONESHOT, DEVICE_NAME, priv);
+ 	if (ret) {
+ 		dev_err(&spi->dev, "failed to acquire irq %d\n", spi->irq);
+-		mcp251x_power_enable(priv->transceiver, 0);
+-		close_candev(net);
+-		goto open_unlock;
++		goto out_close;
+ 	}
+ 
+ 	priv->wq = alloc_workqueue("mcp251x_wq", WQ_FREEZABLE | WQ_MEM_RECLAIM,
+ 				   0);
++	if (!priv->wq) {
++		ret = -ENOMEM;
++		goto out_clean;
++	}
+ 	INIT_WORK(&priv->tx_work, mcp251x_tx_work_handler);
+ 	INIT_WORK(&priv->restart_work, mcp251x_restart_work_handler);
+ 
+ 	ret = mcp251x_hw_reset(spi);
+-	if (ret) {
+-		mcp251x_open_clean(net);
+-		goto open_unlock;
+-	}
++	if (ret)
++		goto out_free_wq;
+ 	ret = mcp251x_setup(net, spi);
+-	if (ret) {
+-		mcp251x_open_clean(net);
+-		goto open_unlock;
+-	}
++	if (ret)
++		goto out_free_wq;
+ 	ret = mcp251x_set_normal_mode(spi);
+-	if (ret) {
+-		mcp251x_open_clean(net);
+-		goto open_unlock;
+-	}
++	if (ret)
++		goto out_free_wq;
+ 
+ 	can_led_event(net, CAN_LED_EVENT_OPEN);
+ 
+ 	netif_wake_queue(net);
++	mutex_unlock(&priv->mcp_lock);
+ 
+-open_unlock:
++	return 0;
++
++out_free_wq:
++	destroy_workqueue(priv->wq);
++out_clean:
++	free_irq(spi->irq, priv);
++	mcp251x_hw_sleep(spi);
++out_close:
++	mcp251x_power_enable(priv->transceiver, 0);
++	close_candev(net);
+ 	mutex_unlock(&priv->mcp_lock);
+ 	return ret;
+ }
+-- 
+2.20.1
