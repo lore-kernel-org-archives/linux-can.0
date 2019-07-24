@@ -1,113 +1,99 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5/7] can: flexcan: fix stop mode acknowledgment
-Date: Wed, 24 Jul 2019 15:03:20 +0200
-Message-ID: <20190724130322.31702-6-mkl@pengutronix.de>
+Subject: [PATCH 7/7] can: gw: Fix error path of cgw_module_init
+Date: Wed, 24 Jul 2019 15:03:22 +0200
+Message-ID: <20190724130322.31702-8-mkl@pengutronix.de>
 References: <20190724130322.31702-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20190724130322.31702-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, YueHaibing <yuehaibing@huawei.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-To enter stop mode, the CPU should manually assert a global Stop Mode
-request and check the acknowledgment asserted by FlexCAN. The CPU must
-only consider the FlexCAN in stop mode when both request and
-acknowledgment conditions are satisfied.
+This patch add error path for cgw_module_init to avoid possible crash if
+some error occurs.
 
-Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.0
+Fixes: c1aabdf379bc ("can-gw: add netlink based CAN routing")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
+ net/can/gw.c | 48 +++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 33 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 33ce45d51e15..fcec8bcb53d6 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -400,9 +400,10 @@ static void flexcan_enable_wakeup_irq(struct flexcan_priv *priv, bool enable)
- 	priv->write(reg_mcr, &regs->mcr);
- }
+diff --git a/net/can/gw.c b/net/can/gw.c
+index 5275ddf580bc..72711053ebe6 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -1046,32 +1046,50 @@ static __init int cgw_module_init(void)
+ 	pr_info("can: netlink gateway (rev " CAN_GW_VERSION ") max_hops=%d\n",
+ 		max_hops);
  
--static inline void flexcan_enter_stop_mode(struct flexcan_priv *priv)
-+static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs = priv->regs;
-+	unsigned int ackval;
- 	u32 reg_mcr;
- 
- 	reg_mcr = priv->read(&regs->mcr);
-@@ -412,20 +413,37 @@ static inline void flexcan_enter_stop_mode(struct flexcan_priv *priv)
- 	/* enable stop request */
- 	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
- 			   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
+-	register_pernet_subsys(&cangw_pernet_ops);
++	ret = register_pernet_subsys(&cangw_pernet_ops);
++	if (ret)
++		return ret;
 +
-+	/* get stop acknowledgment */
-+	if (regmap_read_poll_timeout(priv->stm.gpr, priv->stm.ack_gpr,
-+				     ackval, ackval & (1 << priv->stm.ack_bit),
-+				     0, FLEXCAN_TIMEOUT_US))
-+		return -ETIMEDOUT;
++	ret = -ENOMEM;
+ 	cgw_cache = kmem_cache_create("can_gw", sizeof(struct cgw_job),
+ 				      0, 0, NULL);
+-
+ 	if (!cgw_cache)
+-		return -ENOMEM;
++		goto out_cache_create;
+ 
+ 	/* set notifier */
+ 	notifier.notifier_call = cgw_notifier;
+-	register_netdevice_notifier(&notifier);
++	ret = register_netdevice_notifier(&notifier);
++	if (ret)
++		goto out_register_notifier;
+ 
+ 	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_GETROUTE,
+ 				   NULL, cgw_dump_jobs, 0);
+-	if (ret) {
+-		unregister_netdevice_notifier(&notifier);
+-		kmem_cache_destroy(cgw_cache);
+-		return -ENOBUFS;
+-	}
+-
+-	/* Only the first call to rtnl_register_module can fail */
+-	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
+-			     cgw_create_job, NULL, 0);
+-	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
+-			     cgw_remove_job, NULL, 0);
++	if (ret)
++		goto out_rtnl_register1;
 +
-+	return 0;
- }
- 
--static inline void flexcan_exit_stop_mode(struct flexcan_priv *priv)
-+static inline int flexcan_exit_stop_mode(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs = priv->regs;
-+	unsigned int ackval;
- 	u32 reg_mcr;
- 
- 	/* remove stop request */
- 	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
- 			   1 << priv->stm.req_bit, 0);
- 
-+	/* get stop acknowledgment */
-+	if (regmap_read_poll_timeout(priv->stm.gpr, priv->stm.ack_gpr,
-+				     ackval, !(ackval & (1 << priv->stm.ack_bit)),
-+				     0, FLEXCAN_TIMEOUT_US))
-+		return -ETIMEDOUT;
-+
- 	reg_mcr = priv->read(&regs->mcr);
- 	reg_mcr &= ~FLEXCAN_MCR_SLF_WAK;
- 	priv->write(reg_mcr, &regs->mcr);
-+
-+	return 0;
- }
- 
- static inline void flexcan_error_irq_enable(const struct flexcan_priv *priv)
-@@ -1614,7 +1632,9 @@ static int __maybe_unused flexcan_suspend(struct device *device)
- 		 */
- 		if (device_may_wakeup(device)) {
- 			enable_irq_wake(dev->irq);
--			flexcan_enter_stop_mode(priv);
-+			err = flexcan_enter_stop_mode(priv);
-+			if (err)
-+				return err;
- 		} else {
- 			err = flexcan_chip_disable(priv);
- 			if (err)
-@@ -1664,10 +1684,13 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
- {
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
-+	int err;
- 
- 	if (netif_running(dev) && device_may_wakeup(device)) {
- 		flexcan_enable_wakeup_irq(priv, false);
--		flexcan_exit_stop_mode(priv);
-+		err = flexcan_exit_stop_mode(priv);
-+		if (err)
-+			return err;
- 	}
++	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
++				   cgw_create_job, NULL, 0);
++	if (ret)
++		goto out_rtnl_register2;
++	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
++				   cgw_remove_job, NULL, 0);
++	if (ret)
++		goto out_rtnl_register3;
  
  	return 0;
++
++out_rtnl_register3:
++	rtnl_unregister(PF_CAN, RTM_NEWROUTE);
++out_rtnl_register2:
++	rtnl_unregister(PF_CAN, RTM_GETROUTE);
++out_rtnl_register1:
++	unregister_netdevice_notifier(&notifier);
++out_register_notifier:
++	kmem_cache_destroy(cgw_cache);
++out_cache_create:
++	unregister_pernet_subsys(&cangw_pernet_ops);
++
++	return ret;
+ }
+ 
+ static __exit void cgw_module_exit(void)
 -- 
 2.20.1
