@@ -1,63 +1,23 @@
-From: Colin Ian King <colin.king@canonical.com>
-Subject: Re: [PATCH][next] can: kvaser_pciefd: remove redundant negative check
- on trigger
-Date: Thu, 25 Jul 2019 13:41:04 +0100
-Message-ID: <0d61d4a1-4307-af0e-5dae-517dea89c992@canonical.com>
-References: <20190725112509.1075-1-colin.king@canonical.com>
- <5D39A274.1000800@bfs.de>
+From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Subject: Re: [PATCH 2/7] can: rcar_canfd: fix possible IRQ storm on high load
+Date: Thu, 25 Jul 2019 16:29:43 +0300
+Message-ID: <6b23b091-92d1-b05d-b451-d8c78a990ef3@cogentembedded.com>
+References: <20190724130322.31702-3-mkl@pengutronix.de>
+ <20190724210328.D91DF21873@mail.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <5D39A274.1000800@bfs.de>
+In-Reply-To: <20190724210328.D91DF21873@mail.kernel.org>
 Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: wharms@bfs.de
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Sasha Levin <sashal@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-On 25/07/2019 13:37, walter harms wrote:
+> NOTE: The patch will not be queued to stable trees until it is upstream.
 > 
-> 
-> Am 25.07.2019 13:25, schrieb Colin King:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> The check to see if trigger is less than zero is always false, trigger
->> is always in the range 0..255.  Hence the check is redundant and can
->> be removed.
->>
->> Addresses-Coverity: ("Logically dead code")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  drivers/net/can/kvaser_pciefd.c | 3 ---
->>  1 file changed, 3 deletions(-)
->>
->> diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
->> index 3af747cbbde4..68e00aad0810 100644
->> --- a/drivers/net/can/kvaser_pciefd.c
->> +++ b/drivers/net/can/kvaser_pciefd.c
->> @@ -652,9 +652,6 @@ static void kvaser_pciefd_pwm_stop(struct kvaser_pciefd_can *can)
->>  	top = (pwm_ctrl >> KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT) & 0xff;
->>  
->>  	trigger = (100 * top + 50) / 100;
->> -	if (trigger < 0)
->> -		trigger = 0;
->> -
-> 	to be fair i do not understand the calculation here here.
-> 	(100*top+50)/100 = top+50/100
-> 
-> 	but seems to be int so it should be =top
+> How should we proceed with this patch?
 
-Indeed it does not do anything, that does look like an unintentional
-bug. Good catch.
-
-> 
-> 	did i missunderstand something here ?
-> 
-> 	re,
-> 	 wh
-> 
-> 
->>  	pwm_ctrl = trigger & 0xff;
->>  	pwm_ctrl |= (top & 0xff) << KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT;
->>  	iowrite32(pwm_ctrl, can->reg_base + KVASER_PCIEFD_KCAN_PWM_REG);
+I don't know.
+Maintainer did not respond, nor to original send nor to resend.
