@@ -1,42 +1,103 @@
-From: Jeroen Hofstee <jhofstee@victronenergy.com>
-Subject: Re: [PATCH net-next] can: ti_hecc: remove set but not used variable
- 'mbx_mask'
-Date: Thu, 25 Jul 2019 08:19:10 +0000
-Message-ID: <acefc74c-b303-64b8-4a98-6d15835f1666@victronenergy.com>
-References: <20190725070044.2692-1-yuehaibing@huawei.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/8] can: flexcan: add CAN FD support for NXP Flexcan
+Date: Thu, 25 Jul 2019 12:37:05 +0200
+Message-ID: <24eb5c67-4692-1002-2468-4ae2e1a6b68b@pengutronix.de>
+References: <20190712075926.7357-1-qiangqing.zhang@nxp.com>
+ <DB7PR04MB461831872271A98E741FF68AE6C10@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <22ca8787-fa99-50bb-af1a-098866542e42@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="u4IkX5Ie06c9SrWb94ZE9RBA6IYwhnM6v"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190725070044.2692-1-yuehaibing@huawei.com>
-Content-Language: en-US
-Content-ID: <14AF8ADE908F64449B95A2151128E550@eurprd07.prod.outlook.com>
+In-Reply-To: <22ca8787-fa99-50bb-af1a-098866542e42@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQpPbiA3LzI1LzE5IDk6MDAgQU0sIFl1ZUhhaWJpbmcgd3JvdGU6DQo+IEZpeGVzIGdjYyAnLVd1
-bnVzZWQtYnV0LXNldC12YXJpYWJsZScgd2FybmluZzoNCj4NCj4gZHJpdmVycy9uZXQvY2FuL3Rp
-X2hlY2MuYzogSW4gZnVuY3Rpb24gJ3RpX2hlY2NfbWFpbGJveF9yZWFkJzoNCj4gZHJpdmVycy9u
-ZXQvY2FuL3RpX2hlY2MuYzo1MzM6MTI6IHdhcm5pbmc6DQo+ICAgdmFyaWFibGUgJ21ieF9tYXNr
-JyBzZXQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC1idXQtc2V0LXZhcmlhYmxlXQ0KPg0KPiBJdCBp
-cyBuZXZlciB1c2VkIHNvIGNhbiBiZSByZW1vdmVkLg0KPg0KPiBSZXBvcnRlZC1ieTogSHVsayBS
-b2JvdCA8aHVsa2NpQGh1YXdlaS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFl1ZUhhaWJpbmcgPHl1
-ZWhhaWJpbmdAaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICAgZHJpdmVycy9uZXQvY2FuL3RpX2hlY2Mu
-YyB8IDMgKy0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAyIGRlbGV0aW9u
-cygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL3RpX2hlY2MuYyBiL2RyaXZl
-cnMvbmV0L2Nhbi90aV9oZWNjLmMNCj4gaW5kZXggYjYyZjc1ZmEwM2YwLi5lNjNlMmY4NmMyODkg
-MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi90aV9oZWNjLmMNCj4gKysrIGIvZHJpdmVy
-cy9uZXQvY2FuL3RpX2hlY2MuYw0KPiBAQCAtNTMwLDkgKzUzMCw4IEBAIHN0YXRpYyB1bnNpZ25l
-ZCBpbnQgdGlfaGVjY19tYWlsYm94X3JlYWQoc3RydWN0IGNhbl9yeF9vZmZsb2FkICpvZmZsb2Fk
-LA0KPiAgIAkJCQkJIHUzMiAqdGltZXN0YW1wLCB1bnNpZ25lZCBpbnQgbWJ4bm8pDQo+ICAgew0K
-PiAgIAlzdHJ1Y3QgdGlfaGVjY19wcml2ICpwcml2ID0gcnhfb2ZmbG9hZF90b19wcml2KG9mZmxv
-YWQpOw0KPiAtCXUzMiBkYXRhLCBtYnhfbWFzazsNCj4gKwl1MzIgZGF0YTsNCj4gICANCj4gLQlt
-YnhfbWFzayA9IEJJVChtYnhubyk7DQo+ICAgCWRhdGEgPSBoZWNjX3JlYWRfbWJ4KHByaXYsIG1i
-eG5vLCBIRUNDX0NBTk1JRCk7DQo+ICAgCWlmIChkYXRhICYgSEVDQ19DQU5NSURfSURFKQ0KPiAg
-IAkJY2YtPmNhbl9pZCA9IChkYXRhICYgQ0FOX0VGRl9NQVNLKSB8IENBTl9FRkZfRkxBRzsNCj4N
-Cj4NCg0KSW5kZWVkLCBtYnhfbWFzayBpcyBubyBsb25nZXIgdXNlZCBhZnRlciBpbmNsdWRpbmcN
-CiJjYW46IHRpX2hlY2M6IHVzZSB0aW1lc3RhbXAgYmFzZWQgcngtb2ZmbG9hZGluZyIuDQoNClJl
-dmlld2VkLWJ5OiBKZXJvZW4gSG9mc3RlZSA8amhvZnN0ZWVAdmljdHJvbmVuZXJneS5jb20+DQoN
-Cg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--u4IkX5Ie06c9SrWb94ZE9RBA6IYwhnM6v
+Content-Type: multipart/mixed; boundary="qGuZIf5lPtITr0mdKMxewU2Toy4gXun4s";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, dl-linux-imx
+ <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Message-ID: <24eb5c67-4692-1002-2468-4ae2e1a6b68b@pengutronix.de>
+Subject: Re: [PATCH 0/8] can: flexcan: add CAN FD support for NXP Flexcan
+References: <20190712075926.7357-1-qiangqing.zhang@nxp.com>
+ <DB7PR04MB461831872271A98E741FF68AE6C10@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <22ca8787-fa99-50bb-af1a-098866542e42@pengutronix.de>
+In-Reply-To: <22ca8787-fa99-50bb-af1a-098866542e42@pengutronix.de>
+
+--qGuZIf5lPtITr0mdKMxewU2Toy4gXun4s
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 7/25/19 9:53 AM, Marc Kleine-Budde wrote:
+> On 7/25/19 9:38 AM, Joakim Zhang wrote:
+>> Kindly pinging...
+>>
+>> After you git pull request for linux-can-next-for-5.4-20190724, some p=
+atches are missing from linux-can-next/testing.
+>> can: flexcan: flexcan_mailbox_read() make use of flexcan_write64() to =
+mark the mailbox as read
+>> can: flexcan: flexcan_irq(): add support for TX mailbox in iflag1
+>> can: flexcan: flexcan_read_reg_iflag_rx(): optimize reading
+>> can: flexcan: introduce struct flexcan_priv::tx_mask and make use of i=
+t
+>> can: flexcan: convert struct flexcan_priv::rx_mask{1,2} to rx_mask
+>> can: flexcan: remove TX mailbox bit from struct flexcan_priv::rx_mask{=
+1,2}
+>> can: flexcan: rename struct flexcan_priv::reg_imask{1,2}_default to rx=
+_mask{1,2}
+>> can: flexcan: flexcan_irq(): rename variable reg_iflag -> reg_iflag_rx=
+
+>> can: flexcan: rename macro FLEXCAN_IFLAG_MB() -> FLEXCAN_IFLAG2_MB()
+>>
+>> You can refer to below link for the reason of adding above patches:
+>> https://www.spinics.net/lists/linux-can/msg00777.html
+>> https://www.spinics.net/lists/linux-can/msg01150.html
+>>
+>> Are you prepared to add back these patches as they are necessary for
+>> Flexcan CAN FD? And this Flexcan CAN FD patch set is based on these
+>> patches.
+>=20
+> Yes, these patches will be added back.
+
+I've cleaned up the first patch a bit, and pushed everything to the
+testing branch. Can you give it a test.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--qGuZIf5lPtITr0mdKMxewU2Toy4gXun4s--
+
+--u4IkX5Ie06c9SrWb94ZE9RBA6IYwhnM6v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl05hlEACgkQWsYho5Hk
+nSAGjQf9Fbu0zJ+edTfTI/tu491WgJu4gVTHHnuVA+RBRWIXDx6mvzsYVr+hnmQd
+OEmiuWwTTHMfqt4RQCFLb/RWBNBtva8BwCsAplIZOAx4kV/4Y+ki4ya9yqOu7HLD
+QZuZWrUR/zawrhFWLLYzUB9JzeFHDspXa77JM7X5fn8HsqhJh0Lvtmgv3680aDHw
+hiXyotE7q86ilP7EMjytSbbJgAjJ6cGpabpFFeGwXaPF2yauRP6gT2Uhanr5CtKU
+pQlS6bKMpxoA1KIu18TVtLnneSCAVZI8EZiEwaKXeaoaRVLUxdd8aAKliFP2F735
+itt0n9Yl5SFVi6btLkktoZzmtN994Q==
+=tDGV
+-----END PGP SIGNATURE-----
+
+--u4IkX5Ie06c9SrWb94ZE9RBA6IYwhnM6v--
