@@ -1,21 +1,33 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2019-07-24
-Date: Wed, 24 Jul 2019 14:15:20 -0700 (PDT)
-Message-ID: <20190724.141520.1522531604858881865.davem@davemloft.net>
-References: <20190724130322.31702-1-mkl@pengutronix.de>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] can: kvaser_pciefd: Remove unused including <linux/version.h>
+Date: Thu, 25 Jul 2019 07:02:17 +0000
+Message-ID: <20190725070217.3569-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190724130322.31702-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: Wolfgang Grandegger <wg@grandegger.com>, Henning Colliander <henning.colliander@evidente.se>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: YueHaibing <yuehaibing@huawei.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 24 Jul 2019 15:03:15 +0200
+Remove including <linux/version.h> that don't need it.
 
-> this is a pull reqeust of 7 patches for net/master.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/can/kvaser_pciefd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Pulled, thank you.
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index 3af747cbbde4..952a022b8343 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -7,7 +7,6 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/version.h>
+ #include <linux/module.h>
+ #include <linux/device.h>
+ #include <linux/pci.h>
