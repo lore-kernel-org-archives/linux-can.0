@@ -1,178 +1,79 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Jeroen Hofstee <jhofstee@victronenergy.com>
 Subject: Re: [PATCH] can: ti_hecc: use timestamp based rx-offloading
-Date: Fri, 26 Jul 2019 13:48:50 +0200
-Message-ID: <04bdda38-79fa-c266-2a3c-1229a1fd8229@pengutronix.de>
+Date: Fri, 26 Jul 2019 20:10:47 +0000
+Message-ID: <c52cda86-8889-63a7-ce10-e1d10444f6d2@victronenergy.com>
 References: <1556539376-20932-1-git-send-email-jhofstee@victronenergy.com>
+ <04bdda38-79fa-c266-2a3c-1229a1fd8229@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="8Vcx5zN8NAF034AJYysdQKrpAeRKXuUgg"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1556539376-20932-1-git-send-email-jhofstee@victronenergy.com>
-Sender: netdev-owner@vger.kernel.org
-To: Jeroen Hofstee <jhofstee@victronenergy.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <04bdda38-79fa-c266-2a3c-1229a1fd8229@pengutronix.de>
+Content-Language: en-US
+Content-ID: <446F18C45B2B9D4EBEE768D3D7EE34C8@eurprd07.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: Anant Gole <anantgole@ti.com>, AnilKumar Ch <anilkumar@ti.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8Vcx5zN8NAF034AJYysdQKrpAeRKXuUgg
-Content-Type: multipart/mixed; boundary="M37tVGSr116Pwc4jJbfEdkeK6V5F6LKxb";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Jeroen Hofstee <jhofstee@victronenergy.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Anant Gole <anantgole@ti.com>, AnilKumar Ch <anilkumar@ti.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-Message-ID: <04bdda38-79fa-c266-2a3c-1229a1fd8229@pengutronix.de>
-Subject: Re: [PATCH] can: ti_hecc: use timestamp based rx-offloading
-References: <1556539376-20932-1-git-send-email-jhofstee@victronenergy.com>
-In-Reply-To: <1556539376-20932-1-git-send-email-jhofstee@victronenergy.com>
-
---M37tVGSr116Pwc4jJbfEdkeK6V5F6LKxb
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-
-On 4/29/19 2:03 PM, Jeroen Hofstee wrote:
-> As already mentioned in [1] and included in [2], there is an off by one=
-
-> issue since the high bank is already enabled when the _next_ mailbox to=
-
-> be read has index 12, so the mailbox being read was 13. The message can=
-
-> therefore go into mailbox 31 and the driver will be repolled until the
-> mailbox 12 eventually receives a msg. Or the message might end up in th=
-e
-> 12th mailbox, but then it would become disabled after reading it and on=
-ly
-> be enabled again in the next "round" after mailbox 13 was read, which c=
-an
-> cause out of order messages, since the lower priority mailboxes can
-> accept messages in the meantime.
->=20
-> As mentioned in [3] there is a hardware race condition when changing th=
-e
-> CANME register while messages are being received. Even when including a=
-
-> busy poll on reception, like in [2] there are still overflows and out o=
-f
-> order messages at times, but less then without the busy loop polling.
-> Unlike what the patch suggests, the polling time is not in the microsec=
-ond
-> range, but takes as long as a current CAN bus reception needs to finish=
-,
-> so typically more in the fraction of millisecond range. Since the timeo=
-ut
-> is in jiffies it won't timeout.
->=20
-> Even with these additional fixes the driver is still not able to provid=
-e a
-> proper FIFO which doesn't drop packages. So change the driver to use
-> rx-offload and base order on timestamp instead of message box numbers. =
-As
-> a side affect, this also fixes [4] and [5].
->=20
-> Before this change messages with a single byte counter were dropped /
-> received out of order at a bitrate of 250kbit/s on an am3517. With this=
-
-> patch that no longer occurs up to and including 1Mbit/s.
->=20
-> [1] https://linux-can.vger.kernel.narkive.com/zgO9inVi/patch-can-ti-hec=
-c-fix-rx-wrong-sequence-issue#post6
-> [2] http://arago-project.org/git/projects/?p=3Dlinux-omap3.git;a=3Dcomm=
-it;h=3D02346892777f07245de4d5af692513ebd852dcb2
-> [3] https://linux-can.vger.kernel.narkive.com/zgO9inVi/patch-can-ti-hec=
-c-fix-rx-wrong-sequence-issue#post5
-> [4] https://patchwork.ozlabs.org/patch/895956/
-> [5] https://www.spinics.net/lists/netdev/msg494971.html
->=20
-> Cc: Anant Gole <anantgole@ti.com>
-> Cc: AnilKumar Ch <anilkumar@ti.com>
-> Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
-
-[...]
-
-> @@ -744,8 +652,8 @@ static irqreturn_t ti_hecc_interrupt(int irq, void =
-*dev_id)
->  	struct net_device *ndev =3D (struct net_device *)dev_id;
->  	struct ti_hecc_priv *priv =3D netdev_priv(ndev);
->  	struct net_device_stats *stats =3D &ndev->stats;
-> -	u32 mbxno, mbx_mask, int_status, err_status;
-> -	unsigned long ack, flags;
-> +	u32 mbxno, mbx_mask, int_status, err_status, stamp;
-> +	unsigned long flags, rx_pending;
-> =20
->  	int_status =3D hecc_read(priv,
->  		(priv->use_hecc1int) ? HECC_CANGIF1 : HECC_CANGIF0);
-> @@ -769,11 +677,11 @@ static irqreturn_t ti_hecc_interrupt(int irq, voi=
-d *dev_id)
->  			spin_lock_irqsave(&priv->mbx_lock, flags);
->  			hecc_clear_bit(priv, HECC_CANME, mbx_mask);
->  			spin_unlock_irqrestore(&priv->mbx_lock, flags);
-> -			stats->tx_bytes +=3D hecc_read_mbx(priv, mbxno,
-> -						HECC_CANMCF) & 0xF;
-> +			stamp =3D hecc_read_stamp(priv, mbxno);
-> +			stats->tx_bytes +=3D can_rx_offload_get_echo_skb(&priv->offload,
-> +									mbxno, stamp);
->  			stats->tx_packets++;
->  			can_led_event(ndev, CAN_LED_EVENT_TX);
-> -			can_get_echo_skb(ndev, mbxno);
->  			--priv->tx_tail;
->  		}
-> =20
-> @@ -784,12 +692,11 @@ static irqreturn_t ti_hecc_interrupt(int irq, voi=
-d *dev_id)
->  		((priv->tx_head & HECC_TX_MASK) =3D=3D HECC_TX_MASK)))
->  			netif_wake_queue(ndev);
-> =20
-> -		/* Disable RX mailbox interrupts and let NAPI reenable them */
-> -		if (hecc_read(priv, HECC_CANRMP)) {
-> -			ack =3D hecc_read(priv, HECC_CANMIM);
-> -			ack &=3D BIT(HECC_MAX_TX_MBOX) - 1;
-> -			hecc_write(priv, HECC_CANMIM, ack);
-> -			napi_schedule(&priv->napi);
-> +		/* offload RX mailboxes and let NAPI deliver them */
-> +		while ((rx_pending =3D hecc_read(priv, HECC_CANRMP))) {
-> +			can_rx_offload_irq_offload_timestamp(&priv->offload,
-> +							     rx_pending);
-> +			hecc_write(priv, HECC_CANRMP, rx_pending);
-
-Can prepare a patch to move the RMP writing into the mailbox_read()
-function. This makes the mailbox available a bit earlier and works
-better for memory pressure situations, where no skb can be allocated.
-
->  		}
->  	}
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---M37tVGSr116Pwc4jJbfEdkeK6V5F6LKxb--
-
---8Vcx5zN8NAF034AJYysdQKrpAeRKXuUgg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl066KMACgkQWsYho5Hk
-nSDQNAf/SLz1+GBIBkre422kLlWi2HhYFlWnIRc7+uk12HUKOzsnluhDcXjdOxmh
-sKqlYnFgwDU1rElu2OMLcwwBOyESwm3spL+9OC/hDg2jdfvZG0M/0tGwa+/QxjIC
-dMgbYK29TTwuYWtIgY9nbSKHNRAlVszUnDD3WelT+VgEoFlC3AFk9IYBxwVUEsL/
-2T6ElbIWSCXOD3Ad75yoPN5zvcVb/ekFcG3QCV8w3vn2RxDEG2HG15M3Mdkk9Zcf
-WRbLB4NllVnuJ3U2EfLQyrT8A1fgBKPDHRLFWcFVFYduRR5ktxvbiisY+bGebLIj
-DKAKcC1qe4IEccivuscShSTAvZcXEA==
-=kW2T
------END PGP SIGNATURE-----
-
---8Vcx5zN8NAF034AJYysdQKrpAeRKXuUgg--
+SGVsbG8gTWFyYywNCg0KT24gNy8yNi8xOSAxOjQ4IFBNLCBNYXJjIEtsZWluZS1CdWRkZSB3cm90
+ZToNCj4gT24gNC8yOS8xOSAyOjAzIFBNLCBKZXJvZW4gSG9mc3RlZSB3cm90ZToNCj4NCj4+IEBA
+IC03NDQsOCArNjUyLDggQEAgc3RhdGljIGlycXJldHVybl90IHRpX2hlY2NfaW50ZXJydXB0KGlu
+dCBpcnEsIHZvaWQgKmRldl9pZCkNCj4+ICAgCXN0cnVjdCBuZXRfZGV2aWNlICpuZGV2ID0gKHN0
+cnVjdCBuZXRfZGV2aWNlICopZGV2X2lkOw0KPj4gICAJc3RydWN0IHRpX2hlY2NfcHJpdiAqcHJp
+diA9IG5ldGRldl9wcml2KG5kZXYpOw0KPj4gICAJc3RydWN0IG5ldF9kZXZpY2Vfc3RhdHMgKnN0
+YXRzID0gJm5kZXYtPnN0YXRzOw0KPj4gLQl1MzIgbWJ4bm8sIG1ieF9tYXNrLCBpbnRfc3RhdHVz
+LCBlcnJfc3RhdHVzOw0KPj4gLQl1bnNpZ25lZCBsb25nIGFjaywgZmxhZ3M7DQo+PiArCXUzMiBt
+YnhubywgbWJ4X21hc2ssIGludF9zdGF0dXMsIGVycl9zdGF0dXMsIHN0YW1wOw0KPj4gKwl1bnNp
+Z25lZCBsb25nIGZsYWdzLCByeF9wZW5kaW5nOw0KPj4gICANCj4+ICAgCWludF9zdGF0dXMgPSBo
+ZWNjX3JlYWQocHJpdiwNCj4+ICAgCQkocHJpdi0+dXNlX2hlY2MxaW50KSA/IEhFQ0NfQ0FOR0lG
+MSA6IEhFQ0NfQ0FOR0lGMCk7DQo+PiBAQCAtNzY5LDExICs2NzcsMTEgQEAgc3RhdGljIGlycXJl
+dHVybl90IHRpX2hlY2NfaW50ZXJydXB0KGludCBpcnEsIHZvaWQgKmRldl9pZCkNCj4+ICAgCQkJ
+c3Bpbl9sb2NrX2lycXNhdmUoJnByaXYtPm1ieF9sb2NrLCBmbGFncyk7DQo+PiAgIAkJCWhlY2Nf
+Y2xlYXJfYml0KHByaXYsIEhFQ0NfQ0FOTUUsIG1ieF9tYXNrKTsNCj4+ICAgCQkJc3Bpbl91bmxv
+Y2tfaXJxcmVzdG9yZSgmcHJpdi0+bWJ4X2xvY2ssIGZsYWdzKTsNCj4+IC0JCQlzdGF0cy0+dHhf
+Ynl0ZXMgKz0gaGVjY19yZWFkX21ieChwcml2LCBtYnhubywNCj4+IC0JCQkJCQlIRUNDX0NBTk1D
+RikgJiAweEY7DQo+PiArCQkJc3RhbXAgPSBoZWNjX3JlYWRfc3RhbXAocHJpdiwgbWJ4bm8pOw0K
+Pj4gKwkJCXN0YXRzLT50eF9ieXRlcyArPSBjYW5fcnhfb2ZmbG9hZF9nZXRfZWNob19za2IoJnBy
+aXYtPm9mZmxvYWQsDQo+PiArCQkJCQkJCQkJbWJ4bm8sIHN0YW1wKTsNCj4+ICAgCQkJc3RhdHMt
+PnR4X3BhY2tldHMrKzsNCj4+ICAgCQkJY2FuX2xlZF9ldmVudChuZGV2LCBDQU5fTEVEX0VWRU5U
+X1RYKTsNCj4+IC0JCQljYW5fZ2V0X2VjaG9fc2tiKG5kZXYsIG1ieG5vKTsNCj4+ICAgCQkJLS1w
+cml2LT50eF90YWlsOw0KPj4gICAJCX0NCj4+ICAgDQo+PiBAQCAtNzg0LDEyICs2OTIsMTEgQEAg
+c3RhdGljIGlycXJldHVybl90IHRpX2hlY2NfaW50ZXJydXB0KGludCBpcnEsIHZvaWQgKmRldl9p
+ZCkNCj4+ICAgCQkoKHByaXYtPnR4X2hlYWQgJiBIRUNDX1RYX01BU0spID09IEhFQ0NfVFhfTUFT
+SykpKQ0KPj4gICAJCQluZXRpZl93YWtlX3F1ZXVlKG5kZXYpOw0KPj4gICANCj4+IC0JCS8qIERp
+c2FibGUgUlggbWFpbGJveCBpbnRlcnJ1cHRzIGFuZCBsZXQgTkFQSSByZWVuYWJsZSB0aGVtICov
+DQo+PiAtCQlpZiAoaGVjY19yZWFkKHByaXYsIEhFQ0NfQ0FOUk1QKSkgew0KPj4gLQkJCWFjayA9
+IGhlY2NfcmVhZChwcml2LCBIRUNDX0NBTk1JTSk7DQo+PiAtCQkJYWNrICY9IEJJVChIRUNDX01B
+WF9UWF9NQk9YKSAtIDE7DQo+PiAtCQkJaGVjY193cml0ZShwcml2LCBIRUNDX0NBTk1JTSwgYWNr
+KTsNCj4+IC0JCQluYXBpX3NjaGVkdWxlKCZwcml2LT5uYXBpKTsNCj4+ICsJCS8qIG9mZmxvYWQg
+UlggbWFpbGJveGVzIGFuZCBsZXQgTkFQSSBkZWxpdmVyIHRoZW0gKi8NCj4+ICsJCXdoaWxlICgo
+cnhfcGVuZGluZyA9IGhlY2NfcmVhZChwcml2LCBIRUNDX0NBTlJNUCkpKSB7DQo+PiArCQkJY2Fu
+X3J4X29mZmxvYWRfaXJxX29mZmxvYWRfdGltZXN0YW1wKCZwcml2LT5vZmZsb2FkLA0KPj4gKwkJ
+CQkJCQkgICAgIHJ4X3BlbmRpbmcpOw0KPj4gKwkJCWhlY2Nfd3JpdGUocHJpdiwgSEVDQ19DQU5S
+TVAsIHJ4X3BlbmRpbmcpOw0KPiBDYW4gcHJlcGFyZSBhIHBhdGNoIHRvIG1vdmUgdGhlIFJNUCB3
+cml0aW5nIGludG8gdGhlIG1haWxib3hfcmVhZCgpDQo+IGZ1bmN0aW9uLiBUaGlzIG1ha2VzIHRo
+ZSBtYWlsYm94IGF2YWlsYWJsZSBhIGJpdCBlYXJsaWVyIGFuZCB3b3Jrcw0KPiBiZXR0ZXIgZm9y
+IG1lbW9yeSBwcmVzc3VyZSBzaXR1YXRpb25zLCB3aGVyZSBubyBza2IgY2FuIGJlIGFsbG9jYXRl
+ZC4NCg0KDQpGb3IgbXkgdW5kZXJzdGFuZGluZywgaXMgdGhlcmUgYW55IG90aGVyIHJlYXNvbiBm
+b3IgYWxsb2NfY2FuX3NrYiwNCnRvIGZhaWwsIGJlc2lkZXMgYmVpbmcgb3V0IG9mIG1lbW9yeS4g
+SSBjb3VsZG4ndCBlYXNpbHkgZmluZCBhbiBvdGhlcg0KbGltaXQgZW5mb3JjZWQgb24gaXQuDQoN
+CklmIGl0IGlzIGFjdHVhbGx5IF9tb3ZlZF8sIGFzIHlvdSBzdWdnZXN0ZWQsIGl0IGRvZXMgbG9v
+c2UgdGhlIGFiaWxpdHkgdG8NCmhhbmRsZSB0aGUgbmV3bHkgcmVjZWl2ZWQgbWVzc2FnZXMgd2hp
+bGUgdGhlIG1lc3NhZ2VzIGFyZSByZWFkDQppbiB0aGUgc2FtZSBpbnRlcnJ1cHQsIHNvIGl0IG5l
+ZWRzIHRvIGludGVycnVwdCBhZ2Fpbi4gVGhhdCB3aWxsIHdvcmssDQpidXQgc2VlbXMgYSBiaXQg
+YSBzaWxseSB0aGluZyB0byBkby4NCg0KUGVyaGFwcyB3ZSBjYW4gZG8gYm90aD8gTWFyayB0aGUg
+bWFpbGJveCBhcyBhdmFpbGFibGUgaW4NCm1haWxib3hfcmVhZCwgc28gaXQgaXMgYXZhaWxhYmxl
+IGFzIHNvb24gYXMgcG9zc2libGUgYW5kIGNsZWFyDQp0aGVtIGFsbCBpbiB0aGUgaXJxICh1bmRl
+ciB0aGUgYXNzdW1wdGlvbiB0aGF0IGFsbG9jX2Nhbl9za2INCmZhaWx1cmUgbWVhbnMgcmVhbCBi
+aWcgdHJvdWJsZSwgd2h5IHdvdWxkIHdlIHdhbnQgdG8ga2VlcCB0aGUNCm9sZCBtZXNzYWdlcyBh
+cm91bmQgYW5kIGV2ZW50dWFsbHkgaWdub3JlIHRoZSBuZXcgbWVzc2FnZXM/KS4NCg0KQW5vdGhl
+ciBxdWVzdGlvbiwgbm90IHJlbGF0ZWQgdG8gdGhpcyBwYXRjaCwgYnV0IHRoaXMgZHJpdmVyLi4N
+Ck1vc3Qgb2YgdGhlIHRpbWVzIHRoZSBpcnEgaGFuZGxlcyAxIG9yIHNvbWV0aW1lcyAyIG1lc3Nh
+Z2VzLg0KRG8geW91IGhhcHBlbiB0byBrbm93IGlmIGl0IGlzIHBvc3NpYmxlIHRvIG9wdGlvbmFs
+bHkgZGVsYXkgdGhlIGlycQ0KYSBiaXQgaW4gdGhlIG1pbGxpc2Vjb25kIHJhbmdlLCBzbyBtb3Jl
+IHdvcmsgY2FuIGJlIGRvbmUgaW4gYSBzaW5nbGUNCmludGVycnVwdD8gU2luY2UgdGhlcmUgYXJl
+IG5vdyAyOCByeCBoYXJkd2FyZSBtYWlsYm94ZXMgYXZhaWxhYmxlLA0KaXQgc2hvdWxkbid0IHJ1
+biBvdXQgZWFzaWx5Lg0KDQpBbmQgYXMgbGFzdCwgSSBndWVzcyB5b3Ugd2FudCBhIHBhdGNoIHdo
+aWNoIGFwcGxpZXMgdG8NCmxpbnV4LWNhbi1uZXh0L3Rlc3RpbmcsIHJpZ2h0Pw0KDQpXaXRoIGtp
+bmQgcmVnYXJkcywNCg0KSmVyb2VuDQoNCg0K
