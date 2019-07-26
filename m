@@ -1,79 +1,60 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/7] can: rcar_canfd: fix possible IRQ storm on high load
-Date: Thu, 25 Jul 2019 15:41:35 +0200
-Message-ID: <ce15aec8-db14-65e7-720d-b0ef066145bb@pengutronix.de>
-References: <20190724130322.31702-3-mkl@pengutronix.de>
- <20190724210328.D91DF21873@mail.kernel.org>
- <6b23b091-92d1-b05d-b451-d8c78a990ef3@cogentembedded.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH 0/8] can: flexcan: add CAN FD support for NXP Flexcan
+Date: Fri, 26 Jul 2019 01:25:47 +0000
+Message-ID: <DB7PR04MB46180B39F68030C4EA5E2533E6C00@DB7PR04MB4618.eurprd04.prod.outlook.com>
+References: <20190712075926.7357-1-qiangqing.zhang@nxp.com>
+ <DB7PR04MB461831872271A98E741FF68AE6C10@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <22ca8787-fa99-50bb-af1a-098866542e42@pengutronix.de>
+ <24eb5c67-4692-1002-2468-4ae2e1a6b68b@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="GrY1lSSDTvHidBFAR22Ka79GGPjL3xAh1"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <6b23b091-92d1-b05d-b451-d8c78a990ef3@cogentembedded.com>
+In-Reply-To: <24eb5c67-4692-1002-2468-4ae2e1a6b68b@pengutronix.de>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>, Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, linux-stable <stable@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GrY1lSSDTvHidBFAR22Ka79GGPjL3xAh1
-Content-Type: multipart/mixed; boundary="DktKmtTd8FO4IzzNauI9LR8c4JaB334BN";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
- Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org,
- linux-stable <stable@vger.kernel.org>
-Message-ID: <ce15aec8-db14-65e7-720d-b0ef066145bb@pengutronix.de>
-Subject: Re: [PATCH 2/7] can: rcar_canfd: fix possible IRQ storm on high load
-References: <20190724130322.31702-3-mkl@pengutronix.de>
- <20190724210328.D91DF21873@mail.kernel.org>
- <6b23b091-92d1-b05d-b451-d8c78a990ef3@cogentembedded.com>
-In-Reply-To: <6b23b091-92d1-b05d-b451-d8c78a990ef3@cogentembedded.com>
-
---DktKmtTd8FO4IzzNauI9LR8c4JaB334BN
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 7/25/19 3:29 PM, Nikita Yushchenko wrote:
->> NOTE: The patch will not be queued to stable trees until it is upstrea=
-m.
->>
->> How should we proceed with this patch?
->=20
-> I don't know.
-> Maintainer did not respond, nor to original send nor to resend.
-
-You can backport this patch to v4.9.186 and send it to Sasha
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---DktKmtTd8FO4IzzNauI9LR8c4JaB334BN--
-
---GrY1lSSDTvHidBFAR22Ka79GGPjL3xAh1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl05sZIACgkQWsYho5Hk
-nSDENAgAmdiXpqQKEQJQWdwUKY33k0MFGe9SI6ATpWeJQTMxm+4CtltFDaH7GBxX
-6Y0DnoUCf6XZi6UKLiceWZ507+B/uq4rtQNFaSmkC9AlOY/+VYCweBNIxwpBRhjD
-dOioD8vE0BBkCspY3wTbzzhGzOdnSb6UkORSBFnq2NUsJpKStRnj6LJNlbREYOyI
-z19PFHwI7202zOVQDz51ZlB0ttTS1V70pT+O4H+VNBY7vr+Scp2uj7gLDRs6uH7/
-NFQYcIpQbvPaFB5FELG7iCXaat6Pg3RNpnQ+8m+odDHHArwYAa2PYZVgDTuZV4m+
-HdzRMf3fZ6oPkjMIcNekFDINYyPvIg==
-=9SAy
------END PGP SIGNATURE-----
-
---GrY1lSSDTvHidBFAR22Ka79GGPjL3xAh1--
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
+IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQ35pyIMjXml6UgMTg6MzcNCj4g
+VG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBsaW51eC1jYW5Admdl
+ci5rZXJuZWwub3JnDQo+IENjOiB3Z0BncmFuZGVnZ2VyLmNvbTsgZGwtbGludXgtaW14IDxsaW51
+eC1pbXhAbnhwLmNvbT47DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6
+IFtQQVRDSCAwLzhdIGNhbjogZmxleGNhbjogYWRkIENBTiBGRCBzdXBwb3J0IGZvciBOWFAgRmxl
+eGNhbg0KPiANCj4gT24gNy8yNS8xOSA5OjUzIEFNLCBNYXJjIEtsZWluZS1CdWRkZSB3cm90ZToN
+Cj4gPiBPbiA3LzI1LzE5IDk6MzggQU0sIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4gPj4gS2luZGx5
+IHBpbmdpbmcuLi4NCj4gPj4NCj4gPj4gQWZ0ZXIgeW91IGdpdCBwdWxsIHJlcXVlc3QgZm9yIGxp
+bnV4LWNhbi1uZXh0LWZvci01LjQtMjAxOTA3MjQsIHNvbWUgcGF0Y2hlcw0KPiBhcmUgbWlzc2lu
+ZyBmcm9tIGxpbnV4LWNhbi1uZXh0L3Rlc3RpbmcuDQo+ID4+IGNhbjogZmxleGNhbjogZmxleGNh
+bl9tYWlsYm94X3JlYWQoKSBtYWtlIHVzZSBvZiBmbGV4Y2FuX3dyaXRlNjQoKSB0bw0KPiA+PiBt
+YXJrIHRoZSBtYWlsYm94IGFzIHJlYWQNCj4gPj4gY2FuOiBmbGV4Y2FuOiBmbGV4Y2FuX2lycSgp
+OiBhZGQgc3VwcG9ydCBmb3IgVFggbWFpbGJveCBpbiBpZmxhZzENCj4gPj4gY2FuOiBmbGV4Y2Fu
+OiBmbGV4Y2FuX3JlYWRfcmVnX2lmbGFnX3J4KCk6IG9wdGltaXplIHJlYWRpbmcNCj4gPj4gY2Fu
+OiBmbGV4Y2FuOiBpbnRyb2R1Y2Ugc3RydWN0IGZsZXhjYW5fcHJpdjo6dHhfbWFzayBhbmQgbWFr
+ZSB1c2Ugb2YNCj4gPj4gaXQNCj4gPj4gY2FuOiBmbGV4Y2FuOiBjb252ZXJ0IHN0cnVjdCBmbGV4
+Y2FuX3ByaXY6OnJ4X21hc2t7MSwyfSB0byByeF9tYXNrDQo+ID4+IGNhbjogZmxleGNhbjogcmVt
+b3ZlIFRYIG1haWxib3ggYml0IGZyb20gc3RydWN0DQo+ID4+IGZsZXhjYW5fcHJpdjo6cnhfbWFz
+a3sxLDJ9DQo+ID4+IGNhbjogZmxleGNhbjogcmVuYW1lIHN0cnVjdCBmbGV4Y2FuX3ByaXY6OnJl
+Z19pbWFza3sxLDJ9X2RlZmF1bHQgdG8NCj4gPj4gcnhfbWFza3sxLDJ9DQo+ID4+IGNhbjogZmxl
+eGNhbjogZmxleGNhbl9pcnEoKTogcmVuYW1lIHZhcmlhYmxlIHJlZ19pZmxhZyAtPg0KPiA+PiBy
+ZWdfaWZsYWdfcngNCj4gPj4gY2FuOiBmbGV4Y2FuOiByZW5hbWUgbWFjcm8gRkxFWENBTl9JRkxB
+R19NQigpIC0+DQo+IEZMRVhDQU5fSUZMQUcyX01CKCkNCj4gPj4NCj4gPj4gWW91IGNhbiByZWZl
+ciB0byBiZWxvdyBsaW5rIGZvciB0aGUgcmVhc29uIG9mIGFkZGluZyBhYm92ZSBwYXRjaGVzOg0K
+PiA+PiBodHRwczovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9saW51eC1jYW4vbXNnMDA3NzcuaHRt
+bA0KPiA+PiBodHRwczovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9saW51eC1jYW4vbXNnMDExNTAu
+aHRtbA0KPiA+Pg0KPiA+PiBBcmUgeW91IHByZXBhcmVkIHRvIGFkZCBiYWNrIHRoZXNlIHBhdGNo
+ZXMgYXMgdGhleSBhcmUgbmVjZXNzYXJ5IGZvcg0KPiA+PiBGbGV4Y2FuIENBTiBGRD8gQW5kIHRo
+aXMgRmxleGNhbiBDQU4gRkQgcGF0Y2ggc2V0IGlzIGJhc2VkIG9uIHRoZXNlDQo+ID4+IHBhdGNo
+ZXMuDQo+ID4NCj4gPiBZZXMsIHRoZXNlIHBhdGNoZXMgd2lsbCBiZSBhZGRlZCBiYWNrLg0KPiAN
+Cj4gSSd2ZSBjbGVhbmVkIHVwIHRoZSBmaXJzdCBwYXRjaCBhIGJpdCwgYW5kIHB1c2hlZCBldmVy
+eXRoaW5nIHRvIHRoZSB0ZXN0aW5nDQo+IGJyYW5jaC4gQ2FuIHlvdSBnaXZlIGl0IGEgdGVzdC4N
+Cg0KSGkgTWFyYywNCg0KQm90aCBDbGFzc2ljIENBTiBhbmQgQ0FOIEZEIGNhbiB3b3JrIGZpbmUg
+b24gbXkgc2lkZSB0ZXN0LCB0aGFuayB5b3UgZm9yIHlvdXIga2luZGx5IHJldmlldy4NCg0KQmVz
+dCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IHJlZ2FyZHMsDQo+IE1hcmMNCj4gDQo+IC0tDQo+
+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAg
+ICAgICAgICB8DQo+IEluZHVzdHJpYWwgTGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiAr
+NDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAg
+ICB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hl
+aW0sIEhSQSAyNjg2ICB8IGh0dHA6Ly93d3cucGVuZ3V0cm9uaXguZGUgICB8DQoNCg==
