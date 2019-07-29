@@ -1,39 +1,86 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: tcan4x5x on a Raspberry Pi
-Date: Mon, 29 Jul 2019 13:07:06 -0500
-Message-ID: <d1badcdb-7635-705d-35d5-448297e8fafa@ti.com>
-References: <845ea24f71b74b42821c7fce20bc0476@escrypt.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH net-next] can: fix ioctl function removal
+Date: Mon, 29 Jul 2019 22:40:56 +0200
+Message-ID: <20190729204056.2976-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <845ea24f71b74b42821c7fce20bc0476@escrypt.com>
-Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: "FIXED-TERM Buecheler Konstantin (ETAS-SEC/ECT-Mu)" <fixed-term.Konstantin.Buecheler@escrypt.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: davem@davemloft.net, netdev@vger.kernel.org
+Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, kernel test robot <rong.a.chen@intel.com>
 List-Id: linux-can.vger.kernel.org
 
-Konstantin
+Commit 60649d4e0af ("can: remove obsolete empty ioctl() handler") replaced the
+almost empty can_ioctl() function with sock_no_ioctl() which always returns
+-EOPNOTSUPP.
 
-On 7/29/19 6:19 AM, FIXED-TERM Buecheler Konstantin (ETAS-SEC/ECT-Mu) wrote:
-> Hi all,
->
-> I am currently working on a project where I am trying to use the tcan4550 chip with a Raspberry PI 3B.
-> I am struggling to create a working device tree overlay file for the Raspberry Pi.
-> Has anyone here tried this already? I would appreciate any help.
+Even though we don't have any ioctl() functions on socket/network layer we need
+to return -ENOIOCTLCMD to be able to forward ioctl commands like SIOCGIFINDEX
+to the network driver layer.
 
-Are you using the driver from net-next?
+This patch fixes the wrong return codes in the CAN network layer protocols.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/tree/drivers/net/can/m_can
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Fixes: 60649d4e0af ("can: remove obsolete empty ioctl() handler")
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/bcm.c | 9 ++++++++-
+ net/can/raw.c | 9 ++++++++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
-DT documentation here
-
-https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/tree/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-
-I did the development on a BeagleBone Black.
-
-Dan
-
-> Thanks,
-> Konstantin
->
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 8da986b19d88..bf1d0bbecec8 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -1680,6 +1680,13 @@ static int bcm_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	return size;
+ }
+ 
++int bcm_sock_no_ioctlcmd(struct socket *sock, unsigned int cmd,
++			 unsigned long arg)
++{
++	/* no ioctls for socket layer -> hand it down to NIC layer */
++	return -ENOIOCTLCMD;
++}
++
+ static const struct proto_ops bcm_ops = {
+ 	.family        = PF_CAN,
+ 	.release       = bcm_release,
+@@ -1689,7 +1696,7 @@ static const struct proto_ops bcm_ops = {
+ 	.accept        = sock_no_accept,
+ 	.getname       = sock_no_getname,
+ 	.poll          = datagram_poll,
+-	.ioctl         = sock_no_ioctl,
++	.ioctl         = bcm_sock_no_ioctlcmd,
+ 	.gettstamp     = sock_gettstamp,
+ 	.listen        = sock_no_listen,
+ 	.shutdown      = sock_no_shutdown,
+diff --git a/net/can/raw.c b/net/can/raw.c
+index ff720272f7b7..da386f1fa815 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -837,6 +837,13 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	return size;
+ }
+ 
++int raw_sock_no_ioctlcmd(struct socket *sock, unsigned int cmd,
++			 unsigned long arg)
++{
++	/* no ioctls for socket layer -> hand it down to NIC layer */
++	return -ENOIOCTLCMD;
++}
++
+ static const struct proto_ops raw_ops = {
+ 	.family        = PF_CAN,
+ 	.release       = raw_release,
+@@ -846,7 +853,7 @@ static const struct proto_ops raw_ops = {
+ 	.accept        = sock_no_accept,
+ 	.getname       = raw_getname,
+ 	.poll          = datagram_poll,
+-	.ioctl         = sock_no_ioctl,
++	.ioctl         = raw_sock_no_ioctlcmd,
+ 	.gettstamp     = sock_gettstamp,
+ 	.listen        = sock_no_listen,
+ 	.shutdown      = sock_no_shutdown,
+-- 
+2.20.1
