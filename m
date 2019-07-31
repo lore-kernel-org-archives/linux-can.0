@@ -1,102 +1,111 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH net-next v2] can: fix ioctl function removal
-Date: Tue, 30 Jul 2019 08:48:05 +0200
-Message-ID: <7aa4fcc3-893b-7251-f305-80f8930e9da6@hartkopp.net>
-References: <20190730064333.1581-1-socketcan@hartkopp.net>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH] can: flexcan: add LPSR mode support for i.MX7D
+Date: Wed, 31 Jul 2019 05:56:32 +0000
+Message-ID: <20190731055401.15454-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190730064333.1581-1-socketcan@hartkopp.net>
 Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: davem@davemloft.net, netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org, sfr@canb.auug.org.au, kernel test robot <rong.a.chen@intel.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-According to Marc the original patch has already been applied by Dave.
+For i.MX7D LPSR mode, the controller will lost power and got the
+configuration state lost after system resume back. (coming i.MX8QM/QXP
+will also completely power off the domain, the controller state will be
+lost and needs restore).
+So we need to set pinctrl state again and re-start chip to do
+re-configuration after resume.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/commit/?id=473d924d7d46cb57aa4c1863261d18366af345af
+For wakeup case, it should not set pinctrl to sleep state by
+pinctrl_pm_select_sleep_state.
+For interface is not up before suspend case, we don't need
+re-configure as it will be configured by user later by interface up.
 
-Thanks for the support & sorry for the noise!
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+---
+ drivers/net/can/flexcan.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-Best regards,
-Oliver
-
-On 30/07/2019 08.43, Oliver Hartkopp wrote:
-> Commit 60649d4e0af6c26b ("can: remove obsolete empty ioctl() handler") replaced
-> the almost empty can_ioctl() function with sock_no_ioctl() which always returns
-> -EOPNOTSUPP.
-> 
-> Even though we don't have any ioctl() functions on socket/network layer we need
-> to return -ENOIOCTLCMD to be able to forward ioctl commands like SIOCGIFINDEX
-> to the network driver layer.
-> 
-> This patch fixes the wrong return codes in the CAN network layer protocols.
-> 
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> Fixes: 60649d4e0af6c26b ("can: remove obsolete empty ioctl() handler")
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
-> 
->   v2: Changed SHA1 tag to be a least 12 digits long
-> 
->   net/can/bcm.c | 9 ++++++++-
->   net/can/raw.c | 9 ++++++++-
->   2 files changed, 16 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index 8da986b19d88..bf1d0bbecec8 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-> @@ -1680,6 +1680,13 @@ static int bcm_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
->   	return size;
->   }
->   
-> +int bcm_sock_no_ioctlcmd(struct socket *sock, unsigned int cmd,
-> +			 unsigned long arg)
-> +{
-> +	/* no ioctls for socket layer -> hand it down to NIC layer */
-> +	return -ENOIOCTLCMD;
-> +}
-> +
->   static const struct proto_ops bcm_ops = {
->   	.family        = PF_CAN,
->   	.release       = bcm_release,
-> @@ -1689,7 +1696,7 @@ static const struct proto_ops bcm_ops = {
->   	.accept        = sock_no_accept,
->   	.getname       = sock_no_getname,
->   	.poll          = datagram_poll,
-> -	.ioctl         = sock_no_ioctl,
-> +	.ioctl         = bcm_sock_no_ioctlcmd,
->   	.gettstamp     = sock_gettstamp,
->   	.listen        = sock_no_listen,
->   	.shutdown      = sock_no_shutdown,
-> diff --git a/net/can/raw.c b/net/can/raw.c
-> index ff720272f7b7..da386f1fa815 100644
-> --- a/net/can/raw.c
-> +++ b/net/can/raw.c
-> @@ -837,6 +837,13 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
->   	return size;
->   }
->   
-> +int raw_sock_no_ioctlcmd(struct socket *sock, unsigned int cmd,
-> +			 unsigned long arg)
-> +{
-> +	/* no ioctls for socket layer -> hand it down to NIC layer */
-> +	return -ENOIOCTLCMD;
-> +}
-> +
->   static const struct proto_ops raw_ops = {
->   	.family        = PF_CAN,
->   	.release       = raw_release,
-> @@ -846,7 +853,7 @@ static const struct proto_ops raw_ops = {
->   	.accept        = sock_no_accept,
->   	.getname       = raw_getname,
->   	.poll          = datagram_poll,
-> -	.ioctl         = sock_no_ioctl,
-> +	.ioctl         = raw_sock_no_ioctlcmd,
->   	.gettstamp     = sock_gettstamp,
->   	.listen        = sock_no_listen,
->   	.shutdown      = sock_no_shutdown,
-> 
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index c21b3507123e..228d07e84ddc 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -26,6 +26,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/regmap.h>
+=20
+ #define DRV_NAME			"flexcan"
+@@ -1889,7 +1890,7 @@ static int __maybe_unused flexcan_suspend(struct devi=
+ce *device)
+ {
+ 	struct net_device *dev =3D dev_get_drvdata(device);
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+-	int err =3D 0;
++	int err;
+=20
+ 	if (netif_running(dev)) {
+ 		/* if wakeup is enabled, enter stop mode
+@@ -1899,25 +1900,27 @@ static int __maybe_unused flexcan_suspend(struct de=
+vice *device)
+ 			enable_irq_wake(dev->irq);
+ 			flexcan_enter_stop_mode(priv);
+ 		} else {
+-			err =3D flexcan_chip_disable(priv);
++			flexcan_chip_stop(dev);
++
++			err =3D pm_runtime_force_suspend(device);
+ 			if (err)
+ 				return err;
+=20
+-			err =3D pm_runtime_force_suspend(device);
++			pinctrl_pm_select_sleep_state(device);
+ 		}
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+ 	}
+ 	priv->can.state =3D CAN_STATE_SLEEPING;
+=20
+-	return err;
++	return 0;
+ }
+=20
+ static int __maybe_unused flexcan_resume(struct device *device)
+ {
+ 	struct net_device *dev =3D dev_get_drvdata(device);
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+-	int err =3D 0;
++	int err;
+=20
+ 	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+ 	if (netif_running(dev)) {
+@@ -1926,15 +1929,19 @@ static int __maybe_unused flexcan_resume(struct dev=
+ice *device)
+ 		if (device_may_wakeup(device)) {
+ 			disable_irq_wake(dev->irq);
+ 		} else {
++			pinctrl_pm_select_default_state(device);
++
+ 			err =3D pm_runtime_force_resume(device);
+ 			if (err)
+ 				return err;
+=20
+-			err =3D flexcan_chip_enable(priv);
++			err =3D flexcan_chip_start(dev);
++			if (err)
++				return err;
+ 		}
+ 	}
+=20
+-	return err;
++	return 0;
+ }
+=20
+ static int __maybe_unused flexcan_runtime_suspend(struct device *device)
+--=20
+2.17.1
