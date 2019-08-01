@@ -1,42 +1,24 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] can: ti_hecc: remove set but not used variable 'mbx_mask'
-Date: Thu, 25 Jul 2019 07:00:44 +0000
-Message-ID: <20190725070044.2692-1-yuehaibing@huawei.com>
+From: =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>
+Subject: Re: [PATCH] can: flexcan: free error skb if enqueueing failed
+Date: Thu, 1 Aug 2019 09:59:32 +0200
+Message-ID: <d5f8811e-4b85-776a-668f-33f64ec6ef16@geanix.com>
+References: <20190715185308.104333-1-martin@geanix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190715185308.104333-1-martin@geanix.com>
+Content-Language: en-US-large
 Sender: netdev-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Jeroen Hofstee <jhofstee@victronenergy.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: YueHaibing <yuehaibing@huawei.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>
 List-Id: linux-can.vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+On 15/07/2019 20.53, Martin Hundebøll wrote:
+> If the call to can_rx_offload_queue_sorted() fails, the passed skb isn't
+> consumed, so the caller must do so.
+> 
+> Fixes: 30164759db1b ("can: flexcan: make use of rx-offload's irq_offload_fifo")
+> Signed-off-by: Martin Hundebøll <martin@geanix.com>
 
-drivers/net/can/ti_hecc.c: In function 'ti_hecc_mailbox_read':
-drivers/net/can/ti_hecc.c:533:12: warning:
- variable 'mbx_mask' set but not used [-Wunused-but-set-variable]
-
-It is never used so can be removed.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/can/ti_hecc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index b62f75fa03f0..e63e2f86c289 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -530,9 +530,8 @@ static unsigned int ti_hecc_mailbox_read(struct can_rx_offload *offload,
- 					 u32 *timestamp, unsigned int mbxno)
- {
- 	struct ti_hecc_priv *priv = rx_offload_to_priv(offload);
--	u32 data, mbx_mask;
-+	u32 data;
- 
--	mbx_mask = BIT(mbxno);
- 	data = hecc_read_mbx(priv, mbxno, HECC_CANMID);
- 	if (data & HECC_CANMID_IDE)
- 		cf->can_id = (data & CAN_EFF_MASK) | CAN_EFF_FLAG;
+Ping.
