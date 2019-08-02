@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/4] can: peak_usb: force the string buffer NULL-terminated
-Date: Fri,  2 Aug 2019 14:00:36 +0200
-Message-ID: <20190802120038.18154-3-mkl@pengutronix.de>
+Subject: [PATCH 1/4] can: sja1000: force the string buffer NULL-terminated
+Date: Fri,  2 Aug 2019 14:00:35 +0200
+Message-ID: <20190802120038.18154-2-mkl@pengutronix.de>
 References: <20190802120038.18154-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -15,8 +15,8 @@ List-Id: linux-can.vger.kernel.org
 From: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>
 
 strncpy() does not ensure NULL-termination when the input string size
-equals to the destination buffer size IFNAMSIZ. The output string is
-passed to dev_info() which relies on the NULL-termination.
+equals to the destination buffer size IFNAMSIZ. The output string
+'name' is passed to dev_info which relies on NULL-termination.
 
 Use strlcpy() instead.
 
@@ -25,21 +25,21 @@ This issue is identified by a Coccinelle script.
 Signed-off-by: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 2 +-
+ drivers/net/can/sja1000/peak_pcmcia.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 22b9c8e6d040..65dce642b86b 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -855,7 +855,7 @@ static void peak_usb_disconnect(struct usb_interface *intf)
+diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
+index 185c7f7d38a4..5e0d5e8101c8 100644
+--- a/drivers/net/can/sja1000/peak_pcmcia.c
++++ b/drivers/net/can/sja1000/peak_pcmcia.c
+@@ -479,7 +479,7 @@ static void pcan_free_channels(struct pcan_pccard *card)
+ 		if (!netdev)
+ 			continue;
  
- 		dev_prev_siblings = dev->prev_siblings;
- 		dev->state &= ~PCAN_USB_STATE_CONNECTED;
 -		strncpy(name, netdev->name, IFNAMSIZ);
 +		strlcpy(name, netdev->name, IFNAMSIZ);
  
- 		unregister_netdev(netdev);
+ 		unregister_sja1000dev(netdev);
  
 -- 
 2.20.1
