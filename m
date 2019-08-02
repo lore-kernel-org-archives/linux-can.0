@@ -1,56 +1,44 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2019-08-02
-Date: Fri,  2 Aug 2019 14:00:34 +0200
-Message-ID: <20190802120038.18154-1-mkl@pengutronix.de>
+Subject: [PATCH 3/4] can: peak_usb: pcan_usb_fd: uix info-leaks to USB devices
+Date: Fri,  2 Aug 2019 14:00:37 +0200
+Message-ID: <20190802120038.18154-4-mkl@pengutronix.de>
+References: <20190802120038.18154-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190802120038.18154-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Tomas Bortoli <tomasbortoli@gmail.com>, syzbot+513e4d0985298538bf9b@syzkaller.appspotmail.com, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Tomas Bortoli <tomasbortoli@gmail.com>
 
-this is a pull request of 4 patches for net/master.
+Uninitialized Kernel memory can leak to USB devices.
 
-The first two patches are by Wang Xiayang, they force that the string buffer
-during a dev_info() is properly NULL terminated.
+Fix by using kzalloc() instead of kmalloc() on the affected buffers.
 
-The last two patches are by Tomas Bortoli and fix both a potential info leak of
-kernel memory to USB devices.
-
-regards,
-Marc
-
+Signed-off-by: Tomas Bortoli <tomasbortoli@gmail.com>
+Reported-by: syzbot+513e4d0985298538bf9b@syzkaller.appspotmail.com
+Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The following changes since commit 224c04973db1125fcebefffd86115f99f50f8277:
-
-  net: usb: pegasus: fix improper read if get_registers() fail (2019-08-01 18:18:27 -0400)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.3-20190802
-
-for you to fetch changes up to ead16e53c2f0ed946d82d4037c630e2f60f4ab69:
-
-  can: peak_usb: pcan_usb_pro: Fix info-leaks to USB devices (2019-08-02 13:58:01 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.3-20190802
-
-----------------------------------------------------------------
-Tomas Bortoli (2):
-      can: peak_usb: pcan_usb_fd: Fix info-leaks to USB devices
-      can: peak_usb: pcan_usb_pro: Fix info-leaks to USB devices
-
-Wang Xiayang (2):
-      can: sja1000: force the string buffer NULL-terminated
-      can: peak_usb: force the string buffer NULL-terminated
-
- drivers/net/can/sja1000/peak_pcmcia.c        | 2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 34761c3a6286..47cc1ff5b88e 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -841,7 +841,7 @@ static int pcan_usb_fd_init(struct peak_usb_device *dev)
+ 			goto err_out;
+ 
+ 		/* allocate command buffer once for all for the interface */
+-		pdev->cmd_buffer_addr = kmalloc(PCAN_UFD_CMD_BUFFER_SIZE,
++		pdev->cmd_buffer_addr = kzalloc(PCAN_UFD_CMD_BUFFER_SIZE,
+ 						GFP_KERNEL);
+ 		if (!pdev->cmd_buffer_addr)
+ 			goto err_out_1;
+-- 
+2.20.1
