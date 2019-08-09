@@ -1,56 +1,98 @@
-From: "FIXED-TERM Buecheler Konstantin (ETAS-SEC/ECT-Mu)"
-        <fixed-term.Konstantin.Buecheler@escrypt.com>
-Subject: AW: tcan4x5x on a Raspberry Pi
-Date: Fri, 9 Aug 2019 16:46:43 +0000
-Message-ID: <ee351bd74b764759bb0258af3651bd4a@escrypt.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: tcan4x5x on a Raspberry Pi
+Date: Fri, 9 Aug 2019 21:49:48 +0200
+Message-ID: <09c773a9-6b50-5633-c597-dcc67e938920@grandegger.com>
 References: <845ea24f71b74b42821c7fce20bc0476@escrypt.com>
  <d1badcdb-7635-705d-35d5-448297e8fafa@ti.com>
+ <ee351bd74b764759bb0258af3651bd4a@escrypt.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <d1badcdb-7635-705d-35d5-448297e8fafa@ti.com>
-Content-Language: de-DE
+In-Reply-To: <ee351bd74b764759bb0258af3651bd4a@escrypt.com>
+Content-Language: en-GB
 Sender: netdev-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: "FIXED-TERM Buecheler Konstantin (ETAS-SEC/ECT-Mu)" <fixed-term.Konstantin.Buecheler@escrypt.com>, Dan Murphy <dmurphy@ti.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IEtvbnN0YW50aW4NCg0KPj4gT24gNy8yOS8xOSA2OjE5IEFNLCBGSVhFRC1URVJNIEJ1ZWNo
-ZWxlciBLb25zdGFudGluIChFVEFTLVNFQy9FQ1QtTXUpIHdyb3RlOg0KPj4gSGkgYWxsLA0KPj4N
-Cj4+IEkgYW0gY3VycmVudGx5IHdvcmtpbmcgb24gYSBwcm9qZWN0IHdoZXJlIEkgYW0gdHJ5aW5n
-IHRvIHVzZSB0aGUgdGNhbjQ1NTAgY2hpcCB3aXRoIGEgUmFzcGJlcnJ5IFBJIDNCLg0KPj4gSSBh
-bSBzdHJ1Z2dsaW5nIHRvIGNyZWF0ZSBhIHdvcmtpbmcgZGV2aWNlIHRyZWUgb3ZlcmxheSBmaWxl
-IGZvciB0aGUgUmFzcGJlcnJ5IFBpLg0KPj4gSGFzIGFueW9uZSBoZXJlIHRyaWVkIHRoaXMgYWxy
-ZWFkeT8gSSB3b3VsZCBhcHByZWNpYXRlIGFueSBoZWxwLg0KDQo+IEFyZSB5b3UgdXNpbmcgdGhl
-IGRyaXZlciBmcm9tIG5ldC1uZXh0Pw0KDQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
-bS9saW51eC9rZXJuZWwvZ2l0L2RhdmVtL25ldC1uZXh0LmdpdC90cmVlL2RyaXZlcnMvbmV0L2Nh
-bi9tX2Nhbg0KDQpZZXMsIEkgYW0gdXNpbmcgdGhlIGRyaXZlciBmcm9tIG5ldC1uZXh0LiANCg0K
-DQo+IERUIGRvY3VtZW50YXRpb24gaGVyZQ0KDQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
-L3NjbS9saW51eC9rZXJuZWwvZ2l0L2RhdmVtL25ldC1uZXh0LmdpdC90cmVlL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvY2FuL3RjYW40eDV4LnR4dA0KDQpJIHNhdyB0aGlz
-IGRvY3VtZW50YXRpb24gYnV0IGl0IGRpZG7igJl0IGhlbHAgbXVjaCAoQXMgSSBzYWlkLCBJIGRv
-buKAmXQgaGF2ZSBtdWNoIGV4cGVyaWVuY2Ugd2l0aCBkZXZpY2UgdHJlZXMpIC4gTXkgZHRzIGZp
-bGUgY3VycmVudGx5IGxvb2tzIGxpa2UgdGhpczogIA0KDQovZHRzLXYxLzsNCi9wbHVnaW4vOw0K
-DQovIHsNCiAgICBjb21wYXRpYmxlID0gImJyY20sYmNtMjgzNSIsICJicmNtLGJjbTI4MzYiLCAi
-YnJjbSxiY20yNzA4IiwgImJyY20sYmNtMjcwOSI7DQogICAgZnJhZ21lbnRAMCB7DQogICAgICAg
-IHRhcmdldCA9IDwmc3BpMD47DQoJX19vdmVybGF5X18gew0KICAgICAgICAgICAgc3RhdHVzID0g
-Im9rYXkiOw0KCSAgICBzcGlkZXZAMHsNCgkgICAgICAgIHN0YXR1cyA9ICJkaXNhYmxlZCI7DQoJ
-ICAgIH07DQoJfTsNCiAgICB9Ow0KDQogICAgZnJhZ21lbnRAMiB7DQogICAgICAgIGNvbXBhdGli
-bGUgPSAiYm9zY2gsIG1fY2FuIjsNCgl0YXJnZXQgPSA8JnNwaTA+Ow0KCV9fb3ZlcmxheV9fIHsN
-CgkgICAgdGNhbjR4NXg6IHRjYW40eDV4QDAgew0KCSAgICAgICAgICAgICBjb21wYXRpYmxlID0g
-InRpLHRjYW40eDV4IjsNCiAgICAgICAgICAgICAgICAgICAgICAgICAgcmVnID0gPDA+Ow0KCQkj
-YWRkcmVzcy1jZWxscyA9IDwxPjsNCiAgICAgICAgICAgICAgICAgICAgICAgICAjc2l6ZS1jZWxs
-cyA9IDwxPjsNCgkJc3BpLW1heC1mcmVxdWVuY3kgPSA8MTAwMDAwMDA+Ow0KICAgICAgICAgICAg
-ICAgICAgICAgICAgIGJvc2NoLG1yYW0tY2ZnID0gPDB4MCAwIDAgMzIgMCAwIDEgMT47DQoJCWRh
-dGEtcmVhZHktZ3Bpb3MgPSA8JmdwaW8gMjMgMD47DQoJCWRldmljZS13YWtlLWdwaW9zID0gPCZn
-cGlvIDI0IDE+Ow0KCQkJCQ0KCSAgICB9OwkJDQoJfTsNCiAgICB9Ow0KfTsNCg0KDQpDaGVja2lu
-ZyBkbWVzZyBJIGFsd2F5cyBzZWUgdGhlc2UgZXJyb3JzOg0KWyAgICA1LjQwOTA1MV0gdGNhbjR4
-NXggc3BpMC4wOiBubyBjbG9jayBmb3VuZA0KWyAgICA1LjQwOTA2NF0gdGNhbjR4NXggc3BpMC4w
-OiBubyBDQU4gY2xvY2sgc291cmNlIGRlZmluZWQNClsgICAgNS40MDkxMjVdIHRjYW40eDV4IHNw
-aTAuMDogZGF0YS1yZWFkeSBncGlvIG5vdCBkZWZpbmVkDQpbICAgIDUuNDA5MTM1XSB0Y2FuNHg1
-eCBzcGkwLjA6IFByb2JlIGZhaWxlZCwgZXJyPS0yMg0KDQpJIGFscmVhZHkgZml4ZWQgdGhlIGNs
-b2NrIGlzc3VlIG9uY2UgYnkgZG9pbmcgc29tZXRoaW5nIGxpa2UgdGhpczoNCmNsb2NrcyA9IDwm
-Y2FuMF9vc2M+LA0KICAgICAgICAgICAgICA8JmNhbjBfb3NjPjsNCmNsb2NrLW5hbWVzID0gImhj
-bGsiLCAiY2NsayI7DQpCdXQgdGhhdCBkaWRu4oCZdCBmaXggdGhlICIgZGF0YS1yZWFkeSBncGlv
-IG5vdCBkZWZpbmVkIiBlcnJvci4NCg0KDQo+IEkgZGlkIHRoZSBkZXZlbG9wbWVudCBvbiBhIEJl
-YWdsZUJvbmUgQmxhY2suDQoNCj4gRGFuDQoNCj4gVGhhbmtzLA0KPiBLb25zdGFudGluDQo+DQo=
+Hello Konstantin,
+
+m 09.08.19 um 18:46 schrieb FIXED-TERM Buecheler Konstantin
+(ETAS-SEC/ECT-Mu):
+> 
+>> Konstantin
+> 
+>>> On 7/29/19 6:19 AM, FIXED-TERM Buecheler Konstantin (ETAS-SEC/ECT-Mu) wrote:
+>>> Hi all,
+>>>
+>>> I am currently working on a project where I am trying to use the tcan4550 chip with a Raspberry PI 3B.
+>>> I am struggling to create a working device tree overlay file for the Raspberry Pi.
+>>> Has anyone here tried this already? I would appreciate any help.
+> 
+>> Are you using the driver from net-next?
+> 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/tree/drivers/net/can/m_can
+> 
+> Yes, I am using the driver from net-next. 
+> 
+> 
+>> DT documentation here
+> 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/tree/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+> 
+> I saw this documentation but it didn’t help much (As I said, I don’t have much experience with device trees) . My dts file currently looks like this:  
+> 
+> /dts-v1/;
+> /plugin/;
+> 
+> / {
+>     compatible = "brcm,bcm2835", "brcm,bcm2836", "brcm,bcm2708", "brcm,bcm2709";
+>     fragment@0 {
+>         target = <&spi0>;
+> 	__overlay__ {
+>             status = "okay";
+> 	    spidev@0{
+> 	        status = "disabled";
+> 	    };
+> 	};
+>     };
+> 
+>     fragment@2 {
+>         compatible = "bosch, m_can";
+> 	target = <&spi0>;
+> 	__overlay__ {
+> 	    tcan4x5x: tcan4x5x@0 {
+> 	             compatible = "ti,tcan4x5x";
+>                           reg = <0>;
+> 		#address-cells = <1>;
+>                          #size-cells = <1>;
+> 		spi-max-frequency = <10000000>;
+>                          bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
+> 		data-ready-gpios = <&gpio 23 0>;
+> 		device-wake-gpios = <&gpio 24 1>;
+> 				
+> 	    };		
+> 	};
+>     };
+> };
+> 
+> 
+> Checking dmesg I always see these errors:
+> [    5.409051] tcan4x5x spi0.0: no clock found
+> [    5.409064] tcan4x5x spi0.0: no CAN clock source defined
+> [    5.409125] tcan4x5x spi0.0: data-ready gpio not defined
+> [    5.409135] tcan4x5x spi0.0: Probe failed, err=-22
+> 
+> I already fixed the clock issue once by doing something like this:
+> clocks = <&can0_osc>,
+>               <&can0_osc>;
+> clock-names = "hclk", "cclk";
+> But that didn’t fix the " data-ready gpio not defined" error.
+> 
+> 
+>> I did the development on a BeagleBone Black.
+
+Before fiddling with the dynamic device tree, I would try to patch
+normal device tree source files first.
+
+Wolfgang
