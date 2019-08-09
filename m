@@ -1,81 +1,56 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] pcan_usb_fd: zero out the common command buffer
-Date: Thu, 8 Aug 2019 21:52:05 +0200
-Message-ID: <a54e9a74-56d9-d643-746c-d68bd524c68e@pengutronix.de>
-References: <20190808092825.23470-1-oneukum@suse.com>
- <20190808.110330.1163430543960132818.davem@davemloft.net>
+From: "FIXED-TERM Buecheler Konstantin (ETAS-SEC/ECT-Mu)"
+        <fixed-term.Konstantin.Buecheler@escrypt.com>
+Subject: AW: tcan4x5x on a Raspberry Pi
+Date: Fri, 9 Aug 2019 16:46:43 +0000
+Message-ID: <ee351bd74b764759bb0258af3651bd4a@escrypt.com>
+References: <845ea24f71b74b42821c7fce20bc0476@escrypt.com>
+ <d1badcdb-7635-705d-35d5-448297e8fafa@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="UMc50YZIT55HBY87aHP7DDcDtIjFtUxI1"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190808.110330.1163430543960132818.davem@davemloft.net>
+In-Reply-To: <d1badcdb-7635-705d-35d5-448297e8fafa@ti.com>
+Content-Language: de-DE
 Sender: netdev-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>, oneukum@suse.com
-Cc: netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UMc50YZIT55HBY87aHP7DDcDtIjFtUxI1
-Content-Type: multipart/mixed; boundary="UjcLNn2C8cbDWlgar12cIesHnkIWP0Zdn";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: David Miller <davem@davemloft.net>, oneukum@suse.com
-Cc: netdev@vger.kernel.org, wg@grandegger.com, linux-can@vger.kernel.org
-Message-ID: <a54e9a74-56d9-d643-746c-d68bd524c68e@pengutronix.de>
-Subject: Re: [PATCH] pcan_usb_fd: zero out the common command buffer
-References: <20190808092825.23470-1-oneukum@suse.com>
- <20190808.110330.1163430543960132818.davem@davemloft.net>
-In-Reply-To: <20190808.110330.1163430543960132818.davem@davemloft.net>
-
---UjcLNn2C8cbDWlgar12cIesHnkIWP0Zdn
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 8/8/19 8:03 PM, David Miller wrote:
-> From: Oliver Neukum <oneukum@suse.com>
-> Date: Thu,  8 Aug 2019 11:28:25 +0200
->=20
->> Lest we leak kernel memory to a device we better zero out buffers.
->>
->> Reported-by: syzbot+513e4d0985298538bf9b@syzkaller.appspotmail.com
->> Signed-off-by: Oliver Neukum <oneukum@suse.com>
->=20
-> Please CC: the CAN subsystem maintainers, as this is clearly listed in =
-the
-> MAINTAINERS file.
-
-The issue is already fixed and already mainline (stable@v.k.o is on Cc):
-
-30a8beeb3042 can: peak_usb: pcan_usb_fd: Fix info-leaks to USB devices
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---UjcLNn2C8cbDWlgar12cIesHnkIWP0Zdn--
-
---UMc50YZIT55HBY87aHP7DDcDtIjFtUxI1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1MfWUACgkQWsYho5Hk
-nSBwrwf/RKjvw+UBYG5dyLsSKeWQPRowAaiVipNU/nmK9qSaRy62QrSx9K93F7Sa
-CKiB/LNRuubgzdwPF+4Wb9zKZ4X9m9llNdlX+4EkJVSuRofubuff/N1cagL4ZnRj
-dtunLcUCZc9cENeLaow5JQmTCM+eiXhtGXRtQQz4Naj1nMj5g0ZE6O/Rf/NH3cMW
-vTX35XzrKuOaOa+lxBftB0ORZpLEhgbINKwcEDFmv2LZDt1zFGsST6t1oNivojB8
-6YvQl6hepi9+q5dVag1eBAKC9DviWo8N9pk3LFElQkGZ8/FfKZGhpAZLrZRTZESO
-R+gahlYAQj0TybuLor0Y7rchJeRooA==
-=XaAn
------END PGP SIGNATURE-----
-
---UMc50YZIT55HBY87aHP7DDcDtIjFtUxI1--
+DQo+IEtvbnN0YW50aW4NCg0KPj4gT24gNy8yOS8xOSA2OjE5IEFNLCBGSVhFRC1URVJNIEJ1ZWNo
+ZWxlciBLb25zdGFudGluIChFVEFTLVNFQy9FQ1QtTXUpIHdyb3RlOg0KPj4gSGkgYWxsLA0KPj4N
+Cj4+IEkgYW0gY3VycmVudGx5IHdvcmtpbmcgb24gYSBwcm9qZWN0IHdoZXJlIEkgYW0gdHJ5aW5n
+IHRvIHVzZSB0aGUgdGNhbjQ1NTAgY2hpcCB3aXRoIGEgUmFzcGJlcnJ5IFBJIDNCLg0KPj4gSSBh
+bSBzdHJ1Z2dsaW5nIHRvIGNyZWF0ZSBhIHdvcmtpbmcgZGV2aWNlIHRyZWUgb3ZlcmxheSBmaWxl
+IGZvciB0aGUgUmFzcGJlcnJ5IFBpLg0KPj4gSGFzIGFueW9uZSBoZXJlIHRyaWVkIHRoaXMgYWxy
+ZWFkeT8gSSB3b3VsZCBhcHByZWNpYXRlIGFueSBoZWxwLg0KDQo+IEFyZSB5b3UgdXNpbmcgdGhl
+IGRyaXZlciBmcm9tIG5ldC1uZXh0Pw0KDQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
+bS9saW51eC9rZXJuZWwvZ2l0L2RhdmVtL25ldC1uZXh0LmdpdC90cmVlL2RyaXZlcnMvbmV0L2Nh
+bi9tX2Nhbg0KDQpZZXMsIEkgYW0gdXNpbmcgdGhlIGRyaXZlciBmcm9tIG5ldC1uZXh0LiANCg0K
+DQo+IERUIGRvY3VtZW50YXRpb24gaGVyZQ0KDQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
+L3NjbS9saW51eC9rZXJuZWwvZ2l0L2RhdmVtL25ldC1uZXh0LmdpdC90cmVlL0RvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvY2FuL3RjYW40eDV4LnR4dA0KDQpJIHNhdyB0aGlz
+IGRvY3VtZW50YXRpb24gYnV0IGl0IGRpZG7igJl0IGhlbHAgbXVjaCAoQXMgSSBzYWlkLCBJIGRv
+buKAmXQgaGF2ZSBtdWNoIGV4cGVyaWVuY2Ugd2l0aCBkZXZpY2UgdHJlZXMpIC4gTXkgZHRzIGZp
+bGUgY3VycmVudGx5IGxvb2tzIGxpa2UgdGhpczogIA0KDQovZHRzLXYxLzsNCi9wbHVnaW4vOw0K
+DQovIHsNCiAgICBjb21wYXRpYmxlID0gImJyY20sYmNtMjgzNSIsICJicmNtLGJjbTI4MzYiLCAi
+YnJjbSxiY20yNzA4IiwgImJyY20sYmNtMjcwOSI7DQogICAgZnJhZ21lbnRAMCB7DQogICAgICAg
+IHRhcmdldCA9IDwmc3BpMD47DQoJX19vdmVybGF5X18gew0KICAgICAgICAgICAgc3RhdHVzID0g
+Im9rYXkiOw0KCSAgICBzcGlkZXZAMHsNCgkgICAgICAgIHN0YXR1cyA9ICJkaXNhYmxlZCI7DQoJ
+ICAgIH07DQoJfTsNCiAgICB9Ow0KDQogICAgZnJhZ21lbnRAMiB7DQogICAgICAgIGNvbXBhdGli
+bGUgPSAiYm9zY2gsIG1fY2FuIjsNCgl0YXJnZXQgPSA8JnNwaTA+Ow0KCV9fb3ZlcmxheV9fIHsN
+CgkgICAgdGNhbjR4NXg6IHRjYW40eDV4QDAgew0KCSAgICAgICAgICAgICBjb21wYXRpYmxlID0g
+InRpLHRjYW40eDV4IjsNCiAgICAgICAgICAgICAgICAgICAgICAgICAgcmVnID0gPDA+Ow0KCQkj
+YWRkcmVzcy1jZWxscyA9IDwxPjsNCiAgICAgICAgICAgICAgICAgICAgICAgICAjc2l6ZS1jZWxs
+cyA9IDwxPjsNCgkJc3BpLW1heC1mcmVxdWVuY3kgPSA8MTAwMDAwMDA+Ow0KICAgICAgICAgICAg
+ICAgICAgICAgICAgIGJvc2NoLG1yYW0tY2ZnID0gPDB4MCAwIDAgMzIgMCAwIDEgMT47DQoJCWRh
+dGEtcmVhZHktZ3Bpb3MgPSA8JmdwaW8gMjMgMD47DQoJCWRldmljZS13YWtlLWdwaW9zID0gPCZn
+cGlvIDI0IDE+Ow0KCQkJCQ0KCSAgICB9OwkJDQoJfTsNCiAgICB9Ow0KfTsNCg0KDQpDaGVja2lu
+ZyBkbWVzZyBJIGFsd2F5cyBzZWUgdGhlc2UgZXJyb3JzOg0KWyAgICA1LjQwOTA1MV0gdGNhbjR4
+NXggc3BpMC4wOiBubyBjbG9jayBmb3VuZA0KWyAgICA1LjQwOTA2NF0gdGNhbjR4NXggc3BpMC4w
+OiBubyBDQU4gY2xvY2sgc291cmNlIGRlZmluZWQNClsgICAgNS40MDkxMjVdIHRjYW40eDV4IHNw
+aTAuMDogZGF0YS1yZWFkeSBncGlvIG5vdCBkZWZpbmVkDQpbICAgIDUuNDA5MTM1XSB0Y2FuNHg1
+eCBzcGkwLjA6IFByb2JlIGZhaWxlZCwgZXJyPS0yMg0KDQpJIGFscmVhZHkgZml4ZWQgdGhlIGNs
+b2NrIGlzc3VlIG9uY2UgYnkgZG9pbmcgc29tZXRoaW5nIGxpa2UgdGhpczoNCmNsb2NrcyA9IDwm
+Y2FuMF9vc2M+LA0KICAgICAgICAgICAgICA8JmNhbjBfb3NjPjsNCmNsb2NrLW5hbWVzID0gImhj
+bGsiLCAiY2NsayI7DQpCdXQgdGhhdCBkaWRu4oCZdCBmaXggdGhlICIgZGF0YS1yZWFkeSBncGlv
+IG5vdCBkZWZpbmVkIiBlcnJvci4NCg0KDQo+IEkgZGlkIHRoZSBkZXZlbG9wbWVudCBvbiBhIEJl
+YWdsZUJvbmUgQmxhY2suDQoNCj4gRGFuDQoNCj4gVGhhbmtzLA0KPiBLb25zdGFudGluDQo+DQo=
