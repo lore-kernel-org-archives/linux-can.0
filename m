@@ -1,7 +1,7 @@
 From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: [PATCH v2 3/5] can: xilinx_can: Fix the data updation logic for CANFD FD frames
-Date: Mon, 12 Aug 2019 15:36:44 +0530
-Message-ID: <1565604406-4920-4-git-send-email-appana.durga.rao@xilinx.com>
+Subject: [PATCH v2 2/5] can: xilinx_can: Fix FSR register handling in the rx path
+Date: Mon, 12 Aug 2019 15:36:43 +0530
+Message-ID: <1565604406-4920-3-git-send-email-appana.durga.rao@xilinx.com>
 References: <1565604406-4920-1-git-send-email-appana.durga.rao@xilinx.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,10 +12,12 @@ To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, michal.simek@xil
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 List-Id: linux-can.vger.kernel.org
 
-commit c223da689324 ("can: xilinx_can: Add support for CANFD FD frames")
-is writing data to a wrong offset for FD frames.
-
-This patch fixes this issue.
+After commit c223da689324 ("can: xilinx_can: Add support for
+CANFD FD frames") Driver is updating the FSR IRI index multiple
+times(i.e in xcanfd_rx() and xcan_rx_fifo_get_next_frame()),
+It should be updated once per rx packet this patch fixes this issue,
+also this patch removes the unnecessary fsr register checks in
+xcanfd_rx() API.
 
 Fixes: c223da6 ("can: xilinx_can: Add support for CANFD FD frames")
 Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
@@ -23,75 +25,167 @@ Reviewed-by: Shubhrajyoti Datta <Shubhrajyoti.datta@xilinx.com>
 Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
- drivers/net/can/xilinx_can.c | 29 ++++++++---------------------
- 1 file changed, 8 insertions(+), 21 deletions(-)
+ drivers/net/can/xilinx_can.c | 139 ++++++++++++++++++++-----------------------
+ 1 file changed, 63 insertions(+), 76 deletions(-)
 
 diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 2d3399e..c9b951b 100644
+index ac175ab..2d3399e 100644
 --- a/drivers/net/can/xilinx_can.c
 +++ b/drivers/net/can/xilinx_can.c
-@@ -66,8 +66,7 @@ enum xcan_reg {
- #define XCAN_FRAME_DLC_OFFSET(frame_base)	((frame_base) + 0x04)
- #define XCAN_FRAME_DW1_OFFSET(frame_base)	((frame_base) + 0x08)
- #define XCAN_FRAME_DW2_OFFSET(frame_base)	((frame_base) + 0x0C)
--#define XCANFD_FRAME_DW_OFFSET(frame_base, n)	(((frame_base) + 0x08) + \
--						 ((n) * XCAN_CANFD_FRAME_SIZE))
-+#define XCANFD_FRAME_DW_OFFSET(frame_base)	((frame_base) + 0x08)
+@@ -819,91 +819,78 @@ static int xcanfd_rx(struct net_device *ndev, int frame_base)
+ 	u32 id_xcan, dlc, data[2] = {0, 0}, dwindex = 0, i, fsr, readindex;
  
- #define XCAN_CANFD_FRAME_SIZE		0x48
- #define XCAN_TXMSG_FRAME_OFFSET(n)	(XCAN_TXMSG_BASE_OFFSET + \
-@@ -600,7 +599,7 @@ static void xcan_write_frame(struct xcan_priv *priv, struct sk_buff *skb,
- 	if (priv->devtype.cantype == XAXI_CANFD ||
- 	    priv->devtype.cantype == XAXI_CANFD_2_0) {
- 		for (i = 0; i < cf->len; i += 4) {
--			ramoff = XCANFD_FRAME_DW_OFFSET(frame_offset, dwindex) +
-+			ramoff = XCANFD_FRAME_DW_OFFSET(frame_offset) +
- 					(dwindex * XCANFD_DW_BYTES);
- 			priv->write_reg(priv, ramoff,
- 					be32_to_cpup((__be32 *)(cf->data + i)));
-@@ -816,10 +815,8 @@ static int xcanfd_rx(struct net_device *ndev, int frame_base)
- 	struct net_device_stats *stats = &ndev->stats;
- 	struct canfd_frame *cf;
- 	struct sk_buff *skb;
--	u32 id_xcan, dlc, data[2] = {0, 0}, dwindex = 0, i, fsr, readindex;
-+	u32 id_xcan, dlc, data[2] = {0, 0}, dwindex = 0, i, dw_offset;
+ 	fsr = priv->read_reg(priv, XCAN_FSR_OFFSET);
+-	if (fsr & XCAN_FSR_FL_MASK) {
+-		readindex = fsr & XCAN_FSR_RI_MASK;
+-		id_xcan = priv->read_reg(priv,
+-					 XCAN_FRAME_ID_OFFSET(frame_base));
+-		dlc = priv->read_reg(priv, XCAN_FRAME_DLC_OFFSET(frame_base));
+-		if (dlc & XCAN_DLCR_EDL_MASK)
+-			skb = alloc_canfd_skb(ndev, &cf);
+-		else
+-			skb = alloc_can_skb(ndev, (struct can_frame **)&cf);
++	readindex = fsr & XCAN_FSR_RI_MASK;
++	id_xcan = priv->read_reg(priv, XCAN_FRAME_ID_OFFSET(frame_base));
++	dlc = priv->read_reg(priv, XCAN_FRAME_DLC_OFFSET(frame_base));
++	if (dlc & XCAN_DLCR_EDL_MASK)
++		skb = alloc_canfd_skb(ndev, &cf);
++	else
++		skb = alloc_can_skb(ndev, (struct can_frame **)&cf);
  
--	fsr = priv->read_reg(priv, XCAN_FSR_OFFSET);
--	readindex = fsr & XCAN_FSR_RI_MASK;
- 	id_xcan = priv->read_reg(priv, XCAN_FRAME_ID_OFFSET(frame_base));
- 	dlc = priv->read_reg(priv, XCAN_FRAME_DLC_OFFSET(frame_base));
- 	if (dlc & XCAN_DLCR_EDL_MASK)
-@@ -863,26 +860,16 @@ static int xcanfd_rx(struct net_device *ndev, int frame_base)
- 	/* Check the frame received is FD or not*/
- 	if (dlc & XCAN_DLCR_EDL_MASK) {
- 		for (i = 0; i < cf->len; i += 4) {
--			if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
--				data[0] = priv->read_reg(priv,
--					(XCAN_RXMSG_2_FRAME_OFFSET(readindex) +
--					(dwindex * XCANFD_DW_BYTES)));
--			else
--				data[0] = priv->read_reg(priv,
--					(XCAN_RXMSG_FRAME_OFFSET(readindex) +
--					(dwindex * XCANFD_DW_BYTES)));
-+			dw_offset = XCANFD_FRAME_DW_OFFSET(frame_base) +
-+					(dwindex * XCANFD_DW_BYTES);
-+			data[0] = priv->read_reg(priv, dw_offset);
- 			*(__be32 *)(cf->data + i) = cpu_to_be32(data[0]);
- 			dwindex++;
+-		if (unlikely(!skb)) {
+-			stats->rx_dropped++;
+-			return 0;
+-		}
++	if (unlikely(!skb)) {
++		stats->rx_dropped++;
++		return 0;
++	}
+ 
+-		/* Change Xilinx CANFD data length format to socketCAN data
+-		 * format
+-		 */
+-		if (dlc & XCAN_DLCR_EDL_MASK)
+-			cf->len = can_dlc2len((dlc & XCAN_DLCR_DLC_MASK) >>
++	/* Change Xilinx CANFD data length format to socketCAN data
++	 * format
++	 */
++	if (dlc & XCAN_DLCR_EDL_MASK)
++		cf->len = can_dlc2len((dlc & XCAN_DLCR_DLC_MASK) >>
++				  XCAN_DLCR_DLC_SHIFT);
++	else
++		cf->len = get_can_dlc((dlc & XCAN_DLCR_DLC_MASK) >>
+ 					  XCAN_DLCR_DLC_SHIFT);
+-		else
+-			cf->len = get_can_dlc((dlc & XCAN_DLCR_DLC_MASK) >>
+-						  XCAN_DLCR_DLC_SHIFT);
+-
+-		/* Change Xilinx CAN ID format to socketCAN ID format */
+-		if (id_xcan & XCAN_IDR_IDE_MASK) {
+-			/* The received frame is an Extended format frame */
+-			cf->can_id = (id_xcan & XCAN_IDR_ID1_MASK) >> 3;
+-			cf->can_id |= (id_xcan & XCAN_IDR_ID2_MASK) >>
+-					XCAN_IDR_ID2_SHIFT;
+-			cf->can_id |= CAN_EFF_FLAG;
+-			if (id_xcan & XCAN_IDR_RTR_MASK)
+-				cf->can_id |= CAN_RTR_FLAG;
+-		} else {
+-			/* The received frame is a standard format frame */
+-			cf->can_id = (id_xcan & XCAN_IDR_ID1_MASK) >>
+-					XCAN_IDR_ID1_SHIFT;
+-			if (!(dlc & XCAN_DLCR_EDL_MASK) && (id_xcan &
+-						XCAN_IDR_SRR_MASK))
+-				cf->can_id |= CAN_RTR_FLAG;
+-		}
+ 
+-		/* Check the frame received is FD or not*/
+-		if (dlc & XCAN_DLCR_EDL_MASK) {
+-			for (i = 0; i < cf->len; i += 4) {
+-				if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
+-					data[0] = priv->read_reg(priv,
++	/* Change Xilinx CAN ID format to socketCAN ID format */
++	if (id_xcan & XCAN_IDR_IDE_MASK) {
++		/* The received frame is an Extended format frame */
++		cf->can_id = (id_xcan & XCAN_IDR_ID1_MASK) >> 3;
++		cf->can_id |= (id_xcan & XCAN_IDR_ID2_MASK) >>
++				XCAN_IDR_ID2_SHIFT;
++		cf->can_id |= CAN_EFF_FLAG;
++		if (id_xcan & XCAN_IDR_RTR_MASK)
++			cf->can_id |= CAN_RTR_FLAG;
++	} else {
++		/* The received frame is a standard format frame */
++		cf->can_id = (id_xcan & XCAN_IDR_ID1_MASK) >>
++				XCAN_IDR_ID1_SHIFT;
++		if (!(dlc & XCAN_DLCR_EDL_MASK) && (id_xcan &
++					XCAN_IDR_SRR_MASK))
++			cf->can_id |= CAN_RTR_FLAG;
++	}
++
++	/* Check the frame received is FD or not*/
++	if (dlc & XCAN_DLCR_EDL_MASK) {
++		for (i = 0; i < cf->len; i += 4) {
++			if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
++				data[0] = priv->read_reg(priv,
+ 					(XCAN_RXMSG_2_FRAME_OFFSET(readindex) +
+ 					(dwindex * XCANFD_DW_BYTES)));
+-				else
+-					data[0] = priv->read_reg(priv,
++			else
++				data[0] = priv->read_reg(priv,
+ 					(XCAN_RXMSG_FRAME_OFFSET(readindex) +
+-						(dwindex * XCANFD_DW_BYTES)));
+-				*(__be32 *)(cf->data + i) =
+-						cpu_to_be32(data[0]);
+-				dwindex++;
+-			}
+-		} else {
+-			for (i = 0; i < cf->len; i += 4) {
+-				if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
+-					data[0] = priv->read_reg(priv,
+-						XCAN_RXMSG_2_FRAME_OFFSET(readindex) + i);
+-				else
+-					data[0] = priv->read_reg(priv,
+-						XCAN_RXMSG_FRAME_OFFSET(readindex) + i);
+-				*(__be32 *)(cf->data + i) =
+-						cpu_to_be32(data[0]);
+-			}
++					(dwindex * XCANFD_DW_BYTES)));
++			*(__be32 *)(cf->data + i) = cpu_to_be32(data[0]);
++			dwindex++;
++		}
++	} else {
++		for (i = 0; i < cf->len; i += 4) {
++			if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
++				data[0] = priv->read_reg(priv,
++					XCAN_RXMSG_2_FRAME_OFFSET(readindex) +
++								  i);
++			else
++				data[0] = priv->read_reg(priv,
++					XCAN_RXMSG_FRAME_OFFSET(readindex) + i);
++			*(__be32 *)(cf->data + i) = cpu_to_be32(data[0]);
  		}
- 	} else {
- 		for (i = 0; i < cf->len; i += 4) {
--			if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
--				data[0] = priv->read_reg(priv,
--					XCAN_RXMSG_2_FRAME_OFFSET(readindex) +
--								  i);
--			else
--				data[0] = priv->read_reg(priv,
--					XCAN_RXMSG_FRAME_OFFSET(readindex) + i);
-+			dw_offset = XCANFD_FRAME_DW_OFFSET(frame_base);
-+			data[0] = priv->read_reg(priv, dw_offset + i);
- 			*(__be32 *)(cf->data + i) = cpu_to_be32(data[0]);
- 		}
+-		/* Update FSR Register so that next packet will save to
+-		 * buffer
+-		 */
+-		fsr = priv->read_reg(priv, XCAN_FSR_OFFSET);
+-		fsr |= XCAN_FSR_IRI_MASK;
+-		priv->write_reg(priv, XCAN_FSR_OFFSET, fsr);
+-		fsr = priv->read_reg(priv, XCAN_FSR_OFFSET);
+-		stats->rx_bytes += cf->len;
+-		stats->rx_packets++;
+-		netif_receive_skb(skb);
+-
+-		return 1;
  	}
+-	/* If FSR Register is not updated with fill level */
+-	return 0;
++	stats->rx_bytes += cf->len;
++	stats->rx_packets++;
++	netif_receive_skb(skb);
++
++	return 1;
+ }
+ 
+ /**
 -- 
 2.7.4
