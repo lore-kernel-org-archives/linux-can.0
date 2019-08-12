@@ -1,43 +1,59 @@
-From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: [PATCH v2 5/5] can: xilinx_can: Fix the data phase btr1 calculation
-Date: Mon, 12 Aug 2019 15:36:46 +0530
-Message-ID: <1565604406-4920-6-git-send-email-appana.durga.rao@xilinx.com>
-References: <1565604406-4920-1-git-send-email-appana.durga.rao@xilinx.com>
+From: Michal Simek <michal.simek@xilinx.com>
+Subject: Re: [PATCH 0/5] can: xilinx_can: Bug fixes
+Date: Mon, 12 Aug 2019 12:18:47 +0200
+Message-ID: <f0e3360d-7c9a-a455-f63c-7fb584dfad2f@xilinx.com>
+References: <1565594914-18999-1-git-send-email-appana.durga.rao@xilinx.com>
+ <7ecaa7df-3202-21d8-de93-5f6af3582964@pengutronix.de>
+ <5571da8a-de1f-f420-f6b7-81c6d8932430@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1565604406-4920-1-git-send-email-appana.durga.rao@xilinx.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, michal.simek@xilinx.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Srinivas Neeli <srinivas.neeli@xilinx.com>, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <5571da8a-de1f-f420-f6b7-81c6d8932430@pengutronix.de>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>, wg@grandegger.com, davem@davemloft.net, michal.simek@xilinx.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Srinivas Neeli <srinivas.neeli@xilinx.com>
+On 12. 08. 19 11:10, Marc Kleine-Budde wrote:
+> On 8/12/19 11:05 AM, Marc Kleine-Budde wrote:
+>> On 8/12/19 9:28 AM, Appana Durga Kedareswara rao wrote:
+>>> This patch series fixes below issues
+>>> --> Bugs in the driver w.r.to CANFD 2.0 IP support
+>>> --> Defer the probe if clock is not found
+>>>
+>>> Appana Durga Kedareswara rao (3):
+>>>   can: xilinx_can: Fix FSR register handling in the rx path
+>>>   can: xilinx_can: Fix the data updation logic for CANFD FD frames
+>>>   can: xilinx_can: Fix FSR register FL and RI mask values for canfd 2.0
+>>>
+>>> Srinivas Neeli (1):
+>>>   can: xilinx_can: Fix the data phase btr1 calculation
+>>>
+>>> Venkatesh Yadav Abbarapu (1):
+>>>   can: xilinx_can: defer the probe if clock is not found
+>>
+>> Please add your S-o-b to patches 4+5.
+>>
+>> As these all are bugfixes please add a reference to the commit it fixes:
+>>
+>>     Fixes: commitish ("description")
+> 
+> Add this to your ~/.gitconfig:
+> 
+> [alias]
+>         lfixes = log --pretty=fixes
+> [pretty]
+>         fixes = Fixes: %h (\"%s\")
 
-While calculating bitrate for the data phase, the driver is using phase
-segment 1 of the arbitration phase instead of the data phase.
+This is understandable and I have this in my .gitconfig for quite a long
+time. And this is just log
 
-Fixes: c223da6 ("can: xilinx_can: Add support for CANFD FD frames")
-Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-Acked-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
- drivers/net/can/xilinx_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> and then use $(git lfixes $commitish).
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 4cb8c1c9..ab26691 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -425,7 +425,7 @@ static int xcan_set_bittiming(struct net_device *ndev)
- 		btr0 = dbt->brp - 1;
- 
- 		/* Setting Time Segment 1 in BTR Register */
--		btr1 = dbt->prop_seg + bt->phase_seg1 - 1;
-+		btr1 = dbt->prop_seg + dbt->phase_seg1 - 1;
- 
- 		/* Setting Time Segment 2 in BTR Register */
- 		btr1 |= (dbt->phase_seg2 - 1) << priv->devtype.btr_ts2_shift;
--- 
-2.7.4
+But what do you mean by this? Are you able to add this to commit message
+just with sha1?
+
+Thanks,
+Michal
