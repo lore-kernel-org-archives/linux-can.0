@@ -1,7 +1,7 @@
 From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: [PATCH 2/5] can: xilinx_can: Fix FSR register handling in the rx path
-Date: Mon, 12 Aug 2019 12:58:31 +0530
-Message-ID: <1565594914-18999-3-git-send-email-appana.durga.rao@xilinx.com>
+Subject: [PATCH 5/5] can: xilinx_can: Fix the data phase btr1 calculation
+Date: Mon, 12 Aug 2019 12:58:34 +0530
+Message-ID: <1565594914-18999-6-git-send-email-appana.durga.rao@xilinx.com>
 References: <1565594914-18999-1-git-send-email-appana.durga.rao@xilinx.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -9,182 +9,33 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1565594914-18999-1-git-send-email-appana.durga.rao@xilinx.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, michal.simek@xilinx.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Srinivas Neeli <srinivas.neeli@xilinx.com>
 List-Id: linux-can.vger.kernel.org
 
-After commit c223da689324 ("can: xilinx_can: Add support for
-CANFD FD frames") Driver is updating the FSR IRI index multiple
-times(i.e in xcanfd_rx() and xcan_rx_fifo_get_next_frame()),
-It should be updated once per rx packet this patch fixes this issue,
-also this patch removes the unnecessary fsr register checks in
-xcanfd_rx() API.
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Reviewed-by: Shubhrajyoti Datta <Shubhrajyoti.datta@xilinx.com>
-Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+While calculating bitrate for the data phase, the driver is using phase
+segment 1 of the arbitration phase instead of the data phase.
+
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Acked-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
- drivers/net/can/xilinx_can.c | 139 ++++++++++++++++++++-----------------------
- 1 file changed, 63 insertions(+), 76 deletions(-)
+ drivers/net/can/xilinx_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index ac175ab..2d3399e 100644
+index 4cb8c1c9..ab26691 100644
 --- a/drivers/net/can/xilinx_can.c
 +++ b/drivers/net/can/xilinx_can.c
-@@ -819,91 +819,78 @@ static int xcanfd_rx(struct net_device *ndev, int frame_base)
- 	u32 id_xcan, dlc, data[2] = {0, 0}, dwindex = 0, i, fsr, readindex;
+@@ -425,7 +425,7 @@ static int xcan_set_bittiming(struct net_device *ndev)
+ 		btr0 = dbt->brp - 1;
  
- 	fsr = priv->read_reg(priv, XCAN_FSR_OFFSET);
--	if (fsr & XCAN_FSR_FL_MASK) {
--		readindex = fsr & XCAN_FSR_RI_MASK;
--		id_xcan = priv->read_reg(priv,
--					 XCAN_FRAME_ID_OFFSET(frame_base));
--		dlc = priv->read_reg(priv, XCAN_FRAME_DLC_OFFSET(frame_base));
--		if (dlc & XCAN_DLCR_EDL_MASK)
--			skb = alloc_canfd_skb(ndev, &cf);
--		else
--			skb = alloc_can_skb(ndev, (struct can_frame **)&cf);
-+	readindex = fsr & XCAN_FSR_RI_MASK;
-+	id_xcan = priv->read_reg(priv, XCAN_FRAME_ID_OFFSET(frame_base));
-+	dlc = priv->read_reg(priv, XCAN_FRAME_DLC_OFFSET(frame_base));
-+	if (dlc & XCAN_DLCR_EDL_MASK)
-+		skb = alloc_canfd_skb(ndev, &cf);
-+	else
-+		skb = alloc_can_skb(ndev, (struct can_frame **)&cf);
+ 		/* Setting Time Segment 1 in BTR Register */
+-		btr1 = dbt->prop_seg + bt->phase_seg1 - 1;
++		btr1 = dbt->prop_seg + dbt->phase_seg1 - 1;
  
--		if (unlikely(!skb)) {
--			stats->rx_dropped++;
--			return 0;
--		}
-+	if (unlikely(!skb)) {
-+		stats->rx_dropped++;
-+		return 0;
-+	}
- 
--		/* Change Xilinx CANFD data length format to socketCAN data
--		 * format
--		 */
--		if (dlc & XCAN_DLCR_EDL_MASK)
--			cf->len = can_dlc2len((dlc & XCAN_DLCR_DLC_MASK) >>
-+	/* Change Xilinx CANFD data length format to socketCAN data
-+	 * format
-+	 */
-+	if (dlc & XCAN_DLCR_EDL_MASK)
-+		cf->len = can_dlc2len((dlc & XCAN_DLCR_DLC_MASK) >>
-+				  XCAN_DLCR_DLC_SHIFT);
-+	else
-+		cf->len = get_can_dlc((dlc & XCAN_DLCR_DLC_MASK) >>
- 					  XCAN_DLCR_DLC_SHIFT);
--		else
--			cf->len = get_can_dlc((dlc & XCAN_DLCR_DLC_MASK) >>
--						  XCAN_DLCR_DLC_SHIFT);
--
--		/* Change Xilinx CAN ID format to socketCAN ID format */
--		if (id_xcan & XCAN_IDR_IDE_MASK) {
--			/* The received frame is an Extended format frame */
--			cf->can_id = (id_xcan & XCAN_IDR_ID1_MASK) >> 3;
--			cf->can_id |= (id_xcan & XCAN_IDR_ID2_MASK) >>
--					XCAN_IDR_ID2_SHIFT;
--			cf->can_id |= CAN_EFF_FLAG;
--			if (id_xcan & XCAN_IDR_RTR_MASK)
--				cf->can_id |= CAN_RTR_FLAG;
--		} else {
--			/* The received frame is a standard format frame */
--			cf->can_id = (id_xcan & XCAN_IDR_ID1_MASK) >>
--					XCAN_IDR_ID1_SHIFT;
--			if (!(dlc & XCAN_DLCR_EDL_MASK) && (id_xcan &
--						XCAN_IDR_SRR_MASK))
--				cf->can_id |= CAN_RTR_FLAG;
--		}
- 
--		/* Check the frame received is FD or not*/
--		if (dlc & XCAN_DLCR_EDL_MASK) {
--			for (i = 0; i < cf->len; i += 4) {
--				if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
--					data[0] = priv->read_reg(priv,
-+	/* Change Xilinx CAN ID format to socketCAN ID format */
-+	if (id_xcan & XCAN_IDR_IDE_MASK) {
-+		/* The received frame is an Extended format frame */
-+		cf->can_id = (id_xcan & XCAN_IDR_ID1_MASK) >> 3;
-+		cf->can_id |= (id_xcan & XCAN_IDR_ID2_MASK) >>
-+				XCAN_IDR_ID2_SHIFT;
-+		cf->can_id |= CAN_EFF_FLAG;
-+		if (id_xcan & XCAN_IDR_RTR_MASK)
-+			cf->can_id |= CAN_RTR_FLAG;
-+	} else {
-+		/* The received frame is a standard format frame */
-+		cf->can_id = (id_xcan & XCAN_IDR_ID1_MASK) >>
-+				XCAN_IDR_ID1_SHIFT;
-+		if (!(dlc & XCAN_DLCR_EDL_MASK) && (id_xcan &
-+					XCAN_IDR_SRR_MASK))
-+			cf->can_id |= CAN_RTR_FLAG;
-+	}
-+
-+	/* Check the frame received is FD or not*/
-+	if (dlc & XCAN_DLCR_EDL_MASK) {
-+		for (i = 0; i < cf->len; i += 4) {
-+			if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
-+				data[0] = priv->read_reg(priv,
- 					(XCAN_RXMSG_2_FRAME_OFFSET(readindex) +
- 					(dwindex * XCANFD_DW_BYTES)));
--				else
--					data[0] = priv->read_reg(priv,
-+			else
-+				data[0] = priv->read_reg(priv,
- 					(XCAN_RXMSG_FRAME_OFFSET(readindex) +
--						(dwindex * XCANFD_DW_BYTES)));
--				*(__be32 *)(cf->data + i) =
--						cpu_to_be32(data[0]);
--				dwindex++;
--			}
--		} else {
--			for (i = 0; i < cf->len; i += 4) {
--				if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
--					data[0] = priv->read_reg(priv,
--						XCAN_RXMSG_2_FRAME_OFFSET(readindex) + i);
--				else
--					data[0] = priv->read_reg(priv,
--						XCAN_RXMSG_FRAME_OFFSET(readindex) + i);
--				*(__be32 *)(cf->data + i) =
--						cpu_to_be32(data[0]);
--			}
-+					(dwindex * XCANFD_DW_BYTES)));
-+			*(__be32 *)(cf->data + i) = cpu_to_be32(data[0]);
-+			dwindex++;
-+		}
-+	} else {
-+		for (i = 0; i < cf->len; i += 4) {
-+			if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
-+				data[0] = priv->read_reg(priv,
-+					XCAN_RXMSG_2_FRAME_OFFSET(readindex) +
-+								  i);
-+			else
-+				data[0] = priv->read_reg(priv,
-+					XCAN_RXMSG_FRAME_OFFSET(readindex) + i);
-+			*(__be32 *)(cf->data + i) = cpu_to_be32(data[0]);
- 		}
--		/* Update FSR Register so that next packet will save to
--		 * buffer
--		 */
--		fsr = priv->read_reg(priv, XCAN_FSR_OFFSET);
--		fsr |= XCAN_FSR_IRI_MASK;
--		priv->write_reg(priv, XCAN_FSR_OFFSET, fsr);
--		fsr = priv->read_reg(priv, XCAN_FSR_OFFSET);
--		stats->rx_bytes += cf->len;
--		stats->rx_packets++;
--		netif_receive_skb(skb);
--
--		return 1;
- 	}
--	/* If FSR Register is not updated with fill level */
--	return 0;
-+	stats->rx_bytes += cf->len;
-+	stats->rx_packets++;
-+	netif_receive_skb(skb);
-+
-+	return 1;
- }
- 
- /**
+ 		/* Setting Time Segment 2 in BTR Register */
+ 		btr1 |= (dbt->phase_seg2 - 1) << priv->devtype.btr_ts2_shift;
 -- 
 2.7.4
