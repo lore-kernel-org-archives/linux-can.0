@@ -1,53 +1,70 @@
 From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: [PATCH 1/5] can: xilinx_can: defer the probe if clock is not found
-Date: Mon, 12 Aug 2019 12:58:30 +0530
-Message-ID: <1565594914-18999-2-git-send-email-appana.durga.rao@xilinx.com>
+Subject: [PATCH 4/5] can: xilinx_can: Fix FSR register FL and RI mask values for canfd 2.0
+Date: Mon, 12 Aug 2019 12:58:33 +0530
+Message-ID: <1565594914-18999-5-git-send-email-appana.durga.rao@xilinx.com>
 References: <1565594914-18999-1-git-send-email-appana.durga.rao@xilinx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Type: text/plain
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1565594914-18999-1-git-send-email-appana.durga.rao@xilinx.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Sender: netdev-owner@vger.kernel.org
 To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, michal.simek@xilinx.com
-Cc: netdev@vger.kernel.org, Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
+For CANFD 2.0 IP configuration existing driver is using incorrect mask
+values for FSR register FL and RI fields.
 
-It's not always the case that clock is already available when can
-driver get probed at the first time, e.g. the clock is provided by
-clock wizard which may be probed after can driver. So let's defer
-the probe when devm_clk_get() call fails and give it chance to
-try later.
-
-Signed-off-by: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
+Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Acked-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
- drivers/net/can/xilinx_can.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/xilinx_can.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index bd95cfa..ac175ab 100644
+index c9b951b..4cb8c1c9 100644
 --- a/drivers/net/can/xilinx_can.c
 +++ b/drivers/net/can/xilinx_can.c
-@@ -1791,7 +1791,8 @@ static int xcan_probe(struct platform_device *pdev)
- 	/* Getting the CAN can_clk info */
- 	priv->can_clk = devm_clk_get(&pdev->dev, "can_clk");
- 	if (IS_ERR(priv->can_clk)) {
--		dev_err(&pdev->dev, "Device clock not found.\n");
-+		if (PTR_ERR(priv->can_clk) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Device clock not found.\n");
- 		ret = PTR_ERR(priv->can_clk);
- 		goto err_free;
- 	}
+@@ -123,8 +123,10 @@ enum xcan_reg {
+ #define XCAN_IDR_RTR_MASK		0x00000001 /* Remote TX request */
+ #define XCAN_DLCR_DLC_MASK		0xF0000000 /* Data length code */
+ #define XCAN_FSR_FL_MASK		0x00003F00 /* RX Fill Level */
++#define XCAN_2_FSR_FL_MASK		0x00007F00 /* RX Fill Level */
+ #define XCAN_FSR_IRI_MASK		0x00000080 /* RX Increment Read Index */
+ #define XCAN_FSR_RI_MASK		0x0000001F /* RX Read Index */
++#define XCAN_2_FSR_RI_MASK		0x0000003F /* RX Read Index */
+ #define XCAN_DLCR_EDL_MASK		0x08000000 /* EDL Mask in DLC */
+ #define XCAN_DLCR_BRS_MASK		0x04000000 /* BRS Mask in DLC */
+ 
+@@ -1138,7 +1140,7 @@ static int xcan_rx_fifo_get_next_frame(struct xcan_priv *priv)
+ 	int offset;
+ 
+ 	if (priv->devtype.flags & XCAN_FLAG_RX_FIFO_MULTI) {
+-		u32 fsr;
++		u32 fsr, mask;
+ 
+ 		/* clear RXOK before the is-empty check so that any newly
+ 		 * received frame will reassert it without a race
+@@ -1148,12 +1150,17 @@ static int xcan_rx_fifo_get_next_frame(struct xcan_priv *priv)
+ 		fsr = priv->read_reg(priv, XCAN_FSR_OFFSET);
+ 
+ 		/* check if RX FIFO is empty */
+-		if (!(fsr & XCAN_FSR_FL_MASK))
++		if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
++			mask = XCAN_2_FSR_FL_MASK;
++		else
++			mask = XCAN_FSR_FL_MASK;
++
++		if (!(fsr & mask))
+ 			return -ENOENT;
+ 
+ 		if (priv->devtype.flags & XCAN_FLAG_CANFD_2)
+ 			offset =
+-			  XCAN_RXMSG_2_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
++			  XCAN_RXMSG_2_FRAME_OFFSET(fsr & XCAN_2_FSR_RI_MASK);
+ 		else
+ 			offset =
+ 			  XCAN_RXMSG_FRAME_OFFSET(fsr & XCAN_FSR_RI_MASK);
 -- 
 2.7.4
