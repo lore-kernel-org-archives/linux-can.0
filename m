@@ -1,39 +1,126 @@
-From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
-Subject: RE: [PATCH 0/5] can: xilinx_can: Bug fixes
-Date: Mon, 12 Aug 2019 09:09:00 +0000
-Message-ID: <MN2PR02MB640099F65EBB5A6805B94F9ADCD30@MN2PR02MB6400.namprd02.prod.outlook.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/5] can: xilinx_can: Bug fixes
+Date: Mon, 12 Aug 2019 11:10:32 +0200
+Message-ID: <5571da8a-de1f-f420-f6b7-81c6d8932430@pengutronix.de>
 References: <1565594914-18999-1-git-send-email-appana.durga.rao@xilinx.com>
  <7ecaa7df-3202-21d8-de93-5f6af3582964@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============3419807536863070388=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <7ecaa7df-3202-21d8-de93-5f6af3582964@pengutronix.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>, wg@grandegger.com, davem@davemloft.net, michal.simek@xilinx.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-SGkgTWFyYywNCg0KVGhhbmtzIGZvciB0aGUgcmV2aWV3Lg0KDQo8U25pcD4gDQo+IE9uIDgvMTIv
-MTkgOToyOCBBTSwgQXBwYW5hIER1cmdhIEtlZGFyZXN3YXJhIHJhbyB3cm90ZToNCj4gPiBUaGlz
-IHBhdGNoIHNlcmllcyBmaXhlcyBiZWxvdyBpc3N1ZXMNCj4gPiAtLT4gQnVncyBpbiB0aGUgZHJp
-dmVyIHcuci50byBDQU5GRCAyLjAgSVAgc3VwcG9ydCBEZWZlciB0aGUgcHJvYmUgaWYNCj4gPiAt
-LT4gY2xvY2sgaXMgbm90IGZvdW5kDQo+ID4NCj4gPiBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dhcmEg
-cmFvICgzKToNCj4gPiAgIGNhbjogeGlsaW54X2NhbjogRml4IEZTUiByZWdpc3RlciBoYW5kbGlu
-ZyBpbiB0aGUgcnggcGF0aA0KPiA+ICAgY2FuOiB4aWxpbnhfY2FuOiBGaXggdGhlIGRhdGEgdXBk
-YXRpb24gbG9naWMgZm9yIENBTkZEIEZEIGZyYW1lcw0KPiA+ICAgY2FuOiB4aWxpbnhfY2FuOiBG
-aXggRlNSIHJlZ2lzdGVyIEZMIGFuZCBSSSBtYXNrIHZhbHVlcyBmb3IgY2FuZmQNCj4gPiAyLjAN
-Cj4gPg0KPiA+IFNyaW5pdmFzIE5lZWxpICgxKToNCj4gPiAgIGNhbjogeGlsaW54X2NhbjogRml4
-IHRoZSBkYXRhIHBoYXNlIGJ0cjEgY2FsY3VsYXRpb24NCj4gPg0KPiA+IFZlbmthdGVzaCBZYWRh
-diBBYmJhcmFwdSAoMSk6DQo+ID4gICBjYW46IHhpbGlueF9jYW46IGRlZmVyIHRoZSBwcm9iZSBp
-ZiBjbG9jayBpcyBub3QgZm91bmQNCj4gDQo+IFBsZWFzZSBhZGQgeW91ciBTLW8tYiB0byBwYXRj
-aGVzIDQrNS4NCj4gDQo+IEFzIHRoZXNlIGFsbCBhcmUgYnVnZml4ZXMgcGxlYXNlIGFkZCBhIHJl
-ZmVyZW5jZSB0byB0aGUgY29tbWl0IGl0IGZpeGVzOg0KPiANCj4gICAgIEZpeGVzOiBjb21taXRp
-c2ggKCJkZXNjcmlwdGlvbiIpDQoNClN1cmUgd2lsbCBmaXggaW4gdjIuLi4gDQoNClJlZ2FyZHMs
-DQpLZWRhci4gDQoNCj4gDQo+IE1hcmMNCj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAg
-ICAgICAgICAgICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEluZHVzdHJp
-YWwgTGludXggU29sdXRpb25zICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8
-DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAgICAgICAgICB8IEZheDogICArNDktNTEyMS0y
-MDY5MTctNTU1NSB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICB8IGh0dHA6
-Ly93d3cucGVuZ3V0cm9uaXguZGUgICB8DQoNCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============3419807536863070388==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="n406Pf6ucFPRr81ZBCSfLv22f4uepOdOB"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--n406Pf6ucFPRr81ZBCSfLv22f4uepOdOB
+Content-Type: multipart/mixed; boundary="Bh7iV2cCBX2dzNWNFNsLjKNDADYAoxdLa";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+ wg@grandegger.com, davem@davemloft.net, michal.simek@xilinx.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-ID: <5571da8a-de1f-f420-f6b7-81c6d8932430@pengutronix.de>
+Subject: Re: [PATCH 0/5] can: xilinx_can: Bug fixes
+References: <1565594914-18999-1-git-send-email-appana.durga.rao@xilinx.com>
+ <7ecaa7df-3202-21d8-de93-5f6af3582964@pengutronix.de>
+In-Reply-To: <7ecaa7df-3202-21d8-de93-5f6af3582964@pengutronix.de>
+
+--Bh7iV2cCBX2dzNWNFNsLjKNDADYAoxdLa
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 8/12/19 11:05 AM, Marc Kleine-Budde wrote:
+> On 8/12/19 9:28 AM, Appana Durga Kedareswara rao wrote:
+>> This patch series fixes below issues
+>> --> Bugs in the driver w.r.to CANFD 2.0 IP support
+>> --> Defer the probe if clock is not found
+>>
+>> Appana Durga Kedareswara rao (3):
+>>   can: xilinx_can: Fix FSR register handling in the rx path
+>>   can: xilinx_can: Fix the data updation logic for CANFD FD frames
+>>   can: xilinx_can: Fix FSR register FL and RI mask values for canfd 2.=
+0
+>>
+>> Srinivas Neeli (1):
+>>   can: xilinx_can: Fix the data phase btr1 calculation
+>>
+>> Venkatesh Yadav Abbarapu (1):
+>>   can: xilinx_can: defer the probe if clock is not found
+>=20
+> Please add your S-o-b to patches 4+5.
+>=20
+> As these all are bugfixes please add a reference to the commit it fixes=
+:
+>=20
+>     Fixes: commitish ("description")
+
+Add this to your ~/.gitconfig:
+
+[alias]
+        lfixes =3D log --pretty=3Dfixes
+[pretty]
+        fixes =3D Fixes: %h (\"%s\")
+
+and then use $(git lfixes $commitish).
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--Bh7iV2cCBX2dzNWNFNsLjKNDADYAoxdLa--
+
+--n406Pf6ucFPRr81ZBCSfLv22f4uepOdOB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1RLQgACgkQWsYho5Hk
+nSA7iAf/SPKEeZgvTZ73lEBwv0Fw+6St3jUayWb22nfMohsOBtHE07DbuA4uewt8
+8VjnSvqK9MH44QayDP5vBVKGCnSYrSFQj51PgL1YOg/ftVQLWXCAkgq1SwWVykKk
+QI6HiYTLqV4t/0ebVq61nryUZmt0VYBg2maBaLtkutPWkrbweAX+tSfZHD6rVtwp
+RkMkA77gC5rK7iSWQTngUiiIRU0I2wUAtECbI+R/aa7FtkWT3GqlferXW++yJRBJ
+AMST2HsiTD9gLRj0t0GjpcO/kRhL25mcpcTlIcsNpMNBJAhBhj93PyOe5qFantC4
+JfbfGVETc+P9Wjf3B61ShI0/LlpFiQ==
+=lsBO
+-----END PGP SIGNATURE-----
+
+--n406Pf6ucFPRr81ZBCSfLv22f4uepOdOB--
+
+
+--===============3419807536863070388==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============3419807536863070388==--
