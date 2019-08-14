@@ -1,100 +1,41 @@
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] can: rcar_can: Remove unused platform data support
-Date: Wed, 14 Aug 2019 11:22:21 +0200
-Message-ID: <20190814092221.12959-1-geert+renesas@glider.be>
+From: "FIXED-TERM Buecheler Konstantin (ETAS-SEC/ECT-Mu)"
+        <fixed-term.Konstantin.Buecheler@escrypt.com>
+Subject: can: tcan4x5x: spi bits_per_word issue on Raspberry PI
+Date: Wed, 14 Aug 2019 09:43:21 +0000
+Message-ID: <f1e2a3fba8604996b16e11f9405542d1@escrypt.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netdev-owner@vger.kernel.org>
+Content-Language: de-DE
 Sender: netdev-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: "David S . Miller" <davem@davemloft.net>, Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-can@vger.kernel.org, linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc: Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-All R-Car platforms use DT for describing CAN controllers.
-R-Car CAN platform data support was never used in any upstream kernel.
+Hi all,
 
-Move the Clock Select Register settings enum into the driver, and remove
-platform data support and the corresponding header file.
+I am trying to use a tcan4550 together with a Raspberry PI 3 B. I am using =
+the tcan4x5x driver from net-next.=20
+I always get the following error during startup.
+	tcan4x5x spi0.0: Probe failed, err=3D-22
+	tcan4x5x: probe of spi0.0 failed with error -22
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/net/can/rcar/rcar_can.c       | 22 +++++++++-------------
- include/linux/can/platform/rcar_can.h | 18 ------------------
- 2 files changed, 9 insertions(+), 31 deletions(-)
- delete mode 100644 include/linux/can/platform/rcar_can.h
+I realized that this happens because the Raspberry PI does only support 8/9=
+ bit words. https://elinux.org/index.php?title=3DRPi_SPI#Supported_bits_per=
+_word
+In the driver it is set to 32.
+	spi->bits_per_word =3D 32;
 
-diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index cf218949a8fb52d5..3c5e9c2c5342147f 100644
---- a/drivers/net/can/rcar/rcar_can.c
-+++ b/drivers/net/can/rcar/rcar_can.c
-@@ -15,11 +15,17 @@
- #include <linux/can/led.h>
- #include <linux/can/dev.h>
- #include <linux/clk.h>
--#include <linux/can/platform/rcar_can.h>
- #include <linux/of.h>
- 
- #define RCAR_CAN_DRV_NAME	"rcar_can"
- 
-+/* Clock Select Register settings */
-+enum CLKR {
-+	CLKR_CLKP1 = 0,	/* Peripheral clock (clkp1) */
-+	CLKR_CLKP2 = 1,	/* Peripheral clock (clkp2) */
-+	CLKR_CLKEXT = 3	/* Externally input clock */
-+};
-+
- #define RCAR_SUPPORTED_CLOCKS	(BIT(CLKR_CLKP1) | BIT(CLKR_CLKP2) | \
- 				 BIT(CLKR_CLKEXT))
- 
-@@ -736,7 +742,6 @@ static const char * const clock_names[] = {
- 
- static int rcar_can_probe(struct platform_device *pdev)
- {
--	struct rcar_can_platform_data *pdata;
- 	struct rcar_can_priv *priv;
- 	struct net_device *ndev;
- 	struct resource *mem;
-@@ -745,17 +750,8 @@ static int rcar_can_probe(struct platform_device *pdev)
- 	int err = -ENODEV;
- 	int irq;
- 
--	if (pdev->dev.of_node) {
--		of_property_read_u32(pdev->dev.of_node,
--				     "renesas,can-clock-select", &clock_select);
--	} else {
--		pdata = dev_get_platdata(&pdev->dev);
--		if (!pdata) {
--			dev_err(&pdev->dev, "No platform data provided!\n");
--			goto fail;
--		}
--		clock_select = pdata->clock_select;
--	}
-+	of_property_read_u32(pdev->dev.of_node, "renesas,can-clock-select",
-+			     &clock_select);
- 
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
-diff --git a/include/linux/can/platform/rcar_can.h b/include/linux/can/platform/rcar_can.h
-deleted file mode 100644
-index a43dcd0cf79ee3ec..0000000000000000
---- a/include/linux/can/platform/rcar_can.h
-+++ /dev/null
-@@ -1,18 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _CAN_PLATFORM_RCAR_CAN_H_
--#define _CAN_PLATFORM_RCAR_CAN_H_
--
--#include <linux/types.h>
--
--/* Clock Select Register settings */
--enum CLKR {
--	CLKR_CLKP1 = 0,	/* Peripheral clock (clkp1) */
--	CLKR_CLKP2 = 1,	/* Peripheral clock (clkp2) */
--	CLKR_CLKEXT = 3	/* Externally input clock */
--};
--
--struct rcar_can_platform_data {
--	enum CLKR clock_select;	/* Clock source select */
--};
--
--#endif	/* !_CAN_PLATFORM_RCAR_CAN_H_ */
--- 
-2.17.1
+Setting this to 8 does not help of course since the tcan chip expects a mul=
+tiple of 32 per spi transaction.=20
+I don't know if this is a Raspberry Pi specific problem or if there are mor=
+e devices with this hardware limitation.=20
+
+Does anyone have a workaround for that?=20
+
+If this a common issue it might be a good idea to patch the driver. I will =
+check if I can find proper a way to do so.=20
+
+Regards,=20
+Konstantin=20
