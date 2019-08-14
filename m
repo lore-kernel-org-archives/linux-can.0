@@ -1,102 +1,48 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.2 039/123] can: gw: Fix error path of cgw_module_init
-Date: Tue, 13 Aug 2019 22:09:23 -0400
-Message-ID: <20190814021047.14828-39-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 075/123] can: sja1000: force the string buffer NULL-terminated
+Date: Tue, 13 Aug 2019 22:09:59 -0400
+Message-ID: <20190814021047.14828-75-sashal@kernel.org>
 References: <20190814021047.14828-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190814021047.14828-1-sashal@kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: YueHaibing <yuehaibing@huawei.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>
 
-[ Upstream commit b7a14297f102b6e2ce6f16feffebbb9bde1e9b55 ]
+[ Upstream commit cd28aa2e056cd1ea79fc5f24eed0ce868c6cab5c ]
 
-This patch add error path for cgw_module_init to avoid possible crash if
-some error occurs.
+strncpy() does not ensure NULL-termination when the input string size
+equals to the destination buffer size IFNAMSIZ. The output string
+'name' is passed to dev_info which relies on NULL-termination.
 
-Fixes: c1aabdf379bc ("can-gw: add netlink based CAN routing")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Use strlcpy() instead.
+
+This issue is identified by a Coccinelle script.
+
+Signed-off-by: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/gw.c | 48 +++++++++++++++++++++++++++++++++---------------
- 1 file changed, 33 insertions(+), 15 deletions(-)
+ drivers/net/can/sja1000/peak_pcmcia.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 5275ddf580bc7..72711053ebe66 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -1046,32 +1046,50 @@ static __init int cgw_module_init(void)
- 	pr_info("can: netlink gateway (rev " CAN_GW_VERSION ") max_hops=%d\n",
- 		max_hops);
+diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
+index 185c7f7d38a4a..5e0d5e8101c86 100644
+--- a/drivers/net/can/sja1000/peak_pcmcia.c
++++ b/drivers/net/can/sja1000/peak_pcmcia.c
+@@ -479,7 +479,7 @@ static void pcan_free_channels(struct pcan_pccard *card)
+ 		if (!netdev)
+ 			continue;
  
--	register_pernet_subsys(&cangw_pernet_ops);
-+	ret = register_pernet_subsys(&cangw_pernet_ops);
-+	if (ret)
-+		return ret;
-+
-+	ret = -ENOMEM;
- 	cgw_cache = kmem_cache_create("can_gw", sizeof(struct cgw_job),
- 				      0, 0, NULL);
--
- 	if (!cgw_cache)
--		return -ENOMEM;
-+		goto out_cache_create;
+-		strncpy(name, netdev->name, IFNAMSIZ);
++		strlcpy(name, netdev->name, IFNAMSIZ);
  
- 	/* set notifier */
- 	notifier.notifier_call = cgw_notifier;
--	register_netdevice_notifier(&notifier);
-+	ret = register_netdevice_notifier(&notifier);
-+	if (ret)
-+		goto out_register_notifier;
+ 		unregister_sja1000dev(netdev);
  
- 	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_GETROUTE,
- 				   NULL, cgw_dump_jobs, 0);
--	if (ret) {
--		unregister_netdevice_notifier(&notifier);
--		kmem_cache_destroy(cgw_cache);
--		return -ENOBUFS;
--	}
--
--	/* Only the first call to rtnl_register_module can fail */
--	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
--			     cgw_create_job, NULL, 0);
--	rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
--			     cgw_remove_job, NULL, 0);
-+	if (ret)
-+		goto out_rtnl_register1;
-+
-+	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_NEWROUTE,
-+				   cgw_create_job, NULL, 0);
-+	if (ret)
-+		goto out_rtnl_register2;
-+	ret = rtnl_register_module(THIS_MODULE, PF_CAN, RTM_DELROUTE,
-+				   cgw_remove_job, NULL, 0);
-+	if (ret)
-+		goto out_rtnl_register3;
- 
- 	return 0;
-+
-+out_rtnl_register3:
-+	rtnl_unregister(PF_CAN, RTM_NEWROUTE);
-+out_rtnl_register2:
-+	rtnl_unregister(PF_CAN, RTM_GETROUTE);
-+out_rtnl_register1:
-+	unregister_netdevice_notifier(&notifier);
-+out_register_notifier:
-+	kmem_cache_destroy(cgw_cache);
-+out_cache_create:
-+	unregister_pernet_subsys(&cangw_pernet_ops);
-+
-+	return ret;
- }
- 
- static __exit void cgw_module_exit(void)
 -- 
 2.20.1
