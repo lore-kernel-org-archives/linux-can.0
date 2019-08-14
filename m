@@ -1,59 +1,58 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH] can: rcar_can: Remove unused platform data support
-Date: Wed, 14 Aug 2019 11:46:03 +0200
-Message-ID: <20190814094603.GB1511@ninjato>
-References: <20190814092221.12959-1-geert+renesas@glider.be>
+From: "FIXED-TERM Buecheler Konstantin (ETAS-SEC/ECT-Mu)"
+        <fixed-term.Konstantin.Buecheler@escrypt.com>
+Subject: can: tcan4x5x: spi bits_per_word issue on Raspberry PI
+Date: Wed, 14 Aug 2019 15:01:44 +0000
+Message-ID: <3f71bdff8f4f4fe19ad9a09be89bc73d@escrypt.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190814092221.12959-1-geert+renesas@glider.be>
+Content-Language: de-DE
 Sender: netdev-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, "David S . Miller" <davem@davemloft.net>, Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-can@vger.kernel.org, linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc: Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-
---SkvwRMAIpAhPCcCJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Aug 14, 2019 at 11:22:21AM +0200, Geert Uytterhoeven wrote:
-> All R-Car platforms use DT for describing CAN controllers.
-> R-Car CAN platform data support was never used in any upstream kernel.
+> Hi all,
 >=20
-> Move the Clock Select Register settings enum into the driver, and remove
-> platform data support and the corresponding header file.
+> I am trying to use a tcan4550 together with a Raspberry PI 3 B. I am usin=
+g the
+> tcan4x5x driver from net-next.
+> I always get the following error during startup.
+> 	tcan4x5x spi0.0: Probe failed, err=3D-22
+> 	tcan4x5x: probe of spi0.0 failed with error -22
 >=20
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> I realized that this happens because the Raspberry PI does only support 8=
+/9 bit
+> words. https://elinux.org/index.php?title=3DRPi_SPI#Supported_bits_per_wo=
+rd
+> In the driver it is set to 32.
+> 	spi->bits_per_word =3D 32;
+>=20
+> Setting this to 8 does not help of course since the tcan chip expects a m=
+ultiple of
+> 32 per spi transaction.
+> I don't know if this is a Raspberry Pi specific problem or if there are m=
+ore devices
+> with this hardware limitation.
+>=20
+> Does anyone have a workaround for that?
 
-Not tested on HW, but double-checked there are no users in-tree, there
-is no dangling pdata pointer left in the driver, visual review of the
-moved block, and build-tested.
+It seems to be enough to just change the bits_per_word value to 8
 
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+>=20
+> If this a common issue it might be a good idea to patch the driver. I wil=
+l check if I
+> can find proper a way to do so.
+>=20
+> Regards,
+> Konstantin
 
+Now I have another really confusing problem. Anything I write to SPI is wri=
+tten little endian. The tcan chip expects big endian.=20
+Anything I read from SPI is treated as little endian but is big endian. Doe=
+s anyone know why this happens?=20
+Is there a flag or something I can set for the SPI device/wire to fix this?
 
---SkvwRMAIpAhPCcCJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl1T2FoACgkQFA3kzBSg
-KbYgsxAAoYdxzJnOyenR92qQswpVrJibp9k656vQXf/t3C5LdbpCDryOU9QOJ9/P
-XznxB/fQkAMI0Xkt8t14bZux9euO9LB+zTvAPKr8wwrjaqVQPqGw1J8xchvTBlY0
-1PLNrk0g+06teky5cWcqgDC7TUGplpH0oMZChfPDAmYocEU2qskLE8U+PfgpwhT/
-okyO8N9ve/jUpn4CjqFdVANCSHWuhg8O4jo+776gq5VoFT3NEl3dRHU+Mq2RI8fz
-6Mt89ohdbSv5Ujb5RSgJsOKmI0UijvQ8Y48ig+TZhphfHYxVvYW9PVU9MXOQWDEL
-gv0cJwcHL/hzJcxg8cOTv7EcmRjqq8HHZp1ypmRGqfjE3BnhYu5cmhDei3EccMmC
-afLNEX03YC2lJffupgVlMIx7O2XPuJRBCzok9ueN2hsmxBCFy++Aj9pl2wwwIWJc
-Yb0IKvZofzeQnIl/RrR91xbfexAScQwL9FEmox1tnKxTQY4RtKlEE2Y+NI46c9Bj
-K3ZIbkgAxYfu4eVVPwG7YcbA9f8H+xkIcuTi7CWKx7s4rHzTU22IShGuFIGk8AGa
-rh6PD9ivSf14usYTMZvigdF1sB3PBh1pAu0MYj66Kuw2gu0UXpLXZl8jr4mRFH6I
-806iNlAze67mdl0qJUQf2s2EIVyaX3j5KrXycFf7lcEBFU+wEWk=
-=62lr
------END PGP SIGNATURE-----
-
---SkvwRMAIpAhPCcCJ--
+Regards,
+Konstantin
