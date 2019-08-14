@@ -1,48 +1,48 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 06/33] can: dev: call netif_carrier_off() in register_candev()
-Date: Tue, 13 Aug 2019 22:22:56 -0400
-Message-ID: <20190814022323.17111-6-sashal@kernel.org>
-References: <20190814022323.17111-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 38/68] can: peak_usb: force the string buffer NULL-terminated
+Date: Tue, 13 Aug 2019 22:15:16 -0400
+Message-ID: <20190814021548.16001-38-sashal@kernel.org>
+References: <20190814021548.16001-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190814022323.17111-1-sashal@kernel.org>
+In-Reply-To: <20190814021548.16001-1-sashal@kernel.org>
 Sender: netdev-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>, Willem de Bruijn <willemb@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+From: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>
 
-[ Upstream commit c63845609c4700488e5eacd6ab4d06d5d420e5ef ]
+[ Upstream commit e787f19373b8a5fa24087800ed78314fd17b984a ]
 
-CONFIG_CAN_LEDS is deprecated. When trying to use the generic netdev
-trigger as suggested, there's a small inconsistency with the link
-property: The LED is on initially, stays on when the device is brought
-up, and then turns off (as expected) when the device is brought down.
+strncpy() does not ensure NULL-termination when the input string size
+equals to the destination buffer size IFNAMSIZ. The output string is
+passed to dev_info() which relies on the NULL-termination.
 
-Make sure the LED always reflects the state of the CAN device.
+Use strlcpy() instead.
 
-Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Acked-by: Willem de Bruijn <willemb@google.com>
+This issue is identified by a Coccinelle script.
+
+Signed-off-by: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/dev.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 214a48703a4e4..ffc5467a1ec2b 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -1095,6 +1095,8 @@ static struct rtnl_link_ops can_link_ops __read_mostly = {
- int register_candev(struct net_device *dev)
- {
- 	dev->rtnl_link_ops = &can_link_ops;
-+	netif_carrier_off(dev);
-+
- 	return register_netdev(dev);
- }
- EXPORT_SYMBOL_GPL(register_candev);
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 611f9d31be5d0..1909eac4591ba 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -863,7 +863,7 @@ static void peak_usb_disconnect(struct usb_interface *intf)
+ 
+ 		dev_prev_siblings = dev->prev_siblings;
+ 		dev->state &= ~PCAN_USB_STATE_CONNECTED;
+-		strncpy(name, netdev->name, IFNAMSIZ);
++		strlcpy(name, netdev->name, IFNAMSIZ);
+ 
+ 		unregister_netdev(netdev);
+ 
 -- 
 2.20.1
