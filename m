@@ -1,115 +1,48 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 14/68] can: mcp251x: add error check when wq alloc failed
-Date: Tue, 13 Aug 2019 22:14:52 -0400
-Message-ID: <20190814021548.16001-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 37/68] can: sja1000: force the string buffer NULL-terminated
+Date: Tue, 13 Aug 2019 22:15:15 -0400
+Message-ID: <20190814021548.16001-37-sashal@kernel.org>
 References: <20190814021548.16001-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190814021548.16001-1-sashal@kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Weitao Hou <houweitaoo@gmail.com>, Willem de Bruijn <willemb@google.com>, Sean Nyekjaer <sean@geanix.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>, Marc Kleine-Budde <mkl@pengutronix.de>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Weitao Hou <houweitaoo@gmail.com>
+From: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>
 
-[ Upstream commit 375f755899b8fc21196197e02aab26257df26e85 ]
+[ Upstream commit cd28aa2e056cd1ea79fc5f24eed0ce868c6cab5c ]
 
-add error check when workqueue alloc failed, and remove redundant code
-to make it clear.
+strncpy() does not ensure NULL-termination when the input string size
+equals to the destination buffer size IFNAMSIZ. The output string
+'name' is passed to dev_info which relies on NULL-termination.
 
-Fixes: e0000163e30e ("can: Driver for the Microchip MCP251x SPI CAN controllers")
-Signed-off-by: Weitao Hou <houweitaoo@gmail.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
+Use strlcpy() instead.
+
+This issue is identified by a Coccinelle script.
+
+Signed-off-by: Wang Xiayang <xywang.sjtu@sjtu.edu.cn>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/spi/mcp251x.c | 49 ++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 27 deletions(-)
+ drivers/net/can/sja1000/peak_pcmcia.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index da64e71a62ee2..fccb6bf21fada 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -678,17 +678,6 @@ static int mcp251x_power_enable(struct regulator *reg, int enable)
- 		return regulator_disable(reg);
- }
+diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
+index b8c39ede7cd51..179bfcd541f2f 100644
+--- a/drivers/net/can/sja1000/peak_pcmcia.c
++++ b/drivers/net/can/sja1000/peak_pcmcia.c
+@@ -487,7 +487,7 @@ static void pcan_free_channels(struct pcan_pccard *card)
+ 		if (!netdev)
+ 			continue;
  
--static void mcp251x_open_clean(struct net_device *net)
--{
--	struct mcp251x_priv *priv = netdev_priv(net);
--	struct spi_device *spi = priv->spi;
--
--	free_irq(spi->irq, priv);
--	mcp251x_hw_sleep(spi);
--	mcp251x_power_enable(priv->transceiver, 0);
--	close_candev(net);
--}
--
- static int mcp251x_stop(struct net_device *net)
- {
- 	struct mcp251x_priv *priv = netdev_priv(net);
-@@ -954,37 +943,43 @@ static int mcp251x_open(struct net_device *net)
- 				   flags | IRQF_ONESHOT, DEVICE_NAME, priv);
- 	if (ret) {
- 		dev_err(&spi->dev, "failed to acquire irq %d\n", spi->irq);
--		mcp251x_power_enable(priv->transceiver, 0);
--		close_candev(net);
--		goto open_unlock;
-+		goto out_close;
- 	}
+-		strncpy(name, netdev->name, IFNAMSIZ);
++		strlcpy(name, netdev->name, IFNAMSIZ);
  
- 	priv->wq = alloc_workqueue("mcp251x_wq", WQ_FREEZABLE | WQ_MEM_RECLAIM,
- 				   0);
-+	if (!priv->wq) {
-+		ret = -ENOMEM;
-+		goto out_clean;
-+	}
- 	INIT_WORK(&priv->tx_work, mcp251x_tx_work_handler);
- 	INIT_WORK(&priv->restart_work, mcp251x_restart_work_handler);
+ 		unregister_sja1000dev(netdev);
  
- 	ret = mcp251x_hw_reset(spi);
--	if (ret) {
--		mcp251x_open_clean(net);
--		goto open_unlock;
--	}
-+	if (ret)
-+		goto out_free_wq;
- 	ret = mcp251x_setup(net, spi);
--	if (ret) {
--		mcp251x_open_clean(net);
--		goto open_unlock;
--	}
-+	if (ret)
-+		goto out_free_wq;
- 	ret = mcp251x_set_normal_mode(spi);
--	if (ret) {
--		mcp251x_open_clean(net);
--		goto open_unlock;
--	}
-+	if (ret)
-+		goto out_free_wq;
- 
- 	can_led_event(net, CAN_LED_EVENT_OPEN);
- 
- 	netif_wake_queue(net);
-+	mutex_unlock(&priv->mcp_lock);
- 
--open_unlock:
-+	return 0;
-+
-+out_free_wq:
-+	destroy_workqueue(priv->wq);
-+out_clean:
-+	free_irq(spi->irq, priv);
-+	mcp251x_hw_sleep(spi);
-+out_close:
-+	mcp251x_power_enable(priv->transceiver, 0);
-+	close_candev(net);
- 	mutex_unlock(&priv->mcp_lock);
- 	return ret;
- }
 -- 
 2.20.1
