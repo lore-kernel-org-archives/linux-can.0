@@ -1,78 +1,46 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH REPOST 2/2] can: flexcan: add LPSR mode support for i.MX7D
-Date: Fri, 16 Aug 2019 08:20:44 +0000
-Message-ID: <20190816081749.19300-3-qiangqing.zhang@nxp.com>
-References: <20190816081749.19300-1-qiangqing.zhang@nxp.com>
+From: "FIXED-TERM Buecheler Konstantin (ETAS-SEC/ECT-Mu)"
+        <fixed-term.Konstantin.Buecheler@escrypt.com>
+Subject: AW: can: tcan4x5x: spi bits_per_word issue on Raspberry PI
+Date: Fri, 16 Aug 2019 08:26:16 +0000
+Message-ID: <47108d803086402c83d1073f3e3a62bb@escrypt.com>
+References: <3f71bdff8f4f4fe19ad9a09be89bc73d@escrypt.com>
+ <f78bb414-4165-3f56-151a-47ab4a8a645d@pengutronix.de>
+ <e6577cc2-89fc-9428-b73e-47f41eff2949@posteo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190816081749.19300-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
+In-Reply-To: <e6577cc2-89fc-9428-b73e-47f41eff2949@posteo.de>
+Content-Language: de-DE
 Sender: netdev-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "sean@geanix.com" <sean@geanix.com>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
+To: Patrick Menschel <menschel.p@posteo.de>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc: Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-For i.MX7D LPSR mode, the controller will lost power and got the
-configuration state lost after system resume back. (coming i.MX8QM/QXP
-will also completely power off the domain, the controller state will be
-lost and needs restore).
-So we need to set pinctrl state again and re-start chip to do
-re-configuration after resume.
-
-For wakeup case, it should not set pinctrl to sleep state by
-pinctrl_pm_select_sleep_state.
-For interface is not up before suspend case, we don't need
-re-configure as it will be configured by user later by interface up.
-
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-
-ChangeLog:
-V1->V2:
-	* rebase on linux-can/testing.
-	* move into a patch set.
----
- drivers/net/can/flexcan.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index de2bf71b335b..b3edaf6a5a61 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -25,6 +25,7 @@
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/regmap.h>
-=20
- #define DRV_NAME			"flexcan"
-@@ -1640,9 +1641,9 @@ static int __maybe_unused flexcan_suspend(struct devi=
-ce *device)
-=20
- 			priv->in_stop_mode =3D true;
- 		} else {
--			err =3D flexcan_chip_disable(priv);
--			if (err)
--				return err;
-+			flexcan_chip_stop(dev);
-+
-+			pinctrl_pm_select_sleep_state(device);
- 		}
- 		netif_stop_queue(dev);
- 		netif_device_detach(dev);
-@@ -1674,7 +1675,9 @@ static int __maybe_unused flexcan_resume(struct devic=
-e *device)
-=20
- 			disable_irq_wake(dev->irq);
- 		} else {
--			err =3D flexcan_chip_enable(priv);
-+			pinctrl_pm_select_default_state(device);
-+
-+			err =3D flexcan_chip_start(dev);
- 			if (err)
- 				return err;
- 		}
---=20
-2.17.1
+PiA+PiBOb3cgSSBoYXZlIGFub3RoZXIgcmVhbGx5IGNvbmZ1c2luZyBwcm9ibGVtLiBBbnl0aGlu
+ZyBJIHdyaXRlIHRvIFNQSSBpcyB3cml0dGVuIGxpdHRsZSBlbmRpYW4uIFRoZSB0Y2FuIGNoaXAg
+ZXhwZWN0cyBiaWcgZW5kaWFuLg0KPiA+PiBBbnl0aGluZyBJIHJlYWQgZnJvbSBTUEkgaXMgdHJl
+YXRlZCBhcyBsaXR0bGUgZW5kaWFuIGJ1dCBpcyBiaWcgZW5kaWFuLiBEb2VzIGFueW9uZSBrbm93
+IHdoeSB0aGlzIGhhcHBlbnM/DQo+ID4+IElzIHRoZXJlIGEgZmxhZyBvciBzb21ldGhpbmcgSSBj
+YW4gc2V0IGZvciB0aGUgU1BJIGRldmljZS93aXJlIHRvIGZpeCB0aGlzPw0KPiA+DQo+ID4gSGF2
+ZSB5b3UgY2hhbmdlZCB0aGUgYml0c19wZXJfd29yZCB0byA4PyBUaGVuIHlvdSByZWFkIGp1c3Qg
+YSBzdHJlYW0NCj4gPiBvZiBieXRlcy4gSWYgeW91IHRyZWFkIHRoZW0gYXMgYW4gdTMyIHRoZXkg
+YXJlIGluIGhvc3Qgb3JkZXIuDQo+ID4NCg0KQE1hcmMNClllcywgSSBjaGFuZ2VkIGJpdHNfcGVy
+X3dvcmQgdG8gOC4gU2luY2UgdGhlIFBJIGRvZXMgbm90IHN1cHBvcnQgYW55IHZhbHVlcyBhcGFy
+dCBmcm9tIA0KOCBhbmQgOSB0aGlzIHNlZW1zIHRvIGJlIHRoZSBvbmx5IHdheS4NCg0KPiA+IE1h
+cmMNCj4gPg0KPiANCj4gDQo+IEhpLA0KPiANCj4gZnJvbSBteSBleHBlcmllbmNlIHdpdGggU1BJ
+REVWIG9uIFJQSSwgdGhlIGRyaXZlciB1c2VzIGEgY2hhciBhcnJheSBmb3IgSS9PLg0KPiBBcyB0
+aGUgUlBJIGNvZGUgaXMgYnVpbGQgbGl0dGxlIGVuZGlhbiwgbG9naWNhbGx5IGxpdHRsZSBlbmRp
+YW4gY29tZXMgb3V0IG9mIFNQSS4gWW91DQo+IGJhc2ljYWxseSBoYXZlIHRvIGludmVydCB0aGUg
+Yml0IGFuZCBieXRlIG9yZGVyIGJ5IGhhbmQgZm9yIGEgYmlnIGVuZGlhbiBzbGF2ZS4NCj4gDQoN
+CkBQYXRyaWNrLCBNYXJjDQpZb3UgYm90aCBhcmUgcmlnaHQuIFRoaXMgc2VlbXMgdG8gYmUgdGhl
+IHByb2JsZW0uIFRoZSBTUEkgZHJpdmVyIHVzZXMgY2hhciBhcnJheXMNCmFuZCB0aGUgdGNhbiBk
+cml2ZXIgdHJlYXRzIHRoZW0gYXMgdTMyLiANCg0KSSB3aWxsIHRyeSB0byBjaGFuZ2UgdGhlIGJ5
+dGUgb3JkZXIgYnkgaGFuZCB0byBnZXQgaXQgcnVubmluZyBmb3IgbXkgcHJvamVjdC4gQnV0IGlu
+IHRoZSBsb25nIA0KcnVuLCB0aGlzIGRvZXMgbm90IHNlZW0gdG8gYmUgYSBwcm9wZXIgc29sdXRp
+b24uLi4gDQoNClJlZ2FyZHMsIA0KS29uc3RhbnRpbiANCg0KDQo+IENsb2NrIFBoYXNlIGFuZCBD
+bG9jayBQb2xhcml0eSBhcmUgYWxzbyBhbiBpc3N1ZSBvbiB0aGUgUlBJIGFzIGF0IGxlYXN0IFNQ
+SURFVg0KPiBraW5kbHkgb3Zlcmxvb2tzIGFueSBvcHRpb25zIHNldCBwcmV2aW91c2x5Lg0KPiBJ
+IGhhZCBteSBzaGFyZSBvZiB0aGlzIHdoaWxlIHdyaXRpbmcgYSB0ZXN0IGFwcCBmb3IgYSBNQVgz
+MTg1NSBJQyBhbmQgZW5kZWQgdXANCj4gY2FzdGluZyBhIGxpdHRsZSBlbmRpYW4gYXJyYXkgdG8g
+YSBiaWcgZW5kaWFuIHN0cnVjdHVyZS4NCj4gDQo+IFJlZ2FyZHMsDQo+IFBhdHJpY2sNCg0K
