@@ -1,75 +1,96 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: update hardware feature information for
- i.MX8QM
-Date: Fri, 16 Aug 2019 08:45:13 +0200
-Message-ID: <6353240b-af7e-9695-bf0e-5889e5bc808e@pengutronix.de>
-References: <20190815075638.23148-1-qiangqing.zhang@nxp.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V2] can: flexcan: fix deadlock when using self wakeup
+Date: Fri, 16 Aug 2019 06:47:13 +0000
+Message-ID: <DB7PR04MB461880A3451F057E88FB5815E6AF0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+References: <20190730024834.31182-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="jYhhSmBZsrhdtLAqrhRsH687kd9T7sFPZ"
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190815075638.23148-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20190730024834.31182-1-qiangqing.zhang@nxp.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "sean@geanix.com" <sean@geanix.com>
 Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---jYhhSmBZsrhdtLAqrhRsH687kd9T7sFPZ
-Content-Type: multipart/mixed; boundary="ZAseZrHbqzqSnu6IldzSnjd6ef4yAsKdj";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- dl-linux-imx <linux-imx@nxp.com>
-Message-ID: <6353240b-af7e-9695-bf0e-5889e5bc808e@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: update hardware feature information for
- i.MX8QM
-References: <20190815075638.23148-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20190815075638.23148-1-qiangqing.zhang@nxp.com>
-
---ZAseZrHbqzqSnu6IldzSnjd6ef4yAsKdj
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 8/15/19 9:58 AM, Joakim Zhang wrote:
-> Update hardware feature information for i.MX8QM.
->=20
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-
-Squashed into "can: flexcan: add imx8qm support"
-
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---ZAseZrHbqzqSnu6IldzSnjd6ef4yAsKdj--
-
---jYhhSmBZsrhdtLAqrhRsH687kd9T7sFPZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1WUPkACgkQWsYho5Hk
-nSBpdwgAhUQTA8ePGtDBuJygDJW1yzKKD4PGR7P1lsBDkufvrYBJe5+TsH9/uM0f
-92g/NuD4R8zgPqMUSJRC8QMYpnJ/O1fdFCmx7gdKza9E4wfHcawg18duk0H28QZv
-2IxGD5b5K12AUB4On4WCV95czfc5Ds948PFVVH6M5ztwDT/Zo9RAoqszTpX/OWYn
-hdAwbHjwfrhU5urD5gXVmQSRyZf6YNMQuzrUU1dVl3WV6O1J+t+guiXtWrZEma9k
-mSfBZukFIFiR+MclAc+cE8iyZtxT8j2SdZw/Omus/Yi/LjCn/oka2Nj5f3/6+LcM
-ZT5arN6YQQOOrW2jvxSq4ucC4kH2Sw==
-=FiKO
------END PGP SIGNATURE-----
-
---jYhhSmBZsrhdtLAqrhRsH687kd9T7sFPZ--
+DQpLaW5kbHkgUGluZy4uLg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCg0KPiAtLS0t
+LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2FraW0gWmhhbmcNCj4gU2VudDogMjAx
+OcTqN9TCMzDI1SAxMDo1Mg0KPiBUbzogbWtsQHBlbmd1dHJvbml4LmRlOyBsaW51eC1jYW5Admdl
+ci5rZXJuZWwub3JnOyBzZWFuQGdlYW5peC5jb20NCj4gQ2M6IHdnQGdyYW5kZWdnZXIuY29tOyBu
+ZXRkZXZAdmdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXgNCj4gPGxpbnV4LWlteEBueHAuY29t
+PjsgSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gU3ViamVjdDogW1BB
+VENIIFYyXSBjYW46IGZsZXhjYW46IGZpeCBkZWFkbG9jayB3aGVuIHVzaW5nIHNlbGYgd2FrZXVw
+DQo+IA0KPiBBcyByZXByb3RlZCBieSBTZWFuIE55ZWtqYWVyIGJlbG93Og0KPiBXaGVuIHN1c3Bl
+bmRpbmcsIHdoZW4gdGhlcmUgaXMgc3RpbGwgY2FuIHRyYWZmaWMgb24gdGhlIGludGVyZmFjZXMg
+dGhlIGZsZXhjYW4NCj4gaW1tZWRpYXRlbHkgd2FrZXMgdGhlIHBsYXRmb3JtIGFnYWluLiBBcyBp
+dCBzaG91bGQgOi0pLiBCdXQgaXQgdGhyb3dzIHRoaXMgZXJyb3INCj4gbXNnOg0KPiBbIDMxNjku
+Mzc4NjYxXSBQTTogbm9pcnEgc3VzcGVuZCBvZiBkZXZpY2VzIGZhaWxlZA0KPiANCj4gT24gdGhl
+IHdheSBkb3duIHRvIHN1c3BlbmQgdGhlIGludGVyZmFjZSB0aGF0IHRocm93cyB0aGUgZXJyb3Ig
+bWVzc2FnZSBkb2VzDQo+IGNhbGwgZmxleGNhbl9zdXNwZW5kIGJ1dCBmYWlscyB0byBjYWxsIGZs
+ZXhjYW5fbm9pcnFfc3VzcGVuZC4gVGhhdCBtZWFucyB0aGUNCj4gZmxleGNhbl9lbnRlcl9zdG9w
+X21vZGUgaXMgY2FsbGVkLCBidXQgb24gdGhlIHdheSBvdXQgb2Ygc3VzcGVuZCB0aGUgZHJpdmVy
+DQo+IG9ubHkgY2FsbHMgZmxleGNhbl9yZXN1bWUgYW5kIHNraXBzIGZsZXhjYW5fbm9pcnFfcmVz
+dW1lLCB0aHVzIGl0IGRvZXNuJ3QgY2FsbA0KPiBmbGV4Y2FuX2V4aXRfc3RvcF9tb2RlLiBUaGlz
+IGxlYXZlcyB0aGUgZmxleGNhbiBpbiBzdG9wIG1vZGUsIGFuZCB3aXRoIHRoZQ0KPiBjdXJyZW50
+IGRyaXZlciBpdCBjYW4ndCByZWNvdmVyIGZyb20gdGhpcyBldmVuIHdpdGggYSBzb2Z0IHJlYm9v
+dCwgaXQgcmVxdWlyZXMgYQ0KPiBoYXJkIHJlYm9vdC4NCj4gDQo+IFRoZSBiZXN0IHdheSB0byBl
+eGl0IHN0b3AgbW9kZSBpcyBpbiBXYWtlIFVwIGludGVycnVwdCBjb250ZXh0LCBhbmQgdGhlbg0K
+PiBzdXNwZW5kKCkgYW5kIHJlc3VtZSgpIGZ1bmN0aW9ucyBjYW4gYmUgc3ltbWV0cmljLiBIb3dl
+dmVyLCBzdG9wIG1vZGUNCj4gcmVxdWVzdCBhbmQgYWNrIHdpbGwgYmUgY29udHJvbGxlZCBieSBT
+Q1UoU3lzdGVtIENvbnRyb2wgVW5pdCkNCj4gZmlybXdhcmUobWFuYWdlIGNsb2NrLHBvd2VyLHN0
+b3AgbW9kZSwgZXRjLiBieSBDb3J0ZXgtTTQgY29yZSkgaW4gY29taW5nDQo+IGkuTVg4KFFNL1FY
+UCkuIEFuZCBTQ1UgZmlybXdhcmUgaW50ZXJmYWNlIGNhbid0IGJlIGF2YWlsYWJsZSBpbiBpbnRl
+cnJ1cHQNCj4gY29udGV4dC4NCj4gDQo+IEZvciBjb21wYXRpYmlsbGl0eSwgdGhlIHdha2UgdXAg
+bWVjaGFuaXNtIGNhbid0IGJlIHN5bW1ldHJpYywgc28gd2UgbmVlZA0KPiBpbl9zdG9wX21vZGUg
+aGFjay4NCj4gDQo+IEZpeGVzOiBkZTM1NzhjMTk4YzYgKCJjYW46IGZsZXhjYW46IGFkZCBzZWxm
+IHdha2V1cCBzdXBwb3J0IikNCj4gUmVwb3J0ZWQtYnk6IFNlYW4gTnlla2phZXIgPHNlYW5AZ2Vh
+bml4LmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdA
+bnhwLmNvbT4NCj4gDQo+IENoYW5nZWxvZzoNCj4gVjEtPlYyOg0KPiAJKiBhZGQgUmVwb3J0ZWQt
+YnkgdGFnLg0KPiAJKiByZWJhc2Ugb24gcGF0Y2g6IGNhbjpmbGV4Y2FuOmZpeCBzdG9wIG1vZGUg
+YWNrbm93bGVkZ21lbnQuDQo+IC0tLQ0KPiAgZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyB8IDIz
+ICsrKysrKysrKysrKysrKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMjMgaW5zZXJ0aW9u
+cygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2
+ZXJzL25ldC9jYW4vZmxleGNhbi5jIGluZGV4DQo+IGZjZWM4YmNiNTNkNi4uMWRiZWM4NjhkM2Vh
+IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ICsrKyBiL2RyaXZl
+cnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gQEAgLTI4Miw2ICsyODIsNyBAQCBzdHJ1Y3QgZmxleGNh
+bl9wcml2IHsNCj4gIAljb25zdCBzdHJ1Y3QgZmxleGNhbl9kZXZ0eXBlX2RhdGEgKmRldnR5cGVf
+ZGF0YTsNCj4gIAlzdHJ1Y3QgcmVndWxhdG9yICpyZWdfeGNlaXZlcjsNCj4gIAlzdHJ1Y3QgZmxl
+eGNhbl9zdG9wX21vZGUgc3RtOw0KPiArCWJvb2wgaW5fc3RvcF9tb2RlOw0KPiANCj4gIAkvKiBS
+ZWFkIGFuZCBXcml0ZSBBUElzICovDQo+ICAJdTMyICgqcmVhZCkodm9pZCBfX2lvbWVtICphZGRy
+KTsNCj4gQEAgLTE2MzUsNiArMTYzNiw4IEBAIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgZmxl
+eGNhbl9zdXNwZW5kKHN0cnVjdA0KPiBkZXZpY2UgKmRldmljZSkNCj4gIAkJCWVyciA9IGZsZXhj
+YW5fZW50ZXJfc3RvcF9tb2RlKHByaXYpOw0KPiAgCQkJaWYgKGVycikNCj4gIAkJCQlyZXR1cm4g
+ZXJyOw0KPiArDQo+ICsJCQlwcml2LT5pbl9zdG9wX21vZGUgPSB0cnVlOw0KPiAgCQl9IGVsc2Ug
+ew0KPiAgCQkJZXJyID0gZmxleGNhbl9jaGlwX2Rpc2FibGUocHJpdik7DQo+ICAJCQlpZiAoZXJy
+KQ0KPiBAQCAtMTY1OSw2ICsxNjYyLDE1IEBAIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgZmxl
+eGNhbl9yZXN1bWUoc3RydWN0DQo+IGRldmljZSAqZGV2aWNlKQ0KPiAgCQluZXRpZl9kZXZpY2Vf
+YXR0YWNoKGRldik7DQo+ICAJCW5ldGlmX3N0YXJ0X3F1ZXVlKGRldik7DQo+ICAJCWlmIChkZXZp
+Y2VfbWF5X3dha2V1cChkZXZpY2UpKSB7DQo+ICsJCQlpZiAocHJpdi0+aW5fc3RvcF9tb2RlKSB7
+DQo+ICsJCQkJZmxleGNhbl9lbmFibGVfd2FrZXVwX2lycShwcml2LCBmYWxzZSk7DQo+ICsJCQkJ
+ZXJyID0gZmxleGNhbl9leGl0X3N0b3BfbW9kZShwcml2KTsNCj4gKwkJCQlpZiAoZXJyKQ0KPiAr
+CQkJCQlyZXR1cm4gIGVycjsNCj4gKw0KPiArCQkJCXByaXYtPmluX3N0b3BfbW9kZSA9IGZhbHNl
+Ow0KPiArCQkJfQ0KPiArDQo+ICAJCQlkaXNhYmxlX2lycV93YWtlKGRldi0+aXJxKTsNCj4gIAkJ
+fSBlbHNlIHsNCj4gIAkJCWVyciA9IGZsZXhjYW5fY2hpcF9lbmFibGUocHJpdik7DQo+IEBAIC0x
+Njc0LDYgKzE2ODYsMTEgQEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZA0KPiBmbGV4Y2FuX25v
+aXJxX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2aWNlKQ0KPiAgCXN0cnVjdCBuZXRfZGV2aWNl
+ICpkZXYgPSBkZXZfZ2V0X2RydmRhdGEoZGV2aWNlKTsNCj4gIAlzdHJ1Y3QgZmxleGNhbl9wcml2
+ICpwcml2ID0gbmV0ZGV2X3ByaXYoZGV2KTsNCj4gDQo+ICsJLyogTmVlZCB0byBlbmFibGUgd2Fr
+ZXVwIGludGVycnVwdCBpbiBub2lycSBzdXNwZW5kIHN0YWdlLiBPdGhlcndpc2UsDQo+ICsJICog
+aXQgd2lsbCB0cmlnZ2VyIGNvbnRpbnVvdXNseSB3YWtldXAgaW50ZXJydXB0IGlmIHRoZSB3YWtl
+dXAgZXZlbnQNCj4gKwkgKiBjb21lcyBiZWZvcmUgbm9pcnEgc3VzcGVuZCBzdGFnZSwgYW5kIHNp
+bXVsdGFuZW91c2x5IGl0IGhhcyBlbnRlcg0KPiArCSAqIHRoZSBzdG9wIG1vZGUuDQo+ICsJICov
+DQo+ICAJaWYgKG5ldGlmX3J1bm5pbmcoZGV2KSAmJiBkZXZpY2VfbWF5X3dha2V1cChkZXZpY2Up
+KQ0KPiAgCQlmbGV4Y2FuX2VuYWJsZV93YWtldXBfaXJxKHByaXYsIHRydWUpOw0KPiANCj4gQEAg
+LTE2ODYsMTEgKzE3MDMsMTcgQEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZA0KPiBmbGV4Y2Fu
+X25vaXJxX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXZpY2UpDQo+ICAJc3RydWN0IGZsZXhjYW5f
+cHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQo+ICAJaW50IGVycjsNCj4gDQo+ICsJLyog
+TmVlZCB0byBleGl0IHN0b3AgbW9kZSBpbiBub2lycSByZXN1bWUgc3RhZ2UuIE90aGVyd2lzZSwg
+aXQgd2lsbA0KPiArCSAqIHRyaWdnZXIgY29udGludW91c2x5IHdha2V1cCBpbnRlcnJ1cHQgaWYg
+dGhlIHdha2V1cCBldmVudCBjb21lcywNCj4gKwkgKiBhbmQgc2ltdWx0YW5lb3VzbHkgaXQgaGFz
+IHN0aWxsIGluIHN0b3AgbW9kZS4NCj4gKwkgKi8NCj4gIAlpZiAobmV0aWZfcnVubmluZyhkZXYp
+ICYmIGRldmljZV9tYXlfd2FrZXVwKGRldmljZSkpIHsNCj4gIAkJZmxleGNhbl9lbmFibGVfd2Fr
+ZXVwX2lycShwcml2LCBmYWxzZSk7DQo+ICAJCWVyciA9IGZsZXhjYW5fZXhpdF9zdG9wX21vZGUo
+cHJpdik7DQo+ICAJCWlmIChlcnIpDQo+ICAJCQlyZXR1cm4gZXJyOw0KPiArDQo+ICsJCXByaXYt
+PmluX3N0b3BfbW9kZSA9IGZhbHNlOw0KPiAgCX0NCj4gDQo+ICAJcmV0dXJuIDA7DQo+IC0tDQo+
+IDIuMTcuMQ0KDQo=
