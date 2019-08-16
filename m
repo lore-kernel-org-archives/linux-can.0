@@ -1,52 +1,49 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: disable completely the ECC mechanism
-Date: Fri, 16 Aug 2019 08:37:30 +0200
-Message-ID: <18178f51-2a64-0401-839c-36f774a22fbe@pengutronix.de>
-References: <20190815075806.23212-1-qiangqing.zhang@nxp.com>
+Subject: Re: [PATCH] can: flexcan: update hardware feature information for
+ i.MX8QM
+Date: Fri, 16 Aug 2019 08:45:13 +0200
+Message-ID: <6353240b-af7e-9695-bf0e-5889e5bc808e@pengutronix.de>
+References: <20190815075638.23148-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="18E0YIb4pnwpQXeRnATY6Y4QMQXHx0j2X"
+ boundary="jYhhSmBZsrhdtLAqrhRsH687kd9T7sFPZ"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190815075806.23212-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20190815075638.23148-1-qiangqing.zhang@nxp.com>
 Sender: netdev-owner@vger.kernel.org
 To: Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "stefan@agner.ch" <stefan@agner.ch>, dl-linux-imx <linux-imx@nxp.com>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---18E0YIb4pnwpQXeRnATY6Y4QMQXHx0j2X
-Content-Type: multipart/mixed; boundary="A3iWmuuPEigh9yYBMKcMtGNdLf2iiSztH";
+--jYhhSmBZsrhdtLAqrhRsH687kd9T7sFPZ
+Content-Type: multipart/mixed; boundary="ZAseZrHbqzqSnu6IldzSnjd6ef4yAsKdj";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: Joakim Zhang <qiangqing.zhang@nxp.com>,
  "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: "wg@grandegger.com" <wg@grandegger.com>,
  "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "stefan@agner.ch" <stefan@agner.ch>, dl-linux-imx <linux-imx@nxp.com>
-Message-ID: <18178f51-2a64-0401-839c-36f774a22fbe@pengutronix.de>
-Subject: Re: [PATCH] can: flexcan: disable completely the ECC mechanism
-References: <20190815075806.23212-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20190815075806.23212-1-qiangqing.zhang@nxp.com>
+ dl-linux-imx <linux-imx@nxp.com>
+Message-ID: <6353240b-af7e-9695-bf0e-5889e5bc808e@pengutronix.de>
+Subject: Re: [PATCH] can: flexcan: update hardware feature information for
+ i.MX8QM
+References: <20190815075638.23148-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20190815075638.23148-1-qiangqing.zhang@nxp.com>
 
---A3iWmuuPEigh9yYBMKcMtGNdLf2iiSztH
+--ZAseZrHbqzqSnu6IldzSnjd6ef4yAsKdj
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 8/15/19 10:00 AM, Joakim Zhang wrote:
-> The ECC(memory error detection and correction) mechanism can be
-> activated or not, controlled by the ECCDIS bit in CAN_MECR. When
-> disabled, updates on indications and reporting registers are stopped.
-> So if want to disable ECC completely, had better assert ECCDIS bit,
-> not just mask the related interrupts.
+On 8/15/19 9:58 AM, Joakim Zhang wrote:
+> Update hardware feature information for i.MX8QM.
 >=20
-> Fixes:cdce844865be("can: flexcan: add vf610 support for FlexCAN")
 > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-Added to can.
+Squashed into "can: flexcan: add imx8qm support"
 
-tnx
+Tnx,
 Marc
 
 --=20
@@ -56,23 +53,23 @@ Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
 Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
---A3iWmuuPEigh9yYBMKcMtGNdLf2iiSztH--
+--ZAseZrHbqzqSnu6IldzSnjd6ef4yAsKdj--
 
---18E0YIb4pnwpQXeRnATY6Y4QMQXHx0j2X
+--jYhhSmBZsrhdtLAqrhRsH687kd9T7sFPZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1WTyoACgkQWsYho5Hk
-nSBqagf/XyBojzLJrtEUEfjyQK6/rbTt8TNegezyPeZcsxzB8G2VCrBXVpUoRtWq
-eOOo2vmFhSa+65hr0vDzDsWqRdSC8ce9RiSsV+D+DZP7ejWDYigaW5CrIVF3lx1u
-59SgXR5O2x7ZEye3e3X+jyax6Un28qH+v0BuUlcfrLuBzDQ8hvOQ+e1mvGH0csNM
-NJaZ9Zg/iyFQyyVC9Ae7emdZmMJUmCpoDc2e9srGiP60Tcv4fwKnTrdCMUEFMcbk
-GrTOihO+X2CP/ZHxQbUlsi8YB8tbTNV61ywtw1TCddtv/vAMLdyFJTcR2eP7VdE7
-vJ4ZMMVWXPxCcmoB5lkRPbBAhpZjYQ==
-=y+VK
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1WUPkACgkQWsYho5Hk
+nSBpdwgAhUQTA8ePGtDBuJygDJW1yzKKD4PGR7P1lsBDkufvrYBJe5+TsH9/uM0f
+92g/NuD4R8zgPqMUSJRC8QMYpnJ/O1fdFCmx7gdKza9E4wfHcawg18duk0H28QZv
+2IxGD5b5K12AUB4On4WCV95czfc5Ds948PFVVH6M5ztwDT/Zo9RAoqszTpX/OWYn
+hdAwbHjwfrhU5urD5gXVmQSRyZf6YNMQuzrUU1dVl3WV6O1J+t+guiXtWrZEma9k
+mSfBZukFIFiR+MclAc+cE8iyZtxT8j2SdZw/Omus/Yi/LjCn/oka2Nj5f3/6+LcM
+ZT5arN6YQQOOrW2jvxSq4ucC4kH2Sw==
+=FiKO
 -----END PGP SIGNATURE-----
 
---18E0YIb4pnwpQXeRnATY6Y4QMQXHx0j2X--
+--jYhhSmBZsrhdtLAqrhRsH687kd9T7sFPZ--
