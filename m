@@ -1,36 +1,53 @@
 From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH 2/2] dt-bindings: can: flexcan: add can wakeup property
-Date: Tue, 20 Aug 2019 11:10:45 +0200
-Message-ID: <9e152f0d-fd1c-cb6f-2d9a-730804f8ec41@geanix.com>
-References: <20190409083949.27917-1-sean@geanix.com>
- <20190409083949.27917-2-sean@geanix.com> <20190429173930.GA11283@bogus>
+Subject: Re: [PATCH] can: flexcan: free error skb if enqueueing failed
+Date: Tue, 20 Aug 2019 11:49:46 +0200
+Message-ID: <6bddb702-e9ba-1c9e-7d7a-eb974d2e0fdd@geanix.com>
+References: <20190715185308.104333-1-martin@geanix.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190429173930.GA11283@bogus>
+In-Reply-To: <20190715185308.104333-1-martin@geanix.com>
 Content-Language: en-US-large
 Sender: netdev-owner@vger.kernel.org
-To: linux-can@vger.kernel.org, mkl@pengutronix.de
-Cc: Rob Herring <robh@kernel.org>, netdev@vger.kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org
+To: =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc: "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
+CC'ing Joakim Zhang
 
-
-On 29/04/2019 19.39, Rob Herring wrote:
-> On Tue,  9 Apr 2019 10:39:49 +0200, Sean Nyekjaer wrote:
->> add wakeup-source boolean property.
->>
->> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
->> ---
->>   Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 2 ++
->>   1 file changed, 2 insertions(+)
->>
+On 15/07/2019 20.53, Martin Hundebøll wrote:
+> If the call to can_rx_offload_queue_sorted() fails, the passed skb isn't
+> consumed, so the caller must do so.
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
->
-This doesn't seem to be applied. PATCH 1/2 in this series is applied.
-
-In any case which repo does this patch belong to?
-
-/Sean
+> Fixes: 30164759db1b ("can: flexcan: make use of rx-offload's irq_offload_fifo")
+> Signed-off-by: Martin Hundebøll <martin@geanix.com>
+> ---
+>   drivers/net/can/flexcan.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index 1c66fb2ad76b..21f39e805d42 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -688,7 +688,8 @@ static void flexcan_irq_bus_err(struct net_device *dev, u32 reg_esr)
+>   	if (tx_errors)
+>   		dev->stats.tx_errors++;
+>   
+> -	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
+> +	if (can_rx_offload_queue_sorted(&priv->offload, skb, timestamp))
+> +		kfree_skb(skb);
+>   }
+>   
+>   static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
+> @@ -732,7 +733,8 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
+>   	if (unlikely(new_state == CAN_STATE_BUS_OFF))
+>   		can_bus_off(dev);
+>   
+> -	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
+> +	if (can_rx_offload_queue_sorted(&priv->offload, skb, timestamp))
+> +		kfree_skb(skb);
+>   }
+>   
+>   static inline struct flexcan_priv *rx_offload_to_priv(struct can_rx_offload *offload)
+> 
