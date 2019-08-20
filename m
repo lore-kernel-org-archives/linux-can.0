@@ -1,53 +1,54 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH] can: flexcan: free error skb if enqueueing failed
-Date: Tue, 20 Aug 2019 11:49:46 +0200
-Message-ID: <6bddb702-e9ba-1c9e-7d7a-eb974d2e0fdd@geanix.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH] can: flexcan: free error skb if enqueueing failed
+Date: Tue, 20 Aug 2019 10:12:10 +0000
+Message-ID: <DB7PR04MB46189C38B1747F1C3AC4E58FE6AB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20190715185308.104333-1-martin@geanix.com>
+ <6bddb702-e9ba-1c9e-7d7a-eb974d2e0fdd@geanix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190715185308.104333-1-martin@geanix.com>
-Content-Language: en-US-large
+In-Reply-To: <6bddb702-e9ba-1c9e-7d7a-eb974d2e0fdd@geanix.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>
+To: Sean Nyekjaer <sean@geanix.com>, =?utf-8?B?TWFydGluIEh1bmRlYsO4bGw=?= <martin@geanix.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "David S . Miller" <davem@davemloft.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-CC'ing Joakim Zhang
-
-On 15/07/2019 20.53, Martin Hundebøll wrote:
-> If the call to can_rx_offload_queue_sorted() fails, the passed skb isn't
-> consumed, so the caller must do so.
-> 
-> Fixes: 30164759db1b ("can: flexcan: make use of rx-offload's irq_offload_fifo")
-> Signed-off-by: Martin Hundebøll <martin@geanix.com>
-> ---
->   drivers/net/can/flexcan.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index 1c66fb2ad76b..21f39e805d42 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -688,7 +688,8 @@ static void flexcan_irq_bus_err(struct net_device *dev, u32 reg_esr)
->   	if (tx_errors)
->   		dev->stats.tx_errors++;
->   
-> -	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-> +	if (can_rx_offload_queue_sorted(&priv->offload, skb, timestamp))
-> +		kfree_skb(skb);
->   }
->   
->   static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
-> @@ -732,7 +733,8 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
->   	if (unlikely(new_state == CAN_STATE_BUS_OFF))
->   		can_bus_off(dev);
->   
-> -	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-> +	if (can_rx_offload_queue_sorted(&priv->offload, skb, timestamp))
-> +		kfree_skb(skb);
->   }
->   
->   static inline struct flexcan_priv *rx_offload_to_priv(struct can_rx_offload *offload)
-> 
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
+YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOeW5tDjmnIgyMOaXpSAxNzo1MA0KPiBUbzogTWFy
+dGluIEh1bmRlYsO4bGwgPG1hcnRpbkBnZWFuaXguY29tPjsgV29sZmdhbmcgR3JhbmRlZ2dlcg0K
+PiA8d2dAZ3JhbmRlZ2dlci5jb20+OyBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4
+LmRlPjsNCj4gbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBDYzogRGF2aWQgUyAuIE1pbGxl
+ciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IEpvYWtpbQ0K
+PiBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hd
+IGNhbjogZmxleGNhbjogZnJlZSBlcnJvciBza2IgaWYgZW5xdWV1ZWluZyBmYWlsZWQNCj4gDQo+
+IENDJ2luZyBKb2FraW0gWmhhbmcNCg0KTG9va3MgZ29vZCwgc28gYWRkIG15IHRhZzoNCkFja2Vk
+LWJ5OiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPg0KDQpCZXN0IFJlZ2Fy
+ZHMsDQpKb2FraW0gWmhhbmcNCj4gT24gMTUvMDcvMjAxOSAyMC41MywgTWFydGluIEh1bmRlYsO4
+bGwgd3JvdGU6DQo+ID4gSWYgdGhlIGNhbGwgdG8gY2FuX3J4X29mZmxvYWRfcXVldWVfc29ydGVk
+KCkgZmFpbHMsIHRoZSBwYXNzZWQgc2tiDQo+ID4gaXNuJ3QgY29uc3VtZWQsIHNvIHRoZSBjYWxs
+ZXIgbXVzdCBkbyBzby4NCj4gPg0KPiA+IEZpeGVzOiAzMDE2NDc1OWRiMWIgKCJjYW46IGZsZXhj
+YW46IG1ha2UgdXNlIG9mIHJ4LW9mZmxvYWQncw0KPiA+IGlycV9vZmZsb2FkX2ZpZm8iKQ0KPiA+
+IFNpZ25lZC1vZmYtYnk6IE1hcnRpbiBIdW5kZWLDuGxsIDxtYXJ0aW5AZ2Vhbml4LmNvbT4NCj4g
+PiAtLS0NCj4gPiAgIGRyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgfCA2ICsrKystLQ0KPiA+ICAg
+MSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gPg0KPiA+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJpdmVycy9uZXQvY2Fu
+L2ZsZXhjYW4uYw0KPiA+IGluZGV4IDFjNjZmYjJhZDc2Yi4uMjFmMzllODA1ZDQyIDEwMDY0NA0K
+PiA+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiArKysgYi9kcml2ZXJzL25l
+dC9jYW4vZmxleGNhbi5jDQo+ID4gQEAgLTY4OCw3ICs2ODgsOCBAQCBzdGF0aWMgdm9pZCBmbGV4
+Y2FuX2lycV9idXNfZXJyKHN0cnVjdCBuZXRfZGV2aWNlDQo+ICpkZXYsIHUzMiByZWdfZXNyKQ0K
+PiA+ICAgCWlmICh0eF9lcnJvcnMpDQo+ID4gICAJCWRldi0+c3RhdHMudHhfZXJyb3JzKys7DQo+
+ID4NCj4gPiAtCWNhbl9yeF9vZmZsb2FkX3F1ZXVlX3NvcnRlZCgmcHJpdi0+b2ZmbG9hZCwgc2ti
+LCB0aW1lc3RhbXApOw0KPiA+ICsJaWYgKGNhbl9yeF9vZmZsb2FkX3F1ZXVlX3NvcnRlZCgmcHJp
+di0+b2ZmbG9hZCwgc2tiLCB0aW1lc3RhbXApKQ0KPiA+ICsJCWtmcmVlX3NrYihza2IpOw0KPiA+
+ICAgfQ0KPiA+DQo+ID4gICBzdGF0aWMgdm9pZCBmbGV4Y2FuX2lycV9zdGF0ZShzdHJ1Y3QgbmV0
+X2RldmljZSAqZGV2LCB1MzIgcmVnX2VzcikNCj4gPiBAQCAtNzMyLDcgKzczMyw4IEBAIHN0YXRp
+YyB2b2lkIGZsZXhjYW5faXJxX3N0YXRlKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsDQo+IHUzMiBy
+ZWdfZXNyKQ0KPiA+ICAgCWlmICh1bmxpa2VseShuZXdfc3RhdGUgPT0gQ0FOX1NUQVRFX0JVU19P
+RkYpKQ0KPiA+ICAgCQljYW5fYnVzX29mZihkZXYpOw0KPiA+DQo+ID4gLQljYW5fcnhfb2ZmbG9h
+ZF9xdWV1ZV9zb3J0ZWQoJnByaXYtPm9mZmxvYWQsIHNrYiwgdGltZXN0YW1wKTsNCj4gPiArCWlm
+IChjYW5fcnhfb2ZmbG9hZF9xdWV1ZV9zb3J0ZWQoJnByaXYtPm9mZmxvYWQsIHNrYiwgdGltZXN0
+YW1wKSkNCj4gPiArCQlrZnJlZV9za2Ioc2tiKTsNCj4gPiAgIH0NCj4gPg0KPiA+ICAgc3RhdGlj
+IGlubGluZSBzdHJ1Y3QgZmxleGNhbl9wcml2ICpyeF9vZmZsb2FkX3RvX3ByaXYoc3RydWN0DQo+
+ID4gY2FuX3J4X29mZmxvYWQgKm9mZmxvYWQpDQo+ID4NCg==
