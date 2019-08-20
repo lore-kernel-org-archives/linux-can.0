@@ -1,156 +1,163 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH REPOST 1/2] can: flexcan: fix deadlock when using self
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: Re: [PATCH REPOST 1/2] can: flexcan: fix deadlock when using self
  wakeup
-Date: Tue, 20 Aug 2019 11:24:35 +0000
-Message-ID: <DB7PR04MB4618A1F984F2281C66959B06E6AB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+Date: Tue, 20 Aug 2019 13:55:52 +0200
+Message-ID: <35190c5b-f8be-8784-5b4f-32a691a6cffe@geanix.com>
 References: <20190816081749.19300-1-qiangqing.zhang@nxp.com>
  <20190816081749.19300-2-qiangqing.zhang@nxp.com>
  <dd8f5269-8403-702b-b054-e031423ffc73@geanix.com>
+ <DB7PR04MB4618A1F984F2281C66959B06E6AB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <dd8f5269-8403-702b-b054-e031423ffc73@geanix.com>
-Content-Language: en-US
+In-Reply-To: <DB7PR04MB4618A1F984F2281C66959B06E6AB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+Content-Language: en-US-large
 Sender: netdev-owner@vger.kernel.org
-To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, =?utf-8?B?TWFydGluIEh1bmRlYsO4bGw=?= <martin@geanix.com>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
-YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOeW5tDjmnIgyMOaXpSAxODoyNQ0KPiBUbzogSm9h
-a2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT47IG1rbEBwZW5ndXRyb25peC5kZTsN
-Cj4gbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBDYzogd2dAZ3JhbmRlZ2dlci5jb207IG5l
-dGRldkB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteA0KPiA8bGludXgtaW14QG54cC5jb20+
-OyBNYXJ0aW4gSHVuZGViw7hsbCA8bWFydGluQGdlYW5peC5jb20+DQo+IFN1YmplY3Q6IFJlOiBb
-UEFUQ0ggUkVQT1NUIDEvMl0gY2FuOiBmbGV4Y2FuOiBmaXggZGVhZGxvY2sgd2hlbiB1c2luZyBz
-ZWxmDQo+IHdha2V1cA0KPiANCj4gDQo+IA0KPiBPbiAxNi8wOC8yMDE5IDEwLjIwLCBKb2FraW0g
-Wmhhbmcgd3JvdGU6DQo+ID4gQXMgcmVwcm90ZWQgYnkgU2VhbiBOeWVramFlciBiZWxvdzoNCj4g
-PiBXaGVuIHN1c3BlbmRpbmcsIHdoZW4gdGhlcmUgaXMgc3RpbGwgY2FuIHRyYWZmaWMgb24gdGhl
-IGludGVyZmFjZXMgdGhlDQo+ID4gZmxleGNhbiBpbW1lZGlhdGVseSB3YWtlcyB0aGUgcGxhdGZv
-cm0gYWdhaW4uIEFzIGl0IHNob3VsZCA6LSkuIEJ1dCBpdA0KPiA+IHRocm93cyB0aGlzIGVycm9y
-IG1zZzoNCj4gPiBbIDMxNjkuMzc4NjYxXSBQTTogbm9pcnEgc3VzcGVuZCBvZiBkZXZpY2VzIGZh
-aWxlZA0KPiA+DQo+ID4gT24gdGhlIHdheSBkb3duIHRvIHN1c3BlbmQgdGhlIGludGVyZmFjZSB0
-aGF0IHRocm93cyB0aGUgZXJyb3IgbWVzc2FnZQ0KPiA+IGRvZXMgY2FsbCBmbGV4Y2FuX3N1c3Bl
-bmQgYnV0IGZhaWxzIHRvIGNhbGwgZmxleGNhbl9ub2lycV9zdXNwZW5kLg0KPiA+IFRoYXQgbWVh
-bnMgdGhlIGZsZXhjYW5fZW50ZXJfc3RvcF9tb2RlIGlzIGNhbGxlZCwgYnV0IG9uIHRoZSB3YXkg
-b3V0DQo+ID4gb2Ygc3VzcGVuZCB0aGUgZHJpdmVyIG9ubHkgY2FsbHMgZmxleGNhbl9yZXN1bWUg
-YW5kIHNraXBzDQo+ID4gZmxleGNhbl9ub2lycV9yZXN1bWUsIHRodXMgaXQgZG9lc24ndCBjYWxs
-IGZsZXhjYW5fZXhpdF9zdG9wX21vZGUuDQo+ID4gVGhpcyBsZWF2ZXMgdGhlIGZsZXhjYW4gaW4g
-c3RvcCBtb2RlLCBhbmQgd2l0aCB0aGUgY3VycmVudCBkcml2ZXIgaXQNCj4gPiBjYW4ndCByZWNv
-dmVyIGZyb20gdGhpcyBldmVuIHdpdGggYSBzb2Z0IHJlYm9vdCwgaXQgcmVxdWlyZXMgYSBoYXJk
-IHJlYm9vdC4NCj4gPg0KPiA+IFRoZSBiZXN0IHdheSB0byBleGl0IHN0b3AgbW9kZSBpcyBpbiBX
-YWtlIFVwIGludGVycnVwdCBjb250ZXh0LCBhbmQNCj4gPiB0aGVuDQo+ID4gc3VzcGVuZCgpIGFu
-ZCByZXN1bWUoKSBmdW5jdGlvbnMgY2FuIGJlIHN5bW1ldHJpYy4gSG93ZXZlciwgc3RvcCBtb2Rl
-DQo+ID4gcmVxdWVzdCBhbmQgYWNrIHdpbGwgYmUgY29udHJvbGxlZCBieSBTQ1UoU3lzdGVtIENv
-bnRyb2wgVW5pdCkNCj4gPiBmaXJtd2FyZShtYW5hZ2UgY2xvY2sscG93ZXIsc3RvcCBtb2RlLCBl
-dGMuIGJ5IENvcnRleC1NNCBjb3JlKSBpbg0KPiA+IGNvbWluZyBpLk1YOChRTS9RWFApLiBBbmQg
-U0NVIGZpcm13YXJlIGludGVyZmFjZSBjYW4ndCBiZSBhdmFpbGFibGUgaW4NCj4gaW50ZXJydXB0
-IGNvbnRleHQuDQo+ID4NCj4gPiBGb3IgY29tcGF0aWJpbGxpdHksIHRoZSB3YWtlIHVwIG1lY2hh
-bmlzbSBjYW4ndCBiZSBzeW1tZXRyaWMsIHNvIHdlDQo+ID4gbmVlZCBpbl9zdG9wX21vZGUgaGFj
-ay4NCj4gPg0KPiA+IEZpeGVzOiBkZTM1NzhjMTk4YzYgKCJjYW46IGZsZXhjYW46IGFkZCBzZWxm
-IHdha2V1cCBzdXBwb3J0IikNCj4gPiBSZXBvcnRlZC1ieTogU2VhbiBOeWVramFlciA8c2VhbkBn
-ZWFuaXguY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpo
-YW5nQG54cC5jb20+DQo+ID4NCj4gDQo+IFVuZm9ydHVuYXRseSBpdCdzIHN0aWxsIHBvc3NpYmxl
-IHRvIHJlcHJvZHVjZSB0aGUgZGVhZGxvY2sgd2l0aCB0aGlzIHBhdGNoLi4uDQo+IA0KPiBbICA2
-ODkuOTIxNzE3XSBmbGV4Y2FuOiBwcm9iZSBvZiAyMDk0MDAwLmZsZXhjYW4gZmFpbGVkIHdpdGgg
-ZXJyb3IgLTExMA0KPiANCj4gTXkgdGVzdCBzZXR1cDoNCj4gUEMgd2l0aCBDQU4tVVNCIGRvbmds
-ZSBjb25uZWN0ZWQgdG8gY2FuMCBhbmQgY2FuMS4NCj4gDQo+IFBDOg0KPiAkIHdoaWxlIHRydWU7
-IGRvIGNhbnNlbmQgY2FuMCAnMTIzI0RFQURCRUVGJzsgZG9uZQ0KPiANCj4gaU1YNnVsbDoNCj4g
-cm9vdEBpd2cyNjp+IyBzeXN0ZW1jdGwgc3VzcGVuZA0KPiANCj4gDQo+IFsgIDM2NS44NTgwNTRd
-IHN5c3RlbWRbMV06IFJlYWNoZWQgdGFyZ2V0IFNsZWVwLg0KPiByb290QGl3ZzI2On4jIFsgIDM2
-NS45Mzk4MjZdIHN5c3RlbWRbMV06IFN0YXJ0aW5nIFN1c3BlbmQuLi4NCj4gWyAgMzY2LjExNTgz
-OV0gc3lzdGVtZC1zbGVlcFsyNDhdOiBTdXNwZW5kaW5nIHN5c3RlbS4uLg0KPiBbICAzNjYuNTE3
-OTQ5XSBkcG1fcnVuX2NhbGxiYWNrKCk6IHBsYXRmb3JtX3BtX3N1c3BlbmQrMHgwLzB4NWMgcmV0
-dXJucw0KPiAtMTEwIFsgIDM2Ni41MTgyNDldIFBNOiBEZXZpY2UgMjA5NDAwMC5mbGV4Y2FuIGZh
-aWxlZCB0byBzdXNwZW5kOiBlcnJvciAtMTEwDQo+IFsgIDM2Ni41MTg0MDZdIFBNOiBTb21lIGRl
-dmljZXMgZmFpbGVkIHRvIHN1c3BlbmQsIG9yIGVhcmx5IHdha2UgZXZlbnQNCj4gZGV0ZWN0ZWQg
-WyAgMzY2LjczMjE2Ml0gZHBtX3J1bl9jYWxsYmFjaygpOg0KPiBwbGF0Zm9ybV9wbV9zdXNwZW5k
-KzB4MC8weDVjIHJldHVybnMgLTExMCBbICAzNjYuNzMyMjg1XSBQTTogRGV2aWNlDQo+IDIwOTAw
-MDAuZmxleGNhbiBmYWlsZWQgdG8gc3VzcGVuZDogZXJyb3IgLTExMCBbICAzNjYuNzMyMzMwXSBQ
-TTogU29tZQ0KPiBkZXZpY2VzIGZhaWxlZCB0byBzdXNwZW5kLCBvciBlYXJseSB3YWtlIGV2ZW50
-IGRldGVjdGVkIFsgIDM2Ni44OTA2MzddDQo+IHN5c3RlbWQtc2xlZXBbMjQ4XTogU3lzdGVtIHJl
-c3VtZWQuDQoNCkNBTjEsIENBTjAgc3VzcGVuZGVkIGZhaWxlZCwgdGhlbiBDQU4wLCBDQU4xIHJl
-c3VtZWQgYmFjaywgc28gQ0FOMC9DQU4xIGNhbiB3b3JrIGZpbmUuDQoNCj4gWyAgMzY2LjkyMzA2
-Ml0gc3lzdGVtZFsxXTogU3RhcnRlZCBTdXNwZW5kLg0KPiBbICAzNjYuOTQyODE5XSBzeXN0ZW1k
-WzFdOiBzbGVlcC50YXJnZXQ6IFVuaXQgbm90IG5lZWRlZCBhbnltb3JlLiBTdG9wcGluZy4NCj4g
-WyAgMzY2Ljk1NDc5MV0gc3lzdGVtZFsxXTogU3RvcHBlZCB0YXJnZXQgU2xlZXAuDQo+IFsgIDM2
-Ni45NjI0MDJdIHN5c3RlbWRbMV06IFJlYWNoZWQgdGFyZ2V0IFN1c3BlbmQuDQo+IFsgIDM2Ni45
-Nzc1NDZdIHN5c3RlbWQtbG9naW5kWzEzNV06IE9wZXJhdGlvbiAnc2xlZXAnIGZpbmlzaGVkLg0K
-PiBbICAzNjYuOTc5MTk0XSBzeXN0ZW1kWzFdOiBzdXNwZW5kLnRhcmdldDogVW5pdCBub3QgbmVl
-ZGVkIGFueW1vcmUuDQo+IFN0b3BwaW5nLg0KPiBbICAzNjYuOTkzODMxXSBzeXN0ZW1kWzFdOiBT
-dG9wcGVkIHRhcmdldCBTdXNwZW5kLg0KPiBbICAzNjcuMTM5OTcyXSBzeXN0ZW1kLW5ldHdvcmtk
-WzIyMF06IHVzYjA6IExvc3QgY2FycmllciBbICAzNjcuMjk0MDc3XQ0KPiBzeXN0ZW1kLW5ldHdv
-cmtkWzIyMF06IHVzYjA6IEdhaW5lZCBjYXJyaWVyDQo+IA0KPiByb290QGl3ZzI2On4jIGNhbmR1
-bXAgY2FuMCB8IGhlYWQgLW4gMg0KPiANCj4gICAgY2FuMCAgMTIzICAgWzRdICBERSBBRCBCRSBF
-Rg0KPiAgICBjYW4wICAxMjMgICBbNF0gIERFIEFEIEJFIEVGDQo+IHJvb3RAaXdnMjY6fiMgY2Fu
-ZHVtcCBjYW4xIHwgaGVhZCAtbiAyDQo+IA0KPiAgICBjYW4xICAxMjMgICBbNF0gIERFIEFEIEJF
-IEVGDQo+ICAgIGNhbjEgIDEyMyAgIFs0XSAgREUgQUQgQkUgRUYNCj4gcm9vdEBpd2cyNjp+IyBz
-eXN0ZW1jdGwgc3VzcGVuZA0KPiANCj4gcm9vdEBpd2cyNjp+IyBbICAzODUuMTA2NjU4XSBzeXN0
-ZW1kWzFdOiBSZWFjaGVkIHRhcmdldCBTbGVlcC4NCj4gWyAgMzg1LjE0NzYwMl0gc3lzdGVtZFsx
-XTogU3RhcnRpbmcgU3VzcGVuZC4uLg0KPiBbICAzODUuMjQ2NDIxXSBzeXN0ZW1kLXNsZWVwWzI2
-MF06IFN1c3BlbmRpbmcgc3lzdGVtLi4uDQo+IFsgIDM4NS42MzQ3MzNdIGRwbV9ydW5fY2FsbGJh
-Y2soKTogcGxhdGZvcm1fcG1fc3VzcGVuZCsweDAvMHg1YyByZXR1cm5zDQo+IC0xMTAgWyAgMzg1
-LjYzNDg1NV0gUE06IERldmljZSAyMDkwMDAwLmZsZXhjYW4gZmFpbGVkIHRvIHN1c3BlbmQ6IGVy
-cm9yIC0xMTANCj4gWyAgMzg1LjYzNDg5N10gUE06IFNvbWUgZGV2aWNlcyBmYWlsZWQgdG8gc3Vz
-cGVuZCwgb3IgZWFybHkgd2FrZSBldmVudA0KPiBkZXRlY3RlZCBbICAzODUuODU2MjUxXSBQTTog
-bm9pcnEgc3VzcGVuZCBvZiBkZXZpY2VzIGZhaWxlZCBbICAzODUuOTk4MzY0XQ0KPiBzeXN0ZW1k
-LXNsZWVwWzI2MF06IFN5c3RlbSByZXN1bWVkLg0KDQpDQU4wIHN1c3BlbmRlZCBmYWlsZWQsIENB
-TjEgbm9pcnEgc3VzcGVuZGVkIGZhaWxlZCwgdGhlbiBDQU4xLCBDQU4wIHJlc3VtZWQgYmFjaywg
-c28gQ0FOMC9DQU4xIGNhbiB3b3JrIGZpbmUuDQoNCj4gWyAgMzg2LjAyMzM5MF0gc3lzdGVtZFsx
-XTogU3RhcnRlZCBTdXNwZW5kLg0KPiBbICAzODYuMDMxNTcwXSBzeXN0ZW1kWzFdOiBzbGVlcC50
-YXJnZXQ6IFVuaXQgbm90IG5lZWRlZCBhbnltb3JlLiBTdG9wcGluZy4NCj4gWyAgMzg2LjA1NTg4
-Nl0gc3lzdGVtZFsxXTogU3RvcHBlZCB0YXJnZXQgU2xlZXAuDQo+IFsgIDM4Ni4wNjE0MzBdIHN5
-c3RlbWRbMV06IFJlYWNoZWQgdGFyZ2V0IFN1c3BlbmQuDQo+IFsgIDM4Ni4wNjYxNDJdIHN5c3Rl
-bWRbMV06IHN1c3BlbmQudGFyZ2V0OiBVbml0IG5vdCBuZWVkZWQgYW55bW9yZS4NCj4gU3RvcHBp
-bmcuDQo+IFsgIDM4Ni4xMTI1NzVdIHN5c3RlbWQtbmV0d29ya2RbMjIwXTogdXNiMDogTG9zdCBj
-YXJyaWVyIFsgIDM4Ni4xMTY3OTddDQo+IHN5c3RlbWQtbG9naW5kWzEzNV06IE9wZXJhdGlvbiAn
-c2xlZXAnIGZpbmlzaGVkLg0KPiBbICAzODYuMTQ2MTYxXSBzeXN0ZW1kWzFdOiBTdG9wcGVkIHRh
-cmdldCBTdXNwZW5kLg0KPiBbICAzODYuMjYwODY2XSBzeXN0ZW1kLW5ldHdvcmtkWzIyMF06IHVz
-YjA6IEdhaW5lZCBjYXJyaWVyIHJvb3RAaXdnMjY6fiMNCj4gY2FuZHVtcCBjYW4wIHwgaGVhZCAt
-biAyDQo+ICAgIGNhbjAgIDEyMyAgIFs0XSAgREUgQUQgQkUgRUYNCj4gICAgY2FuMCAgMTIzICAg
-WzRdICBERSBBRCBCRSBFRg0KPiByb290QGl3ZzI2On4jIGNhbmR1bXAgY2FuMSB8IGhlYWQgLW4g
-Mg0KPiANCj4gICAgY2FuMSAgMTIzICAgWzRdICBERSBBRCBCRSBFRg0KPiAgICBjYW4xICAxMjMg
-ICBbNF0gIERFIEFEIEJFIEVGDQo+IHJvb3RAaXdnMjY6fiMgc3lzdGVtY3RsIHN1c3BlbmQNCj4g
-DQo+IFsgIDM5Ni45MTkzMDNdIHN5c3RlbWRbMV06IFJlYWNoZWQgdGFyZ2V0IFNsZWVwLg0KPiBy
-b290QGl3ZzI2On4jIFsgIDM5Ni45NjQ3MjJdIHN5c3RlbWRbMV06IFN0YXJ0aW5nIFN1c3BlbmQu
-Li4NCj4gWyAgMzk3LjA2NzMzNl0gc3lzdGVtZC1zbGVlcFsyNjhdOiBTdXNwZW5kaW5nIHN5c3Rl
-bS4uLg0KPiBbICAzOTcuNTc0NTcxXSBQTTogbm9pcnEgc3VzcGVuZCBvZiBkZXZpY2VzIGZhaWxl
-ZCBbICAzOTcuODM0NzMxXSBQTTogbm9pcnENCj4gc3VzcGVuZCBvZiBkZXZpY2VzIGZhaWxlZCBb
-ICAzOTcuODA3OTk2XSBzeXN0ZW1kLW5ldHdvcmtkWzIyMF06IHVzYjA6IExvc3QNCj4gY2Fycmll
-ciBbICAzOTguMTU2Mjk1XSBkcG1fcnVuX2NhbGxiYWNrKCk6IHBsYXRmb3JtX3BtX3N1c3BlbmQr
-MHgwLzB4NWMNCj4gcmV0dXJucyAtMTEwIFsgIDM5OC4xNTYzMzldIFBNOiBEZXZpY2UgMjA5NDAw
-MC5mbGV4Y2FuIGZhaWxlZCB0byBzdXNwZW5kOg0KPiBlcnJvciAtMTEwIFsgIDM5OC4xNTY1MDld
-IFBNOiBTb21lIGRldmljZXMgZmFpbGVkIHRvIHN1c3BlbmQsIG9yIGVhcmx5IHdha2UNCj4gZXZl
-bnQgZGV0ZWN0ZWQgWyAgMzk4LjA1MzU1NV0gc3lzdGVtZC1zbGVlcFsyNjhdOiBGYWlsZWQgdG8g
-d3JpdGUNCj4gL3N5cy9wb3dlci9zdGF0ZToNCj4gRGV2aWNlIG9yIHJlc291cmNlIGJ1c3kNCg0K
-QnV0IHRoZSBsb2cgaGVyZSBpcyB2ZXJ5IHN0cmFuZ2UgYW5kIGNoYW90aWMsIGl0IGxvb2tzIGxp
-a2UgQ0FOMCBzdXNwZW5kZWQgZmFpbGVkLCB0aGVuIHJlc3VtZWQgYmFjaywgc28gQ0FOMCBjYW4g
-d29yayBmaW5lLg0KQ0FOMSBub2lycSBzdXNwZW5kIGZhaWxlZCwgYnV0IGhhdmUgbm90IHJlc3Vt
-ZWQgYmFjaywgc28gQ0FOMSBzdGlsbCBpbiBzdG9wIG1vZGUsIGNhbm5vdCB3b3JrLiBJIHRoaW5r
-IHRoaXMgbWF5IGJlIG90aGVyIGRldmljZSBub2lycSBzdXNwZW5kIGZhaWxlZA0KYnJva2UgdGhl
-IHJlc3VtZSBvZiBDQU4xLg0KDQpDb3VsZCB5b3UgZG8gbW9yZSBkZWJ1ZyB0byBoZWxwIGxvY2F0
-ZSB0aGUgaXNzdWU/DQoNCj4gWyAgMzk4LjA3NDc1MV0gc3lzdGVtZFsxXTogc3lzdGVtZC1zdXNw
-ZW5kLnNlcnZpY2U6IE1haW4gcHJvY2VzcyBleGl0ZWQsDQo+IGNvZGU9ZXhpdGVkLCBzdGF0dXM9
-MS9GQUlMVVJFIFsgIDM5OC4wNzY3NzldIHN5c3RlbWRbMV06DQoNCj4gc3lzdGVtZC1zdXNwZW5k
-LnNlcnZpY2U6IEZhaWxlZCB3aXRoIHJlc3VsdCAnZXhpdC1jb2RlJy4NCj4gWyAgMzk4LjEwOTI1
-NV0gc3lzdGVtZFsxXTogRmFpbGVkIHRvIHN0YXJ0IFN1c3BlbmQuDQo+IFsgIDM5OC4xMTg3MDRd
-IHN5c3RlbWRbMV06IERlcGVuZGVuY3kgZmFpbGVkIGZvciBTdXNwZW5kLg0KPiBbICAzOTguMTM2
-MjgzXSBzeXN0ZW1kLWxvZ2luZFsxMzVdOiBPcGVyYXRpb24gJ3NsZWVwJyBmaW5pc2hlZC4NCj4g
-WyAgMzk4LjEzNzc3MF0gc3lzdGVtZFsxXTogc3VzcGVuZC50YXJnZXQ6IEpvYiBzdXNwZW5kLnRh
-cmdldC9zdGFydCBmYWlsZWQNCj4gd2l0aCByZXN1bHQgJ2RlcGVuZGVuY3knLg0KPiBbICAzOTgu
-MTM5MTA1XSBzeXN0ZW1kWzFdOiBzbGVlcC50YXJnZXQ6IFVuaXQgbm90IG5lZWRlZCBhbnltb3Jl
-LiBTdG9wcGluZy4NCj4gWyAgMzk4LjE2NzU5MF0gc3lzdGVtZFsxXTogU3RvcHBlZCB0YXJnZXQg
-U2xlZXAuDQo+IFsgIDM5OC4yMDE1NThdIHN5c3RlbWQtbmV0d29ya2RbMjIwXTogdXNiMDogR2Fp
-bmVkIGNhcnJpZXINCg0KTG9nIGhlcmUgYWxzbyBzdHJhbmdlLg0KDQpCZXN0IFJlZ2FyZHMsDQpK
-b2FraW0gWmhhbmcNCj4gcm9vdEBpd2cyNjp+IyBjYW5kdW1wIGNhbjAgfCBoZWFkIC1uIDINCj4g
-ICAgY2FuMCAgMTIzICAgWzRdICBERSBBRCBCRSBFRg0KPiAgICBjYW4wICAxMjMgICBbNF0gIERF
-IEFEIEJFIEVGDQo+IHJvb3RAaXdnMjY6fiMgY2FuZHVtcCBjYW4xIHwgaGVhZCAtbiAyDQo+IA0K
-PiBub3RoaW5nIG9uIGNhbjEgYW55bW9yZSA6LSgNCj4gDQo+IHJvb3RAaXdnMjY6fiMgcm1tb2Qg
-ZmxleGNhbg0KPiBbICA2MjIuODg0NzQ2XSBzeXN0ZW1kLW5ldHdvcmtkWzIyMF06IGNhbjE6IExv
-c3QgY2FycmllciBbICA2MjMuMDQ2NzY2XQ0KPiBzeXN0ZW1kLW5ldHdvcmtkWzIyMF06IGNhbjA6
-IExvc3QgY2FycmllciByb290QGl3ZzI2On4jIGluc21vZA0KPiAvbW50L2ZsZXhjYW4ua28gWyAg
-NjI4LjMyMzk4MV0gZmxleGNhbiAyMDk0MDAwLmZsZXhjYW46IHJlZ2lzdGVyaW5nIG5ldGRldg0K
-PiBmYWlsZWQNCj4gDQo+IGFuZCBjYW4xIGZhaWxzIHRvIHJlZ2lzdGVyIHdpdGg6DQo+IFsgIDYy
-OC4zNDc0ODVdIGZsZXhjYW46IHByb2JlIG9mIDIwOTQwMDAuZmxleGNhbiBmYWlsZWQgd2l0aCBl
-cnJvciAtMTEwDQo+IA0KPiAvU2Vhbg0K
+
+>> Unfortunatly it's still possible to reproduce the deadlock with this patch...
+>>
+>> [  689.921717] flexcan: probe of 2094000.flexcan failed with error -110
+>>
+>> My test setup:
+>> PC with CAN-USB dongle connected to can0 and can1.
+>>
+>> PC:
+>> $ while true; do cansend can0 '123#DEADBEEF'; done
+>>
+>> iMX6ull:
+>> root@iwg26:~# systemctl suspend
+>>
+>>
+>> [  365.858054] systemd[1]: Reached target Sleep.
+>> root@iwg26:~# [  365.939826] systemd[1]: Starting Suspend...
+>> [  366.115839] systemd-sleep[248]: Suspending system...
+>> [  366.517949] dpm_run_callback(): platform_pm_suspend+0x0/0x5c returns
+>> -110 [  366.518249] PM: Device 2094000.flexcan failed to suspend: error -110
+>> [  366.518406] PM: Some devices failed to suspend, or early wake event
+>> detected [  366.732162] dpm_run_callback():
+>> platform_pm_suspend+0x0/0x5c returns -110 [  366.732285] PM: Device
+>> 2090000.flexcan failed to suspend: error -110 [  366.732330] PM: Some
+>> devices failed to suspend, or early wake event detected [  366.890637]
+>> systemd-sleep[248]: System resumed.
+> 
+> CAN1, CAN0 suspended failed, then CAN0, CAN1 resumed back, so CAN0/CAN1 can work fine.
+> 
+>> [  366.923062] systemd[1]: Started Suspend.
+>> [  366.942819] systemd[1]: sleep.target: Unit not needed anymore. Stopping.
+>> [  366.954791] systemd[1]: Stopped target Sleep.
+>> [  366.962402] systemd[1]: Reached target Suspend.
+>> [  366.977546] systemd-logind[135]: Operation 'sleep' finished.
+>> [  366.979194] systemd[1]: suspend.target: Unit not needed anymore.
+>> Stopping.
+>> [  366.993831] systemd[1]: Stopped target Suspend.
+>> [  367.139972] systemd-networkd[220]: usb0: Lost carrier [  367.294077]
+>> systemd-networkd[220]: usb0: Gained carrier
+>>
+>> root@iwg26:~# candump can0 | head -n 2
+>>
+>>     can0  123   [4]  DE AD BE EF
+>>     can0  123   [4]  DE AD BE EF
+>> root@iwg26:~# candump can1 | head -n 2
+>>
+>>     can1  123   [4]  DE AD BE EF
+>>     can1  123   [4]  DE AD BE EF
+>> root@iwg26:~# systemctl suspend
+>>
+>> root@iwg26:~# [  385.106658] systemd[1]: Reached target Sleep.
+>> [  385.147602] systemd[1]: Starting Suspend...
+>> [  385.246421] systemd-sleep[260]: Suspending system...
+>> [  385.634733] dpm_run_callback(): platform_pm_suspend+0x0/0x5c returns
+>> -110 [  385.634855] PM: Device 2090000.flexcan failed to suspend: error -110
+>> [  385.634897] PM: Some devices failed to suspend, or early wake event
+>> detected [  385.856251] PM: noirq suspend of devices failed [  385.998364]
+>> systemd-sleep[260]: System resumed.
+> 
+> CAN0 suspended failed, CAN1 noirq suspended failed, then CAN1, CAN0 resumed back, so CAN0/CAN1 can work fine.
+> 
+>> [  386.023390] systemd[1]: Started Suspend.
+>> [  386.031570] systemd[1]: sleep.target: Unit not needed anymore. Stopping.
+>> [  386.055886] systemd[1]: Stopped target Sleep.
+>> [  386.061430] systemd[1]: Reached target Suspend.
+>> [  386.066142] systemd[1]: suspend.target: Unit not needed anymore.
+>> Stopping.
+>> [  386.112575] systemd-networkd[220]: usb0: Lost carrier [  386.116797]
+>> systemd-logind[135]: Operation 'sleep' finished.
+>> [  386.146161] systemd[1]: Stopped target Suspend.
+>> [  386.260866] systemd-networkd[220]: usb0: Gained carrier root@iwg26:~#
+>> candump can0 | head -n 2
+>>     can0  123   [4]  DE AD BE EF
+>>     can0  123   [4]  DE AD BE EF
+>> root@iwg26:~# candump can1 | head -n 2
+>>
+>>     can1  123   [4]  DE AD BE EF
+>>     can1  123   [4]  DE AD BE EF
+>> root@iwg26:~# systemctl suspend
+>>
+>> [  396.919303] systemd[1]: Reached target Sleep.
+>> root@iwg26:~# [  396.964722] systemd[1]: Starting Suspend...
+>> [  397.067336] systemd-sleep[268]: Suspending system...
+>> [  397.574571] PM: noirq suspend of devices failed [  397.834731] PM: noirq
+>> suspend of devices failed [  397.807996] systemd-networkd[220]: usb0: Lost
+>> carrier [  398.156295] dpm_run_callback(): platform_pm_suspend+0x0/0x5c
+>> returns -110 [  398.156339] PM: Device 2094000.flexcan failed to suspend:
+>> error -110 [  398.156509] PM: Some devices failed to suspend, or early wake
+>> event detected [  398.053555] systemd-sleep[268]: Failed to write
+>> /sys/power/state:
+>> Device or resource busy
+> 
+> But the log here is very strange and chaotic, it looks like CAN0 suspended failed, then resumed back, so CAN0 can work fine.
+> CAN1 noirq suspend failed, but have not resumed back, so CAN1 still in stop mode, cannot work. I think this may be other device noirq suspend failed
+> broke the resume of CAN1.
+> 
+> Could you do more debug to help locate the issue?
+> 
+>> [  398.074751] systemd[1]: systemd-suspend.service: Main process exited,
+>> code=exited, status=1/FAILURE [  398.076779] systemd[1]:
+> 
+>> systemd-suspend.service: Failed with result 'exit-code'.
+>> [  398.109255] systemd[1]: Failed to start Suspend.
+>> [  398.118704] systemd[1]: Dependency failed for Suspend.
+>> [  398.136283] systemd-logind[135]: Operation 'sleep' finished.
+>> [  398.137770] systemd[1]: suspend.target: Job suspend.target/start failed
+>> with result 'dependency'.
+>> [  398.139105] systemd[1]: sleep.target: Unit not needed anymore. Stopping.
+>> [  398.167590] systemd[1]: Stopped target Sleep.
+>> [  398.201558] systemd-networkd[220]: usb0: Gained carrier
+> 
+> Log here also strange.
+> 
+> Best Regards,
+> Joakim Zhang
+>> root@iwg26:~# candump can0 | head -n 2
+>>     can0  123   [4]  DE AD BE EF
+>>     can0  123   [4]  DE AD BE EF
+>> root@iwg26:~# candump can1 | head -n 2
+>>
+>> nothing on can1 anymore :-(
+>>
+>> root@iwg26:~# rmmod flexcan
+>> [  622.884746] systemd-networkd[220]: can1: Lost carrier [  623.046766]
+>> systemd-networkd[220]: can0: Lost carrier root@iwg26:~# insmod
+>> /mnt/flexcan.ko [  628.323981] flexcan 2094000.flexcan: registering netdev
+>> failed
+>>
+>> and can1 fails to register with:
+>> [  628.347485] flexcan: probe of 2094000.flexcan failed with error -110
+>>
+>> /Sean
+
+I have added some more debug, same test setup:
+https://gist.github.com/sknsean/81208714de23aa3639d3e31dccb2f3e0
+
+root@iwg26:~# systemctl suspend 
+ 
+
+...
+https://gist.github.com/sknsean/2a786f1543305056d4de03d387872403
+
+/Sean
