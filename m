@@ -1,70 +1,36 @@
 From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH 6/9] can: mcp251x: mcp251x_hw_reset(): allow more time
- after a reset
-Date: Tue, 20 Aug 2019 09:14:38 +0200
-Message-ID: <0ad8b13d-ea63-bc2e-55d2-fb279e51331f@geanix.com>
-References: <20190819153818.29293-1-mkl@pengutronix.de>
- <20190819153818.29293-7-mkl@pengutronix.de>
+Subject: Re: [PATCH 2/2] dt-bindings: can: flexcan: add can wakeup property
+Date: Tue, 20 Aug 2019 11:10:45 +0200
+Message-ID: <9e152f0d-fd1c-cb6f-2d9a-730804f8ec41@geanix.com>
+References: <20190409083949.27917-1-sean@geanix.com>
+ <20190409083949.27917-2-sean@geanix.com> <20190429173930.GA11283@bogus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20190819153818.29293-7-mkl@pengutronix.de>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190429173930.GA11283@bogus>
 Content-Language: en-US-large
-Sender: stable-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc: t.schluessler@krause.de, shc_work@mail.ru, linux-stable <stable@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: linux-can@vger.kernel.org, mkl@pengutronix.de
+Cc: Rob Herring <robh@kernel.org>, netdev@vger.kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 
 
-On 19/08/2019 17.38, Marc Kleine-Budde wrote:
-> Some boards take longer than 5ms to power up after a reset, so allow
-> some retries attempts before giving up.
+On 29/04/2019 19.39, Rob Herring wrote:
+> On Tue,  9 Apr 2019 10:39:49 +0200, Sean Nyekjaer wrote:
+>> add wakeup-source boolean property.
+>>
+>> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+>> ---
+>>   Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
 > 
-> Fixes: ff06d611a31c ("can: mcp251x: Improve mcp251x_hw_reset()")
-> Cc: linux-stable <stable@vger.kernel.org>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
-> ---
->   drivers/net/can/spi/mcp251x.c | 19 ++++++++++++++-----
->   1 file changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-> index 44b57187a6f3..db69c04bac2d 100644
-> --- a/drivers/net/can/spi/mcp251x.c
-> +++ b/drivers/net/can/spi/mcp251x.c
-> @@ -606,7 +606,7 @@ static int mcp251x_setup(struct net_device *net, struct spi_device *spi)
->   static int mcp251x_hw_reset(struct spi_device *spi)
->   {
->   	struct mcp251x_priv *priv = spi_get_drvdata(spi);
-> -	u8 reg;
-> +	unsigned long timeout;
->   	int ret;
->   
->   	/* Wait for oscillator startup timer after power up */
-> @@ -620,10 +620,19 @@ static int mcp251x_hw_reset(struct spi_device *spi)
->   	/* Wait for oscillator startup timer after reset */
->   	mdelay(MCP251X_OST_DELAY_MS);
->   
-> -	reg = mcp251x_read_reg(spi, CANSTAT);
-> -	if ((reg & CANCTRL_REQOP_MASK) != CANCTRL_REQOP_CONF)
-> -		return -ENODEV;
-> -
-> +	/* Wait for reset to finish */
-> +	timeout = jiffies + HZ;
-> +	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) !=
-> +	       CANCTRL_REQOP_CONF) {
-> +		usleep_range(MCP251X_OST_DELAY_MS * 1000,
-> +			     MCP251X_OST_DELAY_MS * 1000 * 2);
-> +
-> +		if (time_after(jiffies, timeout)) {
-> +			dev_err(&spi->dev,
-> +				"MCP251x didn't enter in conf mode after reset\n");
-> +			return -EBUSY;
-> +		}
-> +	}
->   	return 0;
->   }
->   
-> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
+>
+This doesn't seem to be applied. PATCH 1/2 in this series is applied.
+
+In any case which repo does this patch belong to?
+
+/Sean
