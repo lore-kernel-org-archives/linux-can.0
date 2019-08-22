@@ -1,105 +1,100 @@
-From: Dan Murphy <dmurphy@ti.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: [PATCH v12 3/5] dt-bindings: can: tcan4x5x: Add DT bindings for
  TCAN4x5X driver
-Date: Thu, 22 Aug 2019 09:20:22 -0500
-Message-ID: <ff9e007b-6e39-3d64-b62b-93c281d69113@ti.com>
+Date: Thu, 22 Aug 2019 17:46:08 +0200
+Message-ID: <6c2bf55f-e360-c51a-e7bb-effc86aa5b6c@pengutronix.de>
 References: <20190509161109.10499-1-dmurphy@ti.com>
  <20190509161109.10499-3-dmurphy@ti.com>
  <bdf06ead-a2e8-09a9-8cdd-49b54ec9da72@pengutronix.de>
+ <ff9e007b-6e39-3d64-b62b-93c281d69113@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="b5orkHz9ibUbF7nWrPatgW4erJBEZbGjj"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <bdf06ead-a2e8-09a9-8cdd-49b54ec9da72@pengutronix.de>
-Content-Language: en-US
+In-Reply-To: <ff9e007b-6e39-3d64-b62b-93c281d69113@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com, davem@davemloft.net
+To: Dan Murphy <dmurphy@ti.com>, wg@grandegger.com, davem@davemloft.net
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--b5orkHz9ibUbF7nWrPatgW4erJBEZbGjj
+Content-Type: multipart/mixed; boundary="r0SgaKD5BGhUZBvMER0VMyVCgXsPI8g3V";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Dan Murphy <dmurphy@ti.com>, wg@grandegger.com, davem@davemloft.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <6c2bf55f-e360-c51a-e7bb-effc86aa5b6c@pengutronix.de>
+Subject: Re: [PATCH v12 3/5] dt-bindings: can: tcan4x5x: Add DT bindings for
+ TCAN4x5X driver
+References: <20190509161109.10499-1-dmurphy@ti.com>
+ <20190509161109.10499-3-dmurphy@ti.com>
+ <bdf06ead-a2e8-09a9-8cdd-49b54ec9da72@pengutronix.de>
+ <ff9e007b-6e39-3d64-b62b-93c281d69113@ti.com>
+In-Reply-To: <ff9e007b-6e39-3d64-b62b-93c281d69113@ti.com>
+
+--r0SgaKD5BGhUZBvMER0VMyVCgXsPI8g3V
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 8/22/19 4:20 PM, Dan Murphy wrote:
+>>> +tcan4x5x: tcan4x5x@0 {
+>>> +		compatible =3D "ti,tcan4x5x";
+>>> +		reg =3D <0>;
+>>> +		#address-cells =3D <1>;
+>>> +		#size-cells =3D <1>;
+>>> +		spi-max-frequency =3D <10000000>;
+>>> +		bosch,mram-cfg =3D <0x0 0 0 32 0 0 1 1>;
+>>> +		data-ready-gpios =3D <&gpio1 14 GPIO_ACTIVE_LOW>;
+>> Can you convert this into a proper interrupt property? E.g.:
+>=20
+> OK.=C2=A0 Do you want v13 or do you want patches on top for net-next?
+
+Please use net-next/master as the base.
+
+>>>                  interrupt-parent =3D <&gpio4>;
+>>>                  interrupts =3D <13 0x2>;
+>> See:
+>> https://elixir.bootlin.com/linux/latest/source/Documentation/devicetre=
+e/bindings/net/can/microchip,mcp251x.txt#L21
+>> https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git=
+/tree/drivers/net/can/spi/mcp251x.c?h=3Dmcp251x#n945
+
+I've removed the branch, as the patches are already upstream, have a
+look here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/tree/d=
+rivers/net/can/spi/mcp251x.c#n921
+
 Marc
 
-On 8/16/19 4:38 AM, Marc Kleine-Budde wrote:
-> On 5/9/19 6:11 PM, Dan Murphy wrote:
->> DT binding documentation for TI TCAN4x5x driver.
->>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>
->> v12 - No changes - https://lore.kernel.org/patchwork/patch/1052300/
->>
->> v11 - No changes - https://lore.kernel.org/patchwork/patch/1051178/
->> v10 - No changes - https://lore.kernel.org/patchwork/patch/1050488/
->> v9 - No Changes - https://lore.kernel.org/patchwork/patch/1050118/
->> v8 - No Changes - https://lore.kernel.org/patchwork/patch/1047981/
->> v7 - Made device state optional - https://lore.kernel.org/patchwork/patch/1047218/
->> v6 - No changes - https://lore.kernel.org/patchwork/patch/1042445/
->>
->>   .../devicetree/bindings/net/can/tcan4x5x.txt  | 37 +++++++++++++++++++
->>   1 file changed, 37 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/net/can/tcan4x5x.txt
->>
->> diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
->> new file mode 100644
->> index 000000000000..c388f7d9feb1
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
->> @@ -0,0 +1,37 @@
->> +Texas Instruments TCAN4x5x CAN Controller
->> +================================================
->> +
->> +This file provides device node information for the TCAN4x5x interface contains.
->> +
->> +Required properties:
->> +	- compatible: "ti,tcan4x5x"
->> +	- reg: 0
->> +	- #address-cells: 1
->> +	- #size-cells: 0
->> +	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
->> +			     operate at should be less than or equal to 18 MHz.
->> +	- data-ready-gpios: Interrupt GPIO for data and error reporting.
->> +	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
->> +
->> +See Documentation/devicetree/bindings/net/can/m_can.txt for additional
->> +required property details.
->> +
->> +Optional properties:
->> +	- reset-gpios: Hardwired output GPIO. If not defined then software
->> +		       reset.
->> +	- device-state-gpios: Input GPIO that indicates if the device is in
->> +			      a sleep state or if the device is active.
->> +
->> +Example:
->> +tcan4x5x: tcan4x5x@0 {
->> +		compatible = "ti,tcan4x5x";
->> +		reg = <0>;
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		spi-max-frequency = <10000000>;
->> +		bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
->> +		data-ready-gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
-> Can you convert this into a proper interrupt property? E.g.:
-
-OK.  Do you want v13 or do you want patches on top for net-next?
-
-Dan
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
->
->>                  interrupt-parent = <&gpio4>;
->>                  interrupts = <13 0x2>;
-> See:
-> https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt#L21
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/tree/drivers/net/can/spi/mcp251x.c?h=mcp251x#n945
+--r0SgaKD5BGhUZBvMER0VMyVCgXsPI8g3V--
 
-This second link says it invalid
+--b5orkHz9ibUbF7nWrPatgW4erJBEZbGjj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Dan
+-----BEGIN PGP SIGNATURE-----
 
->
->> +		device-state-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
->> +		device-wake-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
->> +		reset-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
->> +};
-> Marc
->
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1euMAACgkQWsYho5Hk
+nSBRfgf/dgt6qwCU+00wQD4mEbAvVn39RyASlLw3AdaliduTEV6b3SDDe5Ip+Jp2
+cbrZOTfhAZ2Q2zBhP0jR4HlpjLtjLjKVN/i+3Y/Qgb8GFAMvySPcU520e03w++ug
+pzMnUP4hIFz2NuiG+eMgQ30mgTWEzjhyA0T5qVS3MSplYc+HNHwmy2BXnmTCsseA
+Mw7K1LA482sPDye52qJNyfBCfSyD2nQImgKC4PMZ640WY4pKmj8XL9St8M/aB+WN
+9RAQESJ60klKTxLCs9Oy7mbvTJzEOn1o+YQ18Qj+DFKKD859v+Tgbxc1Xvrd9jww
+ldc2jaor6zSIvISR8/2ATnzT5E7ruw==
+=t0jQ
+-----END PGP SIGNATURE-----
+
+--b5orkHz9ibUbF7nWrPatgW4erJBEZbGjj--
