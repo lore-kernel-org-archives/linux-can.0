@@ -1,96 +1,70 @@
-From: syzbot <syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com>
-Subject: KASAN: null-ptr-deref Write in queue_work_on
-Date: Wed, 21 Aug 2019 15:38:08 -0700
-Message-ID: <0000000000002b81b70590a83ad7@google.com>
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_can=3a_Delete_unnecessary_checks_before?=
+ =?UTF-8?B?IHRoZSBtYWNybyBjYWxsIOKAnGRldl9rZnJlZV9za2LigJ0=?=
+Date: Thu, 22 Aug 2019 11:13:41 +0200
+Message-ID: <dc19a08f-eba9-ebd3-ef0a-3f99e06c9916@geanix.com>
+References: <27674907-fd2a-7f0c-84fd-d8b5124739a9@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: davem@davemloft.net, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, mkl@pengutronix.de, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com, wg@grandegger.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <27674907-fd2a-7f0c-84fd-d8b5124739a9@web.de>
+Content-Language: en-US-large
+Sender: linux-kernel-owner@vger.kernel.org
+To: Markus Elfring <Markus.Elfring@web.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Allison Randal <allison@lohutok.net>, "David S. Miller" <davem@davemloft.net>, Enrico Weigelt <lkml@metux.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Lukas Wunner <lukas@wunner.de>, Marc Kleine-Budde <mkl@pengutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Weitao Hou <houweitaoo@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    6e625a1a Merge tag 'xtensa-20190816' of git://github.com/j..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=174e04ac600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3ff364e429585cf2
-dashboard link: https://syzkaller.appspot.com/bug?extid=017e491ae13c0068598a
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1327d9e2600000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c4fc4c600000
-
-Bisection is inconclusive: the first bad commit could be any of:
-
-569dbb88 Linux 4.13
-  that is not the commit
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17520702600000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: null-ptr-deref in test_and_set_bit  
-include/asm-generic/bitops-instrumented.h:143 [inline]
-BUG: KASAN: null-ptr-deref in queue_work_on+0xa6/0x210  
-kernel/workqueue.c:1517
-Write of size 8 at addr 0000000000000050 by task syz-executor935/9691
-
-CPU: 0 PID: 9691 Comm: syz-executor935 Not tainted 5.3.0-rc4+ #113
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  __kasan_report.cold+0x5/0x36 mm/kasan/report.c:486
-  kasan_report+0x12/0x17 mm/kasan/common.c:612
-  check_memory_region_inline mm/kasan/generic.c:185 [inline]
-  check_memory_region+0x134/0x1a0 mm/kasan/generic.c:192
-  __kasan_check_write+0x14/0x20 mm/kasan/common.c:98
-  test_and_set_bit include/asm-generic/bitops-instrumented.h:143 [inline]
-  queue_work_on+0xa6/0x210 kernel/workqueue.c:1517
-  queue_work include/linux/workqueue.h:490 [inline]
-  schedule_work include/linux/workqueue.h:548 [inline]
-  slcan_write_wakeup+0x66/0x90 drivers/net/can/slcan.c:348
-  tty_wakeup+0xe9/0x120 drivers/tty/tty_io.c:535
-  pty_unthrottle+0x37/0x60 drivers/tty/pty.c:95
-  tty_unthrottle+0xab/0x110 drivers/tty/tty_ioctl.c:139
-  __tty_perform_flush+0x1b3/0x200 drivers/tty/tty_ioctl.c:861
-  n_tty_ioctl_helper+0x1cc/0x3b0 drivers/tty/tty_ioctl.c:937
-  n_tty_ioctl+0x59/0x370 drivers/tty/n_tty.c:2466
-  tty_ioctl+0xaf9/0x14f0 drivers/tty/tty_io.c:2666
-  vfs_ioctl fs/ioctl.c:46 [inline]
-  file_ioctl fs/ioctl.c:509 [inline]
-  do_vfs_ioctl+0xdb6/0x13e0 fs/ioctl.c:696
-  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
-  __do_sys_ioctl fs/ioctl.c:720 [inline]
-  __se_sys_ioctl fs/ioctl.c:718 [inline]
-  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
-  do_syscall_64+0xfd/0x6a0 arch/x86/entry/common.c:296
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x446859
-Code: e8 9c b4 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 eb 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f17a0a3fd18 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000006dbc38 RCX: 0000000000446859
-RDX: 0000000000000000 RSI: 000000000000540b RDI: 0000000000000003
-RBP: 00000000006dbc30 R08: 00007f17a0a40700 R09: 0000000000000000
-R10: 00007f17a0a40700 R11: 0000000000000246 R12: 00000000006dbc3c
-R13: 00007ffdfd0bdb5f R14: 00007f17a0a409c0 R15: 20c49ba5e353f7cf
-==================================================================
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 21/08/2019 21.30, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Wed, 21 Aug 2019 21:16:15 +0200
+> 
+> The dev_kfree_skb() function performs also input parameter validation.
+> Thus the test around the shown calls is not needed.
+> 
+> This issue was detected by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Acked-by: Sean Nyekjaer <sean@geanix.com>
+> ---
+>   drivers/net/can/spi/hi311x.c  | 3 +--
+>   drivers/net/can/spi/mcp251x.c | 3 +--
+>   2 files changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+> index 03a711c3221b..7c7c7e78214c 100644
+> --- a/drivers/net/can/spi/hi311x.c
+> +++ b/drivers/net/can/spi/hi311x.c
+> @@ -184,8 +184,7 @@ static void hi3110_clean(struct net_device *net)
+> 
+>   	if (priv->tx_skb || priv->tx_len)
+>   		net->stats.tx_errors++;
+> -	if (priv->tx_skb)
+> -		dev_kfree_skb(priv->tx_skb);
+> +	dev_kfree_skb(priv->tx_skb);
+>   	if (priv->tx_len)
+>   		can_free_echo_skb(priv->net, 0);
+>   	priv->tx_skb = NULL;
+> diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+> index 12358f06d194..1c496d2adb45 100644
+> --- a/drivers/net/can/spi/mcp251x.c
+> +++ b/drivers/net/can/spi/mcp251x.c
+> @@ -274,8 +274,7 @@ static void mcp251x_clean(struct net_device *net)
+> 
+>   	if (priv->tx_skb || priv->tx_len)
+>   		net->stats.tx_errors++;
+> -	if (priv->tx_skb)
+> -		dev_kfree_skb(priv->tx_skb);
+> +	dev_kfree_skb(priv->tx_skb);
+>   	if (priv->tx_len)
+>   		can_free_echo_skb(priv->net, 0);
+>   	priv->tx_skb = NULL;
+> --
+> 2.23.0
+> 
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Good catch Markus :-)
+
+/Sean
