@@ -1,42 +1,87 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 3/3] can: mcp251x: Call wrapper instead of regulator_disable()
-Date: Mon, 26 Aug 2019 20:26:23 +0300
-Message-ID: <20190826172623.79378-3-andriy.shevchenko@linux.intel.com>
-References: <20190826172623.79378-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/3] can: mcp251x: Use devm_clk_get_optional() to get the input clock
+Date: Mon, 26 Aug 2019 20:26:21 +0300
+Message-ID: <20190826172623.79378-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190826172623.79378-1-andriy.shevchenko@linux.intel.com>
 Sender: netdev-owner@vger.kernel.org
 To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: linux-can.vger.kernel.org
 
-There is no need to check for regulator presence in the ->suspend()
-since a wrapper does it for us. Due to this we may unconditionally set
-AFTER_SUSPEND_POWER flag.
+Simplify the code which fetches the input clock by using
+devm_clk_get_optional(). This comes with a small functional change: previously
+all errors were ignored when platform data is present. Now all errors are
+treated as errors. If no input clock is present devm_clk_get_optional() will
+return NULL instead of an error which matches the behavior of the old code.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/net/can/spi/mcp251x.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/can/spi/mcp251x.c | 30 ++++++++++++------------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 0b7e743ca0a0..6ee0ea51399a 100644
+index 58992fd61cb9..e04b578f2b1f 100644
 --- a/drivers/net/can/spi/mcp251x.c
 +++ b/drivers/net/can/spi/mcp251x.c
-@@ -1162,10 +1162,8 @@ static int __maybe_unused mcp251x_can_suspend(struct device *dev)
- 		priv->after_suspend = AFTER_SUSPEND_DOWN;
- 	}
+@@ -1014,15 +1014,13 @@ static int mcp251x_can_probe(struct spi_device *spi)
+ 	struct clk *clk;
+ 	int freq, ret;
  
--	if (!IS_ERR_OR_NULL(priv->power)) {
--		regulator_disable(priv->power);
--		priv->after_suspend |= AFTER_SUSPEND_POWER;
+-	clk = devm_clk_get(&spi->dev, NULL);
+-	if (IS_ERR(clk)) {
+-		if (pdata)
+-			freq = pdata->oscillator_frequency;
+-		else
+-			return PTR_ERR(clk);
+-	} else {
+-		freq = clk_get_rate(clk);
 -	}
-+	mcp251x_power_enable(priv->power, 0);
-+	priv->after_suspend |= AFTER_SUSPEND_POWER;
++	clk = devm_clk_get_optional(&spi->dev, NULL);
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
++
++	freq = clk_get_rate(clk);
++	if (freq == 0 && pdata)
++		freq = pdata->oscillator_frequency;
  
- 	return 0;
- }
+ 	/* Sanity check */
+ 	if (freq < 1000000 || freq > 25000000)
+@@ -1033,11 +1031,9 @@ static int mcp251x_can_probe(struct spi_device *spi)
+ 	if (!net)
+ 		return -ENOMEM;
+ 
+-	if (!IS_ERR(clk)) {
+-		ret = clk_prepare_enable(clk);
+-		if (ret)
+-			goto out_free;
+-	}
++	ret = clk_prepare_enable(clk);
++	if (ret)
++		goto out_free;
+ 
+ 	net->netdev_ops = &mcp251x_netdev_ops;
+ 	net->flags |= IFF_ECHO;
+@@ -1122,8 +1118,7 @@ static int mcp251x_can_probe(struct spi_device *spi)
+ 	mcp251x_power_enable(priv->power, 0);
+ 
+ out_clk:
+-	if (!IS_ERR(clk))
+-		clk_disable_unprepare(clk);
++	clk_disable_unprepare(clk);
+ 
+ out_free:
+ 	free_candev(net);
+@@ -1141,8 +1136,7 @@ static int mcp251x_can_remove(struct spi_device *spi)
+ 
+ 	mcp251x_power_enable(priv->power, 0);
+ 
+-	if (!IS_ERR(priv->clk))
+-		clk_disable_unprepare(priv->clk);
++	clk_disable_unprepare(priv->clk);
+ 
+ 	free_candev(net);
+ 
 -- 
 2.23.0.rc1
