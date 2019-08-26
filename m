@@ -1,30 +1,42 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] can: Delete unnecessary checks before the macro call
- =?iso-2022-jp?B?GyRCIUgbKEJkZXZfa2ZyZWVfc2tiGyRCIUkbKEI=?=
-Date: Thu, 22 Aug 2019 16:23:10 -0700 (PDT)
-Message-ID: <20190822.162310.1544602687585865172.davem@davemloft.net>
-References: <27674907-fd2a-7f0c-84fd-d8b5124739a9@web.de>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/3] can: mcp251x: Call wrapper instead of regulator_disable()
+Date: Mon, 26 Aug 2019 20:26:23 +0300
+Message-ID: <20190826172623.79378-3-andriy.shevchenko@linux.intel.com>
+References: <20190826172623.79378-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <27674907-fd2a-7f0c-84fd-d8b5124739a9@web.de>
+In-Reply-To: <20190826172623.79378-1-andriy.shevchenko@linux.intel.com>
 Sender: netdev-owner@vger.kernel.org
-To: Markus.Elfring@web.de
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, allison@lohutok.net, lkml@metux.net, gregkh@linuxfoundation.org, gustavo@embeddedor.com, lukas@wunner.de, mkl@pengutronix.de, sean@geanix.com, tglx@linutronix.de, houweitaoo@gmail.com, wg@grandegger.com, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Markus Elfring <Markus.Elfring@web.de>
-Date: Wed, 21 Aug 2019 21:30:11 +0200
+There is no need to check for regulator presence in the ->suspend()
+since a wrapper does it for us. Due to this we may unconditionally set
+AFTER_SUSPEND_POWER flag.
 
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Wed, 21 Aug 2019 21:16:15 +0200
-> 
-> The dev_kfree_skb() function performs also input parameter validation.
-> Thus the test around the shown calls is not needed.
-> 
-> This issue was detected by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/net/can/spi/mcp251x.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Applied.
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index 0b7e743ca0a0..6ee0ea51399a 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -1162,10 +1162,8 @@ static int __maybe_unused mcp251x_can_suspend(struct device *dev)
+ 		priv->after_suspend = AFTER_SUSPEND_DOWN;
+ 	}
+ 
+-	if (!IS_ERR_OR_NULL(priv->power)) {
+-		regulator_disable(priv->power);
+-		priv->after_suspend |= AFTER_SUSPEND_POWER;
+-	}
++	mcp251x_power_enable(priv->power, 0);
++	priv->after_suspend |= AFTER_SUSPEND_POWER;
+ 
+ 	return 0;
+ }
+-- 
+2.23.0.rc1
