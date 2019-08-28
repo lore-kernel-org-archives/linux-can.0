@@ -1,68 +1,62 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/3] can: mcp251x: Make use of device property API
-Date: Mon, 26 Aug 2019 20:26:22 +0300
-Message-ID: <20190826172623.79378-2-andriy.shevchenko@linux.intel.com>
-References: <20190826172623.79378-1-andriy.shevchenko@linux.intel.com>
+From: Srinivas Neeli <sneeli@xilinx.com>
+Subject: RE: Query on possible bug in the can_create_echo_skb() API
+Date: Wed, 28 Aug 2019 11:02:43 +0000
+Message-ID: <BYAPR02MB546403642B2233DDD5C456C4AFA30@BYAPR02MB5464.namprd02.prod.outlook.com>
+References: <BYAPR02MB5464DC9DA2D38AF1100A5A8FAFAA0@BYAPR02MB5464.namprd02.prod.outlook.com>
+ <6bd3a657-dd8a-03a5-1e7c-bac532008f6e@pengutronix.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190826172623.79378-1-andriy.shevchenko@linux.intel.com>
-Sender: netdev-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <6bd3a657-dd8a-03a5-1e7c-bac532008f6e@pengutronix.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
+Cc: Srinivas Goud <sgoud@xilinx.com>, Naga Sureshkumar Relli <nagasure@xilinx.com>, Appana Durga Kedareswara Rao <appanad@xilinx.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Make use of device property API in this driver so that both OF based
-system and ACPI based system can use this driver.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/net/can/spi/mcp251x.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index e04b578f2b1f..0b7e743ca0a0 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -53,8 +53,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/netdevice.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/property.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spi/spi.h>
-@@ -914,7 +913,7 @@ static int mcp251x_open(struct net_device *net)
- 	priv->tx_skb = NULL;
- 	priv->tx_len = 0;
- 
--	if (!spi->dev.of_node)
-+	if (!dev_fwnode(&spi->dev))
- 		flags = IRQF_TRIGGER_FALLING;
- 
- 	ret = request_threaded_irq(spi->irq, NULL, mcp251x_can_ist,
-@@ -1006,8 +1005,7 @@ MODULE_DEVICE_TABLE(spi, mcp251x_id_table);
- 
- static int mcp251x_can_probe(struct spi_device *spi)
- {
--	const struct of_device_id *of_id = of_match_device(mcp251x_of_match,
--							   &spi->dev);
-+	const void *match = device_get_match_data(&spi->dev);
- 	struct mcp251x_platform_data *pdata = dev_get_platdata(&spi->dev);
- 	struct net_device *net;
- 	struct mcp251x_priv *priv;
-@@ -1044,8 +1042,8 @@ static int mcp251x_can_probe(struct spi_device *spi)
- 	priv->can.clock.freq = freq / 2;
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
- 		CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_LISTENONLY;
--	if (of_id)
--		priv->model = (enum mcp251x_model)of_id->data;
-+	if (match)
-+		priv->model = (enum mcp251x_model)match;
- 	else
- 		priv->model = spi_get_device_id(spi)->driver_data;
- 	priv->net = net;
--- 
-2.23.0.rc1
+SGksDQoNCkNhc2UgMToNCmNhbl9wdXRfZWNob19za2IoKTsgLT4gc2tiID0gY2FuX2NyZWF0ZV9l
+Y2hvX3NrYihza2IpOyAtPiByZXR1cm4gc2tiOw0KDQpJbiBjYW5fY3JlYXRlX2VjaG9fc2tiKCkg
+bm90IHVzaW5nIHRoZSBzaGFyZWRfc2tiLCBzbyB3ZSBhcmUgcmV0dXJuaW5nIHRoZSBvbGQgc2ti
+Lg0KU3RvcmluZyB0aGUgcmV0dXJuIHZhbHVlIGluICJza2IiLiBCdXQgaXQncyBhIHBvaW50ZXIs
+IGZvciBzdG9yaW5nIHRoYXQgbmVlZCBkb3VibGUgcG9pbnRlci4NCkluc3RlYWQgb2YgZG91Ymxl
+LXBvaW50ZXIgdXNpbmcgYSBzaW5nbGUgcG9pbnRlci4gSW4gdGhpcyBzY2VuYXJpbyBpdCdzIG9r
+ICwgd2UgYXJlIHJldHVybmluZyB0aGUgc2FtZSBTS0IuDQoNCkNhc2UgMjoNCmNhbl9wdXRfZWNo
+b19za2Ioc2tiLCBuZGV2LCBwcml2LT50eF9oZWFkICUgcHJpdi0+dHhfbWF4KTsgLT4gc2tiID0g
+Y2FuX2NyZWF0ZV9lY2hvX3NrYihza2IpOyAtPiBjYW5fc2tiX3NldF9vd25lcihuc2tiLCBza2It
+PnNrKTsgLSBSZXR1cm5pbmcgbnNrYjsNCg0Kc2hhcmVkX3NrYiBzY2VuYXJpbzoNCkluIHNoYXJl
+LXNrYiBjYXNlIOKAnGNhbl9jcmVhdGVfZWNob19za2Ioc2tiKTvigJ0gIHJldHVybmluZyAibmV3
+IHNrYiIuIEZvciBzdG9yaW5nIG5ldyBza2IgbmVlZCBhIGRvdWJsZSBwb2ludGVyLg0KDQpQcm92
+aWRpbmcgYW4gZXhhbXBsZSBmb3Igb3ZlcmNvbWluZyBhYm92ZSBpc3N1ZS4NCkV4YW1wbGU6DQpj
+YW5fcHV0X2VjaG9fc2tiKHN0cnVjdCBza19idWZmICoqc2tiLHN0cnVjdCBuZXRfZGV2aWNlICpk
+ZXYsdW5zaWduZWQgaW50IGlkeCk7DQoNCklmIHlvdSBvayB3aXRoIHRoaXMgY2hhbmdlLCBJIHdp
+bGwgc2VuZCBhIHBhdGNoLg0KDQoNClRoYW5rcw0KU3Jpbml2YXMgTmVlbGkNCg0KPiAtLS0tLU9y
+aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1
+dHJvbml4LmRlPg0KPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAyOCwgMjAxOSAxOjAzIEFNDQo+
+IFRvOiBTcmluaXZhcyBOZWVsaSA8c25lZWxpQHhpbGlueC5jb20+OyB3Z0BncmFuZGVnZ2VyLmNv
+bQ0KPiBDYzogU3Jpbml2YXMgR291ZCA8c2dvdWRAeGlsaW54LmNvbT47IE5hZ2EgU3VyZXNoa3Vt
+YXIgUmVsbGkNCj4gPG5hZ2FzdXJlQHhpbGlueC5jb20+OyBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dh
+cmEgUmFvDQo+IDxhcHBhbmFkQHhpbGlueC5jb20+OyBsaW51eC1jYW5Admdlci5rZXJuZWwub3Jn
+DQo+IFN1YmplY3Q6IFJlOiBRdWVyeSBvbiBwb3NzaWJsZSBidWcgaW4gdGhlIGNhbl9jcmVhdGVf
+ZWNob19za2IoKSBBUEkNCj4gDQo+IEhlbGxvIFNyaW5pdmFzIE5lZWxpLA0KPiANCj4gcGxlYXNl
+IGRvbid0IHNlbmQgSFRNTCBtZXNzYWdlcyB0byB0aGUga2VybmVsIG1haWxpbmdsaXN0cy4NCj4g
+DQo+IE9uIDgvMjEvMTkgMTI6NTEgUE0sIFNyaW5pdmFzIE5lZWxpIHdyb3RlOg0KPiA+IFdoaWxl
+IHdhbGtpbmcgdGhyb3VnaCB0aGUgQ0FOIGNvcmUgbGF5ZXIgZGV2LmMgZmlsZSBpbiB0aGUNCj4g
+PiBjYW5fcHV0X2VjaG9fc2tiKCkgQVBJIFsxXSwgU2VlbXMgdG8gYmUgdGhlcmUgaXMgYSByYWNl
+IGNvbmRpdGlvbiBpbg0KPiA+IHRoZQ0KPiA+IGNhbl9jcmVhdGVfZWNob19za2IoKSBBUEksIG1v
+cmUgZGV0YWlscyBiZWxvdw0KPiA+DQo+ID4gSWYgdGhlIHNrYiBpcyBhIHNoYXJlZCBza2IsIHdl
+IGFyZSBvdmVyd3JpdGluZyB0aGUgc2tiIHBvaW50ZXIgWzJdIGluDQo+ID4gdGhlIGNhbl9jcmVh
+dGVfZWNob19za2IoKSBBUEkgYW5kIHJldHVybmluZyB0aGUgbmV3IHNrYiBiYWNrLg0KPiANCj4g
+V2hlcmUgYW5kIGhvdyBpcyB0aGUgc2tiIHBvaW50ZXIgb3ZlcndyaXR0ZW4/IENhbiB5b3UgZXhw
+bGFpbiBhIGJpdCBtb3JlLg0KPiANCj4gPiBJZiB0aGUgY29yZSBsYXllci9kcml2ZXJzIHVzZSB0
+aGlzIHNrYiBpdCBpcyBub3QgdmFsaWQgYW55IG1vcmUgKGl0DQo+ID4gbWF5IGxlYWQgdG8gY3Jh
+c2gvb29wcykuDQo+ID4NCj4gPg0KPiA+DQo+ID4gQSBwb3NzaWJsZSBzb2x1dGlvbiBmb3IgdGhp
+cyBpc3N1ZSB3b3VsZCBtYWtlIHRoZSBmdW5jdGlvbiBpbnB1dA0KPiA+IGFyZ3VtZW50IHNob3Vs
+ZCBiZSBkb3VibGUtcG9pbnRlci4NCj4gPg0KPiA+IFBsZWFzZSBjb3JyZWN0IG1lIGlmIG15IGFu
+YWx5emF0aW9uIGlzIHdyb25nLg0KPiANCj4gQ2FuIHlvdSBwcm92aWRlIGEgcGF0Y2ggb2YgeW91
+ciBwcm9wb3NlZCBjaGFuZ2VzPw0KPiANCj4gcmVnYXJkcywNCj4gTWFyYw0KPiANCj4gLS0NCj4g
+UGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAg
+ICAgICAgIHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0
+OS0yMzEtMjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAg
+IHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVp
+bSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
