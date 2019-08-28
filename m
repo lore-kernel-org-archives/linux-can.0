@@ -1,62 +1,107 @@
-From: Srinivas Neeli <sneeli@xilinx.com>
-Subject: RE: Query on possible bug in the can_create_echo_skb() API
-Date: Wed, 28 Aug 2019 11:02:43 +0000
-Message-ID: <BYAPR02MB546403642B2233DDD5C456C4AFA30@BYAPR02MB5464.namprd02.prod.outlook.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: Query on possible bug in the can_create_echo_skb() API
+Date: Wed, 28 Aug 2019 14:15:51 +0200
+Message-ID: <3a8c557f-adb5-144d-00f1-1b1c608129dc@pengutronix.de>
 References: <BYAPR02MB5464DC9DA2D38AF1100A5A8FAFAA0@BYAPR02MB5464.namprd02.prod.outlook.com>
  <6bd3a657-dd8a-03a5-1e7c-bac532008f6e@pengutronix.de>
+ <BYAPR02MB546403642B2233DDD5C456C4AFA30@BYAPR02MB5464.namprd02.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6bd3a657-dd8a-03a5-1e7c-bac532008f6e@pengutronix.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="QzR5jW2iDxMph4DR1wPP7iACWG1J582gw"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <BYAPR02MB546403642B2233DDD5C456C4AFA30@BYAPR02MB5464.namprd02.prod.outlook.com>
+Sender: netdev-owner@vger.kernel.org
+To: Srinivas Neeli <sneeli@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>
 Cc: Srinivas Goud <sgoud@xilinx.com>, Naga Sureshkumar Relli <nagasure@xilinx.com>, Appana Durga Kedareswara Rao <appanad@xilinx.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-SGksDQoNCkNhc2UgMToNCmNhbl9wdXRfZWNob19za2IoKTsgLT4gc2tiID0gY2FuX2NyZWF0ZV9l
-Y2hvX3NrYihza2IpOyAtPiByZXR1cm4gc2tiOw0KDQpJbiBjYW5fY3JlYXRlX2VjaG9fc2tiKCkg
-bm90IHVzaW5nIHRoZSBzaGFyZWRfc2tiLCBzbyB3ZSBhcmUgcmV0dXJuaW5nIHRoZSBvbGQgc2ti
-Lg0KU3RvcmluZyB0aGUgcmV0dXJuIHZhbHVlIGluICJza2IiLiBCdXQgaXQncyBhIHBvaW50ZXIs
-IGZvciBzdG9yaW5nIHRoYXQgbmVlZCBkb3VibGUgcG9pbnRlci4NCkluc3RlYWQgb2YgZG91Ymxl
-LXBvaW50ZXIgdXNpbmcgYSBzaW5nbGUgcG9pbnRlci4gSW4gdGhpcyBzY2VuYXJpbyBpdCdzIG9r
-ICwgd2UgYXJlIHJldHVybmluZyB0aGUgc2FtZSBTS0IuDQoNCkNhc2UgMjoNCmNhbl9wdXRfZWNo
-b19za2Ioc2tiLCBuZGV2LCBwcml2LT50eF9oZWFkICUgcHJpdi0+dHhfbWF4KTsgLT4gc2tiID0g
-Y2FuX2NyZWF0ZV9lY2hvX3NrYihza2IpOyAtPiBjYW5fc2tiX3NldF9vd25lcihuc2tiLCBza2It
-PnNrKTsgLSBSZXR1cm5pbmcgbnNrYjsNCg0Kc2hhcmVkX3NrYiBzY2VuYXJpbzoNCkluIHNoYXJl
-LXNrYiBjYXNlIOKAnGNhbl9jcmVhdGVfZWNob19za2Ioc2tiKTvigJ0gIHJldHVybmluZyAibmV3
-IHNrYiIuIEZvciBzdG9yaW5nIG5ldyBza2IgbmVlZCBhIGRvdWJsZSBwb2ludGVyLg0KDQpQcm92
-aWRpbmcgYW4gZXhhbXBsZSBmb3Igb3ZlcmNvbWluZyBhYm92ZSBpc3N1ZS4NCkV4YW1wbGU6DQpj
-YW5fcHV0X2VjaG9fc2tiKHN0cnVjdCBza19idWZmICoqc2tiLHN0cnVjdCBuZXRfZGV2aWNlICpk
-ZXYsdW5zaWduZWQgaW50IGlkeCk7DQoNCklmIHlvdSBvayB3aXRoIHRoaXMgY2hhbmdlLCBJIHdp
-bGwgc2VuZCBhIHBhdGNoLg0KDQoNClRoYW5rcw0KU3Jpbml2YXMgTmVlbGkNCg0KPiAtLS0tLU9y
-aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1
-dHJvbml4LmRlPg0KPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAyOCwgMjAxOSAxOjAzIEFNDQo+
-IFRvOiBTcmluaXZhcyBOZWVsaSA8c25lZWxpQHhpbGlueC5jb20+OyB3Z0BncmFuZGVnZ2VyLmNv
-bQ0KPiBDYzogU3Jpbml2YXMgR291ZCA8c2dvdWRAeGlsaW54LmNvbT47IE5hZ2EgU3VyZXNoa3Vt
-YXIgUmVsbGkNCj4gPG5hZ2FzdXJlQHhpbGlueC5jb20+OyBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dh
-cmEgUmFvDQo+IDxhcHBhbmFkQHhpbGlueC5jb20+OyBsaW51eC1jYW5Admdlci5rZXJuZWwub3Jn
-DQo+IFN1YmplY3Q6IFJlOiBRdWVyeSBvbiBwb3NzaWJsZSBidWcgaW4gdGhlIGNhbl9jcmVhdGVf
-ZWNob19za2IoKSBBUEkNCj4gDQo+IEhlbGxvIFNyaW5pdmFzIE5lZWxpLA0KPiANCj4gcGxlYXNl
-IGRvbid0IHNlbmQgSFRNTCBtZXNzYWdlcyB0byB0aGUga2VybmVsIG1haWxpbmdsaXN0cy4NCj4g
-DQo+IE9uIDgvMjEvMTkgMTI6NTEgUE0sIFNyaW5pdmFzIE5lZWxpIHdyb3RlOg0KPiA+IFdoaWxl
-IHdhbGtpbmcgdGhyb3VnaCB0aGUgQ0FOIGNvcmUgbGF5ZXIgZGV2LmMgZmlsZSBpbiB0aGUNCj4g
-PiBjYW5fcHV0X2VjaG9fc2tiKCkgQVBJIFsxXSwgU2VlbXMgdG8gYmUgdGhlcmUgaXMgYSByYWNl
-IGNvbmRpdGlvbiBpbg0KPiA+IHRoZQ0KPiA+IGNhbl9jcmVhdGVfZWNob19za2IoKSBBUEksIG1v
-cmUgZGV0YWlscyBiZWxvdw0KPiA+DQo+ID4gSWYgdGhlIHNrYiBpcyBhIHNoYXJlZCBza2IsIHdl
-IGFyZSBvdmVyd3JpdGluZyB0aGUgc2tiIHBvaW50ZXIgWzJdIGluDQo+ID4gdGhlIGNhbl9jcmVh
-dGVfZWNob19za2IoKSBBUEkgYW5kIHJldHVybmluZyB0aGUgbmV3IHNrYiBiYWNrLg0KPiANCj4g
-V2hlcmUgYW5kIGhvdyBpcyB0aGUgc2tiIHBvaW50ZXIgb3ZlcndyaXR0ZW4/IENhbiB5b3UgZXhw
-bGFpbiBhIGJpdCBtb3JlLg0KPiANCj4gPiBJZiB0aGUgY29yZSBsYXllci9kcml2ZXJzIHVzZSB0
-aGlzIHNrYiBpdCBpcyBub3QgdmFsaWQgYW55IG1vcmUgKGl0DQo+ID4gbWF5IGxlYWQgdG8gY3Jh
-c2gvb29wcykuDQo+ID4NCj4gPg0KPiA+DQo+ID4gQSBwb3NzaWJsZSBzb2x1dGlvbiBmb3IgdGhp
-cyBpc3N1ZSB3b3VsZCBtYWtlIHRoZSBmdW5jdGlvbiBpbnB1dA0KPiA+IGFyZ3VtZW50IHNob3Vs
-ZCBiZSBkb3VibGUtcG9pbnRlci4NCj4gPg0KPiA+IFBsZWFzZSBjb3JyZWN0IG1lIGlmIG15IGFu
-YWx5emF0aW9uIGlzIHdyb25nLg0KPiANCj4gQ2FuIHlvdSBwcm92aWRlIGEgcGF0Y2ggb2YgeW91
-ciBwcm9wb3NlZCBjaGFuZ2VzPw0KPiANCj4gcmVnYXJkcywNCj4gTWFyYw0KPiANCj4gLS0NCj4g
-UGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAg
-ICAgICAgIHwNCj4gSW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgIHwgUGhvbmU6ICs0
-OS0yMzEtMjgyNi05MjQgICAgIHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAg
-IHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCj4gQW10c2dlcmljaHQgSGlsZGVzaGVp
-bSwgSFJBIDI2ODYgIHwgaHR0cDovL3d3dy5wZW5ndXRyb25peC5kZSAgIHwNCg0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--QzR5jW2iDxMph4DR1wPP7iACWG1J582gw
+Content-Type: multipart/mixed; boundary="RY22PpBUTD32uM4bOZ1jQik2RlJaeGTmM";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Srinivas Neeli <sneeli@xilinx.com>, "wg@grandegger.com"
+ <wg@grandegger.com>
+Cc: Srinivas Goud <sgoud@xilinx.com>,
+ Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ Appana Durga Kedareswara Rao <appanad@xilinx.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <3a8c557f-adb5-144d-00f1-1b1c608129dc@pengutronix.de>
+Subject: Re: Query on possible bug in the can_create_echo_skb() API
+References: <BYAPR02MB5464DC9DA2D38AF1100A5A8FAFAA0@BYAPR02MB5464.namprd02.prod.outlook.com>
+ <6bd3a657-dd8a-03a5-1e7c-bac532008f6e@pengutronix.de>
+ <BYAPR02MB546403642B2233DDD5C456C4AFA30@BYAPR02MB5464.namprd02.prod.outlook.com>
+In-Reply-To: <BYAPR02MB546403642B2233DDD5C456C4AFA30@BYAPR02MB5464.namprd02.prod.outlook.com>
+
+--RY22PpBUTD32uM4bOZ1jQik2RlJaeGTmM
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 8/28/19 1:02 PM, Srinivas Neeli wrote:
+> Case 1:
+> can_put_echo_skb(); -> skb =3D can_create_echo_skb(skb); -> return skb;=
+
+>=20
+> In can_create_echo_skb() not using the shared_skb, so we are returning =
+the old skb.
+> Storing the return value in "skb". But it's a pointer, for storing that=
+ need double pointer.
+> Instead of double-pointer using a single pointer. In this scenario it's=
+ ok , we are returning the same SKB.
+>=20
+> Case 2:
+> can_put_echo_skb(skb, ndev, priv->tx_head % priv->tx_max); -> skb =3D c=
+an_create_echo_skb(skb); -> can_skb_set_owner(nskb, skb->sk); - Returning=
+ nskb;
+>=20
+> shared_skb scenario:
+> In share-skb case =E2=80=9Ccan_create_echo_skb(skb);=E2=80=9D  returnin=
+g "new skb". For storing new skb need a double pointer.
+>=20
+> Providing an example for overcoming above issue.
+> Example:
+> can_put_echo_skb(struct sk_buff **skb,struct net_device *dev,unsigned i=
+nt idx);
+
+Now I get what you mean.
+
+> If you ok with this change, I will send a patch.
+
+I think the can_put_echo_skb() API needs clarification. The driver is
+not allowed to touch the skb any more after can_put_echo_skb(). We
+should review the driver for this.
+
+thanks,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--RY22PpBUTD32uM4bOZ1jQik2RlJaeGTmM--
+
+--QzR5jW2iDxMph4DR1wPP7iACWG1J582gw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1mcHcACgkQWsYho5Hk
+nSDbCQgAkgVDQuau0Tdv3KonyWFkxvE8+XYywNNobRqUHPZTnqk5slSgz+HGIxz/
+ae3FKsVcjvC5CRQ+2LI23eg7yTNlZ7EUHfh5Rn7Og+FviIz/NplxQkfR3vf0SS6Y
+fzbUzsdU+3ORgHcVnP2Zxm6pJSkTV8ro6IXia+mefgn3lk/0rXYA/A4Igeot6hFK
+MSmdEDb4uXUyF+UeMTj8NKDtCXuuUcazb9I84y4nR03dVXrEqXlRCT4A6ofXnLzi
+l34pEQLRvE1Uu07b8194IDKOX8HtE7HckSMWtJkO1DUkhMmXWcDUd+GBjTH1Idrh
+s3bV8sq6bEdlE4sSpAciqtGGNVIKiQ==
+=bKs1
+-----END PGP SIGNATURE-----
+
+--QzR5jW2iDxMph4DR1wPP7iACWG1J582gw--
