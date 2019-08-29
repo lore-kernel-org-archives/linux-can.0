@@ -1,38 +1,50 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH REPOST 1/2] can: flexcan: fix deadlock when using self
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH REPOST 1/2] can: flexcan: fix deadlock when using self
  wakeup
-Date: Wed, 28 Aug 2019 15:24:35 +0200
-Message-ID: <6a9bc081-334a-df91-3a23-b74a6cdd3633@geanix.com>
+Date: Thu, 29 Aug 2019 07:30:20 +0000
+Message-ID: <DB7PR04MB4618E527339B69AEAD46FB06E6A20@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20190816081749.19300-1-qiangqing.zhang@nxp.com>
  <20190816081749.19300-2-qiangqing.zhang@nxp.com>
  <dd8f5269-8403-702b-b054-e031423ffc73@geanix.com>
  <DB7PR04MB4618A1F984F2281C66959B06E6AB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
  <35190c5b-f8be-8784-5b4f-32a691a6cffe@geanix.com>
+ <6a9bc081-334a-df91-3a23-b74a6cdd3633@geanix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <35190c5b-f8be-8784-5b4f-32a691a6cffe@geanix.com>
-Content-Language: en-US-large
+In-Reply-To: <6a9bc081-334a-df91-3a23-b74a6cdd3633@geanix.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>
+To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, =?utf-8?B?TWFydGluIEh1bmRlYsO4bGw=?= <martin@geanix.com>
 List-Id: linux-can.vger.kernel.org
 
-
-
-On 20/08/2019 13.55, Sean Nyekjaer wrote:
-> 
-> I have added some more debug, same test setup:
-> https://gist.github.com/sknsean/81208714de23aa3639d3e31dccb2f3e0
-> 
-> root@iwg26:~# systemctl suspend
-> 
-> ...
-> https://gist.github.com/sknsean/2a786f1543305056d4de03d387872403
-> 
-> /Sean
-
-Any luck reproducing this?
-
-/Sean
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
+YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOeW5tDjmnIgyOOaXpSAyMToyNQ0KPiBUbzogSm9h
+a2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT47IG1rbEBwZW5ndXRyb25peC5kZTsN
+Cj4gbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBDYzogd2dAZ3JhbmRlZ2dlci5jb207IG5l
+dGRldkB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteA0KPiA8bGludXgtaW14QG54cC5jb20+
+OyBNYXJ0aW4gSHVuZGViw7hsbCA8bWFydGluQGdlYW5peC5jb20+DQo+IFN1YmplY3Q6IFJlOiBb
+UEFUQ0ggUkVQT1NUIDEvMl0gY2FuOiBmbGV4Y2FuOiBmaXggZGVhZGxvY2sgd2hlbiB1c2luZyBz
+ZWxmDQo+IHdha2V1cA0KPiANCj4gDQo+IA0KPiBPbiAyMC8wOC8yMDE5IDEzLjU1LCBTZWFuIE55
+ZWtqYWVyIHdyb3RlOg0KPiA+DQo+ID4gSSBoYXZlIGFkZGVkIHNvbWUgbW9yZSBkZWJ1Zywgc2Ft
+ZSB0ZXN0IHNldHVwOg0KPiA+DQo+IGh0dHBzOi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24u
+b3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUyRiUyRmdpc3QuZ2l0aA0KPiB1Yi5jb20lMkZza25z
+ZWFuJTJGODEyMDg3MTRkZTIzYWEzNjM5ZDNlMzFkY2NiMmYzZTAmYW1wO2RhdGE9MDIlDQo+IDdD
+MDElN0NxaWFuZ3FpbmcuemhhbmclNDBueHAuY29tJTdDMWRhZTdlYzRmMTkxNDYyYmU0M2QwOGQ3
+MmJiYjENCj4gZTgyJTdDNjg2ZWExZDNiYzJiNGM2ZmE5MmNkOTljNWMzMDE2MzUlN0MwJTdDMCU3
+QzYzNzAyNTk1NDk4OTUyDQo+IDk4MTMmYW1wO3NkYXRhPXUydDc0N0w0bWk4N2VqdWFMd2w0V1dK
+TkpJRkl6dmxFZk5FJTJCU0xxMktiYyUzRCYNCj4gYW1wO3Jlc2VydmVkPTANCj4gPg0KPiA+IHJv
+b3RAaXdnMjY6fiMgc3lzdGVtY3RsIHN1c3BlbmQNCj4gPg0KPiA+IC4uLg0KPiA+DQo+IGh0dHBz
+Oi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUy
+RiUyRmdpc3QuZ2l0aA0KPiB1Yi5jb20lMkZza25zZWFuJTJGMmE3ODZmMTU0MzMwNTA1NmQ0ZGUw
+M2QzODc4NzI0MDMmYW1wO2RhdGE9MDINCj4gJTdDMDElN0NxaWFuZ3FpbmcuemhhbmclNDBueHAu
+Y29tJTdDMWRhZTdlYzRmMTkxNDYyYmU0M2QwOGQ3MmJiYg0KPiAxZTgyJTdDNjg2ZWExZDNiYzJi
+NGM2ZmE5MmNkOTljNWMzMDE2MzUlN0MwJTdDMCU3QzYzNzAyNTk1NDk4OTUNCj4gMjk4MTMmYW1w
+O3NkYXRhPVdiSTJlZUlsck5DNkhVU3ZpYWdhaUF5aTRZcEslMkIyYkMzYWw0WW45RVhaTSUzRA0K
+PiAmYW1wO3Jlc2VydmVkPTANCj4gPg0KPiA+IC9TZWFuDQo+IA0KPiBBbnkgbHVjayByZXByb2R1
+Y2luZyB0aGlzPw0KDQpIaSBTZWFuLA0KDQpJJ20gc29ycnkgdGhhdCBJIGNhbid0IGdldCB0aGUg
+ZGVidWcgbG9nIGFzIHRoZSBzaXRlIGNhbid0IGJlIHJlYWNoZWQuIEFuZCBJIGNvbm5lY3QgdHdv
+IGJvYXJkcyB0byBkbyB0ZXN0IGF0IG15IHNpZGUsIHRoaXMgaXNzdWUgY2FuJ3QgYmUgcmVwcm9k
+dWNlZC4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IC9TZWFuDQo=
