@@ -1,50 +1,146 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH REPOST 1/2] can: flexcan: fix deadlock when using self
- wakeup
-Date: Thu, 29 Aug 2019 07:30:20 +0000
-Message-ID: <DB7PR04MB4618E527339B69AEAD46FB06E6A20@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20190816081749.19300-1-qiangqing.zhang@nxp.com>
- <20190816081749.19300-2-qiangqing.zhang@nxp.com>
- <dd8f5269-8403-702b-b054-e031423ffc73@geanix.com>
- <DB7PR04MB4618A1F984F2281C66959B06E6AB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <35190c5b-f8be-8784-5b4f-32a691a6cffe@geanix.com>
- <6a9bc081-334a-df91-3a23-b74a6cdd3633@geanix.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: pull-request: can-next 2019-09-03
+Date: Tue, 3 Sep 2019 11:46:31 +0200
+Message-ID: <a6751a50-f15d-612d-783b-a706098ea90e@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="vaDxWTXAQZUBmXN3l4EPTj0zWvk0zWOIh"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <6a9bc081-334a-df91-3a23-b74a6cdd3633@geanix.com>
-Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, =?utf-8?B?TWFydGluIEh1bmRlYsO4bGw=?= <martin@geanix.com>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
-YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOeW5tDjmnIgyOOaXpSAyMToyNQ0KPiBUbzogSm9h
-a2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT47IG1rbEBwZW5ndXRyb25peC5kZTsN
-Cj4gbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBDYzogd2dAZ3JhbmRlZ2dlci5jb207IG5l
-dGRldkB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteA0KPiA8bGludXgtaW14QG54cC5jb20+
-OyBNYXJ0aW4gSHVuZGViw7hsbCA8bWFydGluQGdlYW5peC5jb20+DQo+IFN1YmplY3Q6IFJlOiBb
-UEFUQ0ggUkVQT1NUIDEvMl0gY2FuOiBmbGV4Y2FuOiBmaXggZGVhZGxvY2sgd2hlbiB1c2luZyBz
-ZWxmDQo+IHdha2V1cA0KPiANCj4gDQo+IA0KPiBPbiAyMC8wOC8yMDE5IDEzLjU1LCBTZWFuIE55
-ZWtqYWVyIHdyb3RlOg0KPiA+DQo+ID4gSSBoYXZlIGFkZGVkIHNvbWUgbW9yZSBkZWJ1Zywgc2Ft
-ZSB0ZXN0IHNldHVwOg0KPiA+DQo+IGh0dHBzOi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24u
-b3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUyRiUyRmdpc3QuZ2l0aA0KPiB1Yi5jb20lMkZza25z
-ZWFuJTJGODEyMDg3MTRkZTIzYWEzNjM5ZDNlMzFkY2NiMmYzZTAmYW1wO2RhdGE9MDIlDQo+IDdD
-MDElN0NxaWFuZ3FpbmcuemhhbmclNDBueHAuY29tJTdDMWRhZTdlYzRmMTkxNDYyYmU0M2QwOGQ3
-MmJiYjENCj4gZTgyJTdDNjg2ZWExZDNiYzJiNGM2ZmE5MmNkOTljNWMzMDE2MzUlN0MwJTdDMCU3
-QzYzNzAyNTk1NDk4OTUyDQo+IDk4MTMmYW1wO3NkYXRhPXUydDc0N0w0bWk4N2VqdWFMd2w0V1dK
-TkpJRkl6dmxFZk5FJTJCU0xxMktiYyUzRCYNCj4gYW1wO3Jlc2VydmVkPTANCj4gPg0KPiA+IHJv
-b3RAaXdnMjY6fiMgc3lzdGVtY3RsIHN1c3BlbmQNCj4gPg0KPiA+IC4uLg0KPiA+DQo+IGh0dHBz
-Oi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUy
-RiUyRmdpc3QuZ2l0aA0KPiB1Yi5jb20lMkZza25zZWFuJTJGMmE3ODZmMTU0MzMwNTA1NmQ0ZGUw
-M2QzODc4NzI0MDMmYW1wO2RhdGE9MDINCj4gJTdDMDElN0NxaWFuZ3FpbmcuemhhbmclNDBueHAu
-Y29tJTdDMWRhZTdlYzRmMTkxNDYyYmU0M2QwOGQ3MmJiYg0KPiAxZTgyJTdDNjg2ZWExZDNiYzJi
-NGM2ZmE5MmNkOTljNWMzMDE2MzUlN0MwJTdDMCU3QzYzNzAyNTk1NDk4OTUNCj4gMjk4MTMmYW1w
-O3NkYXRhPVdiSTJlZUlsck5DNkhVU3ZpYWdhaUF5aTRZcEslMkIyYkMzYWw0WW45RVhaTSUzRA0K
-PiAmYW1wO3Jlc2VydmVkPTANCj4gPg0KPiA+IC9TZWFuDQo+IA0KPiBBbnkgbHVjayByZXByb2R1
-Y2luZyB0aGlzPw0KDQpIaSBTZWFuLA0KDQpJJ20gc29ycnkgdGhhdCBJIGNhbid0IGdldCB0aGUg
-ZGVidWcgbG9nIGFzIHRoZSBzaXRlIGNhbid0IGJlIHJlYWNoZWQuIEFuZCBJIGNvbm5lY3QgdHdv
-IGJvYXJkcyB0byBkbyB0ZXN0IGF0IG15IHNpZGUsIHRoaXMgaXNzdWUgY2FuJ3QgYmUgcmVwcm9k
-dWNlZC4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IC9TZWFuDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--vaDxWTXAQZUBmXN3l4EPTj0zWvk0zWOIh
+Content-Type: multipart/mixed; boundary="umTbpMyEde8J6VOsRiiHQD4IMgq6CRYyh";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org
+Message-ID: <a6751a50-f15d-612d-783b-a706098ea90e@pengutronix.de>
+Subject: pull-request: can-next 2019-09-03
+
+--umTbpMyEde8J6VOsRiiHQD4IMgq6CRYyh
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+Hello David,
+
+this is a pull request for net-next/master consisting of 15 patches.
+
+The first patch is by Christer Beskow, targets the kvaser_pciefd driver
+and fixes the PWM generator's frequency.
+
+The next three patches are by Dan Murphy, the tcan4x5x is updated to use
+a proper interrupts/interrupt-parent DT binding to specify the devices
+IRQ line. Further the unneeded wake ups of the device is removed from
+the driver.
+
+A patch by me for the mcp25xx driver removes the deprecated board file
+setup example. Three patches by Andy Shevchenko simplify clock handling,
+update the driver from OF to device property API and simplify the
+mcp251x_can_suspend() function.
+
+The remaining 7 patches are by me and clean up checkpatch warnings in
+the generic CAN device infrastructure.
+
+regards,
+Marc
+
+---
+
+The following changes since commit 67538eb5c00f08d7fe27f1bb703098b17302bd=
+c0:
+
+  Merge branch 'mvpp2-per-cpu-buffers' (2019-09-02 12:07:46 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git ta=
+gs/linux-can-next-for-5.4-20190903
+
+for you to fetch changes up to 13ecee77fa810b21beaf3023e921525c55f88b04:
+
+  can: dev: can_dev_init(): convert from printk(KERN_INFO) to pr_info (20=
+19-09-03 10:28:13 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-5.4-20190903
+
+----------------------------------------------------------------
+Andy Shevchenko (3):
+      can: mcp251x: Use devm_clk_get_optional() to get the input clock
+      can: mcp251x: Make use of device property API
+      can: mcp251x: Call wrapper instead of regulator_disable()
+
+Christer Beskow (1):
+      can: kvaser_pciefd: the PWM generator is running at the bus frequen=
+cy of the system.
+
+Dan Murphy (3):
+      dt-bindings: can: tcan4x5x: Update binding to use interrupt propert=
+y
+      can: tcan4x5x: Remove data-ready gpio interrupt
+      can: tcan4x5x: Remove checking the wake pin
+
+Marc Kleine-Budde (8):
+      can: mcp251x: remove deprecated board file setup example
+      can: dev: convert block comments to network style comments
+      can: dev: avoid long lines
+      can: dev: remove unnecessary parentheses
+      can: dev: remove unnecessary blank line
+      can: dev: can_restart(): convert NULL pointer check
+      can: dev: can_dellink(): remove return at end of void function
+      can: dev: can_dev_init(): convert from printk(KERN_INFO) to pr_info=
+
+
+ .../devicetree/bindings/net/can/tcan4x5x.txt       |   7 +-
+ drivers/net/can/dev.c                              | 131 +++++++++------=
+------
+ drivers/net/can/kvaser_pciefd.c                    |   6 +-
+ drivers/net/can/m_can/tcan4x5x.c                   |  24 +---
+ drivers/net/can/spi/mcp251x.c                      |  68 +++--------
+ include/linux/can/dev.h                            |   3 +-
+ include/linux/can/rx-offload.h                     |  13 +-
+ 7 files changed, 97 insertions(+), 155 deletions(-)
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |-
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+
+
+
+
+
+
+
+
+
+
+--umTbpMyEde8J6VOsRiiHQD4IMgq6CRYyh--
+
+--vaDxWTXAQZUBmXN3l4EPTj0zWvk0zWOIh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1uNncACgkQWsYho5Hk
+nSAXAgf+M4Tbgs1aNVymcDBEGZAU/P8w0MKYV70ebTbXE8CGG6H8aepP7Lh7fKwH
+AvqbhN+7QrBoK8wcaQFdggFzf7saWUCF+1lVsjIXPRXyenW7Lhq7xFMBocMf8+z4
+gKQlWcxkZVrVaF+pYeSzQTE8CF8e7KWWBMwSUPj9FkETj3ltqs5dOBWHnqClqHVL
+bM50Va7h6Q1ysJgwFf9/25Nvl8VVcasD3xZ1GdH3i4ZOyTeE6sR/uSoEXe1r/8Rb
+GXGpayZIL1v2pkMWxbC+euOUCxFyMM8AFbuivI0tKxE7FIYuftd21o7k2VzyzveK
+Wp+2BSYHMUPRhUJnAGltGLhPjJBkhA==
+=qTle
+-----END PGP SIGNATURE-----
+
+--vaDxWTXAQZUBmXN3l4EPTj0zWvk0zWOIh--
