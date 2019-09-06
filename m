@@ -1,97 +1,56 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [Bug] mtd: rawnand: gpmi
-Date: Thu, 5 Sep 2019 22:39:36 +0200
-Message-ID: <9db42086-027f-e096-44d7-6d39b8af94ee@pengutronix.de>
-References: <6a333d0f-09b2-d0d1-a3a5-955b31b6291e@geanix.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH REPOST 1/2] can: flexcan: fix deadlock when using self
+ wakeup
+Date: Fri, 6 Sep 2019 02:11:37 +0000
+Message-ID: <DB7PR04MB461874ED80BCEA892249661AE6BA0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+References: <20190816081749.19300-1-qiangqing.zhang@nxp.com>
+ <20190816081749.19300-2-qiangqing.zhang@nxp.com>
+ <dd8f5269-8403-702b-b054-e031423ffc73@geanix.com>
+ <DB7PR04MB4618A1F984F2281C66959B06E6AB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <35190c5b-f8be-8784-5b4f-32a691a6cffe@geanix.com>
+ <6a9bc081-334a-df91-3a23-b74a6cdd3633@geanix.com>
+ <DB7PR04MB4618E527339B69AEAD46FB06E6A20@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <588ab34d-613d-ac01-7949-921140ca4543@geanix.com>
+ <DB7PR04MB461868320DA0B25CC8255213E6BB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <1655f342-7aaf-5e36-d141-d00eee84f3ec@geanix.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2910849127678432163=="
-Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
-In-Reply-To: <6a333d0f-09b2-d0d1-a3a5-955b31b6291e@geanix.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
-To: Sean Nyekjaer <sean@geanix.com>, s.hauer@pengutronix.de, miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org, linux-can <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1655f342-7aaf-5e36-d141-d00eee84f3ec@geanix.com>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, =?utf-8?B?TWFydGluIEh1bmRlYsO4bGw=?= <martin@geanix.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============2910849127678432163==
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="5dQik6L09IRMXXsePXfzC0PhJe2enN51h"
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---5dQik6L09IRMXXsePXfzC0PhJe2enN51h
-Content-Type: multipart/mixed; boundary="fXrJmMosEU8RMe8VehDddG5VVSRdBvTWf";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Sean Nyekjaer <sean@geanix.com>, s.hauer@pengutronix.de,
- miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
- linux-can <linux-can@vger.kernel.org>
-Message-ID: <9db42086-027f-e096-44d7-6d39b8af94ee@pengutronix.de>
-Subject: Re: [Bug] mtd: rawnand: gpmi
-References: <6a333d0f-09b2-d0d1-a3a5-955b31b6291e@geanix.com>
-In-Reply-To: <6a333d0f-09b2-d0d1-a3a5-955b31b6291e@geanix.com>
-
---fXrJmMosEU8RMe8VehDddG5VVSRdBvTWf
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 9/5/19 10:26 PM, Sean Nyekjaer wrote:
-> I have been troubleshooting some CAN problems on our imx6ull with a raw=
-=20
-> nand flash.
-> I normally run with a 4.19 series kernel, but to verify those CAN=20
-> problems have been resolved in newer kernels i have been trying ~5.3-rc=
-6.
-
-What kind of CAN problem? (Cc +=3D linux-can).
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---fXrJmMosEU8RMe8VehDddG5VVSRdBvTWf--
-
---5dQik6L09IRMXXsePXfzC0PhJe2enN51h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl1xcogACgkQWsYho5Hk
-nSBz7Af/ai1hQLjrzTi/jsQDJRAIf4qjhJW/doaHYZAleBEBs4wZqVh4ncWt4Ura
-gR9AKbL3jTS4qsxWat/F7oL87jTPik3Yz36PsPLz1nrKL5C5xyIS6h82TJgfF9d3
-ujULqt17EZ5xHPWc6Qumv1hgJ0seTNooA2xjVoJqxLnuI22ipKsRhj/rR4r679AT
-fAYoUZPiokn26FtT9eAFfyoEVcfXqHU8QoIY78NcPoGGxG9mIuKLh3r/V5aBWyBe
-0uU5f16jwy1eUMKGbRRdrvgGW40qxkyYzDqp/Xc2i4tMeSdH4r8K03VN9y0gAImB
-BY1WRlAtP4bdehj0rHITUGzA3YQzZQ==
-=cMqv
------END PGP SIGNATURE-----
-
---5dQik6L09IRMXXsePXfzC0PhJe2enN51h--
-
-
---===============2910849127678432163==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2910849127678432163==--
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
+YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOeW5tDnmnIg15pelIDIxOjE4DQo+IFRvOiBKb2Fr
+aW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsgbWtsQHBlbmd1dHJvbml4LmRlOw0K
+PiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+IENjOiB3Z0BncmFuZGVnZ2VyLmNvbTsgbmV0
+ZGV2QHZnZXIua2VybmVsLm9yZzsgZGwtbGludXgtaW14DQo+IDxsaW51eC1pbXhAbnhwLmNvbT47
+IE1hcnRpbiBIdW5kZWLDuGxsIDxtYXJ0aW5AZ2Vhbml4LmNvbT4NCj4gU3ViamVjdDogUmU6IFtQ
+QVRDSCBSRVBPU1QgMS8yXSBjYW46IGZsZXhjYW46IGZpeCBkZWFkbG9jayB3aGVuIHVzaW5nIHNl
+bGYNCj4gd2FrZXVwDQo+IA0KPiANCj4gDQo+IE9uIDA1LzA5LzIwMTkgMDkuMTAsIEpvYWtpbSBa
+aGFuZyB3cm90ZToNCj4gPiBIaSBTZWFuLA0KPiA+DQo+ID4gQ291bGQgeW91IHVwZGF0ZSBsYXN0
+ZXN0IGZsZXhjYW4gZHJpdmVyIHVzaW5nIGxpbnV4LWNhbi1uZXh0L2ZsZXhjYW4gYW5kIHRoZW4N
+Cj4gbWVyZ2UgYmVsb3cgdHdvIHBhdGNoZXMgZnJvbSBsaW51eC1jYW4vdGVzdGluZz8NCj4gPiBk
+MGI1MzYxNjcxNmUgKEhFQUQgLT4gdGVzdGluZywgb3JpZ2luL3Rlc3RpbmcpIGNhbjogZmxleGNh
+bjogYWRkIExQU1INCj4gPiBtb2RlIHN1cHBvcnQgZm9yIGkuTVg3RCA4MDNlYjZiYWQ2NWIgY2Fu
+OiBmbGV4Y2FuOiBmaXggZGVhZGxvY2sgd2hlbg0KPiA+IHVzaW5nIHNlbGYgd2FrZXVwDQo+ID4N
+Cj4gPiBCZXN0IFJlZ2FyZHMsDQo+ID4gSm9ha2ltIFpoYW5nDQo+IA0KPiBUaGUgdGVzdGluZyBi
+cmFuY2ggaGF2ZSBzb21lIFVCSSBidWdzLCB3aGVuIHN1c3BlbmRpbmcgaXQgY3Jhc2hlcy4uLg0K
+PiBTbyB3aWxsIGhhdmUgdG8gbGVhdmUgdGhpcywgdW50aWwgdGhleSBhcmUgcmVzb2x2ZWQgOi0p
+DQoNCkkgdGhpbmsgeW91IGNhbiBmaW5kIHRoZSBiYXNlIGFuZCBjaGVycnktcGljayBhbGwgYWJv
+dmUgZmxleGNhbiByZWxhdGVkIGxhdGVzdCBwYXRjaGVzIHRvIHlvdXIgbG9jYWwgc3RhYmxlIHRy
+ZWUuDQpJIGRpZCB0aGlzIGFuZCB0ZXN0IHdha2V1cCBmdW5jdGlvbiBvbiBpLk1YOFFNL1FYUCBi
+ZWZvcmUuDQoNCkJUVywgSSB0aGluayB3aXRob3V0IENBTiBGRCByZWxhdGVkIHBhdGNoZXMsIHlv
+dSBzdGlsbCBjYW4gdGVzdCB3YWtldXAgZnVuY3Rpb24gb24gaS5NWDYvNyB3aXRoIHRoaXMgcGF0
+Y2gobWF5IG5lZWQgZml4IG1lcmdlIGNvbmZsaWN0cykNClRoaXMgcGF0Y2ggaGFzIGJlZW4gbWVy
+Z2VkIGludG8gb3VyIDQuMTkga2VybmVsIGFuZCBwYXNzZWQgdGhlIHdha2V1cCB0ZXN0IGZvciBp
+Lk1YNi83LzguIEkgd2VudCB0aHJvdWdoIHRoZSBmbGV4Y2FuIHN1c3BlbmQvcmVzdW1lIHByb2Nl
+c3MgYWdhaW4sDQphbmQgbm90IGZpbmQgbG9naWNhbCBpc3N1ZS4gSWYgeW91IG1ldCB3YWtldXAg
+ZmFpbHVyZSwgY291bGQgeW91IGhlbHAgdG8gbG9jYXRlIHRoZSBwcm9ibGVtIG1vcmUgYWNjdXJh
+dGUuIEZhaWx1cmUgbG9nIHlvdSBwcm92aWRlZCBsYXN0IHRpbWUsIHN0cmFuZ2UNCmFuZCBpbGxv
+Z2ljYWwuDQoNClRoYW5rcyBhIGxvdCEg8J+Yig0KIAkNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBa
+aGFuZw0KPiAvU2Vhbg0K
