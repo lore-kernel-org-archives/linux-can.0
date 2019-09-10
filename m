@@ -1,44 +1,48 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH REPOST 1/2] can: flexcan: fix deadlock when using self
- wakeup
-Date: Tue, 10 Sep 2019 09:52:45 +0200
-Message-ID: <739eee2e-2919-93b4-24fe-8d0d198ae042@geanix.com>
-References: <20190816081749.19300-1-qiangqing.zhang@nxp.com>
- <20190816081749.19300-2-qiangqing.zhang@nxp.com>
- <dd8f5269-8403-702b-b054-e031423ffc73@geanix.com>
- <DB7PR04MB4618A1F984F2281C66959B06E6AB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <35190c5b-f8be-8784-5b4f-32a691a6cffe@geanix.com>
- <6a9bc081-334a-df91-3a23-b74a6cdd3633@geanix.com>
- <DB7PR04MB4618E527339B69AEAD46FB06E6A20@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <588ab34d-613d-ac01-7949-921140ca4543@geanix.com>
- <DB7PR04MB461868320DA0B25CC8255213E6BB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: Signed-off-by missing for commit in the net-next tree
+Date: Wed, 11 Sep 2019 00:41:03 +1000
+Message-ID: <20190911004103.3480fa40@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <DB7PR04MB461868320DA0B25CC8255213E6BB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-Content-Language: en-US-large
-Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>
+Content-Type: multipart/signed; boundary="Sig_/9Jn59mgO98rup=kQiyX7Z.U";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>, Networking <netdev@vger.kernel.org>
+Cc: Linux Next Mailing List <linux-next@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, The j1939 authors <linux-can@vger.kernel.org>, Bastian Stender <bst@pengutronix.de>, Elenita Hinds <ecathinds@gmail.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, kbuild test robot <lkp@intel.com>, Maxime Jayat <maxime.jayat@mobile-devices.fr>, Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
+--Sig_/9Jn59mgO98rup=kQiyX7Z.U
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 05/09/2019 09.10, Joakim Zhang wrote:
-> Hi Sean,
-> 
-> Could you update lastest flexcan driver using linux-can-next/flexcan and then merge below two patches from linux-can/testing?
-> d0b53616716e (HEAD -> testing, origin/testing) can: flexcan: add LPSR mode support for i.MX7D
-> 803eb6bad65b can: flexcan: fix deadlock when using self wakeup
-> 
-> Best Regards,
-> Joakim Zhang
+Commit
 
-Hi
+  9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 
-I reverted 2 commits on thw nand driver and got the testing kernel to work.
+is missing a Signed-off-by from its author.
 
-I can confirm the issue is resolved with this patch :-)
+[Not sure if I should complain about this one ...]
 
-/Sean
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9Jn59mgO98rup=kQiyX7Z.U
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl13tf8ACgkQAVBC80lX
+0Gz1XQgAghJMDzpTB959LAyRnZ2BTcdjC1I1Ql+yI07GFjjckCpckq6nNv+XJQ8V
+8v0zFk21GxHe4iiFr5TENfSfALy1o8hw1lqjfilqQk9q8E6RjkNrVE+j6rnEVG95
+iLE41mafTnm/T6b2sUBdLPQ8hkir6ToIcLeEQp8k3naw1cEqa7dG1D07nRiOFDoU
+OzQREKHCUpFGmbne150OlvNIBzM5tQmicoRALm6dAwGckksLMeGwtES07coQsSqZ
+dMydcYHuHSfMLzrail0URBEN2Llw75EZxKc+Y6XJhNhQLYhuKiERhZ0ZtWykz82i
+cvM+OQfoJINzEz+OyEne3/nLz1azEg==
+=F1hC
+-----END PGP SIGNATURE-----
+
+--Sig_/9Jn59mgO98rup=kQiyX7Z.U--
