@@ -1,55 +1,31 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] can: fix resource leak of skb on error return paths
-Date: Wed, 18 Sep 2019 11:11:56 +0100
-Message-ID: <20190918101156.24370-1-colin.king@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <linux@rempel-privat.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
+Subject: [PATCH] can: gs_usb: prevent memory leak
+Date: Thu, 19 Sep 2019 21:44:38 -0500
+Message-ID: <20190920024445.28214-1-navid.emamdoost@gmail.com>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+Cc: emamd001@umn.edu, smccaman@umn.edu, kjlu@umn.edu, Navid Emamdoost <navid.emamdoost@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Alexios Zavras <alexios.zavras@intel.com>, Allison Randal <allison@lohutok.net>, Thomas Gleixner <tglx@linutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+In gs_can_open if usb_submit_urb fails the allocated urb should be
+released.
 
-Currently the error return paths do not free skb and this results
-in a memory leak. Fix this by freeing them before the return.
-
-Addresses-Coverity: ("Resource leak")
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 ---
- net/can/j1939/socket.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/gs_usb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 37c1040bcb9c..5c6eabcb5df1 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -909,8 +909,10 @@ void j1939_sk_errqueue(struct j1939_session *session,
- 	memset(serr, 0, sizeof(*serr));
- 	switch (type) {
- 	case J1939_ERRQUEUE_ACK:
--		if (!(sk->sk_tsflags & SOF_TIMESTAMPING_TX_ACK))
-+		if (!(sk->sk_tsflags & SOF_TIMESTAMPING_TX_ACK)) {
-+			kfree_skb(skb);
- 			return;
-+		}
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index bd6eb9967630..2f74f6704c12 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -623,6 +623,7 @@ static int gs_can_open(struct net_device *netdev)
+ 					   rc);
  
- 		serr->ee.ee_errno = ENOMSG;
- 		serr->ee.ee_origin = SO_EE_ORIGIN_TIMESTAMPING;
-@@ -918,8 +920,10 @@ void j1939_sk_errqueue(struct j1939_session *session,
- 		state = "ACK";
- 		break;
- 	case J1939_ERRQUEUE_SCHED:
--		if (!(sk->sk_tsflags & SOF_TIMESTAMPING_TX_SCHED))
-+		if (!(sk->sk_tsflags & SOF_TIMESTAMPING_TX_SCHED)) {
-+			kfree_skb(skb);
- 			return;
-+		}
+ 				usb_unanchor_urb(urb);
++				usb_free_urb(urb);
+ 				break;
+ 			}
  
- 		serr->ee.ee_errno = ENOMSG;
- 		serr->ee.ee_origin = SO_EE_ORIGIN_TIMESTAMPING;
 -- 
-2.20.1
+2.17.1
