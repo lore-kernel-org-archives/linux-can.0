@@ -1,7 +1,7 @@
 From: Jeroen Hofstee <jhofstee@victronenergy.com>
-Subject: [PATCH 5/7] can: ti_hecc: add fifo underflow error reporting
-Date: Tue, 24 Sep 2019 18:46:00 +0000
-Message-ID: <20190924184437.10607-6-jhofstee@victronenergy.com>
+Subject: [PATCH 7/7] can: ti_hecc: add missing state changes
+Date: Tue, 24 Sep 2019 18:46:06 +0000
+Message-ID: <20190924184437.10607-8-jhofstee@victronenergy.com>
 References: <20190924184437.10607-1-jhofstee@victronenergy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,73 +14,45 @@ To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: Jeroen Hofstee <jhofstee@victronenergy.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-When the rx fifo overflows the ti_hecc would silently drop them since
-the overwrite protection is enabled for all mailboxes. So disable it
-for the lowest priority mailbox and increment the rx_fifo_errors when
-receive message lost is set. Drop the message itself in that case,
-since it might be partially updated.
+While the ti_hecc has interrupts to report when the error counters increase
+to a certain level and which change state it doesn't handle the case that
+the error counters go down again, so the reported state can actually be
+wrong. Since there is no interrupt for that, do update state based on the
+error counters, when the state is not error active and goes down again.
 
 Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
 ---
- drivers/net/can/ti_hecc.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ drivers/net/can/ti_hecc.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 35c82289f2a3..4206ad5cb666 100644
+index 6098725bfdea..c7c866da9c6a 100644
 --- a/drivers/net/can/ti_hecc.c
 +++ b/drivers/net/can/ti_hecc.c
-@@ -82,7 +82,7 @@ MODULE_VERSION(HECC_MODULE_VERSION);
- #define HECC_CANTA		0x10	/* Transmission acknowledge */
- #define HECC_CANAA		0x14	/* Abort acknowledge */
- #define HECC_CANRMP		0x18	/* Receive message pending */
--#define HECC_CANRML		0x1C	/* Remote message lost */
-+#define HECC_CANRML		0x1C	/* Receive message lost */
- #define HECC_CANRFP		0x20	/* Remote frame pending */
- #define HECC_CANGAM		0x24	/* SECC only:Global acceptance mask */
- #define HECC_CANMC		0x28	/* Master control */
-@@ -385,8 +385,17 @@ static void ti_hecc_start(struct net_device *ndev)
- 	/* Enable tx interrupts */
- 	hecc_set_bit(priv, HECC_CANMIM, BIT(HECC_MAX_TX_MBOX) - 1);
-=20
--	/* Prevent message over-write & Enable interrupts */
--	hecc_write(priv, HECC_CANOPC, HECC_SET_REG);
-+	/* Prevent message over-write to create a rx fifo, but not for the
-+	 * lowest priority mailbox, since that allows detecting overflows
-+	 * instead of the hardware silently dropping the messages. The lowest
-+	 * rx mailbox is one above the tx ones, hence its mbxno is the number
-+	 * of tx mailboxes.
-+	 */
-+	mbxno =3D HECC_MAX_TX_MBOX;
-+	mbx_mask =3D ~BIT(mbxno);
-+	hecc_write(priv, HECC_CANOPC, mbx_mask);
+@@ -689,6 +689,23 @@ static irqreturn_t ti_hecc_interrupt(int irq, void *de=
+v_id)
+ 			can_bus_off(ndev);
+ 			change_state(priv, rx_state, tx_state);
+ 		}
++	} else if (unlikely(priv->can.state !=3D CAN_STATE_ERROR_ACTIVE)) {
++		enum can_state new_state, tx_state, rx_state;
++		u32 rec =3D hecc_read(priv, HECC_CANREC);
++		u32 tec =3D hecc_read(priv, HECC_CANTEC);
 +
-+	/* Enable interrupts */
- 	if (priv->use_hecc1int) {
- 		hecc_write(priv, HECC_CANMIL, HECC_SET_REG);
- 		hecc_write(priv, HECC_CANGIM, HECC_CANGIM_DEF_MASK |
-@@ -531,6 +540,7 @@ static unsigned int ti_hecc_mailbox_read(struct can_rx_=
-offload *offload,
- {
- 	struct ti_hecc_priv *priv =3D rx_offload_to_priv(offload);
- 	u32 data, mbx_mask;
-+	int lost;
-=20
- 	mbx_mask =3D BIT(mbxno);
- 	data =3D hecc_read_mbx(priv, mbxno, HECC_CANMID);
-@@ -552,9 +562,12 @@ static unsigned int ti_hecc_mailbox_read(struct can_rx=
-_offload *offload,
++		if (rec >=3D 128 || tec >=3D 128)
++			new_state =3D CAN_STATE_ERROR_PASSIVE;
++		else if (rec >=3D 96 || tec >=3D 96)
++			new_state =3D CAN_STATE_ERROR_WARNING;
++		else
++			new_state =3D CAN_STATE_ERROR_ACTIVE;
++
++		if (new_state < priv->can.state) {
++			rx_state =3D rec >=3D tec ? new_state : 0;
++			tx_state =3D rec <=3D tec ? new_state : 0;
++			change_state(priv, rx_state, tx_state);
++		}
  	}
 =20
- 	*timestamp =3D hecc_read_stamp(priv, mbxno);
-+	lost =3D hecc_read(priv, HECC_CANRML) & mbx_mask;
-+	if (unlikely(lost))
-+		priv->offload.dev->stats.rx_fifo_errors++;
- 	hecc_write(priv, HECC_CANRMP, mbx_mask);
-=20
--	return 1;
-+	return !lost;
- }
-=20
- static int ti_hecc_error(struct net_device *ndev, int int_status,
+ 	if (int_status & HECC_CANGIF_GMIF) {
 --=20
 2.17.1
