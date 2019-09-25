@@ -1,58 +1,73 @@
 From: Jeroen Hofstee <jhofstee@victronenergy.com>
-Subject: [PATCH 7/7] can: ti_hecc: add missing state changes
-Date: Tue, 24 Sep 2019 18:46:06 +0000
-Message-ID: <20190924184437.10607-8-jhofstee@victronenergy.com>
-References: <20190924184437.10607-1-jhofstee@victronenergy.com>
+Subject: [PATCH] can: peakcan: report bus recovery as well
+Date: Wed, 25 Sep 2019 08:58:45 +0000
+Message-ID: <20190925085824.4708-1-jhofstee@victronenergy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190924184437.10607-1-jhofstee@victronenergy.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Jeroen Hofstee <jhofstee@victronenergy.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Cc: Jeroen Hofstee <jhofstee@victronenergy.com>, Stephane Grosjean <s.grosjean@peak-system.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-While the ti_hecc has interrupts to report when the error counters increase
-to a certain level and which change state it doesn't handle the case that
-the error counters go down again, so the reported state can actually be
-wrong. Since there is no interrupt for that, do update state based on the
-error counters, when the state is not error active and goes down again.
+While the state changes are reported when the error counters increase
+and decrease, there is no event when the bus recovers and the error
+counters decrease again. So add those as well.
+
+Change the state going downward to be ERROR_PASSIVE -> ERROR_WARNING ->
+ERROR_ACTIVE instead of directly to ERROR_ACTIVE again.
 
 Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 ---
- drivers/net/can/ti_hecc.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 6098725bfdea..c7c866da9c6a 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -689,6 +689,23 @@ static irqreturn_t ti_hecc_interrupt(int irq, void *de=
-v_id)
- 			can_bus_off(ndev);
- 			change_state(priv, rx_state, tx_state);
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/=
+peak_usb/pcan_usb.c
+index 617da295b6c1..dd2a7f529012 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -436,8 +436,8 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_co=
+ntext *mc, u8 n,
  		}
-+	} else if (unlikely(priv->can.state !=3D CAN_STATE_ERROR_ACTIVE)) {
-+		enum can_state new_state, tx_state, rx_state;
-+		u32 rec =3D hecc_read(priv, HECC_CANREC);
-+		u32 tec =3D hecc_read(priv, HECC_CANTEC);
-+
-+		if (rec >=3D 128 || tec >=3D 128)
-+			new_state =3D CAN_STATE_ERROR_PASSIVE;
-+		else if (rec >=3D 96 || tec >=3D 96)
-+			new_state =3D CAN_STATE_ERROR_WARNING;
-+		else
+ 		if ((n & PCAN_USB_ERROR_BUS_LIGHT) =3D=3D 0) {
+ 			/* no error (back to active state) */
+-			mc->pdev->dev.can.state =3D CAN_STATE_ERROR_ACTIVE;
+-			return 0;
 +			new_state =3D CAN_STATE_ERROR_ACTIVE;
-+
-+		if (new_state < priv->can.state) {
-+			rx_state =3D rec >=3D tec ? new_state : 0;
-+			tx_state =3D rec <=3D tec ? new_state : 0;
-+			change_state(priv, rx_state, tx_state);
-+		}
- 	}
++			break;
+ 		}
+ 		break;
 =20
- 	if (int_status & HECC_CANGIF_GMIF) {
+@@ -460,9 +460,9 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_co=
+ntext *mc, u8 n,
+ 		}
+=20
+ 		if ((n & PCAN_USB_ERROR_BUS_HEAVY) =3D=3D 0) {
+-			/* no error (back to active state) */
+-			mc->pdev->dev.can.state =3D CAN_STATE_ERROR_ACTIVE;
+-			return 0;
++			/* no error (back to warning state) */
++			new_state =3D CAN_STATE_ERROR_WARNING;
++			break;
+ 		}
+ 		break;
+=20
+@@ -501,6 +501,11 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_c=
+ontext *mc, u8 n,
+ 		mc->pdev->dev.can.can_stats.error_warning++;
+ 		break;
+=20
++	case CAN_STATE_ERROR_ACTIVE:
++		cf->can_id |=3D CAN_ERR_CRTL;
++		cf->data[1] =3D CAN_ERR_CRTL_ACTIVE;
++		break;
++
+ 	default:
+ 		/* CAN_STATE_MAX (trick to handle other errors) */
+ 		cf->can_id |=3D CAN_ERR_CRTL;
 --=20
 2.17.1
