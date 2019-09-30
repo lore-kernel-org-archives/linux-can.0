@@ -1,45 +1,29 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] can: grcan: use devm_platform_ioremap_resource() to simplify code
-Date: Mon, 30 Sep 2019 17:49:09 +0800
-Message-ID: <20190930094909.49672-1-yuehaibing@huawei.com>
+From: Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] docs: use flexible array members, not zero-length
+Date: Mon, 30 Sep 2019 11:00:57 -0600
+Message-ID: <20190930110057.1b11d798@lwn.net>
+References: <20190927142927.27968-1-steve@sk2.org>
+        <20190928011639.7c983e77@lwn.net>
+        <20190928105557.221fb119@heffalump.sk2.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190928105557.221fb119@heffalump.sk2.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
+To: Stephen Kitt <steve@sk2.org>
+Cc: linux-doc@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-can@vger.kernel.org, linux-afs@lists.infradead.org, kvm@vger.kernel.org, "Gustavo A . R . Silva" <gustavo@embeddedor.com>
 List-Id: linux-can.vger.kernel.org
 
-Use devm_platform_ioremap_resource() to simplify the code a bit.
-This is detected by coccinelle.
+On Sat, 28 Sep 2019 10:55:57 +0200
+Stephen Kitt <steve@sk2.org> wrote:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/can/grcan.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> Wouldn’t it be better to update the docs simultaneously in each patch which
+> fixes a structure? Or is that unworkable with current development practices?
 
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index b8f1f2b69dd3..378200b682fa 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -1652,7 +1652,6 @@ static int grcan_setup_netdev(struct platform_device *ofdev,
- static int grcan_probe(struct platform_device *ofdev)
- {
- 	struct device_node *np = ofdev->dev.of_node;
--	struct resource *res;
- 	u32 sysid, ambafreq;
- 	int irq, err;
- 	void __iomem *base;
-@@ -1672,8 +1671,7 @@ static int grcan_probe(struct platform_device *ofdev)
- 		goto exit_error;
- 	}
- 
--	res = platform_get_resource(ofdev, IORESOURCE_MEM, 0);
--	base = devm_ioremap_resource(&ofdev->dev, res);
-+	base = devm_platform_ioremap_resource(ofdev, 0);
- 	if (IS_ERR(base)) {
- 		err = PTR_ERR(base);
- 		goto exit_error;
--- 
-2.20.1
+Definitely update the two together.  The doc fix should just go through
+the appropriate maintainer with the code change.
+
+Thanks,
+
+jon
