@@ -1,83 +1,45 @@
 From: Jeroen Hofstee <jhofstee@victronenergy.com>
-Subject: [PATCH v2 2/2] can: C_CAN: add bus recovery events
-Date: Tue, 1 Oct 2019 21:01:24 +0000
-Message-ID: <20191001210054.14588-3-jhofstee@victronenergy.com>
-References: <20191001210054.14588-1-jhofstee@victronenergy.com>
+Subject: Re: [PATCH 1/2] can: D_CAN: perform a sofware reset on open
+Date: Tue, 1 Oct 2019 21:17:01 +0000
+Message-ID: <04f38523-07fb-4ea9-3031-932176f68660@victronenergy.com>
+References: <20190926085005.24805-1-jhofstee@victronenergy.com>
+ <20190926085005.24805-2-jhofstee@victronenergy.com>
+ <b30e9834-a324-ad97-2050-df9600a95347@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191001210054.14588-1-jhofstee@victronenergy.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <b30e9834-a324-ad97-2050-df9600a95347@pengutronix.de>
 Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Jeroen Hofstee <jhofstee@victronenergy.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-ID: <A7F7F6AD8CEF9145A094951C873E3341@eurprd07.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-While the state is updated when the error counters increase and decrease,
-there is no event when the bus recovers and the error counters decrease
-again. So add that event as well.
-
-Change the state going downward to be ERROR_PASSIVE -> ERROR_WARNING ->
-ERROR_ACTIVE instead of directly to ERROR_ACTIVE again.
-
-Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
-Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Tested-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
----
- drivers/net/can/c_can/c_can.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 2332687fa6dc..e1e9b87dd4d2 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -912,6 +912,9 @@ static int c_can_handle_state_change(struct net_device =
-*dev,
- 	struct can_berr_counter bec;
-=20
- 	switch (error_type) {
-+	case C_CAN_NO_ERROR:
-+		priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
-+		break;
- 	case C_CAN_ERROR_WARNING:
- 		/* error warning state */
- 		priv->can.can_stats.error_warning++;
-@@ -942,6 +945,13 @@ static int c_can_handle_state_change(struct net_device=
- *dev,
- 				ERR_CNT_RP_SHIFT;
-=20
- 	switch (error_type) {
-+	case C_CAN_NO_ERROR:
-+		/* error warning state */
-+		cf->can_id |=3D CAN_ERR_CRTL;
-+		cf->data[1] =3D CAN_ERR_CRTL_ACTIVE;
-+		cf->data[6] =3D bec.txerr;
-+		cf->data[7] =3D bec.rxerr;
-+		break;
- 	case C_CAN_ERROR_WARNING:
- 		/* error warning state */
- 		cf->can_id |=3D CAN_ERR_CRTL;
-@@ -1080,11 +1090,17 @@ static int c_can_poll(struct napi_struct *napi, int=
- quota)
- 	/* handle bus recovery events */
- 	if ((!(curr & STATUS_BOFF)) && (last & STATUS_BOFF)) {
- 		netdev_dbg(dev, "left bus off state\n");
--		priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
-+		work_done +=3D c_can_handle_state_change(dev, C_CAN_ERROR_PASSIVE);
- 	}
-+
- 	if ((!(curr & STATUS_EPASS)) && (last & STATUS_EPASS)) {
- 		netdev_dbg(dev, "left error passive state\n");
--		priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
-+		work_done +=3D c_can_handle_state_change(dev, C_CAN_ERROR_WARNING);
-+	}
-+
-+	if ((!(curr & STATUS_EWARN)) && (last & STATUS_EWARN)) {
-+		netdev_dbg(dev, "left error warning state\n");
-+		work_done +=3D c_can_handle_state_change(dev, C_CAN_NO_ERROR);
- 	}
-=20
- 	/* handle lec errors on the bus */
---=20
-2.17.1
+SGVsbG8gTWFyYywNCg0KT24gMTAvMS8xOSA0OjMyIFBNLCBNYXJjIEtsZWluZS1CdWRkZSB3cm90
+ZToNCj4gT24gOS8yNi8xOSAxMDo1MCBBTSwgSmVyb2VuIEhvZnN0ZWUgd3JvdGU6DQo+PiBXaGVu
+IHRoZSBDX0NBTiBpbnRlcmZhY2UgaXMgY2xvc2VkIGl0IGlzIHB1dCBpbiBwb3dlciBkb3duIG1v
+ZGUsIGJ1dA0KPj4gZG9lcyBub3QgcmVzZXQgdGhlIGVycm9yIGNvdW50ZXJzIC8gc3RhdGUuIFNv
+IHJlc2V0IHRoZSBEX0NBTiBvbiBvcGVuLA0KPj4gc28gdGhlIHJlcG9ydGVkIHN0YXRlIGFuZCB0
+aGUgYWN0dWFsIHN0YXRlIG1hdGNoLg0KPj4NCj4+IEFjY29yZGluZyB0byBbMV0sIHRoZSBDX0NB
+TiBtb2R1bGUgZG9lc24ndCBoYXZlIHRoZSBzb2Z0d2FyZSByZXNldC4NCj4+DQo+PiBbMV0gaHR0
+cDovL3d3dy5ib3NjaC1zZW1pY29uZHVjdG9ycy5jb20vbWVkaWEvaXBfbW9kdWxlcy9wZGZfMi9j
+X2Nhbl9mZDgvdXNlcnNfbWFudWFsX2NfY2FuX2ZkOF9yMjEwXzEucGRmDQo+Pg0KPj4gU2lnbmVk
+LW9mZi1ieTogSmVyb2VuIEhvZnN0ZWUgPGpob2ZzdGVlQHZpY3Ryb25lbmVyZ3kuY29tPg0KPj4g
+LS0tDQo+PiAgIGRyaXZlcnMvbmV0L2Nhbi9jX2Nhbi9jX2Nhbi5jIHwgMjYgKysrKysrKysrKysr
+KysrKysrKysrKysrKysNCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDI2IGluc2VydGlvbnMoKykNCj4+
+DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL2NfY2FuL2NfY2FuLmMgYi9kcml2ZXJz
+L25ldC9jYW4vY19jYW4vY19jYW4uYw0KPj4gaW5kZXggNjA2YjdkOGZmZTEzLi41MDJhMTgxZDAy
+ZTcgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vY19jYW4vY19jYW4uYw0KPj4gKysr
+IGIvZHJpdmVycy9uZXQvY2FuL2NfY2FuL2NfY2FuLmMNCj4+IEBAIC01Miw2ICs1Miw3IEBADQo+
+PiAgICNkZWZpbmUgQ09OVFJPTF9FWF9QRFIJCUJJVCg4KQ0KPj4gICANCj4+ICAgLyogY29udHJv
+bCByZWdpc3RlciAqLw0KPj4gKyNkZWZpbmUgQ09OVFJPTF9TV1IJCUJJVCgxNSkNCj4+ICAgI2Rl
+ZmluZSBDT05UUk9MX1RFU1QJCUJJVCg3KQ0KPj4gICAjZGVmaW5lIENPTlRST0xfQ0NFCQlCSVQo
+NikNCj4+ICAgI2RlZmluZSBDT05UUk9MX0RJU0FCTEVfQVIJQklUKDUpDQo+PiBAQCAtNTY5LDYg
+KzU3MCwyNiBAQCBzdGF0aWMgdm9pZCBjX2Nhbl9jb25maWd1cmVfbXNnX29iamVjdHMoc3RydWN0
+IG5ldF9kZXZpY2UgKmRldikNCj4+ICAgCQkJCSAgIElGX01DT05UX1JDVl9FT0IpOw0KPj4gICB9
+DQo+PiAgIA0KPj4gK3N0YXRpYyBpbnQgc29mdHdhcmVfcmVzZXQoc3RydWN0IG5ldF9kZXZpY2Ug
+KmRldikNCj4gUGxlYXNlIGFkZCB0aGUgY29tbW9uIHByZWZpeCAiY19jYW5fIiB0byB0aGUgZnVu
+Y3Rpb24NCg0KRmluZSB3aXRoIG1lLCBJIGRpZCBzZW50IGEgdjIuDQoNClJlZ2FyZHMsDQpKZXJv
+ZW4NCg0K
