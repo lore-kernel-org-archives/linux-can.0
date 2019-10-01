@@ -1,29 +1,26 @@
-From: Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] docs: use flexible array members, not zero-length
-Date: Mon, 30 Sep 2019 11:00:57 -0600
-Message-ID: <20190930110057.1b11d798@lwn.net>
-References: <20190927142927.27968-1-steve@sk2.org>
-        <20190928011639.7c983e77@lwn.net>
-        <20190928105557.221fb119@heffalump.sk2.org>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: [PATCH 2/2] can: C_CAN: add bus recovery events
+Date: Tue, 1 Oct 2019 09:40:57 +0200
+Message-ID: <20191001074057.GA28813@x1.vandijck-laurijssen.be>
+References: <20190926085005.24805-1-jhofstee@victronenergy.com>
+ <20190926085005.24805-3-jhofstee@victronenergy.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190928105557.221fb119@heffalump.sk2.org>
+Content-Disposition: inline
+In-Reply-To: <20190926085005.24805-3-jhofstee@victronenergy.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Stephen Kitt <steve@sk2.org>
-Cc: linux-doc@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-can@vger.kernel.org, linux-afs@lists.infradead.org, kvm@vger.kernel.org, "Gustavo A . R . Silva" <gustavo@embeddedor.com>
+To: Jeroen Hofstee <jhofstee@victronenergy.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-On Sat, 28 Sep 2019 10:55:57 +0200
-Stephen Kitt <steve@sk2.org> wrote:
+On do, 26 sep 2019 08:50:51 +0000, Jeroen Hofstee wrote:
+> While the state is update when the error counters increase and decrease,
+> there is no event when the bus recovers and the error counters decrease
+> again. So add that event as well.
+> 
+> Change the state going downward to be ERROR_PASSIVE -> ERROR_WARNING ->
+> ERROR_ACTIVE instead of directly to ERROR_ACTIVE again.
 
-> Wouldn’t it be better to update the docs simultaneously in each patch which
-> fixes a structure? Or is that unworkable with current development practices?
-
-Definitely update the two together.  The doc fix should just go through
-the appropriate maintainer with the code change.
-
-Thanks,
-
-jon
+This looks like a proper thing to do
+Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
