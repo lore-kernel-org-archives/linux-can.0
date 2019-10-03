@@ -1,80 +1,105 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: gs_usb: prevent memory leak
-Date: Tue, 1 Oct 2019 22:23:45 +0200
-Message-ID: <0b3ac5bb-af87-92ab-1b87-c419bbb85395@pengutronix.de>
-References: <20190920024445.28214-1-navid.emamdoost@gmail.com>
+From: "pankj.sharma" <pankj.sharma@samsung.com>
+Subject: RE: [PATCH] can: m_can: add support for one shot mode
+Date: Thu, 3 Oct 2019 09:17:32 +0530
+Message-ID: <010501d5799d$4b372830$e1a57890$@samsung.com>
+References: <CGME20190925114609epcas5p305e259619c7fe8cdc75d9fd27f34e758@epcas5p3.samsung.com>
+        <1569411904-6319-1-git-send-email-pankj.sharma@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="wdn5ZD10inilur2w3Zvl7mKcpLj8aU6ma"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190920024445.28214-1-navid.emamdoost@gmail.com>
-Sender: netdev-owner@vger.kernel.org
-To: Navid Emamdoost <navid.emamdoost@gmail.com>
-Cc: emamd001@umn.edu, smccaman@umn.edu, kjlu@umn.edu, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Alexios Zavras <alexios.zavras@intel.com>, Allison Randal <allison@lohutok.net>, Thomas Gleixner <tglx@linutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1569411904-6319-1-git-send-email-pankj.sharma@samsung.com>
+Content-Language: en-us
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, eugen.hristev@microchip.com, ludovic.desroches@microchip.com, pankaj.dubey@samsung.com, rcsekar@samsung.com, 'Sriram Dash' <sriram.dash@samsung.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wdn5ZD10inilur2w3Zvl7mKcpLj8aU6ma
-Content-Type: multipart/mixed; boundary="NwQBjjnI9b4xRZrJx2I05muuYH8ly50eB";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Navid Emamdoost <navid.emamdoost@gmail.com>
-Cc: emamd001@umn.edu, smccaman@umn.edu, kjlu@umn.edu,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Alexios Zavras <alexios.zavras@intel.com>,
- Allison Randal <allison@lohutok.net>, Thomas Gleixner <tglx@linutronix.de>,
- linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <0b3ac5bb-af87-92ab-1b87-c419bbb85395@pengutronix.de>
-Subject: Re: [PATCH] can: gs_usb: prevent memory leak
-References: <20190920024445.28214-1-navid.emamdoost@gmail.com>
-In-Reply-To: <20190920024445.28214-1-navid.emamdoost@gmail.com>
+Gentle Ping
 
---NwQBjjnI9b4xRZrJx2I05muuYH8ly50eB
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 9/20/19 4:44 AM, Navid Emamdoost wrote:
-> In gs_can_open if usb_submit_urb fails the allocated urb should be
-> released.
+> -----Original Message-----
+> From: Pankaj Sharma <pankj.sharma=40samsung.com>
+> Subject: =5BPATCH=5D can: m_can: add support for one shot mode
 >=20
-> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> According to the CAN Specification (see ISO 11898-1:2015, 8.3.4 Recovery
+> Management), the M_CAN provides means for automatic retransmission of
+> frames that have lost arbitration or that have been disturbed by errors d=
+uring
+> transmission. By default automatic retransmission is enabled.
+>=20
+> The Bosch MCAN controller has support for disabling automatic retransmiss=
+ion.
+>=20
+> To support time-triggered communication as described in ISO 11898-1:2015,
+> chapter 9.2, the automatic retransmission may be disabled via CCCR.DAR.
+>=20
+> CAN_CTRLMODE_ONE_SHOT is used for disabling automatic retransmission.
+>=20
+> Signed-off-by: Pankaj Sharma <pankj.sharma=40samsung.com>
+> Signed-off-by: Sriram Dash <sriram.dash=40samsung.com>
 > ---
->  drivers/net/can/usb/gs_usb.c | 1 +
->  1 file changed, 1 insertion(+)
-
-Added Fixes line and added stable@v.k.o on Cc.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---NwQBjjnI9b4xRZrJx2I05muuYH8ly50eB--
-
---wdn5ZD10inilur2w3Zvl7mKcpLj8aU6ma
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl2TtdEACgkQWsYho5Hk
-nSAwVAf9GmrmybB6sGdFeeuEu1gPZWBmusuRT8oot0ESFihdrc/cPY9RvB6RAmAO
-qsqeZKr5kqa/sX82LJGFKdho7Hb5QvgKl/h36jRNYsyhLbzVT9dhyG0BIY1AP7Jf
-fTRrhj8Q2agZwkbpVVEEQRmufLAWPvXcKK5PDqgCAMAtO7xOijQ8VKKLOp1mG72Y
-3zjubgHh0m9CZ4JPe/z13VT72pfYi/ZmpnzgDF2/f9Fokvh7k8QpwkEkhqgB/iXJ
-ciyBwYPLjqW1ntQOr1im1Xl6DkSNL4FgU1amxhQNOu0bw7XDxG+TgEOPdirNN50Z
-P1bfTjJp+8AriIiHhWpFgBznAVR2Dw==
-=PU+i
------END PGP SIGNATURE-----
-
---wdn5ZD10inilur2w3Zvl7mKcpLj8aU6ma--
+>  drivers/net/can/m_can/m_can.c =7C 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.=
+c
+> index deb274a19ba0..e7165404ba8a 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> =40=40 -150,6 +150,7 =40=40 enum m_can_mram_cfg =7B
+>  =23define CCCR_CME_CANFD_BRS	0x2
+>  =23define CCCR_TXP		BIT(14)
+>  =23define CCCR_TEST		BIT(7)
+> +=23define CCCR_DAR		BIT(6)
+>  =23define CCCR_MON		BIT(5)
+>  =23define CCCR_CSR		BIT(4)
+>  =23define CCCR_CSA		BIT(3)
+> =40=40 -1123,7 +1124,7 =40=40 static void m_can_chip_config(struct net_de=
+vice
+> *dev)
+>  	if (priv->version =3D=3D 30) =7B
+>  	/* Version 3.0.x */
+>=20
+> -		cccr &=3D =7E(CCCR_TEST =7C CCCR_MON =7C
+> +		cccr &=3D =7E(CCCR_TEST =7C CCCR_MON =7C CCCR_DAR =7C
+>  			(CCCR_CMR_MASK << CCCR_CMR_SHIFT) =7C
+>  			(CCCR_CME_MASK << CCCR_CME_SHIFT));
+>=20
+> =40=40 -1133,7 +1134,7 =40=40 static void m_can_chip_config(struct net_de=
+vice
+> *dev)
+>  	=7D else =7B
+>  	/* Version 3.1.x or 3.2.x */
+>  		cccr &=3D =7E(CCCR_TEST =7C CCCR_MON =7C CCCR_BRSE =7C CCCR_FDOE
+> =7C
+> -			  CCCR_NISO);
+> +			  CCCR_NISO =7C CCCR_DAR);
+>=20
+>  		/* Only 3.2.x has NISO Bit implemented */
+>  		if (priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO) =40=40 -
+> 1153,6 +1154,10 =40=40 static void m_can_chip_config(struct net_device *d=
+ev)
+>  	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+>  		cccr =7C=3D CCCR_MON;
+>=20
+> +	/* Disable Auto Retransmission (all versions) */
+> +	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+> +		cccr =7C=3D CCCR_DAR;
+> +
+>  	/* Write config */
+>  	m_can_write(priv, M_CAN_CCCR, cccr);
+>  	m_can_write(priv, M_CAN_TEST, test);
+> =40=40 -1291,7 +1296,8 =40=40 static int m_can_dev_setup(struct platform_=
+device
+> *pdev, struct net_device *dev,
+>  	priv->can.ctrlmode_supported =3D CAN_CTRLMODE_LOOPBACK =7C
+>  					CAN_CTRLMODE_LISTENONLY =7C
+>  					CAN_CTRLMODE_BERR_REPORTING =7C
+> -					CAN_CTRLMODE_FD;
+> +					CAN_CTRLMODE_FD =7C
+> +					CAN_CTRLMODE_ONE_SHOT;
+>=20
+>  	/* Set properties depending on M_CAN version */
+>  	switch (priv->version) =7B
+> --
+> 2.17.1
