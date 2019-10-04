@@ -1,105 +1,76 @@
-From: "pankj.sharma" <pankj.sharma@samsung.com>
-Subject: RE: [PATCH] can: m_can: add support for one shot mode
-Date: Thu, 3 Oct 2019 09:17:32 +0530
-Message-ID: <010501d5799d$4b372830$e1a57890$@samsung.com>
-References: <CGME20190925114609epcas5p305e259619c7fe8cdc75d9fd27f34e758@epcas5p3.samsung.com>
-        <1569411904-6319-1-git-send-email-pankj.sharma@samsung.com>
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
+Subject: Re: [PATCH 2/6] net: can: xilinx_can: Fix flags field initialization
+ for axi can and canps
+Date: Fri, 4 Oct 2019 17:32:52 +0300
+Message-ID: <d1bedb13-f66f-b0fd-bd6d-9f95b64fc405@bitwise.fi>
+References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
+ <1552908766-26753-3-git-send-email-appana.durga.rao@xilinx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1569411904-6319-1-git-send-email-pankj.sharma@samsung.com>
-Content-Language: en-us
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, eugen.hristev@microchip.com, ludovic.desroches@microchip.com, pankaj.dubey@samsung.com, rcsekar@samsung.com, 'Sriram Dash' <sriram.dash@samsung.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1552908766-26753-3-git-send-email-appana.durga.rao@xilinx.com>
+Content-Language: en-GB
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, michal.simek@xilinx.com, mkl@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, davem@davemloft.net, wg@grandegger.com
 List-Id: linux-can.vger.kernel.org
 
-Gentle Ping
-
-> -----Original Message-----
-> From: Pankaj Sharma <pankj.sharma=40samsung.com>
-> Subject: =5BPATCH=5D can: m_can: add support for one shot mode
->=20
-> According to the CAN Specification (see ISO 11898-1:2015, 8.3.4 Recovery
-> Management), the M_CAN provides means for automatic retransmission of
-> frames that have lost arbitration or that have been disturbed by errors d=
-uring
-> transmission. By default automatic retransmission is enabled.
->=20
-> The Bosch MCAN controller has support for disabling automatic retransmiss=
-ion.
->=20
-> To support time-triggered communication as described in ISO 11898-1:2015,
-> chapter 9.2, the automatic retransmission may be disabled via CCCR.DAR.
->=20
-> CAN_CTRLMODE_ONE_SHOT is used for disabling automatic retransmission.
->=20
-> Signed-off-by: Pankaj Sharma <pankj.sharma=40samsung.com>
-> Signed-off-by: Sriram Dash <sriram.dash=40samsung.com>
+On 18.3.2019 13.32, Appana Durga Kedareswara rao wrote:
+> AXI CAN IP and CANPS IP supports tx fifo empty feature, this patch updates
+> the flags field for the same.
+>
+> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 > ---
->  drivers/net/can/m_can/m_can.c =7C 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.=
-c
-> index deb274a19ba0..e7165404ba8a 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> =40=40 -150,6 +150,7 =40=40 enum m_can_mram_cfg =7B
->  =23define CCCR_CME_CANFD_BRS	0x2
->  =23define CCCR_TXP		BIT(14)
->  =23define CCCR_TEST		BIT(7)
-> +=23define CCCR_DAR		BIT(6)
->  =23define CCCR_MON		BIT(5)
->  =23define CCCR_CSR		BIT(4)
->  =23define CCCR_CSA		BIT(3)
-> =40=40 -1123,7 +1124,7 =40=40 static void m_can_chip_config(struct net_de=
-vice
-> *dev)
->  	if (priv->version =3D=3D 30) =7B
->  	/* Version 3.0.x */
->=20
-> -		cccr &=3D =7E(CCCR_TEST =7C CCCR_MON =7C
-> +		cccr &=3D =7E(CCCR_TEST =7C CCCR_MON =7C CCCR_DAR =7C
->  			(CCCR_CMR_MASK << CCCR_CMR_SHIFT) =7C
->  			(CCCR_CME_MASK << CCCR_CME_SHIFT));
->=20
-> =40=40 -1133,7 +1134,7 =40=40 static void m_can_chip_config(struct net_de=
-vice
-> *dev)
->  	=7D else =7B
->  	/* Version 3.1.x or 3.2.x */
->  		cccr &=3D =7E(CCCR_TEST =7C CCCR_MON =7C CCCR_BRSE =7C CCCR_FDOE
-> =7C
-> -			  CCCR_NISO);
-> +			  CCCR_NISO =7C CCCR_DAR);
->=20
->  		/* Only 3.2.x has NISO Bit implemented */
->  		if (priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO) =40=40 -
-> 1153,6 +1154,10 =40=40 static void m_can_chip_config(struct net_device *d=
-ev)
->  	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
->  		cccr =7C=3D CCCR_MON;
->=20
-> +	/* Disable Auto Retransmission (all versions) */
-> +	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-> +		cccr =7C=3D CCCR_DAR;
-> +
->  	/* Write config */
->  	m_can_write(priv, M_CAN_CCCR, cccr);
->  	m_can_write(priv, M_CAN_TEST, test);
-> =40=40 -1291,7 +1296,8 =40=40 static int m_can_dev_setup(struct platform_=
-device
-> *pdev, struct net_device *dev,
->  	priv->can.ctrlmode_supported =3D CAN_CTRLMODE_LOOPBACK =7C
->  					CAN_CTRLMODE_LISTENONLY =7C
->  					CAN_CTRLMODE_BERR_REPORTING =7C
-> -					CAN_CTRLMODE_FD;
-> +					CAN_CTRLMODE_FD =7C
-> +					CAN_CTRLMODE_ONE_SHOT;
->=20
->  	/* Set properties depending on M_CAN version */
->  	switch (priv->version) =7B
-> --
-> 2.17.1
+>  drivers/net/can/xilinx_can.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+> index 2de51ac..22569ef 100644
+> --- a/drivers/net/can/xilinx_can.c
+> +++ b/drivers/net/can/xilinx_can.c
+> @@ -1428,6 +1428,7 @@ static const struct dev_pm_ops xcan_dev_pm_ops = {
+>  };
+>  
+>  static const struct xcan_devtype_data xcan_zynq_data = {
+> +	.flags = XCAN_FLAG_TXFEMP,
+>  	.bittiming_const = &xcan_bittiming_const,
+>  	.btr_ts2_shift = XCAN_BTR_TS2_SHIFT,
+>  	.btr_sjw_shift = XCAN_BTR_SJW_SHIFT,
+
+Thanks for catching this, this line seemed to have been incorrectly
+removed by my 9e5f1b273e ("can: xilinx_can: add support for Xilinx CAN
+FD core").
+
+But:
+
+> @@ -1435,6 +1436,7 @@ static const struct xcan_devtype_data xcan_zynq_data = {
+>  };
+>  
+>  static const struct xcan_devtype_data xcan_axi_data = {
+> +	.flags = XCAN_FLAG_TXFEMP,
+>  	.bittiming_const = &xcan_bittiming_const,
+>  	.btr_ts2_shift = XCAN_BTR_TS2_SHIFT,
+>  	.btr_sjw_shift = XCAN_BTR_SJW_SHIFT,
+
+
+Are you sure this is right?
+In the documentation [1] there does not seem to be any TXFEMP interrupt,
+it would be interrupt bit 14 but AXI CAN 5.0 seems to only go up to 11.
+
+Or maybe it is undocumented or there is a newer version somewhere?
+
+[1]
+https://www.xilinx.com/support/documentation/ip_documentation/can/v5_0/pg096-can.pdf
+
+-- 
+Anssi Hannula / Bitwise Oy
++358 503803997
