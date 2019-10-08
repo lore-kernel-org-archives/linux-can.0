@@ -1,46 +1,73 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH REPOST 1/2] can: flexcan: fix deadlock when using self
- wakeup
-Date: Tue, 8 Oct 2019 10:20:59 +0000
-Message-ID: <DB7PR04MB4618DEF0873D110536724818E69A0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20190816081749.19300-1-qiangqing.zhang@nxp.com>
- <20190816081749.19300-2-qiangqing.zhang@nxp.com>
- <dd8f5269-8403-702b-b054-e031423ffc73@geanix.com>
- <DB7PR04MB4618A1F984F2281C66959B06E6AB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <35190c5b-f8be-8784-5b4f-32a691a6cffe@geanix.com>
- <6a9bc081-334a-df91-3a23-b74a6cdd3633@geanix.com>
- <DB7PR04MB4618E527339B69AEAD46FB06E6A20@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <588ab34d-613d-ac01-7949-921140ca4543@geanix.com>
- <DB7PR04MB461868320DA0B25CC8255213E6BB0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <739eee2e-2919-93b4-24fe-8d0d198ae042@geanix.com>
+From: Jakub Kicinski <jakub.kicinski@netronome.com>
+Subject: Re: pull-request: can-next 2019-10-07
+Date: Tue, 8 Oct 2019 12:09:53 -0700
+Message-ID: <20191008120953.515a3dbd@cakuba.netronome.com>
+References: <2ffa00e7-d447-9216-587d-30396a47ca64@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <739eee2e-2919-93b4-24fe-8d0d198ae042@geanix.com>
-Content-Language: en-US
+In-Reply-To: <2ffa00e7-d447-9216-587d-30396a47ca64@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, =?utf-8?B?TWFydGluIEh1bmRlYsO4bGw=?= <martin@geanix.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Bastian Stender <bst@pengutronix.de>, Elenita Hinds <ecathinds@gmail.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Maxime Jayat <maxime.jayat@mobile-devices.fr>, Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <ore@pengutronix.de>, David Jander <david@protonic.nl>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
-YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOeW5tDnmnIgxMOaXpSAxNTo1Mw0KPiBUbzogSm9h
-a2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT47IG1rbEBwZW5ndXRyb25peC5kZTsN
-Cj4gbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBDYzogd2dAZ3JhbmRlZ2dlci5jb207IG5l
-dGRldkB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteA0KPiA8bGludXgtaW14QG54cC5jb20+
-OyBNYXJ0aW4gSHVuZGViw7hsbCA8bWFydGluQGdlYW5peC5jb20+DQo+IFN1YmplY3Q6IFJlOiBb
-UEFUQ0ggUkVQT1NUIDEvMl0gY2FuOiBmbGV4Y2FuOiBmaXggZGVhZGxvY2sgd2hlbiB1c2luZyBz
-ZWxmDQo+IHdha2V1cA0KPiANCj4gDQo+IA0KPiBPbiAwNS8wOS8yMDE5IDA5LjEwLCBKb2FraW0g
-Wmhhbmcgd3JvdGU6DQo+ID4gSGkgU2VhbiwNCj4gPg0KPiA+IENvdWxkIHlvdSB1cGRhdGUgbGFz
-dGVzdCBmbGV4Y2FuIGRyaXZlciB1c2luZyBsaW51eC1jYW4tbmV4dC9mbGV4Y2FuIGFuZCB0aGVu
-DQo+IG1lcmdlIGJlbG93IHR3byBwYXRjaGVzIGZyb20gbGludXgtY2FuL3Rlc3Rpbmc/DQo+ID4g
-ZDBiNTM2MTY3MTZlIChIRUFEIC0+IHRlc3RpbmcsIG9yaWdpbi90ZXN0aW5nKSBjYW46IGZsZXhj
-YW46IGFkZCBMUFNSDQo+ID4gbW9kZSBzdXBwb3J0IGZvciBpLk1YN0QgODAzZWI2YmFkNjViIGNh
-bjogZmxleGNhbjogZml4IGRlYWRsb2NrIHdoZW4NCj4gPiB1c2luZyBzZWxmIHdha2V1cA0KPiA+
-DQo+ID4gQmVzdCBSZWdhcmRzLA0KPiA+IEpvYWtpbSBaaGFuZw0KPiANCj4gSGkNCj4gDQo+IEkg
-cmV2ZXJ0ZWQgMiBjb21taXRzIG9uIHRodyBuYW5kIGRyaXZlciBhbmQgZ290IHRoZSB0ZXN0aW5n
-IGtlcm5lbCB0byB3b3JrLg0KPiANCj4gSSBjYW4gY29uZmlybSB0aGUgaXNzdWUgaXMgcmVzb2x2
-ZWQgd2l0aCB0aGlzIHBhdGNoIDotKQ0KDQpIaSBNYXJjLA0KDQpIb3cgYWJvdXQgdGhlc2UgdHdv
-IGZpeGVzIGZvciBGbGV4Y2FuPw0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gL1Nl
-YW4NCg==
+On Mon, 7 Oct 2019 16:38:14 +0200, Marc Kleine-Budde wrote:
+> Hello David,
+> 
+> this is a pull request for net-next/master consisting of 12 patches.
+> 
+> The first patch is by Andy Shevchenko for the mcp251x driver and removes
+> the legacy platform data from all in-tree users and the driver.
+> 
+> The next two patches target the peak_canfd driver, the first one is by
+> me and fixes several checkpatch warnings, the second one is by Stephane
+> Grosjean and adds hardware timestamps to the rx skbs.
+> 
+> Followed by two patches for the xilinx_can driver. Again the first is by
+> me and fixes checkpatch warnings, the second one is by Anssi Hannula and
+> avoids non-requested bus error frames, which improves performance.
+> 
+> Pankaj Sharma's patch for the m_can driver adds support for the one shot
+> mode.
+> 
+> YueHaibing provides a patch for the grcan driver to use
+> devm_platform_ioremap_resource() to simplify code.
+> 
+> Joakim Zhang provides a similar patch for the flexcan driver.
+> 
+> The last 4 patches are by me and target the rx-offload infrastructure.
+> The first 3 fix checkpatch warnings, the last one removes a no-op
+> function.
+
+Hi Marc,
+
+I think the correction should have been s/Substract/Subtract/,
+sorry for the nit pick.
+
+Would you be able to fix that up or do you prefer to do a follow up?
+
+commit 8e7f9a874626a1aec191b34c2b983f76275d0448
+Author: Marc Kleine-Budde <mkl@pengutronix.de>
+Date:   Mon Oct 7 10:00:25 2019 +0200
+
+    can: rx-offload: can_rx_offload_compare(): fix typo
+    
+    This patch fixes a typo found by checkpatch.
+    
+    Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+
+diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
+index 0daa8c7fe83b..8db07587ce3c 100644
+--- a/drivers/net/can/rx-offload.c
++++ b/drivers/net/can/rx-offload.c
+@@ -109,7 +109,7 @@ static int can_rx_offload_compare(struct sk_buff *a, struct sk_buff *b)
+        cb_a = can_rx_offload_get_cb(a);
+        cb_b = can_rx_offload_get_cb(b);
+ 
+-       /* Substract two u32 and return result as int, to keep
++       /* Substact two u32 and return result as int, to keep
+         * difference steady around the u32 overflow.
+         */
+        return cb_b->timestamp - cb_a->timestamp;
