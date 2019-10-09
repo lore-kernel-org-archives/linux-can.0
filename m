@@ -1,36 +1,67 @@
-From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: [PATCH] net: can: xilinx_can: Fix flags field initialization for axi can
-Date: Wed,  9 Oct 2019 12:59:47 +0530
-Message-ID: <1570606187-30935-1-git-send-email-appana.durga.rao@xilinx.com>
+From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
+Subject: RE: [PATCH 2/6] net: can: xilinx_can: Fix flags field initialization
+ for axi can and canps
+Date: Wed, 9 Oct 2019 07:31:21 +0000
+Message-ID: <MN2PR02MB640062BAF9E353802FF9EDA0DC950@MN2PR02MB6400.namprd02.prod.outlook.com>
+References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
+ <1552908766-26753-3-git-send-email-appana.durga.rao@xilinx.com>
+ <d1bedb13-f66f-b0fd-bd6d-9f95b64fc405@bitwise.fi>
+ <MN2PR02MB64004059908C95EB5E16746FDC950@MN2PR02MB6400.namprd02.prod.outlook.com>
+ <644fb76f-8169-4911-2293-92ae2dfe4e1c@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, michal.simek@xilinx.com, anssi.hannula@bitwise.fi
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <644fb76f-8169-4911-2293-92ae2dfe4e1c@pengutronix.de>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Anssi Hannula <anssi.hannula@bitwise.fi>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-AXI CANIP doesn't support tx fifo empty interrupt feature(TXFEMP),
-update the flags filed in the driver for AXI CAN case accordingly.
-
-Fixes: 3281b380ec9f ("can: xilinx_can: Fix flags field initialization for axi can and canps")
-Reported-by: Anssi Hannula <anssi.hannula@bitwise.fi>
-Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
----
- drivers/net/can/xilinx_can.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 911b34316c9d..7c482b2d78d2 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1599,7 +1599,6 @@ static const struct xcan_devtype_data xcan_zynq_data = {
- 
- static const struct xcan_devtype_data xcan_axi_data = {
- 	.cantype = XAXI_CAN,
--	.flags = XCAN_FLAG_TXFEMP,
- 	.bittiming_const = &xcan_bittiming_const,
- 	.btr_ts2_shift = XCAN_BTR_TS2_SHIFT,
- 	.btr_sjw_shift = XCAN_BTR_SJW_SHIFT,
--- 
-2.7.4
+SGkgTWFyYywNCg0KPFNuaXA+DQo+IE9uIDEwLzkvMTkgNjowMSBBTSwgQXBwYW5hIER1cmdhIEtl
+ZGFyZXN3YXJhIFJhbyB3cm90ZToNCj4gPiBIaSwNCj4gPg0KPiA+IDxTbmlwPg0KPiA+PiBPbiAx
+OC4zLjIwMTkgMTMuMzIsIEFwcGFuYSBEdXJnYSBLZWRhcmVzd2FyYSByYW8gd3JvdGU6DQo+ID4+
+PiBBWEkgQ0FOIElQIGFuZCBDQU5QUyBJUCBzdXBwb3J0cyB0eCBmaWZvIGVtcHR5IGZlYXR1cmUs
+IHRoaXMgcGF0Y2gNCj4gPj4+IHVwZGF0ZXMgdGhlIGZsYWdzIGZpZWxkIGZvciB0aGUgc2FtZS4N
+Cj4gPj4+DQo+ID4+PiBTaWduZWQtb2ZmLWJ5OiBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dhcmEgcmFv
+DQo+ID4+PiA8YXBwYW5hLmR1cmdhLnJhb0B4aWxpbnguY29tPg0KPiA+Pj4gLS0tDQo+ID4+PiAg
+ZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4uYyB8IDIgKysNCj4gPj4+ICAxIGZpbGUgY2hhbmdl
+ZCwgMiBpbnNlcnRpb25zKCspDQo+ID4+Pg0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0
+L2Nhbi94aWxpbnhfY2FuLmMNCj4gPj4+IGIvZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4uYyBp
+bmRleCAyZGU1MWFjLi4yMjU2OWVmIDEwMDY0NA0KPiA+Pj4gLS0tIGEvZHJpdmVycy9uZXQvY2Fu
+L3hpbGlueF9jYW4uYw0KPiA+Pj4gKysrIGIvZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4uYw0K
+PiA+Pj4gQEAgLTE0MjgsNiArMTQyOCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZGV2X3BtX29w
+cw0KPiB4Y2FuX2Rldl9wbV9vcHMNCj4gPj4gPQ0KPiA+Pj4geyAgfTsNCj4gPj4+DQo+ID4+PiAg
+c3RhdGljIGNvbnN0IHN0cnVjdCB4Y2FuX2RldnR5cGVfZGF0YSB4Y2FuX3p5bnFfZGF0YSA9IHsN
+Cj4gPj4+ICsJLmZsYWdzID0gWENBTl9GTEFHX1RYRkVNUCwNCj4gPj4+ICAJLmJpdHRpbWluZ19j
+b25zdCA9ICZ4Y2FuX2JpdHRpbWluZ19jb25zdCwNCj4gPj4+ICAJLmJ0cl90czJfc2hpZnQgPSBY
+Q0FOX0JUUl9UUzJfU0hJRlQsDQo+ID4+PiAgCS5idHJfc2p3X3NoaWZ0ID0gWENBTl9CVFJfU0pX
+X1NISUZULA0KPiA+Pg0KPiA+PiBUaGFua3MgZm9yIGNhdGNoaW5nIHRoaXMsIHRoaXMgbGluZSBz
+ZWVtZWQgdG8gaGF2ZSBiZWVuIGluY29ycmVjdGx5DQo+ID4+IHJlbW92ZWQgYnkgbXkgOWU1ZjFi
+MjczZSAoImNhbjogeGlsaW54X2NhbjogYWRkIHN1cHBvcnQgZm9yIFhpbGlueCBDQU4gRkQNCj4g
+Y29yZSIpLg0KPiA+Pg0KPiA+PiBCdXQ6DQo+ID4+DQo+ID4+PiBAQCAtMTQzNSw2ICsxNDM2LDcg
+QEAgc3RhdGljIGNvbnN0IHN0cnVjdCB4Y2FuX2RldnR5cGVfZGF0YQ0KPiA+Pj4geGNhbl96eW5x
+X2RhdGEgPSB7ICB9Ow0KPiA+Pj4NCj4gPj4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHhjYW5fZGV2
+dHlwZV9kYXRhIHhjYW5fYXhpX2RhdGEgPSB7DQo+ID4+PiArCS5mbGFncyA9IFhDQU5fRkxBR19U
+WEZFTVAsDQo+ID4+PiAgCS5iaXR0aW1pbmdfY29uc3QgPSAmeGNhbl9iaXR0aW1pbmdfY29uc3Qs
+DQo+ID4+PiAgCS5idHJfdHMyX3NoaWZ0ID0gWENBTl9CVFJfVFMyX1NISUZULA0KPiA+Pj4gIAku
+YnRyX3Nqd19zaGlmdCA9IFhDQU5fQlRSX1NKV19TSElGVCwNCj4gPj4NCj4gPj4NCj4gPj4gQXJl
+IHlvdSBzdXJlIHRoaXMgaXMgcmlnaHQ/DQo+ID4+IEluIHRoZSBkb2N1bWVudGF0aW9uIFsxXSB0
+aGVyZSBkb2VzIG5vdCBzZWVtIHRvIGJlIGFueSBUWEZFTVANCj4gPj4gaW50ZXJydXB0LCBpdCB3
+b3VsZCBiZSBpbnRlcnJ1cHQgYml0IDE0IGJ1dCBBWEkgQ0FOIDUuMCBzZWVtcyB0byBvbmx5IGdv
+IHVwDQo+IHRvIDExLg0KPiA+Pg0KPiA+PiBPciBtYXliZSBpdCBpcyB1bmRvY3VtZW50ZWQgb3Ig
+dGhlcmUgaXMgYSBuZXdlciB2ZXJzaW9uIHNvbWV3aGVyZT8NCj4gPg0KPiA+IFNvcnJ5IGZvciB0
+aGUgZGVsYXkgaW4gdGhlIHJlcGx5Lg0KPiA+IEFncmVlIFRYRkVNUCBpbnRlcnJ1cHQgZmVhdHVy
+ZSBpcyBub3Qgc3VwcG9ydGVkIGJ5IHRoZSBTb2Z0IElQIENBTi4NCj4gPiBTaW5jZSB0aGlzIHBh
+dGNoIGFscmVhZHkgZ290IGFwcGxpZWQgd2lsbCBzZW5kIGEgc2VwYXJhdGUgcGF0Y2ggdG8gZml4
+IHRoaXMuDQo+IA0KPiBQbGVhc2UgYmFzZSB5b3VyIHBhdGNoIG9uIG5ldC9tYXN0ZXIgYW5kIGFk
+ZCB0aGUgYXBwcm9wcmlhdGUgZml4ZXMgdGFnOg0KPiANCj4gRml4ZXM6IDMyODFiMzgwZWM5ZiAo
+ImNhbjogeGlsaW54X2NhbjogRml4IGZsYWdzIGZpZWxkIGluaXRpYWxpemF0aW9uIGZvciBheGkg
+Y2FuDQo+IGFuZCBjYW5wcyIpDQoNClN1cmUgTWFyYyB3aWxsIHNlbmQgdGhlIHBhdGNoIG9uIHRv
+cCBvZiBuZXQvbWFzdGVyLiANCg0KUmVnYXJkcywNCktlZGFyLg0KDQo+IA0KPiBNYXJjDQo+IA0K
+PiAtLQ0KPiBQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1C
+dWRkZSAgICAgICAgICAgfA0KPiBJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9ucyAgICAgICAgfCBQ
+aG9uZTogKzQ5LTIzMS0yODI2LTkyNCAgICAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQg
+ICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KPiBBbXRzZ2VyaWNodCBI
+aWxkZXNoZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
