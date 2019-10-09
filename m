@@ -1,133 +1,178 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH V4 1/2] can: flexcan: fix deadlock when using self wakeup
-Date: Wed, 9 Oct 2019 08:13:04 +0000
-Message-ID: <20191009080956.29128-1-qiangqing.zhang@nxp.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/7] can: rx-offload: continue on error
+Date: Wed, 9 Oct 2019 15:18:12 +0200
+Message-ID: <134ddb8e-a231-922d-f554-ca77ce0c16af@pengutronix.de>
+References: <20190924184437.10607-1-jhofstee@victronenergy.com>
+ <20190924184437.10607-2-jhofstee@victronenergy.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "sean@geanix.com" <sean@geanix.com>, dl-linux-imx <linux-imx@nxp.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="BXNKZd3qMlXdhqpqPUPu9DyJyHZxPf3Ik"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190924184437.10607-2-jhofstee@victronenergy.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeroen Hofstee <jhofstee@victronenergy.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-As reproted by Sean Nyekjaer below:
-When suspending, when there is still can traffic on the interfaces the
-flexcan immediately wakes the platform again. As it should :-). But it
-throws this error msg:
-[ 3169.378661] PM: noirq suspend of devices failed
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BXNKZd3qMlXdhqpqPUPu9DyJyHZxPf3Ik
+Content-Type: multipart/mixed; boundary="KNwgur7TmfQkHy3BGycM90HOnustJrKiJ";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Jeroen Hofstee <jhofstee@victronenergy.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+Message-ID: <134ddb8e-a231-922d-f554-ca77ce0c16af@pengutronix.de>
+Subject: Re: [PATCH 1/7] can: rx-offload: continue on error
+References: <20190924184437.10607-1-jhofstee@victronenergy.com>
+ <20190924184437.10607-2-jhofstee@victronenergy.com>
+In-Reply-To: <20190924184437.10607-2-jhofstee@victronenergy.com>
 
-On the way down to suspend the interface that throws the error message does
-call flexcan_suspend but fails to call flexcan_noirq_suspend. That means th=
-e
-flexcan_enter_stop_mode is called, but on the way out of suspend the driver
-only calls flexcan_resume and skips flexcan_noirq_resume, thus it doesn't c=
-all
-flexcan_exit_stop_mode. This leaves the flexcan in stop mode, and with the
-current driver it can't recover from this even with a soft reboot, it requi=
-res
-a hard reboot.
+--KNwgur7TmfQkHy3BGycM90HOnustJrKiJ
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 
-The best way to exit stop mode is in Wake Up interrupt context, and then
-suspend() and resume() functions can be symmetric. However, stop mode
-request and ack will be controlled by SCU(System Control Unit) firmware(man=
-age
-clock,power,stop mode, etc. by Cortex-M4 core) in coming i.MX8(QM/QXP). And=
- SCU
-firmware interface can't be available in interrupt context.
+Hello Jeroen,
 
-For compatibillity, the wake up mechanism can't be symmetric, so we need
-in_stop_mode hack.
+I'm currently looking at the rx-offload error handling in detail.
 
-Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-Reported-by: Sean Nyekjaer <sean@geanix.com>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+TLDR: I've added the patch to linux-can.
 
-Changelog:
-V1->V2:
-	* add Reported-by tag.
-	* rebase on patch: can:flexcan:fix stop mode acknowledgment.
-V2->V3:
-	* rebase on linux-can/testing.
-	* change into patch set.
-V3->V4:
-	* add Tested-by tag.
----
- drivers/net/can/flexcan.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Thanks,
+Marc
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 1cd5179cb876..24cc386c4bce 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -286,6 +286,7 @@ struct flexcan_priv {
- 	const struct flexcan_devtype_data *devtype_data;
- 	struct regulator *reg_xceiver;
- 	struct flexcan_stop_mode stm;
-+	bool in_stop_mode;
-=20
- 	/* Read and Write APIs */
- 	u32 (*read)(void __iomem *addr);
-@@ -1670,6 +1671,8 @@ static int __maybe_unused flexcan_suspend(struct devi=
-ce *device)
- 			err =3D flexcan_enter_stop_mode(priv);
- 			if (err)
- 				return err;
-+
-+			priv->in_stop_mode =3D true;
- 		} else {
- 			err =3D flexcan_chip_disable(priv);
- 			if (err)
-@@ -1696,6 +1699,15 @@ static int __maybe_unused flexcan_resume(struct devi=
-ce *device)
- 		netif_device_attach(dev);
- 		netif_start_queue(dev);
- 		if (device_may_wakeup(device)) {
-+			if (priv->in_stop_mode) {
-+				flexcan_enable_wakeup_irq(priv, false);
-+				err =3D flexcan_exit_stop_mode(priv);
-+				if (err)
-+					return err;
-+
-+				priv->in_stop_mode =3D false;
-+			}
-+
- 			disable_irq_wake(dev->irq);
- 		} else {
- 			err =3D pm_runtime_force_resume(device);
-@@ -1732,6 +1744,11 @@ static int __maybe_unused flexcan_noirq_suspend(stru=
-ct device *device)
- 	struct net_device *dev =3D dev_get_drvdata(device);
- 	struct flexcan_priv *priv =3D netdev_priv(dev);
-=20
-+	/* Need to enable wakeup interrupt in noirq suspend stage. Otherwise,
-+	 * it will trigger continuously wakeup interrupt if the wakeup event
-+	 * comes before noirq suspend stage, and simultaneously it has enter
-+	 * the stop mode.
-+	 */
- 	if (netif_running(dev) && device_may_wakeup(device))
- 		flexcan_enable_wakeup_irq(priv, true);
-=20
-@@ -1744,11 +1761,17 @@ static int __maybe_unused flexcan_noirq_resume(stru=
-ct device *device)
- 	struct flexcan_priv *priv =3D netdev_priv(dev);
- 	int err;
-=20
-+	/* Need to exit stop mode in noirq resume stage. Otherwise, it will
-+	 * trigger continuously wakeup interrupt if the wakeup event comes,
-+	 * and simultaneously it has still in stop mode.
-+	 */
- 	if (netif_running(dev) && device_may_wakeup(device)) {
- 		flexcan_enable_wakeup_irq(priv, false);
- 		err =3D flexcan_exit_stop_mode(priv);
- 		if (err)
- 			return err;
-+
-+		priv->in_stop_mode =3D false;
- 	}
-=20
- 	return 0;
+For the record, the details:
+
+On 9/24/19 8:45 PM, Jeroen Hofstee wrote:
+> While can_rx_offload_offload_one will call mailbox_read to discard
+> the mailbox in case of an error,
+
+Yes.
+
+can_rx_offload_offload_one() will read into the discard mailbox in case
+of an error.
+
+Currently there are two kinds of errors:
+1) the rx-offoad skb queue (between the IRQ handler and the NAPI)
+   is full
+2) alloc_can_skb() fails to allocate a skb, due to OOM
+
+> can_rx_offload_irq_offload_timestamp bails out in the error case.
+
+Yes, in case of an error both can_rx_offload_irq_offload_timestamp() and
+can_rx_offload_irq_offload_fifo() will stop reading mailboxes, add the
+already filled skbs to the queue and schedule NAPI if needed.
+
+Currently both can_rx_offload_irq_offload_timestamp() and
+can_rx_offload_irq_offload_fifo() will return the number of queued
+mailboxes.
+
+This means in case of queue overflow or OOM, only one mailbox is
+discaded, before can_rx_offload_irq_offload_*() returning the number of
+successfully queued mailboxes so far.
+
+Looking at the flexcan driver:
+
+https://elixir.bootlin.com/linux/latest/source/drivers/net/can/flexcan.c#=
+L867
+
+> 		while ((reg_iflag =3D flexcan_read_reg_iflag_rx(priv))) {
+> 			handled =3D IRQ_HANDLED;
+> 			ret =3D can_rx_offload_irq_offload_timestamp(&priv->offload,
+> 								   reg_iflag);
+> 			if (!ret)
+> 				break;
+> 		}
+[...]
+> 		if (reg_iflag1 & FLEXCAN_IFLAG_RX_FIFO_AVAILABLE) {
+> 			handled =3D IRQ_HANDLED;
+> 			can_rx_offload_irq_offload_fifo(&priv->offload);
+> 		}
+
+This means for the timestamp mode, at least one mailbox is discarded or
+if the error occurred after reading one or more mailboxes the while loop
+will try again. If the error persists a second mailbox is discarded.
+
+For the fifo mode, only one mailbox is discarded.
+
+Then the flexcan's IRQ is exited. If there are messages in mailboxes are
+pending another IRQ is triggered.... I doubt that this is a good idea.
+
+On the other hand the ti_hecc driver:
+
+> 		/* offload RX mailboxes and let NAPI deliver them */
+> 		while ((rx_pending =3D hecc_read(priv, HECC_CANRMP))) {
+> 			can_rx_offload_irq_offload_timestamp(&priv->offload,
+> 							     rx_pending);
+> 			hecc_write(priv, HECC_CANRMP, rx_pending);
+> 		}
+
+The error is ignored and the _all_ mailboxes are discarded (given the
+error persists).
+
+> Since it is typically called from a while loop, all message will
+> eventually be discarded. So lets continue on error instead to discard
+> them directly.
+
+After reading my own code and writing it up, your patch totally makes sen=
+se.
+
+If there is a shortage of resources, queue overrun or OOM, it makes no
+sense to return from the IRQ handler, if a mailbox is still active as it
+will trigger the IRQ again. Entering the IRQ handler again probably
+doesn't give the system time to recover from the resource problem.
+
+> Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
+> ---
+>  drivers/net/can/rx-offload.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.=
+c
+> index e6a668ee7730..39df41280e2d 100644
+> --- a/drivers/net/can/rx-offload.c
+> +++ b/drivers/net/can/rx-offload.c
+> @@ -158,7 +158,7 @@ int can_rx_offload_irq_offload_timestamp(struct can=
+_rx_offload *offload, u64 pen
+> =20
+>  		skb =3D can_rx_offload_offload_one(offload, i);
+>  		if (!skb)
+> -			break;
+> +			continue;
+> =20
+>  		__skb_queue_add_sort(&skb_queue, skb, can_rx_offload_compare);
+>  	}
+>=20
+
 --=20
-2.17.1
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--KNwgur7TmfQkHy3BGycM90HOnustJrKiJ--
+
+--BXNKZd3qMlXdhqpqPUPu9DyJyHZxPf3Ik
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl2d3hQACgkQWsYho5Hk
+nSBm/Qf/db/9uepOMhA4XKlFASkkpWMbqzjYRhEwCqR2+SPQscKUaCLawPTQFOMS
+LN46ygYSRhbiQ8hSI1DwVwfY/alylL3KP4JqRnuawdj98Vi+HR4ywPG5b4cxlguQ
+7qmip9bFAgODJCGN43tU3DZ+3yBPG75nRO5BCpcu84TV3HxdZ8TbCrPEjTrhwzdF
+aDkMPVSRqe8h3t5KMC3BXgW2MTz7y+ThixpAJUmdeYIDEXS2l0VHWCCXlaeX+/PC
+f9xoa57oKxt1CTHAmQFLjCgJ896+otSkrRwzfM0njNR5pC6zgi88MPQyQZYlC43r
+zgnL87JBES2oqQ22tILFSMFWY/69lA==
+=SEml
+-----END PGP SIGNATURE-----
+
+--BXNKZd3qMlXdhqpqPUPu9DyJyHZxPf3Ik--
