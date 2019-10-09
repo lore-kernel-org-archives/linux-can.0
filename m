@@ -1,67 +1,82 @@
-From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
-Subject: RE: [PATCH 2/6] net: can: xilinx_can: Fix flags field initialization
- for axi can and canps
-Date: Wed, 9 Oct 2019 07:31:21 +0000
-Message-ID: <MN2PR02MB640062BAF9E353802FF9EDA0DC950@MN2PR02MB6400.namprd02.prod.outlook.com>
-References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
- <1552908766-26753-3-git-send-email-appana.durga.rao@xilinx.com>
- <d1bedb13-f66f-b0fd-bd6d-9f95b64fc405@bitwise.fi>
- <MN2PR02MB64004059908C95EB5E16746FDC950@MN2PR02MB6400.namprd02.prod.outlook.com>
- <644fb76f-8169-4911-2293-92ae2dfe4e1c@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: pull-request: can-next 2019-10-07
+Date: Wed, 9 Oct 2019 09:33:10 +0200
+Message-ID: <3c38ea33-c362-fd85-7801-17e34af18233@pengutronix.de>
+References: <2ffa00e7-d447-9216-587d-30396a47ca64@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="pMSbcTWU7HgHHirdTqI6Xg5BHxYitq9xT"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <644fb76f-8169-4911-2293-92ae2dfe4e1c@pengutronix.de>
-Content-Language: en-US
+In-Reply-To: <2ffa00e7-d447-9216-587d-30396a47ca64@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Anssi Hannula <anssi.hannula@bitwise.fi>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Bastian Stender <bst@pengutronix.de>, Elenita Hinds <ecathinds@gmail.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Maxime Jayat <maxime.jayat@mobile-devices.fr>, Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <ore@pengutronix.de>, David Jander <david@protonic.nl>
 List-Id: linux-can.vger.kernel.org
 
-SGkgTWFyYywNCg0KPFNuaXA+DQo+IE9uIDEwLzkvMTkgNjowMSBBTSwgQXBwYW5hIER1cmdhIEtl
-ZGFyZXN3YXJhIFJhbyB3cm90ZToNCj4gPiBIaSwNCj4gPg0KPiA+IDxTbmlwPg0KPiA+PiBPbiAx
-OC4zLjIwMTkgMTMuMzIsIEFwcGFuYSBEdXJnYSBLZWRhcmVzd2FyYSByYW8gd3JvdGU6DQo+ID4+
-PiBBWEkgQ0FOIElQIGFuZCBDQU5QUyBJUCBzdXBwb3J0cyB0eCBmaWZvIGVtcHR5IGZlYXR1cmUs
-IHRoaXMgcGF0Y2gNCj4gPj4+IHVwZGF0ZXMgdGhlIGZsYWdzIGZpZWxkIGZvciB0aGUgc2FtZS4N
-Cj4gPj4+DQo+ID4+PiBTaWduZWQtb2ZmLWJ5OiBBcHBhbmEgRHVyZ2EgS2VkYXJlc3dhcmEgcmFv
-DQo+ID4+PiA8YXBwYW5hLmR1cmdhLnJhb0B4aWxpbnguY29tPg0KPiA+Pj4gLS0tDQo+ID4+PiAg
-ZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4uYyB8IDIgKysNCj4gPj4+ICAxIGZpbGUgY2hhbmdl
-ZCwgMiBpbnNlcnRpb25zKCspDQo+ID4+Pg0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0
-L2Nhbi94aWxpbnhfY2FuLmMNCj4gPj4+IGIvZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4uYyBp
-bmRleCAyZGU1MWFjLi4yMjU2OWVmIDEwMDY0NA0KPiA+Pj4gLS0tIGEvZHJpdmVycy9uZXQvY2Fu
-L3hpbGlueF9jYW4uYw0KPiA+Pj4gKysrIGIvZHJpdmVycy9uZXQvY2FuL3hpbGlueF9jYW4uYw0K
-PiA+Pj4gQEAgLTE0MjgsNiArMTQyOCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZGV2X3BtX29w
-cw0KPiB4Y2FuX2Rldl9wbV9vcHMNCj4gPj4gPQ0KPiA+Pj4geyAgfTsNCj4gPj4+DQo+ID4+PiAg
-c3RhdGljIGNvbnN0IHN0cnVjdCB4Y2FuX2RldnR5cGVfZGF0YSB4Y2FuX3p5bnFfZGF0YSA9IHsN
-Cj4gPj4+ICsJLmZsYWdzID0gWENBTl9GTEFHX1RYRkVNUCwNCj4gPj4+ICAJLmJpdHRpbWluZ19j
-b25zdCA9ICZ4Y2FuX2JpdHRpbWluZ19jb25zdCwNCj4gPj4+ICAJLmJ0cl90czJfc2hpZnQgPSBY
-Q0FOX0JUUl9UUzJfU0hJRlQsDQo+ID4+PiAgCS5idHJfc2p3X3NoaWZ0ID0gWENBTl9CVFJfU0pX
-X1NISUZULA0KPiA+Pg0KPiA+PiBUaGFua3MgZm9yIGNhdGNoaW5nIHRoaXMsIHRoaXMgbGluZSBz
-ZWVtZWQgdG8gaGF2ZSBiZWVuIGluY29ycmVjdGx5DQo+ID4+IHJlbW92ZWQgYnkgbXkgOWU1ZjFi
-MjczZSAoImNhbjogeGlsaW54X2NhbjogYWRkIHN1cHBvcnQgZm9yIFhpbGlueCBDQU4gRkQNCj4g
-Y29yZSIpLg0KPiA+Pg0KPiA+PiBCdXQ6DQo+ID4+DQo+ID4+PiBAQCAtMTQzNSw2ICsxNDM2LDcg
-QEAgc3RhdGljIGNvbnN0IHN0cnVjdCB4Y2FuX2RldnR5cGVfZGF0YQ0KPiA+Pj4geGNhbl96eW5x
-X2RhdGEgPSB7ICB9Ow0KPiA+Pj4NCj4gPj4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHhjYW5fZGV2
-dHlwZV9kYXRhIHhjYW5fYXhpX2RhdGEgPSB7DQo+ID4+PiArCS5mbGFncyA9IFhDQU5fRkxBR19U
-WEZFTVAsDQo+ID4+PiAgCS5iaXR0aW1pbmdfY29uc3QgPSAmeGNhbl9iaXR0aW1pbmdfY29uc3Qs
-DQo+ID4+PiAgCS5idHJfdHMyX3NoaWZ0ID0gWENBTl9CVFJfVFMyX1NISUZULA0KPiA+Pj4gIAku
-YnRyX3Nqd19zaGlmdCA9IFhDQU5fQlRSX1NKV19TSElGVCwNCj4gPj4NCj4gPj4NCj4gPj4gQXJl
-IHlvdSBzdXJlIHRoaXMgaXMgcmlnaHQ/DQo+ID4+IEluIHRoZSBkb2N1bWVudGF0aW9uIFsxXSB0
-aGVyZSBkb2VzIG5vdCBzZWVtIHRvIGJlIGFueSBUWEZFTVANCj4gPj4gaW50ZXJydXB0LCBpdCB3
-b3VsZCBiZSBpbnRlcnJ1cHQgYml0IDE0IGJ1dCBBWEkgQ0FOIDUuMCBzZWVtcyB0byBvbmx5IGdv
-IHVwDQo+IHRvIDExLg0KPiA+Pg0KPiA+PiBPciBtYXliZSBpdCBpcyB1bmRvY3VtZW50ZWQgb3Ig
-dGhlcmUgaXMgYSBuZXdlciB2ZXJzaW9uIHNvbWV3aGVyZT8NCj4gPg0KPiA+IFNvcnJ5IGZvciB0
-aGUgZGVsYXkgaW4gdGhlIHJlcGx5Lg0KPiA+IEFncmVlIFRYRkVNUCBpbnRlcnJ1cHQgZmVhdHVy
-ZSBpcyBub3Qgc3VwcG9ydGVkIGJ5IHRoZSBTb2Z0IElQIENBTi4NCj4gPiBTaW5jZSB0aGlzIHBh
-dGNoIGFscmVhZHkgZ290IGFwcGxpZWQgd2lsbCBzZW5kIGEgc2VwYXJhdGUgcGF0Y2ggdG8gZml4
-IHRoaXMuDQo+IA0KPiBQbGVhc2UgYmFzZSB5b3VyIHBhdGNoIG9uIG5ldC9tYXN0ZXIgYW5kIGFk
-ZCB0aGUgYXBwcm9wcmlhdGUgZml4ZXMgdGFnOg0KPiANCj4gRml4ZXM6IDMyODFiMzgwZWM5ZiAo
-ImNhbjogeGlsaW54X2NhbjogRml4IGZsYWdzIGZpZWxkIGluaXRpYWxpemF0aW9uIGZvciBheGkg
-Y2FuDQo+IGFuZCBjYW5wcyIpDQoNClN1cmUgTWFyYyB3aWxsIHNlbmQgdGhlIHBhdGNoIG9uIHRv
-cCBvZiBuZXQvbWFzdGVyLiANCg0KUmVnYXJkcywNCktlZGFyLg0KDQo+IA0KPiBNYXJjDQo+IA0K
-PiAtLQ0KPiBQZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWluZS1C
-dWRkZSAgICAgICAgICAgfA0KPiBJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9ucyAgICAgICAgfCBQ
-aG9uZTogKzQ5LTIzMS0yODI2LTkyNCAgICAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQg
-ICAgICAgICAgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0KPiBBbXRzZ2VyaWNodCBI
-aWxkZXNoZWltLCBIUkEgMjY4NiAgfCBodHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlICAgfA0KDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--pMSbcTWU7HgHHirdTqI6Xg5BHxYitq9xT
+Content-Type: multipart/mixed; boundary="wjJH1Ff8YR8E1WQwa4MqMGC3leHhvnXd4";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
+ Bastian Stender <bst@pengutronix.de>, Elenita Hinds <ecathinds@gmail.com>,
+ Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+ Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+ Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel
+ <ore@pengutronix.de>, David Jander <david@protonic.nl>
+Message-ID: <3c38ea33-c362-fd85-7801-17e34af18233@pengutronix.de>
+Subject: Re: pull-request: can-next 2019-10-07
+References: <2ffa00e7-d447-9216-587d-30396a47ca64@pengutronix.de>
+In-Reply-To: <2ffa00e7-d447-9216-587d-30396a47ca64@pengutronix.de>
+
+--wjJH1Ff8YR8E1WQwa4MqMGC3leHhvnXd4
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+Hello David,
+
+On 10/7/19 4:38 PM, Marc Kleine-Budde wrote:
+> this is a pull request for net-next/master consisting of 12 patches.
+
+Please don't merge this pull request, it has several shortcomings :(
+
+>   git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git =
+tags/linux-can-next-for-5.5-20191007
+
+I've deleted the tag, so that merging fails, if you try before reading
+this mail.
+
+Looking for a brown paper bag,
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--wjJH1Ff8YR8E1WQwa4MqMGC3leHhvnXd4--
+
+--pMSbcTWU7HgHHirdTqI6Xg5BHxYitq9xT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl2djTYACgkQWsYho5Hk
+nSC90Af/bDdum6CL4Vwzjp61JmDZbGGdKzWwqUS/wxJXtaxzmVvcQtcwNBvhBfUA
+gTMTyURSlOCvwepDhxlzlETHs+jCiebSAqufZFEzZ3E1yVSZaILJsKPT8msPWrAa
+KML72j5CxvINjsMmYvjIF6l/TUw77W3bwbFsqr5sdV+4AAFiZuyVFYVXyzZZpb96
+6D+jjylreme+Cq9kvTN8cjz4Z04p9L9i/dD/rSv4mbrGFl+RI+Fey7LCqfFhkRLy
+rZ3ze/VEcbnY2nEuC09XQD+p5d4R9HSQFfIFoBbMQgRbZDs0l3vI1pgEQfNBdCyY
+3ZQIfZqHKMu85Qnb4bdDLntjaJgiQQ==
+=2f9O
+-----END PGP SIGNATURE-----
+
+--pMSbcTWU7HgHHirdTqI6Xg5BHxYitq9xT--
