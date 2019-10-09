@@ -1,73 +1,55 @@
-From: Jakub Kicinski <jakub.kicinski@netronome.com>
-Subject: Re: pull-request: can-next 2019-10-07
-Date: Tue, 8 Oct 2019 12:09:53 -0700
-Message-ID: <20191008120953.515a3dbd@cakuba.netronome.com>
-References: <2ffa00e7-d447-9216-587d-30396a47ca64@pengutronix.de>
+From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
+Subject: RE: [PATCH 2/6] net: can: xilinx_can: Fix flags field initialization
+ for axi can and canps
+Date: Wed, 9 Oct 2019 04:01:46 +0000
+Message-ID: <MN2PR02MB64004059908C95EB5E16746FDC950@MN2PR02MB6400.namprd02.prod.outlook.com>
+References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
+ <1552908766-26753-3-git-send-email-appana.durga.rao@xilinx.com>
+ <d1bedb13-f66f-b0fd-bd6d-9f95b64fc405@bitwise.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <2ffa00e7-d447-9216-587d-30396a47ca64@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, Bastian Stender <bst@pengutronix.de>, Elenita Hinds <ecathinds@gmail.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Maxime Jayat <maxime.jayat@mobile-devices.fr>, Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <ore@pengutronix.de>, David Jander <david@protonic.nl>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <d1bedb13-f66f-b0fd-bd6d-9f95b64fc405@bitwise.fi>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Anssi Hannula <anssi.hannula@bitwise.fi>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-On Mon, 7 Oct 2019 16:38:14 +0200, Marc Kleine-Budde wrote:
-> Hello David,
-> 
-> this is a pull request for net-next/master consisting of 12 patches.
-> 
-> The first patch is by Andy Shevchenko for the mcp251x driver and removes
-> the legacy platform data from all in-tree users and the driver.
-> 
-> The next two patches target the peak_canfd driver, the first one is by
-> me and fixes several checkpatch warnings, the second one is by Stephane
-> Grosjean and adds hardware timestamps to the rx skbs.
-> 
-> Followed by two patches for the xilinx_can driver. Again the first is by
-> me and fixes checkpatch warnings, the second one is by Anssi Hannula and
-> avoids non-requested bus error frames, which improves performance.
-> 
-> Pankaj Sharma's patch for the m_can driver adds support for the one shot
-> mode.
-> 
-> YueHaibing provides a patch for the grcan driver to use
-> devm_platform_ioremap_resource() to simplify code.
-> 
-> Joakim Zhang provides a similar patch for the flexcan driver.
-> 
-> The last 4 patches are by me and target the rx-offload infrastructure.
-> The first 3 fix checkpatch warnings, the last one removes a no-op
-> function.
-
-Hi Marc,
-
-I think the correction should have been s/Substract/Subtract/,
-sorry for the nit pick.
-
-Would you be able to fix that up or do you prefer to do a follow up?
-
-commit 8e7f9a874626a1aec191b34c2b983f76275d0448
-Author: Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Mon Oct 7 10:00:25 2019 +0200
-
-    can: rx-offload: can_rx_offload_compare(): fix typo
-    
-    This patch fixes a typo found by checkpatch.
-    
-    Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
-index 0daa8c7fe83b..8db07587ce3c 100644
---- a/drivers/net/can/rx-offload.c
-+++ b/drivers/net/can/rx-offload.c
-@@ -109,7 +109,7 @@ static int can_rx_offload_compare(struct sk_buff *a, struct sk_buff *b)
-        cb_a = can_rx_offload_get_cb(a);
-        cb_b = can_rx_offload_get_cb(b);
- 
--       /* Substract two u32 and return result as int, to keep
-+       /* Substact two u32 and return result as int, to keep
-         * difference steady around the u32 overflow.
-         */
-        return cb_b->timestamp - cb_a->timestamp;
+SGksDQoNCjxTbmlwPg0KPiBPbiAxOC4zLjIwMTkgMTMuMzIsIEFwcGFuYSBEdXJnYSBLZWRhcmVz
+d2FyYSByYW8gd3JvdGU6DQo+ID4gQVhJIENBTiBJUCBhbmQgQ0FOUFMgSVAgc3VwcG9ydHMgdHgg
+ZmlmbyBlbXB0eSBmZWF0dXJlLCB0aGlzIHBhdGNoDQo+ID4gdXBkYXRlcyB0aGUgZmxhZ3MgZmll
+bGQgZm9yIHRoZSBzYW1lLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQXBwYW5hIER1cmdhIEtl
+ZGFyZXN3YXJhIHJhbw0KPiA+IDxhcHBhbmEuZHVyZ2EucmFvQHhpbGlueC5jb20+DQo+ID4gLS0t
+DQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi94aWxpbnhfY2FuLmMgfCAyICsrDQo+ID4gIDEgZmlsZSBj
+aGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25l
+dC9jYW4veGlsaW54X2Nhbi5jDQo+ID4gYi9kcml2ZXJzL25ldC9jYW4veGlsaW54X2Nhbi5jIGlu
+ZGV4IDJkZTUxYWMuLjIyNTY5ZWYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL3hp
+bGlueF9jYW4uYw0KPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi94aWxpbnhfY2FuLmMNCj4gPiBA
+QCAtMTQyOCw2ICsxNDI4LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBkZXZfcG1fb3BzIHhjYW5f
+ZGV2X3BtX29wcw0KPiA9DQo+ID4geyAgfTsNCj4gPg0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0
+IHhjYW5fZGV2dHlwZV9kYXRhIHhjYW5fenlucV9kYXRhID0gew0KPiA+ICsJLmZsYWdzID0gWENB
+Tl9GTEFHX1RYRkVNUCwNCj4gPiAgCS5iaXR0aW1pbmdfY29uc3QgPSAmeGNhbl9iaXR0aW1pbmdf
+Y29uc3QsDQo+ID4gIAkuYnRyX3RzMl9zaGlmdCA9IFhDQU5fQlRSX1RTMl9TSElGVCwNCj4gPiAg
+CS5idHJfc2p3X3NoaWZ0ID0gWENBTl9CVFJfU0pXX1NISUZULA0KPiANCj4gVGhhbmtzIGZvciBj
+YXRjaGluZyB0aGlzLCB0aGlzIGxpbmUgc2VlbWVkIHRvIGhhdmUgYmVlbiBpbmNvcnJlY3RseSBy
+ZW1vdmVkIGJ5DQo+IG15IDllNWYxYjI3M2UgKCJjYW46IHhpbGlueF9jYW46IGFkZCBzdXBwb3J0
+IGZvciBYaWxpbnggQ0FOIEZEIGNvcmUiKS4NCj4gDQo+IEJ1dDoNCj4gDQo+ID4gQEAgLTE0MzUs
+NiArMTQzNiw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgeGNhbl9kZXZ0eXBlX2RhdGENCj4gPiB4
+Y2FuX3p5bnFfZGF0YSA9IHsgIH07DQo+ID4NCj4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCB4Y2Fu
+X2RldnR5cGVfZGF0YSB4Y2FuX2F4aV9kYXRhID0gew0KPiA+ICsJLmZsYWdzID0gWENBTl9GTEFH
+X1RYRkVNUCwNCj4gPiAgCS5iaXR0aW1pbmdfY29uc3QgPSAmeGNhbl9iaXR0aW1pbmdfY29uc3Qs
+DQo+ID4gIAkuYnRyX3RzMl9zaGlmdCA9IFhDQU5fQlRSX1RTMl9TSElGVCwNCj4gPiAgCS5idHJf
+c2p3X3NoaWZ0ID0gWENBTl9CVFJfU0pXX1NISUZULA0KPiANCj4gDQo+IEFyZSB5b3Ugc3VyZSB0
+aGlzIGlzIHJpZ2h0Pw0KPiBJbiB0aGUgZG9jdW1lbnRhdGlvbiBbMV0gdGhlcmUgZG9lcyBub3Qg
+c2VlbSB0byBiZSBhbnkgVFhGRU1QIGludGVycnVwdCwgaXQNCj4gd291bGQgYmUgaW50ZXJydXB0
+IGJpdCAxNCBidXQgQVhJIENBTiA1LjAgc2VlbXMgdG8gb25seSBnbyB1cCB0byAxMS4NCj4gDQo+
+IE9yIG1heWJlIGl0IGlzIHVuZG9jdW1lbnRlZCBvciB0aGVyZSBpcyBhIG5ld2VyIHZlcnNpb24g
+c29tZXdoZXJlPw0KDQpTb3JyeSBmb3IgdGhlIGRlbGF5IGluIHRoZSByZXBseS4gDQpBZ3JlZSBU
+WEZFTVAgaW50ZXJydXB0IGZlYXR1cmUgaXMgbm90IHN1cHBvcnRlZCBieSB0aGUgU29mdCBJUCBD
+QU4uDQpTaW5jZSB0aGlzIHBhdGNoIGFscmVhZHkgZ290IGFwcGxpZWQgd2lsbCBzZW5kIGEgc2Vw
+YXJhdGUgcGF0Y2ggdG8gZml4IHRoaXMuDQoNClJlZ2FyZHMsDQpLZWRhci4NCg0KPiANCj4gWzFd
+DQo+IGh0dHBzOi8vd3d3LnhpbGlueC5jb20vc3VwcG9ydC9kb2N1bWVudGF0aW9uL2lwX2RvY3Vt
+ZW50YXRpb24vY2FuL3Y1XzANCj4gL3BnMDk2LWNhbi5wZGYNCj4gDQo+IC0tDQo+IEFuc3NpIEhh
+bm51bGEgLyBCaXR3aXNlIE95DQo+ICszNTggNTAzODAzOTk3DQoNCg==
