@@ -1,55 +1,140 @@
-From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
-Subject: RE: [PATCH 2/6] net: can: xilinx_can: Fix flags field initialization
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 2/6] net: can: xilinx_can: Fix flags field initialization
  for axi can and canps
-Date: Wed, 9 Oct 2019 04:01:46 +0000
-Message-ID: <MN2PR02MB64004059908C95EB5E16746FDC950@MN2PR02MB6400.namprd02.prod.outlook.com>
+Date: Wed, 9 Oct 2019 09:17:49 +0200
+Message-ID: <644fb76f-8169-4911-2293-92ae2dfe4e1c@pengutronix.de>
 References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
  <1552908766-26753-3-git-send-email-appana.durga.rao@xilinx.com>
  <d1bedb13-f66f-b0fd-bd6d-9f95b64fc405@bitwise.fi>
+ <MN2PR02MB64004059908C95EB5E16746FDC950@MN2PR02MB6400.namprd02.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d1bedb13-f66f-b0fd-bd6d-9f95b64fc405@bitwise.fi>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Anssi Hannula <anssi.hannula@bitwise.fi>
-Cc: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="o6gGPgD5ZTyYWoRyGFKHldQgJZ9IWZIQR"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <MN2PR02MB64004059908C95EB5E16746FDC950@MN2PR02MB6400.namprd02.prod.outlook.com>
+Sender: netdev-owner@vger.kernel.org
+To: Appana Durga Kedareswara Rao <appanad@xilinx.com>, Anssi Hannula <anssi.hannula@bitwise.fi>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-SGksDQoNCjxTbmlwPg0KPiBPbiAxOC4zLjIwMTkgMTMuMzIsIEFwcGFuYSBEdXJnYSBLZWRhcmVz
-d2FyYSByYW8gd3JvdGU6DQo+ID4gQVhJIENBTiBJUCBhbmQgQ0FOUFMgSVAgc3VwcG9ydHMgdHgg
-ZmlmbyBlbXB0eSBmZWF0dXJlLCB0aGlzIHBhdGNoDQo+ID4gdXBkYXRlcyB0aGUgZmxhZ3MgZmll
-bGQgZm9yIHRoZSBzYW1lLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQXBwYW5hIER1cmdhIEtl
-ZGFyZXN3YXJhIHJhbw0KPiA+IDxhcHBhbmEuZHVyZ2EucmFvQHhpbGlueC5jb20+DQo+ID4gLS0t
-DQo+ID4gIGRyaXZlcnMvbmV0L2Nhbi94aWxpbnhfY2FuLmMgfCAyICsrDQo+ID4gIDEgZmlsZSBj
-aGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25l
-dC9jYW4veGlsaW54X2Nhbi5jDQo+ID4gYi9kcml2ZXJzL25ldC9jYW4veGlsaW54X2Nhbi5jIGlu
-ZGV4IDJkZTUxYWMuLjIyNTY5ZWYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL3hp
-bGlueF9jYW4uYw0KPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi94aWxpbnhfY2FuLmMNCj4gPiBA
-QCAtMTQyOCw2ICsxNDI4LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBkZXZfcG1fb3BzIHhjYW5f
-ZGV2X3BtX29wcw0KPiA9DQo+ID4geyAgfTsNCj4gPg0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0
-IHhjYW5fZGV2dHlwZV9kYXRhIHhjYW5fenlucV9kYXRhID0gew0KPiA+ICsJLmZsYWdzID0gWENB
-Tl9GTEFHX1RYRkVNUCwNCj4gPiAgCS5iaXR0aW1pbmdfY29uc3QgPSAmeGNhbl9iaXR0aW1pbmdf
-Y29uc3QsDQo+ID4gIAkuYnRyX3RzMl9zaGlmdCA9IFhDQU5fQlRSX1RTMl9TSElGVCwNCj4gPiAg
-CS5idHJfc2p3X3NoaWZ0ID0gWENBTl9CVFJfU0pXX1NISUZULA0KPiANCj4gVGhhbmtzIGZvciBj
-YXRjaGluZyB0aGlzLCB0aGlzIGxpbmUgc2VlbWVkIHRvIGhhdmUgYmVlbiBpbmNvcnJlY3RseSBy
-ZW1vdmVkIGJ5DQo+IG15IDllNWYxYjI3M2UgKCJjYW46IHhpbGlueF9jYW46IGFkZCBzdXBwb3J0
-IGZvciBYaWxpbnggQ0FOIEZEIGNvcmUiKS4NCj4gDQo+IEJ1dDoNCj4gDQo+ID4gQEAgLTE0MzUs
-NiArMTQzNiw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgeGNhbl9kZXZ0eXBlX2RhdGENCj4gPiB4
-Y2FuX3p5bnFfZGF0YSA9IHsgIH07DQo+ID4NCj4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCB4Y2Fu
-X2RldnR5cGVfZGF0YSB4Y2FuX2F4aV9kYXRhID0gew0KPiA+ICsJLmZsYWdzID0gWENBTl9GTEFH
-X1RYRkVNUCwNCj4gPiAgCS5iaXR0aW1pbmdfY29uc3QgPSAmeGNhbl9iaXR0aW1pbmdfY29uc3Qs
-DQo+ID4gIAkuYnRyX3RzMl9zaGlmdCA9IFhDQU5fQlRSX1RTMl9TSElGVCwNCj4gPiAgCS5idHJf
-c2p3X3NoaWZ0ID0gWENBTl9CVFJfU0pXX1NISUZULA0KPiANCj4gDQo+IEFyZSB5b3Ugc3VyZSB0
-aGlzIGlzIHJpZ2h0Pw0KPiBJbiB0aGUgZG9jdW1lbnRhdGlvbiBbMV0gdGhlcmUgZG9lcyBub3Qg
-c2VlbSB0byBiZSBhbnkgVFhGRU1QIGludGVycnVwdCwgaXQNCj4gd291bGQgYmUgaW50ZXJydXB0
-IGJpdCAxNCBidXQgQVhJIENBTiA1LjAgc2VlbXMgdG8gb25seSBnbyB1cCB0byAxMS4NCj4gDQo+
-IE9yIG1heWJlIGl0IGlzIHVuZG9jdW1lbnRlZCBvciB0aGVyZSBpcyBhIG5ld2VyIHZlcnNpb24g
-c29tZXdoZXJlPw0KDQpTb3JyeSBmb3IgdGhlIGRlbGF5IGluIHRoZSByZXBseS4gDQpBZ3JlZSBU
-WEZFTVAgaW50ZXJydXB0IGZlYXR1cmUgaXMgbm90IHN1cHBvcnRlZCBieSB0aGUgU29mdCBJUCBD
-QU4uDQpTaW5jZSB0aGlzIHBhdGNoIGFscmVhZHkgZ290IGFwcGxpZWQgd2lsbCBzZW5kIGEgc2Vw
-YXJhdGUgcGF0Y2ggdG8gZml4IHRoaXMuDQoNClJlZ2FyZHMsDQpLZWRhci4NCg0KPiANCj4gWzFd
-DQo+IGh0dHBzOi8vd3d3LnhpbGlueC5jb20vc3VwcG9ydC9kb2N1bWVudGF0aW9uL2lwX2RvY3Vt
-ZW50YXRpb24vY2FuL3Y1XzANCj4gL3BnMDk2LWNhbi5wZGYNCj4gDQo+IC0tDQo+IEFuc3NpIEhh
-bm51bGEgLyBCaXR3aXNlIE95DQo+ICszNTggNTAzODAzOTk3DQoNCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--o6gGPgD5ZTyYWoRyGFKHldQgJZ9IWZIQR
+Content-Type: multipart/mixed; boundary="r6Se4r1d84yFfg5K20EFRv9UIXwPXokF8";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Appana Durga Kedareswara Rao <appanad@xilinx.com>,
+ Anssi Hannula <anssi.hannula@bitwise.fi>
+Cc: "wg@grandegger.com" <wg@grandegger.com>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ Michal Simek <michals@xilinx.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <644fb76f-8169-4911-2293-92ae2dfe4e1c@pengutronix.de>
+Subject: Re: [PATCH 2/6] net: can: xilinx_can: Fix flags field initialization
+ for axi can and canps
+References: <1552908766-26753-1-git-send-email-appana.durga.rao@xilinx.com>
+ <1552908766-26753-3-git-send-email-appana.durga.rao@xilinx.com>
+ <d1bedb13-f66f-b0fd-bd6d-9f95b64fc405@bitwise.fi>
+ <MN2PR02MB64004059908C95EB5E16746FDC950@MN2PR02MB6400.namprd02.prod.outlook.com>
+In-Reply-To: <MN2PR02MB64004059908C95EB5E16746FDC950@MN2PR02MB6400.namprd02.prod.outlook.com>
+
+--r6Se4r1d84yFfg5K20EFRv9UIXwPXokF8
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+On 10/9/19 6:01 AM, Appana Durga Kedareswara Rao wrote:
+> Hi,
+>=20
+> <Snip>
+>> On 18.3.2019 13.32, Appana Durga Kedareswara rao wrote:
+>>> AXI CAN IP and CANPS IP supports tx fifo empty feature, this patch
+>>> updates the flags field for the same.
+>>>
+>>> Signed-off-by: Appana Durga Kedareswara rao
+>>> <appana.durga.rao@xilinx.com>
+>>> ---
+>>>  drivers/net/can/xilinx_can.c | 2 ++
+>>>  1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/drivers/net/can/xilinx_can.c
+>>> b/drivers/net/can/xilinx_can.c index 2de51ac..22569ef 100644
+>>> --- a/drivers/net/can/xilinx_can.c
+>>> +++ b/drivers/net/can/xilinx_can.c
+>>> @@ -1428,6 +1428,7 @@ static const struct dev_pm_ops xcan_dev_pm_ops
+>> =3D
+>>> {  };
+>>>
+>>>  static const struct xcan_devtype_data xcan_zynq_data =3D {
+>>> +	.flags =3D XCAN_FLAG_TXFEMP,
+>>>  	.bittiming_const =3D &xcan_bittiming_const,
+>>>  	.btr_ts2_shift =3D XCAN_BTR_TS2_SHIFT,
+>>>  	.btr_sjw_shift =3D XCAN_BTR_SJW_SHIFT,
+>>
+>> Thanks for catching this, this line seemed to have been incorrectly re=
+moved by
+>> my 9e5f1b273e ("can: xilinx_can: add support for Xilinx CAN FD core").=
+
+>>
+>> But:
+>>
+>>> @@ -1435,6 +1436,7 @@ static const struct xcan_devtype_data
+>>> xcan_zynq_data =3D {  };
+>>>
+>>>  static const struct xcan_devtype_data xcan_axi_data =3D {
+>>> +	.flags =3D XCAN_FLAG_TXFEMP,
+>>>  	.bittiming_const =3D &xcan_bittiming_const,
+>>>  	.btr_ts2_shift =3D XCAN_BTR_TS2_SHIFT,
+>>>  	.btr_sjw_shift =3D XCAN_BTR_SJW_SHIFT,
+>>
+>>
+>> Are you sure this is right?
+>> In the documentation [1] there does not seem to be any TXFEMP interrup=
+t, it
+>> would be interrupt bit 14 but AXI CAN 5.0 seems to only go up to 11.
+>>
+>> Or maybe it is undocumented or there is a newer version somewhere?
+>=20
+> Sorry for the delay in the reply.=20
+> Agree TXFEMP interrupt feature is not supported by the Soft IP CAN.
+> Since this patch already got applied will send a separate patch to fix =
+this.
+
+Please base your patch on net/master and add the appropriate fixes tag:
+
+Fixes: 3281b380ec9f ("can: xilinx_can: Fix flags field initialization for=
+ axi can and canps")
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--r6Se4r1d84yFfg5K20EFRv9UIXwPXokF8--
+
+--o6gGPgD5ZTyYWoRyGFKHldQgJZ9IWZIQR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl2diZ0ACgkQWsYho5Hk
+nSDwGwf+Oxe0LBV8cKXYL5gwSl2c4iMUIorM6JCFmH1Uavtlp11+g91f3qyPCpyq
+MVHHsIeBIbta2dN1oBY7tGBmBH5s4MNdxhFlc8EajUeYf6sZBD+BK243TSJVC7hF
+pjVtdIEhiPkZcveLzF2TIaBMVPqLiJyKmsJvgVlXLUY9TYOi7BGqu0NoTvEOjNJ9
+HThgvSUH/zfJrWIT5m6DMxg+39QacVCjfTtlXIhefPsr/F6IPZ855qItY9mNGsPh
+2qC24k6Pq70Q4h7uGtKO+/dU1Uy0Ru/t7BOlhzcEG/cwVuLE/x3tW2ccnNKdeBoq
+MLDHd+vQ3kqakVr4m010yE8l/cBiPA==
+=mgwU
+-----END PGP SIGNATURE-----
+
+--o6gGPgD5ZTyYWoRyGFKHldQgJZ9IWZIQR--
