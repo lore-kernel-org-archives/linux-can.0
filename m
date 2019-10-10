@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 19/29] can: flexcan: increase error counters if skb enqueueing via can_rx_offload_queue_sorted() fails
-Date: Thu, 10 Oct 2019 14:17:40 +0200
-Message-ID: <20191010121750.27237-20-mkl@pengutronix.de>
+Subject: [PATCH 12/29] can: rx-offload: can_rx_offload_queue_sorted(): fix error handling, avoid skb mem leak
+Date: Thu, 10 Oct 2019 14:17:33 +0200
+Message-ID: <20191010121750.27237-13-mkl@pengutronix.de>
 References: <20191010121750.27237-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -10,63 +10,47 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191010121750.27237-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-The call to can_rx_offload_queue_sorted() may fail and return an error
-(in the current implementation due to resource shortage). The passed skb
-is consumed.
+If the rx-offload skb_queue is full can_rx_offload_queue_sorted() will
+not queue the skb and return with an error.
 
-This patch adds incrementing of the appropriate error counters to let
-the device statistics reflect that there's a problem.
+None of the callers of this function, issue a kfree_skb() to free the
+not queued skb. This results in a memory leak.
 
+This patch fixes the problem by freeing the skb in case of a full queue.
+The return value is adjusted to -ENOBUFS to better reflect the actual
+problem.
+
+The device stats handling is left to the callers, as this function
+mightbe used in both the rx and tx path.
+
+Fixes: 55059f2b7f86 ("can: rx-offload: introduce can_rx_offload_get_echo_skb() and can_rx_offload_queue_sorted() functions")
+Cc: linux-stable <stable@vger.kernel.org>
+Cc: Martin Hundebøll <martin@geanix.com>
 Reported-by: Martin Hundebøll <martin@geanix.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/net/can/rx-offload.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 1cd5179cb876..57f9a2f51085 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -677,6 +677,7 @@ static void flexcan_irq_bus_err(struct net_device *dev, u32 reg_esr)
- 	struct can_frame *cf;
- 	bool rx_errors = false, tx_errors = false;
- 	u32 timestamp;
-+	int err;
+diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
+index e6a668ee7730..663697439d1c 100644
+--- a/drivers/net/can/rx-offload.c
++++ b/drivers/net/can/rx-offload.c
+@@ -207,8 +207,10 @@ int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
+ 	unsigned long flags;
  
- 	timestamp = priv->read(&regs->timer) << 16;
+ 	if (skb_queue_len(&offload->skb_queue) >
+-	    offload->skb_queue_len_max)
+-		return -ENOMEM;
++	    offload->skb_queue_len_max) {
++		kfree_skb(skb);
++		return -ENOBUFS;
++	}
  
-@@ -725,7 +726,9 @@ static void flexcan_irq_bus_err(struct net_device *dev, u32 reg_esr)
- 	if (tx_errors)
- 		dev->stats.tx_errors++;
- 
--	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	if (err)
-+		dev->stats.rx_fifo_errors++;
- }
- 
- static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
-@@ -738,6 +741,7 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
- 	int flt;
- 	struct can_berr_counter bec;
- 	u32 timestamp;
-+	int err;
- 
- 	timestamp = priv->read(&regs->timer) << 16;
- 
-@@ -769,7 +773,9 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
- 	if (unlikely(new_state == CAN_STATE_BUS_OFF))
- 		can_bus_off(dev);
- 
--	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	if (err)
-+		dev->stats.rx_fifo_errors++;
- }
- 
- static inline struct flexcan_priv *rx_offload_to_priv(struct can_rx_offload *offload)
+ 	cb = can_rx_offload_get_cb(skb);
+ 	cb->timestamp = timestamp;
 -- 
 2.23.0
