@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 11/29] can: xilinx_can: Fix flags field initialization for axi can
-Date: Thu, 10 Oct 2019 14:17:32 +0200
-Message-ID: <20191010121750.27237-12-mkl@pengutronix.de>
+Subject: [PATCH 14/29] can: rx-offload: can_rx_offload_offload_one(): do not increase the skb_queue beyond skb_queue_len_max
+Date: Thu, 10 Oct 2019 14:17:35 +0200
+Message-ID: <20191010121750.27237-15-mkl@pengutronix.de>
 References: <20191010121750.27237-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,33 +9,37 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191010121750.27237-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>, Anssi Hannula <anssi.hannula@bitwise.fi>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+The skb_queue is a linked list, holding the skb to be processed in the
+next NAPI call.
 
-AXI CANIP doesn't support tx fifo empty interrupt feature(TXFEMP),
-update the flags filed in the driver for AXI CAN case accordingly.
+Without this patch, the queue length in can_rx_offload_offload_one() is
+limited to skb_queue_len_max + 1. As the skb_queue is a linked list, no
+array or other resources are accessed out-of-bound, however this
+behaviour is counterintuitive.
 
-Fixes: 3281b380ec9f ("can: xilinx_can: Fix flags field initialization for axi can and canps")
-Reported-by: Anssi Hannula <anssi.hannula@bitwise.fi>
-Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+This patch limits the rx-offload skb_queue length to skb_queue_len_max.
+
+Fixes: d254586c3453 ("can: rx-offload: Add support for HW fifo based irq offloading")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/can/rx-offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 911b34316c9d..7c482b2d78d2 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1599,7 +1599,6 @@ static const struct xcan_devtype_data xcan_zynq_data = {
+diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
+index d1c863409945..bdc27481b57f 100644
+--- a/drivers/net/can/rx-offload.c
++++ b/drivers/net/can/rx-offload.c
+@@ -115,7 +115,7 @@ static struct sk_buff *can_rx_offload_offload_one(struct can_rx_offload *offload
+ 	int ret;
  
- static const struct xcan_devtype_data xcan_axi_data = {
- 	.cantype = XAXI_CAN,
--	.flags = XCAN_FLAG_TXFEMP,
- 	.bittiming_const = &xcan_bittiming_const,
- 	.btr_ts2_shift = XCAN_BTR_TS2_SHIFT,
- 	.btr_sjw_shift = XCAN_BTR_SJW_SHIFT,
+ 	/* If queue is full or skb not available, read to discard mailbox */
+-	if (likely(skb_queue_len(&offload->skb_queue) <=
++	if (likely(skb_queue_len(&offload->skb_queue) <
+ 		   offload->skb_queue_len_max))
+ 		skb = alloc_can_skb(offload->dev, &cf);
+ 
 -- 
 2.23.0
