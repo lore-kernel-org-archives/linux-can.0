@@ -1,159 +1,105 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Jeroen Hofstee <jhofstee@victronenergy.com>
 Subject: Re: [PATCH 24/29] can: ti_hecc: add fifo underflow error reporting
-Date: Thu, 10 Oct 2019 17:52:15 +0200
-Message-ID: <dfdbefb3-48c4-0830-9627-146da062a01a@pengutronix.de>
+Date: Thu, 10 Oct 2019 18:04:45 +0000
+Message-ID: <4dee69d8-f8f7-080e-1a4f-7ed7f94a66a8@victronenergy.com>
 References: <20191010121750.27237-1-mkl@pengutronix.de>
  <20191010121750.27237-25-mkl@pengutronix.de>
+ <dfdbefb3-48c4-0830-9627-146da062a01a@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="PuZm4VCQiooSzQjeQd9ZclikGRIXl4Xzt"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191010121750.27237-25-mkl@pengutronix.de>
+In-Reply-To: <dfdbefb3-48c4-0830-9627-146da062a01a@pengutronix.de>
+Content-Language: en-US
+Content-ID: <A9F329C653DF7040A4E5459E07074E38@eurprd07.prod.outlook.com>
 Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>, jhofstee@victronenergy.com, kernel@pengutronix.de, davem@davemloft.net
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-can <linux-can@vger.kernel.org>
+Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, =?utf-8?B?TWFydGluIEh1bmRlYsO4bGw=?= <martin@geanix.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---PuZm4VCQiooSzQjeQd9ZclikGRIXl4Xzt
-Content-Type: multipart/mixed; boundary="xhk6VFvhkEkazo2IJ4w3oJBiKfHLH2mX7";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
- =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>,
- jhofstee@victronenergy.com, kernel@pengutronix.de, davem@davemloft.net
-Message-ID: <dfdbefb3-48c4-0830-9627-146da062a01a@pengutronix.de>
-Subject: Re: [PATCH 24/29] can: ti_hecc: add fifo underflow error reporting
-References: <20191010121750.27237-1-mkl@pengutronix.de>
- <20191010121750.27237-25-mkl@pengutronix.de>
-In-Reply-To: <20191010121750.27237-25-mkl@pengutronix.de>
-
---xhk6VFvhkEkazo2IJ4w3oJBiKfHLH2mX7
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-
-On 10/10/19 2:17 PM, Marc Kleine-Budde wrote:
-> From: Jeroen Hofstee <jhofstee@victronenergy.com>
->=20
-> When the rx fifo overflows the ti_hecc would silently drop them since
-> the overwrite protection is enabled for all mailboxes. So disable it
-> for the lowest priority mailbox and increment the rx_fifo_errors when
-> receive message lost is set. Drop the message itself in that case,
-> since it might be partially updated.
-
-Is that your observation or does the data sheet say anything to this
-situation?
-
->=20
-> Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
->  drivers/net/can/ti_hecc.c | 21 +++++++++++++++++----
->  1 file changed, 17 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-> index 6ea29126c60b..c2d83ada203a 100644
-> --- a/drivers/net/can/ti_hecc.c
-> +++ b/drivers/net/can/ti_hecc.c
-> @@ -82,7 +82,7 @@ MODULE_VERSION(HECC_MODULE_VERSION);
->  #define HECC_CANTA		0x10	/* Transmission acknowledge */
->  #define HECC_CANAA		0x14	/* Abort acknowledge */
->  #define HECC_CANRMP		0x18	/* Receive message pending */
-> -#define HECC_CANRML		0x1C	/* Remote message lost */
-> +#define HECC_CANRML		0x1C	/* Receive message lost */
->  #define HECC_CANRFP		0x20	/* Remote frame pending */
->  #define HECC_CANGAM		0x24	/* SECC only:Global acceptance mask */
->  #define HECC_CANMC		0x28	/* Master control */
-> @@ -385,8 +385,17 @@ static void ti_hecc_start(struct net_device *ndev)=
-
->  	/* Enable tx interrupts */
->  	hecc_set_bit(priv, HECC_CANMIM, BIT(HECC_MAX_TX_MBOX) - 1);
-> =20
-> -	/* Prevent message over-write & Enable interrupts */
-> -	hecc_write(priv, HECC_CANOPC, HECC_SET_REG);
-> +	/* Prevent message over-write to create a rx fifo, but not for
-> +	 * the lowest priority mailbox, since that allows detecting
-> +	 * overflows instead of the hardware silently dropping the
-> +	 * messages. The lowest rx mailbox is one above the tx ones,
-> +	 * hence its mbxno is the number of tx mailboxes.
-> +	 */
-> +	mbxno =3D HECC_MAX_TX_MBOX;
-> +	mbx_mask =3D ~BIT(mbxno);
-> +	hecc_write(priv, HECC_CANOPC, mbx_mask);
-> +
-> +	/* Enable interrupts */
->  	if (priv->use_hecc1int) {
->  		hecc_write(priv, HECC_CANMIL, HECC_SET_REG);
->  		hecc_write(priv, HECC_CANGIM, HECC_CANGIM_DEF_MASK |
-> @@ -531,6 +540,7 @@ static unsigned int ti_hecc_mailbox_read(struct can=
-_rx_offload *offload,
->  {
->  	struct ti_hecc_priv *priv =3D rx_offload_to_priv(offload);
->  	u32 data, mbx_mask;
-> +	int lost;
-> =20
->  	mbx_mask =3D BIT(mbxno);
->  	data =3D hecc_read_mbx(priv, mbxno, HECC_CANMID);
-> @@ -552,9 +562,12 @@ static unsigned int ti_hecc_mailbox_read(struct ca=
-n_rx_offload *offload,
->  	}
-> =20
->  	*timestamp =3D hecc_read_stamp(priv, mbxno);
-> +	lost =3D hecc_read(priv, HECC_CANRML) & mbx_mask;
-> +	if (unlikely(lost))
-> +		priv->offload.dev->stats.rx_fifo_errors++;
-
-In the flexcan and at91_can driver we're incrementing the following error=
-s:
-			dev->stats.rx_over_errors++;
-			dev->stats.rx_errors++;
-
-You can save the register access if you only check for overflows if
-reading from the lowest prio mailbox.
-
-If you're discarding the data if the mailbox is marked as overflow
-there's no need to read the data in the first place.
-
->  	hecc_write(priv, HECC_CANRMP, mbx_mask);
-> =20
-> -	return 1;
-> +	return !lost;
->  }
-> =20
->  static int ti_hecc_error(struct net_device *ndev, int int_status,
->=20
-
-I'll send a v2 that addresses these findings.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---xhk6VFvhkEkazo2IJ4w3oJBiKfHLH2mX7--
-
---PuZm4VCQiooSzQjeQd9ZclikGRIXl4Xzt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl2fU68ACgkQWsYho5Hk
-nSA5SQf9HlJfbDEIUFCh1DSdIQi1gpHDT06ox9newEDnSmivCgtNuiLB7Z2WEWmd
-gNqR6EgU8uW2wccchEJvjELgoFq5uJdquT0zCtRwu3jCxPGZhpAhi0vj7ClM9K/f
-9Cx0rgstnY59iePQMAIe8A2I5Yur8u3ZDIGGS3NWp4iJop78qpbx80/YIfii7JCl
-WR2LmzcD1Jx3pwQMVN6FhdHyf3RjHw+Vfza8pX8VS25ubrUnynVQTh/HbGNlGlK1
-BzTP2YlaElDzXFGI+8Tnsw91b+F8j2OmbTel2yKT45o8cTd4k5g8obc1Oh77OBC8
-85ZRYf8vwVERCnE59VuyRAym62+h9g==
-=bgHo
------END PGP SIGNATURE-----
-
---PuZm4VCQiooSzQjeQd9ZclikGRIXl4Xzt--
+QXR0ZW1wdCAyLCBub3cgYXMgcGxhaW4gdGV4dC4uLiAodmdlciBkb2Vzbid0IGxpa2UgaHRtbCkN
+Cg0KT24gMTAvMTAvMTkgNTo1MiBQTSwgTWFyYyBLbGVpbmUtQnVkZGUgd3JvdGU6DQo+IE9uIDEw
+LzEwLzE5IDI6MTcgUE0sIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOg0KPj4gRnJvbTogSmVyb2Vu
+IEhvZnN0ZWUgPGpob2ZzdGVlQHZpY3Ryb25lbmVyZ3kuY29tPg0KPj4NCj4+IFdoZW4gdGhlIHJ4
+IGZpZm8gb3ZlcmZsb3dzIHRoZSB0aV9oZWNjIHdvdWxkIHNpbGVudGx5IGRyb3AgdGhlbSBzaW5j
+ZQ0KPj4gdGhlIG92ZXJ3cml0ZSBwcm90ZWN0aW9uIGlzIGVuYWJsZWQgZm9yIGFsbCBtYWlsYm94
+ZXMuIFNvIGRpc2FibGUgaXQNCj4+IGZvciB0aGUgbG93ZXN0IHByaW9yaXR5IG1haWxib3ggYW5k
+IGluY3JlbWVudCB0aGUgcnhfZmlmb19lcnJvcnMgd2hlbg0KPj4gcmVjZWl2ZSBtZXNzYWdlIGxv
+c3QgaXMgc2V0LiBEcm9wIHRoZSBtZXNzYWdlIGl0c2VsZiBpbiB0aGF0IGNhc2UsDQo+PiBzaW5j
+ZSBpdCBtaWdodCBiZSBwYXJ0aWFsbHkgdXBkYXRlZC4NCj4gSXMgdGhhdCB5b3VyIG9ic2VydmF0
+aW9uIG9yIGRvZXMgdGhlIGRhdGEgc2hlZXQgc2F5IGFueXRoaW5nIHRvIHRoaXMNCj4gc2l0dWF0
+aW9uPw0KDQoNCkkgY291bGRuJ3QgZmluZCBpbiB0aGUgZGF0YSBzaGVldCwgc28gSSBzaW1wbHkg
+dGVzdGVkIGl0LCBieSBhbGxvd2luZw0KdGhlIGhpZ2hlc3QgbWFpbGJveCB0byBiZSBvdmVyd3Jp
+dHRlbiBhbmQgc2VuZCBhIHN0cmVhbSBhbHRlcm5hdGluZw0Kd2l0aCBtZXNzYWdlcyB3aWxsIGFs
+bCBiaXRzIHNldCBhbmQgYWxsIGNsZWFyZWQuIFRoYXQgZG9lcyBlbmQgd2l0aA0KY2FuaWRzIGZy
+b20gb25lIG1lc3NhZ2UgY29tYmluZWQgd2l0aCBkYXRhIGZyb20gYW5vdGhlci4NCg0KDQo+PiBT
+aWduZWQtb2ZmLWJ5OiBKZXJvZW4gSG9mc3RlZSA8amhvZnN0ZWVAdmljdHJvbmVuZXJneS5jb20+
+DQo+PiBTaWduZWQtb2ZmLWJ5OiBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRl
+Pg0KPj4gLS0tDQo+PiAgIGRyaXZlcnMvbmV0L2Nhbi90aV9oZWNjLmMgfCAyMSArKysrKysrKysr
+KysrKysrKy0tLS0NCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKyksIDQgZGVs
+ZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi90aV9oZWNjLmMg
+Yi9kcml2ZXJzL25ldC9jYW4vdGlfaGVjYy5jDQo+PiBpbmRleCA2ZWEyOTEyNmM2MGIuLmMyZDgz
+YWRhMjAzYSAxMDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi90aV9oZWNjLmMNCj4+ICsr
+KyBiL2RyaXZlcnMvbmV0L2Nhbi90aV9oZWNjLmMNCj4+IEBAIC04Miw3ICs4Miw3IEBAIE1PRFVM
+RV9WRVJTSU9OKEhFQ0NfTU9EVUxFX1ZFUlNJT04pOw0KPj4gICAjZGVmaW5lIEhFQ0NfQ0FOVEEJ
+CTB4MTAJLyogVHJhbnNtaXNzaW9uIGFja25vd2xlZGdlICovDQo+PiAgICNkZWZpbmUgSEVDQ19D
+QU5BQQkJMHgxNAkvKiBBYm9ydCBhY2tub3dsZWRnZSAqLw0KPj4gICAjZGVmaW5lIEhFQ0NfQ0FO
+Uk1QCQkweDE4CS8qIFJlY2VpdmUgbWVzc2FnZSBwZW5kaW5nICovDQo+PiAtI2RlZmluZSBIRUND
+X0NBTlJNTAkJMHgxQwkvKiBSZW1vdGUgbWVzc2FnZSBsb3N0ICovDQo+PiArI2RlZmluZSBIRUND
+X0NBTlJNTAkJMHgxQwkvKiBSZWNlaXZlIG1lc3NhZ2UgbG9zdCAqLw0KPj4gICAjZGVmaW5lIEhF
+Q0NfQ0FOUkZQCQkweDIwCS8qIFJlbW90ZSBmcmFtZSBwZW5kaW5nICovDQo+PiAgICNkZWZpbmUg
+SEVDQ19DQU5HQU0JCTB4MjQJLyogU0VDQyBvbmx5Okdsb2JhbCBhY2NlcHRhbmNlIG1hc2sgKi8N
+Cj4+ICAgI2RlZmluZSBIRUNDX0NBTk1DCQkweDI4CS8qIE1hc3RlciBjb250cm9sICovDQo+PiBA
+QCAtMzg1LDggKzM4NSwxNyBAQCBzdGF0aWMgdm9pZCB0aV9oZWNjX3N0YXJ0KHN0cnVjdCBuZXRf
+ZGV2aWNlICpuZGV2KQ0KPj4gICAJLyogRW5hYmxlIHR4IGludGVycnVwdHMgKi8NCj4+ICAgCWhl
+Y2Nfc2V0X2JpdChwcml2LCBIRUNDX0NBTk1JTSwgQklUKEhFQ0NfTUFYX1RYX01CT1gpIC0gMSk7
+DQo+PiAgIA0KPj4gLQkvKiBQcmV2ZW50IG1lc3NhZ2Ugb3Zlci13cml0ZSAmIEVuYWJsZSBpbnRl
+cnJ1cHRzICovDQo+PiAtCWhlY2Nfd3JpdGUocHJpdiwgSEVDQ19DQU5PUEMsIEhFQ0NfU0VUX1JF
+Ryk7DQo+PiArCS8qIFByZXZlbnQgbWVzc2FnZSBvdmVyLXdyaXRlIHRvIGNyZWF0ZSBhIHJ4IGZp
+Zm8sIGJ1dCBub3QgZm9yDQo+PiArCSAqIHRoZSBsb3dlc3QgcHJpb3JpdHkgbWFpbGJveCwgc2lu
+Y2UgdGhhdCBhbGxvd3MgZGV0ZWN0aW5nDQo+PiArCSAqIG92ZXJmbG93cyBpbnN0ZWFkIG9mIHRo
+ZSBoYXJkd2FyZSBzaWxlbnRseSBkcm9wcGluZyB0aGUNCj4+ICsJICogbWVzc2FnZXMuIFRoZSBs
+b3dlc3QgcnggbWFpbGJveCBpcyBvbmUgYWJvdmUgdGhlIHR4IG9uZXMsDQo+PiArCSAqIGhlbmNl
+IGl0cyBtYnhubyBpcyB0aGUgbnVtYmVyIG9mIHR4IG1haWxib3hlcy4NCj4+ICsJICovDQo+PiAr
+CW1ieG5vID0gSEVDQ19NQVhfVFhfTUJPWDsNCj4+ICsJbWJ4X21hc2sgPSB+QklUKG1ieG5vKTsN
+Cj4+ICsJaGVjY193cml0ZShwcml2LCBIRUNDX0NBTk9QQywgbWJ4X21hc2spOw0KPj4gKw0KPj4g
+KwkvKiBFbmFibGUgaW50ZXJydXB0cyAqLw0KPj4gICAJaWYgKHByaXYtPnVzZV9oZWNjMWludCkg
+ew0KPj4gICAJCWhlY2Nfd3JpdGUocHJpdiwgSEVDQ19DQU5NSUwsIEhFQ0NfU0VUX1JFRyk7DQo+
+PiAgIAkJaGVjY193cml0ZShwcml2LCBIRUNDX0NBTkdJTSwgSEVDQ19DQU5HSU1fREVGX01BU0sg
+fA0KPj4gQEAgLTUzMSw2ICs1NDAsNyBAQCBzdGF0aWMgdW5zaWduZWQgaW50IHRpX2hlY2NfbWFp
+bGJveF9yZWFkKHN0cnVjdCBjYW5fcnhfb2ZmbG9hZCAqb2ZmbG9hZCwNCj4+ICAgew0KPj4gICAJ
+c3RydWN0IHRpX2hlY2NfcHJpdiAqcHJpdiA9IHJ4X29mZmxvYWRfdG9fcHJpdihvZmZsb2FkKTsN
+Cj4+ICAgCXUzMiBkYXRhLCBtYnhfbWFzazsNCj4+ICsJaW50IGxvc3Q7DQo+PiAgIA0KPj4gICAJ
+bWJ4X21hc2sgPSBCSVQobWJ4bm8pOw0KPj4gICAJZGF0YSA9IGhlY2NfcmVhZF9tYngocHJpdiwg
+bWJ4bm8sIEhFQ0NfQ0FOTUlEKTsNCj4+IEBAIC01NTIsOSArNTYyLDEyIEBAIHN0YXRpYyB1bnNp
+Z25lZCBpbnQgdGlfaGVjY19tYWlsYm94X3JlYWQoc3RydWN0IGNhbl9yeF9vZmZsb2FkICpvZmZs
+b2FkLA0KPj4gICAJfQ0KPj4gICANCj4+ICAgCSp0aW1lc3RhbXAgPSBoZWNjX3JlYWRfc3RhbXAo
+cHJpdiwgbWJ4bm8pOw0KPj4gKwlsb3N0ID0gaGVjY19yZWFkKHByaXYsIEhFQ0NfQ0FOUk1MKSAm
+IG1ieF9tYXNrOw0KPj4gKwlpZiAodW5saWtlbHkobG9zdCkpDQo+PiArCQlwcml2LT5vZmZsb2Fk
+LmRldi0+c3RhdHMucnhfZmlmb19lcnJvcnMrKzsNCj4gSW4gdGhlIGZsZXhjYW4gYW5kIGF0OTFf
+Y2FuIGRyaXZlciB3ZSdyZSBpbmNyZW1lbnRpbmcgdGhlIGZvbGxvd2luZyBlcnJvcnM6DQo+IAkJ
+CWRldi0+c3RhdHMucnhfb3Zlcl9lcnJvcnMrKzsNCj4gCQkJZGV2LT5zdGF0cy5yeF9lcnJvcnMr
+KzsNCg0KDQpJIHVuZGVyc3Rvb2QgaXQgYXMgZm9sbG93cywgc2VlWzFdIGUuZy46DQoNCnJ4X2Vy
+cm9ycyAtPiBsaW5rIGxldmVsIGVycm9ycywgbm90IHJlYWxseSBhcHBsaWNhYmxlIHRvIENBTg0K
+KHBlcmhhcHMgaW4gc2luZ2xlIHNob3QgbW9kZSBvciBpZiB5b3Ugd2FudCAoYW5kIGNhbikgcmVw
+b3J0IA0KcmV0cmFuc21pc3Npb25zKQ0KDQpyeF9vdmVyX2Vycm9ycyAtPiB0aGUgaGFyZHdhcmUg
+aXRzZWxmIGNhbm5vdCBrZWVwIHVwLg0KTm90IGFwcGxpY2FibGUgZm9yIENBTi4NCg0KcnhfZmlm
+b19lcnJvcnMgLT4gdGhlIHNvZnR3YXJlIGRyaXZlciBjYW5ub3Qga2VlcCB1cC4NClNvIEkgcGlj
+a2VkIHRoYXQgb25lLg0KDQpyeF9kcm9wcGVkIC0+IHNvZnR3YXJlIGlzIGRyb3BwaW5nIG9uIHB1
+cnBvc2UgYmFzZWQgb24gbGltaXRzIGV0Yy4NCg0KQnV0IEkgbWlnaHQgYmUgd3JvbmcuDQoNCg0K
+PiBZb3UgY2FuIHNhdmUgdGhlIHJlZ2lzdGVyIGFjY2VzcyBpZiB5b3Ugb25seSBjaGVjayBmb3Ig
+b3ZlcmZsb3dzIGlmDQo+IHJlYWRpbmcgZnJvbSB0aGUgbG93ZXN0IHByaW8gbWFpbGJveC4NCj4N
+Cj4gSWYgeW91J3JlIGRpc2NhcmRpbmcgdGhlIGRhdGEgaWYgdGhlIG1haWxib3ggaXMgbWFya2Vk
+IGFzIG92ZXJmbG93DQo+IHRoZXJlJ3Mgbm8gbmVlZCB0byByZWFkIHRoZSBkYXRhIGluIHRoZSBm
+aXJzdCBwbGFjZS4NCj4NCj4+ICAgCWhlY2Nfd3JpdGUocHJpdiwgSEVDQ19DQU5STVAsIG1ieF9t
+YXNrKTsNCj4+ICAgDQo+PiAtCXJldHVybiAxOw0KPj4gKwlyZXR1cm4gIWxvc3Q7DQo+PiAgIH0N
+Cj4+ICAgDQo+PiAgIHN0YXRpYyBpbnQgdGlfaGVjY19lcnJvcihzdHJ1Y3QgbmV0X2RldmljZSAq
+bmRldiwgaW50IGludF9zdGF0dXMsDQo+Pg0KDQpNaW5kIGl0IHRoYXQgeW91IGRvbid0IGNhdXNl
+IGEgcmFjZSEgVGhlIGJpdCBjYW4gYmVjb21lIHNldA0KZHVyaW5nIHJlYWRpbmcgb2YgdGhlIGRh
+dGEsIGl0IHNob3VsZCBiZSBjaGVjayBfYWZ0ZXJfIHdlDQpoYXZlIGEgY29weSBvZiB0aGUgbWFp
+bGJveC4gWW91IGNhbiBkbyBhIGRvdWJsZSBjaGVjaywgb25lDQpiZWZvcmUgb25lIGFmdGVyLCBi
+dXQgc2luY2UgdGhlcmUgc2hvdWxkIGJlIG5vIGZpZm8gb3ZlcmZsb3cNCmFueXdheSwgdGhlcmUg
+aXMgbm8gcmVhc29uIHRvIG9wdGltaXplIGZvciB0aGF0IHBhdGguIChAMjUwaw0KSSBjYW5ub3Qg
+Z2V0IG1vcmUgdGhlbiAzIG1lc3NhZ2VzIGluIHRoZSBmaWZvLi4uKS4NCg0KUmVnYXJkcywNCg0K
+SmVyb2VuDQoNClsxXSANCmh0dHBzOi8vY29tbXVuaXR5Lm1lbGxhbm94LmNvbS9zL2FydGljbGUv
+Y291bnRlcnMtdHJvdWJsZXNob290aW5nLWZvci1saW51eC1kcml2ZXIgDQoNCg==
