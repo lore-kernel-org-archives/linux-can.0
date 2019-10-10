@@ -1,24 +1,41 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: linux-can/testing: Request for testing
-Date: Thu, 10 Oct 2019 14:17:21 +0200
-Message-ID: <20191010121750.27237-1-mkl@pengutronix.de>
+Subject: [PATCH 02/29] can: gs_usb: gs_can_open(): prevent memory leak
+Date: Thu, 10 Oct 2019 14:17:23 +0200
+Message-ID: <20191010121750.27237-3-mkl@pengutronix.de>
+References: <20191010121750.27237-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20191010121750.27237-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Navid Emamdoost <navid.emamdoost@gmail.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello,
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-this patch series is the upcoming pull request for net/master.
+In gs_can_open() if usb_submit_urb() fails the allocated urb should be
+released.
 
-One of the biggest changes is the cleanup of the error handling in the
-rx-offload infrastructure. If queueing fails the skbs are now properly
-freed.
+Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/gs_usb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Please test.
-
-regards,
-Marc
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index bd6eb9967630..2f74f6704c12 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -623,6 +623,7 @@ static int gs_can_open(struct net_device *netdev)
+ 					   rc);
+ 
+ 				usb_unanchor_urb(urb);
++				usb_free_urb(urb);
+ 				break;
+ 			}
+ 
+-- 
+2.23.0
