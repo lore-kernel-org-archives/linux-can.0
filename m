@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 10/29] can: c_can: C_CAN: add bus recovery events
-Date: Thu, 10 Oct 2019 14:17:31 +0200
-Message-ID: <20191010121750.27237-11-mkl@pengutronix.de>
+Subject: [PATCH 23/29] can: ti_hecc: release the mailbox a bit earlier
+Date: Thu, 10 Oct 2019 14:17:44 +0200
+Message-ID: <20191010121750.27237-24-mkl@pengutronix.de>
 References: <20191010121750.27237-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,68 +14,47 @@ List-Id: linux-can.vger.kernel.org
 
 From: Jeroen Hofstee <jhofstee@victronenergy.com>
 
-While the state is updated when the error counters increase and
-decrease, there is no event when the bus recovers and the error counters
-decrease again. So add that event as well.
+Release the mailbox after reading it, so it can be reused a bit earlier.
+Since "can: rx-offload: continue on error" all pending message bits are
+cleared directly, so remove clearing them in ti_hecc.
 
-Change the state going downward to be ERROR_PASSIVE -> ERROR_WARNING ->
-ERROR_ACTIVE instead of directly to ERROR_ACTIVE again.
-
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
-Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Tested-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ drivers/net/can/ti_hecc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 24c6015f6c92..8e9f5620c9a2 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -915,6 +915,9 @@ static int c_can_handle_state_change(struct net_device *dev,
- 	struct can_berr_counter bec;
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index d6a84f8ff863..6ea29126c60b 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -530,8 +530,9 @@ static unsigned int ti_hecc_mailbox_read(struct can_rx_offload *offload,
+ 					 u32 *timestamp, unsigned int mbxno)
+ {
+ 	struct ti_hecc_priv *priv = rx_offload_to_priv(offload);
+-	u32 data;
++	u32 data, mbx_mask;
  
- 	switch (error_type) {
-+	case C_CAN_NO_ERROR:
-+		priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+		break;
- 	case C_CAN_ERROR_WARNING:
- 		/* error warning state */
- 		priv->can.can_stats.error_warning++;
-@@ -945,6 +948,13 @@ static int c_can_handle_state_change(struct net_device *dev,
- 				ERR_CNT_RP_SHIFT;
- 
- 	switch (error_type) {
-+	case C_CAN_NO_ERROR:
-+		/* error warning state */
-+		cf->can_id |= CAN_ERR_CRTL;
-+		cf->data[1] = CAN_ERR_CRTL_ACTIVE;
-+		cf->data[6] = bec.txerr;
-+		cf->data[7] = bec.rxerr;
-+		break;
- 	case C_CAN_ERROR_WARNING:
- 		/* error warning state */
- 		cf->can_id |= CAN_ERR_CRTL;
-@@ -1089,11 +1099,17 @@ static int c_can_poll(struct napi_struct *napi, int quota)
- 	/* handle bus recovery events */
- 	if ((!(curr & STATUS_BOFF)) && (last & STATUS_BOFF)) {
- 		netdev_dbg(dev, "left bus off state\n");
--		priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+		work_done += c_can_handle_state_change(dev, C_CAN_ERROR_PASSIVE);
- 	}
-+
- 	if ((!(curr & STATUS_EPASS)) && (last & STATUS_EPASS)) {
- 		netdev_dbg(dev, "left error passive state\n");
--		priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+		work_done += c_can_handle_state_change(dev, C_CAN_ERROR_WARNING);
-+	}
-+
-+	if ((!(curr & STATUS_EWARN)) && (last & STATUS_EWARN)) {
-+		netdev_dbg(dev, "left error warning state\n");
-+		work_done += c_can_handle_state_change(dev, C_CAN_NO_ERROR);
++	mbx_mask = BIT(mbxno);
+ 	data = hecc_read_mbx(priv, mbxno, HECC_CANMID);
+ 	if (data & HECC_CANMID_IDE)
+ 		cf->can_id = (data & CAN_EFF_MASK) | CAN_EFF_FLAG;
+@@ -551,6 +552,7 @@ static unsigned int ti_hecc_mailbox_read(struct can_rx_offload *offload,
  	}
  
- 	/* handle lec errors on the bus */
+ 	*timestamp = hecc_read_stamp(priv, mbxno);
++	hecc_write(priv, HECC_CANRMP, mbx_mask);
+ 
+ 	return 1;
+ }
+@@ -701,7 +703,6 @@ static irqreturn_t ti_hecc_interrupt(int irq, void *dev_id)
+ 		while ((rx_pending = hecc_read(priv, HECC_CANRMP))) {
+ 			can_rx_offload_irq_offload_timestamp(&priv->offload,
+ 							     rx_pending);
+-			hecc_write(priv, HECC_CANRMP, rx_pending);
+ 		}
+ 	}
+ 
 -- 
 2.23.0
