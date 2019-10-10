@@ -1,59 +1,69 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH net-next 2/3] dt-bindings: can: rcar_canfd: document
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Subject: RE: [PATCH net-next 2/3] dt-bindings: can: rcar_canfd: document
  r8a774b1 support
-Date: Thu, 10 Oct 2019 14:46:32 +0200
-Message-ID: <CAMuHMdV5XUPSrgoDm62p0f_B1TtvhMyOX3NVho=QVqdesq31jg@mail.gmail.com>
-References: <1570711049-5691-1-git-send-email-fabrizio.castro@bp.renesas.com> <1570711049-5691-3-git-send-email-fabrizio.castro@bp.renesas.com>
+Date: Thu, 10 Oct 2019 13:37:36 +0000
+Message-ID: <TY1PR01MB177051B4DCAD29E5D4954F11C0940@TY1PR01MB1770.jpnprd01.prod.outlook.com>
+References: <1570711049-5691-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1570711049-5691-3-git-send-email-fabrizio.castro@bp.renesas.com>
+ <CAMuHMdV5XUPSrgoDm62p0f_B1TtvhMyOX3NVho=QVqdesq31jg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1570711049-5691-3-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <CAMuHMdV5XUPSrgoDm62p0f_B1TtvhMyOX3NVho=QVqdesq31jg@mail.gmail.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, "David S. Miller" <davem@davemloft.net>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Jacopo Mondi <jacopo+renesas@jmondi.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, "David S. Miller" <davem@davemloft.net>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, netdev <netdev@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Jacopo Mondi <jacopo+r>
 List-Id: linux-can.vger.kernel.org
 
-Hi Fabrizio,
-
-On Thu, Oct 10, 2019 at 2:37 PM Fabrizio Castro
-<fabrizio.castro@bp.renesas.com> wrote:
-> Document the support for rcar_canfd on R8A774B1 SoC devices.
->
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-
-Thanks for your patch!
-
-> --- a/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> +++ b/Documentation/devicetree/bindings/net/can/rcar_canfd.txt
-> @@ -5,6 +5,7 @@ Required properties:
->  - compatible: Must contain one or more of the following:
->    - "renesas,rcar-gen3-canfd" for R-Car Gen3 and RZ/G2 compatible controllers.
->    - "renesas,r8a774a1-canfd" for R8A774A1 (RZ/G2M) compatible controller.
-> +  - "renesas,r8a774b1-canfd" for R8A774B1 (RZ/G2N) compatible controller.
->    - "renesas,r8a774c0-canfd" for R8A774C0 (RZ/G2E) compatible controller.
->    - "renesas,r8a7795-canfd" for R8A7795 (R-Car H3) compatible controller.
->    - "renesas,r8a7796-canfd" for R8A7796 (R-Car M3-W) compatible controller.
-
-The above looks good, but I think you forgot to add R8A774B1 to the
-paragraph talking about the CAN FD clock below.
-With that fixed:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-While at it, the example in the bindings says the CANFD clock should be
-configured to 40 MHz, which matches what is used in the various DTS files.
-However, the Hardware User's Manual states it should be 80 MHz, except
-for R-Car D3.
-Is that correct?
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SGkgR2VlcnQsDQoNClRoYW5rIHlvdSBmb3IgeW91ciBmZWVkYmFjayENCg0KPiBGcm9tOiBHZWVy
+dCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsub3JnPg0KPiBTZW50OiAxMCBPY3RvYmVy
+IDIwMTkgMTM6NDcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQtbmV4dCAyLzNdIGR0LWJpbmRp
+bmdzOiBjYW46IHJjYXJfY2FuZmQ6IGRvY3VtZW50IHI4YTc3NGIxIHN1cHBvcnQNCj4gDQo+IEhp
+IEZhYnJpemlvLA0KPiANCj4gT24gVGh1LCBPY3QgMTAsIDIwMTkgYXQgMjozNyBQTSBGYWJyaXpp
+byBDYXN0cm8NCj4gPGZhYnJpemlvLmNhc3Ryb0BicC5yZW5lc2FzLmNvbT4gd3JvdGU6DQo+ID4g
+RG9jdW1lbnQgdGhlIHN1cHBvcnQgZm9yIHJjYXJfY2FuZmQgb24gUjhBNzc0QjEgU29DIGRldmlj
+ZXMuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBGYWJyaXppbyBDYXN0cm8gPGZhYnJpemlvLmNh
+c3Ryb0BicC5yZW5lc2FzLmNvbT4NCj4gDQo+IFRoYW5rcyBmb3IgeW91ciBwYXRjaCENCj4gDQo+
+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9jYW4vcmNhcl9j
+YW5mZC50eHQNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0
+L2Nhbi9yY2FyX2NhbmZkLnR4dA0KPiA+IEBAIC01LDYgKzUsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0
+aWVzOg0KPiA+ICAtIGNvbXBhdGlibGU6IE11c3QgY29udGFpbiBvbmUgb3IgbW9yZSBvZiB0aGUg
+Zm9sbG93aW5nOg0KPiA+ICAgIC0gInJlbmVzYXMscmNhci1nZW4zLWNhbmZkIiBmb3IgUi1DYXIg
+R2VuMyBhbmQgUlovRzIgY29tcGF0aWJsZSBjb250cm9sbGVycy4NCj4gPiAgICAtICJyZW5lc2Fz
+LHI4YTc3NGExLWNhbmZkIiBmb3IgUjhBNzc0QTEgKFJaL0cyTSkgY29tcGF0aWJsZSBjb250cm9s
+bGVyLg0KPiA+ICsgIC0gInJlbmVzYXMscjhhNzc0YjEtY2FuZmQiIGZvciBSOEE3NzRCMSAoUlov
+RzJOKSBjb21wYXRpYmxlIGNvbnRyb2xsZXIuDQo+ID4gICAgLSAicmVuZXNhcyxyOGE3NzRjMC1j
+YW5mZCIgZm9yIFI4QTc3NEMwIChSWi9HMkUpIGNvbXBhdGlibGUgY29udHJvbGxlci4NCj4gPiAg
+ICAtICJyZW5lc2FzLHI4YTc3OTUtY2FuZmQiIGZvciBSOEE3Nzk1IChSLUNhciBIMykgY29tcGF0
+aWJsZSBjb250cm9sbGVyLg0KPiA+ICAgIC0gInJlbmVzYXMscjhhNzc5Ni1jYW5mZCIgZm9yIFI4
+QTc3OTYgKFItQ2FyIE0zLVcpIGNvbXBhdGlibGUgY29udHJvbGxlci4NCj4gDQo+IFRoZSBhYm92
+ZSBsb29rcyBnb29kLCBidXQgSSB0aGluayB5b3UgZm9yZ290IHRvIGFkZCBSOEE3NzRCMSB0byB0
+aGUNCj4gcGFyYWdyYXBoIHRhbGtpbmcgYWJvdXQgdGhlIENBTiBGRCBjbG9jayBiZWxvdy4NCg0K
+SSBtb3N0IGNlcnRhaW5seSBkaWQgZm9yZ2V0IHRvIGFkZCB0aGUgUjhBNzc0QjEgdG8gdGhlIENB
+TiBGRCBjbG9jayBwYXJhZ3JhcGguDQpUaGFuayB5b3UgZm9yIHBvaW50aW5nIHRoaXMgb3V0LCB3
+aWxsIHNlbmQgYSB2Mi4NCg0KPiBXaXRoIHRoYXQgZml4ZWQ6DQo+IFJldmlld2VkLWJ5OiBHZWVy
+dCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVzYXNAZ2xpZGVyLmJlPg0KPiANCj4gV2hpbGUgYXQg
+aXQsIHRoZSBleGFtcGxlIGluIHRoZSBiaW5kaW5ncyBzYXlzIHRoZSBDQU5GRCBjbG9jayBzaG91
+bGQgYmUNCj4gY29uZmlndXJlZCB0byA0MCBNSHosIHdoaWNoIG1hdGNoZXMgd2hhdCBpcyB1c2Vk
+IGluIHRoZSB2YXJpb3VzIERUUyBmaWxlcy4NCj4gSG93ZXZlciwgdGhlIEhhcmR3YXJlIFVzZXIn
+cyBNYW51YWwgc3RhdGVzIGl0IHNob3VsZCBiZSA4MCBNSHosIGV4Y2VwdA0KPiBmb3IgUi1DYXIg
+RDMuDQo+IElzIHRoYXQgY29ycmVjdD8NCg0KVGhlIG1hbnVhbCBzdGF0ZXMgODAgTUh6LCBhbmQg
+SSBkaWQgdGVzdCB0aGUgSVAgaW4gQ0FOIGFuZCBDQU4gRkQgbW9kZSBhdCA4MCBNSHoNCmEgd2hp
+bGUgYmFjaywgYnV0IFJhbWVzaCByZXBvcnRlZCBzb21lIGluc3RhYmlsaXR5IGF0IDgwIE1IeiB3
+aGVuIGhlIGZpcnN0IGJyb3VnaHQNCkNBTiBGRCB1cC4gV2UgZG9uJ3Qga25vdyBpZiB0aGUgaW5z
+dGFiaWxpdHkgd2FzIGR1ZSB0byB0aGUgSVAgb3IgdG8gdGhlIGJvYXJkIGhlIHdhcw0KdXNpbmcs
+IGF0IHNvbWUgcG9pbnQgaXQgd291bGQgYmUgbmljZSB0byByZXRlc3QgdGhlIHNhbWUgdGhpbmcg
+b24gYSBkaWZmZXJlbnQgU29DL2JvYXJkDQpjb25uZWN0ZWQgdG8gdGhlIHNhbWUgcGVyaXBoZXJh
+bCBoZSB3YXMgdXNpbmcgZm9yIHRlc3RpbmcsIGFuZCBzZWUgaWYgd2UgZ2V0IHRoZSBzYW1lDQpp
+c3N1ZXMuIEZvciB0aGUgdGltZSBiZWluZywgdG8gYmUgb24gdGhlIHNhZmUgc2lkZSBvZiB0aGlu
+Z3MsIHdlIHdvdWxkIGxpa2UgdG8ga2VlcCB0aGUNCmNsb2NrIGNvbmZpZ3VyZWQgYXQgNDBNSHou
+DQoNClRoYW5rcywNCkZhYg0KDQo+IA0KPiBUaGFua3MhDQo+IA0KPiBHcntvZXRqZSxlZXRpbmd9
+cywNCj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIEdlZXJ0DQo+IA0KPiAtLQ0KPiBHZWVy
+dCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4IGJleW9uZCBpYTMyIC0tIGdl
+ZXJ0QGxpbnV4LW02OGsub3JnDQo+IA0KPiBJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGgg
+dGVjaG5pY2FsIHBlb3BsZSwgSSBjYWxsIG15c2VsZiBhIGhhY2tlci4gQnV0DQo+IHdoZW4gSSdt
+IHRhbGtpbmcgdG8gam91cm5hbGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRo
+aW5nIGxpa2UgdGhhdC4NCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtLSBMaW51
+cyBUb3J2YWxkcw0K
