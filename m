@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 08/29] can: c_can: c_can_poll(): only read status register after status IRQ
-Date: Thu, 10 Oct 2019 14:17:29 +0200
-Message-ID: <20191010121750.27237-9-mkl@pengutronix.de>
+Subject: [PATCH 21/29] can: ti_hecc: ti_hecc_stop(): stop the CPK on down
+Date: Thu, 10 Oct 2019 14:17:42 +0200
+Message-ID: <20191010121750.27237-22-mkl@pengutronix.de>
 References: <20191010121750.27237-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,96 +9,46 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191010121750.27237-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Wolfgang Grandegger <wg@grandegger.com>, Joe Burmeister <joe.burmeister@devtank.co.uk>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+From: Jeroen Hofstee <jhofstee@victronenergy.com>
 
-When the status register is read without the status IRQ pending, the
-chip may not raise the interrupt line for an upcoming status interrupt
-and the driver may miss a status interrupt.
+When the interface goes down, the CPK should no longer take an active
+part in the CAN-bus communication, like sending acks and error frames.
+So enable configuration mode in ti_hecc_stop, so the CPK is no longer
+active.
 
-It is critical that the BUSOFF status interrupt is forwarded to the
-higher layers, since no more interrupts will follow without
-intervention.
+When a transceiver switch is present the acks and errors don't make it
+to the bus, but disabling the CPK then does prevent oddities, like
+ti_hecc_reset() failing, since the CPK can become bus-off and starts
+counting the 11 bit recessive bits, which seems to block the reset. It
+can also cause invalid interrupts and disrupt the CAN-bus, since
+transmission can be stopped in the middle of a message, by disabling the
+tranceiver while the CPK is sending.
 
-Thanks to Wolfgang and Joe for bringing up the first idea.
+Since the CPK is disabled after normal power on, it is typically only
+seen when the interface is restarted.
 
-Signed-off-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Joe Burmeister <joe.burmeister@devtank.co.uk>
-Fixes: fa39b54ccf28 ("can: c_can: Get rid of pointless interrupts")
-Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 25 ++++++++++++++++++++-----
- drivers/net/can/c_can/c_can.h |  1 +
- 2 files changed, 21 insertions(+), 5 deletions(-)
+ drivers/net/can/ti_hecc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 606b7d8ffe13..9b61bfbea6cd 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -97,6 +97,9 @@
- #define BTR_TSEG2_SHIFT		12
- #define BTR_TSEG2_MASK		(0x7 << BTR_TSEG2_SHIFT)
- 
-+/* interrupt register */
-+#define INT_STS_PENDING		0x8000
-+
- /* brp extension register */
- #define BRP_EXT_BRPE_MASK	0x0f
- #define BRP_EXT_BRPE_SHIFT	0
-@@ -1029,10 +1032,16 @@ static int c_can_poll(struct napi_struct *napi, int quota)
- 	u16 curr, last = priv->last_status;
- 	int work_done = 0;
- 
--	priv->last_status = curr = priv->read_reg(priv, C_CAN_STS_REG);
--	/* Ack status on C_CAN. D_CAN is self clearing */
--	if (priv->type != BOSCH_D_CAN)
--		priv->write_reg(priv, C_CAN_STS_REG, LEC_UNUSED);
-+	/* Only read the status register if a status interrupt was pending */
-+	if (atomic_xchg(&priv->sie_pending, 0)) {
-+		priv->last_status = curr = priv->read_reg(priv, C_CAN_STS_REG);
-+		/* Ack status on C_CAN. D_CAN is self clearing */
-+		if (priv->type != BOSCH_D_CAN)
-+			priv->write_reg(priv, C_CAN_STS_REG, LEC_UNUSED);
-+	} else {
-+		/* no change detected ... */
-+		curr = last;
-+	}
- 
- 	/* handle state changes */
- 	if ((curr & STATUS_EWARN) && (!(last & STATUS_EWARN))) {
-@@ -1083,10 +1092,16 @@ static irqreturn_t c_can_isr(int irq, void *dev_id)
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 91188e6d4f78..eb8151154083 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -400,6 +400,9 @@ static void ti_hecc_stop(struct net_device *ndev)
  {
- 	struct net_device *dev = (struct net_device *)dev_id;
- 	struct c_can_priv *priv = netdev_priv(dev);
-+	int reg_int;
+ 	struct ti_hecc_priv *priv = netdev_priv(ndev);
  
--	if (!priv->read_reg(priv, C_CAN_INT_REG))
-+	reg_int = priv->read_reg(priv, C_CAN_INT_REG);
-+	if (!reg_int)
- 		return IRQ_NONE;
- 
-+	/* save for later use */
-+	if (reg_int & INT_STS_PENDING)
-+		atomic_set(&priv->sie_pending, 1);
++	/* Disable the CPK; stop sending, erroring and acking */
++	hecc_set_bit(priv, HECC_CANMC, HECC_CANMC_CCR);
 +
- 	/* disable all interrupts and schedule the NAPI */
- 	c_can_irq_control(priv, false);
- 	napi_schedule(&priv->napi);
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 8acdc7fa4792..d5567a7c1c6d 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -198,6 +198,7 @@ struct c_can_priv {
- 	struct net_device *dev;
- 	struct device *device;
- 	atomic_t tx_active;
-+	atomic_t sie_pending;
- 	unsigned long tx_dir;
- 	int last_status;
- 	u16 (*read_reg) (const struct c_can_priv *priv, enum reg index);
+ 	/* Disable interrupts and disable mailboxes */
+ 	hecc_write(priv, HECC_CANGIM, 0);
+ 	hecc_write(priv, HECC_CANMIM, 0);
 -- 
 2.23.0
