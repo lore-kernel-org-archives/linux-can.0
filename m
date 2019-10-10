@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 18/29] can: rx-offload: can_rx_offload_irq_offload_fifo(): continue on error
-Date: Thu, 10 Oct 2019 14:17:39 +0200
-Message-ID: <20191010121750.27237-19-mkl@pengutronix.de>
+Subject: [PATCH 08/29] can: c_can: c_can_poll(): only read status register after status IRQ
+Date: Thu, 10 Oct 2019 14:17:29 +0200
+Message-ID: <20191010121750.27237-9-mkl@pengutronix.de>
 References: <20191010121750.27237-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,50 +9,96 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191010121750.27237-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Wolfgang Grandegger <wg@grandegger.com>, Joe Burmeister <joe.burmeister@devtank.co.uk>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-In case of a resource shortage, i.e. the rx_offload queue will overflow
-or a skb fails to be allocated (due to OOM),
-can_rx_offload_offload_one() will call mailbox_read() to discard the
-mailbox and return an ERR_PTR.
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 
-If the hardware FIFO is empty can_rx_offload_offload_one() will return
-NULL.
+When the status register is read without the status IRQ pending, the
+chip may not raise the interrupt line for an upcoming status interrupt
+and the driver may miss a status interrupt.
 
-In case a CAN frame was read from the hardware,
-can_rx_offload_offload_one() returns the skb containing it.
+It is critical that the BUSOFF status interrupt is forwarded to the
+higher layers, since no more interrupts will follow without
+intervention.
 
-Without this patch can_rx_offload_irq_offload_fifo() bails out if no skb
-returned, regardless of the reason.
+Thanks to Wolfgang and Joe for bringing up the first idea.
 
-Similar to can_rx_offload_irq_offload_timestamp() in case of a resource
-shortage the whole FIFO should be discarded, to avoid an IRQ storm and
-give the system some time to recover. However if the FIFO is empty the
-loop can be left.
-
-With this patch the loop is left in case of empty FIFO, but not on
-errors.
-
+Signed-off-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Joe Burmeister <joe.burmeister@devtank.co.uk>
+Fixes: fa39b54ccf28 ("can: c_can: Get rid of pointless interrupts")
+Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rx-offload.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/can/c_can/c_can.c | 25 ++++++++++++++++++++-----
+ drivers/net/can/c_can/c_can.h |  1 +
+ 2 files changed, 21 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
-index 42a1b7d1c753..f6274dbb292c 100644
---- a/drivers/net/can/rx-offload.c
-+++ b/drivers/net/can/rx-offload.c
-@@ -230,7 +230,9 @@ int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload)
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 606b7d8ffe13..9b61bfbea6cd 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -97,6 +97,9 @@
+ #define BTR_TSEG2_SHIFT		12
+ #define BTR_TSEG2_MASK		(0x7 << BTR_TSEG2_SHIFT)
  
- 	while (1) {
- 		skb = can_rx_offload_offload_one(offload, 0);
--		if (IS_ERR_OR_NULL(skb))
-+		if (IS_ERR(skb))
-+			continue;
-+		if (!skb)
- 			break;
++/* interrupt register */
++#define INT_STS_PENDING		0x8000
++
+ /* brp extension register */
+ #define BRP_EXT_BRPE_MASK	0x0f
+ #define BRP_EXT_BRPE_SHIFT	0
+@@ -1029,10 +1032,16 @@ static int c_can_poll(struct napi_struct *napi, int quota)
+ 	u16 curr, last = priv->last_status;
+ 	int work_done = 0;
  
- 		skb_queue_tail(&offload->skb_queue, skb);
+-	priv->last_status = curr = priv->read_reg(priv, C_CAN_STS_REG);
+-	/* Ack status on C_CAN. D_CAN is self clearing */
+-	if (priv->type != BOSCH_D_CAN)
+-		priv->write_reg(priv, C_CAN_STS_REG, LEC_UNUSED);
++	/* Only read the status register if a status interrupt was pending */
++	if (atomic_xchg(&priv->sie_pending, 0)) {
++		priv->last_status = curr = priv->read_reg(priv, C_CAN_STS_REG);
++		/* Ack status on C_CAN. D_CAN is self clearing */
++		if (priv->type != BOSCH_D_CAN)
++			priv->write_reg(priv, C_CAN_STS_REG, LEC_UNUSED);
++	} else {
++		/* no change detected ... */
++		curr = last;
++	}
+ 
+ 	/* handle state changes */
+ 	if ((curr & STATUS_EWARN) && (!(last & STATUS_EWARN))) {
+@@ -1083,10 +1092,16 @@ static irqreturn_t c_can_isr(int irq, void *dev_id)
+ {
+ 	struct net_device *dev = (struct net_device *)dev_id;
+ 	struct c_can_priv *priv = netdev_priv(dev);
++	int reg_int;
+ 
+-	if (!priv->read_reg(priv, C_CAN_INT_REG))
++	reg_int = priv->read_reg(priv, C_CAN_INT_REG);
++	if (!reg_int)
+ 		return IRQ_NONE;
+ 
++	/* save for later use */
++	if (reg_int & INT_STS_PENDING)
++		atomic_set(&priv->sie_pending, 1);
++
+ 	/* disable all interrupts and schedule the NAPI */
+ 	c_can_irq_control(priv, false);
+ 	napi_schedule(&priv->napi);
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 8acdc7fa4792..d5567a7c1c6d 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -198,6 +198,7 @@ struct c_can_priv {
+ 	struct net_device *dev;
+ 	struct device *device;
+ 	atomic_t tx_active;
++	atomic_t sie_pending;
+ 	unsigned long tx_dir;
+ 	int last_status;
+ 	u16 (*read_reg) (const struct c_can_priv *priv, enum reg index);
 -- 
 2.23.0
