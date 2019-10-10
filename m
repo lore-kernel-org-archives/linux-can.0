@@ -1,83 +1,89 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 09/29] can: c_can: D_CAN: c_can_chip_config(): perform a sofware reset on open
-Date: Thu, 10 Oct 2019 14:17:30 +0200
-Message-ID: <20191010121750.27237-10-mkl@pengutronix.de>
+Subject: [PATCH 06/29] can: peak_usb: fix a potential out-of-sync while decoding packets
+Date: Thu, 10 Oct 2019 14:17:27 +0200
+Message-ID: <20191010121750.27237-7-mkl@pengutronix.de>
 References: <20191010121750.27237-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20191010121750.27237-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Stephane Grosjean <s.grosjean@peak-system.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Jeroen Hofstee <jhofstee@victronenergy.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-When the CAN interface is closed it the hardwre is put in power down
-mode, but does not reset the error counters / state. Reset the D_CAN on
-open, so the reported state and the actual state match.
+When decoding a buffer received from PCAN-USB, the first timestamp read in
+a packet is a 16-bit coded time base, and the next ones are an 8-bit
+offset to this base, regardless of the type of packet read.
 
-According to [1], the C_CAN module doesn't have the software reset.
+This patch corrects a potential loss of synchronization by using a
+timestamp index read from the buffer, rather than an index of received
+data packets, to determine on the sizeof the timestamp to be read from the
+packet being decoded.
 
-[1] http://www.bosch-semiconductors.com/media/ip_modules/pdf_2/c_can_fd8/users_manual_c_can_fd8_r210_1.pdf
-
-Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Fixes: 46be265d3388 ("can: usb: PEAK-System Technik PCAN-USB specific part")
+Cc: linux-stable <stable@vger.kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 9b61bfbea6cd..24c6015f6c92 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -52,6 +52,7 @@
- #define CONTROL_EX_PDR		BIT(8)
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 617da295b6c1..5a66c9f53aae 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -100,7 +100,7 @@ struct pcan_usb_msg_context {
+ 	u8 *end;
+ 	u8 rec_cnt;
+ 	u8 rec_idx;
+-	u8 rec_data_idx;
++	u8 rec_ts_idx;
+ 	struct net_device *netdev;
+ 	struct pcan_usb *pdev;
+ };
+@@ -547,10 +547,15 @@ static int pcan_usb_decode_status(struct pcan_usb_msg_context *mc,
+ 	mc->ptr += PCAN_USB_CMD_ARGS;
  
- /* control register */
-+#define CONTROL_SWR		BIT(15)
- #define CONTROL_TEST		BIT(7)
- #define CONTROL_CCE		BIT(6)
- #define CONTROL_DISABLE_AR	BIT(5)
-@@ -572,6 +573,26 @@ static void c_can_configure_msg_objects(struct net_device *dev)
- 				   IF_MCONT_RCV_EOB);
- }
+ 	if (status_len & PCAN_USB_STATUSLEN_TIMESTAMP) {
+-		int err = pcan_usb_decode_ts(mc, !mc->rec_idx);
++		int err = pcan_usb_decode_ts(mc, !mc->rec_ts_idx);
  
-+static int c_can_software_reset(struct net_device *dev)
-+{
-+	struct c_can_priv *priv = netdev_priv(dev);
-+	int retry = 0;
+ 		if (err)
+ 			return err;
 +
-+	if (priv->type != BOSCH_D_CAN)
-+		return 0;
-+
-+	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_SWR | CONTROL_INIT);
-+	while (priv->read_reg(priv, C_CAN_CTRL_REG) & CONTROL_SWR) {
-+		msleep(20);
-+		if (retry++ > 100) {
-+			netdev_err(dev, "CCTRL: software reset failed\n");
-+			return -EIO;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Configure C_CAN chip:
-  * - enable/disable auto-retransmission
-@@ -581,6 +602,11 @@ static void c_can_configure_msg_objects(struct net_device *dev)
- static int c_can_chip_config(struct net_device *dev)
- {
- 	struct c_can_priv *priv = netdev_priv(dev);
-+	int err;
-+
-+	err = c_can_software_reset(dev);
-+	if (err)
-+		return err;
++		/* Next packet in the buffer will have a timestamp on a single
++		 * byte
++		 */
++		mc->rec_ts_idx++;
+ 	}
  
- 	/* enable automatic retransmission */
- 	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_ENABLE_AR);
+ 	switch (f) {
+@@ -632,10 +637,13 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
+ 
+ 	cf->can_dlc = get_can_dlc(rec_len);
+ 
+-	/* first data packet timestamp is a word */
+-	if (pcan_usb_decode_ts(mc, !mc->rec_data_idx))
++	/* Only first packet timestamp is a word */
++	if (pcan_usb_decode_ts(mc, !mc->rec_ts_idx))
+ 		goto decode_failed;
+ 
++	/* Next packet in the buffer will have a timestamp on a single byte */
++	mc->rec_ts_idx++;
++
+ 	/* read data */
+ 	memset(cf->data, 0x0, sizeof(cf->data));
+ 	if (status_len & PCAN_USB_STATUSLEN_RTR) {
+@@ -688,7 +696,6 @@ static int pcan_usb_decode_msg(struct peak_usb_device *dev, u8 *ibuf, u32 lbuf)
+ 		/* handle normal can frames here */
+ 		} else {
+ 			err = pcan_usb_decode_data(&mc, sl);
+-			mc.rec_data_idx++;
+ 		}
+ 	}
+ 
 -- 
 2.23.0
