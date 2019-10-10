@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 05/29] can: flexcan: disable completely the ECC mechanism
-Date: Thu, 10 Oct 2019 14:17:26 +0200
-Message-ID: <20191010121750.27237-6-mkl@pengutronix.de>
+Subject: [PATCH 04/29] can: usb_8dev: fix use-after-free on disconnect
+Date: Thu, 10 Oct 2019 14:17:25 +0200
+Message-ID: <20191010121750.27237-5-mkl@pengutronix.de>
 References: <20191010121750.27237-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,36 +9,37 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191010121750.27237-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Joakim Zhang <qiangqing.zhang@nxp.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Johan Hovold <johan@kernel.org>, stable <stable@vger.kernel.org>, Bernd Krumboeck <b.krumboeck@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Johan Hovold <johan@kernel.org>
 
-The ECC (memory error detection and correction) mechanism can be
-activated or not, controlled by the ECCDIS bit in CAN_MECR. When
-disabled, updates on indications and reporting registers are stopped.
-So if want to disable ECC completely, had better assert ECCDIS bit, not
-just mask the related interrupts.
+The driver was accessing its driver data after having freed it.
 
-Fixes: cdce844865be ("can: flexcan: add vf610 support for FlexCAN")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc: linux-stable <stable@vger.kernel.org>
+Fixes: 0024d8ad1639 ("can: usb_8dev: Add support for USB2CAN interface from 8 devices")
+Cc: stable <stable@vger.kernel.org>     # 3.9
+Cc: Bernd Krumboeck <b.krumboeck@gmail.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/usb/usb_8dev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index dc5695dffc2e..1cd5179cb876 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1188,6 +1188,7 @@ static int flexcan_chip_start(struct net_device *dev)
- 		reg_mecr = priv->read(&regs->mecr);
- 		reg_mecr &= ~FLEXCAN_MECR_ECRWRDIS;
- 		priv->write(reg_mecr, &regs->mecr);
-+		reg_mecr |= FLEXCAN_MECR_ECCDIS;
- 		reg_mecr &= ~(FLEXCAN_MECR_NCEFAFRZ | FLEXCAN_MECR_HANCEI_MSK |
- 			      FLEXCAN_MECR_FANCEI_MSK);
- 		priv->write(reg_mecr, &regs->mecr);
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index d596a2ad7f78..8fa224b28218 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -996,9 +996,8 @@ static void usb_8dev_disconnect(struct usb_interface *intf)
+ 		netdev_info(priv->netdev, "device disconnected\n");
+ 
+ 		unregister_netdev(priv->netdev);
+-		free_candev(priv->netdev);
+-
+ 		unlink_all_urbs(priv);
++		free_candev(priv->netdev);
+ 	}
+ 
+ }
 -- 
 2.23.0
