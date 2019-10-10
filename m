@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 20/29] can: ti_hecc: ti_hecc_error(): increase error counters if skb enqueueing via can_rx_offload_queue_sorted() fails
-Date: Thu, 10 Oct 2019 14:17:41 +0200
-Message-ID: <20191010121750.27237-21-mkl@pengutronix.de>
+Subject: [PATCH 29/29] can: don't use deprecated license identifiers
+Date: Thu, 10 Oct 2019 14:17:50 +0200
+Message-ID: <20191010121750.27237-30-mkl@pengutronix.de>
 References: <20191010121750.27237-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,43 +9,106 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191010121750.27237-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, kernel@pengutronix.de, jhofstee@victronenergy.com, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Yegor Yefremov <yegorslists@googlemail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-The call to can_rx_offload_queue_sorted() may fail and return an error
-(in the current implementation due to resource shortage). The passed skb
-is consumed.
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-This patch adds incrementing of the appropriate error counters to let
-the device statistics reflect that there's a problem.
+The "GPL-2.0" license identifier changed to "GPL-2.0-only" in SPDX v3.0.
 
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ti_hecc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/uapi/linux/can.h         | 2 +-
+ include/uapi/linux/can/bcm.h     | 2 +-
+ include/uapi/linux/can/error.h   | 2 +-
+ include/uapi/linux/can/gw.h      | 2 +-
+ include/uapi/linux/can/j1939.h   | 2 +-
+ include/uapi/linux/can/netlink.h | 2 +-
+ include/uapi/linux/can/raw.h     | 2 +-
+ include/uapi/linux/can/vxcan.h   | 2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index f8b19eef5d26..91188e6d4f78 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -558,6 +558,7 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
- 	struct can_frame *cf;
- 	struct sk_buff *skb;
- 	u32 timestamp;
-+	int err;
+diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
+index 1e988fdeba34..6a6d2c7655ff 100644
+--- a/include/uapi/linux/can.h
++++ b/include/uapi/linux/can.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++/* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) */
+ /*
+  * linux/can.h
+  *
+diff --git a/include/uapi/linux/can/bcm.h b/include/uapi/linux/can/bcm.h
+index 0fb328d93148..dd2b925b09ac 100644
+--- a/include/uapi/linux/can/bcm.h
++++ b/include/uapi/linux/can/bcm.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++/* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) */
+ /*
+  * linux/can/bcm.h
+  *
+diff --git a/include/uapi/linux/can/error.h b/include/uapi/linux/can/error.h
+index bfc4b5d22a5e..34633283de64 100644
+--- a/include/uapi/linux/can/error.h
++++ b/include/uapi/linux/can/error.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++/* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) */
+ /*
+  * linux/can/error.h
+  *
+diff --git a/include/uapi/linux/can/gw.h b/include/uapi/linux/can/gw.h
+index 3aea5388c8e4..c2190bbe21d8 100644
+--- a/include/uapi/linux/can/gw.h
++++ b/include/uapi/linux/can/gw.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++/* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) */
+ /*
+  * linux/can/gw.h
+  *
+diff --git a/include/uapi/linux/can/j1939.h b/include/uapi/linux/can/j1939.h
+index c32325342d30..df6e821075c1 100644
+--- a/include/uapi/linux/can/j1939.h
++++ b/include/uapi/linux/can/j1939.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+ /*
+  * j1939.h
+  *
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index 1bc70d3a4d39..6f598b73839e 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+ /*
+  * linux/can/netlink.h
+  *
+diff --git a/include/uapi/linux/can/raw.h b/include/uapi/linux/can/raw.h
+index be3b36e7ff61..6a11d308eb5c 100644
+--- a/include/uapi/linux/can/raw.h
++++ b/include/uapi/linux/can/raw.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++/* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) */
+ /*
+  * linux/can/raw.h
+  *
+diff --git a/include/uapi/linux/can/vxcan.h b/include/uapi/linux/can/vxcan.h
+index 066812d118a2..4fa9d8777a07 100644
+--- a/include/uapi/linux/can/vxcan.h
++++ b/include/uapi/linux/can/vxcan.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+ #ifndef _UAPI_CAN_VXCAN_H
+ #define _UAPI_CAN_VXCAN_H
  
- 	/* propagate the error condition to the can stack */
- 	skb = alloc_can_err_skb(ndev, &cf);
-@@ -639,7 +640,9 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
- 	}
- 
- 	timestamp = hecc_read(priv, HECC_CANLNT);
--	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	if (err)
-+		ndev->stats.rx_fifo_errors++;
- 
- 	return 0;
- }
 -- 
 2.23.0
