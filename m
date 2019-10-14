@@ -1,78 +1,33 @@
-From: Jeroen Hofstee <jhofstee@victronenergy.com>
-Subject: Re: [PATCH 1/7] can: rx-offload: continue on error
-Date: Sun, 13 Oct 2019 21:26:50 +0000
-Message-ID: <f9da9ffb-f4c0-fcc2-17e6-7d11d7aec14f@victronenergy.com>
-References: <20190924184437.10607-1-jhofstee@victronenergy.com>
- <20190924184437.10607-2-jhofstee@victronenergy.com>
- <134ddb8e-a231-922d-f554-ca77ce0c16af@pengutronix.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 3/3] arm64: dts: renesas: r8a774b1: Add CAN and CAN FD support
+Date: Mon, 14 Oct 2019 10:49:01 +0200
+Message-ID: <CAMuHMdWtK1+3AZ734j8rLsAx-b873Gxaif5g0+J4UVPLRR9X6g@mail.gmail.com>
+References: <1570717560-7431-1-git-send-email-fabrizio.castro@bp.renesas.com> <1570717560-7431-4-git-send-email-fabrizio.castro@bp.renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <134ddb8e-a231-922d-f554-ca77ce0c16af@pengutronix.de>
-Content-Language: en-US
-Content-ID: <3F76F3EB4EE6FA4EA8E7041D135B190F@eurprd07.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1570717560-7431-4-git-send-email-fabrizio.castro@bp.renesas.com>
+Sender: netdev-owner@vger.kernel.org
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, "David S. Miller" <davem@davemloft.net>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Jacopo Mondi <jacopo+renesas@jmondi.org>
 List-Id: linux-can.vger.kernel.org
 
-SGVsbG8gTWFyYywNCg0KT24gMTAvOS8xOSAzOjE4IFBNLCBNYXJjIEtsZWluZS1CdWRkZSB3cm90
-ZToNCj4gSGVsbG8gSmVyb2VuLA0KPg0KPiBJJ20gY3VycmVudGx5IGxvb2tpbmcgYXQgdGhlIHJ4
-LW9mZmxvYWQgZXJyb3IgaGFuZGxpbmcgaW4gZGV0YWlsLg0KPg0KPiBUTERSOiBJJ3ZlIGFkZGVk
-IHRoZSBwYXRjaCB0byBsaW51eC1jYW4uDQo+DQo+IFRoYW5rcywNCj4gTWFyYw0KPg0KPiBGb3Ig
-dGhlIHJlY29yZCwgdGhlIGRldGFpbHM6DQo+DQo+IE9uIDkvMjQvMTkgODo0NSBQTSwgSmVyb2Vu
-IEhvZnN0ZWUgd3JvdGU6DQo+PiBXaGlsZSBjYW5fcnhfb2ZmbG9hZF9vZmZsb2FkX29uZSB3aWxs
-IGNhbGwgbWFpbGJveF9yZWFkIHRvIGRpc2NhcmQNCj4+IHRoZSBtYWlsYm94IGluIGNhc2Ugb2Yg
-YW4gZXJyb3IsDQo+IFllcy4NCj4NCj4gY2FuX3J4X29mZmxvYWRfb2ZmbG9hZF9vbmUoKSB3aWxs
-IHJlYWQgaW50byB0aGUgZGlzY2FyZCBtYWlsYm94IGluIGNhc2UNCj4gb2YgYW4gZXJyb3IuDQo+
-DQo+IEN1cnJlbnRseSB0aGVyZSBhcmUgdHdvIGtpbmRzIG9mIGVycm9yczoNCj4gMSkgdGhlIHJ4
-LW9mZm9hZCBza2IgcXVldWUgKGJldHdlZW4gdGhlIElSUSBoYW5kbGVyIGFuZCB0aGUgTkFQSSkN
-Cj4gICAgIGlzIGZ1bGwNCj4gMikgYWxsb2NfY2FuX3NrYigpIGZhaWxzIHRvIGFsbG9jYXRlIGEg
-c2tiLCBkdWUgdG8gT09NDQo+DQo+PiBjYW5fcnhfb2ZmbG9hZF9pcnFfb2ZmbG9hZF90aW1lc3Rh
-bXAgYmFpbHMgb3V0IGluIHRoZSBlcnJvciBjYXNlLg0KPiBZZXMsIGluIGNhc2Ugb2YgYW4gZXJy
-b3IgYm90aCBjYW5fcnhfb2ZmbG9hZF9pcnFfb2ZmbG9hZF90aW1lc3RhbXAoKSBhbmQNCj4gY2Fu
-X3J4X29mZmxvYWRfaXJxX29mZmxvYWRfZmlmbygpIHdpbGwgc3RvcCByZWFkaW5nIG1haWxib3hl
-cywgYWRkIHRoZQ0KPiBhbHJlYWR5IGZpbGxlZCBza2JzIHRvIHRoZSBxdWV1ZSBhbmQgc2NoZWR1
-bGUgTkFQSSBpZiBuZWVkZWQuDQo+DQo+IEN1cnJlbnRseSBib3RoIGNhbl9yeF9vZmZsb2FkX2ly
-cV9vZmZsb2FkX3RpbWVzdGFtcCgpIGFuZA0KPiBjYW5fcnhfb2ZmbG9hZF9pcnFfb2ZmbG9hZF9m
-aWZvKCkgd2lsbCByZXR1cm4gdGhlIG51bWJlciBvZiBxdWV1ZWQNCj4gbWFpbGJveGVzLg0KPg0K
-PiBUaGlzIG1lYW5zIGluIGNhc2Ugb2YgcXVldWUgb3ZlcmZsb3cgb3IgT09NLCBvbmx5IG9uZSBt
-YWlsYm94IGlzDQo+IGRpc2NhZGVkLCBiZWZvcmUgY2FuX3J4X29mZmxvYWRfaXJxX29mZmxvYWRf
-KigpIHJldHVybmluZyB0aGUgbnVtYmVyIG9mDQo+IHN1Y2Nlc3NmdWxseSBxdWV1ZWQgbWFpbGJv
-eGVzIHNvIGZhci4NCj4NCj4gTG9va2luZyBhdCB0aGUgZmxleGNhbiBkcml2ZXI6DQo+DQo+IGh0
-dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2UvZHJpdmVycy9uZXQv
-Y2FuL2ZsZXhjYW4uYyNMODY3DQo+DQo+PiAJCXdoaWxlICgocmVnX2lmbGFnID0gZmxleGNhbl9y
-ZWFkX3JlZ19pZmxhZ19yeChwcml2KSkpIHsNCj4+IAkJCWhhbmRsZWQgPSBJUlFfSEFORExFRDsN
-Cj4+IAkJCXJldCA9IGNhbl9yeF9vZmZsb2FkX2lycV9vZmZsb2FkX3RpbWVzdGFtcCgmcHJpdi0+
-b2ZmbG9hZCwNCj4+IAkJCQkJCQkJICAgcmVnX2lmbGFnKTsNCj4+IAkJCWlmICghcmV0KQ0KPj4g
-CQkJCWJyZWFrOw0KPj4gCQl9DQo+IFsuLi5dDQo+PiAJCWlmIChyZWdfaWZsYWcxICYgRkxFWENB
-Tl9JRkxBR19SWF9GSUZPX0FWQUlMQUJMRSkgew0KPj4gCQkJaGFuZGxlZCA9IElSUV9IQU5ETEVE
-Ow0KPj4gCQkJY2FuX3J4X29mZmxvYWRfaXJxX29mZmxvYWRfZmlmbygmcHJpdi0+b2ZmbG9hZCk7
-DQo+PiAJCX0NCj4gVGhpcyBtZWFucyBmb3IgdGhlIHRpbWVzdGFtcCBtb2RlLCBhdCBsZWFzdCBv
-bmUgbWFpbGJveCBpcyBkaXNjYXJkZWQgb3INCj4gaWYgdGhlIGVycm9yIG9jY3VycmVkIGFmdGVy
-IHJlYWRpbmcgb25lIG9yIG1vcmUgbWFpbGJveGVzIHRoZSB3aGlsZSBsb29wDQo+IHdpbGwgdHJ5
-IGFnYWluLiBJZiB0aGUgZXJyb3IgcGVyc2lzdHMgYSBzZWNvbmQgbWFpbGJveCBpcyBkaXNjYXJk
-ZWQuDQo+DQo+IEZvciB0aGUgZmlmbyBtb2RlLCBvbmx5IG9uZSBtYWlsYm94IGlzIGRpc2NhcmRl
-ZC4NCj4NCj4gVGhlbiB0aGUgZmxleGNhbidzIElSUSBpcyBleGl0ZWQuIElmIHRoZXJlIGFyZSBt
-ZXNzYWdlcyBpbiBtYWlsYm94ZXMgYXJlDQo+IHBlbmRpbmcgYW5vdGhlciBJUlEgaXMgdHJpZ2dl
-cmVkLi4uLiBJIGRvdWJ0IHRoYXQgdGhpcyBpcyBhIGdvb2QgaWRlYS4NCj4NCj4gT24gdGhlIG90
-aGVyIGhhbmQgdGhlIHRpX2hlY2MgZHJpdmVyOg0KPg0KPj4gCQkvKiBvZmZsb2FkIFJYIG1haWxi
-b3hlcyBhbmQgbGV0IE5BUEkgZGVsaXZlciB0aGVtICovDQo+PiAJCXdoaWxlICgocnhfcGVuZGlu
-ZyA9IGhlY2NfcmVhZChwcml2LCBIRUNDX0NBTlJNUCkpKSB7DQo+PiAJCQljYW5fcnhfb2ZmbG9h
-ZF9pcnFfb2ZmbG9hZF90aW1lc3RhbXAoJnByaXYtPm9mZmxvYWQsDQo+PiAJCQkJCQkJICAgICBy
-eF9wZW5kaW5nKTsNCj4+IAkJCWhlY2Nfd3JpdGUocHJpdiwgSEVDQ19DQU5STVAsIHJ4X3BlbmRp
-bmcpOw0KPj4gCQl9DQo+IFRoZSBlcnJvciBpcyBpZ25vcmVkIGFuZCB0aGUgX2FsbF8gbWFpbGJv
-eGVzIGFyZSBkaXNjYXJkZWQgKGdpdmVuIHRoZQ0KPiBlcnJvciBwZXJzaXN0cykuDQo+DQo+PiBT
-aW5jZSBpdCBpcyB0eXBpY2FsbHkgY2FsbGVkIGZyb20gYSB3aGlsZSBsb29wLCBhbGwgbWVzc2Fn
-ZSB3aWxsDQo+PiBldmVudHVhbGx5IGJlIGRpc2NhcmRlZC4gU28gbGV0cyBjb250aW51ZSBvbiBl
-cnJvciBpbnN0ZWFkIHRvIGRpc2NhcmQNCj4+IHRoZW0gZGlyZWN0bHkuDQo+IEFmdGVyIHJlYWRp
-bmcgbXkgb3duIGNvZGUgYW5kIHdyaXRpbmcgaXQgdXAsIHlvdXIgcGF0Y2ggdG90YWxseSBtYWtl
-cyBzZW5zZS4NCj4NCj4gSWYgdGhlcmUgaXMgYSBzaG9ydGFnZSBvZiByZXNvdXJjZXMsIHF1ZXVl
-IG92ZXJydW4gb3IgT09NLCBpdCBtYWtlcyBubw0KPiBzZW5zZSB0byByZXR1cm4gZnJvbSB0aGUg
-SVJRIGhhbmRsZXIsIGlmIGEgbWFpbGJveCBpcyBzdGlsbCBhY3RpdmUgYXMgaXQNCj4gd2lsbCB0
-cmlnZ2VyIHRoZSBJUlEgYWdhaW4uIEVudGVyaW5nIHRoZSBJUlEgaGFuZGxlciBhZ2FpbiBwcm9i
-YWJseQ0KPiBkb2Vzbid0IGdpdmUgdGhlIHN5c3RlbSB0aW1lIHRvIHJlY292ZXIgZnJvbSB0aGUg
-cmVzb3VyY2UgcHJvYmxlbS4NCg0KDQpJbmRlZWQsIEkgaGF2ZSBub3RoaW5nIHRvIGNvbW1lbnQg
-b24gdGhhdCwgYmVzaWRlcyB0aGFua3MgZm9yDQpiZWluZyB3aWxsaW5nIHRvIHJlY29uc2lkZXIg
-eW91ciBvd24gY29kZS4NCg0KV2l0aCBraW5kIHJlZ2FyZHMsDQoNCkplcm9lbg0KDQoNCg==
+On Thu, Oct 10, 2019 at 4:26 PM Fabrizio Castro
+<fabrizio.castro@bp.renesas.com> wrote:
+> Add CAN and CAN FD support to the RZ/G2N SoC specific dtsi.
+>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.5.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
