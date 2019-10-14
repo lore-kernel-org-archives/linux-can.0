@@ -1,33 +1,90 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 3/3] arm64: dts: renesas: r8a774b1: Add CAN and CAN FD support
-Date: Mon, 14 Oct 2019 10:49:01 +0200
-Message-ID: <CAMuHMdWtK1+3AZ734j8rLsAx-b873Gxaif5g0+J4UVPLRR9X6g@mail.gmail.com>
-References: <1570717560-7431-1-git-send-email-fabrizio.castro@bp.renesas.com> <1570717560-7431-4-git-send-email-fabrizio.castro@bp.renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Pankaj Sharma <pankj.sharma@samsung.com>
+Subject: [PATCH v2] can: m_can: add support for one shot mode
+Date: Mon, 14 Oct 2019 16:54:48 +0530
+Message-ID: <1571052288-22554-1-git-send-email-pankj.sharma@samsung.com>
+References: <CGME20191014112533epcas5p1c18bb35f34950256b625e467924b2acd@epcas5p1.samsung.com>
+Content-Type: text/plain; charset="utf-8"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1570717560-7431-4-git-send-email-fabrizio.castro@bp.renesas.com>
 Sender: netdev-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, "David S. Miller" <davem@davemloft.net>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Jacopo Mondi <jacopo+renesas@jmondi.org>
+To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, eugen.hristev@microchip.com, ludovic.desroches@microchip.com, pankaj.dubey@samsung.com, rcsekar@samsung.com, Pankaj Sharma <pankj.sharma@samsung.com>, Sriram Dash <sriram.dash@samsung.com>
 List-Id: linux-can.vger.kernel.org
 
-On Thu, Oct 10, 2019 at 4:26 PM Fabrizio Castro
-<fabrizio.castro@bp.renesas.com> wrote:
-> Add CAN and CAN FD support to the RZ/G2N SoC specific dtsi.
->
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+According to the CAN Specification (see ISO 11898-1:2015, 8.3.4
+Recovery Management), the M_CAN provides means for automatic
+retransmission of frames that have lost arbitration or that
+have been disturbed by errors during transmission. By default
+automatic retransmission is enabled.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.5.
+The Bosch MCAN controller has support for disabling automatic
+retransmission.
 
-Gr{oetje,eeting}s,
+To support time-triggered communication as described in ISO
+11898-1:2015, chapter 9.2, the automatic retransmission may be
+disabled via CCCR.DAR.
 
-                        Geert
+CAN_CTRLMODE_ONE_SHOT is used for disabling automatic retransmission.
 
+Signed-off-by: Pankaj Sharma <pankj.sharma@samsung.com>
+Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
+---
+
+changes in v2:
+ - rebase to net-next
+
+ drivers/net/can/m_can/m_can.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 386e7eb..7efafee 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -123,6 +123,7 @@ enum m_can_reg {
+ #define CCCR_CME_CANFD_BRS	0x2
+ #define CCCR_TXP		BIT(14)
+ #define CCCR_TEST		BIT(7)
++#define CCCR_DAR		BIT(6)
+ #define CCCR_MON		BIT(5)
+ #define CCCR_CSR		BIT(4)
+ #define CCCR_CSA		BIT(3)
+@@ -1173,7 +1174,7 @@ static void m_can_chip_config(struct net_device *dev)
+ 	if (cdev->version == 30) {
+ 	/* Version 3.0.x */
+ 
+-		cccr &= ~(CCCR_TEST | CCCR_MON |
++		cccr &= ~(CCCR_TEST | CCCR_MON | CCCR_DAR |
+ 			(CCCR_CMR_MASK << CCCR_CMR_SHIFT) |
+ 			(CCCR_CME_MASK << CCCR_CME_SHIFT));
+ 
+@@ -1183,7 +1184,7 @@ static void m_can_chip_config(struct net_device *dev)
+ 	} else {
+ 	/* Version 3.1.x or 3.2.x */
+ 		cccr &= ~(CCCR_TEST | CCCR_MON | CCCR_BRSE | CCCR_FDOE |
+-			  CCCR_NISO);
++			  CCCR_NISO | CCCR_DAR);
+ 
+ 		/* Only 3.2.x has NISO Bit implemented */
+ 		if (cdev->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
+@@ -1203,6 +1204,10 @@ static void m_can_chip_config(struct net_device *dev)
+ 	if (cdev->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+ 		cccr |= CCCR_MON;
+ 
++	/* Disable Auto Retransmission (all versions) */
++	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
++		cccr |= CCCR_DAR;
++
+ 	/* Write config */
+ 	m_can_write(cdev, M_CAN_CCCR, cccr);
+ 	m_can_write(cdev, M_CAN_TEST, test);
+@@ -1348,7 +1353,8 @@ static int m_can_dev_setup(struct m_can_classdev *m_can_dev)
+ 	m_can_dev->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+ 					CAN_CTRLMODE_LISTENONLY |
+ 					CAN_CTRLMODE_BERR_REPORTING |
+-					CAN_CTRLMODE_FD;
++					CAN_CTRLMODE_FD |
++					CAN_CTRLMODE_ONE_SHOT;
+ 
+ 	/* Set properties depending on M_CAN version */
+ 	switch (m_can_dev->version) {
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+2.7.4
