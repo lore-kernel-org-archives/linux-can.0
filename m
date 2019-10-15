@@ -1,67 +1,51 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] can: rcar: use devm_platform_ioremap_resource() to simplify code
-Date: Tue, 15 Oct 2019 22:30:47 +0800
-Message-ID: <20191015143047.19440-1-yuehaibing@huawei.com>
+From: Simon Horman <simon.horman@netronome.com>
+Subject: Re: [PATCH net-next] can: ifi: use devm_platform_ioremap_resource()
+ to simplify code
+Date: Tue, 15 Oct 2019 18:10:23 +0200
+Message-ID: <20191015161022.mtgohberdmhkbo46@netronome.com>
+References: <20191015142046.24844-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20191015142046.24844-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, wsa+renesas@sang-engineering.com, horms+renesas@verge.net.au, swboyd@chromium.org, fabrizio.castro@bp.renesas.com, geert+renesas@glider.be, yuehaibing@huawei.com, nikita.yoush@cogentembedded.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Use devm_platform_ioremap_resource() to simplify the code a bit.
-This is detected by coccinelle.
+On Tue, Oct 15, 2019 at 10:20:46PM +0800, YueHaibing wrote:
+> Use devm_platform_ioremap_resource() to simplify the code a bit.
+> This is detected by coccinelle.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/can/rcar/rcar_can.c   | 4 +---
- drivers/net/can/rcar/rcar_canfd.c | 4 +---
- 2 files changed, 2 insertions(+), 6 deletions(-)
+Reviewed-by: Simon Horman <simon.horman@netronome.com>
 
-diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index bf5adea..4857590 100644
---- a/drivers/net/can/rcar/rcar_can.c
-+++ b/drivers/net/can/rcar/rcar_can.c
-@@ -744,7 +744,6 @@ static int rcar_can_probe(struct platform_device *pdev)
- {
- 	struct rcar_can_priv *priv;
- 	struct net_device *ndev;
--	struct resource *mem;
- 	void __iomem *addr;
- 	u32 clock_select = CLKR_CLKP1;
- 	int err = -ENODEV;
-@@ -759,8 +758,7 @@ static int rcar_can_probe(struct platform_device *pdev)
- 		goto fail;
- 	}
- 
--	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	addr = devm_ioremap_resource(&pdev->dev, mem);
-+	addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(addr)) {
- 		err = PTR_ERR(addr);
- 		goto fail;
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index edaa1ca..de59dd6 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -1630,7 +1630,6 @@ static void rcar_canfd_channel_remove(struct rcar_canfd_global *gpriv, u32 ch)
- 
- static int rcar_canfd_probe(struct platform_device *pdev)
- {
--	struct resource *mem;
- 	void __iomem *addr;
- 	u32 sts, ch, fcan_freq;
- 	struct rcar_canfd_global *gpriv;
-@@ -1704,8 +1703,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 		/* CANFD clock is further divided by (1/2) within the IP */
- 		fcan_freq /= 2;
- 
--	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	addr = devm_ioremap_resource(&pdev->dev, mem);
-+	addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(addr)) {
- 		err = PTR_ERR(addr);
- 		goto fail_dev;
--- 
-2.7.4
+> ---
+>  drivers/net/can/ifi_canfd/ifi_canfd.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+> index fedd927..04d59be 100644
+> --- a/drivers/net/can/ifi_canfd/ifi_canfd.c
+> +++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+> @@ -942,13 +942,11 @@ static int ifi_canfd_plat_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct net_device *ndev;
+>  	struct ifi_canfd_priv *priv;
+> -	struct resource *res;
+>  	void __iomem *addr;
+>  	int irq, ret;
+>  	u32 id, rev;
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	addr = devm_ioremap_resource(dev, res);
+> +	addr = devm_platform_ioremap_resource(pdev, 0);
+>  	irq = platform_get_irq(pdev, 0);
+>  	if (IS_ERR(addr) || irq < 0)
+>  		return -EINVAL;
+> -- 
+> 2.7.4
+> 
+> 
