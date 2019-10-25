@@ -1,91 +1,63 @@
-From: Vincent Prince <vincent.prince.fr@gmail.com>
-Subject: [PATCH v5] net: sch_generic: Use pfifo_fast as fallback scheduler for CAN hardware
-Date: Wed, 23 Oct 2019 15:44:20 +0200
-Message-ID: <1571838260-19186-1-git-send-email-vincent.prince.fr@gmail.com>
-References: <20190327165632.10711-1-mkl@pengutronix.de>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: [PATCH v1] j1939: transport: make sure EOMA is send with the total message size set
+Date: Fri, 25 Oct 2019 11:30:15 +0200
+Message-ID: <20191025093015.24506-1-o.rempel@pengutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20190327165632.10711-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: dave.taht@gmail.com, davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, xiyou.wangcong@gmail.com, Vincent Prince <vincent.prince.fr@gmail.com>
+To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-There is networking hardware that isn't based on Ethernet for layers 1 and 2.
+We was sending malformed EOMA with total message size set to 0. So, fix this
+bug and add sanity check to the RX path.
 
-For example CAN.
-
-CAN is a multi-master serial bus standard for connecting Electronic Control
-Units [ECUs] also known as nodes. A frame on the CAN bus carries up to 8 bytes
-of payload. Frame corruption is detected by a CRC. However frame loss due to
-corruption is possible, but a quite unusual phenomenon.
-
-While fq_codel works great for TCP/IP, it doesn't for CAN. There are a lot of
-legacy protocols on top of CAN, which are not build with flow control or high
-CAN frame drop rates in mind.
-
-When using fq_codel, as soon as the queue reaches a certain delay based length,
-skbs from the head of the queue are silently dropped. Silently meaning that the
-user space using a send() or similar syscall doesn't get an error. However
-TCP's flow control algorithm will detect dropped packages and adjust the
-bandwidth accordingly.
-
-When using fq_codel and sending raw frames over CAN, which is the common use
-case, the user space thinks the package has been sent without problems, because
-send() returned without an error. pfifo_fast will drop skbs, if the queue
-length exceeds the maximum. But with this scheduler the skbs at the tail are
-dropped, an error (-ENOBUFS) is propagated to user space. So that the user
-space can slow down the package generation.
-
-On distributions, where fq_codel is made default via CONFIG_DEFAULT_NET_SCH
-during compile time, or set default during runtime with sysctl
-net.core.default_qdisc (see [1]), we get a bad user experience. In my test case
-with pfifo_fast, I can transfer thousands of million CAN frames without a frame
-drop. On the other hand with fq_codel there is more then one lost CAN frame per
-thousand frames.
-
-As pointed out fq_codel is not suited for CAN hardware, so this patch changes
-attach_one_default_qdisc() to use pfifo_fast for "ARPHRD_CAN" network devices.
-
-During transition of a netdev from down to up state the default queuing
-discipline is attached by attach_default_qdiscs() with the help of
-attach_one_default_qdisc(). This patch modifies attach_one_default_qdisc() to
-attach the pfifo_fast (pfifo_fast_ops) if the network device type is
-"ARPHRD_CAN".
-
-[1] https://github.com/systemd/systemd/issues/9194
-
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Vincent Prince <vincent.prince.fr@gmail.com>
-Acked-by: Dave Taht <dave.taht@gmail.com>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-Changes in v5:
- - add previous ack
+ net/can/j1939/transport.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-Changes in v4: 
- - add Marc credit to commit log
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index fe000ea757ea..a82097427642 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1273,9 +1273,27 @@ j1939_xtp_rx_abort(struct j1939_priv *priv, struct sk_buff *skb,
+ static void
+ j1939_xtp_rx_eoma_one(struct j1939_session *session, struct sk_buff *skb)
+ {
++	struct j1939_sk_buff_cb *skcb = j1939_skb_to_cb(skb);
++	const u8 *dat;
++	int len;
++
+ 	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
+ 		return;
  
-Changes in v3:
- - add description
-
-Changes in v2:
- - reformat patch
-
- net/sched/sch_generic.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 77b289d..dfb2982 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -1008,6 +1008,8 @@ static void attach_one_default_qdisc(struct net_device *dev,
++	dat = skb->data;
++
++	if (skcb->addr.type == J1939_ETP)
++		len = j1939_etp_ctl_to_size(dat);
++	else
++		len = j1939_tp_ctl_to_size(dat);
++
++	if (session->total_message_size != len) {
++		netdev_warn(session->priv->ndev, "%s: 0x%p: Incorrect size. Expected: %i; got: %i.\n",
++			    __func__, session, session->total_message_size,
++			    len);
++		return;
++	}
++
+ 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
  
- 	if (dev->priv_flags & IFF_NO_QUEUE)
- 		ops = &noqueue_qdisc_ops;
-+	else if(dev->type == ARPHRD_CAN)
-+		ops = &pfifo_fast_ops;
+ 	session->pkt.tx_acked = session->pkt.total;
+@@ -1432,7 +1450,7 @@ j1939_session *j1939_session_fresh_new(struct j1939_priv *priv,
+ 	skcb = j1939_skb_to_cb(skb);
+ 	memcpy(skcb, rel_skcb, sizeof(*skcb));
  
- 	qdisc = qdisc_create_dflt(dev_queue, ops, TC_H_ROOT, NULL);
- 	if (!qdisc) {
+-	session = j1939_session_new(priv, skb, skb->len);
++	session = j1939_session_new(priv, skb, size);
+ 	if (!session) {
+ 		kfree_skb(skb);
+ 		return NULL;
 -- 
-2.7.4
+2.23.0
