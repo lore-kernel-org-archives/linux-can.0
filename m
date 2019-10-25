@@ -1,112 +1,99 @@
-From: "pankj.sharma" <pankj.sharma@samsung.com>
-Subject: RE: [PATCH v2] can: m_can: add support for handling arbitration
- error
-Date: Fri, 25 Oct 2019 15:14:38 +0530
-Message-ID: <000101d58b18$d3178e70$7946ab50$@samsung.com>
-References: <CGME20191021121350epcas5p3313e54a3bc5c8600c52a6db299893f78@epcas5p3.samsung.com>
-        <1571660016-29726-1-git-send-email-pankj.sharma@samsung.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V4 1/2] can: flexcan: fix deadlock when using self wakeup
+Date: Fri, 25 Oct 2019 10:10:22 +0000
+Message-ID: <DB7PR04MB4618B68B92D802B62EFB2F40E6650@DB7PR04MB4618.eurprd04.prod.outlook.com>
+References: <20191009080956.29128-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1571660016-29726-1-git-send-email-pankj.sharma@samsung.com>
-Content-Language: en-us
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, wg@grandegger.com, mkl@pengutronix.de
-Cc: davem@davemloft.net, eugen.hristev@microchip.com, ludovic.desroches@microchip.com, pankaj.dubey@samsung.com, rcsekar@samsung.com, jhofstee@victronenergy.com, simon.horman@netronome.com, 'Sriram Dash' <sriram.dash@samsung.com>
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20191009080956.29128-1-qiangqing.zhang@nxp.com>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "sean@geanix.com" <sean@geanix.com>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-Gentle Ping=21
-
-> From: Pankaj Sharma <pankj.sharma=40samsung.com>
-> Subject: =5BPATCH v2=5D can: m_can: add support for handling arbitration =
-error
->=20
-> The Bosch MCAN hardware (3.1.0 and above) supports interrupt flag to dete=
-ct
-> Protocol error in arbitration phase.
->=20
-> Transmit error statistics is currently not updated from the MCAN driver.
-> Protocol error in arbitration phase is a TX error and the network statist=
-ics should
-> be updated accordingly.
->=20
-> The member =22tx_error=22 of =22struct net_device_stats=22 should be incr=
-emented as
-> arbitration is a transmit protocol error. Also =22arbitration_lost=22 of =
-=22struct
-> can_device_stats=22 should be incremented to report arbitration lost.
->=20
-> Signed-off-by: Pankaj Sharma <pankj.sharma=40samsung.com>
-> Signed-off-by: Sriram Dash <sriram.dash=40samsung.com>
-> ---
->=20
-> changes in v2:
-> - common m_can_ prefix for is_protocol_err function
-> - handling stats even if the allocation of the skb fails
-> - resolving build errors on net-next branch
->=20
->  drivers/net/can/m_can/m_can.c =7C 37
-> +++++++++++++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
->=20
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.=
-c
-> index 75e7490c4299..a736297a875f 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> =40=40 -778,6 +778,38 =40=40 static inline bool is_lec_err(u32 psr)
->  	return psr && (psr =21=3D LEC_UNUSED);
->  =7D
->=20
-> +static inline bool m_can_is_protocol_err(u32 irqstatus) =7B
-> +	return irqstatus & IR_ERR_LEC_31X;
-> +=7D
-> +
-> +static int m_can_handle_protocol_error(struct net_device *dev, u32
-> +irqstatus) =7B
-> +	struct net_device_stats *stats =3D &dev->stats;
-> +	struct m_can_classdev *cdev =3D netdev_priv(dev);
-> +	struct can_frame *cf;
-> +	struct sk_buff *skb;
-> +
-> +	/* propagate the error condition to the CAN stack */
-> +	skb =3D alloc_can_err_skb(dev, &cf);
-> +	if (unlikely(=21skb)) =7B
-> +		netdev_dbg(dev, =22allocation of skb failed=5Cn=22);
-> +		stats->tx_errors++;
-> +		return 0;
-> +	=7D
-> +	if (cdev->version >=3D 31 && (irqstatus & IR_PEA)) =7B
-> +		netdev_dbg(dev, =22Protocol error in Arbitration fail=5Cn=22);
-> +		stats->tx_errors++;
-> +		cdev->can.can_stats.arbitration_lost++;
-> +		cf->can_id =7C=3D CAN_ERR_LOSTARB;
-> +		cf->data=5B0=5D =7C=3D CAN_ERR_LOSTARB_UNSPEC;
-> +	=7D
-> +
-> +	netif_receive_skb(skb);
-> +
-> +	return 1;
-> +=7D
-> +
->  static int m_can_handle_bus_errors(struct net_device *dev, u32 irqstatus=
-,
->  				   u32 psr)
->  =7B
-> =40=40 -792,6 +824,11 =40=40 static int m_can_handle_bus_errors(struct ne=
-t_device
-> *dev, u32 irqstatus,
->  	    is_lec_err(psr))
->  		work_done +=3D m_can_handle_lec_err(dev, psr & LEC_UNUSED);
->=20
-> +	/* handle protocol errors in arbitration phase */
-> +	if ((cdev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) &&
-> +	    m_can_is_protocol_err(irqstatus))
-> +		work_done +=3D m_can_handle_protocol_error(dev, irqstatus);
-> +
->  	/* other unproccessed error interrupts */
->  	m_can_handle_other_err(dev, irqstatus);
->=20
-> --
-> 2.17.1
+DQpLaW5kbHkgUGluZy4uLg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCg0KPiAtLS0t
+LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56
+aGFuZ0BueHAuY29tPg0KPiBTZW50OiAyMDE5xOoxMNTCOcjVIDE2OjEzDQo+IFRvOiBta2xAcGVu
+Z3V0cm9uaXguZGU7IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IHdnQGdyYW5kZWdn
+ZXIuY29tOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBzZWFuQGdlYW5peC5jb207DQo+IGRsLWxp
+bnV4LWlteCA8bGludXgtaW14QG54cC5jb20+OyBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFu
+Z0BueHAuY29tPg0KPiBTdWJqZWN0OiBbUEFUQ0ggVjQgMS8yXSBjYW46IGZsZXhjYW46IGZpeCBk
+ZWFkbG9jayB3aGVuIHVzaW5nIHNlbGYgd2FrZXVwDQo+IA0KPiBBcyByZXByb3RlZCBieSBTZWFu
+IE55ZWtqYWVyIGJlbG93Og0KPiBXaGVuIHN1c3BlbmRpbmcsIHdoZW4gdGhlcmUgaXMgc3RpbGwg
+Y2FuIHRyYWZmaWMgb24gdGhlIGludGVyZmFjZXMgdGhlIGZsZXhjYW4NCj4gaW1tZWRpYXRlbHkg
+d2FrZXMgdGhlIHBsYXRmb3JtIGFnYWluLiBBcyBpdCBzaG91bGQgOi0pLiBCdXQgaXQgdGhyb3dz
+IHRoaXMgZXJyb3INCj4gbXNnOg0KPiBbIDMxNjkuMzc4NjYxXSBQTTogbm9pcnEgc3VzcGVuZCBv
+ZiBkZXZpY2VzIGZhaWxlZA0KPiANCj4gT24gdGhlIHdheSBkb3duIHRvIHN1c3BlbmQgdGhlIGlu
+dGVyZmFjZSB0aGF0IHRocm93cyB0aGUgZXJyb3IgbWVzc2FnZSBkb2VzDQo+IGNhbGwgZmxleGNh
+bl9zdXNwZW5kIGJ1dCBmYWlscyB0byBjYWxsIGZsZXhjYW5fbm9pcnFfc3VzcGVuZC4gVGhhdCBt
+ZWFucyB0aGUNCj4gZmxleGNhbl9lbnRlcl9zdG9wX21vZGUgaXMgY2FsbGVkLCBidXQgb24gdGhl
+IHdheSBvdXQgb2Ygc3VzcGVuZCB0aGUgZHJpdmVyDQo+IG9ubHkgY2FsbHMgZmxleGNhbl9yZXN1
+bWUgYW5kIHNraXBzIGZsZXhjYW5fbm9pcnFfcmVzdW1lLCB0aHVzIGl0IGRvZXNuJ3QgY2FsbA0K
+PiBmbGV4Y2FuX2V4aXRfc3RvcF9tb2RlLiBUaGlzIGxlYXZlcyB0aGUgZmxleGNhbiBpbiBzdG9w
+IG1vZGUsIGFuZCB3aXRoIHRoZQ0KPiBjdXJyZW50IGRyaXZlciBpdCBjYW4ndCByZWNvdmVyIGZy
+b20gdGhpcyBldmVuIHdpdGggYSBzb2Z0IHJlYm9vdCwgaXQgcmVxdWlyZXMgYQ0KPiBoYXJkIHJl
+Ym9vdC4NCj4gDQo+IFRoZSBiZXN0IHdheSB0byBleGl0IHN0b3AgbW9kZSBpcyBpbiBXYWtlIFVw
+IGludGVycnVwdCBjb250ZXh0LCBhbmQgdGhlbg0KPiBzdXNwZW5kKCkgYW5kIHJlc3VtZSgpIGZ1
+bmN0aW9ucyBjYW4gYmUgc3ltbWV0cmljLiBIb3dldmVyLCBzdG9wIG1vZGUNCj4gcmVxdWVzdCBh
+bmQgYWNrIHdpbGwgYmUgY29udHJvbGxlZCBieSBTQ1UoU3lzdGVtIENvbnRyb2wgVW5pdCkNCj4g
+ZmlybXdhcmUobWFuYWdlIGNsb2NrLHBvd2VyLHN0b3AgbW9kZSwgZXRjLiBieSBDb3J0ZXgtTTQg
+Y29yZSkgaW4gY29taW5nDQo+IGkuTVg4KFFNL1FYUCkuIEFuZCBTQ1UgZmlybXdhcmUgaW50ZXJm
+YWNlIGNhbid0IGJlIGF2YWlsYWJsZSBpbiBpbnRlcnJ1cHQNCj4gY29udGV4dC4NCj4gDQo+IEZv
+ciBjb21wYXRpYmlsbGl0eSwgdGhlIHdha2UgdXAgbWVjaGFuaXNtIGNhbid0IGJlIHN5bW1ldHJp
+Yywgc28gd2UgbmVlZA0KPiBpbl9zdG9wX21vZGUgaGFjay4NCj4gDQo+IEZpeGVzOiBkZTM1Nzhj
+MTk4YzYgKCJjYW46IGZsZXhjYW46IGFkZCBzZWxmIHdha2V1cCBzdXBwb3J0IikNCj4gUmVwb3J0
+ZWQtYnk6IFNlYW4gTnlla2phZXIgPHNlYW5AZ2Vhbml4LmNvbT4NCj4gVGVzdGVkLWJ5OiBTZWFu
+IE55ZWtqYWVyIDxzZWFuQGdlYW5peC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IEpvYWtpbSBaaGFu
+ZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IA0KPiBDaGFuZ2Vsb2c6DQo+IFYxLT5WMjoN
+Cj4gCSogYWRkIFJlcG9ydGVkLWJ5IHRhZy4NCj4gCSogcmViYXNlIG9uIHBhdGNoOiBjYW46Zmxl
+eGNhbjpmaXggc3RvcCBtb2RlIGFja25vd2xlZGdtZW50Lg0KPiBWMi0+VjM6DQo+IAkqIHJlYmFz
+ZSBvbiBsaW51eC1jYW4vdGVzdGluZy4NCj4gCSogY2hhbmdlIGludG8gcGF0Y2ggc2V0Lg0KPiBW
+My0+VjQ6DQo+IAkqIGFkZCBUZXN0ZWQtYnkgdGFnLg0KPiAtLS0NCj4gIGRyaXZlcnMvbmV0L2Nh
+bi9mbGV4Y2FuLmMgfCAyMyArKysrKysrKysrKysrKysrKysrKysrKw0KPiAgMSBmaWxlIGNoYW5n
+ZWQsIDIzIGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4v
+ZmxleGNhbi5jIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBpbmRleA0KPiAxY2Q1MTc5Y2I4
+NzYuLjI0Y2MzODZjNGJjZSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4u
+Yw0KPiArKysgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+IEBAIC0yODYsNiArMjg2LDcg
+QEAgc3RydWN0IGZsZXhjYW5fcHJpdiB7DQo+ICAJY29uc3Qgc3RydWN0IGZsZXhjYW5fZGV2dHlw
+ZV9kYXRhICpkZXZ0eXBlX2RhdGE7DQo+ICAJc3RydWN0IHJlZ3VsYXRvciAqcmVnX3hjZWl2ZXI7
+DQo+ICAJc3RydWN0IGZsZXhjYW5fc3RvcF9tb2RlIHN0bTsNCj4gKwlib29sIGluX3N0b3BfbW9k
+ZTsNCj4gDQo+ICAJLyogUmVhZCBhbmQgV3JpdGUgQVBJcyAqLw0KPiAgCXUzMiAoKnJlYWQpKHZv
+aWQgX19pb21lbSAqYWRkcik7DQo+IEBAIC0xNjcwLDYgKzE2NzEsOCBAQCBzdGF0aWMgaW50IF9f
+bWF5YmVfdW51c2VkIGZsZXhjYW5fc3VzcGVuZChzdHJ1Y3QNCj4gZGV2aWNlICpkZXZpY2UpDQo+
+ICAJCQllcnIgPSBmbGV4Y2FuX2VudGVyX3N0b3BfbW9kZShwcml2KTsNCj4gIAkJCWlmIChlcnIp
+DQo+ICAJCQkJcmV0dXJuIGVycjsNCj4gKw0KPiArCQkJcHJpdi0+aW5fc3RvcF9tb2RlID0gdHJ1
+ZTsNCj4gIAkJfSBlbHNlIHsNCj4gIAkJCWVyciA9IGZsZXhjYW5fY2hpcF9kaXNhYmxlKHByaXYp
+Ow0KPiAgCQkJaWYgKGVycikNCj4gQEAgLTE2OTYsNiArMTY5OSwxNSBAQCBzdGF0aWMgaW50IF9f
+bWF5YmVfdW51c2VkIGZsZXhjYW5fcmVzdW1lKHN0cnVjdA0KPiBkZXZpY2UgKmRldmljZSkNCj4g
+IAkJbmV0aWZfZGV2aWNlX2F0dGFjaChkZXYpOw0KPiAgCQluZXRpZl9zdGFydF9xdWV1ZShkZXYp
+Ow0KPiAgCQlpZiAoZGV2aWNlX21heV93YWtldXAoZGV2aWNlKSkgew0KPiArCQkJaWYgKHByaXYt
+PmluX3N0b3BfbW9kZSkgew0KPiArCQkJCWZsZXhjYW5fZW5hYmxlX3dha2V1cF9pcnEocHJpdiwg
+ZmFsc2UpOw0KPiArCQkJCWVyciA9IGZsZXhjYW5fZXhpdF9zdG9wX21vZGUocHJpdik7DQo+ICsJ
+CQkJaWYgKGVycikNCj4gKwkJCQkJcmV0dXJuIGVycjsNCj4gKw0KPiArCQkJCXByaXYtPmluX3N0
+b3BfbW9kZSA9IGZhbHNlOw0KPiArCQkJfQ0KPiArDQo+ICAJCQlkaXNhYmxlX2lycV93YWtlKGRl
+di0+aXJxKTsNCj4gIAkJfSBlbHNlIHsNCj4gIAkJCWVyciA9IHBtX3J1bnRpbWVfZm9yY2VfcmVz
+dW1lKGRldmljZSk7IEBAIC0xNzMyLDYgKzE3NDQsMTENCj4gQEAgc3RhdGljIGludCBfX21heWJl
+X3VudXNlZCBmbGV4Y2FuX25vaXJxX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2aWNlKQ0KPiAg
+CXN0cnVjdCBuZXRfZGV2aWNlICpkZXYgPSBkZXZfZ2V0X2RydmRhdGEoZGV2aWNlKTsNCj4gIAlz
+dHJ1Y3QgZmxleGNhbl9wcml2ICpwcml2ID0gbmV0ZGV2X3ByaXYoZGV2KTsNCj4gDQo+ICsJLyog
+TmVlZCB0byBlbmFibGUgd2FrZXVwIGludGVycnVwdCBpbiBub2lycSBzdXNwZW5kIHN0YWdlLiBP
+dGhlcndpc2UsDQo+ICsJICogaXQgd2lsbCB0cmlnZ2VyIGNvbnRpbnVvdXNseSB3YWtldXAgaW50
+ZXJydXB0IGlmIHRoZSB3YWtldXAgZXZlbnQNCj4gKwkgKiBjb21lcyBiZWZvcmUgbm9pcnEgc3Vz
+cGVuZCBzdGFnZSwgYW5kIHNpbXVsdGFuZW91c2x5IGl0IGhhcyBlbnRlcg0KPiArCSAqIHRoZSBz
+dG9wIG1vZGUuDQo+ICsJICovDQo+ICAJaWYgKG5ldGlmX3J1bm5pbmcoZGV2KSAmJiBkZXZpY2Vf
+bWF5X3dha2V1cChkZXZpY2UpKQ0KPiAgCQlmbGV4Y2FuX2VuYWJsZV93YWtldXBfaXJxKHByaXYs
+IHRydWUpOw0KPiANCj4gQEAgLTE3NDQsMTEgKzE3NjEsMTcgQEAgc3RhdGljIGludCBfX21heWJl
+X3VudXNlZA0KPiBmbGV4Y2FuX25vaXJxX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXZpY2UpDQo+
+ICAJc3RydWN0IGZsZXhjYW5fcHJpdiAqcHJpdiA9IG5ldGRldl9wcml2KGRldik7DQo+ICAJaW50
+IGVycjsNCj4gDQo+ICsJLyogTmVlZCB0byBleGl0IHN0b3AgbW9kZSBpbiBub2lycSByZXN1bWUg
+c3RhZ2UuIE90aGVyd2lzZSwgaXQgd2lsbA0KPiArCSAqIHRyaWdnZXIgY29udGludW91c2x5IHdh
+a2V1cCBpbnRlcnJ1cHQgaWYgdGhlIHdha2V1cCBldmVudCBjb21lcywNCj4gKwkgKiBhbmQgc2lt
+dWx0YW5lb3VzbHkgaXQgaGFzIHN0aWxsIGluIHN0b3AgbW9kZS4NCj4gKwkgKi8NCj4gIAlpZiAo
+bmV0aWZfcnVubmluZyhkZXYpICYmIGRldmljZV9tYXlfd2FrZXVwKGRldmljZSkpIHsNCj4gIAkJ
+ZmxleGNhbl9lbmFibGVfd2FrZXVwX2lycShwcml2LCBmYWxzZSk7DQo+ICAJCWVyciA9IGZsZXhj
+YW5fZXhpdF9zdG9wX21vZGUocHJpdik7DQo+ICAJCWlmIChlcnIpDQo+ICAJCQlyZXR1cm4gZXJy
+Ow0KPiArDQo+ICsJCXByaXYtPmluX3N0b3BfbW9kZSA9IGZhbHNlOw0KPiAgCX0NCj4gDQo+ICAJ
+cmV0dXJuIDA7DQo+IC0tDQo+IDIuMTcuMQ0KDQo=
