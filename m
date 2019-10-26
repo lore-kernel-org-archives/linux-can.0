@@ -1,23 +1,70 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: [PATCH v2] j1939: transport: make sure EOMA is send with the
- total message size set
-Date: Fri, 25 Oct 2019 15:23:34 +0200
-Message-ID: <20191025132334.GB2031@x1.vandijck-laurijssen.be>
-References: <20191025130413.1298-1-o.rempel@pengutronix.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH v5] net: sch_generic: Use pfifo_fast as fallback
+ scheduler for CAN hardware
+Date: Fri, 25 Oct 2019 19:20:45 -0700 (PDT)
+Message-ID: <20191025.192045.1462505833001638832.davem@davemloft.net>
+References: <20190327165632.10711-1-mkl@pengutronix.de>
+        <1571838260-19186-1-git-send-email-vincent.prince.fr@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20191025130413.1298-1-o.rempel@pengutronix.de>
+In-Reply-To: <1571838260-19186-1-git-send-email-vincent.prince.fr@gmail.com>
 Sender: netdev-owner@vger.kernel.org
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: mkl@pengutronix.de, wg@grandegger.com, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: vincent.prince.fr@gmail.com
+Cc: mkl@pengutronix.de, dave.taht@gmail.com, jhs@mojatatu.com, jiri@resnulli.us, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, xiyou.wangcong@gmail.com
 List-Id: linux-can.vger.kernel.org
 
-On vr, 25 okt 2019 15:04:13 +0200, Oleksij Rempel wrote:
+From: Vincent Prince <vincent.prince.fr@gmail.com>
+Date: Wed, 23 Oct 2019 15:44:20 +0200
+
+> There is networking hardware that isn't based on Ethernet for layers 1 and 2.
 > 
-> We was sending malformed EOMA with total message size set to 0. So, fix this
-> bug and add sanity check to the RX path.
+> For example CAN.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+> CAN is a multi-master serial bus standard for connecting Electronic Control
+> Units [ECUs] also known as nodes. A frame on the CAN bus carries up to 8 bytes
+> of payload. Frame corruption is detected by a CRC. However frame loss due to
+> corruption is possible, but a quite unusual phenomenon.
+> 
+> While fq_codel works great for TCP/IP, it doesn't for CAN. There are a lot of
+> legacy protocols on top of CAN, which are not build with flow control or high
+> CAN frame drop rates in mind.
+> 
+> When using fq_codel, as soon as the queue reaches a certain delay based length,
+> skbs from the head of the queue are silently dropped. Silently meaning that the
+> user space using a send() or similar syscall doesn't get an error. However
+> TCP's flow control algorithm will detect dropped packages and adjust the
+> bandwidth accordingly.
+> 
+> When using fq_codel and sending raw frames over CAN, which is the common use
+> case, the user space thinks the package has been sent without problems, because
+> send() returned without an error. pfifo_fast will drop skbs, if the queue
+> length exceeds the maximum. But with this scheduler the skbs at the tail are
+> dropped, an error (-ENOBUFS) is propagated to user space. So that the user
+> space can slow down the package generation.
+> 
+> On distributions, where fq_codel is made default via CONFIG_DEFAULT_NET_SCH
+> during compile time, or set default during runtime with sysctl
+> net.core.default_qdisc (see [1]), we get a bad user experience. In my test case
+> with pfifo_fast, I can transfer thousands of million CAN frames without a frame
+> drop. On the other hand with fq_codel there is more then one lost CAN frame per
+> thousand frames.
+> 
+> As pointed out fq_codel is not suited for CAN hardware, so this patch changes
+> attach_one_default_qdisc() to use pfifo_fast for "ARPHRD_CAN" network devices.
+> 
+> During transition of a netdev from down to up state the default queuing
+> discipline is attached by attach_default_qdiscs() with the help of
+> attach_one_default_qdisc(). This patch modifies attach_one_default_qdisc() to
+> attach the pfifo_fast (pfifo_fast_ops) if the network device type is
+> "ARPHRD_CAN".
+> 
+> [1] https://github.com/systemd/systemd/issues/9194
+> 
+> Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Vincent Prince <vincent.prince.fr@gmail.com>
+> Acked-by: Dave Taht <dave.taht@gmail.com>
+
+Applied to net-next.
