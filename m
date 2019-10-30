@@ -1,148 +1,101 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [RFC PATCH] can: dev: Add check for the minimum value of a bit time
-Date: Wed, 30 Oct 2019 06:45:54 +0000
-Message-ID: <20191030064245.12923-1-qiangqing.zhang@nxp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+From: Pankaj Sharma <pankj.sharma@samsung.com>
+Subject: [PATCH v3] can: m_can: add support for handling arbitration error
+Date: Wed, 30 Oct 2019 17:08:59 +0530
+Message-ID: <1572435539-3315-1-git-send-email-pankj.sharma@samsung.com>
+References: <CGME20191030114039epcas5p434c9a7ffb715f2af2f4d3745239b5bbd@epcas5p4.samsung.com>
+Content-Type: text/plain; charset="utf-8"
 Return-path: <netdev-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "sean@geanix.com" <sean@geanix.com>, Joakim Zhang <qiangqing.zhang@nxp.com>
+To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, pankaj.dubey@samsung.com, rcsekar@samsung.com, jhofstee@victronenergy.com, simon.horman@netronome.com, Pankaj Sharma <pankj.sharma@samsung.com>, Sriram Dash <sriram.dash@samsung.com>
 List-Id: linux-can.vger.kernel.org
 
-As ISO 11898-1 said: The total number of time quanta in a nominal bit
-time shall be programmable at least from 8 to 25 for implementation that
-are not FD enabled. For implementations that are FD enabled, the total
-number of time quanta in a data bit time shall be programmable at least
-from 5 to 25 and in a nominal bit time at least from 8 to 80.
+The Bosch MCAN hardware (3.1.0 and above) supports interrupt flag to
+detect Protocol error in arbitration phase.
 
-So the minimum value for nominal bit time is 8 and for data bit time is
-5, had better ensure the minimum value of a bit time.
+Transmit error statistics is currently not updated from the MCAN driver.
+Protocol error in arbitration phase is a TX error and the network
+statistics should be updated accordingly.
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+The member "tx_error" of "struct net_device_stats" should be incremented
+as arbitration is a transmit protocol error. Also "arbitration_lost" of
+"struct can_device_stats" should be incremented to report arbitration
+lost.
+
+Signed-off-by: Pankaj Sharma <pankj.sharma@samsung.com>
+Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
 ---
- drivers/net/can/dev.c | 37 +++++++++++++++++++++++++++++--------
- 1 file changed, 29 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index ac86be52b461..69e693c79579 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -115,7 +115,8 @@ can_update_sample_point(const struct can_bittiming_cons=
-t *btc,
- 	return best_sample_point;
+changes in v3:
+- handle arbitration lost stats even if the allocation of the skb fails
+
+changes in v2:
+- common m_can_ prefix for is_protocol_err function
+- handling stats even if the allocation of the skb fails
+- resolving build errors on net-next branch
+
+ drivers/net/can/m_can/m_can.c | 42 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 75e7490c4299..02c5795b7393 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -778,6 +778,43 @@ static inline bool is_lec_err(u32 psr)
+ 	return psr && (psr != LEC_UNUSED);
  }
-=20
--static int can_calc_bittiming(struct net_device *dev, struct can_bittiming=
- *bt,
-+static int can_calc_bittiming(struct net_device *dev, bool is_data_bt,
-+			      struct can_bittiming *bt,
- 			      const struct can_bittiming_const *btc)
- {
- 	struct can_priv *priv =3D netdev_priv(dev);
-@@ -147,6 +148,14 @@ static int can_calc_bittiming(struct net_device *dev, =
-struct can_bittiming *bt,
- 	     tseg >=3D (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
- 		tsegall =3D CAN_CALC_SYNC_SEG + tseg / 2;
-=20
-+		/* the total number of time quanta in a data bit time
-+		 * (SYNC_SEG + TSEG1 + TSEG2) shall be programmable at least 5.
-+		 * the total number of time quanta in a nominal bit time
-+		 * (SYNC_SEG + TSEG1 + TSEG2) shall be programmable at least 8.
-+		 */
-+		if ((is_data_bt && tsegall < 5) || (!is_data_bt && tsegall < 8))
-+			continue;
+ 
++static inline bool m_can_is_protocol_err(u32 irqstatus)
++{
++	return irqstatus & IR_ERR_LEC_31X;
++}
 +
- 		/* Compute all possible tseg choices (tseg=3Dtseg1+tseg2) */
- 		brp =3D priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
-=20
-@@ -228,7 +237,8 @@ static int can_calc_bittiming(struct net_device *dev, s=
-truct can_bittiming *bt,
- 	return 0;
- }
- #else /* !CONFIG_CAN_CALC_BITTIMING */
--static int can_calc_bittiming(struct net_device *dev, struct can_bittiming=
- *bt,
-+static int can_calc_bittiming(struct net_device *dev, bool is_data_bt,
-+			      struct can_bittiming *bt,
- 			      const struct can_bittiming_const *btc)
- {
- 	netdev_err(dev, "bit-timing calculation not available\n");
-@@ -241,7 +251,8 @@ static int can_calc_bittiming(struct net_device *dev, s=
-truct can_bittiming *bt,
-  * prescaler value brp. You can find more information in the header
-  * file linux/can/netlink.h.
-  */
--static int can_fixup_bittiming(struct net_device *dev, struct can_bittimin=
-g *bt,
-+static int can_fixup_bittiming(struct net_device *dev, bool is_data_bt,
-+			       struct can_bittiming *bt,
- 			       const struct can_bittiming_const *btc)
- {
- 	struct can_priv *priv =3D netdev_priv(dev);
-@@ -269,6 +280,15 @@ static int can_fixup_bittiming(struct net_device *dev,=
- struct can_bittiming *bt,
- 		return -EINVAL;
-=20
- 	alltseg =3D bt->prop_seg + bt->phase_seg1 + bt->phase_seg2 + 1;
++static int m_can_handle_protocol_error(struct net_device *dev, u32 irqstatus)
++{
++	struct net_device_stats *stats = &dev->stats;
++	struct m_can_classdev *cdev = netdev_priv(dev);
++	struct can_frame *cf;
++	struct sk_buff *skb;
 +
-+	/* the total number of time quanta in a data bit time
-+	 * (SYNC_SEG + TSEG1 + TSEG2) shall be programmable at least 5.
-+	 * the total number of time quanta in a nominal bit time
-+	 * (SYNC_SEG + TSEG1 + TSEG2) shall be programmable at least 8.
-+	 */
-+	if ((is_data_bt && alltseg < 5) || (!is_data_bt && alltseg < 8))
-+		return -EINVAL;
++	/* propagate the error condition to the CAN stack */
++	skb = alloc_can_err_skb(dev, &cf);
 +
- 	bt->bitrate =3D priv->clock.freq / (bt->brp * alltseg);
- 	bt->sample_point =3D ((tseg1 + 1) * 1000) / alltseg;
-=20
-@@ -295,7 +315,8 @@ can_validate_bitrate(struct net_device *dev, struct can=
-_bittiming *bt,
- 	return 0;
- }
-=20
--static int can_get_bittiming(struct net_device *dev, struct can_bittiming =
-*bt,
-+static int can_get_bittiming(struct net_device *dev, bool is_data_bt,
-+			     struct can_bittiming *bt,
- 			     const struct can_bittiming_const *btc,
- 			     const u32 *bitrate_const,
- 			     const unsigned int bitrate_const_cnt)
-@@ -308,9 +329,9 @@ static int can_get_bittiming(struct net_device *dev, st=
-ruct can_bittiming *bt,
- 	 * provided directly which are then checked and fixed up.
- 	 */
- 	if (!bt->tq && bt->bitrate && btc)
--		err =3D can_calc_bittiming(dev, bt, btc);
-+		err =3D can_calc_bittiming(dev, is_data_bt, bt, btc);
- 	else if (bt->tq && !bt->bitrate && btc)
--		err =3D can_fixup_bittiming(dev, bt, btc);
-+		err =3D can_fixup_bittiming(dev, is_data_bt, bt, btc);
- 	else if (!bt->tq && bt->bitrate && bitrate_const)
- 		err =3D can_validate_bitrate(dev, bt, bitrate_const,
- 					   bitrate_const_cnt);
-@@ -944,7 +965,7 @@ static int can_changelink(struct net_device *dev, struc=
-t nlattr *tb[],
- 			return -EOPNOTSUPP;
-=20
- 		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
--		err =3D can_get_bittiming(dev, &bt,
-+		err =3D can_get_bittiming(dev, false, &bt,
- 					priv->bittiming_const,
- 					priv->bitrate_const,
- 					priv->bitrate_const_cnt);
-@@ -1035,7 +1056,7 @@ static int can_changelink(struct net_device *dev, str=
-uct nlattr *tb[],
-=20
- 		memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
- 		       sizeof(dbt));
--		err =3D can_get_bittiming(dev, &dbt,
-+		err =3D can_get_bittiming(dev, true, &dbt,
- 					priv->data_bittiming_const,
- 					priv->data_bitrate_const,
- 					priv->data_bitrate_const_cnt);
---=20
++	/* update tx error stats since there is protocol error */
++	stats->tx_errors++;
++
++	/* update arbitration lost status */
++	if (cdev->version >= 31 && (irqstatus & IR_PEA)) {
++		netdev_dbg(dev, "Protocol error in Arbitration fail\n");
++		cdev->can.can_stats.arbitration_lost++;
++		if (skb) {
++			cf->can_id |= CAN_ERR_LOSTARB;
++			cf->data[0] |= CAN_ERR_LOSTARB_UNSPEC;
++		}
++	}
++
++	if (unlikely(!skb)) {
++		netdev_dbg(dev, "allocation of skb failed\n");
++		return 0;
++	}
++	netif_receive_skb(skb);
++
++	return 1;
++}
++
+ static int m_can_handle_bus_errors(struct net_device *dev, u32 irqstatus,
+ 				   u32 psr)
+ {
+@@ -792,6 +829,11 @@ static int m_can_handle_bus_errors(struct net_device *dev, u32 irqstatus,
+ 	    is_lec_err(psr))
+ 		work_done += m_can_handle_lec_err(dev, psr & LEC_UNUSED);
+ 
++	/* handle protocol errors in arbitration phase */
++	if ((cdev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) &&
++	    m_can_is_protocol_err(irqstatus))
++		work_done += m_can_handle_protocol_error(dev, irqstatus);
++
+ 	/* other unproccessed error interrupts */
+ 	m_can_handle_other_err(dev, irqstatus);
+ 
+-- 
 2.17.1
