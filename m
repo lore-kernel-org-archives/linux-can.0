@@ -1,101 +1,114 @@
-From: Pankaj Sharma <pankj.sharma@samsung.com>
-Subject: [PATCH v3] can: m_can: add support for handling arbitration error
-Date: Wed, 30 Oct 2019 17:08:59 +0530
-Message-ID: <1572435539-3315-1-git-send-email-pankj.sharma@samsung.com>
-References: <CGME20191030114039epcas5p434c9a7ffb715f2af2f4d3745239b5bbd@epcas5p4.samsung.com>
-Content-Type: text/plain; charset="utf-8"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, pankaj.dubey@samsung.com, rcsekar@samsung.com, jhofstee@victronenergy.com, simon.horman@netronome.com, Pankaj Sharma <pankj.sharma@samsung.com>, Sriram Dash <sriram.dash@samsung.com>
+From: syzbot <syzbot+feff46f1778030d14234@syzkaller.appspotmail.com>
+Subject: general protection fault in j1939_priv_get_by_ndev_locked
+Date: Sun, 03 Nov 2019 00:32:08 -0700
+Message-ID: <000000000000595be405966c3231@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
-The Bosch MCAN hardware (3.1.0 and above) supports interrupt flag to
-detect Protocol error in arbitration phase.
+Hello,
 
-Transmit error statistics is currently not updated from the MCAN driver.
-Protocol error in arbitration phase is a TX error and the network
-statistics should be updated accordingly.
+syzbot found the following crash on:
 
-The member "tx_error" of "struct net_device_stats" should be incremented
-as arbitration is a transmit protocol error. Also "arbitration_lost" of
-"struct can_device_stats" should be incremented to report arbitration
-lost.
+HEAD commit:    7de08690 powerpc/bpf: Fix tail call implementation
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=178ba242e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2cc209e226c8fbbd
+dashboard link: https://syzkaller.appspot.com/bug?extid=feff46f1778030d14234
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1726e97ce00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1678e4ece00000
 
-Signed-off-by: Pankaj Sharma <pankj.sharma@samsung.com>
-Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+feff46f1778030d14234@syzkaller.appspotmail.com
+
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 8769 Comm: syz-executor448 Not tainted 5.4.0-rc3+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:j1939_ndev_to_priv net/can/j1939/main.c:210 [inline]
+RIP: 0010:j1939_priv_get_by_ndev_locked+0xf5/0x190 net/can/j1939/main.c:222
+Code: 03 80 3c 02 00 0f 85 ae 00 00 00 48 8b 9b 88 05 00 00 48 b8 00 00 00  
+00 00 fc ff df 48 8d bb 28 60 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75  
+7f 4c 8b a3 28 60 00 00 4d 85 e4 74 12 e8 e4 9c f4
+RSP: 0018:ffff8880949bf8e8 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff867e77c7
+RDX: 0000000000000c05 RSI: ffffffff867e77d4 RDI: 0000000000006028
+RBP: ffff8880949bf900 R08: ffff8880a879c340 R09: ffffed1012937f10
+R10: ffffed1012937f0f R11: 0000000000000003 R12: 0000000000000000
+R13: 0000000000000118 R14: dffffc0000000000 R15: 0000000000000000
+FS:  0000000000789880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8c146c1518 CR3: 000000009fc92000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  j1939_priv_get_by_ndev net/can/j1939/main.c:234 [inline]
+  j1939_netdev_notify+0x47/0x120 net/can/j1939/main.c:344
+  notifier_call_chain+0xc2/0x230 kernel/notifier.c:95
+  __raw_notifier_call_chain kernel/notifier.c:396 [inline]
+  raw_notifier_call_chain+0x2e/0x40 kernel/notifier.c:403
+  call_netdevice_notifiers_info+0x3f/0x90 net/core/dev.c:1668
+  call_netdevice_notifiers_extack net/core/dev.c:1680 [inline]
+  call_netdevice_notifiers net/core/dev.c:1694 [inline]
+  rollback_registered_many+0x9b9/0xfc0 net/core/dev.c:8521
+  rollback_registered+0x109/0x1d0 net/core/dev.c:8563
+  unregister_netdevice_queue net/core/dev.c:9655 [inline]
+  unregister_netdevice_queue+0x1ee/0x2c0 net/core/dev.c:9648
+  unregister_netdevice include/linux/netdevice.h:2637 [inline]
+  __tun_detach+0xd8a/0x1040 drivers/net/tun.c:723
+  tun_detach drivers/net/tun.c:740 [inline]
+  tun_chr_close+0xe0/0x180 drivers/net/tun.c:3448
+  __fput+0x2ff/0x890 fs/file_table.c:280
+  ____fput+0x16/0x20 fs/file_table.c:313
+  task_work_run+0x145/0x1c0 kernel/task_work.c:113
+  exit_task_work include/linux/task_work.h:22 [inline]
+  do_exit+0x904/0x2e60 kernel/exit.c:817
+  do_group_exit+0x135/0x360 kernel/exit.c:921
+  __do_sys_exit_group kernel/exit.c:932 [inline]
+  __se_sys_exit_group kernel/exit.c:930 [inline]
+  __x64_sys_exit_group+0x44/0x50 kernel/exit.c:930
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x43ee08
+Code: Bad RIP value.
+RSP: 002b:00007fff3faf5578 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043ee08
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00000000004be608 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006d0180 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 78c1c985ae8b77ec ]---
+RIP: 0010:j1939_ndev_to_priv net/can/j1939/main.c:210 [inline]
+RIP: 0010:j1939_priv_get_by_ndev_locked+0xf5/0x190 net/can/j1939/main.c:222
+Code: 03 80 3c 02 00 0f 85 ae 00 00 00 48 8b 9b 88 05 00 00 48 b8 00 00 00  
+00 00 fc ff df 48 8d bb 28 60 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75  
+7f 4c 8b a3 28 60 00 00 4d 85 e4 74 12 e8 e4 9c f4
+RSP: 0018:ffff8880949bf8e8 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff867e77c7
+RDX: 0000000000000c05 RSI: ffffffff867e77d4 RDI: 0000000000006028
+RBP: ffff8880949bf900 R08: ffff8880a879c340 R09: ffffed1012937f10
+R10: ffffed1012937f0f R11: 0000000000000003 R12: 0000000000000000
+R13: 0000000000000118 R14: dffffc0000000000 R15: 0000000000000000
+FS:  0000000000789880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000043edde CR3: 000000009fc92000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-changes in v3:
-- handle arbitration lost stats even if the allocation of the skb fails
-
-changes in v2:
-- common m_can_ prefix for is_protocol_err function
-- handling stats even if the allocation of the skb fails
-- resolving build errors on net-next branch
-
- drivers/net/can/m_can/m_can.c | 42 +++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 75e7490c4299..02c5795b7393 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -778,6 +778,43 @@ static inline bool is_lec_err(u32 psr)
- 	return psr && (psr != LEC_UNUSED);
- }
- 
-+static inline bool m_can_is_protocol_err(u32 irqstatus)
-+{
-+	return irqstatus & IR_ERR_LEC_31X;
-+}
-+
-+static int m_can_handle_protocol_error(struct net_device *dev, u32 irqstatus)
-+{
-+	struct net_device_stats *stats = &dev->stats;
-+	struct m_can_classdev *cdev = netdev_priv(dev);
-+	struct can_frame *cf;
-+	struct sk_buff *skb;
-+
-+	/* propagate the error condition to the CAN stack */
-+	skb = alloc_can_err_skb(dev, &cf);
-+
-+	/* update tx error stats since there is protocol error */
-+	stats->tx_errors++;
-+
-+	/* update arbitration lost status */
-+	if (cdev->version >= 31 && (irqstatus & IR_PEA)) {
-+		netdev_dbg(dev, "Protocol error in Arbitration fail\n");
-+		cdev->can.can_stats.arbitration_lost++;
-+		if (skb) {
-+			cf->can_id |= CAN_ERR_LOSTARB;
-+			cf->data[0] |= CAN_ERR_LOSTARB_UNSPEC;
-+		}
-+	}
-+
-+	if (unlikely(!skb)) {
-+		netdev_dbg(dev, "allocation of skb failed\n");
-+		return 0;
-+	}
-+	netif_receive_skb(skb);
-+
-+	return 1;
-+}
-+
- static int m_can_handle_bus_errors(struct net_device *dev, u32 irqstatus,
- 				   u32 psr)
- {
-@@ -792,6 +829,11 @@ static int m_can_handle_bus_errors(struct net_device *dev, u32 irqstatus,
- 	    is_lec_err(psr))
- 		work_done += m_can_handle_lec_err(dev, psr & LEC_UNUSED);
- 
-+	/* handle protocol errors in arbitration phase */
-+	if ((cdev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) &&
-+	    m_can_is_protocol_err(irqstatus))
-+		work_done += m_can_handle_protocol_error(dev, irqstatus);
-+
- 	/* other unproccessed error interrupts */
- 	m_can_handle_other_err(dev, irqstatus);
- 
--- 
-2.17.1
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
