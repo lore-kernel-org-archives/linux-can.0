@@ -1,7 +1,7 @@
-From: syzbot <syzbot+07bb74aeafc88ba7d5b4@syzkaller.appspotmail.com>
-Subject: KASAN: use-after-free Write in j1939_sock_pending_del
-Date: Mon, 04 Nov 2019 21:32:08 -0800
-Message-ID: <000000000000de1eec059692c021@google.com>
+From: syzbot <syzbot+db4869ba599c0de9b13e@syzkaller.appspotmail.com>
+Subject: KASAN: use-after-free Read in j1939_xtp_rx_abort_one
+Date: Mon, 04 Nov 2019 22:25:08 -0800
+Message-ID: <0000000000005ed7710596937e86@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -15,30 +15,25 @@ syzbot found the following crash on:
 
 HEAD commit:    a99d8080 Linux 5.4-rc6
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=169c59b2e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14ed25cce00000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=896c87b73c6fcda6
-dashboard link: https://syzkaller.appspot.com/bug?extid=07bb74aeafc88ba7d5b4
+dashboard link: https://syzkaller.appspot.com/bug?extid=db4869ba599c0de9b13e
 compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
 80fee25776c2fb61e74c1ecb1a523375c2500b69)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16fd7044e00000
+
+Unfortunately, I don't have any reproducer for this crash yet.
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+07bb74aeafc88ba7d5b4@syzkaller.appspotmail.com
+Reported-by: syzbot+db4869ba599c0de9b13e@syzkaller.appspotmail.com
 
-vcan0: j1939_xtp_rx_abort_one: 0x00000000b4d8b78c: 0x00000: (2) System  
-resources were needed for another task so this connection managed session  
-was terminated.
-vcan0: j1939_xtp_rx_abort_one: 0x00000000dadb7e22: 0x00000: (2) System  
-resources were needed for another task so this connection managed session  
-was terminated.
+vcan0: j1939_xtp_rx_abort_one: 0x00000000704d9bae: 0x00000: (3) A timeout  
+occurred and this is the connection abort to close the session.
+vcan0: j1939_xtp_rx_abort_one: 0x000000002231a129: 0x00000: (3) A timeout  
+occurred and this is the connection abort to close the session.
 ==================================================================
-BUG: KASAN: use-after-free in atomic_sub_return  
-include/asm-generic/atomic-instrumented.h:159 [inline]
-BUG: KASAN: use-after-free in atomic_dec_return  
-include/linux/atomic-fallback.h:455 [inline]
-BUG: KASAN: use-after-free in j1939_sock_pending_del+0x20/0x70  
-net/can/j1939/socket.c:73
-Write of size 4 at addr ffff8880a4a2e4c0 by task ksoftirqd/1/16
+BUG: KASAN: use-after-free in __lock_acquire+0x96/0x1be0  
+kernel/locking/lockdep.c:3828
+Read of size 8 at addr ffff88808feb5080 by task ksoftirqd/1/16
 
 CPU: 1 PID: 16 Comm: ksoftirqd/1 Not tainted 5.4.0-rc6 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
@@ -49,21 +44,18 @@ Call Trace:
   print_address_description+0x75/0x5c0 mm/kasan/report.c:374
   __kasan_report+0x14b/0x1c0 mm/kasan/report.c:506
   kasan_report+0x26/0x50 mm/kasan/common.c:634
-  check_memory_region_inline mm/kasan/generic.c:182 [inline]
-  check_memory_region+0x2cf/0x2e0 mm/kasan/generic.c:192
-  __kasan_check_write+0x14/0x20 mm/kasan/common.c:98
-  atomic_sub_return include/asm-generic/atomic-instrumented.h:159 [inline]
-  atomic_dec_return include/linux/atomic-fallback.h:455 [inline]
-  j1939_sock_pending_del+0x20/0x70 net/can/j1939/socket.c:73
-  __j1939_session_drop net/can/j1939/transport.c:257 [inline]
-  j1939_session_destroy net/can/j1939/transport.c:270 [inline]
-  __j1939_session_release net/can/j1939/transport.c:280 [inline]
-  kref_put include/linux/kref.h:65 [inline]
-  j1939_session_put+0xd2/0x150 net/can/j1939/transport.c:285
-  j1939_xtp_rx_abort_one+0xd3/0x3f0 net/can/j1939/transport.c:1261
-  j1939_xtp_rx_abort net/can/j1939/transport.c:1269 [inline]
-  j1939_tp_cmd_recv net/can/j1939/transport.c:1940 [inline]
-  j1939_tp_recv+0x633/0xb80 net/can/j1939/transport.c:1973
+  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
+  __lock_acquire+0x96/0x1be0 kernel/locking/lockdep.c:3828
+  lock_acquire+0x158/0x250 kernel/locking/lockdep.c:4487
+  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+  _raw_spin_lock_bh+0x34/0x50 kernel/locking/spinlock.c:175
+  spin_lock_bh include/linux/spinlock.h:343 [inline]
+  j1939_session_list_lock net/can/j1939/transport.c:238 [inline]
+  j1939_session_get_by_addr net/can/j1939/transport.c:530 [inline]
+  j1939_xtp_rx_abort_one+0x89/0x3f0 net/can/j1939/transport.c:1242
+  j1939_xtp_rx_abort net/can/j1939/transport.c:1270 [inline]
+  j1939_tp_cmd_recv net/can/j1939/transport.c:1943 [inline]
+  j1939_tp_recv+0x731/0xb80 net/can/j1939/transport.c:1973
   j1939_can_recv+0x424/0x650 net/can/j1939/main.c:100
   deliver net/can/af_can.c:568 [inline]
   can_rcv_filter+0x3c0/0x8b0 net/can/af_can.c:602
@@ -80,23 +72,21 @@ Call Trace:
   kthread+0x332/0x350 kernel/kthread.c:255
   ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
 
-Allocated by task 8435:
+Allocated by task 9951:
   save_stack mm/kasan/common.c:69 [inline]
   set_track mm/kasan/common.c:77 [inline]
   __kasan_kmalloc+0x11c/0x1b0 mm/kasan/common.c:510
   kasan_kmalloc+0x9/0x10 mm/kasan/common.c:524
-  __do_kmalloc mm/slab.c:3655 [inline]
-  __kmalloc+0x254/0x340 mm/slab.c:3664
-  kmalloc include/linux/slab.h:561 [inline]
-  sk_prot_alloc+0xb0/0x290 net/core/sock.c:1605
-  sk_alloc+0x38/0x950 net/core/sock.c:1659
-  can_create+0x1de/0x480 net/can/af_can.c:157
-  __sock_create+0x5cc/0x910 net/socket.c:1418
-  sock_create net/socket.c:1469 [inline]
-  __sys_socket+0xe7/0x2e0 net/socket.c:1511
-  __do_sys_socket net/socket.c:1520 [inline]
-  __se_sys_socket net/socket.c:1518 [inline]
-  __x64_sys_socket+0x7a/0x90 net/socket.c:1518
+  kmem_cache_alloc_trace+0x221/0x2f0 mm/slab.c:3550
+  kmalloc include/linux/slab.h:556 [inline]
+  kzalloc include/linux/slab.h:690 [inline]
+  j1939_priv_create net/can/j1939/main.c:122 [inline]
+  j1939_netdev_start+0x177/0x730 net/can/j1939/main.c:251
+  j1939_sk_bind+0x2c0/0xac0 net/can/j1939/socket.c:438
+  __sys_bind+0x2c2/0x3a0 net/socket.c:1647
+  __do_sys_bind net/socket.c:1658 [inline]
+  __se_sys_bind net/socket.c:1656 [inline]
+  __x64_sys_bind+0x7a/0x90 net/socket.c:1656
   do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:290
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
@@ -108,24 +98,17 @@ Freed by task 16:
   kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
   __cache_free mm/slab.c:3425 [inline]
   kfree+0x115/0x200 mm/slab.c:3756
-  sk_prot_free net/core/sock.c:1642 [inline]
-  __sk_destruct+0x523/0x620 net/core/sock.c:1726
-  sk_destruct net/core/sock.c:1741 [inline]
-  __sk_free+0x35d/0x430 net/core/sock.c:1752
-  sock_wfree+0x106/0x140 net/core/sock.c:1968
-  skb_release_head_state+0x100/0x210 net/core/skbuff.c:652
-  skb_release_all net/core/skbuff.c:663 [inline]
-  __kfree_skb+0x25/0x170 net/core/skbuff.c:679
-  kfree_skb net/core/skbuff.c:697 [inline]
-  skb_queue_purge+0x1a6/0x260 net/core/skbuff.c:3078
-  j1939_session_destroy net/can/j1939/transport.c:269 [inline]
+  __j1939_priv_release net/can/j1939/main.c:154 [inline]
+  kref_put include/linux/kref.h:65 [inline]
+  j1939_priv_put+0x86/0xa0 net/can/j1939/main.c:159
+  j1939_session_destroy net/can/j1939/transport.c:271 [inline]
   __j1939_session_release net/can/j1939/transport.c:280 [inline]
   kref_put include/linux/kref.h:65 [inline]
-  j1939_session_put+0x7f/0x150 net/can/j1939/transport.c:285
+  j1939_session_put+0xfe/0x150 net/can/j1939/transport.c:285
   j1939_xtp_rx_abort_one+0xd3/0x3f0 net/can/j1939/transport.c:1261
   j1939_xtp_rx_abort net/can/j1939/transport.c:1269 [inline]
-  j1939_tp_cmd_recv net/can/j1939/transport.c:1940 [inline]
-  j1939_tp_recv+0x633/0xb80 net/can/j1939/transport.c:1973
+  j1939_tp_cmd_recv net/can/j1939/transport.c:1943 [inline]
+  j1939_tp_recv+0x719/0xb80 net/can/j1939/transport.c:1973
   j1939_can_recv+0x424/0x650 net/can/j1939/main.c:100
   deliver net/can/af_can.c:568 [inline]
   can_rcv_filter+0x3c0/0x8b0 net/can/af_can.c:602
@@ -138,25 +121,25 @@ Freed by task 16:
   net_rx_action+0x5ef/0x10d0 net/core/dev.c:6379
   __do_softirq+0x333/0x7c4 arch/x86/include/asm/paravirt.h:766
 
-The buggy address belongs to the object at ffff8880a4a2e000
-  which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 1216 bytes inside of
-  2048-byte region [ffff8880a4a2e000, ffff8880a4a2e800)
+The buggy address belongs to the object at ffff88808feb4000
+  which belongs to the cache kmalloc-8k of size 8192
+The buggy address is located 4224 bytes inside of
+  8192-byte region [ffff88808feb4000, ffff88808feb6000)
 The buggy address belongs to the page:
-page:ffffea0002928b80 refcount:1 mapcount:0 mapping:ffff8880aa400e00  
-index:0x0
-flags: 0x1fffc0000000200(slab)
-raw: 01fffc0000000200 ffffea0002a48588 ffffea0002443f48 ffff8880aa400e00
-raw: 0000000000000000 ffff8880a4a2e000 0000000100000001 0000000000000000
+page:ffffea00023fad00 refcount:1 mapcount:0 mapping:ffff8880aa4021c0  
+index:0x0 compound_mapcount: 0
+flags: 0x1fffc0000010200(slab|head)
+raw: 01fffc0000010200 ffffea00024cc108 ffffea0002781e08 ffff8880aa4021c0
+raw: 0000000000000000 ffff88808feb4000 0000000100000001 0000000000000000
 page dumped because: kasan: bad access detected
 
 Memory state around the buggy address:
-  ffff8880a4a2e380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff8880a4a2e400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff8880a4a2e480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                            ^
-  ffff8880a4a2e500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff8880a4a2e580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff88808feb4f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff88808feb5000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ffff88808feb5080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                    ^
+  ffff88808feb5100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff88808feb5180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
 ==================================================================
 
 
@@ -167,5 +150,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this bug report. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
