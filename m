@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 32/33] can: mcp251x: mcp251x_restart_work_handler(): Fix potential force_quit race condition
-Date: Tue,  5 Nov 2019 17:32:14 +0100
-Message-ID: <20191105163215.30194-33-mkl@pengutronix.de>
+Subject: [PATCH 13/33] can: rx-offload: can_rx_offload_queue_sorted(): fix error handling, avoid skb mem leak
+Date: Tue,  5 Nov 2019 17:31:55 +0100
+Message-ID: <20191105163215.30194-14-mkl@pengutronix.de>
 References: <20191105163215.30194-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -10,43 +10,47 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, =?UTF-8?q?Timo=20Schl=C3=BC=C3=9Fler?= <schluessler@krause.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, linux-stable <stable@vger.kernel.org>, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Timo Schlüßler <schluessler@krause.de>
+If the rx-offload skb_queue is full can_rx_offload_queue_sorted() will
+not queue the skb and return with an error.
 
-In mcp251x_restart_work_handler() the variable to stop the interrupt
-handler (priv->force_quit) is reset after the chip is restarted and thus
-a interrupt might occur.
+None of the callers of this function, issue a kfree_skb() to free the
+not queued skb. This results in a memory leak.
 
-This patch fixes the potential race condition by resetting force_quit
-before enabling interrupts.
+This patch fixes the problem by freeing the skb in case of a full queue.
+The return value is adjusted to -ENOBUFS to better reflect the actual
+problem.
 
-Signed-off-by: Timo Schlüßler <schluessler@krause.de>
+The device stats handling is left to the callers, as this function might
+be used in both the rx and tx path.
+
+Fixes: 55059f2b7f86 ("can: rx-offload: introduce can_rx_offload_get_echo_skb() and can_rx_offload_queue_sorted() functions")
+Cc: linux-stable <stable@vger.kernel.org>
+Cc: Martin Hundebøll <martin@geanix.com>
+Reported-by: Martin Hundebøll <martin@geanix.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/rx-offload.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index bee9f7b8dad6..bb20a9b75cc6 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -717,6 +717,7 @@ static void mcp251x_restart_work_handler(struct work_struct *ws)
- 	if (priv->after_suspend) {
- 		mcp251x_hw_reset(spi);
- 		mcp251x_setup(net, spi);
-+		priv->force_quit = 0;
- 		if (priv->after_suspend & AFTER_SUSPEND_RESTART) {
- 			mcp251x_set_normal_mode(spi);
- 		} else if (priv->after_suspend & AFTER_SUSPEND_UP) {
-@@ -728,7 +729,6 @@ static void mcp251x_restart_work_handler(struct work_struct *ws)
- 			mcp251x_hw_sleep(spi);
- 		}
- 		priv->after_suspend = 0;
--		priv->force_quit = 0;
- 	}
+diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
+index e6a668ee7730..663697439d1c 100644
+--- a/drivers/net/can/rx-offload.c
++++ b/drivers/net/can/rx-offload.c
+@@ -207,8 +207,10 @@ int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
+ 	unsigned long flags;
  
- 	if (priv->restart_tx) {
+ 	if (skb_queue_len(&offload->skb_queue) >
+-	    offload->skb_queue_len_max)
+-		return -ENOMEM;
++	    offload->skb_queue_len_max) {
++		kfree_skb(skb);
++		return -ENOBUFS;
++	}
+ 
+ 	cb = can_rx_offload_get_cb(skb);
+ 	cb->timestamp = timestamp;
 -- 
 2.24.0.rc1
