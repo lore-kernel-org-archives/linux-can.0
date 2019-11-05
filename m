@@ -1,81 +1,45 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 11/33] can: c_can: C_CAN: add bus recovery events
-Date: Tue,  5 Nov 2019 17:31:53 +0100
-Message-ID: <20191105163215.30194-12-mkl@pengutronix.de>
+Subject: [PATCH 04/33] can: usb_8dev: fix use-after-free on disconnect
+Date: Tue,  5 Nov 2019 17:31:46 +0100
+Message-ID: <20191105163215.30194-5-mkl@pengutronix.de>
 References: <20191105163215.30194-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Jeroen Hofstee <jhofstee@victronenergy.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Johan Hovold <johan@kernel.org>, stable <stable@vger.kernel.org>, Bernd Krumboeck <b.krumboeck@gmail.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Jeroen Hofstee <jhofstee@victronenergy.com>
+From: Johan Hovold <johan@kernel.org>
 
-While the state is updated when the error counters increase and
-decrease, there is no event when the bus recovers and the error counters
-decrease again. So add that event as well.
+The driver was accessing its driver data after having freed it.
 
-Change the state going downward to be ERROR_PASSIVE -> ERROR_WARNING ->
-ERROR_ACTIVE instead of directly to ERROR_ACTIVE again.
-
-Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
-Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Tested-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Fixes: 0024d8ad1639 ("can: usb_8dev: Add support for USB2CAN interface from 8 devices")
+Cc: stable <stable@vger.kernel.org>     # 3.9
+Cc: Bernd Krumboeck <b.krumboeck@gmail.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/usb_8dev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 24c6015f6c92..8e9f5620c9a2 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -915,6 +915,9 @@ static int c_can_handle_state_change(struct net_device *dev,
- 	struct can_berr_counter bec;
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index d596a2ad7f78..8fa224b28218 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -996,9 +996,8 @@ static void usb_8dev_disconnect(struct usb_interface *intf)
+ 		netdev_info(priv->netdev, "device disconnected\n");
  
- 	switch (error_type) {
-+	case C_CAN_NO_ERROR:
-+		priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+		break;
- 	case C_CAN_ERROR_WARNING:
- 		/* error warning state */
- 		priv->can.can_stats.error_warning++;
-@@ -945,6 +948,13 @@ static int c_can_handle_state_change(struct net_device *dev,
- 				ERR_CNT_RP_SHIFT;
- 
- 	switch (error_type) {
-+	case C_CAN_NO_ERROR:
-+		/* error warning state */
-+		cf->can_id |= CAN_ERR_CRTL;
-+		cf->data[1] = CAN_ERR_CRTL_ACTIVE;
-+		cf->data[6] = bec.txerr;
-+		cf->data[7] = bec.rxerr;
-+		break;
- 	case C_CAN_ERROR_WARNING:
- 		/* error warning state */
- 		cf->can_id |= CAN_ERR_CRTL;
-@@ -1089,11 +1099,17 @@ static int c_can_poll(struct napi_struct *napi, int quota)
- 	/* handle bus recovery events */
- 	if ((!(curr & STATUS_BOFF)) && (last & STATUS_BOFF)) {
- 		netdev_dbg(dev, "left bus off state\n");
--		priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+		work_done += c_can_handle_state_change(dev, C_CAN_ERROR_PASSIVE);
- 	}
-+
- 	if ((!(curr & STATUS_EPASS)) && (last & STATUS_EPASS)) {
- 		netdev_dbg(dev, "left error passive state\n");
--		priv->can.state = CAN_STATE_ERROR_ACTIVE;
-+		work_done += c_can_handle_state_change(dev, C_CAN_ERROR_WARNING);
-+	}
-+
-+	if ((!(curr & STATUS_EWARN)) && (last & STATUS_EWARN)) {
-+		netdev_dbg(dev, "left error warning state\n");
-+		work_done += c_can_handle_state_change(dev, C_CAN_NO_ERROR);
+ 		unregister_netdev(priv->netdev);
+-		free_candev(priv->netdev);
+-
+ 		unlink_all_urbs(priv);
++		free_candev(priv->netdev);
  	}
  
- 	/* handle lec errors on the bus */
+ }
 -- 
 2.24.0.rc1
