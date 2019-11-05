@@ -1,15 +1,16 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 21/33] can: ti_hecc: ti_hecc_error(): increase error counters if skb enqueueing via can_rx_offload_queue_sorted() fails
-Date: Tue,  5 Nov 2019 17:32:03 +0100
-Message-ID: <20191105163215.30194-22-mkl@pengutronix.de>
+Subject: [PATCH 20/33] can: flexcan: increase error counters if skb enqueueing via can_rx_offload_queue_sorted() fails
+Date: Tue,  5 Nov 2019 17:32:02 +0100
+Message-ID: <20191105163215.30194-21-mkl@pengutronix.de>
 References: <20191105163215.30194-1-mkl@pengutronix.de>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
 List-Id: linux-can.vger.kernel.org
 
 The call to can_rx_offload_queue_sorted() may fail and return an error
@@ -19,33 +20,53 @@ is consumed.
 This patch adds incrementing of the appropriate error counters to let
 the device statistics reflect that there's a problem.
 
+Reported-by: Martin Hundebøll <martin@geanix.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ti_hecc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index f8b19eef5d26..91188e6d4f78 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -558,6 +558,7 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 1cd5179cb876..57f9a2f51085 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -677,6 +677,7 @@ static void flexcan_irq_bus_err(struct net_device *dev, u32 reg_esr)
  	struct can_frame *cf;
- 	struct sk_buff *skb;
+ 	bool rx_errors = false, tx_errors = false;
  	u32 timestamp;
 +	int err;
  
- 	/* propagate the error condition to the can stack */
- 	skb = alloc_can_err_skb(ndev, &cf);
-@@ -639,7 +640,9 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
- 	}
+ 	timestamp = priv->read(&regs->timer) << 16;
  
- 	timestamp = hecc_read(priv, HECC_CANLNT);
+@@ -725,7 +726,9 @@ static void flexcan_irq_bus_err(struct net_device *dev, u32 reg_esr)
+ 	if (tx_errors)
+ 		dev->stats.tx_errors++;
+ 
 -	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
 +	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
 +	if (err)
-+		ndev->stats.rx_fifo_errors++;
- 
- 	return 0;
++		dev->stats.rx_fifo_errors++;
  }
+ 
+ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
+@@ -738,6 +741,7 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
+ 	int flt;
+ 	struct can_berr_counter bec;
+ 	u32 timestamp;
++	int err;
+ 
+ 	timestamp = priv->read(&regs->timer) << 16;
+ 
+@@ -769,7 +773,9 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
+ 	if (unlikely(new_state == CAN_STATE_BUS_OFF))
+ 		can_bus_off(dev);
+ 
+-	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
++	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
++	if (err)
++		dev->stats.rx_fifo_errors++;
+ }
+ 
+ static inline struct flexcan_priv *rx_offload_to_priv(struct can_rx_offload *offload)
 -- 
 2.24.0.rc1
