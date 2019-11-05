@@ -1,72 +1,54 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 20/33] can: flexcan: increase error counters if skb enqueueing via can_rx_offload_queue_sorted() fails
-Date: Tue,  5 Nov 2019 17:32:02 +0100
-Message-ID: <20191105163215.30194-21-mkl@pengutronix.de>
+Subject: [PATCH 22/33] can: ti_hecc: ti_hecc_stop(): stop the CPK on down
+Date: Tue,  5 Nov 2019 17:32:04 +0100
+Message-ID: <20191105163215.30194-23-mkl@pengutronix.de>
 References: <20191105163215.30194-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Jeroen Hofstee <jhofstee@victronenergy.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-The call to can_rx_offload_queue_sorted() may fail and return an error
-(in the current implementation due to resource shortage). The passed skb
-is consumed.
+From: Jeroen Hofstee <jhofstee@victronenergy.com>
 
-This patch adds incrementing of the appropriate error counters to let
-the device statistics reflect that there's a problem.
+When the interface goes down, the CPK should no longer take an active
+part in the CAN-bus communication, like sending acks and error frames.
+So enable configuration mode in ti_hecc_stop, so the CPK is no longer
+active.
 
-Reported-by: Martin Hundebøll <martin@geanix.com>
+When a transceiver switch is present the acks and errors don't make it
+to the bus, but disabling the CPK then does prevent oddities, like
+ti_hecc_reset() failing, since the CPK can become bus-off and starts
+counting the 11 bit recessive bits, which seems to block the reset. It
+can also cause invalid interrupts and disrupt the CAN-bus, since
+transmission can be stopped in the middle of a message, by disabling the
+tranceiver while the CPK is sending.
+
+Since the CPK is disabled after normal power on, it is typically only
+seen when the interface is restarted.
+
+Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/net/can/ti_hecc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 1cd5179cb876..57f9a2f51085 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -677,6 +677,7 @@ static void flexcan_irq_bus_err(struct net_device *dev, u32 reg_esr)
- 	struct can_frame *cf;
- 	bool rx_errors = false, tx_errors = false;
- 	u32 timestamp;
-+	int err;
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 91188e6d4f78..eb8151154083 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -400,6 +400,9 @@ static void ti_hecc_stop(struct net_device *ndev)
+ {
+ 	struct ti_hecc_priv *priv = netdev_priv(ndev);
  
- 	timestamp = priv->read(&regs->timer) << 16;
- 
-@@ -725,7 +726,9 @@ static void flexcan_irq_bus_err(struct net_device *dev, u32 reg_esr)
- 	if (tx_errors)
- 		dev->stats.tx_errors++;
- 
--	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	if (err)
-+		dev->stats.rx_fifo_errors++;
- }
- 
- static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
-@@ -738,6 +741,7 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
- 	int flt;
- 	struct can_berr_counter bec;
- 	u32 timestamp;
-+	int err;
- 
- 	timestamp = priv->read(&regs->timer) << 16;
- 
-@@ -769,7 +773,9 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
- 	if (unlikely(new_state == CAN_STATE_BUS_OFF))
- 		can_bus_off(dev);
- 
--	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
-+	if (err)
-+		dev->stats.rx_fifo_errors++;
- }
- 
- static inline struct flexcan_priv *rx_offload_to_priv(struct can_rx_offload *offload)
++	/* Disable the CPK; stop sending, erroring and acking */
++	hecc_set_bit(priv, HECC_CANMC, HECC_CANMC_CCR);
++
+ 	/* Disable interrupts and disable mailboxes */
+ 	hecc_write(priv, HECC_CANGIM, 0);
+ 	hecc_write(priv, HECC_CANMIM, 0);
 -- 
 2.24.0.rc1
