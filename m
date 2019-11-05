@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 14/33] can: rx-offload: can_rx_offload_queue_tail(): fix error handling, avoid skb mem leak
-Date: Tue,  5 Nov 2019 17:31:56 +0100
-Message-ID: <20191105163215.30194-15-mkl@pengutronix.de>
+Subject: [PATCH 30/33] can: j1939: transport: j1939_session_fresh_new(): make sure EOMA is send with the total message size set
+Date: Tue,  5 Nov 2019 17:32:12 +0100
+Message-ID: <20191105163215.30194-31-mkl@pengutronix.de>
 References: <20191105163215.30194-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,45 +9,35 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-If the rx-offload skb_queue is full can_rx_offload_queue_tail() will not
-queue the skb and return with an error.
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-This patch frees the skb in case of a full queue, which brings
-can_rx_offload_queue_tail() in line with the
-can_rx_offload_queue_sorted() function, which has been adjusted in the
-previous patch.
+We were sending malformed EOMA messageswith total message size set to 0.
 
-The return value is adjusted to -ENOBUFS to better reflect the actual
-problem.
+This patch fixes the bug.
 
-The device stats handling is left to the caller.
-
-Fixes: d254586c3453 ("can: rx-offload: Add support for HW fifo based irq offloading")
-Reported-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Reported-by: https://github.com/linux-can/can-utils/issues/159
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rx-offload.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/can/j1939/transport.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
-index 663697439d1c..d1c863409945 100644
---- a/drivers/net/can/rx-offload.c
-+++ b/drivers/net/can/rx-offload.c
-@@ -252,8 +252,10 @@ int can_rx_offload_queue_tail(struct can_rx_offload *offload,
- 			      struct sk_buff *skb)
- {
- 	if (skb_queue_len(&offload->skb_queue) >
--	    offload->skb_queue_len_max)
--		return -ENOMEM;
-+	    offload->skb_queue_len_max) {
-+		kfree_skb(skb);
-+		return -ENOBUFS;
-+	}
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index fe000ea757ea..06183d6f4fb7 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1432,7 +1432,7 @@ j1939_session *j1939_session_fresh_new(struct j1939_priv *priv,
+ 	skcb = j1939_skb_to_cb(skb);
+ 	memcpy(skcb, rel_skcb, sizeof(*skcb));
  
- 	skb_queue_tail(&offload->skb_queue, skb);
- 	can_rx_offload_schedule(offload);
+-	session = j1939_session_new(priv, skb, skb->len);
++	session = j1939_session_new(priv, skb, size);
+ 	if (!session) {
+ 		kfree_skb(skb);
+ 		return NULL;
 -- 
 2.24.0.rc1
