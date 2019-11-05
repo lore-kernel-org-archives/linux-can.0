@@ -1,12 +1,12 @@
-From: syzbot <syzbot+d9536adc269404a984f8@syzkaller.appspotmail.com>
-Subject: KASAN: use-after-free Read in j1939_session_get_by_addr
-Date: Mon, 04 Nov 2019 20:22:09 -0800
-Message-ID: <0000000000009393ba059691c6a3@google.com>
+From: syzbot <syzbot+95c8e0d9dffde15b6c5c@syzkaller.appspotmail.com>
+Subject: general protection fault in j1939_netdev_notify
+Date: Mon, 04 Nov 2019 20:22:10 -0800
+Message-ID: <0000000000009e481a059691c6fe@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: bst@pengutronix.de, davem@davemloft.net, dev.kurt@vandijck-laurijssen.be, ecathinds@gmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, lkp@intel.com, maxime.jayat@mobile-devices.fr, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
 Hello,
@@ -15,133 +15,110 @@ syzbot found the following crash on:
 
 HEAD commit:    a99d8080 Linux 5.4-rc6
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d0cc58e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5e2eca3f31f9bf
-dashboard link: https://syzkaller.appspot.com/bug?extid=d9536adc269404a984f8
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1796b4dce00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142798dce00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14303cdce00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=896c87b73c6fcda6
+dashboard link: https://syzkaller.appspot.com/bug?extid=95c8e0d9dffde15b6c5c
+compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
+80fee25776c2fb61e74c1ecb1a523375c2500b69)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a4e444e00000
+
+The bug was bisected to:
+
+commit 9d71dd0c70099914fcd063135da3c580865e924c
+Author: The j1939 authors <linux-can@vger.kernel.org>
+Date:   Mon Oct 8 09:48:36 2018 +0000
+
+     can: add support of SAE J1939 protocol
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f90314e00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=16f90314e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12f90314e00000
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+d9536adc269404a984f8@syzkaller.appspotmail.com
+Reported-by: syzbot+95c8e0d9dffde15b6c5c@syzkaller.appspotmail.com
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 
-vcan0: j1939_xtp_rx_abort_one: 0x00000000a2ba57cc: 0x00000: (3) A timeout  
-occurred and this is the connection abort to close the session.
-vcan0: j1939_xtp_rx_abort_one: 0x00000000f495a5ef: 0x00000: (3) A timeout  
-occurred and this is the connection abort to close the session.
-==================================================================
-BUG: KASAN: use-after-free in __lock_acquire+0x3a8b/0x4a00  
-kernel/locking/lockdep.c:3828
-Read of size 8 at addr ffff888094225080 by task ksoftirqd/0/9
-
-CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.4.0-rc6 #0
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8092 Comm: syz-executor.0 Not tainted 5.4.0-rc6 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
 Google 01/01/2011
+RIP: 0010:j1939_ndev_to_priv net/can/j1939/main.c:210 [inline]
+RIP: 0010:j1939_priv_get_by_ndev_locked net/can/j1939/main.c:222 [inline]
+RIP: 0010:j1939_priv_get_by_ndev net/can/j1939/main.c:234 [inline]
+RIP: 0010:j1939_netdev_notify+0x10a/0x2c0 net/can/j1939/main.c:344
+Code: 88 05 00 00 4c 89 e0 48 c1 e8 03 42 80 3c 28 00 74 08 4c 89 e7 e8 36  
+95 fc fa bb 28 60 00 00 49 03 1c 24 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00  
+74 08 48 89 df e8 17 95 fc fa 4c 8b 2b 4d 85 ed 0f
+RSP: 0018:ffff8880a58579d0 EFLAGS: 00010206
+RAX: 0000000000000c05 RBX: 0000000000006028 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000118 RDI: 0000000000000118
+RBP: ffff8880a5857a00 R08: ffffffff86afeeb1 R09: ffffed1014b0af2f
+R10: ffffed1014b0af2f R11: 0000000000000000 R12: ffff8880a5a90588
+R13: dffffc0000000000 R14: ffff8880a5a9023c R15: 1ffff11014b52047
+FS:  0000000001356940(0000) GS:ffff8880aeb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1d28a0616b CR3: 0000000099ed7000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
-  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
-  kasan_report+0x12/0x20 mm/kasan/common.c:634
-  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
-  __lock_acquire+0x3a8b/0x4a00 kernel/locking/lockdep.c:3828
-  lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4487
-  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-  _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
-  spin_lock_bh include/linux/spinlock.h:343 [inline]
-  j1939_session_list_lock net/can/j1939/transport.c:238 [inline]
-  j1939_session_get_by_addr+0x2d/0x60 net/can/j1939/transport.c:530
-  j1939_xtp_rx_abort_one+0x8d/0x100 net/can/j1939/transport.c:1242
-  j1939_xtp_rx_abort net/can/j1939/transport.c:1270 [inline]
-  j1939_tp_cmd_recv net/can/j1939/transport.c:1943 [inline]
-  j1939_tp_recv+0x513/0x9b0 net/can/j1939/transport.c:1973
-  j1939_can_recv+0x4bb/0x620 net/can/j1939/main.c:100
-  deliver net/can/af_can.c:568 [inline]
-  can_rcv_filter+0x292/0x8e0 net/can/af_can.c:602
-  can_receive+0x2e7/0x530 net/can/af_can.c:659
-  can_rcv+0x133/0x1b0 net/can/af_can.c:685
-  __netif_receive_skb_one_core+0x113/0x1a0 net/core/dev.c:4929
-  __netif_receive_skb+0x2c/0x1d0 net/core/dev.c:5043
-  process_backlog+0x206/0x750 net/core/dev.c:5874
-  napi_poll net/core/dev.c:6311 [inline]
-  net_rx_action+0x508/0x1120 net/core/dev.c:6379
-  __do_softirq+0x262/0x98c kernel/softirq.c:292
-  run_ksoftirqd kernel/softirq.c:603 [inline]
-  run_ksoftirqd+0x8e/0x110 kernel/softirq.c:595
-  smpboot_thread_fn+0x6a3/0xa40 kernel/smpboot.c:165
-  kthread+0x361/0x430 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-
-Allocated by task 9736:
-  save_stack+0x23/0x90 mm/kasan/common.c:69
-  set_track mm/kasan/common.c:77 [inline]
-  __kasan_kmalloc mm/kasan/common.c:510 [inline]
-  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:483
-  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:524
-  kmem_cache_alloc_trace+0x158/0x790 mm/slab.c:3550
-  kmalloc include/linux/slab.h:556 [inline]
-  kzalloc include/linux/slab.h:690 [inline]
-  j1939_priv_create net/can/j1939/main.c:122 [inline]
-  j1939_netdev_start+0xa4/0x550 net/can/j1939/main.c:251
-  j1939_sk_bind+0x65a/0x8e0 net/can/j1939/socket.c:438
-  __sys_bind+0x239/0x290 net/socket.c:1647
-  __do_sys_bind net/socket.c:1658 [inline]
-  __se_sys_bind net/socket.c:1656 [inline]
-  __x64_sys_bind+0x73/0xb0 net/socket.c:1656
-  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  notifier_call_chain kernel/notifier.c:95 [inline]
+  __raw_notifier_call_chain kernel/notifier.c:396 [inline]
+  raw_notifier_call_chain+0xec/0x190 kernel/notifier.c:403
+  call_netdevice_notifiers_info net/core/dev.c:1668 [inline]
+  call_netdevice_notifiers_extack net/core/dev.c:1680 [inline]
+  call_netdevice_notifiers net/core/dev.c:1694 [inline]
+  rollback_registered_many+0xbd6/0x11c0 net/core/dev.c:8522
+  rollback_registered net/core/dev.c:8564 [inline]
+  unregister_netdevice_queue+0x2ce/0x480 net/core/dev.c:9656
+  unregister_netdevice include/linux/netdevice.h:2637 [inline]
+  unregister_netdev+0x1c/0x30 net/core/dev.c:9697
+  slip_close+0x160/0x190 drivers/net/slip/slip.c:895
+  tty_ldisc_close+0x126/0x180 drivers/tty/tty_ldisc.c:494
+  tty_ldisc_kill drivers/tty/tty_ldisc.c:642 [inline]
+  tty_ldisc_release+0x248/0x5a0 drivers/tty/tty_ldisc.c:814
+  tty_release_struct+0x2a/0xe0 drivers/tty/tty_io.c:1612
+  tty_release+0xce9/0xfa0 drivers/tty/tty_io.c:1785
+  __fput+0x2e4/0x740 fs/file_table.c:280
+  ____fput+0x15/0x20 fs/file_table.c:313
+  task_work_run+0x17e/0x1b0 kernel/task_work.c:113
+  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+  exit_to_usermode_loop arch/x86/entry/common.c:163 [inline]
+  prepare_exit_to_usermode+0x459/0x580 arch/x86/entry/common.c:194
+  syscall_return_slowpath+0x113/0x4a0 arch/x86/entry/common.c:274
+  do_syscall_64+0x11f/0x1c0 arch/x86/entry/common.c:300
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 9:
-  save_stack+0x23/0x90 mm/kasan/common.c:69
-  set_track mm/kasan/common.c:77 [inline]
-  kasan_set_free_info mm/kasan/common.c:332 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:471
-  kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
-  __cache_free mm/slab.c:3425 [inline]
-  kfree+0x10a/0x2c0 mm/slab.c:3756
-  __j1939_priv_release net/can/j1939/main.c:154 [inline]
-  kref_put include/linux/kref.h:65 [inline]
-  j1939_priv_put+0x8b/0xb0 net/can/j1939/main.c:159
-  j1939_session_destroy net/can/j1939/transport.c:271 [inline]
-  __j1939_session_release net/can/j1939/transport.c:280 [inline]
-  kref_put include/linux/kref.h:65 [inline]
-  j1939_session_put+0x12c/0x180 net/can/j1939/transport.c:285
-  j1939_xtp_rx_abort_one+0xc7/0x100 net/can/j1939/transport.c:1261
-  j1939_xtp_rx_abort net/can/j1939/transport.c:1269 [inline]
-  j1939_tp_cmd_recv net/can/j1939/transport.c:1943 [inline]
-  j1939_tp_recv+0x4fb/0x9b0 net/can/j1939/transport.c:1973
-  j1939_can_recv+0x4bb/0x620 net/can/j1939/main.c:100
-  deliver net/can/af_can.c:568 [inline]
-  can_rcv_filter+0x292/0x8e0 net/can/af_can.c:602
-  can_receive+0x2e7/0x530 net/can/af_can.c:659
-  can_rcv+0x133/0x1b0 net/can/af_can.c:685
-  __netif_receive_skb_one_core+0x113/0x1a0 net/core/dev.c:4929
-  __netif_receive_skb+0x2c/0x1d0 net/core/dev.c:5043
-  process_backlog+0x206/0x750 net/core/dev.c:5874
-  napi_poll net/core/dev.c:6311 [inline]
-  net_rx_action+0x508/0x1120 net/core/dev.c:6379
-  __do_softirq+0x262/0x98c kernel/softirq.c:292
-
-The buggy address belongs to the object at ffff888094224000
-  which belongs to the cache kmalloc-8k of size 8192
-The buggy address is located 4224 bytes inside of
-  8192-byte region [ffff888094224000, ffff888094226000)
-The buggy address belongs to the page:
-page:ffffea0002508900 refcount:1 mapcount:0 mapping:ffff8880aa4021c0  
-index:0x0 compound_mapcount: 0
-flags: 0x1fffc0000010200(slab|head)
-raw: 01fffc0000010200 ffffea000252a808 ffffea000232f808 ffff8880aa4021c0
-raw: 0000000000000000 ffff888094224000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff888094224f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff888094225000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff888094225080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                    ^
-  ffff888094225100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff888094225180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+RIP: 0033:0x413d90
+Code: 01 f0 ff ff 0f 83 30 1b 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f  
+44 00 00 83 3d 7d 42 66 00 00 75 14 b8 03 00 00 00 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff
+RSP: 002b:00007ffec2dd6688 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000413d90
+RDX: 0000001b33020000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000001 R08: 0000000000000000 R09: ffffffffffffffff
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000075bf20
+R13: 0000000000000003 R14: 00000000007601c8 R15: 000000000075bf2c
+Modules linked in:
+---[ end trace 8207e28d10fcf54c ]---
+RIP: 0010:j1939_ndev_to_priv net/can/j1939/main.c:210 [inline]
+RIP: 0010:j1939_priv_get_by_ndev_locked net/can/j1939/main.c:222 [inline]
+RIP: 0010:j1939_priv_get_by_ndev net/can/j1939/main.c:234 [inline]
+RIP: 0010:j1939_netdev_notify+0x10a/0x2c0 net/can/j1939/main.c:344
+Code: 88 05 00 00 4c 89 e0 48 c1 e8 03 42 80 3c 28 00 74 08 4c 89 e7 e8 36  
+95 fc fa bb 28 60 00 00 49 03 1c 24 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00  
+74 08 48 89 df e8 17 95 fc fa 4c 8b 2b 4d 85 ed 0f
+RSP: 0018:ffff8880a58579d0 EFLAGS: 00010206
+RAX: 0000000000000c05 RBX: 0000000000006028 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000118 RDI: 0000000000000118
+RBP: ffff8880a5857a00 R08: ffffffff86afeeb1 R09: ffffed1014b0af2f
+R10: ffffed1014b0af2f R11: 0000000000000000 R12: ffff8880a5a90588
+R13: dffffc0000000000 R14: ffff8880a5a9023c R15: 1ffff11014b52047
+FS:  0000000001356940(0000) GS:ffff8880aeb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1d28a0616b CR3: 0000000099ed7000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -151,5 +128,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this bug report. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this bug, for details see:
 https://goo.gl/tpsmEJ#testing-patches
