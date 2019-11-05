@@ -1,7 +1,7 @@
-From: syzbot <syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com>
-Subject: general protection fault in j1939_jsk_del
-Date: Mon, 04 Nov 2019 20:22:09 -0800
-Message-ID: <000000000000994f3c059691c676@google.com>
+From: syzbot <syzbot+07bb74aeafc88ba7d5b4@syzkaller.appspotmail.com>
+Subject: KASAN: use-after-free Write in j1939_sock_pending_del
+Date: Mon, 04 Nov 2019 21:32:08 -0800
+Message-ID: <000000000000de1eec059692c021@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -15,76 +15,149 @@ syzbot found the following crash on:
 
 HEAD commit:    a99d8080 Linux 5.4-rc6
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1296b4dce00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5e2eca3f31f9bf
-dashboard link: https://syzkaller.appspot.com/bug?extid=6d04f6a1b31a0ae12ca9
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1450cc58e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=169c59b2e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=896c87b73c6fcda6
+dashboard link: https://syzkaller.appspot.com/bug?extid=07bb74aeafc88ba7d5b4
+compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
+80fee25776c2fb61e74c1ecb1a523375c2500b69)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16fd7044e00000
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com
+Reported-by: syzbot+07bb74aeafc88ba7d5b4@syzkaller.appspotmail.com
 
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 9046 Comm: syz-executor.0 Not tainted 5.4.0-rc6 #0
+vcan0: j1939_xtp_rx_abort_one: 0x00000000b4d8b78c: 0x00000: (2) System  
+resources were needed for another task so this connection managed session  
+was terminated.
+vcan0: j1939_xtp_rx_abort_one: 0x00000000dadb7e22: 0x00000: (2) System  
+resources were needed for another task so this connection managed session  
+was terminated.
+==================================================================
+BUG: KASAN: use-after-free in atomic_sub_return  
+include/asm-generic/atomic-instrumented.h:159 [inline]
+BUG: KASAN: use-after-free in atomic_dec_return  
+include/linux/atomic-fallback.h:455 [inline]
+BUG: KASAN: use-after-free in j1939_sock_pending_del+0x20/0x70  
+net/can/j1939/socket.c:73
+Write of size 4 at addr ffff8880a4a2e4c0 by task ksoftirqd/1/16
+
+CPU: 1 PID: 16 Comm: ksoftirqd/1 Not tainted 5.4.0-rc6 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
 Google 01/01/2011
-RIP: 0010:__lock_acquire+0x1254/0x4a00 kernel/locking/lockdep.c:3828
-Code: 00 0f 85 96 24 00 00 48 81 c4 f0 00 00 00 5b 41 5c 41 5d 41 5e 41 5f  
-5d c3 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f  
-85 0b 28 00 00 49 81 3e e0 85 06 8a 0f 84 5f ee ff
-RSP: 0018:ffff8880894c7b48 EFLAGS: 00010006
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000218 RSI: 0000000000000000 RDI: 0000000000000001
-RBP: ffff8880894c7c60 R08: 0000000000000001 R09: 0000000000000001
-R10: fffffbfff138cd40 R11: ffff888091c120c0 R12: 00000000000010c0
-R13: 0000000000000000 R14: 00000000000010c0 R15: 0000000000000000
-FS:  00007f32e6337700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd8dbf57000 CR3: 00000000a0e72000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
-  lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4487
-  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-  _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
-  spin_lock_bh include/linux/spinlock.h:343 [inline]
-  j1939_jsk_del+0x32/0x240 net/can/j1939/socket.c:90
-  j1939_sk_bind+0x2e2/0x8e0 net/can/j1939/socket.c:421
-  __sys_bind+0x239/0x290 net/socket.c:1647
-  __do_sys_bind net/socket.c:1658 [inline]
-  __se_sys_bind net/socket.c:1656 [inline]
-  __x64_sys_bind+0x73/0xb0 net/socket.c:1656
-  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x1d8/0x2f8 lib/dump_stack.c:113
+  print_address_description+0x75/0x5c0 mm/kasan/report.c:374
+  __kasan_report+0x14b/0x1c0 mm/kasan/report.c:506
+  kasan_report+0x26/0x50 mm/kasan/common.c:634
+  check_memory_region_inline mm/kasan/generic.c:182 [inline]
+  check_memory_region+0x2cf/0x2e0 mm/kasan/generic.c:192
+  __kasan_check_write+0x14/0x20 mm/kasan/common.c:98
+  atomic_sub_return include/asm-generic/atomic-instrumented.h:159 [inline]
+  atomic_dec_return include/linux/atomic-fallback.h:455 [inline]
+  j1939_sock_pending_del+0x20/0x70 net/can/j1939/socket.c:73
+  __j1939_session_drop net/can/j1939/transport.c:257 [inline]
+  j1939_session_destroy net/can/j1939/transport.c:270 [inline]
+  __j1939_session_release net/can/j1939/transport.c:280 [inline]
+  kref_put include/linux/kref.h:65 [inline]
+  j1939_session_put+0xd2/0x150 net/can/j1939/transport.c:285
+  j1939_xtp_rx_abort_one+0xd3/0x3f0 net/can/j1939/transport.c:1261
+  j1939_xtp_rx_abort net/can/j1939/transport.c:1269 [inline]
+  j1939_tp_cmd_recv net/can/j1939/transport.c:1940 [inline]
+  j1939_tp_recv+0x633/0xb80 net/can/j1939/transport.c:1973
+  j1939_can_recv+0x424/0x650 net/can/j1939/main.c:100
+  deliver net/can/af_can.c:568 [inline]
+  can_rcv_filter+0x3c0/0x8b0 net/can/af_can.c:602
+  can_receive+0x2ac/0x3b0 net/can/af_can.c:659
+  can_rcv+0xe4/0x220 net/can/af_can.c:685
+  __netif_receive_skb_one_core net/core/dev.c:4929 [inline]
+  __netif_receive_skb+0x136/0x370 net/core/dev.c:5043
+  process_backlog+0x4d8/0x930 net/core/dev.c:5874
+  napi_poll net/core/dev.c:6311 [inline]
+  net_rx_action+0x5ef/0x10d0 net/core/dev.c:6379
+  __do_softirq+0x333/0x7c4 arch/x86/include/asm/paravirt.h:766
+  run_ksoftirqd+0x64/0xf0 kernel/softirq.c:603
+  smpboot_thread_fn+0x5b3/0x9a0 kernel/smpboot.c:165
+  kthread+0x332/0x350 kernel/kthread.c:255
+  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+Allocated by task 8435:
+  save_stack mm/kasan/common.c:69 [inline]
+  set_track mm/kasan/common.c:77 [inline]
+  __kasan_kmalloc+0x11c/0x1b0 mm/kasan/common.c:510
+  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:524
+  __do_kmalloc mm/slab.c:3655 [inline]
+  __kmalloc+0x254/0x340 mm/slab.c:3664
+  kmalloc include/linux/slab.h:561 [inline]
+  sk_prot_alloc+0xb0/0x290 net/core/sock.c:1605
+  sk_alloc+0x38/0x950 net/core/sock.c:1659
+  can_create+0x1de/0x480 net/can/af_can.c:157
+  __sock_create+0x5cc/0x910 net/socket.c:1418
+  sock_create net/socket.c:1469 [inline]
+  __sys_socket+0xe7/0x2e0 net/socket.c:1511
+  __do_sys_socket net/socket.c:1520 [inline]
+  __se_sys_socket net/socket.c:1518 [inline]
+  __x64_sys_socket+0x7a/0x90 net/socket.c:1518
+  do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:290
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x45a219
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f32e6336c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045a219
-RDX: 0000000000000018 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 000000000075bfc8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f32e63376d4
-R13: 00000000004c057e R14: 00000000004d2c50 R15: 00000000ffffffff
-Modules linked in:
----[ end trace 2db5662cc5070619 ]---
-RIP: 0010:__lock_acquire+0x1254/0x4a00 kernel/locking/lockdep.c:3828
-Code: 00 0f 85 96 24 00 00 48 81 c4 f0 00 00 00 5b 41 5c 41 5d 41 5e 41 5f  
-5d c3 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f  
-85 0b 28 00 00 49 81 3e e0 85 06 8a 0f 84 5f ee ff
-RSP: 0018:ffff8880894c7b48 EFLAGS: 00010006
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000218 RSI: 0000000000000000 RDI: 0000000000000001
-RBP: ffff8880894c7c60 R08: 0000000000000001 R09: 0000000000000001
-R10: fffffbfff138cd40 R11: ffff888091c120c0 R12: 00000000000010c0
-R13: 0000000000000000 R14: 00000000000010c0 R15: 0000000000000000
-FS:  00007f32e6337700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd8dbf57000 CR3: 00000000a0e72000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+Freed by task 16:
+  save_stack mm/kasan/common.c:69 [inline]
+  set_track mm/kasan/common.c:77 [inline]
+  kasan_set_free_info mm/kasan/common.c:332 [inline]
+  __kasan_slab_free+0x12a/0x1e0 mm/kasan/common.c:471
+  kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
+  __cache_free mm/slab.c:3425 [inline]
+  kfree+0x115/0x200 mm/slab.c:3756
+  sk_prot_free net/core/sock.c:1642 [inline]
+  __sk_destruct+0x523/0x620 net/core/sock.c:1726
+  sk_destruct net/core/sock.c:1741 [inline]
+  __sk_free+0x35d/0x430 net/core/sock.c:1752
+  sock_wfree+0x106/0x140 net/core/sock.c:1968
+  skb_release_head_state+0x100/0x210 net/core/skbuff.c:652
+  skb_release_all net/core/skbuff.c:663 [inline]
+  __kfree_skb+0x25/0x170 net/core/skbuff.c:679
+  kfree_skb net/core/skbuff.c:697 [inline]
+  skb_queue_purge+0x1a6/0x260 net/core/skbuff.c:3078
+  j1939_session_destroy net/can/j1939/transport.c:269 [inline]
+  __j1939_session_release net/can/j1939/transport.c:280 [inline]
+  kref_put include/linux/kref.h:65 [inline]
+  j1939_session_put+0x7f/0x150 net/can/j1939/transport.c:285
+  j1939_xtp_rx_abort_one+0xd3/0x3f0 net/can/j1939/transport.c:1261
+  j1939_xtp_rx_abort net/can/j1939/transport.c:1269 [inline]
+  j1939_tp_cmd_recv net/can/j1939/transport.c:1940 [inline]
+  j1939_tp_recv+0x633/0xb80 net/can/j1939/transport.c:1973
+  j1939_can_recv+0x424/0x650 net/can/j1939/main.c:100
+  deliver net/can/af_can.c:568 [inline]
+  can_rcv_filter+0x3c0/0x8b0 net/can/af_can.c:602
+  can_receive+0x2ac/0x3b0 net/can/af_can.c:659
+  can_rcv+0xe4/0x220 net/can/af_can.c:685
+  __netif_receive_skb_one_core net/core/dev.c:4929 [inline]
+  __netif_receive_skb+0x136/0x370 net/core/dev.c:5043
+  process_backlog+0x4d8/0x930 net/core/dev.c:5874
+  napi_poll net/core/dev.c:6311 [inline]
+  net_rx_action+0x5ef/0x10d0 net/core/dev.c:6379
+  __do_softirq+0x333/0x7c4 arch/x86/include/asm/paravirt.h:766
+
+The buggy address belongs to the object at ffff8880a4a2e000
+  which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 1216 bytes inside of
+  2048-byte region [ffff8880a4a2e000, ffff8880a4a2e800)
+The buggy address belongs to the page:
+page:ffffea0002928b80 refcount:1 mapcount:0 mapping:ffff8880aa400e00  
+index:0x0
+flags: 0x1fffc0000000200(slab)
+raw: 01fffc0000000200 ffffea0002a48588 ffffea0002443f48 ffff8880aa400e00
+raw: 0000000000000000 ffff8880a4a2e000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff8880a4a2e380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff8880a4a2e400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ffff8880a4a2e480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                            ^
+  ffff8880a4a2e500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff8880a4a2e580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
 ---
