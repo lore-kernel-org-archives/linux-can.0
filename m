@@ -1,11 +1,11 @@
-From: syzbot <syzbot+4857323ec1bb236f6a45@syzkaller.appspotmail.com>
-Subject: general protection fault in j1939_sk_bind
-Date: Mon, 04 Nov 2019 20:22:10 -0800
-Message-ID: <000000000000a367e3059691c6b4@google.com>
+From: syzbot <syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com>
+Subject: general protection fault in j1939_jsk_del
+Date: Mon, 04 Nov 2019 20:22:09 -0800
+Message-ID: <000000000000994f3c059691c676@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
@@ -15,75 +15,74 @@ syzbot found the following crash on:
 
 HEAD commit:    a99d8080 Linux 5.4-rc6
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12a6b844e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=896c87b73c6fcda6
-dashboard link: https://syzkaller.appspot.com/bug?extid=4857323ec1bb236f6a45
-compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
-80fee25776c2fb61e74c1ecb1a523375c2500b69)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110a8b8ae00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1296b4dce00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5e2eca3f31f9bf
+dashboard link: https://syzkaller.appspot.com/bug?extid=6d04f6a1b31a0ae12ca9
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1450cc58e00000
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+4857323ec1bb236f6a45@syzkaller.appspotmail.com
+Reported-by: syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com
 
 kasan: CONFIG_KASAN_INLINE enabled
 kasan: GPF could be caused by NULL-ptr deref or user memory access
 general protection fault: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 8341 Comm: syz-executor.0 Not tainted 5.4.0-rc6 #0
+CPU: 1 PID: 9046 Comm: syz-executor.0 Not tainted 5.4.0-rc6 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
 Google 01/01/2011
-RIP: 0010:__lock_acquire+0x86/0x1be0 kernel/locking/lockdep.c:3828
-Code: 8a 04 30 84 c0 0f 85 66 12 00 00 83 3d 92 24 66 07 00 0f 84 91 12 00  
-00 83 3d 35 a6 34 07 00 74 34 48 8b 44 24 10 48 c1 e8 03 <80> 3c 30 00 74  
-14 48 8b 7c 24 10 e8 fa 13 54 00 48 be 00 00 00 00
-RSP: 0018:ffff88809865fb80 EFLAGS: 00010006
-RAX: 0000000000000218 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 00000000000010c0
-RBP: ffff88809865fcd8 R08: 0000000000000001 R09: 0000000000000000
-R10: fffffbfff117cc5d R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: ffff888098654700
-FS:  00007f68f3c1c700(0000) GS:ffff8880aea00000(0000) knlGS:0000000000000000
+RIP: 0010:__lock_acquire+0x1254/0x4a00 kernel/locking/lockdep.c:3828
+Code: 00 0f 85 96 24 00 00 48 81 c4 f0 00 00 00 5b 41 5c 41 5d 41 5e 41 5f  
+5d c3 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f  
+85 0b 28 00 00 49 81 3e e0 85 06 8a 0f 84 5f ee ff
+RSP: 0018:ffff8880894c7b48 EFLAGS: 00010006
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000218 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: ffff8880894c7c60 R08: 0000000000000001 R09: 0000000000000001
+R10: fffffbfff138cd40 R11: ffff888091c120c0 R12: 00000000000010c0
+R13: 0000000000000000 R14: 00000000000010c0 R15: 0000000000000000
+FS:  00007f32e6337700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000075c000 CR3: 00000000a96a2000 CR4: 00000000001406f0
+CR2: 00007fd8dbf57000 CR3: 00000000a0e72000 CR4: 00000000001406e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
-  lock_acquire+0x158/0x250 kernel/locking/lockdep.c:4487
+  lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4487
   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-  _raw_spin_lock_bh+0x34/0x50 kernel/locking/spinlock.c:175
+  _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
   spin_lock_bh include/linux/spinlock.h:343 [inline]
-  j1939_jsk_del net/can/j1939/socket.c:90 [inline]
-  j1939_sk_bind+0x387/0xac0 net/can/j1939/socket.c:421
-  __sys_bind+0x2c2/0x3a0 net/socket.c:1647
+  j1939_jsk_del+0x32/0x240 net/can/j1939/socket.c:90
+  j1939_sk_bind+0x2e2/0x8e0 net/can/j1939/socket.c:421
+  __sys_bind+0x239/0x290 net/socket.c:1647
   __do_sys_bind net/socket.c:1658 [inline]
   __se_sys_bind net/socket.c:1656 [inline]
-  __x64_sys_bind+0x7a/0x90 net/socket.c:1656
-  do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:290
+  __x64_sys_bind+0x73/0xb0 net/socket.c:1656
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
 RIP: 0033:0x45a219
 Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
 ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f68f3c1bc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+RSP: 002b:00007f32e6336c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
 RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045a219
 RDX: 0000000000000018 RSI: 0000000020000000 RDI: 0000000000000003
 RBP: 000000000075bfc8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f68f3c1c6d4
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f32e63376d4
 R13: 00000000004c057e R14: 00000000004d2c50 R15: 00000000ffffffff
 Modules linked in:
----[ end trace bc0dd162dace32c7 ]---
-RIP: 0010:__lock_acquire+0x86/0x1be0 kernel/locking/lockdep.c:3828
-Code: 8a 04 30 84 c0 0f 85 66 12 00 00 83 3d 92 24 66 07 00 0f 84 91 12 00  
-00 83 3d 35 a6 34 07 00 74 34 48 8b 44 24 10 48 c1 e8 03 <80> 3c 30 00 74  
-14 48 8b 7c 24 10 e8 fa 13 54 00 48 be 00 00 00 00
-RSP: 0018:ffff88809865fb80 EFLAGS: 00010006
-RAX: 0000000000000218 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 00000000000010c0
-RBP: ffff88809865fcd8 R08: 0000000000000001 R09: 0000000000000000
-R10: fffffbfff117cc5d R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: ffff888098654700
-FS:  00007f68f3c1c700(0000) GS:ffff8880aea00000(0000) knlGS:0000000000000000
+---[ end trace 2db5662cc5070619 ]---
+RIP: 0010:__lock_acquire+0x1254/0x4a00 kernel/locking/lockdep.c:3828
+Code: 00 0f 85 96 24 00 00 48 81 c4 f0 00 00 00 5b 41 5c 41 5d 41 5e 41 5f  
+5d c3 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f  
+85 0b 28 00 00 49 81 3e e0 85 06 8a 0f 84 5f ee ff
+RSP: 0018:ffff8880894c7b48 EFLAGS: 00010006
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000218 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: ffff8880894c7c60 R08: 0000000000000001 R09: 0000000000000001
+R10: fffffbfff138cd40 R11: ffff888091c120c0 R12: 00000000000010c0
+R13: 0000000000000000 R14: 00000000000010c0 R15: 0000000000000000
+FS:  00007f32e6337700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000075c000 CR3: 00000000a96a2000 CR4: 00000000001406f0
+CR2: 00007fd8dbf57000 CR3: 00000000a0e72000 CR4: 00000000001406e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
