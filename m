@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 29/33] can: j1939: fix memory leak if filters was set
-Date: Tue,  5 Nov 2019 17:32:11 +0100
-Message-ID: <20191105163215.30194-30-mkl@pengutronix.de>
+Subject: [PATCH 14/33] can: rx-offload: can_rx_offload_queue_tail(): fix error handling, avoid skb mem leak
+Date: Tue,  5 Nov 2019 17:31:56 +0100
+Message-ID: <20191105163215.30194-15-mkl@pengutronix.de>
 References: <20191105163215.30194-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,32 +9,45 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 List-Id: linux-can.vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+If the rx-offload skb_queue is full can_rx_offload_queue_tail() will not
+queue the skb and return with an error.
 
-Filters array is coped from user space and linked to the j1939 socket.
-On socket release this memory was not freed.
+This patch frees the skb in case of a full queue, which brings
+can_rx_offload_queue_tail() in line with the
+can_rx_offload_queue_sorted() function, which has been adjusted in the
+previous patch.
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+The return value is adjusted to -ENOBUFS to better reflect the actual
+problem.
+
+The device stats handling is left to the caller.
+
+Fixes: d254586c3453 ("can: rx-offload: Add support for HW fifo based irq offloading")
+Reported-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/socket.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/rx-offload.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 5c6eabcb5df1..4d8ba701e15d 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -580,6 +580,7 @@ static int j1939_sk_release(struct socket *sock)
- 		j1939_netdev_stop(priv);
- 	}
+diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
+index 663697439d1c..d1c863409945 100644
+--- a/drivers/net/can/rx-offload.c
++++ b/drivers/net/can/rx-offload.c
+@@ -252,8 +252,10 @@ int can_rx_offload_queue_tail(struct can_rx_offload *offload,
+ 			      struct sk_buff *skb)
+ {
+ 	if (skb_queue_len(&offload->skb_queue) >
+-	    offload->skb_queue_len_max)
+-		return -ENOMEM;
++	    offload->skb_queue_len_max) {
++		kfree_skb(skb);
++		return -ENOBUFS;
++	}
  
-+	kfree(jsk->filters);
- 	sock_orphan(sk);
- 	sock->sk = NULL;
- 
+ 	skb_queue_tail(&offload->skb_queue, skb);
+ 	can_rx_offload_schedule(offload);
 -- 
 2.24.0.rc1
