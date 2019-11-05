@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 25/33] can: ti_hecc: add fifo overflow error reporting
-Date: Tue,  5 Nov 2019 17:32:07 +0100
-Message-ID: <20191105163215.30194-26-mkl@pengutronix.de>
+Subject: [PATCH 21/33] can: ti_hecc: ti_hecc_error(): increase error counters if skb enqueueing via can_rx_offload_queue_sorted() fails
+Date: Tue,  5 Nov 2019 17:32:03 +0100
+Message-ID: <20191105163215.30194-22-mkl@pengutronix.de>
 References: <20191105163215.30194-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,107 +9,43 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Jeroen Hofstee <jhofstee@victronenergy.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Jeroen Hofstee <jhofstee@victronenergy.com>
+The call to can_rx_offload_queue_sorted() may fail and return an error
+(in the current implementation due to resource shortage). The passed skb
+is consumed.
 
-When the rx FIFO overflows the ti_hecc would silently drop them since
-the overwrite protection is enabled for all mailboxes. So disable it for
-the lowest priority mailbox and return a proper error value when receive
-message lost is set. Drop the message itself in that case, since it
-might be partially updated.
+This patch adds incrementing of the appropriate error counters to let
+the device statistics reflect that there's a problem.
 
-Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
-Acked-by: Jeroen Hofstee <jhofstee@victronenergy.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ti_hecc.c | 36 +++++++++++++++++++++++++++++++-----
- 1 file changed, 31 insertions(+), 5 deletions(-)
+ drivers/net/can/ti_hecc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 6ea29126c60b..b12fd0bd489d 100644
+index f8b19eef5d26..91188e6d4f78 100644
 --- a/drivers/net/can/ti_hecc.c
 +++ b/drivers/net/can/ti_hecc.c
-@@ -73,6 +73,7 @@ MODULE_VERSION(HECC_MODULE_VERSION);
-  */
- #define HECC_MAX_RX_MBOX	(HECC_MAX_MAILBOXES - HECC_MAX_TX_MBOX)
- #define HECC_RX_FIRST_MBOX	(HECC_MAX_MAILBOXES - 1)
-+#define HECC_RX_LAST_MBOX	(HECC_MAX_TX_MBOX)
+@@ -558,6 +558,7 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
+ 	struct can_frame *cf;
+ 	struct sk_buff *skb;
+ 	u32 timestamp;
++	int err;
  
- /* TI HECC module registers */
- #define HECC_CANME		0x0	/* Mailbox enable */
-@@ -82,7 +83,7 @@ MODULE_VERSION(HECC_MODULE_VERSION);
- #define HECC_CANTA		0x10	/* Transmission acknowledge */
- #define HECC_CANAA		0x14	/* Abort acknowledge */
- #define HECC_CANRMP		0x18	/* Receive message pending */
--#define HECC_CANRML		0x1C	/* Remote message lost */
-+#define HECC_CANRML		0x1C	/* Receive message lost */
- #define HECC_CANRFP		0x20	/* Remote frame pending */
- #define HECC_CANGAM		0x24	/* SECC only:Global acceptance mask */
- #define HECC_CANMC		0x28	/* Master control */
-@@ -385,8 +386,15 @@ static void ti_hecc_start(struct net_device *ndev)
- 	/* Enable tx interrupts */
- 	hecc_set_bit(priv, HECC_CANMIM, BIT(HECC_MAX_TX_MBOX) - 1);
- 
--	/* Prevent message over-write & Enable interrupts */
--	hecc_write(priv, HECC_CANOPC, HECC_SET_REG);
-+	/* Prevent message over-write to create a rx fifo, but not for
-+	 * the lowest priority mailbox, since that allows detecting
-+	 * overflows instead of the hardware silently dropping the
-+	 * messages.
-+	 */
-+	mbx_mask = ~BIT(HECC_RX_LAST_MBOX);
-+	hecc_write(priv, HECC_CANOPC, mbx_mask);
-+
-+	/* Enable interrupts */
- 	if (priv->use_hecc1int) {
- 		hecc_write(priv, HECC_CANMIL, HECC_SET_REG);
- 		hecc_write(priv, HECC_CANGIM, HECC_CANGIM_DEF_MASK |
-@@ -531,6 +539,7 @@ static unsigned int ti_hecc_mailbox_read(struct can_rx_offload *offload,
- {
- 	struct ti_hecc_priv *priv = rx_offload_to_priv(offload);
- 	u32 data, mbx_mask;
-+	int ret = 1;
- 
- 	mbx_mask = BIT(mbxno);
- 	data = hecc_read_mbx(priv, mbxno, HECC_CANMID);
-@@ -552,9 +561,26 @@ static unsigned int ti_hecc_mailbox_read(struct can_rx_offload *offload,
+ 	/* propagate the error condition to the can stack */
+ 	skb = alloc_can_err_skb(ndev, &cf);
+@@ -639,7 +640,9 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
  	}
  
- 	*timestamp = hecc_read_stamp(priv, mbxno);
-+
-+	/* Check for FIFO overrun.
-+	 *
-+	 * All but the last RX mailbox have activated overwrite
-+	 * protection. So skip check for overrun, if we're not
-+	 * handling the last RX mailbox.
-+	 *
-+	 * As the overwrite protection for the last RX mailbox is
-+	 * disabled, the CAN core might update while we're reading
-+	 * it. This means the skb might be inconsistent.
-+	 *
-+	 * Return an error to let rx-offload discard this CAN frame.
-+	 */
-+	if (unlikely(mbxno == HECC_RX_LAST_MBOX &&
-+		     hecc_read(priv, HECC_CANRML) & mbx_mask))
-+		ret = -ENOBUFS;
-+
- 	hecc_write(priv, HECC_CANRMP, mbx_mask);
+ 	timestamp = hecc_read(priv, HECC_CANLNT);
+-	can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
++	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
++	if (err)
++		ndev->stats.rx_fifo_errors++;
  
--	return 1;
-+	return ret;
+ 	return 0;
  }
- 
- static int ti_hecc_error(struct net_device *ndev, int int_status,
-@@ -884,7 +910,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 
- 	priv->offload.mailbox_read = ti_hecc_mailbox_read;
- 	priv->offload.mb_first = HECC_RX_FIRST_MBOX;
--	priv->offload.mb_last = HECC_MAX_TX_MBOX;
-+	priv->offload.mb_last = HECC_RX_LAST_MBOX;
- 	err = can_rx_offload_add_timestamp(ndev, &priv->offload);
- 	if (err) {
- 		dev_err(&pdev->dev, "can_rx_offload_add_timestamp() failed\n");
 -- 
 2.24.0.rc1
