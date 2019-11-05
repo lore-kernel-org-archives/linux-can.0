@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 28/33] can: j1939: fix resource leak of skb on error return paths
-Date: Tue,  5 Nov 2019 17:32:10 +0100
-Message-ID: <20191105163215.30194-29-mkl@pengutronix.de>
+Subject: [PATCH 12/33] can: xilinx_can: Fix flags field initialization for axi can
+Date: Tue,  5 Nov 2019 17:31:54 +0100
+Message-ID: <20191105163215.30194-13-mkl@pengutronix.de>
 References: <20191105163215.30194-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,50 +9,33 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Colin Ian King <colin.king@canonical.com>, Oleksij Rempel <o.rempel@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>, Anssi Hannula <anssi.hannula@bitwise.fi>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 
-Currently the error return paths do not free skb and this results in a
-memory leak. Fix this by freeing them before the return.
+AXI CANIP doesn't support tx fifo empty interrupt feature(TXFEMP),
+update the flags filed in the driver for AXI CAN case accordingly.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Fixes: 3281b380ec9f ("can: xilinx_can: Fix flags field initialization for axi can and canps")
+Reported-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/socket.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/can/xilinx_can.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 37c1040bcb9c..5c6eabcb5df1 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -909,8 +909,10 @@ void j1939_sk_errqueue(struct j1939_session *session,
- 	memset(serr, 0, sizeof(*serr));
- 	switch (type) {
- 	case J1939_ERRQUEUE_ACK:
--		if (!(sk->sk_tsflags & SOF_TIMESTAMPING_TX_ACK))
-+		if (!(sk->sk_tsflags & SOF_TIMESTAMPING_TX_ACK)) {
-+			kfree_skb(skb);
- 			return;
-+		}
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 911b34316c9d..7c482b2d78d2 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -1599,7 +1599,6 @@ static const struct xcan_devtype_data xcan_zynq_data = {
  
- 		serr->ee.ee_errno = ENOMSG;
- 		serr->ee.ee_origin = SO_EE_ORIGIN_TIMESTAMPING;
-@@ -918,8 +920,10 @@ void j1939_sk_errqueue(struct j1939_session *session,
- 		state = "ACK";
- 		break;
- 	case J1939_ERRQUEUE_SCHED:
--		if (!(sk->sk_tsflags & SOF_TIMESTAMPING_TX_SCHED))
-+		if (!(sk->sk_tsflags & SOF_TIMESTAMPING_TX_SCHED)) {
-+			kfree_skb(skb);
- 			return;
-+		}
- 
- 		serr->ee.ee_errno = ENOMSG;
- 		serr->ee.ee_origin = SO_EE_ORIGIN_TIMESTAMPING;
+ static const struct xcan_devtype_data xcan_axi_data = {
+ 	.cantype = XAXI_CAN,
+-	.flags = XCAN_FLAG_TXFEMP,
+ 	.bittiming_const = &xcan_bittiming_const,
+ 	.btr_ts2_shift = XCAN_BTR_TS2_SHIFT,
+ 	.btr_sjw_shift = XCAN_BTR_SJW_SHIFT,
 -- 
 2.24.0.rc1
