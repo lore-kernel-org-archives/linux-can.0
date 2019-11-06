@@ -1,89 +1,120 @@
-From: syzbot <syzbot+afd421337a736d6c1ee6@syzkaller.appspotmail.com>
-Subject: WARNING: refcount bug in j1939_netdev_start
-Date: Tue, 05 Nov 2019 19:46:09 -0800
-Message-ID: <000000000000aae1480596a5632b@google.com>
+From: "pankj.sharma" <pankj.sharma@samsung.com>
+Subject: RE: [PATCH v3] can: m_can: add support for handling arbitration
+ error
+Date: Wed, 6 Nov 2019 11:29:24 +0530
+Message-ID: <01db01d59467$597156c0$0c540440$@samsung.com>
+References: <CGME20191030114039epcas5p434c9a7ffb715f2af2f4d3745239b5bbd@epcas5p4.samsung.com>
+        <1572435539-3315-1-git-send-email-pankj.sharma@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1572435539-3315-1-git-send-email-pankj.sharma@samsung.com>
+Content-Language: en-us
+Sender: linux-kernel-owner@vger.kernel.org
+To: mkl@pengutronix.de, wg@grandegger.com
+Cc: davem@davemloft.net, pankaj.dubey@samsung.com, rcsekar@samsung.com, jhofstee@victronenergy.com, simon.horman@netronome.com, 'Sriram Dash' <sriram.dash@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Hello,
+Gentle Ping=21
 
-syzbot found the following crash on:
-
-HEAD commit:    a99d8080 Linux 5.4-rc6
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a7443ae00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5e2eca3f31f9bf
-dashboard link: https://syzkaller.appspot.com/bug?extid=afd421337a736d6c1ee6
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+afd421337a736d6c1ee6@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-refcount_t: increment on 0; use-after-free.
-WARNING: CPU: 0 PID: 27509 at lib/refcount.c:156 refcount_inc_checked  
-lib/refcount.c:156 [inline]
-WARNING: CPU: 0 PID: 27509 at lib/refcount.c:156  
-refcount_inc_checked+0x61/0x70 lib/refcount.c:154
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 27509 Comm: syz-executor.5 Not tainted 5.4.0-rc6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  panic+0x2e3/0x75c kernel/panic.c:221
-  __warn.cold+0x2f/0x35 kernel/panic.c:582
-  report_bug+0x289/0x300 lib/bug.c:195
-  fixup_bug arch/x86/kernel/traps.c:179 [inline]
-  fixup_bug arch/x86/kernel/traps.c:174 [inline]
-  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
-  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
-  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1028
-RIP: 0010:refcount_inc_checked lib/refcount.c:156 [inline]
-RIP: 0010:refcount_inc_checked+0x61/0x70 lib/refcount.c:154
-Code: 1d ce 0c 7e 06 31 ff 89 de e8 bb a8 2e fe 84 db 75 dd e8 72 a7 2e fe  
-48 c7 c7 c0 af e6 87 c6 05 ae 0c 7e 06 01 e8 57 dc ff fd <0f> 0b eb c1 90  
-90 90 90 90 90 90 90 90 90 90 55 48 89 e5 41 57 41
-RSP: 0018:ffff88805c33fce8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000016597 RSI: ffffffff815cc396 RDI: ffffed100b867f8f
-RBP: ffff88805c33fcf8 R08: ffff8880921ae440 R09: ffffed1015d04101
-R10: ffffed1015d04100 R11: ffff8880ae820807 R12: ffff8880604010f0
-R13: ffff88805c33fe00 R14: ffff888045255580 R15: 0000000000000118
-  kref_get include/linux/kref.h:45 [inline]
-  j1939_netdev_start+0x53/0x550 net/can/j1939/main.c:247
-  j1939_sk_bind+0x65a/0x8e0 net/can/j1939/socket.c:438
-  __sys_bind+0x239/0x290 net/socket.c:1647
-  __do_sys_bind net/socket.c:1658 [inline]
-  __se_sys_bind net/socket.c:1656 [inline]
-  __x64_sys_bind+0x73/0xb0 net/socket.c:1656
-  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x45a219
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f2ba4d29c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045a219
-RDX: 0000000000000018 RSI: 0000000020000240 RDI: 0000000000000003
-RBP: 000000000075bfc8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f2ba4d2a6d4
-R13: 00000000004c057e R14: 00000000004d2c50 R15: 00000000ffffffff
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> From: Pankaj Sharma <pankj.sharma=40samsung.com>
+> Subject: =5BPATCH v3=5D can: m_can: add support for handling arbitration =
+error
+>=20
+> The Bosch MCAN hardware (3.1.0 and above) supports interrupt flag to dete=
+ct
+> Protocol error in arbitration phase.
+>=20
+> Transmit error statistics is currently not updated from the MCAN driver.
+> Protocol error in arbitration phase is a TX error and the network statist=
+ics should
+> be updated accordingly.
+>=20
+> The member =22tx_error=22 of =22struct net_device_stats=22 should be incr=
+emented as
+> arbitration is a transmit protocol error. Also =22arbitration_lost=22 of =
+=22struct
+> can_device_stats=22 should be incremented to report arbitration lost.
+>=20
+> Signed-off-by: Pankaj Sharma <pankj.sharma=40samsung.com>
+> Signed-off-by: Sriram Dash <sriram.dash=40samsung.com>
+> ---
+>=20
+> changes in v3:
+> - handle arbitration lost stats even if the allocation of the skb fails
+>=20
+> changes in v2:
+> - common m_can_ prefix for is_protocol_err function
+> - handling stats even if the allocation of the skb fails
+> - resolving build errors on net-next branch
+>=20
+>  drivers/net/can/m_can/m_can.c =7C 42
+> +++++++++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>=20
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.=
+c
+> index 75e7490c4299..02c5795b7393 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> =40=40 -778,6 +778,43 =40=40 static inline bool is_lec_err(u32 psr)
+>  	return psr && (psr =21=3D LEC_UNUSED);
+>  =7D
+>=20
+> +static inline bool m_can_is_protocol_err(u32 irqstatus) =7B
+> +	return irqstatus & IR_ERR_LEC_31X;
+> +=7D
+> +
+> +static int m_can_handle_protocol_error(struct net_device *dev, u32
+> +irqstatus) =7B
+> +	struct net_device_stats *stats =3D &dev->stats;
+> +	struct m_can_classdev *cdev =3D netdev_priv(dev);
+> +	struct can_frame *cf;
+> +	struct sk_buff *skb;
+> +
+> +	/* propagate the error condition to the CAN stack */
+> +	skb =3D alloc_can_err_skb(dev, &cf);
+> +
+> +	/* update tx error stats since there is protocol error */
+> +	stats->tx_errors++;
+> +
+> +	/* update arbitration lost status */
+> +	if (cdev->version >=3D 31 && (irqstatus & IR_PEA)) =7B
+> +		netdev_dbg(dev, =22Protocol error in Arbitration fail=5Cn=22);
+> +		cdev->can.can_stats.arbitration_lost++;
+> +		if (skb) =7B
+> +			cf->can_id =7C=3D CAN_ERR_LOSTARB;
+> +			cf->data=5B0=5D =7C=3D CAN_ERR_LOSTARB_UNSPEC;
+> +		=7D
+> +	=7D
+> +
+> +	if (unlikely(=21skb)) =7B
+> +		netdev_dbg(dev, =22allocation of skb failed=5Cn=22);
+> +		return 0;
+> +	=7D
+> +	netif_receive_skb(skb);
+> +
+> +	return 1;
+> +=7D
+> +
+>  static int m_can_handle_bus_errors(struct net_device *dev, u32 irqstatus=
+,
+>  				   u32 psr)
+>  =7B
+> =40=40 -792,6 +829,11 =40=40 static int m_can_handle_bus_errors(struct ne=
+t_device
+> *dev, u32 irqstatus,
+>  	    is_lec_err(psr))
+>  		work_done +=3D m_can_handle_lec_err(dev, psr & LEC_UNUSED);
+>=20
+> +	/* handle protocol errors in arbitration phase */
+> +	if ((cdev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) &&
+> +	    m_can_is_protocol_err(irqstatus))
+> +		work_done +=3D m_can_handle_protocol_error(dev, irqstatus);
+> +
+>  	/* other unproccessed error interrupts */
+>  	m_can_handle_other_err(dev, irqstatus);
+>=20
+> --
+> 2.17.1
