@@ -1,34 +1,53 @@
-From: syzbot <syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com>
-Subject: Re: general protection fault in j1939_jsk_del
-Date: Wed, 06 Nov 2019 12:45:00 -0800
-Message-ID: <000000000000632acf0596b39f6f@google.com>
-References: <000000000000994f3c059691c676@google.com>
+From: Jaroslav Beran <jara.beran@gmail.com>
+Subject: [PATCH] can: return error from can_send() in BUS-OFF state
+Date: Wed,  6 Nov 2019 23:03:02 +0100
+Message-ID: <20191106220302.27698-1-jara.beran@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <000000000000994f3c059691c676@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: bst@pengutronix.de, davem@davemloft.net, dev.kurt@vandijck-laurijssen.be, ecathinds@gmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, lkp@intel.com, maxime.jayat@mobile-devices.fr, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Jaroslav Beran <jara.beran@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
-syzbot has bisected this bug to:
+When a CAN node reaches BUS-OFF state, its netdev state
+is set to __LINK_STATE_NOCARRIER and qdisc ->enqueue() starts
+dropping frames and returning NET_XMIT_CN that is turned to 0
+by net_xmit_errno(). So can_send() returns success to a sender
+even if his frame is lost.
 
-commit 9d71dd0c70099914fcd063135da3c580865e924c
-Author: The j1939 authors <linux-can@vger.kernel.org>
-Date:   Mon Oct 8 09:48:36 2018 +0000
+As this behavior is inappropriate for a node in BUS-OFF state,
+this patch adds a check for no-carrier condition and returns
+-ENETUNREACH in such case.
 
-     can: add support of SAE J1939 protocol
+Signed-off-by: Jaroslav Beran <jara.beran@gmail.com>
+---
+ net/can/af_can.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13341558e00000
-start commit:   a99d8080 Linux 5.4-rc6
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=10b41558e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17341558e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5e2eca3f31f9bf
-dashboard link: https://syzkaller.appspot.com/bug?extid=6d04f6a1b31a0ae12ca9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1450cc58e00000
-
-Reported-by: syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 5518a7d9eed9..68c56241733b 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -189,6 +189,7 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
+  * Return:
+  *  0 on success
+  *  -ENETDOWN when the selected interface is down
++ *  -ENETUNREACH when the node is in BUS-OFF state
+  *  -ENOBUFS on full driver queue (see net_xmit_errno())
+  *  -ENOMEM when local loopback failed at calling skb_clone()
+  *  -EPERM when trying to send on a non-CAN interface
+@@ -233,6 +234,11 @@ int can_send(struct sk_buff *skb, int loop)
+ 		goto inval_skb;
+ 	}
+ 
++	if (unlikely(!netif_carrier_ok(skb->dev))) {
++		err = -ENETUNREACH;
++		goto inval_skb;
++	}
++
+ 	skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 
+ 	skb_reset_mac_header(skb);
+-- 
+2.23.0
