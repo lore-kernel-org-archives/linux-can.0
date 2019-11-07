@@ -1,69 +1,34 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: request: merge net/master into net-next/master
-Date: Thu, 7 Nov 2019 09:45:08 +0100
-Message-ID: <e9b0dcdb-15c3-6f4d-36db-f62c055c15d0@pengutronix.de>
-References: <20191105163215.30194-1-mkl@pengutronix.de>
+From: syzbot <syzbot+06283a66a648cd073885@syzkaller.appspotmail.com>
+Subject: Re: INFO: task hung in vivid_stop_generating_vid_cap
+Date: Thu, 07 Nov 2019 05:42:06 -0800
+Message-ID: <000000000000c9f0a40596c1d46b@google.com>
+References: <00000000000080601805795ada2e@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="HKj7hgBb3ce11eaCMRacIeChDPCtbGX9L"
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
+In-Reply-To: <00000000000080601805795ada2e@google.com>
 Sender: netdev-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
+To: andy@greyhouse.net, davem@davemloft.net, dvyukov@google.com, hans.verkuil@cisco.com, helen.koike@collabora.com, hverkuil-cisco@xs4all.nl, hverkuil@xs4all.nl, j.vosburgh@gmail.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, maheshb@google.com, mchehab+samsung@kernel.org, mchehab@kernel.org, mchehab@s-opensource.com, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com, tfiga@chromium.org, vfalico@gmail.com
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HKj7hgBb3ce11eaCMRacIeChDPCtbGX9L
-Content-Type: multipart/mixed; boundary="MKs5C95F5GZHx9RBCe1cpgOpBrzJTinzJ";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: David Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
-Message-ID: <e9b0dcdb-15c3-6f4d-36db-f62c055c15d0@pengutronix.de>
-Subject: request: merge net/master into net-next/master
-References: <20191105163215.30194-1-mkl@pengutronix.de>
-In-Reply-To: <20191105163215.30194-1-mkl@pengutronix.de>
+syzbot suspects this bug was fixed by commit:
 
---MKs5C95F5GZHx9RBCe1cpgOpBrzJTinzJ
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+commit d65842f7126aa1a87fb44b7c9980c12630ed4f33
+Author: Hans Verkuil <hverkuil@xs4all.nl>
+Date:   Mon Nov 19 11:09:00 2018 +0000
 
-Hello David,
+     media: vb2: add waiting_in_dqbuf flag
 
-I've some patches for net-next/master rely on some CAN related changes
-in net/master. Can you please merge net/master into net-next/master to
-avoid merge conflicts.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1417a04a600000
+start commit:   9f51ae62 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=62118286bb772a24
+dashboard link: https://syzkaller.appspot.com/bug?extid=06283a66a648cd073885
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15701a33400000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154c8e4d400000
 
-regards,
-Marc
+If the result looks correct, please mark the bug fixed by replying with:
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+#syz fix: media: vb2: add waiting_in_dqbuf flag
 
-
---MKs5C95F5GZHx9RBCe1cpgOpBrzJTinzJ--
-
---HKj7hgBb3ce11eaCMRacIeChDPCtbGX9L
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3D2ZQACgkQWsYho5Hk
-nSCMDgf+JNUIVXxfjXJNLUjdda6Stnw/lN7FGszbSnHDlXfFisLRqs1QHHnI8rtD
-iYC1Fnf8CS1KrAtCtQvXpy1roDpVZFq8lfodY136FTahWECAxwjOxgbngo+4k5x2
-QJwF/0d6Z0a9s2z6xm4i/9y4w0xQRXait5JDZ15v0fo2g/gzBJQsHrim3VNslR4n
-/2jvcLbyoxqJZx1FUKZxyqVdNnfwTkEL12e6eyrnd/d3wYuo7EeyjxYEJv7pxwIA
-rBTjypWU2MPfpYPVX37T7nKuBNU9NltsbBC4V2XM6olE3F48cucnH8kU+2+bwczt
-WG/T7a00Wip+rlqPUHSP2coaHHNkXg==
-=euAR
------END PGP SIGNATURE-----
-
---HKj7hgBb3ce11eaCMRacIeChDPCtbGX9L--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
