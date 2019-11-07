@@ -1,34 +1,106 @@
-From: syzbot <syzbot+06283a66a648cd073885@syzkaller.appspotmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: INFO: task hung in vivid_stop_generating_vid_cap
-Date: Thu, 07 Nov 2019 05:42:06 -0800
-Message-ID: <000000000000c9f0a40596c1d46b@google.com>
+Date: Thu, 7 Nov 2019 19:51:22 +0100
+Message-ID: <d4f03b02-29c6-3479-d5a4-baae86879e13@pengutronix.de>
 References: <00000000000080601805795ada2e@google.com>
+ <000000000000e626290584a983c0@google.com>
+ <CACT4Y+YVNA6aYe-Ai-ZnU+EhNSNAFhjvXPT0oA+i4rCFpQThcg@mail.gmail.com>
+ <CACT4Y+aVXJuaBsvwM-7UcpDzvPZG8HaFHPnHQMX1ZzE1Emd-Tg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <00000000000080601805795ada2e@google.com>
-Sender: netdev-owner@vger.kernel.org
-To: andy@greyhouse.net, davem@davemloft.net, dvyukov@google.com, hans.verkuil@cisco.com, helen.koike@collabora.com, hverkuil-cisco@xs4all.nl, hverkuil@xs4all.nl, j.vosburgh@gmail.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, maheshb@google.com, mchehab+samsung@kernel.org, mchehab@kernel.org, mchehab@s-opensource.com, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com, tfiga@chromium.org, vfalico@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="NeIZlyowumXtqXLNOZErcBk1aZbUuvacE"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CACT4Y+aVXJuaBsvwM-7UcpDzvPZG8HaFHPnHQMX1ZzE1Emd-Tg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dmitry Vyukov <dvyukov@google.com>, syzbot <syzbot+06283a66a648cd073885@syzkaller.appspotmail.com>, linux-can@vger.kernel.org
+Cc: andy@greyhouse.net, David Miller <davem@davemloft.net>, Hans Verkuil <hverkuil@xs4all.nl>, j.vosburgh@gmail.com, LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org, Mahesh Bandewar <maheshb@google.com>, mchehab@kernel.org, netdev <netdev@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>, vfalico@gmail.com
 List-Id: linux-can.vger.kernel.org
 
-syzbot suspects this bug was fixed by commit:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--NeIZlyowumXtqXLNOZErcBk1aZbUuvacE
+Content-Type: multipart/mixed; boundary="4FKKqhxBizYnGAZ3YsXRzhsPWgt6jD1Xg";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Dmitry Vyukov <dvyukov@google.com>,
+ syzbot <syzbot+06283a66a648cd073885@syzkaller.appspotmail.com>,
+ linux-can@vger.kernel.org
+Cc: andy@greyhouse.net, David Miller <davem@davemloft.net>,
+ Hans Verkuil <hverkuil@xs4all.nl>, j.vosburgh@gmail.com,
+ LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
+ Mahesh Bandewar <maheshb@google.com>, mchehab@kernel.org,
+ netdev <netdev@vger.kernel.org>,
+ syzkaller-bugs <syzkaller-bugs@googlegroups.com>, vfalico@gmail.com
+Message-ID: <d4f03b02-29c6-3479-d5a4-baae86879e13@pengutronix.de>
+Subject: Re: INFO: task hung in vivid_stop_generating_vid_cap
+References: <00000000000080601805795ada2e@google.com>
+ <000000000000e626290584a983c0@google.com>
+ <CACT4Y+YVNA6aYe-Ai-ZnU+EhNSNAFhjvXPT0oA+i4rCFpQThcg@mail.gmail.com>
+ <CACT4Y+aVXJuaBsvwM-7UcpDzvPZG8HaFHPnHQMX1ZzE1Emd-Tg@mail.gmail.com>
+In-Reply-To: <CACT4Y+aVXJuaBsvwM-7UcpDzvPZG8HaFHPnHQMX1ZzE1Emd-Tg@mail.gmail.com>
 
-commit d65842f7126aa1a87fb44b7c9980c12630ed4f33
-Author: Hans Verkuil <hverkuil@xs4all.nl>
-Date:   Mon Nov 19 11:09:00 2018 +0000
+--4FKKqhxBizYnGAZ3YsXRzhsPWgt6jD1Xg
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-     media: vb2: add waiting_in_dqbuf flag
+On 3/22/19 9:06 AM, Dmitry Vyukov wrote:
+> On Fri, Mar 22, 2019 at 9:00 AM Dmitry Vyukov <dvyukov@google.com> wrot=
+e:
+>>
+>> On Fri, Mar 22, 2019 at 8:08 AM syzbot
+>> <syzbot+06283a66a648cd073885@syzkaller.appspotmail.com> wrote:
+>>>
+>>> syzbot has bisected this bug to:
+>>>
+>>> commit 4493b81bea24269df898339dee638d7c5cb2b2df
+>>> Author: Mahesh Bandewar <maheshb@google.com>
+>>> Date:   Wed Mar 8 18:55:54 2017 +0000
+>>>
+>>>      bonding: initialize work-queues during creation of bond
+>>
+>> +linux-can
+>>
+>> I think I will disable CONFIG_CAN before v4.12. It causes too many
+>> false results for v4.12..v4.11 range. It always leads to a wrong
+>> decision for first 3 steps, then no chances of correct bisection
+>> anymore.
+>=20
+> The same seems to show up for v4.12..v4.13:
+> all runs: crashed: INFO: trying to register non-static key in can_notif=
+ier
+> https://syzkaller.appspot.com/text?tag=3DLog&x=3D1555b12b200000
+>=20
+> This was fixed by 74b7b490886852582d986a33443c2ffa50970169 right?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1417a04a600000
-start commit:   9f51ae62 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=62118286bb772a24
-dashboard link: https://syzkaller.appspot.com/bug?extid=06283a66a648cd073885
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15701a33400000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154c8e4d400000
+ACK
 
-If the result looks correct, please mark the bug fixed by replying with:
+Marc
 
-#syz fix: media: vb2: add waiting_in_dqbuf flag
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+--4FKKqhxBizYnGAZ3YsXRzhsPWgt6jD1Xg--
+
+--NeIZlyowumXtqXLNOZErcBk1aZbUuvacE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3EZ6oACgkQWsYho5Hk
+nSBtBAgAllvi9XlOwEQqlRCgEviA4PZ9wDRj16b0XhPl+82RiA9fXyPRHcCj2Owa
+sNnNCF+nHA3Vq/N64n9snPpWz0mXuzUO6NGCTbB3rqY+mK/U6mq+KnVJwvjHq2D6
+y9sHCDOMn1VLFlw+Ek3m95fUAi72i/6YCfVcRg2ArY35aDATtlrGTjWt0G+8YyuN
+YqyIiueOYaiIyev99lVpwExKcRwZHVK27c1WMl0o/oXXv/0ZcK/q0vbD42RyT3NJ
+5kHPKHxKOdSzbQ/xw+oLBJB+xhW4RJnKJmMIjITz6lHJ0Uep2KYarg00JjNGNtr4
+/VqJZlN4hWKyPTRBu5aI1Bef0JpmEA==
+=xA/S
+-----END PGP SIGNATURE-----
+
+--NeIZlyowumXtqXLNOZErcBk1aZbUuvacE--
