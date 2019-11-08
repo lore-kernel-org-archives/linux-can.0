@@ -1,140 +1,35 @@
 From: syzbot <syzbot+a47537d3964ef6c874e1@syzkaller.appspotmail.com>
-Subject: KASAN: use-after-free Read in j1939_session_deactivate
-Date: Fri, 08 Nov 2019 09:04:12 -0800
-Message-ID: <0000000000006264c60596d8c5fa@google.com>
+Subject: Re: KASAN: use-after-free Read in j1939_session_deactivate
+Date: Fri, 08 Nov 2019 15:22:00 -0800
+Message-ID: <0000000000008207e30596de0cf3@google.com>
+References: <0000000000006264c60596d8c5fa@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0000000000006264c60596d8c5fa@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+To: bst@pengutronix.de, davem@davemloft.net, dev.kurt@vandijck-laurijssen.be, ecathinds@gmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, lkp@intel.com, maxime.jayat@mobile-devices.fr, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
-Hello,
+syzbot has bisected this bug to:
 
-syzbot found the following crash on:
+commit 9d71dd0c70099914fcd063135da3c580865e924c
+Author: The j1939 authors <linux-can@vger.kernel.org>
+Date:   Mon Oct 8 09:48:36 2018 +0000
 
-HEAD commit:    847120f8 Merge branch 'for-linus' of git://git.kernel.org/..
+     can: add support of SAE J1939 protocol
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17325552e00000
+start commit:   847120f8 Merge branch 'for-linus' of git://git.kernel.org/..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11077272e00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=14b25552e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10b25552e00000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5e2eca3f31f9bf
 dashboard link: https://syzkaller.appspot.com/bug?extid=a47537d3964ef6c874e1
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 userspace arch: i386
 syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164973b4e00000
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
 Reported-by: syzbot+a47537d3964ef6c874e1@syzkaller.appspotmail.com
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 
-vcan0: j1939_xtp_rx_abort_one: 0x0000000017fc679a: 0x00000: (2) System  
-resources were needed for another task so this connection managed session  
-was terminated.
-vcan0: j1939_tp_rxtimer: 0x000000000eaf12e4: abort rx timeout. Force  
-session deactivation
-==================================================================
-BUG: KASAN: use-after-free in j1939_session_deactivate+0x80/0x90  
-net/can/j1939/transport.c:1033
-Read of size 8 at addr ffff88809958dc00 by task ksoftirqd/0/9
-
-CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.4.0-rc6+ #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x197/0x210 lib/dump_stack.c:118
-  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
-  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
-  kasan_report+0x12/0x20 mm/kasan/common.c:634
-  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
-  j1939_session_deactivate+0x80/0x90 net/can/j1939/transport.c:1033
-  j1939_session_deactivate_activate_next+0x17/0x50  
-net/can/j1939/transport.c:1041
-  j1939_tp_rxtimer+0xc8/0x27b net/can/j1939/transport.c:1150
-  __run_hrtimer kernel/time/hrtimer.c:1514 [inline]
-  __hrtimer_run_queues+0x364/0xe40 kernel/time/hrtimer.c:1576
-  hrtimer_run_softirq+0x17e/0x270 kernel/time/hrtimer.c:1593
-  __do_softirq+0x262/0x98c kernel/softirq.c:292
-  run_ksoftirqd kernel/softirq.c:603 [inline]
-  run_ksoftirqd+0x8e/0x110 kernel/softirq.c:595
-  smpboot_thread_fn+0x6a3/0xa40 kernel/smpboot.c:165
-  kthread+0x361/0x430 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-
-Allocated by task 9265:
-  save_stack+0x23/0x90 mm/kasan/common.c:69
-  set_track mm/kasan/common.c:77 [inline]
-  __kasan_kmalloc mm/kasan/common.c:510 [inline]
-  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:483
-  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:524
-  kmem_cache_alloc_trace+0x158/0x790 mm/slab.c:3550
-  kmalloc include/linux/slab.h:556 [inline]
-  kzalloc include/linux/slab.h:690 [inline]
-  j1939_session_new+0x81/0x3f0 net/can/j1939/transport.c:1384
-  j1939_tp_send+0x249/0x750 net/can/j1939/transport.c:1846
-  j1939_sk_send_loop net/can/j1939/socket.c:995 [inline]
-  j1939_sk_sendmsg+0xb76/0x1450 net/can/j1939/socket.c:1100
-  sock_sendmsg_nosec net/socket.c:637 [inline]
-  sock_sendmsg+0xd7/0x130 net/socket.c:657
-  ___sys_sendmsg+0x803/0x920 net/socket.c:2311
-  __sys_sendmsg+0x105/0x1d0 net/socket.c:2356
-  __compat_sys_sendmsg net/compat.c:642 [inline]
-  __do_compat_sys_sendmsg net/compat.c:649 [inline]
-  __se_compat_sys_sendmsg net/compat.c:646 [inline]
-  __ia32_compat_sys_sendmsg+0x7a/0xb0 net/compat.c:646
-  do_syscall_32_irqs_on arch/x86/entry/common.c:333 [inline]
-  do_fast_syscall_32+0x27b/0xdb3 arch/x86/entry/common.c:404
-  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-
-Freed by task 9:
-  save_stack+0x23/0x90 mm/kasan/common.c:69
-  set_track mm/kasan/common.c:77 [inline]
-  kasan_set_free_info mm/kasan/common.c:332 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:471
-  kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
-  __cache_free mm/slab.c:3425 [inline]
-  kfree+0x10a/0x2c0 mm/slab.c:3756
-  j1939_session_destroy net/can/j1939/transport.c:272 [inline]
-  __j1939_session_release net/can/j1939/transport.c:280 [inline]
-  kref_put include/linux/kref.h:65 [inline]
-  j1939_session_put+0x134/0x180 net/can/j1939/transport.c:285
-  j1939_session_deactivate_locked net/can/j1939/transport.c:1021 [inline]
-  j1939_session_deactivate_locked+0x245/0x2f0 net/can/j1939/transport.c:1009
-  j1939_session_deactivate+0x3d/0x90 net/can/j1939/transport.c:1032
-  j1939_session_deactivate_activate_next+0x17/0x50  
-net/can/j1939/transport.c:1041
-  j1939_tp_rxtimer+0xc8/0x27b net/can/j1939/transport.c:1150
-  __run_hrtimer kernel/time/hrtimer.c:1514 [inline]
-  __hrtimer_run_queues+0x364/0xe40 kernel/time/hrtimer.c:1576
-  hrtimer_run_softirq+0x17e/0x270 kernel/time/hrtimer.c:1593
-  __do_softirq+0x262/0x98c kernel/softirq.c:292
-
-The buggy address belongs to the object at ffff88809958dc00
-  which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 0 bytes inside of
-  512-byte region [ffff88809958dc00, ffff88809958de00)
-The buggy address belongs to the page:
-page:ffffea0002656340 refcount:1 mapcount:0 mapping:ffff8880aa400a80  
-index:0x0
-flags: 0x1fffc0000000200(slab)
-raw: 01fffc0000000200 ffffea00028faa88 ffffea0002a31c48 ffff8880aa400a80
-raw: 0000000000000000 ffff88809958d000 0000000100000004 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff88809958db00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88809958db80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> ffff88809958dc00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                    ^
-  ffff88809958dc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff88809958dd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
