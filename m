@@ -1,35 +1,75 @@
-From: syzbot <syzbot+ca172a0ac477ac90f045@syzkaller.appspotmail.com>
-Subject: Re: KASAN: use-after-free Read in j1939_session_get_by_addr_locked
-Date: Sun, 10 Nov 2019 19:57:01 -0800
-Message-ID: <000000000000b98cf305970a1fd3@google.com>
-References: <00000000000082c66d059705e442@google.com>
+From: syzbot <syzbot+afd421337a736d6c1ee6@syzkaller.appspotmail.com>
+Subject: Re: WARNING: refcount bug in j1939_netdev_start
+Date: Mon, 11 Nov 2019 04:05:05 -0800
+Message-ID: <00000000000034a246059710f18a@google.com>
+References: <000000000000aae1480596a5632b@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <00000000000082c66d059705e442@google.com>
-Sender: netdev-owner@vger.kernel.org
-To: bst@pengutronix.de, davem@davemloft.net, dev.kurt@vandijck-laurijssen.be, ecathinds@gmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, lkp@intel.com, maxime.jayat@mobile-devices.fr, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <000000000000aae1480596a5632b@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
-syzbot has bisected this bug to:
+syzbot has found a reproducer for the following crash on:
 
-commit 9d71dd0c70099914fcd063135da3c580865e924c
-Author: The j1939 authors <linux-can@vger.kernel.org>
-Date:   Mon Oct 8 09:48:36 2018 +0000
-
-     can: add support of SAE J1939 protocol
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11bc06d6e00000
-start commit:   00aff683 Merge tag 'for-5.4-rc6-tag' of git://git.kernel.o..
+HEAD commit:    9805a683 Merge branch 'x86-urgent-for-linus' of git://git...
 git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=13bc06d6e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15bc06d6e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5e2eca3f31f9bf
-dashboard link: https://syzkaller.appspot.com/bug?extid=ca172a0ac477ac90f045
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=144150e2e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11aaa9fce00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=133de01ce00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=896c87b73c6fcda6
+dashboard link: https://syzkaller.appspot.com/bug?extid=afd421337a736d6c1ee6
+compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
+80fee25776c2fb61e74c1ecb1a523375c2500b69)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d713c6e00000
 
-Reported-by: syzbot+ca172a0ac477ac90f045@syzkaller.appspotmail.com
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+afd421337a736d6c1ee6@syzkaller.appspotmail.com
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+------------[ cut here ]------------
+refcount_t: increment on 0; use-after-free.
+WARNING: CPU: 1 PID: 8514 at lib/refcount.c:156  
+refcount_inc_checked+0x4b/0x50 lib/refcount.c:156
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 8514 Comm: syz-executor.3 Not tainted 5.4.0-rc6+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x1fb/0x318 lib/dump_stack.c:118
+  panic+0x264/0x7a9 kernel/panic.c:221
+  __warn+0x20e/0x210 kernel/panic.c:582
+  report_bug+0x1b6/0x2f0 lib/bug.c:195
+  fixup_bug arch/x86/kernel/traps.c:179 [inline]
+  do_error_trap+0xd7/0x440 arch/x86/kernel/traps.c:272
+  do_invalid_op+0x36/0x40 arch/x86/kernel/traps.c:291
+  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1028
+RIP: 0010:refcount_inc_checked+0x4b/0x50 lib/refcount.c:156
+Code: 3d f7 ab 75 05 01 75 08 e8 12 e2 2d fe 5b 5d c3 e8 0a e2 2d fe c6 05  
+e1 ab 75 05 01 48 c7 c7 b4 c5 40 88 31 c0 e8 a5 78 00 fe <0f> 0b eb df 90  
+55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 ec 10
+RSP: 0018:ffff8880816dfd10 EFLAGS: 00010246
+RAX: 8358cd98639ffe00 RBX: ffff8880975b50f0 RCX: ffff8880a4010540
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffff8880816dfd18 R08: ffffffff815ca054 R09: ffffed1015d640d2
+R10: ffffed1015d640d2 R11: 0000000000000000 R12: ffff88808e820588
+R13: dffffc0000000000 R14: ffff88808e820000 R15: 1ffff11011d04047
+  j1939_netdev_start+0x47c/0x730 net/can/j1939/main.c:267
+  j1939_sk_bind+0x2c0/0xac0 net/can/j1939/socket.c:438
+  __sys_bind+0x2c2/0x3a0 net/socket.c:1647
+  __do_sys_bind net/socket.c:1658 [inline]
+  __se_sys_bind net/socket.c:1656 [inline]
+  __x64_sys_bind+0x7a/0x90 net/socket.c:1656
+  do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x45a219
+Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007efc734cbc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045a219
+RDX: 0000000000000018 RSI: 0000000020000240 RDI: 0000000000000005
+RBP: 000000000075c070 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007efc734cc6d4
+R13: 00000000004c057e R14: 00000000004d2c50 R15: 00000000ffffffff
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
