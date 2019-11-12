@@ -1,7 +1,7 @@
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH v1 5/9] can: j1939: transport: make sure the aborted session will be deactivated only once
-Date: Tue, 12 Nov 2019 12:15:56 +0100
-Message-ID: <20191112111600.18719-6-o.rempel@pengutronix.de>
+Subject: [PATCH v1 2/9] can: j1939: move j1939_priv_put() into sk_destruct callback
+Date: Tue, 12 Nov 2019 12:15:53 +0100
+Message-ID: <20191112111600.18719-3-o.rempel@pengutronix.de>
 References: <20191112111600.18719-1-o.rempel@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,107 +12,90 @@ To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
 Cc: Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-j1939_session_cancel() was modifying session->state without protecting
-it by locks and without checking actual state of the session.
-
-This patch moves j1939_tp_set_rxtimeout() into j1939_session_cancel()
-and adds the missing locking.
+This patch delays the j1939_priv_put() until the socket is destroyed via
+the sk_destruct callback, to avoid use-after-free problems.
 
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- net/can/j1939/transport.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ net/can/j1939/socket.c | 37 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index e5f1a56994c6..ecdedfc0b10c 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1042,12 +1042,13 @@ j1939_session_deactivate_activate_next(struct j1939_session *session)
- 		j1939_sk_queue_activate_next(session);
- }
- 
--static void j1939_session_cancel(struct j1939_session *session,
-+static void __j1939_session_cancel(struct j1939_session *session,
- 				 enum j1939_xtp_abort err)
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 4d8ba701e15d..aee94b09ef08 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -78,7 +78,6 @@ static void j1939_jsk_add(struct j1939_priv *priv, struct j1939_sock *jsk)
  {
- 	struct j1939_priv *priv = session->priv;
+ 	jsk->state |= J1939_SOCK_BOUND;
+ 	j1939_priv_get(priv);
+-	jsk->priv = priv;
  
- 	WARN_ON_ONCE(!err);
-+	lockdep_assert_held(&session->priv->active_session_list_lock);
+ 	spin_lock_bh(&priv->j1939_socks_lock);
+ 	list_add_tail(&jsk->list, &priv->j1939_socks);
+@@ -91,7 +90,6 @@ static void j1939_jsk_del(struct j1939_priv *priv, struct j1939_sock *jsk)
+ 	list_del_init(&jsk->list);
+ 	spin_unlock_bh(&priv->j1939_socks_lock);
  
- 	session->err = j1939_xtp_abort_to_errno(priv, err);
- 	/* do not send aborts on incoming broadcasts */
-@@ -1062,6 +1063,20 @@ static void j1939_session_cancel(struct j1939_session *session,
- 		j1939_sk_send_loop_abort(session->sk, session->err);
+-	jsk->priv = NULL;
+ 	j1939_priv_put(priv);
+ 	jsk->state &= ~J1939_SOCK_BOUND;
+ }
+@@ -349,6 +347,34 @@ void j1939_sk_recv(struct j1939_priv *priv, struct sk_buff *skb)
+ 	spin_unlock_bh(&priv->j1939_socks_lock);
  }
  
-+static void j1939_session_cancel(struct j1939_session *session,
-+				 enum j1939_xtp_abort err)
++static void j1939_sk_sock_destruct(struct sock *sk)
 +{
-+	j1939_session_list_lock(session->priv);
++	struct j1939_sock *jsk = j1939_sk(sk);
 +
-+	if (session->state >= J1939_SESSION_ACTIVE &&
-+	    session->state < J1939_SESSION_WAITING_ABORT) {
-+		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
-+		__j1939_session_cancel(session, err);
++	/* This function will be call by the generic networking code, when then
++	 * the socket is ultimately closed (sk->sk_destruct).
++	 *
++	 * The race between
++	 * - processing a received CAN frame
++	 *   (can_receive -> j1939_can_recv)
++	 *   and accessing j1939_priv
++	 * ... and ...
++	 * - closing a socket
++	 *   (j1939_can_rx_unregister -> can_rx_unregister)
++	 *   and calling the final j1939_priv_put()
++	 *
++	 * is avoided by calling the final j1939_priv_put() from this
++	 * RCU deferred cleanup call.
++	 */
++	if (jsk->priv) {
++		j1939_priv_put(jsk->priv);
++		jsk->priv = NULL;
 +	}
 +
-+	j1939_session_list_unlock(session->priv);
++	/* call generic CAN sock destruct */
++	can_sock_destruct(sk);
 +}
 +
- static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
+ static int j1939_sk_init(struct sock *sk)
  {
- 	struct j1939_session *session =
-@@ -1108,8 +1123,6 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
- 		netdev_alert(priv->ndev, "%s: 0x%p: tx aborted with unknown reason: %i\n",
- 			     __func__, session, ret);
- 		if (session->skcb.addr.type != J1939_SIMPLE) {
--			j1939_tp_set_rxtimeout(session,
--					       J1939_XTP_ABORT_TIMEOUT_MS);
- 			j1939_session_cancel(session, J1939_XTP_ABORT_OTHER);
- 		} else {
- 			session->err = ret;
-@@ -1169,7 +1182,7 @@ static enum hrtimer_restart j1939_tp_rxtimer(struct hrtimer *hrtimer)
- 			hrtimer_start(&session->rxtimer,
- 				      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
- 				      HRTIMER_MODE_REL_SOFT);
--			j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
-+			__j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
+ 	struct j1939_sock *jsk = j1939_sk(sk);
+@@ -371,6 +397,7 @@ static int j1939_sk_init(struct sock *sk)
+ 	atomic_set(&jsk->skb_pending, 0);
+ 	spin_lock_init(&jsk->sk_session_queue_lock);
+ 	INIT_LIST_HEAD(&jsk->sk_session_queue);
++	sk->sk_destruct = j1939_sk_sock_destruct;
+ 
+ 	return 0;
+ }
+@@ -443,6 +470,12 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
  		}
- 		j1939_session_list_unlock(session->priv);
- 	}
-@@ -1375,7 +1388,6 @@ j1939_xtp_rx_cts_one(struct j1939_session *session, struct sk_buff *skb)
  
-  out_session_cancel:
- 	j1939_session_timers_cancel(session);
--	j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
- 	j1939_session_cancel(session, err);
- }
- 
-@@ -1572,7 +1584,6 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
- 
- 		/* RTS on active session */
- 		j1939_session_timers_cancel(session);
--		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
- 		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
+ 		jsk->ifindex = addr->can_ifindex;
++
++		/* the corresponding j1939_priv_put() is called via
++		 * sk->sk_destruct, which points to j1939_sk_sock_destruct()
++		 */
++		j1939_priv_get(priv);
++		jsk->priv = priv;
  	}
  
-@@ -1583,7 +1594,6 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
- 			     session->last_cmd);
- 
- 		j1939_session_timers_cancel(session);
--		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
- 		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
- 
- 		return -EBUSY;
-@@ -1785,7 +1795,6 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 
-  out_session_cancel:
- 	j1939_session_timers_cancel(session);
--	j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
- 	j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
- 	j1939_session_put(session);
- }
+ 	/* set default transmit pgn */
 -- 
 2.24.0.rc1
