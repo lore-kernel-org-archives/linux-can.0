@@ -1,131 +1,67 @@
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH v1 4/9] can: j1939: socket: rework socket locking for j1939_sk_release() and j1939_sk_sendmsg()
-Date: Tue, 12 Nov 2019 12:15:55 +0100
-Message-ID: <20191112111600.18719-5-o.rempel@pengutronix.de>
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v1 1/9] can: af_can: export can_sock_destruct()
+Date: Tue, 12 Nov 2019 12:37:24 +0100
+Message-ID: <20191112113724.pff6atmyii5ri4my@pengutronix.de>
 References: <20191112111600.18719-1-o.rempel@pengutronix.de>
+ <20191112111600.18719-2-o.rempel@pengutronix.de>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191112111600.18719-1-o.rempel@pengutronix.de>
+Content-Disposition: inline
+In-Reply-To: <20191112111600.18719-2-o.rempel@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
-To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, syzbot+afd421337a736d6c1ee6@syzkaller.appspotmail.com, syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com, netdev@vger.kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-j1939_sk_sendmsg() should be protected by lock_sock() to avoid race with
-j1939_sk_bind() and j1939_sk_release().
+Hello,
 
-Reported-by: syzbot+afd421337a736d6c1ee6@syzkaller.appspotmail.com
-Reported-by: syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- net/can/j1939/socket.c | 57 +++++++++++++++++++++++++++++-------------
- 1 file changed, 39 insertions(+), 18 deletions(-)
+On Tue, Nov 12, 2019 at 12:15:52PM +0100, Oleksij Rempel wrote:
+> In j1939 we need our own struct sock::sk_destruct callback. Export the
+> generic af_can can_sock_destruct() that allows us to chain-call it.
+> 
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  include/linux/can/core.h | 1 +
+>  net/can/af_can.c         | 3 ++-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+> index 8339071ab08b..e20a0cd09ba5 100644
+> --- a/include/linux/can/core.h
+> +++ b/include/linux/can/core.h
+> @@ -65,5 +65,6 @@ extern void can_rx_unregister(struct net *net, struct net_device *dev,
+>  			      void *data);
+>  
+>  extern int can_send(struct sk_buff *skb, int loop);
+> +void can_sock_destruct(struct sock *sk);
+>  
+>  #endif /* !_CAN_CORE_H */
+> diff --git a/net/can/af_can.c b/net/can/af_can.c
+> index 5518a7d9eed9..128d37a4c2e0 100644
+> --- a/net/can/af_can.c
+> +++ b/net/can/af_can.c
+> @@ -86,11 +86,12 @@ static atomic_t skbcounter = ATOMIC_INIT(0);
+>  
+>  /* af_can socket functions */
+>  
+> -static void can_sock_destruct(struct sock *sk)
+> +void can_sock_destruct(struct sock *sk)
+>  {
+>  	skb_queue_purge(&sk->sk_receive_queue);
+>  	skb_queue_purge(&sk->sk_error_queue);
+>  }
+> +EXPORT_SYMBOL(can_sock_destruct);
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index aee94b09ef08..de09b0a65791 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -593,8 +593,8 @@ static int j1939_sk_release(struct socket *sock)
- 	if (!sk)
- 		return 0;
- 
--	jsk = j1939_sk(sk);
- 	lock_sock(sk);
-+	jsk = j1939_sk(sk);
- 
- 	if (jsk->state & J1939_SOCK_BOUND) {
- 		struct j1939_priv *priv = jsk->priv;
-@@ -1092,51 +1092,72 @@ static int j1939_sk_sendmsg(struct socket *sock, struct msghdr *msg,
- {
- 	struct sock *sk = sock->sk;
- 	struct j1939_sock *jsk = j1939_sk(sk);
--	struct j1939_priv *priv = jsk->priv;
-+	struct j1939_priv *priv;
- 	int ifindex;
- 	int ret;
- 
-+	lock_sock(sock->sk);
- 	/* various socket state tests */
--	if (!(jsk->state & J1939_SOCK_BOUND))
--		return -EBADFD;
-+	if (!(jsk->state & J1939_SOCK_BOUND)) {
-+		ret = -EBADFD;
-+		goto sendmsg_done;
-+	}
- 
-+	priv = jsk->priv;
- 	ifindex = jsk->ifindex;
- 
--	if (!jsk->addr.src_name && jsk->addr.sa == J1939_NO_ADDR)
-+	if (!jsk->addr.src_name && jsk->addr.sa == J1939_NO_ADDR) {
- 		/* no source address assigned yet */
--		return -EBADFD;
-+		ret = -EBADFD;
-+		goto sendmsg_done;
-+	}
- 
- 	/* deal with provided destination address info */
- 	if (msg->msg_name) {
- 		struct sockaddr_can *addr = msg->msg_name;
- 
--		if (msg->msg_namelen < J1939_MIN_NAMELEN)
--			return -EINVAL;
-+		if (msg->msg_namelen < J1939_MIN_NAMELEN) {
-+			ret = -EINVAL;
-+			goto sendmsg_done;
-+		}
- 
--		if (addr->can_family != AF_CAN)
--			return -EINVAL;
-+		if (addr->can_family != AF_CAN) {
-+			ret = -EINVAL;
-+			goto sendmsg_done;
-+		}
- 
--		if (addr->can_ifindex && addr->can_ifindex != ifindex)
--			return -EBADFD;
-+		if (addr->can_ifindex && addr->can_ifindex != ifindex) {
-+			ret = -EBADFD;
-+			goto sendmsg_done;
-+		}
- 
- 		if (j1939_pgn_is_valid(addr->can_addr.j1939.pgn) &&
--		    !j1939_pgn_is_clean_pdu(addr->can_addr.j1939.pgn))
--			return -EINVAL;
-+		    !j1939_pgn_is_clean_pdu(addr->can_addr.j1939.pgn)) {
-+			ret = -EINVAL;
-+			goto sendmsg_done;
-+		}
- 
- 		if (!addr->can_addr.j1939.name &&
- 		    addr->can_addr.j1939.addr == J1939_NO_ADDR &&
--		    !sock_flag(sk, SOCK_BROADCAST))
-+		    !sock_flag(sk, SOCK_BROADCAST)) {
- 			/* broadcast, but SO_BROADCAST not set */
--			return -EACCES;
-+			ret = -EACCES;
-+			goto sendmsg_done;
-+		}
- 	} else {
- 		if (!jsk->addr.dst_name && jsk->addr.da == J1939_NO_ADDR &&
--		    !sock_flag(sk, SOCK_BROADCAST))
-+		    !sock_flag(sk, SOCK_BROADCAST)) {
- 			/* broadcast, but SO_BROADCAST not set */
--			return -EACCES;
-+			ret = -EACCES;
-+			goto sendmsg_done;
-+		}
- 	}
- 
- 	ret = j1939_sk_send_loop(priv, sk, msg, size);
- 
-+sendmsg_done:
-+	release_sock(sock->sk);
-+
- 	return ret;
- }
- 
+If the users are only expected to be another can module, it might make
+sense to use a namespace here?!
+
+Best regards
+Uwe
+
 -- 
-2.24.0.rc1
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
