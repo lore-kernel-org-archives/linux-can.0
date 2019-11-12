@@ -1,7 +1,7 @@
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH v1 8/9] can: j1939: j1939_can_recv(): add priv refcounting
-Date: Tue, 12 Nov 2019 12:15:59 +0100
-Message-ID: <20191112111600.18719-9-o.rempel@pengutronix.de>
+Subject: [PATCH v1 6/9] can: j1939: make sure socket is held as long as session exists
+Date: Tue, 12 Nov 2019 12:15:57 +0100
+Message-ID: <20191112111600.18719-7-o.rempel@pengutronix.de>
 References: <20191112111600.18719-1-o.rempel@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,41 +9,39 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191112111600.18719-1-o.rempel@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, syzbot+ca172a0ac477ac90f045@syzkaller.appspotmail.com, syzbot+07ca5bce8530070a5650@syzkaller.appspotmail.com, syzbot+a47537d3964ef6c874e1@syzkaller.appspotmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-j1939_can_recv() can be called in parallel with socket release. In this
-case sk_release and sk_destruct can be done earlier than
-j1939_can_recv() is processed.
+We link the socket to the session to be able provide socket specific
+notifications. For example messages over error queue.
 
-Reported-by: syzbot+ca172a0ac477ac90f045@syzkaller.appspotmail.com
-Reported-by: syzbot+07ca5bce8530070a5650@syzkaller.appspotmail.com
-Reported-by: syzbot+a47537d3964ef6c874e1@syzkaller.appspotmail.com
+We need to keep the socket held, while we have a reference to it.
+
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- net/can/j1939/main.c | 2 ++
+ net/can/j1939/transport.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 8dc935dc2e54..2afcf27c72c8 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -51,6 +51,7 @@ static void j1939_can_recv(struct sk_buff *iskb, void *data)
- 	if (!skb)
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index ecdedfc0b10c..afc2adfd97e4 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -255,6 +255,7 @@ static void __j1939_session_drop(struct j1939_session *session)
  		return;
  
-+	j1939_priv_get(priv);
- 	can_skb_set_owner(skb, iskb->sk);
- 
- 	/* get a pointer to the header of the skb
-@@ -104,6 +105,7 @@ static void j1939_can_recv(struct sk_buff *iskb, void *data)
- 	j1939_simple_recv(priv, skb);
- 	j1939_sk_recv(priv, skb);
-  done:
-+	j1939_priv_put(priv);
- 	kfree_skb(skb);
+ 	j1939_sock_pending_del(session->sk);
++	sock_put(session->sk);
  }
  
+ static void j1939_session_destroy(struct j1939_session *session)
+@@ -1875,6 +1876,7 @@ struct j1939_session *j1939_tp_send(struct j1939_priv *priv,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	/* skb is recounted in j1939_session_new() */
++	sock_hold(skb->sk);
+ 	session->sk = skb->sk;
+ 	session->transmission = true;
+ 	session->pkt.total = (size + 6) / 7;
 -- 
 2.24.0.rc1
