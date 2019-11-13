@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 7/9] can: j1939: transport: j1939_cancel_active_session(): use hrtimer_try_to_cancel() instead of hrtimer_cancel()
-Date: Wed, 13 Nov 2019 10:55:48 +0100
-Message-ID: <20191113095550.26527-8-mkl@pengutronix.de>
+Subject: [PATCH 5/9] can: j1939: transport: make sure the aborted session will be deactivated only once
+Date: Wed, 13 Nov 2019 10:55:46 +0100
+Message-ID: <20191113095550.26527-6-mkl@pengutronix.de>
 References: <20191113095550.26527-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,31 +14,107 @@ List-Id: linux-can.vger.kernel.org
 
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-This part of the code protected by lock used in the hrtimer as well.
-Using hrtimer_cancel() will trigger dead lock.
+j1939_session_cancel() was modifying session->state without protecting
+it by locks and without checking actual state of the session.
+
+This patch moves j1939_tp_set_rxtimeout() into j1939_session_cancel()
+and adds the missing locking.
 
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- net/can/j1939/transport.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ net/can/j1939/transport.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
 diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index afc2adfd97e4..0c62b8fc4b20 100644
+index e5f1a56994c6..ecdedfc0b10c 100644
 --- a/net/can/j1939/transport.c
 +++ b/net/can/j1939/transport.c
-@@ -2039,7 +2039,11 @@ int j1939_cancel_active_session(struct j1939_priv *priv, struct sock *sk)
- 				 &priv->active_session_list,
- 				 active_session_list_entry) {
- 		if (!sk || sk == session->sk) {
--			j1939_session_timers_cancel(session);
-+			if (hrtimer_try_to_cancel(&session->txtimer) == 1)
-+				j1939_session_put(session);
-+			if (hrtimer_try_to_cancel(&session->rxtimer) == 1)
-+				j1939_session_put(session);
+@@ -1042,12 +1042,13 @@ j1939_session_deactivate_activate_next(struct j1939_session *session)
+ 		j1939_sk_queue_activate_next(session);
+ }
+ 
+-static void j1939_session_cancel(struct j1939_session *session,
++static void __j1939_session_cancel(struct j1939_session *session,
+ 				 enum j1939_xtp_abort err)
+ {
+ 	struct j1939_priv *priv = session->priv;
+ 
+ 	WARN_ON_ONCE(!err);
++	lockdep_assert_held(&session->priv->active_session_list_lock);
+ 
+ 	session->err = j1939_xtp_abort_to_errno(priv, err);
+ 	/* do not send aborts on incoming broadcasts */
+@@ -1062,6 +1063,20 @@ static void j1939_session_cancel(struct j1939_session *session,
+ 		j1939_sk_send_loop_abort(session->sk, session->err);
+ }
+ 
++static void j1939_session_cancel(struct j1939_session *session,
++				 enum j1939_xtp_abort err)
++{
++	j1939_session_list_lock(session->priv);
 +
- 			session->err = ESHUTDOWN;
- 			j1939_session_deactivate_locked(session);
++	if (session->state >= J1939_SESSION_ACTIVE &&
++	    session->state < J1939_SESSION_WAITING_ABORT) {
++		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
++		__j1939_session_cancel(session, err);
++	}
++
++	j1939_session_list_unlock(session->priv);
++}
++
+ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
+ {
+ 	struct j1939_session *session =
+@@ -1108,8 +1123,6 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
+ 		netdev_alert(priv->ndev, "%s: 0x%p: tx aborted with unknown reason: %i\n",
+ 			     __func__, session, ret);
+ 		if (session->skcb.addr.type != J1939_SIMPLE) {
+-			j1939_tp_set_rxtimeout(session,
+-					       J1939_XTP_ABORT_TIMEOUT_MS);
+ 			j1939_session_cancel(session, J1939_XTP_ABORT_OTHER);
+ 		} else {
+ 			session->err = ret;
+@@ -1169,7 +1182,7 @@ static enum hrtimer_restart j1939_tp_rxtimer(struct hrtimer *hrtimer)
+ 			hrtimer_start(&session->rxtimer,
+ 				      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
+ 				      HRTIMER_MODE_REL_SOFT);
+-			j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
++			__j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
  		}
+ 		j1939_session_list_unlock(session->priv);
+ 	}
+@@ -1375,7 +1388,6 @@ j1939_xtp_rx_cts_one(struct j1939_session *session, struct sk_buff *skb)
+ 
+  out_session_cancel:
+ 	j1939_session_timers_cancel(session);
+-	j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
+ 	j1939_session_cancel(session, err);
+ }
+ 
+@@ -1572,7 +1584,6 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
+ 
+ 		/* RTS on active session */
+ 		j1939_session_timers_cancel(session);
+-		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
+ 		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
+ 	}
+ 
+@@ -1583,7 +1594,6 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
+ 			     session->last_cmd);
+ 
+ 		j1939_session_timers_cancel(session);
+-		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
+ 		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
+ 
+ 		return -EBUSY;
+@@ -1785,7 +1795,6 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+ 
+  out_session_cancel:
+ 	j1939_session_timers_cancel(session);
+-	j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
+ 	j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
+ 	j1939_session_put(session);
+ }
 -- 
 2.24.0
