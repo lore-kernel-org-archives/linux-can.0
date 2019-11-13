@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 9/9] can: j1939: warn if resources are still linked on destroy
-Date: Wed, 13 Nov 2019 10:55:50 +0100
-Message-ID: <20191113095550.26527-10-mkl@pengutronix.de>
+Subject: [PATCH 2/9] can: j1939: move j1939_priv_put() into sk_destruct callback
+Date: Wed, 13 Nov 2019 10:55:43 +0100
+Message-ID: <20191113095550.26527-3-mkl@pengutronix.de>
 References: <20191113095550.26527-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,49 +14,90 @@ List-Id: linux-can.vger.kernel.org
 
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-j1939_session_destroy() and __j1939_priv_release() should be called only
-if session, ecu or socket are not linked or used by any one else. If at
-least one of these resources is linked, then the reference counting is
-broken somewhere.
+This patch delays the j1939_priv_put() until the socket is destroyed via
+the sk_destruct callback, to avoid use-after-free problems.
 
-This warning will be triggered before KASAN will do, and will make it
-easier to debug initial issue. This works on platforms without KASAN
-support.
-
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- net/can/j1939/main.c      | 4 ++++
- net/can/j1939/transport.c | 3 +++
- 2 files changed, 7 insertions(+)
+ net/can/j1939/socket.c | 37 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 2afcf27c72c8..137054bff9ec 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -152,6 +152,10 @@ static void __j1939_priv_release(struct kref *kref)
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 4d8ba701e15d..aee94b09ef08 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -78,7 +78,6 @@ static void j1939_jsk_add(struct j1939_priv *priv, struct j1939_sock *jsk)
+ {
+ 	jsk->state |= J1939_SOCK_BOUND;
+ 	j1939_priv_get(priv);
+-	jsk->priv = priv;
  
- 	netdev_dbg(priv->ndev, "%s: 0x%p\n", __func__, priv);
+ 	spin_lock_bh(&priv->j1939_socks_lock);
+ 	list_add_tail(&jsk->list, &priv->j1939_socks);
+@@ -91,7 +90,6 @@ static void j1939_jsk_del(struct j1939_priv *priv, struct j1939_sock *jsk)
+ 	list_del_init(&jsk->list);
+ 	spin_unlock_bh(&priv->j1939_socks_lock);
  
-+	WARN_ON_ONCE(!list_empty(&priv->active_session_list));
-+	WARN_ON_ONCE(!list_empty(&priv->ecus));
-+	WARN_ON_ONCE(!list_empty(&priv->j1939_socks));
-+
- 	dev_put(ndev);
- 	kfree(priv);
+-	jsk->priv = NULL;
+ 	j1939_priv_put(priv);
+ 	jsk->state &= ~J1939_SOCK_BOUND;
  }
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 0c62b8fc4b20..9f99af5b0b11 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -267,6 +267,9 @@ static void j1939_session_destroy(struct j1939_session *session)
+@@ -349,6 +347,34 @@ void j1939_sk_recv(struct j1939_priv *priv, struct sk_buff *skb)
+ 	spin_unlock_bh(&priv->j1939_socks_lock);
+ }
  
- 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
- 
-+	WARN_ON_ONCE(!list_empty(&session->sk_session_queue_entry));
-+	WARN_ON_ONCE(!list_empty(&session->active_session_list_entry));
++static void j1939_sk_sock_destruct(struct sock *sk)
++{
++	struct j1939_sock *jsk = j1939_sk(sk);
 +
- 	skb_queue_purge(&session->skb_queue);
- 	__j1939_session_drop(session);
- 	j1939_priv_put(session->priv);
++	/* This function will be call by the generic networking code, when then
++	 * the socket is ultimately closed (sk->sk_destruct).
++	 *
++	 * The race between
++	 * - processing a received CAN frame
++	 *   (can_receive -> j1939_can_recv)
++	 *   and accessing j1939_priv
++	 * ... and ...
++	 * - closing a socket
++	 *   (j1939_can_rx_unregister -> can_rx_unregister)
++	 *   and calling the final j1939_priv_put()
++	 *
++	 * is avoided by calling the final j1939_priv_put() from this
++	 * RCU deferred cleanup call.
++	 */
++	if (jsk->priv) {
++		j1939_priv_put(jsk->priv);
++		jsk->priv = NULL;
++	}
++
++	/* call generic CAN sock destruct */
++	can_sock_destruct(sk);
++}
++
+ static int j1939_sk_init(struct sock *sk)
+ {
+ 	struct j1939_sock *jsk = j1939_sk(sk);
+@@ -371,6 +397,7 @@ static int j1939_sk_init(struct sock *sk)
+ 	atomic_set(&jsk->skb_pending, 0);
+ 	spin_lock_init(&jsk->sk_session_queue_lock);
+ 	INIT_LIST_HEAD(&jsk->sk_session_queue);
++	sk->sk_destruct = j1939_sk_sock_destruct;
+ 
+ 	return 0;
+ }
+@@ -443,6 +470,12 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
+ 		}
+ 
+ 		jsk->ifindex = addr->can_ifindex;
++
++		/* the corresponding j1939_priv_put() is called via
++		 * sk->sk_destruct, which points to j1939_sk_sock_destruct()
++		 */
++		j1939_priv_get(priv);
++		jsk->priv = priv;
+ 	}
+ 
+ 	/* set default transmit pgn */
 -- 
 2.24.0
