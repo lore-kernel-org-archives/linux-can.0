@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 6/9] can: j1939: make sure socket is held as long as session exists
-Date: Wed, 13 Nov 2019 10:55:47 +0100
-Message-ID: <20191113095550.26527-7-mkl@pengutronix.de>
+Subject: [PATCH 4/9] can: j1939: socket: rework socket locking for j1939_sk_release() and j1939_sk_sendmsg()
+Date: Wed, 13 Nov 2019 10:55:45 +0100
+Message-ID: <20191113095550.26527-5-mkl@pengutronix.de>
 References: <20191113095550.26527-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,41 +9,125 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191113095550.26527-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>, syzbot+afd421337a736d6c1ee6@syzkaller.appspotmail.com, syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com
 List-Id: linux-can.vger.kernel.org
 
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-We link the socket to the session to be able provide socket specific
-notifications. For example messages over error queue.
+j1939_sk_sendmsg() should be protected by lock_sock() to avoid race with
+j1939_sk_bind() and j1939_sk_release().
 
-We need to keep the socket held, while we have a reference to it.
-
+Reported-by: syzbot+afd421337a736d6c1ee6@syzkaller.appspotmail.com
+Reported-by: syzbot+6d04f6a1b31a0ae12ca9@syzkaller.appspotmail.com
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- net/can/j1939/transport.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/can/j1939/socket.c | 57 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 39 insertions(+), 18 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index ecdedfc0b10c..afc2adfd97e4 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -255,6 +255,7 @@ static void __j1939_session_drop(struct j1939_session *session)
- 		return;
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index aee94b09ef08..de09b0a65791 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -593,8 +593,8 @@ static int j1939_sk_release(struct socket *sock)
+ 	if (!sk)
+ 		return 0;
  
- 	j1939_sock_pending_del(session->sk);
-+	sock_put(session->sk);
+-	jsk = j1939_sk(sk);
+ 	lock_sock(sk);
++	jsk = j1939_sk(sk);
+ 
+ 	if (jsk->state & J1939_SOCK_BOUND) {
+ 		struct j1939_priv *priv = jsk->priv;
+@@ -1092,51 +1092,72 @@ static int j1939_sk_sendmsg(struct socket *sock, struct msghdr *msg,
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct j1939_sock *jsk = j1939_sk(sk);
+-	struct j1939_priv *priv = jsk->priv;
++	struct j1939_priv *priv;
+ 	int ifindex;
+ 	int ret;
+ 
++	lock_sock(sock->sk);
+ 	/* various socket state tests */
+-	if (!(jsk->state & J1939_SOCK_BOUND))
+-		return -EBADFD;
++	if (!(jsk->state & J1939_SOCK_BOUND)) {
++		ret = -EBADFD;
++		goto sendmsg_done;
++	}
+ 
++	priv = jsk->priv;
+ 	ifindex = jsk->ifindex;
+ 
+-	if (!jsk->addr.src_name && jsk->addr.sa == J1939_NO_ADDR)
++	if (!jsk->addr.src_name && jsk->addr.sa == J1939_NO_ADDR) {
+ 		/* no source address assigned yet */
+-		return -EBADFD;
++		ret = -EBADFD;
++		goto sendmsg_done;
++	}
+ 
+ 	/* deal with provided destination address info */
+ 	if (msg->msg_name) {
+ 		struct sockaddr_can *addr = msg->msg_name;
+ 
+-		if (msg->msg_namelen < J1939_MIN_NAMELEN)
+-			return -EINVAL;
++		if (msg->msg_namelen < J1939_MIN_NAMELEN) {
++			ret = -EINVAL;
++			goto sendmsg_done;
++		}
+ 
+-		if (addr->can_family != AF_CAN)
+-			return -EINVAL;
++		if (addr->can_family != AF_CAN) {
++			ret = -EINVAL;
++			goto sendmsg_done;
++		}
+ 
+-		if (addr->can_ifindex && addr->can_ifindex != ifindex)
+-			return -EBADFD;
++		if (addr->can_ifindex && addr->can_ifindex != ifindex) {
++			ret = -EBADFD;
++			goto sendmsg_done;
++		}
+ 
+ 		if (j1939_pgn_is_valid(addr->can_addr.j1939.pgn) &&
+-		    !j1939_pgn_is_clean_pdu(addr->can_addr.j1939.pgn))
+-			return -EINVAL;
++		    !j1939_pgn_is_clean_pdu(addr->can_addr.j1939.pgn)) {
++			ret = -EINVAL;
++			goto sendmsg_done;
++		}
+ 
+ 		if (!addr->can_addr.j1939.name &&
+ 		    addr->can_addr.j1939.addr == J1939_NO_ADDR &&
+-		    !sock_flag(sk, SOCK_BROADCAST))
++		    !sock_flag(sk, SOCK_BROADCAST)) {
+ 			/* broadcast, but SO_BROADCAST not set */
+-			return -EACCES;
++			ret = -EACCES;
++			goto sendmsg_done;
++		}
+ 	} else {
+ 		if (!jsk->addr.dst_name && jsk->addr.da == J1939_NO_ADDR &&
+-		    !sock_flag(sk, SOCK_BROADCAST))
++		    !sock_flag(sk, SOCK_BROADCAST)) {
+ 			/* broadcast, but SO_BROADCAST not set */
+-			return -EACCES;
++			ret = -EACCES;
++			goto sendmsg_done;
++		}
+ 	}
+ 
+ 	ret = j1939_sk_send_loop(priv, sk, msg, size);
+ 
++sendmsg_done:
++	release_sock(sock->sk);
++
+ 	return ret;
  }
  
- static void j1939_session_destroy(struct j1939_session *session)
-@@ -1875,6 +1876,7 @@ struct j1939_session *j1939_tp_send(struct j1939_priv *priv,
- 		return ERR_PTR(-ENOMEM);
- 
- 	/* skb is recounted in j1939_session_new() */
-+	sock_hold(skb->sk);
- 	session->sk = skb->sk;
- 	session->transmission = true;
- 	session->pkt.total = (size + 6) / 7;
 -- 
 2.24.0
