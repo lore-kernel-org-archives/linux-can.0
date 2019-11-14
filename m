@@ -1,44 +1,61 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2019-11-14
-Date: Thu, 14 Nov 2019 10:45:47 +0100
-Message-ID: <20191114094548.4867-1-mkl@pengutronix.de>
+Subject: [PATCH] slcan: Fix memory leak in error path
+Date: Thu, 14 Nov 2019 10:45:48 +0100
+Message-ID: <20191114094548.4867-2-mkl@pengutronix.de>
+References: <20191114094548.4867-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20191114094548.4867-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Jouni Hogander <jouni.hogander@unikie.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Lukas Bulwahn <lukas.bulwahn@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Jouni Hogander <jouni.hogander@unikie.com>
 
-here another pull request for net/master consisting of one patch (including my S-o-b).
+This patch is fixing memory leak reported by Syzkaller:
 
-Jouni Hogander's patch fixes a memory leak found by the syzbot in the slcan
-driver's error path.
+BUG: memory leak unreferenced object 0xffff888067f65500 (size 4096):
+  comm "syz-executor043", pid 454, jiffies 4294759719 (age 11.930s)
+  hex dump (first 32 bytes):
+    73 6c 63 61 6e 30 00 00 00 00 00 00 00 00 00 00 slcan0..........
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+  backtrace:
+    [<00000000a06eec0d>] __kmalloc+0x18b/0x2c0
+    [<0000000083306e66>] kvmalloc_node+0x3a/0xc0
+    [<000000006ac27f87>] alloc_netdev_mqs+0x17a/0x1080
+    [<0000000061a996c9>] slcan_open+0x3ae/0x9a0
+    [<000000001226f0f9>] tty_ldisc_open.isra.1+0x76/0xc0
+    [<0000000019289631>] tty_set_ldisc+0x28c/0x5f0
+    [<000000004de5a617>] tty_ioctl+0x48d/0x1590
+    [<00000000daef496f>] do_vfs_ioctl+0x1c7/0x1510
+    [<0000000059068dbc>] ksys_ioctl+0x99/0xb0
+    [<000000009a6eb334>] __x64_sys_ioctl+0x78/0xb0
+    [<0000000053d0332e>] do_syscall_64+0x16f/0x580
+    [<0000000021b83b99>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    [<000000008ea75434>] 0xffffffffffffffff
 
-Marc
-
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Jouni Hogander <jouni.hogander@unikie.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-
-The following changes since commit a56dcc6b455830776899ce3686735f1172e12243:
-
-  net: cdc_ncm: Signedness bug in cdc_ncm_set_dgram_size() (2019-11-13 14:30:16 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.4-20191114
-
-for you to fetch changes up to ed50e1600b4483c049ce76e6bd3b665a6a9300ed:
-
-  slcan: Fix memory leak in error path (2019-11-14 10:38:30 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.4-20191114
-
-----------------------------------------------------------------
-Jouni Hogander (1):
-      slcan: Fix memory leak in error path
-
  drivers/net/can/slcan.c | 1 +
  1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index bb6032211043..0a9f42e5fedf 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -617,6 +617,7 @@ static int slcan_open(struct tty_struct *tty)
+ 	sl->tty = NULL;
+ 	tty->disc_data = NULL;
+ 	clear_bit(SLF_INUSE, &sl->flags);
++	free_netdev(sl->dev);
+ 
+ err_exit:
+ 	rtnl_unlock();
+-- 
+2.24.0
