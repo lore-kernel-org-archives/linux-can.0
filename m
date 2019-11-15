@@ -1,7 +1,7 @@
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH 2/3] can: flexcan: change the way of stop mode acknowledgment
-Date: Fri, 15 Nov 2019 05:03:28 +0000
-Message-ID: <20191115050032.25928-2-qiangqing.zhang@nxp.com>
+Subject: [PATCH 3/3] can: flexcan: add LPSR mode support
+Date: Fri, 15 Nov 2019 05:03:31 +0000
+Message-ID: <20191115050032.25928-3-qiangqing.zhang@nxp.com>
 References: <20191115050032.25928-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,151 +14,100 @@ To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.co
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-Stop mode is entered when Stop mode is requested at chip level and
-MCR[LPM_ACK] is asserted by the FlexCAN.
+For i.MX7D LPSR mode, the controller will lost power and got the
+configuration state lost after system resume back. (coming i.MX8QM/QXP
+will also completely power off the domain, the controller state will be
+lost and needs restore).
+So we need to set pinctrl state again and re-start chip to do
+re-configuration after resume.
 
-Double check with IP owner, should poll MCR[LPM_ACK] for stop mode
-acknowledgment, not the acknowledgment from chip level.
+For wakeup case, it should not set pinctrl to sleep state by
+pinctrl_pm_select_sleep_state.
+For interface is not up before suspend case, we don't need
+re-configure as it will be configured by user later by interface up.
 
-Fixes: 5f186c257fa4(can: flexcan: fix stop mode acknowledgment)
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- drivers/net/can/flexcan.c | 64 ++++++++++++++++++++-------------------
- 1 file changed, 33 insertions(+), 31 deletions(-)
+ drivers/net/can/flexcan.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 43fd187768f1..dd91d8d6b5a6 100644
+index dd91d8d6b5a6..f75d8099a035 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -388,6 +388,34 @@ static struct flexcan_mb __iomem *flexcan_get_mb(const=
- struct flexcan_priv *priv
- 		(&priv->regs->mb[bank][priv->mb_size * mb_index]);
- }
+@@ -26,6 +26,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/regmap.h>
 =20
-+static int flexcan_enter_low_power_ack(struct flexcan_priv *priv)
-+{
-+	struct flexcan_regs __iomem *regs =3D priv->regs;
-+	unsigned int timeout =3D FLEXCAN_TIMEOUT_US / 10;
+ #define DRV_NAME			"flexcan"
+@@ -1691,7 +1692,7 @@ static int __maybe_unused flexcan_suspend(struct devi=
+ce *device)
+ {
+ 	struct net_device *dev =3D dev_get_drvdata(device);
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+-	int err =3D 0;
++	int err;
+=20
+ 	if (netif_running(dev)) {
+ 		/* if wakeup is enabled, enter stop mode
+@@ -1703,25 +1704,27 @@ static int __maybe_unused flexcan_suspend(struct de=
+vice *device)
+ 			if (err)
+ 				return err;
+ 		} else {
+-			err =3D flexcan_chip_disable(priv);
++			flexcan_chip_stop(dev);
 +
-+	while (timeout-- && !(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
-+		udelay(10);
-+
-+	if (!(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
-+		return -ETIMEDOUT;
-+
++			err =3D pm_runtime_force_suspend(device);
+ 			if (err)
+ 				return err;
+=20
+-			err =3D pm_runtime_force_suspend(device);
++			pinctrl_pm_select_sleep_state(device);
+ 		}
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+ 	}
+ 	priv->can.state =3D CAN_STATE_SLEEPING;
+=20
+-	return err;
 +	return 0;
-+}
+ }
+=20
+ static int __maybe_unused flexcan_resume(struct device *device)
+ {
+ 	struct net_device *dev =3D dev_get_drvdata(device);
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+-	int err =3D 0;
++	int err;
+=20
+ 	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+ 	if (netif_running(dev)) {
+@@ -1733,15 +1736,19 @@ static int __maybe_unused flexcan_resume(struct dev=
+ice *device)
+ 			if (err)
+ 				return err;
+ 		} else {
++			pinctrl_pm_select_default_state(device);
 +
-+static int flexcan_exit_low_power_ack(struct flexcan_priv *priv)
-+{
-+	struct flexcan_regs __iomem *regs =3D priv->regs;
-+	unsigned int timeout =3D FLEXCAN_TIMEOUT_US / 10;
-+
-+	while (timeout-- && (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
-+		udelay(10);
-+
-+	if (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK)
-+		return -ETIMEDOUT;
-+
+ 			err =3D pm_runtime_force_resume(device);
+ 			if (err)
+ 				return err;
+=20
+-			err =3D flexcan_chip_enable(priv);
++			err =3D flexcan_chip_start(dev);
++			if (err)
++				return err;
+ 		}
+ 	}
+=20
+-	return err;
 +	return 0;
-+}
-+
- static void flexcan_enable_wakeup_irq(struct flexcan_priv *priv, bool enab=
-le)
- {
- 	struct flexcan_regs __iomem *regs =3D priv->regs;
-@@ -406,7 +434,6 @@ static void flexcan_enable_wakeup_irq(struct flexcan_pr=
-iv *priv, bool enable)
- static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs =3D priv->regs;
--	unsigned int ackval;
- 	u32 reg_mcr;
-=20
- 	reg_mcr =3D priv->read(&regs->mcr);
-@@ -418,35 +445,24 @@ static inline int flexcan_enter_stop_mode(struct flex=
-can_priv *priv)
- 			   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
-=20
- 	/* get stop acknowledgment */
--	if (regmap_read_poll_timeout(priv->stm.gpr, priv->stm.ack_gpr,
--				     ackval, ackval & (1 << priv->stm.ack_bit),
--				     0, FLEXCAN_TIMEOUT_US))
--		return -ETIMEDOUT;
--
--	return 0;
-+	return flexcan_enter_low_power_ack(priv);
  }
 =20
- static inline int flexcan_exit_stop_mode(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs =3D priv->regs;
--	unsigned int ackval;
- 	u32 reg_mcr;
-=20
- 	/* remove stop request */
- 	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
- 			   1 << priv->stm.req_bit, 0);
-=20
--	/* get stop acknowledgment */
--	if (regmap_read_poll_timeout(priv->stm.gpr, priv->stm.ack_gpr,
--				     ackval, !(ackval & (1 << priv->stm.ack_bit)),
--				     0, FLEXCAN_TIMEOUT_US))
--		return -ETIMEDOUT;
--
- 	reg_mcr =3D priv->read(&regs->mcr);
- 	reg_mcr &=3D ~FLEXCAN_MCR_SLF_WAK;
- 	priv->write(reg_mcr, &regs->mcr);
-=20
--	return 0;
-+	/* get stop acknowledgment */
-+	return flexcan_exit_low_power_ack(priv);
- }
-=20
- static inline void flexcan_error_irq_enable(const struct flexcan_priv *pri=
-v)
-@@ -505,39 +521,25 @@ static inline int flexcan_transceiver_disable(const s=
-truct flexcan_priv *priv)
- static int flexcan_chip_enable(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs =3D priv->regs;
--	unsigned int timeout =3D FLEXCAN_TIMEOUT_US / 10;
- 	u32 reg;
-=20
- 	reg =3D priv->read(&regs->mcr);
- 	reg &=3D ~FLEXCAN_MCR_MDIS;
- 	priv->write(reg, &regs->mcr);
-=20
--	while (timeout-- && (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
--		udelay(10);
--
--	if (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK)
--		return -ETIMEDOUT;
--
--	return 0;
-+	return flexcan_exit_low_power_ack(priv);
- }
-=20
- static int flexcan_chip_disable(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs =3D priv->regs;
--	unsigned int timeout =3D FLEXCAN_TIMEOUT_US / 10;
- 	u32 reg;
-=20
- 	reg =3D priv->read(&regs->mcr);
- 	reg |=3D FLEXCAN_MCR_MDIS;
- 	priv->write(reg, &regs->mcr);
-=20
--	while (timeout-- && !(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
--		udelay(10);
--
--	if (!(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
--		return -ETIMEDOUT;
--
--	return 0;
-+	return flexcan_enter_low_power_ack(priv);
- }
-=20
- static int flexcan_chip_freeze(struct flexcan_priv *priv)
+ static int __maybe_unused flexcan_runtime_suspend(struct device *device)
 --=20
 2.17.1
