@@ -1,72 +1,65 @@
 From: Sean Nyekjaer <sean@geanix.com>
 Subject: Re: [PATCH 1/3] can: flexcan: fix deadlock when using self wakeup
-Date: Fri, 15 Nov 2019 10:07:20 +0100
-Message-ID: <91802fbe-5840-5b14-9b5e-afc278017dba@geanix.com>
+Date: Fri, 15 Nov 2019 10:07:40 +0100
+Message-ID: <9870ec21-b664-522e-e0df-290ab56fbb32@geanix.com>
 References: <20191115050032.25928-1-qiangqing.zhang@nxp.com>
- <DB7PR04MB4618335E8A90387EDAE17F21E6700@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <986c06e6-644a-5ad4-b7e0-ce431605b626@geanix.com>
- <DB7PR04MB4618824F3A331AF9EC207C55E6700@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <DB7PR04MB4618824F3A331AF9EC207C55E6700@DB7PR04MB4618.eurprd04.prod.outlook.com>
+In-Reply-To: <20191115050032.25928-1-qiangqing.zhang@nxp.com>
 Content-Language: en-US-large
 Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
 
 
-On 15/11/2019 10.06, Joakim Zhang wrote:
+On 15/11/2019 06.03, Joakim Zhang wrote:
+> From: Sean Nyekjaer <sean@geanix.com>
 > 
->> -----Original Message-----
->> From: Sean Nyekjaer <sean@geanix.com>
->> Sent: 2019Äê11ÔÂ15ÈÕ 16:54
->> To: Joakim Zhang <qiangqing.zhang@nxp.com>; mkl@pengutronix.de;
->> linux-can@vger.kernel.org
->> Cc: dl-linux-imx <linux-imx@nxp.com>; netdev@vger.kernel.org
->> Subject: Re: [PATCH 1/3] can: flexcan: fix deadlock when using self wakeup
->>
->>
->>
->> On 15/11/2019 06.09, Joakim Zhang wrote:
->>>
->>> Hi Sean,
->>>
->>> I remember that you are the first one sending out the patch to fix this issue,
->> and I NACK the patch before.
->>> I am so sorry for that, it can work fine after testing at my side.
->>> Could you help double check at your side for this patch? Both wakeup from
->> totally suspend and wakeup from suspending?
->>>
->>> With this patch, we can fix two problems:
->>> 1) fix deadlock when using self wakeup
->>> 2) frames out-of-order in first IRQ handler run after wakeup
->>>
->>> Thanks a lot!
->>>
->>> Best Regards,
->>> Joakim Zhang
->>
->> Hi Joakim,
->>
->>
->>
->> We are mostly listening for broadcast packages, so we haven't noticed frames
->> out-of-order :-)
+> When suspending, when there is still can traffic on the interfaces the
+> flexcan immediately wakes the platform again. As it should :-). But it
+> throws this error msg:
+> [ 3169.378661] PM: noirq suspend of devices failed
 > 
-> Okay, I have discussed with Marc before, this could be possible. You can test with two boards, one receive and another transmit.
->>
->>
->> I have checked this series, it comes out of suspend every time :-)
+> On the way down to suspend the interface that throws the error message does
+> call flexcan_suspend but fails to call flexcan_noirq_suspend. That means the
+> flexcan_enter_stop_mode is called, but on the way out of suspend the driver
+> only calls flexcan_resume and skips flexcan_noirq_resume, thus it doesn't call
+> flexcan_exit_stop_mode. This leaves the flexcan in stop mode, and with the
+> current driver it can't recover from this even with a soft reboot, it requires
+> a hard reboot.
 > 
-> I am not quite understand, could you explain more, this patch cannot fix deadlock issue?
+> This patch can fix deadlock when using self wakeup, it happenes to be
+> able to fix another issue that frames out-of-order in first IRQ handler
+> run after wakeup.
+> 
+> In wakeup case, after system resume, frames received out-of-order,the
+> problem is wakeup latency from frame reception to IRQ handler is much
+> bigger than the counter overflow. This means it's impossible to sort the
+> CAN frames by timestamp. The reason is that controller exits stop mode
+> during noirq resume, then it can receive the frame immediately. If
+> noirq reusme stage consumes much time, it will extend interrupt response
+> time.
+> 
+> Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-It fixes the deadlock issue :)
-> 
-> Best Regards,
-> Joakim Zhang
->> /Sean
-> 
+Hi Joakim and Marc
+
+We have quite a few devices in the field where flexcan is stuck in 
+Stop-Mode. We do not have the possibility to cold reboot them, and hot 
+reboot will not get flexcan out of stop-mode.
+So flexcan comes up with:
+[  279.444077] flexcan: probe of 2090000.flexcan failed with error -110
+[  279.501405] flexcan: probe of 2094000.flexcan failed with error -110
+
+They are on, de3578c198c6 ("can: flexcan: add self wakeup support")
+
+Would it be a solution to add a check in the probe function to pull it 
+out of stop-mode?
+
+/Sean
