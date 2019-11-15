@@ -1,44 +1,72 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH 1/3] can: flexcan: fix deadlock when using self wakeup
-Date: Fri, 15 Nov 2019 09:06:01 +0000
-Message-ID: <DB7PR04MB4618824F3A331AF9EC207C55E6700@DB7PR04MB4618.eurprd04.prod.outlook.com>
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: Re: [PATCH 1/3] can: flexcan: fix deadlock when using self wakeup
+Date: Fri, 15 Nov 2019 10:07:20 +0100
+Message-ID: <91802fbe-5840-5b14-9b5e-afc278017dba@geanix.com>
 References: <20191115050032.25928-1-qiangqing.zhang@nxp.com>
  <DB7PR04MB4618335E8A90387EDAE17F21E6700@DB7PR04MB4618.eurprd04.prod.outlook.com>
  <986c06e6-644a-5ad4-b7e0-ce431605b626@geanix.com>
+ <DB7PR04MB4618824F3A331AF9EC207C55E6700@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <986c06e6-644a-5ad4-b7e0-ce431605b626@geanix.com>
-Content-Language: en-US
+In-Reply-To: <DB7PR04MB4618824F3A331AF9EC207C55E6700@DB7PR04MB4618.eurprd04.prod.outlook.com>
+Content-Language: en-US-large
 Sender: netdev-owner@vger.kernel.org
-To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
-YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOcTqMTHUwjE1yNUgMTY6NTQNCj4gVG86IEpvYWtp
-bSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBta2xAcGVuZ3V0cm9uaXguZGU7DQo+
-IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlteCA8bGludXgtaW14
-QG54cC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
-MS8zXSBjYW46IGZsZXhjYW46IGZpeCBkZWFkbG9jayB3aGVuIHVzaW5nIHNlbGYgd2FrZXVwDQo+
-IA0KPiANCj4gDQo+IE9uIDE1LzExLzIwMTkgMDYuMDksIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4g
-Pg0KPiA+IEhpIFNlYW4sDQo+ID4NCj4gPiBJIHJlbWVtYmVyIHRoYXQgeW91IGFyZSB0aGUgZmly
-c3Qgb25lIHNlbmRpbmcgb3V0IHRoZSBwYXRjaCB0byBmaXggdGhpcyBpc3N1ZSwNCj4gYW5kIEkg
-TkFDSyB0aGUgcGF0Y2ggYmVmb3JlLg0KPiA+IEkgYW0gc28gc29ycnkgZm9yIHRoYXQsIGl0IGNh
-biB3b3JrIGZpbmUgYWZ0ZXIgdGVzdGluZyBhdCBteSBzaWRlLg0KPiA+IENvdWxkIHlvdSBoZWxw
-IGRvdWJsZSBjaGVjayBhdCB5b3VyIHNpZGUgZm9yIHRoaXMgcGF0Y2g/IEJvdGggd2FrZXVwIGZy
-b20NCj4gdG90YWxseSBzdXNwZW5kIGFuZCB3YWtldXAgZnJvbSBzdXNwZW5kaW5nPw0KPiA+DQo+
-ID4gV2l0aCB0aGlzIHBhdGNoLCB3ZSBjYW4gZml4IHR3byBwcm9ibGVtczoNCj4gPiAxKSBmaXgg
-ZGVhZGxvY2sgd2hlbiB1c2luZyBzZWxmIHdha2V1cA0KPiA+IDIpIGZyYW1lcyBvdXQtb2Ytb3Jk
-ZXIgaW4gZmlyc3QgSVJRIGhhbmRsZXIgcnVuIGFmdGVyIHdha2V1cA0KPiA+DQo+ID4gVGhhbmtz
-IGEgbG90IQ0KPiA+DQo+ID4gQmVzdCBSZWdhcmRzLA0KPiA+IEpvYWtpbSBaaGFuZw0KPiANCj4g
-SGkgSm9ha2ltLA0KPiANCj4gDQo+IA0KPiBXZSBhcmUgbW9zdGx5IGxpc3RlbmluZyBmb3IgYnJv
-YWRjYXN0IHBhY2thZ2VzLCBzbyB3ZSBoYXZlbid0IG5vdGljZWQgZnJhbWVzDQo+IG91dC1vZi1v
-cmRlciA6LSkNCg0KT2theSwgSSBoYXZlIGRpc2N1c3NlZCB3aXRoIE1hcmMgYmVmb3JlLCB0aGlz
-IGNvdWxkIGJlIHBvc3NpYmxlLiBZb3UgY2FuIHRlc3Qgd2l0aCB0d28gYm9hcmRzLCBvbmUgcmVj
-ZWl2ZSBhbmQgYW5vdGhlciB0cmFuc21pdC4NCj4gDQo+IA0KPiBJIGhhdmUgY2hlY2tlZCB0aGlz
-IHNlcmllcywgaXQgY29tZXMgb3V0IG9mIHN1c3BlbmQgZXZlcnkgdGltZSA6LSkNCg0KSSBhbSBu
-b3QgcXVpdGUgdW5kZXJzdGFuZCwgY291bGQgeW91IGV4cGxhaW4gbW9yZSwgdGhpcyBwYXRjaCBj
-YW5ub3QgZml4IGRlYWRsb2NrIGlzc3VlPw0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcN
-Cj4gL1NlYW4NCg0K
+
+
+On 15/11/2019 10.06, Joakim Zhang wrote:
+> 
+>> -----Original Message-----
+>> From: Sean Nyekjaer <sean@geanix.com>
+>> Sent: 2019Äê11ÔÂ15ÈÕ 16:54
+>> To: Joakim Zhang <qiangqing.zhang@nxp.com>; mkl@pengutronix.de;
+>> linux-can@vger.kernel.org
+>> Cc: dl-linux-imx <linux-imx@nxp.com>; netdev@vger.kernel.org
+>> Subject: Re: [PATCH 1/3] can: flexcan: fix deadlock when using self wakeup
+>>
+>>
+>>
+>> On 15/11/2019 06.09, Joakim Zhang wrote:
+>>>
+>>> Hi Sean,
+>>>
+>>> I remember that you are the first one sending out the patch to fix this issue,
+>> and I NACK the patch before.
+>>> I am so sorry for that, it can work fine after testing at my side.
+>>> Could you help double check at your side for this patch? Both wakeup from
+>> totally suspend and wakeup from suspending?
+>>>
+>>> With this patch, we can fix two problems:
+>>> 1) fix deadlock when using self wakeup
+>>> 2) frames out-of-order in first IRQ handler run after wakeup
+>>>
+>>> Thanks a lot!
+>>>
+>>> Best Regards,
+>>> Joakim Zhang
+>>
+>> Hi Joakim,
+>>
+>>
+>>
+>> We are mostly listening for broadcast packages, so we haven't noticed frames
+>> out-of-order :-)
+> 
+> Okay, I have discussed with Marc before, this could be possible. You can test with two boards, one receive and another transmit.
+>>
+>>
+>> I have checked this series, it comes out of suspend every time :-)
+> 
+> I am not quite understand, could you explain more, this patch cannot fix deadlock issue?
+
+It fixes the deadlock issue :)
+> 
+> Best Regards,
+> Joakim Zhang
+>> /Sean
+> 
