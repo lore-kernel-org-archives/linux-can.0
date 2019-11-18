@@ -1,78 +1,100 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH 1/3] can: flexcan: fix deadlock when using self wakeup
-Date: Mon, 18 Nov 2019 07:05:22 +0000
-Message-ID: <DB7PR04MB4618220095E1F844A44DB480E64D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: Re: [PATCH 1/3] can: flexcan: fix deadlock when using self wakeup
+Date: Mon, 18 Nov 2019 08:52:57 +0100
+Message-ID: <16a0aa7b-875e-8dd9-085c-3341d3f1ac51@geanix.com>
 References: <20191115050032.25928-1-qiangqing.zhang@nxp.com>
  <9870ec21-b664-522e-e0df-290ab56fbb32@geanix.com>
+ <DB7PR04MB4618220095E1F844A44DB480E64D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <9870ec21-b664-522e-e0df-290ab56fbb32@geanix.com>
-Content-Language: en-US
+In-Reply-To: <DB7PR04MB4618220095E1F844A44DB480E64D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+Content-Language: en-US-large
 Sender: netdev-owner@vger.kernel.org
-To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IGxpbnV4LWNhbi1vd25lckB2
-Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LWNhbi1vd25lckB2Z2VyLmtlcm5lbC5vcmc+DQo+IE9uIEJl
-aGFsZiBPZiBTZWFuIE55ZWtqYWVyDQo+IFNlbnQ6IDIwMTnlubQxMeaciDE15pelIDE3OjA4DQo+
-IFRvOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsgbWtsQHBlbmd1dHJv
-bml4LmRlDQo+IENjOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXggPGxp
-bnV4LWlteEBueHAuY29tPjsNCj4gbmV0ZGV2QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBS
-ZTogW1BBVENIIDEvM10gY2FuOiBmbGV4Y2FuOiBmaXggZGVhZGxvY2sgd2hlbiB1c2luZyBzZWxm
-IHdha2V1cA0KPiANCj4gDQo+IA0KPiBPbiAxNS8xMS8yMDE5IDA2LjAzLCBKb2FraW0gWmhhbmcg
-d3JvdGU6DQo+ID4gRnJvbTogU2VhbiBOeWVramFlciA8c2VhbkBnZWFuaXguY29tPg0KPiA+DQo+
-ID4gV2hlbiBzdXNwZW5kaW5nLCB3aGVuIHRoZXJlIGlzIHN0aWxsIGNhbiB0cmFmZmljIG9uIHRo
-ZSBpbnRlcmZhY2VzIHRoZQ0KPiA+IGZsZXhjYW4gaW1tZWRpYXRlbHkgd2FrZXMgdGhlIHBsYXRm
-b3JtIGFnYWluLiBBcyBpdCBzaG91bGQgOi0pLiBCdXQgaXQNCj4gPiB0aHJvd3MgdGhpcyBlcnJv
-ciBtc2c6DQo+ID4gWyAzMTY5LjM3ODY2MV0gUE06IG5vaXJxIHN1c3BlbmQgb2YgZGV2aWNlcyBm
-YWlsZWQNCj4gPg0KPiA+IE9uIHRoZSB3YXkgZG93biB0byBzdXNwZW5kIHRoZSBpbnRlcmZhY2Ug
-dGhhdCB0aHJvd3MgdGhlIGVycm9yIG1lc3NhZ2UNCj4gPiBkb2VzIGNhbGwgZmxleGNhbl9zdXNw
-ZW5kIGJ1dCBmYWlscyB0byBjYWxsIGZsZXhjYW5fbm9pcnFfc3VzcGVuZC4NCj4gPiBUaGF0IG1l
-YW5zIHRoZSBmbGV4Y2FuX2VudGVyX3N0b3BfbW9kZSBpcyBjYWxsZWQsIGJ1dCBvbiB0aGUgd2F5
-IG91dA0KPiA+IG9mIHN1c3BlbmQgdGhlIGRyaXZlciBvbmx5IGNhbGxzIGZsZXhjYW5fcmVzdW1l
-IGFuZCBza2lwcw0KPiA+IGZsZXhjYW5fbm9pcnFfcmVzdW1lLCB0aHVzIGl0IGRvZXNuJ3QgY2Fs
-bCBmbGV4Y2FuX2V4aXRfc3RvcF9tb2RlLg0KPiA+IFRoaXMgbGVhdmVzIHRoZSBmbGV4Y2FuIGlu
-IHN0b3AgbW9kZSwgYW5kIHdpdGggdGhlIGN1cnJlbnQgZHJpdmVyIGl0DQo+ID4gY2FuJ3QgcmVj
-b3ZlciBmcm9tIHRoaXMgZXZlbiB3aXRoIGEgc29mdCByZWJvb3QsIGl0IHJlcXVpcmVzIGEgaGFy
-ZCByZWJvb3QuDQo+ID4NCj4gPiBUaGlzIHBhdGNoIGNhbiBmaXggZGVhZGxvY2sgd2hlbiB1c2lu
-ZyBzZWxmIHdha2V1cCwgaXQgaGFwcGVuZXMgdG8gYmUNCj4gPiBhYmxlIHRvIGZpeCBhbm90aGVy
-IGlzc3VlIHRoYXQgZnJhbWVzIG91dC1vZi1vcmRlciBpbiBmaXJzdCBJUlENCj4gPiBoYW5kbGVy
-IHJ1biBhZnRlciB3YWtldXAuDQo+ID4NCj4gPiBJbiB3YWtldXAgY2FzZSwgYWZ0ZXIgc3lzdGVt
-IHJlc3VtZSwgZnJhbWVzIHJlY2VpdmVkIG91dC1vZi1vcmRlcix0aGUNCj4gPiBwcm9ibGVtIGlz
-IHdha2V1cCBsYXRlbmN5IGZyb20gZnJhbWUgcmVjZXB0aW9uIHRvIElSUSBoYW5kbGVyIGlzIG11
-Y2gNCj4gPiBiaWdnZXIgdGhhbiB0aGUgY291bnRlciBvdmVyZmxvdy4gVGhpcyBtZWFucyBpdCdz
-IGltcG9zc2libGUgdG8gc29ydA0KPiA+IHRoZSBDQU4gZnJhbWVzIGJ5IHRpbWVzdGFtcC4gVGhl
-IHJlYXNvbiBpcyB0aGF0IGNvbnRyb2xsZXIgZXhpdHMgc3RvcA0KPiA+IG1vZGUgZHVyaW5nIG5v
-aXJxIHJlc3VtZSwgdGhlbiBpdCBjYW4gcmVjZWl2ZSB0aGUgZnJhbWUgaW1tZWRpYXRlbHkuDQo+
-ID4gSWYgbm9pcnEgcmV1c21lIHN0YWdlIGNvbnN1bWVzIG11Y2ggdGltZSwgaXQgd2lsbCBleHRl
-bmQgaW50ZXJydXB0DQo+ID4gcmVzcG9uc2UgdGltZS4NCj4gPg0KPiA+IEZpeGVzOiBkZTM1Nzhj
-MTk4YzYgKCJjYW46IGZsZXhjYW46IGFkZCBzZWxmIHdha2V1cCBzdXBwb3J0IikNCj4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBTZWFuIE55ZWtqYWVyIDxzZWFuQGdlYW5peC5jb20+DQo+ID4gU2lnbmVkLW9m
-Zi1ieTogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gDQo+IEhpIEpv
-YWtpbSBhbmQgTWFyYw0KPiANCj4gV2UgaGF2ZSBxdWl0ZSBhIGZldyBkZXZpY2VzIGluIHRoZSBm
-aWVsZCB3aGVyZSBmbGV4Y2FuIGlzIHN0dWNrIGluIFN0b3AtTW9kZS4NCj4gV2UgZG8gbm90IGhh
-dmUgdGhlIHBvc3NpYmlsaXR5IHRvIGNvbGQgcmVib290IHRoZW0sIGFuZCBob3QgcmVib290IHdp
-bGwgbm90IGdldA0KPiBmbGV4Y2FuIG91dCBvZiBzdG9wLW1vZGUuDQo+IFNvIGZsZXhjYW4gY29t
-ZXMgdXAgd2l0aDoNCj4gWyAgMjc5LjQ0NDA3N10gZmxleGNhbjogcHJvYmUgb2YgMjA5MDAwMC5m
-bGV4Y2FuIGZhaWxlZCB3aXRoIGVycm9yIC0xMTANCj4gWyAgMjc5LjUwMTQwNV0gZmxleGNhbjog
-cHJvYmUgb2YgMjA5NDAwMC5mbGV4Y2FuIGZhaWxlZCB3aXRoIGVycm9yIC0xMTANCj4gDQo+IFRo
-ZXkgYXJlIG9uLCBkZTM1NzhjMTk4YzYgKCJjYW46IGZsZXhjYW46IGFkZCBzZWxmIHdha2V1cCBz
-dXBwb3J0IikNCj4gDQo+IFdvdWxkIGl0IGJlIGEgc29sdXRpb24gdG8gYWRkIGEgY2hlY2sgaW4g
-dGhlIHByb2JlIGZ1bmN0aW9uIHRvIHB1bGwgaXQgb3V0IG9mDQo+IHN0b3AtbW9kZT8NCg0KSGkg
-U2VhbiwNCg0KU29mdCByZXNldCBjYW5ub3QgYmUgYXBwbGllZCB3aGVuIGNsb2NrcyBhcmUgc2h1
-dCBkb3duIGluIGEgbG93IHBvd2VyIG1vZGUuIFRoZSBtb2R1bGUgc2hvdWxkIGJlIGZpcnN0IHJl
-bW92ZWQgZnJvbSBsb3cgcG93ZXIgbW9kZSwgYW5kIHRoZW4gc29mdCByZXNldCBjYW4gYmUgYXBw
-bGllZC4NCkFuZCBleGl0IGZyb20gc3RvcCBtb2RlIGhhcHBlbnMgd2hlbiB0aGUgU3RvcCBtb2Rl
-IHJlcXVlc3QgaXMgcmVtb3ZlZCwgb3Igd2hlbiBhY3Rpdml0eSBpcyBkZXRlY3RlZCBvbiB0aGUg
-Q0FOIGJ1cyBhbmQgdGhlIFNlbGYgV2FrZSBVcCBtZWNoYW5pc20gaXMgZW5hYmxlZC4NCg0KU28g
-ZnJvbSBteSBwb2ludCBvZiB2aWV3LCB3ZSBjYW4gYWRkIGEgY2hlY2sgaW4gdGhlIHByb2JlIGZ1
-bmN0aW9uIHRvIHB1bGwgaXQgb3V0IG9mIHN0b3AgbW9kZSwgc2luY2UgY29udHJvbGxlciBhY3R1
-YWxseSBjb3VsZCBiZSBzdHVjayBpbiBzdG9wIG1vZGUgaWYgc3VzcGVuZC9yZXN1bWUgZmFpbGVk
-IGFuZCB1c2VycyBqdXN0IA0Kd2FudCBhIHdhcm0gcmVzZXQgZm9yIHRoZSBzeXN0ZW0uDQoNCkNv
-dWxkIHlvdSBwbGVhc2UgdGVsbCBtZSBob3cgY2FuIEkgZ2VuZXJhdGUgYSB3YXJtIHJlc2V0PyBB
-RkFJSywgYm90aCAicmVib290IiBjb21tYW5kIHB1dCBpbnRvIHByb21wdCBhbmQgUlNUIEtFWSBp
-biBvdXIgRVZLIGJvYXJkIGFsbCBwbGF5IGEgcm9sZSBvZiBjb2xkIHJlc2V0Lg0KDQpCZXN0IFJl
-Z2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gL1NlYW4NCg==
+
+
+On 18/11/2019 08.05, Joakim Zhang wrote:
+> 
+>> -----Original Message-----
+>> From: linux-can-owner@vger.kernel.org <linux-can-owner@vger.kernel.org>
+>> On Behalf Of Sean Nyekjaer
+>> Sent: 2019年11月15日 17:08
+>> To: Joakim Zhang <qiangqing.zhang@nxp.com>; mkl@pengutronix.de
+>> Cc: linux-can@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
+>> netdev@vger.kernel.org
+>> Subject: Re: [PATCH 1/3] can: flexcan: fix deadlock when using self wakeup
+>>
+>>
+>>
+>> On 15/11/2019 06.03, Joakim Zhang wrote:
+>>> From: Sean Nyekjaer <sean@geanix.com>
+>>>
+>>> When suspending, when there is still can traffic on the interfaces the
+>>> flexcan immediately wakes the platform again. As it should :-). But it
+>>> throws this error msg:
+>>> [ 3169.378661] PM: noirq suspend of devices failed
+>>>
+>>> On the way down to suspend the interface that throws the error message
+>>> does call flexcan_suspend but fails to call flexcan_noirq_suspend.
+>>> That means the flexcan_enter_stop_mode is called, but on the way out
+>>> of suspend the driver only calls flexcan_resume and skips
+>>> flexcan_noirq_resume, thus it doesn't call flexcan_exit_stop_mode.
+>>> This leaves the flexcan in stop mode, and with the current driver it
+>>> can't recover from this even with a soft reboot, it requires a hard reboot.
+>>>
+>>> This patch can fix deadlock when using self wakeup, it happenes to be
+>>> able to fix another issue that frames out-of-order in first IRQ
+>>> handler run after wakeup.
+>>>
+>>> In wakeup case, after system resume, frames received out-of-order,the
+>>> problem is wakeup latency from frame reception to IRQ handler is much
+>>> bigger than the counter overflow. This means it's impossible to sort
+>>> the CAN frames by timestamp. The reason is that controller exits stop
+>>> mode during noirq resume, then it can receive the frame immediately.
+>>> If noirq reusme stage consumes much time, it will extend interrupt
+>>> response time.
+>>>
+>>> Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
+>>> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+>>> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+>>
+>> Hi Joakim and Marc
+>>
+>> We have quite a few devices in the field where flexcan is stuck in Stop-Mode.
+>> We do not have the possibility to cold reboot them, and hot reboot will not get
+>> flexcan out of stop-mode.
+>> So flexcan comes up with:
+>> [  279.444077] flexcan: probe of 2090000.flexcan failed with error -110
+>> [  279.501405] flexcan: probe of 2094000.flexcan failed with error -110
+>>
+>> They are on, de3578c198c6 ("can: flexcan: add self wakeup support")
+>>
+>> Would it be a solution to add a check in the probe function to pull it out of
+>> stop-mode?
+> 
+> Hi Sean,
+> 
+> Soft reset cannot be applied when clocks are shut down in a low power mode. The module should be first removed from low power mode, and then soft reset can be applied.
+> And exit from stop mode happens when the Stop mode request is removed, or when activity is detected on the CAN bus and the Self Wake Up mechanism is enabled.
+> 
+> So from my point of view, we can add a check in the probe function to pull it out of stop mode, since controller actually could be stuck in stop mode if suspend/resume failed and users just
+> want a warm reset for the system.
+
+Exactly what I thought could be done :)
+
+> 
+> Could you please tell me how can I generate a warm reset? AFAIK, both "reboot" command put into prompt and RST KEY in our EVK board all play a role of cold reset.
+
+Warm reset is just `reboot` :-) Cold is poweroff...
+
+/Sean
+
+> 
+> Best Regards,
+> Joakim Zhang
+>> /Sean
