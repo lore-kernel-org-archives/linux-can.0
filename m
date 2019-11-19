@@ -1,85 +1,63 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: KMSAN: uninit-value in can_receive
-Date: Tue, 19 Nov 2019 11:08:52 +0100
-Message-ID: <CACT4Y+acOwzqwrJ1OSStRkvdxsmM4RY6mz4qDEFAUpMM2P-FiQ@mail.gmail.com>
-References: <0000000000005c08d10597a3a05d@google.com> <a5f73d92-fdf2-2590-c863-39a181dca8e1@hartkopp.net>
- <deedd609-6f3b-8035-47e1-252ab221faa1@pengutronix.de> <7934bc2b-597f-0bb3-be2d-32f3b07b4de9@hartkopp.net>
- <7f5c4546-0c1a-86ae-581e-0203b5fca446@pengutronix.de> <1f7d6ea7-152e-ff18-549c-b196d8b5e3a7@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1f7d6ea7-152e-ff18-549c-b196d8b5e3a7@hartkopp.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Alexander Potapenko <glider@google.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, syzbot <syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+From: Pankaj Sharma <pankj.sharma@samsung.com>
+Subject: [PATCH 0/2] can: m_can_platform: Bug fix of kernel panic for
+Date: Tue, 19 Nov 2019 15:50:36 +0530
+Message-ID: <1574158838-4616-1-git-send-email-pankj.sharma@samsung.com>
+References: <CGME20191119102134epcas5p4d3c1b18203e2001c189b9fa7a0e3aab5@epcas5p4.samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, dmurphy@ti.com, rcsekar@samsung.com, pankaj.dubey@samsung.com, Pankaj Sharma <pankj.sharma@samsung.com>
 List-Id: linux-can.vger.kernel.org
 
-On Tue, Nov 19, 2019 at 8:36 AM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> On 18/11/2019 22.15, Marc Kleine-Budde wrote:
-> > On 11/18/19 9:49 PM, Oliver Hartkopp wrote:
-> >>
-> >>
-> >> On 18/11/2019 21.29, Marc Kleine-Budde wrote:
-> >>> On 11/18/19 9:25 PM, Oliver Hartkopp wrote:
-> >>
-> >>>>> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> >>>>> Reported-by: syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com
-> >>>>>
-> >>>>> =====================================================
-> >>>>> BUG: KMSAN: uninit-value in can_receive+0x23c/0x5e0 net/can/af_can.c:649
-> >>>>> CPU: 1 PID: 3490 Comm: syz-executor.2 Not tainted 5.4.0-rc5+ #0
-> >>
-> >>>>
-> >>>> In line 649 of 5.4.0-rc5+ we can find a while() statement:
-> >>>>
-> >>>> while (!(can_skb_prv(skb)->skbcnt))
-> >>>>    can_skb_prv(skb)->skbcnt = atomic_inc_return(&skbcounter);
-> >>>>
-> >>>> In linux/include/linux/can/skb.h we see:
-> >>>>
-> >>>> static inline struct can_skb_priv *can_skb_prv(struct sk_buff *skb)
-> >>>> {
-> >>>>    return (struct can_skb_priv *)(skb->head);
-> >>>> }
-> >>>>
-> >>>> IMO accessing can_skb_prv(skb)->skbcnt at this point is a valid
-> >>>> operation which has no uninitialized value.
-> >>>>
-> >>>> Can this probably be a false positive of KMSAN?
-> >>>
-> >>> The packet is injected via the packet socket into the kernel. Where does
-> >>> skb->head point to in this case? When the skb is a proper
-> >>> kernel-generated skb containing a CAN-2.0 or CAN-FD frame skb->head is
-> >>> maybe properly initialized?
-> >>
-> >> The packet is either received via vcan or vxcan which checks via
-> >> can_dropped_invalid_skb() if we have a valid ETH_P_CAN type skb.
-> >
-> > According to the call stack it's injected into the kernel via a packet
-> > socket and not via v(x)can.
->
-> See ioctl$ifreq https://syzkaller.appspot.com/x/log.txt?x=14563416e00000
->
-> 23:11:34 executing program 2:
-> r0 = socket(0x200000000000011, 0x3, 0x0)
-> ioctl$ifreq_SIOCGIFINDEX_vcan(r0, 0x8933,
-> &(0x7f0000000040)={'vxcan1\x00', <r1=>0x0})
-> bind$packet(r0, &(0x7f0000000300)={0x11, 0xc, r1}, 0x14)
-> sendmmsg(r0, &(0x7f0000000d00), 0x400004e, 0x0)
->
-> We only can receive skbs from (v(x))can devices.
-> No matter if someone wrote to them via PF_CAN or PF_PACKET.
-> We check for ETH_P_CAN(FD) type and ARPHRD_CAN dev type at rx time.
->
-> >> We additionally might think about introducing a check whether we have a
-> >> can_skb_reserve() created skbuff.
-> >>
-> >> But even if someone forged a skbuff without this reserved space the
-> >> access to can_skb_prv(skb)->skbcnt would point into some CAN frame
-> >> content - which is still no access to uninitialized content, right?
->
-> So this question remains still valid whether we have a false positive
-> from KMSAN here.
+The current code is failing while clock prepare enable because of not
+getting proper clock from platform device. 
 
-+Alex, please check re KMSAN false positive.
-Oliver, Marc, where this skbcnt should have been initialized in this case?
+[    0.852089] Call trace:
+[    0.854516]  0xffff0000fa22a668
+[    0.857638]  clk_prepare+0x20/0x34
+[    0.861019]  m_can_runtime_resume+0x2c/0xe4
+[    0.865180]  pm_generic_runtime_resume+0x28/0x38
+[    0.869770]  __rpm_callback+0x16c/0x1bc
+[    0.873583]  rpm_callback+0x24/0x78
+[    0.877050]  rpm_resume+0x428/0x560
+[    0.880517]  __pm_runtime_resume+0x7c/0xa8
+[    0.884593]  m_can_clk_start.isra.9.part.10+0x1c/0xa8
+[    0.889618]  m_can_class_register+0x138/0x370
+[    0.893950]  m_can_plat_probe+0x120/0x170
+[    0.897939]  platform_drv_probe+0x4c/0xa0
+[    0.901924]  really_probe+0xd8/0x31c
+[    0.905477]  driver_probe_device+0x58/0xe8
+[    0.909551]  device_driver_attach+0x68/0x70
+[    0.913711]  __driver_attach+0x9c/0xf8
+[    0.917437]  bus_for_each_dev+0x50/0xa0
+[    0.921251]  driver_attach+0x20/0x28
+[    0.924804]  bus_add_driver+0x148/0x1fc
+[    0.928617]  driver_register+0x6c/0x124
+[    0.932431]  __platform_driver_register+0x48/0x50
+[    0.937113]  m_can_plat_driver_init+0x18/0x20
+[    0.941446]  do_one_initcall+0x4c/0x19c
+[    0.945259]  kernel_init_freeable+0x1d0/0x280
+[    0.949591]  kernel_init+0x10/0x100
+[    0.953057]  ret_from_fork+0x10/0x18
+[    0.956614] Code: 00000000 00000000 00000000 00000000 (fa22a668) 
+[    0.962681] ---[ end trace 881f71bd609de763 ]---
+[    0.967301] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+A device driver for CAN controller hardware registers itself with the
+Linux network layer as a network device. So, the driver data for m_can
+should ideally be of type net_device. 
+
+Further even when passing the proper net device in probe function the
+code was hanging because of the function m_can_runtime_resume() getting
+recursively called from m_can_class_resume().
+
+Pankaj Sharma (2):
+  can: m_can_platform: set net_device structure as driver data
+  can: m_can_platform: remove unnecessary m_can_class_resume() call
+
+ drivers/net/can/m_can/m_can_platform.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+-- 
+2.7.4
