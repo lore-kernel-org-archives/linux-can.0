@@ -1,7 +1,7 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Eric Dumazet <eric.dumazet@gmail.com>
 Subject: Re: KMSAN: uninit-value in can_receive
-Date: Tue, 19 Nov 2019 21:24:53 +0100
-Message-ID: <3142c032-e46a-531c-d1b8-d532e5b403a6@hartkopp.net>
+Date: Tue, 19 Nov 2019 13:09:16 -0800
+Message-ID: <92c04159-b83a-3e33-91da-25a727a692d0@gmail.com>
 References: <0000000000005c08d10597a3a05d@google.com>
  <a5f73d92-fdf2-2590-c863-39a181dca8e1@hartkopp.net>
  <deedd609-6f3b-8035-47e1-252ab221faa1@pengutronix.de>
@@ -9,83 +9,85 @@ References: <0000000000005c08d10597a3a05d@google.com>
  <7f5c4546-0c1a-86ae-581e-0203b5fca446@pengutronix.de>
  <1f7d6ea7-152e-ff18-549c-b196d8b5e3a7@hartkopp.net>
  <9e06266a-67f3-7352-7b87-2b9144c7c9a9@gmail.com>
+ <3142c032-e46a-531c-d1b8-d532e5b403a6@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <9e06266a-67f3-7352-7b87-2b9144c7c9a9@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <3142c032-e46a-531c-d1b8-d532e5b403a6@hartkopp.net>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Eric Dumazet <eric.dumazet@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, syzbot <syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com>, davem@davemloft.net, glider@google.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Sender: netdev-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Eric Dumazet <eric.dumazet@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, syzbot <syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com>, davem@davemloft.net, glider@google.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
-Hi Eric,
 
-On 19/11/2019 17.53, Eric Dumazet wrote:
-> 
-> 
-> On 11/18/19 11:35 PM, Oliver Hartkopp wrote:
->>
-> 
->>
->> See ioctl$ifreq https://syzkaller.appspot.com/x/log.txt?x=14563416e00000
->>
->> 23:11:34 executing program 2:
->> r0 = socket(0x200000000000011, 0x3, 0x0)
->> ioctl$ifreq_SIOCGIFINDEX_vcan(r0, 0x8933, &(0x7f0000000040)={'vxcan1\x00', <r1=>0x0})
->> bind$packet(r0, &(0x7f0000000300)={0x11, 0xc, r1}, 0x14)
->> sendmmsg(r0, &(0x7f0000000d00), 0x400004e, 0x0)
->>
->> We only can receive skbs from (v(x))can devices.
->> No matter if someone wrote to them via PF_CAN or PF_PACKET.
->> We check for ETH_P_CAN(FD) type and ARPHRD_CAN dev type at rx time.
-> 
-> And what entity sets the can_skb_prv(skb)->skbcnt to zero exactly ?
-> 
->>
->>>> We additionally might think about introducing a check whether we have a
->>>> can_skb_reserve() created skbuff.
->>>>
->>>> But even if someone forged a skbuff without this reserved space the
->>>> access to can_skb_prv(skb)->skbcnt would point into some CAN frame
->>>> content - which is still no access to uninitialized content, right?
->>
->> So this question remains still valid whether we have a false positive from KMSAN here.
-> 
-> I do not believe it is a false positive.
-> 
-> It seems CAN relies on some properties of low level drivers using alloc_can_skb() or similar function.
-> 
-> Why not simply fix this like that ?
-> 
-> diff --git a/net/can/af_can.c b/net/can/af_can.c
-> index 128d37a4c2e0ba5d8db69fcceec8cbd6a79380df..3e71a78d82af84caaacd0ef512b5e894efbf4852 100644
-> --- a/net/can/af_can.c
-> +++ b/net/can/af_can.c
-> @@ -647,8 +647,9 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
->          pkg_stats->rx_frames_delta++;
->   
->          /* create non-zero unique skb identifier together with *skb */
-> -       while (!(can_skb_prv(skb)->skbcnt))
-> +       do {
->                  can_skb_prv(skb)->skbcnt = atomic_inc_return(&skbcounter);
-> +       } while (!(can_skb_prv(skb)->skbcnt));
->   
->          rcu_read_lock();
->   
 
-Please check commit d3b58c47d330d ("can: replace timestamp as unique skb 
-attribute").
+On 11/19/19 12:24 PM, Oliver Hartkopp wrote:
+> Hi Eric,
+> 
+> On 19/11/2019 17.53, Eric Dumazet wrote:
+>>
+>>
+>> On 11/18/19 11:35 PM, Oliver Hartkopp wrote:
+>>>
+>>
+>>>
+>>> See ioctl$ifreq https://syzkaller.appspot.com/x/log.txt?x=14563416e00000
+>>>
+>>> 23:11:34 executing program 2:
+>>> r0 = socket(0x200000000000011, 0x3, 0x0)
+>>> ioctl$ifreq_SIOCGIFINDEX_vcan(r0, 0x8933, &(0x7f0000000040)={'vxcan1\x00', <r1=>0x0})
+>>> bind$packet(r0, &(0x7f0000000300)={0x11, 0xc, r1}, 0x14)
+>>> sendmmsg(r0, &(0x7f0000000d00), 0x400004e, 0x0)
+>>>
+>>> We only can receive skbs from (v(x))can devices.
+>>> No matter if someone wrote to them via PF_CAN or PF_PACKET.
+>>> We check for ETH_P_CAN(FD) type and ARPHRD_CAN dev type at rx time.
+>>
+>> And what entity sets the can_skb_prv(skb)->skbcnt to zero exactly ?
+>>
+>>>
+>>>>> We additionally might think about introducing a check whether we have a
+>>>>> can_skb_reserve() created skbuff.
+>>>>>
+>>>>> But even if someone forged a skbuff without this reserved space the
+>>>>> access to can_skb_prv(skb)->skbcnt would point into some CAN frame
+>>>>> content - which is still no access to uninitialized content, right?
+>>>
+>>> So this question remains still valid whether we have a false positive from KMSAN here.
+>>
+>> I do not believe it is a false positive.
+>>
+>> It seems CAN relies on some properties of low level drivers using alloc_can_skb() or similar function.
+>>
+>> Why not simply fix this like that ?
+>>
+>> diff --git a/net/can/af_can.c b/net/can/af_can.c
+>> index 128d37a4c2e0ba5d8db69fcceec8cbd6a79380df..3e71a78d82af84caaacd0ef512b5e894efbf4852 100644
+>> --- a/net/can/af_can.c
+>> +++ b/net/can/af_can.c
+>> @@ -647,8 +647,9 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
+>>          pkg_stats->rx_frames_delta++;
+>>            /* create non-zero unique skb identifier together with *skb */
+>> -       while (!(can_skb_prv(skb)->skbcnt))
+>> +       do {
+>>                  can_skb_prv(skb)->skbcnt = atomic_inc_return(&skbcounter);
+>> +       } while (!(can_skb_prv(skb)->skbcnt));
+>>            rcu_read_lock();
+>>   
+> 
+> Please check commit d3b58c47d330d ("can: replace timestamp as unique skb attribute").
 
-can_skb_prv(skb)->skbcnt is set to 0 at skb creation time when sending 
-CAN frames from local host or receiving CAN frames from a real CAN 
-interface.
+Oh well... This notion of 'unique skb attribute' is interesting...
 
-When a CAN skb is received by the net layer the *first* time it gets a 
-unique value which we need for a per-cpu filter mechanism in raw_rcv().
+> 
+> can_skb_prv(skb)->skbcnt is set to 0 at skb creation time when sending CAN frames from local host or receiving CAN frames from a real CAN interface.
 
-So where's the problem to check for (!(can_skb_prv(skb)->skbcnt)) in a 
-while statement? I can't see a chance for an uninitialized value there.
+We can not enforce this to happen with a virtual interface.
 
-Regards,
-Oliver
+> 
+> When a CAN skb is received by the net layer the *first* time it gets a unique value which we need for a per-cpu filter mechanism in raw_rcv().
+> 
+> So where's the problem to check for (!(can_skb_prv(skb)->skbcnt)) in a while statement? I can't see a chance for an uninitialized value there.
+
+You have to make sure the packet has been properly cooked by a 'real CAN interface' then, and reject them if not.
