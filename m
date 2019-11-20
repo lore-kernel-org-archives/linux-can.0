@@ -1,93 +1,46 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: KMSAN: uninit-value in can_receive
-Date: Tue, 19 Nov 2019 13:09:16 -0800
-Message-ID: <92c04159-b83a-3e33-91da-25a727a692d0@gmail.com>
-References: <0000000000005c08d10597a3a05d@google.com>
- <a5f73d92-fdf2-2590-c863-39a181dca8e1@hartkopp.net>
- <deedd609-6f3b-8035-47e1-252ab221faa1@pengutronix.de>
- <7934bc2b-597f-0bb3-be2d-32f3b07b4de9@hartkopp.net>
- <7f5c4546-0c1a-86ae-581e-0203b5fca446@pengutronix.de>
- <1f7d6ea7-152e-ff18-549c-b196d8b5e3a7@hartkopp.net>
- <9e06266a-67f3-7352-7b87-2b9144c7c9a9@gmail.com>
- <3142c032-e46a-531c-d1b8-d532e5b403a6@hartkopp.net>
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Subject: [PATCH 1/2] can: xilinx_can: skip error message on deferred probe
+Date: Wed, 20 Nov 2019 17:41:04 +0530
+Message-ID: <1574251865-19592-2-git-send-email-srinivas.neeli@xilinx.com>
+References: <1574251865-19592-1-git-send-email-srinivas.neeli@xilinx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <3142c032-e46a-531c-d1b8-d532e5b403a6@hartkopp.net>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Eric Dumazet <eric.dumazet@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, syzbot <syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com>, davem@davemloft.net, glider@google.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1574251865-19592-1-git-send-email-srinivas.neeli@xilinx.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, michal.simek@xilinx.com, appanad@xilinx.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, git@xilinx.com, nagasure@xilinx.com, Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>, Srinivas Neeli <srinivas.neeli@xilinx.com>
 List-Id: linux-can.vger.kernel.org
 
+From: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
 
+When can clock is provided from the clock wizard, clock wizard driver
+may not be available when can driver probes resulting to the error
+message "bus clock not found error".
 
-On 11/19/19 12:24 PM, Oliver Hartkopp wrote:
-> Hi Eric,
-> 
-> On 19/11/2019 17.53, Eric Dumazet wrote:
->>
->>
->> On 11/18/19 11:35 PM, Oliver Hartkopp wrote:
->>>
->>
->>>
->>> See ioctl$ifreq https://syzkaller.appspot.com/x/log.txt?x=14563416e00000
->>>
->>> 23:11:34 executing program 2:
->>> r0 = socket(0x200000000000011, 0x3, 0x0)
->>> ioctl$ifreq_SIOCGIFINDEX_vcan(r0, 0x8933, &(0x7f0000000040)={'vxcan1\x00', <r1=>0x0})
->>> bind$packet(r0, &(0x7f0000000300)={0x11, 0xc, r1}, 0x14)
->>> sendmmsg(r0, &(0x7f0000000d00), 0x400004e, 0x0)
->>>
->>> We only can receive skbs from (v(x))can devices.
->>> No matter if someone wrote to them via PF_CAN or PF_PACKET.
->>> We check for ETH_P_CAN(FD) type and ARPHRD_CAN dev type at rx time.
->>
->> And what entity sets the can_skb_prv(skb)->skbcnt to zero exactly ?
->>
->>>
->>>>> We additionally might think about introducing a check whether we have a
->>>>> can_skb_reserve() created skbuff.
->>>>>
->>>>> But even if someone forged a skbuff without this reserved space the
->>>>> access to can_skb_prv(skb)->skbcnt would point into some CAN frame
->>>>> content - which is still no access to uninitialized content, right?
->>>
->>> So this question remains still valid whether we have a false positive from KMSAN here.
->>
->> I do not believe it is a false positive.
->>
->> It seems CAN relies on some properties of low level drivers using alloc_can_skb() or similar function.
->>
->> Why not simply fix this like that ?
->>
->> diff --git a/net/can/af_can.c b/net/can/af_can.c
->> index 128d37a4c2e0ba5d8db69fcceec8cbd6a79380df..3e71a78d82af84caaacd0ef512b5e894efbf4852 100644
->> --- a/net/can/af_can.c
->> +++ b/net/can/af_can.c
->> @@ -647,8 +647,9 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
->>          pkg_stats->rx_frames_delta++;
->>            /* create non-zero unique skb identifier together with *skb */
->> -       while (!(can_skb_prv(skb)->skbcnt))
->> +       do {
->>                  can_skb_prv(skb)->skbcnt = atomic_inc_return(&skbcounter);
->> +       } while (!(can_skb_prv(skb)->skbcnt));
->>            rcu_read_lock();
->>   
-> 
-> Please check commit d3b58c47d330d ("can: replace timestamp as unique skb attribute").
+As this error message is not very useful to the end user, skip printing
+in the case of deferred probe.
 
-Oh well... This notion of 'unique skb attribute' is interesting...
+Signed-off-by: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
+ drivers/net/can/xilinx_can.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> 
-> can_skb_prv(skb)->skbcnt is set to 0 at skb creation time when sending CAN frames from local host or receiving CAN frames from a real CAN interface.
-
-We can not enforce this to happen with a virtual interface.
-
-> 
-> When a CAN skb is received by the net layer the *first* time it gets a unique value which we need for a per-cpu filter mechanism in raw_rcv().
-> 
-> So where's the problem to check for (!(can_skb_prv(skb)->skbcnt)) in a while statement? I can't see a chance for an uninitialized value there.
-
-You have to make sure the packet has been properly cooked by a 'real CAN interface' then, and reject them if not.
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 4a96e2dd7d77..c5f05b994435 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -1772,7 +1772,8 @@ static int xcan_probe(struct platform_device *pdev)
+ 
+ 	priv->bus_clk = devm_clk_get(&pdev->dev, devtype->bus_clk_name);
+ 	if (IS_ERR(priv->bus_clk)) {
+-		dev_err(&pdev->dev, "bus clock not found\n");
++		if (PTR_ERR(priv->bus_clk) != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "bus clock not found\n");
+ 		ret = PTR_ERR(priv->bus_clk);
+ 		goto err_free;
+ 	}
+-- 
+2.7.4
