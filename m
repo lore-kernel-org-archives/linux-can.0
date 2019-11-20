@@ -1,113 +1,78 @@
-From: Srinivas Neeli <srinivas.neeli@xilinx.com>
-Subject: [PATCH 2/2] can: xilinx_can: Fix usage of skb memory
-Date: Wed, 20 Nov 2019 17:41:05 +0530
-Message-ID: <1574251865-19592-3-git-send-email-srinivas.neeli@xilinx.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 2/2] can: xilinx_can: Fix usage of skb memory
+Date: Wed, 20 Nov 2019 13:37:32 +0100
+Message-ID: <30572daa-1c75-37a2-20f5-c1f818acc603@pengutronix.de>
 References: <1574251865-19592-1-git-send-email-srinivas.neeli@xilinx.com>
+ <1574251865-19592-3-git-send-email-srinivas.neeli@xilinx.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="VJ7JV65o8ehgq8fGg8Ur0l68J44ivsOpz"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1574251865-19592-1-git-send-email-srinivas.neeli@xilinx.com>
+In-Reply-To: <1574251865-19592-3-git-send-email-srinivas.neeli@xilinx.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, michal.simek@xilinx.com, appanad@xilinx.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, git@xilinx.com, nagasure@xilinx.com, Srinivas Neeli <srinivas.neeli@xilinx.com>
+To: Srinivas Neeli <srinivas.neeli@xilinx.com>, wg@grandegger.com, davem@davemloft.net, michal.simek@xilinx.com, appanad@xilinx.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, git@xilinx.com, nagasure@xilinx.com
 List-Id: linux-can.vger.kernel.org
 
-As per linux can framework, driver not allowed to touch the skb memory
-after can_put_echo_skb() call.
-This patch fixes the same.
-https://www.spinics.net/lists/linux-can/msg02199.html
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VJ7JV65o8ehgq8fGg8Ur0l68J44ivsOpz
+Content-Type: multipart/mixed; boundary="hle4YSMSiBFJwCiISAd8u83kxFrR0E3Xa";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Srinivas Neeli <srinivas.neeli@xilinx.com>, wg@grandegger.com,
+ davem@davemloft.net, michal.simek@xilinx.com, appanad@xilinx.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ git@xilinx.com, nagasure@xilinx.com
+Message-ID: <30572daa-1c75-37a2-20f5-c1f818acc603@pengutronix.de>
+Subject: Re: [PATCH 2/2] can: xilinx_can: Fix usage of skb memory
+References: <1574251865-19592-1-git-send-email-srinivas.neeli@xilinx.com>
+ <1574251865-19592-3-git-send-email-srinivas.neeli@xilinx.com>
+In-Reply-To: <1574251865-19592-3-git-send-email-srinivas.neeli@xilinx.com>
 
-Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
- drivers/net/can/xilinx_can.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+--hle4YSMSiBFJwCiISAd8u83kxFrR0E3Xa
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index c5f05b994435..536b0f8272f6 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -191,6 +191,8 @@ struct xcan_devtype_data {
-  * @bus_clk:			Pointer to struct clk
-  * @can_clk:			Pointer to struct clk
-  * @devtype:			Device type specific constants
-+ * @cfd:			Variable to struct canfd_frame
-+ * @is_canfd:			For checking canfd or not
-  */
- struct xcan_priv {
- 	struct can_priv can;
-@@ -208,6 +210,8 @@ struct xcan_priv {
- 	struct clk *bus_clk;
- 	struct clk *can_clk;
- 	struct xcan_devtype_data devtype;
-+	struct canfd_frame cfd;
-+	bool is_canfd;
- };
- 
- /* CAN Bittiming constants as per Xilinx CAN specs */
-@@ -543,14 +547,13 @@ static int xcan_do_set_mode(struct net_device *ndev, enum can_mode mode)
- /**
-  * xcan_write_frame - Write a frame to HW
-  * @priv:		Driver private data structure
-- * @skb:		sk_buff pointer that contains data to be Txed
-+ * @cf:			canfd_frame pointer that contains data to be Txed
-  * @frame_offset:	Register offset to write the frame to
-  */
--static void xcan_write_frame(struct xcan_priv *priv, struct sk_buff *skb,
-+static void xcan_write_frame(struct xcan_priv *priv, struct canfd_frame *cf,
- 			     int frame_offset)
- {
- 	u32 id, dlc, data[2] = {0, 0};
--	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
- 	u32 ramoff, dwindex = 0, i;
- 
- 	/* Watch carefully on the bit sequence */
-@@ -581,7 +584,7 @@ static void xcan_write_frame(struct xcan_priv *priv, struct sk_buff *skb,
- 	}
- 
- 	dlc = can_len2dlc(cf->len) << XCAN_DLCR_DLC_SHIFT;
--	if (can_is_canfd_skb(skb)) {
-+	if (priv->is_canfd) {
- 		if (cf->flags & CANFD_BRS)
- 			dlc |= XCAN_DLCR_BRS_MASK;
- 		dlc |= XCAN_DLCR_EDL_MASK;
-@@ -633,6 +636,9 @@ static int xcan_start_xmit_fifo(struct sk_buff *skb, struct net_device *ndev)
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	unsigned long flags;
- 
-+	priv->cfd = *((struct canfd_frame *)skb->data);
-+	priv->is_canfd = can_is_canfd_skb(skb);
-+
- 	/* Check if the TX buffer is full */
- 	if (unlikely(priv->read_reg(priv, XCAN_SR_OFFSET) &
- 			XCAN_SR_TXFLL_MASK))
-@@ -644,7 +650,7 @@ static int xcan_start_xmit_fifo(struct sk_buff *skb, struct net_device *ndev)
- 
- 	priv->tx_head++;
- 
--	xcan_write_frame(priv, skb, XCAN_TXFIFO_OFFSET);
-+	xcan_write_frame(priv, &priv->cfd, XCAN_TXFIFO_OFFSET);
- 
- 	/* Clear TX-FIFO-empty interrupt for xcan_tx_interrupt() */
- 	if (priv->tx_max > 1)
-@@ -671,6 +677,9 @@ static int xcan_start_xmit_mailbox(struct sk_buff *skb, struct net_device *ndev)
- 	struct xcan_priv *priv = netdev_priv(ndev);
- 	unsigned long flags;
- 
-+	priv->cfd = *((struct canfd_frame *)skb->data);
-+	priv->is_canfd = can_is_canfd_skb(skb);
-+
- 	if (unlikely(priv->read_reg(priv, XCAN_TRR_OFFSET) &
- 		     BIT(XCAN_TX_MAILBOX_IDX)))
- 		return -ENOSPC;
-@@ -681,7 +690,7 @@ static int xcan_start_xmit_mailbox(struct sk_buff *skb, struct net_device *ndev)
- 
- 	priv->tx_head++;
- 
--	xcan_write_frame(priv, skb,
-+	xcan_write_frame(priv, &priv->cfd,
- 			 XCAN_TXMSG_FRAME_OFFSET(XCAN_TX_MAILBOX_IDX));
- 
- 	/* Mark buffer as ready for transmit */
--- 
-2.7.4
+On 11/20/19 1:11 PM, Srinivas Neeli wrote:
+> As per linux can framework, driver not allowed to touch the skb memory
+> after can_put_echo_skb() call.
+> This patch fixes the same.
+> https://www.spinics.net/lists/linux-can/msg02199.html
+
+NACK.
+
+Don't make a copy of the CAN frame, move the can_put_echo_skb() after
+you don't need the skb anymore.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--hle4YSMSiBFJwCiISAd8u83kxFrR0E3Xa--
+
+--VJ7JV65o8ehgq8fGg8Ur0l68J44ivsOpz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3VM4wACgkQWsYho5Hk
+nSBrPggAplHwHyBXpA/MuKwjV84TSemich3Q5fZBolKKoLgLUsbjoFC8Ca5zRciK
+VM6IAyZWEHq4xuh5T2gcPegBYt1eQm1ECa2J1UNFpfAoY7YB28+L8H6ncQrE9QdC
+nZS+6F4PMdGAYMJ0HzWE9NAom62sw/8A18MuYV4zgFapX1BuiWxe3QFbh02bHAtV
+AuFI2B7NtM/M/p+pswzxii9y7BB0g4qvz0jJgQHh4W5I8nKrMZyKx+ulCQRaV4mA
+qqBRyCYbtVexQBru5181nsuHxDish1KASQP5OCAD48Ip763mOcqmRTYuG4Wp3HAk
++Gl47CTBvwWDWgA+larxa1AMq1wBGA==
+=SK8i
+-----END PGP SIGNATURE-----
+
+--VJ7JV65o8ehgq8fGg8Ur0l68J44ivsOpz--
