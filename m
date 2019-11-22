@@ -1,13 +1,13 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 10/13] slcan: Fix memory leak in error path
-Date: Fri, 22 Nov 2019 14:49:55 -0500
-Message-ID: <20191122194958.24926-10-sashal@kernel.org>
-References: <20191122194958.24926-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 15/21] slcan: Fix memory leak in error path
+Date: Fri, 22 Nov 2019 14:49:25 -0500
+Message-ID: <20191122194931.24732-15-sashal@kernel.org>
+References: <20191122194931.24732-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20191122194958.24926-1-sashal@kernel.org>
-Sender: stable-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20191122194931.24732-1-sashal@kernel.org>
+Sender: netdev-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc: Jouni Hogander <jouni.hogander@unikie.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
@@ -49,7 +49,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index eb7173713bbcb..a2c4048c07bec 100644
+index 5d067c1b987f8..49427f44dc5ba 100644
 --- a/drivers/net/can/slcan.c
 +++ b/drivers/net/can/slcan.c
 @@ -613,6 +613,7 @@ static int slcan_open(struct tty_struct *tty)
