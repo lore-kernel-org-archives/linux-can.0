@@ -1,35 +1,76 @@
-From: syzbot <syzbot+49595536c57ef38095ed@syzkaller.appspotmail.com>
-Subject: Re: WARNING in j1939_sk_queue_activate_next
-Date: Thu, 21 Nov 2019 01:26:01 -0800
-Message-ID: <000000000000bb10ec0597d7e2bb@google.com>
-References: <00000000000028f3c20597d2d8ee@google.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] MAINTAINERS: Add fragment for xilinx CAN driver
+Date: Fri, 22 Nov 2019 15:20:33 +0100
+Message-ID: <1fb1f9bf-5bf2-dc4b-a277-d8686810658a@pengutronix.de>
+References: <1574325564-30529-1-git-send-email-appana.durga.rao@xilinx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <00000000000028f3c20597d2d8ee@google.com>
-Sender: netdev-owner@vger.kernel.org
-To: bst@pengutronix.de, davem@davemloft.net, dev.kurt@vandijck-laurijssen.be, ecathinds@gmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, lkp@intel.com, maxime.jayat@mobile-devices.fr, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="THYRnl6ns8SFuPniAGLk8fDYUr8nrAygp"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1574325564-30529-1-git-send-email-appana.durga.rao@xilinx.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>, wg@grandegger.com, davem@davemloft.net, michal.simek@xilinx.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-syzbot has bisected this bug to:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--THYRnl6ns8SFuPniAGLk8fDYUr8nrAygp
+Content-Type: multipart/mixed; boundary="5USbQxiRglyjWGCjfibSmEuN9eI1mIpDx";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+ wg@grandegger.com, davem@davemloft.net, michal.simek@xilinx.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-ID: <1fb1f9bf-5bf2-dc4b-a277-d8686810658a@pengutronix.de>
+Subject: Re: [PATCH] MAINTAINERS: Add fragment for xilinx CAN driver
+References: <1574325564-30529-1-git-send-email-appana.durga.rao@xilinx.com>
+In-Reply-To: <1574325564-30529-1-git-send-email-appana.durga.rao@xilinx.com>
 
-commit 9d71dd0c70099914fcd063135da3c580865e924c
-Author: The j1939 authors <linux-can@vger.kernel.org>
-Date:   Mon Oct 8 09:48:36 2018 +0000
+--5USbQxiRglyjWGCjfibSmEuN9eI1mIpDx
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-     can: add support of SAE J1939 protocol
+On 11/21/19 9:39 AM, Appana Durga Kedareswara rao wrote:
+> Added entry for xilinx CAN driver.
+>=20
+> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.co=
+m>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152c6bace00000
-start commit:   c74386d5 afs: Fix missing timeout reset
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=172c6bace00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=132c6bace00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4737c15fc47048f2
-dashboard link: https://syzkaller.appspot.com/bug?extid=49595536c57ef38095ed
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b8ba86e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ce855ae00000
+Thanks a lot.
 
-Reported-by: syzbot+49595536c57ef38095ed@syzkaller.appspotmail.com
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Please have a look at "[PATCH 1/2] can: xilinx_can: skip error message
+on deferred probe" and give me your Reviewed-by if the patch is ok :)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--5USbQxiRglyjWGCjfibSmEuN9eI1mIpDx--
+
+--THYRnl6ns8SFuPniAGLk8fDYUr8nrAygp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3X7rMACgkQWsYho5Hk
+nSACzwf/aIXeUlKdz5pmrq6nyQkXc5ah3E0kK4pIoXkVNd07N78tsG7fqCaIZlXn
+xxZ9jamvLcmWcxI5FXNLQPd2lNj/ujfYZ4YQB6MmzMoK69KKE4ip6E0DcaDLvx44
+/SZ8Emo6QfgqqKSKgXL+Sv9eehFIFJyJteSys4o/m/ylFgb8YDvl2hs83UQxkEsM
+jjRCy3rYl/q8CgZk4Z92F32xTlUVWLDLSFAP6Pn6yC84db3ugkeyZ/0+3olm+DzI
+xXY3G7m9u21fDZhDKIbskmUSWoNTR0qfTRtC6nUzXkteSs92C4TXkMdZGgKhbJeK
+21k/N493zj45Zvru6el0RfI4TvhVhQ==
+=reXf
+-----END PGP SIGNATURE-----
+
+--THYRnl6ns8SFuPniAGLk8fDYUr8nrAygp--
