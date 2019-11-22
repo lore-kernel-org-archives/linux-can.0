@@ -1,27 +1,64 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2019-11-22
-Date: Fri, 22 Nov 2019 09:42:51 -0800 (PST)
-Message-ID: <20191122.094251.536759158186199937.davem@davemloft.net>
-References: <20191122145251.9775-1-mkl@pengutronix.de>
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 7/9] slcan: Fix memory leak in error path
+Date: Fri, 22 Nov 2019 14:50:12 -0500
+Message-ID: <20191122195014.25065-7-sashal@kernel.org>
+References: <20191122195014.25065-1-sashal@kernel.org>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191122145251.9775-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20191122195014.25065-1-sashal@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Jouni Hogander <jouni.hogander@unikie.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri, 22 Nov 2019 15:52:49 +0100
+From: Jouni Hogander <jouni.hogander@unikie.com>
 
-> this is a pull request of 2 patches for net/master, if possible for the
-> current release cycle. Otherwise these patches should hit v5.4 via the
-> stable tree.
-> 
-> Both patches of this pull request target the m_can driver. Pankaj Sharma
-> fixes the fallout in the m_can_platform part, which appeared with the
-> introduction of the m_can platform framework.
+[ Upstream commit ed50e1600b4483c049ce76e6bd3b665a6a9300ed ]
 
-Pulled, thanks Marc.
+This patch is fixing memory leak reported by Syzkaller:
+
+BUG: memory leak unreferenced object 0xffff888067f65500 (size 4096):
+  comm "syz-executor043", pid 454, jiffies 4294759719 (age 11.930s)
+  hex dump (first 32 bytes):
+    73 6c 63 61 6e 30 00 00 00 00 00 00 00 00 00 00 slcan0..........
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+  backtrace:
+    [<00000000a06eec0d>] __kmalloc+0x18b/0x2c0
+    [<0000000083306e66>] kvmalloc_node+0x3a/0xc0
+    [<000000006ac27f87>] alloc_netdev_mqs+0x17a/0x1080
+    [<0000000061a996c9>] slcan_open+0x3ae/0x9a0
+    [<000000001226f0f9>] tty_ldisc_open.isra.1+0x76/0xc0
+    [<0000000019289631>] tty_set_ldisc+0x28c/0x5f0
+    [<000000004de5a617>] tty_ioctl+0x48d/0x1590
+    [<00000000daef496f>] do_vfs_ioctl+0x1c7/0x1510
+    [<0000000059068dbc>] ksys_ioctl+0x99/0xb0
+    [<000000009a6eb334>] __x64_sys_ioctl+0x78/0xb0
+    [<0000000053d0332e>] do_syscall_64+0x16f/0x580
+    [<0000000021b83b99>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    [<000000008ea75434>] 0xffffffffffffffff
+
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Jouni Hogander <jouni.hogander@unikie.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/can/slcan.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index 9a3f15cb7ef48..9b9dfa167ffbd 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -613,6 +613,7 @@ static int slcan_open(struct tty_struct *tty)
+ 	sl->tty = NULL;
+ 	tty->disc_data = NULL;
+ 	clear_bit(SLF_INUSE, &sl->flags);
++	free_netdev(sl->dev);
+ 
+ err_exit:
+ 	rtnl_unlock();
+-- 
+2.20.1
