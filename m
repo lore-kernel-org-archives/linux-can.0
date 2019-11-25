@@ -1,64 +1,77 @@
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 18/25] slcan: Fix memory leak in error path
-Date: Fri, 22 Nov 2019 14:48:51 -0500
-Message-ID: <20191122194859.24508-18-sashal@kernel.org>
-References: <20191122194859.24508-1-sashal@kernel.org>
+From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
+Subject: RE: [PATCH 1/2] can: xilinx_can: skip error message on deferred probe
+Date: Mon, 25 Nov 2019 03:58:14 +0000
+Message-ID: <MN2PR02MB640088D5A6812ED36864C55CDC4A0@MN2PR02MB6400.namprd02.prod.outlook.com>
+References: <1574251865-19592-1-git-send-email-srinivas.neeli@xilinx.com>
+ <1574251865-19592-2-git-send-email-srinivas.neeli@xilinx.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191122194859.24508-1-sashal@kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Jouni Hogander <jouni.hogander@unikie.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1574251865-19592-2-git-send-email-srinivas.neeli@xilinx.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, git <git@xilinx.com>, Naga Sureshkumar Relli <nagasure@xilinx.com>, Venkatesh Yadav Abbarapu <VABBARAP@xilinx.com>, Srinivas Neeli <sneeli@xilinx.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Jouni Hogander <jouni.hogander@unikie.com>
+Hi,
 
-[ Upstream commit ed50e1600b4483c049ce76e6bd3b665a6a9300ed ]
+> -----Original Message-----
+> From: Srinivas Neeli <srinivas.neeli@xilinx.com>
+> Sent: Wednesday, November 20, 2019 5:41 PM
+> To: wg@grandegger.com; mkl@pengutronix.de; davem@davemloft.net;
+> Michal Simek <michals@xilinx.com>; Appana Durga Kedareswara Rao
+> <appanad@xilinx.com>
+> Cc: linux-can@vger.kernel.org; netdev@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org; git
+> <git@xilinx.com>; Naga Sureshkumar Relli <nagasure@xilinx.com>;
+> Venkatesh Yadav Abbarapu <VABBARAP@xilinx.com>; Srinivas Neeli
+> <sneeli@xilinx.com>
+> Subject: [PATCH 1/2] can: xilinx_can: skip error message on deferred prob=
+e
+>=20
+> From: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
+>=20
+> When can clock is provided from the clock wizard, clock wizard driver may
+> not be available when can driver probes resulting to the error message "b=
+us
+> clock not found error".
+>=20
+> As this error message is not very useful to the end user, skip printing i=
+n the
+> case of deferred probe.
+>=20
+> Signed-off-by: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
+> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 
-This patch is fixing memory leak reported by Syzkaller:
+@Srinivas Neeli: Please send v2 with improved commit message as Marc sugges=
+ted, feel free to add=20
+Reviewed-by: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com> in =
+v2.=20
 
-BUG: memory leak unreferenced object 0xffff888067f65500 (size 4096):
-  comm "syz-executor043", pid 454, jiffies 4294759719 (age 11.930s)
-  hex dump (first 32 bytes):
-    73 6c 63 61 6e 30 00 00 00 00 00 00 00 00 00 00 slcan0..........
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-  backtrace:
-    [<00000000a06eec0d>] __kmalloc+0x18b/0x2c0
-    [<0000000083306e66>] kvmalloc_node+0x3a/0xc0
-    [<000000006ac27f87>] alloc_netdev_mqs+0x17a/0x1080
-    [<0000000061a996c9>] slcan_open+0x3ae/0x9a0
-    [<000000001226f0f9>] tty_ldisc_open.isra.1+0x76/0xc0
-    [<0000000019289631>] tty_set_ldisc+0x28c/0x5f0
-    [<000000004de5a617>] tty_ioctl+0x48d/0x1590
-    [<00000000daef496f>] do_vfs_ioctl+0x1c7/0x1510
-    [<0000000059068dbc>] ksys_ioctl+0x99/0xb0
-    [<000000009a6eb334>] __x64_sys_ioctl+0x78/0xb0
-    [<0000000053d0332e>] do_syscall_64+0x16f/0x580
-    [<0000000021b83b99>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-    [<000000008ea75434>] 0xffffffffffffffff
-
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Jouni Hogander <jouni.hogander@unikie.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/can/slcan.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index aa97dbc797b6b..5d338b2ac39e1 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -613,6 +613,7 @@ static int slcan_open(struct tty_struct *tty)
- 	sl->tty = NULL;
- 	tty->disc_data = NULL;
- 	clear_bit(SLF_INUSE, &sl->flags);
-+	free_netdev(sl->dev);
- 
- err_exit:
- 	rtnl_unlock();
--- 
-2.20.1
+Regards,
+Kedar.
+> ---
+>  drivers/net/can/xilinx_can.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c =
+index
+> 4a96e2dd7d77..c5f05b994435 100644
+> --- a/drivers/net/can/xilinx_can.c
+> +++ b/drivers/net/can/xilinx_can.c
+> @@ -1772,7 +1772,8 @@ static int xcan_probe(struct platform_device
+> *pdev)
+>=20
+>  	priv->bus_clk =3D devm_clk_get(&pdev->dev, devtype->bus_clk_name);
+>  	if (IS_ERR(priv->bus_clk)) {
+> -		dev_err(&pdev->dev, "bus clock not found\n");
+> +		if (PTR_ERR(priv->bus_clk) !=3D -EPROBE_DEFER)
+> +			dev_err(&pdev->dev, "bus clock not found\n");
+>  		ret =3D PTR_ERR(priv->bus_clk);
+>  		goto err_free;
+>  	}
+> --
+> 2.7.4
