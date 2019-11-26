@@ -1,77 +1,101 @@
-From: Appana Durga Kedareswara Rao <appanad@xilinx.com>
-Subject: RE: [PATCH 1/2] can: xilinx_can: skip error message on deferred probe
-Date: Mon, 25 Nov 2019 03:58:14 +0000
-Message-ID: <MN2PR02MB640088D5A6812ED36864C55CDC4A0@MN2PR02MB6400.namprd02.prod.outlook.com>
-References: <1574251865-19592-1-git-send-email-srinivas.neeli@xilinx.com>
- <1574251865-19592-2-git-send-email-srinivas.neeli@xilinx.com>
+From: syzbot <syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com>
+Subject: Re: KMSAN: uninit-value in can_receive
+Date: Tue, 26 Nov 2019 01:00:07 -0800
+Message-ID: <00000000000055558105983c1b38@google.com>
+References: <0000000000005c08d10597a3a05d@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1574251865-19592-2-git-send-email-srinivas.neeli@xilinx.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, git <git@xilinx.com>, Naga Sureshkumar Relli <nagasure@xilinx.com>, Venkatesh Yadav Abbarapu <VABBARAP@xilinx.com>, Srinivas Neeli <sneeli@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <0000000000005c08d10597a3a05d@google.com>
+Sender: netdev-owner@vger.kernel.org
+To: davem@davemloft.net, dvyukov@google.com, eric.dumazet@gmail.com, glider@google.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
-Hi,
+syzbot has found a reproducer for the following crash on:
 
-> -----Original Message-----
-> From: Srinivas Neeli <srinivas.neeli@xilinx.com>
-> Sent: Wednesday, November 20, 2019 5:41 PM
-> To: wg@grandegger.com; mkl@pengutronix.de; davem@davemloft.net;
-> Michal Simek <michals@xilinx.com>; Appana Durga Kedareswara Rao
-> <appanad@xilinx.com>
-> Cc: linux-can@vger.kernel.org; netdev@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-kernel@vger.kernel.org; git
-> <git@xilinx.com>; Naga Sureshkumar Relli <nagasure@xilinx.com>;
-> Venkatesh Yadav Abbarapu <VABBARAP@xilinx.com>; Srinivas Neeli
-> <sneeli@xilinx.com>
-> Subject: [PATCH 1/2] can: xilinx_can: skip error message on deferred prob=
-e
->=20
-> From: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
->=20
-> When can clock is provided from the clock wizard, clock wizard driver may
-> not be available when can driver probes resulting to the error message "b=
-us
-> clock not found error".
->=20
-> As this error message is not very useful to the end user, skip printing i=
-n the
-> case of deferred probe.
->=20
-> Signed-off-by: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
-> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+HEAD commit:    4a1d41e3 net: kasan: kmsan: support CONFIG_GENERIC_CSUM on..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1632f75ae00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fde150fb1e865232
+dashboard link: https://syzkaller.appspot.com/bug?extid=b02ff0707a97e4e79ebb
+compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
+80fee25776c2fb61e74c1ecb1a523375c2500b69)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15696e36e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132b3636e00000
 
-@Srinivas Neeli: Please send v2 with improved commit message as Marc sugges=
-ted, feel free to add=20
-Reviewed-by: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com> in =
-v2.=20
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com
 
-Regards,
-Kedar.
-> ---
->  drivers/net/can/xilinx_can.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c =
-index
-> 4a96e2dd7d77..c5f05b994435 100644
-> --- a/drivers/net/can/xilinx_can.c
-> +++ b/drivers/net/can/xilinx_can.c
-> @@ -1772,7 +1772,8 @@ static int xcan_probe(struct platform_device
-> *pdev)
->=20
->  	priv->bus_clk =3D devm_clk_get(&pdev->dev, devtype->bus_clk_name);
->  	if (IS_ERR(priv->bus_clk)) {
-> -		dev_err(&pdev->dev, "bus clock not found\n");
-> +		if (PTR_ERR(priv->bus_clk) !=3D -EPROBE_DEFER)
-> +			dev_err(&pdev->dev, "bus clock not found\n");
->  		ret =3D PTR_ERR(priv->bus_clk);
->  		goto err_free;
->  	}
-> --
-> 2.7.4
+=====================================================
+BUG: KMSAN: uninit-value in can_receive+0x23c/0x5e0 net/can/af_can.c:650
+CPU: 0 PID: 11833 Comm: syz-executor463 Not tainted 5.4.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  <IRQ>
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+  kmsan_report+0x128/0x220 mm/kmsan/kmsan_report.c:108
+  __msan_warning+0x64/0xc0 mm/kmsan/kmsan_instr.c:245
+  can_receive+0x23c/0x5e0 net/can/af_can.c:650
+  canfd_rcv+0x188/0x3a0 net/can/af_can.c:703
+  __netif_receive_skb_one_core net/core/dev.c:4929 [inline]
+  __netif_receive_skb net/core/dev.c:5043 [inline]
+  process_backlog+0x12a6/0x13c0 net/core/dev.c:5874
+  napi_poll net/core/dev.c:6311 [inline]
+  net_rx_action+0x7a6/0x1aa0 net/core/dev.c:6379
+  __do_softirq+0x4a1/0x83a kernel/softirq.c:293
+  do_softirq_own_stack+0x49/0x80 arch/x86/entry/entry_64.S:1091
+  </IRQ>
+  do_softirq kernel/softirq.c:338 [inline]
+  __local_bh_enable_ip+0x184/0x1d0 kernel/softirq.c:190
+  local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
+  rcu_read_unlock_bh include/linux/rcupdate.h:688 [inline]
+  __dev_queue_xmit+0x38e8/0x4200 net/core/dev.c:3819
+  dev_queue_xmit+0x4b/0x60 net/core/dev.c:3825
+  packet_snd net/packet/af_packet.c:2959 [inline]
+  packet_sendmsg+0x8234/0x9100 net/packet/af_packet.c:2984
+  sock_sendmsg_nosec net/socket.c:637 [inline]
+  sock_sendmsg net/socket.c:657 [inline]
+  ___sys_sendmsg+0x14ff/0x1590 net/socket.c:2311
+  __sys_sendmmsg+0x53a/0xae0 net/socket.c:2413
+  __do_sys_sendmmsg net/socket.c:2442 [inline]
+  __se_sys_sendmmsg+0xbd/0xe0 net/socket.c:2439
+  __x64_sys_sendmmsg+0x56/0x70 net/socket.c:2439
+  do_syscall_64+0xb6/0x160 arch/x86/entry/common.c:291
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x442129
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 5b 10 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fffef5083a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000442129
+RDX: 000000000400004e RSI: 0000000020000d00 RDI: 0000000000000003
+RBP: 0000000000000004 R08: 0000000000000025 R09: 0000000000000025
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00000000004036a0 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was created at:
+  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:149 [inline]
+  kmsan_internal_poison_shadow+0x60/0x120 mm/kmsan/kmsan.c:132
+  kmsan_slab_alloc+0x97/0x100 mm/kmsan/kmsan_hooks.c:86
+  slab_alloc_node mm/slub.c:2773 [inline]
+  __kmalloc_node_track_caller+0xe27/0x11a0 mm/slub.c:4381
+  __kmalloc_reserve net/core/skbuff.c:141 [inline]
+  __alloc_skb+0x306/0xa10 net/core/skbuff.c:209
+  alloc_skb include/linux/skbuff.h:1049 [inline]
+  alloc_skb_with_frags+0x18c/0xa80 net/core/skbuff.c:5662
+  sock_alloc_send_pskb+0xafd/0x10a0 net/core/sock.c:2244
+  packet_alloc_skb net/packet/af_packet.c:2807 [inline]
+  packet_snd net/packet/af_packet.c:2902 [inline]
+  packet_sendmsg+0x63a6/0x9100 net/packet/af_packet.c:2984
+  sock_sendmsg_nosec net/socket.c:637 [inline]
+  sock_sendmsg net/socket.c:657 [inline]
+  ___sys_sendmsg+0x14ff/0x1590 net/socket.c:2311
+  __sys_sendmmsg+0x53a/0xae0 net/socket.c:2413
+  __do_sys_sendmmsg net/socket.c:2442 [inline]
+  __se_sys_sendmmsg+0xbd/0xe0 net/socket.c:2439
+  __x64_sys_sendmmsg+0x56/0x70 net/socket.c:2439
+  do_syscall_64+0xb6/0x160 arch/x86/entry/common.c:291
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
