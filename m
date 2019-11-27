@@ -1,36 +1,43 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH V2 0/4] can: flexcan: fixes for stop mode
-Date: Wed, 27 Nov 2019 10:52:06 +0100
-Message-ID: <1c71c2ef-39a4-6f38-98c0-4ee43767a725@geanix.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V2 0/4] can: flexcan: fixes for stop mode
+Date: Wed, 27 Nov 2019 09:58:03 +0000
+Message-ID: <DB7PR04MB46180EE59D373F9634DD936AE6440@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
  <e936b9b1-d602-ac38-213c-7272df529bef@geanix.com>
  <4a9c2e4a-c62d-6e88-bd9e-01778dab503b@geanix.com>
  <DB7PR04MB46186472F0437A825548CE11E6440@DB7PR04MB4618.eurprd04.prod.outlook.com>
  <DB7PR04MB4618C541894AD851BED5B0B7E6440@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <1c71c2ef-39a4-6f38-98c0-4ee43767a725@geanix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <DB7PR04MB4618C541894AD851BED5B0B7E6440@DB7PR04MB4618.eurprd04.prod.outlook.com>
-Content-Language: en-US-large
+In-Reply-To: <1c71c2ef-39a4-6f38-98c0-4ee43767a725@geanix.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-
-
-On 27/11/2019 10.48, Joakim Zhang wrote:
-> One more should confirm with you, you inserted a flexcan.ko after stop mode activated without fix patch firstly, and then inserted a flexcan.ko
-> with fix patch. If yes, this could cause unbalanced pm_runtime_enabled. The reason is that firstly inserted the flexcan.ko would enable device runtime pm,
-> and then you inserted flexcan.ko enable device runtime pm again.
-> 
-> Could you please insert flexcan.ko with fix patch directly after stop mode activated?
->   
-Hi,
-
-If I insert flexcan.ko with fix patch directly after stop mode 
-activated, the unbalanced msg is not shown...
-I guess we are good then :)
-
-/Sean
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
+YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOeW5tDEx5pyIMjfml6UgMTc6NTINCj4gVG86IEpv
+YWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBta2xAcGVuZ3V0cm9uaXguZGU7
+DQo+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlteCA8bGludXgt
+aW14QG54cC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFU
+Q0ggVjIgMC80XSBjYW46IGZsZXhjYW46IGZpeGVzIGZvciBzdG9wIG1vZGUNCj4gDQo+IA0KPiAN
+Cj4gT24gMjcvMTEvMjAxOSAxMC40OCwgSm9ha2ltIFpoYW5nIHdyb3RlOg0KPiA+IE9uZSBtb3Jl
+IHNob3VsZCBjb25maXJtIHdpdGggeW91LCB5b3UgaW5zZXJ0ZWQgYSBmbGV4Y2FuLmtvIGFmdGVy
+IHN0b3ANCj4gPiBtb2RlIGFjdGl2YXRlZCB3aXRob3V0IGZpeCBwYXRjaCBmaXJzdGx5LCBhbmQg
+dGhlbiBpbnNlcnRlZCBhDQo+ID4gZmxleGNhbi5rbyB3aXRoIGZpeCBwYXRjaC4gSWYgeWVzLCB0
+aGlzIGNvdWxkIGNhdXNlIHVuYmFsYW5jZWQNCj4gcG1fcnVudGltZV9lbmFibGVkLiBUaGUgcmVh
+c29uIGlzIHRoYXQgZmlyc3RseSBpbnNlcnRlZCB0aGUgZmxleGNhbi5rbyB3b3VsZA0KPiBlbmFi
+bGUgZGV2aWNlIHJ1bnRpbWUgcG0sIGFuZCB0aGVuIHlvdSBpbnNlcnRlZCBmbGV4Y2FuLmtvIGVu
+YWJsZSBkZXZpY2UNCj4gcnVudGltZSBwbSBhZ2Fpbi4NCj4gPg0KPiA+IENvdWxkIHlvdSBwbGVh
+c2UgaW5zZXJ0IGZsZXhjYW4ua28gd2l0aCBmaXggcGF0Y2ggZGlyZWN0bHkgYWZ0ZXIgc3RvcCBt
+b2RlDQo+IGFjdGl2YXRlZD8NCj4gPg0KPiBIaSwNCj4gDQo+IElmIEkgaW5zZXJ0IGZsZXhjYW4u
+a28gd2l0aCBmaXggcGF0Y2ggZGlyZWN0bHkgYWZ0ZXIgc3RvcCBtb2RlIGFjdGl2YXRlZCwgdGhl
+DQo+IHVuYmFsYW5jZWQgbXNnIGlzIG5vdCBzaG93bi4uLg0KPiBJIGd1ZXNzIHdlIGFyZSBnb29k
+IHRoZW4gOikNCg0KR3JlYXQsIFRoYW5rcyBhIGxvdCENCg0KQ291bGQgeW91IGdpdmUgeW91ciBU
+ZXN0LWJ5IHRhZyBmb3IgdGhpcyBwYXRjaCBzZXQ/IEFuZCB0aGVuIE1hcmMgY291bGQgcmV2aWV3
+IHRoaXMgcGF0Y2ggc2V0Lg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gL1NlYW4N
+Cg==
