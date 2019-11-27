@@ -1,7 +1,7 @@
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH V2 1/4] can: flexcan: fix deadlock when using self wakeup
-Date: Wed, 27 Nov 2019 05:56:45 +0000
-Message-ID: <20191127055334.1476-2-qiangqing.zhang@nxp.com>
+Subject: [PATCH V2 2/4] can: flexcan: try to exit stop mode during probe stage
+Date: Wed, 27 Nov 2019 05:56:47 +0000
+Message-ID: <20191127055334.1476-3-qiangqing.zhang@nxp.com>
 References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,103 +14,78 @@ To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.co
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+CAN controller could be stucked in stop mode once it enters stop mode
+when suspend, and then it fails to exit stop mode when resume. Only code
+reset can get CAN out of stop mode, so add stop mode remove request
+during probe stage for other methods(soft reset from chip level,
+unbind/bind driver, etc) to let CAN active again. MCR[LPMACK] will be
+checked when enable CAN in register_flexcandev().
 
-When suspending, when there is still can traffic on the interfaces the
-flexcan immediately wakes the platform again. As it should :-). But it
-throws this error msg:
-[ 3169.378661] PM: noirq suspend of devices failed
-
-On the way down to suspend the interface that throws the error message does
-call flexcan_suspend but fails to call flexcan_noirq_suspend. That means th=
-e
-flexcan_enter_stop_mode is called, but on the way out of suspend the driver
-only calls flexcan_resume and skips flexcan_noirq_resume, thus it doesn't c=
-all
-flexcan_exit_stop_mode. This leaves the flexcan in stop mode, and with the
-current driver it can't recover from this even with a soft reboot, it requi=
-res
-a hard reboot.
-
-This patch can fix deadlock when using self wakeup, it happenes to be
-able to fix another issue that frames out-of-order in first IRQ handler
-run after wakeup.
-
-In wakeup case, after system resume, frames received out-of-order in
-first IRQ handler, the problem is wakeup latency from frame reception to
-IRQ handler is much bigger than the counter overflow. This means it's
-impossible to sort the CAN frames by timestamp. The reason is that controll=
-er
-exits stop mode during noirq resume, then it can receive the frame immediat=
-ely.
-If noirq reusme stage consumes much time, it will extend interrupt response
-time. So exit stop mode during resume stage instead of noirq resume can
-fix this issue.
-
-Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Suggested-by: Sean Nyekjaer <sean@geanix.com>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ------
 ChangeLog:
-	V1->V2: no change.
+	V1->V2: new add.
 ---
- drivers/net/can/flexcan.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/net/can/flexcan.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 2efa06119f68..2297663cacb2 100644
+index 2297663cacb2..5d5ed28d3005 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -134,8 +134,7 @@
- 	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
- #define FLEXCAN_ESR_ALL_INT \
- 	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
--	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT | \
--	 FLEXCAN_ESR_WAK_INT)
-+	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
-=20
- /* FLEXCAN interrupt flag register (IFLAG) bits */
- /* Errata ERR005829 step7: Reserve first valid MB */
-@@ -960,6 +959,12 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
-=20
- 	reg_esr =3D priv->read(&regs->esr);
-=20
-+	/* ACK wakeup interrupt */
-+	if (reg_esr & FLEXCAN_ESR_WAK_INT) {
-+		handled =3D IRQ_HANDLED;
-+		priv->write(reg_esr & FLEXCAN_ESR_WAK_INT, &regs->esr);
-+	}
-+
- 	/* ACK all bus error and state change IRQ sources */
- 	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
- 		handled =3D IRQ_HANDLED;
-@@ -1722,6 +1727,9 @@ static int __maybe_unused flexcan_resume(struct devic=
-e *device)
- 		netif_start_queue(dev);
- 		if (device_may_wakeup(device)) {
- 			disable_irq_wake(dev->irq);
-+			err =3D flexcan_exit_stop_mode(priv);
-+			if (err)
-+				return err;
- 		} else {
- 			err =3D pm_runtime_force_resume(device);
- 			if (err)
-@@ -1767,14 +1775,9 @@ static int __maybe_unused flexcan_noirq_resume(struc=
-t device *device)
- {
- 	struct net_device *dev =3D dev_get_drvdata(device);
- 	struct flexcan_priv *priv =3D netdev_priv(dev);
--	int err;
-=20
--	if (netif_running(dev) && device_may_wakeup(device)) {
-+	if (netif_running(dev) && device_may_wakeup(device))
- 		flexcan_enable_wakeup_irq(priv, false);
--		err =3D flexcan_exit_stop_mode(priv);
--		if (err)
--			return err;
--	}
-=20
+@@ -449,6 +449,13 @@ static inline int flexcan_exit_stop_mode(struct flexca=
+n_priv *priv)
  	return 0;
  }
+=20
++static void flexcan_try_exit_stop_mode(struct flexcan_priv *priv)
++{
++	/* remove stop request */
++	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
++			   1 << priv->stm.req_bit, 0);
++}
++
+ static inline void flexcan_error_irq_enable(const struct flexcan_priv *pri=
+v)
+ {
+ 	struct flexcan_regs __iomem *regs =3D priv->regs;
+@@ -1649,6 +1656,21 @@ static int flexcan_probe(struct platform_device *pde=
+v)
+ 	priv->devtype_data =3D devtype_data;
+ 	priv->reg_xceiver =3D reg_xceiver;
+=20
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE) {
++		err =3D flexcan_setup_stop_mode(pdev);
++		if (err)
++			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
++
++		/* CAN controller could be stucked in stop mode once it enters
++		 * stop mode when suspend, and then it fails to exit stop
++		 * mode when resume. Only code reset can get CAN out of stop
++		 * mode, so add stop mode remove request here for other methods
++		 * (soft reset, bind, etc) to let CAN active again. MCR[LPMACK]
++		 * will be checked when enable CAN in register_flexcandev().
++		 */
++		flexcan_try_exit_stop_mode(priv);
++	}
++
+ 	pm_runtime_get_noresume(&pdev->dev);
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+@@ -1661,12 +1683,6 @@ static int flexcan_probe(struct platform_device *pde=
+v)
+=20
+ 	devm_can_led_init(dev);
+=20
+-	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE) {
+-		err =3D flexcan_setup_stop_mode(pdev);
+-		if (err)
+-			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
+-	}
+-
+ 	return 0;
+=20
+  failed_register:
 --=20
 2.17.1
