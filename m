@@ -1,53 +1,57 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] MAINTAINERS: add myself as maintainer of MCAN MMIO device
- driver
-Date: Tue, 3 Dec 2019 10:55:01 +0100
-Message-ID: <9c9b1f4d-e092-957a-150c-41f2348810e5@pengutronix.de>
-References: <CGME20191203043533epcas5p19bfc21e2b03db7f27c6d84cda6824d27@epcas5p1.samsung.com>
- <1575347349-32689-1-git-send-email-sriram.dash@samsung.com>
+Subject: Re: [PATCH] can: ucan: fix non-atomic allocation in completion
+ handler
+Date: Tue, 3 Dec 2019 11:07:46 +0100
+Message-ID: <6bb1865a-ecfd-6fb4-0621-0fa2c7693aec@pengutronix.de>
+References: <20191128182603.22004-1-johan@kernel.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="AgPODyPcIAY4cJ8CKaolPkD5tAQR8qlUo"
+ boundary="JnoY2PbaAEAL5dQV9OIN73qLYQw3HAP20"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1575347349-32689-1-git-send-email-sriram.dash@samsung.com>
+In-Reply-To: <20191128182603.22004-1-johan@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sriram Dash <sriram.dash@samsung.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com
-Cc: mchehab+samsung@kernel.org, davem@davemloft.net, gregkh@linuxfoundation.org, robh@kernel.org, dmurphy@ti.com, rcsekar@samsung.com, pankaj.dubey@samsung.com, pankj.sharma@samsung.com
+To: Johan Hovold <johan@kernel.org>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>, Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>, Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---AgPODyPcIAY4cJ8CKaolPkD5tAQR8qlUo
-Content-Type: multipart/mixed; boundary="PMj6IRNcR0cQVRbqraVAABpoCo0rGJrMh";
+--JnoY2PbaAEAL5dQV9OIN73qLYQw3HAP20
+Content-Type: multipart/mixed; boundary="aW3TfrPLtE7jtOJRGUnuzATBqHuU3ZHsv";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Sriram Dash <sriram.dash@samsung.com>, linux-kernel@vger.kernel.org,
- linux-can@vger.kernel.org, wg@grandegger.com
-Cc: mchehab+samsung@kernel.org, davem@davemloft.net,
- gregkh@linuxfoundation.org, robh@kernel.org, dmurphy@ti.com,
- rcsekar@samsung.com, pankaj.dubey@samsung.com, pankj.sharma@samsung.com
-Message-ID: <9c9b1f4d-e092-957a-150c-41f2348810e5@pengutronix.de>
-Subject: Re: [PATCH] MAINTAINERS: add myself as maintainer of MCAN MMIO device
- driver
-References: <CGME20191203043533epcas5p19bfc21e2b03db7f27c6d84cda6824d27@epcas5p1.samsung.com>
- <1575347349-32689-1-git-send-email-sriram.dash@samsung.com>
-In-Reply-To: <1575347349-32689-1-git-send-email-sriram.dash@samsung.com>
+To: Johan Hovold <johan@kernel.org>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>,
+ Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>,
+ Martin Elshuber <martin.elshuber@theobroma-systems.com>,
+ Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
+Message-ID: <6bb1865a-ecfd-6fb4-0621-0fa2c7693aec@pengutronix.de>
+Subject: Re: [PATCH] can: ucan: fix non-atomic allocation in completion
+ handler
+References: <20191128182603.22004-1-johan@kernel.org>
+In-Reply-To: <20191128182603.22004-1-johan@kernel.org>
 
---PMj6IRNcR0cQVRbqraVAABpoCo0rGJrMh
+--aW3TfrPLtE7jtOJRGUnuzATBqHuU3ZHsv
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 12/3/19 5:29 AM, Sriram Dash wrote:
-> Since we are actively working on MMIO MCAN device driver,
-> as discussed with Marc, I am adding myself as a maintainer.
+On 11/28/19 7:26 PM, Johan Hovold wrote:
+> USB completion handlers are called in atomic context and must
+> specifically not allocate memory using GFP_KERNEL.
 >=20
-> Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
-> ---
+> Fixes: 9f2d3eae88d2 ("can: ucan: add driver for Theobroma Systems UCAN =
+devices")
+> Cc: stable <stable@vger.kernel.org>     # 4.19
+> Cc: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+> Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>
+> Cc: Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
 Added to linux-can.
 
-Tnx,
+tnx,
 Marc
 
 --=20
@@ -57,23 +61,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---PMj6IRNcR0cQVRbqraVAABpoCo0rGJrMh--
+--aW3TfrPLtE7jtOJRGUnuzATBqHuU3ZHsv--
 
---AgPODyPcIAY4cJ8CKaolPkD5tAQR8qlUo
+--JnoY2PbaAEAL5dQV9OIN73qLYQw3HAP20
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3mMPUACgkQWsYho5Hk
-nSCPqwgAuOqh+sGM+elUOahNy8zlT0jJUsD5IlZDpXrkto1wfFfTpcp9iDNYWaIx
-uM19pwnc09Jg+S7pkHSFWIGDM0JExgKGwyJ47G04tA4PzBLqcmIUfVbEE8rmzYYQ
-1MQtmkx62Kms3v2OG/Wv1NPWLGAroeD9X+l+pq+jjvrKygZ5QCezj4CNZqwz6KHv
-vmm+U0zNuaR6WjHOrSBVE3MM4gAjhQrBhNsT6F0jaCobatj7lGIrVRA8f9PCRr7H
-0AOXpK9yNyI684MByoxzxqLjDayTREUTFjcEUdtY9ORzf+pdvp4BUTc1Y7PzS0oP
-dZRqRYbMMTq9R2cHzc9pqN357KW62A==
-=a+Sh
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3mM/IACgkQWsYho5Hk
+nSCuTgf/fwPYT7PvRKMrRRKbuCiqAnUaOvo85yVfBkEzrLkcIkXCaCpxvncLjJ+W
+xhfittVwuCMkM1ed/W6M3a90qn48XR8tlfqoL4TK9rpNczgeowZg7/iHOM8Jdofs
+nSOG9xGmd2oz3cZH6nd7pkEswRLqNZ8qgmxxxOSvT/17w2fFqVsZqZJ+jQOci6um
+dGpsA6Nf9rmX2+ibTLBdp/Ley+27eZ1ezgrsGFPokaHumMpJLlNw08EbtGfAzAjO
++VXcPDXZWgN6wHIOJpSjsMpsOk1IuTLwP98bdUWI/TBKJl8uuHDaj2zqZ+G0JvZA
+UC7QgRTucSHb2HoBa+xyDB6EzCHcOg==
+=8qrr
 -----END PGP SIGNATURE-----
 
---AgPODyPcIAY4cJ8CKaolPkD5tAQR8qlUo--
+--JnoY2PbaAEAL5dQV9OIN73qLYQw3HAP20--
