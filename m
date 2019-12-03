@@ -1,48 +1,45 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5/6] can: xilinx_can: skip error message on deferred probe
-Date: Tue,  3 Dec 2019 11:47:02 +0100
-Message-ID: <20191203104703.14620-6-mkl@pengutronix.de>
+Subject: [PATCH 4/6] can: ucan: fix non-atomic allocation in completion handler
+Date: Tue,  3 Dec 2019 11:47:01 +0100
+Message-ID: <20191203104703.14620-5-mkl@pengutronix.de>
 References: <20191203104703.14620-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20191203104703.14620-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>, Srinivas Neeli <srinivas.neeli@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Johan Hovold <johan@kernel.org>, stable <stable@vger.kernel.org>, Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>, Martin Elshuber <martin.elshuber@theobroma-systems.com>, Philipp Tomsich <philipp.tomsich@theobroma-systems.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
+From: Johan Hovold <johan@kernel.org>
 
-When the CAN bus clock is provided from the clock wizard, clock wizard
-driver may not be available when can driver probes resulting to the
-error message "bus clock not found error".
+USB completion handlers are called in atomic context and must
+specifically not allocate memory using GFP_KERNEL.
 
-As this error message is not very useful to the end user, skip printing
-in the case of deferred probe.
-
-Signed-off-by: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
-Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Reviewed-by: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
+Fixes: 9f2d3eae88d2 ("can: ucan: add driver for Theobroma Systems UCAN devices")
+Cc: stable <stable@vger.kernel.org>     # 4.19
+Cc: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+Cc: Martin Elshuber <martin.elshuber@theobroma-systems.com>
+Cc: Philipp Tomsich <philipp.tomsich@theobroma-systems.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/ucan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 4a96e2dd7d77..c5f05b994435 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1772,7 +1772,8 @@ static int xcan_probe(struct platform_device *pdev)
+diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+index 04aac3bb54ef..81e942f713e6 100644
+--- a/drivers/net/can/usb/ucan.c
++++ b/drivers/net/can/usb/ucan.c
+@@ -792,7 +792,7 @@ static void ucan_read_bulk_callback(struct urb *urb)
+ 			  up);
  
- 	priv->bus_clk = devm_clk_get(&pdev->dev, devtype->bus_clk_name);
- 	if (IS_ERR(priv->bus_clk)) {
--		dev_err(&pdev->dev, "bus clock not found\n");
-+		if (PTR_ERR(priv->bus_clk) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "bus clock not found\n");
- 		ret = PTR_ERR(priv->bus_clk);
- 		goto err_free;
- 	}
+ 	usb_anchor_urb(urb, &up->rx_urbs);
+-	ret = usb_submit_urb(urb, GFP_KERNEL);
++	ret = usb_submit_urb(urb, GFP_ATOMIC);
+ 
+ 	if (ret < 0) {
+ 		netdev_err(up->netdev,
 -- 
 2.24.0
