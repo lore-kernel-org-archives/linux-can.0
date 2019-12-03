@@ -1,75 +1,99 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: pull-request: can 2019-12-03
-Date: Tue,  3 Dec 2019 11:46:57 +0100
-Message-ID: <20191203104703.14620-1-mkl@pengutronix.de>
+Subject: [PATCH 6/6] can: xilinx_can: Fix usage of skb memory
+Date: Tue,  3 Dec 2019 11:47:03 +0100
+Message-ID: <20191203104703.14620-7-mkl@pengutronix.de>
+References: <20191203104703.14620-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20191203104703.14620-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Srinivas Neeli <srinivas.neeli@xilinx.com>, Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-Hello David,
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-this is a pull request of 6 patches for net/master.
+As per linux can framework, driver not allowed to touch the skb memory
+after can_put_echo_skb() call.
+This patch fixes the same.
+https://www.spinics.net/lists/linux-can/msg02199.html
 
-The first two patches are against the MAINTAINERS file and adds Appana
-Durga Kedareswara rao as maintainer for the xilinx-can driver and Sriram
-Dash for the m_can (mmio) driver.
-
-The next patch is by Jouni Hogander and fixes a use-after-free in the
-slcan driver.
-
-Johan Hovold's patch for the ucan driver fixes the non-atomic allocation
-in the completion handler.
-
-The last two patches target the xilinx-can driver. The first one is by
-Venkatesh Yadav Abbarapu and skips the error message on deferred probe,
-the second one is by Srinivas Neeli and fixes the usage of the skb after
-can_put_echo_skb().
-
-regards,
-Marc
-
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Reviewed-by: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/xilinx_can.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-The following changes since commit 040b5cfbcefa263ccf2c118c4938308606bb7ed8:
-
-  Fixed updating of ethertype in function skb_mpls_pop (2019-12-02 13:03:50 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.5-20191203
-
-for you to fetch changes up to 3d3c817c3a409ba51ad6e44dd8fde4cfc07c93fe:
-
-  can: xilinx_can: Fix usage of skb memory (2019-12-03 11:15:08 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.5-20191203
-
-----------------------------------------------------------------
-Appana Durga Kedareswara rao (1):
-      MAINTAINERS: add fragment for xilinx CAN driver
-
-Johan Hovold (1):
-      can: ucan: fix non-atomic allocation in completion handler
-
-Jouni Hogander (1):
-      can: slcan: Fix use-after-free Read in slcan_open
-
-Srinivas Neeli (1):
-      can: xilinx_can: Fix usage of skb memory
-
-Sriram Dash (1):
-      MAINTAINERS: add myself as maintainer of MCAN MMIO device driver
-
-Venkatesh Yadav Abbarapu (1):
-      can: xilinx_can: skip error message on deferred probe
-
- MAINTAINERS                  | 17 +++++++++++++++++
- drivers/net/can/slcan.c      |  1 +
- drivers/net/can/usb/ucan.c   |  2 +-
- drivers/net/can/xilinx_can.c | 28 +++++++++++++++-------------
- 4 files changed, 34 insertions(+), 14 deletions(-)
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index c5f05b994435..464af939cd8a 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -542,16 +542,17 @@ static int xcan_do_set_mode(struct net_device *ndev, enum can_mode mode)
+ 
+ /**
+  * xcan_write_frame - Write a frame to HW
+- * @priv:		Driver private data structure
++ * @ndev:		Pointer to net_device structure
+  * @skb:		sk_buff pointer that contains data to be Txed
+  * @frame_offset:	Register offset to write the frame to
+  */
+-static void xcan_write_frame(struct xcan_priv *priv, struct sk_buff *skb,
++static void xcan_write_frame(struct net_device *ndev, struct sk_buff *skb,
+ 			     int frame_offset)
+ {
+ 	u32 id, dlc, data[2] = {0, 0};
+ 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+ 	u32 ramoff, dwindex = 0, i;
++	struct xcan_priv *priv = netdev_priv(ndev);
+ 
+ 	/* Watch carefully on the bit sequence */
+ 	if (cf->can_id & CAN_EFF_FLAG) {
+@@ -587,6 +588,14 @@ static void xcan_write_frame(struct xcan_priv *priv, struct sk_buff *skb,
+ 		dlc |= XCAN_DLCR_EDL_MASK;
+ 	}
+ 
++	if (!(priv->devtype.flags & XCAN_FLAG_TX_MAILBOXES) &&
++	    (priv->devtype.flags & XCAN_FLAG_TXFEMP))
++		can_put_echo_skb(skb, ndev, priv->tx_head % priv->tx_max);
++	else
++		can_put_echo_skb(skb, ndev, 0);
++
++	priv->tx_head++;
++
+ 	priv->write_reg(priv, XCAN_FRAME_ID_OFFSET(frame_offset), id);
+ 	/* If the CAN frame is RTR frame this write triggers transmission
+ 	 * (not on CAN FD)
+@@ -638,13 +647,9 @@ static int xcan_start_xmit_fifo(struct sk_buff *skb, struct net_device *ndev)
+ 			XCAN_SR_TXFLL_MASK))
+ 		return -ENOSPC;
+ 
+-	can_put_echo_skb(skb, ndev, priv->tx_head % priv->tx_max);
+-
+ 	spin_lock_irqsave(&priv->tx_lock, flags);
+ 
+-	priv->tx_head++;
+-
+-	xcan_write_frame(priv, skb, XCAN_TXFIFO_OFFSET);
++	xcan_write_frame(ndev, skb, XCAN_TXFIFO_OFFSET);
+ 
+ 	/* Clear TX-FIFO-empty interrupt for xcan_tx_interrupt() */
+ 	if (priv->tx_max > 1)
+@@ -675,13 +680,9 @@ static int xcan_start_xmit_mailbox(struct sk_buff *skb, struct net_device *ndev)
+ 		     BIT(XCAN_TX_MAILBOX_IDX)))
+ 		return -ENOSPC;
+ 
+-	can_put_echo_skb(skb, ndev, 0);
+-
+ 	spin_lock_irqsave(&priv->tx_lock, flags);
+ 
+-	priv->tx_head++;
+-
+-	xcan_write_frame(priv, skb,
++	xcan_write_frame(ndev, skb,
+ 			 XCAN_TXMSG_FRAME_OFFSET(XCAN_TX_MAILBOX_IDX));
+ 
+ 	/* Mark buffer as ready for transmit */
+-- 
+2.24.0
