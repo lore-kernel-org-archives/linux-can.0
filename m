@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 6/6] can: xilinx_can: Fix usage of skb memory
-Date: Tue,  3 Dec 2019 11:47:03 +0100
-Message-ID: <20191203104703.14620-7-mkl@pengutronix.de>
+Subject: [PATCH 5/6] can: xilinx_can: skip error message on deferred probe
+Date: Tue,  3 Dec 2019 11:47:02 +0100
+Message-ID: <20191203104703.14620-6-mkl@pengutronix.de>
 References: <20191203104703.14620-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,91 +9,40 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191203104703.14620-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Srinivas Neeli <srinivas.neeli@xilinx.com>, Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>, Srinivas Neeli <srinivas.neeli@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Srinivas Neeli <srinivas.neeli@xilinx.com>
+From: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
 
-As per linux can framework, driver not allowed to touch the skb memory
-after can_put_echo_skb() call.
-This patch fixes the same.
-https://www.spinics.net/lists/linux-can/msg02199.html
+When the CAN bus clock is provided from the clock wizard, clock wizard
+driver may not be available when can driver probes resulting to the
+error message "bus clock not found error".
 
+As this error message is not very useful to the end user, skip printing
+in the case of deferred probe.
+
+Signed-off-by: Venkatesh Yadav Abbarapu <venkatesh.abbarapu@xilinx.com>
 Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 Reviewed-by: Appana Durga Kedareswara Rao <appana.durga.rao@xilinx.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ drivers/net/can/xilinx_can.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index c5f05b994435..464af939cd8a 100644
+index 4a96e2dd7d77..c5f05b994435 100644
 --- a/drivers/net/can/xilinx_can.c
 +++ b/drivers/net/can/xilinx_can.c
-@@ -542,16 +542,17 @@ static int xcan_do_set_mode(struct net_device *ndev, enum can_mode mode)
+@@ -1772,7 +1772,8 @@ static int xcan_probe(struct platform_device *pdev)
  
- /**
-  * xcan_write_frame - Write a frame to HW
-- * @priv:		Driver private data structure
-+ * @ndev:		Pointer to net_device structure
-  * @skb:		sk_buff pointer that contains data to be Txed
-  * @frame_offset:	Register offset to write the frame to
-  */
--static void xcan_write_frame(struct xcan_priv *priv, struct sk_buff *skb,
-+static void xcan_write_frame(struct net_device *ndev, struct sk_buff *skb,
- 			     int frame_offset)
- {
- 	u32 id, dlc, data[2] = {0, 0};
- 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
- 	u32 ramoff, dwindex = 0, i;
-+	struct xcan_priv *priv = netdev_priv(ndev);
- 
- 	/* Watch carefully on the bit sequence */
- 	if (cf->can_id & CAN_EFF_FLAG) {
-@@ -587,6 +588,14 @@ static void xcan_write_frame(struct xcan_priv *priv, struct sk_buff *skb,
- 		dlc |= XCAN_DLCR_EDL_MASK;
+ 	priv->bus_clk = devm_clk_get(&pdev->dev, devtype->bus_clk_name);
+ 	if (IS_ERR(priv->bus_clk)) {
+-		dev_err(&pdev->dev, "bus clock not found\n");
++		if (PTR_ERR(priv->bus_clk) != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "bus clock not found\n");
+ 		ret = PTR_ERR(priv->bus_clk);
+ 		goto err_free;
  	}
- 
-+	if (!(priv->devtype.flags & XCAN_FLAG_TX_MAILBOXES) &&
-+	    (priv->devtype.flags & XCAN_FLAG_TXFEMP))
-+		can_put_echo_skb(skb, ndev, priv->tx_head % priv->tx_max);
-+	else
-+		can_put_echo_skb(skb, ndev, 0);
-+
-+	priv->tx_head++;
-+
- 	priv->write_reg(priv, XCAN_FRAME_ID_OFFSET(frame_offset), id);
- 	/* If the CAN frame is RTR frame this write triggers transmission
- 	 * (not on CAN FD)
-@@ -638,13 +647,9 @@ static int xcan_start_xmit_fifo(struct sk_buff *skb, struct net_device *ndev)
- 			XCAN_SR_TXFLL_MASK))
- 		return -ENOSPC;
- 
--	can_put_echo_skb(skb, ndev, priv->tx_head % priv->tx_max);
--
- 	spin_lock_irqsave(&priv->tx_lock, flags);
- 
--	priv->tx_head++;
--
--	xcan_write_frame(priv, skb, XCAN_TXFIFO_OFFSET);
-+	xcan_write_frame(ndev, skb, XCAN_TXFIFO_OFFSET);
- 
- 	/* Clear TX-FIFO-empty interrupt for xcan_tx_interrupt() */
- 	if (priv->tx_max > 1)
-@@ -675,13 +680,9 @@ static int xcan_start_xmit_mailbox(struct sk_buff *skb, struct net_device *ndev)
- 		     BIT(XCAN_TX_MAILBOX_IDX)))
- 		return -ENOSPC;
- 
--	can_put_echo_skb(skb, ndev, 0);
--
- 	spin_lock_irqsave(&priv->tx_lock, flags);
- 
--	priv->tx_head++;
--
--	xcan_write_frame(priv, skb,
-+	xcan_write_frame(ndev, skb,
- 			 XCAN_TXMSG_FRAME_OFFSET(XCAN_TX_MAILBOX_IDX));
- 
- 	/* Mark buffer as ready for transmit */
 -- 
 2.24.0
