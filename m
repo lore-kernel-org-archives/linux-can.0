@@ -1,179 +1,79 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: KASAN: use-after-free Read in slcan_open
-Date: Tue, 3 Dec 2019 07:29:23 +0100
-Message-ID: <CACT4Y+apyc+q__suXWLGXVOEdhZhjTOHH3oXqo=Gpo6Hc=tdyw@mail.gmail.com>
-References: <0000000000000e4f720598bb95f8@google.com> <09ad00de-c082-3c69-5b81-ceae5e9cd3c9@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] MAINTAINERS: add myself as maintainer of MCAN MMIO device
+ driver
+Date: Tue, 3 Dec 2019 10:55:01 +0100
+Message-ID: <9c9b1f4d-e092-957a-150c-41f2348810e5@pengutronix.de>
+References: <CGME20191203043533epcas5p19bfc21e2b03db7f27c6d84cda6824d27@epcas5p1.samsung.com>
+ <1575347349-32689-1-git-send-email-sriram.dash@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="AgPODyPcIAY4cJ8CKaolPkD5tAQR8qlUo"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <09ad00de-c082-3c69-5b81-ceae5e9cd3c9@hartkopp.net>
+In-Reply-To: <1575347349-32689-1-git-send-email-sriram.dash@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: syzbot <syzbot+b5ec6fd05ab552a78532@syzkaller.appspotmail.com>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, netdev <netdev@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>, wg@grandegger.com, Jouni Hogander <jouni.hogander@unikie.com>
+To: Sriram Dash <sriram.dash@samsung.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com
+Cc: mchehab+samsung@kernel.org, davem@davemloft.net, gregkh@linuxfoundation.org, robh@kernel.org, dmurphy@ti.com, rcsekar@samsung.com, pankaj.dubey@samsung.com, pankj.sharma@samsung.com
 List-Id: linux-can.vger.kernel.org
 
-On Mon, Dec 2, 2019 at 10:28 PM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->
-> This issue has already been addressed by Jouni Hogander here:
->
-> https://marc.info/?l=linux-can&m=157483684128186
->
-> The patch is waiting for upstream via linux-can tree.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--AgPODyPcIAY4cJ8CKaolPkD5tAQR8qlUo
+Content-Type: multipart/mixed; boundary="PMj6IRNcR0cQVRbqraVAABpoCo0rGJrMh";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Sriram Dash <sriram.dash@samsung.com>, linux-kernel@vger.kernel.org,
+ linux-can@vger.kernel.org, wg@grandegger.com
+Cc: mchehab+samsung@kernel.org, davem@davemloft.net,
+ gregkh@linuxfoundation.org, robh@kernel.org, dmurphy@ti.com,
+ rcsekar@samsung.com, pankaj.dubey@samsung.com, pankj.sharma@samsung.com
+Message-ID: <9c9b1f4d-e092-957a-150c-41f2348810e5@pengutronix.de>
+Subject: Re: [PATCH] MAINTAINERS: add myself as maintainer of MCAN MMIO device
+ driver
+References: <CGME20191203043533epcas5p19bfc21e2b03db7f27c6d84cda6824d27@epcas5p1.samsung.com>
+ <1575347349-32689-1-git-send-email-sriram.dash@samsung.com>
+In-Reply-To: <1575347349-32689-1-git-send-email-sriram.dash@samsung.com>
 
-#syz fix: slcan: Fix use-after-free Read in slcan_open
+--PMj6IRNcR0cQVRbqraVAABpoCo0rGJrMh
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-> Regards,
-> Oliver
->
-> On 02/12/2019 18.05, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following crash on:
-> >
-> > HEAD commit:    32ef9553 Merge tag 'fsnotify_for_v5.5-rc1' of
-> > git://git.ke..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=12a48e9ce00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=ff560c3de405258c
-> > dashboard link:
-> > https://syzkaller.appspot.com/bug?extid=b5ec6fd05ab552a78532
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12943882e00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10562f86e00000
-> >
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+b5ec6fd05ab552a78532@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KASAN: use-after-free in slc_sync drivers/net/can/slcan.c:504 [inline]
-> > BUG: KASAN: use-after-free in slcan_open+0x8a1/0x9e0
-> > drivers/net/can/slcan.c:579
-> > Read of size 8 at addr ffff88809a6e0b88 by task syz-executor961/9030
-> >
-> > CPU: 1 PID: 9030 Comm: syz-executor961 Not tainted 5.4.0-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> > Google 01/01/2011
-> > Call Trace:
-> >   __dump_stack lib/dump_stack.c:77 [inline]
-> >   dump_stack+0x197/0x210 lib/dump_stack.c:118
-> >   print_address_description.constprop.0.cold+0xd4/0x30b
-> > mm/kasan/report.c:374
-> >   __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
-> >   kasan_report+0x12/0x20 mm/kasan/common.c:634
-> >   __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
-> >   slc_sync drivers/net/can/slcan.c:504 [inline]
-> >   slcan_open+0x8a1/0x9e0 drivers/net/can/slcan.c:579
-> >   tty_ldisc_open.isra.0+0xa3/0x110 drivers/tty/tty_ldisc.c:469
-> >   tty_set_ldisc+0x30e/0x6b0 drivers/tty/tty_ldisc.c:596
-> >   tiocsetd drivers/tty/tty_io.c:2334 [inline]
-> >   tty_ioctl+0xe8d/0x14f0 drivers/tty/tty_io.c:2594
-> >   vfs_ioctl fs/ioctl.c:46 [inline]
-> >   file_ioctl fs/ioctl.c:509 [inline]
-> >   do_vfs_ioctl+0xdb6/0x13e0 fs/ioctl.c:696
-> >   ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
-> >   __do_sys_ioctl fs/ioctl.c:720 [inline]
-> >   __se_sys_ioctl fs/ioctl.c:718 [inline]
-> >   __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
-> >   do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-> >   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> > RIP: 0033:0x4429e9
-> > Code: e8 dc 02 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89
-> > f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
-> > f0 ff ff 0f 83 1b 0a fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> > RSP: 002b:00007ffc7db87168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> > RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004429e9
-> > RDX: 00000000200000c0 RSI: 0000000000005423 RDI: 0000000000000003
-> > RBP: 0000000000000000 R08: 0000000000000002 R09: 0000000000003031
-> > R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-> > R13: 0000000000000004 R14: 00007ffc7db871dc R15: 0000000000000000
-> >
-> > Allocated by task 9029:
-> >   save_stack+0x23/0x90 mm/kasan/common.c:69
-> >   set_track mm/kasan/common.c:77 [inline]
-> >   __kasan_kmalloc mm/kasan/common.c:510 [inline]
-> >   __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:483
-> >   kasan_kmalloc+0x9/0x10 mm/kasan/common.c:524
-> >   __do_kmalloc_node mm/slab.c:3615 [inline]
-> >   __kmalloc_node+0x4e/0x70 mm/slab.c:3622
-> >   kmalloc_node include/linux/slab.h:599 [inline]
-> >   kvmalloc_node+0xbd/0x100 mm/util.c:564
-> >   kvmalloc include/linux/mm.h:670 [inline]
-> >   kvzalloc include/linux/mm.h:678 [inline]
-> >   alloc_netdev_mqs+0x98/0xde0 net/core/dev.c:9730
-> >   slc_alloc drivers/net/can/slcan.c:533 [inline]
-> >   slcan_open+0x32d/0x9e0 drivers/net/can/slcan.c:590
-> >   tty_ldisc_open.isra.0+0xa3/0x110 drivers/tty/tty_ldisc.c:469
-> >   tty_set_ldisc+0x30e/0x6b0 drivers/tty/tty_ldisc.c:596
-> >   tiocsetd drivers/tty/tty_io.c:2334 [inline]
-> >   tty_ioctl+0xe8d/0x14f0 drivers/tty/tty_io.c:2594
-> >   vfs_ioctl fs/ioctl.c:46 [inline]
-> >   file_ioctl fs/ioctl.c:509 [inline]
-> >   do_vfs_ioctl+0xdb6/0x13e0 fs/ioctl.c:696
-> >   ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
-> >   __do_sys_ioctl fs/ioctl.c:720 [inline]
-> >   __se_sys_ioctl fs/ioctl.c:718 [inline]
-> >   __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
-> >   do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-> >   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> >
-> > Freed by task 9029:
-> >   save_stack+0x23/0x90 mm/kasan/common.c:69
-> >   set_track mm/kasan/common.c:77 [inline]
-> >   kasan_set_free_info mm/kasan/common.c:332 [inline]
-> >   __kasan_slab_free+0x102/0x150 mm/kasan/common.c:471
-> >   kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
-> >   __cache_free mm/slab.c:3425 [inline]
-> >   kfree+0x10a/0x2c0 mm/slab.c:3756
-> >   kvfree+0x61/0x70 mm/util.c:593
-> >   netdev_freemem net/core/dev.c:9684 [inline]
-> >   free_netdev+0x3c0/0x470 net/core/dev.c:9839
-> >   slcan_open+0x848/0x9e0 drivers/net/can/slcan.c:620
-> >   tty_ldisc_open.isra.0+0xa3/0x110 drivers/tty/tty_ldisc.c:469
-> >   tty_set_ldisc+0x30e/0x6b0 drivers/tty/tty_ldisc.c:596
-> >   tiocsetd drivers/tty/tty_io.c:2334 [inline]
-> >   tty_ioctl+0xe8d/0x14f0 drivers/tty/tty_io.c:2594
-> >   vfs_ioctl fs/ioctl.c:46 [inline]
-> >   file_ioctl fs/ioctl.c:509 [inline]
-> >   do_vfs_ioctl+0xdb6/0x13e0 fs/ioctl.c:696
-> >   ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
-> >   __do_sys_ioctl fs/ioctl.c:720 [inline]
-> >   __se_sys_ioctl fs/ioctl.c:718 [inline]
-> >   __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
-> >   do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-> >   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> >
-> > The buggy address belongs to the object at ffff88809a6e0000
-> >   which belongs to the cache kmalloc-32k of size 32768
-> > The buggy address is located 2952 bytes inside of
-> >   32768-byte region [ffff88809a6e0000, ffff88809a6e8000)
-> > The buggy address belongs to the page:
-> > page:ffffea000269b800 refcount:1 mapcount:0 mapping:ffff8880aa402540
-> > index:0x0 compound_mapcount: 0
-> > raw: 00fffe0000010200 ffffea000244d008 ffff8880aa401d48 ffff8880aa402540
-> > raw: 0000000000000000 ffff88809a6e0000 0000000100000001 0000000000000000
-> > page dumped because: kasan: bad access detected
-> >
-> > Memory state around the buggy address:
-> >   ffff88809a6e0a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >   ffff88809a6e0b00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >> ffff88809a6e0b80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >                        ^
-> >   ffff88809a6e0c00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >   ffff88809a6e0c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > ==================================================================
-> >
-> >
-> > ---
-> > This bug is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this bug report. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > syzbot can test patches for this bug, for details see:
-> > https://goo.gl/tpsmEJ#testing-patches
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/09ad00de-c082-3c69-5b81-ceae5e9cd3c9%40hartkopp.net.
+On 12/3/19 5:29 AM, Sriram Dash wrote:
+> Since we are actively working on MMIO MCAN device driver,
+> as discussed with Marc, I am adding myself as a maintainer.
+>=20
+> Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
+> ---
+
+Added to linux-can.
+
+Tnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--PMj6IRNcR0cQVRbqraVAABpoCo0rGJrMh--
+
+--AgPODyPcIAY4cJ8CKaolPkD5tAQR8qlUo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3mMPUACgkQWsYho5Hk
+nSCPqwgAuOqh+sGM+elUOahNy8zlT0jJUsD5IlZDpXrkto1wfFfTpcp9iDNYWaIx
+uM19pwnc09Jg+S7pkHSFWIGDM0JExgKGwyJ47G04tA4PzBLqcmIUfVbEE8rmzYYQ
+1MQtmkx62Kms3v2OG/Wv1NPWLGAroeD9X+l+pq+jjvrKygZ5QCezj4CNZqwz6KHv
+vmm+U0zNuaR6WjHOrSBVE3MM4gAjhQrBhNsT6F0jaCobatj7lGIrVRA8f9PCRr7H
+0AOXpK9yNyI684MByoxzxqLjDayTREUTFjcEUdtY9ORzf+pdvp4BUTc1Y7PzS0oP
+dZRqRYbMMTq9R2cHzc9pqN357KW62A==
+=a+Sh
+-----END PGP SIGNATURE-----
+
+--AgPODyPcIAY4cJ8CKaolPkD5tAQR8qlUo--
