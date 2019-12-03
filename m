@@ -1,38 +1,50 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH V2 0/4] can: flexcan: fixes for stop mode
-Date: Tue, 3 Dec 2019 10:16:26 +0000
-Message-ID: <DB7PR04MB461896927F3DD1C88A987672E6420@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
- <e936b9b1-d602-ac38-213c-7272df529bef@geanix.com>
- <4a9c2e4a-c62d-6e88-bd9e-01778dab503b@geanix.com>
- <DB7PR04MB46186472F0437A825548CE11E6440@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <DB7PR04MB4618C541894AD851BED5B0B7E6440@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <1c71c2ef-39a4-6f38-98c0-4ee43767a725@geanix.com>
- <DB7PR04MB46180EE59D373F9634DD936AE6440@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <6fa94966-c21b-ad2b-653d-aa3589b32df8@geanix.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: KMSAN: uninit-value in can_receive
+Date: Tue, 3 Dec 2019 11:37:58 +0100
+Message-ID: <82b02a62-51ff-4568-c33d-90223a2aed86@hartkopp.net>
+References: <0000000000005c08d10597a3a05d@google.com>
+ <a5f73d92-fdf2-2590-c863-39a181dca8e1@hartkopp.net>
+ <deedd609-6f3b-8035-47e1-252ab221faa1@pengutronix.de>
+ <7934bc2b-597f-0bb3-be2d-32f3b07b4de9@hartkopp.net>
+ <7f5c4546-0c1a-86ae-581e-0203b5fca446@pengutronix.de>
+ <1f7d6ea7-152e-ff18-549c-b196d8b5e3a7@hartkopp.net>
+ <9e06266a-67f3-7352-7b87-2b9144c7c9a9@gmail.com>
+ <3142c032-e46a-531c-d1b8-d532e5b403a6@hartkopp.net>
+ <92c04159-b83a-3e33-91da-25a727a692d0@gmail.com>
+ <c1f80bac-bb75-e671-ba32-05cfae86569c@hartkopp.net>
+ <0f395f1e-b7d4-6254-2a0c-54029b4dc38f@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <6fa94966-c21b-ad2b-653d-aa3589b32df8@geanix.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0f395f1e-b7d4-6254-2a0c-54029b4dc38f@pengutronix.de>
 Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Eric Dumazet <eric.dumazet@gmail.com>, syzbot <syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com>, davem@davemloft.net, glider@google.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IGxpbnV4LWNhbi1vd25lckB2
-Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LWNhbi1vd25lckB2Z2VyLmtlcm5lbC5vcmc+DQo+IE9uIEJl
-aGFsZiBPZiBTZWFuIE55ZWtqYWVyDQo+IFNlbnQ6IDIwMTnlubQxMeaciDI35pelIDE4OjAwDQo+
-IFRvOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsgbWtsQHBlbmd1dHJv
-bml4LmRlOw0KPiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+IENjOiBkbC1saW51eC1pbXgg
-PGxpbnV4LWlteEBueHAuY29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBS
-ZTogW1BBVENIIFYyIDAvNF0gY2FuOiBmbGV4Y2FuOiBmaXhlcyBmb3Igc3RvcCBtb2RlDQo+IA0K
-PiANCj4gDQo+IE9uIDI3LzExLzIwMTkgMTAuNTgsIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4gPiBD
-b3VsZCB5b3UgZ2l2ZSB5b3VyIFRlc3QtYnkgdGFnIGZvciB0aGlzIHBhdGNoIHNldD8gQW5kIHRo
-ZW4gTWFyYyBjb3VsZA0KPiByZXZpZXcgdGhpcyBwYXRjaCBzZXQuDQo+IA0KPiBEb25lIDopDQo+
-IENhbid0IHRlc3QgcGF0Y2ggNC80Li4uDQo+IA0KPiBIb3BlIE1hcmMgY2FuIGdpdmUgaGlzIGNv
-bW1lbnRzIGFuZCBwaWNrIHRoZXNlLg0KDQpIaSBNYXJjLA0KDQpDb3VsZCB5b3UgcGxlYXNlIHJl
-dmlldyB0aGlzIHBhdGNoIHNldCwgb3IgbmVlZCBJIHJlc2VuZCBpdD8gU2VhbiBoYXMgYWxyZWFk
-eSB0ZXN0ZWQgZmlyc3QgdGhyZWUgcGF0Y2hlcy4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpo
-YW5nDQo+IC9TZWFuDQo=
+No. I have analyzed several solutions which turn out to be either unsafe 
+in processing or need some changes in af_packet :-(
+
+I'm currently very busy @work but will come up with a discussion until 
+end of this week.
+
+There is no big pressure as the problem is more unpleasant than causing 
+a real problem right now.
+
+Best regards,
+Oliver
+
+On 03/12/2019 11.09, Marc Kleine-Budde wrote:
+> On 11/20/19 9:10 PM, Oliver Hartkopp wrote:
+> [...]
+>> So the KMSAN detection was right at the end :-(
+>>
+>> I'll take a closer look to enable PF_PACKET to send CAN frames again
+>> which will fix up the entire  problem.
+> 
+> I'm going to send a pull request today. Do you already have a fix for this?
+> 
+> regards,
+> Marc
+> 
