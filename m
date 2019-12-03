@@ -1,86 +1,89 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: xilinx_can: Fix missing Rx can packets on CANFD2.0
-Date: Tue, 3 Dec 2019 12:16:23 +0100
-Message-ID: <885dca39-92be-50f1-8814-f14fa3271c7f@pengutronix.de>
-References: <1575371522-3030-1-git-send-email-srinivas.neeli@xilinx.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 3/6] can: slcan: Fix use-after-free Read in slcan_open
+Date: Tue, 3 Dec 2019 12:21:56 +0100
+Message-ID: <df8db94f-307f-6a08-2711-c869b4548a67@hartkopp.net>
+References: <20191203104703.14620-1-mkl@pengutronix.de>
+ <20191203104703.14620-4-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="KRPJWEPvktscw2cXv6pxzoCjmQsk8lzFK"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1575371522-3030-1-git-send-email-srinivas.neeli@xilinx.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Neeli <srinivas.neeli@xilinx.com>, wg@grandegger.com, davem@davemloft.net, michal.simek@xilinx.com, appanad@xilinx.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, git@xilinx.com, nagasure@xilinx.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20191203104703.14620-4-mkl@pengutronix.de>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Jouni Hogander <jouni.hogander@unikie.com>, Wolfgang Grandegger <wg@grandegger.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---KRPJWEPvktscw2cXv6pxzoCjmQsk8lzFK
-Content-Type: multipart/mixed; boundary="TyjDWf9B9YjbpCa7nSUZyuRlmimp8m8Ab";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Srinivas Neeli <srinivas.neeli@xilinx.com>, wg@grandegger.com,
- davem@davemloft.net, michal.simek@xilinx.com, appanad@xilinx.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- git@xilinx.com, nagasure@xilinx.com
-Message-ID: <885dca39-92be-50f1-8814-f14fa3271c7f@pengutronix.de>
-Subject: Re: [PATCH] can: xilinx_can: Fix missing Rx can packets on CANFD2.0
-References: <1575371522-3030-1-git-send-email-srinivas.neeli@xilinx.com>
-In-Reply-To: <1575371522-3030-1-git-send-email-srinivas.neeli@xilinx.com>
-
---TyjDWf9B9YjbpCa7nSUZyuRlmimp8m8Ab
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 12/3/19 12:12 PM, Srinivas Neeli wrote:
-> CANFD2.0 core uses BRAM for storing acceptance filter ID(AFID) and MASK=
-
-> (AFMASK)registers. So by default AFID and AFMASK registers contain rand=
-om
-> data. Due to random data, not able to receive all CAN ids.
->=20
-> Initializing AFID and AFMASK registers with Zero before enabling
-> acceptance filter to receive all packets irrespective of ID and Mask.
->=20
-> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-> Reviewed-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>=
-
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-
-Please add a "Fixes:" tag.
-
-Some nitpicks: Please add your S-o-B as the last one. Further I'd be
-happier, if Naga Sureshkumar Relli adds the Reviewed-by in a seperate mai=
-l.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---TyjDWf9B9YjbpCa7nSUZyuRlmimp8m8Ab--
+On 03/12/2019 11.47, Marc Kleine-Budde wrote:
+> From: Jouni Hogander <jouni.hogander@unikie.com>
+> 
+> Slcan_open doesn't clean-up device which registration failed from the
+> slcan_devs device list. On next open this list is iterated and freed
+> device is accessed. Fix this by calling slc_free_netdev in error path.
+> 
+> Driver/net/can/slcan.c is derived from slip.c. Use-after-free error was
+> identified in slip_open by syzboz. Same bug is in slcan.c. Here is the
+> trace from the Syzbot slip report:
+> 
+> __dump_stack lib/dump_stack.c:77 [inline]
+> dump_stack+0x197/0x210 lib/dump_stack.c:118
+> print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+> __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
+> kasan_report+0x12/0x20 mm/kasan/common.c:634
+> __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
+> sl_sync drivers/net/slip/slip.c:725 [inline]
+> slip_open+0xecd/0x11b7 drivers/net/slip/slip.c:801
+> tty_ldisc_open.isra.0+0xa3/0x110 drivers/tty/tty_ldisc.c:469
+> tty_set_ldisc+0x30e/0x6b0 drivers/tty/tty_ldisc.c:596
+> tiocsetd drivers/tty/tty_io.c:2334 [inline]
+> tty_ioctl+0xe8d/0x14f0 drivers/tty/tty_io.c:2594
+> vfs_ioctl fs/ioctl.c:46 [inline]
+> file_ioctl fs/ioctl.c:509 [inline]
+> do_vfs_ioctl+0xdb6/0x13e0 fs/ioctl.c:696
+> ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
+> __do_sys_ioctl fs/ioctl.c:720 [inline]
+> __se_sys_ioctl fs/ioctl.c:718 [inline]
+> __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+> do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+> entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+> Fixes: ed50e1600b44 ("slcan: Fix memory leak in error path")
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: David Miller <davem@davemloft.net>
+> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+> Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Jouni Hogander <jouni.hogander@unikie.com>
+> Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
 
---KRPJWEPvktscw2cXv6pxzoCjmQsk8lzFK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+I think this problem existed from the initial commit in 2010 and is not 
+restricted to >= v5.4
 
------BEGIN PGP SIGNATURE-----
+Together with commit commit ed50e1600b4483c049 ("slcan: Fix memory leak 
+in error path") from Jouni Hogander.
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3mRAcACgkQWsYho5Hk
-nSAHJgf/VaE8e0cY3G9IlwKJ61hgtboO4c1PW+e40qaBOKTY3MuF00XIC7DecbHR
-xoA1DHwh50kmqgg60wegLAy7GQaLEQ1zAs8qQzOuduf8Fr4EHgWzFnIwFWBrajrA
-WakrmzfLHMQlS3nSKYEDwDd1eI+AfdRdt+JYp7JXCskKGeR/ZUTge6PXVeO1aCEN
-iRX9VtCuwD6gFvylMYs0Zt8o/h23sD2p7yjGY5yHaiQK9QTBktstdoiCAHGg3tl6
-NoY7+qPLo2xpT+FGuDWmBlsTNCItPcIoeHMansRze2hB+STuFoiuommKFiHLG4U/
-X6Vt72cS7CeQrAqveG256vhbdu+MjA==
-=4+Hn
------END PGP SIGNATURE-----
+Regards,
+Oliver
 
---KRPJWEPvktscw2cXv6pxzoCjmQsk8lzFK--
+> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>   drivers/net/can/slcan.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+> index 0a9f42e5fedf..2e57122f02fb 100644
+> --- a/drivers/net/can/slcan.c
+> +++ b/drivers/net/can/slcan.c
+> @@ -617,6 +617,7 @@ static int slcan_open(struct tty_struct *tty)
+>   	sl->tty = NULL;
+>   	tty->disc_data = NULL;
+>   	clear_bit(SLF_INUSE, &sl->flags);
+> +	slc_free_netdev(sl->dev);
+>   	free_netdev(sl->dev);
+>   
+>   err_exit:
+> 
