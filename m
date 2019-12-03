@@ -1,108 +1,75 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: KMSAN: uninit-value in can_receive
-Date: Tue, 3 Dec 2019 11:40:07 +0100
-Message-ID: <5d539fdf-dcd8-3bab-1347-dbcbe63c646d@pengutronix.de>
-References: <0000000000005c08d10597a3a05d@google.com>
- <a5f73d92-fdf2-2590-c863-39a181dca8e1@hartkopp.net>
- <deedd609-6f3b-8035-47e1-252ab221faa1@pengutronix.de>
- <7934bc2b-597f-0bb3-be2d-32f3b07b4de9@hartkopp.net>
- <7f5c4546-0c1a-86ae-581e-0203b5fca446@pengutronix.de>
- <1f7d6ea7-152e-ff18-549c-b196d8b5e3a7@hartkopp.net>
- <9e06266a-67f3-7352-7b87-2b9144c7c9a9@gmail.com>
- <3142c032-e46a-531c-d1b8-d532e5b403a6@hartkopp.net>
- <92c04159-b83a-3e33-91da-25a727a692d0@gmail.com>
- <c1f80bac-bb75-e671-ba32-05cfae86569c@hartkopp.net>
- <0f395f1e-b7d4-6254-2a0c-54029b4dc38f@pengutronix.de>
- <82b02a62-51ff-4568-c33d-90223a2aed86@hartkopp.net>
+Subject: pull-request: can 2019-12-03
+Date: Tue,  3 Dec 2019 11:46:57 +0100
+Message-ID: <20191203104703.14620-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="wTDiHAZ40UyZRmeXKAzo1IfJUECuaBNE4"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <82b02a62-51ff-4568-c33d-90223a2aed86@hartkopp.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Eric Dumazet <eric.dumazet@gmail.com>, syzbot <syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com>, davem@davemloft.net, glider@google.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wTDiHAZ40UyZRmeXKAzo1IfJUECuaBNE4
-Content-Type: multipart/mixed; boundary="erGAT8plmeXGe87IUrkUEGtfmoKpbKo9C";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>,
- Eric Dumazet <eric.dumazet@gmail.com>,
- syzbot <syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com>,
- davem@davemloft.net, glider@google.com, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-Message-ID: <5d539fdf-dcd8-3bab-1347-dbcbe63c646d@pengutronix.de>
-Subject: Re: KMSAN: uninit-value in can_receive
-References: <0000000000005c08d10597a3a05d@google.com>
- <a5f73d92-fdf2-2590-c863-39a181dca8e1@hartkopp.net>
- <deedd609-6f3b-8035-47e1-252ab221faa1@pengutronix.de>
- <7934bc2b-597f-0bb3-be2d-32f3b07b4de9@hartkopp.net>
- <7f5c4546-0c1a-86ae-581e-0203b5fca446@pengutronix.de>
- <1f7d6ea7-152e-ff18-549c-b196d8b5e3a7@hartkopp.net>
- <9e06266a-67f3-7352-7b87-2b9144c7c9a9@gmail.com>
- <3142c032-e46a-531c-d1b8-d532e5b403a6@hartkopp.net>
- <92c04159-b83a-3e33-91da-25a727a692d0@gmail.com>
- <c1f80bac-bb75-e671-ba32-05cfae86569c@hartkopp.net>
- <0f395f1e-b7d4-6254-2a0c-54029b4dc38f@pengutronix.de>
- <82b02a62-51ff-4568-c33d-90223a2aed86@hartkopp.net>
-In-Reply-To: <82b02a62-51ff-4568-c33d-90223a2aed86@hartkopp.net>
+Hello David,
 
---erGAT8plmeXGe87IUrkUEGtfmoKpbKo9C
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+this is a pull request of 6 patches for net/master.
 
-Hey Oliver,
+The first two patches are against the MAINTAINERS file and adds Appana
+Durga Kedareswara rao as maintainer for the xilinx-can driver and Sriram
+Dash for the m_can (mmio) driver.
 
-On 12/3/19 11:37 AM, Oliver Hartkopp wrote:
-> No. I have analyzed several solutions which turn out to be either unsaf=
-e=20
-> in processing or need some changes in af_packet :-(
->=20
-> I'm currently very busy @work
+The next patch is by Jouni Hogander and fixes a use-after-free in the
+slcan driver.
 
-I know this problem :/
-Thanks for your quick feedback, although your busy.
+Johan Hovold's patch for the ucan driver fixes the non-atomic allocation
+in the completion handler.
 
-> but will come up with a discussion until end of this week.
-
-Looking forward to this.
-
-> There is no big pressure as the problem is more unpleasant than causing=
-=20
-> a real problem right now.
+The last two patches target the xilinx-can driver. The first one is by
+Venkatesh Yadav Abbarapu and skips the error message on deferred probe,
+the second one is by Srinivas Neeli and fixes the usage of the skb after
+can_put_echo_skb().
 
 regards,
 Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+---
 
+The following changes since commit 040b5cfbcefa263ccf2c118c4938308606bb7ed8:
 
---erGAT8plmeXGe87IUrkUEGtfmoKpbKo9C--
+  Fixed updating of ethertype in function skb_mpls_pop (2019-12-02 13:03:50 -0800)
 
---wTDiHAZ40UyZRmeXKAzo1IfJUECuaBNE4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+are available in the Git repository at:
 
------BEGIN PGP SIGNATURE-----
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.5-20191203
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3mO4cACgkQWsYho5Hk
-nSBSUQgAl5zQRiGygswxp9a9NSLOCofSwtPE+kM+7Izoe32OLmU2K0YOFTriUIzu
-AEOMbMH1+4Yd3E62m8OojYRQdbmIxJuGpCFG0tz/1qxBPy5Er6T8oLM2j1cdUTYa
-X5ySXkdeS5Sfo20zf7w0FxrqdPXH8xbmDuerAnjE2lRESjPx2Lxepo5oLd305rlK
-lHAj4AehgNQfqdVTAN/abFLIQ1AeA8RGsZC5F2E9nizS6A+x5vLDxqim9RaXXbdE
-swFN32k3eOZz1Sr1453ehAsuFgcJ33dZwzOFZzvineAFSE9/RaI+cDJcFfzO+B7F
-dwRPXiwR5HvkzL7NIz43rO/Qtk0ytA==
-=Vtx6
------END PGP SIGNATURE-----
+for you to fetch changes up to 3d3c817c3a409ba51ad6e44dd8fde4cfc07c93fe:
 
---wTDiHAZ40UyZRmeXKAzo1IfJUECuaBNE4--
+  can: xilinx_can: Fix usage of skb memory (2019-12-03 11:15:08 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-5.5-20191203
+
+----------------------------------------------------------------
+Appana Durga Kedareswara rao (1):
+      MAINTAINERS: add fragment for xilinx CAN driver
+
+Johan Hovold (1):
+      can: ucan: fix non-atomic allocation in completion handler
+
+Jouni Hogander (1):
+      can: slcan: Fix use-after-free Read in slcan_open
+
+Srinivas Neeli (1):
+      can: xilinx_can: Fix usage of skb memory
+
+Sriram Dash (1):
+      MAINTAINERS: add myself as maintainer of MCAN MMIO device driver
+
+Venkatesh Yadav Abbarapu (1):
+      can: xilinx_can: skip error message on deferred probe
+
+ MAINTAINERS                  | 17 +++++++++++++++++
+ drivers/net/can/slcan.c      |  1 +
+ drivers/net/can/usb/ucan.c   |  2 +-
+ drivers/net/can/xilinx_can.c | 28 +++++++++++++++-------------
+ 4 files changed, 34 insertions(+), 14 deletions(-)
