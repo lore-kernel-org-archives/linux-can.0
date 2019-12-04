@@ -1,56 +1,117 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V2] can: xilinx_can: Fix missing Rx can packets on
- CANFD2.0
-Date: Wed, 4 Dec 2019 08:52:47 +0100
-Message-ID: <528491f5-d28a-2f0a-0621-ab343e4ff7e5@pengutronix.de>
-References: <1575375396-3403-1-git-send-email-srinivas.neeli@xilinx.com>
- <MN2PR02MB5727E5E2BF394AC2898D5E1FAF5D0@MN2PR02MB5727.namprd02.prod.outlook.com>
+Subject: Re: [PATCH V2 1/4] can: flexcan: fix deadlock when using self wakeup
+Date: Wed, 4 Dec 2019 09:31:05 +0100
+Message-ID: <b4ce5a7a-7fc0-edb2-608e-4030ce6428a2@pengutronix.de>
+References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
+ <20191127055334.1476-2-qiangqing.zhang@nxp.com>
+ <b77829d5-9eda-a244-3ee8-2ccdbdfb6524@pengutronix.de>
+ <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="EsHhqYijumrOCWNOGfOVtR88b93OMXvMp"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <MN2PR02MB5727E5E2BF394AC2898D5E1FAF5D0@MN2PR02MB5727.namprd02.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>, Srinivas Neeli <sneeli@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>, Appana Durga Kedareswara Rao <appanad@xilinx.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, git <git@xilinx.com>
+ boundary="gNfDjcm1x9HHDAIkEGdoHJkH587wTN8L3"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+Sender: netdev-owner@vger.kernel.org
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EsHhqYijumrOCWNOGfOVtR88b93OMXvMp
-Content-Type: multipart/mixed; boundary="6jAZiqs74AMe09G2oX3Cjn13Nl4WWl9FO";
+--gNfDjcm1x9HHDAIkEGdoHJkH587wTN8L3
+Content-Type: multipart/mixed; boundary="RsU4ZEJsDnWk1wNwXlT3btpEzfioQ0U3D";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Srinivas Neeli <sneeli@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>,
- "davem@davemloft.net" <davem@davemloft.net>,
- Michal Simek <michals@xilinx.com>,
- Appana Durga Kedareswara Rao <appanad@xilinx.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- git <git@xilinx.com>
-Message-ID: <528491f5-d28a-2f0a-0621-ab343e4ff7e5@pengutronix.de>
-Subject: Re: [PATCH V2] can: xilinx_can: Fix missing Rx can packets on
- CANFD2.0
-References: <1575375396-3403-1-git-send-email-srinivas.neeli@xilinx.com>
- <MN2PR02MB5727E5E2BF394AC2898D5E1FAF5D0@MN2PR02MB5727.namprd02.prod.outlook.com>
-In-Reply-To: <MN2PR02MB5727E5E2BF394AC2898D5E1FAF5D0@MN2PR02MB5727.namprd02.prod.outlook.com>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com"
+ <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Message-ID: <b4ce5a7a-7fc0-edb2-608e-4030ce6428a2@pengutronix.de>
+Subject: Re: [PATCH V2 1/4] can: flexcan: fix deadlock when using self wakeup
+References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
+ <20191127055334.1476-2-qiangqing.zhang@nxp.com>
+ <b77829d5-9eda-a244-3ee8-2ccdbdfb6524@pengutronix.de>
+ <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+In-Reply-To: <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 
---6jAZiqs74AMe09G2oX3Cjn13Nl4WWl9FO
+--RsU4ZEJsDnWk1wNwXlT3btpEzfioQ0U3D
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 12/4/19 4:59 AM, Naga Sureshkumar Relli wrote:
-> Reviewed-by: Naga Sureshkumar Relli	<naga.sureshkumar.relli@xilinx.com>=
+On 12/4/19 2:58 AM, Joakim Zhang wrote:
+> [...]
+>>>  drivers/net/can/flexcan.c | 19 +++++++++++--------
+>>>  1 file changed, 11 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+>>> index 2efa06119f68..2297663cacb2 100644
+>>> --- a/drivers/net/can/flexcan.c
+>>> +++ b/drivers/net/can/flexcan.c
+>>> @@ -134,8 +134,7 @@
+>>>  	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)  #define
+>>> FLEXCAN_ESR_ALL_INT \
+>>>  	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
+>>> -	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT | \
+>>> -	 FLEXCAN_ESR_WAK_INT)
+>>> +	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
+>>
+>> Why do you remove the FLEXCAN_ESR_WAK_INT from the
+>> FLEXCAN_ESR_ALL_INT?
+>>
+>>>
+>>>  /* FLEXCAN interrupt flag register (IFLAG) bits */
+>>>  /* Errata ERR005829 step7: Reserve first valid MB */ @@ -960,6
+>>> +959,12 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+>>>
+>>>  	reg_esr =3D priv->read(&regs->esr);
+>>>
+>>> +	/* ACK wakeup interrupt */
+>>> +	if (reg_esr & FLEXCAN_ESR_WAK_INT) {
+>>> +		handled =3D IRQ_HANDLED;
+>>> +		priv->write(reg_esr & FLEXCAN_ESR_WAK_INT, &regs->esr);
+>>> +	}
+>>> +
+>>
+>> If FLEXCAN_ESR_WAK_INT stays in FLEXCAN_ESR_ALL_INT, you don't need
+>> that explicit ACK here.
+>=20
+> Hi Marc,
+>=20
+> I remove the FLEXCAN_ESR_WAK_INT from the FLEXCAN_ESR_ALL_INT since
+> FLEXCAN_ESR_ALL_INT is for all bus error and state change IRQ
+> sources, wakeup interrupt does not belong to these. If you think this
+> does not need, I can remove this change.
 
+I see, makes sense.
 
-Added to the patch.
+Make this a separate patch. Move the FLEXCAN_ESR_WAK_INT from the
+FLEXCAN_ESR_ALL_INT, but add it to the existing ack of the interrupts.
+Like this:
 
-tnx,
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index b6f675a5e2d9..74f622b40b61 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -960,10 +960,10 @@ static irqreturn_t flexcan_irq(int irq, void *dev=
+_id)
+> =20
+>         reg_esr =3D priv->read(&regs->esr);
+> =20
+> -       /* ACK all bus error and state change IRQ sources */
+> -       if (reg_esr & FLEXCAN_ESR_ALL_INT) {
+> +       /* ACK all bus error, state change and wake IRQ sources */
+> +       if (reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ESR_WAK_INT)) {
+>                 handled =3D IRQ_HANDLED;
+> -               priv->write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);=
+
+> +               priv->write(reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ES=
+R_WAK_INT), &regs->esr);
+>         }
+> =20
+>         /* state change interrupt or broken error state quirk fix is en=
+abled */
+
 Marc
 
 --=20
@@ -60,23 +121,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---6jAZiqs74AMe09G2oX3Cjn13Nl4WWl9FO--
+--RsU4ZEJsDnWk1wNwXlT3btpEzfioQ0U3D--
 
---EsHhqYijumrOCWNOGfOVtR88b93OMXvMp
+--gNfDjcm1x9HHDAIkEGdoHJkH587wTN8L3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3nZc8ACgkQWsYho5Hk
-nSC5xAf9E2O7Hpw8B7UnryAqewMRYuZNLn45EgXEkrrYc5HbpEIGtcdlCIZ5YEqf
-cb912bh159h/0mR7EorVvV4b4RCMnQPyCEAJ4cfwMLjzT0obZTiwtvQ9dQ0V2Av8
-TOSetZz0WRgly0LPy8HsGjmTUsXl57hfwrQp656nInYwbDm3LJRr90/rNE9PBOch
-M895jgoxPM0eXujRUOVN+gf/dJ7xV+5Qks+7cHhlI33CwyMfwXBhLo1gOAxdTOL6
-w95DvQfgO2jJieAv7ETIcpBbOaf23z8yMJ6BJciWTpgPBI1O+XSfXDWQGKCAkCb4
-nRNnRFbIPK+y2TgO3JDLK630H5Twkg==
-=FpiZ
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3nbskACgkQWsYho5Hk
+nSCM+Qf+O704RSvmyOPEQZDym+oL1w3DRt7iDaIrOET+5giecvKBt+xRX2ogTzqI
+BQnYlT4wf40FNlEi62/TJ3EBLEQS8FBH54hEtofn+JKm0yyf3ITpO/xSX0sGqr/+
+gC7a8eWCCo6Ypmdtw7kELWiKANXDmgd2RQMXLxwMKMiEa99DPrh/Bxf0kjZ/cVfm
+ptkQxARsOVxii03vlwA7w86bkHRLU15XZVhDMuXnI5YRTdL0+z85BR6lzW3CPFR3
+XifJ3jlWnDLh4g8BUG6OsJHhoj8HMuC0El2vcVTKEJBx6MUYvpU5Csl8AvbNmAAi
+MRTSL0LuB9cuQMCvPv55PY1+NRsBTg==
+=5XGv
 -----END PGP SIGNATURE-----
 
---EsHhqYijumrOCWNOGfOVtR88b93OMXvMp--
+--gNfDjcm1x9HHDAIkEGdoHJkH587wTN8L3--
