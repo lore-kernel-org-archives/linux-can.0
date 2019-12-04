@@ -1,82 +1,151 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH V2 1/4] can: flexcan: fix deadlock when using self wakeup
-Date: Wed, 4 Dec 2019 08:35:13 +0000
-Message-ID: <DB7PR04MB46188F5455DD63DF05191F27E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH V2 2/4] can: flexcan: try to exit stop mode during probe
+ stage
+Date: Wed, 4 Dec 2019 09:45:04 +0100
+Message-ID: <d68b2b79-34ec-eb4c-cf4b-047b5157d5e3@pengutronix.de>
 References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
- <20191127055334.1476-2-qiangqing.zhang@nxp.com>
- <b77829d5-9eda-a244-3ee8-2ccdbdfb6524@pengutronix.de>
- <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <b4ce5a7a-7fc0-edb2-608e-4030ce6428a2@pengutronix.de>
+ <20191127055334.1476-3-qiangqing.zhang@nxp.com>
+ <ad7e7b15-26f3-daa1-02d2-782ff548756d@pengutronix.de>
+ <DB7PR04MB46180C5F1EAC7C4A69A45E0CE65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="ZlZmhQmN6SpMV8nrfBVgIvHUioSnJWW5x"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <b4ce5a7a-7fc0-edb2-608e-4030ce6428a2@pengutronix.de>
-Content-Language: en-US
+In-Reply-To: <DB7PR04MB46180C5F1EAC7C4A69A45E0CE65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
-IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQxMuaciDTml6UgMTY6MzENCj4g
-VG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBzZWFuQGdlYW5peC5j
-b207DQo+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlteCA8bGlu
-dXgtaW14QG54cC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBb
-UEFUQ0ggVjIgMS80XSBjYW46IGZsZXhjYW46IGZpeCBkZWFkbG9jayB3aGVuIHVzaW5nIHNlbGYg
-d2FrZXVwDQo+IA0KPiBPbiAxMi80LzE5IDI6NTggQU0sIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4g
-PiBbLi4uXQ0KPiA+Pj4gIGRyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgfCAxOSArKysrKysrKysr
-Ky0tLS0tLS0tDQo+ID4+PiAgMSBmaWxlIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDggZGVs
-ZXRpb25zKC0pDQo+ID4+Pg0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4
-Y2FuLmMgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4+PiBpbmRleCAyZWZhMDYxMTlm
-NjguLjIyOTc2NjNjYWNiMiAxMDA2NDQNCj4gPj4+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4
-Y2FuLmMNCj4gPj4+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPj4+IEBAIC0x
-MzQsOCArMTM0LDcgQEANCj4gPj4+ICAJKEZMRVhDQU5fRVNSX0VSUl9CVVMgfCBGTEVYQ0FOX0VT
-Ul9FUlJfU1RBVEUpICAjZGVmaW5lDQo+ID4+PiBGTEVYQ0FOX0VTUl9BTExfSU5UIFwNCj4gPj4+
-ICAJKEZMRVhDQU5fRVNSX1RXUk5fSU5UIHwgRkxFWENBTl9FU1JfUldSTl9JTlQgfCBcDQo+ID4+
-PiAtCSBGTEVYQ0FOX0VTUl9CT0ZGX0lOVCB8IEZMRVhDQU5fRVNSX0VSUl9JTlQgfCBcDQo+ID4+
-PiAtCSBGTEVYQ0FOX0VTUl9XQUtfSU5UKQ0KPiA+Pj4gKwkgRkxFWENBTl9FU1JfQk9GRl9JTlQg
-fCBGTEVYQ0FOX0VTUl9FUlJfSU5UKQ0KPiA+Pg0KPiA+PiBXaHkgZG8geW91IHJlbW92ZSB0aGUg
-RkxFWENBTl9FU1JfV0FLX0lOVCBmcm9tIHRoZQ0KPiA+PiBGTEVYQ0FOX0VTUl9BTExfSU5UPw0K
-PiA+Pg0KPiA+Pj4NCj4gPj4+ICAvKiBGTEVYQ0FOIGludGVycnVwdCBmbGFnIHJlZ2lzdGVyIChJ
-RkxBRykgYml0cyAqLw0KPiA+Pj4gIC8qIEVycmF0YSBFUlIwMDU4Mjkgc3RlcDc6IFJlc2VydmUg
-Zmlyc3QgdmFsaWQgTUIgKi8gQEAgLTk2MCw2DQo+ID4+PiArOTU5LDEyIEBAIHN0YXRpYyBpcnFy
-ZXR1cm5fdCBmbGV4Y2FuX2lycShpbnQgaXJxLCB2b2lkICpkZXZfaWQpDQo+ID4+Pg0KPiA+Pj4g
-IAlyZWdfZXNyID0gcHJpdi0+cmVhZCgmcmVncy0+ZXNyKTsNCj4gPj4+DQo+ID4+PiArCS8qIEFD
-SyB3YWtldXAgaW50ZXJydXB0ICovDQo+ID4+PiArCWlmIChyZWdfZXNyICYgRkxFWENBTl9FU1Jf
-V0FLX0lOVCkgew0KPiA+Pj4gKwkJaGFuZGxlZCA9IElSUV9IQU5ETEVEOw0KPiA+Pj4gKwkJcHJp
-di0+d3JpdGUocmVnX2VzciAmIEZMRVhDQU5fRVNSX1dBS19JTlQsICZyZWdzLT5lc3IpOw0KPiA+
-Pj4gKwl9DQo+ID4+PiArDQo+ID4+DQo+ID4+IElmIEZMRVhDQU5fRVNSX1dBS19JTlQgc3RheXMg
-aW4gRkxFWENBTl9FU1JfQUxMX0lOVCwgeW91IGRvbid0IG5lZWQNCj4gPj4gdGhhdCBleHBsaWNp
-dCBBQ0sgaGVyZS4NCj4gPg0KPiA+IEhpIE1hcmMsDQo+ID4NCj4gPiBJIHJlbW92ZSB0aGUgRkxF
-WENBTl9FU1JfV0FLX0lOVCBmcm9tIHRoZSBGTEVYQ0FOX0VTUl9BTExfSU5UIHNpbmNlDQo+ID4g
-RkxFWENBTl9FU1JfQUxMX0lOVCBpcyBmb3IgYWxsIGJ1cyBlcnJvciBhbmQgc3RhdGUgY2hhbmdl
-IElSUSBzb3VyY2VzLA0KPiA+IHdha2V1cCBpbnRlcnJ1cHQgZG9lcyBub3QgYmVsb25nIHRvIHRo
-ZXNlLiBJZiB5b3UgdGhpbmsgdGhpcyBkb2VzIG5vdA0KPiA+IG5lZWQsIEkgY2FuIHJlbW92ZSB0
-aGlzIGNoYW5nZS4NCj4gDQo+IEkgc2VlLCBtYWtlcyBzZW5zZS4NCj4gDQo+IE1ha2UgdGhpcyBh
-IHNlcGFyYXRlIHBhdGNoLiBNb3ZlIHRoZSBGTEVYQ0FOX0VTUl9XQUtfSU5UIGZyb20gdGhlDQo+
-IEZMRVhDQU5fRVNSX0FMTF9JTlQsIGJ1dCBhZGQgaXQgdG8gdGhlIGV4aXN0aW5nIGFjayBvZiB0
-aGUgaW50ZXJydXB0cy4NCj4gTGlrZSB0aGlzOg0KPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9uZXQvY2FuL2ZsZXhjYW4uYyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiBpbmRl
-eCBiNmY2NzVhNWUyZDkuLjc0ZjYyMmI0MGI2MSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL25l
-dC9jYW4vZmxleGNhbi5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiA+
-IEBAIC05NjAsMTAgKzk2MCwxMCBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgZmxleGNhbl9pcnEoaW50
-IGlycSwgdm9pZA0KPiA+ICpkZXZfaWQpDQo+ID4NCj4gPiAgICAgICAgIHJlZ19lc3IgPSBwcml2
-LT5yZWFkKCZyZWdzLT5lc3IpOw0KPiA+DQo+ID4gLSAgICAgICAvKiBBQ0sgYWxsIGJ1cyBlcnJv
-ciBhbmQgc3RhdGUgY2hhbmdlIElSUSBzb3VyY2VzICovDQo+ID4gLSAgICAgICBpZiAocmVnX2Vz
-ciAmIEZMRVhDQU5fRVNSX0FMTF9JTlQpIHsNCj4gPiArICAgICAgIC8qIEFDSyBhbGwgYnVzIGVy
-cm9yLCBzdGF0ZSBjaGFuZ2UgYW5kIHdha2UgSVJRIHNvdXJjZXMgKi8NCj4gPiArICAgICAgIGlm
-IChyZWdfZXNyICYgKEZMRVhDQU5fRVNSX0FMTF9JTlQgfCBGTEVYQ0FOX0VTUl9XQUtfSU5UKSkg
-ew0KPiA+ICAgICAgICAgICAgICAgICBoYW5kbGVkID0gSVJRX0hBTkRMRUQ7DQo+ID4gLSAgICAg
-ICAgICAgICAgIHByaXYtPndyaXRlKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9BTExfSU5ULA0KPiAm
-cmVncy0+ZXNyKTsNCj4gPiArICAgICAgICAgICAgICAgcHJpdi0+d3JpdGUocmVnX2VzciAmIChG
-TEVYQ0FOX0VTUl9BTExfSU5UIHwNCj4gPiArIEZMRVhDQU5fRVNSX1dBS19JTlQpLCAmcmVncy0+
-ZXNyKTsNCj4gPiAgICAgICAgIH0NCj4gPg0KPiA+ICAgICAgICAgLyogc3RhdGUgY2hhbmdlIGlu
-dGVycnVwdCBvciBicm9rZW4gZXJyb3Igc3RhdGUgcXVpcmsgZml4IGlzDQo+ID4gZW5hYmxlZCAq
-Lw0KDQpHb3QgaXQhIFRoYW5rcy4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IE1h
-cmMNCj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgIHwgTWFyYyBL
-bGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gRW1iZWRkZWQgTGludXggICAgICAgICAgICAgICAg
-ICAgfCBodHRwczovL3d3dy5wZW5ndXRyb25peC5kZSAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9y
-dG11bmQgICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IEFtdHNnZXJp
-Y2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2IHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwN
-Cg0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ZlZmhQmN6SpMV8nrfBVgIvHUioSnJWW5x
+Content-Type: multipart/mixed; boundary="4nMcngxFmMvjwzxK6dfDliCaJBTLTplAs";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com"
+ <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Message-ID: <d68b2b79-34ec-eb4c-cf4b-047b5157d5e3@pengutronix.de>
+Subject: Re: [PATCH V2 2/4] can: flexcan: try to exit stop mode during probe
+ stage
+References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
+ <20191127055334.1476-3-qiangqing.zhang@nxp.com>
+ <ad7e7b15-26f3-daa1-02d2-782ff548756d@pengutronix.de>
+ <DB7PR04MB46180C5F1EAC7C4A69A45E0CE65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+In-Reply-To: <DB7PR04MB46180C5F1EAC7C4A69A45E0CE65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+
+--4nMcngxFmMvjwzxK6dfDliCaJBTLTplAs
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+On 12/4/19 3:22 AM, Joakim Zhang wrote:
+>=20
+>> -----Original Message-----
+>> From: Marc Kleine-Budde <mkl@pengutronix.de>
+>> Sent: 2019=E5=B9=B412=E6=9C=884=E6=97=A5 2:15
+>> To: Joakim Zhang <qiangqing.zhang@nxp.com>; sean@geanix.com;
+>> linux-can@vger.kernel.org
+>> Cc: dl-linux-imx <linux-imx@nxp.com>; netdev@vger.kernel.org
+>> Subject: Re: [PATCH V2 2/4] can: flexcan: try to exit stop mode during=
+ probe
+>> stage
+>>
+>> On 11/27/19 6:56 AM, Joakim Zhang wrote:
+>>> CAN controller could be stucked in stop mode once it enters stop mode=
+
+>>                           ^^^^^^^ stuck
+>>> when suspend, and then it fails to exit stop mode when resume.
+>>
+>> How can this happen?
+>=20
+> I am also confused how can this happen, as I asked Sean, only CAN
+> enter stop mode when suspend, then system hang,
+How do you recover the system when suspended?
+
+> it could let CAN=20
+> stuck in stop mode. However, Sean said this indeed happen at his
+> side, @sean@geanix.com, could you explain how this happen in
+> details?
+That would be good.
+
+>>> Only code reset can get CAN out of stop mode,
+>>
+>> What is "code reset"?
+>=20
+> As I know, "code reset" is to press the POWER KEY from the board. At
+> my side, reboot command from OS also can get CAN out of stop mode.
+Do you mean "cold reset", also known as Power-On-Reset, POR or power cycl=
+e?
+
+What does pressing the POWER KEY do? A power cycle of the system or
+toggling the reset line of the imx?
+
+We need to describe in detail, as not everyone has the same board as
+you, and these boards might not even have a power key :)
+
+> Below is experiment I did:
+> 	Firstly, do a hacking to let CAN stuck into stop mode, then:
+
+You mean you put the CAN into stop mode without keeping track in the CAN
+driver that the CAN-IP is in stop mode, e.g. by hacking the driver.
+
+Then you try several methods to recover:
+
+> 	(1) press power on/off key, get CAN out of stop mode;
+> 	(2) reboot command from console, get CAN out of stop mode;
+> 	(3) unbind/bind driver, cannot get CAN out of stop mode; =20
+> 	(4) remod/insmod module, cannot get CAN out of stop mode;
+
+(2) resets the complete imx, including the CAN-IP core, (1) probably, too=
+=2E
+
+(3) and (4) fail to recover the CAN core, as the IP core is still
+powered off by some upstream component. So the question why this happens
+in the first place is IMHO as important as trying to wake up the core. I
+think if we discover this situation (CAN Core is in stop-mode in probe)
+we should print a warning message, but try to recover.
+
+>>> so add stop mode remove request during probe stage for other
+>>> methods(soft reset from chip level, unbind/bind driver, etc) to let
+>>         ^^^ please add a space
+>>> CAN active again.
+>>
+>> Can you rephrase the sentence after "so add stop mode remove request d=
+uring
+>> probe stage". I'm not completely sure what you want to tell.
+>=20
+> Sure.
+
+tnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--4nMcngxFmMvjwzxK6dfDliCaJBTLTplAs--
+
+--ZlZmhQmN6SpMV8nrfBVgIvHUioSnJWW5x
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3nchAACgkQWsYho5Hk
+nSCTpggAmAMrS03XnqjmwdpdqX/3QzdujpVXMAIIdRhp1Hdsx0qsrlFKzXSZ9jsi
+AyvrmiO/2t76mxKZQkQ0ngKHYgHKmBS+YwWSXIoRC0ATg0H6qX2TXjxQhCu87puX
+odLHR/vuG40R28Alc8YR37+yzuxmfoHT8at6jjGFqWStPen3siOzBj8K2gA7QhN1
+kBoH0L4AxDqXZwNUbSghVwrca1t/X09T7hpCBYDhBblwkZovGl8rfGpGCdV2NFaP
+QYOqUwBA5Sw6bGpKBHPxrFHZWuFpg/NhaoRyEt/7E7/9BUx0kjzLV4WkpDez/hNa
+Zritj7qKbAcZmSlBfWWFegMda7x1PA==
+=qCmu
+-----END PGP SIGNATURE-----
+
+--ZlZmhQmN6SpMV8nrfBVgIvHUioSnJWW5x--
