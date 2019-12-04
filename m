@@ -1,7 +1,7 @@
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH V3 2/6] can: flexcan: Ack wakeup interrupt separately
-Date: Wed, 4 Dec 2019 11:36:08 +0000
-Message-ID: <20191204113249.3381-3-qiangqing.zhang@nxp.com>
+Subject: [PATCH V3 1/6] can: flexcan: fix deadlock when using self wakeup
+Date: Wed, 4 Dec 2019 11:36:06 +0000
+Message-ID: <20191204113249.3381-2-qiangqing.zhang@nxp.com>
 References: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,48 +14,80 @@ To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.co
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-As FLEXCAN_ESR_ALL_INT is for all bus errors and state change IRQ
-sources, and FLEXCAN_ESR_WAK_INT does not belong to these. So add
-wakeup interrupt ack separately to existing ack of the interrupts.
+From: Sean Nyekjaer <sean@geanix.com>
 
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+When suspending, when there is still can traffic on the interfaces the
+flexcan immediately wakes the platform again. As it should :-). But it
+throws this error msg:
+[ 3169.378661] PM: noirq suspend of devices failed
+
+On the way down to suspend the interface that throws the error message does
+call flexcan_suspend but fails to call flexcan_noirq_suspend. That means
+flexcan_enter_stop_mode is called, but on the way out of suspend the driver
+only calls flexcan_resume and skips flexcan_noirq_resume, thus it doesn't
+call flexcan_exit_stop_mode. This leaves the flexcan in stop mode, and with
+the current driver it can't recover from this even with a soft reboot, it
+requires a hard reboot.
+
+This patch can fix deadlock when using self wakeup, it happenes to be
+able to fix another issue that frames out-of-order in first IRQ handler
+run after wakeup.
+
+In wakeup case, after system resume, frames received out-of-order in
+first IRQ handler, the problem is wakeup latency from frame reception to
+IRQ handler is much bigger than the counter overflow. This means it's
+impossible to sort the CAN frames by timestamp. The reason is that controll=
+er
+exits stop mode during noirq resume, then it can receive the frame immediat=
+ely.
+If noirq reusme stage consumes much time, it will extend interrupt response
+time. So exit stop mode during resume stage instead of noirq resume can
+fix this issue.
+
+Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Tested-by: Sean Nyekjaer <sean@geanix.com>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ------
 ChangeLog:
-	V3: *split from the patch
-	     can: flexcan: fix deadlock when using self wakeup
+	V1->V2: *no change.
+
+	V2->V3: *split wakeup interrupt ack into another patch.
 ---
- drivers/net/can/flexcan.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/net/can/flexcan.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 99aae90c1cdd..1b33936790b4 100644
+index 2efa06119f68..99aae90c1cdd 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -134,8 +134,7 @@
- 	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
- #define FLEXCAN_ESR_ALL_INT \
- 	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
--	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT | \
--	 FLEXCAN_ESR_WAK_INT)
-+	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
+@@ -1722,6 +1722,9 @@ static int __maybe_unused flexcan_resume(struct devic=
+e *device)
+ 		netif_start_queue(dev);
+ 		if (device_may_wakeup(device)) {
+ 			disable_irq_wake(dev->irq);
++			err =3D flexcan_exit_stop_mode(priv);
++			if (err)
++				return err;
+ 		} else {
+ 			err =3D pm_runtime_force_resume(device);
+ 			if (err)
+@@ -1767,14 +1770,9 @@ static int __maybe_unused flexcan_noirq_resume(struc=
+t device *device)
+ {
+ 	struct net_device *dev =3D dev_get_drvdata(device);
+ 	struct flexcan_priv *priv =3D netdev_priv(dev);
+-	int err;
 =20
- /* FLEXCAN interrupt flag register (IFLAG) bits */
- /* Errata ERR005829 step7: Reserve first valid MB */
-@@ -960,10 +959,10 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+-	if (netif_running(dev) && device_may_wakeup(device)) {
++	if (netif_running(dev) && device_may_wakeup(device))
+ 		flexcan_enable_wakeup_irq(priv, false);
+-		err =3D flexcan_exit_stop_mode(priv);
+-		if (err)
+-			return err;
+-	}
 =20
- 	reg_esr =3D priv->read(&regs->esr);
-=20
--	/* ACK all bus error and state change IRQ sources */
--	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
-+	/* ACK all bus error, state change and wake IRQ sources */
-+	if (reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ESR_WAK_INT)) {
- 		handled =3D IRQ_HANDLED;
--		priv->write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
-+		priv->write(reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ESR_WAK_INT), &regs=
-->esr);
- 	}
-=20
- 	/* state change interrupt or broken error state quirk fix is enabled */
+ 	return 0;
+ }
 --=20
 2.17.1
