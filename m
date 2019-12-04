@@ -1,36 +1,57 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2019-12-03
-Date: Tue, 03 Dec 2019 11:14:57 -0800 (PST)
-Message-ID: <20191203.111457.631787255568854644.davem@davemloft.net>
-References: <20191203104703.14620-1-mkl@pengutronix.de>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V2 1/4] can: flexcan: fix deadlock when using self wakeup
+Date: Wed, 4 Dec 2019 01:58:24 +0000
+Message-ID: <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
+ <20191127055334.1476-2-qiangqing.zhang@nxp.com>
+ <b77829d5-9eda-a244-3ee8-2ccdbdfb6524@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191203104703.14620-1-mkl@pengutronix.de>
+In-Reply-To: <b77829d5-9eda-a244-3ee8-2ccdbdfb6524@pengutronix.de>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Tue,  3 Dec 2019 11:46:57 +0100
-
-> this is a pull request of 6 patches for net/master.
-> 
-> The first two patches are against the MAINTAINERS file and adds Appana
-> Durga Kedareswara rao as maintainer for the xilinx-can driver and Sriram
-> Dash for the m_can (mmio) driver.
-> 
-> The next patch is by Jouni Hogander and fixes a use-after-free in the
-> slcan driver.
-> 
-> Johan Hovold's patch for the ucan driver fixes the non-atomic allocation
-> in the completion handler.
-> 
-> The last two patches target the xilinx-can driver. The first one is by
-> Venkatesh Yadav Abbarapu and skips the error message on deferred probe,
-> the second one is by Srinivas Neeli and fixes the usage of the skb after
-> can_put_echo_skb().
-
-Pulled, thanks Marc.
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
+IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQxMuaciDTml6UgMToyNQ0KPiBU
+bzogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT47IHNlYW5AZ2Vhbml4LmNv
+bTsNCj4gbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBDYzogZGwtbGludXgtaW14IDxsaW51
+eC1pbXhAbnhwLmNvbT47IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQ
+QVRDSCBWMiAxLzRdIGNhbjogZmxleGNhbjogZml4IGRlYWRsb2NrIHdoZW4gdXNpbmcgc2VsZiB3
+YWtldXANCg0KWy4uLl0NCj4gPiAgZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyB8IDE5ICsrKysr
+KysrKysrLS0tLS0tLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDgg
+ZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhj
+YW4uYyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiBpbmRleCAyZWZhMDYxMTlmNjgu
+LjIyOTc2NjNjYWNiMiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5j
+DQo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiA+IEBAIC0xMzQsOCArMTM0
+LDcgQEANCj4gPiAgCShGTEVYQ0FOX0VTUl9FUlJfQlVTIHwgRkxFWENBTl9FU1JfRVJSX1NUQVRF
+KSAgI2RlZmluZQ0KPiA+IEZMRVhDQU5fRVNSX0FMTF9JTlQgXA0KPiA+ICAJKEZMRVhDQU5fRVNS
+X1RXUk5fSU5UIHwgRkxFWENBTl9FU1JfUldSTl9JTlQgfCBcDQo+ID4gLQkgRkxFWENBTl9FU1Jf
+Qk9GRl9JTlQgfCBGTEVYQ0FOX0VTUl9FUlJfSU5UIHwgXA0KPiA+IC0JIEZMRVhDQU5fRVNSX1dB
+S19JTlQpDQo+ID4gKwkgRkxFWENBTl9FU1JfQk9GRl9JTlQgfCBGTEVYQ0FOX0VTUl9FUlJfSU5U
+KQ0KPiANCj4gV2h5IGRvIHlvdSByZW1vdmUgdGhlIEZMRVhDQU5fRVNSX1dBS19JTlQgZnJvbSB0
+aGUNCj4gRkxFWENBTl9FU1JfQUxMX0lOVD8NCj4gDQo+ID4NCj4gPiAgLyogRkxFWENBTiBpbnRl
+cnJ1cHQgZmxhZyByZWdpc3RlciAoSUZMQUcpIGJpdHMgKi8NCj4gPiAgLyogRXJyYXRhIEVSUjAw
+NTgyOSBzdGVwNzogUmVzZXJ2ZSBmaXJzdCB2YWxpZCBNQiAqLyBAQCAtOTYwLDYNCj4gPiArOTU5
+LDEyIEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBmbGV4Y2FuX2lycShpbnQgaXJxLCB2b2lkICpkZXZf
+aWQpDQo+ID4NCj4gPiAgCXJlZ19lc3IgPSBwcml2LT5yZWFkKCZyZWdzLT5lc3IpOw0KPiA+DQo+
+ID4gKwkvKiBBQ0sgd2FrZXVwIGludGVycnVwdCAqLw0KPiA+ICsJaWYgKHJlZ19lc3IgJiBGTEVY
+Q0FOX0VTUl9XQUtfSU5UKSB7DQo+ID4gKwkJaGFuZGxlZCA9IElSUV9IQU5ETEVEOw0KPiA+ICsJ
+CXByaXYtPndyaXRlKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9XQUtfSU5ULCAmcmVncy0+ZXNyKTsN
+Cj4gPiArCX0NCj4gPiArDQo+IA0KPiBJZiBGTEVYQ0FOX0VTUl9XQUtfSU5UIHN0YXlzIGluIEZM
+RVhDQU5fRVNSX0FMTF9JTlQsIHlvdSBkb24ndCBuZWVkDQo+IHRoYXQgZXhwbGljaXQgQUNLIGhl
+cmUuDQoNCkhpIE1hcmMsDQoNCkkgcmVtb3ZlIHRoZSBGTEVYQ0FOX0VTUl9XQUtfSU5UIGZyb20g
+dGhlIEZMRVhDQU5fRVNSX0FMTF9JTlQgc2luY2UgRkxFWENBTl9FU1JfQUxMX0lOVCBpcyBmb3IN
+CmFsbCBidXMgZXJyb3IgYW5kIHN0YXRlIGNoYW5nZSBJUlEgc291cmNlcywgd2FrZXVwIGludGVy
+cnVwdCBkb2VzIG5vdCBiZWxvbmcgdG8gdGhlc2UuIElmIHlvdSB0aGluayB0aGlzIGRvZXMNCm5v
+dCBuZWVkLCBJIGNhbiByZW1vdmUgdGhpcyBjaGFuZ2UuDQoNCkJlc3QgUmVnYXJkcywNCkpvYWtp
+bSBaaGFuZw0KPiBNYXJjDQo+IA0KPiAtLQ0KPiBQZW5ndXRyb25peCBlLksuICAgICAgICAgICAg
+ICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEVtYmVkZGVkIExpbnV4ICAg
+ICAgICAgICAgICAgICAgIHwgaHR0cHM6Ly93d3cucGVuZ3V0cm9uaXguZGUgIHwNCj4gVmVydHJl
+dHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgfCBQaG9uZTogKzQ5LTIzMS0yODI2LTkyNCAgICAg
+fA0KPiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiB8IEZheDogICArNDktNTEyMS0y
+MDY5MTctNTU1NSB8DQoNCg==
