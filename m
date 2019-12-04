@@ -1,143 +1,82 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V2 1/4] can: flexcan: fix deadlock when using self wakeup
-Date: Wed, 4 Dec 2019 09:31:05 +0100
-Message-ID: <b4ce5a7a-7fc0-edb2-608e-4030ce6428a2@pengutronix.de>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V2 1/4] can: flexcan: fix deadlock when using self wakeup
+Date: Wed, 4 Dec 2019 08:35:13 +0000
+Message-ID: <DB7PR04MB46188F5455DD63DF05191F27E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
  <20191127055334.1476-2-qiangqing.zhang@nxp.com>
  <b77829d5-9eda-a244-3ee8-2ccdbdfb6524@pengutronix.de>
  <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <b4ce5a7a-7fc0-edb2-608e-4030ce6428a2@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="gNfDjcm1x9HHDAIkEGdoHJkH587wTN8L3"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+In-Reply-To: <b4ce5a7a-7fc0-edb2-608e-4030ce6428a2@pengutronix.de>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gNfDjcm1x9HHDAIkEGdoHJkH587wTN8L3
-Content-Type: multipart/mixed; boundary="RsU4ZEJsDnWk1wNwXlT3btpEzfioQ0U3D";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com"
- <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Message-ID: <b4ce5a7a-7fc0-edb2-608e-4030ce6428a2@pengutronix.de>
-Subject: Re: [PATCH V2 1/4] can: flexcan: fix deadlock when using self wakeup
-References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
- <20191127055334.1476-2-qiangqing.zhang@nxp.com>
- <b77829d5-9eda-a244-3ee8-2ccdbdfb6524@pengutronix.de>
- <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-In-Reply-To: <DB7PR04MB46183730127339DAC15ABF33E65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-
---RsU4ZEJsDnWk1wNwXlT3btpEzfioQ0U3D
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 12/4/19 2:58 AM, Joakim Zhang wrote:
-> [...]
->>>  drivers/net/can/flexcan.c | 19 +++++++++++--------
->>>  1 file changed, 11 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
->>> index 2efa06119f68..2297663cacb2 100644
->>> --- a/drivers/net/can/flexcan.c
->>> +++ b/drivers/net/can/flexcan.c
->>> @@ -134,8 +134,7 @@
->>>  	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)  #define
->>> FLEXCAN_ESR_ALL_INT \
->>>  	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
->>> -	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT | \
->>> -	 FLEXCAN_ESR_WAK_INT)
->>> +	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
->>
->> Why do you remove the FLEXCAN_ESR_WAK_INT from the
->> FLEXCAN_ESR_ALL_INT?
->>
->>>
->>>  /* FLEXCAN interrupt flag register (IFLAG) bits */
->>>  /* Errata ERR005829 step7: Reserve first valid MB */ @@ -960,6
->>> +959,12 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
->>>
->>>  	reg_esr =3D priv->read(&regs->esr);
->>>
->>> +	/* ACK wakeup interrupt */
->>> +	if (reg_esr & FLEXCAN_ESR_WAK_INT) {
->>> +		handled =3D IRQ_HANDLED;
->>> +		priv->write(reg_esr & FLEXCAN_ESR_WAK_INT, &regs->esr);
->>> +	}
->>> +
->>
->> If FLEXCAN_ESR_WAK_INT stays in FLEXCAN_ESR_ALL_INT, you don't need
->> that explicit ACK here.
->=20
-> Hi Marc,
->=20
-> I remove the FLEXCAN_ESR_WAK_INT from the FLEXCAN_ESR_ALL_INT since
-> FLEXCAN_ESR_ALL_INT is for all bus error and state change IRQ
-> sources, wakeup interrupt does not belong to these. If you think this
-> does not need, I can remove this change.
-
-I see, makes sense.
-
-Make this a separate patch. Move the FLEXCAN_ESR_WAK_INT from the
-FLEXCAN_ESR_ALL_INT, but add it to the existing ack of the interrupts.
-Like this:
-
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index b6f675a5e2d9..74f622b40b61 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -960,10 +960,10 @@ static irqreturn_t flexcan_irq(int irq, void *dev=
-_id)
-> =20
->         reg_esr =3D priv->read(&regs->esr);
-> =20
-> -       /* ACK all bus error and state change IRQ sources */
-> -       if (reg_esr & FLEXCAN_ESR_ALL_INT) {
-> +       /* ACK all bus error, state change and wake IRQ sources */
-> +       if (reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ESR_WAK_INT)) {
->                 handled =3D IRQ_HANDLED;
-> -               priv->write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);=
-
-> +               priv->write(reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ES=
-R_WAK_INT), &regs->esr);
->         }
-> =20
->         /* state change interrupt or broken error state quirk fix is en=
-abled */
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---RsU4ZEJsDnWk1wNwXlT3btpEzfioQ0U3D--
-
---gNfDjcm1x9HHDAIkEGdoHJkH587wTN8L3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3nbskACgkQWsYho5Hk
-nSCM+Qf+O704RSvmyOPEQZDym+oL1w3DRt7iDaIrOET+5giecvKBt+xRX2ogTzqI
-BQnYlT4wf40FNlEi62/TJ3EBLEQS8FBH54hEtofn+JKm0yyf3ITpO/xSX0sGqr/+
-gC7a8eWCCo6Ypmdtw7kELWiKANXDmgd2RQMXLxwMKMiEa99DPrh/Bxf0kjZ/cVfm
-ptkQxARsOVxii03vlwA7w86bkHRLU15XZVhDMuXnI5YRTdL0+z85BR6lzW3CPFR3
-XifJ3jlWnDLh4g8BUG6OsJHhoj8HMuC0El2vcVTKEJBx6MUYvpU5Csl8AvbNmAAi
-MRTSL0LuB9cuQMCvPv55PY1+NRsBTg==
-=5XGv
------END PGP SIGNATURE-----
-
---gNfDjcm1x9HHDAIkEGdoHJkH587wTN8L3--
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
+IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQxMuaciDTml6UgMTY6MzENCj4g
+VG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBzZWFuQGdlYW5peC5j
+b207DQo+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlteCA8bGlu
+dXgtaW14QG54cC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBb
+UEFUQ0ggVjIgMS80XSBjYW46IGZsZXhjYW46IGZpeCBkZWFkbG9jayB3aGVuIHVzaW5nIHNlbGYg
+d2FrZXVwDQo+IA0KPiBPbiAxMi80LzE5IDI6NTggQU0sIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4g
+PiBbLi4uXQ0KPiA+Pj4gIGRyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgfCAxOSArKysrKysrKysr
+Ky0tLS0tLS0tDQo+ID4+PiAgMSBmaWxlIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDggZGVs
+ZXRpb25zKC0pDQo+ID4+Pg0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4
+Y2FuLmMgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ID4+PiBpbmRleCAyZWZhMDYxMTlm
+NjguLjIyOTc2NjNjYWNiMiAxMDA2NDQNCj4gPj4+IC0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4
+Y2FuLmMNCj4gPj4+ICsrKyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPj4+IEBAIC0x
+MzQsOCArMTM0LDcgQEANCj4gPj4+ICAJKEZMRVhDQU5fRVNSX0VSUl9CVVMgfCBGTEVYQ0FOX0VT
+Ul9FUlJfU1RBVEUpICAjZGVmaW5lDQo+ID4+PiBGTEVYQ0FOX0VTUl9BTExfSU5UIFwNCj4gPj4+
+ICAJKEZMRVhDQU5fRVNSX1RXUk5fSU5UIHwgRkxFWENBTl9FU1JfUldSTl9JTlQgfCBcDQo+ID4+
+PiAtCSBGTEVYQ0FOX0VTUl9CT0ZGX0lOVCB8IEZMRVhDQU5fRVNSX0VSUl9JTlQgfCBcDQo+ID4+
+PiAtCSBGTEVYQ0FOX0VTUl9XQUtfSU5UKQ0KPiA+Pj4gKwkgRkxFWENBTl9FU1JfQk9GRl9JTlQg
+fCBGTEVYQ0FOX0VTUl9FUlJfSU5UKQ0KPiA+Pg0KPiA+PiBXaHkgZG8geW91IHJlbW92ZSB0aGUg
+RkxFWENBTl9FU1JfV0FLX0lOVCBmcm9tIHRoZQ0KPiA+PiBGTEVYQ0FOX0VTUl9BTExfSU5UPw0K
+PiA+Pg0KPiA+Pj4NCj4gPj4+ICAvKiBGTEVYQ0FOIGludGVycnVwdCBmbGFnIHJlZ2lzdGVyIChJ
+RkxBRykgYml0cyAqLw0KPiA+Pj4gIC8qIEVycmF0YSBFUlIwMDU4Mjkgc3RlcDc6IFJlc2VydmUg
+Zmlyc3QgdmFsaWQgTUIgKi8gQEAgLTk2MCw2DQo+ID4+PiArOTU5LDEyIEBAIHN0YXRpYyBpcnFy
+ZXR1cm5fdCBmbGV4Y2FuX2lycShpbnQgaXJxLCB2b2lkICpkZXZfaWQpDQo+ID4+Pg0KPiA+Pj4g
+IAlyZWdfZXNyID0gcHJpdi0+cmVhZCgmcmVncy0+ZXNyKTsNCj4gPj4+DQo+ID4+PiArCS8qIEFD
+SyB3YWtldXAgaW50ZXJydXB0ICovDQo+ID4+PiArCWlmIChyZWdfZXNyICYgRkxFWENBTl9FU1Jf
+V0FLX0lOVCkgew0KPiA+Pj4gKwkJaGFuZGxlZCA9IElSUV9IQU5ETEVEOw0KPiA+Pj4gKwkJcHJp
+di0+d3JpdGUocmVnX2VzciAmIEZMRVhDQU5fRVNSX1dBS19JTlQsICZyZWdzLT5lc3IpOw0KPiA+
+Pj4gKwl9DQo+ID4+PiArDQo+ID4+DQo+ID4+IElmIEZMRVhDQU5fRVNSX1dBS19JTlQgc3RheXMg
+aW4gRkxFWENBTl9FU1JfQUxMX0lOVCwgeW91IGRvbid0IG5lZWQNCj4gPj4gdGhhdCBleHBsaWNp
+dCBBQ0sgaGVyZS4NCj4gPg0KPiA+IEhpIE1hcmMsDQo+ID4NCj4gPiBJIHJlbW92ZSB0aGUgRkxF
+WENBTl9FU1JfV0FLX0lOVCBmcm9tIHRoZSBGTEVYQ0FOX0VTUl9BTExfSU5UIHNpbmNlDQo+ID4g
+RkxFWENBTl9FU1JfQUxMX0lOVCBpcyBmb3IgYWxsIGJ1cyBlcnJvciBhbmQgc3RhdGUgY2hhbmdl
+IElSUSBzb3VyY2VzLA0KPiA+IHdha2V1cCBpbnRlcnJ1cHQgZG9lcyBub3QgYmVsb25nIHRvIHRo
+ZXNlLiBJZiB5b3UgdGhpbmsgdGhpcyBkb2VzIG5vdA0KPiA+IG5lZWQsIEkgY2FuIHJlbW92ZSB0
+aGlzIGNoYW5nZS4NCj4gDQo+IEkgc2VlLCBtYWtlcyBzZW5zZS4NCj4gDQo+IE1ha2UgdGhpcyBh
+IHNlcGFyYXRlIHBhdGNoLiBNb3ZlIHRoZSBGTEVYQ0FOX0VTUl9XQUtfSU5UIGZyb20gdGhlDQo+
+IEZMRVhDQU5fRVNSX0FMTF9JTlQsIGJ1dCBhZGQgaXQgdG8gdGhlIGV4aXN0aW5nIGFjayBvZiB0
+aGUgaW50ZXJydXB0cy4NCj4gTGlrZSB0aGlzOg0KPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9uZXQvY2FuL2ZsZXhjYW4uYyBiL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCj4gPiBpbmRl
+eCBiNmY2NzVhNWUyZDkuLjc0ZjYyMmI0MGI2MSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL25l
+dC9jYW4vZmxleGNhbi5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiA+
+IEBAIC05NjAsMTAgKzk2MCwxMCBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgZmxleGNhbl9pcnEoaW50
+IGlycSwgdm9pZA0KPiA+ICpkZXZfaWQpDQo+ID4NCj4gPiAgICAgICAgIHJlZ19lc3IgPSBwcml2
+LT5yZWFkKCZyZWdzLT5lc3IpOw0KPiA+DQo+ID4gLSAgICAgICAvKiBBQ0sgYWxsIGJ1cyBlcnJv
+ciBhbmQgc3RhdGUgY2hhbmdlIElSUSBzb3VyY2VzICovDQo+ID4gLSAgICAgICBpZiAocmVnX2Vz
+ciAmIEZMRVhDQU5fRVNSX0FMTF9JTlQpIHsNCj4gPiArICAgICAgIC8qIEFDSyBhbGwgYnVzIGVy
+cm9yLCBzdGF0ZSBjaGFuZ2UgYW5kIHdha2UgSVJRIHNvdXJjZXMgKi8NCj4gPiArICAgICAgIGlm
+IChyZWdfZXNyICYgKEZMRVhDQU5fRVNSX0FMTF9JTlQgfCBGTEVYQ0FOX0VTUl9XQUtfSU5UKSkg
+ew0KPiA+ICAgICAgICAgICAgICAgICBoYW5kbGVkID0gSVJRX0hBTkRMRUQ7DQo+ID4gLSAgICAg
+ICAgICAgICAgIHByaXYtPndyaXRlKHJlZ19lc3IgJiBGTEVYQ0FOX0VTUl9BTExfSU5ULA0KPiAm
+cmVncy0+ZXNyKTsNCj4gPiArICAgICAgICAgICAgICAgcHJpdi0+d3JpdGUocmVnX2VzciAmIChG
+TEVYQ0FOX0VTUl9BTExfSU5UIHwNCj4gPiArIEZMRVhDQU5fRVNSX1dBS19JTlQpLCAmcmVncy0+
+ZXNyKTsNCj4gPiAgICAgICAgIH0NCj4gPg0KPiA+ICAgICAgICAgLyogc3RhdGUgY2hhbmdlIGlu
+dGVycnVwdCBvciBicm9rZW4gZXJyb3Igc3RhdGUgcXVpcmsgZml4IGlzDQo+ID4gZW5hYmxlZCAq
+Lw0KDQpHb3QgaXQhIFRoYW5rcy4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IE1h
+cmMNCj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgIHwgTWFyYyBL
+bGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gRW1iZWRkZWQgTGludXggICAgICAgICAgICAgICAg
+ICAgfCBodHRwczovL3d3dy5wZW5ndXRyb25peC5kZSAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9y
+dG11bmQgICAgICAgICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IEFtdHNnZXJp
+Y2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2IHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwN
+Cg0K
