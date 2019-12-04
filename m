@@ -1,78 +1,82 @@
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Subject: RE: [PATCH V2] can: xilinx_can: Fix missing Rx can packets on CANFD2.0
-Date: Wed, 4 Dec 2019 03:59:38 +0000
-Message-ID: <MN2PR02MB5727E5E2BF394AC2898D5E1FAF5D0@MN2PR02MB5727.namprd02.prod.outlook.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH V2] can: xilinx_can: Fix missing Rx can packets on
+ CANFD2.0
+Date: Wed, 4 Dec 2019 08:52:47 +0100
+Message-ID: <528491f5-d28a-2f0a-0621-ab343e4ff7e5@pengutronix.de>
 References: <1575375396-3403-1-git-send-email-srinivas.neeli@xilinx.com>
+ <MN2PR02MB5727E5E2BF394AC2898D5E1FAF5D0@MN2PR02MB5727.namprd02.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1575375396-3403-1-git-send-email-srinivas.neeli@xilinx.com>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>, Appana Durga Kedareswara Rao <appanad@xilinx.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Srinivas Neeli <sneeli@xilinx.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, git <git@xilinx.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="EsHhqYijumrOCWNOGfOVtR88b93OMXvMp"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <MN2PR02MB5727E5E2BF394AC2898D5E1FAF5D0@MN2PR02MB5727.namprd02.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>, Srinivas Neeli <sneeli@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>, "davem@davemloft.net" <davem@davemloft.net>, Michal Simek <michals@xilinx.com>, Appana Durga Kedareswara Rao <appanad@xilinx.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, git <git@xilinx.com>
 List-Id: linux-can.vger.kernel.org
 
-Reviewed-by: Naga Sureshkumar Relli	<naga.sureshkumar.relli@xilinx.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--EsHhqYijumrOCWNOGfOVtR88b93OMXvMp
+Content-Type: multipart/mixed; boundary="6jAZiqs74AMe09G2oX3Cjn13Nl4WWl9FO";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ Srinivas Neeli <sneeli@xilinx.com>, "wg@grandegger.com" <wg@grandegger.com>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ Michal Simek <michals@xilinx.com>,
+ Appana Durga Kedareswara Rao <appanad@xilinx.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ git <git@xilinx.com>
+Message-ID: <528491f5-d28a-2f0a-0621-ab343e4ff7e5@pengutronix.de>
+Subject: Re: [PATCH V2] can: xilinx_can: Fix missing Rx can packets on
+ CANFD2.0
+References: <1575375396-3403-1-git-send-email-srinivas.neeli@xilinx.com>
+ <MN2PR02MB5727E5E2BF394AC2898D5E1FAF5D0@MN2PR02MB5727.namprd02.prod.outlook.com>
+In-Reply-To: <MN2PR02MB5727E5E2BF394AC2898D5E1FAF5D0@MN2PR02MB5727.namprd02.prod.outlook.com>
 
-> -----Original Message-----
-> From: Srinivas Neeli <srinivas.neeli@xilinx.com>
-> Sent: Tuesday, December 3, 2019 5:47 PM
-> To: wg@grandegger.com; mkl@pengutronix.de; davem@davemloft.net; Michal Simek
-> <michals@xilinx.com>; Appana Durga Kedareswara Rao <appanad@xilinx.com>
-> Cc: linux-can@vger.kernel.org; netdev@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-kernel@vger.kernel.org; git <git@xilinx.com>; Naga
-> Sureshkumar Relli <nagasure@xilinx.com>; Srinivas Neeli <sneeli@xilinx.com>
-> Subject: [PATCH V2] can: xilinx_can: Fix missing Rx can packets on CANFD2.0
-> 
-> CANFD2.0 core uses BRAM for storing acceptance filter ID(AFID) and MASK
-> (AFMASK)registers. So by default AFID and AFMASK registers contain random data. Due to
-> random data, we are not able to receive all CAN ids.
-> 
-> Initializing AFID and AFMASK registers with Zero before enabling acceptance filter to
-> receive all packets irrespective of ID and Mask.
-> 
-> Fixes: 0db9071353a0 ("can: xilinx: add can 2.0 support")
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-> ---
->  drivers/net/can/xilinx_can.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c index
-> 464af939cd8a..c1dbab8c896d 100644
-> --- a/drivers/net/can/xilinx_can.c
-> +++ b/drivers/net/can/xilinx_can.c
-> @@ -60,6 +60,8 @@ enum xcan_reg {
->  	XCAN_TXMSG_BASE_OFFSET	= 0x0100, /* TX Message Space */
->  	XCAN_RXMSG_BASE_OFFSET	= 0x1100, /* RX Message Space */
->  	XCAN_RXMSG_2_BASE_OFFSET	= 0x2100, /* RX Message Space */
-> +	XCAN_AFR_2_MASK_OFFSET	= 0x0A00, /* Acceptance Filter MASK */
-> +	XCAN_AFR_2_ID_OFFSET	= 0x0A04, /* Acceptance Filter ID */
->  };
-> 
->  #define XCAN_FRAME_ID_OFFSET(frame_base)	((frame_base) + 0x00)
-> @@ -1809,6 +1811,11 @@ static int xcan_probe(struct platform_device *pdev)
-> 
->  	pm_runtime_put(&pdev->dev);
-> 
-> +	if (priv->devtype.flags & XCAN_FLAG_CANFD_2) {
-> +		priv->write_reg(priv, XCAN_AFR_2_ID_OFFSET, 0x00000000);
-> +		priv->write_reg(priv, XCAN_AFR_2_MASK_OFFSET, 0x00000000);
-> +	}
-> +
->  	netdev_dbg(ndev, "reg_base=0x%p irq=%d clock=%d, tx buffers: actual %d, using
-> %d\n",
->  		   priv->reg_base, ndev->irq, priv->can.clock.freq,
->  		   hw_tx_max, priv->tx_max);
-> --
-> 2.7.4
+--6jAZiqs74AMe09G2oX3Cjn13Nl4WWl9FO
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 12/4/19 4:59 AM, Naga Sureshkumar Relli wrote:
+> Reviewed-by: Naga Sureshkumar Relli	<naga.sureshkumar.relli@xilinx.com>=
+
+
+Added to the patch.
+
+tnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--6jAZiqs74AMe09G2oX3Cjn13Nl4WWl9FO--
+
+--EsHhqYijumrOCWNOGfOVtR88b93OMXvMp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3nZc8ACgkQWsYho5Hk
+nSC5xAf9E2O7Hpw8B7UnryAqewMRYuZNLn45EgXEkrrYc5HbpEIGtcdlCIZ5YEqf
+cb912bh159h/0mR7EorVvV4b4RCMnQPyCEAJ4cfwMLjzT0obZTiwtvQ9dQ0V2Av8
+TOSetZz0WRgly0LPy8HsGjmTUsXl57hfwrQp656nInYwbDm3LJRr90/rNE9PBOch
+M895jgoxPM0eXujRUOVN+gf/dJ7xV+5Qks+7cHhlI33CwyMfwXBhLo1gOAxdTOL6
+w95DvQfgO2jJieAv7ETIcpBbOaf23z8yMJ6BJciWTpgPBI1O+XSfXDWQGKCAkCb4
+nRNnRFbIPK+y2TgO3JDLK630H5Twkg==
+=FpiZ
+-----END PGP SIGNATURE-----
+
+--EsHhqYijumrOCWNOGfOVtR88b93OMXvMp--
