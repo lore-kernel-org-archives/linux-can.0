@@ -1,7 +1,8 @@
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH V3 1/6] can: flexcan: fix deadlock when using self wakeup
-Date: Wed, 4 Dec 2019 11:36:06 +0000
-Message-ID: <20191204113249.3381-2-qiangqing.zhang@nxp.com>
+Subject: [PATCH V3 3/6] can: flexcan: add low power enter/exit acknowledgment
+ helper
+Date: Wed, 4 Dec 2019 11:36:11 +0000
+Message-ID: <20191204113249.3381-4-qiangqing.zhang@nxp.com>
 References: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,80 +15,105 @@ To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.co
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+MCR[LPMACK] this read-only bit indicates that FlexCAN is in a
+lower-power mode (Disabled mode, Doze mode, Stop mode), CPU can poll
+this bit to know when FlexCAN has actually entered low power mode.
+Low power enter/exit acknowledgment helper will reduce code duplication
+for disabled mode, doze mode and stop mode.
 
-When suspending, when there is still can traffic on the interfaces the
-flexcan immediately wakes the platform again. As it should :-). But it
-throws this error msg:
-[ 3169.378661] PM: noirq suspend of devices failed
-
-On the way down to suspend the interface that throws the error message does
-call flexcan_suspend but fails to call flexcan_noirq_suspend. That means
-flexcan_enter_stop_mode is called, but on the way out of suspend the driver
-only calls flexcan_resume and skips flexcan_noirq_resume, thus it doesn't
-call flexcan_exit_stop_mode. This leaves the flexcan in stop mode, and with
-the current driver it can't recover from this even with a soft reboot, it
-requires a hard reboot.
-
-This patch can fix deadlock when using self wakeup, it happenes to be
-able to fix another issue that frames out-of-order in first IRQ handler
-run after wakeup.
-
-In wakeup case, after system resume, frames received out-of-order in
-first IRQ handler, the problem is wakeup latency from frame reception to
-IRQ handler is much bigger than the counter overflow. This means it's
-impossible to sort the CAN frames by timestamp. The reason is that controll=
-er
-exits stop mode during noirq resume, then it can receive the frame immediat=
-ely.
-If noirq reusme stage consumes much time, it will extend interrupt response
-time. So exit stop mode during resume stage instead of noirq resume can
-fix this issue.
-
-Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 Tested-by: Sean Nyekjaer <sean@geanix.com>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-------
+-----
 ChangeLog:
-	V1->V2: *no change.
-
-	V2->V3: *split wakeup interrupt ack into another patch.
+	V3: * split from patch
+	      can: flexcan: change the way of stop mode acknowledgment
 ---
- drivers/net/can/flexcan.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/net/can/flexcan.c | 46 +++++++++++++++++++++++++--------------
+ 1 file changed, 30 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 2efa06119f68..99aae90c1cdd 100644
+index 1b33936790b4..6c4f1bab7042 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -1722,6 +1722,9 @@ static int __maybe_unused flexcan_resume(struct devic=
-e *device)
- 		netif_start_queue(dev);
- 		if (device_may_wakeup(device)) {
- 			disable_irq_wake(dev->irq);
-+			err =3D flexcan_exit_stop_mode(priv);
-+			if (err)
-+				return err;
- 		} else {
- 			err =3D pm_runtime_force_resume(device);
- 			if (err)
-@@ -1767,14 +1770,9 @@ static int __maybe_unused flexcan_noirq_resume(struc=
-t device *device)
- {
- 	struct net_device *dev =3D dev_get_drvdata(device);
- 	struct flexcan_priv *priv =3D netdev_priv(dev);
--	int err;
-=20
--	if (netif_running(dev) && device_may_wakeup(device)) {
-+	if (netif_running(dev) && device_may_wakeup(device))
- 		flexcan_enable_wakeup_irq(priv, false);
--		err =3D flexcan_exit_stop_mode(priv);
--		if (err)
--			return err;
--	}
-=20
- 	return 0;
+@@ -388,6 +388,34 @@ static struct flexcan_mb __iomem *flexcan_get_mb(const=
+ struct flexcan_priv *priv
+ 		(&priv->regs->mb[bank][priv->mb_size * mb_index]);
  }
+=20
++static int flexcan_low_power_enter_ack(struct flexcan_priv *priv)
++{
++	struct flexcan_regs __iomem *regs =3D priv->regs;
++	unsigned int timeout =3D FLEXCAN_TIMEOUT_US / 10;
++
++	while (timeout-- && !(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
++		udelay(10);
++
++	if (!(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
++static int flexcan_low_power_exit_ack(struct flexcan_priv *priv)
++{
++	struct flexcan_regs __iomem *regs =3D priv->regs;
++	unsigned int timeout =3D FLEXCAN_TIMEOUT_US / 10;
++
++	while (timeout-- && (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
++		udelay(10);
++
++	if (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK)
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
+ static void flexcan_enable_wakeup_irq(struct flexcan_priv *priv, bool enab=
+le)
+ {
+ 	struct flexcan_regs __iomem *regs =3D priv->regs;
+@@ -505,39 +533,25 @@ static inline int flexcan_transceiver_disable(const s=
+truct flexcan_priv *priv)
+ static int flexcan_chip_enable(struct flexcan_priv *priv)
+ {
+ 	struct flexcan_regs __iomem *regs =3D priv->regs;
+-	unsigned int timeout =3D FLEXCAN_TIMEOUT_US / 10;
+ 	u32 reg;
+=20
+ 	reg =3D priv->read(&regs->mcr);
+ 	reg &=3D ~FLEXCAN_MCR_MDIS;
+ 	priv->write(reg, &regs->mcr);
+=20
+-	while (timeout-- && (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
+-		udelay(10);
+-
+-	if (priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK)
+-		return -ETIMEDOUT;
+-
+-	return 0;
++	return flexcan_low_power_exit_ack(priv);
+ }
+=20
+ static int flexcan_chip_disable(struct flexcan_priv *priv)
+ {
+ 	struct flexcan_regs __iomem *regs =3D priv->regs;
+-	unsigned int timeout =3D FLEXCAN_TIMEOUT_US / 10;
+ 	u32 reg;
+=20
+ 	reg =3D priv->read(&regs->mcr);
+ 	reg |=3D FLEXCAN_MCR_MDIS;
+ 	priv->write(reg, &regs->mcr);
+=20
+-	while (timeout-- && !(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
+-		udelay(10);
+-
+-	if (!(priv->read(&regs->mcr) & FLEXCAN_MCR_LPM_ACK))
+-		return -ETIMEDOUT;
+-
+-	return 0;
++	return flexcan_low_power_enter_ack(priv);
+ }
+=20
+ static int flexcan_chip_freeze(struct flexcan_priv *priv)
 --=20
 2.17.1
