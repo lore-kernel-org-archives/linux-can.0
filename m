@@ -1,90 +1,90 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH V2 2/4] can: flexcan: try to exit stop mode during probe
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: Re: [PATCH V2 2/4] can: flexcan: try to exit stop mode during probe
  stage
-Date: Thu, 5 Dec 2019 08:46:58 +0000
-Message-ID: <DB7PR04MB46186FB41B5873FED5ABEC06E65C0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+Date: Thu, 5 Dec 2019 10:21:34 +0100
+Message-ID: <a1ded645-9e12-d939-7920-8e79983b02a0@geanix.com>
 References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
  <20191127055334.1476-3-qiangqing.zhang@nxp.com>
  <ad7e7b15-26f3-daa1-02d2-782ff548756d@pengutronix.de>
  <DB7PR04MB46180C5F1EAC7C4A69A45E0CE65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
  <d68b2b79-34ec-eb4c-cf4b-047b5157d5e3@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <d68b2b79-34ec-eb4c-cf4b-047b5157d5e3@pengutronix.de>
-Content-Language: en-US
+Content-Language: en-US-large
 Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Joakim Zhang <qiangqing.zhang@nxp.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQpIaSBTZWFuLA0KDQpDb3VsZCB5b3UgcGxlYXNlIGFuc3dlciBNYXJjJ3MgY29uY2VybiBpbiBk
-ZXRhaWxzIHdoZW4geW91IGFyZSBmcmVlPyBUaGVuIHdlIGNhbiBkaXNjdXNzIGhvdyB0byBmaXgg
-aXQgbW9yZSByZWFzb25hYmxlLiBUaGFua3MuDQogDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhh
-bmcNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIEtsZWluZS1C
-dWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPg0KPiBTZW50OiAyMDE55bm0MTLmnIg05pelIDE2OjQ1
-DQo+IFRvOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsgc2VhbkBnZWFu
-aXguY29tOw0KPiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+IENjOiBkbC1saW51eC1pbXgg
-PGxpbnV4LWlteEBueHAuY29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBS
-ZTogW1BBVENIIFYyIDIvNF0gY2FuOiBmbGV4Y2FuOiB0cnkgdG8gZXhpdCBzdG9wIG1vZGUgZHVy
-aW5nIHByb2JlDQo+IHN0YWdlDQo+IA0KPiBPbiAxMi80LzE5IDM6MjIgQU0sIEpvYWtpbSBaaGFu
-ZyB3cm90ZToNCj4gPg0KPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9t
-OiBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPg0KPiA+PiBTZW50OiAyMDE5
-5bm0MTLmnIg05pelIDI6MTUNCj4gPj4gVG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5n
-QG54cC5jb20+OyBzZWFuQGdlYW5peC5jb207DQo+ID4+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5v
-cmcNCj4gPj4gQ2M6IGRsLWxpbnV4LWlteCA8bGludXgtaW14QG54cC5jb20+OyBuZXRkZXZAdmdl
-ci5rZXJuZWwub3JnDQo+ID4+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggVjIgMi80XSBjYW46IGZsZXhj
-YW46IHRyeSB0byBleGl0IHN0b3AgbW9kZQ0KPiA+PiBkdXJpbmcgcHJvYmUgc3RhZ2UNCj4gPj4N
-Cj4gPj4gT24gMTEvMjcvMTkgNjo1NiBBTSwgSm9ha2ltIFpoYW5nIHdyb3RlOg0KPiA+Pj4gQ0FO
-IGNvbnRyb2xsZXIgY291bGQgYmUgc3R1Y2tlZCBpbiBzdG9wIG1vZGUgb25jZSBpdCBlbnRlcnMg
-c3RvcA0KPiA+Pj4gbW9kZQ0KPiA+PiAgICAgICAgICAgICAgICAgICAgICAgICAgIF5eXl5eXl4g
-c3R1Y2sNCj4gPj4+IHdoZW4gc3VzcGVuZCwgYW5kIHRoZW4gaXQgZmFpbHMgdG8gZXhpdCBzdG9w
-IG1vZGUgd2hlbiByZXN1bWUuDQo+ID4+DQo+ID4+IEhvdyBjYW4gdGhpcyBoYXBwZW4/DQo+ID4N
-Cj4gPiBJIGFtIGFsc28gY29uZnVzZWQgaG93IGNhbiB0aGlzIGhhcHBlbiwgYXMgSSBhc2tlZCBT
-ZWFuLCBvbmx5IENBTg0KPiA+IGVudGVyIHN0b3AgbW9kZSB3aGVuIHN1c3BlbmQsIHRoZW4gc3lz
-dGVtIGhhbmcsDQo+IEhvdyBkbyB5b3UgcmVjb3ZlciB0aGUgc3lzdGVtIHdoZW4gc3VzcGVuZGVk
-Pw0KPiANCj4gPiBpdCBjb3VsZCBsZXQgQ0FODQo+ID4gc3R1Y2sgaW4gc3RvcCBtb2RlLiBIb3dl
-dmVyLCBTZWFuIHNhaWQgdGhpcyBpbmRlZWQgaGFwcGVuIGF0IGhpcyBzaWRlLA0KPiA+IEBzZWFu
-QGdlYW5peC5jb20sIGNvdWxkIHlvdSBleHBsYWluIGhvdyB0aGlzIGhhcHBlbiBpbiBkZXRhaWxz
-Pw0KPiBUaGF0IHdvdWxkIGJlIGdvb2QuDQo+IA0KPiA+Pj4gT25seSBjb2RlIHJlc2V0IGNhbiBn
-ZXQgQ0FOIG91dCBvZiBzdG9wIG1vZGUsDQo+ID4+DQo+ID4+IFdoYXQgaXMgImNvZGUgcmVzZXQi
-Pw0KPiA+DQo+ID4gQXMgSSBrbm93LCAiY29kZSByZXNldCIgaXMgdG8gcHJlc3MgdGhlIFBPV0VS
-IEtFWSBmcm9tIHRoZSBib2FyZC4gQXQNCj4gPiBteSBzaWRlLCByZWJvb3QgY29tbWFuZCBmcm9t
-IE9TIGFsc28gY2FuIGdldCBDQU4gb3V0IG9mIHN0b3AgbW9kZS4NCj4gRG8geW91IG1lYW4gImNv
-bGQgcmVzZXQiLCBhbHNvIGtub3duIGFzIFBvd2VyLU9uLVJlc2V0LCBQT1Igb3IgcG93ZXINCj4g
-Y3ljbGU/DQo+IA0KPiBXaGF0IGRvZXMgcHJlc3NpbmcgdGhlIFBPV0VSIEtFWSBkbz8gQSBwb3dl
-ciBjeWNsZSBvZiB0aGUgc3lzdGVtIG9yDQo+IHRvZ2dsaW5nIHRoZSByZXNldCBsaW5lIG9mIHRo
-ZSBpbXg/DQo+IA0KPiBXZSBuZWVkIHRvIGRlc2NyaWJlIGluIGRldGFpbCwgYXMgbm90IGV2ZXJ5
-b25lIGhhcyB0aGUgc2FtZSBib2FyZCBhcyB5b3UsIGFuZA0KPiB0aGVzZSBib2FyZHMgbWlnaHQg
-bm90IGV2ZW4gaGF2ZSBhIHBvd2VyIGtleSA6KQ0KPiANCj4gPiBCZWxvdyBpcyBleHBlcmltZW50
-IEkgZGlkOg0KPiA+IAlGaXJzdGx5LCBkbyBhIGhhY2tpbmcgdG8gbGV0IENBTiBzdHVjayBpbnRv
-IHN0b3AgbW9kZSwgdGhlbjoNCj4gDQo+IFlvdSBtZWFuIHlvdSBwdXQgdGhlIENBTiBpbnRvIHN0
-b3AgbW9kZSB3aXRob3V0IGtlZXBpbmcgdHJhY2sgaW4gdGhlIENBTg0KPiBkcml2ZXIgdGhhdCB0
-aGUgQ0FOLUlQIGlzIGluIHN0b3AgbW9kZSwgZS5nLiBieSBoYWNraW5nIHRoZSBkcml2ZXIuDQo+
-IA0KPiBUaGVuIHlvdSB0cnkgc2V2ZXJhbCBtZXRob2RzIHRvIHJlY292ZXI6DQo+IA0KPiA+IAko
-MSkgcHJlc3MgcG93ZXIgb24vb2ZmIGtleSwgZ2V0IENBTiBvdXQgb2Ygc3RvcCBtb2RlOw0KPiA+
-IAkoMikgcmVib290IGNvbW1hbmQgZnJvbSBjb25zb2xlLCBnZXQgQ0FOIG91dCBvZiBzdG9wIG1v
-ZGU7DQo+ID4gCSgzKSB1bmJpbmQvYmluZCBkcml2ZXIsIGNhbm5vdCBnZXQgQ0FOIG91dCBvZiBz
-dG9wIG1vZGU7DQo+ID4gCSg0KSByZW1vZC9pbnNtb2QgbW9kdWxlLCBjYW5ub3QgZ2V0IENBTiBv
-dXQgb2Ygc3RvcCBtb2RlOw0KPiANCj4gKDIpIHJlc2V0cyB0aGUgY29tcGxldGUgaW14LCBpbmNs
-dWRpbmcgdGhlIENBTi1JUCBjb3JlLCAoMSkgcHJvYmFibHksIHRvby4NCj4gDQo+ICgzKSBhbmQg
-KDQpIGZhaWwgdG8gcmVjb3ZlciB0aGUgQ0FOIGNvcmUsIGFzIHRoZSBJUCBjb3JlIGlzIHN0aWxs
-IHBvd2VyZWQgb2ZmIGJ5DQo+IHNvbWUgdXBzdHJlYW0gY29tcG9uZW50LiBTbyB0aGUgcXVlc3Rp
-b24gd2h5IHRoaXMgaGFwcGVucyBpbiB0aGUgZmlyc3QgcGxhY2UNCj4gaXMgSU1ITyBhcyBpbXBv
-cnRhbnQgYXMgdHJ5aW5nIHRvIHdha2UgdXAgdGhlIGNvcmUuIEkgdGhpbmsgaWYgd2UgZGlzY292
-ZXIgdGhpcw0KPiBzaXR1YXRpb24gKENBTiBDb3JlIGlzIGluIHN0b3AtbW9kZSBpbiBwcm9iZSkg
-d2Ugc2hvdWxkIHByaW50IGEgd2FybmluZw0KPiBtZXNzYWdlLCBidXQgdHJ5IHRvIHJlY292ZXIu
-DQo+IA0KPiA+Pj4gc28gYWRkIHN0b3AgbW9kZSByZW1vdmUgcmVxdWVzdCBkdXJpbmcgcHJvYmUg
-c3RhZ2UgZm9yIG90aGVyDQo+ID4+PiBtZXRob2RzKHNvZnQgcmVzZXQgZnJvbSBjaGlwIGxldmVs
-LCB1bmJpbmQvYmluZCBkcml2ZXIsIGV0YykgdG8gbGV0DQo+ID4+ICAgICAgICAgXl5eIHBsZWFz
-ZSBhZGQgYSBzcGFjZQ0KPiA+Pj4gQ0FOIGFjdGl2ZSBhZ2Fpbi4NCj4gPj4NCj4gPj4gQ2FuIHlv
-dSByZXBocmFzZSB0aGUgc2VudGVuY2UgYWZ0ZXIgInNvIGFkZCBzdG9wIG1vZGUgcmVtb3ZlIHJl
-cXVlc3QNCj4gPj4gZHVyaW5nIHByb2JlIHN0YWdlIi4gSSdtIG5vdCBjb21wbGV0ZWx5IHN1cmUg
-d2hhdCB5b3Ugd2FudCB0byB0ZWxsLg0KPiA+DQo+ID4gU3VyZS4NCj4gDQo+IHRueCwNCj4gTWFy
-Yw0KPiANCj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgfCBNYXJjIEts
-ZWluZS1CdWRkZSAgICAgICAgICAgfA0KPiBFbWJlZGRlZCBMaW51eCAgICAgICAgICAgICAgICAg
-ICB8IGh0dHBzOi8vd3d3LnBlbmd1dHJvbml4LmRlICB8DQo+IFZlcnRyZXR1bmcgV2VzdC9Eb3J0
-bXVuZCAgICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwNCj4gQW10c2dlcmlj
-aHQgSGlsZGVzaGVpbSwgSFJBIDI2ODYgfCBGYXg6ICAgKzQ5LTUxMjEtMjA2OTE3LTU1NTUgfA0K
-DQo=
+
+
+On 04/12/2019 09.45, Marc Kleine-Budde wrote:
+> On 12/4/19 3:22 AM, Joakim Zhang wrote:
+>>
+>>> -----Original Message-----
+>>> From: Marc Kleine-Budde <mkl@pengutronix.de>
+>>> Sent: 2019年12月4日 2:15
+>>> To: Joakim Zhang <qiangqing.zhang@nxp.com>; sean@geanix.com;
+>>> linux-can@vger.kernel.org
+>>> Cc: dl-linux-imx <linux-imx@nxp.com>; netdev@vger.kernel.org
+>>> Subject: Re: [PATCH V2 2/4] can: flexcan: try to exit stop mode during probe
+>>> stage
+>>>
+>>> On 11/27/19 6:56 AM, Joakim Zhang wrote:
+>>>> CAN controller could be stucked in stop mode once it enters stop mode
+>>>                            ^^^^^^^ stuck
+>>>> when suspend, and then it fails to exit stop mode when resume.
+>>>
+>>> How can this happen?
+>>
+>> I am also confused how can this happen, as I asked Sean, only CAN
+>> enter stop mode when suspend, then system hang,
+> How do you recover the system when suspended?
+> 
+>> it could let CAN
+>> stuck in stop mode. However, Sean said this indeed happen at his
+>> side, @sean@geanix.com, could you explain how this happen in
+>> details?
+> That would be good.
+> 
+>>>> Only code reset can get CAN out of stop mode,
+>>>
+>>> What is "code reset"?
+>>
+>> As I know, "code reset" is to press the POWER KEY from the board. At
+>> my side, reboot command from OS also can get CAN out of stop mode.
+> Do you mean "cold reset", also known as Power-On-Reset, POR or power cycle?
+> 
+> What does pressing the POWER KEY do? A power cycle of the system or
+> toggling the reset line of the imx?
+> 
+> We need to describe in detail, as not everyone has the same board as
+> you, and these boards might not even have a power key :)
+> 
+>> Below is experiment I did:
+>> 	Firstly, do a hacking to let CAN stuck into stop mode, then:
+> 
+> You mean you put the CAN into stop mode without keeping track in the CAN
+> driver that the CAN-IP is in stop mode, e.g. by hacking the driver.
+> 
+> Then you try several methods to recover:
+> 
+>> 	(1) press power on/off key, get CAN out of stop mode;
+>> 	(2) reboot command from console, get CAN out of stop mode;
+>> 	(3) unbind/bind driver, cannot get CAN out of stop mode;
+>> 	(4) remod/insmod module, cannot get CAN out of stop mode;
+> 
+> (2) resets the complete imx, including the CAN-IP core, (1) probably, too.
+No, if the CAN-IP core is in stop-mode it will stay that way even after 
+a reboot from the console.
+At least it's what we are seeing in the field.
+
+This could be because we are missing a wire from the watchdog out to the 
+RESETBMCU/PWRON on the PMIC.
+But i guess a check for if the CAN-Ip is in stop-mode doesn't hurt 
+anything :)
+
+/Sean
