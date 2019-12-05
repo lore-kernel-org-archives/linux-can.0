@@ -1,52 +1,39 @@
 From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH 1/2] dt-bindings: tcan4x5x: Make wake-gpio an optional
- gpio
-Date: Thu, 5 Dec 2019 08:36:26 +0100
-Message-ID: <d34673db-cc43-6e1d-6f4a-07b25c2c8f7b@geanix.com>
+Subject: Re: [PATCH 2/2] net: m_can: Make wake-up gpio an optional
+Date: Thu, 5 Dec 2019 08:39:08 +0100
+Message-ID: <b9eaa5c4-13bc-295f-dcbf-d2a846243682@geanix.com>
 References: <20191204175112.7308-1-dmurphy@ti.com>
+ <20191204175112.7308-2-dmurphy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20191204175112.7308-1-dmurphy@ti.com>
+In-Reply-To: <20191204175112.7308-2-dmurphy@ti.com>
 Content-Language: en-US-large
 Sender: linux-kernel-owner@vger.kernel.org
 To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 
 
 On 04/12/2019 18.51, Dan Murphy wrote:
-> The wake-up of the device can be configured as an optional
-> feature of the device.  Move the wake-up gpio from a requried
-> property to an optional property.
+> The device has the ability to disable the wake-up pin option.
+> The wake-up pin can be either force to GND or Vsup and does not have to
+> be tied to a GPIO.  In order for the device to not use the wake-up feature
+> write the register to disable the WAKE_CONFIG option.
 > 
 > Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> CC: Rob Herring <robh@kernel.org>
+> CC: Sean Nyekjaer <sean@geanix.com>
 Reviewed-by: Sean Nyekjaer <sean@geanix.com>
 > ---
->   Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-> index 27e1b4cebfbd..7cf5ef7acba4 100644
-> --- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-> +++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-> @@ -10,7 +10,6 @@ Required properties:
->   	- #size-cells: 0
->   	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
->   			     operate at should be less than or equal to 18 MHz.
-> -	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
->   	- interrupt-parent: the phandle to the interrupt controller which provides
->                       the interrupt.
->   	- interrupts: interrupt specification for data-ready.
-> @@ -23,6 +22,7 @@ Optional properties:
->   		       reset.
->   	- device-state-gpios: Input GPIO that indicates if the device is in
->   			      a sleep state or if the device is active.
-> +	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
->   
->   Example:
->   tcan4x5x: tcan4x5x@0 {
-> 
+
+
+Hi Dan,
+
+I would add tcan4x5x to the subject of this patch ->
+"net: m_can: tcan4x5x Make wake-up gpio an optional"
+
+Will be testing this during this or the next week...
+
+/Sean
