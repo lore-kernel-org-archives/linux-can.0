@@ -1,70 +1,46 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH V2 2/4] can: flexcan: try to exit stop mode during probe
- stage
-Date: Thu, 5 Dec 2019 12:32:27 +0100
-Message-ID: <3a4102bc-8a86-3425-e227-590c005df044@geanix.com>
-References: <20191127055334.1476-1-qiangqing.zhang@nxp.com>
- <20191127055334.1476-3-qiangqing.zhang@nxp.com>
- <ad7e7b15-26f3-daa1-02d2-782ff548756d@pengutronix.de>
- <DB7PR04MB46180C5F1EAC7C4A69A45E0CE65D0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <d68b2b79-34ec-eb4c-cf4b-047b5157d5e3@pengutronix.de>
- <a1ded645-9e12-d939-7920-8e79983b02a0@geanix.com>
- <DB7PR04MB46184164EAC5719BDCF3822CE65C0@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <e7bef254-9762-0b77-1ace-2040113982ec@geanix.com>
- <DB7PR04MB461820120FF61E08B8B5B0B5E65C0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH 2/2] net: m_can: Make wake-up gpio an optional
+Date: Thu, 5 Dec 2019 07:26:05 -0600
+Message-ID: <827b022e-9188-7bcf-25e3-3777df3b08a5@ti.com>
+References: <20191204175112.7308-1-dmurphy@ti.com>
+ <20191204175112.7308-2-dmurphy@ti.com>
+ <b9eaa5c4-13bc-295f-dcbf-d2a846243682@geanix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <DB7PR04MB461820120FF61E08B8B5B0B5E65C0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-Content-Language: en-US-large
-Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <b9eaa5c4-13bc-295f-dcbf-d2a846243682@geanix.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sean Nyekjaer <sean@geanix.com>, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
+Marc
 
-
-On 05/12/2019 12.19, Joakim Zhang wrote:
-> 
->> -----Original Message-----
->> From: Sean Nyekjaer <sean@geanix.com>
->> Sent: 2019年12月5日 19:12
->> To: Joakim Zhang <qiangqing.zhang@nxp.com>; Marc Kleine-Budde
->> <mkl@pengutronix.de>; linux-can@vger.kernel.org
->> Cc: dl-linux-imx <linux-imx@nxp.com>; netdev@vger.kernel.org
->> Subject: Re: [PATCH V2 2/4] can: flexcan: try to exit stop mode during probe
->> stage
+On 12/5/19 1:39 AM, Sean Nyekjaer wrote:
+>
+>
+> On 04/12/2019 18.51, Dan Murphy wrote:
+>> The device has the ability to disable the wake-up pin option.
+>> The wake-up pin can be either force to GND or Vsup and does not have to
+>> be tied to a GPIO.  In order for the device to not use the wake-up 
+>> feature
+>> write the register to disable the WAKE_CONFIG option.
 >>
->>
->>
->> On 05/12/2019 12.04, Joakim Zhang wrote:
->>> Hi Sean,
->>>
->>> At my side, both Power-On-Reset and reboot from console can get CAN-IP out
->> of stop mode, HW is i.MX7D-SDB/i.MX8QXP-mek.
->>> I think HW design could make difference.
->>>
->>> We more care about how does CAN-IP stuck in stop mode, could you please
->> explain in details? We want figure out the root cause.
->>
->> When running only with the first stop mode commit:
->> de3578c198c6 ("can: flexcan: add self wakeup support") And there is incoming
->> traffic on both CAN lines.
->> I happens when going into suspend.
->> Then the CAN-IP is stuck in stop mode..
-> 
-> That means with below patch then CAN-IP could not been stuck in stop mode, right?
-> 	can: flexcan: fix deadlock when using self wakeup
-Yes :)
-> 
-> If yes, I think we don't need check stop mode in probe stage, since issue has disappeared automatically.
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> CC: Sean Nyekjaer <sean@geanix.com>
+> Reviewed-by: Sean Nyekjaer <sean@geanix.com>
+>> ---
+>
+>
+> Hi Dan,
+>
+> I would add tcan4x5x to the subject of this patch ->
+> "net: m_can: tcan4x5x Make wake-up gpio an optional"
+>
+Do you want me to submit v2 with the $subject change?
 
-If one have devices deployed where:
-"can: flexcan: fix deadlock when using self wakeup" isn't applied.
-They could have devices stuck in stop-mode.
+Or would you fix it up when committing it?
 
-That's what i meant by this patch doesn't do any harm to have the check 
-included.
-
-/Sean
+Dan
