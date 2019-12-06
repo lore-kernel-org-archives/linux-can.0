@@ -1,95 +1,43 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/2] can: m_can_platform: Bug fix of kernel panic for
-Date: Fri, 6 Dec 2019 08:39:02 +0100
-Message-ID: <a967e70e-456d-7855-6bb1-2e2285ce6f9b@pengutronix.de>
-References: <CGME20191119102134epcas5p4d3c1b18203e2001c189b9fa7a0e3aab5@epcas5p4.samsung.com>
- <1574158838-4616-1-git-send-email-pankj.sharma@samsung.com>
- <f0550b0b-6681-75a3-c58a-28f5b7ca0821@ti.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V3 0/6] can: flexcan: fixes for stop mode
+Date: Fri, 6 Dec 2019 07:52:23 +0000
+Message-ID: <DB7PR04MB4618D19B51F80DDE74BEA3CAE65F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
+References: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="J7PAfLCnD6GAAUfn5Afj7StQLBgIq7dkS"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f0550b0b-6681-75a3-c58a-28f5b7ca0821@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, Pankaj Sharma <pankj.sharma@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: wg@grandegger.com, davem@davemloft.net, rcsekar@samsung.com, pankaj.dubey@samsung.com
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---J7PAfLCnD6GAAUfn5Afj7StQLBgIq7dkS
-Content-Type: multipart/mixed; boundary="R6Lpc9rHMptUxg3wRCeFA8vNFLQfkt4PV";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Dan Murphy <dmurphy@ti.com>, Pankaj Sharma <pankj.sharma@samsung.com>,
- linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: wg@grandegger.com, davem@davemloft.net, rcsekar@samsung.com,
- pankaj.dubey@samsung.com
-Message-ID: <a967e70e-456d-7855-6bb1-2e2285ce6f9b@pengutronix.de>
-Subject: Re: [PATCH 0/2] can: m_can_platform: Bug fix of kernel panic for
-References: <CGME20191119102134epcas5p4d3c1b18203e2001c189b9fa7a0e3aab5@epcas5p4.samsung.com>
- <1574158838-4616-1-git-send-email-pankj.sharma@samsung.com>
- <f0550b0b-6681-75a3-c58a-28f5b7ca0821@ti.com>
-In-Reply-To: <f0550b0b-6681-75a3-c58a-28f5b7ca0821@ti.com>
-
---R6Lpc9rHMptUxg3wRCeFA8vNFLQfkt4PV
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 12/5/19 9:57 PM, Dan Murphy wrote:
-> Pankaj
->=20
-> On 11/19/19 4:20 AM, Pankaj Sharma wrote:
->> The current code is failing while clock prepare enable because of not
->> getting proper clock from platform device.
->> A device driver for CAN controller hardware registers itself with the
->> Linux network layer as a network device. So, the driver data for m_can=
-
->> should ideally be of type net_device.
->>
->> Further even when passing the proper net device in probe function the
->> code was hanging because of the function m_can_runtime_resume() gettin=
-g
->> recursively called from m_can_class_resume().
->>
->> Pankaj Sharma (2):
->>    can: m_can_platform: set net_device structure as driver data
->>    can: m_can_platform: remove unnecessary m_can_class_resume() call
->=20
-> Did you CC: linux-stable for these?=C2=A0 We are probably going to have=
-=20
-> customers picking up 5.4 LTS and would need these bug fixes.
-
-Both patches made it into the v5.4 release. So no need for stable.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---R6Lpc9rHMptUxg3wRCeFA8vNFLQfkt4PV--
-
---J7PAfLCnD6GAAUfn5Afj7StQLBgIq7dkS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3qBZYACgkQWsYho5Hk
-nSAGuAgAp5+CFD1N0dWgqU7yjdFbAf6OalnacbP2rmsjsvwt/qyQZQbagbBkYOE6
-0feJAdi+qoOaWSwzWRR7C0C8iMui7BgoNxSVruj9sbuOU1EovwCleeGXOBGV/CJH
-8qO729v18hVFQeV/vT+f5ZrKVmxB/Uf2Ub6jb4E+vyaaLd/X3iMsYpmsaJTcISTA
-nZYSOBX2atcQsJizcr4eSnLNhvMof92L+swrtOcA5epMG7fXJ+cZxgLwT0xOlz6a
-fMzrfDkKi83duGa0R3N5WRaWrCCPyG5uy9C4JJ8uuyZKcI9hGe85V3WyN+c7yOL2
-w2rPULjEMM5EIRE+mK2ZhJAKoxHcgQ==
-=D87v
------END PGP SIGNATURE-----
-
---J7PAfLCnD6GAAUfn5Afj7StQLBgIq7dkS--
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBaaGFuZyA8cWlh
+bmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IFNlbnQ6IDIwMTnE6jEy1MI0yNUgMTk6MzYNCj4gVG86
+IG1rbEBwZW5ndXRyb25peC5kZTsgc2VhbkBnZWFuaXguY29tOyBsaW51eC1jYW5Admdlci5rZXJu
+ZWwub3JnDQo+IENjOiBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsgbmV0ZGV2QHZn
+ZXIua2VybmVsLm9yZzsgSm9ha2ltIFpoYW5nDQo+IDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4N
+Cj4gU3ViamVjdDogW1BBVENIIFYzIDAvNl0gY2FuOiBmbGV4Y2FuOiBmaXhlcyBmb3Igc3RvcCBt
+b2RlDQo+IA0KPiBIaSBNYXJjLA0KPiANCj4gICAgSSByZW1vdmVkIHRoZSBwYXRjaCAoY2FuOiBm
+bGV4Y2FuOiB0cnkgdG8gZXhpdCBzdG9wIG1vZGUgZHVyaW5nIHByb2JlIHN0YWdlKQ0KPiBvdXQg
+b2YgdGhpcyBwYXRjaCBzZXQgZm9yIG5vdy4gVGhpcyBwYXRjaCBzaG91bGQgZnVydGhlciBkaXNj
+dXNzIHdpdGggU2VhbiBhbmQgSQ0KPiB3aWxsIHByZXBhcmUgaXQgYWNjb3JkaW5nIHRvIGZpbmFs
+IGNvbmNsdXNpb24uIFRoYW5rcy4NCg0KSGkgTWFyYywNCg0KQWZ0ZXIgZGlzY3Vzc2VkIHdpdGgg
+U2VhbiwgQ0FOLUlQIHN0dWNrIGluIHN0b3AgbW9kZSBkaXNhcHBlYXJlZCB3aXRoIHBhdGNoKGNh
+bjogZmxleGNhbjogZml4IGRlYWRsb2NrIHdoZW4gdXNpbmcgc2VsZiB3YWtldXApLCBzbyBJIHRo
+aW5rIHdlIGRvbid0IG5lZWQNCmFub3RoZXIgcGF0Y2ggdG8gZml4IHRoZSBzYW1lIGlzc3VlLiBC
+dXQgdGhpcyBmaXggcGF0Y2ggaGFkIGJldHRlciBnbyB0byBzdGFibGUgdHJlZS4NCg0KQW55IGNv
+bW1lbnRzIGFib3V0IHRoaXMgcGF0Y2ggc2V0Pw0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhh
+bmcNCj4gUmVnYXJkcywNCj4gSm9ha2ltIFpoYW5nDQo+IA0KPiBKb2FraW0gWmhhbmcgKDUpOg0K
+PiAgIGNhbjogZmxleGNhbjogQWNrIHdha2V1cCBpbnRlcnJ1cHQgc2VwYXJhdGVseQ0KPiAgIGNh
+bjogZmxleGNhbjogYWRkIGxvdyBwb3dlciBlbnRlci9leGl0IGFja25vd2xlZGdtZW50IGhlbHBl
+cg0KPiAgIGNhbjogZmxleGNhbjogY2hhbmdlIHRoZSB3YXkgb2Ygc3RvcCBtb2RlIGFja25vd2xl
+ZGdtZW50DQo+ICAgY2FuOiBmbGV4Y2FuOiBwcm9wYWdhdGUgZXJyb3IgdmFsdWUgb2YgZmxleGNh
+bl9jaGlwX3N0b3AoKQ0KPiAgIGNhbjogZmxleGNhbjogYWRkIExQU1IgbW9kZSBzdXBwb3J0DQo+
+IA0KPiBTZWFuIE55ZWtqYWVyICgxKToNCj4gICBjYW46IGZsZXhjYW46IGZpeCBkZWFkbG9jayB3
+aGVuIHVzaW5nIHNlbGYgd2FrZXVwDQo+IA0KPiAgZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyB8
+IDEzMSArKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLQ0KPiAgMSBmaWxlIGNo
+YW5nZWQsIDc5IGluc2VydGlvbnMoKyksIDUyIGRlbGV0aW9ucygtKQ0KPiANCj4gLS0NCj4gMi4x
+Ny4xDQoNCg==
