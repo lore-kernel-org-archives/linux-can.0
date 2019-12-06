@@ -1,43 +1,52 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH V3 0/6] can: flexcan: fixes for stop mode
-Date: Fri, 6 Dec 2019 07:52:23 +0000
-Message-ID: <DB7PR04MB4618D19B51F80DDE74BEA3CAE65F0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: Re: [PATCH 1/2] dt-bindings: tcan4x5x: Make wake-gpio an optional
+ gpio
+Date: Fri, 6 Dec 2019 14:49:41 +0100
+Message-ID: <f9b0e2ad-1d62-2c5a-fdce-c03205c2a9f7@geanix.com>
+References: <20191204175112.7308-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20191204175112.7308-1-dmurphy@ti.com>
+Content-Language: en-US-large
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBaaGFuZyA8cWlh
-bmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IFNlbnQ6IDIwMTnE6jEy1MI0yNUgMTk6MzYNCj4gVG86
-IG1rbEBwZW5ndXRyb25peC5kZTsgc2VhbkBnZWFuaXguY29tOyBsaW51eC1jYW5Admdlci5rZXJu
-ZWwub3JnDQo+IENjOiBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsgbmV0ZGV2QHZn
-ZXIua2VybmVsLm9yZzsgSm9ha2ltIFpoYW5nDQo+IDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4N
-Cj4gU3ViamVjdDogW1BBVENIIFYzIDAvNl0gY2FuOiBmbGV4Y2FuOiBmaXhlcyBmb3Igc3RvcCBt
-b2RlDQo+IA0KPiBIaSBNYXJjLA0KPiANCj4gICAgSSByZW1vdmVkIHRoZSBwYXRjaCAoY2FuOiBm
-bGV4Y2FuOiB0cnkgdG8gZXhpdCBzdG9wIG1vZGUgZHVyaW5nIHByb2JlIHN0YWdlKQ0KPiBvdXQg
-b2YgdGhpcyBwYXRjaCBzZXQgZm9yIG5vdy4gVGhpcyBwYXRjaCBzaG91bGQgZnVydGhlciBkaXNj
-dXNzIHdpdGggU2VhbiBhbmQgSQ0KPiB3aWxsIHByZXBhcmUgaXQgYWNjb3JkaW5nIHRvIGZpbmFs
-IGNvbmNsdXNpb24uIFRoYW5rcy4NCg0KSGkgTWFyYywNCg0KQWZ0ZXIgZGlzY3Vzc2VkIHdpdGgg
-U2VhbiwgQ0FOLUlQIHN0dWNrIGluIHN0b3AgbW9kZSBkaXNhcHBlYXJlZCB3aXRoIHBhdGNoKGNh
-bjogZmxleGNhbjogZml4IGRlYWRsb2NrIHdoZW4gdXNpbmcgc2VsZiB3YWtldXApLCBzbyBJIHRo
-aW5rIHdlIGRvbid0IG5lZWQNCmFub3RoZXIgcGF0Y2ggdG8gZml4IHRoZSBzYW1lIGlzc3VlLiBC
-dXQgdGhpcyBmaXggcGF0Y2ggaGFkIGJldHRlciBnbyB0byBzdGFibGUgdHJlZS4NCg0KQW55IGNv
-bW1lbnRzIGFib3V0IHRoaXMgcGF0Y2ggc2V0Pw0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhh
-bmcNCj4gUmVnYXJkcywNCj4gSm9ha2ltIFpoYW5nDQo+IA0KPiBKb2FraW0gWmhhbmcgKDUpOg0K
-PiAgIGNhbjogZmxleGNhbjogQWNrIHdha2V1cCBpbnRlcnJ1cHQgc2VwYXJhdGVseQ0KPiAgIGNh
-bjogZmxleGNhbjogYWRkIGxvdyBwb3dlciBlbnRlci9leGl0IGFja25vd2xlZGdtZW50IGhlbHBl
-cg0KPiAgIGNhbjogZmxleGNhbjogY2hhbmdlIHRoZSB3YXkgb2Ygc3RvcCBtb2RlIGFja25vd2xl
-ZGdtZW50DQo+ICAgY2FuOiBmbGV4Y2FuOiBwcm9wYWdhdGUgZXJyb3IgdmFsdWUgb2YgZmxleGNh
-bl9jaGlwX3N0b3AoKQ0KPiAgIGNhbjogZmxleGNhbjogYWRkIExQU1IgbW9kZSBzdXBwb3J0DQo+
-IA0KPiBTZWFuIE55ZWtqYWVyICgxKToNCj4gICBjYW46IGZsZXhjYW46IGZpeCBkZWFkbG9jayB3
-aGVuIHVzaW5nIHNlbGYgd2FrZXVwDQo+IA0KPiAgZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyB8
-IDEzMSArKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLQ0KPiAgMSBmaWxlIGNo
-YW5nZWQsIDc5IGluc2VydGlvbnMoKyksIDUyIGRlbGV0aW9ucygtKQ0KPiANCj4gLS0NCj4gMi4x
-Ny4xDQoNCg==
+
+
+On 04/12/2019 18.51, Dan Murphy wrote:
+> The wake-up of the device can be configured as an optional
+> feature of the device.  Move the wake-up gpio from a requried
+> property to an optional property.
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> CC: Rob Herring <robh@kernel.org>
+Tested-by: Sean Nyekjaer <sean@geanix.com>
+> ---
+>   Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+> index 27e1b4cebfbd..7cf5ef7acba4 100644
+> --- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+> +++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+> @@ -10,7 +10,6 @@ Required properties:
+>   	- #size-cells: 0
+>   	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
+>   			     operate at should be less than or equal to 18 MHz.
+> -	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
+>   	- interrupt-parent: the phandle to the interrupt controller which provides
+>                       the interrupt.
+>   	- interrupts: interrupt specification for data-ready.
+> @@ -23,6 +22,7 @@ Optional properties:
+>   		       reset.
+>   	- device-state-gpios: Input GPIO that indicates if the device is in
+>   			      a sleep state or if the device is active.
+> +	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
+>   
+>   Example:
+>   tcan4x5x: tcan4x5x@0 {
+> 
