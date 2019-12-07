@@ -1,48 +1,63 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v1] can: j1939: j1939_sk_bind(): take priv after lock is
- held
-Date: Sat, 7 Dec 2019 14:05:32 +0100
-Message-ID: <45a5246e-8bf2-3312-5931-18e525d78f4b@pengutronix.de>
-References: <20191206141835.20557-1-o.rempel@pengutronix.de>
+Subject: Re: [PATCH V3 0/6] can: flexcan: fixes for stop mode
+Date: Sat, 7 Dec 2019 15:10:54 +0100
+Message-ID: <67da1a42-f3d3-6ac1-e5f9-211d2da00ba3@pengutronix.de>
+References: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="zK88azG4d9z8EORMOzhEmBFJhkgfPcvUO"
+ boundary="ycQUMqggH0Flcqx6hA22owqu8FToNnCwG"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191206141835.20557-1-o.rempel@pengutronix.de>
+In-Reply-To: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
 Sender: netdev-owner@vger.kernel.org
-To: Oleksij Rempel <o.rempel@pengutronix.de>, dev.kurt@vandijck-laurijssen.be, wg@grandegger.com
-Cc: syzbot+99e9e1b200a1e363237d@syzkaller.appspotmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---zK88azG4d9z8EORMOzhEmBFJhkgfPcvUO
-Content-Type: multipart/mixed; boundary="uuoC5PUj9c5LTGrBHp3YYnFeNlNDpw7XZ";
+--ycQUMqggH0Flcqx6hA22owqu8FToNnCwG
+Content-Type: multipart/mixed; boundary="G5HJZyHAi8udaunguHWzlGTRXiIoaL1et";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oleksij Rempel <o.rempel@pengutronix.de>,
- dev.kurt@vandijck-laurijssen.be, wg@grandegger.com
-Cc: syzbot+99e9e1b200a1e363237d@syzkaller.appspotmail.com,
- kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Message-ID: <45a5246e-8bf2-3312-5931-18e525d78f4b@pengutronix.de>
-Subject: Re: [PATCH v1] can: j1939: j1939_sk_bind(): take priv after lock is
- held
-References: <20191206141835.20557-1-o.rempel@pengutronix.de>
-In-Reply-To: <20191206141835.20557-1-o.rempel@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com"
+ <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Message-ID: <67da1a42-f3d3-6ac1-e5f9-211d2da00ba3@pengutronix.de>
+Subject: Re: [PATCH V3 0/6] can: flexcan: fixes for stop mode
+References: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
 
---uuoC5PUj9c5LTGrBHp3YYnFeNlNDpw7XZ
+--G5HJZyHAi8udaunguHWzlGTRXiIoaL1et
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 12/6/19 3:18 PM, Oleksij Rempel wrote:
-> syzbot reproduced following crash:
+On 12/4/19 12:36 PM, Joakim Zhang wrote:
+> Hi Marc,
+>=20
+>    I removed the patch (can: flexcan: try to exit stop mode during prob=
+e stage)
+> out of this patch set for now. This patch should further discuss with S=
+ean and
+> I will prepare it according to final conclusion. Thanks.
+>=20
+> Regards,
+> Joakim Zhang
+>=20
+> Joakim Zhang (5):
+>   can: flexcan: Ack wakeup interrupt separately
+>   can: flexcan: add low power enter/exit acknowledgment helper
+>   can: flexcan: change the way of stop mode acknowledgment
 
-applied to linux-can.
+Above 3 applied to linux-can.
 
-Tnx,
+>   can: flexcan: propagate error value of flexcan_chip_stop()
+>   can: flexcan: add LPSR mode support
+
+Above 2 applied to linux-can-next
+
 Marc
-
 --=20
 Pengutronix e.K.                 | Marc Kleine-Budde           |
 Embedded Linux                   | https://www.pengutronix.de  |
@@ -50,23 +65,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---uuoC5PUj9c5LTGrBHp3YYnFeNlNDpw7XZ--
+--G5HJZyHAi8udaunguHWzlGTRXiIoaL1et--
 
---zK88azG4d9z8EORMOzhEmBFJhkgfPcvUO
+--ycQUMqggH0Flcqx6hA22owqu8FToNnCwG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3ro50ACgkQWsYho5Hk
-nSC6dQf/Wsll9DQlJcLCgcrNOJQBdo5t9PP+M0YBPqFWw7Lf4a9VlyGZNRUw8Y9M
-4LRvCnEthSUNNHY6Yu4goCKs9HoumXFQwQZeEih/rEM84LsT8KFvgy8aTCqeiQcl
-yv8cCyCDT1DyOYsY50sjypduPWct1JjYT/WD7DGm2nR2tUFVws2qn9kcnK8EV5jF
-BixcCDdYs+pXb0mWd+aLopyRYRysl5hlD79+FGtuXaZRuxNdUBxZwEEk5AC7yZg4
-exYwzVCi1R4PTu7XtzjxF2D6td1lgY/ms2ws7/QRCyRKZK9V4M/g18+CisbVQYuY
-Ax2rsRMLDHvlWwh1kdA9aaMZeCbuvQ==
-=FI+m
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3rsu4ACgkQWsYho5Hk
+nSCAiAgAqw7anwYTOjePxi2RpKgP+6rrr23CWyoohozVvX0MoXS2mQj25thcAB48
+I95OiAlWeI6hsBEtjmjjS0EwR+bM/yoZ8ThewvfcYtOhqCLpxepi9dFT47WVvDXR
+KFZFAr97s+n1gnOmkVDxUmEnE8jGTTQlxrOtptz+WsipWcFbt6pL2kQGsmdiMjyr
+WKzP5eCpno3QVJzAsaLxevmHvNMOjTJ59RY1pMwRcyGcFsHn0R8C9RBA9qAe6k3M
+sK13Vhz5p6MmiOpw7xaFYpID0jHg5O3MnLOIwKFkuqQrmHTDL+sfCH+I0bL+0fMz
+eKwPyX8jFunfW+69iZpyFca6idhsiw==
+=vNel
 -----END PGP SIGNATURE-----
 
---zK88azG4d9z8EORMOzhEmBFJhkgfPcvUO--
+--ycQUMqggH0Flcqx6hA22owqu8FToNnCwG--
