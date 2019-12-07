@@ -1,90 +1,74 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] can: ensure an initialized headroom in outgoing CAN sk_buffs
-Date: Sat,  7 Dec 2019 19:34:18 +0100
-Message-ID: <20191207183418.28868-1-socketcan@hartkopp.net>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 1/2] MAINTAINERS: Add myself as a maintainer for MMIO
+ m_can
+Date: Sat, 7 Dec 2019 21:20:23 +0100
+Message-ID: <cc269adc-2958-40de-79d7-08e8502d20da@pengutronix.de>
+References: <20191205175716.9905-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: linux-can@vger.kernel.org, dvyukov@google.com, mkl@pengutronix.de
-Cc: syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com, glider@google.com, syzkaller-bugs@googlegroups.com, netdev@vger.kernel.org, o.rempel@pengutronix.de, eric.dumazet@gmail.com, Oliver Hartkopp <socketcan@hartkopp.net>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="mHanN6RRAWF1zeK9k7ypMpJm07ZfONxwd"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20191205175716.9905-1-dmurphy@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
+Cc: davem@davemloft.net, gregkh@linuxfoundation.org, robh@kernel.org
 List-Id: linux-can.vger.kernel.org
 
-KMSAN sysbot detected a read access to an untinitialized value in the headroom
-of an outgoing CAN related sk_buff. When using CAN sockets this area is filled
-appropriately - but when using a packet socket this initialization is missing.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--mHanN6RRAWF1zeK9k7ypMpJm07ZfONxwd
+Content-Type: multipart/mixed; boundary="CJBfEN1ahpCWQlpoXSlengL6NIpVUBXz9";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Dan Murphy <dmurphy@ti.com>, linux-kernel@vger.kernel.org,
+ linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
+Cc: davem@davemloft.net, gregkh@linuxfoundation.org, robh@kernel.org
+Message-ID: <cc269adc-2958-40de-79d7-08e8502d20da@pengutronix.de>
+Subject: Re: [PATCH 1/2] MAINTAINERS: Add myself as a maintainer for MMIO
+ m_can
+References: <20191205175716.9905-1-dmurphy@ti.com>
+In-Reply-To: <20191205175716.9905-1-dmurphy@ti.com>
 
-The problematic read access occurs in the CAN receive path which can only be
-triggered when the sk_buff is sent through a (virtual) CAN interface. So we
-check in the sending path whether we need to perform the missing
-initializations.
+--CJBfEN1ahpCWQlpoXSlengL6NIpVUBXz9
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: d3b58c47d330d ("can: replace timestamp as unique skb attribute")
-Reported-by: syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- include/linux/can/dev.h | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+On 12/5/19 6:57 PM, Dan Murphy wrote:
+> Since I refactored the code to create a m_can framework and we
+> have a MMIO MCAN IP as well add myself to help maintain the code.
+>=20
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
 
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 9b3c720a31b1..8f86e7a1f8e9 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -18,6 +18,7 @@
- #include <linux/can/error.h>
- #include <linux/can/led.h>
- #include <linux/can/netlink.h>
-+#include <linux/can/skb.h>
- #include <linux/netdevice.h>
- 
- /*
-@@ -91,6 +92,37 @@ struct can_priv {
- #define get_can_dlc(i)		(min_t(__u8, (i), CAN_MAX_DLC))
- #define get_canfd_dlc(i)	(min_t(__u8, (i), CANFD_MAX_DLC))
- 
-+/* Check for outgoing skbs that have not been created by the CAN subsystem */
-+static inline bool can_check_skb_headroom(struct net_device *dev,
-+					  struct sk_buff *skb)
-+{
-+	/* af_packet creates a headroom of HH_DATA_MOD bytes which is fine */
-+	if (WARN_ON_ONCE(skb_headroom(skb) < sizeof(struct can_skb_priv)))
-+		return true;
-+
-+	/* af_packet does not apply CAN skb specific settings */
-+	if (skb->ip_summed == CHECKSUM_NONE) {
-+
-+		/* init headroom */
-+		can_skb_prv(skb)->ifindex = dev->ifindex;
-+		can_skb_prv(skb)->skbcnt = 0;
-+
-+		skb->ip_summed = CHECKSUM_UNNECESSARY;
-+
-+		/* preform proper loopback on capable devices */
-+		if (dev->flags & IFF_ECHO)
-+			skb->pkt_type = PACKET_LOOPBACK;
-+		else
-+			skb->pkt_type = PACKET_HOST;
-+
-+		skb_reset_mac_header(skb);
-+		skb_reset_network_header(skb);
-+		skb_reset_transport_header(skb);
-+	}
-+
-+	return false;
-+}
-+
- /* Drop a given socketbuffer if it does not contain a valid CAN frame. */
- static inline bool can_dropped_invalid_skb(struct net_device *dev,
- 					  struct sk_buff *skb)
-@@ -108,6 +140,9 @@ static inline bool can_dropped_invalid_skb(struct net_device *dev,
- 	} else
- 		goto inval_skb;
- 
-+	if (can_check_skb_headroom(dev, skb))
-+		goto inval_skb;
-+
- 	return false;
- 
- inval_skb:
--- 
-2.20.1
+Added both to linx-can.
+
+Tnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--CJBfEN1ahpCWQlpoXSlengL6NIpVUBXz9--
+
+--mHanN6RRAWF1zeK9k7ypMpJm07ZfONxwd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3sCYcACgkQWsYho5Hk
+nSD1Qgf/Zx6RAkgrsyksNV0iG4AVsaMXmiqI0ZQVdnPiZw8x6+5h3sEMygArf8Js
+lEsDDLLr/pnJ6vX+kku5cfo05ItEJR6aAlYf/I9NEEicYtmndEAeikOkxetQ2UT+
+eO2NzBVo9yjUvV83I0GEFZYs3W7WwoNa3vz7TnB0OvI7Af+jraFZI071gxvixNM6
+gNCOUr849l0+eUrLwju1VauvenGAPZdDzS59XI1bGeCOUtbcdaqXMWokf1TK5gmC
+XSJ/HbM5Ca6D50vYdQXv4sGoC6HfqyKA9GJE56j1F7BvHsZgOX2COpJJ/U/e1gGC
+TjFEzwovei7adZh2kFRg97Mz5+1YOQ==
+=wI2k
+-----END PGP SIGNATURE-----
+
+--mHanN6RRAWF1zeK9k7ypMpJm07ZfONxwd--
