@@ -1,87 +1,52 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH V3 0/6] can: flexcan: fixes for stop mode
-Date: Sat, 7 Dec 2019 15:10:54 +0100
-Message-ID: <67da1a42-f3d3-6ac1-e5f9-211d2da00ba3@pengutronix.de>
-References: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="ycQUMqggH0Flcqx6hA22owqu8FToNnCwG"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
-Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+From: Xiaolong Huang <butterflyhuangxx@gmail.com>
+Subject: [PATCH] can: kvaser_usb: kvaser_usb_leaf: Fix some info-leaks to USB devices
+Date: Sat,  7 Dec 2019 22:40:24 +0800
+Message-ID: <1575729624-5917-1-git-send-email-butterflyhuangxx@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Xiaolong Huang <butterflyhuangxx@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ycQUMqggH0Flcqx6hA22owqu8FToNnCwG
-Content-Type: multipart/mixed; boundary="G5HJZyHAi8udaunguHWzlGTRXiIoaL1et";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com"
- <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Message-ID: <67da1a42-f3d3-6ac1-e5f9-211d2da00ba3@pengutronix.de>
-Subject: Re: [PATCH V3 0/6] can: flexcan: fixes for stop mode
-References: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
+Uninitialized Kernel memory can leak to USB devices.
 
---G5HJZyHAi8udaunguHWzlGTRXiIoaL1et
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Using kzalloc() instead of kmalloc()
 
-On 12/4/19 12:36 PM, Joakim Zhang wrote:
-> Hi Marc,
->=20
->    I removed the patch (can: flexcan: try to exit stop mode during prob=
-e stage)
-> out of this patch set for now. This patch should further discuss with S=
-ean and
-> I will prepare it according to final conclusion. Thanks.
->=20
-> Regards,
-> Joakim Zhang
->=20
-> Joakim Zhang (5):
->   can: flexcan: Ack wakeup interrupt separately
->   can: flexcan: add low power enter/exit acknowledgment helper
->   can: flexcan: change the way of stop mode acknowledgment
+Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
+---
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Above 3 applied to linux-can.
-
->   can: flexcan: propagate error value of flexcan_chip_stop()
->   can: flexcan: add LPSR mode support
-
-Above 2 applied to linux-can-next
-
-Marc
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---G5HJZyHAi8udaunguHWzlGTRXiIoaL1et--
-
---ycQUMqggH0Flcqx6hA22owqu8FToNnCwG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3rsu4ACgkQWsYho5Hk
-nSCAiAgAqw7anwYTOjePxi2RpKgP+6rrr23CWyoohozVvX0MoXS2mQj25thcAB48
-I95OiAlWeI6hsBEtjmjjS0EwR+bM/yoZ8ThewvfcYtOhqCLpxepi9dFT47WVvDXR
-KFZFAr97s+n1gnOmkVDxUmEnE8jGTTQlxrOtptz+WsipWcFbt6pL2kQGsmdiMjyr
-WKzP5eCpno3QVJzAsaLxevmHvNMOjTJ59RY1pMwRcyGcFsHn0R8C9RBA9qAe6k3M
-sK13Vhz5p6MmiOpw7xaFYpID0jHg5O3MnLOIwKFkuqQrmHTDL+sfCH+I0bL+0fMz
-eKwPyX8jFunfW+69iZpyFca6idhsiw==
-=vNel
------END PGP SIGNATURE-----
-
---ycQUMqggH0Flcqx6hA22owqu8FToNnCwG--
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+index 07d2f3a..ae4c37e 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+@@ -608,7 +608,7 @@ static int kvaser_usb_leaf_simple_cmd_async(struct kvaser_usb_net_priv *priv,
+ 	struct kvaser_cmd *cmd;
+ 	int err;
+ 
+-	cmd = kmalloc(sizeof(*cmd), GFP_ATOMIC);
++	cmd = kzalloc(sizeof(*cmd), GFP_ATOMIC);
+ 	if (!cmd)
+ 		return -ENOMEM;
+ 
+@@ -1140,7 +1140,7 @@ static int kvaser_usb_leaf_set_opt_mode(const struct kvaser_usb_net_priv *priv)
+ 	struct kvaser_cmd *cmd;
+ 	int rc;
+ 
+-	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+ 	if (!cmd)
+ 		return -ENOMEM;
+ 
+@@ -1206,7 +1206,7 @@ static int kvaser_usb_leaf_flush_queue(struct kvaser_usb_net_priv *priv)
+ 	struct kvaser_cmd *cmd;
+ 	int rc;
+ 
+-	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+ 	if (!cmd)
+ 		return -ENOMEM;
+ 
+-- 
+2.7.4
