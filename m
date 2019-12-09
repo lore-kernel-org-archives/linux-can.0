@@ -1,21 +1,50 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: pull-request: can 2019-12-08
-Date: Mon, 09 Dec 2019 09:28:02 -0800 (PST)
-Message-ID: <20191209.092802.52782374419546161.davem@davemloft.net>
-References: <20191209163256.12000-1-mkl@pengutronix.de>
+From: Sean Nyekjaer <sean@geanix.com>
+Subject: [PATCH v2 1/2] can: m_can: tcan4x5x: put the device out of standby before register access
+Date: Mon,  9 Dec 2019 20:24:39 +0100
+Message-ID: <20191209192440.998659-1-sean@geanix.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191209163256.12000-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: mkl@pengutronix.de, dmurphy@ti.com, linux-can@vger.kernel.org
+Cc: Sean Nyekjaer <sean@geanix.com>, martin@geanix.com, stable@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon,  9 Dec 2019 17:32:43 +0100
+The m_can tries to detect of niso (canfd) is available while in standby,
+this function results in the following error:
 
-> this is a pull request of 13 patches for net/master.
+tcan4x5x spi2.0 (unnamed net_device) (uninitialized): Failed to init module
+tcan4x5x spi2.0: m_can device registered (irq=84, version=32)
+tcan4x5x spi2.0 can2: TCAN4X5X successfully initialized.
 
-Pulled, thanks Marc.
+When the tcan device comes out of reset it comes out in standby mode.
+The m_can driver tries to access the control register but fails due to
+the device is in standby mode.
+So this patch will put the tcan device in normal mode before the m_can
+driver does the initialization.
+
+Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
+tcan4x5x_init will now be called from probe and the m_can call.
+Would it be better to move the mode switch only to the probe function?
+
+ drivers/net/can/m_can/tcan4x5x.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index 4e1789ea2bc3..3c30209ca84c 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -455,6 +455,8 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	if (ret)
+ 		goto out_clk;
+ 
++	tcan4x5x_init(mcan_class);
++
+ 	tcan4x5x_power_enable(priv->power, 1);
+ 
+ 	ret = m_can_class_register(mcan_class);
+-- 
+2.24.0
