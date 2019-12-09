@@ -1,101 +1,47 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] can: ensure an initialized headroom in outgoing CAN
- sk_buffs
-Date: Sun, 8 Dec 2019 12:34:42 +0100
-Message-ID: <2b997c05-fcef-e067-2771-8e07e35dfadd@hartkopp.net>
-References: <20191207183418.28868-1-socketcan@hartkopp.net>
- <cc102c3b-d9d3-6447-7581-a36795259cc2@pengutronix.de>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V3 0/6] can: flexcan: fixes for stop mode
+Date: Mon, 9 Dec 2019 08:28:17 +0000
+Message-ID: <DB7PR04MB4618328FDC7BC5B4DA3953A2E6580@DB7PR04MB4618.eurprd04.prod.outlook.com>
+References: <20191204113249.3381-1-qiangqing.zhang@nxp.com>
+ <67da1a42-f3d3-6ac1-e5f9-211d2da00ba3@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <cc102c3b-d9d3-6447-7581-a36795259cc2@pengutronix.de>
+In-Reply-To: <67da1a42-f3d3-6ac1-e5f9-211d2da00ba3@pengutronix.de>
 Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, dvyukov@google.com
-Cc: syzbot+b02ff0707a97e4e79ebb@syzkaller.appspotmail.com, glider@google.com, syzkaller-bugs@googlegroups.com, netdev@vger.kernel.org, o.rempel@pengutronix.de, eric.dumazet@gmail.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-
-
-On 08/12/2019 11.48, Marc Kleine-Budde wrote:
-> On 12/7/19 7:34 PM, Oliver Hartkopp wrote:
->> KMSAN sysbot detected a read access to an untinitialized value in the headroom
->> of an outgoing CAN related sk_buff. When using CAN sockets this area is filled
->> appropriately - but when using a packet socket this initialization is missing.
-
-
->> +/* Check for outgoing skbs that have not been created by the CAN subsystem */
->> +static inline bool can_check_skb_headroom(struct net_device *dev,
->> +					  struct sk_buff *skb)
-> 
-> Do we want to have such a big function as a static inline?
-> 
-
-No. Usually not. can_dropped_invalid_skb() has the same problem IMO.
-
-This additional inline function approach was the only way to ensure 
-simple backwards portability for stable kernels.
-
-I would suggest to clean this up once this patch went into mainline.
-
->> +{
->> +	/* af_packet creates a headroom of HH_DATA_MOD bytes which is fine */
->> +	if (WARN_ON_ONCE(skb_headroom(skb) < sizeof(struct can_skb_priv)))
->> +		return true;
->> +
->> +	/* af_packet does not apply CAN skb specific settings */
->> +	if (skb->ip_summed == CHECKSUM_NONE) {
-> 
-> Is it possible to set the ip_summed via the packet socket or is it
-> always 0 (== CHECKSUM_NONE)?
-
-af_packet only reads ip_summed in the receive path. It is not set when 
-creating the outgoing skb where the struct skb is mainly zero'ed.
-
-> 
->> +
-> 
-> Please remove that empty line.
-> 
-
-ok.
-
->> +		/* init headroom */
->> +		can_skb_prv(skb)->ifindex = dev->ifindex;
->> +		can_skb_prv(skb)->skbcnt = 0;
->> +
->> +		skb->ip_summed = CHECKSUM_UNNECESSARY;
->> +
->> +		/* preform proper loopback on capable devices */
->> +		if (dev->flags & IFF_ECHO)
->> +			skb->pkt_type = PACKET_LOOPBACK;
->> +		else
->> +			skb->pkt_type = PACKET_HOST;
->> +
->> +		skb_reset_mac_header(skb);
->> +		skb_reset_network_header(skb);
->> +		skb_reset_transport_header(skb);
->> +	}
->> +
->> +	return false;
->> +}
->> +
->>   /* Drop a given socketbuffer if it does not contain a valid CAN frame. */
->>   static inline bool can_dropped_invalid_skb(struct net_device *dev,
->>   					  struct sk_buff *skb)
->> @@ -108,6 +140,9 @@ static inline bool can_dropped_invalid_skb(struct net_device *dev,
->>   	} else
->>   		goto inval_skb;
->>   
->> +	if (can_check_skb_headroom(dev, skb))
-> 
-> Can you rename the function, so that it's clear that returning false
-> means it's an invalid skb?
-> 
-
-Returning 'false' is *good* like in can_dropped_invalid_skb(). What 
-naming would you suggest?
-
-Regards,
-Oliver
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
+IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQxMuaciDfml6UgMjI6MTENCj4g
+VG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBzZWFuQGdlYW5peC5j
+b207DQo+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlteCA8bGlu
+dXgtaW14QG54cC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBb
+UEFUQ0ggVjMgMC82XSBjYW46IGZsZXhjYW46IGZpeGVzIGZvciBzdG9wIG1vZGUNCj4gDQo+IE9u
+IDEyLzQvMTkgMTI6MzYgUE0sIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4gPiBIaSBNYXJjLA0KPiA+
+DQo+ID4gICAgSSByZW1vdmVkIHRoZSBwYXRjaCAoY2FuOiBmbGV4Y2FuOiB0cnkgdG8gZXhpdCBz
+dG9wIG1vZGUgZHVyaW5nDQo+ID4gcHJvYmUgc3RhZ2UpIG91dCBvZiB0aGlzIHBhdGNoIHNldCBm
+b3Igbm93LiBUaGlzIHBhdGNoIHNob3VsZCBmdXJ0aGVyDQo+ID4gZGlzY3VzcyB3aXRoIFNlYW4g
+YW5kIEkgd2lsbCBwcmVwYXJlIGl0IGFjY29yZGluZyB0byBmaW5hbCBjb25jbHVzaW9uLiBUaGFu
+a3MuDQo+ID4NCj4gPiBSZWdhcmRzLA0KPiA+IEpvYWtpbSBaaGFuZw0KPiA+DQo+ID4gSm9ha2lt
+IFpoYW5nICg1KToNCj4gPiAgIGNhbjogZmxleGNhbjogQWNrIHdha2V1cCBpbnRlcnJ1cHQgc2Vw
+YXJhdGVseQ0KPiA+ICAgY2FuOiBmbGV4Y2FuOiBhZGQgbG93IHBvd2VyIGVudGVyL2V4aXQgYWNr
+bm93bGVkZ21lbnQgaGVscGVyDQo+ID4gICBjYW46IGZsZXhjYW46IGNoYW5nZSB0aGUgd2F5IG9m
+IHN0b3AgbW9kZSBhY2tub3dsZWRnbWVudA0KPiANCj4gQWJvdmUgMyBhcHBsaWVkIHRvIGxpbnV4
+LWNhbi4NCkhpIE1hcmMsDQoNCkZyb20gYmVsb3cgbGluaywgSSBoYXZlIG5vdCBmb3VuZCB0aGUg
+cGF0Y2g6IGNhbjogZmxleGNhbjogQWNrIHdha2V1cCBpbnRlcnJ1cHQgc2VwYXJhdGVseQ0KaHR0
+cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbWtsL2xpbnV4LWNh
+bi5naXQvbG9nLz9oPWxpbnV4LWNhbi1maXhlcy1mb3ItNS41LTIwMTkxMjA4DQoNCj4gPiAgIGNh
+bjogZmxleGNhbjogcHJvcGFnYXRlIGVycm9yIHZhbHVlIG9mIGZsZXhjYW5fY2hpcF9zdG9wKCkN
+Cj4gPiAgIGNhbjogZmxleGNhbjogYWRkIExQU1IgbW9kZSBzdXBwb3J0DQo+IA0KPiBBYm92ZSAy
+IGFwcGxpZWQgdG8gbGludXgtY2FuLW5leHQNCg0KSSBhbHNvIGhhdmUgbm90IGZvdW5kIHRoZXNl
+IHR3byBwYXRjaCBvbiBsaW51eC1jYW4tbmV4dCwgd2hpY2ggYnJhbmNoIGhhcyB5b3UgcHVzaGVk
+Pw0KDQpUaGFua3MuDQoNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KPiBNYXJjDQo+IC0t
+DQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUg
+ICAgICAgICAgIHwNCj4gRW1iZWRkZWQgTGludXggICAgICAgICAgICAgICAgICAgfCBodHRwczov
+L3d3dy5wZW5ndXRyb25peC5kZSAgfA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAg
+ICB8IFBob25lOiArNDktMjMxLTI4MjYtOTI0ICAgICB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hl
+aW0sIEhSQSAyNjg2IHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCg0K
