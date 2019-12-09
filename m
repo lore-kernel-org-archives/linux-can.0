@@ -1,89 +1,61 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 08/13] can: flexcan: poll MCR_LPM_ACK instead of GPR ACK for stop mode acknowledgment
-Date: Mon,  9 Dec 2019 17:32:51 +0100
-Message-ID: <20191209163256.12000-9-mkl@pengutronix.de>
+Subject: [PATCH 13/13] can: kvaser_usb: kvaser_usb_leaf: Fix some info-leaks to USB devices
+Date: Mon,  9 Dec 2019 17:32:56 +0100
+Message-ID: <20191209163256.12000-14-mkl@pengutronix.de>
 References: <20191209163256.12000-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20191209163256.12000-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>, Sean Nyekjaer <sean@geanix.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Xiaolong Huang <butterflyhuangxx@gmail.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Xiaolong Huang <butterflyhuangxx@gmail.com>
 
-Stop Mode is entered when Stop Mode is requested at chip level and
-MCR[LPM_ACK] is asserted by the FlexCAN.
+Uninitialized Kernel memory can leak to USB devices.
 
-Double check with IP owner, the MCR[LPM_ACK] bit should be polled for
-stop mode acknowledgment, not the acknowledgment from chip level which
-is used to gate flexcan clocks.
+Fix this by using kzalloc() instead of kmalloc().
 
-This patch depends on:
-
-    b7603d080ffc ("can: flexcan: add low power enter/exit acknowledgment helper")
-
-Fixes: 5f186c257fa4 (can: flexcan: fix stop mode acknowledgment)
-Tested-by: Sean Nyekjaer <sean@geanix.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.0
+Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
+Fixes: 7259124eac7d ("can: kvaser_usb: Split driver into kvaser_usb_core.c and kvaser_usb_leaf.c")
+Cc: linux-stable <stable@vger.kernel.org> # >= v4.19
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 9f3a5e56fc37..94d10ec954a0 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -435,7 +435,6 @@ static void flexcan_enable_wakeup_irq(struct flexcan_priv *priv, bool enable)
- static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs = priv->regs;
--	unsigned int ackval;
- 	u32 reg_mcr;
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+index 07d2f3aa2c02..ae4c37e1bb75 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+@@ -608,7 +608,7 @@ static int kvaser_usb_leaf_simple_cmd_async(struct kvaser_usb_net_priv *priv,
+ 	struct kvaser_cmd *cmd;
+ 	int err;
  
- 	reg_mcr = priv->read(&regs->mcr);
-@@ -446,36 +445,24 @@ static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
- 	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
- 			   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
+-	cmd = kmalloc(sizeof(*cmd), GFP_ATOMIC);
++	cmd = kzalloc(sizeof(*cmd), GFP_ATOMIC);
+ 	if (!cmd)
+ 		return -ENOMEM;
  
--	/* get stop acknowledgment */
--	if (regmap_read_poll_timeout(priv->stm.gpr, priv->stm.ack_gpr,
--				     ackval, ackval & (1 << priv->stm.ack_bit),
--				     0, FLEXCAN_TIMEOUT_US))
--		return -ETIMEDOUT;
--
--	return 0;
-+	return flexcan_low_power_enter_ack(priv);
- }
+@@ -1140,7 +1140,7 @@ static int kvaser_usb_leaf_set_opt_mode(const struct kvaser_usb_net_priv *priv)
+ 	struct kvaser_cmd *cmd;
+ 	int rc;
  
- static inline int flexcan_exit_stop_mode(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs = priv->regs;
--	unsigned int ackval;
- 	u32 reg_mcr;
+-	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+ 	if (!cmd)
+ 		return -ENOMEM;
  
- 	/* remove stop request */
- 	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
- 			   1 << priv->stm.req_bit, 0);
+@@ -1206,7 +1206,7 @@ static int kvaser_usb_leaf_flush_queue(struct kvaser_usb_net_priv *priv)
+ 	struct kvaser_cmd *cmd;
+ 	int rc;
  
--	/* get stop acknowledgment */
--	if (regmap_read_poll_timeout(priv->stm.gpr, priv->stm.ack_gpr,
--				     ackval, !(ackval & (1 << priv->stm.ack_bit)),
--				     0, FLEXCAN_TIMEOUT_US))
--		return -ETIMEDOUT;
+-	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+ 	if (!cmd)
+ 		return -ENOMEM;
  
- 	reg_mcr = priv->read(&regs->mcr);
- 	reg_mcr &= ~FLEXCAN_MCR_SLF_WAK;
- 	priv->write(reg_mcr, &regs->mcr);
- 
--	return 0;
-+	return flexcan_low_power_exit_ack(priv);
- }
- 
- static inline void flexcan_error_irq_enable(const struct flexcan_priv *priv)
 -- 
 2.24.0
