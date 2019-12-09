@@ -1,7 +1,7 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 11/13] dt-bindings: tcan4x5x: Make wake-gpio an optional gpio
-Date: Mon,  9 Dec 2019 17:32:54 +0100
-Message-ID: <20191209163256.12000-12-mkl@pengutronix.de>
+Subject: [PATCH 12/13] can: tcan45x: Make wake-up GPIO an optional GPIO
+Date: Mon,  9 Dec 2019 17:32:55 +0100
+Message-ID: <20191209163256.12000-13-mkl@pengutronix.de>
 References: <20191209163256.12000-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,43 +9,86 @@ Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191209163256.12000-1-mkl@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>, Rob Herring <robh@kernel.org>, Sean Nyekjaer <sean@geanix.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>, Sean Nyekjaer <sean@geanix.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
 From: Dan Murphy <dmurphy@ti.com>
 
-The wake-up of the device can be configured as an optional feature of
-the device. Move the wake-up gpio from a requried property to an
-optional property.
+The device has the ability to disable the wake-up pin option. The
+wake-up pin can be either force to GND or Vsup and does not have to be
+tied to a GPIO. In order for the device to not use the wake-up feature
+write the register to disable the WAKE_CONFIG option.
 
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Cc: Rob Herring <robh@kernel.org>
+Cc: Sean Nyekjaer <sean@geanix.com>
 Reviewed-by: Sean Nyekjaer <sean@geanix.com>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/m_can/tcan4x5x.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-index e8aa21d9174e..6bdcc3f84bd3 100644
---- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-+++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-@@ -10,7 +10,6 @@ Required properties:
- 	- #size-cells: 0
- 	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
- 			     operate at should be less than or equal to 18 MHz.
--	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
- 	- interrupt-parent: the phandle to the interrupt controller which provides
-                     the interrupt.
- 	- interrupts: interrupt specification for data-ready.
-@@ -23,6 +22,7 @@ Optional properties:
- 		       reset.
- 	- device-state-gpios: Input GPIO that indicates if the device is in
- 			      a sleep state or if the device is active.
-+	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index d5d4bfa9c8fd..4e1789ea2bc3 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -101,6 +101,8 @@
+ #define TCAN4X5X_MODE_STANDBY BIT(6)
+ #define TCAN4X5X_MODE_NORMAL BIT(7)
  
- Example:
- tcan4x5x: tcan4x5x@0 {
++#define TCAN4X5X_DISABLE_WAKE_MSK	(BIT(31) | BIT(30))
++
+ #define TCAN4X5X_SW_RESET BIT(2)
+ 
+ #define TCAN4X5X_MCAN_CONFIGURED BIT(5)
+@@ -338,6 +340,14 @@ static int tcan4x5x_init(struct m_can_classdev *cdev)
+ 	return ret;
+ }
+ 
++static int tcan4x5x_disable_wake(struct m_can_classdev *cdev)
++{
++	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
++
++	return regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
++				  TCAN4X5X_DISABLE_WAKE_MSK, 0x00);
++}
++
+ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+ {
+ 	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
+@@ -345,8 +355,10 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+ 	tcan4x5x->device_wake_gpio = devm_gpiod_get(cdev->dev, "device-wake",
+ 						    GPIOD_OUT_HIGH);
+ 	if (IS_ERR(tcan4x5x->device_wake_gpio)) {
+-		dev_err(cdev->dev, "device-wake gpio not defined\n");
+-		return -EINVAL;
++		if (PTR_ERR(tcan4x5x->power) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++
++		tcan4x5x_disable_wake(cdev);
+ 	}
+ 
+ 	tcan4x5x->reset_gpio = devm_gpiod_get_optional(cdev->dev, "reset",
+@@ -430,10 +442,6 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 
+ 	spi_set_drvdata(spi, priv);
+ 
+-	ret = tcan4x5x_parse_config(mcan_class);
+-	if (ret)
+-		goto out_clk;
+-
+ 	/* Configure the SPI bus */
+ 	spi->bits_per_word = 32;
+ 	ret = spi_setup(spi);
+@@ -443,6 +451,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	priv->regmap = devm_regmap_init(&spi->dev, &tcan4x5x_bus,
+ 					&spi->dev, &tcan4x5x_regmap);
+ 
++	ret = tcan4x5x_parse_config(mcan_class);
++	if (ret)
++		goto out_clk;
++
+ 	tcan4x5x_power_enable(priv->power, 1);
+ 
+ 	ret = m_can_class_register(mcan_class);
 -- 
 2.24.0
