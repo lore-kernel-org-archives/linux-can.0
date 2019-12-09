@@ -1,36 +1,59 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH v2 1/2] can: m_can: tcan4x5x: put the device out of
- standby before register access
-Date: Mon, 9 Dec 2019 20:52:58 +0100
-Message-ID: <a40b5bba-1c8d-7911-bc37-9aab6816e227@geanix.com>
-References: <20191209192440.998659-1-sean@geanix.com>
- <78903660-2471-ee36-404b-4c9d2af02fc6@pengutronix.de>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH 2/2] net: m_can: Make wake-up gpio an optional
+Date: Mon, 9 Dec 2019 15:01:30 -0600
+Message-ID: <dc24a8a3-d515-f84b-9f33-db92bd4a412a@ti.com>
+References: <20191204175112.7308-1-dmurphy@ti.com>
+ <20191204175112.7308-2-dmurphy@ti.com>
+ <b9eaa5c4-13bc-295f-dcbf-d2a846243682@geanix.com>
+ <827b022e-9188-7bcf-25e3-3777df3b08a5@ti.com>
+ <809b9ff1-88e3-4e46-33e0-856db37898b2@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <78903660-2471-ee36-404b-4c9d2af02fc6@pengutronix.de>
-Content-Language: en-US-large
-Sender: stable-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, dmurphy@ti.com, linux-can@vger.kernel.org
-Cc: martin@geanix.com, stable@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <809b9ff1-88e3-4e46-33e0-856db37898b2@pengutronix.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Sean Nyekjaer <sean@geanix.com>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
+Marc
 
+On 12/5/19 8:39 AM, Marc Kleine-Budde wrote:
+> On 12/5/19 2:26 PM, Dan Murphy wrote:
+>> On 12/5/19 1:39 AM, Sean Nyekjaer wrote:
+>>>
+>>> On 04/12/2019 18.51, Dan Murphy wrote:
+>>>> The device has the ability to disable the wake-up pin option.
+>>>> The wake-up pin can be either force to GND or Vsup and does not have to
+>>>> be tied to a GPIO.  In order for the device to not use the wake-up
+>>>> feature
+>>>> write the register to disable the WAKE_CONFIG option.
+>>>>
+>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>>> CC: Sean Nyekjaer <sean@geanix.com>
+>>> Reviewed-by: Sean Nyekjaer <sean@geanix.com>
+>>>> ---
+>>>
+>>> Hi Dan,
+>>>
+>>> I would add tcan4x5x to the subject of this patch ->
+>>> "net: m_can: tcan4x5x Make wake-up gpio an optional"
+>>>
+>> Do you want me to submit v2 with the $subject change?
+>>
+>> Or would you fix it up when committing it?
+> I'll change the subject while applying.
+>
+> Dan, what about maintainerchip of the tcan4x5?
 
-On 09/12/2019 20.44, Marc Kleine-Budde wrote:
-> On 12/9/19 8:24 PM, Sean Nyekjaer wrote:
->> The m_can tries to detect of niso (canfd) is available while in standby,
-> 
-> What's "of niso"?
-> 
-Should have been "if niso" :)
+Do you know when you will be applying these?
 
-Non ISO Operation
+I have 2 patches I need to put on top.
 
-0 – CAN FD Frame format according to ISO 11898-1:2015
+Dan
 
-1 – CAN FD Frame format according to Bosch CAN FD
-  Specification V1.0
-
-/Sean
+> regards,
+> Marc
+>
