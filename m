@@ -1,42 +1,60 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 09/13] can: m_can: tcan4x5x: add required delay after reset
-Date: Mon,  9 Dec 2019 17:32:52 +0100
-Message-ID: <20191209163256.12000-10-mkl@pengutronix.de>
+Subject: [PATCH 05/13] can: xilinx_can: Fix missing Rx can packets on CANFD2.0
+Date: Mon,  9 Dec 2019 17:32:48 +0100
+Message-ID: <20191209163256.12000-6-mkl@pengutronix.de>
 References: <20191209163256.12000-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20191209163256.12000-1-mkl@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
+Sender: stable-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Sean Nyekjaer <sean@geanix.com>, Dan Murphy <dmurphy@ti.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Srinivas Neeli <srinivas.neeli@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-According to section "8.3.8 RST Pin" in the datasheet we are required to
-wait >700us after the device is reset.
+CANFD2.0 core uses BRAM for storing acceptance filter ID(AFID) and MASK
+(AFMASK)registers. So by default AFID and AFMASK registers contain random
+data. Due to random data, we are not able to receive all CAN ids.
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Acked-by: Dan Murphy <dmurphy@ti.com>
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
+Initializing AFID and AFMASK registers with Zero before enabling
+acceptance filter to receive all packets irrespective of ID and Mask.
+
+Fixes: 0db9071353a0 ("can: xilinx: add can 2.0 support")
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Reviewed-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Cc: linux-stable <stable@vger.kernel.org> # >= v5.0
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/tcan4x5x.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/xilinx_can.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index 3db619209fe1..d5d4bfa9c8fd 100644
---- a/drivers/net/can/m_can/tcan4x5x.c
-+++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -354,6 +354,8 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
- 	if (IS_ERR(tcan4x5x->reset_gpio))
- 		tcan4x5x->reset_gpio = NULL;
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 464af939cd8a..c1dbab8c896d 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -60,6 +60,8 @@ enum xcan_reg {
+ 	XCAN_TXMSG_BASE_OFFSET	= 0x0100, /* TX Message Space */
+ 	XCAN_RXMSG_BASE_OFFSET	= 0x1100, /* RX Message Space */
+ 	XCAN_RXMSG_2_BASE_OFFSET	= 0x2100, /* RX Message Space */
++	XCAN_AFR_2_MASK_OFFSET	= 0x0A00, /* Acceptance Filter MASK */
++	XCAN_AFR_2_ID_OFFSET	= 0x0A04, /* Acceptance Filter ID */
+ };
  
-+	usleep_range(700, 1000);
+ #define XCAN_FRAME_ID_OFFSET(frame_base)	((frame_base) + 0x00)
+@@ -1809,6 +1811,11 @@ static int xcan_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_put(&pdev->dev);
+ 
++	if (priv->devtype.flags & XCAN_FLAG_CANFD_2) {
++		priv->write_reg(priv, XCAN_AFR_2_ID_OFFSET, 0x00000000);
++		priv->write_reg(priv, XCAN_AFR_2_MASK_OFFSET, 0x00000000);
++	}
 +
- 	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(cdev->dev,
- 							      "device-state",
- 							      GPIOD_IN);
+ 	netdev_dbg(ndev, "reg_base=0x%p irq=%d clock=%d, tx buffers: actual %d, using %d\n",
+ 		   priv->reg_base, ndev->irq, priv->can.clock.freq,
+ 		   hw_tx_max, priv->tx_max);
 -- 
 2.24.0
