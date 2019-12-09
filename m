@@ -1,61 +1,42 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 13/13] can: kvaser_usb: kvaser_usb_leaf: Fix some info-leaks to USB devices
-Date: Mon,  9 Dec 2019 17:32:56 +0100
-Message-ID: <20191209163256.12000-14-mkl@pengutronix.de>
+Subject: [PATCH 09/13] can: m_can: tcan4x5x: add required delay after reset
+Date: Mon,  9 Dec 2019 17:32:52 +0100
+Message-ID: <20191209163256.12000-10-mkl@pengutronix.de>
 References: <20191209163256.12000-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191209163256.12000-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Xiaolong Huang <butterflyhuangxx@gmail.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Sean Nyekjaer <sean@geanix.com>, Dan Murphy <dmurphy@ti.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Xiaolong Huang <butterflyhuangxx@gmail.com>
+From: Sean Nyekjaer <sean@geanix.com>
 
-Uninitialized Kernel memory can leak to USB devices.
+According to section "8.3.8 RST Pin" in the datasheet we are required to
+wait >700us after the device is reset.
 
-Fix this by using kzalloc() instead of kmalloc().
-
-Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
-Fixes: 7259124eac7d ("can: kvaser_usb: Split driver into kvaser_usb_core.c and kvaser_usb_leaf.c")
-Cc: linux-stable <stable@vger.kernel.org> # >= v4.19
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Acked-by: Dan Murphy <dmurphy@ti.com>
+Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/m_can/tcan4x5x.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 07d2f3aa2c02..ae4c37e1bb75 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -608,7 +608,7 @@ static int kvaser_usb_leaf_simple_cmd_async(struct kvaser_usb_net_priv *priv,
- 	struct kvaser_cmd *cmd;
- 	int err;
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index 3db619209fe1..d5d4bfa9c8fd 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -354,6 +354,8 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+ 	if (IS_ERR(tcan4x5x->reset_gpio))
+ 		tcan4x5x->reset_gpio = NULL;
  
--	cmd = kmalloc(sizeof(*cmd), GFP_ATOMIC);
-+	cmd = kzalloc(sizeof(*cmd), GFP_ATOMIC);
- 	if (!cmd)
- 		return -ENOMEM;
- 
-@@ -1140,7 +1140,7 @@ static int kvaser_usb_leaf_set_opt_mode(const struct kvaser_usb_net_priv *priv)
- 	struct kvaser_cmd *cmd;
- 	int rc;
- 
--	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd)
- 		return -ENOMEM;
- 
-@@ -1206,7 +1206,7 @@ static int kvaser_usb_leaf_flush_queue(struct kvaser_usb_net_priv *priv)
- 	struct kvaser_cmd *cmd;
- 	int rc;
- 
--	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd)
- 		return -ENOMEM;
- 
++	usleep_range(700, 1000);
++
+ 	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(cdev->dev,
+ 							      "device-state",
+ 							      GPIOD_IN);
 -- 
 2.24.0
