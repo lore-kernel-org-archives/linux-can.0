@@ -1,91 +1,51 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 06/13] can: flexcan: fix possible deadlock and out-of-order reception after wakeup
-Date: Mon,  9 Dec 2019 17:32:49 +0100
-Message-ID: <20191209163256.12000-7-mkl@pengutronix.de>
+Subject: [PATCH 11/13] dt-bindings: tcan4x5x: Make wake-gpio an optional gpio
+Date: Mon,  9 Dec 2019 17:32:54 +0100
+Message-ID: <20191209163256.12000-12-mkl@pengutronix.de>
 References: <20191209163256.12000-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191209163256.12000-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Sean Nyekjaer <sean@geanix.com>, Joakim Zhang <qiangqing.zhang@nxp.com>, linux-stable <stable@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>, Rob Herring <robh@kernel.org>, Sean Nyekjaer <sean@geanix.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Dan Murphy <dmurphy@ti.com>
 
-When suspending, and there is still CAN traffic on the interfaces the
-flexcan immediately wakes the platform again. As it should :-). But it
-throws this error msg:
+The wake-up of the device can be configured as an optional feature of
+the device. Move the wake-up gpio from a requried property to an
+optional property.
 
-[ 3169.378661] PM: noirq suspend of devices failed
-
-On the way down to suspend the interface that throws the error message
-calls flexcan_suspend() but fails to call flexcan_noirq_suspend(). That
-means flexcan_enter_stop_mode() is called, but on the way out of suspend
-the driver only calls flexcan_resume() and skips flexcan_noirq_resume(),
-thus it doesn't call flexcan_exit_stop_mode(). This leaves the flexcan
-in stop mode, and with the current driver it can't recover from this
-even with a soft reboot, it requires a hard reboot.
-
-This patch fixes the deadlock when using self wakeup, by calling
-flexcan_exit_stop_mode() from flexcan_resume() instead of
-flexcan_noirq_resume().
-
-This also fixes another issue: CAN frames are received out-of-order in
-first IRQ handler run after wakeup.
-
-The problem is that the wakeup latency from frame reception to the IRQ
-handler (where the CAN frames are sorted by timestamp) is much bigger
-than the time stamp counter wrap around time. This means it's
-impossible to sort the CAN frames by timestamp.
-
-The reason is that the controller exits stop mode during noirq resume,
-which means it receives frames immediately, but interrupt handling is
-still not possible.
-
-So exit stop mode during resume stage instead of noirq resume fixes this
-issue.
-
-Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Cc: Rob Herring <robh@kernel.org>
+Reviewed-by: Sean Nyekjaer <sean@geanix.com>
 Tested-by: Sean Nyekjaer <sean@geanix.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.0
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index a929cdda9ab2..b6f675a5e2d9 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1722,6 +1722,9 @@ static int __maybe_unused flexcan_resume(struct device *device)
- 		netif_start_queue(dev);
- 		if (device_may_wakeup(device)) {
- 			disable_irq_wake(dev->irq);
-+			err = flexcan_exit_stop_mode(priv);
-+			if (err)
-+				return err;
- 		} else {
- 			err = pm_runtime_force_resume(device);
- 			if (err)
-@@ -1767,14 +1770,9 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
- {
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
--	int err;
+diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+index e8aa21d9174e..6bdcc3f84bd3 100644
+--- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -10,7 +10,6 @@ Required properties:
+ 	- #size-cells: 0
+ 	- spi-max-frequency: Maximum frequency of the SPI bus the chip can
+ 			     operate at should be less than or equal to 18 MHz.
+-	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
+ 	- interrupt-parent: the phandle to the interrupt controller which provides
+                     the interrupt.
+ 	- interrupts: interrupt specification for data-ready.
+@@ -23,6 +22,7 @@ Optional properties:
+ 		       reset.
+ 	- device-state-gpios: Input GPIO that indicates if the device is in
+ 			      a sleep state or if the device is active.
++	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
  
--	if (netif_running(dev) && device_may_wakeup(device)) {
-+	if (netif_running(dev) && device_may_wakeup(device))
- 		flexcan_enable_wakeup_irq(priv, false);
--		err = flexcan_exit_stop_mode(priv);
--		if (err)
--			return err;
--	}
- 
- 	return 0;
- }
+ Example:
+ tcan4x5x: tcan4x5x@0 {
 -- 
 2.24.0
