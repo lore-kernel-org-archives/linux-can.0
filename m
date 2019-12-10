@@ -1,60 +1,76 @@
-From: Johan Hovold <johan@kernel.org>
-Subject: [PATCH 1/2] can: kvaser_usb: fix interface sanity check
-Date: Tue, 10 Dec 2019 12:32:30 +0100
-Message-ID: <20191210113231.3797-2-johan@kernel.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/2] can: fix USB altsetting bugs
+Date: Tue, 10 Dec 2019 12:40:30 +0100
+Message-ID: <1244df5c-27e4-2558-3a88-5be6a7c2bfea@pengutronix.de>
 References: <20191210113231.3797-1-johan@kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="PYGNQfSib4ZC3jmgsc9Zx3onSi9UVP22F"
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20191210113231.3797-1-johan@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>, stable <stable@vger.kernel.org>, Jimmy Assarsson <extja@kvaser.com>, Christer Beskow <chbe@kvaser.com>, Nicklas Johansson <extnj@kvaser.com>, Martin Henriksson <mh@kvaser.com>
+Sender: netdev-owner@vger.kernel.org
+To: Johan Hovold <johan@kernel.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Make sure to use the current alternate setting when verifying the
-interface descriptors to avoid binding to an invalid interface.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--PYGNQfSib4ZC3jmgsc9Zx3onSi9UVP22F
+Content-Type: multipart/mixed; boundary="4pKZgfYpzjUZxIs7BT0wqFDzgp0vWLE1V";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Johan Hovold <johan@kernel.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <1244df5c-27e4-2558-3a88-5be6a7c2bfea@pengutronix.de>
+Subject: Re: [PATCH 0/2] can: fix USB altsetting bugs
+References: <20191210113231.3797-1-johan@kernel.org>
+In-Reply-To: <20191210113231.3797-1-johan@kernel.org>
 
-Failing to do so could cause the driver to misbehave or trigger a WARN()
-in usb_submit_urb() that kernels with panic_on_warn set would choke on.
+--4pKZgfYpzjUZxIs7BT0wqFDzgp0vWLE1V
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
-Cc: stable <stable@vger.kernel.org>     # 4.19
-Cc: Jimmy Assarsson <extja@kvaser.com>
-Cc: Christer Beskow <chbe@kvaser.com>
-Cc: Nicklas Johansson <extnj@kvaser.com>
-Cc: Martin Henriksson <mh@kvaser.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On 12/10/19 12:32 PM, Johan Hovold wrote:
+> We had quite a few driver using the first alternate setting instead of
+> the current one when doing descriptor sanity checks. This is mostly an
+> issue on kernels with panic_on_warn set due to a WARN() in
+> usb_submit_urn(). Since we've started backporting such fixes (e.g. as
+> reported by syzbot), I've marked these for stable as well.
+>=20
+> The second patch here is a related cleanup to prevent future issues.
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index 5fc0be564274..7ab87a758754 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -1590,7 +1590,7 @@ static int kvaser_usb_hydra_setup_endpoints(struct kvaser_usb *dev)
- 	struct usb_endpoint_descriptor *ep;
- 	int i;
- 
--	iface_desc = &dev->intf->altsetting[0];
-+	iface_desc = dev->intf->cur_altsetting;
- 
- 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
- 		ep = &iface_desc->endpoint[i].desc;
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 07d2f3aa2c02..1c794bb443e1 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -1310,7 +1310,7 @@ static int kvaser_usb_leaf_setup_endpoints(struct kvaser_usb *dev)
- 	struct usb_endpoint_descriptor *endpoint;
- 	int i;
- 
--	iface_desc = &dev->intf->altsetting[0];
-+	iface_desc = dev->intf->cur_altsetting;
- 
- 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
- 		endpoint = &iface_desc->endpoint[i].desc;
--- 
-2.24.0
+Applied both to linux-can.
+
+Tnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--4pKZgfYpzjUZxIs7BT0wqFDzgp0vWLE1V--
+
+--PYGNQfSib4ZC3jmgsc9Zx3onSi9UVP22F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3vhC4ACgkQWsYho5Hk
+nSD2aQgAs5lFAaX+514YmdXepheaxkuir4ylLzDPIatvpPcC20tLVL7dGefACkyl
+46nNfNaGzduZI/UwIbkflwthsNqVUJvMpm9Lzho2CKpIqunUt/QDBKo+9ZxhtwI7
+UJY8uhR3CMQBNn5c4cxAFTlqM4S+wvJTn/5QrCRRxwJysfBGRifkUPV7iqTGR3yK
+/04uPq4EVVRixbQ2Te5XNdnKhv5qyDmPUll8ZPiNgrF7SuemJ0iAZmBA47elxD/j
+0iPo2BREX5akTkghbLsOHav42jREllGklBsMo3+d5M410MkliWfQH4Aou2Gx0LbM
+JnTfQqgPH3IlNXWHHqGowMmpR1bXuA==
+=Ow7r
+-----END PGP SIGNATURE-----
+
+--PYGNQfSib4ZC3jmgsc9Zx3onSi9UVP22F--
