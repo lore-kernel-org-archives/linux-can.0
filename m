@@ -1,40 +1,74 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] can: tcan45x: Fix inconsistent IS_ERR and PTR_ERR
-Date: Tue, 10 Dec 2019 09:05:32 -0600
-Message-ID: <20191210150532.GA12732@embeddedor>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v2] can: tcan4x5x: Turn on the power before parsing the config
+Date: Tue, 10 Dec 2019 10:32:04 -0600
+Message-ID: <20191210163204.28225-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netdev-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Sean Nyekjaer <sean@geanix.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-Fix inconsistent IS_ERR and PTR_ERR in tcan4x5x_parse_config.
+The parse config function now performs action on the device either
+reading or writing and a reset.  If the regulator is managed it needs
+to be turned on.  So turn on the regulator if available if the parsing
+fails then turn off the regulator.
 
-The proper pointer to be passed as argument is tcan4x5x->device_wake_gpio.
-
-This bug was detected with the help of Coccinelle.
-
-Fixes: 2de497356955 ("can: tcan45x: Make wake-up GPIO an optional GPIO")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Fixes: a5235f3c7c23 ("can: tcan45x: Make wake-up GPIO an optional GPIO")
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- drivers/net/can/m_can/tcan4x5x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+
+v2 - Added error handling and moved regulator_get to probe
+
+ drivers/net/can/m_can/tcan4x5x.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index 4e1789ea2bc3..6676ecec48c3 100644
+index 4e1789ea2bc3..ddf7db498241 100644
 --- a/drivers/net/can/m_can/tcan4x5x.c
 +++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -355,7 +355,7 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
- 	tcan4x5x->device_wake_gpio = devm_gpiod_get(cdev->dev, "device-wake",
- 						    GPIOD_OUT_HIGH);
- 	if (IS_ERR(tcan4x5x->device_wake_gpio)) {
--		if (PTR_ERR(tcan4x5x->power) == -EPROBE_DEFER)
-+		if (PTR_ERR(tcan4x5x->device_wake_gpio) == -EPROBE_DEFER)
- 			return -EPROBE_DEFER;
+@@ -374,11 +374,6 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+ 	if (IS_ERR(tcan4x5x->device_state_gpio))
+ 		tcan4x5x->device_state_gpio = NULL;
  
- 		tcan4x5x_disable_wake(cdev);
+-	tcan4x5x->power = devm_regulator_get_optional(cdev->dev,
+-						      "vsup");
+-	if (PTR_ERR(tcan4x5x->power) == -EPROBE_DEFER)
+-		return -EPROBE_DEFER;
+-
+ 	return 0;
+ }
+ 
+@@ -412,6 +407,12 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
++	priv->power = devm_regulator_get_optional(&spi->dev, "vsup");
++	if (PTR_ERR(priv->power) == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
++	else
++		priv->power = NULL;
++
+ 	mcan_class->device_data = priv;
+ 
+ 	m_can_class_get_clocks(mcan_class);
+@@ -451,11 +452,13 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	priv->regmap = devm_regmap_init(&spi->dev, &tcan4x5x_bus,
+ 					&spi->dev, &tcan4x5x_regmap);
+ 
+-	ret = tcan4x5x_parse_config(mcan_class);
++	ret = tcan4x5x_power_enable(priv->power, 1);
+ 	if (ret)
+ 		goto out_clk;
+ 
+-	tcan4x5x_power_enable(priv->power, 1);
++	ret = tcan4x5x_parse_config(mcan_class);
++	if (ret)
++		goto out_power;
+ 
+ 	ret = m_can_class_register(mcan_class);
+ 	if (ret)
 -- 
 2.23.0
