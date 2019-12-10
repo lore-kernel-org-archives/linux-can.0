@@ -1,76 +1,47 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/2] can: fix USB altsetting bugs
-Date: Tue, 10 Dec 2019 12:40:30 +0100
-Message-ID: <1244df5c-27e4-2558-3a88-5be6a7c2bfea@pengutronix.de>
-References: <20191210113231.3797-1-johan@kernel.org>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH][next] can: tcan45x: Fix inconsistent IS_ERR and PTR_ERR
+Date: Tue, 10 Dec 2019 09:13:35 -0600
+Message-ID: <f1c40cbe-28de-55e9-ec19-9401f2c0de03@ti.com>
+References: <20191210150532.GA12732@embeddedor>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="PYGNQfSib4ZC3jmgsc9Zx3onSi9UVP22F"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191210113231.3797-1-johan@kernel.org>
+In-Reply-To: <20191210150532.GA12732@embeddedor>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Johan Hovold <johan@kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Sean Nyekjaer <sean@geanix.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---PYGNQfSib4ZC3jmgsc9Zx3onSi9UVP22F
-Content-Type: multipart/mixed; boundary="4pKZgfYpzjUZxIs7BT0wqFDzgp0vWLE1V";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Johan Hovold <johan@kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <1244df5c-27e4-2558-3a88-5be6a7c2bfea@pengutronix.de>
-Subject: Re: [PATCH 0/2] can: fix USB altsetting bugs
-References: <20191210113231.3797-1-johan@kernel.org>
-In-Reply-To: <20191210113231.3797-1-johan@kernel.org>
+Gustavo
 
---4pKZgfYpzjUZxIs7BT0wqFDzgp0vWLE1V
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 12/10/19 12:32 PM, Johan Hovold wrote:
-> We had quite a few driver using the first alternate setting instead of
-> the current one when doing descriptor sanity checks. This is mostly an
-> issue on kernels with panic_on_warn set due to a WARN() in
-> usb_submit_urn(). Since we've started backporting such fixes (e.g. as
-> reported by syzbot), I've marked these for stable as well.
->=20
-> The second patch here is a related cleanup to prevent future issues.
-
-Applied both to linux-can.
-
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+On 12/10/19 9:05 AM, Gustavo A. R. Silva wrote:
+> Fix inconsistent IS_ERR and PTR_ERR in tcan4x5x_parse_config.
+>
+> The proper pointer to be passed as argument is tcan4x5x->device_wake_gpio.
+>
+> This bug was detected with the help of Coccinelle.
+>
+> Fixes: 2de497356955 ("can: tcan45x: Make wake-up GPIO an optional GPIO")
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
+>   drivers/net/can/m_can/tcan4x5x.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+> index 4e1789ea2bc3..6676ecec48c3 100644
+> --- a/drivers/net/can/m_can/tcan4x5x.c
+> +++ b/drivers/net/can/m_can/tcan4x5x.c
+> @@ -355,7 +355,7 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+>   	tcan4x5x->device_wake_gpio = devm_gpiod_get(cdev->dev, "device-wake",
+>   						    GPIOD_OUT_HIGH);
+>   	if (IS_ERR(tcan4x5x->device_wake_gpio)) {
+> -		if (PTR_ERR(tcan4x5x->power) == -EPROBE_DEFER)
+> +		if (PTR_ERR(tcan4x5x->device_wake_gpio) == -EPROBE_DEFER)
+>   			return -EPROBE_DEFER;
+>   
+>   		tcan4x5x_disable_wake(cdev);
 
 
---4pKZgfYpzjUZxIs7BT0wqFDzgp0vWLE1V--
-
---PYGNQfSib4ZC3jmgsc9Zx3onSi9UVP22F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3vhC4ACgkQWsYho5Hk
-nSD2aQgAs5lFAaX+514YmdXepheaxkuir4ylLzDPIatvpPcC20tLVL7dGefACkyl
-46nNfNaGzduZI/UwIbkflwthsNqVUJvMpm9Lzho2CKpIqunUt/QDBKo+9ZxhtwI7
-UJY8uhR3CMQBNn5c4cxAFTlqM4S+wvJTn/5QrCRRxwJysfBGRifkUPV7iqTGR3yK
-/04uPq4EVVRixbQ2Te5XNdnKhv5qyDmPUll8ZPiNgrF7SuemJ0iAZmBA47elxD/j
-0iPo2BREX5akTkghbLsOHav42jREllGklBsMo3+d5M410MkliWfQH4Aou2Gx0LbM
-JnTfQqgPH3IlNXWHHqGowMmpR1bXuA==
-=Ow7r
------END PGP SIGNATURE-----
-
---PYGNQfSib4ZC3jmgsc9Zx3onSi9UVP22F--
+Acked-by: Dan Murphy <dmurphy@ti.com>
