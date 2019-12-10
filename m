@@ -1,98 +1,51 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 2/2] can: flexcan: disable clocks during stop mode
-Date: Tue, 10 Dec 2019 09:31:47 +0100
-Message-ID: <3ccfc7ac-b860-8254-ad39-66e2f50a5f3c@pengutronix.de>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH 2/2] can: flexcan: disable clocks during stop mode
+Date: Tue, 10 Dec 2019 08:41:29 +0000
+Message-ID: <DB7PR04MB4618045D0E1135A514329AFFE65B0@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <20191210071252.26165-1-qiangqing.zhang@nxp.com>
  <20191210071252.26165-2-qiangqing.zhang@nxp.com>
+ <3ccfc7ac-b860-8254-ad39-66e2f50a5f3c@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="lnW7fl0OROBhIE49JrvV35DXoVT6kEWG6"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191210071252.26165-2-qiangqing.zhang@nxp.com>
+In-Reply-To: <3ccfc7ac-b860-8254-ad39-66e2f50a5f3c@pengutronix.de>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lnW7fl0OROBhIE49JrvV35DXoVT6kEWG6
-Content-Type: multipart/mixed; boundary="jK4mD1wBQRjuOpIGsEtNuO9txxU9hNrzI";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, "sean@geanix.com"
- <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Message-ID: <3ccfc7ac-b860-8254-ad39-66e2f50a5f3c@pengutronix.de>
-Subject: Re: [PATCH 2/2] can: flexcan: disable clocks during stop mode
-References: <20191210071252.26165-1-qiangqing.zhang@nxp.com>
- <20191210071252.26165-2-qiangqing.zhang@nxp.com>
-In-Reply-To: <20191210071252.26165-2-qiangqing.zhang@nxp.com>
-
---jK4mD1wBQRjuOpIGsEtNuO9txxU9hNrzI
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 12/10/19 8:16 AM, Joakim Zhang wrote:
-> Disable clocks during CAN in stop mode.
->=20
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
->  drivers/net/can/flexcan.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index 6c1ccf9f6c08..d767f85c80d3 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -1786,10 +1786,16 @@ static int __maybe_unused flexcan_noirq_suspend=
-(struct device *device)
->  {
->  	struct net_device *dev =3D dev_get_drvdata(device);
->  	struct flexcan_priv *priv =3D netdev_priv(dev);
-> +	int err;
-> =20
-> -	if (netif_running(dev) && device_may_wakeup(device))
-> +	if (netif_running(dev) && device_may_wakeup(device)) {
->  		flexcan_enable_wakeup_irq(priv, true);
-> =20
-> +		err =3D pm_runtime_force_suspend(device);
-> +		if (err)
-> +			return err;
-> +	}
-
-What about moving the pm_runtime_force_suspend() call for both cases
-"device_may_wakeup()" and "!device_may_wakeup()" into the
-flexcan_noirq_suspend() handler?
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---jK4mD1wBQRjuOpIGsEtNuO9txxU9hNrzI--
-
---lnW7fl0OROBhIE49JrvV35DXoVT6kEWG6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3vV/MACgkQWsYho5Hk
-nSC9FQf/c5s7hkfr8XM4tHz8Oet950Rfzdp94c/sbauUbbXx5VmVnd+IpsLbpiga
-WhsSOrEHZBFU++Pk+AP323n3yqbbou9X5g7G/oV5d/5Z/o5gAtHPzvhuGcg5HEdZ
-uzUoVc14SY8QvYhUD0CU5bcmMYq6QhYf/9ySGWwsSQaRy6s5RDmbzFfooZ0pFjL0
-BVPdoXZHS74s8N0OQi0HeJvYXIDopzUcTt/1nLunFIEWdDkjzGcXamMBjgJI2QBg
-289oIFNwm89y+uM0mS1EAOi02hbFnEiJV7lvRCw9GIsuqpvHZA1PVb3M7sGp+bWo
-Do7jAhfa2jUW0WzOBaBXJrYKR8fCTQ==
-=uXSH
------END PGP SIGNATURE-----
-
---lnW7fl0OROBhIE49JrvV35DXoVT6kEWG6--
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
+IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMTnlubQxMuaciDEw5pelIDE2OjMyDQo+
+IFRvOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsgc2VhbkBnZWFuaXgu
+Y29tOw0KPiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+IENjOiBkbC1saW51eC1pbXggPGxp
+bnV4LWlteEBueHAuY29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTog
+W1BBVENIIDIvMl0gY2FuOiBmbGV4Y2FuOiBkaXNhYmxlIGNsb2NrcyBkdXJpbmcgc3RvcCBtb2Rl
+DQo+IA0KPiBPbiAxMi8xMC8xOSA4OjE2IEFNLCBKb2FraW0gWmhhbmcgd3JvdGU6DQo+ID4gRGlz
+YWJsZSBjbG9ja3MgZHVyaW5nIENBTiBpbiBzdG9wIG1vZGUuDQo+ID4NCj4gPiBTaWduZWQtb2Zm
+LWJ5OiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPg0KPiA+IC0tLQ0KPiA+
+ICBkcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIHwgMTMgKysrKysrKysrKysrLQ0KPiA+ICAxIGZp
+bGUgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2ZXJzL25ldC9jYW4vZmxl
+eGNhbi5jDQo+ID4gaW5kZXggNmMxY2NmOWY2YzA4Li5kNzY3Zjg1YzgwZDMgMTAwNjQ0DQo+ID4g
+LS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2Nh
+bi9mbGV4Y2FuLmMNCj4gPiBAQCAtMTc4NiwxMCArMTc4NiwxNiBAQCBzdGF0aWMgaW50IF9fbWF5
+YmVfdW51c2VkDQo+ID4gZmxleGNhbl9ub2lycV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldmlj
+ZSkgIHsNCj4gPiAgCXN0cnVjdCBuZXRfZGV2aWNlICpkZXYgPSBkZXZfZ2V0X2RydmRhdGEoZGV2
+aWNlKTsNCj4gPiAgCXN0cnVjdCBmbGV4Y2FuX3ByaXYgKnByaXYgPSBuZXRkZXZfcHJpdihkZXYp
+Ow0KPiA+ICsJaW50IGVycjsNCj4gPg0KPiA+IC0JaWYgKG5ldGlmX3J1bm5pbmcoZGV2KSAmJiBk
+ZXZpY2VfbWF5X3dha2V1cChkZXZpY2UpKQ0KPiA+ICsJaWYgKG5ldGlmX3J1bm5pbmcoZGV2KSAm
+JiBkZXZpY2VfbWF5X3dha2V1cChkZXZpY2UpKSB7DQo+ID4gIAkJZmxleGNhbl9lbmFibGVfd2Fr
+ZXVwX2lycShwcml2LCB0cnVlKTsNCj4gPg0KPiA+ICsJCWVyciA9IHBtX3J1bnRpbWVfZm9yY2Vf
+c3VzcGVuZChkZXZpY2UpOw0KPiA+ICsJCWlmIChlcnIpDQo+ID4gKwkJCXJldHVybiBlcnI7DQo+
+ID4gKwl9DQo+IA0KPiBXaGF0IGFib3V0IG1vdmluZyB0aGUgcG1fcnVudGltZV9mb3JjZV9zdXNw
+ZW5kKCkgY2FsbCBmb3IgYm90aCBjYXNlcw0KPiAiZGV2aWNlX21heV93YWtldXAoKSIgYW5kICIh
+ZGV2aWNlX21heV93YWtldXAoKSIgaW50byB0aGUNCj4gZmxleGNhbl9ub2lycV9zdXNwZW5kKCkg
+aGFuZGxlcj8NCg0KU291bmRzIGdyZWF0ISBJIHdpbGwgZG8gaXQgaW4gVjIuDQoNCkJlc3QgUmVn
+YXJkcywNCkpvYWtpbSBaaGFuZw0KPiBNYXJjDQo+IA0KPiAtLQ0KPiBQZW5ndXRyb25peCBlLksu
+ICAgICAgICAgICAgICAgICB8IE1hcmMgS2xlaW5lLUJ1ZGRlICAgICAgICAgICB8DQo+IEVtYmVk
+ZGVkIExpbnV4ICAgICAgICAgICAgICAgICAgIHwgaHR0cHM6Ly93d3cucGVuZ3V0cm9uaXguZGUg
+IHwNCj4gVmVydHJldHVuZyBXZXN0L0RvcnRtdW5kICAgICAgICAgfCBQaG9uZTogKzQ5LTIzMS0y
+ODI2LTkyNCAgICAgfA0KPiBBbXRzZ2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiB8IEZheDog
+ICArNDktNTEyMS0yMDY5MTctNTU1NSB8DQoNCg==
