@@ -1,54 +1,51 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH][next] can: tcan45x: Fix inconsistent IS_ERR and PTR_ERR
-Date: Tue, 10 Dec 2019 17:35:44 +0100
-Message-ID: <095ab519-8dd9-4971-83ae-85e96c796d11@pengutronix.de>
-References: <20191210150532.GA12732@embeddedor>
+Subject: Re: [PATCH v2] can: tcan4x5x: Turn on the power before parsing the
+ config
+Date: Tue, 10 Dec 2019 17:46:06 +0100
+Message-ID: <5c6cba4b-efc1-6982-aa6f-c5e90fbb5aa4@pengutronix.de>
+References: <20191210163204.28225-1-dmurphy@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="R9XkPeRyhuEFt6TFKubqSxxwhq61N3wMA"
+ boundary="pP3GmhQynuFVQhOpVFpKVBofGaQQdp8Kb"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20191210150532.GA12732@embeddedor>
+In-Reply-To: <20191210163204.28225-1-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Dan Murphy <dmurphy@ti.com>, Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, Sean Nyekjaer <sean@geanix.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---R9XkPeRyhuEFt6TFKubqSxxwhq61N3wMA
-Content-Type: multipart/mixed; boundary="CejTD8dxQvWUIgUTNgihNi1N7v5kDiLMf";
+--pP3GmhQynuFVQhOpVFpKVBofGaQQdp8Kb
+Content-Type: multipart/mixed; boundary="RYWLW15WZQLM7id6xO88q6TUEsbe5fZ7O";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
- Dan Murphy <dmurphy@ti.com>, Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>, Sean Nyekjaer <sean@geanix.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <095ab519-8dd9-4971-83ae-85e96c796d11@pengutronix.de>
-Subject: Re: [PATCH][next] can: tcan45x: Fix inconsistent IS_ERR and PTR_ERR
-References: <20191210150532.GA12732@embeddedor>
-In-Reply-To: <20191210150532.GA12732@embeddedor>
+To: Dan Murphy <dmurphy@ti.com>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+Message-ID: <5c6cba4b-efc1-6982-aa6f-c5e90fbb5aa4@pengutronix.de>
+Subject: Re: [PATCH v2] can: tcan4x5x: Turn on the power before parsing the
+ config
+References: <20191210163204.28225-1-dmurphy@ti.com>
+In-Reply-To: <20191210163204.28225-1-dmurphy@ti.com>
 
---CejTD8dxQvWUIgUTNgihNi1N7v5kDiLMf
+--RYWLW15WZQLM7id6xO88q6TUEsbe5fZ7O
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 12/10/19 4:05 PM, Gustavo A. R. Silva wrote:
-> Fix inconsistent IS_ERR and PTR_ERR in tcan4x5x_parse_config.
+On 12/10/19 5:32 PM, Dan Murphy wrote:
+> The parse config function now performs action on the device either
+> reading or writing and a reset.  If the regulator is managed it needs
+> to be turned on.  So turn on the regulator if available if the parsing
+> fails then turn off the regulator.
 >=20
-> The proper pointer to be passed as argument is tcan4x5x->device_wake_gp=
-io.
->=20
-> This bug was detected with the help of Coccinelle.
->=20
-> Fixes: 2de497356955 ("can: tcan45x: Make wake-up GPIO an optional GPIO"=
+> Fixes: a5235f3c7c23 ("can: tcan45x: Make wake-up GPIO an optional GPIO"=
 )
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
 
 Applied to linux-can.
 
-Tnx,
 Marc
 
 --=20
@@ -58,23 +55,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---CejTD8dxQvWUIgUTNgihNi1N7v5kDiLMf--
+--RYWLW15WZQLM7id6xO88q6TUEsbe5fZ7O--
 
---R9XkPeRyhuEFt6TFKubqSxxwhq61N3wMA
+--pP3GmhQynuFVQhOpVFpKVBofGaQQdp8Kb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEyBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3vyWAACgkQWsYho5Hk
-nSDQoAf4gHv21bwcm2rpLFf7ZB0YPYaPWz7fcDxQ7KpM7BOeuh9AVn/6EpV3mVEz
-W/QEKztlw91dD9V4FXb5POetjW34wZ2xpBV6tn225avbl5DBQvhFw9G9BUVcQSua
-pJDaYM8j3Rbgloh13uqiROCosKtFf0ObL7VoSjEa3zAFSP9V3cA/12TLMHu0yO6i
-WV3uLLL4HbBPgB43oVXJ/BMoF5ebzk61Zqtwd3ztht5W5xFyflrtyZ/f93I9eLSW
-HvufQOVGs573rIndn6yobXrFX8D/7TwJIyZDNv+KcK4GPKZcIMx64vhMNBpLVkVR
-NRyixv0vtF/2GO3oS28D6wjn7ZhQ
-=MmTk
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl3vy88ACgkQWsYho5Hk
+nSBbyQf/SYPgQ9W4VJnUTBNv/mbIkTXCd+PsI7uo5464zX0WGbdiFVEttBLFUezz
+fDowEqMFi7jkTi7rS5fUkOH9fL5Oi5oQHIhB5AGwTVFUOmQQwFwspPM3rdiygNOM
+nTs3skR8FzwV56IvXvbxAiNuQWOaqNDiOLcHBhivSUcmfJ3lToDsP5HBqIU8u8Ct
+f+aBe1Mn+x1vhmWfZRAcVUXvUUsOMm4ZS9X7wvcZqPIMOCUKp/vItpQHNnIXRQ02
+ykXJtDt1e9ZAw8ZKxpcxPlQAic7GVXDgbVOAAhIycQosBCd9ueODWCh1fIk8VjIt
+MUGOieZ9M4/eNGKwQwLpC0AEDRPh8Q==
+=UP1A
 -----END PGP SIGNATURE-----
 
---R9XkPeRyhuEFt6TFKubqSxxwhq61N3wMA--
+--pP3GmhQynuFVQhOpVFpKVBofGaQQdp8Kb--
