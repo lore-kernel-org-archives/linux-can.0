@@ -1,101 +1,34 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH V2 2/2] can: flexcan: disable clocks during stop mode
-Date: Tue, 10 Dec 2019 09:00:13 +0000
-Message-ID: <20191210085721.9853-2-qiangqing.zhang@nxp.com>
-References: <20191210085721.9853-1-qiangqing.zhang@nxp.com>
+From: Johan Hovold <johan@kernel.org>
+Subject: [PATCH 0/2] can: fix USB altsetting bugs
+Date: Tue, 10 Dec 2019 12:32:29 +0100
+Message-ID: <20191210113231.3797-1-johan@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191210085721.9853-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Disable clocks during CAN in stop mode.
+We had quite a few driver using the first alternate setting instead of
+the current one when doing descriptor sanity checks. This is mostly an
+issue on kernels with panic_on_warn set due to a WARN() in
+usb_submit_urn(). Since we've started backporting such fixes (e.g. as
+reported by syzbot), I've marked these for stable as well.
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-------
-ChangeLog:
-	V1->V2: * moving the pm_runtime_force_suspend() call for both
-	cases "device_may_wakeup()" and "!device_may_wakeup()" into the
-	flexcan_noirq_suspend() handler
----
- drivers/net/can/flexcan.c | 32 +++++++++++++++++++-------------
- 1 file changed, 19 insertions(+), 13 deletions(-)
+The second patch here is a related cleanup to prevent future issues.
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 6c1ccf9f6c08..63b2f47635cf 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1718,10 +1718,6 @@ static int __maybe_unused flexcan_suspend(struct dev=
-ice *device)
- 			if (err)
- 				return err;
-=20
--			err =3D pm_runtime_force_suspend(device);
--			if (err)
--				return err;
--
- 			err =3D pinctrl_pm_select_sleep_state(device);
- 			if (err)
- 				return err;
-@@ -1751,10 +1747,6 @@ static int __maybe_unused flexcan_resume(struct devi=
-ce *device)
- 			if (err)
- 				return err;
-=20
--			err =3D pm_runtime_force_resume(device);
--			if (err)
--				return err;
--
- 			err =3D flexcan_chip_start(dev);
- 			if (err)
- 				return err;
-@@ -1786,9 +1778,16 @@ static int __maybe_unused flexcan_noirq_suspend(stru=
-ct device *device)
- {
- 	struct net_device *dev =3D dev_get_drvdata(device);
- 	struct flexcan_priv *priv =3D netdev_priv(dev);
-+	int err;
-=20
--	if (netif_running(dev) && device_may_wakeup(device))
--		flexcan_enable_wakeup_irq(priv, true);
-+	if (netif_running(dev)) {
-+		if (device_may_wakeup(device))
-+			flexcan_enable_wakeup_irq(priv, true);
-+
-+		err =3D pm_runtime_force_suspend(device);
-+		if (err)
-+			return err;
-+	}
-=20
- 	return 0;
- }
-@@ -1799,11 +1798,18 @@ static int __maybe_unused flexcan_noirq_resume(stru=
-ct device *device)
- 	struct flexcan_priv *priv =3D netdev_priv(dev);
- 	int err;
-=20
--	if (netif_running(dev) && device_may_wakeup(device)) {
--		flexcan_enable_wakeup_irq(priv, false);
--		err =3D flexcan_exit_stop_mode(priv);
-+	if (netif_running(dev)) {
-+		err =3D pm_runtime_force_resume(device);
- 		if (err)
- 			return err;
-+
-+		if (device_may_wakeup(device)) {
-+			flexcan_enable_wakeup_irq(priv, false);
-+
-+			err =3D flexcan_exit_stop_mode(priv);
-+			if (err)
-+				return err;
-+		}
- 	}
-=20
- 	return 0;
---=20
-2.17.1
+Johan
+
+
+Johan Hovold (2):
+  can: kvaser_usb: fix interface sanity check
+  can: gs_usb: use descriptors of current altsetting
+
+ drivers/net/can/usb/gs_usb.c                      | 4 ++--
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+2.24.0
