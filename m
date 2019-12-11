@@ -1,15 +1,13 @@
 From: Sean Nyekjaer <sean@geanix.com>
-Subject: [PATCH v5 2/2] can: tcan4x5x: put the device out of standby before register access
-Date: Wed, 11 Dec 2019 14:39:26 +0100
-Message-ID: <20191211133926.319015-2-sean@geanix.com>
-References: <20191211133926.319015-1-sean@geanix.com>
+Subject: [PATCH v6 1/2] can: tcan4x5x: put the device out of standby before register access
+Date: Wed, 11 Dec 2019 14:53:39 +0100
+Message-ID: <20191211135340.320004-1-sean@geanix.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20191211133926.319015-1-sean@geanix.com>
 Sender: stable-owner@vger.kernel.org
 To: mkl@pengutronix.de, dmurphy@ti.com, linux-can@vger.kernel.org
-Cc: Sean Nyekjaer <sean@geanix.com>, martin@geanix.com, stable@vger.kernel.org
+Cc: Sean Nyekjaer <sean@geanix.com>, stable@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 The m_can tries to detect if Non ISO Operation is available while in
@@ -32,19 +30,22 @@ Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
 Changes since v3:
- - Fixed fixes tag
+ - added reset if the reset_gpio is not avaliable
 
 Changes since v4:
- - None
+ - added error handling for the SPI I/O
+
+Changes since v5:
+ - Removed braces for single statement if's
 
  drivers/net/can/m_can/tcan4x5x.c | 4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index 032d110e0870..3a3359ad3723 100644
+index c1b83dc26c3a..295dbb73c69e 100644
 --- a/drivers/net/can/m_can/tcan4x5x.c
 +++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -485,6 +485,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+@@ -484,6 +484,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
  	if (ret)
  		goto out_power;
  
