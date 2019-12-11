@@ -1,12 +1,12 @@
 From: Sean Nyekjaer <sean@geanix.com>
-Subject: [PATCH v4 2/2] can: tcan4x5x: put the device out of standby before register access
-Date: Wed, 11 Dec 2019 14:12:23 +0100
-Message-ID: <20191211131223.292455-2-sean@geanix.com>
-References: <20191211131223.292455-1-sean@geanix.com>
+Subject: [PATCH v5 2/2] can: tcan4x5x: put the device out of standby before register access
+Date: Wed, 11 Dec 2019 14:39:26 +0100
+Message-ID: <20191211133926.319015-2-sean@geanix.com>
+References: <20191211133926.319015-1-sean@geanix.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20191211131223.292455-1-sean@geanix.com>
+In-Reply-To: <20191211133926.319015-1-sean@geanix.com>
 Sender: stable-owner@vger.kernel.org
 To: mkl@pengutronix.de, dmurphy@ti.com, linux-can@vger.kernel.org
 Cc: Sean Nyekjaer <sean@geanix.com>, martin@geanix.com, stable@vger.kernel.org
@@ -34,14 +34,17 @@ Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Changes since v3:
  - Fixed fixes tag
 
+Changes since v4:
+ - None
+
  drivers/net/can/m_can/tcan4x5x.c | 4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index 960a16aca7ca..32c16be5a9d8 100644
+index 032d110e0870..3a3359ad3723 100644
 --- a/drivers/net/can/m_can/tcan4x5x.c
 +++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -475,6 +475,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+@@ -485,6 +485,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
  	if (ret)
  		goto out_power;
  
