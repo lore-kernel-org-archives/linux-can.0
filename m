@@ -1,64 +1,63 @@
-From: Sean Nyekjaer <sean@geanix.com>
-Subject: [PATCH v6 2/2] can: tcan4x5x: put the device out of standby before register access
-Date: Wed, 11 Dec 2019 14:58:52 +0100
-Message-ID: <20191211135852.320650-2-sean@geanix.com>
-References: <20191211135852.320650-1-sean@geanix.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH linux-can/testing] can: tcan4x5x: Disable the INH pin device-state GPIO is unavailable
+Date: Thu, 12 Dec 2019 10:15:36 -0600
+Message-ID: <20191212161536.23264-1-dmurphy@ti.com>
 Mime-Version: 1.0
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20191211135852.320650-1-sean@geanix.com>
-Sender: stable-owner@vger.kernel.org
-To: mkl@pengutronix.de, dmurphy@ti.com, linux-can@vger.kernel.org
-Cc: Sean Nyekjaer <sean@geanix.com>, stable@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
+Cc: Dan Murphy <dmurphy@ti.com>
 List-Id: linux-can.vger.kernel.org
 
-The m_can tries to detect if Non ISO Operation is available while in
-standby, this function results in the following error:
+If the device state GPIO is not connected to the host then disable the
+INH output from the TCAN device per section 8.3.5 of the data sheet.
 
-tcan4x5x spi2.0 (unnamed net_device) (uninitialized): Failed to init module
-tcan4x5x spi2.0: m_can device registered (irq=84, version=32)
-tcan4x5x spi2.0 can2: TCAN4X5X successfully initialized.
-
-When the tcan device comes out of reset it comes out in standby mode.
-The m_can driver tries to access the control register but fails due to
-the device is in standby mode.
-
-So this patch will put the tcan device in normal mode before the m_can
-driver does the initialization.
-
-Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
-Changes since v3:
- - Fixed fixes tag
-
-Changes since v4:
- - None
-
-Changes since v5:
- - None
-
- Sorry for the mess :)
-
- drivers/net/can/m_can/tcan4x5x.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/can/m_can/tcan4x5x.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index dcfa85edc787..8ed2813f227e 100644
+index b5d2ea0999c1..6a1f242d1876 100644
 --- a/drivers/net/can/m_can/tcan4x5x.c
 +++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -482,6 +482,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+@@ -102,6 +102,7 @@
+ #define TCAN4X5X_MODE_NORMAL BIT(7)
  
- 	tcan4x5x_power_enable(priv->power, 1);
+ #define TCAN4X5X_DISABLE_WAKE_MSK	(BIT(31) | BIT(30))
++#define TCAN4X5X_DISABLE_INH_MSK	BIT(9)
  
-+	ret = tcan4x5x_init(mcan_class);
-+	if (ret)
-+		goto out_power;
+ #define TCAN4X5X_SW_RESET BIT(2)
+ 
+@@ -360,6 +361,15 @@ static int tcan4x5x_disable_wake(struct m_can_classdev *cdev)
+ 				  TCAN4X5X_DISABLE_WAKE_MSK, 0x00);
+ }
+ 
++static int tcan4x5x_disable_state(struct m_can_classdev *cdev)
++{
++	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
 +
- 	ret = m_can_class_register(mcan_class);
- 	if (ret)
- 		goto out_power;
++	return regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
++				  TCAN4X5X_DISABLE_INH_MSK, 0x01);
++
++}
++
+ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+ {
+ 	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
+@@ -383,8 +393,10 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+ 	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(cdev->dev,
+ 							      "device-state",
+ 							      GPIOD_IN);
+-	if (IS_ERR(tcan4x5x->device_state_gpio))
++	if (IS_ERR(tcan4x5x->device_state_gpio)) {
+ 		tcan4x5x->device_state_gpio = NULL;
++		tcan4x5x_disable_state(cdev);
++	}
+ 
+ 	return 0;
+ }
 -- 
-2.24.0
+2.23.0
