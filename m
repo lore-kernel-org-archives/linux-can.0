@@ -1,38 +1,64 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH V2 1/2] can: flexcan: disable runtime PM if register
- flexcandev failed
-Date: Tue, 17 Dec 2019 06:36:00 +0000
-Message-ID: <DB7PR04MB46181D2F1538A53B4F1892E2E6500@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20191210085721.9853-1-qiangqing.zhang@nxp.com>
+From: Marek Vasut <marex@denx.de>
+Subject: [PATCH] can: m_can: Fix default pinmux glitch at init
+Date: Tue, 17 Dec 2019 11:07:40 +0100
+Message-ID: <20191217100740.2687835-1-marex@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191210085721.9853-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: Marek Vasut <marex@denx.de>, Bich Hemon <bich.hemon@st.com>, Grygorii Strashko <grygorii.strashko@ti.com>, "J . D . Schroeder" <jay.schroeder@garmin.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Roger Quadros <rogerq@ti.com>, linux-stable <stable@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-DQpIaSBTZWFuLA0KDQpIYXZlIHlvdSBmb3VuZCB0aW1lIHRvIHRlc3QgdGhpcyBwYXRjaCBzZXQ/
-IFRoYW5rcyA6LSkNCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQoNCj4gLS0tLS1Pcmln
-aW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdA
-bnhwLmNvbT4NCj4gU2VudDogMjAxOcTqMTLUwjEwyNUgMTc6MDANCj4gVG86IG1rbEBwZW5ndXRy
-b25peC5kZTsgc2VhbkBnZWFuaXguY29tOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+IENj
-OiBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9y
-ZzsgSm9ha2ltIFpoYW5nDQo+IDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gU3ViamVjdDog
-W1BBVENIIFYyIDEvMl0gY2FuOiBmbGV4Y2FuOiBkaXNhYmxlIHJ1bnRpbWUgUE0gaWYgcmVnaXN0
-ZXIgZmxleGNhbmRldg0KPiBmYWlsZWQNCj4gDQo+IEhhZCBiZXR0ZXIgZGlzYWJsZSBydW50aW1l
-IFBNIGlmIHJlZ2lzdGVyIGZsZXhjYW5kZXYgZmFpbGVkLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
-Sm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gLS0tLS0tDQo+IENoYW5n
-ZUxvZzoNCj4gCVYxLT5WMjogKm5vIGNoYW5nZS4NCj4gLS0tDQo+ICBkcml2ZXJzL25ldC9jYW4v
-ZmxleGNhbi5jIHwgMiArKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQ0KPiAN
-Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2ZXJzL25ldC9j
-YW4vZmxleGNhbi5jIGluZGV4DQo+IDNhNzU0MzU1ZWJlNi4uNmMxY2NmOWY2YzA4IDEwMDY0NA0K
-PiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nh
-bi9mbGV4Y2FuLmMNCj4gQEAgLTE2ODEsNiArMTY4MSw4IEBAIHN0YXRpYyBpbnQgZmxleGNhbl9w
-cm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiAgCXJldHVybiAwOw0KPiAN
-Cj4gICBmYWlsZWRfcmVnaXN0ZXI6DQo+ICsJcG1fcnVudGltZV9wdXRfbm9pZGxlKCZwZGV2LT5k
-ZXYpOw0KPiArCXBtX3J1bnRpbWVfZGlzYWJsZSgmcGRldi0+ZGV2KTsNCj4gIAlmcmVlX2NhbmRl
-dihkZXYpOw0KPiAgCXJldHVybiBlcnI7DQo+ICB9DQo+IC0tDQo+IDIuMTcuMQ0KDQo=
+The current code causes a slight glitch on the pinctrl settings when used.
+Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
+the device core will automatically set the default pins. This causes the pins
+to be momentarily set to the default and then to the sleep state in
+register_m_can_dev(). By adding an optional "enable" state, boards can set the
+default pin state to be disabled and avoid the glitch when the switch from
+default to sleep first occurs. If the "enable" state is not available
+pinctrl_get_select() falls back to using the "default" pinctrl state.
+
+Fixes: c9b3bce18da4 ("can: m_can: select pinctrl state in each suspend/resume function")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Bich Hemon <bich.hemon@st.com>
+Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: J.D. Schroeder <jay.schroeder@garmin.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Roger Quadros <rogerq@ti.com>
+Cc: linux-stable <stable@vger.kernel.org>
+To: linux-can@vger.kernel.org
+---
+NOTE: This is commit 033365191136 ("can: c_can: Fix default pinmux glitch at init")
+      adapted for m_can driver.
+---
+ drivers/net/can/m_can/m_can.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 02c5795b73936..afb6760b17427 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1243,12 +1243,20 @@ static void m_can_chip_config(struct net_device *dev)
+ static void m_can_start(struct net_device *dev)
+ {
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
++	struct pinctrl *p;
+ 
+ 	/* basic m_can configuration */
+ 	m_can_chip_config(dev);
+ 
+ 	cdev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
++	/* Attempt to use "active" if available else use "default" */
++	p = pinctrl_get_select(cdev->dev, "active");
++	if (!IS_ERR(p))
++		pinctrl_put(p);
++	else
++		pinctrl_pm_select_default_state(cdev->dev);
++
+ 	m_can_enable_all_interrupts(cdev);
+ }
+ 
+-- 
+2.24.0.525.g8f36a354ae
