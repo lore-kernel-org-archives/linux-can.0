@@ -1,63 +1,38 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH linux-can/testing] can: tcan4x5x: Disable the INH pin device-state GPIO is unavailable
-Date: Thu, 12 Dec 2019 10:15:36 -0600
-Message-ID: <20191212161536.23264-1-dmurphy@ti.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V2 1/2] can: flexcan: disable runtime PM if register
+ flexcandev failed
+Date: Tue, 17 Dec 2019 06:36:00 +0000
+Message-ID: <DB7PR04MB46181D2F1538A53B4F1892E2E6500@DB7PR04MB4618.eurprd04.prod.outlook.com>
+References: <20191210085721.9853-1-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
-Cc: Dan Murphy <dmurphy@ti.com>
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20191210085721.9853-1-qiangqing.zhang@nxp.com>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "sean@geanix.com" <sean@geanix.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-If the device state GPIO is not connected to the host then disable the
-INH output from the TCAN device per section 8.3.5 of the data sheet.
-
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/net/can/m_can/tcan4x5x.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index b5d2ea0999c1..6a1f242d1876 100644
---- a/drivers/net/can/m_can/tcan4x5x.c
-+++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -102,6 +102,7 @@
- #define TCAN4X5X_MODE_NORMAL BIT(7)
- 
- #define TCAN4X5X_DISABLE_WAKE_MSK	(BIT(31) | BIT(30))
-+#define TCAN4X5X_DISABLE_INH_MSK	BIT(9)
- 
- #define TCAN4X5X_SW_RESET BIT(2)
- 
-@@ -360,6 +361,15 @@ static int tcan4x5x_disable_wake(struct m_can_classdev *cdev)
- 				  TCAN4X5X_DISABLE_WAKE_MSK, 0x00);
- }
- 
-+static int tcan4x5x_disable_state(struct m_can_classdev *cdev)
-+{
-+	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
-+
-+	return regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
-+				  TCAN4X5X_DISABLE_INH_MSK, 0x01);
-+
-+}
-+
- static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
- {
- 	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
-@@ -383,8 +393,10 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
- 	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(cdev->dev,
- 							      "device-state",
- 							      GPIOD_IN);
--	if (IS_ERR(tcan4x5x->device_state_gpio))
-+	if (IS_ERR(tcan4x5x->device_state_gpio)) {
- 		tcan4x5x->device_state_gpio = NULL;
-+		tcan4x5x_disable_state(cdev);
-+	}
- 
- 	return 0;
- }
--- 
-2.23.0
+DQpIaSBTZWFuLA0KDQpIYXZlIHlvdSBmb3VuZCB0aW1lIHRvIHRlc3QgdGhpcyBwYXRjaCBzZXQ/
+IFRoYW5rcyA6LSkNCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQoNCj4gLS0tLS1Pcmln
+aW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdA
+bnhwLmNvbT4NCj4gU2VudDogMjAxOcTqMTLUwjEwyNUgMTc6MDANCj4gVG86IG1rbEBwZW5ndXRy
+b25peC5kZTsgc2VhbkBnZWFuaXguY29tOyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnDQo+IENj
+OiBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9y
+ZzsgSm9ha2ltIFpoYW5nDQo+IDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gU3ViamVjdDog
+W1BBVENIIFYyIDEvMl0gY2FuOiBmbGV4Y2FuOiBkaXNhYmxlIHJ1bnRpbWUgUE0gaWYgcmVnaXN0
+ZXIgZmxleGNhbmRldg0KPiBmYWlsZWQNCj4gDQo+IEhhZCBiZXR0ZXIgZGlzYWJsZSBydW50aW1l
+IFBNIGlmIHJlZ2lzdGVyIGZsZXhjYW5kZXYgZmFpbGVkLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
+Sm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gLS0tLS0tDQo+IENoYW5n
+ZUxvZzoNCj4gCVYxLT5WMjogKm5vIGNoYW5nZS4NCj4gLS0tDQo+ICBkcml2ZXJzL25ldC9jYW4v
+ZmxleGNhbi5jIHwgMiArKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQ0KPiAN
+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgYi9kcml2ZXJzL25ldC9j
+YW4vZmxleGNhbi5jIGluZGV4DQo+IDNhNzU0MzU1ZWJlNi4uNmMxY2NmOWY2YzA4IDEwMDY0NA0K
+PiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2Nh
+bi9mbGV4Y2FuLmMNCj4gQEAgLTE2ODEsNiArMTY4MSw4IEBAIHN0YXRpYyBpbnQgZmxleGNhbl9w
+cm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiAgCXJldHVybiAwOw0KPiAN
+Cj4gICBmYWlsZWRfcmVnaXN0ZXI6DQo+ICsJcG1fcnVudGltZV9wdXRfbm9pZGxlKCZwZGV2LT5k
+ZXYpOw0KPiArCXBtX3J1bnRpbWVfZGlzYWJsZSgmcGRldi0+ZGV2KTsNCj4gIAlmcmVlX2NhbmRl
+dihkZXYpOw0KPiAgCXJldHVybiBlcnI7DQo+ICB9DQo+IC0tDQo+IDIuMTcuMQ0KDQo=
