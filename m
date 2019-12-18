@@ -1,82 +1,61 @@
-From: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] can: m_can: Fix default pinmux glitch at init
-Date: Tue, 17 Dec 2019 11:55:25 +0100
-Message-ID: <3c48dd07-154e-bc47-4aff-73769d9efa22@denx.de>
-References: <20191217100740.2687835-1-marex@denx.de>
- <8b2e0a40-cf23-58a5-4f52-215015c61ea8@ti.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: [PATCH v1] can: j1939: transport: j1939_simple_recv(): ignore local J1939 messages send not by J1939 stack
+Date: Wed, 18 Dec 2019 09:43:55 +0100
+Message-ID: <20191218084355.24398-1-o.rempel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <8b2e0a40-cf23-58a5-4f52-215015c61ea8@ti.com>
-Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Grygorii Strashko <grygorii.strashko@ti.com>, linux-can@vger.kernel.org
-Cc: Bich Hemon <bich.hemon@st.com>, "J . D . Schroeder" <jay.schroeder@garmin.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Roger Quadros <rogerq@ti.com>, linux-stable <stable@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On 12/17/19 11:42 AM, Grygorii Strashko wrote:
-> 
-> 
-> On 17/12/2019 12:07, Marek Vasut wrote:
->> The current code causes a slight glitch on the pinctrl settings when
->> used.
->> Since commit ab78029 (drivers/pinctrl: grab default handles from
->> device core),
->> the device core will automatically set the default pins. This causes
->> the pins
->> to be momentarily set to the default and then to the sleep state in
->> register_m_can_dev(). By adding an optional "enable" state, boards can
->> set the
->> default pin state to be disabled and avoid the glitch when the switch
->> from
->> default to sleep first occurs. If the "enable" state is not available
->> pinctrl_get_select() falls back to using the "default" pinctrl state.
->>
->> Fixes: c9b3bce18da4 ("can: m_can: select pinctrl state in each
->> suspend/resume function")
->> Signed-off-by: Marek Vasut <marex@denx.de>
->> Cc: Bich Hemon <bich.hemon@st.com>
->> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
->> Cc: J.D. Schroeder <jay.schroeder@garmin.com>
->> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
->> Cc: Roger Quadros <rogerq@ti.com>
->> Cc: linux-stable <stable@vger.kernel.org>
->> To: linux-can@vger.kernel.org
->> ---
->> NOTE: This is commit 033365191136 ("can: c_can: Fix default pinmux
->> glitch at init")
->>        adapted for m_can driver.
->> ---
->>   drivers/net/can/m_can/m_can.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/drivers/net/can/m_can/m_can.c
->> b/drivers/net/can/m_can/m_can.c
->> index 02c5795b73936..afb6760b17427 100644
->> --- a/drivers/net/can/m_can/m_can.c
->> +++ b/drivers/net/can/m_can/m_can.c
->> @@ -1243,12 +1243,20 @@ static void m_can_chip_config(struct
->> net_device *dev)
->>   static void m_can_start(struct net_device *dev)
->>   {
->>       struct m_can_classdev *cdev = netdev_priv(dev);
->> +    struct pinctrl *p;
->>         /* basic m_can configuration */
->>       m_can_chip_config(dev);
->>         cdev->can.state = CAN_STATE_ERROR_ACTIVE;
->>   +    /* Attempt to use "active" if available else use "default" */
->> +    p = pinctrl_get_select(cdev->dev, "active");
->> +    if (!IS_ERR(p))
->> +        pinctrl_put(p);
->> +    else
->> +        pinctrl_pm_select_default_state(cdev->dev);
->> +
->>       m_can_enable_all_interrupts(cdev);
->>   }
->>  
-> 
-> May be init state should be used - #define PINCTRL_STATE_INIT "init"
-> instead?
+In current J1939 stack implementation, we process all locally send
+messages as own messages. Even if it was send by CAN_RAW socket.
 
-I'm not sure I quite understand -- how ?
+To reproduce it use following commands:
+testj1939 -P -r can0:0x80 &
+cansend can0 18238040#0123
+
+This step will trigger false positive not critical warning:
+j1939_simple_recv: Received already invalidated message
+
+With this patch we add additional check to make sure, related skb is own
+echo message.
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ net/can/j1939/socket.c    | 1 +
+ net/can/j1939/transport.c | 4 ++++
+ 2 files changed, 5 insertions(+)
+
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index f7587428febd..b9a17c2ee16f 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -398,6 +398,7 @@ static int j1939_sk_init(struct sock *sk)
+ 	spin_lock_init(&jsk->sk_session_queue_lock);
+ 	INIT_LIST_HEAD(&jsk->sk_session_queue);
+ 	sk->sk_destruct = j1939_sk_sock_destruct;
++	sk->sk_protocol = CAN_J1939;
+ 
+ 	return 0;
+ }
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 9f99af5b0b11..b135c5e2a86e 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -2017,6 +2017,10 @@ void j1939_simple_recv(struct j1939_priv *priv, struct sk_buff *skb)
+ 	if (!skb->sk)
+ 		return;
+ 
++	if (skb->sk->sk_family != AF_CAN ||
++	    skb->sk->sk_protocol != CAN_J1939)
++		return;
++
+ 	j1939_session_list_lock(priv);
+ 	session = j1939_session_get_simple(priv, skb);
+ 	j1939_session_list_unlock(priv);
+-- 
+2.24.0
