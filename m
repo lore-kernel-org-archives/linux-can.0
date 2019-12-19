@@ -1,47 +1,36 @@
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: RE: [PATCH net-next v2 2/3] dt-bindings: can: rcar_canfd: document
- r8a774b1 support
-Date: Wed, 18 Dec 2019 15:16:35 +0000
-Message-ID: <TY1PR01MB17703B32045654CB46C2FC8BC0530@TY1PR01MB1770.jpnprd01.prod.outlook.com>
-References: <1570717560-7431-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1570717560-7431-3-git-send-email-fabrizio.castro@bp.renesas.com>
- <20191014181035.GA2613@bogus>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH V2 1/2] can: flexcan: disable runtime PM if register
+ flexcandev failed
+Date: Thu, 19 Dec 2019 04:59:58 +0000
+Message-ID: <VI1PR04MB46223042279D18D20C955881E6520@VI1PR04MB4622.eurprd04.prod.outlook.com>
+References: <20191210085721.9853-1-qiangqing.zhang@nxp.com>
+ <DB7PR04MB46181D2F1538A53B4F1892E2E6500@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <935f466b-a9c9-de73-be12-6ebb7b77e058@geanix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20191014181035.GA2613@bogus>
+In-Reply-To: <935f466b-a9c9-de73-be12-6ebb7b77e058@geanix.com>
 Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Mark Rutland <mark.rutland@arm.com>, "David S. Miller" <davem@davemloft.net>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, Jacopo Mondi <jacopo+renesas@jmondi.org>
+To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Hi Geert,
-
-Do you think you can take this patch?
-
-Thanks,
-Fab
-
-> From: linux-renesas-soc-owner@vger.kernel.org <linux-renesas-soc-owner@vg=
-er.kernel.org> On Behalf Of Rob Herring
-> Sent: 14 October 2019 19:11
-> Subject: Re: [PATCH net-next v2 2/3] dt-bindings: can: rcar_canfd: docume=
-nt r8a774b1 support
->=20
-> On Thu, 10 Oct 2019 15:25:59 +0100, Fabrizio Castro wrote:
-> > Document the support for rcar_canfd on R8A774B1 SoC devices.
-> >
-> > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> > v1->v2:
-> > * Added the R8A774B1 to the clock paragraph according to Geert's commen=
-t
-> >
-> >  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
->=20
-> Acked-by: Rob Herring <robh@kernel.org>
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gTnlla2phZXIgPHNl
+YW5AZ2Vhbml4LmNvbT4NCj4gU2VudDogMjAxOcTqMTLUwjE4yNUgMjI6MDQNCj4gVG86IEpvYWtp
+bSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBta2xAcGVuZ3V0cm9uaXguZGU7DQo+
+IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlteCA8bGludXgtaW14
+QG54cC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
+VjIgMS8yXSBjYW46IGZsZXhjYW46IGRpc2FibGUgcnVudGltZSBQTSBpZiByZWdpc3Rlcg0KPiBm
+bGV4Y2FuZGV2IGZhaWxlZA0KPiANCj4gDQo+IA0KPiBPbiAxNy8xMi8yMDE5IDA3LjM2LCBKb2Fr
+aW0gWmhhbmcgd3JvdGU6DQo+ID4NCj4gPiBIaSBTZWFuLA0KPiA+DQo+ID4gSGF2ZSB5b3UgZm91
+bmQgdGltZSB0byB0ZXN0IHRoaXMgcGF0Y2ggc2V0PyBUaGFua3MgOi0pDQo+ID4NCj4gPiBCZXN0
+IFJlZ2FyZHMsDQo+ID4gSm9ha2ltIFpoYW5nDQo+ID4NCj4gDQo+IEhpIEpvYWtpbQ0KPiANCj4g
+U29ycnkgZm9yIHRoZSBkZWxheSA6KQ0KPiANCj4gSSBoYXZlIHRlc3RlZCB0aGlzIHBhdGNoc2V0
+IGFuZCBmb3VuZCBubyBpc3N1ZXMuLi4NClRoYW5rcyBhIGxvdCBmb3IgeW91ciB0ZXN0LCBTZWFu
+IDotKQ0KDQo+IEp1c3QgYSBoZWFkcyB1cCB3aGVuIGFkZGluZyAiQ2hhbmdlTG9nOiIgZG8gaXQg
+dW5kZXIgdGhlICItLS0iIGFuZCBhYm92ZSB0aGUNCj4gZGlmZi4gVGhhdCB3YXkgdGhlIENoYW5n
+ZUxvZyBkb2Vzbid0IGVuZCB1cCBpbiB0aGUgY29tbWl0IG1zZy4uLg0KSSB3aWxsIGtlZXAgaW4g
+bWluZCwgcGF5IGF0dGVudGlvbiB0byBpdCBuZXh0IHRpbWUuDQoNCkJlc3QgUmVnYXJkcywNCkpv
+YWtpbSBaaGFuZw0KPiAvU2Vhbg0KPiANCg0K
