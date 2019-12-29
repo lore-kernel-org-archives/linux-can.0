@@ -1,159 +1,130 @@
-From: syzbot <syzbot+5322482fe520b02aea30@syzkaller.appspotmail.com>
-Subject: KASAN: use-after-free Read in j1939_tp_txtimer
-Date: Thu, 26 Dec 2019 13:15:11 -0800
-Message-ID: <0000000000005b5fc7059aa1df89@google.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH linux-can/testing] can: tcan4x5x: Disable the INH pin
+ device-state GPIO is unavailable
+Date: Sun, 29 Dec 2019 16:32:08 +0100
+Message-ID: <b0560413-525c-39ba-30ce-816c098e51ab@pengutronix.de>
+References: <20191212161536.23264-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="N1nesT42QyOxVEMMoQougOQqY8SIbiSL0"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20191212161536.23264-1-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: bst@pengutronix.de, davem@davemloft.net, dev.kurt@vandijck-laurijssen.be, ecathinds@gmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, lkp@intel.com, maxime.jayat@mobile-devices.fr, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+To: Dan Murphy <dmurphy@ti.com>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
 List-Id: linux-can.vger.kernel.org
 
-Hello,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--N1nesT42QyOxVEMMoQougOQqY8SIbiSL0
+Content-Type: multipart/mixed; boundary="av7eADa9mYDcTsXodHZDp6AFIW6KEoww7";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Dan Murphy <dmurphy@ti.com>, linux-kernel@vger.kernel.org,
+ linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
+Message-ID: <b0560413-525c-39ba-30ce-816c098e51ab@pengutronix.de>
+Subject: Re: [PATCH linux-can/testing] can: tcan4x5x: Disable the INH pin
+ device-state GPIO is unavailable
+References: <20191212161536.23264-1-dmurphy@ti.com>
+In-Reply-To: <20191212161536.23264-1-dmurphy@ti.com>
 
-syzbot found the following crash on:
+--av7eADa9mYDcTsXodHZDp6AFIW6KEoww7
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    46cf053e Linux 5.5-rc3
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=158ac866e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ed9d672709340e35
-dashboard link: https://syzkaller.appspot.com/bug?extid=5322482fe520b02aea30
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11af21fee00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116b4ec1e00000
+On 12/12/19 5:15 PM, Dan Murphy wrote:
+> If the device state GPIO is not connected to the host then disable the
+> INH output from the TCAN device per section 8.3.5 of the data sheet.
+>=20
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
 
-The bug was bisected to:
+Applied to linux-can. With some changes...
 
-commit 9d71dd0c70099914fcd063135da3c580865e924c
-Author: The j1939 authors <linux-can@vger.kernel.org>
-Date:   Mon Oct 8 09:48:36 2018 +0000
+>  drivers/net/can/m_can/tcan4x5x.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/t=
+can4x5x.c
+> index b5d2ea0999c1..6a1f242d1876 100644
+> --- a/drivers/net/can/m_can/tcan4x5x.c
+> +++ b/drivers/net/can/m_can/tcan4x5x.c
+> @@ -102,6 +102,7 @@
+>  #define TCAN4X5X_MODE_NORMAL BIT(7)
+> =20
+>  #define TCAN4X5X_DISABLE_WAKE_MSK	(BIT(31) | BIT(30))
+> +#define TCAN4X5X_DISABLE_INH_MSK	BIT(9)
+> =20
+>  #define TCAN4X5X_SW_RESET BIT(2)
+> =20
+> @@ -360,6 +361,15 @@ static int tcan4x5x_disable_wake(struct m_can_clas=
+sdev *cdev)
+>  				  TCAN4X5X_DISABLE_WAKE_MSK, 0x00);
+>  }
+> =20
+> +static int tcan4x5x_disable_state(struct m_can_classdev *cdev)
+> +{
+> +	struct tcan4x5x_priv *tcan4x5x =3D cdev->device_data;
+> +
+> +	return regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
+> +				  TCAN4X5X_DISABLE_INH_MSK, 0x01);
+> +
 
-     can: add support of SAE J1939 protocol
+Removed the stray line while applying.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=124d0ac1e00000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=114d0ac1e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=164d0ac1e00000
+> +}
+> +
+>  static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+>  {
+>  	struct tcan4x5x_priv *tcan4x5x =3D cdev->device_data;
+> @@ -383,8 +393,10 @@ static int tcan4x5x_parse_config(struct m_can_clas=
+sdev *cdev)
+>  	tcan4x5x->device_state_gpio =3D devm_gpiod_get_optional(cdev->dev,
+>  							      "device-state",
+>  							      GPIOD_IN);
+> -	if (IS_ERR(tcan4x5x->device_state_gpio))
+> +	if (IS_ERR(tcan4x5x->device_state_gpio)) {
+>  		tcan4x5x->device_state_gpio =3D NULL;
+> +		tcan4x5x_disable_state(cdev);
+> +	}
+For some reason, this hunk doesn't apply, due to the additional:
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+5322482fe520b02aea30@syzkaller.appspotmail.com
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+>> 	tcan4x5x->power =3D devm_regulator_get_optional(cdev->dev,
+>> 						      "vsup");
 
-==================================================================
-BUG: KASAN: use-after-free in memcpy include/linux/string.h:380 [inline]
-BUG: KASAN: use-after-free in j1939_session_tx_dat  
-net/can/j1939/transport.c:790 [inline]
-BUG: KASAN: use-after-free in j1939_xtp_txnext_transmiter  
-net/can/j1939/transport.c:847 [inline]
-BUG: KASAN: use-after-free in j1939_tp_txtimer+0x777/0x1b00  
-net/can/j1939/transport.c:1095
-Read of size 7 at addr ffff88809073d917 by task ksoftirqd/0/9
+I've applied the patch manually.
 
-CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.5.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x197/0x210 lib/dump_stack.c:118
-  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
-  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
-  kasan_report+0x12/0x20 mm/kasan/common.c:639
-  check_memory_region_inline mm/kasan/generic.c:185 [inline]
-  check_memory_region+0x134/0x1a0 mm/kasan/generic.c:192
-  memcpy+0x24/0x50 mm/kasan/common.c:125
-  memcpy include/linux/string.h:380 [inline]
-  j1939_session_tx_dat net/can/j1939/transport.c:790 [inline]
-  j1939_xtp_txnext_transmiter net/can/j1939/transport.c:847 [inline]
-  j1939_tp_txtimer+0x777/0x1b00 net/can/j1939/transport.c:1095
-  __run_hrtimer kernel/time/hrtimer.c:1517 [inline]
-  __hrtimer_run_queues+0x364/0xe40 kernel/time/hrtimer.c:1579
-  hrtimer_run_softirq+0x17e/0x270 kernel/time/hrtimer.c:1596
-  __do_softirq+0x262/0x98c kernel/softirq.c:292
-  run_ksoftirqd kernel/softirq.c:603 [inline]
-  run_ksoftirqd+0x8e/0x110 kernel/softirq.c:595
-  smpboot_thread_fn+0x6a3/0xa40 kernel/smpboot.c:165
-  kthread+0x361/0x430 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+> =20
+>  	return 0;
+>  }
+>=20
 
-Allocated by task 16:
-  save_stack+0x23/0x90 mm/kasan/common.c:72
-  set_track mm/kasan/common.c:80 [inline]
-  __kasan_kmalloc mm/kasan/common.c:513 [inline]
-  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:486
-  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:521
-  slab_post_alloc_hook mm/slab.h:584 [inline]
-  slab_alloc_node mm/slab.c:3263 [inline]
-  kmem_cache_alloc_node+0x138/0x740 mm/slab.c:3575
-  __alloc_skb+0xd5/0x5e0 net/core/skbuff.c:197
-  alloc_skb include/linux/skbuff.h:1049 [inline]
-  j1939_tp_tx_dat_new+0x38/0x530 net/can/j1939/transport.c:568
-  j1939_tp_tx_dat net/can/j1939/transport.c:606 [inline]
-  j1939_session_tx_dat net/can/j1939/transport.c:791 [inline]
-  j1939_xtp_txnext_transmiter net/can/j1939/transport.c:847 [inline]
-  j1939_tp_txtimer+0x7a7/0x1b00 net/can/j1939/transport.c:1095
-  __run_hrtimer kernel/time/hrtimer.c:1517 [inline]
-  __hrtimer_run_queues+0x364/0xe40 kernel/time/hrtimer.c:1579
-  hrtimer_run_softirq+0x17e/0x270 kernel/time/hrtimer.c:1596
-  __do_softirq+0x262/0x98c kernel/softirq.c:292
+Marc
 
-Freed by task 16:
-  save_stack+0x23/0x90 mm/kasan/common.c:72
-  set_track mm/kasan/common.c:80 [inline]
-  kasan_set_free_info mm/kasan/common.c:335 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:474
-  kasan_slab_free+0xe/0x10 mm/kasan/common.c:483
-  __cache_free mm/slab.c:3426 [inline]
-  kmem_cache_free+0x86/0x320 mm/slab.c:3694
-  kfree_skbmem net/core/skbuff.c:623 [inline]
-  kfree_skbmem+0xfb/0x1c0 net/core/skbuff.c:617
-  __kfree_skb net/core/skbuff.c:680 [inline]
-  consume_skb net/core/skbuff.c:838 [inline]
-  consume_skb+0x103/0x410 net/core/skbuff.c:832
-  vcan_tx+0x29f/0x7f0 drivers/net/can/vcan.c:110
-  __netdev_start_xmit include/linux/netdevice.h:4447 [inline]
-  netdev_start_xmit include/linux/netdevice.h:4461 [inline]
-  xmit_one net/core/dev.c:3420 [inline]
-  dev_hard_start_xmit+0x1a3/0x9b0 net/core/dev.c:3436
-  __dev_queue_xmit+0x2b05/0x35c0 net/core/dev.c:4013
-  dev_queue_xmit+0x18/0x20 net/core/dev.c:4046
-  can_send+0x439/0x890 net/can/af_can.c:277
-  j1939_send_one+0x29d/0x360 net/can/j1939/main.c:340
-  j1939_tp_tx_dat net/can/j1939/transport.c:615 [inline]
-  j1939_session_tx_dat net/can/j1939/transport.c:791 [inline]
-  j1939_xtp_txnext_transmiter net/can/j1939/transport.c:847 [inline]
-  j1939_tp_txtimer+0x5a9/0x1b00 net/can/j1939/transport.c:1095
-  __run_hrtimer kernel/time/hrtimer.c:1517 [inline]
-  __hrtimer_run_queues+0x364/0xe40 kernel/time/hrtimer.c:1579
-  hrtimer_run_softirq+0x17e/0x270 kernel/time/hrtimer.c:1596
-  __do_softirq+0x262/0x98c kernel/softirq.c:292
-
-The buggy address belongs to the object at ffff88809073d840
-  which belongs to the cache skbuff_head_cache of size 224
-The buggy address is located 215 bytes inside of
-  224-byte region [ffff88809073d840, ffff88809073d920)
-The buggy address belongs to the page:
-page:ffffea000241cf40 refcount:1 mapcount:0 mapping:ffff88821b774e00  
-index:0x0
-raw: 00fffe0000000200 ffffea00026df588 ffffea00023d9308 ffff88821b774e00
-raw: 0000000000000000 ffff88809073d0c0 000000010000000c 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff88809073d800: fc fc fc fc fc fc fc fc fb fb fb fb fb fb fb fb
-  ffff88809073d880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff88809073d900: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
-                          ^
-  ffff88809073d980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff88809073da00: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
-==================================================================
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+--av7eADa9mYDcTsXodHZDp6AFIW6KEoww7--
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--N1nesT42QyOxVEMMoQougOQqY8SIbiSL0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl4IxvgACgkQWsYho5Hk
+nSDFkAgAh/d0YN3ZLCS7Edg2Caf0/2aoBAnjAnyPTEMN0T8VxWDaKWme8EOkMSWw
+ypXN1WdSb550yQwpGdmZpbMM8wRBancV5IZ3pwjaw9/cNYVzaCxcXTCWP/BUD13Y
+W9WW1SatZhHlbvDPP9XBFsxXWh7Fyac7lSAsYu/JberBTtDPrJKzXirrGcDEeh4I
+/vCoT3plKv8YAIqFZSjx0CyqGlH5QYQzJnVvYFk40Sp4FMbu8UZ4L4OMQrbL+EtX
+m2fEkFZXI6DfpNHxM3/VfM0DYTt7ip6icFjb3qld559TNx5yf1S+y0qwZ76TPO4I
+1vMMaaRdn2CC9/nPBf+q65T+se4AAw==
+=KyXS
+-----END PGP SIGNATURE-----
+
+--N1nesT42QyOxVEMMoQougOQqY8SIbiSL0--
