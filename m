@@ -1,50 +1,53 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2] can: tcan4x5x: Turn on the power before parsing the
- config
-Date: Thu, 2 Jan 2020 15:40:36 +0100
-Message-ID: <a59d4384-9cb9-baaa-e5f4-1e2111e295c9@pengutronix.de>
-References: <20191210163204.28225-1-dmurphy@ti.com>
+Subject: Re: [PATCH v2 1/2] can: m_can: tcan4x5x: put the device out of
+ standby before register access
+Date: Thu, 2 Jan 2020 16:46:54 +0100
+Message-ID: <d58b9d08-dbd8-b73e-dae1-286c1a3ce8f2@pengutronix.de>
+References: <20191209192440.998659-1-sean@geanix.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="0KU4DLo8SwRpHjvSqkuatOgkkGHa7Ksz3"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20191210163204.28225-1-dmurphy@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+ boundary="bk90h3EihotBQbuOoPzh7VMn1HGgzQ4DV"
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20191209192440.998659-1-sean@geanix.com>
+Sender: stable-owner@vger.kernel.org
+To: Sean Nyekjaer <sean@geanix.com>, dmurphy@ti.com, linux-can@vger.kernel.org
+Cc: martin@geanix.com, stable@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---0KU4DLo8SwRpHjvSqkuatOgkkGHa7Ksz3
-Content-Type: multipart/mixed; boundary="0eQF700mEiUNKSVyqGioPj8OHXiNmWw4A";
+--bk90h3EihotBQbuOoPzh7VMn1HGgzQ4DV
+Content-Type: multipart/mixed; boundary="EsO2yfAbvCsPUQ50DqRrCMBVO4aDHuNX1";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Dan Murphy <dmurphy@ti.com>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-Message-ID: <a59d4384-9cb9-baaa-e5f4-1e2111e295c9@pengutronix.de>
-Subject: Re: [PATCH v2] can: tcan4x5x: Turn on the power before parsing the
- config
-References: <20191210163204.28225-1-dmurphy@ti.com>
-In-Reply-To: <20191210163204.28225-1-dmurphy@ti.com>
+To: Sean Nyekjaer <sean@geanix.com>, dmurphy@ti.com, linux-can@vger.kernel.org
+Cc: martin@geanix.com, stable@vger.kernel.org
+Message-ID: <d58b9d08-dbd8-b73e-dae1-286c1a3ce8f2@pengutronix.de>
+Subject: Re: [PATCH v2 1/2] can: m_can: tcan4x5x: put the device out of
+ standby before register access
+References: <20191209192440.998659-1-sean@geanix.com>
+In-Reply-To: <20191209192440.998659-1-sean@geanix.com>
 
---0eQF700mEiUNKSVyqGioPj8OHXiNmWw4A
+--EsO2yfAbvCsPUQ50DqRrCMBVO4aDHuNX1
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 12/10/19 5:32 PM, Dan Murphy wrote:
-> The parse config function now performs action on the device either
-> reading or writing and a reset.
+On 12/9/19 8:24 PM, Sean Nyekjaer wrote:
+> The m_can tries to detect of niso (canfd) is available while in standby=
+,
+> this function results in the following error:
+>=20
+> tcan4x5x spi2.0 (unnamed net_device) (uninitialized): Failed to init mo=
+dule
+> tcan4x5x spi2.0: m_can device registered (irq=3D84, version=3D32)
+> tcan4x5x spi2.0 can2: TCAN4X5X successfully initialized.
 
-BTW n+1:
-Why is the function called parse_config? I don't see any parsing going on=
-=2E
-
-Please add it directly to the tcan4x5x_can_probe() function.
+Can you add the missing error handling to m_can_config_endisable(), and
+handle this error correctly in all its callers?
 
 Marc
+
 --=20
 Pengutronix e.K.                 | Marc Kleine-Budde           |
 Embedded Linux                   | https://www.pengutronix.de  |
@@ -52,23 +55,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---0eQF700mEiUNKSVyqGioPj8OHXiNmWw4A--
+--EsO2yfAbvCsPUQ50DqRrCMBVO4aDHuNX1--
 
---0KU4DLo8SwRpHjvSqkuatOgkkGHa7Ksz3
+--bk90h3EihotBQbuOoPzh7VMn1HGgzQ4DV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl4OAOQACgkQWsYho5Hk
-nSCsXggAs4T5UKkkEcJzPQRv5NjpqncQ4dQpvNmXevnS+1syYyvrOf3ZIW5rA5ke
-8mpmvsGotKjKQ4W+oVA4nY5S0xlIT2AuQFlx5aQAOkcxgEinb6qzyx1N+tXAPftT
-Q4dqRJXZFqEvWSIUqMryrGa7Iq85ZkDM08TGjDcxm+/lA/5UHevCv7ULEb5W6/qo
-C/XwTSnS0LprV40VCSG1i67RCVNJGLJLmWvjTZ9jgQq+90g/tHqCdWRQznsTBnIO
-zwTVuNGti9183PIMMUtI88IkWTKqif547lrbxJQs7HBGPbAKBqX/4k3OUJzRUMoh
-86AC2wQbYrF5erohGcTfGZgQyoX1Fg==
-=83Gt
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl4OEG4ACgkQWsYho5Hk
+nSDTVAf8D0t4VeoPmZdnqafB92TkUl6FZiP/oJFclMEmtW++RozQnuXK/qNiKe0x
+anEzTn2FXUCkVSlKxY4Enj9bEMPMtGEO17riJOXSdZO3TX2I4iTXgpdj2rW8hDj7
+sDrPGa4VoYaDaaSPrd045hsdenfSvdMPg+aCINDyZdUS+cIPHaACxH/gClqtlwfn
+2tZaXwDtFvaxeWqbAByzafp6IHNtRiukvqgswr2eya0eJmUivJuCMy+P3sebnznf
+yzZCb4MN+A80X8LXrgzHDRak6UzPx9iv6AbKEisRl0vufEghJFU76w24Q3JBDzLG
+V7WeMB1g6xzEWj+NZbmheA6q0veIJA==
+=QNq3
 -----END PGP SIGNATURE-----
 
---0KU4DLo8SwRpHjvSqkuatOgkkGHa7Ksz3--
+--bk90h3EihotBQbuOoPzh7VMn1HGgzQ4DV--
