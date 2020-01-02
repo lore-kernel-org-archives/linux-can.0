@@ -1,63 +1,81 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 7/9] can: kvaser_usb: fix interface sanity check
-Date: Thu,  2 Jan 2020 17:09:32 +0100
-Message-ID: <20200102160934.1524-8-mkl@pengutronix.de>
+Subject: [PATCH 3/9] can: tcan4x5x: tcan4x5x_parse_config(): reset device before register access
+Date: Thu,  2 Jan 2020 17:09:28 +0100
+Message-ID: <20200102160934.1524-4-mkl@pengutronix.de>
 References: <20200102160934.1524-1-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <20200102160934.1524-1-mkl@pengutronix.de>
-Sender: stable-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Johan Hovold <johan@kernel.org>, stable <stable@vger.kernel.org>, Jimmy Assarsson <extja@kvaser.com>, Christer Beskow <chbe@kvaser.com>, Nicklas Johansson <extnj@kvaser.com>, Martin Henriksson <mh@kvaser.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, kernel@pengutronix.de, Sean Nyekjaer <sean@geanix.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: linux-can.vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Sean Nyekjaer <sean@geanix.com>
 
-Make sure to use the current alternate setting when verifying the
-interface descriptors to avoid binding to an invalid interface.
+It's a good idea to reset a ip-block/spi device before using it, this
+patch will reset the device.
 
-Failing to do so could cause the driver to misbehave or trigger a WARN()
-in usb_submit_urb() that kernels with panic_on_warn set would choke on.
+And a generic reset function if needed elsewhere.
 
-Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
-Cc: stable <stable@vger.kernel.org>     # 4.19
-Cc: Jimmy Assarsson <extja@kvaser.com>
-Cc: Christer Beskow <chbe@kvaser.com>
-Cc: Nicklas Johansson <extnj@kvaser.com>
-Cc: Martin Henriksson <mh@kvaser.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/m_can/tcan4x5x.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index 5fc0be564274..7ab87a758754 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -1590,7 +1590,7 @@ static int kvaser_usb_hydra_setup_endpoints(struct kvaser_usb *dev)
- 	struct usb_endpoint_descriptor *ep;
- 	int i;
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index a69476f5aec6..ee22e39f131b 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -166,6 +166,28 @@ static void tcan4x5x_check_wake(struct tcan4x5x_priv *priv)
+ 	}
+ }
  
--	iface_desc = &dev->intf->altsetting[0];
-+	iface_desc = dev->intf->cur_altsetting;
++static int tcan4x5x_reset(struct tcan4x5x_priv *priv)
++{
++	int ret = 0;
++
++	if (priv->reset_gpio) {
++		gpiod_set_value(priv->reset_gpio, 1);
++
++		/* tpulse_width minimum 30us */
++		usleep_range(30, 100);
++		gpiod_set_value(priv->reset_gpio, 0);
++	} else {
++		ret = regmap_write(priv->regmap, TCAN4X5X_CONFIG,
++				   TCAN4X5X_SW_RESET);
++		if (ret)
++			return ret;
++	}
++
++	usleep_range(700, 1000);
++
++	return ret;
++}
++
+ static int regmap_spi_gather_write(void *context, const void *reg,
+ 				   size_t reg_len, const void *val,
+ 				   size_t val_len)
+@@ -351,6 +373,7 @@ static int tcan4x5x_disable_wake(struct m_can_classdev *cdev)
+ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+ {
+ 	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
++	int ret;
  
- 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
- 		ep = &iface_desc->endpoint[i].desc;
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index ae4c37e1bb75..1b9957f12459 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -1310,7 +1310,7 @@ static int kvaser_usb_leaf_setup_endpoints(struct kvaser_usb *dev)
- 	struct usb_endpoint_descriptor *endpoint;
- 	int i;
+ 	tcan4x5x->device_wake_gpio = devm_gpiod_get(cdev->dev, "device-wake",
+ 						    GPIOD_OUT_HIGH);
+@@ -366,7 +389,9 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+ 	if (IS_ERR(tcan4x5x->reset_gpio))
+ 		tcan4x5x->reset_gpio = NULL;
  
--	iface_desc = &dev->intf->altsetting[0];
-+	iface_desc = dev->intf->cur_altsetting;
+-	usleep_range(700, 1000);
++	ret = tcan4x5x_reset(tcan4x5x);
++	if (ret)
++		return ret;
  
- 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
- 		endpoint = &iface_desc->endpoint[i].desc;
+ 	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(cdev->dev,
+ 							      "device-state",
 -- 
 2.24.1
