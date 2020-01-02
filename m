@@ -1,60 +1,60 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 1/2] can: m_can: tcan4x5x: put the device out of
- standby before register access
-Date: Thu, 2 Jan 2020 17:16:15 +0100
-Message-ID: <19a2019d-da91-082d-b533-5513748f604a@pengutronix.de>
-References: <20191209192440.998659-1-sean@geanix.com>
- <d58b9d08-dbd8-b73e-dae1-286c1a3ce8f2@pengutronix.de>
- <973df29f-c930-c6b2-17c4-3e3b468f3bf0@geanix.com>
+Subject: Re: [PATCH] mscan: fix rx path lockup when returning from polling to
+ irq mode
+Date: Thu, 2 Jan 2020 17:19:40 +0100
+Message-ID: <40ad7d2c-6e34-109b-560a-2056a932acb6@pengutronix.de>
+References: <860de41f-bb60-728b-7602-90dced920c27@faberman.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="Gus2kdPU7NEdZpzLLlT2Yzd5W7h5PPhGy"
+ boundary="xIsVOaKtpHxIl5iDUucCCCHKLskVIH22D"
 Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <973df29f-c930-c6b2-17c4-3e3b468f3bf0@geanix.com>
+In-Reply-To: <860de41f-bb60-728b-7602-90dced920c27@faberman.de>
 Sender: stable-owner@vger.kernel.org
-To: Sean Nyekjaer <sean@geanix.com>, linux-can@vger.kernel.org
-Cc: dmurphy@ti.com, martin@geanix.com, stable@vger.kernel.org
+To: Florian Faber <faber@faberman.de>, linux-can@vger.kernel.org
+Cc: stable@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Gus2kdPU7NEdZpzLLlT2Yzd5W7h5PPhGy
-Content-Type: multipart/mixed; boundary="em2waUGH8Yze3JqQSAEFSPXlv69CydNm6";
+--xIsVOaKtpHxIl5iDUucCCCHKLskVIH22D
+Content-Type: multipart/mixed; boundary="8KUKqe5NdK8MvM3270RNcisiM0Xe5Ezws";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Sean Nyekjaer <sean@geanix.com>, linux-can@vger.kernel.org
-Cc: dmurphy@ti.com, martin@geanix.com, stable@vger.kernel.org
-Message-ID: <19a2019d-da91-082d-b533-5513748f604a@pengutronix.de>
-Subject: Re: [PATCH v2 1/2] can: m_can: tcan4x5x: put the device out of
- standby before register access
-References: <20191209192440.998659-1-sean@geanix.com>
- <d58b9d08-dbd8-b73e-dae1-286c1a3ce8f2@pengutronix.de>
- <973df29f-c930-c6b2-17c4-3e3b468f3bf0@geanix.com>
-In-Reply-To: <973df29f-c930-c6b2-17c4-3e3b468f3bf0@geanix.com>
+To: Florian Faber <faber@faberman.de>, linux-can@vger.kernel.org
+Cc: stable@vger.kernel.org
+Message-ID: <40ad7d2c-6e34-109b-560a-2056a932acb6@pengutronix.de>
+Subject: Re: [PATCH] mscan: fix rx path lockup when returning from polling to
+ irq mode
+References: <860de41f-bb60-728b-7602-90dced920c27@faberman.de>
+In-Reply-To: <860de41f-bb60-728b-7602-90dced920c27@faberman.de>
 
---em2waUGH8Yze3JqQSAEFSPXlv69CydNm6
+--8KUKqe5NdK8MvM3270RNcisiM0Xe5Ezws
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 1/2/20 5:09 PM, Sean Nyekjaer wrote:
-> Sorry if this was a bit of mess :)
-> Version 6 of this patch is already applied....
-> https://www.spinics.net/lists/linux-can/msg03186.html
+On 12/26/19 7:51 PM, Florian Faber wrote:
+> Under load, the RX side of the mscan driver can get stuck while TX stil=
+l
+> works. Restarting the interface locks up the system. This behaviour=20
+> could be reproduced reliably on a MPC5121e based system.
+>=20
+> The patch fixes the return value of the NAPI polling function (should b=
+e
+> the number of processed packets, not constant 1) and the condition unde=
+r
+> which IRQs are enabled again after polling is finished.
+>=20
+> With this patch, no more lockups were observed over a test period of te=
+n=20
+> days.
+>=20
+> Signed-off-by: Florian Faber <faber@faberman.de>
 
-I know, and I just send it out in a pull request. :D
+Applied to linux-can. Please consider using git-send-email in the
+future, as your mail setup somehow mangles spaces and tabs.
 
-> Do you want me to add more error handling than this?
-
-So far I've no more comments, besides the ones I've send earlier today:
-
-https://lkml.org/lkml/2020/1/2/197
-https://lkml.org/lkml/2020/1/2/229
-https://lkml.org/lkml/2020/1/2/296
-
-If you want to contribute, please coordinate with Dan here. I think
-we'll roll the changes via can-next.
-
+regards,
 Marc
 
 --=20
@@ -64,23 +64,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---em2waUGH8Yze3JqQSAEFSPXlv69CydNm6--
+--8KUKqe5NdK8MvM3270RNcisiM0Xe5Ezws--
 
---Gus2kdPU7NEdZpzLLlT2Yzd5W7h5PPhGy
+--xIsVOaKtpHxIl5iDUucCCCHKLskVIH22D
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl4OF08ACgkQWsYho5Hk
-nSBRPQgArz65f8ckxt3zQ/IaOVuM72TEVaBy9vBFnIxU8a+A00swcxe8Zzd7oLUE
-j+t+xj3SKLQWhTQRJWQOzXlcjU1Qr/gXLncswi97B1esB7JDRxn3vZzQTQbsYjha
-VnCiYmjFbMgCjIpm1/ZPFSZFQsebQzh1UqmB+BkU819H2YSt1YwnjZpkcY+emwXd
-gw+wX3O+m8H9DkzHbUSfSr1+5eSYc/qZhRTA/wYBQ3zm8uQA49ez0nXNOrVggCai
-3cS7pR3iIAyiTNS5d8tJ/3KGm11gJnZLjRlGo5GDIup3XdaQOHxCsEGwhECkrEmb
-ebT4S5kUi7VsHOR0icN3rJhnnGETtg==
-=Q7a6
+iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl4OGBwACgkQWsYho5Hk
+nSBhNAgAo6wBBJ5u6IKGlrqGSsl+X5LZo+SsvSir1W8y1Sm40YoUiTPO6YXkaLtS
+GtGjlsf+dwm4tpuBXpWLdy1KhqIcOd0UYpAcRp+AF95JLLS6IlDFHLa4i4FVzBOf
+x6riCnULvnhrzSFPDrxh6yALJiX6RnWVkVBhRrc9xhfkE/sS0jbfd4VVyPL0nKfi
+kgmK7QtrzR/LfWQu1KuEdyUh14l6+s+rFcttw8IYFE2Fwfyjq5WtpOQo7Tfgrbsa
+yjCcvBm34SUqInBMFNQfDB1IpYctwhihXwfIjJjex05A3T2jp912ZPgLaKOpNHP+
+/Lfs1NrR3ep1WQqUUfGGRU1xrptc5g==
+=AFjm
 -----END PGP SIGNATURE-----
 
---Gus2kdPU7NEdZpzLLlT2Yzd5W7h5PPhGy--
+--xIsVOaKtpHxIl5iDUucCCCHKLskVIH22D--
