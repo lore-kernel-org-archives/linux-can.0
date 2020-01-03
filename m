@@ -1,86 +1,39 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] mscan: fix rx path lockup when returning from polling to
- irq mode
-Date: Thu, 2 Jan 2020 17:19:40 +0100
-Message-ID: <40ad7d2c-6e34-109b-560a-2056a932acb6@pengutronix.de>
-References: <860de41f-bb60-728b-7602-90dced920c27@faberman.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: pull-request: can 2020-01-02
+Date: Thu, 02 Jan 2020 16:41:13 -0800 (PST)
+Message-ID: <20200102.164113.762444597958242363.davem@davemloft.net>
+References: <20200102160934.1524-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="xIsVOaKtpHxIl5iDUucCCCHKLskVIH22D"
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <860de41f-bb60-728b-7602-90dced920c27@faberman.de>
-Sender: stable-owner@vger.kernel.org
-To: Florian Faber <faber@faberman.de>, linux-can@vger.kernel.org
-Cc: stable@vger.kernel.org
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200102160934.1524-1-mkl@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
 List-Id: linux-can.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---xIsVOaKtpHxIl5iDUucCCCHKLskVIH22D
-Content-Type: multipart/mixed; boundary="8KUKqe5NdK8MvM3270RNcisiM0Xe5Ezws";
- protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Florian Faber <faber@faberman.de>, linux-can@vger.kernel.org
-Cc: stable@vger.kernel.org
-Message-ID: <40ad7d2c-6e34-109b-560a-2056a932acb6@pengutronix.de>
-Subject: Re: [PATCH] mscan: fix rx path lockup when returning from polling to
- irq mode
-References: <860de41f-bb60-728b-7602-90dced920c27@faberman.de>
-In-Reply-To: <860de41f-bb60-728b-7602-90dced920c27@faberman.de>
+Date: Thu,  2 Jan 2020 17:09:25 +0100
 
---8KUKqe5NdK8MvM3270RNcisiM0Xe5Ezws
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+> this is a pull request of 9 patches for net/master.
+> 
+> The first 5 patches target all the tcan4x5x driver. The first 3 patches
+> of them are by Dan Murphy and Sean Nyekjaer and improve the device
+> initialization (power on, reset and get device out of standby before
+> register access). The next patch is by Dan Murphy and disables the INH
+> pin device-state if the GPIO is unavailable. The last patch for the
+> tcan4x5x driver is by Gustavo A. R. Silva and fixes an inconsistent
+> PTR_ERR check in the tcan4x5x_parse_config() function.
+> 
+> The next patch is by Oliver Hartkopp and targets the generic CAN device
+> infrastructure. It ensures that an initialized headroom in outgoing CAN
+> sk_buffs (e.g. if injected by AF_PACKET).
+> 
+> The last 2 patches are by Johan Hovold and fix the kvaser_usb and gs_usb
+> drivers by always using the current alternate setting not blindly the
+> first one.
 
-On 12/26/19 7:51 PM, Florian Faber wrote:
-> Under load, the RX side of the mscan driver can get stuck while TX stil=
-l
-> works. Restarting the interface locks up the system. This behaviour=20
-> could be reproduced reliably on a MPC5121e based system.
->=20
-> The patch fixes the return value of the NAPI polling function (should b=
-e
-> the number of processed packets, not constant 1) and the condition unde=
-r
-> which IRQs are enabled again after polling is finished.
->=20
-> With this patch, no more lockups were observed over a test period of te=
-n=20
-> days.
->=20
-> Signed-off-by: Florian Faber <faber@faberman.de>
+Pulled, thanks Marc.
 
-Applied to linux-can. Please consider using git-send-email in the
-future, as your mail setup somehow mangles spaces and tabs.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---8KUKqe5NdK8MvM3270RNcisiM0Xe5Ezws--
-
---xIsVOaKtpHxIl5iDUucCCCHKLskVIH22D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEmvEkXzgOfc881GuFWsYho5HknSAFAl4OGBwACgkQWsYho5Hk
-nSBhNAgAo6wBBJ5u6IKGlrqGSsl+X5LZo+SsvSir1W8y1Sm40YoUiTPO6YXkaLtS
-GtGjlsf+dwm4tpuBXpWLdy1KhqIcOd0UYpAcRp+AF95JLLS6IlDFHLa4i4FVzBOf
-x6riCnULvnhrzSFPDrxh6yALJiX6RnWVkVBhRrc9xhfkE/sS0jbfd4VVyPL0nKfi
-kgmK7QtrzR/LfWQu1KuEdyUh14l6+s+rFcttw8IYFE2Fwfyjq5WtpOQo7Tfgrbsa
-yjCcvBm34SUqInBMFNQfDB1IpYctwhihXwfIjJjex05A3T2jp912ZPgLaKOpNHP+
-/Lfs1NrR3ep1WQqUUfGGRU1xrptc5g==
-=AFjm
------END PGP SIGNATURE-----
-
---xIsVOaKtpHxIl5iDUucCCCHKLskVIH22D--
+ 
