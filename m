@@ -1,54 +1,35 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH V2 1/2] can: flexcan: disable runtime PM if register
- flexcandev failed
-Date: Fri, 3 Jan 2020 07:37:37 +0000
-Message-ID: <DB7PR04MB461861DC1DBDB5C04998E4C6E6230@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20191210085721.9853-1-qiangqing.zhang@nxp.com>
- <DB7PR04MB46181D2F1538A53B4F1892E2E6500@DB7PR04MB4618.eurprd04.prod.outlook.com>
- <935f466b-a9c9-de73-be12-6ebb7b77e058@geanix.com>
- <VI1PR04MB46223042279D18D20C955881E6520@VI1PR04MB4622.eurprd04.prod.outlook.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 2/6] dt-bindings: net: can: binding for CTU CAN FD
+ open-source IP core.
+Date: Fri, 3 Jan 2020 16:53:59 -0700
+Message-ID: <20200103235359.GA23875@bogus>
+References: <cover.1576922226.git.pisa@cmp.felk.cvut.cz>
+ <61533d59378822f8c808abf193b40070810d3d35.1576922226.git.pisa@cmp.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <VI1PR04MB46223042279D18D20C955881E6520@VI1PR04MB4622.eurprd04.prod.outlook.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <61533d59378822f8c808abf193b40070810d3d35.1576922226.git.pisa@cmp.felk.cvut.cz>
 Sender: netdev-owner@vger.kernel.org
-To: Sean Nyekjaer <sean@geanix.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: pisa@cmp.felk.cvut.cz
+Cc: devicetree@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org, socketcan@hartkopp.net, wg@grandegger.com, davem@davemloft.net, mark.rutland@arm.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com, ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com
 List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBaaGFuZyA8cWlh
-bmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IFNlbnQ6IDIwMTnE6jEy1MIxOcjVIDEzOjAwDQo+IFRv
-OiBTZWFuIE55ZWtqYWVyIDxzZWFuQGdlYW5peC5jb20+OyBta2xAcGVuZ3V0cm9uaXguZGU7DQo+
-IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlteCA8bGludXgtaW14
-QG54cC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0gg
-VjIgMS8yXSBjYW46IGZsZXhjYW46IGRpc2FibGUgcnVudGltZSBQTSBpZiByZWdpc3Rlcg0KPiBm
-bGV4Y2FuZGV2IGZhaWxlZA0KPiANCj4gDQo+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
-Cj4gPiBGcm9tOiBTZWFuIE55ZWtqYWVyIDxzZWFuQGdlYW5peC5jb20+DQo+ID4gU2VudDogMjAx
-OcTqMTLUwjE4yNUgMjI6MDQNCj4gPiBUbzogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdA
-bnhwLmNvbT47IG1rbEBwZW5ndXRyb25peC5kZTsNCj4gPiBsaW51eC1jYW5Admdlci5rZXJuZWwu
-b3JnDQo+ID4gQ2M6IGRsLWxpbnV4LWlteCA8bGludXgtaW14QG54cC5jb20+OyBuZXRkZXZAdmdl
-ci5rZXJuZWwub3JnDQo+ID4gU3ViamVjdDogUmU6IFtQQVRDSCBWMiAxLzJdIGNhbjogZmxleGNh
-bjogZGlzYWJsZSBydW50aW1lIFBNIGlmDQo+ID4gcmVnaXN0ZXIgZmxleGNhbmRldiBmYWlsZWQN
-Cj4gPg0KPiA+DQo+ID4NCj4gPiBPbiAxNy8xMi8yMDE5IDA3LjM2LCBKb2FraW0gWmhhbmcgd3Jv
-dGU6DQo+ID4gPg0KPiA+ID4gSGkgU2VhbiwNCj4gPiA+DQo+ID4gPiBIYXZlIHlvdSBmb3VuZCB0
-aW1lIHRvIHRlc3QgdGhpcyBwYXRjaCBzZXQ/IFRoYW5rcyA6LSkNCj4gPiA+DQo+ID4gPiBCZXN0
-IFJlZ2FyZHMsDQo+ID4gPiBKb2FraW0gWmhhbmcNCj4gPiA+DQo+ID4NCj4gPiBIaSBKb2FraW0N
-Cj4gPg0KPiA+IFNvcnJ5IGZvciB0aGUgZGVsYXkgOikNCj4gPg0KPiA+IEkgaGF2ZSB0ZXN0ZWQg
-dGhpcyBwYXRjaHNldCBhbmQgZm91bmQgbm8gaXNzdWVzLi4uDQo+IFRoYW5rcyBhIGxvdCBmb3Ig
-eW91ciB0ZXN0LCBTZWFuIDotKQ0KPiANCj4gPiBKdXN0IGEgaGVhZHMgdXAgd2hlbiBhZGRpbmcg
-IkNoYW5nZUxvZzoiIGRvIGl0IHVuZGVyIHRoZSAiLS0tIiBhbmQNCj4gPiBhYm92ZSB0aGUgZGlm
-Zi4gVGhhdCB3YXkgdGhlIENoYW5nZUxvZyBkb2Vzbid0IGVuZCB1cCBpbiB0aGUgY29tbWl0IG1z
-Zy4uLg0KPiBJIHdpbGwga2VlcCBpbiBtaW5kLCBwYXkgYXR0ZW50aW9uIHRvIGl0IG5leHQgdGlt
-ZS4NCj4gDQo+IEJlc3QgUmVnYXJkcywNCj4gSm9ha2ltIFpoYW5nDQo+ID4gL1NlYW4NCj4gPg0K
-DQpIaSBNYXJjLA0KDQpIb3cgYWJvdXQgdGhpcyBwYXRjaCBzZXQ/IFNlYW4gaGFzIGFscmVhZHkg
-dGVzdCBpdC4NCg0KQW5kIHdoZW4geW91IHBsYW4gdG8gc2VuZCBGbGV4Y2FuIEZEIHJlbGF0ZWQg
-cGF0Y2hlZCB0byBtYWlubGluZSwgc2luY2UgaXQgaXMgcGVuZGluZyBvbiBsaW51eC1jYW4tbmV4
-dC9mbGV4Y2FuIGJyYW5jaCBmb3IgYSBsb25nIHRpbWUuIENvdWxkIGl0IGdvIGludG8gdjUuNiBr
-ZXJuZWw/IFRoYW5rcyBhIGxvdCA6LSkNCg0KTWFyYywgU2VhbiwgeW91IGFyZSBhbGwgQ0FOIGV4
-cGVydHMuIEEgcXVlc3Rpb24gY29uZnVzZWQgbWUgZm9yIGEgbG9uZyB0aW1lLCBpcyB0aGF0IHdo
-eSBDQU4gbXVzdCBuZWVkIGEgdHJhbnNjZWl2ZXIgdG8gY29udmVydCBkaWdpdGFsIHNpZ25hbCB0
-byBkaWZmZXJlbnRpYWwgc2lnbmFsPyBXaHkgQ0FOIGNhbm5vdCBjb21tdW5pY2F0ZSB3aXRoIGRp
-Z2l0YWwgc2lnbmFsPw0KQ291bGQgeW91IGdpdmUgbWUgYSBzaW1wbGUgZXhwbGFuYXRpb24/IFRo
-YW5rcy4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo=
+On Sat, Dec 21, 2019 at 03:07:31PM +0100, pisa@cmp.felk.cvut.cz wrote:
+> From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+> 
+> Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+> ---
+>  .../devicetree/bindings/net/can/ctu,ctucanfd.txt   | 61 ++++++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt
+
+Bindings are moving DT schema format now. Not something I'd require on a 
+respin I've already reviewed, but OTOH it's been 10 months to respin 
+from v2. So:
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+If you have a v4, then please convert to a schema.
+
+Rob
