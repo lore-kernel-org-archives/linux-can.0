@@ -1,7 +1,7 @@
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 04/16] dt-bindings: atmel-isi: add microchip,sam9x60-isi
-Date: Wed, 8 Jan 2020 14:55:11 +0200
-Message-ID: <1578488123-26127-5-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH 06/16] dt-bindings: atmel-matrix: add microchip,sam9x60-matrix
+Date: Wed, 8 Jan 2020 14:55:13 +0200
+Message-ID: <1578488123-26127-7-git-send-email-claudiu.beznea@microchip.com>
 References: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,25 +12,24 @@ To: robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, alexa
 Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-rtc@vger.kernel.org, Claudiu Beznea <claudiu.beznea@microchip.com>
 List-Id: linux-can.vger.kernel.org
 
-Add microchip,sam9x60-isi to DT bindings documentation.
+Add microchip,sam9x60-matrix to DT bindings documentation.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- Documentation/devicetree/bindings/media/atmel-isi.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/mfd/atmel-matrix.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/media/atmel-isi.txt b/Documentation/devicetree/bindings/media/atmel-isi.txt
-index 332513a151cc..8924c7545b63 100644
---- a/Documentation/devicetree/bindings/media/atmel-isi.txt
-+++ b/Documentation/devicetree/bindings/media/atmel-isi.txt
-@@ -2,7 +2,7 @@ Atmel Image Sensor Interface (ISI)
- ----------------------------------
+diff --git a/Documentation/devicetree/bindings/mfd/atmel-matrix.txt b/Documentation/devicetree/bindings/mfd/atmel-matrix.txt
+index e3ef50ca02a5..89d05c64fb01 100644
+--- a/Documentation/devicetree/bindings/mfd/atmel-matrix.txt
++++ b/Documentation/devicetree/bindings/mfd/atmel-matrix.txt
+@@ -13,6 +13,7 @@ Required properties:
+ 			"atmel,at91sam9n12-matrix", "syscon"
+ 			"atmel,at91sam9x5-matrix", "syscon"
+ 			"atmel,sama5d3-matrix", "syscon"
++			"microchip,sam9x60-matrix", "syscon"
+ - reg:			Contains offset/length value of the Bus Matrix
+ 			memory region.
  
- Required properties for ISI:
--- compatible: must be "atmel,at91sam9g45-isi".
-+- compatible: must be "atmel,at91sam9g45-isi" or "microchip,sam9x60-isi".
- - reg: physical base address and length of the registers set for the device.
- - interrupts: should contain IRQ line for the ISI.
- - clocks: list of clock specifiers, corresponding to entries in the clock-names
 -- 
 2.7.4
