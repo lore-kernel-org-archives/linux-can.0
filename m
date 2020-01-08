@@ -1,7 +1,7 @@
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 09/16] dt-bindings: atmel-smc: add microchip,sam9x60-smc
-Date: Wed, 8 Jan 2020 14:55:16 +0200
-Message-ID: <1578488123-26127-10-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH 12/16] dt-bindings: spi_atmel: add microchip,sam9x60-spi
+Date: Wed, 8 Jan 2020 14:55:19 +0200
+Message-ID: <1578488123-26127-13-git-send-email-claudiu.beznea@microchip.com>
 References: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,24 +12,25 @@ To: robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, alexa
 Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-rtc@vger.kernel.org, Claudiu Beznea <claudiu.beznea@microchip.com>
 List-Id: linux-can.vger.kernel.org
 
-Add microchip,sam9x60-smc to DT bindings documentation.
+Add microchip,sam9x60-spi to DT bindings documentation.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- Documentation/devicetree/bindings/mfd/atmel-smc.txt | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/spi/spi_atmel.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/atmel-smc.txt b/Documentation/devicetree/bindings/mfd/atmel-smc.txt
-index 1103ce2030fb..5696d9fcb5dc 100644
---- a/Documentation/devicetree/bindings/mfd/atmel-smc.txt
-+++ b/Documentation/devicetree/bindings/mfd/atmel-smc.txt
-@@ -9,6 +9,7 @@ Required properties:
- 			"atmel,at91sam9260-smc", "syscon"
- 			"atmel,sama5d3-smc", "syscon"
- 			"atmel,sama5d2-smc", "syscon"
-+			"microchip,sam9x60-smc", "syscon"
- - reg:			Contains offset/length value of the SMC memory
- 			region.
+diff --git a/Documentation/devicetree/bindings/spi/spi_atmel.txt b/Documentation/devicetree/bindings/spi/spi_atmel.txt
+index f99c733d75c1..5bb4a8f1df7a 100644
+--- a/Documentation/devicetree/bindings/spi/spi_atmel.txt
++++ b/Documentation/devicetree/bindings/spi/spi_atmel.txt
+@@ -1,7 +1,7 @@
+ Atmel SPI device
  
+ Required properties:
+-- compatible : should be "atmel,at91rm9200-spi".
++- compatible : should be "atmel,at91rm9200-spi" or "microchip,sam9x60-spi".
+ - reg: Address and length of the register set for the device
+ - interrupts: Should contain spi interrupt
+ - cs-gpios: chipselects (optional for SPI controller version >= 2 with the
 -- 
 2.7.4
