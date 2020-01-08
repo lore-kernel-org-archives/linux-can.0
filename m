@@ -1,7 +1,7 @@
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 05/16] dt-bindings: at91-sama5d2_adc: add microchip,sam9x60-adc
-Date: Wed, 8 Jan 2020 14:55:12 +0200
-Message-ID: <1578488123-26127-6-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH 04/16] dt-bindings: atmel-isi: add microchip,sam9x60-isi
+Date: Wed, 8 Jan 2020 14:55:11 +0200
+Message-ID: <1578488123-26127-5-git-send-email-claudiu.beznea@microchip.com>
 References: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,25 +12,25 @@ To: robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, alexa
 Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-rtc@vger.kernel.org, Claudiu Beznea <claudiu.beznea@microchip.com>
 List-Id: linux-can.vger.kernel.org
 
-Add microchip,sam9x60-adc to DT bindings documentation.
+Add microchip,sam9x60-isi to DT bindings documentation.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- Documentation/devicetree/bindings/iio/adc/at91-sama5d2_adc.txt | 2 +-
+ Documentation/devicetree/bindings/media/atmel-isi.txt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/at91-sama5d2_adc.txt b/Documentation/devicetree/bindings/iio/adc/at91-sama5d2_adc.txt
-index 4a3c1d496e1a..07c59f301b31 100644
---- a/Documentation/devicetree/bindings/iio/adc/at91-sama5d2_adc.txt
-+++ b/Documentation/devicetree/bindings/iio/adc/at91-sama5d2_adc.txt
-@@ -1,7 +1,7 @@
- * AT91 SAMA5D2 Analog to Digital Converter (ADC)
+diff --git a/Documentation/devicetree/bindings/media/atmel-isi.txt b/Documentation/devicetree/bindings/media/atmel-isi.txt
+index 332513a151cc..8924c7545b63 100644
+--- a/Documentation/devicetree/bindings/media/atmel-isi.txt
++++ b/Documentation/devicetree/bindings/media/atmel-isi.txt
+@@ -2,7 +2,7 @@ Atmel Image Sensor Interface (ISI)
+ ----------------------------------
  
- Required properties:
--  - compatible: Should be "atmel,sama5d2-adc".
-+  - compatible: Should be "atmel,sama5d2-adc" or "microchip,sam9x60-adc".
-   - reg: Should contain ADC registers location and length.
-   - interrupts: Should contain the IRQ line for the ADC.
-   - clocks: phandle to device clock.
+ Required properties for ISI:
+-- compatible: must be "atmel,at91sam9g45-isi".
++- compatible: must be "atmel,at91sam9g45-isi" or "microchip,sam9x60-isi".
+ - reg: physical base address and length of the registers set for the device.
+ - interrupts: should contain IRQ line for the ISI.
+ - clocks: list of clock specifiers, corresponding to entries in the clock-names
 -- 
 2.7.4
