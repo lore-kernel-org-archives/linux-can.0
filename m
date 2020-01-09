@@ -1,75 +1,46 @@
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Re: [BUG] pfifo_fast may cause out-of-order CAN frame transmission
-Date: Thu, 9 Jan 2020 18:39:50 +0100
-Message-ID: <779d3346-0344-9064-15d5-4d565647a556@pengutronix.de>
-References: <661cc33a-5f65-2769-cc1a-65791cb4b131@pengutronix.de>
- <7717e4470f6881bbc92645c72ad7f6ec71360796.camel@redhat.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 07/16] dt-bindings: atmel-nand: add
+ microchip,sam9x60-pmecc
+Date: Thu, 9 Jan 2020 20:16:44 +0100
+Message-ID: <20200109201644.34c6b936@xps13>
+References: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
+        <1578488123-26127-8-git-send-email-claudiu.beznea@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <7717e4470f6881bbc92645c72ad7f6ec71360796.camel@redhat.com>
-Content-Language: en-US
+In-Reply-To: <1578488123-26127-8-git-send-email-claudiu.beznea@microchip.com>
 Sender: netdev-owner@vger.kernel.org
-To: Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-Cc: Sascha Hauer <kernel@pengutronix.de>
+To: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com, vkoul@kernel.org, eugen.hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, mchehab@kernel.org, lee.jones@linaro.org, richard.genoud@gmail.com, radu_nicolae.pirea@upb.ro, tudor.ambarus@microchip.com, richard@nod.at, vigneshr@ti.com, wg@grandegger.com, mkl@pengutronix.de, a.zummo@towertech.it, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: linux-can.vger.kernel.org
 
-Hello Paolo,
+Hi Claudiu,
 
-On 1/9/20 1:51 PM, Paolo Abeni wrote:
-> On Wed, 2020-01-08 at 15:55 +0100, Ahmad Fatoum wrote:
->> I've run into an issue of CAN frames being sent out-of-order on an i.MX6 Dual
->> with Linux v5.5-rc5. Bisecting has lead me down to this commit:
+Claudiu Beznea <claudiu.beznea@microchip.com> wrote on Wed, 8 Jan 2020
+14:55:14 +0200:
+
+> Add microchip,sam9x60-pmecc to DT bindings documentation.
 > 
-> Thank you for the report.
-
-Thanks for the prompt patch. :-)
-
-> The code is only build-tested, could you please try it in your setup?
-
-Issue still persists, albeit appears to have become much less frequent. Took 2 million
-frames till first two were swapped. What I usually saw was a swap every few thousand
-frames at least and quite often more frequent than that. Might just be noise though.
-
-Thanks
-Ahmad
-
-> 
-> Thanks,
-> 
-> Paolo
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index fceddf89592a..df460fe0773a 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -158,7 +158,6 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->  	if (qdisc->flags & TCQ_F_NOLOCK) {
->  		if (!spin_trylock(&qdisc->seqlock))
->  			return false;
-> -		WRITE_ONCE(qdisc->empty, false);
->  	} else if (qdisc_is_running(qdisc)) {
->  		return false;
->  	}
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 0ad39c87b7fd..3c46575a5af5 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -3625,6 +3625,8 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->  			qdisc_run_end(q);
->  		} else {
->  			rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-> +			if (rc != NET_XMIT_DROP && READ_ONCE(q->empty))
-> +				WRITE_ONCE(q->empty, false);
->  			qdisc_run(q);
->  		}
+>  Documentation/devicetree/bindings/mtd/atmel-nand.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> index 68b51dc58816..3aa297c97ab6 100644
+> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> @@ -57,6 +57,7 @@ Required properties:
+>  	"atmel,at91sam9g45-pmecc"
+>  	"atmel,sama5d4-pmecc"
+>  	"atmel,sama5d2-pmecc"
+> +	"microchip,sam9x60-pmecc"
+>  - reg: should contain 2 register ranges. The first one is pointing to the PMECC
+>         block, and the second one to the PMECC_ERRLOC block.
 >  
-> 
-> 
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Thanks,
+Miquèl
