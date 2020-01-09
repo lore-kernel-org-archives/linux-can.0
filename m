@@ -1,38 +1,68 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: [RFC] input: cap11xx: plasma globe proof
-Date: Thu, 9 Jan 2020 21:03:34 +0100
-Message-ID: <20200109200334.GA19438@x1.vandijck-laurijssen.be>
-References: <1577647277-8298-1-git-send-email-dev.kurt@vandijck-laurijssen.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1577647277-8298-1-git-send-email-dev.kurt@vandijck-laurijssen.be>
-Sender: linux-input-owner@vger.kernel.org
-To: linux-input@vger.kernel.org
-Cc: linux-can@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "dt-bindings: spi_atmel: add microchip,sam9x60-spi" to the spi tree
+Date: Thu, 09 Jan 2020 21:31:05 +0000
+Message-ID: <applied-1578488123-26127-13-git-send-email-claudiu.beznea@microchip.com>
+References: <1578488123-26127-13-git-send-email-claudiu.beznea@microchip.com>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1578488123-26127-13-git-send-email-claudiu.beznea@microchip.com>
+Sender: netdev-owner@vger.kernel.org
+To: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: alexandre.belloni@bootlin.com, a.zummo@towertech.it, broonie@kernel.org, devicetree@vger.kernel.org, dmaengine@vger.kernel.org, eugen.hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org, ludovic.desroches@microchip.comMark Brown <broonie@kernel.org>, mark.rutland@arm.com, mchehab@kernel.org, miquel.raynal@bootlin.com, mkl@pengutronix.de, netdev@vger.kernel.org, nicolas.ferre@microchip.com, pmeerw@pmeerw.net, radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com, richard@nod.at, robh+dt@kernel.orgt
 List-Id: linux-can.vger.kernel.org
 
-Ping?
+The patch
 
-On zo, 29 dec 2019 20:21:11 +0100, Kurt Van Dijck wrote:
-> Hey,
-> 
-> I built a raspberry-pi wakeup for my kids. Recently, one of them bought
-> a plasma globe. That globe leaves an electrostatic field that disturbes
-> the cap11xx when it operates with default settings.
-> So I grabbed the datasheet and started modifying the configuration.
-> This is the result that should apply to other scenarios as well.
-> 
-> The patch series improves the cap11xx in 2 ways.
-> It adds support for a cap1208 as on the explorer hat of Pimoroni,
-> and allows to run in polling mode (the explorer hat omitted the irq,
-> or I didn't find it).
-> It then exposes the major configuration parts of the chip so one can
-> tune it to her/his needs.
-> 
-> Please feel free to comment
-> 
-> Kind regards,
-> Kurt
-> 
+   dt-bindings: spi_atmel: add microchip,sam9x60-spi
+
+has been applied to the spi tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-5.6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 0a1eb761ff30cdc089bcc94e1bd540b6956487c5 Mon Sep 17 00:00:00 2001
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
+Date: Wed, 8 Jan 2020 14:55:19 +0200
+Subject: [PATCH] dt-bindings: spi_atmel: add microchip,sam9x60-spi
+
+Add microchip,sam9x60-spi to DT bindings documentation.
+
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Link: https://lore.kernel.org/r/1578488123-26127-13-git-send-email-claudiu.beznea@microchip.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/spi/spi_atmel.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/spi/spi_atmel.txt b/Documentation/devicetree/bindings/spi/spi_atmel.txt
+index f99c733d75c1..5bb4a8f1df7a 100644
+--- a/Documentation/devicetree/bindings/spi/spi_atmel.txt
++++ b/Documentation/devicetree/bindings/spi/spi_atmel.txt
+@@ -1,7 +1,7 @@
+ Atmel SPI device
+ 
+ Required properties:
+-- compatible : should be "atmel,at91rm9200-spi".
++- compatible : should be "atmel,at91rm9200-spi" or "microchip,sam9x60-spi".
+ - reg: Address and length of the register set for the device
+ - interrupts: Should contain spi interrupt
+ - cs-gpios: chipselects (optional for SPI controller version >= 2 with the
+-- 
+2.20.1
