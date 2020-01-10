@@ -1,48 +1,49 @@
-From: Alexandre Belloni <alexandre.belloni-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+From: <Claudiu.Beznea@microchip.com>
 Subject: Re: [PATCH 03/16] dt-bindings: atmel-tcb: add microchip,<chip>-tcb
-Date: Fri, 10 Jan 2020 14:40:01 +0100
-Message-ID: <20200110134001.GD1027187@piout.net>
+Date: Fri, 10 Jan 2020 14:29:27 +0000
+Message-ID: <da99fbce-8341-19d2-12c9-144564d70726@microchip.com>
 References: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
  <1578488123-26127-4-git-send-email-claudiu.beznea@microchip.com>
+ <20200110134001.GD1027187@piout.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1578488123-26127-4-git-send-email-claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, ludovic.desroches-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, eugen.hristev-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, knaack.h-Mmb7MZpHnFY@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org, mchehab-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, radu_nicolae.pirea-8LCfxC+Vs8U@public.gmane.org, tudor.ambarus-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, miquel.raynal-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org, richard-/L3Ra7n9ekc@public.gmane.org, vigneshr-l0cyMroinI0@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rtc-fy+rA21nqHI@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20200110134001.GD1027187@piout.net>
+Content-Language: en-US
+Content-ID: <88CA889BDD9DA749BF1403CE9B9231D5@namprd11.prod.outlook.com>
+Sender: linux-media-owner@vger.kernel.org
+To: alexandre.belloni@bootlin.com
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com, vkoul@kernel.org, Eugen.Hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, mchehab@kernel.org, lee.jones@linaro.org, richard.genoud@gmail.com, radu_nicolae.pirea@upb.ro, Tudor.Ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, wg@grandegger.com, mkl@pengutronix.de, a.zummo@towertech.it, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: linux-can.vger.kernel.org
 
-On 08/01/2020 14:55:10+0200, Claudiu Beznea wrote:
-> Add microchip,<chip>-tcb to DT bindings documentation. This is for
-> microchip,sam9x60-tcb.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/mfd/atmel-tcb.txt | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-> index c4a83e364cb6..e1713e41f6e0 100644
-> --- a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-> +++ b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-> @@ -1,6 +1,7 @@
->  * Device tree bindings for Atmel Timer Counter Blocks
-> -- compatible: Should be "atmel,<chip>-tcb", "simple-mfd", "syscon".
-> -  <chip> can be "at91rm9200" or "at91sam9x5"
-> +- compatible: Should be "atmel,<chip>-tcb", "microchip,<chip>-tcb",
-> +  "simple-mfd", "syscon".
-> +  <chip> can be "at91rm9200", "at91sam9x5" or "sam9x60"
-
-atmel,sam9x60-tcb, microchip,at91rm9200-tcb and microchip,at91sam9x5-tcb
-are not allowed and the documentation should reflect that.
-
-It would probably be easier to do that on top of the yaml conversion
-here:
-https://lore.kernel.org/lkml/20191009224006.5021-2-alexandre.belloni-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org/
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+DQoNCk9uIDEwLjAxLjIwMjAgMTU6NDAsIEFsZXhhbmRyZSBCZWxsb25pIHdyb3RlOg0KPiBFWFRF
+Uk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
+IHlvdSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDA4LzAxLzIwMjAgMTQ6NTU6
+MTArMDIwMCwgQ2xhdWRpdSBCZXpuZWEgd3JvdGU6DQo+PiBBZGQgbWljcm9jaGlwLDxjaGlwPi10
+Y2IgdG8gRFQgYmluZGluZ3MgZG9jdW1lbnRhdGlvbi4gVGhpcyBpcyBmb3INCj4+IG1pY3JvY2hp
+cCxzYW05eDYwLXRjYi4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBDbGF1ZGl1IEJlem5lYSA8Y2xh
+dWRpdS5iZXpuZWFAbWljcm9jaGlwLmNvbT4NCj4+IC0tLQ0KPj4gIERvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9tZmQvYXRtZWwtdGNiLnR4dCB8IDUgKysrLS0NCj4+ICAxIGZpbGUg
+Y2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1n
+aXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL2F0bWVsLXRjYi50eHQg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL2F0bWVsLXRjYi50eHQNCj4+
+IGluZGV4IGM0YTgzZTM2NGNiNi4uZTE3MTNlNDFmNmUwIDEwMDY0NA0KPj4gLS0tIGEvRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9hdG1lbC10Y2IudHh0DQo+PiArKysgYi9E
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL2F0bWVsLXRjYi50eHQNCj4+IEBA
+IC0xLDYgKzEsNyBAQA0KPj4gICogRGV2aWNlIHRyZWUgYmluZGluZ3MgZm9yIEF0bWVsIFRpbWVy
+IENvdW50ZXIgQmxvY2tzDQo+PiAtLSBjb21wYXRpYmxlOiBTaG91bGQgYmUgImF0bWVsLDxjaGlw
+Pi10Y2IiLCAic2ltcGxlLW1mZCIsICJzeXNjb24iLg0KPj4gLSAgPGNoaXA+IGNhbiBiZSAiYXQ5
+MXJtOTIwMCIgb3IgImF0OTFzYW05eDUiDQo+PiArLSBjb21wYXRpYmxlOiBTaG91bGQgYmUgImF0
+bWVsLDxjaGlwPi10Y2IiLCAibWljcm9jaGlwLDxjaGlwPi10Y2IiLA0KPj4gKyAgInNpbXBsZS1t
+ZmQiLCAic3lzY29uIi4NCj4+ICsgIDxjaGlwPiBjYW4gYmUgImF0OTFybTkyMDAiLCAiYXQ5MXNh
+bTl4NSIgb3IgInNhbTl4NjAiDQo+IA0KPiBhdG1lbCxzYW05eDYwLXRjYiwgbWljcm9jaGlwLGF0
+OTFybTkyMDAtdGNiIGFuZCBtaWNyb2NoaXAsYXQ5MXNhbTl4NS10Y2INCj4gYXJlIG5vdCBhbGxv
+d2VkIGFuZCB0aGUgZG9jdW1lbnRhdGlvbiBzaG91bGQgcmVmbGVjdCB0aGF0Lg0KDQpPSyEgSSds
+bCBkb3VibGUgY2hlY2sgaXQuDQoNCj4gDQo+IEl0IHdvdWxkIHByb2JhYmx5IGJlIGVhc2llciB0
+byBkbyB0aGF0IG9uIHRvcCBvZiB0aGUgeWFtbCBjb252ZXJzaW9uDQo+IGhlcmU6DQo+IGh0dHBz
+Oi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAxOTEwMDkyMjQwMDYuNTAyMS0yLWFsZXhhbmRyZS5i
+ZWxsb25pQGJvb3RsaW4uY29tLw0KDQpJIGRvbid0IHNlZSB0aGlzIGludGVncmF0ZWQgaW4gbmV4
+dC0yMDIwMDExMC4gQW0gSSBsb29raW5nIGF0IHRoZSB3cm9uZyBicmFuY2g/DQoNCj4gDQo+IC0t
+DQo+IEFsZXhhbmRyZSBCZWxsb25pLCBCb290bGluDQo+IEVtYmVkZGVkIExpbnV4IGFuZCBLZXJu
+ZWwgZW5naW5lZXJpbmcNCj4gaHR0cHM6Ly9ib290bGluLmNvbQ0KPiA=
