@@ -1,70 +1,64 @@
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH 13/16] dt-bindings: atmel-usart: add microchip,<chip>-usart
-Date: Fri, 10 Jan 2020 15:31:30 +0100
-Message-ID: <20200110143130.GF1027187@piout.net>
+From: Alexandre Belloni <alexandre.belloni-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH 03/16] dt-bindings: atmel-tcb: add microchip,<chip>-tcb
+Date: Fri, 10 Jan 2020 15:32:38 +0100
+Message-ID: <20200110143238.GG1027187@piout.net>
 References: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
- <1578488123-26127-14-git-send-email-claudiu.beznea@microchip.com>
+ <1578488123-26127-4-git-send-email-claudiu.beznea@microchip.com>
+ <20200110134001.GD1027187@piout.net>
+ <da99fbce-8341-19d2-12c9-144564d70726@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=m.gmane-mx.org@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1578488123-26127-14-git-send-email-claudiu.beznea@microchip.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=m.gmane-mx.org@lists.infradead.org
-To: Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc: mark.rutland@arm.com, vigneshr@ti.com, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, pmeerw@pmeerw.net, miquel.raynal@bootlin.com, lee.jones@linaro.org, linux-rtc@vger.kernel.org, lars@metafoo.de, richard@nod.at, ludovic.desroches@microchip.com, wg@grandegger.com, linux-media@vger.kernel.org, devicetree@vger.kernel.org, tudor.ambarus@microchip.com, radu_nicolae.pirea@upb.ro, linux-can@vger.kernel.org, robh+dt@kernel.org, mkl@pengutronix.de, mchehab@kernel.org, linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it, richard.genoud@gmail.com, netdev@vger.kernel.org, nicolas.ferre@microchip.com, linux-spi@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, knaack.h@gmx.de, dmaengine@vger.kernel.org, eugen.hristev@microchip.com, jic23@kernel.org
+In-Reply-To: <da99fbce-8341-19d2-12c9-144564d70726-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Claudiu.Beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Nicolas.Ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, Ludovic.Desroches-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Eugen.Hristev-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, knaack.h-Mmb7MZpHnFY@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org, mchehab-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, radu_nicolae.pirea-8LCfxC+Vs8U@public.gmane.org, Tudor.Ambarus-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, miquel.raynal-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org, richard-/L3Ra7n9ekc@public.gmane.org, vigneshr-l0cyMroinI0@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rtc-fy+rA21nqHI@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-On 08/01/2020 14:55:20+0200, Claudiu Beznea wrote:
-> Add microchip,<chip>-usart to DT bindings documentation. This is for
-> microchip,sam9x60-usart.
+On 10/01/2020 14:29:27+0000, Claudiu.Beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org wrote:
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
->  Documentation/devicetree/bindings/mfd/atmel-usart.txt | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/atmel-usart.txt b/Documentation/devicetree/bindings/mfd/atmel-usart.txt
-> index 699fd3c9ace8..e5c7331abe09 100644
-> --- a/Documentation/devicetree/bindings/mfd/atmel-usart.txt
-> +++ b/Documentation/devicetree/bindings/mfd/atmel-usart.txt
-> @@ -1,10 +1,12 @@
->  * Atmel Universal Synchronous Asynchronous Receiver/Transmitter (USART)
->  
->  Required properties for USART:
-> -- compatible: Should be "atmel,<chip>-usart" or "atmel,<chip>-dbgu"
-> +- compatible: Should be "atmel,<chip>-usart", "microchip,<chip>-usart" or
-> +  "atmel,<chip>-dbgu".
->    The compatible <chip> indicated will be the first SoC to support an
->    additional mode or an USART new feature.
-> -  For the dbgu UART, use "atmel,<chip>-dbgu", "atmel,<chip>-usart"
-> +  For the dbgu UART, use "atmel,<chip>-dbgu", "atmel,<chip>-usart",
-> +  "microchip,<chip>-usart".
+> On 10.01.2020 15:40, Alexandre Belloni wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On 08/01/2020 14:55:10+0200, Claudiu Beznea wrote:
+> >> Add microchip,<chip>-tcb to DT bindings documentation. This is for
+> >> microchip,sam9x60-tcb.
+> >>
+> >> Signed-off-by: Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
+> >> ---
+> >>  Documentation/devicetree/bindings/mfd/atmel-tcb.txt | 5 +++--
+> >>  1 file changed, 3 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
+> >> index c4a83e364cb6..e1713e41f6e0 100644
+> >> --- a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
+> >> +++ b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
+> >> @@ -1,6 +1,7 @@
+> >>  * Device tree bindings for Atmel Timer Counter Blocks
+> >> -- compatible: Should be "atmel,<chip>-tcb", "simple-mfd", "syscon".
+> >> -  <chip> can be "at91rm9200" or "at91sam9x5"
+> >> +- compatible: Should be "atmel,<chip>-tcb", "microchip,<chip>-tcb",
+> >> +  "simple-mfd", "syscon".
+> >> +  <chip> can be "at91rm9200", "at91sam9x5" or "sam9x60"
+> > 
+> > atmel,sam9x60-tcb, microchip,at91rm9200-tcb and microchip,at91sam9x5-tcb
+> > are not allowed and the documentation should reflect that.
+> 
+> OK! I'll double check it.
+> 
+> > 
+> > It would probably be easier to do that on top of the yaml conversion
+> > here:
+> > https://lore.kernel.org/lkml/20191009224006.5021-2-alexandre.belloni-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org/
+> 
+> I don't see this integrated in next-20200110. Am I looking at the wrong branch?
+> 
 
-The wildcard here should be eliminated because all the combinations are
-not allowed. This would also make it clearer that this change is to
-introduce a new IP instead of renamed atmel to microchip.
-
->  - reg: Should contain registers location and length
->  - interrupts: Should contain interrupt
->  - clock-names: tuple listing input clock names.
-> -- 
-> 2.7.4
-> 
+I had a few comments and I need to resend.
 
 -- 
 Alexandre Belloni, Bootlin
 Embedded Linux and Kernel engineering
 https://bootlin.com
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
