@@ -1,36 +1,37 @@
-From: Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
-Subject: [PATCH v2 04/17] dt-bindings: atmel-tcb: add microchip,sam9x60-tcb
-Date: Fri, 10 Jan 2020 18:17:56 +0200
-Message-ID: <1578673089-3484-5-git-send-email-claudiu.beznea@microchip.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 03/17] dt-bindings: atmel-can: add microchip,sam9x60-can
+Date: Fri, 10 Jan 2020 18:17:55 +0200
+Message-ID: <1578673089-3484-4-git-send-email-claudiu.beznea@microchip.com>
 References: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1578673089-3484-1-git-send-email-claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, alexandre.belloni-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org, ludovic.desroches-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, eugen.hristev-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, knaack.h-Mmb7MZpHnFY@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org, mchehab-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, radu_nicolae.pirea-8LCfxC+Vs8U@public.gmane.org, richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tudor.ambarus-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, miquel.raynal-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org, richard-/L3Ra7n9ekc@public.gmane.org, vigneshr-l0cyMroinI0@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rtc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com, vkoul@kernel.org, eugen.hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, mchehab@kernel.org, lee.jones@linaro.org, radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com, tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, wg@grandegger.com, mkl@pengutronix.de, a.zummo@towertech.it
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-can@vger.kernel.org, linux-rtc@vger.kernel.org, Claudiu Beznea <claudiu.beznea@microchip.com>
 List-Id: linux-can.vger.kernel.org
 
-Add microchip,sam9x60-tcb to DT bindings documentation.
+Add microchip,sam9x60-can to DT bindings documentation.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- Documentation/devicetree/bindings/mfd/atmel-tcb.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/net/can/atmel-can.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-index c4a83e364cb6..cf0edf5381c9 100644
---- a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-+++ b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-@@ -1,6 +1,6 @@
- * Device tree bindings for Atmel Timer Counter Blocks
--- compatible: Should be "atmel,<chip>-tcb", "simple-mfd", "syscon".
--  <chip> can be "at91rm9200" or "at91sam9x5"
-+- compatible: Should be "atmel,at91rm9200-tcb", "atmel,at91sam9x5-tcb",
-+  "microchip,sam9x60-tcb", "simple-mfd", "syscon".
- - reg: Should contain registers location and length
- - #address-cells: has to be 1
- - #size-cells: has to be 0
+diff --git a/Documentation/devicetree/bindings/net/can/atmel-can.txt b/Documentation/devicetree/bindings/net/can/atmel-can.txt
+index 14e52a0d86ec..218a3b3eb27e 100644
+--- a/Documentation/devicetree/bindings/net/can/atmel-can.txt
++++ b/Documentation/devicetree/bindings/net/can/atmel-can.txt
+@@ -1,7 +1,8 @@
+ * AT91 CAN *
+ 
+ Required properties:
+-  - compatible: Should be "atmel,at91sam9263-can" or "atmel,at91sam9x5-can"
++  - compatible: Should be "atmel,at91sam9263-can", "atmel,at91sam9x5-can" or
++    "microchip,sam9x60-can"
+   - reg: Should contain CAN controller registers location and length
+   - interrupts: Should contain IRQ line for the CAN controller
+ 
 -- 
 2.7.4
