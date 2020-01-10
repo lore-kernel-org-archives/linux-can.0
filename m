@@ -1,49 +1,53 @@
-From: <Claudiu.Beznea@microchip.com>
-Subject: Re: [PATCH 03/16] dt-bindings: atmel-tcb: add microchip,<chip>-tcb
-Date: Fri, 10 Jan 2020 14:29:27 +0000
-Message-ID: <da99fbce-8341-19d2-12c9-144564d70726@microchip.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH 11/16] dt-bindings: atmel,at91rm9200-rtc: add
+ microchip,sam9x60-rtc
+Date: Fri, 10 Jan 2020 15:30:01 +0100
+Message-ID: <20200110143001.GE1027187@piout.net>
 References: <1578488123-26127-1-git-send-email-claudiu.beznea@microchip.com>
- <1578488123-26127-4-git-send-email-claudiu.beznea@microchip.com>
- <20200110134001.GD1027187@piout.net>
+ <1578488123-26127-12-git-send-email-claudiu.beznea@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20200110134001.GD1027187@piout.net>
-Content-Language: en-US
-Content-ID: <88CA889BDD9DA749BF1403CE9B9231D5@namprd11.prod.outlook.com>
+Content-Disposition: inline
+In-Reply-To: <1578488123-26127-12-git-send-email-claudiu.beznea@microchip.com>
 Sender: linux-media-owner@vger.kernel.org
-To: alexandre.belloni@bootlin.com
-Cc: robh+dt@kernel.org, mark.rutland@arm.com, Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com, vkoul@kernel.org, Eugen.Hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, mchehab@kernel.org, lee.jones@linaro.org, richard.genoud@gmail.com, radu_nicolae.pirea@upb.ro, Tudor.Ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, wg@grandegger.com, mkl@pengutronix.de, a.zummo@towertech.it, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org
+To: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, ludovic.desroches@microchip.com, vkoul@kernel.org, eugen.hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, mchehab@kernel.org, lee.jones@linaro.org, richard.genoud@gmail.com, radu_nicolae.pirea@upb.ro, tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, wg@grandegger.com, mkl@pengutronix.de, a.zummo@towertech.it, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-rtc@vger.ke
 List-Id: linux-can.vger.kernel.org
 
-DQoNCk9uIDEwLjAxLjIwMjAgMTU6NDAsIEFsZXhhbmRyZSBCZWxsb25pIHdyb3RlOg0KPiBFWFRF
-Uk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDA4LzAxLzIwMjAgMTQ6NTU6
-MTArMDIwMCwgQ2xhdWRpdSBCZXpuZWEgd3JvdGU6DQo+PiBBZGQgbWljcm9jaGlwLDxjaGlwPi10
-Y2IgdG8gRFQgYmluZGluZ3MgZG9jdW1lbnRhdGlvbi4gVGhpcyBpcyBmb3INCj4+IG1pY3JvY2hp
-cCxzYW05eDYwLXRjYi4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBDbGF1ZGl1IEJlem5lYSA8Y2xh
-dWRpdS5iZXpuZWFAbWljcm9jaGlwLmNvbT4NCj4+IC0tLQ0KPj4gIERvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9tZmQvYXRtZWwtdGNiLnR4dCB8IDUgKysrLS0NCj4+ICAxIGZpbGUg
-Y2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1n
-aXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL2F0bWVsLXRjYi50eHQg
-Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL2F0bWVsLXRjYi50eHQNCj4+
-IGluZGV4IGM0YTgzZTM2NGNiNi4uZTE3MTNlNDFmNmUwIDEwMDY0NA0KPj4gLS0tIGEvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9hdG1lbC10Y2IudHh0DQo+PiArKysgYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL2F0bWVsLXRjYi50eHQNCj4+IEBA
-IC0xLDYgKzEsNyBAQA0KPj4gICogRGV2aWNlIHRyZWUgYmluZGluZ3MgZm9yIEF0bWVsIFRpbWVy
-IENvdW50ZXIgQmxvY2tzDQo+PiAtLSBjb21wYXRpYmxlOiBTaG91bGQgYmUgImF0bWVsLDxjaGlw
-Pi10Y2IiLCAic2ltcGxlLW1mZCIsICJzeXNjb24iLg0KPj4gLSAgPGNoaXA+IGNhbiBiZSAiYXQ5
-MXJtOTIwMCIgb3IgImF0OTFzYW05eDUiDQo+PiArLSBjb21wYXRpYmxlOiBTaG91bGQgYmUgImF0
-bWVsLDxjaGlwPi10Y2IiLCAibWljcm9jaGlwLDxjaGlwPi10Y2IiLA0KPj4gKyAgInNpbXBsZS1t
-ZmQiLCAic3lzY29uIi4NCj4+ICsgIDxjaGlwPiBjYW4gYmUgImF0OTFybTkyMDAiLCAiYXQ5MXNh
-bTl4NSIgb3IgInNhbTl4NjAiDQo+IA0KPiBhdG1lbCxzYW05eDYwLXRjYiwgbWljcm9jaGlwLGF0
-OTFybTkyMDAtdGNiIGFuZCBtaWNyb2NoaXAsYXQ5MXNhbTl4NS10Y2INCj4gYXJlIG5vdCBhbGxv
-d2VkIGFuZCB0aGUgZG9jdW1lbnRhdGlvbiBzaG91bGQgcmVmbGVjdCB0aGF0Lg0KDQpPSyEgSSds
-bCBkb3VibGUgY2hlY2sgaXQuDQoNCj4gDQo+IEl0IHdvdWxkIHByb2JhYmx5IGJlIGVhc2llciB0
-byBkbyB0aGF0IG9uIHRvcCBvZiB0aGUgeWFtbCBjb252ZXJzaW9uDQo+IGhlcmU6DQo+IGh0dHBz
-Oi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAxOTEwMDkyMjQwMDYuNTAyMS0yLWFsZXhhbmRyZS5i
-ZWxsb25pQGJvb3RsaW4uY29tLw0KDQpJIGRvbid0IHNlZSB0aGlzIGludGVncmF0ZWQgaW4gbmV4
-dC0yMDIwMDExMC4gQW0gSSBsb29raW5nIGF0IHRoZSB3cm9uZyBicmFuY2g/DQoNCj4gDQo+IC0t
-DQo+IEFsZXhhbmRyZSBCZWxsb25pLCBCb290bGluDQo+IEVtYmVkZGVkIExpbnV4IGFuZCBLZXJu
-ZWwgZW5naW5lZXJpbmcNCj4gaHR0cHM6Ly9ib290bGluLmNvbQ0KPiA=
+Hi,
+
+On 08/01/2020 14:55:18+0200, Claudiu Beznea wrote:
+> Add microchip,sam9x60-rtc to DT bindings documentation.
+
+This will have to be rebased on top of
+https://lore.kernel.org/linux-rtc/20191229204421.337612-2-alexandre.belloni@bootlin.com/
+
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>  Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.txt | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.txt b/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.txt
+> index 5d3791e789c6..35eab9138d0b 100644
+> --- a/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.txt
+> +++ b/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.txt
+> @@ -1,7 +1,8 @@
+>  Atmel AT91RM9200 Real Time Clock
+>  
+>  Required properties:
+> -- compatible: should be: "atmel,at91rm9200-rtc" or "atmel,at91sam9x5-rtc"
+> +- compatible: should be: "atmel,at91rm9200-rtc", "atmel,at91sam9x5-rtc" or
+> +  "microchip,sam9x60-rtc"
+>  - reg: physical base address of the controller and length of memory mapped
+>    region.
+>  - interrupts: rtc alarm/event interrupt
+> -- 
+> 2.7.4
+> 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
