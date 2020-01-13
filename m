@@ -1,34 +1,88 @@
-From: Rick Schaech <cathben72@gmail.com>
-Subject: I wait for your swift response,
-Date: Mon, 13 Jan 2020 01:52:24 -0400
-Message-ID: <CAEcBxO=TAnFn5LzizHa22hUC0Db5FuiZJF28m=yX3_9m--jRqg__3240.28119664348$1578894849$gmane$org@mail.gmail.com>
-Reply-To: rickschaech@gmail.com
+From: syzbot <syzbot+85d9878b19c94f9019ad@syzkaller.appspotmail.com>
+Subject: WARNING: refcount bug in j1939_netdev_start (2)
+Date: Sun, 12 Jan 2020 22:51:08 -0800
+Message-ID: <0000000000007272b9059bffe6cc@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:35616 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726946AbgAMFwZ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Jan 2020 00:52:25 -0500
-Received: by mail-oi1-f193.google.com with SMTP id k4so7232402oik.2
-        for <linux-can@vger.kernel.org>; Sun, 12 Jan 2020 21:52:25 -0800 (PST)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: davem@davemloft.net, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+List-Id: linux-can.vger.kernel.org
 
-Dear, I'm Mr Rick Schaech, I am the General Account Auditor, Though i
-know we have not meet each other before but sometimes in life God have
-a reason of bringing two people from two different countries together
-as business partners or life partners.
+Hello,
 
-My dear friend, I have the sum of 15.7 Million USD i wish to put in
-your name due to the death of my late client who died several years
-ago as his next of kin column still remain blank. Though the internet
-medium is highly abuse these days but am assuring you that this
-transaction is legitimate and I am contacting you that we may have a
-deal, note for your cooperation and collaboration 40% of the sum will
-be for you while the other 60% will be for me as well. I wait for your
-swift response for more details. please forward your response to my
-personal E-mail: rickschaech@gmail.com
+syzbot found the following crash on:
 
-Yours sincerely,
-Rick Schaech.
+HEAD commit:    6327edce Merge branch 'i2c/for-current' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1608b349e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7e89bd00623fe71e
+dashboard link: https://syzkaller.appspot.com/bug?extid=85d9878b19c94f9019ad
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+85d9878b19c94f9019ad@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 1 PID: 26973 at lib/refcount.c:25  
+refcount_warn_saturate+0x174/0x1f0 lib/refcount.c:25
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 26973 Comm: syz-executor.2 Not tainted 5.5.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x197/0x210 lib/dump_stack.c:118
+  panic+0x2e3/0x75c kernel/panic.c:221
+  __warn.cold+0x2f/0x3e kernel/panic.c:582
+  report_bug+0x289/0x300 lib/bug.c:195
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  fixup_bug arch/x86/kernel/traps.c:169 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
+  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:refcount_warn_saturate+0x174/0x1f0 lib/refcount.c:25
+Code: 06 31 ff 89 de e8 6c 18 d9 fd 84 db 0f 85 33 ff ff ff e8 1f 17 d9 fd  
+48 c7 c7 c0 27 71 88 c6 05 7b d8 da 06 01 e8 9b c6 a9 fd <0f> 0b e9 14 ff  
+ff ff e8 00 17 d9 fd 0f b6 1d 60 d8 da 06 31 ff 89
+RSP: 0018:ffffc90008e77ce0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000009ee4 RSI: ffffffff815e53a6 RDI: fffff520011cef8e
+RBP: ffffc90008e77cf0 R08: ffff888093580600 R09: ffffed1015d26621
+R10: ffffed1015d26620 R11: ffff8880ae933107 R12: 0000000000000002
+R13: ffff888047150000 R14: ffff8880a725b000 R15: 0000000000000118
+  refcount_add include/linux/refcount.h:191 [inline]
+  refcount_inc include/linux/refcount.h:228 [inline]
+  kref_get include/linux/kref.h:45 [inline]
+  j1939_netdev_start+0x534/0x650 net/can/j1939/main.c:277
+  j1939_sk_bind+0x68d/0x980 net/can/j1939/socket.c:469
+  __sys_bind+0x239/0x290 net/socket.c:1649
+  __do_sys_bind net/socket.c:1660 [inline]
+  __se_sys_bind net/socket.c:1658 [inline]
+  __x64_sys_bind+0x73/0xb0 net/socket.c:1658
+  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x45af49
+Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f0a1184dc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045af49
+RDX: 0000000000000018 RSI: 0000000020000240 RDI: 0000000000000005
+RBP: 000000000075c070 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f0a1184e6d4
+R13: 00000000004c1358 R14: 00000000004d6080 R15: 00000000ffffffff
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
