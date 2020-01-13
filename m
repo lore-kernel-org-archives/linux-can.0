@@ -1,31 +1,34 @@
-From: Peter Wong <peterwong@hsbc.com.hk>
-Subject: Investment opportunity
-Date: Sun, 12 Jan 2020 06:00:18 +0100 (CET)
-Message-ID: <27520913.460729.1578805219919.JavaMail.cash@217.130.24.55>
-Reply-To: Peter Wong <peterwonghkhsbc@gmail.com>
+From: syzbot <syzbot+db4869ba599c0de9b13e@syzkaller.appspotmail.com>
+Subject: Re: KASAN: use-after-free Read in j1939_xtp_rx_abort_one
+Date: Mon, 13 Jan 2020 08:42:02 -0800
+Message-ID: <000000000000a0ef18059c082789@google.com>
+References: <0000000000005ed7710596937e86@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail01.vodafone.es ([217.130.24.71]:63166 "EHLO
-        mail01.vodafone.es" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgAMGwI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Jan 2020 01:52:08 -0500
-Received: from unknown (HELO 192.168.1.3) (quesosbelda@[217.217.179.17])
-          (envelope-sender <peterwong@hsbc.com.hk>)
-          by mailrel04.vodafone.es (qmail-ldap-1.03) with SMTP
-          for <linux-can@vger.kernel.org>; 12 Jan 2020 05:00:20 -0000
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <0000000000005ed7710596937e86@google.com>
+Sender: netdev-owner@vger.kernel.org
+To: bst@pengutronix.de, davem@davemloft.net, dev.kurt@vandijck-laurijssen.be, ecathinds@gmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, lkp@intel.com, maxime.jayat@mobile-devices.fr, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+List-Id: linux-can.vger.kernel.org
 
-Greetings,
-Please read the attached investment proposal and reply for more details.
-Are you interested in loan?
-Sincerely: Peter Wong
+syzbot suspects this bug was fixed by commit:
 
+commit ddeeb7d4822ed06d79fc15e822b70dce3fa77e39
+Author: Oleksij Rempel <o.rempel@pengutronix.de>
+Date:   Sat Nov 9 15:11:18 2019 +0000
 
+     can: j1939: j1939_can_recv(): add priv refcounting
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15a7ec76e00000
+start commit:   de620fb9 Merge branch 'for-5.4-fixes' of git://git.kernel...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f9ff8f11e66c1fb1
+dashboard link: https://syzkaller.appspot.com/bug?extid=db4869ba599c0de9b13e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113e0d72e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=136aa6e8e00000
 
-----------------------------------------------------
-This email was sent by the shareware version of Postman Professional.
+If the result looks correct, please mark the bug fixed by replying with:
+
+#syz fix: can: j1939: j1939_can_recv(): add priv refcounting
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
