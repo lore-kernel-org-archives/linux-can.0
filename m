@@ -1,34 +1,26 @@
-From: syzbot <syzbot+db4869ba599c0de9b13e@syzkaller.appspotmail.com>
-Subject: Re: KASAN: use-after-free Read in j1939_xtp_rx_abort_one
-Date: Mon, 13 Jan 2020 08:42:02 -0800
-Message-ID: <000000000000a0ef18059c082789@google.com>
-References: <0000000000005ed7710596937e86@google.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 02/17] dt-bindings: at_xdmac: add microchip,sam9x60-dma
+Date: Mon, 13 Jan 2020 17:23:10 -0600
+Message-ID: <20200113232310.GA30698@bogus>
+References: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
+ <1578673089-3484-3-git-send-email-claudiu.beznea@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <0000000000005ed7710596937e86@google.com>
-Sender: netdev-owner@vger.kernel.org
-To: bst@pengutronix.de, davem@davemloft.net, dev.kurt@vandijck-laurijssen.be, ecathinds@gmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, lkp@intel.com, maxime.jayat@mobile-devices.fr, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1578673089-3484-3-git-send-email-claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, alexandre.belloni-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org, ludovic.desroches-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, eugen.hristev-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, knaack.h-Mmb7MZpHnFY@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org, mchehab-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, radu_nicolae.pirea-8LCfxC+Vs8U@public.gmane.org, richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tudor.ambarus-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, miquel.raynal-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org, richard-/L3Ra7n9ekc@public.gmane.org, vigneshr-l0cyMroinI0@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rtc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-syzbot suspects this bug was fixed by commit:
+On Fri, 10 Jan 2020 18:17:54 +0200, Claudiu Beznea wrote:
+> Add microchip,sam9x60-dma to DT bindings documentation.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/dma/atmel-xdma.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-commit ddeeb7d4822ed06d79fc15e822b70dce3fa77e39
-Author: Oleksij Rempel <o.rempel@pengutronix.de>
-Date:   Sat Nov 9 15:11:18 2019 +0000
-
-     can: j1939: j1939_can_recv(): add priv refcounting
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15a7ec76e00000
-start commit:   de620fb9 Merge branch 'for-5.4-fixes' of git://git.kernel...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f9ff8f11e66c1fb1
-dashboard link: https://syzkaller.appspot.com/bug?extid=db4869ba599c0de9b13e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113e0d72e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=136aa6e8e00000
-
-If the result looks correct, please mark the bug fixed by replying with:
-
-#syz fix: can: j1939: j1939_can_recv(): add priv refcounting
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
