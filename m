@@ -1,27 +1,30 @@
-From: Alexandre Belloni <alexandre.belloni-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v2 11/17] dt-bindings: atmel-gpbr: add
- microchip,sam9x60-gpbr
-Date: Tue, 14 Jan 2020 10:56:47 +0100
-Message-ID: <20200114095647.GK3137@piout.net>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v2 15/17] dt-bindings: arm: add sam9x60-ek board
+Date: Tue, 14 Jan 2020 10:57:42 +0100
+Message-ID: <20200114095742.GL3137@piout.net>
 References: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
- <1578673089-3484-12-git-send-email-claudiu.beznea@microchip.com>
+ <1578673089-3484-16-git-send-email-claudiu.beznea@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from relay10.mail.gandi.net ([217.70.178.230]:45733 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbgANJ5r (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Jan 2020 04:57:47 -0500
 Content-Disposition: inline
-In-Reply-To: <1578673089-3484-12-git-send-email-claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
-Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, ludovic.desroches-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, eugen.hristev-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, knaack.h-Mmb7MZpHnFY@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org, mchehab-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, radu_nicolae.pirea-8LCfxC+Vs8U@public.gmane.org, richard.genoud-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tudor.ambarus-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, miquel.raynal-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org, richard-/L3Ra7n9ekc@public.gmane.org, vigneshr-l0cyMroinI0@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rtc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+In-Reply-To: <1578673089-3484-16-git-send-email-claudiu.beznea@microchip.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, ludovic.desroches@microchip.com, vkoul@kernel.org, eugen.hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, mchehab@kernel.org, lee.jones@linaro.org, radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com, tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, wg@grandegger.com, mkl@pengutronix.de, a.zummo@towertech.it, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-can@vger.kernel.org, linux-rtc@vger.kernel.org
 
-On 10/01/2020 18:18:03+0200, Claudiu Beznea wrote:
-> Add microchip,sam9x60-gpbr to DT bindings documentation.
+On 10/01/2020 18:18:07+0200, Claudiu Beznea wrote:
+> Add documentation for SAM9X60-EK board.
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
->  Documentation/devicetree/bindings/mfd/atmel-gpbr.txt | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/arm/atmel-at91.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
 Applied, thanks.
 
