@@ -1,34 +1,46 @@
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v2 15/17] dt-bindings: arm: add sam9x60-ek board
-Date: Tue, 14 Jan 2020 10:57:42 +0100
-Message-ID: <20200114095742.GL3137@piout.net>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v2 05/17] dt-bindings: atmel-isi: add
+ microchip,sam9x60-isi
+Date: Tue, 14 Jan 2020 13:21:02 +0100
+Message-ID: <58d0a872-9f9e-ab64-b9e4-d6548b05142b@xs4all.nl>
 References: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
- <1578673089-3484-16-git-send-email-claudiu.beznea@microchip.com>
+ <1578673089-3484-6-git-send-email-claudiu.beznea@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay10.mail.gandi.net ([217.70.178.230]:45733 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725842AbgANJ5r (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Jan 2020 04:57:47 -0500
-Content-Disposition: inline
-In-Reply-To: <1578673089-3484-16-git-send-email-claudiu.beznea@microchip.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc: robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, ludovic.desroches@microchip.com, vkoul@kernel.org, eugen.hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, mchehab@kernel.org, lee.jones@linaro.org, radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com, tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, wg@grandegger.com, mkl@pengutronix.de, a.zummo@towertech.it, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-can@vger.kernel.org, linux-rtc@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1578673089-3484-6-git-send-email-claudiu.beznea@microchip.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Claudiu Beznea <claudiu.beznea@microchip.com>, robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com, vkoul@kernel.org, eugen.hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, mchehab@kernel.org, lee.jones@linaro.org, radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com, tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, wg@grandegger.com, mkl@pengutronix.de, a.zummo@towertech.it
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-can@vger.kernel.org, linux-rtc@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-On 10/01/2020 18:18:07+0200, Claudiu Beznea wrote:
-> Add documentation for SAM9X60-EK board.
+On 1/10/20 5:17 PM, Claudiu Beznea wrote:
+> Add microchip,sam9x60-isi to DT bindings documentation.
 > 
 > Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
->  Documentation/devicetree/bindings/arm/atmel-at91.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  Documentation/devicetree/bindings/media/atmel-isi.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-Applied, thanks.
+> diff --git a/Documentation/devicetree/bindings/media/atmel-isi.txt b/Documentation/devicetree/bindings/media/atmel-isi.txt
+> index 332513a151cc..8924c7545b63 100644
+> --- a/Documentation/devicetree/bindings/media/atmel-isi.txt
+> +++ b/Documentation/devicetree/bindings/media/atmel-isi.txt
+> @@ -2,7 +2,7 @@ Atmel Image Sensor Interface (ISI)
+>  ----------------------------------
+>  
+>  Required properties for ISI:
+> -- compatible: must be "atmel,at91sam9g45-isi".
+> +- compatible: must be "atmel,at91sam9g45-isi" or "microchip,sam9x60-isi".
+>  - reg: physical base address and length of the registers set for the device.
+>  - interrupts: should contain IRQ line for the ISI.
+>  - clocks: list of clock specifiers, corresponding to entries in the clock-names
+> 
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+Regards,
+
+	Hans
