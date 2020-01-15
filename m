@@ -1,127 +1,43 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH] can, slip: Protect tty->disc_data access with RCU
-Date: Tue, 14 Jan 2020 07:17:51 -0800
-Message-ID: <19d5e4c6-72f4-631f-2ccd-b5df660a5ef6@gmail.com>
-References: <0000000000002b81b70590a83ad7@google.com>
- <20200114143244.20739-1-rpalethorpe@suse.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2 10/17] dt-bindings: atmel-smc: add
+ microchip,sam9x60-smc
+Date: Wed, 15 Jan 2020 08:00:53 +0000
+Message-ID: <20200115080053.GC325@dell>
+References: <1578673089-3484-1-git-send-email-claudiu.beznea@microchip.com>
+ <1578673089-3484-11-git-send-email-claudiu.beznea@microchip.com>
+ <20200114095538.GJ3137@piout.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:38478 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgANPRy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Jan 2020 10:17:54 -0500
-In-Reply-To: <20200114143244.20739-1-rpalethorpe@suse.com>
-Content-Language: en-US
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:37954 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728946AbgAOIAn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 15 Jan 2020 03:00:43 -0500
+Received: by mail-wm1-f68.google.com with SMTP id u2so16648873wmc.3
+        for <linux-can@vger.kernel.org>; Wed, 15 Jan 2020 00:00:42 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20200114095538.GJ3137@piout.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Richard Palethorpe <rpalethorpe@suse.com>, linux-can@vger.kernel.org
-Cc: syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Tyler Hall <tylerwhall@gmail.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, syzkaller@googlegroups.com
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Claudiu Beznea <claudiu.beznea@microchip.com>, robh+dt@kernel.org, mark.rutland@arm.com, nicolas.ferre@microchip.com, ludovic.desroches@microchip.com, vkoul@kernel.org, eugen.hristev@microchip.com, jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, mchehab@kernel.org, radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com, tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, wg@grandegger.com, mkl@pengutronix.de, a.zummo@towertech.it, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-iio@vger.kernel.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-can@vger.kernel.org, linux-rtc@vger.kernel.org
 
+On Tue, 14 Jan 2020, Alexandre Belloni wrote:
 
+> On 10/01/2020 18:18:02+0200, Claudiu Beznea wrote:
+> > Add microchip,sam9x60-smc to DT bindings documentation.
+> > 
+> > Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> > ---
+> >  Documentation/devicetree/bindings/mfd/atmel-smc.txt | 1 +
+> >  1 file changed, 1 insertion(+)
+> Applied, thanks.
 
-On 1/14/20 6:32 AM, Richard Palethorpe wrote:
-> write_wakeup can happen in parallel with close where tty->disc_data is set
-> to NULL. So we a) need to check if tty->disc_data is NULL and b) ensure it
-> is an atomic operation. Otherwise accessing tty->disc_data could result in
-> a NULL pointer deref or access to some random location.
-> 
-> This problem was found by Syzkaller on slcan, but the same issue appears to
-> exist in slip where slcan was copied from.
-> 
-> A fix which didn't use RCU was posted by Hillf Danton.
-> 
-> Fixes: 661f7fda21b1 ("slip: Fix deadlock in write_wakeup")
-> Fixes: a8e83b17536a ("slcan: Port write_wakeup deadlock fix from slip")
-> Reported-by: syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Tyler Hall <tylerwhall@gmail.com>
-> Cc: netdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: syzkaller@googlegroups.com
-> ---
-> 
-> Note, that mabye RCU should also applied to receive_buf as that also happens
-> in interrupt context. So if the pointer assignment is split by the compiler
-> then sl may point somewhere unexpected?
-> 
->  drivers/net/can/slcan.c | 11 +++++++++--
->  drivers/net/slip/slip.c | 11 +++++++++--
->  2 files changed, 18 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-> index 2e57122f02fb..ee029aae69d4 100644
-> --- a/drivers/net/can/slcan.c
-> +++ b/drivers/net/can/slcan.c
-> @@ -344,7 +344,14 @@ static void slcan_transmit(struct work_struct *work)
->   */
->  static void slcan_write_wakeup(struct tty_struct *tty)
->  {
-> -	struct slcan *sl = tty->disc_data;
-> +	struct slcan *sl;
-> +
-> +	rcu_read_lock();
-> +	sl = rcu_dereference(tty->disc_data);
-> +	rcu_read_unlock();
+Remind me why you are applying this patch please?
 
-This rcu_read_lock()/rcu_read_unlock() pair is not protecting anything.
-
-Right after rcu_read_unlock(), sl validity can not be guaranteed.
-
-> +
-> +	if (!sl)
-> +		return;
->  
->  	schedule_work(&sl->tx_work);
->  }
-> @@ -644,7 +651,7 @@ static void slcan_close(struct tty_struct *tty)
->  		return;
->  
->  	spin_lock_bh(&sl->lock);
-> -	tty->disc_data = NULL;
-> +	rcu_assign_pointer(tty->disc_data, NULL);
->  	sl->tty = NULL;
->  	spin_unlock_bh(&sl->lock);
-
-
-
-Where is the rcu grace period before freeing enforced ?
-
->  
-> diff --git a/drivers/net/slip/slip.c b/drivers/net/slip/slip.c
-> index 2a91c192659f..dfed9f0b8646 100644
-> --- a/drivers/net/slip/slip.c
-> +++ b/drivers/net/slip/slip.c
-> @@ -452,7 +452,14 @@ static void slip_transmit(struct work_struct *work)
->   */
->  static void slip_write_wakeup(struct tty_struct *tty)
->  {
-> -	struct slip *sl = tty->disc_data;
-> +	struct slip *sl;
-> +
-> +	rcu_read_lock();
-> +	sl = rcu_dereference(tty->disc_data);
-> +	rcu_read_unlock();
-
-Same here.
-
-> +
-> +	if (!sl)
-> +		return;
->  
->  	schedule_work(&sl->tx_work);
->  }
-> @@ -882,7 +889,7 @@ static void slip_close(struct tty_struct *tty)
->  		return;
->  
->  	spin_lock_bh(&sl->lock);
-> -	tty->disc_data = NULL;
-> +	rcu_assign_pointer(tty->disc_data, NULL);
->  	sl->tty = NULL;
->  	spin_unlock_bh(&sl->lock);
->  
-> 
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
