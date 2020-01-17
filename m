@@ -1,211 +1,33 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Subject: Re: [PATCH] can, slip: Protect tty->disc_data access with RCU
-Date: Thu, 16 Jan 2020 11:38:28 +0100
-Message-ID: <87v9pbit3v.fsf@our.domain.is.not.set>
-References: <0000000000002b81b70590a83ad7@google.com> <20200114143244.20739-1-rpalethorpe@suse.com> <19d5e4c6-72f4-631f-2ccd-b5df660a5ef6@gmail.com>
-Reply-To: rpalethorpe@suse.de
+From: syzbot <syzbot+4857323ec1bb236f6a45@syzkaller.appspotmail.com>
+Subject: Re: general protection fault in j1939_sk_bind
+Date: Fri, 17 Jan 2020 01:06:01 -0800
+Message-ID: <0000000000002ab713059c524079@google.com>
+References: <000000000000a367e3059691c6b4@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx2.suse.de ([195.135.220.15]:42464 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbgAPKic (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 16 Jan 2020 05:38:32 -0500
-In-reply-to: <19d5e4c6-72f4-631f-2ccd-b5df660a5ef6@gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, linux-can@vger.kernel.org, syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Tyler Hall <tylerwhall@gmail.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, syzkaller@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <000000000000a367e3059691c6b4@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: bst@pengutronix.de, davem@davemloft.net, dev.kurt@vandijck-laurijssen.be, ecathinds@gmail.com, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, lkp@intel.com, maxime.jayat@mobile-devices.fr, mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+List-Id: linux-can.vger.kernel.org
 
+syzbot suspects this bug was fixed by commit:
 
-Eric Dumazet <eric.dumazet@gmail.com> writes:
+commit 00d4e14d2e4caf5f7254a505fee5eeca8cd37bd4
+Author: Oleksij Rempel <o.rempel@pengutronix.de>
+Date:   Fri Dec 6 14:18:35 2019 +0000
 
-> On 1/14/20 6:32 AM, Richard Palethorpe wrote:
->> write_wakeup can happen in parallel with close where tty->disc_data is set
->> to NULL. So we a) need to check if tty->disc_data is NULL and b) ensure it
->> is an atomic operation. Otherwise accessing tty->disc_data could result in
->> a NULL pointer deref or access to some random location.
->>
->> This problem was found by Syzkaller on slcan, but the same issue appears to
->> exist in slip where slcan was copied from.
->>
->> A fix which didn't use RCU was posted by Hillf Danton.
->>
->> Fixes: 661f7fda21b1 ("slip: Fix deadlock in write_wakeup")
->> Fixes: a8e83b17536a ("slcan: Port write_wakeup deadlock fix from slip")
->> Reported-by: syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> Cc: Wolfgang Grandegger <wg@grandegger.com>
->> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
->> Cc: "David S. Miller" <davem@davemloft.net>
->> Cc: Tyler Hall <tylerwhall@gmail.com>
->> Cc: netdev@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: syzkaller@googlegroups.com
->> ---
->>
->> Note, that mabye RCU should also applied to receive_buf as that also happens
->> in interrupt context. So if the pointer assignment is split by the compiler
->> then sl may point somewhere unexpected?
->>
->>  drivers/net/can/slcan.c | 11 +++++++++--
->>  drivers/net/slip/slip.c | 11 +++++++++--
->>  2 files changed, 18 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
->> index 2e57122f02fb..ee029aae69d4 100644
->> --- a/drivers/net/can/slcan.c
->> +++ b/drivers/net/can/slcan.c
->> @@ -344,7 +344,14 @@ static void slcan_transmit(struct work_struct *work)
->>   */
->>  static void slcan_write_wakeup(struct tty_struct *tty)
->>  {
->> -	struct slcan *sl = tty->disc_data;
->> +	struct slcan *sl;
->> +
->> +	rcu_read_lock();
->> +	sl = rcu_dereference(tty->disc_data);
->> +	rcu_read_unlock();
->
-> This rcu_read_lock()/rcu_read_unlock() pair is not protecting anything.
->
-> Right after rcu_read_unlock(), sl validity can not be guaranteed.
->
->> +
->> +	if (!sl)
->> +		return;
->>
->>  	schedule_work(&sl->tx_work);
->>  }
->> @@ -644,7 +651,7 @@ static void slcan_close(struct tty_struct *tty)
->>  		return;
->>
->>  	spin_lock_bh(&sl->lock);
->> -	tty->disc_data = NULL;
->> +	rcu_assign_pointer(tty->disc_data, NULL);
->>  	sl->tty = NULL;
->>  	spin_unlock_bh(&sl->lock);
->
->
->
-> Where is the rcu grace period before freeing enforced ?
->
+     can: j1939: j1939_sk_bind(): take priv after lock is held
 
-Sorry that was dumb.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1001b266e00000
+start commit:   32ef9553 Merge tag 'fsnotify_for_v5.5-rc1' of git://git.ke..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c2e464ae414aee8c
+dashboard link: https://syzkaller.appspot.com/bug?extid=4857323ec1bb236f6a45
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177c34a2e00000
 
-I have respun the patch so it now schedules the work inside the RCU read
-lock and it synchronises before freeing the netdev.
+If the result looks correct, please mark the bug fixed by replying with:
 
-However sparse complains about the address space of the pointer. I guess
-if disc_data is to be protected by RCU then it should be marked as
-such...
+#syz fix: can: j1939: j1939_sk_bind(): take priv after lock is held
 
-I suppose that at least the access in slip/slcan_receive_buf should also
-be protected by RCU? It seems like disc_data could be freed from
-underneath it by close.
-
-At any rate below is the updated patch FYI.
-
--- >8 --
-
-Subject: [PATCH v2] can, slip: Protect tty->disc_data access with RCU
-
-write_wakeup can happen in parallel with close where tty->disc_data is set
-to NULL. So we a) need to check if tty->disc_data is NULL and b) ensure it
-is an atomic operation. Otherwise accessing tty->disc_data could result in a
-NULL pointer deref or access to some random location.
-
-This problem was found by Syzkaller on slcan, but the same issue appears to
-exist in slip where slcan was copied from.
-
-A fix which didn't use RCU was posted by Hillf Danton.
-
-Fixes: 661f7fda21b1 ("slip: Fix deadlock in write_wakeup")
-Fixes: a8e83b17536a ("slcan: Port write_wakeup deadlock fix from slip")
-Reported-by: syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Tyler Hall <tylerwhall@gmail.com>
-Cc: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: syzkaller@googlegroups.com
----
- drivers/net/can/slcan.c | 12 ++++++++++--
- drivers/net/slip/slip.c | 12 ++++++++++--
- 2 files changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 2e57122f02fb..2f5c287eac95 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -344,9 +344,16 @@ static void slcan_transmit(struct work_struct *work)
-  */
- static void slcan_write_wakeup(struct tty_struct *tty)
- {
--	struct slcan *sl = tty->disc_data;
-+	struct slcan *sl;
-+
-+	rcu_read_lock();
-+	sl = rcu_dereference(tty->disc_data);
-+	if (!sl)
-+		goto out;
-
- 	schedule_work(&sl->tx_work);
-+out:
-+	rcu_read_unlock();
- }
-
- /* Send a can_frame to a TTY queue. */
-@@ -644,10 +651,11 @@ static void slcan_close(struct tty_struct *tty)
- 		return;
-
- 	spin_lock_bh(&sl->lock);
--	tty->disc_data = NULL;
-+	rcu_assign_pointer(tty->disc_data, NULL);
- 	sl->tty = NULL;
- 	spin_unlock_bh(&sl->lock);
-
-+	synchronize_rcu();
- 	flush_work(&sl->tx_work);
-
- 	/* Flush network side */
-diff --git a/drivers/net/slip/slip.c b/drivers/net/slip/slip.c
-index 2a91c192659f..61d7e0d1d77d 100644
---- a/drivers/net/slip/slip.c
-+++ b/drivers/net/slip/slip.c
-@@ -452,9 +452,16 @@ static void slip_transmit(struct work_struct *work)
-  */
- static void slip_write_wakeup(struct tty_struct *tty)
- {
--	struct slip *sl = tty->disc_data;
-+	struct slip *sl;
-+
-+	rcu_read_lock();
-+	sl = rcu_dereference(tty->disc_data);
-+	if (!sl)
-+		goto out;
-
- 	schedule_work(&sl->tx_work);
-+out:
-+	rcu_read_unlock();
- }
-
- static void sl_tx_timeout(struct net_device *dev)
-@@ -882,10 +889,11 @@ static void slip_close(struct tty_struct *tty)
- 		return;
-
- 	spin_lock_bh(&sl->lock);
--	tty->disc_data = NULL;
-+	rcu_assign_pointer(tty->disc_data, NULL);
- 	sl->tty = NULL;
- 	spin_unlock_bh(&sl->lock);
-
-+	synchronize_rcu();
- 	flush_work(&sl->tx_work);
-
- 	/* VSV = very important to remove timers */
---
-2.24.0
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
