@@ -1,56 +1,107 @@
-From: "Prof, William Roberts" <eco.bank1204@gmail.com>
-Subject: Contact Diplomatic Agent, Mr. Mcclaine John to receive your ATM CARD
- valued the sum of $12.8Million United States Dollars
-Date: Mon, 20 Jan 2020 20:31:57 +0100
-Message-ID: <CAOE+jAB9Cv76tHqc-hO92yWjVshCsALoX=zT1ruNmX+0-Bjyxw__6440.26957904629$1579548724$gmane$org@mail.gmail.com>
-Reply-To: mcclainejohn.13@gmail.com
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: general protection fault in can_rx_register
+Date: Mon, 20 Jan 2020 23:02:11 +0100
+Message-ID: <8332ec7f-2235-fdf6-9bda-71f789c57b37@hartkopp.net>
+References: <00000000000030dddb059c562a3f@google.com>
+ <55ad363b-1723-28aa-78b1-8aba5565247e@hartkopp.net>
+ <20200120091146.GD11138@x1.vandijck-laurijssen.be>
+ <CACT4Y+a+GusEA1Gs+z67uWjtwBRp_s7P4Wd_SMmgpCREnDu3kg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:35261 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727071AbgATTcA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 20 Jan 2020 14:32:00 -0500
-Received: by mail-ed1-f65.google.com with SMTP id f8so625591edv.2
-        for <linux-can@vger.kernel.org>; Mon, 20 Jan 2020 11:31:59 -0800 (PST)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CACT4Y+a+GusEA1Gs+z67uWjtwBRp_s7P4Wd_SMmgpCREnDu3kg@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+List-Id: linux-can.vger.kernel.org
 
-Attn: Dear Beneficiary,
+Hi all,
 
-I wish to inform you that the diplomatic agent conveying your ATM CARD
-valued the sum of $12.8Million United States Dollars has misplaced
-your address and he is currently stranded at (George Bush
-International Airport) Houston Texas USA now
-We required you to reconfirm the following information's below to him
-so that he can deliver your Payment CARD to you today or tomorrow
-morning as information provided with open communications via email and
-telephone for security reasons.
-HERE IS THE DETAILS  HE NEED FROM YOU URGENT
-YOUR FULL NAME:========
-ADDRESS:========
-MOBILE NO:========
-NAME OF YOUR NEAREST AIRPORT:========
-A COPY OF YOUR IDENTIFICATION :========
+On 20/01/2020 10.22, Dmitry Vyukov wrote:
 
-Note; do contact the diplomatic agent immediately through the
-information's listed below
-Contact Person: Diplomatic Agent, Mr. Mcclaine John
-EMAIL: mcclainejohn.13@gmail.com
-Tel:(223) 777-7518
+>> Is this code what triggers the bug?
+>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=138f5db9e00000
+> 
+> yes
+> 
 
-Contact the diplomatic agent immediately
-because he is waiting to hear from you today with the needed information's.
+(..)
 
-NOTE: The Diplomatic agent does not know that the content of the
-consignment box is $12.800,000,00 Million United States Dollars and on
-no circumstances should you let him know the content. The consignment
-was moved from here as family treasures, so never allow him to open
-the box. Please I have paid delivery fees for you but the only money
-you must send to Mcclaine John is your ATM CARD delivery fee $25.00
-only. text Him as you contact Him Immediately
+>>>> RIP: 0010:hlist_add_head_rcu include/linux/rculist.h:528 [inline]
+>>>> RIP: 0010:can_rx_register+0x43b/0x600 net/can/af_can.c:476
+>>>
+>>> include/linux/rculist.h:528 is
+>>>
+>>> struct hlist_node *first = h->first;
+>>>
+>>> which would mean that 'h' must be NULL.
+>>>
+>>> But the h parameter is rcv_list from
+>>> rcv_list = can_rcv_list_find(&can_id, &mask, dev_rcv_lists);
+>>>
+>>> Which can not return NULL - at least when dev_rcv_lists is a proper pointer
+>>> to the dev_rcv_lists provided by can_dev_rcv_lists_find().
+>>>
+>>> So either dev->ml_priv is NULL in the case of having a CAN interface (here
+>>> vxcan) ...
 
-Thanks,
-with Regards.
-Prof, William Roberts
-Director DHL COURIER SERVICES-Benin
+Added some code to check whether dev->ml_priv is NULL:
+
+~/linux$ git diff
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 128d37a4c2e0..6fb4ae4c359e 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -463,6 +463,10 @@ int can_rx_register(struct net *net, struct 
+net_device *dev, canid_t can_id,
+         spin_lock_bh(&net->can.rcvlists_lock);
+
+         dev_rcv_lists = can_dev_rcv_lists_find(net, dev);
++       if (!dev_rcv_lists) {
++               pr_err("dev_rcv_lists == NULL! %p\n", dev);
++               goto out_unlock;
++       }
+         rcv_list = can_rcv_list_find(&can_id, &mask, dev_rcv_lists);
+
+         rcv->can_id = can_id;
+@@ -479,6 +483,7 @@ int can_rx_register(struct net *net, struct 
+net_device *dev, canid_t can_id,
+         rcv_lists_stats->rcv_entries++;
+         rcv_lists_stats->rcv_entries_max = 
+max(rcv_lists_stats->rcv_entries_max,
+ 
+rcv_lists_stats->rcv_entries);
++out_unlock:
+         spin_unlock_bh(&net->can.rcvlists_lock);
+
+         return err;
+
+And the output (after some time) is:
+
+[  758.505841] netlink: 'crash': attribute type 1 has an invalid length.
+[  758.508045] bond7148: (slave vxcan1): The slave device specified does 
+not support setting the MAC address
+[  758.508057] bond7148: (slave vxcan1): Error -22 calling dev_set_mtu
+[  758.532025] bond10413: (slave vxcan1): The slave device specified 
+does not support setting the MAC address
+[  758.532043] bond10413: (slave vxcan1): Error -22 calling dev_set_mtu
+[  758.532254] dev_rcv_lists == NULL! 000000006b9d257f
+[  758.547392] netlink: 'crash': attribute type 1 has an invalid length.
+[  758.549310] bond7145: (slave vxcan1): The slave device specified does 
+not support setting the MAC address
+[  758.549313] bond7145: (slave vxcan1): Error -22 calling dev_set_mtu
+[  758.550464] netlink: 'crash': attribute type 1 has an invalid length.
+[  758.552301] bond7146: (slave vxcan1): The slave device specified does 
+not support setting the MAC address
+
+So we can see that we get a ml_priv pointer which is NULL which should 
+not be possible due to this:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/can/dev.c#n743
+
+Btw. the variable 'size' is set two times at the top of 
+alloc_candev_mqs() depending on echo_skb_max. This looks wrong.
+
+Best regards,
+Oliver
