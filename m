@@ -1,7 +1,7 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Subject: Re: general protection fault in can_rx_register
-Date: Tue, 21 Jan 2020 21:03:42 +0100
-Message-ID: <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
+Date: Tue, 21 Jan 2020 21:34:24 +0100
+Message-ID: <20200121203424.GF13462@x1.vandijck-laurijssen.be>
 References: <00000000000030dddb059c562a3f@google.com>
  <55ad363b-1723-28aa-78b1-8aba5565247e@hartkopp.net>
  <20200120091146.GD11138@x1.vandijck-laurijssen.be>
@@ -9,57 +9,43 @@ References: <00000000000030dddb059c562a3f@google.com>
  <8332ec7f-2235-fdf6-9bda-71f789c57b37@hartkopp.net>
  <2a676c0e-20f2-61b5-c72b-f51947bafc7d@hartkopp.net>
  <20200121192248.GC13462@x1.vandijck-laurijssen.be>
+ <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:21912 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727360AbgAUUEF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2020 15:04:05 -0500
-In-Reply-To: <20200121192248.GC13462@x1.vandijck-laurijssen.be>
-Content-Language: en-US
+Received: from relay-b02.edpnet.be ([212.71.1.222]:55085 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727360AbgAUUe3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2020 15:34:29 -0500
+Content-Disposition: inline
+In-Reply-To: <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, linux-can@vger.kernel.org
 
-Hi Kurt,
-
-On 21/01/2020 20.22, Kurt Van Dijck wrote:
-
-> I decreased the CC list a bit, as I'm more like thinking in the wild
-> now:
-
-Good choice!
-
-> Since the problems happens only rarely, and with vxcan, I assume not
-> vcan, I started to think to locking issues.
+On di, 21 jan 2020 21:03:42 +0100, Oliver Hartkopp wrote:
+> Hi Kurt,
+...
 > 
-> 1. What surprised me a bit is 'rtnl_dereference()' calls, without
-> rcu_read_lock() around it? is that supposed to be ok?
+> Yes. That's really weird as is just has an impact on the socket API. But it
+> should not have any impact on the CAN_RAW socket they are using.
+> 
+> Hm - in fact is has an impact on the socket API.
+> Before the patch the user space was able to send 16 bytes to the CAN_RAW
+> socket. Now it's only 8 byte as you reduced the required size.
 
-Don't know. This code was just copied from veth.c
+Nack,
+the CAN_REQUIRED_SIZE is applied on struct sockaddr_can only, to guard
+against breaking ABI with the upcoming addition of j1939 fields.
 
-But veth doesn't fiddle with ml_priv like us.
+But where in the past, the tp members where necessary but unused, they
+are now optional and still unused, in both raw_bind and raw_sendmsg.
 
-> 2. is it possible to call vxcan_dellink in between the 2
-> rcu_assign_pointer() calls in vxcan_newlink(), resulting in a dead end,
-> i.e. one end is referenced, but already deleted?
-> I'd expect a kind of rcu_write_lock around the cross-linking at least.
+But this does not propagate to sk_buff, so I could not find how it
+changes anything that worked before into a crash.
 
-Will look into this too. When there's a comment this might be a 
-justification for doing "hacky" things ;-)
-
-> It still puzzles me how this bisected to CAN_REQUIRED_SIZE() macro
-> commit.
-
-Yes. That's really weird as is just has an impact on the socket API. But 
-it should not have any impact on the CAN_RAW socket they are using.
-
-Hm - in fact is has an impact on the socket API.
-Before the patch the user space was able to send 16 bytes to the CAN_RAW 
-socket. Now it's only 8 byte as you reduced the required size.
-
-Regards,
-Oliver
+> 
+> Regards,
+> Oliver
+> 
