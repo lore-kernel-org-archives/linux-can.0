@@ -1,87 +1,65 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: general protection fault in can_rx_register
-Date: Tue, 21 Jan 2020 20:47:11 +0100
-Message-ID: <20200121194711.GD13462@x1.vandijck-laurijssen.be>
+Date: Tue, 21 Jan 2020 21:03:42 +0100
+Message-ID: <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
 References: <00000000000030dddb059c562a3f@google.com>
  <55ad363b-1723-28aa-78b1-8aba5565247e@hartkopp.net>
  <20200120091146.GD11138@x1.vandijck-laurijssen.be>
  <CACT4Y+a+GusEA1Gs+z67uWjtwBRp_s7P4Wd_SMmgpCREnDu3kg@mail.gmail.com>
  <8332ec7f-2235-fdf6-9bda-71f789c57b37@hartkopp.net>
  <2a676c0e-20f2-61b5-c72b-f51947bafc7d@hartkopp.net>
- <20200121083035.GD14537@x1.vandijck-laurijssen.be>
- <20200121185407.GA13462@x1.vandijck-laurijssen.be>
- <a04209c8-747b-6116-d915-21c285f48730@hartkopp.net>
+ <20200121192248.GC13462@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <a04209c8-747b-6116-d915-21c285f48730@hartkopp.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, David Miller <davem@davemloft.net>, linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:21912 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727360AbgAUUEF (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2020 15:04:05 -0500
+In-Reply-To: <20200121192248.GC13462@x1.vandijck-laurijssen.be>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, linux-can@vger.kernel.org
 
-On di, 21 jan 2020 20:28:51 +0100, Oliver Hartkopp wrote:
-> Hi Kurt,
-> 
-> On 21/01/2020 19.54, Kurt Van Dijck wrote:
-> >On di, 21 jan 2020 09:30:35 +0100, Kurt Van Dijck wrote:
-> >>On ma, 20 jan 2020 23:35:16 +0100, Oliver Hartkopp wrote:
-> 
-> 
-> >>>But it is still open why dev->ml_priv is not set correctly in vxcan.c as all
-> >>>the settings for .priv_size and in vxcan_setup look fine.
-> >>
-> >>Maybe I got completely lost:
-> >>Shouldn't can_ml_priv and vxcan_priv not be similar?
-> >>Where is the dev_rcv_lists in the vxcan case?
-> >
-> >I indeed got completely lost. vxcan_priv & can_ml_priv form together the
-> >private part. I continue looking
-> 
-> I added some more debug output:
-> 
-> @@ -463,6 +463,10 @@ int can_rx_register(struct net *net, struct net_device
-> *dev, canid_t can_id,
->         spin_lock_bh(&net->can.rcvlists_lock);
-> 
->         dev_rcv_lists = can_dev_rcv_lists_find(net, dev);
-> +       if (!dev_rcv_lists) {
-> +               pr_err("dev_rcv_lists == NULL! %p (%s)\n", dev, dev->name);
-> +               goto out_unlock;
-> +       }
->         rcv_list = can_rcv_list_find(&can_id, &mask, dev_rcv_lists);
-> 
->         rcv->can_id = can_id;
-> 
-> 
-> and the output becomes:
-> 
-> [ 1814.644087] bond5130: (slave vxcan1): The slave device specified does not
-> support setting the MAC address
-> [ 1814.644106] bond5130: (slave vxcan1): Error -22 calling dev_set_mtu
-> [ 1814.648867] bond5128: (slave vxcan1): The slave device specified does not
-> support setting the MAC address
-> [ 1814.648904] bond5128: (slave vxcan1): Error -22 calling dev_set_mtu
-> [ 1814.649124] dev_rcv_lists == NULL! 000000008e41fb06 (bond5128)
-> [ 1814.696420] bond5129: (slave vxcan1): The slave device specified does not
-> support setting the MAC address
-> [ 1814.696438] bond5129: (slave vxcan1): Error -22 calling dev_set_mtu
-> 
-> So it's not the vxcan1 netdev that causes the issue but (sporadically!!) the
-> bonding netdev.
-> 
-> Interesting enough that the bonding device bond5128 obviously passes the
-> 
->        if (dev && dev->type != ARPHRD_CAN)
->                 return -ENODEV;
-> test.
-> 
-> ?!?
-Did you consider my hypothesis I sent you (at 20h22 tonight)?
-I don't personally understand all the locks around networking, but your
-observation acks my theory of race condition.
+Hi Kurt,
 
+On 21/01/2020 20.22, Kurt Van Dijck wrote:
+
+> I decreased the CC list a bit, as I'm more like thinking in the wild
+> now:
+
+Good choice!
+
+> Since the problems happens only rarely, and with vxcan, I assume not
+> vcan, I started to think to locking issues.
 > 
-> Regards,
-> Oliver
+> 1. What surprised me a bit is 'rtnl_dereference()' calls, without
+> rcu_read_lock() around it? is that supposed to be ok?
+
+Don't know. This code was just copied from veth.c
+
+But veth doesn't fiddle with ml_priv like us.
+
+> 2. is it possible to call vxcan_dellink in between the 2
+> rcu_assign_pointer() calls in vxcan_newlink(), resulting in a dead end,
+> i.e. one end is referenced, but already deleted?
+> I'd expect a kind of rcu_write_lock around the cross-linking at least.
+
+Will look into this too. When there's a comment this might be a 
+justification for doing "hacky" things ;-)
+
+> It still puzzles me how this bisected to CAN_REQUIRED_SIZE() macro
+> commit.
+
+Yes. That's really weird as is just has an impact on the socket API. But 
+it should not have any impact on the CAN_RAW socket they are using.
+
+Hm - in fact is has an impact on the socket API.
+Before the patch the user space was able to send 16 bytes to the CAN_RAW 
+socket. Now it's only 8 byte as you reduced the required size.
+
+Regards,
+Oliver
