@@ -1,61 +1,36 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: general protection fault in can_rx_register
-Date: Tue, 21 Jan 2020 21:39:54 +0100
-Message-ID: <20200121203954.GG13462@x1.vandijck-laurijssen.be>
-References: <00000000000030dddb059c562a3f@google.com>
- <55ad363b-1723-28aa-78b1-8aba5565247e@hartkopp.net>
- <20200120091146.GD11138@x1.vandijck-laurijssen.be>
- <CACT4Y+a+GusEA1Gs+z67uWjtwBRp_s7P4Wd_SMmgpCREnDu3kg@mail.gmail.com>
- <8332ec7f-2235-fdf6-9bda-71f789c57b37@hartkopp.net>
- <2a676c0e-20f2-61b5-c72b-f51947bafc7d@hartkopp.net>
- <20200121192248.GC13462@x1.vandijck-laurijssen.be>
- <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: [PATCH 0/3] Add Support for MCAN in AM654x-idk
+Date: Wed, 22 Jan 2020 13:33:07 +0530
+Message-ID: <20200122080310.24653-1-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b01.edpnet.be ([212.71.1.221]:42893 "EHLO
-        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgAUUkC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Jan 2020 15:40:02 -0500
-Content-Disposition: inline
-In-Reply-To: <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, linux-can@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
+Cc: mark.rutland@arm.com, nm@ti.com, catalin.marinas@arm.com, sriram.dash@samsung.com, faiz_abbas@ti.com, t-kristo@ti.com, robh+dt@kernel.org, mkl@pengutronix.de, dmurphy@ti.com, davem@davemloft.net, wg@grandegger.com
+List-Id: linux-can.vger.kernel.org
 
-Oliver,
+This series adds driver patches to support MCAN in TI's AM654x-idk.
 
-On di, 21 jan 2020 21:03:42 +0100, Oliver Hartkopp wrote:
-> Hi Kurt,
-> 
-> On 21/01/2020 20.22, Kurt Van Dijck wrote:
-> 
-> >I decreased the CC list a bit, as I'm more like thinking in the wild
-> >now:
-> 
-> Good choice!
-> 
-> >Since the problems happens only rarely, and with vxcan, I assume not
-> >vcan, I started to think to locking issues.
-> >
-> >1. What surprised me a bit is 'rtnl_dereference()' calls, without
-> >rcu_read_lock() around it? is that supposed to be ok?
-> 
-> Don't know. This code was just copied from veth.c
-> 
-> But veth doesn't fiddle with ml_priv like us.
-> 
-> >2. is it possible to call vxcan_dellink in between the 2
-> >rcu_assign_pointer() calls in vxcan_newlink(), resulting in a dead end,
-> >i.e. one end is referenced, but already deleted?
-> >I'd expect a kind of rcu_write_lock around the cross-linking at least.
-> 
-> Will look into this too. When there's a comment this might be a
-> justification for doing "hacky" things ;-)
+Faiz Abbas (3):
+  dt-bindings: net: can: m_can: Add Documentation for stb-gpios
+  can: m_can: m_can_platform: Add support for enabling transceiver
+    through the STB line
+  arm64: defconfig: Add Support for Bosch M_CAN controllers
 
-Maybe move the crosslinking to before the register, then they're
-inaccessible from userspace.
+ Documentation/devicetree/bindings/net/can/m_can.txt |  2 ++
+ arch/arm64/configs/defconfig                        |  3 +++
+ drivers/net/can/m_can/m_can_platform.c              | 12 ++++++++++++
+ 3 files changed, 17 insertions(+)
 
-and a little comment, indeed.
-Kurt
+-- 
+2.19.2
