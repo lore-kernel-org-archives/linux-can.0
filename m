@@ -1,60 +1,81 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH 1/3] dt-bindings: net: can: m_can: Add Documentation for
- stb-gpios
-Date: Wed, 22 Jan 2020 08:34:20 -0600
-Message-ID: <f834087b-da1c-88a0-93fe-bc72c8ac71ff@ti.com>
+From: "Sriram Dash" <sriram.dash-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: RE: [PATCH 2/3] can: m_can: m_can_platform: Add support for
+ enabling transceiver through the STB line
+Date: Wed, 22 Jan 2020 20:23:57 +0530
+Message-ID: <002101d5d133$c8352100$589f6300$@samsung.com>
 References: <20200122080310.24653-1-faiz_abbas@ti.com>
- <20200122080310.24653-2-faiz_abbas@ti.com>
- <c3b0eeb8-bd78-aa96-4783-62dc93f03bfe@ti.com>
- <8fc7c343-267d-c91c-0381-60990cfc35e8@ti.com>
+        <CGME20200122080213epcas5p46e361ac6fa299521c1bab3ab20862b46@epcas5p4.samsung.com>
+        <20200122080310.24653-3-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org>
-In-Reply-To: <8fc7c343-267d-c91c-0381-60990cfc35e8@ti.com>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org
-To: Sekhar Nori <nsekhar@ti.com>, Faiz Abbas <faiz_abbas@ti.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
-Cc: mark.rutland@arm.com, nm@ti.com, catalin.marinas@arm.com, sriram.dash@samsung.com, t-kristo@ti.com, robh+dt@kernel.org, mkl@pengutronix.de, davem@davemloft.net, wg@grandegger.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20200122080310.24653-3-faiz_abbas-l0cyMroinI0@public.gmane.org>
+Content-Language: en-in
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: 'Faiz Abbas' <faiz_abbas-l0cyMroinI0@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: catalin.marinas-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, dmurphy-l0cyMroinI0@public.gmane.org, nm-l0cyMroinI0@public.gmane.org, t-kristo-l0cyMroinI0@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-U2VraGFyCgpPbiAxLzIyLzIwIDg6MjQgQU0sIFNla2hhciBOb3JpIHdyb3RlOgo+IE9uIDIyLzAx
-LzIwIDc6MDUgUE0sIERhbiBNdXJwaHkgd3JvdGU6Cj4+IEZhaXoKPj4KPj4gT24gMS8yMi8yMCAy
-OjAzIEFNLCBGYWl6IEFiYmFzIHdyb3RlOgo+Pj4gVGhlIENBTiB0cmFuc2NlaXZlciBvbiBzb21l
-IGJvYXJkcyBoYXMgYW4gU1RCIHBpbiB3aGljaCBpcwo+Pj4gdXNlZCB0byBjb250cm9sIGl0cyBz
-dGFuZGJ5IG1vZGUuIEFkZCBhbiBvcHRpb25hbCBwcm9wZXJ0eQo+Pj4gc3RiLWdwaW9zIHRvIHRv
-Z2dsZSB0aGUgc2FtZS4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBGYWl6IEFiYmFzIDxmYWl6X2Fi
-YmFzQHRpLmNvbT4KPj4+IFNpZ25lZC1vZmYtYnk6IFNla2hhciBOb3JpIDxuc2VraGFyQHRpLmNv
-bT4KPj4+IC0tLQo+Pj4gIMKgIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQv
-Y2FuL21fY2FuLnR4dCB8IDIgKysKPj4+ICDCoCAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25z
-KCspCj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9uZXQvY2FuL21fY2FuLnR4dAo+Pj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvbmV0L2Nhbi9tX2Nhbi50eHQKPj4+IGluZGV4IGVkNjE0MzgzYWY5Yy4uY2M4YmEzZjdhMmFh
-IDEwMDY0NAo+Pj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9j
-YW4vbV9jYW4udHh0Cj4+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-bmV0L2Nhbi9tX2Nhbi50eHQKPj4+IEBAIC00OCw2ICs0OCw4IEBAIE9wdGlvbmFsIFN1Ym5vZGU6
-Cj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHRoYXQgY2FuIGJlIHVzZWQgZm9y
-IENBTi9DQU4tRkQgbW9kZXMuIFNlZQo+Pj4gICAgICAgICAgICAgICAgIAo+Pj4gRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9jYW4vY2FuLXRyYW5zY2VpdmVyLnR4dAo+Pj4g
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBmb3IgZGV0YWlscy4KPj4+ICtzdGItZ3Bp
-b3PCoMKgwqDCoMKgwqDCoCA6IGdwaW8gbm9kZSB0byB0b2dnbGUgdGhlIFNUQiAoc3RhbmRieSkg
-c2lnbmFsIG9uCj4+PiB0aGUgdHJhbnNjZWl2ZXIKPj4+ICsKPj4gVGhlIG1fY2FuLnR4dCBpcyBm
-b3IgdGhlIG1fY2FuIGZyYW1ld29yay7CoCBJZiB0aGlzIGlzIHNwZWNpZmljIHRvIHRoZQo+PiBw
-bGF0Zm9ybSB0aGVuIGl0IHJlYWxseSBkb2VzIG5vdCBiZWxvbmcgaGVyZS4KPj4KPj4gSWYgdGhl
-IHBsYXRmb3JtIGhhcyBzcGVjaWZpYyBub2RlcyB0aGVuIG1heWJlIHdlIG5lZWQgYQo+PiBtX2Nh
-bl9wbGF0Zm9ybS50eHQgYmluZGluZyBmb3Igc3BlY2lmaWMgcGxhdGZvcm0gbm9kZXMuwqAgQnV0
-IEkgbGVhdmUKPj4gdGhhdCBkZWNpc2lvbiB0byBSb2IuCj4gU2luY2UgdGhpcyBpcyB0cmFuc2Nl
-aXZlciBlbmFibGUsIHNob3VsZCB0aGlzIG5vdCBiZSBpbgo+IERvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9uZXQvY2FuL2Nhbi10cmFuc2NlaXZlci50eHQ/CgorMQoKRGFuCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtYXJtLWtl
-cm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5l
-bAo=
+> From: linux-can-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org <linux-can-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org> On
+> Behalf Of Faiz Abbas
+> Subject: [PATCH 2/3] can: m_can: m_can_platform: Add support for enabling
+> transceiver through the STB line
+> 
+> CAN transceivers on some boards have an STB (standby) line which can be
+> toggled to enable/disable the transceiver. Add support for enabling the
+> transceiver using a GPIO connected to the STB line.
+> 
+
+Looks good to me. 
+Other than Dan's concern on stb  as standby,
+Acked-by: Sriram Dash <sriram.dash-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+
+> Signed-off-by: Faiz Abbas <faiz_abbas-l0cyMroinI0@public.gmane.org>
+> ---
+>  drivers/net/can/m_can/m_can_platform.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/net/can/m_can/m_can_platform.c
+> b/drivers/net/can/m_can/m_can_platform.c
+> index 38ea5e600fb8..b4e1423bd5d8 100644
+> --- a/drivers/net/can/m_can/m_can_platform.c
+> +++ b/drivers/net/can/m_can/m_can_platform.c
+> @@ -6,6 +6,7 @@
+>  // Copyright (C) 2018-19 Texas Instruments Incorporated -
+http://www.ti.com/
+> 
+>  #include <linux/platform_device.h>
+> +#include <linux/gpio/consumer.h>
+> 
+>  #include "m_can.h"
+> 
+> @@ -57,6 +58,7 @@ static int m_can_plat_probe(struct platform_device
+*pdev)
+> {
+>  	struct m_can_classdev *mcan_class;
+>  	struct m_can_plat_priv *priv;
+> +	struct gpio_desc *stb;
+>  	struct resource *res;
+>  	void __iomem *addr;
+>  	void __iomem *mram_addr;
+> @@ -111,6 +113,16 @@ static int m_can_plat_probe(struct platform_device
+> *pdev)
+> 
+>  	m_can_init_ram(mcan_class);
+> 
+> +	stb = devm_gpiod_get_optional(&pdev->dev, "stb", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(stb)) {
+> +		ret = PTR_ERR(stb);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev,
+> +				"gpio request failed, ret %d\n", ret);
+> +
+> +		goto failed_ret;
+> +	}
+> +
+>  	ret = m_can_class_register(mcan_class);
+> 
+>  failed_ret:
+> --
+> 2.19.2
