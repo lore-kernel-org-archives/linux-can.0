@@ -1,36 +1,67 @@
 From: Faiz Abbas <faiz_abbas@ti.com>
-Subject: [PATCH 0/3] Add Support for MCAN in AM654x-idk
-Date: Wed, 22 Jan 2020 13:33:07 +0530
-Message-ID: <20200122080310.24653-1-faiz_abbas@ti.com>
+Subject: [PATCH 2/3] can: m_can: m_can_platform: Add support for enabling transceiver through the STB line
+Date: Wed, 22 Jan 2020 13:33:09 +0530
+Message-ID: <20200122080310.24653-3-faiz_abbas@ti.com>
+References: <20200122080310.24653-1-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:44008 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbgAVICK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 22 Jan 2020 03:02:10 -0500
+In-Reply-To: <20200122080310.24653-1-faiz_abbas@ti.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
-Cc: mark.rutland@arm.com, nm@ti.com, catalin.marinas@arm.com, sriram.dash@samsung.com, faiz_abbas@ti.com, t-kristo@ti.com, robh+dt@kernel.org, mkl@pengutronix.de, dmurphy@ti.com, davem@davemloft.net, wg@grandegger.com
-List-Id: linux-can.vger.kernel.org
+Cc: catalin.marinas@arm.com, mark.rutland@arm.com, robh+dt@kernel.org, davem@davemloft.net, mkl@pengutronix.de, wg@grandegger.com, sriram.dash@samsung.com, dmurphy@ti.com, faiz_abbas@ti.com, nm@ti.com, t-kristo@ti.com
 
-This series adds driver patches to support MCAN in TI's AM654x-idk.
+CAN transceivers on some boards have an STB (standby) line which can be
+toggled to enable/disable the transceiver. Add support for enabling the
+transceiver using a GPIO connected to the STB line.
 
-Faiz Abbas (3):
-  dt-bindings: net: can: m_can: Add Documentation for stb-gpios
-  can: m_can: m_can_platform: Add support for enabling transceiver
-    through the STB line
-  arm64: defconfig: Add Support for Bosch M_CAN controllers
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+---
+ drivers/net/can/m_can/m_can_platform.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
- Documentation/devicetree/bindings/net/can/m_can.txt |  2 ++
- arch/arm64/configs/defconfig                        |  3 +++
- drivers/net/can/m_can/m_can_platform.c              | 12 ++++++++++++
- 3 files changed, 17 insertions(+)
-
+diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+index 38ea5e600fb8..b4e1423bd5d8 100644
+--- a/drivers/net/can/m_can/m_can_platform.c
++++ b/drivers/net/can/m_can/m_can_platform.c
+@@ -6,6 +6,7 @@
+ // Copyright (C) 2018-19 Texas Instruments Incorporated - http://www.ti.com/
+ 
+ #include <linux/platform_device.h>
++#include <linux/gpio/consumer.h>
+ 
+ #include "m_can.h"
+ 
+@@ -57,6 +58,7 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ {
+ 	struct m_can_classdev *mcan_class;
+ 	struct m_can_plat_priv *priv;
++	struct gpio_desc *stb;
+ 	struct resource *res;
+ 	void __iomem *addr;
+ 	void __iomem *mram_addr;
+@@ -111,6 +113,16 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 
+ 	m_can_init_ram(mcan_class);
+ 
++	stb = devm_gpiod_get_optional(&pdev->dev, "stb", GPIOD_OUT_HIGH);
++	if (IS_ERR(stb)) {
++		ret = PTR_ERR(stb);
++		if (ret != -EPROBE_DEFER)
++			dev_err(&pdev->dev,
++				"gpio request failed, ret %d\n", ret);
++
++		goto failed_ret;
++	}
++
+ 	ret = m_can_class_register(mcan_class);
+ 
+ failed_ret:
 -- 
 2.19.2
