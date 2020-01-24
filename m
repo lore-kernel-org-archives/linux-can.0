@@ -1,7 +1,7 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Subject: Re: general protection fault in can_rx_register
-Date: Fri, 24 Jan 2020 19:43:23 +0100
-Message-ID: <afa442db-d893-25b5-c580-b29323c8816c@hartkopp.net>
+Date: Fri, 24 Jan 2020 20:05:12 +0100
+Message-ID: <20200124190512.GB14622@x1.vandijck-laurijssen.be>
 References: <00000000000030dddb059c562a3f@google.com>
  <55ad363b-1723-28aa-78b1-8aba5565247e@hartkopp.net>
  <20200120091146.GD11138@x1.vandijck-laurijssen.be>
@@ -11,67 +11,77 @@ References: <00000000000030dddb059c562a3f@google.com>
  <20200121192248.GC13462@x1.vandijck-laurijssen.be>
  <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
  <20200121203954.GG13462@x1.vandijck-laurijssen.be>
+ <afa442db-d893-25b5-c580-b29323c8816c@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:18614 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387843AbgAXStb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Jan 2020 13:49:31 -0500
-In-Reply-To: <20200121203954.GG13462@x1.vandijck-laurijssen.be>
-Content-Language: en-US
+Received: from relay-b02.edpnet.be ([212.71.1.222]:44541 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387973AbgAXTFS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Jan 2020 14:05:18 -0500
+Content-Disposition: inline
+In-Reply-To: <afa442db-d893-25b5-c580-b29323c8816c@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, linux-can@vger.kernel.org
 
-Hi Kurt, Dmitry,
+On vr, 24 jan 2020 19:43:23 +0100, Oliver Hartkopp wrote:
+> Hi Kurt, Dmitry,
+> 
+> On 21/01/2020 21.39, Kurt Van Dijck wrote:
+> 
+> >Maybe move the crosslinking to before the register, then they're
+> >inaccessible from userspace.
+> 
+> I think I found the problem:
 
-On 21/01/2020 21.39, Kurt Van Dijck wrote:
+Well done!
 
-> Maybe move the crosslinking to before the register, then they're
-> inaccessible from userspace.
+> 
+> [ 1814.648904] bond5128: (slave vxcan1): Error -22 calling dev_set_mtu
+> [ 1814.649124] dev_rcv_lists == NULL! 000000008e41fb06 (bond5128)
+> 
+> The bonding netdev bond5128 enslaved the vxcan1 netdev. As vxcan1 is a CAN
+> netdev with ARPHRD_CAN the bonding process executes
+> 
 
-I think I found the problem:
+You were able to make the syscalls comprehensible then?
 
-[ 1814.648904] bond5128: (slave vxcan1): Error -22 calling dev_set_mtu
-[ 1814.649124] dev_rcv_lists == NULL! 000000008e41fb06 (bond5128)
+> if (slave_dev->type != ARPHRD_ETHER)
+> 	bond_setup_by_slave(bond_dev, slave_dev);
+> 
+> in bond_enslave() in .../bonding/bond_main.c
+> 
+> Which does this:
+> 
+> static void bond_setup_by_slave(struct net_device *bond_dev,
+>                                 struct net_device *slave_dev)
+> {
+>         bond_dev->header_ops        = slave_dev->header_ops;
+> 
+>         bond_dev->type              = slave_dev->type;
+>         bond_dev->hard_header_len   = slave_dev->hard_header_len;
+>         bond_dev->addr_len          = slave_dev->addr_len;
+> 
+>         memcpy(bond_dev->broadcast, slave_dev->broadcast,
+>                 slave_dev->addr_len);
+> }
+> 
+> So bond5128 becomes an ARPHDR_CAN interface BUT without having a
+> netdev_priv() space which contains our lovely can_ml_priv structure with the
+> dev_rcv_lists for the CAN filters.
+> 
+> I was able to confirm the bisected commit but the crashes still were pure
+> luck IMO.
+> 
+> can_rx_register() accesses netdev_priv() of the bonding device - but there
+> are no CAN filters. BAM!
+> 
+> So we need to make sure that ARPHDR_CAN dev->type can not be enslaved by the
+> bonding driver.
 
-The bonding netdev bond5128 enslaved the vxcan1 netdev. As vxcan1 is a 
-CAN netdev with ARPHRD_CAN the bonding process executes
-
-if (slave_dev->type != ARPHRD_ETHER)
-	bond_setup_by_slave(bond_dev, slave_dev);
-
-in bond_enslave() in .../bonding/bond_main.c
-
-Which does this:
-
-static void bond_setup_by_slave(struct net_device *bond_dev,
-                                 struct net_device *slave_dev)
-{
-         bond_dev->header_ops        = slave_dev->header_ops;
-
-         bond_dev->type              = slave_dev->type;
-         bond_dev->hard_header_len   = slave_dev->hard_header_len;
-         bond_dev->addr_len          = slave_dev->addr_len;
-
-         memcpy(bond_dev->broadcast, slave_dev->broadcast,
-                 slave_dev->addr_len);
-}
-
-So bond5128 becomes an ARPHDR_CAN interface BUT without having a 
-netdev_priv() space which contains our lovely can_ml_priv structure with 
-the dev_rcv_lists for the CAN filters.
-
-I was able to confirm the bisected commit but the crashes still were 
-pure luck IMO.
-
-can_rx_register() accesses netdev_priv() of the bonding device - but 
-there are no CAN filters. BAM!
-
-So we need to make sure that ARPHDR_CAN dev->type can not be enslaved by 
-the bonding driver.
-
-Best regards,
-Oliver
+This implies modifying bond_main.c, right?
+> 
+> Best regards,
+> Oliver
