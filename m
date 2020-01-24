@@ -1,87 +1,52 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: general protection fault in can_rx_register
-Date: Fri, 24 Jan 2020 20:05:12 +0100
-Message-ID: <20200124190512.GB14622@x1.vandijck-laurijssen.be>
-References: <00000000000030dddb059c562a3f@google.com>
- <55ad363b-1723-28aa-78b1-8aba5565247e@hartkopp.net>
- <20200120091146.GD11138@x1.vandijck-laurijssen.be>
- <CACT4Y+a+GusEA1Gs+z67uWjtwBRp_s7P4Wd_SMmgpCREnDu3kg@mail.gmail.com>
- <8332ec7f-2235-fdf6-9bda-71f789c57b37@hartkopp.net>
- <2a676c0e-20f2-61b5-c72b-f51947bafc7d@hartkopp.net>
- <20200121192248.GC13462@x1.vandijck-laurijssen.be>
- <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
- <20200121203954.GG13462@x1.vandijck-laurijssen.be>
- <afa442db-d893-25b5-c580-b29323c8816c@hartkopp.net>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v2] can: tcan4x5x: Turn on the power before parsing the
+ config
+Date: Fri, 24 Jan 2020 13:50:01 -0600
+Message-ID: <3a67743b-aec6-ba4e-14a6-c2ab327e1eae@ti.com>
+References: <20191210163204.28225-1-dmurphy@ti.com>
+ <4a2e80f0-13c5-df7b-65af-25f86ca48f2a@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b02.edpnet.be ([212.71.1.222]:44541 "EHLO
-        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387973AbgAXTFS (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Jan 2020 14:05:18 -0500
-Content-Disposition: inline
-In-Reply-To: <afa442db-d893-25b5-c580-b29323c8816c@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, linux-can@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4a2e80f0-13c5-df7b-65af-25f86ca48f2a@pengutronix.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-On vr, 24 jan 2020 19:43:23 +0100, Oliver Hartkopp wrote:
-> Hi Kurt, Dmitry,
-> 
-> On 21/01/2020 21.39, Kurt Van Dijck wrote:
-> 
-> >Maybe move the crosslinking to before the register, then they're
-> >inaccessible from userspace.
-> 
-> I think I found the problem:
+Marc
 
-Well done!
+On 1/2/20 6:38 AM, Marc Kleine-Budde wrote:
+> On 12/10/19 5:32 PM, Dan Murphy wrote:
+>> The parse config function now performs action on the device either
+>> reading or writing and a reset.  If the regulator is managed it needs
+>> to be turned on.  So turn on the regulator if available if the parsing
+>> fails then turn off the regulator.
+> Another BTW:
+> Consider converting the switching of the vsup to runtime_pm.
+>
+> Yet another one:
+> Why do you disable the clocks in the error path of tcan4x5x_can_probe(),
+> but never enable them?
+>
+>> out_clk:
+>> 	if (!IS_ERR(mcan_class->cclk)) {
+>> 		clk_disable_unprepare(mcan_class->cclk);
+>> 		clk_disable_unprepare(mcan_class->hclk);
+>> 	}
+> - please move the clock handling from the m_can.c to the individual
+>    driver
+> - please move the clock handling to runtime_pm in the individual driver
+> - remove the obsolete m_can_class_get_clocks()
+> - make runtime_pm mandatory
 
-> 
-> [ 1814.648904] bond5128: (slave vxcan1): Error -22 calling dev_set_mtu
-> [ 1814.649124] dev_rcv_lists == NULL! 000000008e41fb06 (bond5128)
-> 
-> The bonding netdev bond5128 enslaved the vxcan1 netdev. As vxcan1 is a CAN
-> netdev with ARPHRD_CAN the bonding process executes
-> 
+Ack to the above I have made these changes locally.  Will submit next week.
 
-You were able to make the syscalls comprehensible then?
+Dan
 
-> if (slave_dev->type != ARPHRD_ETHER)
-> 	bond_setup_by_slave(bond_dev, slave_dev);
-> 
-> in bond_enslave() in .../bonding/bond_main.c
-> 
-> Which does this:
-> 
-> static void bond_setup_by_slave(struct net_device *bond_dev,
->                                 struct net_device *slave_dev)
-> {
->         bond_dev->header_ops        = slave_dev->header_ops;
-> 
->         bond_dev->type              = slave_dev->type;
->         bond_dev->hard_header_len   = slave_dev->hard_header_len;
->         bond_dev->addr_len          = slave_dev->addr_len;
-> 
->         memcpy(bond_dev->broadcast, slave_dev->broadcast,
->                 slave_dev->addr_len);
-> }
-> 
-> So bond5128 becomes an ARPHDR_CAN interface BUT without having a
-> netdev_priv() space which contains our lovely can_ml_priv structure with the
-> dev_rcv_lists for the CAN filters.
-> 
-> I was able to confirm the bisected commit but the crashes still were pure
-> luck IMO.
-> 
-> can_rx_register() accesses netdev_priv() of the bonding device - but there
-> are no CAN filters. BAM!
-> 
-> So we need to make sure that ARPHDR_CAN dev->type can not be enslaved by the
-> bonding driver.
 
-This implies modifying bond_main.c, right?
-> 
-> Best regards,
-> Oliver
+> regards,
+> Marc
+>
