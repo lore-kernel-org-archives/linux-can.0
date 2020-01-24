@@ -1,298 +1,77 @@
-From: Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [PATCH] dt-bindings: net: can: Convert M_CAN to json-schema
-Date: Fri, 24 Jan 2020 16:55:42 +0100
-Message-ID: <20200124155542.2053-1-benjamin.gaignard@st.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: general protection fault in can_rx_register
+Date: Fri, 24 Jan 2020 19:43:23 +0100
+Message-ID: <afa442db-d893-25b5-c580-b29323c8816c@hartkopp.net>
+References: <00000000000030dddb059c562a3f@google.com>
+ <55ad363b-1723-28aa-78b1-8aba5565247e@hartkopp.net>
+ <20200120091146.GD11138@x1.vandijck-laurijssen.be>
+ <CACT4Y+a+GusEA1Gs+z67uWjtwBRp_s7P4Wd_SMmgpCREnDu3kg@mail.gmail.com>
+ <8332ec7f-2235-fdf6-9bda-71f789c57b37@hartkopp.net>
+ <2a676c0e-20f2-61b5-c72b-f51947bafc7d@hartkopp.net>
+ <20200121192248.GC13462@x1.vandijck-laurijssen.be>
+ <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
+ <20200121203954.GG13462@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:48946 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389209AbgAXP4G (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Jan 2020 10:56:06 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:18614 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387843AbgAXStb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Jan 2020 13:49:31 -0500
+In-Reply-To: <20200121203954.GG13462@x1.vandijck-laurijssen.be>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com, sriram.dash@samsung.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Benjamin Gaignard <benjamin.gaignard@st.com>
+To: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, linux-can@vger.kernel.org
 
-Convert M_CAN bindings to json-schema
+Hi Kurt, Dmitry,
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
----
- .../bindings/net/can/can-transceiver.txt           |  24 ----
- .../devicetree/bindings/net/can/m_can.txt          |  75 ----------
- .../devicetree/bindings/net/can/m_can.yaml         | 151 +++++++++++++++++++++
- 3 files changed, 151 insertions(+), 99 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.txt
- delete mode 100644 Documentation/devicetree/bindings/net/can/m_can.txt
- create mode 100644 Documentation/devicetree/bindings/net/can/m_can.yaml
+On 21/01/2020 21.39, Kurt Van Dijck wrote:
 
-diff --git a/Documentation/devicetree/bindings/net/can/can-transceiver.txt b/Documentation/devicetree/bindings/net/can/can-transceiver.txt
-deleted file mode 100644
-index 0011f53ff159..000000000000
---- a/Documentation/devicetree/bindings/net/can/can-transceiver.txt
-+++ /dev/null
-@@ -1,24 +0,0 @@
--Generic CAN transceiver Device Tree binding
--------------------------------
--
--CAN transceiver typically limits the max speed in standard CAN and CAN FD
--modes. Typically these limitations are static and the transceivers themselves
--provide no way to detect this limitation at runtime. For this situation,
--the "can-transceiver" node can be used.
--
--Required Properties:
-- max-bitrate:	a positive non 0 value that determines the max
--		speed that CAN/CAN-FD can run. Any other value
--		will be ignored.
--
--Examples:
--
--Based on Texas Instrument's TCAN1042HGV CAN Transceiver
--
--m_can0 {
--	....
--	can-transceiver {
--		max-bitrate = <5000000>;
--	};
--	...
--};
-diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
-deleted file mode 100644
-index ed614383af9c..000000000000
---- a/Documentation/devicetree/bindings/net/can/m_can.txt
-+++ /dev/null
-@@ -1,75 +0,0 @@
--Bosch MCAN controller Device Tree Bindings
---------------------------------------------------
--
--Required properties:
--- compatible		: Should be "bosch,m_can" for M_CAN controllers
--- reg			: physical base address and size of the M_CAN
--			  registers map and Message RAM
--- reg-names		: Should be "m_can" and "message_ram"
--- interrupts		: Should be the interrupt number of M_CAN interrupt
--			  line 0 and line 1, could be same if sharing
--			  the same interrupt.
--- interrupt-names	: Should contain "int0" and "int1"
--- clocks		: Clocks used by controller, should be host clock
--			  and CAN clock.
--- clock-names		: Should contain "hclk" and "cclk"
--- pinctrl-<n>		: Pinctrl states as described in bindings/pinctrl/pinctrl-bindings.txt
--- pinctrl-names 	: Names corresponding to the numbered pinctrl states
--- bosch,mram-cfg	: Message RAM configuration data.
--			  Multiple M_CAN instances can share the same Message
--			  RAM and each element(e.g Rx FIFO or Tx Buffer and etc)
--			  number in Message RAM is also configurable,
--			  so this property is telling driver how the shared or
--			  private Message RAM are used by this M_CAN controller.
--
--			  The format should be as follows:
--			  <offset sidf_elems xidf_elems rxf0_elems rxf1_elems
--			   rxb_elems txe_elems txb_elems>
--			  The 'offset' is an address offset of the Message RAM
--			  where the following elements start from. This is
--			  usually set to 0x0 if you're using a private Message
--			  RAM. The remain cells are used to specify how many
--			  elements are used for each FIFO/Buffer.
--
--			  M_CAN includes the following elements according to user manual:
--			  11-bit Filter	0-128 elements / 0-128 words
--			  29-bit Filter	0-64 elements / 0-128 words
--			  Rx FIFO 0	0-64 elements / 0-1152 words
--			  Rx FIFO 1	0-64 elements / 0-1152 words
--			  Rx Buffers	0-64 elements / 0-1152 words
--			  Tx Event FIFO	0-32 elements / 0-64 words
--			  Tx Buffers	0-32 elements / 0-576 words
--
--			  Please refer to 2.4.1 Message RAM Configuration in
--			  Bosch M_CAN user manual for details.
--
--Optional Subnode:
--- can-transceiver	: Can-transceiver subnode describing maximum speed
--			  that can be used for CAN/CAN-FD modes. See
--			  Documentation/devicetree/bindings/net/can/can-transceiver.txt
--			  for details.
--Example:
--SoC dtsi:
--m_can1: can@20e8000 {
--	compatible = "bosch,m_can";
--	reg = <0x020e8000 0x4000>, <0x02298000 0x4000>;
--	reg-names = "m_can", "message_ram";
--	interrupts = <0 114 0x04>,
--		     <0 114 0x04>;
--	interrupt-names = "int0", "int1";
--	clocks = <&clks IMX6SX_CLK_CANFD>,
--		 <&clks IMX6SX_CLK_CANFD>;
--	clock-names = "hclk", "cclk";
--	bosch,mram-cfg = <0x0 0 0 32 0 0 0 1>;
--};
--
--Board dts:
--&m_can1 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_m_can1>;
--	status = "enabled";
--
--	can-transceiver {
--		max-bitrate = <5000000>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/net/can/m_can.yaml b/Documentation/devicetree/bindings/net/can/m_can.yaml
-new file mode 100644
-index 000000000000..efdbed81af29
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/m_can.yaml
-@@ -0,0 +1,151 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/m_can.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Bosch MCAN controller Bindings
-+
-+description: Bosch MCAN controller for CAN bus
-+
-+maintainers:
-+  -  Sriram Dash <sriram.dash@samsung.com>
-+
-+properties:
-+  compatible:
-+    const: bosch,m_can
-+
-+  reg:
-+    items:
-+      - description: M_CAN registers map
-+      - description: message RAM
-+
-+  reg-names:
-+    items:
-+      - const: m_can
-+      - const: message_ram
-+
-+  interrupts:
-+    items:
-+      - description: interrupt line0
-+      - description: interrupt line1
-+    minItems: 1
-+    maxItems: 2
-+
-+  interrupt-names:
-+    items:
-+      - const: int0
-+      - const: int1
-+    minItems: 1
-+    maxItems: 2
-+
-+  clocks:
-+    items:
-+      - description: peripheral clock
-+      - description: bus clock
-+
-+  clock-names:
-+    items:
-+      - const: hclk
-+      - const: cclk
-+
-+  bosch,mram-cfg:
-+    description: |
-+                 Message RAM configuration data.
-+                 Multiple M_CAN instances can share the same Message RAM
-+                 and each element(e.g Rx FIFO or Tx Buffer and etc) number
-+                 in Message RAM is also configurable, so this property is
-+                 telling driver how the shared or private Message RAM are
-+                 used by this M_CAN controller.
-+
-+                 The format should be as follows:
-+                 <offset sidf_elems xidf_elems rxf0_elems rxf1_elems rxb_elems txe_elems txb_elems>
-+                 The 'offset' is an address offset of the Message RAM where
-+                 the following elements start from. This is usually set to
-+                 0x0 if you're using a private Message RAM. The remain cells
-+                 are used to specify how many elements are used for each FIFO/Buffer.
-+
-+                 M_CAN includes the following elements according to user manual:
-+                 11-bit Filter	0-128 elements / 0-128 words
-+                 29-bit Filter	0-64 elements / 0-128 words
-+                 Rx FIFO 0	0-64 elements / 0-1152 words
-+                 Rx FIFO 1	0-64 elements / 0-1152 words
-+                 Rx Buffers	0-64 elements / 0-1152 words
-+                 Tx Event FIFO	0-32 elements / 0-64 words
-+                 Tx Buffers	0-32 elements / 0-576 words
-+
-+                 Please refer to 2.4.1 Message RAM Configuration in Bosch
-+                 M_CAN user manual for details.
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/int32-matrix
-+      - items:
-+         items:
-+           - description: The 'offset' is an address offset of the Message RAM
-+                          where the following elements start from. This is usually
-+                          set to 0x0 if you're using a private Message RAM.
-+             default: 0
-+           - description: 11-bit Filter 0-128 elements / 0-128 words
-+             minimum: 0
-+             maximum: 128
-+           - description: 29-bit Filter 0-64 elements / 0-128 words
-+             minimum: 0
-+             maximum: 64
-+           - description: Rx FIFO 0 0-64 elements / 0-1152 words
-+             minimum: 0
-+             maximum: 64
-+           - description: Rx FIFO 1 0-64 elements / 0-1152 words
-+             minimum: 0
-+             maximum: 64
-+           - description: Rx Buffers 0-64 elements / 0-1152 words
-+             minimum: 0
-+             maximum: 64
-+           - description: Tx Event FIFO 0-32 elements / 0-64 words
-+             minimum: 0
-+             maximum: 32
-+           - description: Tx Buffers 0-32 elements / 0-576 words
-+             minimum: 0
-+             maximum: 32
-+        maxItems: 1
-+
-+  can-transceiver:
-+    type: object
-+
-+    properties:
-+      max-bitrate:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        description: a positive non 0 value that determines the max speed that
-+                     CAN/CAN-FD can run.
-+        minimum: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - interrupt-names
-+  - clocks
-+  - clock-names
-+  - bosch,mram-cfg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx6sx-clock.h>
-+    can@20e8000 {
-+      compatible = "bosch,m_can";
-+      reg = <0x020e8000 0x4000>, <0x02298000 0x4000>;
-+      reg-names = "m_can", "message_ram";
-+      interrupts = <0 114 0x04>, <0 114 0x04>;
-+      interrupt-names = "int0", "int1";
-+      clocks = <&clks IMX6SX_CLK_CANFD>,
-+               <&clks IMX6SX_CLK_CANFD>;
-+      clock-names = "hclk", "cclk";
-+      bosch,mram-cfg = <0x0 0 0 32 0 0 0 1>;
-+
-+      can-transceiver {
-+        max-bitrate = <5000000>;
-+      };
-+    };
-+
-+...
--- 
-2.15.0
+> Maybe move the crosslinking to before the register, then they're
+> inaccessible from userspace.
+
+I think I found the problem:
+
+[ 1814.648904] bond5128: (slave vxcan1): Error -22 calling dev_set_mtu
+[ 1814.649124] dev_rcv_lists == NULL! 000000008e41fb06 (bond5128)
+
+The bonding netdev bond5128 enslaved the vxcan1 netdev. As vxcan1 is a 
+CAN netdev with ARPHRD_CAN the bonding process executes
+
+if (slave_dev->type != ARPHRD_ETHER)
+	bond_setup_by_slave(bond_dev, slave_dev);
+
+in bond_enslave() in .../bonding/bond_main.c
+
+Which does this:
+
+static void bond_setup_by_slave(struct net_device *bond_dev,
+                                 struct net_device *slave_dev)
+{
+         bond_dev->header_ops        = slave_dev->header_ops;
+
+         bond_dev->type              = slave_dev->type;
+         bond_dev->hard_header_len   = slave_dev->hard_header_len;
+         bond_dev->addr_len          = slave_dev->addr_len;
+
+         memcpy(bond_dev->broadcast, slave_dev->broadcast,
+                 slave_dev->addr_len);
+}
+
+So bond5128 becomes an ARPHDR_CAN interface BUT without having a 
+netdev_priv() space which contains our lovely can_ml_priv structure with 
+the dev_rcv_lists for the CAN filters.
+
+I was able to confirm the bisected commit but the crashes still were 
+pure luck IMO.
+
+can_rx_register() accesses netdev_priv() of the bonding device - but 
+there are no CAN filters. BAM!
+
+So we need to make sure that ARPHDR_CAN dev->type can not be enslaved by 
+the bonding driver.
+
+Best regards,
+Oliver
