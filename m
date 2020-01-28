@@ -1,14 +1,14 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.9 234/271] can, slip: Protect tty->disc_data in write_wakeup and close with RCU
-Date: Tue, 28 Jan 2020 15:06:23 +0100
-Message-ID: <20200128135909.978871848@linuxfoundation.org>
-References: <20200128135852.449088278@linuxfoundation.org>
+Subject: [PATCH 4.19 01/92] can, slip: Protect tty->disc_data in write_wakeup and close with RCU
+Date: Tue, 28 Jan 2020 15:07:29 +0100
+Message-ID: <20200128135809.516072484@linuxfoundation.org>
+References: <20200128135809.344954797@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20200128135852.449088278@linuxfoundation.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20200128135809.344954797@linuxfoundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com, Richard Palethorpe <rpalethorpe@suse.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Tyler Hall <tylerwhall@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, syzkaller@googlegroups.com
 List-Id: linux-can.vger.kernel.org
@@ -53,7 +53,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/net/can/slcan.c
 +++ b/drivers/net/can/slcan.c
-@@ -344,9 +344,16 @@ static void slcan_transmit(struct work_s
+@@ -343,9 +343,16 @@ static void slcan_transmit(struct work_s
   */
  static void slcan_write_wakeup(struct tty_struct *tty)
  {
@@ -104,7 +104,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  }
  
  static void sl_tx_timeout(struct net_device *dev)
-@@ -887,10 +894,11 @@ static void slip_close(struct tty_struct
+@@ -882,10 +889,11 @@ static void slip_close(struct tty_struct
  		return;
  
  	spin_lock_bh(&sl->lock);
