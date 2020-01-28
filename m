@@ -1,14 +1,14 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.4 001/104] can, slip: Protect tty->disc_data in write_wakeup and close with RCU
-Date: Tue, 28 Jan 2020 14:59:22 +0100
-Message-ID: <20200128135817.462851820@linuxfoundation.org>
-References: <20200128135817.238524998@linuxfoundation.org>
+Subject: [PATCH 4.4 160/183] can, slip: Protect tty->disc_data in write_wakeup and close with RCU
+Date: Tue, 28 Jan 2020 15:06:19 +0100
+Message-ID: <20200128135845.698951055@linuxfoundation.org>
+References: <20200128135829.486060649@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20200128135817.238524998@linuxfoundation.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20200128135829.486060649@linuxfoundation.org>
+Sender: stable-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com, Richard Palethorpe <rpalethorpe@suse.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Tyler Hall <tylerwhall@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, syzkaller@googlegroups.com
 List-Id: linux-can.vger.kernel.org
@@ -71,7 +71,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  }
  
  /* Send a can_frame to a TTY queue. */
-@@ -644,10 +651,11 @@ static void slcan_close(struct tty_struc
+@@ -640,10 +647,11 @@ static void slcan_close(struct tty_struc
  		return;
  
  	spin_lock_bh(&sl->lock);
@@ -104,7 +104,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  }
  
  static void sl_tx_timeout(struct net_device *dev)
-@@ -882,10 +889,11 @@ static void slip_close(struct tty_struct
+@@ -887,10 +894,11 @@ static void slip_close(struct tty_struct
  		return;
  
  	spin_lock_bh(&sl->lock);
