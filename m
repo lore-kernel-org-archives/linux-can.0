@@ -1,100 +1,119 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: general protection fault in can_rx_register
-Date: Fri, 24 Jan 2020 22:04:24 +0100
-Message-ID: <35983732-5a66-b25f-4ead-c7df5f39598e@hartkopp.net>
-References: <00000000000030dddb059c562a3f@google.com>
- <55ad363b-1723-28aa-78b1-8aba5565247e@hartkopp.net>
- <20200120091146.GD11138@x1.vandijck-laurijssen.be>
- <CACT4Y+a+GusEA1Gs+z67uWjtwBRp_s7P4Wd_SMmgpCREnDu3kg@mail.gmail.com>
- <8332ec7f-2235-fdf6-9bda-71f789c57b37@hartkopp.net>
- <2a676c0e-20f2-61b5-c72b-f51947bafc7d@hartkopp.net>
- <20200121192248.GC13462@x1.vandijck-laurijssen.be>
- <9a6be054-ac52-761d-83f0-809ec80e7764@hartkopp.net>
- <20200121203954.GG13462@x1.vandijck-laurijssen.be>
- <afa442db-d893-25b5-c580-b29323c8816c@hartkopp.net>
- <20200124190512.GB14622@x1.vandijck-laurijssen.be>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.14 01/46] can, slip: Protect tty->disc_data in write_wakeup and close with RCU
+Date: Tue, 28 Jan 2020 14:57:35 +0100
+Message-ID: <20200128135750.358825967@linuxfoundation.org>
+References: <20200128135749.822297911@linuxfoundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:26777 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387394AbgAXVEg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Jan 2020 16:04:36 -0500
-In-Reply-To: <20200124190512.GB14622@x1.vandijck-laurijssen.be>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Dmitry Vyukov <dvyukov@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>, o.rempel@pengutronix.de, syzbot <syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com>, linux-can@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20200128135749.822297911@linuxfoundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com, Richard Palethorpe <rpalethorpe@suse.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Tyler Hall <tylerwhall@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, syzkaller@googlegroups.com
+List-Id: linux-can.vger.kernel.org
 
-Hi Kurt,
+From: Richard Palethorpe <rpalethorpe@suse.com>
 
-On 24/01/2020 20.05, Kurt Van Dijck wrote:
-> On vr, 24 jan 2020 19:43:23 +0100, Oliver Hartkopp wrote:
->> Hi Kurt, Dmitry,
->>
->> On 21/01/2020 21.39, Kurt Van Dijck wrote:
->>
->>> Maybe move the crosslinking to before the register, then they're
->>> inaccessible from userspace.
->>
->> I think I found the problem:
-> 
-> Well done!
-> 
->>
->> [ 1814.648904] bond5128: (slave vxcan1): Error -22 calling dev_set_mtu
->> [ 1814.649124] dev_rcv_lists == NULL! 000000008e41fb06 (bond5128)
->>
->> The bonding netdev bond5128 enslaved the vxcan1 netdev. As vxcan1 is a CAN
->> netdev with ARPHRD_CAN the bonding process executes
->>
-> 
-> You were able to make the syscalls comprehensible then?
+[ Upstream commit 0ace17d56824165c7f4c68785d6b58971db954dd ]
 
-Not really. I was just digging into "what bonding CAN interfaces" 
-probably means to us :-)
+write_wakeup can happen in parallel with close/hangup where tty->disc_data
+is set to NULL and the netdevice is freed thus also freeing
+disc_data. write_wakeup accesses disc_data so we must prevent close from
+freeing the netdev while write_wakeup has a non-NULL view of
+tty->disc_data.
 
-The fact that we are only handling ARPHDR_CAN interfaces *and* the 
-dev_rcv_lists have not been available finally lead to the problem.
+We also need to make sure that accesses to disc_data are atomic. Which can
+all be done with RCU.
 
->> if (slave_dev->type != ARPHRD_ETHER)
->> 	bond_setup_by_slave(bond_dev, slave_dev);
->>
->> in bond_enslave() in .../bonding/bond_main.c
->>
->> Which does this:
->>
->> static void bond_setup_by_slave(struct net_device *bond_dev,
->>                                  struct net_device *slave_dev)
->> {
->>          bond_dev->header_ops        = slave_dev->header_ops;
->>
->>          bond_dev->type              = slave_dev->type;
->>          bond_dev->hard_header_len   = slave_dev->hard_header_len;
->>          bond_dev->addr_len          = slave_dev->addr_len;
->>
->>          memcpy(bond_dev->broadcast, slave_dev->broadcast,
->>                  slave_dev->addr_len);
->> }
->>
->> So bond5128 becomes an ARPHDR_CAN interface BUT without having a
->> netdev_priv() space which contains our lovely can_ml_priv structure with the
->> dev_rcv_lists for the CAN filters.
->>
->> I was able to confirm the bisected commit but the crashes still were pure
->> luck IMO.
->>
->> can_rx_register() accesses netdev_priv() of the bonding device - but there
->> are no CAN filters. BAM!
->>
->> So we need to make sure that ARPHDR_CAN dev->type can not be enslaved by the
->> bonding driver.
-> 
-> This implies modifying bond_main.c, right?
+This problem was found by Syzkaller on SLCAN, but the same issue is
+reproducible with the SLIP line discipline using an LTP test based on the
+Syzkaller reproducer.
 
-I think so. But I wanted to have this discussed on the mailing list 
-before preparing a patch.
+A fix which didn't use RCU was posted by Hillf Danton.
 
-Best,
-Oliver
+Fixes: 661f7fda21b1 ("slip: Fix deadlock in write_wakeup")
+Fixes: a8e83b17536a ("slcan: Port write_wakeup deadlock fix from slip")
+Reported-by: syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Tyler Hall <tylerwhall@gmail.com>
+Cc: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: syzkaller@googlegroups.com
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/net/can/slcan.c |   12 ++++++++++--
+ drivers/net/slip/slip.c |   12 ++++++++++--
+ 2 files changed, 20 insertions(+), 4 deletions(-)
+
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -343,9 +343,16 @@ static void slcan_transmit(struct work_s
+  */
+ static void slcan_write_wakeup(struct tty_struct *tty)
+ {
+-	struct slcan *sl = tty->disc_data;
++	struct slcan *sl;
++
++	rcu_read_lock();
++	sl = rcu_dereference(tty->disc_data);
++	if (!sl)
++		goto out;
+ 
+ 	schedule_work(&sl->tx_work);
++out:
++	rcu_read_unlock();
+ }
+ 
+ /* Send a can_frame to a TTY queue. */
+@@ -640,10 +647,11 @@ static void slcan_close(struct tty_struc
+ 		return;
+ 
+ 	spin_lock_bh(&sl->lock);
+-	tty->disc_data = NULL;
++	rcu_assign_pointer(tty->disc_data, NULL);
+ 	sl->tty = NULL;
+ 	spin_unlock_bh(&sl->lock);
+ 
++	synchronize_rcu();
+ 	flush_work(&sl->tx_work);
+ 
+ 	/* Flush network side */
+--- a/drivers/net/slip/slip.c
++++ b/drivers/net/slip/slip.c
+@@ -452,9 +452,16 @@ static void slip_transmit(struct work_st
+  */
+ static void slip_write_wakeup(struct tty_struct *tty)
+ {
+-	struct slip *sl = tty->disc_data;
++	struct slip *sl;
++
++	rcu_read_lock();
++	sl = rcu_dereference(tty->disc_data);
++	if (!sl)
++		goto out;
+ 
+ 	schedule_work(&sl->tx_work);
++out:
++	rcu_read_unlock();
+ }
+ 
+ static void sl_tx_timeout(struct net_device *dev)
+@@ -886,10 +893,11 @@ static void slip_close(struct tty_struct
+ 		return;
+ 
+ 	spin_lock_bh(&sl->lock);
+-	tty->disc_data = NULL;
++	rcu_assign_pointer(tty->disc_data, NULL);
+ 	sl->tty = NULL;
+ 	spin_unlock_bh(&sl->lock);
+ 
++	synchronize_rcu();
+ 	flush_work(&sl->tx_work);
+ 
+ 	/* VSV = very important to remove timers */
