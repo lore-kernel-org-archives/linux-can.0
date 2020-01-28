@@ -1,14 +1,14 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.4 160/183] can, slip: Protect tty->disc_data in write_wakeup and close with RCU
-Date: Tue, 28 Jan 2020 15:06:19 +0100
-Message-ID: <20200128135845.698951055@linuxfoundation.org>
-References: <20200128135829.486060649@linuxfoundation.org>
+Subject: [PATCH 4.9 234/271] can, slip: Protect tty->disc_data in write_wakeup and close with RCU
+Date: Tue, 28 Jan 2020 15:06:23 +0100
+Message-ID: <20200128135909.978871848@linuxfoundation.org>
+References: <20200128135852.449088278@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20200128135829.486060649@linuxfoundation.org>
-Sender: stable-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200128135852.449088278@linuxfoundation.org>
+Sender: netdev-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com, Richard Palethorpe <rpalethorpe@suse.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Tyler Hall <tylerwhall@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, syzkaller@googlegroups.com
 List-Id: linux-can.vger.kernel.org
