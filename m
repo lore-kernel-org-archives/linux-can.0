@@ -1,39 +1,41 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Tutorial to use the M_CAN IP cores with a STM32MP157A-DK1 dev kit
-Date: Tue, 28 Jan 2020 18:50:10 +0100
-Message-ID: <392f401a-f785-094d-2043-37197312c08c@hartkopp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.22]:15437 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgA1RuU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Jan 2020 12:50:20 -0500
-Received: from [192.168.1.177]
-        by smtp.strato.de (RZmta 46.1.7 DYNA|AUTH)
-        with ESMTPSA id R0798bw0SHoIEoa
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate)
-        for <linux-can@vger.kernel.org>;
-        Tue, 28 Jan 2020 18:50:18 +0100 (CET)
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can <linux-can@vger.kernel.org>
+From: Wu Bo <wubo.oduw@gmail.com>
+Subject: [PATCH] can: m_can: the state change mistake
+Date: Wed, 29 Jan 2020 10:23:29 +0800
+Message-ID: <20200129022330.21248-1-wubo.oduw@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Wu Bo <wubo.oduw@gmail.com>, Dan Murphy <dmurphy@ti.com>, Sriram Dash <sriram.dash@samsung.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-To whom it may concern ...
+The new state is change to CAN_STATE_ERROR_WARNING, but the value of
+switch case is CAN_STATE_ERROR_ACTIVE.
 
-I was searching for a development kit that allows SocketCAN testing with 
-a Bosch M_CAN IP core.
+Signed-off-by: Wu Bo <wubo.oduw@gmail.com>
+---
+ drivers/net/can/m_can/m_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The STM32MP157A-DK1 dev kit contains a M_CAN and a MTT_CAN (time 
-triggered) IP core but has no CAN transceivers and no device tree 
-configuration to access the CAN rx/tx lines of the two CAN interfaces.
-
-The tutorial can be found here:
-
-https://github.com/hartkopp/M_CAN-on-STM32MP157A-DK1
-
-Have fun,
-Oliver
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 02c5795b7393..63887e23d89c 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -665,7 +665,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	unsigned int ecr;
+ 
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		cdev->can.can_stats.error_warning++;
+ 		cdev->can.state = CAN_STATE_ERROR_WARNING;
+@@ -694,7 +694,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	__m_can_get_berr_counter(dev, &bec);
+ 
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[1] = (bec.txerr > bec.rxerr) ?
+-- 
+2.17.1
