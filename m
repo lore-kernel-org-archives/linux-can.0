@@ -1,8 +1,10 @@
 From: Wu Bo <wubo.oduw@gmail.com>
 Subject: [PATCH] can: m_can: the state change mistake
-Date: Wed, 29 Jan 2020 10:23:29 +0800
-Message-ID: <20200129022330.21248-1-wubo.oduw@gmail.com>
+Date: Wed, 29 Jan 2020 10:23:30 +0800
+Message-ID: <20200129022330.21248-2-wubo.oduw@gmail.com>
+References: <20200129022330.21248-1-wubo.oduw@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20200129022330.21248-1-wubo.oduw@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: Wu Bo <wubo.oduw@gmail.com>, Dan Murphy <dmurphy@ti.com>, Sriram Dash <sriram.dash@samsung.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
