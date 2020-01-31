@@ -1,156 +1,122 @@
 From: Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH linux-master 1/3] can: tcan4x5x: Move clock init to TCAN driver
-Date: Fri, 31 Jan 2020 12:34:31 -0600
-Message-ID: <20200131183433.11041-2-dmurphy@ti.com>
+Subject: [PATCH linux-master 2/3] can: m_can_platform: Move clock discovery and init to platform
+Date: Fri, 31 Jan 2020 12:34:32 -0600
+Message-ID: <20200131183433.11041-3-dmurphy@ti.com>
 References: <20200131183433.11041-1-dmurphy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:49246 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgAaSiH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 31 Jan 2020 13:38:07 -0500
 In-Reply-To: <20200131183433.11041-1-dmurphy@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: linux-kernel@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
 Cc: davem@davemloft.net, Dan Murphy <dmurphy@ti.com>
-List-Id: linux-can.vger.kernel.org
 
-Move the clock discovery and initialization from the m_can framework to
-the registrar.  This allows for registrars to have unique clock
-initialization.  The TCAN device only needs the CAN clock reference.
+Move the clock discovery and init to the platform driver as the platform
+driver needs an additional clock to the CAN clock to be initilialized
+and managed.
 
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- drivers/net/can/m_can/tcan4x5x.c | 78 ++++++++++++++++++++++++--------
- 1 file changed, 59 insertions(+), 19 deletions(-)
+ drivers/net/can/m_can/m_can_platform.c | 37 +++++++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index eacd428e07e9..9821babef55e 100644
---- a/drivers/net/can/m_can/tcan4x5x.c
-+++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -124,6 +124,8 @@ struct tcan4x5x_priv {
- 	struct gpio_desc *device_state_gpio;
- 	struct regulator *power;
- 
-+	struct clk *cclk;
+diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+index 38ea5e600fb8..8bd459317eba 100644
+--- a/drivers/net/can/m_can/m_can_platform.c
++++ b/drivers/net/can/m_can/m_can_platform.c
+@@ -12,6 +12,9 @@
+ struct m_can_plat_priv {
+ 	void __iomem *base;
+ 	void __iomem *mram_base;
 +
- 	/* Register based ip */
- 	int mram_start;
- 	int reg_offset;
-@@ -429,6 +431,27 @@ static struct m_can_ops tcan4x5x_ops = {
- 	.clear_interrupts = tcan4x5x_clear_interrupts,
++	struct clk *hclk;
++	struct clk *cclk;
  };
  
-+static int tcan4x5x_get_clock(struct tcan4x5x_priv *priv,
-+			      struct m_can_classdev *m_can_dev)
+ static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
+@@ -53,6 +56,22 @@ static struct m_can_ops m_can_plat_ops = {
+ 	.read_fifo = iomap_read_fifo,
+ };
+ 
++static int m_can_plat_get_clocks(struct m_can_plat_priv *priv,
++				 struct m_can_classdev *mcan_class)
 +{
-+	int freq;
++	int ret = 0;
 +
-+	priv->cclk = devm_clk_get(m_can_dev->dev, "cclk");
++	priv->hclk = devm_clk_get(mcan_class->dev, "hclk");
++
++	priv->cclk = devm_clk_get(mcan_class->dev, "cclk");
 +	if (IS_ERR(priv->cclk)) {
-+		dev_err(m_can_dev->dev, "no CAN clock source defined\n");
-+		freq = TCAN4X5X_EXT_CLK_DEF;
-+		priv->cclk = NULL;
-+
-+	} else {
-+		freq = clk_get_rate(priv->cclk);
-+		/* Sanity check */
-+		if (freq < 20000000 || freq > TCAN4X5X_EXT_CLK_DEF)
-+			return -ERANGE;
++		dev_err(mcan_class->dev, "no clock found\n");
++		ret = -ENODEV;
 +	}
 +
-+	return freq;
++	return ret;
 +}
 +
- static int tcan4x5x_can_probe(struct spi_device *spi)
+ static int m_can_plat_probe(struct platform_device *pdev)
  {
- 	struct tcan4x5x_priv *priv;
-@@ -451,17 +474,9 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	struct m_can_classdev *mcan_class;
+@@ -72,7 +91,9 @@ static int m_can_plat_probe(struct platform_device *pdev)
  
  	mcan_class->device_data = priv;
  
 -	m_can_class_get_clocks(mcan_class);
--	if (IS_ERR(mcan_class->cclk)) {
--		dev_err(&spi->dev, "no CAN clock source defined\n");
--		freq = TCAN4X5X_EXT_CLK_DEF;
--	} else {
--		freq = clk_get_rate(mcan_class->cclk);
--	}
--
--	/* Sanity check */
--	if (freq < 20000000 || freq > TCAN4X5X_EXT_CLK_DEF)
--		return -ERANGE;
-+	freq = tcan4x5x_get_clock(priv, mcan_class);
-+	if (freq < 0)
-+		return freq;
- 
- 	priv->reg_offset = TCAN4X5X_MCAN_OFFSET;
- 	priv->mram_start = TCAN4X5X_MRAM_START;
-@@ -483,14 +498,14 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
- 	spi->bits_per_word = 32;
- 	ret = spi_setup(spi);
- 	if (ret)
--		goto out_clk;
++	ret = m_can_plat_get_clocks(priv, mcan_class);
++	if (ret)
 +		return ret;
  
- 	priv->regmap = devm_regmap_init(&spi->dev, &tcan4x5x_bus,
- 					&spi->dev, &tcan4x5x_regmap);
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "m_can");
+ 	addr = devm_ioremap_resource(&pdev->dev, res);
+@@ -100,7 +121,7 @@ static int m_can_plat_probe(struct platform_device *pdev)
  
- 	ret = tcan4x5x_power_enable(priv->power, 1);
- 	if (ret)
--		goto out_clk;
-+		return ret;
+ 	mcan_class->net->irq = irq;
+ 	mcan_class->pm_clock_support = 1;
+-	mcan_class->can.clock.freq = clk_get_rate(mcan_class->cclk);
++	mcan_class->can.clock.freq = clk_get_rate(priv->cclk);
+ 	mcan_class->dev = &pdev->dev;
  
- 	ret = tcan4x5x_parse_config(mcan_class);
- 	if (ret)
-@@ -509,12 +524,6 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	mcan_class->ops = &m_can_plat_ops;
+@@ -143,11 +164,12 @@ static int __maybe_unused m_can_runtime_suspend(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct m_can_classdev *mcan_class = netdev_priv(ndev);
++	struct m_can_plat_priv *priv = mcan_class->device_data;
  
- out_power:
- 	tcan4x5x_power_enable(priv->power, 0);
--out_clk:
--	if (!IS_ERR(mcan_class->cclk)) {
--		clk_disable_unprepare(mcan_class->cclk);
--		clk_disable_unprepare(mcan_class->hclk);
--	}
--
- 	dev_err(&spi->dev, "Probe failed, err=%d\n", ret);
- 	return ret;
- }
-@@ -530,6 +539,37 @@ static int tcan4x5x_can_remove(struct spi_device *spi)
+ 	m_can_class_suspend(dev);
+ 
+-	clk_disable_unprepare(mcan_class->cclk);
+-	clk_disable_unprepare(mcan_class->hclk);
++	clk_disable_unprepare(priv->cclk);
++	clk_disable_unprepare(priv->hclk);
+ 
  	return 0;
  }
+@@ -156,15 +178,16 @@ static int __maybe_unused m_can_runtime_resume(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct m_can_classdev *mcan_class = netdev_priv(ndev);
++	struct m_can_plat_priv *priv = mcan_class->device_data;
+ 	int err;
  
-+static int __maybe_unused tcan4x5x_runtime_suspend(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct m_can_classdev *mcan_class = netdev_priv(ndev);
-+	struct tcan4x5x_priv *priv = mcan_class->device_data;
-+
-+	m_can_class_suspend(dev);
-+
-+	if (priv->cclk)
-+		clk_disable_unprepare(priv->cclk);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused tcan4x5x_runtime_resume(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct m_can_classdev *mcan_class = netdev_priv(ndev);
-+	struct tcan4x5x_priv *priv = mcan_class->device_data;
-+
-+	if (priv->cclk)
-+		return clk_prepare_enable(priv->cclk);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops m_can_pmops = {
-+	SET_RUNTIME_PM_OPS(tcan4x5x_runtime_suspend,
-+			   tcan4x5x_runtime_resume, NULL)
-+};
-+
- static const struct of_device_id tcan4x5x_of_match[] = {
- 	{ .compatible = "ti,tcan4x5x", },
- 	{ }
+-	err = clk_prepare_enable(mcan_class->hclk);
++	err = clk_prepare_enable(priv->hclk);
+ 	if (err)
+ 		return err;
+ 
+-	err = clk_prepare_enable(mcan_class->cclk);
++	err = clk_prepare_enable(priv->cclk);
+ 	if (err)
+-		clk_disable_unprepare(mcan_class->hclk);
++		clk_disable_unprepare(priv->hclk);
+ 
+ 	return err;
+ }
 -- 
 2.25.0
