@@ -1,59 +1,58 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Help to set up can net interface on Dell 3200 Intel Atom
-Date: Tue, 4 Feb 2020 17:08:00 +0100
-Message-ID: <f2f20f9f-7810-e555-f6d0-11fc0510491c@hartkopp.net>
-References: <CAP22eLHKe=0FEoS3DfRK8Oi6k2xntCvxQPVpXhau_bnuOAs71A@mail.gmail.com>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: Re: [BUG] pfifo_fast may cause out-of-order CAN frame transmission
+Date: Tue, 4 Feb 2020 17:25:38 +0100
+Message-ID: <ef6b4e00-75fe-70f6-6b57-7bdbaa1aac33@pengutronix.de>
+References: <661cc33a-5f65-2769-cc1a-65791cb4b131@pengutronix.de>
+ <7717e4470f6881bbc92645c72ad7f6ec71360796.camel@redhat.com>
+ <779d3346-0344-9064-15d5-4d565647a556@pengutronix.de>
+ <1b70f56b72943bf5dfd2813565373e8c1b639c31.camel@redhat.com>
+ <53ce1ab4-3346-2367-8aa5-85a89f6897ec@pengutronix.de>
+ <57a2352dfc442ea2aa9cd653f8e09db277bf67c7.camel@redhat.com>
+ <b012e914-fc1a-5a45-f28b-e9d4d4dfc0fe@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.219]:32228 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727290AbgBDQII (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Feb 2020 11:08:08 -0500
-In-Reply-To: <CAP22eLHKe=0FEoS3DfRK8Oi6k2xntCvxQPVpXhau_bnuOAs71A@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:50255 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727310AbgBDQZl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Feb 2020 11:25:41 -0500
+In-Reply-To: <b012e914-fc1a-5a45-f28b-e9d4d4dfc0fe@pengutronix.de>
 Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "Lev R. Oshvang ." <levonshe@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, Pengutronix Kernel Team <kernel@pengutronix.de>
 
-On 04/02/2020 14.07, Lev R. Oshvang . wrote:
+Hello Paolo,
 
-> I have with DELL 3002 Edge server
-> It has can and can_raw drivers loaded at boot time
-> It does not have /boot/config.txt file
+On 1/20/20 5:06 PM, Ahmad Fatoum wrote:
+> Hello Paolo,
 > 
-> Unfortunately, I do not have kernel sources and kernel config file is
-> not present in /proc, so I do not know which exactly chip is on b
-> oard and board specs says only:
+> On 1/16/20 1:40 PM, Paolo Abeni wrote:
+>> I'm sorry for this trial & error experience. I tried to reproduce the
+>> issue on top of the vcan virtual device, but it looks like it requires
+>> the timing imposed by a real device, and it's missing here (TL;DR: I
+>> can't reproduce the issue locally).
 > 
-> (CAN2.0 A/B/FD) 1Mbps (CAN2.0), 5Mbps (CAN-FD).
-
-https://topics-cdn.dell.com/pdf/dell-edge-gateway-3000-series_Specifications2_de-de.pdf
-says that there is a 
-https://www.microchip.com/wwwproducts/en/ATSAME70N19 Cortex-M7 which 
-handles the CAN FD controller.
-
-The ATSAME70N19 is connected somehow to the Intel Atom-Prozessor E3805.
-
-So I won't assume, that you can access the CAN controller from the Intel 
-CPU.
-
-> I tried to set it up but get the following error
+> No worries. I don't mind testing.
 > 
+>>
+>> Code wise, the 2nd patch closed a possible race, but it dumbly re-
+>> opened the one addressed by the first attempt - the 'empty' field must
+>> be cleared prior to the trylock operation, or we may end-up with such
+>> field set and the queue not empty.
+>>
+>> So, could you please try the following code?
 > 
-> root@5HCF902:~# ip link add dev can0 type can
-> RTNETLINK answers: Operation not supported
+> Unfortunately, I still see observe reodering.
 
-You can not "add" a real CAN interface with "ip link add ..." - this 
-works only for virtual CANs.
+Any news?
 
-Try
+Thanks
+Ahmad
 
-ip -det link show
-
-where some CAN interface (e.g. can0) should be visible, if you have one.
-
-Regards,
-Oliver
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
