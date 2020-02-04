@@ -1,47 +1,70 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: can-utils update for Debian
-Date: Tue, 4 Feb 2020 17:59:14 +0100
-Message-ID: <08b5fb48-bb69-0a34-3851-cb213d9b9f15@hartkopp.net>
-References: <b6496d06-00ad-49e9-04bb-0062b19857dd@hartkopp.net>
- <20160925230257.68f3b937@brick.gerasiov.net>
- <ee55bc09-f60a-a637-e0d4-ff4aa69c9df1@hartkopp.net>
- <20160927110637.3d7f7ece@brick.gerasiov.net>
+Subject: Re: [PATCH] bonding: do not enslave CAN devices
+Date: Tue, 4 Feb 2020 18:11:04 +0100
+Message-ID: <3315b977-8b62-ca07-7117-d87ad476a548@hartkopp.net>
+References: <20200130133046.2047-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.23]:19921 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727310AbgBDQ7Z (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Feb 2020 11:59:25 -0500
-In-Reply-To: <20160927110637.3d7f7ece@brick.gerasiov.net>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20200130133046.2047-1-socketcan@hartkopp.net>
 Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Alexander Gerasiov <gq@debian.org>
-Cc: linux-can <linux-can@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, mkl@pengutronix.de, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net, linux-stable <stable@vger.kernel.org>, Sabrina Dubroca <sd@queasysnail.net>
+List-Id: linux-can.vger.kernel.org
 
-Hello Alexander,
+Any updates, reviews, acks on this?
 
-we have a new tag v2020.02.04 which is worth to make it a Debian package 
-after nearly two years.
+As pointed out by Sabrina here 
+https://marc.info/?l=linux-netdev&m=158039302905460&w=2
+the issue is also relevant for the TEAM driver.
 
-Relevant things that have changed:
-
-- SPDX license compliance and cleanup
-- new tools for CAN J1939 (since Linux 5.4)
-- remove bridging functionality from candump
-
-and of course several updates and enhancements.
-
-We already had people that asked for an update of the tag to get an 
-update on Debian ;-)
-
-There is also another 2020.x tag - but the latest 2020.02.04 has a late 
-fix for isotpsniffer.
-
-Many thanks and best regards,
+Best,
 Oliver
 
-ps. I remember your attempt to create man pages for the can-utils. We 
-should probably plan this for the next but one release.
+On 30/01/2020 14.30, Oliver Hartkopp wrote:
+> Since commit 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
+> device struct can_dev_rcv_lists") the device specific CAN receive filter lists
+> are stored in netdev_priv() and dev->ml_priv points to these filters.
+> 
+> In the bug report Syzkaller enslaved a vxcan1 CAN device and accessed the
+> bonding device with a PF_CAN socket which lead to a crash due to an access of
+> an unhandled bond_dev->ml_priv pointer.
+> 
+> Deny to enslave CAN devices by the bonding driver as the resulting bond_dev
+> pretends to be a CAN device by copying dev->type without really being one.
+> 
+> Reported-by: syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com
+> Fixes: 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
+> device struct can_dev_rcv_lists")
+> Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>   drivers/net/bonding/bond_main.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> index 48d5ec770b94..4b781a7dfd96 100644
+> --- a/drivers/net/bonding/bond_main.c
+> +++ b/drivers/net/bonding/bond_main.c
+> @@ -1475,6 +1475,18 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
+>   		return -EPERM;
+>   	}
+>   
+> +	/* CAN network devices hold device specific filter lists in
+> +	 * netdev_priv() where dev->ml_priv sets a reference to.
+> +	 * As bonding assumes to have some ethernet-like device it doesn't
+> +	 * take care about these CAN specific filter lists today.
+> +	 * So we deny the enslaving of CAN interfaces here.
+> +	 */
+> +	if (slave_dev->type == ARPHRD_CAN) {
+> +		NL_SET_ERR_MSG(extack, "CAN devices can not be enslaved");
+> +		slave_err(bond_dev, slave_dev, "no bonding on CAN devices\n");
+> +		return -EINVAL;
+> +	}
+> +
+>   	/* set bonding device ether type by slave - bonding netdevices are
+>   	 * created with ether_setup, so when the slave type is not ARPHRD_ETHER
+>   	 * there is a need to override some of the type dependent attribs/funcs.
+> 
