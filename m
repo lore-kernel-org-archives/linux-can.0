@@ -1,70 +1,89 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH] bonding: do not enslave CAN devices
-Date: Tue, 4 Feb 2020 18:11:04 +0100
-Message-ID: <3315b977-8b62-ca07-7117-d87ad476a548@hartkopp.net>
-References: <20200130133046.2047-1-socketcan@hartkopp.net>
+Subject: Re: usb_8dev - WARN_ON(in_irq())
+Date: Tue, 4 Feb 2020 18:52:02 +0100
+Message-ID: <8aaec717-0ff7-922b-6969-482363d2790b@hartkopp.net>
+References: <87h8245gyv.fsf@steelpick.2x.cz>
+ <7429cd37-f4dd-247c-7fa3-259801f20944@rusoku.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20200130133046.2047-1-socketcan@hartkopp.net>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:30411 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727357AbgBDRwG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Feb 2020 12:52:06 -0500
+In-Reply-To: <7429cd37-f4dd-247c-7fa3-259801f20944@rusoku.com>
 Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, mkl@pengutronix.de, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net, linux-stable <stable@vger.kernel.org>, Sabrina Dubroca <sd@queasysnail.net>
-List-Id: linux-can.vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Gediminas Simanskis <gediminas@rusoku.com>, Michal Sojka <michal.sojka@cvut.cz>, linux-can@vger.kernel.org
+Cc: Bernd Krumboeck <b.krumboeck@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Any updates, reviews, acks on this?
+Hello Gediminas,
 
-As pointed out by Sabrina here 
-https://marc.info/?l=linux-netdev&m=158039302905460&w=2
-the issue is also relevant for the TEAM driver.
+I took a look into the old firmware of the former USB_8DEV adapter with 
+the white housing which had a CANAL_STATUSMSG_BUSLIGHT (== 0x02) return 
+value:
 
-Best,
+https://github.com/krumboeck/usb2can_firmware/blob/master/main.c#L227
+
+Is this the right place to search for the value that is checked in the 
+kernel here:
+https://elixir.bootlin.com/linux/v5.5.1/source/drivers/net/can/usb/usb_8dev.c#L581
+
+??
+
+can0: Tx URB aborted (-2)
+
+At least the status is *only* printed in usb_8dev_write_bulk_callback() 
+and the echo skb handling is still performed as there was a zero status 
+(== ok?!?).
+
+Do you have an idea how to proceed with the driver in the case the user 
+has the newer
+https://www.8devices.com/products/usb2can_korlan
+device?
+
+Best regards,
 Oliver
 
-On 30/01/2020 14.30, Oliver Hartkopp wrote:
-> Since commit 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
-> device struct can_dev_rcv_lists") the device specific CAN receive filter lists
-> are stored in netdev_priv() and dev->ml_priv points to these filters.
+On 13/12/2019 18.20, Gediminas Simanskis wrote:
+> Seems like to USB2CAN buffer overflow and firmware crashing.
 > 
-> In the bug report Syzkaller enslaved a vxcan1 CAN device and accessed the
-> bonding device with a PF_CAN socket which lead to a crash due to an access of
-> an unhandled bond_dev->ml_priv pointer.
+> Gediminas
 > 
-> Deny to enslave CAN devices by the bonding driver as the resulting bond_dev
-> pretends to be a CAN device by copying dev->type without really being one.
-> 
-> Reported-by: syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com
-> Fixes: 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
-> device struct can_dev_rcv_lists")
-> Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->   drivers/net/bonding/bond_main.c | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index 48d5ec770b94..4b781a7dfd96 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -1475,6 +1475,18 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
->   		return -EPERM;
->   	}
->   
-> +	/* CAN network devices hold device specific filter lists in
-> +	 * netdev_priv() where dev->ml_priv sets a reference to.
-> +	 * As bonding assumes to have some ethernet-like device it doesn't
-> +	 * take care about these CAN specific filter lists today.
-> +	 * So we deny the enslaving of CAN interfaces here.
-> +	 */
-> +	if (slave_dev->type == ARPHRD_CAN) {
-> +		NL_SET_ERR_MSG(extack, "CAN devices can not be enslaved");
-> +		slave_err(bond_dev, slave_dev, "no bonding on CAN devices\n");
-> +		return -EINVAL;
-> +	}
-> +
->   	/* set bonding device ether type by slave - bonding netdevices are
->   	 * created with ether_setup, so when the slave type is not ARPHRD_ETHER
->   	 * there is a need to override some of the type dependent attribs/funcs.
-> 
+> On 2019-12-13 18:27, Michal Sojka wrote:
+>> On Fri, Dec 13 2019, Michal Sojka wrote:
+>>> Hi Oliver,
+>>>
+>>> On Fri, Dec 13 2019, Oliver Hartkopp wrote:
+>>>> Did you do anything weird (e.g. pulling the USB plug on the run) to get
+>>>> this problem?
+>>> No, I just connected it to an ECU and started sending messages on the
+>>> bus. The behaviour was like if the messages were not acknowledged, i.e.,
+>>> initially, candump on my laptop showed the messages sent, but after some
+>>> time (perhaps after TX buffers were full), candump stopped. I was also
+>>> not able to see any messages sent by the ECU (both before and after I
+>>> sent my messages).
+>>>
+>>> When I used the same ECU and all the wiring with peak_usb, communication
+>>> with the ECU was without any problems.
+>> I did more investigation - I was able to fix the problem by adding a
+>> terminator resistor to the bus.
+>>
+>> However, the problem can be easily reproduced by the following sequence
+>> of commands, when the USB2CAN is not connected to any bus:
+>>
+>>      ip link set can0 up txqueuelen 1000 type can bitrate 500000
+>>      candump can0
+>>      cangen -v -g 50 can0
+>>
+>> when candump stops printing the messages, run:
+>>
+>>      ip link set down dev can0
+>>
+>> and the warnings appear in dmesg. I was also trying this with latest
+>> mainline kernel, which includes the fix for use-after-free, and the
+>> warnings are still there.
+>>
+>> -Michal
