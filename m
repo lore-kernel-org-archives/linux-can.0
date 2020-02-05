@@ -1,127 +1,96 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: usb_8dev - WARN_ON(in_irq())
-Date: Wed, 5 Feb 2020 11:58:59 +0100
-Message-ID: <72ef9952-df01-aa84-a186-93d578b06818@hartkopp.net>
-References: <87h8245gyv.fsf@steelpick.2x.cz>
- <7429cd37-f4dd-247c-7fa3-259801f20944@rusoku.com>
- <8aaec717-0ff7-922b-6969-482363d2790b@hartkopp.net>
- <03fe333a-7a7b-e9b6-fd9e-3d433c2f3cb3@rusoku.com>
+From: "Lev R. Oshvang ." <levonshe@gmail.com>
+Subject: Re: Help to set up can net interface on Dell 3200 Intel Atom
+Date: Wed, 5 Feb 2020 14:00:15 +0200
+Message-ID: <CAP22eLE4L53Qcf0tK4X0kieKxw_=jtoh_qvnUpeq1yUy_cvBsw@mail.gmail.com>
+References: <CAP22eLHKe=0FEoS3DfRK8Oi6k2xntCvxQPVpXhau_bnuOAs71A@mail.gmail.com>
+ <f2f20f9f-7810-e555-f6d0-11fc0510491c@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:30199 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728034AbgBEK7J (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Feb 2020 05:59:09 -0500
-In-Reply-To: <03fe333a-7a7b-e9b6-fd9e-3d433c2f3cb3@rusoku.com>
-Content-Language: en-US
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40273 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726277AbgBEMA2 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Feb 2020 07:00:28 -0500
+Received: by mail-io1-f65.google.com with SMTP id x1so1808872iop.7
+        for <linux-can@vger.kernel.org>; Wed, 05 Feb 2020 04:00:26 -0800 (PST)
+In-Reply-To: <f2f20f9f-7810-e555-f6d0-11fc0510491c@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Gediminas Simanskis <gediminas@rusoku.com>, linux-can@vger.kernel.org, info@8devices.com
-Cc: Michal Sojka <michal.sojka@cvut.cz>, Bernd Krumboeck <b.krumboeck@gmail.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
-Hi Gediminas,
+Hi Oliver,
 
-thanks for the information!
+I tried command which is proposed in Dell manual
+https://www.dell.com/support/manuals/il/en/ilbsdt1/dell-edge-gateway-3000-series/dell-edge_gateway-3002-install_manual/can-module?guid=guid-b6b7f697-0a5c-4b9c-acfe-9b436ca90bdc&lang=en-us
 
-I've put info [at] 8devices.com into the recipients list as the Linux 
-driver has to do the "right thing" when it gets the "Tx URB aborted 
-(-2)" information.
+or i in /dev/ttyACM*; do udevadm info $i | grep -q
+03eb_2404_USB_CAN_FD && echo "path:
+                                    /dev/$(basename $i)"; done
 
-And so far I did not see anything like this with the old 'white' USB2CAN 
-adapter with FW 1.7.
+It prints the device  /dev/ttyACM0 is present.
 
-As long as we don't know how to react on this new feedback from the USB 
-device, it is hard to think about a fix ...
+Can I use it as serial CAN  device?
+I am novice to CAN devices. Now I understand that can and can_raw are
+only generic drivers and I need real driver.
+I wrote to Microchip support, perhaps they have driver for this box.
 
-Best regards,
-Oliver
+But still I do not understand why can driver is loaded at boot time I
+used to think that only real hardware cause the driver to appear.
 
+   16.727375] r8169 0000:02:00.0: can't disable ASPM; OS doesn't have
+ASPM control
+[   16.742055] r8169 0000:04:00.0: can't disable ASPM; OS doesn't have
+ASPM control
+[   16.824470] peak_usb 1-2:1.0 can0: attached to PCAN-USB channel 0
+(device 255)
+[   30.661705] can: controller area network core (rev 20120528 abi 9)
+[   30.678155] can: raw protocol (rev 20120528)
 
-On 04/02/2020 20.54, Gediminas Simanskis wrote:
-> Hi Oliver,
-> 
-> I remember that in some conditions usb2can began to flood with messages 
-> like this (CANAL_STATUSMSG_xx).
-> In normal state these messages should be disabled via init string.
-> 
-> I don't have acces to Korlan firmware.
-> 
+I saw these lines in dmesg and now I thing they apperead because CAN
+support was not a module but built-in in kernel configuration.
+Regards,
+Lev
+
+On Tue, Feb 4, 2020 at 6:08 PM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+>
+> On 04/02/2020 14.07, Lev R. Oshvang . wrote:
+>
+> > I have with DELL 3002 Edge server
+> > It has can and can_raw drivers loaded at boot time
+> > It does not have /boot/config.txt file
+> >
+> > Unfortunately, I do not have kernel sources and kernel config file is
+> > not present in /proc, so I do not know which exactly chip is on b
+> > oard and board specs says only:
+> >
+> > (CAN2.0 A/B/FD) 1Mbps (CAN2.0), 5Mbps (CAN-FD).
+>
+> https://topics-cdn.dell.com/pdf/dell-edge-gateway-3000-series_Specifications2_de-de.pdf
+> says that there is a
+> https://www.microchip.com/wwwproducts/en/ATSAME70N19 Cortex-M7 which
+> handles the CAN FD controller.
+>
+> The ATSAME70N19 is connected somehow to the Intel Atom-Prozessor E3805.
+>
+> So I won't assume, that you can access the CAN controller from the Intel
+> CPU.
+>
+> > I tried to set it up but get the following error
+> >
+> >
+> > root@5HCF902:~# ip link add dev can0 type can
+> > RTNETLINK answers: Operation not supported
+>
+> You can not "add" a real CAN interface with "ip link add ..." - this
+> works only for virtual CANs.
+>
+> Try
+>
+> ip -det link show
+>
+> where some CAN interface (e.g. can0) should be visible, if you have one.
+>
 > Regards,
-> Gediminas
-> 
-> On 2020-02-04 19:52, Oliver Hartkopp wrote:
->> Hello Gediminas,
->>
->> I took a look into the old firmware of the former USB_8DEV adapter 
->> with the white housing which had a CANAL_STATUSMSG_BUSLIGHT (== 0x02) 
->> return value:
->>
->> https://github.com/krumboeck/usb2can_firmware/blob/master/main.c#L227
->>
->> Is this the right place to search for the value that is checked in the 
->> kernel here:
->> https://elixir.bootlin.com/linux/v5.5.1/source/drivers/net/can/usb/usb_8dev.c#L581 
->>
->>
->> ??
->>
->> can0: Tx URB aborted (-2)
->>
->> At least the status is *only* printed in 
->> usb_8dev_write_bulk_callback() and the echo skb handling is still 
->> performed as there was a zero status (== ok?!?).
->>
->> Do you have an idea how to proceed with the driver in the case the 
->> user has the newer
->> https://www.8devices.com/products/usb2can_korlan
->> device?
->>
->> Best regards,
->> Oliver
->>
->> On 13/12/2019 18.20, Gediminas Simanskis wrote:
->>> Seems like to USB2CAN buffer overflow and firmware crashing.
->>>
->>> Gediminas
->>>
->>> On 2019-12-13 18:27, Michal Sojka wrote:
->>>> On Fri, Dec 13 2019, Michal Sojka wrote:
->>>>> Hi Oliver,
->>>>>
->>>>> On Fri, Dec 13 2019, Oliver Hartkopp wrote:
->>>>>> Did you do anything weird (e.g. pulling the USB plug on the run) 
->>>>>> to get
->>>>>> this problem?
->>>>> No, I just connected it to an ECU and started sending messages on the
->>>>> bus. The behaviour was like if the messages were not acknowledged, 
->>>>> i.e.,
->>>>> initially, candump on my laptop showed the messages sent, but after 
->>>>> some
->>>>> time (perhaps after TX buffers were full), candump stopped. I was also
->>>>> not able to see any messages sent by the ECU (both before and after I
->>>>> sent my messages).
->>>>>
->>>>> When I used the same ECU and all the wiring with peak_usb, 
->>>>> communication
->>>>> with the ECU was without any problems.
->>>> I did more investigation - I was able to fix the problem by adding a
->>>> terminator resistor to the bus.
->>>>
->>>> However, the problem can be easily reproduced by the following sequence
->>>> of commands, when the USB2CAN is not connected to any bus:
->>>>
->>>>      ip link set can0 up txqueuelen 1000 type can bitrate 500000
->>>>      candump can0
->>>>      cangen -v -g 50 can0
->>>>
->>>> when candump stops printing the messages, run:
->>>>
->>>>      ip link set down dev can0
->>>>
->>>> and the warnings appear in dmesg. I was also trying this with latest
->>>> mainline kernel, which includes the fix for use-after-free, and the
->>>> warnings are still there.
->>>>
->>>> -Michal
+> Oliver
+>
