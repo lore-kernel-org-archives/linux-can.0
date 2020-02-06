@@ -1,54 +1,53 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: Is /dev/ttyACM0 of ATMEL serial CAN bus ?
-Date: Thu, 6 Feb 2020 09:10:42 +0100
-Message-ID: <CAGm1_ksLOtbu=PEOYfkzsckejLEUPyF1HRh1Xf--iaukPkwrTQ@mail.gmail.com>
-References: <CAP22eLE2ro96aZymd3-b9HW6k2XAJeZGWBS5jRe+WU0pCJJFmQ@mail.gmail.com>
+From: Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [BUG] pfifo_fast may cause out-of-order CAN frame transmission
+Date: Thu, 06 Feb 2020 14:21:16 +0100
+Message-ID: <13e8950e8537e549f6afb6e254ec75a7462ce648.camel@redhat.com>
+References: <661cc33a-5f65-2769-cc1a-65791cb4b131@pengutronix.de>
+         <7717e4470f6881bbc92645c72ad7f6ec71360796.camel@redhat.com>
+         <779d3346-0344-9064-15d5-4d565647a556@pengutronix.de>
+         <1b70f56b72943bf5dfd2813565373e8c1b639c31.camel@redhat.com>
+         <53ce1ab4-3346-2367-8aa5-85a89f6897ec@pengutronix.de>
+         <57a2352dfc442ea2aa9cd653f8e09db277bf67c7.camel@redhat.com>
+         <b012e914-fc1a-5a45-f28b-e9d4d4dfc0fe@pengutronix.de>
+         <ef6b4e00-75fe-70f6-6b57-7bdbaa1aac33@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:40030 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727879AbgBFILI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Feb 2020 03:11:08 -0500
-Received: by mail-vs1-f67.google.com with SMTP id g23so3202482vsr.7
-        for <linux-can@vger.kernel.org>; Thu, 06 Feb 2020 00:11:07 -0800 (PST)
-In-Reply-To: <CAP22eLE2ro96aZymd3-b9HW6k2XAJeZGWBS5jRe+WU0pCJJFmQ@mail.gmail.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "Lev R. Oshvang ." <levonshe@gmail.com>
-Cc: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <ef6b4e00-75fe-70f6-6b57-7bdbaa1aac33@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: Ahmad Fatoum <a.fatoum@pengutronix.de>, netdev@vger.kernel.org, linux-can@vger.kernel.org, Pengutronix Kernel Team <kernel@pengutronix.de>
+List-Id: linux-can.vger.kernel.org
 
-Hi Lev,
+On Tue, 2020-02-04 at 17:25 +0100, Ahmad Fatoum wrote:
+> Hello Paolo,
+> 
+> On 1/20/20 5:06 PM, Ahmad Fatoum wrote:
+> > Hello Paolo,
+> > 
+> > On 1/16/20 1:40 PM, Paolo Abeni wrote:
+> > > I'm sorry for this trial & error experience. I tried to reproduce the
+> > > issue on top of the vcan virtual device, but it looks like it requires
+> > > the timing imposed by a real device, and it's missing here (TL;DR: I
+> > > can't reproduce the issue locally).
+> > 
+> > No worries. I don't mind testing.
+> > 
+> > > Code wise, the 2nd patch closed a possible race, but it dumbly re-
+> > > opened the one addressed by the first attempt - the 'empty' field must
+> > > be cleared prior to the trylock operation, or we may end-up with such
+> > > field set and the queue not empty.
+> > > 
+> > > So, could you please try the following code?
+> > 
+> > Unfortunately, I still see observe reodering.
+> 
+> Any news?
 
-On Thu, Feb 6, 2020 at 8:56 AM Lev R. Oshvang . <levonshe@gmail.com> wrote:
->
-> Hi All,
->
-> I decided to split my correspondence with Oliver to be very specific
-> I have Atmel Chip  on DELL 3201 board with built-in CAN port , as well
-> as LAN and  USB ports
->
-> I followed Dell manual and run proposed command below
->
-> > for i in /dev/ttyACM*; do udevadm info $i | grep -q 03eb_2404_USB_CAN_FD && echo "path:/dev/$(basename $i)"; done
->
-> It prints the device
->  /dev/ttyACM0
->
-> What is this device?
-> Does it serve CAN port or USB port?
-> Can I use it as a serial CAN  device?
->
-> BTH, even kernel 5.3 does not have a configuration option for ATMEL CAN device.
+I'm unable to find any better solution than a revert. That will cost
+some small performace regression, so I'm a bit reluctant to go ahead.
+If there is agreement I can post the revert.
 
-DELL's description is very poor indeed. I would try something like
-this just to verify whether this device can speak slcan:
+Cheers,
 
-sudo slcand -o -c -s6 /dev/ttyACM0 can0
-
-See [1] for more information.
-
-[1] https://elinux.org/Bringing_CAN_interface_up#SLCAN_based_Interfaces
-
-Regards,
-Yegor
+Paolo
