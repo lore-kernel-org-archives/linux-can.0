@@ -1,21 +1,28 @@
 From: Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [PATCH v3 1/2] dt-bindinsg: net: can: Convert can-transceiver to json-schema
-Date: Fri, 7 Feb 2020 10:51:12 +0100
-Message-ID: <20200207095113.14489-2-benjamin.gaignard@st.com>
-References: <20200207095113.14489-1-benjamin.gaignard@st.com>
+Subject: [PATCH v4 1/2] dt-bindinsg: net: can: Convert can-transceiver to json-schema
+Date: Fri, 7 Feb 2020 11:03:05 +0100
+Message-ID: <20200207100306.20997-2-benjamin.gaignard@st.com>
+References: <20200207100306.20997-1-benjamin.gaignard@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20200207095113.14489-1-benjamin.gaignard@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:51753 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726587AbgBGKDY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Feb 2020 05:03:24 -0500
+In-Reply-To: <20200207100306.20997-1-benjamin.gaignard@st.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com, sriram.dash@samsung.com
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Benjamin Gaignard <benjamin.gaignard@st.com>
-List-Id: linux-can.vger.kernel.org
 
 Convert can-transceiver property to json-schema
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
 ---
+version 4:
+- no change
+
 version 3:
 - only declare max-bitrate property in can-transceiver.yaml
 
