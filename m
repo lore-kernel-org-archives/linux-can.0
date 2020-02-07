@@ -1,90 +1,38 @@
 From: Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [PATCH v4 1/2] dt-bindinsg: net: can: Convert can-transceiver to json-schema
-Date: Fri, 7 Feb 2020 11:03:05 +0100
-Message-ID: <20200207100306.20997-2-benjamin.gaignard@st.com>
-References: <20200207100306.20997-1-benjamin.gaignard@st.com>
+Subject: [PATCH v4 0/2] Convert bosch,m_can to json-schema
+Date: Fri, 7 Feb 2020 11:03:04 +0100
+Message-ID: <20200207100306.20997-1-benjamin.gaignard@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:51753 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726587AbgBGKDY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Feb 2020 05:03:24 -0500
-In-Reply-To: <20200207100306.20997-1-benjamin.gaignard@st.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com, sriram.dash@samsung.com
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Benjamin Gaignard <benjamin.gaignard@st.com>
+List-Id: linux-can.vger.kernel.org
 
-Convert can-transceiver property to json-schema
+The goal of this series is to convert bosch,m_can bindings to json-schema.
+First convert can-transceiver to yaml and then use it for bosch,m_can.yaml.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
----
 version 4:
-- no change
+- remove useless ref to can-transceiver.yaml
 
 version 3:
 - only declare max-bitrate property in can-transceiver.yaml
+- move can-transceive node into bosch,m_can.yaml bindings
 
- .../bindings/net/can/can-transceiver.txt           | 24 ----------------------
- .../bindings/net/can/can-transceiver.yaml          | 18 ++++++++++++++++
- 2 files changed, 18 insertions(+), 24 deletions(-)
+Benjamin Gaignard (2):
+  dt-bindinsg: net: can: Convert can-transceiver to json-schema
+  dt-bindings: net: can: Convert M_CAN to json-schema
+
+ .../devicetree/bindings/net/can/bosch,m_can.yaml   | 144 +++++++++++++++++++++
+ .../bindings/net/can/can-transceiver.txt           |  24 ----
+ .../bindings/net/can/can-transceiver.yaml          |  18 +++
+ .../devicetree/bindings/net/can/m_can.txt          |  75 -----------
+ 4 files changed, 162 insertions(+), 99 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
  delete mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.txt
  create mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/m_can.txt
 
-diff --git a/Documentation/devicetree/bindings/net/can/can-transceiver.txt b/Documentation/devicetree/bindings/net/can/can-transceiver.txt
-deleted file mode 100644
-index 0011f53ff159..000000000000
---- a/Documentation/devicetree/bindings/net/can/can-transceiver.txt
-+++ /dev/null
-@@ -1,24 +0,0 @@
--Generic CAN transceiver Device Tree binding
--------------------------------
--
--CAN transceiver typically limits the max speed in standard CAN and CAN FD
--modes. Typically these limitations are static and the transceivers themselves
--provide no way to detect this limitation at runtime. For this situation,
--the "can-transceiver" node can be used.
--
--Required Properties:
-- max-bitrate:	a positive non 0 value that determines the max
--		speed that CAN/CAN-FD can run. Any other value
--		will be ignored.
--
--Examples:
--
--Based on Texas Instrument's TCAN1042HGV CAN Transceiver
--
--m_can0 {
--	....
--	can-transceiver {
--		max-bitrate = <5000000>;
--	};
--	...
--};
-diff --git a/Documentation/devicetree/bindings/net/can/can-transceiver.yaml b/Documentation/devicetree/bindings/net/can/can-transceiver.yaml
-new file mode 100644
-index 000000000000..6396977d29e5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/can-transceiver.yaml
-@@ -0,0 +1,18 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/can-transceiver.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: CAN transceiver Bindings
-+
-+description: CAN transceiver generic properties bindings
-+
-+maintainers:
-+  - Rob Herring <robh@kernel.org>
-+
-+properties:
-+  max-bitrate:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: a positive non 0 value that determines the max speed that CAN/CAN-FD can run.
-+    minimum: 1
 -- 
 2.15.0
