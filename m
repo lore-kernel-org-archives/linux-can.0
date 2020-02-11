@@ -1,75 +1,51 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [mkl-can-next:v5.4/mcp25xxfd 5/99] drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c:1305 mcp25xxfd_irq() warn: ignoring unreachable code.
-Date: Mon, 10 Feb 2020 10:42:27 +0300
-Message-ID: <20200210074227.GR24804@kadam>
+From: Thomas Kopp <thomas.kopp@microchip.com>
+Subject: [PATCH] can: mcp25xxfd: minor register definition fixes
+Date: Tue, 11 Feb 2020 13:04:46 +0100
+Message-ID: <20200211120446.1390-1-thomas.kopp@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <kbuild-bounces@lists.01.org>
-Content-Disposition: inline
-List-Archive: <https://lists.01.org/hyperkitty/list/kbuild@lists.01.org/>
-List-Help: <mailto:kbuild-request@lists.01.org?subject=help>
-List-Post: <mailto:kbuild@lists.01.org>
-List-Subscribe: <mailto:kbuild-join@lists.01.org>
-List-Unsubscribe: <mailto:kbuild-leave@lists.01.org>
-To: kbuild@lists.01.org, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: kbuild-all@lists.01.org, linux-can@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:25352 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727936AbgBKMEv (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 11 Feb 2020 07:04:51 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, thomas.kopp@microchip.com
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git v5.4/mcp25xxfd
-head:   cdcc21e4acc1a753bc4fb151b938ba292ecf686b
-commit: 6499ad52b2ad766769d55b8d59df0d36db848e95 [5/99] can: mcp25xxfd: initial commit
+Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
+---
+Hi Marc,
+I started testing your driver at https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/drivers/net/can/spi/mcp25xxfd?h=v5.4/mcp25xxfd and noticed two small things in the register definitions. Overall TX seems to be working fine - one thing I noticed when testing with cangen can0 -b -g 0 and another external node periodically sending frames on the bus (with 2ms gaps) I'm eventually getting stuffing errors from which the driver never really recovers. As soon as the external node then stops sending messages, the MCP2518FD node stops sending as well and gets unresponsive (ssh isn't possible anymore etc.). When resuming the external CAN traffic the node becomes responsive again. The driver was compiled with Additional Debugging output and Logging enabled. Ifconfig doesn't s
+ how any RX/TX errors and shows plausible numbers for packets transmitted/received. Am I chasing ghosts here or have you encountered similar behaviour?
+Best Regards,
+Thomas
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-New smatch warnings:
-drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c:1305 mcp25xxfd_irq() warn: ignoring unreachable code.
-
-Old smatch warnings:
-drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c:1667 mcp25xxfd_probe() warn: passing zero to 'PTR_ERR'
-drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c:1675 mcp25xxfd_probe() warn: passing zero to 'PTR_ERR'
-
-# https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/commit/?id=6499ad52b2ad766769d55b8d59df0d36db848e95
-git remote add mkl-can-next https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
-git remote update mkl-can-next
-git checkout 6499ad52b2ad766769d55b8d59df0d36db848e95
-vim +1305 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1280  
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1281  		if (IS_ENABLED(CONFIG_CAN_MCP25XXFD_DEBUG) &&
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1282  		    intf_pending & ~(MCP25XXFD_CAN_INT_MODIF |
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1283  				     MCP25XXFD_CAN_INT_TEFIF |
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1284  				     MCP25XXFD_CAN_INT_RXIF |
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1285  				     MCP25XXFD_CAN_INT_SERRIF |
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1286  				     MCP25XXFD_CAN_INT_IVMIF)) {
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1287  			netdev_err(priv->ndev, "%s: intf_pending=0x%04x\n",
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1288  				   __func__, intf_pending);
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1289  			mcp25xxfd_dump(priv);
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1290  		}
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1291  
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1292  		/* ACK interrupts that need to be ACKed in the
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1293  		 * MCP25XXFD_CAN_INT register.
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1294  		 */
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1295  		intf_pending_clearable = intf_pending &
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1296  			MCP25XXFD_CAN_INT_INTERRUPT_CLEARABLE;
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1297  		if (intf_pending_clearable) {
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1298  			err = regmap_update_bits(priv->map, MCP25XXFD_CAN_INT,
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1299  						 intf_pending_clearable, 0x0);
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1300  			if (err)
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1301  				goto out_fail;
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1302  		}
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1303  	} while (1);
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1304  
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14 @1305  	return handled;
-
-I guess the while (1) loop has no breaks.
-
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1306  
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1307   out_fail:
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1308  	mcp25xxfd_dump(priv);
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1309  	mcp25xxfd_chip_interrupts_disable(priv);
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1310  
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1311  	return handled;
-6499ad52b2ad76 Marc Kleine-Budde 2019-10-14  1312  }
+diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd.h b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd.h
+index 6bf211673d0e..13af06d7fd67 100644
+--- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd.h
++++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd.h
+@@ -94,7 +94,7 @@ static inline void __dump(const void *d, unsigned int len)
+ #define MCP25XXFD_CAN_TDC 0x0c
+ #define MCP25XXFD_CAN_TDC_EDGFLTEN BIT(25)
+ #define MCP25XXFD_CAN_TDC_SID11EN BIT(24)
+-#define MCP25XXFD_CAN_TDC_TDCMOD_MASK GENMASK(17, 6)
++#define MCP25XXFD_CAN_TDC_TDCMOD_MASK GENMASK(17, 16)
+ #define MCP25XXFD_CAN_TDC_TDCMOD_AUTO 2
+ #define MCP25XXFD_CAN_TDC_TDCMOD_MANUAL 1
+ #define MCP25XXFD_CAN_TDC_TDCMOD_DISABLED 0
+@@ -304,7 +304,7 @@ static inline void __dump(const void *d, unsigned int len)
+ #define MCP25XXFD_CAN_FLTOBJ(x) (0x1f0 + 8 * (x))
+ #define MCP25XXFD_CAN_FLTOBJ_EXIDE BIT(30)
+ #define MCP25XXFD_CAN_FLTOBJ_SID11 BIT(29)
+-#define MCP25XXFD_CAN_FLTOBJ_EID_MASK GENMASK(28. 11)
++#define MCP25XXFD_CAN_FLTOBJ_EID_MASK GENMASK(28, 11)
+ #define MCP25XXFD_CAN_FLTOBJ_SID_MASK GENMASK(10, 0)
+ 
+ #define MCP25XXFD_CAN_FLTMASK(x) (0x1f4 + 8 * (x))
+-- 
+2.17.1
