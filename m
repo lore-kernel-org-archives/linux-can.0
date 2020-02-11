@@ -1,70 +1,54 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: mcp25xxfd: minor register definition fixes
-Date: Tue, 11 Feb 2020 13:46:33 +0100
-Message-ID: <a931e996-cb91-7672-5add-2b705b2d79c2@pengutronix.de>
-References: <20200211120446.1390-1-thomas.kopp@microchip.com>
+Subject: mcp25xxfd: missing cerrif
+Date: Tue, 11 Feb 2020 13:53:56 +0100
+Message-ID: <a933c5be-c95f-36d5-57ce-c312fbaa81db@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:43761 "EHLO
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:58683 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728066AbgBKMqg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 11 Feb 2020 07:46:36 -0500
-In-Reply-To: <20200211120446.1390-1-thomas.kopp@microchip.com>
-Content-Language: en-GB
+        with ESMTP id S1727723AbgBKMx7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 11 Feb 2020 07:53:59 -0500
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Thomas Kopp <thomas.kopp@microchip.com>, linux-can@vger.kernel.org
+To: Thomas Kopp <thomas.kopp@microchip.com>, linux-can <linux-can@vger.kernel.org>
 
-On 2/11/20 1:04 PM, Thomas Kopp wrote:
-> I started testing your driver
+Hello Thomas,
 
-yeay!
+according to the mcp2518fd datasheet:
 
-> at 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/drivers/net/can/spi/mcp25xxfd?h=v5.4/mcp25xxfd
+> 10.5.3 CAN BUS ERROR INTERRUPT - CERRIF
+>
+> The CiTREC register will count the errors during transmit and receive
+> according to the ISO 11898-1:2015. The CERRIF flag will be set based
+> on the error counter values. The flag must be cleared by the
+> application.
+> 
+> CERRIF will be set each time a threshold in the TEC/REC counter is
+> crossed by the following conditions:
+>
+> - TEC or REC exceeds the Error Warning state threshold
+> - The transmitter or receiver transitions to Error Passive state
+> - The transmitter transitions to Bus Off state
+> - The transmitter or receiver transitions from Error Passive to Error
+>   Active state
 
-For testing use the lastest 5.4/mcp25xxfd-YYYYMMDD-X, they will not be
-rebased.
+I don't see this interrupt, neither on the mcp2517fd nor on the
+mcp2518fd rev0.0.
 
-> and noticed two small things in the register definitions.
+> - The module transitions from Bus Off to Error Active state, after
+>   the bus off recovery sequence
+>
+> When the user clears CERRIF, it will remain clear until a new counter
+> crossing occurs.
 
-tnx, applied
+The workaround in the driver is next to trivial and doesn't cause much
+overhead, but can you try to confirm the error and try to get it fixed
+in the next chip revision?
 
-> Overall TX seems to be working fine - one thing I noticed when
-> testing with cangen can0 -b -g 0 and another external node
-                           ^^
-
-I've not tested CAN-FD, yet.
-
-> periodically sending frames on the bus (with 2ms gaps) I'm eventually
-> getting stuffing errors from which the driver never really recovers.
-
-Con you describe the complete setup?
-- which mcp25xxfd?
-- exact "ip" command line to configure the mcp
-- exact command line on the mcp
-- which controller on the other side
-- command line on the other side to generate frames
-
-> As soon as the external node then stops sending messages, the
-> MCP2518FD node stops sending as well and gets unresponsive (ssh isn't
-> possible anymore etc.).
-
-Do you see anything in the kernel logs?
-
-> When resuming the external CAN traffic the node becomes responsive
-> again. The driver was compiled with Additional Debugging output and
-> Logging enabled. Ifconfig doesn't show any RX/TX errors and shows
-> plausible numbers for packets transmitted/received. Am I chasing
-> ghosts here or have you encountered similar behaviour?
-
-With two mcp2518fd on the same machine connected to each other, CAN-2.0
-mode, but no third station and a specific test I see errors as well. The
-controller finally not sending anymore, however the system keeps
-responsive. I've to debug this further.
-
+regards,
 Marc
 
 -- 
