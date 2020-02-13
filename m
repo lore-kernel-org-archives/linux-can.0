@@ -1,110 +1,48 @@
-From: =?iso-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
-Subject: FW: [PATCH] can/peak_canfd: fix echo management when loopback is on
-Date: Thu, 13 Feb 2020 15:42:22 +0000
-Message-ID: <DB6PR03MB3093B69C542061D1AE7DE745D61A0@DB6PR03MB3093.eurprd03.prod.outlook.com>
-References: <20200204153357.25424-1-s.grosjean@peak-system.com>
+From: Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH 0/8] can: flexcan: add CAN FD support for NXP Flexcan
+Date: Thu, 13 Feb 2020 20:20:27 +0100
+Message-ID: <20200213192027.4813-1-michael@walle.cc>
+References: <24eb5c67-4692-1002-2468-4ae2e1a6b68b@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-am6eur05on2057.outbound.protection.outlook.com ([40.107.22.57]:8952
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729821AbgBMPm1 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 13 Feb 2020 10:42:27 -0500
-In-Reply-To: <20200204153357.25424-1-s.grosjean@peak-system.com>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: linux-can Mailing List <linux-can@vger.kernel.org>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <24eb5c67-4692-1002-2468-4ae2e1a6b68b@pengutronix.de>
+Sender: netdev-owner@vger.kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Joakim Zhang <qiangqing.zhang@nxp.com>, wg@grandegger.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, Pankaj Bansal <pankaj.bansal@nxp.com>, Michael Walle <michael@walle.cc>
+List-Id: linux-can.vger.kernel.org
 
-Hello,
+Hi,
 
-AFAIK I have no news about that patch...
+>>> Are you prepared to add back these patches as they are necessary for
+>>> Flexcan CAN FD? And this Flexcan CAN FD patch set is based on these
+>>> patches.
+>>
+>> Yes, these patches will be added back.
+>
+>I've cleaned up the first patch a bit, and pushed everything to the
+>testing branch. Can you give it a test.
 
-Best regards,
+What happend to that branch? FWIW I've just tried the patches on a custom
+board with a LS1028A SoC. Both CAN and CAN-FD are working. I've tested
+against a Peaktech USB CAN adapter. I'd love to see these patches upstream,
+because our board also offers CAN and basic support for it just made it
+upstream [1].
 
-- St=E9phane
+If these patches are upstream, only the device tree nodes seems to be
+missing. I don't know what has happened to [2]. But the patch doesn't seem
+to be necessary.
 
-> -----Original Message-----
-> From: Stephane Grosjean <s.grosjean@peak-system.com>
-> Sent: mardi 4 f=E9vrier 2020 16:34
-> To: linux-can Mailing List <linux-can@vger.kernel.org>
-> Cc: St=E9phane Grosjean <s.grosjean@peak-system.com>
-> Subject: [PATCH] can/peak_canfd: fix echo management when loopback is
-> on
->
-> Echo management is driven by PUCAN_MSG_LOOPED_BACK bit, while
-> loopback frames are identified with PUCAN_MSG_SELF_RECEIVE bit. Those
-> bits are set for each outgoing frame written to the IP core so that a cop=
-y of
-> each one will be placed into the rx path. Thus,
->
-> - when PUCAN_MSG_LOOPED_BACK is set then the rx frame is an echo of a
->   previously sent frame,
-> - when PUCAN_MSG_LOOPED_BACK+PUCAN_MSG_SELF_RECEIVE are set,
-> then the rx
->   frame is an echo AND a loopback frame. Therefore, this frame must be
->   put into the socket rx path too.
->
-> This patch fixes how CAN frames are handled when these are sent while the
-> CAN interface is configured in "loopback on" mode.
->
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-> ---
->  drivers/net/can/peak_canfd/peak_canfd.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/can/peak_canfd/peak_canfd.c
-> b/drivers/net/can/peak_canfd/peak_canfd.c
-> index 10aa3e457c33..40c33b8a5fda 100644
-> --- a/drivers/net/can/peak_canfd/peak_canfd.c
-> +++ b/drivers/net/can/peak_canfd/peak_canfd.c
-> @@ -262,8 +262,7 @@ static int pucan_handle_can_rx(struct
-> peak_canfd_priv *priv,
->                 cf_len =3D get_can_dlc(pucan_msg_get_dlc(msg));
->
->         /* if this frame is an echo, */
-> -       if ((rx_msg_flags & PUCAN_MSG_LOOPED_BACK) &&
-> -           !(rx_msg_flags & PUCAN_MSG_SELF_RECEIVE)) {
-> +       if (rx_msg_flags & PUCAN_MSG_LOOPED_BACK) {
->                 unsigned long flags;
->
->                 spin_lock_irqsave(&priv->echo_lock, flags); @@ -277,7 +27=
-6,13 @@
-> static int pucan_handle_can_rx(struct peak_canfd_priv *priv,
->                 netif_wake_queue(priv->ndev);
->
->                 spin_unlock_irqrestore(&priv->echo_lock, flags);
-> -               return 0;
-> +
-> +               /* if this frame is only an echo, stop here. Otherwise,
-> +                * continue to push this application self-received frame =
-into
-> +                * its own rx queue.
-> +                */
-> +               if (!(rx_msg_flags & PUCAN_MSG_SELF_RECEIVE))
-> +                       return 0;
->         }
->
->         /* otherwise, it should be pushed into rx fifo */
-> --
-> 2.20.1
->
->
-> --
-> PEAK-System Technik GmbH
-> Sitz der Gesellschaft Darmstadt - HRB 9183
-> Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm Unsere
-> Datenschutzerklaerung mit wichtigen Hinweisen zur Behandlung
-> personenbezogener Daten finden Sie unter www.peak-
-> system.com/Datenschutz.483.0.html
+Pankaj already send a patch to add the device node to the LS1028A [3].
+Thats basically the same I've used, only that mine didn't had the
+"fsl,ls1028ar1-flexcan" compatiblity string, but only the
+"lx2160ar1-flexcan" which is the correct way to use it, right?
 
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt - HRB 9183
-Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
-Unsere Datenschutzerklaerung mit wichtigen Hinweisen
-zur Behandlung personenbezogener Daten finden Sie unter
-www.peak-system.com/Datenschutz.483.0.html
+Sorry for putting this all in one mail, but I've just subscribed to
+linux-can and there is no message archive on lore.kernel.org for it :/
+
+[1] https://lore.kernel.org/lkml/20200212073617.GA11096@dragon/
+[2] https://www.spinics.net/lists/linux-can/msg01584.html
+[3] https://www.spinics.net/lists/linux-can/msg01577.html
+
+-michael
