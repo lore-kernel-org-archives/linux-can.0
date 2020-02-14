@@ -1,122 +1,106 @@
-From: Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH 0/8] can: flexcan: add CAN FD support for NXP Flexcan
-Date: Fri, 14 Feb 2020 09:42:40 +0100
-Message-ID: <2322fb83486c678917957d9879e27e63@walle.cc>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH 0/8] can: flexcan: add CAN FD support for NXP Flexcan
+Date: Fri, 14 Feb 2020 09:18:23 +0000
+Message-ID: <DB7PR04MB46187A6B5A8EC3A1D73D69FFE6150@DB7PR04MB4618.eurprd04.prod.outlook.com>
 References: <24eb5c67-4692-1002-2468-4ae2e1a6b68b@pengutronix.de>
  <20200213192027.4813-1-michael@walle.cc>
  <DB7PR04MB461896B6CC3EDC7009BCD741E6150@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <2322fb83486c678917957d9879e27e63@walle.cc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <DB7PR04MB461896B6CC3EDC7009BCD741E6150@DB7PR04MB4618.eurprd04.prod.outlook.com>
+In-Reply-To: <2322fb83486c678917957d9879e27e63@walle.cc>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, Pankaj Bansal <pankaj.bansal@nxp.com>
+To: Michael Walle <michael@walle.cc>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "wg@grandegger.com" <wg@grandegger.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Pankaj Bansal <pankaj.bansal@nxp.com>
 List-Id: linux-can.vger.kernel.org
 
-Hi Joakim,
-
-Am 2020-02-14 02:55, schrieb Joakim Zhang:
-> Hi Michal,
-> 
->> -----Original Message-----
->> From: Michael Walle <michael@walle.cc>
->> Sent: 2020年2月14日 3:20
->> To: Marc Kleine-Budde <mkl@pengutronix.de>
->> Cc: Joakim Zhang <qiangqing.zhang@nxp.com>; wg@grandegger.com;
->> netdev@vger.kernel.org; linux-can@vger.kernel.org; Pankaj Bansal
->> <pankaj.bansal@nxp.com>; Michael Walle <michael@walle.cc>
->> Subject: Re: [PATCH 0/8] can: flexcan: add CAN FD support for NXP 
->> Flexcan
->> 
->> Hi,
->> 
->> >>> Are you prepared to add back these patches as they are necessary for
->> >>> Flexcan CAN FD? And this Flexcan CAN FD patch set is based on these
->> >>> patches.
->> >>
->> >> Yes, these patches will be added back.
->> >
->> >I've cleaned up the first patch a bit, and pushed everything to the
->> >testing branch. Can you give it a test.
->> 
->> What happend to that branch? FWIW I've just tried the patches on a 
->> custom
->> board with a LS1028A SoC. Both CAN and CAN-FD are working. I've tested
->> against a Peaktech USB CAN adapter. I'd love to see these patches 
->> upstream,
->> because our board also offers CAN and basic support for it just made 
->> it
->> upstream [1].
-> The FlexCAN CAN FD related patches have stayed in
-> linux-can-next/flexcan branch for a long time, I still don't know why
-> Marc doesn't merge them into Linux mainline.
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/tree/?h=flexcan
-> Also must hope that this patch set can be upstreamed soon. :-)
-
-I've took them from this branch and applied them to the latest linux 
-master.
-
-Thus,
-
-Tested-by: Michael Walle <michael@walle.cc>
-
-
->> If these patches are upstream, only the device tree nodes seems to be 
->> missing.
->> I don't know what has happened to [2]. But the patch doesn't seem to 
->> be
->> necessary.
-> Yes, this patch is unnecessary. I have NACKed this patch for that,
-> according to FlexCAN Integrated Guide, CTRL1[CLKSRC]=0 select
-> oscillator clock and CTRL1[CLKSRC]=1 select peripheral clock.
-> But it is actually decided by SoC integration, for i.MX, the design is
-> different.
-
-ok thanks for clarifying.
-
-> I have not upstream i.MX FlexCAN device tree nodes, since it's
-> dependency have not upstreamed yet.
-> 
->> Pankaj already send a patch to add the device node to the LS1028A [3].
->> Thats basically the same I've used, only that mine didn't had the
->> "fsl,ls1028ar1-flexcan" compatiblity string, but only the 
->> "lx2160ar1-flexcan"
->> which is the correct way to use it, right?
-> You can see below table from FlexCAN driver, "fsl,lx2160ar1-flexcan"
-> supports CAN FD, you can use this compatible string.
-
-correct. I've already a patch that does exactly this ;) Who would take 
-the
-patch for adding the LS1028A can device tree nodes to ls1028a.dtsi? You 
-or
-Shawn Guo?
-
-> static const struct of_device_id flexcan_of_match[] = {
-> 	{ .compatible = "fsl,imx8qm-flexcan", .data = 
-> &fsl_imx8qm_devtype_data, },
-> 	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, 
-> },
-> 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, 
-> },
-> 	{ .compatible = "fsl,imx53-flexcan", .data = &fsl_imx25_devtype_data, 
-> },
-> 	{ .compatible = "fsl,imx35-flexcan", .data = &fsl_imx25_devtype_data, 
-> },
-> 	{ .compatible = "fsl,imx25-flexcan", .data = &fsl_imx25_devtype_data, 
-> },
-> 	{ .compatible = "fsl,p1010-flexcan", .data = &fsl_p1010_devtype_data, 
-> },
-> 	{ .compatible = "fsl,vf610-flexcan", .data = &fsl_vf610_devtype_data, 
-> },
-> 	{ .compatible = "fsl,ls1021ar2-flexcan", .data =
-> &fsl_ls1021a_r2_devtype_data, },
-> 	{ .compatible = "fsl,lx2160ar1-flexcan", .data =
-> &fsl_lx2160a_r1_devtype_data, },
-> 	{ /* sentinel */ },
-> };
-> 
-
--michael
+DQoNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2Fn
+ZS0tLS0tDQo+IEZyb206IE1pY2hhZWwgV2FsbGUgPG1pY2hhZWxAd2FsbGUuY2M+DQo+IFNlbnQ6
+IDIwMjDlubQy5pyIMTTml6UgMTY6NDMNCj4gVG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpo
+YW5nQG54cC5jb20+DQo+IENjOiBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRl
+Pjsgd2dAZ3JhbmRlZ2dlci5jb207DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWNh
+bkB2Z2VyLmtlcm5lbC5vcmc7IFBhbmthaiBCYW5zYWwNCj4gPHBhbmthai5iYW5zYWxAbnhwLmNv
+bT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCAwLzhdIGNhbjogZmxleGNhbjogYWRkIENBTiBGRCBz
+dXBwb3J0IGZvciBOWFAgRmxleGNhbg0KPiANCj4gSGkgSm9ha2ltLA0KPiANCj4gQW0gMjAyMC0w
+Mi0xNCAwMjo1NSwgc2NocmllYiBKb2FraW0gWmhhbmc6DQo+ID4gSGkgTWljaGFsLA0KPiA+DQo+
+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+IEZyb206IE1pY2hhZWwgV2FsbGUg
+PG1pY2hhZWxAd2FsbGUuY2M+DQo+ID4+IFNlbnQ6IDIwMjDlubQy5pyIMTTml6UgMzoyMA0KPiA+
+PiBUbzogTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT4NCj4gPj4gQ2M6IEpv
+YWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyB3Z0BncmFuZGVnZ2VyLmNvbTsN
+Cj4gPj4gbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsg
+UGFua2FqIEJhbnNhbA0KPiA+PiA8cGFua2FqLmJhbnNhbEBueHAuY29tPjsgTWljaGFlbCBXYWxs
+ZSA8bWljaGFlbEB3YWxsZS5jYz4NCj4gPj4gU3ViamVjdDogUmU6IFtQQVRDSCAwLzhdIGNhbjog
+ZmxleGNhbjogYWRkIENBTiBGRCBzdXBwb3J0IGZvciBOWFANCj4gPj4gRmxleGNhbg0KPiA+Pg0K
+PiA+PiBIaSwNCj4gPj4NCj4gPj4gPj4+IEFyZSB5b3UgcHJlcGFyZWQgdG8gYWRkIGJhY2sgdGhl
+c2UgcGF0Y2hlcyBhcyB0aGV5IGFyZSBuZWNlc3NhcnkNCj4gPj4gPj4+IGZvciBGbGV4Y2FuIENB
+TiBGRD8gQW5kIHRoaXMgRmxleGNhbiBDQU4gRkQgcGF0Y2ggc2V0IGlzIGJhc2VkIG9uDQo+ID4+
+ID4+PiB0aGVzZSBwYXRjaGVzLg0KPiA+PiA+Pg0KPiA+PiA+PiBZZXMsIHRoZXNlIHBhdGNoZXMg
+d2lsbCBiZSBhZGRlZCBiYWNrLg0KPiA+PiA+DQo+ID4+ID5JJ3ZlIGNsZWFuZWQgdXAgdGhlIGZp
+cnN0IHBhdGNoIGEgYml0LCBhbmQgcHVzaGVkIGV2ZXJ5dGhpbmcgdG8gdGhlDQo+ID4+ID50ZXN0
+aW5nIGJyYW5jaC4gQ2FuIHlvdSBnaXZlIGl0IGEgdGVzdC4NCj4gPj4NCj4gPj4gV2hhdCBoYXBw
+ZW5kIHRvIHRoYXQgYnJhbmNoPyBGV0lXIEkndmUganVzdCB0cmllZCB0aGUgcGF0Y2hlcyBvbiBh
+DQo+ID4+IGN1c3RvbSBib2FyZCB3aXRoIGEgTFMxMDI4QSBTb0MuIEJvdGggQ0FOIGFuZCBDQU4t
+RkQgYXJlIHdvcmtpbmcuDQo+ID4+IEkndmUgdGVzdGVkIGFnYWluc3QgYSBQZWFrdGVjaCBVU0Ig
+Q0FOIGFkYXB0ZXIuIEknZCBsb3ZlIHRvIHNlZSB0aGVzZQ0KPiA+PiBwYXRjaGVzIHVwc3RyZWFt
+LCBiZWNhdXNlIG91ciBib2FyZCBhbHNvIG9mZmVycyBDQU4gYW5kIGJhc2ljIHN1cHBvcnQNCj4g
+Pj4gZm9yIGl0IGp1c3QgbWFkZSBpdCB1cHN0cmVhbSBbMV0uDQo+ID4gVGhlIEZsZXhDQU4gQ0FO
+IEZEIHJlbGF0ZWQgcGF0Y2hlcyBoYXZlIHN0YXllZCBpbg0KPiA+IGxpbnV4LWNhbi1uZXh0L2Zs
+ZXhjYW4gYnJhbmNoIGZvciBhIGxvbmcgdGltZSwgSSBzdGlsbCBkb24ndCBrbm93IHdoeQ0KPiA+
+IE1hcmMgZG9lc24ndCBtZXJnZSB0aGVtIGludG8gTGludXggbWFpbmxpbmUuDQo+ID4gaHR0cHM6
+Ly9ldXIwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHBzJTNBJTJG
+JTJGZ2l0Lg0KPiA+DQo+IGtlcm5lbC5vcmclMkZwdWIlMkZzY20lMkZsaW51eCUyRmtlcm5lbCUy
+RmdpdCUyRm1rbCUyRmxpbnV4LWNhbi1uZXh0LmcNCj4gPg0KPiBpdCUyRnRyZWUlMkYlM0ZoJTNE
+ZmxleGNhbiZhbXA7ZGF0YT0wMiU3QzAxJTdDcWlhbmdxaW5nLnpoYW5nJTQwbg0KPiB4cC5jbw0K
+PiA+DQo+IG0lN0M5NGRjYTQ0NzJhNTg0NDEwYjNiOTA4ZDdiMTI5ZGIyNyU3QzY4NmVhMWQzYmMy
+YjRjNmZhOTJjZDk5Yw0KPiA1YzMwMTYzDQo+ID4NCj4gNSU3QzAlN0MwJTdDNjM3MTcyNjY1NjQy
+MDc5MTkyJmFtcDtzZGF0YT03N3RHNlZ1UUNpJTJGWlhCS2IyMw0KPiA4JTJGZE5TVjMNCj4gPiBO
+VUlGck01WTBlOXlqMEozb3MlM0QmYW1wO3Jlc2VydmVkPTANCj4gPiBBbHNvIG11c3QgaG9wZSB0
+aGF0IHRoaXMgcGF0Y2ggc2V0IGNhbiBiZSB1cHN0cmVhbWVkIHNvb24uIDotKQ0KPiANCj4gSSd2
+ZSB0b29rIHRoZW0gZnJvbSB0aGlzIGJyYW5jaCBhbmQgYXBwbGllZCB0aGVtIHRvIHRoZSBsYXRl
+c3QgbGludXggbWFzdGVyLg0KPiANCj4gVGh1cywNCj4gDQo+IFRlc3RlZC1ieTogTWljaGFlbCBX
+YWxsZSA8bWljaGFlbEB3YWxsZS5jYz4NCj4gDQo+IA0KPiA+PiBJZiB0aGVzZSBwYXRjaGVzIGFy
+ZSB1cHN0cmVhbSwgb25seSB0aGUgZGV2aWNlIHRyZWUgbm9kZXMgc2VlbXMgdG8gYmUNCj4gPj4g
+bWlzc2luZy4NCj4gPj4gSSBkb24ndCBrbm93IHdoYXQgaGFzIGhhcHBlbmVkIHRvIFsyXS4gQnV0
+IHRoZSBwYXRjaCBkb2Vzbid0IHNlZW0gdG8NCj4gPj4gYmUgbmVjZXNzYXJ5Lg0KPiA+IFllcywg
+dGhpcyBwYXRjaCBpcyB1bm5lY2Vzc2FyeS4gSSBoYXZlIE5BQ0tlZCB0aGlzIHBhdGNoIGZvciB0
+aGF0LA0KPiA+IGFjY29yZGluZyB0byBGbGV4Q0FOIEludGVncmF0ZWQgR3VpZGUsIENUUkwxW0NM
+S1NSQ109MCBzZWxlY3QNCj4gPiBvc2NpbGxhdG9yIGNsb2NrIGFuZCBDVFJMMVtDTEtTUkNdPTEg
+c2VsZWN0IHBlcmlwaGVyYWwgY2xvY2suDQo+ID4gQnV0IGl0IGlzIGFjdHVhbGx5IGRlY2lkZWQg
+YnkgU29DIGludGVncmF0aW9uLCBmb3IgaS5NWCwgdGhlIGRlc2lnbiBpcw0KPiA+IGRpZmZlcmVu
+dC4NCj4gDQo+IG9rIHRoYW5rcyBmb3IgY2xhcmlmeWluZy4NCj4gDQo+ID4gSSBoYXZlIG5vdCB1
+cHN0cmVhbSBpLk1YIEZsZXhDQU4gZGV2aWNlIHRyZWUgbm9kZXMsIHNpbmNlIGl0J3MNCj4gPiBk
+ZXBlbmRlbmN5IGhhdmUgbm90IHVwc3RyZWFtZWQgeWV0Lg0KPiA+DQo+ID4+IFBhbmthaiBhbHJl
+YWR5IHNlbmQgYSBwYXRjaCB0byBhZGQgdGhlIGRldmljZSBub2RlIHRvIHRoZSBMUzEwMjhBIFsz
+XS4NCj4gPj4gVGhhdHMgYmFzaWNhbGx5IHRoZSBzYW1lIEkndmUgdXNlZCwgb25seSB0aGF0IG1p
+bmUgZGlkbid0IGhhZCB0aGUNCj4gPj4gImZzbCxsczEwMjhhcjEtZmxleGNhbiIgY29tcGF0aWJs
+aXR5IHN0cmluZywgYnV0IG9ubHkgdGhlDQo+ID4+ICJseDIxNjBhcjEtZmxleGNhbiINCj4gPj4g
+d2hpY2ggaXMgdGhlIGNvcnJlY3Qgd2F5IHRvIHVzZSBpdCwgcmlnaHQ/DQo+ID4gWW91IGNhbiBz
+ZWUgYmVsb3cgdGFibGUgZnJvbSBGbGV4Q0FOIGRyaXZlciwgImZzbCxseDIxNjBhcjEtZmxleGNh
+biINCj4gPiBzdXBwb3J0cyBDQU4gRkQsIHlvdSBjYW4gdXNlIHRoaXMgY29tcGF0aWJsZSBzdHJp
+bmcuDQo+IA0KPiBjb3JyZWN0LiBJJ3ZlIGFscmVhZHkgYSBwYXRjaCB0aGF0IGRvZXMgZXhhY3Rs
+eSB0aGlzIDspIFdobyB3b3VsZCB0YWtlIHRoZSBwYXRjaA0KPiBmb3IgYWRkaW5nIHRoZSBMUzEw
+MjhBIGNhbiBkZXZpY2UgdHJlZSBub2RlcyB0byBsczEwMjhhLmR0c2k/IFlvdSBvciBTaGF3bg0K
+PiBHdW8/DQpTb3JyeSwgSSBtaXNzZWQgdGhlIGxpbmtbM10sIHdlIHVzdWFsbHkgd3JpdGUgaXQg
+dGhpcyB3YXk6DQoJCQljb21wYXRpYmxlID0gImZzbCxsczEwMjhhcjEtZmxleGNhbiIsImZzbCxs
+eDIxNjBhcjEtZmxleGNhbiI7DQpQbGVhc2Ugc2VuZCBwYXRjaCB0byBTaGF3biBHdW8sIGhlIHdp
+bGwgcmV2aWV3IHRoZSBkZXZpY2UgdHJlZS4NCg0KPiA+IHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2Zf
+ZGV2aWNlX2lkIGZsZXhjYW5fb2ZfbWF0Y2hbXSA9IHsNCj4gPiAJeyAuY29tcGF0aWJsZSA9ICJm
+c2wsaW14OHFtLWZsZXhjYW4iLCAuZGF0YSA9DQo+ID4gJmZzbF9pbXg4cW1fZGV2dHlwZV9kYXRh
+LCB9LA0KPiA+IAl7IC5jb21wYXRpYmxlID0gImZzbCxpbXg2cS1mbGV4Y2FuIiwgLmRhdGEgPSAm
+ZnNsX2lteDZxX2RldnR5cGVfZGF0YSwNCj4gPiB9LA0KPiA+IAl7IC5jb21wYXRpYmxlID0gImZz
+bCxpbXgyOC1mbGV4Y2FuIiwgLmRhdGEgPSAmZnNsX2lteDI4X2RldnR5cGVfZGF0YSwNCj4gPiB9
+LA0KPiA+IAl7IC5jb21wYXRpYmxlID0gImZzbCxpbXg1My1mbGV4Y2FuIiwgLmRhdGEgPSAmZnNs
+X2lteDI1X2RldnR5cGVfZGF0YSwNCj4gPiB9LA0KPiA+IAl7IC5jb21wYXRpYmxlID0gImZzbCxp
+bXgzNS1mbGV4Y2FuIiwgLmRhdGEgPSAmZnNsX2lteDI1X2RldnR5cGVfZGF0YSwNCj4gPiB9LA0K
+PiA+IAl7IC5jb21wYXRpYmxlID0gImZzbCxpbXgyNS1mbGV4Y2FuIiwgLmRhdGEgPSAmZnNsX2lt
+eDI1X2RldnR5cGVfZGF0YSwNCj4gPiB9LA0KPiA+IAl7IC5jb21wYXRpYmxlID0gImZzbCxwMTAx
+MC1mbGV4Y2FuIiwgLmRhdGEgPSAmZnNsX3AxMDEwX2RldnR5cGVfZGF0YSwNCj4gPiB9LA0KPiA+
+IAl7IC5jb21wYXRpYmxlID0gImZzbCx2ZjYxMC1mbGV4Y2FuIiwgLmRhdGEgPSAmZnNsX3ZmNjEw
+X2RldnR5cGVfZGF0YSwNCj4gPiB9LA0KPiA+IAl7IC5jb21wYXRpYmxlID0gImZzbCxsczEwMjFh
+cjItZmxleGNhbiIsIC5kYXRhID0NCj4gPiAmZnNsX2xzMTAyMWFfcjJfZGV2dHlwZV9kYXRhLCB9
+LA0KPiA+IAl7IC5jb21wYXRpYmxlID0gImZzbCxseDIxNjBhcjEtZmxleGNhbiIsIC5kYXRhID0N
+Cj4gPiAmZnNsX2x4MjE2MGFfcjFfZGV2dHlwZV9kYXRhLCB9LA0KPiA+IAl7IC8qIHNlbnRpbmVs
+ICovIH0sDQo+ID4gfTsNCj4gPg0KPiANCj4gLW1pY2hhZWwNCg==
