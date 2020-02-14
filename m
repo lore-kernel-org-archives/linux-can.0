@@ -1,37 +1,35 @@
 From: Michael Walle <michael@walle.cc>
 Subject: Re: [PATCH 0/8] can: flexcan: add CAN FD support for NXP Flexcan
-Date: Fri, 14 Feb 2020 11:02:46 +0100
-Message-ID: <78789949f2a9dc532ec461768fbd3a60@walle.cc>
+Date: Fri, 14 Feb 2020 11:18:14 +0100
+Message-ID: <66d741b8d01f6d2cc2473172a6d550c2@walle.cc>
 References: <24eb5c67-4692-1002-2468-4ae2e1a6b68b@pengutronix.de>
  <20200213192027.4813-1-michael@walle.cc>
  <DB7PR04MB461896B6CC3EDC7009BCD741E6150@DB7PR04MB4618.eurprd04.prod.outlook.com>
  <2322fb83486c678917957d9879e27e63@walle.cc>
  <DB7PR04MB46187A6B5A8EC3A1D73D69FFE6150@DB7PR04MB4618.eurprd04.prod.outlook.com>
  <bf671072ce479049eb354d44f3617383@walle.cc>
- <DB7PR04MB46183F74C137B644A229B632E6150@DB7PR04MB4618.eurprd04.prod.outlook.com>
+ <VI1PR0401MB2496CE72BC7FB91AD2C2685CF1150@VI1PR0401MB2496.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8;
  format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from ssl.serverraum.org ([176.9.125.105]:38001 "EHLO
+Received: from ssl.serverraum.org ([176.9.125.105]:39693 "EHLO
         ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387415AbgBNKCt (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Feb 2020 05:02:49 -0500
-In-Reply-To: <DB7PR04MB46183F74C137B644A229B632E6150@DB7PR04MB4618.eurprd04.prod.outlook.com>
+        with ESMTP id S1728807AbgBNKSR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Feb 2020 05:18:17 -0500
+In-Reply-To: <VI1PR0401MB2496CE72BC7FB91AD2C2685CF1150@VI1PR0401MB2496.eurprd04.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, Pankaj Bansal <pankaj.bansal@nxp.com>
+To: Pankaj Bansal <pankaj.bansal@nxp.com>
+Cc: Joakim Zhang <qiangqing.zhang@nxp.com>, Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com, netdev@vger.kernel.org, linux-can@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>
 
-
-Hi Joakim, Hi Shawn,
-
-
-Am 2020-02-14 10:56, schrieb Joakim Zhang:
+Am 2020-02-14 11:01, schrieb Pankaj Bansal:
+> Hi Michael,
+> 
 >> -----Original Message-----
 >> From: Michael Walle <michael@walle.cc>
->> Sent: 2020年2月14日 17:33
+>> Sent: Friday, February 14, 2020 3:03 PM
 >> To: Joakim Zhang <qiangqing.zhang@nxp.com>
 >> Cc: Marc Kleine-Budde <mkl@pengutronix.de>; wg@grandegger.com;
 >> netdev@vger.kernel.org; linux-can@vger.kernel.org; Pankaj Bansal
@@ -89,8 +87,8 @@ Am 2020-02-14 10:56, schrieb Joakim Zhang:
 >> >> > why Marc doesn't merge them into Linux mainline.
 >> >> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.
 >> >> >
->> >>
->> kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fmkl%2Flinux-can-next.
+>> >> kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fmkl%2Flinux-can-
+>> next.
 >> >> g
 >> >> >
 >> >>
@@ -101,8 +99,7 @@ Am 2020-02-14 10:56, schrieb Joakim Zhang:
 >> m%7C94dca4472a584410b3b908d7b129db27%7C686ea1d3bc2b4c6fa92cd99c
 >> >> 5c30163
 >> >> >
->> >>
->> 5%7C0%7C0%7C637172665642079192&amp;sdata=77tG6VuQCi%2FZXBKb23
+>> >> 5%7C0%7C0%7C637172665642079192&amp;sdata=77tG6VuQCi%2FZXBKb23
 >> >> 8%2FdNSV3
 >> >> > NUIFrM5Y0e9yj0J3os%3D&amp;reserved=0
 >> >> > Also must hope that this patch set can be upstreamed soon. :-)
@@ -142,13 +139,15 @@ Am 2020-02-14 10:56, schrieb Joakim Zhang:
 >> >> take the patch for adding the LS1028A can device tree nodes to
 >> >> ls1028a.dtsi? You or Shawn Guo?
 >> > Sorry, I missed the link[3], we usually write it this way:
->> > 			compatible = "fsl,ls1028ar1-flexcan","fsl,lx2160ar1-flexcan";
+>> > 			compatible = "fsl,ls1028ar1-flexcan","fsl,lx2160ar1-
+>> flexcan";
 >> > Please send patch to Shawn Guo, he will review the device tree.
 >> 
->> As far as I know, there should be no undocumented binding. Eg. the
->> ls1028ar1-flexcan is neither in the source nor in the device tree 
->> binding
->> documentation, thus wouldn't be accepted.
+>> As far as I know, there should be no undocumented binding. Eg. the 
+>> ls1028ar1-
+>> flexcan is neither in the source nor in the device tree binding 
+>> documentation,
+>> thus wouldn't be accepted.
 >> 
 >> Thus either there should be another ls1028ar1-flexcan in the 
 >> flexcan_of_match
@@ -156,35 +155,25 @@ Am 2020-02-14 10:56, schrieb Joakim Zhang:
 >> only
 >> contain fsl,lx2160ar1-flexcan. Is there any advantage of the first 
 >> option?
-> From the FlexCAN
-> binding(Documentation/devicetree/bindings/net/can/fsl-flexcan.txt)
-> - compatible : Should be "fsl,<processor>-flexcan"
+>> 
 > 
->   An implementation should also claim any of the following compatibles
->   that it is fully backwards compatible with:
-> 
->   - fsl,p1010-flexcan
-> 
-> You also can check imx6ul.dtsi imx7s.dtsi etc.
-> 
-> Sorry :-(, I also don't know the advantage, it's just that we're used
-> to writing it that way. You can check nodes of other devices.
-> It's unnecessary to add compatible string for each SoCs since they may
-> share the same IP. And dts had batter have a SoC specific compatible
-> string. It's just my understanding.
+> This is done to ensure that device tree bindings are stable.
+> See this talk for more information for stable device tree ABI:
 
-Ah thanks. So Pankaj's patch [1] seems to be correct (at least according
-to the description in the device tree documentation).
-
-Shawn, whats your opinion?
+Thanks, yes that makes sense, actually I'd have done it the same way. I 
+was
+just wondering about the "it has to be documented"; as Joakim pointed 
+out, thats
+easy here, because there is the template here, eg. 
+"fsl,<processor>-flexcan".
 
 -michael
 
-[1] https://www.spinics.net/lists/linux-can/msg01577.html
-
 > 
-> Joakim
+> https://elinux.org/images/0/0e/OSELAS.Presentation-ELCE2017-DT.pdf
+> https://www.youtube.com/watch?v=6iguKSJJfxo
 > 
+>> 
 >> -michael
 >> 
 >> 
