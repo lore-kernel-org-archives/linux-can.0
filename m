@@ -1,76 +1,36 @@
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Re: [BUG] pfifo_fast may cause out-of-order CAN frame transmission
-Date: Fri, 14 Feb 2020 17:03:27 +0100
-Message-ID: <c9cf9605-a20f-f3cf-b1a5-75ad42f5a886@pengutronix.de>
-References: <661cc33a-5f65-2769-cc1a-65791cb4b131@pengutronix.de>
- <7717e4470f6881bbc92645c72ad7f6ec71360796.camel@redhat.com>
- <779d3346-0344-9064-15d5-4d565647a556@pengutronix.de>
- <1b70f56b72943bf5dfd2813565373e8c1b639c31.camel@redhat.com>
- <53ce1ab4-3346-2367-8aa5-85a89f6897ec@pengutronix.de>
- <57a2352dfc442ea2aa9cd653f8e09db277bf67c7.camel@redhat.com>
- <b012e914-fc1a-5a45-f28b-e9d4d4dfc0fe@pengutronix.de>
- <ef6b4e00-75fe-70f6-6b57-7bdbaa1aac33@pengutronix.de>
- <13e8950e8537e549f6afb6e254ec75a7462ce648.camel@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <13e8950e8537e549f6afb6e254ec75a7462ce648.camel@redhat.com>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, Pengutronix Kernel Team <kernel@pengutronix.de>
-List-Id: linux-can.vger.kernel.org
+From: Chris Morgan <chmorgan@gmail.com>
+Subject: canfd through slcan via SocketCAN
+Date: Sun, 16 Feb 2020 08:43:22 -0500
+Message-ID: <B1BB0B55-5478-4C06-AAC2-B27AB986755B@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-qk1-f178.google.com ([209.85.222.178]:38742 "EHLO
+        mail-qk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgBPNnZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 16 Feb 2020 08:43:25 -0500
+Received: by mail-qk1-f178.google.com with SMTP id z19so13758928qkj.5
+        for <linux-can@vger.kernel.org>; Sun, 16 Feb 2020 05:43:25 -0800 (PST)
+Received: from ?IPv6:2601:18c:600:dc42:7d5e:e4de:7ed8:d90b? ([2601:18c:600:dc42:7d5e:e4de:7ed8:d90b])
+        by smtp.gmail.com with ESMTPSA id a2sm4884280qka.75.2020.02.16.05.43.23
+        for <linux-can@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 16 Feb 2020 05:43:23 -0800 (PST)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-Hello Paolo,
+Hello.
 
-On 2/6/20 2:21 PM, Paolo Abeni wrote:
-> On Tue, 2020-02-04 at 17:25 +0100, Ahmad Fatoum wrote:
->> Hello Paolo,
->>
->> On 1/20/20 5:06 PM, Ahmad Fatoum wrote:
->>> Hello Paolo,
->>>
->>> On 1/16/20 1:40 PM, Paolo Abeni wrote:
->>>> I'm sorry for this trial & error experience. I tried to reproduce the
->>>> issue on top of the vcan virtual device, but it looks like it requires
->>>> the timing imposed by a real device, and it's missing here (TL;DR: I
->>>> can't reproduce the issue locally).
->>>
->>> No worries. I don't mind testing.
->>>
->>>> Code wise, the 2nd patch closed a possible race, but it dumbly re-
->>>> opened the one addressed by the first attempt - the 'empty' field must
->>>> be cleared prior to the trylock operation, or we may end-up with such
->>>> field set and the queue not empty.
->>>>
->>>> So, could you please try the following code?
->>>
->>> Unfortunately, I still see observe reodering.
->>
->> Any news?
-> 
-> I'm unable to find any better solution than a revert. That will cost
-> some small performace regression, so I'm a bit reluctant to go ahead.
-> If there is agreement I can post the revert.
+I=E2=80=99m looking at options to add canfd support to embedded =
+processors via serial using slcan. I=E2=80=99d like the devices to be =
+available via socketcan. Looking at the slcan driver it looks like the =
+MTU is something around 30 bytes and there isn=E2=80=99t any mention of =
+canfd in the driver or in the userspace utilities. Am I missing =
+something with this support? If slcan doesn=E2=80=99t support canfd yet =
+is anyone working to add any?
 
-Could you draft the revert?
-d518d2ed864 ("net/sched: fix race between deactivation and dequeue for NOLOCK qdisc")
-looks applicable even with the revert, so I don't want to inadvertently cause
-a regression by wrongly reverting.
-
-Cheers
-Ahmad
-
-
-> 
-> Cheers,
-> 
-> Paolo
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Regards,
+Chris
