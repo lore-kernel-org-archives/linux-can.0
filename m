@@ -1,81 +1,37 @@
-From: <Thomas.Kopp@microchip.com>
-Subject: RE: mcp25xxfd: missing cerrif
-Date: Tue, 18 Feb 2020 11:44:49 +0000
-Message-ID: <MN2PR11MB3645382ACDDB3CF132B92E25FB110@MN2PR11MB3645.namprd11.prod.outlook.com>
-References: <a933c5be-c95f-36d5-57ce-c312fbaa81db@pengutronix.de>
- <MN2PR11MB36450B9C2BE91F6CBA897002FB180@MN2PR11MB3645.namprd11.prod.outlook.com>
- <532b4fed-a984-0875-d933-43c6a90fcc1a@pengutronix.de>
- <MN2PR11MB36458E1696285A0196B6E46FFB1B0@MN2PR11MB3645.namprd11.prod.outlook.com>
- <a049ea8b-a3e2-ea39-d084-bd12b637cb9c@pengutronix.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v4 1/2] dt-bindinsg: net: can: Convert can-transceiver to
+ json-schema
+Date: Tue, 18 Feb 2020 15:11:23 -0600
+Message-ID: <20200218211123.GA11668@bogus>
+References: <20200207100306.20997-1-benjamin.gaignard@st.com>
+ <20200207100306.20997-2-benjamin.gaignard@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:35666 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgBRLox (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Feb 2020 06:44:53 -0500
-In-Reply-To: <a049ea8b-a3e2-ea39-d084-bd12b637cb9c@pengutronix.de>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: mkl@pengutronix.de, linux-can@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20200207100306.20997-2-benjamin.gaignard@st.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com, sriram.dash@samsung.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Benjamin Gaignard <benjamin.gaignard@st.com>
+List-Id: linux-can.vger.kernel.org
 
-PiBIbW1tLiBJIHRoaW5rIHRoZSBxdWVzdGlvbiBpcywgaXMgdGhlcmUgYSBkZWRpY2F0ZWQgd2Fy
-bmluZyBzdGF0ZSBhbmQNCj4gaWYsIGhvdyBhcmUgdGhlIHRyYW5zaXRpb25zIGZyb20gYW5kIHRv
-IGl0Pw0KSSB0aGluayB0aGUgbWFpbiBjb25mdXNpb24gY29tZXMgZnJvbSB0aGUgZmFjdCB0aGF0
-IGVycm9yIHdhcm5pbmcgaXMgbm90IGEgc3RhdGUgYXMgZGVmaW5lZCBpbiB0aGUgSVNPLiBUaGUg
-SVNPIGRlZmluZXMgdGhyZWUgc3RhdGVzOiBlcnJvci1hY3RpdmUsIGVycm9yLXBhc3NpdmUgYW5k
-IGJ1cy1vZmYuDQpUaGUgZXJyb3Igd2FybmluZyBpcyBhbiBpbnRlcnJ1cHQgdGhhdCAobW9zdD8p
-IENBTiBJUHMgaXNzdWUgd2hlbiB0aGUgZXJyb3IgY291bnRlcnMgZXhjZWVkcyA5Ni4gQUZBSUsg
-dGhpcyBpcyBvbmx5IGEgY29udmVudGlvbiB0aG91Z2gsIG5vdCBhIHNwZWMgKEkga25vdyB0aGF0
-IEt2YXNlciBhbmQgdGhlIEJvc2NoIE1DQU4gaGFuZGxlIGl0IGxpa2UgdGhpcykuDQoNCj4gQUNL
-LiBUaGUgZG9jdW1lbnRhdGlvbiB0YWxrcyBhYm91dCBlcnJvciBwYXNzaXZlIHRvIGVycm9yIGFj
-dGl2ZSwgd2hpY2gNCj4gbWVhbnMgdGhlIGRpYWdyYW0gbG9va3MgbGlrZSB0aGlzOg0KTm90IHF1
-aXRlLCB0aGF0J3MgaG93IGl0IHNob3VsZCBsb29rIGxpa2U6DQogICAgICAgICAgICAgICAgICAg
-ICAtLSBFID4gOTUgLS0gICAgICAgICAtLSBFID4gMTI3IC0tICAgICAgICAgICAgICAgLS0gRSA+
-IDI1NSAtLQ0KICAgICAgICAgICAgICAgICAgICAgIC8gICAgICAgICAgICBcICAgICAgICAgIC8g
-ICAgICAgICAgICAgXCAgICAgICAgICAgICAgICAgICAgLyAgICAgICAgICAgICBcDQogICAgICAg
-ICAgICAgICAgICAgIC8gICAgICAgICAgICAgIFYgICAgICAgICAvICAgICAgICAgICAgICAgViAg
-ICAgICAgICAgICAgICAvICAgICAgICAgICAgICAgVg0KIC0tPiBlcnJvciBhY3RpdmUgIChlcnJv
-ciB3YXJuaW5nKSAgICAgIGVycm9yIHBhc3NpdmUgICAgYnVzIG9mZg0KICAgICAgICAgICBeICAg
-ICAgICAgICAgICAvICAgICAgICAgICAgICAgICAgICAgIF4gICAgICAgICAvDQogICAgICAgICAg
-ICBcICAgICAgICAgICAgLyAgICAgICAgICAgICAgICAgICAgICAgICBcICAgICAgIC8NCiAgICAg
-ICAgICAgICAtLSBFIDwgOTYgLS0gICAgICAgICAgICAgICAgICAgLS0gRSA8IDEyOCAtLQ0KDQpU
-aGUgZW51bSBpbiBuZXRsaW5rLmggbWl4ZXMgdGhlIGVycm9yIHN0YXRlcyBwbHVzIHNvbWUgb3Ro
-ZXIgc3RhdGVzLiBUbyBmdWxmaWxsIHRoZSBJU08gYW4gaW50ZXJydXB0IGZyb20gRXJyb3Igd2Fy
-bmluZyB0byBFcnJvciBhY3RpdmUgaXNuJ3QgcmVhbGx5IHVzZWZ1bC4gSSBzdXBwb3NlIHRoYXQn
-cyB3aHkgaXQncyBub3QgaW1wbGVtZW50ZWQgaW4gdGhlIE1DUDI1MThGRC4NCg0KZW51bSBjYW5f
-c3RhdGUgew0KCUNBTl9TVEFURV9FUlJPUl9BQ1RJVkUgPSAwLAkvKiBSWC9UWCBlcnJvciBjb3Vu
-dCA8IDk2ICovDQoJQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkcsCS8qIFJYL1RYIGVycm9yIGNvdW50
-IDwgMTI4ICovDQoJQ0FOX1NUQVRFX0VSUk9SX1BBU1NJVkUsCS8qIFJYL1RYIGVycm9yIGNvdW50
-IDwgMjU2ICovDQoJQ0FOX1NUQVRFX0JVU19PRkYsCQkvKiBSWC9UWCBlcnJvciBjb3VudCA+PSAy
-NTYgKi8NCglDQU5fU1RBVEVfU1RPUFBFRCwJCS8qIERldmljZSBpcyBzdG9wcGVkICovDQoJQ0FO
-X1NUQVRFX1NMRUVQSU5HLAkJLyogRGV2aWNlIGlzIHNsZWVwaW5nICovDQoJQ0FOX1NUQVRFX01B
-WA0KfTsNCg0KUXVpY2tseSBsb29raW5nIGF0IGRpZmZlcmVudCBDQU4gZHJpdmVycyBpbiB0aGUg
-a2VybmVsIEkgZG9uJ3QgcmVhbGx5IHNlZSBhIGNvbW1vbiBwYXR0ZXJuIGhvdyB0aGlzIGNvdW50
-ZXIgaXMgdXNlZC4NClRha2luZyB0aGUgTV9DQU4gZHJpdmVyIGFzIGFuIGV4YW1wbGUgKGRyaXZl
-cnMvbmV0L2Nhbi9tX2Nhbi9tX2Nhbi5jI0w2NzEpIEkgc2VlIHRoYXQgYSBzdGF0ZSBjaGFuZ2Ug
-ZnJvbSBlcnJvciBwYXNzaXZlIHRvIGVycm9yIGFjdGl2ZSAod2l0aCB0aGUgZXJyb3Igd2Fybmlu
-ZyBiaXQgYmVpbmcgc2V0KSBsZWFkcyB0byB0aGUgZXJyb3Igd2FybmluZyBjb3VudGVyIGJlaW5n
-IGluY3JlbWVudGVkIGFuZCB0aGUgc3RhdGUgYmVpbmcgdXBkYXRlZCB0byBDQU5fU1RBVEVfRVJS
-T1JfV0FSTklORy4NCkkgZGlkIG5vdCBmaW5kIGEgZG9jdW1lbnRhdGlvbiBvbiB3aGF0IHRoaXMg
-ZXJyb3IgY291bnRlciBpcyBzdXBwb3NlZCB0byBzaG93IC0gSSBzdXBwb3NlIEkgZGlkbid0IGxv
-b2sgaW4gdGhlIHJpZ2h0IHBsYWNlLiBCdXQgd2hpbGUgdGhlIG51bWJlciBvZiB0aW1lcyB0aGUg
-ZGV2aWNlIHdhcyBpbiBlcnJvciB3YXJuaW5nIHN0YXRlIGhhcyB0ZWNobmljYWxseSBnb25lIHVw
-IGJ5IG9uZSBJIHdvdWxkIGhhdmUgZXhwZWN0ZWQgdGhhdCB0aGlzIGNvdW50cyB0aGUgc3dpdGNo
-ZXMuIEFnYWluLCB0aGlzIGlzIG5vdCBiYXNlZCBvbiBkb2N1bWVudGF0aW9uIChJJ20gbm90IHJl
-YWxseSBmYW1pbGlhciB3aXRoIHRoZSBTb2NrZXRDQU4gc28gaXQncyBsaWtlbHkgSSBtaXNzZWQg
-c29tZXRoaW5nKSBidXQgcmF0aGVyIG9uIHdoYXQgSSB3b3VsZCBoYXZlIGV4cGVjdGVkIGludHVp
-dGl2ZWx5Lg0KDQpPbmUgbW9yZSB0aGluZyBJIG5vdGljZWQgaW4gdGhlIG1jYW4gZHJpdmVyIGlz
-IHRoYXQgdGhlcmUgZG9lc24ndCBzZWVtIHRvIGJlIGEgd2F5IHRvIGdvIGZyb20gZXJyb3Igd2Fy
-bmluZyB0byBlcnJvciBhY3RpdmUgd2l0aG91dCBpZmRvd24vaWZ1cC4gU28gdGhlIGRyaXZlciBy
-ZW1haW5zIGluIGluIGVycm9yIHdhcm5pbmcgc3RhdGUgZm9yIGEgc2lnbmlmaWNhbnQgdGltZS4N
-Cg0KQW5vdGhlciBleGFtcGxlIGluIHRoZSBrdmFzZXJfdXNiX2h5ZHJhLmM6DQogKiBLbm93biBp
-c3N1ZXM6DQogKiAgLSBUcmFuc2l0aW9uIGZyb20gQ0FOX1NUQVRFX0VSUk9SX1dBUk5JTkcgdG8g
-Q0FOX1NUQVRFX0VSUk9SX0FDVElWRSBpcyBvbmx5DQogKiAgICByZXBvcnRlZCBhZnRlciBhIGNh
-bGwgdG8gZG9fZ2V0X2JlcnJfY291bnRlcigpLCBzaW5jZSBmaXJtd2FyZSBkb2VzIG5vdA0KICog
-ICAgZGlzdGluZ3Vpc2ggYmV0d2VlbiBFUlJPUl9XQVJOSU5HIGFuZCBFUlJPUl9BQ1RJVkUuDQoN
-Cj4gSSB0aGluayB3ZSBoYXZlIHRvIGRpc2N1c3MgaG93IHRoZSBzdGF0ZSBkaWFncmFtIG9uIHNv
-Y2tldGNhbiBzaG91bGQNCj5sb29rIGxpa2UuDQoNCkkgYWdyZWUuIEhvdyB3b3VsZCB0aGF0IGRp
-c2N1c3Npb24gaGFwcGVuPw0KDQpCZXN0IFJlZ2FyZHMsDQpUaG9tYXMgDQoNCg==
+On Fri, 7 Feb 2020 11:03:05 +0100, Benjamin Gaignard wrote:
+> Convert can-transceiver property to json-schema
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+> ---
+> version 4:
+> - no change
+> 
+> version 3:
+> - only declare max-bitrate property in can-transceiver.yaml
+> 
+>  .../bindings/net/can/can-transceiver.txt           | 24 ----------------------
+>  .../bindings/net/can/can-transceiver.yaml          | 18 ++++++++++++++++
+>  2 files changed, 18 insertions(+), 24 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/can/can-transceiver.yaml
+> 
+
+Applied, thanks.
+
+Rob
