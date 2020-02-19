@@ -1,40 +1,39 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 2/2] dt-bindings: net: can: Convert M_CAN to
- json-schema
-Date: Tue, 18 Feb 2020 15:11:38 -0600
-Message-ID: <20200218211138.GA12217@bogus>
-References: <20200207100306.20997-1-benjamin.gaignard@st.com>
- <20200207100306.20997-3-benjamin.gaignard@st.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH linux-master 0/3] MCAN updates for clock discovery
+Date: Wed, 19 Feb 2020 07:07:19 -0600
+Message-ID: <a97ed7ef-e95a-af32-4d01-2ed7c2c08c20@ti.com>
+References: <20200131183433.11041-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:35925 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbgBRVLk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Feb 2020 16:11:40 -0500
-Content-Disposition: inline
-In-Reply-To: <20200207100306.20997-3-benjamin.gaignard@st.com>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-Cc: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com, sriram.dash@samsung.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Benjamin Gaignard <benjamin.gaignard@st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20200131183433.11041-1-dmurphy@ti.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
+Cc: davem@davemloft.net
+List-Id: linux-can.vger.kernel.org
 
-On Fri, 7 Feb 2020 11:03:06 +0100, Benjamin Gaignard wrote:
-> Convert M_CAN bindings to json-schema
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
-> ---
-> version 4:
-> - remove useless ref to can-transceiver.yaml
-> 
-> version 3:
-> - move can-transceive node into bosch,m_can.yaml bindings
->  .../devicetree/bindings/net/can/bosch,m_can.yaml   | 144 +++++++++++++++++++++
->  .../devicetree/bindings/net/can/m_can.txt          |  75 -----------
->  2 files changed, 144 insertions(+), 75 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/can/m_can.txt
-> 
+Bump
 
-Applied, thanks.
-
-Rob
+On 1/31/20 12:34 PM, Dan Murphy wrote:
+> Hello
+>
+> These are the initial fixes for issues found in and requested in
+> https://lore.kernel.org/patchwork/patch/1165091/
+>
+> For the clock discovery and initialization.
+>
+> Dan
+>
+> Dan Murphy (3):
+>    can: tcan4x5x: Move clock init to TCAN driver
+>    can: m_can_platform: Move clock discovery and init to platform
+>    can: m_can: Remove unused clock function from the framework
+>
+>   drivers/net/can/m_can/m_can.c          | 16 ------
+>   drivers/net/can/m_can/m_can.h          |  3 -
+>   drivers/net/can/m_can/m_can_platform.c | 37 +++++++++---
+>   drivers/net/can/m_can/tcan4x5x.c       | 78 +++++++++++++++++++-------
+>   4 files changed, 89 insertions(+), 45 deletions(-)
+>
