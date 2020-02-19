@@ -1,39 +1,26 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH linux-master 0/3] MCAN updates for clock discovery
-Date: Wed, 19 Feb 2020 07:07:19 -0600
-Message-ID: <a97ed7ef-e95a-af32-4d01-2ed7c2c08c20@ti.com>
-References: <20200131183433.11041-1-dmurphy@ti.com>
+From: "urs portmann" <mucios@imp.edu.mx>
+Subject: 19-02-2020
+Date: Wed, 19 Feb 2020 21:51:40 +1100
+Message-ID: <20200219105142.27589180635F4C__40628.454268311$1582119485$gmane$org@imp.edu.mx>
+Reply-To: onube@qq.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20200131183433.11041-1-dmurphy@ti.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
-Cc: davem@davemloft.net
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from scm.imp.edu.mx ([132.247.16.103]:21930 "EHLO scm.imp.edu.mx"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726723AbgBSNh6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 19 Feb 2020 08:37:58 -0500
+Content-Description: Mail message body
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Recipients <mucios@imp.edu.mx>
 
-Bump
+Guten Morgen,
+                                          19-02-2020
+Wir haben versucht, Sie zu erreichen und haben noch nichts von Ihnen gehört. Haben Sie unsere letzte E-Mail über Ihre S.p.e.n.d.e erhalten? Wenn nicht, melden Sie sich bitte bei uns, um weitere Informationen zu erhalten.
 
-On 1/31/20 12:34 PM, Dan Murphy wrote:
-> Hello
->
-> These are the initial fixes for issues found in and requested in
-> https://lore.kernel.org/patchwork/patch/1165091/
->
-> For the clock discovery and initialization.
->
-> Dan
->
-> Dan Murphy (3):
->    can: tcan4x5x: Move clock init to TCAN driver
->    can: m_can_platform: Move clock discovery and init to platform
->    can: m_can: Remove unused clock function from the framework
->
->   drivers/net/can/m_can/m_can.c          | 16 ------
->   drivers/net/can/m_can/m_can.h          |  3 -
->   drivers/net/can/m_can/m_can_platform.c | 37 +++++++++---
->   drivers/net/can/m_can/tcan4x5x.c       | 78 +++++++++++++++++++-------
->   4 files changed, 89 insertions(+), 45 deletions(-)
->
+Wir warten darauf, von Ihnen zu hören, sobald Sie diese Nachricht erhalten, die Sie bei der weiteren Vorgehensweise unterstützt.
+
+Mfg
+urs portmann
