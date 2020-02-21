@@ -1,42 +1,62 @@
-From: "Mrs. Susan S. Cage" <drgoodluckebelejonathan061@gmail.com>
-Subject: Attention:Beneficiary
-Date: Thu, 20 Feb 2020 02:00:19 -0800
-Message-ID: <CALjo5=9K_EbQ8srqiQniWjb1-pHoZ0-VEKLr+B_DR=ULeNgsDg__11633.5781452776$1582192827$gmane$org@mail.gmail.com>
-Reply-To: cagesusan199@gmail.com
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: Re: [PATCH v2 2/3] can: m_can: m_can_platform: Add support for
+ enabling transceiver
+Date: Fri, 21 Feb 2020 13:24:46 +0530
+Message-ID: <8885c00b-7b73-0448-7e9d-ecb19fe84adf@ti.com>
+References: <20200217142836.23702-1-faiz_abbas@ti.com>
+ <20200217142836.23702-3-faiz_abbas@ti.com>
+ <250f905a-33c3-dd17-15c9-e282299dd742@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:39792 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727034AbgBTKAU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 20 Feb 2020 05:00:20 -0500
-Received: by mail-pf1-f193.google.com with SMTP id 84so1677938pfy.6
-        for <linux-can@vger.kernel.org>; Thu, 20 Feb 2020 02:00:20 -0800 (PST)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org>
+In-Reply-To: <250f905a-33c3-dd17-15c9-e282299dd742@ti.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org
+To: Dan Murphy <dmurphy@ti.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
+Cc: mark.rutland@arm.com, catalin.marinas@arm.com, sriram.dash@samsung.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, mkl@pengutronix.de, wg@grandegger.com
+List-Id: linux-can.vger.kernel.org
 
--- 
-Dearest Friend,
-
-Sorry for invading your privacy, my name is Susan S. Cage I am 81
-years, citizen of United States and presently in hospital undergoing
-chromatography for bronchogenic carcinomas (Lung cancer) which
-affected both Lungs. The doctors said I have few days to live because
-the cancer has now affected my brain.
-
-My late husband left Fifteen Million, Five Hundred British Pounds
-Sterling in my account, I want to transfer the money to you and I want
-you to use it as a donate for charitable and help the needy,
-motherless, less privileged and widows within your location.
-
-I need your assurance that you will use the fund for charity, once I a
-favorable reply from you, will inform my Bank through my lawyer to
-transfer the fund to you as my Next of Kin and Sole Beneficiary. Once
-I receive your response, I will inform my bank in writing through my
-lawyer.
-
-
-
-Thank you and God bless you.
-
-Mrs. Susan S. Cage
+SGkgRGFuLAoKT24gMTcvMDIvMjAgODo0MCBwbSwgRGFuIE11cnBoeSB3cm90ZToKPiBGYWl6Cj4g
+Cj4gT24gMi8xNy8yMCA4OjI4IEFNLCBGYWl6IEFiYmFzIHdyb3RlOgo+PiBDQU4gdHJhbnNjZWl2
+ZXJzIG9uIHNvbWUgYm9hcmRzIGhhdmUgYSBzdGFuZGJ5IGxpbmUgd2hpY2ggY2FuIGJlCj4+IHRv
+Z2dsZWQgdG8gZW5hYmxlL2Rpc2FibGUgdGhlIHRyYW5zY2VpdmVyLiBNb2RlbCB0aGlzIGFzIGFu
+IG9wdGlvbmFsCj4+IGZpeGVkIHhjZWl2ZXIgcmVndWxhdG9yLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5
+OiBGYWl6IEFiYmFzIDxmYWl6X2FiYmFzQHRpLmNvbT4KPj4gQWNrZWQtYnk6IFNyaXJhbSBEYXNo
+IDxzcmlyYW0uZGFzaEBzYW1zdW5nLmNvbT4KPj4gLS0tCj4+IMKgIGRyaXZlcnMvbmV0L2Nhbi9t
+X2Nhbi9tX2Nhbl9wbGF0Zm9ybS5jIHwgNiArKysrKysKPj4gwqAgMSBmaWxlIGNoYW5nZWQsIDYg
+aW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvY2FuL21fY2FuL21f
+Y2FuX3BsYXRmb3JtLmMKPj4gYi9kcml2ZXJzL25ldC9jYW4vbV9jYW4vbV9jYW5fcGxhdGZvcm0u
+Ywo+PiBpbmRleCAzOGVhNWU2MDBmYjguLjcxOTQ2OGZhYjUwNyAxMDA2NDQKPj4gLS0tIGEvZHJp
+dmVycy9uZXQvY2FuL21fY2FuL21fY2FuX3BsYXRmb3JtLmMKPj4gKysrIGIvZHJpdmVycy9uZXQv
+Y2FuL21fY2FuL21fY2FuX3BsYXRmb3JtLmMKPj4gQEAgLTYsNiArNiw3IEBACj4+IMKgIC8vIENv
+cHlyaWdodCAoQykgMjAxOC0xOSBUZXhhcyBJbnN0cnVtZW50cyBJbmNvcnBvcmF0ZWQgLQo+PiBo
+dHRwOi8vd3d3LnRpLmNvbS8KPj4gwqAgwqAgI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2Rldmlj
+ZS5oPgo+PiArI2luY2x1ZGUgPGxpbnV4L3JlZ3VsYXRvci9jb25zdW1lci5oPgo+PiDCoCDCoCAj
+aW5jbHVkZSAibV9jYW4uaCIKPj4gwqAgQEAgLTU3LDYgKzU4LDcgQEAgc3RhdGljIGludCBtX2Nh
+bl9wbGF0X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UKPj4gKnBkZXYpCj4+IMKgIHsKPj4g
+wqDCoMKgwqDCoCBzdHJ1Y3QgbV9jYW5fY2xhc3NkZXYgKm1jYW5fY2xhc3M7Cj4+IMKgwqDCoMKg
+wqAgc3RydWN0IG1fY2FuX3BsYXRfcHJpdiAqcHJpdjsKPj4gK8KgwqDCoCBzdHJ1Y3QgcmVndWxh
+dG9yICpyZWdfeGNlaXZlcjsKPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgcmVzb3VyY2UgKnJlczsKPj4g
+wqDCoMKgwqDCoCB2b2lkIF9faW9tZW0gKmFkZHI7Cj4+IMKgwqDCoMKgwqAgdm9pZCBfX2lvbWVt
+ICptcmFtX2FkZHI7Cj4+IEBAIC0xMTEsNiArMTEzLDEwIEBAIHN0YXRpYyBpbnQgbV9jYW5fcGxh
+dF9wcm9iZShzdHJ1Y3QKPj4gcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiDCoCDCoMKgwqDCoMKg
+IG1fY2FuX2luaXRfcmFtKG1jYW5fY2xhc3MpOwo+PiDCoCArwqDCoMKgIHJlZ194Y2VpdmVyID0g
+ZGV2bV9yZWd1bGF0b3JfZ2V0X29wdGlvbmFsKCZwZGV2LT5kZXYsICJ4Y2VpdmVyIik7Cj4+ICvC
+oMKgwqAgaWYgKFBUUl9FUlIocmVnX3hjZWl2ZXIpID09IC1FUFJPQkVfREVGRVIpCj4+ICvCoMKg
+wqDCoMKgwqDCoCByZXR1cm4gLUVQUk9CRV9ERUZFUjsKPj4gKwo+IAo+IFdoZXJlIGlzIHRoaXMg
+cmVndWxhdG9yIGVuYWJsZWQ/CgpJIGhhdmUgc2V0IHJlZ3VsYXRvci1ib290LW9uIGZsYWcgaW4g
+dGhlIGR0IHNvIHRoaXMgZGlkbid0IHJlcXVpcmUgYW4KZW5hYmxlLgoKPiBTaG91bGRuJ3QgdGhl
+IHJlZ3VsYXRvciBiZSBtYW5hZ2VkIGJ5IHJ1bnRpbWUgUE0gYXMgd2VsbD8KPiAKCkxldCBtZSB0
+cnkgdGhpcyBvdXQuCgpUaGFua3MsCkZhaXoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1h
+cm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
