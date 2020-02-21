@@ -1,70 +1,36 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v2 1/3] dt-bindings: m_can: Add Documentation for
- transceiver regulator
-Date: Fri, 21 Feb 2020 09:31:08 +0100
-Message-ID: <20b86553-9b98-1a9d-3757-54174aa67c62@pengutronix.de>
-References: <20200217142836.23702-1-faiz_abbas@ti.com>
- <20200217142836.23702-2-faiz_abbas@ti.com> <20200219203529.GA21085@bogus>
- <a987bcd7-ca1c-dfda-72f3-cd2004a87ea5@ti.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH linux-master 1/3] can: tcan4x5x: Move clock init to TCAN
+ driver
+Date: Fri, 21 Feb 2020 08:25:54 -0600
+Message-ID: <06af6e1d-aec4-189c-378a-77af4073a1a6@ti.com>
+References: <20200131183433.11041-1-dmurphy@ti.com>
+ <20200131183433.11041-2-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org>
-In-Reply-To: <a987bcd7-ca1c-dfda-72f3-cd2004a87ea5@ti.com>
-Content-Language: de-DE
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org
-To: Faiz Abbas <faiz_abbas@ti.com>, Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, lgirdwood@gmail.com, netdev@vger.kernel.org, sriram.dash@samsung.com, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, broonie@kernel.org, wg@grandegger.com, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, dmurphy@ti.com
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58094 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728902AbgBUObN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 21 Feb 2020 09:31:13 -0500
+In-Reply-To: <20200131183433.11041-2-dmurphy@ti.com>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-kernel@vger.kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
+Cc: davem@davemloft.net
 
-On 2/21/20 9:31 AM, Faiz Abbas wrote:
-> Hi Rob,
-> 
-> On 20/02/20 2:05 am, Rob Herring wrote:
->> On Mon, Feb 17, 2020 at 07:58:34PM +0530, Faiz Abbas wrote:
->>> Some CAN transceivers have a standby line that needs to be asserted
->>> before they can be used. Model this GPIO lines as an optional
->>> fixed-regulator node. Document bindings for the same.
->>>
->>> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
->>> ---
->>>  Documentation/devicetree/bindings/net/can/m_can.txt | 3 +++
->>>  1 file changed, 3 insertions(+)
->>
->> This has moved to DT schema in my tree, so please adjust it and resend.
-> 
-> Ok.
->>
->>> diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
->>> index ed614383af9c..f17e2a5207dc 100644
->>> --- a/Documentation/devicetree/bindings/net/can/m_can.txt
->>> +++ b/Documentation/devicetree/bindings/net/can/m_can.txt
->>> @@ -48,6 +48,9 @@ Optional Subnode:
->>>  			  that can be used for CAN/CAN-FD modes. See
->>>  			  Documentation/devicetree/bindings/net/can/can-transceiver.txt
->>>  			  for details.
->>> +
->>> +- xceiver-supply: Regulator that powers the CAN transceiver.
->>
->> The supply for a transceiver should go in the transceiver node.
->>
-> 
-> Marc, while I have you here, do you agree with this?
+Hello
 
-I'll look into the details later today.
+On 1/31/20 12:34 PM, Dan Murphy wrote:
+> Move the clock discovery and initialization from the m_can framework to
+> the registrar.  This allows for registrars to have unique clock
+> initialization.  The TCAN device only needs the CAN clock reference.
+>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
 
-Marc
+I would like to have these 3 patches reviewed and integrated (post 
+review) so I can work on other issues identified.
 
--- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Dan
