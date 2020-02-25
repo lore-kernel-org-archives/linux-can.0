@@ -1,54 +1,54 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH] can: mcp251x: convert to half-duplex SPI
-Date: Tue, 25 Feb 2020 10:35:34 -0800
-Message-ID: <1582655734-20890-1-git-send-email-tharvey@gateworks.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: =?UTF-8?q?Timo=20Schl=C3=BC=C3=9Fler?= <schluessler@krause.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Tim Harvey <tharvey@gateworks.com>
-List-Id: linux-can.vger.kernel.org
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH linux-master 1/3] can: tcan4x5x: Move clock init to TCAN
+ driver
+Date: Tue, 25 Feb 2020 11:45:45 -0600
+Message-ID: <e420c667-23d8-9739-1905-4a89570ddb72@ti.com>
+References: <20200131183433.11041-1-dmurphy@ti.com>
+ <20200131183433.11041-2-dmurphy@ti.com>
+ <06af6e1d-aec4-189c-378a-77af4073a1a6@ti.com>
+ <fed1d801-e284-eada-d5b3-ae78089b3ead@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:33984 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731425AbgBYT3C (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Feb 2020 14:29:02 -0500
+In-Reply-To: <fed1d801-e284-eada-d5b3-ae78089b3ead@pengutronix.de>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
+Cc: davem@davemloft.net
 
-Some SPI host controllers such as the Cavium Thunder do not support
-full-duplex SPI. Using half-duplex transfers allows the driver to work
-with those host controllers.
+Marc
 
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
- drivers/net/can/spi/mcp251x.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On 2/21/20 8:43 AM, Marc Kleine-Budde wrote:
+> On 2/21/20 3:25 PM, Dan Murphy wrote:
+>> Hello
+>>
+>> On 1/31/20 12:34 PM, Dan Murphy wrote:
+>>> Move the clock discovery and initialization from the m_can framework to
+>>> the registrar.  This allows for registrars to have unique clock
+>>> initialization.  The TCAN device only needs the CAN clock reference.
+>>>
+>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>> ---
+>> I would like to have these 3 patches reviewed and integrated (post
+>> review) so I can work on other issues identified.
+> Applied to linux-can-next/testing.
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 5009ff2..840c31c 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -290,23 +290,23 @@ static u8 mcp251x_read_reg(struct spi_device *spi, u8 reg)
- 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
- 	priv->spi_tx_buf[1] = reg;
- 
--	mcp251x_spi_trans(spi, 3);
--	val = priv->spi_rx_buf[2];
-+	spi_write_then_read(spi, priv->spi_tx_buf, 2, &val, 1);
- 
- 	return val;
- }
- 
- static void mcp251x_read_2regs(struct spi_device *spi, u8 reg, u8 *v1, u8 *v2)
- {
-+	u8 val[4] = {0};
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
- 
- 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
- 	priv->spi_tx_buf[1] = reg;
- 
--	mcp251x_spi_trans(spi, 4);
-+	spi_write_then_read(spi, priv->spi_tx_buf, 2, val, 2);
- 
--	*v1 = priv->spi_rx_buf[2];
--	*v2 = priv->spi_rx_buf[3];
-+	*v1 = val[0];
-+	*v2 = val[1];
- }
- 
- static void mcp251x_write_reg(struct spi_device *spi, u8 reg, u8 val)
--- 
-2.7.4
+I am not seeing these patches applied
+
+I am looking here 
+https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/?h=testing
+
+But they could be in a different repo
+
+Dan
+
+>
+> tnx,
+> Marc
+>
