@@ -1,54 +1,76 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH linux-master 1/3] can: tcan4x5x: Move clock init to TCAN
- driver
-Date: Tue, 25 Feb 2020 11:45:45 -0600
-Message-ID: <e420c667-23d8-9739-1905-4a89570ddb72@ti.com>
-References: <20200131183433.11041-1-dmurphy@ti.com>
- <20200131183433.11041-2-dmurphy@ti.com>
- <06af6e1d-aec4-189c-378a-77af4073a1a6@ti.com>
- <fed1d801-e284-eada-d5b3-ae78089b3ead@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] bonding: do not enslave CAN devices
+Date: Tue, 25 Feb 2020 21:32:41 +0100
+Message-ID: <767580d8-1c93-907b-609c-4c1c049b7c42@pengutronix.de>
+References: <20200130133046.2047-1-socketcan@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:33984 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731425AbgBYT3C (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Feb 2020 14:29:02 -0500
-In-Reply-To: <fed1d801-e284-eada-d5b3-ae78089b3ead@pengutronix.de>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, wg@grandegger.com, sriram.dash@samsung.com
-Cc: davem@davemloft.net
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200130133046.2047-1-socketcan@hartkopp.net>
+Content-Language: en-GB
+Sender: netdev-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net, linux-stable <stable@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
+On 1/30/20 2:30 PM, Oliver Hartkopp wrote:
+> Since commit 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
+> device struct can_dev_rcv_lists") the device specific CAN receive filter lists
+> are stored in netdev_priv() and dev->ml_priv points to these filters.
+> 
+> In the bug report Syzkaller enslaved a vxcan1 CAN device and accessed the
+> bonding device with a PF_CAN socket which lead to a crash due to an access of
+> an unhandled bond_dev->ml_priv pointer.
+> 
+> Deny to enslave CAN devices by the bonding driver as the resulting bond_dev
+> pretends to be a CAN device by copying dev->type without really being one.
+> 
+> Reported-by: syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com
+> Fixes: 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
+> device struct can_dev_rcv_lists")
+> Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+
+What's the preferred to upstream this? I could take this via the
+linux-can tree.
+
+regards,
 Marc
 
-On 2/21/20 8:43 AM, Marc Kleine-Budde wrote:
-> On 2/21/20 3:25 PM, Dan Murphy wrote:
->> Hello
->>
->> On 1/31/20 12:34 PM, Dan Murphy wrote:
->>> Move the clock discovery and initialization from the m_can framework to
->>> the registrar.  This allows for registrars to have unique clock
->>> initialization.  The TCAN device only needs the CAN clock reference.
->>>
->>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->>> ---
->> I would like to have these 3 patches reviewed and integrated (post
->> review) so I can work on other issues identified.
-> Applied to linux-can-next/testing.
+> ---
+>  drivers/net/bonding/bond_main.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> index 48d5ec770b94..4b781a7dfd96 100644
+> --- a/drivers/net/bonding/bond_main.c
+> +++ b/drivers/net/bonding/bond_main.c
+> @@ -1475,6 +1475,18 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
+>  		return -EPERM;
+>  	}
+>  
+> +	/* CAN network devices hold device specific filter lists in
+> +	 * netdev_priv() where dev->ml_priv sets a reference to.
+> +	 * As bonding assumes to have some ethernet-like device it doesn't
+> +	 * take care about these CAN specific filter lists today.
+> +	 * So we deny the enslaving of CAN interfaces here.
+> +	 */
+> +	if (slave_dev->type == ARPHRD_CAN) {
+> +		NL_SET_ERR_MSG(extack, "CAN devices can not be enslaved");
+> +		slave_err(bond_dev, slave_dev, "no bonding on CAN devices\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	/* set bonding device ether type by slave - bonding netdevices are
+>  	 * created with ether_setup, so when the slave type is not ARPHRD_ETHER
+>  	 * there is a need to override some of the type dependent attribs/funcs.
+> 
 
-I am not seeing these patches applied
 
-I am looking here 
-https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/?h=testing
-
-But they could be in a different repo
-
-Dan
-
->
-> tnx,
-> Marc
->
+-- 
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
