@@ -1,88 +1,54 @@
-From: syzbot <syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com>
-Subject: general protection fault in j1939_netdev_start
-Date: Tue, 25 Feb 2020 10:29:14 -0800
-Message-ID: <00000000000030395e059f6aaa09@google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: davem@davemloft.net, kernel@pengutronix.de, kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+From: Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH] can: mcp251x: convert to half-duplex SPI
+Date: Tue, 25 Feb 2020 10:35:34 -0800
+Message-ID: <1582655734-20890-1-git-send-email-tharvey@gateworks.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: =?UTF-8?q?Timo=20Schl=C3=BC=C3=9Fler?= <schluessler@krause.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Tim Harvey <tharvey@gateworks.com>
 List-Id: linux-can.vger.kernel.org
 
-Hello,
+Some SPI host controllers such as the Cavium Thunder do not support
+full-duplex SPI. Using half-duplex transfers allows the driver to work
+with those host controllers.
 
-syzbot found the following crash on:
-
-HEAD commit:    6132c1d9 net: core: devlink.c: Hold devlink->lock from the..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=10678909e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3b8906eb6a7d6028
-dashboard link: https://syzkaller.appspot.com/bug?extid=f03d384f3455d28833eb
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e36909e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100679dde00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000c05: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x0000000000006028-0x000000000000602f]
-CPU: 1 PID: 10119 Comm: syz-executor671 Not tainted 5.6.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:j1939_priv_set net/can/j1939/main.c:145 [inline]
-RIP: 0010:j1939_netdev_start+0x361/0x650 net/can/j1939/main.c:280
-Code: 03 80 3c 02 00 0f 85 bc 02 00 00 4c 8b ab 90 05 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bd 28 60 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 89 02 00 00 4d 89 a5 28 60 00 00 48 c7 c7 60 89
-RSP: 0018:ffffc900070b7d00 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: ffff888094ed4000 RCX: ffffffff8715dd84
-RDX: 0000000000000c05 RSI: ffffffff8715ed3c RDI: 0000000000006028
-RBP: ffffc900070b7d40 R08: ffff888095b121c0 R09: fffff52000e16f8e
-R10: fffff52000e16f8d R11: 0000000000000003 R12: ffff888095538000
-R13: 0000000000000000 R14: ffff888095539050 R15: ffff888094ed4558
-FS:  00007f9a340ef700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f9a340eee78 CR3: 00000000947c2000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- j1939_sk_bind+0x68d/0x980 net/can/j1939/socket.c:469
- __sys_bind+0x239/0x290 net/socket.c:1662
- __do_sys_bind net/socket.c:1673 [inline]
- __se_sys_bind net/socket.c:1671 [inline]
- __x64_sys_bind+0x73/0xb0 net/socket.c:1671
- do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x446d39
-Code: e8 8c e7 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f9a340eed98 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
-RAX: ffffffffffffffda RBX: 00000000006dbc78 RCX: 0000000000446d39
-RDX: 0000000000000018 RSI: 0000000020000040 RDI: 0000000000000003
-RBP: 00000000006dbc70 R08: 00007f9a340ef700 R09: 0000000000000000
-R10: 00007f9a340ef700 R11: 0000000000000246 R12: 00000000006dbc7c
-R13: 000000006f340000 R14: 0000000000000000 R15: 068500100000003c
-Modules linked in:
----[ end trace e9a9971e66fb9d42 ]---
-RIP: 0010:j1939_priv_set net/can/j1939/main.c:145 [inline]
-RIP: 0010:j1939_netdev_start+0x361/0x650 net/can/j1939/main.c:280
-Code: 03 80 3c 02 00 0f 85 bc 02 00 00 4c 8b ab 90 05 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bd 28 60 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 89 02 00 00 4d 89 a5 28 60 00 00 48 c7 c7 60 89
-RSP: 0018:ffffc900070b7d00 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: ffff888094ed4000 RCX: ffffffff8715dd84
-RDX: 0000000000000c05 RSI: ffffffff8715ed3c RDI: 0000000000006028
-RBP: ffffc900070b7d40 R08: ffff888095b121c0 R09: fffff52000e16f8e
-R10: fffff52000e16f8d R11: 0000000000000003 R12: ffff888095538000
-R13: 0000000000000000 R14: ffff888095539050 R15: ffff888094ed4558
-FS:  00007f9a340ef700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f9a340eee78 CR3: 00000000947c2000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/can/spi/mcp251x.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index 5009ff2..840c31c 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -290,23 +290,23 @@ static u8 mcp251x_read_reg(struct spi_device *spi, u8 reg)
+ 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
+ 	priv->spi_tx_buf[1] = reg;
+ 
+-	mcp251x_spi_trans(spi, 3);
+-	val = priv->spi_rx_buf[2];
++	spi_write_then_read(spi, priv->spi_tx_buf, 2, &val, 1);
+ 
+ 	return val;
+ }
+ 
+ static void mcp251x_read_2regs(struct spi_device *spi, u8 reg, u8 *v1, u8 *v2)
+ {
++	u8 val[4] = {0};
+ 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
+ 
+ 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
+ 	priv->spi_tx_buf[1] = reg;
+ 
+-	mcp251x_spi_trans(spi, 4);
++	spi_write_then_read(spi, priv->spi_tx_buf, 2, val, 2);
+ 
+-	*v1 = priv->spi_rx_buf[2];
+-	*v2 = priv->spi_rx_buf[3];
++	*v1 = val[0];
++	*v2 = val[1];
+ }
+ 
+ static void mcp251x_write_reg(struct spi_device *spi, u8 reg, u8 val)
+-- 
+2.7.4
