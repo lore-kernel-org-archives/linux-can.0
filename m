@@ -1,85 +1,88 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v2] can: af_can: can_rcv() canfd_rcv(): Fix access of
- uninitialized memory or out of bounds
-Date: Tue, 25 Feb 2020 15:06:21 +0100
-Message-ID: <a77d525e-e174-e732-1f36-c4dace4fa532@hartkopp.net>
-References: <20200225083950.2542543-1-mkl@pengutronix.de>
- <bde858ee-f4d8-4f3c-8b50-95f1a917c869@pengutronix.de>
+From: syzbot <syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com>
+Subject: general protection fault in j1939_netdev_start
+Date: Tue, 25 Feb 2020 10:29:14 -0800
+Message-ID: <00000000000030395e059f6aaa09@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <bde858ee-f4d8-4f3c-8b50-95f1a917c869@pengutronix.de>
-Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can @ vger . kernel . org" <linux-can@vger.kernel.org>
-Cc: kernel@pengutronix.de, glider@google.com, kuba@kernel.org, netdev@vger.kernel.org, syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
+To: davem@davemloft.net, kernel@pengutronix.de, kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
+Hello,
+
+syzbot found the following crash on:
+
+HEAD commit:    6132c1d9 net: core: devlink.c: Hold devlink->lock from the..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=10678909e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3b8906eb6a7d6028
+dashboard link: https://syzkaller.appspot.com/bug?extid=f03d384f3455d28833eb
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e36909e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100679dde00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000c05: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x0000000000006028-0x000000000000602f]
+CPU: 1 PID: 10119 Comm: syz-executor671 Not tainted 5.6.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:j1939_priv_set net/can/j1939/main.c:145 [inline]
+RIP: 0010:j1939_netdev_start+0x361/0x650 net/can/j1939/main.c:280
+Code: 03 80 3c 02 00 0f 85 bc 02 00 00 4c 8b ab 90 05 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bd 28 60 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 89 02 00 00 4d 89 a5 28 60 00 00 48 c7 c7 60 89
+RSP: 0018:ffffc900070b7d00 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff888094ed4000 RCX: ffffffff8715dd84
+RDX: 0000000000000c05 RSI: ffffffff8715ed3c RDI: 0000000000006028
+RBP: ffffc900070b7d40 R08: ffff888095b121c0 R09: fffff52000e16f8e
+R10: fffff52000e16f8d R11: 0000000000000003 R12: ffff888095538000
+R13: 0000000000000000 R14: ffff888095539050 R15: ffff888094ed4558
+FS:  00007f9a340ef700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9a340eee78 CR3: 00000000947c2000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ j1939_sk_bind+0x68d/0x980 net/can/j1939/socket.c:469
+ __sys_bind+0x239/0x290 net/socket.c:1662
+ __do_sys_bind net/socket.c:1673 [inline]
+ __se_sys_bind net/socket.c:1671 [inline]
+ __x64_sys_bind+0x73/0xb0 net/socket.c:1671
+ do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x446d39
+Code: e8 8c e7 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f9a340eed98 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 00000000006dbc78 RCX: 0000000000446d39
+RDX: 0000000000000018 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00000000006dbc70 R08: 00007f9a340ef700 R09: 0000000000000000
+R10: 00007f9a340ef700 R11: 0000000000000246 R12: 00000000006dbc7c
+R13: 000000006f340000 R14: 0000000000000000 R15: 068500100000003c
+Modules linked in:
+---[ end trace e9a9971e66fb9d42 ]---
+RIP: 0010:j1939_priv_set net/can/j1939/main.c:145 [inline]
+RIP: 0010:j1939_netdev_start+0x361/0x650 net/can/j1939/main.c:280
+Code: 03 80 3c 02 00 0f 85 bc 02 00 00 4c 8b ab 90 05 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bd 28 60 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 89 02 00 00 4d 89 a5 28 60 00 00 48 c7 c7 60 89
+RSP: 0018:ffffc900070b7d00 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff888094ed4000 RCX: ffffffff8715dd84
+RDX: 0000000000000c05 RSI: ffffffff8715ed3c RDI: 0000000000006028
+RBP: ffffc900070b7d40 R08: ffff888095b121c0 R09: fffff52000e16f8e
+R10: fffff52000e16f8d R11: 0000000000000003 R12: ffff888095538000
+R13: 0000000000000000 R14: ffff888095539050 R15: ffff888094ed4558
+FS:  00007f9a340ef700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9a340eee78 CR3: 00000000947c2000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-On 25/02/2020 09.40, Marc Kleine-Budde wrote:
-> On 2/25/20 9:39 AM, Marc Kleine-Budde wrote:
->> Syzbot found the use of uninitialzied memory when injecting non conformant
->> CANFD frames via a tun device into the kernel:
->>
->> | BUG: KMSAN: uninit-value in number+0x9f8/0x2000 lib/vsprintf.c:459
->> | CPU: 1 PID: 11897 Comm: syz-executor136 Not tainted 5.6.0-rc2-syzkaller #0
->> | Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> | Call Trace:
->> |  __dump_stack lib/dump_stack.c:77 [inline]
->> |  dump_stack+0x1c9/0x220 lib/dump_stack.c:118
->> |  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
->> |  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
->> |  number+0x9f8/0x2000 lib/vsprintf.c:459
->> |  vsnprintf+0x1d85/0x31b0 lib/vsprintf.c:2640
->> |  vscnprintf+0xc2/0x180 lib/vsprintf.c:2677
->> |  vprintk_store+0xef/0x11d0 kernel/printk/printk.c:1917
->> |  vprintk_emit+0x2c0/0x860 kernel/printk/printk.c:1984
->> |  vprintk_default+0x90/0xa0 kernel/printk/printk.c:2029
->> |  vprintk_func+0x636/0x820 kernel/printk/printk_safe.c:386
->> |  printk+0x18b/0x1d3 kernel/printk/printk.c:2062
->> |  canfd_rcv+0x370/0x3a0 net/can/af_can.c:697
->> |  __netif_receive_skb_one_core net/core/dev.c:5198 [inline]
->> |  __netif_receive_skb net/core/dev.c:5312 [inline]
->> |  netif_receive_skb_internal net/core/dev.c:5402 [inline]
->> |  netif_receive_skb+0xe77/0xf20 net/core/dev.c:5461
->> |  tun_rx_batched include/linux/skbuff.h:4321 [inline]
->> |  tun_get_user+0x6aef/0x6f60 drivers/net/tun.c:1997
->> |  tun_chr_write_iter+0x1f2/0x360 drivers/net/tun.c:2026
->> |  call_write_iter include/linux/fs.h:1901 [inline]
->> |  new_sync_write fs/read_write.c:483 [inline]
->> |  __vfs_write+0xa5a/0xca0 fs/read_write.c:496
->> |  vfs_write+0x44a/0x8f0 fs/read_write.c:558
->> |  ksys_write+0x267/0x450 fs/read_write.c:611
->> |  __do_sys_write fs/read_write.c:623 [inline]
->> |  __se_sys_write+0x92/0xb0 fs/read_write.c:620
->> |  __x64_sys_write+0x4a/0x70 fs/read_write.c:620
->> |  do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:296
->> |  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>
->> In canfd_rcv() the non conformant CANFD frame (i.e. skb too short) is detected,
->> but the pr_warn_once() accesses uninitialized memory or the skb->data out of
->> bounds to print the warning message.
->>
->> This problem exists in both can_rcv() and canfd_rcv(). This patch removes the
->> access to the skb->data from the pr_warn_once() in both functions.
->>
->> Reported-by: syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
->> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
->> ---
->> Hello,
->>
->> changes since RFC:
->> - print cfd->len if backed by skb, -1 otherwise
->>    (Requested by Oliver)
-> 
-> Doh! I have to adjust the patch description. Will do in next iteration.
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks Marc!
-
-So for the next iteration:
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
-Best,
-Oliver
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
