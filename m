@@ -1,75 +1,102 @@
-From: Faiz Abbas <faiz_abbas@ti.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: m_can: Add Documentation for
- transceiver regulator
-Date: Wed, 26 Feb 2020 14:40:18 +0530
-Message-ID: <72e4b1f4-e7f1-cccd-6327-0c8ab6f9f9a7@ti.com>
-References: <20200217142836.23702-1-faiz_abbas@ti.com>
- <20200217142836.23702-2-faiz_abbas@ti.com> <20200219203529.GA21085@bogus>
- <a987bcd7-ca1c-dfda-72f3-cd2004a87ea5@ti.com>
- <20b86553-9b98-1a9d-3757-54174aa67c62@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v2] can: mcp251x: convert to half-duplex SPI
+Date: Wed, 26 Feb 2020 11:10:21 +0100
+Message-ID: <20200226101021.2635356-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org>
-In-Reply-To: <20b86553-9b98-1a9d-3757-54174aa67c62@pengutronix.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, lgirdwood@gmail.com, netdev@vger.kernel.org, sriram.dash@samsung.com, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, broonie@kernel.org, wg@grandegger.com, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, dmurphy@ti.com
-List-Id: linux-can.vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:42815 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728056AbgBZKKY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2020 05:10:24 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "linux-can @ vger . kernel . org" <linux-can@vger.kernel.org>
+Cc: kernel@pengutronix.de, Tim Harvey <tharvey@gateworks.com>, Marc Kleine-Budde <mkl@pengutronix.de>
 
-Hi Marc,
+From: Tim Harvey <tharvey@gateworks.com>
 
-On 21/02/20 2:01 pm, Marc Kleine-Budde wrote:
-> On 2/21/20 9:31 AM, Faiz Abbas wrote:
->> Hi Rob,
->>
->> On 20/02/20 2:05 am, Rob Herring wrote:
->>> On Mon, Feb 17, 2020 at 07:58:34PM +0530, Faiz Abbas wrote:
->>>> Some CAN transceivers have a standby line that needs to be asserted
->>>> before they can be used. Model this GPIO lines as an optional
->>>> fixed-regulator node. Document bindings for the same.
->>>>
->>>> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
->>>> ---
->>>>  Documentation/devicetree/bindings/net/can/m_can.txt | 3 +++
->>>>  1 file changed, 3 insertions(+)
->>>
->>> This has moved to DT schema in my tree, so please adjust it and resend.
->>
->> Ok.
->>>
->>>> diff --git a/Documentation/devicetree/bindings/net/can/m_can.txt b/Documentation/devicetree/bindings/net/can/m_can.txt
->>>> index ed614383af9c..f17e2a5207dc 100644
->>>> --- a/Documentation/devicetree/bindings/net/can/m_can.txt
->>>> +++ b/Documentation/devicetree/bindings/net/can/m_can.txt
->>>> @@ -48,6 +48,9 @@ Optional Subnode:
->>>>  			  that can be used for CAN/CAN-FD modes. See
->>>>  			  Documentation/devicetree/bindings/net/can/can-transceiver.txt
->>>>  			  for details.
->>>> +
->>>> +- xceiver-supply: Regulator that powers the CAN transceiver.
->>>
->>> The supply for a transceiver should go in the transceiver node.
->>>
->>
->> Marc, while I have you here, do you agree with this?
-> 
-> I'll look into the details later today.
-> 
+Some SPI host controllers such as the Cavium Thunder do not support
+full-duplex SPI. Using half-duplex transfers allows the driver to work
+with those host controllers.
 
-Sure. Be sure to take another look at my attempt to use the transceiver
-with a phy driver some time ago.
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Hello,
 
-https://lore.kernel.org/patchwork/patch/1006238/
+what about setting up a proper half duplex transfer like this?
 
-Thanks,
-Faiz
+Marc
+
+Changes since v1:
+- use spi_sync_transfer instead of spi_write_then_read()
+
+ drivers/net/can/spi/mcp251x.c | 35 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index a3897baa359f..26b7e4cb51ed 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -317,13 +317,26 @@ static int mcp251x_spi_trans(struct spi_device *spi, int len)
+ static u8 mcp251x_read_reg(struct spi_device *spi, u8 reg)
+ {
+ 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
++	struct spi_transfer xfer[] = {
++		{
++			.tx_buf = priv->spi_tx_buf,
++			.len = 2,
++		}, {
++			.rx_buf = priv->spi_rx_buf,
++			.len = 1,
++		},
++	};
+ 	u8 val = 0;
++	int err;
+ 
+ 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
+ 	priv->spi_tx_buf[1] = reg;
+ 
+-	mcp251x_spi_trans(spi, 3);
+-	val = priv->spi_rx_buf[2];
++	err = spi_sync_transfer(spi, xfer, ARRAY_SIZE(xfer));
++	if (err)
++		dev_err(&spi->dev, "spi transfer failed: ret = %d\n", err);
++
++	val = priv->spi_rx_buf[0];
+ 
+ 	return val;
+ }
+@@ -331,14 +344,26 @@ static u8 mcp251x_read_reg(struct spi_device *spi, u8 reg)
+ static void mcp251x_read_2regs(struct spi_device *spi, u8 reg, u8 *v1, u8 *v2)
+ {
+ 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
++	struct spi_transfer xfer[] = {
++		{
++			.tx_buf = priv->spi_tx_buf,
++			.len = 2,
++		}, {
++			.rx_buf = priv->spi_rx_buf,
++			.len = 2,
++		},
++	};
++	int err;
+ 
+ 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
+ 	priv->spi_tx_buf[1] = reg;
+ 
+-	mcp251x_spi_trans(spi, 4);
++	err = spi_sync_transfer(spi, xfer, ARRAY_SIZE(xfer));
++	if (err)
++		dev_err(&spi->dev, "spi transfer failed: ret = %d\n", err);
+ 
+-	*v1 = priv->spi_rx_buf[2];
+-	*v2 = priv->spi_rx_buf[3];
++	*v1 = priv->spi_rx_buf[0];
++	*v2 = priv->spi_rx_buf[1];
+ }
+ 
+ static void mcp251x_write_reg(struct spi_device *spi, u8 reg, u8 val)
+-- 
+2.25.0
