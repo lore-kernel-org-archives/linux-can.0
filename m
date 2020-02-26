@@ -1,116 +1,79 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH v2] can: af_can: can_rcv() canfd_rcv(): Fix access of
- uninitialized memory or out of bounds
-Date: Tue, 25 Feb 2020 21:34:28 -0800
-Message-ID: <f184a3f3-5b7a-01fd-1bc7-d953319fb523@gmail.com>
-References: <20200225083950.2542543-1-mkl@pengutronix.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: mcp251x: convert to half-duplex SPI
+Date: Wed, 26 Feb 2020 08:37:02 +0100
+Message-ID: <0b351fe3-8fe9-572f-fd85-e2aed22873e3@pengutronix.de>
+References: <1582655734-20890-1-git-send-email-tharvey@gateworks.com>
+ <0ac77abd-0df5-e437-ea46-f6c77f59b81c@pengutronix.de>
+ <CAJ+vNU3vk92_1UnrYH72QgD3-q9Oy9As=jCiup42jzx_2LG9FA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20200225083950.2542543-1-mkl@pengutronix.de>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can @ vger . kernel . org" <linux-can@vger.kernel.org>
-Cc: kernel@pengutronix.de, glider@google.com, kuba@kernel.org, netdev@vger.kernel.org, socketcan@hartkopp.net, syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:58317 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726823AbgBZHhJ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Feb 2020 02:37:09 -0500
+In-Reply-To: <CAJ+vNU3vk92_1UnrYH72QgD3-q9Oy9As=jCiup42jzx_2LG9FA@mail.gmail.com>
+Content-Language: en-GB
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Tim Harvey <tharvey@gateworks.com>
+Cc: open list <linux-kernel@vger.kernel.org>, linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, =?UTF-8?Q?Timo_Schl=c3=bc=c3=9fler?= <schluessler@krause.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+On 2/25/20 11:25 PM, Tim Harvey wrote:
+>> On 2/25/20 7:35 PM, Tim Harvey wrote:
+>>> Some SPI host controllers such as the Cavium Thunder do not support
+>>> full-duplex SPI. Using half-duplex transfers allows the driver to work
+>>> with those host controllers.
 
+Hmmm, at least none of the spi-cavium*.c have HALF_DUPLEX set....
 
-On 2/25/20 12:39 AM, Marc Kleine-Budde wrote:
-> Syzbot found the use of uninitialzied memory when injecting non conformant
-> CANFD frames via a tun device into the kernel:
-> 
-> | BUG: KMSAN: uninit-value in number+0x9f8/0x2000 lib/vsprintf.c:459
-> | CPU: 1 PID: 11897 Comm: syz-executor136 Not tainted 5.6.0-rc2-syzkaller #0
-> | Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> | Call Trace:
-> |  __dump_stack lib/dump_stack.c:77 [inline]
-> |  dump_stack+0x1c9/0x220 lib/dump_stack.c:118
-> |  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
-> |  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
-> |  number+0x9f8/0x2000 lib/vsprintf.c:459
-> |  vsnprintf+0x1d85/0x31b0 lib/vsprintf.c:2640
-> |  vscnprintf+0xc2/0x180 lib/vsprintf.c:2677
-> |  vprintk_store+0xef/0x11d0 kernel/printk/printk.c:1917
-> |  vprintk_emit+0x2c0/0x860 kernel/printk/printk.c:1984
-> |  vprintk_default+0x90/0xa0 kernel/printk/printk.c:2029
-> |  vprintk_func+0x636/0x820 kernel/printk/printk_safe.c:386
-> |  printk+0x18b/0x1d3 kernel/printk/printk.c:2062
-> |  canfd_rcv+0x370/0x3a0 net/can/af_can.c:697
-> |  __netif_receive_skb_one_core net/core/dev.c:5198 [inline]
-> |  __netif_receive_skb net/core/dev.c:5312 [inline]
-> |  netif_receive_skb_internal net/core/dev.c:5402 [inline]
-> |  netif_receive_skb+0xe77/0xf20 net/core/dev.c:5461
-> |  tun_rx_batched include/linux/skbuff.h:4321 [inline]
-> |  tun_get_user+0x6aef/0x6f60 drivers/net/tun.c:1997
-> |  tun_chr_write_iter+0x1f2/0x360 drivers/net/tun.c:2026
-> |  call_write_iter include/linux/fs.h:1901 [inline]
-> |  new_sync_write fs/read_write.c:483 [inline]
-> |  __vfs_write+0xa5a/0xca0 fs/read_write.c:496
-> |  vfs_write+0x44a/0x8f0 fs/read_write.c:558
-> |  ksys_write+0x267/0x450 fs/read_write.c:611
-> |  __do_sys_write fs/read_write.c:623 [inline]
-> |  __se_sys_write+0x92/0xb0 fs/read_write.c:620
-> |  __x64_sys_write+0x4a/0x70 fs/read_write.c:620
-> |  do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:296
-> |  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> In canfd_rcv() the non conformant CANFD frame (i.e. skb too short) is detected,
-> but the pr_warn_once() accesses uninitialized memory or the skb->data out of
-> bounds to print the warning message.
-> 
-> This problem exists in both can_rcv() and canfd_rcv(). This patch removes the
-> access to the skb->data from the pr_warn_once() in both functions.
-> 
-> Reported-by: syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
-> Hello,
-> 
-> changes since RFC:
-> - print cfd->len if backed by skb, -1 otherwise
->   (Requested by Oliver)
-> 
-> Marc
-> 
->  net/can/af_can.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/can/af_can.c b/net/can/af_can.c
-> index 7511bfae2e0d..38b7aaa6b286 100644
-> --- a/net/can/af_can.c
-> +++ b/net/can/af_can.c
-> @@ -678,7 +678,9 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
->  	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU ||
->  		     cfd->len > CAN_MAX_DLEN)) {
->  		pr_warn_once("PF_CAN: dropped non conform CAN skbuf: dev type %d, len %d, datalen %d\n",
-> -			     dev->type, skb->len, cfd->len);
-> +			     dev->type, skb->len,
-> +			     skb->len >= offsetof(struct canfd_frame, len) +
-> +			     sizeof(cfd->len) ? cfd->len : -1);
+I only find these ones:
+> drivers/spi/spi-falcon.c:404:   master->flags = SPI_MASTER_HALF_DUPLEX;
+> drivers/spi/spi-lp8841-rtc.c:194:       master->flags = SPI_MASTER_HALF_DUPLEX;
+> drivers/spi/spi-mt7621.c:360:   master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+> drivers/spi/spi-mxs.c:576:      master->flags = SPI_MASTER_HALF_DUPLEX;
+> drivers/spi/spi-omap-uwire.c:490:       master->flags = SPI_MASTER_HALF_DUPLEX;
+> drivers/spi/spi-pic32-sqi.c:651:        master->flags           = SPI_MASTER_HALF_DUPLEX;
+> drivers/spi/spi-pl022.c:1714:                           SSP_MICROWIRE_CHANNEL_HALF_DUPLEX)) {
+> drivers/spi/spi-qcom-qspi.c:478:        master->flags = SPI_MASTER_HALF_DUPLEX;
+> drivers/spi/spi-sprd-adi.c:521: ctlr->flags = SPI_MASTER_HALF_DUPLEX;
+> drivers/spi/spi-stm32.c:160:#define STM32H7_SPI_HALF_DUPLEX             3
+> drivers/spi/spi-stm32.c:1469:           mode = STM32H7_SPI_HALF_DUPLEX;
+> drivers/spi/spi-stm32.c:1472:           mode = STM32H7_SPI_HALF_DUPLEX;
+> drivers/spi/spi-ti-qspi.c:758:  master->flags = SPI_MASTER_HALF_DUPLEX;
+> drivers/spi/spi-xcomm.c:222:    master->flags = SPI_MASTER_HALF_DUPLEX;
 
-skb->len being big enough is not sufficient.
+>> There are several transfers left in the driver, where both rx_buf and
+>> tx_buf are set. How does your host controller driver know which one to
+>> handle?
 
-You also need to make sure the header is present in skb->head
+I'm trying to answer my question:
+I think the spi host controller sets SPI_MASTER_HALF_DUPLEX if it only
+supports half duplex and the spi framework checks that only either TX or
+RX is set during one transfer.
 
-Check for calls to pskb_may_pull() all over the stack :)
+> Your right... there is the mcp251x_hw_rx_frame() call that also uses
+> spi_rx_buf after a synchronous transfer (I didn't see any others).
+> I'll look at this again.
 
-Alternative is to force skb_linearize(), since it seems net/can assumes
-skbs are linear ? 
+Have you hardware to test your changes? I think the SPI framework would
+return an -EINVAL in that case....though the return value is sometimes
+not checked by the driver :/
 
->  		kfree_skb(skb);
->  		return NET_RX_DROP;
->  	}
-> @@ -695,7 +697,9 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
->  	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU ||
->  		     cfd->len > CANFD_MAX_DLEN)) {
->  		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuf: dev type %d, len %d, datalen %d\n",
-> -			     dev->type, skb->len, cfd->len);
-> +			     dev->type, skb->len,
-> +			     skb->len >= offsetof(struct canfd_frame, len) +
-> +			     sizeof(cfd->len) ? cfd->len : -1);
->  		kfree_skb(skb);
->  		return NET_RX_DROP;
->  	}
-> 
+> In general is it an ok approach to switch the driver to half-duplex
+> for this issue without the need of complicating things with a
+> module/dt param?
+
+AFAICS the chip doesn't do real full duplex. It either send or receives
+data at the same time. With splitting one pseudo full duplex transfer
+into two half duplex transfers brings some minor overhead, but I think
+that's hardly measurable.
+
+Marc
+
+-- 
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
