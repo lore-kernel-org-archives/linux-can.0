@@ -1,48 +1,49 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] bonding: do not enslave CAN devices
-Date: Wed, 26 Feb 2020 20:23:26 -0800 (PST)
-Message-ID: <20200226.202326.295871777946911500.davem@davemloft.net>
-References: <20200130133046.2047-1-socketcan@hartkopp.net>
-        <767580d8-1c93-907b-609c-4c1c049b7c42@pengutronix.de>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [RESEND PATCH can-next 1/2] can: tcan4x5x: Rename parse_config function
+Date: Thu, 27 Feb 2020 12:38:28 -0600
+Message-ID: <20200227183829.21854-1-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <767580d8-1c93-907b-609c-4c1c049b7c42@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de
-Cc: socketcan@hartkopp.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, stable@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35872 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgB0Snv (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 27 Feb 2020 13:43:51 -0500
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: mkl@pengutronix.de, wg@grandegger.com
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Tue, 25 Feb 2020 21:32:41 +0100
+Rename the tcan4x5x_parse_config function to tcan4x5x_get_gpios since
+the function retrieves the gpio configurations from the firmware.
 
-> On 1/30/20 2:30 PM, Oliver Hartkopp wrote:
->> Since commit 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
->> device struct can_dev_rcv_lists") the device specific CAN receive filter lists
->> are stored in netdev_priv() and dev->ml_priv points to these filters.
->> 
->> In the bug report Syzkaller enslaved a vxcan1 CAN device and accessed the
->> bonding device with a PF_CAN socket which lead to a crash due to an access of
->> an unhandled bond_dev->ml_priv pointer.
->> 
->> Deny to enslave CAN devices by the bonding driver as the resulting bond_dev
->> pretends to be a CAN device by copying dev->type without really being one.
->> 
->> Reported-by: syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com
->> Fixes: 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
->> device struct can_dev_rcv_lists")
->> Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
->> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> 
-> What's the preferred to upstream this? I could take this via the
-> linux-can tree.
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ drivers/net/can/m_can/tcan4x5x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-What I don't get is why the PF_CAN is blindly dereferencing a device
-assuming what is behind bond_dev->ml_priv.
-
-If it assumes a device it access is CAN then it should check the
-device by comparing the netdev_ops or via some other means.
-
-This restriction seems arbitrary.
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index 9821babef55e..37d53ecc560b 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -381,7 +381,7 @@ static int tcan4x5x_disable_state(struct m_can_classdev *cdev)
+ 				  TCAN4X5X_DISABLE_INH_MSK, 0x01);
+ }
+ 
+-static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
++static int tcan4x5x_get_gpios(struct m_can_classdev *cdev)
+ {
+ 	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
+ 	int ret;
+@@ -507,7 +507,7 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = tcan4x5x_parse_config(mcan_class);
++	ret = tcan4x5x_get_gpios(mcan_class);
+ 	if (ret)
+ 		goto out_power;
+ 
+-- 
+2.25.0
