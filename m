@@ -1,35 +1,74 @@
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: KASAN: use-after-free Read in slcan_open
-Date: Mon, 2 Mar 2020 09:31:58 +0100
-Message-ID: <2f8c5b49-ae02-e269-97cf-b4a979f950ac@hartkopp.net>
-References: <00000000000099fb63059fd95165@google.com>
+Subject: Re: [PATCH] bonding: do not enslave CAN devices
+Date: Mon, 2 Mar 2020 09:45:41 +0100
+Message-ID: <d6d9368d-b468-3946-ac63-abedf6758154@hartkopp.net>
+References: <20200130133046.2047-1-socketcan@hartkopp.net>
+ <767580d8-1c93-907b-609c-4c1c049b7c42@pengutronix.de>
+ <20200226.202326.295871777946911500.davem@davemloft.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:9718 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726758AbgCBIcQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 2 Mar 2020 03:32:16 -0500
-In-Reply-To: <00000000000099fb63059fd95165@google.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20200226.202326.295871777946911500.davem@davemloft.net>
 Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: syzbot <syzbot+b5ec6fd05ab552a78532@syzkaller.appspotmail.com>, davem@davemloft.net, dvyukov@google.com, jouni.hogander@unikie.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, mkl@pengutronix.de, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com, wg@grandegger.com
+Sender: stable-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>, mkl@pengutronix.de
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, stable@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-#sys fix: can: slcan: Fix use-after-free Read in slcan_open
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/net/can/slcan.c?id=9ebd796e24008f33f06ebea5a5e6aceb68b51794
 
-Thanks,
-Oliver
-
-On 02/03/2020 07.30, syzbot wrote:
-> This bug is marked as fixed by commit:
-> slcan: Fix use-after-free Read in slcan_open
-> But I can't find it in any tested tree for more than 90 days.
-> Is it a correct commit? Please update it by replying:
-> #syz fix: exact-commit-title
-> Until then the bug is still considered open and
-> new crashes with the same signature are ignored.
+On 27/02/2020 05.23, David Miller wrote:
+> From: Marc Kleine-Budde <mkl@pengutronix.de>
+> Date: Tue, 25 Feb 2020 21:32:41 +0100
 > 
+>> On 1/30/20 2:30 PM, Oliver Hartkopp wrote:
+>>> Since commit 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
+>>> device struct can_dev_rcv_lists") the device specific CAN receive filter lists
+>>> are stored in netdev_priv() and dev->ml_priv points to these filters.
+>>>
+>>> In the bug report Syzkaller enslaved a vxcan1 CAN device and accessed the
+>>> bonding device with a PF_CAN socket which lead to a crash due to an access of
+>>> an unhandled bond_dev->ml_priv pointer.
+>>>
+>>> Deny to enslave CAN devices by the bonding driver as the resulting bond_dev
+>>> pretends to be a CAN device by copying dev->type without really being one.
+>>>
+>>> Reported-by: syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com
+>>> Fixes: 8df9ffb888c ("can: make use of preallocated can_ml_priv for per
+>>> device struct can_dev_rcv_lists")
+>>> Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
+>>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>>
+>> What's the preferred to upstream this? I could take this via the
+>> linux-can tree.
+> 
+> What I don't get is why the PF_CAN is blindly dereferencing a device
+> assuming what is behind bond_dev->ml_priv.
+> 
+> If it assumes a device it access is CAN then it should check the
+> device by comparing the netdev_ops or via some other means.
+
+Yes we do.
+
+> This restriction seems arbitrary.
+
+Since commit 8df9ffb888c the data structures for the CAN filters have 
+been moved from net/can/af_can.c into netdev->ml_priv.
+
+PF_CAN only works with CAN interfaces and therefore always checks 
+dev->type to be ARPHRD_CAN before accessing netdev->ml_priv.
+
+Bonding and Team driver copy most of the device data structures to 
+create bonding/team devices.
+They copy dev->type but *not* dev->ml_priv.
+That leads to the problematic ml_priv access after passing the dev->type 
+check ...
+
+I don't know yet whether it makes sense to have CAN bonding/team 
+devices. But if so we would need some more investigation. For now 
+disabling CAN interfaces for bonding/team devices seems to be reasonable.
+
+Regards,
+Oliver
