@@ -1,33 +1,46 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] bonding: do not enslave CAN devices
-Date: Mon, 02 Mar 2020 11:12:49 -0800 (PST)
-Message-ID: <20200302.111249.471862054833131096.davem@davemloft.net>
-References: <767580d8-1c93-907b-609c-4c1c049b7c42@pengutronix.de>
-        <20200226.202326.295871777946911500.davem@davemloft.net>
-        <d6d9368d-b468-3946-ac63-abedf6758154@hartkopp.net>
+From: Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net 06/16] can: add missing attribute validation for termination
+Date: Mon,  2 Mar 2020 21:05:16 -0800
+Message-ID: <20200303050526.4088735-7-kuba@kernel.org>
+References: <20200303050526.4088735-1-kuba@kernel.org>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <d6d9368d-b468-3946-ac63-abedf6758154@hartkopp.net>
-Sender: netdev-owner@vger.kernel.org
-To: socketcan@hartkopp.net
-Cc: mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, stable@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail.kernel.org ([198.145.29.99]:37596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726164AbgCCFFn (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 3 Mar 2020 00:05:43 -0500
+In-Reply-To: <20200303050526.4088735-1-kuba@kernel.org>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: davem@davemloft.net
+Cc: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Date: Mon, 2 Mar 2020 09:45:41 +0100
+Add missing attribute validation for IFLA_CAN_TERMINATION
+to the netlink policy.
 
-> I don't know yet whether it makes sense to have CAN bonding/team
-> devices. But if so we would need some more investigation. For now
-> disabling CAN interfaces for bonding/team devices seems to be
-> reasonable.
+Fixes: 12a6075cabc0 ("can: dev: add CAN interface termination API")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+CC: Wolfgang Grandegger <wg@grandegger.com>
+CC: Marc Kleine-Budde <mkl@pengutronix.de>
+CC: Oliver Hartkopp <socketcan@hartkopp.net>
+CC: linux-can@vger.kernel.org
+---
+ drivers/net/can/dev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Every single interesting device that falls into a special use case
-like CAN is going to be tempted to add a similar check.
-
-I don't want to set this precedence.
-
-Check that the devices you get passed are actually CAN devices, it's
-easy, just compare the netdev_ops and make sure they equal the CAN
-ones.
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 6ee06a49fb4c..68834a2853c9 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -883,6 +883,7 @@ static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
+ 				= { .len = sizeof(struct can_bittiming) },
+ 	[IFLA_CAN_DATA_BITTIMING_CONST]
+ 				= { .len = sizeof(struct can_bittiming_const) },
++	[IFLA_CAN_TERMINATION]	= { .type = NLA_U16 },
+ };
+ 
+ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
+-- 
+2.24.1
