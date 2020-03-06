@@ -1,32 +1,51 @@
-From: ''Michael Weirsky'' <alex.zari@11d02.mspz7.gob.ec>
-Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
-Date: Thu, 05 Mar 2020 11:05:37 +0200
-Message-ID: <20200305091243.1B5EB14596E@mail.11d02.mspz7.gob.ec>
-Reply-To: mikeweirskyspende@gmail.com
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] bonding: do not enslave CAN devices
+Date: Fri, 6 Mar 2020 15:12:48 +0100
+Message-ID: <03ff979e-a621-c9a3-9be3-13677c147f91@pengutronix.de>
+References: <767580d8-1c93-907b-609c-4c1c049b7c42@pengutronix.de>
+ <20200226.202326.295871777946911500.davem@davemloft.net>
+ <d6d9368d-b468-3946-ac63-abedf6758154@hartkopp.net>
+ <20200302.111249.471862054833131096.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.11d02.mspz7.gob.ec ([181.211.254.254]:37544 "EHLO
-        mail.11d02.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726079AbgCEOJS (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Mar 2020 09:09:18 -0500
-Content-Description: Mail message body
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Recipients <alex.zari@11d02.mspz7.gob.ec>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200302.111249.471862054833131096.davem@davemloft.net>
+Content-Language: en-GB
+Sender: netdev-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>, socketcan@hartkopp.net
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, stable@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-Lieber Freund,
+On 3/2/20 8:12 PM, David Miller wrote:
+> From: Oliver Hartkopp <socketcan@hartkopp.net>
+> Date: Mon, 2 Mar 2020 09:45:41 +0100
+> 
+>> I don't know yet whether it makes sense to have CAN bonding/team
+>> devices. But if so we would need some more investigation. For now
+>> disabling CAN interfaces for bonding/team devices seems to be
+>> reasonable.
+> 
+> Every single interesting device that falls into a special use case
+> like CAN is going to be tempted to add a similar check.
+> 
+> I don't want to set this precedence.
+> 
+> Check that the devices you get passed are actually CAN devices, it's
+> easy, just compare the netdev_ops and make sure they equal the CAN
+> ones.
 
-Ich bin Herr Mike Weirsky, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 273million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen.
-Das ist dein Spendencode: [MW530342019]
-www.youtube.com/watch?v=un8yRTmrYMY
+Sorry, I'm not really sure how to implement this check.
 
-Antworten Sie mit dem SPENDE-CODE an diese 
+Should I maintain a list of all netdev_ops of all the CAN devices (=
+whitelist) and the compare against that list? Having a global list of
+pointers to network devices remind me of the old days of kernel-2.4.
 
-E-Mail:mikeweirskyspende@gmail.com
+regards,
+Marc
 
-Ich hoffe, Sie und Ihre Familie glücklich zu machen.
-
-Grüße
-Herr Mike Weirsky
+-- 
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
