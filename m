@@ -1,43 +1,50 @@
-From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
-Subject: Need help in interpreting ip status output
-Date: Fri, 6 Mar 2020 21:13:00 +0100
-Message-ID: <a6c8ef8c-5c72-7a2b-98df-0a30057c5fdc@gmx.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] bonding: do not enslave CAN devices
+Date: Fri, 06 Mar 2020 21:13:20 -0800 (PST)
+Message-ID: <20200306.211320.1410615421373955488.davem@davemloft.net>
+References: <d6d9368d-b468-3946-ac63-abedf6758154@hartkopp.net>
+        <20200302.111249.471862054833131096.davem@davemloft.net>
+        <03ff979e-a621-c9a3-9be3-13677c147f91@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.15.15]:35731 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgCFUNC (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 6 Mar 2020 15:13:02 -0500
-Received: from [192.168.2.106] ([84.176.153.207]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Md6Qr-1jj5vb3Iot-00aILM for
- <linux-can@vger.kernel.org>; Fri, 06 Mar 2020 21:13:00 +0100
-Content-Language: en-GB
+Received: from shards.monkeyblade.net ([23.128.96.9]:40714 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725263AbgCGFNi (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 7 Mar 2020 00:13:38 -0500
+In-Reply-To: <03ff979e-a621-c9a3-9be3-13677c147f91@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: mkl@pengutronix.de
+Cc: socketcan@hartkopp.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, stable@vger.kernel.org
 
-Hi all,
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Fri, 6 Mar 2020 15:12:48 +0100
 
-can someone help me interpreting the following ip output:
+> On 3/2/20 8:12 PM, David Miller wrote:
+>> From: Oliver Hartkopp <socketcan@hartkopp.net>
+>> Date: Mon, 2 Mar 2020 09:45:41 +0100
+>> 
+>>> I don't know yet whether it makes sense to have CAN bonding/team
+>>> devices. But if so we would need some more investigation. For now
+>>> disabling CAN interfaces for bonding/team devices seems to be
+>>> reasonable.
+>> 
+>> Every single interesting device that falls into a special use case
+>> like CAN is going to be tempted to add a similar check.
+>> 
+>> I don't want to set this precedence.
+>> 
+>> Check that the devices you get passed are actually CAN devices, it's
+>> easy, just compare the netdev_ops and make sure they equal the CAN
+>> ones.
+> 
+> Sorry, I'm not really sure how to implement this check.
 
-ip -s link show can1
-      3: can1: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state
-UNKNOWN mode DEFAULT group default qlen 100
-          link/can
-          RX: bytes  packets  errors  dropped overrun mcast
-          0          9987413  1       74      1       0
-          TX: bytes  packets  errors  dropped carrier collsns
-          0          0        0       0       0       0
+Like this:
 
-I'm especially interested in the meaning of the
+if (netdev->ops != &can_netdev_ops)
+	return;
 
-* 1 errors
-* 74 dropped
-* 1 overrun
-
-fields.
-
-Thanks and best regards,
-Andr=C3=A9
+Done.
