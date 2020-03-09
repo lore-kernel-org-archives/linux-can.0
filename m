@@ -1,25 +1,59 @@
-From: "Michael J. Weirsky" <mikhailov@paleo.ru>
-Subject: (unknown)
-Date: Mon, 09 Mar 2020 09:34:50 +0200
-Message-ID: <220b7168bd2107159801152a8cfc3e22__24775.5390287907$1583741265$gmane$org@paleo.ru>
-Reply-To: micjsky@aol.com
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH] bonding: do not enslave CAN devices
+Date: Mon, 9 Mar 2020 11:25:50 +0100
+Message-ID: <d69b4a32-5d3e-d100-78d3-d713b97eb2ff@pengutronix.de>
+References: <d6d9368d-b468-3946-ac63-abedf6758154@hartkopp.net>
+ <20200302.111249.471862054833131096.davem@davemloft.net>
+ <03ff979e-a621-c9a3-9be3-13677c147f91@pengutronix.de>
+ <20200306.211320.1410615421373955488.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from paleo.ru ([195.178.204.132]:37887 "EHLO mail.paleo.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726426AbgCIIHh (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 9 Mar 2020 04:07:37 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20200306.211320.1410615421373955488.davem@davemloft.net>
+Content-Language: de-DE
+Sender: stable-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: socketcan@hartkopp.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, stable@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
+On 3/7/20 6:13 AM, David Miller wrote:
+> From: Marc Kleine-Budde <mkl@pengutronix.de>
+> Date: Fri, 6 Mar 2020 15:12:48 +0100
+> 
+>> On 3/2/20 8:12 PM, David Miller wrote:
+>>> From: Oliver Hartkopp <socketcan@hartkopp.net>
+>>> Date: Mon, 2 Mar 2020 09:45:41 +0100
+>>>
+>>>> I don't know yet whether it makes sense to have CAN bonding/team
+>>>> devices. But if so we would need some more investigation. For now
+>>>> disabling CAN interfaces for bonding/team devices seems to be
+>>>> reasonable.
+>>>
+>>> Every single interesting device that falls into a special use case
+>>> like CAN is going to be tempted to add a similar check.
+>>>
+>>> I don't want to set this precedence.
+>>>
+>>> Check that the devices you get passed are actually CAN devices, it's
+>>> easy, just compare the netdev_ops and make sure they equal the CAN
+>>> ones.
+>>
+>> Sorry, I'm not really sure how to implement this check.
+> 
+> Like this:
+> 
+> if (netdev->ops != &can_netdev_ops)
+> 	return;
 
+There is no single can_netdev_ops. The netdev_ops are per CAN-network
+driver. But the ml_priv is used in the generic CAN code.
+
+regards,
+Marc
 
 -- 
-My name is Michael J. Weirsky, I'm an unemployed Handy man , winner of 
-$273million Jackpot in March 8, 2019. I donate $1.000.000,00 to you. 
-Contact me via email: micjsky@aol.com for info / claim.
-Continue reading: 
-https://abcnews.go.com/WNT/video/jersey-handyman-forward-273m-lottery-winner-61544244
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
