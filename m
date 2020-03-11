@@ -1,106 +1,104 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH linux-can-next] can: flexcan: add correctable errors
- correction when HW supports ECC
-Date: Wed, 11 Mar 2020 08:50:55 +0000
-Message-ID: <DB7PR04MB4618848506D2B1B4ECF00D0CE6FC0@DB7PR04MB4618.eurprd04.prod.outlook.com>
-References: <20200212114620.15416-1-qiangqing.zhang@nxp.com>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Kernel-Warning when stopping the CAN interface
+Date: Wed, 11 Mar 2020 16:47:40 +0100
+Message-ID: <c72f924a-8736-1f54-c5ab-4f5cfe6af9ed@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr80049.outbound.protection.outlook.com ([40.107.8.49]:16366
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726160AbgCKIvA (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 11 Mar 2020 04:51:00 -0400
-In-Reply-To: <20200212114620.15416-1-qiangqing.zhang@nxp.com>
-Content-Language: en-US
+Received: from mailproxy06.manitu.net ([217.11.48.70]:35648 "EHLO
+        mailproxy06.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729841AbgCKPw6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 11 Mar 2020 11:52:58 -0400
+Received: from [IPv6:2001:a61:b23:a901:512:698b:590b:3ad6] (unknown [IPv6:2001:a61:b23:a901:512:698b:590b:3ad6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wg@grandegger.com)
+        by mailproxy06.manitu.net (Postfix) with ESMTPSA id 470C458025A
+        for <linux-can@vger.kernel.org>; Wed, 11 Mar 2020 16:47:41 +0100 (CET)
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-DQpLaW5kbHkgUGluZy4uLg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCg0KPiAtLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56
-aGFuZ0BueHAuY29tPg0KPiBTZW50OiAyMDIwxOoy1MIxMsjVIDE5OjQ2DQo+IFRvOiBta2xAcGVu
-Z3V0cm9uaXguZGU7IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRsLWxpbnV4LWlt
-eCA8bGludXgtaW14QG54cC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6
-IFtQQVRDSCBsaW51eC1jYW4tbmV4dF0gY2FuOiBmbGV4Y2FuOiBhZGQgY29ycmVjdGFibGUgZXJy
-b3JzIGNvcnJlY3Rpb24NCj4gd2hlbiBIVyBzdXBwb3J0cyBFQ0MNCj4gDQo+IGNvbW1pdCBjZGNl
-ODQ0ODY1YmUgKCJjYW46IGZsZXhjYW46IGFkZCB2ZjYxMCBzdXBwb3J0IGZvciBGbGV4Q0FOIikg
-RnJvbQ0KPiBhYm92ZSBjb21taXQgYnkgU3RlZmFuIEFnbmVyLCB0aGUgcGF0Y2gganVzdCBkaXNh
-YmxlcyBub24tY29ycmVjdGFibGUgZXJyb3JzDQo+IGludGVycnVwdCBhbmQgZnJlZXplIG1vZGUu
-IEl0IHN0aWxsIGNhbiBjb3JyZWN0IHRoZSBjb3JyZWN0YWJsZSBlcnJvcnMgc2luY2UgRUNDDQo+
-IGVuYWJsZWQgYnkgZGVmYXVsdCBhZnRlciByZXNldCAoTUVDUltFQ0NESVNdPTAsIGVuYWJsZSBt
-ZW1vcnkgZXJyb3IgY29ycmVjdCkNCj4gaWYgSFcgc3VwcG9ydHMgRUNDLg0KPiANCj4gY29tbWl0
-IDVlMjY5MzI0ZGI1YSAoImNhbjogZmxleGNhbjogZGlzYWJsZSBjb21wbGV0ZWx5IHRoZSBFQ0Mg
-bWVjaGFuaXNtIikNCj4gRnJvbSBhYm92ZSBjb21taXQgYnkgSm9ha2ltIFpoYW5nLCB0aGUgcGF0
-Y2ggZGlzYWJsZXMgRUNDIGNvbXBsZXRlbHkNCj4gKGFzc2VydA0KPiBNRUNSW0VDQ0RJU10pIGFj
-Y29yZGluZyB0byB0aGUgZXhwbGFuYXRpb24gb2YNCj4gRkxFWENBTl9RVUlSS19ESVNBQkxFX01F
-Q1IgdGhhdCBkaXNhYmxlIG1lbW9yeSBlcnJvciBkZXRlY3Rpb24uIFRoaXMNCj4gY2F1c2UgY29y
-cmVjdGFibGUgZXJyb3JzIGNhbm5vdCBiZSBjb3JyZWN0ZWQgZXZlbiBIVyBzdXBwb3J0cyBFQ0Mu
-DQo+IA0KPiBUaGUgZXJyb3IgY29ycmVjdGlvbiBtZWNoYW5pc20gZW5zdXJlcyB0aGF0IGluIHRo
-aXMgMTMtYml0IHdvcmQsIGVycm9ycyBpbiBvbmUNCj4gYml0IGNhbiBiZSBjb3JyZWN0ZWQgKGNv
-cnJlY3RhYmxlIGVycm9ycykgYW5kIGVycm9ycyBpbiB0d28gYml0cyBjYW4gYmUgZGV0ZWN0ZWQN
-Cj4gYnV0IG5vdCBjb3JyZWN0ZWQgKG5vbi1jb3JyZWN0YWJsZSBlcnJvcnMpLiBFcnJvcnMgaW4g
-bW9yZSB0aGFuIHR3byBiaXRzIG1heQ0KPiBub3QgYmUgZGV0ZWN0ZWQuDQo+IA0KPiBJZiBIVyBz
-dXBwb3J0cyBFQ0MsIHdlIGNhbiB1c2UgdGhpcyB0byBjb3JyZWN0IHRoZSBjb3JyZWN0YWJsZSBl
-cnJvcnMgZGV0ZWN0ZWQNCj4gZnJvbSBGbGV4Q0FOIG1lbW9yeS4gVGhlbiBkaXNhYmxlIG5vbi1j
-b3JyZWN0YWJsZSBlcnJvcnMgaW50ZXJydXB0IGFuZA0KPiBmcmVlemUgbW9kZSB0byBhdm9pZCB0
-aGF0IHB1dCBGbGV4Q0FOIGluIGZyZWV6ZSBtb2RlLg0KPiANCj4gVGhpcyBwYXRjaCBhZGRzIGNv
-cnJlY3RhYmxlIGVycm9ycyBjb3JyZWN0aW9uIHdoZW4gSFcgc3VwcG9ydHMgRUNDLCBhbmQNCj4g
-bW9kaWZ5IGV4cGxhbmF0aW9uIGZvciBGTEVYQ0FOX1FVSVJLX0RJU0FCTEVfTUVDUi4NCj4gDQo+
-IFNpZ25lZC1vZmYtYnk6IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+
-IC0tLQ0KPiAgZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyB8IDIzICsrKysrKysrKysrKysrKysr
-Ky0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMo
-LSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJpdmVy
-cy9uZXQvY2FuL2ZsZXhjYW4uYyBpbmRleA0KPiAzYTc1NDM1NWViZTYuLmFhODcxOTUzMDAzYSAx
-MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiArKysgYi9kcml2ZXJz
-L25ldC9jYW4vZmxleGNhbi5jDQo+IEBAIC0xODcsNyArMTg3LDcgQEANCj4gICNkZWZpbmUgRkxF
-WENBTl9RVUlSS19CUk9LRU5fV0VSUl9TVEFURQlCSVQoMSkgLyogW1RSXVdSTl9JTlQNCj4gbm90
-IGNvbm5lY3RlZCAqLw0KPiAgI2RlZmluZSBGTEVYQ0FOX1FVSVJLX0RJU0FCTEVfUlhGRwlCSVQo
-MikgLyogRGlzYWJsZSBSWCBGSUZPIEdsb2JhbA0KPiBtYXNrICovDQo+ICAjZGVmaW5lIEZMRVhD
-QU5fUVVJUktfRU5BQkxFX0VBQ0VOX1JSUwlCSVQoMykgLyogRW5hYmxlIEVBQ0VOIGFuZA0KPiBS
-UlMgYml0IGluIGN0cmwyICovDQo+IC0jZGVmaW5lIEZMRVhDQU5fUVVJUktfRElTQUJMRV9NRUNS
-CUJJVCg0KSAvKiBEaXNhYmxlIE1lbW9yeSBlcnJvcg0KPiBkZXRlY3Rpb24gKi8NCj4gKyNkZWZp
-bmUgRkxFWENBTl9RVUlSS19ESVNBQkxFX01FQ1IJQklUKDQpIC8qIERpc2FibGUgbm9uLWNvcnJl
-Y3RhYmxlDQo+IGVycm9ycyBpbnRlcnJ1cHQgYW5kIGZyZWV6ZSBtb2RlICovDQo+ICAjZGVmaW5l
-IEZMRVhDQU5fUVVJUktfVVNFX09GRl9USU1FU1RBTVAJQklUKDUpIC8qIFVzZSB0aW1lc3RhbXAN
-Cj4gYmFzZWQgb2ZmbG9hZGluZyAqLw0KPiAgI2RlZmluZSBGTEVYQ0FOX1FVSVJLX0JST0tFTl9Q
-RVJSX1NUQVRFCUJJVCg2KSAvKiBObyBpbnRlcnJ1cHQgZm9yDQo+IGVycm9yIHBhc3NpdmUgKi8N
-Cj4gICNkZWZpbmUgRkxFWENBTl9RVUlSS19ERUZBVUxUX0JJR19FTkRJQU4JQklUKDcpIC8qIGRl
-ZmF1bHQgdG8gQkUNCj4gcmVnaXN0ZXIgYWNjZXNzICovDQo+IEBAIC0xMjAzLDggKzEyMDMsOCBA
-QCBzdGF0aWMgaW50IGZsZXhjYW5fY2hpcF9zdGFydChzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQ0K
-PiAgCWZvciAoaSA9IDA7IGkgPCBwcml2LT5tYl9jb3VudDsgaSsrKQ0KPiAgCQlwcml2LT53cml0
-ZSgwLCAmcmVncy0+cnhpbXJbaV0pOw0KPiANCj4gLQkvKiBPbiBWeWJyaWQsIGRpc2FibGUgbWVt
-b3J5IGVycm9yIGRldGVjdGlvbiBpbnRlcnJ1cHRzDQo+IC0JICogYW5kIGZyZWV6ZSBtb2RlLg0K
-PiArCS8qIE9uIFZ5YnJpZCwgZGlzYWJsZSBub24tY29ycmVjdGFibGUgZXJyb3JzIGludGVycnVw
-dCBhbmQgZnJlZXplDQo+ICsJICogbW9kZS4gSXQgc3RpbGwgY2FuIGNvcnJlY3QgdGhlIGNvcnJl
-Y3RhYmxlIGVycm9ycyB3aGVuIEhXIHN1cHBvcnRzDQo+IEVDQy4NCj4gIAkgKiBUaGlzIGFsc28g
-d29ya3MgYXJvdW5kIGVycmF0YSBlNTI5NSB3aGljaCBnZW5lcmF0ZXMNCj4gIAkgKiBmYWxzZSBw
-b3NpdGl2ZSBtZW1vcnkgZXJyb3JzIGFuZCBwdXQgdGhlIGRldmljZSBpbg0KPiAgCSAqIGZyZWV6
-ZSBtb2RlLg0KPiBAQCAtMTIxMiwxOSArMTIxMiwzMiBAQCBzdGF0aWMgaW50IGZsZXhjYW5fY2hp
-cF9zdGFydChzdHJ1Y3QgbmV0X2RldmljZQ0KPiAqZGV2KQ0KPiAgCWlmIChwcml2LT5kZXZ0eXBl
-X2RhdGEtPnF1aXJrcyAmIEZMRVhDQU5fUVVJUktfRElTQUJMRV9NRUNSKSB7DQo+ICAJCS8qIEZv
-bGxvdyB0aGUgcHJvdG9jb2wgYXMgZGVzY3JpYmVkIGluICJEZXRlY3Rpb24NCj4gIAkJICogYW5k
-IENvcnJlY3Rpb24gb2YgTWVtb3J5IEVycm9ycyIgdG8gd3JpdGUgdG8NCj4gLQkJICogTUVDUiBy
-ZWdpc3Rlcg0KPiArCQkgKiBNRUNSIHJlZ2lzdGVyIChzdGVwIDEgLSA1KQ0KPiArCQkgKiAxLiBC
-eSBkZWZhdWx0LCBDVFJMMltFQ1JXUkVdID0gMCwgTUVDUltFQ1JXUkRJU10gPSAxDQo+ICsJCSAq
-IDIuIHNldCBDVFJMMltFQ1JXUkVdDQo+ICAJCSAqLw0KPiAgCQlyZWdfY3RybDIgPSBwcml2LT5y
-ZWFkKCZyZWdzLT5jdHJsMik7DQo+ICAJCXJlZ19jdHJsMiB8PSBGTEVYQ0FOX0NUUkwyX0VDUldS
-RTsNCj4gIAkJcHJpdi0+d3JpdGUocmVnX2N0cmwyLCAmcmVncy0+Y3RybDIpOw0KPiANCj4gKwkJ
-LyogMy4gY2xlYXIgTUVDUltFQ1JXUkRJU10gKi8NCj4gIAkJcmVnX21lY3IgPSBwcml2LT5yZWFk
-KCZyZWdzLT5tZWNyKTsNCj4gIAkJcmVnX21lY3IgJj0gfkZMRVhDQU5fTUVDUl9FQ1JXUkRJUzsN
-Cj4gIAkJcHJpdi0+d3JpdGUocmVnX21lY3IsICZyZWdzLT5tZWNyKTsNCj4gLQkJcmVnX21lY3Ig
-fD0gRkxFWENBTl9NRUNSX0VDQ0RJUzsNCj4gKw0KPiArCQkvKiA0LiBhbGwgd3JpdGVzIHRvIE1F
-Q1IgbXVzdCBrZWVwIE1FQ1JbRUNSV1JESVNdIGNsZWFyZWQgKi8NCj4gIAkJcmVnX21lY3IgJj0g
-fihGTEVYQ0FOX01FQ1JfTkNFRkFGUlogfA0KPiBGTEVYQ0FOX01FQ1JfSEFOQ0VJX01TSyB8DQo+
-ICAJCQkgICAgICBGTEVYQ0FOX01FQ1JfRkFOQ0VJX01TSyk7DQo+ICAJCXByaXYtPndyaXRlKHJl
-Z19tZWNyLCAmcmVncy0+bWVjcik7DQo+ICsNCj4gKwkJLyogNS4gYWZ0ZXIgY29uZmlndXJhdGlv
-biBkb25lLCBsb2NrIE1FQ1IgYnkgZWl0aGVyIHNldHRpbmcNCj4gKwkJICogTUVDUltFQ1JXUkRJ
-U10gb3IgY2xlYXJpbmcgQ1RSTDJbRUNSV1JFXQ0KPiArCQkgKi8NCj4gKwkJcmVnX21lY3IgfD0g
-RkxFWENBTl9NRUNSX0VDUldSRElTOw0KPiArCQlwcml2LT53cml0ZShyZWdfbWVjciwgJnJlZ3Mt
-Pm1lY3IpOw0KPiArCQlyZWdfY3RybDIgJj0gfkZMRVhDQU5fQ1RSTDJfRUNSV1JFOw0KPiArCQlw
-cml2LT53cml0ZShyZWdfY3RybDIsICZyZWdzLT5jdHJsMik7DQo+ICsNCj4gIAl9DQo+IA0KPiAg
-CWVyciA9IGZsZXhjYW5fdHJhbnNjZWl2ZXJfZW5hYmxlKHByaXYpOw0KPiAtLQ0KPiAyLjE3LjEN
-Cg0K
+Hello,
+
+I can easily trigger the kernel warning below with a "gs_usb" device when
+I send messages with "cangen -g1 can0" and then stop the interface with
+"ifconfig can0 down". The warning comes from here:
+
+  https://elixir.bootlin.com/linux/latest/source/net/core/skbuff.c#L651
+
+What happens is that the "ifconfig down" command first sets
+
+  clear_bit(__LINK_STATE_START, &dev->state);
+
+before it calls the device specific stop/close routine. In the meantime,
+TX done events may still occur, calling can_get_echo_skb(), which calls
+netif_rx() then netif_rx_internal() and finally enqueue_to_backlog().
+Because the interface is not running any longer, the skb is dropped in
+there:
+
+  https://elixir.bootlin.com/linux/latest/source/net/core/dev.c#L4394
+
+causing the warning below, because the kfree_skb(skb) is called from
+the interrupt context.
+
+How can I avoid that warning? Actually, I do not see a simple method.
+Maybe I have missed something.
+
+Wolfgang
+
+[ 1694.131475] ------------[ cut here ]------------
+[ 1694.139911] WARNING: CPU: 0 PID: 0 at skb_release_head_state+0x9e/0xb0
+[ 1694.147206] Modules linked in: intel_telemetry_pltdrv intel_pmc_ipc intel_punit_ipc intel_telemetry_core x86_pkg_temp_thermal igb tpm_tis tpm_tis_core btusb btrtl dca tpm lpc_ich btbcm spi_pxa2xx_platform mei_me btintel mei thermal rfcomm bluetooth ecdh_generic ntngdm_i2c ntngdm_core ntngdm_bl ntngdm_tsi ntngdm_irq ntngdm_hwmon i915 video
+[ 1694.180782] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G     U  W       4.14.51apollolake #1
+[ 1694.189828] Hardware name: Default string Default string/AGCO_NT-NG, BIOS X3.00c#AGCO BETA 09/19/2019
+[ 1694.200136] task: ffffffff840104c0 task.stack: ffffffff84000000
+[ 1694.206753] RIP: 0010:skb_release_head_state+0x9e/0xb0
+[ 1694.212494] RSP: 0018:ffff8b2b3fc03cb0 EFLAGS: 00010006
+[ 1694.218333] RAX: ffffffff835a4fb0 RBX: ffff8b2b3a20b100 RCX: 0000000000000018
+[ 1694.226310] RDX: 0000000000010000 RSI: 0000000000000000 RDI: 0000000000000000
+[ 1694.234284] RBP: 0000000000020ac0 R08: 0000000000000014 R09: 0000000000000014
+[ 1694.242259] R10: 0000000000000000 R11: ffff8b2b3a7a2180 R12: ffff8b2b3fc03d40
+[ 1694.250235] R13: ffff8b2b3a20b100 R14: ffff8b2b3fc20bcc R15: 0000000000000086
+[ 1694.258211] FS:  0000000000000000(0000) GS:ffff8b2b3fc00000(0000) knlGS:0000000000000000
+[ 1694.267256] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1694.273678] CR2: 00007f83a2db5130 CR3: 0000000179c6a000 CR4: 00000000003406f0
+[ 1694.281653] Call Trace:
+[ 1694.284383]  <IRQ>
+[ 1694.286629]  skb_release_all+0x9/0x20
+[ 1694.290720]  kfree_skb+0x19/0x40
+[ 1694.294327]  enqueue_to_backlog+0x7e/0x230
+[ 1694.298906]  ? recalibrate_cpu_khz+0x10/0x10
+[ 1694.303677]  ? ktime_get_with_offset+0x4f/0xb0
+[ 1694.308644]  netif_rx_internal+0x56/0x150
+[ 1694.313126]  can_get_echo_skb+0x37/0x60
+[ 1694.317415]  gs_usb_receive_bulk_callback+0x111/0x320
+[ 1694.323063]  __usb_hcd_giveback_urb+0x7b/0xf0
+[ 1694.327924]  xhci_giveback_urb_in_irq.isra.55+0x6d/0x90
+[ 1694.333765]  xhci_td_cleanup+0xcb/0x150
+[ 1694.338051]  xhci_irq+0x66a/0x20b0
+[ 1694.341854]  ? rcu_accelerate_cbs+0x3a/0x190
+[ 1694.346628]  __handle_irq_event_percpu+0x32/0xd0
+[ 1694.351791]  handle_irq_event_percpu+0x2b/0x70
+[ 1694.356757]  handle_irq_event+0x2f/0x50
+[ 1694.361044]  handle_edge_irq+0x72/0x190
+[ 1694.365331]  handle_irq+0x17/0x20
+[ 1694.369038]  do_IRQ+0x3c/0xc0
+[ 1694.372355]  common_interrupt+0x7a/0x7a
+[ 1694.376639]  </IRQ>
+[ 1694.378981] RIP: 0010:cpuidle_enter_state+0x122/0x200
+[ 1694.384622] RSP: 0018:ffffffff84003ea8 EFLAGS: 00000286 ORIG_RAX: ffffffffffffffbd
+[ 1694.393087] RAX: ffff8b2b3fc1fa00 RBX: 0000000000000002 RCX: 0000018a721a5ae8
+[ 1694.401063] RDX: 0000018a721a5ae8 RSI: 0000000050523fbe RDI: 0000000000000000
+[ 1694.409040] RBP: ffff8b2b3aa13600 R08: 0000000000000193 R09: 000000000000012a
+[ 1694.417015] R10: ffffffff84003e90 R11: 00000000000000ef R12: 0000018a721a5ae8
+[ 1694.424990] R13: 0000018a72199308 R14: 0000000000000002 R15: 0000000072efca78
+[ 1694.432970]  ? cpuidle_enter_state+0x11e/0x200
+[ 1694.437937]  do_idle+0x161/0x1a0
+[ 1694.441544]  cpu_startup_entry+0x6a/0x70
+[ 1694.445927]  start_kernel+0x414/0x434
+[ 1694.450023]  secondary_startup_64+0xa5/0xb0
+[ 1694.454697] Code: 88 96 4f 17 00 74 02 5b c3 5b e9 4e 15 bc ff e8 d9 33 04 00 eb dd e8 c2 5a 0d 00 eb 9f 48 83 e7 fe e8 07 d7 01 00 e9 75 ff ff ff <0f> 0b eb ad 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00 00 53 48 89 
+[ 1694.475869] ---[ end trace 063196a1141471b3 ]---
