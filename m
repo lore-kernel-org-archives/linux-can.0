@@ -1,35 +1,23 @@
-From: syzbot <syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com>
-Subject: Re: general protection fault in j1939_netdev_start
-Date: Wed, 11 Mar 2020 13:17:03 -0700
-Message-ID: <00000000000064f9a805a099eb8a@google.com>
-References: <00000000000030395e059f6aaa09@google.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] net: slcan, slip -- no need for goto when if () will do
+Date: Wed, 11 Mar 2020 23:15:51 -0700 (PDT)
+Message-ID: <20200311.231551.178115854707336170.davem@davemloft.net>
+References: <20200309223323.GA1634@duo.ucw.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <00000000000030395e059f6aaa09@google.com>
+In-Reply-To: <20200309223323.GA1634@duo.ucw.cz>
 Sender: linux-kernel-owner@vger.kernel.org
-To: a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net, jiri@mellanox.com, jiri@resnulli.us, kernel@pengutronix.de, kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux@rempel-privat.de, mareklindner@neomailbox.ch, mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl, socketcan@hartkopp.net, sven@narfation.org, sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com
+To: pavel@ucw.cz
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, yangerkun@huawei.com, mkl@pengutronix.de, wg@grandegger.com
 List-Id: linux-can.vger.kernel.org
 
-syzbot has bisected this bug to:
+From: Pavel Machek <pavel@ucw.cz>
+Date: Mon, 9 Mar 2020 23:33:23 +0100
 
-commit 8330f73fe9742f201f467639f8356cf58756fb9f
-Author: Jiri Pirko <jiri@mellanox.com>
-Date:   Wed Sep 4 07:40:47 2019 +0000
+> No need to play with gotos to jump over single statement.
+> 
+> Signed-off-by: Pavel Machek <pavel@ucw.cz>
 
-    rocker: add missing init_net check in FIB notifier
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=165cdcb1e00000
-start commit:   63623fd4 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=155cdcb1e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=115cdcb1e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9833e26bab355358
-dashboard link: https://syzkaller.appspot.com/bug?extid=f03d384f3455d28833eb
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=162b8331e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f10a2de00000
-
-Reported-by: syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com
-Fixes: 8330f73fe974 ("rocker: add missing init_net check in FIB notifier")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Applied, thanks.
