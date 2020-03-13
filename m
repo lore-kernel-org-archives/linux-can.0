@@ -1,93 +1,49 @@
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: Re: [PATCH] bonding: do not enslave CAN devices
-Date: Fri, 13 Mar 2020 10:56:10 +0100
-Message-ID: <20200313095610.x3iorvdotry54vb4@pengutronix.de>
-References: <d6d9368d-b468-3946-ac63-abedf6758154@hartkopp.net>
- <20200302.111249.471862054833131096.davem@davemloft.net>
- <03ff979e-a621-c9a3-9be3-13677c147f91@pengutronix.de>
- <20200306.211320.1410615421373955488.davem@davemloft.net>
- <d69b4a32-5d3e-d100-78d3-d713b97eb2ff@pengutronix.de>
+Subject: [PATCH v1] can: j1939: socket: j1939_sk_bind(): make sure ml_priv is allocated
+Date: Fri, 13 Mar 2020 16:28:59 +0100
+Message-ID: <20200313152859.25588-1-o.rempel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7iofuxgb4mu2cylw"
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <d69b4a32-5d3e-d100-78d3-d713b97eb2ff@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: David Miller <davem@davemloft.net>, socketcan@hartkopp.net, linux-can@vger.kernel.org, netdev@vger.kernel.org, syzbot+c3ea30e1e2485573f953@syzkaller.appspotmail.com, dvyukov@google.com, j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net, stable@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com, linux-stable <stable@vger.kernel.org>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, David Jander <david@protonic.nl>
 List-Id: linux-can.vger.kernel.org
 
+This patch adds check to ensure that the struct net_device::ml_priv is
+allocated, as it is used later by the j1939 stack.
 
---7iofuxgb4mu2cylw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The allocation is done by all mainline CAN network drivers, but when using
+bond or team devices this is not the case.
 
-On Mon, Mar 09, 2020 at 11:25:50AM +0100, Marc Kleine-Budde wrote:
-> On 3/7/20 6:13 AM, David Miller wrote:
-> > From: Marc Kleine-Budde <mkl@pengutronix.de>
-> > Date: Fri, 6 Mar 2020 15:12:48 +0100
-> >=20
-> >> On 3/2/20 8:12 PM, David Miller wrote:
-> >>> From: Oliver Hartkopp <socketcan@hartkopp.net>
-> >>> Date: Mon, 2 Mar 2020 09:45:41 +0100
-> >>>
-> >>>> I don't know yet whether it makes sense to have CAN bonding/team
-> >>>> devices. But if so we would need some more investigation. For now
-> >>>> disabling CAN interfaces for bonding/team devices seems to be
-> >>>> reasonable.
-> >>>
-> >>> Every single interesting device that falls into a special use case
-> >>> like CAN is going to be tempted to add a similar check.
-> >>>
-> >>> I don't want to set this precedence.
-> >>>
-> >>> Check that the devices you get passed are actually CAN devices, it's
-> >>> easy, just compare the netdev_ops and make sure they equal the CAN
-> >>> ones.
-> >>
-> >> Sorry, I'm not really sure how to implement this check.
-> >=20
-> > Like this:
-> >=20
-> > if (netdev->ops !=3D &can_netdev_ops)
-> > 	return;
->=20
-> There is no single can_netdev_ops. The netdev_ops are per CAN-network
-> driver. But the ml_priv is used in the generic CAN code.
+Bail out if no ml_priv is allocated.
 
-ping,
+Reported-by: syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ net/can/j1939/socket.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-are there any other ways or ideas how to solve this issue?
-
-Regards,
-Oleksij
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---7iofuxgb4mu2cylw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl5rWLYACgkQ4omh9DUa
-UbM3rRAAlQmb7VoWlMTGLXbsF+xdJwyuJpRNeq/8b499jlIF0wq0u4gidS5EwlLT
-ZUx/yhRQnYEvT8olNfbKOydG074ZybVRAoKWxqo2WLeTTlK93dSCsSchgGNP4tMb
-eN2Q/bP0Sfeo0DhRN1G3ddYDvNCBQT+Ix3gsjAPM7UApaWwmpse2m8N3doIJJpLf
-pXExGT8TDBhyCytnWvogGjjFo2/bRGGZ4niNp7dpG4Ty+HRLl0JNwPJPW+ypPwfu
-zY0JK9dUqi9Jg3c79g9cCLPD/u7/9a4uFtlEZ8suGzTauhkvEBjM951rU59YZt6d
-YQeAHvWf5B48n7BCa5yk/kJL+D3iAZhp4Il27w1sdzajmyZaQU3JHygssDjnk+kg
-t9+Ft2SCfIuRFHwga4EOMlAngOx2hZlLw76t8MRXBckE124+/Jky3AJSPxIG1u8X
-9t20xtC2s8S6LYY/oNhhWSUJQYoew9NNVYlvSpRJOK9lt4Ptcc02NhVlEVwIKmMB
-lLkHLTvGgOAsfkmS39Bi5B+qzYWt5Eu9j+SOsUHnfv5dNhc71Cue2v3pk7wYsAv7
-mwyEs0bAUA7cPm2fYPPwLIvZQ0SOnFBsNFxXzSOC5kByf3kIROf5AM+91Rvl5aPE
-tAe/mFcFUFzCjtxbjj4uInbvPWH+uiwrRaFtI9iltnHiefxHWII=
-=3Iqy
------END PGP SIGNATURE-----
-
---7iofuxgb4mu2cylw--
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index b9a17c2ee16f..27542de233c7 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -467,6 +467,14 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
+ 			goto out_release_sock;
+ 		}
+ 
++		if (!ndev->ml_priv) {
++			netdev_warn_once(ndev,
++					 "No CAN mid layer private allocated, please fix your driver and use alloc_candev()!\n");
++			dev_put(ndev);
++			ret = -ENODEV;
++			goto out_release_sock;
++		}
++
+ 		priv = j1939_netdev_start(ndev);
+ 		dev_put(ndev);
+ 		if (IS_ERR(priv)) {
+-- 
+2.25.1
