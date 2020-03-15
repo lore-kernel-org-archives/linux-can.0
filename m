@@ -1,49 +1,45 @@
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH v1] can: j1939: socket: j1939_sk_bind(): make sure ml_priv is allocated
-Date: Fri, 13 Mar 2020 16:28:59 +0100
-Message-ID: <20200313152859.25588-1-o.rempel@pengutronix.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com, linux-stable <stable@vger.kernel.org>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, David Jander <david@protonic.nl>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: adjust to MCAN MMIO schema conversion
+Date: Sun, 15 Mar 2020 08:53:56 +0100
+Message-ID: <20200315075356.8596-1-lukas.bulwahn@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Benjamin Gaignard <benjamin.gaignard@st.com>, Rob Herring <robh@kernel.org>
+Cc: Dan Murphy <dmurphy@ti.com>, Sriram Dash <sriram.dash@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>
 List-Id: linux-can.vger.kernel.org
 
-This patch adds check to ensure that the struct net_device::ml_priv is
-allocated, as it is used later by the j1939 stack.
+Commit 824674b59f72 ("dt-bindings: net: can: Convert M_CAN to json-schema")
+missed to adjust the MCAN MMIO DEVICE DRIVER entry in MAINTAINERS.
 
-The allocation is done by all mainline CAN network drivers, but when using
-bond or team devices this is not the case.
+Since then, ./scripts/get_maintainer.pl --self-test complains:
 
-Bail out if no ml_priv is allocated.
+  warning: no file matches \
+  F: Documentation/devicetree/bindings/net/can/m_can.txt
 
-Reported-by: syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Update MAINTAINERS entry to location of converted schema.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- net/can/j1939/socket.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+applies cleanly on next-20200313
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index b9a17c2ee16f..27542de233c7 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -467,6 +467,14 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 			goto out_release_sock;
- 		}
- 
-+		if (!ndev->ml_priv) {
-+			netdev_warn_once(ndev,
-+					 "No CAN mid layer private allocated, please fix your driver and use alloc_candev()!\n");
-+			dev_put(ndev);
-+			ret = -ENODEV;
-+			goto out_release_sock;
-+		}
-+
- 		priv = j1939_netdev_start(ndev);
- 		dev_put(ndev);
- 		if (IS_ERR(priv)) {
+Benjamin, please ack.
+Rob, please pick this patch (it is not urgent, though).
+
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 32a95d162f06..ebc3d91294c6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10323,7 +10323,7 @@ M:	Dan Murphy <dmurphy@ti.com>
+ M:	Sriram Dash <sriram.dash@samsung.com>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/net/can/m_can.txt
++F:	Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+ F:	drivers/net/can/m_can/m_can.c
+ F:	drivers/net/can/m_can/m_can.h
+ F:	drivers/net/can/m_can/m_can_platform.c
 -- 
-2.25.1
+2.17.1
