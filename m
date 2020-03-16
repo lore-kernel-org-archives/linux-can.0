@@ -1,45 +1,40 @@
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust to MCAN MMIO schema conversion
-Date: Sun, 15 Mar 2020 08:53:56 +0100
-Message-ID: <20200315075356.8596-1-lukas.bulwahn@gmail.com>
+From: Benjamin GAIGNARD <benjamin.gaignard@st.com>
+Subject: Re: [PATCH] MAINTAINERS: adjust to MCAN MMIO schema conversion
+Date: Mon, 16 Mar 2020 08:05:28 +0000
+Message-ID: <28f8b502-1f33-1da2-e2b8-3a727db58eea@st.com>
+References: <20200315075356.8596-1-lukas.bulwahn@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20200315075356.8596-1-lukas.bulwahn@gmail.com>
+Content-Language: en-US
+Content-ID: <2B429A41A546874391B681CDAA92AAC5@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Benjamin Gaignard <benjamin.gaignard@st.com>, Rob Herring <robh@kernel.org>
-Cc: Dan Murphy <dmurphy@ti.com>, Sriram Dash <sriram.dash@samsung.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Rob Herring <robh@kernel.org>
+Cc: Dan Murphy <dmurphy@ti.com>, Sriram Dash <sriram.dash@samsung.com>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Joe Perches <joe@perches.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Commit 824674b59f72 ("dt-bindings: net: can: Convert M_CAN to json-schema")
-missed to adjust the MCAN MMIO DEVICE DRIVER entry in MAINTAINERS.
-
-Since then, ./scripts/get_maintainer.pl --self-test complains:
-
-  warning: no file matches \
-  F: Documentation/devicetree/bindings/net/can/m_can.txt
-
-Update MAINTAINERS entry to location of converted schema.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20200313
-
-Benjamin, please ack.
-Rob, please pick this patch (it is not urgent, though).
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 32a95d162f06..ebc3d91294c6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10323,7 +10323,7 @@ M:	Dan Murphy <dmurphy@ti.com>
- M:	Sriram Dash <sriram.dash@samsung.com>
- L:	linux-can@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/net/can/m_can.txt
-+F:	Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
- F:	drivers/net/can/m_can/m_can.c
- F:	drivers/net/can/m_can/m_can.h
- F:	drivers/net/can/m_can/m_can_platform.c
--- 
-2.17.1
+DQoNCk9uIDMvMTUvMjAgODo1MyBBTSwgTHVrYXMgQnVsd2FobiB3cm90ZToNCj4gQ29tbWl0IDgy
+NDY3NGI1OWY3MiAoImR0LWJpbmRpbmdzOiBuZXQ6IGNhbjogQ29udmVydCBNX0NBTiB0byBqc29u
+LXNjaGVtYSIpDQo+IG1pc3NlZCB0byBhZGp1c3QgdGhlIE1DQU4gTU1JTyBERVZJQ0UgRFJJVkVS
+IGVudHJ5IGluIE1BSU5UQUlORVJTLg0KPg0KPiBTaW5jZSB0aGVuLCAuL3NjcmlwdHMvZ2V0X21h
+aW50YWluZXIucGwgLS1zZWxmLXRlc3QgY29tcGxhaW5zOg0KPg0KPiAgICB3YXJuaW5nOiBubyBm
+aWxlIG1hdGNoZXMgXA0KPiAgICBGOiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bmV0L2Nhbi9tX2Nhbi50eHQNCj4NCj4gVXBkYXRlIE1BSU5UQUlORVJTIGVudHJ5IHRvIGxvY2F0
+aW9uIG9mIGNvbnZlcnRlZCBzY2hlbWEuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IEx1a2FzIEJ1bHdh
+aG4gPGx1a2FzLmJ1bHdhaG5AZ21haWwuY29tPg0KUmV2aWV3ZWQtYnk6IEJlbmphbWluIEdhaWdu
+YXJkIDxiZW5qYW1pbi5nYWlnbmFyZEBzdC5jb20+DQoNClRoYW5rcw0KPiAtLS0NCj4gYXBwbGll
+cyBjbGVhbmx5IG9uIG5leHQtMjAyMDAzMTMNCj4NCj4gQmVuamFtaW4sIHBsZWFzZSBhY2suDQo+
+IFJvYiwgcGxlYXNlIHBpY2sgdGhpcyBwYXRjaCAoaXQgaXMgbm90IHVyZ2VudCwgdGhvdWdoKS4N
+Cj4NCj4gICBNQUlOVEFJTkVSUyB8IDIgKy0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
+b24oKyksIDEgZGVsZXRpb24oLSkNCj4NCj4gZGlmZiAtLWdpdCBhL01BSU5UQUlORVJTIGIvTUFJ
+TlRBSU5FUlMNCj4gaW5kZXggMzJhOTVkMTYyZjA2Li5lYmMzZDkxMjk0YzYgMTAwNjQ0DQo+IC0t
+LSBhL01BSU5UQUlORVJTDQo+ICsrKyBiL01BSU5UQUlORVJTDQo+IEBAIC0xMDMyMyw3ICsxMDMy
+Myw3IEBAIE06CURhbiBNdXJwaHkgPGRtdXJwaHlAdGkuY29tPg0KPiAgIE06CVNyaXJhbSBEYXNo
+IDxzcmlyYW0uZGFzaEBzYW1zdW5nLmNvbT4NCj4gICBMOglsaW51eC1jYW5Admdlci5rZXJuZWwu
+b3JnDQo+ICAgUzoJTWFpbnRhaW5lZA0KPiAtRjoJRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL25ldC9jYW4vbV9jYW4udHh0DQo+ICtGOglEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvbmV0L2Nhbi9ib3NjaCxtX2Nhbi55YW1sDQo+ICAgRjoJZHJpdmVycy9uZXQvY2Fu
+L21fY2FuL21fY2FuLmMNCj4gICBGOglkcml2ZXJzL25ldC9jYW4vbV9jYW4vbV9jYW4uaA0KPiAg
+IEY6CWRyaXZlcnMvbmV0L2Nhbi9tX2Nhbi9tX2Nhbl9wbGF0Zm9ybS5jDQo=
