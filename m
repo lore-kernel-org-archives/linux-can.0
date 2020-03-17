@@ -1,52 +1,34 @@
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 04/12] docs: dt: fix references to m_can.txt file
-Date: Tue, 17 Mar 2020 14:10:43 +0100
-Message-ID: <db67f9bc93f062179942f1e095a46b572a442b76.1584450500.git.mchehab+huawei@kernel.org>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH 04/12] docs: dt: fix references to m_can.txt file
+Date: Tue, 17 Mar 2020 14:17:36 +0100
+Message-ID: <376dba43-84cc-6bf9-6c69-270c689caf37@pengutronix.de>
 References: <cover.1584450500.git.mchehab+huawei@kernel.org>
+ <db67f9bc93f062179942f1e095a46b572a442b76.1584450500.git.mchehab+huawei@kernel.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <cover.1584450500.git.mchehab+huawei@kernel.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Dan Murphy <dmurphy@ti.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Benjamin Gaignard <benjamin.gaignard@st.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <db67f9bc93f062179942f1e095a46b572a442b76.1584450500.git.mchehab+huawei-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Content-Language: de-DE
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mauro Carvalho Chehab <mchehab+huawei-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux Doc Mailing List <linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jonathan Corbet <corbet-T1hC0tSOHrs@public.gmane.org>, Dan Murphy <dmurphy-l0cyMroinI0@public.gmane.org>, Wolfgang Grandegger <wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org>, "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Benjamin Gaignard <benjamin.gaignard-qxv4g6HH51o@public.gmane.org>, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: linux-can.vger.kernel.org
 
-This file was converted to json and renamed. Update its
-references accordingly.
+On 3/17/20 2:10 PM, Mauro Carvalho Chehab wrote:
+> This file was converted to json and renamed. Update its
+> references accordingly.
+> 
+> Fixes: 824674b59f72 ("dt-bindings: net: can: Convert M_CAN to json-schema")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
-Fixes: 824674b59f72 ("dt-bindings: net: can: Convert M_CAN to json-schema")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
- MAINTAINERS                                            | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Acked-by: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 
-diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-index 6bdcc3f84bd3..3613c2c8f75d 100644
---- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-+++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-@@ -14,7 +14,7 @@ Required properties:
-                     the interrupt.
- 	- interrupts: interrupt specification for data-ready.
- 
--See Documentation/devicetree/bindings/net/can/m_can.txt for additional
-+See Documentation/devicetree/bindings/net/can/bosch,m_can.yaml for additional
- required property details.
- 
- Optional properties:
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 39da9ac4cc1f..84cb39b5a23b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10327,7 +10327,7 @@ M:	Dan Murphy <dmurphy@ti.com>
- M:	Sriram Dash <sriram.dash@samsung.com>
- L:	linux-can@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/net/can/m_can.txt
-+F:	Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
- F:	drivers/net/can/m_can/m_can.c
- F:	drivers/net/can/m_can/m_can.h
- F:	drivers/net/can/m_can/m_can_platform.c
+regards,
+Marc
+
 -- 
-2.24.1
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
