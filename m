@@ -1,54 +1,44 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] docs: dt: Fix m_can.txt reference in tcan4x5x.txt
-Date: Wed, 18 Mar 2020 11:36:50 +0100
-Message-ID: <8a450951-a28d-dabf-6d52-2c827c5b749e@pengutronix.de>
-References: <20200317161900.14380-1-dmurphy@ti.com>
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 16/73] can: add missing attribute validation for termination
+Date: Wed, 18 Mar 2020 16:52:40 -0400
+Message-ID: <20200318205337.16279-16-sashal@kernel.org>
+References: <20200318205337.16279-1-sashal@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <20200317161900.14380-1-dmurphy@ti.com>
-Content-Language: de-DE
-Sender: linux-doc-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, linux-doc@vger.kernel.org
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, robh+dt@kernel.org, davem@davemloft.net, wg@grandegger.com, corbet@lwn.net, linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20200318205337.16279-1-sashal@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Jakub Kicinski <kuba@kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, "David S . Miller" <davem@davemloft.net>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-On 3/17/20 5:19 PM, Dan Murphy wrote:
-> Fix the m_can.txt reference to point to the bosch,m_can.yaml.
-> 
-> Fixes: 824674b59f72 ("dt-bindings: net: can: Convert M_CAN to json-schema")
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-Mauro Carvalho Chehab has already send a patch. See:
-https://lkml.org/lkml/2020/3/17/843
+[ Upstream commit ab02ad660586b94f5d08912a3952b939cf4c4430 ]
 
-Feel free to ack that patch.
+Add missing attribute validation for IFLA_CAN_TERMINATION
+to the netlink policy.
 
-Marc
+Fixes: 12a6075cabc0 ("can: dev: add CAN interface termination API")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/can/dev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->  Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-> index 6bdcc3f84bd3..3613c2c8f75d 100644
-> --- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-> +++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-> @@ -14,7 +14,7 @@ Required properties:
->                      the interrupt.
->  	- interrupts: interrupt specification for data-ready.
->  
-> -See Documentation/devicetree/bindings/net/can/m_can.txt for additional
-> +See Documentation/devicetree/bindings/net/can/bosch,m_can.yaml for additional
->  required property details.
->  
->  Optional properties:
-> 
-
-
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 1c88c361938cc..3a33fb5034005 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -884,6 +884,7 @@ static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
+ 				= { .len = sizeof(struct can_bittiming) },
+ 	[IFLA_CAN_DATA_BITTIMING_CONST]
+ 				= { .len = sizeof(struct can_bittiming_const) },
++	[IFLA_CAN_TERMINATION]	= { .type = NLA_U16 },
+ };
+ 
+ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
 -- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+2.20.1
