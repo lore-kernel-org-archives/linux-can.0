@@ -1,13 +1,13 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 16/73] can: add missing attribute validation for termination
-Date: Wed, 18 Mar 2020 16:52:40 -0400
-Message-ID: <20200318205337.16279-16-sashal@kernel.org>
-References: <20200318205337.16279-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 09/28] can: add missing attribute validation for termination
+Date: Wed, 18 Mar 2020 16:55:36 -0400
+Message-ID: <20200318205555.17447-9-sashal@kernel.org>
+References: <20200318205555.17447-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20200318205337.16279-1-sashal@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20200318205555.17447-1-sashal@kernel.org>
+Sender: stable-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc: Jakub Kicinski <kuba@kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, "David S . Miller" <davem@davemloft.net>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
@@ -29,10 +29,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 1c88c361938cc..3a33fb5034005 100644
+index d92113db4fb97..05ad5ed145a3a 100644
 --- a/drivers/net/can/dev.c
 +++ b/drivers/net/can/dev.c
-@@ -884,6 +884,7 @@ static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
+@@ -867,6 +867,7 @@ static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
  				= { .len = sizeof(struct can_bittiming) },
  	[IFLA_CAN_DATA_BITTIMING_CONST]
  				= { .len = sizeof(struct can_bittiming_const) },
