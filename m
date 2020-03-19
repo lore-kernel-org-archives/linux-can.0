@@ -1,44 +1,47 @@
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 11/37] can: add missing attribute validation for termination
-Date: Wed, 18 Mar 2020 16:54:43 -0400
-Message-ID: <20200318205509.17053-11-sashal@kernel.org>
-References: <20200318205509.17053-1-sashal@kernel.org>
+From: =?iso-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
+Subject: PCI/PCIe cards and MSI support
+Date: Thu, 19 Mar 2020 10:53:51 +0000
+Message-ID: <DB6PR03MB3093A117F99170BDD81CBC1FD6F40@DB6PR03MB3093.eurprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20200318205509.17053-1-sashal@kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Jakub Kicinski <kuba@kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, "David S . Miller" <davem@davemloft.net>, Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-am6eur05on2069.outbound.protection.outlook.com ([40.107.22.69]:6142
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726188AbgCSKxz (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 19 Mar 2020 06:53:55 -0400
+Content-Language: fr-FR
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-From: Jakub Kicinski <kuba@kernel.org>
+Hello everyone,
 
-[ Upstream commit ab02ad660586b94f5d08912a3952b939cf4c4430 ]
+I hope everyone is well and that the health of your loved ones is just as g=
+ood.
 
-Add missing attribute validation for IFLA_CAN_TERMINATION
-to the netlink policy.
+I just want to know if the rule applied in the socket-can layer that a driv=
+er calls request_irq() (resp. free_irq()) only when the interface is set UP=
+ (resp. DOWN) is an unchangeable rule, or if the driver can decide to reque=
+st (resp. free) IRQs when loading (resp. unloading) the module?
 
-Fixes: 12a6075cabc0 ("can: dev: add CAN interface termination API")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Note that this rule currently prevents us from easily implementing MSI supp=
+ort in our PCI/PCIe drivers.
+
+Best regards,
+
 ---
- drivers/net/can/dev.c | 1 +
- 1 file changed, 1 insertion(+)
+St=E9phane Grosjean
+PEAK-System France
+132, rue Andr=E9 Bisiaux
+F-54320 MAXEVILLE
+T=E9l : +(33) 9.72.54.51.97
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 49b853f53f595..1545f2b299d06 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -892,6 +892,7 @@ static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
- 				= { .len = sizeof(struct can_bittiming) },
- 	[IFLA_CAN_DATA_BITTIMING_CONST]
- 				= { .len = sizeof(struct can_bittiming_const) },
-+	[IFLA_CAN_TERMINATION]	= { .type = NLA_U16 },
- };
- 
- static int can_validate(struct nlattr *tb[], struct nlattr *data[],
--- 
-2.20.1
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt - HRB 9183
+Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
+Unsere Datenschutzerklaerung mit wichtigen Hinweisen
+zur Behandlung personenbezogener Daten finden Sie unter
+www.peak-system.com/Datenschutz.483.0.html
