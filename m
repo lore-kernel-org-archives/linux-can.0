@@ -1,28 +1,41 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: PCI/PCIe cards and MSI support
-Date: Thu, 19 Mar 2020 15:01:27 +0100
-Message-ID: <20200319140127.GD2538@x1.vandijck-laurijssen.be>
-References: <DB6PR03MB3093A117F99170BDD81CBC1FD6F40@DB6PR03MB3093.eurprd03.prod.outlook.com>
+From: ECOWAS COMMITEE <ecowasmonitoringcommitteeabj@gmail.com>
+Subject: HAPPY SURVIVAL OF CORONAVIRUS
+Date: Fri, 20 Mar 2020 11:21:57 +0000
+Message-ID: <CAHHubrYVO=2YdPqKZhJ+2V5OGE9v-76hg5HAnvmVr7enpkq_MA__26140.7411818922$1584703331$gmane$org@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b02.edpnet.be ([212.71.1.222]:34748 "EHLO
-        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727232AbgCSOVN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Mar 2020 10:21:13 -0400
-Content-Disposition: inline
-In-Reply-To: <DB6PR03MB3093A117F99170BDD81CBC1FD6F40@DB6PR03MB3093.eurprd03.prod.outlook.com>
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:36809 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726955AbgCTLV6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Mar 2020 07:21:58 -0400
+Received: by mail-oi1-f195.google.com with SMTP id k18so6106976oib.3
+        for <linux-can@vger.kernel.org>; Fri, 20 Mar 2020 04:21:58 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?utf-8?B?U3TDqXBoYW5l?= Grosjean <s.grosjean@peak-system.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hey,
+Dear Sir/Madam
 
-> or if the driver can decide to request (resp. free) IRQs when loading (resp. unloading)
-> the module?
+HAPPY SURVIVAL OF CORONAVIRUS
 
-This seems a bad idea. Loading the module should not allocate resources.
-A reasonable point IMHO is the probe of a device.
+We the West African Monitoring Committee of the West African Economic
+Community(ECOWAS)are contacting you for a business transaction which
+we feel will be of great interest to you.
 
-Kurt
+Our duty is to see to the coming in and out of funds into this sub
+region.There is a fund which we confiscated worth of $12.5 million
+dollars.We will like you to receive this fund on your name in your
+account and as well helping us in the investment.
+
+You are advised to contact us as soon as you get this message for
+details of the transaction if you find it interesting.
+
+Best Regards,
+
+Mr John Aka
+
+Chairman
+ECOWAS
+West African Monitoring Committee
+Tel 00225 6716 6756
+Abidjan Cote D'Ivoire
