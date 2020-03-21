@@ -1,85 +1,134 @@
-From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
-Subject: Re: Need help in interpreting ip status output
-Date: Sat, 21 Mar 2020 16:19:39 +0100
-Message-ID: <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
-References: <a6c8ef8c-5c72-7a2b-98df-0a30057c5fdc@gmx.de>
- <f029f731-25bc-a3f0-c5a9-380012a16839@gmx.de>
- <86b34b1b-7bda-e481-2087-1be8e64d2fed@hartkopp.net>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: How to send a CAN message while in a kernel module?
+Date: Sat, 21 Mar 2020 17:46:04 +0100
+Message-ID: <2cb68f43-a551-c69d-b43f-3b044b948142@hartkopp.net>
+References: <CAOHJ0jSS=g4rQtXGkEFocafEqQAtxEOvq5eSXBC2FY_Esb23OA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.17.22]:45859 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727015AbgCUPTk (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 21 Mar 2020 11:19:40 -0400
-In-Reply-To: <86b34b1b-7bda-e481-2087-1be8e64d2fed@hartkopp.net>
-Content-Language: en-GB
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.24]:18509 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726955AbgCUQqM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 21 Mar 2020 12:46:12 -0400
+In-Reply-To: <CAOHJ0jSS=g4rQtXGkEFocafEqQAtxEOvq5eSXBC2FY_Esb23OA@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Alex Blasche <alexander.blasche@qt.io>
+To: Robert Barrows <robb.barrows@gmail.com>, linux-can@vger.kernel.org
 
-Hi Oliver,
+Hi Robert,
 
-thanks for your answer. I hope you are well.
+On 21/03/2020 15.50, Robert Barrows wrote:
+> I have attempted to write a kernel module that sends a message via CAN but I am
+> having trouble understanding which level of the socket api I should be using,
+> and where there may be some documentation or examples of how to use it?
+> 
+> I am on a much older embedded 2.6.31 imx arm kernel, and eventually I
+> would like to
+> send this message from within a high res timer triggered ISR.
 
-> Hi Andr=C3=A9,
->
-> I have an idea ;-)
->
-> On 12/03/2020 18.43, Andr=C3=A9 Hartmann wrote:
->
->>> can someone help me interpreting the following ip output:
->>>
->>> ip -s link show can1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3: can1: <NOARP,UP,LOWER_UP,ECHO> mtu 1=
-6 qdisc pfifo_fast state
->>> UNKNOWN mode DEFAULT group default qlen 100
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 link/can
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 RX: bytes=C2=A0=
- packets=C2=A0 errors=C2=A0 dropped overrun mcast
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 9987413=C2=A0 1=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 74=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 TX: bytes=C2=A0=
- packets=C2=A0 errors=C2=A0 dropped carrier collsns
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->>>
->>> I'm especially interested in the meaning of the
->>>
->>> * 1 errors
->>> * 74 dropped
->>> * 1 overrun
->
-> E.g. if you look into
-> linux/drivers/net/can/sja1000/sja1000.c
-> you can see that an overrun error also triggers the error counter to
-> increase - that's why both are set to 1.
->
-> The reason for the overrun error is a notification from the CAN
-> controller itself. It tells us that the received CAN frame has not been
-> read from the controller until the next CAN frame arrived.
+You can probably use the CAN_BCM sockets for your use-case which uses 
+high-res timers too - even in the 2.6.31 kernel. But I'll come to that 
+later ...
 
-Ok, that's what I thought too, thanks for the confirmation.
+> This is my code, which is hobbled together from internet examples, and kernel
+> oops is during sock_sendmsg, for now I am just trying to get it do run as part
+> of the init of the module:
+> 
+> int SendCanTime(struct timespec *tsCurrentTime) {
+>    int s;
+>    struct sockaddr_can addr;
+>    struct can_frame frame;
+>    struct socket *sock;
+>    int thetime = tsCurrentTime->tv_sec;
+>    mm_segment_t oldfs;
+> 
+>    oldfs = get_fs();
+>    set_fs(KERNEL_DS);
+> 
+>    printk("cantime.ko: Socket 10\n");
+>    if ((s = sock_create(PF_CAN, SOCK_RAW, CAN_RAW, &sock)) < 0) {
+>      printk("cantime.ko: Socket failure\n");
+>      return 1;
+>    }
 
-> The dropped counter usually indicates that the CAN driver did not get a
-> skbuff data structure (e.g. out of memory condition).
->
-> This is NOT good. What CAN hardware/setup are you using?
+Argh - No!
 
-Actually it's not my system. The report is from a customer doing a full
-load test on an iMX8: https://bugreports.qt.io/browse/QTBUG-82610
+You don't use sockets from INSIDE the kernel.
+If you want to send CAN frames from inside the kernel you should use the 
+can_send() function from af_can.c
 
-I guess the customer should try a more recent Kernel than 4.14 first?
+> 
+>    printk("cantime.ko: Socket 20\n");
+>    memset(&addr, 0, sizeof(addr));
+>    addr.can_family = PF_CAN;
+>    addr.can_ifindex = 2; // This is bad how do I dynamically find it?
+> 
+>    printk("cantime.ko: Socket 30");
+>    if (sock->ops->bind(sock, (struct sockaddr *)&addr, sizeof(struct
+> sockaddr) ) < 0) {
+>      printk("cantime.ko: Bind failure\n");
+>      return 1;
+>    }
+> 
+>    printk("cantime.ko: Socket 40\n");
+>    frame.can_id = 0x00050F93 | CAN_EFF_FLAG;
+>    frame.can_dlc = 6;
+>    frame.data[0] = 0x00;
+>    frame.data[1] = 0x02;
+> 
+>    memcpy(frame.data+2, &thetime, sizeof(int));
 
-Thanks, and best regards,
-Andr=C3=A9
+Is your requirement to send "some content" in a very defined time slot 
+OR do you need to send the time as content?
 
->
-> Regards,
-> Oliver
+> 
+>    printk("cantime.ko: Socket 50\n");
+>    if (sock_sendmsg(sock,(struct msghdr*)&frame,sizeof(struct
+> can_frame)) !=  sizeof(struct can_frame)) {
+>      printk("cantime.ko: Write failure");
+>      return 1;
+>    }
+> 
+>    sock_release(sock);
+>    set_fs(oldfs);
+> 
+>    return 0;
+> 
+> }
+> 
+> Output:
+> cantime.ko: Socket 10
+> cantime.ko: Socket 20
+> cantime.ko: Socket 30cantime.ko: Socket 40
+> cantime.ko: Socket 50
+> Unable to handle kernel paging request at virtual address 80050f93
+> pgd = d14c8000
+> [80050f93] *pgd=00000000
+> Internal error: Oops: 1 [#1] PREEMPT
+> Modules linked in: cantime(+) g_ether arcotg_udc
+
+Funny thing :-)
+
+> I also have the user space code that works perfectly that I was trying to model
+> my kernel module code after:
+
+Ok - but we need to check your use-case.
+
+Sending CAN frames in a very precise (hrtimer) manner can be done with 
+the broadcast manager (aka CAN_BCM) sockets.
+
+See:
+https://elixir.bootlin.com/linux/latest/source/Documentation/networking/can.rst#L677
+
+1. You can send fixed CAN frames and also a sequence of up to 256 
+(different) CAN frames at a precisely defined time with a CAN_BCM TX job.
+
+2. You can generate the timestamp in user space and send it via CAN_RAW 
+socket.
+
+3. You write your own kernel module o_O :)
+
+Regards,
+Oliver
