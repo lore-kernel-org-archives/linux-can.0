@@ -1,60 +1,54 @@
-From: Robert Barrows <robb.barrows@gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 Subject: Re: How to send a CAN message while in a kernel module?
-Date: Sat, 21 Mar 2020 14:15:17 -0500
-Message-ID: <CAOHJ0jRQx2U1APx92DTGFGzGLY9+tds3R4Sz8Tz8+LToWx_44g@mail.gmail.com>
+Date: Sat, 21 Mar 2020 21:51:31 +0100
+Message-ID: <ead77f42-f0f9-9b5a-ce5a-5e7f641d8a14@hartkopp.net>
 References: <CAOHJ0jSS=g4rQtXGkEFocafEqQAtxEOvq5eSXBC2FY_Esb23OA@mail.gmail.com>
  <2cb68f43-a551-c69d-b43f-3b044b948142@hartkopp.net>
+ <CAOHJ0jRQx2U1APx92DTGFGzGLY9+tds3R4Sz8Tz8+LToWx_44g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:35723 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727028AbgCUTPb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 21 Mar 2020 15:15:31 -0400
-Received: by mail-lj1-f194.google.com with SMTP id u12so10170348ljo.2
-        for <linux-can@vger.kernel.org>; Sat, 21 Mar 2020 12:15:29 -0700 (PDT)
-In-Reply-To: <2cb68f43-a551-c69d-b43f-3b044b948142@hartkopp.net>
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.23]:24093 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgCUUvd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 21 Mar 2020 16:51:33 -0400
+In-Reply-To: <CAOHJ0jRQx2U1APx92DTGFGzGLY9+tds3R4Sz8Tz8+LToWx_44g@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Robert Barrows <robb.barrows@gmail.com>
 Cc: linux-can@vger.kernel.org
 
-> You don't use sockets from INSIDE the kernel.
-> If you want to send CAN frames from inside the kernel you should use the
-> can_send() function from af_can.c
-Great to know! I Will look at that right away, any example(s) you could point
-me towards?
+On 21/03/2020 20.15, Robert Barrows wrote:
+>> You don't use sockets from INSIDE the kernel.
+>> If you want to send CAN frames from inside the kernel you should use the
+>> can_send() function from af_can.c
+> Great to know! I Will look at that right away, any example(s) you could point
+> me towards?
+> 
 
-> Is your requirement to send "some content" in a very defined time slot
-> OR do you need to send the time as content?
-Use case:
-I need to send the epoch seconds as close to the zeroth of the second
-as possible, there are some legacy cards that use this packet to set their
-clocks, and I am attempting a solution to improve their accuracy without
-modifying their firmware.
-Hence I have a kernel module that can run a function with sub 10uS accuracy,
-the function of choice would spit out a CAN packet with the epoch seconds in
-it.
+You mainly need to look at raw_sendmsg() from linux/net/can/raw.c
 
-> Sending CAN frames in a very precise (hrtimer) manner can be done with
-> the broadcast manager (aka CAN_BCM) sockets.
->
-> See:
-> https://elixir.bootlin.com/linux/latest/source/Documentation/networking/can.rst#L677
->
-> 1. You can send fixed CAN frames and also a sequence of up to 256
-> (different) CAN frames at a precisely defined time with a CAN_BCM TX job.
+Create a skb and set can_skb_reserve() and the other stuff and finally 
+put your CAN frame content into the skb->data and invoke can_send().
 
-struct timeval ival1, ival2;    /* count and subsequent interval */
-Unfortunately, this doesn't look like it fits my use case, would have been nice
-to do from user space though.  This looks like it can send out evenly spaced
-packets. And I need to send one packet at a precise clock time.
+You will at least need
 
-> 2. You can generate the timestamp in user space and send it via CAN_RAW
-> socket.
+#include <linux/netdevice.h>
+#include <linux/skbuff.h>
+#include <linux/can.h>
+#include <linux/can/core.h>
+#include <linux/can/skb.h>
 
-This also wont work due to the use case.
+Of course you don't have a sk reference as you don't have a socket in place.
 
-> 3. You write your own kernel module o_O :)
+So you maybe should check the content of alloc_can_skb() from 
+linux/drivers/net/can/dev.c and use netdev_alloc_skb() or alloc_skb() 
+instead of sock_alloc_send_skb() which needs sk to take care of socket 
+specific memory quotas.
 
-Here we are :)
+If you are unsure just post the code for a review.
+
+Best,
+Oliver
