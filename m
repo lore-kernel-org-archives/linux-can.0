@@ -1,196 +1,85 @@
-From: Robert Barrows <robb.barrows@gmail.com>
-Subject: How to send a CAN message while in a kernel module?
-Date: Sat, 21 Mar 2020 09:50:00 -0500
-Message-ID: <CAOHJ0jSS=g4rQtXGkEFocafEqQAtxEOvq5eSXBC2FY_Esb23OA@mail.gmail.com>
+From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
+Subject: Re: Need help in interpreting ip status output
+Date: Sat, 21 Mar 2020 16:19:39 +0100
+Message-ID: <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
+References: <a6c8ef8c-5c72-7a2b-98df-0a30057c5fdc@gmx.de>
+ <f029f731-25bc-a3f0-c5a9-380012a16839@gmx.de>
+ <86b34b1b-7bda-e481-2087-1be8e64d2fed@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:38140 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgCUOuP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 21 Mar 2020 10:50:15 -0400
-Received: by mail-lf1-f49.google.com with SMTP id c5so1305851lfp.5
-        for <linux-can@vger.kernel.org>; Sat, 21 Mar 2020 07:50:12 -0700 (PDT)
+Received: from mout.gmx.net ([212.227.17.22]:45859 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727015AbgCUPTk (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 21 Mar 2020 11:19:40 -0400
+In-Reply-To: <86b34b1b-7bda-e481-2087-1be8e64d2fed@hartkopp.net>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Alex Blasche <alexander.blasche@qt.io>
 
-I have attempted to write a kernel module that sends a message via CAN but I am
-having trouble understanding which level of the socket api I should be using,
-and where there may be some documentation or examples of how to use it?
+Hi Oliver,
 
-I am on a much older embedded 2.6.31 imx arm kernel, and eventually I
-would like to
-send this message from within a high res timer triggered ISR.
+thanks for your answer. I hope you are well.
 
-This is my code, which is hobbled together from internet examples, and kernel
-oops is during sock_sendmsg, for now I am just trying to get it do run as part
-of the init of the module:
+> Hi Andr=C3=A9,
+>
+> I have an idea ;-)
+>
+> On 12/03/2020 18.43, Andr=C3=A9 Hartmann wrote:
+>
+>>> can someone help me interpreting the following ip output:
+>>>
+>>> ip -s link show can1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3: can1: <NOARP,UP,LOWER_UP,ECHO> mtu 1=
+6 qdisc pfifo_fast state
+>>> UNKNOWN mode DEFAULT group default qlen 100
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 link/can
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 RX: bytes=C2=A0=
+ packets=C2=A0 errors=C2=A0 dropped overrun mcast
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 9987413=C2=A0 1=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 74=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 0
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 TX: bytes=C2=A0=
+ packets=C2=A0 errors=C2=A0 dropped carrier collsns
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>>>
+>>> I'm especially interested in the meaning of the
+>>>
+>>> * 1 errors
+>>> * 74 dropped
+>>> * 1 overrun
+>
+> E.g. if you look into
+> linux/drivers/net/can/sja1000/sja1000.c
+> you can see that an overrun error also triggers the error counter to
+> increase - that's why both are set to 1.
+>
+> The reason for the overrun error is a notification from the CAN
+> controller itself. It tells us that the received CAN frame has not been
+> read from the controller until the next CAN frame arrived.
 
-int SendCanTime(struct timespec *tsCurrentTime) {
-  int s;
-  struct sockaddr_can addr;
-  struct can_frame frame;
-  struct socket *sock;
-  int thetime = tsCurrentTime->tv_sec;
-  mm_segment_t oldfs;
+Ok, that's what I thought too, thanks for the confirmation.
 
-  oldfs = get_fs();
-  set_fs(KERNEL_DS);
+> The dropped counter usually indicates that the CAN driver did not get a
+> skbuff data structure (e.g. out of memory condition).
+>
+> This is NOT good. What CAN hardware/setup are you using?
 
-  printk("cantime.ko: Socket 10\n");
-  if ((s = sock_create(PF_CAN, SOCK_RAW, CAN_RAW, &sock)) < 0) {
-    printk("cantime.ko: Socket failure\n");
-    return 1;
-  }
+Actually it's not my system. The report is from a customer doing a full
+load test on an iMX8: https://bugreports.qt.io/browse/QTBUG-82610
 
-  printk("cantime.ko: Socket 20\n");
-  memset(&addr, 0, sizeof(addr));
-  addr.can_family = PF_CAN;
-  addr.can_ifindex = 2; // This is bad how do I dynamically find it?
+I guess the customer should try a more recent Kernel than 4.14 first?
 
-  printk("cantime.ko: Socket 30");
-  if (sock->ops->bind(sock, (struct sockaddr *)&addr, sizeof(struct
-sockaddr) ) < 0) {
-    printk("cantime.ko: Bind failure\n");
-    return 1;
-  }
+Thanks, and best regards,
+Andr=C3=A9
 
-  printk("cantime.ko: Socket 40\n");
-  frame.can_id = 0x00050F93 | CAN_EFF_FLAG;
-  frame.can_dlc = 6;
-  frame.data[0] = 0x00;
-  frame.data[1] = 0x02;
-
-  memcpy(frame.data+2, &thetime, sizeof(int));
-
-  printk("cantime.ko: Socket 50\n");
-  if (sock_sendmsg(sock,(struct msghdr*)&frame,sizeof(struct
-can_frame)) !=  sizeof(struct can_frame)) {
-    printk("cantime.ko: Write failure");
-    return 1;
-  }
-
-  sock_release(sock);
-  set_fs(oldfs);
-
-  return 0;
-
-}
-
-Output:
-cantime.ko: Socket 10
-cantime.ko: Socket 20
-cantime.ko: Socket 30cantime.ko: Socket 40
-cantime.ko: Socket 50
-Unable to handle kernel paging request at virtual address 80050f93
-pgd = d14c8000
-[80050f93] *pgd=00000000
-Internal error: Oops: 1 [#1] PREEMPT
-Modules linked in: cantime(+) g_ether arcotg_udc
-CPU: 0    Not tainted  (2.6.31-imx-09.12.00 #1)
-PC is at raw_sendmsg+0x20/0x138
-LR is at sock_sendmsg+0xa0/0xc4
-pc : [<c02fe83c>]    lr : [<c0283c30>]    psr: a0000013
-sp : d67fddc8  ip : c04246c4  fp : 00000000
-r10: 0000bb38  r9 : d67fc000  r8 : 00000010
-r7 : d67fded0  r6 : d679fe00  r5 : 00000000  r4 : 00000000
-r3 : 00000010  r2 : 80050f93  r1 : d0d194e0  r0 : d67fdde8
-Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
-Control: 0005317f  Table: 914c8000  DAC: 00000017
-Process insmod (pid: 13116, stack limit = 0xd67fc270)
-Stack: (0xd67fddc8 to 0xd67fe000)
-ddc0:                   d67fc000 000699b8 00000000 00000000 d67fded0 00000000
-dde0: c0044fe4 c0283c30 c031b2a8 d785c4cc 00000000 00000001 ffffffff 00000000
-de00: 00000000 00000000 00000000 00000000 d785c340 d67fde20 00000000 00000000
-de20: 00002a89 d785c340 c00793d0 d67fde2c d67fde2c c031b278 00000000 00000016
-de40: d67fde78 c0398293 d679ff38 d6aaa800 00000034 60000013 00000000 c0044fe4
-de60: d6aaa800 0000bb38 00000000 c02feb94 00000000 d0d194e0 d6aaa800 d679fe00
-de80: d6aaa800 00000010 d0d194e0 00000000 00000000 d67fded0 00000002 bf000000
-dea0: 00000000 c0044fe4 d67fc000 0000bb38 00000000 c031ab78 00000000 d67fdee0
-dec0: 00000002 bf000000 00000000 bf01837c 80050f93 bf019506 00000200 bf010000
-dee0: 0000001d 00000002 00000000 00000000 00000000 d0d194e0 bf019528 00000000
-df00: bf01877b bf0185e8 bf01877b c040e5d0 00000000 00000000 00000000 00000000
-df20: 00000000 00000000 bf0188a0 00000000 00000000 00000000 00000000 00000000
-df40: 00000000 00000000 00000000 0000003c 00000000 bf0193ac bf0184cc c004432c
-df60: 00001e66 bf0193ac 00000000 000c9058 c0044fe4 00000000 bf0193ac 00000000
-df80: 000c9058 c008d974 d6bcf6c0 d1477a60 be926ca4 00001e66 be926e67 00000002
-dfa0: 00000080 c0044e60 00001e66 be926e67 000c9058 00001e66 000c9008 000c86b8
-dfc0: 00001e66 be926e67 00000002 00000080 00000002 0000d33c 0000bb38 00000000
-dfe0: be926ca0 be926c90 0001f87c 4001a8d0 20000010 000c9058 00000000 00000000
-[<c02fe83c>] (raw_sendmsg+0x20/0x138) from [<c0283c30>] (sock_sendmsg+0xa0/0xc4)
-[<c0283c30>] (sock_sendmsg+0xa0/0xc4) from [<bf01837c>]
-(SendCanTime+0x10c/0x180 [cantime])
-[<bf01837c>] (SendCanTime+0x10c/0x180 [cantime]) from [<bf0185e8>]
-(cantime_init+0x11c/0x180 [cantime])
-[<bf0185e8>] (cantime_init+0x11c/0x180 [cantime]) from [<c004432c>]
-(do_one_initcall+0x5c/0x1c4)
-[<c004432c>] (do_one_initcall+0x5c/0x1c4) from [<c008d974>]
-(sys_init_module+0xc0/0x1d8)
-[<c008d974>] (sys_init_module+0xc0/0x1d8) from [<c0044e60>]
-(ret_fast_syscall+0x0/0x2c)
-Code: e3520000 e1a08003 e591601c 0a000004 (e1d230b0)
----[ end trace 8599b84226905be0 ]---
-
-I also have the user space code that works perfectly that I was trying to model
-my kernel module code after:
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-#include <net/if.h>
-#include <sys/ioctl.h>
-#include <linux/socket.h>
-#include <linux/can.h>
-#include <linux/can/raw.h>
-
-int main(int argc, char **argv)
-{
-  int s;
-  struct sockaddr_can addr;
-  struct ifreq ifr;
-  struct can_frame frame;
-
-  if ((s = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0) {
-    perror("Socket");
-    return 1;
-  }
-
-  strcpy(ifr.ifr_name, "can0" );
-  ioctl(s, SIOCGIFINDEX, &ifr);
-
-  memset(&addr, 0, sizeof(addr));
-  addr.can_family = AF_CAN;
-  addr.can_ifindex = ifr.ifr_ifindex;
-  printf("if index = %x\n", addr.can_ifindex);
-
-  if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-    perror("Bind");
-    return 1;
-  }
-
-  frame.can_id = 0x00050F93 | CAN_EFF_FLAG;
-  frame.can_dlc = 6;
-  frame.data[0] = 0x00;
-  frame.data[1] = 0x02;
-
-  int thetime = (int)time(NULL);
-  memcpy(frame.data+2, &thetime, sizeof(int));
-
-  if (write(s, &frame, sizeof(struct can_frame)) != sizeof(struct can_frame)) {
-    perror("Write");
-    return 1;
-  }
-
-  if (close(s) < 0) {
-    perror("Close");
-    return 1;
-  }
-
-  return 0;
-}
-
-
-                                                                               ^
+>
+> Regards,
+> Oliver
