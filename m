@@ -1,61 +1,60 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: Need help in interpreting ip status output
-Date: Sat, 21 Mar 2020 18:04:35 +0100
-Message-ID: <fe141541-7e79-3bee-8c75-29e6f9f3bc4e@hartkopp.net>
-References: <a6c8ef8c-5c72-7a2b-98df-0a30057c5fdc@gmx.de>
- <f029f731-25bc-a3f0-c5a9-380012a16839@gmx.de>
- <86b34b1b-7bda-e481-2087-1be8e64d2fed@hartkopp.net>
- <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
+From: Robert Barrows <robb.barrows@gmail.com>
+Subject: Re: How to send a CAN message while in a kernel module?
+Date: Sat, 21 Mar 2020 14:15:17 -0500
+Message-ID: <CAOHJ0jRQx2U1APx92DTGFGzGLY9+tds3R4Sz8Tz8+LToWx_44g@mail.gmail.com>
+References: <CAOHJ0jSS=g4rQtXGkEFocafEqQAtxEOvq5eSXBC2FY_Esb23OA@mail.gmail.com>
+ <2cb68f43-a551-c69d-b43f-3b044b948142@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.217]:17569 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbgCUREh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 21 Mar 2020 13:04:37 -0400
-In-Reply-To: <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
-Content-Language: en-US
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:35723 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727028AbgCUTPb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 21 Mar 2020 15:15:31 -0400
+Received: by mail-lj1-f194.google.com with SMTP id u12so10170348ljo.2
+        for <linux-can@vger.kernel.org>; Sat, 21 Mar 2020 12:15:29 -0700 (PDT)
+In-Reply-To: <2cb68f43-a551-c69d-b43f-3b044b948142@hartkopp.net>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Alex Blasche <alexander.blasche@qt.io>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
 
-+ Marc
+> You don't use sockets from INSIDE the kernel.
+> If you want to send CAN frames from inside the kernel you should use the
+> can_send() function from af_can.c
+Great to know! I Will look at that right away, any example(s) you could point
+me towards?
 
-Hi André,
+> Is your requirement to send "some content" in a very defined time slot
+> OR do you need to send the time as content?
+Use case:
+I need to send the epoch seconds as close to the zeroth of the second
+as possible, there are some legacy cards that use this packet to set their
+clocks, and I am attempting a solution to improve their accuracy without
+modifying their firmware.
+Hence I have a kernel module that can run a function with sub 10uS accuracy,
+the function of choice would spit out a CAN packet with the epoch seconds in
+it.
 
-On 21/03/2020 16.19, André Hartmann wrote:
+> Sending CAN frames in a very precise (hrtimer) manner can be done with
+> the broadcast manager (aka CAN_BCM) sockets.
+>
+> See:
+> https://elixir.bootlin.com/linux/latest/source/Documentation/networking/can.rst#L677
+>
+> 1. You can send fixed CAN frames and also a sequence of up to 256
+> (different) CAN frames at a precisely defined time with a CAN_BCM TX job.
 
->> On 12/03/2020 18.43, André Hartmann wrote:
->>
->>>> can someone help me interpreting the following ip output:
+struct timeval ival1, ival2;    /* count and subsequent interval */
+Unfortunately, this doesn't look like it fits my use case, would have been nice
+to do from user space though.  This looks like it can send out evenly spaced
+packets. And I need to send one packet at a precise clock time.
 
->> The reason for the overrun error is a notification from the CAN
->> controller itself. It tells us that the received CAN frame has not been
->> read from the controller until the next CAN frame arrived.
-> 
-> Ok, that's what I thought too, thanks for the confirmation.
-> 
->> The dropped counter usually indicates that the CAN driver did not get a
->> skbuff data structure (e.g. out of memory condition).
->>
->> This is NOT good. What CAN hardware/setup are you using?
-> 
-> Actually it's not my system. The report is from a customer doing a full
-> load test on an iMX8: https://bugreports.qt.io/browse/QTBUG-82610
+> 2. You can generate the timestamp in user space and send it via CAN_RAW
+> socket.
 
-Thanks for the link!
+This also wont work due to the use case.
 
-> I guess the customer should try a more recent Kernel than 4.14 first?
+> 3. You write your own kernel module o_O :)
 
-The FlexCAN driver (which is used in the IMX8 AFAIK) had a remarkable 
-number of changes last year:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/drivers/net/can/flexcan.c
-
-So I would definitely suggest an update.
-I added Marc to this thread as he was very active on the FlexCAN 
-improvements.
-
-Best,
-Oliver
+Here we are :)
