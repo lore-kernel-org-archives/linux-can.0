@@ -1,41 +1,91 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: Need help in interpreting ip status output
-Date: Mon, 23 Mar 2020 08:44:31 +0100
-Message-ID: <2cd75c78-cec7-09c0-ea80-fbedf37d37d5@pengutronix.de>
-References: <a6c8ef8c-5c72-7a2b-98df-0a30057c5fdc@gmx.de>
- <f029f731-25bc-a3f0-c5a9-380012a16839@gmx.de>
- <86b34b1b-7bda-e481-2087-1be8e64d2fed@hartkopp.net>
- <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
+From: =?iso-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
+Subject: RE: PCI/PCIe cards and MSI support
+Date: Mon, 23 Mar 2020 08:33:56 +0000
+Message-ID: <DB6PR03MB3093B3487EC5FCFBFCDB4D6AD6F00@DB6PR03MB3093.eurprd03.prod.outlook.com>
+References: <DB6PR03MB3093A117F99170BDD81CBC1FD6F40@DB6PR03MB3093.eurprd03.prod.outlook.com>,<20200319140127.GD2538@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:57551 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727422AbgCWHon (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Mar 2020 03:44:43 -0400
-In-Reply-To: <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
-Content-Language: en-GB
+Received: from mail-eopbgr30069.outbound.protection.outlook.com ([40.107.3.69]:49280
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727534AbgCWIeC (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 23 Mar 2020 04:34:02 -0400
+In-Reply-To: <20200319140127.GD2538@x1.vandijck-laurijssen.be>
+Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>, Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: Alex Blasche <alexander.blasche@qt.io>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On 3/21/20 4:19 PM, André Hartmann wrote:
-> Actually it's not my system. The report is from a customer doing a full
-> load test on an iMX8: https://bugreports.qt.io/browse/QTBUG-82610
+Hello Kurt,
 
-Which exact kernel are you using?
-Don't run any applications and/or kernel logs over the serial console.
+Thank you for your reply.
 
-> I guess the customer should try a more recent Kernel than 4.14 first?
+> This seems a bad idea. Loading the module should not allocate resources.
+> A reasonable point IMHO is the probe of a device.
 
-Ack.
+That's what I was thinking, sorry for the approximation and misunderstandin=
+g. So, you confirm that I can modify the driver to request_irq() when probi=
+ng the CAN channels one after the other rather than when these are opened?
 
-Marc
+Regards,
 
--- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+---
+St=E9phane Grosjean
+PEAK-System France
+132, rue Andr=E9 Bisiaux
+F-54320 MAXEVILLE
+T=E9l : +(33) 9.72.54.51.97
+
+
+
+
+
+
+
+
+
+
+
+De : Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+
+Envoy=E9 : jeudi 19 mars 2020 15:01
+
+=C0 : St=E9phane Grosjean <s.grosjean@peak-system.com>
+
+Cc : linux-can@vger.kernel.org <linux-can@vger.kernel.org>
+
+Objet : Re: PCI/PCIe cards and MSI support
+
+
+
+
+Hey,
+
+
+
+> or if the driver can decide to request (resp. free) IRQs when loading (re=
+sp. unloading)
+
+> the module?
+
+
+
+This seems a bad idea. Loading the module should not allocate resources.
+
+A reasonable point IMHO is the probe of a device.
+
+
+
+Kurt
+
+
+--
+PEAK-System Technik GmbH
+Sitz der Gesellschaft Darmstadt - HRB 9183
+Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
+Unsere Datenschutzerklaerung mit wichtigen Hinweisen
+zur Behandlung personenbezogener Daten finden Sie unter
+www.peak-system.com/Datenschutz.483.0.html
