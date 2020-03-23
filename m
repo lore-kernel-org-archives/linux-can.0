@@ -1,54 +1,43 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: PCI/PCIe cards and MSI support
-Date: Mon, 23 Mar 2020 10:35:59 +0100
-Message-ID: <45fe5f0a-9b74-a673-40e9-c3e361c625d5@pengutronix.de>
-References: <DB6PR03MB3093A117F99170BDD81CBC1FD6F40@DB6PR03MB3093.eurprd03.prod.outlook.com>
- <20200319140127.GD2538@x1.vandijck-laurijssen.be>
- <DB6PR03MB3093B3487EC5FCFBFCDB4D6AD6F00@DB6PR03MB3093.eurprd03.prod.outlook.com>
- <375f841b-05a3-f1ab-a582-4796d4448029@pengutronix.de>
- <DB6PR03MB3093D18BB366D78BA9D384D1D6F00@DB6PR03MB3093.eurprd03.prod.outlook.com>
+From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
+Subject: Re: Need help in interpreting ip status output
+Date: Mon, 23 Mar 2020 12:16:18 +0100
+Message-ID: <ece51328-6b3d-c8c3-0a38-cea39f71270c@gmx.de>
+References: <a6c8ef8c-5c72-7a2b-98df-0a30057c5fdc@gmx.de>
+ <f029f731-25bc-a3f0-c5a9-380012a16839@gmx.de>
+ <86b34b1b-7bda-e481-2087-1be8e64d2fed@hartkopp.net>
+ <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
+ <2cd75c78-cec7-09c0-ea80-fbedf37d37d5@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:53947 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727695AbgCWJgF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Mar 2020 05:36:05 -0400
-In-Reply-To: <DB6PR03MB3093D18BB366D78BA9D384D1D6F00@DB6PR03MB3093.eurprd03.prod.outlook.com>
-Content-Language: de-DE
+Received: from mout.gmx.net ([212.227.15.19]:56449 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728011AbgCWLQX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 23 Mar 2020 07:16:23 -0400
+In-Reply-To: <2cd75c78-cec7-09c0-ea80-fbedf37d37d5@pengutronix.de>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Alex Blasche <alexander.blasche@qt.io>
 
-On 3/23/20 10:25 AM, Stéphane Grosjean wrote:
-> When switching in MSI mode, we've noticed that once CAN0 is closed
-> (i.e., once its own interrupt is freed), all other CANs on the same card no longer receive interrupts (i.e., the handler is never called again).
+Thanks Marc! I'll forward this information.
 
-Is it the free_irq() or the other code called on ifdown? Comment out the
-free_irq() and check what happens.
+Best regards,
+Andr=C3=A9
 
-> This issue doesn't exist when any other CANx then CAN0 is closed.
-> 
-> The reason of this is not clear. What we know is that this issue doesn't
->  exist under Windows for any of our (CAN 2.0 as well as CAN FD) cards. On the contrary, the issue is the same for all of our CAN 2.0 / CAN FD cards under Linux.
-> 
-> Up to now, the only workaround we have to run in MSI mode is to
-> request_irq() when probing the devices (starting from CAN0) *AND*
-> free_irq() in the opposite order (ending with CAN0)  when removing the module.
-> 
-> Obvioulsy, enabling/disabling hw interrupts is always done when the can interface is put to up/down.
-> 
-> The "only" side effect is that all MSI interupt levels allocated by the
-> driver are requested, even if their corresponding interfaces are not UP.
-
-Which drivers have this problem?
-
-Marc
-
--- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+On 23.03.20 08:44, Marc Kleine-Budde wrote:
+> On 3/21/20 4:19 PM, Andr=C3=A9 Hartmann wrote:
+>> Actually it's not my system. The report is from a customer doing a full
+>> load test on an iMX8: https://bugreports.qt.io/browse/QTBUG-82610
+>
+> Which exact kernel are you using?
+> Don't run any applications and/or kernel logs over the serial console.
+>
+>> I guess the customer should try a more recent Kernel than 4.14 first?
+>
+> Ack.
+>
+> Marc
+>
