@@ -1,97 +1,76 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: How to send a CAN message while in a kernel module?
-Date: Sun, 22 Mar 2020 19:55:05 +0100
-Message-ID: <a152f1b1-f9e4-cae2-4dc4-d651f84eb11b@hartkopp.net>
-References: <CAOHJ0jSS=g4rQtXGkEFocafEqQAtxEOvq5eSXBC2FY_Esb23OA@mail.gmail.com>
- <2cb68f43-a551-c69d-b43f-3b044b948142@hartkopp.net>
- <CAOHJ0jRQx2U1APx92DTGFGzGLY9+tds3R4Sz8Tz8+LToWx_44g@mail.gmail.com>
- <ead77f42-f0f9-9b5a-ce5a-5e7f641d8a14@hartkopp.net>
- <CAOHJ0jQq80B64O6nG-aNSUhUrczVL0r4GZj-AUWcs4coiERG+Q@mail.gmail.com>
+From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
+Subject: Re: Need help in interpreting ip status output
+Date: Mon, 23 Mar 2020 08:19:09 +0100
+Message-ID: <42667b7b-59be-051b-eeca-da5b5b843221@gmx.de>
+References: <a6c8ef8c-5c72-7a2b-98df-0a30057c5fdc@gmx.de>
+ <f029f731-25bc-a3f0-c5a9-380012a16839@gmx.de>
+ <86b34b1b-7bda-e481-2087-1be8e64d2fed@hartkopp.net>
+ <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
+ <fe141541-7e79-3bee-8c75-29e6f9f3bc4e@hartkopp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:9192 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgCVSzI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 22 Mar 2020 14:55:08 -0400
-In-Reply-To: <CAOHJ0jQq80B64O6nG-aNSUhUrczVL0r4GZj-AUWcs4coiERG+Q@mail.gmail.com>
-Content-Language: en-US
+Received: from mout.gmx.net ([212.227.15.15]:41471 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727380AbgCWHTP (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 23 Mar 2020 03:19:15 -0400
+In-Reply-To: <fe141541-7e79-3bee-8c75-29e6f9f3bc4e@hartkopp.net>
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Robert Barrows <robb.barrows@gmail.com>
-Cc: linux-can@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Alex Blasche <alexander.blasche@qt.io>, Marc Kleine-Budde <mkl@pengutronix.de>
 
+Thanks Oliver.
 
+Reading the log it indeed seems a good idea to try a newer Kernel.
 
-On 22/03/2020 19.03, Robert Barrows wrote:
-> Thank you for all the direction Oliver,  I think I am on the correct path,
-> but now have can_send returning with a "-1" (ERESTART). I used raw_sendmsg
-> as a template for this and cut out (hopefully) unneeded code, but I am
-> concerned I cut out something I needed.  Would you mind taking another look?
-> 
-> Thanks.
-> 
-> int SendCanTime(struct timespec *tsCurrentTime) {
-> 
->    struct sk_buff *skb;
->    struct can_frame *frame = kmalloc(sizeof (struct can_frame), GFP_KERNEL);
->    struct net_device *dev;
->    int err = 0;
->    int thetime = tsCurrentTime->tv_sec;
-> 
->    // Set up can frame
->    frame->can_id = 0x00050F93 | CAN_EFF_FLAG;
->    frame->can_dlc = 6;
->    frame->data[0] = 0x00;
->    frame->data[1] = 0x02;
->    memcpy(frame->data+2, &thetime, sizeof(int));
-> 
->    // Find the netdevice named can0
->    read_lock(&dev_base_lock);
->    dev = first_net_device(&init_net);
->    while (!strcmp(dev->name, "can0")) {
->      printk(KERN_INFO "found [%s]\n", dev->name);
->      dev = next_net_device(dev);
->    }
->    read_unlock(&dev_base_lock);
+Marc, do you have any further comments?
 
-What does this return when you don't have can0 in the system??
+Thanks and best regards,
+Andr=C3=A9
 
-You should use
-  __dev_get_by_name()
-here.
-https://elixir.bootlin.com/linux/latest/source/net/core/dev.c#L762
-
-And check for success :-)
-
-
-> 
->    if (!dev)
->      return -ENXIO;
-> 
->    // Create skb
->    skb = alloc_can_skb(dev, &frame);
->    if (!skb)
->      goto put_dev;
-> 
->    skb->dev = dev;
-> 
->    err = can_send(skb, 0);
-> 
->    dev_put(dev);
-> 
->    if (err)
->      goto send_failed;
-> 
->    return 0;
-> 
-> //kfree_skb(skb);
-> put_dev:
->    dev_put(dev);
-> send_failed:
->    return err;
-> 
-> }
->                                                                                 ^
-> 
+On 21.03.20 18:04, Oliver Hartkopp wrote:
+> + Marc
+>
+> Hi Andr=C3=A9,
+>
+> On 21/03/2020 16.19, Andr=C3=A9 Hartmann wrote:
+>
+>>> On 12/03/2020 18.43, Andr=C3=A9 Hartmann wrote:
+>>>
+>>>>> can someone help me interpreting the following ip output:
+>
+>>> The reason for the overrun error is a notification from the CAN
+>>> controller itself. It tells us that the received CAN frame has not bee=
+n
+>>> read from the controller until the next CAN frame arrived.
+>>
+>> Ok, that's what I thought too, thanks for the confirmation.
+>>
+>>> The dropped counter usually indicates that the CAN driver did not get =
+a
+>>> skbuff data structure (e.g. out of memory condition).
+>>>
+>>> This is NOT good. What CAN hardware/setup are you using?
+>>
+>> Actually it's not my system. The report is from a customer doing a full
+>> load test on an iMX8: https://bugreports.qt.io/browse/QTBUG-82610
+>
+> Thanks for the link!
+>
+>> I guess the customer should try a more recent Kernel than 4.14 first?
+>
+> The FlexCAN driver (which is used in the IMX8 AFAIK) had a remarkable
+> number of changes last year:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/d=
+rivers/net/can/flexcan.c
+>
+>
+> So I would definitely suggest an update.
+> I added Marc to this thread as he was very active on the FlexCAN
+> improvements.
+>
+> Best,
+> Oliver
