@@ -1,76 +1,41 @@
-From: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 Subject: Re: Need help in interpreting ip status output
-Date: Mon, 23 Mar 2020 08:19:09 +0100
-Message-ID: <42667b7b-59be-051b-eeca-da5b5b843221@gmx.de>
+Date: Mon, 23 Mar 2020 08:44:31 +0100
+Message-ID: <2cd75c78-cec7-09c0-ea80-fbedf37d37d5@pengutronix.de>
 References: <a6c8ef8c-5c72-7a2b-98df-0a30057c5fdc@gmx.de>
  <f029f731-25bc-a3f0-c5a9-380012a16839@gmx.de>
  <86b34b1b-7bda-e481-2087-1be8e64d2fed@hartkopp.net>
  <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
- <fe141541-7e79-3bee-8c75-29e6f9f3bc4e@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout.gmx.net ([212.227.15.15]:41471 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727380AbgCWHTP (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 23 Mar 2020 03:19:15 -0400
-In-Reply-To: <fe141541-7e79-3bee-8c75-29e6f9f3bc4e@hartkopp.net>
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:57551 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727422AbgCWHon (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Mar 2020 03:44:43 -0400
+In-Reply-To: <75a1a6b5-141e-e741-f6c2-bab5e9e4e541@gmx.de>
 Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Alex Blasche <alexander.blasche@qt.io>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?Q?Andr=c3=a9_Hartmann?= <aha_1980@gmx.de>, Oliver Hartkopp <socketcan@hartkopp.net>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: Alex Blasche <alexander.blasche@qt.io>
 
-Thanks Oliver.
+On 3/21/20 4:19 PM, André Hartmann wrote:
+> Actually it's not my system. The report is from a customer doing a full
+> load test on an iMX8: https://bugreports.qt.io/browse/QTBUG-82610
 
-Reading the log it indeed seems a good idea to try a newer Kernel.
+Which exact kernel are you using?
+Don't run any applications and/or kernel logs over the serial console.
 
-Marc, do you have any further comments?
+> I guess the customer should try a more recent Kernel than 4.14 first?
 
-Thanks and best regards,
-Andr=C3=A9
+Ack.
 
-On 21.03.20 18:04, Oliver Hartkopp wrote:
-> + Marc
->
-> Hi Andr=C3=A9,
->
-> On 21/03/2020 16.19, Andr=C3=A9 Hartmann wrote:
->
->>> On 12/03/2020 18.43, Andr=C3=A9 Hartmann wrote:
->>>
->>>>> can someone help me interpreting the following ip output:
->
->>> The reason for the overrun error is a notification from the CAN
->>> controller itself. It tells us that the received CAN frame has not bee=
-n
->>> read from the controller until the next CAN frame arrived.
->>
->> Ok, that's what I thought too, thanks for the confirmation.
->>
->>> The dropped counter usually indicates that the CAN driver did not get =
-a
->>> skbuff data structure (e.g. out of memory condition).
->>>
->>> This is NOT good. What CAN hardware/setup are you using?
->>
->> Actually it's not my system. The report is from a customer doing a full
->> load test on an iMX8: https://bugreports.qt.io/browse/QTBUG-82610
->
-> Thanks for the link!
->
->> I guess the customer should try a more recent Kernel than 4.14 first?
->
-> The FlexCAN driver (which is used in the IMX8 AFAIK) had a remarkable
-> number of changes last year:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/d=
-rivers/net/can/flexcan.c
->
->
-> So I would definitely suggest an update.
-> I added Marc to this thread as he was very active on the FlexCAN
-> improvements.
->
-> Best,
-> Oliver
+Marc
+
+-- 
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
