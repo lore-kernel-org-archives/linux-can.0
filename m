@@ -1,145 +1,107 @@
-From: =?iso-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
-Subject: RE: PCI/PCIe cards and MSI support
-Date: Tue, 24 Mar 2020 09:15:29 +0000
-Message-ID: <DB6PR03MB30934B5DE1A1B43E7E684937D6F10@DB6PR03MB3093.eurprd03.prod.outlook.com>
-References: <DB6PR03MB3093A117F99170BDD81CBC1FD6F40@DB6PR03MB3093.eurprd03.prod.outlook.com>
- <20200319140127.GD2538@x1.vandijck-laurijssen.be>
- <DB6PR03MB3093B3487EC5FCFBFCDB4D6AD6F00@DB6PR03MB3093.eurprd03.prod.outlook.com>
- <375f841b-05a3-f1ab-a582-4796d4448029@pengutronix.de>
- <DB6PR03MB3093D18BB366D78BA9D384D1D6F00@DB6PR03MB3093.eurprd03.prod.outlook.com>,<45fe5f0a-9b74-a673-40e9-c3e361c625d5@pengutronix.de>
+From: Wolfgang Grandegger <wg@grandegger.com>
+Subject: [PATCH] can: gs_usb: avoid kernel warning when the device is stopped
+Date: Tue, 24 Mar 2020 12:21:20 +0100
+Message-ID: <50bcd1d6-57e2-504a-50b2-4c9561955628@grandegger.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr80089.outbound.protection.outlook.com ([40.107.8.89]:6723
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726697AbgCXJQN (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 24 Mar 2020 05:16:13 -0400
-In-Reply-To: <45fe5f0a-9b74-a673-40e9-c3e361c625d5@pengutronix.de>
-Content-Language: fr-FR
+Received: from mailproxy04.manitu.net ([217.11.48.68]:54310 "EHLO
+        mailproxy04.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727164AbgCXLVX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 24 Mar 2020 07:21:23 -0400
+Content-Language: en-GB
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: Maximilian Schneider <max@schneidersoft.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 
->> When switching in MSI mode, we've noticed that once CAN0 is closed (i.e.=
-, once its own interrupt is freed), all other CANs on the same card no long=
-er receive interrupts (i.e., the handler is never called
-again).
+This commit fixes partly the kernel warning listed below. It can easily
+be triggered by sending messages with "cangen -g1 can0" and then
+stopping the interface with "ifconfig can0 down". The warning comes from
+skb_release_all() and it occurs, because the "ifconfig down" command
+clears the running state before calling the device specific stop/close
+routine. In the meantime, TX done events may still occur, calling
+can_get_echo_skb(), which calls netif_rx() then netif_rx_internal()
+and enqueue_to_backlog(). Because the interface is not running any
+longer, the skb is finally dropped, causing the warning below. We now
+check the running state in gs_usb_receive_bulk_callback() before
+processing the data making the occurrence of that warning much much less
+probable. BTW, the warning can cause rather high latencies of 500 ms...
+that's likely the reason why it's there. The problem should show up on
+other (USB) CAN drivers as well.
 
-> Is it the free_irq() or the other code called on ifdown? Comment out the =
-free_irq() and check what happens.
+[ 1694.131475] ------------[ cut here ]------------
+[ 1694.139911] WARNING: CPU: 0 PID: 0 at skb_release_head_state+0x9e/0xb0
+[ 1694.147206] Modules linked in: intel_telemetry_pltdrv intel_pmc_ipc intel_punit_ipc intel_telemetry_core x86_pkg_temp_thermal igb tpm_tis tpm_tis_core btusb btrtl dca tpm lpc_ich btbcm spi_pxa2xx_platform mei_me btintel mei thermal rfcomm bluetooth ecdh_generic ntngdm_i2c ntngdm_core ntngdm_bl ntngdm_tsi ntngdm_irq ntngdm_hwmon i915 video
+[ 1694.180782] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G     U  W       4.14.51apollolake #1
+[ 1694.189828] Hardware name: Default string Default string/AGCO_NT-NG, BIOS X3.00c#AGCO BETA 09/19/2019
+[ 1694.200136] task: ffffffff840104c0 task.stack: ffffffff84000000
+[ 1694.206753] RIP: 0010:skb_release_head_state+0x9e/0xb0
+[ 1694.212494] RSP: 0018:ffff8b2b3fc03cb0 EFLAGS: 00010006
+[ 1694.218333] RAX: ffffffff835a4fb0 RBX: ffff8b2b3a20b100 RCX: 0000000000000018
+[ 1694.226310] RDX: 0000000000010000 RSI: 0000000000000000 RDI: 0000000000000000
+[ 1694.234284] RBP: 0000000000020ac0 R08: 0000000000000014 R09: 0000000000000014
+[ 1694.242259] R10: 0000000000000000 R11: ffff8b2b3a7a2180 R12: ffff8b2b3fc03d40
+[ 1694.250235] R13: ffff8b2b3a20b100 R14: ffff8b2b3fc20bcc R15: 0000000000000086
+[ 1694.258211] FS:  0000000000000000(0000) GS:ffff8b2b3fc00000(0000) knlGS:0000000000000000
+[ 1694.267256] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1694.273678] CR2: 00007f83a2db5130 CR3: 0000000179c6a000 CR4: 00000000003406f0
+[ 1694.281653] Call Trace:
+[ 1694.284383]  <IRQ>
+[ 1694.286629]  skb_release_all+0x9/0x20
+[ 1694.290720]  kfree_skb+0x19/0x40
+[ 1694.294327]  enqueue_to_backlog+0x7e/0x230
+[ 1694.298906]  ? recalibrate_cpu_khz+0x10/0x10
+[ 1694.303677]  ? ktime_get_with_offset+0x4f/0xb0
+[ 1694.308644]  netif_rx_internal+0x56/0x150
+[ 1694.313126]  can_get_echo_skb+0x37/0x60
+[ 1694.317415]  gs_usb_receive_bulk_callback+0x111/0x320
+[ 1694.323063]  __usb_hcd_giveback_urb+0x7b/0xf0
+[ 1694.327924]  xhci_giveback_urb_in_irq.isra.55+0x6d/0x90
+[ 1694.333765]  xhci_td_cleanup+0xcb/0x150
+[ 1694.338051]  xhci_irq+0x66a/0x20b0
+[ 1694.341854]  ? rcu_accelerate_cbs+0x3a/0x190
+[ 1694.346628]  __handle_irq_event_percpu+0x32/0xd0
+[ 1694.351791]  handle_irq_event_percpu+0x2b/0x70
+[ 1694.356757]  handle_irq_event+0x2f/0x50
+[ 1694.361044]  handle_edge_irq+0x72/0x190
+[ 1694.365331]  handle_irq+0x17/0x20
+[ 1694.369038]  do_IRQ+0x3c/0xc0
+[ 1694.372355]  common_interrupt+0x7a/0x7a
+[ 1694.376639]  </IRQ>
+[ 1694.378981] RIP: 0010:cpuidle_enter_state+0x122/0x200
+[ 1694.384622] RSP: 0018:ffffffff84003ea8 EFLAGS: 00000286 ORIG_RAX: ffffffffffffffbd
+[ 1694.393087] RAX: ffff8b2b3fc1fa00 RBX: 0000000000000002 RCX: 0000018a721a5ae8
+[ 1694.401063] RDX: 0000018a721a5ae8 RSI: 0000000050523fbe RDI: 0000000000000000
+[ 1694.409040] RBP: ffff8b2b3aa13600 R08: 0000000000000193 R09: 000000000000012a
+[ 1694.417015] R10: ffffffff84003e90 R11: 00000000000000ef R12: 0000018a721a5ae8
+[ 1694.424990] R13: 0000018a72199308 R14: 0000000000000002 R15: 0000000072efca78
+[ 1694.432970]  ? cpuidle_enter_state+0x11e/0x200
+[ 1694.437937]  do_idle+0x161/0x1a0
+[ 1694.441544]  cpu_startup_entry+0x6a/0x70
+[ 1694.445927]  start_kernel+0x414/0x434
+[ 1694.450023]  secondary_startup_64+0xa5/0xb0
+[ 1694.454697] Code: 88 96 4f 17 00 74 02 5b c3 5b e9 4e 15 bc ff e8 d9 33 04 00 eb dd e8 c2 5a 0d 00 eb 9f 48 83 e7 fe e8 07 d7 01 00 e9 75 ff ff ff <0f> 0b eb ad 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00 00 53 48 89
+[ 1694.475869] ---[ end trace 063196a1141471b3 ]---
 
-This issue does exist for peak_pci (SJA1000 PC/PCIe driver) as well as for =
-peak_pciefd (CAN FD PC interfaces driver) when MSI mode is requested.
-
-At the moment, free_irq() is called on ifdown in both drivers. That's the c=
-ore of the issue. When commented out, the interrupt handler is always calle=
-d for the other CANs. But, obvioulsy, ifup(CAN0) now says "RTNETLINK answer=
-s: Device or resource busy".
-
+Signed-of-by: Wolfgang Grandegger <wg@grandegger.com>
 ---
-St=E9phane Grosjean
-PEAK-System France
-132, rue Andr=E9 Bisiaux
-F-54320 MAXEVILLE
-T=E9l : +(33) 9.72.54.51.97
+ drivers/net/can/usb/gs_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-
-
-
-
-
-
-
-
-
-De : Marc Kleine-Budde <mkl@pengutronix.de>
-
-Envoy=E9 : lundi 23 mars 2020 10:35
-
-=C0 : St=E9phane Grosjean <s.grosjean@peak-system.com>; Kurt Van Dijck <dev=
-.kurt@vandijck-laurijssen.be>
-
-Cc : linux-can@vger.kernel.org <linux-can@vger.kernel.org>
-
-Objet : Re: PCI/PCIe cards and MSI support
-
-
-
-
-On 3/23/20 10:25 AM, St=E9phane Grosjean wrote:
-
-> When switching in MSI mode, we've noticed that once CAN0 is closed
-
-> (i.e., once its own interrupt is freed), all other CANs on the same card =
-no longer receive interrupts (i.e., the handler is never called again).
-
-
-
-Is it the free_irq() or the other code called on ifdown? Comment out the
-
-free_irq() and check what happens.
-
-
-
-> This issue doesn't exist when any other CANx then CAN0 is closed.
-
->
-
-> The reason of this is not clear. What we know is that this issue doesn't
-
->  exist under Windows for any of our (CAN 2.0 as well as CAN FD) cards. On=
- the contrary, the issue is the same for all of our CAN 2.0 / CAN FD cards =
-under Linux.
-
->
-
-> Up to now, the only workaround we have to run in MSI mode is to
-
-> request_irq() when probing the devices (starting from CAN0) *AND*
-
-> free_irq() in the opposite order (ending with CAN0)  when removing the mo=
-dule.
-
->
-
-> Obvioulsy, enabling/disabling hw interrupts is always done when the can i=
-nterface is put to up/down.
-
->
-
-> The "only" side effect is that all MSI interupt levels allocated by the
-
-> driver are requested, even if their corresponding interfaces are not UP.
-
-
-
-Which drivers have this problem?
-
-
-
-Marc
-
-
-
---
-
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-
-Embedded Linux                   | https://www.pengutronix.de  |
-
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt - HRB 9183
-Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
-Unsere Datenschutzerklaerung mit wichtigen Hinweisen
-zur Behandlung personenbezogener Daten finden Sie unter
-www.peak-system.com/Datenschutz.483.0.html
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index a4b4b74..1893267 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -321,7 +321,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 	netdev = dev->netdev;
+ 	stats = &netdev->stats;
+ 
+-	if (!netif_device_present(netdev))
++	if (!netif_device_present(netdev) || !netif_running(netdev))
+ 		return;
+ 
+ 	if (hf->echo_id == -1) { /* normal rx */
+-- 
+1.9.1
