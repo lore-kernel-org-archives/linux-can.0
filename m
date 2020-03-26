@@ -1,95 +1,129 @@
-From: Felix Riemann <Felix.Riemann@sma.de>
-Subject: RE: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
  disabled
-Date: Thu, 26 Mar 2020 14:49:23 +0000
-Message-ID: <AM0PR04MB5427D3BF64C3D3DA3961920488CF0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+Date: Thu, 26 Mar 2020 20:38:37 +0100
+Message-ID: <20200326193837.GF760@x1.vandijck-laurijssen.be>
 References: <20200326104318.15086-1-felix.riemann@sma.de>
  <20200326134015.GC27785@x1.vandijck-laurijssen.be>
+ <AM0PR04MB5427D3BF64C3D3DA3961920488CF0@AM0PR04MB5427.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr00124.outbound.protection.outlook.com ([40.107.0.124]:6143
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726363AbgCZOt1 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 26 Mar 2020 10:49:27 -0400
-In-Reply-To: <20200326134015.GC27785@x1.vandijck-laurijssen.be>
-Content-Language: de-DE
+Received: from relay-b02.edpnet.be ([212.71.1.222]:42575 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgCZTis (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 26 Mar 2020 15:38:48 -0400
+Content-Disposition: inline
+In-Reply-To: <AM0PR04MB5427D3BF64C3D3DA3961920488CF0@AM0PR04MB5427.eurprd04.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To: Felix Riemann <Felix.Riemann@sma.de>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andre Kalb <Andre.Kalb@sma.de>
 
-SGkgS3VydCwNCg0KeWVzIHRoYXQgd291bGQgYmUgM2NiM2VhYWM1MmMwZjE0NWQ4OTVmNGI2YzIy
-ODM0ZDVmMDJiODU2OS4NCg0KSSB0cmllZCB5b3VyIHBhdGNoIGFzIHdlbGwsIHNpbmNlIHRoZSBk
-ZXNjcmlwdGlvbiBtYXRjaGVkIHRoZSBwcm9ibGVtIHByZXR0eSB3ZWxsLiBIb3dldmVyLCBJIGNv
-dWxkIHN0aWxsIHByb2R1Y2UgdGhlIGhhbmcgb24gb3VyIGJvYXJkIChiYXNlZCBvbiBBTTMzNTIp
-IGVzcGVjaWFsbHkgaWYgdGhlIGJ1cyBvZmYgb2NjdXJzIHdoaWxlIHRoZSBidXMgbG9hZCBpcyB2
-ZXJ5IGhpZ2guDQoNCldoYXQgSSBjb3VsZCBzZWUgd2FzIHRoZSB3b3JrZXIgYmVpbmcgdHJpZ2dl
-cmVkIGJ5IHRoZSBpbnRlcnJ1cHQgd2l0aCB0aGUgYnVzIGJlaW5nIGluIHBhc3NpdmUgbW9kZS4g
-V2hlbiB0aGUgd29ya2VyIHRoZW4gcmUtZW5hYmxlZCB0aGUgaW50ZXJydXB0IHRoZSBoYXJkd2Fy
-ZSBoYWQgYWxyZWFkeSBlbnRlcmVkIGluaXQgbW9kZSBkdWUgdG8gdGhlIGJ1cy1vZmYgYnV0IG5v
-ciB3b3VsZCBpdCB0cmlnZ2VyIGFnYWluIG5vciB3b3VsZCB0aGUgaW50ZXJydXB0IHJlZ2lzdGVy
-IGluZGljYXRlIGEgcGVuZGluZyBJUlEuIFRoZSBzdGF0dXMgcmVnaXN0ZXIgYWxzbyBpbmRpY2F0
-ZXMgYW4gZXJyb3IgKExFQyAhPSAweDcpLg0KDQpBIGZpcnN0IGF0dGVtcHQgdG8gZml4L3dvcmth
-cm91bmQgdGhpcyBwbGFjZWQgdGhlIGNoZWNrIGp1c3QgYmVmb3JlIHRoZSB3b3JrZXIgcmUtZW5h
-YmxlcyB0aGUgaW50ZXJydXB0cy4gQnV0IGV2ZW4gdGhpcyBzZXR1cCBjb3VsZCByZXByb2R1Y2Ug
-dGhlIHByb2JsZW0sIGFsdGhvdWdoIGl0IHRvb2sgbG9uZ2VyIHRvIGRvIHNvLiAgU28gdGhlIHRp
-bWluZyBhcm91bmQgZW5hYmxpbmcgdGhlIGludGVycnVwdHMgc2VlbXMgdG8gbWF0dGVyIGhlcmUu
-IEFjdHVhbGx5LCBhZGRpbmcgYSBwcmludG91dCBhdCB0aGUgdG9wIG9mIHRoZSB3b3JrZXIgd2hl
-cmUgeW91ciBwYXRjaCBjaGVja3MgdGhlIHZhbHVlIG9mIHRoZSBzaWVfcGVuZGluZyBhdG9taWMg
-c2VlbXMgdG8gaW5jcmVhc2UgdGhlIGNoYW5jZXMgb2YgbWFraW5nIGl0IGhhcHBlbiBvbiBteSBi
-b2FyZCwgYnV0IHRoYXQncyBqdXN0IGEgZmVlbGluZyBJIGdvdCB3aGlsZSBjbGVhbmluZyB1cCBt
-eSBwYXRjaC4NCg0KUmVnYXJkcywNCg0KRmVsaXgNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
-LS0NCkZyb206IEt1cnQgVmFuIERpamNrIDxkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJl
-Pg0KU2VudDogVGh1cnNkYXksIE1hcmNoIDI2LCAyMDIwIDI6NDAgUE0NCg0KVGhpcyBwYXRjaCBs
-b29rcyB2ZXJ5IGZhbWlsaWFyLg0KSSB0cmllZCB0aGlzIDYgbW9udGhzIGFnbywgd2hlbiBJIGdv
-dCBhIHNldHVwIHdoZXJlIEkgY291bGQgcmVwcm9kdWNlIHRoaXMgd2l0aGluIG1pbnV0ZXMuDQoN
-ClRoaXMgcGF0Y2ggZGlkbid0IHNvbHZlIG15IHByb2JsZW0sIGFuZCBJIGZpeGVkIG15IHByb2Js
-ZW0gd2l0aCByZWFkaW5nIHRoZSBJU1IgcmVnaXN0ZXIgb25seSBvbmNlIGluIHRoZSBJUlEsIGFu
-ZCBfbm90XyAybmQgdGltZSBpbiBuYXBpIGhhbmRsZXIuDQpSZWFkaW5nIHRoZSBJU1IgaW4gQ19D
-QU4gaXMgY29uc3VtaW5nIHRoZSBpbmZvLCBzbyB1bmxlc3MgdGhlIHRoZXJlIGlzIG1vcmUgc3Rh
-dGUgdG8gY2xlYXIgKHN1Y2ggYXMgcmVjZWl2ZWQgbWVzc2FnZSBidWZmZXJzKSwgdGhlIGludGVy
-cnVwdCBjYXVzZSBpcyBhc3N1bWVkIHRvIGJlIGtub3duLCBhbmQgdGhlIENfQ0FOIHByb2NlZWRz
-IHRvIHRoZSBuZXh0IGludGVycnVwdCBjYXVzZS4NCkkndmUgbm90IGV4cGVyaWVuY2VkIGEgc2lu
-Z2xlIHByb2JsZW0gc2luY2UsIHdoZXJlIGJlZm9yZSB0aGUgZml4LCBJJ2QgZXhwZXJpZW5jZSBh
-IGZldyBvY2N1cmFuY2VzIGV2ZXJ5IG1vbnRoLg0KV2UgaGF2ZSBhbiBhbTMzNTggKGJlYWdsZWJv
-bmUtbGlrZSBoYXJkd2FyZSkuDQoNCkkgYmVsaWV2ZSBJIHN1Ym1pdHRlZCBhIHBhdGNoIGZvciB0
-aGF0Lg0KDQpSZS1zY2hlZHVsaW5nIHRoZSBuYXBpIGlzIGEgd29ya2Fyb3VuZCwgSU1ITy4NCg0K
-S3VydA0KDQpPbiBkbywgMjYgbXJ0IDIwMjAgMTE6NDM6MTggKzAxMDAsIEZlbGl4IFJpZW1hbm4g
-d3JvdGU6DQo+IFRoZXJlIGFyZSBhcHBlYXJzIHRvIGJlIGEgcmFjZSBjb25kaXRpb24gd2hlcmUg
-aW50ZXJydXB0cyBjYXVzZWQgYnkNCj4gYnVzIG9mZnMgZ2V0IGxvc3QgaWYgaXQgb2NjdXJzIHdo
-aWxlIGludGVycnVwdHMgYXJlIGRpc2FibGVkIG9yIGJlaW5nDQo+IHJlLWVuYWJsZWQuDQo+DQo+
-IFRoaXMgdHJpZXMgdG8gYXZvaWQgdGhlIGRlYWRsb2NrIGJ5IHJlc2NoZWR1bGluZyB0aGUgTkFQ
-SSB3b3JrZXIgdG8NCj4gaGFuZGxlIHRoZSBidXMtb2ZmIGNvbmRpdGlvbi4NCj4NCj4gU2lnbmVk
-LW9mZi1ieTogRmVsaXggUmllbWFubiA8ZmVsaXgucmllbWFubkBzbWEuZGU+DQo+IFJldmlld2Vk
-LWJ5OiBBbmRyZSBLYWxiIDxhbmRyZS5rYWxiQHNtYS5kZT4NCj4gLS0tDQo+ICBkcml2ZXJzL25l
-dC9jYW4vY19jYW4vY19jYW4uYyB8IDE5ICsrKysrKysrKysrKysrKysrKy0NCj4gIDEgZmlsZSBj
-aGFuZ2VkLCAxOCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+DQo+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL25ldC9jYW4vY19jYW4vY19jYW4uYw0KPiBiL2RyaXZlcnMvbmV0L2Nhbi9jX2Nh
-bi9jX2Nhbi5jIGluZGV4IDhlOWY1NjIwYzlhMi4uMDk1MmFjMGI5MTIzDQo+IDEwMDY0NA0KPiAt
-LS0gYS9kcml2ZXJzL25ldC9jYW4vY19jYW4vY19jYW4uYw0KPiArKysgYi9kcml2ZXJzL25ldC9j
-YW4vY19jYW4vY19jYW4uYw0KPiBAQCAtMTEyMyw4ICsxMTIzLDI1IEBAIHN0YXRpYyBpbnQgY19j
-YW5fcG9sbChzdHJ1Y3QgbmFwaV9zdHJ1Y3QgKm5hcGksIGludCBxdW90YSkNCj4gIGlmICh3b3Jr
-X2RvbmUgPCBxdW90YSkgew0KPiAgbmFwaV9jb21wbGV0ZV9kb25lKG5hcGksIHdvcmtfZG9uZSk7
-DQo+ICAvKiBlbmFibGUgYWxsIElSUXMgaWYgd2UgYXJlIG5vdCBpbiBidXMgb2ZmIHN0YXRlICov
-DQo+IC1pZiAocHJpdi0+Y2FuLnN0YXRlICE9IENBTl9TVEFURV9CVVNfT0ZGKQ0KPiAraWYgKHBy
-aXYtPmNhbi5zdGF0ZSAhPSBDQU5fU1RBVEVfQlVTX09GRikgew0KPiArdTMyIGN0cmw7DQo+ICBj
-X2Nhbl9pcnFfY29udHJvbChwcml2LCB0cnVlKTsNCj4gKw0KPiArLyogVGhlcmUgYXBwZWFycyB0
-byBiZSBhIHJhY2UgY29uZGl0aW9uIHdoZW4gdGhlIGRldmljZQ0KPiArICogZW50ZXJzIGJ1cyBv
-ZmYgd2hpbGUgaW50ZXJydXB0cyBhcmUgb2ZmIG9yIGJlaW5nDQo+ICsgKiByZS1lbmFibGVkIGNh
-dXNpbmcgdGhlIGJ1cyBvZmYgdG8gZ2V0IGxvc3QuDQo+ICsgKiBUaGlzIHRyaWVzIHRvIGF2b2lk
-IHRoaXMgY29uZGl0aW9uLg0KPiArICovDQo+ICtjdHJsID0gcHJpdi0+cmVhZF9yZWcocHJpdiwg
-Q19DQU5fQ1RSTF9SRUcpOw0KPiArDQo+ICtpZiAoY3RybCAmIENPTlRST0xfSU5JVCkgew0KPiAr
-bmV0ZGV2X3dhcm4oZGV2LCAibG9zdCBidXMgb2ZmXG4iKTsNCj4gK2NfY2FuX2lycV9jb250cm9s
-KHByaXYsIGZhbHNlKTsNCj4gKy8qIFJlc2NoZWR1bGUgd29ya2VyIHRvIGhhbmRsZSBidXMgb2Zm
-ICovDQo+ICthdG9taWNfc2V0KCZwcml2LT5zaWVfcGVuZGluZywgMSk7DQo+ICtuYXBpX3Jlc2No
-ZWR1bGUobmFwaSk7DQo+ICt9DQo+ICt9DQo+ICB9DQo+DQo+ICByZXR1cm4gd29ya19kb25lOw0K
-PiAtLQ0KPiAyLjI2LjANCj4NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXw0KDQpTTUEgU29sYXIgVGVjaG5vbG9neSBBRw0KQXVmc2ljaHRzcmF0OiBE
-ci4gRXJpayBFaHJlbnRyYXV0IChWb3JzaXR6ZW5kZXIpDQpWb3JzdGFuZDogVWxyaWNoIEhhZGRp
-bmcsIERyLi1JbmcuIEp1ZXJnZW4gUmVpbmVydA0KSGFuZGVsc3JlZ2lzdGVyOiBBbXRzZ2VyaWNo
-dCBLYXNzZWwgSFJCIDM5NzINClNpdHogZGVyIEdlc2VsbHNjaGFmdDogMzQyNjYgTmllc3RldGFs
-DQpVU3QtSUQtTnIuIERFIDExMyAwOCA1OSA1NA0KV0VFRS1SZWcuLU5yLiBERSA5NTg4MTE1MA0K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo=
+Interesting topic.
+
+After the bus-off problem, I also attacked the overflow problems. No
+idea why this patch series got stalled. I activated the complete 64
+message buffers of the D_CAN hardware (only 64 of the 128 being present
+in the IP for some reason I don't know) and modified the IRQ to use
+rx-offload. That may affect the circumstances under load, I admit.
+
+Whould you mind trying that series, just for reference, in your setup?
+If your hypothesis is right, my observations do not survive your
+busload.
+
+Kind regards,
+Kurt
+
+On do, 26 mrt 2020 14:49:23 +0000, Felix Riemann wrote:
+> Hi Kurt,
+> 
+> yes that would be 3cb3eaac52c0f145d895f4b6c22834d5f02b8569.
+> 
+> I tried your patch as well, since the description matched the problem pretty well. However, I could still produce the hang on our board (based on AM3352) especially if the bus off occurs while the bus load is very high.
+> 
+> What I could see was the worker being triggered by the interrupt with the bus being in passive mode. When the worker then re-enabled the interrupt the hardware had already entered init mode due to the bus-off but nor would it trigger again nor would the interrupt register indicate a pending IRQ. The status register also indicates an error (LEC != 0x7).
+> 
+> A first attempt to fix/workaround this placed the check just before the worker re-enables the interrupts. But even this setup could reproduce the problem, although it took longer to do so.  So the timing around enabling the interrupts seems to matter here. Actually, adding a printout at the top of the worker where your patch checks the value of the sie_pending atomic seems to increase the chances of making it happen on my board, but that's just a feeling I got while cleaning up my patch.
+> 
+> Regards,
+> 
+> Felix
+> 
+> -----Original Message-----
+> From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+> Sent: Thursday, March 26, 2020 2:40 PM
+> 
+> This patch looks very familiar.
+> I tried this 6 months ago, when I got a setup where I could reproduce this within minutes.
+> 
+> This patch didn't solve my problem, and I fixed my problem with reading the ISR register only once in the IRQ, and _not_ 2nd time in napi handler.
+> Reading the ISR in C_CAN is consuming the info, so unless the there is more state to clear (such as received message buffers), the interrupt cause is assumed to be known, and the C_CAN proceeds to the next interrupt cause.
+> I've not experienced a single problem since, where before the fix, I'd experience a few occurances every month.
+> We have an am3358 (beaglebone-like hardware).
+> 
+> I believe I submitted a patch for that.
+> 
+> Re-scheduling the napi is a workaround, IMHO.
+> 
+> Kurt
+> 
+> On do, 26 mrt 2020 11:43:18 +0100, Felix Riemann wrote:
+> > There are appears to be a race condition where interrupts caused by
+> > bus offs get lost if it occurs while interrupts are disabled or being
+> > re-enabled.
+> >
+> > This tries to avoid the deadlock by rescheduling the NAPI worker to
+> > handle the bus-off condition.
+> >
+> > Signed-off-by: Felix Riemann <felix.riemann@sma.de>
+> > Reviewed-by: Andre Kalb <andre.kalb@sma.de>
+> > ---
+> >  drivers/net/can/c_can/c_can.c | 19 ++++++++++++++++++-
+> >  1 file changed, 18 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/can/c_can/c_can.c
+> > b/drivers/net/can/c_can/c_can.c index 8e9f5620c9a2..0952ac0b9123
+> > 100644
+> > --- a/drivers/net/can/c_can/c_can.c
+> > +++ b/drivers/net/can/c_can/c_can.c
+> > @@ -1123,8 +1123,25 @@ static int c_can_poll(struct napi_struct *napi, int quota)
+> >  if (work_done < quota) {
+> >  napi_complete_done(napi, work_done);
+> >  /* enable all IRQs if we are not in bus off state */
+> > -if (priv->can.state != CAN_STATE_BUS_OFF)
+> > +if (priv->can.state != CAN_STATE_BUS_OFF) {
+> > +u32 ctrl;
+> >  c_can_irq_control(priv, true);
+> > +
+> > +/* There appears to be a race condition when the device
+> > + * enters bus off while interrupts are off or being
+> > + * re-enabled causing the bus off to get lost.
+> > + * This tries to avoid this condition.
+> > + */
+> > +ctrl = priv->read_reg(priv, C_CAN_CTRL_REG);
+> > +
+> > +if (ctrl & CONTROL_INIT) {
+> > +netdev_warn(dev, "lost bus off\n");
+> > +c_can_irq_control(priv, false);
+> > +/* Reschedule worker to handle bus off */
+> > +atomic_set(&priv->sie_pending, 1);
+> > +napi_reschedule(napi);
+> > +}
+> > +}
+> >  }
+> >
+> >  return work_done;
+> > --
+> > 2.26.0
+> >
+> ___________________________________________________
+> 
+> SMA Solar Technology AG
+> Aufsichtsrat: Dr. Erik Ehrentraut (Vorsitzender)
+> Vorstand: Ulrich Hadding, Dr.-Ing. Juergen Reinert
+> Handelsregister: Amtsgericht Kassel HRB 3972
+> Sitz der Gesellschaft: 34266 Niestetal
+> USt-ID-Nr. DE 113 08 59 54
+> WEEE-Reg.-Nr. DE 95881150
+> ___________________________________________________
