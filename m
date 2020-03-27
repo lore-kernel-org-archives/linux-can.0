@@ -1,129 +1,122 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
+From: Felix Riemann <Felix.Riemann@sma.de>
+Subject: RE: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
  disabled
-Date: Thu, 26 Mar 2020 20:38:37 +0100
-Message-ID: <20200326193837.GF760@x1.vandijck-laurijssen.be>
+Date: Fri, 27 Mar 2020 10:09:03 +0000
+Message-ID: <AM0PR04MB542742337A89900E12A8732288CC0@AM0PR04MB5427.eurprd04.prod.outlook.com>
 References: <20200326104318.15086-1-felix.riemann@sma.de>
  <20200326134015.GC27785@x1.vandijck-laurijssen.be>
  <AM0PR04MB5427D3BF64C3D3DA3961920488CF0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+ <20200326193837.GF760@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b02.edpnet.be ([212.71.1.222]:42575 "EHLO
-        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgCZTis (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 26 Mar 2020 15:38:48 -0400
-Content-Disposition: inline
-In-Reply-To: <AM0PR04MB5427D3BF64C3D3DA3961920488CF0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+Received: from mail-eopbgr40120.outbound.protection.outlook.com ([40.107.4.120]:24462
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726027AbgC0KJJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 27 Mar 2020 06:09:09 -0400
+In-Reply-To: <20200326193837.GF760@x1.vandijck-laurijssen.be>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Felix Riemann <Felix.Riemann@sma.de>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andre Kalb <Andre.Kalb@sma.de>
 
-Interesting topic.
-
-After the bus-off problem, I also attacked the overflow problems. No
-idea why this patch series got stalled. I activated the complete 64
-message buffers of the D_CAN hardware (only 64 of the 128 being present
-in the IP for some reason I don't know) and modified the IRQ to use
-rx-offload. That may affect the circumstances under load, I admit.
-
-Whould you mind trying that series, just for reference, in your setup?
-If your hypothesis is right, my observations do not survive your
-busload.
-
-Kind regards,
-Kurt
-
-On do, 26 mrt 2020 14:49:23 +0000, Felix Riemann wrote:
-> Hi Kurt,
-> 
-> yes that would be 3cb3eaac52c0f145d895f4b6c22834d5f02b8569.
-> 
-> I tried your patch as well, since the description matched the problem pretty well. However, I could still produce the hang on our board (based on AM3352) especially if the bus off occurs while the bus load is very high.
-> 
-> What I could see was the worker being triggered by the interrupt with the bus being in passive mode. When the worker then re-enabled the interrupt the hardware had already entered init mode due to the bus-off but nor would it trigger again nor would the interrupt register indicate a pending IRQ. The status register also indicates an error (LEC != 0x7).
-> 
-> A first attempt to fix/workaround this placed the check just before the worker re-enables the interrupts. But even this setup could reproduce the problem, although it took longer to do so.  So the timing around enabling the interrupts seems to matter here. Actually, adding a printout at the top of the worker where your patch checks the value of the sie_pending atomic seems to increase the chances of making it happen on my board, but that's just a feeling I got while cleaning up my patch.
-> 
-> Regards,
-> 
-> Felix
-> 
-> -----Original Message-----
-> From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-> Sent: Thursday, March 26, 2020 2:40 PM
-> 
-> This patch looks very familiar.
-> I tried this 6 months ago, when I got a setup where I could reproduce this within minutes.
-> 
-> This patch didn't solve my problem, and I fixed my problem with reading the ISR register only once in the IRQ, and _not_ 2nd time in napi handler.
-> Reading the ISR in C_CAN is consuming the info, so unless the there is more state to clear (such as received message buffers), the interrupt cause is assumed to be known, and the C_CAN proceeds to the next interrupt cause.
-> I've not experienced a single problem since, where before the fix, I'd experience a few occurances every month.
-> We have an am3358 (beaglebone-like hardware).
-> 
-> I believe I submitted a patch for that.
-> 
-> Re-scheduling the napi is a workaround, IMHO.
-> 
-> Kurt
-> 
-> On do, 26 mrt 2020 11:43:18 +0100, Felix Riemann wrote:
-> > There are appears to be a race condition where interrupts caused by
-> > bus offs get lost if it occurs while interrupts are disabled or being
-> > re-enabled.
-> >
-> > This tries to avoid the deadlock by rescheduling the NAPI worker to
-> > handle the bus-off condition.
-> >
-> > Signed-off-by: Felix Riemann <felix.riemann@sma.de>
-> > Reviewed-by: Andre Kalb <andre.kalb@sma.de>
-> > ---
-> >  drivers/net/can/c_can/c_can.c | 19 ++++++++++++++++++-
-> >  1 file changed, 18 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/can/c_can/c_can.c
-> > b/drivers/net/can/c_can/c_can.c index 8e9f5620c9a2..0952ac0b9123
-> > 100644
-> > --- a/drivers/net/can/c_can/c_can.c
-> > +++ b/drivers/net/can/c_can/c_can.c
-> > @@ -1123,8 +1123,25 @@ static int c_can_poll(struct napi_struct *napi, int quota)
-> >  if (work_done < quota) {
-> >  napi_complete_done(napi, work_done);
-> >  /* enable all IRQs if we are not in bus off state */
-> > -if (priv->can.state != CAN_STATE_BUS_OFF)
-> > +if (priv->can.state != CAN_STATE_BUS_OFF) {
-> > +u32 ctrl;
-> >  c_can_irq_control(priv, true);
-> > +
-> > +/* There appears to be a race condition when the device
-> > + * enters bus off while interrupts are off or being
-> > + * re-enabled causing the bus off to get lost.
-> > + * This tries to avoid this condition.
-> > + */
-> > +ctrl = priv->read_reg(priv, C_CAN_CTRL_REG);
-> > +
-> > +if (ctrl & CONTROL_INIT) {
-> > +netdev_warn(dev, "lost bus off\n");
-> > +c_can_irq_control(priv, false);
-> > +/* Reschedule worker to handle bus off */
-> > +atomic_set(&priv->sie_pending, 1);
-> > +napi_reschedule(napi);
-> > +}
-> > +}
-> >  }
-> >
-> >  return work_done;
-> > --
-> > 2.26.0
-> >
-> ___________________________________________________
-> 
-> SMA Solar Technology AG
-> Aufsichtsrat: Dr. Erik Ehrentraut (Vorsitzender)
-> Vorstand: Ulrich Hadding, Dr.-Ing. Juergen Reinert
-> Handelsregister: Amtsgericht Kassel HRB 3972
-> Sitz der Gesellschaft: 34266 Niestetal
-> USt-ID-Nr. DE 113 08 59 54
-> WEEE-Reg.-Nr. DE 95881150
-> ___________________________________________________
+SXMgaXQgdGhpcyBvbmU/DQpodHRwczovL21hcmMuaW5mby8/bD1saW51eC1jYW4mbT0xNTc2ODM1
+Nzk1MTgyODINCg0KSXQgc2VlbXMgdG8gYmUgbWlzc2luZyBwYXRjaCA2IGluIHRoZSBzZXJpZXMu
+DQoNClJlZ2FyZHMsDQpGZWxpeA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTog
+S3VydCBWYW4gRGlqY2sNClNlbnQ6IFRodXJzZGF5LCBNYXJjaCAyNiwgMjAyMCA4OjM5IFBNDQoN
+CkludGVyZXN0aW5nIHRvcGljLg0KDQpBZnRlciB0aGUgYnVzLW9mZiBwcm9ibGVtLCBJIGFsc28g
+YXR0YWNrZWQgdGhlIG92ZXJmbG93IHByb2JsZW1zLiBObw0KaWRlYSB3aHkgdGhpcyBwYXRjaCBz
+ZXJpZXMgZ290IHN0YWxsZWQuIEkgYWN0aXZhdGVkIHRoZSBjb21wbGV0ZSA2NA0KbWVzc2FnZSBi
+dWZmZXJzIG9mIHRoZSBEX0NBTiBoYXJkd2FyZSAob25seSA2NCBvZiB0aGUgMTI4IGJlaW5nIHBy
+ZXNlbnQNCmluIHRoZSBJUCBmb3Igc29tZSByZWFzb24gSSBkb24ndCBrbm93KSBhbmQgbW9kaWZp
+ZWQgdGhlIElSUSB0byB1c2UNCnJ4LW9mZmxvYWQuIFRoYXQgbWF5IGFmZmVjdCB0aGUgY2lyY3Vt
+c3RhbmNlcyB1bmRlciBsb2FkLCBJIGFkbWl0Lg0KDQpXaG91bGQgeW91IG1pbmQgdHJ5aW5nIHRo
+YXQgc2VyaWVzLCBqdXN0IGZvciByZWZlcmVuY2UsIGluIHlvdXIgc2V0dXA/DQpJZiB5b3VyIGh5
+cG90aGVzaXMgaXMgcmlnaHQsIG15IG9ic2VydmF0aW9ucyBkbyBub3Qgc3Vydml2ZSB5b3VyDQpi
+dXNsb2FkLg0KDQpLaW5kIHJlZ2FyZHMsDQpLdXJ0DQoNCk9uIGRvLCAyNiBtcnQgMjAyMCAxNDo0
+OToyMyArMDAwMCwgRmVsaXggUmllbWFubiB3cm90ZToNCj4gSGkgS3VydCwNCj4NCj4geWVzIHRo
+YXQgd291bGQgYmUgM2NiM2VhYWM1MmMwZjE0NWQ4OTVmNGI2YzIyODM0ZDVmMDJiODU2OS4NCj4N
+Cj4gSSB0cmllZCB5b3VyIHBhdGNoIGFzIHdlbGwsIHNpbmNlIHRoZSBkZXNjcmlwdGlvbiBtYXRj
+aGVkIHRoZSBwcm9ibGVtIHByZXR0eSB3ZWxsLiBIb3dldmVyLCBJIGNvdWxkIHN0aWxsIHByb2R1
+Y2UgdGhlIGhhbmcgb24gb3VyIGJvYXJkIChiYXNlZCBvbiBBTTMzNTIpIGVzcGVjaWFsbHkgaWYg
+dGhlIGJ1cyBvZmYgb2NjdXJzIHdoaWxlIHRoZSBidXMgbG9hZCBpcyB2ZXJ5IGhpZ2guDQo+DQo+
+IFdoYXQgSSBjb3VsZCBzZWUgd2FzIHRoZSB3b3JrZXIgYmVpbmcgdHJpZ2dlcmVkIGJ5IHRoZSBp
+bnRlcnJ1cHQgd2l0aCB0aGUgYnVzIGJlaW5nIGluIHBhc3NpdmUgbW9kZS4gV2hlbiB0aGUgd29y
+a2VyIHRoZW4gcmUtZW5hYmxlZCB0aGUgaW50ZXJydXB0IHRoZSBoYXJkd2FyZSBoYWQgYWxyZWFk
+eSBlbnRlcmVkIGluaXQgbW9kZSBkdWUgdG8gdGhlIGJ1cy1vZmYgYnV0IG5vciB3b3VsZCBpdCB0
+cmlnZ2VyIGFnYWluIG5vciB3b3VsZCB0aGUgaW50ZXJydXB0IHJlZ2lzdGVyIGluZGljYXRlIGEg
+cGVuZGluZyBJUlEuIFRoZSBzdGF0dXMgcmVnaXN0ZXIgYWxzbyBpbmRpY2F0ZXMgYW4gZXJyb3Ig
+KExFQyAhPSAweDcpLg0KPg0KPiBBIGZpcnN0IGF0dGVtcHQgdG8gZml4L3dvcmthcm91bmQgdGhp
+cyBwbGFjZWQgdGhlIGNoZWNrIGp1c3QgYmVmb3JlIHRoZSB3b3JrZXIgcmUtZW5hYmxlcyB0aGUg
+aW50ZXJydXB0cy4gQnV0IGV2ZW4gdGhpcyBzZXR1cCBjb3VsZCByZXByb2R1Y2UgdGhlIHByb2Js
+ZW0sIGFsdGhvdWdoIGl0IHRvb2sgbG9uZ2VyIHRvIGRvIHNvLiAgU28gdGhlIHRpbWluZyBhcm91
+bmQgZW5hYmxpbmcgdGhlIGludGVycnVwdHMgc2VlbXMgdG8gbWF0dGVyIGhlcmUuIEFjdHVhbGx5
+LCBhZGRpbmcgYSBwcmludG91dCBhdCB0aGUgdG9wIG9mIHRoZSB3b3JrZXIgd2hlcmUgeW91ciBw
+YXRjaCBjaGVja3MgdGhlIHZhbHVlIG9mIHRoZSBzaWVfcGVuZGluZyBhdG9taWMgc2VlbXMgdG8g
+aW5jcmVhc2UgdGhlIGNoYW5jZXMgb2YgbWFraW5nIGl0IGhhcHBlbiBvbiBteSBib2FyZCwgYnV0
+IHRoYXQncyBqdXN0IGEgZmVlbGluZyBJIGdvdCB3aGlsZSBjbGVhbmluZyB1cCBteSBwYXRjaC4N
+Cj4NCj4gUmVnYXJkcywNCj4NCj4gRmVsaXgNCj4NCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
+LS0NCj4gRnJvbTogS3VydCBWYW4gRGlqY2sgPGRldi5rdXJ0QHZhbmRpamNrLWxhdXJpanNzZW4u
+YmU+DQo+IFNlbnQ6IFRodXJzZGF5LCBNYXJjaCAyNiwgMjAyMCAyOjQwIFBNDQo+DQo+IFRoaXMg
+cGF0Y2ggbG9va3MgdmVyeSBmYW1pbGlhci4NCj4gSSB0cmllZCB0aGlzIDYgbW9udGhzIGFnbywg
+d2hlbiBJIGdvdCBhIHNldHVwIHdoZXJlIEkgY291bGQgcmVwcm9kdWNlIHRoaXMgd2l0aGluIG1p
+bnV0ZXMuDQo+DQo+IFRoaXMgcGF0Y2ggZGlkbid0IHNvbHZlIG15IHByb2JsZW0sIGFuZCBJIGZp
+eGVkIG15IHByb2JsZW0gd2l0aCByZWFkaW5nIHRoZSBJU1IgcmVnaXN0ZXIgb25seSBvbmNlIGlu
+IHRoZSBJUlEsIGFuZCBfbm90XyAybmQgdGltZSBpbiBuYXBpIGhhbmRsZXIuDQo+IFJlYWRpbmcg
+dGhlIElTUiBpbiBDX0NBTiBpcyBjb25zdW1pbmcgdGhlIGluZm8sIHNvIHVubGVzcyB0aGUgdGhl
+cmUgaXMgbW9yZSBzdGF0ZSB0byBjbGVhciAoc3VjaCBhcyByZWNlaXZlZCBtZXNzYWdlIGJ1ZmZl
+cnMpLCB0aGUgaW50ZXJydXB0IGNhdXNlIGlzIGFzc3VtZWQgdG8gYmUga25vd24sIGFuZCB0aGUg
+Q19DQU4gcHJvY2VlZHMgdG8gdGhlIG5leHQgaW50ZXJydXB0IGNhdXNlLg0KPiBJJ3ZlIG5vdCBl
+eHBlcmllbmNlZCBhIHNpbmdsZSBwcm9ibGVtIHNpbmNlLCB3aGVyZSBiZWZvcmUgdGhlIGZpeCwg
+SSdkIGV4cGVyaWVuY2UgYSBmZXcgb2NjdXJhbmNlcyBldmVyeSBtb250aC4NCj4gV2UgaGF2ZSBh
+biBhbTMzNTggKGJlYWdsZWJvbmUtbGlrZSBoYXJkd2FyZSkuDQo+DQo+IEkgYmVsaWV2ZSBJIHN1
+Ym1pdHRlZCBhIHBhdGNoIGZvciB0aGF0Lg0KPg0KPiBSZS1zY2hlZHVsaW5nIHRoZSBuYXBpIGlz
+IGEgd29ya2Fyb3VuZCwgSU1ITy4NCj4NCj4gS3VydA0KPg0KPiBPbiBkbywgMjYgbXJ0IDIwMjAg
+MTE6NDM6MTggKzAxMDAsIEZlbGl4IFJpZW1hbm4gd3JvdGU6DQo+ID4gVGhlcmUgYXJlIGFwcGVh
+cnMgdG8gYmUgYSByYWNlIGNvbmRpdGlvbiB3aGVyZSBpbnRlcnJ1cHRzIGNhdXNlZCBieQ0KPiA+
+IGJ1cyBvZmZzIGdldCBsb3N0IGlmIGl0IG9jY3VycyB3aGlsZSBpbnRlcnJ1cHRzIGFyZSBkaXNh
+YmxlZCBvciBiZWluZw0KPiA+IHJlLWVuYWJsZWQuDQo+ID4NCj4gPiBUaGlzIHRyaWVzIHRvIGF2
+b2lkIHRoZSBkZWFkbG9jayBieSByZXNjaGVkdWxpbmcgdGhlIE5BUEkgd29ya2VyIHRvDQo+ID4g
+aGFuZGxlIHRoZSBidXMtb2ZmIGNvbmRpdGlvbi4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEZl
+bGl4IFJpZW1hbm4gPGZlbGl4LnJpZW1hbm5Ac21hLmRlPg0KPiA+IFJldmlld2VkLWJ5OiBBbmRy
+ZSBLYWxiIDxhbmRyZS5rYWxiQHNtYS5kZT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9uZXQvY2Fu
+L2NfY2FuL2NfY2FuLmMgfCAxOSArKysrKysrKysrKysrKysrKystDQo+ID4gIDEgZmlsZSBjaGFu
+Z2VkLCAxOCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9uZXQvY2FuL2NfY2FuL2NfY2FuLmMNCj4gPiBiL2RyaXZlcnMvbmV0L2Nhbi9j
+X2Nhbi9jX2Nhbi5jIGluZGV4IDhlOWY1NjIwYzlhMi4uMDk1MmFjMGI5MTIzDQo+ID4gMTAwNjQ0
+DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2NfY2FuL2NfY2FuLmMNCj4gPiArKysgYi9kcml2
+ZXJzL25ldC9jYW4vY19jYW4vY19jYW4uYw0KPiA+IEBAIC0xMTIzLDggKzExMjMsMjUgQEAgc3Rh
+dGljIGludCBjX2Nhbl9wb2xsKHN0cnVjdCBuYXBpX3N0cnVjdCAqbmFwaSwgaW50IHF1b3RhKQ0K
+PiA+ICBpZiAod29ya19kb25lIDwgcXVvdGEpIHsNCj4gPiAgbmFwaV9jb21wbGV0ZV9kb25lKG5h
+cGksIHdvcmtfZG9uZSk7DQo+ID4gIC8qIGVuYWJsZSBhbGwgSVJRcyBpZiB3ZSBhcmUgbm90IGlu
+IGJ1cyBvZmYgc3RhdGUgKi8NCj4gPiAtaWYgKHByaXYtPmNhbi5zdGF0ZSAhPSBDQU5fU1RBVEVf
+QlVTX09GRikNCj4gPiAraWYgKHByaXYtPmNhbi5zdGF0ZSAhPSBDQU5fU1RBVEVfQlVTX09GRikg
+ew0KPiA+ICt1MzIgY3RybDsNCj4gPiAgY19jYW5faXJxX2NvbnRyb2wocHJpdiwgdHJ1ZSk7DQo+
+ID4gKw0KPiA+ICsvKiBUaGVyZSBhcHBlYXJzIHRvIGJlIGEgcmFjZSBjb25kaXRpb24gd2hlbiB0
+aGUgZGV2aWNlDQo+ID4gKyAqIGVudGVycyBidXMgb2ZmIHdoaWxlIGludGVycnVwdHMgYXJlIG9m
+ZiBvciBiZWluZw0KPiA+ICsgKiByZS1lbmFibGVkIGNhdXNpbmcgdGhlIGJ1cyBvZmYgdG8gZ2V0
+IGxvc3QuDQo+ID4gKyAqIFRoaXMgdHJpZXMgdG8gYXZvaWQgdGhpcyBjb25kaXRpb24uDQo+ID4g
+KyAqLw0KPiA+ICtjdHJsID0gcHJpdi0+cmVhZF9yZWcocHJpdiwgQ19DQU5fQ1RSTF9SRUcpOw0K
+PiA+ICsNCj4gPiAraWYgKGN0cmwgJiBDT05UUk9MX0lOSVQpIHsNCj4gPiArbmV0ZGV2X3dhcm4o
+ZGV2LCAibG9zdCBidXMgb2ZmXG4iKTsNCj4gPiArY19jYW5faXJxX2NvbnRyb2wocHJpdiwgZmFs
+c2UpOw0KPiA+ICsvKiBSZXNjaGVkdWxlIHdvcmtlciB0byBoYW5kbGUgYnVzIG9mZiAqLw0KPiA+
+ICthdG9taWNfc2V0KCZwcml2LT5zaWVfcGVuZGluZywgMSk7DQo+ID4gK25hcGlfcmVzY2hlZHVs
+ZShuYXBpKTsNCj4gPiArfQ0KPiA+ICt9DQo+ID4gIH0NCj4gPg0KPiA+ICByZXR1cm4gd29ya19k
+b25lOw0KPiA+IC0tDQo+ID4gMi4yNi4wDQo+ID4NCj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+DQo+IFNNQSBTb2xhciBUZWNobm9sb2d5IEFH
+DQo+IEF1ZnNpY2h0c3JhdDogRHIuIEVyaWsgRWhyZW50cmF1dCAoVm9yc2l0emVuZGVyKQ0KPiBW
+b3JzdGFuZDogVWxyaWNoIEhhZGRpbmcsIERyLi1JbmcuIEp1ZXJnZW4gUmVpbmVydA0KPiBIYW5k
+ZWxzcmVnaXN0ZXI6IEFtdHNnZXJpY2h0IEthc3NlbCBIUkIgMzk3Mg0KPiBTaXR6IGRlciBHZXNl
+bGxzY2hhZnQ6IDM0MjY2IE5pZXN0ZXRhbA0KPiBVU3QtSUQtTnIuIERFIDExMyAwOCA1OSA1NA0K
+PiBXRUVFLVJlZy4tTnIuIERFIDk1ODgxMTUwDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXw0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fDQoNClNNQSBTb2xhciBUZWNobm9sb2d5IEFHDQpBdWZzaWNo
+dHNyYXQ6IERyLiBFcmlrIEVocmVudHJhdXQgKFZvcnNpdHplbmRlcikNClZvcnN0YW5kOiBVbHJp
+Y2ggSGFkZGluZywgRHIuLUluZy4gSnVlcmdlbiBSZWluZXJ0DQpIYW5kZWxzcmVnaXN0ZXI6IEFt
+dHNnZXJpY2h0IEthc3NlbCBIUkIgMzk3Mg0KU2l0eiBkZXIgR2VzZWxsc2NoYWZ0OiAzNDI2NiBO
+aWVzdGV0YWwNClVTdC1JRC1Oci4gREUgMTEzIDA4IDU5IDU0DQpXRUVFLVJlZy4tTnIuIERFIDk1
+ODgxMTUwDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18NCg==
