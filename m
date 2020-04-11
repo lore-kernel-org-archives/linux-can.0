@@ -1,21 +1,17 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.5 10/44] slcan: Dont transmit uninitialized stack data in padding
-Date: Sat, 11 Apr 2020 14:09:30 +0200
-Message-ID: <20200411115457.729173605@linuxfoundation.org>
-References: <20200411115456.934174282@linuxfoundation.org>
+Subject: [PATCH 5.6 10/38] slcan: Dont transmit uninitialized stack data in padding
+Date: Sat, 11 Apr 2020 14:09:47 +0200
+Message-ID: <20200411115500.480070777@linuxfoundation.org>
+References: <20200411115459.324496182@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.kernel.org ([198.145.29.99]:55860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728929AbgDKMUH (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:20:07 -0400
-In-Reply-To: <20200411115456.934174282@linuxfoundation.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200411115459.324496182@linuxfoundation.org>
+Sender: netdev-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Richard Palethorpe <rpalethorpe@suse.com>, Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
+List-Id: linux-can.vger.kernel.org
 
 From: Richard Palethorpe <rpalethorpe@suse.com>
 
