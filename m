@@ -1,13 +1,13 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.6 10/38] slcan: Dont transmit uninitialized stack data in padding
-Date: Sat, 11 Apr 2020 14:09:47 +0200
-Message-ID: <20200411115500.480070777@linuxfoundation.org>
-References: <20200411115459.324496182@linuxfoundation.org>
+Subject: [PATCH 4.4 18/29] slcan: Dont transmit uninitialized stack data in padding
+Date: Sat, 11 Apr 2020 14:08:48 +0200
+Message-ID: <20200411115411.003822206@linuxfoundation.org>
+References: <20200411115407.651296755@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20200411115459.324496182@linuxfoundation.org>
+In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
 Sender: netdev-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Richard Palethorpe <rpalethorpe@suse.com>, Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
@@ -41,7 +41,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/net/can/slcan.c
 +++ b/drivers/net/can/slcan.c
-@@ -148,7 +148,7 @@ static void slc_bump(struct slcan *sl)
+@@ -147,7 +147,7 @@ static void slc_bump(struct slcan *sl)
  	u32 tmpid;
  	char *cmd = sl->rbuff;
  
@@ -50,7 +50,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	switch (*cmd) {
  	case 'r':
-@@ -187,8 +187,6 @@ static void slc_bump(struct slcan *sl)
+@@ -186,8 +186,6 @@ static void slc_bump(struct slcan *sl)
  	else
  		return;
  
