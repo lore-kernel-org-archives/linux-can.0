@@ -1,13 +1,13 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.14 19/38] slcan: Dont transmit uninitialized stack data in padding
-Date: Sat, 11 Apr 2020 14:09:03 +0200
-Message-ID: <20200411115439.908546772@linuxfoundation.org>
-References: <20200411115437.795556138@linuxfoundation.org>
+Subject: [PATCH 4.19 33/54] slcan: Dont transmit uninitialized stack data in padding
+Date: Sat, 11 Apr 2020 14:09:15 +0200
+Message-ID: <20200411115511.772234226@linuxfoundation.org>
+References: <20200411115508.284500414@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
+In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Richard Palethorpe <rpalethorpe@suse.com>, Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
