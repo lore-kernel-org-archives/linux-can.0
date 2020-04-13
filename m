@@ -1,70 +1,40 @@
-From: Barrister Robert Richter UN-Attorney at Law Court-Benin
-        <info.zennitbankplcnigerian@gmail.com>
-Subject: I have already sent you first payment US$5000.00 this morning through
- MONEY Gram service.it is available to pick up in address now.
-Date: Mon, 13 Apr 2020 13:41:07 +0200
-Message-ID: <CABHzvrm3rWryg1yAooKeHwdxzrKD47PRAEfC+ay1A6i5z3Wdiw__2771.29961630038$1586778690$gmane$org@mail.gmail.com>
-Reply-To: mgbenin903@gmail.com
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCH] can: tcan4x5x: Replace depends on REGMAP_SPI with depends on SPI
+Date: Mon, 13 Apr 2020 16:10:13 +0200
+Message-ID: <20200413141013.506613-1-enric.balletbo@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729176AbgDMLts (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Apr 2020 07:49:48 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91B1C008619
-        for <linux-can@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id i14so8147851ilr.11
-        for <linux-can@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Collabora Kernel ML <kernel@collabora.com>, Dan Murphy <dmurphy@ti.com>, "David S. Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-ATTN DEAR BENEFICIARY.
+regmap is a library function that gets selected by drivers that need
+it. No driver modules should depend on it. Instead depends on SPI and
+select REGMAP_SPI. Depending on REGMAP_SPI makes this driver only build
+if another driver already selected REGMAP_SPI, as the symbol can't be
+selected through the menu kernel configuration.
 
-GOOD NEWS.
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
 
-I have already sent you first payment US$5000.00 this morning through
-MONEY Gram service.it is available to pick up in address now.
+ drivers/net/can/m_can/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-So we advise you to Contact This Money Gram office to pick up your
-transfer $US5000.00 today.
-
-
-Note that your compensation payment funds is total amount $US2.800,000
-Million Dollars.We have instructed the Money Gram Agent,Mr. James
-Gadner to keep sending the transfer to you daily, but the maximum
-amount you will be receiving everyday is US$5000.00. Contact Agent now
-to pick up your first payment $US5000.00 immediately.
-
-Contact Person, Mr. James Gadner, Dir. Money Gram Benin.
-Email: mgbenin903@gmail.com
-Telephone Numbers: +229 62819378/ +229 98477762
-
-HERE IS YOUR PAYMENT DETAILS FOR THE FIRST =C2=A3US5000.00 SENT TODAY.
-
-Track View Website link:
-https://secure.moneygram.com/track
-Sender=E2=80=99s First name: David
-Sender=E2=80=99s Last Name: Joiner
-Money Transfer Control Number (MTCN) (REFERENCE)# 26046856
-
-Contact the Mmoney Gram Urgent and reconfirm your address to the
-office before, they will allow you to pick up the transfer today.
-
-HERE IS WHAT REQUIRED OF YOU.
-
-YOUR FULL NAME---------
-ADDRESS--------------
-COUNTRY-----------------------------
-TELEPHONE NUMBERS-----------------
-
-Note, I paid the transfer fee for you, but only you are required to
-send to the office is $75 only,Been Your Payment File activation fee,
-Send once you contact the office,before you can able to pick up your
-transfer today.
-
-Let me know once you pick up first payment today.
-
-Barrister Robert Richter UN-Attorney at Law Court-Benin
+diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
+index 1ff0b7fe81d6..c10932a7f1fe 100644
+--- a/drivers/net/can/m_can/Kconfig
++++ b/drivers/net/can/m_can/Kconfig
+@@ -16,7 +16,8 @@ config CAN_M_CAN_PLATFORM
+ 
+ config CAN_M_CAN_TCAN4X5X
+ 	depends on CAN_M_CAN
+-	depends on REGMAP_SPI
++	depends on SPI
++	select REGMAP_SPI
+ 	tristate "TCAN4X5X M_CAN device"
+ 	---help---
+ 	  Say Y here if you want support for Texas Instruments TCAN4x5x
+-- 
+2.25.1
