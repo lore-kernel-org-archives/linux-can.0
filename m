@@ -1,33 +1,70 @@
-From: Alexander Gerasiov <a@gerasiov.net>
-Subject: jcat binary name conflict
-Date: Mon, 13 Apr 2020 12:53:04 +0300
-Message-ID: <20200413125304.3a57fe8d@fran.gerasiov.net>
+From: Barrister Robert Richter UN-Attorney at Law Court-Benin
+        <info.zennitbankplcnigerian@gmail.com>
+Subject: I have already sent you first payment US$5000.00 this morning through
+ MONEY Gram service.it is available to pick up in address now.
+Date: Mon, 13 Apr 2020 13:41:07 +0200
+Message-ID: <CABHzvrm3rWryg1yAooKeHwdxzrKD47PRAEfC+ay1A6i5z3Wdiw__2771.29961630038$1586778690$gmane$org@mail.gmail.com>
+Reply-To: mgbenin903@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from gans.gerasiov.net ([78.46.205.176]:53958 "EHLO
-        mail.gerasiov.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727827AbgDMKCc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Apr 2020 06:02:32 -0400
-Received: from fran.gerasiov.net (unknown [178.154.217.48])
-        by mail.gerasiov.net (Postfix) with ESMTPSA id D3799FC5EE
-        for <linux-can@vger.kernel.org>; Mon, 13 Apr 2020 12:53:07 +0300 (MSK)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729176AbgDMLts (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Apr 2020 07:49:48 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91B1C008619
+        for <linux-can@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id i14so8147851ilr.11
+        for <linux-can@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
 
-Hello, there.
+ATTN DEAR BENEFICIARY.
 
-I just found conflict in binary name jcat with one from sleuthkit
-package: https://bugs.debian.org/956530
+GOOD NEWS.
 
-I'm going to rename the binary to j1939cat in debian package.
-May be you should do the same with it (or even with other j.* tools) in
-upstream sources.
+I have already sent you first payment US$5000.00 this morning through
+MONEY Gram service.it is available to pick up in address now.
 
--- 
-Best regards,
- Alexander Gerasiov
+So we advise you to Contact This Money Gram office to pick up your
+transfer $US5000.00 today.
 
- PGP fingerprint: 04B5 9D90 DF7C C2AB CD49  BAEA CA87 E9E8 2AAC 33F1
+
+Note that your compensation payment funds is total amount $US2.800,000
+Million Dollars.We have instructed the Money Gram Agent,Mr. James
+Gadner to keep sending the transfer to you daily, but the maximum
+amount you will be receiving everyday is US$5000.00. Contact Agent now
+to pick up your first payment $US5000.00 immediately.
+
+Contact Person, Mr. James Gadner, Dir. Money Gram Benin.
+Email: mgbenin903@gmail.com
+Telephone Numbers: +229 62819378/ +229 98477762
+
+HERE IS YOUR PAYMENT DETAILS FOR THE FIRST =C2=A3US5000.00 SENT TODAY.
+
+Track View Website link:
+https://secure.moneygram.com/track
+Sender=E2=80=99s First name: David
+Sender=E2=80=99s Last Name: Joiner
+Money Transfer Control Number (MTCN) (REFERENCE)# 26046856
+
+Contact the Mmoney Gram Urgent and reconfirm your address to the
+office before, they will allow you to pick up the transfer today.
+
+HERE IS WHAT REQUIRED OF YOU.
+
+YOUR FULL NAME---------
+ADDRESS--------------
+COUNTRY-----------------------------
+TELEPHONE NUMBERS-----------------
+
+Note, I paid the transfer fee for you, but only you are required to
+send to the office is $75 only,Been Your Payment File activation fee,
+Send once you contact the office,before you can able to pick up your
+transfer today.
+
+Let me know once you pick up first payment today.
+
+Barrister Robert Richter UN-Attorney at Law Court-Benin
