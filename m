@@ -1,61 +1,33 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.4 18/29] slcan: Dont transmit uninitialized stack data in padding
-Date: Sat, 11 Apr 2020 14:08:48 +0200
-Message-ID: <20200411115411.003822206@linuxfoundation.org>
-References: <20200411115407.651296755@linuxfoundation.org>
+From: Alexander Gerasiov <a@gerasiov.net>
+Subject: jcat binary name conflict
+Date: Mon, 13 Apr 2020 12:53:04 +0300
+Message-ID: <20200413125304.3a57fe8d@fran.gerasiov.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
-Sender: netdev-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Richard Palethorpe <rpalethorpe@suse.com>, Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from gans.gerasiov.net ([78.46.205.176]:53958 "EHLO
+        mail.gerasiov.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727827AbgDMKCc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 13 Apr 2020 06:02:32 -0400
+Received: from fran.gerasiov.net (unknown [178.154.217.48])
+        by mail.gerasiov.net (Postfix) with ESMTPSA id D3799FC5EE
+        for <linux-can@vger.kernel.org>; Mon, 13 Apr 2020 12:53:07 +0300 (MSK)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
 
-From: Richard Palethorpe <rpalethorpe@suse.com>
+Hello, there.
 
-[ Upstream commit b9258a2cece4ec1f020715fe3554bc2e360f6264 ]
+I just found conflict in binary name jcat with one from sleuthkit
+package: https://bugs.debian.org/956530
 
-struct can_frame contains some padding which is not explicitly zeroed in
-slc_bump. This uninitialized data will then be transmitted if the stack
-initialization hardening feature is not enabled (CONFIG_INIT_STACK_ALL).
+I'm going to rename the binary to j1939cat in debian package.
+May be you should do the same with it (or even with other j.* tools) in
+upstream sources.
 
-This commit just zeroes the whole struct including the padding.
+-- 
+Best regards,
+ Alexander Gerasiov
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Fixes: a1044e36e457 ("can: add slcan driver for serial/USB-serial CAN adapters")
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Cc: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: security@kernel.org
-Cc: wg@grandegger.com
-Cc: mkl@pengutronix.de
-Cc: davem@davemloft.net
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/can/slcan.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -147,7 +147,7 @@ static void slc_bump(struct slcan *sl)
- 	u32 tmpid;
- 	char *cmd = sl->rbuff;
- 
--	cf.can_id = 0;
-+	memset(&cf, 0, sizeof(cf));
- 
- 	switch (*cmd) {
- 	case 'r':
-@@ -186,8 +186,6 @@ static void slc_bump(struct slcan *sl)
- 	else
- 		return;
- 
--	*(u64 *) (&cf.data) = 0; /* clear payload */
--
- 	/* RTR frames may have a dlc > 0 but they never have any data bytes */
- 	if (!(cf.can_id & CAN_RTR_FLAG)) {
- 		for (i = 0; i < cf.can_dlc; i++) {
+ PGP fingerprint: 04B5 9D90 DF7C C2AB CD49  BAEA CA87 E9E8 2AAC 33F1
