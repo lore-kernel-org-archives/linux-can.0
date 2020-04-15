@@ -1,16 +1,20 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.5 057/106] slcan: Don't transmit uninitialized stack data in padding
-Date: Wed, 15 Apr 2020 07:41:37 -0400
-Message-ID: <20200415114226.13103-57-sashal@kernel.org>
-References: <20200415114226.13103-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 17/40] slcan: Don't transmit uninitialized stack data in padding
+Date: Wed, 15 Apr 2020 07:46:00 -0400
+Message-ID: <20200415114623.14972-17-sashal@kernel.org>
+References: <20200415114623.14972-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20200415114226.13103-1-sashal@kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail.kernel.org ([198.145.29.99]:41784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409317AbgDOLqo (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:46:44 -0400
+In-Reply-To: <20200415114623.14972-1-sashal@kernel.org>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc: Richard Palethorpe <rpalethorpe@suse.com>, Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, Sasha Levin <sashal@kernel.org>
-List-Id: linux-can.vger.kernel.org
 
 From: Richard Palethorpe <rpalethorpe@suse.com>
 
@@ -39,10 +43,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index a3664281a33fc..4dfa459ef5c73 100644
+index db96078096206..f99cd94509be3 100644
 --- a/drivers/net/can/slcan.c
 +++ b/drivers/net/can/slcan.c
-@@ -148,7 +148,7 @@ static void slc_bump(struct slcan *sl)
+@@ -147,7 +147,7 @@ static void slc_bump(struct slcan *sl)
  	u32 tmpid;
  	char *cmd = sl->rbuff;
  
@@ -51,7 +55,7 @@ index a3664281a33fc..4dfa459ef5c73 100644
  
  	switch (*cmd) {
  	case 'r':
-@@ -187,8 +187,6 @@ static void slc_bump(struct slcan *sl)
+@@ -186,8 +186,6 @@ static void slc_bump(struct slcan *sl)
  	else
  		return;
  
