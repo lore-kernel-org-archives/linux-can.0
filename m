@@ -1,13 +1,13 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 07/14] slcan: Don't transmit uninitialized stack data in padding
-Date: Wed, 15 Apr 2020 07:48:07 -0400
-Message-ID: <20200415114814.15954-7-sashal@kernel.org>
-References: <20200415114814.15954-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 14/30] slcan: Don't transmit uninitialized stack data in padding
+Date: Wed, 15 Apr 2020 07:46:55 -0400
+Message-ID: <20200415114711.15381-14-sashal@kernel.org>
+References: <20200415114711.15381-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20200415114814.15954-1-sashal@kernel.org>
-Sender: stable-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200415114711.15381-1-sashal@kernel.org>
+Sender: netdev-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc: Richard Palethorpe <rpalethorpe@suse.com>, Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, Sasha Levin <sashal@kernel.org>
 List-Id: linux-can.vger.kernel.org
@@ -39,7 +39,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 27f42763eaf5a..5bacb019ec1f8 100644
+index 7c37b96ff22a7..c5a616395c490 100644
 --- a/drivers/net/can/slcan.c
 +++ b/drivers/net/can/slcan.c
 @@ -147,7 +147,7 @@ static void slc_bump(struct slcan *sl)
