@@ -1,20 +1,16 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.6 068/129] slcan: Don't transmit uninitialized stack data in padding
-Date: Wed, 15 Apr 2020 07:33:43 -0400
-Message-ID: <20200415113445.11881-68-sashal@kernel.org>
-References: <20200415113445.11881-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 057/106] slcan: Don't transmit uninitialized stack data in padding
+Date: Wed, 15 Apr 2020 07:41:37 -0400
+Message-ID: <20200415114226.13103-57-sashal@kernel.org>
+References: <20200415114226.13103-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.kernel.org ([198.145.29.99]:55766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897107AbgDOLgF (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:36:05 -0400
-In-Reply-To: <20200415113445.11881-1-sashal@kernel.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200415114226.13103-1-sashal@kernel.org>
+Sender: netdev-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc: Richard Palethorpe <rpalethorpe@suse.com>, Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, Sasha Levin <sashal@kernel.org>
+List-Id: linux-can.vger.kernel.org
 
 From: Richard Palethorpe <rpalethorpe@suse.com>
 
