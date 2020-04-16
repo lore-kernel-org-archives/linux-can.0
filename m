@@ -1,102 +1,57 @@
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH Resend linux-can-next/testing] can: flexcan: add correctable errors correction when HW supports ECC
-Date: Thu, 16 Apr 2020 17:31:25 +0800
-Message-ID: <20200416093126.15242-1-qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH linux-can-next/flexcan] can: flexcan: fix TDC feature
+Date: Thu, 16 Apr 2020 09:41:45 +0000
+Message-ID: <DB8PR04MB6795F7E28A9964A121A06140E6D80@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20200416093126.15242-1-qiangqing.zhang@nxp.com>
+ <20200416093126.15242-2-qiangqing.zhang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc: linux-imx@nxp.com, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-eopbgr70041.outbound.protection.outlook.com ([40.107.7.41]:5892
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2503869AbgDPJlt (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 16 Apr 2020 05:41:49 -0400
+In-Reply-To: <20200416093126.15242-2-qiangqing.zhang@nxp.com>
+Content-Language: en-US
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Michael Walle <michael@walle.cc>
 
-commit cdce844865be ("can: flexcan: add vf610 support for FlexCAN")
-From above commit by Stefan Agner, the patch just disables
-non-correctable errors interrupt and freeze mode. It still can correct
-the correctable errors since ECC enabled by default after reset (MECR[ECCDIS]=0,
-enable memory error correct) if HW supports ECC.
-
-commit 5e269324db5a ("can: flexcan: disable completely the ECC mechanism")
-From above commit by Joakim Zhang, the patch disables ECC completely (assert
-MECR[ECCDIS]) according to the explanation of FLEXCAN_QUIRK_DISABLE_MECR that
-disable memory error detection. This cause correctable errors cannot be
-corrected even HW supports ECC.
-
-The error correction mechanism ensures that in this 13-bit word, errors
-in one bit can be corrected (correctable errors) and errors in two bits can
-be detected but not corrected (non-correctable errors). Errors in more than
-two bits may not be detected.
-
-If HW supports ECC, we can use this to correct the correctable errors detected
-from FlexCAN memory. Then disable non-correctable errors interrupt and freeze
-mode to avoid that put FlexCAN in freeze mode.
-
-This patch adds correctable errors correction when HW supports ECC, and
-modify explanation for FLEXCAN_QUIRK_DISABLE_MECR.
-
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- drivers/net/can/flexcan.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 3a754355ebe6..aa871953003a 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -187,7 +187,7 @@
- #define FLEXCAN_QUIRK_BROKEN_WERR_STATE	BIT(1) /* [TR]WRN_INT not connected */
- #define FLEXCAN_QUIRK_DISABLE_RXFG	BIT(2) /* Disable RX FIFO Global mask */
- #define FLEXCAN_QUIRK_ENABLE_EACEN_RRS	BIT(3) /* Enable EACEN and RRS bit in ctrl2 */
--#define FLEXCAN_QUIRK_DISABLE_MECR	BIT(4) /* Disable Memory error detection */
-+#define FLEXCAN_QUIRK_DISABLE_MECR	BIT(4) /* Disable non-correctable errors interrupt and freeze mode */
- #define FLEXCAN_QUIRK_USE_OFF_TIMESTAMP	BIT(5) /* Use timestamp based offloading */
- #define FLEXCAN_QUIRK_BROKEN_PERR_STATE	BIT(6) /* No interrupt for error passive */
- #define FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN	BIT(7) /* default to BE register access */
-@@ -1203,8 +1203,8 @@ static int flexcan_chip_start(struct net_device *dev)
- 	for (i = 0; i < priv->mb_count; i++)
- 		priv->write(0, &regs->rximr[i]);
- 
--	/* On Vybrid, disable memory error detection interrupts
--	 * and freeze mode.
-+	/* On Vybrid, disable non-correctable errors interrupt and freeze
-+	 * mode. It still can correct the correctable errors when HW supports ECC.
- 	 * This also works around errata e5295 which generates
- 	 * false positive memory errors and put the device in
- 	 * freeze mode.
-@@ -1212,19 +1212,32 @@ static int flexcan_chip_start(struct net_device *dev)
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_DISABLE_MECR) {
- 		/* Follow the protocol as described in "Detection
- 		 * and Correction of Memory Errors" to write to
--		 * MECR register
-+		 * MECR register (step 1 - 5)
-+		 * 1. By default, CTRL2[ECRWRE] = 0, MECR[ECRWRDIS] = 1
-+		 * 2. set CTRL2[ECRWRE]
- 		 */
- 		reg_ctrl2 = priv->read(&regs->ctrl2);
- 		reg_ctrl2 |= FLEXCAN_CTRL2_ECRWRE;
- 		priv->write(reg_ctrl2, &regs->ctrl2);
- 
-+		/* 3. clear MECR[ECRWRDIS] */
- 		reg_mecr = priv->read(&regs->mecr);
- 		reg_mecr &= ~FLEXCAN_MECR_ECRWRDIS;
- 		priv->write(reg_mecr, &regs->mecr);
--		reg_mecr |= FLEXCAN_MECR_ECCDIS;
-+
-+		/* 4. all writes to MECR must keep MECR[ECRWRDIS] cleared */
- 		reg_mecr &= ~(FLEXCAN_MECR_NCEFAFRZ | FLEXCAN_MECR_HANCEI_MSK |
- 			      FLEXCAN_MECR_FANCEI_MSK);
- 		priv->write(reg_mecr, &regs->mecr);
-+
-+		/* 5. after configuration done, lock MECR by either setting
-+		 * MECR[ECRWRDIS] or clearing CTRL2[ECRWRE]
-+		 */
-+		reg_mecr |= FLEXCAN_MECR_ECRWRDIS;
-+		priv->write(reg_mecr, &regs->mecr);
-+		reg_ctrl2 &= ~FLEXCAN_CTRL2_ECRWRE;
-+		priv->write(reg_ctrl2, &regs->ctrl2);
-+
- 	}
- 
- 	err = flexcan_transceiver_enable(priv);
--- 
-2.17.1
+DQpIaSBNYXJjLA0KDQpIb3cgYWJvdXQgRmxleENBTiBGRCBwYXRjaCBzZXQsIGl0IGlzIHBlbmRp
+bmcgZm9yIGEgbG9uZyB0aW1lLiBNYW55IHdvcmsgd291bGQgYmFzZSBvbiBpdCwgd2UgYXJlIGhh
+cHB5IHRvIHNlZSBpdCBpbiB1cHN0cmVhbSBtYWlubGluZSBBU0FQLg0KDQpNaWNoYWVsIFdhbGxl
+IGFsc28gZ2l2ZXMgb3V0IHRoZSB0ZXN0LWJ5IHRhZzoNCglUZXN0ZWQtYnk6IE1pY2hhZWwgV2Fs
+bGUgPG1pY2hhZWxAd2FsbGUuY2M+DQoNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KDQo+
+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBaaGFuZyA8cWlhbmdx
+aW5nLnpoYW5nQG54cC5jb20+DQo+IFNlbnQ6IDIwMjDE6jTUwjE2yNUgMTc6MzENCj4gVG86IG1r
+bEBwZW5ndXRyb25peC5kZTsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBDYzogZGwtbGlu
+dXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gU3Vi
+amVjdDogW1BBVENIIGxpbnV4LWNhbi1uZXh0L2ZsZXhjYW5dIGNhbjogZmxleGNhbjogZml4IFRE
+QyBmZWF0dXJlDQo+IA0KPiBXZSBlbmFibGUgVERDIGZlYXR1cmUgaW4gZmxleGNhbl9zZXRfYml0
+dGltaW5nIHdoZW4gbG9vcGJhY2sgb2ZmLCBidXQgZGlzYWJsZQ0KPiBpdCBieSBtaXN0YWtlIGFm
+dGVyIGNhbGxpbmcgZmxleGNhbl9zZXRfYml0dGltaW5nLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
+Sm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJz
+L25ldC9jYW4vZmxleGNhbi5jIHwgMyArKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlv
+bnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4v
+ZmxleGNhbi5jIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBpbmRleA0KPiBiMTZiOGFiYzFj
+MmMuLjI3ZjQ1NDFkOTQwMCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4u
+Yw0KPiArKysgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+IEBAIC0xMjAyLDYgKzEyMDIs
+OCBAQCBzdGF0aWMgdm9pZCBmbGV4Y2FuX3NldF9iaXR0aW1pbmcoc3RydWN0IG5ldF9kZXZpY2UN
+Cj4gKmRldikNCj4gIAkJCQkvKiBmb3IgdGhlIFREQyB0byB3b3JrIHJlbGlhYmx5LCB0aGUgb2Zm
+c2V0IGhhcyB0byB1c2UNCj4gb3B0aW1hbCBzZXR0aW5ncyAqLw0KPiAgCQkJCXJlZ19mZGN0cmwg
+fD0NCj4gRkxFWENBTl9GRENUUkxfVERDT0ZGKCgoZGJ0LT5waGFzZV9zZWcxIC0gMSkgKyBkYnQt
+PnByb3Bfc2VnICsgMikgKg0KPiAgCQkJCQkJCQkgICAgKChkYnQtPmJycCAtMSkgKyAxKSk7DQo+
+ICsJCQl9IGVsc2Ugew0KPiArCQkJCXJlZ19mZGN0cmwgJj0gfkZMRVhDQU5fRkRDVFJMX1REQ0VO
+Ow0KPiAgCQkJfQ0KPiAgCQkJcHJpdi0+d3JpdGUocmVnX2ZkY3RybCwgJnJlZ3MtPmZkY3RybCk7
+DQo+IA0KPiBAQCAtMTM1NCw3ICsxMzU2LDYgQEAgc3RhdGljIGludCBmbGV4Y2FuX2NoaXBfc3Rh
+cnQoc3RydWN0IG5ldF9kZXZpY2UgKmRldikNCj4gIAkvKiBGRENUUkwgKi8NCj4gIAlpZiAocHJp
+di0+Y2FuLmN0cmxtb2RlX3N1cHBvcnRlZCAmIENBTl9DVFJMTU9ERV9GRCkgew0KPiAgCQlyZWdf
+ZmRjdHJsID0gcHJpdi0+cmVhZCgmcmVncy0+ZmRjdHJsKSAmIH5GTEVYQ0FOX0ZEQ1RSTF9GRFJB
+VEU7DQo+IC0JCXJlZ19mZGN0cmwgJj0gfkZMRVhDQU5fRkRDVFJMX1REQ0VOOw0KPiAgCQlyZWdf
+ZmRjdHJsICY9IH4oRkxFWENBTl9GRENUUkxfTUJEU1IxKDB4MykgfA0KPiBGTEVYQ0FOX0ZEQ1RS
+TF9NQkRTUjAoMHgzKSk7DQo+ICAJCXJlZ19tY3IgPSBwcml2LT5yZWFkKCZyZWdzLT5tY3IpICYg
+fkZMRVhDQU5fTUNSX0ZERU47DQo+ICAJCXJlZ19jdHJsMiA9IHByaXYtPnJlYWQoJnJlZ3MtPmN0
+cmwyKSAmDQo+IH5GTEVYQ0FOX0NUUkwyX0lTT0NBTkZERU47DQo+IC0tDQo+IDIuMTcuMQ0KDQo=
