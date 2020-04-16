@@ -1,118 +1,131 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
-Date: Thu, 16 Apr 2020 08:20:18 +0100
-Message-ID: <20200416072018.GS2167633@dell>
+Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
+ '$ref'
+Date: Thu, 16 Apr 2020 08:22:31 +0100
+Message-ID: <20200416072231.GT2167633@dell>
 References: <20200416005549.9683-1-robh@kernel.org>
+ <20200416005549.9683-2-robh@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-riscv-bounces+glpr-linux-riscv=m.gmane-mx.org@lists.infradead.org>
+Return-path: <linux-i2c-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-riscv>,
- <mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-riscv/>
-List-Post: <mailto:linux-riscv@lists.infradead.org>
-List-Help: <mailto:linux-riscv-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-riscv>,
- <mailto:linux-riscv-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-riscv" <linux-riscv-bounces@lists.infradead.org>
-Errors-To: linux-riscv-bounces+glpr-linux-riscv=m.gmane-mx.org@lists.infradead.org
+In-Reply-To: <20200416005549.9683-2-robh@kernel.org>
+Sender: linux-i2c-owner@vger.kernel.org
 To: Rob Herring <robh@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org, linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org, Alexandre Belloni <alexandre.belloni@bootlin.com>, dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>, Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, Pavel Machek <pavel@ucw.cz>, linux-riscv@lists.infradead.org, Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org, linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Krzysztof Kozlowski <krzk@kernel.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-s
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, Maxime Ripard <mripard@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Alexandre Torgue <alexandre.torgue@st.com>, Thierry Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, Vinod Koul <vkoul@kernel.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Guenter Roeck <linux@roeck-us.net>, Jonathan Cameron <jic23@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, Mauro Carvalho Chehab <mchehab@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Heiko Stuebner <heiko@sntech.de>, Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, Linus
 List-Id: linux-can.vger.kernel.org
 
 On Wed, 15 Apr 2020, Rob Herring wrote:
 
-> Fix various inconsistencies in schema indentation. Most of these are
-> list indentation which should be 2 spaces more than the start of the
-> enclosing keyword. This doesn't matter functionally, but affects running
-> scripts which do transforms on the schema files.
+> json-schema versions draft7 and earlier have a weird behavior in that
+> any keywords combined with a '$ref' are ignored (silently). The correct
+> form was to put a '$ref' under an 'allOf'. This behavior is now changed
+> in the 2019-09 json-schema spec and '$ref' can be mixed with other
+> keywords. The json-schema library doesn't yet support this, but the
+> tooling now does a fixup for this and either way works.
+> 
+> This has been a constant source of review comments, so let's change this
+> treewide so everyone copies the simpler syntax.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  .../devicetree/bindings/arm/altera.yaml       |  6 +-
->  .../amlogic/amlogic,meson-gx-ao-secure.yaml   |  2 +-
->  .../devicetree/bindings/arm/bitmain.yaml      |  2 +-
->  .../devicetree/bindings/arm/nxp/lpc32xx.yaml  |  9 ++-
->  .../bindings/arm/socionext/uniphier.yaml      | 26 ++++----
->  .../bindings/arm/stm32/st,mlahb.yaml          |  2 +-
->  .../bindings/arm/stm32/st,stm32-syscon.yaml   |  6 +-
->  .../bindings/ata/faraday,ftide010.yaml        |  4 +-
->  .../bindings/bus/allwinner,sun8i-a23-rsb.yaml |  4 +-
->  .../clock/allwinner,sun4i-a10-gates-clk.yaml  |  8 +--
->  .../devicetree/bindings/clock/fsl,plldig.yaml | 17 +++--
->  .../devicetree/bindings/clock/qcom,mmcc.yaml  | 16 ++---
->  .../bindings/connector/usb-connector.yaml     |  6 +-
->  .../crypto/allwinner,sun4i-a10-crypto.yaml    | 14 ++--
->  .../bindings/crypto/allwinner,sun8i-ce.yaml   | 16 ++---
->  .../bindings/crypto/amlogic,gxl-crypto.yaml   |  2 +-
->  .../display/allwinner,sun4i-a10-hdmi.yaml     | 40 ++++++------
->  .../display/allwinner,sun4i-a10-tcon.yaml     | 58 ++++++++---------
->  .../display/allwinner,sun6i-a31-mipi-dsi.yaml | 28 ++++----
->  .../display/allwinner,sun8i-a83t-dw-hdmi.yaml | 10 +--
->  .../bindings/display/bridge/lvds-codec.yaml   | 18 +++---
->  .../display/panel/sony,acx424akp.yaml         |  2 +-
->  .../display/panel/xinpeng,xpp055c272.yaml     |  4 +-
->  .../bindings/display/renesas,cmm.yaml         | 16 ++---
->  .../devicetree/bindings/dma/ti/k3-udma.yaml   |  8 +--
->  .../bindings/gpio/brcm,xgs-iproc-gpio.yaml    |  2 +-
->  .../bindings/gpu/arm,mali-midgard.yaml        | 18 +++---
->  .../devicetree/bindings/gpu/vivante,gc.yaml   |  2 +-
->  .../devicetree/bindings/i2c/i2c-rk3x.yaml     | 10 +--
->  .../bindings/iio/adc/adi,ad7124.yaml          |  4 +-
->  .../bindings/iio/adc/lltc,ltc2496.yaml        |  6 +-
->  .../input/allwinner,sun4i-a10-lradc-keys.yaml |  4 +-
->  .../bindings/input/touchscreen/goodix.yaml    |  2 +-
->  .../bindings/interconnect/qcom,msm8916.yaml   |  4 +-
->  .../bindings/interconnect/qcom,msm8974.yaml   |  4 +-
->  .../bindings/interconnect/qcom,qcs404.yaml    |  4 +-
->  .../allwinner,sun7i-a20-sc-nmi.yaml           | 12 ++--
->  .../intel,ixp4xx-interrupt.yaml               |  8 +--
->  .../interrupt-controller/st,stm32-exti.yaml   | 12 ++--
->  .../bindings/iommu/samsung,sysmmu.yaml        | 10 +--
->  .../bindings/mailbox/st,stm32-ipcc.yaml       |  2 +-
->  .../media/allwinner,sun4i-a10-csi.yaml        | 28 ++++----
->  .../bindings/media/amlogic,gx-vdec.yaml       | 14 ++--
->  .../bindings/media/renesas,ceu.yaml           | 28 ++++----
->  .../bindings/media/renesas,vin.yaml           |  8 +--
->  .../devicetree/bindings/media/ti,vpe.yaml     |  2 +-
->  .../memory-controllers/fsl/imx8m-ddrc.yaml    |  6 +-
+>  .../devicetree/bindings/arm/cpus.yaml         |  81 +++---
+>  .../devicetree/bindings/arm/l2c2x0.yaml       |  87 +++---
+>  .../devicetree/bindings/arm/psci.yaml         |  15 +-
+>  .../bindings/arm/samsung/exynos-chipid.yaml   |   5 +-
+>  .../bus/allwinner,sun50i-a64-de2.yaml         |   5 +-
+>  .../bindings/clock/fixed-factor-clock.yaml    |   5 +-
+>  .../bindings/connector/usb-connector.yaml     |  28 +-
+>  .../bindings/crypto/st,stm32-hash.yaml        |   9 +-
+>  .../allwinner,sun4i-a10-display-engine.yaml   |   7 +-
+>  .../display/allwinner,sun4i-a10-tcon.yaml     |   5 +-
+>  .../bindings/display/panel/panel-common.yaml  |   5 +-
+>  .../devicetree/bindings/dma/dma-common.yaml   |   3 +-
+>  .../devicetree/bindings/dma/ti/k3-udma.yaml   |  18 +-
+>  .../devicetree/bindings/eeprom/at24.yaml      |  11 +-
+>  .../devicetree/bindings/example-schema.yaml   |  17 +-
+>  .../bindings/hwmon/adi,ltc2947.yaml           |  32 +--
+>  .../devicetree/bindings/hwmon/ti,tmp513.yaml  |  21 +-
+>  .../devicetree/bindings/i2c/st,stm32-i2c.yaml |   9 +-
+>  .../bindings/iio/adc/adi,ad7124.yaml          |   5 +-
+>  .../bindings/iio/adc/lltc,ltc2496.yaml        |   3 +-
+>  .../bindings/iio/adc/microchip,mcp3911.yaml   |   7 +-
+>  .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  |  31 +-
+>  .../bindings/iio/light/tsl2772.yaml           |  13 +-
+>  .../bindings/iio/temperature/adi,ltc2983.yaml |  56 ++--
+>  .../input/allwinner,sun4i-a10-lradc-keys.yaml |   5 +-
+>  .../devicetree/bindings/input/input.yaml      |   9 +-
+>  .../interrupt-controller/arm,gic-v3.yaml      |  39 ++-
+>  .../devicetree/bindings/iommu/arm,smmu.yaml   |   3 +-
+>  .../devicetree/bindings/leds/common.yaml      |  13 +-
+>  .../devicetree/bindings/leds/leds-gpio.yaml   |   3 +-
+>  .../bindings/leds/rohm,bd71828-leds.yaml      |  10 +-
+>  .../bindings/mailbox/st,stm32-ipcc.yaml       |   5 +-
+>  .../bindings/media/amlogic,gx-vdec.yaml       |   6 +-
+>  .../media/amlogic,meson-gx-ao-cec.yaml        |   3 +-
+>  .../devicetree/bindings/media/rc.yaml         | 265 +++++++++---------
+>  .../bindings/media/renesas,vin.yaml           |   7 +-
+>  .../memory-controllers/exynos-srom.yaml       |  14 +-
+>  .../nvidia,tegra124-emc.yaml                  |   9 +-
+>  .../nvidia,tegra124-mc.yaml                   |   3 +-
+>  .../nvidia,tegra30-emc.yaml                   |   9 +-
+>  .../memory-controllers/nvidia,tegra30-mc.yaml |   3 +-
 
->  .../bindings/mfd/st,stm32-lptimer.yaml        |  4 +-
->  .../bindings/mfd/st,stm32-timers.yaml         |  4 +-
->  .../devicetree/bindings/mfd/syscon.yaml       | 12 ++--
+>  .../bindings/mfd/allwinner,sun4i-a10-ts.yaml  |  20 +-
+>  .../bindings/mfd/st,stm32-timers.yaml         |  33 ++-
+>  .../devicetree/bindings/mfd/st,stpmic1.yaml   |   9 +-
+>  .../devicetree/bindings/mfd/syscon.yaml       |   5 +-
 
 Acked-by: Lee Jones <lee.jones@linaro.org>
 
->  .../devicetree/bindings/mmc/cdns,sdhci.yaml   |  2 +-
->  .../bindings/mmc/rockchip-dw-mshc.yaml        | 16 ++---
->  .../bindings/mmc/socionext,uniphier-sd.yaml   | 14 ++--
->  .../devicetree/bindings/mtd/denali,nand.yaml  |  4 +-
->  .../net/allwinner,sun8i-a83t-emac.yaml        |  4 +-
->  .../bindings/net/can/bosch,m_can.yaml         | 52 +++++++--------
->  .../bindings/net/renesas,ether.yaml           |  4 +-
->  .../bindings/net/ti,cpsw-switch.yaml          | 12 ++--
->  .../bindings/net/ti,davinci-mdio.yaml         | 27 ++++----
->  .../bindings/phy/intel,lgm-emmc-phy.yaml      |  2 +-
->  .../devicetree/bindings/pwm/pwm-samsung.yaml  | 16 ++---
->  .../bindings/remoteproc/st,stm32-rproc.yaml   |  2 +-
->  .../reset/brcm,bcm7216-pcie-sata-rescal.yaml  |  4 +-
->  .../devicetree/bindings/rtc/st,stm32-rtc.yaml | 38 +++++------
->  .../bindings/serial/amlogic,meson-uart.yaml   | 16 ++---
->  .../devicetree/bindings/serial/rs485.yaml     | 17 ++---
->  .../bindings/soc/amlogic/amlogic,canvas.yaml  | 10 +--
->  .../bindings/sound/renesas,fsi.yaml           | 16 ++---
->  .../bindings/spi/qcom,spi-qcom-qspi.yaml      | 10 +--
->  .../devicetree/bindings/spi/renesas,hspi.yaml |  4 +-
->  .../devicetree/bindings/spi/spi-pl022.yaml    |  2 +-
->  .../bindings/spi/st,stm32-qspi.yaml           |  4 +-
->  .../allwinner,sun4i-a10-system-control.yaml   | 64 +++++++++----------
->  .../bindings/thermal/amlogic,thermal.yaml     | 10 +--
->  .../bindings/timer/arm,arch_timer.yaml        |  4 +-
->  .../bindings/timer/arm,arch_timer_mmio.yaml   |  4 +-
->  .../devicetree/bindings/usb/dwc2.yaml         |  8 +--
->  77 files changed, 450 insertions(+), 450 deletions(-)
+>  .../devicetree/bindings/mmc/aspeed,sdhci.yaml |   4 +-
+>  .../devicetree/bindings/mmc/cdns,sdhci.yaml   |  77 +++--
+>  .../bindings/mmc/mmc-controller.yaml          |  37 ++-
+>  .../bindings/mmc/rockchip-dw-mshc.yaml        |   6 +-
+>  .../bindings/mmc/synopsys-dw-mshc-common.yaml |  14 +-
+>  .../mtd/allwinner,sun4i-a10-nand.yaml         |  13 +-
+>  .../bindings/mtd/nand-controller.yaml         |  27 +-
+>  .../bindings/net/can/bosch,m_can.yaml         |  59 ++--
+>  .../bindings/net/ethernet-controller.yaml     |  34 +--
+>  .../devicetree/bindings/net/qca,ar803x.yaml   |  17 +-
+>  .../devicetree/bindings/net/snps,dwmac.yaml   |  22 +-
+>  .../bindings/net/ti,cpsw-switch.yaml          |   3 +-
+>  .../bindings/net/ti,davinci-mdio.yaml         |   7 +-
+>  .../bindings/pci/intel-gw-pcie.yaml           |   7 +-
+>  .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml  |  12 +-
+>  .../pinctrl/aspeed,ast2400-pinctrl.yaml       |  37 ++-
+>  .../pinctrl/aspeed,ast2500-pinctrl.yaml       |  45 ++-
+>  .../pinctrl/aspeed,ast2600-pinctrl.yaml       | 108 ++++---
+>  .../bindings/pinctrl/fsl,imx8mp-pinctrl.yaml  |  31 +-
+>  .../bindings/pinctrl/intel,lgm-io.yaml        |   4 +-
+>  .../bindings/pinctrl/pinmux-node.yaml         |   3 +-
+>  .../bindings/pinctrl/st,stm32-pinctrl.yaml    |  56 ++--
+>  .../bindings/power/amlogic,meson-ee-pwrc.yaml |   3 +-
+>  .../devicetree/bindings/pwm/pwm-samsung.yaml  |  11 +-
+>  .../bindings/regulator/gpio-regulator.yaml    |  35 ++-
+>  .../bindings/regulator/mps,mpq7920.yaml       |  31 +-
+>  .../bindings/regulator/regulator.yaml         |   5 +-
+>  .../regulator/rohm,bd71828-regulator.yaml     |  34 +--
+>  .../bindings/regulator/st,stm32-booster.yaml  |   3 +-
+>  .../regulator/st,stm32mp1-pwr-reg.yaml        |   3 +-
+>  .../bindings/remoteproc/st,stm32-rproc.yaml   |   9 +-
+>  .../bindings/reset/intel,rcu-gw.yaml          |   3 +-
+>  .../devicetree/bindings/riscv/cpus.yaml       |  20 +-
+>  .../devicetree/bindings/rtc/st,stm32-rtc.yaml |   9 +-
+>  .../devicetree/bindings/serial/pl011.yaml     |  10 +-
+>  .../devicetree/bindings/serial/rs485.yaml     |  26 +-
+>  .../bindings/serial/samsung_uart.yaml         |   5 +-
+>  .../bindings/sound/adi,adau7118.yaml          |  20 +-
+>  .../sound/allwinner,sun4i-a10-codec.yaml      |  41 ++-
+>  .../bindings/sound/qcom,wcd934x.yaml          |   3 +-
+>  .../bindings/spi/renesas,sh-msiof.yaml        |  42 ++-
+>  .../bindings/spi/spi-controller.yaml          |  14 +-
+>  .../devicetree/bindings/spi/spi-pl022.yaml    |  55 ++--
+>  .../devicetree/bindings/spi/spi-sifive.yaml   |  14 +-
+>  .../bindings/thermal/qcom-tsens.yaml          |   7 +-
+>  .../bindings/timer/arm,arch_timer_mmio.yaml   |   7 +-
+>  91 files changed, 881 insertions(+), 1103 deletions(-)
 
 -- 
 Lee Jones [李琼斯]
