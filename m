@@ -1,104 +1,56 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
-Date: Thu, 16 Apr 2020 14:43:59 +0200
-Message-ID: <20200416124359.GB5785@ravnborg.org>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
+ '$ref'
+Date: Thu, 16 Apr 2020 08:55:21 -0500
+Message-ID: <CAL_JsqLcJrFow_+-o2CxoPRCv4U-ELb2FHSbUgG=Mzt8PFn_CA@mail.gmail.com>
 References: <20200416005549.9683-1-robh@kernel.org>
+ <20200416005549.9683-2-robh@kernel.org>
+ <d93f90bbcc99967ed5ba458ba99d7e73de12e3b2.camel@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from asavdk4.altibox.net ([109.247.116.15]:33886 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2636077AbgDPMoR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Apr 2020 08:44:17 -0400
-Content-Disposition: inline
-In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, Maxime Ripard <mripard@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Alexandre Torgue <alexandre.torgue@st.com>, Thierry Reding <thierry.reding@gmail.com>, Vinod Koul <vkoul@kernel.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Guenter Roeck <linux@roeck-us.net>, Jonathan Cameron <jic23@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, Mauro Carvalho Chehab <mchehab@kernel.org>, Lee Jones <lee.jones@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>, Heiko Stuebner <heiko@sntech.de>, Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, Linu
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=m.gmane-mx.org@lists.infradead.org>
+In-Reply-To: <d93f90bbcc99967ed5ba458ba99d7e73de12e3b2.camel@perches.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=m.gmane-mx.org@lists.infradead.org
+To: Joe Perches <joe@perches.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Heiko Stuebner <heiko@sntech.de>, Linux PWM List <linux-pwm@vger.kernel.org>, "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>, PCI <linux-pci@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>, "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" <linux-remoteproc@vger.kernel.org>, Alexandre Belloni <alexandre.belloni@bootlin.com>, dri-devel <dri-devel@lists.freedesktop.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Thierry Reding <thierry.reding@gmail.com>, MTD Maling List <linux-mtd@lists.infradead.org>, Linux I2C <linux-i2c@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-riscv <linux-riscv@lists.infradead.org>, Lee Jones <lee.jones@linaro.org>, linux-clk <linux-clk@vger.kernel.org>, Linux LED Subsystem <linux-leds@vger.kernel.org>, open list:REAL TIME CLOCK (RT
+List-Id: linux-can.vger.kernel.org
 
-Hi Rob.
+On Thu, Apr 16, 2020 at 1:52 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Wed, 2020-04-15 at 19:55 -0500, Rob Herring wrote:
+> > json-schema versions draft7 and earlier have a weird behavior in that
+> > any keywords combined with a '$ref' are ignored (silently). The correct
+> > form was to put a '$ref' under an 'allOf'. This behavior is now changed
+> > in the 2019-09 json-schema spec and '$ref' can be mixed with other
+> > keywords. The json-schema library doesn't yet support this, but the
+> > tooling now does a fixup for this and either way works.
+> >
+> > This has been a constant source of review comments, so let's change this
+> > treewide so everyone copies the simpler syntax.
+>
+> This is a large change.
+>
+> Was this done manually or by some script?
 
-On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
-> Fix various inconsistencies in schema indentation. Most of these are
-> list indentation which should be 2 spaces more than the start of the
-> enclosing keyword. This doesn't matter functionally, but affects running
-> scripts which do transforms on the schema files.
+Scripted with python ruamel yaml, but then I had to filter out all the
+re-formatting (hence the first patch to cut down some of that).
 
-Are there any plans to improve the tooling so we get warnigns for this?
-Otherwise I am afraid we will see a lot of patches that gets this wrong.
+> If it was done manually, how likely is it there are defects
+> in the conversion?
 
-As a follow-up patch it would be good if example-schema.yaml
-could gain some comments about the correct indentions.
+Either way, the schemas still have to pass the meta-schema checks.
 
-Some comments in the following.
+Rob
 
-> diff --git a/Documentation/devicetree/bindings/arm/altera.yaml b/Documentation/devicetree/bindings/arm/altera.yaml
-> index 49e0362ddc11..b388c5aa7984 100644
-> --- a/Documentation/devicetree/bindings/arm/altera.yaml
-> +++ b/Documentation/devicetree/bindings/arm/altera.yaml
-> @@ -13,8 +13,8 @@ properties:
->    compatible:
->      items:
->        - enum:
-> -        - altr,socfpga-cyclone5
-> -        - altr,socfpga-arria5
-> -        - altr,socfpga-arria10
-> +          - altr,socfpga-cyclone5
-> +          - altr,socfpga-arria5
-> +          - altr,socfpga-arria10
->        - const: altr,socfpga
-
-So here "- enum" do not need the extra indent.
-Is it because this is not a list?
-
->  ...
-> diff --git a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
-> index 66213bd95e6e..6cc74523ebfd 100644
-> --- a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
-> +++ b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
-> @@ -25,7 +25,7 @@ select:
-> 
->  properties:
->    compatible:
-> -   items:
-> +    items:
->        - const: amlogic,meson-gx-ao-secure
->        - const: syscon
-
-This is something I had expected the tooling to notice.
-I had expected the two "- const" to be indented with 4 spaces, not two.
-So there is something I do not understand.
-
-
-> diff --git a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
-> index 07f39d3eee7e..f7f024910e71 100644
-> --- a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
-> +++ b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
-> @@ -17,9 +17,8 @@ properties:
->            - nxp,lpc3230
->            - nxp,lpc3240
->        - items:
-> -        - enum:
-> -            - ea,ea3250
-> -            - phytec,phy3250
-> -        - const: nxp,lpc3250
-> -
-> +          - enum:
-> +              - ea,ea3250
-> +              - phytec,phy3250
-> +          - const: nxp,lpc3250
->  ...
-
-And here "- enum" receive extra indent.
-
-I trust you know what you are doing - but I do not get it.
-
-Some pointers or examples for the correct indention would be great.
-I cannot review this patch as long as I do not know the rules.
-
-My request to update example-schema.yaml was one way to teach me.
-(Some people will say that is difficult/impossible to teach me,
-but thats another story:-) ).
-
-	Sam
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
