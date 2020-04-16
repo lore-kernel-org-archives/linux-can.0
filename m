@@ -1,57 +1,53 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH linux-can-next/flexcan] can: flexcan: fix TDC feature
-Date: Thu, 16 Apr 2020 09:41:45 +0000
-Message-ID: <DB8PR04MB6795F7E28A9964A121A06140E6D80@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20200416093126.15242-1-qiangqing.zhang@nxp.com>
- <20200416093126.15242-2-qiangqing.zhang@nxp.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
+Date: Thu, 16 Apr 2020 11:40:24 +0100
+Message-ID: <20200416104024.GD5354@sirena.org.uk>
+References: <20200416005549.9683-1-robh@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr70041.outbound.protection.outlook.com ([40.107.7.41]:5892
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2503869AbgDPJlt (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:41:49 -0400
-In-Reply-To: <20200416093126.15242-2-qiangqing.zhang@nxp.com>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "mkl@pengutronix.de" <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Michael Walle <michael@walle.cc>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="wLAMOaPNJ0fu1fTG"
+Return-path: <linux-riscv-bounces+glpr-linux-riscv=m.gmane-mx.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-riscv/>
+List-Post: <mailto:linux-riscv@lists.infradead.org>
+List-Help: <mailto:linux-riscv-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-riscv" <linux-riscv-bounces@lists.infradead.org>
+Errors-To: linux-riscv-bounces+glpr-linux-riscv=m.gmane-mx.org@lists.infradead.org
+To: Rob Herring <robh@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org, linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org, Alexandre Belloni <alexandre.belloni@bootlin.com>, dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>, Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, Pavel Machek <pavel@ucw.cz>, linux-riscv@lists.infradead.org, Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org, linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Krzysztof Kozlowski <krzk@kernel.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-ser
+List-Id: linux-can.vger.kernel.org
 
-DQpIaSBNYXJjLA0KDQpIb3cgYWJvdXQgRmxleENBTiBGRCBwYXRjaCBzZXQsIGl0IGlzIHBlbmRp
-bmcgZm9yIGEgbG9uZyB0aW1lLiBNYW55IHdvcmsgd291bGQgYmFzZSBvbiBpdCwgd2UgYXJlIGhh
-cHB5IHRvIHNlZSBpdCBpbiB1cHN0cmVhbSBtYWlubGluZSBBU0FQLg0KDQpNaWNoYWVsIFdhbGxl
-IGFsc28gZ2l2ZXMgb3V0IHRoZSB0ZXN0LWJ5IHRhZzoNCglUZXN0ZWQtYnk6IE1pY2hhZWwgV2Fs
-bGUgPG1pY2hhZWxAd2FsbGUuY2M+DQoNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KDQo+
-IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBaaGFuZyA8cWlhbmdx
-aW5nLnpoYW5nQG54cC5jb20+DQo+IFNlbnQ6IDIwMjDE6jTUwjE2yNUgMTc6MzENCj4gVG86IG1r
-bEBwZW5ndXRyb25peC5kZTsgbGludXgtY2FuQHZnZXIua2VybmVsLm9yZw0KPiBDYzogZGwtbGlu
-dXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gU3Vi
-amVjdDogW1BBVENIIGxpbnV4LWNhbi1uZXh0L2ZsZXhjYW5dIGNhbjogZmxleGNhbjogZml4IFRE
-QyBmZWF0dXJlDQo+IA0KPiBXZSBlbmFibGUgVERDIGZlYXR1cmUgaW4gZmxleGNhbl9zZXRfYml0
-dGltaW5nIHdoZW4gbG9vcGJhY2sgb2ZmLCBidXQgZGlzYWJsZQ0KPiBpdCBieSBtaXN0YWtlIGFm
-dGVyIGNhbGxpbmcgZmxleGNhbl9zZXRfYml0dGltaW5nLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
-Sm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJz
-L25ldC9jYW4vZmxleGNhbi5jIHwgMyArKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlv
-bnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4v
-ZmxleGNhbi5jIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBpbmRleA0KPiBiMTZiOGFiYzFj
-MmMuLjI3ZjQ1NDFkOTQwMCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4u
-Yw0KPiArKysgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+IEBAIC0xMjAyLDYgKzEyMDIs
-OCBAQCBzdGF0aWMgdm9pZCBmbGV4Y2FuX3NldF9iaXR0aW1pbmcoc3RydWN0IG5ldF9kZXZpY2UN
-Cj4gKmRldikNCj4gIAkJCQkvKiBmb3IgdGhlIFREQyB0byB3b3JrIHJlbGlhYmx5LCB0aGUgb2Zm
-c2V0IGhhcyB0byB1c2UNCj4gb3B0aW1hbCBzZXR0aW5ncyAqLw0KPiAgCQkJCXJlZ19mZGN0cmwg
-fD0NCj4gRkxFWENBTl9GRENUUkxfVERDT0ZGKCgoZGJ0LT5waGFzZV9zZWcxIC0gMSkgKyBkYnQt
-PnByb3Bfc2VnICsgMikgKg0KPiAgCQkJCQkJCQkgICAgKChkYnQtPmJycCAtMSkgKyAxKSk7DQo+
-ICsJCQl9IGVsc2Ugew0KPiArCQkJCXJlZ19mZGN0cmwgJj0gfkZMRVhDQU5fRkRDVFJMX1REQ0VO
-Ow0KPiAgCQkJfQ0KPiAgCQkJcHJpdi0+d3JpdGUocmVnX2ZkY3RybCwgJnJlZ3MtPmZkY3RybCk7
-DQo+IA0KPiBAQCAtMTM1NCw3ICsxMzU2LDYgQEAgc3RhdGljIGludCBmbGV4Y2FuX2NoaXBfc3Rh
-cnQoc3RydWN0IG5ldF9kZXZpY2UgKmRldikNCj4gIAkvKiBGRENUUkwgKi8NCj4gIAlpZiAocHJp
-di0+Y2FuLmN0cmxtb2RlX3N1cHBvcnRlZCAmIENBTl9DVFJMTU9ERV9GRCkgew0KPiAgCQlyZWdf
-ZmRjdHJsID0gcHJpdi0+cmVhZCgmcmVncy0+ZmRjdHJsKSAmIH5GTEVYQ0FOX0ZEQ1RSTF9GRFJB
-VEU7DQo+IC0JCXJlZ19mZGN0cmwgJj0gfkZMRVhDQU5fRkRDVFJMX1REQ0VOOw0KPiAgCQlyZWdf
-ZmRjdHJsICY9IH4oRkxFWENBTl9GRENUUkxfTUJEU1IxKDB4MykgfA0KPiBGTEVYQ0FOX0ZEQ1RS
-TF9NQkRTUjAoMHgzKSk7DQo+ICAJCXJlZ19tY3IgPSBwcml2LT5yZWFkKCZyZWdzLT5tY3IpICYg
-fkZMRVhDQU5fTUNSX0ZERU47DQo+ICAJCXJlZ19jdHJsMiA9IHByaXYtPnJlYWQoJnJlZ3MtPmN0
-cmwyKSAmDQo+IH5GTEVYQ0FOX0NUUkwyX0lTT0NBTkZERU47DQo+IC0tDQo+IDIuMTcuMQ0KDQo=
+
+--wLAMOaPNJ0fu1fTG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
+> Fix various inconsistencies in schema indentation. Most of these are
+> list indentation which should be 2 spaces more than the start of the
+> enclosing keyword. This doesn't matter functionally, but affects running
+> scripts which do transforms on the schema files.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--wLAMOaPNJ0fu1fTG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6YNhcACgkQJNaLcl1U
+h9CTpAf+IW4icH5zPKy5c7TecTxfEyWNDjNTt8Pa69ga67NVmMDHKzueRcPb7D3e
+ihhK7zM0HDSd8aebO5YtW3GiVBBUyJ0m1CNYvbcsJscIhoOoco+NPJUss00w/0Zs
+L0RHGHcgc6lhNve8n+r6QbzSYEeeT9QhqTaPtyPnvMDRUkAYgShAD0ejHjNQWYOt
+3KuH8RD18xfK/PWSRsrrxCY3flOTx0RIpS9+oyO+JWIcKd6Y5lCZiBAXGrXEdEjx
+bgRsC/mO1YSE03iuDgQnodKThzIoJrygjOkGGDJuYsKY5erh8JZ93l5KPoLkyKCT
+SSA9qjNaVs+wMuSlq8WJ3w8m+z5cOA==
+=dNaD
+-----END PGP SIGNATURE-----
+
+--wLAMOaPNJ0fu1fTG--
