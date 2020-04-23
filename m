@@ -1,19 +1,23 @@
 From: Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 3.16 245/245] slcan: Don't transmit uninitialized stack
- data in padding
-Date: Fri, 24 Apr 2020 00:07:52 +0100
-Message-ID: <lsq.1587683028.722482633@decadent.org.uk>
+Subject: [PATCH 3.16 201/245] can, slip: Protect tty->disc_data in
+ write_wakeup and close with RCU
+Date: Fri, 24 Apr 2020 00:07:08 +0100
+Message-ID: <lsq.1587683028.166259533@decadent.org.uk>
 References: <lsq.1587683027.831233700@decadent.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:50980 "EHLO
+        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728666AbgDWXG7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Apr 2020 19:06:59 -0400
 Content-Disposition: inline
 In-Reply-To: <lsq.1587683027.831233700@decadent.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>, linux-can@vger.kernel.org, security@kernel.org, Kees Cook <keescook@chromium.org>, davem@davemloft.net, netdev@vger.kernel.org, wg@grandegger.com, Richard Palethorpe <rpalethorpe@suse.com>, mkl@pengutronix.de
-List-Id: linux-can.vger.kernel.org
+Cc: akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Richard Palethorpe <rpalethorpe@suse.com>, Wolfgang Grandegger <wg@grandegger.com>, syzkaller@googlegroups.com, linux-can@vger.kernel.org, syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com, Tyler Hall <tylerwhall@gmail.com>
 
 3.16.83-rc1 review patch.  If anyone has any objections, please let me know.
 
@@ -21,47 +25,105 @@ List-Id: linux-can.vger.kernel.org
 
 From: Richard Palethorpe <rpalethorpe@suse.com>
 
-commit b9258a2cece4ec1f020715fe3554bc2e360f6264 upstream.
+commit 0ace17d56824165c7f4c68785d6b58971db954dd upstream.
 
-struct can_frame contains some padding which is not explicitly zeroed in
-slc_bump. This uninitialized data will then be transmitted if the stack
-initialization hardening feature is not enabled (CONFIG_INIT_STACK_ALL).
+write_wakeup can happen in parallel with close/hangup where tty->disc_data
+is set to NULL and the netdevice is freed thus also freeing
+disc_data. write_wakeup accesses disc_data so we must prevent close from
+freeing the netdev while write_wakeup has a non-NULL view of
+tty->disc_data.
 
-This commit just zeroes the whole struct including the padding.
+We also need to make sure that accesses to disc_data are atomic. Which can
+all be done with RCU.
 
+This problem was found by Syzkaller on SLCAN, but the same issue is
+reproducible with the SLIP line discipline using an LTP test based on the
+Syzkaller reproducer.
+
+A fix which didn't use RCU was posted by Hillf Danton.
+
+Fixes: 661f7fda21b1 ("slip: Fix deadlock in write_wakeup")
+Fixes: a8e83b17536a ("slcan: Port write_wakeup deadlock fix from slip")
+Reported-by: syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Fixes: a1044e36e457 ("can: add slcan driver for serial/USB-serial CAN adapters")
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Tyler Hall <tylerwhall@gmail.com>
 Cc: linux-can@vger.kernel.org
 Cc: netdev@vger.kernel.org
-Cc: security@kernel.org
-Cc: wg@grandegger.com
-Cc: mkl@pengutronix.de
-Cc: davem@davemloft.net
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org
+Cc: syzkaller@googlegroups.com
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 ---
- drivers/net/can/slcan.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/can/slcan.c | 12 ++++++++++--
+ drivers/net/slip/slip.c | 12 ++++++++++--
+ 2 files changed, 20 insertions(+), 4 deletions(-)
 
 --- a/drivers/net/can/slcan.c
 +++ b/drivers/net/can/slcan.c
-@@ -150,7 +150,7 @@ static void slc_bump(struct slcan *sl)
- 	u32 tmpid;
- 	char *cmd = sl->rbuff;
+@@ -346,9 +346,16 @@ static void slcan_transmit(struct work_s
+  */
+ static void slcan_write_wakeup(struct tty_struct *tty)
+ {
+-	struct slcan *sl = tty->disc_data;
++	struct slcan *sl;
++
++	rcu_read_lock();
++	sl = rcu_dereference(tty->disc_data);
++	if (!sl)
++		goto out;
  
--	cf.can_id = 0;
-+	memset(&cf, 0, sizeof(cf));
+ 	schedule_work(&sl->tx_work);
++out:
++	rcu_read_unlock();
+ }
  
- 	switch (*cmd) {
- 	case 'r':
-@@ -189,8 +189,6 @@ static void slc_bump(struct slcan *sl)
- 	else
+ /* Send a can_frame to a TTY queue. */
+@@ -640,10 +647,11 @@ static void slcan_close(struct tty_struc
  		return;
  
--	*(u64 *) (&cf.data) = 0; /* clear payload */
--
- 	/* RTR frames may have a dlc > 0 but they never have any data bytes */
- 	if (!(cf.can_id & CAN_RTR_FLAG)) {
- 		for (i = 0; i < cf.can_dlc; i++) {
+ 	spin_lock_bh(&sl->lock);
+-	tty->disc_data = NULL;
++	rcu_assign_pointer(tty->disc_data, NULL);
+ 	sl->tty = NULL;
+ 	spin_unlock_bh(&sl->lock);
+ 
++	synchronize_rcu();
+ 	flush_work(&sl->tx_work);
+ 
+ 	/* Flush network side */
+--- a/drivers/net/slip/slip.c
++++ b/drivers/net/slip/slip.c
+@@ -452,9 +452,16 @@ static void slip_transmit(struct work_st
+  */
+ static void slip_write_wakeup(struct tty_struct *tty)
+ {
+-	struct slip *sl = tty->disc_data;
++	struct slip *sl;
++
++	rcu_read_lock();
++	sl = rcu_dereference(tty->disc_data);
++	if (!sl)
++		goto out;
+ 
+ 	schedule_work(&sl->tx_work);
++out:
++	rcu_read_unlock();
+ }
+ 
+ static void sl_tx_timeout(struct net_device *dev)
+@@ -885,10 +892,11 @@ static void slip_close(struct tty_struct
+ 		return;
+ 
+ 	spin_lock_bh(&sl->lock);
+-	tty->disc_data = NULL;
++	rcu_assign_pointer(tty->disc_data, NULL);
+ 	sl->tty = NULL;
+ 	spin_unlock_bh(&sl->lock);
+ 
++	synchronize_rcu();
+ 	flush_work(&sl->tx_work);
+ 
+ 	/* VSV = very important to remove timers */
