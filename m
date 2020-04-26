@@ -1,129 +1,27 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 3.16 201/245] can, slip: Protect tty->disc_data in
- write_wakeup and close with RCU
-Date: Fri, 24 Apr 2020 00:07:08 +0100
-Message-ID: <lsq.1587683028.166259533@decadent.org.uk>
-References: <lsq.1587683027.831233700@decadent.org.uk>
+From: "Lev R. Oshvang ." <levonshe@gmail.com>
+Subject: Are there any netfilter modules for use with Socket CAN
+Date: Sun, 26 Apr 2020 15:07:08 +0300
+Message-ID: <CAP22eLGTc6K1auF5JOofTKy83uTOq0hK_qb8fgJ=J78njwWjVA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:50980 "EHLO
-        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728666AbgDWXG7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Apr 2020 19:06:59 -0400
-Content-Disposition: inline
-In-Reply-To: <lsq.1587683027.831233700@decadent.org.uk>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726125AbgDZMHX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 26 Apr 2020 08:07:23 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8F2C061A0E
+        for <linux-can@vger.kernel.org>; Sun, 26 Apr 2020 05:07:22 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id d17so17116870wrg.11
+        for <linux-can@vger.kernel.org>; Sun, 26 Apr 2020 05:07:21 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Richard Palethorpe <rpalethorpe@suse.com>, Wolfgang Grandegger <wg@grandegger.com>, syzkaller@googlegroups.com, linux-can@vger.kernel.org, syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com, Tyler Hall <tylerwhall@gmail.com>
+To: linux-can@vger.kernel.org
 
-3.16.83-rc1 review patch.  If anyone has any objections, please let me know.
+Hi list,
+From my google search I did not find any netfilter /iptable rule which
+allows to filter on CAN fields,  message ID and other.
+Please point me in the right direction.
 
-------------------
-
-From: Richard Palethorpe <rpalethorpe@suse.com>
-
-commit 0ace17d56824165c7f4c68785d6b58971db954dd upstream.
-
-write_wakeup can happen in parallel with close/hangup where tty->disc_data
-is set to NULL and the netdevice is freed thus also freeing
-disc_data. write_wakeup accesses disc_data so we must prevent close from
-freeing the netdev while write_wakeup has a non-NULL view of
-tty->disc_data.
-
-We also need to make sure that accesses to disc_data are atomic. Which can
-all be done with RCU.
-
-This problem was found by Syzkaller on SLCAN, but the same issue is
-reproducible with the SLIP line discipline using an LTP test based on the
-Syzkaller reproducer.
-
-A fix which didn't use RCU was posted by Hillf Danton.
-
-Fixes: 661f7fda21b1 ("slip: Fix deadlock in write_wakeup")
-Fixes: a8e83b17536a ("slcan: Port write_wakeup deadlock fix from slip")
-Reported-by: syzbot+017e491ae13c0068598a@syzkaller.appspotmail.com
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Tyler Hall <tylerwhall@gmail.com>
-Cc: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: syzkaller@googlegroups.com
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
----
- drivers/net/can/slcan.c | 12 ++++++++++--
- drivers/net/slip/slip.c | 12 ++++++++++--
- 2 files changed, 20 insertions(+), 4 deletions(-)
-
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -346,9 +346,16 @@ static void slcan_transmit(struct work_s
-  */
- static void slcan_write_wakeup(struct tty_struct *tty)
- {
--	struct slcan *sl = tty->disc_data;
-+	struct slcan *sl;
-+
-+	rcu_read_lock();
-+	sl = rcu_dereference(tty->disc_data);
-+	if (!sl)
-+		goto out;
- 
- 	schedule_work(&sl->tx_work);
-+out:
-+	rcu_read_unlock();
- }
- 
- /* Send a can_frame to a TTY queue. */
-@@ -640,10 +647,11 @@ static void slcan_close(struct tty_struc
- 		return;
- 
- 	spin_lock_bh(&sl->lock);
--	tty->disc_data = NULL;
-+	rcu_assign_pointer(tty->disc_data, NULL);
- 	sl->tty = NULL;
- 	spin_unlock_bh(&sl->lock);
- 
-+	synchronize_rcu();
- 	flush_work(&sl->tx_work);
- 
- 	/* Flush network side */
---- a/drivers/net/slip/slip.c
-+++ b/drivers/net/slip/slip.c
-@@ -452,9 +452,16 @@ static void slip_transmit(struct work_st
-  */
- static void slip_write_wakeup(struct tty_struct *tty)
- {
--	struct slip *sl = tty->disc_data;
-+	struct slip *sl;
-+
-+	rcu_read_lock();
-+	sl = rcu_dereference(tty->disc_data);
-+	if (!sl)
-+		goto out;
- 
- 	schedule_work(&sl->tx_work);
-+out:
-+	rcu_read_unlock();
- }
- 
- static void sl_tx_timeout(struct net_device *dev)
-@@ -885,10 +892,11 @@ static void slip_close(struct tty_struct
- 		return;
- 
- 	spin_lock_bh(&sl->lock);
--	tty->disc_data = NULL;
-+	rcu_assign_pointer(tty->disc_data, NULL);
- 	sl->tty = NULL;
- 	spin_unlock_bh(&sl->lock);
- 
-+	synchronize_rcu();
- 	flush_work(&sl->tx_work);
- 
- 	/* VSV = very important to remove timers */
+Regards,
+Lev
