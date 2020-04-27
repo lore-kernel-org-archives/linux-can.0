@@ -1,31 +1,24 @@
-From: "Lev R. Oshvang ." <levonshe@gmail.com>
-Subject: Is is possible to use Netfilter for outgoing CAN msgs by CAN-ID?
-Date: Mon, 27 Apr 2020 13:48:39 +0300
-Message-ID: <CAP22eLEefVnmatvz1yn8g09o1v_YRs3NS=_ybhF_-WmquiUaLQ@mail.gmail.com>
+From: Ruben CONVY <andrewboccc@gmail.com>
+Subject: Why continued silence 2
+Date: Mon, 27 Apr 2020 12:41:33 +0100
+Message-ID: <CAHVC0+Ag87TMCmfNNwWbxXOFxn5166q8GG5wEfPjwtixj9=EXQ@mail.gmail.com>
+Reply-To: convy0090@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726507AbgD0Ksw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 27 Apr 2020 06:48:52 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3B0C0610D5
-        for <linux-can@vger.kernel.org>; Mon, 27 Apr 2020 03:48:51 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id g13so19948684wrb.8
-        for <linux-can@vger.kernel.org>; Mon, 27 Apr 2020 03:48:51 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726899AbgD0Lle (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 27 Apr 2020 07:41:34 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96520C061BD3
+        for <linux-can@vger.kernel.org>; Mon, 27 Apr 2020 04:41:34 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id c2so3621389iow.7
+        for <linux-can@vger.kernel.org>; Mon, 27 Apr 2020 04:41:34 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
 
-Hi,
-
-Thanks to Chris and Pavel, you helped me to sharpen my question. so I
-rephrased my original question and learn things.
-
- At first glance the answer should be definitely YES.
-
-Since CAN-ID lives in sk_buff and Netfilter hook receives sk_buff as a
-parameter there should not be a problem
-
-But I did not find any such module by googling.
+Did you receive my previous email regarding your family inheritance?
+Reply strictly through: convy0090@gmail.com
+Best Regards,
+Ruben CONVY
