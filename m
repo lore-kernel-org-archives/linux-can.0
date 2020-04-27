@@ -1,24 +1,73 @@
-From: Ruben CONVY <andrewboccc@gmail.com>
-Subject: Why continued silence 2
-Date: Mon, 27 Apr 2020 12:41:33 +0100
-Message-ID: <CAHVC0+Ag87TMCmfNNwWbxXOFxn5166q8GG5wEfPjwtixj9=EXQ@mail.gmail.com>
-Reply-To: convy0090@gmail.com
+From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Subject: Re: Are there any netfilter modules for use with Socket CAN
+Date: Mon, 27 Apr 2020 15:30:33 +0200
+Message-ID: <202004271530.33887.pisa@cmp.felk.cvut.cz>
+References: <CAP22eLGTc6K1auF5JOofTKy83uTOq0hK_qb8fgJ=J78njwWjVA@mail.gmail.com> <202004262215.36557.pisa@cmp.felk.cvut.cz> <CAP22eLEq1FJWLgT+-NvG=geLiKeEasgz7WZFkhXYuTbeio2t8g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726899AbgD0Lle (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 27 Apr 2020 07:41:34 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96520C061BD3
-        for <linux-can@vger.kernel.org>; Mon, 27 Apr 2020 04:41:34 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id c2so3621389iow.7
-        for <linux-can@vger.kernel.org>; Mon, 27 Apr 2020 04:41:34 -0700 (PDT)
+        with ESMTP id S1726651AbgD0Ncl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 27 Apr 2020 09:32:41 -0400
+Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 518FDC0610D5
+        for <linux-can@vger.kernel.org>; Mon, 27 Apr 2020 06:32:40 -0700 (PDT)
+In-Reply-To: <CAP22eLEq1FJWLgT+-NvG=geLiKeEasgz7WZFkhXYuTbeio2t8g@mail.gmail.com>
+Content-Disposition: inline
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
+To: "Lev R. Oshvang ." <levonshe@gmail.com>
+Cc: linux-can@vger.kernel.org, Rostislav =?utf-8?q?Lisov=C3=BD?= <lisovy@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>
 
-Did you receive my previous email regarding your family inheritance?
-Reply strictly through: convy0090@gmail.com
-Best Regards,
-Ruben CONVY
+Hello Lev,
+
+On Monday 27 of April 2020 12:31:36 Lev R. Oshvang . wrote:
+> On Sun, Apr 26, 2020 at 11:17 PM Pavel Pisa <pisa@cmp.felk.cvut.cz> wrote:
+> > Dear Lev,
+> >
+> > On Sunday 26 of April 2020 14:07:08 Lev R. Oshvang . wrote:
+> > > >From my google search I did not find any netfilter /iptable rule which
+> > >
+> > > allows to filter on CAN fields,  message ID and other.
+> > > Please point me in the right direction.
+> >
+> > I am not sure if this can help, but Rostislav Lisovy
+> > has implemented linux-devel/net/sched/em_canid.c
+> > which has been merged around Linux kernel version 3.6
+> > and is still there. It allows to classify CAN frames
+> > for purpose of queening disciplines. There is report
+> > with documentation how to use it
+> >
+> > https://rtime.felk.cvut.cz/can/socketcan-qdisc-final.pdf
+> >
+> > I am not sure if this can be used for netfilter.
+> >
+> > For sure CAN Gateway allows separation of real and virtual
+> > can network and full control on IDs which are passed.
+>
+> Hi Pavel,
+> Thanks for the info.
+> I read again cangw man page. It clearly states that filter might be
+> applied to incoming CAN traffic.
+> It does not answer my question of whether anybody uses Netfilter for
+> outgoing CAN messages?
+
+the use described in our report is for outgoing traffic to classify
+CAN frames to different output queues according to IDs to resolve
+different kind of buffering of different kind of CAN traffic.
+I.e. for best effort RT data ensure that only last one
+is sent and previous are forgottent if not sent in a time.
+For service data ensure that FIFO depth is long enough
+to hold all data etc.
+
+If I remember, it could be used to block some applications
+or nodes to send some IDs etc...
+
+What is your idea, need for use?
+
+Best wishes,
+
+Pavel
