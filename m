@@ -1,42 +1,36 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] can: c_can: Remove unused inline function
-Date: Tue, 5 May 2020 16:41:49 +0800
-Message-ID: <20200505084149.23848-1-yuehaibing@huawei.com>
+From: Serena Buafoh <modesecdossongui@gmail.com>
+Subject: =?UTF-8?B?SGVqIG1pbiBrw6RyYSw=?=
+Date: Tue, 5 May 2020 12:55:55 +0200
+Message-ID: <CAJxL6vdAK4at1Mvh4qDOpZpgBwsswz5SWQAb+X_KK51WKz_rnA@mail.gmail.com>
+Reply-To: serenabuafohi@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, jhofstee@victronenergy.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728180AbgEEKz5 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 5 May 2020 06:55:57 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02037C061A0F
+        for <linux-can@vger.kernel.org>; Tue,  5 May 2020 03:55:57 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id c16so1839501ilr.3
+        for <linux-can@vger.kernel.org>; Tue, 05 May 2020 03:55:56 -0700 (PDT)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: serenabuafohi@gmail.com
 
-commit 524369e2391f ("can: c_can: remove obsolete STRICT_FRAME_ORDERING Kconfig option")
-left behind this, remove it.
+--=20
+Min k=C3=A4ra,
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/can/c_can/c_can.c | 9 ---------
- 1 file changed, 9 deletions(-)
+Jag vill finansiera ett v=C3=A4lg=C3=B6renhetsprojekt i ditt land till f=C3=
+=B6rm=C3=A5n
+f=C3=B6r de mindre privilegierade. Bekr=C3=A4fta ditt intresse om du kan ha=
+ntera
+ett s=C3=A5dant projekt =C3=A4rligt. Jag kommer att ge dig mer information =
+n=C3=A4r
+jag har svarat.
+Gud v=C3=A4lsigne dig.
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 8e9f5620c9a2..1ccdbe89585b 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -356,15 +356,6 @@ static void c_can_setup_tx_object(struct net_device *dev, int iface,
- 	}
- }
- 
--static inline void c_can_activate_all_lower_rx_msg_obj(struct net_device *dev,
--						       int iface)
--{
--	int i;
--
--	for (i = C_CAN_MSG_OBJ_RX_FIRST; i <= C_CAN_MSG_RX_LOW_LAST; i++)
--		c_can_object_get(dev, iface, i, IF_COMM_CLR_NEWDAT);
--}
--
- static int c_can_handle_lost_msg_obj(struct net_device *dev,
- 				     int iface, int objno, u32 ctrl)
- {
--- 
-2.17.1
+H=C3=A4lsningar,
+Serena Buafoh,
