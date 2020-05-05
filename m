@@ -1,34 +1,42 @@
-From: syzbot <syzbot+b92e4f1472a54e1c7dec@syzkaller.appspotmail.com>
-Subject: Re: WARNING in hsr_addr_subst_dest
-Date: Sun, 03 May 2020 20:02:04 -0700
-Message-ID: <0000000000007851da05a4c9c169@google.com>
-References: <0000000000001b1a1d057e776c92@google.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] can: c_can: Remove unused inline function
+Date: Tue, 5 May 2020 16:41:49 +0800
+Message-ID: <20200505084149.23848-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <0000000000001b1a1d057e776c92@google.com>
-Sender: netdev-owner@vger.kernel.org
-To: ap420073@gmail.com, arvid.brodin@alten.se, axboe@fb.com, axboe@kernel.dk, davem@davemloft.net, dvyukov@google.com, hch@lst.de, kuba@kernel.org, linux-block@vger.kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, ming.lei@redhat.com, mkl@pengutronix.de, netdev@vger.kernel.org, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, jhofstee@victronenergy.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: linux-can.vger.kernel.org
 
-syzbot suspects this bug was fixed by commit:
+commit 524369e2391f ("can: c_can: remove obsolete STRICT_FRAME_ORDERING Kconfig option")
+left behind this, remove it.
 
-commit 4b793acdca0050739b99ace6a8b9e7f717f57c6b
-Author: Taehee Yoo <ap420073@gmail.com>
-Date:   Fri Feb 28 18:01:46 2020 +0000
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/can/c_can/c_can.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-    hsr: use netdev_err() instead of WARN_ONCE()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=130746ffe00000
-start commit:   ea200dec Merge tag 'armsoc-fixes' of git://git.kernel.org/..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dcf10bf83926432a
-dashboard link: https://syzkaller.appspot.com/bug?extid=b92e4f1472a54e1c7dec
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b5cafee00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12574271e00000
-
-If the result looks correct, please mark the bug fixed by replying with:
-
-#syz fix: hsr: use netdev_err() instead of WARN_ONCE()
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 8e9f5620c9a2..1ccdbe89585b 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -356,15 +356,6 @@ static void c_can_setup_tx_object(struct net_device *dev, int iface,
+ 	}
+ }
+ 
+-static inline void c_can_activate_all_lower_rx_msg_obj(struct net_device *dev,
+-						       int iface)
+-{
+-	int i;
+-
+-	for (i = C_CAN_MSG_OBJ_RX_FIRST; i <= C_CAN_MSG_RX_LOW_LAST; i++)
+-		c_can_object_get(dev, iface, i, IF_COMM_CLR_NEWDAT);
+-}
+-
+ static int c_can_handle_lost_msg_obj(struct net_device *dev,
+ 				     int iface, int objno, u32 ctrl)
+ {
+-- 
+2.17.1
