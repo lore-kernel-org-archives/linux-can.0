@@ -1,204 +1,90 @@
-From: =?iso-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
-Subject: RE: PCAN USB hardware timestamps jumps forward
-Date: Tue, 12 May 2020 07:56:47 +0000
-Message-ID: <DB6PR03MB3093457A77199F550EBBA84CD6BE0@DB6PR03MB3093.eurprd03.prod.outlook.com>
-References: <CAArkK-dJkWCfUoTfZeXDiKSKNeey6_CwAK_gNB5QoRs=kA2O5A@mail.gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: Replace zero-length array with flexible-array
+Date: Tue, 12 May 2020 15:30:59 +0200
+Message-ID: <0420f571-2d6a-c830-2029-8da60e3c2094@hartkopp.net>
+References: <20200507185118.GA14022@embeddedor>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr60044.outbound.protection.outlook.com ([40.107.6.44]:61250
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725889AbgELH4w (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 12 May 2020 03:56:52 -0400
-In-Reply-To: <CAArkK-dJkWCfUoTfZeXDiKSKNeey6_CwAK_gNB5QoRs=kA2O5A@mail.gmail.com>
-Content-Language: fr-FR
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: =?iso-8859-1?Q?Fabi=E1n_Inostroza?= <fabian.inostroza.p@gmail.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-
-Hi,
-
-Thank you for your email. Your diagnosis is good. We will think of a way to=
- correct this case so as not to disrupt the proper functioning of other USB=
- adapters whose drivers share this code.
-
---- Stephane
-
-
-De : linux-can-owner@vger.kernel.org <linux-can-owner@vger.kernel.org> de l=
-a part de Fabi=E1n Inostroza <fabian.inostroza.p@gmail.com>
-
-Envoy=E9 : samedi 9 mai 2020 21:05
-
-=C0 : linux-can@vger.kernel.org <linux-can@vger.kernel.org>
-
-Objet : PCAN USB hardware timestamps jumps forward
-
-
-
-
-Hello,
-
-
-
-I have noticed that sometimes the hardware timestamps shown by candump
-
-jump forward, look at the following candump extract:
-
-(0000034679.461888) can0 123#7003000000000000
-
-(0000034682.263253) can0 123#7103000000000000
-
-(0000034679.472170) can0 123#7203000000000000
-
-
-
-these messages are transported in the following usb packets:
-
-Time        Data
-
-7.436864  02 01 08 60 24 34 7b 70 03 00 00 00 00 00 00 ...
-
-7.441998  02 03 42 04 01 c4 7b 40 01 00 08 60 24 ad 7b 71 03 00 00 00
-
-00 00 00 ...
-
-7.447143  02 01 08 60 24 25 7c 72 03 00 00 00 00 00 00 ...
-
-
-
-The time column is the time shown in Wireshark and the CAN messages
-
-where send approx
-
-every 5 ms.
-
-
-
-Reading the source code of the driver I concluded that the jump is
-
-caused because the second
-
-usb packet contains 3 records, the first with only a timestamp, the
-
-second record is a error record and the third contains a data record
-
-and the timestamp of the data record is before the first record and
-
-the driver detects this as an overflow.
-
-
-
-I've attached a patch that fixes this, I've only tested it with PCAN
-
-USB ver 8.3 latter upgraded to v8.4.
-
-
-
-From 34dccd02d430b8bbb68802ab304c7e2f9f184871 Mon Sep 17 00:00:00 2001
-
-From: Fabian Inostroza <fabianinostrozap@gmail.com>
-
-Date: Tue, 5 May 2020 01:06:40 -0400
-
-Subject: [PATCH] can: peak_usb: fix hardware timestamp jumps
-
-
-
-Sometimes the adapter sends an internal record with a timestamp
-
-captured after the timestamp contained in the following data record.
-
-The driver interprets this as an overflow in the timestamp and produces
-
-a jump of some seconds for the messages contained in the usb packet.
-
-
-
-Since the adapter periodically (~1s) sends records to sync the timestamp
-
-then this delta computed in the driver cannot be bigger than this period.
-
-Use this to detect real overflows.
-
-
-
-Signed-off-by: Fabian Inostroza <fabianinostrozap@gmail.com>
-
----
-
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 12 ++++++++----
-
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-
-
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-
-b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-
-index 0b7766b71..77d734731 100644
-
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-
-@@ -130,12 +130,16 @@ void peak_usb_get_ts_time(struct peak_time_ref
-
-*time_ref, u32 ts, ktime_t *time)
-
-     /* protect from getting time before setting now */
-
-     if (ktime_to_ns(time_ref->tv_host)) {
-
-         u64 delta_us;
-
-+        s64 delta =3D (s64)ts - (s64)time_ref->ts_dev_2;
-
-
-
--        delta_us =3D ts - time_ref->ts_dev_2;
-
--        if (ts < time_ref->ts_dev_2)
-
--            delta_us &=3D (1 << time_ref->adapter->ts_used_bits) - 1;
-
-+        if (delta < 0) {
-
-+            delta_us =3D delta &
-
-+                ((1 << time_ref->adapter->ts_used_bits) - 1);
-
-+            if (delta_us < time_ref->adapter->ts_period)
-
-+                delta =3D delta_us;
-
-+        }
-
-
-
--        delta_us +=3D time_ref->ts_total;
-
-+        delta_us =3D delta + time_ref->ts_total;
-
-
-
-         delta_us *=3D time_ref->adapter->us_per_ts_scale;
-
-         delta_us >>=3D time_ref->adapter->us_per_ts_shift;
-
---
-
-2.26.2
-
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt - HRB 9183
-Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
-Unsere Datenschutzerklaerung mit wichtigen Hinweisen
-zur Behandlung personenbezogener Daten finden Sie unter
-www.peak-system.com/Datenschutz.483.0.html
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20200507185118.GA14022@embeddedor>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
+
+
+
+On 2020-05-07 20:51, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>          int stuff;
+>          struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   include/linux/can/skb.h |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+> index a954def26c0d..900b9f4e0605 100644
+> --- a/include/linux/can/skb.h
+> +++ b/include/linux/can/skb.h
+> @@ -34,7 +34,7 @@
+>   struct can_skb_priv {
+>   	int ifindex;
+>   	int skbcnt;
+> -	struct can_frame cf[0];
+> +	struct can_frame cf[];
+>   };
+>   
+>   static inline struct can_skb_priv *can_skb_prv(struct sk_buff *skb)
+> 
+
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+
+@Gustavo: Just to be sure:
+
+ From the referenced URLs I got the information that the sizeof() 
+operator causes problems when applied to e.g. cf[0].
+
+We don't have this case in our code - but one question remains to me:
+
+We are using the above construct to ensure the padding between the two 
+'int' values and the struct can_frame which enforces a 64 bit alignment.
+
+This intention is not affected by the patch, right?
+
+Best,
+Oliver
