@@ -1,23 +1,34 @@
-From: foundation@mail.ac.gov.br
-Subject: Re: Reply Urgently
-Date: Wed, 13 May 2020 11:27:38 -0700
-Message-ID: <20200513182849.CA6E832A8932@srvifs070.ac.gov.br>
-Reply-To: richard.wahl9804@gmail.com
+From: pedro hills <abhay@dvp24.com>
+Subject: (DONATION) $2 Million Has Been Donated
+Date: Mon, 18 May 2020 12:03:47 +0100
+Message-ID: <48fae56db7d72b6c8944f63bdd887348__30879.7861727484$1589801122$gmane$org@dvp24.com>
+Reply-To: <pedrohills@outlook.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.ac.gov.br ([179.252.114.240]:44786 "EHLO
-        srvifs070.ac.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732218AbgEMS40 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 13 May 2020 14:56:26 -0400
-Content-Description: Mail message body
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbgERLZC (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 18 May 2020 07:25:02 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Recipients <foundation@mail.ac.gov.br>
 
-Richard Wahl is Donating $500,000.00 to you and your family contact email for more details richard.wahl9804@gmail.com
+
 
 -- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+$2 Million Has Been Donated To You,By PEDRO this is Real For More Info
+  Contact PEDRO immediately for your clame This Email:
+  pedrohills@outlook.es
+
+  Contact phone number +34632232897
+  Send Your Response To: pedrohills@outlook.es
+
+  2 Millionen US-Dollar wurden an Sie gespendet. Von PEDRO ist dies für
+weitere Informationen real
+  Wenden Sie sich umgehend an PEDRO. Diese E-Mail:
+  pedrohills@outlook.es
+
+  Kontakttelefonnummer +34632232897
+  Senden Sie Ihre Antwort an: pedrohills@outlook.es
