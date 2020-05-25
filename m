@@ -1,27 +1,44 @@
-From: mrs chantal <mrs.chantaltwo@gmail.com>
-Subject: jjCompliment
-Date: Sat, 23 May 2020 18:00:18 +0000
-Message-ID: <CAGVwK0UnqGdMqCxvjeR06i5Ca=SScOHB3E1kfQEUa4_tgZN-cQ__27399.0297968098$1590256851$gmane$org@mail.gmail.com>
-Reply-To: mrs.chantala2055@gmail.com
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH] can: flexcan: Fix runtime PM imbalance on error
+Date: Mon, 25 May 2020 01:36:18 +0000
+Message-ID: <DB8PR04MB679570CD8E04A213435330FFE6B30@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20200522094340.18059-1-dinghao.liu@zju.edu.cn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728150AbgEWSAU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 23 May 2020 14:00:20 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5398C08C5C5
-        for <linux-can@vger.kernel.org>; Sat, 23 May 2020 11:00:19 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id er16so6294467qvb.0
-        for <linux-can@vger.kernel.org>; Sat, 23 May 2020 11:00:19 -0700 (PDT)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200522094340.18059-1-dinghao.liu@zju.edu.cn>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Dinghao Liu <dinghao.liu@zju.edu.cn>, "kjlu@umn.edu" <kjlu@umn.edu>
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-Id: linux-can.vger.kernel.org
 
-     Compliment of the day to you. I am Mrs.CHANTAL I am sending this brief
-    letter to solicit your partnership to transfer $13.5 Million US
-    Dollars.I shall send you more information and procedures when I receive
-    positive response From you. Please send me a message in My private
-    email address is ( mrschantal066@gmail.com  )
-    Best Regards
-    MrS.Chantal
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IGxpbnV4LWNhbi1vd25lckB2
+Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LWNhbi1vd25lckB2Z2VyLmtlcm5lbC5vcmc+DQo+IE9uIEJl
+aGFsZiBPZiBEaW5naGFvIExpdQ0KPiBTZW50OiAyMDIwxOo11MIyMsjVIDE3OjQ0DQo+IFRvOiBk
+aW5naGFvLmxpdUB6anUuZWR1LmNuOyBramx1QHVtbi5lZHUNCj4gQ2M6IFdvbGZnYW5nIEdyYW5k
+ZWdnZXIgPHdnQGdyYW5kZWdnZXIuY29tPjsgTWFyYyBLbGVpbmUtQnVkZGUNCj4gPG1rbEBwZW5n
+dXRyb25peC5kZT47IERhdmlkIFMuIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IEpha3Vi
+DQo+IEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+OyBsaW51eC1jYW5Admdlci5rZXJuZWwub3Jn
+Ow0KPiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
+DQo+IFN1YmplY3Q6IFtQQVRDSF0gY2FuOiBmbGV4Y2FuOiBGaXggcnVudGltZSBQTSBpbWJhbGFu
+Y2Ugb24gZXJyb3INCj4gDQo+IFdoZW4gcmVnaXN0ZXJfZmxleGNhbmRldigpIHJldHVybnMgYW4g
+ZXJyb3IgY29kZSwgYSBwYWlyaW5nIHJ1bnRpbWUgUE0NCj4gdXNhZ2UgY291bnRlciBkZWNyZW1l
+bnQgaXMgbmVlZGVkIHRvIGtlZXAgdGhlIGNvdW50ZXIgYmFsYW5jZWQuDQo+IA0KPiBBbHNvLCBj
+YWxsIHBtX3J1bnRpbWVfZGlzYWJsZSgpIHdoZW4gcmVnaXN0ZXJfZmxleGNhbmRldigpIHJldHVy
+bnMgYW4gZXJyb3INCj4gY29kZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IERpbmdoYW8gTGl1IDxk
+aW5naGFvLmxpdUB6anUuZWR1LmNuPg0KDQpBIHBhdGNoIGhhcyBhbHJlYWR5IGJlZW4gc2VudCBv
+dXQgdG8gZml4IHRoaXMgaXNzdWU6DQpodHRwczovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9saW51
+eC1jYW4vbXNnMDMwNTIuaHRtbA0KDQpSZXZpZXdlZC1ieTogSm9ha2ltIFpoYW5nIDxxaWFuZ3Fp
+bmcuemhhbmdAbnhwLmNvbT4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IC0tLQ0K
+PiAgZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyB8IDIgKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAy
+IGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNh
+bi5jIGIvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYyBpbmRleA0KPiA5NGQxMGVjOTU0YTAuLmVh
+MTkzNDI2ZTVhZSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiAr
+KysgYi9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jDQo+IEBAIC0xNjY2LDYgKzE2NjYsOCBAQCBz
+dGF0aWMgaW50IGZsZXhjYW5fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQ0KPiAqcGRldikN
+Cj4gIAlyZXR1cm4gMDsNCj4gDQo+ICAgZmFpbGVkX3JlZ2lzdGVyOg0KPiArCXBtX3J1bnRpbWVf
+cHV0X25vaWRsZSgmcGRldi0+ZGV2KTsNCj4gKwlwbV9ydW50aW1lX2Rpc2FibGUoJnBkZXYtPmRl
+dik7DQo+ICAJZnJlZV9jYW5kZXYoZGV2KTsNCj4gIAlyZXR1cm4gZXJyOw0KPiAgfQ0KPiAtLQ0K
+PiAyLjE3LjENCg0K
