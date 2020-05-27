@@ -1,16 +1,16 @@
 From: "Mrs.Judith Rice" <hamurafujimi@tmail.plala.or.jp>
 Subject: Spende
-Date: Wed, 27 May 2020 22:10:56 +0900
-Message-ID: <20200527221056.JYBIZ.815.root__11478.7089916476$1590585244$gmane$org@mwebp13>
+Date: Wed, 27 May 2020 22:59:53 +0900
+Message-ID: <20200527225953.LM7D6.1032.root__42844.6705847577$1590588006$gmane$org@mwebp13>
 Reply-To: jonesevansje@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-2022-jp
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387722AbgE0NNu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 27 May 2020 09:13:50 -0400
+        with ESMTP id S2388899AbgE0N7y (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 27 May 2020 09:59:54 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 
@@ -31,3 +31,5 @@ Herkunftsland:
 
 Gr&#252;&#223;e,
 Mrs. Judith Rice
+
+Spende
