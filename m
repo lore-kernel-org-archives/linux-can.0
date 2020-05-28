@@ -1,99 +1,83 @@
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.6 44/47] net: Fix return value about
- devm_platform_ioremap_resource()
-Date: Thu, 28 May 2020 07:55:57 -0400
-Message-ID: <20200528115600.1405808-44-sashal@kernel.org>
-References: <20200528115600.1405808-1-sashal@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org>
-In-Reply-To: <20200528115600.1405808-1-sashal@kernel.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane-mx.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org, linux-can@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>, "David S . Miller" <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org
+From: Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH] can: mcp251x: add support for half duplex controllers
+Date: Thu, 28 May 2020 08:27:57 -0700
+Message-ID: <1590679677-2678-1-git-send-email-tharvey@gateworks.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: "David S . Miller" <davem@davemloft.net>, Sean Nyekjaer <sean@geanix.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, =?UTF-8?q?Timo=20Schl=C3=BC=C3=9Fler?= <schluessler@krause.de>, "Gustavo A . R . Silva" <gustavo@embeddedor.com>, Tim Harvey <tharvey@gateworks.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Some SPI host controllers do not support full-duplex SPI and are
+marked as such via the SPI_CONTROLLER_HALF_DUPLEX controller flag.
 
-[ Upstream commit ef24d6c3d6965158dfe23ae961d87e9a343e18a2 ]
+For such controllers use half duplex transactions but retain full
+duplex transactions for the controllers that can handle those.
 
-When call function devm_platform_ioremap_resource(), we should use IS_ERR()
-to check the return value and return PTR_ERR() if failed.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 ---
- drivers/net/can/ifi_canfd/ifi_canfd.c     | 5 ++++-
- drivers/net/can/sun4i_can.c               | 2 +-
- drivers/net/dsa/b53/b53_srab.c            | 2 +-
- drivers/net/ethernet/marvell/pxa168_eth.c | 2 +-
- 4 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/can/spi/mcp251x.c | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index 04d59bede5ea..74503cacf594 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -947,8 +947,11 @@ static int ifi_canfd_plat_probe(struct platform_device *pdev)
- 	u32 id, rev;
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index 5009ff2..203ef20 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -290,8 +290,12 @@ static u8 mcp251x_read_reg(struct spi_device *spi, u8 reg)
+ 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
+ 	priv->spi_tx_buf[1] = reg;
  
- 	addr = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(addr))
-+		return PTR_ERR(addr);
+-	mcp251x_spi_trans(spi, 3);
+-	val = priv->spi_rx_buf[2];
++	if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
++		spi_write_then_read(spi, priv->spi_tx_buf, 2, &val, 1);
++	} else {
++		mcp251x_spi_trans(spi, 3);
++		val = priv->spi_rx_buf[2];
++	}
+ 
+ 	return val;
+ }
+@@ -303,10 +307,18 @@ static void mcp251x_read_2regs(struct spi_device *spi, u8 reg, u8 *v1, u8 *v2)
+ 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
+ 	priv->spi_tx_buf[1] = reg;
+ 
+-	mcp251x_spi_trans(spi, 4);
++	if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
++		u8 val[2] = { 0 };
+ 
+-	*v1 = priv->spi_rx_buf[2];
+-	*v2 = priv->spi_rx_buf[3];
++		spi_write_then_read(spi, priv->spi_tx_buf, 2, val, 2);
++		*v1 = val[0];
++		*v2 = val[1];
++	} else {
++		mcp251x_spi_trans(spi, 4);
 +
- 	irq = platform_get_irq(pdev, 0);
--	if (IS_ERR(addr) || irq < 0)
-+	if (irq < 0)
- 		return -EINVAL;
++		*v1 = priv->spi_rx_buf[2];
++		*v2 = priv->spi_rx_buf[3];
++	}
+ }
  
- 	id = readl(addr + IFI_CANFD_IP_ID);
-diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-index e3ba8ab0cbf4..e2c6cf4b2228 100644
---- a/drivers/net/can/sun4i_can.c
-+++ b/drivers/net/can/sun4i_can.c
-@@ -792,7 +792,7 @@ static int sun4ican_probe(struct platform_device *pdev)
- 
- 	addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(addr)) {
--		err = -EBUSY;
-+		err = PTR_ERR(addr);
- 		goto exit;
+ static void mcp251x_write_reg(struct spi_device *spi, u8 reg, u8 val)
+@@ -409,8 +421,16 @@ static void mcp251x_hw_rx_frame(struct spi_device *spi, u8 *buf,
+ 			buf[i] = mcp251x_read_reg(spi, RXBCTRL(buf_idx) + i);
+ 	} else {
+ 		priv->spi_tx_buf[RXBCTRL_OFF] = INSTRUCTION_READ_RXB(buf_idx);
+-		mcp251x_spi_trans(spi, SPI_TRANSFER_BUF_LEN);
+-		memcpy(buf, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN);
++		if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
++			spi_write_then_read(spi, priv->spi_tx_buf, 1,
++					    priv->spi_rx_buf,
++					    SPI_TRANSFER_BUF_LEN);
++			memcpy(buf + 1, priv->spi_rx_buf,
++			       SPI_TRANSFER_BUF_LEN - 1);
++		} else {
++			mcp251x_spi_trans(spi, SPI_TRANSFER_BUF_LEN);
++			memcpy(buf, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN);
++		}
  	}
- 
-diff --git a/drivers/net/dsa/b53/b53_srab.c b/drivers/net/dsa/b53/b53_srab.c
-index 0a1be5259be0..38cd8285ac67 100644
---- a/drivers/net/dsa/b53/b53_srab.c
-+++ b/drivers/net/dsa/b53/b53_srab.c
-@@ -609,7 +609,7 @@ static int b53_srab_probe(struct platform_device *pdev)
- 
- 	priv->regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(priv->regs))
--		return -ENOMEM;
-+		return PTR_ERR(priv->regs);
- 
- 	dev = b53_switch_alloc(&pdev->dev, &b53_srab_ops, priv);
- 	if (!dev)
-diff --git a/drivers/net/ethernet/marvell/pxa168_eth.c b/drivers/net/ethernet/marvell/pxa168_eth.c
-index 7a0d785b826c..17243bb5ba91 100644
---- a/drivers/net/ethernet/marvell/pxa168_eth.c
-+++ b/drivers/net/ethernet/marvell/pxa168_eth.c
-@@ -1418,7 +1418,7 @@ static int pxa168_eth_probe(struct platform_device *pdev)
- 
- 	pep->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(pep->base)) {
--		err = -ENOMEM;
-+		err = PTR_ERR(pep->base);
- 		goto err_netdev;
- 	}
+ }
  
 -- 
-2.25.1
+2.7.4
