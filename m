@@ -1,63 +1,113 @@
-From: "Mrs.Susan Jones" <joneswife.susan@gmail.com>
-Subject: HELLO: I AM MRS SUSAN JONES
-Date: Wed, 3 Jun 2020 14:48:46 +0100
-Message-ID: <CALBhdBfusXWup1N4iFuTS3D1AZxWbZbTDS_qa-wA3FkbkE7MrQ__45135.8248641313$1591192167$gmane$org@mail.gmail.com>
-Reply-To: susanjones.wife@gmail.com
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] can: Replace zero-length array with flexible-array
+Date: Wed, 3 Jun 2020 19:58:35 -0500
+Message-ID: <73903bc6-afb7-f30e-28ef-065d41c6ace6@embeddedor.com>
+References: <20200507185118.GA14022@embeddedor>
+ <0420f571-2d6a-c830-2029-8da60e3c2094@hartkopp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgFCNst (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Jun 2020 09:48:49 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171E0C08C5CB
-        for <linux-can@vger.kernel.org>; Wed,  3 Jun 2020 06:48:49 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z206so1363649lfc.6
-        for <linux-can@vger.kernel.org>; Wed, 03 Jun 2020 06:48:48 -0700 (PDT)
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0420f571-2d6a-c830-2029-8da60e3c2094@hartkopp.net>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oliver Hartkopp <socketcan@hartkopp.net>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
--- 
-OUR GOLDEN OPPORTUNITY
+Hi Oliver,
 
-Hello Dear Friend,
+Sorry for the late reply. I totally lost track of this thread. :/
+Please, see my comments below...
 
-Complement of the day, i hope you are doing great today. However, I am
-Mrs.Susan Jones, an auditor with one of the new generation banks here
-in Burkina Faso.
+On 5/12/20 08:30, Oliver Hartkopp wrote:
+> 
+> 
+> On 2020-05-07 20:51, Gustavo A. R. Silva wrote:
+>> The current codebase makes use of the zero-length array language
+>> extension to the C90 standard, but the preferred mechanism to declare
+>> variable-length types such as these ones is a flexible array member[1][2],
+>> introduced in C99:
+>>
+>> struct foo {
+>>          int stuff;
+>>          struct boo array[];
+>> };
+>>
+>> By making use of the mechanism above, we will get a compiler warning
+>> in case the flexible array does not occur last in the structure, which
+>> will help us prevent some kind of undefined behavior bugs from being
+>> inadvertently introduced[3] to the codebase from now on.
+>>
+>> Also, notice that, dynamic memory allocations won't be affected by
+>> this change:
+>>
+>> "Flexible array members have incomplete type, and so the sizeof operator
+>> may not be applied. As a quirk of the original implementation of
+>> zero-length arrays, sizeof evaluates to zero."[1]
+>>
+>> sizeof(flexible-array-member) triggers a warning because flexible array
+>> members have incomplete type[1]. There are some instances of code in
+>> which the sizeof operator is being incorrectly/erroneously applied to
+>> zero-length arrays and the result is zero. Such instances may be hiding
+>> some bugs. So, this work (flexible-array member conversions) will also
+>> help to get completely rid of those sorts of issues.
+>>
+>> This issue was found with the help of Coccinelle.
+>>
+>> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+>> [2] https://github.com/KSPP/linux/issues/21
+>> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>   include/linux/can/skb.h |    2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+>> index a954def26c0d..900b9f4e0605 100644
+>> --- a/include/linux/can/skb.h
+>> +++ b/include/linux/can/skb.h
+>> @@ -34,7 +34,7 @@
+>>   struct can_skb_priv {
+>>       int ifindex;
+>>       int skbcnt;
+>> -    struct can_frame cf[0];
+>> +    struct can_frame cf[];
+>>   };
+>>     static inline struct can_skb_priv *can_skb_prv(struct sk_buff *skb)
+>>
+> 
+> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> 
+> @Gustavo: Just to be sure:
+> 
+> From the referenced URLs I got the information that the sizeof() operator causes problems when applied to e.g. cf[0].
+> 
+> We don't have this case in our code - but one question remains to me:
+> 
+> We are using the above construct to ensure the padding between the two 'int' values and the struct can_frame which enforces a 64 bit alignment.
+> 
+> This intention is not affected by the patch, right?
+> 
 
-I am writing you this letter based on the latest development at my
-Department. i discovered some abandoned huge amount of money, Ten
-Million, Five hundred thousand  United States Dollars.($10.500.000).
-Now I am only contacting you as a foreigner because this money cannot
-be approved to a local bank account here, but can only be approved to
-any foreign account and foreign beneficiary because the money is in US
-dollars
+pahole shows exactly the same output either if cf is a zero-length array or
+a flexible-array member:
 
-This will be  a legitimate transaction once you accept to build trust
-with me and follow simple instruction doing the transfer process,
-until the total sum transfer out of the bank here to your own bank
-account any where in the world, and I agreed to share the total money
-50/50 with you once you successful confirmed it in your bank account.
-But any expenses doing the transfer process will be deduct from the
-amount before sharing, If you are interested to work with me and
-provide a good receiving bank account, get back to me as soon as
-possible with the following details below.
+$ pahole -C 'can_skb_priv' drivers/net/can/dev.o
 
-Your full name
-Your Profession
-Your direct mobile phone number
-Your Scanned International passport or any of your identity
+struct can_skb_priv {
+	int                        ifindex;              /*     0     4 */
+	int                        skbcnt;               /*     4     4 */
+	struct can_frame           cf[] __attribute__((__aligned__(8))); /*     8     0 */
 
-NOTE: PLEASE IT YOU ARE NOT INTERESTED DON'T BORDER TO RESPOND BACK TO
-AVOID TIME WASTED.
+	/* size: 8, cachelines: 1, members: 3 */
+	/* forced alignments: 1 */
+	/* last cacheline: 8 bytes */
+} __attribute__((__aligned__(8)));
 
-As soon as I receive these data's, I will forward to you the
-application form which you will send to the bank for the claim and
-transfer of the fund into your bank account as the  new beneficial.
+So, it seems everything should fine. :)
 
-I am waiting to hear from you soon
-
-Yours
-Mrs.Susan Jones
+Thanks
+--
+Gustavo
