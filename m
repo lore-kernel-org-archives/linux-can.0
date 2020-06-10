@@ -1,103 +1,123 @@
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
-Date: Wed, 10 Jun 2020 13:14:36 +0530
-Message-ID: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 1/6] dt-bindings: can: Document devicetree bindings for MCP25XXFD
+Date: Wed, 10 Jun 2020 13:14:37 +0530
+Message-ID: <20200610074442.10808-2-manivannan.sadhasivam@linaro.org>
+References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726558AbgFJHo6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 10 Jun 2020 03:44:58 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A5AC03E96B
+        for <linux-can@vger.kernel.org>; Wed, 10 Jun 2020 00:44:58 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id e18so614147pgn.7
+        for <linux-can@vger.kernel.org>; Wed, 10 Jun 2020 00:44:58 -0700 (PDT)
+In-Reply-To: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: wg@grandegger.com, mkl@pengutronix.de
 Cc: kernel@martin.sperl.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-List-Id: linux-can.vger.kernel.org
 
-Hello,
+From: Martin Sperl <kernel@martin.sperl.org>
 
-This series adds CAN network driver support for Microchip MCP25XXFD CAN
-Controller with MCP2517FD as the target controller version. This series is
-mostly inspired (or taken) from the previous iterations posted by Martin Sperl.
-I've trimmed down the parts which are not necessary for the initial version
-to ease review. Still the series is relatively huge but I hope to get some
-reviews (post -rcX ofc!).
+Add devicetree YAML bindings for Microchip MCP25XXFD CAN controller.
 
-Link to the origial series posted by Martin:
-https://www.spinics.net/lists/devicetree/msg284462.html
-
-I've not changed the functionality much but done some considerable amount of
-cleanups and also preserved the authorship of Martin for all the patches he has
-posted earlier. This series has been tested on 96Boards RB3 platform by myself
-and Martin has tested the previous version on Rpi3 with external MCP2517FD
-controller.
-
-Thanks,
-Mani
-
-Manivannan Sadhasivam (1):
-  MAINTAINERS: Add entry for Microchip MCP25XXFD CAN network driver
-
-Martin Sperl (5):
-  dt-bindings: can: Document devicetree bindings for MCP25XXFD
-  can: mcp25xxfd: Add Microchip MCP25XXFD CAN-FD driver infrastructure
-  can: mcp25xxfd: Add support for CAN reception
-  can: mcp25xxfd: Add CAN transmission support
-  can: mcp25xxfd: Optimize TEF read by avoiding unnecessary SPI
-    transfers
-
- .../bindings/net/can/microchip,mcp25xxfd.yaml |  82 +++
- MAINTAINERS                                   |   8 +
- drivers/net/can/spi/Kconfig                   |   2 +
- drivers/net/can/spi/Makefile                  |   2 +
- drivers/net/can/spi/mcp25xxfd/Kconfig         |   5 +
- drivers/net/can/spi/mcp25xxfd/Makefile        |  11 +
- .../net/can/spi/mcp25xxfd/mcp25xxfd_base.c    | 177 +++++
- .../net/can/spi/mcp25xxfd/mcp25xxfd_base.h    |  14 +
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can.c | 538 ++++++++++++++
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can.h |  52 ++
- .../can/spi/mcp25xxfd/mcp25xxfd_can_fifo.c    | 305 ++++++++
- .../can/spi/mcp25xxfd/mcp25xxfd_can_fifo.h    |  16 +
- .../net/can/spi/mcp25xxfd/mcp25xxfd_can_id.h  |  69 ++
- .../net/can/spi/mcp25xxfd/mcp25xxfd_can_int.c | 674 ++++++++++++++++++
- .../net/can/spi/mcp25xxfd/mcp25xxfd_can_int.h |  18 +
- .../can/spi/mcp25xxfd/mcp25xxfd_can_priv.h    | 144 ++++
- .../net/can/spi/mcp25xxfd/mcp25xxfd_can_rx.c  | 233 ++++++
- .../net/can/spi/mcp25xxfd/mcp25xxfd_can_rx.h  |  18 +
- .../net/can/spi/mcp25xxfd/mcp25xxfd_can_tx.c  | 653 +++++++++++++++++
- .../net/can/spi/mcp25xxfd/mcp25xxfd_can_tx.h  |  86 +++
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_cmd.c | 226 ++++++
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_cmd.h |  84 +++
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_crc.c |  31 +
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_crc.h |  15 +
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_ecc.c |  74 ++
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_ecc.h |  16 +
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_int.c |  71 ++
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd_int.h |  15 +
- .../net/can/spi/mcp25xxfd/mcp25xxfd_priv.h    |  50 ++
- .../net/can/spi/mcp25xxfd/mcp25xxfd_regs.h    | 661 +++++++++++++++++
- 30 files changed, 4350 insertions(+)
+Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
+[mani: converted to YAML binding]
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ .../bindings/net/can/microchip,mcp25xxfd.yaml | 82 +++++++++++++++++++
+ 1 file changed, 82 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
- create mode 100644 drivers/net/can/spi/mcp25xxfd/Kconfig
- create mode 100644 drivers/net/can/spi/mcp25xxfd/Makefile
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_base.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_base.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_fifo.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_fifo.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_id.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_int.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_int.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_priv.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_rx.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_rx.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_tx.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_tx.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_cmd.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_cmd.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_crc.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_crc.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_ecc.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_ecc.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_int.c
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_int.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_priv.h
- create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_regs.h
 
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+new file mode 100644
+index 000000000000..7b87ec328515
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+@@ -0,0 +1,82 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/microchip,mcp25xxfd.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip MCP25XXFD stand-alone CAN controller binding
++
++maintainers:
++  -  Martin Sperl <kernel@martin.sperl.org>
++  -  Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
++
++properties:
++  compatible:
++    const: microchip,mcp2517fd
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    const: 2
++
++  vdd-supply:
++    description: Regulator that powers the CAN controller
++
++  xceiver-supply:
++    description: Regulator that powers the CAN transceiver
++
++  microchip,clock-out-div:
++    description: Clock output pin divider
++    allOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0, 1, 2, 4, 10]
++    default: 10
++
++  microchip,clock-div2:
++    description: Divide the internal clock by 2
++    type: boolean
++
++  microchip,gpio-open-drain:
++    description: Enable open-drain for all pins
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - interrupts
++  - gpio-controller
++  - vdd-supply
++  - xceiver-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    spi {
++           #address-cells = <1>;
++           #size-cells = <0>;
++
++           can0: can@1 {
++                   compatible = "microchip,mcp2517fd";
++                   reg = <1>;
++                   clocks = <&clk24m>;
++                   interrupt-parent = <&gpio4>;
++                   interrupts = <13 0x8>;
++                   vdd-supply = <&reg5v0>;
++                   xceiver-supply = <&reg5v0>;
++                   gpio-controller;
++                   #gpio-cells = <2>;
++           };
++    };
++
++...
 -- 
 2.17.1
