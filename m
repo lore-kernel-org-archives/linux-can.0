@@ -1,175 +1,103 @@
-From: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH] can: m_can_platform: fix m_can_runtime_suspend()
-Date: Tue, 9 Jun 2020 10:47:52 +0200
-Message-ID: <d7f024a4-f2d0-8045-dfd2-d1f89e4789c8@sorico.fr>
-References: <20200608094348.12650-1-richard.genoud@gmail.com>
- <b9510aa6-d865-7c4f-6730-dcd207bdb753@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
+Date: Wed, 10 Jun 2020 13:14:36 +0530
+Message-ID: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <b9510aa6-d865-7c4f-6730-dcd207bdb753@ti.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>, Richard Genoud <richard.genoud@gmail.com>, Sriram Dash <sriram.dash@samsung.com>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Faiz Abbas <faiz_abbas@ti.com>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+To: wg@grandegger.com, mkl@pengutronix.de
+Cc: kernel@martin.sperl.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 List-Id: linux-can.vger.kernel.org
 
-Hi Dan,
+Hello,
 
-Le 08/06/2020 à 16:27, Dan Murphy a écrit :
-> Richard
-> 
-> On 6/8/20 4:43 AM, Richard Genoud wrote:
->> Since commit f524f829b75a ("can: m_can: Create a m_can platform
->> framework"), the can peripheral on STM32MP1 wasn't working anymore.
->>
->> The reason was a bad copy/paste maneuver that added a call to
->> m_can_class_suspend() in m_can_runtime_suspend().
-> 
-> Are you sure it was a copy paste error?
-> 
-> Probably don't want to have an unfounded cause unless you know for 
-> certain it was this.
-I understand.
+This series adds CAN network driver support for Microchip MCP25XXFD CAN
+Controller with MCP2517FD as the target controller version. This series is
+mostly inspired (or taken) from the previous iterations posted by Martin Sperl.
+I've trimmed down the parts which are not necessary for the initial version
+to ease review. Still the series is relatively huge but I hope to get some
+reviews (post -rcX ofc!).
 
-What makes me think it was a copy-paste error is that the primary goal 
-of the patch series "M_CAN Framework" was to introduce the tcan4x5x 
-driver into the kernel.
-For that, the code has to be split into a re-usable code (m_can.c) and a 
-platform code m_can_platform.c
-And finally, tcan4x5x.c can be added.
-(I'm sure you already know that since you write the patch, it's just to 
-be sure that we are on the same page :))
+Link to the origial series posted by Martin:
+https://www.spinics.net/lists/devicetree/msg284462.html
 
-So, when splitting the m_can code into m_can.c and m_can_platform.c, 
-there was no reason to change the behavior, even less reason to change 
-the behavior in m_can_platform.c, since the main target was tcan4x5x.
-(And the behavior changed because the CAN peripheral on the STM32MP1 was 
-working before this patch, and not after).
+I've not changed the functionality much but done some considerable amount of
+cleanups and also preserved the authorship of Martin for all the patches he has
+posted earlier. This series has been tested on 96Boards RB3 platform by myself
+and Martin has tested the previous version on Rpi3 with external MCP2517FD
+controller.
 
-So I went digging into that and I realized that before this patch, 
-runtime suspend function was in m_can.c:
-static int __maybe_unused m_can_runtime_suspend(struct device *dev)
-{
-	struct net_device *ndev = dev_get_drvdata(dev);
-	struct m_can_priv *priv = netdev_priv(ndev);
+Thanks,
+Mani
 
-	clk_disable_unprepare(priv->cclk);
-	clk_disable_unprepare(priv->hclk);
+Manivannan Sadhasivam (1):
+  MAINTAINERS: Add entry for Microchip MCP25XXFD CAN network driver
 
-	return 0;
-}
+Martin Sperl (5):
+  dt-bindings: can: Document devicetree bindings for MCP25XXFD
+  can: mcp25xxfd: Add Microchip MCP25XXFD CAN-FD driver infrastructure
+  can: mcp25xxfd: Add support for CAN reception
+  can: mcp25xxfd: Add CAN transmission support
+  can: mcp25xxfd: Optimize TEF read by avoiding unnecessary SPI
+    transfers
 
-And after, in m_can_platform.c:
-static int __maybe_unused m_can_runtime_suspend(struct device *dev)
-{
-	struct net_device *ndev = dev_get_drvdata(dev);
-	struct m_can_priv *mcan_class = netdev_priv(ndev);
+ .../bindings/net/can/microchip,mcp25xxfd.yaml |  82 +++
+ MAINTAINERS                                   |   8 +
+ drivers/net/can/spi/Kconfig                   |   2 +
+ drivers/net/can/spi/Makefile                  |   2 +
+ drivers/net/can/spi/mcp25xxfd/Kconfig         |   5 +
+ drivers/net/can/spi/mcp25xxfd/Makefile        |  11 +
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_base.c    | 177 +++++
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_base.h    |  14 +
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can.c | 538 ++++++++++++++
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can.h |  52 ++
+ .../can/spi/mcp25xxfd/mcp25xxfd_can_fifo.c    | 305 ++++++++
+ .../can/spi/mcp25xxfd/mcp25xxfd_can_fifo.h    |  16 +
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_can_id.h  |  69 ++
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_can_int.c | 674 ++++++++++++++++++
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_can_int.h |  18 +
+ .../can/spi/mcp25xxfd/mcp25xxfd_can_priv.h    | 144 ++++
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_can_rx.c  | 233 ++++++
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_can_rx.h  |  18 +
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_can_tx.c  | 653 +++++++++++++++++
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_can_tx.h  |  86 +++
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_cmd.c | 226 ++++++
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_cmd.h |  84 +++
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_crc.c |  31 +
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_crc.h |  15 +
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_ecc.c |  74 ++
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_ecc.h |  16 +
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_int.c |  71 ++
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd_int.h |  15 +
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_priv.h    |  50 ++
+ .../net/can/spi/mcp25xxfd/mcp25xxfd_regs.h    | 661 +++++++++++++++++
+ 30 files changed, 4350 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/Kconfig
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/Makefile
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_base.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_base.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_fifo.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_fifo.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_id.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_int.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_int.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_priv.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_rx.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_rx.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_tx.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_can_tx.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_cmd.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_cmd.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_crc.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_crc.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_ecc.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_ecc.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_int.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_int.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_priv.h
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd_regs.h
 
-	m_can_class_suspend(dev);
-
-	clk_disable_unprepare(mcan_class->cclk);
-	clk_disable_unprepare(mcan_class->hclk);
-
-	return 0;
-}
-
-Same for runtime resume,
-Before:
-static int __maybe_unused m_can_runtime_resume(struct device *dev)
-{
-	struct net_device *ndev = dev_get_drvdata(dev);
-	struct m_can_priv *priv = netdev_priv(ndev);
-	int err;
-
-	err = clk_prepare_enable(priv->hclk);
-	if (err)
-		return err;
-
-	err = clk_prepare_enable(priv->cclk);
-	if (err)
-		clk_disable_unprepare(priv->hclk);
-
-	return err;
-}
-
-After:
-static int __maybe_unused m_can_runtime_resume(struct device *dev)
-{
-	struct net_device *ndev = dev_get_drvdata(dev);
-	struct m_can_priv *mcan_class = netdev_priv(ndev);
-	int err;
-
-	err = clk_prepare_enable(mcan_class->hclk);
-	if (err)
-		return err;
-
-	err = clk_prepare_enable(mcan_class->cclk);
-	if (err)
-		clk_disable_unprepare(mcan_class->hclk);
-
-	m_can_class_resume(dev);
-
-	return err;
-}
-
-Now, the m_class_resume() call has been removed by commit 0704c5743694 
-("can: m_can_platform: remove unnecessary m_can_class_resume() call")
-cf https://lkml.org/lkml/2019/11/19/965
-
-Then only the m_can_class_suspend() call is left alone. If I remove it, 
-the stm32mp1 peripheral works as before the patch. (and the code is 
-symmetrical again :))
-
-I read all the iterations I could find about this patch (see note 1), 
-and I didn't found any comment on the addition of 
-m_can_class_{resume,suspend}() calls.
-
-But I found this in v3 cover letter:
-"The m_can platform code will need to be updated as I have not tested 
-this code."
-and in v3 1/4 comments:
-"This patch set is working for the TCAN and at least boots on io-mapped 
-devices."
-
-For me, that means that the code in m_can_platform.c was written with 
-this sentence in mind :
-"I can test everything but this, so let's try not to break things in 
-there, keep the changes at a minimum"
-And that was really the case for all the file, but the 2 calls to 
-m_can_class_{resume,suspend}().
-
-So that's why I have a pretty good confidence in the fact that it was a 
-copy-paste error.
-
-And, moreover, if m_can_class_suspend() is called, the CAN device is 
-stopped, and all interrupts are disabled (in m_can_stop()), so the 
-device can not wake-up by itself (and thus not working anymore).
-
-
-All this make me think that maybe I should send a v2 of this patch with 
-a bigger commit message.
-What do you think ?
-
-
-Thanks !
-
-Richard.
-
-
-> 
-> Dan
-> 
-> 
-
-Note 1: patches v3 to v12 (missing v11)
-https://lwn.net/ml/linux-kernel/20190111173236.14329-1-dmurphy@ti.com/
-https://lore.kernel.org/patchwork/patch/1033094/
-https://lore.kernel.org/patchwork/cover/1042441/
-https://lore.kernel.org/patchwork/patch/1047220/
-https://lore.kernel.org/patchwork/patch/1047980/
-https://lkml.org/lkml/2019/3/12/362
-https://lkml.org/lkml/2019/3/13/512
-https://www.spinics.net/lists/netdev/msg557961.html
-https://lore.kernel.org/patchwork/patch/1071894/
+-- 
+2.17.1
