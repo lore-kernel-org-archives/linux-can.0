@@ -1,10 +1,9 @@
 From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Subject: Re: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
  disabled
-Date: Fri, 12 Jun 2020 09:10:44 +0200
-Message-ID: <20200612071044.GA25294@x1.vandijck-laurijssen.be>
-References: <20200326104318.15086-1-felix.riemann@sma.de>
- <20200326134015.GC27785@x1.vandijck-laurijssen.be>
+Date: Fri, 12 Jun 2020 09:42:53 +0200
+Message-ID: <20200612074253.GB25294@x1.vandijck-laurijssen.be>
+References: <20200326134015.GC27785@x1.vandijck-laurijssen.be>
  <AM0PR04MB5427D3BF64C3D3DA3961920488CF0@AM0PR04MB5427.eurprd04.prod.outlook.com>
  <20200326193837.GF760@x1.vandijck-laurijssen.be>
  <AM0PR04MB542742337A89900E12A8732288CC0@AM0PR04MB5427.eurprd04.prod.outlook.com>
@@ -13,67 +12,76 @@ References: <20200326104318.15086-1-felix.riemann@sma.de>
  <20200429084733.GA27733@x1.vandijck-laurijssen.be>
  <20200429090618.GB27733@x1.vandijck-laurijssen.be>
  <AM0PR04MB6273640802E04C4009CE5BC588830@AM0PR04MB6273.eurprd04.prod.outlook.com>
+ <20200612071044.GA25294@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b01.edpnet.be ([212.71.1.221]:33776 "EHLO
+Received: from relay-b01.edpnet.be ([212.71.1.221]:39081 "EHLO
         relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgFLHad (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 12 Jun 2020 03:30:33 -0400
+        with ESMTP id S1726292AbgFLHnj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 12 Jun 2020 03:43:39 -0400
 Content-Disposition: inline
-In-Reply-To: <AM0PR04MB6273640802E04C4009CE5BC588830@AM0PR04MB6273.eurprd04.prod.outlook.com>
+In-Reply-To: <20200612071044.GA25294@x1.vandijck-laurijssen.be>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Felix Riemann <Felix.Riemann@sma.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andre Kalb <Andre.Kalb@sma.de>
+To: Felix Riemann <Felix.Riemann@sma.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andre Kalb <Andre.Kalb@sma.de>
 
-Thanks for verifying,
+Hi Felix,
 
-I'll take a look how that can happen.
+Next question comes up.
+See inline.
 
-I think packet loss is better (less packets lost) than before.
+On vr, 12 jun 2020 09:10:44 +0200, Kurt Van Dijck wrote:
+> Thanks for verifying,
+> 
+> I'll take a look how that can happen.
+> 
+> I think packet loss is better (less packets lost) than before.
+> 
+> Kurt
+> 
+> On wo, 10 jun 2020 08:08:28 +0000, Felix Riemann wrote:
+> > Hi Kurt,
+> > 
+> > > -----Original Message-----
+> > >
+> > > I have the impression that the recv path is covered, at least the null ptr would
+> > > have caused issued earlier already.
+> > > Would the problem arise in c_can_do_tx fetching a NULL echo_skb?
+> > 
+> > It really looks like it.
+> > 
+> > Adding a BUG_ON to the loop in c_can_do_tx triggers with a NULL skb returned by __can_get_echo_skb().
+> > 
+> > For testing I replaced the BUG_ON with a check that skips the skb if that happens (not sure if that would be a valid fix in that place):
+> > 
+> > while ((obj = c_can_ffs64(pend))) {
+> > pend &= ~((u64)1 << (obj - 1));
+> > c_can_inval_tx_object(dev, IF_RX, obj);
+> > idx = obj - priv->obj.send_frst;
+> > skb = __can_get_echo_skb(dev, idx, &len);
+> > if(!skb)
 
-Kurt
+It would be interesting to know idx and priv->tx_active here.
 
-On wo, 10 jun 2020 08:08:28 +0000, Felix Riemann wrote:
-> Hi Kurt,
-> 
-> > -----Original Message-----
-> >
-> > I have the impression that the recv path is covered, at least the null ptr would
-> > have caused issued earlier already.
-> > Would the problem arise in c_can_do_tx fetching a NULL echo_skb?
-> 
-> It really looks like it.
-> 
-> Adding a BUG_ON to the loop in c_can_do_tx triggers with a NULL skb returned by __can_get_echo_skb().
-> 
-> For testing I replaced the BUG_ON with a check that skips the skb if that happens (not sure if that would be a valid fix in that place):
-> 
-> while ((obj = c_can_ffs64(pend))) {
-> pend &= ~((u64)1 << (obj - 1));
-> c_can_inval_tx_object(dev, IF_RX, obj);
-> idx = obj - priv->obj.send_frst;
-> skb = __can_get_echo_skb(dev, idx, &len);
-> if(!skb)
-> continue;
-> can_rx_offload_irq_receive_skb(&priv->offload, skb);
-> bytes += len;
-> pkts++;
-> }
-> 
-> So far it got through the night without crashing or deadlocking, but I can't really tell if we are missing pakets though.
-> 
-> Regards,
-> 
-> Felix
-> ___________________________________________________
-> 
-> SMA Solar Technology AG
-> Aufsichtsrat: Uwe Kleinkauf (Vorsitzender)
-> Vorstand: Ulrich Hadding, Dr.-Ing. Juergen Reinert
-> Handelsregister: Amtsgericht Kassel HRB 3972
-> Sitz der Gesellschaft: 34266 Niestetal
-> USt-ID-Nr. DE 113 08 59 54
-> WEEE-Reg.-Nr. DE 95881150
-> ___________________________________________________
+> > continue;
+> > can_rx_offload_irq_receive_skb(&priv->offload, skb);
+> > bytes += len;
+> > pkts++;
+> > }
+> > 
+> > So far it got through the night without crashing or deadlocking, but I can't really tell if we are missing pakets though.
+> > 
+> > Regards,
+> > 
+> > Felix
+> > ___________________________________________________
+> > 
+> > SMA Solar Technology AG
+> > Aufsichtsrat: Uwe Kleinkauf (Vorsitzender)
+> > Vorstand: Ulrich Hadding, Dr.-Ing. Juergen Reinert
+> > Handelsregister: Amtsgericht Kassel HRB 3972
+> > Sitz der Gesellschaft: 34266 Niestetal
+> > USt-ID-Nr. DE 113 08 59 54
+> > WEEE-Reg.-Nr. DE 95881150
+> > ___________________________________________________
