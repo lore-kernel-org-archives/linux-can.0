@@ -1,66 +1,49 @@
-From: Drew Fustini <drew@beagleboard.org>
+From: Patrick Menschel <menschel.p@posteo.de>
 Subject: Re: isotp in mainline?
-Date: Fri, 12 Jun 2020 17:36:41 +0200
-Message-ID: <20200612153641.GA3433528@x1>
+Date: Fri, 12 Jun 2020 22:00:01 +0200
+Message-ID: <01ce3f69-3bae-4369-3fda-92c016a71251@posteo.de>
 References: <20200611154337.GA3166627@x1>
  <9d3bcfde-68f3-c9e0-4c63-cbae61915585@posteo.de>
+ <20200612153641.GA3433528@x1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgFLPgr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 12 Jun 2020 11:36:47 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D380DC03E96F
-        for <linux-can@vger.kernel.org>; Fri, 12 Jun 2020 08:36:45 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id j10so10179539wrw.8
-        for <linux-can@vger.kernel.org>; Fri, 12 Jun 2020 08:36:45 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <9d3bcfde-68f3-c9e0-4c63-cbae61915585@posteo.de>
+Received: from mout02.posteo.de ([185.67.36.66]:52101 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726268AbgFLUAF (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 12 Jun 2020 16:00:05 -0400
+Received: from submission (posteo.de [89.146.220.130])
+        by mout02.posteo.de (Postfix) with ESMTPS id 3D8812400FC
+        for <linux-can@vger.kernel.org>; Fri, 12 Jun 2020 22:00:02 +0200 (CEST)
+In-Reply-To: <20200612153641.GA3433528@x1>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Patrick Menschel <menschel.p@posteo.de>
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>
+To: Drew Fustini <drew@beagleboard.org>
+Cc: linux-can@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 03:47:45PM +0200, Patrick Menschel wrote:
-> Hi Drew,
+> Maybe it was just to a test to see if the the protocol type existed?
 > 
-> > Is there a current effort to get the isotp driver accepted into mainline?
+> It does look like the protocol is defined in include/uapi/linux/can.h:
 > 
-> I believe ISOTP has been mainline for quite a while.
+> #define CAN_ISOTP	6 /* ISO 15765-2 Transport Protocol */
 > 
-> I remember writing a test script when Python 3.7 came out in Aug 2018
-> and added the isotp socket type to socket class [1].
+> However, there does not appear to be any implementation in the mainline
+> kernel.
 > 
-> I tested on a X86_64 machine with Ubuntu 18.04 LTS, so it must have been
-> mainline at that time.
-> 
-> Regards,
-> Patrick
-> 
-> [1]
-> https://docs.python.org/3.7/library/socket.html?highlight=socket#socket.CAN_ISOTP
->
+> I recall Oliver mentioning that he should try to mainline isotp modules
+> at the end of the J1939 talk at ELC-E last October [1]. I don't see any
+> posts regarding isotp in the linux-can archives since then, so I thought
+> I would bring it up.
 
-Hi Patrick,
+Hi,
 
-Maybe it was just to a test to see if the the protocol type existed?
+you're perfectly right. I just tested that script on a fresh ubuntu
+20.04 install and it turns out, isotp-module is missing.
 
-It does look like the protocol is defined in include/uapi/linux/can.h:
+"OSError: [Errno 93] Protocol not supported"
 
-#define CAN_ISOTP	6 /* ISO 15765-2 Transport Protocol */
+I must have compiled it by hand back then.
 
-However, there does not appear to be any implementation in the mainline
-kernel.
-
-I recall Oliver mentioning that he should try to mainline isotp modules
-at the end of the J1939 talk at ELC-E last October [1]. I don't see any
-posts regarding isotp in the linux-can archives since then, so I thought
-I would bring it up.
-
-Thanks,
-Drew
-
-[0] https://elixir.bootlin.com/linux/v5.7/source/include/uapi/linux/can.h#L159
-[1] https://youtu.be/3NfN8B4-w8w?t=2052
+--Patrick
