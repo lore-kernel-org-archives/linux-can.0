@@ -1,44 +1,79 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
-Date: Thu, 11 Jun 2020 22:30:22 +0200
-Message-ID: <ed3f66c0-28e5-9bfc-729b-457d564638f9@pengutronix.de>
-References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
- <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
+ disabled
+Date: Fri, 12 Jun 2020 09:10:44 +0200
+Message-ID: <20200612071044.GA25294@x1.vandijck-laurijssen.be>
+References: <20200326104318.15086-1-felix.riemann@sma.de>
+ <20200326134015.GC27785@x1.vandijck-laurijssen.be>
+ <AM0PR04MB5427D3BF64C3D3DA3961920488CF0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+ <20200326193837.GF760@x1.vandijck-laurijssen.be>
+ <AM0PR04MB542742337A89900E12A8732288CC0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+ <20200330070203.GE22500@x1.vandijck-laurijssen.be>
+ <AM0PR04MB54271EA5CC205263750BDBD288CB0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+ <20200429084733.GA27733@x1.vandijck-laurijssen.be>
+ <20200429090618.GB27733@x1.vandijck-laurijssen.be>
+ <AM0PR04MB6273640802E04C4009CE5BC588830@AM0PR04MB6273.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
-Content-Language: de-DE
-Sender: linux-kernel-owner@vger.kernel.org
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, wg@grandegger.com
-Cc: kernel@martin.sperl.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from relay-b01.edpnet.be ([212.71.1.221]:33776 "EHLO
+        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726491AbgFLHad (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 12 Jun 2020 03:30:33 -0400
+Content-Disposition: inline
+In-Reply-To: <AM0PR04MB6273640802E04C4009CE5BC588830@AM0PR04MB6273.eurprd04.prod.outlook.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Felix Riemann <Felix.Riemann@sma.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andre Kalb <Andre.Kalb@sma.de>
 
-On 6/11/20 6:26 PM, Marc Kleine-Budde wrote:
-> I initially started looking at Martin's driver and it was not using several
-> modern CAN driver infrastructures. I then posted some cleanup patches but Martin
-> was not working on the driver any more. Then I decided to rewrite the driver,
-> that is the one I'm hoping to mainline soon.
+Thanks for verifying,
 
-Seems the driver still suffers from the same problems the last time I looked at it:
+I'll take a look how that can happen.
 
-I'm on a raspi4 with a mcp2518fd connected to spi0 cs0 and cs1.
+I think packet loss is better (less packets lost) than before.
 
-Running a canfdtest -vg can0; canfdtest -v can1. It  runs into this problem on a
-unloaded system and scaling_governor=performance  within minutes:
+Kurt
 
-> Jun 11 21:27:08 rpi4 kernel: mcp25xxfd spi0.0 can1: Something is wrong - we got a TEF interrupt but we were not able to detect a finished fifo
-> Jun 11 21:27:08 rpi4 kernel: mcp25xxfd spi0.0 can1: Something is wrong - we got a TEF interrupt but we were not able to detect a finished fifo
-> Jun 11 21:27:08 rpi4 kernel: mcp25xxfd spi0.0 can1: tefif: fifo 6 not pending - tef data: id: 00000078 flags: 00000c08, ts: 0addbed3 - this may be a problem with spi signal quality- try reducing spi-clock speed if this can get reproduced
-> Jun 11 21:27:08 rpi4 kernel: mcp25xxfd spi0.0 can1: tefif: fifo 7 not pending - tef data: id: 00000078 flags: 00000e08, ts: 0addc2e5 - this may be a problem with spi signal quality- try reducing spi-clock speed if this can get reproduced
-> Jun 11 21:27:08 rpi4 kernel: mcp25xxfd spi0.0 can1: tefif: fifo 1 not pending - tef data: id: 00000078 flags: 00000208, ts: 0addc701 - this may be a problem with spi signal quality- try reducing spi-clock speed if this can get reproduced
-> Jun 11 21:27:08 rpi4 kernel: mcp25xxfd spi0.0 can1: tefif: fifo 2 not pending - tef data: id: 00000078 flags: 00000408, ts: 0addcb1b - this may be a problem with spi signal quality- try reducing spi-clock speed if this can get reproduced
-
-Marc
-
--- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+On wo, 10 jun 2020 08:08:28 +0000, Felix Riemann wrote:
+> Hi Kurt,
+> 
+> > -----Original Message-----
+> >
+> > I have the impression that the recv path is covered, at least the null ptr would
+> > have caused issued earlier already.
+> > Would the problem arise in c_can_do_tx fetching a NULL echo_skb?
+> 
+> It really looks like it.
+> 
+> Adding a BUG_ON to the loop in c_can_do_tx triggers with a NULL skb returned by __can_get_echo_skb().
+> 
+> For testing I replaced the BUG_ON with a check that skips the skb if that happens (not sure if that would be a valid fix in that place):
+> 
+> while ((obj = c_can_ffs64(pend))) {
+> pend &= ~((u64)1 << (obj - 1));
+> c_can_inval_tx_object(dev, IF_RX, obj);
+> idx = obj - priv->obj.send_frst;
+> skb = __can_get_echo_skb(dev, idx, &len);
+> if(!skb)
+> continue;
+> can_rx_offload_irq_receive_skb(&priv->offload, skb);
+> bytes += len;
+> pkts++;
+> }
+> 
+> So far it got through the night without crashing or deadlocking, but I can't really tell if we are missing pakets though.
+> 
+> Regards,
+> 
+> Felix
+> ___________________________________________________
+> 
+> SMA Solar Technology AG
+> Aufsichtsrat: Uwe Kleinkauf (Vorsitzender)
+> Vorstand: Ulrich Hadding, Dr.-Ing. Juergen Reinert
+> Handelsregister: Amtsgericht Kassel HRB 3972
+> Sitz der Gesellschaft: 34266 Niestetal
+> USt-ID-Nr. DE 113 08 59 54
+> WEEE-Reg.-Nr. DE 95881150
+> ___________________________________________________
