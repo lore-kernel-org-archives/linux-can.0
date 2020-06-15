@@ -1,74 +1,107 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: j1939: root requirements for messages with the priorities 0 & 1
-Date: Mon, 15 Jun 2020 09:42:57 +0200
-Message-ID: <20200615074257.GA15385@x1.vandijck-laurijssen.be>
-References: <20190625173137.GB8923@x1.vandijck-laurijssen.be>
- <20190626091524.40410c4b@erd988>
- <20190626130012.GC8923@x1.vandijck-laurijssen.be>
- <20190626160238.5d62fc15@erd988>
- <20190627093353.GA693@x1.vandijck-laurijssen.be>
- <20190627105901.GA24805@pengutronix.de>
- <20190627140849.39916a65@erd988>
- <20190722091328.GA24349@pengutronix.de>
- <20190722133723.GA17189@pengutronix.de>
- <20200612100320.u7tixjjcb2dxmo4d@pengutronix.de>
+From: Felix Riemann <Felix.Riemann@sma.de>
+Subject: RE: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
+ disabled
+Date: Mon, 15 Jun 2020 11:11:17 +0000
+Message-ID: <AM0PR04MB62731627E4FC7368DB5051D4889C0@AM0PR04MB6273.eurprd04.prod.outlook.com>
+References: <20200326134015.GC27785@x1.vandijck-laurijssen.be>
+ <AM0PR04MB5427D3BF64C3D3DA3961920488CF0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+ <20200326193837.GF760@x1.vandijck-laurijssen.be>
+ <AM0PR04MB542742337A89900E12A8732288CC0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+ <20200330070203.GE22500@x1.vandijck-laurijssen.be>
+ <AM0PR04MB54271EA5CC205263750BDBD288CB0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+ <20200429084733.GA27733@x1.vandijck-laurijssen.be>
+ <20200429090618.GB27733@x1.vandijck-laurijssen.be>
+ <AM0PR04MB6273640802E04C4009CE5BC588830@AM0PR04MB6273.eurprd04.prod.outlook.com>
+ <20200612071044.GA25294@x1.vandijck-laurijssen.be>
+ <20200612074253.GB25294@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b02.edpnet.be ([212.71.1.222]:47165 "EHLO
-        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728260AbgFOHnK (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Jun 2020 03:43:10 -0400
-Content-Disposition: inline
-In-Reply-To: <20200612100320.u7tixjjcb2dxmo4d@pengutronix.de>
+Received: from mail-eopbgr140115.outbound.protection.outlook.com ([40.107.14.115]:52550
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728285AbgFOLLW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 15 Jun 2020 07:11:22 -0400
+In-Reply-To: <20200612074253.GB25294@x1.vandijck-laurijssen.be>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: David Jander <david@protonic.nl>, robin@protonic.nl, linux-can@vger.kernel.org, mkl@pengutronix.de, kernel@pengutronix.de
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andre Kalb <Andre.Kalb@sma.de>
 
-On vr, 12 jun 2020 12:03:20 +0200, Oleksij Rempel wrote:
-> Hello all,
-> 
-> We have following issues reported on can-utils:
-> https://github.com/linux-can/can-utils/issues/217
-> ===============================================================================
-> This is a follow-up of the issue #159 .
-> 
-> When testing the priorities, I noticed, that for the priorities 0 and 1,
-> the message occurs, that setting the priority is not permitted:
-> 
->   ./testj1939 -B -s -p3 vcan0:0x80 :,0x0200
-> 
-> Works ok.
-> 
->   ./testj1939 -B -s -p1 vcan0:0x80 :,0x0200
->   testj1939: set priority 1: Operation not permitted
-> 
->   ./testj1939 -B -s -p0 vcan0:0x80 :,0x0200
->    testj1939: set priority 0: Operation not permitted
-> 
-> I am not aware that the priorities 0 & 1 are not permitted.
-> 
-> > Originally posted by @marckleinebudde in #159 (comment):
-> > Priorities 0 and 1 are only permitted for root or users with
-> > capable(CAP_NET_ADMIN), see:
-> 
-> > https://elixir.bootlin.com/linux/latest/source/net/can/j1939/socket.c#L705
-> 
-> > I think this limit is arbitrary and we can discuss if
-> > this makes sense at all or add this to the
-> > documentation.
-
-If I remember well, there is a similar restriction for ethernet or IP
-priorities.
-It's true that this limit is arbritrary.
-It's based on me never having seen intended prio 0 or 1 messages on a bus,
-but only as a result of 'we forgot to set the priority'.
-
-The goal is to avoid people using 0 as a default without further attention.
-I think that this could be replaced by some kind of setsockopt call,
-that sets the highest allowed priority, without ever requiring root.
-The initial default would then be 2 (or any other value, but 2 seems
-feasible to me).
-
-Kurt
+SGkgS3VydCwNCg0Kc2VlIGJlbG93Lg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+
+IEZyb206IEt1cnQgVmFuIERpamNrIDxkZXYua3VydEB2YW5kaWpjay1sYXVyaWpzc2VuLmJlPg0K
+PiBTZW50OiBGcmlkYXksIEp1bmUgMTIsIDIwMjAgOTo0MyBBTQ0KPiBTdWJqZWN0OiBSZTogW1BB
+VENIXSBjYW46IGNfY2FuOiBIYW5kbGUgbG9zdCBidXMtb2ZmIGludGVycnVwdCB3aGlsZSBJUlFz
+IGFyZQ0KPiBkaXNhYmxlZA0KPg0KPiBIaSBGZWxpeCwNCj4NCj4gTmV4dCBxdWVzdGlvbiBjb21l
+cyB1cC4NCj4gU2VlIGlubGluZS4NCj4NCj4gT24gdnIsIDEyIGp1biAyMDIwIDA5OjEwOjQ0ICsw
+MjAwLCBLdXJ0IFZhbiBEaWpjayB3cm90ZToNCj4gPiBUaGFua3MgZm9yIHZlcmlmeWluZywNCj4g
+Pg0KPiA+IEknbGwgdGFrZSBhIGxvb2sgaG93IHRoYXQgY2FuIGhhcHBlbi4NCj4gPg0KPiA+IEkg
+dGhpbmsgcGFja2V0IGxvc3MgaXMgYmV0dGVyIChsZXNzIHBhY2tldHMgbG9zdCkgdGhhbiBiZWZv
+cmUuDQo+ID4NCj4gPiBLdXJ0DQo+ID4NCj4gPiBPbiB3bywgMTAganVuIDIwMjAgMDg6MDg6Mjgg
+KzAwMDAsIEZlbGl4IFJpZW1hbm4gd3JvdGU6DQo+ID4gPiBIaSBLdXJ0LA0KPiA+ID4NCj4gPiA+
+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+ID4NCj4gPiA+ID4gSSBoYXZlIHRo
+ZSBpbXByZXNzaW9uIHRoYXQgdGhlIHJlY3YgcGF0aCBpcyBjb3ZlcmVkLCBhdCBsZWFzdCB0aGUN
+Cj4gPiA+ID4gbnVsbCBwdHIgd291bGQgaGF2ZSBjYXVzZWQgaXNzdWVkIGVhcmxpZXIgYWxyZWFk
+eS4NCj4gPiA+ID4gV291bGQgdGhlIHByb2JsZW0gYXJpc2UgaW4gY19jYW5fZG9fdHggZmV0Y2hp
+bmcgYSBOVUxMIGVjaG9fc2tiPw0KPiA+ID4NCj4gPiA+IEl0IHJlYWxseSBsb29rcyBsaWtlIGl0
+Lg0KPiA+ID4NCj4gPiA+IEFkZGluZyBhIEJVR19PTiB0byB0aGUgbG9vcCBpbiBjX2Nhbl9kb190
+eCB0cmlnZ2VycyB3aXRoIGEgTlVMTCBza2INCj4gcmV0dXJuZWQgYnkgX19jYW5fZ2V0X2VjaG9f
+c2tiKCkuDQo+ID4gPg0KPiA+ID4gRm9yIHRlc3RpbmcgSSByZXBsYWNlZCB0aGUgQlVHX09OIHdp
+dGggYSBjaGVjayB0aGF0IHNraXBzIHRoZSBza2IgaWYgdGhhdA0KPiBoYXBwZW5zIChub3Qgc3Vy
+ZSBpZiB0aGF0IHdvdWxkIGJlIGEgdmFsaWQgZml4IGluIHRoYXQgcGxhY2UpOg0KPiA+ID4NCj4g
+PiA+IHdoaWxlICgob2JqID0gY19jYW5fZmZzNjQocGVuZCkpKSB7DQo+ID4gPiBwZW5kICY9IH4o
+KHU2NCkxIDw8IChvYmogLSAxKSk7DQo+ID4gPiBjX2Nhbl9pbnZhbF90eF9vYmplY3QoZGV2LCBJ
+Rl9SWCwgb2JqKTsgaWR4ID0gb2JqIC0NCj4gPiA+IHByaXYtPm9iai5zZW5kX2Zyc3Q7IHNrYiA9
+IF9fY2FuX2dldF9lY2hvX3NrYihkZXYsIGlkeCwgJmxlbik7DQo+ID4gPiBpZighc2tiKQ0KPg0K
+PiBJdCB3b3VsZCBiZSBpbnRlcmVzdGluZyB0byBrbm93IGlkeCBhbmQgcHJpdi0+dHhfYWN0aXZl
+IGhlcmUuDQoNClRoYXQncyB0aGUgc3RhdGlzdGljIG92ZXIgYWJvdXQgMTYwMCBsaW5lcyBJIGNh
+cHR1cmVkLiBGaXJzdCBudW1iZXIgaXMgbnVtYmVyIG9mIG9jY3VycmVuY2VzOg0KDQogICAgOTky
+IGNhbjA6IFNraXAgQCBpZHggMCwgdHhfYWN0aXZlOiAweDENCiAgICAyNTUgY2FuMDogU2tpcCBA
+IGlkeCAwLCB0eF9hY3RpdmU6IDB4Mw0KICAgIDI1MCBjYW4wOiBTa2lwIEAgaWR4IDEsIHR4X2Fj
+dGl2ZTogMHgyDQogICAgIDExIGNhbjA6IFNraXAgQCBpZHggMCwgdHhfYWN0aXZlOiAweDcNCiAg
+ICAgMTAgY2FuMDogU2tpcCBAIGlkeCAxLCB0eF9hY3RpdmU6IDB4Ng0KICAgICAgOCBjYW4wOiBT
+a2lwIEAgaWR4IDcsIHR4X2FjdGl2ZTogMHg4MA0KICAgICAgOCBjYW4wOiBTa2lwIEAgaWR4IDYs
+IHR4X2FjdGl2ZTogMHhjMA0KICAgICAgOCBjYW4wOiBTa2lwIEAgaWR4IDIsIHR4X2FjdGl2ZTog
+MHg2DQogICAgICA2IGNhbjA6IFNraXAgQCBpZHggMSwgdHhfYWN0aXZlOiAweGUNCiAgICAgIDUg
+Y2FuMDogU2tpcCBAIGlkeCAyLCB0eF9hY3RpdmU6IDB4NA0KICAgICAgNSBjYW4wOiBTa2lwIEAg
+aWR4IDAsIHR4X2FjdGl2ZTogMHhmDQogICAgICA0IGNhbjA6IFNraXAgQCBpZHggMiwgdHhfYWN0
+aXZlOiAweGMNCiAgICAgIDQgY2FuMDogU2tpcCBAIGlkeCAwLCB0eF9hY3RpdmU6IDB4M2YNCiAg
+ICAgIDMgY2FuMDogU2tpcCBAIGlkeCA2LCB0eF9hY3RpdmU6IDB4NDANCiAgICAgIDMgY2FuMDog
+U2tpcCBAIGlkeCAzLCB0eF9hY3RpdmU6IDB4Yw0KICAgICAgMyBjYW4wOiBTa2lwIEAgaWR4IDIs
+IHR4X2FjdGl2ZTogMHhmYw0KICAgICAgMyBjYW4wOiBTa2lwIEAgaWR4IDIsIHR4X2FjdGl2ZTog
+MHgzYw0KICAgICAgMyBjYW4wOiBTa2lwIEAgaWR4IDAsIHR4X2FjdGl2ZTogMHgxZg0KICAgICAg
+MiBjYW4wOiBTa2lwIEAgaWR4IDUsIHR4X2FjdGl2ZTogMHgzZQ0KICAgICAgMiBjYW4wOiBTa2lw
+IEAgaWR4IDQsIHR4X2FjdGl2ZTogMHgzZQ0KICAgICAgMiBjYW4wOiBTa2lwIEAgaWR4IDMsIHR4
+X2FjdGl2ZTogMHhmOA0KICAgICAgMiBjYW4wOiBTa2lwIEAgaWR4IDMsIHR4X2FjdGl2ZTogMHgz
+ZQ0KICAgICAgMiBjYW4wOiBTa2lwIEAgaWR4IDIsIHR4X2FjdGl2ZTogMHgzZQ0KICAgICAgMiBj
+YW4wOiBTa2lwIEAgaWR4IDEsIHR4X2FjdGl2ZTogMHgzZQ0KICAgICAgMiBjYW4wOiBTa2lwIEAg
+aWR4IDEsIHR4X2FjdGl2ZTogMHgxZQ0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDcsIHR4X2Fj
+dGl2ZTogMHhmMA0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDYsIHR4X2FjdGl2ZTogMHhmMA0K
+ICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDYsIHR4X2FjdGl2ZTogMHg3OA0KICAgICAgMSBjYW4w
+OiBTa2lwIEAgaWR4IDYsIHR4X2FjdGl2ZTogMHg3MA0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4
+IDUsIHR4X2FjdGl2ZTogMHhmMA0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDUsIHR4X2FjdGl2
+ZTogMHg3OA0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDUsIHR4X2FjdGl2ZTogMHg3MA0KICAg
+ICAgMSBjYW4wOiBTa2lwIEAgaWR4IDUsIHR4X2FjdGl2ZTogMHgzOA0KICAgICAgMSBjYW4wOiBT
+a2lwIEAgaWR4IDUsIHR4X2FjdGl2ZTogMHgyMA0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDQs
+IHR4X2FjdGl2ZTogMHhmMA0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDQsIHR4X2FjdGl2ZTog
+MHgzOA0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDQsIHR4X2FjdGl2ZTogMHgxYw0KICAgICAg
+MSBjYW4wOiBTa2lwIEAgaWR4IDMsIHR4X2FjdGl2ZTogMHhmYw0KICAgICAgMSBjYW4wOiBTa2lw
+IEAgaWR4IDMsIHR4X2FjdGl2ZTogMHhlDQogICAgICAxIGNhbjA6IFNraXAgQCBpZHggMywgdHhf
+YWN0aXZlOiAweDgNCiAgICAgIDEgY2FuMDogU2tpcCBAIGlkeCAzLCB0eF9hY3RpdmU6IDB4NzgN
+CiAgICAgIDEgY2FuMDogU2tpcCBAIGlkeCAzLCB0eF9hY3RpdmU6IDB4MzgNCiAgICAgIDEgY2Fu
+MDogU2tpcCBAIGlkeCAzLCB0eF9hY3RpdmU6IDB4MWMNCiAgICAgIDEgY2FuMDogU2tpcCBAIGlk
+eCAyLCB0eF9hY3RpdmU6IDB4ZQ0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDIsIHR4X2FjdGl2
+ZTogMHg3Yw0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDIsIHR4X2FjdGl2ZTogMHgxYw0KICAg
+ICAgMSBjYW4wOiBTa2lwIEAgaWR4IDEsIHR4X2FjdGl2ZTogMHhmZQ0KICAgICAgMSBjYW4wOiBT
+a2lwIEAgaWR4IDAsIHR4X2FjdGl2ZTogMHhmZg0KICAgICAgMSBjYW4wOiBTa2lwIEAgaWR4IDAs
+IHR4X2FjdGl2ZTogMHg3Zg0KDQpJIHVzZWQgYXRvbWljX3JlYWQgdG8gZ2V0IHRoZSB2YWx1ZSBv
+ZiB0eF9hY3RpdmUuDQoNClJlZ2FyZHMsDQoNCkZlbGl4DQpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCg0KU01BIFNvbGFyIFRlY2hub2xvZ3kgQUcN
+CkF1ZnNpY2h0c3JhdDogVXdlIEtsZWlua2F1ZiAoVm9yc2l0emVuZGVyKQ0KVm9yc3RhbmQ6IFVs
+cmljaCBIYWRkaW5nLCBEci4tSW5nLiBKdWVyZ2VuIFJlaW5lcnQNCkhhbmRlbHNyZWdpc3Rlcjog
+QW10c2dlcmljaHQgS2Fzc2VsIEhSQiAzOTcyDQpTaXR6IGRlciBHZXNlbGxzY2hhZnQ6IDM0MjY2
+IE5pZXN0ZXRhbA0KVVN0LUlELU5yLiBERSAxMTMgMDggNTkgNTQNCldFRUUtUmVnLi1Oci4gREUg
+OTU4ODExNTANCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXw0K
