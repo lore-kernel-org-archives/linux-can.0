@@ -1,49 +1,74 @@
-From: Patrick Menschel <menschel.p@posteo.de>
-Subject: Re: isotp in mainline?
-Date: Fri, 12 Jun 2020 22:00:01 +0200
-Message-ID: <01ce3f69-3bae-4369-3fda-92c016a71251@posteo.de>
-References: <20200611154337.GA3166627@x1>
- <9d3bcfde-68f3-c9e0-4c63-cbae61915585@posteo.de>
- <20200612153641.GA3433528@x1>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: j1939: root requirements for messages with the priorities 0 & 1
+Date: Mon, 15 Jun 2020 09:42:57 +0200
+Message-ID: <20200615074257.GA15385@x1.vandijck-laurijssen.be>
+References: <20190625173137.GB8923@x1.vandijck-laurijssen.be>
+ <20190626091524.40410c4b@erd988>
+ <20190626130012.GC8923@x1.vandijck-laurijssen.be>
+ <20190626160238.5d62fc15@erd988>
+ <20190627093353.GA693@x1.vandijck-laurijssen.be>
+ <20190627105901.GA24805@pengutronix.de>
+ <20190627140849.39916a65@erd988>
+ <20190722091328.GA24349@pengutronix.de>
+ <20190722133723.GA17189@pengutronix.de>
+ <20200612100320.u7tixjjcb2dxmo4d@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mout02.posteo.de ([185.67.36.66]:52101 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726268AbgFLUAF (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 12 Jun 2020 16:00:05 -0400
-Received: from submission (posteo.de [89.146.220.130])
-        by mout02.posteo.de (Postfix) with ESMTPS id 3D8812400FC
-        for <linux-can@vger.kernel.org>; Fri, 12 Jun 2020 22:00:02 +0200 (CEST)
-In-Reply-To: <20200612153641.GA3433528@x1>
-Content-Language: de-DE
+Received: from relay-b02.edpnet.be ([212.71.1.222]:47165 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728260AbgFOHnK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Jun 2020 03:43:10 -0400
+Content-Disposition: inline
+In-Reply-To: <20200612100320.u7tixjjcb2dxmo4d@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Drew Fustini <drew@beagleboard.org>
-Cc: linux-can@vger.kernel.org
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: David Jander <david@protonic.nl>, robin@protonic.nl, linux-can@vger.kernel.org, mkl@pengutronix.de, kernel@pengutronix.de
 
-> Maybe it was just to a test to see if the the protocol type existed?
+On vr, 12 jun 2020 12:03:20 +0200, Oleksij Rempel wrote:
+> Hello all,
 > 
-> It does look like the protocol is defined in include/uapi/linux/can.h:
+> We have following issues reported on can-utils:
+> https://github.com/linux-can/can-utils/issues/217
+> ===============================================================================
+> This is a follow-up of the issue #159 .
 > 
-> #define CAN_ISOTP	6 /* ISO 15765-2 Transport Protocol */
+> When testing the priorities, I noticed, that for the priorities 0 and 1,
+> the message occurs, that setting the priority is not permitted:
 > 
-> However, there does not appear to be any implementation in the mainline
-> kernel.
+>   ./testj1939 -B -s -p3 vcan0:0x80 :,0x0200
 > 
-> I recall Oliver mentioning that he should try to mainline isotp modules
-> at the end of the J1939 talk at ELC-E last October [1]. I don't see any
-> posts regarding isotp in the linux-can archives since then, so I thought
-> I would bring it up.
+> Works ok.
+> 
+>   ./testj1939 -B -s -p1 vcan0:0x80 :,0x0200
+>   testj1939: set priority 1: Operation not permitted
+> 
+>   ./testj1939 -B -s -p0 vcan0:0x80 :,0x0200
+>    testj1939: set priority 0: Operation not permitted
+> 
+> I am not aware that the priorities 0 & 1 are not permitted.
+> 
+> > Originally posted by @marckleinebudde in #159 (comment):
+> > Priorities 0 and 1 are only permitted for root or users with
+> > capable(CAP_NET_ADMIN), see:
+> 
+> > https://elixir.bootlin.com/linux/latest/source/net/can/j1939/socket.c#L705
+> 
+> > I think this limit is arbitrary and we can discuss if
+> > this makes sense at all or add this to the
+> > documentation.
 
-Hi,
+If I remember well, there is a similar restriction for ethernet or IP
+priorities.
+It's true that this limit is arbritrary.
+It's based on me never having seen intended prio 0 or 1 messages on a bus,
+but only as a result of 'we forgot to set the priority'.
 
-you're perfectly right. I just tested that script on a fresh ubuntu
-20.04 install and it turns out, isotp-module is missing.
+The goal is to avoid people using 0 as a default without further attention.
+I think that this could be replaced by some kind of setsockopt call,
+that sets the highest allowed priority, without ever requiring root.
+The initial default would then be 2 (or any other value, but 2 seems
+feasible to me).
 
-"OSError: [Errno 93] Protocol not supported"
-
-I must have compiled it by hand back then.
-
---Patrick
+Kurt
