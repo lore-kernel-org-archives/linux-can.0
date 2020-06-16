@@ -1,23 +1,75 @@
-From: "manuel franco" <manuel@info.com>
-Subject: donation of Euro 2,000,000.00.
-Date: Mon, 15 Jun 2020 23:54:48 +0200
-Message-ID: <20200615215457.762A63633A6B__44477.7907033981$1592264210$gmane$org@correo.bnv.gob.ve>
-Reply-To: manuelfrancospende22@gmail.com
+From: Felix Riemann <Felix.Riemann@sma.de>
+Subject: RE: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
+ disabled
+Date: Tue, 16 Jun 2020 09:51:00 +0000
+Message-ID: <AM0PR04MB62734DA80CB35517656041FE889D0@AM0PR04MB6273.eurprd04.prod.outlook.com>
+References: <20200326193837.GF760@x1.vandijck-laurijssen.be>
+ <AM0PR04MB542742337A89900E12A8732288CC0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+ <20200330070203.GE22500@x1.vandijck-laurijssen.be>
+ <AM0PR04MB54271EA5CC205263750BDBD288CB0@AM0PR04MB5427.eurprd04.prod.outlook.com>
+ <20200429084733.GA27733@x1.vandijck-laurijssen.be>
+ <20200429090618.GB27733@x1.vandijck-laurijssen.be>
+ <AM0PR04MB6273640802E04C4009CE5BC588830@AM0PR04MB6273.eurprd04.prod.outlook.com>
+ <20200612071044.GA25294@x1.vandijck-laurijssen.be>
+ <20200612074253.GB25294@x1.vandijck-laurijssen.be>
+ <AM0PR04MB62731627E4FC7368DB5051D4889C0@AM0PR04MB6273.eurprd04.prod.outlook.com>
+ <20200615153109.GB28894@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail.bnv.gob.ve ([201.249.200.115]:41330 "EHLO
-        correo.bnv.gob.ve" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726763AbgFOXg1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Jun 2020 19:36:27 -0400
-Content-Description: Mail message body
+Received: from mail-db8eur05on2137.outbound.protection.outlook.com ([40.107.20.137]:33217
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726261AbgFPJvE (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 16 Jun 2020 05:51:04 -0400
+In-Reply-To: <20200615153109.GB28894@x1.vandijck-laurijssen.be>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Recipients <manuel@info.com>
+To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andre Kalb <Andre.Kalb@sma.de>
 
-You have a donation of Euro 2,000,000.00.
-
-My name is Manuel Franco from the United States.
-
-I won the America lottery worth $768 million and I am donating a portion of it to just 5 lucky people and a few Orphanage homes as a memorandum of goodwill to humanity.email: manuelfrancospende@gmail.com
+SGkgS3VydCwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBLdXJ0IFZh
+biBEaWpjayA8ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZT4NCj4gU2VudDogTW9uZGF5
+LCBKdW5lIDE1LCAyMDIwIDU6MzEgUE0NCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gY2FuOiBjX2Nh
+bjogSGFuZGxlIGxvc3QgYnVzLW9mZiBpbnRlcnJ1cHQgd2hpbGUgSVJRcyBhcmUNCj4gZGlzYWJs
+ZWQNCj4NCj4gT24gbWEsIDE1IGp1biAyMDIwIDExOjExOjE3ICswMDAwLCBGZWxpeCBSaWVtYW5u
+IHdyb3RlOg0KPiA+DQo+ID4gSGkgS3VydCwNCj4gPg0KPiA+IHNlZSBiZWxvdy4NCj4gPg0KPiA+
+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+DQo+ID4gPiBIaSBGZWxpeCwNCj4g
+PiA+DQo+ID4gPiBOZXh0IHF1ZXN0aW9uIGNvbWVzIHVwLg0KPiA+ID4gU2VlIGlubGluZS4NCj4g
+PiA+DQo+ID4gPiBPbiB2ciwgMTIganVuIDIwMjAgMDk6MTA6NDQgKzAyMDAsIEt1cnQgVmFuIERp
+amNrIHdyb3RlOg0KPiA+ID4gPiBUaGFua3MgZm9yIHZlcmlmeWluZywNCj4gPiA+ID4NCj4gPiA+
+ID4gSSdsbCB0YWtlIGEgbG9vayBob3cgdGhhdCBjYW4gaGFwcGVuLg0KPiA+ID4gPg0KPiA+ID4g
+PiBJIHRoaW5rIHBhY2tldCBsb3NzIGlzIGJldHRlciAobGVzcyBwYWNrZXRzIGxvc3QpIHRoYW4g
+YmVmb3JlLg0KPiA+ID4gPg0KPiA+ID4gPiBLdXJ0DQo+ID4gPiA+DQo+ID4gPiA+IE9uIHdvLCAx
+MCBqdW4gMjAyMCAwODowODoyOCArMDAwMCwgRmVsaXggUmllbWFubiB3cm90ZToNCj4gPiA+ID4g
+PiBIaSBLdXJ0LA0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
+LS0tLQ0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IEkgaGF2ZSB0aGUgaW1wcmVzc2lvbiB0aGF0
+IHRoZSByZWN2IHBhdGggaXMgY292ZXJlZCwgYXQgbGVhc3QNCj4gPiA+ID4gPiA+IHRoZSBudWxs
+IHB0ciB3b3VsZCBoYXZlIGNhdXNlZCBpc3N1ZWQgZWFybGllciBhbHJlYWR5Lg0KPiA+ID4gPiA+
+ID4gV291bGQgdGhlIHByb2JsZW0gYXJpc2UgaW4gY19jYW5fZG9fdHggZmV0Y2hpbmcgYSBOVUxM
+IGVjaG9fc2tiPw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gSXQgcmVhbGx5IGxvb2tzIGxpa2UgaXQu
+DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBBZGRpbmcgYSBCVUdfT04gdG8gdGhlIGxvb3AgaW4gY19j
+YW5fZG9fdHggdHJpZ2dlcnMgd2l0aCBhIE5VTEwNCj4gPiA+ID4gPiBza2INCj4gPiA+IHJldHVy
+bmVkIGJ5IF9fY2FuX2dldF9lY2hvX3NrYigpLg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gRm9yIHRl
+c3RpbmcgSSByZXBsYWNlZCB0aGUgQlVHX09OIHdpdGggYSBjaGVjayB0aGF0IHNraXBzIHRoZQ0K
+PiA+ID4gPiA+IHNrYiBpZiB0aGF0DQo+ID4gPiBoYXBwZW5zIChub3Qgc3VyZSBpZiB0aGF0IHdv
+dWxkIGJlIGEgdmFsaWQgZml4IGluIHRoYXQgcGxhY2UpOg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4g
+d2hpbGUgKChvYmogPSBjX2Nhbl9mZnM2NChwZW5kKSkpIHsgcGVuZCAmPSB+KCh1NjQpMSA8PCAo
+b2JqIC0NCj4gPiA+ID4gPiAxKSk7IGNfY2FuX2ludmFsX3R4X29iamVjdChkZXYsIElGX1JYLCBv
+YmopOyBpZHggPSBvYmogLQ0KPiA+ID4gPiA+IHByaXYtPm9iai5zZW5kX2Zyc3Q7IHNrYiA9IF9f
+Y2FuX2dldF9lY2hvX3NrYihkZXYsIGlkeCwgJmxlbik7DQo+ID4gPiA+ID4gaWYoIXNrYikNCj4g
+PiA+DQo+ID4gPiBJdCB3b3VsZCBiZSBpbnRlcmVzdGluZyB0byBrbm93IGlkeCBhbmQgcHJpdi0+
+dHhfYWN0aXZlIGhlcmUuDQo+ID4NCj4gPiBUaGF0J3MgdGhlIHN0YXRpc3RpYyBvdmVyIGFib3V0
+IDE2MDAgbGluZXMgSSBjYXB0dXJlZC4gRmlyc3QgbnVtYmVyIGlzIG51bWJlcg0KPiBvZiBvY2N1
+cnJlbmNlczoNCj4NCj4ganVzdCBkb3VibGUtY2hlY2s6DQo+IFRoZXNlIGFyZSBhbGwgd2hlbiBf
+X2Nhbl9nZXRfZWNob19za2IgcmV0dXJuZWQgTlVMTD8NCg0KWWVzLCB0aGF0J3MgY29ycmVjdC4g
+VGhlIHByaW50b3V0IG9jY3VycyBkaXJlY3RseSBiZWZvcmUgaXQgc2tpcHMgdG8gdGhlIG5leHQg
+aXRlbSBpbiB0aGUgbG9vcC4NCg0KRmVsaXgNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXw0KDQpTTUEgU29sYXIgVGVjaG5vbG9neSBBRw0KQXVmc2lj
+aHRzcmF0OiBVd2UgS2xlaW5rYXVmIChWb3JzaXR6ZW5kZXIpDQpWb3JzdGFuZDogVWxyaWNoIEhh
+ZGRpbmcsIERyLi1JbmcuIEp1ZXJnZW4gUmVpbmVydA0KSGFuZGVsc3JlZ2lzdGVyOiBBbXRzZ2Vy
+aWNodCBLYXNzZWwgSFJCIDM5NzINClNpdHogZGVyIEdlc2VsbHNjaGFmdDogMzQyNjYgTmllc3Rl
+dGFsDQpVU3QtSUQtTnIuIERFIDExMyAwOCA1OSA1NA0KV0VFRS1SZWcuLU5yLiBERSA5NTg4MTE1
+MA0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo=
