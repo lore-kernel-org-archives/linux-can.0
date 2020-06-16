@@ -1,11 +1,9 @@
-From: Felix Riemann <Felix.Riemann@sma.de>
-Subject: RE: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
  disabled
-Date: Tue, 16 Jun 2020 09:51:00 +0000
-Message-ID: <AM0PR04MB62734DA80CB35517656041FE889D0@AM0PR04MB6273.eurprd04.prod.outlook.com>
-References: <20200326193837.GF760@x1.vandijck-laurijssen.be>
- <AM0PR04MB542742337A89900E12A8732288CC0@AM0PR04MB5427.eurprd04.prod.outlook.com>
- <20200330070203.GE22500@x1.vandijck-laurijssen.be>
+Date: Tue, 16 Jun 2020 14:42:43 +0200
+Message-ID: <20200616124243.GA18169@x1.vandijck-laurijssen.be>
+References: <20200330070203.GE22500@x1.vandijck-laurijssen.be>
  <AM0PR04MB54271EA5CC205263750BDBD288CB0@AM0PR04MB5427.eurprd04.prod.outlook.com>
  <20200429084733.GA27733@x1.vandijck-laurijssen.be>
  <20200429090618.GB27733@x1.vandijck-laurijssen.be>
@@ -14,62 +12,84 @@ References: <20200326193837.GF760@x1.vandijck-laurijssen.be>
  <20200612074253.GB25294@x1.vandijck-laurijssen.be>
  <AM0PR04MB62731627E4FC7368DB5051D4889C0@AM0PR04MB6273.eurprd04.prod.outlook.com>
  <20200615153109.GB28894@x1.vandijck-laurijssen.be>
+ <AM0PR04MB62734DA80CB35517656041FE889D0@AM0PR04MB6273.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db8eur05on2137.outbound.protection.outlook.com ([40.107.20.137]:33217
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726261AbgFPJvE (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 16 Jun 2020 05:51:04 -0400
-In-Reply-To: <20200615153109.GB28894@x1.vandijck-laurijssen.be>
-Content-Language: de-DE
+Received: from relay-b03.edpnet.be ([212.71.1.220]:50228 "EHLO
+        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728348AbgFPMm5 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Jun 2020 08:42:57 -0400
+Content-Disposition: inline
+In-Reply-To: <AM0PR04MB62734DA80CB35517656041FE889D0@AM0PR04MB6273.eurprd04.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To: Felix Riemann <Felix.Riemann@sma.de>
 Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andre Kalb <Andre.Kalb@sma.de>
 
-SGkgS3VydCwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBLdXJ0IFZh
-biBEaWpjayA8ZGV2Lmt1cnRAdmFuZGlqY2stbGF1cmlqc3Nlbi5iZT4NCj4gU2VudDogTW9uZGF5
-LCBKdW5lIDE1LCAyMDIwIDU6MzEgUE0NCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gY2FuOiBjX2Nh
-bjogSGFuZGxlIGxvc3QgYnVzLW9mZiBpbnRlcnJ1cHQgd2hpbGUgSVJRcyBhcmUNCj4gZGlzYWJs
-ZWQNCj4NCj4gT24gbWEsIDE1IGp1biAyMDIwIDExOjExOjE3ICswMDAwLCBGZWxpeCBSaWVtYW5u
-IHdyb3RlOg0KPiA+DQo+ID4gSGkgS3VydCwNCj4gPg0KPiA+IHNlZSBiZWxvdy4NCj4gPg0KPiA+
-ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+DQo+ID4gPiBIaSBGZWxpeCwNCj4g
-PiA+DQo+ID4gPiBOZXh0IHF1ZXN0aW9uIGNvbWVzIHVwLg0KPiA+ID4gU2VlIGlubGluZS4NCj4g
-PiA+DQo+ID4gPiBPbiB2ciwgMTIganVuIDIwMjAgMDk6MTA6NDQgKzAyMDAsIEt1cnQgVmFuIERp
-amNrIHdyb3RlOg0KPiA+ID4gPiBUaGFua3MgZm9yIHZlcmlmeWluZywNCj4gPiA+ID4NCj4gPiA+
-ID4gSSdsbCB0YWtlIGEgbG9vayBob3cgdGhhdCBjYW4gaGFwcGVuLg0KPiA+ID4gPg0KPiA+ID4g
-PiBJIHRoaW5rIHBhY2tldCBsb3NzIGlzIGJldHRlciAobGVzcyBwYWNrZXRzIGxvc3QpIHRoYW4g
-YmVmb3JlLg0KPiA+ID4gPg0KPiA+ID4gPiBLdXJ0DQo+ID4gPiA+DQo+ID4gPiA+IE9uIHdvLCAx
-MCBqdW4gMjAyMCAwODowODoyOCArMDAwMCwgRmVsaXggUmllbWFubiB3cm90ZToNCj4gPiA+ID4g
-PiBIaSBLdXJ0LA0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQ0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IEkgaGF2ZSB0aGUgaW1wcmVzc2lvbiB0aGF0
-IHRoZSByZWN2IHBhdGggaXMgY292ZXJlZCwgYXQgbGVhc3QNCj4gPiA+ID4gPiA+IHRoZSBudWxs
-IHB0ciB3b3VsZCBoYXZlIGNhdXNlZCBpc3N1ZWQgZWFybGllciBhbHJlYWR5Lg0KPiA+ID4gPiA+
-ID4gV291bGQgdGhlIHByb2JsZW0gYXJpc2UgaW4gY19jYW5fZG9fdHggZmV0Y2hpbmcgYSBOVUxM
-IGVjaG9fc2tiPw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gSXQgcmVhbGx5IGxvb2tzIGxpa2UgaXQu
-DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBBZGRpbmcgYSBCVUdfT04gdG8gdGhlIGxvb3AgaW4gY19j
-YW5fZG9fdHggdHJpZ2dlcnMgd2l0aCBhIE5VTEwNCj4gPiA+ID4gPiBza2INCj4gPiA+IHJldHVy
-bmVkIGJ5IF9fY2FuX2dldF9lY2hvX3NrYigpLg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gRm9yIHRl
-c3RpbmcgSSByZXBsYWNlZCB0aGUgQlVHX09OIHdpdGggYSBjaGVjayB0aGF0IHNraXBzIHRoZQ0K
-PiA+ID4gPiA+IHNrYiBpZiB0aGF0DQo+ID4gPiBoYXBwZW5zIChub3Qgc3VyZSBpZiB0aGF0IHdv
-dWxkIGJlIGEgdmFsaWQgZml4IGluIHRoYXQgcGxhY2UpOg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4g
-d2hpbGUgKChvYmogPSBjX2Nhbl9mZnM2NChwZW5kKSkpIHsgcGVuZCAmPSB+KCh1NjQpMSA8PCAo
-b2JqIC0NCj4gPiA+ID4gPiAxKSk7IGNfY2FuX2ludmFsX3R4X29iamVjdChkZXYsIElGX1JYLCBv
-YmopOyBpZHggPSBvYmogLQ0KPiA+ID4gPiA+IHByaXYtPm9iai5zZW5kX2Zyc3Q7IHNrYiA9IF9f
-Y2FuX2dldF9lY2hvX3NrYihkZXYsIGlkeCwgJmxlbik7DQo+ID4gPiA+ID4gaWYoIXNrYikNCj4g
-PiA+DQo+ID4gPiBJdCB3b3VsZCBiZSBpbnRlcmVzdGluZyB0byBrbm93IGlkeCBhbmQgcHJpdi0+
-dHhfYWN0aXZlIGhlcmUuDQo+ID4NCj4gPiBUaGF0J3MgdGhlIHN0YXRpc3RpYyBvdmVyIGFib3V0
-IDE2MDAgbGluZXMgSSBjYXB0dXJlZC4gRmlyc3QgbnVtYmVyIGlzIG51bWJlcg0KPiBvZiBvY2N1
-cnJlbmNlczoNCj4NCj4ganVzdCBkb3VibGUtY2hlY2s6DQo+IFRoZXNlIGFyZSBhbGwgd2hlbiBf
-X2Nhbl9nZXRfZWNob19za2IgcmV0dXJuZWQgTlVMTD8NCg0KWWVzLCB0aGF0J3MgY29ycmVjdC4g
-VGhlIHByaW50b3V0IG9jY3VycyBkaXJlY3RseSBiZWZvcmUgaXQgc2tpcHMgdG8gdGhlIG5leHQg
-aXRlbSBpbiB0aGUgbG9vcC4NCg0KRmVsaXgNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXw0KDQpTTUEgU29sYXIgVGVjaG5vbG9neSBBRw0KQXVmc2lj
-aHRzcmF0OiBVd2UgS2xlaW5rYXVmIChWb3JzaXR6ZW5kZXIpDQpWb3JzdGFuZDogVWxyaWNoIEhh
-ZGRpbmcsIERyLi1JbmcuIEp1ZXJnZW4gUmVpbmVydA0KSGFuZGVsc3JlZ2lzdGVyOiBBbXRzZ2Vy
-aWNodCBLYXNzZWwgSFJCIDM5NzINClNpdHogZGVyIEdlc2VsbHNjaGFmdDogMzQyNjYgTmllc3Rl
-dGFsDQpVU3QtSUQtTnIuIERFIDExMyAwOCA1OSA1NA0KV0VFRS1SZWcuLU5yLiBERSA5NTg4MTE1
-MA0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo=
+On di, 16 jun 2020 09:51:00 +0000, Felix Riemann wrote:
+> Hi Kurt,
+> 
+> > -----Original Message-----
+> > From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+> > Sent: Monday, June 15, 2020 5:31 PM
+> > Subject: Re: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
+> > disabled
+> >
+> > On ma, 15 jun 2020 11:11:17 +0000, Felix Riemann wrote:
+> > >
+> > > Hi Kurt,
+> > >
+> > > see below.
+> > >
+> > > > -----Original Message-----
+> > > >
+> > > > Hi Felix,
+> > > >
+> > > > Next question comes up.
+> > > > See inline.
+> > > >
+> > > > On vr, 12 jun 2020 09:10:44 +0200, Kurt Van Dijck wrote:
+> > > > > Thanks for verifying,
+> > > > >
+> > > > > I'll take a look how that can happen.
+> > > > >
+> > > > > I think packet loss is better (less packets lost) than before.
+> > > > >
+> > > > > Kurt
+> > > > >
+> > > > > On wo, 10 jun 2020 08:08:28 +0000, Felix Riemann wrote:
+> > > > > > Hi Kurt,
+> > > > > >
+> > > > > > > -----Original Message-----
+> > > > > > >
+> > > > > > > I have the impression that the recv path is covered, at least
+> > > > > > > the null ptr would have caused issued earlier already.
+> > > > > > > Would the problem arise in c_can_do_tx fetching a NULL echo_skb?
+> > > > > >
+> > > > > > It really looks like it.
+> > > > > >
+> > > > > > Adding a BUG_ON to the loop in c_can_do_tx triggers with a NULL
+> > > > > > skb
+> > > > returned by __can_get_echo_skb().
+> > > > > >
+> > > > > > For testing I replaced the BUG_ON with a check that skips the
+> > > > > > skb if that
+> > > > happens (not sure if that would be a valid fix in that place):
+> > > > > >
+> > > > > > while ((obj = c_can_ffs64(pend))) { pend &= ~((u64)1 << (obj -
+> > > > > > 1)); c_can_inval_tx_object(dev, IF_RX, obj); idx = obj -
+> > > > > > priv->obj.send_frst; skb = __can_get_echo_skb(dev, idx, &len);
+> > > > > > if(!skb)
+> > > >
+> > > > It would be interesting to know idx and priv->tx_active here.
+> > >
+> > > That's the statistic over about 1600 lines I captured. First number is number
+> > of occurrences:
+> >
+> > just double-check:
+> > These are all when __can_get_echo_skb returned NULL?
+> 
+> Yes, that's correct. The printout occurs directly before it skips to the next item in the loop.
+
+thanks.
