@@ -1,95 +1,41 @@
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: Re: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
- disabled
-Date: Tue, 16 Jun 2020 14:42:43 +0200
-Message-ID: <20200616124243.GA18169@x1.vandijck-laurijssen.be>
-References: <20200330070203.GE22500@x1.vandijck-laurijssen.be>
- <AM0PR04MB54271EA5CC205263750BDBD288CB0@AM0PR04MB5427.eurprd04.prod.outlook.com>
- <20200429084733.GA27733@x1.vandijck-laurijssen.be>
- <20200429090618.GB27733@x1.vandijck-laurijssen.be>
- <AM0PR04MB6273640802E04C4009CE5BC588830@AM0PR04MB6273.eurprd04.prod.outlook.com>
- <20200612071044.GA25294@x1.vandijck-laurijssen.be>
- <20200612074253.GB25294@x1.vandijck-laurijssen.be>
- <AM0PR04MB62731627E4FC7368DB5051D4889C0@AM0PR04MB6273.eurprd04.prod.outlook.com>
- <20200615153109.GB28894@x1.vandijck-laurijssen.be>
- <AM0PR04MB62734DA80CB35517656041FE889D0@AM0PR04MB6273.eurprd04.prod.outlook.com>
+From: Arnej Duranovic <arnejduranovic@pm.me>
+Subject: J1939: /proc/net/can interface
+Date: Tue, 16 Jun 2020 18:40:49 +0000
+Message-ID: <4SjA_8nFwOgutMJ5YoVaQPwX-zU-3shqgm7lsWxNWIQas0hIsCMdujJJbEJXOdxFjnDlDTqaDs4yiOXhAgZUYDUKIHXKcwtih3aa1fL8LV4=@pm.me>
+Reply-To: Arnej Duranovic <arnejduranovic@pm.me>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from relay-b03.edpnet.be ([212.71.1.220]:50228 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728348AbgFPMm5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Jun 2020 08:42:57 -0400
-Content-Disposition: inline
-In-Reply-To: <AM0PR04MB62734DA80CB35517656041FE889D0@AM0PR04MB6273.eurprd04.prod.outlook.com>
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:16294 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728175AbgFPSlC (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Jun 2020 14:41:02 -0400
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Felix Riemann <Felix.Riemann@sma.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Andre Kalb <Andre.Kalb@sma.de>
+To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-On di, 16 jun 2020 09:51:00 +0000, Felix Riemann wrote:
-> Hi Kurt,
-> 
-> > -----Original Message-----
-> > From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-> > Sent: Monday, June 15, 2020 5:31 PM
-> > Subject: Re: [PATCH] can: c_can: Handle lost bus-off interrupt while IRQs are
-> > disabled
-> >
-> > On ma, 15 jun 2020 11:11:17 +0000, Felix Riemann wrote:
-> > >
-> > > Hi Kurt,
-> > >
-> > > see below.
-> > >
-> > > > -----Original Message-----
-> > > >
-> > > > Hi Felix,
-> > > >
-> > > > Next question comes up.
-> > > > See inline.
-> > > >
-> > > > On vr, 12 jun 2020 09:10:44 +0200, Kurt Van Dijck wrote:
-> > > > > Thanks for verifying,
-> > > > >
-> > > > > I'll take a look how that can happen.
-> > > > >
-> > > > > I think packet loss is better (less packets lost) than before.
-> > > > >
-> > > > > Kurt
-> > > > >
-> > > > > On wo, 10 jun 2020 08:08:28 +0000, Felix Riemann wrote:
-> > > > > > Hi Kurt,
-> > > > > >
-> > > > > > > -----Original Message-----
-> > > > > > >
-> > > > > > > I have the impression that the recv path is covered, at least
-> > > > > > > the null ptr would have caused issued earlier already.
-> > > > > > > Would the problem arise in c_can_do_tx fetching a NULL echo_skb?
-> > > > > >
-> > > > > > It really looks like it.
-> > > > > >
-> > > > > > Adding a BUG_ON to the loop in c_can_do_tx triggers with a NULL
-> > > > > > skb
-> > > > returned by __can_get_echo_skb().
-> > > > > >
-> > > > > > For testing I replaced the BUG_ON with a check that skips the
-> > > > > > skb if that
-> > > > happens (not sure if that would be a valid fix in that place):
-> > > > > >
-> > > > > > while ((obj = c_can_ffs64(pend))) { pend &= ~((u64)1 << (obj -
-> > > > > > 1)); c_can_inval_tx_object(dev, IF_RX, obj); idx = obj -
-> > > > > > priv->obj.send_frst; skb = __can_get_echo_skb(dev, idx, &len);
-> > > > > > if(!skb)
-> > > >
-> > > > It would be interesting to know idx and priv->tx_active here.
-> > >
-> > > That's the statistic over about 1600 lines I captured. First number is number
-> > of occurrences:
-> >
-> > just double-check:
-> > These are all when __can_get_echo_skb returned NULL?
-> 
-> Yes, that's correct. The printout occurs directly before it skips to the next item in the loop.
+Hello all,
 
-thanks.
+Earlier versions of J1939 contained the following:
+
++ 6. /proc/net/can-j1939 Interface.
++ --------------------------------
++
++   Files giving you a view on the in-kernel operation of J1939 are located=
+ at:
++   /proc/net/j1939.
++
++ 6.1 /proc/net/can-j1939/ecu
++
++   This file gives an overview of the known ECU's to the kernel.
++   - iface : network interface they operate on.
++   - SA : current address.
++   - name : 64bit NAME
++   - flags : 'L' =3D local, 'R' =3D remote
+
+I am interested in what happened to this feature since I do not see it in t=
+he latest implementation or in the documentation?
+
+I am interested in retrieving "known ECU's to the kernel" in the latest imp=
+lementation. What is recommended?
