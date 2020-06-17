@@ -1,127 +1,77 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [RESEND PATCH 1/6] dt-bindings: can: Document devicetree
- bindings for MCP25XXFD
-Date: Wed, 17 Jun 2020 16:16:56 -0600
-Message-ID: <20200617221656.GA2927781@bogus>
-References: <20200610074711.10969-1-manivannan.sadhasivam@linaro.org>
- <20200610074711.10969-2-manivannan.sadhasivam@linaro.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
+Date: Thu, 18 Jun 2020 00:36:29 +0200
+Message-ID: <2e80e2ed-d63d-5cc6-e1c6-e0c9e75c218e@pengutronix.de>
+References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
+ <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
+ <20200617165902.GB14228@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20200610074711.10969-2-manivannan.sadhasivam-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Manivannan Sadhasivam <manivannan.sadhasivam-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: wg-5Yr1BZd7O62+XT7JhA+gdA@public.gmane.org, mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726758AbgFQWgu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 17 Jun 2020 18:36:50 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19967C06174E
+        for <linux-can@vger.kernel.org>; Wed, 17 Jun 2020 15:36:50 -0700 (PDT)
+In-Reply-To: <20200617165902.GB14228@x1.vandijck-laurijssen.be>
+Content-Language: en-GB
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, wg@grandegger.com, kernel@martin.sperl.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 
-On Wed, Jun 10, 2020 at 01:17:06PM +0530, Manivannan Sadhasivam wrote:
-> From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+On 6/17/20 6:59 PM, Kurt Van Dijck wrote:
+> I'm in the process of getting a Variscite imx8m mini SOM online, with
+
+Have your heard about the imx8m plus? It has CAN cores! We have a board in the
+office to play with. :)
+
+> MCP2517FD. The 4.19 kernel that comes with it, has a driver that is
+
+You shall not start projects with 1,5 years old kernel.
+And you probably shall not use vendor kernel for new projects.
+:D
+
+> clearly inspired by the one of Martin Sperl (not investigated too much
+> yet). I have problems of probing the chip when the bus is under full
+> load (under not full load, the probing only occasionally fails) due to
+> the modeswitch test.
 > 
-> Add devicetree YAML bindings for Microchip MCP25XXFD CAN controller.
-> 
-> Signed-off-by: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-> [mani: converted to YAML binding]
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-> ---
->  .../bindings/net/can/microchip,mcp25xxfd.yaml | 82 +++++++++++++++++++
->  1 file changed, 82 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-> new file mode 100644
-> index 000000000000..7b87ec328515
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-> @@ -0,0 +1,82 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/can/microchip,mcp25xxfd.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip MCP25XXFD stand-alone CAN controller binding
-> +
-> +maintainers:
-> +  -  Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-> +  -  Manivannan Sadhasivam <manivannan.sadhasivam-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-> +
-> +properties:
-> +  compatible:
-> +    const: microchip,mcp2517fd
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  gpio-controller: true
-> +
-> +  "#gpio-cells":
-> +    const: 2
-> +
-> +  vdd-supply:
-> +    description: Regulator that powers the CAN controller
-> +
-> +  xceiver-supply:
-> +    description: Regulator that powers the CAN transceiver
-> +
-> +  microchip,clock-out-div:
-> +    description: Clock output pin divider
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> Is there a real difference in yours between the rpi and sunxi branches?
 
-You can drop the 'allOf' now.
+The sunxi branch has some sunxi SPI driver improvements, the rpi branch some for
+the raspi SPI drivers. All branches with the same -xx should have the same
+mcp25xxfd driver.
 
-> +    enum: [0, 1, 2, 4, 10]
-> +    default: 10
-> +
-> +  microchip,clock-div2:
-> +    description: Divide the internal clock by 2
-> +    type: boolean
-> +
-> +  microchip,gpio-open-drain:
-> +    description: Enable open-drain for all pins
-> +    type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - interrupts
-> +  - gpio-controller
+With the exception the latest version is v5.6-rpi/mcp25xxfd-20200607-41, which
+is cleaned up for mainlining (it has the logging and dump stuff removed).
 
-And '#gpio-cells'?
+> Is there much evolution since -36 or would you mind to backport your
+> latest -42 to 4.19?
 
-> +  - vdd-supply
-> +  - xceiver-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +           #address-cells = <1>;
-> +           #size-cells = <0>;
-> +
-> +           can0: can@1 {
-> +                   compatible = "microchip,mcp2517fd";
-> +                   reg = <1>;
-> +                   clocks = <&clk24m>;
-> +                   interrupt-parent = <&gpio4>;
-> +                   interrupts = <13 0x8>;
-> +                   vdd-supply = <&reg5v0>;
-> +                   xceiver-supply = <&reg5v0>;
-> +                   gpio-controller;
-> +                   #gpio-cells = <2>;
-> +           };
-> +    };
-> +
-> +...
-> -- 
-> 2.17.1
-> 
+Not much, some bus off cleanups, however I've backported all changes to
+v4.19-rpi/mcp25xxfd-20200429-41 (debug and log is still included).
+
+When you port this to your mx8 take all from (including)
+
+    097701d1ea4f can: dev: avoid long lines
+to
+    v4.19-rpi/mcp25xxfd-20200429-41
+
+> I will work on this the upcoming days. I can't do extensive tests, but
+> rather a works-for-me test that includes bitrate probe.
+> I only have 1 such board right now, and no other FD hardware.
+
+Great, looking for feedback! Especially how the driver copes with your fully
+loaded bus test.
+
+regards,
+Marc
+
+-- 
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
