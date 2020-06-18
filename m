@@ -1,77 +1,77 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Subject: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
-Date: Thu, 18 Jun 2020 00:36:29 +0200
-Message-ID: <2e80e2ed-d63d-5cc6-e1c6-e0c9e75c218e@pengutronix.de>
+Date: Thu, 18 Jun 2020 14:25:33 +0530
+Message-ID: <20200618085533.GA26093@mani>
 References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
  <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
- <20200617165902.GB14228@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726758AbgFQWgu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 17 Jun 2020 18:36:50 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19967C06174E
-        for <linux-can@vger.kernel.org>; Wed, 17 Jun 2020 15:36:50 -0700 (PDT)
-In-Reply-To: <20200617165902.GB14228@x1.vandijck-laurijssen.be>
-Content-Language: en-GB
+        with ESMTP id S1728852AbgFRIzn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 Jun 2020 04:55:43 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050DEC0613ED
+        for <linux-can@vger.kernel.org>; Thu, 18 Jun 2020 01:55:41 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b201so2505175pfb.0
+        for <linux-can@vger.kernel.org>; Thu, 18 Jun 2020 01:55:41 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, wg@grandegger.com, kernel@martin.sperl.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: wg@grandegger.com, kernel@martin.sperl.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On 6/17/20 6:59 PM, Kurt Van Dijck wrote:
-> I'm in the process of getting a Variscite imx8m mini SOM online, with
+Hi,
 
-Have your heard about the imx8m plus? It has CAN cores! We have a board in the
-office to play with. :)
-
-> MCP2517FD. The 4.19 kernel that comes with it, has a driver that is
-
-You shall not start projects with 1,5 years old kernel.
-And you probably shall not use vendor kernel for new projects.
-:D
-
-> clearly inspired by the one of Martin Sperl (not investigated too much
-> yet). I have problems of probing the chip when the bus is under full
-> load (under not full load, the probing only occasionally fails) due to
-> the modeswitch test.
+On 0611, Marc Kleine-Budde wrote:
+> On 6/10/20 9:44 AM, Manivannan Sadhasivam wrote:
+> > Hello,
+> > 
+> > This series adds CAN network driver support for Microchip MCP25XXFD CAN
+> > Controller with MCP2517FD as the target controller version. This series is
+> > mostly inspired (or taken) from the previous iterations posted by Martin Sperl.
+> > I've trimmed down the parts which are not necessary for the initial version
+> > to ease review. Still the series is relatively huge but I hope to get some
+> > reviews (post -rcX ofc!).
+> > 
+> > Link to the origial series posted by Martin:
+> > https://www.spinics.net/lists/devicetree/msg284462.html
+> > 
+> > I've not changed the functionality much but done some considerable amount of
+> > cleanups and also preserved the authorship of Martin for all the patches he has
+> > posted earlier. This series has been tested on 96Boards RB3 platform by myself
+> > and Martin has tested the previous version on Rpi3 with external MCP2517FD
+> > controller.
 > 
-> Is there a real difference in yours between the rpi and sunxi branches?
+> I initially started looking at Martin's driver and it was not using several
+> modern CAN driver infrastructures. I then posted some cleanup patches but Martin
+> was not working on the driver any more. Then I decided to rewrite the driver,
+> that is the one I'm hoping to mainline soon.
+> 
 
-The sunxi branch has some sunxi SPI driver improvements, the rpi branch some for
-the raspi SPI drivers. All branches with the same -xx should have the same
-mcp25xxfd driver.
+So how should we proceed from here? It is okay for me to work on adding some
+features and also fixing the issues you've reported so far. But I want to reach
+a consensus before moving forward.
 
-With the exception the latest version is v5.6-rpi/mcp25xxfd-20200607-41, which
-is cleaned up for mainlining (it has the logging and dump stuff removed).
+If you think that it makes sense to go with your set of patches, then I need an
+estimate on when you'll post the first revision.
 
-> Is there much evolution since -36 or would you mind to backport your
-> latest -42 to 4.19?
+> Can you give it a try?
+> 
+> https://github.com/marckleinebudde/linux/commits/v5.6-rpi/mcp25xxfd-20200607-41
+> 
 
-Not much, some bus off cleanups, however I've backported all changes to
-v4.19-rpi/mcp25xxfd-20200429-41 (debug and log is still included).
+Sure thing. Will do.
 
-When you port this to your mx8 take all from (including)
+Thanks,
+Mani
 
-    097701d1ea4f can: dev: avoid long lines
-to
-    v4.19-rpi/mcp25xxfd-20200429-41
-
-> I will work on this the upcoming days. I can't do extensive tests, but
-> rather a works-for-me test that includes bitrate probe.
-> I only have 1 such board right now, and no other FD hardware.
-
-Great, looking for feedback! Especially how the driver copes with your fully
-loaded bus test.
-
-regards,
-Marc
-
--- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
