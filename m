@@ -1,21 +1,21 @@
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Subject: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
-Date: Thu, 18 Jun 2020 14:25:33 +0530
-Message-ID: <20200618085533.GA26093@mani>
+Date: Thu, 18 Jun 2020 17:36:15 +0530
+Message-ID: <20200618120615.GA3949@mani>
 References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
  <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60138 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728852AbgFRIzn (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 18 Jun 2020 04:55:43 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050DEC0613ED
-        for <linux-can@vger.kernel.org>; Thu, 18 Jun 2020 01:55:41 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b201so2505175pfb.0
-        for <linux-can@vger.kernel.org>; Thu, 18 Jun 2020 01:55:41 -0700 (PDT)
+        with ESMTP id S1726919AbgFRMGY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 Jun 2020 08:06:24 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B893DC06174E
+        for <linux-can@vger.kernel.org>; Thu, 18 Jun 2020 05:06:23 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e18so2819204pgn.7
+        for <linux-can@vger.kernel.org>; Thu, 18 Jun 2020 05:06:23 -0700 (PDT)
 Content-Disposition: inline
 In-Reply-To: <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
@@ -50,20 +50,14 @@ On 0611, Marc Kleine-Budde wrote:
 > was not working on the driver any more. Then I decided to rewrite the driver,
 > that is the one I'm hoping to mainline soon.
 > 
-
-So how should we proceed from here? It is okay for me to work on adding some
-features and also fixing the issues you've reported so far. But I want to reach
-a consensus before moving forward.
-
-If you think that it makes sense to go with your set of patches, then I need an
-estimate on when you'll post the first revision.
-
 > Can you give it a try?
 > 
 > https://github.com/marckleinebudde/linux/commits/v5.6-rpi/mcp25xxfd-20200607-41
 > 
 
-Sure thing. Will do.
+Tested this version on my board with MCP2518FD and it works fine. I'm okay with
+moving forward with your version and would like to contribute. Please let me
+know how we can move forward.
 
 Thanks,
 Mani
