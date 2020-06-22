@@ -1,118 +1,42 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v41 2/3] dt-binding: can: mcp25xxfd: document device tree bindings
-Date: Mon, 22 Jun 2020 13:46:02 +0200
-Message-ID: <20200622114603.965371-3-mkl@pengutronix.de>
-References: <20200622114603.965371-1-mkl@pengutronix.de>
+Subject: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
+Date: Mon, 22 Jun 2020 13:47:52 +0200
+Message-ID: <ccd98238-8480-ad05-a9e6-0a0536175753@pengutronix.de>
+References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
+ <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
+ <20200618085533.GA26093@mani>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726998AbgFVLqT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 22 Jun 2020 07:46:19 -0400
+        with ESMTP id S1727048AbgFVLr4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 22 Jun 2020 07:47:56 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4933AC061795
-        for <linux-can@vger.kernel.org>; Mon, 22 Jun 2020 04:46:19 -0700 (PDT)
-In-Reply-To: <20200622114603.965371-1-mkl@pengutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C5EC061794
+        for <linux-can@vger.kernel.org>; Mon, 22 Jun 2020 04:47:56 -0700 (PDT)
+In-Reply-To: <20200618085533.GA26093@mani>
+Content-Language: de-DE
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: linux-can@vger.kernel.org
-Cc: manivannan.sadhasivam@linaro.org, dev.kurt@vandijck-laurijssen.be, Oleksij Rempel <o.rempel@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: wg@grandegger.com, kernel@martin.sperl.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+On 6/18/20 10:55 AM, Manivannan Sadhasivam wrote:
+> So how should we proceed from here? It is okay for me to work on adding some
+> features and also fixing the issues you've reported so far. But I want to reach
+> a consensus before moving forward.
+> 
+> If you think that it makes sense to go with your set of patches, then I need an
+> estimate on when you'll post the first revision.
 
-This patch adds the device-tree binding documentation for the Microchip
-MCP25xxFD SPI CAN controller family.
+Done, I've posted my current version, which is -41.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- .../bindings/net/can/microchip,mcp25xxfd.yaml | 77 +++++++++++++++++++
- 1 file changed, 77 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+Marc
 
-diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-new file mode 100644
-index 000000000000..4993dd49181c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-@@ -0,0 +1,77 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/microchip,mcp25xxfd.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip MCP2517/18FD stand-alone CAN controller device tree bindings
-+
-+maintainers:
-+  - Marc Kleine-Budde <mkl@pengutronix.de>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: microchip,mcp2517fd
-+        description: for MCP2517FD
-+      - const: microchip,mcp2518fd
-+        description: for MCP2518FD
-+      - const: microchip,mcp25xxfd
-+        description: to autodetect chip variant
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts-extended:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description: Regulator that powers the CAN controller.
-+    maxItems: 1
-+
-+  xceiver-supply:
-+    description: Regulator that powers the CAN transceiver.
-+    maxItems: 1
-+
-+  rx-int-gpios:
-+    description:
-+      GPIO phandle of GPIO connected to to INT1 pin of the MCP25XXFD, which
-+      signals a pending RX interrupt.
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    description:
-+      Must be half or less of "clocks" frequency.
-+    maximum: 20000000
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts-extended
-+  - clocks
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    spi0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        can@0 {
-+            compatible = "microchip,mcp25xxfd";
-+            reg = <0>;
-+            clocks = <&can0_osc>;
-+            pinctrl-names = "default";
-+            pinctrl-0 = <&can0_pins>;
-+            spi-max-frequency = <20000000>;
-+            interrupts-extended = <&gpio 13 IRQ_TYPE_LEVEL_LOW>;
-+            rx-int-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
-+            vdd-supply = <&reg5v0>;
-+            xceiver-supply = <&reg5v0>;
-+        };
-+    };
 -- 
-2.27.0
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
