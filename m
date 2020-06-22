@@ -1,35 +1,29 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
-Date: Mon, 22 Jun 2020 13:41:16 +0200
-Message-ID: <e485d113-9bfb-b999-4318-8b6b4883143f@pengutronix.de>
-References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
- <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
- <20200618120615.GA3949@mani>
+Subject: [PATCH v41 0/3] can: add mcp25xxfd support
+Date: Mon, 22 Jun 2020 13:46:00 +0200
+Message-ID: <20200622114603.965371-1-mkl@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20200618120615.GA3949@mani>
-Content-Language: de-DE
-Sender: linux-kernel-owner@vger.kernel.org
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: wg@grandegger.com, kernel@martin.sperl.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727799AbgFVLqS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 22 Jun 2020 07:46:18 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C12C061794
+        for <linux-can@vger.kernel.org>; Mon, 22 Jun 2020 04:46:18 -0700 (PDT)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: linux-can@vger.kernel.org
+Cc: manivannan.sadhasivam@linaro.org, dev.kurt@vandijck-laurijssen.be
 
-On 6/18/20 2:06 PM, Manivannan Sadhasivam wrote:
->> https://github.com/marckleinebudde/linux/commits/v5.6-rpi/mcp25xxfd-20200607-41
->>
-> 
-> Tested this version on my board with MCP2518FD and it works fine. I'm okay with
-> moving forward with your version and would like to contribute. Please let me
-> know how we can move forward.
+Hello,
 
-Can I add your Tested-by?
+this series adds support for the Microchip MCP25xxFD SPI CAN controller family.
 
+The series is available at:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/?h=mcp25xxfd-41
+
+regards,
 Marc
-
--- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
