@@ -1,93 +1,105 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH v41 2/3] dt-binding: can: mcp25xxfd: document device tree
- bindings
-Date: Tue, 23 Jun 2020 09:27:05 +0200
-Message-ID: <0b59a55c-8e67-75f2-45c9-cb3c699470e3@pengutronix.de>
-References: <20200622114603.965371-1-mkl@pengutronix.de>
- <20200622114603.965371-3-mkl@pengutronix.de>
- <20200622165325.GA23113@Mani-XPS-13-9360>
- <89ebabc5-dd88-32ed-65b3-911d3d80237b@pengutronix.de>
- <20200623032635.GG11093@Mani-XPS-13-9360>
+Subject: Re: [PATCH] can: mcp25xxfd: add listen-only mode
+Date: Tue, 23 Jun 2020 09:40:48 +0200
+Message-ID: <10e4e6f0-d400-fd7f-5c99-33637cdc8dbc@pengutronix.de>
+References: <20200622122047.9494-1-dev.kurt@vandijck-laurijssen.be>
+ <24a81519-9628-6626-77e6-22dbd5253954@pengutronix.de>
+ <20200623051527.GE3077@x1.vandijck-laurijssen.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730830AbgFWH1O (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Jun 2020 03:27:14 -0400
+        with ESMTP id S1731054AbgFWHkw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Jun 2020 03:40:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE06C061573
-        for <linux-can@vger.kernel.org>; Tue, 23 Jun 2020 00:27:14 -0700 (PDT)
-In-Reply-To: <20200623032635.GG11093@Mani-XPS-13-9360>
-Content-Language: en-GB
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83BCC061573
+        for <linux-can@vger.kernel.org>; Tue, 23 Jun 2020 00:40:51 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1jndY2-0002Yv-KO
+        for linux-can@vger.kernel.org; Tue, 23 Jun 2020 09:40:50 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:789c:8c3:eaa5:9d1b] (unknown [IPv6:2a03:f580:87bc:d400:789c:8c3:eaa5:9d1b])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id EAD3851FAA5
+        for <linux-can@vger.kernel.org>; Tue, 23 Jun 2020 07:40:49 +0000 (UTC)
+In-Reply-To: <20200623051527.GE3077@x1.vandijck-laurijssen.be>
+Content-Language: en-US
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: linux-can@vger.kernel.org, dev.kurt@vandijck-laurijssen.be, Oleksij Rempel <o.rempel@pengutronix.de>
+To: linux-can@vger.kernel.org
 
-On 6/23/20 5:26 AM, Manivannan Sadhasivam wrote:
->>>> +title: Microchip MCP2517/18FD stand-alone CAN controller device tree bindings
->>>> +
->>>
->>> MCP251{7/8}FD?
+On 6/23/20 7:15 AM, Kurt Van Dijck wrote:
+> On ma, 22 jun 2020 15:38:03 +0200, Marc Kleine-Budde wrote:
+>> On 6/22/20 2:20 PM, Kurt Van Dijck wrote:
+>>> This commit enables listen-only mode, which works internally like CANFD mode.
 >>
->> Which expansion rules should be use for the title? In sh-like shells it would be
->> MCP251{7,8}FD.
->>
+>> Does the controller distinguish between CAN-2.0 listen only and CAN-FD listen
+>> only mode?
 > 
-> Either one. I was just concerned about the original one which might create
-> ambiguity.
-
-I've changed this to:
-
-> Microchip MCP2517FD and MCP2518FD stand-alone CAN controller device tree
-> bindings
-
-[...]
-
->>>> +  rx-int-gpios:
-> 
-> This doesn't look like a standard property. So I think you need to add
-> 'microchip' prefix to make it as vendor specific.
-
-makes sense.
-
->>>> +    description:
->>>> +      GPIO phandle of GPIO connected to to INT1 pin of the MCP25XXFD, which
->>>> +      signals a pending RX interrupt.
->>>> +    maxItems: 1
->>>> +
->>>> +  spi-max-frequency:
->>>> +    description:
->>>> +      Must be half or less of "clocks" frequency.
->>>> +    maximum: 20000000
->>>> +
->>>> +required:
->>>> +  - compatible
->>>> +  - reg
->>>> +  - interrupts-extended
->>>> +  - clocks
->>>> +
->>>
->>> The controller is capable of generating clocks and also able to control few
->>> GPIOs. So eventually you need to document those properties in bindings even
->>> your driver is not supporting all of them atm.
+> Nope, Listen-only is a 3rd mode, and from the manual, it's similar to
+> CANFD mode.
 >>
->> I'd like to add support for clocks and GPIOs as soon as someone needs them. DT
->> bindings will go along with that. So far I have no customer that needs support
->> for that, do you?>
-> DT binding should describe what the controller is capable of and not the
-> capability of the driver. You can always add functionality to driver but binding
-> should stay as it is (although there are exceptions...).
-As Oleksij pointed out, this make driver development very complicated. I'm not
-even sure how to properly abstract the GPIO support. For open drain pinctrl
-would be best, haveing one microchip,open-drain property in the DT would effect
-all GPIOs.
+>> If listen only means CAN-FD...should we add a check to open() if CAN_CTRLMODE_FD
+>> and CAN_CTRLMODE_LISTENONLY is both set (or unset).
+> 
+> The difference between CAN-FD and CAN-2.0 is in CAN-2.0, the chip will
+> send error frames on CAN-FD frame.
+> That looks obvious.
+> In listen-only mode, no acks or error-frames are sent, so the difference
+> is not really relevant in listen-only mode.
 
-Further this means I have to look into the driver if a documented property is
-implemented and does what it is advertised to do? That sounds very counter
-intuitive for me.
+ACK
+
+> On the host side however, in listen-only mode with no CAN_CTRLMODE_FD,
+> you could find CAN-FD packets in your socket.
+> I think we could improve and filter them out in software during the
+> receive handler.
+> If we think that is necessary.
+
+ACK
+
+> It would strictly be correct, but I tend to be a bit more tolerant on
+> the input, and discard the difference.
+> That's why I didn't add the code. and because it's usually easy to make
+> mistakes and it easily becomes a monster.
+
+ACK
+
+>> Please compile with #define DEBUG and look in dmesg the size of the objects in
+>> the mailbox. Maybe it's worth not allocating any TEF and TX mailbox and using
+>> more RX instead.
+> and have runtime defined sizes. I'm not convinced that this improves the
+> driver. I'm sure it makes it more complex.
+
+The driver already has different sized RX and TX objects depending on CAN-2.0
+and CAN-FD modes. (8 vs. 64 bytes of data). And it uses 8 TX and 32 RX object
+for CAN-2.0, while it's 4 TX and 16 RX for CAN-FD.
+
+But you're right, optimization for listen only can be done later.
+
+>> We have to convert the driver from using a bit mask to modulo to get from the
+>> tail and head to the actual index inside the RAM.
+> 
+> I confess not having studied the chip nor your driver in that detail.
+> Your plan sounds good. I would not postpone submitting the driver for
+> improvements like that, given that other approaches exists in vendor
+> kernels.
+> It sounds like a next iteration to me.
+
+ACK. Currently the driver only supports a power-of-2 for RX and TX mailboxes.
+With converting from a mask to a modulo, this would increase the RX mailboxes
+from 16 to 22 in the CAN-FD mode.
+
+I've added your patch with minor modifications to the series, mostly changing
+the order of CAN_CTRLMODE_LISTENONLY and CAN_CTRLMODE_FD.
 
 regards,
 Marc
