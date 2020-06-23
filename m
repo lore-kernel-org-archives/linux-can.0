@@ -1,180 +1,134 @@
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v41 2/3] dt-binding: can: mcp25xxfd: document device tree
- bindings
-Date: Tue, 23 Jun 2020 08:56:35 +0530
-Message-ID: <20200623032635.GG11093@Mani-XPS-13-9360>
-References: <20200622114603.965371-1-mkl@pengutronix.de>
- <20200622114603.965371-3-mkl@pengutronix.de>
- <20200622165325.GA23113@Mani-XPS-13-9360>
- <89ebabc5-dd88-32ed-65b3-911d3d80237b@pengutronix.de>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: [PATCH] can: mcp25xxfd: add listen-only mode
+Date: Tue, 23 Jun 2020 07:15:27 +0200
+Message-ID: <20200623051527.GE3077@x1.vandijck-laurijssen.be>
+References: <20200622122047.9494-1-dev.kurt@vandijck-laurijssen.be>
+ <24a81519-9628-6626-77e6-22dbd5253954@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730129AbgFWD0m (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 22 Jun 2020 23:26:42 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7A9C061573
-        for <linux-can@vger.kernel.org>; Mon, 22 Jun 2020 20:26:41 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id q22so6371606pgk.2
-        for <linux-can@vger.kernel.org>; Mon, 22 Jun 2020 20:26:41 -0700 (PDT)
+Received: from relay-b02.edpnet.be ([212.71.1.222]:58586 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgFWFPq (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Jun 2020 01:15:46 -0400
 Content-Disposition: inline
-In-Reply-To: <89ebabc5-dd88-32ed-65b3-911d3d80237b@pengutronix.de>
+In-Reply-To: <24a81519-9628-6626-77e6-22dbd5253954@pengutronix.de>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, dev.kurt@vandijck-laurijssen.be, Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: linux-can@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 08:12:58PM +0200, Marc Kleine-Budde wrote:
-> On 6/22/20 6:53 PM, Manivannan Sadhasivam wrote:
-> > Hi,
+On ma, 22 jun 2020 15:38:03 +0200, Marc Kleine-Budde wrote:
+> On 6/22/20 2:20 PM, Kurt Van Dijck wrote:
+> > This commit enables listen-only mode, which works internally like CANFD mode.
+> 
+> Does the controller distinguish between CAN-2.0 listen only and CAN-FD listen
+> only mode?
+
+Nope, Listen-only is a 3rd mode, and from the manual, it's similar to
+CANFD mode.
+> 
+> If listen only means CAN-FD...should we add a check to open() if CAN_CTRLMODE_FD
+> and CAN_CTRLMODE_LISTENONLY is both set (or unset).
+
+The difference between CAN-FD and CAN-2.0 is in CAN-2.0, the chip will
+send error frames on CAN-FD frame.
+That looks obvious.
+In listen-only mode, no acks or error-frames are sent, so the difference
+is not really relevant in listen-only mode.
+
+On the host side however, in listen-only mode with no CAN_CTRLMODE_FD,
+you could find CAN-FD packets in your socket.
+I think we could improve and filter them out in software during the
+receive handler.
+If we think that is necessary.
+It would strictly be correct, but I tend to be a bit more tolerant on
+the input, and discard the difference.
+That's why I didn't add the code. and because it's usually easy to make
+mistakes and it easily becomes a monster.
+
+> 
+> Please compile with #define DEBUG and look in dmesg the size of the objects in
+> the mailbox. Maybe it's worth not allocating any TEF and TX mailbox and using
+> more RX instead.
+and have runtime defined sizes. I'm not convinced that this improves the
+driver. I'm sure it makes it more complex.
+> 
+> We have to convert the driver from using a bit mask to modulo to get from the
+> tail and head to the actual index inside the RAM.
+
+I confess not having studied the chip nor your driver in that detail.
+Your plan sounds good. I would not postpone submitting the driver for
+improvements like that, given that other approaches exists in vendor
+kernels.
+It sounds like a next iteration to me.
+
+Kurt
+ 
+> 
+> > Signed-off-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+> > ---
+> >  drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
 > > 
-> > On Mon, Jun 22, 2020 at 01:46:02PM +0200, Marc Kleine-Budde wrote:
-> >> From: Oleksij Rempel <o.rempel@pengutronix.de>
-> >>
-> >> This patch adds the device-tree binding documentation for the Microchip
-> >> MCP25xxFD SPI CAN controller family.
-> >>
-> >> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> >> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> > diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+> > index c744a0bf2faa..f3bc7d0f1f94 100644
+> > --- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+> > +++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+> > @@ -392,7 +392,8 @@ static int mcp25xxfd_ring_alloc(struct mcp25xxfd_priv *priv)
+> >  	int ram_free, i;
+> >  
+> >  	tef_obj_size = sizeof(struct mcp25xxfd_hw_tef_obj);
+> > -	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+> > +	/* listen-only mode works like FD mode */
+> > +	if (priv->can.ctrlmode & (CAN_CTRLMODE_FD | CAN_CTRLMODE_LISTENONLY)) {
+> >  		tx_obj_num = MCP25XXFD_TX_OBJ_NUM_CANFD;
+> >  		tx_obj_size = sizeof(struct mcp25xxfd_hw_tx_obj_canfd);
+> >  		rx_obj_size = sizeof(struct mcp25xxfd_hw_rx_obj_canfd);
+> > @@ -807,7 +808,7 @@ mcp25xxfd_chip_rx_fifo_init_one(const struct mcp25xxfd_priv *priv,
+> >  		MCP25XXFD_REG_FIFOCON_RXOVIE |
+> >  		MCP25XXFD_REG_FIFOCON_TFNRFNIE;
+> >  
+> > -	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+> > +	if (priv->can.ctrlmode & (CAN_CTRLMODE_FD | CAN_CTRLMODE_LISTENONLY))
+> >  		fifo_con |= FIELD_PREP(MCP25XXFD_REG_FIFOCON_PLSIZE_MASK,
+> >  				       MCP25XXFD_REG_FIFOCON_PLSIZE_64);
+> >  	else
+> > @@ -857,7 +858,7 @@ static int mcp25xxfd_chip_fifo_init(const struct mcp25xxfd_priv *priv)
+> >  		MCP25XXFD_REG_FIFOCON_TXEN |
+> >  		MCP25XXFD_REG_FIFOCON_TXATIE;
+> >  
+> > -	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+> > +	if (priv->can.ctrlmode & (CAN_CTRLMODE_FD | CAN_CTRLMODE_LISTENONLY))
+> >  		val |= FIELD_PREP(MCP25XXFD_REG_FIFOCON_PLSIZE_MASK,
+> >  				  MCP25XXFD_REG_FIFOCON_PLSIZE_64);
+> >  	else
+> > @@ -930,7 +931,9 @@ static u8 mcp25xxfd_get_normal_mode(const struct mcp25xxfd_priv *priv)
+> >  {
+> >  	u8 mode;
+> >  
+> > -	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+> > +	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+> > +		mode = MCP25XXFD_REG_CON_MODE_LISTENONLY;
+> > +	else if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+> >  		mode = MCP25XXFD_REG_CON_MODE_MIXED;
+> >  	else
+> >  		mode = MCP25XXFD_REG_CON_MODE_CAN2_0;
+> > @@ -2778,6 +2781,7 @@ static int mcp25xxfd_probe(struct spi_device *spi)
+> >  	priv->can.bittiming_const = &mcp25xxfd_bittiming_const;
+> >  	priv->can.data_bittiming_const = &mcp25xxfd_data_bittiming_const;
+> >  	priv->can.ctrlmode_supported = CAN_CTRLMODE_FD |
+> > +		CAN_CTRLMODE_LISTENONLY |
+> >  		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_FD_NON_ISO;
+> 
+> please sort this list following (I know it currently isn't):
+> 
+> https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/can/netlink.h#L95
+> 
+> >  	priv->ndev = ndev;
+> >  	priv->spi = spi;
 > > 
-> > You need to CC Rob and devicetree list to get a review for this patch.
 > 
-> Will do for next round.
-> 
-> > 
-> >> ---
-> >>  .../bindings/net/can/microchip,mcp25xxfd.yaml | 77 +++++++++++++++++++
-> >>  1 file changed, 77 insertions(+)
-> >>  create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-> >> new file mode 100644
-> >> index 000000000000..4993dd49181c
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-> >> @@ -0,0 +1,77 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/net/can/microchip,mcp25xxfd.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Microchip MCP2517/18FD stand-alone CAN controller device tree bindings
-> >> +
-> > 
-> > MCP251{7/8}FD?
-> 
-> Which expansion rules should be use for the title? In sh-like shells it would be
-> MCP251{7,8}FD.
-> 
-
-Either one. I was just concerned about the original one which might create
-ambiguity.
-
-> > 
-> >> +maintainers:
-> >> +  - Marc Kleine-Budde <mkl@pengutronix.de>
-> >> +
-> >> +properties:
-> >> +  compatible:
-> >> +    oneOf:
-> >> +      - const: microchip,mcp2517fd
-> >> +        description: for MCP2517FD
-> >> +      - const: microchip,mcp2518fd
-> >> +        description: for MCP2518FD
-> >> +      - const: microchip,mcp25xxfd
-> >> +        description: to autodetect chip variant
-> >> +
-> > 
-> > Actually what benefit this generic compatible provides? User who is integrating
-> > this driver should know the exact controller instance he is playing with, isn't
-> > it?
-> 
-> As the chip variant can be autodetected why not do it? It makes device tree
-> overlays (e.g. for the rpi much simpler), as you don't have to specify the exact
-> chip variant.
-> 
-> Testing is much easier, as I don't have to change the overlays if swapping the
-> CAN hat.
-> 
-
-Okay.
-
-> > 
-> >> +  reg:
-> >> +    maxItems: 1
-> >> +
-> >> +  interrupts-extended:
-> >> +    maxItems: 1
-> >> +
-> > 
-> > Document this just above 'interrupts' property.
-> 
-> Do you mean I should change the order?
-> - reg:
-> - clocks:
-> - interrupts-extended:
-> 
-
-Sorry, please ignore this comment. You can keep the order as it is.
-
-> > 
-> >> +  clocks:
-> >> +    maxItems: 1
-> >> +
-> >> +  vdd-supply:
-> >> +    description: Regulator that powers the CAN controller.
-> >> +    maxItems: 1
-> >> +
-> >> +  xceiver-supply:
-> >> +    description: Regulator that powers the CAN transceiver.
-> >> +    maxItems: 1
-> >> +
-> >> +  rx-int-gpios:
-
-This doesn't look like a standard property. So I think you need to add
-'microchip' prefix to make it as vendor specific.
-
-> >> +    description:
-> >> +      GPIO phandle of GPIO connected to to INT1 pin of the MCP25XXFD, which
-> >> +      signals a pending RX interrupt.
-> >> +    maxItems: 1
-> >> +
-> >> +  spi-max-frequency:
-> >> +    description:
-> >> +      Must be half or less of "clocks" frequency.
-> >> +    maximum: 20000000
-> >> +
-> >> +required:
-> >> +  - compatible
-> >> +  - reg
-> >> +  - interrupts-extended
-> >> +  - clocks
-> >> +
-> > 
-> > The controller is capable of generating clocks and also able to control few
-> > GPIOs. So eventually you need to document those properties in bindings even
-> > your driver is not supporting all of them atm.
-> 
-> I'd like to add support for clocks and GPIOs as soon as someone needs them. DT
-> bindings will go along with that. So far I have no customer that needs support
-> for that, do you?
-> 
-
-DT binding should describe what the controller is capable of and not the
-capability of the driver. You can always add functionality to driver but binding
-should stay as it is (although there are exceptions...).
-
-Thanks,
-Mani
-
-> > If you want you can take a look at the bindings patch I posted earlier:
-> > 
-> > dt-bindings: can: Document devicetree bindings for MCP25XXFD
-> 
-> regards,
 > Marc
 > 
 > -- 
