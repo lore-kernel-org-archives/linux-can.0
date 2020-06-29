@@ -1,89 +1,38 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH linux-can-next/flexcan] can: flexcan: fix TDC feature
-Date: Mon, 29 Jun 2020 05:37:00 +0000
-Message-ID: <DB8PR04MB67958DCE4BA9D0EC67731049E66E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20200416093126.15242-1-qiangqing.zhang@nxp.com>
- <20200416093126.15242-2-qiangqing.zhang@nxp.com>
- <DB8PR04MB6795F7E28A9964A121A06140E6D80@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <d5579883c7e9ab3489ec08a73c407982@walle.cc>
- <39b5d77bda519c4d836f44a554890bae@walle.cc>
- <e38cf40b-ead3-81de-0be7-18cca5ca1a0c@pengutronix.de>
+From: Michael Walle <michael@walle.cc>
+Subject: [PATCH 1/2] can: flexcan: use ctrlmode to enable CAN-FD
+Date: Mon, 29 Jun 2020 20:18:08 +0200
+Message-ID: <20200629181809.25338-2-michael@walle.cc>
+References: <20200629181809.25338-1-michael@walle.cc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731725AbgF2TOP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 29 Jun 2020 15:14:15 -0400
-In-Reply-To: <e38cf40b-ead3-81de-0be7-18cca5ca1a0c@pengutronix.de>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Michael Walle <michael@walle.cc>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200629181809.25338-1-michael@walle.cc>
+Sender: netdev-owner@vger.kernel.org
+To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, Michael Walle <michael@walle.cc>
+List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
-IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMjDlubQ25pyIMjXml6UgMjA6NTcNCj4g
-VG86IE1pY2hhZWwgV2FsbGUgPG1pY2hhZWxAd2FsbGUuY2M+OyBKb2FraW0gWmhhbmcNCj4gPHFp
-YW5ncWluZy56aGFuZ0BueHAuY29tPg0KPiBDYzogbGludXgtY2FuQHZnZXIua2VybmVsLm9yZzsg
-ZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5v
-cmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBsaW51eC1jYW4tbmV4dC9mbGV4Y2FuXSBjYW46IGZs
-ZXhjYW46IGZpeCBUREMgZmVhdHVyZQ0KPiANCj4gT24gNi8yNS8yMCAyOjM3IFBNLCBNaWNoYWVs
-IFdhbGxlIHdyb3RlOg0KPiA+IEFtIDIwMjAtMDYtMDIgMTI6MTUsIHNjaHJpZWIgTWljaGFlbCBX
-YWxsZToNCj4gPj4gSGkgTWFyYywNCj4gPj4NCj4gPj4gQW0gMjAyMC0wNC0xNiAxMTo0MSwgc2No
-cmllYiBKb2FraW0gWmhhbmc6DQo+ID4+PiBIaSBNYXJjLA0KPiA+Pj4NCj4gPj4+IEhvdyBhYm91
-dCBGbGV4Q0FOIEZEIHBhdGNoIHNldCwgaXQgaXMgcGVuZGluZyBmb3IgYSBsb25nIHRpbWUuIE1h
-bnkNCj4gPj4+IHdvcmsgd291bGQgYmFzZSBvbiBpdCwgd2UgYXJlIGhhcHB5IHRvIHNlZSBpdCBp
-biB1cHN0cmVhbSBtYWlubGluZQ0KPiA+Pj4gQVNBUC4NCj4gPj4+DQo+ID4+PiBNaWNoYWVsIFdh
-bGxlIGFsc28gZ2l2ZXMgb3V0IHRoZSB0ZXN0LWJ5IHRhZzoNCj4gPj4+IAlUZXN0ZWQtYnk6IE1p
-Y2hhZWwgV2FsbGUgPG1pY2hhZWxAd2FsbGUuY2M+DQo+ID4+DQo+ID4+IFRoZXJlIHNlZW1zIHRv
-IGJlIG5vIGFjdGl2aXR5IGZvciBtb250aHMgaGVyZS4gQW55IHJlYXNvbiBmb3IgdGhhdD8NCj4g
-Pj4gSXMgdGhlcmUgYW55dGhpbmcgd2UgY2FuIGRvIHRvIHNwZWVkIHRoaW5ncyB1cD8NCj4gPg0K
-PiA+IHBpbmcuLiBUaGVyZSBhcmUgbm8gcmVwbGllcyBvciBhbnl0aGluZy4gU29ycnkgYnV0IHRo
-aXMgaXMgcmVhbGx5DQo+ID4gYW5ub3lpbmcgYW5kIGZydXN0cmF0aW5nLg0KPiA+DQo+ID4gTWFy
-YywgaXMgdGhlcmUgYW55dGhpbmcgd3Jvbmcgd2l0aCB0aGUgZmxleGNhbiBwYXRjaGVzPw0KPiAN
-Cj4gSSd2ZSBjbGVhbmVkIHVwIHRoZSBwYXRjaGVzIGEgYml0LCBjYW4geW91IHRlc3QgdGhpcyBi
-cmFuY2g6DQo+IA0KPiBodHRwczovL2V1cjAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2su
-Y29tLz91cmw9aHR0cHMlM0ElMkYlMkZnaXQua2Vybg0KPiBlbC5vcmclMkZwdWIlMkZzY20lMkZs
-aW51eCUyRmtlcm5lbCUyRmdpdCUyRm1rbCUyRmxpbnV4LWNhbi1uZXh0LmdpdCUyDQo+IEZsb2cl
-MkYlM0ZoJTNEZmxleGNhbiZhbXA7ZGF0YT0wMiU3QzAxJTdDcWlhbmdxaW5nLnpoYW5nJTQwbnhw
-LmNvDQo+IG0lN0NkZGJlOTAxOWZhZTg0NjQxMTY0NTA4ZDgxOTA3MzEyOSU3QzY4NmVhMWQzYmMy
-YjRjNmZhOTJjZDk5Yw0KPiA1YzMwMTYzNSU3QzAlN0MwJTdDNjM3Mjg2ODY1OTYxNTY0MDYxJmFt
-cDtzZGF0YT1CbTB1eW54dWVGJTJGDQo+IFdwRUNUOGF5ZnFReGglMkZNWW5GQ0xpeHZaTHZTZ1Vn
-STQlM0QmYW1wO3Jlc2VydmVkPTANCg0KSGkgTWFyYywNCg0KVGhhbmsgeW91IHZlcnkgbXVjaCBm
-b3IgeW91ciBlZmZvcnQgdG8gY2xlYW4gdXAgdGhlIGNvZGUuIEkgaGF2ZSB0ZXN0IHRoZSBwYXRj
-aCBzZXQsIGl0IGNhbiB3b3JrIGZpbmUgYXQgbXkgc2lkZS4NCg0KQnV0LCBhIHBhdGNoIG1heSBi
-ZSBpZ25vcmVkLCBjb3VsZCB5b3UgaGVscCBhZGQgYmFjayBpdD8gT3IgeW91IGFyZSB1bnNhdGlz
-ZmllZCB3aXRoIGl0LCBJIGNhbiBpbXByb3ZlIGl0IGFjY29yZGluZyB0byB5b3VyIG9waW5pb24u
-DQoNCmNvbW1pdCBkNmFkNWNjOTYyMjllMjhlNGYyZjA5NjAyNzcxMDJlZTE0MjU3N2VkDQpBdXRo
-b3I6IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQpEYXRlOiAgIEZyaSBK
-dWwgMTIgMDg6MDI6NTEgMjAxOSArMDAwMA0KDQogICAgY2FuOiBmbGV4Y2FuOiBhZGQgSVNPIENB
-TiBGRCBmZWF0dXJlIHN1cHBvcnQNCg0KICAgIElTTyBDQU4gRkQgaXMgaW50cm9kdWNlZCB0byBp
-bmNyZWFzZSB0aGUgZmFpbHR1cmUgZGV0ZWN0aW9uIGNhcGFiaWxpdHkNCiAgICB0aGFuIG5vbi1J
-U08gQ0FOIEZELiBUaGUgbm9uLUlTTyBDQU4gRkQgaXMgc3RpbGwgc3VwcG9ydGVkIGJ5IEZsZXhD
-QU4gc28NCiAgICB0aGF0IGl0IGNhbiBiZSB1c2VkIG1haW5seSBkdXJpbmcgYW4gaW50ZXJtZWRp
-YXRlIHBoYXNlLCBmb3IgZXZhbHVhdGlvbg0KICAgIGFuZCBkZXZlbG9wbWVudCBwdXJwb3Nlcy4N
-Cg0KICAgIFRoZXJlZm9yZSwgaXQgaXMgc3Ryb25nbHkgcmVjb21tZW5kZWQgdG8gY29uZmlndXJl
-IEZsZXhDQU4gdG8gdGhlIElTTw0KICAgIENBTiBGRCBwcm90b2NvbCBieSBzZXR0aW5nIHRoZSBJ
-U09DQU5GREVOIGZpZWxkIGluIHRoZSBDVFJMMiByZWdpc3Rlci4NCg0KICAgIE5PVEU6IElmIHlv
-dSBvbmx5IHNldCAiZmQgb24iLCBkcml2ZXIgd2lsbCB1c2UgSVNPIEZEIG1vZGUgYnkgZGVmYXVs
-dC4NCiAgICBZb3Ugc2hvdWxkIHNldCAiZmQtbm9uLWlzbyBvbiIgYWZ0ZXIgc2V0dGluZyAiZmQg
-b24iIGlmIHlvdSB3YW50IHRvIHVzZQ0KICAgIE5PTiBJU08gRkQgbW9kZS4NCg0KICAgIFNpZ25l
-ZC1vZmYtYnk6IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQogICAgU2ln
-bmVkLW9mZi1ieTogTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT4NCg0KQW5k
-LCBpZiBpdCBpcyBva2F5IGZvciB5b3UsIGJlbG93IHBhdGNoIGNvdWxkIHlvdSBhbHNvIHBpY2sg
-dXA/DQpjYW46IGZsZXhjYW46IGRpc2FibGUgcnVudGltZSBQTSBpZiByZWdpc3RlciBmbGV4Y2Fu
-ZGV2IGZhaWxlZCA6IGh0dHBzOi8vd3d3LnNwaW5pY3MubmV0L2xpc3RzL2xpbnV4LWNhbi9tc2cw
-MzE0Ni5odG1sDQoNCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IE1hcmMNCj4gDQo+
-IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVk
-ZGUgICAgICAgICAgIHwNCj4gRW1iZWRkZWQgTGludXggICAgICAgICAgICAgICAgICAgfA0KPiBo
-dHRwczovL2V1cjAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cHMl
-M0ElMkYlMkZ3d3cucA0KPiBlbmd1dHJvbml4LmRlJTJGJmFtcDtkYXRhPTAyJTdDMDElN0NxaWFu
-Z3FpbmcuemhhbmclNDBueHAuY29tJTdDZA0KPiBkYmU5MDE5ZmFlODQ2NDExNjQ1MDhkODE5MDcz
-MTI5JTdDNjg2ZWExZDNiYzJiNGM2ZmE5MmNkOTljNWMzMDE2Mw0KPiA1JTdDMCU3QzAlN0M2Mzcy
-ODY4NjU5NjE1NjQwNjEmYW1wO3NkYXRhPVUzT1F5a3FzU0UzNUF6OUNWem5xDQo+IENrMXJsM0hj
-NlV2RVJhUHVoJTJCVmpIaXclM0QmYW1wO3Jlc2VydmVkPTAgIHwNCj4gVmVydHJldHVuZyBXZXN0
-L0RvcnRtdW5kICAgICAgICAgfCBQaG9uZTogKzQ5LTIzMS0yODI2LTkyNCAgICAgfA0KPiBBbXRz
-Z2VyaWNodCBIaWxkZXNoZWltLCBIUkEgMjY4NiB8IEZheDogICArNDktNTEyMS0yMDY5MTctNTU1
-NSB8DQo=
+The driver will enable CAN-FD mode according to the ctrlmode_supported,
+which will always be true, if the controller supports it. This is wrong.
+Use the correct ctrlmode instead.
+
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 12043250e398..183e094f8d66 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1345,7 +1345,7 @@ static int flexcan_chip_start(struct net_device *dev)
+ 		reg_mcr |= FLEXCAN_MCR_SRX_DIS;
+ 
+ 	/* MCR - CAN-FD */
+-	if (priv->can.ctrlmode_supported & CAN_CTRLMODE_FD)
++	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+ 		reg_mcr |= FLEXCAN_MCR_FDEN;
+ 	else
+ 		reg_mcr &= ~FLEXCAN_MCR_FDEN;
+-- 
+2.20.1
