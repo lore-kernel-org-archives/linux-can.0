@@ -1,41 +1,34 @@
-From: Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH linux-can-next/flexcan] can: flexcan: fix TDC feature
-Date: Mon, 29 Jun 2020 18:23:07 +0200
-Message-ID: <9dc13a697c246a5c7c53bdd89df7d3c7@walle.cc>
-References: <20200416093126.15242-1-qiangqing.zhang@nxp.com>
- <20200416093126.15242-2-qiangqing.zhang@nxp.com>
- <DB8PR04MB6795F7E28A9964A121A06140E6D80@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <d5579883c7e9ab3489ec08a73c407982@walle.cc>
- <39b5d77bda519c4d836f44a554890bae@walle.cc>
- <e38cf40b-ead3-81de-0be7-18cca5ca1a0c@pengutronix.de>
+From: "mrs.victoria alexander" <markalexandermilley321@gmail.com>
+Subject: Hello,
+Date: Mon, 29 Jun 2020 12:15:58 -0700
+Message-ID: <CAP7XNCwEGQ+-Q==u4yk4yvJdk1X+gsfSU6pUV_hROjmF=p-DHw__32312.5951270171$1593458258$gmane$org@mail.gmail.com>
+Reply-To: mrs.victoria.alexander2@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <e38cf40b-ead3-81de-0be7-18cca5ca1a0c@pengutronix.de>
-Sender: netdev-owner@vger.kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Joakim Zhang <qiangqing.zhang@nxp.com>, linux-can@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>, netdev@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731869AbgF2TQB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 29 Jun 2020 15:16:01 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67783C061755
+        for <linux-can@vger.kernel.org>; Mon, 29 Jun 2020 12:16:01 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id c16so18379554ioi.9
+        for <linux-can@vger.kernel.org>; Mon, 29 Jun 2020 12:16:01 -0700 (PDT)
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 
-Hi Marc,
+Dear friend,
 
-> I've cleaned up the patches a bit, can you test this branch:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/?h=flexcan
 
-This is working, but as Joakim already said, CAN-FD ISO mode is missing.
-It defaults to non-ISO mode, which is even worse, IMHO.
+I have a business container transaction what that some of( $13million dollars)
 
-But I've also noticed a difference between the original patch and the
-one in that branch. When FD mode is enabled the original patch checks
-the priv->can.controlmode [1], the patch in the branch looks at
-priv->can.ctrlmode_supported instead [2], is that correct?
+ I would like to discuss with you. If you are interested, please
+contact my email
 
--michael
+address (mrs.victoria.alexander2@gmail.com)
 
-[1] 
-https://lore.kernel.org/netdev/20190712075926.7357-4-qiangqing.zhang@nxp.com/
-[2] 
-https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/tree/drivers/net/can/flexcan.c?h=flexcan&id=5f097cd65cb2b42b88e6e1eb186f6a8f0c90559b#n1341
+My WhatsApp number but only message (+19293737780)
+
+Please do not reply if you are not ready
+Thanks
