@@ -1,79 +1,113 @@
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH 2/2] can: flexcan: add support for ISO CAN-FD
-Date: Tue, 30 Jun 2020 02:42:15 +0000
-Message-ID: <DB8PR04MB679504980A67DB8B1EEC8386E66F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+From: Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH 2/2] can: flexcan: add support for ISO CAN-FD
+Date: Tue, 30 Jun 2020 07:53:17 +0200
+Message-ID: <a42e035c8ee3334a721a089b5f8f0580@walle.cc>
 References: <20200629181809.25338-1-michael@walle.cc>
  <20200629181809.25338-3-michael@walle.cc>
+ <DB8PR04MB679504980A67DB8B1EEC8386E66F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-vi1eur05on2076.outbound.protection.outlook.com ([40.107.21.76]:6264
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726019AbgF3CmW (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 29 Jun 2020 22:42:22 -0400
-In-Reply-To: <20200629181809.25338-3-michael@walle.cc>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Michael Walle <michael@walle.cc>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <DB8PR04MB679504980A67DB8B1EEC8386E66F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Sender: netdev-owner@vger.kernel.org
+To: Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Oliver Hartkopp <socketcan@hartkopp.net>
+List-Id: linux-can.vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pY2hhZWwgV2FsbGUgPG1p
-Y2hhZWxAd2FsbGUuY2M+DQo+IFNlbnQ6IDIwMjDE6jbUwjMwyNUgMjoxOA0KPiBUbzogbGludXgt
-Y2FuQHZnZXIua2VybmVsLm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2Vy
-bmVsQHZnZXIua2VybmVsLm9yZw0KPiBDYzogV29sZmdhbmcgR3JhbmRlZ2dlciA8d2dAZ3JhbmRl
-Z2dlci5jb20+OyBNYXJjIEtsZWluZS1CdWRkZQ0KPiA8bWtsQHBlbmd1dHJvbml4LmRlPjsgRGF2
-aWQgUyAuIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IEpha3ViDQo+IEtpY2luc2tpIDxr
-dWJhQGtlcm5lbC5vcmc+OyBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsN
-Cj4gZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47IE1pY2hhZWwgV2FsbGUgPG1pY2hh
-ZWxAd2FsbGUuY2M+DQo+IFN1YmplY3Q6IFtQQVRDSCAyLzJdIGNhbjogZmxleGNhbjogYWRkIHN1
-cHBvcnQgZm9yIElTTyBDQU4tRkQNCj4gDQo+IFVwIHVudGlsIG5vdywgdGhlIGNvbnRyb2xsZXIg
-dXNlZCBub24tSVNPIENBTi1GRCBtb2RlLCBhbHRob3VnaCBpdCBzdXBwb3J0cyBpdC4NCj4gQWRk
-IHN1cHBvcnQgZm9yIElTTyBtb2RlLCB0b28uIEJ5IGRlZmF1bHQgdGhlIGhhcmR3YXJlIGlzIGlu
-IG5vbi1JU08gbW9kZSBhbmQNCj4gYW4gZW5hYmxlIGJpdCBoYXMgdG8gYmUgZXhwbGljaXRseSBz
-ZXQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWVsIFdhbGxlIDxtaWNoYWVsQHdhbGxlLmNj
-Pg0KPiAtLS0NCj4gIGRyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMgfCAxOSArKysrKysrKysrKysr
-KysrLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTYgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMo
-LSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4vZmxleGNhbi5jIGIvZHJpdmVy
-cy9uZXQvY2FuL2ZsZXhjYW4uYyBpbmRleA0KPiAxODNlMDk0ZjhkNjYuLmE5MmQzY2RmNDE5NSAx
-MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KPiArKysgYi9kcml2ZXJz
-L25ldC9jYW4vZmxleGNhbi5jDQo+IEBAIC05NCw2ICs5NCw3IEBADQo+ICAjZGVmaW5lIEZMRVhD
-QU5fQ1RSTDJfTVJQCQlCSVQoMTgpDQo+ICAjZGVmaW5lIEZMRVhDQU5fQ1RSTDJfUlJTCQlCSVQo
-MTcpDQo+ICAjZGVmaW5lIEZMRVhDQU5fQ1RSTDJfRUFDRU4JCUJJVCgxNikNCj4gKyNkZWZpbmUg
-RkxFWENBTl9DVFJMMl9JU09DQU5GREVOCUJJVCgxMikNCj4gDQo+ICAvKiBGTEVYQ0FOIG1lbW9y
-eSBlcnJvciBjb250cm9sIHJlZ2lzdGVyIChNRUNSKSBiaXRzICovDQo+ICAjZGVmaW5lIEZMRVhD
-QU5fTUVDUl9FQ1JXUkRJUwkJQklUKDMxKQ0KPiBAQCAtMTM0NCwxNCArMTM0NSwyNSBAQCBzdGF0
-aWMgaW50IGZsZXhjYW5fY2hpcF9zdGFydChzdHJ1Y3QgbmV0X2RldmljZQ0KPiAqZGV2KQ0KPiAg
-CWVsc2UNCj4gIAkJcmVnX21jciB8PSBGTEVYQ0FOX01DUl9TUlhfRElTOw0KPiANCj4gLQkvKiBN
-Q1IgLSBDQU4tRkQgKi8NCj4gLQlpZiAocHJpdi0+Y2FuLmN0cmxtb2RlICYgQ0FOX0NUUkxNT0RF
-X0ZEKQ0KPiArCS8qIE1DUiwgQ1RSTDINCj4gKwkgKg0KPiArCSAqIENBTi1GRCBtb2RlDQo+ICsJ
-ICogSVNPIENBTi1GRCBtb2RlDQo+ICsJICovDQo+ICsJcmVnX2N0cmwyID0gcHJpdi0+cmVhZCgm
-cmVncy0+Y3RybDIpOw0KPiArCWlmIChwcml2LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVf
-RkQpIHsNCj4gIAkJcmVnX21jciB8PSBGTEVYQ0FOX01DUl9GREVOOw0KPiAtCWVsc2UNCj4gKwkJ
-cmVnX2N0cmwyIHw9IEZMRVhDQU5fQ1RSTDJfSVNPQ0FORkRFTjsNCj4gKwl9IGVsc2Ugew0KPiAg
-CQlyZWdfbWNyICY9IH5GTEVYQ0FOX01DUl9GREVOOw0KPiArCX0NCj4gKw0KPiArCWlmIChwcml2
-LT5jYW4uY3RybG1vZGUgJiBDQU5fQ1RSTE1PREVfRkRfTk9OX0lTTykNCj4gKwkJcmVnX2N0cmwy
-ICY9IH5GTEVYQ0FOX0NUUkwyX0lTT0NBTkZERU47DQoNCg0KSGkgTWljaGFlbCwNCg0KaXAgbGlu
-ayBzZXQgY2FuMCB1cCB0eXBlIGNhbiBiaXRyYXRlIDEwMDAwMDAgZGJpdHJhdGUgNTAwMDAwMCBm
-ZCBvbg0KQWJvdmUgY21kIGNhbiBjb25maWd1cmUgSVNPIENBTi1GRC4NCg0KSG93ZXZlciwgaWYg
-dXNlcnMgd2FudCB0byBjb25maWd1cmUgTk9OLUlTTyBDQU4tRkQsIHNob3VsZCB1c2UgYmVsb3cg
-Y21kLCB3aGF0IEkgZGlkIGJlZm9yZS4NCmlwIGxpbmsgc2V0IGNhbjAgdXAgdHlwZSBjYW4gYml0
-cmF0ZSAxMDAwMDAwIGRiaXRyYXRlIDUwMDAwMDAgZmQgb24gZmQtbm9uLWlzbyBvbg0KDQpNYXJj
-IG1heSBub3Qgc2F0aXNmeSB3aXRoIGl0LCB0byBiZSBob25lc3QsIHRoaXMgbG9va3Mgbm90IGdv
-b2QsIGhhZCBiZXR0ZXIgY29uZmlndXJlIGxpa2UgYmVsb3cgdG8gZW5hYmxlIE5PTi1JU08gQ0FO
-LUZELg0KaXAgbGluayBzZXQgY2FuMCB1cCB0eXBlIGNhbiBiaXRyYXRlIDEwMDAwMDAgZGJpdHJh
-dGUgNTAwMDAwMCBmZC1ub24taXNvIG9uDQoNCkkgaGF2ZW4ndCBnb3QgYW55IGdvb2QgaWRlYXMg
-eWV0Lg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gIAluZXRkZXZfZGJnKGRldiwg
-IiVzOiB3cml0aW5nIG1jcj0weCUwOHgiLCBfX2Z1bmNfXywgcmVnX21jcik7DQo+ICAJcHJpdi0+
-d3JpdGUocmVnX21jciwgJnJlZ3MtPm1jcik7DQo+ICsJcHJpdi0+d3JpdGUocmVnX2N0cmwyLCAm
-cmVncy0+Y3RybDIpOw0KPiANCj4gIAkvKiBDVFJMDQo+ICAJICoNCj4gQEAgLTE5NTIsNiArMTk2
-NCw3IEBAIHN0YXRpYyBpbnQgZmxleGNhbl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+
-ICpwZGV2KQ0KPiANCj4gIAlpZiAocHJpdi0+ZGV2dHlwZV9kYXRhLT5xdWlya3MgJiBGTEVYQ0FO
-X1FVSVJLX1NVUFBPUlRfRkQpIHsNCj4gIAkJcHJpdi0+Y2FuLmN0cmxtb2RlX3N1cHBvcnRlZCB8
-PSBDQU5fQ1RSTE1PREVfRkQ7DQo+ICsJCXByaXYtPmNhbi5jdHJsbW9kZV9zdXBwb3J0ZWQgfD0g
-Q0FOX0NUUkxNT0RFX0ZEX05PTl9JU087DQo+ICAJCXByaXYtPmNhbi5iaXR0aW1pbmdfY29uc3Qg
-PSAmZmxleGNhbl9mZF9iaXR0aW1pbmdfY29uc3Q7DQo+ICAJCXByaXYtPmNhbi5kYXRhX2JpdHRp
-bWluZ19jb25zdCA9DQo+ICAJCQkmZmxleGNhbl9mZF9kYXRhX2JpdHRpbWluZ19jb25zdDsNCj4g
-LS0NCj4gMi4yMC4xDQoNCg==
+[+ Oliver]
+
+Hi Joakim,
+
+Am 2020-06-30 04:42, schrieb Joakim Zhang:
+>> -----Original Message-----
+>> From: Michael Walle <michael@walle.cc>
+>> Sent: 2020年6月30日 2:18
+>> To: linux-can@vger.kernel.org; netdev@vger.kernel.org;
+>> linux-kernel@vger.kernel.org
+>> Cc: Wolfgang Grandegger <wg@grandegger.com>; Marc Kleine-Budde
+>> <mkl@pengutronix.de>; David S . Miller <davem@davemloft.net>; Jakub
+>> Kicinski <kuba@kernel.org>; Joakim Zhang <qiangqing.zhang@nxp.com>;
+>> dl-linux-imx <linux-imx@nxp.com>; Michael Walle <michael@walle.cc>
+>> Subject: [PATCH 2/2] can: flexcan: add support for ISO CAN-FD
+>> 
+>> Up until now, the controller used non-ISO CAN-FD mode, although it 
+>> supports it.
+>> Add support for ISO mode, too. By default the hardware is in non-ISO 
+>> mode and
+>> an enable bit has to be explicitly set.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  drivers/net/can/flexcan.c | 19 ++++++++++++++++---
+>>  1 file changed, 16 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c 
+>> index
+>> 183e094f8d66..a92d3cdf4195 100644
+>> --- a/drivers/net/can/flexcan.c
+>> +++ b/drivers/net/can/flexcan.c
+>> @@ -94,6 +94,7 @@
+>>  #define FLEXCAN_CTRL2_MRP		BIT(18)
+>>  #define FLEXCAN_CTRL2_RRS		BIT(17)
+>>  #define FLEXCAN_CTRL2_EACEN		BIT(16)
+>> +#define FLEXCAN_CTRL2_ISOCANFDEN	BIT(12)
+>> 
+>>  /* FLEXCAN memory error control register (MECR) bits */
+>>  #define FLEXCAN_MECR_ECRWRDIS		BIT(31)
+>> @@ -1344,14 +1345,25 @@ static int flexcan_chip_start(struct 
+>> net_device
+>> *dev)
+>>  	else
+>>  		reg_mcr |= FLEXCAN_MCR_SRX_DIS;
+>> 
+>> -	/* MCR - CAN-FD */
+>> -	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+>> +	/* MCR, CTRL2
+>> +	 *
+>> +	 * CAN-FD mode
+>> +	 * ISO CAN-FD mode
+>> +	 */
+>> +	reg_ctrl2 = priv->read(&regs->ctrl2);
+>> +	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+>>  		reg_mcr |= FLEXCAN_MCR_FDEN;
+>> -	else
+>> +		reg_ctrl2 |= FLEXCAN_CTRL2_ISOCANFDEN;
+>> +	} else {
+>>  		reg_mcr &= ~FLEXCAN_MCR_FDEN;
+>> +	}
+>> +
+>> +	if (priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
+>> +		reg_ctrl2 &= ~FLEXCAN_CTRL2_ISOCANFDEN;
+> 
+> 
+
+[..]
+> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 fd on
+> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 fd on \
+>    fd-non-iso on
+
+vs.
+
+> ip link set can0 up type can bitrate 1000000 dbitrate 5000000 
+> fd-non-iso on
+
+I haven't found anything if CAN_CTRLMODE_FD_NON_ISO depends on
+CAN_CTRLMODE_FD. I.e. wether CAN_CTRLMODE_FD_NON_ISO can only be set if
+CAN_CTRLMODE_FD is also set.
+
+Only the following piece of code, which might be a hint that you
+have to set CAN_CTRLMODE_FD if you wan't to use CAN_CTRLMODE_FD_NON_ISO:
+
+drivers/net/can/dev.c:
+   /* do not check for static fd-non-iso if 'fd' is disabled */
+   if (!(maskedflags & CAN_CTRLMODE_FD))
+           ctrlstatic &= ~CAN_CTRLMODE_FD_NON_ISO;
+
+If CAN_CTRLMODE_FD_NON_ISO can be set without CAN_CTRLMODE_FD, what
+should be the mode if both are set at the same time?
+
+Marc? Oliver?
+
+-michael
