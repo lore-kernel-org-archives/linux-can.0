@@ -1,74 +1,107 @@
-From: Michael Walle <michael@walle.cc>
-Subject: [PATCH 2/2] can: flexcan: add support for ISO CAN-FD
-Date: Mon, 29 Jun 2020 20:18:09 +0200
-Message-ID: <20200629181809.25338-3-michael@walle.cc>
-References: <20200629181809.25338-1-michael@walle.cc>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: RE: [PATCH linux-can-next/flexcan] can: flexcan: fix TDC feature
+Date: Tue, 30 Jun 2020 02:25:56 +0000
+Message-ID: <DB8PR04MB6795751DBB178E1EDF74136FE66F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20200416093126.15242-1-qiangqing.zhang@nxp.com>
+ <20200416093126.15242-2-qiangqing.zhang@nxp.com>
+ <DB8PR04MB6795F7E28A9964A121A06140E6D80@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <d5579883c7e9ab3489ec08a73c407982@walle.cc>
+ <39b5d77bda519c4d836f44a554890bae@walle.cc>
+ <e38cf40b-ead3-81de-0be7-18cca5ca1a0c@pengutronix.de>
+ <9dc13a697c246a5c7c53bdd89df7d3c7@walle.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20200629181809.25338-1-michael@walle.cc>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, Michael Walle <michael@walle.cc>
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <9dc13a697c246a5c7c53bdd89df7d3c7@walle.cc>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: Michael Walle <michael@walle.cc>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-can.vger.kernel.org
 
-Up until now, the controller used non-ISO CAN-FD mode, although it
-supports it. Add support for ISO mode, too. By default the hardware
-is in non-ISO mode and an enable bit has to be explicitly set.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/net/can/flexcan.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 183e094f8d66..a92d3cdf4195 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -94,6 +94,7 @@
- #define FLEXCAN_CTRL2_MRP		BIT(18)
- #define FLEXCAN_CTRL2_RRS		BIT(17)
- #define FLEXCAN_CTRL2_EACEN		BIT(16)
-+#define FLEXCAN_CTRL2_ISOCANFDEN	BIT(12)
- 
- /* FLEXCAN memory error control register (MECR) bits */
- #define FLEXCAN_MECR_ECRWRDIS		BIT(31)
-@@ -1344,14 +1345,25 @@ static int flexcan_chip_start(struct net_device *dev)
- 	else
- 		reg_mcr |= FLEXCAN_MCR_SRX_DIS;
- 
--	/* MCR - CAN-FD */
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+	/* MCR, CTRL2
-+	 *
-+	 * CAN-FD mode
-+	 * ISO CAN-FD mode
-+	 */
-+	reg_ctrl2 = priv->read(&regs->ctrl2);
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
- 		reg_mcr |= FLEXCAN_MCR_FDEN;
--	else
-+		reg_ctrl2 |= FLEXCAN_CTRL2_ISOCANFDEN;
-+	} else {
- 		reg_mcr &= ~FLEXCAN_MCR_FDEN;
-+	}
-+
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
-+		reg_ctrl2 &= ~FLEXCAN_CTRL2_ISOCANFDEN;
- 
- 	netdev_dbg(dev, "%s: writing mcr=0x%08x", __func__, reg_mcr);
- 	priv->write(reg_mcr, &regs->mcr);
-+	priv->write(reg_ctrl2, &regs->ctrl2);
- 
- 	/* CTRL
- 	 *
-@@ -1952,6 +1964,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) {
- 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD;
-+		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD_NON_ISO;
- 		priv->can.bittiming_const = &flexcan_fd_bittiming_const;
- 		priv->can.data_bittiming_const =
- 			&flexcan_fd_data_bittiming_const;
--- 
-2.20.1
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pY2hhZWwgV2FsbGUgPG1p
+Y2hhZWxAd2FsbGUuY2M+DQo+IFNlbnQ6IDIwMjDE6jbUwjMwyNUgMDoyMw0KPiBUbzogTWFyYyBL
+bGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT4NCj4gQ2M6IEpvYWtpbSBaaGFuZyA8cWlh
+bmdxaW5nLnpoYW5nQG54cC5jb20+OyBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOw0KPiBkbC1s
+aW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZw0KPiBT
+dWJqZWN0OiBSZTogW1BBVENIIGxpbnV4LWNhbi1uZXh0L2ZsZXhjYW5dIGNhbjogZmxleGNhbjog
+Zml4IFREQyBmZWF0dXJlDQo+IA0KPiBIaSBNYXJjLA0KPiANCj4gPiBJJ3ZlIGNsZWFuZWQgdXAg
+dGhlIHBhdGNoZXMgYSBiaXQsIGNhbiB5b3UgdGVzdCB0aGlzIGJyYW5jaDoNCj4gPg0KPiA+IGh0
+dHBzOi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20vP3VybD1odHRwcyUz
+QSUyRiUyRmdpdC4NCj4gPg0KPiBrZXJuZWwub3JnJTJGcHViJTJGc2NtJTJGbGludXglMkZrZXJu
+ZWwlMkZnaXQlMkZta2wlMkZsaW51eC1jYW4tbmV4dC5nDQo+ID4NCj4gaXQlMkZsb2clMkYlM0Zo
+JTNEZmxleGNhbiZhbXA7ZGF0YT0wMiU3QzAxJTdDcWlhbmdxaW5nLnpoYW5nJTQwbngNCj4gcC5j
+b20NCj4gPiAlN0M3YzFkMGVmN2Q4MTM0YzFhMDFkZDA4ZDgxYzQ4YjU1YyU3QzY4NmVhMWQzYmMy
+YjRjNmZhOTJjZDk5YzUNCj4gYzMwMTYzNQ0KPiA+ICU3QzAlN0MxJTdDNjM3MjkwNDQ1OTI1MTUx
+NjU0JmFtcDtzZGF0YT1xWWFNNmdVb1hFRCUyRmNkSGhSDQo+IGt6WnI5RDFldjh0DQo+ID4gZklu
+MmJqN2tuQVpWYVZ3JTNEJmFtcDtyZXNlcnZlZD0wDQo+IA0KPiBUaGlzIGlzIHdvcmtpbmcsIGJ1
+dCBhcyBKb2FraW0gYWxyZWFkeSBzYWlkLCBDQU4tRkQgSVNPIG1vZGUgaXMgbWlzc2luZy4NCj4g
+SXQgZGVmYXVsdHMgdG8gbm9uLUlTTyBtb2RlLCB3aGljaCBpcyBldmVuIHdvcnNlLCBJTUhPLg0K
+PiANCj4gQnV0IEkndmUgYWxzbyBub3RpY2VkIGEgZGlmZmVyZW5jZSBiZXR3ZWVuIHRoZSBvcmln
+aW5hbCBwYXRjaCBhbmQgdGhlIG9uZSBpbiB0aGF0DQo+IGJyYW5jaC4gV2hlbiBGRCBtb2RlIGlz
+IGVuYWJsZWQgdGhlIG9yaWdpbmFsIHBhdGNoIGNoZWNrcyB0aGUNCj4gcHJpdi0+Y2FuLmNvbnRy
+b2xtb2RlIFsxXSwgdGhlIHBhdGNoIGluIHRoZSBicmFuY2ggbG9va3MgYXQNCj4gcHJpdi0+Y2Fu
+LmN0cmxtb2RlX3N1cHBvcnRlZCBpbnN0ZWFkIFsyXSwgaXMgdGhhdCBjb3JyZWN0Pw0KDQoNCkhp
+IE1hcmMsIE1pY2hhZWwsDQoNCkkgaGF2ZSBhbHNvIG5vdGljZWQgdGhpcyBkaWZmZXJlbmNlLCBh
+bHRob3VnaCB0aGlzIGNvdWxkIG5vdCBicmVhayBmdW5jdGlvbiwgYnV0IElNTywgdXNpbmcgcHJp
+di0+Y2FuLmN0cmxtb2RlIHNob3VsZCBiZSBiZXR0ZXIuDQoNClNvbWUgbml0cGlja3M6DQoxKSBD
+YW4gd2UgdXNlIHVuaWZvcm0gY2hlY2sgZm9yIEhXIHdoaWNoIHN1cHBvcnRzIENBTiBGRCBpbiB0
+aGUgZHJpdmVyLCB1c2luZyBwcml2LT5jYW4uY3RybG1vZGVfc3VwcG9ydGVkIGluc3RlYWQgb2Yg
+cXVpcmtzPw0KLS0tIGEvZHJpdmVycy9uZXQvY2FuL2ZsZXhjYW4uYw0KKysrIGIvZHJpdmVycy9u
+ZXQvY2FuL2ZsZXhjYW4uYw0KQEAgLTEzOTIsNyArMTM5Miw3IEBAIHN0YXRpYyBpbnQgZmxleGNh
+bl9jaGlwX3N0YXJ0KHN0cnVjdCBuZXRfZGV2aWNlICpkZXYpDQogICAgICAgICAgICAgICAgcHJp
+di0+d3JpdGUocmVnX2N0cmwyLCAmcmVncy0+Y3RybDIpOw0KICAgICAgICB9DQoNCi0gICAgICAg
+aWYgKChwcml2LT5kZXZ0eXBlX2RhdGEtPnF1aXJrcyAmIEZMRVhDQU5fUVVJUktfU1VQUE9SVF9G
+RCkpIHsNCisgICAgICAgaWYgKHByaXYtPmNhbi5jdHJsbW9kZV9zdXBwb3J0ZWQgJiBDQU5fQ1RS
+TE1PREVfRkQpIHsNCiAgICAgICAgICAgICAgICB1MzIgcmVnX2ZkY3RybDsNCg0KICAgICAgICAg
+ICAgICAgIHJlZ19mZGN0cmwgPSBwcml2LT5yZWFkKCZyZWdzLT5mZGN0cmwpOw0KDQpBbHNvIGRl
+bGV0ZSB0aGUgcmVkdW5kYW50IHBhcmVudGhlc2VzIGhlcmUuDQoNCjIpIENsZWFuIHRpbWluZyBy
+ZWdpc3Rlci4NCi0tLSBhL2RyaXZlcnMvbmV0L2Nhbi9mbGV4Y2FuLmMNCisrKyBiL2RyaXZlcnMv
+bmV0L2Nhbi9mbGV4Y2FuLmMNCkBAIC0xMTY3LDYgKzExNjcsMTQgQEAgc3RhdGljIHZvaWQgZmxl
+eGNhbl9zZXRfYml0dGltaW5nX2NidChjb25zdCBzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQ0KICAg
+ICAgICBzdHJ1Y3QgZmxleGNhbl9yZWdzIF9faW9tZW0gKnJlZ3MgPSBwcml2LT5yZWdzOw0KICAg
+ICAgICB1MzIgcmVnX2NidCwgcmVnX2ZkY3RybDsNCg0KKyAgICAgICByZWdfY2J0ID0gcHJpdi0+
+cmVhZCgmcmVncy0+Y2J0KTsNCisgICAgICAgcmVnX2NidCAmPSB+KEZMRVhDQU5fQ0JUX0JURiB8
+DQorICAgICAgICAgICAgICAgRklFTERfUFJFUChGTEVYQ0FOX0NCVF9FUFJFU0RJVl9NQVNLLCAw
+eDNmZikgfA0KKyAgICAgICAgICAgICAgIEZJRUxEX1BSRVAoRkxFWENBTl9DQlRfRVJKV19NQVNL
+LCAweDFmKSB8DQorICAgICAgICAgICAgICAgRklFTERfUFJFUChGTEVYQ0FOX0NCVF9FUFJPUFNF
+R19NQVNLLCAweDNmKSB8DQorICAgICAgICAgICAgICAgRklFTERfUFJFUChGTEVYQ0FOX0NCVF9F
+UFNFRzFfTUFTSywgMHgxZikgfA0KKyAgICAgICAgICAgICAgIEZJRUxEX1BSRVAoRkxFWENBTl9D
+QlRfRVBTRUcyX01BU0ssIDB4MWYpKTsNCisNCiAgICAgICAgLyogQ0JUICovDQogICAgICAgIC8q
+IENCVFtFUFNFRzFdIGlzIDUgYml0IGxvbmcgYW5kIENCVFtFUFJPUFNFR10gaXMgNiBiaXQNCiAg
+ICAgICAgICogbG9uZy4gVGhlIGNhbl9jYWxjX2JpdHRpbWluZygpIHRyaWVzIHRvIGRpdmlkZSB0
+aGUgdHNlZzENCkBAIC0xMTkyLDYgKzEyMDAsMTMgQEAgc3RhdGljIHZvaWQgZmxleGNhbl9zZXRf
+Yml0dGltaW5nX2NidChjb25zdCBzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQ0KICAgICAgICBpZiAo
+cHJpdi0+Y2FuLmN0cmxtb2RlICYgQ0FOX0NUUkxNT0RFX0ZEKSB7DQogICAgICAgICAgICAgICAg
+dTMyIHJlZ19mZGNidDsNCg0KKyAgICAgICAgICAgICAgIHJlZ19mZGNidCA9IHByaXYtPnJlYWQo
+JnJlZ3MtPmZkY2J0KTsNCisgICAgICAgICAgICAgICByZWdfZmRjYnQgJj0gfihGSUVMRF9QUkVQ
+KEZMRVhDQU5fRkRDQlRfRlBSRVNESVZfTUFTSywgMHgzZmYpIHwNCisgICAgICAgICAgICAgICAg
+ICAgICAgIEZJRUxEX1BSRVAoRkxFWENBTl9GRENCVF9GUkpXX01BU0ssIDB4NykgfA0KKyAgICAg
+ICAgICAgICAgICAgICAgICAgRklFTERfUFJFUChGTEVYQ0FOX0ZEQ0JUX0ZQUk9QU0VHX01BU0ss
+IDB4MWYpIHwNCisgICAgICAgICAgICAgICAgICAgICAgIEZJRUxEX1BSRVAoRkxFWENBTl9GRENC
+VF9GUFNFRzFfTUFTSywgMHg3KSB8DQorICAgICAgICAgICAgICAgICAgICAgICBGSUVMRF9QUkVQ
+KEZMRVhDQU5fRkRDQlRfRlBTRUcyX01BU0ssIDB4NykpOw0KKw0KICAgICAgICAgICAgICAgIGlm
+IChidC0+YnJwICE9IGRidC0+YnJwKQ0KICAgICAgICAgICAgICAgICAgICAgICAgbmV0ZGV2X3dh
+cm4oZGV2LCAiRGF0YSBicnA9JWQgYW5kIGJycD0lZCBkb24ndCBtYXRjaCwgdGhpcyBtYXkgcmVz
+dWx0IGluIGEgcGhhc2UgZXJyb3IuIENvbnNpZGVyIHVzaW5nIGRpZmZlcmVudCBiaXRyYXRlIGFu
+ZC9vciBkYXRhIGJpdHJhdGUuXG4iLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgZGJ0LT5icnAsIGJ0LT5icnApOw0KDQoNClRoaXMgaXMganVzdCBteSBzdWdnZXN0aW9uLCB0
+byBzZWUgaWYgaXQgaXMgcmVhc29uYWJsZS4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5n
+DQo+IC1taWNoYWVsDQo+IA0KPiBbMV0NCj4gaHR0cHM6Ly9ldXIwMS5zYWZlbGlua3MucHJvdGVj
+dGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHBzJTNBJTJGJTJGbG9yZS5rZXINCj4gbmVsLm9yZyUy
+Rm5ldGRldiUyRjIwMTkwNzEyMDc1OTI2LjczNTctNC1xaWFuZ3FpbmcuemhhbmclNDBueHAuY29t
+JQ0KPiAyRiZhbXA7ZGF0YT0wMiU3QzAxJTdDcWlhbmdxaW5nLnpoYW5nJTQwbnhwLmNvbSU3Qzdj
+MWQwZWY3ZDgxMzRjDQo+IDFhMDFkZDA4ZDgxYzQ4YjU1YyU3QzY4NmVhMWQzYmMyYjRjNmZhOTJj
+ZDk5YzVjMzAxNjM1JTdDMCU3QzElNw0KPiBDNjM3MjkwNDQ1OTI1MTUxNjU0JmFtcDtzZGF0YT1o
+cUYyM2FQV1ZFUHNJdUd2eGlpcm5FZFQ2S0hPVUxGJTJGDQo+IHFCaTdGYUZZM3RnJTNEJmFtcDty
+ZXNlcnZlZD0wDQo+IFsyXQ0KPiBodHRwczovL2V1cjAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91
+dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZnaXQua2Vybg0KPiBlbC5vcmclMkZwdWIlMkZz
+Y20lMkZsaW51eCUyRmtlcm5lbCUyRmdpdCUyRm1rbCUyRmxpbnV4LWNhbi1uZXh0LmdpdCUyDQo+
+IEZ0cmVlJTJGZHJpdmVycyUyRm5ldCUyRmNhbiUyRmZsZXhjYW4uYyUzRmglM0RmbGV4Y2FuJTI2
+aWQlM0Q1ZjA5N2MNCj4gZDY1Y2IyYjQyYjg4ZTZlMWViMTg2ZjZhOGYwYzkwNTU5YiUyM24xMzQx
+JmFtcDtkYXRhPTAyJTdDMDElN0NxaQ0KPiBhbmdxaW5nLnpoYW5nJTQwbnhwLmNvbSU3QzdjMWQw
+ZWY3ZDgxMzRjMWEwMWRkMDhkODFjNDhiNTVjJTdDNjg2DQo+IGVhMWQzYmMyYjRjNmZhOTJjZDk5
+YzVjMzAxNjM1JTdDMCU3QzElN0M2MzcyOTA0NDU5MjUxNTE2NTQmYW1wOw0KPiBzZGF0YT1HV0E3
+U3FEQTl0U2k5bXVkS1JDNEcybnJMVzRGaldKR1hpZkplOGMzVjBRJTNEJmFtcDtyZXNlcnYNCj4g
+ZWQ9MA0K
