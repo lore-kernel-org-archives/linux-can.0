@@ -1,98 +1,37 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: Re: [PATCH] can: mcp251x: add support for half duplex controllers
-Date: Tue, 30 Jun 2020 10:11:33 -0700
-Message-ID: <CAJ+vNU1sEqo4ty68-9LeKFd4oY-qKiEt7_unp-1oCjX=+XQr7g@mail.gmail.com>
-References: <1590679677-2678-1-git-send-email-tharvey@gateworks.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH 1/7] Documentation: networking: arcnet: drop doubled word
+Date: Fri,  3 Jul 2020 15:41:09 -0700
+Message-ID: <20200703224115.29769-2-rdunlap@infradead.org>
+References: <20200703224115.29769-1-rdunlap@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1590679677-2678-1-git-send-email-tharvey@gateworks.com>
-Sender: netdev-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Cc: "David S . Miller" <davem@davemloft.net>, Sean Nyekjaer <sean@geanix.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, =?UTF-8?B?VGltbyBTY2hsw7zDn2xlcg==?= <schluessler@krause.de>, "Gustavo A . R . Silva" <gustavo@embeddedor.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20200703224115.29769-1-rdunlap@infradead.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-hams@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Vivien Didelot <vivien.didelot@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org
 List-Id: linux-can.vger.kernel.org
 
-On Thu, May 28, 2020 at 8:28 AM Tim Harvey <tharvey@gateworks.com> wrote:
->
-> Some SPI host controllers do not support full-duplex SPI and are
-> marked as such via the SPI_CONTROLLER_HALF_DUPLEX controller flag.
->
-> For such controllers use half duplex transactions but retain full
-> duplex transactions for the controllers that can handle those.
->
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
->  drivers/net/can/spi/mcp251x.c | 34 +++++++++++++++++++++++++++-------
->  1 file changed, 27 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-> index 5009ff2..203ef20 100644
-> --- a/drivers/net/can/spi/mcp251x.c
-> +++ b/drivers/net/can/spi/mcp251x.c
-> @@ -290,8 +290,12 @@ static u8 mcp251x_read_reg(struct spi_device *spi, u8 reg)
->         priv->spi_tx_buf[0] = INSTRUCTION_READ;
->         priv->spi_tx_buf[1] = reg;
->
-> -       mcp251x_spi_trans(spi, 3);
-> -       val = priv->spi_rx_buf[2];
-> +       if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
-> +               spi_write_then_read(spi, priv->spi_tx_buf, 2, &val, 1);
-> +       } else {
-> +               mcp251x_spi_trans(spi, 3);
-> +               val = priv->spi_rx_buf[2];
-> +       }
->
->         return val;
->  }
-> @@ -303,10 +307,18 @@ static void mcp251x_read_2regs(struct spi_device *spi, u8 reg, u8 *v1, u8 *v2)
->         priv->spi_tx_buf[0] = INSTRUCTION_READ;
->         priv->spi_tx_buf[1] = reg;
->
-> -       mcp251x_spi_trans(spi, 4);
-> +       if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
-> +               u8 val[2] = { 0 };
->
-> -       *v1 = priv->spi_rx_buf[2];
-> -       *v2 = priv->spi_rx_buf[3];
-> +               spi_write_then_read(spi, priv->spi_tx_buf, 2, val, 2);
-> +               *v1 = val[0];
-> +               *v2 = val[1];
-> +       } else {
-> +               mcp251x_spi_trans(spi, 4);
-> +
-> +               *v1 = priv->spi_rx_buf[2];
-> +               *v2 = priv->spi_rx_buf[3];
-> +       }
->  }
->
->  static void mcp251x_write_reg(struct spi_device *spi, u8 reg, u8 val)
-> @@ -409,8 +421,16 @@ static void mcp251x_hw_rx_frame(struct spi_device *spi, u8 *buf,
->                         buf[i] = mcp251x_read_reg(spi, RXBCTRL(buf_idx) + i);
->         } else {
->                 priv->spi_tx_buf[RXBCTRL_OFF] = INSTRUCTION_READ_RXB(buf_idx);
-> -               mcp251x_spi_trans(spi, SPI_TRANSFER_BUF_LEN);
-> -               memcpy(buf, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN);
-> +               if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
-> +                       spi_write_then_read(spi, priv->spi_tx_buf, 1,
-> +                                           priv->spi_rx_buf,
-> +                                           SPI_TRANSFER_BUF_LEN);
-> +                       memcpy(buf + 1, priv->spi_rx_buf,
-> +                              SPI_TRANSFER_BUF_LEN - 1);
-> +               } else {
-> +                       mcp251x_spi_trans(spi, SPI_TRANSFER_BUF_LEN);
-> +                       memcpy(buf, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN);
-> +               }
->         }
->  }
->
-> --
-> 2.7.4
->
+Drop the doubled word "to".
 
-Marc / Wolfgang,
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+---
+ Documentation/networking/arcnet.rst |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Any feedback on this?
-
-Best Regards,
-
-Tim
+--- linux-next-20200701.orig/Documentation/networking/arcnet.rst
++++ linux-next-20200701/Documentation/networking/arcnet.rst
+@@ -434,7 +434,7 @@ can set up your network then:
+ 	ifconfig arc0 insight
+ 	route add insight arc0
+ 	route add freedom arc0	/* I would use the subnet here (like I said
+-					to to in "single protocol" above),
++					to in "single protocol" above),
+ 					but the rest of the subnet
+ 					unfortunately lies across the PPP
+ 					link on freedom, which confuses
