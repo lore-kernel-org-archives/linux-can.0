@@ -1,58 +1,95 @@
-From: trix@redhat.com
-Subject: [PATCH] can: j1939: fix double free in j1939_netdev_start
-Date: Fri, 10 Jul 2020 06:45:36 -0700
-Message-ID: <20200710134536.4399-1-trix@redhat.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: robin@protonic.nl, linux@rempel-privat.de, kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org, ecathinds@gmail.com, lkp@intel.com, bst@pengutronix.de, maxime.jayat@mobile-devices.fr
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+From: syzbot <syzbot+d2ff507f470081495266@syzkaller.appspotmail.com>
+Subject: general protection fault in raw_notifier
+Date: Fri, 10 Jul 2020 11:38:18 -0700
+Message-ID: <0000000000000714f605aa1aa56c@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, mkl@pengutronix.de, netdev@vger.kernel.org, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Hello,
 
-clang static analysis flags this error
+syzbot found the following crash on:
 
-j1939/main.c:292:2: warning: Attempt to free released memory [unix.Malloc]
-        kfree(priv);
-        ^~~~~~~~~~~
+HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=111cddcb100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2ff507f470081495266
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-The problem block of code is
+Unfortunately, I don't have any reproducer for this crash yet.
 
-	ret = j1939_can_rx_register(priv);
-	if (ret < 0)
-		goto out_priv_put;
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+d2ff507f470081495266@syzkaller.appspotmail.com
 
-	return priv;
+general protection fault, probably for non-canonical address 0xe0000aeee00000aa: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x0000777700000550-0x0000777700000557]
+CPU: 0 PID: 8345 Comm: syz-executor.5 Not tainted 5.8.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:read_pnet include/net/net_namespace.h:330 [inline]
+RIP: 0010:dev_net include/linux/netdevice.h:2261 [inline]
+RIP: 0010:raw_notifier+0x7c/0x740 net/can/raw.c:273
+Code: 03 80 3c 02 00 0f 85 de 05 00 00 4d 8d b7 98 05 00 00 48 8b ab 70 fb ff ff 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 cc 05 00 00 49 3b af 98 05 00 00 74 16 e8 0c 5d
+RSP: 0018:ffffc9001ab27c78 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff88802521c4c0 RCX: ffffc90014660000
+RDX: 00000eeee00000aa RSI: ffffffff871159dc RDI: ffff88802521c030
+RBP: ffff88805602a180 R08: 0000000000000000 R09: ffffffff8a7b30cb
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000005
+R13: ffffed1004a43898 R14: 0000777700000550 R15: 00007776ffffffb8
+FS:  00007fe94efbf700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b32d21000 CR3: 00000001e1c55000 CR4: 00000000001426f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ call_netdevice_notifier net/core/dev.c:1727 [inline]
+ call_netdevice_register_notifiers net/core/dev.c:1735 [inline]
+ call_netdevice_register_net_notifiers+0xdd/0x2b0 net/core/dev.c:1765
+ register_netdevice_notifier+0xf5/0x260 net/core/dev.c:1816
+ raw_init+0x296/0x340 net/can/raw.c:339
+ can_create+0x27c/0x4d0 net/can/af_can.c:168
+ __sock_create+0x3ca/0x740 net/socket.c:1428
+ sock_create net/socket.c:1479 [inline]
+ __sys_socket+0xef/0x200 net/socket.c:1521
+ __do_sys_socket net/socket.c:1530 [inline]
+ __se_sys_socket net/socket.c:1528 [inline]
+ __x64_sys_socket+0x6f/0xb0 net/socket.c:1528
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45cb29
+Code: Bad RIP value.
+RSP: 002b:00007fe94efbec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 00000000005084a0 RCX: 000000000045cb29
+RDX: 0000000000000001 RSI: 0000000000000003 RDI: 000000000000001d
+RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 0000000000000bb8 R14: 00000000004ce1ab R15: 00007fe94efbf6d4
+Modules linked in:
+---[ end trace 8db5579e5986dda6 ]---
+RIP: 0010:read_pnet include/net/net_namespace.h:330 [inline]
+RIP: 0010:dev_net include/linux/netdevice.h:2261 [inline]
+RIP: 0010:raw_notifier+0x7c/0x740 net/can/raw.c:273
+Code: 03 80 3c 02 00 0f 85 de 05 00 00 4d 8d b7 98 05 00 00 48 8b ab 70 fb ff ff 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 cc 05 00 00 49 3b af 98 05 00 00 74 16 e8 0c 5d
+RSP: 0018:ffffc9001ab27c78 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff88802521c4c0 RCX: ffffc90014660000
+RDX: 00000eeee00000aa RSI: ffffffff871159dc RDI: ffff88802521c030
+RBP: ffff88805602a180 R08: 0000000000000000 R09: ffffffff8a7b30cb
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000005
+R13: ffffed1004a43898 R14: 0000777700000550 R15: 00007776ffffffb8
+FS:  00007fe94efbf700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe94ef7cdb8 CR3: 00000001e1c55000 CR4: 00000000001426f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
- out_priv_put:
-	j1939_priv_set(ndev, NULL);
-	dev_put(ndev);
-	kfree(priv);
 
-When j1939_can_rx_register fails, it frees priv via the
-j1939_priv_put release function __j1939_priv_release.
-
-Since j1939_priv_put is used widely, remove the second
-free from j1939_netdev_start.
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-
-Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- net/can/j1939/main.c | 1 -
- 1 file changed, 1 deletion(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 137054bff9ec..991a74bc491b 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -289,7 +289,6 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
-  out_priv_put:
- 	j1939_priv_set(ndev, NULL);
- 	dev_put(ndev);
--	kfree(priv);
- 
- 	return ERR_PTR(ret);
- }
--- 
-2.18.1
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
