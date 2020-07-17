@@ -1,80 +1,37 @@
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
-Subject: [PATCH net-next] can: mscan: simplify clock enable/disable
-Date: Fri, 17 Jul 2020 16:01:15 +0800
-Message-ID: <1594972875-27631-1-git-send-email-zhangchangzhong@huawei.com>
+From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH 22/22] net: make ->{get,set}sockopt in proto_ops optional
+Date: Fri, 17 Jul 2020 10:01:28 +0200
+Message-ID: <5f88e695-d787-2191-feef-883a067788ed@pengutronix.de>
+References: <20200717062331.691152-1-hch@lst.de>
+ <20200717062331.691152-23-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49170 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726198AbgGQIBX (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:01:23 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org, faber@faberman.de
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20200717062331.691152-23-hch-jcswGhMUV9g@public.gmane.org>
+Content-Language: de-DE
+Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
+Cc: Alexei Starovoitov <ast-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Daniel Borkmann <daniel-FeC+5ew28dpmcu3hnIyYJQ@public.gmane.org>, Chas Williams <3chas3-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Pablo Neira Ayuso <pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>, Jozsef Kadlecsik <kadlec-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>, Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>, Alexey Kuznetsov <kuznet-v/Mj1YrvjDBInbfyfbPRSQ@public.gmane.org>, Hideaki YOSHIFUJI <yoshfuji-VfPWfsRibaP+Ru+s062T9g@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bpf-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bridge-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dccp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wpan-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mptcp-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-All the NULL checks are pointless, clk_*() routines already deal with
-NULL just fine.
+On 7/17/20 8:23 AM, Christoph Hellwig wrote:
+> Just check for a NULL method instead of wiring up
+> sock_no_{get,set}sockopt.
+> 
+> Signed-off-by: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
+> ---
+>  net/can/bcm.c               |  2 --
+>  net/core/sock.c             | 14 --------------
 
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/net/can/mscan/mscan.c | 28 ++++++++++------------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+For the CAN part:
 
-diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
-index 99101d7..d4390b6 100644
---- a/drivers/net/can/mscan/mscan.c
-+++ b/drivers/net/can/mscan/mscan.c
-@@ -540,16 +540,12 @@ static int mscan_open(struct net_device *dev)
- 	struct mscan_priv *priv = netdev_priv(dev);
- 	struct mscan_regs __iomem *regs = priv->reg_base;
- 
--	if (priv->clk_ipg) {
--		ret = clk_prepare_enable(priv->clk_ipg);
--		if (ret)
--			goto exit_retcode;
--	}
--	if (priv->clk_can) {
--		ret = clk_prepare_enable(priv->clk_can);
--		if (ret)
--			goto exit_dis_ipg_clock;
--	}
-+	ret = clk_prepare_enable(priv->clk_ipg);
-+	if (ret)
-+		goto exit_retcode;
-+	ret = clk_prepare_enable(priv->clk_can);
-+	if (ret)
-+		goto exit_dis_ipg_clock;
- 
- 	/* common open */
- 	ret = open_candev(dev);
-@@ -583,11 +579,9 @@ static int mscan_open(struct net_device *dev)
- 	napi_disable(&priv->napi);
- 	close_candev(dev);
- exit_dis_can_clock:
--	if (priv->clk_can)
--		clk_disable_unprepare(priv->clk_can);
-+	clk_disable_unprepare(priv->clk_can);
- exit_dis_ipg_clock:
--	if (priv->clk_ipg)
--		clk_disable_unprepare(priv->clk_ipg);
-+	clk_disable_unprepare(priv->clk_ipg);
- exit_retcode:
- 	return ret;
- }
-@@ -606,10 +600,8 @@ static int mscan_close(struct net_device *dev)
- 	close_candev(dev);
- 	free_irq(dev->irq, dev);
- 
--	if (priv->clk_can)
--		clk_disable_unprepare(priv->clk_can);
--	if (priv->clk_ipg)
--		clk_disable_unprepare(priv->clk_ipg);
-+	clk_disable_unprepare(priv->clk_can);
-+	clk_disable_unprepare(priv->clk_ipg);
- 
- 	return 0;
- }
+Acked-by: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+
+Marc
+
 -- 
-1.8.3.1
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
