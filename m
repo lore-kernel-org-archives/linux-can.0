@@ -1,61 +1,43 @@
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
-Subject: [PATCH net-next v2] can: ti_hecc: add missed clk_disable_unprepare() in error path
-Date: Fri, 17 Jul 2020 16:04:39 +0800
-Message-ID: <1594973079-27743-1-git-send-email-zhangchangzhong@huawei.com>
+From: Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [MPTCP] [PATCH 05/22] net: remove
+ compat_sock_common_{get,set}sockopt
+Date: Fri, 17 Jul 2020 11:18:08 +0200
+Message-ID: <203f5f41-1de0-575e-864b-53a9412d97f6@tessares.net>
+References: <20200717062331.691152-1-hch@lst.de>
+ <20200717062331.691152-6-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7778 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726233AbgGQIEx (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 17 Jul 2020 04:04:53 -0400
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20200717062331.691152-6-hch@lst.de>
+Content-Language: en-GB
+Sender: linux-arch-owner@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Chas Williams <3chas3@gmail.com>, Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, linux-sctp@vger.kernel.org, linux-arch@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org, mptcp@lists.01.org
+List-Id: linux-can.vger.kernel.org
 
-The driver forgets to call clk_disable_unprepare() in error path after
-a success calling for clk_prepare_enable().
+Hi Christoph,
 
-Fix it by adding a clk_disable_unprepare() in error path.
+On 17/07/2020 08:23, Christoph Hellwig wrote:
+> Add the compat handling to sock_common_{get,set}sockopt instead,
+> keyed of in_compat_syscall().  This allow to remove the now unused
+> ->compat_{get,set}sockopt methods from struct proto_ops.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   include/linux/net.h      |  6 ------
+>   include/net/sock.h       |  4 ----
+>   net/core/sock.c          | 30 ++++++------------------------
+>   net/mptcp/protocol.c     |  6 ------
 
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/net/can/ti_hecc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Thank you for looking at that!
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 94b1491..228ecd4 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -950,7 +950,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	err = clk_prepare_enable(priv->clk);
- 	if (err) {
- 		dev_err(&pdev->dev, "clk_prepare_enable() failed\n");
--		goto probe_exit_clk;
-+		goto probe_exit_release_clk;
- 	}
- 
- 	priv->offload.mailbox_read = ti_hecc_mailbox_read;
-@@ -959,7 +959,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	err = can_rx_offload_add_timestamp(ndev, &priv->offload);
- 	if (err) {
- 		dev_err(&pdev->dev, "can_rx_offload_add_timestamp() failed\n");
--		goto probe_exit_clk;
-+		goto probe_exit_disable_clk;
- 	}
- 
- 	err = register_candev(ndev);
-@@ -977,7 +977,9 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 
- probe_exit_offload:
- 	can_rx_offload_del(&priv->offload);
--probe_exit_clk:
-+probe_exit_disable_clk:
-+	clk_disable_unprepare(priv->clk);
-+probe_exit_release_clk:
- 	clk_put(priv->clk);
- probe_exit_candev:
- 	free_candev(ndev);
+For MPTCP-related code:
+
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+
+Cheers,
+Matt
 -- 
-1.8.3.1
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
