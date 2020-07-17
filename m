@@ -1,276 +1,179 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 04/22] net: simplify cBPF setsockopt compat handling
-Date: Fri, 17 Jul 2020 08:23:13 +0200
-Message-ID: <20200717062331.691152-5-hch@lst.de>
-References: <20200717062331.691152-1-hch@lst.de>
+From: =?utf-8?B?U3TDqXBoYW5lIEdyb3NqZWFu?= <s.grosjean@peak-system.com>
+Subject: RE: [Bug] Kernel Panic on Deletion of the network-namespace
+ containing the SocketCAN interface
+Date: Fri, 17 Jul 2020 07:55:16 +0000
+Message-ID: <DB7PR03MB505186792325DBBF2471EF1ED67C0@DB7PR03MB5051.eurprd03.prod.outlook.com>
+References: <20ea6d4c00dc4d5f99cd004677280369@hs-karlsruhe.de>
+ <88fb5401-746a-5589-650d-a88fde43b122@hartkopp.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20200717062331.691152-1-hch@lst.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "David S. Miller" <davem@davemloft.net>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Chas Williams <3chas3@gmail.com>, Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, linux-sctp@vger.kernel.org, linux-arch@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org, mptcp@lists.01.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-eopbgr140054.outbound.protection.outlook.com ([40.107.14.54]:64612
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726105AbgGQHzW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 17 Jul 2020 03:55:22 -0400
+In-Reply-To: <88fb5401-746a-5589-650d-a88fde43b122@hartkopp.net>
+Content-Language: fr-FR
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Philipp Lehmann <leph1016@hs-karlsruhe.de>, "wg@grandegger.com" <wg@grandegger.com>, "mkl@pengutronix.de" <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "christian.sauer.w@sew-eurodrive.de" <christian.sauer.w@sew-eurodrive.de>
 
-Add a helper that copies either a native or compat bpf_fprog from
-userspace after verifying the length, and remove the compat setsockopt
-handlers that now aren't required.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/filter.h |  4 ++--
- include/net/compat.h   |  1 -
- net/compat.c           | 45 +-----------------------------------------
- net/core/filter.c      | 23 +++++++++++++++++++++
- net/core/sock.c        | 30 ++++++++++------------------
- net/packet/af_packet.c | 33 ++++---------------------------
- 6 files changed, 40 insertions(+), 96 deletions(-)
-
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 0b0144752d780a..4d049c8e1fbeaa 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -502,13 +502,11 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
- 		offsetof(TYPE, MEMBER);						\
- 	})
- 
--#ifdef CONFIG_COMPAT
- /* A struct sock_filter is architecture independent. */
- struct compat_sock_fprog {
- 	u16		len;
- 	compat_uptr_t	filter;	/* struct sock_filter * */
- };
--#endif
- 
- struct sock_fprog_kern {
- 	u16			len;
-@@ -1278,4 +1276,6 @@ struct bpf_sockopt_kern {
- 	s32		retval;
- };
- 
-+int copy_bpf_fprog_from_user(struct sock_fprog *dst, void __user *src, int len);
-+
- #endif /* __LINUX_FILTER_H__ */
-diff --git a/include/net/compat.h b/include/net/compat.h
-index f241666117d88c..745db0d605b62b 100644
---- a/include/net/compat.h
-+++ b/include/net/compat.h
-@@ -61,7 +61,6 @@ int __get_compat_msghdr(struct msghdr *kmsg, struct compat_msghdr __user *umsg,
- 			compat_size_t *len);
- int get_compat_msghdr(struct msghdr *, struct compat_msghdr __user *,
- 		      struct sockaddr __user **, struct iovec **);
--struct sock_fprog __user *get_compat_bpf_fprog(char __user *optval);
- int put_cmsg_compat(struct msghdr*, int, int, int, void *);
- 
- int cmsghdr_from_user_compat_to_kern(struct msghdr *, struct sock *,
-diff --git a/net/compat.c b/net/compat.c
-index 5e3041a2c37d4d..3e6c2c5ff2609c 100644
---- a/net/compat.c
-+++ b/net/compat.c
-@@ -335,49 +335,6 @@ void scm_detach_fds_compat(struct msghdr *kmsg, struct scm_cookie *scm)
- 	__scm_destroy(scm);
- }
- 
--/* allocate a 64-bit sock_fprog on the user stack for duration of syscall. */
--struct sock_fprog __user *get_compat_bpf_fprog(char __user *optval)
--{
--	struct compat_sock_fprog __user *fprog32 = (struct compat_sock_fprog __user *)optval;
--	struct sock_fprog __user *kfprog = compat_alloc_user_space(sizeof(struct sock_fprog));
--	struct compat_sock_fprog f32;
--	struct sock_fprog f;
--
--	if (copy_from_user(&f32, fprog32, sizeof(*fprog32)))
--		return NULL;
--	memset(&f, 0, sizeof(f));
--	f.len = f32.len;
--	f.filter = compat_ptr(f32.filter);
--	if (copy_to_user(kfprog, &f, sizeof(struct sock_fprog)))
--		return NULL;
--
--	return kfprog;
--}
--EXPORT_SYMBOL_GPL(get_compat_bpf_fprog);
--
--static int do_set_attach_filter(struct socket *sock, int level, int optname,
--				char __user *optval, unsigned int optlen)
--{
--	struct sock_fprog __user *kfprog;
--
--	kfprog = get_compat_bpf_fprog(optval);
--	if (!kfprog)
--		return -EFAULT;
--
--	return sock_setsockopt(sock, level, optname, (char __user *)kfprog,
--			      sizeof(struct sock_fprog));
--}
--
--static int compat_sock_setsockopt(struct socket *sock, int level, int optname,
--				char __user *optval, unsigned int optlen)
--{
--	if (optname == SO_ATTACH_FILTER ||
--	    optname == SO_ATTACH_REUSEPORT_CBPF)
--		return do_set_attach_filter(sock, level, optname,
--					    optval, optlen);
--	return sock_setsockopt(sock, level, optname, optval, optlen);
--}
--
- static int __compat_sys_setsockopt(int fd, int level, int optname,
- 				   char __user *optval, unsigned int optlen)
- {
-@@ -396,7 +353,7 @@ static int __compat_sys_setsockopt(int fd, int level, int optname,
- 		}
- 
- 		if (level == SOL_SOCKET)
--			err = compat_sock_setsockopt(sock, level,
-+			err = sock_setsockopt(sock, level,
- 					optname, optval, optlen);
- 		else if (sock->ops->compat_setsockopt)
- 			err = sock->ops->compat_setsockopt(sock, level,
-diff --git a/net/core/filter.c b/net/core/filter.c
-index bdd2382e655d85..2bf6624796d86f 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -77,6 +77,29 @@
- #include <net/transp_v6.h>
- #include <linux/btf_ids.h>
- 
-+int copy_bpf_fprog_from_user(struct sock_fprog *dst, void __user *src, int len)
-+{
-+	if (in_compat_syscall()) {
-+		struct compat_sock_fprog f32;
-+
-+		if (len != sizeof(f32))
-+			return -EINVAL;
-+		if (copy_from_user(&f32, src, sizeof(f32)))
-+			return -EFAULT;
-+		memset(dst, 0, sizeof(*dst));
-+		dst->len = f32.len;
-+		dst->filter = compat_ptr(f32.filter);
-+	} else {
-+		if (len != sizeof(*dst))
-+			return -EINVAL;
-+		if (copy_from_user(dst, src, sizeof(*dst)))
-+			return -EFAULT;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(copy_bpf_fprog_from_user);
-+
- /**
-  *	sk_filter_trim_cap - run a packet through a socket filter
-  *	@sk: sock associated with &sk_buff
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 11d6f77dd56207..e085df79482520 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1059,19 +1059,14 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
- 		ret = sock_set_timeout(&sk->sk_sndtimeo, optval, optlen, optname == SO_SNDTIMEO_OLD);
- 		break;
- 
--	case SO_ATTACH_FILTER:
--		ret = -EINVAL;
--		if (optlen == sizeof(struct sock_fprog)) {
--			struct sock_fprog fprog;
--
--			ret = -EFAULT;
--			if (copy_from_user(&fprog, optval, sizeof(fprog)))
--				break;
-+	case SO_ATTACH_FILTER: {
-+		struct sock_fprog fprog;
- 
-+		ret = copy_bpf_fprog_from_user(&fprog, optval, optlen);
-+		if (!ret)
- 			ret = sk_attach_filter(&fprog, sk);
--		}
- 		break;
--
-+	}
- 	case SO_ATTACH_BPF:
- 		ret = -EINVAL;
- 		if (optlen == sizeof(u32)) {
-@@ -1085,19 +1080,14 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
- 		}
- 		break;
- 
--	case SO_ATTACH_REUSEPORT_CBPF:
--		ret = -EINVAL;
--		if (optlen == sizeof(struct sock_fprog)) {
--			struct sock_fprog fprog;
--
--			ret = -EFAULT;
--			if (copy_from_user(&fprog, optval, sizeof(fprog)))
--				break;
-+	case SO_ATTACH_REUSEPORT_CBPF: {
-+		struct sock_fprog fprog;
- 
-+		ret = copy_bpf_fprog_from_user(&fprog, optval, optlen);
-+		if (!ret)
- 			ret = sk_reuseport_attach_filter(&fprog, sk);
--		}
- 		break;
--
-+	}
- 	case SO_ATTACH_REUSEPORT_EBPF:
- 		ret = -EINVAL;
- 		if (optlen == sizeof(u32)) {
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 781fee93b7d5e3..35aee9e980536d 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -1545,10 +1545,10 @@ static int fanout_set_data_cbpf(struct packet_sock *po, char __user *data,
- 
- 	if (sock_flag(&po->sk, SOCK_FILTER_LOCKED))
- 		return -EPERM;
--	if (len != sizeof(fprog))
--		return -EINVAL;
--	if (copy_from_user(&fprog, data, len))
--		return -EFAULT;
-+
-+	ret = copy_bpf_fprog_from_user(&fprog, data, len);
-+	if (ret)
-+		return ret;
- 
- 	ret = bpf_prog_create_from_user(&new, &fprog, NULL, false);
- 	if (ret)
-@@ -4040,28 +4040,6 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
- 	return 0;
- }
- 
--
--#ifdef CONFIG_COMPAT
--static int compat_packet_setsockopt(struct socket *sock, int level, int optname,
--				    char __user *optval, unsigned int optlen)
--{
--	struct packet_sock *po = pkt_sk(sock->sk);
--
--	if (level != SOL_PACKET)
--		return -ENOPROTOOPT;
--
--	if (optname == PACKET_FANOUT_DATA &&
--	    po->fanout && po->fanout->type == PACKET_FANOUT_CBPF) {
--		optval = (char __user *)get_compat_bpf_fprog(optval);
--		if (!optval)
--			return -EFAULT;
--		optlen = sizeof(struct sock_fprog);
--	}
--
--	return packet_setsockopt(sock, level, optname, optval, optlen);
--}
--#endif
--
- static int packet_notifier(struct notifier_block *this,
- 			   unsigned long msg, void *ptr)
- {
-@@ -4549,9 +4527,6 @@ static const struct proto_ops packet_ops = {
- 	.shutdown =	sock_no_shutdown,
- 	.setsockopt =	packet_setsockopt,
- 	.getsockopt =	packet_getsockopt,
--#ifdef CONFIG_COMPAT
--	.compat_setsockopt = compat_packet_setsockopt,
--#endif
- 	.sendmsg =	packet_sendmsg,
- 	.recvmsg =	packet_recvmsg,
- 	.mmap =		packet_mmap,
--- 
-2.27.0
+SGVsbG8gZXZlcnlvbmUsDQoNCihhZGRlbmR1bSkNCg0KVGhlcmUncyBhIGZpcnN0IFdBUk5JTkcg
+a2VybmVsIG1lc3NhZ2UganVzdCB3aGVuIHRoZSBuYW1lc3BhY2UgaXMgZGVsZXRlZC4gVGhlIFdB
+Uk5JTkcgdHVybnMgaW50byBhIEJVRyAoa2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSkg
+d2hlbiByZW1vdmluZyB0aGUgaW50ZXJmYWNlIGl0c2VsZiAoZm9yIGV4YW1wbGUsIHdoZW4gdGhl
+IGRyaXZlciBtb2R1bGUgaXMgcmVtb3ZlZCBmcm9tIG1lbW9yeSkuIE5vdGUgdGhhdCB0aGUgaXNz
+dWUgb2NjdXJzIHdpdGggYWxsIG91ciBpbnRlcm5hbCBhcyB3ZWxsIGFzIFVTQiBDQU4gaW50ZXJm
+YWNlcy4NCg0KT2J2aW91c2x5LCB0aGUgcHJvYmxlbSBkb2Vzbid0IGFwcGVhciB3aGVuIHlvdSBw
+dXQgdGhlIGludGVyZmFjZSBiYWNrIGluIHRoZSByb290IG5hbWVzcGFjZSBiZWZvcmUgdGhlIGRl
+c3RydWN0aW9uLCBvciB3aGVuIHRoZSBpbnRlcmZhY2UgaXMgYSB0cnVlIEV0aGVybmV0IG5ldHdv
+cmsgaW50ZXJmYWNlLg0KDQpSZWdhcmRzLA0KDQotLSBTdMOpcGhhbmUNCg0KQ29udGV4dDoNCg0K
+JCB1bmFtZSAtYQ0KTGludXggbGludXgtZGV2IDUuNC4wLTM5LWdlbmVyaWMgIzQzLVVidW50dSBT
+TVAgRnJpIEp1biAxOSAxMDoyODozMSBVVEMgMjAyMCB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUv
+TGludXgNCg0KJCBkbWVzZyB8IGdyZXAgcGVha19wY2kNClsgICAxOS4wMjgwNDhdIHBlYWtfcGNp
+IDAwMDA6MGE6MDAuMDogZW5hYmxpbmcgZGV2aWNlICgwMTAwIC0+IDAxMDIpDQpbICAgMTkuMDM0
+MjgzXSBwZWFrX3BjaSAwMDAwOjBhOjAwLjA6IGNhbjYgYXQgcmVnX2Jhc2U9MHgwMDAwMDAwMDEz
+NmI4YjBiIGNmZ19iYXNlPTB4MDAwMDAwMDBiODI2NTk3YyBpcnE9MjcNClsgICAxOS4wMzQzNzhd
+IHBlYWtfcGNpIDAwMDA6MGE6MDAuMDogY2FuNyBhdCByZWdfYmFzZT0weDAwMDAwMDAwNmIzZGU5
+YTAgY2ZnX2Jhc2U9MHgwMDAwMDAwMGI4MjY1OTdjIGlycT0yNw0KDQojIGlwIG5ldG5zIGFkZCB0
+ZXN0DQojIGlwIGxpbmsgc2V0IGRldiBjYW42IG5ldG5zIHRlc3QNCiMgaXAgbmV0bnMgZGVsZXRl
+IHRlc3QNCg0KWyAxNzU1LjgwNTI0MV0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0t
+LS0tDQpbIDE3NTUuODA1MjUxXSBXQVJOSU5HOiBDUFU6IDggUElEOiAyNjM1IGF0IG5ldC9jb3Jl
+L2Rldi5jOjEwMDM5IG5ldGRldl9leGl0KzB4NDQvMHg1MA0KWyAxNzU1LjgwNTI1Ml0gTW9kdWxl
+cyBsaW5rZWQgaW46IHZib3huZXRhZHAoT0UpIHZib3huZXRmbHQoT0UpIHZib3hkcnYoT0UpIG1k
+NCBubHNfdXRmOCBjaWZzIGxpYmFyYzQgZnNjYWNoZSBsaWJkZXMgY2ZnODAyMTEgbmxzX2lzbzg4
+NTlfMSBpbnRlbF9yYXBsX21zciBpbnRlbF9yYXBsX2NvbW1vbiB4ODZfcGtnX3RlbXBfdGhlcm1h
+bCBpbnRlbF9wb3dlcmNsYW1wIGNvcmV0ZW1wIGt2bV9pbnRlbCBwZWFrX3VzYiA4ODEyYXUoT0Up
+IGpveWRldiBwbGluKE9FKSBrdm0gaW5wdXRfbGVkcyBwY2FuKE9FKSBlZWVwY193bWkgc25kX2hk
+YV9jb2RlY19oZG1pIHNuZF9oZGFfY29kZWNfcmVhbHRlayBub3V2ZWF1IHBjbWNpYSBzbmRfaGRh
+X2NvZGVjX2dlbmVyaWMgYXN1c193bWkgcGNtY2lhX2NvcmUgY3JjdDEwZGlmX3BjbG11bCBnaGFz
+aF9jbG11bG5pX2ludGVsIHBlYWtfcGNpIHNqYTEwMDAgcGVha19wY2llZmQgbGVkdHJpZ19hdWRp
+byB0dG0gYWVzbmlfaW50ZWwgZHJtX2ttc19oZWxwZXIgc25kX2hkYV9pbnRlbCBzbmRfaW50ZWxf
+ZHNwY2ZnIGZiX3N5c19mb3BzIHN5c2NvcHlhcmVhIHN5c2ZpbGxyZWN0IHN5c2ltZ2JsdCBjYW5f
+ZGV2IHNuZF9oZGFfY29kZWMgc25kX2hkYV9jb3JlIGNyeXB0b19zaW1kIHNuZF9od2RlcCBjcnlw
+dGQgc25kX3BjbSBnbHVlX2hlbHBlciBzbmRfc2VxX21pZGkgc25kX3NlcV9taWRpX2V2ZW50IHNu
+ZF9yYXdtaWRpIHNuZF9zZXEgc25kX3NlcV9kZXZpY2Ugc25kX3RpbWVyIHNwYXJzZV9rZXltYXAg
+aW50ZWxfY3N0YXRlIGludGVsX3JhcGxfcGVyZiBzbmQgdmlkZW8gbWVpX21lIG1laSBzb3VuZGNv
+cmUgd21pX2Jtb2YgaW50ZWxfd21pX3RodW5kZXJib2x0IG14bV93bWkgbWFjX2hpZCBzY2hfZnFf
+Y29kZWwgcGFycG9ydF9wYyBwcGRldiBscCBwYXJwb3J0IGRybSBpcF90YWJsZXMgeF90YWJsZXMg
+YXV0b2ZzNCBoaWRfZ2VuZXJpYyB1c2JoaWQgdWFzIHVzYl9zdG9yYWdlIGhpZCBjcmMzMl9wY2xt
+dWwgaWdiIGUxMDAwZQ0KWyAxNzU1LjgwNTMwNl0gIGFoY2kgaTJjX2k4MDEgaTJjX2FsZ29fYml0
+IGxwY19pY2ggbGliYWhjaSBkY2Egd21pDQpbIDE3NTUuODA1MzE1XSBDUFU6IDggUElEOiAyNjM1
+IENvbW06IGt3b3JrZXIvdTI0OjAgVGFpbnRlZDogRyAgICAgICAgICAgT0UgICAgIDUuNC4wLTM5
+LWdlbmVyaWMgIzQzLVVidW50dQ0KWyAxNzU1LjgwNTMxNl0gSGFyZHdhcmUgbmFtZTogQVNVUyBB
+bGwgU2VyaWVzL1g5OS1FIFdTLCBCSU9TIDQwMDEgMDUvMjcvMjAxOQ0KWyAxNzU1LjgwNTMxOV0g
+V29ya3F1ZXVlOiBuZXRucyBjbGVhbnVwX25ldA0KWyAxNzU1LjgwNTMyNF0gUklQOiAwMDEwOm5l
+dGRldl9leGl0KzB4NDQvMHg1MA0KWyAxNzU1LjgwNTMyN10gQ29kZTogOGIgYmIgMzAgMDEgMDAg
+MDAgZTggOGIgOWQgOTcgZmYgNDggODEgZmIgMDAgMjEgYmUgYjUgNzQgMTMgNDggOGIgODMgOTAg
+MDAgMDAgMDAgNDggODEgYzMgOTAgMDAgMDAgMDAgNDggMzkgYzMgNzUgMDMgNWIgNWQgYzMgPDBm
+PiAwYiBlYiBmOSAwZiAxZiA4NCAwMCAwMCAwMCAwMCAwMCAwZiAxZiA0NCAwMCAwMCA1NSA0OCA4
+OSBlNSA0MQ0KWyAxNzU1LjgwNTMyOV0gUlNQOiAwMDE4OmZmZmZiMTJkMDE2OWZkYzggRUZMQUdT
+OiAwMDAxMDI4Nw0KWyAxNzU1LjgwNTMzMV0gUkFYOiBmZmZmOTYyNGM4YTcwMDUwIFJCWDogZmZm
+Zjk2MjQ3NjQyYTcxMCBSQ1g6IDAwMDAwMDAwODAxMDAwMGINClsgMTc1NS44MDUzMzNdIFJEWDog
+MDAwMDAwMDA4MDEwMDAwYyBSU0k6IDAwMDAwMDAwMDAwMDAwMDEgUkRJOiBmZmZmOTYyNGNkYzA2
+YTAwDQpbIDE3NTUuODA1MzM0XSBSQlA6IGZmZmZiMTJkMDE2OWZkZDAgUjA4OiAwMDAwMDAwMDAw
+MDAwMDAwIFIwOTogZmZmZmZmZmZiNGQyZTMwMA0KWyAxNzU1LjgwNTMzNV0gUjEwOiBmZmZmOTYy
+NGEwZDg0MDAwIFIxMTogMDAwMDAwMDAwMDAwMDAwMSBSMTI6IGZmZmZiMTJkMDE2OWZlMjANClsg
+MTc1NS44MDUzMzddIFIxMzogZmZmZmZmZmZiNWJlM2YyMCBSMTQ6IGZmZmZmZmZmYjViZTNmMjgg
+UjE1OiBmZmZmOTYyNDk4ZWEzOWQ4DQpbIDE3NTUuODA1MzM5XSBGUzogIDAwMDAwMDAwMDAwMDAw
+MDAoMDAwMCkgR1M6ZmZmZjk2MjRjZmEwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAw
+DQpbIDE3NTUuODA1MzQxXSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAw
+MDgwMDUwMDMzDQpbIDE3NTUuODA1MzQyXSBDUjI6IDAwMDA1NWZiYjU5Y2Q4ZTggQ1IzOiAwMDAw
+MDAwMDRhYTBhMDA2IENSNDogMDAwMDAwMDAwMDE2MDZlMA0KWyAxNzU1LjgwNTM0NF0gQ2FsbCBU
+cmFjZToNClsgMTc1NS44MDUzNTBdICBvcHNfZXhpdF9saXN0LmlzcmEuMCsweDNiLzB4NzANClsg
+MTc1NS44MDUzNTNdICBjbGVhbnVwX25ldCsweDFmMC8weDMwMA0KWyAxNzU1LjgwNTM1OV0gIHBy
+b2Nlc3Nfb25lX3dvcmsrMHgxZWIvMHgzYjANClsgMTc1NS44MDUzNjNdICB3b3JrZXJfdGhyZWFk
+KzB4NGQvMHg0MDANClsgMTc1NS44MDUzNjddICBrdGhyZWFkKzB4MTA0LzB4MTQwDQpbIDE3NTUu
+ODA1MzcwXSAgPyBwcm9jZXNzX29uZV93b3JrKzB4M2IwLzB4M2IwDQpbIDE3NTUuODA1MzczXSAg
+PyBrdGhyZWFkX3BhcmsrMHg5MC8weDkwDQpbIDE3NTUuODA1Mzc4XSAgcmV0X2Zyb21fZm9yaysw
+eDM1LzB4NDANClsgMTc1NS44MDUzODJdIC0tLVsgZW5kIHRyYWNlIDgzMmE3NWFkOTZmODEwNWUg
+XS0tLQ0KWyAxNzU1LjgwNTQxMF0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0t
+DQpbIDE3NTUuODA1NDE2XSBXQVJOSU5HOiBDUFU6IDggUElEOiAyNjM1IGF0IGZzL3Byb2MvcHJv
+Y19zeXNjdGwuYzoxNzE0IHJldGlyZV9zeXNjdGxfc2V0KzB4MTQvMHgxOA0KWyAxNzU1LjgwNTQx
+N10gTW9kdWxlcyBsaW5rZWQgaW46IHZib3huZXRhZHAoT0UpIHZib3huZXRmbHQoT0UpIHZib3hk
+cnYoT0UpIG1kNCBubHNfdXRmOCBjaWZzIGxpYmFyYzQgZnNjYWNoZSBsaWJkZXMgY2ZnODAyMTEg
+bmxzX2lzbzg4NTlfMSBpbnRlbF9yYXBsX21zciBpbnRlbF9yYXBsX2NvbW1vbiB4ODZfcGtnX3Rl
+bXBfdGhlcm1hbCBpbnRlbF9wb3dlcmNsYW1wIGNvcmV0ZW1wIGt2bV9pbnRlbCBwZWFrX3VzYiA4
+ODEyYXUoT0UpIGpveWRldiBwbGluKE9FKSBrdm0gaW5wdXRfbGVkcyBwY2FuKE9FKSBlZWVwY193
+bWkgc25kX2hkYV9jb2RlY19oZG1pIHNuZF9oZGFfY29kZWNfcmVhbHRlayBub3V2ZWF1IHBjbWNp
+YSBzbmRfaGRhX2NvZGVjX2dlbmVyaWMgYXN1c193bWkgcGNtY2lhX2NvcmUgY3JjdDEwZGlmX3Bj
+bG11bCBnaGFzaF9jbG11bG5pX2ludGVsIHBlYWtfcGNpIHNqYTEwMDAgcGVha19wY2llZmQgbGVk
+dHJpZ19hdWRpbyB0dG0gYWVzbmlfaW50ZWwgZHJtX2ttc19oZWxwZXIgc25kX2hkYV9pbnRlbCBz
+bmRfaW50ZWxfZHNwY2ZnIGZiX3N5c19mb3BzIHN5c2NvcHlhcmVhIHN5c2ZpbGxyZWN0IHN5c2lt
+Z2JsdCBjYW5fZGV2IHNuZF9oZGFfY29kZWMgc25kX2hkYV9jb3JlIGNyeXB0b19zaW1kIHNuZF9o
+d2RlcCBjcnlwdGQgc25kX3BjbSBnbHVlX2hlbHBlciBzbmRfc2VxX21pZGkgc25kX3NlcV9taWRp
+X2V2ZW50IHNuZF9yYXdtaWRpIHNuZF9zZXEgc25kX3NlcV9kZXZpY2Ugc25kX3RpbWVyIHNwYXJz
+ZV9rZXltYXAgaW50ZWxfY3N0YXRlIGludGVsX3JhcGxfcGVyZiBzbmQgdmlkZW8gbWVpX21lIG1l
+aSBzb3VuZGNvcmUgd21pX2Jtb2YgaW50ZWxfd21pX3RodW5kZXJib2x0IG14bV93bWkgbWFjX2hp
+ZCBzY2hfZnFfY29kZWwgcGFycG9ydF9wYyBwcGRldiBscCBwYXJwb3J0IGRybSBpcF90YWJsZXMg
+eF90YWJsZXMgYXV0b2ZzNCBoaWRfZ2VuZXJpYyB1c2JoaWQgdWFzIHVzYl9zdG9yYWdlIGhpZCBj
+cmMzMl9wY2xtdWwgaWdiIGUxMDAwZQ0KWyAxNzU1LjgwNTQ1NF0gIGFoY2kgaTJjX2k4MDEgaTJj
+X2FsZ29fYml0IGxwY19pY2ggbGliYWhjaSBkY2Egd21pDQpbIDE3NTUuODA1NDYwXSBDUFU6IDgg
+UElEOiAyNjM1IENvbW06IGt3b3JrZXIvdTI0OjAgVGFpbnRlZDogRyAgICAgICAgVyAgT0UgICAg
+IDUuNC4wLTM5LWdlbmVyaWMgIzQzLVVidW50dQ0KWyAxNzU1LjgwNTQ2MV0gSGFyZHdhcmUgbmFt
+ZTogQVNVUyBBbGwgU2VyaWVzL1g5OS1FIFdTLCBCSU9TIDQwMDEgMDUvMjcvMjAxOQ0KWyAxNzU1
+LjgwNTQ2M10gV29ya3F1ZXVlOiBuZXRucyBjbGVhbnVwX25ldA0KWyAxNzU1LjgwNTQ2N10gUklQ
+OiAwMDEwOnJldGlyZV9zeXNjdGxfc2V0KzB4MTQvMHgxOA0KWyAxNzU1LjgwNTQ2OV0gQ29kZTog
+MDAgMDAgMDAgMDAgNDkgYzcgNDAgNDggMDAgMDAgMDAgMDAgNDkgYzcgNDAgNTAgMDAgMDAgMDAg
+MDAgYzMgOTAgMGYgMWYgNDQgMDAgMDAgNTUgNDggOGIgNDcgNTggNDggODkgZTUgNDggODUgYzAg
+NzUgMDIgNWQgYzMgPDBmPiAwYiA1ZCBjMyAwZiAxZiA0NCAwMCAwMCA1NSA0OCA4OSBlNSA0OCA4
+MyBlYyA2MCA0OCA4OSA0YyAyNCA0OA0KWyAxNzU1LjgwNTQ3MV0gUlNQOiAwMDE4OmZmZmZiMTJk
+MDE2OWZkYzAgRUZMQUdTOiAwMDAxMDI4Mg0KWyAxNzU1LjgwNTQ3M10gUkFYOiBmZmZmOTYyNGE2
+OTdhZDU4IFJCWDogZmZmZjk2MjQ3NjQyYTY4MCBSQ1g6IDAwMDAwMDAwODAxNTAwMDkNClsgMTc1
+NS44MDU0NzVdIFJEWDogZmZmZjk2MjQ3NjQyYTZiMCBSU0k6IGZmZmZmZmZmYjViZmViNDggUkRJ
+OiBmZmZmOTYyNDc2NDJhNzMwDQpbIDE3NTUuODA1NDc2XSBSQlA6IGZmZmZiMTJkMDE2OWZkYzAg
+UjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogZmZmZmZmZmZiNDc3NmQwMA0KWyAxNzU1LjgwNTQ3
+N10gUjEwOiBmZmZmOTYyNGNhZDBhOWMwIFIxMTogMDAwMDAwMDAwMDAwMDAwMSBSMTI6IGZmZmZi
+MTJkMDE2OWZlMjANClsgMTc1NS44MDU0NzldIFIxMzogZmZmZmZmZmZiNWJmZWI0MCBSMTQ6IGZm
+ZmZmZmZmYjViZmViNDggUjE1OiBmZmZmOTYyNDk4ZWEzOWQ4DQpbIDE3NTUuODA1NDgxXSBGUzog
+IDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjk2MjRjZmEwMDAwMCgwMDAwKSBrbmxHUzow
+MDAwMDAwMDAwMDAwMDAwDQpbIDE3NTUuODA1NDgyXSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAw
+MDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpbIDE3NTUuODA1NDgzXSBDUjI6IDAwMDA1NWZiYjU5
+Y2Q4ZTggQ1IzOiAwMDAwMDAwMDRhYTBhMDA2IENSNDogMDAwMDAwMDAwMDE2MDZlMA0KWyAxNzU1
+LjgwNTQ4NV0gQ2FsbCBUcmFjZToNClsgMTc1NS44MDU0OTBdICBzeXNjdGxfbmV0X2V4aXQrMHgx
+NS8weDIwDQpbIDE3NTUuODA1NDkzXSAgb3BzX2V4aXRfbGlzdC5pc3JhLjArMHgzYi8weDcwDQpb
+IDE3NTUuODA1NDk2XSAgY2xlYW51cF9uZXQrMHgxZjAvMHgzMDANClsgMTc1NS44MDU1MDBdICBw
+cm9jZXNzX29uZV93b3JrKzB4MWViLzB4M2IwDQpbIDE3NTUuODA1NTAzXSAgd29ya2VyX3RocmVh
+ZCsweDRkLzB4NDAwDQpbIDE3NTUuODA1NTA3XSAga3RocmVhZCsweDEwNC8weDE0MA0KWyAxNzU1
+LjgwNTUxMF0gID8gcHJvY2Vzc19vbmVfd29yaysweDNiMC8weDNiMA0KWyAxNzU1LjgwNTUxMl0g
+ID8ga3RocmVhZF9wYXJrKzB4OTAvMHg5MA0KWyAxNzU1LjgwNTUxN10gIHJldF9mcm9tX2Zvcmsr
+MHgzNS8weDQwDQpbIDE3NTUuODA1NTIwXSAtLS1bIGVuZCB0cmFjZSA4MzJhNzVhZDk2ZjgxMDVm
+IF0tLS0NCg0KDQoNCuKAlCBTdMOpcGhhbmUNCg0KLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0t
+DQpEZSA6IGxpbnV4LWNhbi1vd25lckB2Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LWNhbi1vd25lckB2
+Z2VyLmtlcm5lbC5vcmc+IERlIGxhIHBhcnQgZGUgT2xpdmVyIEhhcnRrb3BwDQpFbnZvecOpIDog
+amV1ZGkgMTYganVpbGxldCAyMDIwIDIwOjM4DQrDgCA6IFBoaWxpcHAgTGVobWFubiA8bGVwaDEw
+MTZAaHMta2FybHNydWhlLmRlPjsgd2dAZ3JhbmRlZ2dlci5jb207IG1rbEBwZW5ndXRyb25peC5k
+ZQ0KQ2MgOiBsaW51eC1jYW5Admdlci5rZXJuZWwub3JnOyBjaHJpc3RpYW4uc2F1ZXIud0BzZXct
+ZXVyb2RyaXZlLmRlDQpPYmpldCA6IFJlOiBbQnVnXSBLZXJuZWwgUGFuaWMgb24gRGVsZXRpb24g
+b2YgdGhlIG5ldHdvcmstbmFtZXNwYWNlIGNvbnRhaW5pbmcgdGhlIFNvY2tldENBTiBpbnRlcmZh
+Y2UNCg0KSGkgUGhpbGlwcCwNCg0KdGhhbmtzIGZvciB0aGUgcmVwb3J0IGFuZCBpdHMgcmVwcm9k
+dWNlciENCg0KSSBhc3N1bWVkIHRoZSBpbnRlcmZhY2VzIC0gYXQgbGVhc3QgaW4gdGhlIGNhc2Ug
+b2YgJ3JlYWwnIGhhcmR3YXJlIENBTiBpbnRlcmZhY2VzIC0gdG8gbWUgbW92ZWQgYmFjayB0byB0
+aGUgcm9vdCBuYW1lIHNwYWNlIC4uLiB3ZWxsLg0KDQpJJ2xsIHRha2UgYSBsb29rIGF0IGl0Lg0K
+DQpCZXN0IHJlZ2FyZHMsDQpPbGl2ZXINCg0KT24gMTYuMDcuMjAgMTg6NDYsIFBoaWxpcHAgTGVo
+bWFubiB3cm90ZToNCj4gSWYgYSBTb2NrZXRDQU4gSW50ZXJmYWNlIChUZXN0ZWQgd2l0aCBhIFBD
+QU4tVVNCIGFkYXB0ZXIpIGlzIG1vdmVkIGludG8gYSBuZXR3b3JrLW5hbWVzcGFjZSBhbmQgdGhl
+IG5ldHdvcmsgbmFtZXNwYWNlIGlzIGRlbGV0ZWQgYWZ0ZXJ3YXJkcywgd2l0aG91dCBtb3Zpbmcg
+dGhlIGRldmljZSBvdXQgb2YgdGhlIG5hbWVzcGFjZSBwcmlvciB0byB0aGUgZGVsZXRpb24uIFRo
+ZSBkZXZpY2UgY291bGQgbm90IGJlIGZvdW5kIGluIGFueSBvZiB0aGUgbmV0d29yayBuYW1lc3Bh
+Y2VzIGFmdGVyd2FyZHMsIG9ubHkgYSByZWJvb3Qgb2YgdGhlIHN5c3RlbSBmaXhlcyB0aGlzLiBJ
+ZiB0aGUgZGV2aWNlIGlzIGluc3RlYWQgcmVtb3ZlZCBmcm9tIHRoZSBVU0ItQnVzIHdpdGhvdXQg
+YSByZXN0YXJ0LCBhIGtlcm5lbCBwYW5pYyBpcyB0aGUgcmVzdWx0Lg0KPg0KPg0KPiBPdXRwdXQg
+b2YgdW5hbWUgLXIgW0xpbnV4IGNwYzR4IDUuNC4wLTQwLWdlbmVyaWMgIzQ0LVVidW50dSBTTVAg
+VHVlDQo+IEp1biAyMyAwMDowMTowNCBVVEMgMjAyMCB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUv
+TGludXhdDQo+DQo+DQo+IFRoZSBidWcgY291bGQgYmUgcmVwcm9kdWNlZCB3aXRoIHRoZSBmb2xs
+b3dpbmcgc3RlcHM6DQo+DQo+DQo+IDEuIENvbm5lY3QgdGhlIChVU0IpLVNvY2tldENBTiBkZXZp
+Y2UgdG8gdGhlIGhvc3QNCj4NCj4gMi4gQWRkIGEgbmV3IG5ldHdvcmsgbmFtZXNwYWNlIFtzdWRv
+IGlwIG5ldG5zIGFkZCB0ZXN0XSAzLiBNb3ZlIHRoZQ0KPiBDQU4taW50ZXJmYWNlIHRvIHRoZSBu
+ZXR3b3JrIG5hbWUtc3BhY2UgW3N1ZG8gaXAgbGluayBzZXQgZGV2IGNhbjANCj4gbmV0bnMgdGVz
+dF0gNC4gRGVsZXRlIHRoZSBuYW1lc3BhY2UgW3N1ZG8gaXAgbmV0bnMgZGVsZXRlIHRlc3RdIDUu
+DQo+IFJlbW92ZSB0aGUgYWRhcHRlciBmcm9tIHRoZSBVU0ItQnVzLiBJbiBtb3N0IGNhc2VzIHRo
+aXMgc2hvdWxkIHJlc3VsdA0KPiBpbiBhIGtlcm5lbCBwYW5pYw0KPg0KDQotLQ0KUEVBSy1TeXN0
+ZW0gVGVjaG5payBHbWJIDQpTaXR6IGRlciBHZXNlbGxzY2hhZnQgRGFybXN0YWR0IC0gSFJCIDkx
+ODMNCkdlc2NoYWVmdHNmdWVocnVuZzogQWxleGFuZGVyIEdhY2ggLyBVd2UgV2lsaGVsbQ0KVW5z
+ZXJlIERhdGVuc2NodXR6ZXJrbGFlcnVuZyBtaXQgd2ljaHRpZ2VuIEhpbndlaXNlbg0KenVyIEJl
+aGFuZGx1bmcgcGVyc29uZW5iZXpvZ2VuZXIgRGF0ZW4gZmluZGVuIFNpZSB1bnRlcg0Kd3d3LnBl
+YWstc3lzdGVtLmNvbS9EYXRlbnNjaHV0ei40ODMuMC5odG1sDQo=
