@@ -1,37 +1,61 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH 22/22] net: make ->{get,set}sockopt in proto_ops optional
-Date: Fri, 17 Jul 2020 10:01:28 +0200
-Message-ID: <5f88e695-d787-2191-feef-883a067788ed@pengutronix.de>
-References: <20200717062331.691152-1-hch@lst.de>
- <20200717062331.691152-23-hch@lst.de>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
+Subject: [PATCH net-next v2] can: ti_hecc: add missed clk_disable_unprepare() in error path
+Date: Fri, 17 Jul 2020 16:04:39 +0800
+Message-ID: <1594973079-27743-1-git-send-email-zhangchangzhong@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20200717062331.691152-23-hch-jcswGhMUV9g@public.gmane.org>
-Content-Language: de-DE
-Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
-Cc: Alexei Starovoitov <ast-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Daniel Borkmann <daniel-FeC+5ew28dpmcu3hnIyYJQ@public.gmane.org>, Chas Williams <3chas3-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Pablo Neira Ayuso <pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>, Jozsef Kadlecsik <kadlec-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>, Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>, Alexey Kuznetsov <kuznet-v/Mj1YrvjDBInbfyfbPRSQ@public.gmane.org>, Hideaki YOSHIFUJI <yoshfuji-VfPWfsRibaP+Ru+s062T9g@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bpf-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bridge-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dccp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wpan-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mptcp-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
-List-Id: linux-can.vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7778 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726233AbgGQIEx (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 17 Jul 2020 04:04:53 -0400
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On 7/17/20 8:23 AM, Christoph Hellwig wrote:
-> Just check for a NULL method instead of wiring up
-> sock_no_{get,set}sockopt.
-> 
-> Signed-off-by: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
-> ---
->  net/can/bcm.c               |  2 --
->  net/core/sock.c             | 14 --------------
+The driver forgets to call clk_disable_unprepare() in error path after
+a success calling for clk_prepare_enable().
 
-For the CAN part:
+Fix it by adding a clk_disable_unprepare() in error path.
 
-Acked-by: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ drivers/net/can/ti_hecc.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Marc
-
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 94b1491..228ecd4 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -950,7 +950,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	err = clk_prepare_enable(priv->clk);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "clk_prepare_enable() failed\n");
+-		goto probe_exit_clk;
++		goto probe_exit_release_clk;
+ 	}
+ 
+ 	priv->offload.mailbox_read = ti_hecc_mailbox_read;
+@@ -959,7 +959,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	err = can_rx_offload_add_timestamp(ndev, &priv->offload);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "can_rx_offload_add_timestamp() failed\n");
+-		goto probe_exit_clk;
++		goto probe_exit_disable_clk;
+ 	}
+ 
+ 	err = register_candev(ndev);
+@@ -977,7 +977,9 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 
+ probe_exit_offload:
+ 	can_rx_offload_del(&priv->offload);
+-probe_exit_clk:
++probe_exit_disable_clk:
++	clk_disable_unprepare(priv->clk);
++probe_exit_release_clk:
+ 	clk_put(priv->clk);
+ probe_exit_candev:
+ 	free_candev(ndev);
 -- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+1.8.3.1
