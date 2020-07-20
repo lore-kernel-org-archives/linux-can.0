@@ -1,23 +1,53 @@
-From: David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
-Subject: Re: sockopt cleanups
-Date: Sun, 19 Jul 2020 18:16:59 -0700 (PDT)
-Message-ID: <20200719.181659.1807927650741641565.davem@davemloft.net>
-References: <20200717062331.691152-1-hch@lst.de>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20200717062331.691152-1-hch-jcswGhMUV9g@public.gmane.org>
-Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: hch-jcswGhMUV9g@public.gmane.org
-Cc: ast-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, daniel-FeC+5ew28dpmcu3hnIyYJQ@public.gmane.org, 3chas3-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, kadlec-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org, kuznet-v/Mj1YrvjDBInbfyfbPRSQ@public.gmane.org, yoshfuji-VfPWfsRibaP+Ru+s062T9g@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bpf-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bridge-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dccp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wpan-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mptcp-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/20] Add support for [H]SCIF/TMU/CMT/THS/SDHI/MSIOF/CAN[FD]/I2C/IIC/RWDT on R8A774E1
+Date: Mon, 20 Jul 2020 12:12:00 +0100
+Message-ID: <159524352070.8289.9628744508547399473.b4-ty@kernel.org>
+References: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Return-path: <linux-i2c-owner@vger.kernel.org>
+In-Reply-To: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Sender: linux-i2c-owner@vger.kernel.org
+To: Jakub Kicinski <kuba@kernel.org>, Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, Wolfgang Grandegger <wg@grandegger.com>, Zhang Rui <rui.zhang@intel.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh+dt@kernel.org>, Niklas <niklas.soderlund@ragnatech.se>, Wim Van Sebroeck <wim@linux-watchdog.org>, Wolfram Sang <wsa+renesas@sang-engineering.com>, "David S. Miller" <davem@davemloft.net>, Magnus Damm <magnus.damm@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: devicetree@vger.kernel.org, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, linux-i2c@vger.kernel.org, linux-watchdog@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org, linux-spi@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Amit Kucheria <amit.kucheria@verdurent.com>
 List-Id: linux-can.vger.kernel.org
 
-From: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
-Date: Fri, 17 Jul 2020 08:23:09 +0200
+On Wed, 15 Jul 2020 12:08:50 +0100, Lad Prabhakar wrote:
+> This patch series enables support for following on RZ/G2H SoC,
+> * CPU OPP
+> * THS
+> * CMT/TMU
+> * I2C/IIC
+> * MSIOF
+> * RWDT
+> * SDHI
+> * SCIF/HSCIF
+> * CAN/CANFD
+> 
+> [...]
 
-> this series cleans up various lose ends in the sockopt code, most
-> importantly removing the compat_{get,set}sockopt infrastructure in favor
-> of just using in_compat_syscall() in the few places that care.
+Applied to
 
-Series applied to net-next, thanks.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/1] spi: renesas,sh-msiof: Add r8a774e1 support
+      commit: b4f7f5f5470588e45e5d004f1dc4887af20f18c0
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
