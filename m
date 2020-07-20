@@ -1,36 +1,40 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 02/24] bpfilter: fix up a sparse annotation
-Date: Mon, 20 Jul 2020 14:47:15 +0200
-Message-ID: <20200720124737.118617-3-hch@lst.de>
+Subject: [PATCH 01/24] bpfilter: reject kernel addresses
+Date: Mon, 20 Jul 2020 14:47:14 +0200
+Message-ID: <20200720124737.118617-2-hch@lst.de>
 References: <20200720124737.118617-1-hch@lst.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-crypto-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 In-Reply-To: <20200720124737.118617-1-hch@lst.de>
-Sender: linux-crypto-owner@vger.kernel.org
+Sender: netfilter-devel-owner@vger.kernel.org
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
 Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-The __user doesn't make sense when casting to an integer type.
+When feeding addresses to userspace we can't support kernel addresses
+that were fed under set_fs(KERNEL_DS) from bpf-cgroup.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- net/bpfilter/bpfilter_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/bpfilter/bpfilter_kern.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/net/bpfilter/bpfilter_kern.c b/net/bpfilter/bpfilter_kern.c
-index 977e9dad72ca4f..713b4b3d02005d 100644
+index 2c31e82cb953af..977e9dad72ca4f 100644
 --- a/net/bpfilter/bpfilter_kern.c
 +++ b/net/bpfilter/bpfilter_kern.c
-@@ -49,7 +49,7 @@ static int __bpfilter_process_sockopt(struct sock *sk, int optname,
+@@ -41,6 +41,11 @@ static int __bpfilter_process_sockopt(struct sock *sk, int optname,
+ 	ssize_t n;
+ 	int ret = -EFAULT;
+ 
++	if (uaccess_kernel()) {
++		pr_err("kernel access not supported\n");
++		return -EFAULT;
++	}
++
  	req.is_set = is_set;
  	req.pid = current->pid;
  	req.cmd = optname;
--	req.addr = (long __force __user)optval;
-+	req.addr = (__force long)optval;
- 	req.len = optlen;
- 	if (!bpfilter_ops.info.tgid)
- 		goto out;
 -- 
 2.27.0
