@@ -1,81 +1,60 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 06/24] net: switch sock_set_timeout to sockptr_t
-Date: Mon, 20 Jul 2020 14:47:19 +0200
-Message-ID: <20200720124737.118617-7-hch@lst.de>
+Subject: [PATCH 05/24] net: switch sock_setbindtodevice to sockptr_t
+Date: Mon, 20 Jul 2020 14:47:18 +0200
+Message-ID: <20200720124737.118617-6-hch@lst.de>
 References: <20200720124737.118617-1-hch@lst.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <lvs-devel-owner@vger.kernel.org>
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728703AbgGTMsK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 20 Jul 2020 08:48:10 -0400
 In-Reply-To: <20200720124737.118617-1-hch@lst.de>
-Sender: lvs-devel-owner@vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
 Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-List-Id: linux-can.vger.kernel.org
 
 Pass a sockptr_t to prepare for set_fs-less handling of the kernel
 pointer from bpf-cgroup.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- net/core/sock.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ net/core/sock.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/net/core/sock.c b/net/core/sock.c
-index bd20fc5cce0850..d45bb1c2c36abf 100644
+index 91224709869389..bd20fc5cce0850 100644
 --- a/net/core/sock.c
 +++ b/net/core/sock.c
-@@ -360,7 +360,8 @@ static int sock_get_timeout(long timeo, void *optval, bool old_timeval)
- 	return sizeof(tv);
+@@ -608,8 +608,7 @@ int sock_bindtoindex(struct sock *sk, int ifindex, bool lock_sk)
  }
+ EXPORT_SYMBOL(sock_bindtoindex);
  
--static int sock_set_timeout(long *timeo_p, char __user *optval, int optlen, bool old_timeval)
-+static int sock_set_timeout(long *timeo_p, sockptr_t optval, int optlen,
-+			    bool old_timeval)
+-static int sock_setbindtodevice(struct sock *sk, char __user *optval,
+-				int optlen)
++static int sock_setbindtodevice(struct sock *sk, sockptr_t optval, int optlen)
  {
- 	struct __kernel_sock_timeval tv;
+ 	int ret = -ENOPROTOOPT;
+ #ifdef CONFIG_NETDEVICES
+@@ -631,7 +630,7 @@ static int sock_setbindtodevice(struct sock *sk, char __user *optval,
+ 	memset(devname, 0, sizeof(devname));
  
-@@ -370,7 +371,7 @@ static int sock_set_timeout(long *timeo_p, char __user *optval, int optlen, bool
- 		if (optlen < sizeof(tv32))
- 			return -EINVAL;
+ 	ret = -EFAULT;
+-	if (copy_from_user(devname, optval, optlen))
++	if (copy_from_sockptr(devname, optval, optlen))
+ 		goto out;
  
--		if (copy_from_user(&tv32, optval, sizeof(tv32)))
-+		if (copy_from_sockptr(&tv32, optval, sizeof(tv32)))
- 			return -EFAULT;
- 		tv.tv_sec = tv32.tv_sec;
- 		tv.tv_usec = tv32.tv_usec;
-@@ -379,14 +380,14 @@ static int sock_set_timeout(long *timeo_p, char __user *optval, int optlen, bool
+ 	index = 0;
+@@ -839,7 +838,7 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 	 */
  
- 		if (optlen < sizeof(old_tv))
- 			return -EINVAL;
--		if (copy_from_user(&old_tv, optval, sizeof(old_tv)))
-+		if (copy_from_sockptr(&old_tv, optval, sizeof(old_tv)))
- 			return -EFAULT;
- 		tv.tv_sec = old_tv.tv_sec;
- 		tv.tv_usec = old_tv.tv_usec;
- 	} else {
- 		if (optlen < sizeof(tv))
- 			return -EINVAL;
--		if (copy_from_user(&tv, optval, sizeof(tv)))
-+		if (copy_from_sockptr(&tv, optval, sizeof(tv)))
- 			return -EFAULT;
- 	}
- 	if (tv.tv_usec < 0 || tv.tv_usec >= USEC_PER_SEC)
-@@ -1050,12 +1051,14 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 	if (optname == SO_BINDTODEVICE)
+-		return sock_setbindtodevice(sk, optval, optlen);
++		return sock_setbindtodevice(sk, USER_SOCKPTR(optval), optlen);
  
- 	case SO_RCVTIMEO_OLD:
- 	case SO_RCVTIMEO_NEW:
--		ret = sock_set_timeout(&sk->sk_rcvtimeo, optval, optlen, optname == SO_RCVTIMEO_OLD);
-+		ret = sock_set_timeout(&sk->sk_rcvtimeo, USER_SOCKPTR(optval),
-+				       optlen, optname == SO_RCVTIMEO_OLD);
- 		break;
- 
- 	case SO_SNDTIMEO_OLD:
- 	case SO_SNDTIMEO_NEW:
--		ret = sock_set_timeout(&sk->sk_sndtimeo, optval, optlen, optname == SO_SNDTIMEO_OLD);
-+		ret = sock_set_timeout(&sk->sk_sndtimeo, USER_SOCKPTR(optval),
-+				       optlen, optname == SO_SNDTIMEO_OLD);
- 		break;
- 
- 	case SO_ATTACH_FILTER: {
+ 	if (optlen < sizeof(int))
+ 		return -EINVAL;
 -- 
 2.27.0
