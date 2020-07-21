@@ -1,45 +1,27 @@
-From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: Re: [PATCH 02/24] bpfilter: fix up a sparse annotation
-Date: Tue, 21 Jul 2020 04:40:16 +0200
-Message-ID: <20200721024016.2talwdt5hjqvirr6@ltop.local>
-References: <20200720124737.118617-1-hch@lst.de>
- <20200720124737.118617-3-hch@lst.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 02/20] dt-bindings: thermal: rcar-gen3-thermal: Add
+ r8a774e1 support
+Date: Mon, 20 Jul 2020 20:42:31 -0600
+Message-ID: <20200721024231.GA3433616@bogus>
+References: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594811350-14066-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgGUCkU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 20 Jul 2020 22:40:20 -0400
+Return-path: <linux-i2c-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20200720124737.118617-3-hch@lst.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.o
+In-Reply-To: <1594811350-14066-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Sender: linux-i2c-owner@vger.kernel.org
+To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Daniel Lezcano <daniel.lezcano@linaro.org>, linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, linux-i2c@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Wolfgang Grandegger <wg@grandegger.com>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, Amit Kucheria <amit.kucheria@verdurent.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Jakub Kicinski <kuba@kernel.org>, linux-pm@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Niklas <niklas.soderlund@ragnatech.se>, Prabhakar <prabhakar.csengg@gmail.com>, Wim
+List-Id: linux-can.vger.kernel.org
 
-On Mon, Jul 20, 2020 at 02:47:15PM +0200, Christoph Hellwig wrote:
-> The __user doesn't make sense when casting to an integer type.
+On Wed, 15 Jul 2020 12:08:52 +0100, Lad Prabhakar wrote:
+> Document RZ/G2H (R8A774E1) SoC bindings.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > ---
->  net/bpfilter/bpfilter_kern.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/thermal/rcar-gen3-thermal.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/net/bpfilter/bpfilter_kern.c b/net/bpfilter/bpfilter_kern.c
-> index 977e9dad72ca4f..713b4b3d02005d 100644
-> --- a/net/bpfilter/bpfilter_kern.c
-> +++ b/net/bpfilter/bpfilter_kern.c
-> @@ -49,7 +49,7 @@ static int __bpfilter_process_sockopt(struct sock *sk, int optname,
->  	req.is_set = is_set;
->  	req.pid = current->pid;
->  	req.cmd = optname;
-> -	req.addr = (long __force __user)optval;
-> +	req.addr = (__force long)optval;
 
-For casts to integers, even '__force' is not needed (since integers
-can't be dereferenced, the concept of address-space is meaningless
-for them, so it's never useful to warn when it's dropped and
-'__force' is thus not needed).
-
--- Luc
+Acked-by: Rob Herring <robh@kernel.org>
