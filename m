@@ -1,41 +1,92 @@
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: get rid of the address_space override in setsockopt
-Date: Tue, 21 Jul 2020 10:26:58 +0000
-Message-ID: <ae6a743aaea3406596dbc89e332b6b3e@AcuMS.aculab.com>
-References: <20200720124737.118617-1-hch@lst.de>
+From: syzbot <syzbot+81908a97abeec4f4f02d@syzkaller.appspotmail.com>
+Subject: KMSAN: uninit-value in _copy_to_iter (3)
+Date: Tue, 21 Jul 2020 23:03:20 -0700
+Message-ID: <0000000000002f93a705ab017f2c@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-hams-owner@vger.kernel.org>
-In-Reply-To: <20200720124737.118617-1-hch@lst.de>
-Content-Language: en-US
-Sender: linux-hams-owner@vger.kernel.org
-To: 'Christoph Hellwig' <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
-Cc: "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>, "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>, "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>, "bridge@lists.linux-foundation.org" <bridge@lists.linux-foundation.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "dccp@vger.kernel.org" <dccp@vger.kernel.org>, "linux-decnet-user@lists.sourceforge.net" <linux-decnet-user@lists.sourcefor>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: davem@davemloft.net, glider@google.com, kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, mkl@pengutronix.de, netdev@vger.kernel.org, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
 List-Id: linux-can.vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 20 July 2020 13:47
-> 
-> setsockopt is the last place in architecture-independ code that still
-> uses set_fs to force the uaccess routines to operate on kernel pointers.
-> 
-> This series adds a new sockptr_t type that can contained either a kernel
-> or user pointer, and which has accessors that do the right thing, and
-> then uses it for setsockopt, starting by refactoring some low-level
-> helpers and moving them over to it before finally doing the main
-> setsockopt method.
+Hello,
 
-Another 'gotcha' ...
+syzbot found the following issue on:
 
-On an least some architectures (possibly only m68k) IIRC all structures
-are actually passed by reference.
-(This used to be true for sparc - but it may have changed in the
-last 30 years.)
+HEAD commit:    14525656 compiler.h: reinstate missing KMSAN_INIT
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=15996087100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c534a9fad6323722
+dashboard link: https://syzkaller.appspot.com/bug?extid=81908a97abeec4f4f02d
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1018fc7f100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100846d7100000
 
-	David
- 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+81908a97abeec4f4f02d@syzkaller.appspotmail.com
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+=====================================================
+BUG: KMSAN: uninit-value in kmsan_check_memory+0xd/0x10 mm/kmsan/kmsan_hooks.c:428
+CPU: 0 PID: 8682 Comm: syz-executor281 Not tainted 5.8.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1df/0x240 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ kmsan_internal_check_memory+0x238/0x3d0 mm/kmsan/kmsan.c:423
+ kmsan_check_memory+0xd/0x10 mm/kmsan/kmsan_hooks.c:428
+ instrument_copy_to_user include/linux/instrumented.h:91 [inline]
+ copyout lib/iov_iter.c:142 [inline]
+ _copy_to_iter+0x3d4/0x26e0 lib/iov_iter.c:631
+ copy_to_iter include/linux/uio.h:138 [inline]
+ memcpy_to_msg include/linux/skbuff.h:3571 [inline]
+ bcm_recvmsg+0x25a/0x740 net/can/bcm.c:1612
+ sock_recvmsg_nosec net/socket.c:886 [inline]
+ sock_recvmsg net/socket.c:904 [inline]
+ __sys_recvfrom+0xacd/0xae0 net/socket.c:2052
+ __do_sys_recvfrom net/socket.c:2070 [inline]
+ __se_sys_recvfrom+0x111/0x130 net/socket.c:2066
+ __x64_sys_recvfrom+0x6e/0x90 net/socket.c:2066
+ do_syscall_64+0xb0/0x150 arch/x86/entry/common.c:386
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x448cd9
+Code: Bad RIP value.
+RSP: 002b:00007f5fbb95fd88 EFLAGS: 00000246 ORIG_RAX: 000000000000002d
+RAX: ffffffffffffffda RBX: 00000000006dec68 RCX: 0000000000448cd9
+RDX: 0000000000000032 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00000000006dec60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dec6c
+R13: ffffff7f00000001 R14: 0000000000000000 R15: 000000306e616376
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ kmsan_memcpy_memmove_metadata+0x272/0x2e0 mm/kmsan/kmsan.c:247
+ kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:267
+ __msan_memcpy+0x43/0x50 mm/kmsan/kmsan_instr.c:116
+ skb_put_data include/linux/skbuff.h:2260 [inline]
+ bcm_send_to_user+0x250/0x820 net/can/bcm.c:327
+ bcm_tx_timeout_handler+0x5d0/0x620 net/can/bcm.c:413
+ __run_hrtimer kernel/time/hrtimer.c:1520 [inline]
+ __hrtimer_run_queues+0xa61/0x1340 kernel/time/hrtimer.c:1584
+ hrtimer_run_softirq+0x1b2/0x2b0 kernel/time/hrtimer.c:1601
+ __do_softirq+0x311/0x83d kernel/softirq.c:293
+
+Local variable ----msg_head@bcm_tx_timeout_handler created at:
+ bcm_tx_timeout_handler+0x4f/0x620 net/can/bcm.c:398
+ bcm_tx_timeout_handler+0x4f/0x620 net/can/bcm.c:398
+
+Bytes 12-15 of 50 are uninitialized
+Memory access of size 50 starts at ffff88b629809600
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
