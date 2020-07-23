@@ -1,25 +1,31 @@
-From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: Re: [PATCH 01/26] bpfilter: fix up a sparse annotation
-Date: Thu, 23 Jul 2020 13:14:47 +0200
-Message-ID: <20200723111447.3xj7cidlsspofsja@ltop.local>
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH 13/26] bpfilter: switch bpfilter_ip_set_sockopt to
+ sockptr_t
+Date: Thu, 23 Jul 2020 11:16:16 +0000
+Message-ID: <621e193e4af74d8198ed87d6a9ce8260@AcuMS.aculab.com>
 References: <20200723060908.50081-1-hch@lst.de>
- <20200723060908.50081-2-hch@lst.de>
+ <20200723060908.50081-14-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20200723060908.50081-2-hch@lst.de>
-Sender: netfilter-devel-owner@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.o
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200723060908.50081-14-hch@lst.de>
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+To: 'Christoph Hellwig' <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
+Cc: "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>, "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>, "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>, "bridge@lists.linux-foundation.org" <bridge@lists.linux-foundation.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "dccp@vger.kernel.org" <dccp@vger.kernel.org>, "linux-decnet-user@lists.sourceforge.net" <linux-decnet-user@lists.sourcefor>
 List-Id: linux-can.vger.kernel.org
 
-On Thu, Jul 23, 2020 at 08:08:43AM +0200, Christoph Hellwig wrote:
-> The __user doesn't make sense when casting to an integer type, just
-> switch to a uintptr_t cast which also removes the need for the __force.
+From: Christoph Hellwig
+> Sent: 23 July 2020 07:09
+> 
+> This is mostly to prepare for cleaning up the callers, as bpfilter by
+> design can't handle kernel pointers.
 
-Feel free to add my:
+You've failed to fix the sense of the above...
 
-Reviewed-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+	David
 
--- Luc
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
