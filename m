@@ -1,89 +1,98 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 22/26] net/udp: switch udp_lib_setsockopt to sockptr_t
-Date: Thu, 23 Jul 2020 08:09:04 +0200
-Message-ID: <20200723060908.50081-23-hch@lst.de>
+Subject: [PATCH 23/26] net/tcp: switch ->md5_parse to sockptr_t
+Date: Thu, 23 Jul 2020 08:09:05 +0200
+Message-ID: <20200723060908.50081-24-hch@lst.de>
 References: <20200723060908.50081-1-hch@lst.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727779AbgGWGJy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Jul 2020 02:09:54 -0400
+Return-path: <linux-crypto-owner@vger.kernel.org>
 In-Reply-To: <20200723060908.50081-1-hch@lst.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
+Sender: linux-crypto-owner@vger.kernel.org
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
 Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
 Pass a sockptr_t to prepare for set_fs-less handling of the kernel
 pointer from bpf-cgroup.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/net/udp.h | 2 +-
- net/ipv4/udp.c    | 7 ++++---
- net/ipv6/udp.c    | 3 ++-
- 3 files changed, 7 insertions(+), 5 deletions(-)
+ include/net/tcp.h   | 2 +-
+ net/ipv4/tcp.c      | 3 ++-
+ net/ipv4/tcp_ipv4.c | 4 ++--
+ net/ipv6/tcp_ipv6.c | 4 ++--
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/udp.h b/include/net/udp.h
-index 17a9e86a807638..295d52a7359827 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -306,7 +306,7 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
- int udp_lib_getsockopt(struct sock *sk, int level, int optname,
- 		       char __user *optval, int __user *optlen);
- int udp_lib_setsockopt(struct sock *sk, int level, int optname,
--		       char __user *optval, unsigned int optlen,
-+		       sockptr_t optval, unsigned int optlen,
- 		       int (*push_pending_frames)(struct sock *));
- struct sock *udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
- 			     __be32 daddr, __be16 dport, int dif);
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index bb95cddcb040a6..c6cb2d09dbc75e 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2588,7 +2588,7 @@ void udp_destroy_sock(struct sock *sk)
-  *	Socket option code for UDP
-  */
- int udp_lib_setsockopt(struct sock *sk, int level, int optname,
--		       char __user *optval, unsigned int optlen,
-+		       sockptr_t optval, unsigned int optlen,
- 		       int (*push_pending_frames)(struct sock *))
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 9f7f7c0c110451..e3c8e1d820214c 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -2002,7 +2002,7 @@ struct tcp_sock_af_ops {
+ 					 const struct sk_buff *skb);
+ 	int		(*md5_parse)(struct sock *sk,
+ 				     int optname,
+-				     char __user *optval,
++				     sockptr_t optval,
+ 				     int optlen);
+ #endif
+ };
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 58ede3d62b2e2c..49bf15c27deac7 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -3249,7 +3249,8 @@ static int do_tcp_setsockopt(struct sock *sk, int level,
+ #ifdef CONFIG_TCP_MD5SIG
+ 	case TCP_MD5SIG:
+ 	case TCP_MD5SIG_EXT:
+-		err = tp->af_specific->md5_parse(sk, optname, optval, optlen);
++		err = tp->af_specific->md5_parse(sk, optname,
++						 USER_SOCKPTR(optval), optlen);
+ 		break;
+ #endif
+ 	case TCP_USER_TIMEOUT:
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index daa39d33702b13..f8913923a6c05e 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1195,7 +1195,7 @@ static void tcp_clear_md5_list(struct sock *sk)
+ }
+ 
+ static int tcp_v4_parse_md5_keys(struct sock *sk, int optname,
+-				 char __user *optval, int optlen)
++				 sockptr_t optval, int optlen)
  {
- 	struct udp_sock *up = udp_sk(sk);
-@@ -2599,7 +2599,7 @@ int udp_lib_setsockopt(struct sock *sk, int level, int optname,
- 	if (optlen < sizeof(int))
+ 	struct tcp_md5sig cmd;
+ 	struct sockaddr_in *sin = (struct sockaddr_in *)&cmd.tcpm_addr;
+@@ -1206,7 +1206,7 @@ static int tcp_v4_parse_md5_keys(struct sock *sk, int optname,
+ 	if (optlen < sizeof(cmd))
  		return -EINVAL;
  
--	if (get_user(val, (int __user *)optval))
-+	if (copy_from_sockptr(&val, optval, sizeof(val)))
+-	if (copy_from_user(&cmd, optval, sizeof(cmd)))
++	if (copy_from_sockptr(&cmd, optval, sizeof(cmd)))
  		return -EFAULT;
  
- 	valbool = val ? 1 : 0;
-@@ -2707,7 +2707,8 @@ int udp_setsockopt(struct sock *sk, int level, int optname,
- 		   char __user *optval, unsigned int optlen)
- {
- 	if (level == SOL_UDP  ||  level == SOL_UDPLITE)
--		return udp_lib_setsockopt(sk, level, optname, optval, optlen,
-+		return udp_lib_setsockopt(sk, level, optname,
-+					  USER_SOCKPTR(optval), optlen,
- 					  udp_push_pending_frames);
- 	return ip_setsockopt(sk, level, optname, optval, optlen);
+ 	if (sin->sin_family != AF_INET)
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index c34b7834fd84a8..305870a72352d6 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -567,7 +567,7 @@ static struct tcp_md5sig_key *tcp_v6_md5_lookup(const struct sock *sk,
  }
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 7c1143feb2bf7e..2df1e6c9d7cbf6 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -1622,7 +1622,8 @@ int udpv6_setsockopt(struct sock *sk, int level, int optname,
- 		     char __user *optval, unsigned int optlen)
+ 
+ static int tcp_v6_parse_md5_keys(struct sock *sk, int optname,
+-				 char __user *optval, int optlen)
++				 sockptr_t optval, int optlen)
  {
- 	if (level == SOL_UDP  ||  level == SOL_UDPLITE)
--		return udp_lib_setsockopt(sk, level, optname, optval, optlen,
-+		return udp_lib_setsockopt(sk, level, optname,
-+					  USER_SOCKPTR(optval), optlen,
- 					  udp_v6_push_pending_frames);
- 	return ipv6_setsockopt(sk, level, optname, optval, optlen);
- }
+ 	struct tcp_md5sig cmd;
+ 	struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&cmd.tcpm_addr;
+@@ -577,7 +577,7 @@ static int tcp_v6_parse_md5_keys(struct sock *sk, int optname,
+ 	if (optlen < sizeof(cmd))
+ 		return -EINVAL;
+ 
+-	if (copy_from_user(&cmd, optval, sizeof(cmd)))
++	if (copy_from_sockptr(&cmd, optval, sizeof(cmd)))
+ 		return -EFAULT;
+ 
+ 	if (sin6->sin6_family != AF_INET6)
 -- 
 2.27.0
