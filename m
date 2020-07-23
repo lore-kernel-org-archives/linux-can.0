@@ -1,83 +1,95 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: [RESEND PATCH] can: mcp251x: add support for half duplex controllers
-Date: Thu, 23 Jul 2020 07:57:55 -0700
-Message-ID: <1595516275-1179-1-git-send-email-tharvey@gateworks.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: "David S . Miller" <davem@davemloft.net>, Sean Nyekjaer <sean@geanix.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, =?UTF-8?q?Timo=20Schl=C3=BC=C3=9Fler?= <schluessler@krause.de>, "Gustavo A . R . Silva" <gustavo@embeddedor.com>, Tim Harvey <tharvey@gateworks.com>
-List-Id: linux-can.vger.kernel.org
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: About sysfs usage by socket-can drivers
+Date: Thu, 23 Jul 2020 17:23:33 +0200
+Message-ID: <f329322b-25e1-b53a-73ae-2f239e27e92f@pengutronix.de>
+References: <VI1PR03MB5053B1FB7A45D4243BD1F095D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="pPM7xB3qFbob8jAHCcwHPZ3ixRikNd5yF"
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727996AbgGWPXk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Jul 2020 11:23:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFCDC0619DC
+        for <linux-can@vger.kernel.org>; Thu, 23 Jul 2020 08:23:40 -0700 (PDT)
+In-Reply-To: <VI1PR03MB5053B1FB7A45D4243BD1F095D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Some SPI host controllers do not support full-duplex SPI and are
-marked as such via the SPI_CONTROLLER_HALF_DUPLEX controller flag.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--pPM7xB3qFbob8jAHCcwHPZ3ixRikNd5yF
+Content-Type: multipart/mixed; boundary="1ksVh48gfRP95YB0UnWvBXsPLMnTdrhIG";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Message-ID: <f329322b-25e1-b53a-73ae-2f239e27e92f@pengutronix.de>
+Subject: Re: About sysfs usage by socket-can drivers
+References: <VI1PR03MB5053B1FB7A45D4243BD1F095D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
+In-Reply-To: <VI1PR03MB5053B1FB7A45D4243BD1F095D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
 
-For such controllers use half duplex transactions but retain full
-duplex transactions for the controllers that can handle those.
+--1ksVh48gfRP95YB0UnWvBXsPLMnTdrhIG
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
- drivers/net/can/spi/mcp251x.c | 34 +++++++++++++++++++++++++++-------
- 1 file changed, 27 insertions(+), 7 deletions(-)
+On 7/23/20 4:50 PM, St=C3=A9phane Grosjean wrote:
+> We've several pending requests regarding:
+> - changing the default clock value,
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 5009ff2..203ef20 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -290,8 +290,12 @@ static u8 mcp251x_read_reg(struct spi_device *spi, u8 reg)
- 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
- 	priv->spi_tx_buf[1] = reg;
- 
--	mcp251x_spi_trans(spi, 3);
--	val = priv->spi_rx_buf[2];
-+	if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
-+		spi_write_then_read(spi, priv->spi_tx_buf, 2, &val, 1);
-+	} else {
-+		mcp251x_spi_trans(spi, 3);
-+		val = priv->spi_rx_buf[2];
-+	}
- 
- 	return val;
- }
-@@ -303,10 +307,18 @@ static void mcp251x_read_2regs(struct spi_device *spi, u8 reg, u8 *v1, u8 *v2)
- 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
- 	priv->spi_tx_buf[1] = reg;
- 
--	mcp251x_spi_trans(spi, 4);
-+	if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
-+		u8 val[2] = { 0 };
- 
--	*v1 = priv->spi_rx_buf[2];
--	*v2 = priv->spi_rx_buf[3];
-+		spi_write_then_read(spi, priv->spi_tx_buf, 2, val, 2);
-+		*v1 = val[0];
-+		*v2 = val[1];
-+	} else {
-+		mcp251x_spi_trans(spi, 4);
-+
-+		*v1 = priv->spi_rx_buf[2];
-+		*v2 = priv->spi_rx_buf[3];
-+	}
- }
- 
- static void mcp251x_write_reg(struct spi_device *spi, u8 reg, u8 val)
-@@ -409,8 +421,16 @@ static void mcp251x_hw_rx_frame(struct spi_device *spi, u8 *buf,
- 			buf[i] = mcp251x_read_reg(spi, RXBCTRL(buf_idx) + i);
- 	} else {
- 		priv->spi_tx_buf[RXBCTRL_OFF] = INSTRUCTION_READ_RXB(buf_idx);
--		mcp251x_spi_trans(spi, SPI_TRANSFER_BUF_LEN);
--		memcpy(buf, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN);
-+		if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
-+			spi_write_then_read(spi, priv->spi_tx_buf, 1,
-+					    priv->spi_rx_buf,
-+					    SPI_TRANSFER_BUF_LEN);
-+			memcpy(buf + 1, priv->spi_rx_buf,
-+			       SPI_TRANSFER_BUF_LEN - 1);
-+		} else {
-+			mcp251x_spi_trans(spi, SPI_TRANSFER_BUF_LEN);
-+			memcpy(buf, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN);
-+		}
- 	}
- }
- 
--- 
-2.7.4
+The input clock rate for the CAN IP Core?
+
+> - reading the bus load value,
+
+=2E.as calculated by the USB device?
+
+> - using a flashed device id. to better control the can interface number=
+,
+
+Can you make use of dev_id/dev_port
+https://elixir.bootlin.com/linux/latest/source/include/linux/netdevice.h#=
+L1687
+
+> - identifying the (USB) channel
+
+Does udev offer all needed information? E.g.:
+
+    udevadm test /sys/class/net/can0
+
+> Adding attributes under /sys/class/net/canX (or into a specific/private=
+ group) could be a solution.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--1ksVh48gfRP95YB0UnWvBXsPLMnTdrhIG--
+
+--pPM7xB3qFbob8jAHCcwHPZ3ixRikNd5yF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl8Zq3UACgkQqclaivrt
+76mAqwf+IzLyk/cXtQs/Hb32bVjxS/7FY0oNMtuY53E5cVtNStXKpbvioSHE89Uz
+Yj5rTfNKRvKBvM/SVYl1i7XrSfu85CG6LxNi0dm78gO/TlvkXEvFZ2q5OaW7P59W
+sxhVVERgRfA2B6qYi17vsoJBJYxCi9O5IhCOoPIRQ2JHrynX5GSvC5vCfzUNpZqG
+3FA6zlmeoSyeN6B+gTUSfbMHGEBx2mtc8fIpReJ7vV+j1c5RUDPTY1d2Pje2A6q+
+aVzMwfVoASAdXz79cN0GhytBw5b+OoBFMqCWI2n8OjCXJ+rMy6szUZHE33Suthlg
+S93Q+PFe0foWTogRGf3xV1ox/9gJSA==
+=fgTu
+-----END PGP SIGNATURE-----
+
+--pPM7xB3qFbob8jAHCcwHPZ3ixRikNd5yF--
