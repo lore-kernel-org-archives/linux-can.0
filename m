@@ -1,28 +1,25 @@
-From: =?utf-8?B?U3TDqXBoYW5lIEdyb3NqZWFu?= <s.grosjean@peak-system.com>
-Subject: About sysfs usage by socket-can drivers
-Date: Thu, 23 Jul 2020 09:18:51 +0000
-Message-ID: <VI1PR03MB5053197AAA73DC22A681610DD6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
-References: <VI1PR03MB5053976465B2A1EAB995BA02D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
+From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH 01/26] bpfilter: fix up a sparse annotation
+Date: Thu, 23 Jul 2020 13:14:47 +0200
+Message-ID: <20200723111447.3xj7cidlsspofsja@ltop.local>
+References: <20200723060908.50081-1-hch@lst.de>
+ <20200723060908.50081-2-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:54217
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726330AbgGWJSz (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 23 Jul 2020 05:18:55 -0400
-In-Reply-To: <VI1PR03MB5053976465B2A1EAB995BA02D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
-Content-Language: fr-FR
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20200723060908.50081-2-hch@lst.de>
+Sender: netfilter-devel-owner@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.o
+List-Id: linux-can.vger.kernel.org
 
-SGVsbG8sDQoNCkFyZSB0aGVyZSBydWxlcyBmb3IgdXNpbmcgbmV0d29yayBpbnRlcmZhY2Ugc3lz
-ZnMsIGluIHBhcnRpY3VsYXIsIGNhbiBhIHNvY2tldC1jYW4gZHJpdmVyIGFkZCBpdHMgb3duIGF0
-dHJpYnV0ZXMsIHBsZWFzZT8NCg0KUmVnYXJkcyzigIsNCg0KLS0tIFN0ZXBoYW5lDQoNCi0tDQpQ
-RUFLLVN5c3RlbSBUZWNobmlrIEdtYkgNClNpdHogZGVyIEdlc2VsbHNjaGFmdCBEYXJtc3RhZHQg
-LSBIUkIgOTE4Mw0KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBBbGV4YW5kZXIgR2FjaCAvIFV3ZSBXaWxo
-ZWxtDQpVbnNlcmUgRGF0ZW5zY2h1dHplcmtsYWVydW5nIG1pdCB3aWNodGlnZW4gSGlud2Vpc2Vu
-DQp6dXIgQmVoYW5kbHVuZyBwZXJzb25lbmJlem9nZW5lciBEYXRlbiBmaW5kZW4gU2llIHVudGVy
-DQp3d3cucGVhay1zeXN0ZW0uY29tL0RhdGVuc2NodXR6LjQ4My4wLmh0bWwNCg==
+On Thu, Jul 23, 2020 at 08:08:43AM +0200, Christoph Hellwig wrote:
+> The __user doesn't make sense when casting to an integer type, just
+> switch to a uintptr_t cast which also removes the need for the __force.
+
+Feel free to add my:
+
+Reviewed-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+
+-- Luc
