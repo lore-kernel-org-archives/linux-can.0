@@ -1,99 +1,61 @@
-From: =?iso-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
-Subject: RE: About sysfs usage by socket-can drivers
-Date: Thu, 23 Jul 2020 14:50:02 +0000
-Message-ID: <VI1PR03MB5053B1FB7A45D4243BD1F095D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH 03/26] bpfilter: reject kernel addresses
+Date: Thu, 23 Jul 2020 14:56:33 +0000
+Message-ID: <5fc6b1716f1b4534bda95bab49512754@AcuMS.aculab.com>
+References: <20200723060908.50081-1-hch@lst.de>
+ <20200723060908.50081-4-hch@lst.de>
+ <c3dc5b4d84e64230bb6ca8df7bb70705@AcuMS.aculab.com>
+ <20200723144455.GA12280@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr60058.outbound.protection.outlook.com ([40.107.6.58]:16514
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726761AbgGWOuG (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:50:06 -0400
-Content-Language: fr-FR
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-hams-owner@vger.kernel.org>
+In-Reply-To: <20200723144455.GA12280@lst.de>
+Content-Language: en-US
+Sender: linux-hams-owner@vger.kernel.org
+To: 'Christoph Hellwig' <hch@lst.de>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>, "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>, "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>, "linux-bluetooth@vger.kernel.org" <linux-b>
+List-Id: linux-can.vger.kernel.org
 
-Hello Mark,
+From: 'Christoph Hellwig'
+> Sent: 23 July 2020 15:45
+> 
+> On Thu, Jul 23, 2020 at 02:42:11PM +0000, David Laight wrote:
+> > From: Christoph Hellwig
+> > > Sent: 23 July 2020 07:09
+> > >
+> > > The bpfilter user mode helper processes the optval address using
+> > > process_vm_readv.  Don't send it kernel addresses fed under
+> > > set_fs(KERNEL_DS) as that won't work.
+> >
+> > What sort of operations is the bpf filter doing on the sockopt buffers?
+> >
+> > Any attempts to reject some requests can be thwarted by a second
+> > application thread modifying the buffer after the bpf filter has
+> > checked that it allowed.
+> >
+> > You can't do security by reading a user buffer twice.
+> 
+> I'm not saying that I approve of the design, but the current bpfilter
+> design uses process_vm_readv to access the buffer, which obviously does
+> not work with kernel buffers.
 
-Thank you for your answer.
+Is this a different bit of bpf that that which used to directly
+intercept setsockopt() requests and pass them down from a kernel buffer?
 
-We've several pending requests regarding:
-- changing the default clock value,
-- reading the bus load value,
-- using a flashed device id. to better control the can interface number,
-- identifying the (USB) channel
-- ...
+I can't held feeling that bpf is getting 'too big for its boots' and
+will have a local-user privilege escalation hiding in it somewhere.
 
-Adding attributes under /sys/class/net/canX (or into a specific/private gro=
-up) could be a solution.
----
-St=E9phane Grosjean
-PEAK-System France
-132, rue Andr=E9 Bisiaux
-F-54320 MAXEVILLE
-T=E9l : +(33) 9.72.54.51.97
+I've had to fix my 'out of tree' driver to remove the [sg]etsockopt()
+calls. Some of the replacements will go badly wrong if I've accidentally
+lost track of the socket type.
+I do have a daemon process sleeping in the driver - so I can wake it up
+and make the requests from it with a user buffer.
+I may have to implement that to get the negotiated number of 'ostreams'
+to an SCTP connection.
 
+	David
 
-
-
-
-
-
-            De: Marc Kleine-Budde
-Envoy=E9: Jeudi 23 juillet 2020 15:37
-=C0: St=E9phane Grosjean; linux-can@vger.kernel.org
-Objet: Re: About sysfs usage by socket-can drivers
-
-
-
-
-On 7/23/20 11:18 AM, St=E9phane Grosjean wrote:
-
-> Are there rules for using network interface sysfs, in particular, can a
-
-> socket-can driver add its own attributes, please?
-
-First let's discuss, why you need a sysfs attribute?
-
-Is there a better way to do this?
-
-
-
-Then you have to describe the sysfs entry, e.g.:
-
-Documentation/ABI/testing/sysfs-platform-at91
-
-
-
-regards,
-
-Marc
-
-
-
---
-
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-
-Embedded Linux                   | https://www.pengutronix.de  |
-
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
-
-
-
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt - HRB 9183
-Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
-Unsere Datenschutzerklaerung mit wichtigen Hinweisen
-zur Behandlung personenbezogener Daten finden Sie unter
-www.peak-system.com/Datenschutz.483.0.html
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
