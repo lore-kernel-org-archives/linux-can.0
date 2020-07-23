@@ -1,128 +1,55 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 05/26] net: switch copy_bpf_fprog_from_user to sockptr_t
-Date: Thu, 23 Jul 2020 08:08:47 +0200
-Message-ID: <20200723060908.50081-6-hch@lst.de>
+From: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
+Subject: [PATCH 10/26] netfilter: remove the unused user argument to do_update_counters
+Date: Thu, 23 Jul 2020 08:08:52 +0200
+Message-ID: <20200723060908.50081-11-hch@lst.de>
 References: <20200723060908.50081-1-hch@lst.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgGWGJ3 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Jul 2020 02:09:29 -0400
-In-Reply-To: <20200723060908.50081-1-hch@lst.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20200723060908.50081-1-hch-jcswGhMUV9g@public.gmane.org>
+Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Jakub Kicinski <kuba-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexei Starovoitov <ast-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Daniel Borkmann <daniel-FeC+5ew28dpmcu3hnIyYJQ@public.gmane.org>, Alexey Kuznetsov <kuznet-v/Mj1YrvjDBInbfyfbPRSQ@public.gmane.org>, Hideaki YOSHIFUJI <yoshfuji-VfPWfsRibaP+Ru+s062T9g@public.gmane.org>, Eric Dumazet <edumazet-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+Cc: linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bpf-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bridge-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dccp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-decnet-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-wpan-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mptcp-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, lvs-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, rds-devel-N0ozoZBvEnrZJqsBc5GL+g@public.gmane.org, linux-afs-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, tipc-discussion-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-x25-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Id: linux-can.vger.kernel.org
 
-Pass a sockptr_t to prepare for set_fs-less handling of the kernel
-pointer from bpf-cgroup.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
 ---
- include/linux/filter.h | 3 ++-
- net/core/filter.c      | 6 +++---
- net/core/sock.c        | 6 ++++--
- net/packet/af_packet.c | 4 ++--
- 4 files changed, 11 insertions(+), 8 deletions(-)
+ net/bridge/netfilter/ebtables.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 1c6b6d982bf498..d07a6e973a7d6f 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -20,6 +20,7 @@
- #include <linux/kallsyms.h>
- #include <linux/if_vlan.h>
- #include <linux/vmalloc.h>
-+#include <linux/sockptr.h>
- #include <crypto/sha.h>
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index fe13108af1f542..12f8929667bf43 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -1242,9 +1242,8 @@ void ebt_unregister_table(struct net *net, struct ebt_table *table,
  
- #include <net/sch_generic.h>
-@@ -1276,7 +1277,7 @@ struct bpf_sockopt_kern {
- 	s32		retval;
- };
- 
--int copy_bpf_fprog_from_user(struct sock_fprog *dst, void __user *src, int len);
-+int copy_bpf_fprog_from_user(struct sock_fprog *dst, sockptr_t src, int len);
- 
- struct bpf_sk_lookup_kern {
- 	u16		family;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 3fa16b8c0d616a..29e3455122f772 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -77,14 +77,14 @@
- #include <net/transp_v6.h>
- #include <linux/btf_ids.h>
- 
--int copy_bpf_fprog_from_user(struct sock_fprog *dst, void __user *src, int len)
-+int copy_bpf_fprog_from_user(struct sock_fprog *dst, sockptr_t src, int len)
+ /* userspace just supplied us with counters */
+ static int do_update_counters(struct net *net, const char *name,
+-				struct ebt_counter __user *counters,
+-				unsigned int num_counters,
+-				const void __user *user, unsigned int len)
++			      struct ebt_counter __user *counters,
++			      unsigned int num_counters, unsigned int len)
  {
- 	if (in_compat_syscall()) {
- 		struct compat_sock_fprog f32;
+ 	int i, ret;
+ 	struct ebt_counter *tmp;
+@@ -1299,7 +1298,7 @@ static int update_counters(struct net *net, const void __user *user,
+ 		return -EINVAL;
  
- 		if (len != sizeof(f32))
- 			return -EINVAL;
--		if (copy_from_user(&f32, src, sizeof(f32)))
-+		if (copy_from_sockptr(&f32, src, sizeof(f32)))
- 			return -EFAULT;
- 		memset(dst, 0, sizeof(*dst));
- 		dst->len = f32.len;
-@@ -92,7 +92,7 @@ int copy_bpf_fprog_from_user(struct sock_fprog *dst, void __user *src, int len)
- 	} else {
- 		if (len != sizeof(*dst))
- 			return -EINVAL;
--		if (copy_from_user(dst, src, sizeof(*dst)))
-+		if (copy_from_sockptr(dst, src, sizeof(*dst)))
- 			return -EFAULT;
- 	}
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 6da54eac2b3456..71fc7e4ddd0648 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1063,7 +1063,8 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
- 	case SO_ATTACH_FILTER: {
- 		struct sock_fprog fprog;
- 
--		ret = copy_bpf_fprog_from_user(&fprog, optval, optlen);
-+		ret = copy_bpf_fprog_from_user(&fprog, USER_SOCKPTR(optval),
-+					       optlen);
- 		if (!ret)
- 			ret = sk_attach_filter(&fprog, sk);
- 		break;
-@@ -1084,7 +1085,8 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
- 	case SO_ATTACH_REUSEPORT_CBPF: {
- 		struct sock_fprog fprog;
- 
--		ret = copy_bpf_fprog_from_user(&fprog, optval, optlen);
-+		ret = copy_bpf_fprog_from_user(&fprog, USER_SOCKPTR(optval),
-+					       optlen);
- 		if (!ret)
- 			ret = sk_reuseport_attach_filter(&fprog, sk);
- 		break;
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index c240fb5de3f014..d8d4f78f78e451 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -1536,7 +1536,7 @@ static void __fanout_set_data_bpf(struct packet_fanout *f, struct bpf_prog *new)
- 	}
+ 	return do_update_counters(net, hlp.name, hlp.counters,
+-				hlp.num_counters, user, len);
++				  hlp.num_counters, len);
  }
  
--static int fanout_set_data_cbpf(struct packet_sock *po, char __user *data,
-+static int fanout_set_data_cbpf(struct packet_sock *po, sockptr_t data,
- 				unsigned int len)
- {
- 	struct bpf_prog *new;
-@@ -1584,7 +1584,7 @@ static int fanout_set_data(struct packet_sock *po, char __user *data,
- {
- 	switch (po->fanout->type) {
- 	case PACKET_FANOUT_CBPF:
--		return fanout_set_data_cbpf(po, data, len);
-+		return fanout_set_data_cbpf(po, USER_SOCKPTR(data), len);
- 	case PACKET_FANOUT_EBPF:
- 		return fanout_set_data_ebpf(po, data, len);
- 	default:
+ static inline int ebt_obj_to_user(char __user *um, const char *_name,
+@@ -2231,7 +2230,7 @@ static int compat_update_counters(struct net *net, void __user *user,
+ 		return update_counters(net, user, len);
+ 
+ 	return do_update_counters(net, hlp.name, compat_ptr(hlp.counters),
+-					hlp.num_counters, user, len);
++				  hlp.num_counters, len);
+ }
+ 
+ static int compat_do_ebt_get_ctl(struct sock *sk, int cmd,
 -- 
 2.27.0
