@@ -1,55 +1,137 @@
-From: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
-Subject: [PATCH 10/26] netfilter: remove the unused user argument to do_update_counters
-Date: Thu, 23 Jul 2020 08:08:52 +0200
-Message-ID: <20200723060908.50081-11-hch@lst.de>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 14/26] net/ipv4: switch ip_mroute_setsockopt to sockptr_t
+Date: Thu, 23 Jul 2020 08:08:56 +0200
+Message-ID: <20200723060908.50081-15-hch@lst.de>
 References: <20200723060908.50081-1-hch@lst.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20200723060908.50081-1-hch-jcswGhMUV9g@public.gmane.org>
-Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Jakub Kicinski <kuba-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexei Starovoitov <ast-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Daniel Borkmann <daniel-FeC+5ew28dpmcu3hnIyYJQ@public.gmane.org>, Alexey Kuznetsov <kuznet-v/Mj1YrvjDBInbfyfbPRSQ@public.gmane.org>, Hideaki YOSHIFUJI <yoshfuji-VfPWfsRibaP+Ru+s062T9g@public.gmane.org>, Eric Dumazet <edumazet-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
-Cc: linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bpf-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bridge-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dccp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-decnet-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-wpan-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mptcp-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, lvs-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, rds-devel-N0ozoZBvEnrZJqsBc5GL+g@public.gmane.org, linux-afs-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, tipc-discussion-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-x25-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200723060908.50081-1-hch@lst.de>
+Sender: netdev-owner@vger.kernel.org
+To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Signed-off-by: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
----
- net/bridge/netfilter/ebtables.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Pass a sockptr_t to prepare for set_fs-less handling of the kernel
+pointer from bpf-cgroup.
 
-diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index fe13108af1f542..12f8929667bf43 100644
---- a/net/bridge/netfilter/ebtables.c
-+++ b/net/bridge/netfilter/ebtables.c
-@@ -1242,9 +1242,8 @@ void ebt_unregister_table(struct net *net, struct ebt_table *table,
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ include/linux/mroute.h |  5 +++--
+ net/ipv4/ip_sockglue.c |  3 ++-
+ net/ipv4/ipmr.c        | 14 +++++++-------
+ 3 files changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/include/linux/mroute.h b/include/linux/mroute.h
+index 9a36fad9e068f6..6cbbfe94348cee 100644
+--- a/include/linux/mroute.h
++++ b/include/linux/mroute.h
+@@ -8,6 +8,7 @@
+ #include <net/fib_notifier.h>
+ #include <uapi/linux/mroute.h>
+ #include <linux/mroute_base.h>
++#include <linux/sockptr.h>
  
- /* userspace just supplied us with counters */
- static int do_update_counters(struct net *net, const char *name,
--				struct ebt_counter __user *counters,
--				unsigned int num_counters,
--				const void __user *user, unsigned int len)
-+			      struct ebt_counter __user *counters,
-+			      unsigned int num_counters, unsigned int len)
+ #ifdef CONFIG_IP_MROUTE
+ static inline int ip_mroute_opt(int opt)
+@@ -15,7 +16,7 @@ static inline int ip_mroute_opt(int opt)
+ 	return opt >= MRT_BASE && opt <= MRT_MAX;
+ }
+ 
+-int ip_mroute_setsockopt(struct sock *, int, char __user *, unsigned int);
++int ip_mroute_setsockopt(struct sock *, int, sockptr_t, unsigned int);
+ int ip_mroute_getsockopt(struct sock *, int, char __user *, int __user *);
+ int ipmr_ioctl(struct sock *sk, int cmd, void __user *arg);
+ int ipmr_compat_ioctl(struct sock *sk, unsigned int cmd, void __user *arg);
+@@ -23,7 +24,7 @@ int ip_mr_init(void);
+ bool ipmr_rule_default(const struct fib_rule *rule);
+ #else
+ static inline int ip_mroute_setsockopt(struct sock *sock, int optname,
+-				       char __user *optval, unsigned int optlen)
++				       sockptr_t optval, unsigned int optlen)
  {
- 	int i, ret;
- 	struct ebt_counter *tmp;
-@@ -1299,7 +1298,7 @@ static int update_counters(struct net *net, const void __user *user,
- 		return -EINVAL;
- 
- 	return do_update_counters(net, hlp.name, hlp.counters,
--				hlp.num_counters, user, len);
-+				  hlp.num_counters, len);
+ 	return -ENOPROTOOPT;
  }
+diff --git a/net/ipv4/ip_sockglue.c b/net/ipv4/ip_sockglue.c
+index 36f746e01741f6..ac495b0cff8ffb 100644
+--- a/net/ipv4/ip_sockglue.c
++++ b/net/ipv4/ip_sockglue.c
+@@ -925,7 +925,8 @@ static int do_ip_setsockopt(struct sock *sk, int level,
+ 	if (optname == IP_ROUTER_ALERT)
+ 		return ip_ra_control(sk, val ? 1 : 0, NULL);
+ 	if (ip_mroute_opt(optname))
+-		return ip_mroute_setsockopt(sk, optname, optval, optlen);
++		return ip_mroute_setsockopt(sk, optname, USER_SOCKPTR(optval),
++					    optlen);
  
- static inline int ebt_obj_to_user(char __user *um, const char *_name,
-@@ -2231,7 +2230,7 @@ static int compat_update_counters(struct net *net, void __user *user,
- 		return update_counters(net, user, len);
+ 	err = 0;
+ 	if (needs_rtnl)
+diff --git a/net/ipv4/ipmr.c b/net/ipv4/ipmr.c
+index 678639c01e4882..cdf3a40f9ff5fc 100644
+--- a/net/ipv4/ipmr.c
++++ b/net/ipv4/ipmr.c
+@@ -1341,7 +1341,7 @@ static void mrtsock_destruct(struct sock *sk)
+  * MOSPF/PIM router set up we can clean this up.
+  */
  
- 	return do_update_counters(net, hlp.name, compat_ptr(hlp.counters),
--					hlp.num_counters, user, len);
-+				  hlp.num_counters, len);
- }
- 
- static int compat_do_ebt_get_ctl(struct sock *sk, int cmd,
+-int ip_mroute_setsockopt(struct sock *sk, int optname, char __user *optval,
++int ip_mroute_setsockopt(struct sock *sk, int optname, sockptr_t optval,
+ 			 unsigned int optlen)
+ {
+ 	struct net *net = sock_net(sk);
+@@ -1413,7 +1413,7 @@ int ip_mroute_setsockopt(struct sock *sk, int optname, char __user *optval,
+ 			ret = -EINVAL;
+ 			break;
+ 		}
+-		if (copy_from_user(&vif, optval, sizeof(vif))) {
++		if (copy_from_sockptr(&vif, optval, sizeof(vif))) {
+ 			ret = -EFAULT;
+ 			break;
+ 		}
+@@ -1441,7 +1441,7 @@ int ip_mroute_setsockopt(struct sock *sk, int optname, char __user *optval,
+ 			ret = -EINVAL;
+ 			break;
+ 		}
+-		if (copy_from_user(&mfc, optval, sizeof(mfc))) {
++		if (copy_from_sockptr(&val, optval, sizeof(val))) {
+ 			ret = -EFAULT;
+ 			break;
+ 		}
+@@ -1459,7 +1459,7 @@ int ip_mroute_setsockopt(struct sock *sk, int optname, char __user *optval,
+ 			ret = -EINVAL;
+ 			break;
+ 		}
+-		if (get_user(val, (int __user *)optval)) {
++		if (copy_from_sockptr(&val, optval, sizeof(val))) {
+ 			ret = -EFAULT;
+ 			break;
+ 		}
+@@ -1471,7 +1471,7 @@ int ip_mroute_setsockopt(struct sock *sk, int optname, char __user *optval,
+ 			ret = -EINVAL;
+ 			break;
+ 		}
+-		if (get_user(val, (int __user *)optval)) {
++		if (copy_from_sockptr(&val, optval, sizeof(val))) {
+ 			ret = -EFAULT;
+ 			break;
+ 		}
+@@ -1486,7 +1486,7 @@ int ip_mroute_setsockopt(struct sock *sk, int optname, char __user *optval,
+ 			ret = -EINVAL;
+ 			break;
+ 		}
+-		if (get_user(val, (int __user *)optval)) {
++		if (copy_from_sockptr(&val, optval, sizeof(val))) {
+ 			ret = -EFAULT;
+ 			break;
+ 		}
+@@ -1508,7 +1508,7 @@ int ip_mroute_setsockopt(struct sock *sk, int optname, char __user *optval,
+ 			ret = -EINVAL;
+ 			break;
+ 		}
+-		if (get_user(uval, (u32 __user *)optval)) {
++		if (copy_from_sockptr(&uval, optval, sizeof(uval))) {
+ 			ret = -EFAULT;
+ 			break;
+ 		}
 -- 
 2.27.0
