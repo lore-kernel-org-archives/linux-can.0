@@ -1,34 +1,35 @@
-From: ''Tayeb@vger.kernel.org, Souami''@vger.kernel.org
-Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
-Date: Fri, 24 Jul 2020 10:19:41 +0200
-Message-ID: <63249080-3370-4b2e-931f-45dfe03601cc@CRONOS.itam.mx>
-Reply-To: <charlesjacksonjr001@gmail.com>
+From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: About sysfs usage by socket-can drivers
+Date: Fri, 24 Jul 2020 11:45:02 +0200
+Message-ID: <20200724094502.GB27720@x1.vandijck-laurijssen.be>
+References: <VI1PR03MB5053B1FB7A45D4243BD1F095D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mx2.itam.mx ([148.205.229.36]:44468 "EHLO mx2.itam.mx"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726437AbgGXIU3 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 24 Jul 2020 04:20:29 -0400
-Content-Description: Mail message body
+Received: from relay-b03.edpnet.be ([212.71.1.220]:48485 "EHLO
+        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726114AbgGXJph (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 24 Jul 2020 05:45:37 -0400
+Content-Disposition: inline
+In-Reply-To: <VI1PR03MB5053B1FB7A45D4243BD1F095D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Recipients@vger.kernel.org
+To: =?utf-8?B?U3TDqXBoYW5l?= Grosjean <s.grosjean@peak-system.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Hallo
+> We've several pending requests regarding:
+> - changing the default clock value,
+> - reading the bus load value,
+> - using a flashed device id. to better control the can interface number,
+> - identifying the (USB) channel
+> - ...
 
-Ich bin Charles W. Jackson aus North Carolina, Vereinigte Staaten von Amerika, und ich bin der Gewinner des Mega-Millionen-Jackpots von 344 Millionen US-Dollar. Ich spende die Summe von 2.000.000 Millionen Euro als Teil der Hilfsgelder für das Corona-Virus.
+I tend to look in the (in your case) usb device, and add properties there.
+After all, those are device-related properties, not?
 
-Dies ist Ihr Spendencode: [CJ530342019]
+You could reach them via /sys/class/net/canX/device/...
 
-www.youtube.com/watch?v=BSr8myiLPMQ
+If you add them before the netdev is registered, you can use them in
+udev rules without race conditions.
 
-Bitte antworten Sie auf diese E-Mail mit dem SPENDERCODE:
-
-charlesjacksonjr001@gmail.com
-
-Ich hoffe, dass Sie und Ihre Familie dies durchkommen
-
-
-Herr Charles Jackson
+Kurt
