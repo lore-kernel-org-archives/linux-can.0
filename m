@@ -1,58 +1,144 @@
 From: =?iso-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
 Subject: RE: About sysfs usage by socket-can drivers
-Date: Tue, 28 Jul 2020 07:31:52 +0000
-Message-ID: <VI1PR03MB5053EF45CF182D93B68F3FC4D6730@VI1PR03MB5053.eurprd03.prod.outlook.com>
-References: <VI1PR03MB5053B1FB7A45D4243BD1F095D6760@VI1PR03MB5053.eurprd03.prod.outlook.com>,<20200724094502.GB27720@x1.vandijck-laurijssen.be>
+Date: Tue, 28 Jul 2020 07:53:33 +0000
+Message-ID: <VI1PR03MB5053BD184B309045AD7336D2D6730@VI1PR03MB5053.eurprd03.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-db8eur05on2077.outbound.protection.outlook.com ([40.107.20.77]:4928
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr80083.outbound.protection.outlook.com ([40.107.8.83]:28674
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726990AbgG1Hb5 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:31:57 -0400
-In-Reply-To: <20200724094502.GB27720@x1.vandijck-laurijssen.be>
+        id S1728037AbgG1Hxg (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 28 Jul 2020 03:53:36 -0400
 Content-Language: fr-FR
 Sender: linux-can-owner@vger.kernel.org
 List-ID: <linux-can.vger.kernel.org>
-To: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 
-Thx for your answer Kurt! Even if properties are channel related, this coul=
-d be a solution...
+> Can you query the possible clock rates? Either add to ethtool
 
-But... creating a (new) channel tree under /devices looks weird, doesn't it=
-?
-And why it should be "easier" to add attributes there rather than under eac=
-h /sys/class/net/can?
+Yes the available clock rates list can be provided (by the driver). How to =
+do that through ethtool please?
+
+> or make it a CAN specific callback.
+
+Do you propose to extend "struct can_priv" so that the clock could be selec=
+tect from netlink?
 
 -- St=E9phane
 
 
-De : Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Envoy=E9 : vendredi 24 juillet 2020 11:45
-=C0 : St=E9phane Grosjean <s.grosjean@peak-system.com>
-Cc : Marc Kleine-Budde <mkl@pengutronix.de>; linux-can@vger.kernel.org <lin=
-ux-can@vger.kernel.org>
-Objet : Re: About sysfs usage by socket-can drivers
 
-> We've several pending requests regarding:
-> - changing the default clock value,
-> - reading the bus load value,
-> - using a flashed device id. to better control the can interface number,
-> - identifying the (USB) channel
-> - ...
 
-I tend to look in the (in your case) usb device, and add properties there.
-After all, those are device-related properties, not?
+            De: Marc Kleine-Budde
+Envoy=E9: Jeudi 23 juillet 2020 22:13
+=C0: St=E9phane Grosjean
+Cc: linux-can@vger.kernel.org
+Objet: Re: About sysfs usage by socket-can drivers
 
-You could reach them via /sys/class/net/canX/device/...
 
-If you add them before the netdev is registered, you can use them in
-udev rules without race conditions.
 
-Kurt
+
+On 7/23/20 9:39 PM, St=E9phane Grosjean wrote:
+
+>>> - changing the default clock value,
+
+>
+
+>> The input clock rate for the CAN IP Core?
+
+> Yes
+
+
+
+Can you query the possible clock rates? Either add to ethtool or make it a =
+CAN
+
+specific callback.
+
+
+
+>>> - reading the bus load value,
+
+>> ..as calculated by the USB device?
+
+>
+
+> or by the IP core, yes.
+
+
+
+maybe we can add this to ethtool's stats, otherwise to the CAN stats.
+
+
+
+>>> - using a flashed device id. to better control the can interface number=
+,
+
+>
+
+>> Can you make use of dev_id/dev_port
+
+>> https://elixir.bootlin.com/linux/latest/source/include/linux/netdevice.h=
+#L1687
+
+>
+
+> Ok. I'll check that, thanks.
+
+>
+
+>
+
+>>> - identifying the (USB) channel
+
+>
+
+>> Does udev offer all needed information? E.g.:
+
+>
+
+> Sorry, nope: identify the USB adapter <=3D> flash the LED (which USB devi=
+ce corresponds to which canX)
+
+
+
+Use ethtool's set_phys_id for this:
+
+
+
+https://elixir.bootlin.com/linux/latest/source/drivers/net/can/usb/gs_usb.c=
+#L762
+
+
+
+You can either implement a "activate blink", "deactivate blink" or "switch =
+LED
+
+on", "switch LED off" (and I think the core will take care of blinking).
+
+
+
+Marc
+
+
+
+--
+
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+
+Embedded Linux                   | https://www.pengutronix.de  |
+
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+
+
+
 
 --
 PEAK-System Technik GmbH
