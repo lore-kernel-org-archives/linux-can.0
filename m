@@ -1,149 +1,47 @@
-From: =?iso-8859-1?Q?St=E9phane_Grosjean?= <s.grosjean@peak-system.com>
-Subject: RE: About sysfs usage by socket-can drivers
-Date: Tue, 28 Jul 2020 07:53:33 +0000
-Message-ID: <VI1PR03MB5053BD184B309045AD7336D2D6730@VI1PR03MB5053.eurprd03.prod.outlook.com>
+From: David Laight <David.Laight-ZS65k/vG3HxXrIkS9f7CXA@public.gmane.org>
+Subject: RE: [PATCH 12/26] netfilter: switch nf_setsockopt to sockptr_t
+Date: Tue, 28 Jul 2020 08:07:11 +0000
+Message-ID: <908ed73081cc42d58a5b01e0c97dbe47@AcuMS.aculab.com>
+References: <20200723060908.50081-1-hch@lst.de>
+ <20200723060908.50081-13-hch@lst.de> <20200727150310.GA1632472@zx2c4.com>
+ <20200727150601.GA3447@lst.de>
+ <CAHmME9ric=chLJayn7Erve7WBa+qCKn-+Gjri=zqydoY6623aA@mail.gmail.com>
+ <20200727162357.GA8022@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from mail-eopbgr80083.outbound.protection.outlook.com ([40.107.8.83]:28674
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728037AbgG1Hxg (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:53:36 -0400
-Content-Language: fr-FR
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-
-> Can you query the possible clock rates? Either add to ethtool
-
-Yes the available clock rates list can be provided (by the driver). How to =
-do that through ethtool please?
-
-> or make it a CAN specific callback.
-
-Do you propose to extend "struct can_priv" so that the clock could be selec=
-tect from netlink?
-
--- St=E9phane
-
-
-
-
-            De: Marc Kleine-Budde
-Envoy=E9: Jeudi 23 juillet 2020 22:13
-=C0: St=E9phane Grosjean
-Cc: linux-can@vger.kernel.org
-Objet: Re: About sysfs usage by socket-can drivers
-
-
-
-
-On 7/23/20 9:39 PM, St=E9phane Grosjean wrote:
-
->>> - changing the default clock value,
-
->
-
->> The input clock rate for the CAN IP Core?
-
-> Yes
-
-
-
-Can you query the possible clock rates? Either add to ethtool or make it a =
-CAN
-
-specific callback.
-
-
-
->>> - reading the bus load value,
-
->> ..as calculated by the USB device?
-
->
-
-> or by the IP core, yes.
-
-
-
-maybe we can add this to ethtool's stats, otherwise to the CAN stats.
-
-
-
->>> - using a flashed device id. to better control the can interface number=
-,
-
->
-
->> Can you make use of dev_id/dev_port
-
->> https://elixir.bootlin.com/linux/latest/source/include/linux/netdevice.h=
-#L1687
-
->
-
-> Ok. I'll check that, thanks.
-
->
-
->
-
->>> - identifying the (USB) channel
-
->
-
->> Does udev offer all needed information? E.g.:
-
->
-
-> Sorry, nope: identify the USB adapter <=3D> flash the LED (which USB devi=
-ce corresponds to which canX)
-
-
-
-Use ethtool's set_phys_id for this:
-
-
-
-https://elixir.bootlin.com/linux/latest/source/drivers/net/can/usb/gs_usb.c=
-#L762
-
-
-
-You can either implement a "activate blink", "deactivate blink" or "switch =
-LED
-
-on", "switch LED off" (and I think the core will take care of blinking).
-
-
-
-Marc
-
-
-
---
-
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-
-Embedded Linux                   | https://www.pengutronix.de  |
-
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
-
-
-
-
---
-PEAK-System Technik GmbH
-Sitz der Gesellschaft Darmstadt - HRB 9183
-Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
-Unsere Datenschutzerklaerung mit wichtigen Hinweisen
-zur Behandlung personenbezogener Daten finden Sie unter
-www.peak-system.com/Datenschutz.483.0.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20200727162357.GA8022-jcswGhMUV9g@public.gmane.org>
+Content-Language: en-US
+Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: 'Christoph Hellwig' <hch-jcswGhMUV9g@public.gmane.org>, "Jason A. Donenfeld" <Jason-OnJsPKxuuEcAvxtiuMwx3w@public.gmane.org>
+Cc: "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Jakub Kicinski <kuba-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexei Starovoitov <ast-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Daniel Borkmann <daniel-FeC+5ew28dpmcu3hnIyYJQ@public.gmane.org>, Alexey Kuznetsov <kuznet-v/Mj1YrvjDBInbfyfbPRSQ@public.gmane.org>, Hideaki YOSHIFUJI <yoshfuji-VfPWfsRibaP+Ru+s062T9g@public.gmane.org>, Eric Dumazet <edumazet-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Linux Crypto Mailing List <linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Netdev <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "bpf-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <bpf-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org" <coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>, "linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, bridge@list
+List-Id: linux-can.vger.kernel.org
+
+From: Christoph Hellwig
+> Sent: 27 July 2020 17:24
+> 
+> On Mon, Jul 27, 2020 at 06:16:32PM +0200, Jason A. Donenfeld wrote:
+> > Maybe sockptr_advance should have some safety checks and sometimes
+> > return -EFAULT? Or you should always use the implementation where
+> > being a kernel address is an explicit bit of sockptr_t, rather than
+> > being implicit?
+> 
+> I already have a patch to use access_ok to check the whole range in
+> init_user_sockptr.
+
+That doesn't make (much) difference to the code paths that ignore
+the user-supplied length.
+OTOH doing the user/kernel check on the base address (not an
+incremented one) means that the correct copy function is always
+selected.
+
+Perhaps the functions should all be passed a 'const sockptr_t'.
+The typedef could be made 'const' - requiring non-const items
+explicitly use the union/struct itself.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
