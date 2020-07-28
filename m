@@ -1,55 +1,188 @@
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCH 12/26] netfilter: switch nf_setsockopt to sockptr_t
-Date: Tue, 28 Jul 2020 10:17:28 +0200
-Message-ID: <CAHmME9pUbRmJq1Qcj10eENt15cuQHkiXJNKrUDmmC18n2mLKDA@mail.gmail.com>
-References: <20200723060908.50081-1-hch@lst.de> <20200723060908.50081-13-hch@lst.de>
- <20200727150310.GA1632472@zx2c4.com> <20200727150601.GA3447@lst.de>
- <CAHmME9ric=chLJayn7Erve7WBa+qCKn-+Gjri=zqydoY6623aA@mail.gmail.com>
- <20200727162357.GA8022@lst.de> <908ed73081cc42d58a5b01e0c97dbe47@AcuMS.aculab.com>
+From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Subject: [PATCH v1] pch_can: use generic power management
+Date: Tue, 28 Jul 2020 14:27:57 +0530
+Message-ID: <20200728085757.888620-1-vaibhavgupta40@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-crypto-owner@vger.kernel.org>
-In-Reply-To: <908ed73081cc42d58a5b01e0c97dbe47@AcuMS.aculab.com>
-Sender: linux-crypto-owner@vger.kernel.org
-To: David Laight <David.Laight@aculab.com>
-Cc: Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Netdev <netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>, "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>, "linux-bluetooth@vger.kernel.org" <linux-bluetooth@>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bjorn Helgaas <helgaas@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Bjorn Helgaas <bjorn@helgaas.com>, Vaibhav Gupta <vaibhav.varodek@gmail.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Vaibhav Gupta <vaibhavgupta40@gmail.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org, Shuah Khan <skhan@linuxfoundation.org>
 List-Id: linux-can.vger.kernel.org
 
-On Tue, Jul 28, 2020 at 10:07 AM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Christoph Hellwig
-> > Sent: 27 July 2020 17:24
-> >
-> > On Mon, Jul 27, 2020 at 06:16:32PM +0200, Jason A. Donenfeld wrote:
-> > > Maybe sockptr_advance should have some safety checks and sometimes
-> > > return -EFAULT? Or you should always use the implementation where
-> > > being a kernel address is an explicit bit of sockptr_t, rather than
-> > > being implicit?
-> >
-> > I already have a patch to use access_ok to check the whole range in
-> > init_user_sockptr.
->
-> That doesn't make (much) difference to the code paths that ignore
-> the user-supplied length.
-> OTOH doing the user/kernel check on the base address (not an
-> incremented one) means that the correct copy function is always
-> selected.
+Drivers using legacy power management .suspen()/.resume() callbacks
+have to manage PCI states and device's PM states themselves. They also
+need to take care of standard configuration registers.
 
-Right, I had the same reaction in reading this, but actually, his code
-gets rid of the sockptr_advance stuff entirely and never mutates, so
-even though my point about attacking those pointers was missed, the
-code does the better thing now -- checking the base address and never
-mutating the pointer. So I think we're good.
+Switch to generic power management framework using a single
+"struct dev_pm_ops" variable to take the unnecessary load from the driver.
+This also avoids the need for the driver to directly call most of the PCI
+helper functions and device power state control functions, as through
+the generic framework PCI Core takes care of the necessary operations,
+and drivers are required to do only device-specific jobs.
 
->
-> Perhaps the functions should all be passed a 'const sockptr_t'.
-> The typedef could be made 'const' - requiring non-const items
-> explicitly use the union/struct itself.
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/net/can/pch_can.c | 63 +++++++++++++--------------------------
+ 1 file changed, 21 insertions(+), 42 deletions(-)
 
-I was thinking the same, but just by making the pointers inside the
-struct const. However, making the whole struct const via the typedef
-is a much better idea. That'd probably require changing the signature
-of init_user_sockptr a bit, which would be fine, but indeed I think
-this would be a very positive change.
-
-Jason
+diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
+index db41dddd5771..ca54a6e1c810 100644
+--- a/drivers/net/can/pch_can.c
++++ b/drivers/net/can/pch_can.c
+@@ -957,8 +957,7 @@ static void pch_can_remove(struct pci_dev *pdev)
+ 	free_candev(priv->ndev);
+ }
+ 
+-#ifdef CONFIG_PM
+-static void pch_can_set_int_custom(struct pch_can_priv *priv)
++static void __maybe_unused pch_can_set_int_custom(struct pch_can_priv *priv)
+ {
+ 	/* Clearing the IE, SIE and EIE bits of Can control register. */
+ 	pch_can_bit_clear(&priv->regs->cont, PCH_CTRL_IE_SIE_EIE);
+@@ -969,14 +968,14 @@ static void pch_can_set_int_custom(struct pch_can_priv *priv)
+ }
+ 
+ /* This function retrieves interrupt enabled for the CAN device. */
+-static u32 pch_can_get_int_enables(struct pch_can_priv *priv)
++static u32 __maybe_unused pch_can_get_int_enables(struct pch_can_priv *priv)
+ {
+ 	/* Obtaining the status of IE, SIE and EIE interrupt bits. */
+ 	return (ioread32(&priv->regs->cont) & PCH_CTRL_IE_SIE_EIE) >> 1;
+ }
+ 
+-static u32 pch_can_get_rxtx_ir(struct pch_can_priv *priv, u32 buff_num,
+-			       enum pch_ifreg dir)
++static u32 __maybe_unused pch_can_get_rxtx_ir(struct pch_can_priv *priv,
++					      u32 buff_num, enum pch_ifreg dir)
+ {
+ 	u32 ie, enable;
+ 
+@@ -997,8 +996,8 @@ static u32 pch_can_get_rxtx_ir(struct pch_can_priv *priv, u32 buff_num,
+ 	return enable;
+ }
+ 
+-static void pch_can_set_rx_buffer_link(struct pch_can_priv *priv,
+-				       u32 buffer_num, int set)
++static void __maybe_unused pch_can_set_rx_buffer_link(struct pch_can_priv *priv,
++						      u32 buffer_num, int set)
+ {
+ 	iowrite32(PCH_CMASK_RX_TX_GET, &priv->regs->ifregs[0].cmask);
+ 	pch_can_rw_msg_obj(&priv->regs->ifregs[0].creq, buffer_num);
+@@ -1013,7 +1012,8 @@ static void pch_can_set_rx_buffer_link(struct pch_can_priv *priv,
+ 	pch_can_rw_msg_obj(&priv->regs->ifregs[0].creq, buffer_num);
+ }
+ 
+-static u32 pch_can_get_rx_buffer_link(struct pch_can_priv *priv, u32 buffer_num)
++static u32 __maybe_unused pch_can_get_rx_buffer_link(struct pch_can_priv *priv,
++						     u32 buffer_num)
+ {
+ 	u32 link;
+ 
+@@ -1027,20 +1027,19 @@ static u32 pch_can_get_rx_buffer_link(struct pch_can_priv *priv, u32 buffer_num)
+ 	return link;
+ }
+ 
+-static int pch_can_get_buffer_status(struct pch_can_priv *priv)
++static int __maybe_unused pch_can_get_buffer_status(struct pch_can_priv *priv)
+ {
+ 	return (ioread32(&priv->regs->treq1) & 0xffff) |
+ 	       (ioread32(&priv->regs->treq2) << 16);
+ }
+ 
+-static int pch_can_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused pch_can_suspend(struct device *dev_d)
+ {
+ 	int i;
+-	int retval;
+ 	u32 buf_stat;	/* Variable for reading the transmit buffer status. */
+ 	int counter = PCH_COUNTER_LIMIT;
+ 
+-	struct net_device *dev = pci_get_drvdata(pdev);
++	struct net_device *dev = dev_get_drvdata(dev_d);
+ 	struct pch_can_priv *priv = netdev_priv(dev);
+ 
+ 	/* Stop the CAN controller */
+@@ -1058,7 +1057,7 @@ static int pch_can_suspend(struct pci_dev *pdev, pm_message_t state)
+ 		udelay(1);
+ 	}
+ 	if (!counter)
+-		dev_err(&pdev->dev, "%s -> Transmission time out.\n", __func__);
++		dev_err(dev_d, "%s -> Transmission time out.\n", __func__);
+ 
+ 	/* Save interrupt configuration and then disable them */
+ 	priv->int_enables = pch_can_get_int_enables(priv);
+@@ -1081,35 +1080,16 @@ static int pch_can_suspend(struct pci_dev *pdev, pm_message_t state)
+ 
+ 	/* Disable all Receive buffers */
+ 	pch_can_set_rx_all(priv, 0);
+-	retval = pci_save_state(pdev);
+-	if (retval) {
+-		dev_err(&pdev->dev, "pci_save_state failed.\n");
+-	} else {
+-		pci_enable_wake(pdev, PCI_D3hot, 0);
+-		pci_disable_device(pdev);
+-		pci_set_power_state(pdev, pci_choose_state(pdev, state));
+-	}
+ 
+-	return retval;
++	return 0;
+ }
+ 
+-static int pch_can_resume(struct pci_dev *pdev)
++static int __maybe_unused pch_can_resume(struct device *dev_d)
+ {
+ 	int i;
+-	int retval;
+-	struct net_device *dev = pci_get_drvdata(pdev);
++	struct net_device *dev = dev_get_drvdata(dev_d);
+ 	struct pch_can_priv *priv = netdev_priv(dev);
+ 
+-	pci_set_power_state(pdev, PCI_D0);
+-	pci_restore_state(pdev);
+-	retval = pci_enable_device(pdev);
+-	if (retval) {
+-		dev_err(&pdev->dev, "pci_enable_device failed.\n");
+-		return retval;
+-	}
+-
+-	pci_enable_wake(pdev, PCI_D3hot, 0);
+-
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	/* Disabling all interrupts. */
+@@ -1146,12 +1126,8 @@ static int pch_can_resume(struct pci_dev *pdev)
+ 	/* Restore Run Mode */
+ 	pch_can_set_run_mode(priv, PCH_CAN_RUN);
+ 
+-	return retval;
++	return 0;
+ }
+-#else
+-#define pch_can_suspend NULL
+-#define pch_can_resume NULL
+-#endif
+ 
+ static int pch_can_get_berr_counter(const struct net_device *dev,
+ 				    struct can_berr_counter *bec)
+@@ -1252,13 +1228,16 @@ static int pch_can_probe(struct pci_dev *pdev,
+ 	return rc;
+ }
+ 
++static SIMPLE_DEV_PM_OPS(pch_can_pm_ops,
++			 pch_can_suspend,
++			 pch_can_resume);
++
+ static struct pci_driver pch_can_pci_driver = {
+ 	.name = "pch_can",
+ 	.id_table = pch_pci_tbl,
+ 	.probe = pch_can_probe,
+ 	.remove = pch_can_remove,
+-	.suspend = pch_can_suspend,
+-	.resume = pch_can_resume,
++	.driver.pm = &pch_can_pm_ops,
+ };
+ 
+ module_pci_driver(pch_can_pci_driver);
+-- 
+2.27.0
