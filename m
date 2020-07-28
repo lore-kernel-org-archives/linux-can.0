@@ -1,47 +1,53 @@
-From: Ido Schimmel <idosch@idosch.org>
-Subject: Re: [PATCH 19/26] net/ipv6: switch ipv6_flowlabel_opt to sockptr_t
-Date: Mon, 27 Jul 2020 21:22:59 +0300
-Message-ID: <20200727182259.GA1931870@shredder>
-References: <20200723060908.50081-1-hch@lst.de>
- <20200723060908.50081-20-hch@lst.de>
- <20200727121505.GA1804864@shredder>
- <20200727130029.GA26393@lst.de>
- <20200727133331.GA1851348@shredder>
- <20200727161555.GA7817@lst.de>
+From: Faiz Abbas <faiz_abbas@ti.com>
+Subject: Re: [PATCH] can: m_can: Set device to software init mode before
+ closing
+Date: Tue, 28 Jul 2020 11:50:48 +0530
+Message-ID: <1491e746-6694-1c36-4bba-ac9f61d9ae6f@ti.com>
+References: <20200716042312.26989-1-faiz_abbas@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:46683 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729205AbgG0SXH (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 27 Jul 2020 14:23:07 -0400
-Content-Disposition: inline
-In-Reply-To: <20200727161555.GA7817@lst.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.o
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20200716042312.26989-1-faiz_abbas@ti.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org
+Cc: kuba@kernel.org, davem@davemloft.net, mkl@pengutronix.de, wg@grandegger.com, sriram.dash@samsung.com, dmurphy@ti.com
+List-Id: linux-can.vger.kernel.org
 
-On Mon, Jul 27, 2020 at 06:15:55PM +0200, Christoph Hellwig wrote:
-> I have to admit I didn't spot the difference between the good and the
-> bad output even after trying hard..
+Hi,
+
+On 16/07/20 9:53 am, Faiz Abbas wrote:
+> There might be some requests pending in the buffer when the
+> interface close sequence occurs. In some devices, these
+> pending requests might lead to the module not shutting down
+> properly when m_can_clk_stop() is called.
 > 
-> But can you try the patch below?
+> Therefore, move the device to init state before potentially
+> powering it down.
 > 
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 > ---
-> From cce2d2e1b43ecee5f4af7cf116808b74b330080f Mon Sep 17 00:00:00 2001
-> From: Christoph Hellwig <hch@lst.de>
-> Date: Mon, 27 Jul 2020 17:42:27 +0200
-> Subject: net: remove sockptr_advance
+>  drivers/net/can/m_can/m_can.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> sockptr_advance never properly worked.  Replace it with _offset variants
-> of copy_from_sockptr and copy_to_sockptr.
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> index 02c5795b7393..d0c458f7f6e1 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -1414,6 +1414,9 @@ static void m_can_stop(struct net_device *dev)
+>  	/* disable all interrupts */
+>  	m_can_disable_all_interrupts(cdev);
+>  
+> +	/* Set init mode to disengage from the network */
+> +	m_can_config_endisable(cdev, true);
+> +
+>  	/* set the state as STOPPED */
+>  	cdev->can.state = CAN_STATE_STOPPED;
+>  }
 > 
-> Fixes: ba423fdaa589 ("net: add a new sockptr_t type")
-> Reported-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> Reported-by: Ido Schimmel <idosch@idosch.org>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Tested-by: Ido Schimmel <idosch@mellanox.com>
+Gentle ping.
 
-Thanks!
+Thanks,
+Faiz
