@@ -1,52 +1,39 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v4 4/6] can: ctucanfd: CTU CAN FD open-source IP core -
- PCI bus support.
-Date: Mon, 3 Aug 2020 12:32:11 -0700
-Message-ID: <e4378bd9-6484-88bc-48d3-d7fdda62c844@infradead.org>
+From: Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH v4 0/6] CTU CAN FD open-source IP core SocketCAN driver,
+ PCI, platform integration and documentation
+Date: Mon, 3 Aug 2020 13:29:49 -0700
+Message-ID: <20200803132949.64884ff1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
- <bad059402032f82fa63aa51d2122589a8a2cf6fd.1596408856.git.pisa@cmp.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbgHCTcv (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 3 Aug 2020 15:32:51 -0400
-In-Reply-To: <bad059402032f82fa63aa51d2122589a8a2cf6fd.1596408856.git.pisa@cmp.felk.cvut.cz>
-Content-Language: en-US
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: pisa@cmp.felk.cvut.cz, linux-can@vger.kernel.org, devicetree@vger.kernel.org, mkl@pengutronix.de, socketcan@hartkopp.net
-Cc: wg@grandegger.com, davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com, c.emde@osadl.org, armbru@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com, ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
+Sender: linux-kernel-owner@vger.kernel.org
+To: pisa@cmp.felk.cvut.cz
+Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org, mkl@pengutronix.de, socketcan@hartkopp.net, wg@grandegger.com, davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com, c.emde@osadl.org, armbru@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com, ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com
+List-Id: linux-can.vger.kernel.org
 
-On 8/3/20 11:34 AM, pisa@cmp.felk.cvut.cz wrote:
-> diff --git a/drivers/net/can/ctucanfd/Kconfig b/drivers/net/can/ctucanfd/Kconfig
-> index 0620111d57fd..8a5f5d05fa72 100644
-> --- a/drivers/net/can/ctucanfd/Kconfig
-> +++ b/drivers/net/can/ctucanfd/Kconfig
-> @@ -15,4 +15,13 @@ config CAN_CTUCANFD
->  
->  if CAN_CTUCANFD
->  
-> +config CAN_CTUCANFD_PCI
-> +    tristate "CTU CAN-FD IP core PCI/PCIe driver"
-> +    depends on PCI
-> +	help
+On Mon,  3 Aug 2020 20:34:48 +0200 pisa@cmp.felk.cvut.cz wrote:
+> From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+> 
+> This driver adds support for the CTU CAN FD open-source IP core.
+> More documentation and core sources at project page
+> (https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core).
+> The core integration to Xilinx Zynq system as platform driver
+> is available (https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top).
+> Implementation on Intel FPGA based PCI Express board is available
+> from project (https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd).
+> The CTU CAN FD core emulation send for review for QEMU mainline.
+> Development repository for QEMU emulation - ctu-canfd branch of
+>   https://gitlab.fel.cvut.cz/canbus/qemu-canbus
+> 
+> More about CAN related projects used and developed at the Faculty
+> of the Electrical Engineering (http://www.fel.cvut.cz/en/)
+> of Czech Technical University (https://www.cvut.cz/en)
+> in Prague at http://canbus.pages.fel.cvut.cz/ .
 
-"help" should be indented with one tab only (no spaces).
+Patches 3 and 4 have warnings when built with W=1 C=1 flags.
 
-> +	  This driver adds PCI/PCIe support for CTU CAN-FD IP core.
-> +	  The project providing FPGA design for Intel EP4CGX15 based DB4CGX15
-> +	  PCIe board with PiKRON.com designed transceiver riser shield is available
-> +	  at https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd .
-
-help text should be indented with one tab + 2 spaces according to
-Documentation/process/coding-style.rst.
-
-> +
->  endif
-
-thanks.
--- 
-~Randy
+Please also remove the uses of static inline in C sources.
+Those are rarely necessary and hide unused code warnings.
