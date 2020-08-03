@@ -1,104 +1,117 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 2/6] dt-bindings: net: can: binding for CTU CAN FD
- open-source IP core.
-Date: Mon, 3 Aug 2020 12:39:44 -0600
-Message-ID: <CAL_JsqKgzQRo4rn5eL0MKz_df5N2JbZmOo_mmJ05UufK8fsx0g@mail.gmail.com>
-References: <cover.1576922226.git.pisa@cmp.felk.cvut.cz> <20200103235359.GA23875@bogus>
- <202007290112.32007.pisa@cmp.felk.cvut.cz> <202008012327.02185.pisa@cmp.felk.cvut.cz>
+From: pisa@cmp.felk.cvut.cz
+Subject: [PATCH v4 2/6] dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
+Date: Mon,  3 Aug 2020 20:34:50 +0200
+Message-ID: <701442883f2b439637ff84544745725bdee7bcf8.1596408856.git.pisa@cmp.felk.cvut.cz>
+References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <202008012327.02185.pisa@cmp.felk.cvut.cz>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: c.emde@osadl.org, devicetree@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, socketcan@hartkopp.net, Wolfgang Grandegger <wg@grandegger.com>, David Miller <davem@davemloft.net>, Mark Rutland <mark.rutland@arm.com>, netdev <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, martin.jerabek01@gmail.com, ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
+Sender: netdev-owner@vger.kernel.org
+To: linux-can@vger.kernel.org, devicetree@vger.kernel.org, mkl@pengutronix.de, socketcan@hartkopp.net
+Cc: wg@grandegger.com, davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com, c.emde@osadl.org, armbru@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com, ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com, Pavel Pisa <pisa@cmp.felk.cvut.cz>
 List-Id: linux-can.vger.kernel.org
 
-On Sat, Aug 1, 2020 at 3:28 PM Pavel Pisa <pisa@cmp.felk.cvut.cz> wrote:
->
-> Hello Rob ad others,
->
-> On Wednesday 29 of July 2020 01:12:31 Pavel Pisa wrote:
-> > On Saturday 04 of January 2020 00:53:59 Rob Herring wrote:
-> > > On Sat, Dec 21, 2019 at 03:07:31PM +0100, pisa@cmp.felk.cvut.cz wrote:
-> > > > From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-> > > >
-> > > > Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-> > > > ---
-> > > >  .../devicetree/bindings/net/can/ctu,ctucanfd.txt   | 61
-> > > > ++++++++++++++++++++++ 1 file changed, 61 insertions(+)
-> > > >  create mode 100644
-> > > > Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt
-> > >
-> > > Bindings are moving DT schema format now. Not something I'd require on a
-> > > respin I've already reviewed, but OTOH it's been 10 months to respin
-> > > from v2. So:
-> > >
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > >
-> > > If you have a v4, then please convert to a schema.
-> >
->
-> ...
->
-> > I am trying to resolve that only one review feedback which I have received
-> > before v4 patches sending. I have spent half day to update and integrate
-> > self build packages to my stable Debian to can run
-> >
-> >    make -k dt_binding_check
-> >
-> > but unfortunately, I have not achieved promissing result even when tested
-> > on Linux kernel unpatched sources. I used actual git
-> > dt-schema/dt-doc-validate with 5.4 kernel build but I get only long series
-> > of
->
-> I have succeed to run make dt_binding_check on stable Debian with 5.4
-> kernel with only denumerable bunch of errors, probably normal one.
-> Details to make dt_binding_check usable on stable Debian later.
->
-> When invoked with base directory specified
->
-> /usr/local/bin/dt-doc-validate -u /usr/src/linux-5.4/Documentation/devicetree/bindings/ net/can/ctu,ctucanfd.yaml
->
-> then no problem is reported in ctu,ctucanfd.yaml .
-> Please is the specification correct even after human check?
->
-> > pi@baree:/usr/src/linux-5.4-rt/_build/arm/px6$ make dt_binding_check -k
-> > GNUmakefile:40: *** mixed implicit and normal rules: deprecated syntax
-> > make -C /usr/src/linux-5.4-rt O=/usr/src/linux-5.4-rt/_build/arm/px6/
-> > ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- QTDIR=/usr/share/qt4
-> > dt_binding_check CHKDT   Documentation/devicetree/bindings/arm/actions.yaml
-> > /usr/src/linux-5.4-rt/Documentation/devicetree/bindings/arm/actions.yaml:
-> > found incompatible YAML document in "<unicode string>", line 2, column 1
-> > make[3]: ***
->
-> The remark to save time of others, actual stable Debian Buster provides package
-> python3-ruamel.yaml in 0.15.34-1+b1 version. But use of make dt_binding_check
-> and dt-doc-validate and dt-validate with this version lead to many errors
-> "found incompatible YAML document". The validation tools can be make
-> to work when next packages are added and replaced in stable Debian
+From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 
-pip/setup.py should check the dependencies which includes
-'ruamel.yaml>0.15.69'. Did you not use pip?
+The device-tree bindings for open-source CAN FD IP core
+which design started at Department of Measurement
+at Faculty of Electrical Engineering
+of Czech Technical University in Prague.
+The IP core main author is Ondrej Ille who continues
+on the core development even after finishing the studies.
 
-> python3-pyrsistent 0.15.5-1
-> python3-pyfakefs 4.0.2-1
-> python3-zipp 1.0.0-3
-> python3-importlib-metadata 1.6.0
+The CTU CAN FD IP core main repository
 
-These must all be indirect dependencies as I have no idea what they provide.
+  https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
 
-> python3-jsonschema 3.2.0-3
-> python3-ruamel.yaml.clib 0.2.0-3
-> python3-ruamel.yaml 0.16.10-2
->
-> The dependencies and interdependence of the tools are really wide and that
-> the tools are unusable in the actual regular Debian stable distribution
-> should be described somewhere visible enough to save developers
-> time.
+The list of related CAN bus projects which we participate in
 
-I can't document distro specifics for what I don't have. Manually
-documenting dependencies and their versions seems like a recipe for
-inaccurate and out of date documentation.
+   http://canbus.pages.fel.cvut.cz/
 
-Rob
+The commit text again to make checkpatch happy.
+
+Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+---
+ .../devicetree/bindings/net/can/ctu,ctucanfd.yaml  | 70 ++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+
+diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+new file mode 100644
+index 000000000000..b74bfc951062
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/ctu,ctucanfd.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: CTU CAN FD Open-source IP Core Device Tree Bindings
++
++description: |
++  Open-source CAN FD IP core developed at the Czech Technical University in Prague
++
++  The core sources and documentation on project page
++    [1] sources : https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
++    [2] datasheet : https://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
++
++  Integration in Xilinx Zynq SoC based system together with
++  OpenCores SJA1000 compatible controllers
++    [3] project : https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top
++  Martin Jerabek dimploma thesis with integration and testing
++  framework description
++    [4] PDF : https://dspace.cvut.cz/bitstream/handle/10467/80366/F3-DP-2019-Jerabek-Martin-Jerabek-thesis-2019-canfd.pdf
++
++maintainers:
++  - Pavel Pisa <pisa@cmp.felk.cvut.cz>
++  - Ondrej Ille <ondrej.ille@gmail.com>
++  - Martin Jerabek <martin.jerabek01@gmail.com>
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - const: ctu,ctucanfd
++          - const: ctu,canfd-2
++      - const: ctu,ctucanfd
++
++  reg:
++    description:
++      mapping into bus address space, offset and size
++    maxItems: 1
++
++  interrupts:
++    description: |
++      interrupt source. For Zynq SoC system, format is <(is_spi) (number) (type)>
++      where is_spi defines if it is SPI (shared peripheral) interrupt,
++      the second number is translated to the vector by addition of 32
++      on Zynq-7000 systems and type is IRQ_TYPE_LEVEL_HIGH (4) for Zynq.
++    maxItems: 1
++
++  clocks:
++    description: |
++      phandle of reference clock (100 MHz is appropriate
++      for FPGA implementation on Zynq-7000 system).
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    ctu_can_fd_0: can@43c30000 {
++      compatible = "ctu,ctucanfd";
++      interrupts = <0 30 4>;
++      clocks = <&clkc 15>;
++      reg = <0x43c30000 0x10000>;
++    };
+-- 
+2.11.0
