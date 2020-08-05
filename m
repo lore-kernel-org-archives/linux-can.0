@@ -1,38 +1,82 @@
 From: Zhang Changzhong <zhangchangzhong@huawei.com>
-Subject: [PATCH net 2/4] can: j1939: cancel rxtimer on multipacket broadcast session complete
-Date: Wed, 5 Aug 2020 11:50:23 +0800
-Message-ID: <1596599425-5534-3-git-send-email-zhangchangzhong@huawei.com>
+Subject: [PATCH net 1/4] can: j1939: fix support for multipacket broadcast message
+Date: Wed, 5 Aug 2020 11:50:22 +0800
+Message-ID: <1596599425-5534-2-git-send-email-zhangchangzhong@huawei.com>
 References: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
-Sender: netdev-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: robin@protonic.nl, linux@rempel-privat.de, kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-If j1939_xtp_rx_dat_one() receive last frame of multipacket broadcast
-message, j1939_session_timers_cancel() should be called to cancel
-rxtimer.
+Currently j1939_tp_im_involved_anydir() in j1939_tp_recv() check the
+previously set flags J1939_ECU_LOCAL_DST and J1939_ECU_LOCAL_SRC of
+incoming skb, thus multipacket broadcast message was aborted by
+receive side because it may come from remote ECUs and have no exact
+dst address. Similarly, j1939_tp_cmd_recv() and j1939_xtp_rx_dat()
+didn't process broadcast message.
+
+So fix it by checking and process broadcast message in j1939_tp_recv(),
+j1939_tp_cmd_recv() and j1939_xtp_rx_dat().
 
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 ---
- net/can/j1939/transport.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/can/j1939/transport.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index e5188ac..dd6a120 100644
+index 9f99af5..e5188ac 100644
 --- a/net/can/j1939/transport.c
 +++ b/net/can/j1939/transport.c
-@@ -1788,6 +1788,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+@@ -1651,8 +1651,12 @@ static void j1939_xtp_rx_rts(struct j1939_priv *priv, struct sk_buff *skb,
+ 			return;
+ 		}
+ 		session = j1939_xtp_rx_rts_session_new(priv, skb);
+-		if (!session)
++		if (!session) {
++			if (cmd == J1939_TP_CMD_BAM && j1939_sk_recv_match(priv, skcb))
++				netdev_info(priv->ndev, "%s: failed to create TP BAM session\n",
++					    __func__);
+ 			return;
++		}
+ 	} else {
+ 		if (j1939_xtp_rx_rts_session_active(session, skb)) {
+ 			j1939_session_put(session);
+@@ -1829,6 +1833,13 @@ static void j1939_xtp_rx_dat(struct j1939_priv *priv, struct sk_buff *skb)
+ 		else
+ 			j1939_xtp_rx_dat_one(session, skb);
  	}
++
++	if (j1939_cb_is_broadcast(skcb)) {
++		session = j1939_session_get_by_addr(priv, &skcb->addr, false,
++						    false);
++		if (session)
++			j1939_xtp_rx_dat_one(session, skb);
++	}
+ }
  
- 	if (final) {
-+		j1939_session_timers_cancel(session);
- 		j1939_session_completed(session);
- 	} else if (do_cts_eoma) {
- 		j1939_tp_set_rxtimeout(session, 1250);
+ /* j1939 main intf */
+@@ -1920,7 +1931,7 @@ static void j1939_tp_cmd_recv(struct j1939_priv *priv, struct sk_buff *skb)
+ 		if (j1939_tp_im_transmitter(skcb))
+ 			j1939_xtp_rx_rts(priv, skb, true);
+ 
+-		if (j1939_tp_im_receiver(skcb))
++		if (j1939_tp_im_receiver(skcb) || j1939_cb_is_broadcast(skcb))
+ 			j1939_xtp_rx_rts(priv, skb, false);
+ 
+ 		break;
+@@ -1984,7 +1995,7 @@ int j1939_tp_recv(struct j1939_priv *priv, struct sk_buff *skb)
+ {
+ 	struct j1939_sk_buff_cb *skcb = j1939_skb_to_cb(skb);
+ 
+-	if (!j1939_tp_im_involved_anydir(skcb))
++	if (!j1939_tp_im_involved_anydir(skcb) && !j1939_cb_is_broadcast(skcb))
+ 		return 0;
+ 
+ 	switch (skcb->addr.pgn) {
 -- 
 2.9.5
