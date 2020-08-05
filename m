@@ -1,7 +1,7 @@
 From: Zhang Changzhong <zhangchangzhong@huawei.com>
-Subject: [PATCH net 1/4] can: j1939: fix support for multipacket broadcast message
-Date: Wed, 5 Aug 2020 11:50:22 +0800
-Message-ID: <1596599425-5534-2-git-send-email-zhangchangzhong@huawei.com>
+Subject: [PATCH net 3/4] can: j1939: abort multipacket broadcast session when timeout occurs
+Date: Wed, 5 Aug 2020 11:50:24 +0800
+Message-ID: <1596599425-5534-4-git-send-email-zhangchangzhong@huawei.com>
 References: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,71 +12,41 @@ To: robin@protonic.nl, linux@rempel-privat.de, kernel@pengutronix.de, socketcan@
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-can.vger.kernel.org
 
-Currently j1939_tp_im_involved_anydir() in j1939_tp_recv() check the
-previously set flags J1939_ECU_LOCAL_DST and J1939_ECU_LOCAL_SRC of
-incoming skb, thus multipacket broadcast message was aborted by
-receive side because it may come from remote ECUs and have no exact
-dst address. Similarly, j1939_tp_cmd_recv() and j1939_xtp_rx_dat()
-didn't process broadcast message.
+If timeout occurs, j1939_tp_rxtimer() first calls hrtimer_start() to
+restart rxtimer, and then calls __j1939_session_cancel() to set
+session->state = J1939_SESSION_WAITING_ABORT. At next timeout
+expiration, because of the J1939_SESSION_WAITING_ABORT session state
+j1939_tp_rxtimer() will call j1939_session_deactivate_activate_next()
+to deactivate current session, and rxtimer won't be set.
 
-So fix it by checking and process broadcast message in j1939_tp_recv(),
-j1939_tp_cmd_recv() and j1939_xtp_rx_dat().
+But for multipacket broadcast session, __j1939_session_cancel() don't
+set session->state = J1939_SESSION_WAITING_ABORT, thus current session
+won't be deactivate and hrtimer_start() is called to start new
+rxtimer again and again.
+
+So fix it by moving session->state = J1939_SESSION_WAITING_ABORT out of
+if (!j1939_cb_is_broadcast(&session->skcb)) statement.
 
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 ---
- net/can/j1939/transport.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ net/can/j1939/transport.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 9f99af5..e5188ac 100644
+index dd6a120..5757f9f 100644
 --- a/net/can/j1939/transport.c
 +++ b/net/can/j1939/transport.c
-@@ -1651,8 +1651,12 @@ static void j1939_xtp_rx_rts(struct j1939_priv *priv, struct sk_buff *skb,
- 			return;
- 		}
- 		session = j1939_xtp_rx_rts_session_new(priv, skb);
--		if (!session)
-+		if (!session) {
-+			if (cmd == J1939_TP_CMD_BAM && j1939_sk_recv_match(priv, skcb))
-+				netdev_info(priv->ndev, "%s: failed to create TP BAM session\n",
-+					    __func__);
- 			return;
-+		}
- 	} else {
- 		if (j1939_xtp_rx_rts_session_active(session, skb)) {
- 			j1939_session_put(session);
-@@ -1829,6 +1833,13 @@ static void j1939_xtp_rx_dat(struct j1939_priv *priv, struct sk_buff *skb)
- 		else
- 			j1939_xtp_rx_dat_one(session, skb);
- 	}
-+
-+	if (j1939_cb_is_broadcast(skcb)) {
-+		session = j1939_session_get_by_addr(priv, &skcb->addr, false,
-+						    false);
-+		if (session)
-+			j1939_xtp_rx_dat_one(session, skb);
-+	}
- }
+@@ -1055,9 +1055,9 @@ static void __j1939_session_cancel(struct j1939_session *session,
+ 	lockdep_assert_held(&session->priv->active_session_list_lock);
  
- /* j1939 main intf */
-@@ -1920,7 +1931,7 @@ static void j1939_tp_cmd_recv(struct j1939_priv *priv, struct sk_buff *skb)
- 		if (j1939_tp_im_transmitter(skcb))
- 			j1939_xtp_rx_rts(priv, skb, true);
- 
--		if (j1939_tp_im_receiver(skcb))
-+		if (j1939_tp_im_receiver(skcb) || j1939_cb_is_broadcast(skcb))
- 			j1939_xtp_rx_rts(priv, skb, false);
- 
- 		break;
-@@ -1984,7 +1995,7 @@ int j1939_tp_recv(struct j1939_priv *priv, struct sk_buff *skb)
- {
- 	struct j1939_sk_buff_cb *skcb = j1939_skb_to_cb(skb);
- 
--	if (!j1939_tp_im_involved_anydir(skcb))
-+	if (!j1939_tp_im_involved_anydir(skcb) && !j1939_cb_is_broadcast(skcb))
- 		return 0;
- 
- 	switch (skcb->addr.pgn) {
+ 	session->err = j1939_xtp_abort_to_errno(priv, err);
++	session->state = J1939_SESSION_WAITING_ABORT;
+ 	/* do not send aborts on incoming broadcasts */
+ 	if (!j1939_cb_is_broadcast(&session->skcb)) {
+-		session->state = J1939_SESSION_WAITING_ABORT;
+ 		j1939_xtp_tx_abort(priv, &session->skcb,
+ 				   !session->transmission,
+ 				   err, session->skcb.addr.pgn);
 -- 
 2.9.5
