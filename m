@@ -1,109 +1,59 @@
-From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Subject: Re: [PATCH v4 2/6] dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
-Date: Thu, 6 Aug 2020 17:53:40 +0200
-Message-ID: <202008061753.40832.pisa@cmp.felk.cvut.cz>
-References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz> <20200804092021.yd3wisz3g2ed6ioe@duo.ucw.cz> <20200806144713.GA829771@bogus>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH 25/26] net: pass a sockptr_t into ->setsockopt
+Date: Thu, 6 Aug 2020 15:21:25 -0700
+Message-ID: <6357942b-0b6e-1901-7dce-e308c9fac347@gmail.com>
+References: <20200723060908.50081-1-hch@lst.de>
+ <20200723060908.50081-26-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20200806144713.GA829771@bogus>
-Content-Disposition: inline
-Sender: netdev-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: Pavel Machek <pavel@ucw.cz>, linux-can@vger.kernel.org, devicetree@vger.kernel.org, mkl@pengutronix.de, socketcan@hartkopp.net, wg@grandegger.com, davem@davemloft.net, mark.rutland@arm.com, c.emde@osadl.org, armbru@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com, ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com
+Return-path: <linux-crypto-owner@vger.kernel.org>
+In-Reply-To: <20200723060908.50081-26-hch@lst.de>
+Content-Language: en-US
+Sender: linux-crypto-owner@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org, Stefan Schmidt <stefan@datenfreihafen.org>
 List-Id: linux-can.vger.kernel.org
 
-Hello Pavel and Rob,
 
-thanks much for review.
 
-On Thursday 06 of August 2020 16:47:13 Rob Herring wrote:
-> On Tue, Aug 04, 2020 at 11:20:21AM +0200, Pavel Machek wrote:
-> > On Tue 2020-08-04 11:18:17, Pavel Machek wrote:
-> > > Hi!
-> > >
-> > > > The commit text again to make checkpatch happy.
-> > >
-> > > ?
+On 7/22/20 11:09 PM, Christoph Hellwig wrote:
+> Rework the remaining setsockopt code to pass a sockptr_t instead of a
+> plain user pointer.  This removes the last remaining set_fs(KERNEL_DS)
+> outside of architecture specific code.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Stefan Schmidt <stefan@datenfreihafen.org> [ieee802154]
+> ---
 
-The checkpatch reports as a problem when there is no description
-of the patch. At least for patch
 
-  [PATCH v4 1/6] dt-bindings: vendor-prefix: add prefix for the Czech Technical University in Prague.
+...
 
-I consider that little pontificate but I have fullfiled its suggestion
-with remark, that in this case, It is not my intention to add these
-promotions. I remove the reference to patchcheck from these commit messages.
+> diff --git a/net/ipv6/raw.c b/net/ipv6/raw.c
+> index 594e01ad670aa6..874f01cd7aec42 100644
+> --- a/net/ipv6/raw.c
+> +++ b/net/ipv6/raw.c
+> @@ -972,13 +972,13 @@ static int rawv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>  }
+>  
 
-> > > > +    oneOf:
-> > > > +      - items:
-> > > > +          - const: ctu,ctucanfd
-> > > > +          - const: ctu,canfd-2
-> > > > +      - const: ctu,ctucanfd
-> > >
-> > > For consistency, can we have ctu,canfd-1, ctu,canfd-2?
-> >
-> > Make it ctu,ctucanfd-1, ctu,ctucanfd-2... to make it consistent with
-> > the file names.
->
-> If you are going to do version numbers, please define where they come
-> from. Hopefully some tag of the h/w IP version...
->
-> Better yet, put version numbers in the h/w registers itself and you
-> don't need different compatibles.
+...
 
-The actual major version of the core is 2. The minor intended
-for release was 1. But we wait for driver inclusion and release
-and IP core release has not been realized. Sources moved to
-2.2-pre version and compiled core reports 2.2 now.
-There is added control bit for protocol exception
-behavior selection and minor enhancements in sync of standard
-and data rate bittimes starts.
+>  static int do_rawv6_setsockopt(struct sock *sk, int level, int optname,
+> -			    char __user *optval, unsigned int optlen)
+> +			       sockptr_t optval, unsigned int optlen)
+>  {
+>  	struct raw6_sock *rp = raw6_sk(sk);
+>  	int val;
+>  
+> -	if (get_user(val, (int __user *)optval))
+> +	if (copy_from_sockptr(&val, optval, sizeof(val)))
+>  		return -EFAULT;
+>  
 
-Yes, version can be obtained from hardware.
-There is magic and version in the first core register.
-See 3.1.1 DEVICE_ID section of the manual (page 22/28)
+converting get_user(...)   to  copy_from_sockptr(...) really assumed the optlen
+has been validated to be >= sizeof(int) earlier.
 
-  http://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
+Which is not always the case, for example here.
 
-As for the DT identifier we use "ctu,ctucanfd" in more projects already.
-Some devices are in the wild now. So I would prefer to keep compatibility
-with that name. Other name reflects that this driver is compatible with major
-version 2 of the core. It can be "ctu,ctucanfd-2". I am not sure if the
-repeat of "ctu" is good idea, but yes, full sources prefix is "ctucanfd".
-The second alias can be omitted alltogether. But I am not sure, there can
-be one day fundamental change between IP core versions which would be better
-handled by change of PCI ID and DT ID. It is questionable if attempt to keep
-single driver for more too different versions would be more manageable
-or convoluted than two fully independent ones. May it be we do not need
-to solve that because by that time it would be "ctu,ctucanxl".
-
-At this time, our actual first first choic for the IP core identifier
-is ctu,ctucanfd.
-
-As for the pointed description, I would remove them from version 5
-according to your reference. My personal one is to keep documentation
-(even of actual/local functional setup) directly in the sources and mainline
-to find it out when I or somebody else need to recreate or update designs,
-my biological memory is already worn out by past events.
-
-I am not sure if I should wait for subsystem maintainers review now
-or sent new patches version. I may get to its preparation tommorrow
-or may it be later because I want to take some time in
-countrysite/mountains.
-
-Best wishes
-
-                Pavel
--- 
-                Pavel Pisa
-    phone:      +420 603531357
-    e-mail:     pisa@cmp.felk.cvut.cz
-    Department of Control Engineering FEE CVUT
-    Karlovo namesti 13, 121 35, Prague 2
-    university: http://dce.fel.cvut.cz/
-    personal:   http://cmp.felk.cvut.cz/~pisa
-    projects:   https://www.openhub.net/accounts/ppisa
-    CAN related:http://canbus.pages.fel.cvut.cz/
+User application can fool us passing optlen=0, and a user pointer of exactly TASK_SIZE-1
