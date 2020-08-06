@@ -1,133 +1,109 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 2/6] dt-bindings: net: can: binding for CTU CAN FD
- open-source IP core.
-Date: Thu, 6 Aug 2020 08:43:45 -0600
-Message-ID: <20200806144345.GA822372@bogus>
-References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz>
- <701442883f2b439637ff84544745725bdee7bcf8.1596408856.git.pisa@cmp.felk.cvut.cz>
+From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Subject: Re: [PATCH v4 2/6] dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
+Date: Thu, 6 Aug 2020 17:53:40 +0200
+Message-ID: <202008061753.40832.pisa@cmp.felk.cvut.cz>
+References: <cover.1596408856.git.pisa@cmp.felk.cvut.cz> <20200804092021.yd3wisz3g2ed6ioe@duo.ucw.cz> <20200806144713.GA829771@bogus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20200806144713.GA829771@bogus>
 Content-Disposition: inline
-In-Reply-To: <701442883f2b439637ff84544745725bdee7bcf8.1596408856.git.pisa@cmp.felk.cvut.cz>
 Sender: netdev-owner@vger.kernel.org
-To: pisa@cmp.felk.cvut.cz
-Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org, mkl@pengutronix.de, socketcan@hartkopp.net, wg@grandegger.com, davem@davemloft.net, mark.rutland@arm.com, c.emde@osadl.org, armbru@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com, ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com
+To: Rob Herring <robh@kernel.org>
+Cc: Pavel Machek <pavel@ucw.cz>, linux-can@vger.kernel.org, devicetree@vger.kernel.org, mkl@pengutronix.de, socketcan@hartkopp.net, wg@grandegger.com, davem@davemloft.net, mark.rutland@arm.com, c.emde@osadl.org, armbru@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, martin.jerabek01@gmail.com, ondrej.ille@gmail.com, jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com
 List-Id: linux-can.vger.kernel.org
 
-On Mon, Aug 03, 2020 at 08:34:50PM +0200, pisa@cmp.felk.cvut.cz wrote:
-> From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-> 
-> The device-tree bindings for open-source CAN FD IP core
-> which design started at Department of Measurement
-> at Faculty of Electrical Engineering
-> of Czech Technical University in Prague.
-> The IP core main author is Ondrej Ille who continues
-> on the core development even after finishing the studies.
-> 
-> The CTU CAN FD IP core main repository
-> 
->   https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
-> 
-> The list of related CAN bus projects which we participate in
-> 
->    http://canbus.pages.fel.cvut.cz/
-> 
-> The commit text again to make checkpatch happy.
-> 
-> Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-> ---
->  .../devicetree/bindings/net/can/ctu,ctucanfd.yaml  | 70 ++++++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-> new file mode 100644
-> index 000000000000..b74bfc951062
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/can/ctu,ctucanfd.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: CTU CAN FD Open-source IP Core Device Tree Bindings
-> +
-> +description: |
-> +  Open-source CAN FD IP core developed at the Czech Technical University in Prague
-> +
-> +  The core sources and documentation on project page
-> +    [1] sources : https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
-> +    [2] datasheet : https://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
-> +
-> +  Integration in Xilinx Zynq SoC based system together with
-> +  OpenCores SJA1000 compatible controllers
-> +    [3] project : https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top
-> +  Martin Jerabek dimploma thesis with integration and testing
-> +  framework description
-> +    [4] PDF : https://dspace.cvut.cz/bitstream/handle/10467/80366/F3-DP-2019-Jerabek-Martin-Jerabek-thesis-2019-canfd.pdf
-> +
-> +maintainers:
-> +  - Pavel Pisa <pisa@cmp.felk.cvut.cz>
-> +  - Ondrej Ille <ondrej.ille@gmail.com>
-> +  - Martin Jerabek <martin.jerabek01@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: ctu,ctucanfd
-> +          - const: ctu,canfd-2
+Hello Pavel and Rob,
 
-The order is supposed to be be most specific compatible first, but this 
-seems backwards given 'ctu,ctucanfd' alone is allowed.
+thanks much for review.
 
-> +      - const: ctu,ctucanfd
-> +
-> +  reg:
-> +    description:
-> +      mapping into bus address space, offset and size
+On Thursday 06 of August 2020 16:47:13 Rob Herring wrote:
+> On Tue, Aug 04, 2020 at 11:20:21AM +0200, Pavel Machek wrote:
+> > On Tue 2020-08-04 11:18:17, Pavel Machek wrote:
+> > > Hi!
+> > >
+> > > > The commit text again to make checkpatch happy.
+> > >
+> > > ?
 
-No need to describe common properties unless you have something specific 
-to this device to say.
+The checkpatch reports as a problem when there is no description
+of the patch. At least for patch
 
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: |
-> +      interrupt source. For Zynq SoC system, format is <(is_spi) (number) (type)>
-> +      where is_spi defines if it is SPI (shared peripheral) interrupt,
-> +      the second number is translated to the vector by addition of 32
-> +      on Zynq-7000 systems and type is IRQ_TYPE_LEVEL_HIGH (4) for Zynq.
+  [PATCH v4 1/6] dt-bindings: vendor-prefix: add prefix for the Czech Technical University in Prague.
 
-That's all outside the scope of this binding.
+I consider that little pontificate but I have fullfiled its suggestion
+with remark, that in this case, It is not my intention to add these
+promotions. I remove the reference to patchcheck from these commit messages.
 
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description: |
-> +      phandle of reference clock (100 MHz is appropriate
-> +      for FPGA implementation on Zynq-7000 system).
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    ctu_can_fd_0: can@43c30000 {
-> +      compatible = "ctu,ctucanfd";
-> +      interrupts = <0 30 4>;
-> +      clocks = <&clkc 15>;
-> +      reg = <0x43c30000 0x10000>;
-> +    };
-> -- 
-> 2.11.0
-> 
+> > > > +    oneOf:
+> > > > +      - items:
+> > > > +          - const: ctu,ctucanfd
+> > > > +          - const: ctu,canfd-2
+> > > > +      - const: ctu,ctucanfd
+> > >
+> > > For consistency, can we have ctu,canfd-1, ctu,canfd-2?
+> >
+> > Make it ctu,ctucanfd-1, ctu,ctucanfd-2... to make it consistent with
+> > the file names.
+>
+> If you are going to do version numbers, please define where they come
+> from. Hopefully some tag of the h/w IP version...
+>
+> Better yet, put version numbers in the h/w registers itself and you
+> don't need different compatibles.
+
+The actual major version of the core is 2. The minor intended
+for release was 1. But we wait for driver inclusion and release
+and IP core release has not been realized. Sources moved to
+2.2-pre version and compiled core reports 2.2 now.
+There is added control bit for protocol exception
+behavior selection and minor enhancements in sync of standard
+and data rate bittimes starts.
+
+Yes, version can be obtained from hardware.
+There is magic and version in the first core register.
+See 3.1.1 DEVICE_ID section of the manual (page 22/28)
+
+  http://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
+
+As for the DT identifier we use "ctu,ctucanfd" in more projects already.
+Some devices are in the wild now. So I would prefer to keep compatibility
+with that name. Other name reflects that this driver is compatible with major
+version 2 of the core. It can be "ctu,ctucanfd-2". I am not sure if the
+repeat of "ctu" is good idea, but yes, full sources prefix is "ctucanfd".
+The second alias can be omitted alltogether. But I am not sure, there can
+be one day fundamental change between IP core versions which would be better
+handled by change of PCI ID and DT ID. It is questionable if attempt to keep
+single driver for more too different versions would be more manageable
+or convoluted than two fully independent ones. May it be we do not need
+to solve that because by that time it would be "ctu,ctucanxl".
+
+At this time, our actual first first choic for the IP core identifier
+is ctu,ctucanfd.
+
+As for the pointed description, I would remove them from version 5
+according to your reference. My personal one is to keep documentation
+(even of actual/local functional setup) directly in the sources and mainline
+to find it out when I or somebody else need to recreate or update designs,
+my biological memory is already worn out by past events.
+
+I am not sure if I should wait for subsystem maintainers review now
+or sent new patches version. I may get to its preparation tommorrow
+or may it be later because I want to take some time in
+countrysite/mountains.
+
+Best wishes
+
+                Pavel
+-- 
+                Pavel Pisa
+    phone:      +420 603531357
+    e-mail:     pisa@cmp.felk.cvut.cz
+    Department of Control Engineering FEE CVUT
+    Karlovo namesti 13, 121 35, Prague 2
+    university: http://dce.fel.cvut.cz/
+    personal:   http://cmp.felk.cvut.cz/~pisa
+    projects:   https://www.openhub.net/accounts/ppisa
+    CAN related:http://canbus.pages.fel.cvut.cz/
