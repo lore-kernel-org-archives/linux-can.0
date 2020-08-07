@@ -1,91 +1,31 @@
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH v1 4/5] can: j1939: transport: add j1939_session_skb_find_by_offset() function
-Date: Fri,  7 Aug 2020 12:51:59 +0200
-Message-ID: <20200807105200.26441-5-o.rempel@pengutronix.de>
-References: <20200807105200.26441-1-o.rempel@pengutronix.de>
+Subject: [PATCH v1 0/5] j1939 fixes
+Date: Fri,  7 Aug 2020 12:51:55 +0200
+Message-ID: <20200807105200.26441-1-o.rempel@pengutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20200807105200.26441-1-o.rempel@pengutronix.de>
 Sender: netdev-owner@vger.kernel.org
 To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Henrique Figueira <henrislip@gmail.com>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, David Jander <david@protonic.nl>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, David Jander <david@protonic.nl>
 List-Id: linux-can.vger.kernel.org
 
-Sometimes it makes no sense to search the skb by pkt.dpo, since we need
-next the skb within the transaction block. This may happen if we have an
-ETP session with CTS set to less than 255 packets.
+This patch set include different fixes reported by google syzkaller or
+other users.
 
-After this patch, we will be able to work with ETP sessions where the
-block size (ETP.CM_CTS byte 2) is less than 255 packets.
+Oleksij Rempel (5):
+  can: j1939: transport: j1939_simple_recv(): ignore local J1939
+    messages send not by J1939 stack
+  can: j1939: transport: j1939_session_tx_dat(): fix use-after-free read
+    in j1939_tp_txtimer()
+  can: j1939: socket: j1939_sk_bind(): make sure ml_priv is allocated
+  can: j1939: transport: add j1939_session_skb_find_by_offset() function
+  can: j1939: transport: j1939_xtp_rx_dat_one(): compare own packets to
+    detect corruptions
 
-Reported-by: Henrique Figueira <henrislip@gmail.com>
-Reported-by: https://github.com/linux-can/can-utils/issues/228
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- net/can/j1939/transport.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ net/can/j1939/socket.c    |  9 +++++++
+ net/can/j1939/transport.c | 56 +++++++++++++++++++++++++++++++++------
+ 2 files changed, 57 insertions(+), 8 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 30957c9a8eb7..90a2baac8a4a 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -352,17 +352,16 @@ void j1939_session_skb_queue(struct j1939_session *session,
- 	skb_queue_tail(&session->skb_queue, skb);
- }
- 
--static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+static struct
-+sk_buff *j1939_session_skb_find_by_offset(struct j1939_session *session,
-+					  unsigned int offset_start)
- {
- 	struct j1939_priv *priv = session->priv;
-+	struct j1939_sk_buff_cb *do_skcb;
- 	struct sk_buff *skb = NULL;
- 	struct sk_buff *do_skb;
--	struct j1939_sk_buff_cb *do_skcb;
--	unsigned int offset_start;
- 	unsigned long flags;
- 
--	offset_start = session->pkt.dpo * 7;
--
- 	spin_lock_irqsave(&session->skb_queue.lock, flags);
- 	skb_queue_walk(&session->skb_queue, do_skb) {
- 		do_skcb = j1939_skb_to_cb(do_skb);
-@@ -382,6 +381,14 @@ static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
- 	return skb;
- }
- 
-+static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+{
-+	unsigned int offset_start;
-+
-+	offset_start = session->pkt.dpo * 7;
-+	return j1939_session_skb_find_by_offset(session, offset_start);
-+}
-+
- /* see if we are receiver
-  * returns 0 for broadcasts, although we will receive them
-  */
-@@ -766,7 +773,7 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 	int ret = 0;
- 	u8 dat[8];
- 
--	se_skb = j1939_session_skb_find(session);
-+	se_skb = j1939_session_skb_find_by_offset(session, session->pkt.tx * 7);
- 	if (!se_skb)
- 		return -ENOBUFS;
- 
-@@ -1765,7 +1772,8 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 			    __func__, session);
- 		goto out_session_cancel;
- 	}
--	se_skb = j1939_session_skb_find(session);
-+
-+	se_skb = j1939_session_skb_find_by_offset(session, packet * 7);
- 	if (!se_skb) {
- 		netdev_warn(priv->ndev, "%s: 0x%p: no skb found\n", __func__,
- 			    session);
 -- 
 2.28.0
