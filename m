@@ -1,78 +1,79 @@
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH v1 2/5] can: j1939: transport: j1939_session_tx_dat(): fix use-after-free read in j1939_tp_txtimer()
-Date: Fri,  7 Aug 2020 12:51:57 +0200
-Message-ID: <20200807105200.26441-3-o.rempel@pengutronix.de>
-References: <20200807105200.26441-1-o.rempel@pengutronix.de>
+Subject: Re: [PATCH net 0/4] support multipacket broadcast message
+Date: Fri, 7 Aug 2020 15:15:52 +0200
+Message-ID: <20200807131552.4hsuafdubumvh3hl@pengutronix.de>
+References: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
+ <20200806161027.py5ged3a23xpmxgi@pengutronix.de>
+ <24c3daa5-8243-0b80-9f4c-aa5883cb75da@huawei.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-can-owner@vger.kernel.org>
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728064AbgHGKxh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Aug 2020 06:53:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A0DC0617A5
-        for <linux-can@vger.kernel.org>; Fri,  7 Aug 2020 03:52:20 -0700 (PDT)
-In-Reply-To: <20200807105200.26441-1-o.rempel@pengutronix.de>
-Sender: linux-can-owner@vger.kernel.org
-List-ID: <linux-can.vger.kernel.org>
-To: dev.kurt@vandijck-laurijssen.be, mkl@pengutronix.de, wg@grandegger.com
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, syzbot+5322482fe520b02aea30@syzkaller.appspotmail.com, linux-stable <stable@vger.kernel.org>, kernel@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org, David Jander <david@protonic.nl>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="n75w4eckvcy5gpqk"
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <24c3daa5-8243-0b80-9f4c-aa5883cb75da@huawei.com>
+Sender: netdev-owner@vger.kernel.org
+To: Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc: robin@protonic.nl, linux@rempel-privat.de, kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+List-Id: linux-can.vger.kernel.org
 
-The current stack implementation do not support ECTS requests of not
-aligned TP sized blocks.
 
-If ECTS will request a block with size and offset spanning two TP
-blocks, this will cause memcpy() to read beyond the queued skb (which
-does only contain one TP sized block).
+--n75w4eckvcy5gpqk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sometimes KASAN will detect this read if the memory region beyond the
-skb was previously allocated and freed. In other situations it will stay
-undetected. The ETP transfer in any case will be corrupted.
+On Fri, Aug 07, 2020 at 05:36:38PM +0800, Zhang Changzhong wrote:
+> Hi Oleksij,
+>=20
+> We have tested this j1939 stack according to SAE J1939-21. It works fine =
+for
+> most cases, but when we test multipacket broadcast message function we fo=
+und
+> the receiver can't receive those packets.
+>=20
+> You can reproduce on CAN bus or vcan, for vcan case use cangw to connect =
+vcan0
+> and vcan1:
+> sudo cangw -A -s vcan0 -d vcan1 -e
+> sudo cangw -A -s vcan1 -d vcan0 -e
+>=20
+> To reproduce it use following commands:
+> testj1939 -B -r vcan1:0x90 &
+> testj1939 -B -s20 vcan0:0x80 :,0x12300
+>=20
+> Besides, candump receives correct packets while testj1939 receives nothin=
+g.
 
-This patch adds a sanity check to avoid this kind of read and abort the
-session with error J1939_XTP_ABORT_ECTS_TOO_BIG.
+Ok, thank you!
 
-Reported-by: syzbot+5322482fe520b02aea30@syzkaller.appspotmail.com
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- net/can/j1939/transport.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+i'm able to reproduce it and added following test:
+https://github.com/linux-can/can-tests/blob/master/j1939/j1939_ac_1k_bam_lo=
+cal0.sh
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index b135c5e2a86e..30957c9a8eb7 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -787,6 +787,18 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 		if (len > 7)
- 			len = 7;
- 
-+		if (offset + len > se_skb->len) {
-+			netdev_err_once(priv->ndev,
-+					"%s: 0x%p: requested data outside of queued buffer: offset %i, len %i, pkt.tx: %i\n",
-+					__func__, session, skcb->offset, se_skb->len , session->pkt.tx);
-+			return -EOVERFLOW;
-+		}
-+
-+		if (!len) {
-+			ret = -ENOBUFS;
-+			break;
-+		}
-+
- 		memcpy(&dat[1], &tpdat[offset], len);
- 		ret = j1939_tp_tx_dat(session, dat, len + 1);
- 		if (ret < 0) {
-@@ -1120,6 +1132,9 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
- 		 * cleanup including propagation of the error to user space.
- 		 */
- 		break;
-+	case -EOVERFLOW:
-+		j1939_session_cancel(session, J1939_XTP_ABORT_ECTS_TOO_BIG);
-+		break;
- 	case 0:
- 		session->tx_retry = 0;
- 		break;
--- 
-2.28.0
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--n75w4eckvcy5gpqk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl8tU/4ACgkQ4omh9DUa
+UbPhvxAAxOQ+jcN0KCTwuokh3OstfcYfo1QPKj+HKdphdxy7m6eA84SX1879VOiE
+zqJuqho7+jn5Cu7iReznWsHurGje9AB/pu3sDdKjk28DWDtbsen9+hooAOd7hKwZ
+ooxjUy2LSf0P6kWOvpboybb5/4D3VFw3lwmyIPZUsrtLhO5wEPCKlE/WQvn91y5x
+HQDixiG/ywyE321uKhjeLwTqA20Ub9ZWV6zN3TJYerjFpU5/jYxvlEjX854RNbXS
+gyiyM4mQUAQaGCB3zy3SFb22Kf+hZ0Ob7+jwgDiZfAeeVZMjrYjh5H4jlazqKhbX
+eeWtTUi3B99lrDK/sQEToi5CYvHa/5mYTwJLDyj0VKl+TqDB5hceM4Is23lvosho
+PQ8ZiP7ArK7s7fn1fscVTgLmatG7/ERuUmJYQiOXwWmIFnu0qwZ+kxpN6lDPS0Kf
+V93XapZBO+CB8Q50pGltMLpzGe40HGGlYEKLy9d1FQCS6xw8d1tpwfBpdbemPhaY
+F1aj3V1VYRe6a5qJQyZpeV6CpGiKEtU3mBoEkrDCu5DERFt8/RlFcKBKLb+OrjoI
+jC5kX9NKD6D1522yIuV2fIRX/6Fda9L1ZrwLqTbXfvcIuf/8crXlpNOLwGoINSje
+Tl7lC1QNWHYRo66WLEomLtTyZWRCaUawYsG7sGOQKM6msojpyX0=
+=RooE
+-----END PGP SIGNATURE-----
+
+--n75w4eckvcy5gpqk--
