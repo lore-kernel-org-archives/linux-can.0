@@ -1,51 +1,64 @@
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: [PATCH 25/26] net: pass a sockptr_t into ->setsockopt
-Date: Fri, 7 Aug 2020 09:18:03 +0000
-Message-ID: <f21589f1262640b09ca27ed20f8e6790@AcuMS.aculab.com>
-References: <20200723060908.50081-1-hch@lst.de>
- <20200723060908.50081-26-hch@lst.de>
- <6357942b-0b6e-1901-7dce-e308c9fac347@gmail.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
+Subject: Re: [PATCH net 0/4] support multipacket broadcast message
+Date: Fri, 7 Aug 2020 17:36:38 +0800
+Message-ID: <24c3daa5-8243-0b80-9f4c-aa5883cb75da@huawei.com>
+References: <1596599425-5534-1-git-send-email-zhangchangzhong@huawei.com>
+ <20200806161027.py5ged3a23xpmxgi@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Return-path: <lvs-devel-owner@vger.kernel.org>
-In-Reply-To: <6357942b-0b6e-1901-7dce-e308c9fac347@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9352 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726382AbgHGJgq (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 7 Aug 2020 05:36:46 -0400
+In-Reply-To: <20200806161027.py5ged3a23xpmxgi@pengutronix.de>
 Content-Language: en-US
-Sender: lvs-devel-owner@vger.kernel.org
-To: 'Eric Dumazet' <eric.dumazet@gmail.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
-Cc: "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>, "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>, "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>, "bridge@lists.linux-foundation.org" <bridge@lists.linux-foundation.org>, "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "dccp@vger.kernel.org" <dccp@vger.kernel.org>, "linux-decnet-user@lists.sourceforge.net" <linux-decnet-user@lists.sourcefor>
-List-Id: linux-can.vger.kernel.org
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: robin@protonic.nl, linux@rempel-privat.de, kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
 
-RnJvbTogRXJpYyBEdW1hemV0DQo+IFNlbnQ6IDA2IEF1Z3VzdCAyMDIwIDIzOjIxDQo+IA0KPiBP
-biA3LzIyLzIwIDExOjA5IFBNLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90ZToNCj4gPiBSZXdvcmsg
-dGhlIHJlbWFpbmluZyBzZXRzb2Nrb3B0IGNvZGUgdG8gcGFzcyBhIHNvY2twdHJfdCBpbnN0ZWFk
-IG9mIGENCj4gPiBwbGFpbiB1c2VyIHBvaW50ZXIuICBUaGlzIHJlbW92ZXMgdGhlIGxhc3QgcmVt
-YWluaW5nIHNldF9mcyhLRVJORUxfRFMpDQo+ID4gb3V0c2lkZSBvZiBhcmNoaXRlY3R1cmUgc3Bl
-Y2lmaWMgY29kZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waCBIZWxsd2lnIDxo
-Y2hAbHN0LmRlPg0KPiA+IEFja2VkLWJ5OiBTdGVmYW4gU2NobWlkdCA8c3RlZmFuQGRhdGVuZnJl
-aWhhZmVuLm9yZz4gW2llZWU4MDIxNTRdDQo+ID4gLS0tDQo+IA0KPiANCj4gLi4uDQo+IA0KPiA+
-IGRpZmYgLS1naXQgYS9uZXQvaXB2Ni9yYXcuYyBiL25ldC9pcHY2L3Jhdy5jDQo+ID4gaW5kZXgg
-NTk0ZTAxYWQ2NzBhYTYuLjg3NGYwMWNkN2FlYzQyIDEwMDY0NA0KPiA+IC0tLSBhL25ldC9pcHY2
-L3Jhdy5jDQo+ID4gKysrIGIvbmV0L2lwdjYvcmF3LmMNCj4gPiBAQCAtOTcyLDEzICs5NzIsMTMg
-QEAgc3RhdGljIGludCByYXd2Nl9zZW5kbXNnKHN0cnVjdCBzb2NrICpzaywgc3RydWN0IG1zZ2hk
-ciAqbXNnLCBzaXplX3QgbGVuKQ0KPiA+ICB9DQo+ID4NCj4gDQo+IC4uLg0KPiANCj4gPiAgc3Rh
-dGljIGludCBkb19yYXd2Nl9zZXRzb2Nrb3B0KHN0cnVjdCBzb2NrICpzaywgaW50IGxldmVsLCBp
-bnQgb3B0bmFtZSwNCj4gPiAtCQkJICAgIGNoYXIgX191c2VyICpvcHR2YWwsIHVuc2lnbmVkIGlu
-dCBvcHRsZW4pDQo+ID4gKwkJCSAgICAgICBzb2NrcHRyX3Qgb3B0dmFsLCB1bnNpZ25lZCBpbnQg
-b3B0bGVuKQ0KPiA+ICB7DQo+ID4gIAlzdHJ1Y3QgcmF3Nl9zb2NrICpycCA9IHJhdzZfc2soc2sp
-Ow0KPiA+ICAJaW50IHZhbDsNCj4gPg0KPiA+IC0JaWYgKGdldF91c2VyKHZhbCwgKGludCBfX3Vz
-ZXIgKilvcHR2YWwpKQ0KPiA+ICsJaWYgKGNvcHlfZnJvbV9zb2NrcHRyKCZ2YWwsIG9wdHZhbCwg
-c2l6ZW9mKHZhbCkpKQ0KPiA+ICAJCXJldHVybiAtRUZBVUxUOw0KPiA+DQo+IA0KPiBjb252ZXJ0
-aW5nIGdldF91c2VyKC4uLikgICB0byAgY29weV9mcm9tX3NvY2twdHIoLi4uKSByZWFsbHkgYXNz
-dW1lZCB0aGUgb3B0bGVuDQo+IGhhcyBiZWVuIHZhbGlkYXRlZCB0byBiZSA+PSBzaXplb2YoaW50
-KSBlYXJsaWVyLg0KPiANCj4gV2hpY2ggaXMgbm90IGFsd2F5cyB0aGUgY2FzZSwgZm9yIGV4YW1w
-bGUgaGVyZS4NCj4gDQo+IFVzZXIgYXBwbGljYXRpb24gY2FuIGZvb2wgdXMgcGFzc2luZyBvcHRs
-ZW49MCwgYW5kIGEgdXNlciBwb2ludGVyIG9mIGV4YWN0bHkgVEFTS19TSVpFLTENCg0KV29uJ3Qg
-dGhlIHVzZXIgcG9pbnRlciBmb3JjZSBjb3B5X2Zyb21fc29ja3B0cigpIHRvIGNhbGwNCmNvcHlf
-ZnJvbV91c2VyKCkgd2hpY2ggd2lsbCB0aGVuIGRvIGFjY2Vzc19vaygpIG9uIHRoZSBlbnRpcmUN
-CnJhbmdlIGFuZCBzbyByZXR1cm4gLUVGQVVMVC4NCg0KVGhlIG9ubHkgcHJvYmxlbXMgYXJpc2Ug
-aWYgdGhlIGtlcm5lbCBjb2RlIGFkZHMgYW4gb2Zmc2V0IHRvIHRoZQ0KdXNlciBhZGRyZXNzLg0K
-QW5kIHRoZSBsYXRlciBwYXRjaCBhZGRlZCBhbiBvZmZzZXQgdG8gdGhlIGNvcHkgZnVuY3Rpb25z
-Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJv
-YWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24g
-Tm86IDEzOTczODYgKFdhbGVzKQ0K
+Hi Oleksij,
+
+We have tested this j1939 stack according to SAE J1939-21. It works fine for
+most cases, but when we test multipacket broadcast message function we found
+the receiver can't receive those packets.
+
+You can reproduce on CAN bus or vcan, for vcan case use cangw to connect vcan0
+and vcan1:
+sudo cangw -A -s vcan0 -d vcan1 -e
+sudo cangw -A -s vcan1 -d vcan0 -e
+
+To reproduce it use following commands:
+testj1939 -B -r vcan1:0x90 &
+testj1939 -B -s20 vcan0:0x80 :,0x12300
+
+Besides, candump receives correct packets while testj1939 receives nothing.
+
+Regards,
+Zhang Changzhong
+
+On 2020/8/7 0:10, Oleksij Rempel wrote:
+> Hello,
+> 
+> Thank you for your patches! Currently I'm busy, but I'll take a look at it as
+> soon possible.
+> 
+> btw. can you tell me about more of your use case/work. I would like to
+> have some feedback about this stack. You can write a personal message,
+> if it is not for public.
+> 
+> On Wed, Aug 05, 2020 at 11:50:21AM +0800, Zhang Changzhong wrote:
+>> Zhang Changzhong (4):
+>>   can: j1939: fix support for multipacket broadcast message
+>>   can: j1939: cancel rxtimer on multipacket broadcast session complete
+>>   can: j1939: abort multipacket broadcast session when timeout occurs
+>>   can: j1939: add rxtimer for multipacket broadcast session
+>>
+>>  net/can/j1939/transport.c | 48 +++++++++++++++++++++++++++++++++++------------
+>>  1 file changed, 36 insertions(+), 12 deletions(-)
+> 
+> Regards,
+> Oleksij
+> 
