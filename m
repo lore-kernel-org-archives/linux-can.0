@@ -1,59 +1,83 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH 25/26] net: pass a sockptr_t into ->setsockopt
-Date: Thu, 6 Aug 2020 15:21:25 -0700
-Message-ID: <6357942b-0b6e-1901-7dce-e308c9fac347@gmail.com>
-References: <20200723060908.50081-1-hch@lst.de>
- <20200723060908.50081-26-hch@lst.de>
+From: Davide Massarenti <davide.m@optio3.com>
+Subject: [PATCH] can: m_can_platform: restore necessary m_can_class_resume()
+ call
+Date: Thu, 6 Aug 2020 18:34:54 -0700
+Message-ID: <20200807013452.GA122904@optio3.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-crypto-owner@vger.kernel.org>
-In-Reply-To: <20200723060908.50081-26-hch@lst.de>
-Content-Language: en-US
-Sender: linux-crypto-owner@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Eric Dumazet <edumazet@google.com>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org, linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org, mptcp@lists.01.org, lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org, Stefan Schmidt <stefan@datenfreihafen.org>
-List-Id: linux-can.vger.kernel.org
+Return-path: <linux-can-owner@vger.kernel.org>
+Received: from mail-eopbgr760108.outbound.protection.outlook.com ([40.107.76.108]:36736
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726038AbgHGBe7 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 6 Aug 2020 21:34:59 -0400
+Content-Disposition: inline
+Sender: linux-can-owner@vger.kernel.org
+List-ID: <linux-can.vger.kernel.org>
+To: dmurphy@ti.com, linux-can@vger.kernel.org
 
+Hi there,
 
+After the last refactoring, m_can_runtime_suspend()/resume() would call
+the corresponding m_can_class_suspend() and m_can_class_resume() functions.
+That caused a recursion through m_can_clk_start/stop calls, with a deadlock
+due to spin_lock_irqsave(&dev->power.lock, flags).
 
-On 7/22/20 11:09 PM, Christoph Hellwig wrote:
-> Rework the remaining setsockopt code to pass a sockptr_t instead of a
-> plain user pointer.  This removes the last remaining set_fs(KERNEL_DS)
-> outside of architecture specific code.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Stefan Schmidt <stefan@datenfreihafen.org> [ieee802154]
-> ---
+The temporary solution, put in place in 0704c57,
+was to remove the call to m_can_runtime_resume().
 
+However, this breaks the driver on SoCs that use pinmux to control
+the CAN controller. The controller would be permanently disconnected
+from the outside world.
 
-...
+The fix for the recursion is to remove calls to m_can_clk_start/stop()
+from resume/suspend, since m_can_clk_start/stop() calls are
+what triggered resume/suspend.
 
-> diff --git a/net/ipv6/raw.c b/net/ipv6/raw.c
-> index 594e01ad670aa6..874f01cd7aec42 100644
-> --- a/net/ipv6/raw.c
-> +++ b/net/ipv6/raw.c
-> @@ -972,13 +972,13 @@ static int rawv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
->  }
->  
+Signed-off-by: Davide Massarenti <davide.m@optio3.com>
+---
+ drivers/net/can/m_can/m_can.c          | 7 -------
+ drivers/net/can/m_can/m_can_platform.c | 3 +++
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-...
-
->  static int do_rawv6_setsockopt(struct sock *sk, int level, int optname,
-> -			    char __user *optval, unsigned int optlen)
-> +			       sockptr_t optval, unsigned int optlen)
->  {
->  	struct raw6_sock *rp = raw6_sk(sk);
->  	int val;
->  
-> -	if (get_user(val, (int __user *)optval))
-> +	if (copy_from_sockptr(&val, optval, sizeof(val)))
->  		return -EFAULT;
->  
-
-converting get_user(...)   to  copy_from_sockptr(...) really assumed the optlen
-has been validated to be >= sizeof(int) earlier.
-
-Which is not always the case, for example here.
-
-User application can fool us passing optlen=0, and a user pointer of exactly TASK_SIZE-1
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 02c5795b7393..f801205fff78 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1866,7 +1866,6 @@ int m_can_class_suspend(struct device *dev)
+ 		netif_stop_queue(ndev);
+ 		netif_device_detach(ndev);
+ 		m_can_stop(ndev);
+-		m_can_clk_stop(cdev);
+ 	}
+ 
+ 	pinctrl_pm_select_sleep_state(dev);
+@@ -1887,12 +1886,6 @@ int m_can_class_resume(struct device *dev)
+ 	cdev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	if (netif_running(ndev)) {
+-		int ret;
+-
+-		ret = m_can_clk_start(cdev);
+-		if (ret)
+-			return ret;
+-
+ 		m_can_init_ram(cdev);
+ 		m_can_start(ndev);
+ 		netif_device_attach(ndev);
+diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+index 38ea5e600fb8..51497410c4c1 100644
+--- a/drivers/net/can/m_can/m_can_platform.c
++++ b/drivers/net/can/m_can/m_can_platform.c
+@@ -166,6 +166,9 @@ static int __maybe_unused m_can_runtime_resume(struct device *dev)
+ 	if (err)
+ 		clk_disable_unprepare(mcan_class->hclk);
+ 
++	if (!err)
++		m_can_class_resume(dev);
++
+ 	return err;
+ }
+ 
+-- 
+2.17.1
