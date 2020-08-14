@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E26EAC433E8
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C53AC433E4
 	for <linux-can@archiver.kernel.org>; Fri, 14 Aug 2020 11:04:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C0DF5206DA
+	by mail.kernel.org (Postfix) with ESMTP id 63A27206DA
 	for <linux-can@archiver.kernel.org>; Fri, 14 Aug 2020 11:04:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgHNLEm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727900AbgHNLEm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 14 Aug 2020 07:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727913AbgHNLEg (ORCPT
+        with ESMTP id S1727925AbgHNLEg (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 14 Aug 2020 07:04:36 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04DDC061386
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7D3C061387
         for <linux-can@vger.kernel.org>; Fri, 14 Aug 2020 04:04:35 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1k6XVg-00040D-DJ; Fri, 14 Aug 2020 13:04:32 +0200
+        id 1k6XVf-00040D-Ve; Fri, 14 Aug 2020 13:04:32 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
-        syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com,
+        syzbot+5322482fe520b02aea30@syzkaller.appspotmail.com,
         linux-stable <stable@vger.kernel.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/6] can: j1939: socket: j1939_sk_bind(): make sure ml_priv is allocated
-Date:   Fri, 14 Aug 2020 13:04:26 +0200
-Message-Id: <20200814110428.405051-5-mkl@pengutronix.de>
+Subject: [PATCH 3/6] can: j1939: transport: j1939_session_tx_dat(): fix use-after-free read in j1939_tp_txtimer()
+Date:   Fri, 14 Aug 2020 13:04:25 +0200
+Message-Id: <20200814110428.405051-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200814110428.405051-1-mkl@pengutronix.de>
 References: <20200814110428.405051-1-mkl@pengutronix.de>
@@ -52,43 +52,63 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-This patch adds check to ensure that the struct net_device::ml_priv is
-allocated, as it is used later by the j1939 stack.
+The current stack implementation do not support ECTS requests of not
+aligned TP sized blocks.
 
-The allocation is done by all mainline CAN network drivers, but when using
-bond or team devices this is not the case.
+If ECTS will request a block with size and offset spanning two TP
+blocks, this will cause memcpy() to read beyond the queued skb (which
+does only contain one TP sized block).
 
-Bail out if no ml_priv is allocated.
+Sometimes KASAN will detect this read if the memory region beyond the
+skb was previously allocated and freed. In other situations it will stay
+undetected. The ETP transfer in any case will be corrupted.
 
-Reported-by: syzbot+f03d384f3455d28833eb@syzkaller.appspotmail.com
+This patch adds a sanity check to avoid this kind of read and abort the
+session with error J1939_XTP_ABORT_ECTS_TOO_BIG.
+
+Reported-by: syzbot+5322482fe520b02aea30@syzkaller.appspotmail.com
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Cc: linux-stable <stable@vger.kernel.org> # >= v5.4
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-4-o.rempel@pengutronix.de
+Link: https://lore.kernel.org/r/20200807105200.26441-3-o.rempel@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/socket.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/can/j1939/transport.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index ad973370de12..b93876c57fc4 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -467,6 +467,14 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 			goto out_release_sock;
- 		}
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index b135c5e2a86e..30957c9a8eb7 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -787,6 +787,18 @@ static int j1939_session_tx_dat(struct j1939_session *session)
+ 		if (len > 7)
+ 			len = 7;
  
-+		if (!ndev->ml_priv) {
-+			netdev_warn_once(ndev,
-+					 "No CAN mid layer private allocated, please fix your driver and use alloc_candev()!\n");
-+			dev_put(ndev);
-+			ret = -ENODEV;
-+			goto out_release_sock;
++		if (offset + len > se_skb->len) {
++			netdev_err_once(priv->ndev,
++					"%s: 0x%p: requested data outside of queued buffer: offset %i, len %i, pkt.tx: %i\n",
++					__func__, session, skcb->offset, se_skb->len , session->pkt.tx);
++			return -EOVERFLOW;
 +		}
 +
- 		priv = j1939_netdev_start(ndev);
- 		dev_put(ndev);
- 		if (IS_ERR(priv)) {
++		if (!len) {
++			ret = -ENOBUFS;
++			break;
++		}
++
+ 		memcpy(&dat[1], &tpdat[offset], len);
+ 		ret = j1939_tp_tx_dat(session, dat, len + 1);
+ 		if (ret < 0) {
+@@ -1120,6 +1132,9 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
+ 		 * cleanup including propagation of the error to user space.
+ 		 */
+ 		break;
++	case -EOVERFLOW:
++		j1939_session_cancel(session, J1939_XTP_ABORT_ECTS_TOO_BIG);
++		break;
+ 	case 0:
+ 		session->tx_retry = 0;
+ 		break;
 -- 
 2.28.0
 
