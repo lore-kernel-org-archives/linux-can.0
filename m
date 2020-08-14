@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18633C433E3
-	for <linux-can@archiver.kernel.org>; Fri, 14 Aug 2020 11:04:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 403F8C433E1
+	for <linux-can@archiver.kernel.org>; Fri, 14 Aug 2020 11:04:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EBD0A206DA
-	for <linux-can@archiver.kernel.org>; Fri, 14 Aug 2020 11:04:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 211BA2078D
+	for <linux-can@archiver.kernel.org>; Fri, 14 Aug 2020 11:04:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgHNLEg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 14 Aug 2020 07:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
+        id S1727895AbgHNLEm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 14 Aug 2020 07:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727900AbgHNLEe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Aug 2020 07:04:34 -0400
+        with ESMTP id S1727900AbgHNLEh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Aug 2020 07:04:37 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDFDC061386
-        for <linux-can@vger.kernel.org>; Fri, 14 Aug 2020 04:04:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC757C061389
+        for <linux-can@vger.kernel.org>; Fri, 14 Aug 2020 04:04:36 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1k6XVf-00040D-8i; Fri, 14 Aug 2020 13:04:31 +0200
+        id 1k6XVh-00040D-Hq; Fri, 14 Aug 2020 13:04:33 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/6] can: j1939: transport: j1939_simple_recv(): ignore local J1939 messages send not by J1939 stack
-Date:   Fri, 14 Aug 2020 13:04:24 +0200
-Message-Id: <20200814110428.405051-3-mkl@pengutronix.de>
+Subject: [PATCH 6/6] can: j1939: transport: j1939_xtp_rx_dat_one(): compare own packets to detect corruptions
+Date:   Fri, 14 Aug 2020 13:04:28 +0200
+Message-Id: <20200814110428.405051-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200814110428.405051-1-mkl@pengutronix.de>
 References: <20200814110428.405051-1-mkl@pengutronix.de>
@@ -50,55 +50,49 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-In current J1939 stack implementation, we process all locally send
-messages as own messages. Even if it was send by CAN_RAW socket.
+Since the stack relays on receiving own packets, it was overwriting own
+transmit buffer from received packets.
 
-To reproduce it use following commands:
-testj1939 -P -r can0:0x80 &
-cansend can0 18238040#0123
+At least theoretically, the received echo buffer can be corrupt or
+changed and the session partner can request to resend previous data. In
+this case we will re-send bad data.
 
-This step will trigger false positive not critical warning:
-j1939_simple_recv: Received already invalidated message
+With this patch we will stop to overwrite own TX buffer and use it for
+sanity checking.
 
-With this patch we add additional check to make sure, related skb is own
-echo message.
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-2-o.rempel@pengutronix.de
+Link: https://lore.kernel.org/r/20200807105200.26441-6-o.rempel@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/socket.c    | 1 +
- net/can/j1939/transport.c | 4 ++++
- 2 files changed, 5 insertions(+)
+ net/can/j1939/transport.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index b634b680177f..ad973370de12 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -398,6 +398,7 @@ static int j1939_sk_init(struct sock *sk)
- 	spin_lock_init(&jsk->sk_session_queue_lock);
- 	INIT_LIST_HEAD(&jsk->sk_session_queue);
- 	sk->sk_destruct = j1939_sk_sock_destruct;
-+	sk->sk_protocol = CAN_J1939;
- 
- 	return 0;
- }
 diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 9f99af5b0b11..b135c5e2a86e 100644
+index 90a2baac8a4a..5cf107cb447c 100644
 --- a/net/can/j1939/transport.c
 +++ b/net/can/j1939/transport.c
-@@ -2017,6 +2017,10 @@ void j1939_simple_recv(struct j1939_priv *priv, struct sk_buff *skb)
- 	if (!skb->sk)
- 		return;
+@@ -1792,7 +1792,20 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+ 	}
  
-+	if (skb->sk->sk_family != AF_CAN ||
-+	    skb->sk->sk_protocol != CAN_J1939)
-+		return;
+ 	tpdat = se_skb->data;
+-	memcpy(&tpdat[offset], &dat[1], nbytes);
++	if (!session->transmission) {
++		memcpy(&tpdat[offset], &dat[1], nbytes);
++	} else {
++		int err;
 +
- 	j1939_session_list_lock(priv);
- 	session = j1939_session_get_simple(priv, skb);
- 	j1939_session_list_unlock(priv);
++		err = memcmp(&tpdat[offset], &dat[1], nbytes);
++		if (err)
++			netdev_err_once(priv->ndev,
++					"%s: 0x%p: Data of RX-looped back packet (%*ph) doesn't match TX data (%*ph)!\n",
++					__func__, session,
++					nbytes, &dat[1],
++					nbytes, &tpdat[offset]);
++	}
++
+ 	if (packet == session->pkt.rx)
+ 		session->pkt.rx++;
+ 
 -- 
 2.28.0
 
