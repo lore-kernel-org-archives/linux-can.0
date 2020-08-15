@@ -2,39 +2,45 @@ Return-Path: <SRS0=hs8p=BZ=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 510E5C433E1
-	for <linux-can@archiver.kernel.org>; Sat, 15 Aug 2020 22:45:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 565CEC433DF
+	for <linux-can@archiver.kernel.org>; Sat, 15 Aug 2020 23:26:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3AFE820675
-	for <linux-can@archiver.kernel.org>; Sat, 15 Aug 2020 22:45:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 356ED2065C
+	for <linux-can@archiver.kernel.org>; Sat, 15 Aug 2020 23:26:03 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Z4yowwp4"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgHOWpp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 15 Aug 2020 18:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
+        id S1726320AbgHOXZ4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 15 Aug 2020 19:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728381AbgHOWpm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 15 Aug 2020 18:45:42 -0400
-Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 40060C0045A6;
-        Sat, 15 Aug 2020 12:47:54 -0700 (PDT)
-Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 07FJkqOV068015;
-        Sat, 15 Aug 2020 21:46:52 +0200 (CEST)
-        (envelope-from pisa@cmp.felk.cvut.cz)
-Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 07FJkpI4000504;
-        Sat, 15 Aug 2020 21:46:51 +0200
-Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 07FJkpJv000503;
-        Sat, 15 Aug 2020 21:46:51 +0200
-From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
-To:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        "Marc Kleine-Budde" <mkl@pengutronix.de>,
+        with ESMTP id S1726021AbgHOXZ4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 15 Aug 2020 19:25:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433A7C061786;
+        Sat, 15 Aug 2020 16:25:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=thSB2duN5RGwr8Q6zOeYxAh5uO9v+2fWgViJOQmw1Dk=; b=Z4yowwp4zbGQeTVglQC+C9iE/u
+        bxcKFv5nygjuGgfRtqI0EY7F47Q4fxKtcgzo0rgmZU9ROSJOarJRdI+lJflYXNDt3EdwWI01zmgV0
+        eh09woCU3ErCWKlMJAeQz9zDsefj50aG4ZELi2sHOtfLGS8asgOAb15RuepmpO/6dSA4FHJUpk35n
+        CgjoiTh1+7tdzxBLoE1uPiHPvgiRWjPLoQp4vk60flN7K+dVLuDLVDUZd8aAhzcWecTTyVGrrPzOF
+        /hRZGQplXgxiPBnFy5GJjPAOc6eq3fPFQL9XJudgUU2r5H+RdHI1cOJbIZWlwRBmd/hVH1fWajYRq
+        hUN4oziQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k75YQ-0004jH-39; Sat, 15 Aug 2020 23:25:40 +0000
+Subject: Re: [PATCH v5 3/6] can: ctucanfd: add support for CTU CAN FD
+ open-source IP core - bus independent part.
+To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>, linux-can@vger.kernel.org,
+        devicetree@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Oliver Hartkopp <socketcan@hartkopp.net>
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         David Miller <davem@davemloft.net>,
@@ -45,112 +51,52 @@ Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Ondrej Ille <ondrej.ille@gmail.com>,
         Jiri Novak <jnovak@fel.cvut.cz>,
         Jaroslav Beran <jara.beran@gmail.com>,
-        Petr Porazil <porazil@pikron.com>,
-        Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Subject: [PATCH v5 2/6] dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
-Date:   Sat, 15 Aug 2020 21:43:04 +0200
-Message-Id: <4ad7279ba263bb4da35edcefc66679a9d72702ec.1597518433.git.ppisa@pikron.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1597518433.git.ppisa@pikron.com>
+        Petr Porazil <porazil@pikron.com>
 References: <cover.1597518433.git.ppisa@pikron.com>
+ <b634e83c1883e631092bdaca3519e906077f2f8b.1597518433.git.ppisa@pikron.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <45598c29-722d-93d4-bea2-7ed40ca13050@infradead.org>
+Date:   Sat, 15 Aug 2020 16:25:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-FELK-MailScanner-Information: 
-X-MailScanner-ID: 07FJkqOV068015
-X-FELK-MailScanner: Found to be clean
-X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
-        score=-0.497, required 6, autolearn=not spam, BAYES_00 -0.50,
-        KHOP_HELO_FCRDNS 0.00, SPF_HELO_NONE 0.00, SPF_NONE 0.00)
-X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
-X-FELK-MailScanner-Watermark: 1598125614.27224@CINxMI+r4dBBZ1Gq4CkgmA
+In-Reply-To: <b634e83c1883e631092bdaca3519e906077f2f8b.1597518433.git.ppisa@pikron.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-can-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The device-tree bindings for open-source/open-hardware CAN FD IP core
-designed at the Czech Technical University in Prague.
+On 8/15/20 12:43 PM, Pavel Pisa wrote:
+> diff --git a/drivers/net/can/ctucanfd/Kconfig b/drivers/net/can/ctucanfd/Kconfig
+> new file mode 100644
+> index 000000000000..d8da44d7f926
+> --- /dev/null
+> +++ b/drivers/net/can/ctucanfd/Kconfig
+> @@ -0,0 +1,15 @@
+> +config CAN_CTUCANFD
+> +	tristate "CTU CAN-FD IP core"
+> +	help
+> +	  This driver adds support for the CTU CAN FD open-source IP core.
+> +	  More documentation and core sources at project page
+> +	  (https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core).
+> +	  The core integration to Xilinx Zynq system as platform driver
+> +	  is available (https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top).
+> +	  Implementation on Intel FGA based PCI Express board is available
 
-CTU CAN FD IP core and other CTU CAN bus related projects
-listing and documentation page
+   Is that                        FPGA-based
+   ?
 
-   http://canbus.pages.fel.cvut.cz/
+> +	  from project (https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd).
+> +	  Guidepost CTU FEE CAN bus projects page http://canbus.pages.fel.cvut.cz/ .
+> +
+> +if CAN_CTUCANFD
+> +
+> +endif
 
-Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
----
- .../bindings/net/can/ctu,ctucanfd.yaml        | 63 +++++++++++++++++++
- 1 file changed, 63 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
 
-diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-new file mode 100644
-index 000000000000..6fa42112bb58
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-@@ -0,0 +1,63 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/ctu,ctucanfd.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: CTU CAN FD Open-source IP Core Device Tree Bindings
-+
-+description: |
-+  Open-source CAN FD IP core developed at the Czech Technical University in Prague
-+
-+  The core sources and documentation on project page
-+    [1] sources : https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
-+    [2] datasheet : https://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
-+
-+  Integration in Xilinx Zynq SoC based system together with
-+  OpenCores SJA1000 compatible controllers
-+    [3] project : https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top
-+  Martin Jerabek dimploma thesis with integration and testing
-+  framework description
-+    [4] PDF : https://dspace.cvut.cz/bitstream/handle/10467/80366/F3-DP-2019-Jerabek-Martin-Jerabek-thesis-2019-canfd.pdf
-+
-+maintainers:
-+  - Pavel Pisa <pisa@cmp.felk.cvut.cz>
-+  - Ondrej Ille <ondrej.ille@gmail.com>
-+  - Martin Jerabek <martin.jerabek01@gmail.com>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: ctu,ctucanfd-2
-+          - const: ctu,ctucanfd
-+      - const: ctu,ctucanfd
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    description: |
-+      phandle of reference clock (100 MHz is appropriate
-+      for FPGA implementation on Zynq-7000 system).
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    ctu_can_fd_0: can@43c30000 {
-+      compatible = "ctu,ctucanfd";
-+      interrupts = <0 30 4>;
-+      clocks = <&clkc 15>;
-+      reg = <0x43c30000 0x10000>;
-+    };
 -- 
-2.20.1
+~Randy
 
