@@ -2,81 +2,56 @@ Return-Path: <SRS0=EbP5=B2=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7300C433E3
-	for <linux-can@archiver.kernel.org>; Sun, 16 Aug 2020 19:08:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A32EC433DF
+	for <linux-can@archiver.kernel.org>; Sun, 16 Aug 2020 23:05:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8366A20866
-	for <linux-can@archiver.kernel.org>; Sun, 16 Aug 2020 19:08:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0BF0B20772
+	for <linux-can@archiver.kernel.org>; Sun, 16 Aug 2020 23:05:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgHPTID (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 16 Aug 2020 15:08:03 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:39725 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729238AbgHPTH4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 16 Aug 2020 15:07:56 -0400
-X-IronPort-AV: E=Sophos;i="5.76,321,1592838000"; 
-   d="scan'208";a="54692120"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 17 Aug 2020 04:07:53 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id A875740062C7;
-        Mon, 17 Aug 2020 04:07:50 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH 2/3] dt-bindings: can: rcar_can: Add r8a7742 support
-Date:   Sun, 16 Aug 2020 20:07:31 +0100
-Message-Id: <20200816190732.6905-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200816190732.6905-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200816190732.6905-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1726165AbgHPXFI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 16 Aug 2020 19:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgHPXFH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 16 Aug 2020 19:05:07 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30A2C061786;
+        Sun, 16 Aug 2020 16:05:06 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 1CFC711E47940;
+        Sun, 16 Aug 2020 15:48:20 -0700 (PDT)
+Date:   Sun, 16 Aug 2020 16:05:05 -0700 (PDT)
+Message-Id: <20200816.160505.374966632241402758.davem@davemloft.net>
+To:     mkl@pengutronix.de
+Cc:     netdev@vger.kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: pull-request: can 2020-08-15
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200815092116.424137-1-mkl@pengutronix.de>
+References: <20200815092116.424137-1-mkl@pengutronix.de>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 16 Aug 2020 15:48:20 -0700 (PDT)
 Sender: linux-can-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Document RZ/G1H (r8a7742) SoC specific bindings. The R8A7742 CAN module
-is identical to R-Car Gen2 family.
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Sat, 15 Aug 2020 11:21:12 +0200
 
-No driver change is needed due to the fallback compatible value
-"renesas,rcar-gen2-can".
+> this is a pull request of 4 patches for net/master.
+> 
+> All patches are by Zhang Changzhong and fix broadcast related problems in the
+> j1939 CAN networking stack.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
----
- Documentation/devicetree/bindings/net/can/rcar_can.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-index 85c6551b602a..2099ce809ae7 100644
---- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-+++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-@@ -2,7 +2,8 @@ Renesas R-Car CAN controller Device Tree Bindings
- -------------------------------------------------
- 
- Required properties:
--- compatible: "renesas,can-r8a7743" if CAN controller is a part of R8A7743 SoC.
-+- compatible: "renesas,can-r8a7742" if CAN controller is a part of R8A7742 SoC.
-+	      "renesas,can-r8a7743" if CAN controller is a part of R8A7743 SoC.
- 	      "renesas,can-r8a7744" if CAN controller is a part of R8A7744 SoC.
- 	      "renesas,can-r8a7745" if CAN controller is a part of R8A7745 SoC.
- 	      "renesas,can-r8a77470" if CAN controller is a part of R8A77470 SoC.
--- 
-2.17.1
-
+Pulled, thanks Marc.
