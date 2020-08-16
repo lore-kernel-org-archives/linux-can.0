@@ -7,25 +7,25 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C858C433DF
-	for <linux-can@archiver.kernel.org>; Sun, 16 Aug 2020 19:08:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7300C433E3
+	for <linux-can@archiver.kernel.org>; Sun, 16 Aug 2020 19:08:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0ED4120829
-	for <linux-can@archiver.kernel.org>; Sun, 16 Aug 2020 19:08:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8366A20866
+	for <linux-can@archiver.kernel.org>; Sun, 16 Aug 2020 19:08:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729574AbgHPTID (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1726855AbgHPTID (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sun, 16 Aug 2020 15:08:03 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:45739 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725873AbgHPTIB (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 16 Aug 2020 15:08:01 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:39725 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729238AbgHPTH4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 16 Aug 2020 15:07:56 -0400
 X-IronPort-AV: E=Sophos;i="5.76,321,1592838000"; 
-   d="scan'208";a="54478027"
+   d="scan'208";a="54692120"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 17 Aug 2020 04:08:00 +0900
+  by relmlie5.idc.renesas.com with ESMTP; 17 Aug 2020 04:07:53 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 30F2440062C7;
-        Mon, 17 Aug 2020 04:07:57 +0900 (JST)
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id A875740062C7;
+        Mon, 17 Aug 2020 04:07:50 +0900 (JST)
 From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>,
         Wolfgang Grandegger <wg@grandegger.com>,
@@ -40,9 +40,9 @@ Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH 3/3] ARM: dts: r8a7742: Add CAN support
-Date:   Sun, 16 Aug 2020 20:07:32 +0100
-Message-Id: <20200816190732.6905-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 2/3] dt-bindings: can: rcar_can: Add r8a7742 support
+Date:   Sun, 16 Aug 2020 20:07:31 +0100
+Message-Id: <20200816190732.6905-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200816190732.6905-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20200816190732.6905-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -51,66 +51,32 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add the definitions for can0 and can1 to the r8a7742 SoC dtsi.
+Document RZ/G1H (r8a7742) SoC specific bindings. The R8A7742 CAN module
+is identical to R-Car Gen2 family.
+
+No driver change is needed due to the fallback compatible value
+"renesas,rcar-gen2-can".
 
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 ---
- arch/arm/boot/dts/r8a7742.dtsi | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ Documentation/devicetree/bindings/net/can/rcar_can.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/r8a7742.dtsi b/arch/arm/boot/dts/r8a7742.dtsi
-index 009827708bf4..0fc52b27ae64 100644
---- a/arch/arm/boot/dts/r8a7742.dtsi
-+++ b/arch/arm/boot/dts/r8a7742.dtsi
-@@ -36,6 +36,14 @@
- 		clock-frequency = <0>;
- 	};
+diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+index 85c6551b602a..2099ce809ae7 100644
+--- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
++++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
+@@ -2,7 +2,8 @@ Renesas R-Car CAN controller Device Tree Bindings
+ -------------------------------------------------
  
-+	/* External CAN clock */
-+	can_clk: can {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		/* This value must be overridden by the board. */
-+		clock-frequency = <0>;
-+	};
-+
- 	cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-@@ -951,6 +959,32 @@
- 			status = "disabled";
- 		};
- 
-+		can0: can@e6e80000 {
-+			compatible = "renesas,can-r8a7742",
-+				     "renesas,rcar-gen2-can";
-+			reg = <0 0xe6e80000 0 0x1000>;
-+			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 916>,
-+				 <&cpg CPG_CORE R8A7742_CLK_RCAN>, <&can_clk>;
-+			clock-names = "clkp1", "clkp2", "can_clk";
-+			power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-+			resets = <&cpg 916>;
-+			status = "disabled";
-+		};
-+
-+		can1: can@e6e88000 {
-+			compatible = "renesas,can-r8a7742",
-+				     "renesas,rcar-gen2-can";
-+			reg = <0 0xe6e88000 0 0x1000>;
-+			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 915>,
-+				 <&cpg CPG_CORE R8A7742_CLK_RCAN>, <&can_clk>;
-+			clock-names = "clkp1", "clkp2", "can_clk";
-+			power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-+			resets = <&cpg 915>;
-+			status = "disabled";
-+		};
-+
- 		pwm0: pwm@e6e30000 {
- 			compatible = "renesas,pwm-r8a7742", "renesas,pwm-rcar";
- 			reg = <0 0xe6e30000 0 0x8>;
+ Required properties:
+-- compatible: "renesas,can-r8a7743" if CAN controller is a part of R8A7743 SoC.
++- compatible: "renesas,can-r8a7742" if CAN controller is a part of R8A7742 SoC.
++	      "renesas,can-r8a7743" if CAN controller is a part of R8A7743 SoC.
+ 	      "renesas,can-r8a7744" if CAN controller is a part of R8A7744 SoC.
+ 	      "renesas,can-r8a7745" if CAN controller is a part of R8A7745 SoC.
+ 	      "renesas,can-r8a77470" if CAN controller is a part of R8A77470 SoC.
 -- 
 2.17.1
 
