@@ -2,43 +2,42 @@ Return-Path: <SRS0=jvO6=CC=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A7E2C433E1
-	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 08:43:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 199F1C433E4
+	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 08:49:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 60D862074D
-	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 08:43:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB4EF2074D
+	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 08:49:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598258599;
+	s=default; t=1598258970;
 	bh=H4PJW85OSbOIF1DQ4hnrfqyHQL20ozcmuZlOID6RNzg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=IcjBURXfe0SDavNVdcp9rxOqpqe425vt19PV1nDMvn1gRHWvFCQIneRpuAs5SMSKt
-	 rJJoQesgzmuJhjw3xlj7ChrqIU7tRyc/8Cn7eLGwcI9HnaJ5qOyVYQ3jWmbSm+8O/q
-	 87Db1CIFQnP5lKhDKkRTi28wjjwMF5HHNaBXvt90=
+	b=m05UsyhfeIkzlkNw4z9F1ouKdjUCZBdWH0wsHk7j9BzE6zM/+1L1+yfwzQW5M5xiH
+	 Qj7CentlChHiB88WRnbz6ITWyhf1Plls01SqxDAbcDVR+4qh5bwZM++2M4wzHRzIM6
+	 4GPulZZ/wd7fLTLIPl7iaI+HcYRq1rRa0v1snofw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729015AbgHXInK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 24 Aug 2020 04:43:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
+        id S1729712AbgHXIt3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 24 Aug 2020 04:49:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728467AbgHXInJ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:43:09 -0400
+        id S1729710AbgHXItY (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:49:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B6E42075B;
-        Mon, 24 Aug 2020 08:43:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B07BA206F0;
+        Mon, 24 Aug 2020 08:49:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598258589;
+        s=default; t=1598258964;
         bh=H4PJW85OSbOIF1DQ4hnrfqyHQL20ozcmuZlOID6RNzg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQ1CvTDdHwd7MuaCd2bufMXCs53MznyM5AOn2fly/gLq7whFimNZcKTbTOi9UvNID
-         12fCFP9zCc12BHyzXwen1PrYCLbvjIzaXGI61mgM0vC55Lj7estrmv0FJqDdKUURKi
-         kvaBgZSPK5hj6wsHTGv5+TxXv0QLoGegCT84B7Kc=
+        b=F1xCvcPirmOz2VG+TVpGiCCXLjWJayKxdbBqs3UpAxaZ03CMfDjmZGiE6ksb8Wuxz
+         vFr1l4voS2LsOlCPh0yISUnfm6Bvt+IbF+X4xW8kr9dA71cf7wahRSVriv4kFkO4xZ
+         Anv4cT/lYWtRxUe+JbrWIO3p47zvkRN12skHE/3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -49,12 +48,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 070/124] can: j1939: fix kernel-infoleak in j1939_sk_sock2sockaddr_can()
-Date:   Mon, 24 Aug 2020 10:30:04 +0200
-Message-Id: <20200824082412.855998880@linuxfoundation.org>
+Subject: [PATCH 5.4 070/107] can: j1939: fix kernel-infoleak in j1939_sk_sock2sockaddr_can()
+Date:   Mon, 24 Aug 2020 10:30:36 +0200
+Message-Id: <20200824082408.590017649@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824082409.368269240@linuxfoundation.org>
-References: <20200824082409.368269240@linuxfoundation.org>
+In-Reply-To: <20200824082405.020301642@linuxfoundation.org>
+References: <20200824082405.020301642@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
