@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65CBAC433E4
-	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 17:12:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C20BAC433E1
+	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 17:23:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3BC8A2063A
-	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 17:12:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 92C5620738
+	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 17:23:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598289136;
+	s=default; t=1598289806;
 	bh=Y+dzBIhGF+kbEmw58dJ4IZaOWYovq8f4Yu+nhkSCnkU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=io2aULTnMDOx57wz7nWqeErfCQ2zS7TG4HOCnJAkavyjzoBgXvlAjhwSFYdGgyHnb
-	 OgXVlQZ+AJdpNwZezjYFgHx3qcckDVo/gXY6zL8PAwIpjDobV3XzmJ84n5JYbowR+B
-	 /b3JGcH72hRqqU5xB50Uki0E6NPwFbBXb7SZ6V3w=
+	b=1k8yA4s4k4TFBDrpaKII2AqmzAAvniWv9w4GKbJHNK53oamdfnqFBpp7WlhYVZIom
+	 zSp9F0/aoKSUrURuFmVIIgY7FsWiZhV6dDxNp4g5lJorkaw9hBJOvN/7BLKd8ysZ/E
+	 9p7BLA74yCG9rlfC0HuYKQKieXmegNv/J/+VvS4w=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgHXRLq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 24 Aug 2020 13:11:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40360 "EHLO mail.kernel.org"
+        id S1727012AbgHXRXV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 24 Aug 2020 13:23:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728392AbgHXQhy (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:37:54 -0400
+        id S1728273AbgHXQfo (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:35:44 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 735F022D70;
-        Mon, 24 Aug 2020 16:37:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4ED6B22CF7;
+        Mon, 24 Aug 2020 16:35:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598287030;
+        s=default; t=1598286944;
         bh=Y+dzBIhGF+kbEmw58dJ4IZaOWYovq8f4Yu+nhkSCnkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ov6q7qK3VBYSw1I08FHAy5RhExDJDcFUz0SVjqJdKN46zKfS0bDZ3pr9iGXX2x/Uz
-         szUYn1aNRK1iVzS4WTsk97pIzopuNOqpUHMOR5Pdh2MjhailubQE+bwyop4CqqoApR
-         4S/JTsPkA9dH719zfKcFcBYrsvopDntHVuNtYL1s=
+        b=jek+oqzy3XtLnluiCYHhJbsfBHcpqpC0WGOyvPWreqZpC/R6RDylwL9ypCXcdoNXB
+         8QaF9NtXpLB0qOTIRuina3nE1Xns9REgrkk7sSZP3GX+sxTEvaBK7BnJMcV7Y2LGVo
+         PMgPrBBl3o+eQlHSfsvpRcM/2Agc1/dFNSVJVsfk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 26/54] can: j1939: transport: j1939_xtp_rx_dat_one(): compare own packets to detect corruptions
-Date:   Mon, 24 Aug 2020 12:36:05 -0400
-Message-Id: <20200824163634.606093-26-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 29/63] can: j1939: transport: j1939_xtp_rx_dat_one(): compare own packets to detect corruptions
+Date:   Mon, 24 Aug 2020 12:34:29 -0400
+Message-Id: <20200824163504.605538-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200824163634.606093-1-sashal@kernel.org>
-References: <20200824163634.606093-1-sashal@kernel.org>
+In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
+References: <20200824163504.605538-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
