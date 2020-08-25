@@ -2,91 +2,114 @@ Return-Path: <SRS0=GUJ3=CD=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EC93C433DF
-	for <linux-can@archiver.kernel.org>; Tue, 25 Aug 2020 10:17:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83D1FC433E1
+	for <linux-can@archiver.kernel.org>; Tue, 25 Aug 2020 15:11:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4F02B2068F
-	for <linux-can@archiver.kernel.org>; Tue, 25 Aug 2020 10:17:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E1C82076C
+	for <linux-can@archiver.kernel.org>; Tue, 25 Aug 2020 15:11:28 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tB7mY0ZO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgHYKRw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 25 Aug 2020 06:17:52 -0400
-Received: from mga07.intel.com ([134.134.136.100]:60647 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729761AbgHYKRs (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 25 Aug 2020 06:17:48 -0400
-IronPort-SDR: HlwF4+okgFV5dVyjQ3VZoKKHblry5yzGN4s6XOA1GYPi+GR2jzrw0a26GTXjGUueWnQiBCHmLi
- j/hLz+gmZS0A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9723"; a="220344034"
-X-IronPort-AV: E=Sophos;i="5.76,352,1592895600"; 
-   d="scan'208";a="220344034"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 03:17:43 -0700
-IronPort-SDR: zO5tX7u6BIxanDKKSBqiskYxioStbQvUHCO4WCf/WbSwK5Vq+psZjhGva1CPqilT+Q5jP4a4KH
- PmhrZWTpQ/2Q==
-X-IronPort-AV: E=Sophos;i="5.76,352,1592895600"; 
-   d="scan'208";a="499257119"
-Received: from jinalbex-wtg.gar.corp.intel.com (HELO pflykt-mobl1.ger.corp.intel.com) ([10.252.20.102])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2020 03:17:40 -0700
-Received: by pflykt-mobl1.ger.corp.intel.com (Postfix, from userid 1100)
-        id C7AAF321598; Tue, 25 Aug 2020 13:17:36 +0300 (EEST)
-From:   Patrik Flykt <patrik.flykt@linux.intel.com>
-To:     linux-can@vger.kernel.org
-Cc:     wg@grandegger.com, mkl@pengutronix.de, dmurphy@ti.com,
-        sriram.dash@samsung.com, jarkko.nikula@intel.com
-Subject: [PATCH 0/1] NET: mcan: Move runtime PM enable/disable to  m_can_platform
-Date:   Tue, 25 Aug 2020 13:17:35 +0300
-Message-Id: <20200825101736.158578-1-patrik.flykt@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726750AbgHYPLH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 25 Aug 2020 11:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgHYPLE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 25 Aug 2020 11:11:04 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0CAC061755;
+        Tue, 25 Aug 2020 08:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=LPG5Lc7nCg6NrS7ax+6DMhtaCUehIHNu6awjAcV2BcE=; b=tB7mY0ZOpnz4kAH3i8HK3Mu2Dr
+        KdjEI6mp7kDoq4wQGigAPa4qc5Uzr0yGhCJqcti2O8wuhkO6l6Y5mOSL5jBo8HryngLeovoPGDjvT
+        6NodraZ/TUTwHK4CD7ro8a1FOfHYzy0YSFWm5tmdL574Q81rla/G/tPLAgmKQmu9ZnQluf4rmyxgf
+        36SM1gZq65OUuvNaW1W4PtfWlUuVHkOZzx9ekjEmCBgdQC/lzKDU5CnupngOBr3GGGxzUhWMQ1ePt
+        szktTlwydy0dQUcdxA0P35WDPeRCbcYF+OC7Fbzc4p7owylhuQMtnZlwQAd780JWGROiokTNr5vxl
+        WvTtxoaA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kAab6-0005G5-QJ; Tue, 25 Aug 2020 15:10:53 +0000
+Subject: Re: [PATCH v5 5/6] can: ctucanfd: CTU CAN FD open-source IP core -
+ platform and next steps and mainlining chances
+To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Drew Fustini <pdp7pdp7@gmail.com>
+Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        David Miller <davem@davemloft.net>, mark.rutland@arm.com,
+        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marin Jerabek <martin.jerabek01@gmail.com>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Jiri Novak <jnovak@fel.cvut.cz>,
+        Jaroslav Beran <jara.beran@gmail.com>,
+        Petr Porazil <porazil@pikron.com>, Pavel Machek <pavel@ucw.cz>
+References: <cover.1597518433.git.ppisa@pikron.com>
+ <4ceda3a9d68263b4e0dfe66521a46f40b2e502f7.1597518433.git.ppisa@pikron.com>
+ <73e3dad8-9ab7-2f8f-312c-1957b4572b08@infradead.org>
+ <202008251125.41514.pisa@cmp.felk.cvut.cz>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6f26127d-5403-3ea2-9b6d-11dc35b0d5c2@infradead.org>
+Date:   Tue, 25 Aug 2020 08:10:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Organization: Intel Finland Oy - BIC 0357606-4 - PL 281, 00181 Helsinki
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <202008251125.41514.pisa@cmp.felk.cvut.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-can-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On 8/25/20 2:25 AM, Pavel Pisa wrote:
+> Hello Randy and Rob,
+> 
+> thanks much for review, I have corrected FPGA spelling
+> and binding YAML license.
+> 
+> On Sunday 16 of August 2020 01:28:13 Randy Dunlap wrote:
+>> On 8/15/20 12:43 PM, Pavel Pisa wrote:
+>>> diff --git a/drivers/net/can/ctucanfd/Kconfig
+>>> b/drivers/net/can/ctucanfd/Kconfig index e1636373628a..a8c9cc38f216
+>>> 100644
+>>> --- a/drivers/net/can/ctucanfd/Kconfig
+>>> +++ b/drivers/net/can/ctucanfd/Kconfig
+>>> @@ -21,4 +21,15 @@ config CAN_CTUCANFD_PCI
+>>>  	  PCIe board with PiKRON.com designed transceiver riser shield is
+>>> available at https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd .
+>>>
+>>> +config CAN_CTUCANFD_PLATFORM
+>>> +	tristate "CTU CAN-FD IP core platform (FPGA, SoC) driver"
+>>> +	depends on OF
+>>
+>> Can this be
+>> 	depends on OF || COMPILE_TEST
+>> ?
+> 
+> I am not sure for this change. Is it ensured/documented somewhere that
+> header files provide dummy definition such way, that OF drivers builds
+> even if OF support is disabled? If I remember well, CTU CAN FD OF
+> module build fails if attempted in the frame of native x86_64
+> build where OF has been disabled. Does COMPILE_TEST ensure that
+> such build succeeds.
+> 
 
-	Hi,
-
-This is a preparatory patch for modifying PM enabling due to PCI based
-M_CAN devices. As the functionality is right now, adding a PCI based
-M_CAN driver causes the core PCI functionality to call
-pm_runtime_enable() from pci_pm_init() when the PCI device is added.
-When the device is added, it is registered with m_can_class_register(),
-which ends up calling pm_runtime_enable() once more and causes the
-kernel to log an angry 'Unbalanced pm_runtime_enable!' message, as
-dev->power.disable_depth has gone down to zero.
-
-To resolve this situation, I have added a patch that moves runtime PM
-enabling from m_can.c to the m_can_platform.c driver, which currently
-is the only driver that ends up enabling runtime PM. Would this
-approach be appropriate, or should PM be enabled in some other way
-with PCI based M_CAN devices?
-
-Now, the actual sticky point is that there aren't yet any PCI based
-M_CAN devices upstream, but one is in the works. So if the change
-proposed works out, should this patch actually be sent in the patch
-set providing a PCI based M_CAN device?
-
-
-Thanks,
-
-	Patrik
-
-
-Patrik Flykt (1):
-  NET: mcan: Move runtime PM enable/disable to m_can_platform
-
- drivers/net/can/m_can/m_can.c          | 6 +-----
- drivers/net/can/m_can/m_can_platform.c | 3 +++
- 2 files changed, 4 insertions(+), 5 deletions(-)
+COMPILE_TEST won't ensure anything.
+OTOH, <linux/of.h> has lots of stubs for handling the case of
+CONFIG_OF not being enabled.
 
 -- 
-2.27.0
+~Randy
 
