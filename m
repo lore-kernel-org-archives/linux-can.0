@@ -1,112 +1,109 @@
-Return-Path: <SRS0=jvO6=CC=vger.kernel.org=linux-can-owner@kernel.org>
+Return-Path: <SRS0=GUJ3=CD=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C20BAC433E1
-	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 17:23:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 487C6C433E1
+	for <linux-can@archiver.kernel.org>; Tue, 25 Aug 2020 02:17:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 92C5620738
-	for <linux-can@archiver.kernel.org>; Mon, 24 Aug 2020 17:23:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1B75620639
+	for <linux-can@archiver.kernel.org>; Tue, 25 Aug 2020 02:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598289806;
-	bh=Y+dzBIhGF+kbEmw58dJ4IZaOWYovq8f4Yu+nhkSCnkU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=1k8yA4s4k4TFBDrpaKII2AqmzAAvniWv9w4GKbJHNK53oamdfnqFBpp7WlhYVZIom
-	 zSp9F0/aoKSUrURuFmVIIgY7FsWiZhV6dDxNp4g5lJorkaw9hBJOvN/7BLKd8ysZ/E
-	 9p7BLA74yCG9rlfC0HuYKQKieXmegNv/J/+VvS4w=
+	s=default; t=1598321834;
+	bh=WvVetekKhkaYtqbboq+rBKuO2wsH27S4WQusdkNNv0w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=FymBlJF4uE+TqG7Au0WlL1cjG9Os4iOkYpxp6hV3tDC/x/v7gIULv4dfOqol3pn68
+	 S3llTrNbo99EQt3fdEaAnrpeg7wUfLA2Jxum1A6tAxqLadGQkegWACRFYTxLvdE5AV
+	 g5JGBFxSXC9smMp6ev0+8MseE4qGlLwsWTY0Limw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgHXRXV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 24 Aug 2020 13:23:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728273AbgHXQfo (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:35:44 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4ED6B22CF7;
-        Mon, 24 Aug 2020 16:35:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598286944;
-        bh=Y+dzBIhGF+kbEmw58dJ4IZaOWYovq8f4Yu+nhkSCnkU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jek+oqzy3XtLnluiCYHhJbsfBHcpqpC0WGOyvPWreqZpC/R6RDylwL9ypCXcdoNXB
-         8QaF9NtXpLB0qOTIRuina3nE1Xns9REgrkk7sSZP3GX+sxTEvaBK7BnJMcV7Y2LGVo
-         PMgPrBBl3o+eQlHSfsvpRcM/2Agc1/dFNSVJVsfk=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        id S1727003AbgHYCRC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 24 Aug 2020 22:17:02 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:45914 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726531AbgHYCRB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 24 Aug 2020 22:17:01 -0400
+Received: by mail-il1-f193.google.com with SMTP id k4so9109246ilr.12;
+        Mon, 24 Aug 2020 19:17:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cPaUYqeBD8duoMMFHhwQl/b6M7U9Dhl4gzL36hPNANM=;
+        b=PaUg8UVgFkV8xgWBE6u2tLN0ov0OGgqUSMY5FL/6y8QNWzcgVS0RMLjXmSxw1VRE/9
+         TZ1wuSpMryDW/TbNgREHclNA0kBCdo+0y3B2HjnS+YywKIYfryWG5jHbMIlUiFLzgUkc
+         cidX65NgG3tkk/m0GKVGTHxYUIQp8uW6Z3ooSne5Mn8rL2187+OfO4E843ZVOJc2sqpN
+         9a+e+TqsmWkHqDMISH8EcL5UIyWcnkCAihVXYrbMECV9KccJ7d3kbXmcg0/4ux/H03K8
+         mqOBRDvZQQNg6B3TVSY2o+AKwFnOCG9pTKuC3dH2i8msr0pXn9AvqRBFZji+k9qwHt3G
+         HW/Q==
+X-Gm-Message-State: AOAM531QSZaVeghvCMUC85RaDFy6R+F3SEmQilBhFKnh2OKAmgD4jK0o
+        Zvr4KNtxWuEFd/uuzuYf8jzD2wyBSUdH
+X-Google-Smtp-Source: ABdhPJy039p/D5ALU5plBARNf/qhTGH6VaZe6QqtAV1pNqKKbjtJR47Z1aYdm+9EkRB8JTK6peL8tQ==
+X-Received: by 2002:a92:5bcb:: with SMTP id c72mr6813468ilg.94.1598321820672;
+        Mon, 24 Aug 2020 19:17:00 -0700 (PDT)
+Received: from xps15 ([64.188.179.249])
+        by smtp.gmail.com with ESMTPSA id 18sm1263026iog.31.2020.08.24.19.16.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 19:17:00 -0700 (PDT)
+Received: (nullmailer pid 3801477 invoked by uid 1000);
+        Tue, 25 Aug 2020 02:16:57 -0000
+Date:   Mon, 24 Aug 2020 20:16:57 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc:     devicetree@vger.kernel.org,
+        Marin Jerabek <martin.jerabek01@gmail.com>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        linux-can@vger.kernel.org, mark.rutland@arm.com,
+        netdev@vger.kernel.org, armbru@redhat.com,
+        Jiri Novak <jnovak@fel.cvut.cz>,
+        Jaroslav Beran <jara.beran@gmail.com>,
+        Petr Porazil <porazil@pikron.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Carsten Emde <c.emde@osadl.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 29/63] can: j1939: transport: j1939_xtp_rx_dat_one(): compare own packets to detect corruptions
-Date:   Mon, 24 Aug 2020 12:34:29 -0400
-Message-Id: <20200824163504.605538-29-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
-References: <20200824163504.605538-1-sashal@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/6] dt-bindings: vendor-prefix: add prefix for the
+ Czech Technical University in Prague.
+Message-ID: <20200825021657.GA3801424@bogus>
+References: <cover.1597518433.git.ppisa@pikron.com>
+ <8d0674796f3c4ecfd6fcd66ae79bc3aeb93ace22.1597518433.git.ppisa@pikron.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <8d0674796f3c4ecfd6fcd66ae79bc3aeb93ace22.1597518433.git.ppisa@pikron.com>
 Sender: linux-can-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+On Sat, 15 Aug 2020 21:43:03 +0200, Pavel Pisa wrote:
+> The Czech Technical University in Prague (CTU) is one of
+> the biggest and oldest (founded 1707) technical universities
+> in Europe. The abbreviation in Czech language is ČVUT according
+> to official name in Czech language
+> 
+>   České vysoké učení technické v Praze
+> 
+> The English translation
+> 
+>   The Czech Technical University in Prague
+> 
+> The university pages in English
+> 
+>   https://www.cvut.cz/en
+> 
+> Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-[ Upstream commit e052d0540298bfe0f6cbbecdc7e2ea9b859575b2 ]
-
-Since the stack relays on receiving own packets, it was overwriting own
-transmit buffer from received packets.
-
-At least theoretically, the received echo buffer can be corrupt or
-changed and the session partner can request to resend previous data. In
-this case we will re-send bad data.
-
-With this patch we will stop to overwrite own TX buffer and use it for
-sanity checking.
-
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200807105200.26441-6-o.rempel@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/can/j1939/transport.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 9f99af5b0b11e..3e9c377b0dcce 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1769,7 +1769,20 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 	}
- 
- 	tpdat = se_skb->data;
--	memcpy(&tpdat[offset], &dat[1], nbytes);
-+	if (!session->transmission) {
-+		memcpy(&tpdat[offset], &dat[1], nbytes);
-+	} else {
-+		int err;
-+
-+		err = memcmp(&tpdat[offset], &dat[1], nbytes);
-+		if (err)
-+			netdev_err_once(priv->ndev,
-+					"%s: 0x%p: Data of RX-looped back packet (%*ph) doesn't match TX data (%*ph)!\n",
-+					__func__, session,
-+					nbytes, &dat[1],
-+					nbytes, &tpdat[offset]);
-+	}
-+
- 	if (packet == session->pkt.rx)
- 		session->pkt.rx++;
- 
--- 
-2.25.1
-
+Acked-by: Rob Herring <robh@kernel.org>
