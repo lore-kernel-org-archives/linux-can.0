@@ -2,143 +2,131 @@ Return-Path: <SRS0=26YR=CT=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1E63C433E2
-	for <linux-can@archiver.kernel.org>; Thu, 10 Sep 2020 21:35:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C28B6C433E2
+	for <linux-can@archiver.kernel.org>; Thu, 10 Sep 2020 21:36:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 88FA62065E
-	for <linux-can@archiver.kernel.org>; Thu, 10 Sep 2020 21:35:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6DFC4208E4
+	for <linux-can@archiver.kernel.org>; Thu, 10 Sep 2020 21:36:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JWLt/K0Q"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d2ILA2RX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgIJVfZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Sep 2020 17:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
+        id S1727986AbgIJVg4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Sep 2020 17:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730950AbgIJNkV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Sep 2020 09:40:21 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17584C06179F
-        for <linux-can@vger.kernel.org>; Thu, 10 Sep 2020 06:38:36 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 5so4267989pgl.4
-        for <linux-can@vger.kernel.org>; Thu, 10 Sep 2020 06:38:36 -0700 (PDT)
+        with ESMTP id S1730926AbgIJNjG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Sep 2020 09:39:06 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00FDC061756
+        for <linux-can@vger.kernel.org>; Thu, 10 Sep 2020 06:38:34 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id v196so4781483pfc.1
+        for <linux-can@vger.kernel.org>; Thu, 10 Sep 2020 06:38:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/0UJlMMYS97ZEd1pzZy1E70sLlZzGqr7O+AUirQ/jf8=;
-        b=JWLt/K0QwNvzoj6nxqKPcWAMMXsRyj3oN5+4omDOjxwKh6VeMqT0tOggHi3F5AYIbt
-         hyxo5lP35yLC+r5RRZWsGyW9UD6G6hm5mW+ADILi1Dx59pSfOnkl9/xG79xybquIlCoH
-         DyvTbrQzw43bvNGC6PdmN3nZHYQSm/Xd0bIqyFoCceAhDa5mfOugjvUD8i8vrGipBWg+
-         lrW5SQU3A/CUOJncDK5n26xHziFS7caOipKAve2w4lQ5me4Pe3f0dwnvCJTbfJyXp414
-         AhmAVU5GTrcKuNrA3ZaUk+yiBVryOa4cmozrqoePAqtkn7dyg53KoTrqedbYX86jouPV
-         yNoQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=JzQxGJ9JAZ+XJ6xMfeqjZSBi1JWeufBUfR8QvhxR6Ew=;
+        b=d2ILA2RXwWfKf2hpjWEhVtzEUaCWKdcaSlhAKa/ZSavw/O6roLwxguJh8vFp66iJTA
+         etQlP7MSuLrKmvOxSRQ8VuKq0p2XGDIK2ScvhLZdLwFr2vHS6sYjp/gM4OTwuSBFtmC6
+         xJdwmY/Upik9w63L0ukrrXlljuKTSxjR41FIxXx6KIkLGE3djxdBwSrfliamzyj/6MjT
+         cra674L/E8U19ZNXXs4UoDX8Ft5PGpE22IMGDN+1KHEeJsejdt7oRDprgGXNvEteijLK
+         DqFLkzpzp+nCeRIyceatnuytxGDOxBUZEMbETI02lD4qjxsSWymA9vO3PTPumOqpXF74
+         QPxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/0UJlMMYS97ZEd1pzZy1E70sLlZzGqr7O+AUirQ/jf8=;
-        b=qsv9jyjhTzl+eaFDMyCXoQP9DW7CqWICeQahFFBgesIhXby+U9Ot4NpM4wXSfNkcdr
-         Ca6P9dI6+IZKYepoHf3L8HPVTQsue9H3QOKubdxAwILl2qqhNw6n6ClGDLJ9+wwLnC//
-         P1MoHj+4oPT5uRsIKj6I5DdF/As6X1FmDTB4Q4ZApHRRI4NNDIyyTXR1lT9P1iEr/SRa
-         CMsbBrM6LlXVvLnvSOCIJjFvAOdNjXi2NFNR6wie1Oio2SALAhB6vmgygUxNQ3moGC4Z
-         tiwe/EI0EXPPjHBegOAOQf++pQBRsuCSgttt16wSZqRWF++F4IPiUuHxKt5bvVdd4bzk
-         dfrg==
-X-Gm-Message-State: AOAM532cEqja2Vpbic/Sqn6XY3mNfuNTK3J9HE+rJHD4W4y0LPXQI3Ly
-        Gii8uGi0qBatlnpGv+9QJ6rd
-X-Google-Smtp-Source: ABdhPJzqI5xjENQcYNVIlYz3X+XwkhIeEHTTbg43DOqqVs41K+m+0e9zySQ0dINzjL9/TNZ774pDzQ==
-X-Received: by 2002:a62:19c2:: with SMTP id 185mr5497347pfz.1.1599745115588;
-        Thu, 10 Sep 2020 06:38:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JzQxGJ9JAZ+XJ6xMfeqjZSBi1JWeufBUfR8QvhxR6Ew=;
+        b=VKSmyz6hgnFhFEODIJ1MTwkRFUXMpOGEBQ0mudHC80DBTUC7MKTQelGMcCUqszGaRp
+         4YqpcjQIPWg+9LVjv1X04ICyIYe0fHEs6ZtYIYCj+g+3MMju7yW2jbZR47VVBwPUwwmP
+         WjtXLWcoc0+BmOQgcrEK58PombR97VFNd/bZgRKK54polhfzvrkDV4lggWe7eC0TuymW
+         Iz3jKe1QKdOkU9oGw8GzntjSlahc141t5BdL9pV15I5cTPHFMXoaUzKT2HdTem4qqZeZ
+         RnefVC01MQSB1sW7i6Tn5apEW3wBvcKPASsqeoBAcDa4vScPpPOFigS0KZKjkk2mFKuN
+         FNKQ==
+X-Gm-Message-State: AOAM531qLCB1+k1PI0prioGNVSdcqob80apCD+JtkpvW6ceUabUY0fdX
+        zpieLaOzduApOjA1rQYpjfSF
+X-Google-Smtp-Source: ABdhPJzgg7lFbQmqKPmek/ijOouN0heqEiN0XoCY4AeOPaAnSc8Z0vIErszkKVMt9llJEbz0C6Ljhg==
+X-Received: by 2002:a63:4a1a:: with SMTP id x26mr4409669pga.295.1599745098928;
+        Thu, 10 Sep 2020 06:38:18 -0700 (PDT)
 Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id o30sm5603801pgc.45.2020.09.10.06.38.32
+        by smtp.googlemail.com with ESMTPSA id o30sm5603801pgc.45.2020.09.10.06.38.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 06:38:35 -0700 (PDT)
+        Thu, 10 Sep 2020 06:38:18 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     wg@grandegger.com, mkl@pengutronix.de, robh+dt@kernel.org
 Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, dev.kurt@vandijck-laurijssen.be,
         o.rempel@pengutronix.de,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 5/6] can: mcp25xxfd: add listen-only mode
-Date:   Thu, 10 Sep 2020 19:08:05 +0530
-Message-Id: <20200910133806.25077-6-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/6] Add support for MCP25XXFD SPI-CAN Network driver
+Date:   Thu, 10 Sep 2020 19:08:00 +0530
+Message-Id: <20200910133806.25077-1-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910133806.25077-1-manivannan.sadhasivam@linaro.org>
-References: <20200910133806.25077-1-manivannan.sadhasivam@linaro.org>
 Sender: linux-can-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Hello,
 
-This commit enables listen-only mode, which works internally like CANFD mode.
+This series is the continuation of the work done by Marc Kleine-Budde on
+adding support for Microchip MCP25XXFD SPI-CAN driver [1]. I've taken the
+patches from Marc's tree [2] and posted with an additional MAINTAINERS
+patch on top since he seems to be very busy. This series has been tested
+on RB5 board featuring MCP2518FD transceiver.
 
-Signed-off-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+Marc: I'd like to co-maintain this driver in upstream hence added myself
+as the co-maintainer. Shout at me if you do not want it! Also I've removed
+the v4x tag since I don't think all the versions are posted to mailing
+list.
 
-diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-index eea3ef69f585..905ea98448cd 100644
---- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-+++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-@@ -392,7 +392,8 @@ static int mcp25xxfd_ring_alloc(struct mcp25xxfd_priv *priv)
- 	int ram_free, i;
- 
- 	tef_obj_size = sizeof(struct mcp25xxfd_hw_tef_obj);
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
-+	/* listen-only mode works like FD mode */
-+	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD)) {
- 		tx_obj_num = MCP25XXFD_TX_OBJ_NUM_CANFD;
- 		tx_obj_size = sizeof(struct mcp25xxfd_hw_tx_obj_canfd);
- 		rx_obj_size = sizeof(struct mcp25xxfd_hw_rx_obj_canfd);
-@@ -807,7 +808,7 @@ mcp25xxfd_chip_rx_fifo_init_one(const struct mcp25xxfd_priv *priv,
- 		MCP25XXFD_REG_FIFOCON_RXOVIE |
- 		MCP25XXFD_REG_FIFOCON_TFNRFNIE;
- 
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD))
- 		fifo_con |= FIELD_PREP(MCP25XXFD_REG_FIFOCON_PLSIZE_MASK,
- 				       MCP25XXFD_REG_FIFOCON_PLSIZE_64);
- 	else
-@@ -857,7 +858,7 @@ static int mcp25xxfd_chip_fifo_init(const struct mcp25xxfd_priv *priv)
- 		MCP25XXFD_REG_FIFOCON_TXEN |
- 		MCP25XXFD_REG_FIFOCON_TXATIE;
- 
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD))
- 		val |= FIELD_PREP(MCP25XXFD_REG_FIFOCON_PLSIZE_MASK,
- 				  MCP25XXFD_REG_FIFOCON_PLSIZE_64);
- 	else
-@@ -930,7 +931,9 @@ static u8 mcp25xxfd_get_normal_mode(const struct mcp25xxfd_priv *priv)
- {
- 	u8 mode;
- 
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
-+		mode = MCP25XXFD_REG_CON_MODE_LISTENONLY;
-+	else if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
- 		mode = MCP25XXFD_REG_CON_MODE_MIXED;
- 	else
- 		mode = MCP25XXFD_REG_CON_MODE_CAN2_0;
-@@ -2767,8 +2770,9 @@ static int mcp25xxfd_probe(struct spi_device *spi)
- 	priv->can.do_get_berr_counter = mcp25xxfd_get_berr_counter;
- 	priv->can.bittiming_const = &mcp25xxfd_bittiming_const;
- 	priv->can.data_bittiming_const = &mcp25xxfd_data_bittiming_const;
--	priv->can.ctrlmode_supported = CAN_CTRLMODE_BERR_REPORTING |
--		CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO;
-+	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_FD |
-+		CAN_CTRLMODE_FD_NON_ISO;
- 	priv->ndev = ndev;
- 	priv->spi = spi;
- 	priv->rx_int = rx_int;
+I'll add my review on top of this posting.
+
+Thanks,
+Mani
+
+[1] https://www.spinics.net/lists/linux-can/msg03712.html
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/?h=mcp25xxfd-47
+
+Kurt Van Dijck (1):
+  can: mcp25xxfd: add listen-only mode
+
+Manivannan Sadhasivam (1):
+  MAINTAINERS: Add entry for Microchip MCP25XXFD SPI-CAN network driver
+
+Marc Kleine-Budde (3):
+  can: rx-offload: can_rx_offload_add_manual(): add new initialization
+    function
+  can: mcp25xxfd: add regmap infrastructure
+  can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN
+
+Oleksij Rempel (1):
+  dt-bindings: can: mcp25xxfd: document device tree bindings
+
+ .../bindings/net/can/microchip,mcp25xxfd.yaml |   79 +
+ MAINTAINERS                                   |    8 +
+ drivers/net/can/rx-offload.c                  |   11 +
+ drivers/net/can/spi/Kconfig                   |    2 +
+ drivers/net/can/spi/Makefile                  |    1 +
+ drivers/net/can/spi/mcp25xxfd/Kconfig         |   17 +
+ drivers/net/can/spi/mcp25xxfd/Makefile        |    8 +
+ .../net/can/spi/mcp25xxfd/mcp25xxfd-core.c    | 2884 +++++++++++++++++
+ .../net/can/spi/mcp25xxfd/mcp25xxfd-crc16.c   |   89 +
+ .../net/can/spi/mcp25xxfd/mcp25xxfd-regmap.c  |  556 ++++
+ drivers/net/can/spi/mcp25xxfd/mcp25xxfd.h     |  828 +++++
+ include/linux/can/rx-offload.h                |    3 +
+ 12 files changed, 4486 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/Kconfig
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/Makefile
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-crc16.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-regmap.c
+ create mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd.h
+
 -- 
 2.17.1
 
