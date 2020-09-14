@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7793DC433E2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8EB3C43461
 	for <linux-can@archiver.kernel.org>; Mon, 14 Sep 2020 08:50:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 27FFA221E8
+	by mail.kernel.org (Postfix) with ESMTP id 88A5120756
 	for <linux-can@archiver.kernel.org>; Mon, 14 Sep 2020 08:50:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=monstr-eu.20150623.gappssmtp.com header.i=@monstr-eu.20150623.gappssmtp.com header.b="l/EV8WRl"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=monstr-eu.20150623.gappssmtp.com header.i=@monstr-eu.20150623.gappssmtp.com header.b="OGWWk4oU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgINIun (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1726159AbgINIun (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 14 Sep 2020 04:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726159AbgINIuK (ORCPT
+        with ESMTP id S1726156AbgINIuK (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 14 Sep 2020 04:50:10 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA15C061355
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACB0C061354
         for <linux-can@vger.kernel.org>; Mon, 14 Sep 2020 01:50:09 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e16so17783552wrm.2
+Received: by mail-wm1-x341.google.com with SMTP id w2so9812769wmi.1
         for <linux-can@vger.kernel.org>; Mon, 14 Sep 2020 01:50:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rOuDYNhd1Y5ud5FTj27+NxJ3Of7Hu1ANeTXNQ89wUxQ=;
-        b=l/EV8WRl7sWHYBy73eHItd5zdjECPLnliI92dOSvSWvYDUnU2cuYVi0rvxl66FDh2T
-         tuSNqz+Nx4xXRwhHEsu1GPbA74Up1shUnObJksSEr/dQpVdVmOxAbuDl5E5F1Tzobag3
-         wTMrdA7YOeMlTq3wo5ZEAkrpMgvYh80QQKE0Ok5ieV9RowZb851bamiBwqJhGeceA2wj
-         b9513TZMaIymzFcWSnqe2rlozdi5Sqqh1h8oOul1JfUlsu00KOSPQAMMlKBiFqjj7340
-         9b9dNLMXOC4XGSzx7LTw25QyLIbr/e8wOq4i3aag4hjbAB7UTj1wLAhVC8zs2MVUBmbb
-         jpAQ==
+        bh=6RihlPiUoKJ5dO8u5VgwLil1hFKYQdPZrQdkm6dxH7U=;
+        b=OGWWk4oUqeZhemDzsBit+3ybTzgLDKa8+inPhCSBdmqT0VzUjdt473bbAx3PXD/Me1
+         eom9s9PKN5pOuPDzFY8AmNEoCYJLd74DOxySWtNOyilvYNdjkPP9vo2ruWNm2vZzzLwc
+         clrzILcPcXnV9H59MtGhVLK9Q3XhKSWhFpes4vKRRbtz1Ujtg943pwlv3IOxo4PawCsA
+         wFlI3O3k5pELJnuaLXjy1AocjNWv277s1Z7ijKfV7B8NMJefnKlW5XwzMPckNmVoAcDa
+         MHjzDGi6vpv4Pd0z8TG8BIYNFAwiOvw3crmxTlPMJ8DAudVkWC6dooPf1kpLi9WwgHfs
+         KZ7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=rOuDYNhd1Y5ud5FTj27+NxJ3Of7Hu1ANeTXNQ89wUxQ=;
-        b=XI/tXx35copYHDSpaZyTcwpE2abvtz8FxW/nU0GzHqiDXHflNXAXsEHSPTGE33+Bw3
-         E8Tj6AS/Y6KBOuuw1KDxCA+kcgMBLcgtPreYjHqWi72X6QrTxq37HkMCYVg+bVs1jY/c
-         PmHf3vUEqKTqNRbGqaeYuVVwBCbPkrKRaf993bKn/x5lCjiX11FCitxVG4sbG61SCA39
-         Xv57YCj/MnroxQEWXxHGIFe4QDBcyr9cGYi8P4oYY2CN+8JudZoz5EccfUCHIjraeUMe
-         A0wSErqtmXnZY21Nto6UIaPURncFwYhOrKT8o4bZjxQIdJx4sTWr6jHw8+DuNMoYFnKe
-         MNsw==
-X-Gm-Message-State: AOAM533rYwPAhvW92pI9H3NKti+tQg2Eyk1KNDoIgXEsQjMkwGb3/rg9
-        EKC8Lvqf/Ti3ibvPWYTisKCGtw==
-X-Google-Smtp-Source: ABdhPJwF07/4H0OMXhAy5gL+VhoH+7Eb+10EYNtSdmKWyBjS7M08xEGD/WQEM0cG9zdKo4oUX5hI2w==
-X-Received: by 2002:a5d:620e:: with SMTP id y14mr16069452wru.371.1600073408285;
-        Mon, 14 Sep 2020 01:50:08 -0700 (PDT)
+        bh=6RihlPiUoKJ5dO8u5VgwLil1hFKYQdPZrQdkm6dxH7U=;
+        b=kkK/s+8IgOnq1gKQpzsWIRpcNPNHB83UJIYit5Z1Imbjxk8s3r+MBRIJ7hm2IcsQph
+         CvzKpbNTHAcQ1Qvpqrgk30S4XdvuA8FiGFyBj5MEifLKVQ5j60tsOgOazlCOqb1I7L2w
+         DX5/ds6SaigGtGHcmgfjwlGQKL9P2xCCiz+tXS6FLVkiVTPm9YgQlUTubQ3x71PQ0Y01
+         ihSDn7Q9CONrNToQe1csrakrddl/8WNjAsIchG+iFq1uO41RHH9WttiXFfBVTNy4CtGs
+         IuuiGTncG1PmQ0K2GNSnaF4kliT+kzoQmaPxXNUWdIq/9jyIcM8yITQH9Jx/dhCcAGLx
+         mogQ==
+X-Gm-Message-State: AOAM530u0fS2p7EKtkO+e6TTASS3DezleDZwJnjIMXV6I8p7lzD99mRP
+        A3e+X9dNjA121j8nVo7aqLui0A==
+X-Google-Smtp-Source: ABdhPJwdaqg5f5Kke+vMgGPevV790jo7Y8/D5K3C8rI0hjcUYSusmPhaIAH2G6dWHFzgQjwy7rM1wA==
+X-Received: by 2002:a1c:750d:: with SMTP id o13mr11267961wmc.54.1600073405221;
+        Mon, 14 Sep 2020 01:50:05 -0700 (PDT)
 Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id o4sm19305669wru.55.2020.09.14.01.50.07
+        by smtp.gmail.com with ESMTPSA id q12sm18980386wrs.48.2020.09.14.01.50.04
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Sep 2020 01:50:07 -0700 (PDT)
+        Mon, 14 Sep 2020 01:50:04 -0700 (PDT)
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com
@@ -69,9 +69,9 @@ Cc:     Srinivas Neeli <srinivas.neeli@xilinx.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH 3/3] can: xilinx_can: Fix incorrect variable and initialize with a default value
-Date:   Mon, 14 Sep 2020 10:49:58 +0200
-Message-Id: <0651544d22f3c25893ca9d445b14823f0dfddfc8.1600073396.git.michal.simek@xilinx.com>
+Subject: [PATCH 1/3] can: xilinx_can: Limit CANFD brp to 2
+Date:   Mon, 14 Sep 2020 10:49:56 +0200
+Message-Id: <bca871d7f3ca9c653d50e63c5b60028f2bdf3fb0.1600073396.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1600073396.git.michal.simek@xilinx.com>
 References: <cover.1600073396.git.michal.simek@xilinx.com>
@@ -84,14 +84,9 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-Some variables with incorrect type were passed to "of_property_read_u32"
-API, "of_property_read_u32" API was expecting an "u32 *" but the formal
-parameter that was passed was of type "int *". Fixed the issue by
-changing the variable types from "int" to "u32" and initialized with a
-default value. Fixed sparse warning.
+Bit enlarging is observed for CANFD2.0 when brp is 1,
+So change brp_min value to 2.
 
-Addresses-Coverity: "incompatible_param"
-Addresses-Coverity: "UNINIT(Using uninitialized value)"
 Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
@@ -100,27 +95,27 @@ Signed-off-by: Michal Simek <michal.simek@xilinx.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 3393e2a73e15..46c04b6390f8 100644
+index c1dbab8c896d..f4b544b69646 100644
 --- a/drivers/net/can/xilinx_can.c
 +++ b/drivers/net/can/xilinx_can.c
-@@ -1671,7 +1671,7 @@ static int xcan_probe(struct platform_device *pdev)
- 	void __iomem *addr;
- 	int ret;
- 	int rx_max, tx_max;
--	int hw_tx_max, hw_rx_max;
-+	u32 hw_tx_max = 0, hw_rx_max = 0;
- 	const char *hw_tx_max_property;
- 
- 	/* Get the virtual base address for the device */
-@@ -1724,7 +1724,7 @@ static int xcan_probe(struct platform_device *pdev)
- 	 */
- 	if (!(devtype->flags & XCAN_FLAG_TX_MAILBOXES) &&
- 	    (devtype->flags & XCAN_FLAG_TXFEMP))
--		tx_max = min(hw_tx_max, 2);
-+		tx_max = min(hw_tx_max, 2U);
- 	else
- 		tx_max = 1;
- 
+@@ -259,7 +259,7 @@ static const struct can_bittiming_const xcan_bittiming_const_canfd2 = {
+ 	.tseg2_min = 1,
+ 	.tseg2_max = 128,
+ 	.sjw_max = 128,
+-	.brp_min = 1,
++	.brp_min = 2,
+ 	.brp_max = 256,
+ 	.brp_inc = 1,
+ };
+@@ -272,7 +272,7 @@ static struct can_bittiming_const xcan_data_bittiming_const_canfd2 = {
+ 	.tseg2_min = 1,
+ 	.tseg2_max = 16,
+ 	.sjw_max = 16,
+-	.brp_min = 1,
++	.brp_min = 2,
+ 	.brp_max = 256,
+ 	.brp_inc = 1,
+ };
 -- 
 2.28.0
 
