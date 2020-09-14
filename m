@@ -2,64 +2,66 @@ Return-Path: <SRS0=NQcb=CX=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CABBCC43461
-	for <linux-can@archiver.kernel.org>; Mon, 14 Sep 2020 08:50:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7793DC433E2
+	for <linux-can@archiver.kernel.org>; Mon, 14 Sep 2020 08:50:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 81DD8221E8
-	for <linux-can@archiver.kernel.org>; Mon, 14 Sep 2020 08:50:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 27FFA221E8
+	for <linux-can@archiver.kernel.org>; Mon, 14 Sep 2020 08:50:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=monstr-eu.20150623.gappssmtp.com header.i=@monstr-eu.20150623.gappssmtp.com header.b="I4Wog418"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=monstr-eu.20150623.gappssmtp.com header.i=@monstr-eu.20150623.gappssmtp.com header.b="l/EV8WRl"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgINIuM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 14 Sep 2020 04:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
+        id S1726252AbgINIun (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 14 Sep 2020 04:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbgINIuF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 14 Sep 2020 04:50:05 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF637C061788
-        for <linux-can@vger.kernel.org>; Mon, 14 Sep 2020 01:50:04 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id c18so17738907wrm.9
-        for <linux-can@vger.kernel.org>; Mon, 14 Sep 2020 01:50:04 -0700 (PDT)
+        with ESMTP id S1726159AbgINIuK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 14 Sep 2020 04:50:10 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA15C061355
+        for <linux-can@vger.kernel.org>; Mon, 14 Sep 2020 01:50:09 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e16so17783552wrm.2
+        for <linux-can@vger.kernel.org>; Mon, 14 Sep 2020 01:50:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2Z76iN5dKrEwSbBG4O9fZZwE0qBKlqiQkkuHppjnLYk=;
-        b=I4Wog418XUa15zpIkSdZkM0NfYYZFUjtsBkNZ/nbw/Vs16KcGu6uLbhnVEfgX/mnzm
-         ngoZJMAxMmv4IxCIuOMUpm5SE+/85fyREV/XPkPMYm3dgvKcgMlbLFzS1cmalD84aXon
-         0TXQg1ex1N/stApONUWBM15sM/2NPvq71eKY6xdsdLIOTY788Au2Gs/V3qPU9YRM8d84
-         OvxVM/yV1/P1pPkB0PxNuskRmkB3+Bny/JmF7paTyd8qfKe4q9Ok5Ga+DOb2XH4aYiLX
-         /g2tNeUFNF7b42K/SJLaE2ns2DWLx5d1aTkMYM/GF5jy2FMHQL/c+23W2mJlcBqgRkYZ
-         j4NQ==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rOuDYNhd1Y5ud5FTj27+NxJ3Of7Hu1ANeTXNQ89wUxQ=;
+        b=l/EV8WRl7sWHYBy73eHItd5zdjECPLnliI92dOSvSWvYDUnU2cuYVi0rvxl66FDh2T
+         tuSNqz+Nx4xXRwhHEsu1GPbA74Up1shUnObJksSEr/dQpVdVmOxAbuDl5E5F1Tzobag3
+         wTMrdA7YOeMlTq3wo5ZEAkrpMgvYh80QQKE0Ok5ieV9RowZb851bamiBwqJhGeceA2wj
+         b9513TZMaIymzFcWSnqe2rlozdi5Sqqh1h8oOul1JfUlsu00KOSPQAMMlKBiFqjj7340
+         9b9dNLMXOC4XGSzx7LTw25QyLIbr/e8wOq4i3aag4hjbAB7UTj1wLAhVC8zs2MVUBmbb
+         jpAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=2Z76iN5dKrEwSbBG4O9fZZwE0qBKlqiQkkuHppjnLYk=;
-        b=Plr8GSCGLnjQtoURZZDdPOaiyEq7vhsOMKTMIFUBqWKrInHeJs64vK/hUNhi52A79L
-         gI9Vdluy+Kzfmd7oca6F5YGDF28GiIwhXIMC5/ugk+v4x65cmRUvb3I6gMs4aWatfLaC
-         kIY0Q8jUa4djL1ZqEFDDCBj76wJ/jj7y9gOcFU1TVQt9KZKNGT4xh3h5PFoIP7dvGV8r
-         0iMZ+0pBLGrKzxiwmyMDnVZBGCA4G5C6g645yhciQQevFtn1SN2eihCW+lRVCV8oRimV
-         XutRWpXJUFHU3cln5g/1SPdFuokHlPXrCvPwlB5JRvRD1SOFsZXPzZ1+/2XyuD5a/Rb5
-         IIXw==
-X-Gm-Message-State: AOAM532byRsrd4sFONEaJP8Rw4sf6Yrcdle7rTP4EsyOrln7IEtxiAr9
-        kUmUtqZ5FmEm2rcemGQ3a1FIwg==
-X-Google-Smtp-Source: ABdhPJziOaoLyqZezVgUbtyPAxvBCTpzyAkveYpRhKWSfKSVWKFznTfHP8u9zRb8BEszGSJh/ZyEYQ==
-X-Received: by 2002:adf:f7d0:: with SMTP id a16mr14104094wrq.381.1600073403505;
-        Mon, 14 Sep 2020 01:50:03 -0700 (PDT)
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=rOuDYNhd1Y5ud5FTj27+NxJ3Of7Hu1ANeTXNQ89wUxQ=;
+        b=XI/tXx35copYHDSpaZyTcwpE2abvtz8FxW/nU0GzHqiDXHflNXAXsEHSPTGE33+Bw3
+         E8Tj6AS/Y6KBOuuw1KDxCA+kcgMBLcgtPreYjHqWi72X6QrTxq37HkMCYVg+bVs1jY/c
+         PmHf3vUEqKTqNRbGqaeYuVVwBCbPkrKRaf993bKn/x5lCjiX11FCitxVG4sbG61SCA39
+         Xv57YCj/MnroxQEWXxHGIFe4QDBcyr9cGYi8P4oYY2CN+8JudZoz5EccfUCHIjraeUMe
+         A0wSErqtmXnZY21Nto6UIaPURncFwYhOrKT8o4bZjxQIdJx4sTWr6jHw8+DuNMoYFnKe
+         MNsw==
+X-Gm-Message-State: AOAM533rYwPAhvW92pI9H3NKti+tQg2Eyk1KNDoIgXEsQjMkwGb3/rg9
+        EKC8Lvqf/Ti3ibvPWYTisKCGtw==
+X-Google-Smtp-Source: ABdhPJwF07/4H0OMXhAy5gL+VhoH+7Eb+10EYNtSdmKWyBjS7M08xEGD/WQEM0cG9zdKo4oUX5hI2w==
+X-Received: by 2002:a5d:620e:: with SMTP id y14mr16069452wru.371.1600073408285;
+        Mon, 14 Sep 2020 01:50:08 -0700 (PDT)
 Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id j14sm20378080wrr.66.2020.09.14.01.50.02
+        by smtp.gmail.com with ESMTPSA id o4sm19305669wru.55.2020.09.14.01.50.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Sep 2020 01:50:02 -0700 (PDT)
+        Mon, 14 Sep 2020 01:50:07 -0700 (PDT)
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com
-Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+Cc:     Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -67,10 +69,12 @@ Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH 0/3] can: xilinx_can: Some minor changes
-Date:   Mon, 14 Sep 2020 10:49:55 +0200
-Message-Id: <cover.1600073396.git.michal.simek@xilinx.com>
+Subject: [PATCH 3/3] can: xilinx_can: Fix incorrect variable and initialize with a default value
+Date:   Mon, 14 Sep 2020 10:49:58 +0200
+Message-Id: <0651544d22f3c25893ca9d445b14823f0dfddfc8.1600073396.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1600073396.git.michal.simek@xilinx.com>
+References: <cover.1600073396.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-can-owner@vger.kernel.org
@@ -78,24 +82,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi,
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-recently some small patches come to our internal tree. We started to use
-coverity which found 2 issues (last two patches) which is simply to fix.
+Some variables with incorrect type were passed to "of_property_read_u32"
+API, "of_property_read_u32" API was expecting an "u32 *" but the formal
+parameter that was passed was of type "int *". Fixed the issue by
+changing the variable types from "int" to "u32" and initialized with a
+default value. Fixed sparse warning.
 
-Thanks,
-Michal
+Addresses-Coverity: "incompatible_param"
+Addresses-Coverity: "UNINIT(Using uninitialized value)"
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
+ drivers/net/can/xilinx_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Srinivas Neeli (3):
-  can: xilinx_can: Limit CANFD brp to 2
-  can: xilinx_can: Check return value of set_reset_mode
-  can: xilinx_can: Fix incorrect variable and initialize with a default
-    value
-
- drivers/net/can/xilinx_can.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 3393e2a73e15..46c04b6390f8 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -1671,7 +1671,7 @@ static int xcan_probe(struct platform_device *pdev)
+ 	void __iomem *addr;
+ 	int ret;
+ 	int rx_max, tx_max;
+-	int hw_tx_max, hw_rx_max;
++	u32 hw_tx_max = 0, hw_rx_max = 0;
+ 	const char *hw_tx_max_property;
+ 
+ 	/* Get the virtual base address for the device */
+@@ -1724,7 +1724,7 @@ static int xcan_probe(struct platform_device *pdev)
+ 	 */
+ 	if (!(devtype->flags & XCAN_FLAG_TX_MAILBOXES) &&
+ 	    (devtype->flags & XCAN_FLAG_TXFEMP))
+-		tx_max = min(hw_tx_max, 2);
++		tx_max = min(hw_tx_max, 2U);
+ 	else
+ 		tx_max = 1;
+ 
 -- 
 2.28.0
 
