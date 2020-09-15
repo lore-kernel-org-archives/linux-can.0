@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8115C433E2
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5424C433E2
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A2B12206BE
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 75B7E206BE
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727707AbgIOWgQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
+        id S1726985AbgIOWg5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727701AbgIOWfw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:52 -0400
+        with ESMTP id S1727788AbgIOWf4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:56 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888D0C061225
-        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8DFC061351
+        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:45 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJY2-0002Tb-K7; Wed, 16 Sep 2020 00:35:38 +0200
+        id 1kIJY8-0002Tb-4r; Wed, 16 Sep 2020 00:35:44 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        =?UTF-8?q?Timo=20Schl=C3=BC=C3=9Fler?= <schluessler@krause.de>
-Subject: [PATCH 25/37] dt-bindings: can: mcp251x: document GPIO support
-Date:   Wed, 16 Sep 2020 00:35:15 +0200
-Message-Id: <20200915223527.1417033-26-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 37/37] MAINTAINERS: Add entry for Microchip MCP25XXFD SPI-CAN network driver
+Date:   Wed, 16 Sep 2020 00:35:27 +0200
+Message-Id: <20200915223527.1417033-38-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -48,36 +48,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The next patch adds gpio controller support to the mcp251x driver. This
-patch updates the binding accordingly.
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Cc: Timo Schlüßler <schluessler@krause.de>
+Add MAINTAINERS entry for Microchip MCP25XXFD SPI-CAN network driver.
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/20200910133806.25077-7-manivannan.sadhasivam@linaro.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/microchip,mcp251x.txt        | 5 +++++
- 1 file changed, 5 insertions(+)
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
-index e689506ac38d..381f8fb3e865 100644
---- a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
-+++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
-@@ -12,6 +12,9 @@ Required properties:
- Optional properties:
-  - vdd-supply: Regulator that powers the CAN controller.
-  - xceiver-supply: Regulator that powers the CAN transceiver.
-+ - gpio-controller: Indicates this device is a GPIO controller.
-+ - #gpio-cells: Should be two. The first cell is the pin number and
-+                the second cell is used to specify the gpio polarity.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c99577961cc4..fcb63f0c9635 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10671,6 +10671,14 @@ L:	linux-input@vger.kernel.org
+ S:	Maintained
+ F:	drivers/hid/hid-mcp2221.c
  
- Example:
- 	can0: can@1 {
-@@ -22,4 +25,6 @@ Example:
- 		interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
- 		vdd-supply = <&reg5v0>;
- 		xceiver-supply = <&reg5v0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
- 	};
++MCP25XXFD SPI-CAN NETWORK DRIVER
++M:	Marc Kleine-Budde <mkl@pengutronix.de>
++M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
++L:	linux-can@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
++F:	drivers/net/can/spi/mcp25xxfd/
++
+ MCP4018 AND MCP4531 MICROCHIP DIGITAL POTENTIOMETER DRIVERS
+ M:	Peter Rosin <peda@axentia.se>
+ L:	linux-iio@vger.kernel.org
 -- 
 2.28.0
 
