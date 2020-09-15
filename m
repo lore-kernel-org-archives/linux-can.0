@@ -7,31 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C694C43461
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:38:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 857EDC2D0E3
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:39:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CEC1A206BE
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:38:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 593F3206BE
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:39:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727644AbgIOWix (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        id S1727597AbgIOWiz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727597AbgIOWfc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:32 -0400
+        with ESMTP id S1727586AbgIOWfb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983CAC06178C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F24C06178A
         for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:31 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJXt-0002Tb-MS; Wed, 16 Sep 2020 00:35:29 +0200
+        id 1kIJXt-0002Tb-67; Wed, 16 Sep 2020 00:35:29 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 04/37] can: net: fix spelling mistakes
-Date:   Wed, 16 Sep 2020 00:34:54 +0200
-Message-Id: <20200915223527.1417033-5-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 02/37] can: flexcan: fix spelling mistake "reserverd" -> "reserved"
+Date:   Wed, 16 Sep 2020 00:34:52 +0200
+Message-Id: <20200915223527.1417033-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
@@ -46,36 +48,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes spelling erros found by "codespell" in the net/can
-subtree.
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
+Fix a mistake in a register layout description.
+
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/af_can.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 5c06404bdf3e..ea29a6d97ef5 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -358,7 +358,7 @@ static unsigned int effhash(canid_t can_id)
-  *
-  * Return:
-  *  Pointer to optimal filterlist for the given can_id/mask pair.
-- *  Constistency checked mask.
-+ *  Consistency checked mask.
-  *  Reduced can_id to have a preprocessed filter compare value.
-  */
- static struct hlist_head *can_rcv_list_find(canid_t *can_id, canid_t *mask,
-@@ -411,7 +411,7 @@ static struct hlist_head *can_rcv_list_find(canid_t *can_id, canid_t *mask,
- /**
-  * can_rx_register - subscribe CAN frames from a specific interface
-  * @net: the applicable net namespace
-- * @dev: pointer to netdevice (NULL => subcribe from 'all' CAN devices list)
-+ * @dev: pointer to netdevice (NULL => subscribe from 'all' CAN devices list)
-  * @can_id: CAN identifier (see description)
-  * @mask: CAN mask (see description)
-  * @func: callback function on filter match
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 94d10ec954a0..19403e88daa3 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -230,7 +230,7 @@ struct flexcan_regs {
+ 	/* FIFO-mode:
+ 	 *			MB
+ 	 * 0x080...0x08f	0	RX message buffer
+-	 * 0x090...0x0df	1-5	reserverd
++	 * 0x090...0x0df	1-5	reserved
+ 	 * 0x0e0...0x0ff	6-7	8 entry ID table
+ 	 *				(mx25, mx28, mx35, mx53)
+ 	 * 0x0e0...0x2df	6-7..37	8..128 entry ID table
 -- 
 2.28.0
 
