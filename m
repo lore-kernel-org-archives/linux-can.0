@@ -7,31 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14A5DC2D0E3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B25A7C31E49
 	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DC0A8206BE
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7FD96206BE
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727648AbgIOWgF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
+        id S1727310AbgIOWgG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727687AbgIOWfo (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:44 -0400
+        with ESMTP id S1727770AbgIOWfz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:55 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86529C06121C
-        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E318FC0611C3
+        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:41 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJXw-0002Tb-K8; Wed, 16 Sep 2020 00:35:32 +0200
+        id 1kIJY4-0002Tb-46; Wed, 16 Sep 2020 00:35:40 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 13/37] can: dev: can_bus_off(): print scheduling of restart if activated
-Date:   Wed, 16 Sep 2020 00:35:03 +0200
-Message-Id: <20200915223527.1417033-14-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de, Wolfram Sang <wsa@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 30/37] can: mscan: mpc5xxx_can: update contact email
+Date:   Wed, 16 Sep 2020 00:35:20 +0200
+Message-Id: <20200915223527.1417033-31-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
@@ -46,31 +47,31 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-If a CAN device goes into bus-off and has automatic restart enabled, inform
-user that a automatic restart is scheduled after the configured delay.
+From: Wolfram Sang <wsa@kernel.org>
 
+The 'pengutronix' address is defunct for years. Use the proper contact
+address.
+
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Link: https://lore.kernel.org/r/20200502142657.19199-1-wsa@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/can/mscan/mpc5xxx_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index e0caf969e342..3c40bba71d5b 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -639,7 +639,11 @@ void can_bus_off(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+index e4f4b5c9ebd6..e254e04ae257 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -5,7 +5,7 @@
+  * Copyright (C) 2004-2005 Andrey Volkov <avolkov@varma-el.com>,
+  *                         Varma Electronics Oy
+  * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
+- * Copyright (C) 2009 Wolfram Sang, Pengutronix <w.sang@pengutronix.de>
++ * Copyright (C) 2009 Wolfram Sang, Pengutronix <kernel@pengutronix.de>
+  */
  
--	netdev_info(dev, "bus-off\n");
-+	if (priv->restart_ms)
-+		netdev_info(dev, "bus-off, scheduling restart in %d ms\n",
-+			    priv->restart_ms);
-+	else
-+		netdev_info(dev, "bus-off\n");
- 
- 	netif_carrier_off(dev);
- 
+ #include <linux/kernel.h>
 -- 
 2.28.0
 
