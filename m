@@ -7,33 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59342C31E40
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90915C2D0E3
 	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:37:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 303E920770
+	by mail.kernel.org (Postfix) with ESMTP id 65D7D206BE
 	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:37:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727522AbgIOWg7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727530AbgIOWg7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 15 Sep 2020 18:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727785AbgIOWfz (ORCPT
+        with ESMTP id S1727779AbgIOWfz (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:55 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29A8C061797
-        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F38C0611BE
+        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:42 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJY7-0002Tb-RF; Wed, 16 Sep 2020 00:35:43 +0200
+        id 1kIJY4-0002Tb-V2; Wed, 16 Sep 2020 00:35:41 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de,
-        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+Cc:     kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 36/37] can: mcp25xxfd: add listen-only mode
-Date:   Wed, 16 Sep 2020 00:35:26 +0200
-Message-Id: <20200915223527.1417033-37-mkl@pengutronix.de>
+Subject: [PATCH 33/37] dt-binding: can: mcp25xxfd: document device tree bindings
+Date:   Wed, 16 Sep 2020 00:35:23 +0200
+Message-Id: <20200915223527.1417033-34-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
@@ -48,71 +47,103 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-This commit enables listen-only mode, which works internally like CANFD mode.
+This patch adds the device-tree binding documentation for the Microchip
+MCP25xxFD SPI CAN controller family.
 
-Signed-off-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ .../bindings/net/can/microchip,mcp25xxfd.yaml | 79 +++++++++++++++++++
+ 1 file changed, 79 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
 
-diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-index 043259b3e04e..6ffa7af50119 100644
---- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-+++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-@@ -392,7 +392,8 @@ static int mcp25xxfd_ring_alloc(struct mcp25xxfd_priv *priv)
- 	int ram_free, i;
- 
- 	tef_obj_size = sizeof(struct mcp25xxfd_hw_tef_obj);
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
-+	/* listen-only mode works like FD mode */
-+	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD)) {
- 		tx_obj_num = MCP25XXFD_TX_OBJ_NUM_CANFD;
- 		tx_obj_size = sizeof(struct mcp25xxfd_hw_tx_obj_canfd);
- 		rx_obj_size = sizeof(struct mcp25xxfd_hw_rx_obj_canfd);
-@@ -807,7 +808,7 @@ mcp25xxfd_chip_rx_fifo_init_one(const struct mcp25xxfd_priv *priv,
- 		MCP25XXFD_REG_FIFOCON_RXOVIE |
- 		MCP25XXFD_REG_FIFOCON_TFNRFNIE;
- 
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD))
- 		fifo_con |= FIELD_PREP(MCP25XXFD_REG_FIFOCON_PLSIZE_MASK,
- 				       MCP25XXFD_REG_FIFOCON_PLSIZE_64);
- 	else
-@@ -857,7 +858,7 @@ static int mcp25xxfd_chip_fifo_init(const struct mcp25xxfd_priv *priv)
- 		MCP25XXFD_REG_FIFOCON_TXEN |
- 		MCP25XXFD_REG_FIFOCON_TXATIE;
- 
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD))
- 		val |= FIELD_PREP(MCP25XXFD_REG_FIFOCON_PLSIZE_MASK,
- 				  MCP25XXFD_REG_FIFOCON_PLSIZE_64);
- 	else
-@@ -930,7 +931,9 @@ static u8 mcp25xxfd_get_normal_mode(const struct mcp25xxfd_priv *priv)
- {
- 	u8 mode;
- 
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
-+		mode = MCP25XXFD_REG_CON_MODE_LISTENONLY;
-+	else if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
- 		mode = MCP25XXFD_REG_CON_MODE_MIXED;
- 	else
- 		mode = MCP25XXFD_REG_CON_MODE_CAN2_0;
-@@ -2787,8 +2790,9 @@ static int mcp25xxfd_probe(struct spi_device *spi)
- 	priv->can.do_get_berr_counter = mcp25xxfd_get_berr_counter;
- 	priv->can.bittiming_const = &mcp25xxfd_bittiming_const;
- 	priv->can.data_bittiming_const = &mcp25xxfd_data_bittiming_const;
--	priv->can.ctrlmode_supported = CAN_CTRLMODE_BERR_REPORTING |
--		CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO;
-+	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_FD |
-+		CAN_CTRLMODE_FD_NON_ISO;
- 	priv->ndev = ndev;
- 	priv->spi = spi;
- 	priv->rx_int = rx_int;
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+new file mode 100644
+index 000000000000..aa2cad14d6d7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+@@ -0,0 +1,79 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/microchip,mcp25xxfd.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title:
++  Microchip MCP2517FD and MCP2518FD stand-alone CAN controller device tree
++  bindings
++
++maintainers:
++  - Marc Kleine-Budde <mkl@pengutronix.de>
++
++properties:
++  compatible:
++    oneOf:
++      - const: microchip,mcp2517fd
++        description: for MCP2517FD
++      - const: microchip,mcp2518fd
++        description: for MCP2518FD
++      - const: microchip,mcp25xxfd
++        description: to autodetect chip variant
++
++  reg:
++    maxItems: 1
++
++  interrupts-extended:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  vdd-supply:
++    description: Regulator that powers the CAN controller.
++    maxItems: 1
++
++  xceiver-supply:
++    description: Regulator that powers the CAN transceiver.
++    maxItems: 1
++
++  microchip,rx-int-gpios:
++    description:
++      GPIO phandle of GPIO connected to to INT1 pin of the MCP25XXFD, which
++      signals a pending RX interrupt.
++    maxItems: 1
++
++  spi-max-frequency:
++    description:
++      Must be half or less of "clocks" frequency.
++    maximum: 20000000
++
++required:
++  - compatible
++  - reg
++  - interrupts-extended
++  - clocks
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    spi0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        can@0 {
++            compatible = "microchip,mcp25xxfd";
++            reg = <0>;
++            clocks = <&can0_osc>;
++            pinctrl-names = "default";
++            pinctrl-0 = <&can0_pins>;
++            spi-max-frequency = <20000000>;
++            interrupts-extended = <&gpio 13 IRQ_TYPE_LEVEL_LOW>;
++            microchip,rx-int-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
++            vdd-supply = <&reg5v0>;
++            xceiver-supply = <&reg5v0>;
++        };
++    };
 -- 
 2.28.0
 
