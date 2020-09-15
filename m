@@ -7,32 +7,31 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28068C43461
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:35:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 706DFC433E2
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E2F46206BE
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:35:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 428F9206BE
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727533AbgIOWf4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
+        id S1727254AbgIOWf6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727707AbgIOWfo (ORCPT
+        with ESMTP id S1727577AbgIOWfo (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C75C06174A
-        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89905C061222
+        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:39 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJXy-0002Tb-6I; Wed, 16 Sep 2020 00:35:34 +0200
+        id 1kIJY1-0002Tb-Nj; Wed, 16 Sep 2020 00:35:37 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, YueHaibing <yuehaibing@huawei.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 14/37] can: c_can: Remove unused inline function
-Date:   Wed, 16 Sep 2020 00:35:04 +0200
-Message-Id: <20200915223527.1417033-15-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 23/37] can: spi: Kconfig: remove unneeded dependencies form Kconfig symbols
+Date:   Wed, 16 Sep 2020 00:35:13 +0200
+Message-Id: <20200915223527.1417033-24-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
@@ -47,38 +46,41 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+Since commits
 
-commit 524369e2391f ("can: c_can: remove obsolete STRICT_FRAME_ORDERING Kconfig option")
-left behind this, remove it.
+    653ee35ce6d5 ("can: hi311x: remove custom DMA mapped buffer")
+    Fixes: df58525df395 ("can: mcp251x: remove custom DMA mapped buffer")
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20200505084149.23848-1-yuehaibing@huawei.com
+both the hi3111x and the mcp251x driver don't make use of the DMA API
+any more. So we can safely remove the HAS_DMA dependency.
+
+While we're here, remove the unneeded CAN_DEV and SPI dependencies from
+the CAN_HI311X symbol, as the parent menus already have these
+dependencies.
+
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ drivers/net/can/spi/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 8e9f5620c9a2..1ccdbe89585b 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -356,15 +356,6 @@ static void c_can_setup_tx_object(struct net_device *dev, int iface,
- 	}
- }
+diff --git a/drivers/net/can/spi/Kconfig b/drivers/net/can/spi/Kconfig
+index f780c79aac6f..a332008d8495 100644
+--- a/drivers/net/can/spi/Kconfig
++++ b/drivers/net/can/spi/Kconfig
+@@ -4,13 +4,11 @@ menu "CAN SPI interfaces"
  
--static inline void c_can_activate_all_lower_rx_msg_obj(struct net_device *dev,
--						       int iface)
--{
--	int i;
--
--	for (i = C_CAN_MSG_OBJ_RX_FIRST; i <= C_CAN_MSG_RX_LOW_LAST; i++)
--		c_can_object_get(dev, iface, i, IF_COMM_CLR_NEWDAT);
--}
--
- static int c_can_handle_lost_msg_obj(struct net_device *dev,
- 				     int iface, int objno, u32 ctrl)
- {
+ config CAN_HI311X
+ 	tristate "Holt HI311x SPI CAN controllers"
+-	depends on CAN_DEV && SPI && HAS_DMA
+ 	help
+ 	  Driver for the Holt HI311x SPI CAN controllers.
+ 
+ config CAN_MCP251X
+ 	tristate "Microchip MCP251x and MCP25625 SPI CAN controllers"
+-	depends on HAS_DMA
+ 	help
+ 	  Driver for the Microchip MCP251x and MCP25625 SPI CAN
+ 	  controllers.
 -- 
 2.28.0
 
