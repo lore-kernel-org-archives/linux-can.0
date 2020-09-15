@@ -7,38 +7,36 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E603C43461
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F428C433E2
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F346F206BE
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 32DBA206BE
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727484AbgIOWf7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
+        id S1727573AbgIOWgA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727573AbgIOWfo (ORCPT
+        with ESMTP id S1727657AbgIOWfo (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA70C061220
-        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F4BC061788
+        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:37 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJXz-0002Tb-SO; Wed, 16 Sep 2020 00:35:35 +0200
+        id 1kIJXy-0002Tb-FZ; Wed, 16 Sep 2020 00:35:34 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Wang Hai <wanghai38@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>,
+Cc:     kernel@pengutronix.de, Colin Ian King <colin.king@canonical.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 19/37] can: peak_canfd: Remove unused macros
-Date:   Wed, 16 Sep 2020 00:35:09 +0200
-Message-Id: <20200915223527.1417033-20-mkl@pengutronix.de>
+Subject: [PATCH 15/37] can: mcba_usb: remove redundant initialization of variable err
+Date:   Wed, 16 Sep 2020 00:35:05 +0200
+Message-Id: <20200915223527.1417033-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -49,33 +47,33 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-CANFD_CLK_SEL_DIV_MASK and CANFD_OPTIONS_SET are
-never used after they were introduced. Remove them.
+The variable err is being initialized with a value that is never read
+and it is being updated later with a new value.  The initialization is
+redundant and can be removed.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Link: https://lore.kernel.org/r/20200904131247.23021-1-wanghai38@huawei.com
-[mkl: keep CANFD_CLK_SEL_DIV_MASK for documentation purpose]
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20200706164240.518623-1-colin.king@canonical.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/peak_canfd/peak_pciefd_main.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/can/usb/mcba_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-index 9469d4421afe..0df1cdfa6835 100644
---- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
-+++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-@@ -116,8 +116,6 @@ MODULE_LICENSE("GPL v2");
- #define CANFD_CTL_IRQ_CL_DEF	16	/* Rx msg max nb per IRQ in Rx DMA */
- #define CANFD_CTL_IRQ_TL_DEF	10	/* Time before IRQ if < CL (x100 µs) */
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index eb6fb7435061..5857b37dcd96 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -793,7 +793,7 @@ static int mcba_usb_probe(struct usb_interface *intf,
+ {
+ 	struct net_device *netdev;
+ 	struct mcba_priv *priv;
+-	int err = -ENOMEM;
++	int err;
+ 	struct usb_device *usbdev = interface_to_usbdev(intf);
  
--#define CANFD_OPTIONS_SET	(CANFD_OPTION_ERROR | CANFD_OPTION_BUSLOAD)
--
- /* Tx anticipation window (link logical address should be aligned on 2K
-  * boundary)
-  */
+ 	netdev = alloc_candev(sizeof(struct mcba_priv), MCBA_MAX_TX_URBS);
 -- 
 2.28.0
 
