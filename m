@@ -7,32 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99EE1C35257
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:37:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5025DC35256
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:37:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B100206BE
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:37:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2577E206BE
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:37:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727589AbgIOWhA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
+        id S1727601AbgIOWhB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727671AbgIOWfo (ORCPT
+        with ESMTP id S1727708AbgIOWfo (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01431C06121E
-        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FFAC061221
+        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:39 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJXz-0002Tb-8W; Wed, 16 Sep 2020 00:35:35 +0200
+        id 1kIJY1-0002Tb-5H; Wed, 16 Sep 2020 00:35:37 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Dejin Zheng <zhengdejin5@gmail.com>,
+Cc:     kernel@pengutronix.de,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 17/37] can: ti_hecc: convert to devm_platform_ioremap_resource_byname()
-Date:   Wed, 16 Sep 2020 00:35:07 +0200
-Message-Id: <20200915223527.1417033-18-mkl@pengutronix.de>
+Subject: [PATCH 21/37] can: pcan_usb: Document the commands sent to the device
+Date:   Wed, 16 Sep 2020 00:35:11 +0200
+Message-Id: <20200915223527.1417033-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
@@ -47,77 +48,110 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dejin Zheng <zhengdejin5@gmail.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Use the function devm_platform_ioremap_resource_byname() to simplify
-source code which calls the functions platform_get_resource_byname()
-and devm_ioremap_resource(). Remove also a few error messages which
-became unnecessary with this software refactoring.
+This patch documents the functions and numbers of the commands sent by the
+driver to the PCAN-USB CAN device from PEAK-System GmbH.
 
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-Link: https://lore.kernel.org/r/20200420132207.8536-1-zhengdejin5@gmail.com
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ti_hecc.c | 27 +++++----------------------
- 1 file changed, 5 insertions(+), 22 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 33 +++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index fc76f7ad735a..1d63006c97bc 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -857,7 +857,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	struct net_device *ndev = (struct net_device *)0;
- 	struct ti_hecc_priv *priv;
- 	struct device_node *np = pdev->dev.of_node;
--	struct resource *res, *irq;
-+	struct resource *irq;
- 	struct regulator *reg_xceiver;
- 	int err = -ENODEV;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 66d0198e7834..76468250cabf 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -34,6 +34,22 @@ MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB adapter");
+ #define PCAN_USB_CMD_LEN		(PCAN_USB_CMD_ARGS + \
+ 					 PCAN_USB_CMD_ARGS_LEN)
  
-@@ -878,39 +878,22 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	priv = netdev_priv(ndev);
++/* PCAN-USB commands */
++#define PCAN_USB_CMD_BITRATE	1
++#define PCAN_USB_CMD_SET_BUS	3
++#define PCAN_USB_CMD_DEVID	4
++#define PCAN_USB_CMD_SN		6
++#define PCAN_USB_CMD_REGISTER	9
++#define PCAN_USB_CMD_EXT_VCC	10
++
++/* PCAN_USB_CMD_SET_BUS number arg */
++#define PCAN_USB_BUS_XCVER		2
++#define PCAN_USB_BUS_SILENT_MODE	3
++
++/* PCAN_USB_CMD_xxx functions */
++#define PCAN_USB_GET		1
++#define PCAN_USB_SET		2
++
+ /* PCAN-USB command timeout (ms.) */
+ #define PCAN_USB_COMMAND_TIMEOUT	1000
  
- 	/* handle hecc memory */
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc");
--	if (!res) {
--		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc\n");
--		return -EINVAL;
--	}
--
--	priv->base = devm_ioremap_resource(&pdev->dev, res);
-+	priv->base = devm_platform_ioremap_resource_byname(pdev, "hecc");
- 	if (IS_ERR(priv->base)) {
- 		dev_err(&pdev->dev, "hecc ioremap failed\n");
- 		return PTR_ERR(priv->base);
- 	}
+@@ -172,7 +188,8 @@ static int pcan_usb_set_sja1000(struct peak_usb_device *dev, u8 mode)
+ 		[1] = mode,
+ 	};
  
- 	/* handle hecc-ram memory */
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc-ram");
--	if (!res) {
--		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc-ram\n");
--		return -EINVAL;
--	}
--
--	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
-+	priv->hecc_ram = devm_platform_ioremap_resource_byname(pdev,
-+							       "hecc-ram");
- 	if (IS_ERR(priv->hecc_ram)) {
- 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
- 		return PTR_ERR(priv->hecc_ram);
- 	}
+-	return pcan_usb_send_cmd(dev, 9, 2, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_REGISTER, PCAN_USB_SET,
++				 args);
+ }
  
- 	/* handle mbx memory */
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mbx");
--	if (!res) {
--		dev_err(&pdev->dev, "can't get IORESOURCE_MEM mbx\n");
--		return -EINVAL;
--	}
--
--	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
-+	priv->mbx = devm_platform_ioremap_resource_byname(pdev, "mbx");
- 	if (IS_ERR(priv->mbx)) {
- 		dev_err(&pdev->dev, "mbx ioremap failed\n");
- 		return PTR_ERR(priv->mbx);
+ static int pcan_usb_set_bus(struct peak_usb_device *dev, u8 onoff)
+@@ -181,7 +198,8 @@ static int pcan_usb_set_bus(struct peak_usb_device *dev, u8 onoff)
+ 		[0] = !!onoff,
+ 	};
+ 
+-	return pcan_usb_send_cmd(dev, 3, 2, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_SET_BUS, PCAN_USB_BUS_XCVER,
++				 args);
+ }
+ 
+ static int pcan_usb_set_silent(struct peak_usb_device *dev, u8 onoff)
+@@ -190,7 +208,8 @@ static int pcan_usb_set_silent(struct peak_usb_device *dev, u8 onoff)
+ 		[0] = !!onoff,
+ 	};
+ 
+-	return pcan_usb_send_cmd(dev, 3, 3, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_SET_BUS,
++				 PCAN_USB_BUS_SILENT_MODE, args);
+ }
+ 
+ static int pcan_usb_set_ext_vcc(struct peak_usb_device *dev, u8 onoff)
+@@ -199,7 +218,7 @@ static int pcan_usb_set_ext_vcc(struct peak_usb_device *dev, u8 onoff)
+ 		[0] = !!onoff,
+ 	};
+ 
+-	return pcan_usb_send_cmd(dev, 10, 2, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_EXT_VCC, PCAN_USB_SET, args);
+ }
+ 
+ /*
+@@ -223,7 +242,7 @@ static int pcan_usb_set_bittiming(struct peak_usb_device *dev,
+ 	args[0] = btr1;
+ 	args[1] = btr0;
+ 
+-	return pcan_usb_send_cmd(dev, 1, 2, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_BITRATE, PCAN_USB_SET, args);
+ }
+ 
+ /*
+@@ -307,7 +326,7 @@ static int pcan_usb_get_serial(struct peak_usb_device *dev, u32 *serial_number)
+ 	u8 args[PCAN_USB_CMD_ARGS_LEN];
+ 	int err;
+ 
+-	err = pcan_usb_wait_rsp(dev, 6, 1, args);
++	err = pcan_usb_wait_rsp(dev, PCAN_USB_CMD_SN, PCAN_USB_GET, args);
+ 	if (err) {
+ 		netdev_err(dev->netdev, "getting serial failure: %d\n", err);
+ 	} else if (serial_number) {
+@@ -328,7 +347,7 @@ static int pcan_usb_get_device_id(struct peak_usb_device *dev, u32 *device_id)
+ 	u8 args[PCAN_USB_CMD_ARGS_LEN];
+ 	int err;
+ 
+-	err = pcan_usb_wait_rsp(dev, 4, 1, args);
++	err = pcan_usb_wait_rsp(dev, PCAN_USB_CMD_DEVID, PCAN_USB_GET, args);
+ 	if (err)
+ 		netdev_err(dev->netdev, "getting device id failure: %d\n", err);
+ 	else if (device_id)
 -- 
 2.28.0
 
