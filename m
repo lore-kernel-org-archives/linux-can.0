@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F428C433E2
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 887D0C43461
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 32DBA206BE
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 494A3206BE
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:36:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727573AbgIOWgA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
+        id S1727577AbgIOWgB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727657AbgIOWfo (ORCPT
+        with ESMTP id S1727688AbgIOWfo (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F4BC061788
-        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748FBC06178A
+        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:38 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJXy-0002Tb-FZ; Wed, 16 Sep 2020 00:35:34 +0200
+        id 1kIJY0-0002Tb-4z; Wed, 16 Sep 2020 00:35:36 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Colin Ian King <colin.king@canonical.com>,
+Cc:     kernel@pengutronix.de, Vaibhav Gupta <vaibhavgupta40@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 15/37] can: mcba_usb: remove redundant initialization of variable err
-Date:   Wed, 16 Sep 2020 00:35:05 +0200
-Message-Id: <20200915223527.1417033-16-mkl@pengutronix.de>
+Subject: [PATCH 20/37] can: pch_can: use generic power management
+Date:   Wed, 16 Sep 2020 00:35:10 +0200
+Message-Id: <20200915223527.1417033-21-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
@@ -47,33 +47,184 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 
-The variable err is being initialized with a value that is never read
-and it is being updated later with a new value.  The initialization is
-redundant and can be removed.
+Drivers using legacy power management .suspen()/.resume() callbacks have to
+manage PCI states and device's PM states themselves. They also need to take
+care of standard configuration registers.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20200706164240.518623-1-colin.king@canonical.com
+Switch to generic power management framework using a single "struct dev_pm_ops"
+variable to take the unnecessary load from the driver. This also avoids the
+need for the driver to directly call most of the PCI helper functions and
+device power state control functions, as through the generic framework PCI Core
+takes care of the necessary operations, and drivers are required to do only
+device-specific jobs.
+
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Link: https://lore.kernel.org/r/20200728085757.888620-1-vaibhavgupta40@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/mcba_usb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/pch_can.c | 63 +++++++++++++--------------------------
+ 1 file changed, 21 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index eb6fb7435061..5857b37dcd96 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -793,7 +793,7 @@ static int mcba_usb_probe(struct usb_interface *intf,
- {
- 	struct net_device *netdev;
- 	struct mcba_priv *priv;
--	int err = -ENOMEM;
-+	int err;
- 	struct usb_device *usbdev = interface_to_usbdev(intf);
+diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
+index af4fbd8f9077..5c180d2f3c3c 100644
+--- a/drivers/net/can/pch_can.c
++++ b/drivers/net/can/pch_can.c
+@@ -957,8 +957,7 @@ static void pch_can_remove(struct pci_dev *pdev)
+ 	free_candev(priv->ndev);
+ }
  
- 	netdev = alloc_candev(sizeof(struct mcba_priv), MCBA_MAX_TX_URBS);
+-#ifdef CONFIG_PM
+-static void pch_can_set_int_custom(struct pch_can_priv *priv)
++static void __maybe_unused pch_can_set_int_custom(struct pch_can_priv *priv)
+ {
+ 	/* Clearing the IE, SIE and EIE bits of Can control register. */
+ 	pch_can_bit_clear(&priv->regs->cont, PCH_CTRL_IE_SIE_EIE);
+@@ -969,14 +968,14 @@ static void pch_can_set_int_custom(struct pch_can_priv *priv)
+ }
+ 
+ /* This function retrieves interrupt enabled for the CAN device. */
+-static u32 pch_can_get_int_enables(struct pch_can_priv *priv)
++static u32 __maybe_unused pch_can_get_int_enables(struct pch_can_priv *priv)
+ {
+ 	/* Obtaining the status of IE, SIE and EIE interrupt bits. */
+ 	return (ioread32(&priv->regs->cont) & PCH_CTRL_IE_SIE_EIE) >> 1;
+ }
+ 
+-static u32 pch_can_get_rxtx_ir(struct pch_can_priv *priv, u32 buff_num,
+-			       enum pch_ifreg dir)
++static u32 __maybe_unused pch_can_get_rxtx_ir(struct pch_can_priv *priv,
++					      u32 buff_num, enum pch_ifreg dir)
+ {
+ 	u32 ie, enable;
+ 
+@@ -997,8 +996,8 @@ static u32 pch_can_get_rxtx_ir(struct pch_can_priv *priv, u32 buff_num,
+ 	return enable;
+ }
+ 
+-static void pch_can_set_rx_buffer_link(struct pch_can_priv *priv,
+-				       u32 buffer_num, int set)
++static void __maybe_unused pch_can_set_rx_buffer_link(struct pch_can_priv *priv,
++						      u32 buffer_num, int set)
+ {
+ 	iowrite32(PCH_CMASK_RX_TX_GET, &priv->regs->ifregs[0].cmask);
+ 	pch_can_rw_msg_obj(&priv->regs->ifregs[0].creq, buffer_num);
+@@ -1013,7 +1012,8 @@ static void pch_can_set_rx_buffer_link(struct pch_can_priv *priv,
+ 	pch_can_rw_msg_obj(&priv->regs->ifregs[0].creq, buffer_num);
+ }
+ 
+-static u32 pch_can_get_rx_buffer_link(struct pch_can_priv *priv, u32 buffer_num)
++static u32 __maybe_unused pch_can_get_rx_buffer_link(struct pch_can_priv *priv,
++						     u32 buffer_num)
+ {
+ 	u32 link;
+ 
+@@ -1027,20 +1027,19 @@ static u32 pch_can_get_rx_buffer_link(struct pch_can_priv *priv, u32 buffer_num)
+ 	return link;
+ }
+ 
+-static int pch_can_get_buffer_status(struct pch_can_priv *priv)
++static int __maybe_unused pch_can_get_buffer_status(struct pch_can_priv *priv)
+ {
+ 	return (ioread32(&priv->regs->treq1) & 0xffff) |
+ 	       (ioread32(&priv->regs->treq2) << 16);
+ }
+ 
+-static int pch_can_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused pch_can_suspend(struct device *dev_d)
+ {
+ 	int i;
+-	int retval;
+ 	u32 buf_stat;	/* Variable for reading the transmit buffer status. */
+ 	int counter = PCH_COUNTER_LIMIT;
+ 
+-	struct net_device *dev = pci_get_drvdata(pdev);
++	struct net_device *dev = dev_get_drvdata(dev_d);
+ 	struct pch_can_priv *priv = netdev_priv(dev);
+ 
+ 	/* Stop the CAN controller */
+@@ -1058,7 +1057,7 @@ static int pch_can_suspend(struct pci_dev *pdev, pm_message_t state)
+ 		udelay(1);
+ 	}
+ 	if (!counter)
+-		dev_err(&pdev->dev, "%s -> Transmission time out.\n", __func__);
++		dev_err(dev_d, "%s -> Transmission time out.\n", __func__);
+ 
+ 	/* Save interrupt configuration and then disable them */
+ 	priv->int_enables = pch_can_get_int_enables(priv);
+@@ -1081,35 +1080,16 @@ static int pch_can_suspend(struct pci_dev *pdev, pm_message_t state)
+ 
+ 	/* Disable all Receive buffers */
+ 	pch_can_set_rx_all(priv, 0);
+-	retval = pci_save_state(pdev);
+-	if (retval) {
+-		dev_err(&pdev->dev, "pci_save_state failed.\n");
+-	} else {
+-		pci_enable_wake(pdev, PCI_D3hot, 0);
+-		pci_disable_device(pdev);
+-		pci_set_power_state(pdev, pci_choose_state(pdev, state));
+-	}
+ 
+-	return retval;
++	return 0;
+ }
+ 
+-static int pch_can_resume(struct pci_dev *pdev)
++static int __maybe_unused pch_can_resume(struct device *dev_d)
+ {
+ 	int i;
+-	int retval;
+-	struct net_device *dev = pci_get_drvdata(pdev);
++	struct net_device *dev = dev_get_drvdata(dev_d);
+ 	struct pch_can_priv *priv = netdev_priv(dev);
+ 
+-	pci_set_power_state(pdev, PCI_D0);
+-	pci_restore_state(pdev);
+-	retval = pci_enable_device(pdev);
+-	if (retval) {
+-		dev_err(&pdev->dev, "pci_enable_device failed.\n");
+-		return retval;
+-	}
+-
+-	pci_enable_wake(pdev, PCI_D3hot, 0);
+-
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	/* Disabling all interrupts. */
+@@ -1146,12 +1126,8 @@ static int pch_can_resume(struct pci_dev *pdev)
+ 	/* Restore Run Mode */
+ 	pch_can_set_run_mode(priv, PCH_CAN_RUN);
+ 
+-	return retval;
++	return 0;
+ }
+-#else
+-#define pch_can_suspend NULL
+-#define pch_can_resume NULL
+-#endif
+ 
+ static int pch_can_get_berr_counter(const struct net_device *dev,
+ 				    struct can_berr_counter *bec)
+@@ -1252,13 +1228,16 @@ static int pch_can_probe(struct pci_dev *pdev,
+ 	return rc;
+ }
+ 
++static SIMPLE_DEV_PM_OPS(pch_can_pm_ops,
++			 pch_can_suspend,
++			 pch_can_resume);
++
+ static struct pci_driver pch_can_pci_driver = {
+ 	.name = "pch_can",
+ 	.id_table = pch_pci_tbl,
+ 	.probe = pch_can_probe,
+ 	.remove = pch_can_remove,
+-	.suspend = pch_can_suspend,
+-	.resume = pch_can_resume,
++	.driver.pm = &pch_can_pm_ops,
+ };
+ 
+ module_pci_driver(pch_can_pci_driver);
 -- 
 2.28.0
 
