@@ -2,38 +2,37 @@ Return-Path: <SRS0=ffhE=CY=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46ACCC31E40
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99EE1C35257
 	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:37:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 197C3206BE
+	by mail.kernel.org (Postfix) with ESMTP id 6B100206BE
 	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:37:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727588AbgIOWhA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727589AbgIOWhA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 15 Sep 2020 18:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727768AbgIOWfw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:52 -0400
+        with ESMTP id S1727671AbgIOWfo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71853C0611C1
-        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01431C06121E
+        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:38 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJY3-0002Tb-Hc; Wed, 16 Sep 2020 00:35:39 +0200
+        id 1kIJXz-0002Tb-8W; Wed, 16 Sep 2020 00:35:35 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+Cc:     kernel@pengutronix.de, Dejin Zheng <zhengdejin5@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 28/37] can: mcp251x: Use readx_poll_timeout() helper
-Date:   Wed, 16 Sep 2020 00:35:18 +0200
-Message-Id: <20200915223527.1417033-29-mkl@pengutronix.de>
+Subject: [PATCH 17/37] can: ti_hecc: convert to devm_platform_ioremap_resource_byname()
+Date:   Wed, 16 Sep 2020 00:35:07 +0200
+Message-Id: <20200915223527.1417033-18-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
@@ -48,140 +47,77 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Dejin Zheng <zhengdejin5@gmail.com>
 
-We may use special helper macro to poll IO till condition or timeout occurs.
+Use the function devm_platform_ioremap_resource_byname() to simplify
+source code which calls the functions platform_get_resource_byname()
+and devm_ioremap_resource(). Remove also a few error messages which
+became unnecessary with this software refactoring.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+Link: https://lore.kernel.org/r/20200420132207.8536-1-zhengdejin5@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251x.c | 64 ++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 31 deletions(-)
+ drivers/net/can/ti_hecc.c | 27 +++++----------------------
+ 1 file changed, 5 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 4b113f61e39d..3bf57bc9b3ff 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -32,6 +32,7 @@
- #include <linux/gpio/driver.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/netdevice.h>
-@@ -376,6 +377,15 @@ static void mcp251x_write_bits(struct spi_device *spi, u8 reg,
- 	mcp251x_spi_trans(spi, 4);
- }
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index fc76f7ad735a..1d63006c97bc 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -857,7 +857,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	struct net_device *ndev = (struct net_device *)0;
+ 	struct ti_hecc_priv *priv;
+ 	struct device_node *np = pdev->dev.of_node;
+-	struct resource *res, *irq;
++	struct resource *irq;
+ 	struct regulator *reg_xceiver;
+ 	int err = -ENODEV;
  
-+static u8 mcp251x_read_stat(struct spi_device *spi)
-+{
-+	return mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK;
-+}
-+
-+#define mcp251x_read_stat_poll_timeout(addr, val, cond, delay_us, timeout_us) \
-+	readx_poll_timeout(mcp251x_read_stat, addr, val, cond, \
-+			   delay_us, timeout_us)
-+
- #ifdef CONFIG_GPIOLIB
- enum {
- 	MCP251X_GPIO_TX0RTS = 0,		/* inputs */
-@@ -709,7 +719,8 @@ static void mcp251x_hw_sleep(struct spi_device *spi)
- /* May only be called when device is sleeping! */
- static int mcp251x_hw_wake(struct spi_device *spi)
- {
--	unsigned long timeout;
-+	u8 value;
-+	int ret;
+@@ -878,39 +878,22 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	priv = netdev_priv(ndev);
  
- 	/* Force wakeup interrupt to wake device, but don't execute IST */
- 	disable_irq(spi->irq);
-@@ -722,14 +733,12 @@ static int mcp251x_hw_wake(struct spi_device *spi)
- 	mcp251x_write_reg(spi, CANCTRL, CANCTRL_REQOP_CONF);
- 
- 	/* Wait for the device to enter config mode */
--	timeout = jiffies + HZ;
--	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) !=
--			CANCTRL_REQOP_CONF) {
--		schedule();
--		if (time_after(jiffies, timeout)) {
--			dev_err(&spi->dev, "MCP251x didn't enter in config mode\n");
--			return -EBUSY;
--		}
-+	ret = mcp251x_read_stat_poll_timeout(spi, value, value == CANCTRL_REQOP_CONF,
-+					     MCP251X_OST_DELAY_MS * 1000,
-+					     USEC_PER_SEC);
-+	if (ret) {
-+		dev_err(&spi->dev, "MCP251x didn't enter in config mode\n");
-+		return ret;
- 	}
- 
- 	/* Disable and clear pending interrupts */
-@@ -784,7 +793,8 @@ static int mcp251x_do_set_mode(struct net_device *net, enum can_mode mode)
- static int mcp251x_set_normal_mode(struct spi_device *spi)
- {
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
--	unsigned long timeout;
-+	u8 value;
-+	int ret;
- 
- 	/* Enable interrupts */
- 	mcp251x_write_reg(spi, CANINTE,
-@@ -802,13 +812,12 @@ static int mcp251x_set_normal_mode(struct spi_device *spi)
- 		mcp251x_write_reg(spi, CANCTRL, CANCTRL_REQOP_NORMAL);
- 
- 		/* Wait for the device to enter normal mode */
--		timeout = jiffies + HZ;
--		while (mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) {
--			schedule();
--			if (time_after(jiffies, timeout)) {
--				dev_err(&spi->dev, "MCP251x didn't enter in normal mode\n");
--				return -EBUSY;
--			}
-+		ret = mcp251x_read_stat_poll_timeout(spi, value, value == 0,
-+						     MCP251X_OST_DELAY_MS * 1000,
-+						     USEC_PER_SEC);
-+		if (ret) {
-+			dev_err(&spi->dev, "MCP251x didn't enter in normal mode\n");
-+			return ret;
- 		}
- 	}
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
-@@ -852,7 +861,7 @@ static int mcp251x_setup(struct net_device *net, struct spi_device *spi)
- static int mcp251x_hw_reset(struct spi_device *spi)
- {
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
--	unsigned long timeout;
-+	u8 value;
- 	int ret;
- 
- 	/* Wait for oscillator startup timer after power up */
-@@ -867,19 +876,12 @@ static int mcp251x_hw_reset(struct spi_device *spi)
- 	mdelay(MCP251X_OST_DELAY_MS);
- 
- 	/* Wait for reset to finish */
--	timeout = jiffies + HZ;
--	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) !=
--	       CANCTRL_REQOP_CONF) {
--		usleep_range(MCP251X_OST_DELAY_MS * 1000,
--			     MCP251X_OST_DELAY_MS * 1000 * 2);
--
--		if (time_after(jiffies, timeout)) {
--			dev_err(&spi->dev,
--				"MCP251x didn't enter in conf mode after reset\n");
--			return -EBUSY;
--		}
+ 	/* handle hecc memory */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc");
+-	if (!res) {
+-		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc\n");
+-		return -EINVAL;
 -	}
--	return 0;
-+	ret = mcp251x_read_stat_poll_timeout(spi, value, value == CANCTRL_REQOP_CONF,
-+					     MCP251X_OST_DELAY_MS * 1000,
-+					     USEC_PER_SEC);
-+	if (ret)
-+		dev_err(&spi->dev, "MCP251x didn't enter in conf mode after reset\n");
-+	return ret;
- }
+-
+-	priv->base = devm_ioremap_resource(&pdev->dev, res);
++	priv->base = devm_platform_ioremap_resource_byname(pdev, "hecc");
+ 	if (IS_ERR(priv->base)) {
+ 		dev_err(&pdev->dev, "hecc ioremap failed\n");
+ 		return PTR_ERR(priv->base);
+ 	}
  
- static int mcp251x_hw_probe(struct spi_device *spi)
+ 	/* handle hecc-ram memory */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc-ram");
+-	if (!res) {
+-		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc-ram\n");
+-		return -EINVAL;
+-	}
+-
+-	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
++	priv->hecc_ram = devm_platform_ioremap_resource_byname(pdev,
++							       "hecc-ram");
+ 	if (IS_ERR(priv->hecc_ram)) {
+ 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
+ 		return PTR_ERR(priv->hecc_ram);
+ 	}
+ 
+ 	/* handle mbx memory */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mbx");
+-	if (!res) {
+-		dev_err(&pdev->dev, "can't get IORESOURCE_MEM mbx\n");
+-		return -EINVAL;
+-	}
+-
+-	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
++	priv->mbx = devm_platform_ioremap_resource_byname(pdev, "mbx");
+ 	if (IS_ERR(priv->mbx)) {
+ 		dev_err(&pdev->dev, "mbx ioremap failed\n");
+ 		return PTR_ERR(priv->mbx);
 -- 
 2.28.0
 
