@@ -7,31 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53BFCC433E2
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:35:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28068C43461
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:35:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 16E9620665
-	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:35:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E2F46206BE
+	for <linux-can@archiver.kernel.org>; Tue, 15 Sep 2020 22:35:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbgIOWfo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        id S1727533AbgIOWf4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727736AbgIOWff (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:35 -0400
+        with ESMTP id S1727707AbgIOWfo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Sep 2020 18:35:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB5BC061351
-        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C75C06174A
+        for <linux-can@vger.kernel.org>; Tue, 15 Sep 2020 15:35:36 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIJXu-0002Tb-7Q; Wed, 16 Sep 2020 00:35:30 +0200
+        id 1kIJXy-0002Tb-6I; Wed, 16 Sep 2020 00:35:34 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 06/37] can: raw: fix indention
-Date:   Wed, 16 Sep 2020 00:34:56 +0200
-Message-Id: <20200915223527.1417033-7-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de, YueHaibing <yuehaibing@huawei.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 14/37] can: c_can: Remove unused inline function
+Date:   Wed, 16 Sep 2020 00:35:04 +0200
+Message-Id: <20200915223527.1417033-15-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915223527.1417033-1-mkl@pengutronix.de>
 References: <20200915223527.1417033-1-mkl@pengutronix.de>
@@ -46,81 +47,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the indention to follow kernel coding style.
+From: YueHaibing <yuehaibing@huawei.com>
 
+commit 524369e2391f ("can: c_can: remove obsolete STRICT_FRAME_ORDERING Kconfig option")
+left behind this, remove it.
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20200505084149.23848-1-yuehaibing@huawei.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/raw.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/net/can/c_can/c_can.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 94a9405658dc..57235b29f571 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -154,16 +154,16 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
- 	if (!skb)
- 		return;
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 8e9f5620c9a2..1ccdbe89585b 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -356,15 +356,6 @@ static void c_can_setup_tx_object(struct net_device *dev, int iface,
+ 	}
+ }
  
--	/*  Put the datagram to the queue so that raw_recvmsg() can
--	 *  get it from there.  We need to pass the interface index to
--	 *  raw_recvmsg().  We pass a whole struct sockaddr_can in skb->cb
--	 *  containing the interface index.
-+	/* Put the datagram to the queue so that raw_recvmsg() can get
-+	 * it from there. We need to pass the interface index to
-+	 * raw_recvmsg(). We pass a whole struct sockaddr_can in
-+	 * skb->cb containing the interface index.
- 	 */
- 
- 	sock_skb_cb_check_size(sizeof(struct sockaddr_can));
- 	addr = (struct sockaddr_can *)skb->cb;
- 	memset(addr, 0, sizeof(*addr));
--	addr->can_family  = AF_CAN;
-+	addr->can_family = AF_CAN;
- 	addr->can_ifindex = skb->dev->ifindex;
- 
- 	/* add CAN specific message flags for raw_recvmsg() */
-@@ -290,8 +290,8 @@ static int raw_notifier(struct notifier_block *nb,
- 			kfree(ro->filter);
- 
- 		ro->ifindex = 0;
--		ro->bound   = 0;
--		ro->count   = 0;
-+		ro->bound = 0;
-+		ro->count = 0;
- 		release_sock(sk);
- 
- 		sk->sk_err = ENODEV;
-@@ -374,8 +374,8 @@ static int raw_release(struct socket *sock)
- 		kfree(ro->filter);
- 
- 	ro->ifindex = 0;
--	ro->bound   = 0;
--	ro->count   = 0;
-+	ro->bound = 0;
-+	ro->count = 0;
- 	free_percpu(ro->uniq);
- 
- 	sock_orphan(sk);
-@@ -773,7 +773,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	skb_setup_tx_timestamp(skb, sk->sk_tsflags);
- 
- 	skb->dev = dev;
--	skb->sk  = sk;
-+	skb->sk = sk;
- 	skb->priority = sk->sk_priority;
- 
- 	err = can_send(skb, ro->loopback);
-@@ -801,8 +801,8 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	int err = 0;
- 	int noblock;
- 
--	noblock =  flags & MSG_DONTWAIT;
--	flags   &= ~MSG_DONTWAIT;
-+	noblock = flags & MSG_DONTWAIT;
-+	flags &= ~MSG_DONTWAIT;
- 
- 	skb = skb_recv_datagram(sk, flags, noblock, &err);
- 	if (!skb)
+-static inline void c_can_activate_all_lower_rx_msg_obj(struct net_device *dev,
+-						       int iface)
+-{
+-	int i;
+-
+-	for (i = C_CAN_MSG_OBJ_RX_FIRST; i <= C_CAN_MSG_RX_LOW_LAST; i++)
+-		c_can_object_get(dev, iface, i, IF_COMM_CLR_NEWDAT);
+-}
+-
+ static int c_can_handle_lost_msg_obj(struct net_device *dev,
+ 				     int iface, int objno, u32 ctrl)
+ {
 -- 
 2.28.0
 
