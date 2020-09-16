@@ -2,44 +2,44 @@ Return-Path: <SRS0=+HsW=CZ=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D87FC43461
-	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 10:26:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DC17C43461
+	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 10:27:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 22FCB2074B
-	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 10:26:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1E9BB2076B
+	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 10:27:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726425AbgIPK0v (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Sep 2020 06:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
+        id S1726789AbgIPK1F (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Sep 2020 06:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgIPKVi (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Sep 2020 06:21:38 -0400
+        with ESMTP id S1726701AbgIPKTZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Sep 2020 06:19:25 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6327EC06174A
-        for <linux-can@vger.kernel.org>; Wed, 16 Sep 2020 03:21:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F6CC06174A
+        for <linux-can@vger.kernel.org>; Wed, 16 Sep 2020 03:18:45 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kIUYd-0003L6-HF; Wed, 16 Sep 2020 12:20:59 +0200
+        id 1kIUWO-000380-DB; Wed, 16 Sep 2020 12:18:40 +0200
 Received: from [IPv6:2a03:f580:87bc:d400:8d0c:cfd0:3f99:a545] (unknown [IPv6:2a03:f580:87bc:d400:8d0c:cfd0:3f99:a545])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
          client-signature RSA-PSS (4096 bits))
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 9F39156193B;
-        Wed, 16 Sep 2020 10:20:57 +0000 (UTC)
-Subject: Re: [PATCH] can: mcp25xxfd: Limit spiclk to 0.85*(sysclk/2)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4C4BD561939;
+        Wed, 16 Sep 2020 10:18:39 +0000 (UTC)
+Subject: Re: [PATCH] MAINTAINERS: Add reviewer entry for microchip mcp25xxfd
+ SPI-CAN network driver
 To:     Thomas Kopp <thomas.kopp@microchip.com>, linux-can@vger.kernel.org
-Cc:     dev.kurt@vandijck-laurijssen.be, kernel@pengutronix.de,
-        manivannan.sadhasivam@linaro.org
-References: <20200916100823.1105-1-thomas.kopp@microchip.com>
+Cc:     manivannan.sadhasivam@linaro.org
+References: <20200916101334.1277-1-thomas.kopp@microchip.com>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -101,15 +101,15 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <2c9efaf8-f5d0-0d8e-11c8-47293ef43d10@pengutronix.de>
-Date:   Wed, 16 Sep 2020 12:20:53 +0200
+Message-ID: <d067727d-0b7d-e147-cc1b-abcbddacd216@pengutronix.de>
+Date:   Wed, 16 Sep 2020 12:18:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200916100823.1105-1-thomas.kopp@microchip.com>
+In-Reply-To: <20200916101334.1277-1-thomas.kopp@microchip.com>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="QiZSd0UrvUWXoxmD2CeBqJ1OClaXczh0y"
+ boundary="zeliC6eoxuCrLByNMnk09JSQijGOkdFNT"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -120,63 +120,44 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---QiZSd0UrvUWXoxmD2CeBqJ1OClaXczh0y
-Content-Type: multipart/mixed; boundary="oBen1VS37Q5WIX0xcVFuUWKu5SNlIgVyd";
+--zeliC6eoxuCrLByNMnk09JSQijGOkdFNT
+Content-Type: multipart/mixed; boundary="HmqnPy2DFejDvvmhnFFqRoVXUlYIot232";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: Thomas Kopp <thomas.kopp@microchip.com>, linux-can@vger.kernel.org
-Cc: dev.kurt@vandijck-laurijssen.be, kernel@pengutronix.de,
- manivannan.sadhasivam@linaro.org
-Message-ID: <2c9efaf8-f5d0-0d8e-11c8-47293ef43d10@pengutronix.de>
-Subject: Re: [PATCH] can: mcp25xxfd: Limit spiclk to 0.85*(sysclk/2)
-References: <20200916100823.1105-1-thomas.kopp@microchip.com>
-In-Reply-To: <20200916100823.1105-1-thomas.kopp@microchip.com>
+Cc: manivannan.sadhasivam@linaro.org
+Message-ID: <d067727d-0b7d-e147-cc1b-abcbddacd216@pengutronix.de>
+Subject: Re: [PATCH] MAINTAINERS: Add reviewer entry for microchip mcp25xxfd
+ SPI-CAN network driver
+References: <20200916101334.1277-1-thomas.kopp@microchip.com>
+In-Reply-To: <20200916101334.1277-1-thomas.kopp@microchip.com>
 
---oBen1VS37Q5WIX0xcVFuUWKu5SNlIgVyd
+--HmqnPy2DFejDvvmhnFFqRoVXUlYIot232
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 9/16/20 12:08 PM, Thomas Kopp wrote:
-> Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
+On 9/16/20 12:13 PM, Thomas Kopp wrote:
 > ---
->  drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
 >=20
-> diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c b/drivers/n=
-et/can/spi/mcp25xxfd/mcp25xxfd-core.c
-> index 6ffa7af50119..670b7d1e1f46 100644
-> --- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-> +++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-> @@ -2821,11 +2821,13 @@ static int mcp25xxfd_probe(struct spi_device *s=
-pi)
->  	 * 2518	40 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	18750000 Hz	=
- 93.75%	600000000 Hz	bad	assigned-clocks =3D <&ccu CLK_SPIx>
->  	 * 2517	20 MHz	fsl,imx8mm		fsl,imx51-ecspi		 9090909 Hz	 90.09%	 1818=
-1819 Hz	good	assigned-clocks =3D <&clk IMX8MM_CLK_ECSPIx_ROOT>
->  	 * 2517	20 MHz	fsl,imx8mm		fsl,imx51-ecspi		 9523809 Hz	 95.34%	 2857=
-1429 Hz	bad	assigned-clocks =3D <&clk IMX8MM_CLK_ECSPIx_ROOT>
-> +	 * 2517 40 MHz  atmel,sama5d27          atmel,at91rm9200-spi    16400=
-000 Hz      82%     82000000 Hz    good    default
-> +	 * 2518 40 MHz  atmel,sama5d27          atmel,at91rm9200-spi    16400=
-000 Hz      82%     82000000 Hz    good    default
->  	 *
-> -	 * Limit SPI clock to 92.5% of SYSCLOCK / 2 for now.
-> +	 * Limit SPI clock to 85% of SYSCLOCK / 2 for now.
->  	 */
->  	priv->spi_max_speed_hz_orig =3D spi->max_speed_hz;
-> -	spi->max_speed_hz =3D min(spi->max_speed_hz, freq / 2 / 1000 * 925);
-> +	spi->max_speed_hz =3D min(spi->max_speed_hz, freq / 2 / 1000 * 850);
->  	spi->bits_per_word =3D 8;
->  	spi->rt =3D true;
->  	err =3D spi_setup(spi);
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index fcb63f0c9635..e3c1c70057e4 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10674,6 +10674,7 @@ F:	drivers/hid/hid-mcp2221.c
+>  MCP25XXFD SPI-CAN NETWORK DRIVER
+>  M:	Marc Kleine-Budde <mkl@pengutronix.de>
+>  M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> +R:	Thomas Kopp <thomas.kopp@microchip.com>
+>  L:	linux-can@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
 >=20
 
-Squashed into the "can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI=
- CAN"
-patch.
+Can I add your S-o-b? Please include this in your next patches.
 
-thanks,
 Marc
 
 --=20
@@ -186,23 +167,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---oBen1VS37Q5WIX0xcVFuUWKu5SNlIgVyd--
+--HmqnPy2DFejDvvmhnFFqRoVXUlYIot232--
 
---QiZSd0UrvUWXoxmD2CeBqJ1OClaXczh0y
+--zeliC6eoxuCrLByNMnk09JSQijGOkdFNT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9h5wUACgkQqclaivrt
-76kD3Qf+PeUgjmDGifB3IYsV6PbPZrvtlnGT36yrfIUyJ+9SZsSf4gNSi8o4MiUw
-tjx9YGpJnNOhM5FuRxkWEvTEzAFYqHDQSJHacsslEYfqDkYc8x8zBdcil0CqtGAr
-q9izi6Tr56NsJLq2KUN2s5GUF43GqTOZoNzGHC1mq31yiB84pXjSzdhsNJy3JKPp
-pIcJ4PIdVmYpMVqqLPV0zJnFQPSvYZErew2+xb2UK8ozegIWggUqj3I2V3gqNgnO
-tVRua5dpUZmeAQ6O675IBDorSBipCS+MdO2MxlCjdXf+9u4f+ujOSG5qeC8Sr/Ua
-K8TAH0+M3ue/ZDHtJ4wKIQtMN89PJA==
-=g45N
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9h5noACgkQqclaivrt
+76lzygf9HfsTJuUTAC+srRC+9CZR0/G7gDPlX/IWF1riJfnjUOa4S4HK/SpZ11ae
+lVq1ThWj6xQu0X/iErValq3WaZpaYismCW3P7/Xavdqyy+inWSYHCsBcOoqNrZoz
+aI15+AAxb4h23aE5bcRV98vs2U+0BWO9gwCkgRNzTpDBC38HI/fbNFfsRA9tGPpW
+B+/SXtVmbskOetkUJ907TNU2T0sfwgXp2Ajbb0LDI7IUYWSLdSusqUxEIHIrc19T
+hLVUcxfw2Jt8zaY3l+ShD0EX5qe5jtSp95vrlGMKlP3XNZlagjNE2gSqlXKoSESo
+GUNqCIyh5JfLoyIif/X7DXmIVpHhPw==
+=SPM1
 -----END PGP SIGNATURE-----
 
---QiZSd0UrvUWXoxmD2CeBqJ1OClaXczh0y--
+--zeliC6eoxuCrLByNMnk09JSQijGOkdFNT--
