@@ -2,190 +2,105 @@ Return-Path: <SRS0=+HsW=CZ=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BA2BC433E2
-	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 18:44:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B947C43461
+	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 19:02:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 41DD220936
-	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 18:44:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A54CC205F4
+	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 19:02:21 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ggjcPcaj"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728148AbgIPSn4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Sep 2020 14:43:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
+        id S1728263AbgIPTBw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Sep 2020 15:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727971AbgIPSW5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Sep 2020 14:22:57 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CE7C03542C
-        for <linux-can@vger.kernel.org>; Wed, 16 Sep 2020 05:01:26 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kIW7j-0004DH-IF; Wed, 16 Sep 2020 14:01:19 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:8d0c:cfd0:3f99:a545] (unknown [IPv6:2a03:f580:87bc:d400:8d0c:cfd0:3f99:a545])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 56FC15619CF;
-        Wed, 16 Sep 2020 12:01:17 +0000 (UTC)
-Subject: Re: canfdtest on flexcan loopback
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     wg@grandegger.com, pankaj.bansal@nxp.com,
-        pankaj.bansal@oss.nxp.com, linux-can@vger.kernel.org,
-        qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org,
+        with ESMTP id S1727530AbgIPRsw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Sep 2020 13:48:52 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC14C061222;
+        Wed, 16 Sep 2020 04:04:55 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id j11so9803624ejk.0;
+        Wed, 16 Sep 2020 04:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8yyOs8M38oSzNrlEQXmu5SSo5wKakYP4BlxDSuTxupc=;
+        b=ggjcPcajfgPW1CHntIHR3hz80OMBSbQU7Gwc9RoXmAnGM9T3eNT3gICD5QzpSFGWRl
+         JlA3WUd8EvzBglannUWdaHxayk78gS8ezQxXkBo+9Yew9KOOZWVDe2bMNsr+EX7yY72l
+         rAYAuo5SEljjGbL845wHOLWY/37a2YCtbHzyLmuqOid2Vwr3zlpsGOWHwbMGdOvrJ//I
+         KL+3n7NCtchkaAOl8RVgllX7HXv0wLi1KI6yT2Yhwq+ScxV8dFeFf6lWFjJ4Qv9GQfTI
+         ztuHvm+w2aNZTjBzpeffzd1TFYVOpstvWQTCtSLZ0vEjoKLtdDD3hoSYllsBjpPNnY5r
+         59lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8yyOs8M38oSzNrlEQXmu5SSo5wKakYP4BlxDSuTxupc=;
+        b=GhVVH3wRDY3VANoACWS0pDms4MfZY23vYDau5/8EGRVVHQsYCxL/uOe19o0jy+1inJ
+         EkZCcJ8DBUyLq/g11x8p6d4172MFUAo05TYnmWbwycOPMj0hTsje5ppXTFJv1K5IPrkB
+         QkbwzlCyo1h992kCqCcQDNgZLuNzr5Cpcf3ojrJtVH4VvdPEly49f/CjgBRpU8+wFilt
+         cQsZ+FuyCHsEzQkZCrv6OeTuqumfMsun2JGEPEVcH0zabp69+WKItCjEEdyqvE9EtFqc
+         mlwv4jRacTHqHzyI+eTyHmDuSLo1A20d6KDG743R6PvqCHFbqroeFTExrn7MeA4kAjXW
+         LUyg==
+X-Gm-Message-State: AOAM531ogubLMrHnUJS7xx84tinlsI3JrfEtZWCKf3jYvE4/yF8X3vce
+        YtdX+L0M3vFpmIf3RA8lRps1ucp1B2U=
+X-Google-Smtp-Source: ABdhPJz9CxWsjmf+K1u1jhtjPkh8nevL8QCMYOLC8Q8Nj6rdeZsSCgHqbOd7t84pBrr8/BKOhvnmig==
+X-Received: by 2002:a17:906:88d:: with SMTP id n13mr25343926eje.75.1600254291481;
+        Wed, 16 Sep 2020 04:04:51 -0700 (PDT)
+Received: from skbuf ([188.25.217.212])
+        by smtp.gmail.com with ESMTPSA id ch29sm13931115edb.74.2020.09.16.04.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 04:04:51 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 14:04:48 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     wg@grandegger.com, pankaj.bansal@nxp.com,
+        pankaj.bansal@oss.nxp.com, mkl@pengutronix.de,
+        linux-can@vger.kernel.org
+Cc:     qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org,
         vladimir.oltean@nxp.com
+Subject: Re: canfdtest on flexcan loopback
+Message-ID: <20200916110448.dsla6vjzy4fvdr22@skbuf>
 References: <VI1PR04MB4093944944C574B138371F51F12F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
  <20200916110154.hp4up6yhyokduvf2@skbuf>
- <20200916110448.dsla6vjzy4fvdr22@skbuf>
- <12688d2b-a198-ef5e-dd8f-64957df36574@pengutronix.de>
- <20200916114533.3hlthhfd7xmpamoa@skbuf>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <77d5c83d-1fb2-0d8a-f1ed-bec4857796e7@pengutronix.de>
-Date:   Wed, 16 Sep 2020 14:01:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200916114533.3hlthhfd7xmpamoa@skbuf>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="qny4SQLZLyfiSaBs8qkx58TX9G54RuYEQ"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916110154.hp4up6yhyokduvf2@skbuf>
 Sender: linux-can-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qny4SQLZLyfiSaBs8qkx58TX9G54RuYEQ
-Content-Type: multipart/mixed; boundary="ZIYmYvGyMDl4HDZpeYWewusbQuD5zIB6t";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: wg@grandegger.com, pankaj.bansal@nxp.com, pankaj.bansal@oss.nxp.com,
- linux-can@vger.kernel.org, qiangqing.zhang@nxp.com,
- linux-kernel@vger.kernel.org, vladimir.oltean@nxp.com
-Message-ID: <77d5c83d-1fb2-0d8a-f1ed-bec4857796e7@pengutronix.de>
-Subject: Re: canfdtest on flexcan loopback
-References: <VI1PR04MB4093944944C574B138371F51F12F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
- <20200916110154.hp4up6yhyokduvf2@skbuf>
- <20200916110448.dsla6vjzy4fvdr22@skbuf>
- <12688d2b-a198-ef5e-dd8f-64957df36574@pengutronix.de>
- <20200916114533.3hlthhfd7xmpamoa@skbuf>
-In-Reply-To: <20200916114533.3hlthhfd7xmpamoa@skbuf>
+[ resending, forgot to copy Wolfgang ]
 
---ZIYmYvGyMDl4HDZpeYWewusbQuD5zIB6t
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+On Wed 9/2/2020 10:09 AM, Wolfgang Grandegger wrote:
+> canfdtest normally runs on the DUT *and* a the host. The DUT receives
+> the messages from the host, increments the frame data bytes and then
+> sends them back to the host. With "loopback" mode, the data bytes are
+> not incremented and that's what you see above.
+>
+> Wolfgang
 
-On 9/16/20 1:45 PM, Vladimir Oltean wrote:
-> On Wed, Sep 16, 2020 at 01:32:49PM +0200, Marc Kleine-Budde wrote:
->> Which driver are you using? The mainline driver only uses one TX buffe=
-r.
->=20
-> Are there multiple flexcan drivers in circulation? Yes, the mainline
-> driver with a single priv->tx_mb.
+Wolfgang is of course right, but we're nonetheless investigating what
+seems to be a real problem, and what Pankaj had seen was a red herring.
 
-I assume nxp has several patches on their kernels. Are you using the main=
-line
-kernel or the one that's provided by nxp?
+So currently what I suspect is going on, when I am running canfdtest
+between 2 LS1028A-RDB boards, is that the DUT is reordering frames on
+TX.
 
-Marc
+See, for example, the screenshot below:
+https://drive.google.com/file/d/1rOeW3aXh3kPh1CJ39lCccRfjFz5JN5I6/view?usp=sharing
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+I have added trace points to the end of the flexcan_start_xmit function,
+which print the entire skb, and the frames appear to be written to the
+TX message buffer in the correct order. They are seen, however, in the
+incorrect order on the wire.
 
-
---ZIYmYvGyMDl4HDZpeYWewusbQuD5zIB6t--
-
---qny4SQLZLyfiSaBs8qkx58TX9G54RuYEQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9h/ocACgkQqclaivrt
-76n1iQf/ZZoTPrP6E/OQbBuIkW5G+s0H712CWffmeiEzQ/oEPQAYBZVYN4L70fax
-ku2rWfHg5QxgRwbBkTVfFkeIjLgggdQU95tKXJ3RKHXgyenK5ulFaltjpcF+Hxyw
-WXQ3KjVkFwotNxbVPzjoy6ju2QBDQBvgrHvR0ymoYowIwFfR80z0cz9kVpl9pEbb
-GCJu22dWIqiTK1us1Kh5uSR5tZKlemhWo7mDZyt+qKc/vWS/0C9uTk7WBe0N65h8
-bGxh7o4VwzjdG5kXecSvuLwS8pu7Ujdr739bFTqmFaxwAVpTd/yIvNxQAJCHqQTP
-bBheJBb5Ql25T4Mqtl65bVyWvzYrsQ==
-=YCS9
------END PGP SIGNATURE-----
-
---qny4SQLZLyfiSaBs8qkx58TX9G54RuYEQ--
+Thanks,
+-Vladimir
