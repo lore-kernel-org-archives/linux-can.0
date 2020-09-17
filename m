@@ -1,94 +1,100 @@
-Return-Path: <SRS0=+HsW=CZ=vger.kernel.org=linux-can-owner@kernel.org>
+Return-Path: <SRS0=UMl3=C2=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 501BFC43461
-	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 20:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB4ECC43461
+	for <linux-can@archiver.kernel.org>; Thu, 17 Sep 2020 01:13:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 06016206BE
-	for <linux-can@archiver.kernel.org>; Wed, 16 Sep 2020 20:50:12 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZVX2JTAo"
+	by mail.kernel.org (Postfix) with ESMTP id 701F4206DB
+	for <linux-can@archiver.kernel.org>; Thu, 17 Sep 2020 01:13:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgIPUty (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Sep 2020 16:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgIPQ4e (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Sep 2020 12:56:34 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F18C025269
-        for <linux-can@vger.kernel.org>; Wed, 16 Sep 2020 05:17:10 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id e4so3092514pln.10
-        for <linux-can@vger.kernel.org>; Wed, 16 Sep 2020 05:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ulNy0GYYo73Nhpta7oZ5nEu1dWhqwaLnuHI7Rdu6wyU=;
-        b=ZVX2JTAopg15X134IFNQyjRGZ+lMkS2oseiw5XMndvZzl96fZYL+If1qAKUuoaxoqk
-         2I6DMDpOp5AD3YQ/yQV1cczweXyIX3goOQF0q+8IDa0xiy7TSQkF3x5jqnmcQDnVsGBc
-         J+lP4ln31Vzs8fMTJ6Id61j2P0pOwKliNtOOL/rJvLpBK9avUnfBpSbpDqV7okyJCBh8
-         inZ/cM/irjs5LeuVGFFMwojGUEzZFs243h5fi+/BHLh1RwMP3ZnMq1TS7PfcfDIK4Rcn
-         aPdsKRfORMzVwnlpV02uh1J+4jXw6Yww3OMtzg19LRdiUrBRjRJwO00gDEPiM6prdDwe
-         +geg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ulNy0GYYo73Nhpta7oZ5nEu1dWhqwaLnuHI7Rdu6wyU=;
-        b=QP7xTfXKzoJqeBTOMcSHg0+Zo+PpD+6k9S3h85kKhWiOES9oasjxQIj4JACqJjvebz
-         ZQOESu2vgwRu65t9aOyXTj3nhTc17XFKj0Lt0Z2g7n3TIGppDV80KaFuiakln1KWkKNR
-         zyTkdVDTzSjC/LkcxiqF0tzdAon+ZGDsZNcncWrMMbMBxpJtumTx2JjXPXeBBnXMvrhN
-         hWB+OQC4XsLqkvd01R5PKO8U9M9rPZ2ewUdm9VHVoH1djqUmIW3bqHQk0Bu7LUJLI1r4
-         DeVBpj/G2sIDlPcF6pmbhXMqphYHTDQRP4qETnhK+sMeCmNt0I4m9sQ7Xfzf7CgwbBtc
-         /xGw==
-X-Gm-Message-State: AOAM5314mtG6Kemufq+lKl0pICtS2g+wajTfG4zvmRQIlcae5ZnmQ9IO
-        SzmhnG41S7YmovT3SIGqjRIM
-X-Google-Smtp-Source: ABdhPJzM2b3dXl4SggxQROZIKLRl4JVysPwmHrQs1xG71ZC1d7poRCsAYUqgnLwHRj5I80xXFp32vQ==
-X-Received: by 2002:a17:90a:cf07:: with SMTP id h7mr3649905pju.142.1600258630214;
-        Wed, 16 Sep 2020 05:17:10 -0700 (PDT)
-Received: from linux ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id z9sm16423391pfk.118.2020.09.16.05.17.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 05:17:09 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 17:47:03 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Thomas.Kopp@microchip.com
-Cc:     mkl@pengutronix.de, linux-can@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add reviewer entry for microchip mcp25xxfd
- SPI-CAN network driver
-Message-ID: <20200916121703.GB4281@linux>
-References: <20200916101334.1277-1-thomas.kopp@microchip.com>
- <d067727d-0b7d-e147-cc1b-abcbddacd216@pengutronix.de>
- <DM6PR11MB4283850F9D0A341502F8FA0BFB210@DM6PR11MB4283.namprd11.prod.outlook.com>
+        id S1726054AbgIQBNk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Sep 2020 21:13:40 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:60272 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725886AbgIQBNk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Sep 2020 21:13:40 -0400
+X-Greylist: delayed 482 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:13:38 EDT
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4BsJg03z3Pz1qs4G;
+        Thu, 17 Sep 2020 03:05:25 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4BsJfr6Jl6z1qwSy;
+        Thu, 17 Sep 2020 03:05:24 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id FqgdTcnucdjh; Thu, 17 Sep 2020 03:05:23 +0200 (CEST)
+X-Auth-Info: QtW3ZCSFydW7Acop+OgmpJ4MGJ4Y9os5JMB4YDj5fGA=
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu, 17 Sep 2020 03:05:23 +0200 (CEST)
+Subject: Re: [PATCH] can: m_can: Set pinmux into "default" state on start
+From:   Marek Vasut <marex@denx.de>
+To:     linux-can@vger.kernel.org
+Cc:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>, dmurphy@ti.com,
+        netdev@vger.kernel.org, socketcan@hartkopp.net,
+        davem@davemloft.net, andrew@lunn.ch
+References: <20200531181324.383930-1-marex@denx.de>
+ <419338dc-870d-51a4-87ac-ceddcba046dc@denx.de>
+ <341ddbb5-d46a-813a-8fe9-b0d16ca25041@denx.de>
+Message-ID: <c0c2b01d-8cdb-713d-5b4a-cb5dd6e2dd9d@denx.de>
+Date:   Thu, 17 Sep 2020 03:04:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB4283850F9D0A341502F8FA0BFB210@DM6PR11MB4283.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Sender: linux-can-owner@vger.kernel.org
+In-Reply-To: <341ddbb5-d46a-813a-8fe9-b0d16ca25041@denx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:20:51AM +0000, Thomas.Kopp@microchip.com wrote:
-> Hi Marc,
->  
-> > Can I add your S-o-b? Please include this in your next patches.
+On 9/1/20 8:56 PM, Marek Vasut wrote:
+> On 8/9/20 1:01 PM, Marek Vasut wrote:
+>> On 5/31/20 8:13 PM, Marek Vasut wrote:
+>>> On systems like stm32mp1 where pins have both "default" and "sleep" pinmux
+>>> states in DT, the pins are in "sleep" state by default. Switch the pins into
+>>> the "default" state when bringing the interface up in m_can_start(), because
+>>> otherwise no CAN communication is possible. This replicates the behavior of
+>>> the resume path, which does the same.
+>>>
+>>> Signed-off-by: Marek Vasut <marex@denx.de>
+>>> Cc: Alexandre Torgue <alexandre.torgue@st.com>
+>>> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+>>> Cc: Wolfgang Grandegger <wg@grandegger.com>
+>>> To: linux-can@vger.kernel.org
+>>> ---
+>>>  drivers/net/can/m_can/m_can.c | 2 ++
+>>>  1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+>>> index 02c5795b7393..76fadf2b8ac2 100644
+>>> --- a/drivers/net/can/m_can/m_can.c
+>>> +++ b/drivers/net/can/m_can/m_can.c
+>>> @@ -1247,6 +1247,8 @@ static void m_can_start(struct net_device *dev)
+>>>  	/* basic m_can configuration */
+>>>  	m_can_chip_config(dev);
+>>>  
+>>> +	pinctrl_pm_select_default_state(cdev->dev);
+>>> +
+>>>  	cdev->can.state = CAN_STATE_ERROR_ACTIVE;
+>>>  
+>>>  	m_can_enable_all_interrupts(cdev);
+>>>
+>>
+>> Any news on this ?
 > 
-> Yes you can. Sorry I missed that and I'll include it in future patches.
-> 
+> Almost another month has passed by, ping ?
 
-Please include the commit message also with a bit of explanation!
-
-Thanks,
-Mani
-
-> Best Regards,
-> Thomas 
+Bump ?
