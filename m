@@ -2,44 +2,41 @@ Return-Path: <SRS0=XQ7n=C6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB5EC43466
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA6E9C43465
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 781CE20888
+	by mail.kernel.org (Postfix) with ESMTP id 9FAFB20B1F
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727452AbgIUNqb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        id S1727346AbgIUNr1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727404AbgIUNqH (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:07 -0400
+        with ESMTP id S1727470AbgIUNqc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:32 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A917C0613D2
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07098C0613B4
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:17 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM8q-0003ED-38; Mon, 21 Sep 2020 15:46:04 +0200
+        id 1kKM8x-0003ED-1p; Mon, 21 Sep 2020 15:46:11 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@flameeyes.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 07/38] can: slcan: update dead link
-Date:   Mon, 21 Sep 2020 15:45:26 +0200
-Message-Id: <20200921134557.2251383-8-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 23/38] can: spi: Kconfig: remove unneeded dependencies form Kconfig symbols
+Date:   Mon, 21 Sep 2020 15:45:42 +0200
+Message-Id: <20200921134557.2251383-24-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921134557.2251383-1-mkl@pengutronix.de>
 References: <20200921134557.2251383-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -49,34 +46,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Diego Elio Pettenò <flameeyes@flameeyes.com>
+Since commits
 
-BerliOS has not been operating for more than five years. linux-can moved to
-GitHub.
+    653ee35ce6d5 ("can: hi311x: remove custom DMA mapped buffer")
+    Fixes: df58525df395 ("can: mcp251x: remove custom DMA mapped buffer")
 
-Signed-off-by: Diego Elio Pettenò <flameeyes@flameeyes.com>
-Link: https://lore.kernel.org/r/20200413170241.13207-1-flameeyes@flameeyes.com
-[mkl: split into two patches - handle slcan part here]
+both the hi3111x and the mcp251x driver don't make use of the DMA API
+any more. So we can safely remove the HAS_DMA dependency.
+
+While we're here, remove the unneeded CAN_DEV and SPI dependencies from
+the CAN_HI311X symbol, as the parent menus already have these
+dependencies.
+
+Link: https://lore.kernel.org/r/20200915223527.1417033-24-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/spi/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index f07012a76c0c..424970939fd4 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -41,8 +41,8 @@ config CAN_SLCAN
- 	  www.canusb.com / www.can232.com / www.mictronics.de / www.canhack.de
+diff --git a/drivers/net/can/spi/Kconfig b/drivers/net/can/spi/Kconfig
+index f780c79aac6f..a332008d8495 100644
+--- a/drivers/net/can/spi/Kconfig
++++ b/drivers/net/can/spi/Kconfig
+@@ -4,13 +4,11 @@ menu "CAN SPI interfaces"
  
- 	  Userspace tools to attach the SLCAN line discipline (slcan_attach,
--	  slcand) can be found in the can-utils at the SocketCAN SVN, see
--	  http://developer.berlios.de/projects/socketcan for details.
-+	  slcand) can be found in the can-utils at the linux-can project, see
-+	  https://github.com/linux-can/can-utils for details.
+ config CAN_HI311X
+ 	tristate "Holt HI311x SPI CAN controllers"
+-	depends on CAN_DEV && SPI && HAS_DMA
+ 	help
+ 	  Driver for the Holt HI311x SPI CAN controllers.
  
- 	  The slcan driver supports up to 10 CAN netdevices by default which
- 	  can be changed by the 'maxdev=xx' module option. This driver can
+ config CAN_MCP251X
+ 	tristate "Microchip MCP251x and MCP25625 SPI CAN controllers"
+-	depends on HAS_DMA
+ 	help
+ 	  Driver for the Microchip MCP251x and MCP25625 SPI CAN
+ 	  controllers.
 -- 
 2.28.0
 
