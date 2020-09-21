@@ -7,31 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB724C4727F
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 413C5C4741F
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B0D8420888
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1175320888
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgIUNiy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
+        id S1727321AbgIUNjI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727229AbgIUNix (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:53 -0400
+        with ESMTP id S1727314AbgIUNjD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:39:03 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA1EC0613D7
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A92AC0613D1
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:39:03 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1q-0000ox-Uw; Mon, 21 Sep 2020 15:38:51 +0200
+        id 1kKM21-0000ox-CK; Mon, 21 Sep 2020 15:39:01 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 10/38] can: dev: can_put_echo_skb(): print number of echo_skb that is occupied
-Date:   Mon, 21 Sep 2020 15:38:17 +0200
-Message-Id: <20200921133845.2249271-11-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 37/38] MAINTAINERS: Add entry for Microchip MCP25XXFD SPI-CAN network driver
+Date:   Mon, 21 Sep 2020 15:38:44 +0200
+Message-Id: <20200921133845.2249271-38-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
@@ -45,28 +47,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch prints the number of the occupied echo_skb, to ease
-implementing and debugging of new drivers.
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-11-mkl@pengutronix.de
+Add MAINTAINERS entry for Microchip MCP25XXFD SPI-CAN network driver.
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/20200910133806.25077-7-manivannan.sadhasivam@linaro.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 68834a2853c9..dd443e5d8cb7 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -463,7 +463,7 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 		priv->echo_skb[idx] = skb;
- 	} else {
- 		/* locking problem with netif_stop_queue() ?? */
--		netdev_err(dev, "%s: BUG! echo_skb is occupied!\n", __func__);
-+		netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
- 		kfree_skb(skb);
- 	}
- }
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c99577961cc4..fcb63f0c9635 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10671,6 +10671,14 @@ L:	linux-input@vger.kernel.org
+ S:	Maintained
+ F:	drivers/hid/hid-mcp2221.c
+ 
++MCP25XXFD SPI-CAN NETWORK DRIVER
++M:	Marc Kleine-Budde <mkl@pengutronix.de>
++M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
++L:	linux-can@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
++F:	drivers/net/can/spi/mcp25xxfd/
++
+ MCP4018 AND MCP4531 MICROCHIP DIGITAL POTENTIOMETER DRIVERS
+ M:	Peter Rosin <peda@axentia.se>
+ L:	linux-iio@vger.kernel.org
 -- 
 2.28.0
 
