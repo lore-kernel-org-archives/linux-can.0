@@ -2,39 +2,37 @@ Return-Path: <SRS0=XQ7n=C6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DB72C43466
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:46:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AB77C43468
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:46:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F097920888
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:46:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2FEF52084C
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:46:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgIUNqt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
+        id S1727513AbgIUNqc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727402AbgIUNqc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:32 -0400
+        with ESMTP id S1727439AbgIUNqb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80B8C0613BE
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A5AC0613DD
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:10 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM8y-0003ED-K5; Mon, 21 Sep 2020 15:46:12 +0200
+        id 1kKM8r-0003ED-GS; Mon, 21 Sep 2020 15:46:05 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 28/38] can: mcp251x: Use readx_poll_timeout() helper
-Date:   Mon, 21 Sep 2020 15:45:47 +0200
-Message-Id: <20200921134557.2251383-29-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 11/38] can: dev: can_put_echo_skb(): propagate error in case of errors
+Date:   Mon, 21 Sep 2020 15:45:30 +0200
+Message-Id: <20200921134557.2251383-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921134557.2251383-1-mkl@pengutronix.de>
 References: <20200921134557.2251383-1-mkl@pengutronix.de>
@@ -48,141 +46,77 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+The function can_put_echo_skb() can fail for several reasons. It may
+fail due to OOM, but when it fails it's usually due to locking problems
+in the driver.
 
-We may use special helper macro to poll IO till condition or timeout occurs.
+In order to help developing and debugging of new drivers propagate error
+value in case of errors.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20200217161038.25009-1-andriy.shevchenko@linux.intel.com
+Link: https://lore.kernel.org/r/20200915223527.1417033-12-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251x.c | 64 ++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 31 deletions(-)
+ drivers/net/can/dev.c   | 11 +++++++----
+ include/linux/can/dev.h |  4 ++--
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 4b113f61e39d..3bf57bc9b3ff 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -32,6 +32,7 @@
- #include <linux/gpio/driver.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/netdevice.h>
-@@ -376,6 +377,15 @@ static void mcp251x_write_bits(struct spi_device *spi, u8 reg,
- 	mcp251x_spi_trans(spi, 4);
- }
- 
-+static u8 mcp251x_read_stat(struct spi_device *spi)
-+{
-+	return mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK;
-+}
-+
-+#define mcp251x_read_stat_poll_timeout(addr, val, cond, delay_us, timeout_us) \
-+	readx_poll_timeout(mcp251x_read_stat, addr, val, cond, \
-+			   delay_us, timeout_us)
-+
- #ifdef CONFIG_GPIOLIB
- enum {
- 	MCP251X_GPIO_TX0RTS = 0,		/* inputs */
-@@ -709,7 +719,8 @@ static void mcp251x_hw_sleep(struct spi_device *spi)
- /* May only be called when device is sleeping! */
- static int mcp251x_hw_wake(struct spi_device *spi)
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index dd443e5d8cb7..77a5663693af 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -434,8 +434,8 @@ static void can_flush_echo_skb(struct net_device *dev)
+  * of the device driver. The driver must protect access to
+  * priv->echo_skb, if necessary.
+  */
+-void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+-		      unsigned int idx)
++int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
++		     unsigned int idx)
  {
--	unsigned long timeout;
-+	u8 value;
-+	int ret;
+ 	struct can_priv *priv = netdev_priv(dev);
  
- 	/* Force wakeup interrupt to wake device, but don't execute IST */
- 	disable_irq(spi->irq);
-@@ -722,14 +733,12 @@ static int mcp251x_hw_wake(struct spi_device *spi)
- 	mcp251x_write_reg(spi, CANCTRL, CANCTRL_REQOP_CONF);
- 
- 	/* Wait for the device to enter config mode */
--	timeout = jiffies + HZ;
--	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) !=
--			CANCTRL_REQOP_CONF) {
--		schedule();
--		if (time_after(jiffies, timeout)) {
--			dev_err(&spi->dev, "MCP251x didn't enter in config mode\n");
--			return -EBUSY;
--		}
-+	ret = mcp251x_read_stat_poll_timeout(spi, value, value == CANCTRL_REQOP_CONF,
-+					     MCP251X_OST_DELAY_MS * 1000,
-+					     USEC_PER_SEC);
-+	if (ret) {
-+		dev_err(&spi->dev, "MCP251x didn't enter in config mode\n");
-+		return ret;
+@@ -446,13 +446,13 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	    (skb->protocol != htons(ETH_P_CAN) &&
+ 	     skb->protocol != htons(ETH_P_CANFD))) {
+ 		kfree_skb(skb);
+-		return;
++		return 0;
  	}
  
- 	/* Disable and clear pending interrupts */
-@@ -784,7 +793,8 @@ static int mcp251x_do_set_mode(struct net_device *net, enum can_mode mode)
- static int mcp251x_set_normal_mode(struct spi_device *spi)
- {
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
--	unsigned long timeout;
-+	u8 value;
-+	int ret;
+ 	if (!priv->echo_skb[idx]) {
+ 		skb = can_create_echo_skb(skb);
+ 		if (!skb)
+-			return;
++			return -ENOMEM;
  
- 	/* Enable interrupts */
- 	mcp251x_write_reg(spi, CANINTE,
-@@ -802,13 +812,12 @@ static int mcp251x_set_normal_mode(struct spi_device *spi)
- 		mcp251x_write_reg(spi, CANCTRL, CANCTRL_REQOP_NORMAL);
- 
- 		/* Wait for the device to enter normal mode */
--		timeout = jiffies + HZ;
--		while (mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) {
--			schedule();
--			if (time_after(jiffies, timeout)) {
--				dev_err(&spi->dev, "MCP251x didn't enter in normal mode\n");
--				return -EBUSY;
--			}
-+		ret = mcp251x_read_stat_poll_timeout(spi, value, value == 0,
-+						     MCP251X_OST_DELAY_MS * 1000,
-+						     USEC_PER_SEC);
-+		if (ret) {
-+			dev_err(&spi->dev, "MCP251x didn't enter in normal mode\n");
-+			return ret;
- 		}
+ 		/* make settings for echo to reduce code in irq context */
+ 		skb->pkt_type = PACKET_BROADCAST;
+@@ -465,7 +465,10 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 		/* locking problem with netif_stop_queue() ?? */
+ 		netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
+ 		kfree_skb(skb);
++		return -EBUSY;
  	}
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
-@@ -852,7 +861,7 @@ static int mcp251x_setup(struct net_device *net, struct spi_device *spi)
- static int mcp251x_hw_reset(struct spi_device *spi)
- {
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
--	unsigned long timeout;
-+	u8 value;
- 	int ret;
- 
- 	/* Wait for oscillator startup timer after power up */
-@@ -867,19 +876,12 @@ static int mcp251x_hw_reset(struct spi_device *spi)
- 	mdelay(MCP251X_OST_DELAY_MS);
- 
- 	/* Wait for reset to finish */
--	timeout = jiffies + HZ;
--	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) !=
--	       CANCTRL_REQOP_CONF) {
--		usleep_range(MCP251X_OST_DELAY_MS * 1000,
--			     MCP251X_OST_DELAY_MS * 1000 * 2);
--
--		if (time_after(jiffies, timeout)) {
--			dev_err(&spi->dev,
--				"MCP251x didn't enter in conf mode after reset\n");
--			return -EBUSY;
--		}
--	}
--	return 0;
-+	ret = mcp251x_read_stat_poll_timeout(spi, value, value == CANCTRL_REQOP_CONF,
-+					     MCP251X_OST_DELAY_MS * 1000,
-+					     USEC_PER_SEC);
-+	if (ret)
-+		dev_err(&spi->dev, "MCP251x didn't enter in conf mode after reset\n");
-+	return ret;
++
++	return 0;
  }
+ EXPORT_SYMBOL_GPL(can_put_echo_skb);
  
- static int mcp251x_hw_probe(struct spi_device *spi)
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 516892566ac9..ed0482b2f4b2 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -201,8 +201,8 @@ void can_bus_off(struct net_device *dev);
+ void can_change_state(struct net_device *dev, struct can_frame *cf,
+ 		      enum can_state tx_state, enum can_state rx_state);
+ 
+-void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+-		      unsigned int idx);
++int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
++		     unsigned int idx);
+ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx,
+ 				   u8 *len_ptr);
+ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
 -- 
 2.28.0
 
