@@ -7,36 +7,37 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DDB0C47420
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6546C4346D
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DC33D2084C
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8F1E220888
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgIUNjI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        id S1727197AbgIUNiy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727256AbgIUNiy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:54 -0400
+        with ESMTP id S1727231AbgIUNix (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:53 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5239EC061755
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99A3C0613D8
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:52 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1s-0000ox-G9; Mon, 21 Sep 2020 15:38:52 +0200
+        id 1kKM1q-0000ox-Ms; Mon, 21 Sep 2020 15:38:50 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 16/38] can: mscan: mark expected switch fall-through
-Date:   Mon, 21 Sep 2020 15:38:23 +0200
-Message-Id: <20200921133845.2249271-17-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de, Masahiro Yamada <masahiroy@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 09/38] can: remove "WITH Linux-syscall-note" from SPDX tag of C files
+Date:   Mon, 21 Sep 2020 15:38:16 +0200
+Message-Id: <20200921133845.2249271-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -46,35 +47,63 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-As -Wimplicit-fallthrough is now enabled the mscan driver shows this warning,
-which is fixed by this patch:
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-drivers/net/can/mscan/mscan.c: In function ‘mscan_start_xmit’:
-drivers/net/can/mscan/mscan.c:211:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  211 |   netif_stop_queue(dev);
-      |   ^~~~~~~~~~~~~~~~~~~~~
-drivers/net/can/mscan/mscan.c:212:2: note: here
-  212 |  case 2:
-      |  ^~~~
+The "WITH Linux-syscall-note" exception is intended for UAPI headers.
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-17-mkl@pengutronix.de
+See LICENSES/exceptions/Linux-syscall-note
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Link: https://lore.kernel.org/r/20200403073741.18352-1-masahiroy@kernel.org
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/mscan/mscan.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/can/bcm.c  | 2 +-
+ net/can/gw.c   | 2 +-
+ net/can/proc.c | 2 +-
+ net/can/raw.c  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
-index 99101d7027a8..0b3532dd50e2 100644
---- a/drivers/net/can/mscan/mscan.c
-+++ b/drivers/net/can/mscan/mscan.c
-@@ -209,6 +209,7 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 		 * since buffer with lower id have higher priority (hell..)
- 		 */
- 		netif_stop_queue(dev);
-+		fallthrough;
- 	case 2:
- 		if (buf_id < priv->prev_buf_id) {
- 			priv->cur_pri++;
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index d14ea12affb1..4253915800e6 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+ /*
+  * bcm.c - Broadcast Manager to filter/send (cyclic) CAN content
+  *
+diff --git a/net/can/gw.c b/net/can/gw.c
+index 65d60c93af29..49b4e3d91ad6 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+ /* gw.c - CAN frame Gateway/Router/Bridge with netlink interface
+  *
+  * Copyright (c) 2019 Volkswagen Group Electronic Research
+diff --git a/net/can/proc.c b/net/can/proc.c
+index e6881bfc3ed1..a4eb06c9eb70 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+ /*
+  * proc.c - procfs support for Protocol family CAN core module
+  *
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 57235b29f571..24db4b4afdc7 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+ /* raw.c - Raw sockets for protocol family CAN
+  *
+  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
 -- 
 2.28.0
 
