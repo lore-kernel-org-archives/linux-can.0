@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD082C43468
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:48:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC8D5C43465
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:48:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D7602084C
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:48:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A765B2084C
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:48:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbgIUNr7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34618 "EHLO
+        id S1727363AbgIUNsI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727403AbgIUNqH (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:07 -0400
+        with ESMTP id S1727377AbgIUNqG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:06 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D79C0613D1
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E002C061755
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:06 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM8p-0003ED-NU; Mon, 21 Sep 2020 15:46:03 +0200
+        id 1kKM8o-0003ED-OV; Mon, 21 Sep 2020 15:46:02 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 06/38] can: raw: fix indention
-Date:   Mon, 21 Sep 2020 15:45:25 +0200
-Message-Id: <20200921134557.2251383-7-mkl@pengutronix.de>
+Subject: [PATCH 03/38] can: include: fix spelling mistakes
+Date:   Mon, 21 Sep 2020 15:45:22 +0200
+Message-Id: <20200921134557.2251383-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921134557.2251383-1-mkl@pengutronix.de>
 References: <20200921134557.2251383-1-mkl@pengutronix.de>
@@ -46,82 +46,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the indention to follow kernel coding style.
+This patch fixes spelling erros found by "codespell" in the
+include/linux/can subtree.
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-7-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20200915223527.1417033-4-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/raw.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ include/linux/can/core.h | 2 +-
+ include/linux/can/dev.h  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 94a9405658dc..57235b29f571 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -154,16 +154,16 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
- 	if (!skb)
- 		return;
+diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+index e20a0cd09ba5..7da9f1f82e8e 100644
+--- a/include/linux/can/core.h
++++ b/include/linux/can/core.h
+@@ -2,7 +2,7 @@
+ /*
+  * linux/can/core.h
+  *
+- * Protoypes and definitions for CAN protocol modules using the PF_CAN core
++ * Prototypes and definitions for CAN protocol modules using the PF_CAN core
+  *
+  * Authors: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+  *          Urs Thuermann   <urs.thuermann@volkswagen.de>
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 5e3d45525bd3..516892566ac9 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -108,7 +108,7 @@ static inline bool can_skb_headroom_valid(struct net_device *dev,
  
--	/*  Put the datagram to the queue so that raw_recvmsg() can
--	 *  get it from there.  We need to pass the interface index to
--	 *  raw_recvmsg().  We pass a whole struct sockaddr_can in skb->cb
--	 *  containing the interface index.
-+	/* Put the datagram to the queue so that raw_recvmsg() can get
-+	 * it from there. We need to pass the interface index to
-+	 * raw_recvmsg(). We pass a whole struct sockaddr_can in
-+	 * skb->cb containing the interface index.
- 	 */
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
  
- 	sock_skb_cb_check_size(sizeof(struct sockaddr_can));
- 	addr = (struct sockaddr_can *)skb->cb;
- 	memset(addr, 0, sizeof(*addr));
--	addr->can_family  = AF_CAN;
-+	addr->can_family = AF_CAN;
- 	addr->can_ifindex = skb->dev->ifindex;
- 
- 	/* add CAN specific message flags for raw_recvmsg() */
-@@ -290,8 +290,8 @@ static int raw_notifier(struct notifier_block *nb,
- 			kfree(ro->filter);
- 
- 		ro->ifindex = 0;
--		ro->bound   = 0;
--		ro->count   = 0;
-+		ro->bound = 0;
-+		ro->count = 0;
- 		release_sock(sk);
- 
- 		sk->sk_err = ENODEV;
-@@ -374,8 +374,8 @@ static int raw_release(struct socket *sock)
- 		kfree(ro->filter);
- 
- 	ro->ifindex = 0;
--	ro->bound   = 0;
--	ro->count   = 0;
-+	ro->bound = 0;
-+	ro->count = 0;
- 	free_percpu(ro->uniq);
- 
- 	sock_orphan(sk);
-@@ -773,7 +773,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	skb_setup_tx_timestamp(skb, sk->sk_tsflags);
- 
- 	skb->dev = dev;
--	skb->sk  = sk;
-+	skb->sk = sk;
- 	skb->priority = sk->sk_priority;
- 
- 	err = can_send(skb, ro->loopback);
-@@ -801,8 +801,8 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	int err = 0;
- 	int noblock;
- 
--	noblock =  flags & MSG_DONTWAIT;
--	flags   &= ~MSG_DONTWAIT;
-+	noblock = flags & MSG_DONTWAIT;
-+	flags &= ~MSG_DONTWAIT;
- 
- 	skb = skb_recv_datagram(sk, flags, noblock, &err);
- 	if (!skb)
+-		/* preform proper loopback on capable devices */
++		/* perform proper loopback on capable devices */
+ 		if (dev->flags & IFF_ECHO)
+ 			skb->pkt_type = PACKET_LOOPBACK;
+ 		else
 -- 
 2.28.0
 
