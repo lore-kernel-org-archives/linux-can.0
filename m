@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3F8CC4363D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23B9DC4363C
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 796BA2084C
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DF54320888
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727303AbgIUNjF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
+        id S1727212AbgIUNiy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727270AbgIUNjC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:39:02 -0400
+        with ESMTP id S1727197AbgIUNix (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:53 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5D7C0613D2
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:39:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23473C0613D9
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:53 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1y-0000ox-5V; Mon, 21 Sep 2020 15:38:58 +0200
+        id 1kKM1r-0000ox-6u; Mon, 21 Sep 2020 15:38:51 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 32/38] can: rx-offload: can_rx_offload_add_manual(): add new initialization function
-Date:   Mon, 21 Sep 2020 15:38:39 +0200
-Message-Id: <20200921133845.2249271-33-mkl@pengutronix.de>
+Subject: [PATCH 11/38] can: dev: can_put_echo_skb(): propagate error in case of errors
+Date:   Mon, 21 Sep 2020 15:38:18 +0200
+Message-Id: <20200921133845.2249271-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
@@ -45,56 +45,77 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds a new initialization function:
-can_rx_offload_add_manual()
+The function can_put_echo_skb() can fail for several reasons. It may
+fail due to OOM, but when it fails it's usually due to locking problems
+in the driver.
 
-It should be used to add support rx-offload to a driver, if the callback
-mechanism should not be used. Use e.g. can_rx_offload_queue_sorted() to queue
-skbs into rx-offload.
+In order to help developing and debugging of new drivers propagate error
+value in case of errors.
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-33-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20200915223527.1417033-12-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rx-offload.c   | 11 +++++++++++
- include/linux/can/rx-offload.h |  3 +++
- 2 files changed, 14 insertions(+)
+ drivers/net/can/dev.c   | 11 +++++++----
+ include/linux/can/dev.h |  4 ++--
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
-index e8328910a234..3b180269a92d 100644
---- a/drivers/net/can/rx-offload.c
-+++ b/drivers/net/can/rx-offload.c
-@@ -351,6 +351,17 @@ int can_rx_offload_add_fifo(struct net_device *dev,
- }
- EXPORT_SYMBOL_GPL(can_rx_offload_add_fifo);
- 
-+int can_rx_offload_add_manual(struct net_device *dev,
-+			      struct can_rx_offload *offload,
-+			      unsigned int weight)
-+{
-+	if (offload->mailbox_read)
-+		return -EINVAL;
-+
-+	return can_rx_offload_init_queue(dev, offload, weight);
-+}
-+EXPORT_SYMBOL_GPL(can_rx_offload_add_manual);
-+
- void can_rx_offload_enable(struct can_rx_offload *offload)
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index dd443e5d8cb7..77a5663693af 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -434,8 +434,8 @@ static void can_flush_echo_skb(struct net_device *dev)
+  * of the device driver. The driver must protect access to
+  * priv->echo_skb, if necessary.
+  */
+-void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+-		      unsigned int idx)
++int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
++		     unsigned int idx)
  {
- 	napi_enable(&offload->napi);
-diff --git a/include/linux/can/rx-offload.h b/include/linux/can/rx-offload.h
-index 1b78a0cfb615..f1b38088b765 100644
---- a/include/linux/can/rx-offload.h
-+++ b/include/linux/can/rx-offload.h
-@@ -35,6 +35,9 @@ int can_rx_offload_add_timestamp(struct net_device *dev,
- int can_rx_offload_add_fifo(struct net_device *dev,
- 			    struct can_rx_offload *offload,
- 			    unsigned int weight);
-+int can_rx_offload_add_manual(struct net_device *dev,
-+			      struct can_rx_offload *offload,
-+			      unsigned int weight);
- int can_rx_offload_irq_offload_timestamp(struct can_rx_offload *offload,
- 					 u64 reg);
- int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload);
+ 	struct can_priv *priv = netdev_priv(dev);
+ 
+@@ -446,13 +446,13 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	    (skb->protocol != htons(ETH_P_CAN) &&
+ 	     skb->protocol != htons(ETH_P_CANFD))) {
+ 		kfree_skb(skb);
+-		return;
++		return 0;
+ 	}
+ 
+ 	if (!priv->echo_skb[idx]) {
+ 		skb = can_create_echo_skb(skb);
+ 		if (!skb)
+-			return;
++			return -ENOMEM;
+ 
+ 		/* make settings for echo to reduce code in irq context */
+ 		skb->pkt_type = PACKET_BROADCAST;
+@@ -465,7 +465,10 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 		/* locking problem with netif_stop_queue() ?? */
+ 		netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
+ 		kfree_skb(skb);
++		return -EBUSY;
+ 	}
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(can_put_echo_skb);
+ 
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 516892566ac9..ed0482b2f4b2 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -201,8 +201,8 @@ void can_bus_off(struct net_device *dev);
+ void can_change_state(struct net_device *dev, struct can_frame *cf,
+ 		      enum can_state tx_state, enum can_state rx_state);
+ 
+-void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+-		      unsigned int idx);
++int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
++		     unsigned int idx);
+ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx,
+ 				   u8 *len_ptr);
+ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
 -- 
 2.28.0
 
