@@ -7,36 +7,38 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEBFEC4346B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EB53C43466
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:46:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 95FB92084C
+	by mail.kernel.org (Postfix) with ESMTP id 4F28E2084C
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:46:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbgIUNqc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        id S1727435AbgIUNqd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727440AbgIUNqb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:31 -0400
+        with ESMTP id S1727481AbgIUNqc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:32 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E12C0613DE
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBB8C0613BA
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:18 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM8s-0003ED-42; Mon, 21 Sep 2020 15:46:06 +0200
+        id 1kKM8x-0003ED-LU; Mon, 21 Sep 2020 15:46:11 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 13/38] can: dev: can_bus_off(): print scheduling of restart if activated
-Date:   Mon, 21 Sep 2020 15:45:32 +0200
-Message-Id: <20200921134557.2251383-14-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        =?UTF-8?q?Timo=20Schl=C3=BC=C3=9Fler?= <schluessler@krause.de>
+Subject: [PATCH 25/38] dt-bindings: can: mcp251x: document GPIO support
+Date:   Mon, 21 Sep 2020 15:45:44 +0200
+Message-Id: <20200921134557.2251383-26-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921134557.2251383-1-mkl@pengutronix.de>
 References: <20200921134557.2251383-1-mkl@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -46,32 +48,37 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-If a CAN device goes into bus-off and has automatic restart enabled, inform
-user that a automatic restart is scheduled after the configured delay.
+The next patch adds gpio controller support to the mcp251x driver. This
+patch updates the binding accordingly.
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-14-mkl@pengutronix.de
+Cc: Timo Schlüßler <schluessler@krause.de>
+Link: https://lore.kernel.org/r/20200915223527.1417033-26-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/net/can/microchip,mcp251x.txt        | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index e0caf969e342..3c40bba71d5b 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -639,7 +639,11 @@ void can_bus_off(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
+index e689506ac38d..381f8fb3e865 100644
+--- a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
++++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
+@@ -12,6 +12,9 @@ Required properties:
+ Optional properties:
+  - vdd-supply: Regulator that powers the CAN controller.
+  - xceiver-supply: Regulator that powers the CAN transceiver.
++ - gpio-controller: Indicates this device is a GPIO controller.
++ - #gpio-cells: Should be two. The first cell is the pin number and
++                the second cell is used to specify the gpio polarity.
  
--	netdev_info(dev, "bus-off\n");
-+	if (priv->restart_ms)
-+		netdev_info(dev, "bus-off, scheduling restart in %d ms\n",
-+			    priv->restart_ms);
-+	else
-+		netdev_info(dev, "bus-off\n");
- 
- 	netif_carrier_off(dev);
- 
+ Example:
+ 	can0: can@1 {
+@@ -22,4 +25,6 @@ Example:
+ 		interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
+ 		vdd-supply = <&reg5v0>;
+ 		xceiver-supply = <&reg5v0>;
++		gpio-controller;
++		#gpio-cells = <2>;
+ 	};
 -- 
 2.28.0
 
