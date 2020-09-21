@@ -4,42 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35C49C43468
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 675A9C43469
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EA37B2084C
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2A4BE20888
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727667AbgIUNrU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+        id S1727474AbgIUNr1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727404AbgIUNqc (ORCPT
+        with ESMTP id S1727472AbgIUNqc (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:32 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE28C0613AD
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A619C0613B3
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:16 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM8v-0003ED-Jp; Mon, 21 Sep 2020 15:46:09 +0200
+        id 1kKM8w-0003ED-DI; Mon, 21 Sep 2020 15:46:10 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Wang Hai <wanghai38@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>,
+        kernel@pengutronix.de,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 19/38] can: peak_canfd: Remove unused macros
-Date:   Mon, 21 Sep 2020 15:45:38 +0200
-Message-Id: <20200921134557.2251383-20-mkl@pengutronix.de>
+Subject: [PATCH 21/38] can: pcan_usb: Document the commands sent to the device
+Date:   Mon, 21 Sep 2020 15:45:40 +0200
+Message-Id: <20200921134557.2251383-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921134557.2251383-1-mkl@pengutronix.de>
 References: <20200921134557.2251383-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -49,33 +48,111 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-CANFD_CLK_SEL_DIV_MASK and CANFD_OPTIONS_SET are
-never used after they were introduced. Remove them.
+This patch documents the functions and numbers of the commands sent by the
+driver to the PCAN-USB CAN device from PEAK-System GmbH.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Link: https://lore.kernel.org/r/20200904131247.23021-1-wanghai38@huawei.com
-[mkl: keep CANFD_CLK_SEL_DIV_MASK for documentation purpose]
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Link: https://lore.kernel.org/r/20191206153803.17725-2-s.grosjean@peak-system.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/peak_canfd/peak_pciefd_main.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 33 +++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-index 9469d4421afe..0df1cdfa6835 100644
---- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
-+++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-@@ -116,8 +116,6 @@ MODULE_LICENSE("GPL v2");
- #define CANFD_CTL_IRQ_CL_DEF	16	/* Rx msg max nb per IRQ in Rx DMA */
- #define CANFD_CTL_IRQ_TL_DEF	10	/* Time before IRQ if < CL (x100 µs) */
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 66d0198e7834..76468250cabf 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -34,6 +34,22 @@ MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB adapter");
+ #define PCAN_USB_CMD_LEN		(PCAN_USB_CMD_ARGS + \
+ 					 PCAN_USB_CMD_ARGS_LEN)
  
--#define CANFD_OPTIONS_SET	(CANFD_OPTION_ERROR | CANFD_OPTION_BUSLOAD)
--
- /* Tx anticipation window (link logical address should be aligned on 2K
-  * boundary)
-  */
++/* PCAN-USB commands */
++#define PCAN_USB_CMD_BITRATE	1
++#define PCAN_USB_CMD_SET_BUS	3
++#define PCAN_USB_CMD_DEVID	4
++#define PCAN_USB_CMD_SN		6
++#define PCAN_USB_CMD_REGISTER	9
++#define PCAN_USB_CMD_EXT_VCC	10
++
++/* PCAN_USB_CMD_SET_BUS number arg */
++#define PCAN_USB_BUS_XCVER		2
++#define PCAN_USB_BUS_SILENT_MODE	3
++
++/* PCAN_USB_CMD_xxx functions */
++#define PCAN_USB_GET		1
++#define PCAN_USB_SET		2
++
+ /* PCAN-USB command timeout (ms.) */
+ #define PCAN_USB_COMMAND_TIMEOUT	1000
+ 
+@@ -172,7 +188,8 @@ static int pcan_usb_set_sja1000(struct peak_usb_device *dev, u8 mode)
+ 		[1] = mode,
+ 	};
+ 
+-	return pcan_usb_send_cmd(dev, 9, 2, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_REGISTER, PCAN_USB_SET,
++				 args);
+ }
+ 
+ static int pcan_usb_set_bus(struct peak_usb_device *dev, u8 onoff)
+@@ -181,7 +198,8 @@ static int pcan_usb_set_bus(struct peak_usb_device *dev, u8 onoff)
+ 		[0] = !!onoff,
+ 	};
+ 
+-	return pcan_usb_send_cmd(dev, 3, 2, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_SET_BUS, PCAN_USB_BUS_XCVER,
++				 args);
+ }
+ 
+ static int pcan_usb_set_silent(struct peak_usb_device *dev, u8 onoff)
+@@ -190,7 +208,8 @@ static int pcan_usb_set_silent(struct peak_usb_device *dev, u8 onoff)
+ 		[0] = !!onoff,
+ 	};
+ 
+-	return pcan_usb_send_cmd(dev, 3, 3, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_SET_BUS,
++				 PCAN_USB_BUS_SILENT_MODE, args);
+ }
+ 
+ static int pcan_usb_set_ext_vcc(struct peak_usb_device *dev, u8 onoff)
+@@ -199,7 +218,7 @@ static int pcan_usb_set_ext_vcc(struct peak_usb_device *dev, u8 onoff)
+ 		[0] = !!onoff,
+ 	};
+ 
+-	return pcan_usb_send_cmd(dev, 10, 2, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_EXT_VCC, PCAN_USB_SET, args);
+ }
+ 
+ /*
+@@ -223,7 +242,7 @@ static int pcan_usb_set_bittiming(struct peak_usb_device *dev,
+ 	args[0] = btr1;
+ 	args[1] = btr0;
+ 
+-	return pcan_usb_send_cmd(dev, 1, 2, args);
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_BITRATE, PCAN_USB_SET, args);
+ }
+ 
+ /*
+@@ -307,7 +326,7 @@ static int pcan_usb_get_serial(struct peak_usb_device *dev, u32 *serial_number)
+ 	u8 args[PCAN_USB_CMD_ARGS_LEN];
+ 	int err;
+ 
+-	err = pcan_usb_wait_rsp(dev, 6, 1, args);
++	err = pcan_usb_wait_rsp(dev, PCAN_USB_CMD_SN, PCAN_USB_GET, args);
+ 	if (err) {
+ 		netdev_err(dev->netdev, "getting serial failure: %d\n", err);
+ 	} else if (serial_number) {
+@@ -328,7 +347,7 @@ static int pcan_usb_get_device_id(struct peak_usb_device *dev, u32 *device_id)
+ 	u8 args[PCAN_USB_CMD_ARGS_LEN];
+ 	int err;
+ 
+-	err = pcan_usb_wait_rsp(dev, 4, 1, args);
++	err = pcan_usb_wait_rsp(dev, PCAN_USB_CMD_DEVID, PCAN_USB_GET, args);
+ 	if (err)
+ 		netdev_err(dev->netdev, "getting device id failure: %d\n", err);
+ 	else if (device_id)
 -- 
 2.28.0
 
