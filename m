@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BD71C43465
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 013F7C4363A
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E395220888
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BC22F20866
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgIUNjE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
+        id S1727300AbgIUNjF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727265AbgIUNiy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:54 -0400
+        with ESMTP id S1727302AbgIUNjB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:39:01 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EE9C061755
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B9CC0613D0
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:39:01 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1s-0000ox-Pr; Mon, 21 Sep 2020 15:38:52 +0200
+        id 1kKM1x-0000ox-BR; Mon, 21 Sep 2020 15:38:57 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Dejin Zheng <zhengdejin5@gmail.com>,
+Cc:     kernel@pengutronix.de, Tim Harvey <tharvey@gateworks.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 17/38] can: ti_hecc: convert to devm_platform_ioremap_resource_byname()
-Date:   Mon, 21 Sep 2020 15:38:24 +0200
-Message-Id: <20200921133845.2249271-18-mkl@pengutronix.de>
+Subject: [PATCH 29/38] can: mcp251x: add support for half duplex controllers
+Date:   Mon, 21 Sep 2020 15:38:36 +0200
+Message-Id: <20200921133845.2249271-30-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
@@ -46,77 +46,81 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dejin Zheng <zhengdejin5@gmail.com>
+From: Tim Harvey <tharvey@gateworks.com>
 
-Use the function devm_platform_ioremap_resource_byname() to simplify
-source code which calls the functions platform_get_resource_byname()
-and devm_ioremap_resource(). Remove also a few error messages which
-became unnecessary with this software refactoring.
+Some SPI host controllers do not support full-duplex SPI and are
+marked as such via the SPI_CONTROLLER_HALF_DUPLEX controller flag.
 
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-Link: https://lore.kernel.org/r/20200420132207.8536-1-zhengdejin5@gmail.com
+For such controllers use half duplex transactions but retain full
+duplex transactions for the controllers that can handle those.
+
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Link: https://lore.kernel.org/r/1595516275-1179-1-git-send-email-tharvey@gateworks.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ti_hecc.c | 27 +++++----------------------
- 1 file changed, 5 insertions(+), 22 deletions(-)
+ drivers/net/can/spi/mcp251x.c | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index fc76f7ad735a..1d63006c97bc 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -857,7 +857,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	struct net_device *ndev = (struct net_device *)0;
- 	struct ti_hecc_priv *priv;
- 	struct device_node *np = pdev->dev.of_node;
--	struct resource *res, *irq;
-+	struct resource *irq;
- 	struct regulator *reg_xceiver;
- 	int err = -ENODEV;
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index 3bf57bc9b3ff..22d814ae4edc 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -322,8 +322,12 @@ static u8 mcp251x_read_reg(struct spi_device *spi, u8 reg)
+ 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
+ 	priv->spi_tx_buf[1] = reg;
  
-@@ -878,39 +878,22 @@ static int ti_hecc_probe(struct platform_device *pdev)
- 	priv = netdev_priv(ndev);
+-	mcp251x_spi_trans(spi, 3);
+-	val = priv->spi_rx_buf[2];
++	if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
++		spi_write_then_read(spi, priv->spi_tx_buf, 2, &val, 1);
++	} else {
++		mcp251x_spi_trans(spi, 3);
++		val = priv->spi_rx_buf[2];
++	}
  
- 	/* handle hecc memory */
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc");
--	if (!res) {
--		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc\n");
--		return -EINVAL;
--	}
--
--	priv->base = devm_ioremap_resource(&pdev->dev, res);
-+	priv->base = devm_platform_ioremap_resource_byname(pdev, "hecc");
- 	if (IS_ERR(priv->base)) {
- 		dev_err(&pdev->dev, "hecc ioremap failed\n");
- 		return PTR_ERR(priv->base);
+ 	return val;
+ }
+@@ -335,10 +339,18 @@ static void mcp251x_read_2regs(struct spi_device *spi, u8 reg, u8 *v1, u8 *v2)
+ 	priv->spi_tx_buf[0] = INSTRUCTION_READ;
+ 	priv->spi_tx_buf[1] = reg;
+ 
+-	mcp251x_spi_trans(spi, 4);
++	if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
++		u8 val[2] = { 0 };
+ 
+-	*v1 = priv->spi_rx_buf[2];
+-	*v2 = priv->spi_rx_buf[3];
++		spi_write_then_read(spi, priv->spi_tx_buf, 2, val, 2);
++		*v1 = val[0];
++		*v2 = val[1];
++	} else {
++		mcp251x_spi_trans(spi, 4);
++
++		*v1 = priv->spi_rx_buf[2];
++		*v2 = priv->spi_rx_buf[3];
++	}
+ }
+ 
+ static void mcp251x_write_reg(struct spi_device *spi, u8 reg, u8 val)
+@@ -657,8 +669,16 @@ static void mcp251x_hw_rx_frame(struct spi_device *spi, u8 *buf,
+ 			buf[i] = mcp251x_read_reg(spi, RXBCTRL(buf_idx) + i);
+ 	} else {
+ 		priv->spi_tx_buf[RXBCTRL_OFF] = INSTRUCTION_READ_RXB(buf_idx);
+-		mcp251x_spi_trans(spi, SPI_TRANSFER_BUF_LEN);
+-		memcpy(buf, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN);
++		if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
++			spi_write_then_read(spi, priv->spi_tx_buf, 1,
++					    priv->spi_rx_buf,
++					    SPI_TRANSFER_BUF_LEN);
++			memcpy(buf + 1, priv->spi_rx_buf,
++			       SPI_TRANSFER_BUF_LEN - 1);
++		} else {
++			mcp251x_spi_trans(spi, SPI_TRANSFER_BUF_LEN);
++			memcpy(buf, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN);
++		}
  	}
+ }
  
- 	/* handle hecc-ram memory */
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc-ram");
--	if (!res) {
--		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc-ram\n");
--		return -EINVAL;
--	}
--
--	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
-+	priv->hecc_ram = devm_platform_ioremap_resource_byname(pdev,
-+							       "hecc-ram");
- 	if (IS_ERR(priv->hecc_ram)) {
- 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
- 		return PTR_ERR(priv->hecc_ram);
- 	}
- 
- 	/* handle mbx memory */
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mbx");
--	if (!res) {
--		dev_err(&pdev->dev, "can't get IORESOURCE_MEM mbx\n");
--		return -EINVAL;
--	}
--
--	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
-+	priv->mbx = devm_platform_ioremap_resource_byname(pdev, "mbx");
- 	if (IS_ERR(priv->mbx)) {
- 		dev_err(&pdev->dev, "mbx ioremap failed\n");
- 		return PTR_ERR(priv->mbx);
 -- 
 2.28.0
 
