@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C215C43465
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01F72C43466
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6C0B92084C
+	by mail.kernel.org (Postfix) with ESMTP id C628C2084C
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727455AbgIUNrc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727681AbgIUNrc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 21 Sep 2020 09:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727446AbgIUNqb (ORCPT
+        with ESMTP id S1727455AbgIUNqb (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBC1C0613E6
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B30C0613A7
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:14 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM8t-0003ED-JG; Mon, 21 Sep 2020 15:46:07 +0200
+        id 1kKM8u-0003ED-Sc; Mon, 21 Sep 2020 15:46:08 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, YueHaibing <yuehaibing@huawei.com>,
+        kernel@pengutronix.de, Dejin Zheng <zhengdejin5@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 14/38] can: c_can: Remove unused inline function
-Date:   Mon, 21 Sep 2020 15:45:33 +0200
-Message-Id: <20200921134557.2251383-15-mkl@pengutronix.de>
+Subject: [PATCH 17/38] can: ti_hecc: convert to devm_platform_ioremap_resource_byname()
+Date:   Mon, 21 Sep 2020 15:45:36 +0200
+Message-Id: <20200921134557.2251383-18-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921134557.2251383-1-mkl@pengutronix.de>
 References: <20200921134557.2251383-1-mkl@pengutronix.de>
@@ -47,38 +47,77 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Dejin Zheng <zhengdejin5@gmail.com>
 
-commit 524369e2391f ("can: c_can: remove obsolete STRICT_FRAME_ORDERING Kconfig option")
-left behind this, remove it.
+Use the function devm_platform_ioremap_resource_byname() to simplify
+source code which calls the functions platform_get_resource_byname()
+and devm_ioremap_resource(). Remove also a few error messages which
+became unnecessary with this software refactoring.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20200505084149.23848-1-yuehaibing@huawei.com
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+Link: https://lore.kernel.org/r/20200420132207.8536-1-zhengdejin5@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ drivers/net/can/ti_hecc.c | 27 +++++----------------------
+ 1 file changed, 5 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 8e9f5620c9a2..1ccdbe89585b 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -356,15 +356,6 @@ static void c_can_setup_tx_object(struct net_device *dev, int iface,
- 	}
- }
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index fc76f7ad735a..1d63006c97bc 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -857,7 +857,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	struct net_device *ndev = (struct net_device *)0;
+ 	struct ti_hecc_priv *priv;
+ 	struct device_node *np = pdev->dev.of_node;
+-	struct resource *res, *irq;
++	struct resource *irq;
+ 	struct regulator *reg_xceiver;
+ 	int err = -ENODEV;
  
--static inline void c_can_activate_all_lower_rx_msg_obj(struct net_device *dev,
--						       int iface)
--{
--	int i;
+@@ -878,39 +878,22 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	priv = netdev_priv(ndev);
+ 
+ 	/* handle hecc memory */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc");
+-	if (!res) {
+-		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc\n");
+-		return -EINVAL;
+-	}
 -
--	for (i = C_CAN_MSG_OBJ_RX_FIRST; i <= C_CAN_MSG_RX_LOW_LAST; i++)
--		c_can_object_get(dev, iface, i, IF_COMM_CLR_NEWDAT);
--}
+-	priv->base = devm_ioremap_resource(&pdev->dev, res);
++	priv->base = devm_platform_ioremap_resource_byname(pdev, "hecc");
+ 	if (IS_ERR(priv->base)) {
+ 		dev_err(&pdev->dev, "hecc ioremap failed\n");
+ 		return PTR_ERR(priv->base);
+ 	}
+ 
+ 	/* handle hecc-ram memory */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc-ram");
+-	if (!res) {
+-		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc-ram\n");
+-		return -EINVAL;
+-	}
 -
- static int c_can_handle_lost_msg_obj(struct net_device *dev,
- 				     int iface, int objno, u32 ctrl)
- {
+-	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
++	priv->hecc_ram = devm_platform_ioremap_resource_byname(pdev,
++							       "hecc-ram");
+ 	if (IS_ERR(priv->hecc_ram)) {
+ 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
+ 		return PTR_ERR(priv->hecc_ram);
+ 	}
+ 
+ 	/* handle mbx memory */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mbx");
+-	if (!res) {
+-		dev_err(&pdev->dev, "can't get IORESOURCE_MEM mbx\n");
+-		return -EINVAL;
+-	}
+-
+-	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
++	priv->mbx = devm_platform_ioremap_resource_byname(pdev, "mbx");
+ 	if (IS_ERR(priv->mbx)) {
+ 		dev_err(&pdev->dev, "mbx ioremap failed\n");
+ 		return PTR_ERR(priv->mbx);
 -- 
 2.28.0
 
