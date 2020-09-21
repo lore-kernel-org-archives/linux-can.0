@@ -2,86 +2,109 @@ Return-Path: <SRS0=XQ7n=C6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC8D5C43465
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:48:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D912EC4363C
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 19:34:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A765B2084C
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:48:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 99275216C4
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 19:34:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1600716843;
+	bh=o97U3EzewULg35Mi3mRHRtkdaO0je/TfbdDP9i/jnpI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=OJADa/XuW5XZlhg/JQXnevEcQxzkKr0iDyLUgGXh/SqnAIEUBu/zhuvm4ndiWobrf
+	 Ox19fREPB6t4A1G24Ee79aS2lBWl/45yn3zWIx45cJSedZ6/8YM0qnOPGmyTAuFO9M
+	 DIy2QftZ/BN9SX6Ey8JDAXBqCogypIuI74AAcr8M=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbgIUNsI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727377AbgIUNqG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E002C061755
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:06 -0700 (PDT)
-Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kKM8o-0003ED-OV; Mon, 21 Sep 2020 15:46:02 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/38] can: include: fix spelling mistakes
-Date:   Mon, 21 Sep 2020 15:45:22 +0200
-Message-Id: <20200921134557.2251383-4-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921134557.2251383-1-mkl@pengutronix.de>
-References: <20200921134557.2251383-1-mkl@pengutronix.de>
+        id S1727480AbgIUTd4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 15:33:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727197AbgIUTd4 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:33:56 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3565920757;
+        Mon, 21 Sep 2020 19:33:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600716836;
+        bh=o97U3EzewULg35Mi3mRHRtkdaO0je/TfbdDP9i/jnpI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OamyLmUQ3GiG4ZXAPB47n410lBMl6YaTkDa3O3ss/HY3OtbzbatGD8KRX0Z7gvePM
+         eHd2Q7l25vrUWPQY307s1gx/oTqn8B8/hete3h9OvLsyPeojGC0+eiurXeaxdd/HSc
+         BRvQt/pkGMPDZgjx5fH1P6VS0SwabwkS25dnYf+E=
+Date:   Mon, 21 Sep 2020 20:33:02 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        dev.kurt@vandijck-laurijssen.be
+Subject: Re: [PATCH v53 2/6] can: mcp25xxfd: add regmap infrastructure
+Message-ID: <20200921193302.GA45062@sirena.org.uk>
+References: <20200918172536.2074504-1-mkl@pengutronix.de>
+ <20200918172536.2074504-3-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
+Content-Disposition: inline
+In-Reply-To: <20200918172536.2074504-3-mkl@pengutronix.de>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes spelling erros found by "codespell" in the
-include/linux/can subtree.
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-4-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- include/linux/can/core.h | 2 +-
- include/linux/can/dev.h  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+--zYM0uCDKw75PZbzx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/linux/can/core.h b/include/linux/can/core.h
-index e20a0cd09ba5..7da9f1f82e8e 100644
---- a/include/linux/can/core.h
-+++ b/include/linux/can/core.h
-@@ -2,7 +2,7 @@
- /*
-  * linux/can/core.h
-  *
-- * Protoypes and definitions for CAN protocol modules using the PF_CAN core
-+ * Prototypes and definitions for CAN protocol modules using the PF_CAN core
-  *
-  * Authors: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-  *          Urs Thuermann   <urs.thuermann@volkswagen.de>
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 5e3d45525bd3..516892566ac9 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -108,7 +108,7 @@ static inline bool can_skb_headroom_valid(struct net_device *dev,
- 
- 		skb->ip_summed = CHECKSUM_UNNECESSARY;
- 
--		/* preform proper loopback on capable devices */
-+		/* perform proper loopback on capable devices */
- 		if (dev->flags & IFF_ECHO)
- 			skb->pkt_type = PACKET_LOOPBACK;
- 		else
--- 
-2.28.0
+On Fri, Sep 18, 2020 at 07:25:32PM +0200, Marc Kleine-Budde wrote:
 
+> +static int
+> +mcp25xxfd_regmap_nocrc_update_bits(void *context, unsigned int reg,
+> +				   unsigned int mask, unsigned int val)
+> +{
+
+This doesn't look like the hardware has an update_bits() operation so
+why is there a driver specific implementation?
+
+> +static int
+> +mcp25xxfd_regmap_init_nocrc(struct mcp25xxfd_priv *priv)
+> +{
+> +	if (!priv->map_nocrc) {
+> +		struct regmap *map;
+> +
+> +		map = devm_regmap_init(&priv->spi->dev, &mcp25xxfd_bus_nocrc,
+> +				       priv->spi, &mcp25xxfd_regmap_nocrc);
+
+Why all these checks to see if things might already be allocated?
+
+> +static void mcp25xxfd_regmap_destroy_nocrc(struct mcp25xxfd_priv *priv)
+> +{
+> +	if (priv->map_buf_nocrc_rx) {
+> +		devm_kfree(&priv->spi->dev, priv->map_buf_nocrc_rx);
+> +		priv->map_buf_nocrc_rx = NULL;
+> +	}
+
+Why explicitly free managed allocations like this?
+
+--zYM0uCDKw75PZbzx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9o/+0ACgkQJNaLcl1U
+h9A39gf+JImVo0G2X863KVPu3lFPOwhlw6UGGUhhKKUD2khBbyMVtCD9CtJJiQY7
+55EgR4z7Ix+KwIblPyCfwTtc9C1h35gE3xKo3oTEPCOSLCGldb/fGhpQjiXJzKSe
+0hJ4JhGKNQwY6FLDo9384vPXQ/5PzXvAR+xmvraemeiveiDNM5pZNUy/2+FP7qe+
+qEvagbn2/mIc0dRNdkHrzhIYHqa4X1PVZzcDyUiDQ7bm2mO++R0QMnBAA0h2r2o1
+qbDllqx1jlSJdTAjMhSVcnI5qmcIi8VdRKdUXM0ErVM0Z29f/o3Sp0JRMZ9msyPw
+Te5I7PcV1Ybkj3iWVt1LaXIizClQkA==
+=GLkU
+-----END PGP SIGNATURE-----
+
+--zYM0uCDKw75PZbzx--
