@@ -2,40 +2,43 @@ Return-Path: <SRS0=XQ7n=C6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA16BC43465
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18825C43469
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7307120866
+	by mail.kernel.org (Postfix) with ESMTP id D4E4720888
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727238AbgIUNix (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        id S1727226AbgIUNiy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727203AbgIUNiu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:50 -0400
+        with ESMTP id S1727237AbgIUNix (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:53 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7E6C0613D1
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68C1C0613D5
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:51 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1o-0000ox-F6; Mon, 21 Sep 2020 15:38:48 +0200
+        id 1kKM1p-0000ox-Vp; Mon, 21 Sep 2020 15:38:50 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/38] can: include: fix spelling mistakes
-Date:   Mon, 21 Sep 2020 15:38:10 +0200
-Message-Id: <20200921133845.2249271-4-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de,
+        =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@flameeyes.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 07/38] can: slcan: update dead link
+Date:   Mon, 21 Sep 2020 15:38:14 +0200
+Message-Id: <20200921133845.2249271-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -45,42 +48,34 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes spelling erros found by "codespell" in the
-include/linux/can subtree.
+From: Diego Elio Pettenò <flameeyes@flameeyes.com>
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-4-mkl@pengutronix.de
+BerliOS has not been operating for more than five years. linux-can moved to
+GitHub.
+
+Signed-off-by: Diego Elio Pettenò <flameeyes@flameeyes.com>
+Link: https://lore.kernel.org/r/20200413170241.13207-1-flameeyes@flameeyes.com
+[mkl: split into two patches - handle slcan part here]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/linux/can/core.h | 2 +-
- include/linux/can/dev.h  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/can/core.h b/include/linux/can/core.h
-index e20a0cd09ba5..7da9f1f82e8e 100644
---- a/include/linux/can/core.h
-+++ b/include/linux/can/core.h
-@@ -2,7 +2,7 @@
- /*
-  * linux/can/core.h
-  *
-- * Protoypes and definitions for CAN protocol modules using the PF_CAN core
-+ * Prototypes and definitions for CAN protocol modules using the PF_CAN core
-  *
-  * Authors: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
-  *          Urs Thuermann   <urs.thuermann@volkswagen.de>
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 5e3d45525bd3..516892566ac9 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -108,7 +108,7 @@ static inline bool can_skb_headroom_valid(struct net_device *dev,
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index f07012a76c0c..424970939fd4 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -41,8 +41,8 @@ config CAN_SLCAN
+ 	  www.canusb.com / www.can232.com / www.mictronics.de / www.canhack.de
  
- 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 	  Userspace tools to attach the SLCAN line discipline (slcan_attach,
+-	  slcand) can be found in the can-utils at the SocketCAN SVN, see
+-	  http://developer.berlios.de/projects/socketcan for details.
++	  slcand) can be found in the can-utils at the linux-can project, see
++	  https://github.com/linux-can/can-utils for details.
  
--		/* preform proper loopback on capable devices */
-+		/* perform proper loopback on capable devices */
- 		if (dev->flags & IFF_ECHO)
- 			skb->pkt_type = PACKET_LOOPBACK;
- 		else
+ 	  The slcan driver supports up to 10 CAN netdevices by default which
+ 	  can be changed by the 'maxdev=xx' module option. This driver can
 -- 
 2.28.0
 
