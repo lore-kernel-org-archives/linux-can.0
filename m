@@ -2,37 +2,39 @@ Return-Path: <SRS0=XQ7n=C6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E34A6C43469
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C230AC43466
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BDC3E2084C
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 956502084C
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:47:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727457AbgIUNrn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:47:43 -0400
+        id S1727442AbgIUNrw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:47:52 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727351AbgIUNqb (ORCPT
+        with ESMTP id S1727433AbgIUNqb (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89ACC0613E7
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C121CC0613D4
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:07 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM8u-0003ED-8u; Mon, 21 Sep 2020 15:46:08 +0200
+        id 1kKM8q-0003ED-E1; Mon, 21 Sep 2020 15:46:04 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 16/38] can: mscan: mark expected switch fall-through
-Date:   Mon, 21 Sep 2020 15:45:35 +0200
-Message-Id: <20200921134557.2251383-17-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@flameeyes.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 08/38] can: softing: update dead link
+Date:   Mon, 21 Sep 2020 15:45:27 +0200
+Message-Id: <20200921134557.2251383-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921134557.2251383-1-mkl@pengutronix.de>
 References: <20200921134557.2251383-1-mkl@pengutronix.de>
@@ -47,35 +49,32 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-As -Wimplicit-fallthrough is now enabled the mscan driver shows this warning,
-which is fixed by this patch:
+From: Diego Elio Pettenò <flameeyes@flameeyes.com>
 
-drivers/net/can/mscan/mscan.c: In function ‘mscan_start_xmit’:
-drivers/net/can/mscan/mscan.c:211:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  211 |   netif_stop_queue(dev);
-      |   ^~~~~~~~~~~~~~~~~~~~~
-drivers/net/can/mscan/mscan.c:212:2: note: here
-  212 |  case 2:
-      |  ^~~~
+BerliOS has not been operating for more than five years. linux-can moved to
+GitHub.
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-17-mkl@pengutronix.de
+Signed-off-by: Diego Elio Pettenò <flameeyes@flameeyes.com>
+Link: https://lore.kernel.org/r/20200413170241.13207-1-flameeyes@flameeyes.com
+[mkl: split into two patches - handle softing part here]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/mscan/mscan.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/softing/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
-index 99101d7027a8..0b3532dd50e2 100644
---- a/drivers/net/can/mscan/mscan.c
-+++ b/drivers/net/can/mscan/mscan.c
-@@ -209,6 +209,7 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 		 * since buffer with lower id have higher priority (hell..)
- 		 */
- 		netif_stop_queue(dev);
-+		fallthrough;
- 	case 2:
- 		if (buf_id < priv->prev_buf_id) {
- 			priv->cur_pri++;
+diff --git a/drivers/net/can/softing/Kconfig b/drivers/net/can/softing/Kconfig
+index 9edc73b13014..8afd7d0a1000 100644
+--- a/drivers/net/can/softing/Kconfig
++++ b/drivers/net/can/softing/Kconfig
+@@ -24,7 +24,7 @@ config CAN_SOFTING_CS
+ 	  Support for PCMCIA cards from Softing Gmbh & some cards
+ 	  from Vector Gmbh.
+ 	  You need firmware for these, which you can get at
+-	  http://developer.berlios.de/projects/socketcan/
++	  https://github.com/linux-can/can-firmware
+ 	  This version of the driver is written against
+ 	  firmware version 4.6 (softing-fw-4.6-binaries.tar.gz)
+ 	  In order to use the card as CAN device, you need the Softing generic
 -- 
 2.28.0
 
