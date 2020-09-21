@@ -7,31 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66D9BC4346F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 426D8C43478
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2F6A720866
+	by mail.kernel.org (Postfix) with ESMTP id 11DC52084C
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727231AbgIUNiy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
+        id S1727274AbgIUNjB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727226AbgIUNix (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:53 -0400
+        with ESMTP id S1727269AbgIUNi4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:56 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB44C0613D3
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4326C061755
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:56 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1o-0000ox-Ul; Mon, 21 Sep 2020 15:38:49 +0200
+        id 1kKM1u-0000ox-Q3; Mon, 21 Sep 2020 15:38:54 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 05/38] can: drivers: fix spelling mistakes
-Date:   Mon, 21 Sep 2020 15:38:12 +0200
-Message-Id: <20200921133845.2249271-6-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 22/38] can: pcan_usb: add support of rxerr/txerr counters
+Date:   Mon, 21 Sep 2020 15:38:29 +0200
+Message-Id: <20200921133845.2249271-23-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
@@ -45,422 +47,275 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes spelling erros found by "codespell" in the
-drivers/net/can subtree.
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-6-mkl@pengutronix.de
+This patch adds the support of the rx/tx errors CAN counters to the
+driver of the PCAN-USB PC-CAN interface from PEAK-System GmbH.
+
+The PCAN-USB is capable of giving back the values of the rx/tx errors
+counters, to provide more details and statistics to the linux-can layer.
+Getting these values allows the driver to better tune CAN_ERR_CRTL_TX_xxx
+and CAN_ERR_CRTL_RX_xxx bits in case of the interface enters any
+CAN_STATE_ERROR_xxx state.
+
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Link: https://lore.kernel.org/r/20191206153803.17725-3-s.grosjean@peak-system.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c                  | 8 ++++----
- drivers/net/can/cc770/cc770.c               | 2 +-
- drivers/net/can/cc770/cc770.h               | 2 +-
- drivers/net/can/grcan.c                     | 2 +-
- drivers/net/can/m_can/Kconfig               | 2 +-
- drivers/net/can/pch_can.c                   | 4 ++--
- drivers/net/can/sja1000/peak_pci.c          | 2 +-
- drivers/net/can/sja1000/peak_pcmcia.c       | 2 +-
- drivers/net/can/softing/Kconfig             | 4 ++--
- drivers/net/can/softing/softing_fw.c        | 8 ++++----
- drivers/net/can/softing/softing_main.c      | 8 ++++----
- drivers/net/can/softing/softing_platform.h  | 2 +-
- drivers/net/can/ti_hecc.c                   | 2 +-
- drivers/net/can/usb/Kconfig                 | 2 +-
- drivers/net/can/usb/gs_usb.c                | 4 ++--
- drivers/net/can/usb/mcba_usb.c              | 2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c  | 4 ++--
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 2 +-
- drivers/net/can/usb/ucan.c                  | 4 ++--
- drivers/net/can/usb/usb_8dev.c              | 4 ++--
- drivers/net/can/xilinx_can.c                | 2 +-
- 21 files changed, 36 insertions(+), 36 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 133 +++++++++++++++++++++---
+ 1 file changed, 117 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 38e9f80ed1ef..c14de95d2ca7 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -643,7 +643,7 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
-  *
-  * The first message goes into mb nr. 1 and issues an interrupt. All
-  * rx ints are disabled in the interrupt handler and a napi poll is
-- * scheduled. We read the mailbox, but do _not_ reenable the mb (to
-+ * scheduled. We read the mailbox, but do _not_ re-enable the mb (to
-  * receive another message).
-  *
-  *    lower mbxs      upper
-@@ -661,13 +661,13 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
-  *
-  * The variable priv->rx_next points to the next mailbox to read a
-  * message from. As long we're in the lower mailboxes we just read the
-- * mailbox but not reenable it.
-+ * mailbox but not re-enable it.
-  *
-- * With completion of the last of the lower mailboxes, we reenable the
-+ * With completion of the last of the lower mailboxes, we re-enable the
-  * whole first group, but continue to look for filled mailboxes in the
-  * upper mailboxes. Imagine the second group like overflow mailboxes,
-  * which takes CAN messages if the lower goup is full. While in the
-- * upper group we reenable the mailbox right after reading it. Giving
-+ * upper group we re-enable the mailbox right after reading it. Giving
-  * the chip more room to store messages.
-  *
-  * After finishing we look again in the lower group if we've still
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index 7cdc232cbfea..07e2b8df5153 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -538,7 +538,7 @@ static int cc770_err(struct net_device *dev, u8 status)
- 			priv->can.can_stats.error_warning++;
- 		}
- 	} else {
--		/* Back to error avtive */
-+		/* Back to error active */
- 		cf->can_id |= CAN_ERR_PROT;
- 		cf->data[2] = CAN_ERR_PROT_ACTIVE;
- 		priv->can.state = CAN_STATE_ERROR_ACTIVE;
-diff --git a/drivers/net/can/cc770/cc770.h b/drivers/net/can/cc770/cc770.h
-index 948541491ab5..0628fd9e1980 100644
---- a/drivers/net/can/cc770/cc770.h
-+++ b/drivers/net/can/cc770/cc770.h
-@@ -184,7 +184,7 @@ struct cc770_priv {
- 	u8 control_normal_mode;	/* Control register for normal mode */
- 	u8 cpu_interface;	/* CPU interface register */
- 	u8 clkout;		/* Clock out register */
--	u8 bus_config;		/* Bus conffiguration register */
-+	u8 bus_config;		/* Bus configuration register */
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 76468250cabf..63bd2ed96697 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -41,6 +41,7 @@ MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB adapter");
+ #define PCAN_USB_CMD_SN		6
+ #define PCAN_USB_CMD_REGISTER	9
+ #define PCAN_USB_CMD_EXT_VCC	10
++#define PCAN_USB_CMD_ERR_FR	11
  
- 	struct sk_buff *tx_skb;
+ /* PCAN_USB_CMD_SET_BUS number arg */
+ #define PCAN_USB_BUS_XCVER		2
+@@ -82,6 +83,10 @@ MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB adapter");
+ #define PCAN_USB_ERROR_QOVR		0x40
+ #define PCAN_USB_ERROR_TXQFULL		0x80
+ 
++#define PCAN_USB_ERROR_BUS		(PCAN_USB_ERROR_BUS_LIGHT | \
++					 PCAN_USB_ERROR_BUS_HEAVY | \
++					 PCAN_USB_ERROR_BUS_OFF)
++
+ /* SJA1000 modes */
+ #define SJA1000_MODE_NORMAL		0x00
+ #define SJA1000_MODE_INIT		0x01
+@@ -101,11 +106,25 @@ MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB adapter");
+ #define PCAN_USB_REC_TS			4
+ #define PCAN_USB_REC_BUSEVT		5
+ 
++/* CAN bus events notifications selection mask */
++#define PCAN_USB_ERR_RXERR		0x02	/* ask for rxerr counter */
++#define PCAN_USB_ERR_TXERR		0x04	/* ask for txerr counter */
++
++/* This mask generates an usb packet each time the state of the bus changes.
++ * In other words, its interest is to know which side among rx and tx is
++ * responsible of the change of the bus state.
++ */
++#define PCAN_USB_BERR_MASK	(PCAN_USB_ERR_RXERR | PCAN_USB_ERR_TXERR)
++
++/* identify bus event packets with rx/tx error counters */
++#define PCAN_USB_ERR_CNT		0x80
++
+ /* private to PCAN-USB adapter */
+ struct pcan_usb {
+ 	struct peak_usb_device dev;
+ 	struct peak_time_ref time_ref;
+ 	struct timer_list restart_timer;
++	struct can_berr_counter bec;
  };
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index 5d1f15843181..39802f107eb1 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -1243,7 +1243,7 @@ static int grcan_poll(struct napi_struct *napi, int budget)
- 	int rx_budget = budget / 2;
- 	int tx_budget = budget - rx_budget;
  
--	/* Half of the budget for receiveing messages */
-+	/* Half of the budget for receiving messages */
- 	rx_work_done = grcan_receive(dev, rx_budget);
- 
- 	/* Half of the budget for transmitting messages as that can trigger echo
-diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
-index d9216147ca93..48be627c85c2 100644
---- a/drivers/net/can/m_can/Kconfig
-+++ b/drivers/net/can/m_can/Kconfig
-@@ -20,5 +20,5 @@ config CAN_M_CAN_TCAN4X5X
- 	tristate "TCAN4X5X M_CAN device"
- 	help
- 	  Say Y here if you want support for Texas Instruments TCAN4x5x
--	  M_CAN controller.  This device is a peripherial device that uses the
-+	  M_CAN controller.  This device is a peripheral device that uses the
- 	  SPI bus for communication.
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index db41dddd5771..af4fbd8f9077 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -461,7 +461,7 @@ static void pch_can_int_clr(struct pch_can_priv *priv, u32 mask)
- 			       PCH_ID2_DIR | (0x7ff << 2));
- 		iowrite32(0x0, &priv->regs->ifregs[1].id1);
- 
--		/* Claring NewDat, TxRqst & IntPnd */
-+		/* Clearing NewDat, TxRqst & IntPnd */
- 		pch_can_bit_clear(&priv->regs->ifregs[1].mcont,
- 				  PCH_IF_MCONT_NEWDAT | PCH_IF_MCONT_INTPND |
- 				  PCH_IF_MCONT_TXRQXT);
-@@ -834,7 +834,7 @@ static int pch_can_open(struct net_device *ndev)
- 	struct pch_can_priv *priv = netdev_priv(ndev);
- 	int retval;
- 
--	/* Regstering the interrupt. */
-+	/* Registering the interrupt. */
- 	retval = request_irq(priv->dev->irq, pch_can_interrupt, IRQF_SHARED,
- 			     ndev->name, ndev);
- 	if (retval) {
-diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-index 8c0244f51059..4713921bd511 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -97,7 +97,7 @@ MODULE_DEVICE_TABLE(pci, peak_pci_tbl);
- /* GPIOICR byte access offsets */
- #define PITA_GPOUT		0x18	/* GPx output value */
- #define PITA_GPIN		0x19	/* GPx input value */
--#define PITA_GPOEN		0x1A	/* configure GPx as ouput pin */
-+#define PITA_GPOEN		0x1A	/* configure GPx as output pin */
- 
- /* I2C GP bits */
- #define PITA_GPIN_SCL		0x01	/* Serial Clock Line */
-diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
-index 5e0d5e8101c8..cf951a783078 100644
---- a/drivers/net/can/sja1000/peak_pcmcia.c
-+++ b/drivers/net/can/sja1000/peak_pcmcia.c
-@@ -671,7 +671,7 @@ static int pcan_probe(struct pcmcia_device *pdev)
- 	card->fw_major = pcan_read_reg(card, PCC_FW_MAJOR);
- 	card->fw_minor = pcan_read_reg(card, PCC_FW_MINOR);
- 
--	/* display board name and firware version */
-+	/* display board name and firmware version */
- 	dev_info(&pdev->dev, "PEAK-System pcmcia card %s fw %d.%d\n",
- 		pdev->prod_id[1] ? pdev->prod_id[1] : "PCAN-PC Card",
- 		card->fw_major, card->fw_minor);
-diff --git a/drivers/net/can/softing/Kconfig b/drivers/net/can/softing/Kconfig
-index 16b9eec63490..9edc73b13014 100644
---- a/drivers/net/can/softing/Kconfig
-+++ b/drivers/net/can/softing/Kconfig
-@@ -5,14 +5,14 @@ config CAN_SOFTING
- 	help
- 	  Support for CAN cards from Softing Gmbh & some cards
- 	  from Vector Gmbh.
--	  Softing Gmbh CAN cards come with 1 or 2 physical busses.
-+	  Softing Gmbh CAN cards come with 1 or 2 physical buses.
- 	  Those cards typically use Dual Port RAM to communicate
- 	  with the host CPU. The interface is then identical for PCI
- 	  and PCMCIA cards. This driver operates on a platform device,
- 	  which has been created by softing_cs or softing_pci driver.
- 	  Warning:
- 	  The API of the card does not allow fine control per bus, but
--	  controls the 2 busses on the card together.
-+	  controls the 2 buses on the card together.
- 	  As such, some actions (start/stop/busoff recovery) on 1 bus
- 	  must bring down the other bus too temporarily.
- 
-diff --git a/drivers/net/can/softing/softing_fw.c b/drivers/net/can/softing/softing_fw.c
-index 8f44fdd8804b..ccd649a8e37b 100644
---- a/drivers/net/can/softing/softing_fw.c
-+++ b/drivers/net/can/softing/softing_fw.c
-@@ -273,7 +273,7 @@ int softing_load_app_fw(const char *file, struct softing *card)
- 			goto failed;
- 		}
- 
--		/* regualar data */
-+		/* regular data */
- 		for (sum = 0, j = 0; j < len; ++j)
- 			sum += dat[j];
- 		/* work in 16bit (target) */
-@@ -474,14 +474,14 @@ int softing_startstop(struct net_device *dev, int up)
- 	if (ret)
- 		goto failed;
- 	if (!bus_bitmask_start)
--		/* no busses to be brought up */
-+		/* no buses to be brought up */
- 		goto card_done;
- 
- 	if ((bus_bitmask_start & 1) && (bus_bitmask_start & 2)
- 			&& (softing_error_reporting(card->net[0])
- 				!= softing_error_reporting(card->net[1]))) {
- 		dev_alert(&card->pdev->dev,
--				"err_reporting flag differs for busses\n");
-+				"err_reporting flag differs for buses\n");
- 		goto invalid;
- 	}
- 	error_reporting = 0;
-@@ -635,7 +635,7 @@ int softing_startstop(struct net_device *dev, int up)
- 		priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 		open_candev(netdev);
- 		if (dev != netdev) {
--			/* notify other busses on the restart */
-+			/* notify other buses on the restart */
- 			softing_netdev_rx(netdev, &msg, 0);
- 			++priv->can.can_stats.restarts;
- 		}
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index d1ddf763b188..11b0f3bcfe80 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -170,8 +170,8 @@ static int softing_handle_1(struct softing *card)
- 		msg.can_dlc = CAN_ERR_DLC;
- 		msg.data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
- 		/*
--		 * service to all busses, we don't know which it was applicable
--		 * but only service busses that are online
-+		 * service to all buses, we don't know which it was applicable
-+		 * but only service buses that are online
- 		 */
- 		for (j = 0; j < ARRAY_SIZE(card->net); ++j) {
- 			netdev = card->net[j];
-@@ -339,7 +339,7 @@ static irqreturn_t softing_irq_thread(int irq, void *dev_id)
- 			continue;
- 		priv = netdev_priv(netdev);
- 		if (!canif_is_active(netdev))
--			/* it makes no sense to wake dead busses */
-+			/* it makes no sense to wake dead buses */
- 			continue;
- 		if (priv->tx.pending >= TX_ECHO_SKB_MAX)
- 			continue;
-@@ -374,7 +374,7 @@ static irqreturn_t softing_irq_v1(int irq, void *dev_id)
+ /* incoming message context for decoding */
+@@ -212,6 +231,16 @@ static int pcan_usb_set_silent(struct peak_usb_device *dev, u8 onoff)
+ 				 PCAN_USB_BUS_SILENT_MODE, args);
  }
  
++/* send the cmd to be notified from bus errors */
++static int pcan_usb_set_err_frame(struct peak_usb_device *dev, u8 err_mask)
++{
++	u8 args[PCAN_USB_CMD_ARGS_LEN] = {
++		[0] = err_mask,
++	};
++
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_ERR_FR, PCAN_USB_SET, args);
++}
++
+ static int pcan_usb_set_ext_vcc(struct peak_usb_device *dev, u8 onoff)
+ {
+ 	u8 args[PCAN_USB_CMD_ARGS_LEN] = {
+@@ -445,7 +474,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ 			new_state = CAN_STATE_BUS_OFF;
+ 			break;
+ 		}
+-		if (n & (PCAN_USB_ERROR_RXQOVR | PCAN_USB_ERROR_QOVR)) {
++		if (n & ~PCAN_USB_ERROR_BUS) {
+ 			/*
+ 			 * trick to bypass next comparison and process other
+ 			 * errors
+@@ -469,7 +498,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ 			new_state = CAN_STATE_ERROR_WARNING;
+ 			break;
+ 		}
+-		if (n & (PCAN_USB_ERROR_RXQOVR | PCAN_USB_ERROR_QOVR)) {
++		if (n & ~PCAN_USB_ERROR_BUS) {
+ 			/*
+ 			 * trick to bypass next comparison and process other
+ 			 * errors
+@@ -508,29 +537,50 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ 
+ 	case CAN_STATE_ERROR_PASSIVE:
+ 		cf->can_id |= CAN_ERR_CRTL;
+-		cf->data[1] |= CAN_ERR_CRTL_TX_PASSIVE |
+-			       CAN_ERR_CRTL_RX_PASSIVE;
++		cf->data[1] = (mc->pdev->bec.txerr > mc->pdev->bec.rxerr) ?
++				CAN_ERR_CRTL_TX_PASSIVE :
++				CAN_ERR_CRTL_RX_PASSIVE;
++		cf->data[6] = mc->pdev->bec.txerr;
++		cf->data[7] = mc->pdev->bec.rxerr;
++
+ 		mc->pdev->dev.can.can_stats.error_passive++;
+ 		break;
+ 
+ 	case CAN_STATE_ERROR_WARNING:
+ 		cf->can_id |= CAN_ERR_CRTL;
+-		cf->data[1] |= CAN_ERR_CRTL_TX_WARNING |
+-			       CAN_ERR_CRTL_RX_WARNING;
++		cf->data[1] = (mc->pdev->bec.txerr > mc->pdev->bec.rxerr) ?
++				CAN_ERR_CRTL_TX_WARNING :
++				CAN_ERR_CRTL_RX_WARNING;
++		cf->data[6] = mc->pdev->bec.txerr;
++		cf->data[7] = mc->pdev->bec.rxerr;
++
+ 		mc->pdev->dev.can.can_stats.error_warning++;
+ 		break;
+ 
+ 	case CAN_STATE_ERROR_ACTIVE:
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[1] = CAN_ERR_CRTL_ACTIVE;
++
++		/* sync local copies of rxerr/txerr counters */
++		mc->pdev->bec.txerr = 0;
++		mc->pdev->bec.rxerr = 0;
+ 		break;
+ 
+ 	default:
+ 		/* CAN_STATE_MAX (trick to handle other errors) */
+-		cf->can_id |= CAN_ERR_CRTL;
+-		cf->data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
+-		mc->netdev->stats.rx_over_errors++;
+-		mc->netdev->stats.rx_errors++;
++		if (n & PCAN_USB_ERROR_TXQFULL)
++			netdev_dbg(mc->netdev, "device Tx queue full)\n");
++
++		if (n & PCAN_USB_ERROR_RXQOVR) {
++			netdev_dbg(mc->netdev, "data overrun interrupt\n");
++			cf->can_id |= CAN_ERR_CRTL;
++			cf->data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
++			mc->netdev->stats.rx_over_errors++;
++			mc->netdev->stats.rx_errors++;
++		}
++
++		cf->data[6] = mc->pdev->bec.txerr;
++		cf->data[7] = mc->pdev->bec.rxerr;
+ 
+ 		new_state = mc->pdev->dev.can.state;
+ 		break;
+@@ -552,6 +602,30 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ 	return 0;
+ }
+ 
++/* decode bus event usb packet: first byte contains rxerr while 2nd one contains
++ * txerr.
++ */
++static int pcan_usb_handle_bus_evt(struct pcan_usb_msg_context *mc, u8 ir)
++{
++	struct pcan_usb *pdev = mc->pdev;
++
++	/* acccording to the content of the packet */
++	switch (ir) {
++	case PCAN_USB_ERR_CNT:
++
++		/* save rx/tx error counters from in the device context */
++		pdev->bec.rxerr = mc->ptr[0];
++		pdev->bec.txerr = mc->ptr[1];
++		break;
++
++	default:
++		/* reserved */
++		break;
++	}
++
++	return 0;
++}
++
  /*
-- * netdev/candev inter-operability
-+ * netdev/candev interoperability
+  * decode non-data usb message
   */
- static int softing_netdev_open(struct net_device *ndev)
- {
-diff --git a/drivers/net/can/softing/softing_platform.h b/drivers/net/can/softing/softing_platform.h
-index 68a161547644..cd8d7904c5f0 100644
---- a/drivers/net/can/softing/softing_platform.h
-+++ b/drivers/net/can/softing/softing_platform.h
-@@ -19,7 +19,7 @@ struct softing_platform_data {
- 	 * 16bit, shared interrupt
- 	 */
- 	int generation;
--	int nbus; /* # busses on device */
-+	int nbus; /* # buses on device */
- 	unsigned int freq; /* operating frequency in Hz */
- 	unsigned int max_brp;
- 	unsigned int max_sjw;
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 94b1491b569f..fc76f7ad735a 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -454,7 +454,7 @@ static int ti_hecc_get_berr_counter(const struct net_device *ndev,
- /* ti_hecc_xmit: HECC Transmit
-  *
-  * The transmit mailboxes start from 0 to HECC_MAX_TX_MBOX. In HECC the
-- * priority of the mailbox for tranmission is dependent upon priority setting
-+ * priority of the mailbox for transmission is dependent upon priority setting
-  * field in mailbox registers. The mailbox with highest value in priority field
-  * is transmitted first. Only when two mailboxes have the same value in
-  * priority field the highest numbered mailbox is transmitted first.
-diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
-index 77fa830fe7dd..bcb331b0c958 100644
---- a/drivers/net/can/usb/Kconfig
-+++ b/drivers/net/can/usb/Kconfig
-@@ -90,7 +90,7 @@ config CAN_PEAK_USB
- 	tristate "PEAK PCAN-USB/USB Pro interfaces for CAN 2.0b/CAN-FD"
- 	help
- 	  This driver supports the PEAK-System Technik USB adapters that enable
--	  access to the CAN bus, with repect to the CAN 2.0b and/or CAN-FD
-+	  access to the CAN bus, with respect to the CAN 2.0b and/or CAN-FD
- 	  standards, that is:
+@@ -606,9 +680,10 @@ static int pcan_usb_decode_status(struct pcan_usb_msg_context *mc,
+ 		break;
  
- 	  PCAN-USB             single CAN 2.0b channel USB adapter
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index a4b4b742c80c..3005157059ca 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -828,7 +828,7 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 
- 	netdev->flags |= IFF_ECHO; /* we support full roundtrip echo */
- 
--	/* dev settup */
-+	/* dev setup */
- 	strcpy(dev->bt_const.name, "gs_usb");
- 	dev->bt_const.tseg1_min = bt_const->tseg1_min;
- 	dev->bt_const.tseg1_max = bt_const->tseg1_max;
-@@ -852,7 +852,7 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 		dev->tx_context[rc].echo_id = GS_MAX_TX_URBS;
- 	}
- 
--	/* can settup */
-+	/* can setup */
- 	dev->can.state = CAN_STATE_STOPPED;
- 	dev->can.clock.freq = bt_const->fclk_can;
- 	dev->can.bittiming_const = &dev->bt_const;
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index 21faa2ec4632..eb6fb7435061 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -28,7 +28,7 @@
- #define MCBA_CTX_FREE MCBA_MAX_TX_URBS
- 
- /* RX buffer must be bigger than msg size since at the
-- * beggining USB messages are stacked.
-+ * beginning USB messages are stacked.
-  */
- #define MCBA_USB_RX_BUFF_SIZE 64
- #define MCBA_USB_TX_BUFF_SIZE (sizeof(struct mcba_usb_msg))
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 47cc1ff5b88e..ab63fd9eb982 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -35,7 +35,7 @@ MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB Pro FD adapter");
- #define PCAN_UFD_RX_BUFFER_SIZE		2048
- #define PCAN_UFD_TX_BUFFER_SIZE		512
- 
--/* read some versions info from the hw devcie */
-+/* read some versions info from the hw device */
- struct __packed pcan_ufd_fw_info {
- 	__le16	size_of;	/* sizeof this */
- 	__le16	type;		/* type of this structure */
-@@ -796,7 +796,7 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
- 	return err;
+ 	case PCAN_USB_REC_BUSEVT:
+-		/* error frame/bus event */
+-		if (n & PCAN_USB_ERROR_TXQFULL)
+-			netdev_dbg(mc->netdev, "device Tx queue full)\n");
++		/* bus event notifications (get rxerr/txerr) */
++		err = pcan_usb_handle_bus_evt(mc, n);
++		if (err)
++			return err;
+ 		break;
+ 	default:
+ 		netdev_err(mc->netdev, "unexpected function %u\n", f);
+@@ -792,20 +867,44 @@ static int pcan_usb_encode_msg(struct peak_usb_device *dev, struct sk_buff *skb,
+ 	return 0;
  }
  
--/* socket callback used to copy berr counters values receieved through USB */
 +/* socket callback used to copy berr counters values received through USB */
- static int pcan_usb_fd_get_berr_counter(const struct net_device *netdev,
- 					struct can_berr_counter *bec)
++static int pcan_usb_get_berr_counter(const struct net_device *netdev,
++				     struct can_berr_counter *bec)
++{
++	struct peak_usb_device *dev = netdev_priv(netdev);
++	struct pcan_usb *pdev = container_of(dev, struct pcan_usb, dev);
++
++	*bec = pdev->bec;
++
++	/* must return 0 */
++	return 0;
++}
++
+ /*
+  * start interface
+  */
+ static int pcan_usb_start(struct peak_usb_device *dev)
  {
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index 1689ab387612..f85b560e05db 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -973,7 +973,7 @@ int pcan_usb_pro_probe(struct usb_interface *intf)
- 		struct usb_endpoint_descriptor *ep = &if_desc->endpoint[i].desc;
+ 	struct pcan_usb *pdev = container_of(dev, struct pcan_usb, dev);
++	int err;
  
- 		/*
--		 * below is the list of valid ep addreses. Any other ep address
-+		 * below is the list of valid ep addresses. Any other ep address
- 		 * is considered as not-CAN interface address => no dev created
- 		 */
- 		switch (ep->bEndpointAddress) {
-diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
-index 81e942f713e6..dc5290b36598 100644
---- a/drivers/net/can/usb/ucan.c
-+++ b/drivers/net/can/usb/ucan.c
-@@ -1445,7 +1445,7 @@ static int ucan_probe(struct usb_interface *intf,
+ 	/* number of bits used in timestamps read from adapter struct */
+ 	peak_usb_init_time_ref(&pdev->time_ref, &pcan_usb);
  
- 	/* request the device information and store it in ctl_msg_buffer
- 	 *
--	 * note: ucan_ctrl_command_* wrappers connot be used yet
-+	 * note: ucan_ctrl_command_* wrappers cannot be used yet
- 	 * because `up` is initialised in Stage 3
- 	 */
- 	ret = usb_control_msg(udev,
-@@ -1494,7 +1494,7 @@ static int ucan_probe(struct usb_interface *intf,
- 
- 	up = netdev_priv(netdev);
- 
--	/* initialze data */
-+	/* initialize data */
- 	up->udev = udev;
- 	up->intf = intf;
- 	up->netdev = netdev;
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index 8fa224b28218..62749c67c959 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -88,7 +88,7 @@ enum usb_8dev_cmd {
- 
- /* status */
- #define USB_8DEV_STATUSMSG_OK		0x00  /* Normal condition. */
--#define USB_8DEV_STATUSMSG_OVERRUN	0x01  /* Overrun occured when sending */
-+#define USB_8DEV_STATUSMSG_OVERRUN	0x01  /* Overrun occurred when sending */
- #define USB_8DEV_STATUSMSG_BUSLIGHT	0x02  /* Error counter has reached 96 */
- #define USB_8DEV_STATUSMSG_BUSHEAVY	0x03  /* Error count. has reached 128 */
- #define USB_8DEV_STATUSMSG_BUSOFF	0x04  /* Device is in BUSOFF */
-@@ -165,7 +165,7 @@ struct __packed usb_8dev_rx_msg {
- /* command frame */
- struct __packed usb_8dev_cmd_msg {
- 	u8 begin;
--	u8 channel;	/* unkown - always 0 */
-+	u8 channel;	/* unknown - always 0 */
- 	u8 command;	/* command to execute */
- 	u8 opt1;	/* optional parameter / return value */
- 	u8 opt2;	/* optional parameter 2 */
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index c1dbab8c896d..7ae268468d2c 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1308,7 +1308,7 @@ static void xcan_tx_interrupt(struct net_device *ndev, u32 isr)
- /**
-  * xcan_interrupt - CAN Isr
-  * @irq:	irq number
-- * @dev_id:	device id poniter
-+ * @dev_id:	device id pointer
-  *
-  * This is the xilinx CAN Isr. It checks for the type of interrupt
-  * and invokes the corresponding ISR.
++	pdev->bec.rxerr = 0;
++	pdev->bec.txerr = 0;
++
++	/* be notified on error counter changes (if requested by user) */
++	if (dev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) {
++		err = pcan_usb_set_err_frame(dev, PCAN_USB_BERR_MASK);
++		if (err)
++			netdev_warn(dev->netdev,
++				    "Asking for BERR reporting error %u\n",
++				    err);
++	}
++
+ 	/* if revision greater than 3, can put silent mode on/off */
+ 	if (dev->device_rev > 3) {
+-		int err;
+-
+ 		err = pcan_usb_set_silent(dev,
+ 				dev->can.ctrlmode & CAN_CTRLMODE_LISTENONLY);
+ 		if (err)
+@@ -892,7 +991,8 @@ const struct peak_usb_adapter pcan_usb = {
+ 	.name = "PCAN-USB",
+ 	.device_id = PCAN_USB_PRODUCT_ID,
+ 	.ctrl_count = 1,
+-	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
++	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
++			      CAN_CTRLMODE_BERR_REPORTING,
+ 	.clock = {
+ 		.freq = PCAN_USB_CRYSTAL_HZ / 2 ,
+ 	},
+@@ -925,4 +1025,5 @@ const struct peak_usb_adapter pcan_usb = {
+ 	.dev_encode_msg = pcan_usb_encode_msg,
+ 	.dev_start = pcan_usb_start,
+ 	.dev_restart_async = pcan_usb_restart_async,
++	.do_get_berr_counter = pcan_usb_get_berr_counter,
+ };
 -- 
 2.28.0
 
