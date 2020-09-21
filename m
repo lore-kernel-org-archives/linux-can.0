@@ -4,37 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 989F2C43465
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:48:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33438C43468
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:48:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 64AD02084C
+	by mail.kernel.org (Postfix) with ESMTP id F2BED2084C
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:48:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727728AbgIUNr7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727403AbgIUNr7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 21 Sep 2020 09:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727014AbgIUNqa (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:30 -0400
+        with ESMTP id S1727393AbgIUNqG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:46:06 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC17EC0613D9
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8072CC0613D0
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:46:06 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM8q-0003ED-Sn; Mon, 21 Sep 2020 15:46:04 +0200
+        id 1kKM8p-0003ED-2d; Mon, 21 Sep 2020 15:46:03 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Masahiro Yamada <masahiroy@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 09/38] can: remove "WITH Linux-syscall-note" from SPDX tag of C files
-Date:   Mon, 21 Sep 2020 15:45:28 +0200
-Message-Id: <20200921134557.2251383-10-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 04/38] can: net: fix spelling mistakes
+Date:   Mon, 21 Sep 2020 15:45:23 +0200
+Message-Id: <20200921134557.2251383-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921134557.2251383-1-mkl@pengutronix.de>
 References: <20200921134557.2251383-1-mkl@pengutronix.de>
@@ -48,63 +46,37 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+This patch fixes spelling erros found by "codespell" in the net/can
+subtree.
 
-The "WITH Linux-syscall-note" exception is intended for UAPI headers.
-
-See LICENSES/exceptions/Linux-syscall-note
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Link: https://lore.kernel.org/r/20200403073741.18352-1-masahiroy@kernel.org
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/r/20200915223527.1417033-5-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/bcm.c  | 2 +-
- net/can/gw.c   | 2 +-
- net/can/proc.c | 2 +-
- net/can/raw.c  | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ net/can/af_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index d14ea12affb1..4253915800e6 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- /*
-  * bcm.c - Broadcast Manager to filter/send (cyclic) CAN content
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 5c06404bdf3e..ea29a6d97ef5 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -358,7 +358,7 @@ static unsigned int effhash(canid_t can_id)
   *
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 65d60c93af29..49b4e3d91ad6 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- /* gw.c - CAN frame Gateway/Router/Bridge with netlink interface
-  *
-  * Copyright (c) 2019 Volkswagen Group Electronic Research
-diff --git a/net/can/proc.c b/net/can/proc.c
-index e6881bfc3ed1..a4eb06c9eb70 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- /*
-  * proc.c - procfs support for Protocol family CAN core module
-  *
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 57235b29f571..24db4b4afdc7 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- /* raw.c - Raw sockets for protocol family CAN
-  *
-  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+  * Return:
+  *  Pointer to optimal filterlist for the given can_id/mask pair.
+- *  Constistency checked mask.
++ *  Consistency checked mask.
+  *  Reduced can_id to have a preprocessed filter compare value.
+  */
+ static struct hlist_head *can_rcv_list_find(canid_t *can_id, canid_t *mask,
+@@ -411,7 +411,7 @@ static struct hlist_head *can_rcv_list_find(canid_t *can_id, canid_t *mask,
+ /**
+  * can_rx_register - subscribe CAN frames from a specific interface
+  * @net: the applicable net namespace
+- * @dev: pointer to netdevice (NULL => subcribe from 'all' CAN devices list)
++ * @dev: pointer to netdevice (NULL => subscribe from 'all' CAN devices list)
+  * @can_id: CAN identifier (see description)
+  * @mask: CAN mask (see description)
+  * @func: callback function on filter match
 -- 
 2.28.0
 
