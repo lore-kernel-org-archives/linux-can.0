@@ -2,38 +2,38 @@ Return-Path: <SRS0=XQ7n=C6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6546C4346D
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F529C47425
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8F1E220888
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 498FE2084C
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbgIUNiy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
+        id S1727210AbgIUNix (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727231AbgIUNix (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:53 -0400
+        with ESMTP id S1727194AbgIUNiu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:50 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99A3C0613D8
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B65C0613D0
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:50 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1q-0000ox-Ms; Mon, 21 Sep 2020 15:38:50 +0200
+        id 1kKM1o-0000ox-7S; Mon, 21 Sep 2020 15:38:48 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Masahiro Yamada <masahiroy@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
+Cc:     kernel@pengutronix.de,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 09/38] can: remove "WITH Linux-syscall-note" from SPDX tag of C files
-Date:   Mon, 21 Sep 2020 15:38:16 +0200
-Message-Id: <20200921133845.2249271-10-mkl@pengutronix.de>
+Subject: [PATCH 02/38] can: flexcan: fix spelling mistake "reserverd" -> "reserved"
+Date:   Mon, 21 Sep 2020 15:38:09 +0200
+Message-Id: <20200921133845.2249271-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
@@ -47,63 +47,30 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-The "WITH Linux-syscall-note" exception is intended for UAPI headers.
+Fix a mistake in a register layout description.
 
-See LICENSES/exceptions/Linux-syscall-note
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Link: https://lore.kernel.org/r/20200403073741.18352-1-masahiroy@kernel.org
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20200214141751.21168-1-alexandre.belloni@bootlin.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/bcm.c  | 2 +-
- net/can/gw.c   | 2 +-
- net/can/proc.c | 2 +-
- net/can/raw.c  | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index d14ea12affb1..4253915800e6 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- /*
-  * bcm.c - Broadcast Manager to filter/send (cyclic) CAN content
-  *
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 65d60c93af29..49b4e3d91ad6 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- /* gw.c - CAN frame Gateway/Router/Bridge with netlink interface
-  *
-  * Copyright (c) 2019 Volkswagen Group Electronic Research
-diff --git a/net/can/proc.c b/net/can/proc.c
-index e6881bfc3ed1..a4eb06c9eb70 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- /*
-  * proc.c - procfs support for Protocol family CAN core module
-  *
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 57235b29f571..24db4b4afdc7 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- /* raw.c - Raw sockets for protocol family CAN
-  *
-  * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 94d10ec954a0..19403e88daa3 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -230,7 +230,7 @@ struct flexcan_regs {
+ 	/* FIFO-mode:
+ 	 *			MB
+ 	 * 0x080...0x08f	0	RX message buffer
+-	 * 0x090...0x0df	1-5	reserverd
++	 * 0x090...0x0df	1-5	reserved
+ 	 * 0x0e0...0x0ff	6-7	8 entry ID table
+ 	 *				(mx25, mx28, mx35, mx53)
+ 	 * 0x0e0...0x2df	6-7..37	8..128 entry ID table
 -- 
 2.28.0
 
