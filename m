@@ -2,38 +2,37 @@ Return-Path: <SRS0=XQ7n=C6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9B76C4361C
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C3D5C46466
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A25CA20866
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 19D1820866
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727237AbgIUNjD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
+        id S1727302AbgIUNjF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727298AbgIUNjB (ORCPT
+        with ESMTP id S1727303AbgIUNjB (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:39:01 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FB2C061755
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:39:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFB3C0613D1
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:39:01 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1w-0000ox-VW; Mon, 21 Sep 2020 15:38:57 +0200
+        id 1kKM1y-0000ox-EA; Mon, 21 Sep 2020 15:38:58 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+Cc:     kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 28/38] can: mcp251x: Use readx_poll_timeout() helper
-Date:   Mon, 21 Sep 2020 15:38:35 +0200
-Message-Id: <20200921133845.2249271-29-mkl@pengutronix.de>
+Subject: [PATCH 33/38] dt-binding: can: mcp25xxfd: document device tree bindings
+Date:   Mon, 21 Sep 2020 15:38:40 +0200
+Message-Id: <20200921133845.2249271-34-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
@@ -47,141 +46,104 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-We may use special helper macro to poll IO till condition or timeout occurs.
+This patch adds the device-tree binding documentation for the Microchip
+MCP25xxFD SPI CAN controller family.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20200217161038.25009-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/r/20200918172536.2074504-2-mkl@pengutronix.de
 ---
- drivers/net/can/spi/mcp251x.c | 64 ++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 31 deletions(-)
+ .../bindings/net/can/microchip,mcp25xxfd.yaml | 79 +++++++++++++++++++
+ 1 file changed, 79 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 4b113f61e39d..3bf57bc9b3ff 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -32,6 +32,7 @@
- #include <linux/gpio/driver.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/netdevice.h>
-@@ -376,6 +377,15 @@ static void mcp251x_write_bits(struct spi_device *spi, u8 reg,
- 	mcp251x_spi_trans(spi, 4);
- }
- 
-+static u8 mcp251x_read_stat(struct spi_device *spi)
-+{
-+	return mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK;
-+}
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+new file mode 100644
+index 000000000000..aa2cad14d6d7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+@@ -0,0 +1,79 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/microchip,mcp25xxfd.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#define mcp251x_read_stat_poll_timeout(addr, val, cond, delay_us, timeout_us) \
-+	readx_poll_timeout(mcp251x_read_stat, addr, val, cond, \
-+			   delay_us, timeout_us)
++title:
++  Microchip MCP2517FD and MCP2518FD stand-alone CAN controller device tree
++  bindings
 +
- #ifdef CONFIG_GPIOLIB
- enum {
- 	MCP251X_GPIO_TX0RTS = 0,		/* inputs */
-@@ -709,7 +719,8 @@ static void mcp251x_hw_sleep(struct spi_device *spi)
- /* May only be called when device is sleeping! */
- static int mcp251x_hw_wake(struct spi_device *spi)
- {
--	unsigned long timeout;
-+	u8 value;
-+	int ret;
- 
- 	/* Force wakeup interrupt to wake device, but don't execute IST */
- 	disable_irq(spi->irq);
-@@ -722,14 +733,12 @@ static int mcp251x_hw_wake(struct spi_device *spi)
- 	mcp251x_write_reg(spi, CANCTRL, CANCTRL_REQOP_CONF);
- 
- 	/* Wait for the device to enter config mode */
--	timeout = jiffies + HZ;
--	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) !=
--			CANCTRL_REQOP_CONF) {
--		schedule();
--		if (time_after(jiffies, timeout)) {
--			dev_err(&spi->dev, "MCP251x didn't enter in config mode\n");
--			return -EBUSY;
--		}
-+	ret = mcp251x_read_stat_poll_timeout(spi, value, value == CANCTRL_REQOP_CONF,
-+					     MCP251X_OST_DELAY_MS * 1000,
-+					     USEC_PER_SEC);
-+	if (ret) {
-+		dev_err(&spi->dev, "MCP251x didn't enter in config mode\n");
-+		return ret;
- 	}
- 
- 	/* Disable and clear pending interrupts */
-@@ -784,7 +793,8 @@ static int mcp251x_do_set_mode(struct net_device *net, enum can_mode mode)
- static int mcp251x_set_normal_mode(struct spi_device *spi)
- {
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
--	unsigned long timeout;
-+	u8 value;
-+	int ret;
- 
- 	/* Enable interrupts */
- 	mcp251x_write_reg(spi, CANINTE,
-@@ -802,13 +812,12 @@ static int mcp251x_set_normal_mode(struct spi_device *spi)
- 		mcp251x_write_reg(spi, CANCTRL, CANCTRL_REQOP_NORMAL);
- 
- 		/* Wait for the device to enter normal mode */
--		timeout = jiffies + HZ;
--		while (mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) {
--			schedule();
--			if (time_after(jiffies, timeout)) {
--				dev_err(&spi->dev, "MCP251x didn't enter in normal mode\n");
--				return -EBUSY;
--			}
-+		ret = mcp251x_read_stat_poll_timeout(spi, value, value == 0,
-+						     MCP251X_OST_DELAY_MS * 1000,
-+						     USEC_PER_SEC);
-+		if (ret) {
-+			dev_err(&spi->dev, "MCP251x didn't enter in normal mode\n");
-+			return ret;
- 		}
- 	}
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
-@@ -852,7 +861,7 @@ static int mcp251x_setup(struct net_device *net, struct spi_device *spi)
- static int mcp251x_hw_reset(struct spi_device *spi)
- {
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
--	unsigned long timeout;
-+	u8 value;
- 	int ret;
- 
- 	/* Wait for oscillator startup timer after power up */
-@@ -867,19 +876,12 @@ static int mcp251x_hw_reset(struct spi_device *spi)
- 	mdelay(MCP251X_OST_DELAY_MS);
- 
- 	/* Wait for reset to finish */
--	timeout = jiffies + HZ;
--	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) !=
--	       CANCTRL_REQOP_CONF) {
--		usleep_range(MCP251X_OST_DELAY_MS * 1000,
--			     MCP251X_OST_DELAY_MS * 1000 * 2);
--
--		if (time_after(jiffies, timeout)) {
--			dev_err(&spi->dev,
--				"MCP251x didn't enter in conf mode after reset\n");
--			return -EBUSY;
--		}
--	}
--	return 0;
-+	ret = mcp251x_read_stat_poll_timeout(spi, value, value == CANCTRL_REQOP_CONF,
-+					     MCP251X_OST_DELAY_MS * 1000,
-+					     USEC_PER_SEC);
-+	if (ret)
-+		dev_err(&spi->dev, "MCP251x didn't enter in conf mode after reset\n");
-+	return ret;
- }
- 
- static int mcp251x_hw_probe(struct spi_device *spi)
++maintainers:
++  - Marc Kleine-Budde <mkl@pengutronix.de>
++
++properties:
++  compatible:
++    oneOf:
++      - const: microchip,mcp2517fd
++        description: for MCP2517FD
++      - const: microchip,mcp2518fd
++        description: for MCP2518FD
++      - const: microchip,mcp25xxfd
++        description: to autodetect chip variant
++
++  reg:
++    maxItems: 1
++
++  interrupts-extended:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  vdd-supply:
++    description: Regulator that powers the CAN controller.
++    maxItems: 1
++
++  xceiver-supply:
++    description: Regulator that powers the CAN transceiver.
++    maxItems: 1
++
++  microchip,rx-int-gpios:
++    description:
++      GPIO phandle of GPIO connected to to INT1 pin of the MCP25XXFD, which
++      signals a pending RX interrupt.
++    maxItems: 1
++
++  spi-max-frequency:
++    description:
++      Must be half or less of "clocks" frequency.
++    maximum: 20000000
++
++required:
++  - compatible
++  - reg
++  - interrupts-extended
++  - clocks
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    spi0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        can@0 {
++            compatible = "microchip,mcp25xxfd";
++            reg = <0>;
++            clocks = <&can0_osc>;
++            pinctrl-names = "default";
++            pinctrl-0 = <&can0_pins>;
++            spi-max-frequency = <20000000>;
++            interrupts-extended = <&gpio 13 IRQ_TYPE_LEVEL_LOW>;
++            microchip,rx-int-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
++            vdd-supply = <&reg5v0>;
++            xceiver-supply = <&reg5v0>;
++        };
++    };
 -- 
 2.28.0
 
