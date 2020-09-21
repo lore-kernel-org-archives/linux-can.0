@@ -2,43 +2,41 @@ Return-Path: <SRS0=XQ7n=C6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3A15C4346E
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BD71C43465
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9696E2084C
-	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E395220888
+	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727251AbgIUNiy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        id S1727298AbgIUNjE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727212AbgIUNix (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:53 -0400
+        with ESMTP id S1727265AbgIUNiy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:54 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4462EC0613D6
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EE9C061755
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:54 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1q-0000ox-8S; Mon, 21 Sep 2020 15:38:50 +0200
+        id 1kKM1s-0000ox-Pr; Mon, 21 Sep 2020 15:38:52 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de,
-        =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@flameeyes.com>,
+Cc:     kernel@pengutronix.de, Dejin Zheng <zhengdejin5@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 08/38] can: softing: update dead link
-Date:   Mon, 21 Sep 2020 15:38:15 +0200
-Message-Id: <20200921133845.2249271-9-mkl@pengutronix.de>
+Subject: [PATCH 17/38] can: ti_hecc: convert to devm_platform_ioremap_resource_byname()
+Date:   Mon, 21 Sep 2020 15:38:24 +0200
+Message-Id: <20200921133845.2249271-18-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -48,32 +46,77 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Diego Elio Pettenò <flameeyes@flameeyes.com>
+From: Dejin Zheng <zhengdejin5@gmail.com>
 
-BerliOS has not been operating for more than five years. linux-can moved to
-GitHub.
+Use the function devm_platform_ioremap_resource_byname() to simplify
+source code which calls the functions platform_get_resource_byname()
+and devm_ioremap_resource(). Remove also a few error messages which
+became unnecessary with this software refactoring.
 
-Signed-off-by: Diego Elio Pettenò <flameeyes@flameeyes.com>
-Link: https://lore.kernel.org/r/20200413170241.13207-1-flameeyes@flameeyes.com
-[mkl: split into two patches - handle softing part here]
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+Link: https://lore.kernel.org/r/20200420132207.8536-1-zhengdejin5@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/softing/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/ti_hecc.c | 27 +++++----------------------
+ 1 file changed, 5 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/can/softing/Kconfig b/drivers/net/can/softing/Kconfig
-index 9edc73b13014..8afd7d0a1000 100644
---- a/drivers/net/can/softing/Kconfig
-+++ b/drivers/net/can/softing/Kconfig
-@@ -24,7 +24,7 @@ config CAN_SOFTING_CS
- 	  Support for PCMCIA cards from Softing Gmbh & some cards
- 	  from Vector Gmbh.
- 	  You need firmware for these, which you can get at
--	  http://developer.berlios.de/projects/socketcan/
-+	  https://github.com/linux-can/can-firmware
- 	  This version of the driver is written against
- 	  firmware version 4.6 (softing-fw-4.6-binaries.tar.gz)
- 	  In order to use the card as CAN device, you need the Softing generic
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index fc76f7ad735a..1d63006c97bc 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -857,7 +857,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	struct net_device *ndev = (struct net_device *)0;
+ 	struct ti_hecc_priv *priv;
+ 	struct device_node *np = pdev->dev.of_node;
+-	struct resource *res, *irq;
++	struct resource *irq;
+ 	struct regulator *reg_xceiver;
+ 	int err = -ENODEV;
+ 
+@@ -878,39 +878,22 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	priv = netdev_priv(ndev);
+ 
+ 	/* handle hecc memory */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc");
+-	if (!res) {
+-		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc\n");
+-		return -EINVAL;
+-	}
+-
+-	priv->base = devm_ioremap_resource(&pdev->dev, res);
++	priv->base = devm_platform_ioremap_resource_byname(pdev, "hecc");
+ 	if (IS_ERR(priv->base)) {
+ 		dev_err(&pdev->dev, "hecc ioremap failed\n");
+ 		return PTR_ERR(priv->base);
+ 	}
+ 
+ 	/* handle hecc-ram memory */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hecc-ram");
+-	if (!res) {
+-		dev_err(&pdev->dev, "can't get IORESOURCE_MEM hecc-ram\n");
+-		return -EINVAL;
+-	}
+-
+-	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
++	priv->hecc_ram = devm_platform_ioremap_resource_byname(pdev,
++							       "hecc-ram");
+ 	if (IS_ERR(priv->hecc_ram)) {
+ 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
+ 		return PTR_ERR(priv->hecc_ram);
+ 	}
+ 
+ 	/* handle mbx memory */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mbx");
+-	if (!res) {
+-		dev_err(&pdev->dev, "can't get IORESOURCE_MEM mbx\n");
+-		return -EINVAL;
+-	}
+-
+-	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
++	priv->mbx = devm_platform_ioremap_resource_byname(pdev, "mbx");
+ 	if (IS_ERR(priv->mbx)) {
+ 		dev_err(&pdev->dev, "mbx ioremap failed\n");
+ 		return PTR_ERR(priv->mbx);
 -- 
 2.28.0
 
