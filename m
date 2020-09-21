@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7C45C4346A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA16BC43465
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B22112084C
+	by mail.kernel.org (Postfix) with ESMTP id 7307120866
 	for <linux-can@archiver.kernel.org>; Mon, 21 Sep 2020 13:39:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgIUNiz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Sep 2020 09:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
+        id S1727238AbgIUNix (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 21 Sep 2020 09:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727244AbgIUNix (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:53 -0400
+        with ESMTP id S1727203AbgIUNiu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Sep 2020 09:38:50 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE9FC061755
-        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7E6C0613D1
+        for <linux-can@vger.kernel.org>; Mon, 21 Sep 2020 06:38:50 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKM1r-0000ox-Eb; Mon, 21 Sep 2020 15:38:51 +0200
+        id 1kKM1o-0000ox-F6; Mon, 21 Sep 2020 15:38:48 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 12/38] can: dev: can_change_state(): print human readable state change messages
-Date:   Mon, 21 Sep 2020 15:38:19 +0200
-Message-Id: <20200921133845.2249271-13-mkl@pengutronix.de>
+Subject: [PATCH 03/38] can: include: fix spelling mistakes
+Date:   Mon, 21 Sep 2020 15:38:10 +0200
+Message-Id: <20200921133845.2249271-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921133845.2249271-1-mkl@pengutronix.de>
 References: <20200921133845.2249271-1-mkl@pengutronix.de>
@@ -45,59 +45,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In order to ease debugging let can_change_state() print the human readable
-state change messages. Also print the old and new state.
+This patch fixes spelling erros found by "codespell" in the
+include/linux/can subtree.
 
-Link: https://lore.kernel.org/r/20200915223527.1417033-13-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20200915223527.1417033-4-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ include/linux/can/core.h | 2 +-
+ include/linux/can/dev.h  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 77a5663693af..e0caf969e342 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -371,6 +371,28 @@ static int can_rx_state_to_frame(struct net_device *dev, enum can_state state)
- 	}
- }
+diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+index e20a0cd09ba5..7da9f1f82e8e 100644
+--- a/include/linux/can/core.h
++++ b/include/linux/can/core.h
+@@ -2,7 +2,7 @@
+ /*
+  * linux/can/core.h
+  *
+- * Protoypes and definitions for CAN protocol modules using the PF_CAN core
++ * Prototypes and definitions for CAN protocol modules using the PF_CAN core
+  *
+  * Authors: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+  *          Urs Thuermann   <urs.thuermann@volkswagen.de>
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 5e3d45525bd3..516892566ac9 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -108,7 +108,7 @@ static inline bool can_skb_headroom_valid(struct net_device *dev,
  
-+static const char *can_get_state_str(const enum can_state state)
-+{
-+	switch (state) {
-+	case CAN_STATE_ERROR_ACTIVE:
-+		return "Error Active";
-+	case CAN_STATE_ERROR_WARNING:
-+		return "Error Warning";
-+	case CAN_STATE_ERROR_PASSIVE:
-+		return "Error Passive";
-+	case CAN_STATE_BUS_OFF:
-+		return "Bus Off";
-+	case CAN_STATE_STOPPED:
-+		return "Stopped";
-+	case CAN_STATE_SLEEPING:
-+		return "Sleeping";
-+	default:
-+		return "<unknown>";
-+	}
-+
-+	return "<unknown>";
-+}
-+
- void can_change_state(struct net_device *dev, struct can_frame *cf,
- 		      enum can_state tx_state, enum can_state rx_state)
- {
-@@ -382,7 +404,9 @@ void can_change_state(struct net_device *dev, struct can_frame *cf,
- 		return;
- 	}
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
  
--	netdev_dbg(dev, "New error state: %d\n", new_state);
-+	netdev_dbg(dev, "Controller changed from %s State (%d) into %s State (%d).\n",
-+		   can_get_state_str(priv->state), priv->state,
-+		   can_get_state_str(new_state), new_state);
- 
- 	can_update_state_error_stats(dev, new_state);
- 	priv->state = new_state;
+-		/* preform proper loopback on capable devices */
++		/* perform proper loopback on capable devices */
+ 		if (dev->flags & IFF_ECHO)
+ 			skb->pkt_type = PACKET_LOOPBACK;
+ 		else
 -- 
 2.28.0
 
