@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C66E4C4741F
-	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0CC7C2D0E2
+	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 90FBB2395C
-	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 91FE22396D
+	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgIVOok (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 22 Sep 2020 10:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
+        id S1726702AbgIVOom (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 22 Sep 2020 10:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726678AbgIVOoh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:37 -0400
+        with ESMTP id S1726691AbgIVOol (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:41 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F754C061755
-        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29E1C0613D0
+        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:40 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKjX1-0001FU-FQ; Tue, 22 Sep 2020 16:44:35 +0200
+        id 1kKjX4-0001FU-Q9; Tue, 22 Sep 2020 16:44:38 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 06/20] can: flexcan: Ack wakeup interrupt separately
-Date:   Tue, 22 Sep 2020 16:44:15 +0200
-Message-Id: <20200922144429.2613631-7-mkl@pengutronix.de>
+Subject: [PATCH 14/20] can: flexcan: use struct canfd_frame for CAN classic frame
+Date:   Tue, 22 Sep 2020 16:44:23 +0200
+Message-Id: <20200922144429.2613631-15-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922144429.2613631-1-mkl@pengutronix.de>
 References: <20200922144429.2613631-1-mkl@pengutronix.de>
@@ -48,47 +48,102 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-As FLEXCAN_ESR_ALL_INT is for all bus errors and state change IRQ
-sources, strictly speaking FLEXCAN_ESR_WAK_INT does not belong to these.
-So add wakeup interrupt ack separately to existing ack of the
-interrupts.
+This patch prepares for CAN FD mode, using struct canfd_frame can both
+for classic format frame and fd format frame.
 
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20191204113249.3381-3-qiangqing.zhang@nxp.com
+Link: https://lore.kernel.org/r/20190712075926.7357-3-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/net/can/flexcan.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index b180dd1ba763..06cddc468739 100644
+index a9908deae411..20c845c265e1 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -134,8 +134,7 @@
- 	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
- #define FLEXCAN_ESR_ALL_INT \
- 	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
--	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT | \
--	 FLEXCAN_ESR_WAK_INT)
-+	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
+@@ -646,10 +646,10 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
+ static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	const struct flexcan_priv *priv = netdev_priv(dev);
+-	struct can_frame *cf = (struct can_frame *)skb->data;
++	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 	u32 can_id;
+ 	u32 data;
+-	u32 ctrl = FLEXCAN_MB_CODE_TX_DATA | (cf->can_dlc << 16);
++	u32 ctrl = FLEXCAN_MB_CODE_TX_DATA | (cfd->len << 16);
+ 	int i;
  
- /* FLEXCAN interrupt flag register (IFLAG) bits */
- /* Errata ERR005829 step7: Reserve first valid MB */
-@@ -979,10 +978,10 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 	if (can_dropped_invalid_skb(dev, skb))
+@@ -657,18 +657,18 @@ static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *de
  
- 	reg_esr = priv->read(&regs->esr);
+ 	netif_stop_queue(dev);
  
--	/* ACK all bus error and state change IRQ sources */
--	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
-+	/* ACK all bus error, state change and wake IRQ sources */
-+	if (reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ESR_WAK_INT)) {
- 		handled = IRQ_HANDLED;
--		priv->write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
-+		priv->write(reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ESR_WAK_INT), &regs->esr);
+-	if (cf->can_id & CAN_EFF_FLAG) {
+-		can_id = cf->can_id & CAN_EFF_MASK;
++	if (cfd->can_id & CAN_EFF_FLAG) {
++		can_id = cfd->can_id & CAN_EFF_MASK;
+ 		ctrl |= FLEXCAN_MB_CNT_IDE | FLEXCAN_MB_CNT_SRR;
+ 	} else {
+-		can_id = (cf->can_id & CAN_SFF_MASK) << 18;
++		can_id = (cfd->can_id & CAN_SFF_MASK) << 18;
  	}
  
- 	/* state change interrupt or broken error state quirk fix is enabled */
+-	if (cf->can_id & CAN_RTR_FLAG)
++	if (cfd->can_id & CAN_RTR_FLAG)
+ 		ctrl |= FLEXCAN_MB_CNT_RTR;
+ 
+-	for (i = 0; i < cf->can_dlc; i += sizeof(u32)) {
+-		data = be32_to_cpup((__be32 *)&cf->data[i]);
++	for (i = 0; i < cfd->len; i += sizeof(u32)) {
++		data = be32_to_cpup((__be32 *)&cfd->data[i]);
+ 		priv->write(data, &priv->tx_mb->data[i / sizeof(u32)]);
+ 	}
+ 
+@@ -840,7 +840,7 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
+ 	struct flexcan_regs __iomem *regs = priv->regs;
+ 	struct flexcan_mb __iomem *mb;
+ 	struct sk_buff *skb;
+-	struct can_frame *cf;
++	struct canfd_frame *cfd;
+ 	u32 reg_ctrl, reg_id, reg_iflag1;
+ 	int i;
+ 
+@@ -877,8 +877,8 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
+ 		reg_ctrl = priv->read(&mb->can_ctrl);
+ 	}
+ 
+-	skb = alloc_can_skb(offload->dev, &cf);
+-	if (!skb) {
++	skb = alloc_can_skb(offload->dev, (struct can_frame **)&cfd);
++	if (unlikely(!skb)) {
+ 		skb = ERR_PTR(-ENOMEM);
+ 		goto mark_as_read;
+ 	}
+@@ -888,17 +888,17 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
+ 
+ 	reg_id = priv->read(&mb->can_id);
+ 	if (reg_ctrl & FLEXCAN_MB_CNT_IDE)
+-		cf->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
++		cfd->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
+ 	else
+-		cf->can_id = (reg_id >> 18) & CAN_SFF_MASK;
++		cfd->can_id = (reg_id >> 18) & CAN_SFF_MASK;
+ 
+ 	if (reg_ctrl & FLEXCAN_MB_CNT_RTR)
+-		cf->can_id |= CAN_RTR_FLAG;
+-	cf->can_dlc = get_can_dlc((reg_ctrl >> 16) & 0xf);
++		cfd->can_id |= CAN_RTR_FLAG;
++	cfd->len = get_can_dlc((reg_ctrl >> 16) & 0xf);
+ 
+-	for (i = 0; i < cf->can_dlc; i += sizeof(u32)) {
++	for (i = 0; i < cfd->len; i += sizeof(u32)) {
+ 		__be32 data = cpu_to_be32(priv->read(&mb->data[i / sizeof(u32)]));
+-		*(__be32 *)(cf->data + i) = data;
++		*(__be32 *)(cfd->data + i) = data;
+ 	}
+ 
+  mark_as_read:
 -- 
 2.28.0
 
