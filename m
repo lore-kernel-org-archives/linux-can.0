@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52753C4363D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5E97C4727C
 	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1D7782395C
+	by mail.kernel.org (Postfix) with ESMTP id 7E89F2395C
 	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgIVOoq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1726684AbgIVOoq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 22 Sep 2020 10:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726706AbgIVOon (ORCPT
+        with ESMTP id S1726705AbgIVOon (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:43 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA680C0613D2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B84C0613D0
         for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:42 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKjX6-0001FU-R7; Tue, 22 Sep 2020 16:44:40 +0200
+        id 1kKjX6-0001FU-GQ; Tue, 22 Sep 2020 16:44:40 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 20/20] can: flexcan: add lx2160ar1 support
-Date:   Tue, 22 Sep 2020 16:44:29 +0200
-Message-Id: <20200922144429.2613631-21-mkl@pengutronix.de>
+Subject: [PATCH 19/20] can: flexcan: add imx8qm support
+Date:   Tue, 22 Sep 2020 16:44:28 +0200
+Message-Id: <20200922144429.2613631-20-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922144429.2613631-1-mkl@pengutronix.de>
 References: <20200922144429.2613631-1-mkl@pengutronix.de>
@@ -48,48 +48,66 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-The Flexcan on lx2160ar1 supports CAN FD protocol.
+The Flexcan on i.MX8QM supports CAN FD protocol.
 
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20190712075926.7357-9-qiangqing.zhang@nxp.com
+Link: https://lore.kernel.org/r/20190712075926.7357-8-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/can/flexcan.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 5f778c961a0c..e86925134009 100644
+index fc98b5d521f2..5f778c961a0c 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -216,6 +216,7 @@
-  *   MX8QM FlexCAN3  03.00.23.00    yes       yes        no       no       yes          yes
-  *   VF610 FlexCAN3  ?               no       yes        no      yes       yes?          no
-  * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes           no
-+ * LX2160A FlexCAN3  03.00.23.00     no       yes        no       no       yes          yes
+@@ -206,15 +206,16 @@
+ /* FLEXCAN hardware feature flags
+  *
+  * Below is some version info we got:
+- *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT IRQ Err Memory err RTR re-
+- *                                Filter? connected?  Passive detection  ception in MB
+- *   MX25  FlexCAN2  03.00.00.00     no        no        no       no        no
+- *   MX28  FlexCAN2  03.00.04.00    yes       yes        no       no        no
+- *   MX35  FlexCAN2  03.00.00.00     no        no        no       no        no
+- *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no        no
+- *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no       yes
+- *   VF610 FlexCAN3  ?               no       yes        no      yes       yes?
+- * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes
++ *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT IRQ Err Memory err RTR rece-   FD Mode
++ *                                Filter? connected?  Passive detection  ption in MB Supported?
++ *   MX25  FlexCAN2  03.00.00.00     no        no        no       no        no           no
++ *   MX28  FlexCAN2  03.00.04.00    yes       yes        no       no        no           no
++ *   MX35  FlexCAN2  03.00.00.00     no        no        no       no        no           no
++ *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no        no           no
++ *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no       yes           no
++ *   MX8QM FlexCAN3  03.00.23.00    yes       yes        no       no       yes          yes
++ *   VF610 FlexCAN3  ?               no       yes        no      yes       yes?          no
++ * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes           no
   *
   * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
   */
-@@ -387,6 +388,12 @@ static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
- 		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
+@@ -368,6 +369,12 @@ static const struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+ 		FLEXCAN_QUIRK_SETUP_STOP_MODE,
  };
  
-+static const struct flexcan_devtype_data fsl_lx2160a_r1_devtype_data = {
++static const struct flexcan_devtype_data fsl_imx8qm_devtype_data = {
 +	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
-+		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
-+		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_SUPPORT_FD,
++		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
++		FLEXCAN_QUIRK_SUPPORT_FD,
 +};
 +
- static const struct can_bittiming_const flexcan_bittiming_const = {
- 	.name = DRV_NAME,
- 	.tseg1_min = 4,
-@@ -1846,6 +1853,7 @@ static const struct of_device_id flexcan_of_match[] = {
- 	{ .compatible = "fsl,p1010-flexcan", .data = &fsl_p1010_devtype_data, },
- 	{ .compatible = "fsl,vf610-flexcan", .data = &fsl_vf610_devtype_data, },
- 	{ .compatible = "fsl,ls1021ar2-flexcan", .data = &fsl_ls1021a_r2_devtype_data, },
-+	{ .compatible = "fsl,lx2160ar1-flexcan", .data = &fsl_lx2160a_r1_devtype_data, },
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, flexcan_of_match);
+ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
+@@ -1830,6 +1837,7 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
+ }
+ 
+ static const struct of_device_id flexcan_of_match[] = {
++	{ .compatible = "fsl,imx8qm-flexcan", .data = &fsl_imx8qm_devtype_data, },
+ 	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, },
+ 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
+ 	{ .compatible = "fsl,imx53-flexcan", .data = &fsl_imx25_devtype_data, },
 -- 
 2.28.0
 
