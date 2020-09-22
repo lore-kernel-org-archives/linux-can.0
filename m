@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D64A7C4741F
-	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B694C4727D
+	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AA2002396D
+	by mail.kernel.org (Postfix) with ESMTP id D95C42395C
 	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgIVOog (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 22 Sep 2020 10:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S1726705AbgIVOor (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 22 Sep 2020 10:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbgIVOog (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:36 -0400
+        with ESMTP id S1726701AbgIVOom (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:42 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5887FC061755
-        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167D9C0613CF
+        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:42 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKjX0-0001FU-FX; Tue, 22 Sep 2020 16:44:34 +0200
+        id 1kKjX6-0001FU-5t; Tue, 22 Sep 2020 16:44:40 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/20] can: flexcan: more register names
-Date:   Tue, 22 Sep 2020 16:44:12 +0200
-Message-Id: <20200922144429.2613631-4-mkl@pengutronix.de>
+Subject: [PATCH 18/20] can: flexcan: add Transceiver Delay Compensation support
+Date:   Tue, 22 Sep 2020 16:44:27 +0200
+Message-Id: <20200922144429.2613631-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922144429.2613631-1-mkl@pengutronix.de>
 References: <20200922144429.2613631-1-mkl@pengutronix.de>
@@ -46,55 +46,65 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds some new register names and tries to ensure with a
-static_assert that the documented offset is correct.
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
+The CAN-FD protocol allows the transmission and reception of data at a
+higher bit rate than the nominal rate used in the arbitration phase when
+the message's BRS bit is set.
+
+The TDC mechanism is effective only during the data phase of FD frames
+having BRS bit set. It has no effect either on non-FD frames, or on FD
+frames transmitted at normal bit rate.
+
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Link: https://lore.kernel.org/r/20190712075926.7357-7-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 43fa38033383..c24d7b63e1b9 100644
+index fc0e9d5fd02b..fc98b5d521f2 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -205,7 +205,7 @@ struct flexcan_regs {
- 	u32 mcr;		/* 0x00 */
- 	u32 ctrl;		/* 0x04 */
- 	u32 timer;		/* 0x08 */
--	u32 _reserved1;		/* 0x0c */
-+	u32 tcr;		/* 0x0c */
- 	u32 rxgmask;		/* 0x10 */
- 	u32 rx14mask;		/* 0x14 */
- 	u32 rx15mask;		/* 0x18 */
-@@ -225,7 +225,11 @@ struct flexcan_regs {
- 	u32 crcr;		/* 0x44 */
- 	u32 rxfgmask;		/* 0x48 */
- 	u32 rxfir;		/* 0x4c */
--	u32 _reserved3[12];	/* 0x50 */
-+	u32 cbt;		/* 0x50 */
-+	u32 _reserved2;		/* 0x54 */
-+	u32 dbg1;		/* 0x58 */
-+	u32 dbg2;		/* 0x5c */
-+	u32 _reserved3[8];	/* 0x60 */
- 	u8 mb[2][512];		/* 0x80 */
- 	/* FIFO-mode:
- 	 *			MB
-@@ -250,8 +254,14 @@ struct flexcan_regs {
- 	u32 rerrdr;		/* 0xaf4 */
- 	u32 rerrsynr;		/* 0xaf8 */
- 	u32 errsr;		/* 0xafc */
-+	u32 _reserved7[64];	/* 0xb00 */
-+	u32 fdctrl;		/* 0xc00 */
-+	u32 fdcbt;		/* 0xc04 */
-+	u32 fdcrc;		/* 0xc08 */
- };
+@@ -156,6 +156,10 @@
+ #define FLEXCAN_FDCTRL_MBDSR_12		0x1
+ #define FLEXCAN_FDCTRL_MBDSR_32		0x2
+ #define FLEXCAN_FDCTRL_MBDSR_64		0x3
++#define FLEXCAN_FDCTRL_TDCEN		BIT(15)
++#define FLEXCAN_FDCTRL_TDCFAIL		BIT(14)
++#define FLEXCAN_FDCTRL_TDCOFF		GENMASK(12, 8)
++#define FLEXCAN_FDCTRL_TDCVAL		GENMASK(5, 0)
  
-+static_assert(sizeof(struct flexcan_regs) == 0x4 + 0xc08);
+ /* FLEXCAN FD Bit Timing register (FDCBT) bits */
+ #define FLEXCAN_FDCBT_FPRESDIV_MASK	GENMASK(29, 20)
+@@ -1220,11 +1224,24 @@ static void flexcan_set_bittiming_cbt(const struct net_device *dev)
+ 
+ 	/* FDCTRL */
+ 	reg_fdctrl = priv->read(&regs->fdctrl);
+-	reg_fdctrl &= ~FLEXCAN_FDCTRL_FDRATE;
++	reg_fdctrl &= ~(FLEXCAN_FDCTRL_FDRATE |
++			FIELD_PREP(FLEXCAN_FDCTRL_TDCOFF, 0x1f));
+ 
+-	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
++	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+ 		reg_fdctrl |= FLEXCAN_FDCTRL_FDRATE;
+ 
++		if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK) {
++			/* TDC must be disabled for Loop Back mode */
++			reg_fdctrl &= ~FLEXCAN_FDCTRL_TDCEN;
++		} else {
++			reg_fdctrl |= FLEXCAN_FDCTRL_TDCEN |
++				FIELD_PREP(FLEXCAN_FDCTRL_TDCOFF,
++					   ((dbt->phase_seg1 - 1) +
++					    dbt->prop_seg + 2) *
++					   ((dbt->brp - 1 ) + 1));
++		}
++	}
 +
- struct flexcan_devtype_data {
- 	u32 quirks;		/* quirks needed for different IP cores */
- };
+ 	netdev_dbg(dev, "writing fdctrl=0x%08x\n", reg_fdctrl);
+ 	priv->write(reg_fdctrl, &regs->fdctrl);
+ 
 -- 
 2.28.0
 
