@@ -7,32 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 430F5C47425
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A987EC2D0E2
 	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0C1932395C
+	by mail.kernel.org (Postfix) with ESMTP id 7BA342395C
 	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgIVOoo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1726699AbgIVOoo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 22 Sep 2020 10:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726699AbgIVOom (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:42 -0400
+        with ESMTP id S1726684AbgIVOok (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:40 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661E2C0613D1
-        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D75C061755
+        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:40 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKjX5-0001FU-Fp; Tue, 22 Sep 2020 16:44:39 +0200
+        id 1kKjX3-0001FU-OW; Tue, 22 Sep 2020 16:44:37 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
+        Sean Nyekjaer <sean@geanix.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 16/20] can: flexcan: add ISO CAN FD feature support
-Date:   Tue, 22 Sep 2020 16:44:25 +0200
-Message-Id: <20200922144429.2613631-17-mkl@pengutronix.de>
+Subject: [PATCH 11/20] can: flexcan: disable clocks during stop mode
+Date:   Tue, 22 Sep 2020 16:44:20 +0200
+Message-Id: <20200922144429.2613631-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922144429.2613631-1-mkl@pengutronix.de>
 References: <20200922144429.2613631-1-mkl@pengutronix.de>
@@ -48,103 +49,78 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-ISO CAN FD is introduced to increase the failture detection capability
-than non-ISO CAN FD. The non-ISO CAN FD is still supported by FlexCAN so
-that it can be used mainly during an intermediate phase, for evaluation
-and development purposes.
-
-Therefore, it is strongly recommended to configure FlexCAN to the ISO
-CAN FD protocol by setting the ISOCANFDEN field in the CTRL2 register.
-
-NOTE: If you only set "fd on", driver will use ISO FD mode by default.
-You should set "fd-non-iso on" after setting "fd on" if you want to use
-NON ISO FD mode.
+Disable clocks while CAN core is in stop mode.
 
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20190712075926.7357-6-qiangqing.zhang@nxp.com
+Tested-by: Sean Nyekjaer <sean@geanix.com>
+Link: https://lore.kernel.org/r/20191210085721.9853-2-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+ drivers/net/can/flexcan.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 8dca553fa545..e3ecce80eadb 100644
+index 4be73ce7518e..ed2ead7c21ef 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -94,6 +94,7 @@
- #define FLEXCAN_CTRL2_MRP		BIT(18)
- #define FLEXCAN_CTRL2_RRS		BIT(17)
- #define FLEXCAN_CTRL2_EACEN		BIT(16)
-+#define FLEXCAN_CTRL2_ISOCANFDEN	BIT(12)
- 
- /* FLEXCAN memory error control register (MECR) bits */
- #define FLEXCAN_MECR_ECRWRDIS		BIT(31)
-@@ -1165,7 +1166,7 @@ static void flexcan_set_bittiming_cbt(const struct net_device *dev)
- 	priv->write(reg_cbt, &regs->cbt);
- 
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
--		u32 reg_fdcbt;
-+		u32 reg_fdcbt, reg_ctrl2;
- 
- 		if (bt->brp != dbt->brp)
- 			netdev_warn(dev, "Data brp=%d and brp=%d don't match, this may result in a phase error. Consider using different bitrate and/or data bitrate.\n",
-@@ -1184,7 +1185,14 @@ static void flexcan_set_bittiming_cbt(const struct net_device *dev)
- 			dbt->phase_seg1 = 0x8;
+@@ -1757,8 +1757,6 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 			err = flexcan_chip_disable(priv);
+ 			if (err)
+ 				return err;
+-
+-			err = pm_runtime_force_suspend(device);
  		}
- 
--		reg_fdcbt = FIELD_PREP(FLEXCAN_FDCBT_FPRESDIV_MASK, dbt->brp - 1) |
-+		reg_fdcbt = priv->read(&regs->fdcbt);
-+		reg_fdcbt &= ~(FIELD_PREP(FLEXCAN_FDCBT_FPRESDIV_MASK, 0x3ff) |
-+			       FIELD_PREP(FLEXCAN_FDCBT_FRJW_MASK, 0x7) |
-+			       FIELD_PREP(FLEXCAN_FDCBT_FPROPSEG_MASK, 0x1f) |
-+			       FIELD_PREP(FLEXCAN_FDCBT_FPSEG1_MASK, 0x7) |
-+			       FIELD_PREP(FLEXCAN_FDCBT_FPSEG2_MASK, 0x7));
-+
-+		reg_fdcbt |= FIELD_PREP(FLEXCAN_FDCBT_FPRESDIV_MASK, dbt->brp - 1) |
- 			FIELD_PREP(FLEXCAN_FDCBT_FRJW_MASK, dbt->sjw - 1) |
- 			FIELD_PREP(FLEXCAN_FDCBT_FPROPSEG_MASK, dbt->prop_seg) |
- 			FIELD_PREP(FLEXCAN_FDCBT_FPSEG1_MASK, dbt->phase_seg1 - 1) |
-@@ -1192,6 +1200,15 @@ static void flexcan_set_bittiming_cbt(const struct net_device *dev)
- 
- 		netdev_dbg(dev, "writing fdcbt=0x%08x\n", reg_fdcbt);
- 		priv->write(reg_fdcbt, &regs->fdcbt);
-+
-+		/* CTRL2 */
-+		reg_ctrl2 = priv->read(&regs->ctrl2);
-+		reg_ctrl2 &= ~FLEXCAN_CTRL2_ISOCANFDEN;
-+		if (!(priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO))
-+			reg_ctrl2 |= FLEXCAN_CTRL2_ISOCANFDEN;
-+
-+		netdev_dbg(dev, "writing ctrl2=0x%08x\n", reg_ctrl2);
-+		priv->write(reg_ctrl2, &regs->ctrl2);
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+@@ -1784,10 +1782,6 @@ static int __maybe_unused flexcan_resume(struct device *device)
+ 			if (err)
+ 				return err;
+ 		} else {
+-			err = pm_runtime_force_resume(device);
+-			if (err)
+-				return err;
+-
+ 			err = flexcan_chip_enable(priv);
+ 		}
  	}
+@@ -1818,8 +1812,16 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
  
- 	/* FDCTRL */
-@@ -1204,11 +1221,11 @@ static void flexcan_set_bittiming_cbt(const struct net_device *dev)
- 	netdev_dbg(dev, "writing fdctrl=0x%08x\n", reg_fdctrl);
- 	priv->write(reg_fdctrl, &regs->fdctrl);
+-	if (netif_running(dev) && device_may_wakeup(device))
+-		flexcan_enable_wakeup_irq(priv, true);
++	if (netif_running(dev)) {
++		int err;
++
++		if (device_may_wakeup(device))
++			flexcan_enable_wakeup_irq(priv, true);
++
++		err = pm_runtime_force_suspend(device);
++		if (err)
++			return err;
++	}
  
--	netdev_dbg(dev, "%s: mcr=0x%08x ctrl=0x%08x fdctrl=0x%08x cbt=0x%08x fdcbt=0x%08x\n",
-+	netdev_dbg(dev, "%s: mcr=0x%08x ctrl=0x%08x ctrl2=0x%08x fdctrl=0x%08x cbt=0x%08x fdcbt=0x%08x\n",
- 		   __func__,
- 		   priv->read(&regs->mcr), priv->read(&regs->ctrl),
--		   priv->read(&regs->fdctrl), priv->read(&regs->cbt),
--		   priv->read(&regs->fdcbt));
-+		   priv->read(&regs->ctrl2), priv->read(&regs->fdctrl),
-+		   priv->read(&regs->cbt), priv->read(&regs->fdcbt));
+ 	return 0;
  }
+@@ -1829,8 +1831,16 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
  
- static void flexcan_set_bittiming(struct net_device *dev)
-@@ -1911,7 +1928,8 @@ static int flexcan_probe(struct platform_device *pdev)
- 	priv->reg_xceiver = reg_xceiver;
+-	if (netif_running(dev) && device_may_wakeup(device))
+-		flexcan_enable_wakeup_irq(priv, false);
++	if (netif_running(dev)) {
++		int err;
++
++		err = pm_runtime_force_resume(device);
++		if (err)
++			return err;
++
++		if (device_may_wakeup(device))
++			flexcan_enable_wakeup_irq(priv, false);
++	}
  
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) {
--		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD;
-+		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD |
-+			CAN_CTRLMODE_FD_NON_ISO;
- 		priv->can.bittiming_const = &flexcan_fd_bittiming_const;
- 		priv->can.data_bittiming_const =
- 			&flexcan_fd_data_bittiming_const;
+ 	return 0;
+ }
 -- 
 2.28.0
 
