@@ -7,33 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A987EC2D0E2
-	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A28FC47420
+	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7BA342395C
-	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 369F62395C
+	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgIVOoo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 22 Sep 2020 10:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40086 "EHLO
+        id S1726627AbgIVOop (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 22 Sep 2020 10:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726684AbgIVOok (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:40 -0400
+        with ESMTP id S1726671AbgIVOoh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:37 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D75C061755
-        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FA4C061755
+        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:37 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKjX3-0001FU-OW; Tue, 22 Sep 2020 16:44:37 +0200
+        id 1kKjX1-0001FU-3x; Tue, 22 Sep 2020 16:44:35 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
-        Sean Nyekjaer <sean@geanix.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 11/20] can: flexcan: disable clocks during stop mode
-Date:   Tue, 22 Sep 2020 16:44:20 +0200
-Message-Id: <20200922144429.2613631-12-mkl@pengutronix.de>
+Subject: [PATCH 05/20] can: flexcan: quirks: get rid of long lines
+Date:   Tue, 22 Sep 2020 16:44:14 +0200
+Message-Id: <20200922144429.2613631-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922144429.2613631-1-mkl@pengutronix.de>
 References: <20200922144429.2613631-1-mkl@pengutronix.de>
@@ -47,80 +46,49 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+This patch reformats the quirks to get rid of long lines.
 
-Disable clocks while CAN core is in stop mode.
-
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20191210085721.9853-2-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ drivers/net/can/flexcan.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 4be73ce7518e..ed2ead7c21ef 100644
+index 224000f53a88..b180dd1ba763 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -1757,8 +1757,6 @@ static int __maybe_unused flexcan_suspend(struct device *device)
- 			err = flexcan_chip_disable(priv);
- 			if (err)
- 				return err;
--
--			err = pm_runtime_force_suspend(device);
- 		}
- 		netif_stop_queue(dev);
- 		netif_device_detach(dev);
-@@ -1784,10 +1782,6 @@ static int __maybe_unused flexcan_resume(struct device *device)
- 			if (err)
- 				return err;
- 		} else {
--			err = pm_runtime_force_resume(device);
--			if (err)
--				return err;
--
- 			err = flexcan_chip_enable(priv);
- 		}
- 	}
-@@ -1818,8 +1812,16 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
- 
--	if (netif_running(dev) && device_may_wakeup(device))
--		flexcan_enable_wakeup_irq(priv, true);
-+	if (netif_running(dev)) {
-+		int err;
+@@ -184,14 +184,23 @@
+  *
+  * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
+  */
+-#define FLEXCAN_QUIRK_BROKEN_WERR_STATE	BIT(1) /* [TR]WRN_INT not connected */
+-#define FLEXCAN_QUIRK_DISABLE_RXFG	BIT(2) /* Disable RX FIFO Global mask */
+-#define FLEXCAN_QUIRK_ENABLE_EACEN_RRS	BIT(3) /* Enable EACEN and RRS bit in ctrl2 */
+-#define FLEXCAN_QUIRK_DISABLE_MECR	BIT(4) /* Disable Memory error detection */
+-#define FLEXCAN_QUIRK_USE_OFF_TIMESTAMP	BIT(5) /* Use timestamp based offloading */
+-#define FLEXCAN_QUIRK_BROKEN_PERR_STATE	BIT(6) /* No interrupt for error passive */
+-#define FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN	BIT(7) /* default to BE register access */
+-#define FLEXCAN_QUIRK_SETUP_STOP_MODE		BIT(8) /* Setup stop mode to support wakeup */
 +
-+		if (device_may_wakeup(device))
-+			flexcan_enable_wakeup_irq(priv, true);
-+
-+		err = pm_runtime_force_suspend(device);
-+		if (err)
-+			return err;
-+	}
++/* [TR]WRN_INT not connected */
++#define FLEXCAN_QUIRK_BROKEN_WERR_STATE BIT(1)
++ /* Disable RX FIFO Global mask */
++#define FLEXCAN_QUIRK_DISABLE_RXFG BIT(2)
++/* Enable EACEN and RRS bit in ctrl2 */
++#define FLEXCAN_QUIRK_ENABLE_EACEN_RRS  BIT(3)
++/* Disable Memory error detection */
++#define FLEXCAN_QUIRK_DISABLE_MECR BIT(4)
++/* Use timestamp based offloading */
++#define FLEXCAN_QUIRK_USE_OFF_TIMESTAMP BIT(5)
++/* No interrupt for error passive */
++#define FLEXCAN_QUIRK_BROKEN_PERR_STATE BIT(6)
++/* default to BE register access */
++#define FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN BIT(7)
++/* Setup stop mode to support wakeup */
++#define FLEXCAN_QUIRK_SETUP_STOP_MODE BIT(8)
  
- 	return 0;
- }
-@@ -1829,8 +1831,16 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
- 
--	if (netif_running(dev) && device_may_wakeup(device))
--		flexcan_enable_wakeup_irq(priv, false);
-+	if (netif_running(dev)) {
-+		int err;
-+
-+		err = pm_runtime_force_resume(device);
-+		if (err)
-+			return err;
-+
-+		if (device_may_wakeup(device))
-+			flexcan_enable_wakeup_irq(priv, false);
-+	}
- 
- 	return 0;
- }
+ /* Structure of the message buffer */
+ struct flexcan_mb {
 -- 
 2.28.0
 
