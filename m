@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0CC7C2D0E2
-	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C838AC4741F
+	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 91FE22396D
-	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 921DA2395C
+	for <linux-can@archiver.kernel.org>; Tue, 22 Sep 2020 14:44:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgIVOom (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 22 Sep 2020 10:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
+        id S1726692AbgIVOon (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 22 Sep 2020 10:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbgIVOol (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:41 -0400
+        with ESMTP id S1726688AbgIVOok (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Sep 2020 10:44:40 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29E1C0613D0
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19A9C0613CF
         for <linux-can@vger.kernel.org>; Tue, 22 Sep 2020 07:44:40 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kKjX4-0001FU-Q9; Tue, 22 Sep 2020 16:44:38 +0200
+        id 1kKjX4-0001FU-4N; Tue, 22 Sep 2020 16:44:38 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 14/20] can: flexcan: use struct canfd_frame for CAN classic frame
-Date:   Tue, 22 Sep 2020 16:44:23 +0200
-Message-Id: <20200922144429.2613631-15-mkl@pengutronix.de>
+Subject: [PATCH 12/20] can: flexcan: add LPSR mode support
+Date:   Tue, 22 Sep 2020 16:44:21 +0200
+Message-Id: <20200922144429.2613631-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922144429.2613631-1-mkl@pengutronix.de>
 References: <20200922144429.2613631-1-mkl@pengutronix.de>
@@ -48,102 +48,96 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-This patch prepares for CAN FD mode, using struct canfd_frame can both
-for classic format frame and fd format frame.
+On the i.MX7D in LPSR mode, the controller will be powered off and the
+configuration state is lost after system resume. Upcoming i.MX8QM/QXP
+will also completely power off the domain, the controller state is lost
+and needs restore, too. So we need to set the pinctrl state again and
+re-start chip to re-configuration after resume.
+
+For the wakeup case, it should not set pinctrl to sleep state by
+pinctrl_pm_select_sleep_state.
+
+If the interface is down before suspend, we don't need to re-configure
+it as it will be configured if the interface is brought up later.
 
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20190712075926.7357-3-qiangqing.zhang@nxp.com
+Link: https://lore.kernel.org/r/20191204113249.3381-7-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ drivers/net/can/flexcan.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index a9908deae411..20c845c265e1 100644
+index ed2ead7c21ef..35d0fa59e957 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -646,10 +646,10 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
- static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
+@@ -23,6 +23,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+@@ -1742,7 +1743,7 @@ static int __maybe_unused flexcan_suspend(struct device *device)
  {
- 	const struct flexcan_priv *priv = netdev_priv(dev);
--	struct can_frame *cf = (struct can_frame *)skb->data;
-+	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 	u32 can_id;
- 	u32 data;
--	u32 ctrl = FLEXCAN_MB_CODE_TX_DATA | (cf->can_dlc << 16);
-+	u32 ctrl = FLEXCAN_MB_CODE_TX_DATA | (cfd->len << 16);
- 	int i;
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+-	int err = 0;
++	int err;
  
- 	if (can_dropped_invalid_skb(dev, skb))
-@@ -657,18 +657,18 @@ static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *de
+ 	if (netif_running(dev)) {
+ 		/* if wakeup is enabled, enter stop mode
+@@ -1754,7 +1755,11 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 			if (err)
+ 				return err;
+ 		} else {
+-			err = flexcan_chip_disable(priv);
++			err = flexcan_chip_stop(dev);
++			if (err)
++				return err;
++
++			err = pinctrl_pm_select_sleep_state(device);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -1763,14 +1768,14 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 	}
+ 	priv->can.state = CAN_STATE_SLEEPING;
  
- 	netif_stop_queue(dev);
+-	return err;
++	return 0;
+ }
  
--	if (cf->can_id & CAN_EFF_FLAG) {
--		can_id = cf->can_id & CAN_EFF_MASK;
-+	if (cfd->can_id & CAN_EFF_FLAG) {
-+		can_id = cfd->can_id & CAN_EFF_MASK;
- 		ctrl |= FLEXCAN_MB_CNT_IDE | FLEXCAN_MB_CNT_SRR;
- 	} else {
--		can_id = (cf->can_id & CAN_SFF_MASK) << 18;
-+		can_id = (cfd->can_id & CAN_SFF_MASK) << 18;
+ static int __maybe_unused flexcan_resume(struct device *device)
+ {
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+-	int err = 0;
++	int err;
+ 
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	if (netif_running(dev)) {
+@@ -1782,11 +1787,17 @@ static int __maybe_unused flexcan_resume(struct device *device)
+ 			if (err)
+ 				return err;
+ 		} else {
+-			err = flexcan_chip_enable(priv);
++			err = pinctrl_pm_select_default_state(device);
++			if (err)
++				return err;
++
++			err = flexcan_chip_start(dev);
++			if (err)
++				return err;
+ 		}
  	}
  
--	if (cf->can_id & CAN_RTR_FLAG)
-+	if (cfd->can_id & CAN_RTR_FLAG)
- 		ctrl |= FLEXCAN_MB_CNT_RTR;
+-	return err;
++	return 0;
+ }
  
--	for (i = 0; i < cf->can_dlc; i += sizeof(u32)) {
--		data = be32_to_cpup((__be32 *)&cf->data[i]);
-+	for (i = 0; i < cfd->len; i += sizeof(u32)) {
-+		data = be32_to_cpup((__be32 *)&cfd->data[i]);
- 		priv->write(data, &priv->tx_mb->data[i / sizeof(u32)]);
- 	}
- 
-@@ -840,7 +840,7 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
- 	struct flexcan_regs __iomem *regs = priv->regs;
- 	struct flexcan_mb __iomem *mb;
- 	struct sk_buff *skb;
--	struct can_frame *cf;
-+	struct canfd_frame *cfd;
- 	u32 reg_ctrl, reg_id, reg_iflag1;
- 	int i;
- 
-@@ -877,8 +877,8 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
- 		reg_ctrl = priv->read(&mb->can_ctrl);
- 	}
- 
--	skb = alloc_can_skb(offload->dev, &cf);
--	if (!skb) {
-+	skb = alloc_can_skb(offload->dev, (struct can_frame **)&cfd);
-+	if (unlikely(!skb)) {
- 		skb = ERR_PTR(-ENOMEM);
- 		goto mark_as_read;
- 	}
-@@ -888,17 +888,17 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
- 
- 	reg_id = priv->read(&mb->can_id);
- 	if (reg_ctrl & FLEXCAN_MB_CNT_IDE)
--		cf->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
-+		cfd->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
- 	else
--		cf->can_id = (reg_id >> 18) & CAN_SFF_MASK;
-+		cfd->can_id = (reg_id >> 18) & CAN_SFF_MASK;
- 
- 	if (reg_ctrl & FLEXCAN_MB_CNT_RTR)
--		cf->can_id |= CAN_RTR_FLAG;
--	cf->can_dlc = get_can_dlc((reg_ctrl >> 16) & 0xf);
-+		cfd->can_id |= CAN_RTR_FLAG;
-+	cfd->len = get_can_dlc((reg_ctrl >> 16) & 0xf);
- 
--	for (i = 0; i < cf->can_dlc; i += sizeof(u32)) {
-+	for (i = 0; i < cfd->len; i += sizeof(u32)) {
- 		__be32 data = cpu_to_be32(priv->read(&mb->data[i / sizeof(u32)]));
--		*(__be32 *)(cf->data + i) = data;
-+		*(__be32 *)(cfd->data + i) = data;
- 	}
- 
-  mark_as_read:
+ static int __maybe_unused flexcan_runtime_suspend(struct device *device)
 -- 
 2.28.0
 
