@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ABAEC2D0A8
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50B89C4727D
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:55:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4285620756
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:55:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 297B020756
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:55:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgIWIzK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1726773AbgIWIzK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 23 Sep 2020 04:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726389AbgIWIy1 (ORCPT
+        with ESMTP id S1726415AbgIWIy1 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:27 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A325C0613D8
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF6AC0613D7
+        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:26 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kL0Xf-0000uS-Lo; Wed, 23 Sep 2020 10:54:23 +0200
+        id 1kL0Xf-0000uS-8T; Wed, 23 Sep 2020 10:54:23 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/20] can: flexcan: more register names
-Date:   Wed, 23 Sep 2020 10:54:01 +0200
-Message-Id: <20200923085418.2685858-4-mkl@pengutronix.de>
+Subject: [PATCH 02/20] can: flexcan: flexcan_exit_stop_mode(): remove stray empty line
+Date:   Wed, 23 Sep 2020 10:54:00 +0200
+Message-Id: <20200923085418.2685858-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200923085418.2685858-1-mkl@pengutronix.de>
 References: <20200923085418.2685858-1-mkl@pengutronix.de>
@@ -47,56 +47,27 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds some new register names and tries to ensure with a
-static_assert that the documented offset is correct.
+This patch removes a stray empty line from the flexcan_exit_stop_mode()
+function.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://lore.kernel.org/r/20200922144429.2613631-4-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20200922144429.2613631-3-mkl@pengutronix.de
 ---
- drivers/net/can/flexcan.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 43fa38033383..c24d7b63e1b9 100644
+index 6198319d8fac..43fa38033383 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -205,7 +205,7 @@ struct flexcan_regs {
- 	u32 mcr;		/* 0x00 */
- 	u32 ctrl;		/* 0x04 */
- 	u32 timer;		/* 0x08 */
--	u32 _reserved1;		/* 0x0c */
-+	u32 tcr;		/* 0x0c */
- 	u32 rxgmask;		/* 0x10 */
- 	u32 rx14mask;		/* 0x14 */
- 	u32 rx15mask;		/* 0x18 */
-@@ -225,7 +225,11 @@ struct flexcan_regs {
- 	u32 crcr;		/* 0x44 */
- 	u32 rxfgmask;		/* 0x48 */
- 	u32 rxfir;		/* 0x4c */
--	u32 _reserved3[12];	/* 0x50 */
-+	u32 cbt;		/* 0x50 */
-+	u32 _reserved2;		/* 0x54 */
-+	u32 dbg1;		/* 0x58 */
-+	u32 dbg2;		/* 0x5c */
-+	u32 _reserved3[8];	/* 0x60 */
- 	u8 mb[2][512];		/* 0x80 */
- 	/* FIFO-mode:
- 	 *			MB
-@@ -250,8 +254,14 @@ struct flexcan_regs {
- 	u32 rerrdr;		/* 0xaf4 */
- 	u32 rerrsynr;		/* 0xaf8 */
- 	u32 errsr;		/* 0xafc */
-+	u32 _reserved7[64];	/* 0xb00 */
-+	u32 fdctrl;		/* 0xc00 */
-+	u32 fdcbt;		/* 0xc04 */
-+	u32 fdcrc;		/* 0xc08 */
- };
+@@ -457,7 +457,6 @@ static inline int flexcan_exit_stop_mode(struct flexcan_priv *priv)
+ 	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+ 			   1 << priv->stm.req_bit, 0);
  
-+static_assert(sizeof(struct flexcan_regs) == 0x4 + 0xc08);
-+
- struct flexcan_devtype_data {
- 	u32 quirks;		/* quirks needed for different IP cores */
- };
+-
+ 	reg_mcr = priv->read(&regs->mcr);
+ 	reg_mcr &= ~FLEXCAN_MCR_SLF_WAK;
+ 	priv->write(reg_mcr, &regs->mcr);
 -- 
 2.28.0
 
