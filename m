@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B10C4727E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1EE5C2D0A8
 	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 214A320756
+	by mail.kernel.org (Postfix) with ESMTP id AC96D20756
 	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgIWIyd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Sep 2020 04:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
+        id S1726650AbgIWIye (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Sep 2020 04:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIWIya (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:30 -0400
+        with ESMTP id S1726638AbgIWIyd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:33 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1956CC0613D1
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3044C0613DA
+        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:32 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kL0Xi-0000uS-4J; Wed, 23 Sep 2020 10:54:26 +0200
+        id 1kL0Xj-0000uS-M4; Wed, 23 Sep 2020 10:54:27 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 09/20] can: flexcan: add correctable errors correction when HW supports ECC
-Date:   Wed, 23 Sep 2020 10:54:07 +0200
-Message-Id: <20200923085418.2685858-10-mkl@pengutronix.de>
+Subject: [PATCH 12/20] can: flexcan: add LPSR mode support
+Date:   Wed, 23 Sep 2020 10:54:10 +0200
+Message-Id: <20200923085418.2685858-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200923085418.2685858-1-mkl@pengutronix.de>
 References: <20200923085418.2685858-1-mkl@pengutronix.de>
@@ -49,101 +49,96 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-commit cdce844865be ("can: flexcan: add vf610 support for FlexCAN")
-From above commit by Stefan Agner, the patch just disables
-non-correctable errors interrupt and freeze mode. It still can correct
-the correctable errors since ECC enabled by default after reset (MECR[ECCDIS]=0,
-enable memory error correct) if HW supports ECC.
+On the i.MX7D in LPSR mode, the controller will be powered off and the
+configuration state is lost after system resume. Upcoming i.MX8QM/QXP
+will also completely power off the domain, the controller state is lost
+and needs restore, too. So we need to set the pinctrl state again and
+re-start chip to re-configuration after resume.
 
-commit 5e269324db5a ("can: flexcan: disable completely the ECC mechanism")
-From above commit by Joakim Zhang, the patch disables ECC completely (assert
-MECR[ECCDIS]) according to the explanation of FLEXCAN_QUIRK_DISABLE_MECR that
-disable memory error detection. This cause correctable errors cannot be
-corrected even HW supports ECC.
+For the wakeup case, it should not set pinctrl to sleep state by
+pinctrl_pm_select_sleep_state.
 
-The error correction mechanism ensures that in this 13-bit word, errors
-in one bit can be corrected (correctable errors) and errors in two bits can
-be detected but not corrected (non-correctable errors). Errors in more than
-two bits may not be detected.
-
-If HW supports ECC, we can use this to correct the correctable errors detected
-from FlexCAN memory. Then disable non-correctable errors interrupt and freeze
-mode to avoid that put FlexCAN in freeze mode.
-
-This patch adds correctable errors correction when HW supports ECC, and
-modify explanation for FLEXCAN_QUIRK_DISABLE_MECR.
+If the interface is down before suspend, we don't need to re-configure
+it as it will be configured if the interface is brought up later.
 
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20200416093126.15242-1-qiangqing.zhang@nxp.com
+Link: https://lore.kernel.org/r/20191204113249.3381-7-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ drivers/net/can/flexcan.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 5c6903e23c01..52d73115c7fd 100644
+index ed2ead7c21ef..35d0fa59e957 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -190,7 +190,7 @@
- #define FLEXCAN_QUIRK_DISABLE_RXFG BIT(2)
- /* Enable EACEN and RRS bit in ctrl2 */
- #define FLEXCAN_QUIRK_ENABLE_EACEN_RRS  BIT(3)
--/* Disable Memory error detection */
-+/* Disable non-correctable errors interrupt and freeze mode */
- #define FLEXCAN_QUIRK_DISABLE_MECR BIT(4)
- /* Use timestamp based offloading */
- #define FLEXCAN_QUIRK_USE_OFF_TIMESTAMP BIT(5)
-@@ -1221,28 +1221,43 @@ static int flexcan_chip_start(struct net_device *dev)
- 	for (i = 0; i < priv->mb_count; i++)
- 		priv->write(0, &regs->rximr[i]);
+@@ -23,6 +23,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+@@ -1742,7 +1743,7 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ {
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+-	int err = 0;
++	int err;
  
--	/* On Vybrid, disable memory error detection interrupts
--	 * and freeze mode.
--	 * This also works around errata e5295 which generates
--	 * false positive memory errors and put the device in
--	 * freeze mode.
-+	/* On Vybrid, disable non-correctable errors interrupt and
-+	 * freeze mode. It still can correct the correctable errors
-+	 * when HW supports ECC.
-+	 *
-+	 * This also works around errata e5295 which generates false
-+	 * positive memory errors and put the device in freeze mode.
- 	 */
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_DISABLE_MECR) {
- 		/* Follow the protocol as described in "Detection
- 		 * and Correction of Memory Errors" to write to
--		 * MECR register
-+		 * MECR register (step 1 - 5)
-+		 *
-+		 * 1. By default, CTRL2[ECRWRE] = 0, MECR[ECRWRDIS] = 1
-+		 * 2. set CTRL2[ECRWRE]
- 		 */
- 		reg_ctrl2 = priv->read(&regs->ctrl2);
- 		reg_ctrl2 |= FLEXCAN_CTRL2_ECRWRE;
- 		priv->write(reg_ctrl2, &regs->ctrl2);
+ 	if (netif_running(dev)) {
+ 		/* if wakeup is enabled, enter stop mode
+@@ -1754,7 +1755,11 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 			if (err)
+ 				return err;
+ 		} else {
+-			err = flexcan_chip_disable(priv);
++			err = flexcan_chip_stop(dev);
++			if (err)
++				return err;
++
++			err = pinctrl_pm_select_sleep_state(device);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -1763,14 +1768,14 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 	}
+ 	priv->can.state = CAN_STATE_SLEEPING;
  
-+		/* 3. clear MECR[ECRWRDIS] */
- 		reg_mecr = priv->read(&regs->mecr);
- 		reg_mecr &= ~FLEXCAN_MECR_ECRWRDIS;
- 		priv->write(reg_mecr, &regs->mecr);
--		reg_mecr |= FLEXCAN_MECR_ECCDIS;
+-	return err;
++	return 0;
+ }
+ 
+ static int __maybe_unused flexcan_resume(struct device *device)
+ {
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+-	int err = 0;
++	int err;
+ 
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	if (netif_running(dev)) {
+@@ -1782,11 +1787,17 @@ static int __maybe_unused flexcan_resume(struct device *device)
+ 			if (err)
+ 				return err;
+ 		} else {
+-			err = flexcan_chip_enable(priv);
++			err = pinctrl_pm_select_default_state(device);
++			if (err)
++				return err;
 +
-+		/* 4. all writes to MECR must keep MECR[ECRWRDIS] cleared */
- 		reg_mecr &= ~(FLEXCAN_MECR_NCEFAFRZ | FLEXCAN_MECR_HANCEI_MSK |
- 			      FLEXCAN_MECR_FANCEI_MSK);
- 		priv->write(reg_mecr, &regs->mecr);
-+
-+		/* 5. after configuration done, lock MECR by either
-+		 * setting MECR[ECRWRDIS] or clearing CTRL2[ECRWRE]
-+		 */
-+		reg_mecr |= FLEXCAN_MECR_ECRWRDIS;
-+		priv->write(reg_mecr, &regs->mecr);
-+
-+		reg_ctrl2 &= ~FLEXCAN_CTRL2_ECRWRE;
-+		priv->write(reg_ctrl2, &regs->ctrl2);
++			err = flexcan_chip_start(dev);
++			if (err)
++				return err;
+ 		}
  	}
  
- 	err = flexcan_transceiver_enable(priv);
+-	return err;
++	return 0;
+ }
+ 
+ static int __maybe_unused flexcan_runtime_suspend(struct device *device)
 -- 
 2.28.0
 
