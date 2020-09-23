@@ -2,119 +2,52 @@ Return-Path: <SRS0=s8nA=DA=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8766C2D0A8
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 18:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9846C2D0A8
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 19:10:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8821B20791
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 18:06:39 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="s+6PqfFj"
+	by mail.kernel.org (Postfix) with ESMTP id 5A0D520BED
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 19:10:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgIWSGd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Sep 2020 14:06:33 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36338 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726413AbgIWSGd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 14:06:33 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08NI6O6R113435;
-        Wed, 23 Sep 2020 13:06:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600884384;
-        bh=Hhjy9v9VdpkwlFFrSW6d6ZyqmVJVZU9tfSurVGCzSB4=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=s+6PqfFjG0MNL6W/W8+cClGYxgmEWFEVyTgaHT0A4s7guxjPY3763XHhx1BY7FaBy
-         M4pCd8wmMOW6Lp8N/SNrGKEM/ERu7Xt0IcGXwuXOvW2vGhGd0N7S4OXvlKCaQpygdd
-         UAo4J3+XDpwhqCO/yhNy6pfgEIebuJwFCfxp8dLY=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08NI6OJ8113098
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Sep 2020 13:06:24 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 23
- Sep 2020 13:06:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 23 Sep 2020 13:06:24 -0500
-Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NI6Nb6007743;
-        Wed, 23 Sep 2020 13:06:23 -0500
-Subject: Re: [RESEND PATCH can-next 1/2] can: tcan4x5x: Rename parse_config
- function
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <mkl@pengutronix.de>, <wg@grandegger.com>
-CC:     <linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200227183829.21854-1-dmurphy@ti.com>
- <057bc43f-7db5-de7e-dbf5-8bfe324a973e@ti.com>
-Message-ID: <b61b1a65-90c6-5380-d4ba-d8efcdb42094@ti.com>
-Date:   Wed, 23 Sep 2020 13:06:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <057bc43f-7db5-de7e-dbf5-8bfe324a973e@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1726419AbgIWTKH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Sep 2020 15:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgIWTKH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 15:10:07 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59549C0613CE;
+        Wed, 23 Sep 2020 12:10:07 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 32060141B6D60;
+        Wed, 23 Sep 2020 11:53:19 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 12:10:05 -0700 (PDT)
+Message-Id: <20200923.121005.866680629949225096.davem@davemloft.net>
+To:     mkl@pengutronix.de
+Cc:     netdev@vger.kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com
+Subject: Re: pull-request: can-next 2020-09-23
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200923085418.2685858-1-mkl@pengutronix.de>
+References: <20200923085418.2685858-1-mkl@pengutronix.de>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Wed, 23 Sep 2020 11:53:19 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Mark and Wolfgang
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Wed, 23 Sep 2020 10:53:58 +0200
 
-On 4/28/20 2:48 PM, Dan Murphy wrote:
-> Marc
->
-> On 2/27/20 12:38 PM, Dan Murphy wrote:
->> Rename the tcan4x5x_parse_config function to tcan4x5x_get_gpios since
->> the function retrieves the gpio configurations from the firmware.
->>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>   drivers/net/can/m_can/tcan4x5x.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/can/m_can/tcan4x5x.c 
->> b/drivers/net/can/m_can/tcan4x5x.c
->> index 9821babef55e..37d53ecc560b 100644
->> --- a/drivers/net/can/m_can/tcan4x5x.c
->> +++ b/drivers/net/can/m_can/tcan4x5x.c
->> @@ -381,7 +381,7 @@ static int tcan4x5x_disable_state(struct 
->> m_can_classdev *cdev)
->>                     TCAN4X5X_DISABLE_INH_MSK, 0x01);
->>   }
->>   -static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
->> +static int tcan4x5x_get_gpios(struct m_can_classdev *cdev)
->>   {
->>       struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
->>       int ret;
->> @@ -507,7 +507,7 @@ static int tcan4x5x_can_probe(struct spi_device 
->> *spi)
->>       if (ret)
->>           return ret;
->>   -    ret = tcan4x5x_parse_config(mcan_class);
->> +    ret = tcan4x5x_get_gpios(mcan_class);
->>       if (ret)
->>           goto out_power;
->
-> I noticed this series never was reviewed and applied.  They are still 
-> applicable and were requested changes.
->
-Did you need me to combine all the patches on a m_can-next branch and 
-submit a PR after test?
+> this is a pull request of 20 patches for net-next.
 
-There are quite a few patches out there and they all seem relevant.
-
-Dan
-
-
-> Dan
->
+Pulled, thanks Marc.
