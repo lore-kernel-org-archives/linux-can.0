@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D86E7C4741F
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9837C4727E
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB59720756
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 98FD920756
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgIWIyv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Sep 2020 04:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        id S1726743AbgIWIyz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Sep 2020 04:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgIWIye (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:34 -0400
+        with ESMTP id S1726537AbgIWIy3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:29 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94405C0613CE
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45477C061755
+        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:29 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kL0Xk-0000uS-GH; Wed, 23 Sep 2020 10:54:28 +0200
+        id 1kL0Xh-0000uS-NH; Wed, 23 Sep 2020 10:54:25 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 14/20] can: flexcan: use struct canfd_frame for CAN classic frame
-Date:   Wed, 23 Sep 2020 10:54:12 +0200
-Message-Id: <20200923085418.2685858-15-mkl@pengutronix.de>
+Subject: [PATCH 08/20] can: flexcan: Add check for transceiver maximum bitrate limitation
+Date:   Wed, 23 Sep 2020 10:54:06 +0200
+Message-Id: <20200923085418.2685858-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200923085418.2685858-1-mkl@pengutronix.de>
 References: <20200923085418.2685858-1-mkl@pengutronix.de>
@@ -49,102 +49,28 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-This patch prepares for CAN FD mode, using struct canfd_frame can both
-for classic format frame and fd format frame.
+CAN FD can transmit up to 8Mbps, but some transceivers only can support
+5Mbps, so add check in driver.
 
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20190712075926.7357-3-qiangqing.zhang@nxp.com
+Link: https://lore.kernel.org/r/20191030064245.12923-2-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ drivers/net/can/flexcan.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index a9908deae411..20c845c265e1 100644
+index 52b53ff223f4..5c6903e23c01 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -646,10 +646,10 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
- static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	const struct flexcan_priv *priv = netdev_priv(dev);
--	struct can_frame *cf = (struct can_frame *)skb->data;
-+	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 	u32 can_id;
- 	u32 data;
--	u32 ctrl = FLEXCAN_MB_CODE_TX_DATA | (cf->can_dlc << 16);
-+	u32 ctrl = FLEXCAN_MB_CODE_TX_DATA | (cfd->len << 16);
- 	int i;
- 
- 	if (can_dropped_invalid_skb(dev, skb))
-@@ -657,18 +657,18 @@ static netdev_tx_t flexcan_start_xmit(struct sk_buff *skb, struct net_device *de
- 
- 	netif_stop_queue(dev);
- 
--	if (cf->can_id & CAN_EFF_FLAG) {
--		can_id = cf->can_id & CAN_EFF_MASK;
-+	if (cfd->can_id & CAN_EFF_FLAG) {
-+		can_id = cfd->can_id & CAN_EFF_MASK;
- 		ctrl |= FLEXCAN_MB_CNT_IDE | FLEXCAN_MB_CNT_SRR;
- 	} else {
--		can_id = (cf->can_id & CAN_SFF_MASK) << 18;
-+		can_id = (cfd->can_id & CAN_SFF_MASK) << 18;
+@@ -1674,6 +1674,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 		goto failed_register;
  	}
  
--	if (cf->can_id & CAN_RTR_FLAG)
-+	if (cfd->can_id & CAN_RTR_FLAG)
- 		ctrl |= FLEXCAN_MB_CNT_RTR;
++	of_can_transceiver(dev);
+ 	devm_can_led_init(dev);
  
--	for (i = 0; i < cf->can_dlc; i += sizeof(u32)) {
--		data = be32_to_cpup((__be32 *)&cf->data[i]);
-+	for (i = 0; i < cfd->len; i += sizeof(u32)) {
-+		data = be32_to_cpup((__be32 *)&cfd->data[i]);
- 		priv->write(data, &priv->tx_mb->data[i / sizeof(u32)]);
- 	}
- 
-@@ -840,7 +840,7 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
- 	struct flexcan_regs __iomem *regs = priv->regs;
- 	struct flexcan_mb __iomem *mb;
- 	struct sk_buff *skb;
--	struct can_frame *cf;
-+	struct canfd_frame *cfd;
- 	u32 reg_ctrl, reg_id, reg_iflag1;
- 	int i;
- 
-@@ -877,8 +877,8 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
- 		reg_ctrl = priv->read(&mb->can_ctrl);
- 	}
- 
--	skb = alloc_can_skb(offload->dev, &cf);
--	if (!skb) {
-+	skb = alloc_can_skb(offload->dev, (struct can_frame **)&cfd);
-+	if (unlikely(!skb)) {
- 		skb = ERR_PTR(-ENOMEM);
- 		goto mark_as_read;
- 	}
-@@ -888,17 +888,17 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
- 
- 	reg_id = priv->read(&mb->can_id);
- 	if (reg_ctrl & FLEXCAN_MB_CNT_IDE)
--		cf->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
-+		cfd->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
- 	else
--		cf->can_id = (reg_id >> 18) & CAN_SFF_MASK;
-+		cfd->can_id = (reg_id >> 18) & CAN_SFF_MASK;
- 
- 	if (reg_ctrl & FLEXCAN_MB_CNT_RTR)
--		cf->can_id |= CAN_RTR_FLAG;
--	cf->can_dlc = get_can_dlc((reg_ctrl >> 16) & 0xf);
-+		cfd->can_id |= CAN_RTR_FLAG;
-+	cfd->len = get_can_dlc((reg_ctrl >> 16) & 0xf);
- 
--	for (i = 0; i < cf->can_dlc; i += sizeof(u32)) {
-+	for (i = 0; i < cfd->len; i += sizeof(u32)) {
- 		__be32 data = cpu_to_be32(priv->read(&mb->data[i / sizeof(u32)]));
--		*(__be32 *)(cf->data + i) = data;
-+		*(__be32 *)(cfd->data + i) = data;
- 	}
- 
-  mark_as_read:
+ 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE) {
 -- 
 2.28.0
 
