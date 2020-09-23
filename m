@@ -2,38 +2,41 @@ Return-Path: <SRS0=s8nA=DA=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB28C2D0A8
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 993D0C2D0A8
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5D95620756
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6BD6420756
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgIWIy1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Sep 2020 04:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
+        id S1726572AbgIWIyb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Sep 2020 04:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgIWIy0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:26 -0400
+        with ESMTP id S1726558AbgIWIya (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:30 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C66C0613D2
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE98FC0613CE
+        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:29 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kL0Xe-0000uS-Di; Wed, 23 Sep 2020 10:54:22 +0200
+        id 1kL0Xi-0000uS-HS; Wed, 23 Sep 2020 10:54:26 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com
-Subject: pull-request: can-next 2020-09-23
-Date:   Wed, 23 Sep 2020 10:53:58 +0200
-Message-Id: <20200923085418.2685858-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 10/20] can: flexcan: flexcan_chip_stop(): add error handling and propagate error value
+Date:   Wed, 23 Sep 2020 10:54:08 +0200
+Message-Id: <20200923085418.2685858-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200923085418.2685858-1-mkl@pengutronix.de>
+References: <20200923085418.2685858-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
@@ -44,74 +47,89 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello David,
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-this is a pull request of 20 patches for net-next.
+This patch implements error handling and propagates the error value of
+flexcan_chip_stop(). This function will be called from flexcan_suspend()
+in an upcoming patch in some SoCs which support LPSR mode.
 
-The complete series target the flexcan driver and is created by Joakim Zhang
-and me.
+Add a new function flexcan_chip_stop_disable_on_error() that tries to
+disable the chip even in case of errors.
 
-The first six patches are cleanup (sort include files alphabetically, remove
-stray empty line, get rid of long lines) and adding more registers and
-documentation (registers and wakeup interrupt).
-
-Then in two patches the transceiver regulator is made optional, and a check for
-maximum transceiver bitrate is added.
-
-Then the ECC support for HW thats supports this is added.
-
-The next three patches improve suspend and low power mode handling.
-
-Followed by six patches that add CAN-FD support and CAN-FD related features.
-
-The last two patches add support for the flexcan IP core on the imx8qm and
-lx2160ar1.
-
-regards,
-Marc
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+[mkl: introduce flexcan_chip_stop_disable_on_error() and use it in flexcan_close()]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/r/20200922144429.2613631-11-mkl@pengutronix.de
 ---
+ drivers/net/can/flexcan.c | 34 ++++++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
-The following changes since commit 92ec804f3dbf0d986f8e10850bfff14f316d7aaf:
-
-  net: phy: bcm7xxx: Add an entry for BCM72113 (2020-09-21 17:16:17 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-5.10-20200923
-
-for you to fetch changes up to 2c19bb43e5572929f00f186d43e99bfd6d7ee3b2:
-
-  can: flexcan: add lx2160ar1 support (2020-09-22 16:55:34 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-5.10-20200923
-
-----------------------------------------------------------------
-Joakim Zhang (13):
-      can: flexcan: Ack wakeup interrupt separately
-      can: flexcan: Add check for transceiver maximum bitrate limitation
-      can: flexcan: add correctable errors correction when HW supports ECC
-      can: flexcan: flexcan_chip_stop(): add error handling and propagate error value
-      can: flexcan: disable clocks during stop mode
-      can: flexcan: add LPSR mode support
-      can: flexcan: use struct canfd_frame for CAN classic frame
-      can: flexcan: add CAN-FD mode support
-      can: flexcan: add ISO CAN FD feature support
-      can: flexcan: add CAN FD BRS support
-      can: flexcan: add Transceiver Delay Compensation support
-      can: flexcan: add imx8qm support
-      can: flexcan: add lx2160ar1 support
-
-Marc Kleine-Budde (7):
-      can: flexcan: sort include files alphabetically
-      can: flexcan: flexcan_exit_stop_mode(): remove stray empty line
-      can: flexcan: more register names
-      can: flexcan: struct flexcan_regs: document registers not affected by soft reset
-      can: flexcan: quirks: get rid of long lines
-      can: flexcan: flexcan_probe(): make regulator xceiver optional
-      can: flexcan: flexcan_set_bittiming(): move setup of CAN-2.0 bitiming into separate function
-
- drivers/net/can/flexcan.c | 533 ++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 443 insertions(+), 90 deletions(-)
-
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 52d73115c7fd..4be73ce7518e 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1292,18 +1292,23 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	return err;
+ }
+ 
+-/* flexcan_chip_stop
++/* __flexcan_chip_stop
+  *
+- * this functions is entered with clocks enabled
++ * this function is entered with clocks enabled
+  */
+-static void flexcan_chip_stop(struct net_device *dev)
++static int __flexcan_chip_stop(struct net_device *dev, bool disable_on_error)
+ {
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs = priv->regs;
++	int err;
+ 
+ 	/* freeze + disable module */
+-	flexcan_chip_freeze(priv);
+-	flexcan_chip_disable(priv);
++	err = flexcan_chip_freeze(priv);
++	if (err && !disable_on_error)
++		return err;
++	err = flexcan_chip_disable(priv);
++	if (err && !disable_on_error)
++		goto out_chip_unfreeze;
+ 
+ 	/* Disable all interrupts */
+ 	priv->write(0, &regs->imask2);
+@@ -1313,6 +1318,23 @@ static void flexcan_chip_stop(struct net_device *dev)
+ 
+ 	flexcan_transceiver_disable(priv);
+ 	priv->can.state = CAN_STATE_STOPPED;
++
++	return 0;
++
++ out_chip_unfreeze:
++	flexcan_chip_unfreeze(priv);
++
++	return err;
++}
++
++static inline int flexcan_chip_stop_disable_on_error(struct net_device *dev)
++{
++	return __flexcan_chip_stop(dev, true);
++}
++
++static inline int flexcan_chip_stop(struct net_device *dev)
++{
++	return __flexcan_chip_stop(dev, false);
+ }
+ 
+ static int flexcan_open(struct net_device *dev)
+@@ -1394,7 +1416,7 @@ static int flexcan_close(struct net_device *dev)
+ 
+ 	netif_stop_queue(dev);
+ 	can_rx_offload_disable(&priv->offload);
+-	flexcan_chip_stop(dev);
++	flexcan_chip_stop_disable_on_error(dev);
+ 
+ 	can_rx_offload_del(&priv->offload);
+ 	free_irq(dev->irq, dev);
+-- 
+2.28.0
 
