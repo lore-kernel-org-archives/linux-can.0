@@ -7,33 +7,34 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3607C2D0A8
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E73B7C4741F
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B133E20756
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BAFAB20756
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIWIym (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Sep 2020 04:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
+        id S1726680AbgIWIyl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Sep 2020 04:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbgIWIym (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:42 -0400
+        with ESMTP id S1726584AbgIWIyb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44990C0613D4
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CA4C0613CE
+        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:31 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kL0Xn-0000uS-6l; Wed, 23 Sep 2020 10:54:31 +0200
+        id 1kL0Xj-0000uS-9B; Wed, 23 Sep 2020 10:54:27 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
+        Sean Nyekjaer <sean@geanix.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 20/20] can: flexcan: add lx2160ar1 support
-Date:   Wed, 23 Sep 2020 10:54:18 +0200
-Message-Id: <20200923085418.2685858-21-mkl@pengutronix.de>
+Subject: [PATCH 11/20] can: flexcan: disable clocks during stop mode
+Date:   Wed, 23 Sep 2020 10:54:09 +0200
+Message-Id: <20200923085418.2685858-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200923085418.2685858-1-mkl@pengutronix.de>
 References: <20200923085418.2685858-1-mkl@pengutronix.de>
@@ -49,48 +50,78 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-The Flexcan on lx2160ar1 supports CAN FD protocol.
+Disable clocks while CAN core is in stop mode.
 
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20190712075926.7357-9-qiangqing.zhang@nxp.com
+Tested-by: Sean Nyekjaer <sean@geanix.com>
+Link: https://lore.kernel.org/r/20191210085721.9853-2-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/can/flexcan.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 5f778c961a0c..e86925134009 100644
+index 4be73ce7518e..ed2ead7c21ef 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -216,6 +216,7 @@
-  *   MX8QM FlexCAN3  03.00.23.00    yes       yes        no       no       yes          yes
-  *   VF610 FlexCAN3  ?               no       yes        no      yes       yes?          no
-  * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes           no
-+ * LX2160A FlexCAN3  03.00.23.00     no       yes        no       no       yes          yes
-  *
-  * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
-  */
-@@ -387,6 +388,12 @@ static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
- 		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
- };
+@@ -1757,8 +1757,6 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 			err = flexcan_chip_disable(priv);
+ 			if (err)
+ 				return err;
+-
+-			err = pm_runtime_force_suspend(device);
+ 		}
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+@@ -1784,10 +1782,6 @@ static int __maybe_unused flexcan_resume(struct device *device)
+ 			if (err)
+ 				return err;
+ 		} else {
+-			err = pm_runtime_force_resume(device);
+-			if (err)
+-				return err;
+-
+ 			err = flexcan_chip_enable(priv);
+ 		}
+ 	}
+@@ -1818,8 +1812,16 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
  
-+static const struct flexcan_devtype_data fsl_lx2160a_r1_devtype_data = {
-+	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
-+		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
-+		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_SUPPORT_FD,
-+};
+-	if (netif_running(dev) && device_may_wakeup(device))
+-		flexcan_enable_wakeup_irq(priv, true);
++	if (netif_running(dev)) {
++		int err;
 +
- static const struct can_bittiming_const flexcan_bittiming_const = {
- 	.name = DRV_NAME,
- 	.tseg1_min = 4,
-@@ -1846,6 +1853,7 @@ static const struct of_device_id flexcan_of_match[] = {
- 	{ .compatible = "fsl,p1010-flexcan", .data = &fsl_p1010_devtype_data, },
- 	{ .compatible = "fsl,vf610-flexcan", .data = &fsl_vf610_devtype_data, },
- 	{ .compatible = "fsl,ls1021ar2-flexcan", .data = &fsl_ls1021a_r2_devtype_data, },
-+	{ .compatible = "fsl,lx2160ar1-flexcan", .data = &fsl_lx2160a_r1_devtype_data, },
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, flexcan_of_match);
++		if (device_may_wakeup(device))
++			flexcan_enable_wakeup_irq(priv, true);
++
++		err = pm_runtime_force_suspend(device);
++		if (err)
++			return err;
++	}
+ 
+ 	return 0;
+ }
+@@ -1829,8 +1831,16 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 
+-	if (netif_running(dev) && device_may_wakeup(device))
+-		flexcan_enable_wakeup_irq(priv, false);
++	if (netif_running(dev)) {
++		int err;
++
++		err = pm_runtime_force_resume(device);
++		if (err)
++			return err;
++
++		if (device_may_wakeup(device))
++			flexcan_enable_wakeup_irq(priv, false);
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.28.0
 
