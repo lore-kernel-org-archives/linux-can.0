@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9837C4727E
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BF32C4727D
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 98FD920756
+	by mail.kernel.org (Postfix) with ESMTP id DCAA320756
 	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgIWIyz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1726537AbgIWIyz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 23 Sep 2020 04:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgIWIy3 (ORCPT
+        with ESMTP id S1726516AbgIWIy3 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:29 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45477C061755
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AF1C0613D2
+        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:28 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kL0Xh-0000uS-NH; Wed, 23 Sep 2020 10:54:25 +0200
+        id 1kL0Xg-0000uS-Su; Wed, 23 Sep 2020 10:54:24 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 08/20] can: flexcan: Add check for transceiver maximum bitrate limitation
-Date:   Wed, 23 Sep 2020 10:54:06 +0200
-Message-Id: <20200923085418.2685858-9-mkl@pengutronix.de>
+Subject: [PATCH 06/20] can: flexcan: Ack wakeup interrupt separately
+Date:   Wed, 23 Sep 2020 10:54:04 +0200
+Message-Id: <20200923085418.2685858-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200923085418.2685858-1-mkl@pengutronix.de>
 References: <20200923085418.2685858-1-mkl@pengutronix.de>
@@ -49,28 +49,47 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-CAN FD can transmit up to 8Mbps, but some transceivers only can support
-5Mbps, so add check in driver.
+As FLEXCAN_ESR_ALL_INT is for all bus errors and state change IRQ
+sources, strictly speaking FLEXCAN_ESR_WAK_INT does not belong to these.
+So add wakeup interrupt ack separately to existing ack of the
+interrupts.
 
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20191030064245.12923-2-qiangqing.zhang@nxp.com
+Link: https://lore.kernel.org/r/20191204113249.3381-3-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/flexcan.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 52b53ff223f4..5c6903e23c01 100644
+index b180dd1ba763..06cddc468739 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -1674,6 +1674,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 		goto failed_register;
+@@ -134,8 +134,7 @@
+ 	(FLEXCAN_ESR_ERR_BUS | FLEXCAN_ESR_ERR_STATE)
+ #define FLEXCAN_ESR_ALL_INT \
+ 	(FLEXCAN_ESR_TWRN_INT | FLEXCAN_ESR_RWRN_INT | \
+-	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT | \
+-	 FLEXCAN_ESR_WAK_INT)
++	 FLEXCAN_ESR_BOFF_INT | FLEXCAN_ESR_ERR_INT)
+ 
+ /* FLEXCAN interrupt flag register (IFLAG) bits */
+ /* Errata ERR005829 step7: Reserve first valid MB */
+@@ -979,10 +978,10 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 
+ 	reg_esr = priv->read(&regs->esr);
+ 
+-	/* ACK all bus error and state change IRQ sources */
+-	if (reg_esr & FLEXCAN_ESR_ALL_INT) {
++	/* ACK all bus error, state change and wake IRQ sources */
++	if (reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ESR_WAK_INT)) {
+ 		handled = IRQ_HANDLED;
+-		priv->write(reg_esr & FLEXCAN_ESR_ALL_INT, &regs->esr);
++		priv->write(reg_esr & (FLEXCAN_ESR_ALL_INT | FLEXCAN_ESR_WAK_INT), &regs->esr);
  	}
  
-+	of_can_transceiver(dev);
- 	devm_can_led_init(dev);
- 
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE) {
+ 	/* state change interrupt or broken error state quirk fix is enabled */
 -- 
 2.28.0
 
