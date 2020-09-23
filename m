@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ACAEC2D0A8
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:55:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ABAEC2D0A8
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:55:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E198420756
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:55:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4285620756
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:55:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgIWIzE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Sep 2020 04:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        id S1726405AbgIWIzK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Sep 2020 04:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgIWIy2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:28 -0400
+        with ESMTP id S1726389AbgIWIy1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:27 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0683C0613D5
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A325C0613D8
+        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:27 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kL0Xe-0000uS-Rp; Wed, 23 Sep 2020 10:54:22 +0200
+        id 1kL0Xf-0000uS-Lo; Wed, 23 Sep 2020 10:54:23 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 01/20] can: flexcan: sort include files alphabetically
-Date:   Wed, 23 Sep 2020 10:53:59 +0200
-Message-Id: <20200923085418.2685858-2-mkl@pengutronix.de>
+Subject: [PATCH 03/20] can: flexcan: more register names
+Date:   Wed, 23 Sep 2020 10:54:01 +0200
+Message-Id: <20200923085418.2685858-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200923085418.2685858-1-mkl@pengutronix.de>
 References: <20200923085418.2685858-1-mkl@pengutronix.de>
@@ -47,41 +47,56 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch sorts the include files alphabetically.
+This patch adds some new register names and tries to ensure with a
+static_assert that the documented offset is correct.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://lore.kernel.org/r/20200922144429.2613631-2-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20200922144429.2613631-4-mkl@pengutronix.de
 ---
- drivers/net/can/flexcan.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 19403e88daa3..6198319d8fac 100644
+index 43fa38033383..c24d7b63e1b9 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -9,7 +9,6 @@
- //
- // Based on code originally by Andrey Volkov <avolkov@varma-el.com>
+@@ -205,7 +205,7 @@ struct flexcan_regs {
+ 	u32 mcr;		/* 0x00 */
+ 	u32 ctrl;		/* 0x04 */
+ 	u32 timer;		/* 0x08 */
+-	u32 _reserved1;		/* 0x0c */
++	u32 tcr;		/* 0x0c */
+ 	u32 rxgmask;		/* 0x10 */
+ 	u32 rx14mask;		/* 0x14 */
+ 	u32 rx15mask;		/* 0x18 */
+@@ -225,7 +225,11 @@ struct flexcan_regs {
+ 	u32 crcr;		/* 0x44 */
+ 	u32 rxfgmask;		/* 0x48 */
+ 	u32 rxfir;		/* 0x4c */
+-	u32 _reserved3[12];	/* 0x50 */
++	u32 cbt;		/* 0x50 */
++	u32 _reserved2;		/* 0x54 */
++	u32 dbg1;		/* 0x58 */
++	u32 dbg2;		/* 0x5c */
++	u32 _reserved3[8];	/* 0x60 */
+ 	u8 mb[2][512];		/* 0x80 */
+ 	/* FIFO-mode:
+ 	 *			MB
+@@ -250,8 +254,14 @@ struct flexcan_regs {
+ 	u32 rerrdr;		/* 0xaf4 */
+ 	u32 rerrsynr;		/* 0xaf8 */
+ 	u32 errsr;		/* 0xafc */
++	u32 _reserved7[64];	/* 0xb00 */
++	u32 fdctrl;		/* 0xc00 */
++	u32 fdcbt;		/* 0xc04 */
++	u32 fdcrc;		/* 0xc08 */
+ };
  
--#include <linux/netdevice.h>
- #include <linux/can.h>
- #include <linux/can/dev.h>
- #include <linux/can/error.h>
-@@ -21,12 +20,13 @@
- #include <linux/io.h>
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
-+#include <linux/netdevice.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
--#include <linux/regulator/consumer.h>
- #include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
- 
- #define DRV_NAME			"flexcan"
- 
++static_assert(sizeof(struct flexcan_regs) == 0x4 + 0xc08);
++
+ struct flexcan_devtype_data {
+ 	u32 quirks;		/* quirks needed for different IP cores */
+ };
 -- 
 2.28.0
 
