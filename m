@@ -7,34 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E73B7C4741F
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92D2BC4727E
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BAFAB20756
-	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 722E720756
+	for <linux-can@archiver.kernel.org>; Wed, 23 Sep 2020 08:54:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgIWIyl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Sep 2020 04:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
+        id S1726567AbgIWIyt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Sep 2020 04:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726584AbgIWIyb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:31 -0400
+        with ESMTP id S1726667AbgIWIyg (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Sep 2020 04:54:36 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CA4C0613CE
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E01C0613D3
+        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2020 01:54:36 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kL0Xj-0000uS-9B; Wed, 23 Sep 2020 10:54:27 +0200
+        id 1kL0Xm-0000uS-PX; Wed, 23 Sep 2020 10:54:30 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
         kernel@pengutronix.de, michael@walle.cc, qiangqing.zhang@nxp.com,
-        Sean Nyekjaer <sean@geanix.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 11/20] can: flexcan: disable clocks during stop mode
-Date:   Wed, 23 Sep 2020 10:54:09 +0200
-Message-Id: <20200923085418.2685858-12-mkl@pengutronix.de>
+Subject: [PATCH 19/20] can: flexcan: add imx8qm support
+Date:   Wed, 23 Sep 2020 10:54:17 +0200
+Message-Id: <20200923085418.2685858-20-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200923085418.2685858-1-mkl@pengutronix.de>
 References: <20200923085418.2685858-1-mkl@pengutronix.de>
@@ -50,78 +49,66 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-Disable clocks while CAN core is in stop mode.
+The Flexcan on i.MX8QM supports CAN FD protocol.
 
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20191210085721.9853-2-qiangqing.zhang@nxp.com
+Link: https://lore.kernel.org/r/20190712075926.7357-8-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ drivers/net/can/flexcan.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 4be73ce7518e..ed2ead7c21ef 100644
+index fc98b5d521f2..5f778c961a0c 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -1757,8 +1757,6 @@ static int __maybe_unused flexcan_suspend(struct device *device)
- 			err = flexcan_chip_disable(priv);
- 			if (err)
- 				return err;
--
--			err = pm_runtime_force_suspend(device);
- 		}
- 		netif_stop_queue(dev);
- 		netif_device_detach(dev);
-@@ -1784,10 +1782,6 @@ static int __maybe_unused flexcan_resume(struct device *device)
- 			if (err)
- 				return err;
- 		} else {
--			err = pm_runtime_force_resume(device);
--			if (err)
--				return err;
--
- 			err = flexcan_chip_enable(priv);
- 		}
- 	}
-@@ -1818,8 +1812,16 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
+@@ -206,15 +206,16 @@
+ /* FLEXCAN hardware feature flags
+  *
+  * Below is some version info we got:
+- *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT IRQ Err Memory err RTR re-
+- *                                Filter? connected?  Passive detection  ception in MB
+- *   MX25  FlexCAN2  03.00.00.00     no        no        no       no        no
+- *   MX28  FlexCAN2  03.00.04.00    yes       yes        no       no        no
+- *   MX35  FlexCAN2  03.00.00.00     no        no        no       no        no
+- *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no        no
+- *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no       yes
+- *   VF610 FlexCAN3  ?               no       yes        no      yes       yes?
+- * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes
++ *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT IRQ Err Memory err RTR rece-   FD Mode
++ *                                Filter? connected?  Passive detection  ption in MB Supported?
++ *   MX25  FlexCAN2  03.00.00.00     no        no        no       no        no           no
++ *   MX28  FlexCAN2  03.00.04.00    yes       yes        no       no        no           no
++ *   MX35  FlexCAN2  03.00.00.00     no        no        no       no        no           no
++ *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no        no           no
++ *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no       yes           no
++ *   MX8QM FlexCAN3  03.00.23.00    yes       yes        no       no       yes          yes
++ *   VF610 FlexCAN3  ?               no       yes        no      yes       yes?          no
++ * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes           no
+  *
+  * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
+  */
+@@ -368,6 +369,12 @@ static const struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+ 		FLEXCAN_QUIRK_SETUP_STOP_MODE,
+ };
  
--	if (netif_running(dev) && device_may_wakeup(device))
--		flexcan_enable_wakeup_irq(priv, true);
-+	if (netif_running(dev)) {
-+		int err;
++static const struct flexcan_devtype_data fsl_imx8qm_devtype_data = {
++	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
++		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
++		FLEXCAN_QUIRK_SUPPORT_FD,
++};
 +
-+		if (device_may_wakeup(device))
-+			flexcan_enable_wakeup_irq(priv, true);
-+
-+		err = pm_runtime_force_suspend(device);
-+		if (err)
-+			return err;
-+	}
- 
- 	return 0;
+ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
+@@ -1830,6 +1837,7 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
  }
-@@ -1829,8 +1831,16 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
  
--	if (netif_running(dev) && device_may_wakeup(device))
--		flexcan_enable_wakeup_irq(priv, false);
-+	if (netif_running(dev)) {
-+		int err;
-+
-+		err = pm_runtime_force_resume(device);
-+		if (err)
-+			return err;
-+
-+		if (device_may_wakeup(device))
-+			flexcan_enable_wakeup_irq(priv, false);
-+	}
- 
- 	return 0;
- }
+ static const struct of_device_id flexcan_of_match[] = {
++	{ .compatible = "fsl,imx8qm-flexcan", .data = &fsl_imx8qm_devtype_data, },
+ 	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, },
+ 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
+ 	{ .compatible = "fsl,imx53-flexcan", .data = &fsl_imx25_devtype_data, },
 -- 
 2.28.0
 
