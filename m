@@ -7,34 +7,35 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 039A0C4727F
-	for <linux-can@archiver.kernel.org>; Sat, 26 Sep 2020 17:46:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CD37C2D0A8
+	for <linux-can@archiver.kernel.org>; Sat, 26 Sep 2020 17:46:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CE2AE20878
-	for <linux-can@archiver.kernel.org>; Sat, 26 Sep 2020 17:46:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 60E5A20809
+	for <linux-can@archiver.kernel.org>; Sat, 26 Sep 2020 17:46:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730031AbgIZRqW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 26 Sep 2020 13:46:22 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:53422 "EHLO
+        id S1730065AbgIZRq1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 26 Sep 2020 13:46:27 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:55783 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgIZRqO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 26 Sep 2020 13:46:14 -0400
+        with ESMTP id S1730060AbgIZRq0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 26 Sep 2020 13:46:26 -0400
 Received: from tomoyo.flets-east.jp ([153.230.197.127])
         by mwinf5d89 with ME
-        id Yhlm230082lQRaH03hmA50; Sat, 26 Sep 2020 19:46:13 +0200
+        id Yhlm230082lQRaH03hmM6M; Sat, 26 Sep 2020 19:46:24 +0200
 X-ME-Helo: tomoyo.flets-east.jp
 X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Sep 2020 19:46:13 +0200
+X-ME-Date: Sat, 26 Sep 2020 19:46:24 +0200
 X-ME-IP: 153.230.197.127
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S . Miller" <davem@davemloft.net>
 Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] can: dev: add a helper function to get the correct length of Classical frames
-Date:   Sun, 27 Sep 2020 02:45:32 +0900
-Message-Id: <20200926174542.278166-3-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH 4/6] can: dev: add a helper function to calculate the duration of one bit
+Date:   Sun, 27 Sep 2020 02:45:34 +0900
+Message-Id: <20200926174542.278166-5-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200926174542.278166-1-mailhol.vincent@wanadoo.fr>
 References: <20200926174542.278166-1-mailhol.vincent@wanadoo.fr>
@@ -44,61 +45,103 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In classical CAN, the length of the data (i.e. CAN payload) is not
-always equal to the DLC! If the frame is a Remote Transmission Request
-(RTR), data length is always zero regardless of DLC value and else, if
-the DLC is greater than 8, the length is 8. Contrary to common belief,
-ISO 11898-1 Chapter 8.4.2.3 (DLC field) do allow DLCs greater than 8
-for Classical Frames and specifies that those DLCs shall indicate that
-the data field is 8 bytes long.
+Rename macro CAN_CALC_SYNC_SEG to CAN_SYNC_SEG and make it available
+through include/linux/can/dev.h
 
-Above facts are widely unknown and so many developpers uses the "len"
-field of "struct canfd_frame" to get the length of classical CAN
-frames: this is incorrect!
+Add an helper function can_bit_time() which returns the duration (in
+time quanta) of one CAN bit.
 
-This patch introduces function get_can_len() which can be used in
-remediation. The function takes the SKB as an input in order to be
-able to determine if the frame is classical or FD.
+Rationale for this patch: the sync segment and the bit time are two
+concepts which are defined in the CAN ISO standard. Device drivers for
+CAN might need those.
+
+Please refer to ISO 11898-1:2015, section 11.3.1.1 "Bit time" for
+additional information.
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- include/linux/can/dev.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/net/can/dev.c   | 13 ++++++-------
+ include/linux/can/dev.h | 15 +++++++++++++++
+ 2 files changed, 21 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 8c3e11820e03..6070b4ab3bd8 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -60,7 +60,6 @@ EXPORT_SYMBOL_GPL(can_len2dlc);
+ 
+ #ifdef CONFIG_CAN_CALC_BITTIMING
+ #define CAN_CALC_MAX_ERROR 50 /* in one-tenth of a percent */
+-#define CAN_CALC_SYNC_SEG 1
+ 
+ /* Bit-timing calculation derived from:
+  *
+@@ -86,8 +85,8 @@ can_update_sample_point(const struct can_bittiming_const *btc,
+ 	int i;
+ 
+ 	for (i = 0; i <= 1; i++) {
+-		tseg2 = tseg + CAN_CALC_SYNC_SEG -
+-			(sample_point_nominal * (tseg + CAN_CALC_SYNC_SEG)) /
++		tseg2 = tseg + CAN_SYNC_SEG -
++			(sample_point_nominal * (tseg + CAN_SYNC_SEG)) /
+ 			1000 - i;
+ 		tseg2 = clamp(tseg2, btc->tseg2_min, btc->tseg2_max);
+ 		tseg1 = tseg - tseg2;
+@@ -96,8 +95,8 @@ can_update_sample_point(const struct can_bittiming_const *btc,
+ 			tseg2 = tseg - tseg1;
+ 		}
+ 
+-		sample_point = 1000 * (tseg + CAN_CALC_SYNC_SEG - tseg2) /
+-			(tseg + CAN_CALC_SYNC_SEG);
++		sample_point = 1000 * (tseg + CAN_SYNC_SEG - tseg2) /
++			(tseg + CAN_SYNC_SEG);
+ 		sample_point_error = abs(sample_point_nominal - sample_point);
+ 
+ 		if (sample_point <= sample_point_nominal &&
+@@ -145,7 +144,7 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+ 	/* tseg even = round down, odd = round up */
+ 	for (tseg = (btc->tseg1_max + btc->tseg2_max) * 2 + 1;
+ 	     tseg >= (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
+-		tsegall = CAN_CALC_SYNC_SEG + tseg / 2;
++		tsegall = CAN_SYNC_SEG + tseg / 2;
+ 
+ 		/* Compute all possible tseg choices (tseg=tseg1+tseg2) */
+ 		brp = priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
+@@ -223,7 +222,7 @@ static int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+ 
+ 	/* real bitrate */
+ 	bt->bitrate = priv->clock.freq /
+-		(bt->brp * (CAN_CALC_SYNC_SEG + tseg1 + tseg2));
++		(bt->brp * (CAN_SYNC_SEG + tseg1 + tseg2));
+ 
+ 	return 0;
+ }
 diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 5e3d45525bd3..72a8a60c0094 100644
+index 72a8a60c0094..30b327f1a4bd 100644
 --- a/include/linux/can/dev.h
 +++ b/include/linux/can/dev.h
-@@ -177,6 +177,29 @@ u8 can_dlc2len(u8 can_dlc);
- /* map the sanitized data length to an appropriate data length code */
- u8 can_len2dlc(u8 len);
+@@ -82,6 +82,21 @@ struct can_priv {
+ #endif
+ };
  
-+/*
-+ * get_can_len(skb) - get the length of the CAN payload.
-+ *
-+ * In classical CAN, the length of the data (i.e. CAN payload) is not
-+ * always equal to the DLC! If the frame is a Remote Transmission
-+ * Request (RTR), data length is always zero regardless of DLC value
-+ * and else, if the DLC is greater than 8, the length is 8. Contrary
-+ * to common belief, ISO 11898-1 Chapter 8.4.2.3 (DLC field) do allow
-+ * DLCs greater than 8 for Classical Frames and specifies that those
-+ * DLCs shall indicate that the data field is 8 bytes long.
-+ */
-+static inline int get_can_len(struct sk_buff *skb)
-+{
-+	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
++#define CAN_SYNC_SEG 1
 +
-+	if (can_is_canfd_skb(skb))
-+		return min_t(__u8, cf->len, CANFD_MAX_DLEN);
-+	else if (cf->can_id & CAN_RTR_FLAG)
-+		return 0;
-+	else
-+		return min_t(__u8, cf->len, CAN_MAX_DLEN);
++/*
++ * can_bit_time() - Duration of one bit
++ *
++ * Please refer to ISO 11898-1:2015, section 11.3.1.1 "Bit time" for
++ * additional information.
++ *
++ * Return: the number of time quanta in one bit.
++ */
++static inline int can_bit_time(struct can_bittiming *bt)
++{
++	return CAN_SYNC_SEG + bt->prop_seg + bt->phase_seg1 + bt->phase_seg2;
 +}
 +
- struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
- 				    unsigned int txqs, unsigned int rxqs);
- #define alloc_candev(sizeof_priv, echo_skb_max) \
+ /*
+  * get_can_dlc(value) - helper macro to cast a given data length code (dlc)
+  * to __u8 and ensure the dlc value to be max. 8 bytes.
 -- 
 2.26.2
 
