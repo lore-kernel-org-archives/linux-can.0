@@ -4,38 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1415CC2D0A8
-	for <linux-can@archiver.kernel.org>; Sat, 26 Sep 2020 17:46:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0DA9C2D0A8
+	for <linux-can@archiver.kernel.org>; Sat, 26 Sep 2020 17:47:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DD3C720809
-	for <linux-can@archiver.kernel.org>; Sat, 26 Sep 2020 17:46:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7AB7C20809
+	for <linux-can@archiver.kernel.org>; Sat, 26 Sep 2020 17:47:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729291AbgIZRqW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 26 Sep 2020 13:46:22 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:17964 "EHLO
+        id S1730097AbgIZRrM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 26 Sep 2020 13:47:12 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:36872 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730000AbgIZRqU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 26 Sep 2020 13:46:20 -0400
+        with ESMTP id S1730093AbgIZRrL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 26 Sep 2020 13:47:11 -0400
 Received: from tomoyo.flets-east.jp ([153.230.197.127])
         by mwinf5d89 with ME
-        id Yhlm230082lQRaH03hmF5X; Sat, 26 Sep 2020 19:46:18 +0200
+        id Yhlm230082lQRaH03hn6A8; Sat, 26 Sep 2020 19:47:10 +0200
 X-ME-Helo: tomoyo.flets-east.jp
 X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Sep 2020 19:46:18 +0200
+X-ME-Date: Sat, 26 Sep 2020 19:47:10 +0200
 X-ME-IP: 153.230.197.127
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S . Miller" <davem@davemloft.net>
 Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/6] can: dev: __can_get_echo_skb(): fix the return length
-Date:   Sun, 27 Sep 2020 02:45:33 +0900
-Message-Id: <20200926174542.278166-4-mailhol.vincent@wanadoo.fr>
+        Oliver Neukum <oneukum@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 6/6] USB: cdc-acm: blacklist ETAS ES58X device
+Date:   Sun, 27 Sep 2020 02:45:36 +0900
+Message-Id: <20200926174542.278166-7-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200926174542.278166-1-mailhol.vincent@wanadoo.fr>
 References: <20200926174542.278166-1-mailhol.vincent@wanadoo.fr>
@@ -45,37 +46,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The length of Remote Transmission Request (RTR) frames is always 0
-bytes. The DLC represents the requested length, not the actual length
-of the RTR. But __can_get_echo_skb() returns the DLC value regardless.
+The ES58X devices are incorrectly recognized as USB Modem (CDC ACM),
+preventing the etas-es58x module to load.
 
-Apply get_can_len() function to retrieve the correct length.
+Thus, these have been added
+to the ignore list in drivers/usb/class/cdc-acm.c
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- drivers/net/can/dev.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/usb/class/cdc-acm.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index e291fda395a0..8c3e11820e03 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -481,14 +481,9 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
- 	}
+diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
+index 7f6f3ab5b8a6..ed9355094e8c 100644
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1906,6 +1906,17 @@ static const struct usb_device_id acm_ids[] = {
+ 	.driver_info = IGNORE_DEVICE,
+ 	},
  
- 	if (priv->echo_skb[idx]) {
--		/* Using "struct canfd_frame::len" for the frame
--		 * length is supported on both CAN and CANFD frames.
--		 */
- 		struct sk_buff *skb = priv->echo_skb[idx];
--		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
--		u8 len = cf->len;
- 
--		*len_ptr = len;
-+		*len_ptr = get_can_len(skb);
- 		priv->echo_skb[idx] = NULL;
- 
- 		return skb;
++	/* Exclude ETAS ES58x */
++	{ USB_DEVICE(0x108c, 0x0159), /* ES581.4 */
++	.driver_info = IGNORE_DEVICE,
++	},
++	{ USB_DEVICE(0x108c, 0x0168), /* ES582.1 */
++	.driver_info = IGNORE_DEVICE,
++	},
++	{ USB_DEVICE(0x108c, 0x0169), /* ES584.1 */
++	.driver_info = IGNORE_DEVICE,
++	},
++
+ 	{ USB_DEVICE(0x1bc7, 0x0021), /* Telit 3G ACM only composition */
+ 	.driver_info = SEND_ZERO_PACKET,
+ 	},
 -- 
 2.26.2
 
