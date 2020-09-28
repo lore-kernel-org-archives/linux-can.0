@@ -2,121 +2,196 @@ Return-Path: <SRS0=vpaX=DF=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,
-	DATE_IN_FUTURE_06_12,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4DFBC2D0A8
-	for <linux-can@archiver.kernel.org>; Mon, 28 Sep 2020 10:03:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0600CC2D0A8
+	for <linux-can@archiver.kernel.org>; Mon, 28 Sep 2020 10:15:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 99AE920773
-	for <linux-can@archiver.kernel.org>; Mon, 28 Sep 2020 10:03:11 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="XbcyGoVb"
+	by mail.kernel.org (Postfix) with ESMTP id BB45321531
+	for <linux-can@archiver.kernel.org>; Mon, 28 Sep 2020 10:15:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgI1KDL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 28 Sep 2020 06:03:11 -0400
-Received: from mail-eopbgr50054.outbound.protection.outlook.com ([40.107.5.54]:20046
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726566AbgI1KDK (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:03:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZCmHXGQTRRrsmISzZtAwrlsyWpdAc0w2INcr3+kosZyg4s8n0FqhSXjp5yX63ROypy0hNYuEeQlh+uToEk8QoyEzSWBQa5iAR/S7Z2hv0k1ql1XXvmIP8k28p5p+WGEjXkBrh3CtzvHizkEhJIBxobJbgVYbkp9G1kHBoL+1rzavb8s1VmscdAsKLqdIrSVrZNlKJOCFTHprMa2Kj9ydIs0nsFek2W1AY3VnKA6NW1KuARG71+mpZl7OpVxJpUVA+iP0zErGDGKJWPosq6LAwRO67yxx/WgiKKO+wKj4ur9dxq6ScMMqjutOddCMMtQRvJcW+9meadlYM20hsd/Emw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=voz73Kao5sfdCWENEH/Zme/ZX//wNmXgmMelYmmqA50=;
- b=CCYPk1S4HaspX2attr1yGXPhqQ4OHzeA1V4z9Kfw7xCsoUmXdEvuUdBSK5o3b4rgxQXwLTpg9dF9IOnCOBdEAf6orWRi0Zyt+eo9Z8Lzmfh7/lSVBH8kh8iP1cMtt81ajBjVT8o62wXOcDVEyF2+AXMKZmat2rYhyRBz+T0d30fmcsqyVm9aSlFlKPWfGCbzLV6Yk+uwUIpMjAf27jKhoqXnGqib+r8YlqEMcFVuLi+nPKg1ifh2GhYAPPJqgjfUjsHd/0WnGwZuzKjf0UxVRHbCFsCvAfqomZhgCp6Z8adfTKJGDyvHVlcge6tt2LJh/JLt1s+qNkn1OkLES5XSVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=voz73Kao5sfdCWENEH/Zme/ZX//wNmXgmMelYmmqA50=;
- b=XbcyGoVbnx4/+z28MPmFPoG3mWzaKit8cepbml5ohgnwh+MY1g7qH4Fu6deuyh7S4d4vA7aAFq2D7hydrVerc+unDdeLib7lumwF7RvdoduPBYb89FZ9JBrsFtuMOQNmEjHdzmkaGEtoWVyT0n9a242jnPUl6mMQWQmI8fmsYWk=
-Authentication-Results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB3PR0402MB3769.eurprd04.prod.outlook.com (2603:10a6:8:f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Mon, 28 Sep
- 2020 10:03:03 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::d12e:689a:169:fd68]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::d12e:689a:169:fd68%8]) with mapi id 15.20.3412.029; Mon, 28 Sep 2020
- 10:03:03 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-imx@nxp.com
-Subject: [PATCH V3 3/3] can: flexcan: disable runtime PM if register flexcandev failed
-Date:   Tue, 29 Sep 2020 02:02:53 +0800
-Message-Id: <20200928180253.1454-4-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200928180253.1454-1-qiangqing.zhang@nxp.com>
-References: <20200928180253.1454-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SGAP274CA0017.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::29)
- To DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+        id S1726559AbgI1KPl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 28 Sep 2020 06:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726500AbgI1KPl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Sep 2020 06:15:41 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02512C061755
+        for <linux-can@vger.kernel.org>; Mon, 28 Sep 2020 03:15:41 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kMqC3-00041r-2E; Mon, 28 Sep 2020 12:15:39 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:86f4:ae6c:f218:6298] (unknown [IPv6:2a03:f580:87bc:d400:86f4:ae6c:f218:6298])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E65FE56C6DC;
+        Mon, 28 Sep 2020 10:15:37 +0000 (UTC)
+To:     Thomas Kopp <thomas.kopp@microchip.com>, linux-can@vger.kernel.org
+Cc:     manivannan.sadhasivam@linaro.org
+References: <20200925065606.358-1-thomas.kopp@microchip.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Subject: Re: [PATCH] can: mcp25xxfd: Add explanation for SPI clk limit,
+ Reference to ECC errata
+Message-ID: <05c1b338-0d98-c2bd-9f44-5d35661ce773@pengutronix.de>
+Date:   Mon, 28 Sep 2020 12:15:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SGAP274CA0017.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Mon, 28 Sep 2020 10:03:01 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [119.31.174.71]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d5a3f4a8-a252-4f99-a463-08d86395afe1
-X-MS-TrafficTypeDiagnostic: DB3PR0402MB3769:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB3PR0402MB3769ED6BB690772FE4814852E6350@DB3PR0402MB3769.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:421;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FwLIupxNn9JaOrznTqMt7hCRM91RA8mhrjGUqHtvE5EmxSNt/o1rk5/CRY7RlmXGMTNbiBpVLXOFT0rzlUbtb0Urg5xJVO4ew8yI29HcbDaD6+y0lpulVScTTCCVNzgHd6le4HXrKUE5C+b+GaqEHRqtKprrTZFExx99Ph//3ejwuybo4PWVYyJEb4zrmbmM64vkK5GC5ijvUnc620UeJGIxyiyV6y2AusxxsYyKSnHXtmdt6GoXbeXG7eP3J+VzHKsIC5ERlDy2SyXgVNiJfyOLJFtwkfybMUoOqwKr1vDZDKRX12TD8aFnPp8xJExZtEYa6qNldeFC8x6cRvBmf8ZINQg8ETLybOcY3eNowUN06A7RYq+ONd9CJo7hQYGY/apLdAK0EYTcahdy7F3/lMsVFFN1Vfgl3N4h+l+dd0zltRBU1dGo3x4MaJSGICen
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(39860400002)(396003)(6506007)(52116002)(2906002)(478600001)(4744005)(956004)(2616005)(186003)(16526019)(5660300002)(66556008)(6512007)(66476007)(4326008)(316002)(8676002)(8936002)(66946007)(86362001)(36756003)(26005)(69590400008)(6666004)(6486002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: E0xsNGAn/xRTK4EAvMjMD0G3UqBBl2ZjhQk4tiEjt4y2HZXpEl7irExEUVVdfg30oftPfyDR/VWSagEj8INerX22l4ND0GKt7V4XWsZSkvBiB+8BP24CcbK+1FFzc24lanOUNqKQGZurbjurt/N3nB+LedxVP0OmG1CdLbnwUt5G4q5LjA1q0kXssTZ4FXbemSS6XccMQgUqaRl4jZWbK4mdHtZ+j2H2kEeqzAbghQx2l80HD/C0FpOOIojJEFAWsq4ML61EEiFpnx6qy2yjKyL4S4ES0LVC10PX2w1PCRaGotVb/zg5iqeWuqwhH9a6xs4Rs/FPIf8ZmDLKObmXgVmAwwK/okuCsXnb5WiFDqBpeoGBkxNKlI0x1YDhYzBmOwG7eAsbmENdp/EmpxP5Kj0z+0uHDA3mxpMTPvYmEnHCKBJ3idKCcIdy8AExRWzCV/t3A8MNLWSbXK22XgPPFmSlygA3Ud3CnLZdFu1xey5LkxcwZG9Y/MPdiABaNoOtYBIxz94ZberD3Nd5rVpoMBlCPhRhOO00whEjXQnFXwWCh2wEQq60SCNAEXEX3EF6GunKPlF4tcQKzN1z1lcSZIInO9x6NHfVCBSlCB00HOVqPx+W4FCqoPwya9xwpMtf8++t5jtEqeYsw6xak7/7xQ==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5a3f4a8-a252-4f99-a463-08d86395afe1
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2020 10:03:02.8457
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vhAwByDyHTZLeLZYdzQINah5W1Ain8yepCB97yzLSEXRfLHsm3phbUMUD4zEjehEtxDsDycfr2ZIcLQuK/L4TA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3769
+In-Reply-To: <20200925065606.358-1-thomas.kopp@microchip.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Y6br4re2BgRcwggZVO6ZyX3RW3ukFoPZ2"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Disable runtime PM if register flexcandev failed, and balance reference
-of usage_count.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Y6br4re2BgRcwggZVO6ZyX3RW3ukFoPZ2
+Content-Type: multipart/mixed; boundary="rJ8j29cZ2yQFmhtmGMcbBoJYfNzRCELUY";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Thomas Kopp <thomas.kopp@microchip.com>, linux-can@vger.kernel.org
+Cc: manivannan.sadhasivam@linaro.org
+Message-ID: <05c1b338-0d98-c2bd-9f44-5d35661ce773@pengutronix.de>
+Subject: Re: [PATCH] can: mcp25xxfd: Add explanation for SPI clk limit,
+ Reference to ECC errata
+References: <20200925065606.358-1-thomas.kopp@microchip.com>
+In-Reply-To: <20200925065606.358-1-thomas.kopp@microchip.com>
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
-ChangeLogs:
-V1->V3:
-	* no changes.
----
- drivers/net/can/flexcan.c | 2 ++
- 1 file changed, 2 insertions(+)
+--rJ8j29cZ2yQFmhtmGMcbBoJYfNzRCELUY
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 925efc986b6b..fbbc90454df1 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -2058,6 +2058,8 @@ static int flexcan_probe(struct platform_device *pdev)
- 	return 0;
- 
-  failed_register:
-+	pm_runtime_put_noidle(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
- 	free_candev(dev);
- 	return err;
- }
--- 
-2.17.1
+On 9/25/20 8:56 AM, Thomas Kopp wrote:
+> Reference the MCP2517FD and MCP2518FD erratasheets and paste the
+> explanation.
+> The single error correction does not always work, so just indicate that=
 
+> a single error occurred.
+>=20
+> Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
+> ---
+>  .../net/can/spi/mcp25xxfd/mcp25xxfd-core.c    | 28 ++++++++++++++++---=
+
+>  1 file changed, 24 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c b/drivers/n=
+et/can/spi/mcp25xxfd/mcp25xxfd-core.c
+> index 96901fb47bde..5557b2d1e774 100644
+> --- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+> +++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+> @@ -1943,6 +1943,17 @@ mcp25xxfd_handle_eccif_recover(struct mcp25xxfd_=
+priv *priv, u8 nr)
+>  	return mcp25xxfd_chip_set_normal_mode(priv);
+>  }
+> =20
+> +	/* Errata Reference:  DS80000789B, DS80000792C
+
+The "DS80000792C" is the new erratum for the mcp2517fd? Is it already onl=
+ine,
+the https://www.microchip.com/wwwproducts/en/MCP2517FD still lists the "B=
+" variant.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--rJ8j29cZ2yQFmhtmGMcbBoJYfNzRCELUY--
+
+--Y6br4re2BgRcwggZVO6ZyX3RW3ukFoPZ2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9xt8UACgkQqclaivrt
+76kx0gf/Q6yVcTg29UnfroG1IihU1afvJe/4qb5dLMDRTcmL+Xk43wLnt51G13/G
+78M0F589HB79lGQ20T9WSC2gMPhmtQpaz5Fh2VTUHmSgkm6WJ3E2apAcbWFjlSmP
+JioJkzu2OWZc2DRu95LfEF+GbxHqLGu6Na9AI2zBrTqwwxY+lYAkL9edvFldgqVG
+3RGeFtNS7lJOvMrcV0XhPgluJfs9+I/r+8tMckK4YaKRls0BdsDXj6fPDIWkQEnV
+FU/6V9m6NEVljFxX0NzxX4vh2uLdYk3elwUhK//opOfyn1isxW1OtR4vZqaWdzaJ
+rnK7t51zk6Fd7V7peYTnIbYuqksCOw==
+=vWGD
+-----END PGP SIGNATURE-----
+
+--Y6br4re2BgRcwggZVO6ZyX3RW3ukFoPZ2--
