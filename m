@@ -3,44 +3,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B9BDC4727C
-	for <linux-can@archiver.kernel.org>; Tue, 29 Sep 2020 13:21:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92704C4727D
+	for <linux-can@archiver.kernel.org>; Tue, 29 Sep 2020 13:47:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C4DE920757
-	for <linux-can@archiver.kernel.org>; Tue, 29 Sep 2020 13:21:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E34F207C4
+	for <linux-can@archiver.kernel.org>; Tue, 29 Sep 2020 13:47:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgI2NV1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 29 Sep 2020 09:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54502 "EHLO
+        id S1729569AbgI2NrP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 29 Sep 2020 09:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728430AbgI2NV1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 29 Sep 2020 09:21:27 -0400
+        with ESMTP id S1730363AbgI2NrF (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 29 Sep 2020 09:47:05 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004ACC061755
-        for <linux-can@vger.kernel.org>; Tue, 29 Sep 2020 06:21:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D6BC061755
+        for <linux-can@vger.kernel.org>; Tue, 29 Sep 2020 06:47:04 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kNFZL-0001cz-5r; Tue, 29 Sep 2020 15:21:23 +0200
+        id 1kNFyB-0004nt-IC; Tue, 29 Sep 2020 15:47:03 +0200
 Received: from [IPv6:2a03:f580:87bc:d400:feea:fa2e:c0c5:a14c] (2a03-f580-87bc-d400-feea-fa2e-c0c5-a14c.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:feea:fa2e:c0c5:a14c])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id B99EE56D7A1;
-        Tue, 29 Sep 2020 13:21:21 +0000 (UTC)
-Subject: Re: [PATCH V5 1/3] can: flexcan: initialize all flexcan memory for
- ECC function
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-imx@nxp.com
-References: <20200929211557.14153-1-qiangqing.zhang@nxp.com>
- <20200929211557.14153-2-qiangqing.zhang@nxp.com>
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 753EC56D809;
+        Tue, 29 Sep 2020 13:47:02 +0000 (UTC)
+To:     =?UTF-8?Q?Magnus_Aagaard_S=c3=b8rensen?= <mas@csselectronics.com>,
+        linux-can@vger.kernel.org
+References: <f888df6e-d281-b9b6-93de-1a7329f011ed@csselectronics.com>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -102,15 +99,16 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <5b77012b-f9b2-4e35-4b79-6b41379acb93@pengutronix.de>
-Date:   Tue, 29 Sep 2020 15:21:18 +0200
+Subject: Re: mcp25xxfd driver questions
+Message-ID: <66662c88-aa9a-325d-8152-c5befbfafa2a@pengutronix.de>
+Date:   Tue, 29 Sep 2020 15:46:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200929211557.14153-2-qiangqing.zhang@nxp.com>
+In-Reply-To: <f888df6e-d281-b9b6-93de-1a7329f011ed@csselectronics.com>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="5e2JzHqZMwIJnrafmPLnrVCKJV3uZafC7"
+ boundary="T3WJeVlrHIq8JybhQcpZxfJxs2QkNavLG"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -120,95 +118,79 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---5e2JzHqZMwIJnrafmPLnrVCKJV3uZafC7
-Content-Type: multipart/mixed; boundary="VpgaeOBfMiyopWiewSRzj6xwvTcaTMvV1";
+--T3WJeVlrHIq8JybhQcpZxfJxs2QkNavLG
+Content-Type: multipart/mixed; boundary="LtGKU5jnW4HG52tZTOgAeudKBsMBGRfgJ";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org, linux-imx@nxp.com
-Message-ID: <5b77012b-f9b2-4e35-4b79-6b41379acb93@pengutronix.de>
-Subject: Re: [PATCH V5 1/3] can: flexcan: initialize all flexcan memory for
- ECC function
-References: <20200929211557.14153-1-qiangqing.zhang@nxp.com>
- <20200929211557.14153-2-qiangqing.zhang@nxp.com>
-In-Reply-To: <20200929211557.14153-2-qiangqing.zhang@nxp.com>
+To: =?UTF-8?Q?Magnus_Aagaard_S=c3=b8rensen?= <mas@csselectronics.com>,
+ linux-can@vger.kernel.org
+Message-ID: <66662c88-aa9a-325d-8152-c5befbfafa2a@pengutronix.de>
+Subject: Re: mcp25xxfd driver questions
+References: <f888df6e-d281-b9b6-93de-1a7329f011ed@csselectronics.com>
+In-Reply-To: <f888df6e-d281-b9b6-93de-1a7329f011ed@csselectronics.com>
 
---VpgaeOBfMiyopWiewSRzj6xwvTcaTMvV1
+--LtGKU5jnW4HG52tZTOgAeudKBsMBGRfgJ
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-On 9/29/20 11:15 PM, Joakim Zhang wrote:
-> One issue was reported at a baremetal environment, which is used for
-> FPGA verification. "The first transfer will fail for extended ID
-> format(for both 2.0B and FD format), following frames can be transmitte=
-d
-> and received successfully for extended format, and standard format don'=
-t
-> have this issue. This issue occurred randomly with high possiblity, whe=
-n
-> it occurs, the transmitter will detect a BIT1 error, the receiver a CRC=
+On 9/29/20 1:07 PM, Magnus Aagaard S=C3=B8rensen wrote:
+> This is my first post to the list, so please inform me of any errors in=
+=20
+> etiquette.
 
-> error. According to the spec, a non-correctable error may cause this
-> transfer failure."
+:D
+
+> I'm evaluating the MCP2518FD, and have two questions to the driver.
 >=20
-> With FLEXCAN_QUIRK_DISABLE_MECR quirk, it supports correctable errors,
-> disable non-correctable errors interrupt and freeze mode. Platform has
-> ECC hardware support, but select this quirk, this issue may not come to=
+> 1. I could not find any references to the GPIOs of the chip. Is it=20
+> correct that these are not exposed to the host system?
 
-> light. Initialize all FlexCAN memory before accessing them, at least it=
+ACK, gpio support is not implemented yet. Drop me a note, if you need it.=
 
-> can avoid non-correctable errors detected due to memory uninitialized.
-> The internal region can't be initialized when the hardware doesn't supp=
-ort
-> ECC.
+
+> 2. When setting the oscillator frequency outside the=20
+> MCP25XXFD_SYSCLOCK_HZ_MIN and MCP25XXFD_SYSCLOCK_HZ_MAX range, the=20
+> frequency is compared to the max value scaled by the max PLL value. Is =
+
+> the intention to compare with the min value? Currently, an external=20
+> oscillator of 4 MHz and a PLL value of 10, resulting in 40 MHz, is=20
+> treated as being too low.
+
+This is intended. I have no hardware with a 4MHz osc to test, so I decide=
+d to
+not support the 4MHz osc for now. If you design new hardware I suggest to=
+ use a
+40MHz osc, as probably no one has tested the hardware thoroughly in the P=
+LL
+mode. If you need 4MHz support, it can be added, given there is hardware.=
+
+
+> diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c=20
+> b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+> index bd2ba981ae36..9e0246c4e49f 100644
+> --- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+> +++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+> @@ -2770,7 +2770,7 @@ static int mcp25xxfd_probe(struct spi_device *spi=
+)
+>  =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 return -ERANGE;
+>  =C2=A0=C2=A0=C2=A0=C2=A0 }
 >=20
-> According to IMX8MPRM, Rev.C, 04/2020. There is a NOTE at the section
-> 11.8.3.13 Detection and correction of memory errors:
-> "All FlexCAN memory must be initialized before starting its operation i=
-n
-> order to have the parity bits in memory properly updated. CTRL2[WRMFRZ]=
+> -=C2=A0=C2=A0=C2=A0 if (freq <=3D MCP25XXFD_SYSCLOCK_HZ_MAX / MCP25XXFD=
+_OSC_PLL_MULTIPLIER) {
+> +=C2=A0=C2=A0=C2=A0 if (freq <=3D MCP25XXFD_SYSCLOCK_HZ_MIN / MCP25XXFD=
+_OSC_PLL_MULTIPLIER) {
+>  =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 dev_err(&spi->dev,
+>  =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 "Oscill=
+ator frequency (%u Hz) is too low and PLL is not=20
+> supported.\n",
+>  =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 freq);
 
-> grants write access to all memory positions that require initialization=
-,
-> ranging from 0x080 to 0xADF and from 0xF28 to 0xFFF when the CAN FD fea=
-ture
-> is enabled. The RXMGMASK, RX14MASK, RX15MASK, and RXFGMASK registers ne=
-ed to
-> be initialized as well. MCR[RFEN] must not be set during memory initial=
-ization."
->=20
-> Memory range from 0x080 to 0xADF, there are reserved memory (unimplemen=
-ted
-> by hardware, e.g. only configure 64 MBs), these memory can be initializ=
-ed or not.
-> In this patch, initialize all flexcan memory which includes reserved me=
-mory.
->=20
-> In this patch, create FLEXCAN_QUIRK_SUPPORT_ECC for platforms which has=
- ECC
-> feature. If you have a ECC platform in your hand, please select this
-> qurik to initialize all flexcan memory firstly, then you can select
-> FLEXCAN_QUIRK_DISABLE_MECR to only enable correctable errors.
->=20
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
-> ChangeLogs:
-> V1->V2:
-> 	* update commit messages, add a datasheet reference.
-> 	* initialize block memory instead of trivial memory.
-> 	* inilialize reserved memory.
-> V2->V3:
-> 	* add FLEXCAN_QUIRK_SUPPORT_ECC quirk.
-> 	* remove init_ram struct.
-> V3->V4:
-> 	* move register definition into flexcan_reg.
-> V4->V5:
-> 	* use offsetof instead of cast
+Hope that helps.
 
-looks good now. Should I try to get this into v5.10?
-
+regards,
 Marc
+
 --=20
 Pengutronix e.K.                 | Marc Kleine-Budde           |
 Embedded Linux                   | https://www.pengutronix.de  |
@@ -216,23 +198,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---VpgaeOBfMiyopWiewSRzj6xwvTcaTMvV1--
+--LtGKU5jnW4HG52tZTOgAeudKBsMBGRfgJ--
 
---5e2JzHqZMwIJnrafmPLnrVCKJV3uZafC7
+--T3WJeVlrHIq8JybhQcpZxfJxs2QkNavLG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9zNM4ACgkQqclaivrt
-76knsAgAn2x/if+KZ5+eIMGZ+D6a8rEZgFCldDKtagYJMx8iGRF8JiOEsfRHOIws
-AQEBIAP335m6hHZj/nyMlkdfSFEOuyyCrLdtWSADXwhGDuQXBh0kEt+cHhnOx33w
-QIxD8VxDeT0URheNSoWLUqQ62PWwkKwyFLmwYafVp36mBEnZLNxqCWEdsjkLTN7b
-Xs8121gfmcZAmmpugr+t+Xo0qLKLulEmGqu8Dl+MjnVGeS2gTm/5QtgaZu8/dA5h
-FGdkMOs7aeZv49XS5Ok4dIkduuu50zqgV3TLNxw8OfOEN1Imp8r+XJ1fm5N9E1JV
-iWxtFsA4vGY7Kxlzi0UfV5O0XlpOEg==
-=Ug9W
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9zOtIACgkQqclaivrt
+76kxMQgAkjzjipra04iTW42BAtDjdR7NCgk/+X3XA0oRnDpvFfAzyFah2NUQMGln
+tgOGabaW/gbIfS6gFzkGQ0GZiq3UIzmA7aOQIziVmkL/+BIT6FJczD8J7uaFgB8l
+zZTTu9WP7/rZcb/+6vAXlH3oFV96jqIxijQuYTOueGCGYiKRKLuy1KrB42Cu6uPx
+F873x0sRswOo+jgD8OJQtUG13J2E6IL6ogKgIPncbEo0oK+RnxXZ/B6/f25RiL5p
+zlRWrvsHex/5fzzeCQTJMK4XodXWbgtvGJmpfJBeyybJ9Ggll/jaKgfHjcvPmrDt
+kvpg6JMIWF9CIct22dkn3JryWoDcZw==
+=IR3M
 -----END PGP SIGNATURE-----
 
---5e2JzHqZMwIJnrafmPLnrVCKJV3uZafC7--
+--T3WJeVlrHIq8JybhQcpZxfJxs2QkNavLG--
