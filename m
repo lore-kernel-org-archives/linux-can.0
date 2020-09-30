@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F035C4727F
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:14:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5920C4741F
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:14:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C3082071E
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:14:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD5862071E
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:14:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729114AbgI3JOe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1729065AbgI3JOe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 30 Sep 2020 05:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729067AbgI3JOd (ORCPT
+        with ESMTP id S1729053AbgI3JOd (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 05:14:33 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D34C0613DB
-        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 02:14:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5D1C0613D5
+        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 02:14:29 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kNYBy-0007UQ-4z; Wed, 30 Sep 2020 11:14:30 +0200
+        id 1kNYBw-0007UQ-5x; Wed, 30 Sep 2020 11:14:28 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 11/12] can: flexcan: add flexcan driver for i.MX8MP
-Date:   Wed, 30 Sep 2020 11:14:23 +0200
-Message-Id: <20200930091424.792165-12-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 06/12] dt-binding: can: mcp251xfd: rename autodetect compatible to "microchip,mcp251xfd"
+Date:   Wed, 30 Sep 2020 11:14:18 +0200
+Message-Id: <20200930091424.792165-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930091424.792165-1-mkl@pengutronix.de>
 References: <20200930091424.792165-1-mkl@pengutronix.de>
@@ -46,51 +46,67 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+In [1] Geert noted that the autodetect compatible for the mcp25xxfd driver,
+which is "microchip,mcp25xxfd" might be too generic and overlap with upcoming,
+but incompatible chips.
 
-Add flexcan driver for i.MX8MP, which supports CAN FD and ECC.
+As the driver is in net-next but not mainline yet, the risk of breaking DT
+compatibility is quite low, so this patch changes the compatible to
+"microchip,mcp251xfd" and renames the binding documentation accordingly.
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20200929211557.14153-3-qiangqing.zhang@nxp.com
+[1] http://lore.kernel.org/r/CAMuHMdVkwGjr6dJuMyhQNqFoJqbh6Ec5V2b5LenCshwpM2SDsQ@mail.gmail.com
+
+Fixes: 1b5a78e69c1f ("dt-binding: can: mcp25xxfd: document device tree bindings")
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ ...{microchip,mcp25xxfd.yaml => microchip,mcp251xfd.yaml} | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+ rename Documentation/devicetree/bindings/net/can/{microchip,mcp25xxfd.yaml => microchip,mcp251xfd.yaml} (91%)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 19a29618f0c0..9cf1de42f428 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -214,6 +214,7 @@
-  *   MX53  FlexCAN2  03.00.00.00    yes        no        no       no        no           no
-  *   MX6s  FlexCAN3  10.00.12.00    yes       yes        no       no       yes           no
-  *   MX8QM FlexCAN3  03.00.23.00    yes       yes        no       no       yes          yes
-+ *   MX8MP FlexCAN3  03.00.17.01    yes       yes        no      yes       yes          yes
-  *   VF610 FlexCAN3  ?               no       yes        no      yes       yes?          no
-  * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes           no
-  * LX2160A FlexCAN3  03.00.23.00     no       yes        no       no       yes          yes
-@@ -391,6 +392,13 @@ static const struct flexcan_devtype_data fsl_imx8qm_devtype_data = {
- 		FLEXCAN_QUIRK_SUPPORT_FD,
- };
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
+similarity index 91%
+rename from Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+rename to Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
+index 5beb00a614bf..2a884c1fe0e0 100644
+--- a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/net/can/microchip,mcp25xxfd.yaml#
++$id: http://devicetree.org/schemas/net/can/microchip,mcp251xfd.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
  
-+static struct flexcan_devtype_data fsl_imx8mp_devtype_data = {
-+	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
-+		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
-+		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SETUP_STOP_MODE |
-+		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SUPPORT_ECC,
-+};
-+
- static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
- 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
-@@ -1894,6 +1902,7 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
+ title:
+@@ -18,7 +18,7 @@ properties:
+         description: for MCP2517FD
+       - const: microchip,mcp2518fd
+         description: for MCP2518FD
+-      - const: microchip,mcp25xxfd
++      - const: microchip,mcp251xfd
+         description: to autodetect chip variant
  
- static const struct of_device_id flexcan_of_match[] = {
- 	{ .compatible = "fsl,imx8qm-flexcan", .data = &fsl_imx8qm_devtype_data, },
-+	{ .compatible = "fsl,imx8mp-flexcan", .data = &fsl_imx8mp_devtype_data, },
- 	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, },
- 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
- 	{ .compatible = "fsl,imx53-flexcan", .data = &fsl_imx25_devtype_data, },
+   reg:
+@@ -38,7 +38,7 @@ properties:
+ 
+   microchip,rx-int-gpios:
+     description:
+-      GPIO phandle of GPIO connected to to INT1 pin of the MCP25XXFD, which
++      GPIO phandle of GPIO connected to to INT1 pin of the MCP251XFD, which
+       signals a pending RX interrupt.
+     maxItems: 1
+ 
+@@ -65,7 +65,7 @@ examples:
+         #size-cells = <0>;
+ 
+         can@0 {
+-            compatible = "microchip,mcp25xxfd";
++            compatible = "microchip,mcp251xfd";
+             reg = <0>;
+             clocks = <&can0_osc>;
+             pinctrl-names = "default";
 -- 
 2.28.0
 
