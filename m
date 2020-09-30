@@ -2,139 +2,52 @@ Return-Path: <SRS0=bHV0=DH=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8134DC4727C
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44F1FC4727C
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 22:22:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4FE2220739
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2209A2075F
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 22:22:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730403AbgI3USz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 30 Sep 2020 16:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
+        id S1731481AbgI3WWC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 30 Sep 2020 18:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3USZ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 16:18:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901A1C0613D0
-        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 13:18:25 -0700 (PDT)
-Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kNiYQ-0002Qt-6v; Wed, 30 Sep 2020 22:18:22 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
+        with ESMTP id S1727210AbgI3WWB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 18:22:01 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341CCC061755;
+        Wed, 30 Sep 2020 15:22:01 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3C6B713C79213;
+        Wed, 30 Sep 2020 15:05:13 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 15:21:59 -0700 (PDT)
+Message-Id: <20200930.152159.116377724536752338.davem@davemloft.net>
+To:     mkl@pengutronix.de
+Cc:     netdev@vger.kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de
-Subject: pull-request: can-next 2020-09-30
-Date:   Wed, 30 Sep 2020 22:18:03 +0200
-Message-Id: <20200930201816.1032054-1-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Subject: Re: pull-request: can-next 2020-09-30
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200930201816.1032054-1-mkl@pengutronix.de>
+References: <20200930201816.1032054-1-mkl@pengutronix.de>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Wed, 30 Sep 2020 15:05:13 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello David,
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Wed, 30 Sep 2020 22:18:03 +0200
 
-this is a pull request of 13 patches for net-next.
+> this is a pull request of 13 patches for net-next.
 
-The first 10 target the mcp25xxfd driver (which is renamed to mcp251xfd during
-this series).
-
-The first two patches are by Thomas Kopp, which adds reference to the just
-related errata and updates the documentation and log messages.
-
-Dan Carpenter's patch fixes a resource leak during ifdown.
-
-A patch by me adds the missing initialization of a variable.
-
-Oleksij Rempel updates the DT binding documentation as requested by Rob
-Herring.
-
-The next 5 patches are by Thomas Kopp and me. During review Geert Uytterhoeven
-suggested to use "microchip,mcp251xfd" instead of "microchip,mcp25xxfd" as the
-DT autodetection compatible to avoid clashes with future but incompatible
-devices. We decided not only to rename the compatible but the whole driver from
-"mcp25xxfd" to "mcp251xfd". This is done in several patches.
-
-Joakim Zhang contributes three patches for the flexcan driver. The first one
-adds support for the ECC feature, which is implemented on some modern IP cores,
-by initializing the controller's memory during ifup. The next patch adds
-support for the i.MX8MP (which supports ECC) and the last patch properly
-disables the runtime PM if device registration fails.
-
----
-
-The following changes since commit 879456bedbe54f2d38b15c21dc5e3c30232b53e1:
-
-  net: mvneta: avoid possible cache misses in mvneta_rx_swbm (2020-09-29 18:10:07 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-5.10-20200930
-
-for you to fetch changes up to 5a9323f55d52c9246ce85f2c9c6a8ec45413b1d0:
-
-  can: flexcan: disable runtime PM if register flexcandev failed (2020-09-30 21:56:58 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-5.10-20200930
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      can: mcp25xxfd: mcp25xxfd_ring_free(): fix memory leak during cleanup
-
-Joakim Zhang (3):
-      can: flexcan: initialize all flexcan memory for ECC function
-      can: flexcan: add flexcan driver for i.MX8MP
-      can: flexcan: disable runtime PM if register flexcandev failed
-
-Marc Kleine-Budde (4):
-      can: mcp25xxfd: mcp25xxfd_irq(): add missing initialization of variable set_normal mode
-      can: mcp251xfd: rename driver files and subdir to mcp251xfd
-      can: mcp251xfd: rename all user facing strings to mcp251xfd
-      can: mcp251xfd: rename all remaining occurrence to mcp251xfd
-
-Oleksij Rempel (1):
-      dt-binding: can: mcp25xxfd: documentation fixes
-
-Thomas Kopp (4):
-      can: mcp25xxfd: mcp25xxfd_handle_eccif(): add ECC related errata and update log messages
-      can: mcp25xxfd: mcp25xxfd_probe(): add SPI clk limit related errata information
-      dt-binding: can: mcp251xfd: narrow down wildcards in device tree bindings to "microchip,mcp251xfd"
-      can: mcp25xxfd: narrow down wildcards in device tree bindings to "microchip,mcp251xfd"
-
- ...hip,mcp25xxfd.yaml => microchip,mcp251xfd.yaml} |   16 +-
- drivers/net/can/flexcan.c                          |   64 +-
- drivers/net/can/spi/Kconfig                        |    2 +-
- drivers/net/can/spi/Makefile                       |    2 +-
- .../net/can/spi/{mcp25xxfd => mcp251xfd}/Kconfig   |   10 +-
- drivers/net/can/spi/mcp251xfd/Makefile             |    8 +
- .../mcp251xfd-core.c}                              | 1386 ++++++++++----------
- .../mcp251xfd-crc16.c}                             |   24 +-
- .../mcp251xfd-regmap.c}                            |  232 ++--
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h          |  835 ++++++++++++
- drivers/net/can/spi/mcp25xxfd/Makefile             |    8 -
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd.h          |  835 ------------
- 12 files changed, 1749 insertions(+), 1673 deletions(-)
- rename Documentation/devicetree/bindings/net/can/{microchip,mcp25xxfd.yaml => microchip,mcp251xfd.yaml} (87%)
- rename drivers/net/can/spi/{mcp25xxfd => mcp251xfd}/Kconfig (62%)
- create mode 100644 drivers/net/can/spi/mcp251xfd/Makefile
- rename drivers/net/can/spi/{mcp25xxfd/mcp25xxfd-core.c => mcp251xfd/mcp251xfd-core.c} (54%)
- rename drivers/net/can/spi/{mcp25xxfd/mcp25xxfd-crc16.c => mcp251xfd/mcp251xfd-crc16.c} (81%)
- rename drivers/net/can/spi/{mcp25xxfd/mcp25xxfd-regmap.c => mcp251xfd/mcp251xfd-regmap.c} (60%)
- create mode 100644 drivers/net/can/spi/mcp251xfd/mcp251xfd.h
- delete mode 100644 drivers/net/can/spi/mcp25xxfd/Makefile
- delete mode 100644 drivers/net/can/spi/mcp25xxfd/mcp25xxfd.h
-
-
+Pulled, thanks Marc.
