@@ -2,85 +2,104 @@ Return-Path: <SRS0=bHV0=DH=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 177E0C4727C
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 16:18:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D4E8C4727C
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C8F3520759
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 16:18:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1601482722;
-	bh=FZDd9NrX/b3X4mhyCraw4fkVuDp38h8GVcG5bQ6IPOY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=vMtqxyU8cT3wGlgYK+flf1XK2At9I/+0TXago2CkC/qf+L6f9KBQIP9RtTArerwYt
-	 5uKGtUcTFQIzqtarMrLacqtON/eglB0yA4AgXLOpG4UhaIYrwTA41LSDd4vcObKl5A
-	 xkHroAmYxb+fVoMG8VxHYRsdJBqKS7MoMrX7dJ0E=
+	by mail.kernel.org (Postfix) with ESMTP id 0D1C220739
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731113AbgI3QSh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 30 Sep 2020 12:18:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728744AbgI3QSh (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:18:37 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F223120708;
-        Wed, 30 Sep 2020 16:18:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601482716;
-        bh=FZDd9NrX/b3X4mhyCraw4fkVuDp38h8GVcG5bQ6IPOY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D7dOdHbAvycDMu4PnK4XYyk/tC2brcv/Hwix+oIE4qjeoZ8xW7wMDdN4A2R/g3WIa
-         YsGQKbpds+73FShsHxCwNy5uwRqdPjJnXOk/I1BvRu+y8S+Z+icclMvJ14HjPP/src
-         NX4ao28aABFZeohCKkrOJrqptQ1EcL5/zsbgYr1c=
-Date:   Wed, 30 Sep 2020 18:18:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        "open list:USB ACM DRIVER" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v2 5/6] can: usb: etas_es58X: add support for ETAS ES58X
- CAN USB interfaces
-Message-ID: <20200930161838.GB1663344@kroah.com>
-References: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
- <20200930144602.10290-6-mailhol.vincent@wanadoo.fr>
+        id S1730211AbgI3US1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 30 Sep 2020 16:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730198AbgI3US0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 16:18:26 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DFAC0613D1
+        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 13:18:26 -0700 (PDT)
+Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kNiYR-0002Qt-9I; Wed, 30 Sep 2020 22:18:23 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Thomas Kopp <thomas.kopp@microchip.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 02/13] can: mcp25xxfd: mcp25xxfd_probe(): add SPI clk limit related errata information
+Date:   Wed, 30 Sep 2020 22:18:05 +0200
+Message-Id: <20200930201816.1032054-3-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200930201816.1032054-1-mkl@pengutronix.de>
+References: <20200930201816.1032054-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930144602.10290-6-mailhol.vincent@wanadoo.fr>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 11:45:32PM +0900, Vincent Mailhol wrote:
-> +	num_element =
-> +	    es58x_msg_num_element(es58x_dev->dev,
-> +				  bulk_rx_loopback_msg->rx_loopback_msg,
-> +				  msg_len);
-> +	if (unlikely(num_element <= 0))
-> +		return num_element;
+From: Thomas Kopp <thomas.kopp@microchip.com>
 
-Meta-comment on your use of 'unlikely' everywhere.  Please drop it, it's
-only to be used if you can actually measure the difference in a
-benchmark.  You are dealing with USB devices, which are really really
-slow here.  Also, humans make horrible guessers for this type of thing,
-the compiler and CPU can get this right much more often than we can, and
-we had the numbers for it (someone measured that 80-90% of our usages of
-these markings are actually wrong on modern cpus).
+This patch adds a reference to the recent released MCP2517FD and MCP2518FD
+errata sheets and paste the explanation.
 
-So just drop them all, it makes the code simpler to read and understand,
-and the cpu can actually go faster.
+The driver already implements the proposed fix.
 
-thanks,
+Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
+Link: https://lore.kernel.org/r/20200925065606.358-1-thomas.kopp@microchip.com
+[mkl: split into two patches, adjust subject and commit message]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ .../net/can/spi/mcp25xxfd/mcp25xxfd-core.c    | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-greg k-h
+diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+index 106dda8e5310..c094bb716256 100644
+--- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
++++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+@@ -2819,11 +2819,21 @@ static int mcp25xxfd_probe(struct spi_device *spi)
+ 		priv->devtype_data = *(struct mcp25xxfd_devtype_data *)
+ 			spi_get_device_id(spi)->driver_data;
+ 
+-	/* According to the datasheet the SPI clock must be less or
+-	 * equal SYSCLOCK / 2.
++	/* Errata Reference:
++	 * mcp2517fd: DS80000789B, mcp2518fd: DS80000792C 4.
++	 *
++	 * The SPI can write corrupted data to the RAM at fast SPI
++	 * speeds:
++	 *
++	 * Simultaneous activity on the CAN bus while writing data to
++	 * RAM via the SPI interface, with high SCK frequency, can
++	 * lead to corrupted data being written to RAM.
++	 *
++	 * Fix/Work Around:
++	 * Ensure that FSCK is less than or equal to 0.85 *
++	 * (FSYSCLK/2).
+ 	 *
+-	 * It turns out, that the Controller is not stable at this
+-	 * rate. Known good and bad combinations are:
++	 * Known good and bad combinations are:
+ 	 *
+ 	 * MCP	ext-clk	SoC			SPI			SPI-clk		max-clk	parent-clk	Status	config
+ 	 *
+@@ -2836,7 +2846,6 @@ static int mcp25xxfd_probe(struct spi_device *spi)
+ 	 * 2517 40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	good	default
+ 	 * 2518 40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	good	default
+ 	 *
+-	 * Limit SPI clock to 85% of SYSCLOCK / 2 for now.
+ 	 */
+ 	priv->spi_max_speed_hz_orig = spi->max_speed_hz;
+ 	spi->max_speed_hz = min(spi->max_speed_hz, freq / 2 / 1000 * 850);
+-- 
+2.28.0
+
