@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE05BC4727E
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5B27C47420
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A78C62074A
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B98C420739
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730223AbgI3US1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 30 Sep 2020 16:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
+        id S1730260AbgI3USf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 30 Sep 2020 16:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730196AbgI3US0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 16:18:26 -0400
+        with ESMTP id S1730310AbgI3USd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 16:18:33 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B23C0613D0
-        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 13:18:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448E8C061755
+        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 13:18:32 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kNiYQ-0002Qt-TA; Wed, 30 Sep 2020 22:18:22 +0200
+        id 1kNiYW-0002Qt-Kb; Wed, 30 Sep 2020 22:18:28 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Thomas Kopp <thomas.kopp@microchip.com>,
+        kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 01/13] can: mcp25xxfd: mcp25xxfd_handle_eccif(): add ECC related errata and update log messages
-Date:   Wed, 30 Sep 2020 22:18:04 +0200
-Message-Id: <20200930201816.1032054-2-mkl@pengutronix.de>
+Subject: [PATCH 13/13] can: flexcan: disable runtime PM if register flexcandev failed
+Date:   Wed, 30 Sep 2020 22:18:16 +0200
+Message-Id: <20200930201816.1032054-14-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930201816.1032054-1-mkl@pengutronix.de>
 References: <20200930201816.1032054-1-mkl@pengutronix.de>
@@ -47,64 +47,31 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Thomas Kopp <thomas.kopp@microchip.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-This patch adds a reference to the recent released MCP2517FD and MCP2518FD
-errata sheets and paste the explanation.
+Disable runtime PM if register flexcandev failed, and balance reference
+of usage_count.
 
-The single error correction does not always work, so always indicate that a
-single error occurred. If the location of the ECC error is outside of the
-TX-RAM always use netdev_notice() to log the problem. For ECC errors in the
-TX-RAM, there is a recovery procedure.
-
-Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
-Link: https://lore.kernel.org/r/20200925065606.358-1-thomas.kopp@microchip.com
-[mkl: split into two patches, adjust subject and commit message]
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Link: https://lore.kernel.org/r/20200929211557.14153-4-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp25xxfd/mcp25xxfd-core.c    | 21 ++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ drivers/net/can/flexcan.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-index bd2ba981ae36..106dda8e5310 100644
---- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-+++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-@@ -1973,8 +1973,20 @@ mcp25xxfd_handle_eccif(struct mcp25xxfd_priv *priv, bool set_normal_mode)
- 	else
- 		return err;
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 9cf1de42f428..fbdd9a8c9374 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -2057,6 +2057,8 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	return 0;
  
-+	/* Errata Reference:
-+	 * mcp2517fd: DS80000789B, mcp2518fd: DS80000792C 2.
-+	 *
-+	 * ECC single error correction does not work in all cases:
-+	 *
-+	 * Fix/Work Around:
-+	 * Enable single error correction and double error detection
-+	 * interrupts by setting SECIE and DEDIE. Handle SECIF as a
-+	 * detection interrupt and do not rely on the error
-+	 * correction. Instead, handle both interrupts as a
-+	 * notification that the RAM word at ERRADDR was corrupted.
-+	 */
- 	if (ecc_stat & MCP25XXFD_REG_ECCSTAT_SECIF)
--		msg = "Single ECC Error corrected at address";
-+		msg = "Single ECC Error detected at address";
- 	else if (ecc_stat & MCP25XXFD_REG_ECCSTAT_DEDIF)
- 		msg = "Double ECC Error detected at address";
- 	else
-@@ -1983,12 +1995,7 @@ mcp25xxfd_handle_eccif(struct mcp25xxfd_priv *priv, bool set_normal_mode)
- 	if (!in_tx_ram) {
- 		ecc->ecc_stat = 0;
- 
--		if (ecc_stat & MCP25XXFD_REG_ECCSTAT_SECIF)
--			netdev_info(priv->ndev, "%s 0x%04x.\n",
--				    msg, addr);
--		else
--			netdev_notice(priv->ndev, "%s 0x%04x.\n",
--				      msg, addr);
-+		netdev_notice(priv->ndev, "%s 0x%04x.\n", msg, addr);
- 	} else {
- 		/* Re-occurring error? */
- 		if (ecc->ecc_stat == ecc_stat) {
+  failed_register:
++	pm_runtime_put_noidle(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
+ 	free_candev(dev);
+ 	return err;
+ }
 -- 
 2.28.0
 
