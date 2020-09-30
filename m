@@ -7,33 +7,32 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 262ADC47420
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8689C47428
 	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:15:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D87E720739
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:15:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 71F7F2071E
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:15:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgI3JPV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1729055AbgI3JPV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 30 Sep 2020 05:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729055AbgI3JOd (ORCPT
+        with ESMTP id S1729068AbgI3JOd (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 05:14:33 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FFDC0613D4
-        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 02:14:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BCAC0613DA
+        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 02:14:32 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kNYBv-0007UQ-Sj; Wed, 30 Sep 2020 11:14:27 +0200
+        id 1kNYBy-0007UQ-Dv; Wed, 30 Sep 2020 11:14:30 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Rob Herring <robh@kernel.org>,
+Cc:     kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 05/12] dt-binding: can: mcp25xxfd: documentation fixes
-Date:   Wed, 30 Sep 2020 11:14:17 +0200
-Message-Id: <20200930091424.792165-6-mkl@pengutronix.de>
+Subject: [PATCH 12/12] can: flexcan: disable runtime PM if register flexcandev failed
+Date:   Wed, 30 Sep 2020 11:14:24 +0200
+Message-Id: <20200930091424.792165-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930091424.792165-1-mkl@pengutronix.de>
 References: <20200930091424.792165-1-mkl@pengutronix.de>
@@ -47,62 +46,31 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-Apply following fixes:
-- Use 'interrupts'. (interrupts-extended will automagically be supported
-  by the tools)
-- *-supply is always a single item. So, drop maxItems=1
-- add "additionalProperties: false" flag to detect unneeded properties.
+Disable runtime PM if register flexcandev failed, and balance reference
+of usage_count.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200923125301.27200-1-o.rempel@pengutronix.de
-Reported-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Fixes: 1b5a78e69c1f ("dt-binding: can: mcp25xxfd: document device tree bindings")
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Link: https://lore.kernel.org/r/20200929211557.14153-4-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/microchip,mcp25xxfd.yaml  | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/flexcan.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-index aa2cad14d6d7..5beb00a614bf 100644
---- a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-@@ -24,7 +24,7 @@ properties:
-   reg:
-     maxItems: 1
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 9cf1de42f428..fbdd9a8c9374 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -2057,6 +2057,8 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	return 0;
  
--  interrupts-extended:
-+  interrupts:
-     maxItems: 1
- 
-   clocks:
-@@ -32,11 +32,9 @@ properties:
- 
-   vdd-supply:
-     description: Regulator that powers the CAN controller.
--    maxItems: 1
- 
-   xceiver-supply:
-     description: Regulator that powers the CAN transceiver.
--    maxItems: 1
- 
-   microchip,rx-int-gpios:
-     description:
-@@ -52,9 +50,11 @@ properties:
- required:
-   - compatible
-   - reg
--  - interrupts-extended
-+  - interrupts
-   - clocks
- 
-+additionalProperties: false
-+
- examples:
-   - |
-     #include <dt-bindings/gpio/gpio.h>
+  failed_register:
++	pm_runtime_put_noidle(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
+ 	free_candev(dev);
+ 	return err;
+ }
 -- 
 2.28.0
 
