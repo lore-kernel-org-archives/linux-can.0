@@ -4,37 +4,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A08BC47427
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85C48C47429
 	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0CD6120739
+	by mail.kernel.org (Postfix) with ESMTP id 5764120739
 	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730258AbgI3USm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1730301AbgI3USm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 30 Sep 2020 16:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728721AbgI3USb (ORCPT
+        with ESMTP id S1729551AbgI3USb (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 16:18:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D124C0613D6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6B0C0613D7
         for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 13:18:28 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kNiYS-0002Qt-BX; Wed, 30 Sep 2020 22:18:24 +0200
+        id 1kNiYT-0002Qt-Cv; Wed, 30 Sep 2020 22:18:25 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 04/13] can: mcp25xxfd: mcp25xxfd_irq(): add missing initialization of variable set_normal mode
-Date:   Wed, 30 Sep 2020 22:18:07 +0200
-Message-Id: <20200930201816.1032054-5-mkl@pengutronix.de>
+        kernel@pengutronix.de, Thomas Kopp <thomas.kopp@microchip.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 06/13] dt-binding: can: mcp251xfd: narrow down wildcards in device tree bindings to "microchip,mcp251xfd"
+Date:   Wed, 30 Sep 2020 22:18:09 +0200
+Message-Id: <20200930201816.1032054-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930201816.1032054-1-mkl@pengutronix.de>
 References: <20200930201816.1032054-1-mkl@pengutronix.de>
@@ -48,35 +48,69 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the following warning:
+From: Thomas Kopp <thomas.kopp@microchip.com>
 
-    drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c:2155 mcp25xxfd_irq()
-    error: uninitialized symbol 'set_normal_mode'.
+The wildcard should be narrowed down to prevent existing and future devices
+that are not compatible from matching. It is very unlikely that incompatible
+devices will be released that do not match the wildcard.
 
-by adding the missing initialization.
+This is the documentation part of the commit.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
-Link: https://lore.kernel.org/r/20200923114726.2704426-1-mkl@pengutronix.de
+Discussion Reference: https://lore.kernel.org/r/CAMuHMdVkwGjr6dJuMyhQNqFoJqbh6Ec5V2b5LenCshwpM2SDsQ@mail.gmail.com
+
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
+Link: https://lore.kernel.org/r/20200930091423.755-2-thomas.kopp@microchip.com
+[mkl: rename file, too]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ ...{microchip,mcp25xxfd.yaml => microchip,mcp251xfd.yaml} | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+ rename Documentation/devicetree/bindings/net/can/{microchip,mcp25xxfd.yaml => microchip,mcp251xfd.yaml} (91%)
 
-diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-index b91180b560fd..95d5cb46bc63 100644
---- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-+++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
-@@ -2080,7 +2080,7 @@ static irqreturn_t mcp25xxfd_irq(int irq, void *dev_id)
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
+similarity index 91%
+rename from Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+rename to Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
+index 5beb00a614bf..2a884c1fe0e0 100644
+--- a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/net/can/microchip,mcp25xxfd.yaml#
++$id: http://devicetree.org/schemas/net/can/microchip,mcp251xfd.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
  
- 	do {
- 		u32 intf_pending, intf_pending_clearable;
--		bool set_normal_mode;
-+		bool set_normal_mode = false;
+ title:
+@@ -18,7 +18,7 @@ properties:
+         description: for MCP2517FD
+       - const: microchip,mcp2518fd
+         description: for MCP2518FD
+-      - const: microchip,mcp25xxfd
++      - const: microchip,mcp251xfd
+         description: to autodetect chip variant
  
- 		err = regmap_bulk_read(priv->map_reg, MCP25XXFD_REG_INT,
- 				       &priv->regs_status,
+   reg:
+@@ -38,7 +38,7 @@ properties:
+ 
+   microchip,rx-int-gpios:
+     description:
+-      GPIO phandle of GPIO connected to to INT1 pin of the MCP25XXFD, which
++      GPIO phandle of GPIO connected to to INT1 pin of the MCP251XFD, which
+       signals a pending RX interrupt.
+     maxItems: 1
+ 
+@@ -65,7 +65,7 @@ examples:
+         #size-cells = <0>;
+ 
+         can@0 {
+-            compatible = "microchip,mcp25xxfd";
++            compatible = "microchip,mcp251xfd";
+             reg = <0>;
+             clocks = <&can0_osc>;
+             pinctrl-names = "default";
 -- 
 2.28.0
 
