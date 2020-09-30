@@ -7,34 +7,32 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58183C4727E
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31A33C4741F
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1236B20739
+	by mail.kernel.org (Postfix) with ESMTP id F35F420739
 	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 20:18:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730269AbgI3USb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 30 Sep 2020 16:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
+        id S1728270AbgI3USl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 30 Sep 2020 16:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730239AbgI3US2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 16:18:28 -0400
+        with ESMTP id S1730268AbgI3USb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 16:18:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F466C0613D4
-        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 13:18:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE23C0613DE
+        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 13:18:30 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kNiYS-0002Qt-Q6; Wed, 30 Sep 2020 22:18:24 +0200
+        id 1kNiYU-0002Qt-Gn; Wed, 30 Sep 2020 22:18:26 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Rob Herring <robh@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 05/13] dt-binding: can: mcp25xxfd: documentation fixes
-Date:   Wed, 30 Sep 2020 22:18:08 +0200
-Message-Id: <20200930201816.1032054-6-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 09/13] can: mcp251xfd: rename all user facing strings to mcp251xfd
+Date:   Wed, 30 Sep 2020 22:18:12 +0200
+Message-Id: <20200930201816.1032054-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930201816.1032054-1-mkl@pengutronix.de>
 References: <20200930201816.1032054-1-mkl@pengutronix.de>
@@ -48,62 +46,89 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+In [1] Geert noted that the autodetect compatible for the mcp25xxfd driver,
+which is "microchip,mcp25xxfd" might be too generic and overlap with upcoming,
+but incompatible chips.
 
-Apply following fixes:
-- Use 'interrupts'. (interrupts-extended will automagically be supported
-  by the tools)
-- *-supply is always a single item. So, drop maxItems=1
-- add "additionalProperties: false" flag to detect unneeded properties.
+In the previous patch the autodetect DT compatbile has been renamed to
+"microchip,mcp251xfd", this patch changes all user facing strings from
+"mcp25xxfd" to "mcp251xfd" and "MCP25XXFD" to "MCP251XFD", including:
+- kconfig symbols
+- name of kernel module
+- DT and SPI compatible
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20200923125301.27200-1-o.rempel@pengutronix.de
-Reported-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Fixes: 1b5a78e69c1f ("dt-binding: can: mcp25xxfd: document device tree bindings")
+[1] http://lore.kernel.org/r/CAMuHMdVkwGjr6dJuMyhQNqFoJqbh6Ec5V2b5LenCshwpM2SDsQ@mail.gmail.com
+
+Link: https://lore.kernel.org/r/20200930091424.792165-9-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/microchip,mcp25xxfd.yaml  | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/spi/mcp251xfd/Kconfig          | 10 +++++-----
+ drivers/net/can/spi/mcp251xfd/Makefile         | 10 +++++-----
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c |  4 ++--
+ 3 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-index aa2cad14d6d7..5beb00a614bf 100644
---- a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-@@ -24,7 +24,7 @@ properties:
-   reg:
-     maxItems: 1
+diff --git a/drivers/net/can/spi/mcp251xfd/Kconfig b/drivers/net/can/spi/mcp251xfd/Kconfig
+index 9eb596019a58..f5a147a92cb2 100644
+--- a/drivers/net/can/spi/mcp251xfd/Kconfig
++++ b/drivers/net/can/spi/mcp251xfd/Kconfig
+@@ -1,14 +1,14 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  
--  interrupts-extended:
-+  interrupts:
-     maxItems: 1
+-config CAN_MCP25XXFD
+-	tristate "Microchip MCP25xxFD SPI CAN controllers"
++config CAN_MCP251XFD
++	tristate "Microchip MCP251xFD SPI CAN controllers"
+ 	select REGMAP
+ 	help
+-	  Driver for the Microchip MCP25XXFD SPI FD-CAN controller
++	  Driver for the Microchip MCP251XFD SPI FD-CAN controller
+ 	  family.
  
-   clocks:
-@@ -32,11 +32,9 @@ properties:
+-config CAN_MCP25XXFD_SANITY
+-	depends on CAN_MCP25XXFD
++config CAN_MCP251XFD_SANITY
++	depends on CAN_MCP251XFD
+ 	bool "Additional Sanity Checks"
+ 	help
+ 	  This option enables additional sanity checks in the driver,
+diff --git a/drivers/net/can/spi/mcp251xfd/Makefile b/drivers/net/can/spi/mcp251xfd/Makefile
+index e943e6a2db0c..cb71244cbe89 100644
+--- a/drivers/net/can/spi/mcp251xfd/Makefile
++++ b/drivers/net/can/spi/mcp251xfd/Makefile
+@@ -1,8 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  
-   vdd-supply:
-     description: Regulator that powers the CAN controller.
--    maxItems: 1
+-obj-$(CONFIG_CAN_MCP25XXFD) += mcp25xxfd.o
++obj-$(CONFIG_CAN_MCP251XFD) += mcp251xfd.o
  
-   xceiver-supply:
-     description: Regulator that powers the CAN transceiver.
--    maxItems: 1
+-mcp25xxfd-objs :=
+-mcp25xxfd-objs += mcp251xfd-core.o
+-mcp25xxfd-objs += mcp251xfd-crc16.o
+-mcp25xxfd-objs += mcp251xfd-regmap.o
++mcp251xfd-objs :=
++mcp251xfd-objs += mcp251xfd-core.o
++mcp251xfd-objs += mcp251xfd-crc16.o
++mcp251xfd-objs += mcp251xfd-regmap.o
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 7cd14531ab1e..37d3f07c9bf6 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -25,7 +25,7 @@
  
-   microchip,rx-int-gpios:
-     description:
-@@ -52,9 +50,11 @@ properties:
- required:
-   - compatible
-   - reg
--  - interrupts-extended
-+  - interrupts
-   - clocks
+ #include "mcp251xfd.h"
  
-+additionalProperties: false
-+
- examples:
-   - |
-     #include <dt-bindings/gpio/gpio.h>
+-#define DEVICE_NAME "mcp25xxfd"
++#define DEVICE_NAME "mcp251xfd"
+ 
+ static const struct mcp25xxfd_devtype_data mcp25xxfd_devtype_data_mcp2517fd = {
+ 	.quirks = MCP25XXFD_QUIRK_MAB_NO_WARN | MCP25XXFD_QUIRK_CRC_REG |
+@@ -2923,5 +2923,5 @@ static struct spi_driver mcp25xxfd_driver = {
+ module_spi_driver(mcp25xxfd_driver);
+ 
+ MODULE_AUTHOR("Marc Kleine-Budde <mkl@pengutronix.de>");
+-MODULE_DESCRIPTION("Microchip MCP25xxFD Family CAN controller driver");
++MODULE_DESCRIPTION("Microchip MCP251xFD Family CAN controller driver");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.28.0
 
