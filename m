@@ -2,111 +2,108 @@ Return-Path: <SRS0=bHV0=DH=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4175BC47420
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC4D7C47428
 	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:15:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DF4DB2071E
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:15:26 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="RKeXRCkh"
+	by mail.kernel.org (Postfix) with ESMTP id 9C06E20739
+	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 09:15:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgI3JP0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 30 Sep 2020 05:15:26 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:61943 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729026AbgI3JO3 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 05:14:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601457269; x=1632993269;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=/ZYP5huKS3E3Wxm1rD7Bg9qcbtinex3PHKYcP+sfMWI=;
-  b=RKeXRCkhEPEWun/U29Jti5DDVFvxY3yHqH71fAT93I3mZ9uP7bvBgUE+
-   sBARWL4SxoB+6wi9s392Sy0XUuV9X2RDKmeRoqiy1iTvHVzZO9dh3qjQX
-   FlzWX7r0Itkcbb3sDWvBGI/94zDfwKHzkP5gYQ+5T//AZcJ5/3jKfoTVQ
-   MwoBF/YB5JzHr0b7/Gu48PuSBml1RGCfJPeo4mhPO2EgEyWoI5xB4OaIY
-   kuhH2M2VzMaAZkv6vbqRKgR9MGPJsnQUqjKnJgR+z4PVwtcHu3XW632dH
-   z5syl8qLJPorWVHUpplVx7hS0oK8V3cTTXzIkmLy+nBytFtMKZpBK0thD
-   Q==;
-IronPort-SDR: QdNnkcz7UsvwKZazBrZJjG3Xl4+tj7KFuGHiwrh7cLwTExbKqg+DXvOVc20hq3Y2p00pb89U2J
- +8sWIaWtqgNrOrwyVx7wxSnhBZysWioivYSfa8EfhP7vT1IiZmzRBvG2ut2CMgoAO8CD/kC9aH
- isUD0Tu5NWwWDLG/TvuuOVDrkOZLrAbOm+Wiy5a2NxFFkYH0ykPoB1R+LBMbwJHY2/0GxW0Rf9
- x1ENeJcA/Rl/MyFRqjKnNR06u9UV5fpeq4CAaCl0Vy498Hln7JwENGez4EREAyVNczoqbke3N7
- 9qA=
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="92928482"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2020 02:14:29 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 30 Sep 2020 02:14:28 -0700
-Received: from HNO-LT-M43677A.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 30 Sep 2020 02:14:26 -0700
-From:   Thomas Kopp <thomas.kopp@microchip.com>
-To:     <mkl@pengutronix.de>, <manivannan.sadhasivam@linaro.org>,
-        <o.rempel@pengutronix.de>, <geert@linux-m68k.org>
-CC:     <linux-can@vger.kernel.org>, <thomas.kopp@microchip.com>,
-        <dev.kurt@vandijck-laurijssen.be>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <wg@grandegger.com>
-Subject: [PATCH 2/2] can: mcp25xxfd: narrow down wildcards in device tree bindings
-Date:   Wed, 30 Sep 2020 11:14:23 +0200
-Message-ID: <20200930091423.755-2-thomas.kopp@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200930091423.755-1-thomas.kopp@microchip.com>
-References: <20200930091423.755-1-thomas.kopp@microchip.com>
+        id S1729024AbgI3JP1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 30 Sep 2020 05:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728938AbgI3JO2 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 05:14:28 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE02C0613D0
+        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 02:14:27 -0700 (PDT)
+Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kNYBt-0007UQ-TD; Wed, 30 Sep 2020 11:14:25 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     linux-can@vger.kernel.org
+Cc:     kernel@pengutronix.de, Thomas Kopp <thomas.kopp@microchip.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 01/12] can: mcp25xxfd: mcp25xxfd_handle_eccif(): add ECC related errata and update log messages
+Date:   Wed, 30 Sep 2020 11:14:13 +0200
+Message-Id: <20200930091424.792165-2-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200930091424.792165-1-mkl@pengutronix.de>
+References: <20200930091424.792165-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The wildcard should be narrowed down to prevent existing and
-future devices that are not compatible from matching.
-It is very unlikely that incompatible devices will be released
-that do not match the wildcard.
+From: Thomas Kopp <thomas.kopp@microchip.com>
 
-This is the documentation part of the commit.
+This patch adds a reference to the recent released MCP2517FD and MCP2518FD
+errata sheets and paste the explanation.
 
-Discussion Reference: https://lore.kernel.org/r/CAMuHMdVkwGjr6dJuMyhQNqFoJqbh6Ec5V2b5LenCshwpM2SDsQ@mail.gmail.com/
-
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+The single error correction does not always work, so always indicate that a
+single error occurred. If the location of the ECC error is outside of the
+TX-RAM always use netdev_notice() to log the problem. For ECC errors in the
+TX-RAM, there is a recovery procedure.
 
 Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
+Link: https://lore.kernel.org/r/20200925065606.358-1-thomas.kopp@microchip.com
+[mkl: split into two patches, adjust subject and commit message]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/microchip,mcp25xxfd.yaml      | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../net/can/spi/mcp25xxfd/mcp25xxfd-core.c    | 21 ++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-index 5beb00a614bf..6765f4c611c5 100644
---- a/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-@@ -18,7 +18,7 @@ properties:
-         description: for MCP2517FD
-       - const: microchip,mcp2518fd
-         description: for MCP2518FD
--      - const: microchip,mcp25xxfd
-+      - const: microchip,mcp251xfd
-         description: to autodetect chip variant
+diff --git a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+index bd2ba981ae36..106dda8e5310 100644
+--- a/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
++++ b/drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c
+@@ -1973,8 +1973,20 @@ mcp25xxfd_handle_eccif(struct mcp25xxfd_priv *priv, bool set_normal_mode)
+ 	else
+ 		return err;
  
-   reg:
-@@ -65,7 +65,7 @@ examples:
-         #size-cells = <0>;
++	/* Errata Reference:
++	 * mcp2517fd: DS80000789B, mcp2518fd: DS80000792C 2.
++	 *
++	 * ECC single error correction does not work in all cases:
++	 *
++	 * Fix/Work Around:
++	 * Enable single error correction and double error detection
++	 * interrupts by setting SECIE and DEDIE. Handle SECIF as a
++	 * detection interrupt and do not rely on the error
++	 * correction. Instead, handle both interrupts as a
++	 * notification that the RAM word at ERRADDR was corrupted.
++	 */
+ 	if (ecc_stat & MCP25XXFD_REG_ECCSTAT_SECIF)
+-		msg = "Single ECC Error corrected at address";
++		msg = "Single ECC Error detected at address";
+ 	else if (ecc_stat & MCP25XXFD_REG_ECCSTAT_DEDIF)
+ 		msg = "Double ECC Error detected at address";
+ 	else
+@@ -1983,12 +1995,7 @@ mcp25xxfd_handle_eccif(struct mcp25xxfd_priv *priv, bool set_normal_mode)
+ 	if (!in_tx_ram) {
+ 		ecc->ecc_stat = 0;
  
-         can@0 {
--            compatible = "microchip,mcp25xxfd";
-+            compatible = "microchip,mcp251xfd";
-             reg = <0>;
-             clocks = <&can0_osc>;
-             pinctrl-names = "default";
+-		if (ecc_stat & MCP25XXFD_REG_ECCSTAT_SECIF)
+-			netdev_info(priv->ndev, "%s 0x%04x.\n",
+-				    msg, addr);
+-		else
+-			netdev_notice(priv->ndev, "%s 0x%04x.\n",
+-				      msg, addr);
++		netdev_notice(priv->ndev, "%s 0x%04x.\n", msg, addr);
+ 	} else {
+ 		/* Re-occurring error? */
+ 		if (ecc->ecc_stat == ecc_stat) {
 -- 
-2.25.1
+2.28.0
 
