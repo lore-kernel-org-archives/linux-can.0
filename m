@@ -1,206 +1,103 @@
-Return-Path: <SRS0=bHV0=DH=vger.kernel.org=linux-can-owner@kernel.org>
+Return-Path: <SRS0=V1x3=DI=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD719C4727F
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 23:48:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 973FDC47420
+	for <linux-can@archiver.kernel.org>; Thu,  1 Oct 2020 09:11:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A346220B1F
-	for <linux-can@archiver.kernel.org>; Wed, 30 Sep 2020 23:48:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 58FD720B1F
+	for <linux-can@archiver.kernel.org>; Thu,  1 Oct 2020 09:11:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XFbgbRH4"
+	dkim=pass (1024-bit key) header.d=walle.cc header.i=@walle.cc header.b="BFXJ4ch9"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730785AbgI3Xsm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 30 Sep 2020 19:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730668AbgI3Xsl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 30 Sep 2020 19:48:41 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D9EC061755
-        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 16:48:41 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id f142so3463093qke.13
-        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2020 16:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LPdb74S4jauVVLUsGZ/UYTN0rjjvjELxWrN8cAyg2gg=;
-        b=XFbgbRH4EcEHjoSpFw3ynPiFhqNa5WbBuQroh4Oz8hsDn4Q/pWnNYbaNRZotSgI4hS
-         wliCiRYxbViqhpH27I7Zp8V3nX5QOXjI0n5CR6I+TGjio6w90EORBTBScvZAauQu8v1v
-         OVZjqn3QB5Tter11pbR7hjwHojncFY8uZ/7HvwiJnTqpD7k6KUTNwketAXzLajRuKY6n
-         qHdlknEqmHniBe69Vq74ppNEVrPcc4brnpy5tjTsK3whtkflHTGnRrXNG+hlSEb0QoFz
-         CVIv3Ig9i+NIoGUFimEIo7g55NO4az8KqH3lY9mdK9MpsU+dwiVW0OPN63VrbPlE6Knq
-         wvfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LPdb74S4jauVVLUsGZ/UYTN0rjjvjELxWrN8cAyg2gg=;
-        b=hXJJkfaYMxnlL8epcxAJYAy+QJe8Ts9fVLX7Jjr5i2jYF5pwm/FuBczMqs4R0w3R2P
-         7FlzXQV8CFXIWVZSQ0ycKBvPVjjxWHPPdLjrHQp/7SyLOfHumOu3bn+ABmOp6ONSMStq
-         60GpcRobo88VJ8Pxowcg+6rgC7XtUiLiZJYO+teU1y7nTcjGvSqNv6eR1EwVyknynXe6
-         Uf48GpeXnRfmo0CDg0kXrOzQsW+dw30OZE07SkPe3H05chm6DgIQroFWtDquQr0xC2/c
-         Y9y74fR9C2awuSYR4DbWCBGatSFkoq43DUlbAyv+lUfVldge8pAhCJudBIari6DdoHL+
-         8D2w==
-X-Gm-Message-State: AOAM533JOuQmYoLwC1whi9cCLkiM1XfyJtSTRmKtBlJi9IH/vthKK9ak
-        BOTKWOCqb+qstZ0B5RBqg2zH81t6OojOKkcBAu9RbuRqTqk=
-X-Google-Smtp-Source: ABdhPJw90X53NqVcik+t4nYlRRJMs+4Ul7/2xlCT98WGqL924tePMSLy5PCrQBWtkzC10TuSsKrHVCwzCBaholsK0UU=
-X-Received: by 2002:a37:e311:: with SMTP id y17mr4999031qki.153.1601509720442;
- Wed, 30 Sep 2020 16:48:40 -0700 (PDT)
+        id S1731816AbgJAJLm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 1 Oct 2020 05:11:42 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:54729 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731649AbgJAJLl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Oct 2020 05:11:41 -0400
+Received: from mwalle01.sab.local. (unknown [213.135.10.150])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id B2ED323E3F;
+        Thu,  1 Oct 2020 11:11:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1601543496;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B9CcUhbLMDL7Ms49VSrHSb+cWmK4218oG0EluEg6rUY=;
+        b=BFXJ4ch97fiqFyPnhYmFKDsxKov3TLyLiNGsrMtLDkuaCwqD6GGbJG42gnVUY4Jebmgiyl
+        IKigQCGTQbDzkpVjAcW2/CvtKGPPgwEtepD67n/BiplcUGcIF/JYwD6dS6qq9yJjcmqbhu
+        g84qGMRpDjmFzw3/abOaMHcFqEKzxsw=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH v2 2/3] arm64: dts: ls1028a: add missing CAN nodes
+Date:   Thu,  1 Oct 2020 11:11:30 +0200
+Message-Id: <20201001091131.30514-3-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201001091131.30514-1-michael@walle.cc>
+References: <20201001091131.30514-1-michael@walle.cc>
 MIME-Version: 1.0
-References: <20200728090736.7628-1-s.grosjean@peak-system.com> <VI1PR03MB50536800A01EB17C97D9B6BDD62F0@VI1PR03MB5053.eurprd03.prod.outlook.com>
-In-Reply-To: <VI1PR03MB50536800A01EB17C97D9B6BDD62F0@VI1PR03MB5053.eurprd03.prod.outlook.com>
-From:   =?UTF-8?Q?Fabi=C3=A1n_Inostroza?= <fabian.inostroza.p@gmail.com>
-Date:   Wed, 30 Sep 2020 20:48:29 -0300
-Message-ID: <CAArkK-czkq_qg=V+mfoCJHxAoKLGTgp-nM2GPheVT6L5+==Z1A@mail.gmail.com>
-Subject: Re: [PATCH] can/peak_usb: fix timestamp wrapping
-To:     =?UTF-8?Q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.com>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Ping
+The LS1028A has two FlexCAN controller. These are compatible with
+the ones from the LX2160A. Add the nodes.
 
-Fabi=C3=A1n Antonio Inostroza Paredes
-Ingeniero Civil Electr=C3=B3nico
-Fono: +56962243036
+The first controller was tested on the Kontron sl28 board.
 
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-On Wed, Sep 2, 2020 at 7:44 AM St=C3=A9phane Grosjean
-<s.grosjean@peak-system.com> wrote:
->
-> Hi Marc,
->
-> Any news about that patch?
->
-> ---
-> St=C3=A9phane Grosjean
-> PEAK-System France
-> 132, rue Andr=C3=A9 Bisiaux
-> F-54320 MAXEVILLE
-> T=C3=A9l : +(33) 9.72.54.51.97
->
->
-> De : Stephane Grosjean <s.grosjean@peak-system.com>
-> Envoy=C3=A9 : mardi 28 juillet 2020 11:07
-> =C3=80 : linux-can Mailing List <linux-can@vger.kernel.org>
-> Cc : St=C3=A9phane Grosjean <s.grosjean@peak-system.com>
-> Objet : [PATCH] can/peak_usb: fix timestamp wrapping
->
-> Fabian Inostroza <fabianinostrozap@gmail.com> has discovered a potential
-> problem in the hardware timestamp reporting from the PCAN-USB USB CAN
-> interface (only), related to the fact that a timestamp of an event may
-> precede the timestamp used for synchronization when both records are part
-> of the same USB packet. However, this case was used to detect the wrappin=
-g
-> of the time counter.
->
-> This patch details and fixes the two identified cases where this problem
-> can occur.
->
-> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-> ---
->  drivers/net/can/usb/peak_usb/pcan_usb_core.c | 51 ++++++++++++++++++--
->  1 file changed, 46 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/c=
-an/usb/peak_usb/pcan_usb_core.c
-> index 0b7766b715fd..267ddc18ed51 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> @@ -130,14 +130,55 @@ void peak_usb_get_ts_time(struct peak_time_ref *tim=
-e_ref, u32 ts, ktime_t *time)
->         /* protect from getting time before setting now */
->         if (ktime_to_ns(time_ref->tv_host)) {
->                 u64 delta_us;
-> +               s64 delta_ts =3D 0;
-> +
-> +               /* General case: dev_ts_1 < dev_ts_2 < ts, with:
-> +                *
-> +                * - dev_ts_1 =3D previous sync timestamp
-> +                * - dev_ts_2 =3D last sync timestamp
-> +                * - ts =3D event timestamp
-> +                * - ts_period =3D known sync period (theoretical)
-> +                *             ~ dev_ts2 - dev_ts1
-> +                * *but*:
-> +                *
-> +                * - time counters wrap (see adapter->ts_used_bits)
-> +                * - sometimes, dev_ts_1 < ts < dev_ts2
-> +                *
-> +                * "normal" case (sync time counters increase):
-> +                * must take into account case when ts wraps (tsw)
-> +                *
-> +                *      < ts_period > <          >
-> +                *     |             |            |
-> +                *  ---+--------+----+-------0-+--+-->
-> +                *     ts_dev_1 |    ts_dev_2  |
-> +                *              ts             tsw
-> +                */
-> +               if (time_ref->ts_dev_1 < time_ref->ts_dev_2) {
-> +                       /* case when event time (tsw) wraps */
-> +                       if (ts < time_ref->ts_dev_1)
-> +                               delta_ts =3D 1 << time_ref->adapter->ts_u=
-sed_bits;
-> +
-> +               /* Otherwise, sync time counter (ts_dev_2) has wrapped:
-> +                * handle case when event time (tsn) hasn't.
-> +                *
-> +                *      < ts_period > <          >
-> +                *     |             |            |
-> +                *  ---+--------+--0-+---------+--+-->
-> +                *     ts_dev_1 |    ts_dev_2  |
-> +                *              tsn            ts
-> +                */
-> +               } else if (time_ref->ts_dev_1 < ts) {
-> +                       delta_ts =3D -(1 << time_ref->adapter->ts_used_bi=
-ts);
-> +               }
->
-> -               delta_us =3D ts - time_ref->ts_dev_2;
-> -               if (ts < time_ref->ts_dev_2)
-> -                       delta_us &=3D (1 << time_ref->adapter->ts_used_bi=
-ts) - 1;
-> +               /* add delay between last sync and event timestamps */
-> +               delta_ts +=3D (signed int)(ts - time_ref->ts_dev_2);
->
-> -               delta_us +=3D time_ref->ts_total;
-> +               /* add time from beginning to last sync */
-> +               delta_ts +=3D time_ref->ts_total;
->
-> -               delta_us *=3D time_ref->adapter->us_per_ts_scale;
-> +               /* convert ticks number into microseconds */
-> +               delta_us =3D delta_ts * time_ref->adapter->us_per_ts_scal=
-e;
->                 delta_us >>=3D time_ref->adapter->us_per_ts_shift;
->
->                 *time =3D ktime_add_us(time_ref->tv_host_0, delta_us);
-> --
-> 2.25.1
->
->
-> --
-> PEAK-System Technik GmbH
-> Sitz der Gesellschaft Darmstadt - HRB 9183
-> Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
-> Unsere Datenschutzerklaerung mit wichtigen Hinweisen
-> zur Behandlung personenbezogener Daten finden Sie unter
-> www.peak-system.com/Datenschutz.483.0.html
->
-> --
-> PEAK-System Technik GmbH
-> Sitz der Gesellschaft Darmstadt - HRB 9183
-> Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
-> Unsere Datenschutzerklaerung mit wichtigen Hinweisen
-> zur Behandlung personenbezogener Daten finden Sie unter
-> www.peak-system.com/Datenschutz.483.0.html
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index 73e4f9466887..f223396b8266 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -386,6 +386,24 @@
+ 			status = "disabled";
+ 		};
+ 
++		can0: can@2180000 {
++			compatible = "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-flexcan";
++			reg = <0x0 0x2180000 0x0 0x10000>;
++			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&sysclk>, <&clockgen 4 1>;
++			clock-names = "ipg", "per";
++			status = "disabled";
++		};
++
++		can1: can@2190000 {
++			compatible = "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-flexcan";
++			reg = <0x0 0x2190000 0x0 0x10000>;
++			interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&sysclk>, <&clockgen 4 1>;
++			clock-names = "ipg", "per";
++			status = "disabled";
++		};
++
+ 		duart0: serial@21c0500 {
+ 			compatible = "fsl,ns16550", "ns16550a";
+ 			reg = <0x00 0x21c0500 0x0 0x100>;
+-- 
+2.20.1
+
