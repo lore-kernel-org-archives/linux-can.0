@@ -1,392 +1,129 @@
-Return-Path: <SRS0=KIaw=DJ=vger.kernel.org=linux-can-owner@kernel.org>
+Return-Path: <SRS0=8gHN=DK=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C51F1C35257
-	for <linux-can@archiver.kernel.org>; Fri,  2 Oct 2020 15:56:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 255BCC4363D
+	for <linux-can@archiver.kernel.org>; Sat,  3 Oct 2020 07:55:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 80D53206C9
-	for <linux-can@archiver.kernel.org>; Fri,  2 Oct 2020 15:56:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CA535206CA
+	for <linux-can@archiver.kernel.org>; Sat,  3 Oct 2020 07:55:18 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UJLwyPfc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387688AbgJBP4A (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 2 Oct 2020 11:56:00 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:19140 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726386AbgJBP4A (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 2 Oct 2020 11:56:00 -0400
-Received: from tomoyo.flets-east.jp ([153.230.197.127])
-        by mwinf5d76 with ME
-        id b3vk230042lQRaH033vrag; Fri, 02 Oct 2020 17:55:57 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 02 Oct 2020 17:55:57 +0200
-X-ME-IP: 153.230.197.127
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Oliver Neukum <oneukum@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v3 7/7] usb: cdc-acm: add quirk to blacklist ETAS ES58X devices
-Date:   Sat,  3 Oct 2020 00:41:51 +0900
-Message-Id: <20201002154219.4887-8-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201002154219.4887-1-mailhol.vincent@wanadoo.fr>
-References: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
- <20201002154219.4887-1-mailhol.vincent@wanadoo.fr>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1725747AbgJCHzL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 3 Oct 2020 03:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgJCHzL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 3 Oct 2020 03:55:11 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A8EC0613D0;
+        Sat,  3 Oct 2020 00:55:11 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id b12so4181222edz.11;
+        Sat, 03 Oct 2020 00:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=CDwSbwZssf462MfM1dKOPyFvlfvWZeJTSIh0pC7ZnjQ=;
+        b=UJLwyPfcmDinYs3+jT+yhLhgiA+15jamR1qMAek0wbQZZThapIIbIS6zckayssU8Kp
+         +ywmTHVT3wxr8na6Ep97PkJKBH0DHv/X+tCU0IOC9Dkt1S5NYjYNMl/uy24RyT8F6frD
+         Av7WMWyUakpzlNoFCSom3t/e5IJ+1JOutBlQzxWBeS1JwVj8zN2RwsYRX4YunGhbvSPd
+         wUSDzIwUB4pEqFuOU8IduLCFyuRnlJs4ek7u8J9dvwfNlDkYnIM3e4Kx2h1rOZrt/WOZ
+         VG8fjRhu2gNpNXzFYlhTA1aAbw3/lwiAfXn4w2QAY7sgCwEXlexjcFhNr+mk8VT6+d01
+         /u7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CDwSbwZssf462MfM1dKOPyFvlfvWZeJTSIh0pC7ZnjQ=;
+        b=q3ZWD+Dgr5y8BZ78GkxgAHTE59jIlc5lFo3DkN4szqiy1OzhVWwljEN4zu47slKYVH
+         wa0VKlPXm+pPhZqACrRuFWWtNG8IbBBmw2S/cv+ebLmsAOYFz79jrQpIJniw4uxUBAP3
+         CwLZt17+Klqt0zfVwleQHdtIrt1NqPckXtJMoDRRnK8tLfS9DwbLKaQgnbIIEfokT20A
+         Jstf6idUEseyhce/9gZx/FKshKERXcQsJi4nTq63QXqpR7O4EZPstc0Ntj4yZlabtjMV
+         ZYGg5l69Gb879BHX5hrW4ms51hHNdZu4LiEIiYqgl9I4JtANsDBDXzMHNAtC7wci1tlY
+         CpQg==
+X-Gm-Message-State: AOAM530UYY7+hT7HCg0JB7e8qbFf6eSF/xihdr8q54ppSGfAjdfBRw0Y
+        dphtrHl/Y3OWhUtmXNMdmtc=
+X-Google-Smtp-Source: ABdhPJxkgmJ83cjrOHCJ4qcn0rHCmvs07ctNPUEtyrvd9+dsI5k5pzOXqFnJy2jSsClwrculsE/aoQ==
+X-Received: by 2002:a05:6402:cba:: with SMTP id cn26mr6989717edb.230.1601711709639;
+        Sat, 03 Oct 2020 00:55:09 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d0f:200:5c8a:6672:a0e2:bacb])
+        by smtp.gmail.com with ESMTPSA id k13sm3400867edj.92.2020.10.03.00.55.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 00:55:08 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: adjust to mcp251xfd file renaming
+Date:   Sat,  3 Oct 2020 09:55:00 +0200
+Message-Id: <20201003075500.12477-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The ES58X devices has a CDC ACM interface (used for debug
-purpose). During probing, the device is thus recognized as USB Modem
-(CDC ACM), preventing the etas-es58x module to load:
-  usbcore: registered new interface driver etas_es58x
-  usb 1-1.1: new full-speed USB device number 14 using xhci_hcd
-  usb 1-1.1: New USB device found, idVendor=108c, idProduct=0159, bcdDevice= 1.00
-  usb 1-1.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-  usb 1-1.1: Product: ES581.4
-  usb 1-1.1: Manufacturer: ETAS GmbH
-  usb 1-1.1: SerialNumber: 2204355
-  cdc_acm 1-1.1:1.0: No union descriptor, testing for castrated device
-  cdc_acm 1-1.1:1.0: ttyACM0: USB ACM device
+Commit 27cf93863cbc ("MAINTAINERS: Add entry for Microchip MCP25XXFD
+SPI-CAN network driver"), added the MCP25XXFD SPI-CAN NETWORK DRIVER
+section with the following two file entries:
 
-Thus, these have been added to the ignore list in
-drivers/usb/class/cdc-acm.c
+F:      Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+F:      drivers/net/can/spi/mcp25xxfd/
 
-N.B. Future firmware release of the ES58X will remove the CDC-ACM
-interface.
+Commit 1f0e21a0c065 ("can: mcp251xfd: rename driver files and subdir to
+mcp251xfd") renamed the files from mcp25xxfd to mcp251xfd, but missed to
+adjust the MAINTAINERS section.
 
-`lsusb -v` of the three devices variant (ES581.4, ES582.1 and
-ES584.1):
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
-  Bus 001 Device 011: ID 108c:0159 Robert Bosch GmbH ES581.4
-  Device Descriptor:
-    bLength                18
-    bDescriptorType         1
-    bcdUSB               1.10
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    idVendor           0x108c Robert Bosch GmbH
-    idProduct          0x0159
-    bcdDevice            1.00
-    iManufacturer           1 ETAS GmbH
-    iProduct                2 ES581.4
-    iSerial                 3 2204355
-    bNumConfigurations      1
-    Configuration Descriptor:
-      bLength                 9
-      bDescriptorType         2
-      wTotalLength       0x0035
-      bNumInterfaces          1
-      bConfigurationValue     1
-      iConfiguration          5 Bus Powered Configuration
-      bmAttributes         0x80
-        (Bus Powered)
-      MaxPower              100mA
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        0
-        bAlternateSetting       0
-        bNumEndpoints           3
-        bInterfaceClass         2 Communications
-        bInterfaceSubClass      2 Abstract (modem)
-        bInterfaceProtocol      0
-        iInterface              4 ACM Control Interface
-        CDC Header:
-          bcdCDC               1.10
-        CDC Call Management:
-          bmCapabilities       0x01
-            call management
-          bDataInterface          0
-        CDC ACM:
-          bmCapabilities       0x06
-            sends break
-            line coding and serial state
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x81  EP 1 IN
-          bmAttributes            3
-            Transfer Type            Interrupt
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0010  1x 16 bytes
-          bInterval              10
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x82  EP 2 IN
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0040  1x 64 bytes
-          bInterval               0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x03  EP 3 OUT
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0040  1x 64 bytes
-          bInterval               0
-  Device Status:     0x0000
-    (Bus Powered)
+  warning: no file matches    F: \
+      Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+  warning: no file matches    F:    drivers/net/can/spi/mcp25xxfd/
 
-  Bus 001 Device 012: ID 108c:0168 Robert Bosch GmbH ES582
-  Device Descriptor:
-    bLength                18
-    bDescriptorType         1
-    bcdUSB               2.00
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    idVendor           0x108c Robert Bosch GmbH
-    idProduct          0x0168
-    bcdDevice            1.00
-    iManufacturer           1 ETAS GmbH
-    iProduct                2 ES582
-    iSerial                 3 0108933
-    bNumConfigurations      1
-    Configuration Descriptor:
-      bLength                 9
-      bDescriptorType         2
-      wTotalLength       0x0043
-      bNumInterfaces          2
-      bConfigurationValue     1
-      iConfiguration          0
-      bmAttributes         0x80
-        (Bus Powered)
-      MaxPower              500mA
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        0
-        bAlternateSetting       0
-        bNumEndpoints           1
-        bInterfaceClass         2 Communications
-        bInterfaceSubClass      2 Abstract (modem)
-        bInterfaceProtocol      1 AT-commands (v.25ter)
-        iInterface              0
-        CDC Header:
-          bcdCDC               1.10
-        CDC ACM:
-          bmCapabilities       0x02
-            line coding and serial state
-        CDC Union:
-          bMasterInterface        0
-          bSlaveInterface         1
-        CDC Call Management:
-          bmCapabilities       0x03
-            call management
-            use DataInterface
-          bDataInterface          1
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x83  EP 3 IN
-          bmAttributes            3
-            Transfer Type            Interrupt
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0040  1x 64 bytes
-          bInterval              16
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        1
-        bAlternateSetting       0
-        bNumEndpoints           2
-        bInterfaceClass        10 CDC Data
-        bInterfaceSubClass      0
-        bInterfaceProtocol      0
-        iInterface              0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x81  EP 1 IN
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0200  1x 512 bytes
-          bInterval               0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x02  EP 2 OUT
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0200  1x 512 bytes
-          bInterval               0
-  Device Qualifier (for other device speed):
-    bLength                10
-    bDescriptorType         6
-    bcdUSB               2.00
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    bNumConfigurations      1
-  Device Status:     0x0000
-    (Bus Powered)
+Adjust the MCP251XFD SPI-CAN NETWORK DRIVER section to this driver file
+renaming.
 
-  Bus 001 Device 013: ID 108c:0169 Robert Bosch GmbH ES584.1
-  Device Descriptor:
-    bLength                18
-    bDescriptorType         1
-    bcdUSB               2.00
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    idVendor           0x108c Robert Bosch GmbH
-    idProduct          0x0169
-    bcdDevice            1.00
-    iManufacturer           1 ETAS GmbH
-    iProduct                2 ES584.1
-    iSerial                 3 0100320
-    bNumConfigurations      1
-    Configuration Descriptor:
-      bLength                 9
-      bDescriptorType         2
-      wTotalLength       0x0043
-      bNumInterfaces          2
-      bConfigurationValue     1
-      iConfiguration          0
-      bmAttributes         0x80
-        (Bus Powered)
-      MaxPower              500mA
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        0
-        bAlternateSetting       0
-        bNumEndpoints           1
-        bInterfaceClass         2 Communications
-        bInterfaceSubClass      2 Abstract (modem)
-        bInterfaceProtocol      1 AT-commands (v.25ter)
-        iInterface              0
-        CDC Header:
-          bcdCDC               1.10
-        CDC ACM:
-          bmCapabilities       0x02
-            line coding and serial state
-        CDC Union:
-          bMasterInterface        0
-          bSlaveInterface         1
-        CDC Call Management:
-          bmCapabilities       0x03
-            call management
-            use DataInterface
-          bDataInterface          1
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x83  EP 3 IN
-          bmAttributes            3
-            Transfer Type            Interrupt
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0040  1x 64 bytes
-          bInterval              16
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        1
-        bAlternateSetting       0
-        bNumEndpoints           2
-        bInterfaceClass        10 CDC Data
-        bInterfaceSubClass      0
-        bInterfaceProtocol      0
-        iInterface              0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x81  EP 1 IN
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0200  1x 512 bytes
-          bInterval               0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x02  EP 2 OUT
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0200  1x 512 bytes
-          bInterval               0
-  Device Qualifier (for other device speed):
-    bLength                10
-    bDescriptorType         6
-    bcdUSB               2.00
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    bNumConfigurations      1
-  Device Status:     0x0000
-    (Bus Powered)
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
+applies cleanly on next-2020102
 
-Changes in v3: None
+Marc, please pick this minor non-urgent clean-up patch for your -next tree.
 
-Changes in v2:
-  - Added dmesg and lsusb -v information and rephrased the comment.
----
- drivers/usb/class/cdc-acm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ MAINTAINERS | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 7f6f3ab5b8a6..ed9355094e8c 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1906,6 +1906,17 @@ static const struct usb_device_id acm_ids[] = {
- 	.driver_info = IGNORE_DEVICE,
- 	},
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 00214bbaa72c..b374e594a779 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10732,14 +10732,14 @@ L:	linux-input@vger.kernel.org
+ S:	Maintained
+ F:	drivers/hid/hid-mcp2221.c
  
-+	/* Exclude ETAS ES58x */
-+	{ USB_DEVICE(0x108c, 0x0159), /* ES581.4 */
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+	{ USB_DEVICE(0x108c, 0x0168), /* ES582.1 */
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+	{ USB_DEVICE(0x108c, 0x0169), /* ES584.1 */
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+
- 	{ USB_DEVICE(0x1bc7, 0x0021), /* Telit 3G ACM only composition */
- 	.driver_info = SEND_ZERO_PACKET,
- 	},
+-MCP25XXFD SPI-CAN NETWORK DRIVER
++MCP251XFD SPI-CAN NETWORK DRIVER
+ M:	Marc Kleine-Budde <mkl@pengutronix.de>
+ M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+ R:	Thomas Kopp <thomas.kopp@microchip.com>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+-F:	drivers/net/can/spi/mcp25xxfd/
++F:	Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
++F:	drivers/net/can/spi/mcp251xfd/
+ 
+ MCP4018 AND MCP4531 MICROCHIP DIGITAL POTENTIOMETER DRIVERS
+ M:	Peter Rosin <peda@axentia.se>
 -- 
-2.26.2
+2.17.1
 
