@@ -2,30 +2,29 @@ Return-Path: <SRS0=JZUr=DM=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC309C4363A
-	for <linux-can@archiver.kernel.org>; Mon,  5 Oct 2020 08:13:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B96AC4727E
+	for <linux-can@archiver.kernel.org>; Mon,  5 Oct 2020 08:13:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6562420781
-	for <linux-can@archiver.kernel.org>; Mon,  5 Oct 2020 08:13:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C3DAA20795
+	for <linux-can@archiver.kernel.org>; Mon,  5 Oct 2020 08:13:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgJEINb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 5 Oct 2020 04:13:31 -0400
+        id S1725979AbgJEINZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 5 Oct 2020 04:13:25 -0400
 Received: from relmlor1.renesas.com ([210.160.252.171]:21606 "EHLO
         relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726017AbgJEINb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Oct 2020 04:13:31 -0400
+        by vger.kernel.org with ESMTP id S1725887AbgJEINZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Oct 2020 04:13:25 -0400
 X-IronPort-AV: E=Sophos;i="5.77,338,1596466800"; 
-   d="scan'208";a="58929006"
+   d="scan'208";a="58928994"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 05 Oct 2020 17:13:29 +0900
+  by relmlie5.idc.renesas.com with ESMTP; 05 Oct 2020 17:13:23 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id AF63840061A8;
-        Mon,  5 Oct 2020 17:13:26 +0900 (JST)
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id C01F5400619F;
+        Mon,  5 Oct 2020 17:13:20 +0900 (JST)
 From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -38,49 +37,38 @@ Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
         linux-kernel@vger.kernel.org,
         Prabhakar <prabhakar.csengg@gmail.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [RESEND PATCH v2 2/2] dt-bindings: can: rcar_can: Document r8a774e1 support
-Date:   Mon,  5 Oct 2020 09:13:19 +0100
-Message-Id: <20201005081319.29322-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [RESEND PATCH v2 0/2] dt-bindings: can: document R8A774E1
+Date:   Mon,  5 Oct 2020 09:13:17 +0100
+Message-Id: <20201005081319.29322-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005081319.29322-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20201005081319.29322-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Document SoC specific bindings for RZ/G2H (R8A774E1) SoC.
+Hi All,
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/net/can/rcar_can.txt | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+I am re-sending this patch set as this has been missed previously.
+It is exactly same as [1].
 
-diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-index 85c6551b602a..21d6780874cc 100644
---- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-+++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-@@ -9,6 +9,7 @@ Required properties:
- 	      "renesas,can-r8a774a1" if CAN controller is a part of R8A774A1 SoC.
- 	      "renesas,can-r8a774b1" if CAN controller is a part of R8A774B1 SoC.
- 	      "renesas,can-r8a774c0" if CAN controller is a part of R8A774C0 SoC.
-+	      "renesas,can-r8a774e1" if CAN controller is a part of R8A774E1 SoC.
- 	      "renesas,can-r8a7778" if CAN controller is a part of R8A7778 SoC.
- 	      "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
- 	      "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
-@@ -37,8 +38,8 @@ Required properties:
- - pinctrl-0: pin control group to be used for this controller.
- - pinctrl-names: must be "default".
- 
--Required properties for R8A774A1, R8A774B1, R8A774C0, R8A7795, R8A7796,
--R8A77965, R8A77990, and R8A77995:
-+Required properties for R8A774A1, R8A774B1, R8A774C0, R8A774E1, R8A7795,
-+R8A7796, R8A77965, R8A77990, and R8A77995:
- For the denoted SoCs, "clkp2" can be CANFD clock. This is a div6 clock and can
- be used by both CAN and CAN FD controller at the same time. It needs to be
- scaled to maximum frequency if any of these controllers use it. This is done
+DT maintainers have already acked the patches.
+
+[1] https://www.spinics.net/lists/netdev/msg679244.html
+
+Cheers,
+Prabhakar
+
+Changes for v2:
+* Added R8A774E1 to the list of SoCs that can use CANFD through "clkp2".
+* Added R8A774E1 to the list of SoCs that can use the CANFD clock
+
+Lad Prabhakar (2):
+  dt-bindings: can: rcar_canfd: Document r8a774e1 support
+  dt-bindings: can: rcar_can: Document r8a774e1 support
+
+ Documentation/devicetree/bindings/net/can/rcar_can.txt   | 5 +++--
+ Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
 -- 
 2.17.1
 
