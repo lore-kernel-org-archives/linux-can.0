@@ -7,36 +7,38 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7952C4727E
-	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12A12C4741F
+	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A8F3320870
-	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C350A20866
+	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727310AbgJFUhw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 6 Oct 2020 16:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
+        id S1727312AbgJFUhy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 6 Oct 2020 16:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgJFUhw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Oct 2020 16:37:52 -0400
+        with ESMTP id S1727303AbgJFUhy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Oct 2020 16:37:54 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0ECC061755
-        for <linux-can@vger.kernel.org>; Tue,  6 Oct 2020 13:37:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F5FC061755
+        for <linux-can@vger.kernel.org>; Tue,  6 Oct 2020 13:37:53 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kPtiY-0002n3-Hx; Tue, 06 Oct 2020 22:37:50 +0200
+        id 1kPtia-0002n3-3D; Tue, 06 Oct 2020 22:37:52 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 02/17] can: softing: softing_card_shutdown(): add  braces around empty body in an 'if' statement
-Date:   Tue,  6 Oct 2020 22:37:33 +0200
-Message-Id: <20201006203748.1750156-3-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 05/17] can: raw: add missing error queue support
+Date:   Tue,  6 Oct 2020 22:37:36 +0200
+Message-Id: <20201006203748.1750156-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201006203748.1750156-1-mkl@pengutronix.de>
 References: <20201006203748.1750156-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -46,31 +48,58 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the following warning when building the kernel with "W=1":
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-    warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
+Error queue are not yet implemented in CAN-raw sockets.
 
-Fixes: 03fd3cf5a179 ("can: add driver for Softing card")
+The problem: a userland call to recvmsg(soc, msg, MSG_ERRQUEUE) on a
+CAN-raw socket would unqueue messages from the normal queue without
+any kind of error or warning. As such, it prevented CAN drivers from
+using the functionalities that relies on the error queue such as
+skb_tx_timestamp().
+
+SCM_CAN_RAW_ERRQUEUE is defined as the type for the CAN raw error
+queue. SCM stands for "Socket control messages". The name is inspired
+from SCM_J1939_ERRQUEUE of include/uapi/linux/can/j1939.h.
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/r/20200926162527.270030-1-mailhol.vincent@wanadoo.fr
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/softing/softing_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/uapi/linux/can/raw.h | 3 +++
+ net/can/raw.c                | 4 ++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index 11b0f3bcfe80..9d2faaa39ce4 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -447,8 +447,9 @@ static void softing_card_shutdown(struct softing *card)
- {
- 	int fw_up = 0;
+diff --git a/include/uapi/linux/can/raw.h b/include/uapi/linux/can/raw.h
+index 6a11d308eb5c..3386aa81fdf2 100644
+--- a/include/uapi/linux/can/raw.h
++++ b/include/uapi/linux/can/raw.h
+@@ -49,6 +49,9 @@
+ #include <linux/can.h>
  
--	if (mutex_lock_interruptible(&card->fw.lock))
-+	if (mutex_lock_interruptible(&card->fw.lock)) {
- 		/* return -ERESTARTSYS */;
-+	}
- 	fw_up = card->fw.up;
- 	card->fw.up = 0;
+ #define SOL_CAN_RAW (SOL_CAN_BASE + CAN_RAW)
++enum {
++	SCM_CAN_RAW_ERRQUEUE = 1,
++};
  
+ /* for socket options affecting the socket (not the global system) */
+ 
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 24db4b4afdc7..ea70850f9152 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -804,6 +804,10 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	noblock = flags & MSG_DONTWAIT;
+ 	flags &= ~MSG_DONTWAIT;
+ 
++	if (flags & MSG_ERRQUEUE)
++		return sock_recv_errqueue(sk, msg, size,
++					  SOL_CAN_RAW, SCM_CAN_RAW_ERRQUEUE);
++
+ 	skb = skb_recv_datagram(sk, flags, noblock, &err);
+ 	if (!skb)
+ 		return err;
 -- 
 2.28.0
 
