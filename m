@@ -7,31 +7,32 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1657BC41604
-	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C7D5C4727F
+	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D70D720866
-	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 014D620866
+	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727291AbgJFUhw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 6 Oct 2020 16:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
+        id S1727311AbgJFUhx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 6 Oct 2020 16:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgJFUhw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Oct 2020 16:37:52 -0400
+        with ESMTP id S1727303AbgJFUhx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Oct 2020 16:37:53 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414C2C061755
-        for <linux-can@vger.kernel.org>; Tue,  6 Oct 2020 13:37:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57773C061755
+        for <linux-can@vger.kernel.org>; Tue,  6 Oct 2020 13:37:53 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kPtiY-0002n3-8Q; Tue, 06 Oct 2020 22:37:50 +0200
+        id 1kPtiZ-0002n3-ER; Tue, 06 Oct 2020 22:37:51 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 01/17] can: af_can: can_rcv_list_find(): fix kernel doc after variable renaming
-Date:   Tue,  6 Oct 2020 22:37:32 +0200
-Message-Id: <20201006203748.1750156-2-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 04/17] MAINTAINERS: adjust to mcp251xfd file renaming
+Date:   Tue,  6 Oct 2020 22:37:35 +0200
+Message-Id: <20201006203748.1750156-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201006203748.1750156-1-mkl@pengutronix.de>
 References: <20201006203748.1750156-1-mkl@pengutronix.de>
@@ -45,31 +46,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the kernel doc for can_rcv_list_find() which was broken in commit:
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-    3ee6d2bebef8 ("can: af_can: rename find_rcv_list() to can_rcv_list_find()")
+Commit 27cf93863cbc ("MAINTAINERS: Add entry for Microchip MCP25XXFD
+SPI-CAN network driver"), added the MCP25XXFD SPI-CAN NETWORK DRIVER
+section with the following two file entries:
 
-while renaming a variable, but forgetting to rename the kernel doc, too.
+F:      Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+F:      drivers/net/can/spi/mcp25xxfd/
 
-Fixes: 3ee6d2bebef8 ("can: af_can: rename find_rcv_list() to can_rcv_list_find()")
+Commit 1f0e21a0c065 ("can: mcp251xfd: rename driver files and subdir to
+mcp251xfd") renamed the files from mcp25xxfd to mcp251xfd, but missed to
+adjust the MAINTAINERS section.
+
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+
+  warning: no file matches    F: \
+      Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+  warning: no file matches    F:    drivers/net/can/spi/mcp25xxfd/
+
+Adjust the MCP251XFD SPI-CAN NETWORK DRIVER section to this driver file
+renaming.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Link: https://lore.kernel.org/r/20201003075500.12477-1-lukas.bulwahn@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/af_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ MAINTAINERS | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index ea29a6d97ef5..b7d0f6500893 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -338,7 +338,7 @@ static unsigned int effhash(canid_t can_id)
-  * can_rcv_list_find - determine optimal filterlist inside device filter struct
-  * @can_id: pointer to CAN identifier of a given can_filter
-  * @mask: pointer to CAN mask of a given can_filter
-- * @d: pointer to the device filter struct
-+ * @dev_rcv_lists: pointer to the device filter struct
-  *
-  * Description:
-  *  Returns the optimal filterlist to reduce the filter handling in the
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 734d4dc61084..d651a0934be7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10675,14 +10675,14 @@ L:	linux-input@vger.kernel.org
+ S:	Maintained
+ F:	drivers/hid/hid-mcp2221.c
+ 
+-MCP25XXFD SPI-CAN NETWORK DRIVER
++MCP251XFD SPI-CAN NETWORK DRIVER
+ M:	Marc Kleine-Budde <mkl@pengutronix.de>
+ M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+ R:	Thomas Kopp <thomas.kopp@microchip.com>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
+-F:	drivers/net/can/spi/mcp25xxfd/
++F:	Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
++F:	drivers/net/can/spi/mcp251xfd/
+ 
+ MCP4018 AND MCP4531 MICROCHIP DIGITAL POTENTIOMETER DRIVERS
+ M:	Peter Rosin <peda@axentia.se>
 -- 
 2.28.0
 
