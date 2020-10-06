@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D4A9C3279D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7952C4727E
 	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 586C520866
+	by mail.kernel.org (Postfix) with ESMTP id A8F3320870
 	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726012AbgJFUhx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 6 Oct 2020 16:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
+        id S1727310AbgJFUhw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 6 Oct 2020 16:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727303AbgJFUhw (ORCPT
+        with ESMTP id S1726012AbgJFUhw (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 6 Oct 2020 16:37:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4C6C0613D2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0ECC061755
         for <linux-can@vger.kernel.org>; Tue,  6 Oct 2020 13:37:52 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kPtiY-0002n3-RU; Tue, 06 Oct 2020 22:37:50 +0200
+        id 1kPtiY-0002n3-Hx; Tue, 06 Oct 2020 22:37:50 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/17] can: c_can: reg_map_{c,d}_can: mark as __maybe_unused
-Date:   Tue,  6 Oct 2020 22:37:34 +0200
-Message-Id: <20201006203748.1750156-4-mkl@pengutronix.de>
+Subject: [PATCH 02/17] can: softing: softing_card_shutdown(): add  braces around empty body in an 'if' statement
+Date:   Tue,  6 Oct 2020 22:37:33 +0200
+Message-Id: <20201006203748.1750156-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201006203748.1750156-1-mkl@pengutronix.de>
 References: <20201006203748.1750156-1-mkl@pengutronix.de>
@@ -46,43 +46,31 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch marks the arrays reg_map_c_can and reg_map_d_can as __maybe_unused,
-as they are indeed unused in the c_can driver. This warning shows up, when
-compiling the kernel with "W=1":
+This patch fixes the following warning when building the kernel with "W=1":
 
-    drivers/net/can/c_can/c_can.c:45:
-    drivers/net/can/c_can/c_can.h:124:18: warning: ‘reg_map_d_can’ defined but not used [-Wunused-const-variable=]
-    drivers/net/can/c_can/c_can.h:84:18: warning: ‘reg_map_c_can’ defined but not used [-Wunused-const-variable=]
+    warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
 
-Fixes: 33f810097769 ("can: c_can: Move overlay structure to array with offset as index")
-Fixes: 69927fccd96b ("can: c_can: Add support for Bosch D_CAN controller")
+Fixes: 03fd3cf5a179 ("can: add driver for Softing card")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/softing/softing_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index d5567a7c1c6d..92213d3d96eb 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -81,7 +81,7 @@ enum reg {
- 	C_CAN_FUNCTION_REG,
- };
+diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
+index 11b0f3bcfe80..9d2faaa39ce4 100644
+--- a/drivers/net/can/softing/softing_main.c
++++ b/drivers/net/can/softing/softing_main.c
+@@ -447,8 +447,9 @@ static void softing_card_shutdown(struct softing *card)
+ {
+ 	int fw_up = 0;
  
--static const u16 reg_map_c_can[] = {
-+static const u16 __maybe_unused reg_map_c_can[] = {
- 	[C_CAN_CTRL_REG]	= 0x00,
- 	[C_CAN_STS_REG]		= 0x02,
- 	[C_CAN_ERR_CNT_REG]	= 0x04,
-@@ -121,7 +121,7 @@ static const u16 reg_map_c_can[] = {
- 	[C_CAN_MSGVAL2_REG]	= 0xB2,
- };
+-	if (mutex_lock_interruptible(&card->fw.lock))
++	if (mutex_lock_interruptible(&card->fw.lock)) {
+ 		/* return -ERESTARTSYS */;
++	}
+ 	fw_up = card->fw.up;
+ 	card->fw.up = 0;
  
--static const u16 reg_map_d_can[] = {
-+static const u16 __maybe_unused reg_map_d_can[] = {
- 	[C_CAN_CTRL_REG]	= 0x00,
- 	[C_CAN_CTRL_EX_REG]	= 0x02,
- 	[C_CAN_STS_REG]		= 0x04,
 -- 
 2.28.0
 
