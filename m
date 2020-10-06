@@ -7,32 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA843C4727E
-	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E1D0C47425
+	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:38:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7248320870
-	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D5DA420866
+	for <linux-can@archiver.kernel.org>; Tue,  6 Oct 2020 20:37:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727316AbgJFUh6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 6 Oct 2020 16:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        id S1727321AbgJFUh7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 6 Oct 2020 16:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727317AbgJFUh5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Oct 2020 16:37:57 -0400
+        with ESMTP id S1727317AbgJFUh7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Oct 2020 16:37:59 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A7CC0613D2
-        for <linux-can@vger.kernel.org>; Tue,  6 Oct 2020 13:37:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF922C061755
+        for <linux-can@vger.kernel.org>; Tue,  6 Oct 2020 13:37:58 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kPtid-0002n3-Ie; Tue, 06 Oct 2020 22:37:55 +0200
+        id 1kPtie-0002n3-Sg; Tue, 06 Oct 2020 22:37:56 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Michael Walle <michael@walle.cc>,
+Cc:     kernel@pengutronix.de, Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 12/17] dt-bindings: can: flexcan: list supported processors
-Date:   Tue,  6 Oct 2020 22:37:43 +0200
-Message-Id: <20201006203748.1750156-13-mkl@pengutronix.de>
+Subject: [PATCH 15/17] can: xilinx_can: Limit CANFD brp to 2
+Date:   Tue,  6 Oct 2020 22:37:46 +0200
+Message-Id: <20201006203748.1750156-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201006203748.1750156-1-mkl@pengutronix.de>
 References: <20201006203748.1750156-1-mkl@pengutronix.de>
@@ -46,35 +47,41 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-The compatible is a pattern match. Explicitly list all possible values.
-Also mention that the ls1028ar1 must be followed by lx2160ar1.
+Bit enlarging is observed for CANFD2.0 when brp is 1,
+So change brp_min value to 2.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
-Link: https://lore.kernel.org/r/20201001091131.30514-2-michael@walle.cc
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Link: https://lore.kernel.org/r/bca871d7f3ca9c653d50e63c5b60028f2bdf3fb0.1600073396.git.michal.simek@xilinx.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/can/xilinx_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-index 94c0f8bf4deb..c6152dc2d2d0 100644
---- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-+++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-@@ -4,6 +4,12 @@ Required properties:
- 
- - compatible : Should be "fsl,<processor>-flexcan"
- 
-+  where <processor> is imx8qm, imx6q, imx28, imx53, imx35, imx25, p1010,
-+  vf610, ls1021ar2, lx2160ar1, ls1028ar1.
-+
-+  The ls1028ar1 must be followed by lx2160ar1, e.g.
-+   - "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-flexcan"
-+
-   An implementation should also claim any of the following compatibles
-   that it is fully backwards compatible with:
- 
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 7ae268468d2c..d3c41e6c275d 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -259,7 +259,7 @@ static const struct can_bittiming_const xcan_bittiming_const_canfd2 = {
+ 	.tseg2_min = 1,
+ 	.tseg2_max = 128,
+ 	.sjw_max = 128,
+-	.brp_min = 1,
++	.brp_min = 2,
+ 	.brp_max = 256,
+ 	.brp_inc = 1,
+ };
+@@ -272,7 +272,7 @@ static struct can_bittiming_const xcan_data_bittiming_const_canfd2 = {
+ 	.tseg2_min = 1,
+ 	.tseg2_max = 16,
+ 	.sjw_max = 16,
+-	.brp_min = 1,
++	.brp_min = 2,
+ 	.brp_max = 256,
+ 	.brp_inc = 1,
+ };
 -- 
 2.28.0
 
