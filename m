@@ -2,188 +2,76 @@ Return-Path: <SRS0=tH2h=DO=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24A68C4363C
-	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:08:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B62BC4363D
+	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CC0B82083B
-	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:08:22 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="UNZXgnIz"
+	by mail.kernel.org (Postfix) with ESMTP id D8B982083B
+	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgJGVIQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 7 Oct 2020 17:08:16 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:60274 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgJGVIP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Oct 2020 17:08:15 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097L4Cs4055252;
-        Wed, 7 Oct 2020 21:08:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=g//sBCYth5gJxNzkzjtOhl9eL1n4LCL9IlTHxw7AMZg=;
- b=UNZXgnIzi1kENr5SkIsW2QCKMIg3z7focUgEv4ZxvrawZJvF5+PCW6GwfrwP7QQ1HXp0
- tnc5qxCoL4pIOFUynN2/VoXNco0ef9+NI36mgWlSP45DfnDXZJOunUW2mUhWuNyyVH9w
- IcukxspqJnomDkETTm5HPcsnyxmxJSZQEhAWWgLx2034/0AkWllw1kcwbIAkAJcJk9OM
- 2Sm+W1eKvnilMroulUBcAqeKQ2+TZw5IW3N8y+Y9g3W8wR+Dvht0TqAdeUOUoE0K2Nip
- OzGnNIX6t82Q0zkp+WEcaMQ0r75KZoFJUq9f7H7ImiqeTWaRGbriPwIuB+S3qQDOmbRq zA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 33xetb4hcn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 07 Oct 2020 21:08:08 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097L6Dxo006327;
-        Wed, 7 Oct 2020 21:08:07 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 33y3802rrj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 07 Oct 2020 21:08:07 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 097L86B6014481;
-        Wed, 7 Oct 2020 21:08:06 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by userp3030.oracle.com with ESMTP id 33y3802rqu-1;
-        Wed, 07 Oct 2020 21:08:06 +0000
-From:   Vijayendra Suman <vijayendra.suman@oracle.com>
-To:     pabeni@redhat.com
-Cc:     a.fatoum@pengutronix.de, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        somasundaram.krishnasamy@oracle.com,
-        ramanan.govindarajan@oracle.com,
-        Vijayendra Suman <vijayendra.suman@oracle.com>
-Subject: Re: [BUG] pfifo_fast may cause out-of-order CAN frame transmission
-Date:   Wed,  7 Oct 2020 14:07:44 -0700
-Message-Id: <20201007210744.8546-1-vijayendra.suman@oracle.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <13e8950e8537e549f6afb6e254ec75a7462ce648.camel@redhat.com>
-References: <13e8950e8537e549f6afb6e254ec75a7462ce648.camel@redhat.com>
+        id S1728675AbgJGVcN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 7 Oct 2020 17:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728618AbgJGVcK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Oct 2020 17:32:10 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D4EC0613D5
+        for <linux-can@vger.kernel.org>; Wed,  7 Oct 2020 14:32:09 -0700 (PDT)
+Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kQH2c-0005qi-8e; Wed, 07 Oct 2020 23:32:06 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 01/17] can: af_can: can_rcv_list_find(): fix kernel doc after variable renaming
+Date:   Wed,  7 Oct 2020 23:31:43 +0200
+Message-Id: <20201007213159.1959308-2-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201007213159.1959308-1-mkl@pengutronix.de>
+References: <20201007213159.1959308-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
- clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 malwarescore=0 suspectscore=3 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070136
+X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-[PATCH] Patch with Network Performance Improvment qperf:tcp_lat
+This patch fixes the kernel doc for can_rcv_list_find() which was broken in commit:
 
-Check Performed for __QDISC_STATE_DEACTIVATED before checking BYPASS flag 
+    3ee6d2bebef8 ("can: af_can: rename find_rcv_list() to can_rcv_list_find()")
 
-qperf tcp_lat 65536bytes over an ib_switch 
+while renaming a variable, but forgetting to rename the kernel doc, too.
 
-For 64K packet Performance improvment is around 47 % and performance deviation 
-is reduced to 5 % which was 27 % prior to this patch.
-
-As mentioned by Paolo, With  "net: dev: introduce support for sch BYPASS for lockless qdisc" commit
-there may be out of order packet issue.
-Is there any update to solve out of order packet issue.
-
-qperf Counters for tcp_lat for 60 sec and packet size 64k
-
-With Below Patch
-1. 53817 
-2. 54100 
-3. 57016 
-4. 59410 
-5. 62017 
-6. 54625 
-7. 55770 
-8. 54015 
-9. 54406 
-10. 53137
-
-Without Patch [Upstream Stream]
-1. 83742 
-2. 107320 
-3. 82807 
-4. 105384 
-5. 77406 
-6. 132665 
-7. 117566 
-8. 109279 
-9. 94959 
-10. 82331 
-11. 91614 
-12. 104701 
-13. 91123 
-14. 93908 
-15. 200485 
-
-With UnRevert of commit 379349e9bc3b42b8b2f8f7a03f64a97623fff323 
-[Revert "net: dev: introduce support for sch BYPASS for lockless qdisc"] 
-
-1. 65550
-2. 64285
-3. 64110
-4. 64300
-5. 64645
-6. 63928
-7. 63574
-8. 65024
-9. 65153
-10. 64281
-
-Signed-off-by: Vijayendra Suman <vijayendra.suman@oracle.com>
+Link: http://lore.kernel.org/r/20201006203748.1750156-2-mkl@pengutronix.de
+Fixes: 3ee6d2bebef8 ("can: af_can: rename find_rcv_list() to can_rcv_list_find()")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/core/dev.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+ net/can/af_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 40bbb5e43f5d..6cc8e0209b20 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3384,35 +3384,27 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
- 				 struct net_device *dev,
- 				 struct netdev_queue *txq)
- {
- 	struct sk_buff *to_free = NULL;
- 	bool contended;
--	int rc;
-+	int rc = NET_XMIT_SUCCESS;
- 
- 	qdisc_calculate_pkt_len(skb, q);
- 
- 	if (q->flags & TCQ_F_NOLOCK) {
--		if ((q->flags & TCQ_F_CAN_BYPASS) && READ_ONCE(q->empty) &&
--		    qdisc_run_begin(q)) {
--			if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED,
--					      &q->state))) {
--				__qdisc_drop(skb, &to_free);
--				rc = NET_XMIT_DROP;
--				goto end_run;
--			}
--			qdisc_bstats_cpu_update(q, skb);
--
--			rc = NET_XMIT_SUCCESS;
-+		if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED, &q->state))) {
-+			__qdisc_drop(skb, &to_free);
-+			rc = NET_XMIT_DROP;
-+		} else if ((q->flags & TCQ_F_CAN_BYPASS) && READ_ONCE(q->empty) &&
-+				qdisc_run_begin(q)) {
-+			qdisc_bstats_update(q, skb);
- 			if (sch_direct_xmit(skb, q, dev, txq, NULL, true))
- 				__qdisc_run(q);
--
--end_run:
- 			qdisc_run_end(q);
- 		} else {
- 			rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
- 			qdisc_run(q);
- 		}
--
- 		if (unlikely(to_free))
- 			kfree_skb_list(to_free);
- 		return rc;
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index ea29a6d97ef5..b7d0f6500893 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -338,7 +338,7 @@ static unsigned int effhash(canid_t can_id)
+  * can_rcv_list_find - determine optimal filterlist inside device filter struct
+  * @can_id: pointer to CAN identifier of a given can_filter
+  * @mask: pointer to CAN mask of a given can_filter
+- * @d: pointer to the device filter struct
++ * @dev_rcv_lists: pointer to the device filter struct
+  *
+  * Description:
+  *  Returns the optimal filterlist to reduce the filter handling in the
 -- 
-2.27.0
+2.28.0
 
