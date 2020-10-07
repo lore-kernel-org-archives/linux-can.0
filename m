@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB648C41604
-	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC18C4727E
+	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9ABAE20882
-	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 922162083B
+	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728661AbgJGVcU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 7 Oct 2020 17:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
+        id S1728752AbgJGVcf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 7 Oct 2020 17:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728654AbgJGVcK (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Oct 2020 17:32:10 -0400
+        with ESMTP id S1728762AbgJGVce (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Oct 2020 17:32:34 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64BCC0613D6
-        for <linux-can@vger.kernel.org>; Wed,  7 Oct 2020 14:32:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05692C0613E0
+        for <linux-can@vger.kernel.org>; Wed,  7 Oct 2020 14:32:22 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kQH2c-0005qi-JY; Wed, 07 Oct 2020 23:32:06 +0200
+        id 1kQH2o-0005qi-GG; Wed, 07 Oct 2020 23:32:18 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 02/17] can: softing: softing_card_shutdown(): add  braces around empty body in an 'if' statement
-Date:   Wed,  7 Oct 2020 23:31:44 +0200
-Message-Id: <20201007213159.1959308-3-mkl@pengutronix.de>
+        kernel@pengutronix.de, Michael Walle <michael@walle.cc>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 12/17] dt-bindings: can: flexcan: list supported processors
+Date:   Wed,  7 Oct 2020 23:31:54 +0200
+Message-Id: <20201007213159.1959308-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201007213159.1959308-1-mkl@pengutronix.de>
 References: <20201007213159.1959308-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -47,31 +47,34 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the following warning when building the kernel with "W=1":
+From: Michael Walle <michael@walle.cc>
 
-    warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
+The compatible is a pattern match. Explicitly list all possible values.
+Also mention that the ls1028ar1 must be followed by lx2160ar1.
 
-Link: http://lore.kernel.org/r/20201006203748.1750156-3-mkl@pengutronix.de
-Fixes: 03fd3cf5a179 ("can: add driver for Softing card")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Link: https://lore.kernel.org/r/20201001091131.30514-2-michael@walle.cc
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/softing/softing_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index 11b0f3bcfe80..9d2faaa39ce4 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -447,8 +447,9 @@ static void softing_card_shutdown(struct softing *card)
- {
- 	int fw_up = 0;
+diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+index 94c0f8bf4deb..c6152dc2d2d0 100644
+--- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
++++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+@@ -4,6 +4,12 @@ Required properties:
  
--	if (mutex_lock_interruptible(&card->fw.lock))
-+	if (mutex_lock_interruptible(&card->fw.lock)) {
- 		/* return -ERESTARTSYS */;
-+	}
- 	fw_up = card->fw.up;
- 	card->fw.up = 0;
+ - compatible : Should be "fsl,<processor>-flexcan"
+ 
++  where <processor> is imx8qm, imx6q, imx28, imx53, imx35, imx25, p1010,
++  vf610, ls1021ar2, lx2160ar1, ls1028ar1.
++
++  The ls1028ar1 must be followed by lx2160ar1, e.g.
++   - "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-flexcan"
++
+   An implementation should also claim any of the following compatibles
+   that it is fully backwards compatible with:
  
 -- 
 2.28.0
