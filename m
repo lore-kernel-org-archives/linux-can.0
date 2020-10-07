@@ -4,42 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFCA6C4727E
-	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0314C47423
+	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9702B2083B
-	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6AA7E215A4
+	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:32:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728687AbgJGVcN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 7 Oct 2020 17:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
+        id S1728719AbgJGVcU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 7 Oct 2020 17:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728669AbgJGVcM (ORCPT
+        with ESMTP id S1728661AbgJGVcM (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 7 Oct 2020 17:32:12 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BB4C0613DD
-        for <linux-can@vger.kernel.org>; Wed,  7 Oct 2020 14:32:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D378C0613D7
+        for <linux-can@vger.kernel.org>; Wed,  7 Oct 2020 14:32:10 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kQH2f-0005qi-8z; Wed, 07 Oct 2020 23:32:09 +0200
+        id 1kQH2c-0005qi-UT; Wed, 07 Oct 2020 23:32:07 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 05/17] can: raw: add missing error queue support
-Date:   Wed,  7 Oct 2020 23:31:47 +0200
-Message-Id: <20201007213159.1959308-6-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 03/17] can: c_can: reg_map_{c,d}_can: mark as __maybe_unused
+Date:   Wed,  7 Oct 2020 23:31:45 +0200
+Message-Id: <20201007213159.1959308-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201007213159.1959308-1-mkl@pengutronix.de>
 References: <20201007213159.1959308-1-mkl@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -49,58 +47,44 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+This patch marks the arrays reg_map_c_can and reg_map_d_can as __maybe_unused,
+as they are indeed unused in the c_can driver. This warning shows up, when
+compiling the kernel with "W=1":
 
-Error queue are not yet implemented in CAN-raw sockets.
+    drivers/net/can/c_can/c_can.c:45:
+    drivers/net/can/c_can/c_can.h:124:18: warning: ‘reg_map_d_can’ defined but not used [-Wunused-const-variable=]
+    drivers/net/can/c_can/c_can.h:84:18: warning: ‘reg_map_c_can’ defined but not used [-Wunused-const-variable=]
 
-The problem: a userland call to recvmsg(soc, msg, MSG_ERRQUEUE) on a
-CAN-raw socket would unqueue messages from the normal queue without
-any kind of error or warning. As such, it prevented CAN drivers from
-using the functionalities that relies on the error queue such as
-skb_tx_timestamp().
-
-SCM_CAN_RAW_ERRQUEUE is defined as the type for the CAN raw error
-queue. SCM stands for "Socket control messages". The name is inspired
-from SCM_J1939_ERRQUEUE of include/uapi/linux/can/j1939.h.
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/r/20200926162527.270030-1-mailhol.vincent@wanadoo.fr
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: http://lore.kernel.org/r/20201006203748.1750156-4-mkl@pengutronix.de
+Fixes: 33f810097769 ("can: c_can: Move overlay structure to array with offset as index")
+Fixes: 69927fccd96b ("can: c_can: Add support for Bosch D_CAN controller")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/uapi/linux/can/raw.h | 3 +++
- net/can/raw.c                | 4 ++++
- 2 files changed, 7 insertions(+)
+ drivers/net/can/c_can/c_can.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/can/raw.h b/include/uapi/linux/can/raw.h
-index 6a11d308eb5c..3386aa81fdf2 100644
---- a/include/uapi/linux/can/raw.h
-+++ b/include/uapi/linux/can/raw.h
-@@ -49,6 +49,9 @@
- #include <linux/can.h>
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index d5567a7c1c6d..92213d3d96eb 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -81,7 +81,7 @@ enum reg {
+ 	C_CAN_FUNCTION_REG,
+ };
  
- #define SOL_CAN_RAW (SOL_CAN_BASE + CAN_RAW)
-+enum {
-+	SCM_CAN_RAW_ERRQUEUE = 1,
-+};
+-static const u16 reg_map_c_can[] = {
++static const u16 __maybe_unused reg_map_c_can[] = {
+ 	[C_CAN_CTRL_REG]	= 0x00,
+ 	[C_CAN_STS_REG]		= 0x02,
+ 	[C_CAN_ERR_CNT_REG]	= 0x04,
+@@ -121,7 +121,7 @@ static const u16 reg_map_c_can[] = {
+ 	[C_CAN_MSGVAL2_REG]	= 0xB2,
+ };
  
- /* for socket options affecting the socket (not the global system) */
- 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 24db4b4afdc7..ea70850f9152 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -804,6 +804,10 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	noblock = flags & MSG_DONTWAIT;
- 	flags &= ~MSG_DONTWAIT;
- 
-+	if (flags & MSG_ERRQUEUE)
-+		return sock_recv_errqueue(sk, msg, size,
-+					  SOL_CAN_RAW, SCM_CAN_RAW_ERRQUEUE);
-+
- 	skb = skb_recv_datagram(sk, flags, noblock, &err);
- 	if (!skb)
- 		return err;
+-static const u16 reg_map_d_can[] = {
++static const u16 __maybe_unused reg_map_d_can[] = {
+ 	[C_CAN_CTRL_REG]	= 0x00,
+ 	[C_CAN_CTRL_EX_REG]	= 0x02,
+ 	[C_CAN_STS_REG]		= 0x04,
 -- 
 2.28.0
 
