@@ -2,91 +2,188 @@ Return-Path: <SRS0=tH2h=DO=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2C67C41604
-	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 15:56:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24A68C4363C
+	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:08:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 54AC120789
-	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 15:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1602086180;
-	bh=x9LPOP5V4mCsgx97wjgde+uwj929SoDya5DWIMZRQFE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=Taa3EI/RmERrASxQHovLupjYn89pl8yhhCgHF+5pfFundbevN4FtiUlNrB3XNFlK0
-	 OtFxWyjaRTuGj87gcx9wzzsTOTyHlWmvgIQkHy6OYqfl5BJLGTLGsyRHqd4BiLES45
-	 s+/DSnv3Zv2whoswtzH68OCCajbXrFoprbB40kpQ=
+	by mail.kernel.org (Postfix) with ESMTP id CC0B82083B
+	for <linux-can@archiver.kernel.org>; Wed,  7 Oct 2020 21:08:22 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="UNZXgnIz"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgJGP4N (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 7 Oct 2020 11:56:13 -0400
-Received: from mail-oo1-f68.google.com ([209.85.161.68]:41156 "EHLO
-        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgJGP4N (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Oct 2020 11:56:13 -0400
-Received: by mail-oo1-f68.google.com with SMTP id t3so732693ook.8;
-        Wed, 07 Oct 2020 08:56:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xccrMEUqeLhrUSMAgwJzJvAU/EAB747BnNFSuvETB+0=;
-        b=XyBhFQGce+4z/CPek+vNkV/5+1ouNtgqUduoJBl4Y5b7b9qkhhe1r0B4qxsCTjXve2
-         +Hol51ZIjME1DlZjTuhw0m76gwOXGi0RD0NwtMsvvTX/JXgDck2khlyn+MpOX0j0zR9N
-         weH8Giv8W4FOhyPVDE00elr8Mx7xVmcdU882goNCVo6XGKSGkMxB7Wg8vh5mgQyYuDJc
-         IFuGMV/WaIwXY7Opd9LAlYuEDzhbRS4HXrZKE4hNYBQWC7UZeXdlQ42MD79AiHM8T6fX
-         EbYYvmiEgs4ujZ5qgcRwanLHsye0Jd43VpNGdjjbFCgHqObqEszAmp0+oHUlbCj6hQak
-         lXLQ==
-X-Gm-Message-State: AOAM530FOhybP3q9HK0/EioOPufdbWqPgJ6iCXk9NS4Q/xZdXtlGjTMt
-        LGJK7pY5db/0fx9Bpq82UB8Lm1Tns0JG
-X-Google-Smtp-Source: ABdhPJxM3G7xX4GSVbLmCasn14tnEyqaxlGzZp22Q6pdA6mc75F9vuXrdSGu3Nwi8Xhf69zO9lb45A==
-X-Received: by 2002:a4a:bc92:: with SMTP id m18mr2534952oop.39.1602086172914;
-        Wed, 07 Oct 2020 08:56:12 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o9sm2472536oop.1.2020.10.07.08.56.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 08:56:12 -0700 (PDT)
-Received: (nullmailer pid 292162 invoked by uid 1000);
-        Wed, 07 Oct 2020 15:56:11 -0000
-Date:   Wed, 7 Oct 2020 10:56:11 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     kernel@pengutronix.de, devicetree <devicetree@vger.kernel.org>,
-        linux-can@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: Re: [PATCH 13/17] dt-bindings: can: flexcan: remove ack_grp and
- ack_bit from fsl,stop-mode
-Message-ID: <20201007155611.GA292110@bogus>
-References: <20201006203748.1750156-1-mkl@pengutronix.de>
- <20201006203748.1750156-14-mkl@pengutronix.de>
+        id S1726434AbgJGVIQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 7 Oct 2020 17:08:16 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:60274 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJGVIP (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Oct 2020 17:08:15 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097L4Cs4055252;
+        Wed, 7 Oct 2020 21:08:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=g//sBCYth5gJxNzkzjtOhl9eL1n4LCL9IlTHxw7AMZg=;
+ b=UNZXgnIzi1kENr5SkIsW2QCKMIg3z7focUgEv4ZxvrawZJvF5+PCW6GwfrwP7QQ1HXp0
+ tnc5qxCoL4pIOFUynN2/VoXNco0ef9+NI36mgWlSP45DfnDXZJOunUW2mUhWuNyyVH9w
+ IcukxspqJnomDkETTm5HPcsnyxmxJSZQEhAWWgLx2034/0AkWllw1kcwbIAkAJcJk9OM
+ 2Sm+W1eKvnilMroulUBcAqeKQ2+TZw5IW3N8y+Y9g3W8wR+Dvht0TqAdeUOUoE0K2Nip
+ OzGnNIX6t82Q0zkp+WEcaMQ0r75KZoFJUq9f7H7ImiqeTWaRGbriPwIuB+S3qQDOmbRq zA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 33xetb4hcn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 21:08:08 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097L6Dxo006327;
+        Wed, 7 Oct 2020 21:08:07 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 33y3802rrj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 21:08:07 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 097L86B6014481;
+        Wed, 7 Oct 2020 21:08:06 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
+        by userp3030.oracle.com with ESMTP id 33y3802rqu-1;
+        Wed, 07 Oct 2020 21:08:06 +0000
+From:   Vijayendra Suman <vijayendra.suman@oracle.com>
+To:     pabeni@redhat.com
+Cc:     a.fatoum@pengutronix.de, kernel@pengutronix.de,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        somasundaram.krishnasamy@oracle.com,
+        ramanan.govindarajan@oracle.com,
+        Vijayendra Suman <vijayendra.suman@oracle.com>
+Subject: Re: [BUG] pfifo_fast may cause out-of-order CAN frame transmission
+Date:   Wed,  7 Oct 2020 14:07:44 -0700
+Message-Id: <20201007210744.8546-1-vijayendra.suman@oracle.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <13e8950e8537e549f6afb6e254ec75a7462ce648.camel@redhat.com>
+References: <13e8950e8537e549f6afb6e254ec75a7462ce648.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006203748.1750156-14-mkl@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=3 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070136
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue, 06 Oct 2020 22:37:44 +0200, Marc Kleine-Budde wrote:
-> Since commit:
-> 
->     048e3a34a2e7 can: flexcan: poll MCR_LPM_ACK instead of GPR ACK for stop mode acknowledgment
-> 
-> the driver polls the IP core's internal bit MCR[LPM_ACK] as stop mode
-> acknowledge and not the acknowledgment on chip level.
-> 
-> This means the 4th and 5th value of the property "fsl,stop-mode" isn't used
-> anymore. It will be removed from the driver in the next patch, so remove it
-> from the binding documentation.
-> 
-> Fixes: 048e3a34a2e7 ("can: flexcan: poll MCR_LPM_ACK instead of GPR ACK for stop mode acknowledgment")
-> Cc: devicetree <devicetree@vger.kernel.org>
-> Cc: Joakim Zhang <qiangqing.zhang@nxp.com>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
+[PATCH] Patch with Network Performance Improvment qperf:tcp_lat
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Check Performed for __QDISC_STATE_DEACTIVATED before checking BYPASS flag 
+
+qperf tcp_lat 65536bytes over an ib_switch 
+
+For 64K packet Performance improvment is around 47 % and performance deviation 
+is reduced to 5 % which was 27 % prior to this patch.
+
+As mentioned by Paolo, With  "net: dev: introduce support for sch BYPASS for lockless qdisc" commit
+there may be out of order packet issue.
+Is there any update to solve out of order packet issue.
+
+qperf Counters for tcp_lat for 60 sec and packet size 64k
+
+With Below Patch
+1. 53817 
+2. 54100 
+3. 57016 
+4. 59410 
+5. 62017 
+6. 54625 
+7. 55770 
+8. 54015 
+9. 54406 
+10. 53137
+
+Without Patch [Upstream Stream]
+1. 83742 
+2. 107320 
+3. 82807 
+4. 105384 
+5. 77406 
+6. 132665 
+7. 117566 
+8. 109279 
+9. 94959 
+10. 82331 
+11. 91614 
+12. 104701 
+13. 91123 
+14. 93908 
+15. 200485 
+
+With UnRevert of commit 379349e9bc3b42b8b2f8f7a03f64a97623fff323 
+[Revert "net: dev: introduce support for sch BYPASS for lockless qdisc"] 
+
+1. 65550
+2. 64285
+3. 64110
+4. 64300
+5. 64645
+6. 63928
+7. 63574
+8. 65024
+9. 65153
+10. 64281
+
+Signed-off-by: Vijayendra Suman <vijayendra.suman@oracle.com>
+---
+ net/core/dev.c | 27 ++++++++++-----------------
+ 1 file changed, 10 insertions(+), 17 deletions(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 40bbb5e43f5d..6cc8e0209b20 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3384,35 +3384,27 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
+ 				 struct net_device *dev,
+ 				 struct netdev_queue *txq)
+ {
+ 	struct sk_buff *to_free = NULL;
+ 	bool contended;
+-	int rc;
++	int rc = NET_XMIT_SUCCESS;
+ 
+ 	qdisc_calculate_pkt_len(skb, q);
+ 
+ 	if (q->flags & TCQ_F_NOLOCK) {
+-		if ((q->flags & TCQ_F_CAN_BYPASS) && READ_ONCE(q->empty) &&
+-		    qdisc_run_begin(q)) {
+-			if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED,
+-					      &q->state))) {
+-				__qdisc_drop(skb, &to_free);
+-				rc = NET_XMIT_DROP;
+-				goto end_run;
+-			}
+-			qdisc_bstats_cpu_update(q, skb);
+-
+-			rc = NET_XMIT_SUCCESS;
++		if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED, &q->state))) {
++			__qdisc_drop(skb, &to_free);
++			rc = NET_XMIT_DROP;
++		} else if ((q->flags & TCQ_F_CAN_BYPASS) && READ_ONCE(q->empty) &&
++				qdisc_run_begin(q)) {
++			qdisc_bstats_update(q, skb);
+ 			if (sch_direct_xmit(skb, q, dev, txq, NULL, true))
+ 				__qdisc_run(q);
+-
+-end_run:
+ 			qdisc_run_end(q);
+ 		} else {
+ 			rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
+ 			qdisc_run(q);
+ 		}
+-
+ 		if (unlikely(to_free))
+ 			kfree_skb_list(to_free);
+ 		return rc;
+-- 
+2.27.0
+
