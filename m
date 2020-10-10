@@ -2,99 +2,152 @@ Return-Path: <SRS0=E+hu=DR=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F31D7C352B9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05B61C2D0A4
 	for <linux-can@archiver.kernel.org>; Sat, 10 Oct 2020 23:09:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BFC062075E
-	for <linux-can@archiver.kernel.org>; Sat, 10 Oct 2020 23:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1602371383;
-	bh=c+6LMXEZzk1A7ncH7/sCGuE4n/FGZyKgDHsr3FeDQJM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=y+dZGSK3jvtA4xvzX5OhsA8/ZnOa1vJhl4mH4SVWwEjfCy1XeZmU28ugucGCRuUoo
-	 MW2H3ssrBLyMfOQURDaW5fIPI0r1ojPOzJPyI4VwkXce88de1xnFL8dUzkxJJpsyrh
-	 fHzO2+O4I+0SAB8PxGTG5tYd+5uRltIu+vMS2KX8=
+	by mail.kernel.org (Postfix) with ESMTP id C039F2075E
+	for <linux-can@archiver.kernel.org>; Sat, 10 Oct 2020 23:09:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390168AbgJJW4q (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 10 Oct 2020 18:56:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731435AbgJJTWZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:22:25 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99FC12237B;
-        Sat, 10 Oct 2020 15:44:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602344662;
-        bh=c+6LMXEZzk1A7ncH7/sCGuE4n/FGZyKgDHsr3FeDQJM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uE2WZWZ9o8F3vVGsdME6aFIsv4ylgXRKPxBisANoo3GaXljeSsDeWqMoPM1recgTu
-         7fhouVQI4iIYJvq0oBzjo7l6uK5rSqvNizYYUrTaclRlYjJFU9nsaFcWg94Ssu4iPs
-         XYcbwa5PTVW4dBjRDu1EeKZQygJ3DwZbMeGuXKXQ=
-Date:   Sat, 10 Oct 2020 08:44:21 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org,
-        davem@davemloft.net, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH 08/17] can: add ISO 15765-2:2016 transport protocol
-Message-ID: <20201010084421.308645a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <bcebf26e-3cfb-c7aa-e7fc-4faa744b9c2f@hartkopp.net>
-References: <20201007213159.1959308-1-mkl@pengutronix.de>
-        <20201007213159.1959308-9-mkl@pengutronix.de>
-        <20201009175751.5c54097f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <bcebf26e-3cfb-c7aa-e7fc-4faa744b9c2f@hartkopp.net>
+        id S2390181AbgJJW4r (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 10 Oct 2020 18:56:47 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:20598 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388184AbgJJUt7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 10 Oct 2020 16:49:59 -0400
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0lu8GW2/7Zq6MBXY="
+X-RZG-CLASS-ID: mo00
+Received: from silver.lan
+        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
+        with ESMTPSA id D0b41cw9AKnbMGS
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sat, 10 Oct 2020 22:49:37 +0200 (CEST)
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+To:     kuba@kernel.org, netdev@vger.kernel.org
+Cc:     mkl@pengutronix.de, davem@davemloft.net, linux-can@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH net-next 1/2] can-isotp: implement cleanups / improvements from review
+Date:   Sat, 10 Oct 2020 22:49:08 +0200
+Message-Id: <20201010204909.2059-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Sat, 10 Oct 2020 16:29:06 +0200 Oliver Hartkopp wrote:
-> >> diff --git a/net/can/Kconfig b/net/can/Kconfig
-> >> index 25436a715db3..021fe03a8ed6 100644
-> >> --- a/net/can/Kconfig
-> >> +++ b/net/can/Kconfig
-> >> @@ -55,6 +55,19 @@ config CAN_GW
-> >>   
-> >>   source "net/can/j1939/Kconfig"
-> >>   
-> >> +config CAN_ISOTP
-> >> +	tristate "ISO 15765-2:2016 CAN transport protocol"
-> >> +	default y  
-> > 
-> > default should not be y unless there is a very good reason.
-> > I don't see such reason here. This is new functionality, users
-> > can enable it if they need it.
-> 
-> Yes. I agree. But there is a good reason for it.
-> The ISO 15765-2 protocol is used for vehicle diagnosis and is a *very* 
-> common CAN bus use case.
+As pointed out by Jakub Kicinski here:
+https://marc.info/?l=linux-can&m=160229286216008
+this patch addresses the remarked issues:
 
-More common than j1939? (Google uses words like 'widely used' and
-'common' :)) To give you some perspective we don't enable Ethernet 
-vlan support by default, vlans are pretty common, too.
+- remove empty lines in comment
+- remove default=y for CAN_ISOTP in Kconfig
+- make use of pr_notice_once()
+- use GFP_KERNEL instead of gfp_any() in soft hrtimer context
 
-> The config item only shows up when CONFIG_CAN is selected and then ISO 
-> 15765-2 should be enabled too. I have implemented and maintained the 
-> out-of-tree driver for ~12 years now and the people have real problems 
-> using e.g. Ubuntu with signed kernel modules when they need this protocol.
-> 
-> Therefore the option should default to 'y' to make sure the common 
-> distros (that enable CONFIG_CAN) enable ISO-TP too.
+The version strings in the CAN subsystem are removed by a separate patch.
 
-I understand the motivation, but Linus had pushed back on defaulting to
-'y' many times over the years, please read this:
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/uapi/linux/can/isotp.h |  4 +---
+ net/can/Kconfig                |  3 ++-
+ net/can/isotp.c                | 14 +++++++-------
+ 3 files changed, 10 insertions(+), 11 deletions(-)
 
-https://lkml.org/lkml/2012/1/6/354
+diff --git a/include/uapi/linux/can/isotp.h b/include/uapi/linux/can/isotp.h
+index 553006509f4e..accf0efa46f4 100644
+--- a/include/uapi/linux/can/isotp.h
++++ b/include/uapi/linux/can/isotp.h
+@@ -151,8 +151,7 @@ struct can_isotp_ll_options {
+ #define CAN_ISOTP_DEFAULT_LL_TX_DL	CAN_MAX_DLEN
+ #define CAN_ISOTP_DEFAULT_LL_TX_FLAGS	0
+ 
+-/*
+- * Remark on CAN_ISOTP_DEFAULT_RECV_* values:
++/* Remark on CAN_ISOTP_DEFAULT_RECV_* values:
+  *
+  * We can strongly assume, that the Linux Kernel implementation of
+  * CAN_ISOTP is capable to run with BS=0, STmin=0 and WFTmax=0.
+@@ -160,7 +159,6 @@ struct can_isotp_ll_options {
+  * these default settings can be changed via sockopts.
+  * For that reason the STmin value is intentionally _not_ checked for
+  * consistency and copied directly into the flow control (FC) frame.
+- *
+  */
+ 
+ #endif /* !_UAPI_CAN_ISOTP_H */
+diff --git a/net/can/Kconfig b/net/can/Kconfig
+index 021fe03a8ed6..224e5e0283a9 100644
+--- a/net/can/Kconfig
++++ b/net/can/Kconfig
+@@ -57,7 +57,6 @@ source "net/can/j1939/Kconfig"
+ 
+ config CAN_ISOTP
+ 	tristate "ISO 15765-2:2016 CAN transport protocol"
+-	default y
+ 	help
+ 	  CAN Transport Protocols offer support for segmented Point-to-Point
+ 	  communication between CAN nodes via two defined CAN Identifiers.
+@@ -67,6 +66,8 @@ config CAN_ISOTP
+ 	  vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN traffic.
+ 	  This protocol driver implements data transfers according to
+ 	  ISO 15765-2:2016 for 'classic' CAN and CAN FD frame types.
++	  If you want to perform automotive vehicle diagnostic services (UDS),
++	  say 'y'.
+ 
+ source "drivers/net/can/Kconfig"
+ 
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index e6ff032b5426..bc3a722c200b 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -222,8 +222,8 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
+ 
+ 	can_send_ret = can_send(nskb, 1);
+ 	if (can_send_ret)
+-		printk_once(KERN_NOTICE "can-isotp: %s: can_send_ret %d\n",
+-			    __func__, can_send_ret);
++		pr_notice_once("can-isotp: %s: can_send_ret %d\n",
++			       __func__, can_send_ret);
+ 
+ 	dev_put(dev);
+ 
+@@ -769,7 +769,7 @@ static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
+ 
+ isotp_tx_burst:
+ 		skb = alloc_skb(so->ll.mtu + sizeof(struct can_skb_priv),
+-				gfp_any());
++				GFP_KERNEL);
+ 		if (!skb) {
+ 			dev_put(dev);
+ 			break;
+@@ -798,8 +798,8 @@ static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
+ 
+ 		can_send_ret = can_send(skb, 1);
+ 		if (can_send_ret)
+-			printk_once(KERN_NOTICE "can-isotp: %s: can_send_ret %d\n",
+-				    __func__, can_send_ret);
++			pr_notice_once("can-isotp: %s: can_send_ret %d\n",
++				       __func__, can_send_ret);
+ 
+ 		if (so->tx.idx >= so->tx.len) {
+ 			/* we are done */
+@@ -942,8 +942,8 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	err = can_send(skb, 1);
+ 	dev_put(dev);
+ 	if (err) {
+-		printk_once(KERN_NOTICE "can-isotp: %s: can_send_ret %d\n",
+-			    __func__, err);
++		pr_notice_once("can-isotp: %s: can_send_ret %d\n",
++			       __func__, err);
+ 		return err;
+ 	}
+ 
+-- 
+2.28.0
 
-This really must not pop up on his screen as default 'y' when he does
-an oldconfig after pulling the networking tree..
