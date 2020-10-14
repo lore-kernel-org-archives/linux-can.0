@@ -4,44 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FB6CC433DF
-	for <linux-can@archiver.kernel.org>; Wed, 14 Oct 2020 08:59:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7B6DC433DF
+	for <linux-can@archiver.kernel.org>; Wed, 14 Oct 2020 10:17:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1A22020878
-	for <linux-can@archiver.kernel.org>; Wed, 14 Oct 2020 08:59:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 988C620723
+	for <linux-can@archiver.kernel.org>; Wed, 14 Oct 2020 10:17:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbgJNI7h (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 14 Oct 2020 04:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
+        id S1726112AbgJNKRk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 14 Oct 2020 06:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727470AbgJNI7h (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 14 Oct 2020 04:59:37 -0400
+        with ESMTP id S1726028AbgJNKRj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 14 Oct 2020 06:17:39 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09D7C04587E
-        for <linux-can@vger.kernel.org>; Tue, 13 Oct 2020 23:30:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC4AC061755
+        for <linux-can@vger.kernel.org>; Wed, 14 Oct 2020 03:17:39 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kSaJ3-000306-L5; Wed, 14 Oct 2020 08:30:37 +0200
+        id 1kSdqi-00036B-Pd; Wed, 14 Oct 2020 12:17:36 +0200
 Received: from [IPv6:2a03:f580:87bc:d400:3c11:afd4:9079:fce2] (unknown [IPv6:2a03:f580:87bc:d400:3c11:afd4:9079:fce2])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
          client-signature RSA-PSS (4096 bits) client-digest SHA256)
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 4C935578CD1;
-        Wed, 14 Oct 2020 06:30:32 +0000 (UTC)
-To:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201013141341.28487-1-geert+renesas@glider.be>
- <8e7bface-eef3-c5eb-a822-aec79c6992ac@hartkopp.net>
+        by smtp.blackshift.org (Postfix) with ESMTPSA id D58BD578EB3;
+        Wed, 14 Oct 2020 10:17:29 +0000 (UTC)
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+References: <20201007213159.1959308-1-mkl@pengutronix.de>
+ <20201007213159.1959308-15-mkl@pengutronix.de>
+ <DB8PR04MB6795CE6F83E1C25F8A04633FE6050@DB8PR04MB6795.eurprd04.prod.outlook.com>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -103,16 +104,17 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Subject: Re: [PATCH] can: Explain PDU in CAN_ISOTP help text
-Message-ID: <a45db808-c0e2-a104-4def-bfc80b26c7b7@pengutronix.de>
-Date:   Wed, 14 Oct 2020 08:30:27 +0200
+Subject: Re: [PATCH 14/17] can: flexcan: remove ack_grp and ack_bit handling
+ from driver
+Message-ID: <16223144-3d40-2e3b-52ef-08176a076ed5@pengutronix.de>
+Date:   Wed, 14 Oct 2020 12:17:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <8e7bface-eef3-c5eb-a822-aec79c6992ac@hartkopp.net>
+In-Reply-To: <DB8PR04MB6795CE6F83E1C25F8A04633FE6050@DB8PR04MB6795.eurprd04.prod.outlook.com>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="G0Q3Bsb9QuGRz1FNZaTVti1xX0lVGWkdI"
+ boundary="mblygUAZRtzggU8E3zjOhDytZ94rv0sUt"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -122,47 +124,81 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---G0Q3Bsb9QuGRz1FNZaTVti1xX0lVGWkdI
-Content-Type: multipart/mixed; boundary="30jOGs7sry4g57BgrCTqoIHT6SwqtrJEL";
+--mblygUAZRtzggU8E3zjOhDytZ94rv0sUt
+Content-Type: multipart/mixed; boundary="TzIWZ33hlJ91xWksRrJQwc9Uo9qjuQMVW";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>,
- Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: "David S . Miller" <davem@davemloft.net>, Jakub Kicinski
- <kuba@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <a45db808-c0e2-a104-4def-bfc80b26c7b7@pengutronix.de>
-Subject: Re: [PATCH] can: Explain PDU in CAN_ISOTP help text
-References: <20201013141341.28487-1-geert+renesas@glider.be>
- <8e7bface-eef3-c5eb-a822-aec79c6992ac@hartkopp.net>
-In-Reply-To: <8e7bface-eef3-c5eb-a822-aec79c6992ac@hartkopp.net>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc: "davem@davemloft.net" <davem@davemloft.net>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>
+Message-ID: <16223144-3d40-2e3b-52ef-08176a076ed5@pengutronix.de>
+Subject: Re: [PATCH 14/17] can: flexcan: remove ack_grp and ack_bit handling
+ from driver
+References: <20201007213159.1959308-1-mkl@pengutronix.de>
+ <20201007213159.1959308-15-mkl@pengutronix.de>
+ <DB8PR04MB6795CE6F83E1C25F8A04633FE6050@DB8PR04MB6795.eurprd04.prod.outlook.com>
+In-Reply-To: <DB8PR04MB6795CE6F83E1C25F8A04633FE6050@DB8PR04MB6795.eurprd04.prod.outlook.com>
 
---30jOGs7sry4g57BgrCTqoIHT6SwqtrJEL
+--TzIWZ33hlJ91xWksRrJQwc9Uo9qjuQMVW
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-On 10/13/20 6:43 PM, Oliver Hartkopp wrote:
-> On 13.10.20 16:13, Geert Uytterhoeven wrote:
->> The help text for the CAN_ISOTP config symbol uses the acronym "PDU".
->> However, this acronym is not explained here, nor in
->> Documentation/networking/can.rst.
->> Expand the acronym to make it easier for users to decide if they need =
-to
->> enable the CAN_ISOTP option or not.
+On 10/14/20 10:53 AM, Joakim Zhang wrote:
+>> Since commit:
 >>
->> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->=20
-> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
->=20
-> Yes, when you are so deep into it that PDU becomes a word like dog or=20
-> cat ;-)
+>>     048e3a34a2e7 can: flexcan: poll MCR_LPM_ACK instead of GPR ACK for=
 
-As v5.9 is out and isotp will hit mainline quite soon, I'll queue this vi=
-a
-can/master.
+>> stop mode acknowledgment
+>>
+>> the driver polls the IP core's internal bit MCR[LPM_ACK] as stop mode
+>> acknowledge and not the acknowledgment on chip level.
+>>
+>> This means the 4th and 5th value of the property "fsl,stop-mode" isn't=
+ used
+>> anymore. This patch removes the used "ack_gpr" and "ack_bit" from the
+>> driver.
+>>
+>> Link:
+>> https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Flor=
+e.kern
+>> el.org%2Fr%2F20201006203748.1750156-15-mkl%40pengutronix.de&amp;dat
+>> a=3D02%7C01%7Cqiangqing.zhang%40nxp.com%7C1540ad5bf7bd4a1e10a508d8
+>> 6b087a67%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637377031
+>> 436785787&amp;sdata=3DierIIVdSqZFLklIvgMokHX6LU77cEWQgUGzUi6CHdDI%
+>> 3D&amp;reserved=3D0
+>> Fixes: 048e3a34a2e7 ("can: flexcan: poll MCR_LPM_ACK instead of GPR AC=
+K
+>> for stop mode acknowledgment")
+>> Cc: Joakim Zhang <qiangqing.zhang@nxp.com>
+>> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>=20
+> [...]
+>>  	/* stop mode property format is:
+>> -	 * <&gpr req_gpr req_bit ack_gpr ack_bit>.
+>> +	 * <&gpr req_gpr>.
+>=20
+> Hi Marc,
+>=20
+> Sorry for response delay, stop mode property format should be "<&gpr re=
+q_gpr
+> req_bit>", I saw this code change has went into linux-next, so I will c=
+orrect
+> it by the way next time when I upsteam wakeup function for i.MX8.
 
-Tnx,
+Doh! I wrongly deleted "req_bit" in the comment, but the code should be a=
+ll
+right. I'll add that back.
+
+> Need I update stop mode property in dts file? Although this function wo=
+n't be
+> broken without dts update.
+
+Yes, you can send patches to update the dts (after net-next was merged to=
+ linus).
+
 Marc
 
 --=20
@@ -172,23 +208,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---30jOGs7sry4g57BgrCTqoIHT6SwqtrJEL--
+--TzIWZ33hlJ91xWksRrJQwc9Uo9qjuQMVW--
 
---G0Q3Bsb9QuGRz1FNZaTVti1xX0lVGWkdI
+--mblygUAZRtzggU8E3zjOhDytZ94rv0sUt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+GmwMACgkQqclaivrt
-76lh+gf8Ci9ziO4DyzHxYFLo3yB108wG733EzuUCnz0izP4JobhVIk659MSvE1Ta
-pi03RDHbxQeTE2BCtxpD9mHkpuB78pMJHyQa8hWVLrjCgg0g/pWsB+iZA63CLtoS
-Gs59f2nGBjxX0nTFzeW0PNxr4iPD0B/53zST2fw+fq0iiMelCMVfXc+xRQml0q3K
-hjqE/ziB8nAEmnHDb+CZj2pB8ROceRRhmV45YndBI2a0ozxDVrZzAdhPvyE5W/FY
-wNXVKySrCu1Zx3P9wjjJqgbn387QC9to/SMgSJjuCH5/ivRUOVZKMmv98+5hAa2N
-5MFnndCLDfsknZtIAst97+/oX+Dx0Q==
-=fkE2
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+G0DQACgkQqclaivrt
+76nLmQf+MV3gJ4fq1XF1MrALcRD8RNn/iX6h8MkTimKrF+JZYuwSjxafyNi3bDTb
+f4ZFA7/FVkucE2xuIX9ZXHE3lG69xHteEXIekSXx8204B/ENDZPZoU/ttHobgsE4
+79bk3einErQFOgnLjY2Z7saN+NY5kWp9imWI/LH2FrsfVhjyra4j2KoJH3tLZ9zb
+3BVgjchBirz4Gp//TfgcJfOWOJOgVQOMUm7qjuFFTroWuwVIyVu5JZuHMUznmZib
++16r6afC/cX5PD9HM49+PqBjdfIHk2YKjZJqp06JgeOJYDo+vUTyytoftEEvxCVF
+lkOVGDadVcQ84aBzzDuBXh26iUtJ0A==
+=9SJ0
 -----END PGP SIGNATURE-----
 
---G0Q3Bsb9QuGRz1FNZaTVti1xX0lVGWkdI--
+--mblygUAZRtzggU8E3zjOhDytZ94rv0sUt--
