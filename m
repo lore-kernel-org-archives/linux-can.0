@@ -2,52 +2,52 @@ Return-Path: <SRS0=gX5R=DX=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,
+	DATE_IN_FUTURE_06_12,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F19FFC433E7
-	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 05:43:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5C71C43457
+	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 05:43:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 935A42080A
-	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 05:43:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 733212080A
+	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 05:43:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="W1wcKSr2"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="DtsWcDp8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389612AbgJPFnG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 16 Oct 2020 01:43:06 -0400
-Received: from mail-am6eur05on2045.outbound.protection.outlook.com ([40.107.22.45]:8065
+        id S2389993AbgJPFnS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 16 Oct 2020 01:43:18 -0400
+Received: from mail-am6eur05on2083.outbound.protection.outlook.com ([40.107.22.83]:33504
         "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388851AbgJPFnF (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 16 Oct 2020 01:43:05 -0400
+        id S2389786AbgJPFnS (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 16 Oct 2020 01:43:18 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YnvS750N7Nfq5isWvZqrUE7WE7XyEsD6frH0AzrOe0uOwB1XkhZYO4rAErT2oU5n2aD14Bqn0Xv8LDs8liC4e/qp3hqUVWrCeyjNuP3DaJAeXnRVjWtANMpIpswzLZ7MB/sim5S0it3oZScNssm/Gif4ggDYJhaQbM95vj1ir6G583MD9vIvyN8Z3amfHcN2z80JVprzwJJsW8rV6V0Cgg4Ox0/06TauE2xRuJ3M6AuBVBRaWlKhrW9RHfs6GoGDcsFxjKcjo9NqxhND8So1qFSt2QOUWvBaUymed9jh0NjdbI1ihDJG9/mxmRZqEMwyy1RWx5uSV+v8lsE9ObwNVw==
+ b=eNP+uSgk5wIpUfVPlK19fK8poI8c2Dn7BC2YmnvP0xv1jWpnKY6KkvzKaZc1Vr8W0IIMp9r9zPzKrPTYWAzG//pnUlUkm3MdsOLIK5SuwnyR7+RKwvy6s+hMbwPdQ2VP/9q6wefvBczpS6/C4fwKY6bT/pd80AjJwRO1LTwphD5jQ+sJP6z1I5dbjK5Nr3axhK8A5a80EBZjv9mcubDJoW766/bdAoijxuYeG4UnG/3n2wvxovrsD7bGTZGqzt3vujchH/5RHTszu8dAn9NGtMl5si68guq1t0HD8ZV2Gsf+wbaXdBViJEBEx4LH5J5CGEpye+zMGvlCNLxelOiBqg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tDbAwQnA5enTI3i2f5XQgOnhhQ23eN6woNIFu1j7SmI=;
- b=XOdfQ8zoUPVu9osYZ/BBsOJbRRv9mz8EnWUH5AXIqxa5jHxRQi3V4kTzYLX2nTX2MhMe5s7GvZUS+cmjh0d8BifIvNKbzT4L/Zz7UAcckMVnc77AqPCGYMhbsj0uIgkEx7vSSfqNwvnIZIQRM3dofPB4059s7CbxxahQh3dZcHq6x8SAT4J74AfnufFrEbfdfhpmTefKJTJaCNOLmDx9kjN65tig+Z8Z87Z1VtpC/Q8+cSas//CjXevItIZADzDGrQVlklqul228+GL4Ljlz4uPIuE9hp6c2IHNi0WUWj6NGmwryV5PnE/Nfv6gmk6HmAxtmtWW7rqu7V1I28V/kMw==
+ bh=hS+++hXzQHOHWS1Go95Fv0Zz3XGkSwcC+5QAcYja7Nk=;
+ b=S/8zmr0osnrw1RUqGbjsv0sxGz/bma0epBdsfLEvr9vgSx7X4Cot/YCJdubIkaP90mPS+yt+91qhHum+hGIf2DwDoldk4MtAMjg9TtSjW4yWXhlokioCFaLza6aaDgz8miId0cwsa2GkVN8HiQKmO2hK0E046pyK2Fjlt3oEWEmbHldQXiKfY+vfdQycsdvaAT/poXQYWLscJ2KTmZst50gbHvYq4CqAHyHNYxXVf0WcvPFO5kQRA5ZF4bNkW2XuvwsmEyvIjylZbqzCYV9t/998DepyfRfeurySc8spue8HYSK2hdjFI0Rj6kVtbqJI3RvDHt9HUScHuIJ7aFHwcQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tDbAwQnA5enTI3i2f5XQgOnhhQ23eN6woNIFu1j7SmI=;
- b=W1wcKSr2snvI49D5qRdva/Gf6czTl4c2EhjKV0wWCg9Wv271p1gj5ktLzF4HkEhY6fEnc0FR2sCgth65cqz7N1pwM54gE9sgQ4DpSQNB4P+ttCk2J31S1uTLWwUIMwIG8SeFcLU7KjTyr5Hw1dAfZK1GYuSB41VP+0E5mh0R/MU=
+ bh=hS+++hXzQHOHWS1Go95Fv0Zz3XGkSwcC+5QAcYja7Nk=;
+ b=DtsWcDp87uyZ4h8FHMzLSol9hfybdpCk07QG0ubRfFJYMDP9nZpOQsAm7IqesT7PbJpwh0uQT3VMUmakj2ciL7g1/9FdBLR+KB6JgSVzox/1XXBSZ576oz9Qxgq0BIUzjXwmTJ5Y3GnJYMAnEWaZyBZmphF7vvLTU2LvE9UHGm8=
 Authentication-Results: pengutronix.de; dkim=none (message not signed)
  header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
  by DBAPR04MB7333.eurprd04.prod.outlook.com (2603:10a6:10:1b2::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Fri, 16 Oct
- 2020 05:43:00 +0000
+ 2020 05:43:09 +0000
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::3c3a:58b9:a1cc:cbcc%9]) with mapi id 15.20.3477.021; Fri, 16 Oct 2020
- 05:43:00 +0000
+ 05:43:09 +0000
 From:   Joakim Zhang <qiangqing.zhang@nxp.com>
 To:     mkl@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
         s.hauer@pengutronix.de
@@ -55,9 +55,9 @@ Cc:     kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
         peng.fan@nxp.com, linux-can@vger.kernel.org, pankaj.bansal@nxp.com,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] firmware: imx: always export SCU symbols
-Date:   Fri, 16 Oct 2020 21:43:15 +0800
-Message-Id: <20201016134320.20321-2-qiangqing.zhang@nxp.com>
+Subject: [PATCH 3/6] dt-bindings: can: flexcan: add fsl,can-index property to indicate a resource
+Date:   Fri, 16 Oct 2020 21:43:17 +0800
+Message-Id: <20201016134320.20321-4-qiangqing.zhang@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
 References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
@@ -68,117 +68,63 @@ X-ClientProxiedBy: SG2PR02CA0068.apcprd02.prod.outlook.com
  (2603:10a6:10:fa::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0068.apcprd02.prod.outlook.com (2603:1096:4:54::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Fri, 16 Oct 2020 05:42:57 +0000
+Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0068.apcprd02.prod.outlook.com (2603:1096:4:54::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Fri, 16 Oct 2020 05:43:05 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 13a9bd34-94cd-47c8-9123-08d8719657dc
+X-MS-Office365-Filtering-Correlation-Id: 4405f036-5568-473a-170b-08d871965ce4
 X-MS-TrafficTypeDiagnostic: DBAPR04MB7333:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBAPR04MB733354260CA74CA5AF1634AFE6030@DBAPR04MB7333.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:751;
+X-Microsoft-Antispam-PRVS: <DBAPR04MB73335ADBF3E126795223E629E6030@DBAPR04MB7333.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WDKD7XcFlt/ar03cH+EJ7/oQK2PgHVjz7Pe1ymw2mJaDS8jGfxobxim1Pm/qkqBSe7yVKlOjiwcQ4adUczJnOV6b84uWmCXk9gzIQRu8LS75iWwgsU2gDcrYQww8kj6sd0YFM0vpySJEjsTpeKT5fsRZD4f77/YSo1rU0c5IdYy/Zeumh9+8ntep+arprEK8gqc5z09h2h01N2dKt0Wq+OzgIuR8HLIA0ykoPbEgzBn57u/gMCi38xVFco96aiiLHUq1AucN8BfWJ0QoI3/KfjG75rWAx1HNRxdkaKgRrKHqTDYZJ0rGegYjGqb+7haaZM1pW2bOn2bj8KsyBUtMjBUZj7BTHrGSfJ2QTSUO1P1ddh8E8dlsqPrhihuOFT/gCXkHSbDd/aoM0nz/kcdiRMbN8CT+E/q37rd18VvFEoA=
+X-Microsoft-Antispam-Message-Info: +3iDj8LMJMxLEFw4x97/vgiL4zNHPxWbx6IdX9roFjUXkS3IZLABGtmIe0Y/YQA9jGs/MxBIgJPUj/E5Y1d8wlDjeda4tsMtlAKJis6mtvKjBNQa+PbCGdX5alg+WbTxp/+2kh4AsPrzlTYyfAn7U8w+7CaCAK1qtFKjR4u4DYF7Au+dxverCjybuTAukJkavC69fYY+xSyoS8/AI20KzCxBeqy6bBe+wQCRpZh/UuukTAsBjjqurA2uw4nCIDXX28E968Fw1liga0znqBVYSSGiHPBO5G3BkBgMC66ZnUjCcLbzg4iUsWZ8sIExp0BkiHSV0V9pGIPPc05nMhUDH4CRB9YFTRDYO5hDTy8zZYOkdeU/J/O4ZFfydAX//QCgBBXlPdfXv58pNHwPkprcKn/HXcPpwJP5NKif2qSkruU=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(366004)(136003)(34490700002)(2906002)(316002)(6512007)(8936002)(86362001)(5660300002)(1076003)(69590400008)(478600001)(52116002)(6506007)(6486002)(66556008)(83380400001)(36756003)(4326008)(6666004)(26005)(186003)(2616005)(956004)(16526019)(8676002)(66946007)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Nn2OuamZEOff9hTH15XcBFljwAYmY5JlX3D6tLIOSuHkpDwBXZMAxXVzTkUoIuC3qnDLiEd5XxMYugI6HRmOB6c9SARLdP45QWTU36QZtU3bAWMGzyq6Uk0wpsvD2UCcmODitcOhiMInpHGG5w37DEn7HTySLJIAyK732j1E30Hc0ktWx+J6bdsEiWpp6QVlM1AQzdt1BasR03c3peqcv6HBqWTpD8FzfvsNrfpPL5a07bSD67n2Vf1x/zC24gQsYtUyIf/7mYPv0PvJF0W9fo+VFvG52w6J1IplAduuKAFBgBkrBsgvS1pZ0sCG+/Kfy9X7FK3KHDhGp3SENLH9z7nlp4qACTEznEVzXeH0bdLDYtoxoWTHlOGwDOXgp/3TYdNPOv1Lhk7EauDHeZ/th984KUOdlbQN7hfDvibpqbQ6ypfHjF8JjnITOrhXqOst+TMo7klfOVdliIQ90OVyhESQgYr+xlefr0oZQ/Iqn7FpvvQcJDNQJS4Yma+m+03EAPQmtxPpzDsli/mu/VRGVhTae/ENvBsiTRIwTwPQOeGwKlU6ZPuo4bHu90RMOK0loghJwx1Ac4b2nCyQY6j+b5nr+/ATAkkedrEZJ1h/j+FtfLaRHRvsEoqM+XkXiZ0dMmY9tdK01mUyxTgH2avoZw==
+X-MS-Exchange-AntiSpam-MessageData: lHwFkqt8u6vbduuO9aAkEiUCaNeaqwCpTM+aMPVXmgQFzOLmC70gjCGdIQHfN3hsz4qUiPTJiVJ9W2MXerk92i9KaOfJMbynA6I9pbBqSKrnC24C6UchuSx5FxadZUOMFmJsa77xSHq9p/Ee80bh4hEG1F8iL3ZUm2E5ilEnKBOZHux2SgKeAGT9hCEVbm7Noc/Wmx+UonYHqgF0P0Rh3fOdey7GopQMSjyszLkglC7DwoQQe99c/6g/JzRe6H1Gc8/KwH6eX0jqwhVM3gtaUM2L0s8YdqPk2fsL5de7HRCv1IjNh03ZopCLcPbaPDSNgDLGMku1mzhkMgGfCB4pukuiAkyribuGzWRIUVEdgqfLuB+fnNHDKidScO042wx/2LT6Dwotn3wozLeyXrlqp1t+SCpt2kzyc8JvI9ZZTXSvULywRzNr4sZgXLl8OI2q4we3+QhmLt0Vv/A9g9E36idJMP+ndQpOjPuoVwmiYEV2e0Hi9aKX0fax3M1CmWgoqlPf8tmPiUKdRtO9TUYh/ll8omLJbmTjs5nKRjcZa0HXVRPoSvc7nXHlrU95rQLLuIIeuzbnY2dI1mp1mzkVKDL+Jf4oBNf2MerDKuMSuRIiMtIbDY43FpfMebblZu4Q2T2I8NXM89qgpyc5dDpS9w==
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13a9bd34-94cd-47c8-9123-08d8719657dc
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4405f036-5568-473a-170b-08d871965ce4
 X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2020 05:43:00.8420
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2020 05:43:09.4173
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SHkB26GYl2BjizHcB8eYHSfdvBmuMemH+uXmMKLkcqxT5+Jwg7KK8bzLF+ULBdT5vAb9sgZEnk4ePavUcABIsg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: PWCtVDDwrDmg3hyzWQp/lWQL1ZTPCnHpqhdTh1uLv7DDBbGd3IadL4/Pxt6eL7Y8oLUR4kKaNfRnXqR0tC2Tzw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7333
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Liu Ying <victor.liu@nxp.com>
+For SoCs with SCU support, need setup stop mode via SCU firmware,
+so this property can help indicate a resource.
 
-Always export SCU symbols for both SCU SoCs and non-SCU SoCs to avoid
-build error.
-
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- include/linux/firmware/imx/ipc.h      | 15 +++++++++++++++
- include/linux/firmware/imx/svc/misc.h | 23 +++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+ Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/firmware/imx/ipc.h b/include/linux/firmware/imx/ipc.h
-index 891057434858..300fa253fc30 100644
---- a/include/linux/firmware/imx/ipc.h
-+++ b/include/linux/firmware/imx/ipc.h
-@@ -34,6 +34,7 @@ struct imx_sc_rpc_msg {
- 	uint8_t func;
- };
+diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+index 6af67f5e581c..839c0c0064a2 100644
+--- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
++++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+@@ -43,6 +43,10 @@ Optional properties:
+ 		  0: clock source 0 (oscillator clock)
+ 		  1: clock source 1 (peripheral clock)
  
-+#if IS_ENABLED(CONFIG_IMX_SCU)
- /*
-  * This is an function to send an RPC message over an IPC channel.
-  * It is called by client-side SCFW API function shims.
-@@ -55,4 +56,18 @@ int imx_scu_call_rpc(struct imx_sc_ipc *ipc, void *msg, bool have_resp);
-  * @return Returns an error code (0 = success, failed if < 0)
-  */
- int imx_scu_get_handle(struct imx_sc_ipc **ipc);
++- fsl,can-index: The index of CAN instance.
++                 For SoCs with SCU support, need setup stop mode via SCU firmware,
++                 so this property can help indicate a resource.
 +
-+#else
-+static inline int
-+imx_scu_call_rpc(struct imx_sc_ipc *ipc, void *msg, bool have_resp)
-+{
-+	return -EIO;
-+}
-+
-+static inline int imx_scu_get_handle(struct imx_sc_ipc **ipc)
-+{
-+	return -EIO;
-+}
-+#endif
-+
- #endif /* _SC_IPC_H */
-diff --git a/include/linux/firmware/imx/svc/misc.h b/include/linux/firmware/imx/svc/misc.h
-index 031dd4d3c766..d255048f17de 100644
---- a/include/linux/firmware/imx/svc/misc.h
-+++ b/include/linux/firmware/imx/svc/misc.h
-@@ -46,6 +46,7 @@ enum imx_misc_func {
-  * Control Functions
-  */
+ - wakeup-source: enable CAN remote wakeup
  
-+#if IS_ENABLED(CONFIG_IMX_SCU)
- int imx_sc_misc_set_control(struct imx_sc_ipc *ipc, u32 resource,
- 			    u8 ctrl, u32 val);
- 
-@@ -55,4 +56,26 @@ int imx_sc_misc_get_control(struct imx_sc_ipc *ipc, u32 resource,
- int imx_sc_pm_cpu_start(struct imx_sc_ipc *ipc, u32 resource,
- 			bool enable, u64 phys_addr);
- 
-+#else
-+static inline int
-+imx_sc_misc_set_control(struct imx_sc_ipc *ipc, u32 resource,
-+			u8 ctrl, u32 val)
-+{
-+	return -EIO;
-+}
-+
-+static inline int
-+imx_sc_misc_get_control(struct imx_sc_ipc *ipc, u32 resource,
-+			u8 ctrl, u32 *val)
-+{
-+	return -EIO;
-+}
-+
-+static inline int imx_sc_pm_cpu_start(struct imx_sc_ipc *ipc, u32 resource,
-+				      bool enable, u64 phys_addr)
-+{
-+	return -EIO;
-+}
-+#endif
-+
- #endif /* _SC_MISC_API_H */
+ Example:
+@@ -54,4 +58,5 @@ Example:
+ 		interrupt-parent = <&mpic>;
+ 		clock-frequency = <200000000>; // filled in by bootloader
+ 		fsl,clk-source = /bits/ 8 <0>; // select clock source 0 for PE
++		fsl,can-index = /bits/ 8 <1>; // the second CAN instance
+ 	};
 -- 
 2.17.1
 
