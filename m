@@ -2,55 +2,57 @@ Return-Path: <SRS0=gX5R=DX=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1D19C433E7
-	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 07:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFAA7C433DF
+	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 07:47:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 643C920829
-	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 07:44:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A691207F7
+	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 07:47:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404757AbgJPHo6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 16 Oct 2020 03:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
+        id S2404764AbgJPHr2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 16 Oct 2020 03:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404735AbgJPHo5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 16 Oct 2020 03:44:57 -0400
+        with ESMTP id S2404735AbgJPHr1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 16 Oct 2020 03:47:27 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B729C061755
-        for <linux-can@vger.kernel.org>; Fri, 16 Oct 2020 00:44:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4C4C061755
+        for <linux-can@vger.kernel.org>; Fri, 16 Oct 2020 00:47:27 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kTKPy-0007Th-Rv; Fri, 16 Oct 2020 09:44:50 +0200
+        id 1kTKSO-0007y9-Qh; Fri, 16 Oct 2020 09:47:20 +0200
 Received: from [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1] (unknown [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 2AE7D57A72B;
-        Fri, 16 Oct 2020 07:44:49 +0000 (UTC)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id DCAD257A739;
+        Fri, 16 Oct 2020 07:47:18 +0000 (UTC)
+Subject: Re: [PATCH 3/6] dt-bindings: can: flexcan: add fsl, can-index
+ property to indicate a resource
 To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
         "robh+dt@kernel.org" <robh+dt@kernel.org>,
         "shawnguo@kernel.org" <shawnguo@kernel.org>,
         "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>, Ying Liu <victor.liu@nxp.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
 References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
- <20201016134320.20321-6-qiangqing.zhang@nxp.com>
- <f201e24c-18b9-513a-c4be-6bc4057f4530@pengutronix.de>
- <DB8PR04MB67958AD696264DE16F0936DBE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <20201016134320.20321-4-qiangqing.zhang@nxp.com>
+ <604a66f6-83ea-630e-f479-fe62189de42a@pengutronix.de>
+ <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -112,16 +114,15 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Subject: Re: [PATCH 5/6] can: flexcan: add CAN wakeup function for i.MX8QM
-Message-ID: <da613453-7038-bcec-cdd5-7a8566a254b5@pengutronix.de>
-Date:   Fri, 16 Oct 2020 09:44:44 +0200
+Message-ID: <715a951f-5ed7-d5ee-f64e-f228cf6b9f87@pengutronix.de>
+Date:   Fri, 16 Oct 2020 09:47:14 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB67958AD696264DE16F0936DBE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+In-Reply-To: <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="CC3P733UC0dbH8BLHjAHCg9NnWvq9T3ki"
+ boundary="84xmicyfAILlR4Bs14e1ExCBWjUXoSs64"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -131,76 +132,87 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CC3P733UC0dbH8BLHjAHCg9NnWvq9T3ki
-Content-Type: multipart/mixed; boundary="6DjUUFuSTFd5eQIv3cZQP9FOz607Sx1SF";
+--84xmicyfAILlR4Bs14e1ExCBWjUXoSs64
+Content-Type: multipart/mixed; boundary="GG5iOWp7CBqqr0CCKLzfjW0KgNqLUKaES";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: Joakim Zhang <qiangqing.zhang@nxp.com>,
  "robh+dt@kernel.org" <robh+dt@kernel.org>,
  "shawnguo@kernel.org" <shawnguo@kernel.org>,
  "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc: "kernel@pengutronix.de" <kernel@pengutronix.de>,
- dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
- Peng Fan <peng.fan@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- Pankaj Bansal <pankaj.bansal@nxp.com>,
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Peng Fan <peng.fan@nxp.com>, Ying Liu <victor.liu@nxp.com>,
  "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <da613453-7038-bcec-cdd5-7a8566a254b5@pengutronix.de>
-Subject: Re: [PATCH 5/6] can: flexcan: add CAN wakeup function for i.MX8QM
+ Pankaj Bansal <pankaj.bansal@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ dl-linux-imx <linux-imx@nxp.com>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>
+Message-ID: <715a951f-5ed7-d5ee-f64e-f228cf6b9f87@pengutronix.de>
+Subject: Re: [PATCH 3/6] dt-bindings: can: flexcan: add fsl, can-index
+ property to indicate a resource
 References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
- <20201016134320.20321-6-qiangqing.zhang@nxp.com>
- <f201e24c-18b9-513a-c4be-6bc4057f4530@pengutronix.de>
- <DB8PR04MB67958AD696264DE16F0936DBE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-In-Reply-To: <DB8PR04MB67958AD696264DE16F0936DBE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <20201016134320.20321-4-qiangqing.zhang@nxp.com>
+ <604a66f6-83ea-630e-f479-fe62189de42a@pengutronix.de>
+ <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+In-Reply-To: <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
 
---6DjUUFuSTFd5eQIv3cZQP9FOz607Sx1SF
+--GG5iOWp7CBqqr0CCKLzfjW0KgNqLUKaES
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 10/16/20 8:46 AM, Joakim Zhang wrote:
->>> @@ -2019,6 +2109,7 @@ static int flexcan_probe(struct platform_device=
-
->> *pdev)
->>>  	priv->clk_src =3D clk_src;
->>>  	priv->devtype_data =3D devtype_data;
->>>  	priv->reg_xceiver =3D reg_xceiver;
->>> +	priv->can_idx =3D can_idx;
->>>
->>>  	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) {
->>>  		priv->can.ctrlmode_supported |=3D CAN_CTRLMODE_FD | @@
->> -2030,6
->>> +2121,10 @@ static int flexcan_probe(struct platform_device *pdev)
->>>  		priv->can.bittiming_const =3D &flexcan_bittiming_const;
->>>  	}
->>>
->>> +	err =3D flexcan_setup_stop_mode(pdev);
->>> +	if (err =3D=3D -EPROBE_DEFER)
->>> +		return -EPROBE_DEFER;
+On 10/16/20 8:52 AM, Joakim Zhang wrote:
+>=20
+> Hi Marc,
+>=20
+>> -----Original Message-----
+>> From: Marc Kleine-Budde <mkl@pengutronix.de>
+>> Sent: 2020=E5=B9=B410=E6=9C=8816=E6=97=A5 14:20
+>> To: Joakim Zhang <qiangqing.zhang@nxp.com>; robh+dt@kernel.org;
+>> shawnguo@kernel.org; s.hauer@pengutronix.de
+>> Cc: devicetree@vger.kernel.org; Peng Fan <peng.fan@nxp.com>; Ying Liu
+>> <victor.liu@nxp.com>; netdev@vger.kernel.org; Pankaj Bansal
+>> <pankaj.bansal@nxp.com>; linux-kernel@vger.kernel.org;
+>> linux-can@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
+>> kernel@pengutronix.de
+>> Subject: Re: [PATCH 3/6] dt-bindings: can: flexcan: add fsl, can-index=
+ property
+>> to indicate a resource
 >>
->> You need to free "dev". What about moving this directly before allocat=
-ing dev.
->
-> Yes, need free "dev" here if defer probe. Flexcan_priv has not allocate=
-d
-> before allocating dev, but we need initialize and check it when setup s=
-top
-> mode.
+>> On 10/16/20 3:43 PM, Joakim Zhang wrote:
+>>> For SoCs with SCU support, need setup stop mode via SCU firmware, so
+>>> this property can help indicate a resource.
+>>>
+>>> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 5 +++++
+>>>  1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.tx=
+t
+>>> b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+>>> index 6af67f5e581c..839c0c0064a2 100644
+>>> --- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+>>> +++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+>>> @@ -43,6 +43,10 @@ Optional properties:
+>>>  		  0: clock source 0 (oscillator clock)
+>>>  		  1: clock source 1 (peripheral clock)
+>>>
+>>> +- fsl,can-index: The index of CAN instance.
+>>> +                 For SoCs with SCU support, need setup stop mode via=
 
-Right, please take care of freeing all ressouces in case of defered probe=
-=2E
+>> SCU firmware,
+>>> +                 so this property can help indicate a resource.
+>>
+>> This property is not CAN specific. So the name could be more general.
+>=20
+> How about "fsl,index"?
 
->> Do you have to undo device_set_wakeup_capable() and
->> device_set_wakeup_enable() in case of a failure and/or on flexcan_remo=
-ve()?
->
-> Yes, should invoke device_wakeup_disable() in flexcan_remove.
+Maybe something with "scu", as it's specific to the SCU firmware.
 
-Make it so.
+I think it's up to Rob's and the DT people.
 
-regards,
 Marc
 
 --=20
@@ -210,23 +222,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---6DjUUFuSTFd5eQIv3cZQP9FOz607Sx1SF--
+--GG5iOWp7CBqqr0CCKLzfjW0KgNqLUKaES--
 
---CC3P733UC0dbH8BLHjAHCg9NnWvq9T3ki
+--84xmicyfAILlR4Bs14e1ExCBWjUXoSs64
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+JT2wACgkQqclaivrt
-76k/Xgf+NR8VQLXF63WndzKZiYOLyNsP4R7X/DD0qBESzR6jQJOuNF3H7XDJ+iAM
-QcjeCT7zlM/tN8P5QOeiHhGisEBVM5YECCfUbSX88Js2riGC2rI9YP0d+gwsmSIZ
-Qe6gd4dTuoPhrgtYQ37MaaOqB7gffbDGqOnDp78LVUZEbsUlWuPwxeRVW19HCJgz
-unbeH651x+agD38WJYg47Sgltm7RLRu1Sx9OnmbCNho8cJ2TCKmRY8Eyzl9AbP9K
-0FNZOGmynOVkVwdTjs0HsqniDuq1fPexfkXwxGs3cUiJOQ+Y/PwW52LJqWQv+sk/
-LhmDr85Lerlw7S7ItEkO1y4kohmOHw==
-=6jp0
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+JUAIACgkQqclaivrt
+76k39Af9GKMdUJduwNkE51ACE92N+qC/32WuSsSxd0N4AK2eEJZUS2qFrQSQmJ3R
+C8hVVevohxoIDW+F8YdFurdh9WGNzQIRFbUfk/m9BGotoODWYcCqUDkRG/Q3XNj+
+REhiMFZdi+VWyKaZ8aoWvXFZMw4Bff3mF7Mdghuv7nLA5fy9LxF4h4tr1YO8Y3zz
+KkbIDaia86EV3lhLfoTaNGFZpCresnfwBTz2HEZya3zBRI+l006v0uT+cQEr7gd4
+FrzJNioQR5HRHJdZzzIU0asu7EoymR3ZD5oILNg5VfBveFjnNaMCv4ywNBeZoKvn
+bIZ6EPrePS19x5nxdYvMj5qg8OQmVA==
+=1p8i
 -----END PGP SIGNATURE-----
 
---CC3P733UC0dbH8BLHjAHCg9NnWvq9T3ki--
+--84xmicyfAILlR4Bs14e1ExCBWjUXoSs64--
