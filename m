@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,
 	DATE_IN_FUTURE_06_12,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C0ACC433E7
-	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 05:43:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA900C433E7
+	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 05:43:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BAA952067D
-	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 05:43:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 50D6E2067D
+	for <linux-can@archiver.kernel.org>; Fri, 16 Oct 2020 05:43:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="M2Pb+wRy"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="KtQJXOjG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389795AbgJPFnQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 16 Oct 2020 01:43:16 -0400
+        id S2390225AbgJPFng (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 16 Oct 2020 01:43:36 -0400
 Received: from mail-am6eur05on2083.outbound.protection.outlook.com ([40.107.22.83]:33504
         "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388851AbgJPFnN (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 16 Oct 2020 01:43:13 -0400
+        id S2389978AbgJPFnV (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 16 Oct 2020 01:43:21 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W/HwZpWucY6PG+0mJNoDanZ+mMHizRP8galko1goM4SMhPSmJ7eqUmCh4+Un3BKSD/hIjHpcs0x1Lzl9gS32KLoAgOBrIy8m/GVfh9/UeLjWRplppWioGqeqRmvQ5r11WFDPYo1geasH4i/6kMWcUULBIWtAKuxZJu2pNTx5H2kIY39y9iiPlwMtGgeNliGTxhTc18vqQ66VYKDdAedZp1LRQsl0QSYMHdy4daVzE6cnofhek4b6nt5/PhAhnIu/nkYNUqlc3EGheHKjmHca6wD3bhV/kupv0Z+3NrQCtChe78J/Vy8VwdYPSrjDDI9g462eFAeCfKrtKVVWvGWVxA==
+ b=UP0GUlenMN31SpNa6dUWtGPxPeABCcmirbhfa8sfkHP+4b+dTBDePu69cCn45ehsRiJ6p213MTJwGFdqXq4hgNbvRgUPH24LFBTMft8M7xxcA0iLkjuAaMOtoFlzO18GsCZcU8RLNE8SJNExUL5ggtll8IbqQvzt0e0qBZskiOysgeS2IuaI7N6/hjKU6dy34KeFF3YSVhgP+BnxIumGm1A+WIHb8mu5oos4Qw2+AT8bZlhfRRLhGjUZV4+KENAK/mKTjRMDUbgzNv0xSpe29MdNAw8eMOlcJbbxEzxklDYpTSO4BNuWR/18hq/OGTYjFRVK89zIwYHBuodPPoMP7w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ur08Q6AfFGrPIwCDQuAKK4njckBVmBZasrWQCnYHC5c=;
- b=DOrKXfPCmWt7qX0Agq7oXPb/PcnX9k/WK37AwUfD+ifdCrmUQP0J3+L+FoMHZF2HSjMPFdxHLDOpviyjX4d7k8IznvxwSaiyHtiN19CoJfed+ZcZ88h7ceq8hpNHfVZ04n8mtcc19KJdcXNYv9kTC/NZ+GIVsgD/sJbaywQ0emGaODvs9WXdUYy5qgrSz1di9PZCXCYnxWteuSizFD+vakamrWGDbqDwBZtOO7Q/PBkpwc4nGb3lT8Jtn32Hbi/hl0h50RhhceSpLKZ1uKrvO0+lCzE9w4DzJaViTaUE0nwIS1Suzm/bK6aCNdUxYNfXhV+L0yZyggBITKFnSDxXzA==
+ bh=dAsOfwr/51jOQ/yJM9ZhHR0Mks3JEnQV+TIO8/4hZ3E=;
+ b=V3D8Pz0sijwL8R52qdW/w3kYwrqjy2GpcG9DeGW1LAB9iIkOX7Qsbh0z+p80vQTXJFgS5t9iFjO0EdmnlQiCJJDgqbj5XTnsOHxzqC0T4ZNBTwgtAmWdWAEFkFFk76PKY465l/ZhQS77dY1MwutaeKCr0100+LJ38KBiTATT6yqSWFl/nVin5+kMYQNmb5ZR30ddbQjMvHMFTvzpEW39lqZHCSFwJ2Zr+cVnMvqQl3u4TJmm/kDVFeGCnOXtEgkqVwZCC2EZJLVtAH2NUImcYj6etzZmaiLUTNkDsG1ovNl+9ztHVcZ3ET352G1noX0fJLp2eti/7XDvPuBhUTv35g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ur08Q6AfFGrPIwCDQuAKK4njckBVmBZasrWQCnYHC5c=;
- b=M2Pb+wRyeB9W7oEwakHlpHMuYGje74xf40p+hM4i6UvldUkx4FVQLgBD0uFLINxb9zfef4HKPkx+N+7InlOaYAbRh/GyorHO9R3vLm2SXVbhpY91dhxkxpUOUqhWKKFPO+dj4o9Tk/7RHZMdN94K3IMlsnmcVw4723+J+e0cGNk=
+ bh=dAsOfwr/51jOQ/yJM9ZhHR0Mks3JEnQV+TIO8/4hZ3E=;
+ b=KtQJXOjGHXSMVwobVg//VzkjdPg2mrC5d/K4FHtC/Iep15d0HV3ykVgg9zjcBDZm1FB7DU/vW0gU8ByZHj5YYpzBhAvRkpPwVYeYPjxossFwN+wl6CvrSL1aSQamBBv1Wq3yVTXZ8538bLtJecXdrz9cfNhC6f9qJXiGPfmcmoo=
 Authentication-Results: pengutronix.de; dkim=none (message not signed)
  header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
  by DBAPR04MB7333.eurprd04.prod.outlook.com (2603:10a6:10:1b2::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Fri, 16 Oct
- 2020 05:43:05 +0000
+ 2020 05:43:14 +0000
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::3c3a:58b9:a1cc:cbcc%9]) with mapi id 15.20.3477.021; Fri, 16 Oct 2020
- 05:43:05 +0000
+ 05:43:14 +0000
 From:   Joakim Zhang <qiangqing.zhang@nxp.com>
 To:     mkl@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
         s.hauer@pengutronix.de
@@ -55,9 +55,9 @@ Cc:     kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
         peng.fan@nxp.com, linux-can@vger.kernel.org, pankaj.bansal@nxp.com,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] dt-bindings: can: flexcan: fix fsl,clk-source property
-Date:   Fri, 16 Oct 2020 21:43:16 +0800
-Message-Id: <20201016134320.20321-3-qiangqing.zhang@nxp.com>
+Subject: [PATCH 4/6] can: flexcan: rename macro FLEXCAN_QUIRK_SETUP_STOP_MODE -> FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR
+Date:   Fri, 16 Oct 2020 21:43:18 +0800
+Message-Id: <20201016134320.20321-5-qiangqing.zhang@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
 References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
@@ -68,54 +68,88 @@ X-ClientProxiedBy: SG2PR02CA0068.apcprd02.prod.outlook.com
  (2603:10a6:10:fa::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0068.apcprd02.prod.outlook.com (2603:1096:4:54::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Fri, 16 Oct 2020 05:43:01 +0000
+Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0068.apcprd02.prod.outlook.com (2603:1096:4:54::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Fri, 16 Oct 2020 05:43:09 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3013073c-aba1-49f7-ceef-08d871965a58
+X-MS-Office365-Filtering-Correlation-Id: eafbac88-e13b-4994-0bc7-08d871965fe4
 X-MS-TrafficTypeDiagnostic: DBAPR04MB7333:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBAPR04MB73339E5AAB0FBC1A400A66F9E6030@DBAPR04MB7333.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-Microsoft-Antispam-PRVS: <DBAPR04MB7333CD0FB8ED261DC082038FE6030@DBAPR04MB7333.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:372;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E5Pcp7WTAXp1/IiIaZ5vCo8nLTl8tljx1ijDHGy9aL3h+GH8uac2RZpbevj8AiCo4ARkPXECvD+1A6z0EIzS8pjAForCruM+EEV/LRmnf+6k2hPDvnVdyqKmdiwyFROH8o7WL3pCxNzY/pw171xaKw1fH4vzvEXwJnSLHLmNLokg31pmhOyuPZrQW4PPyhUyMdem/RrbEBtdVewnPIfgG7ogSZrof4U2ij3lLLWkiDBYjlz4kcp1s2Zv7Rl3RLWmesARHz9nkUaIekKLWHTE4TZckxOpCl3DC+rVL7QBzlFXMs7JEH0jo9y+/1hyvGGoRsJeTcenQtC75rqjg2Y95GKc5XWv8D7/gw5hzysgyrmuRf0xIcqXtMWeBifI5fsHVcbIKqiWWmRozttptYip5FNVXdDKBLU0mu1s5J9TkF8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(366004)(136003)(34490700002)(2906002)(316002)(6512007)(8936002)(86362001)(5660300002)(4744005)(1076003)(69590400008)(478600001)(52116002)(6506007)(6486002)(66556008)(83380400001)(36756003)(4326008)(6666004)(26005)(186003)(2616005)(956004)(16526019)(8676002)(66946007)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Rghswu2eGu5ENgqmPSFM4e1hpO/tEusRsy8qlbKLgX1FWiIsbKzVOZF/z6QDfAdjwsJlcIPTkTZSTF8aE5SoCpOl5ShoNUf/ggMFolSPdPQZZ2x83FKeO7Gqb7n75Me9Lsp4do574lvD/URQiQh9aEOzvhWXY98e8418eQ6wJevzn+pigZNsY/mtXyNuYNx/NrrtCcb7/Yscyv4N7BlGtm9RQwOXjXTbaAtSXINs1UJfZxYrigvAyoQ15fHsEMcHHi7R+3NQ9GZXV3G20g/tsNxuMpggMkjvllXRSrEsTyXkBUaJ9v1zSKxd+pbDhOMaidvz7NNIw2sFcYOjd5JA7I+rHlsOgFz6f9qL6aIL55ZDHsJ/+XiALkS8sZ1DyvwdJTGooOluXLVUIn2kyypfS21DdO20s2Ga2jrxWQJ5iOBTU79wVBDTX5z6MZ2VyfDGvpLNxLIKegh0LxpW75xueOYTlETGrOrY7FXoeXpGK/Re8hA0LsZx9OnJ7x8v+d2FtnxXwTvFlMb7qgJty0Xx+vwmYsymISvZJg4e6pSK7fvIGgQzgByNgr/45GFEmrnfcBSMUQ5n/IclU4ZimIgm5B8T37YUkY7mQHrTXSp4HJndpnHKOpdDVlw9hIWEnXeq+y9VpfAAPW7eYyYLfkJehA==
+X-Microsoft-Antispam-Message-Info: 0TsC5FzAV24sospcTDttuimer/ptXC+sEvJaAu8VzVRfjuhl8ATuzAC2ounj6AIbqoLpjTuQCCVhR6RnY2xyvjmiDVqP4OvGTsDLl8NHuiH2wh5IUJeJfAwl1mIE5X1wvJ+L06UM7eeZcPJPQghoxBN08xpFWKUQWu2tpX8Wvv57O55BW8xW3himRZ1S/LQW9NJwwNcJldfFMSSBtz1JL0zuJYO7tU3qzgX4jKQdYpSps6Rf0B2ub6VCFFqBOdm45OHEIeOrnUgvvenUTX7oDWnD+xQB6BSKwJ1Jh2K30HxOaiKsdNzKLm5v/qlyfznNO9MBY3JK8mHdp/xaU6McJVCLkAiaPfSTKBzEKXDRreYQWgmuR+aA1NOr3BazGua1N3Jf41SE+CdiK58hCe9KMbQGh1mWK2xhDB5EXZNLCCI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(366004)(136003)(34490700002)(2906002)(316002)(6512007)(8936002)(86362001)(5660300002)(1076003)(69590400008)(478600001)(52116002)(6506007)(6486002)(66556008)(83380400001)(36756003)(4326008)(6666004)(26005)(186003)(2616005)(956004)(16526019)(8676002)(66946007)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: vWQkW+4AXkDds1yoUqlWb8lFPF7iVZucqBti59ZgQ792k5fOAl/6zWdUD4jnA5SoKPbAPWk0Rt0jLMJGBPzacawo4O5/kCV0Fxjzf2k0VqkeFGMhsmzls9Dl/L4IKr6h7/OxLugmoTM5kgkjuVhboa1mJuvswHX/4DurL95DmSYfKalq6y9tPXbuj/E23voH5BSOyPRmw8d8zQgpgcpiB3kU2svLe1RYywlEZXI9MaqJaRdJGhJcGCVvWSLew5EvujXDvAei+QMGaIETsMwxF6jvp7gqUaTV3mzIJpgmsFocpxA+K6fTe9nMW4dnYpOEtG6GifsCeKqA9+rnu9BurhvH5NgMcU6Ytx+DPS49kFg396ciaqBaeRK9smT4FcOcDop3vuyfmHkgxU18lqNOefOjBMye6TMoNvfkhQcxZDwPXIEt7kvv/FrLaX1WwhKqeKRCsUjLaA1dEfwBf5W2cozScAP2VZdqRninNGTCx8YPzbqq4G1RwrvHIq8/LXPvVxD0Q4ImCIyoklhyyYW/ZpZveZ56Kw594DV7WnIsK7N5VSxaYUdfKyEJZp9CwM5dKYIjDK9yl+uDZr3iY8oC6OPxFwlD9YQT55r+pZakdPcJl2NjZ0LGAGu/Rl8eOrig7r10gtt2fVWb7FlVRZO2Nw==
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3013073c-aba1-49f7-ceef-08d871965a58
+X-MS-Exchange-CrossTenant-Network-Message-Id: eafbac88-e13b-4994-0bc7-08d871965fe4
 X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2020 05:43:05.1431
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2020 05:43:14.3297
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lwqJOi3ubtXqzqJkeG69uJY1VcM2Zg/ClUOMuxZ/NLF6Rnqi0ybmpoPMfzbikgiv781e/WuaBpKETH9V2RKPXw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: ilV5T0MAMbxWU7xnEmLg23Uz38RwON72vjk+vHs4bTEwg9PXERRsQWGKXLeo0uUydOlG66aFIGOquYtWpvN+vA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7333
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Correct fsl,clk-source example since flexcan driver uses "of_property_read_u8"
-to get this property.
+This patch intends to rename FLEXCAN_QUIRK_SETUP_STOP_MODE quirk
+to FLEXCAN_QUIRK_SETUP_STOP_MODE_GRP for non-scu SoCs, coming patch will
+add quirk for scu SoCs.
 
-Fixes: 9d733992772d ("dt-bindings: can: flexcan: add PE clock source property to device tree")
+For non-scu SoCs, setup stop mode with GPR register.
+For scu SoCs, setup stop mode with SCU firmware.
+
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-index e10b6eb955e1..6af67f5e581c 100644
---- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-+++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-@@ -53,5 +53,5 @@ Example:
- 		interrupts = <48 0x2>;
- 		interrupt-parent = <&mpic>;
- 		clock-frequency = <200000000>; // filled in by bootloader
--		fsl,clk-source = <0>; // select clock source 0 for PE
-+		fsl,clk-source = /bits/ 8 <0>; // select clock source 0 for PE
- 	};
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 4d594e977497..e708e7bf28db 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -236,8 +236,8 @@
+ #define FLEXCAN_QUIRK_BROKEN_PERR_STATE BIT(6)
+ /* default to BE register access */
+ #define FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN BIT(7)
+-/* Setup stop mode to support wakeup */
+-#define FLEXCAN_QUIRK_SETUP_STOP_MODE BIT(8)
++/* Setup stop mode with GPR to support wakeup */
++#define FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR BIT(8)
+ /* Support CAN-FD mode */
+ #define FLEXCAN_QUIRK_SUPPORT_FD BIT(9)
+ /* support memory detection and correction */
+@@ -381,7 +381,7 @@ static const struct flexcan_devtype_data fsl_imx28_devtype_data = {
+ static const struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+-		FLEXCAN_QUIRK_SETUP_STOP_MODE,
++		FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR,
+ };
+ 
+ static const struct flexcan_devtype_data fsl_imx8qm_devtype_data = {
+@@ -393,7 +393,7 @@ static const struct flexcan_devtype_data fsl_imx8qm_devtype_data = {
+ static struct flexcan_devtype_data fsl_imx8mp_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
+-		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SETUP_STOP_MODE |
++		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR |
+ 		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SUPPORT_ECC,
+ };
+ 
+@@ -2043,7 +2043,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	of_can_transceiver(dev);
+ 	devm_can_led_init(dev);
+ 
+-	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE) {
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR) {
+ 		err = flexcan_setup_stop_mode(pdev);
+ 		if (err)
+ 			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
 -- 
 2.17.1
 
