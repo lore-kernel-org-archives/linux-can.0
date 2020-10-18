@@ -2,130 +2,148 @@ Return-Path: <SRS0=3nB2=DZ=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF4F1C433E7
-	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:18:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76C45C43457
+	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:36:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9939922282
-	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:18:05 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="WcP5INjn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="WcP5INjn"
+	by mail.kernel.org (Postfix) with ESMTP id 3B7FC204FD
+	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:36:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1603049799;
+	bh=D520WNrr0uWEc7SIFgK6phE/cBpAaUU6XSAVxI02Nh4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=g6Bvg0EDMemKHdnApeFQWGmxQHpgLx99hsdNIa8amcvjpIXNi0jTEkgvo3isn8uaY
+	 6Z8g1bl55P9R18U7biLjC0Y/k2LzaZJh3xpv50xKu3bhX0CpW92m7eO5H/t3hT2lYg
+	 3wH5WOpuW3FCvUaZhVf6hRzdx/JDx2PDp77HYzcc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgJRTSE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 18 Oct 2020 15:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgJRTSD (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 18 Oct 2020 15:18:03 -0400
-X-Greylist: delayed 264 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 18 Oct 2020 12:18:03 PDT
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA74C061755;
-        Sun, 18 Oct 2020 12:18:03 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7A1D5128046A;
-        Sun, 18 Oct 2020 12:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1603048682;
-        bh=aTHhEGSm6DrUFNt/hKuOWL0f+WzaMvx/rc4IP5RJYRs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=WcP5INjnqihCMCJ+2ZkHdzEWBsqi3wavZOcf0NGlcoun37UNiQ4GoZk+2AoMrr8hd
-         1s2t7Y8IzQcDUGm581+QcIuy/enpzpZm6HswhyX4zoKl9l3S5fk96frr/LU4I9kVw8
-         r8s7AtR/5wOGbwEsua/QdQrVgo3j6VSqYIXYukhg=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ywWMwLsGscQI; Sun, 18 Oct 2020 12:18:02 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731575AbgJRT0K (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 18 Oct 2020 15:26:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731567AbgJRT0J (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sun, 18 Oct 2020 15:26:09 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 340C31280456;
-        Sun, 18 Oct 2020 12:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1603048682;
-        bh=aTHhEGSm6DrUFNt/hKuOWL0f+WzaMvx/rc4IP5RJYRs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=WcP5INjnqihCMCJ+2ZkHdzEWBsqi3wavZOcf0NGlcoun37UNiQ4GoZk+2AoMrr8hd
-         1s2t7Y8IzQcDUGm581+QcIuy/enpzpZm6HswhyX4zoKl9l3S5fk96frr/LU4I9kVw8
-         r8s7AtR/5wOGbwEsua/QdQrVgo3j6VSqYIXYukhg=
-Message-ID: <0a739bcd421a3154c2521b49779b287e6c0d08a2.camel@HansenPartnership.com>
-Subject: Re: [Ocfs2-devel] [RFC] treewide: cleanup unreachable breaks
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     trix@redhat.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, clang-built-linux@googlegroups.com,
-        linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org,
-        storagedev@microchip.com, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        ath10k@lists.infradead.org, MPT-FusionLinux.pdl@broadcom.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        usb-storage@lists.one-eyed-alien.net,
-        linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, amd-gfx@lists.freedesktop.org,
-        linux-acpi@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        industrypack-devel@lists.sourceforge.net,
-        linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-nfc@lists.01.org, linux-pm@vger.kernel.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-amlogic@lists.infradead.org,
-        openipmi-developer@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
-        bpf@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-power@fi.rohmeurope.com
-Date:   Sun, 18 Oct 2020 12:17:59 -0700
-In-Reply-To: <20201018191618.GO20115@casper.infradead.org>
-References: <20201017160928.12698-1-trix@redhat.com>
-         <20201018185943.GM20115@casper.infradead.org>
-         <45efa7780c79972eae9ca9bdeb9f7edbab4f3643.camel@HansenPartnership.com>
-         <20201018191618.GO20115@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        by mail.kernel.org (Postfix) with ESMTPSA id 3372D22314;
+        Sun, 18 Oct 2020 19:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603049169;
+        bh=D520WNrr0uWEc7SIFgK6phE/cBpAaUU6XSAVxI02Nh4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PbEVDWXqSU4vpXwtdtm+A+tD5lz1jb5QCAUoq4RgbHpWSEyDA4Lnx6zqRV418b3RC
+         +sf43iU0nYgaWwC2vfGC2PASOpT9W2I6co90SxnL+FmSIw1ppO29RI9KWw+i2rrpNP
+         Mhm6F6IliKBJSzwtOnU6Y49CpZ41uDo7St3/Y9aY=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 32/52] can: flexcan: flexcan_chip_stop(): add error handling and propagate error value
+Date:   Sun, 18 Oct 2020 15:25:09 -0400
+Message-Id: <20201018192530.4055730-32-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201018192530.4055730-1-sashal@kernel.org>
+References: <20201018192530.4055730-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Sun, 2020-10-18 at 20:16 +0100, Matthew Wilcox wrote:
-> On Sun, Oct 18, 2020 at 12:13:35PM -0700, James Bottomley wrote:
-> > On Sun, 2020-10-18 at 19:59 +0100, Matthew Wilcox wrote:
-> > > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> > > > clang has a number of useful, new warnings see
-> > > > https://urldefense.com/v3/__https://clang.llvm.org/docs/DiagnosticsReference.html__;!!GqivPVa7Brio!Krxz78O3RKcB9JBMVo_F98FupVhj_jxX60ddN6tKGEbv_cnooXc1nnBmchm-e_O9ieGnyQ$ 
-> > > 
-> > > Please get your IT department to remove that stupidity.  If you
-> > > can't, please send email from a non-Red Hat email address.
-> > 
-> > Actually, the problem is at Oracle's end somewhere in the ocfs2
-> > list ... if you could fix it, that would be great.  The usual real
-> > mailing lists didn't get this transformation
-> > 
-> > https://lore.kernel.org/bpf/20201017160928.12698-1-trix@redhat.com/
-> > 
-> > but the ocfs2 list archive did:
-> > 
-> > https://oss.oracle.com/pipermail/ocfs2-devel/2020-October/015330.html
-> > 
-> > I bet Oracle IT has put some spam filter on the list that mangles
-> > URLs this way.
-> 
-> *sigh*.  I'm sure there's a way.  I've raised it with someone who
-> should be able to fix it.
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-As someone who works for IBM I can only say I feel your pain ...
+[ Upstream commit 9ad02c7f4f279504bdd38ab706fdc97d5f2b2a9c ]
 
-James
+This patch implements error handling and propagates the error value of
+flexcan_chip_stop(). This function will be called from flexcan_suspend()
+in an upcoming patch in some SoCs which support LPSR mode.
 
+Add a new function flexcan_chip_stop_disable_on_error() that tries to
+disable the chip even in case of errors.
+
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+[mkl: introduce flexcan_chip_stop_disable_on_error() and use it in flexcan_close()]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/r/20200922144429.2613631-11-mkl@pengutronix.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/can/flexcan.c | 34 ++++++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 84dd79041285a..94468a883f369 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1055,18 +1055,23 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	return err;
+ }
+ 
+-/* flexcan_chip_stop
++/* __flexcan_chip_stop
+  *
+- * this functions is entered with clocks enabled
++ * this function is entered with clocks enabled
+  */
+-static void flexcan_chip_stop(struct net_device *dev)
++static int __flexcan_chip_stop(struct net_device *dev, bool disable_on_error)
+ {
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs = priv->regs;
++	int err;
+ 
+ 	/* freeze + disable module */
+-	flexcan_chip_freeze(priv);
+-	flexcan_chip_disable(priv);
++	err = flexcan_chip_freeze(priv);
++	if (err && !disable_on_error)
++		return err;
++	err = flexcan_chip_disable(priv);
++	if (err && !disable_on_error)
++		goto out_chip_unfreeze;
+ 
+ 	/* Disable all interrupts */
+ 	flexcan_write(0, &regs->imask2);
+@@ -1076,6 +1081,23 @@ static void flexcan_chip_stop(struct net_device *dev)
+ 
+ 	flexcan_transceiver_disable(priv);
+ 	priv->can.state = CAN_STATE_STOPPED;
++
++	return 0;
++
++ out_chip_unfreeze:
++	flexcan_chip_unfreeze(priv);
++
++	return err;
++}
++
++static inline int flexcan_chip_stop_disable_on_error(struct net_device *dev)
++{
++	return __flexcan_chip_stop(dev, true);
++}
++
++static inline int flexcan_chip_stop(struct net_device *dev)
++{
++	return __flexcan_chip_stop(dev, false);
+ }
+ 
+ static int flexcan_open(struct net_device *dev)
+@@ -1129,7 +1151,7 @@ static int flexcan_close(struct net_device *dev)
+ 
+ 	netif_stop_queue(dev);
+ 	can_rx_offload_disable(&priv->offload);
+-	flexcan_chip_stop(dev);
++	flexcan_chip_stop_disable_on_error(dev);
+ 
+ 	free_irq(dev->irq, dev);
+ 	clk_disable_unprepare(priv->clk_per);
+-- 
+2.25.1
 
