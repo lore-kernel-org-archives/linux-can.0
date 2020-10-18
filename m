@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 571FFC433E7
-	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:44:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 878B0C433DF
+	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:50:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 25B68207DE
-	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:44:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 486DF20714
+	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:50:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603050251;
-	bh=NmE6hQ/3FioMCYKCOFbaQxX06Kh6L1zhoofrRgH5x+8=;
+	s=default; t=1603050605;
+	bh=BDNwQRwoRfZPxJGVVrsS9A5kA4VPUPUBVwYYvkvLSsk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=fnvLnkuyZHjWw8gfJY7cDa18Qx3Jra9RIswRR3GV0ebvgqVSCClvvOrWN6XjjV3nG
-	 VtVrztg3yItVbR7KmMqd2wW372ensZaBeVqLEG4xTc50ZhrVXkVhLVOvg4ohCSLykL
-	 enrcYOsoN/JICoVWLmxlE7BjmvCbw3G2xj1jb39k=
+	b=miBlOhtMLKn850qJEnf8uFBOyhgRfQFR8Rm7SOJQgVNKjWjZ35cBPQaLW9JuKwK03
+	 6AwaeCSG/srVRGIwrTjbR0XeE+nmYVhVnUG4RyQZtdfRkXG4nm2cAMeT6OerwwinRi
+	 r6V8yv4DQQ31+7/EoRrJaNZSzFSqpvBEr13XsBLE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733200AbgJRToB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 18 Oct 2020 15:44:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36696 "EHLO mail.kernel.org"
+        id S2388077AbgJRTtv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 18 Oct 2020 15:49:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730309AbgJRTX2 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sun, 18 Oct 2020 15:23:28 -0400
+        id S1729480AbgJRTVe (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sun, 18 Oct 2020 15:21:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58460222EB;
-        Sun, 18 Oct 2020 19:23:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88849222EC;
+        Sun, 18 Oct 2020 19:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603049007;
-        bh=NmE6hQ/3FioMCYKCOFbaQxX06Kh6L1zhoofrRgH5x+8=;
+        s=default; t=1603048893;
+        bh=BDNwQRwoRfZPxJGVVrsS9A5kA4VPUPUBVwYYvkvLSsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VMTQfMv/MWuNHfszp5bIuY9AeL+UWWifgigw2In7cyilQ/hTGymJqI0dfNhnBchP+
-         IHyHOol5rE9lfmvL+Ln5JoeLo/ZKjQLYE/5umhcfZxlrH3NQeRlKUpGK9yBeVb+OWR
-         x1/aF69CkNBZTQfXZCKJXLsbsQpGR7sjxOy/F+Ug=
+        b=qBKIwdF2jbcya63sg/kVpAS4W7owNm/ZE4gG+++9V2AjIPI2n0LFiSc02JH+rrp9j
+         LXvuVWmlhFFDOsDI+iabl1QakR/Y8AUoOho/atmoWrXF5ua+FBk5LTAbXrKnPU76Kf
+         j5Ke2qMoRnAiczuT6lg1kEGjsqtQf4AIGMR3vkbY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 43/80] can: flexcan: flexcan_chip_stop(): add error handling and propagate error value
-Date:   Sun, 18 Oct 2020 15:21:54 -0400
-Message-Id: <20201018192231.4054535-43-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 055/101] can: flexcan: flexcan_chip_stop(): add error handling and propagate error value
+Date:   Sun, 18 Oct 2020 15:19:40 -0400
+Message-Id: <20201018192026.4053674-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201018192231.4054535-1-sashal@kernel.org>
-References: <20201018192231.4054535-1-sashal@kernel.org>
+In-Reply-To: <20201018192026.4053674-1-sashal@kernel.org>
+References: <20201018192026.4053674-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -79,10 +79,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 28 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index e5c207ad3c77d..aaa7ed1dc97ee 100644
+index 94d10ec954a05..2ac7a667bde35 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -1232,18 +1232,23 @@ static int flexcan_chip_start(struct net_device *dev)
+@@ -1260,18 +1260,23 @@ static int flexcan_chip_start(struct net_device *dev)
  	return err;
  }
  
@@ -111,7 +111,7 @@ index e5c207ad3c77d..aaa7ed1dc97ee 100644
  
  	/* Disable all interrupts */
  	priv->write(0, &regs->imask2);
-@@ -1253,6 +1258,23 @@ static void flexcan_chip_stop(struct net_device *dev)
+@@ -1281,6 +1286,23 @@ static void flexcan_chip_stop(struct net_device *dev)
  
  	flexcan_transceiver_disable(priv);
  	priv->can.state = CAN_STATE_STOPPED;
@@ -135,7 +135,7 @@ index e5c207ad3c77d..aaa7ed1dc97ee 100644
  }
  
  static int flexcan_open(struct net_device *dev)
-@@ -1341,7 +1363,7 @@ static int flexcan_close(struct net_device *dev)
+@@ -1362,7 +1384,7 @@ static int flexcan_close(struct net_device *dev)
  
  	netif_stop_queue(dev);
  	can_rx_offload_disable(&priv->offload);
