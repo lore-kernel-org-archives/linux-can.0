@@ -2,49 +2,47 @@ Return-Path: <SRS0=1d/x=D3=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C62A9C433E7
-	for <linux-can@archiver.kernel.org>; Tue, 20 Oct 2020 06:40:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33847C433DF
+	for <linux-can@archiver.kernel.org>; Tue, 20 Oct 2020 06:40:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 654A02225F
-	for <linux-can@archiver.kernel.org>; Tue, 20 Oct 2020 06:40:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB3552225F
+	for <linux-can@archiver.kernel.org>; Tue, 20 Oct 2020 06:40:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403916AbgJTGkS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 20 Oct 2020 02:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
+        id S1730785AbgJTGkT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 20 Oct 2020 02:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730785AbgJTGkR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Oct 2020 02:40:17 -0400
+        with ESMTP id S2404327AbgJTGkT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Oct 2020 02:40:19 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7426BC061755
-        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 23:40:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC23BC061755
+        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 23:40:18 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kUlJc-0007ji-Ec; Tue, 20 Oct 2020 08:40:12 +0200
+        id 1kUlJa-0007jj-P7; Tue, 20 Oct 2020 08:40:10 +0200
 Received: from [IPv6:2a03:f580:87bc:d400:1dbb:4a83:65c6:6f4] (unknown [IPv6:2a03:f580:87bc:d400:1dbb:4a83:65c6:6f4])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 8AABE57CE99;
-        Mon, 19 Oct 2020 18:49:18 +0000 (UTC)
-Subject: Re: [PATCH v4 0/4] can: add support for ETAS ES58X CAN USB
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-can@vger.kernel.org
-Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        by smtp.blackshift.org (Postfix) with ESMTPSA id DBACA57CE61;
+        Mon, 19 Oct 2020 18:11:21 +0000 (UTC)
+Subject: Re: [PATCH] can: mcp251xfd: fix semicolon.cocci warnings
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
         Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <202010192040.u25q5Ddd-lkp@intel.com>
+ <20201019120805.GA63693@ae4257e0ab22>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -106,15 +104,15 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <e048d60f-eb8d-cc71-be18-a790e3091cdc@pengutronix.de>
-Date:   Mon, 19 Oct 2020 20:49:14 +0200
+Message-ID: <87d0ad42-e32b-766c-ad73-0d75e7a241f8@pengutronix.de>
+Date:   Mon, 19 Oct 2020 20:11:16 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20201019120805.GA63693@ae4257e0ab22>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="SJ0mY4XF7WNd2MAMQa3Q9ygJO0ACevG5E"
+ boundary="4UdfvVcB1tslzKMudZImZrTWsH7lS8gNz"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -124,40 +122,48 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SJ0mY4XF7WNd2MAMQa3Q9ygJO0ACevG5E
-Content-Type: multipart/mixed; boundary="Nly11ueWjUjyv1XjY9b0vTazUZI0obUTJ";
+--4UdfvVcB1tslzKMudZImZrTWsH7lS8gNz
+Content-Type: multipart/mixed; boundary="uc4AWUTjPallXlAXuWxOIL3AWr8Qypw8f";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-can@vger.kernel.org
-Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Masahiro Yamada <masahiroy@kernel.org>
-Message-ID: <e048d60f-eb8d-cc71-be18-a790e3091cdc@pengutronix.de>
-Subject: Re: [PATCH v4 0/4] can: add support for ETAS ES58X CAN USB
-References: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
-In-Reply-To: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
+To: kernel test robot <lkp@intel.com>
+Cc: kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+ Wolfgang Grandegger <wg@grandegger.com>, Jakub Kicinski <kuba@kernel.org>,
+ linux-can@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <87d0ad42-e32b-766c-ad73-0d75e7a241f8@pengutronix.de>
+Subject: Re: [PATCH] can: mcp251xfd: fix semicolon.cocci warnings
+References: <202010192040.u25q5Ddd-lkp@intel.com>
+ <20201019120805.GA63693@ae4257e0ab22>
+In-Reply-To: <20201019120805.GA63693@ae4257e0ab22>
 
---Nly11ueWjUjyv1XjY9b0vTazUZI0obUTJ
+--uc4AWUTjPallXlAXuWxOIL3AWr8Qypw8f
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 10/16/20 7:13 PM, Vincent Mailhol wrote:
-> The purpose of this patch series is to introduce a new CAN USB
-> driver to support ETAS USB interfaces (ES58X series).
+On 10/19/20 2:08 PM, kernel test robot wrote:
+> From: kernel test robot <lkp@intel.com>
 >=20
-> During development, issues in drivers/net/can/dev.c were discovered,
-> the fix for those issues are included in this patch series.
+> drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c:176:2-3: Unneeded semi=
+colon
 >=20
-> We also propose to add one helper functions in include/linux/can/dev.h
-> which we think can benefit other drivers: get_can_len().
-I applied patches 1-3 to linux-can, I've changed get_can_len() -> can_get=
-_len()
-to use a common can_ prefix for all CAN related functions.
+>=20
+>  Remove unneeded semicolon.
+>=20
+> Generated by: scripts/coccinelle/misc/semicolon.cocci
+>=20
+> Fixes: f4f77366f21d ("can: mcp251xfd: rename all user facing strings to=
+ mcp251xfd")
 
+The correct fixes tag is:
+
+Fixes: 875347fe5756 ("can: mcp25xxfd: add regmap infrastructure")
+
+> Signed-off-by: kernel test robot <lkp@intel.com>
+
+Applied with that to linux-can.
+
+tnx,
 Marc
 
 --=20
@@ -167,23 +173,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---Nly11ueWjUjyv1XjY9b0vTazUZI0obUTJ--
+--uc4AWUTjPallXlAXuWxOIL3AWr8Qypw8f--
 
---SJ0mY4XF7WNd2MAMQa3Q9ygJO0ACevG5E
+--4UdfvVcB1tslzKMudZImZrTWsH7lS8gNz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+N36oACgkQqclaivrt
-76nDmgf7BlwMa3rvVvuUvc7hO+aoJrDSn32CQKTKZSbrp9xnLTlvgapjbDv6LK0X
-3Mx6Pc9pdUhwPkpiKcOkVhSQ/WDycuj7calOxlsqEXFGa96GvAQRaSSNcGk0ul7A
-dEyg8U6UEjZq/Ha1Tn9bsaEp6nHQ6lcXA0CaB+i7he9HhlH1T8hkDBmm7AypUohE
-+YgOmsA2KVzbt+K8khevPLjc+FY4B/7t/UY3DIJZjswygQS5v8Ou1iZhBx6e3KMc
-RF0K7MN/Ptlq5fmDDUfHyhSzEalTqrfktiLYQ5NhB1ySKTKJCIheLLZ32t2yhjSg
-qZtVut4icG4bl+8o6yoq6mTr5J3XtQ==
-=bNR1
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+N1sQACgkQqclaivrt
+76k8sAf/SRPNPfcKAGBC7kY/6wSCKTDPzPWMjXYOV7ejW8R8KhekhOM0jenNpqSA
+WWKmmspFj0wCF6lUjCAYlfuVRY5aGgYVhakvDdG3hW13mZc2YN8QE9zEQopNPiNN
+dZs/gK4OGi7CzcrlaqyFQj4V0KgtOXqn7Z0LW11c6EBy6Uj6R/vizIlOAD5xEu3e
+79kngSVvkrRBXze0NVKZmiewfM8qvbnnG5ncyazpD6HeLz+G6Cp5kNJJrdCNhA9s
+SwNWHde2Zt2B0POtXA2Lgl6FeqKyuFH917ESLSMSKmyNProWXFkPexKCdVwHVgPD
+wHoXeuEREc4AtBymq9JHmb9E78d/oA==
+=nOKQ
 -----END PGP SIGNATURE-----
 
---SJ0mY4XF7WNd2MAMQa3Q9ygJO0ACevG5E--
+--4UdfvVcB1tslzKMudZImZrTWsH7lS8gNz--
