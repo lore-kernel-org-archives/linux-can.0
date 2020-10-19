@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45B1EC4363A
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 366C2C4363D
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E7B9822365
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D2FD72224F
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731030AbgJSTFe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 19 Oct 2020 15:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+        id S1731107AbgJSTFf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 19 Oct 2020 15:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730945AbgJSTFe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 15:05:34 -0400
+        with ESMTP id S1731091AbgJSTFf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 15:05:35 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28F4C0613CE
-        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 12:05:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC839C0613CE
+        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 12:05:34 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kUaTL-0005v5-Ro; Mon, 19 Oct 2020 21:05:31 +0200
+        id 1kUaTM-0005v5-Os; Mon, 19 Oct 2020 21:05:32 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+Cc:     kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-rfc 03/16] can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ context
-Date:   Mon, 19 Oct 2020 21:05:11 +0200
-Message-Id: <20201019190524.1285319-4-mkl@pengutronix.de>
+Subject: [net-rfc 06/16] can: can_create_echo_skb(): fix echo skb generation: always use skb_clone()
+Date:   Mon, 19 Oct 2020 21:05:14 +0200
+Message-Id: <20201019190524.1285319-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201019190524.1285319-1-mkl@pengutronix.de>
 References: <20201019190524.1285319-1-mkl@pengutronix.de>
@@ -47,61 +47,93 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-If a driver calls can_get_echo_skb() during a hardware IRQ (which is often, but
-not always, the case), the 'WARN_ON(in_irq)' in
-net/core/skbuff.c#skb_release_head_state() might be triggered, under network
-congestion circumstances, together with the potential risk of a NULL pointer
-dereference.
+All user space generated SKBs are owned by a socket (unless injected into the
+key via AF_PACKET). If a socket is closed, all associated skbs will be cleaned
+up.
 
-The root cause of this issue is the call to kfree_skb() instead of
-dev_kfree_skb_irq() in net/core/dev.c#enqueue_to_backlog().
+This leads to a problem when a CAN driver calls can_put_echo_skb() on a
+unshared SKB. If the socket is closed prior to the TX complete handler,
+can_get_echo_skb() and the subsequent delivering of the echo SKB to all
+registered callbacks, a SKB with a refcount of 0 is delivered.
 
-This patch prevents the skb to be freed within the call to netif_rx() by
-incrementing its reference count with skb_get(). The skb is finally freed by
-one of the in-irq-context safe functions: dev_consume_skb_any() or
-dev_kfree_skb_any(). The "any" version is used because some drivers might call
-can_get_echo_skb() in a normal context.
+To avoid the problem, in can_get_echo_skb() the original SKB is now always
+cloned, regardless of shared SKB or not. If the process exists it can now
+safely discard its SKBs, without disturbing the delivery of the echo SKB.
 
-The reason for this issue to occur is that initially, in the core network
-stack, loopback skb were not supposed to be received in hardware IRQ context.
-The CAN stack is an exeption.
+The problem shows up in the j1939 stack, when it clones the incoming skb, which
+detects the already 0 refcount.
 
-This bug was previously reported back in 2017 in [1] but the proposed patch
-never got accepted.
+We can easily reproduce this with following example:
 
-While [1] directly modifies net/core/dev.c, we try to propose here a
-smoother modification local to CAN network stack (the assumption
-behind is that only CAN devices are affected by this issue).
+testj1939 -B -r can0: &
+cansend can0 1823ff40#0123
 
-[1] http://lore.kernel.org/r/57a3ffb6-3309-3ad5-5a34-e93c3fe3614d@cetitec.com
+WARNING: CPU: 0 PID: 293 at lib/refcount.c:25 refcount_warn_saturate+0x108/0x174
+refcount_t: addition on 0; use-after-free.
+Modules linked in: coda_vpu imx_vdoa videobuf2_vmalloc dw_hdmi_ahb_audio vcan
+CPU: 0 PID: 293 Comm: cansend Not tainted 5.5.0-rc6-00376-g9e20dcb7040d #1
+Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+Backtrace:
+[<c010f570>] (dump_backtrace) from [<c010f90c>] (show_stack+0x20/0x24)
+[<c010f8ec>] (show_stack) from [<c0c3e1a4>] (dump_stack+0x8c/0xa0)
+[<c0c3e118>] (dump_stack) from [<c0127fec>] (__warn+0xe0/0x108)
+[<c0127f0c>] (__warn) from [<c01283c8>] (warn_slowpath_fmt+0xa8/0xcc)
+[<c0128324>] (warn_slowpath_fmt) from [<c0539c0c>] (refcount_warn_saturate+0x108/0x174)
+[<c0539b04>] (refcount_warn_saturate) from [<c0ad2cac>] (j1939_can_recv+0x20c/0x210)
+[<c0ad2aa0>] (j1939_can_recv) from [<c0ac9dc8>] (can_rcv_filter+0xb4/0x268)
+[<c0ac9d14>] (can_rcv_filter) from [<c0aca2cc>] (can_receive+0xb0/0xe4)
+[<c0aca21c>] (can_receive) from [<c0aca348>] (can_rcv+0x48/0x98)
+[<c0aca300>] (can_rcv) from [<c09b1fdc>] (__netif_receive_skb_one_core+0x64/0x88)
+[<c09b1f78>] (__netif_receive_skb_one_core) from [<c09b2070>] (__netif_receive_skb+0x38/0x94)
+[<c09b2038>] (__netif_receive_skb) from [<c09b2130>] (netif_receive_skb_internal+0x64/0xf8)
+[<c09b20cc>] (netif_receive_skb_internal) from [<c09b21f8>] (netif_receive_skb+0x34/0x19c)
+[<c09b21c4>] (netif_receive_skb) from [<c0791278>] (can_rx_offload_napi_poll+0x58/0xb4)
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201002154219.4887-2-mailhol.vincent@wanadoo.fr
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
+Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: http://lore.kernel.org/r/20200124132656.22156-1-o.rempel@pengutronix.de
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/linux/can/skb.h | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index b70ded3760f2..73cfcd7e9517 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -538,7 +538,11 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
- 	if (!skb)
- 		return 0;
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 900b9f4e0605..fc61cf4eff1c 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -61,21 +61,17 @@ static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
+  */
+ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
+ {
+-	if (skb_shared(skb)) {
+-		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
++	struct sk_buff *nskb;
  
--	netif_rx(skb);
-+	skb_get(skb);
-+	if (netif_rx(skb) == NET_RX_SUCCESS)
-+		dev_consume_skb_any(skb);
-+	else
-+		dev_kfree_skb_any(skb);
+-		if (likely(nskb)) {
+-			can_skb_set_owner(nskb, skb->sk);
+-			consume_skb(skb);
+-			return nskb;
+-		} else {
+-			kfree_skb(skb);
+-			return NULL;
+-		}
++	nskb = skb_clone(skb, GFP_ATOMIC);
++	if (unlikely(!nskb)) {
++		kfree_skb(skb);
++		return NULL;
+ 	}
  
- 	return len;
+-	/* we can assume to have an unshared skb with proper owner */
+-	return skb;
++	can_skb_set_owner(nskb, skb->sk);
++	consume_skb(skb);
++	return nskb;
  }
+ 
+ #endif /* !_CAN_SKB_H */
 -- 
 2.28.0
 
