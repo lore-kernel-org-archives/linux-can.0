@@ -1,149 +1,258 @@
-Return-Path: <SRS0=3nB2=DZ=vger.kernel.org=linux-can-owner@kernel.org>
+Return-Path: <SRS0=yT01=D2=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 357A8C433E7
-	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECDC6C433E7
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 05:23:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0267F22263
-	for <linux-can@archiver.kernel.org>; Sun, 18 Oct 2020 19:57:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603051070;
-	bh=BDNwQRwoRfZPxJGVVrsS9A5kA4VPUPUBVwYYvkvLSsk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=TKiLBp3O/55jkb1ndKXwlONeDjAsufOgvO4a0BfSqLJkNiOenLVxlVwO/j1u8IITR
-	 lCWuwtXWWSGKBRaijd/n34IaRkWtgYcNux8yn1L1GTftz89XICWcBFV7c88hQUaa6Y
-	 a6kHVqf9PE5BhG8S8e699bcbMb740qQL35WRW3g0=
+	by mail.kernel.org (Postfix) with ESMTP id 635A222260
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 05:23:13 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=csselectronics.com header.i=@csselectronics.com header.b="iI7hLop3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgJRTTT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 18 Oct 2020 15:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727286AbgJRTTS (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sun, 18 Oct 2020 15:19:18 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC038222C8;
-        Sun, 18 Oct 2020 19:19:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603048757;
-        bh=BDNwQRwoRfZPxJGVVrsS9A5kA4VPUPUBVwYYvkvLSsk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BANUMzjuDytOSGQCyFO5m/cOMQcJkRjLAzTfuHdPHyKba1uW/hAZkJh6VqmFEFPIb
-         bByKdvtdioA02sOmilVTkEf8OEEp8IRCsy8vu2L5herQMg5SEr+izlSJa6JCt+DYUr
-         kfwnDCkpP6cYtNynBZHO1PJNt7SSKn8j2tl3AHs0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 058/111] can: flexcan: flexcan_chip_stop(): add error handling and propagate error value
-Date:   Sun, 18 Oct 2020 15:17:14 -0400
-Message-Id: <20201018191807.4052726-58-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201018191807.4052726-1-sashal@kernel.org>
-References: <20201018191807.4052726-1-sashal@kernel.org>
+        id S1726222AbgJSFXM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 19 Oct 2020 01:23:12 -0400
+Received: from mailrelay4-2.pub.mailoutpod1-cph3.one.com ([46.30.212.3]:57601
+        "EHLO mailrelay4-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726228AbgJSFXM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 01:23:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=csselectronics.com; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:cc:references:to:subject:from;
+        bh=VNJuIIukJPG/49UGwSbIZ/Wg/08FK0tOCaoz10NMwSg=;
+        b=iI7hLop3gqAg6QRnXM1lED8evcEcv3hKM0jBRxVifM4ElnP3iNd/WEwGcBxnOVavibYCv9sEHe/6+
+         v2fuUpZddv/azsj+FH97KJWjXYJvZh1uNsSO7oDwGC9I0g8n6VxNLaTlL2LIA9LetVw4/bgBf6m0yT
+         7ehIEkP0nQOlvLrRdSEH9KN7RMD3PmM5eULO6U/KNW2EGdWD51xeFIk5fkU4ECwY95+CGuVWV3BlbE
+         yQhKoM+NWniX0K0G1GTZzXatlrS2fY2A5sDt4JyLzwMWnLxwuecka6IFbAUMqYtzKaqPQaSREEs5iJ
+         RMETHvtnnVdcMEFcYwYCeHKqblhseUg==
+X-HalOne-Cookie: 5d7eadc935a9d094cfedef4ae2d2eb4ec1221f94
+X-HalOne-ID: 2ae02fe5-11cb-11eb-a2b4-d0431ea8bb10
+Received: from [192.168.0.157] (unknown [5.103.118.41])
+        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 2ae02fe5-11cb-11eb-a2b4-d0431ea8bb10;
+        Mon, 19 Oct 2020 05:23:06 +0000 (UTC)
+Subject: Re: [PATCH v2 3/3] can: mcp251xfd: add support for internal PLL
+To:     linux-can@vger.kernel.org
+References: <20201016205211.1141590-1-mkl@pengutronix.de>
+ <20201016205211.1141590-4-mkl@pengutronix.de>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>
+From:   =?UTF-8?Q?Magnus_Aagaard_S=c3=b8rensen?= <mas@csselectronics.com>
+Message-ID: <18c8ed1b-7b0b-a9f7-9583-13a4d65490fd@csselectronics.com>
+Date:   Mon, 19 Oct 2020 07:23:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <20201016205211.1141590-4-mkl@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: Magnus Aagaard Sørensen <mas@csselectronics.com>
 
-[ Upstream commit 9ad02c7f4f279504bdd38ab706fdc97d5f2b2a9c ]
-
-This patch implements error handling and propagates the error value of
-flexcan_chip_stop(). This function will be called from flexcan_suspend()
-in an upcoming patch in some SoCs which support LPSR mode.
-
-Add a new function flexcan_chip_stop_disable_on_error() that tries to
-disable the chip even in case of errors.
-
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-[mkl: introduce flexcan_chip_stop_disable_on_error() and use it in flexcan_close()]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://lore.kernel.org/r/20200922144429.2613631-11-mkl@pengutronix.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/can/flexcan.c | 34 ++++++++++++++++++++++++++++------
- 1 file changed, 28 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 94d10ec954a05..2ac7a667bde35 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1260,18 +1260,23 @@ static int flexcan_chip_start(struct net_device *dev)
- 	return err;
- }
- 
--/* flexcan_chip_stop
-+/* __flexcan_chip_stop
-  *
-- * this functions is entered with clocks enabled
-+ * this function is entered with clocks enabled
-  */
--static void flexcan_chip_stop(struct net_device *dev)
-+static int __flexcan_chip_stop(struct net_device *dev, bool disable_on_error)
- {
- 	struct flexcan_priv *priv = netdev_priv(dev);
- 	struct flexcan_regs __iomem *regs = priv->regs;
-+	int err;
- 
- 	/* freeze + disable module */
--	flexcan_chip_freeze(priv);
--	flexcan_chip_disable(priv);
-+	err = flexcan_chip_freeze(priv);
-+	if (err && !disable_on_error)
-+		return err;
-+	err = flexcan_chip_disable(priv);
-+	if (err && !disable_on_error)
-+		goto out_chip_unfreeze;
- 
- 	/* Disable all interrupts */
- 	priv->write(0, &regs->imask2);
-@@ -1281,6 +1286,23 @@ static void flexcan_chip_stop(struct net_device *dev)
- 
- 	flexcan_transceiver_disable(priv);
- 	priv->can.state = CAN_STATE_STOPPED;
-+
-+	return 0;
-+
-+ out_chip_unfreeze:
-+	flexcan_chip_unfreeze(priv);
-+
-+	return err;
-+}
-+
-+static inline int flexcan_chip_stop_disable_on_error(struct net_device *dev)
-+{
-+	return __flexcan_chip_stop(dev, true);
-+}
-+
-+static inline int flexcan_chip_stop(struct net_device *dev)
-+{
-+	return __flexcan_chip_stop(dev, false);
- }
- 
- static int flexcan_open(struct net_device *dev)
-@@ -1362,7 +1384,7 @@ static int flexcan_close(struct net_device *dev)
- 
- 	netif_stop_queue(dev);
- 	can_rx_offload_disable(&priv->offload);
--	flexcan_chip_stop(dev);
-+	flexcan_chip_stop_disable_on_error(dev);
- 
- 	can_rx_offload_del(&priv->offload);
- 	free_irq(dev->irq, dev);
--- 
-2.25.1
-
+On 16-10-2020 22:52, Marc Kleine-Budde wrote:
+> The PLL is enabled if the configured clock is less than or equal to 10 times
+> the max clock frequency.
+>
+> The device will operate with two different SPI speeds. A slow speed determined
+> by the clock without the PLL enabled, and a fast speed derived from the
+> frequency with the PLL enabled.
+>
+> Link: https://lore.kernel.org/r/20201015124401.2766-3-mas@csselectronics.com
+> Co-developed-by: Magnus Aagaard Sørensen <mas@csselectronics.com>
+> Not-Singed-off-by: Magnus Aagaard Sørensen <mas@csselectronics.com>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>   .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 73 +++++++++++++++----
+>   drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |  3 +
+>   2 files changed, 63 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> index b8304b7096d1..2be643c6e243 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> @@ -479,8 +479,12 @@ __mcp251xfd_chip_set_mode(const struct mcp251xfd_priv *priv,
+>   	if (err)
+>   		return err;
+>   
+> -	if (mode_req == MCP251XFD_REG_CON_MODE_SLEEP || nowait)
+> +	if (mode_req == MCP251XFD_REG_CON_MODE_SLEEP || nowait) {
+> +		if (mode_req == MCP251XFD_REG_CON_MODE_SLEEP)
+> +			priv->spi->max_speed_hz = priv->spi_max_speed_hz_slow;
+> +
+>   		return 0;
+> +	}
+>   
+>   	err = regmap_read_poll_timeout(priv->map_reg, MCP251XFD_REG_CON, con,
+>   				       FIELD_GET(MCP251XFD_REG_CON_OPMOD_MASK,
+> @@ -655,7 +659,7 @@ static int mcp251xfd_chip_softreset(const struct mcp251xfd_priv *priv)
+>   
+>   static int mcp251xfd_chip_clock_init(const struct mcp251xfd_priv *priv)
+>   {
+> -	u32 osc;
+> +	u32 osc, osc_reference, osc_mask;
+>   	int err;
+>   
+>   	/* Activate Low Power Mode on Oscillator Disable. This only
+> @@ -665,7 +669,34 @@ static int mcp251xfd_chip_clock_init(const struct mcp251xfd_priv *priv)
+>   	osc = MCP251XFD_REG_OSC_LPMEN |
+>   		FIELD_PREP(MCP251XFD_REG_OSC_CLKODIV_MASK,
+>   			   MCP251XFD_REG_OSC_CLKODIV_10);
+> -	return regmap_write(priv->map_reg, MCP251XFD_REG_OSC, osc);
+> +	osc_reference = MCP251XFD_REG_OSC_OSCRDY;
+> +	osc_mask = MCP251XFD_REG_OSC_OSCRDY | MCP251XFD_REG_OSC_PLLRDY;
+> +
+> +	if (priv->pll_enable) {
+> +		osc |= MCP251XFD_REG_OSC_PLLEN;
+> +		osc_reference |= MCP251XFD_REG_OSC_PLLRDY;
+> +	}
+> +
+> +	err = regmap_write(priv->map_reg, MCP251XFD_REG_OSC, osc);
+> +	if (err)
+> +		return err;
+> +
+> +	/* Wait for "Oscillator + PLL Ready" bit */
+> +	err = regmap_read_poll_timeout(priv->map_reg, MCP251XFD_REG_OSC, osc,
+> +				       (osc & osc_mask) == osc_reference,
+> +				       MCP251XFD_OSC_STAB_SLEEP_US,
+> +				       MCP251XFD_OSC_STAB_TIMEOUT_US);
+> +
+> +	if (err == -ETIMEDOUT) {
+> +		netdev_err(priv->ndev,
+> +			   "Timeout waiting for Oscillator + PLL Ready (osc=0x%08x, osc_reference=0x%08x)\n",
+> +			   osc, osc_reference);
+> +		return -ETIMEDOUT;
+> +	}
+> +
+> +	priv->spi->max_speed_hz = priv->spi_max_speed_hz_fast;
+> +
+> +	return 0;
+>   }
+>   
+>   static int mcp251xfd_chip_timestamp_init(const struct mcp251xfd_priv *priv)
+> @@ -2604,11 +2635,12 @@ mcp251xfd_register_done(const struct mcp251xfd_priv *priv)
+>   		return err;
+>   
+>   	netdev_info(priv->ndev,
+> -		    "%s rev%lu.%lu (%cRX_INT %cMAB_NO_WARN %cCRC_REG %cCRC_RX %cCRC_TX %cECC %cHD c:%u.%02uMHz m:%u.%02uMHz r:%u.%02uMHz e:%u.%02uMHz) successfully initialized.\n",
+> +		    "%s rev%lu.%lu (%cRX_INT %cPLL %cMAB_NO_WARN %cCRC_REG %cCRC_RX %cCRC_TX %cECC %cHD c:%u.%02uMHz m:%u.%02uMHz rs:%u.%02uMHz rf:%u.%02uMHz ef:%u.%02uMHz) successfully initialized.\n",
+>   		    mcp251xfd_get_model_str(priv),
+>   		    FIELD_GET(MCP251XFD_REG_DEVID_ID_MASK, dev_id),
+>   		    FIELD_GET(MCP251XFD_REG_DEVID_REV_MASK, dev_id),
+>   		    priv->rx_int ? '+' : '-',
+> +		    priv->pll_enable ? '+' : '-',
+>   		    MCP251XFD_QUIRK_ACTIVE(MAB_NO_WARN),
+>   		    MCP251XFD_QUIRK_ACTIVE(CRC_REG),
+>   		    MCP251XFD_QUIRK_ACTIVE(CRC_RX),
+> @@ -2619,8 +2651,10 @@ mcp251xfd_register_done(const struct mcp251xfd_priv *priv)
+>   		    priv->can.clock.freq % 1000000 / 1000 / 10,
+>   		    priv->spi_max_speed_hz_orig / 1000000,
+>   		    priv->spi_max_speed_hz_orig % 1000000 / 1000 / 10,
+> -		    priv->spi->max_speed_hz / 1000000,
+> -		    priv->spi->max_speed_hz % 1000000 / 1000 / 10,
+> +		    priv->spi_max_speed_hz_slow / 1000000,
+> +		    priv->spi_max_speed_hz_slow % 1000000 / 1000 / 10,
+> +		    priv->spi_max_speed_hz_fast / 1000000,
+> +		    priv->spi_max_speed_hz_fast % 1000000 / 1000 / 10,
+>   		    effective_speed_hz / 1000000,
+>   		    effective_speed_hz % 1000000 / 1000 / 10);
+>   
+> @@ -2650,6 +2684,10 @@ static int mcp251xfd_register(struct mcp251xfd_priv *priv)
+>   	if (err)
+>   		goto out_chip_set_mode_sleep;
+>   
+> +	err = mcp251xfd_chip_clock_init(priv);
+> +	if (err)
+> +		goto out_chip_set_mode_sleep;
+> +
+>   	err = mcp251xfd_register_chip_detect(priv);
+>   	if (err)
+>   		goto out_chip_set_mode_sleep;
+> @@ -2743,6 +2781,7 @@ static int mcp251xfd_probe(struct spi_device *spi)
+>   	struct gpio_desc *rx_int;
+>   	struct regulator *reg_vdd, *reg_xceiver;
+>   	struct clk *clk;
+> +	bool pll_enable = false;
+>   	u32 freq;
+>   	int err;
+>   
+> @@ -2785,12 +2824,8 @@ static int mcp251xfd_probe(struct spi_device *spi)
+>   		return -ERANGE;
+>   	}
+>   
+> -	if (freq <= MCP251XFD_SYSCLOCK_HZ_MAX / MCP251XFD_OSC_PLL_MULTIPLIER) {
+> -		dev_err(&spi->dev,
+> -			"Oscillator frequency (%u Hz) is too low and PLL is not supported.\n",
+> -			freq);
+> -		return -ERANGE;
+> -	}
+> +	if (freq <= MCP251XFD_SYSCLOCK_HZ_MAX / MCP251XFD_OSC_PLL_MULTIPLIER)
+> +		pll_enable = true;
+>   
+>   	ndev = alloc_candev(sizeof(struct mcp251xfd_priv),
+>   			    MCP251XFD_TX_OBJ_NUM_MAX);
+> @@ -2806,6 +2841,8 @@ static int mcp251xfd_probe(struct spi_device *spi)
+>   	priv = netdev_priv(ndev);
+>   	spi_set_drvdata(spi, priv);
+>   	priv->can.clock.freq = freq;
+> +	if (pll_enable)
+> +		priv->can.clock.freq *= MCP251XFD_OSC_PLL_MULTIPLIER;
+>   	priv->can.do_set_mode = mcp251xfd_set_mode;
+>   	priv->can.do_get_berr_counter = mcp251xfd_get_berr_counter;
+>   	priv->can.bittiming_const = &mcp251xfd_bittiming_const;
+> @@ -2817,6 +2854,7 @@ static int mcp251xfd_probe(struct spi_device *spi)
+>   	priv->spi = spi;
+>   	priv->rx_int = rx_int;
+>   	priv->clk = clk;
+> +	priv->pll_enable = pll_enable;
+>   	priv->reg_vdd = reg_vdd;
+>   	priv->reg_xceiver = reg_xceiver;
+>   
+> @@ -2856,7 +2894,16 @@ static int mcp251xfd_probe(struct spi_device *spi)
+>   	 *
+>   	 */
+>   	priv->spi_max_speed_hz_orig = spi->max_speed_hz;
+> -	spi->max_speed_hz = min(spi->max_speed_hz, freq / 2 / 1000 * 850);
+> +	priv->spi_max_speed_hz_slow = min(spi->max_speed_hz,
+> +					  freq / 2 / 1000 * 850);
+> +	if (priv->pll_enable)
+> +		priv->spi_max_speed_hz_fast = min(spi->max_speed_hz,
+> +						  freq *
+> +						  MCP251XFD_OSC_PLL_MULTIPLIER /
+> +						  2 / 1000 * 850);
+> +	else
+> +		priv->spi_max_speed_hz_fast = priv->spi_max_speed_hz_slow;
+> +	spi->max_speed_hz = priv->spi_max_speed_hz_slow;
+>   	spi->bits_per_word = 8;
+>   	spi->rt = true;
+>   	err = spi_setup(spi);
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+> index fa1246e39980..813a791234de 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+> @@ -579,6 +579,8 @@ struct mcp251xfd_priv {
+>   
+>   	struct spi_device *spi;
+>   	u32 spi_max_speed_hz_orig;
+> +	u32 spi_max_speed_hz_fast;
+> +	u32 spi_max_speed_hz_slow;
+>   
+>   	struct mcp251xfd_tef_ring tef;
+>   	struct mcp251xfd_tx_ring tx[1];
+> @@ -591,6 +593,7 @@ struct mcp251xfd_priv {
+>   
+>   	struct gpio_desc *rx_int;
+>   	struct clk *clk;
+> +	bool pll_enable;
+>   	struct regulator *reg_vdd;
+>   	struct regulator *reg_xceiver;
+>   
