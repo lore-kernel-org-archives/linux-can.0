@@ -7,34 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F670C433DF
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A72C388F9
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EE08A2224F
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 37AAC2224F
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731122AbgJSTFg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 19 Oct 2020 15:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S1731112AbgJSTFh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 19 Oct 2020 15:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731105AbgJSTFf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 15:05:35 -0400
+        with ESMTP id S1731126AbgJSTFg (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 15:05:36 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C235FC0613CE
-        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 12:05:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE948C0613CE
+        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 12:05:36 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kUaTN-0005v5-Pu; Mon, 19 Oct 2020 21:05:33 +0200
+        id 1kUaTO-0005v5-MN; Mon, 19 Oct 2020 21:05:34 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-rfc 08/16] can: isotp: Explain PDU in CAN_ISOTP help text
-Date:   Mon, 19 Oct 2020 21:05:16 +0200
-Message-Id: <20201019190524.1285319-9-mkl@pengutronix.de>
+Subject: [net-rfc 10/16] can: ti_hecc: add missed clk_disable_unprepare() in error path
+Date:   Mon, 19 Oct 2020 21:05:18 +0200
+Message-Id: <20201019190524.1285319-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201019190524.1285319-1-mkl@pengutronix.de>
 References: <20201019190524.1285319-1-mkl@pengutronix.de>
@@ -48,38 +47,54 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-The help text for the CAN_ISOTP config symbol uses the acronym "PDU".  However,
-this acronym is not explained here, nor in Documentation/networking/can.rst.
+The driver forgets to call clk_disable_unprepare() in error path after
+a success calling for clk_prepare_enable().
 
-Expand the acronym to make it easier for users to decide if they need to enable
-the CAN_ISOTP option or not.
+Fix it by adding a clk_disable_unprepare() in error path.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20201013141341.28487-1-geert+renesas@glider.be
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Link: https://lore.kernel.org/r/1594973079-27743-1-git-send-email-zhangchangzhong@huawei.com
+Fixes: befa60113ce7 ("can: ti_hecc: add missing prepare and unprepare of the clock")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/Kconfig | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/can/ti_hecc.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/Kconfig b/net/can/Kconfig
-index 224e5e0283a9..7c9958df91d3 100644
---- a/net/can/Kconfig
-+++ b/net/can/Kconfig
-@@ -62,8 +62,9 @@ config CAN_ISOTP
- 	  communication between CAN nodes via two defined CAN Identifiers.
- 	  As CAN frames can only transport a small amount of data bytes
- 	  (max. 8 bytes for 'classic' CAN and max. 64 bytes for CAN FD) this
--	  segmentation is needed to transport longer PDUs as needed e.g. for
--	  vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN traffic.
-+	  segmentation is needed to transport longer Protocol Data Units (PDU)
-+	  as needed e.g. for vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN
-+	  traffic.
- 	  This protocol driver implements data transfers according to
- 	  ISO 15765-2:2016 for 'classic' CAN and CAN FD frame types.
- 	  If you want to perform automotive vehicle diagnostic services (UDS),
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 1d63006c97bc..9913f5458279 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -933,7 +933,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	err = clk_prepare_enable(priv->clk);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "clk_prepare_enable() failed\n");
+-		goto probe_exit_clk;
++		goto probe_exit_release_clk;
+ 	}
+ 
+ 	priv->offload.mailbox_read = ti_hecc_mailbox_read;
+@@ -942,7 +942,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	err = can_rx_offload_add_timestamp(ndev, &priv->offload);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "can_rx_offload_add_timestamp() failed\n");
+-		goto probe_exit_clk;
++		goto probe_exit_disable_clk;
+ 	}
+ 
+ 	err = register_candev(ndev);
+@@ -960,7 +960,9 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 
+ probe_exit_offload:
+ 	can_rx_offload_del(&priv->offload);
+-probe_exit_clk:
++probe_exit_disable_clk:
++	clk_disable_unprepare(priv->clk);
++probe_exit_release_clk:
+ 	clk_put(priv->clk);
+ probe_exit_candev:
+ 	free_candev(ndev);
 -- 
 2.28.0
 
