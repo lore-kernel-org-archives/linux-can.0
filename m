@@ -7,31 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4678AC433DF
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1271C43467
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E2A0A22365
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F8AA2224F
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727681AbgJSTFd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 19 Oct 2020 15:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56858 "EHLO
+        id S1730945AbgJSTFe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 19 Oct 2020 15:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730945AbgJSTFd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 15:05:33 -0400
+        with ESMTP id S1731091AbgJSTFe (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 15:05:34 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3077BC0613D0
-        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 12:05:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48003C0613CE
+        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 12:05:34 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kUaTL-0005v5-FY; Mon, 19 Oct 2020 21:05:31 +0200
+        id 1kUaTM-0005v5-Eb; Mon, 19 Oct 2020 21:05:32 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-rfc 02/16] can: rx-offload: don't call kfree_skb() from IRQ context
-Date:   Mon, 19 Oct 2020 21:05:10 +0200
-Message-Id: <20201019190524.1285319-3-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-rfc 05/16] can: dev: __can_get_echo_skb(): fix the returned length of CAN frame
+Date:   Mon, 19 Oct 2020 21:05:13 +0200
+Message-Id: <20201019190524.1285319-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201019190524.1285319-1-mkl@pengutronix.de>
 References: <20201019190524.1285319-1-mkl@pengutronix.de>
@@ -45,90 +47,47 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-A CAN driver, using the rx-offload infrastructure, is reading CAN frames
-(usually in IRQ context) from the hardware and placing it into the rx-offload
-queue to be delivered to the networking stack via NAPI.
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-In case the rx-offload queue is full, trying to add more skbs results in the
-skbs being dropped using kfree_skb(). If done from hard-IRQ context this
-results in the following warning:
+The length of Remote Transmission Request (RTR) frames is always 0 bytes. The
+DLC represents the requested length, not the actual length of the RTR. But
+__can_get_echo_skb() returns the DLC value regardless.
 
-[  682.552693] ------------[ cut here ]------------
-[  682.557360] WARNING: CPU: 0 PID: 3057 at net/core/skbuff.c:650 skb_release_head_state+0x74/0x84
-[  682.566075] Modules linked in: can_raw can coda_vpu flexcan dw_hdmi_ahb_audio v4l2_jpeg imx_vdoa can_dev
-[  682.575597] CPU: 0 PID: 3057 Comm: cansend Tainted: G        W         5.7.0+ #18
-[  682.583098] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[  682.589657] [<c0112628>] (unwind_backtrace) from [<c010c1c4>] (show_stack+0x10/0x14)
-[  682.597423] [<c010c1c4>] (show_stack) from [<c06c481c>] (dump_stack+0xe0/0x114)
-[  682.604759] [<c06c481c>] (dump_stack) from [<c0128f10>] (__warn+0xc0/0x10c)
-[  682.611742] [<c0128f10>] (__warn) from [<c0129314>] (warn_slowpath_fmt+0x5c/0xc0)
-[  682.619248] [<c0129314>] (warn_slowpath_fmt) from [<c0b95dec>] (skb_release_head_state+0x74/0x84)
-[  682.628143] [<c0b95dec>] (skb_release_head_state) from [<c0b95e08>] (skb_release_all+0xc/0x24)
-[  682.636774] [<c0b95e08>] (skb_release_all) from [<c0b95eac>] (kfree_skb+0x74/0x1c8)
-[  682.644479] [<c0b95eac>] (kfree_skb) from [<bf001d1c>] (can_rx_offload_queue_sorted+0xe0/0xe8 [can_dev])
-[  682.654051] [<bf001d1c>] (can_rx_offload_queue_sorted [can_dev]) from [<bf001d6c>] (can_rx_offload_get_echo_skb+0x48/0x94 [can_dev])
-[  682.666007] [<bf001d6c>] (can_rx_offload_get_echo_skb [can_dev]) from [<bf01efe4>] (flexcan_irq+0x194/0x5dc [flexcan])
-[  682.676734] [<bf01efe4>] (flexcan_irq [flexcan]) from [<c019c1ec>] (__handle_irq_event_percpu+0x4c/0x3ec)
-[  682.686322] [<c019c1ec>] (__handle_irq_event_percpu) from [<c019c5b8>] (handle_irq_event_percpu+0x2c/0x88)
-[  682.695993] [<c019c5b8>] (handle_irq_event_percpu) from [<c019c64c>] (handle_irq_event+0x38/0x5c)
-[  682.704887] [<c019c64c>] (handle_irq_event) from [<c01a1058>] (handle_fasteoi_irq+0xc8/0x180)
-[  682.713432] [<c01a1058>] (handle_fasteoi_irq) from [<c019b2c0>] (generic_handle_irq+0x30/0x44)
-[  682.722063] [<c019b2c0>] (generic_handle_irq) from [<c019b8f8>] (__handle_domain_irq+0x64/0xdc)
-[  682.730783] [<c019b8f8>] (__handle_domain_irq) from [<c06df4a4>] (gic_handle_irq+0x48/0x9c)
-[  682.739158] [<c06df4a4>] (gic_handle_irq) from [<c0100b30>] (__irq_svc+0x70/0x98)
-[  682.746656] Exception stack(0xe80e9dd8 to 0xe80e9e20)
-[  682.751725] 9dc0:                                                       00000001 e80e8000
-[  682.759922] 9de0: e820cf80 00000000 ffffe000 00000000 eaf08fe4 00000000 600d0013 00000000
-[  682.768117] 9e00: c1732e3c c16093a8 e820d4c0 e80e9e28 c018a57c c018b870 600d0013 ffffffff
-[  682.776315] [<c0100b30>] (__irq_svc) from [<c018b870>] (lock_acquire+0x108/0x4e8)
-[  682.783821] [<c018b870>] (lock_acquire) from [<c0e938e4>] (down_write+0x48/0xa8)
-[  682.791242] [<c0e938e4>] (down_write) from [<c02818dc>] (unlink_file_vma+0x24/0x40)
-[  682.798922] [<c02818dc>] (unlink_file_vma) from [<c027a258>] (free_pgtables+0x34/0xb8)
-[  682.806858] [<c027a258>] (free_pgtables) from [<c02835a4>] (exit_mmap+0xe4/0x170)
-[  682.814361] [<c02835a4>] (exit_mmap) from [<c01248e0>] (mmput+0x5c/0x110)
-[  682.821171] [<c01248e0>] (mmput) from [<c012e910>] (do_exit+0x374/0xbe4)
-[  682.827892] [<c012e910>] (do_exit) from [<c0130888>] (do_group_exit+0x38/0xb4)
-[  682.835132] [<c0130888>] (do_group_exit) from [<c0130914>] (__wake_up_parent+0x0/0x14)
-[  682.843063] irq event stamp: 1936
-[  682.846399] hardirqs last  enabled at (1935): [<c02938b0>] rmqueue+0xf4/0xc64
-[  682.853553] hardirqs last disabled at (1936): [<c0100b20>] __irq_svc+0x60/0x98
-[  682.860799] softirqs last  enabled at (1878): [<bf04cdcc>] raw_release+0x108/0x1f0 [can_raw]
-[  682.869256] softirqs last disabled at (1876): [<c0b8f478>] release_sock+0x18/0x98
-[  682.876753] ---[ end trace 7bca4751ce44c444 ]---
+Apply can_get_len() function to retrieve the correct length.
 
-This patch fixes the problem by replacing the kfree_skb() by
-dev_kfree_skb_any(), as rx-offload might be called from threaded IRQ handlers
-as well.
+This patch depends on:
 
-Fixes: ca913f1ac024 ("can: rx-offload: can_rx_offload_queue_sorted(): fix error handling, avoid skb mem leak")
-Fixes: 6caf8a6d6586 ("can: rx-offload: can_rx_offload_queue_tail(): fix error handling, avoid skb mem leak")
+    7d4b1cbca3bd can: dev: can_get_len():  add a helper function to get the correct length of Classical frames
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201002154219.4887-5-mailhol.vincent@wanadoo.fr
+Fixes: cf5046b309b3 ("can: dev: let can_get_echo_skb() return dlc of CAN frame")
+[mkl: renamed get_can_len() -> can_get_len()]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rx-offload.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/dev.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
-index 3b180269a92d..6e95193b215b 100644
---- a/drivers/net/can/rx-offload.c
-+++ b/drivers/net/can/rx-offload.c
-@@ -245,7 +245,7 @@ int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
- 
- 	if (skb_queue_len(&offload->skb_queue) >
- 	    offload->skb_queue_len_max) {
--		kfree_skb(skb);
-+		dev_kfree_skb_any(skb);
- 		return -ENOBUFS;
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 73cfcd7e9517..47b45a2223f9 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -507,14 +507,9 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
  	}
  
-@@ -290,7 +290,7 @@ int can_rx_offload_queue_tail(struct can_rx_offload *offload,
- {
- 	if (skb_queue_len(&offload->skb_queue) >
- 	    offload->skb_queue_len_max) {
--		kfree_skb(skb);
-+		dev_kfree_skb_any(skb);
- 		return -ENOBUFS;
- 	}
+ 	if (priv->echo_skb[idx]) {
+-		/* Using "struct canfd_frame::len" for the frame
+-		 * length is supported on both CAN and CANFD frames.
+-		 */
+ 		struct sk_buff *skb = priv->echo_skb[idx];
+-		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+-		u8 len = cf->len;
  
+-		*len_ptr = len;
++		*len_ptr = can_get_len(skb);
+ 		priv->echo_skb[idx] = NULL;
+ 
+ 		return skb;
 -- 
 2.28.0
 
