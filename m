@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4123C4363D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 814C0C41604
 	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 15:42:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8125321548
+	by mail.kernel.org (Postfix) with ESMTP id 5196522240
 	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 15:42:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730363AbgJSPmq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1730367AbgJSPmq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 19 Oct 2020 11:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729075AbgJSPmn (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 11:42:43 -0400
+        with ESMTP id S1730363AbgJSPmo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 11:42:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2A3C0613D3
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAB4C0613D5
         for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 08:42:43 -0700 (PDT)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kUXJ3-0000nY-1t; Mon, 19 Oct 2020 17:42:41 +0200
+        id 1kUXJ3-0000nY-Kn; Mon, 19 Oct 2020 17:42:41 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-rfc 07/12] can: m_can: m_can_class_free_dev(): introduce new function
-Date:   Mon, 19 Oct 2020 17:42:28 +0200
-Message-Id: <20201019154233.1262589-8-mkl@pengutronix.de>
+Subject: [net-rfc 09/12] can: m_can: tcan4x5x: tcan4x5x_can_remove(): fix order of deregistration
+Date:   Mon, 19 Oct 2020 17:42:30 +0200
+Message-Id: <20201019154233.1262589-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201019154233.1262589-1-mkl@pengutronix.de>
 References: <20201019154233.1262589-1-mkl@pengutronix.de>
@@ -46,50 +46,34 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dan Murphy <dmurphy@ti.com>
+Change the order in tcan4x5x_can_remove() to be the exact inverse of
+tcan4x5x_can_probe(). First m_can_class_unregister(), then power down the
+device.
 
-This patch creates a common function that peripherials can call to free the
-netdev device when failures occur.
-
-Fixes: d42f4e1d06d9 ("can: m_can: Create a m_can platform framework")
-Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Link: http://lore.kernel.org/r/20200227183829.21854-2-dmurphy@ti.com
+Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
+Cc: Dan Murphy <dmurphy@ti.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 6 ++++++
- drivers/net/can/m_can/m_can.h | 1 +
- 2 files changed, 7 insertions(+)
+ drivers/net/can/m_can/tcan4x5x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 1b72e6fffb31..418f90fc9af5 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1808,6 +1808,12 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(m_can_class_allocate_dev);
- 
-+void m_can_class_free_dev(struct net_device *net)
-+{
-+	free_candev(net);
-+}
-+EXPORT_SYMBOL_GPL(m_can_class_free_dev);
-+
- int m_can_class_register(struct m_can_classdev *m_can_dev)
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index 2fcbcd1b89b7..a2144bbcd486 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -531,10 +531,10 @@ static int tcan4x5x_can_remove(struct spi_device *spi)
  {
- 	int ret;
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index 49f42b50627a..b2699a7c9997 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -99,6 +99,7 @@ struct m_can_classdev {
- };
+ 	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
  
- struct m_can_classdev *m_can_class_allocate_dev(struct device *dev);
-+void m_can_class_free_dev(struct net_device *net);
- int m_can_class_register(struct m_can_classdev *cdev);
- void m_can_class_unregister(struct m_can_classdev *cdev);
- int m_can_class_get_clocks(struct m_can_classdev *cdev);
+-	tcan4x5x_power_enable(priv->power, 0);
+-
+ 	m_can_class_unregister(priv->mcan_dev);
+ 
++	tcan4x5x_power_enable(priv->power, 0);
++
+ 	m_can_class_free_dev(priv->mcan_dev->net);
+ 
+ 	return 0;
 -- 
 2.28.0
 
