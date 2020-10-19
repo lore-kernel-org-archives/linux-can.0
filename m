@@ -2,122 +2,472 @@ Return-Path: <SRS0=yT01=D2=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,
-	DATE_IN_FUTURE_06_12,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 326E4C433DF
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 07:58:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96693C433DF
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 08:15:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DE65522243
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 07:58:31 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="KRno9dzE"
+	by mail.kernel.org (Postfix) with ESMTP id 26D6522268
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 08:15:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgJSH6Z (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 19 Oct 2020 03:58:25 -0400
-Received: from mail-eopbgr30048.outbound.protection.outlook.com ([40.107.3.48]:61410
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728423AbgJSH6H (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:58:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hp/Crg4djTaPAgcSmFphLTYaaF2eZHoHOgghkgG0S586ekVfb1YCjBFIZ/2KN1U54XlUXkY6o6/bmKFuCoFXo/aArd2SspIKUVMJycNURjNDi/jGaWVq+UXXYtiX8mTlqQNtNdF3QS9X6ED55quRqVGKBG0iMMorbo+7GLyEWFdpT1pdl2xy1fw/dYCmgdIt+sirVjL1uv9JhXkToQq6L6nJrpucsjWtpaA6+vx77hA52muEI9W5yxySF1+VCSSsxRBnHYLMQpW+Vfx4qSGulfbIWBAw+ak7QbfqARgOhJOReYDxSGzx1277DrkN/4Mjjpd0ROaxQXrIHxKn92wZhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x5xuKQAQda6WMgDOX2SvDxTU5/aWbfXr5OA6dTBscEI=;
- b=XV0yJ4GDbFqRSy4CXn+4WjNeU9vv65jXB9dH5h+3RBrEALbBYNc0FBEa3F9pZ6nZKhGyCuVCJinTnSvknYCeLAwzpbxuAF3IES2PeOjNGReqduvlI8cMoMmiHV1B7QiNz+d+NwG+B3gsdat7zzo4DSBSbk0+wzx5euQCz/6agh1/bCuollcFlByVmWPrBfKUBF9rpNaRug1+R2fjcfRCm19mFIxbuh1g7l1E4/HWPqEveo5vRMUFSJ10w/CnxlPFp7uLR5In4KcO55poBzhwsVzXTS9lqHfTV1AQXw31yGsA3vHxWYIRThlW0jOf5A/W7C8NoM8YTkWPRjW+3B/Jvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x5xuKQAQda6WMgDOX2SvDxTU5/aWbfXr5OA6dTBscEI=;
- b=KRno9dzEJJYnr+TPk4p4XDIQP4At6AQEprBzANTRfnjcp7zfsuwv3WPFs0cdIEtTt5DF+uiONzF1yJywxq3NW/t1gUBxv1QTW/VaEIFEmkSifZ/fGCBkz8TTkklYWuxHtA/m0p8aeCio7+UZ6P5+siLsn93Eaz4awhAev3mmmkw=
-Authentication-Results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB8PR04MB5852.eurprd04.prod.outlook.com (2603:10a6:10:b0::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Mon, 19 Oct
- 2020 07:57:58 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3c3a:58b9:a1cc:cbcc%9]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
- 07:57:58 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     mkl@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de
+        id S1728778AbgJSIPx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 19 Oct 2020 04:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728006AbgJSIPx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 04:15:53 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05F9C0613CE
+        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 01:15:52 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kUQKW-0007Bs-Qj; Mon, 19 Oct 2020 10:15:44 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:ea52:556b:af36:c63f] (unknown [IPv6:2a03:f580:87bc:d400:ea52:556b:af36:c63f])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 60C1B57BDA5;
+        Mon, 19 Oct 2020 08:15:43 +0000 (UTC)
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
 Cc:     kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
         linux-can@vger.kernel.org, pankaj.bansal@nxp.com,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 5/8] can: flexcan: add ECC initialization for VF610
-Date:   Mon, 19 Oct 2020 23:57:34 +0800
-Message-Id: <20201019155737.26577-6-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201019155737.26577-1-qiangqing.zhang@nxp.com>
 References: <20201019155737.26577-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SG2PR02CA0107.apcprd02.prod.outlook.com
- (2603:1096:4:92::23) To DB8PR04MB6795.eurprd04.prod.outlook.com
- (2603:10a6:10:fa::15)
+ <20201019155737.26577-9-qiangqing.zhang@nxp.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Subject: Re: [PATCH V2 8/8] can: flexcan: add CAN wakeup function for i.MX8QM
+Message-ID: <3ca1d3e9-ef13-283f-8301-68c657628e41@pengutronix.de>
+Date:   Mon, 19 Oct 2020 10:15:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0107.apcprd02.prod.outlook.com (2603:1096:4:92::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20 via Frontend Transport; Mon, 19 Oct 2020 07:57:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: bdb59c9d-11de-4d07-b094-08d87404b196
-X-MS-TrafficTypeDiagnostic: DB8PR04MB5852:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB5852B7DA4C575E17A8F05716E61E0@DB8PR04MB5852.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vW1cbHYfsLrF6axrkk8GUXPIBieie8aOF42B6LzoWBX4ddHd91fj84F7AgmXWrDoOKSxKQBhxNvpvTB0JdOOeYa0F5NmyVuz+1aAE7C0B2DJr4jDmN2DZjbSzFTOlEFYS0mdT6G9de7C8uT3GcSzl3ZdDL3s8K0HC/jaW4fq3jFxQofPuU6VDvI0UDtCE6xJDrV5zWG45yMvfcDPdoVMd1IJUUCHeLJhAeRHdo4mOA2D/33ujIMyhb2BtI8p3T616+KOcl6K2UkkGX0/TrtRuTaGdUVtzhJwiGCCdt9GsE+c278NrPbOgp6MfJ5wc0lcnYzz+MJY7lzSwNiVa2pT4ks7tVoEjib6MHGDdDR1kXlIDnkjOMMOqnjKk8s+WN+A
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(376002)(396003)(346002)(5660300002)(8936002)(8676002)(66556008)(66946007)(52116002)(36756003)(66476007)(6666004)(6506007)(6512007)(956004)(2616005)(83380400001)(316002)(4326008)(26005)(478600001)(6486002)(2906002)(186003)(16526019)(1076003)(69590400008)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: F1D+L2jpTasPCuVYH9u10oaOw9HDhMo+Lmkn6NyYG3ClSHTt/Cl0PMLBSNAHqorUPgdet4Dkv6UlLKojY5TUTTttAGLdIhbmX0zzWAUn6KpDaPSVEr5iMzLMscJzukhzI0yaN4ZKZkb51/65NcP/hvSbQD3njQgBF2PZ9RDtyXxFtoviPVhKMqDXIfRjH/88RxoDSar3bXraihXVCcapZDCnzQXbsnOZyH+GO57lNI814xjBl0t2gc0134oT2LHIGbfZAxTMxmffV1cNe1y2IglCbdKLIiXbhDdhngdoGQlpBFMDy3bEJk/sKMUwwW5+VnGuFH7ZGXtkySmC/kn0RZ8FgD7Rtv40P3kUuHEIfBXtQRARXSeEn4TfP9gyIhxsKJCm7NpwRpSVay6AdDJTLSzHbpTUEahLsBFys0qjpsbIttu5INu2fRD088MLkURwrmUgIIrXdO7gor8R0vF9WsceLdJojb691y3jDY0D7tR5l29/DiQ/RJnN1dP5erpNg4eH58YGDrebJmg6/hZF6uNOhFgMOT1mO2/9dQeelojHzsno2eu+1KaYKnUzpn7spcHN1cdZx9jMor1RgwOezueyYfCLX6KuESpjpgCuDWEfz8zPL3ZBUGlRWRc54KxUFcXe30QJPNLDH3ntaDZFbA==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdb59c9d-11de-4d07-b094-08d87404b196
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2020 07:57:58.4752
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qNiwL/bUi8EJAkgE1EmSLujis+FSq2kIrbNEG2+2oCjgr4PSZbsaWNyU+hrMfHukGReLt4KpBdiOjuCJm8wIIg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5852
+In-Reply-To: <20201019155737.26577-9-qiangqing.zhang@nxp.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="kxM0iUdGyUCnq8Zi6dLFQERB9X8NZ4ahy"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-For SoCs with ECC supported, even use FLEXCAN_QUIRK_DISABLE_MECR quirk to
-disable non-correctable errors interrupt and freeze mode, had better use
-FLEXCAN_QUIRK_SUPPORT_ECC quirk to initialize all memory.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--kxM0iUdGyUCnq8Zi6dLFQERB9X8NZ4ahy
+Content-Type: multipart/mixed; boundary="iyOcUZUyxxov4hHqIPThgbdIc3XBjwhO4";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+ shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc: kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
+ linux-can@vger.kernel.org, pankaj.bansal@nxp.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <3ca1d3e9-ef13-283f-8301-68c657628e41@pengutronix.de>
+Subject: Re: [PATCH V2 8/8] can: flexcan: add CAN wakeup function for i.MX8QM
+References: <20201019155737.26577-1-qiangqing.zhang@nxp.com>
+ <20201019155737.26577-9-qiangqing.zhang@nxp.com>
+In-Reply-To: <20201019155737.26577-9-qiangqing.zhang@nxp.com>
 
-Fixes: cdce844865bea ("can: flexcan: add vf610 support for FlexCAN")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- drivers/net/can/flexcan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--iyOcUZUyxxov4hHqIPThgbdIc3XBjwhO4
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index c2330eab3595..06f94b6f0ebe 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -400,7 +400,7 @@ static struct flexcan_devtype_data fsl_imx8mp_devtype_data = {
- static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
- 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
--		FLEXCAN_QUIRK_BROKEN_PERR_STATE,
-+		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SUPPORT_ECC,
- };
- 
- static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
--- 
-2.17.1
+On 10/19/20 5:57 PM, Joakim Zhang wrote:
+> The System Controller Firmware (SCFW) is a low-level system function
+> which runs on a dedicated Cortex-M core to provide power, clock, and
+> resource management. It exists on some i.MX8 processors. e.g. i.MX8QM
+> (QM, QP), and i.MX8QX (QXP, DX). SCU driver manages the IPC interface
+> between host CPU and the SCU firmware running on M4.
+>=20
+> For i.MX8QM, stop mode request is controlled by System Controller Unit(=
+SCU)
+> firmware, this patch introduces FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW quir=
+k
+> for this function.
+>=20
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ---
+>  drivers/net/can/flexcan.c | 131 +++++++++++++++++++++++++++++++++-----=
 
+>  1 file changed, 114 insertions(+), 17 deletions(-)
+>=20
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index c0cdee904ca7..8ad5065c918f 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -9,6 +9,7 @@
+>  //
+>  // Based on code originally by Andrey Volkov <avolkov@varma-el.com>
+> =20
+> +#include <dt-bindings/firmware/imx/rsrc.h>
+>  #include <linux/bitfield.h>
+>  #include <linux/can.h>
+>  #include <linux/can/dev.h>
+> @@ -17,6 +18,7 @@
+>  #include <linux/can/rx-offload.h>
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+> +#include <linux/firmware/imx/sci.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/mfd/syscon.h>
+> @@ -203,6 +205,8 @@
+> =20
+>  #define FLEXCAN_TIMEOUT_US		(250)
+> =20
+> +#define FLEXCAN_IMX_SC_R_CAN(x)		(IMX_SC_R_CAN_0 + (x))
+
+Why not move it into the appropriate svc header file?
+
+> +
+>  /* FLEXCAN hardware feature flags
+>   *
+>   * Below is some version info we got:
+> @@ -242,6 +246,8 @@
+>  #define FLEXCAN_QUIRK_SUPPORT_FD BIT(9)
+>  /* support memory detection and correction */
+>  #define FLEXCAN_QUIRK_SUPPORT_ECC BIT(10)
+> +/* Setup stop mode with SCU firmware to support wakeup */
+> +#define FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW BIT(11)
+> =20
+>  /* Structure of the message buffer */
+>  struct flexcan_mb {
+> @@ -347,6 +353,7 @@ struct flexcan_priv {
+>  	u8 mb_count;
+>  	u8 mb_size;
+>  	u8 clk_src;	/* clock source of CAN Protocol Engine */
+> +	u8 can_idx;
+> =20
+>  	u64 rx_mask;
+>  	u64 tx_mask;
+> @@ -358,6 +365,9 @@ struct flexcan_priv {
+>  	struct regulator *reg_xceiver;
+>  	struct flexcan_stop_mode stm;
+> =20
+> +	/* IPC handle when setup stop mode by System Controller firmware(scfw=
+) */
+> +	struct imx_sc_ipc *sc_ipc_handle;
+> +
+>  	/* Read and Write APIs */
+>  	u32 (*read)(void __iomem *addr);
+>  	void (*write)(u32 val, void __iomem *addr);
+> @@ -387,7 +397,7 @@ static const struct flexcan_devtype_data fsl_imx6q_=
+devtype_data =3D {
+>  static const struct flexcan_devtype_data fsl_imx8qm_devtype_data =3D {=
+
+>  	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_R=
+RS |
+>  		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+> -		FLEXCAN_QUIRK_SUPPORT_FD,
+> +		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW,
+>  };
+> =20
+>  static struct flexcan_devtype_data fsl_imx8mp_devtype_data =3D {
+> @@ -546,18 +556,42 @@ static void flexcan_enable_wakeup_irq(struct flex=
+can_priv *priv, bool enable)
+>  	priv->write(reg_mcr, &regs->mcr);
+>  }
+> =20
+> +static int flexcan_stop_mode_enable_scfw(struct flexcan_priv *priv, bo=
+ol enabled)
+> +{
+> +	u8 idx =3D priv->can_idx;
+> +	u32 rsrc_id, val;
+> +
+> +	rsrc_id =3D FLEXCAN_IMX_SC_R_CAN(idx);
+> +
+> +	if (enabled)
+> +		val =3D 1;
+> +	else
+> +		val =3D 0;
+> +
+> +	/* stop mode request via scu firmware */
+> +	return imx_sc_misc_set_control(priv->sc_ipc_handle, rsrc_id,
+> +				       IMX_SC_C_IPG_STOP, val);
+> +}
+> +
+>  static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
+>  {
+>  	struct flexcan_regs __iomem *regs =3D priv->regs;
+>  	u32 reg_mcr;
+> +	int ret;
+> =20
+>  	reg_mcr =3D priv->read(&regs->mcr);
+>  	reg_mcr |=3D FLEXCAN_MCR_SLF_WAK;
+>  	priv->write(reg_mcr, &regs->mcr);
+> =20
+>  	/* enable stop request */
+> -	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+> -			   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
+> +	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW) =
+{
+> +		ret =3D flexcan_stop_mode_enable_scfw(priv, true);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+> +				   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
+> +	}
+> =20
+>  	return flexcan_low_power_enter_ack(priv);
+>  }
+> @@ -566,10 +600,17 @@ static inline int flexcan_exit_stop_mode(struct f=
+lexcan_priv *priv)
+>  {
+>  	struct flexcan_regs __iomem *regs =3D priv->regs;
+>  	u32 reg_mcr;
+> +	int ret;
+> =20
+>  	/* remove stop request */
+> -	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+> -			   1 << priv->stm.req_bit, 0);
+> +	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW) =
+{
+> +		ret =3D flexcan_stop_mode_enable_scfw(priv, false);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+> +				   1 << priv->stm.req_bit, 0);
+> +	}
+> =20
+>  	reg_mcr =3D priv->read(&regs->mcr);
+>  	reg_mcr &=3D ~FLEXCAN_MCR_SLF_WAK;
+> @@ -1838,7 +1879,7 @@ static void unregister_flexcandev(struct net_devi=
+ce *dev)
+>  	unregister_candev(dev);
+>  }
+> =20
+> -static int flexcan_setup_stop_mode(struct platform_device *pdev)
+> +static int flexcan_setup_stop_mode_gpr(struct platform_device *pdev)
+>  {
+>  	struct net_device *dev =3D platform_get_drvdata(pdev);
+>  	struct device_node *np =3D pdev->dev.of_node;
+> @@ -1883,11 +1924,6 @@ static int flexcan_setup_stop_mode(struct platfo=
+rm_device *pdev)
+>  		"gpr %s req_gpr=3D0x02%x req_bit=3D%u\n",
+>  		gpr_np->full_name, priv->stm.req_gpr, priv->stm.req_bit);
+> =20
+> -	device_set_wakeup_capable(&pdev->dev, true);
+> -
+> -	if (of_property_read_bool(np, "wakeup-source"))
+> -		device_set_wakeup_enable(&pdev->dev, true);
+> -
+>  	return 0;
+> =20
+>  out_put_node:
+> @@ -1895,6 +1931,64 @@ static int flexcan_setup_stop_mode(struct platfo=
+rm_device *pdev)
+>  	return ret;
+>  }
+> =20
+> +static int flexcan_setup_stop_mode_scfw(struct platform_device *pdev)
+> +{
+> +	struct net_device *dev =3D platform_get_drvdata(pdev);
+> +	struct flexcan_priv *priv;
+> +	u8 can_idx;
+> +	int ret;
+> +
+> +	ret =3D of_property_read_u8(pdev->dev.of_node, "fsl,scu-index", &can_=
+idx);
+> +	if (ret < 0) {
+> +		dev_dbg(&pdev->dev, "failed to get scu index\n");
+> +		return ret;
+> +	}
+> +
+> +	priv =3D netdev_priv(dev);
+> +	priv->can_idx =3D can_idx;
+> +
+> +	/* this function could be defered probe, return -EPROBE_DEFER */
+> +	ret =3D imx_scu_get_handle(&priv->sc_ipc_handle);
+> +	if (ret < 0) {
+> +		dev_dbg(&pdev->dev, "get ipc handle used by SCU failed\n");
+> +		return ret;
+> +	}
+
+Don't print an error message on -EPROBE_DEFER.
+
+> +
+> +	return 0;
+> +}
+> +
+> +/* flexcan_setup_stop_mode - Setup stop mode for wakeup
+> + *
+> + * Return: =3D 0 setup stop mode successfully or doesn't support this =
+feature
+> + *         < 0 fail to setup stop mode (could be defered probe)
+> + */
+> +static int flexcan_setup_stop_mode(struct platform_device *pdev)
+> +{
+> +	struct net_device *dev =3D platform_get_drvdata(pdev);
+> +	struct flexcan_priv *priv;
+> +	int ret;
+> +
+> +	priv =3D netdev_priv(dev);
+> +
+> +	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW)
+> +		ret =3D flexcan_setup_stop_mode_scfw(pdev);
+> +	else if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_G=
+PR)
+> +		ret =3D flexcan_setup_stop_mode_gpr(pdev);
+> +	else
+> +		/* return 0 directly if doesn't support stop mode feature */
+> +		return 0;
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	device_set_wakeup_capable(&pdev->dev, true);
+> +
+> +	if (of_property_read_bool(pdev->dev.of_node, "wakeup-source"))
+> +		device_set_wakeup_enable(&pdev->dev, true);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct of_device_id flexcan_of_match[] =3D {
+>  	{ .compatible =3D "fsl,imx8qm-flexcan", .data =3D &fsl_imx8qm_devtype=
+_data, },
+>  	{ .compatible =3D "fsl,imx8mp-flexcan", .data =3D &fsl_imx8mp_devtype=
+_data, },
+> @@ -2040,17 +2134,19 @@ static int flexcan_probe(struct platform_device=
+ *pdev)
+>  		goto failed_register;
+>  	}
+> =20
+> +	err =3D flexcan_setup_stop_mode(pdev);
+> +	if (err < 0) {
+> +		dev_err(&pdev->dev, "setup stop mode failed\n");
+> +		goto failed_canregister;
+> +	}
+> +
+>  	of_can_transceiver(dev);
+>  	devm_can_led_init(dev);
+> =20
+> -	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR) {=
+
+> -		err =3D flexcan_setup_stop_mode(pdev);
+> -		if (err)
+> -			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
+> -	}
+> -
+>  	return 0;
+> =20
+> + failed_canregister:
+> +	unregister_flexcandev(dev);
+>   failed_register:
+>  	pm_runtime_put_noidle(&pdev->dev);
+>  	pm_runtime_disable(&pdev->dev);
+> @@ -2062,6 +2158,7 @@ static int flexcan_remove(struct platform_device =
+*pdev)
+>  {
+>  	struct net_device *dev =3D platform_get_drvdata(pdev);
+> =20
+> +	device_set_wakeup_enable(&pdev->dev, false);
+
+Please make this a seperate patch, as it fixes a bug.
+
+>  	unregister_flexcandev(dev);
+>  	pm_runtime_disable(&pdev->dev);
+>  	free_candev(dev);
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--iyOcUZUyxxov4hHqIPThgbdIc3XBjwhO4--
+
+--kxM0iUdGyUCnq8Zi6dLFQERB9X8NZ4ahy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+NSysACgkQqclaivrt
+76kNtQf/WmEC49Klon9t0zvQuy7jK2+vD/37WK6MClT9zPvMmEJQregKUE0aBrHE
+LiuFVu2xbXavQFg1XOvtJtTRs5z65Xbi1vMXruyi+UHdiuRpqSDNx4kyDGHjecsc
+mO1RGPJZW9JVbbvvqgubTYe6Ihc8K9Y4NeYSUEypQdUZTOW9wp7FPcyiDQMrJRKS
+wUHsXQqIf4JlwFKb+gLy7xNBJfNOklII/uTVf0TJ3XMDLqEVSwM5TVfIpgzNRaXn
+eXSApysyNUI0FRTsTNuVCdWpmJsI0KmBDz/SFiTY02whzqBKSbpjBtadlaneuZ4Q
+fM9KwG1XONEfbLDwA54G3CxLlF2C7g==
+=zEw6
+-----END PGP SIGNATURE-----
+
+--kxM0iUdGyUCnq8Zi6dLFQERB9X8NZ4ahy--
