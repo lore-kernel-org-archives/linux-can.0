@@ -2,132 +2,93 @@ Return-Path: <SRS0=yT01=D2=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E0A5C433DF
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 17:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22306C433E7
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 114672224D
-	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 17:24:32 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q3Jgr3Br"
+	by mail.kernel.org (Postfix) with ESMTP id B0F2A2224F
+	for <linux-can@archiver.kernel.org>; Mon, 19 Oct 2020 19:05:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730498AbgJSRYZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 19 Oct 2020 13:24:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35415 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730186AbgJSRYY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 13:24:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603128262;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=GlNRdQUy+AGKN2OBLvxM70f2rqnujuydEmx9LlvXhbI=;
-        b=Q3Jgr3BrhQzhigcNJUaEORw9rWB07AC//WSRAfoiMAVHW3CITMcFtmxOEU7dWJNJNe/TJ9
-        hFrFYfXhSuJfpvl5U0v9bEuhdIlZcBL1zKCotbU+E2u7v2+fr8xFy2bbB/4Q4o+o3LwlEN
-        Q+5QZ48luMj1H4u84T/V1Q0zEvajjOA=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-312-s9ahMQwAPRCcE6qLBUgikQ-1; Mon, 19 Oct 2020 13:24:19 -0400
-X-MC-Unique: s9ahMQwAPRCcE6qLBUgikQ-1
-Received: by mail-qv1-f71.google.com with SMTP id v4so342557qvr.19
-        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 10:24:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=GlNRdQUy+AGKN2OBLvxM70f2rqnujuydEmx9LlvXhbI=;
-        b=hs/IOXzt4LymbWr/6XGVGy1DY9JT/L6L2DISIkSV10y7kEx6W9I8iCotaA+VTcLLUw
-         Lo4UeRYJF7V9wmONOF21BlIRdNYPJ/CL+zNMIs4GfYA+D6YAk17k6Ncfk7gky0Vf9bxk
-         P+OAsxJMQA/p7FAsREU3yBkp8/qpgBUcZNEP8ZY9qB3C4r/lyVyT1qRrVDJWhHEqmJJ/
-         4Z2GQamwRAgq1JT9lNx6XtATKpPNiKl8ecNdniRmnB2Ll7+6/AOpm58Yp39YbW7zI684
-         JfbuJddjyJUOS+AHi/HG3/usDMOXoPNHyikmegNOIbJdXjAW1NPhE6LP811hGkUVWAgV
-         yYlw==
-X-Gm-Message-State: AOAM530urFq5UHuE+l1gnPDcevaONR6PFmGMKSj/1Z/rY7EUCJdJfjOV
-        3ekjBWvl3xFMY/EklaeB2PS76TkIfVlB8vLlbNHp336hTcTmaqgqG99W/1lFhaRGk5S14Zi42iG
-        QiQfZXjAz2ZOXX+Nt24JR
-X-Received: by 2002:ad4:456c:: with SMTP id o12mr941397qvu.48.1603128259064;
-        Mon, 19 Oct 2020 10:24:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy1IY0STp8Q6ypEf1lWhvSs2JcyK6xaHXzjj4/dVdBi8JhNegNGdN/AJqDRKfg+58L+7+NNYg==
-X-Received: by 2002:ad4:456c:: with SMTP id o12mr941370qvu.48.1603128258823;
-        Mon, 19 Oct 2020 10:24:18 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s22sm222627qtc.33.2020.10.19.10.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 10:24:18 -0700 (PDT)
-From:   trix@redhat.com
-To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org, thomas.kopp@microchip.com,
-        dan.carpenter@oracle.com, dev.kurt@vandijck-laurijssen.be
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] net: can: remove unneeded break
-Date:   Mon, 19 Oct 2020 10:24:12 -0700
-Message-Id: <20201019172412.31143-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1731029AbgJSTFd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 19 Oct 2020 15:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727681AbgJSTFd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Oct 2020 15:05:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C58C0613CE
+        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2020 12:05:33 -0700 (PDT)
+Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kUaTL-0005v5-70; Mon, 19 Oct 2020 21:05:31 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     linux-can@vger.kernel.org
+Cc:     kernel@pengutronix.de,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-rfc 01/16] can: proc: can_remove_proc(): silence remove_proc_entry warning
+Date:   Mon, 19 Oct 2020 21:05:09 +0200
+Message-Id: <20201019190524.1285319-2-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201019190524.1285319-1-mkl@pengutronix.de>
+References: <20201019190524.1285319-1-mkl@pengutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-A break is not needed if it is preceded by a return
+If can_init_proc() fail to create /proc/net/can directory, can_remove_proc()
+will trigger a warning:
 
-Signed-off-by: Tom Rix <trix@redhat.com>
+WARNING: CPU: 6 PID: 7133 at fs/proc/generic.c:672 remove_proc_entry+0x17b0
+Kernel panic - not syncing: panic_on_warn set ...
+
+Fix to return early from can_remove_proc() if can proc_dir does not exists.
+
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Link: https://lore.kernel.org/r/1594709090-3203-1-git-send-email-zhangchangzhong@huawei.com
+Fixes: 8e8cda6d737d ("can: initial support for network namespaces")
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 22 +++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ net/can/proc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index c3f49543ff26..9c215f7c5f81 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -75,11 +75,11 @@ static const char *__mcp251xfd_get_model_str(enum mcp251xfd_model model)
+diff --git a/net/can/proc.c b/net/can/proc.c
+index 550928b8b8a2..5ea8695f507e 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -462,6 +462,9 @@ void can_init_proc(struct net *net)
+  */
+ void can_remove_proc(struct net *net)
  {
- 	switch (model) {
- 	case MCP251XFD_MODEL_MCP2517FD:
--		return "MCP2517FD"; break;
-+		return "MCP2517FD";
- 	case MCP251XFD_MODEL_MCP2518FD:
--		return "MCP2518FD"; break;
-+		return "MCP2518FD";
- 	case MCP251XFD_MODEL_MCP251XFD:
--		return "MCP251xFD"; break;
-+		return "MCP251xFD";
- 	}
++	if (!net->can.proc_dir)
++		return;
++
+ 	if (net->can.pde_stats)
+ 		remove_proc_entry(CAN_PROC_STATS, net->can.proc_dir);
  
- 	return "<unknown>";
-@@ -95,21 +95,21 @@ static const char *mcp251xfd_get_mode_str(const u8 mode)
- {
- 	switch (mode) {
- 	case MCP251XFD_REG_CON_MODE_MIXED:
--		return "Mixed (CAN FD/CAN 2.0)"; break;
-+		return "Mixed (CAN FD/CAN 2.0)";
- 	case MCP251XFD_REG_CON_MODE_SLEEP:
--		return "Sleep"; break;
-+		return "Sleep";
- 	case MCP251XFD_REG_CON_MODE_INT_LOOPBACK:
--		return "Internal Loopback"; break;
-+		return "Internal Loopback";
- 	case MCP251XFD_REG_CON_MODE_LISTENONLY:
--		return "Listen Only"; break;
-+		return "Listen Only";
- 	case MCP251XFD_REG_CON_MODE_CONFIG:
--		return "Configuration"; break;
-+		return "Configuration";
- 	case MCP251XFD_REG_CON_MODE_EXT_LOOPBACK:
--		return "External Loopback"; break;
-+		return "External Loopback";
- 	case MCP251XFD_REG_CON_MODE_CAN2_0:
--		return "CAN 2.0"; break;
-+		return "CAN 2.0";
- 	case MCP251XFD_REG_CON_MODE_RESTRICTED:
--		return "Restricted Operation"; break;
-+		return "Restricted Operation";
- 	}
+@@ -486,6 +489,5 @@ void can_remove_proc(struct net *net)
+ 	if (net->can.pde_rcvlist_sff)
+ 		remove_proc_entry(CAN_PROC_RCVLIST_SFF, net->can.proc_dir);
  
- 	return "<unknown>";
+-	if (net->can.proc_dir)
+-		remove_proc_entry("can", net->proc_net);
++	remove_proc_entry("can", net->proc_net);
+ }
 -- 
-2.18.1
+2.28.0
 
