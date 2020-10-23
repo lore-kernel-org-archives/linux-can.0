@@ -2,291 +2,336 @@ Return-Path: <SRS0=2KO9=D6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6431EC388F9
-	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 10:37:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CF45C55178
+	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 10:56:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1288D20FC3
-	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 10:37:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 18EC020FC3
+	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 10:56:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461728AbgJWKhO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 23 Oct 2020 06:37:14 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:45958 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461853AbgJWKhN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Oct 2020 06:37:13 -0400
-Received: by mail-yb1-f193.google.com with SMTP id s89so784442ybi.12
-        for <linux-can@vger.kernel.org>; Fri, 23 Oct 2020 03:37:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WNFSJLwEjsEzSOIxtxKD06Hw7ziA3nJQuJuP1VPikpc=;
-        b=Sjyz0HNpU5Ich9yrvlWQgYJwVMB2Fo0wVMpcg95QGWg0z0UDj3EzK2oTmlsoUN11GA
-         Ldk09hwLDz+mgSY70ObHp41j+nAo5QZeANpp6rxSrtzjhG1YdMnnuXyhZRpVOK22lkGG
-         x+LOAdE+nVsbR+x+bqnOFZiiLRZqPdxYNfXF4nN7r2lKxWcjYpSgJOw+QkrScvfIwsYz
-         QVE087+v6rpOMvI8XBWsrhYMEe4/78FjY7Yw5ZzYPNVIWaFu7j5VaSx+BryvW9G4TXKB
-         jLPaaq1QsyRG3LOHt37zv4BourqNObHtw8+eyxOAIVbbcvvO3VsIbPbzFWMDoAULkf2N
-         pbww==
-X-Gm-Message-State: AOAM5338M4hR+BptglqwhNJ5OUV6ooAGjEk1+FvQAP2dEN9MYON8jW6r
-        HOpJPcR2bH4xsRTLyXW6o0heYqQK5JPzpDb/hetWi3llsI3/PQ==
-X-Google-Smtp-Source: ABdhPJyRPzTpZeSe+QsvLqL3fEKDOcqGP4iuT6Wrsdl+/Cx8pXkzEWVIowJ6WTvCUoU/VAZzFpFNxA3LrPRsEhef1Qc=
-X-Received: by 2002:a25:4091:: with SMTP id n139mr2620120yba.226.1603449431663;
- Fri, 23 Oct 2020 03:37:11 -0700 (PDT)
+        id S462601AbgJWK4n (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 23 Oct 2020 06:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S462596AbgJWK4m (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Oct 2020 06:56:42 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A16FC0613CE
+        for <linux-can@vger.kernel.org>; Fri, 23 Oct 2020 03:56:42 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVukG-00087n-Kp; Fri, 23 Oct 2020 12:56:28 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVukF-0001k9-D5; Fri, 23 Oct 2020 12:56:27 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>, linux-can@vger.kernel.org
+Subject: [RFC PATCH v1 1/6] net: phy: add CAN PHY Virtual Bus
+Date:   Fri, 23 Oct 2020 12:56:21 +0200
+Message-Id: <20201023105626.6534-2-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201023105626.6534-1-o.rempel@pengutronix.de>
+References: <20201023105626.6534-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20201019190524.1285319-1-mkl@pengutronix.de> <fbbe1b80-c012-dc87-1eb0-4878cd08cce1@hartkopp.net>
- <ebf50f35-f093-b2c9-a27c-cef73d403efb@pengutronix.de> <20201020113023.102360-1-mailhol.vincent@wanadoo.fr>
- <6f869e47-9a76-3398-0b64-2d573d412f4c@hartkopp.net> <20201020160739.104686-1-mailhol.vincent@wanadoo.fr>
- <a9605011-2674-dc73-111c-8ebf724a13ac@hartkopp.net> <20201021005226.2727-1-mailhol.vincent@wanadoo.fr>
- <CAMZ6RqKFST4dcWZP_8NdDMB6GT09vhVWgN+nuMWkVovkh-EZdw@mail.gmail.com>
- <2711ea6f-e1ce-c3f9-dd98-83142bd33fc9@hartkopp.net> <CAMZ6RqK2RCGLFmjiHTQAxZSGn-HQaAh_nHHGwKdODanZK5oJbg@mail.gmail.com>
- <727e4845-63bd-659b-5344-97eb54121624@hartkopp.net> <CAMZ6RqJ8=T8CAhYaa8PZs5-d2zhx1_15wMe7ohUZovvqTcgW0w@mail.gmail.com>
- <0087f8a4-c77c-cc13-b17d-bd9666837ee3@hartkopp.net> <CAMZ6Rq+nHk1ZNzAGbwetEBULq8u_rsUYCd7FYj2HcQ-ejNC+Tw@mail.gmail.com>
- <d3dda30a-3f22-4824-71be-f8520b3714b2@hartkopp.net> <CAMZ6RqJrpwOkFPNDNdUU=g=p_VwuPW5erGfj-bk0quKQYsCcXQ@mail.gmail.com>
- <adabe4ca-7065-0aa7-7654-51f77d9b2916@hartkopp.net>
-In-Reply-To: <adabe4ca-7065-0aa7-7654-51f77d9b2916@hartkopp.net>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Fri, 23 Oct 2020 19:36:59 +0900
-Message-ID: <CAMZ6RqL2OtSfFp92D0p3RUfeWYgvCb8Aib6=hF-QA0DZTyEqog@mail.gmail.com>
-Subject: Re: [net-rfc 04/16] can: dev: can_get_len(): add a helper function to
- get the correct length of Classical frames
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        =?UTF-8?Q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 23.10.20 02:06, Oliver Hartkopp wrote:
-> On 22.10.20 17:46, Vincent MAILHOL wrote:
->> On 22.10.20 22:28, Oliver Hartkopp wrote:
->>> On 22.10.20 14:23, Vincent MAILHOL wrote:
->
->>>>> The above pseudo code together with CAN_CTRLMODE_RAW_DLC seems to be a
->>>>> pretty safe option to me. Even if 'legacy' applications with
->>>>> uninitialized raw_dlc send CAN frames or AF_PACKET users enable
->>>>> CAN_CTRLMODE_RAW_DLC we always end up with a proper can_dlc == 8  and a
->>>>> fitting valid raw_dlc.
->>>>
->>>> But what if that "fitting valid raw_dlc" is greater than 8?
->>>
->>> This is the plan!
->>>
->>>> The kernel
->>>
->>> the CAN driver
->>>
->>>> would see that frame as valid, a frame with a DLC greater than 8 will
->>>> be sent on the wire and received by the other devices than might be
->>>> connected on the CAN bus.
->>>
->>> Exactly.
->>
->> And this is my point. The legacy application intended to send a frame
->> of 8 bytes with a DLC of 8 but on the wire, there is a frame of 8
->> bytes with a DLC greater than 8. The other devices on the CAN bus
->> might ignore it (if the device has a DLC filter) or might crash if
->> there is a vulnerability in DLC handling.
->
-> But this is your intention, right?
->
-> You wanted to test this behaviour. This is no normal operation - it's a
-> *test* mode to detect said vulnerabilities in DLC handling.
->
-> And what do you mean with "if the device has a DLC filter"?
+Most of CAN PHYs (transceivers) are not attached to any data bus, so we
+are not able to communicate with them. For this case, we introduce a CAN
+specific virtual bus to make use of existing PHY framework.
 
-A DLC filter is a sub-component of a CAN frame filter which is a type
-of Intrusion Prevention System (IPS). The CAN frame filter consists of
-an allow list which entries are usually CAN IDs and DLCs. If the CAN
-ID and DLC of a received frame do not match any of the entries in the
-allow list, the frame is directly discarded. This is also sometimes
-referred to as CAN firewall. Modern CAN gateways are starting to implement
-such protection mechanism (in addition to the IDS).
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/phy/Kconfig       |   8 ++
+ drivers/net/phy/Makefile      |   1 +
+ drivers/net/phy/can_phy_bus.c | 196 ++++++++++++++++++++++++++++++++++
+ include/linux/can/phy.h       |  21 ++++
+ 4 files changed, 226 insertions(+)
+ create mode 100644 drivers/net/phy/can_phy_bus.c
+ create mode 100644 include/linux/can/phy.h
 
-If an ECU has a filter rule to only allow DLC equal to 8, it would
-discard a frame with a DLC greater than 8 even if the length is
-actually 8.
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 698bea312adc..39e3f57ea60a 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -153,6 +153,14 @@ config BCM_CYGNUS_PHY
+ config BCM_NET_PHYLIB
+ 	tristate
+ 
++config CAN_PHY_BUS
++	tristate "Virtual CAN PHY Bus"
++	depends on PHYLIB
++	help
++	  Most CAN PHYs (transceivers) are not attached to any data bus, so we
++	  are not able to communicate with them. For this case, a CAN specific
++	  virtual bus to make use of existing PHY framework.
++
+ config CICADA_PHY
+ 	tristate "Cicada PHYs"
+ 	help
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index a13e402074cf..0d76d802c07f 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -47,6 +47,7 @@ obj-$(CONFIG_BCM87XX_PHY)	+= bcm87xx.o
+ obj-$(CONFIG_BCM_CYGNUS_PHY)	+= bcm-cygnus.o
+ obj-$(CONFIG_BCM_NET_PHYLIB)	+= bcm-phy-lib.o
+ obj-$(CONFIG_BROADCOM_PHY)	+= broadcom.o
++obj-$(CONFIG_CAN_PHY_BUS)	+= can_phy_bus.o
+ obj-$(CONFIG_CICADA_PHY)	+= cicada.o
+ obj-$(CONFIG_CORTINA_PHY)	+= cortina.o
+ obj-$(CONFIG_DAVICOM_PHY)	+= davicom.o
+diff --git a/drivers/net/phy/can_phy_bus.c b/drivers/net/phy/can_phy_bus.c
+new file mode 100644
+index 000000000000..b1712e19327c
+--- /dev/null
++++ b/drivers/net/phy/can_phy_bus.c
+@@ -0,0 +1,196 @@
++// SPDX-License-Identifier: GPL-2.0-only
++// SPDX-FileCopyrightText: 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
++
++#include <linux/can/phy.h>
++#include <linux/mii.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/phy.h>
++#include <linux/platform_device.h>
++
++struct can_mdio_bus {
++	struct mii_bus *mii_bus;
++	struct list_head phys;
++};
++
++struct can_phy {
++	int addr;
++	struct phy_device *phydev;
++	struct list_head node;
++};
++
++static struct platform_device *pdev;
++static struct can_mdio_bus platform_fmb = {
++	.phys = LIST_HEAD_INIT(platform_fmb.phys),
++};
++
++static DEFINE_IDA(phy_can_ida);
++
++/* The is the fake bus. All read/write operations are bugs. */
++static int can_mdio_read(struct mii_bus *bus, int phy_addr, int reg_num)
++{
++	WARN_ON_ONCE(1);
++	return 0xFFFF;
++}
++
++static int can_mdio_write(struct mii_bus *bus, int phy_addr, int reg_num,
++			  u16 val)
++{
++	WARN_ON_ONCE(1);
++	return 0;
++}
++
++static int can_phy_add(int phy_addr)
++{
++	struct can_mdio_bus *fmb = &platform_fmb;
++	struct can_phy *fp;
++
++	fp = kzalloc(sizeof(*fp), GFP_KERNEL);
++	if (!fp)
++		return -ENOMEM;
++
++	fp->addr = phy_addr;
++
++	list_add_tail(&fp->node, &fmb->phys);
++
++	return 0;
++}
++
++static void can_phy_del(int phy_addr)
++{
++	struct can_mdio_bus *fmb = &platform_fmb;
++	struct can_phy *fp, *tmp;
++
++	list_for_each_entry_safe(fp, tmp, &fmb->phys, node) {
++		if (fp->addr == phy_addr) {
++			list_del(&fp->node);
++			kfree(fp);
++			ida_simple_remove(&phy_can_ida, phy_addr);
++			return;
++		}
++	}
++}
++
++struct phy_device *can_phy_register(struct device_node *mac_node)
++{
++	struct can_mdio_bus *fmb = &platform_fmb;
++	struct device_node *np;
++	struct phy_device *phy;
++	int phy_addr;
++	int ret;
++
++	if (!fmb->mii_bus || fmb->mii_bus->state != MDIOBUS_REGISTERED)
++		return ERR_PTR(-EPROBE_DEFER);
++
++	/* New binding */
++	np = of_get_child_by_name(mac_node, "can-transceiver");
++	if (!np)
++		return ERR_PTR(-ENODEV);
++
++	/* Get the next available PHY address, up to PHY_MAX_ADDR */
++	phy_addr = ida_simple_get(&phy_can_ida, 0, PHY_MAX_ADDR, GFP_KERNEL);
++	if (phy_addr < 0) {
++		err = ERR_PTR(phy_addr);
++		goto err_of_node_put;
++	}
++
++	ret = can_phy_add(phy_addr);
++	if (ret < 0)
++		goto err_ida_simple_remove;
++
++	phy = phy_device_create(fmb->mii_bus, phy_addr, 0, false, NULL);
++	if (IS_ERR(phy)) {
++		ret = ERR_PTR(phy);
++		goto err_can_phy_del;
++	}
++
++	of_node_get(np);
++	phy->mdio.dev.of_node = np;
++	phy->is_pseudo_fixed_link = true;
++
++	phy_advertise_supported(phy);
++
++	ret = phy_device_register(phy);
++	if (ret)
++		goto err_phy_device_free;
++
++	return phy;
++
++err_phy_device_free:
++	phy_device_free(phy);
++err_can_phy_del:
++	can_phy_del(phy_addr);
++err_ida_simple_remove:
++	ida_simple_remove(&phy_can_ida, phy_addr);
++err_of_node_put:
++	of_node_put(np);
++	return ERR_PTR(ret);
++}
++EXPORT_SYMBOL_GPL(can_phy_register);
++
++void can_phy_unregister(struct phy_device *phy)
++{
++	phy_device_remove(phy);
++	of_node_put(phy->mdio.dev.of_node);
++	can_phy_del(phy->mdio.addr);
++}
++EXPORT_SYMBOL_GPL(can_phy_unregister);
++
++static int __init can_mdio_bus_init(void)
++{
++	struct can_mdio_bus *fmb = &platform_fmb;
++	int ret;
++
++	pdev = platform_device_register_simple("Virtual CAN PHY Bus", 0, NULL, 0);
++	if (IS_ERR(pdev))
++		return PTR_ERR(pdev);
++
++	fmb->mii_bus = mdiobus_alloc();
++	if (fmb->mii_bus == NULL) {
++		ret = -ENOMEM;
++		goto err_mdiobus_reg;
++	}
++
++	snprintf(fmb->mii_bus->id, MII_BUS_ID_SIZE, "virtual-can-0");
++	fmb->mii_bus->name = "Virtual CAN PHY Bus";
++	fmb->mii_bus->priv = fmb;
++	fmb->mii_bus->parent = &pdev->dev;
++	fmb->mii_bus->read = &can_mdio_read;
++	fmb->mii_bus->write = &can_mdio_write;
++	/* do not scan the bus for PHYs */
++	fmb->mii_bus->phy_mask = ~0;
++
++	ret = mdiobus_register(fmb->mii_bus);
++	if (ret)
++		goto err_mdiobus_alloc;
++
++	return 0;
++
++err_mdiobus_alloc:
++	mdiobus_free(fmb->mii_bus);
++err_mdiobus_reg:
++	platform_device_unregister(pdev);
++	return ret;
++}
++module_init(can_mdio_bus_init);
++
++static void __exit can_mdio_bus_exit(void)
++{
++	struct can_mdio_bus *fmb = &platform_fmb;
++	struct can_phy *fp, *tmp;
++
++	mdiobus_unregister(fmb->mii_bus);
++	mdiobus_free(fmb->mii_bus);
++	platform_device_unregister(pdev);
++
++	list_for_each_entry_safe(fp, tmp, &fmb->phys, node) {
++		list_del(&fp->node);
++		kfree(fp);
++	}
++	ida_destroy(&phy_can_ida);
++}
++module_exit(can_mdio_bus_exit);
++
++MODULE_DESCRIPTION("Virtual CAN PHY Bus");
++MODULE_AUTHOR("Oleksij Rempel");
++MODULE_LICENSE("GPLv2");
+diff --git a/include/linux/can/phy.h b/include/linux/can/phy.h
+new file mode 100644
+index 000000000000..3772132d9100
+--- /dev/null
++++ b/include/linux/can/phy.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef __CAN_PHY_H
++#define __CAN_PHY_H
++
++#include <linux/phy.h>
++
++#if IS_ENABLED(CONFIG_CAN_PHY)
++extern void can_phy_unregister(struct phy_device *phydev);
++struct phy_device *can_phy_register(struct device_node *mac_node);
++#else
++static inline struct phy_device *can_phy_register(struct device_node *mac_node)
++{
++	return ERR_PTR(-ENODEV);
++}
++
++static inline void can_phy_unregister(struct phy_device *phydev)
++{
++}
++#endif /* CONFIG_CAN_PHY */
++
++#endif /* __CAN_PHY_H */
+-- 
+2.28.0
 
-> You told me the DLCs from 9..15 are correct from the ISO standpoint.
-> That a good programmer checks the DLC and makes sure he only processes
-> max. 8 bytes is a common thing and no 'filtering'.
->
-> You might introduce CAN_RAW_RAW_DLC sockopt for CAN_RAW sockets but when
-> you use packet sockets e.g. with Wireshark and forge some CAN frames
-> there your only chance to have proper 0..8 DLCs is to disable
-> CAN_CTRLMODE_RAW_DLC.
-
-Did not think of that use case but yes, I agree that
-CAN_CTRLMODE_RAW_DLC is needed. I see CAN_RAW_RAW_DLC as an addition,
-not a replacement.
-
-> Btw. do you really see any legacy SocketCAN applications (*together*
-> with your testing application on the same Linux host) where you don't
-> have the source code to check whether they properly initialize the
-> reserved/padding bytes?
->
-> You can also use the can-gw to let 'malicious' CAN apps run on a private
-> virtual CAN. Forwarded modified CAN frames definitely initialize the
-> reserved/padding bytes.
-
-Here, I am replying to you about the case of the 'legacy' applications
-with uninitialized raw_dlc send CAN frames.
-
-Even if this is *my* intention, is it the intention of every other
-user activating CAN_CTRLMODE_RAW_DLC?
-
-Consider either of:
-
-  * the newbie user who just wants a normal netlink configuration but
-    copy/pasted the command from the internet without realising the
-    raw_dlc option is here.
-
-  * the 'more helps more' guys that switch everything to 'on' which
-    you mentioned before. This guys does not understand the RAW_DLC
-    thing but yet activated it.
-
-  * the expert user who turned on the feature for tests but also runs
-    legacy applications in parallel or after doing the tests.
-
-All of these users are subjected to the issue on the legacy
-application I explained. It is not their intention to send DLC greater
-than 8.
-
-Furthermore, the first two users do not necessarily know how to
-program. They are using downloaded application and do not have the
-knowledge to check for the issue nor to even understand it. (The third
-user should understand. Maybe he or she is not the best example, wish
-I had started my argumentation with the first two user cases).
-
-I see two options:
-
-  1. The user used an expert command, it is his responsibility: we do
-     not care, it is his fault.
-
-  2. We (as kernel hackers) bare responsibility for all usage scenario
-     of the "ip addr set canX..." options and do not allow a scenario
-     which can break an existing application.
-
-My vote is 2. I draw the line at the code level: user (as a
-programmer) is responsible for the code he or she writes but we (as
-kernel hackers) try to prevent any system configuration from breaking
-existing applications which are working fine.
-
-This my interpretation of the "do not break user land" rule.
-
->>>> Basically, that would replace the use of the can_len2dlc() function.
->>>>
->>>> I also think it should be extended to CAN-FD, but no need to elaborate
->>>> more on this at the moment: let's keep the discussion focused on
->>>> classical CAN and tackle this later.
->>>
->>> Why do you want this?
->>>
->>> You get of the bike and push your bicycle for what reason?
->>>
->>> No.
->>
->> Pushing the bike: yes, that was actually my motivation. One more time,
->> I am not telling you are wrong, just that I would do it in a different
->> way. I explained my view and you read it. I do not have more arguments
->> to bring.
->
-> /me either ...
->
-> https://youtu.be/aKnX5wci404?t=34
->
->>>>> Ok, let me rephrase: Filling can_dlc with something else than a plain
->>>>> length information 0..8 ;-)
->>>>
->>>> Got it :-)
->>>>
->>>>   From my preliminary study, not so much changes or sanity check would
->>>> need to be added:
->>>>
->>>>     1. The current can_dlc sanity checks in can_send() and can_rcv() in
->>>>        net/can/af_can.c definitely needs to be adjusted (but this would
->>>>        also be the case for the raw_dlc field solution).
->>>>
->>>>     2. In the kernel Rx and Tx paths: the length should not be accessed
->>>>        directly anymore but through a getter function.
->>>>
->>>>     3. In the kernel: drivers "DLC aware" need to adapt their code and
->>>>        use the length getter function.
->>>>
->>>>     4. In user land: new "DLC aware" code should always use struct
->>>>        can_frame for classical CAN and check whether can_dlc is greater
->>>>        that CAN_MAX_DLEN before accessing data.
->>>>
->>>> That's mostly all that would have to be adjusted.
->>>>
->>>
->>> No, it is not.
->>> You have to go through all protocols, e.g. raw.c, bcm.c, gw.c, j1939,
->>> isotp.c which get a skb to be (sometimes) cloned by them. And when they
->>> need to modify the can_dlc value to send it to the userspace or
->>> whatever, you need to modify skb->data - and then you can't clone it
->>> anymore but need to skbcopy() them.
->>> HERE you will get a really big effort. Occasionally I was also thinking
->>> using can_dlc would be nice but then I looked into above code and your
->>> use-case does not justify that effort/ risk and performance impact.
->>
->> I naively thought this part would not get impacted. I have yet to
->> understand the full impact in detail but you made your point clear.
->>
->> You won :-)
->> Sorry for the long exchange and thank you for your patience.
->
-> I really don't want to 'win'. But by the time the features and
-> functionalities have been grown and many people rely on its
-> functionality and performance.
->
-> The discussion helps to find the hopefully best solution and brings all
-> of us to new insights.
->
-> The difference is to make a new door into a house or to replace its
-> entire water system. You need a VERY good reason to replace the water
-> system ... when you want a new door.
-
-OK then let me try to re-explain another point.
-
-I understand that you do not want to drop malformed frames so I stop
-replying on that because I feel that I would only annoy you more. But
-in reality I do not yet understand why you do not want to.
-
-Below are all the valid pairs of Lengths and DLCs. Every pair outside
-of the table is incorrect.
-
-    +-----------+-----------+
-    | Length    | DLC       |
-    | (can_dlc) | (raw_dlc) |
-    +-----------+-----------+
-    | 0         | 0         |
-    | 1         | 1         |
-    | 2         | 2         |
-    | 3         | 3         |
-    | 4         | 4         |
-    | 5         | 5         |
-    | 6         | 6         |
-    | 7         | 7         |
-    | 8         | 8..15     |
-    +-----------+-----------+
-
-If the user sets, let say, can_dlc to 8 and raw_dlc to 2, he expects
-to send a frame of length 8 and *DLC 2*. Such a frame does not exist
-and is malformed. Your code lets this frame pass through and
-eventually, the driver sends a frame of length 8 and *DLC 8* on the
-wire: not what the user requested.
-
-My point is why send something different than requested. If it is
-malformed, refuse to send and tell the user "hey this is wrong".
-
-What is the rationale for not dropping invalid frames?
-
-
-Yours sincerely,
-Vincent Mailhol
