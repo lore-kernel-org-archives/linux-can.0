@@ -2,142 +2,82 @@ Return-Path: <SRS0=2KO9=D6=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6339EC388F9
-	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 10:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94FB5C388F9
+	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 11:45:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1A5562225F
-	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 10:57:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 154B720EDD
+	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 11:45:22 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="TAYvai1a"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462596AbgJWK5I (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 23 Oct 2020 06:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
+        id S463186AbgJWLpL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 23 Oct 2020 07:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462569AbgJWK4j (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Oct 2020 06:56:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FD8C0613D4
-        for <linux-can@vger.kernel.org>; Fri, 23 Oct 2020 03:56:39 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        with ESMTP id S463142AbgJWLpL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Oct 2020 07:45:11 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1ADCC0613CE;
+        Fri, 23 Oct 2020 04:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=6lSi9hSUneOKjKoOEI0EQ2kdi/7mfSkeNSqSK8XtkC4=; b=TAYvai1aLUZRqLMGogUsG9bxJ
+        Bg3N5E37TNGkH8pn1Lgko3IhgYJ4Jyj7G621KOm4uV/NR7gSpBRwXlNf2S7pmJrkLh4+rO26e7JLn
+        CELHyb4EyxC5D6TBYdU0ZnLcSkbUGOSt/iEzplsp+7rUeCTJlaeVZANF7KW5oKx5tuHbJYR9fO7by
+        LpsWJrFO4MpjPjIF20JxEMTUX+Bc1wzcQO1KKYG//6mmZAY7ut0QTTHBT17WBiFRk8Jq3Bp4An5/g
+        wB2R7dBtggbb7imRg/tC2rwuFbWIoSC8/BWuIUyPaug3eVkLUPmFYxCJlF882zHEFTINHaXmCH9KM
+        kZVQ58AiA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49952)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kVukG-00087q-Kr; Fri, 23 Oct 2020 12:56:28 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kVukF-0001kc-G7; Fri, 23 Oct 2020 12:56:27 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kVvVI-0003Ni-Fu; Fri, 23 Oct 2020 12:45:04 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kVvVG-0008Q5-DT; Fri, 23 Oct 2020 12:45:02 +0100
+Date:   Fri, 23 Oct 2020 12:45:02 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
         David Jander <david@protonic.nl>, kernel@pengutronix.de,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        Marek Vasut <marex@denx.de>, linux-can@vger.kernel.org
-Subject: [RFC PATCH v1 4/6] net: add CAN specific link modes
-Date:   Fri, 23 Oct 2020 12:56:24 +0200
-Message-Id: <20201023105626.6534-5-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201023105626.6534-1-o.rempel@pengutronix.de>
+        mkl@pengutronix.de, Marek Vasut <marex@denx.de>,
+        linux-can@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/6] add initial CAN PHY support
+Message-ID: <20201023114502.GC1551@shell.armlinux.org.uk>
 References: <20201023105626.6534-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023105626.6534-1-o.rempel@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds the CAN specific link modes to the ethtool user space
-API.
+On Fri, Oct 23, 2020 at 12:56:20PM +0200, Oleksij Rempel wrote:
+> - The upcoming CAN SIC and CAN SIC XL PHYs use a different interface to
+>   the CAN controller. This means the controller needs to know which type
+>   of PHY is attached to configure the interface in the correct mode. Use
+>   PHY link for that, too.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/phy/phy-core.c   | 2 +-
- include/uapi/linux/ethtool.h | 9 +++++++++
- net/ethtool/common.c         | 7 +++++++
- net/ethtool/linkmodes.c      | 7 +++++++
- 4 files changed, 24 insertions(+), 1 deletion(-)
+Is this dynamic in some form?
 
-diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index 635be83962b6..0f0c136890e0 100644
---- a/drivers/net/phy/phy-core.c
-+++ b/drivers/net/phy/phy-core.c
-@@ -13,7 +13,7 @@
-  */
- const char *phy_speed_to_str(int speed)
- {
--	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 92,
-+	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 98,
- 		"Enum ethtool_link_mode_bit_indices and phylib are out of sync. "
- 		"If a speed or mode has been added please update phy_speed_to_str "
- 		"and the PHY settings array.\n");
-diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
-index 9ca87bc73c44..eb3cb846c0a6 100644
---- a/include/uapi/linux/ethtool.h
-+++ b/include/uapi/linux/ethtool.h
-@@ -1619,6 +1619,15 @@ enum ethtool_link_mode_bit_indices {
- 	ETHTOOL_LINK_MODE_400000baseCR4_Full_BIT	 = 89,
- 	ETHTOOL_LINK_MODE_100baseFX_Half_BIT		 = 90,
- 	ETHTOOL_LINK_MODE_100baseFX_Full_BIT		 = 91,
-+
-+	/* CAN specific capabilities */
-+	ETHTOOL_LINK_MODE_CAN_SW_BIT			 = 92,
-+	ETHTOOL_LINK_MODE_CAN_LS_BIT			 = 93,
-+	ETHTOOL_LINK_MODE_CAN_HS_BIT			 = 94,
-+	ETHTOOL_LINK_MODE_CAN_FD_BIT			 = 95,
-+	ETHTOOL_LINK_MODE_CAN_SIC_BIT			 = 96,
-+	ETHTOOL_LINK_MODE_CAN_SIC_XL_BIT		 = 97,
-+
- 	/* must be last entry */
- 	__ETHTOOL_LINK_MODE_MASK_NBITS
- };
-diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-index 24036e3055a1..3d2fa29291a1 100644
---- a/net/ethtool/common.c
-+++ b/net/ethtool/common.c
-@@ -194,6 +194,13 @@ const char link_mode_names[][ETH_GSTRING_LEN] = {
- 	__DEFINE_LINK_MODE_NAME(400000, CR4, Full),
- 	__DEFINE_LINK_MODE_NAME(100, FX, Half),
- 	__DEFINE_LINK_MODE_NAME(100, FX, Full),
-+
-+	__DEFINE_SPECIAL_MODE_NAME(CAN_SW, "Single-wire CAN"),	/* SAE J2411 */
-+	__DEFINE_SPECIAL_MODE_NAME(CAN_LS, "CAN low-speed"),	/* ISO 11898-3 (aka. Fault tolerant) */
-+	__DEFINE_SPECIAL_MODE_NAME(CAN_HS, "CAN high-speed"),	/* ISO 11898-2:2016 limited to bit-rates of 1 Mbit/s */
-+	__DEFINE_SPECIAL_MODE_NAME(CAN_FD, "CAN FD"),		/* ISO 11898-2:2016 supporting improved optional parameters */
-+	__DEFINE_SPECIAL_MODE_NAME(CAN_SIC, "CAN SIC"),		/* CiA 601-4 */
-+	__DEFINE_SPECIAL_MODE_NAME(CAN_SIC_XL, "CAN SIC XL"),	/* CiA 610-3 */
- };
- static_assert(ARRAY_SIZE(link_mode_names) == __ETHTOOL_LINK_MODE_MASK_NBITS);
- 
-diff --git a/net/ethtool/linkmodes.c b/net/ethtool/linkmodes.c
-index c5bcb9abc8b9..eae0f75681fe 100644
---- a/net/ethtool/linkmodes.c
-+++ b/net/ethtool/linkmodes.c
-@@ -264,6 +264,13 @@ static const struct link_mode_info link_mode_params[] = {
- 	__DEFINE_LINK_MODE_PARAMS(400000, CR4, Full),
- 	__DEFINE_LINK_MODE_PARAMS(100, FX, Half),
- 	__DEFINE_LINK_MODE_PARAMS(100, FX, Full),
-+
-+	__DEFINE_SPECIAL_MODE_PARAMS(CAN_SW),
-+	__DEFINE_SPECIAL_MODE_PARAMS(CAN_LS),
-+	__DEFINE_SPECIAL_MODE_PARAMS(CAN_HS),
-+	__DEFINE_SPECIAL_MODE_PARAMS(CAN_FD),
-+	__DEFINE_SPECIAL_MODE_PARAMS(CAN_SIC),
-+	__DEFINE_SPECIAL_MODE_PARAMS(CAN_SIC_XL),
- };
- 
- const struct nla_policy ethnl_linkmodes_set_policy[] = {
 -- 
-2.28.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
