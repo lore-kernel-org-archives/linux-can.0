@@ -7,29 +7,29 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1E14C55179
-	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 10:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A753C56201
+	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 10:56:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9B82C20FC3
+	by mail.kernel.org (Postfix) with ESMTP id F1A1D20FC3
 	for <linux-can@archiver.kernel.org>; Fri, 23 Oct 2020 10:56:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462598AbgJWK4m (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S462597AbgJWK4m (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 23 Oct 2020 06:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462594AbgJWK4l (ORCPT
+        with ESMTP id S462590AbgJWK4l (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 23 Oct 2020 06:56:41 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE39C0613D5
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C83DC0613CE
         for <linux-can@vger.kernel.org>; Fri, 23 Oct 2020 03:56:41 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1kVukG-00087s-Kr; Fri, 23 Oct 2020 12:56:28 +0200
+        id 1kVukG-00087o-Kr; Fri, 23 Oct 2020 12:56:28 +0200
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1kVukF-0001kw-I7; Fri, 23 Oct 2020 12:56:27 +0200
+        id 1kVukF-0001kK-E8; Fri, 23 Oct 2020 12:56:27 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
@@ -42,9 +42,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
         Marek Vasut <marex@denx.de>, linux-can@vger.kernel.org
-Subject: [RFC PATCH v1 6/6] can: flexcan: add ethtool support
-Date:   Fri, 23 Oct 2020 12:56:26 +0200
-Message-Id: <20201023105626.6534-7-o.rempel@pengutronix.de>
+Subject: [RFC PATCH v1 2/6] net: phy: add a driver for generic CAN PHYs
+Date:   Fri, 23 Oct 2020 12:56:22 +0200
+Message-Id: <20201023105626.6534-3-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201023105626.6534-1-o.rempel@pengutronix.de>
 References: <20201023105626.6534-1-o.rempel@pengutronix.de>
@@ -58,161 +58,288 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Generic CAN PHY driver should provide support for simple CAN PHYs
+(transceiver).
+
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 111 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 111 insertions(+)
+ drivers/net/phy/Kconfig       |   6 +
+ drivers/net/phy/Makefile      |   1 +
+ drivers/net/phy/can_phy_drv.c | 236 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 243 insertions(+)
+ create mode 100644 drivers/net/phy/can_phy_drv.c
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index c320eed31322..8f487ac37f5e 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -247,6 +247,11 @@
- /* support memory detection and correction */
- #define FLEXCAN_QUIRK_SUPPORT_ECC BIT(10)
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 39e3f57ea60a..c4ae29c8e9ff 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -153,6 +153,12 @@ config BCM_CYGNUS_PHY
+ config BCM_NET_PHYLIB
+ 	tristate
  
-+#define FLEXCAN_DEFAULT_MSG_ENABLE \
-+	(NETIF_MSG_DRV | NETIF_MSG_PROBE | NETIF_MSG_LINK | NETIF_MSG_TIMER \
-+	 NETIF_MSG_IFDOWN | NETIF_MSG_IFUP | NETIF_MSG_RX_ERR | \
-+	 NETIF_MSG_TX_ERR)
++config CAN_GENERIC_PHY
++	tristate "Generic CAN PHY"
++	depends on CAN_PHY_BUS
++	help
++	  Enable this driver to support the majority of simple CAN PHYs.
 +
- /* Structure of the message buffer */
- struct flexcan_mb {
- 	u32 can_ctrl;
-@@ -369,6 +374,18 @@ struct flexcan_priv {
- 	phy_interface_t phy_if_mode;
- 	struct phylink *phylink;
- 	struct phylink_config phylink_config;
-+	u32 msg_enable;
+ config CAN_PHY_BUS
+ 	tristate "Virtual CAN PHY Bus"
+ 	depends on PHYLIB
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index 0d76d802c07f..80053cb13dc0 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -47,6 +47,7 @@ obj-$(CONFIG_BCM87XX_PHY)	+= bcm87xx.o
+ obj-$(CONFIG_BCM_CYGNUS_PHY)	+= bcm-cygnus.o
+ obj-$(CONFIG_BCM_NET_PHYLIB)	+= bcm-phy-lib.o
+ obj-$(CONFIG_BROADCOM_PHY)	+= broadcom.o
++obj-$(CONFIG_CAN_GENERIC_PHY)	+= can_phy_drv.o
+ obj-$(CONFIG_CAN_PHY_BUS)	+= can_phy_bus.o
+ obj-$(CONFIG_CICADA_PHY)	+= cicada.o
+ obj-$(CONFIG_CORTINA_PHY)	+= cortina.o
+diff --git a/drivers/net/phy/can_phy_drv.c b/drivers/net/phy/can_phy_drv.c
+new file mode 100644
+index 000000000000..c52bf11fdc03
+--- /dev/null
++++ b/drivers/net/phy/can_phy_drv.c
+@@ -0,0 +1,236 @@
++// SPDX-License-Identifier: GPL-2.0-only
++// SPDX-FileCopyrightText: 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
++
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/phy.h>
++#include <linux/regulator/consumer.h>
++
++/* flags */
++#define CAN_GEN_SIC_XL			BIT(5)
++#define CAN_GEN_SIC			BIT(4)
++#define CAN_GEN_FD			BIT(3)
++#define CAN_GEN_HS			BIT(2)
++#define CAN_GEN_LS			BIT(1)
++#define CAN_GEN_SW			BIT(0)
++
++struct can_gen_dcfg {
++	u32 flags;
++	u32 max_bitrate;
 +};
 +
-+struct flexcan_statistic {
-+	unsigned short offset;
-+	u32 mask;
-+	const char name[ETH_GSTRING_LEN];
++struct can_gen_priv {
++	struct regulator *reg_xceiver;
++	struct can_gen_dcfg dcfg;
++	bool off;
 +};
 +
-+static const struct flexcan_statistic flexcan_statistics[] = {
-+	{ 0x001c, GENMASK(15, 7), "RX_ERR", },
-+	{ 0x001c, GENMASK(7, 0), "TX_ERR", },
- };
- 
- static const struct flexcan_devtype_data fsl_p1010_devtype_data = {
-@@ -492,6 +509,98 @@ static inline void flexcan_write_le(u32 val, void __iomem *addr)
- 	iowrite32(val, addr);
- }
- 
-+static void flexcan_get_drvinfo(struct net_device *ndev,
-+			       struct ethtool_drvinfo *info)
++static const struct can_gen_dcfg can_gen_nxp_tja1051 = {
++	.flags = CAN_GEN_HS | CAN_GEN_FD,
++	.max_bitrate = 5000000,
++};
++
++static const struct of_device_id can_gen_ids[] = {
++	{
++		.compatible = "can,generic-transceiver",
++	}, {
++		.compatible = "nxp,tja1051",
++		.data = &can_gen_nxp_tja1051,
++	}, { /* sentinel */ }
++};
++
++static void can_gen_get_bitrate(struct can_gen_priv *priv,
++			       struct phy_device *phydev)
 +{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
++	struct device_node *np = phydev->mdio.dev.of_node;
++	struct can_gen_dcfg *dcfg = &priv->dcfg;
++	u32 max_bitrate;
++	int ret;
 +
-+	strlcpy(info->driver, "flexcan", sizeof(info->driver));
-+	strlcpy(info->bus_info, of_node_full_name(priv->dev->of_node),
-+		sizeof(info->bus_info));
-+}
++	ret = of_property_read_u32(np, "max-bitrate", &max_bitrate);
++	if (ret)
++		phydev_warn(phydev, "Can't read max-bitrate\n");
 +
-+static int flexcan_get_link_ksettings(struct net_device *ndev,
-+				   struct ethtool_link_ksettings *kset)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
++	if (!dcfg->max_bitrate && !max_bitrate) {
++		phydev_warn(phydev, "Huh... Limitless PHY!!\n");
 +
-+	return phylink_ethtool_ksettings_get(priv->phylink, kset);
-+}
++		if (dcfg->flags & CAN_GEN_FD) {
++			max_bitrate = 12000000; /* 12Mbit */
++		} else if (dcfg->flags & CAN_GEN_HS) {
++			max_bitrate = 1000000; /* 1Mbit */
++		} else if (dcfg->flags & CAN_GEN_LS) {
++			max_bitrate = 125000; /* 125Kbit */
++		} else if (dcfg->flags & CAN_GEN_SW) {
++			max_bitrate = 83300; /* 83.3kbit */
++		} else {
++			max_bitrate = 12000000; /* 12Mbit */
++			phydev_warn(phydev, "Can't determine the max bitrate! Set: %d\n",
++				    max_bitrate);
++		}
 +
-+static int flexcan_set_link_ksettings(struct net_device *ndev,
-+				   const struct ethtool_link_ksettings *kset)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	return phylink_ethtool_ksettings_set(priv->phylink, kset);
-+}
-+
-+static int flexcan_ethtool_nway_reset(struct net_device *ndev)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	return phylink_ethtool_nway_reset(priv->phylink);
-+}
-+
-+static void flexcan_set_msglevel(struct net_device *ndev, u32 value)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	priv->msg_enable = value;
-+}
-+
-+static u32 flexcan_get_msglevel(struct net_device *ndev)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	return priv->msg_enable;
-+}
-+
-+static void flexcan_ethtool_get_strings(struct net_device *netdev, u32 sset,
-+				       u8 *data)
-+{
-+	if (sset == ETH_SS_STATS) {
-+		int i;
-+
-+		for (i = 0; i < ARRAY_SIZE(flexcan_statistics); i++)
-+			memcpy(data + i * ETH_GSTRING_LEN,
-+			       flexcan_statistics[i].name, ETH_GSTRING_LEN);
++		dcfg->max_bitrate = max_bitrate;
++	} else if (dcfg->max_bitrate && max_bitrate > dcfg->max_bitrate) {
++		phydev_info(phydev, "Ignoring max-bitrate property: %d, hw limit: %d\n",
++			    max_bitrate, dcfg->max_bitrate);
++	} else {
++		dcfg->max_bitrate = max_bitrate;
 +	}
 +}
 +
-+static void flexcan_ethtool_get_stats(struct net_device *ndev,
-+				     struct ethtool_stats *stats, u64 *data)
++static void can_gen_parse_dt_flags(struct can_gen_priv *priv,
++				   struct phy_device *phydev)
 +{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+	struct flexcan_regs __iomem *regs = priv->regs;
-+	int i;
++	struct can_gen_dcfg *dcfg = &priv->dcfg;
++	struct device *dev = &phydev->mdio.dev;
 +
-+	for (i = 0; i < ARRAY_SIZE(flexcan_statistics); i++)
-+		*data++ = u32_get_bits(priv->read(regs + flexcan_statistics[i].offset),
-+					flexcan_statistics[i].mask);
++	if (device_property_read_bool(dev, "can-sic-xl"))
++		dcfg->flags |= CAN_GEN_SIC_XL;
++	if (device_property_read_bool(dev, "can-sic"))
++		dcfg->flags |= CAN_GEN_SIC;
++	if (device_property_read_bool(dev, "can-fd"))
++		dcfg->flags |= CAN_GEN_FD;
++	if (device_property_read_bool(dev, "can-hs"))
++		dcfg->flags |= CAN_GEN_HS;
++	if (device_property_read_bool(dev, "can-ls"))
++		dcfg->flags |= CAN_GEN_LS;
++	if (device_property_read_bool(dev, "can-sw"))
++		dcfg->flags |= CAN_GEN_SW;
 +}
 +
-+static int flexcan_ethtool_get_sset_count(struct net_device *ndev, int sset)
++static int can_gen_probe(struct phy_device *phydev)
 +{
-+	if (sset == ETH_SS_STATS)
-+		return ARRAY_SIZE(flexcan_statistics);
-+	return -EOPNOTSUPP;
++	struct device_node *np = phydev->mdio.dev.of_node;
++	const struct of_device_id *match;
++	struct regulator *reg_xceiver;
++	struct can_gen_priv *priv;
++
++	match = of_match_node(can_gen_ids, np);
++	if (!match)
++		return 0;
++
++	reg_xceiver = devm_regulator_get_optional(&phydev->mdio.dev, "xceiver");
++	if (PTR_ERR(reg_xceiver) == -ENODEV)
++		reg_xceiver = NULL;
++	else if (IS_ERR(reg_xceiver))
++		return dev_err_probe(&phydev->mdio.dev, PTR_ERR(reg_xceiver),
++				     "Failed to get Transceiver regulator!\n");
++
++	priv = devm_kzalloc(&phydev->mdio.dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	if (!match->data)
++		can_gen_parse_dt_flags(priv, phydev);
++	else
++		memcpy(&priv->dcfg, match->data, sizeof(priv->dcfg));
++
++	can_gen_get_bitrate(priv, phydev);
++
++	phydev->priv = priv;
++	priv->reg_xceiver = reg_xceiver;
++	priv->off = true;
++
++	return 0;
 +}
 +
-+static const struct ethtool_ops flexcan_ethtool_ops = {
-+	.get_drvinfo			= flexcan_get_drvinfo,
-+	.get_link			= ethtool_op_get_link,
-+	.get_ts_info			= ethtool_op_get_ts_info,
-+	.get_link_ksettings		= flexcan_get_link_ksettings,
-+	.set_link_ksettings		= flexcan_set_link_ksettings,
-+	.nway_reset			= flexcan_ethtool_nway_reset,
-+	.get_msglevel			= flexcan_get_msglevel,
-+	.set_msglevel			= flexcan_set_msglevel,
-+	.get_strings			= flexcan_ethtool_get_strings,
-+	.get_ethtool_stats		= flexcan_ethtool_get_stats,
-+	.get_sset_count			= flexcan_ethtool_get_sset_count,
++static int can_gen_read_status(struct phy_device *phydev)
++{
++	phydev->link = true;
++	phydev->duplex = DUPLEX_HALF;
++
++	return 0;
++}
++
++static int can_gen_match_phy_device(struct phy_device *phydev)
++{
++	struct device_node *np = phydev->mdio.dev.of_node;
++	const struct of_device_id *match;
++
++	if (phydev->phy_id)
++		return 0;
++
++	match = of_match_node(can_gen_ids, np);
++	if (!match)
++		return 0;
++
++	return 1;
++}
++
++static int can_get_features(struct phy_device *phydev)
++{
++	struct can_gen_priv *priv = phydev->priv;
++	struct can_gen_dcfg *dcfg = &priv->dcfg;
++
++	phydev->interface = PHY_INTERFACE_MODE_CAN;
++	phydev->max_bitrate = dcfg->max_bitrate;
++
++	if (dcfg->flags & CAN_GEN_SIC_XL)
++		linkmode_set_bit(ETHTOOL_LINK_MODE_CAN_SIC_XL_BIT,
++				 phydev->supported);
++	if (dcfg->flags & CAN_GEN_SIC)
++		linkmode_set_bit(ETHTOOL_LINK_MODE_CAN_SIC_BIT,
++				 phydev->supported);
++	if (dcfg->flags & CAN_GEN_FD)
++		linkmode_set_bit(ETHTOOL_LINK_MODE_CAN_FD_BIT,
++				 phydev->supported);
++	if (dcfg->flags & CAN_GEN_HS)
++		linkmode_set_bit(ETHTOOL_LINK_MODE_CAN_HS_BIT,
++				 phydev->supported);
++	if (dcfg->flags & CAN_GEN_LS)
++		linkmode_set_bit(ETHTOOL_LINK_MODE_CAN_LS_BIT,
++				 phydev->supported);
++	if (dcfg->flags & CAN_GEN_SW)
++		linkmode_set_bit(ETHTOOL_LINK_MODE_CAN_SW_BIT,
++				 phydev->supported);
++
++	return 0;
++}
++
++static int can_gen_config_aneg(struct phy_device *phydev)
++{
++	return 0;
++}
++
++static int can_gen_resume(struct phy_device *phydev)
++{
++	struct can_gen_priv *priv = phydev->priv;
++
++	/* Resume can be called multiple times, so it will be asymmetric to
++	 * the suspend call.*/
++	if (!priv->off)
++		return 0;
++
++	priv->off = false;
++
++	return regulator_enable(priv->reg_xceiver);
++}
++
++static int can_gen_suspend(struct phy_device *phydev)
++{
++	struct can_gen_priv *priv = phydev->priv;
++
++	if (priv->off)
++		return 0;
++
++	priv->off = true;
++
++	return regulator_disable(priv->reg_xceiver);
++}
++
++static struct phy_driver can_gen_drv[] = {
++	{
++		.name			= "Generic CAN PHY",
++		.match_phy_device	= can_gen_match_phy_device,
++		.probe			= can_gen_probe,
++		.read_status		= can_gen_read_status,
++		.suspend		= can_gen_suspend,
++		.resume			= can_gen_resume,
++		.get_features		= can_get_features,
++		.config_aneg		= can_gen_config_aneg,
++	},
 +};
++module_phy_driver(can_gen_drv);
 +
- static struct flexcan_mb __iomem *flexcan_get_mb(const struct flexcan_priv *priv,
- 						 u8 mb_index)
- {
-@@ -2122,6 +2231,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	SET_NETDEV_DEV(dev, &pdev->dev);
- 
- 	dev->netdev_ops = &flexcan_netdev_ops;
-+	dev->ethtool_ops = &flexcan_ethtool_ops;
- 	dev->irq = irq;
- 	dev->flags |= IFF_ECHO;
- 
-@@ -2150,6 +2260,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	priv->devtype_data = devtype_data;
- 	priv->reg_xceiver = reg_xceiver;
- 	priv->phy_if_mode = phy_if_mode;
-+	priv->msg_enable = netif_msg_init(-1, FLEXCAN_DEFAULT_MSG_ENABLE);
- 
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) {
- 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD |
++MODULE_DESCRIPTION("Generic CAN PHY driver");
++MODULE_AUTHOR("Oleksij Rempel");
++MODULE_LICENSE("GPLv2");
 -- 
 2.28.0
 
