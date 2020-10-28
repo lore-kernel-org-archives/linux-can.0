@@ -2,57 +2,41 @@ Return-Path: <SRS0=+ffn=ED=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 289B2C56202
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0B94C56201
 	for <linux-can@archiver.kernel.org>; Wed, 28 Oct 2020 21:34:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D206E24844
-	for <linux-can@archiver.kernel.org>; Wed, 28 Oct 2020 21:34:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A16C724842
+	for <linux-can@archiver.kernel.org>; Wed, 28 Oct 2020 21:34:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgJ1VeQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 28 Oct 2020 17:34:16 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:58585 "EHLO
+        id S1726561AbgJ1VeY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 28 Oct 2020 17:34:24 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:51835 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726493AbgJ1VeO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 28 Oct 2020 17:34:14 -0400
+        with ESMTP id S1726559AbgJ1VeX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 28 Oct 2020 17:34:23 -0400
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kXgLI-0003hu-Jh; Wed, 28 Oct 2020 08:58:00 +0100
+        id 1kXqHU-000320-Ep; Wed, 28 Oct 2020 19:34:44 +0100
 Received: from [IPv6:2a03:f580:87bc:d400:9a81:bf61:4515:808d] (unknown [IPv6:2a03:f580:87bc:d400:9a81:bf61:4515:808d])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
          client-signature RSA-PSS (4096 bits) client-digest SHA256)
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 274C3583B96;
-        Wed, 28 Oct 2020 07:57:57 +0000 (UTC)
-Subject: Re: mcp251xfd on RPi 5.4 downstream
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Patrick Menschel <menschel.p@posteo.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-can@vger.kernel.org, Josh S <josh@macchina.cc>
-References: <CAPgEAj5eeN7Q9Hs7ZcrvaNCQJ7uW8kyNs3CPiVfQ=AEX9WeYoQ@mail.gmail.com>
- <68846197-98dc-b991-1ec8-a477ceb8d614@posteo.de>
- <715b3c3b-dbbc-688c-9757-578455c3a607@pengutronix.de>
- <0667516a-525e-9c4e-ec7a-e4d8a188c338@posteo.de>
- <CAPgEAj72jBPDGWnxOM73JLB=0Soo7uYh0FukNhpZQvDvqPewjg@mail.gmail.com>
- <CAPgEAj4DceAkPySUekDZPAKwNToxNjz6Yr66_3mqkE-0iiKAYA@mail.gmail.com>
- <92dd7044-8f0d-154b-eb04-8cec1b572dd2@pengutronix.de>
- <fa70fffa-7702-7cd0-dcfb-15bd18c3bb15@posteo.de>
- <2a1ddec7-ca28-ae44-dc06-f80f0017bf1f@pengutronix.de>
- <CAPgEAj6z_DaycgVOqvqqTv2KVRcascT8_nd+FNnZJtg0ObGPaw@mail.gmail.com>
- <CAPgEAj6nu475YeeWXc3wWO8sAmn8stz2Qr3nQ=HABd8CKR-c+w@mail.gmail.com>
- <41b606d5-5991-4d4f-bd6f-aaaf31cbc9b5@pengutronix.de>
- <6a7061a4-771d-6703-1e30-273050abfb9d@posteo.de>
- <2593d8e0-2d42-0461-e2e1-86a71b415476@pengutronix.de>
- <CAPgEAj5JheUirqr2kLrjJpwCaK3+HZyo8r8uKk25zMREVXWT3Q@mail.gmail.com>
- <CAPgEAj4W61tCSkdrCP2J4dL7WwQ1NKzFCUGjY9o4_qj+NG5KEA@mail.gmail.com>
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 0ED70584074;
+        Wed, 28 Oct 2020 18:34:42 +0000 (UTC)
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        mailhol.vincent@wanadoo.fr
+Cc:     linux-can@vger.kernel.org
+References: <20201028180940.2071-1-socketcan@hartkopp.net>
+ <20201028180940.2071-4-socketcan@hartkopp.net>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -114,15 +98,16 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <3d19330b-860b-7d76-bc6d-768a7b00ed4b@pengutronix.de>
-Date:   Wed, 28 Oct 2020 08:57:37 +0100
+Subject: Re: [PATCH v2 3/4] can: remove obsolete get_canfd_dlc() macro
+Message-ID: <9eac8c67-694d-9fb7-5d44-272df37d0946@pengutronix.de>
+Date:   Wed, 28 Oct 2020 19:34:38 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAPgEAj4W61tCSkdrCP2J4dL7WwQ1NKzFCUGjY9o4_qj+NG5KEA@mail.gmail.com>
+In-Reply-To: <20201028180940.2071-4-socketcan@hartkopp.net>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="62pxXggHQnFzPS7crpSm7p1Czt8D3hTQO"
+ boundary="EbrWSqPty0Osn7f4V7O1ez9F1MUu0mbE2"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -132,61 +117,56 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---62pxXggHQnFzPS7crpSm7p1Czt8D3hTQO
-Content-Type: multipart/mixed; boundary="rFLhFvecVrXPbJAZCrLqA8kutG3Sleghj";
+--EbrWSqPty0Osn7f4V7O1ez9F1MUu0mbE2
+Content-Type: multipart/mixed; boundary="rG2ffXLZVfMZF9hI2g6QcNA0lAv5jLHTH";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Drew Fustini <drew@beagleboard.org>
-Cc: Patrick Menschel <menschel.p@posteo.de>,
- Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org,
- Josh S <josh@macchina.cc>
-Message-ID: <3d19330b-860b-7d76-bc6d-768a7b00ed4b@pengutronix.de>
-Subject: Re: mcp251xfd on RPi 5.4 downstream
-References: <CAPgEAj5eeN7Q9Hs7ZcrvaNCQJ7uW8kyNs3CPiVfQ=AEX9WeYoQ@mail.gmail.com>
- <CAPgEAj6nQOAQ9NNB2QBbARuqWm5K62QW+NsqPROzcQOZqe-F+g@mail.gmail.com>
- <975a3598-c229-0b9a-df95-c9647f138a3a@hartkopp.net>
- <20201025105808.2pltif74at3xwtjd@hardanger.blackshift.org>
- <68846197-98dc-b991-1ec8-a477ceb8d614@posteo.de>
- <715b3c3b-dbbc-688c-9757-578455c3a607@pengutronix.de>
- <0667516a-525e-9c4e-ec7a-e4d8a188c338@posteo.de>
- <CAPgEAj72jBPDGWnxOM73JLB=0Soo7uYh0FukNhpZQvDvqPewjg@mail.gmail.com>
- <CAPgEAj4DceAkPySUekDZPAKwNToxNjz6Yr66_3mqkE-0iiKAYA@mail.gmail.com>
- <92dd7044-8f0d-154b-eb04-8cec1b572dd2@pengutronix.de>
- <fa70fffa-7702-7cd0-dcfb-15bd18c3bb15@posteo.de>
- <2a1ddec7-ca28-ae44-dc06-f80f0017bf1f@pengutronix.de>
- <CAPgEAj6z_DaycgVOqvqqTv2KVRcascT8_nd+FNnZJtg0ObGPaw@mail.gmail.com>
- <CAPgEAj6nu475YeeWXc3wWO8sAmn8stz2Qr3nQ=HABd8CKR-c+w@mail.gmail.com>
- <41b606d5-5991-4d4f-bd6f-aaaf31cbc9b5@pengutronix.de>
- <6a7061a4-771d-6703-1e30-273050abfb9d@posteo.de>
- <2593d8e0-2d42-0461-e2e1-86a71b415476@pengutronix.de>
- <CAPgEAj5JheUirqr2kLrjJpwCaK3+HZyo8r8uKk25zMREVXWT3Q@mail.gmail.com>
- <CAPgEAj4W61tCSkdrCP2J4dL7WwQ1NKzFCUGjY9o4_qj+NG5KEA@mail.gmail.com>
-In-Reply-To: <CAPgEAj4W61tCSkdrCP2J4dL7WwQ1NKzFCUGjY9o4_qj+NG5KEA@mail.gmail.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, mailhol.vincent@wanadoo.fr
+Cc: linux-can@vger.kernel.org
+Message-ID: <9eac8c67-694d-9fb7-5d44-272df37d0946@pengutronix.de>
+Subject: Re: [PATCH v2 3/4] can: remove obsolete get_canfd_dlc() macro
+References: <20201028180940.2071-1-socketcan@hartkopp.net>
+ <20201028180940.2071-4-socketcan@hartkopp.net>
+In-Reply-To: <20201028180940.2071-4-socketcan@hartkopp.net>
 
---rFLhFvecVrXPbJAZCrLqA8kutG3Sleghj
+--rG2ffXLZVfMZF9hI2g6QcNA0lAv5jLHTH
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 10/28/20 4:47 AM, Drew Fustini wrote:
->> I assumed the Waveshare instructions work but that is error on my part=
-
->> for not actually reproducing.  That is what I will do first.
->> Ultimately, I want the freshly upstreamed driver working but I should
->> check if their driver tarball works.
+On 10/28/20 7:09 PM, Oliver Hartkopp wrote:
+> The macro was always used together with can_dlc2len() which sanitizes t=
+he
+> given dlc value on its own.
 >=20
-> The Waveshare installer uses the 4.19 kernel with the mcp25xxfd
-> driver.  However, it also fails, sio I think I need to dig deeper:
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>  drivers/net/can/flexcan.c                         | 2 +-
+>  drivers/net/can/peak_canfd/peak_canfd.c           | 2 +-
+>  drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c    | 2 +-
+>  drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
+>  drivers/net/can/usb/peak_usb/pcan_usb_fd.c        | 2 +-
+>  include/linux/can/dev.h                           | 1 -
+>  include/linux/can/dev/peak_canfd.h                | 2 +-
+>  7 files changed, 6 insertions(+), 7 deletions(-)
 >=20
-> pi@raspberrypi:~ $ dmesg | grep -Ei spi\|can
-> [    4.263765] CAN device driver interface
-> [    4.286258] mcp25xxfd_can: loading out-of-tree module taints kernel.=
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index b30e3171cbd0..137f46705814 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -996,11 +996,11 @@ static struct sk_buff *flexcan_mailbox_read(struc=
+t can_rx_offload *offload,
+>  		cfd->can_id =3D ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
+>  	else
+>  		cfd->can_id =3D (reg_id >> 18) & CAN_SFF_MASK;
+> =20
+>  	if (reg_ctrl & FLEXCAN_MB_CNT_EDL) {
+> -		cfd->len =3D can_dlc2len(get_canfd_dlc((reg_ctrl >> 16) & 0xf));
+> +		cfd->len =3D can_dlc2len((u8)((reg_ctrl >> 16) & 0xf));
 
-> [    5.477511] mcp25xxfd spi1.0: Cannot initialize MCP2517. Wrong
-> wiring? (oscilator register reads as 00000000)
-
-It reads the osc as 0x0, too. This is the same error as you've seen with =
-my driver.
+Where does the u8 come from? The can_dlc2len() only takes an u8, so the c=
+ast is
+not needed.
 
 Marc
 
@@ -197,23 +177,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---rFLhFvecVrXPbJAZCrLqA8kutG3Sleghj--
+--rG2ffXLZVfMZF9hI2g6QcNA0lAv5jLHTH--
 
---62pxXggHQnFzPS7crpSm7p1Czt8D3hTQO
+--EbrWSqPty0Osn7f4V7O1ez9F1MUu0mbE2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+ZJHQACgkQqclaivrt
-76nNUAf7BmM7tSiN5QCHV6usylnUUXIJnWKx3SlL3nohgC/bqvHXR/FacJCJbJ8o
-fwQ10+yTlg/zJs7y+U3ZSW30LyGCLnZ7B5EgdiPFdRFinp7r0w1fD7xvpcY9QhAq
-tCgeLeZ/RJUqU7B1aFLD0B8ThR0zWlhbbiT5sbptVnDytOnMzjOHTpFDOKXKt9jZ
-VmMipySIdoXcC0jxNfhcT+1+ltn7/rbZ3syVgbFcE3I97kNTCCKdvYjnaFrqsbWd
-rVH6aB40PsGAkUSpj9Vbcym4QTT/HK0bzGV8oqIFsllqXwc2GvujAiyw/4lK4U+J
-56Aa0vdcTp3S6kAgj8fmL8gxoQmaOQ==
-=xTAx
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+Zub4ACgkQqclaivrt
+76lprAf/Y8SxzaZo13dcyrFt9eNJQX3/pL0Cph0tbLCGIvb/zvL/HYrw/YlMdbwW
+h8D3wd1icG8eZih1gSfQB9TSNGNN6tufZ+b7yqE5jabwEvRBXwjcmDIuCuFrxAHW
+N7S98antyjuzEoZOg/aOZsbSjWKM3n3cHoCkOFzMMUIF30eIBc+JQBAtqprIjhqu
+RkILZEH+KySUIfejZAa64hHW0kQ5v/+mWDaTBF2EUCp4ierSTX7Pxk+bzTlKepe2
+fqcg90JDfZkXCEnvZXzW4sKC3UsPfupK3ZCHrQuTq/fw8PrbM0adNBA90ds09SG1
+g8ZPTYK5e/59LPhFQ1S99W/d6KL/mw==
+=iNH1
 -----END PGP SIGNATURE-----
 
---62pxXggHQnFzPS7crpSm7p1Czt8D3hTQO--
+--EbrWSqPty0Osn7f4V7O1ez9F1MUu0mbE2--
