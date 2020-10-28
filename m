@@ -7,37 +7,38 @@ X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64CB5C388F7
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97016C4363A
 	for <linux-can@archiver.kernel.org>; Thu, 29 Oct 2020 02:44:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1DBBA2076A
+	by mail.kernel.org (Postfix) with ESMTP id 52BA72076B
 	for <linux-can@archiver.kernel.org>; Thu, 29 Oct 2020 02:44:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgJ2Coi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 28 Oct 2020 22:44:38 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:54481 "EHLO
+        id S1726549AbgJ2Coj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 28 Oct 2020 22:44:39 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:60685 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726556AbgJ1VeW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 28 Oct 2020 17:34:22 -0400
+        with ESMTP id S1726553AbgJ1VeU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 28 Oct 2020 17:34:20 -0400
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kXjEi-0006lF-P1; Wed, 28 Oct 2020 12:03:24 +0100
+        id 1kXqgG-0005Mt-4Y; Wed, 28 Oct 2020 20:00:20 +0100
 Received: from [IPv6:2a03:f580:87bc:d400:9a81:bf61:4515:808d] (unknown [IPv6:2a03:f580:87bc:d400:9a81:bf61:4515:808d])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id A237E583D28;
-        Wed, 28 Oct 2020 11:03:23 +0000 (UTC)
-Subject: Re: [PATCH 3/4] can: remove obsolete get_canfd_dlc() macro
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 0710158408C;
+        Wed, 28 Oct 2020 19:00:18 +0000 (UTC)
 To:     Oliver Hartkopp <socketcan@hartkopp.net>,
         mailhol.vincent@wanadoo.fr
 Cc:     linux-can@vger.kernel.org
-References: <20201028110033.113702-1-socketcan@hartkopp.net>
- <20201028110033.113702-4-socketcan@hartkopp.net>
+References: <20201028180940.2071-1-socketcan@hartkopp.net>
+ <20201028180940.2071-4-socketcan@hartkopp.net>
+ <9eac8c67-694d-9fb7-5d44-272df37d0946@pengutronix.de>
+ <674a183a-ab3c-a916-c5bd-9cc3d0a37de4@hartkopp.net>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -99,15 +100,16 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <57b153c5-d243-3a13-e643-1e64d60fc4df@pengutronix.de>
-Date:   Wed, 28 Oct 2020 12:03:18 +0100
+Subject: Re: [PATCH v2 3/4] can: remove obsolete get_canfd_dlc() macro
+Message-ID: <49fc0520-5786-c94a-2004-4703663b0a41@pengutronix.de>
+Date:   Wed, 28 Oct 2020 20:00:14 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201028110033.113702-4-socketcan@hartkopp.net>
+In-Reply-To: <674a183a-ab3c-a916-c5bd-9cc3d0a37de4@hartkopp.net>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="Oec8A5CIxpDAV5y9IOBr0iuG5H0x1FuTs"
+ boundary="7S5pbahvk1PqbqNxVZEo2n1cvBYse7s64"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -117,55 +119,66 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Oec8A5CIxpDAV5y9IOBr0iuG5H0x1FuTs
-Content-Type: multipart/mixed; boundary="FWsADq8yyMlmjEHDklTn1896BrSkb6iDd";
+--7S5pbahvk1PqbqNxVZEo2n1cvBYse7s64
+Content-Type: multipart/mixed; boundary="vrNDIP61KGuDbcnSL5LV1na9GA3QdLacy";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: Oliver Hartkopp <socketcan@hartkopp.net>, mailhol.vincent@wanadoo.fr
 Cc: linux-can@vger.kernel.org
-Message-ID: <57b153c5-d243-3a13-e643-1e64d60fc4df@pengutronix.de>
-Subject: Re: [PATCH 3/4] can: remove obsolete get_canfd_dlc() macro
-References: <20201028110033.113702-1-socketcan@hartkopp.net>
- <20201028110033.113702-4-socketcan@hartkopp.net>
-In-Reply-To: <20201028110033.113702-4-socketcan@hartkopp.net>
+Message-ID: <49fc0520-5786-c94a-2004-4703663b0a41@pengutronix.de>
+Subject: Re: [PATCH v2 3/4] can: remove obsolete get_canfd_dlc() macro
+References: <20201028180940.2071-1-socketcan@hartkopp.net>
+ <20201028180940.2071-4-socketcan@hartkopp.net>
+ <9eac8c67-694d-9fb7-5d44-272df37d0946@pengutronix.de>
+ <674a183a-ab3c-a916-c5bd-9cc3d0a37de4@hartkopp.net>
+In-Reply-To: <674a183a-ab3c-a916-c5bd-9cc3d0a37de4@hartkopp.net>
 
---FWsADq8yyMlmjEHDklTn1896BrSkb6iDd
+--vrNDIP61KGuDbcnSL5LV1na9GA3QdLacy
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 10/28/20 12:00 PM, Oliver Hartkopp wrote:
-> The macro was always used together with can_dlc2len() which sanitizes t=
-he
-> given dlc value on its own.
+On 10/28/20 7:55 PM, Oliver Hartkopp wrote:
 >=20
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/flexcan.c                         | 2 +-
->  drivers/net/can/peak_canfd/peak_canfd.c           | 2 +-
->  drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c    | 2 +-
->  drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
->  drivers/net/can/usb/peak_usb/pcan_usb_fd.c        | 2 +-
->  include/linux/can/dev.h                           | 1 -
->  include/linux/can/dev/peak_canfd.h                | 2 +-
->  7 files changed, 6 insertions(+), 7 deletions(-)
 >=20
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index b30e3171cbd0..137f46705814 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -996,11 +996,11 @@ static struct sk_buff *flexcan_mailbox_read(struc=
-t can_rx_offload *offload,
->  		cfd->can_id =3D ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
->  	else
->  		cfd->can_id =3D (reg_id >> 18) & CAN_SFF_MASK;
-> =20
->  	if (reg_ctrl & FLEXCAN_MB_CNT_EDL) {
-> -		cfd->len =3D can_dlc2len(get_canfd_dlc((reg_ctrl >> 16) & 0xf));
-> +		cfd->len =3D can_dlc2len((u8)((reg_ctrl >> 16) & 0xf));
-                                       ^^^^
+> On 28.10.20 19:34, Marc Kleine-Budde wrote:
+>> On 10/28/20 7:09 PM, Oliver Hartkopp wrote:
+>>> The macro was always used together with can_dlc2len() which sanitizes=
+ the
+>>> given dlc value on its own.
+>>>
+>>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>>> ---
+>>>   drivers/net/can/flexcan.c                         | 2 +-
+>>>   drivers/net/can/peak_canfd/peak_canfd.c           | 2 +-
+>>>   drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c    | 2 +-
+>>>   drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
+>>>   drivers/net/can/usb/peak_usb/pcan_usb_fd.c        | 2 +-
+>>>   include/linux/can/dev.h                           | 1 -
+>>>   include/linux/can/dev/peak_canfd.h                | 2 +-
+>>>   7 files changed, 6 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+>>> index b30e3171cbd0..137f46705814 100644
+>>> --- a/drivers/net/can/flexcan.c
+>>> +++ b/drivers/net/can/flexcan.c
+>>> @@ -996,11 +996,11 @@ static struct sk_buff *flexcan_mailbox_read(str=
+uct can_rx_offload *offload,
+>>>   		cfd->can_id =3D ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
+>>>   	else
+>>>   		cfd->can_id =3D (reg_id >> 18) & CAN_SFF_MASK;
+>>>  =20
+>>>   	if (reg_ctrl & FLEXCAN_MB_CNT_EDL) {
+>>> -		cfd->len =3D can_dlc2len(get_canfd_dlc((reg_ctrl >> 16) & 0xf));
+>>> +		cfd->len =3D can_dlc2len((u8)((reg_ctrl >> 16) & 0xf));
+>>
+>> Where does the u8 come from? The can_dlc2len() only takes an u8, so th=
+e cast is
+>> not needed.
+>=20
+> But reg_ctrl is u32. No need for a cast here?
 
-where does this come from?
+No, not needed.
 
 Marc
 
@@ -176,23 +189,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---FWsADq8yyMlmjEHDklTn1896BrSkb6iDd--
+--vrNDIP61KGuDbcnSL5LV1na9GA3QdLacy--
 
---Oec8A5CIxpDAV5y9IOBr0iuG5H0x1FuTs
+--7S5pbahvk1PqbqNxVZEo2n1cvBYse7s64
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+ZT/cACgkQqclaivrt
-76kEJwf/dVm7M5dBaAWTUQczMgxcKg3oDd2DEUF8nxaTg40CduK8q3CBWaE5mPvN
-xtAMbCRRv8O2sEPXEX2UyFvb7sFm9Zm0O7KvOuxgqPMZewyZCxarRUxQFOlQ0tAY
-irq9A0swtPJlIyyJsF0UqlC8F3jtmW7kK23nQuIk5+9mFOA3xj5tRDEoXg5i+zer
-g9glP4dNr/uTVNSgYQGTir+euilffO0+cjuOQMTHCA3ceFYUPykw8dz1MIZ27uKx
-19cGLJVDOpHVF5BfVO591MXN1dPxtOYfFu6hG9qnYy5iPeOKNOAhtHDW1J8MLRUc
-8M+uDL/xc7nRqWbvwTRX14YpRp3rsA==
-=eTdZ
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+Zv74ACgkQqclaivrt
+76l3mAf/RGtvzUtkJyw7bTynz8la+lHP+wkAjem7fHZWkIbzYRJ9JkXSTZBmYMPu
+ItA4MQFFvt6e9Tb++R39D7vZn8bms5uD6G8A/vP9llkdZyaPeigvObbrqQafdZsg
+BleqiRUx4T6jJPsET9o9JJPg6mJCPWjVTYfsbT1t7yymn6I5WjeqLfwDTOpUz8kf
+fhtKK+ndth7hbnNS8Dbis5OkPyzYILAkSG9iOYWbobhHGWEGJQJpWKoCJO9YG6zI
+4YFww/wIkbskHjuJtuIodPU4R0zNfdR1CCN6uwlkA6JtobkiitVRXTCRYZxQl/jE
+NMNTQzNIrezbnL2QXbCSTORh+FtN2A==
+=HbbA
 -----END PGP SIGNATURE-----
 
---Oec8A5CIxpDAV5y9IOBr0iuG5H0x1FuTs--
+--7S5pbahvk1PqbqNxVZEo2n1cvBYse7s64--
