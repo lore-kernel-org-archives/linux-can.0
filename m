@@ -2,128 +2,191 @@ Return-Path: <SRS0=J6wA=EE=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6A6EC55179
-	for <linux-can@archiver.kernel.org>; Thu, 29 Oct 2020 08:32:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A67AC2D0A3
+	for <linux-can@archiver.kernel.org>; Thu, 29 Oct 2020 08:32:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 549CF2076E
+	by mail.kernel.org (Postfix) with ESMTP id C295520757
 	for <linux-can@archiver.kernel.org>; Thu, 29 Oct 2020 08:32:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="JL1ICBxs"
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="qwCVUQVK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgJ2Icn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 29 Oct 2020 04:32:43 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.23]:9371 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbgJ2Icl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 29 Oct 2020 04:32:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1603960346;
+        id S1728455AbgJ2Ico (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 29 Oct 2020 04:32:44 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:27544 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728379AbgJ2Icn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 29 Oct 2020 04:32:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1603960347;
         s=strato-dkim-0002; d=hartkopp.net;
-        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
-        Subject:Sender;
-        bh=47/qJM3ZrS8ZLoR4SNEKrufswROq+2wywJIGpgPXm6E=;
-        b=JL1ICBxsITXUSHmerHHB3k491UMzvGA4vaZ5DXD8Z9uWeiAfDTlEDnLkf1Otr4P7WQ
-        LdNCiaR30dHWlwMgQ3OA1o8M03Iu7hRAT0e2xWF5jLul2Cqb9fJiHqVjRSgCEtYZofXX
-        UDGM+BIQjqDpXyHL1w4Lk5bagkK4R0DaPmsWRwGIvJaV0t1CKfCWyL7lfF56KVWoeJgl
-        N80cazT07Dl5Q2rXCMkTc+smESLI2umSOizsLcTdFc4bvZF8c5IzUa04HFMzeisefEgX
-        Vsyw9M0siRYE5cJubexnv1dmMx3DdBq8G6oMcSr5GBia9DqMJO7mlNqu3KnJPrgP60kC
-        1uhQ==
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=91VUtz6Yy90cwQRxLmfAaXUK7wAqsvBKNcjcE5t/Ed8=;
+        b=qwCVUQVKgNrKQXZFumuA7zy8dPCojU8EYLFwfZ4TfUbD0XHfkhpZfUsWtr/rUidKLZ
+        TJQR5hHrWAwkb6pNXv/ydA6vkmVXFOckTUYIQWIc2qXee5vyd33D+dZCliFA1phKz0bf
+        DIyL0wC+1ry2e3PM+V7joO621Kn6cFf2zVTeqfKk7iDTR1XthbhemofBqYFgdXJYBIW/
+        QxvAF3H9B9AkKVHz9AoORwL9B6rBWGfJMa9GkFGy248fjdRAzawbWjXm0QR3ylynQjtu
+        o1rZQrZJBXWkRIAUhWp2fuj9h4qhuBQQuvCE9y77ERd104L29Pdew+sP2Djkko1Zee8i
+        AZZw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0k+8CejuVIDM8sC/W"
 X-RZG-CLASS-ID: mo00
 Received: from silver.lan
         by smtp.strato.de (RZmta 47.3.0 DYNA|AUTH)
-        with ESMTPSA id L010bew9T8WP0Vi
+        with ESMTPSA id L010bew9T8WR0Vm
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Thu, 29 Oct 2020 09:32:25 +0100 (CET)
+        Thu, 29 Oct 2020 09:32:27 +0100 (CET)
 From:   Oliver Hartkopp <socketcan@hartkopp.net>
 To:     mkl@pengutronix.de, mailhol.vincent@wanadoo.fr
 Cc:     linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v3 0/4] Introduce optional DLC element for Classic CAN
-Date:   Thu, 29 Oct 2020 09:32:14 +0100
-Message-Id: <20201029083218.41505-1-socketcan@hartkopp.net>
+Subject: [PATCH v3 3/4] can: remove obsolete get_canfd_dlc() macro
+Date:   Thu, 29 Oct 2020 09:32:17 +0100
+Message-Id: <20201029083218.41505-4-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201029083218.41505-1-socketcan@hartkopp.net>
+References: <20201029083218.41505-1-socketcan@hartkopp.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Introduce improved DLC handling for Classic CAN with introduces a new
-element 'len8_dlc' to the struct can_frame and additionally rename
-the 'can_dlc' element to 'len' as it represents a plain payload length.
+The macro was always used together with can_dlc2len() which sanitizes the
+given dlc value on its own.
 
-Before implementing the CAN_CTRLMODE_CC_LEN8_DLC handling on driver level
-this patch set cleans up and renames the relevant code.
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ drivers/net/can/flexcan.c                         | 2 +-
+ drivers/net/can/peak_canfd/peak_canfd.c           | 2 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c    | 2 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c        | 2 +-
+ include/linux/can/dev.h                           | 1 -
+ include/linux/can/dev/peak_canfd.h                | 2 +-
+ 7 files changed, 6 insertions(+), 7 deletions(-)
 
-No functional changes.
-
-This patch set is based on mkl/linux-can.git (testing branch).
-
-Changes in v2:
-  - rephrase commit message of patch 4 about can_dlc replacement
-
-Changes in v3:
-  - remove unnecessarily introduced u8 cast in flexcan.c
-
-Oliver Hartkopp (4):
-  can: add optional DLC element to Classical CAN frame structure
-  can: rename get_can_dlc() macro with can_get_cc_len()
-  can: remove obsolete get_canfd_dlc() macro
-  can: replace can_dlc as variable/element for payload length
-
- Documentation/networking/can.rst              |  6 ++--
- drivers/net/can/at91_can.c                    | 14 ++++----
- drivers/net/can/c_can/c_can.c                 | 20 +++++------
- drivers/net/can/cc770/cc770.c                 | 14 ++++----
- drivers/net/can/dev.c                         | 10 +++---
- drivers/net/can/flexcan.c                     |  4 +--
- drivers/net/can/grcan.c                       | 10 +++---
- drivers/net/can/ifi_canfd/ifi_canfd.c         |  6 ++--
- drivers/net/can/janz-ican3.c                  | 20 +++++------
- drivers/net/can/kvaser_pciefd.c               |  4 +--
- drivers/net/can/m_can/m_can.c                 |  6 ++--
- drivers/net/can/mscan/mscan.c                 | 20 +++++------
- drivers/net/can/pch_can.c                     | 14 ++++----
- drivers/net/can/peak_canfd/peak_canfd.c       | 16 ++++-----
- drivers/net/can/rcar/rcar_can.c               | 14 ++++----
- drivers/net/can/rcar/rcar_canfd.c             |  8 ++---
- drivers/net/can/rx-offload.c                  |  2 +-
- drivers/net/can/sja1000/sja1000.c             | 10 +++---
- drivers/net/can/slcan.c                       | 32 ++++++++---------
- drivers/net/can/softing/softing_fw.c          |  2 +-
- drivers/net/can/softing/softing_main.c        | 14 ++++----
- drivers/net/can/spi/hi311x.c                  | 20 +++++------
- drivers/net/can/spi/mcp251x.c                 | 20 +++++------
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    |  4 +--
- drivers/net/can/sun4i_can.c                   | 10 +++---
- drivers/net/can/ti_hecc.c                     |  8 ++---
- drivers/net/can/usb/ems_usb.c                 | 16 ++++-----
- drivers/net/can/usb/esd_usb2.c                | 16 ++++-----
- drivers/net/can/usb/gs_usb.c                  | 14 ++++----
- .../net/can/usb/kvaser_usb/kvaser_usb_core.c  |  2 +-
- .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 20 +++++------
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 22 ++++++------
- drivers/net/can/usb/mcba_usb.c                | 10 +++---
- drivers/net/can/usb/peak_usb/pcan_usb.c       | 14 ++++----
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c    | 14 ++++----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c   | 14 ++++----
- drivers/net/can/usb/ucan.c                    | 20 +++++------
- drivers/net/can/usb/usb_8dev.c                | 14 ++++----
- drivers/net/can/xilinx_can.c                  | 12 +++----
- include/linux/can/dev.h                       |  9 +++--
- include/linux/can/dev/peak_canfd.h            |  2 +-
- include/uapi/linux/can.h                      | 36 ++++++++++++-------
- include/uapi/linux/can/netlink.h              |  1 +
- net/can/af_can.c                              |  2 +-
- net/can/gw.c                                  |  2 +-
- net/can/j1939/main.c                          |  4 +--
- 46 files changed, 281 insertions(+), 271 deletions(-)
-
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index b30e3171cbd0..d5ea33fdb93d 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -996,11 +996,11 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
+ 		cfd->can_id = ((reg_id >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
+ 	else
+ 		cfd->can_id = (reg_id >> 18) & CAN_SFF_MASK;
+ 
+ 	if (reg_ctrl & FLEXCAN_MB_CNT_EDL) {
+-		cfd->len = can_dlc2len(get_canfd_dlc((reg_ctrl >> 16) & 0xf));
++		cfd->len = can_dlc2len((reg_ctrl >> 16) & 0xf);
+ 
+ 		if (reg_ctrl & FLEXCAN_MB_CNT_BRS)
+ 			cfd->flags |= CANFD_BRS;
+ 	} else {
+ 		cfd->len = can_get_cc_len((reg_ctrl >> 16) & 0xf);
+diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
+index dc94ea6821c3..cc01db0c18b8 100644
+--- a/drivers/net/can/peak_canfd/peak_canfd.c
++++ b/drivers/net/can/peak_canfd/peak_canfd.c
+@@ -255,11 +255,11 @@ static int pucan_handle_can_rx(struct peak_canfd_priv *priv,
+ 	struct sk_buff *skb;
+ 	const u16 rx_msg_flags = le16_to_cpu(msg->flags);
+ 	u8 cf_len;
+ 
+ 	if (rx_msg_flags & PUCAN_MSG_EXT_DATA_LEN)
+-		cf_len = can_dlc2len(get_canfd_dlc(pucan_msg_get_dlc(msg)));
++		cf_len = can_dlc2len(pucan_msg_get_dlc(msg));
+ 	else
+ 		cf_len = can_get_cc_len(pucan_msg_get_dlc(msg));
+ 
+ 	/* if this frame is an echo, */
+ 	if (rx_msg_flags & PUCAN_MSG_LOOPED_BACK) {
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index ae9e9bafba23..fdc245774c3e 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1403,11 +1403,11 @@ mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
+ 
+ 		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_BRS)
+ 			cfd->flags |= CANFD_BRS;
+ 
+ 		dlc = FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC, hw_rx_obj->flags);
+-		cfd->len = can_dlc2len(get_canfd_dlc(dlc));
++		cfd->len = can_dlc2len(dlc);
+ 	} else {
+ 		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR)
+ 			cfd->can_id |= CAN_RTR_FLAG;
+ 
+ 		cfd->len = can_get_cc_len(FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC,
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index 1626f73337ab..b2d56bb1950a 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -1249,11 +1249,11 @@ static void kvaser_usb_hydra_rx_msg_ext(const struct kvaser_usb *dev,
+ 
+ 	if (flags & KVASER_USB_HYDRA_CF_FLAG_OVERRUN)
+ 		kvaser_usb_can_rx_over_error(priv->netdev);
+ 
+ 	if (flags & KVASER_USB_HYDRA_CF_FLAG_FDF) {
+-		cf->len = can_dlc2len(get_canfd_dlc(dlc));
++		cf->len = can_dlc2len(dlc);
+ 		if (flags & KVASER_USB_HYDRA_CF_FLAG_BRS)
+ 			cf->flags |= CANFD_BRS;
+ 		if (flags & KVASER_USB_HYDRA_CF_FLAG_ESI)
+ 			cf->flags |= CANFD_ESI;
+ 	} else {
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index cf32bcfabba3..57dfa443c995 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -490,11 +490,11 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
+ 			cfd->flags |= CANFD_BRS;
+ 
+ 		if (rx_msg_flags & PUCAN_MSG_ERROR_STATE_IND)
+ 			cfd->flags |= CANFD_ESI;
+ 
+-		cfd->len = can_dlc2len(get_canfd_dlc(pucan_msg_get_dlc(rm)));
++		cfd->len = can_dlc2len(pucan_msg_get_dlc(rm));
+ 	} else {
+ 		/* CAN 2.0 frame case */
+ 		skb = alloc_can_skb(netdev, (struct can_frame **)&cfd);
+ 		if (!skb)
+ 			return -ENOMEM;
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 0a51f3c9cfec..41b897965376 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -103,11 +103,10 @@ static inline unsigned int can_bit_time(const struct can_bittiming *bt)
+  *
+  * To be used in the CAN netdriver receive path to ensure conformance with
+  * ISO 11898-1 Chapter 8.4.2.3 (DLC field)
+  */
+ #define can_get_cc_len(i)	(min_t(u8, (i), CAN_MAX_DLEN))
+-#define get_canfd_dlc(i)	(min_t(u8, (i), CANFD_MAX_DLC))
+ 
+ /* Check for outgoing skbs that have not been created by the CAN subsystem */
+ static inline bool can_skb_headroom_valid(struct net_device *dev,
+ 					  struct sk_buff *skb)
+ {
+diff --git a/include/linux/can/dev/peak_canfd.h b/include/linux/can/dev/peak_canfd.h
+index 5fd627e9da19..f38772fd0c07 100644
+--- a/include/linux/can/dev/peak_canfd.h
++++ b/include/linux/can/dev/peak_canfd.h
+@@ -280,11 +280,11 @@ static inline int pucan_msg_get_channel(const struct pucan_rx_msg *msg)
+ {
+ 	return msg->channel_dlc & 0xf;
+ }
+ 
+ /* return the dlc value from any received message channel_dlc field */
+-static inline int pucan_msg_get_dlc(const struct pucan_rx_msg *msg)
++static inline u8 pucan_msg_get_dlc(const struct pucan_rx_msg *msg)
+ {
+ 	return msg->channel_dlc >> 4;
+ }
+ 
+ static inline int pucan_ermsg_get_channel(const struct pucan_error_msg *msg)
 -- 
 2.28.0
 
