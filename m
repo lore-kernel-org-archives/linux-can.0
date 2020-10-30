@@ -1,132 +1,87 @@
-Return-Path: <SRS0=J6wA=EE=vger.kernel.org=linux-can-owner@kernel.org>
+Return-Path: <SRS0=SM5d=EF=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDF9BC4742C
-	for <linux-can@archiver.kernel.org>; Thu, 29 Oct 2020 21:33:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30F13C00A89
+	for <linux-can@archiver.kernel.org>; Fri, 30 Oct 2020 15:35:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4FDCE20838
-	for <linux-can@archiver.kernel.org>; Thu, 29 Oct 2020 21:33:20 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="DzIPLCsp"
+	by mail.kernel.org (Postfix) with ESMTP id BDB5120729
+	for <linux-can@archiver.kernel.org>; Fri, 30 Oct 2020 15:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1604072102;
+	bh=ddKportbgpv8q0jD1pzQtbAs98ulD11GQ3O0KeRAkCU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=0O+Fc56qn4DPhioPSNAOM4jPOhbttIXBXOj/BBGG0+eNxrhilsSNMNGeihbODLL1O
+	 Vw4MjRQNfCe/+a7OBgPUl3DFuZ5Zg0GHL4ma/Rl14uBSdwij544t1Qn7MF0zEMjDNA
+	 ewum9DxP50QwgwVKVxNxpHaUskxx0kMnlDhn3biU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725838AbgJ2VdT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 29 Oct 2020 17:33:19 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.23]:27714 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ2VdT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 29 Oct 2020 17:33:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1604007196;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:References:Cc:To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=QRFPJ05CiBVpVECE0FaCPp52O0nfrVDpKYBi8/q5d40=;
-        b=DzIPLCsptU8jZCDyXfIY5AWdY7eLvy3fN9ZKDigtMMCAqKOIw0yyGqAlILNnajSf8L
-        mKzEeziSh9KiV+liw2do5MzYXvMztEkEMi3VfzMbpKPw+KYbhq6/kChwR9Jaxm5Mjbkr
-        dzgg1WJEqYMciInh68u8s4uttAf2ov693G9AvJkNvjqDBbH+wEJEQEJegTr8ZQYQCsVb
-        oHqkSyrTyECirHBf0eRKFTSCPCzo/QoLKhL/aF9IFCXy/dW2P215b+3cpdOUcHbEOZVS
-        URp+xWtIQCqCvADcyg68zEIy2AX8KrAnBmAUhtURpg105BEPPNgvFRF/4H4rsZyUePZu
-        vfkw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3HMbEWKONeaTdI="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.50.177]
-        by smtp.strato.de (RZmta 47.3.0 DYNA|AUTH)
-        with ESMTPSA id L010bew9TLXE2zc
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Thu, 29 Oct 2020 22:33:14 +0100 (CET)
-Subject: Re: [PATCH RFC] can: add optional DLC element to Classical CAN frame
- structure
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-References: <20201023203017.3485-1-socketcan@hartkopp.net>
- <CAMZ6RqKQjD5vWeya1CEpNuaZb=vUYWtkgL1rDr1fcBvBRDdgxA@mail.gmail.com>
- <e23e5ebd-5bd9-dca2-5c1e-9adbd009cf99@hartkopp.net>
-Message-ID: <6bfdc3db-5aaf-b492-dc24-fb5d73cd3b23@hartkopp.net>
-Date:   Thu, 29 Oct 2020 22:33:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726915AbgJ3PfC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 30 Oct 2020 11:35:02 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:40827 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726662AbgJ3PfB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 30 Oct 2020 11:35:01 -0400
+Received: by mail-oo1-f66.google.com with SMTP id p73so1679042oop.7;
+        Fri, 30 Oct 2020 08:35:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f7OS+EUFbhEQuDFaM2eG8nGD2Rlqz1agmq6gIIYsHNU=;
+        b=FKqQF4zO2QMsVfu25lKnMzSaQJm+zolLV0KcsGDBvzfjVbS3gZx6pXAFnVg4Mfq7/r
+         LOeVrBn8w6Bxy4rolwn6zGJZqIgN6jxT0/kieOesUHEolE3d7qzaI/L2i4+vpOCStufQ
+         QiXwW4DnUQiXdRt5wXCMPOVPooQfvB4jVpNtOKW9qkwVvw5qrXYC/eGNxGp3nSkavtIn
+         vBClA/6oIch3NEgujkxre6dXMkbwoHioTOFKxGn4ipmluu/WDgbIE6rd2OsXJGSSAcoz
+         NwHa2pkqDMXh8uXoVTw+BPZMGe1yxxrVQ1iKGrTweOxaLw9rNvQHkz7/JaGjYxEsxkTS
+         vAzA==
+X-Gm-Message-State: AOAM532IqU1SSVAsz2PERTo8vv3xm/YtQEDZFV29xJdrmSPf+egDsdix
+        /6kp6eyw0jq5wSCCHjlVIA==
+X-Google-Smtp-Source: ABdhPJzlmsd1EZXiMrMHIP+mMaqrNBgk1i7G9ZMk3nQVkT6gvmO8VRXAOHSZ12zpEyoTI2UhasQRHw==
+X-Received: by 2002:a4a:ba10:: with SMTP id b16mr2321785oop.75.1604072100632;
+        Fri, 30 Oct 2020 08:35:00 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p17sm1433277oov.1.2020.10.30.08.34.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 08:34:59 -0700 (PDT)
+Received: (nullmailer pid 3885667 invoked by uid 1000);
+        Fri, 30 Oct 2020 15:34:59 -0000
+Date:   Fri, 30 Oct 2020 10:34:59 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Wolfgang Grandegger <wg@grandegger.com>, kernel@pengutronix.de,
+        mkl@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: can: add can-controller.yaml
+Message-ID: <20201030153459.GA3885616@bogus>
+References: <20201022075218.11880-1-o.rempel@pengutronix.de>
+ <20201022075218.11880-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <e23e5ebd-5bd9-dca2-5c1e-9adbd009cf99@hartkopp.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022075218.11880-2-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Vincent,
+On Thu, 22 Oct 2020 09:52:17 +0200, Oleksij Rempel wrote:
+> For now we have only node name as common rule for all CAN controllers
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Link: https://lore.kernel.org/r/20201016073315.16232-2-o.rempel@pengutronix.de
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  .../bindings/net/can/can-controller.yaml       | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/can-controller.yaml
+> 
 
-On 24.10.20 15:00, Oliver Hartkopp wrote:
-> On 24.10.20 14:00, Vincent MAILHOL wrote:
-
->>    * Set up two channels can0 and can1 and connected those to the same
->>      bus.
->>
->>    * Ran 'cangen can0' and 'candump any' simultaneously.
->>
->>
->> Results of candump:
->>    can0  539   [8]  05 21 8C 5C F7 B0 7C 69
->>    can1  539   [8]  05 21 8C 5C F7 B0 7C 69
->>    can0  47E   [1]  53
->>    can1  47E   [1]  53
->>    can0  317   [6]  E5 00 B5 73 66 CF
->>    can1  317   [6]  E5 00 B5 73 66 CF
->>    can0  524   [E]  64 C3 B0 6E 55 7A D7 2E
->>    can1  524   [E]  64 C3 B0 6E 55 7A D7 2E
->>    can0  39C   [D]  63 18 96 69 F6 7A AB 36
->>    can1  39C   [D]  63 18 96 69 F6 7A AB 36
->>    can0  60D   [F]  F2 C6 B6 1D 80 FB BC 7E
->>    can1  60D   [F]  F2 C6 B6 1D 80 FB BC 7E
->>    can0  5DD   [9]  7E 55 56 5B C0 23 B0 53
->>    can1  5DD   [9]  7E 55 56 5B C0 23 B0 53
->>    can0  573   [E]  20 8E A3 31 1B 54 B2 16
->>    can1  573   [E]  20 8E A3 31 1B 54 B2 16
->>    can0  470   [3]  31 9C 06
->>    can1  470   [3]  31 9C 06
->>    can0  465   [4]  93 75 A2 08
->>    can1  465   [4]  93 75 A2 08
->>
->>
->> Works fine :-)
-
-I'm not really sure about the view of Classical CAN DLCs in this 'long' 
-candump representation.
-
-There are people that use this format as base for further processing - 
-instead of the logfile format m(
-So it may be a bad decision to put the DLC value in the length position 
-here.
-
-I changed the logfile format in a backward compatible way and therefore 
-the cansend command line format too:
-
-(1604004658.444168) vcan0 2C0##02643
-(1604004658.494492) vcan0 615#R8_9
-(1604004658.645395) vcan0 6FF#
-(1604004658.695682) vcan0 623##318F88F7043C0
-(1604004658.746046) vcan0 63A##28D1F37
-(1604004658.796214) vcan0 1117DEA5##0BC281D711098
-(1604004658.846397) vcan0 1490B893#R8_F
-(1604004658.896585) vcan0 1F494EC8##39C47E2
-(1604004658.947142) vcan0 1D1EC448#3DC1C81345D7ED7E_D
-(1604004658.997689) vcan0 1C8661BB##14DEA7568D459160D
-(1604004659.047851) vcan0 2D8#AFE0546E6522130D_E
-(1604004659.098216) vcan0 1596E833##3E6789514EF10B466E6789514EF10B466
-
-My can-utils len8_dlc test setup is here:
-https://github.com/hartkopp/can-utils
-
-Feel free to do some tests, e.g. with cangen, candump, canplayer. 
-Feedback is appreciated.
-
-Best,
-Oliver
-
+Reviewed-by: Rob Herring <robh@kernel.org>
