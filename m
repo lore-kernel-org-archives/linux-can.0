@@ -2,90 +2,209 @@ Return-Path: <SRS0=SM5d=EF=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93862C00A89
-	for <linux-can@archiver.kernel.org>; Fri, 30 Oct 2020 15:35:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3507C00A89
+	for <linux-can@archiver.kernel.org>; Fri, 30 Oct 2020 19:15:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 43CC520729
-	for <linux-can@archiver.kernel.org>; Fri, 30 Oct 2020 15:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604072156;
-	bh=0+MaEcqMSLXU1nZeZVdh48yGRoKLA5Lr1aiLZxgSjb4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=O3MRKzzyn+iufncdBILRK2AW+SK6cw+DtlHTHgt9Jaf42zPoNbx9nnT/wFWhW2iTa
-	 2TUI4IKY9pOlGokSeJnTUmjLKsOwF8b+yoihyNu+QqpDoUtVZnLbgUX8WX8R/b+tz/
-	 T29LHd65HNthZ9LO3TogQP+cGQjzONIMvCzjVH3I=
+	by mail.kernel.org (Postfix) with ESMTP id 7209E2072C
+	for <linux-can@archiver.kernel.org>; Fri, 30 Oct 2020 19:15:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgJ3Pfx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 30 Oct 2020 11:35:53 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:35197 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgJ3Pfx (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 30 Oct 2020 11:35:53 -0400
-Received: by mail-ot1-f65.google.com with SMTP id n11so5916675ota.2;
-        Fri, 30 Oct 2020 08:35:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vccbzc68bHDBMq++68aYNYRwmXj6zqZzAG4IULiUytU=;
-        b=WN9UevQrRBy7YS32/UB5XF3oHokMjh5O6MTqhLGZV7lC15M9hXnbVXQWhJ6ocPMool
-         5lYOgTBROWjsZBU8Yo+iComxe79beCP2jGm1/MEIPB1Ek4dbe8iIu6c64U79GENg0SuL
-         dlngdYdWxvG/mbY72LPm/M3Qk2w8593lZzaRmbabZz/sVYwBXKxMl9DgDE6aEp0c41WL
-         lbCZHVMxcl0LUYDnrVNzxCM3eNV/3bxUXG8pMoGcu1/LBsjNcN0zFpY5W7f6IYfCVJMy
-         06CdzuqQTP5t9GeHKI0ALoXgwyXJ0XQg6/3eAh8TxQ5JVfvhatBuD8tNfFLjd1AMRQMo
-         U0dQ==
-X-Gm-Message-State: AOAM533cMkWyxpnXGm0cXxDNUXc3l4hFNlYEG2dYaFRax41bLhky4EDO
-        nb+UUZx3igUpWjN5B6IqNjHS5waeOg==
-X-Google-Smtp-Source: ABdhPJxDzsHszcfmPSSK8SXja5epS0jPUbOvnuPlJZo6cIJfTjcLhW4RSJwxy4Wz4GiyrV9szB+9RQ==
-X-Received: by 2002:a05:6830:154d:: with SMTP id l13mr2258986otp.61.1604072149752;
-        Fri, 30 Oct 2020 08:35:49 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x83sm1452216oig.39.2020.10.30.08.35.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 08:35:49 -0700 (PDT)
-Received: (nullmailer pid 3886857 invoked by uid 1000);
-        Fri, 30 Oct 2020 15:35:48 -0000
-Date:   Fri, 30 Oct 2020 10:35:48 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
-        mkl@pengutronix.de, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>, kernel@pengutronix.de,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] dt-bindings: can: flexcan: convert fsl,*flexcan
- bindings to yaml
-Message-ID: <20201030153548.GA3886754@bogus>
-References: <20201022075218.11880-1-o.rempel@pengutronix.de>
- <20201022075218.11880-3-o.rempel@pengutronix.de>
+        id S1726297AbgJ3TPC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 30 Oct 2020 15:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgJ3TPB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 30 Oct 2020 15:15:01 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A5EC0613CF
+        for <linux-can@vger.kernel.org>; Fri, 30 Oct 2020 12:15:01 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kYZrQ-0003lR-KG; Fri, 30 Oct 2020 20:14:52 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:986b:b1c:42fa:9003] (unknown [IPv6:2a03:f580:87bc:d400:986b:b1c:42fa:9003])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id EE945585FE6;
+        Fri, 30 Oct 2020 19:14:48 +0000 (UTC)
+Subject: Re: net/can/isotp.c:1240:13: sparse: sparse: incorrect type in
+ initializer (different address spaces)
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-can <linux-can@vger.kernel.org>
+References: <202010290720.uQ3pTGrT-lkp@intel.com>
+ <146bb489-abaf-c763-44b2-ac1200560885@pengutronix.de>
+ <4d092e3f-052d-7593-131c-a9629136f07f@hartkopp.net>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <61008eb0-25f3-5986-b5f8-b9844a18dcef@pengutronix.de>
+Date:   Fri, 30 Oct 2020 20:14:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022075218.11880-3-o.rempel@pengutronix.de>
+In-Reply-To: <4d092e3f-052d-7593-131c-a9629136f07f@hartkopp.net>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="gcQtAk3Y3wGD1qeRrIMFsP8CFUu44HdeM"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Thu, 22 Oct 2020 09:52:18 +0200, Oleksij Rempel wrote:
-> In order to automate the verification of DT nodes convert
-> fsl-flexcan.txt to fsl,flexcan.yaml
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Link: https://lore.kernel.org/r/20201016073315.16232-3-o.rempel@pengutronix.de
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
->  .../bindings/net/can/fsl,flexcan.yaml         | 135 ++++++++++++++++++
->  .../bindings/net/can/fsl-flexcan.txt          |  57 --------
->  2 files changed, 135 insertions(+), 57 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--gcQtAk3Y3wGD1qeRrIMFsP8CFUu44HdeM
+Content-Type: multipart/mixed; boundary="Ey7HHqifZyWpIgaCF7F5bNFo37YKlEfKH";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
+ kernel test robot <lkp@intel.com>
+Cc: kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+ Rich Felker <dalias@libc.org>, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ linux-can <linux-can@vger.kernel.org>
+Message-ID: <61008eb0-25f3-5986-b5f8-b9844a18dcef@pengutronix.de>
+Subject: Re: net/can/isotp.c:1240:13: sparse: sparse: incorrect type in
+ initializer (different address spaces)
+References: <202010290720.uQ3pTGrT-lkp@intel.com>
+ <146bb489-abaf-c763-44b2-ac1200560885@pengutronix.de>
+ <4d092e3f-052d-7593-131c-a9629136f07f@hartkopp.net>
+In-Reply-To: <4d092e3f-052d-7593-131c-a9629136f07f@hartkopp.net>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+--Ey7HHqifZyWpIgaCF7F5bNFo37YKlEfKH
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 10/30/20 7:55 PM, Oliver Hartkopp wrote:
+>>>    1229=09
+>>>    1230	static int isotp_getsockopt(struct socket *sock, int level, i=
+nt optname,
+>>>    1231				    char __user *optval, int __user *optlen)
+>>>    1232	{
+>>>    1233		struct sock *sk =3D sock->sk;
+>>>    1234		struct isotp_sock *so =3D isotp_sk(sk);
+>>>    1235		int len;
+>>>    1236		void *val;
+>>>    1237=09
+>>>    1238		if (level !=3D SOL_CAN_ISOTP)
+>>>    1239			return -EINVAL;
+>>>> 1240		if (get_user(len, optlen))
+>>>    1241			return -EFAULT;
+>>>    1242		if (len < 0)
+>>>    1243			return -EINVAL;
+>>>    1244=09
+>=20
+> Sorry but there are tons of identical items in the networking subsystem=
+=20
+> in getsockopt functions.
+>=20
+> And I don't get the sparse warning with make C=3D1 for none of the=20
+> occurrences of
+
+Due to ARCH=3Dsh
+
+looks like sh is missing the some __user annotations so that sparse spwes=
+ these
+warnings.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--Ey7HHqifZyWpIgaCF7F5bNFo37YKlEfKH--
+
+--gcQtAk3Y3wGD1qeRrIMFsP8CFUu44HdeM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+cZiUACgkQqclaivrt
+76lmYQgArcoc2n2AL8i1gs+u1y4w5Zr1QPq9scACmPok1fQQACbHbgSWoKOd3tTU
+N9+oNmTOkiKH/EZiSYQmhgvVTUkWL4g3zLa3/ci6HxZUrrpgyoX/eyMe/AbYUvva
+qTUJi8dLUrSWFQYUdgPVEIMDNMZ4n2KnKs6xb9tnyXXH0p5pk1r3su8d4A1QwIvu
+WIs97qfs5+tRJy2JbB9Y+K4GMmfvcnyqPZFwSRSXopPSRj+O6O74wRywd2MSN4rg
+NIuckZBOqBMq/mo2LtFmfS7N1BZ9vb/xzt1V7XmQvSXqw7LzGLk3kWWVzi9SRuIG
+xehHiULctOM5LwcMNUsHXGZa7CrXHg==
+=0zcV
+-----END PGP SIGNATURE-----
+
+--gcQtAk3Y3wGD1qeRrIMFsP8CFUu44HdeM--
