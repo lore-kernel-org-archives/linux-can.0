@@ -2,102 +2,272 @@ Return-Path: <SRS0=Fclt=EJ=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 729D9C2D0A3
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 21:48:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7C0DC388F7
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3633221556
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 21:48:22 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=beagleboard-org.20150623.gappssmtp.com header.i=@beagleboard-org.20150623.gappssmtp.com header.b="yOJO0XcM"
+	by mail.kernel.org (Postfix) with ESMTP id 8ABA6207BB
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730624AbgKCVsT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 16:48:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
+        id S1731129AbgKCWGp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:06:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730835AbgKCVsS (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 16:48:18 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8E5C0613D1
-        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 13:48:17 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id 9so19966089oir.5
-        for <linux-can@vger.kernel.org>; Tue, 03 Nov 2020 13:48:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/ODKRDsSMIPdBXu49kyOj33LiydR4dwOAg2L0ROOmCs=;
-        b=yOJO0XcMZnUKbvikWLzPw+nP+XnhxkT4e/tHdmqMpqkq5QK7D4fkpWgvQIyjQB81DU
-         QUtfezkwoPhzUGtGX8gur4DwNCkG7iK673E3NGQt5ONS90a9jVn0MJ/eT3ocludmxMF4
-         M/zegHMqyA7WrNniw1VjJdxog3Az1lRYqNAapiH9ShLkxs/2XCcGwIYjZSXJj0LgW9EG
-         KDGAmsw6/Ms/UNgJwB5HWhSYP+OaoSO3LgQI68LEkTOv+RMRNBkmFxZf6DLHbb3xzvts
-         JV7eb1T4nKRBiEDU6FO74gj4v/vy3lan4KgnMB9os597Uz0W5MsDV68p50GjyGxwFSQQ
-         gGoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/ODKRDsSMIPdBXu49kyOj33LiydR4dwOAg2L0ROOmCs=;
-        b=YqLEIomSB5f1WBedhH4/O4LOZm5IlO/xQhqP8THt2NLLS3mXoc9xfz6e7gB7eAeM2d
-         3bllCTGbRXyv0ENEYNlcOyWaSnpbkVrKuPmuLCrhWsW38SoOALEiMcXg+3MibiMkMtNk
-         2pfFQU26/uq22wu3wN6h5roe1037ZLOHWDAZL2f0B+0P9DDXzjPlqqDbj2ba5KcmL2gn
-         wRC9KJt9UIIhvi3k8Tk289atb5pcnz115hgMhZUHRMAH7rvqMpdXAaOtUuCcoAQrwVqn
-         +C+GGRPFPsViKSSEBR7OZrGOsDRwxulFmtrhMlWm3Q1xDkWtdZQjURUvFd1Q9pvIBhpQ
-         vvag==
-X-Gm-Message-State: AOAM533DgpJR/dvDxM5A74mj/3wI8pCiGFtTHifvIZVRxGc3JomAQ+P3
-        4wnotKqEnBIZfqiIeikhtrxRJTkIk7Y/s3riVVPld3x50byvGMaO
-X-Google-Smtp-Source: ABdhPJxUmeoESaK338zl3pjWw/2IAc1XpfKrWWgQ1yaDnyTu6W9zRoVAqmt31ewGdEdTj37NZVskKEdwzSi7wRFuqmc=
-X-Received: by 2002:aca:b644:: with SMTP id g65mr747612oif.164.1604440096641;
- Tue, 03 Nov 2020 13:48:16 -0800 (PST)
+        with ESMTP id S1731092AbgKCWGo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:44 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57783C061A47
+        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:44 -0800 (PST)
+Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1ka4Rr-0006Ui-ML; Tue, 03 Nov 2020 23:06:39 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Rob Herring <robh@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 02/27] dt-bindings: can: flexcan: convert fsl,*flexcan bindings to yaml
+Date:   Tue,  3 Nov 2020 23:06:11 +0100
+Message-Id: <20201103220636.972106-3-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
+References: <20201103220636.972106-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-References: <CAPgEAj75pUnhOrvQ5basubGfpMoijpBonOsv-Wio=WP55dmFNw@mail.gmail.com>
- <90e05b20-d863-49b8-670f-e74bca7537be@pengutronix.de>
-In-Reply-To: <90e05b20-d863-49b8-670f-e74bca7537be@pengutronix.de>
-From:   Drew Fustini <drew@beagleboard.org>
-Date:   Tue, 3 Nov 2020 22:48:25 +0100
-Message-ID: <CAPgEAj4DoWU7w7-NdCB=XQdn3zmtS3Wtr4uMr-zG_Xk0-PNg=g@mail.gmail.com>
-Subject: Re: mcp251xfd: rx-int setting
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org, Josh S <josh@macchina.cc>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 9:03 AM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->
-> On 11/2/20 11:59 PM, Drew Fustini wrote:
-> > I modified devm_gpiod_get_optional() in mcp251xfd_probe() to look for
-> > "rx-int" instead of "microchip,rx-int".  Is there a reason it was
-> > looking for "microchip,rx-int"?
->
-> The DT property was changed why upstreaming the driver. So the overlay has to be
-> patched, not the code.
->
-> > I am using branch v5.4-rpi/mcp251xfd-20201022-54 at commit 9e02abd4fe59.
->
-> I'll update the overlay.
->
-> > While it does now see the property, it does run into this issue:
-> > [    6.830900] mcp251xfd spi0.0 (unnamed net_device) (uninitialized):
-> > RX_INT active after softreset, disabling RX_INT support.
-> >
-> > Any suggestions as to how to troubleshoot this?
->
-> The waveshare board doesn't have the INT1 connected. So chose a free GPIO on you
-> rpi, add this as the parameter to the overlay and connect the GPIO to 3v3.
->
-> Or, if you want to solder, connect the INT1 pin of one of the mcp2517fd with a
-> GPIO on the waveshare module.
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Thanks, I used rx-int of 27 for spi1 and connected to 3v3.  The driver
-successfully registered the rx-int setting:
+In order to automate the verification of DT nodes convert
+fsl-flexcan.txt to fsl,flexcan.yaml
 
-[    6.983684] mcp251xfd spi0.0 can1: MCP2517FD rev0.0 (+RX_INT
-+MAB_NO_WARN +CRC_REG +CRC_RX +CRC_TX +ECC -HD c:40.00MHz m:20.00MHz
-r:17.00MHz e:0.00MHz) successfully initialized.
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20201022075218.11880-3-o.rempel@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ .../bindings/net/can/fsl,flexcan.yaml         | 135 ++++++++++++++++++
+ .../bindings/net/can/fsl-flexcan.txt          |  57 --------
+ 2 files changed, 135 insertions(+), 57 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
 
--Drew
+diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+new file mode 100644
+index 000000000000..43df15ba8fa4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+@@ -0,0 +1,135 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/fsl,flexcan.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title:
++  Flexcan CAN controller on Freescale's ARM and PowerPC system-on-a-chip (SOC).
++
++maintainers:
++  - Marc Kleine-Budde <mkl@pengutronix.de>
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - fsl,imx8qm-flexcan
++          - fsl,imx8mp-flexcan
++          - fsl,imx6q-flexcan
++          - fsl,imx53-flexcan
++          - fsl,imx35-flexcan
++          - fsl,imx28-flexcan
++          - fsl,imx25-flexcan
++          - fsl,p1010-flexcan
++          - fsl,vf610-flexcan
++          - fsl,ls1021ar2-flexcan
++          - fsl,lx2160ar1-flexcan
++      - items:
++          - enum:
++              - fsl,imx7d-flexcan
++              - fsl,imx6ul-flexcan
++              - fsl,imx6sx-flexcan
++          - const: fsl,imx6q-flexcan
++      - items:
++          - enum:
++              - fsl,ls1028ar1-flexcan
++          - const: fsl,lx2160ar1-flexcan
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    items:
++      - const: ipg
++      - const: per
++
++  clock-frequency:
++    description: |
++      The oscillator frequency driving the flexcan device, filled in by the
++      boot loader. This property should only be used the used operating system
++      doesn't support the clocks and clock-names property.
++
++  xceiver-supply:
++    description: Regulator that powers the CAN transceiver.
++
++  big-endian:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      This means the registers of FlexCAN controller are big endian. This is
++      optional property.i.e. if this property is not present in device tree
++      node then controller is assumed to be little endian. If this property is
++      present then controller is assumed to be big endian.
++
++  fsl,stop-mode:
++    description: |
++      Register bits of stop mode control.
++
++      The format should be as follows:
++      <gpr req_gpr req_bit>
++      gpr is the phandle to general purpose register node.
++      req_gpr is the gpr register offset of CAN stop request.
++      req_bit is the bit offset of CAN stop request.
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    items:
++      - description: The 'gpr' is the phandle to general purpose register node.
++      - description: The 'req_gpr' is the gpr register offset of CAN stop request.
++        maximum: 0xff
++      - description: The 'req_bit' is the bit offset of CAN stop request.
++        maximum: 0x1f
++
++  fsl,clk-source:
++    description: |
++      Select the clock source to the CAN Protocol Engine (PE). It's SoC
++      implementation dependent. Refer to RM for detailed definition. If this
++      property is not set in device tree node then driver selects clock source 1
++      by default.
++      0: clock source 0 (oscillator clock)
++      1: clock source 1 (peripheral clock)
++    $ref: /schemas/types.yaml#/definitions/uint32
++    default: 1
++    minimum: 0
++    maximum: 1
++
++  wakeup-source:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Enable CAN remote wakeup.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    can@1c000 {
++        compatible = "fsl,p1010-flexcan";
++        reg = <0x1c000 0x1000>;
++        interrupts = <48 0x2>;
++        interrupt-parent = <&mpic>;
++        clock-frequency = <200000000>;
++        fsl,clk-source = <0>;
++    };
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    can@2090000 {
++        compatible = "fsl,imx6q-flexcan";
++        reg = <0x02090000 0x4000>;
++        interrupts = <0 110 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&clks 1>, <&clks 2>;
++        clock-names = "ipg", "per";
++        fsl,stop-mode = <&gpr 0x34 28>;
++    };
+diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+deleted file mode 100644
+index e10b6eb955e1..000000000000
+--- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
++++ /dev/null
+@@ -1,57 +0,0 @@
+-Flexcan CAN controller on Freescale's ARM and PowerPC system-on-a-chip (SOC).
+-
+-Required properties:
+-
+-- compatible : Should be "fsl,<processor>-flexcan"
+-
+-  where <processor> is imx8qm, imx6q, imx28, imx53, imx35, imx25, p1010,
+-  vf610, ls1021ar2, lx2160ar1, ls1028ar1.
+-
+-  The ls1028ar1 must be followed by lx2160ar1, e.g.
+-   - "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-flexcan"
+-
+-  An implementation should also claim any of the following compatibles
+-  that it is fully backwards compatible with:
+-
+-  - fsl,p1010-flexcan
+-
+-- reg : Offset and length of the register set for this device
+-- interrupts : Interrupt tuple for this device
+-
+-Optional properties:
+-
+-- clock-frequency : The oscillator frequency driving the flexcan device
+-
+-- xceiver-supply: Regulator that powers the CAN transceiver
+-
+-- big-endian: This means the registers of FlexCAN controller are big endian.
+-              This is optional property.i.e. if this property is not present in
+-              device tree node then controller is assumed to be little endian.
+-              if this property is present then controller is assumed to be big
+-              endian.
+-
+-- fsl,stop-mode: register bits of stop mode control, the format is
+-		 <&gpr req_gpr req_bit>.
+-		 gpr is the phandle to general purpose register node.
+-		 req_gpr is the gpr register offset of CAN stop request.
+-		 req_bit is the bit offset of CAN stop request.
+-
+-- fsl,clk-source: Select the clock source to the CAN Protocol Engine (PE).
+-		  It's SoC Implementation dependent. Refer to RM for detailed
+-		  definition. If this property is not set in device tree node
+-		  then driver selects clock source 1 by default.
+-		  0: clock source 0 (oscillator clock)
+-		  1: clock source 1 (peripheral clock)
+-
+-- wakeup-source: enable CAN remote wakeup
+-
+-Example:
+-
+-	can@1c000 {
+-		compatible = "fsl,p1010-flexcan";
+-		reg = <0x1c000 0x1000>;
+-		interrupts = <48 0x2>;
+-		interrupt-parent = <&mpic>;
+-		clock-frequency = <200000000>; // filled in by bootloader
+-		fsl,clk-source = <0>; // select clock source 0 for PE
+-	};
+-- 
+2.28.0
+
