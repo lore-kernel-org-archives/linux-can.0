@@ -2,40 +2,39 @@ Return-Path: <SRS0=Fclt=EJ=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1849FC2D0A3
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17AB4C388F7
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D16252080D
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D4429223AB
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730801AbgKCWGu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 17:06:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        id S1731299AbgKCWGw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:06:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731202AbgKCWGu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:50 -0500
+        with ESMTP id S1731264AbgKCWGv (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:51 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1509FC0613D1
-        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523FFC061A04
+        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:51 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4Rw-0006Ui-Pq; Tue, 03 Nov 2020 23:06:44 +0100
+        id 1ka4Ry-0006Ui-66; Tue, 03 Nov 2020 23:06:46 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Thomas Wagner <thwa1@web.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 12/27] can: j1939: j1939_sk_bind(): return failure if netdev is down
-Date:   Tue,  3 Nov 2020 23:06:21 +0100
-Message-Id: <20201103220636.972106-13-mkl@pengutronix.de>
+Subject: [net 14/27] can: isotp: isotp_rcv_cf(): enable RX timeout handling in listen-only mode
+Date:   Tue,  3 Nov 2020 23:06:23 +0100
+Message-Id: <20201103220636.972106-15-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
 References: <20201103220636.972106-1-mkl@pengutronix.de>
@@ -49,53 +48,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-When a netdev down event occurs after a successful call to
-j1939_sk_bind(), j1939_netdev_notify() can handle it correctly.
+As reported by Thomas Wagner:
 
-But if the netdev already in down state before calling j1939_sk_bind(),
-j1939_sk_release() will stay in wait_event_interruptible() blocked
-forever. Because in this case, j1939_netdev_notify() won't be called and
-j1939_tp_txtimer() won't call j1939_session_cancel() or other function
-to clear session for ENETDOWN error, this lead to mismatch of
-j1939_session_get/put() and jsk->skb_pending will never decrease to
-zero.
+    https://github.com/hartkopp/can-isotp/issues/34
 
-To reproduce it use following commands:
-1. ip link add dev vcan0 type vcan
-2. j1939acd -r 100,80-120 1122334455667788 vcan0
-3. presses ctrl-c and thread will be blocked forever
+the timeout handling for data frames is not enabled when the isotp socket is
+used in listen-only mode (sockopt CAN_ISOTP_LISTEN_MODE). This mode is enabled
+by the isotpsniffer application which therefore became inconsistend with the
+strict rx timeout rules when running the isotp protocol in the operational
+mode.
 
-This patch adds check for ndev->flags in j1939_sk_bind() to avoid this
-kind of situation and return with -ENETDOWN.
+This patch fixes this inconsistency by moving the return condition for the
+listen-only mode behind the timeout handling code.
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Link: https://lore.kernel.org/r/1599460308-18770-1-git-send-email-zhangchangzhong@huawei.com
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reported-by: Thomas Wagner <thwa1@web.de>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Link: https://github.com/hartkopp/can-isotp/issues/34
+Link: https://lore.kernel.org/r/20201019120229.89326-1-socketcan@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/socket.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ net/can/isotp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 1be4c898b2fa..f23966526a88 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -475,6 +475,12 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 			goto out_release_sock;
- 		}
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 4c2062875893..a79287ef86da 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -569,10 +569,6 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
+ 		return 0;
+ 	}
  
-+		if (!(ndev->flags & IFF_UP)) {
-+			dev_put(ndev);
-+			ret = -ENETDOWN;
-+			goto out_release_sock;
-+		}
+-	/* no creation of flow control frames */
+-	if (so->opt.flags & CAN_ISOTP_LISTEN_MODE)
+-		return 0;
+-
+ 	/* perform blocksize handling, if enabled */
+ 	if (!so->rxfc.bs || ++so->rx.bs < so->rxfc.bs) {
+ 		/* start rx timeout watchdog */
+@@ -581,6 +577,10 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
+ 		return 0;
+ 	}
+ 
++	/* no creation of flow control frames */
++	if (so->opt.flags & CAN_ISOTP_LISTEN_MODE)
++		return 0;
 +
- 		priv = j1939_netdev_start(ndev);
- 		dev_put(ndev);
- 		if (IS_ERR(priv)) {
+ 	/* we reached the specified blocksize so->rxfc.bs */
+ 	isotp_send_fc(sk, ae, ISOTP_FC_CTS);
+ 	return 0;
 -- 
 2.28.0
 
