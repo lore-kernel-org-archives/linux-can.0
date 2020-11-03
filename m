@@ -7,33 +7,34 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3F9AC4742C
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08468C388F9
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 75F3B2080D
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C16E820665
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731209AbgKCWGt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 17:06:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
+        id S1731179AbgKCWGs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:06:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731155AbgKCWGs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:48 -0500
+        with ESMTP id S1731155AbgKCWGr (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:47 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963D7C061A47
-        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A19C061A47
+        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:47 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4Rv-0006Ui-H4; Tue, 03 Nov 2020 23:06:43 +0100
+        id 1ka4Ru-0006Ui-Ek; Tue, 03 Nov 2020 23:06:42 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Yegor Yefremov <yegorslists@googlemail.com>,
+        kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 09/27] can: j1939: fix syntax and spelling
-Date:   Tue,  3 Nov 2020 23:06:18 +0100
-Message-Id: <20201103220636.972106-10-mkl@pengutronix.de>
+Subject: [net 07/27] can: can_create_echo_skb(): fix echo skb generation: always use skb_clone()
+Date:   Tue,  3 Nov 2020 23:06:16 +0100
+Message-Id: <20201103220636.972106-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
 References: <20201103220636.972106-1-mkl@pengutronix.de>
@@ -47,117 +48,93 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Yegor Yefremov <yegorslists@googlemail.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-This patches fixes the syntax an spelling of the j1939 documentation.
+All user space generated SKBs are owned by a socket (unless injected into the
+key via AF_PACKET). If a socket is closed, all associated skbs will be cleaned
+up.
 
-Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-Link: https://lore.kernel.org/r/20201020101043.6369-1-yegorslists@googlemail.com
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+This leads to a problem when a CAN driver calls can_put_echo_skb() on a
+unshared SKB. If the socket is closed prior to the TX complete handler,
+can_get_echo_skb() and the subsequent delivering of the echo SKB to all
+registered callbacks, a SKB with a refcount of 0 is delivered.
+
+To avoid the problem, in can_get_echo_skb() the original SKB is now always
+cloned, regardless of shared SKB or not. If the process exists it can now
+safely discard its SKBs, without disturbing the delivery of the echo SKB.
+
+The problem shows up in the j1939 stack, when it clones the incoming skb, which
+detects the already 0 refcount.
+
+We can easily reproduce this with following example:
+
+testj1939 -B -r can0: &
+cansend can0 1823ff40#0123
+
+WARNING: CPU: 0 PID: 293 at lib/refcount.c:25 refcount_warn_saturate+0x108/0x174
+refcount_t: addition on 0; use-after-free.
+Modules linked in: coda_vpu imx_vdoa videobuf2_vmalloc dw_hdmi_ahb_audio vcan
+CPU: 0 PID: 293 Comm: cansend Not tainted 5.5.0-rc6-00376-g9e20dcb7040d #1
+Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+Backtrace:
+[<c010f570>] (dump_backtrace) from [<c010f90c>] (show_stack+0x20/0x24)
+[<c010f8ec>] (show_stack) from [<c0c3e1a4>] (dump_stack+0x8c/0xa0)
+[<c0c3e118>] (dump_stack) from [<c0127fec>] (__warn+0xe0/0x108)
+[<c0127f0c>] (__warn) from [<c01283c8>] (warn_slowpath_fmt+0xa8/0xcc)
+[<c0128324>] (warn_slowpath_fmt) from [<c0539c0c>] (refcount_warn_saturate+0x108/0x174)
+[<c0539b04>] (refcount_warn_saturate) from [<c0ad2cac>] (j1939_can_recv+0x20c/0x210)
+[<c0ad2aa0>] (j1939_can_recv) from [<c0ac9dc8>] (can_rcv_filter+0xb4/0x268)
+[<c0ac9d14>] (can_rcv_filter) from [<c0aca2cc>] (can_receive+0xb0/0xe4)
+[<c0aca21c>] (can_receive) from [<c0aca348>] (can_rcv+0x48/0x98)
+[<c0aca300>] (can_rcv) from [<c09b1fdc>] (__netif_receive_skb_one_core+0x64/0x88)
+[<c09b1f78>] (__netif_receive_skb_one_core) from [<c09b2070>] (__netif_receive_skb+0x38/0x94)
+[<c09b2038>] (__netif_receive_skb) from [<c09b2130>] (netif_receive_skb_internal+0x64/0xf8)
+[<c09b20cc>] (netif_receive_skb_internal) from [<c09b21f8>] (netif_receive_skb+0x34/0x19c)
+[<c09b21c4>] (netif_receive_skb) from [<c0791278>] (can_rx_offload_napi_poll+0x58/0xb4)
+
+Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: http://lore.kernel.org/r/20200124132656.22156-1-o.rempel@pengutronix.de
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- Documentation/networking/j1939.rst | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ include/linux/can/skb.h | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/networking/j1939.rst b/Documentation/networking/j1939.rst
-index 081dfc2e0452..be59fcece3bf 100644
---- a/Documentation/networking/j1939.rst
-+++ b/Documentation/networking/j1939.rst
-@@ -10,9 +10,9 @@ Overview / What Is J1939
- SAE J1939 defines a higher layer protocol on CAN. It implements a more
- sophisticated addressing scheme and extends the maximum packet size above 8
- bytes. Several derived specifications exist, which differ from the original
--J1939 on the application level, like MilCAN A, NMEA2000 and especially
-+J1939 on the application level, like MilCAN A, NMEA2000, and especially
- ISO-11783 (ISOBUS). This last one specifies the so-called ETP (Extended
--Transport Protocol) which is has been included in this implementation. This
-+Transport Protocol), which has been included in this implementation. This
- results in a maximum packet size of ((2 ^ 24) - 1) * 7 bytes == 111 MiB.
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 900b9f4e0605..fc61cf4eff1c 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -61,21 +61,17 @@ static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
+  */
+ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
+ {
+-	if (skb_shared(skb)) {
+-		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
++	struct sk_buff *nskb;
  
- Specifications used
-@@ -32,15 +32,15 @@ sockets, we found some reasons to justify a kernel implementation for the
- addressing and transport methods used by J1939.
+-		if (likely(nskb)) {
+-			can_skb_set_owner(nskb, skb->sk);
+-			consume_skb(skb);
+-			return nskb;
+-		} else {
+-			kfree_skb(skb);
+-			return NULL;
+-		}
++	nskb = skb_clone(skb, GFP_ATOMIC);
++	if (unlikely(!nskb)) {
++		kfree_skb(skb);
++		return NULL;
+ 	}
  
- * **Addressing:** when a process on an ECU communicates via J1939, it should
--  not necessarily know its source address. Although at least one process per
-+  not necessarily know its source address. Although, at least one process per
-   ECU should know the source address. Other processes should be able to reuse
-   that address. This way, address parameters for different processes
-   cooperating for the same ECU, are not duplicated. This way of working is
--  closely related to the UNIX concept where programs do just one thing, and do
-+  closely related to the UNIX concept, where programs do just one thing and do
-   it well.
+-	/* we can assume to have an unshared skb with proper owner */
+-	return skb;
++	can_skb_set_owner(nskb, skb->sk);
++	consume_skb(skb);
++	return nskb;
+ }
  
- * **Dynamic addressing:** Address Claiming in J1939 is time critical.
--  Furthermore data transport should be handled properly during the address
-+  Furthermore, data transport should be handled properly during the address
-   negotiation. Putting this functionality in the kernel eliminates it as a
-   requirement for _every_ user space process that communicates via J1939. This
-   results in a consistent J1939 bus with proper addressing.
-@@ -58,7 +58,7 @@ Therefore, these parts are left to user space.
- 
- The J1939 sockets operate on CAN network devices (see SocketCAN). Any J1939
- user space library operating on CAN raw sockets will still operate properly.
--Since such library does not communicate with the in-kernel implementation, care
-+Since such a library does not communicate with the in-kernel implementation, care
- must be taken that these two do not interfere. In practice, this means they
- cannot share ECU addresses. A single ECU (or virtual ECU) address is used by
- the library exclusively, or by the in-kernel system exclusively.
-@@ -77,13 +77,13 @@ is composed as follows:
- 8 bits : PS (PDU Specific)
- 
- In J1939-21 distinction is made between PDU1 format (where PF < 240) and PDU2
--format (where PF >= 240). Furthermore, when using PDU2 format, the PS-field
-+format (where PF >= 240). Furthermore, when using the PDU2 format, the PS-field
- contains a so-called Group Extension, which is part of the PGN. When using PDU2
- format, the Group Extension is set in the PS-field.
- 
- On the other hand, when using PDU1 format, the PS-field contains a so-called
- Destination Address, which is _not_ part of the PGN. When communicating a PGN
--from user space to kernel (or visa versa) and PDU2 format is used, the PS-field
-+from user space to kernel (or vice versa) and PDU2 format is used, the PS-field
- of the PGN shall be set to zero. The Destination Address shall be set
- elsewhere.
- 
-@@ -96,15 +96,15 @@ Addressing
- 
- Both static and dynamic addressing methods can be used.
- 
--For static addresses, no extra checks are made by the kernel, and provided
-+For static addresses, no extra checks are made by the kernel and provided
- addresses are considered right. This responsibility is for the OEM or system
- integrator.
- 
- For dynamic addressing, so-called Address Claiming, extra support is foreseen
--in the kernel. In J1939 any ECU is known by it's 64-bit NAME. At the moment of
-+in the kernel. In J1939 any ECU is known by its 64-bit NAME. At the moment of
- a successful address claim, the kernel keeps track of both NAME and source
- address being claimed. This serves as a base for filter schemes. By default,
--packets with a destination that is not locally, will be rejected.
-+packets with a destination that is not locally will be rejected.
- 
- Mixed mode packets (from a static to a dynamic address or vice versa) are
- allowed. The BSD sockets define separate API calls for getting/setting the
-@@ -153,8 +153,8 @@ described below.
- In order to send data, a bind(2) must have been successful. bind(2) assigns a
- local address to a socket.
- 
--Different from CAN is that the payload data is just the data that get send,
--without it's header info. The header info is derived from the sockaddr supplied
-+Different from CAN is that the payload data is just the data that get sends,
-+without its header info. The header info is derived from the sockaddr supplied
- to bind(2), connect(2), sendto(2) and recvfrom(2). A write(2) with size 4 will
- result in a packet with 4 bytes.
- 
-@@ -191,7 +191,7 @@ can_addr.j1939.addr contains the address.
- 
- The bind(2) system call assigns the local address, i.e. the source address when
- sending packages. If a PGN during bind(2) is set, it's used as a RX filter.
--I.e.  only packets with a matching PGN are received. If an ADDR or NAME is set
-+I.e. only packets with a matching PGN are received. If an ADDR or NAME is set
- it is used as a receive filter, too. It will match the destination NAME or ADDR
- of the incoming packet. The NAME filter will work only if appropriate Address
- Claiming for this name was done on the CAN bus and registered/cached by the
+ #endif /* !_CAN_SKB_H */
 -- 
 2.28.0
 
