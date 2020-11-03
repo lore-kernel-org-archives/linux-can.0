@@ -4,37 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BD85C388F7
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78A85C4742C
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0D63620665
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 44DAE20665
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730347AbgKCWHG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 17:07:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
+        id S1731345AbgKCWHH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:07:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730879AbgKCWG5 (ORCPT
+        with ESMTP id S1731463AbgKCWG5 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:57 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9BEC061A48
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E02C061A47
         for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:57 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4S4-0006Ui-C4; Tue, 03 Nov 2020 23:06:52 +0100
+        id 1ka4S3-0006Ui-E9; Tue, 03 Nov 2020 23:06:51 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        kernel@pengutronix.de, Tom Rix <trix@redhat.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 25/27] can: flexcan: add ECC initialization for LX2160A
-Date:   Tue,  3 Nov 2020 23:06:34 +0100
-Message-Id: <20201103220636.972106-26-mkl@pengutronix.de>
+Subject: [net 23/27] can: mcp251xfd: remove unneeded break
+Date:   Tue,  3 Nov 2020 23:06:32 +0100
+Message-Id: <20201103220636.972106-24-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
 References: <20201103220636.972106-1-mkl@pengutronix.de>
@@ -48,47 +47,66 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Tom Rix <trix@redhat.com>
 
-After double check with Layerscape CAN owner (Pankaj Bansal), confirm
-that LX2160A indeed supports ECC feature, so correct the feature table.
+A break is not needed if it is preceded by a return.
 
-For SoCs with ECC supported, even use FLEXCAN_QUIRK_DISABLE_MECR quirk to
-disable non-correctable errors interrupt and freeze mode, had better use
-FLEXCAN_QUIRK_SUPPORT_ECC quirk to initialize all memory.
-
-Fixes: 2c19bb43e5572 ("can: flexcan: add lx2160ar1 support")
-Cc: Pankaj Bansal <pankaj.bansal@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20201020155402.30318-5-qiangqing.zhang@nxp.com
+Signed-off-by: Tom Rix <trix@redhat.com>
+Link: https://lore.kernel.org/r/20201019172412.31143-1-trix@redhat.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 22 +++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 586e1417a697..c2330eab3595 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -217,7 +217,7 @@
-  *   MX8MP FlexCAN3  03.00.17.01    yes       yes        no      yes       yes          yes
-  *   VF610 FlexCAN3  ?               no       yes        no      yes       yes?          no
-  * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes           no
-- * LX2160A FlexCAN3  03.00.23.00     no       yes        no       no       yes          yes
-+ * LX2160A FlexCAN3  03.00.23.00     no       yes        no      yes       yes          yes
-  *
-  * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
-  */
-@@ -411,7 +411,8 @@ static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
- static const struct flexcan_devtype_data fsl_lx2160a_r1_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
- 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
--		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_SUPPORT_FD,
-+		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_SUPPORT_FD |
-+		FLEXCAN_QUIRK_SUPPORT_ECC,
- };
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index c3f49543ff26..9c215f7c5f81 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -75,11 +75,11 @@ static const char *__mcp251xfd_get_model_str(enum mcp251xfd_model model)
+ {
+ 	switch (model) {
+ 	case MCP251XFD_MODEL_MCP2517FD:
+-		return "MCP2517FD"; break;
++		return "MCP2517FD";
+ 	case MCP251XFD_MODEL_MCP2518FD:
+-		return "MCP2518FD"; break;
++		return "MCP2518FD";
+ 	case MCP251XFD_MODEL_MCP251XFD:
+-		return "MCP251xFD"; break;
++		return "MCP251xFD";
+ 	}
  
- static const struct can_bittiming_const flexcan_bittiming_const = {
+ 	return "<unknown>";
+@@ -95,21 +95,21 @@ static const char *mcp251xfd_get_mode_str(const u8 mode)
+ {
+ 	switch (mode) {
+ 	case MCP251XFD_REG_CON_MODE_MIXED:
+-		return "Mixed (CAN FD/CAN 2.0)"; break;
++		return "Mixed (CAN FD/CAN 2.0)";
+ 	case MCP251XFD_REG_CON_MODE_SLEEP:
+-		return "Sleep"; break;
++		return "Sleep";
+ 	case MCP251XFD_REG_CON_MODE_INT_LOOPBACK:
+-		return "Internal Loopback"; break;
++		return "Internal Loopback";
+ 	case MCP251XFD_REG_CON_MODE_LISTENONLY:
+-		return "Listen Only"; break;
++		return "Listen Only";
+ 	case MCP251XFD_REG_CON_MODE_CONFIG:
+-		return "Configuration"; break;
++		return "Configuration";
+ 	case MCP251XFD_REG_CON_MODE_EXT_LOOPBACK:
+-		return "External Loopback"; break;
++		return "External Loopback";
+ 	case MCP251XFD_REG_CON_MODE_CAN2_0:
+-		return "CAN 2.0"; break;
++		return "CAN 2.0";
+ 	case MCP251XFD_REG_CON_MODE_RESTRICTED:
+-		return "Restricted Operation"; break;
++		return "Restricted Operation";
+ 	}
+ 
+ 	return "<unknown>";
 -- 
 2.28.0
 
