@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54A45C388F7
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 715FDC4742C
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 28B4620665
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 49C762080D
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731293AbgKCWHU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 17:07:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
+        id S1730756AbgKCWHT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:07:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731331AbgKCWGw (ORCPT
+        with ESMTP id S1731293AbgKCWGw (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:52 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB7FC061A48
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CB2C0613D1
         for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:52 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4Rz-0006Ui-JS; Tue, 03 Nov 2020 23:06:47 +0100
+        id 1ka4Ry-0006Ui-PQ; Tue, 03 Nov 2020 23:06:46 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Navid Emamdoost <navid.emamdoost@gmail.com>,
+        kernel@pengutronix.de, Colin Ian King <colin.king@canonical.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 17/27] can: xilinx_can: handle failure cases of pm_runtime_get_sync
-Date:   Tue,  3 Nov 2020 23:06:26 +0100
-Message-Id: <20201103220636.972106-18-mkl@pengutronix.de>
+Subject: [net 15/27] can: isotp: padlen(): make const array static, makes object smaller
+Date:   Tue,  3 Nov 2020 23:06:24 +0100
+Message-Id: <20201103220636.972106-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
 References: <20201103220636.972106-1-mkl@pengutronix.de>
@@ -47,58 +47,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-Calling pm_runtime_get_sync increments the counter even in case of
-failure, causing incorrect ref count. Call pm_runtime_put if
-pm_runtime_get_sync fails.
+Don't populate the const array plen on the stack but instead it static. Makes
+the object code smaller by 926 bytes.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Link: https://lore.kernel.org/r/20200605033239.60664-1-navid.emamdoost@gmail.com
-Fixes: 4716620d1b62 ("can: xilinx: Convert to runtime_pm")
+Before:
+   text	   data	    bss	    dec	    hex	filename
+  26531	   1943	     64	  28538	   6f7a	net/can/isotp.o
+
+After:
+   text	   data	    bss	    dec	    hex	filename
+  25509	   2039	     64	  27612	   6bdc	net/can/isotp.o
+
+(gcc version 10.2.0)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20201020154203.54711-1-colin.king@canonical.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/can/isotp.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 6c4d00d2dbdc..48d746e18f30 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1395,7 +1395,7 @@ static int xcan_open(struct net_device *ndev)
- 	if (ret < 0) {
- 		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
- 			   __func__, ret);
--		return ret;
-+		goto err;
- 	}
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index a79287ef86da..d78ab13bd8be 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -252,14 +252,16 @@ static void isotp_rcv_skb(struct sk_buff *skb, struct sock *sk)
  
- 	ret = request_irq(ndev->irq, xcan_interrupt, priv->irq_flags,
-@@ -1479,6 +1479,7 @@ static int xcan_get_berr_counter(const struct net_device *ndev,
- 	if (ret < 0) {
- 		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
- 			   __func__, ret);
-+		pm_runtime_put(priv->dev);
- 		return ret;
- 	}
+ static u8 padlen(u8 datalen)
+ {
+-	const u8 plen[] = {8, 8, 8, 8, 8, 8, 8, 8, 8,		/* 0 - 8 */
+-			   12, 12, 12, 12,			/* 9 - 12 */
+-			   16, 16, 16, 16,			/* 13 - 16 */
+-			   20, 20, 20, 20,			/* 17 - 20 */
+-			   24, 24, 24, 24,			/* 21 - 24 */
+-			   32, 32, 32, 32, 32, 32, 32, 32,	/* 25 - 32 */
+-			   48, 48, 48, 48, 48, 48, 48, 48,	/* 33 - 40 */
+-			   48, 48, 48, 48, 48, 48, 48, 48};	/* 41 - 48 */
++	static const u8 plen[] = {
++		8, 8, 8, 8, 8, 8, 8, 8, 8,	/* 0 - 8 */
++		12, 12, 12, 12,			/* 9 - 12 */
++		16, 16, 16, 16,			/* 13 - 16 */
++		20, 20, 20, 20,			/* 17 - 20 */
++		24, 24, 24, 24,			/* 21 - 24 */
++		32, 32, 32, 32, 32, 32, 32, 32,	/* 25 - 32 */
++		48, 48, 48, 48, 48, 48, 48, 48,	/* 33 - 40 */
++		48, 48, 48, 48, 48, 48, 48, 48	/* 41 - 48 */
++	};
  
-@@ -1793,7 +1794,7 @@ static int xcan_probe(struct platform_device *pdev)
- 	if (ret < 0) {
- 		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
- 			   __func__, ret);
--		goto err_pmdisable;
-+		goto err_disableclks;
- 	}
- 
- 	if (priv->read_reg(priv, XCAN_SR_OFFSET) != XCAN_SR_CONFIG_MASK) {
-@@ -1828,7 +1829,6 @@ static int xcan_probe(struct platform_device *pdev)
- 
- err_disableclks:
- 	pm_runtime_put(priv->dev);
--err_pmdisable:
- 	pm_runtime_disable(&pdev->dev);
- err_free:
- 	free_candev(ndev);
+ 	if (datalen > 48)
+ 		return 64;
 -- 
 2.28.0
 
