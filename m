@@ -7,34 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40200C2D0A3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ADAAC4742C
 	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 040A220665
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5197620665
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731541AbgKCWG7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1731388AbgKCWG7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 3 Nov 2020 17:06:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731451AbgKCWG6 (ORCPT
+        with ESMTP id S1731501AbgKCWG6 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:58 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4992C061A49
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEECEC061A4A
         for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:57 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4S3-0006Ui-V1; Tue, 03 Nov 2020 23:06:52 +0100
+        id 1ka4S4-0006Ui-Pj; Tue, 03 Nov 2020 23:06:52 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 24/27] can: flexcan: remove FLEXCAN_QUIRK_DISABLE_MECR quirk for LS1021A
-Date:   Tue,  3 Nov 2020 23:06:33 +0100
-Message-Id: <20201103220636.972106-25-mkl@pengutronix.de>
+Subject: [net 26/27] can: flexcan: add ECC initialization for VF610
+Date:   Tue,  3 Nov 2020 23:06:35 +0100
+Message-Id: <20201103220636.972106-27-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
 References: <20201103220636.972106-1-mkl@pengutronix.de>
@@ -50,33 +49,31 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-After double check with Layerscape CAN owner (Pankaj Bansal), confirm that
-LS1021A doesn't support ECC feature, so remove FLEXCAN_QUIRK_DISABLE_MECR
-quirk.
+For SoCs with ECC supported, even use FLEXCAN_QUIRK_DISABLE_MECR quirk to
+disable non-correctable errors interrupt and freeze mode, had better use
+FLEXCAN_QUIRK_SUPPORT_ECC quirk to initialize all memory.
 
-Fixes: 99b7668c04b27 ("can: flexcan: adding platform specific details for LS1021A")
-Cc: Pankaj Bansal <pankaj.bansal@nxp.com>
+Fixes: cdce844865bea ("can: flexcan: add vf610 support for FlexCAN")
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20201020155402.30318-4-qiangqing.zhang@nxp.com
+Link: https://lore.kernel.org/r/20201020155402.30318-6-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 4d594e977497..586e1417a697 100644
+index c2330eab3595..06f94b6f0ebe 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -405,8 +405,7 @@ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
- 
- static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
+@@ -400,7 +400,7 @@ static struct flexcan_devtype_data fsl_imx8mp_devtype_data = {
+ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
  	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
--		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
--		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
-+		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP |
+-		FLEXCAN_QUIRK_BROKEN_PERR_STATE,
++		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SUPPORT_ECC,
  };
  
- static const struct flexcan_devtype_data fsl_lx2160a_r1_devtype_data = {
+ static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
 -- 
 2.28.0
 
