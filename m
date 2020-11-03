@@ -7,34 +7,34 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29CCAC388F7
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40200C2D0A3
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D6E6D2080D
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 040A220665
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731205AbgKCWG5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 17:06:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
+        id S1731541AbgKCWG7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:06:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731451AbgKCWG4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:56 -0500
+        with ESMTP id S1731451AbgKCWG6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:58 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDE9C061A52
-        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:54 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4992C061A49
+        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:57 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4S1-0006Ui-IV; Tue, 03 Nov 2020 23:06:49 +0100
+        id 1ka4S3-0006Ui-V1; Tue, 03 Nov 2020 23:06:52 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
+        kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 20/27] can: peak_canfd: pucan_handle_can_rx(): fix echo management when loopback is on
-Date:   Tue,  3 Nov 2020 23:06:29 +0100
-Message-Id: <20201103220636.972106-21-mkl@pengutronix.de>
+Subject: [net 24/27] can: flexcan: remove FLEXCAN_QUIRK_DISABLE_MECR quirk for LS1021A
+Date:   Tue,  3 Nov 2020 23:06:33 +0100
+Message-Id: <20201103220636.972106-25-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
 References: <20201103220636.972106-1-mkl@pengutronix.de>
@@ -48,59 +48,35 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-Echo management is driven by PUCAN_MSG_LOOPED_BACK bit, while loopback
-frames are identified with PUCAN_MSG_SELF_RECEIVE bit. Those bits are set
-for each outgoing frame written to the IP core so that a copy of each one
-will be placed into the rx path. Thus,
+After double check with Layerscape CAN owner (Pankaj Bansal), confirm that
+LS1021A doesn't support ECC feature, so remove FLEXCAN_QUIRK_DISABLE_MECR
+quirk.
 
-- when PUCAN_MSG_LOOPED_BACK is set then the rx frame is an echo of a
-  previously sent frame,
-- when PUCAN_MSG_LOOPED_BACK+PUCAN_MSG_SELF_RECEIVE are set, then the rx
-  frame is an echo AND a loopback frame. Therefore, this frame must be
-  put into the socket rx path too.
-
-This patch fixes how CAN frames are handled when these are sent while the
-can interface is configured in "loopback on" mode.
-
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-Link: https://lore.kernel.org/r/20201013153947.28012-1-s.grosjean@peak-system.com
-Fixes: 8ac8321e4a79 ("can: peak: add support for PEAK PCAN-PCIe FD CAN-FD boards")
+Fixes: 99b7668c04b27 ("can: flexcan: adding platform specific details for LS1021A")
+Cc: Pankaj Bansal <pankaj.bansal@nxp.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Link: https://lore.kernel.org/r/20201020155402.30318-4-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/peak_canfd/peak_canfd.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/net/can/flexcan.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
-index 10aa3e457c33..40c33b8a5fda 100644
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -262,8 +262,7 @@ static int pucan_handle_can_rx(struct peak_canfd_priv *priv,
- 		cf_len = get_can_dlc(pucan_msg_get_dlc(msg));
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 4d594e977497..586e1417a697 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -405,8 +405,7 @@ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
  
- 	/* if this frame is an echo, */
--	if ((rx_msg_flags & PUCAN_MSG_LOOPED_BACK) &&
--	    !(rx_msg_flags & PUCAN_MSG_SELF_RECEIVE)) {
-+	if (rx_msg_flags & PUCAN_MSG_LOOPED_BACK) {
- 		unsigned long flags;
+ static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+-		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+-		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
++		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
+ };
  
- 		spin_lock_irqsave(&priv->echo_lock, flags);
-@@ -277,7 +276,13 @@ static int pucan_handle_can_rx(struct peak_canfd_priv *priv,
- 		netif_wake_queue(priv->ndev);
- 
- 		spin_unlock_irqrestore(&priv->echo_lock, flags);
--		return 0;
-+
-+		/* if this frame is only an echo, stop here. Otherwise,
-+		 * continue to push this application self-received frame into
-+		 * its own rx queue.
-+		 */
-+		if (!(rx_msg_flags & PUCAN_MSG_SELF_RECEIVE))
-+			return 0;
- 	}
- 
- 	/* otherwise, it should be pushed into rx fifo */
+ static const struct flexcan_devtype_data fsl_lx2160a_r1_devtype_data = {
 -- 
 2.28.0
 
