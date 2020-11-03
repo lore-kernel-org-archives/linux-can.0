@@ -2,38 +2,40 @@ Return-Path: <SRS0=Fclt=EJ=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08E5BC388F7
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16CB1C2D0A3
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D39A420665
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CC3B420665
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731082AbgKCWGo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 17:06:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
+        id S1731107AbgKCWHw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:07:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731059AbgKCWGn (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:43 -0500
+        with ESMTP id S1730808AbgKCWGp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:45 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0129DC0613D1
-        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556E8C061A47
+        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:45 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4Rq-0006Ui-QA; Tue, 03 Nov 2020 23:06:38 +0100
+        id 1ka4Rs-0006Ui-VI; Tue, 03 Nov 2020 23:06:41 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: pull-request: can 2020-11-03
-Date:   Tue,  3 Nov 2020 23:06:09 +0100
-Message-Id: <20201103220636.972106-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 04/27] can: rx-offload: don't call kfree_skb() from IRQ context
+Date:   Tue,  3 Nov 2020 23:06:13 +0100
+Message-Id: <20201103220636.972106-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
+References: <20201103220636.972106-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
@@ -44,158 +46,91 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+A CAN driver, using the rx-offload infrastructure, is reading CAN frames
+(usually in IRQ context) from the hardware and placing it into the rx-offload
+queue to be delivered to the networking stack via NAPI.
 
-here's a pull request for net/master consisting of 27 patches for net/master.
+In case the rx-offload queue is full, trying to add more skbs results in the
+skbs being dropped using kfree_skb(). If done from hard-IRQ context this
+results in the following warning:
 
-The first two patches are by Oleksij Rempel and they add a generic
-can-controller Device Tree yaml binding and convert the text based binding of
-the flexcan driver to a yaml based binding.
+[  682.552693] ------------[ cut here ]------------
+[  682.557360] WARNING: CPU: 0 PID: 3057 at net/core/skbuff.c:650 skb_release_head_state+0x74/0x84
+[  682.566075] Modules linked in: can_raw can coda_vpu flexcan dw_hdmi_ahb_audio v4l2_jpeg imx_vdoa can_dev
+[  682.575597] CPU: 0 PID: 3057 Comm: cansend Tainted: G        W         5.7.0+ #18
+[  682.583098] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+[  682.589657] [<c0112628>] (unwind_backtrace) from [<c010c1c4>] (show_stack+0x10/0x14)
+[  682.597423] [<c010c1c4>] (show_stack) from [<c06c481c>] (dump_stack+0xe0/0x114)
+[  682.604759] [<c06c481c>] (dump_stack) from [<c0128f10>] (__warn+0xc0/0x10c)
+[  682.611742] [<c0128f10>] (__warn) from [<c0129314>] (warn_slowpath_fmt+0x5c/0xc0)
+[  682.619248] [<c0129314>] (warn_slowpath_fmt) from [<c0b95dec>] (skb_release_head_state+0x74/0x84)
+[  682.628143] [<c0b95dec>] (skb_release_head_state) from [<c0b95e08>] (skb_release_all+0xc/0x24)
+[  682.636774] [<c0b95e08>] (skb_release_all) from [<c0b95eac>] (kfree_skb+0x74/0x1c8)
+[  682.644479] [<c0b95eac>] (kfree_skb) from [<bf001d1c>] (can_rx_offload_queue_sorted+0xe0/0xe8 [can_dev])
+[  682.654051] [<bf001d1c>] (can_rx_offload_queue_sorted [can_dev]) from [<bf001d6c>] (can_rx_offload_get_echo_skb+0x48/0x94 [can_dev])
+[  682.666007] [<bf001d6c>] (can_rx_offload_get_echo_skb [can_dev]) from [<bf01efe4>] (flexcan_irq+0x194/0x5dc [flexcan])
+[  682.676734] [<bf01efe4>] (flexcan_irq [flexcan]) from [<c019c1ec>] (__handle_irq_event_percpu+0x4c/0x3ec)
+[  682.686322] [<c019c1ec>] (__handle_irq_event_percpu) from [<c019c5b8>] (handle_irq_event_percpu+0x2c/0x88)
+[  682.695993] [<c019c5b8>] (handle_irq_event_percpu) from [<c019c64c>] (handle_irq_event+0x38/0x5c)
+[  682.704887] [<c019c64c>] (handle_irq_event) from [<c01a1058>] (handle_fasteoi_irq+0xc8/0x180)
+[  682.713432] [<c01a1058>] (handle_fasteoi_irq) from [<c019b2c0>] (generic_handle_irq+0x30/0x44)
+[  682.722063] [<c019b2c0>] (generic_handle_irq) from [<c019b8f8>] (__handle_domain_irq+0x64/0xdc)
+[  682.730783] [<c019b8f8>] (__handle_domain_irq) from [<c06df4a4>] (gic_handle_irq+0x48/0x9c)
+[  682.739158] [<c06df4a4>] (gic_handle_irq) from [<c0100b30>] (__irq_svc+0x70/0x98)
+[  682.746656] Exception stack(0xe80e9dd8 to 0xe80e9e20)
+[  682.751725] 9dc0:                                                       00000001 e80e8000
+[  682.759922] 9de0: e820cf80 00000000 ffffe000 00000000 eaf08fe4 00000000 600d0013 00000000
+[  682.768117] 9e00: c1732e3c c16093a8 e820d4c0 e80e9e28 c018a57c c018b870 600d0013 ffffffff
+[  682.776315] [<c0100b30>] (__irq_svc) from [<c018b870>] (lock_acquire+0x108/0x4e8)
+[  682.783821] [<c018b870>] (lock_acquire) from [<c0e938e4>] (down_write+0x48/0xa8)
+[  682.791242] [<c0e938e4>] (down_write) from [<c02818dc>] (unlink_file_vma+0x24/0x40)
+[  682.798922] [<c02818dc>] (unlink_file_vma) from [<c027a258>] (free_pgtables+0x34/0xb8)
+[  682.806858] [<c027a258>] (free_pgtables) from [<c02835a4>] (exit_mmap+0xe4/0x170)
+[  682.814361] [<c02835a4>] (exit_mmap) from [<c01248e0>] (mmput+0x5c/0x110)
+[  682.821171] [<c01248e0>] (mmput) from [<c012e910>] (do_exit+0x374/0xbe4)
+[  682.827892] [<c012e910>] (do_exit) from [<c0130888>] (do_group_exit+0x38/0xb4)
+[  682.835132] [<c0130888>] (do_group_exit) from [<c0130914>] (__wake_up_parent+0x0/0x14)
+[  682.843063] irq event stamp: 1936
+[  682.846399] hardirqs last  enabled at (1935): [<c02938b0>] rmqueue+0xf4/0xc64
+[  682.853553] hardirqs last disabled at (1936): [<c0100b20>] __irq_svc+0x60/0x98
+[  682.860799] softirqs last  enabled at (1878): [<bf04cdcc>] raw_release+0x108/0x1f0 [can_raw]
+[  682.869256] softirqs last disabled at (1876): [<c0b8f478>] release_sock+0x18/0x98
+[  682.876753] ---[ end trace 7bca4751ce44c444 ]---
 
-Zhang Changzhong's patch fixes a remove_proc_entry warning in the AF_CAN core.
+This patch fixes the problem by replacing the kfree_skb() by
+dev_kfree_skb_any(), as rx-offload might be called from threaded IRQ handlers
+as well.
 
-A patch by me fixes a kfree_skb() call from IRQ context in the rx-offload
-helper.
-
-Vincent Mailhol contributes a patch to prevent a call to kfree_skb() in hard
-IRQ context in can_get_echo_skb().
-
-Oliver Hartkopp's patch fixes the length calculation for RTR CAN frames in the
-__can_get_echo_skb() helper.
-
-Oleksij Rempel's patch fixes a use-after-free that shows up with j1939 in
-can_create_echo_skb().
-
-Yegor Yefremov contributes 4 patches to enhance the j1939 documentation.
-
-Zhang Changzhong's patch fixes a hanging task problem in j1939_sk_bind() if the
-netdev is down.
-
-Then there are three patches for the newly added CAN_ISOTP protocol. Geert
-Uytterhoeven enhances the kconfig help text. Oliver Hartkopp's patch adds
-missing RX timeout handling in listen-only mode and Colin Ian King's patch
-decreases the generated object code by 926 bytes.
-
-Zhang Changzhong contributes a patch for the ti_hecc driver that fixes the
-error path in the probe function.
-
-Navid Emamdoost's patch for the xilinx_can driver fixes the error handling in
-case of failing pm_runtime_get_sync().
-
-There are two patches for the peak_usb driver. Dan Carpenter adds range
-checking in decode operations and Stephane Grosjean's patch fixes a timestamp
-wrapping problem.
-
-Stephane Grosjean's patch for th peak_canfd driver fixes echo management if
-loopback is on.
-
-The next three patches all target the mcp251xfd driver. The first one is by me
-and it increased the severity of CRC read error messages. The kernel test robot
-removes an unneeded semicolon and Tom Rix removes unneeded break in several
-switch-cases.
-
-The last 4 patches are by Joakim Zhang and target the flexcan driver, the first
-three fix ECC related device specific quirks for the LS1021A, LX2160A and the
-VF610 SoC. The last patch disable wakeup completely upon driver remove.
-
-regards,
-Marc
-
+Fixes: ca913f1ac024 ("can: rx-offload: can_rx_offload_queue_sorted(): fix error handling, avoid skb mem leak")
+Fixes: 6caf8a6d6586 ("can: rx-offload: can_rx_offload_queue_tail(): fix error handling, avoid skb mem leak")
+Link: http://lore.kernel.org/r/20201019190524.1285319-3-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/rx-offload.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The following changes since commit 9621618130bf7e83635367c13b9a6ee53935bb37:
-
-  sfp: Fix error handing in sfp_probe() (2020-11-02 17:19:59 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.10-20201103
-
-for you to fetch changes up to ab07ff1c92fa60f29438e655a1b4abab860ed0b6:
-
-  can: flexcan: flexcan_remove(): disable wakeup completely (2020-11-03 22:30:34 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.10-20201103
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      can: isotp: padlen(): make const array static, makes object smaller
-
-Dan Carpenter (1):
-      can: peak_usb: add range checking in decode operations
-
-Geert Uytterhoeven (1):
-      can: isotp: Explain PDU in CAN_ISOTP help text
-
-Joakim Zhang (4):
-      can: flexcan: remove FLEXCAN_QUIRK_DISABLE_MECR quirk for LS1021A
-      can: flexcan: add ECC initialization for LX2160A
-      can: flexcan: add ECC initialization for VF610
-      can: flexcan: flexcan_remove(): disable wakeup completely
-
-Marc Kleine-Budde (2):
-      can: rx-offload: don't call kfree_skb() from IRQ context
-      can: mcp251xfd: mcp251xfd_regmap_crc_read(): increase severity of CRC read error messages
-
-Navid Emamdoost (1):
-      can: xilinx_can: handle failure cases of pm_runtime_get_sync
-
-Oleksij Rempel (3):
-      dt-bindings: can: add can-controller.yaml
-      dt-bindings: can: flexcan: convert fsl,*flexcan bindings to yaml
-      can: can_create_echo_skb(): fix echo skb generation: always use skb_clone()
-
-Oliver Hartkopp (2):
-      can: dev: __can_get_echo_skb(): fix real payload length return value for RTR frames
-      can: isotp: isotp_rcv_cf(): enable RX timeout handling in listen-only mode
-
-Stephane Grosjean (2):
-      can: peak_usb: peak_usb_get_ts_time(): fix timestamp wrapping
-      can: peak_canfd: pucan_handle_can_rx(): fix echo management when loopback is on
-
-Tom Rix (1):
-      can: mcp251xfd: remove unneeded break
-
-Vincent Mailhol (1):
-      can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ context
-
-Yegor Yefremov (4):
-      can: j1939: rename jacd tool
-      can: j1939: fix syntax and spelling
-      can: j1939: swap addr and pgn in the send example
-      can: j1939: use backquotes for code samples
-
-Zhang Changzhong (3):
-      can: proc: can_remove_proc(): silence remove_proc_entry warning
-      can: j1939: j1939_sk_bind(): return failure if netdev is down
-      can: ti_hecc: ti_hecc_probe(): add missed clk_disable_unprepare() in error path
-
-kernel test robot (1):
-      can: mcp251xfd: mcp251xfd_regmap_nocrc_read(): fix semicolon.cocci warnings
-
- .../bindings/net/can/can-controller.yaml           |  18 +++
- .../devicetree/bindings/net/can/fsl,flexcan.yaml   | 135 +++++++++++++++++++++
- .../devicetree/bindings/net/can/fsl-flexcan.txt    |  57 ---------
- Documentation/networking/j1939.rst                 | 120 +++++++++---------
- drivers/net/can/dev.c                              |  14 ++-
- drivers/net/can/flexcan.c                          |  12 +-
- drivers/net/can/peak_canfd/peak_canfd.c            |  11 +-
- drivers/net/can/rx-offload.c                       |   4 +-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c     |  22 ++--
- drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c   |  18 +--
- drivers/net/can/ti_hecc.c                          |   8 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.c       |  51 +++++++-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c         |  48 ++++++--
- drivers/net/can/xilinx_can.c                       |   6 +-
- include/linux/can/skb.h                            |  20 ++-
- net/can/Kconfig                                    |   5 +-
- net/can/isotp.c                                    |  26 ++--
- net/can/j1939/socket.c                             |   6 +
- net/can/proc.c                                     |   6 +-
- 19 files changed, 387 insertions(+), 200 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/can-controller.yaml
- create mode 100644 Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-
+diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
+index 3b180269a92d..6e95193b215b 100644
+--- a/drivers/net/can/rx-offload.c
++++ b/drivers/net/can/rx-offload.c
+@@ -245,7 +245,7 @@ int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
+ 
+ 	if (skb_queue_len(&offload->skb_queue) >
+ 	    offload->skb_queue_len_max) {
+-		kfree_skb(skb);
++		dev_kfree_skb_any(skb);
+ 		return -ENOBUFS;
+ 	}
+ 
+@@ -290,7 +290,7 @@ int can_rx_offload_queue_tail(struct can_rx_offload *offload,
+ {
+ 	if (skb_queue_len(&offload->skb_queue) >
+ 	    offload->skb_queue_len_max) {
+-		kfree_skb(skb);
++		dev_kfree_skb_any(skb);
+ 		return -ENOBUFS;
+ 	}
+ 
+-- 
+2.28.0
 
