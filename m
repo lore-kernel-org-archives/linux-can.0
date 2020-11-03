@@ -7,33 +7,34 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1678BC4742C
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BD85C388F7
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D6BD820665
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D63620665
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729475AbgKCWHE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 17:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34270 "EHLO
+        id S1730347AbgKCWHG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731532AbgKCWG7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:59 -0500
+        with ESMTP id S1730879AbgKCWG5 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:57 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D176DC061A4B
-        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9BEC061A48
+        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:57 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4S5-0006Ui-9n; Tue, 03 Nov 2020 23:06:53 +0100
+        id 1ka4S4-0006Ui-C4; Tue, 03 Nov 2020 23:06:52 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 27/27] can: flexcan: flexcan_remove(): disable wakeup completely
-Date:   Tue,  3 Nov 2020 23:06:36 +0100
-Message-Id: <20201103220636.972106-28-mkl@pengutronix.de>
+Subject: [net 25/27] can: flexcan: add ECC initialization for LX2160A
+Date:   Tue,  3 Nov 2020 23:06:34 +0100
+Message-Id: <20201103220636.972106-26-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
 References: <20201103220636.972106-1-mkl@pengutronix.de>
@@ -49,42 +50,45 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-With below sequence, we can see wakeup default is enabled after re-load module,
-if it was enabled before, so we need disable wakeup in flexcan_remove().
+After double check with Layerscape CAN owner (Pankaj Bansal), confirm
+that LX2160A indeed supports ECC feature, so correct the feature table.
 
-| # cat /sys/bus/platform/drivers/flexcan/5a8e0000.can/power/wakeup
-| disabled
-| # echo enabled > /sys/bus/platform/drivers/flexcan/5a8e0000.can/power/wakeup
-| # cat /sys/bus/platform/drivers/flexcan/5a8e0000.can/power/wakeup
-| enabled
-| # rmmod flexcan
-| # modprobe flexcan
-| # cat /sys/bus/platform/drivers/flexcan/5a8e0000.can/power/wakeup
-| enabled
+For SoCs with ECC supported, even use FLEXCAN_QUIRK_DISABLE_MECR quirk to
+disable non-correctable errors interrupt and freeze mode, had better use
+FLEXCAN_QUIRK_SUPPORT_ECC quirk to initialize all memory.
 
-Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-Fixes: 915f9666421c ("can: flexcan: add support for DT property 'wakeup-source'")
+Fixes: 2c19bb43e5572 ("can: flexcan: add lx2160ar1 support")
+Cc: Pankaj Bansal <pankaj.bansal@nxp.com>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20201020184527.8190-1-qiangqing.zhang@nxp.com
-[mkl: streamlined commit message]
+Link: https://lore.kernel.org/r/20201020155402.30318-5-qiangqing.zhang@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/flexcan.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 06f94b6f0ebe..881799bd9c5e 100644
+index 586e1417a697..c2330eab3595 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -2062,6 +2062,8 @@ static int flexcan_remove(struct platform_device *pdev)
- {
- 	struct net_device *dev = platform_get_drvdata(pdev);
+@@ -217,7 +217,7 @@
+  *   MX8MP FlexCAN3  03.00.17.01    yes       yes        no      yes       yes          yes
+  *   VF610 FlexCAN3  ?               no       yes        no      yes       yes?          no
+  * LS1021A FlexCAN2  03.00.04.00     no       yes        no       no       yes           no
+- * LX2160A FlexCAN3  03.00.23.00     no       yes        no       no       yes          yes
++ * LX2160A FlexCAN3  03.00.23.00     no       yes        no      yes       yes          yes
+  *
+  * Some SOCs do not have the RX_WARN & TX_WARN interrupt line connected.
+  */
+@@ -411,7 +411,8 @@ static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
+ static const struct flexcan_devtype_data fsl_lx2160a_r1_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+-		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_SUPPORT_FD,
++		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_SUPPORT_FD |
++		FLEXCAN_QUIRK_SUPPORT_ECC,
+ };
  
-+	device_set_wakeup_enable(&pdev->dev, false);
-+	device_set_wakeup_capable(&pdev->dev, false);
- 	unregister_flexcandev(dev);
- 	pm_runtime_disable(&pdev->dev);
- 	free_candev(dev);
+ static const struct can_bittiming_const flexcan_bittiming_const = {
 -- 
 2.28.0
 
