@@ -7,34 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7C0DC388F7
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6044C388F9
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8ABA6207BB
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 89BA32080D
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:06:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731129AbgKCWGp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 17:06:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34166 "EHLO
+        id S1731244AbgKCWGu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:06:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731092AbgKCWGo (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:44 -0500
+        with ESMTP id S1731202AbgKCWGt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:49 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57783C061A47
-        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B55C061A47
+        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:49 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4Rr-0006Ui-ML; Tue, 03 Nov 2020 23:06:39 +0100
+        id 1ka4Rv-0006Ui-U3; Tue, 03 Nov 2020 23:06:44 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Rob Herring <robh@kernel.org>,
+        kernel@pengutronix.de, Yegor Yefremov <yegorslists@googlemail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 02/27] dt-bindings: can: flexcan: convert fsl,*flexcan bindings to yaml
-Date:   Tue,  3 Nov 2020 23:06:11 +0100
-Message-Id: <20201103220636.972106-3-mkl@pengutronix.de>
+Subject: [net 10/27] can: j1939: swap addr and pgn in the send example
+Date:   Tue,  3 Nov 2020 23:06:19 +0100
+Message-Id: <20201103220636.972106-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
 References: <20201103220636.972106-1-mkl@pengutronix.de>
@@ -48,226 +47,33 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-In order to automate the verification of DT nodes convert
-fsl-flexcan.txt to fsl,flexcan.yaml
+The address was wrongly assigned to the PGN field and vice versa.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20201022075218.11880-3-o.rempel@pengutronix.de
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+Link: https://lore.kernel.org/r/20201022083708.8755-1-yegorslists@googlemail.com
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../bindings/net/can/fsl,flexcan.yaml         | 135 ++++++++++++++++++
- .../bindings/net/can/fsl-flexcan.txt          |  57 --------
- 2 files changed, 135 insertions(+), 57 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+ Documentation/networking/j1939.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-new file mode 100644
-index 000000000000..43df15ba8fa4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-@@ -0,0 +1,135 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/fsl,flexcan.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title:
-+  Flexcan CAN controller on Freescale's ARM and PowerPC system-on-a-chip (SOC).
-+
-+maintainers:
-+  - Marc Kleine-Budde <mkl@pengutronix.de>
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - fsl,imx8qm-flexcan
-+          - fsl,imx8mp-flexcan
-+          - fsl,imx6q-flexcan
-+          - fsl,imx53-flexcan
-+          - fsl,imx35-flexcan
-+          - fsl,imx28-flexcan
-+          - fsl,imx25-flexcan
-+          - fsl,p1010-flexcan
-+          - fsl,vf610-flexcan
-+          - fsl,ls1021ar2-flexcan
-+          - fsl,lx2160ar1-flexcan
-+      - items:
-+          - enum:
-+              - fsl,imx7d-flexcan
-+              - fsl,imx6ul-flexcan
-+              - fsl,imx6sx-flexcan
-+          - const: fsl,imx6q-flexcan
-+      - items:
-+          - enum:
-+              - fsl,ls1028ar1-flexcan
-+          - const: fsl,lx2160ar1-flexcan
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 2
-+
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: per
-+
-+  clock-frequency:
-+    description: |
-+      The oscillator frequency driving the flexcan device, filled in by the
-+      boot loader. This property should only be used the used operating system
-+      doesn't support the clocks and clock-names property.
-+
-+  xceiver-supply:
-+    description: Regulator that powers the CAN transceiver.
-+
-+  big-endian:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: |
-+      This means the registers of FlexCAN controller are big endian. This is
-+      optional property.i.e. if this property is not present in device tree
-+      node then controller is assumed to be little endian. If this property is
-+      present then controller is assumed to be big endian.
-+
-+  fsl,stop-mode:
-+    description: |
-+      Register bits of stop mode control.
-+
-+      The format should be as follows:
-+      <gpr req_gpr req_bit>
-+      gpr is the phandle to general purpose register node.
-+      req_gpr is the gpr register offset of CAN stop request.
-+      req_bit is the bit offset of CAN stop request.
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      - description: The 'gpr' is the phandle to general purpose register node.
-+      - description: The 'req_gpr' is the gpr register offset of CAN stop request.
-+        maximum: 0xff
-+      - description: The 'req_bit' is the bit offset of CAN stop request.
-+        maximum: 0x1f
-+
-+  fsl,clk-source:
-+    description: |
-+      Select the clock source to the CAN Protocol Engine (PE). It's SoC
-+      implementation dependent. Refer to RM for detailed definition. If this
-+      property is not set in device tree node then driver selects clock source 1
-+      by default.
-+      0: clock source 0 (oscillator clock)
-+      1: clock source 1 (peripheral clock)
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 1
-+    minimum: 0
-+    maximum: 1
-+
-+  wakeup-source:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Enable CAN remote wakeup.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    can@1c000 {
-+        compatible = "fsl,p1010-flexcan";
-+        reg = <0x1c000 0x1000>;
-+        interrupts = <48 0x2>;
-+        interrupt-parent = <&mpic>;
-+        clock-frequency = <200000000>;
-+        fsl,clk-source = <0>;
-+    };
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    can@2090000 {
-+        compatible = "fsl,imx6q-flexcan";
-+        reg = <0x02090000 0x4000>;
-+        interrupts = <0 110 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&clks 1>, <&clks 2>;
-+        clock-names = "ipg", "per";
-+        fsl,stop-mode = <&gpr 0x34 28>;
-+    };
-diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-deleted file mode 100644
-index e10b6eb955e1..000000000000
---- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-+++ /dev/null
-@@ -1,57 +0,0 @@
--Flexcan CAN controller on Freescale's ARM and PowerPC system-on-a-chip (SOC).
--
--Required properties:
--
--- compatible : Should be "fsl,<processor>-flexcan"
--
--  where <processor> is imx8qm, imx6q, imx28, imx53, imx35, imx25, p1010,
--  vf610, ls1021ar2, lx2160ar1, ls1028ar1.
--
--  The ls1028ar1 must be followed by lx2160ar1, e.g.
--   - "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-flexcan"
--
--  An implementation should also claim any of the following compatibles
--  that it is fully backwards compatible with:
--
--  - fsl,p1010-flexcan
--
--- reg : Offset and length of the register set for this device
--- interrupts : Interrupt tuple for this device
--
--Optional properties:
--
--- clock-frequency : The oscillator frequency driving the flexcan device
--
--- xceiver-supply: Regulator that powers the CAN transceiver
--
--- big-endian: This means the registers of FlexCAN controller are big endian.
--              This is optional property.i.e. if this property is not present in
--              device tree node then controller is assumed to be little endian.
--              if this property is present then controller is assumed to be big
--              endian.
--
--- fsl,stop-mode: register bits of stop mode control, the format is
--		 <&gpr req_gpr req_bit>.
--		 gpr is the phandle to general purpose register node.
--		 req_gpr is the gpr register offset of CAN stop request.
--		 req_bit is the bit offset of CAN stop request.
--
--- fsl,clk-source: Select the clock source to the CAN Protocol Engine (PE).
--		  It's SoC Implementation dependent. Refer to RM for detailed
--		  definition. If this property is not set in device tree node
--		  then driver selects clock source 1 by default.
--		  0: clock source 0 (oscillator clock)
--		  1: clock source 1 (peripheral clock)
--
--- wakeup-source: enable CAN remote wakeup
--
--Example:
--
--	can@1c000 {
--		compatible = "fsl,p1010-flexcan";
--		reg = <0x1c000 0x1000>;
--		interrupts = <48 0x2>;
--		interrupt-parent = <&mpic>;
--		clock-frequency = <200000000>; // filled in by bootloader
--		fsl,clk-source = <0>; // select clock source 0 for PE
--	};
+diff --git a/Documentation/networking/j1939.rst b/Documentation/networking/j1939.rst
+index be59fcece3bf..faf2eb5c5052 100644
+--- a/Documentation/networking/j1939.rst
++++ b/Documentation/networking/j1939.rst
+@@ -414,8 +414,8 @@ Send:
+ 		.can_family = AF_CAN,
+ 		.can_addr.j1939 = {
+ 			.name = J1939_NO_NAME;
+-			.pgn = 0x30,
+-			.addr = 0x12300,
++			.addr = 0x30,
++			.pgn = 0x12300,
+ 		},
+ 	};
+ 
 -- 
 2.28.0
 
