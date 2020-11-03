@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69E59C388F7
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3F9AC4742C
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 31DF92080D
-	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 75F3B2080D
+	for <linux-can@archiver.kernel.org>; Tue,  3 Nov 2020 22:07:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731256AbgKCWGu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 3 Nov 2020 17:06:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
+        id S1731209AbgKCWGt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 3 Nov 2020 17:06:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731212AbgKCWGt (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:49 -0500
+        with ESMTP id S1731155AbgKCWGs (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 3 Nov 2020 17:06:48 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643E5C061A48
-        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963D7C061A47
+        for <linux-can@vger.kernel.org>; Tue,  3 Nov 2020 14:06:48 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ka4Rw-0006Ui-Aw; Tue, 03 Nov 2020 23:06:44 +0100
+        id 1ka4Rv-0006Ui-H4; Tue, 03 Nov 2020 23:06:43 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Yegor Yefremov <yegorslists@googlemail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 11/27] can: j1939: use backquotes for code samples
-Date:   Tue,  3 Nov 2020 23:06:20 +0100
-Message-Id: <20201103220636.972106-12-mkl@pengutronix.de>
+Subject: [net 09/27] can: j1939: fix syntax and spelling
+Date:   Tue,  3 Nov 2020 23:06:18 +0100
+Message-Id: <20201103220636.972106-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103220636.972106-1-mkl@pengutronix.de>
 References: <20201103220636.972106-1-mkl@pengutronix.de>
@@ -49,205 +49,115 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Yegor Yefremov <yegorslists@googlemail.com>
 
-This patch adds backquotes for code samples.
+This patches fixes the syntax an spelling of the j1939 documentation.
 
 Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-Link: https://lore.kernel.org/r/20201026094442.16587-1-yegorslists@googlemail.com
+Link: https://lore.kernel.org/r/20201020101043.6369-1-yegorslists@googlemail.com
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- Documentation/networking/j1939.rst | 88 +++++++++++++++---------------
- 1 file changed, 44 insertions(+), 44 deletions(-)
+ Documentation/networking/j1939.rst | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/Documentation/networking/j1939.rst b/Documentation/networking/j1939.rst
-index faf2eb5c5052..0a4b73b03b99 100644
+index 081dfc2e0452..be59fcece3bf 100644
 --- a/Documentation/networking/j1939.rst
 +++ b/Documentation/networking/j1939.rst
-@@ -131,31 +131,31 @@ API Calls
- ---------
+@@ -10,9 +10,9 @@ Overview / What Is J1939
+ SAE J1939 defines a higher layer protocol on CAN. It implements a more
+ sophisticated addressing scheme and extends the maximum packet size above 8
+ bytes. Several derived specifications exist, which differ from the original
+-J1939 on the application level, like MilCAN A, NMEA2000 and especially
++J1939 on the application level, like MilCAN A, NMEA2000, and especially
+ ISO-11783 (ISOBUS). This last one specifies the so-called ETP (Extended
+-Transport Protocol) which is has been included in this implementation. This
++Transport Protocol), which has been included in this implementation. This
+ results in a maximum packet size of ((2 ^ 24) - 1) * 7 bytes == 111 MiB.
  
- On CAN, you first need to open a socket for communicating over a CAN network.
--To use J1939, #include <linux/can/j1939.h>. From there, <linux/can.h> will be
-+To use J1939, ``#include <linux/can/j1939.h>``. From there, ``<linux/can.h>`` will be
- included too. To open a socket, use:
+ Specifications used
+@@ -32,15 +32,15 @@ sockets, we found some reasons to justify a kernel implementation for the
+ addressing and transport methods used by J1939.
  
- .. code-block:: C
+ * **Addressing:** when a process on an ECU communicates via J1939, it should
+-  not necessarily know its source address. Although at least one process per
++  not necessarily know its source address. Although, at least one process per
+   ECU should know the source address. Other processes should be able to reuse
+   that address. This way, address parameters for different processes
+   cooperating for the same ECU, are not duplicated. This way of working is
+-  closely related to the UNIX concept where programs do just one thing, and do
++  closely related to the UNIX concept, where programs do just one thing and do
+   it well.
  
-     s = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+ * **Dynamic addressing:** Address Claiming in J1939 is time critical.
+-  Furthermore data transport should be handled properly during the address
++  Furthermore, data transport should be handled properly during the address
+   negotiation. Putting this functionality in the kernel eliminates it as a
+   requirement for _every_ user space process that communicates via J1939. This
+   results in a consistent J1939 bus with proper addressing.
+@@ -58,7 +58,7 @@ Therefore, these parts are left to user space.
  
--J1939 does use SOCK_DGRAM sockets. In the J1939 specification, connections are
-+J1939 does use ``SOCK_DGRAM`` sockets. In the J1939 specification, connections are
- mentioned in the context of transport protocol sessions. These still deliver
--packets to the other end (using several CAN packets). SOCK_STREAM is not
-+packets to the other end (using several CAN packets). ``SOCK_STREAM`` is not
- supported.
+ The J1939 sockets operate on CAN network devices (see SocketCAN). Any J1939
+ user space library operating on CAN raw sockets will still operate properly.
+-Since such library does not communicate with the in-kernel implementation, care
++Since such a library does not communicate with the in-kernel implementation, care
+ must be taken that these two do not interfere. In practice, this means they
+ cannot share ECU addresses. A single ECU (or virtual ECU) address is used by
+ the library exclusively, or by the in-kernel system exclusively.
+@@ -77,13 +77,13 @@ is composed as follows:
+ 8 bits : PS (PDU Specific)
  
--After the successful creation of the socket, you would normally use the bind(2)
--and/or connect(2) system call to bind the socket to a CAN interface.  After
--binding and/or connecting the socket, you can read(2) and write(2) from/to the
--socket or use send(2), sendto(2), sendmsg(2) and the recv*() counterpart
-+After the successful creation of the socket, you would normally use the ``bind(2)``
-+and/or ``connect(2)`` system call to bind the socket to a CAN interface. After
-+binding and/or connecting the socket, you can ``read(2)`` and ``write(2)`` from/to the
-+socket or use ``send(2)``, ``sendto(2)``, ``sendmsg(2)`` and the ``recv*()`` counterpart
- operations on the socket as usual. There are also J1939 specific socket options
- described below.
+ In J1939-21 distinction is made between PDU1 format (where PF < 240) and PDU2
+-format (where PF >= 240). Furthermore, when using PDU2 format, the PS-field
++format (where PF >= 240). Furthermore, when using the PDU2 format, the PS-field
+ contains a so-called Group Extension, which is part of the PGN. When using PDU2
+ format, the Group Extension is set in the PS-field.
  
--In order to send data, a bind(2) must have been successful. bind(2) assigns a
-+In order to send data, a ``bind(2)`` must have been successful. ``bind(2)`` assigns a
+ On the other hand, when using PDU1 format, the PS-field contains a so-called
+ Destination Address, which is _not_ part of the PGN. When communicating a PGN
+-from user space to kernel (or visa versa) and PDU2 format is used, the PS-field
++from user space to kernel (or vice versa) and PDU2 format is used, the PS-field
+ of the PGN shall be set to zero. The Destination Address shall be set
+ elsewhere.
+ 
+@@ -96,15 +96,15 @@ Addressing
+ 
+ Both static and dynamic addressing methods can be used.
+ 
+-For static addresses, no extra checks are made by the kernel, and provided
++For static addresses, no extra checks are made by the kernel and provided
+ addresses are considered right. This responsibility is for the OEM or system
+ integrator.
+ 
+ For dynamic addressing, so-called Address Claiming, extra support is foreseen
+-in the kernel. In J1939 any ECU is known by it's 64-bit NAME. At the moment of
++in the kernel. In J1939 any ECU is known by its 64-bit NAME. At the moment of
+ a successful address claim, the kernel keeps track of both NAME and source
+ address being claimed. This serves as a base for filter schemes. By default,
+-packets with a destination that is not locally, will be rejected.
++packets with a destination that is not locally will be rejected.
+ 
+ Mixed mode packets (from a static to a dynamic address or vice versa) are
+ allowed. The BSD sockets define separate API calls for getting/setting the
+@@ -153,8 +153,8 @@ described below.
+ In order to send data, a bind(2) must have been successful. bind(2) assigns a
  local address to a socket.
  
- Different from CAN is that the payload data is just the data that get sends,
- without its header info. The header info is derived from the sockaddr supplied
--to bind(2), connect(2), sendto(2) and recvfrom(2). A write(2) with size 4 will
-+to ``bind(2)``, ``connect(2)``, ``sendto(2)`` and ``recvfrom(2)``. A ``write(2)`` with size 4 will
+-Different from CAN is that the payload data is just the data that get send,
+-without it's header info. The header info is derived from the sockaddr supplied
++Different from CAN is that the payload data is just the data that get sends,
++without its header info. The header info is derived from the sockaddr supplied
+ to bind(2), connect(2), sendto(2) and recvfrom(2). A write(2) with size 4 will
  result in a packet with 4 bytes.
  
- The sockaddr structure has extensions for use with J1939 as specified below:
-@@ -180,47 +180,47 @@ The sockaddr structure has extensions for use with J1939 as specified below:
-          } can_addr;
-       }
+@@ -191,7 +191,7 @@ can_addr.j1939.addr contains the address.
  
--can_family & can_ifindex serve the same purpose as for other SocketCAN sockets.
-+``can_family`` & ``can_ifindex`` serve the same purpose as for other SocketCAN sockets.
- 
--can_addr.j1939.pgn specifies the PGN (max 0x3ffff). Individual bits are
-+``can_addr.j1939.pgn`` specifies the PGN (max 0x3ffff). Individual bits are
- specified above.
- 
--can_addr.j1939.name contains the 64-bit J1939 NAME.
-+``can_addr.j1939.name`` contains the 64-bit J1939 NAME.
- 
--can_addr.j1939.addr contains the address.
-+``can_addr.j1939.addr`` contains the address.
- 
--The bind(2) system call assigns the local address, i.e. the source address when
--sending packages. If a PGN during bind(2) is set, it's used as a RX filter.
-+The ``bind(2)`` system call assigns the local address, i.e. the source address when
-+sending packages. If a PGN during ``bind(2)`` is set, it's used as a RX filter.
- I.e. only packets with a matching PGN are received. If an ADDR or NAME is set
+ The bind(2) system call assigns the local address, i.e. the source address when
+ sending packages. If a PGN during bind(2) is set, it's used as a RX filter.
+-I.e.  only packets with a matching PGN are received. If an ADDR or NAME is set
++I.e. only packets with a matching PGN are received. If an ADDR or NAME is set
  it is used as a receive filter, too. It will match the destination NAME or ADDR
  of the incoming packet. The NAME filter will work only if appropriate Address
  Claiming for this name was done on the CAN bus and registered/cached by the
- kernel.
- 
--On the other hand connect(2) assigns the remote address, i.e. the destination
--address. The PGN from connect(2) is used as the default PGN when sending
-+On the other hand ``connect(2)`` assigns the remote address, i.e. the destination
-+address. The PGN from ``connect(2)`` is used as the default PGN when sending
- packets. If ADDR or NAME is set it will be used as the default destination ADDR
--or NAME. Further a set ADDR or NAME during connect(2) is used as a receive
-+or NAME. Further a set ADDR or NAME during ``connect(2)`` is used as a receive
- filter. It will match the source NAME or ADDR of the incoming packet.
- 
--Both write(2) and send(2) will send a packet with local address from bind(2) and
--the remote address from connect(2). Use sendto(2) to overwrite the destination
-+Both ``write(2)`` and ``send(2)`` will send a packet with local address from ``bind(2)`` and the
-+remote address from ``connect(2)``. Use ``sendto(2)`` to overwrite the destination
- address.
- 
--If can_addr.j1939.name is set (!= 0) the NAME is looked up by the kernel and
--the corresponding ADDR is used. If can_addr.j1939.name is not set (== 0),
--can_addr.j1939.addr is used.
-+If ``can_addr.j1939.name`` is set (!= 0) the NAME is looked up by the kernel and
-+the corresponding ADDR is used. If ``can_addr.j1939.name`` is not set (== 0),
-+``can_addr.j1939.addr`` is used.
- 
- When creating a socket, reasonable defaults are set. Some options can be
--modified with setsockopt(2) & getsockopt(2).
-+modified with ``setsockopt(2)`` & ``getsockopt(2)``.
- 
- RX path related options:
- 
--- SO_J1939_FILTER - configure array of filters
--- SO_J1939_PROMISC - disable filters set by bind(2) and connect(2)
-+- ``SO_J1939_FILTER`` - configure array of filters
-+- ``SO_J1939_PROMISC`` - disable filters set by ``bind(2)`` and ``connect(2)``
- 
- By default no broadcast packets can be send or received. To enable sending or
--receiving broadcast packets use the socket option SO_BROADCAST:
-+receiving broadcast packets use the socket option ``SO_BROADCAST``:
- 
- .. code-block:: C
- 
-@@ -261,26 +261,26 @@ The following diagram illustrates the RX path:
-      +---------------------------+
- 
- TX path related options:
--SO_J1939_SEND_PRIO - change default send priority for the socket
-+``SO_J1939_SEND_PRIO`` - change default send priority for the socket
- 
- Message Flags during send() and Related System Calls
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
--send(2), sendto(2) and sendmsg(2) take a 'flags' argument. Currently
-+``send(2)``, ``sendto(2)`` and ``sendmsg(2)`` take a 'flags' argument. Currently
- supported flags are:
- 
--* MSG_DONTWAIT, i.e. non-blocking operation.
-+* ``MSG_DONTWAIT``, i.e. non-blocking operation.
- 
- recvmsg(2)
- ^^^^^^^^^^
- 
--In most cases recvmsg(2) is needed if you want to extract more information than
--recvfrom(2) can provide. For example package priority and timestamp. The
-+In most cases ``recvmsg(2)`` is needed if you want to extract more information than
-+``recvfrom(2)`` can provide. For example package priority and timestamp. The
- Destination Address, name and packet priority (if applicable) are attached to
--the msghdr in the recvmsg(2) call. They can be extracted using cmsg(3) macros,
--with cmsg_level == SOL_J1939 && cmsg_type == SCM_J1939_DEST_ADDR,
--SCM_J1939_DEST_NAME or SCM_J1939_PRIO. The returned data is a uint8_t for
--priority and dst_addr, and uint64_t for dst_name.
-+the msghdr in the ``recvmsg(2)`` call. They can be extracted using ``cmsg(3)`` macros,
-+with ``cmsg_level == SOL_J1939 && cmsg_type == SCM_J1939_DEST_ADDR``,
-+``SCM_J1939_DEST_NAME`` or ``SCM_J1939_PRIO``. The returned data is a ``uint8_t`` for
-+``priority`` and ``dst_addr``, and ``uint64_t`` for ``dst_name``.
- 
- .. code-block:: C
- 
-@@ -305,12 +305,12 @@ Dynamic Addressing
- 
- Distinction has to be made between using the claimed address and doing an
- address claim. To use an already claimed address, one has to fill in the
--j1939.name member and provide it to bind(2). If the name had claimed an address
-+``j1939.name`` member and provide it to ``bind(2)``. If the name had claimed an address
- earlier, all further messages being sent will use that address. And the
--j1939.addr member will be ignored.
-+``j1939.addr`` member will be ignored.
- 
- An exception on this is PGN 0x0ee00. This is the "Address Claim/Cannot Claim
--Address" message and the kernel will use the j1939.addr member for that PGN if
-+Address" message and the kernel will use the ``j1939.addr`` member for that PGN if
- necessary.
- 
- To claim an address following code example can be used:
-@@ -371,12 +371,12 @@ NAME can send packets.
- 
- If another ECU claims the address, the kernel will mark the NAME-SA expired.
- No socket bound to the NAME can send packets (other than address claims). To
--claim another address, some socket bound to NAME, must bind(2) again, but with
--only j1939.addr changed to the new SA, and must then send a valid address claim
-+claim another address, some socket bound to NAME, must ``bind(2)`` again, but with
-+only ``j1939.addr`` changed to the new SA, and must then send a valid address claim
- packet. This restarts the state machine in the kernel (and any other
- participant on the bus) for this NAME.
- 
--can-utils also include the j1939acd tool, so it can be used as code example or as
-+``can-utils`` also include the ``j1939acd`` tool, so it can be used as code example or as
- default Address Claiming daemon.
- 
- Send Examples
-@@ -403,8 +403,8 @@ Bind:
- 
- 	bind(sock, (struct sockaddr *)&baddr, sizeof(baddr));
- 
--Now, the socket 'sock' is bound to the SA 0x20. Since no connect(2) was called,
--at this point we can use only sendto(2) or sendmsg(2).
-+Now, the socket 'sock' is bound to the SA 0x20. Since no ``connect(2)`` was called,
-+at this point we can use only ``sendto(2)`` or ``sendmsg(2)``.
- 
- Send:
- 
 -- 
 2.28.0
 
