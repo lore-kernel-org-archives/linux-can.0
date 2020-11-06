@@ -2,92 +2,245 @@ Return-Path: <SRS0=ufsH=EM=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98223C56202
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 640C5C56201
 	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 533C72151B
+	by mail.kernel.org (Postfix) with ESMTP id 15AA42072E
 	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727386AbgKFRL0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727351AbgKFRL0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 6 Nov 2020 12:11:26 -0500
-Received: from mail3.ems-wuensche.com ([81.169.186.156]:44226 "EHLO
+Received: from mail3.ems-wuensche.com ([81.169.186.156]:36910 "EHLO
         mail3.ems-wuensche.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727357AbgKFRLW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:22 -0500
+        with ESMTP id S1727386AbgKFRLX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:23 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 6D594FFBB8
-        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:02:53 +0000 (UTC)
+        by h2257714.serverkompetenz.net (Postfix) with ESMTP id C8F7BFFAA1
+        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:05:25 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
 Received: from mail3.ems-wuensche.com ([81.169.186.156])
         by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4zNxGTs-ckqE for <linux-can@vger.kernel.org>;
-        Fri,  6 Nov 2020 18:02:47 +0100 (CET)
+        with ESMTP id xzX9PQuDvHdb for <linux-can@vger.kernel.org>;
+        Fri,  6 Nov 2020 18:05:24 +0100 (CET)
 From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 To:     linux-can@vger.kernel.org
 Cc:     wg@grandegger.com, mkl@pengutronix.de,
         Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH 00/17] Add support for CPC-USB/FD CAN FD interface
-Date:   Fri,  6 Nov 2020 18:01:49 +0100
-Message-Id: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
+Subject: [PATCH 09/17] can: ems_usb: For CPC-USB/FD added clock definitions, bittiming constants, set_bittiming functions, bittiming init function and add all that to probe function
+Date:   Fri,  6 Nov 2020 18:01:58 +0100
+Message-Id: <20201106170206.32162-10-uttenthaler@ems-wuensche.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
+References: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-These patches extend the ems_usb.c driver to support both devices, the
-classic CAN CPC-USB/ARM7 and the CAN FD CPC-USB/FD. Also support for
-the listen only mode for CPC-USB/ARM7 was implemented. Most issues given
-by checkpatch.pl were resolved.
+Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
+---
+ drivers/net/can/usb/ems_usb.c | 141 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 139 insertions(+), 2 deletions(-)
 
-Gerhard Uttenthaler (17):
-  can: ems_usb: Fixed warnings given by checkpatch.pl and fixed some
-    outdated comments
-  can: ems_usb: Added defines and product id needed for CPC-USB/FD
-  can: ems_usb: Added CAN FD message representation
-  can: ems_usb: Added struct used for CAN FD initialization
-  can: ems_usb: Replace constant define RX_BUFFER_SIZE by variable
-    bulk_rd_buf_size, because this will have different values for
-    CPC-USB/ARM7 and CPC-USB/FD. For the same reason added a function
-    pointer ems_usb_write_mode. In device probe function added a switch
-    statement to select between CPC-USB/ARM7 and CPC-USB/FD and
-    rearranged initialization sequence accordingly.
-  can: ems_usb: Added listen only mode for CPC-USB/ARM7 and moved
-    evaluation of can.ctrlmode from set_bittiming routine to
-    ems_usb_write_mode_arm7 routine. Wrapped a long line.
-  can: ems_usb: Added CPC_ClearCmdQueue routine to get access to the
-    interface even it is flooded with messages which cannot successfully
-    be sent. Set timestamp to 0 in ems_usb_control_cmd.
-  can: ems_usb: Modified ems_usb_read_bulk_callback to be able to handle
-    also CPC-USB/FD
-  can: ems_usb: For CPC-USB/FD added clock definitions, bittiming
-    constants, set_bittiming functions, bittiming init function and add
-    all that to probe function
-  can: ems_usb: Added receive routine for CAN FD messages and its call
-    in ems_usb_read_bulk_callback
-  can: ems_usb: Added ems_usb_write_mode_fd and its call in device probe
-    routine. Fixed indentation.
-  can: ems_usb: In ems_usb_start_xmit send only bytes with valid content
-    to interface and not the complete buffer. Set first four bytes of
-    buffer to 0. Wrapped long lines.
-  can: ems_usb: Rearrange code in ems_usb_start_xmit to check with
-    can_is_canfd_skb for CAN FD frames.
-  can: ems_usb: Added code to handle CAN FD frames in ems_usb_start_xmit
-  can: ems_usb: In CAN error handling routine checking which CAN
-    controller type is issuing the error
-  can: ems_usb: Added error handling part for CPC-USB/FD. Get some
-    structures packed
-  can: ems_usb: Made another struct packed. Enable CPC-USB/FD by adding
-    it to the drivers device table
-
- drivers/net/can/usb/ems_usb.c | 860 +++++++++++++++++++++++++++-------
- 1 file changed, 681 insertions(+), 179 deletions(-)
-
+diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+index 6a9ea6a4e687..d6b52b265536 100644
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -108,6 +108,17 @@ MODULE_LICENSE("GPL v2");
+  */
+ #define EMS_USB_ARM7_CLOCK 8000000
+ 
++/* CPC-USB/FD supports the following CAN clocks
++ */
++#define EMS_USB_FD_8MHZ   8000000
++#define EMS_USB_FD_16MHZ 16000000
++#define EMS_USB_FD_20MHZ 20000000
++#define EMS_USB_FD_24MHZ 24000000
++#define EMS_USB_FD_32MHZ 32000000
++#define EMS_USB_FD_40MHZ 40000000
++#define EMS_USB_FD_80MHZ 80000000
++#define EMS_USB_FD_CLOCK EMS_USB_FD_40MHZ
++
+ #define CPC_TX_QUEUE_TRIGGER_LOW	25
+ #define CPC_TX_QUEUE_TRIGGER_HIGH	35
+ 
+@@ -970,6 +981,30 @@ static const struct can_bittiming_const ems_usb_bittiming_const_arm7 = {
+ 	.brp_inc = 1,
+ };
+ 
++static const struct can_bittiming_const ems_usb_bittiming_const_generic = {
++	.name = "ems_usb_fd",
++	.tseg1_min = 1,
++	.tseg1_max = 256,
++	.tseg2_min = 1,
++	.tseg2_max = 128,
++	.sjw_max = 128,
++	.brp_min = 1,
++	.brp_max = 512,
++	.brp_inc = 1,
++};
++
++static const struct can_bittiming_const ems_usb_bittiming_const_generic_data = {
++	.name = "ems_usb_fd",
++	.tseg1_min = 1,
++	.tseg1_max = 16,
++	.tseg2_min = 1,
++	.tseg2_max = 16,
++	.sjw_max = 16,
++	.brp_min = 1,
++	.brp_max = 32,
++	.brp_inc = 1,
++};
++
+ static int ems_usb_set_mode(struct net_device *netdev, enum can_mode mode)
+ {
+ 	struct ems_usb *dev = netdev_priv(netdev);
+@@ -1016,6 +1051,76 @@ static int ems_usb_set_bittiming_arm7(struct net_device *netdev)
+ 	return ems_usb_command_msg(dev, &dev->active_params);
+ }
+ 
++static int ems_usb_set_bittiming_generic(struct net_device *netdev)
++{
++	struct ems_usb *dev = netdev_priv(netdev);
++	struct can_bittiming *bt = &dev->can.bittiming;
++	struct cpc_generic_can_params *gcp =
++		&dev->active_params.msg.can_params.cc_params.generic;
++	int err;
++
++	gcp->config = 0;
++	gcp->can_clk = dev->can.clock.freq;
++
++	gcp->n.tseg1 = bt->prop_seg + bt->phase_seg1;
++	gcp->n.tseg2 = bt->phase_seg2;
++	gcp->n.brp = bt->brp;
++	gcp->n.sjw = bt->sjw;
++
++	err = ems_usb_clear_cmd_queue(dev);
++	if (err)
++		return err;
++
++	netdev_info(netdev, "Set nominal bit timing for CPC-USB/FD with config %X\n",
++		    gcp->config);
++	netdev_info(netdev, "CAN Clock: %uMHz, Tseg1: %u, Tseg2: %u, BRP: %u, SJW: %u\n",
++		    gcp->can_clk / 1000000,
++		    gcp->n.tseg1,
++		    gcp->n.tseg2,
++		    gcp->n.brp,
++		    gcp->n.sjw);
++
++	return ems_usb_command_msg(dev, &dev->active_params);
++}
++
++static int ems_usb_set_bittiming_generic_data(struct net_device *netdev)
++{
++	struct ems_usb *dev = netdev_priv(netdev);
++	struct can_bittiming *bt = &dev->can.data_bittiming;
++	struct cpc_generic_can_params *gcp =
++		&dev->active_params.msg.can_params.cc_params.generic;
++	int err;
++
++	if (dev->can.ctrlmode & CAN_CTRLMODE_FD) {
++		gcp->config |= CPC_GENERICCONF_FD;
++		if (dev->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
++			gcp->config |= CPC_GENERICCONF_FD_BOSCH;
++	} else {
++		// If CAN FD is not requested we can return here
++		return 0;
++	}
++
++	gcp->d.tseg1 = bt->prop_seg + bt->phase_seg1;
++	gcp->d.tseg2 = bt->phase_seg2;
++	gcp->d.brp = bt->brp;
++	gcp->d.sjw = bt->sjw;
++
++	err = ems_usb_clear_cmd_queue(dev);
++	if (err)
++		return err;
++
++	netdev_info(netdev, "Set data bit timing for CPC-USB/FD with config %X\n",
++		    gcp->config);
++	netdev_info(netdev, "CAN Clock: %uMHz, Tseg1: %u, Tseg2: %u, BRP: %u, SJW: %u\n",
++		    gcp->can_clk / 1000000,
++		    gcp->d.tseg1,
++		    gcp->d.tseg2,
++		    gcp->d.brp,
++		    gcp->d.sjw);
++
++	return ems_usb_command_msg(dev, &dev->active_params);
++}
++
+ static void init_params_sja1000(struct ems_cpc_msg *msg)
+ {
+ 	struct cpc_sja1000_params *sja1000 =
+@@ -1024,6 +1129,8 @@ static void init_params_sja1000(struct ems_cpc_msg *msg)
+ 	msg->type = CPC_CMD_TYPE_CAN_PARAMS;
+ 	msg->length = sizeof(struct cpc_can_params);
+ 	msg->msgid = 0;
++	msg->ts_sec = 0;
++	msg->ts_nsec = 0;
+ 
+ 	msg->msg.can_params.cc_type = CPC_CC_TYPE_SJA1000;
+ 
+@@ -1046,6 +1153,24 @@ static void init_params_sja1000(struct ems_cpc_msg *msg)
+ 	sja1000->mode = SJA1000_MOD_RM;
+ }
+ 
++static void init_params_generic(struct ems_cpc_msg *msg)
++{
++	struct cpc_generic_can_params *gcp =
++		&msg->msg.can_params.cc_params.generic;
++
++	msg->type = CPC_CMD_TYPE_CAN_PARAMS;
++	msg->length = sizeof(struct cpc_can_params);
++	msg->msgid = 0;
++	msg->ts_sec = 0;
++	msg->ts_nsec = 0;
++
++	memset((u8 *)gcp, 0, sizeof(struct cpc_generic_can_params));
++	msg->msg.can_params.cc_type = CPC_CC_TYPE_GENERIC;
++
++	gcp->config = CPC_GENERICCONF_RESET_MODE;
++	gcp->can_clk = EMS_USB_FD_CLOCK;
++}
++
+ /* probe function for new CPC-USB devices
+  */
+ static int ems_usb_probe(struct usb_interface *intf,
+@@ -1076,14 +1201,26 @@ static int ems_usb_probe(struct usb_interface *intf,
+ 	dev->can.bittiming_const = &ems_usb_bittiming_const_arm7;
+ 	dev->can.do_set_bittiming = ems_usb_set_bittiming_arm7;
+ 	dev->can.do_set_mode = ems_usb_set_mode;
+-	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY;
++	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
++				      CAN_CTRLMODE_LISTENONLY;
+ 	init_params_sja1000(&dev->active_params);
+ 	dev->ems_usb_write_mode = ems_usb_write_mode_arm7;
+ 	dev->bulk_rd_buf_size = 64;
+ 	break;
+ 
+ 	case USB_CPCUSB_FD_PRODUCT_ID:
+-	// Placeholder for next patchess
++		dev->can.clock.freq = EMS_USB_FD_CLOCK;
++		dev->can.bittiming_const = &ems_usb_bittiming_const_generic;
++		dev->can.data_bittiming_const = &ems_usb_bittiming_const_generic_data;
++		dev->can.do_set_bittiming = ems_usb_set_bittiming_generic;
++		dev->can.do_set_data_bittiming = ems_usb_set_bittiming_generic_data;
++		dev->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
++				CAN_CTRLMODE_ONE_SHOT |
++				CAN_CTRLMODE_BERR_REPORTING |
++				CAN_CTRLMODE_FD |
++				CAN_CTRLMODE_FD_NON_ISO;
++		init_params_generic(&dev->active_params);
++		dev->bulk_rd_buf_size = 512;
+ 	break;
+ 
+ 	default:
 -- 
 2.26.2
 
