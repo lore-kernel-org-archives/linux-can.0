@@ -2,38 +2,38 @@ Return-Path: <SRS0=ufsH=EM=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 640C5C56201
-	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6EABC2D0A3
+	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 15AA42072E
-	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D7FF2072E
+	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727351AbgKFRL0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 6 Nov 2020 12:11:26 -0500
-Received: from mail3.ems-wuensche.com ([81.169.186.156]:36910 "EHLO
+        id S1727458AbgKFRLW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 6 Nov 2020 12:11:22 -0500
+Received: from mail3.ems-wuensche.com ([81.169.186.156]:33177 "EHLO
         mail3.ems-wuensche.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727386AbgKFRLX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:23 -0500
+        with ESMTP id S1727346AbgKFRLV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:21 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id C8F7BFFAA1
-        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:05:25 +0000 (UTC)
+        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 14B64FFAAC
+        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:05:50 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
 Received: from mail3.ems-wuensche.com ([81.169.186.156])
         by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xzX9PQuDvHdb for <linux-can@vger.kernel.org>;
-        Fri,  6 Nov 2020 18:05:24 +0100 (CET)
+        with ESMTP id DK8GzqEYYuEF for <linux-can@vger.kernel.org>;
+        Fri,  6 Nov 2020 18:05:48 +0100 (CET)
 From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 To:     linux-can@vger.kernel.org
 Cc:     wg@grandegger.com, mkl@pengutronix.de,
         Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH 09/17] can: ems_usb: For CPC-USB/FD added clock definitions, bittiming constants, set_bittiming functions, bittiming init function and add all that to probe function
-Date:   Fri,  6 Nov 2020 18:01:58 +0100
-Message-Id: <20201106170206.32162-10-uttenthaler@ems-wuensche.com>
+Subject: [PATCH 16/17] can: ems_usb: Added error handling part for CPC-USB/FD. Get some structures packed
+Date:   Fri,  6 Nov 2020 18:02:05 +0100
+Message-Id: <20201106170206.32162-17-uttenthaler@ems-wuensche.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
 References: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
@@ -45,202 +45,160 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 ---
- drivers/net/can/usb/ems_usb.c | 141 +++++++++++++++++++++++++++++++++-
- 1 file changed, 139 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/ems_usb.c | 108 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 105 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 6a9ea6a4e687..d6b52b265536 100644
+index 4a67c57c4760..7ede3ac08ed5 100644
 --- a/drivers/net/can/usb/ems_usb.c
 +++ b/drivers/net/can/usb/ems_usb.c
-@@ -108,6 +108,17 @@ MODULE_LICENSE("GPL v2");
-  */
- #define EMS_USB_ARM7_CLOCK 8000000
+@@ -103,6 +103,23 @@ MODULE_LICENSE("GPL v2");
  
-+/* CPC-USB/FD supports the following CAN clocks
-+ */
-+#define EMS_USB_FD_8MHZ   8000000
-+#define EMS_USB_FD_16MHZ 16000000
-+#define EMS_USB_FD_20MHZ 20000000
-+#define EMS_USB_FD_24MHZ 24000000
-+#define EMS_USB_FD_32MHZ 32000000
-+#define EMS_USB_FD_40MHZ 40000000
-+#define EMS_USB_FD_80MHZ 80000000
-+#define EMS_USB_FD_CLOCK EMS_USB_FD_40MHZ
+ #define SJA1000_DEFAULT_OUTPUT_CONTROL 0xDA
+ 
++#define LPC546XX_ERROR_MASK  0x07
++#define LPC546XX_ERROR_STUFF 0x01
++#define LPC546XX_ERROR_FORM  0x02
++#define LPC546XX_ERROR_ACK   0x03
++#define LPC546XX_ERROR_BIT1  0x04
++#define LPC546XX_ERROR_BIT0  0x05
++#define LPC546XX_ERROR_CRC   0x06
++#define LPC546XX_ERROR_EP    0x20
++#define LPC546XX_ERROR_EW    0x40
++#define LPC546XX_ERROR_BO    0x80
 +
- #define CPC_TX_QUEUE_TRIGGER_LOW	25
- #define CPC_TX_QUEUE_TRIGGER_HIGH	35
++#define LPC546XX_ACT_MASK 0x18
++#define LPC546XX_ACT_SYNC 0x00
++#define LPC546XX_ACT_IDLE 0x08
++#define LPC546XX_ACT_RX   0x10
++#define LPC546XX_ACT_TX   0x18
++
+ #define SJA1000   2 // NXP basic CAN controller
+ #define LPC546XX  5 // NXP CAN FD controller
  
-@@ -970,6 +981,30 @@ static const struct can_bittiming_const ems_usb_bittiming_const_arm7 = {
- 	.brp_inc = 1,
+@@ -217,20 +234,25 @@ struct cpc_confirm {
  };
  
-+static const struct can_bittiming_const ems_usb_bittiming_const_generic = {
-+	.name = "ems_usb_fd",
-+	.tseg1_min = 1,
-+	.tseg1_max = 256,
-+	.tseg2_min = 1,
-+	.tseg2_max = 128,
-+	.sjw_max = 128,
-+	.brp_min = 1,
-+	.brp_max = 512,
-+	.brp_inc = 1,
+ /* Structure for overrun conditions */
+-struct cpc_overrun {
++struct __packed cpc_overrun {
+ 	u8 event;
+ 	u8 count;
+ };
+ 
+ /* SJA1000 CAN errors (compatible to NXP LPC2119) */
+-struct cpc_sja1000_can_error {
++struct __packed cpc_sja1000_can_error {
+ 	u8 ecc;
+ 	u8 rxerr;
+ 	u8 txerr;
+ };
+ 
++struct __packed cpc_lpc546xx_can_error {
++	__le32 psr; /* protocol status register */
++	__le32 ecr; /* error counter register */
 +};
 +
-+static const struct can_bittiming_const ems_usb_bittiming_const_generic_data = {
-+	.name = "ems_usb_fd",
-+	.tseg1_min = 1,
-+	.tseg1_max = 16,
-+	.tseg2_min = 1,
-+	.tseg2_max = 16,
-+	.sjw_max = 16,
-+	.brp_min = 1,
-+	.brp_max = 32,
-+	.brp_inc = 1,
-+};
-+
- static int ems_usb_set_mode(struct net_device *netdev, enum can_mode mode)
- {
- 	struct ems_usb *dev = netdev_priv(netdev);
-@@ -1016,6 +1051,76 @@ static int ems_usb_set_bittiming_arm7(struct net_device *netdev)
- 	return ems_usb_command_msg(dev, &dev->active_params);
- }
+ /* structure for CAN error conditions */
+-struct cpc_can_error {
++struct __packed cpc_can_error {
+ 	u8 ecode;
  
-+static int ems_usb_set_bittiming_generic(struct net_device *netdev)
-+{
-+	struct ems_usb *dev = netdev_priv(netdev);
-+	struct can_bittiming *bt = &dev->can.bittiming;
-+	struct cpc_generic_can_params *gcp =
-+		&dev->active_params.msg.can_params.cc_params.generic;
-+	int err;
+ 	struct {
+@@ -239,6 +261,7 @@ struct cpc_can_error {
+ 		/* Other controllers may also provide error code capture regs */
+ 		union {
+ 			struct cpc_sja1000_can_error sja1000;
++			struct cpc_lpc546xx_can_error lpc546xx;
+ 		} regs;
+ 	} cc;
+ };
+@@ -502,6 +525,85 @@ static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
+ 				    CAN_ERR_CRTL_TX_PASSIVE : CAN_ERR_CRTL_RX_PASSIVE;
+ 			}
+ 		}
 +
-+	gcp->config = 0;
-+	gcp->can_clk = dev->can.clock.freq;
++		/* CPC-USB/FD */
++		else if (msg->msg.error.cc.cc_type == LPC546XX) {
++			struct net_device *netdev = dev->netdev;
++			u32 psr = msg->msg.error.cc.regs.lpc546xx.psr;
++			u8 txerr = (u8)msg->msg.error.cc.regs.lpc546xx.ecr;
++			u8 rxerr = (u8)(msg->msg.error.cc.regs.lpc546xx.ecr >> 8);
 +
-+	gcp->n.tseg1 = bt->prop_seg + bt->phase_seg1;
-+	gcp->n.tseg2 = bt->phase_seg2;
-+	gcp->n.brp = bt->brp;
-+	gcp->n.sjw = bt->sjw;
++			/* bus error interrupt */
++			dev->can.can_stats.bus_error++;
 +
-+	err = ems_usb_clear_cmd_queue(dev);
-+	if (err)
-+		return err;
++			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
 +
-+	netdev_info(netdev, "Set nominal bit timing for CPC-USB/FD with config %X\n",
-+		    gcp->config);
-+	netdev_info(netdev, "CAN Clock: %uMHz, Tseg1: %u, Tseg2: %u, BRP: %u, SJW: %u\n",
-+		    gcp->can_clk / 1000000,
-+		    gcp->n.tseg1,
-+		    gcp->n.tseg2,
-+		    gcp->n.brp,
-+		    gcp->n.sjw);
++			switch (psr & LPC546XX_ERROR_MASK) {
++			case LPC546XX_ERROR_STUFF:
++				netdev_dbg(netdev, "stuff error\n");
++				cf->data[2] |= CAN_ERR_PROT_STUFF;
++				break;
++			case LPC546XX_ERROR_FORM:
++				netdev_dbg(netdev, "form error\n");
++				cf->data[2] |= CAN_ERR_PROT_FORM;
++				break;
++			case LPC546XX_ERROR_ACK:
++				netdev_dbg(netdev, "ack error\n");
++				cf->data[3] = CAN_ERR_PROT_LOC_ACK;
++				break;
++			case LPC546XX_ERROR_BIT1:
++				netdev_dbg(netdev, "bit1 error\n");
++				cf->data[2] |= CAN_ERR_PROT_BIT1;
++				break;
++			case LPC546XX_ERROR_BIT0:
++				netdev_dbg(netdev, "bit0 error\n");
++				cf->data[2] |= CAN_ERR_PROT_BIT0;
++				break;
++			case LPC546XX_ERROR_CRC:
++				netdev_dbg(netdev, "CRC error\n");
++				cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
++				break;
++			default:
++				break;
++			}
 +
-+	return ems_usb_command_msg(dev, &dev->active_params);
-+}
++			/* Let activity flags decide direction */
++			switch (psr & LPC546XX_ACT_MASK) {
++			case LPC546XX_ACT_SYNC:
++				__attribute__((fallthrough));
++			case LPC546XX_ACT_IDLE:
++				__attribute__((fallthrough));
++			case LPC546XX_ACT_RX:
++				stats->rx_errors++;
++				break;
++			case LPC546XX_ACT_TX:
++				stats->tx_errors++;
++				break;
++			}
 +
-+static int ems_usb_set_bittiming_generic_data(struct net_device *netdev)
-+{
-+	struct ems_usb *dev = netdev_priv(netdev);
-+	struct can_bittiming *bt = &dev->can.data_bittiming;
-+	struct cpc_generic_can_params *gcp =
-+		&dev->active_params.msg.can_params.cc_params.generic;
-+	int err;
++			/* Error warning status */
++			if (psr & LPC546XX_ERROR_EW) {
++				cf->data[1] = (txerr > rxerr) ?
++					CAN_ERR_CRTL_TX_WARNING :
++					CAN_ERR_CRTL_RX_WARNING;
++				cf->can_id |= CAN_ERR_CRTL;
++			}
 +
-+	if (dev->can.ctrlmode & CAN_CTRLMODE_FD) {
-+		gcp->config |= CPC_GENERICCONF_FD;
-+		if (dev->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
-+			gcp->config |= CPC_GENERICCONF_FD_BOSCH;
-+	} else {
-+		// If CAN FD is not requested we can return here
-+		return 0;
-+	}
++			/* Error passive status */
++			if (psr & LPC546XX_ERROR_EP) {
++				cf->data[1] |= (txerr > rxerr) ?
++					CAN_ERR_CRTL_TX_PASSIVE :
++					CAN_ERR_CRTL_RX_PASSIVE;
++				cf->can_id |= CAN_ERR_CRTL;
++			}
 +
-+	gcp->d.tseg1 = bt->prop_seg + bt->phase_seg1;
-+	gcp->d.tseg2 = bt->phase_seg2;
-+	gcp->d.brp = bt->brp;
-+	gcp->d.sjw = bt->sjw;
++			/* Error bus off status */
++			if (psr & LPC546XX_ERROR_BO)
++				cf->can_id |= CAN_ERR_BUSOFF;
 +
-+	err = ems_usb_clear_cmd_queue(dev);
-+	if (err)
-+		return err;
-+
-+	netdev_info(netdev, "Set data bit timing for CPC-USB/FD with config %X\n",
-+		    gcp->config);
-+	netdev_info(netdev, "CAN Clock: %uMHz, Tseg1: %u, Tseg2: %u, BRP: %u, SJW: %u\n",
-+		    gcp->can_clk / 1000000,
-+		    gcp->d.tseg1,
-+		    gcp->d.tseg2,
-+		    gcp->d.brp,
-+		    gcp->d.sjw);
-+
-+	return ems_usb_command_msg(dev, &dev->active_params);
-+}
-+
- static void init_params_sja1000(struct ems_cpc_msg *msg)
- {
- 	struct cpc_sja1000_params *sja1000 =
-@@ -1024,6 +1129,8 @@ static void init_params_sja1000(struct ems_cpc_msg *msg)
- 	msg->type = CPC_CMD_TYPE_CAN_PARAMS;
- 	msg->length = sizeof(struct cpc_can_params);
- 	msg->msgid = 0;
-+	msg->ts_sec = 0;
-+	msg->ts_nsec = 0;
- 
- 	msg->msg.can_params.cc_type = CPC_CC_TYPE_SJA1000;
- 
-@@ -1046,6 +1153,24 @@ static void init_params_sja1000(struct ems_cpc_msg *msg)
- 	sja1000->mode = SJA1000_MOD_RM;
- }
- 
-+static void init_params_generic(struct ems_cpc_msg *msg)
-+{
-+	struct cpc_generic_can_params *gcp =
-+		&msg->msg.can_params.cc_params.generic;
-+
-+	msg->type = CPC_CMD_TYPE_CAN_PARAMS;
-+	msg->length = sizeof(struct cpc_can_params);
-+	msg->msgid = 0;
-+	msg->ts_sec = 0;
-+	msg->ts_nsec = 0;
-+
-+	memset((u8 *)gcp, 0, sizeof(struct cpc_generic_can_params));
-+	msg->msg.can_params.cc_type = CPC_CC_TYPE_GENERIC;
-+
-+	gcp->config = CPC_GENERICCONF_RESET_MODE;
-+	gcp->can_clk = EMS_USB_FD_CLOCK;
-+}
-+
- /* probe function for new CPC-USB devices
-  */
- static int ems_usb_probe(struct usb_interface *intf,
-@@ -1076,14 +1201,26 @@ static int ems_usb_probe(struct usb_interface *intf,
- 	dev->can.bittiming_const = &ems_usb_bittiming_const_arm7;
- 	dev->can.do_set_bittiming = ems_usb_set_bittiming_arm7;
- 	dev->can.do_set_mode = ems_usb_set_mode;
--	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY;
-+	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
-+				      CAN_CTRLMODE_LISTENONLY;
- 	init_params_sja1000(&dev->active_params);
- 	dev->ems_usb_write_mode = ems_usb_write_mode_arm7;
- 	dev->bulk_rd_buf_size = 64;
- 	break;
- 
- 	case USB_CPCUSB_FD_PRODUCT_ID:
--	// Placeholder for next patchess
-+		dev->can.clock.freq = EMS_USB_FD_CLOCK;
-+		dev->can.bittiming_const = &ems_usb_bittiming_const_generic;
-+		dev->can.data_bittiming_const = &ems_usb_bittiming_const_generic_data;
-+		dev->can.do_set_bittiming = ems_usb_set_bittiming_generic;
-+		dev->can.do_set_data_bittiming = ems_usb_set_bittiming_generic_data;
-+		dev->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+				CAN_CTRLMODE_ONE_SHOT |
-+				CAN_CTRLMODE_BERR_REPORTING |
-+				CAN_CTRLMODE_FD |
-+				CAN_CTRLMODE_FD_NON_ISO;
-+		init_params_generic(&dev->active_params);
-+		dev->bulk_rd_buf_size = 512;
- 	break;
- 
- 	default:
++			cf->data[6] = txerr;
++			cf->data[7] = rxerr;
++		}
+ 	} else if (msg->type == CPC_MSG_TYPE_OVERRUN) {
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
 -- 
 2.26.2
 
