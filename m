@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F43EC55ABD
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA58FC5517A
 	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F09E62072E
-	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 807322072E
+	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgKFRLX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727334AbgKFRLX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 6 Nov 2020 12:11:23 -0500
-Received: from mail3.ems-wuensche.com ([81.169.186.156]:41794 "EHLO
+Received: from mail3.ems-wuensche.com ([81.169.186.156]:34361 "EHLO
         mail3.ems-wuensche.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727380AbgKFRLW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:22 -0500
+        with ESMTP id S1727320AbgKFRLV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:21 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id C3797FFA8C
-        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:04:40 +0000 (UTC)
+        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 8D09CFFAB1
+        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:05:45 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
 Received: from mail3.ems-wuensche.com ([81.169.186.156])
         by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id r1HQRErB_Xfd for <linux-can@vger.kernel.org>;
-        Fri,  6 Nov 2020 18:04:38 +0100 (CET)
+        with ESMTP id gCYsWKNl2jVm for <linux-can@vger.kernel.org>;
+        Fri,  6 Nov 2020 18:05:40 +0100 (CET)
 From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 To:     linux-can@vger.kernel.org
 Cc:     wg@grandegger.com, mkl@pengutronix.de,
         Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH 11/17] can: ems_usb: Added ems_usb_write_mode_fd and its call in device probe routine. Fixed indentation.
-Date:   Fri,  6 Nov 2020 18:02:00 +0100
-Message-Id: <20201106170206.32162-12-uttenthaler@ems-wuensche.com>
+Subject: [PATCH 15/17] can: ems_usb: In CAN error handling routine checking which CAN controller type is issuing the error
+Date:   Fri,  6 Nov 2020 18:02:04 +0100
+Message-Id: <20201106170206.32162-16-uttenthaler@ems-wuensche.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
 References: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
@@ -45,91 +45,111 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 ---
- drivers/net/can/usb/ems_usb.c | 49 +++++++++++++++++++++++++++--------
- 1 file changed, 38 insertions(+), 11 deletions(-)
+ drivers/net/can/usb/ems_usb.c | 77 +++++++++++++++++++----------------
+ 1 file changed, 43 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index a4d9a1b2d2f0..b51a5eb65946 100644
+index c36f02eeec85..4a67c57c4760 100644
 --- a/drivers/net/can/usb/ems_usb.c
 +++ b/drivers/net/can/usb/ems_usb.c
-@@ -683,6 +683,32 @@ static int ems_usb_write_mode_arm7(struct ems_usb *dev, u32 mode)
- 	return ems_usb_command_msg(dev, &dev->active_params);
- }
+@@ -103,6 +103,9 @@ MODULE_LICENSE("GPL v2");
  
-+static int ems_usb_write_mode_fd(struct ems_usb *dev, u32 mode)
-+{
-+	struct cpc_generic_can_params *gcp =
-+		&dev->active_params.msg.can_params.cc_params.generic;
+ #define SJA1000_DEFAULT_OUTPUT_CONTROL 0xDA
+ 
++#define SJA1000   2 // NXP basic CAN controller
++#define LPC546XX  5 // NXP CAN FD controller
 +
-+	if (mode == CPC_USB_RESET_MODE) {
-+		gcp->config |= CPC_GENERICCONF_RESET_MODE;
-+	} else if (mode == CPC_USB_RUN_MODE) {
-+		gcp->config &= ~CPC_GENERICCONF_RESET_MODE;
-+
-+		if (dev->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
-+			gcp->config |= CPC_GENERICCONF_LISTEN_ONLY;
-+		else
-+			gcp->config &= ~CPC_GENERICCONF_LISTEN_ONLY;
-+
-+		if (dev->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-+			gcp->config |= CPC_GENERICCONF_SINGLE_SHOT;
-+		else
-+			gcp->config &= ~CPC_GENERICCONF_SINGLE_SHOT;
-+	} else {
-+		return -EINVAL;
-+	}
-+
-+	return ems_usb_command_msg(dev, &dev->active_params);
-+}
-+
- /* Send a CPC_Control command to change behaviour when interface receives a CAN
-  * message, bus error or CAN state changed notifications.
-  */
-@@ -1241,17 +1267,16 @@ static int ems_usb_probe(struct usb_interface *intf,
- 	/* Select CPC-USB/ARM7 or CPC-USB/FD */
- 	switch (dev->udev->descriptor.idProduct) {
- 	case USB_CPCUSB_ARM7_PRODUCT_ID:
+ /* CPC-USB/ARM7 actually uses a 16MHz clock to generate the CAN clock
+  * but it expects SJA1000 bit settings based on 8MHz (is internally
+  * converted).
+@@ -441,6 +444,9 @@ static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
+ 	if (!skb)
+ 		return;
+ 
++	/* The CPC_MSG_TYPE_CAN_STATE works for both
++	 * CPC-USB/ARM7 and CPC-USB/FD
++	 */
+ 	if (msg->type == CPC_MSG_TYPE_CAN_STATE) {
+ 		u8 state = msg->msg.can_state;
+ 
+@@ -458,40 +464,43 @@ static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
+ 			dev->can.can_stats.error_passive++;
+ 		}
+ 	} else if (msg->type == CPC_MSG_TYPE_CAN_FRAME_ERROR) {
+-		u8 ecc = msg->msg.error.cc.regs.sja1000.ecc;
+-		u8 txerr = msg->msg.error.cc.regs.sja1000.txerr;
+-		u8 rxerr = msg->msg.error.cc.regs.sja1000.rxerr;
 -
--	dev->can.clock.freq = EMS_USB_ARM7_CLOCK;
--	dev->can.bittiming_const = &ems_usb_bittiming_const_arm7;
--	dev->can.do_set_bittiming = ems_usb_set_bittiming_arm7;
--	dev->can.do_set_mode = ems_usb_set_mode;
--	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
-+		dev->can.clock.freq = EMS_USB_ARM7_CLOCK;
-+		dev->can.bittiming_const = &ems_usb_bittiming_const_arm7;
-+		dev->can.do_set_bittiming = ems_usb_set_bittiming_arm7;
-+		dev->can.do_set_mode = ems_usb_set_mode;
-+		dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
- 				      CAN_CTRLMODE_LISTENONLY;
--	init_params_sja1000(&dev->active_params);
--	dev->ems_usb_write_mode = ems_usb_write_mode_arm7;
--	dev->bulk_rd_buf_size = 64;
--	break;
-+		init_params_sja1000(&dev->active_params);
-+		dev->ems_usb_write_mode = ems_usb_write_mode_arm7;
-+		dev->bulk_rd_buf_size = 64;
-+		break;
- 
- 	case USB_CPCUSB_FD_PRODUCT_ID:
- 		dev->can.clock.freq = EMS_USB_FD_CLOCK;
-@@ -1259,14 +1284,16 @@ static int ems_usb_probe(struct usb_interface *intf,
- 		dev->can.data_bittiming_const = &ems_usb_bittiming_const_generic_data;
- 		dev->can.do_set_bittiming = ems_usb_set_bittiming_generic;
- 		dev->can.do_set_data_bittiming = ems_usb_set_bittiming_generic_data;
-+		dev->can.do_set_mode = ems_usb_set_mode;
- 		dev->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
- 				CAN_CTRLMODE_ONE_SHOT |
- 				CAN_CTRLMODE_BERR_REPORTING |
- 				CAN_CTRLMODE_FD |
- 				CAN_CTRLMODE_FD_NON_ISO;
- 		init_params_generic(&dev->active_params);
-+		dev->ems_usb_write_mode = ems_usb_write_mode_fd;
- 		dev->bulk_rd_buf_size = 512;
--	break;
-+		break;
- 
- 	default:
- 		err = -ENODEV;
+-		/* bus error interrupt */
+-		dev->can.can_stats.bus_error++;
+-		stats->rx_errors++;
+-
+-		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+-
+-		switch (ecc & SJA1000_ECC_MASK) {
+-		case SJA1000_ECC_BIT:
+-			cf->data[2] |= CAN_ERR_PROT_BIT;
+-			break;
+-		case SJA1000_ECC_FORM:
+-			cf->data[2] |= CAN_ERR_PROT_FORM;
+-			break;
+-		case SJA1000_ECC_STUFF:
+-			cf->data[2] |= CAN_ERR_PROT_STUFF;
+-			break;
+-		default:
+-			cf->data[3] = ecc & SJA1000_ECC_SEG;
+-			break;
+-		}
+-
+-		/* Error occurred during transmission? */
+-		if ((ecc & SJA1000_ECC_DIR) == 0)
+-			cf->data[2] |= CAN_ERR_PROT_TX;
+-
+-		if (dev->can.state == CAN_STATE_ERROR_WARNING ||
+-		    dev->can.state == CAN_STATE_ERROR_PASSIVE) {
+-			cf->can_id |= CAN_ERR_CRTL;
+-			cf->data[1] = (txerr > rxerr) ?
+-			    CAN_ERR_CRTL_TX_PASSIVE : CAN_ERR_CRTL_RX_PASSIVE;
++		// CPC-USB/ARM7
++		if (msg->msg.error.cc.cc_type == SJA1000) {
++			u8 ecc = msg->msg.error.cc.regs.sja1000.ecc;
++			u8 txerr = msg->msg.error.cc.regs.sja1000.txerr;
++			u8 rxerr = msg->msg.error.cc.regs.sja1000.rxerr;
++
++			/* bus error interrupt */
++			dev->can.can_stats.bus_error++;
++			stats->rx_errors++;
++
++			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
++
++			switch (ecc & SJA1000_ECC_MASK) {
++			case SJA1000_ECC_BIT:
++				cf->data[2] |= CAN_ERR_PROT_BIT;
++				break;
++			case SJA1000_ECC_FORM:
++				cf->data[2] |= CAN_ERR_PROT_FORM;
++				break;
++			case SJA1000_ECC_STUFF:
++				cf->data[2] |= CAN_ERR_PROT_STUFF;
++				break;
++			default:
++				cf->data[3] = ecc & SJA1000_ECC_SEG;
++				break;
++			}
++
++			/* Error occurred during transmission? */
++			if ((ecc & SJA1000_ECC_DIR) == 0)
++				cf->data[2] |= CAN_ERR_PROT_TX;
++
++			if (dev->can.state == CAN_STATE_ERROR_WARNING ||
++			    dev->can.state == CAN_STATE_ERROR_PASSIVE) {
++				cf->can_id |= CAN_ERR_CRTL;
++				cf->data[1] = (txerr > rxerr) ?
++				    CAN_ERR_CRTL_TX_PASSIVE : CAN_ERR_CRTL_RX_PASSIVE;
++			}
+ 		}
+ 	} else if (msg->type == CPC_MSG_TYPE_OVERRUN) {
+ 		cf->can_id |= CAN_ERR_CRTL;
 -- 
 2.26.2
 
