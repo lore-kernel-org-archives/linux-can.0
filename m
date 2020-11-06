@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4427C56201
-	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C567C2D0A3
+	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 76A972072E
-	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B04D2151B
+	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbgKFRLW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727356AbgKFRLW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 6 Nov 2020 12:11:22 -0500
-Received: from mail3.ems-wuensche.com ([81.169.186.156]:44226 "EHLO
+Received: from mail3.ems-wuensche.com ([81.169.186.156]:58324 "EHLO
         mail3.ems-wuensche.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727357AbgKFRLV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:21 -0500
+        with ESMTP id S1727334AbgKFRLW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:22 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 926A4FFBCB
-        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:05:51 +0000 (UTC)
+        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 8A0C0FFA5A
+        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:04:41 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
 Received: from mail3.ems-wuensche.com ([81.169.186.156])
         by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4AUajoJs_Lwh for <linux-can@vger.kernel.org>;
-        Fri,  6 Nov 2020 18:05:50 +0100 (CET)
+        with ESMTP id ioUSa1HzLatF for <linux-can@vger.kernel.org>;
+        Fri,  6 Nov 2020 18:04:34 +0100 (CET)
 From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 To:     linux-can@vger.kernel.org
 Cc:     wg@grandegger.com, mkl@pengutronix.de,
         Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH 17/17] can: ems_usb: Made another struct packed. Enable CPC-USB/FD by adding it to the drivers device table
-Date:   Fri,  6 Nov 2020 18:02:06 +0100
-Message-Id: <20201106170206.32162-18-uttenthaler@ems-wuensche.com>
+Subject: [PATCH 10/17] can: ems_usb: Added receive routine for CAN FD messages and its call in ems_usb_read_bulk_callback
+Date:   Fri,  6 Nov 2020 18:01:59 +0100
+Message-Id: <20201106170206.32162-11-uttenthaler@ems-wuensche.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
 References: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
@@ -45,35 +45,72 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 ---
- drivers/net/can/usb/ems_usb.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/ems_usb.c | 45 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
 diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 7ede3ac08ed5..087069f999e5 100644
+index d6b52b265536..a4d9a1b2d2f0 100644
 --- a/drivers/net/can/usb/ems_usb.c
 +++ b/drivers/net/can/usb/ems_usb.c
-@@ -269,7 +269,7 @@ struct __packed cpc_can_error {
- /* Structure containing RX/TX error counter. This structure is used to request
-  * the values of the CAN controllers TX and RX error counter.
-  */
--struct cpc_can_err_counter {
-+struct __packed cpc_can_err_counter {
- 	u8 rx;
- 	u8 tx;
- };
-@@ -296,10 +296,11 @@ struct __packed ems_cpc_msg {
- };
+@@ -389,6 +389,47 @@ static void ems_usb_rx_can_msg(struct ems_usb *dev, struct ems_cpc_msg *msg)
+ 	netif_rx(skb);
+ }
  
- /* Table of devices that work with this driver
-- * NOTE: This driver supports only CPC-USB/ARM7 (LPC2119) yet.
-+ * This driver supports CPC-USB/ARM7 and CPC-USB/FD.
-  */
- static struct usb_device_id ems_usb_table[] = {
- 	{USB_DEVICE(USB_CPCUSB_VENDOR_ID, USB_CPCUSB_ARM7_PRODUCT_ID)},
-+	{USB_DEVICE(USB_CPCUSB_VENDOR_ID, USB_CPCUSB_FD_PRODUCT_ID)},
- 	{} /* Terminating entry */
- };
++static void ems_usb_rx_canfd_msg(struct ems_usb *dev, struct ems_cpc_msg *msg)
++{
++	struct cpc_canfd_msg *fd_msg = &msg->msg.canfd_msg;
++
++	/* Although the CPC_FDFLAG_NONCANFD_MSG flag
++	 * should not be set with a received message,
++	 * it seems better to have checked it anyway.
++	 */
++	if (!(fd_msg->flags & CPC_FDFLAG_NONCANFD_MSG)) {
++		/* CAN FD frame */
++		struct canfd_frame *cfd;
++		struct sk_buff *skb;
++		int i;
++		struct net_device_stats *stats = &dev->netdev->stats;
++
++		skb = alloc_canfd_skb(dev->netdev, &cfd);
++		if (!skb)
++			return;
++
++		cfd->can_id = le32_to_cpu(fd_msg->id);
++		cfd->len = fd_msg->length;
++
++		for (i = 0; i < cfd->len; i++)
++			cfd->data[i] = fd_msg->msg[i];
++
++		cfd->flags = 0;
++		if (fd_msg->flags & CPC_FDFLAG_BRS)
++			cfd->flags |= CANFD_BRS;
++
++		if (fd_msg->flags & CPC_FDFLAG_ESI)
++			cfd->flags |= CANFD_ESI;
++
++		if (fd_msg->flags & CPC_FDFLAG_XTD)
++			cfd->can_id |= CAN_EFF_FLAG;
++
++		stats->rx_packets++;
++		stats->rx_bytes += cfd->len;
++		netif_rx(skb);
++	}
++}
++
+ static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
+ {
+ 	struct can_frame *cf;
+@@ -513,6 +554,10 @@ static void ems_usb_read_bulk_callback(struct urb *urb)
+ 			ems_usb_rx_can_msg(dev, msg);
+ 			break;
  
++		case CPC_MSG_TYPE_CANFD_FRAME:
++			ems_usb_rx_canfd_msg(dev, msg);
++			break;
++
+ 		case CPC_MSG_TYPE_CAN_FRAME_ERROR:
+ 			/* Process errorframe */
+ 			ems_usb_rx_err(dev, msg);
 -- 
 2.26.2
 
