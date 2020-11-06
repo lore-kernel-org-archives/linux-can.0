@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 758A4C55178
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A31D9C61DD8
 	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2BABB2072E
+	by mail.kernel.org (Postfix) with ESMTP id 5BE7F2151B
 	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727320AbgKFRLX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727380AbgKFRLX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 6 Nov 2020 12:11:23 -0500
-Received: from mail3.ems-wuensche.com ([81.169.186.156]:44769 "EHLO
+Received: from mail3.ems-wuensche.com ([81.169.186.156]:33435 "EHLO
         mail3.ems-wuensche.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgKFRLW (ORCPT
+        with ESMTP id S1727352AbgKFRLW (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:22 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id C98F7FF97E
-        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:04:38 +0000 (UTC)
+        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 4A810FF614
+        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:03:02 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
 Received: from mail3.ems-wuensche.com ([81.169.186.156])
         by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2oo2p2OE0jRN for <linux-can@vger.kernel.org>;
-        Fri,  6 Nov 2020 18:04:17 +0100 (CET)
+        with ESMTP id 3gO4KkK2fjhu for <linux-can@vger.kernel.org>;
+        Fri,  6 Nov 2020 18:03:01 +0100 (CET)
 From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 To:     linux-can@vger.kernel.org
 Cc:     wg@grandegger.com, mkl@pengutronix.de,
         Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH 08/17] can: ems_usb: Modified ems_usb_read_bulk_callback to be able to handle also CPC-USB/FD
-Date:   Fri,  6 Nov 2020 18:01:57 +0100
-Message-Id: <20201106170206.32162-9-uttenthaler@ems-wuensche.com>
+Subject: [PATCH 02/17] can: ems_usb: Added defines and product id needed for CPC-USB/FD
+Date:   Fri,  6 Nov 2020 18:01:51 +0100
+Message-Id: <20201106170206.32162-3-uttenthaler@ems-wuensche.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
 References: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
@@ -45,113 +45,45 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 ---
- drivers/net/can/usb/ems_usb.c | 83 ++++++++++++++++++-----------------
- 1 file changed, 42 insertions(+), 41 deletions(-)
+ drivers/net/can/usb/ems_usb.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index c664af4499a1..6a9ea6a4e687 100644
+index c6ea82b01418..50736e031eb2 100644
 --- a/drivers/net/can/usb/ems_usb.c
 +++ b/drivers/net/can/usb/ems_usb.c
-@@ -460,6 +460,7 @@ static void ems_usb_read_bulk_callback(struct urb *urb)
- 	struct ems_usb *dev = urb->context;
- 	struct net_device *netdev;
- 	int retval;
-+	u32 length, start;
+@@ -40,6 +40,7 @@ MODULE_LICENSE("GPL v2");
+ #define CPC_MSG_TYPE_OVERRUN         21 /* overrun events */
+ #define CPC_MSG_TYPE_CAN_FRAME_ERROR 23 /* detected bus errors */
+ #define CPC_MSG_TYPE_ERR_COUNTER     25 /* RX/TX error counter */
++#define CPC_MSG_TYPE_CANFD_FRAME     26 /* CAN FD frame */
  
- 	netdev = dev->netdev;
+ /* Messages from the PC to the CPC interface  */
+ #define CPC_CMD_TYPE_CAN_FRAME     1   /* CAN data frame */
+@@ -49,6 +50,7 @@ MODULE_LICENSE("GPL v2");
+ #define CPC_CMD_TYPE_CAN_STATE     14  /* CAN state message */
+ #define CPC_CMD_TYPE_EXT_CAN_FRAME 15  /* Extended CAN data frame */
+ #define CPC_CMD_TYPE_EXT_RTR_FRAME 16  /* Extended CAN remote frame */
++#define CPC_CMD_TYPE_CANFD_FRAME   26  /* CAN FD frame */
+ #define CPC_CMD_TYPE_CAN_EXIT      200 /* exit the CAN */
  
-@@ -478,50 +479,50 @@ static void ems_usb_read_bulk_callback(struct urb *urb)
- 		goto resubmit_urb;
- 	}
+ #define CPC_CMD_TYPE_INQ_ERR_COUNTER 25 /* request the CAN error counters */
+@@ -56,6 +58,7 @@ MODULE_LICENSE("GPL v2");
+ #define CPC_CMD_TYPE_CLEAR_CMD_QUEUE 28 /* clear CPC_CMD queue */
  
--	if (urb->actual_length > CPC_HEADER_SIZE) {
-+	length = urb->actual_length;
-+	start = CPC_HEADER_SIZE;
-+
-+	while (length >= CPC_MSG_HEADER_LEN) {
- 		struct ems_cpc_msg *msg;
- 		u8 *ibuf = urb->transfer_buffer;
--		u8 msg_count, start;
--
--		msg_count = ibuf[0] & ~0x80;
--
--		start = CPC_HEADER_SIZE;
--
--		while (msg_count) {
--			msg = (struct ems_cpc_msg *)&ibuf[start];
--
--			switch (msg->type) {
--			case CPC_MSG_TYPE_CAN_STATE:
--				/* Process CAN state changes */
--				ems_usb_rx_err(dev, msg);
--				break;
--
--			case CPC_MSG_TYPE_CAN_FRAME:
--			case CPC_MSG_TYPE_EXT_CAN_FRAME:
--			case CPC_MSG_TYPE_RTR_FRAME:
--			case CPC_MSG_TYPE_EXT_RTR_FRAME:
--				ems_usb_rx_can_msg(dev, msg);
--				break;
--
--			case CPC_MSG_TYPE_CAN_FRAME_ERROR:
--				/* Process errorframe */
--				ems_usb_rx_err(dev, msg);
--				break;
--
--			case CPC_MSG_TYPE_OVERRUN:
--				/* Message lost while receiving */
--				ems_usb_rx_err(dev, msg);
--				break;
--			}
--
--			start += CPC_MSG_HEADER_LEN + msg->length;
--			msg_count--;
--
--			if (start > urb->transfer_buffer_length) {
--				netdev_err(netdev, "format error\n");
--				break;
--			}
-+		u32 read_count;
-+
-+		msg = (struct ems_cpc_msg *)&ibuf[start];
-+
-+		switch (msg->type) {
-+		case CPC_MSG_TYPE_CAN_STATE:
-+			/* Process CAN state changes */
-+			ems_usb_rx_err(dev, msg);
-+			break;
-+
-+		case CPC_MSG_TYPE_CAN_FRAME:
-+		case CPC_MSG_TYPE_EXT_CAN_FRAME:
-+		case CPC_MSG_TYPE_RTR_FRAME:
-+		case CPC_MSG_TYPE_EXT_RTR_FRAME:
-+			ems_usb_rx_can_msg(dev, msg);
-+			break;
-+
-+		case CPC_MSG_TYPE_CAN_FRAME_ERROR:
-+			/* Process errorframe */
-+			ems_usb_rx_err(dev, msg);
-+			break;
-+
-+		case CPC_MSG_TYPE_OVERRUN:
-+			/* Message lost while receiving */
-+			ems_usb_rx_err(dev, msg);
-+			break;
- 		}
-+
-+		read_count = CPC_MSG_HEADER_LEN + msg->length;
-+		start += read_count;
-+
-+		if (start > urb->transfer_buffer_length) {
-+			netdev_err(netdev, "format error\n");
-+			break;
-+		}
-+
-+		if (read_count <= length)
-+			length -= read_count;
- 	}
+ #define CPC_CC_TYPE_SJA1000 2 /* NXP CAN controller */
++#define CPC_CC_TYPE_GENERIC 6 /* GENERIC CAN controller */
  
- resubmit_urb:
+ #define CPC_CAN_ECODE_ERRFRAME 0x01 /* Ecode type */
+ 
+@@ -77,6 +80,7 @@ MODULE_LICENSE("GPL v2");
+ #define USB_CPCUSB_VENDOR_ID 0x12D6
+ 
+ #define USB_CPCUSB_ARM7_PRODUCT_ID 0x0444
++#define USB_CPCUSB_FD_PRODUCT_ID   0x0544
+ 
+ /* Mode register NXP LPC2119/SJA1000 CAN Controller */
+ #define SJA1000_MOD_NORMAL 0x00
 -- 
 2.26.2
 
