@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A31D9C61DD8
-	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A0BFC5DF9D
+	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5BE7F2151B
+	by mail.kernel.org (Postfix) with ESMTP id A17092072E
 	for <linux-can@archiver.kernel.org>; Fri,  6 Nov 2020 17:11:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727380AbgKFRLX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 6 Nov 2020 12:11:23 -0500
-Received: from mail3.ems-wuensche.com ([81.169.186.156]:33435 "EHLO
+        id S1727352AbgKFRLY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 6 Nov 2020 12:11:24 -0500
+Received: from mail3.ems-wuensche.com ([81.169.186.156]:46289 "EHLO
         mail3.ems-wuensche.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727352AbgKFRLW (ORCPT
+        with ESMTP id S1727358AbgKFRLW (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 6 Nov 2020 12:11:22 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 4A810FF614
-        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:03:02 +0000 (UTC)
+        by h2257714.serverkompetenz.net (Postfix) with ESMTP id CF4ECFFAB3
+        for <linux-can@vger.kernel.org>; Fri,  6 Nov 2020 17:05:35 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
 Received: from mail3.ems-wuensche.com ([81.169.186.156])
         by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3gO4KkK2fjhu for <linux-can@vger.kernel.org>;
-        Fri,  6 Nov 2020 18:03:01 +0100 (CET)
+        with ESMTP id 5yoVa7fYIWiB for <linux-can@vger.kernel.org>;
+        Fri,  6 Nov 2020 18:05:10 +0100 (CET)
 From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 To:     linux-can@vger.kernel.org
 Cc:     wg@grandegger.com, mkl@pengutronix.de,
         Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH 02/17] can: ems_usb: Added defines and product id needed for CPC-USB/FD
-Date:   Fri,  6 Nov 2020 18:01:51 +0100
-Message-Id: <20201106170206.32162-3-uttenthaler@ems-wuensche.com>
+Subject: [PATCH 13/17] can: ems_usb: Rearrange code in ems_usb_start_xmit to check with can_is_canfd_skb for CAN FD frames.
+Date:   Fri,  6 Nov 2020 18:02:02 +0100
+Message-Id: <20201106170206.32162-14-uttenthaler@ems-wuensche.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
 References: <20201106170206.32162-1-uttenthaler@ems-wuensche.com>
@@ -45,45 +45,133 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 ---
- drivers/net/can/usb/ems_usb.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/can/usb/ems_usb.c | 87 +++++++++++++++++++----------------
+ 1 file changed, 47 insertions(+), 40 deletions(-)
 
 diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index c6ea82b01418..50736e031eb2 100644
+index c464d644c833..c3159ffaa4fa 100644
 --- a/drivers/net/can/usb/ems_usb.c
 +++ b/drivers/net/can/usb/ems_usb.c
-@@ -40,6 +40,7 @@ MODULE_LICENSE("GPL v2");
- #define CPC_MSG_TYPE_OVERRUN         21 /* overrun events */
- #define CPC_MSG_TYPE_CAN_FRAME_ERROR 23 /* detected bus errors */
- #define CPC_MSG_TYPE_ERR_COUNTER     25 /* RX/TX error counter */
-+#define CPC_MSG_TYPE_CANFD_FRAME     26 /* CAN FD frame */
+@@ -899,64 +899,71 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
+ 	struct ems_usb *dev = netdev_priv(netdev);
+ 	struct ems_tx_urb_context *context = NULL;
+ 	struct net_device_stats *stats = &netdev->stats;
+-	struct can_frame *cf = (struct can_frame *)skb->data;
+ 	struct ems_cpc_msg *msg;
+ 	struct urb *urb;
+ 	int i, err;
++	u8 dlc;
  
- /* Messages from the PC to the CPC interface  */
- #define CPC_CMD_TYPE_CAN_FRAME     1   /* CAN data frame */
-@@ -49,6 +50,7 @@ MODULE_LICENSE("GPL v2");
- #define CPC_CMD_TYPE_CAN_STATE     14  /* CAN state message */
- #define CPC_CMD_TYPE_EXT_CAN_FRAME 15  /* Extended CAN data frame */
- #define CPC_CMD_TYPE_EXT_RTR_FRAME 16  /* Extended CAN remote frame */
-+#define CPC_CMD_TYPE_CANFD_FRAME   26  /* CAN FD frame */
- #define CPC_CMD_TYPE_CAN_EXIT      200 /* exit the CAN */
+ 	u8 *buf;
+ 	size_t buf_size;
+ 	size_t buf_len = CPC_HEADER_SIZE + CPC_MSG_HEADER_LEN;
  
- #define CPC_CMD_TYPE_INQ_ERR_COUNTER 25 /* request the CAN error counters */
-@@ -56,6 +58,7 @@ MODULE_LICENSE("GPL v2");
- #define CPC_CMD_TYPE_CLEAR_CMD_QUEUE 28 /* clear CPC_CMD queue */
+-	if (can_dropped_invalid_skb(netdev, skb))
++	if (can_is_canfd_skb(skb)) {
++		// Placeholder for next patch
+ 		return NETDEV_TX_OK;
++	} else {
++		struct can_frame *cf = (struct can_frame *)skb->data;
  
- #define CPC_CC_TYPE_SJA1000 2 /* NXP CAN controller */
-+#define CPC_CC_TYPE_GENERIC 6 /* GENERIC CAN controller */
+-	buf_size = CPC_HEADER_SIZE +
+-		   CPC_MSG_HEADER_LEN +
+-		   sizeof(struct cpc_can_msg);
++		if (can_dropped_invalid_skb(netdev, skb))
++			return NETDEV_TX_OK;
  
- #define CPC_CAN_ECODE_ERRFRAME 0x01 /* Ecode type */
+-	/* Create an URB, and a buffer for it
+-	 * and copy the data to the URB
+-	 */
+-	urb = usb_alloc_urb(0, GFP_ATOMIC);
+-	if (!urb)
+-		goto nomem;
+-
+-	buf = usb_alloc_coherent(dev->udev,
+-				 buf_size,
+-				 GFP_ATOMIC,
+-				 &urb->transfer_dma);
+-	if (!buf) {
+-		netdev_err(netdev, "No memory left for USB buffer\n");
+-		usb_free_urb(urb);
+-		goto nomem;
+-	}
+-	// Clear first 4 bytes
+-	*(u32 *)buf = 0;
++		buf_size = CPC_HEADER_SIZE +
++			   CPC_MSG_HEADER_LEN +
++			   sizeof(struct cpc_can_msg);
  
-@@ -77,6 +80,7 @@ MODULE_LICENSE("GPL v2");
- #define USB_CPCUSB_VENDOR_ID 0x12D6
+-	msg = (struct ems_cpc_msg *)&buf[CPC_HEADER_SIZE];
++		/* Create an URB, and a buffer for it
++		 * and copy the data to the URB
++		 */
++		urb = usb_alloc_urb(0, GFP_ATOMIC);
++		if (!urb)
++			goto nomem;
++
++		buf = usb_alloc_coherent(dev->udev,
++					 buf_size,
++					 GFP_ATOMIC,
++					 &urb->transfer_dma);
++		if (!buf) {
++			netdev_err(netdev, "No memory left for USB buffer\n");
++			usb_free_urb(urb);
++			goto nomem;
++		}
++		// Clear first 4 bytes
++		*(u32 *)buf = 0;
  
- #define USB_CPCUSB_ARM7_PRODUCT_ID 0x0444
-+#define USB_CPCUSB_FD_PRODUCT_ID   0x0544
+-	msg->msg.can_msg.id = cpu_to_le32(cf->can_id & CAN_ERR_MASK);
+-	msg->msg.can_msg.length = cf->can_dlc;
++		msg = (struct ems_cpc_msg *)&buf[CPC_HEADER_SIZE];
  
- /* Mode register NXP LPC2119/SJA1000 CAN Controller */
- #define SJA1000_MOD_NORMAL 0x00
+-	if (cf->can_id & CAN_RTR_FLAG) {
+-		msg->type = cf->can_id & CAN_EFF_FLAG ?
+-			CPC_CMD_TYPE_EXT_RTR_FRAME : CPC_CMD_TYPE_RTR_FRAME;
++		msg->msg.can_msg.id = cpu_to_le32(cf->can_id & CAN_ERR_MASK);
++		dlc = cf->can_dlc;
++		msg->msg.can_msg.length = dlc;
+ 
+-		msg->length = CPC_CAN_MSG_MIN_SIZE;
+-	} else {
+-		msg->type = cf->can_id & CAN_EFF_FLAG ?
+-			CPC_CMD_TYPE_EXT_CAN_FRAME : CPC_CMD_TYPE_CAN_FRAME;
++		if (cf->can_id & CAN_RTR_FLAG) {
++			msg->type = cf->can_id & CAN_EFF_FLAG ?
++				CPC_CMD_TYPE_EXT_RTR_FRAME : CPC_CMD_TYPE_RTR_FRAME;
+ 
+-		for (i = 0; i < cf->can_dlc; i++)
+-			msg->msg.can_msg.msg[i] = cf->data[i];
++			msg->length = CPC_CAN_MSG_MIN_SIZE;
++		} else {
++			msg->type = cf->can_id & CAN_EFF_FLAG ?
++				CPC_CMD_TYPE_EXT_CAN_FRAME : CPC_CMD_TYPE_CAN_FRAME;
+ 
+-		msg->length = CPC_CAN_MSG_MIN_SIZE + cf->can_dlc;
+-	}
++			for (i = 0; i < cf->can_dlc; i++)
++				msg->msg.can_msg.msg[i] = cf->data[i];
+ 
+-	// Send only significant bytes of buffer
+-	buf_len += msg->length;
++			msg->length = CPC_CAN_MSG_MIN_SIZE + cf->can_dlc;
++		}
+ 
++		// Send only significant bytes of buffer
++		buf_len += msg->length;
++	}
+ 	for (i = 0; i < MAX_TX_URBS; i++) {
+ 		if (dev->tx_contexts[i].echo_index == MAX_TX_URBS) {
+ 			context = &dev->tx_contexts[i];
+@@ -978,7 +985,7 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
+ 
+ 	context->dev = dev;
+ 	context->echo_index = i;
+-	context->dlc = cf->can_dlc;
++	context->dlc = dlc;
+ 
+ 	usb_fill_bulk_urb(urb, dev->udev, usb_sndbulkpipe(dev->udev, 2), buf,
+ 			  buf_len, ems_usb_write_bulk_callback, context);
 -- 
 2.26.2
 
