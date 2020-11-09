@@ -7,46 +7,46 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DB0DC55ABD
-	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 10:27:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D06E1C56201
+	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 10:27:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C9D99207BC
-	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 10:27:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8063F207BC
+	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 10:27:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="N8DVJJsb"
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="OIdcqV+z"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgKIK0w (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 9 Nov 2020 05:26:52 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:31969 "EHLO
+        id S1729218AbgKIK0v (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 9 Nov 2020 05:26:51 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:31417 "EHLO
         mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728927AbgKIK0u (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Nov 2020 05:26:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1604917605;
+        with ESMTP id S1729079AbgKIK0v (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Nov 2020 05:26:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1604917606;
         s=strato-dkim-0002; d=hartkopp.net;
         h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=ySSqCYk+5uCJLlK7Xmhe2yr/GKwgN9LSBkkYzE6Y5Qc=;
-        b=N8DVJJsbidjdm4jKzBKED8qxFhMGEK3FN9vJfyMrxAFi2jU0v8PdBQpsc5DbGhzutV
-        O8UzvvJWn8qNPn3/GhVA3I1M+Y7/NFzvJaU1EqlANRXnjxCNQ1tcI50S1Id+P00s8Aie
-        RwmkXRf/PoGCe9uRLWAuRhxtVXC5iNdEnkWIHZhYitn9LfWof7Kr/v5PyPDT5ExxGpw2
-        eW1PSIJ+45+s7biYZdGIeE0e6XnAS/ITfyjTQF6gdNo7WaLdogM4DZ7SxxHiCTrl2G20
-        IVNTmyRpnLYgRXYR9pbYjyakcpgxki8V+qMlByjvDfa4g5+E/yZRiHpafMtRLFPzav+R
-        lfVg==
+        bh=BDT2VpctXon6JpSAiR5InoarRTIh3SEiX+6eGMUfvgE=;
+        b=OIdcqV+zuUtbAQlfwNsW70pJ1uB8SsGGwbq1nzqizqjaLeUHXFUy8Etne2UtvjU3zB
+        PbEBVNiP2vfxnrrKVNu/vrY0R2eXL24vHmyh+sKKuoyREB63W3ydhxwU0mO5QJ02lbZH
+        2pMX5/p4AT0Rbelc3BzB3Zi+JBhB4iKo/xZWNtcckdqNtY7G0ni0t6g2/FwR5ue4rrfO
+        9pgWjhCJW55Cg0vQpr1nBNCG2JQSzEhlYJ1cS5q8j0m+t+f0m2vB38ClXzbH94ZC2gVA
+        XCoqIOUVFDbvqMWOvGU9QETQ52rbjfpAghGbVXZC8D4IM1bLBC6DFYQHjDMRwYCZQIfH
+        jhwg==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0k+8CejudJywjskA="
 X-RZG-CLASS-ID: mo00
 Received: from silver.lan
         by smtp.strato.de (RZmta 47.3.3 DYNA|AUTH)
-        with ESMTPSA id V0298cwA9AQg6dS
+        with ESMTPSA id V0298cwA9AQh6dU
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Mon, 9 Nov 2020 11:26:42 +0100 (CET)
+        Mon, 9 Nov 2020 11:26:43 +0100 (CET)
 From:   Oliver Hartkopp <socketcan@hartkopp.net>
 To:     linux-can@vger.kernel.org, mkl@pengutronix.de,
         mailhol.vincent@wanadoo.fr
 Cc:     netdev@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v4 5/7] can: update documentation for DLC usage in Classical CAN
-Date:   Mon,  9 Nov 2020 11:26:16 +0100
-Message-Id: <20201109102618.2495-6-socketcan@hartkopp.net>
+Subject: [PATCH v4 7/7] can-dev: add len8_dlc support for various CAN USB adapters
+Date:   Mon,  9 Nov 2020 11:26:18 +0100
+Message-Id: <20201109102618.2495-8-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201109102618.2495-1-socketcan@hartkopp.net>
 References: <20201109102618.2495-1-socketcan@hartkopp.net>
@@ -56,252 +56,253 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The extension of struct can_frame with the len8_dlc element and the
-can_dlc naming issue required an update of the documentation.
+Support the Classical CAN raw DLC functionality to send and receive DLC
+values from 9 .. 15 on various Classican CAN capable USB network drivers:
 
-Additionally introduce the term 'Classical CAN' which has been established
-by CAN in Automation to separate the original CAN2.0 A/B from CAN FD.
+- gs_usb
+- pcan_usb
+- pcan_usb_fd
+- usb_8dev
 
-Updated some data structures and flags.
-
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- Documentation/networking/can.rst | 68 ++++++++++++++++++++++++--------
- 1 file changed, 52 insertions(+), 16 deletions(-)
+ drivers/net/can/usb/gs_usb.c               |  8 ++++++--
+ drivers/net/can/usb/peak_usb/pcan_usb.c    |  8 ++++++--
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 17 ++++++++++++-----
+ drivers/net/can/usb/usb_8dev.c             |  9 ++++++---
+ 4 files changed, 30 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index ff05cbd05e0d..e17c6427bb3a 100644
---- a/Documentation/networking/can.rst
-+++ b/Documentation/networking/can.rst
-@@ -226,24 +226,40 @@ interface (which is different from TCP/IP due to different addressing
- the socket, you can read(2) and write(2) from/to the socket or use
- send(2), sendto(2), sendmsg(2) and the recv* counterpart operations
- on the socket as usual. There are also CAN specific socket options
- described below.
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 3a097c240e5a..fab6ed073e45 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -330,10 +330,13 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 			return;
  
--The basic CAN frame structure and the sockaddr structure are defined
--in include/linux/can.h:
-+The Classical CAN frame structure (aka CAN 2.0B), the CAN FD frame structure
-+and the sockaddr structure are defined in include/linux/can.h:
+ 		cf->can_id = hf->can_id;
  
- .. code-block:: C
- 
-     struct can_frame {
-             canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
--            __u8    can_dlc; /* frame payload length in byte (0 .. 8) */
-+            union {
-+                    /* CAN frame payload length in byte (0 .. CAN_MAX_DLEN)
-+                     * was previously named can_dlc so we need to carry that
-+                     * name for legacy support
-+                     */
-+                    __u8 len;
-+                    __u8 can_dlc; /* deprecated */
-+            };
-             __u8    __pad;   /* padding */
-             __u8    __res0;  /* reserved / padding */
--            __u8    __res1;  /* reserved / padding */
-+            __u8    len8_dlc; /* optional DLC for 8 byte payload length (9 .. 15) */
-             __u8    data[8] __attribute__((aligned(8)));
-     };
- 
-+Remark: The len element contains the payload length in bytes and should be
-+used instead of can_dlc. The deprecated can_dlc was misleadingly named as
-+it always contained the plain payload length in bytes and not the so called
-+'data length code' (DLC).
+ 		cf->len = can_get_cc_len(hf->len);
++		cf->len8_dlc = can_get_len8_dlc(dev->can.ctrlmode, cf->len,
++						hf->len);
 +
-+To pass the raw DLC from/to a Classical CAN network device the len8_dlc
-+element can contain values 9 .. 15 when the len element is 8 (the real
-+payload length for all DLC values greater or equal to 8).
+ 		memcpy(cf->data, hf->data, 8);
+ 
+ 		/* ERROR frames tell us information about the controller */
+ 		if (hf->can_id & CAN_ERR_FLAG)
+ 			gs_update_state(dev, cf);
+@@ -502,11 +505,12 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
+ 	hf->channel = dev->channel;
+ 
+ 	cf = (struct can_frame *)skb->data;
+ 
+ 	hf->can_id = cf->can_id;
+-	hf->len = cf->len;
++	hf->len = can_get_cc_dlc(dev->can.ctrlmode, cf->len, cf->len8_dlc);
 +
- The alignment of the (linear) payload data[] to a 64bit boundary
- allows the user to define their own structs and unions to easily access
- the CAN payload. There is no given byteorder on the CAN bus by
- default. A read(2) system call on a CAN_RAW socket transfers a
- struct can_frame to the user space.
-@@ -258,10 +274,27 @@ PF_PACKET socket, that also binds to a specific interface:
-             int         can_ifindex;
-             union {
-                     /* transport protocol class address info (e.g. ISOTP) */
-                     struct { canid_t rx_id, tx_id; } tp;
+ 	memcpy(hf->data, cf->data, cf->len);
  
-+                    /* J1939 address information */
-+                    struct {
-+                            /* 8 byte name when using dynamic addressing */
-+                            __u64 name;
+ 	usb_fill_bulk_urb(urb, dev->udev,
+ 			  usb_sndbulkpipe(dev->udev, GSUSB_ENDPOINT_OUT),
+ 			  hf,
+@@ -856,11 +860,11 @@ static struct gs_can *gs_make_candev(unsigned int channel,
+ 	dev->can.state = CAN_STATE_STOPPED;
+ 	dev->can.clock.freq = bt_const->fclk_can;
+ 	dev->can.bittiming_const = &dev->bt_const;
+ 	dev->can.do_set_bittiming = gs_usb_set_bittiming;
+ 
+-	dev->can.ctrlmode_supported = 0;
++	dev->can.ctrlmode_supported = CAN_CTRLMODE_CC_LEN8_DLC;
+ 
+ 	if (bt_const->feature & GS_CAN_FEATURE_LISTEN_ONLY)
+ 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_LISTENONLY;
+ 
+ 	if (bt_const->feature & GS_CAN_FEATURE_LOOP_BACK)
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index abecb77e34f2..105a17dc8075 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -733,10 +733,12 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
+ 
+ 		cf->can_id = le16_to_cpu(tmp16) >> 5;
+ 	}
+ 
+ 	cf->len = can_get_cc_len(rec_len);
++	cf->len8_dlc = can_get_len8_dlc(mc->pdev->dev.can.ctrlmode, cf->len,
++					rec_len);
+ 
+ 	/* Only first packet timestamp is a word */
+ 	if (pcan_usb_decode_ts(mc, !mc->rec_ts_idx))
+ 		goto decode_failed;
+ 
+@@ -836,11 +838,12 @@ static int pcan_usb_encode_msg(struct peak_usb_device *dev, struct sk_buff *skb,
+ 	obuf[1] = 1;
+ 
+ 	pc = obuf + PCAN_USB_MSG_HEADER_LEN;
+ 
+ 	/* status/len byte */
+-	*pc = cf->len;
++	*pc = can_get_cc_dlc(dev->can.ctrlmode, cf->len, cf->len8_dlc);
 +
-+                            /* pgn:
-+                             * 8 bit: PS in PDU2 case, else 0
-+                             * 8 bit: PF
-+                             * 1 bit: DP
-+                             * 1 bit: reserved
-+                             */
-+                            __u32 pgn;
+ 	if (cf->can_id & CAN_RTR_FLAG)
+ 		*pc |= PCAN_USB_STATUSLEN_RTR;
+ 
+ 	/* can id */
+ 	if (cf->can_id & CAN_EFF_FLAG) {
+@@ -990,11 +993,12 @@ static const struct can_bittiming_const pcan_usb_const = {
+ const struct peak_usb_adapter pcan_usb = {
+ 	.name = "PCAN-USB",
+ 	.device_id = PCAN_USB_PRODUCT_ID,
+ 	.ctrl_count = 1,
+ 	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			      CAN_CTRLMODE_BERR_REPORTING,
++			      CAN_CTRLMODE_BERR_REPORTING |
++			      CAN_CTRLMODE_CC_LEN8_DLC,
+ 	.clock = {
+ 		.freq = PCAN_USB_CRYSTAL_HZ / 2 ,
+ 	},
+ 	.bittiming_const = &pcan_usb_const,
+ 
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 3e875cdbadac..bd90ce8c3f15 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -492,16 +492,21 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
+ 		if (rx_msg_flags & PUCAN_MSG_ERROR_STATE_IND)
+ 			cfd->flags |= CANFD_ESI;
+ 
+ 		cfd->len = can_dlc2len(pucan_msg_get_dlc(rm));
+ 	} else {
++		struct can_frame *cf;
 +
-+                            /* 1 byte address */
-+                            __u8 addr;
-+                    } j1939;
+ 		/* CAN 2.0 frame case */
+ 		skb = alloc_can_skb(netdev, (struct can_frame **)&cfd);
+ 		if (!skb)
+ 			return -ENOMEM;
+ 
+ 		cfd->len = can_get_cc_len(pucan_msg_get_dlc(rm));
++		cf = (struct can_frame *)cfd;
++		cf->len8_dlc = can_get_len8_dlc(dev->can.ctrlmode, cf->len,
++						pucan_msg_get_dlc(rm));
+ 	}
+ 
+ 	cfd->can_id = le32_to_cpu(rm->can_id);
+ 
+ 	if (rx_msg_flags & PUCAN_MSG_EXT_ID)
+@@ -764,12 +769,14 @@ static int pcan_usb_fd_encode_msg(struct peak_usb_device *dev,
+ 			tx_msg_flags |= PUCAN_MSG_BITRATE_SWITCH;
+ 
+ 		if (cfd->flags & CANFD_ESI)
+ 			tx_msg_flags |= PUCAN_MSG_ERROR_STATE_IND;
+ 	} else {
++		struct can_frame *cf = (struct can_frame *)cfd;
 +
-                     /* reserved for future CAN protocols address information */
-             } can_addr;
-     };
+ 		/* CAND 2.0 frames */
+-		len = cfd->len;
++		len = can_get_cc_dlc(dev->can.ctrlmode, cf->len, cf->len8_dlc);
  
- To determine the interface index an appropriate ioctl() has to
-@@ -369,11 +402,11 @@ bitrates for the arbitration phase and the payload phase of the CAN FD frame
- and up to 64 bytes of payload. This extended payload length breaks all the
- kernel interfaces (ABI) which heavily rely on the CAN frame with fixed eight
- bytes of payload (struct can_frame) like the CAN_RAW socket. Therefore e.g.
- the CAN_RAW socket supports a new socket option CAN_RAW_FD_FRAMES that
- switches the socket into a mode that allows the handling of CAN FD frames
--and (legacy) CAN frames simultaneously (see :ref:`socketcan-rawfd`).
-+and Classical CAN frames simultaneously (see :ref:`socketcan-rawfd`).
+ 		if (cfd->can_id & CAN_RTR_FLAG)
+ 			tx_msg_flags |= PUCAN_MSG_RTR;
+ 	}
  
- The struct canfd_frame is defined in include/linux/can.h:
+@@ -1033,11 +1040,11 @@ static const struct can_bittiming_const pcan_usb_fd_data_const = {
  
- .. code-block:: C
+ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.name = "PCAN-USB FD",
+ 	.device_id = PCAN_USBFD_PRODUCT_ID,
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+-	.ctrlmode_supported = CAN_CTRLMODE_FD |
++	.ctrlmode_supported = CAN_CTRLMODE_FD | CAN_CTRLMODE_CC_LEN8_DLC |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+ 	.bittiming_const = &pcan_usb_fd_const,
+@@ -1105,11 +1112,11 @@ static const struct can_bittiming_const pcan_usb_chip_data_const = {
  
-@@ -395,21 +428,21 @@ all structure elements can be used as-is - only the data[] becomes extended.
- When introducing the struct canfd_frame it turned out that the data length
- code (DLC) of the struct can_frame was used as a length information as the
- length and the DLC has a 1:1 mapping in the range of 0 .. 8. To preserve
- the easy handling of the length information the canfd_frame.len element
- contains a plain length value from 0 .. 64. So both canfd_frame.len and
--can_frame.can_dlc are equal and contain a length information and no DLC.
-+can_frame.len are equal and contain a length information and no DLC.
- For details about the distinction of CAN and CAN FD capable devices and
- the mapping to the bus-relevant data length code (DLC), see :ref:`socketcan-can-fd-driver`.
+ const struct peak_usb_adapter pcan_usb_chip = {
+ 	.name = "PCAN-Chip USB",
+ 	.device_id = PCAN_USBCHIP_PRODUCT_ID,
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+-	.ctrlmode_supported = CAN_CTRLMODE_FD |
++	.ctrlmode_supported = CAN_CTRLMODE_FD | CAN_CTRLMODE_CC_LEN8_DLC |
+ 		CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+ 	.bittiming_const = &pcan_usb_chip_const,
+@@ -1177,11 +1184,11 @@ static const struct can_bittiming_const pcan_usb_pro_fd_data_const = {
  
- The length of the two CAN(FD) frame structures define the maximum transfer
- unit (MTU) of the CAN(FD) network interface and skbuff data length. Two
- definitions are specified for CAN specific MTUs in include/linux/can.h:
+ const struct peak_usb_adapter pcan_usb_pro_fd = {
+ 	.name = "PCAN-USB Pro FD",
+ 	.device_id = PCAN_USBPROFD_PRODUCT_ID,
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+-	.ctrlmode_supported = CAN_CTRLMODE_FD |
++	.ctrlmode_supported = CAN_CTRLMODE_FD | CAN_CTRLMODE_CC_LEN8_DLC |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+ 	.bittiming_const = &pcan_usb_pro_fd_const,
+@@ -1249,11 +1256,11 @@ static const struct can_bittiming_const pcan_usb_x6_data_const = {
  
- .. code-block:: C
+ const struct peak_usb_adapter pcan_usb_x6 = {
+ 	.name = "PCAN-USB X6",
+ 	.device_id = PCAN_USBX6_PRODUCT_ID,
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+-	.ctrlmode_supported = CAN_CTRLMODE_FD |
++	.ctrlmode_supported = CAN_CTRLMODE_FD | CAN_CTRLMODE_CC_LEN8_DLC |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+ 	.bittiming_const = &pcan_usb_x6_const,
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index 8aedb2ba37fb..e15650c0663e 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -469,10 +469,12 @@ static void usb_8dev_rx_can_msg(struct usb_8dev_priv *priv,
+ 		if (!skb)
+ 			return;
  
--  #define CAN_MTU   (sizeof(struct can_frame))   == 16  => 'legacy' CAN frame
-+  #define CAN_MTU   (sizeof(struct can_frame))   == 16  => Classical CAN frame
-   #define CANFD_MTU (sizeof(struct canfd_frame)) == 72  => CAN FD frame
+ 		cf->can_id = be32_to_cpu(msg->id);
+ 		cf->len = can_get_cc_len(msg->dlc & 0xF);
++		cf->len8_dlc = can_get_len8_dlc(priv->can.ctrlmode, cf->len,
++						msg->dlc & 0xF);
  
+ 		if (msg->flags & USB_8DEV_EXTID)
+ 			cf->can_id |= CAN_EFF_FLAG;
  
- .. _socketcan-raw-sockets:
+ 		if (msg->flags & USB_8DEV_RTR)
+@@ -635,11 +637,11 @@ static netdev_tx_t usb_8dev_start_xmit(struct sk_buff *skb,
  
-@@ -607,11 +640,11 @@ Example:
+ 	if (cf->can_id & CAN_EFF_FLAG)
+ 		msg->flags |= USB_8DEV_EXTID;
  
-     if (nbytes == CANFD_MTU) {
-             printf("got CAN FD frame with length %d\n", cfd.len);
-             /* cfd.flags contains valid data */
-     } else if (nbytes == CAN_MTU) {
--            printf("got legacy CAN frame with length %d\n", cfd.len);
-+            printf("got Classical CAN frame with length %d\n", cfd.len);
-             /* cfd.flags is undefined */
-     } else {
-             fprintf(stderr, "read: invalid CAN(FD) frame\n");
-             return 1;
-     }
-@@ -621,21 +654,21 @@ Example:
-     printf("can_id: %X data length: %d data: ", cfd.can_id, cfd.len);
-     for (i = 0; i < cfd.len; i++)
-             printf("%02X ", cfd.data[i]);
+ 	msg->id = cpu_to_be32(cf->can_id & CAN_ERR_MASK);
+-	msg->dlc = cf->len;
++	msg->dlc = can_get_cc_dlc(priv->can.ctrlmode, cf->len, cf->len8_dlc);
+ 	memcpy(msg->data, cf->data, cf->len);
+ 	msg->end = USB_8DEV_DATA_END;
  
- When reading with size CANFD_MTU only returns CAN_MTU bytes that have
--been received from the socket a legacy CAN frame has been read into the
-+been received from the socket a Classical CAN frame has been read into the
- provided CAN FD structure. Note that the canfd_frame.flags data field is
- not specified in the struct can_frame and therefore it is only valid in
- CANFD_MTU sized CAN FD frames.
+ 	for (i = 0; i < MAX_TX_URBS; i++) {
+ 		if (priv->tx_contexts[i].echo_index == MAX_TX_URBS) {
+@@ -925,12 +927,13 @@ static int usb_8dev_probe(struct usb_interface *intf,
+ 	priv->can.clock.freq = USB_8DEV_ABP_CLOCK;
+ 	priv->can.bittiming_const = &usb_8dev_bittiming_const;
+ 	priv->can.do_set_mode = usb_8dev_set_mode;
+ 	priv->can.do_get_berr_counter = usb_8dev_get_berr_counter;
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+-				      CAN_CTRLMODE_LISTENONLY |
+-				      CAN_CTRLMODE_ONE_SHOT;
++				       CAN_CTRLMODE_LISTENONLY |
++				       CAN_CTRLMODE_ONE_SHOT |
++				       CAN_CTRLMODE_CC_LEN8_DLC;
  
- Implementation hint for new CAN applications:
+ 	netdev->netdev_ops = &usb_8dev_netdev_ops;
  
- To build a CAN FD aware application use struct canfd_frame as basic CAN
- data structure for CAN_RAW based applications. When the application is
- executed on an older Linux kernel and switching the CAN_RAW_FD_FRAMES
--socket option returns an error: No problem. You'll get legacy CAN frames
-+socket option returns an error: No problem. You'll get Classical CAN frames
- or CAN FD frames and can process them the same way.
+ 	netdev->flags |= IFF_ECHO; /* we support local echo */
  
- When sending to CAN devices make sure that the device is capable to handle
- CAN FD frames by checking if the device maximum transfer unit is CANFD_MTU.
- The CAN device MTU can be retrieved e.g. with a SIOCGIFMTU ioctl() syscall.
-@@ -840,10 +873,12 @@ TX_RESET_MULTI_IDX:
- 	Reset the index for the multiple frame transmission.
- 
- RX_RTR_FRAME:
- 	Send reply for RTR-request (placed in op->frames[0]).
- 
-+CAN_FD_FRAME:
-+	The CAN frames following the bcm_msg_head are struct canfd_frame's
- 
- Broadcast Manager Transmission Timers
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
- Periodic transmission configurations may use up to two interval timers.
-@@ -1024,11 +1059,11 @@ In this example an application requests any CAN traffic from vcan0::
- 
- Additional procfs files in /proc/net/can::
- 
-     stats       - SocketCAN core statistics (rx/tx frames, match ratios, ...)
-     reset_stats - manual statistic reset
--    version     - prints the SocketCAN core version and the ABI version
-+    version     - prints SocketCAN core and ABI version (removed in Linux 5.10)
- 
- 
- Writing Own CAN Protocol Modules
- --------------------------------
- 
-@@ -1068,11 +1103,11 @@ General Settings
- .. code-block:: C
- 
-     dev->type  = ARPHRD_CAN; /* the netdevice hardware type */
-     dev->flags = IFF_NOARP;  /* CAN has no arp */
- 
--    dev->mtu = CAN_MTU; /* sizeof(struct can_frame) -> legacy CAN interface */
-+    dev->mtu = CAN_MTU; /* sizeof(struct can_frame) -> Classical CAN interface */
- 
-     or alternative, when the controller supports CAN with flexible data rate:
-     dev->mtu = CANFD_MTU; /* sizeof(struct canfd_frame) -> CAN FD interface */
- 
- The struct can_frame or struct canfd_frame is the payload of each socket
-@@ -1182,10 +1217,11 @@ Setting CAN device properties::
-         [ one-shot { on | off } ]
-         [ berr-reporting { on | off } ]
-         [ fd { on | off } ]
-         [ fd-non-iso { on | off } ]
-         [ presume-ack { on | off } ]
-+        [ cc-len8-dlc { on | off } ]
- 
-         [ restart-ms TIME-MS ]
-         [ restart ]
- 
-         Where: BITRATE       := { 1..1000000 }
-@@ -1324,26 +1360,26 @@ CAN FD (Flexible Data Rate) Driver Support
- CAN FD capable CAN controllers support two different bitrates for the
- arbitration phase and the payload phase of the CAN FD frame. Therefore a
- second bit timing has to be specified in order to enable the CAN FD bitrate.
- 
- Additionally CAN FD capable CAN controllers support up to 64 bytes of
--payload. The representation of this length in can_frame.can_dlc and
-+payload. The representation of this length in can_frame.len and
- canfd_frame.len for userspace applications and inside the Linux network
- layer is a plain value from 0 .. 64 instead of the CAN 'data length code'.
--The data length code was a 1:1 mapping to the payload length in the legacy
-+The data length code was a 1:1 mapping to the payload length in the Classical
- CAN frames anyway. The payload length to the bus-relevant DLC mapping is
- only performed inside the CAN drivers, preferably with the helper
- functions can_dlc2len() and can_len2dlc().
- 
- The CAN netdevice driver capabilities can be distinguished by the network
- devices maximum transfer unit (MTU)::
- 
--  MTU = 16 (CAN_MTU)   => sizeof(struct can_frame)   => 'legacy' CAN device
-+  MTU = 16 (CAN_MTU)   => sizeof(struct can_frame)   => Classical CAN device
-   MTU = 72 (CANFD_MTU) => sizeof(struct canfd_frame) => CAN FD capable device
- 
- The CAN device MTU can be retrieved e.g. with a SIOCGIFMTU ioctl() syscall.
--N.B. CAN FD capable devices can also handle and send legacy CAN frames.
-+N.B. CAN FD capable devices can also handle and send Classical CAN frames.
- 
- When configuring CAN FD capable CAN controllers an additional 'data' bitrate
- has to be set. This bitrate for the data phase of the CAN FD frame has to be
- at least the bitrate which was configured for the arbitration phase. This
- second bitrate is specified analogue to the first bitrate but the bitrate
 -- 
 2.28.0
 
