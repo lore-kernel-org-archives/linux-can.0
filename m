@@ -7,46 +7,46 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E0D0C56202
-	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 15:37:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AE02C388F7
+	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 15:37:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A6F7C2074F
-	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 15:37:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ED86E206C0
+	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 15:37:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="XUNgUb2Y"
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Nk8R+spa"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730976AbgKIPhS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 9 Nov 2020 10:37:18 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:36601 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729919AbgKIPhS (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Nov 2020 10:37:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1604936235;
+        id S1731318AbgKIPhW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 9 Nov 2020 10:37:22 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:21741 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730212AbgKIPhV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Nov 2020 10:37:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1604936237;
         s=strato-dkim-0002; d=hartkopp.net;
         h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=MTQtC6hu8jphXFm30aQ9c48BEEYCvjQQKzJ5LYSSuWA=;
-        b=XUNgUb2YsrV0OD39L9yEbb22EGZzCIIKmg6IMjpdyphl6uHwv+CkkKMsRS5cd2TrjN
-        H1eWm85NxKA4x/syijmJBNMAcm7gDpMliKsMi5N66tj4Gl3CW+aQrX+mVglzzRRHQL9c
-        xtl6fB23ql2We5EqeHuqOKBIQoGHRqOnUp7A4/2B+cxLAsglPy1tmwjb/OY5jKp3HXb8
-        P82VwH/AURT0z+kfBjqw/92EeHM5YaEAReK0uD6tEd0sGXRoOVAiWk/PTNF//1NxZ0Xl
-        zglJlecyOTxAAr4dkvog4iareLeva6voa4uGfYDf88eHhbMfzL7nBOvmvj8lGbAMwuAd
-        5ZkQ==
+        bh=p01Z6UwPmsyshOKQS/A7DaaBRRnVxd8aUIHf/a2wvj4=;
+        b=Nk8R+spaT9LpxK6zvrYWNTBKmqBBPJ3p5wrOAaS7eJSKKnoBE5eny6tSguQiE20bVG
+        T4T86XxZcTDVhtITXu4qUb2Z/3oJdYazVEho6ZzWZ+ndZZKMVE4gokSfieW/HZ5S4Oi8
+        BOxMMfvk+4JU1MlaVokqmlnqnQJQharBLi12VxrU9JmFaiB+YYuiHtSXfMj9+sAnf4aM
+        qw+f2yICAB4w5PX2gAFNJ7Em19m65psc71ObRHZoX77YtDhPLsKzirpLpyRU6NQSYJQd
+        soSUk/MeQVlQgAhZ1tqYdZlBu3ywMPEQusUt7rZoDGfhmSiutD/FrQf4A47xx4s7WVnR
+        38gw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0lu8GW272ZqqIaA=="
 X-RZG-CLASS-ID: mo00
 Received: from silver.lan
         by smtp.strato.de (RZmta 47.3.3 DYNA|AUTH)
-        with ESMTPSA id V0298cwA9FbC85X
+        with ESMTPSA id V0298cwA9FbE85e
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Mon, 9 Nov 2020 16:37:12 +0100 (CET)
+        Mon, 9 Nov 2020 16:37:14 +0100 (CET)
 From:   Oliver Hartkopp <socketcan@hartkopp.net>
 To:     linux-can@vger.kernel.org, mkl@pengutronix.de,
         mailhol.vincent@wanadoo.fr
 Cc:     netdev@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v5 1/8] can: add optional DLC element to Classical CAN frame structure
-Date:   Mon,  9 Nov 2020 16:36:50 +0100
-Message-Id: <20201109153657.17897-2-socketcan@hartkopp.net>
+Subject: [PATCH v5 8/8] can-dev: add len8_dlc support for various CAN USB adapters
+Date:   Mon,  9 Nov 2020 16:36:57 +0100
+Message-Id: <20201109153657.17897-9-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201109153657.17897-1-socketcan@hartkopp.net>
 References: <20201109153657.17897-1-socketcan@hartkopp.net>
@@ -56,112 +56,253 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-ISO 11898-1 Chapter 8.4.2.3 defines a 4 bit data length code (DLC) table which
-maps the DLC to the payload length of the CAN frame in bytes:
+Support the Classical CAN raw DLC functionality to send and receive DLC
+values from 9 .. 15 on various Classical CAN capable USB network drivers:
 
-    DLC      ->  payload length
-    0 .. 8   ->  0 .. 8
-    9 .. 15  ->  8
+- gs_usb
+- pcan_usb
+- pcan_usb_fd
+- usb_8dev
 
-Although the DLC values 8 .. 15 in Classical CAN always result in a payload
-length of 8 bytes these DLC values are transparently transmitted on the CAN
-bus. As the struct can_frame only provides a 'len' element (formerly 'can_dlc')
-which contains the plain payload length ( 0 .. 8 ) of the CAN frame, the raw
-DLC is not visible to the application programmer, e.g. for testing use-cases.
-
-To access the raw DLC values 9 .. 15 the len8_dlc element is introduced, which
-is only valid when the payload length 'len' is 8 and the DLC is greater than 8.
-
-The len8_dlc element is filled by the CAN interface driver and used for CAN
-frame creation by the CAN driver when the CAN_CTRLMODE_CC_LEN8_DLC flag is
-supported by the driver and enabled via netlink configuration interface.
-
-Reported-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- include/uapi/linux/can.h         | 38 ++++++++++++++++++++------------
- include/uapi/linux/can/netlink.h |  1 +
- 2 files changed, 25 insertions(+), 14 deletions(-)
+ drivers/net/can/usb/gs_usb.c               |  8 ++++++--
+ drivers/net/can/usb/peak_usb/pcan_usb.c    |  8 ++++++--
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 17 ++++++++++++-----
+ drivers/net/can/usb/usb_8dev.c             |  9 ++++++---
+ 4 files changed, 30 insertions(+), 12 deletions(-)
 
-diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
-index 6a6d2c7655ff..f75238ac6dce 100644
---- a/include/uapi/linux/can.h
-+++ b/include/uapi/linux/can.h
-@@ -82,34 +82,44 @@ typedef __u32 canid_t;
-  */
- typedef __u32 can_err_mask_t;
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 940589667a7f..cc0c30a33335 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -330,10 +330,13 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 			return;
  
- /* CAN payload length and DLC definitions according to ISO 11898-1 */
- #define CAN_MAX_DLC 8
-+#define CAN_MAX_RAW_DLC 15
- #define CAN_MAX_DLEN 8
+ 		cf->can_id = hf->can_id;
  
- /* CAN FD payload length and DLC definitions according to ISO 11898-7 */
- #define CANFD_MAX_DLC 15
- #define CANFD_MAX_DLEN 64
+ 		cf->len = can_cc_dlc2len(hf->len);
++		cf->len8_dlc = can_get_len8_dlc(dev->can.ctrlmode, cf->len,
++						hf->len);
++
+ 		memcpy(cf->data, hf->data, 8);
  
- /**
-- * struct can_frame - basic CAN frame structure
-- * @can_id:  CAN ID of the frame and CAN_*_FLAG flags, see canid_t definition
-- * @can_dlc: frame payload length in byte (0 .. 8) aka data length code
-- *           N.B. the DLC field from ISO 11898-1 Chapter 8.4.2.3 has a 1:1
-- *           mapping of the 'data length code' to the real payload length
-- * @__pad:   padding
-- * @__res0:  reserved / padding
-- * @__res1:  reserved / padding
-- * @data:    CAN frame payload (up to 8 byte)
-+ * struct can_frame - Classical CAN frame structure (aka CAN 2.0B)
-+ * @can_id:   CAN ID of the frame and CAN_*_FLAG flags, see canid_t definition
-+ * @len:      CAN frame payload length in byte (0 .. 8)
-+ * @can_dlc:  deprecated name for CAN frame payload length in byte (0 .. 8)
-+ * @__pad:    padding
-+ * @__res0:   reserved / padding
-+ * @len8_dlc: optional DLC value (9 .. 15) at 8 byte payload length
-+ *            len8_dlc contains values from 9 .. 15 when the payload length is
-+ *            8 bytes but the DLC value (see ISO 11898-1) is greater then 8.
-+ *            CAN_CTRLMODE_CC_LEN8_DLC flag has to be enabled in CAN driver.
-+ * @data:     CAN frame payload (up to 8 byte)
-  */
- struct can_frame {
- 	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
--	__u8    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
--	__u8    __pad;   /* padding */
--	__u8    __res0;  /* reserved / padding */
--	__u8    __res1;  /* reserved / padding */
--	__u8    data[CAN_MAX_DLEN] __attribute__((aligned(8)));
-+	union {
-+		/* CAN frame payload length in byte (0 .. CAN_MAX_DLEN)
-+		 * was previously named can_dlc so we need to carry that
-+		 * name for legacy support
-+		 */
-+		__u8 len;
-+		__u8 can_dlc; /* deprecated */
-+	};
-+	__u8 __pad; /* padding */
-+	__u8 __res0; /* reserved / padding */
-+	__u8 len8_dlc; /* optional DLC for 8 byte payload length (9 .. 15) */
-+	__u8 data[CAN_MAX_DLEN] __attribute__((aligned(8)));
- };
+ 		/* ERROR frames tell us information about the controller */
+ 		if (hf->can_id & CAN_ERR_FLAG)
+ 			gs_update_state(dev, cf);
+@@ -502,11 +505,12 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
+ 	hf->channel = dev->channel;
  
- /*
-  * defined bits for canfd_frame.flags
-  *
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index 6f598b73839e..f730d443b918 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -98,10 +98,11 @@ struct can_ctrlmode {
- #define CAN_CTRLMODE_ONE_SHOT		0x08	/* One-Shot mode */
- #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
- #define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
- #define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
- #define CAN_CTRLMODE_FD_NON_ISO		0x80	/* CAN FD in non-ISO mode */
-+#define CAN_CTRLMODE_CC_LEN8_DLC	0x100	/* Classic CAN DLC option */
+ 	cf = (struct can_frame *)skb->data;
  
- /*
-  * CAN device statistics
-  */
- struct can_device_stats {
+ 	hf->can_id = cf->can_id;
+-	hf->len = cf->len;
++	hf->len = can_get_cc_dlc(dev->can.ctrlmode, cf->len, cf->len8_dlc);
++
+ 	memcpy(hf->data, cf->data, cf->len);
+ 
+ 	usb_fill_bulk_urb(urb, dev->udev,
+ 			  usb_sndbulkpipe(dev->udev, GSUSB_ENDPOINT_OUT),
+ 			  hf,
+@@ -856,11 +860,11 @@ static struct gs_can *gs_make_candev(unsigned int channel,
+ 	dev->can.state = CAN_STATE_STOPPED;
+ 	dev->can.clock.freq = bt_const->fclk_can;
+ 	dev->can.bittiming_const = &dev->bt_const;
+ 	dev->can.do_set_bittiming = gs_usb_set_bittiming;
+ 
+-	dev->can.ctrlmode_supported = 0;
++	dev->can.ctrlmode_supported = CAN_CTRLMODE_CC_LEN8_DLC;
+ 
+ 	if (bt_const->feature & GS_CAN_FEATURE_LISTEN_ONLY)
+ 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_LISTENONLY;
+ 
+ 	if (bt_const->feature & GS_CAN_FEATURE_LOOP_BACK)
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index ec34f87cc02c..5a8dffacc24e 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -733,10 +733,12 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
+ 
+ 		cf->can_id = le16_to_cpu(tmp16) >> 5;
+ 	}
+ 
+ 	cf->len = can_cc_dlc2len(rec_len);
++	cf->len8_dlc = can_get_len8_dlc(mc->pdev->dev.can.ctrlmode, cf->len,
++					rec_len);
+ 
+ 	/* Only first packet timestamp is a word */
+ 	if (pcan_usb_decode_ts(mc, !mc->rec_ts_idx))
+ 		goto decode_failed;
+ 
+@@ -836,11 +838,12 @@ static int pcan_usb_encode_msg(struct peak_usb_device *dev, struct sk_buff *skb,
+ 	obuf[1] = 1;
+ 
+ 	pc = obuf + PCAN_USB_MSG_HEADER_LEN;
+ 
+ 	/* status/len byte */
+-	*pc = cf->len;
++	*pc = can_get_cc_dlc(dev->can.ctrlmode, cf->len, cf->len8_dlc);
++
+ 	if (cf->can_id & CAN_RTR_FLAG)
+ 		*pc |= PCAN_USB_STATUSLEN_RTR;
+ 
+ 	/* can id */
+ 	if (cf->can_id & CAN_EFF_FLAG) {
+@@ -990,11 +993,12 @@ static const struct can_bittiming_const pcan_usb_const = {
+ const struct peak_usb_adapter pcan_usb = {
+ 	.name = "PCAN-USB",
+ 	.device_id = PCAN_USB_PRODUCT_ID,
+ 	.ctrl_count = 1,
+ 	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			      CAN_CTRLMODE_BERR_REPORTING,
++			      CAN_CTRLMODE_BERR_REPORTING |
++			      CAN_CTRLMODE_CC_LEN8_DLC,
+ 	.clock = {
+ 		.freq = PCAN_USB_CRYSTAL_HZ / 2 ,
+ 	},
+ 	.bittiming_const = &pcan_usb_const,
+ 
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 761e78d8e647..8020071c9067 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -492,16 +492,21 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
+ 		if (rx_msg_flags & PUCAN_MSG_ERROR_STATE_IND)
+ 			cfd->flags |= CANFD_ESI;
+ 
+ 		cfd->len = can_fd_dlc2len(pucan_msg_get_dlc(rm));
+ 	} else {
++		struct can_frame *cf;
++
+ 		/* CAN 2.0 frame case */
+ 		skb = alloc_can_skb(netdev, (struct can_frame **)&cfd);
+ 		if (!skb)
+ 			return -ENOMEM;
+ 
+ 		cfd->len = can_cc_dlc2len(pucan_msg_get_dlc(rm));
++		cf = (struct can_frame *)cfd;
++		cf->len8_dlc = can_get_len8_dlc(dev->can.ctrlmode, cf->len,
++						pucan_msg_get_dlc(rm));
+ 	}
+ 
+ 	cfd->can_id = le32_to_cpu(rm->can_id);
+ 
+ 	if (rx_msg_flags & PUCAN_MSG_EXT_ID)
+@@ -764,12 +769,14 @@ static int pcan_usb_fd_encode_msg(struct peak_usb_device *dev,
+ 			tx_msg_flags |= PUCAN_MSG_BITRATE_SWITCH;
+ 
+ 		if (cfd->flags & CANFD_ESI)
+ 			tx_msg_flags |= PUCAN_MSG_ERROR_STATE_IND;
+ 	} else {
++		struct can_frame *cf = (struct can_frame *)cfd;
++
+ 		/* CAND 2.0 frames */
+-		len = cfd->len;
++		len = can_get_cc_dlc(dev->can.ctrlmode, cf->len, cf->len8_dlc);
+ 
+ 		if (cfd->can_id & CAN_RTR_FLAG)
+ 			tx_msg_flags |= PUCAN_MSG_RTR;
+ 	}
+ 
+@@ -1033,11 +1040,11 @@ static const struct can_bittiming_const pcan_usb_fd_data_const = {
+ 
+ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.name = "PCAN-USB FD",
+ 	.device_id = PCAN_USBFD_PRODUCT_ID,
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+-	.ctrlmode_supported = CAN_CTRLMODE_FD |
++	.ctrlmode_supported = CAN_CTRLMODE_FD | CAN_CTRLMODE_CC_LEN8_DLC |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+ 	.bittiming_const = &pcan_usb_fd_const,
+@@ -1105,11 +1112,11 @@ static const struct can_bittiming_const pcan_usb_chip_data_const = {
+ 
+ const struct peak_usb_adapter pcan_usb_chip = {
+ 	.name = "PCAN-Chip USB",
+ 	.device_id = PCAN_USBCHIP_PRODUCT_ID,
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+-	.ctrlmode_supported = CAN_CTRLMODE_FD |
++	.ctrlmode_supported = CAN_CTRLMODE_FD | CAN_CTRLMODE_CC_LEN8_DLC |
+ 		CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+ 	.bittiming_const = &pcan_usb_chip_const,
+@@ -1177,11 +1184,11 @@ static const struct can_bittiming_const pcan_usb_pro_fd_data_const = {
+ 
+ const struct peak_usb_adapter pcan_usb_pro_fd = {
+ 	.name = "PCAN-USB Pro FD",
+ 	.device_id = PCAN_USBPROFD_PRODUCT_ID,
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+-	.ctrlmode_supported = CAN_CTRLMODE_FD |
++	.ctrlmode_supported = CAN_CTRLMODE_FD | CAN_CTRLMODE_CC_LEN8_DLC |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+ 	.bittiming_const = &pcan_usb_pro_fd_const,
+@@ -1249,11 +1256,11 @@ static const struct can_bittiming_const pcan_usb_x6_data_const = {
+ 
+ const struct peak_usb_adapter pcan_usb_x6 = {
+ 	.name = "PCAN-USB X6",
+ 	.device_id = PCAN_USBX6_PRODUCT_ID,
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+-	.ctrlmode_supported = CAN_CTRLMODE_FD |
++	.ctrlmode_supported = CAN_CTRLMODE_FD | CAN_CTRLMODE_CC_LEN8_DLC |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+ 	.bittiming_const = &pcan_usb_x6_const,
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index 6517aaeb4bc0..57e689cb87c9 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -469,10 +469,12 @@ static void usb_8dev_rx_can_msg(struct usb_8dev_priv *priv,
+ 		if (!skb)
+ 			return;
+ 
+ 		cf->can_id = be32_to_cpu(msg->id);
+ 		cf->len = can_cc_dlc2len(msg->dlc & 0xF);
++		cf->len8_dlc = can_get_len8_dlc(priv->can.ctrlmode, cf->len,
++						msg->dlc & 0xF);
+ 
+ 		if (msg->flags & USB_8DEV_EXTID)
+ 			cf->can_id |= CAN_EFF_FLAG;
+ 
+ 		if (msg->flags & USB_8DEV_RTR)
+@@ -635,11 +637,11 @@ static netdev_tx_t usb_8dev_start_xmit(struct sk_buff *skb,
+ 
+ 	if (cf->can_id & CAN_EFF_FLAG)
+ 		msg->flags |= USB_8DEV_EXTID;
+ 
+ 	msg->id = cpu_to_be32(cf->can_id & CAN_ERR_MASK);
+-	msg->dlc = cf->len;
++	msg->dlc = can_get_cc_dlc(priv->can.ctrlmode, cf->len, cf->len8_dlc);
+ 	memcpy(msg->data, cf->data, cf->len);
+ 	msg->end = USB_8DEV_DATA_END;
+ 
+ 	for (i = 0; i < MAX_TX_URBS; i++) {
+ 		if (priv->tx_contexts[i].echo_index == MAX_TX_URBS) {
+@@ -925,12 +927,13 @@ static int usb_8dev_probe(struct usb_interface *intf,
+ 	priv->can.clock.freq = USB_8DEV_ABP_CLOCK;
+ 	priv->can.bittiming_const = &usb_8dev_bittiming_const;
+ 	priv->can.do_set_mode = usb_8dev_set_mode;
+ 	priv->can.do_get_berr_counter = usb_8dev_get_berr_counter;
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+-				      CAN_CTRLMODE_LISTENONLY |
+-				      CAN_CTRLMODE_ONE_SHOT;
++				       CAN_CTRLMODE_LISTENONLY |
++				       CAN_CTRLMODE_ONE_SHOT |
++				       CAN_CTRLMODE_CC_LEN8_DLC;
+ 
+ 	netdev->netdev_ops = &usb_8dev_netdev_ops;
+ 
+ 	netdev->flags |= IFF_ECHO; /* we support local echo */
+ 
 -- 
 2.28.0
 
