@@ -2,71 +2,166 @@ Return-Path: <SRS0=26Ma=EP=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8AACC4741F
-	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 08:51:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACA0AC4741F
+	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 10:26:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 82A50206ED
-	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 08:51:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 45421206E3
+	for <linux-can@archiver.kernel.org>; Mon,  9 Nov 2020 10:26:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=fortheconcern.com header.i=@fortheconcern.com header.b="qAoseFoi"
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="VzJqBfYK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgKIIv3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 9 Nov 2020 03:51:29 -0500
-Received: from mail.fortheconcern.com ([217.61.17.234]:58554 "EHLO
-        server1.mail.fortheconcern.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726482AbgKIIv2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Nov 2020 03:51:28 -0500
-X-Greylist: delayed 331 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 03:51:28 EST
-Received: by server1.mail.fortheconcern.com (Postfix, from userid 1001)
-        id E526CA2381; Mon,  9 Nov 2020 08:45:50 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fortheconcern.com;
-        s=mail; t=1604911556;
-        bh=5lk8KlsnCk7Rqr4J/Oy+FhxXcxSrhbRC49P9PDYZidQ=;
-        h=Date:From:To:Subject:From;
-        b=qAoseFoiRCXGqXwgjonWE9DJzm+O7gHVYFvVTKMx4AsWwVtnECCNk6DHiK9fZLeTU
-         CtkzGKKnFXLQD1aBzCi2lTU1jaKjyWP2ODyinLEMgV5QBJbAEsi4g7V8zsDS+q2HTN
-         LZ5LjK9GkgYnkAL58Zfl3ajycMTMBWxauLBivIGwZh+mkvQQuLdI81Kva6Y/JSLmqC
-         YD7czCZZgHTM9j6Nd84k71oYEEA/Dw4NcFXt5tGbbLGCWP/6jr24ZCLJAJaiUMgGeM
-         iXKuo/QURFGZYdbWygT/mb4rxMV1PHsva+yJbyjBuXYosNSP2E5t3ZTNhiodjQt3Pe
-         KAmcDOb+RfWiw==
-Received: by mail.fortheconcern.com for <linux-can@vger.kernel.org>; Mon,  9 Nov 2020 08:45:48 GMT
-Message-ID: <20201109074501-0.1.25.8lot.0.ri9mbeghfq@fortheconcern.com>
-Date:   Mon,  9 Nov 2020 08:45:48 GMT
-From:   "Aiden Branwen" <aiden.branwen@fortheconcern.com>
-To:     <linux-can@vger.kernel.org>
-Subject: Disinfection
-X-Mailer: mail.fortheconcern.com
+        id S1729081AbgKIK0r (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 9 Nov 2020 05:26:47 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:25840 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726423AbgKIK0r (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Nov 2020 05:26:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1604917603;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=MTQtC6hu8jphXFm30aQ9c48BEEYCvjQQKzJ5LYSSuWA=;
+        b=VzJqBfYKHrU5fSKulrMXqFSrB92POykFuNd4B6fkKXRczejwZzNtZulviCugKeiDPY
+        lt6TAywNvmQVSo8kVITUrqKT8n6+aHGSE6L75cs4Qpb7OmIx07qfDH26MGYSOqDkxcsV
+        14eL0TLtnE74x0O5hsACwJNclLgurUeaNfV5MlLzAjAkhKAU6b+XP93XmQmL72Wh85EJ
+        wsQeKUjVBqCwBEbAgpF2nqUMLuniXzXLtBr1VZ7Z68src+s8msgZAzI4H8EdFXB917o2
+        2xux896uCrWnaE0qLz7oGDGSVWS8EQfsf4ftIVP5RfioKtGrSsL1sDpnC+dJcyeINebs
+        bz/A==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0k+8CejudJywjskA="
+X-RZG-CLASS-ID: mo00
+Received: from silver.lan
+        by smtp.strato.de (RZmta 47.3.3 DYNA|AUTH)
+        with ESMTPSA id V0298cwA9AQe6dM
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 9 Nov 2020 11:26:40 +0100 (CET)
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+To:     linux-can@vger.kernel.org, mkl@pengutronix.de,
+        mailhol.vincent@wanadoo.fr
+Cc:     netdev@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH v4 1/7] can: add optional DLC element to Classical CAN frame structure
+Date:   Mon,  9 Nov 2020 11:26:12 +0100
+Message-Id: <20201109102618.2495-2-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201109102618.2495-1-socketcan@hartkopp.net>
+References: <20201109102618.2495-1-socketcan@hartkopp.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Good morning,
+ISO 11898-1 Chapter 8.4.2.3 defines a 4 bit data length code (DLC) table which
+maps the DLC to the payload length of the CAN frame in bytes:
 
-looking for companies interested in raising additional capital by diversi=
-fying their offer in soaps, liquids and gels for hand disinfection and co=
-smetics for body and hair care.
+    DLC      ->  payload length
+    0 .. 8   ->  0 .. 8
+    9 .. 15  ->  8
 
-The distribution of innovative products corresponding to the current pref=
-erences of customers in the field of hygiene and preventive healthcare al=
-lows our partners to gain new markets and achieve better economic results=
-=2E
+Although the DLC values 8 .. 15 in Classical CAN always result in a payload
+length of 8 bytes these DLC values are transparently transmitted on the CAN
+bus. As the struct can_frame only provides a 'len' element (formerly 'can_dlc')
+which contains the plain payload length ( 0 .. 8 ) of the CAN frame, the raw
+DLC is not visible to the application programmer, e.g. for testing use-cases.
 
-In addition to products with bactericidal action, our range includes show=
-er gels, shampoos and hair conditioners, as well as efficient, concentrat=
-ed detergents.
+To access the raw DLC values 9 .. 15 the len8_dlc element is introduced, which
+is only valid when the payload length 'len' is 8 and the DLC is greater than 8.
 
-The versatility (suitable for all skin types) combined with an affordable=
- price means that customers make an informed choice of a product among ot=
-hers available on the market.
+The len8_dlc element is filled by the CAN interface driver and used for CAN
+frame creation by the CAN driver when the CAN_CTRLMODE_CC_LEN8_DLC flag is
+supported by the driver and enabled via netlink configuration interface.
 
-Are you interested in cooperation?
+Reported-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/uapi/linux/can.h         | 38 ++++++++++++++++++++------------
+ include/uapi/linux/can/netlink.h |  1 +
+ 2 files changed, 25 insertions(+), 14 deletions(-)
 
+diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
+index 6a6d2c7655ff..f75238ac6dce 100644
+--- a/include/uapi/linux/can.h
++++ b/include/uapi/linux/can.h
+@@ -82,34 +82,44 @@ typedef __u32 canid_t;
+  */
+ typedef __u32 can_err_mask_t;
+ 
+ /* CAN payload length and DLC definitions according to ISO 11898-1 */
+ #define CAN_MAX_DLC 8
++#define CAN_MAX_RAW_DLC 15
+ #define CAN_MAX_DLEN 8
+ 
+ /* CAN FD payload length and DLC definitions according to ISO 11898-7 */
+ #define CANFD_MAX_DLC 15
+ #define CANFD_MAX_DLEN 64
+ 
+ /**
+- * struct can_frame - basic CAN frame structure
+- * @can_id:  CAN ID of the frame and CAN_*_FLAG flags, see canid_t definition
+- * @can_dlc: frame payload length in byte (0 .. 8) aka data length code
+- *           N.B. the DLC field from ISO 11898-1 Chapter 8.4.2.3 has a 1:1
+- *           mapping of the 'data length code' to the real payload length
+- * @__pad:   padding
+- * @__res0:  reserved / padding
+- * @__res1:  reserved / padding
+- * @data:    CAN frame payload (up to 8 byte)
++ * struct can_frame - Classical CAN frame structure (aka CAN 2.0B)
++ * @can_id:   CAN ID of the frame and CAN_*_FLAG flags, see canid_t definition
++ * @len:      CAN frame payload length in byte (0 .. 8)
++ * @can_dlc:  deprecated name for CAN frame payload length in byte (0 .. 8)
++ * @__pad:    padding
++ * @__res0:   reserved / padding
++ * @len8_dlc: optional DLC value (9 .. 15) at 8 byte payload length
++ *            len8_dlc contains values from 9 .. 15 when the payload length is
++ *            8 bytes but the DLC value (see ISO 11898-1) is greater then 8.
++ *            CAN_CTRLMODE_CC_LEN8_DLC flag has to be enabled in CAN driver.
++ * @data:     CAN frame payload (up to 8 byte)
+  */
+ struct can_frame {
+ 	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
+-	__u8    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
+-	__u8    __pad;   /* padding */
+-	__u8    __res0;  /* reserved / padding */
+-	__u8    __res1;  /* reserved / padding */
+-	__u8    data[CAN_MAX_DLEN] __attribute__((aligned(8)));
++	union {
++		/* CAN frame payload length in byte (0 .. CAN_MAX_DLEN)
++		 * was previously named can_dlc so we need to carry that
++		 * name for legacy support
++		 */
++		__u8 len;
++		__u8 can_dlc; /* deprecated */
++	};
++	__u8 __pad; /* padding */
++	__u8 __res0; /* reserved / padding */
++	__u8 len8_dlc; /* optional DLC for 8 byte payload length (9 .. 15) */
++	__u8 data[CAN_MAX_DLEN] __attribute__((aligned(8)));
+ };
+ 
+ /*
+  * defined bits for canfd_frame.flags
+  *
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index 6f598b73839e..f730d443b918 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -98,10 +98,11 @@ struct can_ctrlmode {
+ #define CAN_CTRLMODE_ONE_SHOT		0x08	/* One-Shot mode */
+ #define CAN_CTRLMODE_BERR_REPORTING	0x10	/* Bus-error reporting */
+ #define CAN_CTRLMODE_FD			0x20	/* CAN FD mode */
+ #define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
+ #define CAN_CTRLMODE_FD_NON_ISO		0x80	/* CAN FD in non-ISO mode */
++#define CAN_CTRLMODE_CC_LEN8_DLC	0x100	/* Classic CAN DLC option */
+ 
+ /*
+  * CAN device statistics
+  */
+ struct can_device_stats {
+-- 
+2.28.0
 
-Aiden Branwen
