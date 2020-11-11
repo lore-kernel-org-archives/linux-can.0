@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 936BDC56201
-	for <linux-can@archiver.kernel.org>; Wed, 11 Nov 2020 13:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1444EC55ABD
+	for <linux-can@archiver.kernel.org>; Wed, 11 Nov 2020 13:05:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 480C520829
+	by mail.kernel.org (Postfix) with ESMTP id BD1772074B
 	for <linux-can@archiver.kernel.org>; Wed, 11 Nov 2020 13:05:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgKKNFT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 11 Nov 2020 08:05:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49472 "EHLO
+        id S1726705AbgKKNFQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 11 Nov 2020 08:05:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726808AbgKKNFR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 11 Nov 2020 08:05:17 -0500
+        with ESMTP id S1726787AbgKKNFQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 11 Nov 2020 08:05:16 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AC6C0613D1
-        for <linux-can@vger.kernel.org>; Wed, 11 Nov 2020 05:05:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BDBC0613D1
+        for <linux-can@vger.kernel.org>; Wed, 11 Nov 2020 05:05:16 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kcpoG-000306-I2; Wed, 11 Nov 2020 14:05:12 +0100
+        id 1kcpoE-000306-S9; Wed, 11 Nov 2020 14:05:10 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
@@ -33,11 +33,10 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         Shawn Guo <shawnguo@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
         devicetree@vger.kernel.org
-Subject: [net v2 4/4] dt-bindings: can: fsl,flexcan.yaml: fix fsl,stop-mode
-Date:   Wed, 11 Nov 2020 14:05:07 +0100
-Message-Id: <20201111130507.1560881-5-mkl@pengutronix.de>
+Subject: [net v2 1/4] ARM: dts: imx: fix can fsl,stop-mode
+Date:   Wed, 11 Nov 2020 14:05:04 +0100
+Message-Id: <20201111130507.1560881-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201111130507.1560881-1-mkl@pengutronix.de>
 References: <[net v2 0/4] arm: imx: flexcan: fix yaml bindings and DTs>
@@ -52,47 +51,119 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The fsl,stop-mode property is a phandle-array and should consist of one phandle
-and two 32 bit integers, e.g.:
+Since commit:
 
-    fsl,stop-mode = <&gpr 0x34 28>;
+    d9b081e3fc4b can: flexcan: remove ack_grp and ack_bit handling from driver
 
-This patch fixes the following errors, which shows up during a dtbs_check:
+the 4th and 5th value of the property "fsl,stop-mode" aren't used anymore. With
+the conversion of the flexcan binding to yaml this raises the following error
+during dtbs_check:
 
-arch/arm/boot/dts/imx6dl-apf6dev.dt.yaml: can@2090000: fsl,stop-mode: [[1, 52, 28]] is too short
+arch/arm/boot/dts/imx6dl-apf6dev.dt.yaml: flexcan@2090000: fsl,stop-mode:0: [1, 52, 28, 16, 17] is too long
     From schema: Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
 
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+This patch fixes the error by removing the obsolete values.
+
+Cc: Shawn Guo <shawnguo@kernel.org>
 Cc: devicetree@vger.kernel.org
-Reported-by: Rob Herring <robh+dt@kernel.org>
-Fixes: e5ab9aa7e49b ("dt-bindings: can: flexcan: convert fsl,*flexcan bindings to yaml")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/fsl,flexcan.yaml      | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/imx6qdl.dtsi | 4 ++--
+ arch/arm/boot/dts/imx6sx.dtsi  | 4 ++--
+ arch/arm/boot/dts/imx6ul.dtsi  | 4 ++--
+ arch/arm/boot/dts/imx7s.dtsi   | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-index 04127714e704..7eca1bf034e6 100644
---- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-+++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-@@ -86,11 +86,12 @@ properties:
-       req_bit is the bit offset of CAN stop request.
-     $ref: /schemas/types.yaml#/definitions/phandle-array
-     items:
--      - description: The 'gpr' is the phandle to general purpose register node.
--      - description: The 'req_gpr' is the gpr register offset of CAN stop request.
--        maximum: 0xff
--      - description: The 'req_bit' is the bit offset of CAN stop request.
--        maximum: 0x1f
-+      items:
-+        - description: The 'gpr' is the phandle to general purpose register node.
-+        - description: The 'req_gpr' is the gpr register offset of CAN stop request.
-+          maximum: 0xff
-+        - description: The 'req_bit' is the bit offset of CAN stop request.
-+          maximum: 0x1f
+diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+index 7a8837cbe21b..bc98b63922b0 100644
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -549,7 +549,7 @@ can1: flexcan@2090000 {
+ 				clocks = <&clks IMX6QDL_CLK_CAN1_IPG>,
+ 					 <&clks IMX6QDL_CLK_CAN1_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x34 28 0x10 17>;
++				fsl,stop-mode = <&gpr 0x34 28>;
+ 				status = "disabled";
+ 			};
  
-   fsl,clk-source:
-     description: |
+@@ -560,7 +560,7 @@ can2: flexcan@2094000 {
+ 				clocks = <&clks IMX6QDL_CLK_CAN2_IPG>,
+ 					 <&clks IMX6QDL_CLK_CAN2_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x34 29 0x10 18>;
++				fsl,stop-mode = <&gpr 0x34 29>;
+ 				status = "disabled";
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
+index dfdca1804f9f..6c604c38c790 100644
+--- a/arch/arm/boot/dts/imx6sx.dtsi
++++ b/arch/arm/boot/dts/imx6sx.dtsi
+@@ -463,7 +463,7 @@ flexcan1: can@2090000 {
+ 				clocks = <&clks IMX6SX_CLK_CAN1_IPG>,
+ 					 <&clks IMX6SX_CLK_CAN1_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 1 0x10 17>;
++				fsl,stop-mode = <&gpr 0x10 1>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -474,7 +474,7 @@ flexcan2: can@2094000 {
+ 				clocks = <&clks IMX6SX_CLK_CAN2_IPG>,
+ 					 <&clks IMX6SX_CLK_CAN2_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 2 0x10 18>;
++				fsl,stop-mode = <&gpr 0x10 2>;
+ 				status = "disabled";
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
+index d7d9f3e46b92..713a4bb341db 100644
+--- a/arch/arm/boot/dts/imx6ul.dtsi
++++ b/arch/arm/boot/dts/imx6ul.dtsi
+@@ -430,7 +430,7 @@ can1: flexcan@2090000 {
+ 				clocks = <&clks IMX6UL_CLK_CAN1_IPG>,
+ 					 <&clks IMX6UL_CLK_CAN1_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 1 0x10 17>;
++				fsl,stop-mode = <&gpr 0x10 1>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -441,7 +441,7 @@ can2: flexcan@2094000 {
+ 				clocks = <&clks IMX6UL_CLK_CAN2_IPG>,
+ 					 <&clks IMX6UL_CLK_CAN2_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 2 0x10 18>;
++				fsl,stop-mode = <&gpr 0x10 2>;
+ 				status = "disabled";
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
+index 84d9cc13afb9..b58262acba11 100644
+--- a/arch/arm/boot/dts/imx7s.dtsi
++++ b/arch/arm/boot/dts/imx7s.dtsi
+@@ -971,7 +971,7 @@ flexcan1: can@30a00000 {
+ 				clocks = <&clks IMX7D_CLK_DUMMY>,
+ 					<&clks IMX7D_CAN1_ROOT_CLK>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 1 0x10 17>;
++				fsl,stop-mode = <&gpr 0x10 1>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -982,7 +982,7 @@ flexcan2: can@30a10000 {
+ 				clocks = <&clks IMX7D_CLK_DUMMY>,
+ 					<&clks IMX7D_CAN2_ROOT_CLK>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 2 0x10 18>;
++				fsl,stop-mode = <&gpr 0x10 2>;
+ 				status = "disabled";
+ 			};
+ 
+
+base-commit: e87d24fce924bfcef9714bbaeb1514162420052e
 -- 
 2.28.0
 
