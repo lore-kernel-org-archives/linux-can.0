@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B354C56202
-	for <linux-can@archiver.kernel.org>; Thu, 12 Nov 2020 18:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A637EC5519F
+	for <linux-can@archiver.kernel.org>; Thu, 12 Nov 2020 18:04:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0936D2222F
-	for <linux-can@archiver.kernel.org>; Thu, 12 Nov 2020 18:04:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F58322201
+	for <linux-can@archiver.kernel.org>; Thu, 12 Nov 2020 18:04:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726295AbgKLSEg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 12 Nov 2020 13:04:36 -0500
-Received: from mail3.ems-wuensche.com ([81.169.186.156]:42512 "EHLO
+        id S1726359AbgKLSEj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 12 Nov 2020 13:04:39 -0500
+Received: from mail3.ems-wuensche.com ([81.169.186.156]:40278 "EHLO
         mail3.ems-wuensche.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgKLSEf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 12 Nov 2020 13:04:35 -0500
+        with ESMTP id S1726217AbgKLSEj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 12 Nov 2020 13:04:39 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 34674FFA5C
-        for <linux-can@vger.kernel.org>; Thu, 12 Nov 2020 18:04:33 +0000 (UTC)
+        by h2257714.serverkompetenz.net (Postfix) with ESMTP id E6462FFBB8
+        for <linux-can@vger.kernel.org>; Thu, 12 Nov 2020 18:04:37 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
 Received: from mail3.ems-wuensche.com ([81.169.186.156])
         by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LJEPIcx2mioy for <linux-can@vger.kernel.org>;
-        Thu, 12 Nov 2020 19:04:32 +0100 (CET)
+        with ESMTP id kOOSNMgeJ0xn for <linux-can@vger.kernel.org>;
+        Thu, 12 Nov 2020 19:04:36 +0100 (CET)
 From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 To:     linux-can@vger.kernel.org
 Cc:     wg@grandegger.com, mkl@pengutronix.de,
         Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH v2 02/16] can: ems_usb: Added CPC_ClearCmdQueue routine.
-Date:   Thu, 12 Nov 2020 19:03:32 +0100
-Message-Id: <20201112180346.29070-3-uttenthaler@ems-wuensche.com>
+Subject: [PATCH v2 04/16] can: ems_usb: Added CAN FD message representation
+Date:   Thu, 12 Nov 2020 19:03:34 +0100
+Message-Id: <20201112180346.29070-5-uttenthaler@ems-wuensche.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201112180346.29070-1-uttenthaler@ems-wuensche.com>
 References: <20201112180346.29070-1-uttenthaler@ems-wuensche.com>
@@ -43,63 +43,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-If the command queue in the interface is flooded with messages which cannot
-successfully be sent to the bus an initialization command would have to
-wait to be executed.
+cpc_canfd_msg struct is added, needed flags are given and the size of 
+ems_cpc_msg is adjusted
 
 Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 ---
- drivers/net/can/usb/ems_usb.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/net/can/usb/ems_usb.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index e943cd07c5f7..a70bda631e4e 100644
+index a9819287e6a7..e75fdd457919 100644
 --- a/drivers/net/can/usb/ems_usb.c
 +++ b/drivers/net/can/usb/ems_usb.c
-@@ -565,6 +565,21 @@ static int ems_usb_control_cmd(struct ems_usb *dev, u8 val)
- 	return ems_usb_command_msg(dev, &cmd);
- }
+@@ -116,6 +116,27 @@ struct cpc_can_msg {
+ 	u8 msg[8];
+ };
  
-+/* Send a CPC_ClearCmdQueue command
++/* CAN FD message representation in a CPC_MSG.
++ * Message object type is CPC_MSG_T_CANFD.
 + */
-+static int ems_usb_clear_cmd_queue(struct ems_usb *dev)
-+{
-+	struct ems_cpc_msg cmd = {
-+		.type = CPC_CMD_TYPE_CLEAR_CMD_QUEUE,
-+		.length = CPC_MSG_HEADER_LEN,
-+		.msgid = 0,
-+		.ts_sec = 0,
-+		.ts_nsec = 0
-+	};
++struct __packed cpc_canfd_msg {
++	__le32 id;
++	u8  length;
++	u8  flags;
++	u8  msg[64];
++};
 +
-+	return ems_usb_command_msg(dev, &cmd);
-+}
++/* This defines are used with the flags variable
++ * within the struct cpc_canfd_msg. A cpc_canfd_msg
++ * can also be used to send a classic CAN frame including
++ * RTR frames when CPC_FDFLAG_NONCANFD_MSG is set.
++ */
++#define CPC_FDFLAG_ESI          BIT(3)
++#define CPC_FDFLAG_RTR          BIT(4)
++#define CPC_FDFLAG_NONCANFD_MSG BIT(5)
++#define CPC_FDFLAG_BRS          BIT(6)
++#define CPC_FDFLAG_XTD          BIT(7)
 +
- /* Start interface
-  */
- static int ems_usb_start(struct ems_usb *dev)
-@@ -897,6 +912,7 @@ static int ems_usb_set_bittiming(struct net_device *netdev)
- 	struct ems_usb *dev = netdev_priv(netdev);
- 	struct can_bittiming *bt = &dev->can.bittiming;
- 	u8 btr0, btr1;
-+	int err;
+ /* Representation of the CAN parameters for the SJA1000 controller */
+ struct cpc_sja1000_params {
+ 	u8 mode;
+@@ -190,8 +211,9 @@ struct __packed ems_cpc_msg {
+ 	__le32 ts_nsec;	/* timestamp in nano seconds */
  
- 	btr0 = ((bt->brp - 1) & 0x3f) | (((bt->sjw - 1) & 0x3) << 6);
- 	btr1 = ((bt->prop_seg + bt->phase_seg1 - 1) & 0xf) |
-@@ -904,6 +920,13 @@ static int ems_usb_set_bittiming(struct net_device *netdev)
- 	if (dev->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
- 		btr1 |= 0x80;
- 
-+	/* If the command queue in the device is full with incoming commands
-+	 * a reinitialization would not be possible before the queue is cleared.
-+	 */
-+	err = ems_usb_clear_cmd_queue(dev);
-+	if (err)
-+		return err;
-+
- 	netdev_info(netdev, "setting BTR0=0x%02x BTR1=0x%02x\n", btr0, btr1);
- 
- 	dev->active_params.msg.can_params.cc_params.sja1000.btr0 = btr0;
+ 	union {
+-		u8 generic[64];
++		u8 generic[70];
+ 		struct cpc_can_msg can_msg;
++		struct cpc_canfd_msg canfd_msg;
+ 		struct cpc_can_params can_params;
+ 		struct cpc_confirm confirmation;
+ 		struct cpc_overrun overrun;
 -- 
 2.26.2
 
