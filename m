@@ -7,34 +7,33 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C269CC63777
-	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43985C63798
+	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 94E0A2222C
-	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1BC06221F9
+	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgKNReq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 14 Nov 2020 12:34:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
+        id S1726387AbgKNRer (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 14 Nov 2020 12:34:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgKNReq (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Nov 2020 12:34:46 -0500
+        with ESMTP id S1726391AbgKNRer (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Nov 2020 12:34:47 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CF6C0613D1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F2DC0613D2
         for <linux-can@vger.kernel.org>; Sat, 14 Nov 2020 09:34:46 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kdzRg-0000mY-VO; Sat, 14 Nov 2020 18:34:41 +0100
+        id 1kdzRh-0000mY-OS; Sat, 14 Nov 2020 18:34:41 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Wu Bo <wubo.oduw@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
+        kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 12/15] can: m_can: m_can_handle_state_change(): fix state change
-Date:   Sat, 14 Nov 2020 18:33:56 +0100
-Message-Id: <20201114173358.2058600-13-mkl@pengutronix.de>
+Subject: [net 14/15] can: m_can: Fix freeing of can device from peripherials
+Date:   Sat, 14 Nov 2020 18:33:58 +0100
+Message-Id: <20201114173358.2058600-15-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201114173358.2058600-1-mkl@pengutronix.de>
 References: <20201114173358.2058600-1-mkl@pengutronix.de>
@@ -48,46 +47,174 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Wu Bo <wubo.oduw@gmail.com>
+From: Dan Murphy <dmurphy@ti.com>
 
-m_can_handle_state_change() is called with the new_state as an argument.
+Fix leaking netdev device from peripherial devices. The call to allocate the
+netdev device is made from and managed by the peripherial.
 
-In the switch statements for CAN_STATE_ERROR_ACTIVE, the comment and the
-following code indicate that a CAN_STATE_ERROR_WARNING is handled.
-
-This patch fixes this problem by changing the case to CAN_STATE_ERROR_WARNING.
-
-Signed-off-by: Wu Bo <wubo.oduw@gmail.com>
-Link: http://lore.kernel.org/r/20200129022330.21248-2-wubo.oduw@gmail.com
-Cc: Dan Murphy <dmurphy@ti.com>
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
+Fixes: d42f4e1d06d9 ("can: m_can: Create a m_can platform framework")
+Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Link: http://lore.kernel.org/r/20200227183829.21854-2-dmurphy@ti.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/m_can/m_can.c          |  3 ---
+ drivers/net/can/m_can/m_can_platform.c | 23 +++++++++++++++--------
+ drivers/net/can/m_can/tcan4x5x.c       | 26 ++++++++++++++++++--------
+ 3 files changed, 33 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 02c5795b7393..63887e23d89c 100644
+index f2c87b76e569..645101d19989 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -665,7 +665,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	unsigned int ecr;
+@@ -1856,7 +1856,6 @@ int m_can_class_register(struct m_can_classdev *m_can_dev)
+ 	if (ret) {
+ 		if (m_can_dev->pm_clock_support)
+ 			pm_runtime_disable(m_can_dev->dev);
+-		free_candev(m_can_dev->net);
+ 	}
  
- 	switch (new_state) {
--	case CAN_STATE_ERROR_ACTIVE:
-+	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
- 		cdev->can.can_stats.error_warning++;
- 		cdev->can.state = CAN_STATE_ERROR_WARNING;
-@@ -694,7 +694,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	__m_can_get_berr_counter(dev, &bec);
+ 	return ret;
+@@ -1914,8 +1913,6 @@ void m_can_class_unregister(struct m_can_classdev *m_can_dev)
+ 	unregister_candev(m_can_dev->net);
  
- 	switch (new_state) {
--	case CAN_STATE_ERROR_ACTIVE:
-+	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
- 		cf->can_id |= CAN_ERR_CRTL;
- 		cf->data[1] = (bec.txerr > bec.rxerr) ?
+ 	m_can_clk_stop(m_can_dev);
+-
+-	free_candev(m_can_dev->net);
+ }
+ EXPORT_SYMBOL_GPL(m_can_class_unregister);
+ 
+diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+index e6d0cb9ee02f..161cb9be018c 100644
+--- a/drivers/net/can/m_can/m_can_platform.c
++++ b/drivers/net/can/m_can/m_can_platform.c
+@@ -67,32 +67,36 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		return -ENOMEM;
++	if (!priv) {
++		ret = -ENOMEM;
++		goto probe_fail;
++	}
+ 
+ 	mcan_class->device_data = priv;
+ 
+-	m_can_class_get_clocks(mcan_class);
++	ret = m_can_class_get_clocks(mcan_class);
++	if (ret)
++		goto probe_fail;
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "m_can");
+ 	addr = devm_ioremap_resource(&pdev->dev, res);
+ 	irq = platform_get_irq_byname(pdev, "int0");
+ 	if (IS_ERR(addr) || irq < 0) {
+ 		ret = -EINVAL;
+-		goto failed_ret;
++		goto probe_fail;
+ 	}
+ 
+ 	/* message ram could be shared */
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "message_ram");
+ 	if (!res) {
+ 		ret = -ENODEV;
+-		goto failed_ret;
++		goto probe_fail;
+ 	}
+ 
+ 	mram_addr = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+ 	if (!mram_addr) {
+ 		ret = -ENOMEM;
+-		goto failed_ret;
++		goto probe_fail;
+ 	}
+ 
+ 	priv->base = addr;
+@@ -111,9 +115,10 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 
+ 	m_can_init_ram(mcan_class);
+ 
+-	ret = m_can_class_register(mcan_class);
++	return m_can_class_register(mcan_class);
+ 
+-failed_ret:
++probe_fail:
++	m_can_class_free_dev(mcan_class->net);
+ 	return ret;
+ }
+ 
+@@ -134,6 +139,8 @@ static int m_can_plat_remove(struct platform_device *pdev)
+ 
+ 	m_can_class_unregister(mcan_class);
+ 
++	m_can_class_free_dev(mcan_class->net);
++
+ 	platform_set_drvdata(pdev, NULL);
+ 
+ 	return 0;
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index 4fdb7121403a..e5d7d85e0b6d 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -440,14 +440,18 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 		return -ENOMEM;
+ 
+ 	priv = devm_kzalloc(&spi->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		return -ENOMEM;
++	if (!priv) {
++		ret = -ENOMEM;
++		goto out_m_can_class_free_dev;
++	}
+ 
+ 	priv->power = devm_regulator_get_optional(&spi->dev, "vsup");
+-	if (PTR_ERR(priv->power) == -EPROBE_DEFER)
+-		return -EPROBE_DEFER;
+-	else
++	if (PTR_ERR(priv->power) == -EPROBE_DEFER) {
++		ret = -EPROBE_DEFER;
++		goto out_m_can_class_free_dev;
++	} else {
+ 		priv->power = NULL;
++	}
+ 
+ 	mcan_class->device_data = priv;
+ 
+@@ -460,8 +464,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	}
+ 
+ 	/* Sanity check */
+-	if (freq < 20000000 || freq > TCAN4X5X_EXT_CLK_DEF)
+-		return -ERANGE;
++	if (freq < 20000000 || freq > TCAN4X5X_EXT_CLK_DEF) {
++		ret = -ERANGE;
++		goto out_m_can_class_free_dev;
++	}
+ 
+ 	priv->reg_offset = TCAN4X5X_MCAN_OFFSET;
+ 	priv->mram_start = TCAN4X5X_MRAM_START;
+@@ -518,8 +524,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 		clk_disable_unprepare(mcan_class->cclk);
+ 		clk_disable_unprepare(mcan_class->hclk);
+ 	}
+-
++ out_m_can_class_free_dev:
++	m_can_class_free_dev(mcan_class->net);
+ 	dev_err(&spi->dev, "Probe failed, err=%d\n", ret);
++
+ 	return ret;
+ }
+ 
+@@ -531,6 +539,8 @@ static int tcan4x5x_can_remove(struct spi_device *spi)
+ 
+ 	tcan4x5x_power_enable(priv->power, 0);
+ 
++	m_can_class_free_dev(priv->mcan_dev->net);
++
+ 	return 0;
+ }
+ 
 -- 
 2.29.2
 
