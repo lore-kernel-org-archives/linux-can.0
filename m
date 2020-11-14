@@ -7,33 +7,35 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4019C61DD8
-	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D1B1C6379F
+	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B56B3221F9
-	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 72576221F9
+	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgKNRer (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1726391AbgKNRer (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sat, 14 Nov 2020 12:34:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgKNReq (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Nov 2020 12:34:46 -0500
+        with ESMTP id S1726374AbgKNRep (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Nov 2020 12:34:45 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B328C0613D1
-        for <linux-can@vger.kernel.org>; Sat, 14 Nov 2020 09:34:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAFAC0613D1
+        for <linux-can@vger.kernel.org>; Sat, 14 Nov 2020 09:34:44 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kdzRh-0000mY-Az; Sat, 14 Nov 2020 18:34:41 +0100
+        id 1kdzRf-0000mY-OX; Sat, 14 Nov 2020 18:34:39 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
+        kernel@pengutronix.de,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Dan Murphy <dmurphy@ti.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 13/15] can: m_can: m_can_class_free_dev(): introduce new function
-Date:   Sat, 14 Nov 2020 18:33:57 +0100
-Message-Id: <20201114173358.2058600-14-mkl@pengutronix.de>
+Subject: [net 09/15] can: tcan4x5x: replace depends on REGMAP_SPI with depends on SPI
+Date:   Sat, 14 Nov 2020 18:33:53 +0100
+Message-Id: <20201114173358.2058600-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201114173358.2058600-1-mkl@pengutronix.de>
 References: <20201114173358.2058600-1-mkl@pengutronix.de>
@@ -47,50 +49,37 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dan Murphy <dmurphy@ti.com>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-This patch creates a common function that peripherials can call to free the
-netdev device when failures occur.
+regmap is a library function that gets selected by drivers that need it. No
+driver modules should depend on it. Instead depends on SPI and select
+REGMAP_SPI. Depending on REGMAP_SPI makes this driver only build if another
+driver already selected REGMAP_SPI, as the symbol can't be selected through the
+menu kernel configuration.
 
-Fixes: d42f4e1d06d9 ("can: m_can: Create a m_can platform framework")
-Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Link: http://lore.kernel.org/r/20200227183829.21854-2-dmurphy@ti.com
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Link: http://lore.kernel.org/r/20200413141013.506613-1-enric.balletbo@collabora.com
+Reviewed-by: Dan Murphy <dmurphy@ti.com>
+Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 6 ++++++
- drivers/net/can/m_can/m_can.h | 1 +
- 2 files changed, 7 insertions(+)
+ drivers/net/can/m_can/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 63887e23d89c..f2c87b76e569 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1812,6 +1812,12 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(m_can_class_allocate_dev);
+diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
+index 48be627c85c2..5f9f8192dd0b 100644
+--- a/drivers/net/can/m_can/Kconfig
++++ b/drivers/net/can/m_can/Kconfig
+@@ -16,7 +16,8 @@ config CAN_M_CAN_PLATFORM
  
-+void m_can_class_free_dev(struct net_device *net)
-+{
-+	free_candev(net);
-+}
-+EXPORT_SYMBOL_GPL(m_can_class_free_dev);
-+
- int m_can_class_register(struct m_can_classdev *m_can_dev)
- {
- 	int ret;
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index 49f42b50627a..b2699a7c9997 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -99,6 +99,7 @@ struct m_can_classdev {
- };
- 
- struct m_can_classdev *m_can_class_allocate_dev(struct device *dev);
-+void m_can_class_free_dev(struct net_device *net);
- int m_can_class_register(struct m_can_classdev *cdev);
- void m_can_class_unregister(struct m_can_classdev *cdev);
- int m_can_class_get_clocks(struct m_can_classdev *cdev);
+ config CAN_M_CAN_TCAN4X5X
+ 	depends on CAN_M_CAN
+-	depends on REGMAP_SPI
++	depends on SPI
++	select REGMAP_SPI
+ 	tristate "TCAN4X5X M_CAN device"
+ 	help
+ 	  Say Y here if you want support for Texas Instruments TCAN4x5x
 -- 
 2.29.2
 
