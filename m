@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5120C6369E
-	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8656EC63697
+	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8CDF32222C
-	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5C24F221F9
+	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgKNRep (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 14 Nov 2020 12:34:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56056 "EHLO
+        id S1726395AbgKNRes (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 14 Nov 2020 12:34:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbgKNReo (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Nov 2020 12:34:44 -0500
+        with ESMTP id S1726355AbgKNRen (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Nov 2020 12:34:43 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4136C061A04
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BEDC0613D2
         for <linux-can@vger.kernel.org>; Sat, 14 Nov 2020 09:34:43 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kdzRe-0000mY-Ej; Sat, 14 Nov 2020 18:34:38 +0100
+        id 1kdzRe-0000mY-0q; Sat, 14 Nov 2020 18:34:38 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Zhang Qilong <zhangqilong3@huawei.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 08/15] can: flexcan: fix failure handling of pm_runtime_get_sync()
-Date:   Sat, 14 Nov 2020 18:33:52 +0100
-Message-Id: <20201114173358.2058600-9-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [net 07/15] can: flexcan: flexcan_setup_stop_mode(): add missing "req_bit" to stop mode property comment
+Date:   Sat, 14 Nov 2020 18:33:51 +0100
+Message-Id: <20201114173358.2058600-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201114173358.2058600-1-mkl@pengutronix.de>
 References: <20201114173358.2058600-1-mkl@pengutronix.de>
@@ -47,54 +47,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+In the patch
 
-pm_runtime_get_sync() will increment pm usage at first and it will resume the
-device later. If runtime of the device has error or device is in inaccessible
-state(or other error state), resume operation will fail. If we do not call put
-operation to decrease the reference, it will result in reference leak in the
-two functions flexcan_get_berr_counter() and flexcan_open().
+    d9b081e3fc4b ("can: flexcan: remove ack_grp and ack_bit handling from driver")
 
-Moreover, this device cannot enter the idle state and always stay busy or other
-non-idle state later. So we should fix it through adding
-pm_runtime_put_noidle().
+the unused ack_grp and ack_bit were removed from the driver. However in the
+comment, the "req_bit" was accidentally removed, too.
 
-Fixes: ca10989632d88 ("can: flexcan: implement can Runtime PM")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201108083000.2599705-1-zhangqilong3@huawei.com
+This patch adds back the "req_bit" bit.
+
+Fixes: d9b081e3fc4b ("can: flexcan: remove ack_grp and ack_bit handling from driver")
+Reported-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Link: http://lore.kernel.org/r/20201014114810.2911135-1-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 4e8fdb6064bd..d6a9cf0e9b60 100644
+index 881799bd9c5e..4e8fdb6064bd 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -728,8 +728,10 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
- 	int err;
+@@ -1852,7 +1852,7 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
+ 		return -EINVAL;
  
- 	err = pm_runtime_get_sync(priv->dev);
--	if (err < 0)
-+	if (err < 0) {
-+		pm_runtime_put_noidle(priv->dev);
- 		return err;
-+	}
- 
- 	err = __flexcan_get_berr_counter(dev, bec);
- 
-@@ -1654,8 +1656,10 @@ static int flexcan_open(struct net_device *dev)
- 	}
- 
- 	err = pm_runtime_get_sync(priv->dev);
--	if (err < 0)
-+	if (err < 0) {
-+		pm_runtime_put_noidle(priv->dev);
- 		return err;
-+	}
- 
- 	err = open_candev(dev);
- 	if (err)
+ 	/* stop mode property format is:
+-	 * <&gpr req_gpr>.
++	 * <&gpr req_gpr req_bit>.
+ 	 */
+ 	ret = of_property_read_u32_array(np, "fsl,stop-mode", out_val,
+ 					 ARRAY_SIZE(out_val));
 -- 
 2.29.2
 
