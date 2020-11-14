@@ -7,37 +7,39 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C15AC5519F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E80B4C6369E
 	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 769CF2222C
+	by mail.kernel.org (Postfix) with ESMTP id B8D2A221F9
 	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbgKNRen (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 14 Nov 2020 12:34:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
+        id S1726336AbgKNRem (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 14 Nov 2020 12:34:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgKNRem (ORCPT
+        with ESMTP id S1726299AbgKNRem (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sat, 14 Nov 2020 12:34:42 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFAAC0613D1
-        for <linux-can@vger.kernel.org>; Sat, 14 Nov 2020 09:34:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8296C0617A6
+        for <linux-can@vger.kernel.org>; Sat, 14 Nov 2020 09:34:41 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kdzRd-0000mY-A8; Sat, 14 Nov 2020 18:34:37 +0100
+        id 1kdzRc-0000mY-K1; Sat, 14 Nov 2020 18:34:36 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Colin Ian King <colin.king@canonical.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 06/15] can: peak_usb: fix potential integer overflow on shift of a int
-Date:   Sat, 14 Nov 2020 18:33:50 +0100
-Message-Id: <20201114173358.2058600-7-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        =?UTF-8?q?Remigiusz=20Ko=C5=82=C5=82=C4=85taj?= 
+        <remigiusz.kollataj@mobica.com>
+Subject: [net 05/15] can: mcba_usb: mcba_usb_start_xmit(): first fill skb, then pass to can_put_echo_skb()
+Date:   Sat, 14 Nov 2020 18:33:49 +0100
+Message-Id: <20201114173358.2058600-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201114173358.2058600-1-mkl@pengutronix.de>
 References: <20201114173358.2058600-1-mkl@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -47,43 +49,40 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The driver has to first fill the skb with data and then handle it to
+can_put_echo_skb(). This patch moves the can_put_echo_skb() down, right before
+sending the skb out via USB.
 
-The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
-arithmetic and then assigned to a signed 64 bit variable. In the case where
-time_ref->adapter->ts_used_bits is 32 or more this can lead to an oveflow.
-Avoid this by shifting using the BIT_ULL macro instead.
-
-Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver core")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20201105112427.40688-1-colin.king@canonical.com
+Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
+Cc: Remigiusz Kołłątaj <remigiusz.kollataj@mobica.com>
+Link: https://lore.kernel.org/r/20201111221204.1639007-1-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 4 ++--
+ drivers/net/can/usb/mcba_usb.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index c2764799f9ef..204ccb27d6d9 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -156,7 +156,7 @@ void peak_usb_get_ts_time(struct peak_time_ref *time_ref, u32 ts, ktime_t *time)
- 		if (time_ref->ts_dev_1 < time_ref->ts_dev_2) {
- 			/* case when event time (tsw) wraps */
- 			if (ts < time_ref->ts_dev_1)
--				delta_ts = 1 << time_ref->adapter->ts_used_bits;
-+				delta_ts = BIT_ULL(time_ref->adapter->ts_used_bits);
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index 5857b37dcd96..e97f2e0da6b0 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -326,8 +326,6 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
+ 	if (!ctx)
+ 		return NETDEV_TX_BUSY;
  
- 		/* Otherwise, sync time counter (ts_dev_2) has wrapped:
- 		 * handle case when event time (tsn) hasn't.
-@@ -168,7 +168,7 @@ void peak_usb_get_ts_time(struct peak_time_ref *time_ref, u32 ts, ktime_t *time)
- 		 *              tsn            ts
- 		 */
- 		} else if (time_ref->ts_dev_1 < ts) {
--			delta_ts = -(1 << time_ref->adapter->ts_used_bits);
-+			delta_ts = -BIT_ULL(time_ref->adapter->ts_used_bits);
- 		}
+-	can_put_echo_skb(skb, priv->netdev, ctx->ndx);
+-
+ 	if (cf->can_id & CAN_EFF_FLAG) {
+ 		/* SIDH    | SIDL                 | EIDH   | EIDL
+ 		 * 28 - 21 | 20 19 18 x x x 17 16 | 15 - 8 | 7 - 0
+@@ -357,6 +355,8 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
+ 	if (cf->can_id & CAN_RTR_FLAG)
+ 		usb_msg.dlc |= MCBA_DLC_RTR_MASK;
  
- 		/* add delay between last sync and event timestamps */
++	can_put_echo_skb(skb, priv->netdev, ctx->ndx);
++
+ 	err = mcba_usb_xmit(priv, (struct mcba_usb_msg *)&usb_msg, ctx);
+ 	if (err)
+ 		goto xmit_failed;
 -- 
 2.29.2
 
