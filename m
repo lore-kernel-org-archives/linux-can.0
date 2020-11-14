@@ -4,37 +4,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8B9FC64E75
-	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C269CC63777
+	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB8E6221F9
-	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 94E0A2222C
+	for <linux-can@archiver.kernel.org>; Sat, 14 Nov 2020 17:34:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbgKNRes (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 14 Nov 2020 12:34:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56082 "EHLO
+        id S1726385AbgKNReq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 14 Nov 2020 12:34:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgKNRer (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Nov 2020 12:34:47 -0500
+        with ESMTP id S1726365AbgKNReq (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Nov 2020 12:34:46 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67242C0613D1
-        for <linux-can@vger.kernel.org>; Sat, 14 Nov 2020 09:34:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CF6C0613D1
+        for <linux-can@vger.kernel.org>; Sat, 14 Nov 2020 09:34:46 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kdzRi-0000mY-7J; Sat, 14 Nov 2020 18:34:42 +0100
+        id 1kdzRg-0000mY-VO; Sat, 14 Nov 2020 18:34:41 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Faiz Abbas <faiz_abbas@ti.com>,
+        kernel@pengutronix.de, Wu Bo <wubo.oduw@gmail.com>,
         Dan Murphy <dmurphy@ti.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 15/15] can: m_can: m_can_stop(): set device to software init mode before closing
-Date:   Sat, 14 Nov 2020 18:33:59 +0100
-Message-Id: <20201114173358.2058600-16-mkl@pengutronix.de>
+Subject: [net 12/15] can: m_can: m_can_handle_state_change(): fix state change
+Date:   Sat, 14 Nov 2020 18:33:56 +0100
+Message-Id: <20201114173358.2058600-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201114173358.2058600-1-mkl@pengutronix.de>
 References: <20201114173358.2058600-1-mkl@pengutronix.de>
@@ -48,37 +48,46 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Faiz Abbas <faiz_abbas@ti.com>
+From: Wu Bo <wubo.oduw@gmail.com>
 
-There might be some requests pending in the buffer when the interface close
-sequence occurs. In some devices, these pending requests might lead to the
-module not shutting down properly when m_can_clk_stop() is called.
+m_can_handle_state_change() is called with the new_state as an argument.
 
-Therefore, move the device to init state before potentially powering it down.
+In the switch statements for CAN_STATE_ERROR_ACTIVE, the comment and the
+following code indicate that a CAN_STATE_ERROR_WARNING is handled.
 
+This patch fixes this problem by changing the case to CAN_STATE_ERROR_WARNING.
+
+Signed-off-by: Wu Bo <wubo.oduw@gmail.com>
+Link: http://lore.kernel.org/r/20200129022330.21248-2-wubo.oduw@gmail.com
+Cc: Dan Murphy <dmurphy@ti.com>
 Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-Acked-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20200825055442.16994-1-faiz_abbas@ti.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/can/m_can/m_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 645101d19989..e7264043f79a 100644
+index 02c5795b7393..63887e23d89c 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -1414,6 +1414,9 @@ static void m_can_stop(struct net_device *dev)
- 	/* disable all interrupts */
- 	m_can_disable_all_interrupts(cdev);
+@@ -665,7 +665,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	unsigned int ecr;
  
-+	/* Set init mode to disengage from the network */
-+	m_can_config_endisable(cdev, true);
-+
- 	/* set the state as STOPPED */
- 	cdev->can.state = CAN_STATE_STOPPED;
- }
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		cdev->can.can_stats.error_warning++;
+ 		cdev->can.state = CAN_STATE_ERROR_WARNING;
+@@ -694,7 +694,7 @@ static int m_can_handle_state_change(struct net_device *dev,
+ 	__m_can_get_berr_counter(dev, &bec);
+ 
+ 	switch (new_state) {
+-	case CAN_STATE_ERROR_ACTIVE:
++	case CAN_STATE_ERROR_WARNING:
+ 		/* error warning state */
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->data[1] = (bec.txerr > bec.rxerr) ?
 -- 
 2.29.2
 
