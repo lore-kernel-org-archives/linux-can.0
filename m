@@ -7,25 +7,25 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A4E1C6369E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F4A3C63798
 	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 345782225B
+	by mail.kernel.org (Postfix) with ESMTP id 4DAEA20639
 	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727360AbgKORlj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 15 Nov 2020 12:41:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
+        id S1727359AbgKORlk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 15 Nov 2020 12:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727359AbgKORlj (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:41:39 -0500
+        with ESMTP id S1727316AbgKORli (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:41:38 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316DCC0613D2
-        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:41:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA60C0613D1
+        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:41:38 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1keM1u-0005uQ-Gf; Sun, 15 Nov 2020 18:41:34 +0100
+        id 1keM1u-0005uQ-1q; Sun, 15 Nov 2020 18:41:34 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
@@ -33,9 +33,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         Anant Thazhemadam <anant.thazhemadam@gmail.com>,
         syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 02/15] can: af_can: prevent potential access of uninitialized member in canfd_rcv()
-Date:   Sun, 15 Nov 2020 18:41:18 +0100
-Message-Id: <20201115174131.2089251-3-mkl@pengutronix.de>
+Subject: [net 01/15] can: af_can: prevent potential access of uninitialized member in can_rcv()
+Date:   Sun, 15 Nov 2020 18:41:17 +0100
+Message-Id: <20201115174131.2089251-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201115174131.2089251-1-mkl@pengutronix.de>
 References: <20201115174131.2089251-1-mkl@pengutronix.de>
@@ -51,46 +51,46 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-In canfd_rcv(), cfd->len is uninitialized when skb->len = 0, and this
+In can_rcv(), cfd->len is uninitialized when skb->len = 0, and this
 uninitialized cfd->len is accessed nonetheless by pr_warn_once().
 
 Fix this uninitialized variable access by checking cfd->len's validity
-condition (cfd->len > CANFD_MAX_DLEN) separately after the skb->len's
+condition (cfd->len > CAN_MAX_DLEN) separately after the skb->len's
 condition is checked, and appropriately modify the log messages that
 are generated as well.
 In case either of the required conditions fail, the skb is freed and
 NET_RX_DROP is returned, same as before.
 
-Fixes: d4689846881d ("can: af_can: canfd_rcv(): replace WARN_ONCE by pr_warn_once")
+Fixes: 8cb68751c115 ("can: af_can: can_rcv(): replace WARN_ONCE by pr_warn_once")
 Reported-by: syzbot+9bcb0c9409066696d3aa@syzkaller.appspotmail.com
 Tested-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Link: https://lore.kernel.org/r/20201103213906.24219-3-anant.thazhemadam@gmail.com
+Link: https://lore.kernel.org/r/20201103213906.24219-2-anant.thazhemadam@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
  net/can/af_can.c | 19 ++++++++++++++-----
  1 file changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/net/can/af_can.c b/net/can/af_can.c
-index e8d4e3ef5322..5d124c155904 100644
+index 6373ab9c5507..e8d4e3ef5322 100644
 --- a/net/can/af_can.c
 +++ b/net/can/af_can.c
-@@ -703,16 +703,25 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+@@ -677,16 +677,25 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
  {
  	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
  
--	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU ||
--		     cfd->len > CANFD_MAX_DLEN)) {
--		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuf: dev type %d, len %d, datalen %d\n",
-+	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU)) {
-+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
+-	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU ||
+-		     cfd->len > CAN_MAX_DLEN)) {
+-		pr_warn_once("PF_CAN: dropped non conform CAN skbuf: dev type %d, len %d, datalen %d\n",
++	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU)) {
++		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d\n",
 +			     dev->type, skb->len);
 +		goto free_skb;
 +	}
 +
 +	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
-+	if (unlikely(cfd->len > CANFD_MAX_DLEN)) {
-+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d, datalen %d\n",
++	if (unlikely(cfd->len > CAN_MAX_DLEN)) {
++		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d, datalen %d\n",
  			     dev->type, skb->len, cfd->len);
 -		kfree_skb(skb);
 -		return NET_RX_DROP;
@@ -105,7 +105,9 @@ index e8d4e3ef5322..5d124c155904 100644
 +	return NET_RX_DROP;
  }
  
- /* af_can protocol functions */
+ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+
+base-commit: ceb736e1d45c253f5e86b185ca9b497cdd43063f
 -- 
 2.29.2
 
