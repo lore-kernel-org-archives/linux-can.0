@@ -2,46 +2,50 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22AF0C83012
-	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FBB8C2D0E4
+	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:56:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 08A0920639
-	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D635622265
+	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:56:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727487AbgKORl5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 15 Nov 2020 12:41:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
+        id S1726789AbgKOR4C (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 15 Nov 2020 12:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727316AbgKORln (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:41:43 -0500
+        with ESMTP id S1726741AbgKOR4C (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:56:02 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2006DC0613D2
-        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:41:43 -0800 (PST)
-Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C80C0613D1
+        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:56:02 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1keM1y-0005uQ-CJ; Sun, 15 Nov 2020 18:41:38 +0100
+        id 1keMFs-0007lt-99; Sun, 15 Nov 2020 18:56:00 +0100
+Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:1e3d:e0be:764c:4a56])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 28250592EFE;
+        Sun, 15 Nov 2020 17:55:59 +0000 (UTC)
+Date:   Sun, 15 Nov 2020 18:55:56 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        =?UTF-8?q?Remigiusz=20Ko=C5=82=C5=82=C4=85taj?= 
-        <remigiusz.kollataj@mobica.com>
-Subject: [net 05/15] can: mcba_usb: mcba_usb_start_xmit(): first fill skb, then pass to can_put_echo_skb()
-Date:   Sun, 15 Nov 2020 18:41:21 +0100
-Message-Id: <20201115174131.2089251-6-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201115174131.2089251-1-mkl@pengutronix.de>
-References: <20201115174131.2089251-1-mkl@pengutronix.de>
+To:     Jimmy Assarsson <jimmyassarsson@gmail.com>
+Cc:     linux-can@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>
+Subject: Re: [PATCH 1/6] can: kvaser_pciefd: Fix KCAN bittiming limits
+Message-ID: <20201115175556.f3kuyxwsy77hluvt@hardanger.blackshift.org>
+References: <20201115163027.16851-1-jimmyassarsson@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:205:1d::14
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pthpnf2mf27ewofe"
+Content-Disposition: inline
+In-Reply-To: <20201115163027.16851-1-jimmyassarsson@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
@@ -49,40 +53,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The driver has to first fill the skb with data and then handle it to
-can_put_echo_skb(). This patch moves the can_put_echo_skb() down, right before
-sending the skb out via USB.
 
-Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
-Cc: Remigiusz Kołłątaj <remigiusz.kollataj@mobica.com>
-Link: https://lore.kernel.org/r/20201111221204.1639007-1-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/mcba_usb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--pthpnf2mf27ewofe
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index 5857b37dcd96..e97f2e0da6b0 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -326,8 +326,6 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
- 	if (!ctx)
- 		return NETDEV_TX_BUSY;
- 
--	can_put_echo_skb(skb, priv->netdev, ctx->ndx);
--
- 	if (cf->can_id & CAN_EFF_FLAG) {
- 		/* SIDH    | SIDL                 | EIDH   | EIDL
- 		 * 28 - 21 | 20 19 18 x x x 17 16 | 15 - 8 | 7 - 0
-@@ -357,6 +355,8 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
- 	if (cf->can_id & CAN_RTR_FLAG)
- 		usb_msg.dlc |= MCBA_DLC_RTR_MASK;
- 
-+	can_put_echo_skb(skb, priv->netdev, ctx->ndx);
-+
- 	err = mcba_usb_xmit(priv, (struct mcba_usb_msg *)&usb_msg, ctx);
- 	if (err)
- 		goto xmit_failed;
--- 
-2.29.2
+On Sun, Nov 15, 2020 at 05:30:22PM +0100, Jimmy Assarsson wrote:
+> From: Jimmy Assarsson <extja@kvaser.com>
+>=20
+> Use correct bittiming limits for the KCAN CAN controller.
+>=20
+> Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 
+Applied this and 2 to linux-can/testing. The rest to linux-can-next/testing.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--pthpnf2mf27ewofe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+xa6gACgkQqclaivrt
+76lH2wgAssSvQPZW6QYeirN6sor9i2AVWqV7BPwzYLxKIrVOZlAk4Svi8sKgwXzU
+f3hSUGDzGZmXEVT1ub5yHTZPAfFOaALsT1TH004+ylBTOXP8J4tPGwVdmcIFOizG
+fLYL3H+Uz63eo43oRKBRrRrVEcQIAN3c4q9Dieq4YlIag2n8sFL9PUe/gdi3fPbG
+6hMtrsMBAmUY5Z+zOR4vDOltD8EoWgSKEB81jBytVbSa191nLcIiMMNMXcn8/rAu
+EnanxpZheHYJEDB75sOkZ0FujDu4JyuytFkFQ5bDusjJ/pwl5LcMrVLVXMJTv2K+
+x1/gZS20j4VOcinGSQX140uF454BNQ==
+=4/6M
+-----END PGP SIGNATURE-----
+
+--pthpnf2mf27ewofe--
