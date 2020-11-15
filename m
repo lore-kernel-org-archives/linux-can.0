@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 528CCC64E7D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59993C64E7C
 	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 29D8820719
+	by mail.kernel.org (Postfix) with ESMTP id 3F5ED20639
 	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727440AbgKORlq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727421AbgKORlq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sun, 15 Nov 2020 12:41:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgKORlp (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:41:45 -0500
+        with ESMTP id S1727417AbgKORln (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:41:43 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30ABC0613D1
-        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:41:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4AFC0617A6
+        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:41:43 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1keM20-0005uQ-JT; Sun, 15 Nov 2020 18:41:40 +0100
+        id 1keM1x-0005uQ-RZ; Sun, 15 Nov 2020 18:41:37 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Zhang Qilong <zhangqilong3@huawei.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 08/15] can: flexcan: fix failure handling of pm_runtime_get_sync()
-Date:   Sun, 15 Nov 2020 18:41:24 +0100
-Message-Id: <20201115174131.2089251-9-mkl@pengutronix.de>
+Subject: [net 04/15] can: ti_hecc: Fix memleak in ti_hecc_probe
+Date:   Sun, 15 Nov 2020 18:41:20 +0100
+Message-Id: <20201115174131.2089251-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201115174131.2089251-1-mkl@pengutronix.de>
 References: <20201115174131.2089251-1-mkl@pengutronix.de>
@@ -49,52 +49,66 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Zhang Qilong <zhangqilong3@huawei.com>
 
-pm_runtime_get_sync() will increment pm usage at first and it will resume the
-device later. If runtime of the device has error or device is in inaccessible
-state(or other error state), resume operation will fail. If we do not call put
-operation to decrease the reference, it will result in reference leak in the
-two functions flexcan_get_berr_counter() and flexcan_open().
+In the error handling, we should goto the probe_exit_candev
+to free ndev to prevent memory leak.
 
-Moreover, this device cannot enter the idle state and always stay busy or other
-non-idle state later. So we should fix it through adding
-pm_runtime_put_noidle().
-
-Fixes: ca10989632d88 ("can: flexcan: implement can Runtime PM")
+Fixes: dabf54dd1c63 ("can: ti_hecc: Convert TI HECC driver to DT only driver")
 Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201108083000.2599705-1-zhangqilong3@huawei.com
+Link: https://lore.kernel.org/r/20201114111708.3465543-1-zhangqilong3@huawei.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/can/ti_hecc.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 4e8fdb6064bd..d6a9cf0e9b60 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -728,8 +728,10 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
- 	int err;
- 
- 	err = pm_runtime_get_sync(priv->dev);
--	if (err < 0)
-+	if (err < 0) {
-+		pm_runtime_put_noidle(priv->dev);
- 		return err;
-+	}
- 
- 	err = __flexcan_get_berr_counter(dev, bec);
- 
-@@ -1654,8 +1656,10 @@ static int flexcan_open(struct net_device *dev)
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 9913f5458279..2c22f40e12bd 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -881,7 +881,8 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	priv->base = devm_platform_ioremap_resource_byname(pdev, "hecc");
+ 	if (IS_ERR(priv->base)) {
+ 		dev_err(&pdev->dev, "hecc ioremap failed\n");
+-		return PTR_ERR(priv->base);
++		err = PTR_ERR(priv->base);
++		goto probe_exit_candev;
  	}
  
- 	err = pm_runtime_get_sync(priv->dev);
--	if (err < 0)
-+	if (err < 0) {
-+		pm_runtime_put_noidle(priv->dev);
- 		return err;
-+	}
+ 	/* handle hecc-ram memory */
+@@ -889,20 +890,22 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 							       "hecc-ram");
+ 	if (IS_ERR(priv->hecc_ram)) {
+ 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
+-		return PTR_ERR(priv->hecc_ram);
++		err = PTR_ERR(priv->hecc_ram);
++		goto probe_exit_candev;
+ 	}
  
- 	err = open_candev(dev);
- 	if (err)
+ 	/* handle mbx memory */
+ 	priv->mbx = devm_platform_ioremap_resource_byname(pdev, "mbx");
+ 	if (IS_ERR(priv->mbx)) {
+ 		dev_err(&pdev->dev, "mbx ioremap failed\n");
+-		return PTR_ERR(priv->mbx);
++		err = PTR_ERR(priv->mbx);
++		goto probe_exit_candev;
+ 	}
+ 
+ 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+ 	if (!irq) {
+ 		dev_err(&pdev->dev, "No irq resource\n");
+-		goto probe_exit;
++		goto probe_exit_candev;
+ 	}
+ 
+ 	priv->ndev = ndev;
+@@ -966,7 +969,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	clk_put(priv->clk);
+ probe_exit_candev:
+ 	free_candev(ndev);
+-probe_exit:
++
+ 	return err;
+ }
+ 
 -- 
 2.29.2
 
