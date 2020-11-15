@@ -4,38 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B407DC6379D
-	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 528CCC64E7D
+	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 868FC20639
-	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 29D8820719
+	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727364AbgKORlk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 15 Nov 2020 12:41:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50720 "EHLO
+        id S1727440AbgKORlq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 15 Nov 2020 12:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727316AbgKORlk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:41:40 -0500
+        with ESMTP id S1727431AbgKORlp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:41:45 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484FDC0613D1
-        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:41:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30ABC0613D1
+        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:41:45 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1keM1v-0005uQ-LY; Sun, 15 Nov 2020 18:41:35 +0100
+        id 1keM20-0005uQ-JT; Sun, 15 Nov 2020 18:41:40 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Alejandro Concepcion Rodriguez <alejandro@acoro.eu>,
-        Loris Fauster <loris.fauster@ttcontrol.com>,
+        kernel@pengutronix.de, Zhang Qilong <zhangqilong3@huawei.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 03/15] can: dev: can_restart(): post buffer from the right context
-Date:   Sun, 15 Nov 2020 18:41:19 +0100
-Message-Id: <20201115174131.2089251-4-mkl@pengutronix.de>
+Subject: [net 08/15] can: flexcan: fix failure handling of pm_runtime_get_sync()
+Date:   Sun, 15 Nov 2020 18:41:24 +0100
+Message-Id: <20201115174131.2089251-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201115174131.2089251-1-mkl@pengutronix.de>
 References: <20201115174131.2089251-1-mkl@pengutronix.de>
@@ -49,36 +47,54 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Alejandro Concepcion Rodriguez <alejandro@acoro.eu>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-netif_rx() is meant to be called from interrupt contexts. can_restart() may be
-called by can_restart_work(), which is called from a worqueue, so it may run in
-process context. Use netif_rx_ni() instead.
+pm_runtime_get_sync() will increment pm usage at first and it will resume the
+device later. If runtime of the device has error or device is in inaccessible
+state(or other error state), resume operation will fail. If we do not call put
+operation to decrease the reference, it will result in reference leak in the
+two functions flexcan_get_berr_counter() and flexcan_open().
 
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
-Co-developed-by: Loris Fauster <loris.fauster@ttcontrol.com>
-Signed-off-by: Loris Fauster <loris.fauster@ttcontrol.com>
-Signed-off-by: Alejandro Concepcion Rodriguez <alejandro@acoro.eu>
-Link: https://lore.kernel.org/r/4e84162b-fb31-3a73-fa9a-9438b4bd5234@acoro.eu
-[mkl: use netif_rx_ni() instead of netif_rx_any_context()]
+Moreover, this device cannot enter the idle state and always stay busy or other
+non-idle state later. So we should fix it through adding
+pm_runtime_put_noidle().
+
+Fixes: ca10989632d88 ("can: flexcan: implement can Runtime PM")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201108083000.2599705-1-zhangqilong3@huawei.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 6dee4f8f2024..81e39d7507d8 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -592,7 +592,7 @@ static void can_restart(struct net_device *dev)
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 4e8fdb6064bd..d6a9cf0e9b60 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -728,8 +728,10 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
+ 	int err;
  
- 	cf->can_id |= CAN_ERR_RESTARTED;
+ 	err = pm_runtime_get_sync(priv->dev);
+-	if (err < 0)
++	if (err < 0) {
++		pm_runtime_put_noidle(priv->dev);
+ 		return err;
++	}
  
--	netif_rx(skb);
-+	netif_rx_ni(skb);
+ 	err = __flexcan_get_berr_counter(dev, bec);
  
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->can_dlc;
+@@ -1654,8 +1656,10 @@ static int flexcan_open(struct net_device *dev)
+ 	}
+ 
+ 	err = pm_runtime_get_sync(priv->dev);
+-	if (err < 0)
++	if (err < 0) {
++		pm_runtime_put_noidle(priv->dev);
+ 		return err;
++	}
+ 
+ 	err = open_candev(dev);
+ 	if (err)
 -- 
 2.29.2
 
