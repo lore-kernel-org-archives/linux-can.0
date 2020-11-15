@@ -7,33 +7,34 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3A36C64EBC
-	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C826C71156
+	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8089420719
+	by mail.kernel.org (Postfix) with ESMTP id CE15720719
 	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 17:42:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727464AbgKORls (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 15 Nov 2020 12:41:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50782 "EHLO
+        id S1727479AbgKORlu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 15 Nov 2020 12:41:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727479AbgKORls (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:41:48 -0500
+        with ESMTP id S1727481AbgKORlt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 12:41:49 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB67C0613D2
-        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:41:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D4EC0613D2
+        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 09:41:49 -0800 (PST)
 Received: from heimdall.vpn.pengutronix.de ([2001:67c:670:205:1d::14] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1keM23-0005uQ-H5; Sun, 15 Nov 2020 18:41:43 +0100
+        id 1keM24-0005uQ-Bd; Sun, 15 Nov 2020 18:41:44 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
+        kernel@pengutronix.de, Faiz Abbas <faiz_abbas@ti.com>,
+        Dan Murphy <dmurphy@ti.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 13/15] can: m_can: m_can_class_free_dev(): introduce new function
-Date:   Sun, 15 Nov 2020 18:41:29 +0100
-Message-Id: <20201115174131.2089251-14-mkl@pengutronix.de>
+Subject: [net 15/15] can: m_can: m_can_stop(): set device to software init mode before closing
+Date:   Sun, 15 Nov 2020 18:41:31 +0100
+Message-Id: <20201115174131.2089251-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201115174131.2089251-1-mkl@pengutronix.de>
 References: <20201115174131.2089251-1-mkl@pengutronix.de>
@@ -47,50 +48,37 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dan Murphy <dmurphy@ti.com>
+From: Faiz Abbas <faiz_abbas@ti.com>
 
-This patch creates a common function that peripherials can call to free the
-netdev device when failures occur.
+There might be some requests pending in the buffer when the interface close
+sequence occurs. In some devices, these pending requests might lead to the
+module not shutting down properly when m_can_clk_stop() is called.
 
-Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
-Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Link: http://lore.kernel.org/r/20200227183829.21854-2-dmurphy@ti.com
+Therefore, move the device to init state before potentially powering it down.
+
+Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+Acked-by: Dan Murphy <dmurphy@ti.com>
+Link: https://lore.kernel.org/r/20200825055442.16994-1-faiz_abbas@ti.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 6 ++++++
- drivers/net/can/m_can/m_can.h | 1 +
- 2 files changed, 7 insertions(+)
+ drivers/net/can/m_can/m_can.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 63887e23d89c..f2c87b76e569 100644
+index 645101d19989..e7264043f79a 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -1812,6 +1812,12 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(m_can_class_allocate_dev);
+@@ -1414,6 +1414,9 @@ static void m_can_stop(struct net_device *dev)
+ 	/* disable all interrupts */
+ 	m_can_disable_all_interrupts(cdev);
  
-+void m_can_class_free_dev(struct net_device *net)
-+{
-+	free_candev(net);
-+}
-+EXPORT_SYMBOL_GPL(m_can_class_free_dev);
++	/* Set init mode to disengage from the network */
++	m_can_config_endisable(cdev, true);
 +
- int m_can_class_register(struct m_can_classdev *m_can_dev)
- {
- 	int ret;
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index 49f42b50627a..b2699a7c9997 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -99,6 +99,7 @@ struct m_can_classdev {
- };
- 
- struct m_can_classdev *m_can_class_allocate_dev(struct device *dev);
-+void m_can_class_free_dev(struct net_device *net);
- int m_can_class_register(struct m_can_classdev *cdev);
- void m_can_class_unregister(struct m_can_classdev *cdev);
- int m_can_class_get_clocks(struct m_can_classdev *cdev);
+ 	/* set the state as STOPPED */
+ 	cdev->can.state = CAN_STATE_STOPPED;
+ }
 -- 
 2.29.2
 
