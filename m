@@ -2,283 +2,100 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45926C2D0E4
-	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 11:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8301C2D0E4
+	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 16:31:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB3CA2225B
-	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 11:42:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 625DB20639
+	for <linux-can@archiver.kernel.org>; Sun, 15 Nov 2020 16:31:35 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bK0GZ+Es"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgKOLl7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 15 Nov 2020 06:41:59 -0500
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:44907 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgKOLl6 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 06:41:58 -0500
-Received: by mail-yb1-f195.google.com with SMTP id w5so631890ybj.11;
-        Sun, 15 Nov 2020 03:41:56 -0800 (PST)
+        id S1727046AbgKOQbO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 15 Nov 2020 11:31:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727201AbgKOQbO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 15 Nov 2020 11:31:14 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F71C0613D2
+        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 08:31:12 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id d17so21343570lfq.10
+        for <linux-can@vger.kernel.org>; Sun, 15 Nov 2020 08:31:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vREcVTqf0XnPs3ZnNVPT87eSMZGPx/gxgKBguECzTL0=;
+        b=bK0GZ+EsxviPmYiVs9U1W5Rb/R1LRnzbwPAsj/PVpuLdaQ7N0Q7XkpPOcmD4hy+Pfu
+         Ec9b5a8RWW7t2FpAGk0OJxBqDRa6su1PZpYZbXtfPYqL9qo1lKxlY3eifYdT2WRz4paO
+         X66rzmQX7kpC51mbLj3iYpAp6apvQ/FToZmDeWJuycri1SdXRbPIcd7+v0AzgPVaWLQl
+         6VZXd9IJeTJ91zqIDm/BfEXOq5bJVoFjllN9+C7YCEMHGPF12RZ/EOtRhpoKxXBg7oAb
+         7agExJ3cw869Z/q9e8hQGot3f01CWyy/oE2s5QnxHbTYzitVUA/K6lBJ41FPRa8rDKg7
+         9ClQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f9TFXb0r9Tccm0T3gjIoQS3fTTI3ZOZAjprd/SljobU=;
-        b=qAvwYDgMHzPVaC4SKxx9VMnQt6RyCD5ZUsbVo7pvcPbwqKiUqvxiBDV+zcoMo8uSb7
-         AGdV8ocbgxGTnzoQ8WBnk78y6dcnYVEM6RpWIcoyiX5kB+B4DclhMnR+vosDvCRxHLCj
-         2W4WmTxfIILrzash+XsORRWLmgc6IcheHm5JjvytwypUUGHykbGOb4SaGFYWNf93blSo
-         lHj0IqB/iJ09GLlxix1HfFgg6/LU+21klC/dFfgrqIzr0i0p67aHyD2p84PLq83qK15z
-         Q/XqbO1Qkrte6MlixMRRiWHadgKfrps8k/ZBdR5nIkdEB9Z4HZwFyWlRAC5XedygSADi
-         mL6g==
-X-Gm-Message-State: AOAM533BnvK9mGNQbpCI9LvlynllmygxPTfj7wZ24ktcn9fWzIfTlTi+
-        fJ7+j0NHsa68Rg7LbTU/jwb4S038CwX1hgWnZUs=
-X-Google-Smtp-Source: ABdhPJy7qZ2FEvkjeyRcu9Km2fiGAJXeDFAuL/EpbfQYZhB4szZB2epE5tdVM7C/cs4rcyxYhdHsTSRiN/5kb1P+MoM=
-X-Received: by 2002:a25:cfd1:: with SMTP id f200mr5775390ybg.145.1605440516314;
- Sun, 15 Nov 2020 03:41:56 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vREcVTqf0XnPs3ZnNVPT87eSMZGPx/gxgKBguECzTL0=;
+        b=MDlEGLrCOk9tJ7kuhFQs3HZiuEeZtRTTe66+8hooTCoD2ZNLyMFSc9p1Iu4NH0osyK
+         8uKBtoZ++olDlZalQgzqIMeVe4kjgV41bTY+4wH5ZGoshzpe1Vc6PnQk6CPuyQfZJfIm
+         flRmstDhdtxxsgKKozc9dpYbUVMov1xRBJ3KmA5R2JIiEuyVLQLqHljRcFl4ROTXL/5j
+         cXNxjqm5+UNBGkZKsHQg3vKyNXPt0xWLM8Xtqth8hd6GE9Ygm1amiDdFa7I8JUWidauZ
+         kANwp6sBmvbWfB2iiK1G/xSJ+IV3A2GC7E0vfk7Bwsx6xmrRZhQtI/ZCuEGqMEuYaBHD
+         V/Ig==
+X-Gm-Message-State: AOAM532Dv3iho8I7yl9hqrX3hBWc4B/iXxusaK7aboqmmpT2G187CgGR
+        UlkyjeshJsMo7u7wusdaf7VHenLZnPs=
+X-Google-Smtp-Source: ABdhPJyEdTDUntiue8baL9MxzjQb8IhaPWyrqM+7r7TYhYfMytbs+0gQskyhtNMRXgEmvl/NDQr+Hw==
+X-Received: by 2002:ac2:5e91:: with SMTP id b17mr3927604lfq.442.1605457870546;
+        Sun, 15 Nov 2020 08:31:10 -0800 (PST)
+Received: from jimmy-desk-arch.kvaser.se (h-4-68-234.A785.priv.bahnhof.se. [155.4.68.234])
+        by smtp.gmail.com with ESMTPSA id b12sm2419462ljj.133.2020.11.15.08.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 08:31:10 -0800 (PST)
+From:   Jimmy Assarsson <jimmyassarsson@gmail.com>
+To:     linux-can@vger.kernel.org
+Cc:     Jimmy Assarsson <jimmyassarsson@gmail.com>,
+        Jimmy Assarsson <extja@kvaser.com>
+Subject: [PATCH 2/6] can: kvaser_usb: kvaser_usb_hydra: Fix KCAN bittiming limits
+Date:   Sun, 15 Nov 2020 17:30:23 +0100
+Message-Id: <20201115163027.16851-2-jimmyassarsson@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201115163027.16851-1-jimmyassarsson@gmail.com>
+References: <20201115163027.16851-1-jimmyassarsson@gmail.com>
 MIME-Version: 1.0
-References: <20201114152325.523630-1-mailhol.vincent@wanadoo.fr> <202011150212.yNjsvCzu-lkp@intel.com>
-In-Reply-To: <202011150212.yNjsvCzu-lkp@intel.com>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Sun, 15 Nov 2020 20:41:45 +0900
-Message-ID: <CAMZ6RqJFasm658=-6Q4-Dm+gDG-tqj39ujzXbMAdYwmaRE=1ew@mail.gmail.com>
-Subject: Re: [PATCH v6] can: usb: etas_es58X: add support for ETAS ES58X CAN
- USB interfaces
-To:     kernel test robot <lkp@intel.com>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The report from Intel's test robot is a false positive.
+From: Jimmy Assarsson <extja@kvaser.com>
 
-On Sun. 15 Nov. 2020 at 03:12, kernel test robot wrote:
-> Hi Vincent,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on linus/master]
-> [also build test ERROR on bff6f1db91e330d7fba56f815cdbc412c75fe163 v5.10-rc3 next-20201113]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
+Use correct bittiming limits for the KCAN CAN controller.
 
-Patch is applied to the wrong git tree. It is based on the testing
-branch of linux-can-next:
-https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/?h=testing
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+---
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index 7ab87a758754..218fadc91155 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -367,7 +367,7 @@ static const struct can_bittiming_const kvaser_usb_hydra_kcan_bittiming_c = {
+ 	.tseg2_max = 32,
+ 	.sjw_max = 16,
+ 	.brp_min = 1,
+-	.brp_max = 4096,
++	.brp_max = 8192,
+ 	.brp_inc = 1,
+ };
+ 
+-- 
+2.29.2
 
-I did so (c.f. the base-commit and prerequisite-patch-id tags at the
-bottom of the patch). While the base-commit was taken into account,
-the prerequisite-patch-id tags seem to have been ignored.
-
-FYI, I used the below command to generate the patch.
-git format-patch --base=bff6f1db91e330d7fba56f815cdbc412c75fe163 -v6
--o patch/v6 HEAD~1
-
-
-Yours sincerely,
-Vincent Mailhol
-
-> url:    https://github.com/0day-ci/linux/commits/Vincent-Mailhol/can-usb-etas_es58X-add-support-for-ETAS-ES58X-CAN-USB-interfaces/20201114-232854
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f01c30de86f1047e9bae1b1b1417b0ce8dcd15b1
-> config: x86_64-randconfig-a005-20201115 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 9a85643cd357e412cff69067bb5c4840e228c2ab)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         # https://github.com/0day-ci/linux/commit/80a9b72580bad04e879752fa5c54d278b486e2bb
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Vincent-Mailhol/can-usb-etas_es58X-add-support-for-ETAS-ES58X-CAN-USB-interfaces/20201114-232854
->         git checkout 80a9b72580bad04e879752fa5c54d278b486e2bb
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
-> >> drivers/net/can/usb/etas_es58x/es58x_core.c:745:12: error: use of undeclared identifier 'CAN_MAX_RAW_DLC'
->            if (dlc > CAN_MAX_RAW_DLC) {
->                      ^
->    drivers/net/can/usb/etas_es58x/es58x_core.c:748:22: error: use of undeclared identifier 'CAN_MAX_RAW_DLC'
->                               __func__, dlc, CAN_MAX_RAW_DLC);
->                                              ^
-> >> drivers/net/can/usb/etas_es58x/es58x_core.c:753:9: error: implicit declaration of function 'can_fd_dlc2len' [-Werror,-Wimplicit-function-declaration]
->                    len = can_fd_dlc2len(dlc);
->                          ^
->    drivers/net/can/usb/etas_es58x/es58x_core.c:753:9: note: did you mean 'can_dlc2len'?
->    include/linux/can/dev.h:190:4: note: 'can_dlc2len' declared here
->    u8 can_dlc2len(u8 can_dlc);
->       ^
-> >> drivers/net/can/usb/etas_es58x/es58x_core.c:756:9: error: implicit declaration of function 'can_cc_dlc2len' [-Werror,-Wimplicit-function-declaration]
->                    len = can_cc_dlc2len(dlc);
->                          ^
->    drivers/net/can/usb/etas_es58x/es58x_core.c:756:9: note: did you mean 'can_dlc2len'?
->    include/linux/can/dev.h:190:4: note: 'can_dlc2len' declared here
->    u8 can_dlc2len(u8 can_dlc);
->       ^
-> >> drivers/net/can/usb/etas_es58x/es58x_core.c:775:3: error: implicit declaration of function 'can_frame_set_cc_len' [-Werror,-Wimplicit-function-declaration]
->                    can_frame_set_cc_len(ccf, dlc, es58x_priv(netdev)->can.ctrlmode);
->                    ^
->    5 errors generated.
-> --
-> >> drivers/net/can/usb/etas_es58x/es581_4.c:385:20: error: implicit declaration of function 'can_get_cc_dlc' [-Werror,-Wimplicit-function-declaration]
->            tx_can_msg->dlc = can_get_cc_dlc(cf, priv->can.ctrlmode);
->                              ^
-> >> drivers/net/can/usb/etas_es58x/es581_4.c:387:41: error: no member named 'len' in 'struct can_frame'
->            memcpy(tx_can_msg->data, cf->data, cf->len);
->                                               ~~  ^
-> >> drivers/net/can/usb/etas_es58x/es581_4.c:391:13: error: implicit declaration of function 'can_cc_dlc2len' [-Werror,-Wimplicit-function-declaration]
->            msg_len += es581_4_sizeof_rx_tx_msg(*tx_can_msg);
->                       ^
->    drivers/net/can/usb/etas_es58x/es581_4.c:30:29: note: expanded from macro 'es581_4_sizeof_rx_tx_msg'
->            offsetof(typeof(msg), data[can_cc_dlc2len((msg).dlc)])
->                                       ^
->    drivers/net/can/usb/etas_es58x/es581_4.c:391:13: note: did you mean 'can_dlc2len'?
->    drivers/net/can/usb/etas_es58x/es581_4.c:30:29: note: expanded from macro 'es581_4_sizeof_rx_tx_msg'
->            offsetof(typeof(msg), data[can_cc_dlc2len((msg).dlc)])
->                                       ^
->    include/linux/can/dev.h:190:4: note: 'can_dlc2len' declared here
->    u8 can_dlc2len(u8 can_dlc);
->       ^
-> >> drivers/net/can/usb/etas_es58x/es581_4.c:515:48: error: use of undeclared identifier 'CAN_CTRLMODE_CC_LEN8_DLC'
->            .ctrlmode_supported = CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_CC_LEN8_DLC,
->                                                          ^
->    4 errors generated.
-> --
-> >> drivers/net/can/usb/etas_es58x/es58x_fd.c:119:24: error: implicit declaration of function 'can_cc_dlc2len' [-Werror,-Wimplicit-function-declaration]
->                    u16 rx_can_msg_len = es58x_fd_sizeof_rx_tx_msg(*rx_can_msg);
->                                         ^
->    drivers/net/can/usb/etas_es58x/es58x_fd.c:36:3: note: expanded from macro 'es58x_fd_sizeof_rx_tx_msg'
->                    can_cc_dlc2len(__msg.dlc);                              \
->                    ^
->    drivers/net/can/usb/etas_es58x/es58x_fd.c:119:24: note: did you mean 'can_dlc2len'?
->    drivers/net/can/usb/etas_es58x/es58x_fd.c:36:3: note: expanded from macro 'es58x_fd_sizeof_rx_tx_msg'
->                    can_cc_dlc2len(__msg.dlc);                              \
->                    ^
->    include/linux/can/dev.h:190:4: note: 'can_dlc2len' declared here
->    u8 can_dlc2len(u8 can_dlc);
->       ^
-> >> drivers/net/can/usb/etas_es58x/es58x_fd.c:141:11: error: implicit declaration of function 'can_fd_len2dlc' [-Werror,-Wimplicit-function-declaration]
->                                    dlc = can_fd_len2dlc(rx_can_msg->len);
->                                          ^
->    drivers/net/can/usb/etas_es58x/es58x_fd.c:141:11: note: did you mean 'can_len2dlc'?
->    include/linux/can/dev.h:193:4: note: 'can_len2dlc' declared here
->    u8 can_len2dlc(u8 len);
->       ^
-> >> drivers/net/can/usb/etas_es58x/es58x_fd.c:371:25: error: no member named 'len' in 'struct can_frame'
->                    tx_can_msg->len = cf->len;
->                                      ~~  ^
-> >> drivers/net/can/usb/etas_es58x/es58x_fd.c:373:21: error: implicit declaration of function 'can_get_cc_dlc' [-Werror,-Wimplicit-function-declaration]
->                    tx_can_msg->dlc = can_get_cc_dlc(cf, priv->can.ctrlmode);
->                                      ^
->    drivers/net/can/usb/etas_es58x/es58x_fd.c:374:41: error: no member named 'len' in 'struct can_frame'
->            memcpy(tx_can_msg->data, cf->data, cf->len);
->                                               ~~  ^
->    drivers/net/can/usb/etas_es58x/es58x_fd.c:377:13: error: implicit declaration of function 'can_cc_dlc2len' [-Werror,-Wimplicit-function-declaration]
->            msg_len += es58x_fd_sizeof_rx_tx_msg(*tx_can_msg);
->                       ^
->    drivers/net/can/usb/etas_es58x/es58x_fd.c:36:3: note: expanded from macro 'es58x_fd_sizeof_rx_tx_msg'
->                    can_cc_dlc2len(__msg.dlc);                              \
->                    ^
-> >> drivers/net/can/usb/etas_es58x/es58x_fd.c:617:6: error: use of undeclared identifier 'CAN_CTRLMODE_CC_LEN8_DLC'
->                CAN_CTRLMODE_CC_LEN8_DLC,
->                ^
->    7 errors generated.
->
-> vim +/CAN_MAX_RAW_DLC +745 drivers/net/can/usb/etas_es58x/es58x_core.c
->
->    718
->    719  /**
->    720   * es58x_rx_can_msg() - Handle a received a CAN message.
->    721   * @netdev: CAN network device.
->    722   * @timestamp: Hardware time stamp (only relevant in rx branches).
->    723   * @data: CAN payload.
->    724   * @can_id: CAN ID.
->    725   * @es58x_flags: Please refer to enum es58x_flag.
->    726   * @dlc: Data Length Code (raw value).
->    727   *
->    728   * Fill up a CAN skb and post it.
->    729   *
->    730   * This function handles the case where the DLC of a classical CAN
->    731   * frame is greater than CAN_MAX_DLEN (c.f. the len8_dlc field of
->    732   * struct can_frame).
->    733   *
->    734   * Return: zero on success.
->    735   */
->    736  int es58x_rx_can_msg(struct net_device *netdev, u64 timestamp, const u8 *data,
->    737                       canid_t can_id, enum es58x_flag es58x_flags, u8 dlc)
->    738  {
->    739          struct canfd_frame *cfd;
->    740          struct can_frame *ccf;
->    741          struct sk_buff *skb;
->    742          u8 len;
->    743          bool is_can_fd = !!(es58x_flags & ES58X_FLAG_FD_DATA);
->    744
->  > 745          if (dlc > CAN_MAX_RAW_DLC) {
->    746                  netdev_err(netdev,
->    747                             "%s: DLC is %d but maximum should be %d\n",
->    748                             __func__, dlc, CAN_MAX_RAW_DLC);
->    749                  return -EMSGSIZE;
->    750          }
->    751
->    752          if (is_can_fd) {
->  > 753                  len = can_fd_dlc2len(dlc);
->    754                  skb = alloc_canfd_skb(netdev, &cfd);
->    755          } else {
->  > 756                  len = can_cc_dlc2len(dlc);
->    757                  skb = alloc_can_skb(netdev, &ccf);
->    758                  cfd = (struct canfd_frame *)ccf;
->    759          }
->    760
->    761          if (!skb) {
->    762                  netdev->stats.rx_dropped++;
->    763                  return -ENOMEM;
->    764          }
->    765          cfd->can_id = can_id;
->    766          if (es58x_flags & ES58X_FLAG_EFF)
->    767                  cfd->can_id |= CAN_EFF_FLAG;
->    768          if (is_can_fd) {
->    769                  cfd->len = len;
->    770                  if (es58x_flags & ES58X_FLAG_FD_BRS)
->    771                          cfd->flags |= CANFD_BRS;
->    772                  if (es58x_flags & ES58X_FLAG_FD_ESI)
->    773                          cfd->flags |= CANFD_ESI;
->    774          } else {
->  > 775                  can_frame_set_cc_len(ccf, dlc, es58x_priv(netdev)->can.ctrlmode);
->    776                  if (es58x_flags & ES58X_FLAG_RTR) {
->    777                          ccf->can_id |= CAN_RTR_FLAG;
->    778                          len = 0;
->    779                  }
->    780          }
->    781          memcpy(cfd->data, data, len);
->    782          netdev->stats.rx_packets++;
->    783          netdev->stats.rx_bytes += len;
->    784
->    785          es58x_set_skb_timestamp(netdev, skb, timestamp);
->    786          netif_rx(skb);
->    787
->    788          es58x_priv(netdev)->err_passive_before_rtx_success = 0;
->    789
->    790          return 0;
->    791  }
->    792
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
