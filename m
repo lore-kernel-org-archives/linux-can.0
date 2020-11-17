@@ -2,112 +2,114 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CD90C5519F
-	for <linux-can@archiver.kernel.org>; Tue, 17 Nov 2020 14:55:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9B2EC2D0E4
+	for <linux-can@archiver.kernel.org>; Tue, 17 Nov 2020 15:28:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B4669223AB
-	for <linux-can@archiver.kernel.org>; Tue, 17 Nov 2020 14:55:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2BADC221E2
+	for <linux-can@archiver.kernel.org>; Tue, 17 Nov 2020 15:28:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=de.bosch.com header.i=@de.bosch.com header.b="CxZoE6B0"
+	dkim=pass (1024-bit key) header.d=de.bosch.com header.i=@de.bosch.com header.b="gWHgRA82"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgKQOyz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 17 Nov 2020 09:54:55 -0500
-Received: from de-deferred2.bosch-org.com ([139.15.180.217]:59550 "EHLO
-        de-deferred2.bosch-org.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727422AbgKQOyz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 17 Nov 2020 09:54:55 -0500
-X-Greylist: delayed 572 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Nov 2020 09:54:53 EST
-Received: from de-out1.bosch-org.com (snat-lb41g3-dmz-psi-sl1-maildeferred.fe.ssn.bosch.com [139.15.180.215])
-        by fe0vms0193.rbdmz01.com (Postfix) with ESMTPS id 4Cb7ym21m4z1BB
-        for <linux-can@vger.kernel.org>; Tue, 17 Nov 2020 15:45:20 +0100 (CET)
-Received: from fe0vm1649.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
-        by si0vms0217.rbdmz01.com (Postfix) with ESMTPS id 4Cb7yk5bXnz4f3lwv;
-        Tue, 17 Nov 2020 15:45:18 +0100 (CET)
+        id S1729507AbgKQP21 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 17 Nov 2020 10:28:27 -0500
+Received: from de-out1.bosch-org.com ([139.15.230.186]:46536 "EHLO
+        de-out1.bosch-org.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728894AbgKQP21 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 17 Nov 2020 10:28:27 -0500
+X-Greylist: delayed 2586 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Nov 2020 10:28:25 EST
+Received: from si0vm1947.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
+        by fe0vms0187.rbdmz01.com (Postfix) with ESMTPS id 4Cb8wS4fvYz1XLDR9;
+        Tue, 17 Nov 2020 16:28:24 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=de.bosch.com;
-        s=key2-intmail; t=1605624318;
-        bh=rNreBz9tcS3Q2kVTNLarcOTT5RXq5VFV0bGKMsjq8CU=; l=10;
+        s=key2-intmail; t=1605626904;
+        bh=OEO3R3OyQ/MyfwEOo1aKgZ7O31m4QfepUJyJQGtUuDU=; l=10;
         h=From:Subject:From:Reply-To:Sender;
-        b=CxZoE6B02KOFYLKuxx207aN5hUBf4WNo2qmTRuASHxEUeuYKhU+1FKHiiSfuoBt5m
-         Ov5hVa2DisGQPElyV4wSKNmRToMete3xj5T5AnFXyP57Q5POAR3jIBaqw+VRZagT40
-         V2pLxsbz9Dwxik2mWNw/ByeS1ayI8nsWsiYjcEY8=
+        b=gWHgRA825oogKcEeJJTbex6HsfqRHbo4bWX6PERe3UQTkTaI9KndPYFAA0MNLGWVL
+         cB3rYaMUgrstgOaML7CL9FskrcadH34wYMmsxWZNp5azF7Sk3kuw7Zl7Zyc0nsP5+P
+         wJWEISc8Hzqh+zppmFX95E2hOeaKTDOe/agrXMj8=
 Received: from fe0vm1741.rbesz01.com (unknown [10.58.172.176])
-        by fe0vm1649.rbesz01.com (Postfix) with ESMTPS id 4Cb7yk5M4Jz3xQ;
-        Tue, 17 Nov 2020 15:45:18 +0100 (CET)
-X-AuditID: 0a3aad15-fb3ff700000022e8-d2-5fb3e1fe96f7
-Received: from si0vm1950.rbesz01.com ( [10.58.173.29])
+        by si0vm1947.rbesz01.com (Postfix) with ESMTPS id 4Cb8wS4L0sz6CjSs7;
+        Tue, 17 Nov 2020 16:28:24 +0100 (CET)
+X-AuditID: 0a3aad15-f9dff700000022e8-47-5fb3ec181b67
+Received: from fe0vm1652.rbesz01.com ( [10.58.173.29])
         (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by fe0vm1741.rbesz01.com (SMG Outbound) with SMTP id 95.06.08936.EF1E3BF5; Tue, 17 Nov 2020 15:45:18 +0100 (CET)
-Received: from SI-HUB2000.de.bosch.com (si-hub2000.de.bosch.com [10.4.103.108])
-        by si0vm1950.rbesz01.com (Postfix) with ESMTPS id 4Cb7yk3p3SzW7Z;
-        Tue, 17 Nov 2020 15:45:18 +0100 (CET)
-Received: from ninja.grb-fir.grb.de.bosch.com (10.19.187.97) by
- SI-HUB2000.de.bosch.com (10.4.103.108) with Microsoft SMTP Server id
- 15.1.2106.2; Tue, 17 Nov 2020 15:45:18 +0100
-From:   Mark Jonas <mark.jonas@de.bosch.com>
-To:     <mkl@pengutronix.de>
-CC:     <linux-can@vger.kernel.org>, Wang Xin <xin.wang7@cn.bosch.com>,
-        Mark Jonas <mark.jonas@de.bosch.com>
-Subject: [PATCH] Fix attribute list size in do_get_nl_link()
-Date:   Tue, 17 Nov 2020 15:42:22 +0100
-Message-ID: <20201117144222.7809-1-mark.jonas@de.bosch.com>
-X-Mailer: git-send-email 2.17.1
+        by fe0vm1741.rbesz01.com (SMG Outbound) with SMTP id 2F.AC.08936.81CE3BF5; Tue, 17 Nov 2020 16:28:24 +0100 (CET)
+Received: from FE-MBX2035.de.bosch.com (fe-mbx2035.de.bosch.com [10.3.231.45])
+        by fe0vm1652.rbesz01.com (Postfix) with ESMTPS id 4Cb8wS2TpnzB1J;
+        Tue, 17 Nov 2020 16:28:24 +0100 (CET)
+Received: from SGPMBX2018.APAC.bosch.com (10.187.83.36) by
+ FE-MBX2035.de.bosch.com (10.3.231.45) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Tue, 17 Nov 2020 16:28:23 +0100
+Received: from FE-MBX2051.de.bosch.com (10.3.231.61) by
+ SGPMBX2018.APAC.bosch.com (10.187.83.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Tue, 17 Nov 2020 23:28:21 +0800
+Received: from FE-MBX2051.de.bosch.com ([fe80::9402:faf1:5852:4e2f]) by
+ FE-MBX2051.de.bosch.com ([fe80::9402:faf1:5852:4e2f%6]) with mapi id
+ 15.01.2106.004; Tue, 17 Nov 2020 16:28:19 +0100
+From:   "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+CC:     "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "WANG Xin (BT-FIR/ENG1-Zhu)" <Xin.Wang7@cn.bosch.com>
+Subject: AW: [PATCH] Fix attribute list size in do_get_nl_link()
+Thread-Topic: [PATCH] Fix attribute list size in do_get_nl_link()
+Thread-Index: AQHWvPBEZZmCtUZC6UWK+ezQ/N9DHanMWHsAgAATkxA=
+Date:   Tue, 17 Nov 2020 15:28:19 +0000
+Message-ID: <a2a1b05307604f1cb9ecb1245b4bc3a0@de.bosch.com>
+References: <20201117144222.7809-1-mark.jonas@de.bosch.com>
+ <0285bc2b-dc7a-3fcb-3bc8-061e8e8e5bd5@pengutronix.de>
+In-Reply-To: <0285bc2b-dc7a-3fcb-3bc8-061e8e8e5bd5@pengutronix.de>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.143.165.147]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKJMWRmVeSWpSXmKPExsXCZbVWVvffw83xBlP+qlms+j6V2WL9oiks
-        Dkwe/X8NPD5vkgtgiuKySUnNySxLLdK3S+DKeH19B3vBc66Ki6cnMTUwfuXoYuTkkBAwkbiz
-        7QZjFyMXh5DAdCaJvU3dTBDObkaJy/efsYNUCQlsZZRYtccMxGYT0JK4eWIHcxcjB4eIgITE
-        9n5rkDCzQJbE2z+dYOXCAjYSlzduAbNZBFQluqctYASxeQWsJbZ0PmaGWCwvsXrDAWaIuKDE
-        yZlPWCDmSEgcfPGCeQIj7ywkqVlIUgsYmVYxiqalGpTlGpqbGOoVJaUWVxkY6iXn525ihISM
-        6A7GO90f9A4xMnEwHmKU4GBWEuF1MdkYL8SbklhZlVqUH19UmpNafIhRmoNFSZxXhWdjnJBA
-        emJJanZqakFqEUyWiYNTqoHJ4f10Dq0+CaEQWa7+4vNzS63l4w2upT7WuCC67smSV3u58lR9
-        Hxk0lLrrtjbsrDu3bMq1Z7UneQtPmz8IqnyyLYTl4zXbIwrHy7tW3K/OtJi3KXvHk5tdWyY0
-        /l11+fLkPpOX8q1y1UULAyRfbNDQ2ztxvuShkkmnHMSY3HL/W6rYpPzi2nZc4aZFxAINhXPH
-        p7fvYHrk1865ZMIxBcntzaxzO4xl2c3vfBdyeOe+Oems7s2G3V87j8u/LXx4uLo7sIcz+IzP
-        ItZ9rA6yYgEzL18+4FbxcAbv/SBzrRjJ1kdh3w5tn2icdvD13sQ3GfOUTSoX35iUMzVWZdHu
-        dJbfM+u/mHXYGTLEKJi3bAlUYinOSDTUYi4qTgQAnGw6V4gCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAIsWRmVeSWpSXmKPExsXCZbVWVlfizeZ4gyMrJS1WfZ/KbLF+0RQW
+        ByaP/r8GHp83yQUwRXHZpKTmZJalFunbJXBl/Nx5k7ngGE/Fxc9PmRsY5/B0MXJySAiYSMyf
+        9p21i5GLQ0hgOpPExH3NUM4uRolZt26xQzgfGCVWPf6H4Fw5uIYRwjnAKHHkSSs7yDA2ATuJ
+        /a/fMIHYIgJaErc/bmfrYuTgYBYokVi/pxIkLCzgIHFj4zpGiBJHidnbj0DZVhLt666CjWER
+        UJX4cPIRmM0rYC2x6/IzVpAxQgLFEl8e5IKYnAJOEq9+CoFUMArISmzYcJ4ZxGYWEJfY9Azk
+        G5DPBCSW7IGISwiISrx8/A8qriTx8M9mZojDNCXW79KHaFWUmNL9EGqpoMTJmU9YJgBDAMnU
+        WQgds5B0zELSsYCRZRWjaFqqQVmuobmJoV5RUmpxlYGhXnJ+7iZGSKSJ7mC80/1B7xAjEwfj
+        IUYJDmYlEV4Xk43xQrwpiZVVqUX58UWlOanFhxilOViUxHlVeDbGCQmkJ5akZqemFqQWwWSZ
+        ODilGpjOTTnBaxzWmy1X6HJQvujV7enWsbt3zpF2u/V3KY9+3Tm11JhJ1v91TbXySo73Cedf
+        Ut0228qBwbpEmtnY60hNRPvx6F6teo5V/j6rQ9SPKqVXX+G+zvajf3ZNC/cC5S3Fjrt/rb9y
+        7vauu4rtq7PnxEe/Fjj2myP6zuVNsSWVxxI/TIs1UVkz487Opd9Sr3vH/58c3NSnUMA+T15P
+        5YmLTZbEptSQfQJKHzc+EfnVrftRYGr9rVmpvW83qntVtHabHHg911pgwlPJl3IeeW2tsa2t
+        V4qS3dRPdmrunm/LtctIuXH6BSYLcV6RaSFnJS5xcsc0nE0pVw/Xy8p1+GBeHnP/rPyElteP
+        Uw8vV2Ipzkg01GIuKk4EANDU9tAjAwAA
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Wang Xin <xin.wang7@cn.bosch.com>
-
-The function do_get_nl_link() retrieves attributes from the response
-RTM_NEWLINK. But it calculates the attribute list size with the wrong
-structure struct ifaddrmsg. According to man 7 rtnetlink, RTM_NEWLINK
-message uses struct ifinfomsg instead of struct ifaddrmsg.  This causes
-that additional 8 bytes are parsed and garbage attributes might be
-retrieved. One of consequences is that the message will be dropped if
-the garbage attribute is IFLA_IFNAME and contains an invalid interface
-name.
-
-To fix this issue, use struct ifinfomsg to calculate the size of
-attribute list for RTM_NEWLINK.
-
-Signed-off-by: Wang Xin <xin.wang7@cn.bosch.com>
-Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
----
- src/libsocketcan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/src/libsocketcan.c b/src/libsocketcan.c
-index c802849..60142cc 100644
---- a/src/libsocketcan.c
-+++ b/src/libsocketcan.c
-@@ -411,7 +411,7 @@ static int do_get_nl_link(int fd, __u8 acquire, const char *name, void *res)
- 			struct rtattr *tb[IFLA_MAX + 1];
- 
- 			len =
--				nl_msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifaddrmsg));
-+				nl_msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifinfomsg));
- 			parse_rtattr(tb, IFLA_MAX, IFLA_RTA(ifi), len);
- 
- 			/* Finish process if the reply message is matched */
--- 
-2.17.1
-
+SGkgTWFyYywNCg0KPiBPbiAxMS8xNy8yMCAzOjQyIFBNLCBNYXJrIEpvbmFzIHdyb3RlOg0KPiA+
+IEZyb206IFdhbmcgWGluIDx4aW4ud2FuZzdAY24uYm9zY2guY29tPg0KPiA+DQo+ID4gVGhlIGZ1
+bmN0aW9uIGRvX2dldF9ubF9saW5rKCkgcmV0cmlldmVzIGF0dHJpYnV0ZXMgZnJvbSB0aGUgcmVz
+cG9uc2UNCj4gPiBSVE1fTkVXTElOSy4gQnV0IGl0IGNhbGN1bGF0ZXMgdGhlIGF0dHJpYnV0ZSBs
+aXN0IHNpemUgd2l0aCB0aGUgd3JvbmcNCj4gPiBzdHJ1Y3R1cmUgc3RydWN0IGlmYWRkcm1zZy4g
+QWNjb3JkaW5nIHRvIG1hbiA3IHJ0bmV0bGluaywgUlRNX05FV0xJTksNCj4gPiBtZXNzYWdlIHVz
+ZXMgc3RydWN0IGlmaW5mb21zZyBpbnN0ZWFkIG9mIHN0cnVjdCBpZmFkZHJtc2cuICBUaGlzDQo+
+ID4gY2F1c2VzIHRoYXQgYWRkaXRpb25hbCA4IGJ5dGVzIGFyZSBwYXJzZWQgYW5kIGdhcmJhZ2Ug
+YXR0cmlidXRlcyBtaWdodA0KPiA+IGJlIHJldHJpZXZlZC4gT25lIG9mIGNvbnNlcXVlbmNlcyBp
+cyB0aGF0IHRoZSBtZXNzYWdlIHdpbGwgYmUgZHJvcHBlZA0KPiA+IGlmIHRoZSBnYXJiYWdlIGF0
+dHJpYnV0ZSBpcyBJRkxBX0lGTkFNRSBhbmQgY29udGFpbnMgYW4gaW52YWxpZA0KPiA+IGludGVy
+ZmFjZSBuYW1lLg0KPiA+DQo+ID4gVG8gZml4IHRoaXMgaXNzdWUsIHVzZSBzdHJ1Y3QgaWZpbmZv
+bXNnIHRvIGNhbGN1bGF0ZSB0aGUgc2l6ZSBvZg0KPiA+IGF0dHJpYnV0ZSBsaXN0IGZvciBSVE1f
+TkVXTElOSy4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFdhbmcgWGluIDx4aW4ud2FuZzdAY24u
+Ym9zY2guY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hcmsgSm9uYXMgPG1hcmsuam9uYXNAZGUu
+Ym9zY2guY29tPg0KPiANCj4gQXBwbGllZCB0byBtYXN0ZXIuDQoNCkkgcGxhbiB0byBlaXRoZXIg
+YWRkIHRoZSBwYXRjaCB0byB0aGUgbGlic29ja2V0Y2FuIHJlY2lwZSBpbiBtZXRhLW9wZW5lbWJl
+ZGRlZA0Kb3IgdG8gdXBncmFkZSB0aGUgcmVjaXBlIHRvIGEgbmV3IHZlcnNpb24gb2YgbGlic29j
+a2V0Y2FuLiBJIHdvdWxkIHByZWZlcg0KdXBncmFkaW5nIHRoZSByZWNpcGUgdG8gYSBuZXcgdmVy
+c2lvbi4NCg0KRG8geW91IHBsYW4gdG8gcmVsZWFzZSBhIG5ldyB2ZXJzaW9uIG9mIGxpYnNvY2tl
+dGNhbiBzb29uPw0KDQpHcmVldGluZ3MsDQpNYXJrDQo=
