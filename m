@@ -2,47 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 371C8C71155
-	for <linux-can@archiver.kernel.org>; Tue, 17 Nov 2020 14:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D513BC2D0E4
+	for <linux-can@archiver.kernel.org>; Tue, 17 Nov 2020 14:55:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D167F20829
-	for <linux-can@archiver.kernel.org>; Tue, 17 Nov 2020 14:03:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 867D720897
+	for <linux-can@archiver.kernel.org>; Tue, 17 Nov 2020 14:55:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbgKQODQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 17 Nov 2020 09:03:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
+        id S1729101AbgKQOym (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 17 Nov 2020 09:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730683AbgKQODH (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 17 Nov 2020 09:03:07 -0500
+        with ESMTP id S1728718AbgKQOym (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 17 Nov 2020 09:54:42 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D8BC0613CF
-        for <linux-can@vger.kernel.org>; Tue, 17 Nov 2020 06:03:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8105CC0613CF
+        for <linux-can@vger.kernel.org>; Tue, 17 Nov 2020 06:54:42 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kf1ZW-0001SW-GL; Tue, 17 Nov 2020 15:03:02 +0100
+        id 1kf2NU-0007JI-Cx; Tue, 17 Nov 2020 15:54:40 +0100
 Received: from [IPv6:2a03:f580:87bc:d400:4295:bc9e:e8ea:bff7] (unknown [IPv6:2a03:f580:87bc:d400:4295:bc9e:e8ea:bff7])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
          client-signature RSA-PSS (4096 bits) client-digest SHA256)
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id B82DB5947F0;
-        Tue, 17 Nov 2020 14:02:59 +0000 (UTC)
-Subject: Re: [net 11/15] can: tcan4x5x: tcan4x5x_can_remove(): fix order of
- deregistration
-To:     Dan Murphy <dmurphy@ti.com>, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-References: <20201115174131.2089251-1-mkl@pengutronix.de>
- <20201115174131.2089251-12-mkl@pengutronix.de>
- <67debcb1-5fb6-76bd-b1b1-24d97389aa6b@ti.com>
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E493E594868;
+        Tue, 17 Nov 2020 14:54:38 +0000 (UTC)
+Subject: Re: [PATCH] Fix attribute list size in do_get_nl_link()
+To:     Mark Jonas <mark.jonas@de.bosch.com>
+Cc:     linux-can@vger.kernel.org, Wang Xin <xin.wang7@cn.bosch.com>
+References: <20201117144222.7809-1-mark.jonas@de.bosch.com>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -104,15 +100,15 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <189eba5e-458e-8d48-a0ca-8d72a0ac2224@pengutronix.de>
-Date:   Tue, 17 Nov 2020 15:02:36 +0100
+Message-ID: <0285bc2b-dc7a-3fcb-3bc8-061e8e8e5bd5@pengutronix.de>
+Date:   Tue, 17 Nov 2020 15:54:34 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <67debcb1-5fb6-76bd-b1b1-24d97389aa6b@ti.com>
+In-Reply-To: <20201117144222.7809-1-mark.jonas@de.bosch.com>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="bMB4ETkZmLiIyqD6M5cH99QkVA060hpql"
+ boundary="LbZzaVXm9m5iJY3xXPgZ5vNdWPqIEnF7k"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -122,32 +118,44 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---bMB4ETkZmLiIyqD6M5cH99QkVA060hpql
-Content-Type: multipart/mixed; boundary="Yp3vkKdxFxADtTXsdDuvSGoK0mDAQC7bA";
+--LbZzaVXm9m5iJY3xXPgZ5vNdWPqIEnF7k
+Content-Type: multipart/mixed; boundary="rsyYwK5dtCZzACzf8vFOiycWxdcFZtQSc";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Dan Murphy <dmurphy@ti.com>, netdev@vger.kernel.org
-Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
- kernel@pengutronix.de
-Message-ID: <189eba5e-458e-8d48-a0ca-8d72a0ac2224@pengutronix.de>
-Subject: Re: [net 11/15] can: tcan4x5x: tcan4x5x_can_remove(): fix order of
- deregistration
-References: <20201115174131.2089251-1-mkl@pengutronix.de>
- <20201115174131.2089251-12-mkl@pengutronix.de>
- <67debcb1-5fb6-76bd-b1b1-24d97389aa6b@ti.com>
-In-Reply-To: <67debcb1-5fb6-76bd-b1b1-24d97389aa6b@ti.com>
+To: Mark Jonas <mark.jonas@de.bosch.com>
+Cc: linux-can@vger.kernel.org, Wang Xin <xin.wang7@cn.bosch.com>
+Message-ID: <0285bc2b-dc7a-3fcb-3bc8-061e8e8e5bd5@pengutronix.de>
+Subject: Re: [PATCH] Fix attribute list size in do_get_nl_link()
+References: <20201117144222.7809-1-mark.jonas@de.bosch.com>
+In-Reply-To: <20201117144222.7809-1-mark.jonas@de.bosch.com>
 
---Yp3vkKdxFxADtTXsdDuvSGoK0mDAQC7bA
+--rsyYwK5dtCZzACzf8vFOiycWxdcFZtQSc
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 11/17/20 3:00 PM, Dan Murphy wrote:
-> Reviewed-by: Dan Murphy<dmurphy@ti.com>
+On 11/17/20 3:42 PM, Mark Jonas wrote:
+> From: Wang Xin <xin.wang7@cn.bosch.com>
+>=20
+> The function do_get_nl_link() retrieves attributes from the response
+> RTM_NEWLINK. But it calculates the attribute list size with the wrong
+> structure struct ifaddrmsg. According to man 7 rtnetlink, RTM_NEWLINK
+> message uses struct ifinfomsg instead of struct ifaddrmsg.  This causes=
 
-Thanks. The patches are already mainline.
+> that additional 8 bytes are parsed and garbage attributes might be
+> retrieved. One of consequences is that the message will be dropped if
+> the garbage attribute is IFLA_IFNAME and contains an invalid interface
+> name.
+>=20
+> To fix this issue, use struct ifinfomsg to calculate the size of
+> attribute list for RTM_NEWLINK.
+>=20
+> Signed-off-by: Wang Xin <xin.wang7@cn.bosch.com>
+> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
 
-regards,
+Applied to master.
+
+Tnx,
 Marc
 
 --=20
@@ -157,23 +165,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---Yp3vkKdxFxADtTXsdDuvSGoK0mDAQC7bA--
+--rsyYwK5dtCZzACzf8vFOiycWxdcFZtQSc--
 
---bMB4ETkZmLiIyqD6M5cH99QkVA060hpql
+--LbZzaVXm9m5iJY3xXPgZ5vNdWPqIEnF7k
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+z1/wACgkQqclaivrt
-76kYkQgAh8ZJ5QVakxrOaVrUfHBGtT0q7tnsxD5R+Aw8Q22MdyV74ffXqEvMaLLL
-N369ade//as+HmcljS2Ix8pnHdsBHSRKlpgBUlU9GrpZcXEKCHTBxaJ/0SGOnSlr
-3BrL15TuwNCq/g0qeKaCC0xAmx8qU3psdvnI4GB81w52I4JHWFMocRZ/3joFysun
-B6HMx1DWNrUQF6ozLFbr7wgZ53YnM6oUH9Sa3FLYWIcc0YuVHJB47sVpkdIyNFkE
-npc3ovGNkNSTwFqHPf3sM0+ZyInDiGjrrg2ZFO9xuxorYbIAKSY8vPjUIxRXWvOr
-tfnV1tnnVtEeQJ9mmOJoamZaBhi8yQ==
-=fvDg
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+z5CoACgkQqclaivrt
+76nRcggApRZhIDWj/zFiivS1rwNIwZJi7c1tBJXuMUZELUb3u7o5CmcldLJ6Ys1K
+GUs37kShrdVt3bLluRm4z+70hlbU5QooYcigLtRShtyTCi6OxKFtE2h3tQtPBVYn
+7z6eVzVyFo/jtPcZ0q4dE1mcBsAHjhuqgMM2kqkKsvWEphlxARyM67BR2JABSUlu
+AUP+VvkWVulBMxBlNXYHYTbdxFpdxLy8USBFb7eCgFlgT64x5nMc58K6hfUdPbeh
+O0cfgTu5n6vpxvrsEeVIQ3xiOd7s1vbg4r5qtxgJ6MKI2OtPMPsehgF5RRDT3wWi
+Eh3IyHqqhO1IOJz8r7OtezPUNwOq/g==
+=qc+F
 -----END PGP SIGNATURE-----
 
---bMB4ETkZmLiIyqD6M5cH99QkVA060hpql--
+--LbZzaVXm9m5iJY3xXPgZ5vNdWPqIEnF7k--
