@@ -2,40 +2,38 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5984C64E75
-	for <linux-can@archiver.kernel.org>; Wed, 18 Nov 2020 16:04:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 649A3C64E7A
+	for <linux-can@archiver.kernel.org>; Wed, 18 Nov 2020 16:04:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB1B02225B
-	for <linux-can@archiver.kernel.org>; Wed, 18 Nov 2020 16:04:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1995320756
+	for <linux-can@archiver.kernel.org>; Wed, 18 Nov 2020 16:04:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727660AbgKRQE0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727416AbgKRQE0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 18 Nov 2020 11:04:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727463AbgKRQEZ (ORCPT
+        with ESMTP id S1726163AbgKRQEZ (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 18 Nov 2020 11:04:25 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CABEC061A4D
-        for <linux-can@vger.kernel.org>; Wed, 18 Nov 2020 08:04:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD0BC0613D4
+        for <linux-can@vger.kernel.org>; Wed, 18 Nov 2020 08:04:24 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kfPwR-0001km-8g; Wed, 18 Nov 2020 17:04:19 +0100
+        id 1kfPwP-0001km-Or; Wed, 18 Nov 2020 17:04:17 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 3/4] can: flexcan: flexcan_chip_start(): fix erroneous flexcan_transceiver_enable() during bus-off recovery
-Date:   Wed, 18 Nov 2020 17:04:13 +0100
-Message-Id: <20201118160414.2731659-4-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: pull-request: can 2020-11-18
+Date:   Wed, 18 Nov 2020 17:04:10 +0100
+Message-Id: <20201118160414.2731659-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201118160414.2731659-1-mkl@pengutronix.de>
-References: <20201118160414.2731659-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -46,99 +44,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-If the CAN controller goes into bus off, the do_set_mode() callback with
-CAN_MODE_START can be used to recover the controller, which then calls
-flexcan_chip_start(). If configured, this is done automatically by the
-framework or manually by the user.
+Hello Jakub, hello David,
 
-In flexcan_chip_start() there is an explicit call to
-flexcan_transceiver_enable(), which does a regulator_enable() on the
-transceiver regulator. This results in a net usage counter increase, as there
-is no corresponding flexcan_transceiver_disable() in the bus off code path.
-This further leads to the transceiver stuck enabled, even if the CAN interface
-is shut down.
+here's a pull request for net/master consisting of 4 patches for net/master,
 
-To fix this problem the
-flexcan_transceiver_enable()/flexcan_transceiver_disable() are moved out of
-flexcan_chip_start()/flexcan_chip_stop() into flexcan_open()/flexcan_close().
+Jimmy Assarsson provides two patches for the kvaser_pciefd and kvaser_usb
+drivers, where the can_bittiming_const are fixed.
 
-Fixes: e955cead0311 ("CAN: Add Flexcan CAN controller driver")
-Link: https://lore.kernel.org/r/20201118150148.2664024-1-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The next patch is by me and fixes an erroneous flexcan_transceiver_enable()
+during bus-off recovery in the flexcan driver.
+
+Jarkko Nikula's patch for the m_can driver fixes the IRQ handler to only
+process the interrupts if the device is not suspended.
+
+regards,
+Marc
+
+P.S.: Can you merge net/master into net-next/master after merging this pull
+request?
+
 ---
- drivers/net/can/flexcan.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index d6a9cf0e9b60..99e5f272205d 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1567,14 +1567,10 @@ static int flexcan_chip_start(struct net_device *dev)
- 		priv->write(reg_ctrl2, &regs->ctrl2);
- 	}
- 
--	err = flexcan_transceiver_enable(priv);
--	if (err)
--		goto out_chip_disable;
--
- 	/* synchronize with the can bus */
- 	err = flexcan_chip_unfreeze(priv);
- 	if (err)
--		goto out_transceiver_disable;
-+		goto out_chip_disable;
- 
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
-@@ -1592,8 +1588,6 @@ static int flexcan_chip_start(struct net_device *dev)
- 
- 	return 0;
- 
-- out_transceiver_disable:
--	flexcan_transceiver_disable(priv);
-  out_chip_disable:
- 	flexcan_chip_disable(priv);
- 	return err;
-@@ -1623,7 +1617,6 @@ static int __flexcan_chip_stop(struct net_device *dev, bool disable_on_error)
- 	priv->write(priv->reg_ctrl_default & ~FLEXCAN_CTRL_ERR_ALL,
- 		    &regs->ctrl);
- 
--	flexcan_transceiver_disable(priv);
- 	priv->can.state = CAN_STATE_STOPPED;
- 
- 	return 0;
-@@ -1665,10 +1658,14 @@ static int flexcan_open(struct net_device *dev)
- 	if (err)
- 		goto out_runtime_put;
- 
--	err = request_irq(dev->irq, flexcan_irq, IRQF_SHARED, dev->name, dev);
-+	err = flexcan_transceiver_enable(priv);
- 	if (err)
- 		goto out_close;
- 
-+	err = request_irq(dev->irq, flexcan_irq, IRQF_SHARED, dev->name, dev);
-+	if (err)
-+		goto out_transceiver_disable;
-+
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
- 		priv->mb_size = sizeof(struct flexcan_mb) + CANFD_MAX_DLEN;
- 	else
-@@ -1720,6 +1717,8 @@ static int flexcan_open(struct net_device *dev)
- 	can_rx_offload_del(&priv->offload);
-  out_free_irq:
- 	free_irq(dev->irq, dev);
-+ out_transceiver_disable:
-+	flexcan_transceiver_disable(priv);
-  out_close:
- 	close_candev(dev);
-  out_runtime_put:
-@@ -1738,6 +1737,7 @@ static int flexcan_close(struct net_device *dev)
- 
- 	can_rx_offload_del(&priv->offload);
- 	free_irq(dev->irq, dev);
-+	flexcan_transceiver_disable(priv);
- 
- 	close_candev(dev);
- 	pm_runtime_put(priv->dev);
--- 
-2.29.2
+The following changes since commit c09c8a27b9baa417864b9adc3228b10ae5eeec93:
+
+  ipv4: use IS_ENABLED instead of ifdef (2020-11-17 17:02:03 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.10-20201118
+
+for you to fetch changes up to a1f634463aaf2c94dfa13001dbdea011303124cc:
+
+  can: m_can: process interrupt only when not runtime suspended (2020-11-18 16:37:32 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-5.10-20201118
+
+----------------------------------------------------------------
+Jarkko Nikula (1):
+      can: m_can: process interrupt only when not runtime suspended
+
+Jimmy Assarsson (2):
+      can: kvaser_pciefd: Fix KCAN bittiming limits
+      can: kvaser_usb: kvaser_usb_hydra: Fix KCAN bittiming limits
+
+Marc Kleine-Budde (1):
+      can: flexcan: flexcan_chip_start(): fix erroneous flexcan_transceiver_enable() during bus-off recovery
+
+ drivers/net/can/flexcan.c                         | 18 +++++++++---------
+ drivers/net/can/kvaser_pciefd.c                   |  4 ++--
+ drivers/net/can/m_can/m_can.c                     |  2 ++
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c |  2 +-
+ 4 files changed, 14 insertions(+), 12 deletions(-)
+
 
