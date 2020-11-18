@@ -7,34 +7,33 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9A42C64E7C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E6F4C64E69
 	for <linux-can@archiver.kernel.org>; Wed, 18 Nov 2020 16:04:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A55A02087D
-	for <linux-can@archiver.kernel.org>; Wed, 18 Nov 2020 16:04:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC5D320A8B
+	for <linux-can@archiver.kernel.org>; Wed, 18 Nov 2020 16:04:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727680AbgKRQE0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1727442AbgKRQE0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 18 Nov 2020 11:04:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727660AbgKRQEZ (ORCPT
+        with ESMTP id S1727416AbgKRQEZ (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 18 Nov 2020 11:04:25 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96871C0613D4
-        for <linux-can@vger.kernel.org>; Wed, 18 Nov 2020 08:04:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95FEC0613D6
+        for <linux-can@vger.kernel.org>; Wed, 18 Nov 2020 08:04:24 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kfPwR-0001km-PI; Wed, 18 Nov 2020 17:04:19 +0100
+        id 1kfPwQ-0001km-ST; Wed, 18 Nov 2020 17:04:18 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 4/4] can: m_can: process interrupt only when not runtime suspended
-Date:   Wed, 18 Nov 2020 17:04:14 +0100
-Message-Id: <20201118160414.2731659-5-mkl@pengutronix.de>
+Subject: [net 2/4] can: kvaser_usb: kvaser_usb_hydra: Fix KCAN bittiming limits
+Date:   Wed, 18 Nov 2020 17:04:12 +0100
+Message-Id: <20201118160414.2731659-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201118160414.2731659-1-mkl@pengutronix.de>
 References: <20201118160414.2731659-1-mkl@pengutronix.de>
@@ -48,35 +47,31 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+From: Jimmy Assarsson <extja@kvaser.com>
 
-Avoid processing bogus interrupt statuses when the HW is runtime suspended and
-the M_CAN_IR register read may get all bits 1's. Handler can be called if the
-interrupt request is shared with other peripherals or at the end of free_irq().
+Use correct bittiming limits for the KCAN CAN controller.
 
-Therefore check the runtime suspended status before processing.
-
-Fixes: cdf8259d6573 ("can: m_can: Add PM Support")
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Link: https://lore.kernel.org/r/20200915134715.696303-1-jarkko.nikula@linux.intel.com
+Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://lore.kernel.org/r/20201115163027.16851-2-jimmyassarsson@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index e7264043f79a..f3fc37e96b08 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -956,6 +956,8 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
- 	struct net_device_stats *stats = &dev->stats;
- 	u32 ir;
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index 7ab87a758754..218fadc91155 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -367,7 +367,7 @@ static const struct can_bittiming_const kvaser_usb_hydra_kcan_bittiming_c = {
+ 	.tseg2_max = 32,
+ 	.sjw_max = 16,
+ 	.brp_min = 1,
+-	.brp_max = 4096,
++	.brp_max = 8192,
+ 	.brp_inc = 1,
+ };
  
-+	if (pm_runtime_suspended(cdev->dev))
-+		return IRQ_NONE;
- 	ir = m_can_read(cdev, M_CAN_IR);
- 	if (!ir)
- 		return IRQ_NONE;
 -- 
 2.29.2
 
