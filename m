@@ -2,40 +2,36 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDC29C6379D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74FB0C6369E
 	for <linux-can@archiver.kernel.org>; Thu, 19 Nov 2020 10:09:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ABB1822259
+	by mail.kernel.org (Postfix) with ESMTP id 1F49322259
 	for <linux-can@archiver.kernel.org>; Thu, 19 Nov 2020 10:09:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgKSKJX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 19 Nov 2020 05:09:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
+        id S1726668AbgKSKJW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 19 Nov 2020 05:09:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgKSKJW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Nov 2020 05:09:22 -0500
+        with ESMTP id S1726650AbgKSKJV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Nov 2020 05:09:21 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E87CC061A49
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7922FC0613CF
         for <linux-can@vger.kernel.org>; Thu, 19 Nov 2020 02:09:21 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kfgsR-00063P-G6; Thu, 19 Nov 2020 11:09:19 +0100
+        id 1kfgsQ-00063P-9k; Thu, 19 Nov 2020 11:09:18 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>, kernel@pengutronix.de,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next v2 4/5] can: flexcan: flexcan_open(): completely initialize controller before requesting IRQ
-Date:   Thu, 19 Nov 2020 11:09:16 +0100
-Message-Id: <20201119100917.3013281-5-mkl@pengutronix.de>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>, kernel@pengutronix.de
+Subject: [net-next v2 PATCH 0/5] flexcan: fix hanging flexcan_close()
+Date:   Thu, 19 Nov 2020 11:09:12 +0100
+Message-Id: <20201119100917.3013281-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201119100917.3013281-1-mkl@pengutronix.de>
-References: <20201119100917.3013281-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -46,64 +42,34 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch changes the order in which the flexcan controller is brought up
-during flexcan_open(). It makes sure that the chip is completely initialized
-before the IRQs are requested and finally enabled.
+Hello,
 
-Link: https://lore.kernel.org/r/20201119085251.2949181-5-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/flexcan.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+There haven been reports, that the flexcan_close() soradically hangs during
+simultanious ifdown, sending of CAN messages and probably open CAN bus:
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index cbce8a3d090c..0fb768dee99f 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1747,32 +1747,33 @@ static int flexcan_open(struct net_device *dev)
- 	if (err)
- 		goto out_close;
- 
--	err = request_irq(dev->irq, flexcan_irq, IRQF_SHARED, dev->name, dev);
-+	err = flexcan_rx_offload_setup(dev);
- 	if (err)
- 		goto out_transceiver_disable;
- 
--	err = flexcan_rx_offload_setup(dev);
-+	err = flexcan_chip_start(dev);
- 	if (err)
--		goto out_free_irq;
-+		goto out_can_rx_offload_del;
- 
--	/* start chip and queuing */
--	err = flexcan_chip_start(dev);
-+	can_rx_offload_enable(&priv->offload);
-+
-+	err = request_irq(dev->irq, flexcan_irq, IRQF_SHARED, dev->name, dev);
- 	if (err)
--		goto out_offload_del;
-+		goto out_can_rx_offload_disable;
- 
- 	flexcan_chip_interrupts_enable(dev);
- 
- 	can_led_event(dev, CAN_LED_EVENT_OPEN);
- 
--	can_rx_offload_enable(&priv->offload);
- 	netif_start_queue(dev);
- 
- 	return 0;
- 
-- out_offload_del:
-+ out_can_rx_offload_disable:
-+	can_rx_offload_disable(&priv->offload);
-+	flexcan_chip_stop(dev);
-+ out_can_rx_offload_del:
- 	can_rx_offload_del(&priv->offload);
-- out_free_irq:
--	free_irq(dev->irq, dev);
-  out_transceiver_disable:
- 	flexcan_transceiver_disable(priv);
-  out_close:
--- 
-2.29.2
+| (__schedule) from [<808bbd34>] (schedule+0x90/0xb8)
+| (schedule) from [<808bf274>] (schedule_timeout+0x1f8/0x24c)
+| (schedule_timeout) from [<8016be44>] (msleep+0x18/0x1c)
+| (msleep) from [<80746a64>] (napi_disable+0x60/0x70)
+| (napi_disable) from [<8052fdd0>] (flexcan_close+0x2c/0x140)
+| (flexcan_close) from [<80744930>] (__dev_close_many+0xb8/0xd8)
+| (__dev_close_many) from [<8074db9c>] (__dev_change_flags+0xd0/0x1a0)
+| (__dev_change_flags) from [<8074dc84>] (dev_change_flags+0x18/0x48)
+| (dev_change_flags) from [<80760c24>] (do_setlink+0x44c/0x7b4)
+| (do_setlink) from [<80761560>] (rtnl_newlink+0x374/0x68c)
+
+I was unable to reproduce the issue, but a cleanup of the flexcan close
+sequence has probably fixed the problem at the reporting user.
+
+As this fix spans 5 patches and changes the flexcan_open() and flexcan_close()
+are rather big, I'm reluctant to push this via net/master now. So I think this
+series should go via net-next/master in my next pull request.
+
+changes since v1:
+- 5/5: remove redundant flexcan_chip_interrupts_disable(dev)
+       Thanks Joakim Zhang
+
+regards,
+Marc
+
 
