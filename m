@@ -2,42 +2,51 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B77CC2D0E4
-	for <linux-can@archiver.kernel.org>; Thu, 19 Nov 2020 08:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91B38C388F9
+	for <linux-can@archiver.kernel.org>; Thu, 19 Nov 2020 09:13:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 181732085B
-	for <linux-can@archiver.kernel.org>; Thu, 19 Nov 2020 08:53:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 420A020679
+	for <linux-can@archiver.kernel.org>; Thu, 19 Nov 2020 09:13:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgKSIw7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 19 Nov 2020 03:52:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40144 "EHLO
+        id S1726571AbgKSJMi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 19 Nov 2020 04:12:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgKSIw7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Nov 2020 03:52:59 -0500
+        with ESMTP id S1725873AbgKSJMi (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Nov 2020 04:12:38 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DF4C0617A7
-        for <linux-can@vger.kernel.org>; Thu, 19 Nov 2020 00:52:59 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=blackshift.org)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F3BC0613CF
+        for <linux-can@vger.kernel.org>; Thu, 19 Nov 2020 01:12:38 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kffgX-0004Tk-1e; Thu, 19 Nov 2020 09:52:57 +0100
+        id 1kffzY-00070r-MF; Thu, 19 Nov 2020 10:12:36 +0100
+Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:d2a0:42c2:7db3:b10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id A24CD595FBB;
+        Thu, 19 Nov 2020 09:12:35 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 10:12:33 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     linux-can@vger.kernel.org
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>, kernel@pengutronix.de,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 3/5] can: flexcan: flexcan_rx_offload_setup(): factor out mailbox and rx-offload setup into separate function
-Date:   Thu, 19 Nov 2020 09:52:49 +0100
-Message-Id: <20201119085251.2949181-4-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201119085251.2949181-1-mkl@pengutronix.de>
-References: <20201119085251.2949181-1-mkl@pengutronix.de>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     linux-can@vger.kernel.org, mailhol.vincent@wanadoo.fr
+Subject: Re: [PATCH net-next v2] can: gw: support modification of Classical
+ CAN DLCs
+Message-ID: <20201119091233.p4rsay26gta6tb74@hardanger.blackshift.org>
+References: <20201119084921.2621-1-socketcan@hartkopp.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5mq5oxy3q6kpcv3h"
+Content-Disposition: inline
+In-Reply-To: <20201119084921.2621-1-socketcan@hartkopp.net>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -46,106 +55,58 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In an upcoming patch the order of operations in flexcan_open() are changed.
-Introduce convenience function to make that patch simpler.
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/flexcan.c | 74 ++++++++++++++++++++++-----------------
- 1 file changed, 42 insertions(+), 32 deletions(-)
+--5mq5oxy3q6kpcv3h
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 52ce26edfb0f..cbce8a3d090c 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1383,6 +1383,47 @@ static void flexcan_ram_init(struct net_device *dev)
- 	priv->write(reg_ctrl2, &regs->ctrl2);
- }
- 
-+static int flexcan_rx_offload_setup(struct net_device *dev)
-+{
-+	struct flexcan_priv *priv = netdev_priv(dev);
-+	int err;
-+
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+		priv->mb_size = sizeof(struct flexcan_mb) + CANFD_MAX_DLEN;
-+	else
-+		priv->mb_size = sizeof(struct flexcan_mb) + CAN_MAX_DLEN;
-+	priv->mb_count = (sizeof(priv->regs->mb[0]) / priv->mb_size) +
-+			 (sizeof(priv->regs->mb[1]) / priv->mb_size);
-+
-+	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP)
-+		priv->tx_mb_reserved =
-+			flexcan_get_mb(priv, FLEXCAN_TX_MB_RESERVED_OFF_TIMESTAMP);
-+	else
-+		priv->tx_mb_reserved =
-+			flexcan_get_mb(priv, FLEXCAN_TX_MB_RESERVED_OFF_FIFO);
-+	priv->tx_mb_idx = priv->mb_count - 1;
-+	priv->tx_mb = flexcan_get_mb(priv, priv->tx_mb_idx);
-+	priv->tx_mask = FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
-+
-+	priv->offload.mailbox_read = flexcan_mailbox_read;
-+
-+	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP) {
-+		priv->offload.mb_first = FLEXCAN_RX_MB_OFF_TIMESTAMP_FIRST;
-+		priv->offload.mb_last = priv->mb_count - 2;
-+
-+		priv->rx_mask = GENMASK_ULL(priv->offload.mb_last,
-+					    priv->offload.mb_first);
-+		err = can_rx_offload_add_timestamp(dev, &priv->offload);
-+	} else {
-+		priv->rx_mask = FLEXCAN_IFLAG_RX_FIFO_OVERFLOW |
-+			FLEXCAN_IFLAG_RX_FIFO_AVAILABLE;
-+		err = can_rx_offload_add_fifo(dev, &priv->offload,
-+					      FLEXCAN_NAPI_WEIGHT);
-+	}
-+
-+	return err;
-+}
-+
- static void flexcan_chip_interrupts_enable(const struct net_device *dev)
- {
- 	const struct flexcan_priv *priv = netdev_priv(dev);
-@@ -1710,38 +1751,7 @@ static int flexcan_open(struct net_device *dev)
- 	if (err)
- 		goto out_transceiver_disable;
- 
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
--		priv->mb_size = sizeof(struct flexcan_mb) + CANFD_MAX_DLEN;
--	else
--		priv->mb_size = sizeof(struct flexcan_mb) + CAN_MAX_DLEN;
--	priv->mb_count = (sizeof(priv->regs->mb[0]) / priv->mb_size) +
--			 (sizeof(priv->regs->mb[1]) / priv->mb_size);
--
--	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP)
--		priv->tx_mb_reserved =
--			flexcan_get_mb(priv, FLEXCAN_TX_MB_RESERVED_OFF_TIMESTAMP);
--	else
--		priv->tx_mb_reserved =
--			flexcan_get_mb(priv, FLEXCAN_TX_MB_RESERVED_OFF_FIFO);
--	priv->tx_mb_idx = priv->mb_count - 1;
--	priv->tx_mb = flexcan_get_mb(priv, priv->tx_mb_idx);
--	priv->tx_mask = FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
--
--	priv->offload.mailbox_read = flexcan_mailbox_read;
--
--	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP) {
--		priv->offload.mb_first = FLEXCAN_RX_MB_OFF_TIMESTAMP_FIRST;
--		priv->offload.mb_last = priv->mb_count - 2;
--
--		priv->rx_mask = GENMASK_ULL(priv->offload.mb_last,
--					    priv->offload.mb_first);
--		err = can_rx_offload_add_timestamp(dev, &priv->offload);
--	} else {
--		priv->rx_mask = FLEXCAN_IFLAG_RX_FIFO_OVERFLOW |
--			FLEXCAN_IFLAG_RX_FIFO_AVAILABLE;
--		err = can_rx_offload_add_fifo(dev, &priv->offload,
--					      FLEXCAN_NAPI_WEIGHT);
--	}
-+	err = flexcan_rx_offload_setup(dev);
- 	if (err)
- 		goto out_free_irq;
- 
--- 
-2.29.2
+On Thu, Nov 19, 2020 at 09:49:21AM +0100, Oliver Hartkopp wrote:
+> Add support for data length code modifications for Classical CAN.
+>=20
+> The netlink configuration interface always allowed to pass any value
+> that fits into a byte, therefore only the modification process had to be
+> extended to handle the raw DLC represenation of Classical CAN frames.
+>=20
+> When a DLC value from 0 .. F is provided for Classical CAN frame
+> modifications the 'len' value is modified as-is with the exception that
+> potentially existing 9 .. F DLC values in the len8_dlc element are moved
+> to the 'len' element for the modification operation by mod_retrieve_ccdlc=
+().
+>=20
+> After the modification the Classical CAN frame DLC information is brought
+> back into the correct format by mod_store_ccdlc() which is filling 'len'
+> and 'len8_dlc' accordingly.
+>=20
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>=20
+> ---
+> v2: remove unnecessary mod_retrieve_ccdlc() for 'set' modification
 
+Added to linux-can-next/testing.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--5mq5oxy3q6kpcv3h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+2Nv8ACgkQqclaivrt
+76nZmAgAqQ+0SaJHZLh0bx0kNu0y4k4ZW5/lhmoyPNXAFBTKNZPrIsZZOcy0ehXI
+5k1RGwsmls5h76/RwyHvsDRwsP8y4uyxPo59MVwqaJuVRKJa/GGpXCQYdCYNInrG
+BfjgvPbY0EtyF6jQ0QIpexhTQQpkhg4dONhggGNGtWp0NTiErqM5g92Dkw99Xoid
+0oX49NkR1fRPhNDKnsElv+XgGsJ0Qa0RI5GIy1exXekGzDIaLdtvoow+oUoI0a7C
+oZBKmORFb3NDDIV2GUWtiw0d9ZUCVJVGWouIP/ixFzKMJNitSS81vtKE58NLmsZS
+bUq8Qysq4wzDP2x7giCqv/zJ/Jl4yA==
+=wC6b
+-----END PGP SIGNATURE-----
+
+--5mq5oxy3q6kpcv3h--
