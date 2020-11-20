@@ -2,40 +2,41 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24C17C56202
-	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:33:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E497C64E7B
+	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C047C222C3
-	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:33:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB8FC222C3
+	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:33:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgKTNdY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 20 Nov 2020 08:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
+        id S1728253AbgKTNdf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 20 Nov 2020 08:33:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728065AbgKTNdY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:24 -0500
+        with ESMTP id S1728250AbgKTNde (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:34 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C90CC0617A7
-        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43224C0617A7
+        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:34 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kg6XQ-0006Fn-MW; Fri, 20 Nov 2020 14:33:20 +0100
+        id 1kg6XY-0006Fn-Jv; Fri, 20 Nov 2020 14:33:28 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: pull-request: can-next 2020-11-20
-Date:   Fri, 20 Nov 2020 14:32:53 +0100
-Message-Id: <20201120133318.3428231-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-next 17/25] can: flexcan: move enabling/disabling of interrupts from flexcan_chip_{start,stop}() to callers
+Date:   Fri, 20 Nov 2020 14:33:10 +0100
+Message-Id: <20201120133318.3428231-18-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201120133318.3428231-1-mkl@pengutronix.de>
+References: <20201120133318.3428231-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -45,156 +46,91 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+The function flexcan_chip_start() first configures the CAN controller and then
+enables the interrupt, flexcan_chip_stop() does the opposite.
 
-here's a pull request of 25 patches for net-next/master.
+In an upcoming patch the order of operations in flexcan_open() and
+flexcan_close() are changed. This requires
+flexcan_chip_start()/flexcan_chip_stop_disable_on_error() and
+flexcan_chip_interrupts_{enable,disable}() to be independent of each other.
 
-The first patch is by Yegor Yefremov and he improves the j1939 documentaton by
-adding tables for the CAN identifier and its fields.
+This patch moves the enabling of the interrupts from flexcan_chip_start() to
+its callers flexcan_open() and flexcan_resume(). Likewise the disabling of the
+interrupts is moved from __flexcan_chip_stop() to its indirect callers
+flexcan_close() and flexcan_suspend().
 
-Then there are 8 patches by Oliver Hartkopp targeting the CAN driver
-infrastructure and drivers. These add support for optional DLC element to the
-Classical CAN frame structure. See patch ea7800565a12 ("can: add optional DLC
-element to Classical CAN frame structure") for details. Oliver's last patch
-adds len8_dlc support to several drivers. Stefan Mätje provides a patch to add 
-len8_dlc support to the esd_usb2 driver.
-
-The next patch is by Oliver Hartkopp, too and adds support for modification of
-Classical CAN DLCs to CAN GW sockets.
-
-The next 3 patches target the nxp,flexcan DT bindings. One patch by my adds the
-missing uint32 reference to the clock-frequency property. Joakim Zhang's
-patches fix the fsl,clk-source property and add the IMX_SC_R_CAN() macro to the
-imx firmware header file, which will be used in the flexcan driver later.
-
-Another patch by Joakim Zhang prepares the flexcan driver for SCU based
-stop-mode, by giving the existing, GPR based stop-mode, a _GPR postfix.
-
-The next 5 patches are by me, target the flexcan driver, and clean up the 
-.ndo_open and .ndo_stop callbacks. These patches try to fix a sporadically 
-hanging flexcan_close() during simultanious ifdown, sending of CAN messages and
-probably open CAN bus. I was never aber to reproduce, but these seem to fix the 
-problem at the reporting user. As these changes are rather big, I'd like to 
-mainline them via net-next/master.
-
-The next patches are by Jimmy Assarsson and Christer Beskow, they add support 
-for new USB devices to the existing kvaser_usb driver.
-
-The last patch is by Kaixu Xia and simplifies the return in the
-mcp251xfd_chip_softreset() function in the mcp251xfd driver.
-
-regrads,
-Marc
-
+Link: https://lore.kernel.org/r/20201119100917.3013281-3-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/flexcan.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-The following changes since commit 4082c502bf9c8a6afe4268c654d4e93ab7dfeb69:
-
-  Merge branch 'enetc-clean-endianness-warnings-up' (2020-11-19 22:05:44 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-5.11-20201120
-
-for you to fetch changes up to 275f6010b6994ad286a859062c03be050e8073ad:
-
-  can: mcp251xfd: remove useless code in mcp251xfd_chip_softreset (2020-11-20 12:06:47 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-5.11-20201120
-
-----------------------------------------------------------------
-Christer Beskow (1):
-      can: kvaser_usb: kvaser_usb_hydra: Add support for new device variant
-
-Jimmy Assarsson (3):
-      can: kvaser_usb: Add USB_{LEAF,HYDRA}_PRODUCT_ID_END defines
-      can: kvaser_usb: Add new Kvaser Leaf v2 devices
-      can: kvaser_usb: Add new Kvaser hydra devices
-
-Joakim Zhang (3):
-      dt-bindings: can: fsl,flexcan: fix fsl,clk-source property
-      dt-bindings: firmware: add IMX_SC_R_CAN(x) macro for CAN
-      can: flexcan: rename macro FLEXCAN_QUIRK_SETUP_STOP_MODE -> FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR
-
-Kaixu Xia (1):
-      can: mcp251xfd: remove useless code in mcp251xfd_chip_softreset
-
-Marc Kleine-Budde (6):
-      dt-bindings: can: fsl,flexcan: add uint32 reference to clock-frequency property
-      can: flexcan: factor out enabling and disabling of interrupts into separate function
-      can: flexcan: move enabling/disabling of interrupts from flexcan_chip_{start,stop}() to callers
-      can: flexcan: flexcan_rx_offload_setup(): factor out mailbox and rx-offload setup into separate function
-      can: flexcan: flexcan_open(): completely initialize controller before requesting IRQ
-      can: flexcan: flexcan_close(): change order if commands to properly shut down the controller
-
-Oliver Hartkopp (9):
-      can: add optional DLC element to Classical CAN frame structure
-      can: rename get_can_dlc() macro with can_cc_dlc2len()
-      can: remove obsolete get_canfd_dlc() macro
-      can: replace can_dlc as variable/element for payload length
-      can: rename CAN FD related can_len2dlc and can_dlc2len helpers
-      can: update documentation for DLC usage in Classical CAN
-      can: drivers: introduce helpers to access Classical CAN DLC values
-      can: drivers: add len8_dlc support for various CAN adapters
-      can: gw: support modification of Classical CAN DLCs
-
-Stefan Mätje (1):
-      can: drivers: add len8_dlc support for esd_usb2 CAN adapter
-
-Yegor Yefremov (1):
-      can: j1939: add tables for the CAN identifier and its fields
-
- .../devicetree/bindings/net/can/fsl,flexcan.yaml   |   5 +-
- Documentation/networking/can.rst                   |  70 ++++++---
- Documentation/networking/j1939.rst                 |  46 +++++-
- drivers/net/can/at91_can.c                         |  14 +-
- drivers/net/can/c_can/c_can.c                      |  20 +--
- drivers/net/can/cc770/cc770.c                      |  14 +-
- drivers/net/can/dev.c                              |  16 +-
- drivers/net/can/flexcan.c                          | 161 ++++++++++++---------
- drivers/net/can/grcan.c                            |  10 +-
- drivers/net/can/ifi_canfd/ifi_canfd.c              |  10 +-
- drivers/net/can/janz-ican3.c                       |  20 +--
- drivers/net/can/kvaser_pciefd.c                    |  10 +-
- drivers/net/can/m_can/m_can.c                      |  12 +-
- drivers/net/can/mscan/mscan.c                      |  20 +--
- drivers/net/can/pch_can.c                          |  14 +-
- drivers/net/can/peak_canfd/peak_canfd.c            |  16 +-
- drivers/net/can/rcar/rcar_can.c                    |  14 +-
- drivers/net/can/rcar/rcar_canfd.c                  |  12 +-
- drivers/net/can/rx-offload.c                       |   2 +-
- drivers/net/can/sja1000/sja1000.c                  |  16 +-
- drivers/net/can/slcan.c                            |  32 ++--
- drivers/net/can/softing/softing_fw.c               |   2 +-
- drivers/net/can/softing/softing_main.c             |  14 +-
- drivers/net/can/spi/hi311x.c                       |  20 +--
- drivers/net/can/spi/mcp251x.c                      |  20 +--
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c     |  15 +-
- drivers/net/can/sun4i_can.c                        |  10 +-
- drivers/net/can/ti_hecc.c                          |   8 +-
- drivers/net/can/usb/Kconfig                        |   5 +
- drivers/net/can/usb/ems_usb.c                      |  16 +-
- drivers/net/can/usb/esd_usb2.c                     |  24 +--
- drivers/net/can/usb/gs_usb.c                       |  11 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   |  22 ++-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c  |  61 ++++++--
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c   |  22 +--
- drivers/net/can/usb/mcba_usb.c                     |  10 +-
- drivers/net/can/usb/peak_usb/pcan_usb.c            |  18 ++-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c         |  29 ++--
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c        |  14 +-
- drivers/net/can/usb/ucan.c                         |  20 +--
- drivers/net/can/usb/usb_8dev.c                     |  17 ++-
- drivers/net/can/xilinx_can.c                       |  16 +-
- include/dt-bindings/firmware/imx/rsrc.h            |   1 +
- include/linux/can/dev.h                            |  38 ++++-
- include/linux/can/dev/peak_canfd.h                 |   2 +-
- include/uapi/linux/can.h                           |  38 +++--
- include/uapi/linux/can/gw.h                        |   4 +-
- include/uapi/linux/can/netlink.h                   |   1 +
- net/can/af_can.c                                   |   2 +-
- net/can/gw.c                                       |  80 ++++++++--
- net/can/j1939/main.c                               |   4 +-
- 51 files changed, 674 insertions(+), 404 deletions(-)
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 681a4d82681c..64c174aa868b 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1598,8 +1598,6 @@ static int flexcan_chip_start(struct net_device *dev)
+ 
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+-	flexcan_chip_interrupts_enable(dev);
+-
+ 	/* print chip status */
+ 	netdev_dbg(dev, "%s: reading mcr=0x%08x ctrl=0x%08x\n", __func__,
+ 		   priv->read(&regs->mcr), priv->read(&regs->ctrl));
+@@ -1628,8 +1626,6 @@ static int __flexcan_chip_stop(struct net_device *dev, bool disable_on_error)
+ 	if (err && !disable_on_error)
+ 		goto out_chip_unfreeze;
+ 
+-	flexcan_chip_interrupts_disable(dev);
+-
+ 	priv->can.state = CAN_STATE_STOPPED;
+ 
+ 	return 0;
+@@ -1719,6 +1715,8 @@ static int flexcan_open(struct net_device *dev)
+ 	if (err)
+ 		goto out_offload_del;
+ 
++	flexcan_chip_interrupts_enable(dev);
++
+ 	can_led_event(dev, CAN_LED_EVENT_OPEN);
+ 
+ 	can_rx_offload_enable(&priv->offload);
+@@ -1747,6 +1745,7 @@ static int flexcan_close(struct net_device *dev)
+ 	netif_stop_queue(dev);
+ 	can_rx_offload_disable(&priv->offload);
+ 	flexcan_chip_stop_disable_on_error(dev);
++	flexcan_chip_interrupts_disable(dev);
+ 
+ 	can_rx_offload_del(&priv->offload);
+ 	free_irq(dev->irq, dev);
+@@ -1770,6 +1769,8 @@ static int flexcan_set_mode(struct net_device *dev, enum can_mode mode)
+ 		if (err)
+ 			return err;
+ 
++		flexcan_chip_interrupts_enable(dev);
++
+ 		netif_wake_queue(dev);
+ 		break;
+ 
+@@ -2108,6 +2109,8 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 			if (err)
+ 				return err;
+ 
++			flexcan_chip_interrupts_disable(dev);
++
+ 			err = pinctrl_pm_select_sleep_state(device);
+ 			if (err)
+ 				return err;
+@@ -2143,6 +2146,8 @@ static int __maybe_unused flexcan_resume(struct device *device)
+ 			err = flexcan_chip_start(dev);
+ 			if (err)
+ 				return err;
++
++			flexcan_chip_interrupts_enable(dev);
+ 		}
+ 	}
+ 
+-- 
+2.29.2
 
