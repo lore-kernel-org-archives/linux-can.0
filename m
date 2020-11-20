@@ -5,34 +5,34 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 109D6C64E90
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DFD4C71155
 	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB0D3222C3
-	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6BD3F222C3
+	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728239AbgKTNdh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1728228AbgKTNdh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 20 Nov 2020 08:33:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728256AbgKTNdf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:35 -0500
+        with ESMTP id S1728270AbgKTNdh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:37 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755FFC0613CF
-        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194B6C0617A7
+        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:37 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kg6XZ-0006Fn-0r; Fri, 20 Nov 2020 14:33:29 +0100
+        id 1kg6XZ-0006Fn-UW; Fri, 20 Nov 2020 14:33:30 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 18/25] can: flexcan: flexcan_rx_offload_setup(): factor out mailbox and rx-offload setup into separate function
-Date:   Fri, 20 Nov 2020 14:33:11 +0100
-Message-Id: <20201120133318.3428231-19-mkl@pengutronix.de>
+Subject: [net-next 20/25] can: flexcan: flexcan_close(): change order if commands to properly shut down the controller
+Date:   Fri, 20 Nov 2020 14:33:13 +0100
+Message-Id: <20201120133318.3428231-21-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201120133318.3428231-1-mkl@pengutronix.de>
 References: <20201120133318.3428231-1-mkl@pengutronix.de>
@@ -46,107 +46,63 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In an upcoming patch the order of operations in flexcan_open() are changed.
-Introduce convenience function to make that patch simpler.
+There haven been reports, that the flexcan_close() soradically hangs during
+simultanious ifdown, sending of CAN messages and probably open CAN bus:
 
-Link: https://lore.kernel.org/r/20201119100917.3013281-4-mkl@pengutronix.de
+| (__schedule) from [<808bbd34>] (schedule+0x90/0xb8)
+| (schedule) from [<808bf274>] (schedule_timeout+0x1f8/0x24c)
+| (schedule_timeout) from [<8016be44>] (msleep+0x18/0x1c)
+| (msleep) from [<80746a64>] (napi_disable+0x60/0x70)
+| (napi_disable) from [<8052fdd0>] (flexcan_close+0x2c/0x140)
+| (flexcan_close) from [<80744930>] (__dev_close_many+0xb8/0xd8)
+| (__dev_close_many) from [<8074db9c>] (__dev_change_flags+0xd0/0x1a0)
+| (__dev_change_flags) from [<8074dc84>] (dev_change_flags+0x18/0x48)
+| (dev_change_flags) from [<80760c24>] (do_setlink+0x44c/0x7b4)
+| (do_setlink) from [<80761560>] (rtnl_newlink+0x374/0x68c)
+
+I was unable to reproduce the issue, but a cleanup of the flexcan close
+sequence has probably fixed the problem at the reporting user.
+
+This patch changes the sequence in flexcan_close() to:
+- stop the TX queue
+- disable the interrupts on the chip level and wait via free_irq()
+  synchronously for the interrupt handler to finish
+- disable RX offload, which disables synchronously NAPI
+- disable the flexcan on the chip level
+- free RX offload
+- disable the transceiver
+- close the CAN device
+- disable the clocks
+
+Link: https://lore.kernel.org/r/20201119100917.3013281-6-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan.c | 74 ++++++++++++++++++++++-----------------
- 1 file changed, 42 insertions(+), 32 deletions(-)
+ drivers/net/can/flexcan.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 64c174aa868b..0705b6384e49 100644
+index e98368be1669..e85f20d18d67 100644
 --- a/drivers/net/can/flexcan.c
 +++ b/drivers/net/can/flexcan.c
-@@ -1346,6 +1346,47 @@ static void flexcan_ram_init(struct net_device *dev)
- 	priv->write(reg_ctrl2, &regs->ctrl2);
- }
+@@ -1754,15 +1754,15 @@ static int flexcan_close(struct net_device *dev)
+ 	struct flexcan_priv *priv = netdev_priv(dev);
  
-+static int flexcan_rx_offload_setup(struct net_device *dev)
-+{
-+	struct flexcan_priv *priv = netdev_priv(dev);
-+	int err;
-+
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
-+		priv->mb_size = sizeof(struct flexcan_mb) + CANFD_MAX_DLEN;
-+	else
-+		priv->mb_size = sizeof(struct flexcan_mb) + CAN_MAX_DLEN;
-+	priv->mb_count = (sizeof(priv->regs->mb[0]) / priv->mb_size) +
-+			 (sizeof(priv->regs->mb[1]) / priv->mb_size);
-+
-+	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP)
-+		priv->tx_mb_reserved =
-+			flexcan_get_mb(priv, FLEXCAN_TX_MB_RESERVED_OFF_TIMESTAMP);
-+	else
-+		priv->tx_mb_reserved =
-+			flexcan_get_mb(priv, FLEXCAN_TX_MB_RESERVED_OFF_FIFO);
-+	priv->tx_mb_idx = priv->mb_count - 1;
-+	priv->tx_mb = flexcan_get_mb(priv, priv->tx_mb_idx);
-+	priv->tx_mask = FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
-+
-+	priv->offload.mailbox_read = flexcan_mailbox_read;
-+
-+	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP) {
-+		priv->offload.mb_first = FLEXCAN_RX_MB_OFF_TIMESTAMP_FIRST;
-+		priv->offload.mb_last = priv->mb_count - 2;
-+
-+		priv->rx_mask = GENMASK_ULL(priv->offload.mb_last,
-+					    priv->offload.mb_first);
-+		err = can_rx_offload_add_timestamp(dev, &priv->offload);
-+	} else {
-+		priv->rx_mask = FLEXCAN_IFLAG_RX_FIFO_OVERFLOW |
-+			FLEXCAN_IFLAG_RX_FIFO_AVAILABLE;
-+		err = can_rx_offload_add_fifo(dev, &priv->offload,
-+					      FLEXCAN_NAPI_WEIGHT);
-+	}
-+
-+	return err;
-+}
-+
- static void flexcan_chip_interrupts_enable(const struct net_device *dev)
- {
- 	const struct flexcan_priv *priv = netdev_priv(dev);
-@@ -1675,38 +1716,7 @@ static int flexcan_open(struct net_device *dev)
- 	if (err)
- 		goto out_transceiver_disable;
+ 	netif_stop_queue(dev);
++	flexcan_chip_interrupts_disable(dev);
++	free_irq(dev->irq, dev);
+ 	can_rx_offload_disable(&priv->offload);
+ 	flexcan_chip_stop_disable_on_error(dev);
+-	flexcan_chip_interrupts_disable(dev);
  
--	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
--		priv->mb_size = sizeof(struct flexcan_mb) + CANFD_MAX_DLEN;
--	else
--		priv->mb_size = sizeof(struct flexcan_mb) + CAN_MAX_DLEN;
--	priv->mb_count = (sizeof(priv->regs->mb[0]) / priv->mb_size) +
--			 (sizeof(priv->regs->mb[1]) / priv->mb_size);
+ 	can_rx_offload_del(&priv->offload);
+-	free_irq(dev->irq, dev);
+ 	flexcan_transceiver_disable(priv);
 -
--	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP)
--		priv->tx_mb_reserved =
--			flexcan_get_mb(priv, FLEXCAN_TX_MB_RESERVED_OFF_TIMESTAMP);
--	else
--		priv->tx_mb_reserved =
--			flexcan_get_mb(priv, FLEXCAN_TX_MB_RESERVED_OFF_FIFO);
--	priv->tx_mb_idx = priv->mb_count - 1;
--	priv->tx_mb = flexcan_get_mb(priv, priv->tx_mb_idx);
--	priv->tx_mask = FLEXCAN_IFLAG_MB(priv->tx_mb_idx);
--
--	priv->offload.mailbox_read = flexcan_mailbox_read;
--
--	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP) {
--		priv->offload.mb_first = FLEXCAN_RX_MB_OFF_TIMESTAMP_FIRST;
--		priv->offload.mb_last = priv->mb_count - 2;
--
--		priv->rx_mask = GENMASK_ULL(priv->offload.mb_last,
--					    priv->offload.mb_first);
--		err = can_rx_offload_add_timestamp(dev, &priv->offload);
--	} else {
--		priv->rx_mask = FLEXCAN_IFLAG_RX_FIFO_OVERFLOW |
--			FLEXCAN_IFLAG_RX_FIFO_AVAILABLE;
--		err = can_rx_offload_add_fifo(dev, &priv->offload,
--					      FLEXCAN_NAPI_WEIGHT);
--	}
-+	err = flexcan_rx_offload_setup(dev);
- 	if (err)
- 		goto out_free_irq;
+ 	close_candev(dev);
++
+ 	pm_runtime_put(priv->dev);
  
+ 	can_led_event(dev, CAN_LED_EVENT_STOP);
 -- 
 2.29.2
 
