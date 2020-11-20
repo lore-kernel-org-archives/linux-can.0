@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1218BC8300F
-	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CDCEC8300E
+	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D33DD222C3
+	by mail.kernel.org (Postfix) with ESMTP id 3BB85222C3
 	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgKTNdm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 20 Nov 2020 08:33:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
+        id S1728256AbgKTNdj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 20 Nov 2020 08:33:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728230AbgKTNde (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:34 -0500
+        with ESMTP id S1728284AbgKTNdi (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:38 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFA2C061A04
-        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0839C0617A7
+        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:38 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kg6XX-0006Fn-3e; Fri, 20 Nov 2020 14:33:27 +0100
+        id 1kg6Xb-0006Fn-L2; Fri, 20 Nov 2020 14:33:31 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 13/25] dt-bindings: can: fsl,flexcan: fix fsl,clk-source property
-Date:   Fri, 20 Nov 2020 14:33:06 +0100
-Message-Id: <20201120133318.3428231-14-mkl@pengutronix.de>
+Subject: [net-next 24/25] can: kvaser_usb: Add new Kvaser hydra devices
+Date:   Fri, 20 Nov 2020 14:33:17 +0100
+Message-Id: <20201120133318.3428231-25-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201120133318.3428231-1-mkl@pengutronix.de>
 References: <20201120133318.3428231-1-mkl@pengutronix.de>
@@ -47,41 +47,59 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Jimmy Assarsson <extja@kvaser.com>
 
-Correct fsl,clk-source example since flexcan driver uses "of_property_read_u8"
-to get this property.
+Add new Kvaser hydra devices.
 
-Fixes: 9d733992772d ("dt-bindings: can: flexcan: add PE clock source property to device tree")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20201106105627.31061-2-qiangqing.zhang@nxp.com
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://lore.kernel.org/r/20201115163027.16851-6-jimmyassarsson@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/Kconfig                      | 3 +++
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 8 +++++++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-index 0133d777e78e..0d2df30f19db 100644
---- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-+++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-@@ -100,7 +100,7 @@ properties:
-       by default.
-       0: clock source 0 (oscillator clock)
-       1: clock source 1 (peripheral clock)
--    $ref: /schemas/types.yaml#/definitions/uint32
-+    $ref: /schemas/types.yaml#/definitions/uint8
-     default: 1
-     minimum: 0
-     maximum: 1
-@@ -125,7 +125,7 @@ examples:
-         interrupts = <48 0x2>;
-         interrupt-parent = <&mpic>;
-         clock-frequency = <200000000>;
--        fsl,clk-source = <0>;
-+        fsl,clk-source = /bits/ 8 <0>;
-     };
-   - |
-     #include <dt-bindings/interrupt-controller/irq.h>
+diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
+index 161f15e5218d..c1e5d5b570b6 100644
+--- a/drivers/net/can/usb/Kconfig
++++ b/drivers/net/can/usb/Kconfig
+@@ -74,6 +74,9 @@ config CAN_KVASER_USB
+ 	    - Kvaser USBcan Light 4xHS
+ 	    - Kvaser USBcan Pro 2xHS v2
+ 	    - Kvaser USBcan Pro 5xHS
++	    - Kvaser U100
++	    - Kvaser U100P
++	    - Kvaser U100S
+ 	    - ATI Memorator Pro 2xHS v2
+ 	    - ATI USBcan Pro 2xHS v2
+ 
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index ad66a3b1a29d..e2d58846c40c 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -83,8 +83,11 @@
+ #define USB_ATI_USBCAN_PRO_2HS_V2_PRODUCT_ID	268
+ #define USB_ATI_MEMO_PRO_2HS_V2_PRODUCT_ID	269
+ #define USB_HYBRID_PRO_CANLIN_PRODUCT_ID	270
++#define USB_U100_PRODUCT_ID			273
++#define USB_U100P_PRODUCT_ID			274
++#define USB_U100S_PRODUCT_ID			275
+ #define USB_HYDRA_PRODUCT_ID_END \
+-	USB_HYBRID_PRO_CANLIN_PRODUCT_ID
++	USB_U100S_PRODUCT_ID
+ 
+ static inline bool kvaser_is_leaf(const struct usb_device_id *id)
+ {
+@@ -187,6 +190,9 @@ static const struct usb_device_id kvaser_usb_table[] = {
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_ATI_USBCAN_PRO_2HS_V2_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_ATI_MEMO_PRO_2HS_V2_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_HYBRID_PRO_CANLIN_PRODUCT_ID) },
++	{ USB_DEVICE(KVASER_VENDOR_ID, USB_U100_PRODUCT_ID) },
++	{ USB_DEVICE(KVASER_VENDOR_ID, USB_U100P_PRODUCT_ID) },
++	{ USB_DEVICE(KVASER_VENDOR_ID, USB_U100S_PRODUCT_ID) },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(usb, kvaser_usb_table);
 -- 
 2.29.2
 
