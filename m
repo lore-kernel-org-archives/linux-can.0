@@ -5,35 +5,35 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47124C64E8A
-	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4CEBC8301D
+	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 00E7A22272
+	by mail.kernel.org (Postfix) with ESMTP id 72AFA22272
 	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbgKTNda (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 20 Nov 2020 08:33:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51692 "EHLO
+        id S1728142AbgKTNd6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 20 Nov 2020 08:33:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728111AbgKTNd1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:27 -0500
+        with ESMTP id S1728161AbgKTNda (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:30 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F161AC061A48
-        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620B1C0617A7
+        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:30 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kg6XR-0006Fn-6F; Fri, 20 Nov 2020 14:33:21 +0100
+        id 1kg6XU-0006Fn-Nd; Fri, 20 Nov 2020 14:33:24 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Yegor Yefremov <yegorslists@googlemail.com>,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 01/25] can: j1939: add tables for the CAN identifier and its fields
-Date:   Fri, 20 Nov 2020 14:32:54 +0100
-Message-Id: <20201120133318.3428231-2-mkl@pengutronix.de>
+Subject: [net-next 08/25] can: drivers: introduce helpers to access Classical CAN DLC values
+Date:   Fri, 20 Nov 2020 14:33:01 +0100
+Message-Id: <20201120133318.3428231-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201120133318.3428231-1-mkl@pengutronix.de>
 References: <20201120133318.3428231-1-mkl@pengutronix.de>
@@ -47,86 +47,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Yegor Yefremov <yegorslists@googlemail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Use table markup to show the structure of the CAN identifier, PGN, PDU1, and
-PDU2 formats. Also add introductory sentence.
+This patch adds the following helper to functions to access Classical CAN DLC
+values.
 
-Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-Link: https://lore.kernel.org/r/20201104155730.25196-1-yegorslists@googlemail.com
-[mkl: removed trailing whitespace]
+can_get_cc_dlc(): get the data length code for Classical CAN raw DLC access
+can_frame_set_cc_len(): set len and len8_dlc value for Classical CAN raw DLC access
+
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/r/20201110154913.1404582-2-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- Documentation/networking/j1939.rst | 46 +++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 4 deletions(-)
+ include/linux/can/dev.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/Documentation/networking/j1939.rst b/Documentation/networking/j1939.rst
-index 0a4b73b03b99..b705d2801e9c 100644
---- a/Documentation/networking/j1939.rst
-+++ b/Documentation/networking/j1939.rst
-@@ -69,18 +69,56 @@ J1939 concepts
- PGN
- ---
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index e767a96ae075..197a79535cc2 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -170,6 +170,31 @@ static inline bool can_is_canfd_skb(const struct sk_buff *skb)
+ 	return skb->len == CANFD_MTU;
+ }
  
-+The J1939 protocol uses the 29-bit CAN identifier with the following structure:
++/* helper to get the data length code (DLC) for Classical CAN raw DLC access */
++static inline u8 can_get_cc_dlc(const struct can_frame *cf, const u32 ctrlmode)
++{
++	/* return len8_dlc as dlc value only if all conditions apply */
++	if ((ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC) &&
++	    (cf->len == CAN_MAX_DLEN) &&
++	    (cf->len8_dlc > CAN_MAX_DLEN && cf->len8_dlc <= CAN_MAX_RAW_DLC))
++		return cf->len8_dlc;
 +
-+  ============  ==============  ====================
-+  29 bit CAN-ID
-+  --------------------------------------------------
-+  Bit positions within the CAN-ID
-+  --------------------------------------------------
-+  28 ... 26     25 ... 8        7 ... 0
-+  ============  ==============  ====================
-+  Priority      PGN             SA (Source Address)
-+  ============  ==============  ====================
++	/* return the payload length as dlc value */
++	return cf->len;
++}
 +
- The PGN (Parameter Group Number) is a number to identify a packet. The PGN
- is composed as follows:
--1 bit  : Reserved Bit
--1 bit  : Data Page
--8 bits : PF (PDU Format)
--8 bits : PS (PDU Specific)
++/* helper to set len and len8_dlc value for Classical CAN raw DLC access */
++static inline void can_frame_set_cc_len(struct can_frame *cf, const u8 dlc,
++					const u32 ctrlmode)
++{
++	/* the caller already ensured that dlc is a value from 0 .. 15 */
++	if (ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC && dlc > CAN_MAX_DLEN)
++		cf->len8_dlc = dlc;
 +
-+  ============  ==============  =================  =================
-+  PGN
-+  ------------------------------------------------------------------
-+  Bit positions within the CAN-ID
-+  ------------------------------------------------------------------
-+  25            24              23 ... 16          15 ... 8
-+  ============  ==============  =================  =================
-+  R (Reserved)  DP (Data Page)  PF (PDU Format)    PS (PDU Specific)
-+  ============  ==============  =================  =================
- 
- In J1939-21 distinction is made between PDU1 format (where PF < 240) and PDU2
- format (where PF >= 240). Furthermore, when using the PDU2 format, the PS-field
- contains a so-called Group Extension, which is part of the PGN. When using PDU2
- format, the Group Extension is set in the PS-field.
- 
-+  ==============  ========================
-+  PDU1 Format (specific) (peer to peer)
-+  ----------------------------------------
-+  Bit positions within the CAN-ID
-+  ----------------------------------------
-+  23 ... 16       15 ... 8
-+  ==============  ========================
-+  00h ... EFh     DA (Destination address)
-+  ==============  ========================
++	/* limit the payload length 'len' to CAN_MAX_DLEN */
++	cf->len = can_cc_dlc2len(dlc);
++}
 +
-+  ==============  ========================
-+  PDU2 Format (global) (broadcast)
-+  ----------------------------------------
-+  Bit positions within the CAN-ID
-+  ----------------------------------------
-+  23 ... 16       15 ... 8
-+  ==============  ========================
-+  F0h ... FFh     GE (Group Extenstion)
-+  ==============  ========================
-+
- On the other hand, when using PDU1 format, the PS-field contains a so-called
- Destination Address, which is _not_ part of the PGN. When communicating a PGN
- from user space to kernel (or vice versa) and PDU2 format is used, the PS-field
-
-base-commit: 4082c502bf9c8a6afe4268c654d4e93ab7dfeb69
+ /* helper to define static CAN controller features at device creation time */
+ static inline void can_set_static_ctrlmode(struct net_device *dev,
+ 					   u32 static_mode)
 -- 
 2.29.2
 
