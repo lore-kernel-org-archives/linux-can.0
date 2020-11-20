@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B8A7C83016
-	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61ECFC8301A
+	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2B1AE22272
-	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 36E36222BA
+	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 13:34:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbgKTNds (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 20 Nov 2020 08:33:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
+        id S1728171AbgKTNdb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 20 Nov 2020 08:33:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728200AbgKTNdb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:31 -0500
+        with ESMTP id S1728141AbgKTNda (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 08:33:30 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829B2C0613CF
-        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8BEC061A51
+        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 05:33:28 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=blackshift.org)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kg6XW-0006Fn-8K; Fri, 20 Nov 2020 14:33:26 +0100
+        id 1kg6XS-0006Fn-QP; Fri, 20 Nov 2020 14:33:22 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 11/25] can: gw: support modification of Classical CAN DLCs
-Date:   Fri, 20 Nov 2020 14:33:04 +0100
-Message-Id: <20201120133318.3428231-12-mkl@pengutronix.de>
+Subject: [net-next 04/25] can: remove obsolete get_canfd_dlc() macro
+Date:   Fri, 20 Nov 2020 14:32:57 +0100
+Message-Id: <20201120133318.3428231-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201120133318.3428231-1-mkl@pengutronix.de>
 References: <20201120133318.3428231-1-mkl@pengutronix.de>
@@ -49,161 +49,112 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Add support for data length code modifications for Classical CAN.
-
-The netlink configuration interface always allowed to pass any value
-that fits into a byte, therefore only the modification process had to be
-extended to handle the raw DLC represenation of Classical CAN frames.
-
-When a DLC value from 0 .. F is provided for Classical CAN frame
-modifications the 'len' value is modified as-is with the exception that
-potentially existing 9 .. F DLC values in the len8_dlc element are moved
-to the 'len' element for the modification operation by mod_retrieve_ccdlc().
-
-After the modification the Classical CAN frame DLC information is brought
-back into the correct format by mod_store_ccdlc() which is filling 'len'
-and 'len8_dlc' accordingly.
+The macro was always used together with can_dlc2len() which sanitizes the
+given dlc value on its own.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://lore.kernel.org/r/20201119084921.2621-1-socketcan@hartkopp.net
+Link: https://lore.kernel.org/r/20201110101852.1973-4-socketcan@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/uapi/linux/can/gw.h |  4 +-
- net/can/gw.c                | 78 +++++++++++++++++++++++++++++++++----
- 2 files changed, 72 insertions(+), 10 deletions(-)
+ drivers/net/can/flexcan.c                         | 2 +-
+ drivers/net/can/peak_canfd/peak_canfd.c           | 2 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c    | 2 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c        | 2 +-
+ include/linux/can/dev.h                           | 1 -
+ include/linux/can/dev/peak_canfd.h                | 2 +-
+ 7 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/include/uapi/linux/can/gw.h b/include/uapi/linux/can/gw.h
-index c2190bbe21d8..e4f0957554f3 100644
---- a/include/uapi/linux/can/gw.h
-+++ b/include/uapi/linux/can/gw.h
-@@ -98,8 +98,8 @@ enum {
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 50ccd18170c8..985569f946e5 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1000,7 +1000,7 @@ static struct sk_buff *flexcan_mailbox_read(struct can_rx_offload *offload,
+ 		cfd->can_id = (reg_id >> 18) & CAN_SFF_MASK;
  
- /* CAN frame elements that are affected by curr. 3 CAN frame modifications */
- #define CGW_MOD_ID	0x01
--#define CGW_MOD_DLC	0x02		/* contains the data length in bytes */
--#define CGW_MOD_LEN	CGW_MOD_DLC	/* CAN FD length representation */
-+#define CGW_MOD_DLC	0x02		/* Classical CAN data length code */
-+#define CGW_MOD_LEN	CGW_MOD_DLC	/* CAN FD (plain) data length */
- #define CGW_MOD_DATA	0x04
- #define CGW_MOD_FLAGS	0x08		/* CAN FD flags */
+ 	if (reg_ctrl & FLEXCAN_MB_CNT_EDL) {
+-		cfd->len = can_dlc2len(get_canfd_dlc((reg_ctrl >> 16) & 0xf));
++		cfd->len = can_dlc2len((reg_ctrl >> 16) & 0xf);
  
-diff --git a/net/can/gw.c b/net/can/gw.c
-index de5e8859ec9b..8598d9da0e5f 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -199,6 +199,68 @@ static void mod_set_fddata(struct canfd_frame *cf, struct cf_mod *mod)
- 	memcpy(cf->data, mod->modframe.set.data, CANFD_MAX_DLEN);
+ 		if (reg_ctrl & FLEXCAN_MB_CNT_BRS)
+ 			cfd->flags |= CANFD_BRS;
+diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
+index 9ea2adea3f0f..c6077e07214e 100644
+--- a/drivers/net/can/peak_canfd/peak_canfd.c
++++ b/drivers/net/can/peak_canfd/peak_canfd.c
+@@ -257,7 +257,7 @@ static int pucan_handle_can_rx(struct peak_canfd_priv *priv,
+ 	u8 cf_len;
+ 
+ 	if (rx_msg_flags & PUCAN_MSG_EXT_DATA_LEN)
+-		cf_len = can_dlc2len(get_canfd_dlc(pucan_msg_get_dlc(msg)));
++		cf_len = can_dlc2len(pucan_msg_get_dlc(msg));
+ 	else
+ 		cf_len = can_cc_dlc2len(pucan_msg_get_dlc(msg));
+ 
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index c0a08400f444..3bac7274ee5b 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1405,7 +1405,7 @@ mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
+ 			cfd->flags |= CANFD_BRS;
+ 
+ 		dlc = FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC, hw_rx_obj->flags);
+-		cfd->len = can_dlc2len(get_canfd_dlc(dlc));
++		cfd->len = can_dlc2len(dlc);
+ 	} else {
+ 		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR)
+ 			cfd->can_id |= CAN_RTR_FLAG;
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index 493a614bf333..843e2e1392e8 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -1251,7 +1251,7 @@ static void kvaser_usb_hydra_rx_msg_ext(const struct kvaser_usb *dev,
+ 		kvaser_usb_can_rx_over_error(priv->netdev);
+ 
+ 	if (flags & KVASER_USB_HYDRA_CF_FLAG_FDF) {
+-		cf->len = can_dlc2len(get_canfd_dlc(dlc));
++		cf->len = can_dlc2len(dlc);
+ 		if (flags & KVASER_USB_HYDRA_CF_FLAG_BRS)
+ 			cf->flags |= CANFD_BRS;
+ 		if (flags & KVASER_USB_HYDRA_CF_FLAG_ESI)
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 1f08dd22b3d5..1233ef20646a 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -492,7 +492,7 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
+ 		if (rx_msg_flags & PUCAN_MSG_ERROR_STATE_IND)
+ 			cfd->flags |= CANFD_ESI;
+ 
+-		cfd->len = can_dlc2len(get_canfd_dlc(pucan_msg_get_dlc(rm)));
++		cfd->len = can_dlc2len(pucan_msg_get_dlc(rm));
+ 	} else {
+ 		/* CAN 2.0 frame case */
+ 		skb = alloc_can_skb(netdev, (struct can_frame **)&cfd);
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 9bc84c6978ec..802606e36b58 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -105,7 +105,6 @@ static inline unsigned int can_bit_time(const struct can_bittiming *bt)
+  * ISO 11898-1 Chapter 8.4.2.3 (DLC field)
+  */
+ #define can_cc_dlc2len(dlc)	(min_t(u8, (dlc), CAN_MAX_DLEN))
+-#define get_canfd_dlc(dlc)	(min_t(u8, (dlc), CANFD_MAX_DLC))
+ 
+ /* Check for outgoing skbs that have not been created by the CAN subsystem */
+ static inline bool can_skb_headroom_valid(struct net_device *dev,
+diff --git a/include/linux/can/dev/peak_canfd.h b/include/linux/can/dev/peak_canfd.h
+index 5fd627e9da19..f38772fd0c07 100644
+--- a/include/linux/can/dev/peak_canfd.h
++++ b/include/linux/can/dev/peak_canfd.h
+@@ -282,7 +282,7 @@ static inline int pucan_msg_get_channel(const struct pucan_rx_msg *msg)
  }
  
-+/* retrieve valid CC DLC value and store it into 'len' */
-+static void mod_retrieve_ccdlc(struct canfd_frame *cf)
-+{
-+	struct can_frame *ccf = (struct can_frame *)cf;
-+
-+	/* len8_dlc is only valid if len == CAN_MAX_DLEN */
-+	if (ccf->len != CAN_MAX_DLEN)
-+		return;
-+
-+	/* do we have a valid len8_dlc value from 9 .. 15 ? */
-+	if (ccf->len8_dlc > CAN_MAX_DLEN && ccf->len8_dlc <= CAN_MAX_RAW_DLC)
-+		ccf->len = ccf->len8_dlc;
-+}
-+
-+/* convert valid CC DLC value in 'len' into struct can_frame elements */
-+static void mod_store_ccdlc(struct canfd_frame *cf)
-+{
-+	struct can_frame *ccf = (struct can_frame *)cf;
-+
-+	/* clear potential leftovers */
-+	ccf->len8_dlc = 0;
-+
-+	/* plain data length 0 .. 8 - that was easy */
-+	if (ccf->len <= CAN_MAX_DLEN)
-+		return;
-+
-+	/* potentially broken values are catched in can_can_gw_rcv() */
-+	if (ccf->len > CAN_MAX_RAW_DLC)
-+		return;
-+
-+	/* we have a valid dlc value from 9 .. 15 in ccf->len */
-+	ccf->len8_dlc = ccf->len;
-+	ccf->len = CAN_MAX_DLEN;
-+}
-+
-+static void mod_and_ccdlc(struct canfd_frame *cf, struct cf_mod *mod)
-+{
-+	mod_retrieve_ccdlc(cf);
-+	mod_and_len(cf, mod);
-+	mod_store_ccdlc(cf);
-+}
-+
-+static void mod_or_ccdlc(struct canfd_frame *cf, struct cf_mod *mod)
-+{
-+	mod_retrieve_ccdlc(cf);
-+	mod_or_len(cf, mod);
-+	mod_store_ccdlc(cf);
-+}
-+
-+static void mod_xor_ccdlc(struct canfd_frame *cf, struct cf_mod *mod)
-+{
-+	mod_retrieve_ccdlc(cf);
-+	mod_xor_len(cf, mod);
-+	mod_store_ccdlc(cf);
-+}
-+
-+static void mod_set_ccdlc(struct canfd_frame *cf, struct cf_mod *mod)
-+{
-+	mod_set_len(cf, mod);
-+	mod_store_ccdlc(cf);
-+}
-+
- static void canframecpy(struct canfd_frame *dst, struct can_frame *src)
+ /* return the dlc value from any received message channel_dlc field */
+-static inline int pucan_msg_get_dlc(const struct pucan_rx_msg *msg)
++static inline u8 pucan_msg_get_dlc(const struct pucan_rx_msg *msg)
  {
- 	/* Copy the struct members separately to ensure that no uninitialized
-@@ -842,8 +904,8 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
- 			if (mb.modtype & CGW_MOD_ID)
- 				mod->modfunc[modidx++] = mod_and_id;
- 
--			if (mb.modtype & CGW_MOD_LEN)
--				mod->modfunc[modidx++] = mod_and_len;
-+			if (mb.modtype & CGW_MOD_DLC)
-+				mod->modfunc[modidx++] = mod_and_ccdlc;
- 
- 			if (mb.modtype & CGW_MOD_DATA)
- 				mod->modfunc[modidx++] = mod_and_data;
-@@ -858,8 +920,8 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
- 			if (mb.modtype & CGW_MOD_ID)
- 				mod->modfunc[modidx++] = mod_or_id;
- 
--			if (mb.modtype & CGW_MOD_LEN)
--				mod->modfunc[modidx++] = mod_or_len;
-+			if (mb.modtype & CGW_MOD_DLC)
-+				mod->modfunc[modidx++] = mod_or_ccdlc;
- 
- 			if (mb.modtype & CGW_MOD_DATA)
- 				mod->modfunc[modidx++] = mod_or_data;
-@@ -874,8 +936,8 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
- 			if (mb.modtype & CGW_MOD_ID)
- 				mod->modfunc[modidx++] = mod_xor_id;
- 
--			if (mb.modtype & CGW_MOD_LEN)
--				mod->modfunc[modidx++] = mod_xor_len;
-+			if (mb.modtype & CGW_MOD_DLC)
-+				mod->modfunc[modidx++] = mod_xor_ccdlc;
- 
- 			if (mb.modtype & CGW_MOD_DATA)
- 				mod->modfunc[modidx++] = mod_xor_data;
-@@ -890,8 +952,8 @@ static int cgw_parse_attr(struct nlmsghdr *nlh, struct cf_mod *mod,
- 			if (mb.modtype & CGW_MOD_ID)
- 				mod->modfunc[modidx++] = mod_set_id;
- 
--			if (mb.modtype & CGW_MOD_LEN)
--				mod->modfunc[modidx++] = mod_set_len;
-+			if (mb.modtype & CGW_MOD_DLC)
-+				mod->modfunc[modidx++] = mod_set_ccdlc;
- 
- 			if (mb.modtype & CGW_MOD_DATA)
- 				mod->modfunc[modidx++] = mod_set_data;
+ 	return msg->channel_dlc >> 4;
+ }
 -- 
 2.29.2
 
