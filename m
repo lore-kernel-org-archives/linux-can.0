@@ -2,50 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F05A1C64E75
-	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 12:07:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC53BC56202
+	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 12:24:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6608622226
-	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 12:07:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C40722226
+	for <linux-can@archiver.kernel.org>; Fri, 20 Nov 2020 12:24:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgKTMHL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 20 Nov 2020 07:07:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        id S1727859AbgKTMYe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 20 Nov 2020 07:24:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727878AbgKTMHL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 07:07:11 -0500
+        with ESMTP id S1727518AbgKTMYd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Nov 2020 07:24:33 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D26C0613CF
-        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 04:07:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87738C0613CF
+        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2020 04:24:33 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kg5Bz-0005jt-Jg; Fri, 20 Nov 2020 13:07:07 +0100
+        id 1kg5Sk-0007Sv-5p; Fri, 20 Nov 2020 13:24:26 +0100
 Received: from [IPv6:2a03:f580:87bc:d400:9503:727f:64a0:8540] (2a03-f580-87bc-d400-9503-727f-64a0-8540.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:9503:727f:64a0:8540])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
          client-signature RSA-PSS (4096 bits))
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 558A859790A;
-        Fri, 20 Nov 2020 12:07:06 +0000 (UTC)
-Subject: Re: [net] can: gs_usb: fix endianess problem with candleLight
- firmware
-To:     Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de,
-        Maximilian Schneider <max@schneidersoft.net>,
-        Hubert Denkmair <hubert@denkmair.de>,
-        Michael Rausch <mr@netadair.de>
-References: <20201120103818.3386964-1-mkl@pengutronix.de>
- <9872e561-ddb5-4d0f-4d7c-fa74269f1208@hartkopp.net>
- <47f185ce-020c-fe43-e317-3fdd9fb2e11e@pengutronix.de>
- <868c694c-c56e-6620-7625-b369a7f15f5a@hartkopp.net>
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 793E5597926;
+        Fri, 20 Nov 2020 12:24:24 +0000 (UTC)
+Subject: Re: [PATCH V5 5/5] can: flexcan: add CAN wakeup function for i.MX8QM
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201106105627.31061-1-qiangqing.zhang@nxp.com>
+ <20201106105627.31061-6-qiangqing.zhang@nxp.com>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -107,15 +104,15 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <ebf1732e-ba77-f29a-4949-d298c9eaf602@pengutronix.de>
-Date:   Fri, 20 Nov 2020 13:07:02 +0100
+Message-ID: <f88bfd4e-1672-7917-48ce-754a95a6c5ab@pengutronix.de>
+Date:   Fri, 20 Nov 2020 13:24:21 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <868c694c-c56e-6620-7625-b369a7f15f5a@hartkopp.net>
+In-Reply-To: <20201106105627.31061-6-qiangqing.zhang@nxp.com>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="FJfLxZfvONmQZ1NTdhKTDVoDkmEXqVxWO"
+ boundary="IlKLrQ2yFtXGaAxw5IIQAzsNhWI3ATTnm"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -125,65 +122,41 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---FJfLxZfvONmQZ1NTdhKTDVoDkmEXqVxWO
-Content-Type: multipart/mixed; boundary="POHz3Kj0F9WhbcspI05N5PrPiGT3jWwTi";
+--IlKLrQ2yFtXGaAxw5IIQAzsNhWI3ATTnm
+Content-Type: multipart/mixed; boundary="49ssAeLkBwYr8TB5XjVTxlUUl0NKIOp4d";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-Cc: kernel@pengutronix.de, Maximilian Schneider <max@schneidersoft.net>,
- Hubert Denkmair <hubert@denkmair.de>, Michael Rausch <mr@netadair.de>
-Message-ID: <ebf1732e-ba77-f29a-4949-d298c9eaf602@pengutronix.de>
-Subject: Re: [net] can: gs_usb: fix endianess problem with candleLight
- firmware
-References: <20201120103818.3386964-1-mkl@pengutronix.de>
- <9872e561-ddb5-4d0f-4d7c-fa74269f1208@hartkopp.net>
- <47f185ce-020c-fe43-e317-3fdd9fb2e11e@pengutronix.de>
- <868c694c-c56e-6620-7625-b369a7f15f5a@hartkopp.net>
-In-Reply-To: <868c694c-c56e-6620-7625-b369a7f15f5a@hartkopp.net>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+ shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc: kernel@pengutronix.de, linux-imx@nxp.com, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <f88bfd4e-1672-7917-48ce-754a95a6c5ab@pengutronix.de>
+Subject: Re: [PATCH V5 5/5] can: flexcan: add CAN wakeup function for i.MX8QM
+References: <20201106105627.31061-1-qiangqing.zhang@nxp.com>
+ <20201106105627.31061-6-qiangqing.zhang@nxp.com>
+In-Reply-To: <20201106105627.31061-6-qiangqing.zhang@nxp.com>
 
---POHz3Kj0F9WhbcspI05N5PrPiGT3jWwTi
+--49ssAeLkBwYr8TB5XjVTxlUUl0NKIOp4d
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 11/20/20 12:50 PM, Oliver Hartkopp wrote:
->>>> The widely used open source firmware candleLight doesn't support thi=
-s feature
->>>> and exchanges the data in little endian byte order. This breaks if a=
- device
->>>> with candleLight firmware is used on big endianess systems.
->>>
->>> Looks like this problem showed up pretty late.
->>
->> There are not that many BE users out there...
->>
->>> Won't it be better to implement the feature in the candlelight firmwa=
-re
->>> so that only the big endian users need to upgrade the candlelight
->>> firmware instead of disabling this nice feature?
->>
->> It's easier to update the Linux driver, for LE Linux host systems this=
- is
->> basically a no-op.
+On 11/6/20 11:56 AM, Joakim Zhang wrote:
+> The System Controller Firmware (SCFW) is a low-level system function
+> which runs on a dedicated Cortex-M core to provide power, clock, and
+> resource management. It exists on some i.MX8 processors. e.g. i.MX8QM
+> (QM, QP), and i.MX8QX (QXP, DX). SCU driver manages the IPC interface
+> between host CPU and the SCU firmware running on M4.
 >=20
-> Ok. And with these changes
+> For i.MX8QM, stop mode request is controlled by System Controller Unit(=
+SCU)
+> firmware, this patch introduces FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW quir=
+k
+> for this function.
 >=20
->  >   struct gs_host_config {
->  > -	u32 byte_order;
->  > +	__le32 byte_order;
->  >   } __packed;
->=20
->=20
->  >
->  > -	hconf->byte_order =3D 0x0000beef;
->  > +	hconf->byte_order =3D cpu_to_le32(0x0000beef);
->  >
->=20
-> the original GS_USB hardware is pinned to always provide little endian,=
-=20
-> right?
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-ACK
+Who is upstreaming this?
 
 Marc
 
@@ -194,23 +167,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---POHz3Kj0F9WhbcspI05N5PrPiGT3jWwTi--
+--49ssAeLkBwYr8TB5XjVTxlUUl0NKIOp4d--
 
---FJfLxZfvONmQZ1NTdhKTDVoDkmEXqVxWO
+--IlKLrQ2yFtXGaAxw5IIQAzsNhWI3ATTnm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+3sWYACgkQqclaivrt
-76k4XAgAlf/NfssEfb8j+BRH62i8vYiBZVsFX8LAqRmYW7BQkQ6xc6ADAPlTZ4NW
-ZFVggPCUd7L638+XMP9LjjgdO6e9Q9hepJCK5kk2fVHvccFbdtwopuO9hEqSINs3
-hkZ92vXfembW3iP0h1bheUwvuhWTfE6cOQxwZCTSg1w7uT5D0ZDTMhKxDT1AHpl5
-Z+NqcjWJffEfCqKDVliuVMS+Sa2kQvVdciNO+zc3MZsMXmgPmzlHCxPUI0WzV6Q7
-M0aiB8UnpNcfWI6/OtFyGAjfs/nzJVyD49p0KHV9KoDgkuP3jMsHKcwu4fYBWBqY
-Ud74irqAc/pIub3zaT9fpSt+/OuvUw==
-=K+4x
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+3tXUACgkQqclaivrt
+76nKrAf+Kl81yJgWhAlaF5I0irbmzhbYp0jD+IVD/2hhIt8B5HsLDuPITjS+B1xA
+gefmLv8GDY1EYHR2UPbohouTMmkz87jLN/dj43ahp69GELCBjjQFUFPDvaNAeCHp
+B6rA1PtgeK+5W4+xgIy7uYuiUVV4KFNCPXEKRA3tM7E6EBcWzXcTr7qyY53h57Fq
+OeT5WpKIarFJV5AhLTaM6F0IwmjrcC4UHnHvqcP+ft1RrSnai2RFpLxcEo12F48F
+Ec1hqgTDL4oGbtBFXfX7DDcLkXahGa6fiPNSb82z3ZouFJzVS5hTaQzC8vi7uphr
+D9rfU+LIT0PhKtkLpqdkZojuNXB1cw==
+=snJ3
 -----END PGP SIGNATURE-----
 
---FJfLxZfvONmQZ1NTdhKTDVoDkmEXqVxWO--
+--IlKLrQ2yFtXGaAxw5IIQAzsNhWI3ATTnm--
