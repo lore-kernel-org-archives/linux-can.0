@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D756BC56202
-	for <linux-can@archiver.kernel.org>; Wed, 25 Nov 2020 14:53:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E593C63798
+	for <linux-can@archiver.kernel.org>; Wed, 25 Nov 2020 14:54:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 899AA20857
+	by mail.kernel.org (Postfix) with ESMTP id B7159206B5
 	for <linux-can@archiver.kernel.org>; Wed, 25 Nov 2020 14:53:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730194AbgKYOx7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1729882AbgKYOx7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 25 Nov 2020 09:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43578 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729882AbgKYOx6 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 25 Nov 2020 09:53:58 -0500
+        with ESMTP id S1730030AbgKYOx7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 25 Nov 2020 09:53:59 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC492C0613D4
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD711C061A4F
         for <linux-can@vger.kernel.org>; Wed, 25 Nov 2020 06:53:58 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1khwBB-0004B7-B4
+        id 1khwBB-0004BD-DF
         for linux-can@vger.kernel.org; Wed, 25 Nov 2020 15:53:57 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3FCFB59B927
+        by bjornoya.blackshift.org (Postfix) with SMTP id B483B59B929
         for <linux-can@vger.kernel.org>; Wed, 25 Nov 2020 14:53:56 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 91B6059B91B;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DA5C159B91E;
         Wed, 25 Nov 2020 14:53:54 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3542b438;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9d8744a6;
         Wed, 25 Nov 2020 14:53:53 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 1/3] can: mcp251xfd: convert tef_ring
-Date:   Wed, 25 Nov 2020 15:52:20 +0100
-Message-Id: <20201125145221.22241-2-mkl@pengutronix.de>
+Subject: [net-next 3/3] can: mcp251xfd: tef-path: reduce number of SPI core requests to set UINC bit
+Date:   Wed, 25 Nov 2020 15:52:22 +0100
+Message-Id: <20201125145221.22241-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201125145221.22241-1-mkl@pengutronix.de>
 References: <20201125145221.22241-1-mkl@pengutronix.de>
@@ -61,113 +61,127 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Reduce the number of separate SPI core requests when setting the UINC bit in
+the TEF FIFO, and instead batch them up into a single SPI core request.
+
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 18 ++++++++++--------
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h      |  8 ++++----
- 2 files changed, 14 insertions(+), 12 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 62 +++++++++++++++----
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |  3 +
+ 2 files changed, 53 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 724837fac992..4e7260571ba9 100644
+index 4e7260571ba9..9aae5f5fcd01 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -326,6 +326,7 @@ mcp251xfd_tx_ring_init_tx_obj(const struct mcp251xfd_priv *priv,
+@@ -340,6 +340,23 @@ static void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ 	tef_ring->head = 0;
+ 	tef_ring->tail = 0;
  
- static void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
- {
-+	struct mcp251xfd_tef_ring *tef_ring;
- 	struct mcp251xfd_tx_ring *tx_ring;
- 	struct mcp251xfd_rx_ring *rx_ring, *prev_rx_ring = NULL;
- 	struct mcp251xfd_tx_obj *tx_obj;
-@@ -335,8 +336,9 @@ static void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
- 	int i, j;
- 
- 	/* TEF */
--	priv->tef.head = 0;
--	priv->tef.tail = 0;
-+	tef_ring = priv->tef;
-+	tef_ring->head = 0;
-+	tef_ring->tail = 0;
- 
++	/* FIFO increment TEF tail pointer */
++	addr = MCP251XFD_REG_TEFCON;
++	val = MCP251XFD_REG_TEFCON_UINC;
++	len = mcp251xfd_cmd_prepare_write_reg(priv, &tef_ring->uinc_buf,
++					      addr, val, val);
++
++	for (j = 0; j < ARRAY_SIZE(tef_ring->uinc_xfer); j++) {
++		struct spi_transfer *xfer;
++
++		xfer = &tef_ring->uinc_xfer[j];
++		xfer->tx_buf = &tef_ring->uinc_buf;
++		xfer->len = len;
++		xfer->cs_change = 1;
++		xfer->cs_change_delay.value = 0;
++		xfer->cs_change_delay.unit = SPI_DELAY_UNIT_NSECS;
++	}
++
  	/* TX */
  	tx_ring = priv->tx;
-@@ -1219,7 +1221,7 @@ mcp251xfd_handle_tefif_recover(const struct mcp251xfd_priv *priv, const u32 seq)
- 		    tef_sta & MCP251XFD_REG_TEFSTA_TEFFIF ?
- 		    "full" : tef_sta & MCP251XFD_REG_TEFSTA_TEFNEIF ?
- 		    "not empty" : "empty",
--		    seq, priv->tef.tail, priv->tef.head, tx_ring->head);
-+		    seq, priv->tef->tail, priv->tef->head, tx_ring->head);
+ 	tx_ring->head = 0;
+@@ -1231,10 +1248,8 @@ static int
+ mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
+ 			   const struct mcp251xfd_hw_tef_obj *hw_tef_obj)
+ {
+-	struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+ 	struct net_device_stats *stats = &priv->ndev->stats;
+ 	u32 seq, seq_masked, tef_tail_masked;
+-	int err;
  
- 	/* The Sequence Number in the TEF doesn't match our tef_tail. */
- 	return -EAGAIN;
-@@ -1243,7 +1245,7 @@ mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
- 	 */
- 	seq_masked = seq &
- 		field_mask(MCP251XFD_OBJ_FLAGS_SEQ_MCP2517FD_MASK);
--	tef_tail_masked = priv->tef.tail &
-+	tef_tail_masked = priv->tef->tail &
- 		field_mask(MCP251XFD_OBJ_FLAGS_SEQ_MCP2517FD_MASK);
- 	if (seq_masked != tef_tail_masked)
- 		return mcp251xfd_handle_tefif_recover(priv, seq);
-@@ -1261,7 +1263,7 @@ mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
- 	if (err)
- 		return err;
+ 	seq = FIELD_GET(MCP251XFD_OBJ_FLAGS_SEQ_MCP2518FD_MASK,
+ 			hw_tef_obj->flags);
+@@ -1255,18 +1270,9 @@ mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
+ 					    mcp251xfd_get_tef_tail(priv),
+ 					    hw_tef_obj->ts);
+ 	stats->tx_packets++;
+-
+-	/* finally increment the TEF pointer */
+-	err = regmap_update_bits(priv->map_reg, MCP251XFD_REG_TEFCON,
+-				 GENMASK(15, 8),
+-				 MCP251XFD_REG_TEFCON_UINC);
+-	if (err)
+-		return err;
+-
+ 	priv->tef->tail++;
+-	tx_ring->tail++;
  
--	priv->tef.tail++;
-+	priv->tef->tail++;
- 	tx_ring->tail++;
- 
- 	return mcp251xfd_check_tef_tail(priv);
-@@ -1281,12 +1283,12 @@ static int mcp251xfd_tef_ring_update(struct mcp251xfd_priv *priv)
- 	/* chip_tx_tail, is the next TX-Object send by the HW.
- 	 * The new TEF head must be >= the old head, ...
- 	 */
--	new_head = round_down(priv->tef.head, tx_ring->obj_num) + chip_tx_tail;
--	if (new_head <= priv->tef.head)
-+	new_head = round_down(priv->tef->head, tx_ring->obj_num) + chip_tx_tail;
-+	if (new_head <= priv->tef->head)
- 		new_head += tx_ring->obj_num;
- 
- 	/* ... but it cannot exceed the TX head. */
--	priv->tef.head = min(new_head, tx_ring->head);
-+	priv->tef->head = min(new_head, tx_ring->head);
- 
- 	return mcp251xfd_check_tef_tail(priv);
+-	return mcp251xfd_check_tef_tail(priv);
++	return 0;
  }
+ 
+ static int mcp251xfd_tef_ring_update(struct mcp251xfd_priv *priv)
+@@ -1353,6 +1359,38 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 	}
+ 
+  out_netif_wake_queue:
++	len = i;	/* number of handled goods TEFs */
++	if (len) {
++		struct mcp251xfd_tef_ring *ring = priv->tef;
++		struct mcp251xfd_tx_ring *tx_ring = priv->tx;
++		struct spi_transfer *last_xfer;
++
++		/* Increment the TEF FIFO tail pointer 'len' times in
++		 * a single SPI message.
++		 */
++		tx_ring->tail += len;
++
++		/* Note:
++		 *
++		 * "cs_change == 1" on the last transfer results in an
++		 * active chip select after the transfer. This causes
++		 * the controller to interpret the next register
++		 * access as data. Temporary set "cs_change" of the
++		 * last transfer to "0" to properly deactivate the
++		 * chip select at the end of the transfer.
++		 */
++		last_xfer = &ring->uinc_xfer[len - 1];
++		last_xfer->cs_change = 0;
++		err = spi_sync_transfer(priv->spi, ring->uinc_xfer, len);
++		last_xfer->cs_change = 1;
++		if (err)
++			return err;
++
++		err = mcp251xfd_check_tef_tail(priv);
++		if (err)
++			return err;
++	}
++
+ 	mcp251xfd_ecc_tefif_successful(priv);
+ 
+ 	if (mcp251xfd_get_tx_free(priv->tx)) {
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index 97dc182e2b42..76585a40d16e 100644
+index 299dbf72e24b..cb6398c2a560 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -583,7 +583,7 @@ struct mcp251xfd_priv {
- 	struct spi_device *spi;
- 	u32 spi_max_speed_hz_orig;
+@@ -504,6 +504,9 @@ struct mcp251xfd_tef_ring {
  
--	struct mcp251xfd_tef_ring tef;
-+	struct mcp251xfd_tef_ring tef[1];
- 	struct mcp251xfd_tx_ring tx[1];
- 	struct mcp251xfd_rx_ring *rx[1];
+ 	/* u8 obj_num equals tx_ring->obj_num */
+ 	/* u8 obj_size equals sizeof(struct mcp251xfd_hw_tef_obj) */
++
++	union mcp251xfd_write_reg_buf uinc_buf;
++	struct spi_transfer uinc_xfer[MCP251XFD_TX_OBJ_NUM_MAX];
+ };
  
-@@ -744,17 +744,17 @@ mcp251xfd_get_rx_obj_addr(const struct mcp251xfd_rx_ring *ring, u8 n)
- 
- static inline u8 mcp251xfd_get_tef_head(const struct mcp251xfd_priv *priv)
- {
--	return priv->tef.head & (priv->tx->obj_num - 1);
-+	return priv->tef->head & (priv->tx->obj_num - 1);
- }
- 
- static inline u8 mcp251xfd_get_tef_tail(const struct mcp251xfd_priv *priv)
- {
--	return priv->tef.tail & (priv->tx->obj_num - 1);
-+	return priv->tef->tail & (priv->tx->obj_num - 1);
- }
- 
- static inline u8 mcp251xfd_get_tef_len(const struct mcp251xfd_priv *priv)
- {
--	return priv->tef.head - priv->tef.tail;
-+	return priv->tef->head - priv->tef->tail;
- }
- 
- static inline u8 mcp251xfd_get_tef_linear_len(const struct mcp251xfd_priv *priv)
+ struct mcp251xfd_tx_ring {
 -- 
 2.29.2
 
