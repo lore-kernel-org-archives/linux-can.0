@@ -2,52 +2,55 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B389C2D0E4
-	for <linux-can@archiver.kernel.org>; Fri, 27 Nov 2020 10:03:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3AEEC2D0E4
+	for <linux-can@archiver.kernel.org>; Fri, 27 Nov 2020 10:04:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 139CD221FF
-	for <linux-can@archiver.kernel.org>; Fri, 27 Nov 2020 10:03:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 65E02221FF
+	for <linux-can@archiver.kernel.org>; Fri, 27 Nov 2020 10:04:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726014AbgK0KD6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 27 Nov 2020 05:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48740 "EHLO
+        id S1727247AbgK0KEC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 27 Nov 2020 05:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbgK0KD6 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 27 Nov 2020 05:03:58 -0500
+        with ESMTP id S1725889AbgK0KEB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 27 Nov 2020 05:04:01 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD2AC0613D1
-        for <linux-can@vger.kernel.org>; Fri, 27 Nov 2020 02:03:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969BEC0613D1
+        for <linux-can@vger.kernel.org>; Fri, 27 Nov 2020 02:04:01 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kiabc-0007ZM-NB
-        for linux-can@vger.kernel.org; Fri, 27 Nov 2020 11:03:56 +0100
+        id 1kiabg-0007ci-84
+        for linux-can@vger.kernel.org; Fri, 27 Nov 2020 11:04:00 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A352F59DE73
-        for <linux-can@vger.kernel.org>; Fri, 27 Nov 2020 10:03:54 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7C6A759DE89
+        for <linux-can@vger.kernel.org>; Fri, 27 Nov 2020 10:03:56 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C891D59DE67;
-        Fri, 27 Nov 2020 10:03:53 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2331359DE6A;
+        Fri, 27 Nov 2020 10:03:54 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2c0a48aa;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8b40a735;
         Fri, 27 Nov 2020 10:03:53 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: pull-request: can 2020-11-27
-Date:   Fri, 27 Nov 2020 11:02:55 +0100
-Message-Id: <20201127100301.512603-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Niels Petter <petter@ka-long.de>
+Subject: [net 2/6] can: mcp251xfd: mcp251xfd_probe(): bail out if no IRQ was given
+Date:   Fri, 27 Nov 2020 11:02:57 +0100
+Message-Id: <20201127100301.512603-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201127100301.512603-1-mkl@pengutronix.de>
+References: <20201127100301.512603-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -58,64 +61,34 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+This patch add a check to the mcp251xfd_probe() function to bail out and give
+the user a proper error message if no IRQ is specified. Otherwise the driver
+will probe just fine but ifup will fail with a meaningless "RTNETLINK answers:
+Invalid argument" error message.
 
-here's a pull request of 6 patches for net/master.
-
-The first patch is by me and target the gs_usb driver and fixes the endianess
-problem with candleLight firmware.
-
-Another patch by me for the mcp251xfd driver add sanity checking to bail out if
-no IRQ is configured.
-
-The next three patches target the m_can driver. A patch by me removes the
-hardcoded IRQF_TRIGGER_FALLING from the request_threaded_irq() as this clashes
-with the trigger level specified in the DT. Further a patch by me fixes the
-nominal bitiming tseg2 min value for modern m_can cores. Pankaj Sharma's patch
-add support for cores version 3.3.x.
-
-The last patch by Oliver Hartkopp is for af_can and converts a WARN() into a
-pr_warn(), which is triggered by the syzkaller. It was able to create a
-situation where the closing of a socket runs simultaneously to the notifier
-call chain for removing the CAN network device in use.
-
-regards,
-Marc
-
+Link: https://lore.kernel.org/r/20201123113522.3820052-1-mkl@pengutronix.de
+Reported-by: Niels Petter <petter@ka-long.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The following changes since commit cbf3d60329c4e11edcecac0c8fc6767b0f05e3a7:
-
-  ch_ktls: lock is not freed (2020-11-25 17:44:42 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.10-20201127
-
-for you to fetch changes up to d73ff9b7c4eacaba0fd956d14882bcae970f8307:
-
-  can: af_can: can_rx_unregister(): remove WARN() statement from list operation sanity check (2020-11-27 10:49:28 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.10-20201127
-
-----------------------------------------------------------------
-Marc Kleine-Budde (4):
-      can: gs_usb: fix endianess problem with candleLight firmware
-      can: mcp251xfd: mcp251xfd_probe(): bail out if no IRQ was given
-      can: m_can: m_can_open(): remove IRQF_TRIGGER_FALLING from request_threaded_irq()'s flags
-      can: m_can: fix nominal bitiming tseg2 min for version >= 3.1
-
-Oliver Hartkopp (1):
-      can: af_can: can_rx_unregister(): remove WARN() statement from list operation sanity check
-
-Pankaj Sharma (1):
-      can: m_can: m_can_dev_setup(): add support for bosch mcan version 3.3.0
-
- drivers/net/can/m_can/m_can.c                  |   6 +-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c |   4 +
- drivers/net/can/usb/gs_usb.c                   | 131 +++++++++++++------------
- net/can/af_can.c                               |   7 +-
- 4 files changed, 83 insertions(+), 65 deletions(-)
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 9c215f7c5f81..8a39be076e14 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -2738,6 +2738,10 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 	u32 freq;
+ 	int err;
+ 
++	if (!spi->irq)
++		return dev_err_probe(&spi->dev, -ENXIO,
++				     "No IRQ specified (maybe node \"interrupts-extended\" in DT missing)!\n");
++
+ 	rx_int = devm_gpiod_get_optional(&spi->dev, "microchip,rx-int",
+ 					 GPIOD_IN);
+ 	if (PTR_ERR(rx_int) == -EPROBE_DEFER)
+-- 
+2.29.2
 
 
