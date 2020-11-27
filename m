@@ -5,52 +5,51 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA519C2D0E4
-	for <linux-can@archiver.kernel.org>; Fri, 27 Nov 2020 10:04:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71C75C2D0E4
+	for <linux-can@archiver.kernel.org>; Fri, 27 Nov 2020 10:04:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9B74E221FD
-	for <linux-can@archiver.kernel.org>; Fri, 27 Nov 2020 10:04:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 26160221F7
+	for <linux-can@archiver.kernel.org>; Fri, 27 Nov 2020 10:04:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgK0KEF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 27 Nov 2020 05:04:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
+        id S1728934AbgK0KEJ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 27 Nov 2020 05:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728792AbgK0KEF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 27 Nov 2020 05:04:05 -0500
+        with ESMTP id S1727791AbgK0KEE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 27 Nov 2020 05:04:04 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B99C0613D4
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A6DC0613D1
         for <linux-can@vger.kernel.org>; Fri, 27 Nov 2020 02:04:04 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kiabj-0007hV-Et
-        for linux-can@vger.kernel.org; Fri, 27 Nov 2020 11:04:03 +0100
+        id 1kiabi-0007hE-UP
+        for linux-can@vger.kernel.org; Fri, 27 Nov 2020 11:04:02 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 5C4C859DEA9
-        for <linux-can@vger.kernel.org>; Fri, 27 Nov 2020 10:04:02 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 11FAF59DEA4
+        for <linux-can@vger.kernel.org>; Fri, 27 Nov 2020 10:04:01 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9A04C59DE72;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5FF5459DE6E;
         Fri, 27 Nov 2020 10:03:54 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6f3eee06;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e38feaff;
         Fri, 27 Nov 2020 10:03:53 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-        syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com,
-        syzbot+d0ddd88c9a7432f041e6@syzkaller.appspotmail.com,
-        syzbot+76d62d3b8162883c7d11@syzkaller.appspotmail.com,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 6/6] can: af_can: can_rx_unregister(): remove WARN() statement from list operation sanity check
-Date:   Fri, 27 Nov 2020 11:03:01 +0100
-Message-Id: <20201127100301.512603-7-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Dan Murphy <dmurphy@ti.com>,
+        Mario Huettel <mario.huettel@gmx.net>,
+        Sriram Dash <sriram.dash@samsung.com>
+Subject: [net 4/6] can: m_can: fix nominal bitiming tseg2 min for version >= 3.1
+Date:   Fri, 27 Nov 2020 11:02:59 +0100
+Message-Id: <20201127100301.512603-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201127100301.512603-1-mkl@pengutronix.de>
 References: <20201127100301.512603-1-mkl@pengutronix.de>
@@ -64,50 +63,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+At lest the revision 3.3.0 of the bosch m_can IP core specifies that valid
+register values for "Nominal Time segment after sample point (NTSEG2)" are from
+1 to 127. As the hardware uses a value of one more than the programmed value,
+mean tseg2_min is 2.
 
-To detect potential bugs in CAN protocol implementations (double removal of
-receiver entries) a WARN() statement has been used if no matching list item was
-found for removal.
+This patch fixes the tseg2_min value accordingly.
 
-The fault injection issued by syzkaller was able to create a situation where
-the closing of a socket runs simultaneously to the notifier call chain for
-removing the CAN network device in use.
-
-This case is very unlikely in real life but it doesn't break anything.
-Therefore we just replace the WARN() statement with pr_warn() to preserve the
-notification for the CAN protocol development.
-
-Reported-by: syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com
-Reported-by: syzbot+d0ddd88c9a7432f041e6@syzkaller.appspotmail.com
-Reported-by: syzbot+76d62d3b8162883c7d11@syzkaller.appspotmail.com
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://lore.kernel.org/r/20201126192140.14350-1-socketcan@hartkopp.net
+Cc: Dan Murphy <dmurphy@ti.com>
+Cc: Mario Huettel <mario.huettel@gmx.net>
+Acked-by: Sriram Dash <sriram.dash@samsung.com>
+Link: https://lore.kernel.org/r/20201124190751.3972238-1-mkl@pengutronix.de
+Fixes: b03cfc5bb0e1 ("can: m_can: Enable M_CAN version dependent initialization")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/af_can.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/can/m_can/m_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 5d124c155904..4c343b43067f 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -541,10 +541,13 @@ void can_rx_unregister(struct net *net, struct net_device *dev, canid_t can_id,
- 
- 	/* Check for bugs in CAN protocol implementations using af_can.c:
- 	 * 'rcv' will be NULL if no matching list item was found for removal.
-+	 * As this case may potentially happen when closing a socket while
-+	 * the notifier for removing the CAN netdev is running we just print
-+	 * a warning here.
- 	 */
- 	if (!rcv) {
--		WARN(1, "BUG: receive list entry not found for dev %s, id %03X, mask %03X\n",
--		     DNAME(dev), can_id, mask);
-+		pr_warn("can: receive list entry not found for dev %s, id %03X, mask %03X\n",
-+			DNAME(dev), can_id, mask);
- 		goto out;
- 	}
- 
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index c62439bdee28..d4030abad935 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1033,7 +1033,7 @@ static const struct can_bittiming_const m_can_bittiming_const_31X = {
+ 	.name = KBUILD_MODNAME,
+ 	.tseg1_min = 2,		/* Time segment 1 = prop_seg + phase_seg1 */
+ 	.tseg1_max = 256,
+-	.tseg2_min = 1,		/* Time segment 2 = phase_seg2 */
++	.tseg2_min = 2,		/* Time segment 2 = phase_seg2 */
+ 	.tseg2_max = 128,
+ 	.sjw_max = 128,
+ 	.brp_min = 1,
 -- 
 2.29.2
 
