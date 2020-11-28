@@ -2,126 +2,86 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45458C83011
-	for <linux-can@archiver.kernel.org>; Sat, 28 Nov 2020 22:12:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43B73C64E7D
+	for <linux-can@archiver.kernel.org>; Sat, 28 Nov 2020 22:13:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0E1AF221FD
-	for <linux-can@archiver.kernel.org>; Sat, 28 Nov 2020 22:12:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CA9F4221FF
+	for <linux-can@archiver.kernel.org>; Sat, 28 Nov 2020 22:13:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ekZcseY0"
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="F3LpZ79g"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389376AbgK1Vt7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S2389359AbgK1Vt7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sat, 28 Nov 2020 16:49:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387393AbgK1SST (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 28 Nov 2020 13:18:19 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC689C02A19E
-        for <linux-can@vger.kernel.org>; Sat, 28 Nov 2020 05:29:04 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id i199so6756871qke.5
-        for <linux-can@vger.kernel.org>; Sat, 28 Nov 2020 05:29:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=7dJA1TKnbNN7W17LOSWam+wywCbZzuAy+Vbq2+hL4r8=;
-        b=ekZcseY0lcXPhyg3VE8xLdmCYYa5YTPrwgHyWh/kqIw8Uxd0T9fKBkEVHqdmYzNkaX
-         dK/aMUE4BadXC/mw1tY66hHKbb9Qp/BD5mMvlS0xSJKoTWIpgvJ6vlGGtK3NIBgX8NS1
-         G0TRVqVbp0LpkRYkoWzIJNfP6q6e+oB2xaHq5OLuy9taNh2m11xZl8xQy9dd4YuukLBO
-         j32DsuiIMM9T4ObJfsbHn4BXvVkXc3Vgfjy0w8LFIQNzb26wi9dEacUX4Q5v3MY/j/9b
-         CAwmqOk530TmBnXd/VDZadiNibK7UxGdVcbHTLLXygrclLIFv1J9L+knc1bvu3aViMj9
-         vJ2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7dJA1TKnbNN7W17LOSWam+wywCbZzuAy+Vbq2+hL4r8=;
-        b=RNkh2bWWZ4z1L6J3fZnF2+wqf1XpW7fZgR2NfO82Q7AO0dWMK9Z9RLTqwVN9zBruig
-         cyC//MgzeofiHXufzb+iXoG5QOLBmTAq/M5iYpZ4Pcib8AfAqym2yoRKmg02jAfTNkwU
-         ENo/2DlXZR3Wq01pHosICxUCA8tYzp7rAgBkX9idlPR2Wt0FApzaj2bqW0GnvZOtdNXo
-         LrJy5LOozfTXQ/WRSoIc32owwMrJF9oUDEF0R46AgNetK+JBiM9kI5XX0MUp03TYeh6l
-         XBKFW5eM0vesxExPDyu3GvQ44Snt+7JGWgDg+VzbPBG0DUC3YtMRGdPKa7A0zr0tpUbj
-         Yfpg==
-X-Gm-Message-State: AOAM533OahOzgbhUapTSbfsMPbQ0uqfj/+4rFI1iPIwdE1MhOvbdMK+7
-        mTNpUYXUyhp2iZam5iRXm+s=
-X-Google-Smtp-Source: ABdhPJwYKZK52+6sXb3sBiey1vn8M7ZLsl8z6XZZ1k3bCEOqwNIyzTUq6y0tUTNbP1t1MWkXbsk8Eg==
-X-Received: by 2002:a37:8ec5:: with SMTP id q188mr13678368qkd.85.1606570143702;
-        Sat, 28 Nov 2020 05:29:03 -0800 (PST)
-Received: from localhost.localdomain ([2804:431:d77f:b974:9ce8:56e7:5368:ece8])
-        by smtp.gmail.com with ESMTPSA id k188sm9538875qkd.98.2020.11.28.05.29.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 05:29:02 -0800 (PST)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     mkl@pengutronix.de
-Cc:     wg@grandegger.com, linux-can@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] can: flexcan: Convert the driver to DT-only
-Date:   Sat, 28 Nov 2020 10:28:55 -0300
-Message-Id: <20201128132855.7724-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S1731627AbgK1SCx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 28 Nov 2020 13:02:53 -0500
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5301::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F68C025396
+        for <linux-can@vger.kernel.org>; Sat, 28 Nov 2020 09:44:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606585485;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=In-Reply-To:Date:Message-ID:From:References:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=ZFHOK2tOlauqaS49BG0Iljfi89bdnQDyUR1fCDYdP+4=;
+        b=F3LpZ79gfJ0G/NAJDhF+RkqwUKImlUSj2ZLPYRy8U7WOhOUa5uV7dwndkaRgFX8MVg
+        6qsmVVw38iehHfKxeQzmjhS/jK6Px8XnKcKCu8pVJfEnJmh5t7FnBR4NJjLUasOVn/2Q
+        BZ4hl9CZ5x4MOA3KXqAFHaPoeebGs/FNC62VOYfnnZC//3aJIFZrkppYIxwrtYG0Zvpb
+        R1wyUVsmPSy68xziwn3KDjaZE+Bd9dDyAmnBWJiIUq0Yrt5YVHdk8C/I5riMdoW1o6OV
+        2CqZrvka60F5r8yDolKILXZCR55mzmuetNuTSd2mco6ZNc3d0UyyYq/L4IQ+CK13OX64
+        l9Bw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR+J8xuzl0="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.10.177]
+        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
+        with ESMTPSA id n07f3bwASHiezk6
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sat, 28 Nov 2020 18:44:40 +0100 (CET)
+Subject: Re: rx-dropped increases if the can module is not loaded (yet)
+To:     Jeroen Hofstee <jhofstee@victronenergy.com>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+References: <269cc265-272e-6b57-0f95-90a3bd66aea3@victronenergy.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <438db92e-692a-5fcf-db97-7ba3a51c97be@hartkopp.net>
+Date:   Sat, 28 Nov 2020 18:44:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <269cc265-272e-6b57-0f95-90a3bd66aea3@victronenergy.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The flexcan driver runs only on DT platforms, so simplify the
-code by using of_device_get_match_data() to retrieve the
-driver data and also by removing the unused id_table.
+On 27.11.20 17:09, Jeroen Hofstee wrote:
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
----
- drivers/net/can/flexcan.c | 18 +-----------------
- 1 file changed, 1 insertion(+), 17 deletions(-)
+> Since it took me a while to figure it out, it might be worthwhile to share.
+> If a CAN-bus network interface is first set to up and only later used,
+> the messages received in the meantime are counted by [1] as dropped.
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index e85f20d18d67..038fe1036df2 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1940,15 +1940,8 @@ static const struct of_device_id flexcan_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, flexcan_of_match);
- 
--static const struct platform_device_id flexcan_id_table[] = {
--	{ .name = "flexcan", .driver_data = (kernel_ulong_t)&fsl_p1010_devtype_data, },
--	{ /* sentinel */ },
--};
--MODULE_DEVICE_TABLE(platform, flexcan_id_table);
--
- static int flexcan_probe(struct platform_device *pdev)
- {
--	const struct of_device_id *of_id;
- 	const struct flexcan_devtype_data *devtype_data;
- 	struct net_device *dev;
- 	struct flexcan_priv *priv;
-@@ -1997,15 +1990,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
- 
--	of_id = of_match_device(flexcan_of_match, &pdev->dev);
--	if (of_id) {
--		devtype_data = of_id->data;
--	} else if (platform_get_device_id(pdev)->driver_data) {
--		devtype_data = (struct flexcan_devtype_data *)
--			platform_get_device_id(pdev)->driver_data;
--	} else {
--		return -ENODEV;
--	}
-+	devtype_data = of_device_get_match_data(&pdev->dev);
- 
- 	if ((devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) &&
- 	    !(devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP)) {
-@@ -2235,7 +2220,6 @@ static struct platform_driver flexcan_driver = {
- 	},
- 	.probe = flexcan_probe,
- 	.remove = flexcan_remove,
--	.id_table = flexcan_id_table,
- };
- 
- module_platform_driver(flexcan_driver);
--- 
-2.17.1
+Interesting! But makes sense and is consistent: When the CAN frame is 
+not processed by the network layer is is just dropped in the rx path.
 
+> If the the can module is modprobed before the interface is upped, this
+> is no longer the case.
+> 
+> Perhaps it saves someone some time.
+
+So far we have not documented these details for the existing netdev 
+statistics. Do you think this is needed when the behaviour, which leads 
+to rx-dropped, is common for other netdevs also?
+
+Regards,
+Oliver
+
+> 
+> [1] https://github.com/torvalds/linux/blob/v5.9/net/core/dev.c#L5257
+> 
