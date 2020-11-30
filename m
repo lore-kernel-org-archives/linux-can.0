@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2552AC64E7B
-	for <linux-can@archiver.kernel.org>; Mon, 30 Nov 2020 14:16:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3063C64E8A
+	for <linux-can@archiver.kernel.org>; Mon, 30 Nov 2020 14:16:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C99172076E
-	for <linux-can@archiver.kernel.org>; Mon, 30 Nov 2020 14:16:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 948CD2076E
+	for <linux-can@archiver.kernel.org>; Mon, 30 Nov 2020 14:16:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727156AbgK3OQP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 30 Nov 2020 09:16:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        id S1727099AbgK3OQV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 30 Nov 2020 09:16:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727147AbgK3OQP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 30 Nov 2020 09:16:15 -0500
+        with ESMTP id S1727186AbgK3OQR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 30 Nov 2020 09:16:17 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B716CC061A55
-        for <linux-can@vger.kernel.org>; Mon, 30 Nov 2020 06:14:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F15BC08E861
+        for <linux-can@vger.kernel.org>; Mon, 30 Nov 2020 06:14:50 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kjjx2-0007k2-69
+        id 1kjjx2-0007l3-Sw
         for linux-can@vger.kernel.org; Mon, 30 Nov 2020 15:14:48 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2EDD459FB2B
+        by bjornoya.blackshift.org (Postfix) with SMTP id AA4FC59FB33
         for <linux-can@vger.kernel.org>; Mon, 30 Nov 2020 14:14:40 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id AE18759FAD7;
-        Mon, 30 Nov 2020 14:14:35 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4E86259FAE0;
+        Mon, 30 Nov 2020 14:14:36 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cdc2d30a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e6da690c;
         Mon, 30 Nov 2020 14:14:33 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
         Dan Murphy <dmurphy@ti.com>
-Subject: [net-next 10/14] can: tcan4x5x: tcan4x5x_can_probe(): remove probe failed error message
-Date:   Mon, 30 Nov 2020 15:14:28 +0100
-Message-Id: <20201130141432.278219-11-mkl@pengutronix.de>
+Subject: [net-next 13/14] can: m_can: m_can_plat_remove(): remove unneeded platform_set_drvdata()
+Date:   Mon, 30 Nov 2020 15:14:31 +0100
+Message-Id: <20201130141432.278219-14-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201130141432.278219-1-mkl@pengutronix.de>
 References: <20201130141432.278219-1-mkl@pengutronix.de>
@@ -61,27 +61,27 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The driver core already emits a probe failed error message, so remove this one
-from the driver.
+There's no need to unset the drvdata on remove, so remove the unneeded call to
+platform_set_drvdata() in m_can_plat_remove().
 
-Link: https://lore.kernel.org/r/20201130133713.269256-3-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20201130133713.269256-6-mkl@pengutronix.de
 Reviewed-by: Dan Murphy <dmurphy@ti.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/tcan4x5x.c | 2 --
+ drivers/net/can/m_can/m_can_platform.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
-index 04bb392f60fa..483a78dca17e 100644
---- a/drivers/net/can/m_can/tcan4x5x.c
-+++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -516,8 +516,6 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
- 	}
-  out_m_can_class_free_dev:
+diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+index 161cb9be018c..c45a889a1afd 100644
+--- a/drivers/net/can/m_can/m_can_platform.c
++++ b/drivers/net/can/m_can/m_can_platform.c
+@@ -141,8 +141,6 @@ static int m_can_plat_remove(struct platform_device *pdev)
+ 
  	m_can_class_free_dev(mcan_class->net);
--	dev_err(&spi->dev, "Probe failed, err=%d\n", ret);
+ 
+-	platform_set_drvdata(pdev, NULL);
 -
- 	return ret;
+ 	return 0;
  }
  
 -- 
