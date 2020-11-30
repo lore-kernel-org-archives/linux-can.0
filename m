@@ -2,82 +2,110 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 188A7C64E8A
-	for <linux-can@archiver.kernel.org>; Mon, 30 Nov 2020 13:42:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DDACC64E90
+	for <linux-can@archiver.kernel.org>; Mon, 30 Nov 2020 14:15:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AD0B0206D8
-	for <linux-can@archiver.kernel.org>; Mon, 30 Nov 2020 13:42:37 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pU2rJyw+"
+	by mail.kernel.org (Postfix) with ESMTP id 0B24A2076E
+	for <linux-can@archiver.kernel.org>; Mon, 30 Nov 2020 14:15:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgK3Nmh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 30 Nov 2020 08:42:37 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:41770 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbgK3Nmh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 30 Nov 2020 08:42:37 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AUDesWA094513;
-        Mon, 30 Nov 2020 07:40:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606743654;
-        bh=qGnpxmWjDbXlfDGwhJxneOWfwCXjaHmcwH0B3TNhwpo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=pU2rJyw+w65Ii+jaL6JlkYjWiiQ84UfUyQ5r8AKQIjxEGTIwJ211113txptvQVbZU
-         rqW5Z4afKFvZAHIko/xFdceujd/lJi8/CFc4CBG9qHSkEyMAlEfevHAGNXrKFI08El
-         iF9xRStoduZ9VACrrdBBjWUdpkGXW239UBXHh8Go=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AUDesKl093666
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Nov 2020 07:40:54 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 30
- Nov 2020 07:40:54 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 30 Nov 2020 07:40:54 -0600
-Received: from [10.250.40.192] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AUDesmL096029;
-        Mon, 30 Nov 2020 07:40:54 -0600
-Subject: Re: [net-next 0/6] can: tcan4x5x: various cleanups
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, <linux-can@vger.kernel.org>
-CC:     Sriram Dash <sriram.dash@samsung.com>
-References: <20201130133713.269256-1-mkl@pengutronix.de>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <c5f1dd85-ff2f-dd08-fc26-3d9b1ad79e2d@ti.com>
-Date:   Mon, 30 Nov 2020 07:40:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725859AbgK3OPW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 30 Nov 2020 09:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbgK3OPW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 30 Nov 2020 09:15:22 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C29C0613D3
+        for <linux-can@vger.kernel.org>; Mon, 30 Nov 2020 06:14:42 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kjjwu-0007aw-MD
+        for linux-can@vger.kernel.org; Mon, 30 Nov 2020 15:14:40 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 5C73F59FAE2
+        for <linux-can@vger.kernel.org>; Mon, 30 Nov 2020 14:14:36 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 421B559FAC0;
+        Mon, 30 Nov 2020 14:14:34 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1db34513;
+        Mon, 30 Nov 2020 14:14:33 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-next 01/14] can: pcan_usb_core: fix fall-through warnings for Clang
+Date:   Mon, 30 Nov 2020 15:14:19 +0100
+Message-Id: <20201130141432.278219-2-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201130141432.278219-1-mkl@pengutronix.de>
+References: <20201130141432.278219-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201130133713.269256-1-mkl@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Marc
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 
-On 11/30/20 7:37 AM, Marc Kleine-Budde wrote:
-> Hello,
->
-> this is a small series of various cleanups for the tcan4x5x and m_can driver.
->
-> regards,
-> Marc
->
->
->
-For the series
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning by
+moving the "default" to the end of the "switch" statement and explicitly adding
+a break statement instead of letting the code fall through to the next case.
 
-Reviewed-by: Dan Murphy <dmurphy@ti.com>
+Link: https://github.com/KSPP/linux/issues/115
+Reported-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Link: http://lore.kernel.org/r/aab7cf16bf43cc7c3e9c9930d2dae850c1d07a3c.1605896059.git.gustavoars@kernel.org
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+[mkl: move default to end]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 204ccb27d6d9..251835ea15aa 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -295,15 +295,16 @@ static void peak_usb_write_bulk_callback(struct urb *urb)
+ 		netif_trans_update(netdev);
+ 		break;
+ 
+-	default:
+-		if (net_ratelimit())
+-			netdev_err(netdev, "Tx urb aborted (%d)\n",
+-				   urb->status);
+ 	case -EPROTO:
+ 	case -ENOENT:
+ 	case -ECONNRESET:
+ 	case -ESHUTDOWN:
++		break;
+ 
++	default:
++		if (net_ratelimit())
++			netdev_err(netdev, "Tx urb aborted (%d)\n",
++				   urb->status);
+ 		break;
+ 	}
+ 
+
+base-commit: e71d2b957ee49fe3ed35a384a4e31774de1316c1
+-- 
+2.29.2
+
 
