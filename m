@@ -2,99 +2,67 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_40,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 325F5C6369E
-	for <linux-can@archiver.kernel.org>; Wed,  2 Dec 2020 20:36:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFD7DC64E7B
+	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 08:46:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BE59A21527
-	for <linux-can@archiver.kernel.org>; Wed,  2 Dec 2020 20:36:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 824B220C56
+	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 08:46:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgLBUgO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 2 Dec 2020 15:36:14 -0500
-Received: from relay-b03.edpnet.be ([212.71.1.220]:45993 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726257AbgLBUgO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 2 Dec 2020 15:36:14 -0500
-X-Greylist: delayed 838 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Dec 2020 15:36:12 EST
-X-ASG-Debug-ID: 1606940492-0a88182e5848ad30001-ZXuqFv
-Received: from zotac.vandijck-laurijssen.be (77.109.124.12.adsl.dyn.edpnet.net [77.109.124.12]) by relay-b03.edpnet.be with ESMTP id unXb3H9cSyJlNl9T; Wed, 02 Dec 2020 21:21:32 +0100 (CET)
-X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
-X-Barracuda-Effective-Source-IP: 77.109.124.12.adsl.dyn.edpnet.net[77.109.124.12]
-X-Barracuda-Apparent-Source-IP: 77.109.124.12
-Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
-        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id 1CC70117A76C;
-        Wed,  2 Dec 2020 21:21:32 +0100 (CET)
-Date:   Wed, 2 Dec 2020 21:21:27 +0100
-From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-To:     Zhang Qilong <zhangqilong3@huawei.com>
-Cc:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org, linux-can@vger.kernel.org
-Subject: Re: [PATCH] can: Fix error handling in softing_netdev_open
-Message-ID: <20201202202127.GA17683@x1.vandijck-laurijssen.be>
-X-ASG-Orig-Subj: Re: [PATCH] can: Fix error handling in softing_netdev_open
-Mail-Followup-To: Zhang Qilong <zhangqilong3@huawei.com>, wg@grandegger.com,
-        mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org
-References: <20201202151632.1343786-1-zhangqilong3@huawei.com>
+        id S1730004AbgLCIqk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 3 Dec 2020 03:46:40 -0500
+Received: from mail.boldwhite24.com ([80.211.42.67]:50896 "EHLO
+        mail.boldwhite24.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730000AbgLCIqj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 3 Dec 2020 03:46:39 -0500
+Received: by mail.boldwhite24.com (Postfix, from userid 1001)
+        id BAD2AA2C0E; Thu,  3 Dec 2020 08:45:24 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=boldwhite24.com;
+        s=mail; t=1606985133;
+        bh=hS3ibs4caZkahrzgcMN2TAJo2B2H5Muwb2NidDYlIzQ=;
+        h=Date:From:To:Subject:From;
+        b=h4GqSB3e4i6QO4mBmLxQ+jekL4D6dBEfLSb3aLKXWcO4e8N1sifIS+2QAEr/WLoTK
+         7gaEH6XWw4fseo9EEyj3RUMo2qyckE+NRGFMhJjmsC/m0O/QildiQnGMKfozht/AMJ
+         Z8yRY5KsxWXgcaXldAxxzyTHt6r5ZV1z1591TKVYpuIA5F5ecCF27PwNcJlsnuhhML
+         7/V1kPQU5PwIJYKZjeWZGnVDLfzKvlZSHeOI8pDWIeNSdeOh0xOcI5TCf4OpzJDuOm
+         40CbwMTAoTA00/eycFsYN9z+CSyPge0j59YD8rp7yLs85WEMP6MS/6B+pAhUQXoosH
+         +1D+85CIk3wgA==
+Received: by mail.boldwhite24.com for <linux-can@vger.kernel.org>; Thu,  3 Dec 2020 08:45:13 GMT
+Message-ID: <20201203074501-0.1.2m.amqw.0.6egpb5d07q@boldwhite24.com>
+Date:   Thu,  3 Dec 2020 08:45:13 GMT
+From:   =?UTF-8?Q? "Diego_S=C3=A1nchez" ?= <diego.sanchez@boldwhite24.com>
+To:     <linux-can@vger.kernel.org>
+Subject: Disinfection
+X-Mailer: mail.boldwhite24.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201202151632.1343786-1-zhangqilong3@huawei.com>
-User-Agent: Mutt/1.5.22 (2013-10-16)
-X-Barracuda-Connect: 77.109.124.12.adsl.dyn.edpnet.net[77.109.124.12]
-X-Barracuda-Start-Time: 1606940492
-X-Barracuda-URL: https://212.71.1.220:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 1080
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: SPAM GLOBAL 0.9907 1.0000 4.2351
-X-Barracuda-Spam-Score: 4.24
-X-Barracuda-Spam-Status: No, SCORE=4.24 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.86265
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Good morning,
 
-On Wed, 02 Dec 2020 23:16:32 +0800, Zhang Qilong wrote:
-> 
-> If softing_netdev_open failed, we should call
-> close_candev to avoid reference leak.
-> 
-> Fixes: 03fd3cf5a179d ("can: add driver for Softing card")
-> Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-> ---
->  drivers/net/can/softing/softing_main.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-> index 03a68bb486fd..40070c930202 100644
-> --- a/drivers/net/can/softing/softing_main.c
-> +++ b/drivers/net/can/softing/softing_main.c
-> @@ -382,8 +382,13 @@ static int softing_netdev_open(struct net_device *ndev)
->  
->  	/* check or determine and set bittime */
->  	ret = open_candev(ndev);
-> -	if (!ret)
-> -		ret = softing_startstop(ndev, 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = softing_startstop(ndev, 1);
-> +	if (ret < 0)
-> +		close_candev(ndev);
-> +
->  	return ret;
->  }
->  
-> -- 
-> 2.25.4
-> 
+looking for companies interested in raising additional capital by diversi=
+fying their offer in soaps, liquids and gels for hand disinfection and co=
+smetics for body and hair care.
+
+The distribution of innovative products corresponding to the current pref=
+erences of customers in the field of hygiene and preventive healthcare al=
+lows our partners to gain new markets and achieve better economic results=
+=2E
+
+In addition to products with bactericidal action, our range includes show=
+er gels, shampoos and hair conditioners, as well as efficient, concentrat=
+ed detergents.
+
+The versatility (suitable for all skin types) combined with an affordable=
+ price means that customers make an informed choice of a product among ot=
+hers available on the market.
+
+Are you interested in cooperation?
+
+Diego S=C3=A1nchez
