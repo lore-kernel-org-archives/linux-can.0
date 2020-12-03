@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A3FFC8301C
-	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 13:34:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38542C8302B
+	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 13:39:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CF9F520449
-	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 13:34:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7808720449
+	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 13:39:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436850AbgLCNeC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 3 Dec 2020 08:34:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47780 "EHLO mail.kernel.org"
+        id S2436629AbgLCNac (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 3 Dec 2020 08:30:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436825AbgLCNbB (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:31:01 -0500
+        id S2436623AbgLCNab (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 3 Dec 2020 08:30:31 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
@@ -25,12 +25,12 @@ Cc:     Pankaj Sharma <pankj.sharma@samsung.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 22/23] can: m_can: m_can_dev_setup(): add support for bosch mcan version 3.3.0
-Date:   Thu,  3 Dec 2020 08:29:34 -0500
-Message-Id: <20201203132935.931362-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.9 38/39] can: m_can: m_can_dev_setup(): add support for bosch mcan version 3.3.0
+Date:   Thu,  3 Dec 2020 08:28:32 -0500
+Message-Id: <20201203132834.930999-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201203132935.931362-1-sashal@kernel.org>
-References: <20201203132935.931362-1-sashal@kernel.org>
+In-Reply-To: <20201203132834.930999-1-sashal@kernel.org>
+References: <20201203132834.930999-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -56,10 +56,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index f9a2a9ecbac9e..c84114b44ee07 100644
+index d4030abad935d..61a93b1920379 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -1337,6 +1337,8 @@ static int m_can_dev_setup(struct m_can_classdev *m_can_dev)
+@@ -1385,6 +1385,8 @@ static int m_can_dev_setup(struct m_can_classdev *m_can_dev)
  						&m_can_data_bittiming_const_31X;
  		break;
  	case 32:
