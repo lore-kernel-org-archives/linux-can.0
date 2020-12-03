@@ -2,93 +2,91 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8F2EC8302E
-	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 13:39:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91C58C433C1
+	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 14:09:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 083AF20637
-	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 13:39:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2D1BB206F6
+	for <linux-can@archiver.kernel.org>; Thu,  3 Dec 2020 14:09:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436626AbgLCNac (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 3 Dec 2020 08:30:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436562AbgLCNac (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:30:32 -0500
-From:   Sasha Levin <sashal@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+        id S1730595AbgLCOJH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 3 Dec 2020 09:09:07 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:14471 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726889AbgLCOJH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 3 Dec 2020 09:09:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607004375;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=OlLlHGEwvtQ1VIatDyql3LwQKLLdufpCbVcOkYrbqmQ=;
+        b=i1lZ/Nr4WQGyrZsYClLqZgjp3upatjLYVwhinpMpK6LMkf815UMP/XGPLnMQI47YIA
+        /D4xWKwr1aQdPRfga+b2Vs42dKGSVNGJZDNyEK7tWalS3FQCAcMhtT+uj+1vMSuSO1k+
+        iSrKDyMBy2cmw7ZkLrJCPV2jkXXc1wuxNVGUXPUhRPkuDivVPxlwYFma0681JEgzhNcU
+        /wt+FkbIRVrZl66gdi2413SXb3jz8lx1VnRJgKBj+UOKo4AT2Rah38gtYrUnXzq6ogdE
+        LpFh6be4slxQOKpuRYhVfdIwWGr4n3yf3k8nsT4BcPKaamGJdnWxBm5QCarXlIdxqJq6
+        KXQA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3UIh9dyKNLCWJaRrQ0pDCeGtVbNHMQ98lI/DcPKMT"
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain
+        by smtp.strato.de (RZmta 47.3.4 AUTH)
+        with ESMTPSA id n07f3bwB3E6EFor
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 3 Dec 2020 15:06:14 +0100 (CET)
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+To:     mkl@pengutronix.de, kuba@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-can@vger.kernel.org
 Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com,
-        syzbot+d0ddd88c9a7432f041e6@syzkaller.appspotmail.com,
-        syzbot+76d62d3b8162883c7d11@syzkaller.appspotmail.com,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 39/39] can: af_can: can_rx_unregister(): remove WARN() statement from list operation sanity check
-Date:   Thu,  3 Dec 2020 08:28:33 -0500
-Message-Id: <20201203132834.930999-39-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201203132834.930999-1-sashal@kernel.org>
-References: <20201203132834.930999-1-sashal@kernel.org>
+        Thomas Wagner <thwa1@web.de>
+Subject: [PATCH 1/2] can-isotp: block setsockopt on bound sockets
+Date:   Thu,  3 Dec 2020 15:06:03 +0100
+Message-Id: <20201203140604.25488-2-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201203140604.25488-1-socketcan@hartkopp.net>
+References: <20201203140604.25488-1-socketcan@hartkopp.net>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+The isotp socket can be widely configured in its behaviour regarding
+addressing types, fill-ups, receive pattern tests and link layer length.
+Usually all these settings need to be fixed before bind() and can not
+be changed afterwards.
 
-[ Upstream commit d73ff9b7c4eacaba0fd956d14882bcae970f8307 ]
+This patch adds a check to enforce the common usage pattern.
 
-To detect potential bugs in CAN protocol implementations (double removal of
-receiver entries) a WARN() statement has been used if no matching list item was
-found for removal.
-
-The fault injection issued by syzkaller was able to create a situation where
-the closing of a socket runs simultaneously to the notifier call chain for
-removing the CAN network device in use.
-
-This case is very unlikely in real life but it doesn't break anything.
-Therefore we just replace the WARN() statement with pr_warn() to preserve the
-notification for the CAN protocol development.
-
-Reported-by: syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com
-Reported-by: syzbot+d0ddd88c9a7432f041e6@syzkaller.appspotmail.com
-Reported-by: syzbot+76d62d3b8162883c7d11@syzkaller.appspotmail.com
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Tested-by: Thomas Wagner <thwa1@web.de>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://lore.kernel.org/r/20201126192140.14350-1-socketcan@hartkopp.net
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/af_can.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ net/can/isotp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 0e71e0164ab3b..086a595caa5a7 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -541,10 +541,13 @@ void can_rx_unregister(struct net *net, struct net_device *dev, canid_t can_id,
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index d78ab13bd8be..26bdc3c20b7e 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1155,10 +1155,13 @@ static int isotp_setsockopt(struct socket *sock, int level, int optname,
+ 	int ret = 0;
  
- 	/* Check for bugs in CAN protocol implementations using af_can.c:
- 	 * 'rcv' will be NULL if no matching list item was found for removal.
-+	 * As this case may potentially happen when closing a socket while
-+	 * the notifier for removing the CAN netdev is running we just print
-+	 * a warning here.
- 	 */
- 	if (!rcv) {
--		WARN(1, "BUG: receive list entry not found for dev %s, id %03X, mask %03X\n",
--		     DNAME(dev), can_id, mask);
-+		pr_warn("can: receive list entry not found for dev %s, id %03X, mask %03X\n",
-+			DNAME(dev), can_id, mask);
- 		goto out;
- 	}
+ 	if (level != SOL_CAN_ISOTP)
+ 		return -EINVAL;
+ 
++	if (so->bound)
++		return -EISCONN;
++
+ 	switch (optname) {
+ 	case CAN_ISOTP_OPTS:
+ 		if (optlen != sizeof(struct can_isotp_options))
+ 			return -EINVAL;
  
 -- 
-2.27.0
+2.29.2
 
