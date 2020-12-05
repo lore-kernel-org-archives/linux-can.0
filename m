@@ -2,68 +2,88 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D39DC4361B
-	for <linux-can@archiver.kernel.org>; Sat,  5 Dec 2020 21:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4652AC433FE
+	for <linux-can@archiver.kernel.org>; Sat,  5 Dec 2020 21:17:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F0F1C23122
-	for <linux-can@archiver.kernel.org>; Sat,  5 Dec 2020 21:10:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1154A23108
+	for <linux-can@archiver.kernel.org>; Sat,  5 Dec 2020 21:17:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgLEVJq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 5 Dec 2020 16:09:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60330 "EHLO mail.kernel.org"
+        id S1727459AbgLEVRW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 5 Dec 2020 16:17:22 -0500
+Received: from mout.web.de ([212.227.17.12]:48297 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725270AbgLEVJq (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 5 Dec 2020 16:09:46 -0500
-Date:   Sat, 5 Dec 2020 13:09:04 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607202545;
-        bh=VNQQQ1I4L8bWmsdkj2+mmJKpBHdI8XJGeONzlCmbN3I=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KseKTjstdz+20s3Qy4lavwM/ZkpQhbJssNEgiGqZbsxouJ+jVeeyj6KwMKWg92/eo
-         dGjH2Wn31LfjlvG0Pg+0z5ZiItjn4hqkPGxtRDVjI6ngO/WN4GvnMN3kJJeZrN1aW+
-         DHOmaVARgx7Ok+3DnluFlBwIkPxyzDam6KG3ZDSslFZOhX7o0eqg3ahw05wILVN9pB
-         dJ95GTAqOaap0B8/EcHRnqLIt9iTMDBFsEvJRce0idO5Xz06FV/KjkKZCaRlm32mxX
-         pBpq7leR8GCb6V8G5juvBmW+OsqhHH96g0dBdXRpIb+HnGWdDx2rbVTtXozIOJtUJI
-         vbuhDCE6qQrVA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Thomas Wagner <thwa1@web.de>, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, netdev@vger.kernel.org, davem@davemloft.net
-Subject: Re: [net 3/3] can: isotp: add SF_BROADCAST support for functional
- addressing
-Message-ID: <20201205130904.3d81b0dc@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <ce547683-925d-6971-6566-a0b54146090a@pengutronix.de>
-References: <20201204133508.742120-1-mkl@pengutronix.de>
-        <20201204133508.742120-4-mkl@pengutronix.de>
-        <20201204194435.0d4ab3fd@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-        <b4acc4eb-aff6-9d20-b8a9-d1c47213cefd@hartkopp.net>
-        <eefc4f80-da1c-fed5-7934-11615f1db0fc@pengutronix.de>
-        <20201205123300.34f99141@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-        <ce547683-925d-6971-6566-a0b54146090a@pengutronix.de>
+        id S1727457AbgLEVRW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 5 Dec 2020 16:17:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1607202928;
+        bh=gsMnfgTWPJMKy4+W+Q9U0oPInIqhzNp1B8BiDR28YF4=;
+        h=X-UI-Sender-Class:From:To:References:In-Reply-To:Subject:Date;
+        b=ie8ELeH4P/9UzlR1eaJ3JMEor2BaKcfmsg0X82TuSUPRnBGW3uXuWupdULQ4+jFdJ
+         ICzd/HRFZlsVVf8MVJbHHXFf4nB9vyFzQZk3kMYG8d0m1Wj2vpN/CD+Ixch1S1E9KB
+         xJ7VFAyf/5UorHH8TQonZQVN4TpM6PqytXGfGaCE=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from THOMASPCWIN ([217.86.29.88]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0M8iPI-1ktJro1PO0-00CCmL; Sat, 05
+ Dec 2020 22:15:28 +0100
+From:   <thwa1@web.de>
+To:     "'Marc Kleine-Budde'" <mkl@pengutronix.de>,
+        <socketcan@hartkopp.net>, <linux-can@vger.kernel.org>
+References: <20201204135557.55599-1-thwa1@web.de> <df231f75-c163-14b3-7ecf-c7341608abec@pengutronix.de>
+In-Reply-To: <df231f75-c163-14b3-7ecf-c7341608abec@pengutronix.de>
+Subject: RE: [PATCH] isotp: do not validate RX address when the broadcast flag is active
+Date:   Sat, 5 Dec 2020 22:15:28 +0100
+Message-ID: <004101d6cb4b$c1e8bf10$45ba3d30$@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: de
+Thread-Index: AQIg/L98+E5wVwXo1QmXRjRKpgJxCQIc2b1vqUO2AwA=
+X-Provags-ID: V03:K1:+vmF+ekuO+gc5Oqwj28Sjl9UHWz2feWWUsNA4TatWRgpO3O1rIS
+ w6wcwHwjL2w3TVZ2vYC8BQ+iVrNOejO0vfdqoWoxuhtqHjKxRnGliNfgDNcTXyXpYQ93LSb
+ jr74SMrPLB/iFvZJmszQ191aPLbAcHXPzrWng1za08cduurdV1tkCeCvlq9652xZg/0FNk3
+ 0J8VM8rIT5anGrwU1aBzw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gI2nUx7UwXs=:uIEQ3k7gou2wLSOUFErOiV
+ xJf07yoZkCU9/h9XeqLFHQmFXUZp1JsihfVLc61uOCnHL+w35271hvqyaaoMwJPd8AJCHLusb
+ W5n7cAZYX4a8jm1rdVXOXT/zWlDImQ5C1htf6Q1e8SxC8zCV2pyLTfnqDy8o8pACbwBlDAO4c
+ hWOu/kWkNSPH3v+B920uLUqP93iw9sJjmwAfYxIRvJcmIUyeCfXSu2TYimJzFSKFA++kMDxbD
+ i4RO1UMYta/ausBjGz38uId4P7jgq5Flq3hCNxbxRdihCiB4q8MF+PVPeVNE+ZmvXKufxnCYu
+ ruc9MH/FnBjesdcHXLdU0U0dDUe50Ynr+pZhd3Fh/H4uYNv1wsplGrOCp+69dUvuwzBXa9lCX
+ Xu9SLCZDcckS+mTJwELxXYvlxBQtl+ZgfpG+zOZ1a7ZUmW6f5eDQWiTg3SeuRRINPuq1cVZvg
+ 4RXDhmjd+kSfrOZ9bD2cEt3ZaR6MaAq8C+gKPkTseGG8Qj7w9RhgbJZsgZdJ18jrS5TDuY2iJ
+ eAL+7A74XoLM1OnWEI3zy2kDAkOQ4WzrY1NykqQ3mwPGKiCrk5P3KPg4Hc67lUhMs8qbo5C/R
+ CeTcg7c0AwqCru+1P86K2XoyTyl3v08/i+T0vvgmgWavtPISoE8lu0fDag0rqUA1lkoMH/5+7
+ K6X6SJ3K48ln/rMXwXguZO2q0SJJUeJKXh0BWiFejlrvNGsCauiZyFgfCl01+SIk/IqvQRX9j
+ S+F+lKHO1Z52/qaZaRGWVRuBwuj+mQEcRX/ZXrx9cxHcXvRPht3XXDgLPB0BbA3mh53s1SMsZ
+ YeGmRHEQYMAGsgLtlHr2S3p3SfXWnitht70b2laex3UsG9CoRPX4SpYo6cBNizW/1epe90/mZ
+ UTq9IxF6btQrOMAK4yEg==
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Sat, 5 Dec 2020 21:56:33 +0100 Marc Kleine-Budde wrote:
-> On 12/5/20 9:33 PM, Jakub Kicinski wrote:
-> >> What about the (incremental?) change that Thomas Wagner posted?
-> >>
-> >> https://lore.kernel.org/r/20201204135557.55599-1-thwa1@web.de  
-> > 
-> > That settles it :) This change needs to got into -next and 5.11.  
-> 
-> Ok. Can you take patch 1, which is a real fix:
-> 
-> https://lore.kernel.org/linux-can/20201204133508.742120-2-mkl@pengutronix.de/
+Hi,
 
-Sure! Applied that one from the ML (I assumed that's what you meant).
+On 05.12.20 21:59, Marc Kleine-Budde wrote:
+> On 12/4/20 2:55 PM, Thomseeen wrote:
+> > EADDRNOTAVAIL shouldn't be thrown when an invalid RX address (e.g. NO_=
+CAN_ID)
+> > is set while the socket is used with the CAN_ISOTP_SF_BROADCAST flag.
+> >
+> > Signed-off-by: Thomseeen <thwa1@web.de>
+>
+> Is this your realname? For the kernel the s-o-b requires your realname. =
+[...]
 
-Thanks!
+sorry, it is of course not. Messed up with my git configs. It should be:
+Signed-off-by: Thomas Wagner <thwa1@web.de>
+Should I repost the patch with a proper tag?
+
+Regards
+Thomas
+
