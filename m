@@ -2,225 +2,141 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7576BC4361B
-	for <linux-can@archiver.kernel.org>; Mon,  7 Dec 2020 13:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4F43C1B0E3
+	for <linux-can@archiver.kernel.org>; Tue,  8 Dec 2020 04:54:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2BFA22343E
-	for <linux-can@archiver.kernel.org>; Mon,  7 Dec 2020 13:47:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D03C23A5A
+	for <linux-can@archiver.kernel.org>; Tue,  8 Dec 2020 04:54:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbgLGNrY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 7 Dec 2020 08:47:24 -0500
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.22]:29718 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbgLGNrY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Dec 2020 08:47:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607348607;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=55JZK/dt5t9+W8Z8jEecFE9mUoxZ2ZUvpLWLDszELyc=;
-        b=YjnH94q3GGK6Y2lQ6lFv9NmPMv6SywTgufPBBEGufjVU7/ZYxWIqjei4RaufSnt0d9
-        lHp7MSL72N00PplrdZxIDLNn1F4YSt4W5/sRv6D4pogy6hM9+DqJMByzqAHrzZXm0Cj2
-        ZV9+F55N17J+0GRQHB1vNj9EdfWqysZG5svXHJWhdGSee0m9nJZW5liPHsVBOsKOd3ww
-        wQtyx1Z/b/LIRzdKVaYzQukS7UJPRXEVSvQlTbCmLnImRmB8fbrDYcKPZjqfXJ04WhZa
-        o2EexETd3wRmbRchATedWtDfw3qYA5tJa60D7AwacZC85jTywBm9C53MHvtC8I3eGr7u
-        ZLkw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR+J89vzF0="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.10.137]
-        by smtp.strato.de (RZmta 47.3.4 SBL|AUTH)
-        with ESMTPSA id n07f3bwB7DhPQWd
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 7 Dec 2020 14:43:25 +0100 (CET)
-Subject: Re: CAN ISO-TP Availability for Yocto
-To:     Jin Park <jpark@enphaseenergy.com>
-Cc:     "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-References: <DM6PR19MB36737423D8AC8E3C53912988B1F20@DM6PR19MB3673.namprd19.prod.outlook.com>
- <f17f5543-192b-b33d-df8b-1ea572b5c6c7@hartkopp.net>
- <4b93c231-a1de-05b4-54bb-1407168560f5@hartkopp.net>
- <DM6PR19MB3673077699C6F1AEECA5D9A2B1F10@DM6PR19MB3673.namprd19.prod.outlook.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <c75bccd0-3ff4-cf81-8bc8-4260b1274758@hartkopp.net>
-Date:   Mon, 7 Dec 2020 14:43:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727482AbgLHEyB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 7 Dec 2020 23:54:01 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:58180 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727451AbgLHEyB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Dec 2020 23:54:01 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B84nxYX064111;
+        Tue, 8 Dec 2020 04:52:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=1e3cV7XKyt5cBPHNeWYhYMHu3W87CKppja6U1Jvw5F4=;
+ b=V+G180Fh0lHbcmydQJqS5i+cerb42SoRrRI9QCXlQMjyWKKfj0acXqExTQUiK+7OEtft
+ OuMy/8L57grCegXY4FPi2mfpdUD9NETOrjU6XyLEGnB6yCKU9e30d2WSgQTsYBxq/cMN
+ 5junVfgiRpfFB5rc1EfDtZHP43anCs3FIrUtz16u4yPsKG0NCInMT5yeMTaPCX1MMJeq
+ qZ1GHIcbwNatFRQ/tELhwJDJybfqjlIskC/pDoCLpTPJ2KTrod7PX9rst5aaRTC3xIQA
+ veh/+mbPHLjYXfePq5oiUCHv2+7Gowf8M2KKiHFzojpZKSSSQD2meZy2nTRpI8CVh6TQ Yg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 35825m0srp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Dec 2020 04:52:35 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B84ocFe155422;
+        Tue, 8 Dec 2020 04:52:34 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 358kys9m8t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Dec 2020 04:52:34 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B84qX4M159553;
+        Tue, 8 Dec 2020 04:52:33 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 358kys9m7s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Dec 2020 04:52:33 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B84qDZf015901;
+        Tue, 8 Dec 2020 04:52:15 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Dec 2020 20:52:13 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        coreteam@netfilter.org, selinux@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        linux-hardening@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, patches@opensource.cirrus.com,
+        linux-fbdev@vger.kernel.org, keyrings@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-ext4@vger.kernel.org,
+        wcn36xx@lists.infradead.org, GR-everest-linux-l2@marvell.com,
+        x86@kernel.org, linux-watchdog@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-usb@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-wireless@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        netfilter-devel@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org,
+        Kees Cook <keescook@chromium.org>,
+        samba-technical@lists.samba.org, ceph-devel@vger.kernel.org,
+        drbd-dev@tron.linbit.com, intel-gfx@lists.freedesktop.org,
+        dm-devel@redhat.com, linux-acpi@vger.kernel.org,
+        linux-ide@vger.kernel.org, xen-devel@lists.xenproject.org,
+        op-tee@lists.trustedfirmware.org, linux-hwmon@vger.kernel.org,
+        linux-sctp@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-mtd@lists.infradead.org, linux-input@vger.kernel.org,
+        linux-can@vger.kernel.org, rds-devel@oss.oracle.com,
+        oss-drivers@netronome.com, tipc-discussion@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-rdma@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net,
+        linux1394-devel@lists.sourceforge.net, alsa-devel@alsa-project.org,
+        linux-i3c@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-afs@lists.infradead.org, nouveau@lists.freedesktop.org,
+        GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, linux-mm@kvack.org,
+        intel-wired-lan@lists.osuosl.org, linux-renesas-soc@vger.kernel.org
+Subject: Re: (subset) [PATCH 000/141] Fix fall-through warnings for Clang
+Date:   Mon,  7 Dec 2020 23:52:01 -0500
+Message-Id: <160740299787.710.4201881220590518200.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR19MB3673077699C6F1AEECA5D9A2B1F10@DM6PR19MB3673.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=740 clxscore=1015 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012080029
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On Fri, 20 Nov 2020 12:21:39 -0600, Gustavo A. R. Silva wrote:
 
+> This series aims to fix almost all remaining fall-through warnings in
+> order to enable -Wimplicit-fallthrough for Clang.
+> 
+> In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
+> add multiple break/goto/return/fallthrough statements instead of just
+> letting the code fall through to the next case.
+> 
+> [...]
 
-On 04.12.20 22:46, Jin Park wrote:
-> Hello Oliver,
-> 
-> I appreciate your comments.
-> 
-> I successfully build the image, loading can-isotp module with your suggestion and change .bb recipe for can-isotp.
-> I commanded send and recv for 'can-isotp' in my hardware board and it worked.
-> 
-> In the socketcan directoryin my local, there is can-isotp_git.bb like below path and I revised the bb.
-> <yocto>/sources/meta-openembedded/meta-oe/recipes-extended/socketcan
-> 
-> Here is my revision for bb.
-> 1) I reverted back to the commit id, d50a2001ec994031233ad9c0cc1647fad41835f3, and change the branch to 4.17+.
+Applied to 5.11/scsi-queue, thanks!
 
-It should work for 5.4.x
+[054/141] target: Fix fall-through warnings for Clang
+          https://git.kernel.org/mkp/scsi/c/492096ecfa39
 
-Btw. looking forward to 5.10 where all this out-of-tree stuff becomes 
-obsolete ...
-
-Regards,
-Oliver
-
-> 
-> If you think that something wrong with the commit id, please let me know. The commit id is just before the commit id that changing from Kernel version change like below.
-> 
-> #if LINUX_VERSION_CODE < KERNEL_VERSION(5,4,0)
-> #error This module needs Kernel 5.4 or newer
-> #if LINUX_VERSION_CODE < KERNEL_VERSION(5,9,0)
-> #error This module needs Kernel 5.9 or newer
-> 
-> 2) I commented out PNBLACKLIST like below, because my Yocto framework is based on Dunfell 5.4.
-> I opened the issue in openembedded like below. It seems okay to comment out PNBLACKLIST. At least, it works for my hardware and yocto environment.
-> https://github.com/openembedded/meta-openembedded/issues/296
-> 
-> #<can-isotp_git.bb>
-> 
-> LICENSE = "GPLv2"
-> LIC_FILES_CHKSUM = "file://COPYING;md5=72d977d697c3c05830fdff00a7448931"
-> SRCREV = "d50a2001ec994031233ad9c0cc1647fad41835f3"
-> PV = "1.0+git${SRCPV}"
-> SRC_URI = "git://github.com/hartkopp/can-isotp.git;branch=4.17+;protocol=https"
-> S = "${WORKDIR}/git"
-> inherit module
-> EXTRA_OEMAKE += "KERNELDIR=${STAGING_KERNEL_DIR}"
-> #PNBLACKLIST[can-isotp] = "Kernel module Needs forward porting to kernel 5.2+"
-> 
-> In addition, FYI, I added 'can-isotp' in my <build>/conf/local.conf like below.
-> 
-> IMAGE_INSTALL_append = " \
->      tcf-agent \
->      openssh-sftp-server \
->      can-isotp \
-> "
-> 
-> Thanks for your help.
-> 
-> Regards,
-> Jin
-> 
-> -----Original Message-----
-> From: Oliver Hartkopp <socketcan@hartkopp.net>
-> Sent: Friday, December 4, 2020 1:01 AM
-> To: Jin Park <jpark@enphaseenergy.com>
-> Cc: linux-can@vger.kernel.org
-> Subject: Re: CAN ISO-TP Availability for Yocto
-> 
-> EXTERNAL EMAIL - Use caution when responding, clicking, and/or downloading attachments.
-> 
-> 
-> 
-> 
-> 
-> Just an addition:
-> 
-> I've looked into openembedded
-> 
-> https://github.com/openembedded/meta-openembedded/commits/master/meta-oe/recipes-extended/socketcan/can-isotp_git.bb
-> 
-> and iso-tp was blacklisted here:
-> 
-> https://github.com/openembedded/meta-openembedded/commit/649d491b213f19f4d7382cc20d824785d0965310#diff-a0aaa6de49c7f7360101571e2fe547248bb29c611c1bcf1f358667007c12f6b5
-> 
-> The recipe update is from 2019-08-29
-> https://github.com/openembedded/meta-openembedded/commit/d6b4dee1b16b6b2bf5c502f23be7eb05ad2f675e#diff-a0aaa6de49c7f7360101571e2fe547248bb29c611c1bcf1f358667007c12f6b5
-> 
-> So I wonder why isotp was blacklisted instead of upgrading the commit hash to a more recent version of the can-isotp GitHub repo ...
-> 
-> ¯\_(ツ)_/¯
-> 
-> Btw. they use the out-of-tree implementation instead of creating a patch. Hm.
-> 
-> 
-> 
-> On 04.12.20 09:14, Oliver Hartkopp wrote:
->> Hello Jin,
->>
->> On 03.12.20 23:50, Jin Park wrote:
->>
->>> I tried to build and load module and build image with Yocto
->>> frameworks and it showed the error like this.
->>>
->>> ‘can-isotp was skipped: Recipe is blacklisted: Kernel module Needs
->>> forward porting to kernel 5.2+’
->>>
->>> Do you know whether CAN ISO-TP supports Yocto project?
->>
->> the CAN ISO-TP support will be in mainline Linux starting with Linux
->> kernel 5.10.
->>
->> For older kernels you may use the implementation for out-of-tree
->> compilation which is located here:
->> https://github.com/hartkopp/can-isotp (master branch)
->>
->> There is also a more up-to-date version in the 4.17+ branch which I
->> used to prepare the mainline process.
->>
->> But out-of-tree compilation is probably not to right way to integrate
->> iso-tp into Yocto. I would suggest to backport the current mainline
->> code to Kernel 5.4 and create a patch for it so that is applied to the
->> kernel code before the kernel compilation process.
->> (Is this already the process in Yocto to have a patch like this which
->> lead to the Yocto error message??)
->>
->> Backporting the 5.10-rc mainline code to 5.4 is really easy as only
->> one thing needs to be changed/reverted:
->> https://github.com/hartkopp/can-isotp/commit/98986fc2f07cb5c7fa73a86d9
->> b4b3ae417d35d79
->>
->>
->>> I tried to bake module in below condition.
->>>
->>>    * Hardware: VAR-SOM-MX8M-NANO
->>>    * Yocto version: Dunfell Kernel 5.4.74
->>>
->>> jin@jin-ThinkPad-P51:~/var-fslc-yocto$ bitbake can-isotp
->>>
->>> WARNING: You have included the meta-virtualization layer, but
->>> 'virtualization' has not been enabled in your DISTRO_FEATURES. Some
->>> bbappend files may not take effect. See the meta-virtualization
->>> README for details on enabling virtualization support.
->>>
->>> Loading cache: 100%
->>> |####################################################################
->>> |####################################################################
->>> |#################################|
->>> Time: 0:00:00
->>>
->>> Loaded 3848 entries from dependency cache.
->>>
->>> ERROR: Nothing PROVIDES 'can-isotp'
->>>
->>> can-isotp was skipped: Recipe is blacklisted: Kernel module Needs
->>> forward porting to kernel 5.2+
->>
->> I'm not familiar with Yocto. But when they created a kernel patch
->> including code/include/Kconfig/Makefile (as suggested above) it should
->> be easy to backport the mainline code as base for a 5.4 kernel patch.
->>
->> Please let me know if you have problems creating such a 5.4 kernel patch.
->>
->> Regards,
->> Oliver
->>
+-- 
+Martin K. Petersen	Oracle Linux Engineering
