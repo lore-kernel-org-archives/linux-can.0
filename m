@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB1C1C4167B
-	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:56:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41655C433FE
+	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:56:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 86FB423B31
-	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:56:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1603223B31
+	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:56:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgLJJ4K (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Dec 2020 04:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46598 "EHLO
+        id S1729051AbgLJJ4p (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Dec 2020 04:56:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgLJJz5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2020 04:55:57 -0500
+        with ESMTP id S1728539AbgLJJ4e (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2020 04:56:34 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22717C06179C
-        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 01:55:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1E0C061285
+        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 01:55:19 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1knIfL-0000yA-PI
-        for linux-can@vger.kernel.org; Thu, 10 Dec 2020 10:55:15 +0100
+        id 1knIfO-00011Q-9o
+        for linux-can@vger.kernel.org; Thu, 10 Dec 2020 10:55:18 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 1540A5AA1B8
-        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 09:55:12 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2D3FA5AA1CD
+        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 09:55:16 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 250255AA197;
-        Thu, 10 Dec 2020 09:55:09 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 100905AA1A6;
+        Thu, 10 Dec 2020 09:55:10 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 89c14679;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a6847c7e;
         Thu, 10 Dec 2020 09:55:08 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Antonio Quartulli <a@unstable.cc>,
+        kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 2/7] can: rx-offload: can_rx_offload_offload_one(): avoid double unlikely() notation when using IS_ERR()
-Date:   Thu, 10 Dec 2020 10:55:02 +0100
-Message-Id: <20201210095507.1551220-3-mkl@pengutronix.de>
+Subject: [net-next 6/7] can: flexcan: convert the driver to DT-only
+Date:   Thu, 10 Dec 2020 10:55:06 +0100
+Message-Id: <20201210095507.1551220-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210095507.1551220-1-mkl@pengutronix.de>
 References: <20201210095507.1551220-1-mkl@pengutronix.de>
@@ -61,34 +61,64 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Antonio Quartulli <a@unstable.cc>
+From: Fabio Estevam <festevam@gmail.com>
 
-The definition of IS_ERR() already applies the unlikely() notation when
-checking the error status of the passed pointer. For this reason there is no
-need to have the same notation outside of IS_ERR() itself.
+The flexcan driver runs only on DT platforms, so simplify the code by using
+of_device_get_match_data() to retrieve the driver data and also by removing the
+unused id_table.
 
-Clean up code by removing redundant notation.
-
-Signed-off-by: Antonio Quartulli <a@unstable.cc>
-Link: https://lore.kernel.org/r/20201210085321.18693-1-a@unstable.cc
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Link: https://lore.kernel.org/r/20201128132855.7724-1-festevam@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rx-offload.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
 
-diff --git a/drivers/net/can/rx-offload.c b/drivers/net/can/rx-offload.c
-index 450c5cfcb3fc..3c1912c0430b 100644
---- a/drivers/net/can/rx-offload.c
-+++ b/drivers/net/can/rx-offload.c
-@@ -157,7 +157,7 @@ can_rx_offload_offload_one(struct can_rx_offload *offload, unsigned int n)
- 	/* There was a problem reading the mailbox, propagate
- 	 * error value.
- 	 */
--	if (unlikely(IS_ERR(skb))) {
-+	if (IS_ERR(skb)) {
- 		offload->dev->stats.rx_dropped++;
- 		offload->dev->stats.rx_fifo_errors++;
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index e85f20d18d67..038fe1036df2 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1940,15 +1940,8 @@ static const struct of_device_id flexcan_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, flexcan_of_match);
  
+-static const struct platform_device_id flexcan_id_table[] = {
+-	{ .name = "flexcan", .driver_data = (kernel_ulong_t)&fsl_p1010_devtype_data, },
+-	{ /* sentinel */ },
+-};
+-MODULE_DEVICE_TABLE(platform, flexcan_id_table);
+-
+ static int flexcan_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *of_id;
+ 	const struct flexcan_devtype_data *devtype_data;
+ 	struct net_device *dev;
+ 	struct flexcan_priv *priv;
+@@ -1997,15 +1990,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+ 
+-	of_id = of_match_device(flexcan_of_match, &pdev->dev);
+-	if (of_id) {
+-		devtype_data = of_id->data;
+-	} else if (platform_get_device_id(pdev)->driver_data) {
+-		devtype_data = (struct flexcan_devtype_data *)
+-			platform_get_device_id(pdev)->driver_data;
+-	} else {
+-		return -ENODEV;
+-	}
++	devtype_data = of_device_get_match_data(&pdev->dev);
+ 
+ 	if ((devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) &&
+ 	    !(devtype_data->quirks & FLEXCAN_QUIRK_USE_OFF_TIMESTAMP)) {
+@@ -2235,7 +2220,6 @@ static struct platform_driver flexcan_driver = {
+ 	},
+ 	.probe = flexcan_probe,
+ 	.remove = flexcan_remove,
+-	.id_table = flexcan_id_table,
+ };
+ 
+ module_platform_driver(flexcan_driver);
 -- 
 2.29.2
 
