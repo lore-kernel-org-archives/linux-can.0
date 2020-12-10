@@ -5,51 +5,50 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88047C2BBCD
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45942C2BB9A
 	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:57:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4EB5B23D3C
+	by mail.kernel.org (Postfix) with ESMTP id 1201323B31
 	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:57:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgLJJ4q (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1729565AbgLJJ4q (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 10 Dec 2020 04:56:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728497AbgLJJ4e (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2020 04:56:34 -0500
+        with ESMTP id S1728886AbgLJJ4k (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2020 04:56:40 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAF7C06138C
-        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 01:55:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37DAC0611CA
+        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 01:55:20 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1knIfN-0000zE-9R
-        for linux-can@vger.kernel.org; Thu, 10 Dec 2020 10:55:17 +0100
+        id 1knIfP-00013g-CW
+        for linux-can@vger.kernel.org; Thu, 10 Dec 2020 10:55:19 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 752715AA1C5
-        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 09:55:14 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 3A68E5AA1D5
+        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 09:55:18 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8310B5AA199;
-        Thu, 10 Dec 2020 09:55:09 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D955E5AA1AD;
+        Thu, 10 Dec 2020 09:55:11 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f8ccf389;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b24df1dd;
         Thu, 10 Dec 2020 09:55:08 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Sean Nyekjaer <sean@geanix.com>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        Dan Murphy <dmurphy@ti.com>,
+        kernel@pengutronix.de,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 3/7] can: m_can: m_can_config_endisable(): remove double clearing of clock stop request bit
-Date:   Thu, 10 Dec 2020 10:55:03 +0100
-Message-Id: <20201210095507.1551220-4-mkl@pengutronix.de>
+Subject: [net-next 7/7] can: mcp251xfd: Add support for internal loopback mode
+Date:   Thu, 10 Dec 2020 10:55:07 +0100
+Message-Id: <20201210095507.1551220-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210095507.1551220-1-mkl@pengutronix.de>
 References: <20201210095507.1551220-1-mkl@pengutronix.de>
@@ -63,39 +62,48 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-The CSR bit is already cleared when arriving here so remove this section of
-duplicate code.
+MCP251xFD supports internal loopback mode which can be used to verify CAN
+functionality in the absence of a real CAN device.
 
-The registers set in m_can_config_endisable() is set to same exact values as
-before this patch.
-
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Acked-by: Sriram Dash <sriram.dash@samsung.com>
-Acked-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20191211063227.84259-1-sean@geanix.com
-Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
+Link: https://lore.kernel.org/r/20201201054019.11012-1-manivannan.sadhasivam@linaro.org
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+[mkl: mcp251xfd_get_normal_mode(): move CAN_CTRLMODE_LOOPBACK check to front]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 05c978d1c53d..8f389df26afc 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -380,10 +380,6 @@ void m_can_config_endisable(struct m_can_classdev *cdev, bool enable)
- 		cccr &= ~CCCR_CSR;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 20cbd5c446f5..77129d5f410b 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -965,7 +965,10 @@ static u8 mcp251xfd_get_normal_mode(const struct mcp251xfd_priv *priv)
+ {
+ 	u8 mode;
  
- 	if (enable) {
--		/* Clear the Clock stop request if it was set */
--		if (cccr & CCCR_CSR)
--			cccr &= ~CCCR_CSR;
--
- 		/* enable m_can configuration */
- 		m_can_write(cdev, M_CAN_CCCR, cccr | CCCR_INIT);
- 		udelay(5);
+-	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
++
++	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
++		mode = MCP251XFD_REG_CON_MODE_INT_LOOPBACK;
++	else if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+ 		mode = MCP251XFD_REG_CON_MODE_LISTENONLY;
+ 	else if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+ 		mode = MCP251XFD_REG_CON_MODE_MIXED;
+@@ -2881,9 +2884,9 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 	priv->can.do_get_berr_counter = mcp251xfd_get_berr_counter;
+ 	priv->can.bittiming_const = &mcp251xfd_bittiming_const;
+ 	priv->can.data_bittiming_const = &mcp251xfd_data_bittiming_const;
+-	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
+-		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_FD |
+-		CAN_CTRLMODE_FD_NON_ISO;
++	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
++		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_BERR_REPORTING |
++		CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO;
+ 	priv->ndev = ndev;
+ 	priv->spi = spi;
+ 	priv->rx_int = rx_int;
 -- 
 2.29.2
 
