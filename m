@@ -2,125 +2,60 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0389C4167B
-	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE482C4361B
+	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:57:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B1CF23B31
-	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:57:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7BA2923D3C
+	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:57:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbgLJJ4x (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Dec 2020 04:56:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
+        id S1728886AbgLJJ4w (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Dec 2020 04:56:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729017AbgLJJ4p (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2020 04:56:45 -0500
+        with ESMTP id S1728815AbgLJJ4k (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2020 04:56:40 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBEAC0611CD
-        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 01:55:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21EBC0613CF
+        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 01:55:20 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1knIfh-0001Gu-13; Thu, 10 Dec 2020 10:55:37 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:92bc:e5f0:39d9:bbfa] (unknown [IPv6:2a03:f580:87bc:d400:92bc:e5f0:39d9:bbfa])
+        id 1knIfP-00013B-BX
+        for linux-can@vger.kernel.org; Thu, 10 Dec 2020 10:55:19 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 5668D5AA1D2
+        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 09:55:17 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 243A75AA1F9;
-        Thu, 10 Dec 2020 09:55:36 +0000 (UTC)
-Subject: Re: [net 3/3] can: isotp: add SF_BROADCAST support for functional
- addressing
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Thomas Wagner <thwa1@web.de>, linux-can@vger.kernel.org
-References: <20201204133508.742120-1-mkl@pengutronix.de>
- <20201204133508.742120-4-mkl@pengutronix.de>
- <20201204194435.0d4ab3fd@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <b4acc4eb-aff6-9d20-b8a9-d1c47213cefd@hartkopp.net>
- <eefc4f80-da1c-fed5-7934-11615f1db0fc@pengutronix.de>
- <20201205123300.34f99141@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <ce547683-925d-6971-6566-a0b54146090a@pengutronix.de>
- <20201205130904.3d81b0dc@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <752c8838-b478-43da-620b-e15bcc690518@hartkopp.net>
- <20201208100718.5ed008dc@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <20e31c74-eb50-072c-1212-a58eb8da704b@pengutronix.de>
- <68a8f0b2-f3c6-23df-f41b-f52edd826cf9@hartkopp.net>
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 707E05AA1A0;
+        Thu, 10 Dec 2020 09:55:10 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e031015c;
+        Thu, 10 Dec 2020 09:55:08 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
- zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
- QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
- 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
- Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
- XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
- nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
- Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
- eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
- kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
- ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
- CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJfEWX4BQkQo2czAAoJECte4hHF
- iupUvfMP/iNtiysSr5yU4tbMBzRkGov1/FjurfH1kPweLVHDwiQJOGBz9HgM5+n8boduRv36
- 0lU32g3PehN0UHZdHWhygUd6J09YUi2mJo1l2Fz1fQ8elUGUOXpT/xoxNQjslZjJGItCjza8
- +D1DO+0cNFgElcNPa7DFBnglatOCZRiMjo4Wx0i8njEVRU+4ySRU7rCI36KPts+uVmZAMD7V
- 3qiR1buYklJaPCJsnXURXYsilBIE9mZRmQjTDVqjLWAit++flqUVmDjaD/pj2AQe2Jcmd2gm
- sYW5P1moz7ACA1GzMjLDmeFtpJOIB7lnDX0F/vvsG3V713/701aOzrXqBcEZ0E4aWeZJzaXw
- n1zVIrl/F3RKrWDhMKTkjYy7HA8hQ9SJApFXsgP334Vo0ea82H3dOU755P89+Eoj0y44MbQX
- 7xUy4UTRAFydPl4pJskveHfg4dO6Yf0PGIvVWOY1K04T1C5dpnHAEMvVNBrfTA8qcahRN82V
- /iIGB+KSC2xR79q1kv1oYn0GOnWkvZmMhqGLhxIqHYitwH4Jn5uRfanKYWBk12LicsjRiTyW
- Z9cJf2RgAtQgvMPvmaOL8vB3U4ava48qsRdgxhXMagU618EszVdYRNxGLCqsKVYIDySTrVzu
- ZGs2ibcRhN4TiSZjztWBAe1MaaGk05Ce4h5IdDLbOOxhuQENBF8SDLABCADohJLQ5yffd8Sq
- 8Lo9ymzgaLcWboyZ46pY4CCCcAFDRh++QNOJ8l4mEJMNdEa/yrW4lDQDhBWV75VdBuapYoal
- LFrSzDzrqlHGG4Rt4/XOqMo6eSeSLipYBu4Xhg59S9wZOWbHVT/6vZNmiTa3d40+gBg68dQ8
- iqWSU5NhBJCJeLYdG6xxeUEtsq/25N1erxmhs/9TD0sIeX36rFgWldMwKmZPe8pgZEv39Sdd
- B+ykOlRuHag+ySJxwovfdVoWT0o0LrGlHzAYo6/ZSi/Iraa9R/7A1isWOBhw087BMNkRYx36
- B77E4KbyBPx9h3wVyD/R6T0Q3ZNPu6SQLnsWojMzABEBAAGJAjwEGAEKACYWIQTBQAugs5ie
- b7x9W1wrXuIRxYrqVAUCXxIMsAIbDAUJAucGAAAKCRArXuIRxYrqVOu0D/48xSLyVZ5NN2Bb
- yqo3zxdv/PMGJSzM3JqSv7hnMZPQGy9XJaTc5Iz/hyXaNRwpH5X0UNKqhQhlztChuAKZ7iu+
- 2VKzq4JJe9qmydRUwylluc4HmGwlIrDNvE0N66pRvC3h8tOVIsippAQlt5ciH74bJYXr0PYw
- Aksw1jugRxMbNRzgGECg4O6EBNaHwDzsVPX1tDj0d9t/7ClzJUy20gg8r9Wm/I/0rcNkQOpV
- RJLDtSbGSusKxor2XYmVtHGauag4YO6Vdq+2RjArB3oNLgSOGlYVpeqlut+YYHjWpaX/cTf8
- /BHtIQuSAEu/WnycpM3Z9aaLocYhbp5lQKL6/bcWQ3udd0RfFR/Gv7eR7rn3evfqNTtQdo4/
- YNmd7P8TS7ALQV/5bNRe+ROLquoAZvhaaa6SOvArcmFccnPeyluX8+o9K3BCdXPwONhsrxGO
- wrPI+7XKMlwWI3O076NqNshh6mm8NIC0mDUr7zBUITa67P3Q2VoPoiPkCL9RtsXdQx5BI9iI
- h/6QlzDxcBdw2TVWyGkVTCdeCBpuRndOMVmfjSWdCXXJCLXO6sYeculJyPkuNvumxgwUiK/H
- AqqdUfy1HqtzP2FVhG5Ce0TeMJepagR2CHPXNg88Xw3PDjzdo+zNpqPHOZVKpLUkCvRv1p1q
- m1qwQVWtAwMML/cuPga78rkBDQRfEXGWAQgAt0Cq8SRiLhWyTqkf16Zv/GLkUgN95RO5ntYM
- fnc2Tr3UlRq2Cqt+TAvB928lN3WHBZx6DkuxRM/Y/iSyMuhzL5FfhsICuyiBs5f3QG70eZx+
- Bdj4I7LpnIAzmBdNWxMHpt0m7UnkNVofA0yH6rcpCsPrdPRJNOLFI6ZqXDQk9VF+AB4HVAJY
- BDU3NAHoyVGdMlcxev0+gEXfBQswEcysAyvzcPVTAqmrDsupnIB2f0SDMROQCLO6F+/cLG4L
- Stbz+S6YFjESyXblhLckTiPURvDLTywyTOxJ7Mafz6ZCene9uEOqyd/h81nZOvRd1HrXjiTE
- 1CBw+Dbvbch1ZwGOTQARAQABiQNyBBgBCgAmFiEEwUALoLOYnm+8fVtcK17iEcWK6lQFAl8R
- cZYCGwIFCQLnoRoBQAkQK17iEcWK6lTAdCAEGQEKAB0WIQQreQhYm33JNgw/d6GpyVqK+u3v
- qQUCXxFxlgAKCRCpyVqK+u3vqatQCAC3QIk2Y0g/07xNLJwhWcD7JhIqfe7Qc5Vz9kf8ZpWr
- +6w4xwRfjUSmrXz3s6e/vrQsfdxjVMDFOkyG8c6DWJo0TVm6Ucrf9G06fsjjE/6cbE/gpBkk
- /hOVz/a7UIELT+HUf0zxhhu+C9hTSl8Nb0bwtm6JuoY5AW0LP2KoQ6LHXF9KNeiJZrSzG6WE
- h7nf3KRFS8cPKe+trbujXZRb36iIYUfXKiUqv5xamhohy1hw+7Sy8nLmw8rZPa40bDxX0/Gi
- 98eVyT4/vi+nUy1gF1jXgNBSkbTpbVwNuldBsGJsMEa8lXnYuLzn9frLdtufUjjCymdcV/iT
- sFKziU9AX7TLZ5AP/i1QMP9OlShRqERH34ufA8zTukNSBPIBfmSGUe6G2KEWjzzNPPgcPSZx
- Do4jfQ/m/CiiibM6YCa51Io72oq43vMeBwG9/vLdyev47bhSfMLTpxdlDJ7oXU9e8J61iAF7
- vBwerBZL94I3QuPLAHptgG8zPGVzNKoAzxjlaxI1MfqAD9XUM80MYBVjunIQlkU/AubdvmMY
- X7hY1oMkTkC5hZNHLgIsDvWUG0g3sACfqF6gtMHY2lhQ0RxgxAEx+ULrk/svF6XGDe6iveyc
- z5Mg5SUggw3rMotqgjMHHRtB3nct6XqgPXVDGYR7nAkXitG+nyG5zWhbhRDglVZ0mLlW9hij
- z3Emwa94FaDhN2+1VqLFNZXhLwrNC5mlA6LUjCwOL+zb9a07HyjekLyVAdA6bZJ5BkSXJ1CO
- 5YeYolFjr4YU7GXcSVfUR6fpxrb8N+yH+kJhY3LmS9vb2IXxneE/ESkXM6a2YAZWfW8sgwTm
- 0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
- HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
- xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <34f1addf-c6b3-1555-8cce-bd4da061e138@pengutronix.de>
-Date:   Thu, 10 Dec 2020 10:55:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Raymond Tan <raymond.tan@intel.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-next 5/7] can: m_can: add PCI glue driver for Intel Elkhart Lake
+Date:   Thu, 10 Dec 2020 10:55:05 +0100
+Message-Id: <20201210095507.1551220-6-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201210095507.1551220-1-mkl@pengutronix.de>
+References: <20201210095507.1551220-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <68a8f0b2-f3c6-23df-f41b-f52edd826cf9@hartkopp.net>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="eclCLGWklX1ZsvOANJd3xBwPF4pROw9FF"
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -129,72 +64,256 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---eclCLGWklX1ZsvOANJd3xBwPF4pROw9FF
-Content-Type: multipart/mixed; boundary="lHpz17js6wTJdQkaxXBjOf03HdLMz6Fdy";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Thomas Wagner <thwa1@web.de>, linux-can@vger.kernel.org
-Message-ID: <34f1addf-c6b3-1555-8cce-bd4da061e138@pengutronix.de>
-Subject: Re: [net 3/3] can: isotp: add SF_BROADCAST support for functional
- addressing
-References: <20201204133508.742120-1-mkl@pengutronix.de>
- <20201204133508.742120-4-mkl@pengutronix.de>
- <20201204194435.0d4ab3fd@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <b4acc4eb-aff6-9d20-b8a9-d1c47213cefd@hartkopp.net>
- <eefc4f80-da1c-fed5-7934-11615f1db0fc@pengutronix.de>
- <20201205123300.34f99141@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <ce547683-925d-6971-6566-a0b54146090a@pengutronix.de>
- <20201205130904.3d81b0dc@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <752c8838-b478-43da-620b-e15bcc690518@hartkopp.net>
- <20201208100718.5ed008dc@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <20e31c74-eb50-072c-1212-a58eb8da704b@pengutronix.de>
- <68a8f0b2-f3c6-23df-f41b-f52edd826cf9@hartkopp.net>
-In-Reply-To: <68a8f0b2-f3c6-23df-f41b-f52edd826cf9@hartkopp.net>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 
---lHpz17js6wTJdQkaxXBjOf03HdLMz6Fdy
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Add support for M_CAN controller on Intel Elkhart Lake attached to the PCI bus.
+It integrates the Bosch M_CAN controller with Message RAM and the wrapper IP
+block with additional registers which all of them are within the same MMIO
+range.
 
-On 12/10/20 9:18 AM, Oliver Hartkopp wrote:
-> Do you take this patch
->=20
-> https://lore.kernel.org/linux-can/20201206144731.4609-1-socketcan@hartk=
-opp.net/T/#u
->=20
-> via linux-can-next then as it is neither in can-next and net-next now .=
-=2E. ?
+Currently only interrupt control register from wrapper IP is used and the MRAM
+configuration is expected to come from the firmware via "bosch,mram-cfg" device
+property and parsed by m_can.c core.
 
-done
+Initial implementation is done by Felipe Balbi while he was working at Intel
+with later changes from Raymond Tan and me.
 
-Marc
+Co-developed-by: Felipe Balbi (Intel) <balbi@kernel.org>
+Co-developed-by: Raymond Tan <raymond.tan@intel.com>
+Signed-off-by: Felipe Balbi (Intel) <balbi@kernel.org>
+Signed-off-by: Raymond Tan <raymond.tan@intel.com>
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Link: https://lore.kernel.org/r/20201117160827.3636264-1-jarkko.nikula@linux.intel.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/m_can/Kconfig     |   7 ++
+ drivers/net/can/m_can/Makefile    |   1 +
+ drivers/net/can/m_can/m_can_pci.c | 186 ++++++++++++++++++++++++++++++
+ 3 files changed, 194 insertions(+)
+ create mode 100644 drivers/net/can/m_can/m_can_pci.c
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
+index e3eb69b76cf5..45ad1b3f0cd0 100644
+--- a/drivers/net/can/m_can/Kconfig
++++ b/drivers/net/can/m_can/Kconfig
+@@ -7,6 +7,13 @@ menuconfig CAN_M_CAN
+ 
+ if CAN_M_CAN
+ 
++config CAN_M_CAN_PCI
++	tristate "Generic PCI Bus based M_CAN driver"
++	depends on PCI
++	help
++	  Say Y here if you want to support Bosch M_CAN controller connected
++	  to the pci bus.
++
+ config CAN_M_CAN_PLATFORM
+ 	tristate "Bosch M_CAN support for io-mapped devices"
+ 	depends on HAS_IOMEM
+diff --git a/drivers/net/can/m_can/Makefile b/drivers/net/can/m_can/Makefile
+index 52a4a6fbe527..ef7963ff2006 100644
+--- a/drivers/net/can/m_can/Makefile
++++ b/drivers/net/can/m_can/Makefile
+@@ -4,5 +4,6 @@
+ #
+ 
+ obj-$(CONFIG_CAN_M_CAN) += m_can.o
++obj-$(CONFIG_CAN_M_CAN_PCI) += m_can_pci.o
+ obj-$(CONFIG_CAN_M_CAN_PLATFORM) += m_can_platform.o
+ obj-$(CONFIG_CAN_M_CAN_TCAN4X5X) += tcan4x5x.o
+diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
+new file mode 100644
+index 000000000000..04010ee0407c
+--- /dev/null
++++ b/drivers/net/can/m_can/m_can_pci.c
+@@ -0,0 +1,186 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * PCI Specific M_CAN Glue
++ *
++ * Copyright (C) 2018-2020 Intel Corporation
++ * Author: Felipe Balbi (Intel)
++ * Author: Jarkko Nikula <jarkko.nikula@linux.intel.com>
++ * Author: Raymond Tan <raymond.tan@intel.com>
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/netdevice.h>
++#include <linux/pci.h>
++#include <linux/pm_runtime.h>
++
++#include "m_can.h"
++
++#define M_CAN_PCI_MMIO_BAR		0
++
++#define M_CAN_CLOCK_FREQ_EHL		100000000
++#define CTL_CSR_INT_CTL_OFFSET		0x508
++
++struct m_can_pci_priv {
++	void __iomem *base;
++};
++
++static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
++{
++	struct m_can_pci_priv *priv = cdev->device_data;
++
++	return readl(priv->base + reg);
++}
++
++static u32 iomap_read_fifo(struct m_can_classdev *cdev, int offset)
++{
++	struct m_can_pci_priv *priv = cdev->device_data;
++
++	return readl(priv->base + offset);
++}
++
++static int iomap_write_reg(struct m_can_classdev *cdev, int reg, int val)
++{
++	struct m_can_pci_priv *priv = cdev->device_data;
++
++	writel(val, priv->base + reg);
++
++	return 0;
++}
++
++static int iomap_write_fifo(struct m_can_classdev *cdev, int offset, int val)
++{
++	struct m_can_pci_priv *priv = cdev->device_data;
++
++	writel(val, priv->base + offset);
++
++	return 0;
++}
++
++static struct m_can_ops m_can_pci_ops = {
++	.read_reg = iomap_read_reg,
++	.write_reg = iomap_write_reg,
++	.write_fifo = iomap_write_fifo,
++	.read_fifo = iomap_read_fifo,
++};
++
++static int m_can_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
++{
++	struct device *dev = &pci->dev;
++	struct m_can_classdev *mcan_class;
++	struct m_can_pci_priv *priv;
++	void __iomem *base;
++	int ret;
++
++	ret = pcim_enable_device(pci);
++	if (ret)
++		return ret;
++
++	pci_set_master(pci);
++
++	ret = pcim_iomap_regions(pci, BIT(M_CAN_PCI_MMIO_BAR), pci_name(pci));
++	if (ret)
++		return ret;
++
++	base = pcim_iomap_table(pci)[M_CAN_PCI_MMIO_BAR];
++
++	if (!base) {
++		dev_err(dev, "failed to map BARs\n");
++		return -ENOMEM;
++	}
++
++	priv = devm_kzalloc(&pci->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	mcan_class = m_can_class_allocate_dev(&pci->dev);
++	if (!mcan_class)
++		return -ENOMEM;
++
++	priv->base = base;
++
++	ret = pci_alloc_irq_vectors(pci, 1, 1, PCI_IRQ_ALL_TYPES);
++	if (ret < 0)
++		return ret;
++
++	mcan_class->device_data = priv;
++	mcan_class->dev = &pci->dev;
++	mcan_class->net->irq = pci_irq_vector(pci, 0);
++	mcan_class->pm_clock_support = 1;
++	mcan_class->can.clock.freq = id->driver_data;
++	mcan_class->ops = &m_can_pci_ops;
++
++	pci_set_drvdata(pci, mcan_class->net);
++
++	ret = m_can_class_register(mcan_class);
++	if (ret)
++		goto err;
++
++	/* Enable interrupt control at CAN wrapper IP */
++	writel(0x1, base + CTL_CSR_INT_CTL_OFFSET);
++
++	pm_runtime_set_autosuspend_delay(dev, 1000);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_put_noidle(dev);
++	pm_runtime_allow(dev);
++
++	return 0;
++
++err:
++	pci_free_irq_vectors(pci);
++	return ret;
++}
++
++static void m_can_pci_remove(struct pci_dev *pci)
++{
++	struct net_device *dev = pci_get_drvdata(pci);
++	struct m_can_classdev *mcan_class = netdev_priv(dev);
++	struct m_can_pci_priv *priv = mcan_class->device_data;
++
++	pm_runtime_forbid(&pci->dev);
++	pm_runtime_get_noresume(&pci->dev);
++
++	/* Disable interrupt control at CAN wrapper IP */
++	writel(0x0, priv->base + CTL_CSR_INT_CTL_OFFSET);
++
++	m_can_class_unregister(mcan_class);
++	pci_free_irq_vectors(pci);
++}
++
++static __maybe_unused int m_can_pci_suspend(struct device *dev)
++{
++	return m_can_class_suspend(dev);
++}
++
++static __maybe_unused int m_can_pci_resume(struct device *dev)
++{
++	return m_can_class_resume(dev);
++}
++
++static SIMPLE_DEV_PM_OPS(m_can_pci_pm_ops,
++			 m_can_pci_suspend, m_can_pci_resume);
++
++static const struct pci_device_id m_can_pci_id_table[] = {
++	{ PCI_VDEVICE(INTEL, 0x4bc1), M_CAN_CLOCK_FREQ_EHL, },
++	{ PCI_VDEVICE(INTEL, 0x4bc2), M_CAN_CLOCK_FREQ_EHL, },
++	{  }	/* Terminating Entry */
++};
++MODULE_DEVICE_TABLE(pci, m_can_pci_id_table);
++
++static struct pci_driver m_can_pci_driver = {
++	.name = "m_can_pci",
++	.probe = m_can_pci_probe,
++	.remove = m_can_pci_remove,
++	.id_table = m_can_pci_id_table,
++	.driver = {
++		.pm = &m_can_pci_pm_ops,
++	},
++};
++
++module_pci_driver(m_can_pci_driver);
++
++MODULE_AUTHOR("Felipe Balbi (Intel)");
++MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@linux.intel.com>");
++MODULE_AUTHOR("Raymond Tan <raymond.tan@intel.com>");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("CAN bus driver for Bosch M_CAN controller on PCI bus");
+-- 
+2.29.2
 
 
---lHpz17js6wTJdQkaxXBjOf03HdLMz6Fdy--
-
---eclCLGWklX1ZsvOANJd3xBwPF4pROw9FF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/R8JUACgkQqclaivrt
-76kepQgAm2B/Ugf0dZ/GVt/ZZFMrUBtAdfz4N1SAmVYj5z1UOzz/iEB9SqTxw+dg
-zrGXB4Svbe2Dn3jRiV9NLqNfa376iuXpqzYgqsyRUYiaEXMioh5J5eM7YaYAUtcD
-mxTWF+LSPT0PE1DOdv5BIUwIJesGzD5HqnNNP/WCiXQRue+yaF+NKFkCNjDel3Tb
-nsGxKCHs2X0lDofRYRcguVxnhgnVyhU/irgiQz4VK2yFPRRqGULbynEYDtdFfoQu
-qJB0zyAouaVPz+JVo5+fDBkLtOnEA435JMhFGK/K/3Bcwe+kwzXDE/kw2LXlfEt8
-wmR4nIdo2QMVe7JqqQWqQsHeZ/2BMg==
-=L3aK
------END PGP SIGNATURE-----
-
---eclCLGWklX1ZsvOANJd3xBwPF4pROw9FF--
