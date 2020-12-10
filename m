@@ -5,50 +5,49 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45942C2BB9A
-	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24BB4C433FE
+	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:58:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1201323B31
-	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:57:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E0F4123D3C
+	for <linux-can@archiver.kernel.org>; Thu, 10 Dec 2020 09:58:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgLJJ4q (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Dec 2020 04:56:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
+        id S1729847AbgLJJ5g (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Dec 2020 04:57:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728886AbgLJJ4k (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2020 04:56:40 -0500
+        with ESMTP id S1728096AbgLJJ4e (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Dec 2020 04:56:34 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37DAC0611CA
-        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 01:55:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FC6C0617B0
+        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 01:55:18 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1knIfP-00013g-CW
-        for linux-can@vger.kernel.org; Thu, 10 Dec 2020 10:55:19 +0100
+        id 1knIfM-0000yt-MR
+        for linux-can@vger.kernel.org; Thu, 10 Dec 2020 10:55:16 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3A68E5AA1D5
-        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 09:55:18 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 490065AA1C0
+        for <linux-can@vger.kernel.org>; Thu, 10 Dec 2020 09:55:13 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D955E5AA1AD;
-        Thu, 10 Dec 2020 09:55:11 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DAFFE5AA19D;
+        Thu, 10 Dec 2020 09:55:09 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b24df1dd;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a12aba87;
         Thu, 10 Dec 2020 09:55:08 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        kernel@pengutronix.de, Patrik Flykt <patrik.flykt@linux.intel.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 7/7] can: mcp251xfd: Add support for internal loopback mode
-Date:   Thu, 10 Dec 2020 10:55:07 +0100
-Message-Id: <20201210095507.1551220-8-mkl@pengutronix.de>
+Subject: [net-next 4/7] can: m_can: move runtime PM enable/disable to m_can_platform
+Date:   Thu, 10 Dec 2020 10:55:04 +0100
+Message-Id: <20201210095507.1551220-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210095507.1551220-1-mkl@pengutronix.de>
 References: <20201210095507.1551220-1-mkl@pengutronix.de>
@@ -62,48 +61,76 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+From: Patrik Flykt <patrik.flykt@linux.intel.com>
 
-MCP251xFD supports internal loopback mode which can be used to verify CAN
-functionality in the absence of a real CAN device.
+This is a preparatory patch for upcoming PCI based M_CAN devices. The current
+PM implementation would cause PCI based drivers to enable PM twice, once when
+the PCI device is added and a second time in m_can_class_register(). This will
+cause 'Unbalanced pm_runtime_enable!' to be logged, and is a situation that
+should be avoided.
 
-Link: https://lore.kernel.org/r/20201201054019.11012-1-manivannan.sadhasivam@linaro.org
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-[mkl: mcp251xfd_get_normal_mode(): move CAN_CTRLMODE_LOOPBACK check to front]
+Therefore, in anticipation of PCI devices, move PM enabling out from M_CAN
+class registration to its only user, the m_can_platform driver.
+
+Signed-off-by: Patrik Flykt <patrik.flykt@linux.intel.com>
+Link: https://lore.kernel.org/r/20201023115800.46538-2-patrik.flykt@linux.intel.com
+[mkl: m_can_plat_probe(): fix error handling
+      m_can_class_register(): simplify error handling]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/can/m_can/m_can.c          | 8 +-------
+ drivers/net/can/m_can/m_can_platform.c | 9 ++++++++-
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 20cbd5c446f5..77129d5f410b 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -965,7 +965,10 @@ static u8 mcp251xfd_get_normal_mode(const struct mcp251xfd_priv *priv)
- {
- 	u8 mode;
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 8f389df26afc..06c136961c7c 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1826,10 +1826,9 @@ int m_can_class_register(struct m_can_classdev *m_can_dev)
+ 	int ret;
  
--	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+ 	if (m_can_dev->pm_clock_support) {
+-		pm_runtime_enable(m_can_dev->dev);
+ 		ret = m_can_clk_start(m_can_dev);
+ 		if (ret)
+-			goto pm_runtime_fail;
++			return ret;
+ 	}
+ 
+ 	ret = m_can_dev_setup(m_can_dev);
+@@ -1855,11 +1854,6 @@ int m_can_class_register(struct m_can_classdev *m_can_dev)
+ 	 */
+ clk_disable:
+ 	m_can_clk_stop(m_can_dev);
+-pm_runtime_fail:
+-	if (ret) {
+-		if (m_can_dev->pm_clock_support)
+-			pm_runtime_disable(m_can_dev->dev);
+-	}
+ 
+ 	return ret;
+ }
+diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+index c45a889a1afd..36ef791da388 100644
+--- a/drivers/net/can/m_can/m_can_platform.c
++++ b/drivers/net/can/m_can/m_can_platform.c
+@@ -115,8 +115,15 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 
+ 	m_can_init_ram(mcan_class);
+ 
+-	return m_can_class_register(mcan_class);
++	pm_runtime_enable(mcan_class->dev);
++	ret = m_can_class_register(mcan_class);
++	if (ret)
++		goto out_runtime_disable;
 +
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
-+		mode = MCP251XFD_REG_CON_MODE_INT_LOOPBACK;
-+	else if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
- 		mode = MCP251XFD_REG_CON_MODE_LISTENONLY;
- 	else if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
- 		mode = MCP251XFD_REG_CON_MODE_MIXED;
-@@ -2881,9 +2884,9 @@ static int mcp251xfd_probe(struct spi_device *spi)
- 	priv->can.do_get_berr_counter = mcp251xfd_get_berr_counter;
- 	priv->can.bittiming_const = &mcp251xfd_bittiming_const;
- 	priv->can.data_bittiming_const = &mcp251xfd_data_bittiming_const;
--	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
--		CAN_CTRLMODE_BERR_REPORTING | CAN_CTRLMODE_FD |
--		CAN_CTRLMODE_FD_NON_ISO;
-+	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
-+		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_BERR_REPORTING |
-+		CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO;
- 	priv->ndev = ndev;
- 	priv->spi = spi;
- 	priv->rx_int = rx_int;
++	return ret;
+ 
++out_runtime_disable:
++	pm_runtime_disable(mcan_class->dev);
+ probe_fail:
+ 	m_can_class_free_dev(mcan_class->net);
+ 	return ret;
 -- 
 2.29.2
 
