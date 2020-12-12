@@ -2,134 +2,274 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BF5FC4361B
-	for <linux-can@archiver.kernel.org>; Fri, 11 Dec 2020 19:36:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90818C433FE
+	for <linux-can@archiver.kernel.org>; Sat, 12 Dec 2020 17:56:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D87B823137
-	for <linux-can@archiver.kernel.org>; Fri, 11 Dec 2020 19:36:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5919522262
+	for <linux-can@archiver.kernel.org>; Sat, 12 Dec 2020 17:56:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392564AbgLKRyS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 11 Dec 2020 12:54:18 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:50277 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436727AbgLKRxw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 11 Dec 2020 12:53:52 -0500
-Received: by mail-io1-f71.google.com with SMTP id l5so7058896ioj.17
-        for <linux-can@vger.kernel.org>; Fri, 11 Dec 2020 09:53:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=F6lzTl7DMvKOhUGDjmWZdH0v8anPBofwp1kBR+QwaMU=;
-        b=VYKwDDYV2dRZn2ppijQ/Hd+94+lEUX/N7DSXB+4cxthmPCv84IE8qgSnUpOvCu2MCC
-         jeBPVt8x5AIB5aKtjOR1OcMJFm2S2OBWWyhdaSNbxDEiSOq63Ln9gi0TdzS/jrFZyUlf
-         +bugIYOfsdfw35lQukDkNyqiaElSLzPG86Pl0T9IRloafYuFmJTOBLjyi6xkYcRpfXIz
-         UG85klE3thGllodfCoWGxDRTtevN1FG0QySpUSoFrjoKQThU1G5MNHrQWn0K/VNqLACl
-         JOUX9VfJR2lpOUO+aZ6Cf+qvua97nemtEcSUvMjgYwZcW2ivK4bjxZfW5FOq0GWtgfxL
-         cnEg==
-X-Gm-Message-State: AOAM530onazwW1i3oqqp3+qkPXVpwmGYVrskNuI6aSZYkNzaASxihjbM
-        9KOURAHO5wzRdiO0naKYheKHNgFhzaYkiwI53lXpE4OhSsyV
-X-Google-Smtp-Source: ABdhPJydbqtHo4VrlKJPWk9c4B7TNVmbpOjyjLinDbvsSX2Yr3fAV/34+U9i/lN2ICGcMOiFL7KY1rbHjlN6oM0pkXxiARMpZ2Ft
+        id S2439616AbgLLR4P (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 12 Dec 2020 12:56:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439614AbgLLR4I (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 12 Dec 2020 12:56:08 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50C6C061794
+        for <linux-can@vger.kernel.org>; Sat, 12 Dec 2020 09:55:28 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1ko979-0000zD-6h
+        for linux-can@vger.kernel.org; Sat, 12 Dec 2020 18:55:27 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 811BA5ABDCD
+        for <linux-can@vger.kernel.org>; Sat, 12 Dec 2020 17:55:22 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3A2D15ABDAA;
+        Sat, 12 Dec 2020 17:55:20 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5ce046bd;
+        Sat, 12 Dec 2020 17:55:19 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     linux-can@vger.kernel.org
+Cc:     kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Sriram Dash <sriram.dash@samsung.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [can-next-rfc 3/7] can: m_can: use cdev as name for struct m_can_classdev uniformly
+Date:   Sat, 12 Dec 2020 18:55:14 +0100
+Message-Id: <20201212175518.139651-4-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201212175518.139651-1-mkl@pengutronix.de>
+References: <20201212175518.139651-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2211:: with SMTP id n17mr16332255ion.107.1607709191262;
- Fri, 11 Dec 2020 09:53:11 -0800 (PST)
-Date:   Fri, 11 Dec 2020 09:53:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003f58a605b633f77d@google.com>
-Subject: memory leak in pcan_usb_fd_init
-From:   syzbot <syzbot+91adee8d9ebb9193d22d@syzkaller.appspotmail.com>
-To:     dan.carpenter@oracle.com, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mkl@pengutronix.de, netdev@vger.kernel.org,
-        s.grosjean@peak-system.com, syzkaller-bugs@googlegroups.com,
-        wg@grandegger.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello,
+This patch coverts the m_can driver to use cdev as name for struct
+m_can_classdev uniformly throughout the whole driver.
 
-syzbot found the following issue on:
-
-HEAD commit:    0477e928 Linux 5.10-rc7
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16dacc13500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=91adee8d9ebb9193d22d
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e1d00f500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=153ac2cb500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+91adee8d9ebb9193d22d@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff88810f4cc200 (size 128):
-  comm "kworker/1:1", pid 34, jiffies 4294942277 (age 8.590s)
-  hex dump (first 32 bytes):
-    40 09 42 12 81 88 ff ff 00 00 00 00 00 00 00 00  @.B.............
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000a24b3bdd>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000a24b3bdd>] kzalloc include/linux/slab.h:664 [inline]
-    [<00000000a24b3bdd>] pcan_usb_fd_init+0x156/0x210 drivers/net/can/usb/peak_usb/pcan_usb_fd.c:865
-    [<000000007ba29c7f>] peak_usb_create_dev drivers/net/can/usb/peak_usb/pcan_usb_core.c:850 [inline]
-    [<000000007ba29c7f>] peak_usb_probe+0x389/0x490 drivers/net/can/usb/peak_usb/pcan_usb_core.c:948
-    [<00000000ea93b2ea>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<000000001ee8e05e>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<0000000010c7fe39>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<0000000020e41d8d>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-    [<000000000272c5fa>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000d3b1aa42>] __device_attach+0x122/0x250 drivers/base/dd.c:912
-    [<00000000a0b053c3>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<00000000dfb5e550>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
-    [<00000000d6321aa6>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
-    [<000000003d1efb2f>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<000000000a7312a8>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<000000001ee8e05e>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<0000000010c7fe39>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<0000000020e41d8d>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-
-BUG: memory leak
-unreferenced object 0xffff88810f7a4800 (size 512):
-  comm "kworker/1:1", pid 34, jiffies 4294942277 (age 8.590s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 ff ff ff ff ff ff ff ff  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000009ddd23ca>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000009ddd23ca>] kzalloc include/linux/slab.h:664 [inline]
-    [<000000009ddd23ca>] pcan_usb_fd_init+0x181/0x210 drivers/net/can/usb/peak_usb/pcan_usb_fd.c:870
-    [<000000007ba29c7f>] peak_usb_create_dev drivers/net/can/usb/peak_usb/pcan_usb_core.c:850 [inline]
-    [<000000007ba29c7f>] peak_usb_probe+0x389/0x490 drivers/net/can/usb/peak_usb/pcan_usb_core.c:948
-    [<00000000ea93b2ea>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<000000001ee8e05e>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<0000000010c7fe39>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<0000000020e41d8d>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-    [<000000000272c5fa>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000d3b1aa42>] __device_attach+0x122/0x250 drivers/base/dd.c:912
-    [<00000000a0b053c3>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<00000000dfb5e550>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
-    [<00000000d6321aa6>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
-    [<000000003d1efb2f>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<000000000a7312a8>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<000000001ee8e05e>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<0000000010c7fe39>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<0000000020e41d8d>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-
-
-
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/can/m_can/m_can.c | 98 +++++++++++++++++------------------
+ 1 file changed, 49 insertions(+), 49 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 27e736464580..fb408ca85188 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1327,79 +1327,79 @@ static bool m_can_niso_supported(struct m_can_classdev *cdev)
+ 	return !niso_timeout;
+ }
+ 
+-static int m_can_dev_setup(struct m_can_classdev *m_can_dev)
++static int m_can_dev_setup(struct m_can_classdev *cdev)
+ {
+-	struct net_device *dev = m_can_dev->net;
++	struct net_device *dev = cdev->net;
+ 	int m_can_version;
+ 
+-	m_can_version = m_can_check_core_release(m_can_dev);
++	m_can_version = m_can_check_core_release(cdev);
+ 	/* return if unsupported version */
+ 	if (!m_can_version) {
+-		dev_err(m_can_dev->dev, "Unsupported version number: %2d",
++		dev_err(cdev->dev, "Unsupported version number: %2d",
+ 			m_can_version);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!m_can_dev->is_peripheral)
+-		netif_napi_add(dev, &m_can_dev->napi,
++	if (!cdev->is_peripheral)
++		netif_napi_add(dev, &cdev->napi,
+ 			       m_can_poll, M_CAN_NAPI_WEIGHT);
+ 
+ 	/* Shared properties of all M_CAN versions */
+-	m_can_dev->version = m_can_version;
+-	m_can_dev->can.do_set_mode = m_can_set_mode;
+-	m_can_dev->can.do_get_berr_counter = m_can_get_berr_counter;
++	cdev->version = m_can_version;
++	cdev->can.do_set_mode = m_can_set_mode;
++	cdev->can.do_get_berr_counter = m_can_get_berr_counter;
+ 
+ 	/* Set M_CAN supported operations */
+-	m_can_dev->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
++	cdev->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+ 		CAN_CTRLMODE_LISTENONLY |
+ 		CAN_CTRLMODE_BERR_REPORTING |
+ 		CAN_CTRLMODE_FD |
+ 		CAN_CTRLMODE_ONE_SHOT;
+ 
+ 	/* Set properties depending on M_CAN version */
+-	switch (m_can_dev->version) {
++	switch (cdev->version) {
+ 	case 30:
+ 		/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.0.x */
+ 		can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
+-		m_can_dev->can.bittiming_const = m_can_dev->bit_timing ?
+-			m_can_dev->bit_timing : &m_can_bittiming_const_30X;
++		cdev->can.bittiming_const = cdev->bit_timing ?
++			cdev->bit_timing : &m_can_bittiming_const_30X;
+ 
+-		m_can_dev->can.data_bittiming_const = m_can_dev->data_timing ?
+-			m_can_dev->data_timing :
++		cdev->can.data_bittiming_const = cdev->data_timing ?
++			cdev->data_timing :
+ 			&m_can_data_bittiming_const_30X;
+ 		break;
+ 	case 31:
+ 		/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.1.x */
+ 		can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
+-		m_can_dev->can.bittiming_const = m_can_dev->bit_timing ?
+-			m_can_dev->bit_timing : &m_can_bittiming_const_31X;
++		cdev->can.bittiming_const = cdev->bit_timing ?
++			cdev->bit_timing : &m_can_bittiming_const_31X;
+ 
+-		m_can_dev->can.data_bittiming_const = m_can_dev->data_timing ?
+-			m_can_dev->data_timing :
++		cdev->can.data_bittiming_const = cdev->data_timing ?
++			cdev->data_timing :
+ 			&m_can_data_bittiming_const_31X;
+ 		break;
+ 	case 32:
+ 	case 33:
+ 		/* Support both MCAN version v3.2.x and v3.3.0 */
+-		m_can_dev->can.bittiming_const = m_can_dev->bit_timing ?
+-			m_can_dev->bit_timing : &m_can_bittiming_const_31X;
++		cdev->can.bittiming_const = cdev->bit_timing ?
++			cdev->bit_timing : &m_can_bittiming_const_31X;
+ 
+-		m_can_dev->can.data_bittiming_const = m_can_dev->data_timing ?
+-			m_can_dev->data_timing :
++		cdev->can.data_bittiming_const = cdev->data_timing ?
++			cdev->data_timing :
+ 			&m_can_data_bittiming_const_31X;
+ 
+-		m_can_dev->can.ctrlmode_supported |=
+-			(m_can_niso_supported(m_can_dev) ?
++		cdev->can.ctrlmode_supported |=
++			(m_can_niso_supported(cdev) ?
+ 			 CAN_CTRLMODE_FD_NON_ISO : 0);
+ 		break;
+ 	default:
+-		dev_err(m_can_dev->dev, "Unsupported version number: %2d",
+-			m_can_dev->version);
++		dev_err(cdev->dev, "Unsupported version number: %2d",
++			cdev->version);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (m_can_dev->ops->init)
+-		m_can_dev->ops->init(m_can_dev);
++	if (cdev->ops->init)
++		cdev->ops->init(cdev);
+ 
+ 	return 0;
+ }
+@@ -1751,15 +1751,15 @@ void m_can_init_ram(struct m_can_classdev *cdev)
+ }
+ EXPORT_SYMBOL_GPL(m_can_init_ram);
+ 
+-int m_can_class_get_clocks(struct m_can_classdev *m_can_dev)
++int m_can_class_get_clocks(struct m_can_classdev *cdev)
+ {
+ 	int ret = 0;
+ 
+-	m_can_dev->hclk = devm_clk_get(m_can_dev->dev, "hclk");
+-	m_can_dev->cclk = devm_clk_get(m_can_dev->dev, "cclk");
++	cdev->hclk = devm_clk_get(cdev->dev, "hclk");
++	cdev->cclk = devm_clk_get(cdev->dev, "cclk");
+ 
+-	if (IS_ERR(m_can_dev->cclk)) {
+-		dev_err(m_can_dev->dev, "no clock found\n");
++	if (IS_ERR(cdev->cclk)) {
++		dev_err(cdev->dev, "no clock found\n");
+ 		ret = -ENODEV;
+ 	}
+ 
+@@ -1818,49 +1818,49 @@ void m_can_class_free_dev(struct net_device *net)
+ }
+ EXPORT_SYMBOL_GPL(m_can_class_free_dev);
+ 
+-int m_can_class_register(struct m_can_classdev *m_can_dev)
++int m_can_class_register(struct m_can_classdev *cdev)
+ {
+ 	int ret;
+ 
+-	if (m_can_dev->pm_clock_support) {
+-		ret = m_can_clk_start(m_can_dev);
++	if (cdev->pm_clock_support) {
++		ret = m_can_clk_start(cdev);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+-	ret = m_can_dev_setup(m_can_dev);
++	ret = m_can_dev_setup(cdev);
+ 	if (ret)
+ 		goto clk_disable;
+ 
+-	ret = register_m_can_dev(m_can_dev->net);
++	ret = register_m_can_dev(cdev->net);
+ 	if (ret) {
+-		dev_err(m_can_dev->dev, "registering %s failed (err=%d)\n",
+-			m_can_dev->net->name, ret);
++		dev_err(cdev->dev, "registering %s failed (err=%d)\n",
++			cdev->net->name, ret);
+ 		goto clk_disable;
+ 	}
+ 
+-	devm_can_led_init(m_can_dev->net);
++	devm_can_led_init(cdev->net);
+ 
+-	of_can_transceiver(m_can_dev->net);
++	of_can_transceiver(cdev->net);
+ 
+-	dev_info(m_can_dev->dev, "%s device registered (irq=%d, version=%d)\n",
+-		 KBUILD_MODNAME, m_can_dev->net->irq, m_can_dev->version);
++	dev_info(cdev->dev, "%s device registered (irq=%d, version=%d)\n",
++		 KBUILD_MODNAME, cdev->net->irq, cdev->version);
+ 
+ 	/* Probe finished
+ 	 * Stop clocks. They will be reactivated once the M_CAN device is opened
+ 	 */
+ clk_disable:
+-	m_can_clk_stop(m_can_dev);
++	m_can_clk_stop(cdev);
+ 
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(m_can_class_register);
+ 
+-void m_can_class_unregister(struct m_can_classdev *m_can_dev)
++void m_can_class_unregister(struct m_can_classdev *cdev)
+ {
+-	unregister_candev(m_can_dev->net);
++	unregister_candev(cdev->net);
+ 
+-	m_can_clk_stop(m_can_dev);
++	m_can_clk_stop(cdev);
+ }
+ EXPORT_SYMBOL_GPL(m_can_class_unregister);
+ 
+-- 
+2.29.2
+
+
