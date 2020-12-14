@@ -2,82 +2,93 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE04CC4361B
-	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 13:24:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8098EC4361B
+	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 13:32:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C91D224B1
-	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 13:24:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F45222571
+	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 13:32:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407947AbgLNNYe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 14 Dec 2020 08:24:34 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34844 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407828AbgLNNY1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 14 Dec 2020 08:24:27 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BEDMYXJ069640;
-        Mon, 14 Dec 2020 07:22:34 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607952154;
-        bh=bXRwMth/mGo8GpueJKFO4+hjEO9i2UcOc7tAlmrGnFI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=byNK7D18upCRzoejDMqlm8ewEdmrGyLkB3dIwRdRnYdrsrFizN3Ki0pGEJGyp5BFP
-         ard45s748r+6W1hWCIb6MQtYx/M32ezv9NREjlEjs4NR168BFVVeK36H389+GXl5PS
-         EeNNANMB2lafksAdXlh+nXGQDvm3VUKtQedjYh9Q=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BEDMY8s103481
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Dec 2020 07:22:34 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
- Dec 2020 07:22:34 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 14 Dec 2020 07:22:34 -0600
-Received: from [10.250.70.26] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BEDMXd5113305;
-        Mon, 14 Dec 2020 07:22:34 -0600
-Subject: Re: [RFC] m_can: cleanups
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, <linux-can@vger.kernel.org>
-CC:     <kernel@pengutronix.de>, Sean Nyekjaer <sean@geanix.com>,
-        Sriram Dash <sriram.dash@samsung.com>
-References: <20201212175518.139651-1-mkl@pengutronix.de>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <79dce7d7-43a4-c46b-b1e1-33e62593ee72@ti.com>
-Date:   Mon, 14 Dec 2020 07:22:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2439525AbgLNNcs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 14 Dec 2020 08:32:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439519AbgLNNce (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 14 Dec 2020 08:32:34 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB82C061793
+        for <linux-can@vger.kernel.org>; Mon, 14 Dec 2020 05:31:53 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1konxA-0003MK-Ft
+        for linux-can@vger.kernel.org; Mon, 14 Dec 2020 14:31:52 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id BC5F95AD2A4
+        for <linux-can@vger.kernel.org>; Mon, 14 Dec 2020 13:31:48 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 33D725AD28C;
+        Mon, 14 Dec 2020 13:31:47 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5da25f90;
+        Mon, 14 Dec 2020 13:31:46 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sean Nyekjaer <sean@geanix.com>, Dan Murphy <dmurphy@ti.com>
+Subject: [net-next 1/7] can: m_can: update link to M_CAN user manual
+Date:   Mon, 14 Dec 2020 14:31:39 +0100
+Message-Id: <20201214133145.442472-2-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201214133145.442472-1-mkl@pengutronix.de>
+References: <20201214133145.442472-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201212175518.139651-1-mkl@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Marc
+Old versions of the user manual are regularly depublished, so change link to
+the linux-can github page, which has a mirror off all published datasheets.
 
-On 12/12/20 11:55 AM, Marc Kleine-Budde wrote:
-> Hello,
->
-> this is a cleanup series for the m_can driver, mainly in preparation for
-> converting the tcan4x5x to pm_runtime.
->
-> regards,
-> Marc
-
-For the series including the github doc change
-
+Link: https://lore.kernel.org/r/20201212175518.139651-2-mkl@pengutronix.de
+Reviewed-by: Sean Nyekjaer <sean@geanix.com>
 Reviewed-by: Dan Murphy <dmurphy@ti.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/m_can/m_can.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
->
->
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 06c136961c7c..ec209326c3d8 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -5,8 +5,7 @@
+ // Copyright (C) 2018-19 Texas Instruments Incorporated - http://www.ti.com/
+ 
+ /* Bosch M_CAN user manual can be obtained from:
+- * http://www.bosch-semiconductors.de/media/pdf_1/ipmodules_1/m_can/
+- * mcan_users_manual_v302.pdf
++ * https://github.com/linux-can/can-doc/tree/master/m_can
+  */
+ 
+ #include <linux/interrupt.h>
+
+base-commit: 13458ffe0a953e17587f172a8e5059c243e6850a
+-- 
+2.29.2
+
+
