@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D333BC4361B
-	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 08:13:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EFA8C1B0D8
+	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 08:14:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 95CC0229F0
-	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 08:13:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D016D207A0
+	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 08:14:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439078AbgLNINH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 14 Dec 2020 03:13:07 -0500
-Received: from first.geanix.com ([116.203.34.67]:57758 "EHLO first.geanix.com"
+        id S2439050AbgLNIOG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 14 Dec 2020 03:14:06 -0500
+Received: from first.geanix.com ([116.203.34.67]:57830 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439074AbgLNINB (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 14 Dec 2020 03:13:01 -0500
+        id S2388775AbgLNIOD (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 14 Dec 2020 03:14:03 -0500
 Received: from [IPv6:2a06:4004:10df:1:da27:a6d2:5305:fd0a] (_gateway [172.21.0.1])
-        by first.geanix.com (Postfix) with ESMTPSA id 5707C481A89;
-        Mon, 14 Dec 2020 08:12:17 +0000 (UTC)
+        by first.geanix.com (Postfix) with ESMTPSA id B068B480B23;
+        Mon, 14 Dec 2020 08:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1607933537; bh=RYM5oS08/h8SEh5FcFmIZjDoa2nmgwQULWW/QSarT0w=;
+        t=1607933599; bh=c956TMwJlOsUMMrSdajhfBqk1QVz6i8FTdtnxPzydnI=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=W3AhMdbu4gkqNEdqPXET9XEsMM86pwgh4DiueFaKGiJ8PXBUACe2vocSfmyG0uFyn
-         ldWtan1L3O1tjhdY1MuRkih5eVq4brnzIXuJ2L8NUSfqlQoJTLDy/tqqkN8xoiasE1
-         DBBiiBQWbFHfaIO4fB8uHkr5NJTiujwVwVx3YzZfWxQ7fBnawMKLixQJToVQJJoY0Z
-         46xNxZ24sQw9ZCOCmnKdBWvVPXhPU6nUbNh4TQP3+MKpoL1IHMTfLGPj3M8RUMHNGh
-         fENXZ2aIZbYbMMDs5fpIwe6914YkFO/Lx8OXOZ8cktlsKe+0yEDoWlVMiIjaVVsmK9
-         EQpG0p74oUjaQ==
-Subject: Re: [can-next-rfc 3/7] can: m_can: use cdev as name for struct
- m_can_classdev uniformly
+        b=As7o7kmL7iGitX/0b2bXAMuiEi6cjOssWxq3s6aIIUvy2i039fO1Fy5vJr3HWk4Cm
+         GEsabern/+htY4edftwweuVkcVVm/9zWMWuwxe8fEQtxViyVpP64NCjcc00IFvNKGF
+         /xi2RP/xCU4LWXEhFYX/JI8A56bKjl8eUPEuok6aOQdEY2bNMDyT/oMDcPwn3JUbwS
+         qxFEJjvrPYJdlxgOL1qXVOCTx1UtGcnAqAo6mikkaOnW2EYvKhLCBtQPi44ETmB9ap
+         EOC9ZpM5xnrA/KEpbGUJdzsdXRvduhX0INf/tChCmO3NIKkbZim7F6XILdJYDH6nX8
+         akWb9VhoIeEgQ==
+Subject: Re: [can-next-rfc 6/7] can: m_can: let m_can_class_allocate_dev()
+ allocate driver specific private data
 To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
         Sriram Dash <sriram.dash@samsung.com>
 References: <20201212175518.139651-1-mkl@pengutronix.de>
- <20201212175518.139651-4-mkl@pengutronix.de>
+ <20201212175518.139651-7-mkl@pengutronix.de>
 From:   Sean Nyekjaer <sean@geanix.com>
-Message-ID: <7454be99-d576-1912-a186-526396216bb7@geanix.com>
-Date:   Mon, 14 Dec 2020 09:12:17 +0100
+Message-ID: <9274ce71-33e4-a3c2-2d18-124793210ad8@geanix.com>
+Date:   Mon, 14 Dec 2020 09:13:19 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <20201212175518.139651-4-mkl@pengutronix.de>
+In-Reply-To: <20201212175518.139651-7-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -55,212 +55,381 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 
 On 12/12/2020 18.55, Marc Kleine-Budde wrote:
-> This patch coverts the m_can driver to use cdev as name for struct
-> m_can_classdev uniformly throughout the whole driver.
+> This patch enhances m_can_class_allocate_dev() to allocate driver specific
+> private data. The driver's private data struct must contain struct
+> m_can_classdev as its first member followed by the remaining private data.
 >
 > Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Reviewed-by: Sean Nyekjaer <sean@geanix.com>
 > ---
->   drivers/net/can/m_can/m_can.c | 98 +++++++++++++++++------------------
->   1 file changed, 49 insertions(+), 49 deletions(-)
+>   drivers/net/can/m_can/m_can.c          |  5 +--
+>   drivers/net/can/m_can/m_can.h          |  4 +--
+>   drivers/net/can/m_can/m_can_pci.c      | 27 +++++++++-------
+>   drivers/net/can/m_can/m_can_platform.c | 26 ++++++++-------
+>   drivers/net/can/m_can/tcan4x5x.c       | 44 +++++++++++++-------------
+>   5 files changed, 56 insertions(+), 50 deletions(-)
 >
 > diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> index 27e736464580..fb408ca85188 100644
+> index d556cd95bd8e..46b23fd33f4a 100644
 > --- a/drivers/net/can/m_can/m_can.c
 > +++ b/drivers/net/can/m_can/m_can.c
-> @@ -1327,79 +1327,79 @@ static bool m_can_niso_supported(struct m_can_classdev *cdev)
->   	return !niso_timeout;
+> @@ -1759,7 +1759,8 @@ int m_can_class_get_clocks(struct m_can_classdev *cdev)
+>   }
+>   EXPORT_SYMBOL_GPL(m_can_class_get_clocks);
+>   
+> -struct m_can_classdev *m_can_class_allocate_dev(struct device *dev)
+> +struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
+> +						int sizeof_priv)
+>   {
+>   	struct m_can_classdev *class_dev = NULL;
+>   	u32 mram_config_vals[MRAM_CFG_LEN];
+> @@ -1782,7 +1783,7 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev)
+>   	tx_fifo_size = mram_config_vals[7];
+>   
+>   	/* allocate the m_can device */
+> -	net_dev = alloc_candev(sizeof(*class_dev), tx_fifo_size);
+> +	net_dev = alloc_candev(sizeof_priv, tx_fifo_size);
+>   	if (!net_dev) {
+>   		dev_err(dev, "Failed to allocate CAN device");
+>   		goto out;
+> diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+> index 3994e20249f8..3fda84cef351 100644
+> --- a/drivers/net/can/m_can/m_can.h
+> +++ b/drivers/net/can/m_can/m_can.h
+> @@ -86,8 +86,6 @@ struct m_can_classdev {
+>   
+>   	struct m_can_ops *ops;
+>   
+> -	void *device_data;
+> -
+>   	int version;
+>   	u32 irqstatus;
+>   
+> @@ -97,7 +95,7 @@ struct m_can_classdev {
+>   	struct mram_cfg mcfg[MRAM_CFG_NUM];
+>   };
+>   
+> -struct m_can_classdev *m_can_class_allocate_dev(struct device *dev);
+> +struct m_can_classdev *m_can_class_allocate_dev(struct device *dev, int sizeof_priv);
+>   void m_can_class_free_dev(struct net_device *net);
+>   int m_can_class_register(struct m_can_classdev *cdev);
+>   void m_can_class_unregister(struct m_can_classdev *cdev);
+> diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
+> index 04010ee0407c..ebfbef25e3f9 100644
+> --- a/drivers/net/can/m_can/m_can_pci.c
+> +++ b/drivers/net/can/m_can/m_can_pci.c
+> @@ -22,26 +22,33 @@
+>   #define CTL_CSR_INT_CTL_OFFSET		0x508
+>   
+>   struct m_can_pci_priv {
+> +	struct m_can_classdev cdev;
+> +
+>   	void __iomem *base;
+>   };
+>   
+> +static inline struct m_can_pci_priv *cdev_to_priv(struct m_can_classdev *cdev)
+> +{
+> +	return container_of(cdev, struct m_can_pci_priv, cdev);
+> +}
+> +
+>   static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
+>   {
+> -	struct m_can_pci_priv *priv = cdev->device_data;
+> +	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
+>   
+>   	return readl(priv->base + reg);
 >   }
 >   
-> -static int m_can_dev_setup(struct m_can_classdev *m_can_dev)
-> +static int m_can_dev_setup(struct m_can_classdev *cdev)
+>   static u32 iomap_read_fifo(struct m_can_classdev *cdev, int offset)
 >   {
-> -	struct net_device *dev = m_can_dev->net;
-> +	struct net_device *dev = cdev->net;
->   	int m_can_version;
+> -	struct m_can_pci_priv *priv = cdev->device_data;
+> +	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
 >   
-> -	m_can_version = m_can_check_core_release(m_can_dev);
-> +	m_can_version = m_can_check_core_release(cdev);
->   	/* return if unsupported version */
->   	if (!m_can_version) {
-> -		dev_err(m_can_dev->dev, "Unsupported version number: %2d",
-> +		dev_err(cdev->dev, "Unsupported version number: %2d",
->   			m_can_version);
->   		return -EINVAL;
+>   	return readl(priv->base + offset);
+>   }
+>   
+>   static int iomap_write_reg(struct m_can_classdev *cdev, int reg, int val)
+>   {
+> -	struct m_can_pci_priv *priv = cdev->device_data;
+> +	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
+>   
+>   	writel(val, priv->base + reg);
+>   
+> @@ -50,7 +57,7 @@ static int iomap_write_reg(struct m_can_classdev *cdev, int reg, int val)
+>   
+>   static int iomap_write_fifo(struct m_can_classdev *cdev, int offset, int val)
+>   {
+> -	struct m_can_pci_priv *priv = cdev->device_data;
+> +	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
+>   
+>   	writel(val, priv->base + offset);
+>   
+> @@ -89,21 +96,19 @@ static int m_can_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
+>   		return -ENOMEM;
 >   	}
 >   
-> -	if (!m_can_dev->is_peripheral)
-> -		netif_napi_add(dev, &m_can_dev->napi,
-> +	if (!cdev->is_peripheral)
-> +		netif_napi_add(dev, &cdev->napi,
->   			       m_can_poll, M_CAN_NAPI_WEIGHT);
+> -	priv = devm_kzalloc(&pci->dev, sizeof(*priv), GFP_KERNEL);
+> -	if (!priv)
+> -		return -ENOMEM;
+> -
+> -	mcan_class = m_can_class_allocate_dev(&pci->dev);
+> +	mcan_class = m_can_class_allocate_dev(&pci->dev,
+> +					      sizeof(struct m_can_pci_priv));
+>   	if (!mcan_class)
+>   		return -ENOMEM;
 >   
->   	/* Shared properties of all M_CAN versions */
-> -	m_can_dev->version = m_can_version;
-> -	m_can_dev->can.do_set_mode = m_can_set_mode;
-> -	m_can_dev->can.do_get_berr_counter = m_can_get_berr_counter;
-> +	cdev->version = m_can_version;
-> +	cdev->can.do_set_mode = m_can_set_mode;
-> +	cdev->can.do_get_berr_counter = m_can_get_berr_counter;
+> +	priv = cdev_to_priv(mcan_class);
+> +
+>   	priv->base = base;
 >   
->   	/* Set M_CAN supported operations */
-> -	m_can_dev->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
-> +	cdev->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
->   		CAN_CTRLMODE_LISTENONLY |
->   		CAN_CTRLMODE_BERR_REPORTING |
->   		CAN_CTRLMODE_FD |
->   		CAN_CTRLMODE_ONE_SHOT;
+>   	ret = pci_alloc_irq_vectors(pci, 1, 1, PCI_IRQ_ALL_TYPES);
+>   	if (ret < 0)
+>   		return ret;
 >   
->   	/* Set properties depending on M_CAN version */
-> -	switch (m_can_dev->version) {
-> +	switch (cdev->version) {
->   	case 30:
->   		/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.0.x */
->   		can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
-> -		m_can_dev->can.bittiming_const = m_can_dev->bit_timing ?
-> -			m_can_dev->bit_timing : &m_can_bittiming_const_30X;
-> +		cdev->can.bittiming_const = cdev->bit_timing ?
-> +			cdev->bit_timing : &m_can_bittiming_const_30X;
+> -	mcan_class->device_data = priv;
+>   	mcan_class->dev = &pci->dev;
+>   	mcan_class->net->irq = pci_irq_vector(pci, 0);
+>   	mcan_class->pm_clock_support = 1;
+> @@ -135,7 +140,7 @@ static void m_can_pci_remove(struct pci_dev *pci)
+>   {
+>   	struct net_device *dev = pci_get_drvdata(pci);
+>   	struct m_can_classdev *mcan_class = netdev_priv(dev);
+> -	struct m_can_pci_priv *priv = mcan_class->device_data;
+> +	struct m_can_pci_priv *priv = cdev_to_priv(mcan_class);
 >   
-> -		m_can_dev->can.data_bittiming_const = m_can_dev->data_timing ?
-> -			m_can_dev->data_timing :
-> +		cdev->can.data_bittiming_const = cdev->data_timing ?
-> +			cdev->data_timing :
->   			&m_can_data_bittiming_const_30X;
->   		break;
->   	case 31:
->   		/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.1.x */
->   		can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
-> -		m_can_dev->can.bittiming_const = m_can_dev->bit_timing ?
-> -			m_can_dev->bit_timing : &m_can_bittiming_const_31X;
-> +		cdev->can.bittiming_const = cdev->bit_timing ?
-> +			cdev->bit_timing : &m_can_bittiming_const_31X;
+>   	pm_runtime_forbid(&pci->dev);
+>   	pm_runtime_get_noresume(&pci->dev);
+> diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+> index 36ef791da388..5758d25e42c8 100644
+> --- a/drivers/net/can/m_can/m_can_platform.c
+> +++ b/drivers/net/can/m_can/m_can_platform.c
+> @@ -10,27 +10,34 @@
+>   #include "m_can.h"
 >   
-> -		m_can_dev->can.data_bittiming_const = m_can_dev->data_timing ?
-> -			m_can_dev->data_timing :
-> +		cdev->can.data_bittiming_const = cdev->data_timing ?
-> +			cdev->data_timing :
->   			&m_can_data_bittiming_const_31X;
->   		break;
->   	case 32:
->   	case 33:
->   		/* Support both MCAN version v3.2.x and v3.3.0 */
-> -		m_can_dev->can.bittiming_const = m_can_dev->bit_timing ?
-> -			m_can_dev->bit_timing : &m_can_bittiming_const_31X;
-> +		cdev->can.bittiming_const = cdev->bit_timing ?
-> +			cdev->bit_timing : &m_can_bittiming_const_31X;
+>   struct m_can_plat_priv {
+> +	struct m_can_classdev cdev;
+> +
+>   	void __iomem *base;
+>   	void __iomem *mram_base;
+>   };
 >   
-> -		m_can_dev->can.data_bittiming_const = m_can_dev->data_timing ?
-> -			m_can_dev->data_timing :
-> +		cdev->can.data_bittiming_const = cdev->data_timing ?
-> +			cdev->data_timing :
->   			&m_can_data_bittiming_const_31X;
+> +static inline struct m_can_plat_priv *cdev_to_priv(struct m_can_classdev *cdev)
+> +{
+> +	return container_of(cdev, struct m_can_plat_priv, cdev);
+> +}
+> +
+>   static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
+>   {
+> -	struct m_can_plat_priv *priv = cdev->device_data;
+> +	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
 >   
-> -		m_can_dev->can.ctrlmode_supported |=
-> -			(m_can_niso_supported(m_can_dev) ?
-> +		cdev->can.ctrlmode_supported |=
-> +			(m_can_niso_supported(cdev) ?
->   			 CAN_CTRLMODE_FD_NON_ISO : 0);
->   		break;
->   	default:
-> -		dev_err(m_can_dev->dev, "Unsupported version number: %2d",
-> -			m_can_dev->version);
-> +		dev_err(cdev->dev, "Unsupported version number: %2d",
-> +			cdev->version);
->   		return -EINVAL;
+>   	return readl(priv->base + reg);
+>   }
+>   
+>   static u32 iomap_read_fifo(struct m_can_classdev *cdev, int offset)
+>   {
+> -	struct m_can_plat_priv *priv = cdev->device_data;
+> +	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
+>   
+>   	return readl(priv->mram_base + offset);
+>   }
+>   
+>   static int iomap_write_reg(struct m_can_classdev *cdev, int reg, int val)
+>   {
+> -	struct m_can_plat_priv *priv = cdev->device_data;
+> +	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
+>   
+>   	writel(val, priv->base + reg);
+>   
+> @@ -39,7 +46,7 @@ static int iomap_write_reg(struct m_can_classdev *cdev, int reg, int val)
+>   
+>   static int iomap_write_fifo(struct m_can_classdev *cdev, int offset, int val)
+>   {
+> -	struct m_can_plat_priv *priv = cdev->device_data;
+> +	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
+>   
+>   	writel(val, priv->mram_base + offset);
+>   
+> @@ -62,17 +69,12 @@ static int m_can_plat_probe(struct platform_device *pdev)
+>   	void __iomem *mram_addr;
+>   	int irq, ret = 0;
+>   
+> -	mcan_class = m_can_class_allocate_dev(&pdev->dev);
+> +	mcan_class = m_can_class_allocate_dev(&pdev->dev,
+> +					      sizeof(struct m_can_plat_priv));
+>   	if (!mcan_class)
+>   		return -ENOMEM;
+>   
+> -	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> -	if (!priv) {
+> -		ret = -ENOMEM;
+> -		goto probe_fail;
+> -	}
+> -
+> -	mcan_class->device_data = priv;
+> +	priv = cdev_to_priv(mcan_class);
+>   
+>   	ret = m_can_class_get_clocks(mcan_class);
+>   	if (ret)
+> diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+> index a0fecc3fb829..24c737c4fc44 100644
+> --- a/drivers/net/can/m_can/tcan4x5x.c
+> +++ b/drivers/net/can/m_can/tcan4x5x.c
+> @@ -114,17 +114,23 @@
+>   #define TCAN4X5X_WD_6_S_TIMER (BIT(28) | BIT(29))
+>   
+>   struct tcan4x5x_priv {
+> +	struct m_can_classdev cdev;
+> +
+>   	struct regmap *regmap;
+>   	struct spi_device *spi;
+>   
+> -	struct m_can_classdev *mcan_dev;
+> -
+>   	struct gpio_desc *reset_gpio;
+>   	struct gpio_desc *device_wake_gpio;
+>   	struct gpio_desc *device_state_gpio;
+>   	struct regulator *power;
+>   };
+>   
+> +static inline struct tcan4x5x_priv *cdev_to_priv(struct m_can_classdev *cdev)
+> +{
+> +	return container_of(cdev, struct tcan4x5x_priv, cdev);
+> +
+> +}
+> +
+>   static struct can_bittiming_const tcan4x5x_bittiming_const = {
+>   	.name = DEVICE_NAME,
+>   	.tseg1_min = 2,
+> @@ -253,7 +259,7 @@ static struct regmap_bus tcan4x5x_bus = {
+>   
+>   static u32 tcan4x5x_read_reg(struct m_can_classdev *cdev, int reg)
+>   {
+> -	struct tcan4x5x_priv *priv = cdev->device_data;
+> +	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+>   	u32 val;
+>   
+>   	regmap_read(priv->regmap, TCAN4X5X_MCAN_OFFSET + reg, &val);
+> @@ -263,7 +269,7 @@ static u32 tcan4x5x_read_reg(struct m_can_classdev *cdev, int reg)
+>   
+>   static u32 tcan4x5x_read_fifo(struct m_can_classdev *cdev, int addr_offset)
+>   {
+> -	struct tcan4x5x_priv *priv = cdev->device_data;
+> +	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+>   	u32 val;
+>   
+>   	regmap_read(priv->regmap, TCAN4X5X_MRAM_START + addr_offset, &val);
+> @@ -273,7 +279,7 @@ static u32 tcan4x5x_read_fifo(struct m_can_classdev *cdev, int addr_offset)
+>   
+>   static int tcan4x5x_write_reg(struct m_can_classdev *cdev, int reg, int val)
+>   {
+> -	struct tcan4x5x_priv *priv = cdev->device_data;
+> +	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+>   
+>   	return regmap_write(priv->regmap, TCAN4X5X_MCAN_OFFSET + reg, val);
+>   }
+> @@ -281,7 +287,7 @@ static int tcan4x5x_write_reg(struct m_can_classdev *cdev, int reg, int val)
+>   static int tcan4x5x_write_fifo(struct m_can_classdev *cdev,
+>   			       int addr_offset, int val)
+>   {
+> -	struct tcan4x5x_priv *priv = cdev->device_data;
+> +	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+>   
+>   	return regmap_write(priv->regmap, TCAN4X5X_MRAM_START + addr_offset, val);
+>   }
+> @@ -300,7 +306,7 @@ static int tcan4x5x_power_enable(struct regulator *reg, int enable)
+>   static int tcan4x5x_write_tcan_reg(struct m_can_classdev *cdev,
+>   				   int reg, int val)
+>   {
+> -	struct tcan4x5x_priv *priv = cdev->device_data;
+> +	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+>   
+>   	return regmap_write(priv->regmap, reg, val);
+>   }
+> @@ -330,7 +336,7 @@ static int tcan4x5x_clear_interrupts(struct m_can_classdev *cdev)
+>   
+>   static int tcan4x5x_init(struct m_can_classdev *cdev)
+>   {
+> -	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
+> +	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
+>   	int ret;
+>   
+>   	tcan4x5x_check_wake(tcan4x5x);
+> @@ -357,7 +363,7 @@ static int tcan4x5x_init(struct m_can_classdev *cdev)
+>   
+>   static int tcan4x5x_disable_wake(struct m_can_classdev *cdev)
+>   {
+> -	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
+> +	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
+>   
+>   	return regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
+>   				  TCAN4X5X_DISABLE_WAKE_MSK, 0x00);
+> @@ -365,7 +371,7 @@ static int tcan4x5x_disable_wake(struct m_can_classdev *cdev)
+>   
+>   static int tcan4x5x_disable_state(struct m_can_classdev *cdev)
+>   {
+> -	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
+> +	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
+>   
+>   	return regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
+>   				  TCAN4X5X_DISABLE_INH_MSK, 0x01);
+> @@ -373,7 +379,7 @@ static int tcan4x5x_disable_state(struct m_can_classdev *cdev)
+>   
+>   static int tcan4x5x_get_gpios(struct m_can_classdev *cdev)
+>   {
+> -	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
+> +	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
+>   	int ret;
+>   
+>   	tcan4x5x->device_wake_gpio = devm_gpiod_get(cdev->dev, "device-wake",
+> @@ -427,15 +433,12 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+>   	struct m_can_classdev *mcan_class;
+>   	int freq, ret;
+>   
+> -	mcan_class = m_can_class_allocate_dev(&spi->dev);
+> +	mcan_class = m_can_class_allocate_dev(&spi->dev,
+> +					      sizeof(struct tcan4x5x_priv));
+>   	if (!mcan_class)
+>   		return -ENOMEM;
+>   
+> -	priv = devm_kzalloc(&spi->dev, sizeof(*priv), GFP_KERNEL);
+> -	if (!priv) {
+> -		ret = -ENOMEM;
+> -		goto out_m_can_class_free_dev;
+> -	}
+> +	priv = cdev_to_priv(mcan_class);
+>   
+>   	priv->power = devm_regulator_get_optional(&spi->dev, "vsup");
+>   	if (PTR_ERR(priv->power) == -EPROBE_DEFER) {
+> @@ -445,8 +448,6 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+>   		priv->power = NULL;
 >   	}
 >   
-> -	if (m_can_dev->ops->init)
-> -		m_can_dev->ops->init(m_can_dev);
-> +	if (cdev->ops->init)
-> +		cdev->ops->init(cdev);
+> -	mcan_class->device_data = priv;
+> -
+>   	m_can_class_get_clocks(mcan_class);
+>   	if (IS_ERR(mcan_class->cclk)) {
+>   		dev_err(&spi->dev, "no CAN clock source defined\n");
+> @@ -462,7 +463,6 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+>   	}
+>   
+>   	priv->spi = spi;
+> -	priv->mcan_dev = mcan_class;
+>   
+>   	mcan_class->pm_clock_support = 0;
+>   	mcan_class->can.clock.freq = freq;
+> @@ -518,11 +518,11 @@ static int tcan4x5x_can_remove(struct spi_device *spi)
+>   {
+>   	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
+>   
+> -	m_can_class_unregister(priv->mcan_dev);
+> +	m_can_class_unregister(&priv->cdev);
+>   
+>   	tcan4x5x_power_enable(priv->power, 0);
+>   
+> -	m_can_class_free_dev(priv->mcan_dev->net);
+> +	m_can_class_free_dev(priv->cdev.net);
 >   
 >   	return 0;
 >   }
-> @@ -1751,15 +1751,15 @@ void m_can_init_ram(struct m_can_classdev *cdev)
->   }
->   EXPORT_SYMBOL_GPL(m_can_init_ram);
->   
-> -int m_can_class_get_clocks(struct m_can_classdev *m_can_dev)
-> +int m_can_class_get_clocks(struct m_can_classdev *cdev)
->   {
->   	int ret = 0;
->   
-> -	m_can_dev->hclk = devm_clk_get(m_can_dev->dev, "hclk");
-> -	m_can_dev->cclk = devm_clk_get(m_can_dev->dev, "cclk");
-> +	cdev->hclk = devm_clk_get(cdev->dev, "hclk");
-> +	cdev->cclk = devm_clk_get(cdev->dev, "cclk");
->   
-> -	if (IS_ERR(m_can_dev->cclk)) {
-> -		dev_err(m_can_dev->dev, "no clock found\n");
-> +	if (IS_ERR(cdev->cclk)) {
-> +		dev_err(cdev->dev, "no clock found\n");
->   		ret = -ENODEV;
->   	}
->   
-> @@ -1818,49 +1818,49 @@ void m_can_class_free_dev(struct net_device *net)
->   }
->   EXPORT_SYMBOL_GPL(m_can_class_free_dev);
->   
-> -int m_can_class_register(struct m_can_classdev *m_can_dev)
-> +int m_can_class_register(struct m_can_classdev *cdev)
->   {
->   	int ret;
->   
-> -	if (m_can_dev->pm_clock_support) {
-> -		ret = m_can_clk_start(m_can_dev);
-> +	if (cdev->pm_clock_support) {
-> +		ret = m_can_clk_start(cdev);
->   		if (ret)
->   			return ret;
->   	}
->   
-> -	ret = m_can_dev_setup(m_can_dev);
-> +	ret = m_can_dev_setup(cdev);
->   	if (ret)
->   		goto clk_disable;
->   
-> -	ret = register_m_can_dev(m_can_dev->net);
-> +	ret = register_m_can_dev(cdev->net);
->   	if (ret) {
-> -		dev_err(m_can_dev->dev, "registering %s failed (err=%d)\n",
-> -			m_can_dev->net->name, ret);
-> +		dev_err(cdev->dev, "registering %s failed (err=%d)\n",
-> +			cdev->net->name, ret);
->   		goto clk_disable;
->   	}
->   
-> -	devm_can_led_init(m_can_dev->net);
-> +	devm_can_led_init(cdev->net);
->   
-> -	of_can_transceiver(m_can_dev->net);
-> +	of_can_transceiver(cdev->net);
->   
-> -	dev_info(m_can_dev->dev, "%s device registered (irq=%d, version=%d)\n",
-> -		 KBUILD_MODNAME, m_can_dev->net->irq, m_can_dev->version);
-> +	dev_info(cdev->dev, "%s device registered (irq=%d, version=%d)\n",
-> +		 KBUILD_MODNAME, cdev->net->irq, cdev->version);
->   
->   	/* Probe finished
->   	 * Stop clocks. They will be reactivated once the M_CAN device is opened
->   	 */
->   clk_disable:
-> -	m_can_clk_stop(m_can_dev);
-> +	m_can_clk_stop(cdev);
->   
->   	return ret;
->   }
->   EXPORT_SYMBOL_GPL(m_can_class_register);
->   
-> -void m_can_class_unregister(struct m_can_classdev *m_can_dev)
-> +void m_can_class_unregister(struct m_can_classdev *cdev)
->   {
-> -	unregister_candev(m_can_dev->net);
-> +	unregister_candev(cdev->net);
->   
-> -	m_can_clk_stop(m_can_dev);
-> +	m_can_clk_stop(cdev);
->   }
->   EXPORT_SYMBOL_GPL(m_can_class_unregister);
->   
 
