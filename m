@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0438C1B0D9
-	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 08:14:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1186AC2BBCA
+	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 08:14:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 59ABF22838
+	by mail.kernel.org (Postfix) with ESMTP id CBB6522838
 	for <linux-can@archiver.kernel.org>; Mon, 14 Dec 2020 08:14:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728424AbgLNIOY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 14 Dec 2020 03:14:24 -0500
-Received: from first.geanix.com ([116.203.34.67]:57842 "EHLO first.geanix.com"
+        id S2439103AbgLNINR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 14 Dec 2020 03:13:17 -0500
+Received: from first.geanix.com ([116.203.34.67]:57778 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439132AbgLNIOV (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 14 Dec 2020 03:14:21 -0500
+        id S2439095AbgLNINL (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 14 Dec 2020 03:13:11 -0500
 Received: from [IPv6:2a06:4004:10df:1:da27:a6d2:5305:fd0a] (_gateway [172.21.0.1])
-        by first.geanix.com (Postfix) with ESMTPSA id 1BDF6485B36;
-        Mon, 14 Dec 2020 08:13:37 +0000 (UTC)
+        by first.geanix.com (Postfix) with ESMTPSA id 73A6E485B36;
+        Mon, 14 Dec 2020 08:12:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1607933617; bh=tmOk0zl1M9K9Q82g4Eku1Go57kfg+JrDITZZMarfBsw=;
+        t=1607933548; bh=ZOD/anCgzE+7jDuKDrizr1tdw17Hdje0bl016cnbhug=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=AyJ5+prHhftfLCpSvfT4nUvxFucJuHMt58kYop1QliP+1aC1LXfV54UL71VygiS+z
-         gd0YjWJ9dIHIWltJXLMJPYXb8bOER0Mt4ZJpI4N4uHkomhb7VLlW/cnq8Oyl3UN/+F
-         uGYbABAHHgRK4WximSeSQ+LZSnRChT6mnYl2VKGOXOnPrZDXP6aIPCZFEpQn3VOT9e
-         2Jz7EpiNozkneJW+5+PfijRHPWoBs6ARDOdZ5Psj8fwECCvegs6CT/pnH5FG66TNqj
-         VFb7xS/mg6C/BTt+OLyYXnvLwzBumV+sVkG3+2oupYnjptmUfKfhdu7Ze8wUtSWtuj
-         QUS5eqD5rKrKQ==
-Subject: Re: [can-next-rfc 7/7] can: m_can: use struct m_can_classdev as
- drvdata
+        b=bTKfAVOtNHtoENwafyuz550sQiUX/W8DWObGt+5RUyKtsa4fWBBE2JK1WFMYdJTMV
+         WOjjaRyNuBIgML1xDYq5o26g3AvIZZvotYEqxw+7ua9RpbVm1H/6axBIyVEfulHd1i
+         8jIKIq8j4c22URrlIfq6HmXnQaxBg9EwMXaQtZO59N+UOJWVM9e58+zVS1Wsg7/vG3
+         cz0VduKIErE3pXrh/FoEJGwJ7Dd8HtsXno8rAt/gKI6P6gExsEeFhKtkQbXz3xWr7y
+         h/iPO8WpAhXdOKZk97a7xyWWFk4JNetVmDBrQZy5YHFfY9yl/1tPikitlLv1Tf8b8j
+         wo9tbcbAy/PgQ==
+Subject: Re: [can-next-rfc 4/7] can: m_can: m_can_config_endisable(): mark as
+ static
 To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
         Sriram Dash <sriram.dash@samsung.com>
 References: <20201212175518.139651-1-mkl@pengutronix.de>
- <20201212175518.139651-8-mkl@pengutronix.de>
+ <20201212175518.139651-5-mkl@pengutronix.de>
 From:   Sean Nyekjaer <sean@geanix.com>
-Message-ID: <225fe014-d005-f1ce-0a67-25dc84efa5ee@geanix.com>
-Date:   Mon, 14 Dec 2020 09:13:36 +0100
+Message-ID: <ab910ad6-8976-0a17-e5cf-6d4fa9b9c0e4@geanix.com>
+Date:   Mon, 14 Dec 2020 09:12:28 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <20201212175518.139651-8-mkl@pengutronix.de>
+In-Reply-To: <20201212175518.139651-5-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -55,117 +55,39 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 
 On 12/12/2020 18.55, Marc Kleine-Budde wrote:
-> The m_can driver's suspend and resume functions (m_can_class_suspend() and
-> m_can_class_resume()) make use of dev_get_drvdata() and assume that the drvdata
-> is a pointer to the struct net_device.
->
-> With upcoming conversion of the tcan4x5x driver to pm_runtime this assumption
-> is no longer valid. As the suspend and resume functions actually need a struct
-> m_can_classdev pointer, change the m_can_platform and the m_can_pci driver to
-> hold a pointer to struct m_can_classdev instead, as the tcan4x5x driver already
-> does.
+> The function m_can_config_endisable() is not used outside of the m_can driver,
+> so mark it as static.
 >
 > Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Reviewed-by: Sean Nyekjaer <sean@geanix.com>
 > ---
->   drivers/net/can/m_can/m_can.c          |  8 ++++----
->   drivers/net/can/m_can/m_can_pci.c      |  5 ++---
->   drivers/net/can/m_can/m_can_platform.c | 14 +++++++-------
->   3 files changed, 13 insertions(+), 14 deletions(-)
+>   drivers/net/can/m_can/m_can.c | 2 +-
+>   drivers/net/can/m_can/m_can.h | 1 -
+>   2 files changed, 1 insertion(+), 2 deletions(-)
 >
 > diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> index 46b23fd33f4a..ebf52f1aca10 100644
+> index fb408ca85188..b1ed925ead63 100644
 > --- a/drivers/net/can/m_can/m_can.c
 > +++ b/drivers/net/can/m_can/m_can.c
-> @@ -1859,8 +1859,8 @@ EXPORT_SYMBOL_GPL(m_can_class_unregister);
+> @@ -368,7 +368,7 @@ static inline bool m_can_tx_fifo_full(struct m_can_classdev *cdev)
+>   	return !!(m_can_read(cdev, M_CAN_TXFQS) & TXFQS_TFQF);
+>   }
 >   
->   int m_can_class_suspend(struct device *dev)
+> -void m_can_config_endisable(struct m_can_classdev *cdev, bool enable)
+> +static void m_can_config_endisable(struct m_can_classdev *cdev, bool enable)
 >   {
-> -	struct net_device *ndev = dev_get_drvdata(dev);
-> -	struct m_can_classdev *cdev = netdev_priv(ndev);
-> +	struct m_can_classdev *cdev = dev_get_drvdata(dev);
-> +	struct net_device *ndev = cdev->net;
+>   	u32 cccr = m_can_read(cdev, M_CAN_CCCR);
+>   	u32 timeout = 10;
+> diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+> index f8a692596e59..3994e20249f8 100644
+> --- a/drivers/net/can/m_can/m_can.h
+> +++ b/drivers/net/can/m_can/m_can.h
+> @@ -103,7 +103,6 @@ int m_can_class_register(struct m_can_classdev *cdev);
+>   void m_can_class_unregister(struct m_can_classdev *cdev);
+>   int m_can_class_get_clocks(struct m_can_classdev *cdev);
+>   void m_can_init_ram(struct m_can_classdev *priv);
+> -void m_can_config_endisable(struct m_can_classdev *priv, bool enable);
 >   
->   	if (netif_running(ndev)) {
->   		netif_stop_queue(ndev);
-> @@ -1879,8 +1879,8 @@ EXPORT_SYMBOL_GPL(m_can_class_suspend);
->   
->   int m_can_class_resume(struct device *dev)
->   {
-> -	struct net_device *ndev = dev_get_drvdata(dev);
-> -	struct m_can_classdev *cdev = netdev_priv(ndev);
-> +	struct m_can_classdev *cdev = dev_get_drvdata(dev);
-> +	struct net_device *ndev = cdev->net;
->   
->   	pinctrl_pm_select_default_state(dev);
->   
-> diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
-> index ebfbef25e3f9..128808605c3f 100644
-> --- a/drivers/net/can/m_can/m_can_pci.c
-> +++ b/drivers/net/can/m_can/m_can_pci.c
-> @@ -115,7 +115,7 @@ static int m_can_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
->   	mcan_class->can.clock.freq = id->driver_data;
->   	mcan_class->ops = &m_can_pci_ops;
->   
-> -	pci_set_drvdata(pci, mcan_class->net);
-> +	pci_set_drvdata(pci, mcan_class);
->   
->   	ret = m_can_class_register(mcan_class);
->   	if (ret)
-> @@ -138,8 +138,7 @@ static int m_can_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
->   
->   static void m_can_pci_remove(struct pci_dev *pci)
->   {
-> -	struct net_device *dev = pci_get_drvdata(pci);
-> -	struct m_can_classdev *mcan_class = netdev_priv(dev);
-> +	struct m_can_classdev *mcan_class = pci_get_drvdata(pci);
->   	struct m_can_pci_priv *priv = cdev_to_priv(mcan_class);
->   
->   	pm_runtime_forbid(&pci->dev);
-> diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-> index 5758d25e42c8..599de0e08cd7 100644
-> --- a/drivers/net/can/m_can/m_can_platform.c
-> +++ b/drivers/net/can/m_can/m_can_platform.c
-> @@ -113,7 +113,7 @@ static int m_can_plat_probe(struct platform_device *pdev)
->   
->   	mcan_class->is_peripheral = false;
->   
-> -	platform_set_drvdata(pdev, mcan_class->net);
-> +	platform_set_drvdata(pdev, mcan_class);
->   
->   	m_can_init_ram(mcan_class);
->   
-> @@ -143,8 +143,8 @@ static __maybe_unused int m_can_resume(struct device *dev)
->   
->   static int m_can_plat_remove(struct platform_device *pdev)
->   {
-> -	struct net_device *dev = platform_get_drvdata(pdev);
-> -	struct m_can_classdev *mcan_class = netdev_priv(dev);
-> +	struct m_can_plat_priv *priv = platform_get_drvdata(pdev);
-> +	struct m_can_classdev *mcan_class = &priv->cdev;
->   
->   	m_can_class_unregister(mcan_class);
->   
-> @@ -155,8 +155,8 @@ static int m_can_plat_remove(struct platform_device *pdev)
->   
->   static int __maybe_unused m_can_runtime_suspend(struct device *dev)
->   {
-> -	struct net_device *ndev = dev_get_drvdata(dev);
-> -	struct m_can_classdev *mcan_class = netdev_priv(ndev);
-> +	struct m_can_plat_priv *priv = dev_get_drvdata(dev);
-> +	struct m_can_classdev *mcan_class = &priv->cdev;
->   
->   	clk_disable_unprepare(mcan_class->cclk);
->   	clk_disable_unprepare(mcan_class->hclk);
-> @@ -166,8 +166,8 @@ static int __maybe_unused m_can_runtime_suspend(struct device *dev)
->   
->   static int __maybe_unused m_can_runtime_resume(struct device *dev)
->   {
-> -	struct net_device *ndev = dev_get_drvdata(dev);
-> -	struct m_can_classdev *mcan_class = netdev_priv(ndev);
-> +	struct m_can_plat_priv *priv = dev_get_drvdata(dev);
-> +	struct m_can_classdev *mcan_class = &priv->cdev;
->   	int err;
->   
->   	err = clk_prepare_enable(mcan_class->hclk);
+>   int m_can_class_suspend(struct device *dev);
+>   int m_can_class_resume(struct device *dev);
 
