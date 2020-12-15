@@ -2,56 +2,52 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E6D5C4361B
-	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1E8BC2D0E4
+	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 40D9622D02
-	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 66E0B22D57
+	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbgLPABZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Dec 2020 19:01:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
+        id S1727864AbgLPABY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Dec 2020 19:01:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729587AbgLOXZe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 18:25:34 -0500
+        with ESMTP id S1728861AbgLOXZd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 18:25:33 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571A6C06138C
-        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 15:18:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407F3C061794
+        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 15:17:58 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kpJZx-0002d2-RI
-        for linux-can@vger.kernel.org; Wed, 16 Dec 2020 00:18:01 +0100
+        id 1kpJZs-0002SZ-SA
+        for linux-can@vger.kernel.org; Wed, 16 Dec 2020 00:17:56 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 6F4485AE3E9
-        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 23:17:54 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id D5FBA5AE3C0
+        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 23:17:51 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 43CFF5AE3A2;
-        Tue, 15 Dec 2020 23:17:50 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3cfc08f1;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DA1205AE39D;
         Tue, 15 Dec 2020 23:17:49 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id dd2029f8;
+        Tue, 15 Dec 2020 23:17:48 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
         Sriram Dash <sriram.dash@samsung.com>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [can-next-rfc 05/16] can: tcan4x5x: mark struct regmap_bus tcan4x5x_bus as constant
-Date:   Wed, 16 Dec 2020 00:17:35 +0100
-Message-Id: <20201215231746.1132907-6-mkl@pengutronix.de>
+        Sean Nyekjaer <sean@geanix.com>
+Subject: [RFC]: tcan4x5x: rework regmap support
+Date:   Wed, 16 Dec 2020 00:17:30 +0100
+Message-Id: <20201215231746.1132907-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201215231746.1132907-1-mkl@pengutronix.de>
-References: <20201215231746.1132907-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -62,27 +58,25 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch marks the struct regmap_bus tcan4x5x_bus as constant.
+Hello,
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/m_can/tcan4x5x-regmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+this series first cleans up the the SPI regmap and then fixes several problem:
+- tcan4x5x_regmap_gather_write(), tcan4x5x_regmap_read():
+  Do not place variable "addr" on stack and use it as buffer for SPI
+  transfer. Buffers for SPI transfers must be allocated from DMA save
+  memory.
+- tcan4x5x_regmap_gather_write(), tcan4x5x_regmap_read():
+  Halfe number of SPI transfers by using a single buffer + memcpy().
+  This improves the performance, especially on SPI controllers, which
+  use interrupt based transfers.
+- Use "8" bits per word, not "32". This makes it possible to use this
+  driver on SoCs like the Raspberry Pi, which SPI host controller
+  drivers only support 8 bits per word.
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index f130c3586543..1d139554fc16 100644
---- a/drivers/net/can/m_can/tcan4x5x-regmap.c
-+++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -76,7 +76,7 @@ static const struct regmap_config tcan4x5x_regmap = {
- 	.max_register = TCAN4X5X_MAX_REGISTER,
- };
- 
--static struct regmap_bus tcan4x5x_bus = {
-+static const struct regmap_bus tcan4x5x_bus = {
- 	.write = tcan4x5x_regmap_write,
- 	.gather_write = regmap_spi_gather_write,
- 	.async_write = regmap_spi_async_write,
--- 
-2.29.2
+With this series, the driver is able to detect a tcan4x5x on a Raspberry Pi.
+
+regards,
+Marc
+
 
 
