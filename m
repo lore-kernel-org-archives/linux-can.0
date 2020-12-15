@@ -7,38 +7,38 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29779C2BBD4
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11109C2BB48
 	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1387022D07
-	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D27FF22D02
+	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgLPABU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Dec 2020 19:01:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
+        id S1725891AbgLPABS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Dec 2020 19:01:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729554AbgLOXZK (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 18:25:10 -0500
+        with ESMTP id S1729523AbgLOXZI (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 18:25:08 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551C2C061248
-        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 15:18:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BA5C06179C
+        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 15:17:59 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kpJZz-0002fL-RE
-        for linux-can@vger.kernel.org; Wed, 16 Dec 2020 00:18:03 +0100
+        id 1kpJZt-0002Su-K3
+        for linux-can@vger.kernel.org; Wed, 16 Dec 2020 00:17:57 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A12835AE400
-        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 23:17:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 15EBF5AE3C5
+        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 23:17:52 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D8B6C5AE3AB;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 092DE5AE39F;
         Tue, 15 Dec 2020 23:17:50 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 581873b3;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 05dd763f;
         Tue, 15 Dec 2020 23:17:49 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
@@ -46,9 +46,9 @@ Cc:     kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
         Sriram Dash <sriram.dash@samsung.com>,
         Sean Nyekjaer <sean@geanix.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [can-next-rfc 11/16] can: tcan4x5x: fix max register value
-Date:   Wed, 16 Dec 2020 00:17:41 +0100
-Message-Id: <20201215231746.1132907-12-mkl@pengutronix.de>
+Subject: [can-next-rfc 02/16] can: tcan4x5x: beautify indention of tcan4x5x_of_match and tcan4x5x_id_table
+Date:   Wed, 16 Dec 2020 00:17:32 +0100
+Message-Id: <20201215231746.1132907-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201215231746.1132907-1-mkl@pengutronix.de>
 References: <20201215231746.1132907-1-mkl@pengutronix.de>
@@ -62,26 +62,44 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the max register value for the regmap.
+This patch beautifies the indention of the tcan4x5x_of_match and
+tcan4x5x_id_table.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/tcan4x5x-regmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/m_can/tcan4x5x.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index 4d43c145fdec..73be4b661305 100644
---- a/drivers/net/can/m_can/tcan4x5x-regmap.c
-+++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -12,7 +12,7 @@
- #define TCAN4X5X_WRITE_CMD (0x61 << 24)
- #define TCAN4X5X_READ_CMD (0x41 << 24)
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index 1b5f706674af..1b47c9d32c30 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -527,17 +527,20 @@ static int tcan4x5x_can_remove(struct spi_device *spi)
+ }
  
--#define TCAN4X5X_MAX_REGISTER 0x8fff
-+#define TCAN4X5X_MAX_REGISTER 0x8ffc
+ static const struct of_device_id tcan4x5x_of_match[] = {
+-	{ .compatible = "ti,tcan4x5x", },
+-	{ }
++	{
++		.compatible = "ti,tcan4x5x",
++	}, {
++		/* sentinel */
++	},
+ };
+ MODULE_DEVICE_TABLE(of, tcan4x5x_of_match);
  
- static int tcan4x5x_regmap_gather_write(void *context, const void *reg,
- 					size_t reg_len, const void *val,
+ static const struct spi_device_id tcan4x5x_id_table[] = {
+ 	{
+-		.name		= "tcan4x5x",
+-		.driver_data	= 0,
++		.name = "tcan4x5x",
++	}, {
++		/* sentinel */
+ 	},
+-	{ }
+ };
+ MODULE_DEVICE_TABLE(spi, tcan4x5x_id_table);
+ 
 -- 
 2.29.2
 
