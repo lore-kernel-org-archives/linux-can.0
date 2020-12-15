@@ -2,189 +2,157 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1F8CC4361B
-	for <linux-can@archiver.kernel.org>; Tue, 15 Dec 2020 21:10:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DAE3C4361B
+	for <linux-can@archiver.kernel.org>; Tue, 15 Dec 2020 21:10:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB8CE22CB8
-	for <linux-can@archiver.kernel.org>; Tue, 15 Dec 2020 21:10:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D570F22CB8
+	for <linux-can@archiver.kernel.org>; Tue, 15 Dec 2020 21:10:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728646AbgLOVKb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Dec 2020 16:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728520AbgLOVK3 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 16:10:29 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0520AC0617A7
-        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 13:09:49 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kpHZq-0007bc-Jc; Tue, 15 Dec 2020 22:09:46 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:d81b:8ab4:f042:fe4f] (unknown [IPv6:2a03:f580:87bc:d400:d81b:8ab4:f042:fe4f])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id E48745AE2FB;
-        Tue, 15 Dec 2020 21:09:44 +0000 (UTC)
-Subject: Re: pcan: usb_submit_urb() hangs in peak_usb_ndo_start_xmit()
-To:     Stefan Tatschner <stefan@rumpelsepp.org>, linux-can@vger.kernel.org
+        id S1729047AbgLOVKu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Dec 2020 16:10:50 -0500
+Received: from coruscant.sevenbyte.org ([45.32.152.104]:57954 "EHLO
+        coruscant.sevenbyte.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727671AbgLOVKs (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 16:10:48 -0500
+X-Greylist: delayed 631 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Dec 2020 16:10:47 EST
+Received: from [IPv6:2003:cd:370e:4d00:7d0:30c6:72d:ea04] (p200300cd370e4d0007d030c6072dea04.dip0.t-ipconnect.de [IPv6:2003:cd:370e:4d00:7d0:30c6:72d:ea04])
+        (Authenticated sender: stefan@rumpelsepp.org)
+        by coruscant.sevenbyte.org (Postfix) with ESMTPSA id 8ACBD3ED93;
+        Tue, 15 Dec 2020 21:59:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rumpelsepp.org;
+        s=dkim; t=1608065972;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=hqgZ1wKmenYE9CftACXOvsmBqXvdZtw3srzX4zSWw5w=;
+        b=Zl+ds/4oMQsUZwAvmkX/8RVFiEHOJcxxajMxfiIiFrNDMVJb80pw9HhYcp0v28c9fD1YaP
+        MJBhslid3kbNqGJx2rAUCokcgat+z/HInbd77q4eSwNNFYwPmvKCgDVKz/fNNtiQFcM2Wh
+        isQLocZzFgMFdzglzqpUBz6kLZyVX2LRnps/GzYilFgkd806Z11TnzKcHP3Jpupg+vc+CK
+        A736md8S74LU4ET8zMqTwor8uLZUYAzP/8mDmTxMJ41ETnoQB/lclc+eSCEgcoRBZbHDbR
+        U4F/h5nUoZX9y0vGCqsHsw48UhNjK26IWJdJRET/Pzdcz4yR3K9uzdjGl3+MCl1ad88BhG
+        AJG/+N2S/cXVR32KEJ7DYo5oQahhDBBng7TDy8NB4di7twxeSt4COsBElN4N4nRAJpq22W
+        OBYMwaNZm/Va3tZJcYi+1SXr1FEUUTWvLD6cDLYMLInqB0eQTOXPPh9XGscaYGC9/t+WHv
+        gKvgV9+lMy5vr/yyy+pZj+1SrLMqn7aHxP32T1a2760xJB1T+fIS+EHIfPoseeZaXck78r
+        dVlUQjRbMzG4KmWjACayPZ+WypSY9ryA1wxOJdhx2OlQ93C8iCQPReHFghxzaKtVq8K7lS
+        ZSkHKJB6BsUZ3ToFg4sn8o3zgCHixelinCB/bMpN+Fz4Hh2tuUIT8=
+Message-ID: <ad68c4ebcdadb31cbf9fd78c9ad38b57ee9ef562.camel@rumpelsepp.org>
+Subject: pcan: usb_submit_urb() hangs in peak_usb_ndo_start_xmit()
+From:   Stefan Tatschner <stefan@rumpelsepp.org>
+To:     linux-can@vger.kernel.org
 Cc:     ferdinand.jarisch@aisec.fraunhofer.de,
         Tobias Specht <tobias.specht@aisec.fraunhofer.de>
-References: <ad68c4ebcdadb31cbf9fd78c9ad38b57ee9ef562.camel@rumpelsepp.org>
- <bf1f223b500ca27636fd04d7d10a1401f5a6bf18.camel@rumpelsepp.org>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <53e2e96c-c10e-28b6-96c8-577f4f7999cd@pengutronix.de>
-Date:   Tue, 15 Dec 2020 22:09:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Date:   Tue, 15 Dec 2020 21:59:31 +0100
+Content-Type: multipart/mixed; boundary="=-ES2x4BOANGpOMcaCO9/S"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-In-Reply-To: <bf1f223b500ca27636fd04d7d10a1401f5a6bf18.camel@rumpelsepp.org>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="5F71bsQ1RMfc8RSWwkHujHez78kcQAM08"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---5F71bsQ1RMfc8RSWwkHujHez78kcQAM08
-Content-Type: multipart/mixed; boundary="cHbft3OQhw6XoyK1G2fcdxNXNqSlUlZvw";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Stefan Tatschner <stefan@rumpelsepp.org>, linux-can@vger.kernel.org
-Cc: ferdinand.jarisch@aisec.fraunhofer.de,
- Tobias Specht <tobias.specht@aisec.fraunhofer.de>
-Message-ID: <53e2e96c-c10e-28b6-96c8-577f4f7999cd@pengutronix.de>
-Subject: Re: pcan: usb_submit_urb() hangs in peak_usb_ndo_start_xmit()
-References: <ad68c4ebcdadb31cbf9fd78c9ad38b57ee9ef562.camel@rumpelsepp.org>
- <bf1f223b500ca27636fd04d7d10a1401f5a6bf18.camel@rumpelsepp.org>
-In-Reply-To: <bf1f223b500ca27636fd04d7d10a1401f5a6bf18.camel@rumpelsepp.org>
 
---cHbft3OQhw6XoyK1G2fcdxNXNqSlUlZvw
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+--=-ES2x4BOANGpOMcaCO9/S
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-Hey Stefan,
+Hi folks!
 
-On 12/15/20 10:02 PM, Stefan Tatschner wrote:
-> On Tue, 2020-12-15 at 21:59 +0100, Stefan Tatschner wrote:
->> The very can frame which poc.py should send is:
->>
->>  25 ff
->=20
-> Sorry for the follow up e-mail, but this detail is important=E2=80=A6
-> "25 ff" should be the very **last** can frame. The word "last" somehow
-> disappeared from my e-mail.^^
+I think we spotted a problem in the pcan_usb_fd device driver. I
+tracked it down but I have no idea if this is actually a device or a
+driver problem. First things first. Wo do stuff with can(-fd) and iso-
+tp using the pcan pro fd interface and we discovered a weird cornercase
+which can be reproduced with the attached python script.
 
-I think the e-mail you're referring to, didn't make it to the mailing lis=
-t at all.
+For the reproducer setup take a pcan pro fd, connect channel 1 to
+channel 2 and set the device up (for both channels) like the following:
 
-https://lore.kernel.org/linux-can/bf1f223b500ca27636fd04d7d10a1401f5a6bf1=
-8.camel@rumpelsepp.org/
+# ip link set can0 type can bitrate 500000 dbitrate 2000000 fd on
+# ip link set can1 type can bitrate 500000 dbitrate 2000000 fd on
 
-Can you resend the mail?
+Then run isotprecv:
 
-regards,
-Marc
+# isotprecv -l -d 0x650 -s 0x6f0 -L 72:64:1 can1
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+And start the attached poc.py script.
+
+The very can frame which poc.py should send is:
+
+  25 ff
+
+But this can frame is always missing on the bus. It is missing in the
+output of candump or wireshark as well. This behaviour seems to be
+dependent on how many consecutive iso-tp frames are generated. In other
+words, large iso-tp packets are truncated. This can not be reproduced
+via the virtual vcan interface.
+
+This cornercase unfortunately breaks our testing setups. Let's track it
+down. I did a few rounds of pr_debug() debugging.
+
+-----------------------------------------------------------------------
+af_can.c
+
+I checked if this problem originates from the isotp module by checking
+the input of can_send() in af_can.c. Everything looks fine there:
+
+[snip]
+Dez 15 21:33:12 kronos kernel: 24 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  $...............
+Dez 15 21:33:12 kronos kernel: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+Dez 15 21:33:12 kronos kernel: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+Dez 15 21:33:12 kronos kernel: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+Dez 15 21:33:12 kronos kernel: can_send: calling queue xmit
+Dez 15 21:33:12 kronos kernel: 25 ff                                            %.
+Dez 15 21:33:12 kronos kernel: can_send: calling queue xmit
+
+------------------------------------------------------------------------
+pcan_usb_core.c
+
+I went one layer deeper and took a look at peak_usb_ndo_start_xmit(),
+especially the usb_submit_urb() call. The problem seems to be that the
+very last call to usb_submit_urb() call blocks for over a minute.
+
+Dez 15 21:33:12 kronos kernel: peak_usb_ndo_start_xmit: submitting urb
+Dez 15 21:33:12 kronos kernel: peak_usb_ndo_start_xmit: urb success
+Dez 15 21:33:12 kronos kernel: peak_usb_ndo_start_xmit: submitting urb
+Dez 15 21:41:59 kronos kernel: peak_usb_ndo_start_xmit: urb success         <---- ??
 
 
---cHbft3OQhw6XoyK1G2fcdxNXNqSlUlZvw--
+Anybody out there who can help me tracking this down further?
 
---5F71bsQ1RMfc8RSWwkHujHez78kcQAM08
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Stefan
 
------BEGIN PGP SIGNATURE-----
+--=-ES2x4BOANGpOMcaCO9/S
+Content-Disposition: attachment; filename="poc.py"
+Content-Type: text/x-python3; name="poc.py"; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/ZJhUACgkQqclaivrt
-76nmFggAtNldjwU68+GJVD9F6S5EBozdJPo5WJj1v54uq3zwdaI1+XzewOH5jAq6
-pCirVc/fCOxSDgFf4u6iVTA0QuroxusL70K75c3Wm7f4Jn/PXcDpvxOpjZSNbmdl
-1xzaaCqcTvpiklWQGeiQMtUOf4BUMJv6oa7/k0jJ+/5YDMZ+sMWULQljmEWmZ6V0
-512tq9yQsYDeEwgBeYKauOP5yGaEJpq5iTS9tmvxyBhBtrlB7i3bz1WcB80CvmSv
-IwpG2CYpc9aVzOBcBNzTSnv4EGTpZcKADh7/Z26Ry2DtfNd6OWOCwyDH0bj8SHDv
-Zi1mB8AXudnDm7Z2D/loyhooEzOqTA==
-=GIfW
------END PGP SIGNATURE-----
+IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoKaW1wb3J0IHNvY2tldAppbXBvcnQgc3RydWN0CmltcG9y
+dCB0aW1lCgoKIyBTb2NrZXQgQ29uc3RhbnRzIG5vdCBhdmFpbGFibGUgaW4gdGhlIHNvY2tldCBt
+b2R1bGUKIyBodHRwczovL2dpdGh1Yi5jb20vaGFydGtvcHAvY2FuLWlzb3RwL2Jsb2IvbWFzdGVy
+L2luY2x1ZGUvdWFwaS9saW51eC9jYW4vaXNvdHAuaApTT0xfQ0FOX0lTT1RQID0gc29ja2V0LlNP
+TF9DQU5fQkFTRSArIHNvY2tldC5DQU5fSVNPVFAKCiMgVmFsdWV0eXBlcyBmb3IgU09MX0NBTl9J
+U09UUApDQU5fSVNPVFBfT1BUUyA9IDEKQ0FOX0lTT1RQX1JFQ1ZfRkMgPSAyCkNBTl9JU09UUF9U
+WF9TVE1JTiA9IDMKQ0FOX0lTT1RQX1JYX1NUTUlOID0gNApDQU5fSVNPVFBfTExfT1BUUyA9IDUK
+CiMgRmxhZ3MgZm9yIHNldHNvY2tvcHQgQ0FOX0lTT1RQX09QVFMKQ0FOX0lTT1RQX0xJU1RFTl9N
+T0RFID0gMHgwMDEKQ0FOX0lTT1RQX0VYVEVORF9BRERSID0gMHgwMDIKQ0FOX0lTT1RQX1RYX1BB
+RERJTkcgPSAweDAwNApDQU5fSVNPVFBfUlhfUEFERElORyA9IDB4MDA4CkNBTl9JU09UUF9DSEtf
+UEFEX0xFTiA9IDB4MDEwCkNBTl9JU09UUF9DSEtfUEFEX0RBVEEgPSAweDAyMApDQU5fSVNPVFBf
+SEFMRl9EVVBMRVggPSAweDA0MApDQU5fSVNPVFBfRk9SQ0VfVFhTVE1JTiA9IDB4MDgwCkNBTl9J
+U09UUF9GT1JDRV9SWFNUTUlOID0gMHgxMDAKQ0FOX0lTT1RQX1JYX0VYVF9BRERSID0gMHgyMDAK
+Cgpzb2NrID0gc29ja2V0LnNvY2tldChzb2NrZXQuUEZfQ0FOLCBzb2NrZXQuU09DS19ER1JBTSwg
+c29ja2V0LkNBTl9JU09UUCkKc29jay5iaW5kKCgiY2FuMCIsIDB4NmYwLCAweDY1MCkpCiMgZGF0
+YSA9IHN0cnVjdC5wYWNrKCJASUlCQkJCIiwgZmxhZ3MsIGZyYW1lX3R4dGltZSwgZXh0X2FkZHIs
+CiMgICAgICAgICAgICAgICAgICAgIHR4cGFkX2NvbnRlbnQsIHJ4cGFkX2NvbnRlbnQsIHJ4X2V4
+dF9hZGRyZXNzKQojIHNvY2suc2V0c29ja29wdChzZWxmLlNPTF9DQU5fSVNPVFAsIHNlbGYuQ0FO
+X0lTT1RQX09QVFMsIGRhdGEpCmNhbm10dSA9IDcyCmRhdGEgPSBzdHJ1Y3QucGFjaygiQEJCQiIs
+IGNhbm10dSwgNjQsIDApCnNvY2suc2V0c29ja29wdChTT0xfQ0FOX0lTT1RQLCBDQU5fSVNPVFBf
+TExfT1BUUywgZGF0YSkKCgojIGZvciBpIGluIHJhbmdlKDB4NDApOgpzb2NrLnNlbmQoYiJceDAw
+IiooMHg1MjkpK2IiXHhmZiIpCnRpbWUuc2xlZXAoMC4wNSkKc29jay5zZW5kKGIiXHgwMCIqKDB4
+NTJhKStiIlx4ZmYiKQojIHRpbWUuc2xlZXAoMC4wNSkKIyBzb2NrLnNlbmQoYiJceENBXHhDQVx4
+Q0FceENBIikKIyB0aW1lLnNsZWVwKDAuMDUpCg==
 
---5F71bsQ1RMfc8RSWwkHujHez78kcQAM08--
+
+--=-ES2x4BOANGpOMcaCO9/S--
+
