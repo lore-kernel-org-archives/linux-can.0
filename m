@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE3CBC3526B
-	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2009BC3526E
+	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8D95E22D72
+	by mail.kernel.org (Postfix) with ESMTP id EFDEC22D02
 	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgLPABY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Dec 2020 19:01:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
+        id S1727895AbgLPAB0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Dec 2020 19:01:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729063AbgLOXZd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 18:25:33 -0500
+        with ESMTP id S1729589AbgLOXZf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 18:25:35 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41537C0611CC
-        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 15:18:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BD2C0617A6
+        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 15:17:59 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kpJa0-0002fm-Si
-        for linux-can@vger.kernel.org; Wed, 16 Dec 2020 00:18:04 +0100
+        id 1kpJZu-0002TT-3w
+        for linux-can@vger.kernel.org; Wed, 16 Dec 2020 00:17:58 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 04ECB5AE406
-        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 23:17:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 4537B5AE3C7
+        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 23:17:52 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id F326B5AE3AE;
-        Tue, 15 Dec 2020 23:17:50 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5baea0da;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id EC1015AE39E;
         Tue, 15 Dec 2020 23:17:49 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 08c70e3f;
+        Tue, 15 Dec 2020 23:17:48 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
         Sriram Dash <sriram.dash@samsung.com>,
         Sean Nyekjaer <sean@geanix.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [can-next-rfc 12/16] can: tcan4x5x: tcan4x5x_regmap: set reg_stride to 4
-Date:   Wed, 16 Dec 2020 00:17:42 +0100
-Message-Id: <20201215231746.1132907-13-mkl@pengutronix.de>
+Subject: [can-next-rfc 01/16] can: tcan4x5x: replace DEVICE_NAME by KBUILD_MODNAME
+Date:   Wed, 16 Dec 2020 00:17:31 +0100
+Message-Id: <20201215231746.1132907-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201215231746.1132907-1-mkl@pengutronix.de>
 References: <20201215231746.1132907-1-mkl@pengutronix.de>
@@ -62,26 +62,55 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch sets the regmap stide to 4, as the chip only supports access on 32
-bit alligned access.
+This patch replaces the DEVICE_NAME macro by KBUILD_MODNAME and removed the
+superfluous DEVICE_NAME.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/tcan4x5x-regmap.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/m_can/tcan4x5x.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index 73be4b661305..c6963437064c 100644
---- a/drivers/net/can/m_can/tcan4x5x-regmap.c
-+++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -55,6 +55,7 @@ static int tcan4x5x_regmap_read(void *context,
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index 24c737c4fc44..1b5f706674af 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -10,7 +10,6 @@
  
- static const struct regmap_config tcan4x5x_regmap = {
- 	.reg_bits = 32,
-+	.reg_stride = 4,
- 	.val_bits = 32,
- 	.cache_type = REGCACHE_NONE,
- 	.max_register = TCAN4X5X_MAX_REGISTER,
+ #include "m_can.h"
+ 
+-#define DEVICE_NAME "tcan4x5x"
+ #define TCAN4X5X_EXT_CLK_DEF 40000000
+ 
+ #define TCAN4X5X_DEV_ID0 0x00
+@@ -132,7 +131,7 @@ static inline struct tcan4x5x_priv *cdev_to_priv(struct m_can_classdev *cdev)
+ }
+ 
+ static struct can_bittiming_const tcan4x5x_bittiming_const = {
+-	.name = DEVICE_NAME,
++	.name = KBUILD_MODNAME,
+ 	.tseg1_min = 2,
+ 	.tseg1_max = 31,
+ 	.tseg2_min = 2,
+@@ -144,7 +143,7 @@ static struct can_bittiming_const tcan4x5x_bittiming_const = {
+ };
+ 
+ static struct can_bittiming_const tcan4x5x_data_bittiming_const = {
+-	.name = DEVICE_NAME,
++	.name = KBUILD_MODNAME,
+ 	.tseg1_min = 1,
+ 	.tseg1_max = 32,
+ 	.tseg2_min = 1,
+@@ -544,7 +543,7 @@ MODULE_DEVICE_TABLE(spi, tcan4x5x_id_table);
+ 
+ static struct spi_driver tcan4x5x_can_driver = {
+ 	.driver = {
+-		.name = DEVICE_NAME,
++		.name = KBUILD_MODNAME,
+ 		.of_match_table = tcan4x5x_of_match,
+ 		.pm = NULL,
+ 	},
+
+base-commit: efd5a1584537698220578227e6467638307c2a0b
 -- 
 2.29.2
 
