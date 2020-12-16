@@ -2,281 +2,143 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FD44C35270
-	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DF76C4361B
+	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 04:41:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0BA6222D02
-	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 00:05:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2AFB523124
+	for <linux-can@archiver.kernel.org>; Wed, 16 Dec 2020 04:41:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgLPABQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Dec 2020 19:01:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728135AbgLOXYX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 18:24:23 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E587EC0611CE
-        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 15:18:06 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kpJa1-0002gg-Gw
-        for linux-can@vger.kernel.org; Wed, 16 Dec 2020 00:18:05 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B656A5AE411
-        for <linux-can@vger.kernel.org>; Tue, 15 Dec 2020 23:17:56 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id S1725385AbgLPElB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 15 Dec 2020 23:41:01 -0500
+Received: from smtp.cubyte.cloud ([62.113.199.100]:32049 "EHLO
+        smtp.cubyte.cloud" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725287AbgLPEkz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Dec 2020 23:40:55 -0500
+X-Greylist: delayed 415 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Dec 2020 23:40:54 EST
+Received: from [192.168.1.10] (204-167-142-46.pool.kielnet.net [46.142.167.204])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 567005AE3B5;
-        Tue, 15 Dec 2020 23:17:51 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4d8adc0e;
-        Tue, 15 Dec 2020 23:17:49 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp.cubyte.cloud (Postfix) with ESMTPSA id B71EB444BC
+        for <linux-can@vger.kernel.org>; Wed, 16 Dec 2020 04:33:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=schich.tel; s=mail;
+        t=1608093191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Tu/tIA9bplO9pprYk0dStEuFVl74zLjditAWRuzbojQ=;
+        b=I2ABg1qrFEYf5ILrG/piimq94ioie+PNQUxI13oOddmle8sbhTUPxePwkpk1aeJptIi6aT
+        OSw7Soh4bPwYRQmZrqhClTzhQBt7ZNjISf3+t3GVPMBeYHff0IIDLJndnraabLyiKyg5ay
+        KMSAsrY4AW0e4ebJVZ+loV8jd5k/ZLiXSIt0JLC3OQTMGpBc3jyN7HoL6avEQHP0Z/ae8N
+        Vhv5GwKP1hl66RhLMKDOrfyBvbJYM2pZvCBVYeUsCvVSAytwgyqZrOiGcVGAN9kri7Wsdl
+        i/T81UoDBdWbm6SHay2ipTErY30GmbxQwJn0yk+6tdjpp+5w5s1IrM704gKL0A==
+Message-ID: <ac75d44f61007ece402aca50f49ee57138000d27.camel@schich.tel>
+Subject: get entire CAN_RAW_FILTER value without knowing its size
+From:   Phillip Schichtel <phillip@schich.tel>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Dan Murphy <dmurphy@ti.com>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [can-next-rfc 15/16] can: tcan4x5x: rework SPI access
-Date:   Wed, 16 Dec 2020 00:17:45 +0100
-Message-Id: <20201215231746.1132907-16-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201215231746.1132907-1-mkl@pengutronix.de>
-References: <20201215231746.1132907-1-mkl@pengutronix.de>
+Date:   Wed, 16 Dec 2020 05:33:10 +0100
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch reworks the SPI access and fixes several probems:
-- tcan4x5x_regmap_gather_write(), tcan4x5x_regmap_read():
-  Do not place variable "addr" on stack and use it as buffer for SPI
-  transfer. Buffers for SPI transfers must be allocated from DMA save
-  memory.
-- tcan4x5x_regmap_gather_write(), tcan4x5x_regmap_read():
-  Halfe number of SPI transfers by using a single buffer + memcpy().
-  This improves the performance, especially on SPI controllers, which
-  use interrupt based transfers.
-- Use "8" bits per word, not "32". This makes it possible to use this
-  driver on SoCs like the Raspberry Pi, which SPI host controller
-  drivers only support 8 bits per word.
+Hi everyone!
 
-Note: this breaks half duplex only controllers. Support for them will be
-re-added in the next patch.
+This is my first post to this mailing list (or any kernel mailing
+list), so please tell me if this is the wrong place for this kind of
+topic.
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/m_can/tcan4x5x-core.c   |  2 +-
- drivers/net/can/m_can/tcan4x5x-regmap.c | 87 +++++++++++++++++--------
- drivers/net/can/m_can/tcan4x5x.h        | 23 +++++++
- 3 files changed, 84 insertions(+), 28 deletions(-)
+I'm developing a Java binding library to SocketCAN using JNI [1], where
+I try to provide a reasonably "Java-like" yet efficient and safe API.
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index 739b8f89a335..d37843a74663 100644
---- a/drivers/net/can/m_can/tcan4x5x-core.c
-+++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -380,7 +380,7 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
- 	spi_set_drvdata(spi, priv);
- 
- 	/* Configure the SPI bus */
--	spi->bits_per_word = 32;
-+	spi->bits_per_word = 8;
- 	ret = spi_setup(spi);
- 	if (ret)
- 		goto out_m_can_class_free_dev;
-diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index 5ea162578619..660e9d87dffb 100644
---- a/drivers/net/can/m_can/tcan4x5x-regmap.c
-+++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -9,48 +9,76 @@
- 
- #include "tcan4x5x.h"
- 
--#define TCAN4X5X_WRITE_CMD (0x61 << 24)
--#define TCAN4X5X_READ_CMD (0x41 << 24)
-+#define TCAN4X5X_SPI_INSTRUCTION_WRITE (0x61 << 24)
-+#define TCAN4X5X_SPI_INSTRUCTION_READ (0x41 << 24)
- 
- #define TCAN4X5X_MAX_REGISTER 0x8ffc
- 
--static int tcan4x5x_regmap_gather_write(void *context, const void *reg,
--					size_t reg_len, const void *val,
--					size_t val_len)
-+static int tcan4x5x_regmap_gather_write(void *context,
-+					const void *reg, size_t reg_len,
-+					const void *val, size_t val_len)
- {
- 	struct spi_device *spi = context;
--	struct spi_message m;
--	u32 addr;
--	struct spi_transfer t[2] = {
--		{ .tx_buf = &addr, .len = reg_len, .cs_change = 0,},
--		{ .tx_buf = val, .len = val_len, },
-+	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
-+	struct tcan4x5x_map_buf *buf_tx = &priv->map_buf_tx;
-+	struct spi_transfer xfer[] = {
-+		{
-+			.tx_buf = buf_tx,
-+			.len = sizeof(buf_tx->cmd) + val_len,
-+		},
- 	};
- 
--	addr = TCAN4X5X_WRITE_CMD | (*((u16 *)reg) << 8) | val_len >> 2;
-+	memcpy(&buf_tx->cmd, reg, sizeof(buf_tx->cmd.cmd) +
-+	       sizeof(buf_tx->cmd.addr));
-+	tcan4x5x_spi_cmd_set_len(&buf_tx->cmd, val_len);
-+	memcpy(buf_tx->data, val, val_len);
- 
--	spi_message_init(&m);
--	spi_message_add_tail(&t[0], &m);
--	spi_message_add_tail(&t[1], &m);
--
--	return spi_sync(spi, &m);
-+	return spi_sync_transfer(spi, xfer, ARRAY_SIZE(xfer));
- }
- 
- static int tcan4x5x_regmap_write(void *context, const void *data, size_t count)
- {
--	return tcan4x5x_regmap_gather_write(context, data, sizeof(u32),
--					    data + sizeof(u32),
--					    count - sizeof(u32));
-+	return tcan4x5x_regmap_gather_write(context, data, sizeof(__be32),
-+					    data + sizeof(__be32),
-+					    count - sizeof(__be32));
- }
- 
- static int tcan4x5x_regmap_read(void *context,
--				const void *reg, size_t reg_size,
--				void *val, size_t val_size)
-+				const void *reg_buf, size_t reg_len,
-+				void *val_buf, size_t val_len)
- {
- 	struct spi_device *spi = context;
-+	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
-+	struct tcan4x5x_map_buf *buf_rx = &priv->map_buf_rx;
-+	struct tcan4x5x_map_buf *buf_tx = &priv->map_buf_tx;
-+	struct spi_transfer xfer[] = {
-+		{
-+			.tx_buf = buf_tx,
-+		}
-+	};
-+	struct spi_message msg;
-+	int err;
-+
-+	spi_message_init(&msg);
-+	spi_message_add_tail(&xfer[0], &msg);
-+
-+	memcpy(&buf_tx->cmd, reg_buf, sizeof(buf_tx->cmd.cmd) +
-+	       sizeof(buf_tx->cmd.addr));
-+	tcan4x5x_spi_cmd_set_len(&buf_tx->cmd, val_len);
-+
-+	xfer[0].rx_buf = buf_rx;
-+	xfer[0].len = sizeof(buf_tx->cmd) + val_len;
- 
--	u32 addr = TCAN4X5X_READ_CMD | (*((u16 *)reg) << 8) | val_size >> 2;
-+	if (TCAN4X5X_SANITIZE_SPI)
-+		memset(buf_tx->data, 0x0, val_len);
- 
--	return spi_write_then_read(spi, &addr, reg_size, (u32 *)val, val_size);
-+	err = spi_sync(spi, &msg);
-+	if (err)
-+		return err;
-+
-+	memcpy(val_buf, buf_rx->data, val_len);
-+
-+	return 0;
- }
- 
- static const struct regmap_range tcan4x5x_reg_table_yes_range[] = {
-@@ -66,21 +94,26 @@ static const struct regmap_access_table tcan4x5x_reg_table = {
- };
- 
- static const struct regmap_config tcan4x5x_regmap = {
--	.reg_bits = 32,
-+	.reg_bits = 24,
- 	.reg_stride = 4,
-+	.pad_bits = 8,
- 	.val_bits = 32,
- 	.wr_table = &tcan4x5x_reg_table,
- 	.rd_table = &tcan4x5x_reg_table,
--	.cache_type = REGCACHE_NONE,
- 	.max_register = TCAN4X5X_MAX_REGISTER,
-+	.cache_type = REGCACHE_NONE,
-+	.read_flag_mask = (__force unsigned long)
-+		cpu_to_be32(TCAN4X5X_SPI_INSTRUCTION_READ),
-+	.write_flag_mask = (__force unsigned long)
-+		cpu_to_be32(TCAN4X5X_SPI_INSTRUCTION_WRITE),
- };
- 
- static const struct regmap_bus tcan4x5x_bus = {
- 	.write = tcan4x5x_regmap_write,
- 	.gather_write = tcan4x5x_regmap_gather_write,
- 	.read = tcan4x5x_regmap_read,
--	.reg_format_endian_default = REGMAP_ENDIAN_NATIVE,
--	.val_format_endian_default = REGMAP_ENDIAN_NATIVE,
-+	.reg_format_endian_default = REGMAP_ENDIAN_BIG,
-+	.val_format_endian_default = REGMAP_ENDIAN_BIG,
- 	.max_raw_read = 256,
- 	.max_raw_write = 256,
- };
-diff --git a/drivers/net/can/m_can/tcan4x5x.h b/drivers/net/can/m_can/tcan4x5x.h
-index e5bdd91b8005..7bf264f8e81f 100644
---- a/drivers/net/can/m_can/tcan4x5x.h
-+++ b/drivers/net/can/m_can/tcan4x5x.h
-@@ -17,6 +17,19 @@
- 
- #include "m_can.h"
- 
-+#define TCAN4X5X_SANITIZE_SPI 1
-+
-+struct __packed tcan4x5x_buf_cmd {
-+	u8 cmd;
-+	__be16 addr;
-+	u8 len;
-+};
-+
-+struct __packed tcan4x5x_map_buf {
-+	struct tcan4x5x_buf_cmd cmd;
-+	u8 data[256 * sizeof(u32)];
-+} ____cacheline_aligned;
-+
- struct tcan4x5x_priv {
- 	struct m_can_classdev cdev;
- 
-@@ -27,8 +40,18 @@ struct tcan4x5x_priv {
- 	struct gpio_desc *device_wake_gpio;
- 	struct gpio_desc *device_state_gpio;
- 	struct regulator *power;
-+
-+	struct tcan4x5x_map_buf map_buf_rx;
-+	struct tcan4x5x_map_buf map_buf_tx;
- };
- 
-+static inline void
-+tcan4x5x_spi_cmd_set_len(struct tcan4x5x_buf_cmd *cmd, u8 len)
-+{
-+	/* number of u32 */
-+	cmd->len = len >> 2;
-+}
-+
- int tcan4x5x_regmap_init(struct tcan4x5x_priv *priv);
- 
- #endif
--- 
-2.29.2
+Part of this are setters and getters for the SOL_CAN_* socket options,
+which is straight forward for all options except CAN_RAW_FILTER, since
+it is the only option with a dynamically sized value (struct
+can_filter*). Setting the value is simple, since all the information is
+available in user space, but when using getsockopt I'm expected to
+provide a buffer and a size, but I don't know how many filters there
+are without keeping that state in the library or application, risking
+it going out of sync with the kernel. Is this correct thus far or am I
+missing something? Relevant source on the kernel side is at [2].
 
+On the user space side using getsockopt() I see three ways around this
+issue:
+
+1. Track the amount of filters in user space. I feel like this might be
+problematic if e.g. sockets get shared between threads and processes.
+Other bindings usually take this approach as far as I could tell, if
+they support getting filters at all.
+
+2. Allocate a buffer large enough that the filters will most likely all
+fit, the optlen will be corrected to the actual size. This is the
+approach I currently take (see [3]), but it feels very wrong.
+
+3. Search for the right size by trying increasingly larger buffers
+until the buffer is big enough to fit all. This would be kind of an
+improvement to 2. for the common case.
+
+Neither of these feel good to me, but maybe that is just me? On the
+kernel side ([2]), I could imagine the option taking a void** for
+optval and the kernel allocating a new buffer for the caller and
+writing its address to the given pointer and the real length to optlen,
+kind of like this (without knowing the appropriate functions):
+
+
+case CAN_RAW_FILTER:
+	lock_sock(sk);
+	void* filters = NULL;
+	if (ro->count > 0) {
+		int fsize = ro->count * sizeof(struct can_filter);
+		filters = allocate_to_user(fsize);
+                if (!optval)
+			err = -EFAULT;
+		if (copy_to_user(optval, ro->filter, fsize))
+			err = -EFAULT;
+	} else {
+		len = 0;
+	}
+	release_sock(sk);
+
+
+	if (!err)
+		err = put_user(len, optlen);
+	if (!err)
+		err = put_user(filters, optval);
+	return err;
+
+The setsockopt implementation of the option could also be adapted to
+take the same void**.
+
+Alternatively the implementation could always write back the full size
+to optlen instead of the "written size" (put_user(fsize, optlen)
+instead of put_user(len, optlen) in code). Since the caller knows how
+big its buffer is, the size necessary would be the more valuable
+information.
+
+Did I completely misunderstand something or is this really a limitation
+of the current implementation of this option? And if the latter is
+true, are we in the position to change anything about this without
+breaking user space?
+
+I also haven't really looked into how other protocols handle
+dynamically sized option values or if that is even a thing else where.
+
+Either way, any feedback on this is very much appreciated!
+
+~ Phillip Schichtel
+
+[1]: https://github.com/pschichtel/JavaCAN
+[2]:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/can/raw.c?h=v5.10#n663
+
+[3]:
+https://github.com/pschichtel/JavaCAN/blob/ab64fb416996978fc154f84c204bf25273ab1776/core/src/main/c/javacan_socketcan.c#L176-L182
 
