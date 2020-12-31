@@ -7,25 +7,25 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09ED6C4332B
-	for <linux-can@archiver.kernel.org>; Thu, 31 Dec 2020 16:01:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4401C43381
+	for <linux-can@archiver.kernel.org>; Thu, 31 Dec 2020 16:01:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D19F9222BB
+	by mail.kernel.org (Postfix) with ESMTP id B42D82080C
 	for <linux-can@archiver.kernel.org>; Thu, 31 Dec 2020 16:01:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgLaQBG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 31 Dec 2020 11:01:06 -0500
-Received: from relmlor2.renesas.com ([210.160.252.172]:50233 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727254AbgLaQBF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Dec 2020 11:01:05 -0500
+        id S1727287AbgLaQBD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 31 Dec 2020 11:01:03 -0500
+Received: from relmlor1.renesas.com ([210.160.252.171]:40091 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727254AbgLaQBC (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Dec 2020 11:01:02 -0500
 X-IronPort-AV: E=Sophos;i="5.78,464,1599490800"; 
-   d="scan'208";a="67335976"
+   d="scan'208";a="67553350"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 01 Jan 2021 01:00:13 +0900
+  by relmlie5.idc.renesas.com with ESMTP; 01 Jan 2021 01:00:11 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8029340127B5;
-        Fri,  1 Jan 2021 01:00:11 +0900 (JST)
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id B5D504012A9E;
+        Fri,  1 Jan 2021 01:00:08 +0900 (JST)
 From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>,
         Wolfgang Grandegger <wg@grandegger.com>,
@@ -37,41 +37,44 @@ Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         Prabhakar <prabhakar.csengg@gmail.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] can: rcar: Update help description for CAN_RCAR config
-Date:   Thu, 31 Dec 2020 15:59:57 +0000
-Message-Id: <20201231155957.31165-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] can: rcar: Update help description for CAN_RCAR_CANFD config
+Date:   Thu, 31 Dec 2020 15:59:56 +0000
+Message-Id: <20201231155957.31165-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201231155957.31165-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20201231155957.31165-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The rcar_can driver supports R-Car Gen{1,2,3} and RZ/G{1,2} SoC's, update
-the description to reflect this.
+The rcar_canfd driver supports R-Car Gen3 and RZ/G2 SoC's, update the
+description to reflect this.
 
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
- drivers/net/can/rcar/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/rcar/Kconfig | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/rcar/Kconfig b/drivers/net/can/rcar/Kconfig
-index 8d36101b78e3..6bb0e7c052ad 100644
+index 6bb0e7c052ad..a669b9ac8057 100644
 --- a/drivers/net/can/rcar/Kconfig
 +++ b/drivers/net/can/rcar/Kconfig
-@@ -1,10 +1,10 @@
- # SPDX-License-Identifier: GPL-2.0
- config CAN_RCAR
--	tristate "Renesas R-Car CAN controller"
-+	tristate "Renesas R-Car Gen{1,2,3} and RZ/G{1,2} CAN controller"
+@@ -10,13 +10,13 @@ config CAN_RCAR
+ 	  be called rcar_can.
+ 
+ config CAN_RCAR_CANFD
+-	tristate "Renesas R-Car CAN FD controller"
++	tristate "Renesas R-Car Gen3 and RZ/G2 CAN FD controller"
  	depends on ARCH_RENESAS || ARM
  	help
- 	  Say Y here if you want to use CAN controller found on Renesas R-Car
--	  SoCs.
-+	  Gen{1,2,3} and RZ/G{1,2} SoCs.
+ 	  Say Y here if you want to use CAN FD controller found on
+-	  Renesas R-Car SoCs. The driver puts the controller in CAN FD only
+-	  mode, which can interoperate with CAN2.0 nodes but does not support
+-	  dedicated CAN 2.0 mode.
++	  Renesas R-Car Gen3 and RZ/G2 SoCs. The driver puts the
++	  controller in CAN FD only mode, which can interoperate with
++	  CAN2.0 nodes but does not support dedicated CAN 2.0 mode.
  
  	  To compile this driver as a module, choose M here: the module will
- 	  be called rcar_can.
+ 	  be called rcar_canfd.
 -- 
 2.17.1
 
