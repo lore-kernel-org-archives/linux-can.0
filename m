@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96934C433DB
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E40AC433E0
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0C64A20732
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3392B20732
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbhAGKfk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 7 Jan 2021 05:35:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
+        id S1726371AbhAGKfn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 7 Jan 2021 05:35:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726371AbhAGKfk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 05:35:40 -0500
+        with ESMTP id S1727364AbhAGKfl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 05:35:41 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004D2C0612F6
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 02:34:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75ABDC0612F9
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 02:35:01 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kxSd8-0008PJ-Kq
-        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 11:34:58 +0100
+        id 1kxSd9-0008Q2-PQ
+        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 11:34:59 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 37CC45BBC97
+        by bjornoya.blackshift.org (Postfix) with SMTP id 18CB45BBC9E
         for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 10:34:55 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6538A5BBC80;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3DAE25BBC7D;
         Thu,  7 Jan 2021 10:34:53 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ef69317f;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2f04b679;
         Thu, 7 Jan 2021 10:34:52 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 3/6] can: mcp251xfd: mcp251xfd_handle_tefif(): fix TEF vs. TX race condition
-Date:   Thu,  7 Jan 2021 11:34:48 +0100
-Message-Id: <20210107103451.183477-4-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Dan Murphy <dmurphy@ti.com>, Sean Nyekjaer <sean@geanix.com>
+Subject: [net 2/6] can: tcan4x5x: fix bittiming const, use common bittiming from m_can driver
+Date:   Thu,  7 Jan 2021 11:34:47 +0100
+Message-Id: <20210107103451.183477-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210107103451.183477-1-mkl@pengutronix.de>
 References: <20210107103451.183477-1-mkl@pengutronix.de>
@@ -60,57 +61,66 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The mcp251xfd driver uses a TX FIFO for sending CAN frames and a TX Event FIFO
-(TEF) for completed TX-requests.
+According to the TCAN4550 datasheet "SLLSF91 - DECEMBER 2018" the tcan4x5x has
+the same bittiming constants as a m_can revision 3.2.x/3.3.0.
 
-The TEF event handling in the mcp251xfd_handle_tefif() function has a race
-condition. It first increments the tx-ring's tail counter to signal that
-there's room in the TX and TEF FIFO, then it increments the TEF FIFO in
-hardware.
+The tcan4x5x chip I'm using identifies itself as m_can revision 3.2.1, so
+remove the tcan4x5x specific bittiming values and rely on the values in the
+m_can driver, which are selected according to core revision.
 
-A running mcp251xfd_start_xmit() on a different CPU might not stop the txqueue
-(as the tx-ring still shows free space). The next mcp251xfd_start_xmit() will
-push a message into the chip and the TX complete event might overflow the TEF
-FIFO.
-
-This patch changes the order to fix the problem.
-
-Fixes: 68c0c1c7f966 ("can: mcp251xfd: tef-path: reduce number of SPI core requests to set UINC bit")
-Link: https://lore.kernel.org/r/20210105214138.3150886-2-mkl@pengutronix.de
+Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
+Cc: Dan Murphy <dmurphy@ti.com>
+Reviewed-by: Sean Nyekjaer <sean@geanix.com>
+Link: https://lore.kernel.org/r/20201215103238.524029-3-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/net/can/m_can/tcan4x5x.c | 26 --------------------------
+ 1 file changed, 26 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 77129d5f410b..85a1a8b7c0e7 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -1368,13 +1368,10 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
- 		struct mcp251xfd_tx_ring *tx_ring = priv->tx;
- 		struct spi_transfer *last_xfer;
+diff --git a/drivers/net/can/m_can/tcan4x5x.c b/drivers/net/can/m_can/tcan4x5x.c
+index 24c737c4fc44..970f0e9d19bf 100644
+--- a/drivers/net/can/m_can/tcan4x5x.c
++++ b/drivers/net/can/m_can/tcan4x5x.c
+@@ -131,30 +131,6 @@ static inline struct tcan4x5x_priv *cdev_to_priv(struct m_can_classdev *cdev)
  
--		tx_ring->tail += len;
--
- 		/* Increment the TEF FIFO tail pointer 'len' times in
- 		 * a single SPI message.
--		 */
--
--		/* Note:
-+		 *
-+		 * Note:
- 		 *
- 		 * "cs_change == 1" on the last transfer results in an
- 		 * active chip select after the complete SPI
-@@ -1391,6 +1388,8 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
- 		if (err)
- 			return err;
+ }
  
-+		tx_ring->tail += len;
-+
- 		err = mcp251xfd_check_tef_tail(priv);
- 		if (err)
- 			return err;
+-static struct can_bittiming_const tcan4x5x_bittiming_const = {
+-	.name = DEVICE_NAME,
+-	.tseg1_min = 2,
+-	.tseg1_max = 31,
+-	.tseg2_min = 2,
+-	.tseg2_max = 16,
+-	.sjw_max = 16,
+-	.brp_min = 1,
+-	.brp_max = 32,
+-	.brp_inc = 1,
+-};
+-
+-static struct can_bittiming_const tcan4x5x_data_bittiming_const = {
+-	.name = DEVICE_NAME,
+-	.tseg1_min = 1,
+-	.tseg1_max = 32,
+-	.tseg2_min = 1,
+-	.tseg2_max = 16,
+-	.sjw_max = 16,
+-	.brp_min = 1,
+-	.brp_max = 32,
+-	.brp_inc = 1,
+-};
+-
+ static void tcan4x5x_check_wake(struct tcan4x5x_priv *priv)
+ {
+ 	int wake_state = 0;
+@@ -469,8 +445,6 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	mcan_class->dev = &spi->dev;
+ 	mcan_class->ops = &tcan4x5x_ops;
+ 	mcan_class->is_peripheral = true;
+-	mcan_class->bit_timing = &tcan4x5x_bittiming_const;
+-	mcan_class->data_timing = &tcan4x5x_data_bittiming_const;
+ 	mcan_class->net->irq = spi->irq;
+ 
+ 	spi_set_drvdata(spi, priv);
 -- 
 2.29.2
 
