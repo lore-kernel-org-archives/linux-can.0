@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B23E1C432C3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA05AC43332
 	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 09:52:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9B4DC2333D
+	by mail.kernel.org (Postfix) with ESMTP id 845782333E
 	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 09:52:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727252AbhAGJvo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 7 Jan 2021 04:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
+        id S1727415AbhAGJvp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 7 Jan 2021 04:51:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727278AbhAGJvl (ORCPT
+        with ESMTP id S1727294AbhAGJvl (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 04:51:41 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E752DC061251
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 01:50:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5A6C0612A7
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 01:49:58 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kxRvi-0001UX-Hd
-        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 10:50:06 +0100
+        id 1kxRvY-00019h-VA
+        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 10:49:57 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E7DDF5BBAD0
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 09:49:08 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 66E755BBA99
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 09:49:07 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9A4515BBA2F;
-        Thu,  7 Jan 2021 09:49:03 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 837725BBA1C;
+        Thu,  7 Jan 2021 09:49:02 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bb3b969c;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7b12daf1;
         Thu, 7 Jan 2021 09:49:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
         Dan Murphy <dmurphy@ti.com>, Sean Nyekjaer <sean@geanix.com>
-Subject: [net-next 14/19] can: tcan4x5x: add {wr,rd}_table
-Date:   Thu,  7 Jan 2021 10:48:55 +0100
-Message-Id: <20210107094900.173046-15-mkl@pengutronix.de>
+Subject: [net-next 07/19] can: tcan4x5x: remove regmap async support
+Date:   Thu,  7 Jan 2021 10:48:48 +0100
+Message-Id: <20210107094900.173046-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210107094900.173046-1-mkl@pengutronix.de>
 References: <20210107094900.173046-1-mkl@pengutronix.de>
@@ -61,46 +61,49 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The memory space of the chip is not fully populated, so add a regmap range
-table to document this.
+The driver doesn't use regmap async support, so remove the stubs.
 
 Reviewed-by: Dan Murphy <dmurphy@ti.com>
 Tested-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20201215231746.1132907-15-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20201215231746.1132907-8-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/tcan4x5x-regmap.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/net/can/m_can/tcan4x5x-regmap.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
 diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index f113881fb012..5ea162578619 100644
+index 20bf9a57c9b1..8905fc36b00a 100644
 --- a/drivers/net/can/m_can/tcan4x5x-regmap.c
 +++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -53,10 +53,24 @@ static int tcan4x5x_regmap_read(void *context,
- 	return spi_write_then_read(spi, &addr, reg_size, (u32 *)val, val_size);
+@@ -44,19 +44,6 @@ static int tcan4x5x_regmap_write(void *context, const void *data, size_t count)
+ 	return regmap_spi_gather_write(context, reg, 4, val, count - 4);
  }
  
-+static const struct regmap_range tcan4x5x_reg_table_yes_range[] = {
-+	regmap_reg_range(0x0000, 0x002c),	/* Device ID and SPI Registers */
-+	regmap_reg_range(0x0800, 0x083c),	/* Device configuration registers and Interrupt Flags*/
-+	regmap_reg_range(0x1000, 0x10fc),	/* M_CAN */
-+	regmap_reg_range(0x8000, 0x87fc),	/* MRAM */
-+};
-+
-+static const struct regmap_access_table tcan4x5x_reg_table = {
-+	.yes_ranges = tcan4x5x_reg_table_yes_range,
-+	.n_yes_ranges = ARRAY_SIZE(tcan4x5x_reg_table_yes_range),
-+};
-+
- static const struct regmap_config tcan4x5x_regmap = {
- 	.reg_bits = 32,
- 	.reg_stride = 4,
- 	.val_bits = 32,
-+	.wr_table = &tcan4x5x_reg_table,
-+	.rd_table = &tcan4x5x_reg_table,
- 	.cache_type = REGCACHE_NONE,
- 	.max_register = TCAN4X5X_MAX_REGISTER,
- };
+-static int regmap_spi_async_write(void *context,
+-				  const void *reg, size_t reg_len,
+-				  const void *val, size_t val_len,
+-				  struct regmap_async *a)
+-{
+-	return -ENOTSUPP;
+-}
+-
+-static struct regmap_async *regmap_spi_async_alloc(void)
+-{
+-	return NULL;
+-}
+-
+ static int tcan4x5x_regmap_read(void *context,
+ 				const void *reg, size_t reg_size,
+ 				void *val, size_t val_size)
+@@ -79,8 +66,6 @@ static const struct regmap_config tcan4x5x_regmap = {
+ static const struct regmap_bus tcan4x5x_bus = {
+ 	.write = tcan4x5x_regmap_write,
+ 	.gather_write = regmap_spi_gather_write,
+-	.async_write = regmap_spi_async_write,
+-	.async_alloc = regmap_spi_async_alloc,
+ 	.read = tcan4x5x_regmap_read,
+ 	.reg_format_endian_default = REGMAP_ENDIAN_NATIVE,
+ 	.val_format_endian_default = REGMAP_ENDIAN_NATIVE,
 -- 
 2.29.2
 
