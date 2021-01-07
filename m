@@ -4,51 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17445C433E0
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:36:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8FA0C433E0
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:36:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C783B2312F
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:36:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 92FD62312F
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:36:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727765AbhAGKg0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 7 Jan 2021 05:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48186 "EHLO
+        id S1727599AbhAGKgS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 7 Jan 2021 05:36:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727739AbhAGKgV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 05:36:21 -0500
+        with ESMTP id S1727610AbhAGKgR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 05:36:17 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4073AC061285
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 02:35:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87229C0612FC
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 02:35:02 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kxSdB-0008TJ-Qm
+        id 1kxSdB-0008Rx-0W
         for linux-can@vger.kernel.org; Thu, 07 Jan 2021 11:35:01 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 08FDB5BBCB0
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 10:34:59 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 8B6925BBCA7
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 10:34:57 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id B1CB35BBC85;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7FB8C5BBC81;
         Thu,  7 Jan 2021 10:34:53 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4f8d1a3e;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f8826be2;
         Thu, 7 Jan 2021 10:34:52 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Sriram Dash <sriram.dash@samsung.com>,
-        Pankaj Sharma <pankj.sharma@samsung.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 6/6] MAINTAINERS: Update MCAN MMIO device driver maintainer
-Date:   Thu,  7 Jan 2021 11:34:51 +0100
-Message-Id: <20210107103451.183477-7-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 4/6] can: mcp251xfd: mcp251xfd_handle_rxif_ring(): first increment RX tail pointer in HW, then in driver
+Date:   Thu,  7 Jan 2021 11:34:49 +0100
+Message-Id: <20210107103451.183477-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210107103451.183477-1-mkl@pengutronix.de>
 References: <20210107103451.183477-1-mkl@pengutronix.de>
@@ -62,32 +60,47 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Sriram Dash <sriram.dash@samsung.com>
+The previous patch fixes a TEF vs. TX race condition, by first updating the TEF
+tail pointer in hardware, and then updating the driver internal pointer.
 
-Update Pankaj Sharma as maintainer for mcan mmio device driver as I
-will be moving to a different role.
+The same pattern exists in the RX-path, too. This should be no problem, as the
+driver accesses the RX-FIFO from the interrupt handler only, thus the access is
+properly serialized. Fix the order here, too, so that the TEF- and RX-path look
+similar.
 
-Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
-Acked-by: Pankaj Sharma <pankj.sharma@samsung.com>
-Link: https://lore.kernel.org/r/20210104123134.16930-1-sriram.dash@samsung.com
+Fixes: 1f652bb6bae7 ("can: mcp25xxfd: rx-path: reduce number of SPI core requests to set UINC bit")
+Link: https://lore.kernel.org/r/20210105214138.3150886-3-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7c1e45c416b1..b15514a770e3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10847,7 +10847,7 @@ F:	drivers/media/radio/radio-maxiradio*
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 85a1a8b7c0e7..36235afb0bc6 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1552,10 +1552,8 @@ mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
  
- MCAN MMIO DEVICE DRIVER
- M:	Dan Murphy <dmurphy@ti.com>
--M:	Sriram Dash <sriram.dash@samsung.com>
-+M:	Pankaj Sharma <pankj.sharma@samsung.com>
- L:	linux-can@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+ 		/* Increment the RX FIFO tail pointer 'len' times in a
+ 		 * single SPI message.
+-		 */
+-		ring->tail += len;
+-
+-		/* Note:
++		 *
++		 * Note:
+ 		 *
+ 		 * "cs_change == 1" on the last transfer results in an
+ 		 * active chip select after the complete SPI
+@@ -1571,6 +1569,8 @@ mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
+ 		last_xfer->cs_change = 1;
+ 		if (err)
+ 			return err;
++
++		ring->tail += len;
+ 	}
+ 
+ 	return 0;
 -- 
 2.29.2
 
