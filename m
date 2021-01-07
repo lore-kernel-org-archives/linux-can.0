@@ -5,51 +5,51 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3820CC433DB
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:36:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3C5BC433DB
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:36:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E5AB02312F
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:36:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8A33320732
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:36:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbhAGKgS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 7 Jan 2021 05:36:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
+        id S1727907AbhAGKgZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 7 Jan 2021 05:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727599AbhAGKgR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 05:36:17 -0500
+        with ESMTP id S1727765AbhAGKgW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 05:36:22 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58289C0612FB
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 02:35:02 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CE3C061290
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 02:35:03 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kxSdA-0008RH-RZ
-        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 11:35:00 +0100
+        id 1kxSdB-0008T1-Qm
+        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 11:35:01 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 40A915BBCA5
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 10:34:57 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id DBBE05BBCAF
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 10:34:58 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1CECE5BBC7B;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 96E695BBC83;
         Thu,  7 Jan 2021 10:34:53 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ec42f650;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id fea24183;
         Thu, 7 Jan 2021 10:34:52 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Dan Murphy <dmurphy@ti.com>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        Sean Nyekjaer <sean@geanix.com>
-Subject: [net 1/6] can: m_can: m_can_class_unregister(): remove erroneous m_can_clk_stop()
-Date:   Thu,  7 Jan 2021 11:34:46 +0100
-Message-Id: <20210107103451.183477-2-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 5/6] can: rcar: Kconfig: update help description for CAN_RCAR config
+Date:   Thu,  7 Jan 2021 11:34:50 +0100
+Message-Id: <20210107103451.183477-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210107103451.183477-1-mkl@pengutronix.de>
 References: <20210107103451.183477-1-mkl@pengutronix.de>
@@ -63,36 +63,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In m_can_class_register() the clock is started, but stopped on exit. When
-calling m_can_class_unregister(), the clock is stopped a second time.
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-This patch removes the erroneous m_can_clk_stop() in  m_can_class_unregister().
+The rcar_can driver also supports RZ/G SoC's, update the description to reflect
+this.
 
-Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
-Cc: Dan Murphy <dmurphy@ti.com>
-Cc: Sriram Dash <sriram.dash@samsung.com>
-Reviewed-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20201215103238.524029-2-mkl@pengutronix.de
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20210104090327.6547-1-prabhakar.mahadev-lad.rj@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/can/rcar/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 2c9f12401276..da551fd0f502 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1852,8 +1852,6 @@ EXPORT_SYMBOL_GPL(m_can_class_register);
- void m_can_class_unregister(struct m_can_classdev *cdev)
- {
- 	unregister_candev(cdev->net);
--
--	m_can_clk_stop(cdev);
- }
- EXPORT_SYMBOL_GPL(m_can_class_unregister);
+diff --git a/drivers/net/can/rcar/Kconfig b/drivers/net/can/rcar/Kconfig
+index 8d36101b78e3..29cabc20109e 100644
+--- a/drivers/net/can/rcar/Kconfig
++++ b/drivers/net/can/rcar/Kconfig
+@@ -1,10 +1,10 @@
+ # SPDX-License-Identifier: GPL-2.0
+ config CAN_RCAR
+-	tristate "Renesas R-Car CAN controller"
++	tristate "Renesas R-Car and RZ/G CAN controller"
+ 	depends on ARCH_RENESAS || ARM
+ 	help
+ 	  Say Y here if you want to use CAN controller found on Renesas R-Car
+-	  SoCs.
++	  or RZ/G SoCs.
  
-
-base-commit: 1f685e6adbbe3c7b1bd9053be771b898d9efa655
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called rcar_can.
 -- 
 2.29.2
 
