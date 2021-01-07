@@ -2,52 +2,54 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 867D8C433DB
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96934C433DB
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2F87220732
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0C64A20732
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbhAGKfh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 7 Jan 2021 05:35:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
+        id S1727270AbhAGKfk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 7 Jan 2021 05:35:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbhAGKfh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 05:35:37 -0500
+        with ESMTP id S1726371AbhAGKfk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 05:35:40 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57C0C0612F4
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 02:34:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004D2C0612F6
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 02:34:59 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kxSd5-0008M5-J4
-        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 11:34:55 +0100
+        id 1kxSd8-0008PJ-Kq
+        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 11:34:58 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 846655BBC82
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 10:34:53 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 37CC45BBC97
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 10:34:55 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 069185BBC7A;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6538A5BBC80;
         Thu,  7 Jan 2021 10:34:53 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 446a9442;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ef69317f;
         Thu, 7 Jan 2021 10:34:52 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: pull-request: can 2021-01-07
-Date:   Thu,  7 Jan 2021 11:34:45 +0100
-Message-Id: <20210107103451.183477-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 3/6] can: mcp251xfd: mcp251xfd_handle_tefif(): fix TEF vs. TX race condition
+Date:   Thu,  7 Jan 2021 11:34:48 +0100
+Message-Id: <20210107103451.183477-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210107103451.183477-1-mkl@pengutronix.de>
+References: <20210107103451.183477-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -58,65 +60,58 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+The mcp251xfd driver uses a TX FIFO for sending CAN frames and a TX Event FIFO
+(TEF) for completed TX-requests.
 
-this is a pull request of 6 patches for net/master.
+The TEF event handling in the mcp251xfd_handle_tefif() function has a race
+condition. It first increments the tx-ring's tail counter to signal that
+there's room in the TX and TEF FIFO, then it increments the TEF FIFO in
+hardware.
 
-The first patch is by me for the m_can driver and removes an erroneous
-m_can_clk_stop() from the driver's unregister function.
+A running mcp251xfd_start_xmit() on a different CPU might not stop the txqueue
+(as the tx-ring still shows free space). The next mcp251xfd_start_xmit() will
+push a message into the chip and the TX complete event might overflow the TEF
+FIFO.
 
-The second patch targets the tcan4x5x driver, is by me, and fixes the bit
-timing constant parameters.
+This patch changes the order to fix the problem.
 
-The next two patches are by me, target the mcp251xfd driver, and fix a race
-condition in the optimized TEF path (which was added in net-next for v5.11).
-The similar code in the RX path is changed to look the same, although it
-doesn't suffer from the race condition.
-
-A patch by Lad Prabhakar updates the description and help text for the rcar CAN
-driver to reflect all supported SoCs.
-
-In the last patch Sriram Dash transfers the maintainership of the m_can driver
-to Pankaj Sharma.
-
-regards,
-Marc
-
+Fixes: 68c0c1c7f966 ("can: mcp251xfd: tef-path: reduce number of SPI core requests to set UINC bit")
+Link: https://lore.kernel.org/r/20210105214138.3150886-2-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-The following changes since commit 1f685e6adbbe3c7b1bd9053be771b898d9efa655:
-
-  ptp: ptp_ines: prevent build when HAS_IOMEM is not set (2021-01-06 16:17:23 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.11-20210107
-
-for you to fetch changes up to 6ee49118f87cf02b36f68812bc49855b7b627a2b:
-
-  MAINTAINERS: Update MCAN MMIO device driver maintainer (2021-01-07 11:02:10 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.11-20210107
-
-----------------------------------------------------------------
-Lad Prabhakar (1):
-      can: rcar: Kconfig: update help description for CAN_RCAR config
-
-Marc Kleine-Budde (4):
-      can: m_can: m_can_class_unregister(): remove erroneous m_can_clk_stop()
-      can: tcan4x5x: fix bittiming const, use common bittiming from m_can driver
-      can: mcp251xfd: mcp251xfd_handle_tefif(): fix TEF vs. TX race condition
-      can: mcp251xfd: mcp251xfd_handle_rxif_ring(): first increment RX tail pointer in HW, then in driver
-
-Sriram Dash (1):
-      MAINTAINERS: Update MCAN MMIO device driver maintainer
-
- MAINTAINERS                                    |  2 +-
- drivers/net/can/m_can/m_can.c                  |  2 --
- drivers/net/can/m_can/tcan4x5x.c               | 26 --------------------------
- drivers/net/can/rcar/Kconfig                   |  4 ++--
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 17 ++++++++---------
- 5 files changed, 11 insertions(+), 40 deletions(-)
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 77129d5f410b..85a1a8b7c0e7 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1368,13 +1368,10 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 		struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+ 		struct spi_transfer *last_xfer;
+ 
+-		tx_ring->tail += len;
+-
+ 		/* Increment the TEF FIFO tail pointer 'len' times in
+ 		 * a single SPI message.
+-		 */
+-
+-		/* Note:
++		 *
++		 * Note:
+ 		 *
+ 		 * "cs_change == 1" on the last transfer results in an
+ 		 * active chip select after the complete SPI
+@@ -1391,6 +1388,8 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 		if (err)
+ 			return err;
+ 
++		tx_ring->tail += len;
++
+ 		err = mcp251xfd_check_tef_tail(priv);
+ 		if (err)
+ 			return err;
+-- 
+2.29.2
 
 
