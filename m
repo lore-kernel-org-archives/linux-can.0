@@ -2,55 +2,52 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA05AC43332
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 09:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 867D8C433DB
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 845782333E
-	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 09:52:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2F87220732
+	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 10:35:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727415AbhAGJvp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 7 Jan 2021 04:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
+        id S1726754AbhAGKfh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 7 Jan 2021 05:35:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727294AbhAGJvl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 04:51:41 -0500
+        with ESMTP id S1726362AbhAGKfh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 05:35:37 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5A6C0612A7
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 01:49:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57C0C0612F4
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 02:34:56 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kxRvY-00019h-VA
-        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 10:49:57 +0100
+        id 1kxSd5-0008M5-J4
+        for linux-can@vger.kernel.org; Thu, 07 Jan 2021 11:34:55 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 66E755BBA99
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 09:49:07 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 846655BBC82
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 10:34:53 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 837725BBA1C;
-        Thu,  7 Jan 2021 09:49:02 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 069185BBC7A;
+        Thu,  7 Jan 2021 10:34:53 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7b12daf1;
-        Thu, 7 Jan 2021 09:49:01 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 446a9442;
+        Thu, 7 Jan 2021 10:34:52 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Dan Murphy <dmurphy@ti.com>, Sean Nyekjaer <sean@geanix.com>
-Subject: [net-next 07/19] can: tcan4x5x: remove regmap async support
-Date:   Thu,  7 Jan 2021 10:48:48 +0100
-Message-Id: <20210107094900.173046-8-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: pull-request: can 2021-01-07
+Date:   Thu,  7 Jan 2021 11:34:45 +0100
+Message-Id: <20210107103451.183477-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210107094900.173046-1-mkl@pengutronix.de>
-References: <20210107094900.173046-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -61,50 +58,65 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The driver doesn't use regmap async support, so remove the stubs.
+Hello Jakub, hello David,
 
-Reviewed-by: Dan Murphy <dmurphy@ti.com>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20201215231746.1132907-8-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+this is a pull request of 6 patches for net/master.
+
+The first patch is by me for the m_can driver and removes an erroneous
+m_can_clk_stop() from the driver's unregister function.
+
+The second patch targets the tcan4x5x driver, is by me, and fixes the bit
+timing constant parameters.
+
+The next two patches are by me, target the mcp251xfd driver, and fix a race
+condition in the optimized TEF path (which was added in net-next for v5.11).
+The similar code in the RX path is changed to look the same, although it
+doesn't suffer from the race condition.
+
+A patch by Lad Prabhakar updates the description and help text for the rcar CAN
+driver to reflect all supported SoCs.
+
+In the last patch Sriram Dash transfers the maintainership of the m_can driver
+to Pankaj Sharma.
+
+regards,
+Marc
+
 ---
- drivers/net/can/m_can/tcan4x5x-regmap.c | 15 ---------------
- 1 file changed, 15 deletions(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index 20bf9a57c9b1..8905fc36b00a 100644
---- a/drivers/net/can/m_can/tcan4x5x-regmap.c
-+++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -44,19 +44,6 @@ static int tcan4x5x_regmap_write(void *context, const void *data, size_t count)
- 	return regmap_spi_gather_write(context, reg, 4, val, count - 4);
- }
- 
--static int regmap_spi_async_write(void *context,
--				  const void *reg, size_t reg_len,
--				  const void *val, size_t val_len,
--				  struct regmap_async *a)
--{
--	return -ENOTSUPP;
--}
--
--static struct regmap_async *regmap_spi_async_alloc(void)
--{
--	return NULL;
--}
--
- static int tcan4x5x_regmap_read(void *context,
- 				const void *reg, size_t reg_size,
- 				void *val, size_t val_size)
-@@ -79,8 +66,6 @@ static const struct regmap_config tcan4x5x_regmap = {
- static const struct regmap_bus tcan4x5x_bus = {
- 	.write = tcan4x5x_regmap_write,
- 	.gather_write = regmap_spi_gather_write,
--	.async_write = regmap_spi_async_write,
--	.async_alloc = regmap_spi_async_alloc,
- 	.read = tcan4x5x_regmap_read,
- 	.reg_format_endian_default = REGMAP_ENDIAN_NATIVE,
- 	.val_format_endian_default = REGMAP_ENDIAN_NATIVE,
--- 
-2.29.2
+The following changes since commit 1f685e6adbbe3c7b1bd9053be771b898d9efa655:
+
+  ptp: ptp_ines: prevent build when HAS_IOMEM is not set (2021-01-06 16:17:23 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.11-20210107
+
+for you to fetch changes up to 6ee49118f87cf02b36f68812bc49855b7b627a2b:
+
+  MAINTAINERS: Update MCAN MMIO device driver maintainer (2021-01-07 11:02:10 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-5.11-20210107
+
+----------------------------------------------------------------
+Lad Prabhakar (1):
+      can: rcar: Kconfig: update help description for CAN_RCAR config
+
+Marc Kleine-Budde (4):
+      can: m_can: m_can_class_unregister(): remove erroneous m_can_clk_stop()
+      can: tcan4x5x: fix bittiming const, use common bittiming from m_can driver
+      can: mcp251xfd: mcp251xfd_handle_tefif(): fix TEF vs. TX race condition
+      can: mcp251xfd: mcp251xfd_handle_rxif_ring(): first increment RX tail pointer in HW, then in driver
+
+Sriram Dash (1):
+      MAINTAINERS: Update MCAN MMIO device driver maintainer
+
+ MAINTAINERS                                    |  2 +-
+ drivers/net/can/m_can/m_can.c                  |  2 --
+ drivers/net/can/m_can/tcan4x5x.c               | 26 --------------------------
+ drivers/net/can/rcar/Kconfig                   |  4 ++--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 17 ++++++++---------
+ 5 files changed, 11 insertions(+), 40 deletions(-)
 
 
