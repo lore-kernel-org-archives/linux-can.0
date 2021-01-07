@@ -5,49 +5,49 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89F95C43331
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DC90C4332D
 	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 09:52:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6290A2333E
+	by mail.kernel.org (Postfix) with ESMTP id 3F7592333D
 	for <linux-can@archiver.kernel.org>; Thu,  7 Jan 2021 09:52:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbhAGJvy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1726666AbhAGJvy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 7 Jan 2021 04:51:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726666AbhAGJvw (ORCPT
+        with ESMTP id S1727935AbhAGJvw (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 7 Jan 2021 04:51:52 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AE6C0612B2
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 01:50:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF57C061240
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 01:50:01 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kxRvb-0001F2-6S
+        id 1kxRvb-0001Fc-F1
         for linux-can@vger.kernel.org; Thu, 07 Jan 2021 10:49:59 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8DF3B5BBAE8
-        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 09:49:09 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9A0595BBAC3
+        for <linux-can@vger.kernel.org>; Thu,  7 Jan 2021 09:49:08 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 313165BBA3C;
-        Thu,  7 Jan 2021 09:49:04 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5C38D5BBA2B;
+        Thu,  7 Jan 2021 09:49:03 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id eae9bd0f;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id dcb21eaf;
         Thu, 7 Jan 2021 09:49:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
         Dan Murphy <dmurphy@ti.com>, Sean Nyekjaer <sean@geanix.com>
-Subject: [net-next 16/19] can: tcan4x5x: add support for half-duplex controllers
-Date:   Thu,  7 Jan 2021 10:48:57 +0100
-Message-Id: <20210107094900.173046-17-mkl@pengutronix.de>
+Subject: [net-next 12/19] can: tcan4x5x: tcan4x5x_regmap: set reg_stride to 4
+Date:   Thu,  7 Jan 2021 10:48:53 +0100
+Message-Id: <20210107094900.173046-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210107094900.173046-1-mkl@pengutronix.de>
 References: <20210107094900.173046-1-mkl@pengutronix.de>
@@ -61,62 +61,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds back support for half-duplex controllers, which was removed in
-the last patch.
+This patch sets the regmap stide to 4, as the chip only supports access on 32
+bit alligned access.
 
 Reviewed-by: Dan Murphy <dmurphy@ti.com>
 Tested-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20201215231746.1132907-17-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20201215231746.1132907-13-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/tcan4x5x-regmap.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ drivers/net/can/m_can/tcan4x5x-regmap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index 660e9d87dffb..ca80dbaf7a3f 100644
+index 73be4b661305..c6963437064c 100644
 --- a/drivers/net/can/m_can/tcan4x5x-regmap.c
 +++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -51,7 +51,7 @@ static int tcan4x5x_regmap_read(void *context,
- 	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
- 	struct tcan4x5x_map_buf *buf_rx = &priv->map_buf_rx;
- 	struct tcan4x5x_map_buf *buf_tx = &priv->map_buf_tx;
--	struct spi_transfer xfer[] = {
-+	struct spi_transfer xfer[2] = {
- 		{
- 			.tx_buf = buf_tx,
- 		}
-@@ -66,17 +66,26 @@ static int tcan4x5x_regmap_read(void *context,
- 	       sizeof(buf_tx->cmd.addr));
- 	tcan4x5x_spi_cmd_set_len(&buf_tx->cmd, val_len);
+@@ -55,6 +55,7 @@ static int tcan4x5x_regmap_read(void *context,
  
--	xfer[0].rx_buf = buf_rx;
--	xfer[0].len = sizeof(buf_tx->cmd) + val_len;
-+	if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
-+		xfer[0].len = sizeof(buf_tx->cmd);
-+
-+		xfer[1].rx_buf = val_buf;
-+		xfer[1].len = val_len;
-+		spi_message_add_tail(&xfer[1], &msg);
-+	} else {
-+		xfer[0].rx_buf = buf_rx;
-+		xfer[0].len = sizeof(buf_tx->cmd) + val_len;
- 
--	if (TCAN4X5X_SANITIZE_SPI)
--		memset(buf_tx->data, 0x0, val_len);
-+		if (TCAN4X5X_SANITIZE_SPI)
-+			memset(buf_tx->data, 0x0, val_len);
-+	}
- 
- 	err = spi_sync(spi, &msg);
- 	if (err)
- 		return err;
- 
--	memcpy(val_buf, buf_rx->data, val_len);
-+	if (!(spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX))
-+		memcpy(val_buf, buf_rx->data, val_len);
- 
- 	return 0;
- }
+ static const struct regmap_config tcan4x5x_regmap = {
+ 	.reg_bits = 32,
++	.reg_stride = 4,
+ 	.val_bits = 32,
+ 	.cache_type = REGCACHE_NONE,
+ 	.max_register = TCAN4X5X_MAX_REGISTER,
 -- 
 2.29.2
 
