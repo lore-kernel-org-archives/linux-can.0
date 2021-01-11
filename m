@@ -7,48 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50982C433E9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B864BC433E0
 	for <linux-can@archiver.kernel.org>; Mon, 11 Jan 2021 14:22:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1B5FF2242A
+	by mail.kernel.org (Postfix) with ESMTP id 8ED592242A
 	for <linux-can@archiver.kernel.org>; Mon, 11 Jan 2021 14:22:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728262AbhAKOWu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1728141AbhAKOWu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 11 Jan 2021 09:22:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36022 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbhAKOWu (ORCPT
+        with ESMTP id S1728348AbhAKOWu (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 11 Jan 2021 09:22:50 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BBAC061795
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E029CC0617A2
         for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 06:22:09 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kyy5A-0007aB-4O
+        id 1kyy5A-0007aL-Cv
         for linux-can@vger.kernel.org; Mon, 11 Jan 2021 15:22:08 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2037E5C0FB4
-        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 14:19:41 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 3ED7E5C0F56
+        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 14:19:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 764D85C0F6F;
-        Mon, 11 Jan 2021 14:19:36 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f9a88925;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DD3AA5C0F3D;
         Mon, 11 Jan 2021 14:19:32 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2d55c7ed;
+        Mon, 11 Jan 2021 14:19:31 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next v3 10/15] can: length: can_skb_get_frame_len(): introduce function to get data length of frame in data link layer
-Date:   Mon, 11 Jan 2021 15:19:25 +0100
-Message-Id: <20210111141930.693847-11-mkl@pengutronix.de>
+Subject: [net-next v3 04/15] can: dev: move length related code into seperate file
+Date:   Mon, 11 Jan 2021 15:19:19 +0100
+Message-Id: <20210111141930.693847-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210111141930.693847-1-mkl@pengutronix.de>
 References: <20210111141930.693847-1-mkl@pengutronix.de>
@@ -62,225 +61,260 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+This patch moves all CAN frame length related code of the CAN device
+infrastructure into a separate file.
 
-This patch adds the function can_skb_get_frame_len() which returns the length
-of a CAN frame on the data link layer, including Start-of-frame, Identifier,
-various other bits, the actual data, the CRC, the End-of-frame, the Inter frame
-spacing.
-
-Co-developed-by: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-Signed-off-by: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-Co-developed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Co-developed-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/length.c |  50 +++++++++++++++
- include/linux/can/length.h   | 120 +++++++++++++++++++++++++++++++++++
- 2 files changed, 170 insertions(+)
+ MAINTAINERS                  |  1 +
+ drivers/net/can/dev/Makefile |  1 +
+ drivers/net/can/dev/dev.c    | 33 -------------------------
+ drivers/net/can/dev/length.c | 38 ++++++++++++++++++++++++++++
+ include/linux/can/dev.h      | 41 +-----------------------------
+ include/linux/can/length.h   | 48 ++++++++++++++++++++++++++++++++++++
+ 6 files changed, 89 insertions(+), 73 deletions(-)
+ create mode 100644 drivers/net/can/dev/length.c
+ create mode 100644 include/linux/can/length.h
 
-diff --git a/drivers/net/can/dev/length.c b/drivers/net/can/dev/length.c
-index d695a3bee1ed..20cd153a45a5 100644
---- a/drivers/net/can/dev/length.c
-+++ b/drivers/net/can/dev/length.c
-@@ -38,3 +38,53 @@ u8 can_fd_len2dlc(u8 len)
- 	return len2dlc[len];
- }
- EXPORT_SYMBOL_GPL(can_fd_len2dlc);
-+
-+/**
-+ * can_skb_get_frame_len() - Calculate the CAN Frame length in bytes
-+ * 	of a given skb.
-+ * @skb: socket buffer of a CAN message.
-+ *
-+ * Do a rough calculation: bit stuffing is ignored and length in bits
-+ * is rounded up to a length in bytes.
-+ *
-+ * Rationale: this function is to be used for the BQL functions
-+ * (netdev_sent_queue() and netdev_completed_queue()) which expect a
-+ * value in bytes. Just using skb->len is insufficient because it will
-+ * return the constant value of CAN(FD)_MTU. Doing the bit stuffing
-+ * calculation would be too expensive in term of computing resources
-+ * for no noticeable gain.
-+ *
-+ * Remarks: The payload of CAN FD frames with BRS flag are sent at a
-+ * different bitrate. Currently, the can-utils canbusload tool does
-+ * not support CAN-FD yet and so we could not run any benchmark to
-+ * measure the impact. There might be possible improvement here.
-+ *
-+ * Return: length in bytes.
-+ */
-+unsigned int can_skb_get_frame_len(const struct sk_buff *skb)
-+{
-+	const struct canfd_frame *cf = (const struct canfd_frame *)skb->data;
-+	u8 len;
-+
-+	if (can_is_canfd_skb(skb))
-+		len = canfd_sanitize_len(cf->len);
-+	else if (cf->can_id & CAN_RTR_FLAG)
-+		len = 0;
-+	else
-+		len = cf->len;
-+
-+	if (can_is_canfd_skb(skb)) {
-+		if (cf->can_id & CAN_EFF_FLAG)
-+			len += CANFD_FRAME_OVERHEAD_EFF;
-+		else
-+			len += CANFD_FRAME_OVERHEAD_SFF;
-+	} else {
-+		if (cf->can_id & CAN_EFF_FLAG)
-+			len += CAN_FRAME_OVERHEAD_EFF;
-+		else
-+			len += CAN_FRAME_OVERHEAD_SFF;
-+	}
-+
-+	return len;
-+}
-+EXPORT_SYMBOL_GPL(can_skb_get_frame_len);
-diff --git a/include/linux/can/length.h b/include/linux/can/length.h
-index b2313b2a0b02..6995092b774e 100644
---- a/include/linux/can/length.h
-+++ b/include/linux/can/length.h
-@@ -1,10 +1,127 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /* Copyright (C) 2020 Oliver Hartkopp <socketcan@hartkopp.net>
-+ * Copyright (C) 2020 Marc Kleine-Budde <kernel@pengutronix.de>
-  */
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d17662df1cd7..21780c4e2e71 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3946,6 +3946,7 @@ F:	drivers/net/can/
+ F:	include/linux/can/bittiming.h
+ F:	include/linux/can/dev.h
+ F:	include/linux/can/led.h
++F:	include/linux/can/length.h
+ F:	include/linux/can/platform/
+ F:	include/linux/can/rx-offload.h
+ F:	include/uapi/linux/can/error.h
+diff --git a/drivers/net/can/dev/Makefile b/drivers/net/can/dev/Makefile
+index b5c6bb848d9d..5c647951e06d 100644
+--- a/drivers/net/can/dev/Makefile
++++ b/drivers/net/can/dev/Makefile
+@@ -3,6 +3,7 @@
+ obj-$(CONFIG_CAN_DEV)		+= can-dev.o
+ can-dev-y			+= bittiming.o
+ can-dev-y			+= dev.o
++can-dev-y			+= length.o
+ can-dev-y			+= rx-offload.o
  
- #ifndef _CAN_LENGTH_H
- #define _CAN_LENGTH_H
+ can-dev-$(CONFIG_CAN_LEDS)	+= led.o
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 1b3ab95b3fd1..3372e99d5db7 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -25,39 +25,6 @@ MODULE_DESCRIPTION(MOD_DESC);
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Wolfgang Grandegger <wg@grandegger.com>");
  
-+/*
-+ * Size of a Classical CAN Standard Frame
-+ *
-+ * Name of Field			Bits
-+ * ---------------------------------------------------------
-+ * Start-of-frame			1
-+ * Identifier				11
-+ * Remote transmission request (RTR)	1
-+ * Identifier extension bit (IDE)	1
-+ * Reserved bit (r0)			1
-+ * Data length code (DLC)		4
-+ * Data field				0...64
-+ * CRC					15
-+ * CRC delimiter			1
-+ * ACK slot				1
-+ * ACK delimiter			1
-+ * End-of-frame (EOF)			7
-+ * Inter frame spacing			3
-+ *
-+ * rounded up and ignoring bitstuffing
-+ */
-+#define CAN_FRAME_OVERHEAD_SFF DIV_ROUND_UP(47, 8)
-+
-+/*
-+ * Size of a Classical CAN Extended Frame
-+ *
-+ * Name of Field			Bits
-+ * ---------------------------------------------------------
-+ * Start-of-frame			1
-+ * Identifier A				11
-+ * Substitute remote request (SRR)	1
-+ * Identifier extension bit (IDE)	1
-+ * Identifier B				18
-+ * Remote transmission request (RTR)	1
-+ * Reserved bits (r1, r0)		2
-+ * Data length code (DLC)		4
-+ * Data field				0...64
-+ * CRC					15
-+ * CRC delimiter			1
-+ * ACK slot				1
-+ * ACK delimiter			1
-+ * End-of-frame (EOF)			7
-+ * Inter frame spacing			3
-+ *
-+ * rounded up and ignoring bitstuffing
-+ */
-+#define CAN_FRAME_OVERHEAD_EFF DIV_ROUND_UP(67, 8)
-+
-+/*
-+ * Size of a CAN-FD Standard Frame
-+ *
-+ * Name of Field			Bits
-+ * ---------------------------------------------------------
-+ * Start-of-frame			1
-+ * Identifier				11
-+ * Reserved bit (r1)			1
-+ * Identifier extension bit (IDE)	1
-+ * Flexible data rate format (FDF)	1
-+ * Reserved bit (r0)			1
-+ * Bit Rate Switch (BRS)		1
-+ * Error Status Indicator (ESI)		1
-+ * Data length code (DLC)		4
-+ * Data field				0...512
-+ * Stuff Bit Count (SBC)		0...16: 4 20...64:5
-+ * CRC					0...16: 17 20...64:21
-+ * CRC delimiter (CD)			1
-+ * ACK slot (AS)			1
-+ * ACK delimiter (AD)			1
-+ * End-of-frame (EOF)			7
-+ * Inter frame spacing			3
-+ *
-+ * assuming CRC21, rounded up and ignoring bitstuffing
-+ */
-+#define CANFD_FRAME_OVERHEAD_SFF DIV_ROUND_UP(61, 8)
-+
-+/*
-+ * Size of a CAN-FD Extended Frame
-+ *
-+ * Name of Field			Bits
-+ * ---------------------------------------------------------
-+ * Start-of-frame			1
-+ * Identifier A				11
-+ * Substitute remote request (SRR)	1
-+ * Identifier extension bit (IDE)	1
-+ * Identifier B				18
-+ * Reserved bit (r1)			1
-+ * Flexible data rate format (FDF)	1
-+ * Reserved bit (r0)			1
-+ * Bit Rate Switch (BRS)		1
-+ * Error Status Indicator (ESI)		1
-+ * Data length code (DLC)		4
-+ * Data field				0...512
-+ * Stuff Bit Count (SBC)		0...16: 4 20...64:5
-+ * CRC					0...16: 17 20...64:21
-+ * CRC delimiter (CD)			1
-+ * ACK slot (AS)			1
-+ * ACK delimiter (AD)			1
-+ * End-of-frame (EOF)			7
-+ * Inter frame spacing			3
-+ *
-+ * assuming CRC21, rounded up and ignoring bitstuffing
-+ */
-+#define CANFD_FRAME_OVERHEAD_EFF DIV_ROUND_UP(80, 8)
-+
-+/*
-+ * Maximum size of a Classical CAN frame
-+ * (rounded up and ignoring bitstuffing)
-+ */
-+#define CAN_FRAME_LEN_MAX (CAN_FRAME_OVERHEAD_EFF + CAN_MAX_DLEN)
-+
-+/*
-+ * Maximum size of a CAN-FD frame
-+ * (rounded up and ignoring bitstuffing)
-+ */
-+#define CANFD_FRAME_LEN_MAX (CANFD_FRAME_OVERHEAD_EFF + CANFD_MAX_DLEN)
-+
- /*
-  * can_cc_dlc2len(value) - convert a given data length code (dlc) of a
-  * Classical CAN frame into a valid data length of max. 8 bytes.
-@@ -45,6 +162,9 @@ u8 can_fd_dlc2len(u8 dlc);
- /* map the sanitized data length to an appropriate data length code */
- u8 can_fd_len2dlc(u8 len);
- 
-+/* calculate the CAN Frame length in bytes of a given skb */
-+unsigned int can_skb_get_frame_len(const struct sk_buff *skb);
-+
- /* map the data length to an appropriate data link layer length */
- static inline u8 canfd_sanitize_len(u8 len)
+-/* CAN DLC to real data length conversion helpers */
+-
+-static const u8 dlc2len[] = {0, 1, 2, 3, 4, 5, 6, 7,
+-			     8, 12, 16, 20, 24, 32, 48, 64};
+-
+-/* get data length from raw data length code (DLC) */
+-u8 can_fd_dlc2len(u8 dlc)
+-{
+-	return dlc2len[dlc & 0x0F];
+-}
+-EXPORT_SYMBOL_GPL(can_fd_dlc2len);
+-
+-static const u8 len2dlc[] = {0, 1, 2, 3, 4, 5, 6, 7, 8,		/* 0 - 8 */
+-			     9, 9, 9, 9,			/* 9 - 12 */
+-			     10, 10, 10, 10,			/* 13 - 16 */
+-			     11, 11, 11, 11,			/* 17 - 20 */
+-			     12, 12, 12, 12,			/* 21 - 24 */
+-			     13, 13, 13, 13, 13, 13, 13, 13,	/* 25 - 32 */
+-			     14, 14, 14, 14, 14, 14, 14, 14,	/* 33 - 40 */
+-			     14, 14, 14, 14, 14, 14, 14, 14,	/* 41 - 48 */
+-			     15, 15, 15, 15, 15, 15, 15, 15,	/* 49 - 56 */
+-			     15, 15, 15, 15, 15, 15, 15, 15};	/* 57 - 64 */
+-
+-/* map the sanitized data length to an appropriate data length code */
+-u8 can_fd_len2dlc(u8 len)
+-{
+-	if (unlikely(len > 64))
+-		return 0xF;
+-
+-	return len2dlc[len];
+-}
+-EXPORT_SYMBOL_GPL(can_fd_len2dlc);
+-
+ static void can_update_state_error_stats(struct net_device *dev,
+ 					 enum can_state new_state)
  {
+diff --git a/drivers/net/can/dev/length.c b/drivers/net/can/dev/length.c
+new file mode 100644
+index 000000000000..6fe18aa23ec9
+--- /dev/null
++++ b/drivers/net/can/dev/length.c
+@@ -0,0 +1,38 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (C) 2012, 2020 Oliver Hartkopp <socketcan@hartkopp.net>
++ */
++
++#include <linux/can/dev.h>
++
++/* CAN DLC to real data length conversion helpers */
++
++static const u8 dlc2len[] = {0, 1, 2, 3, 4, 5, 6, 7,
++			     8, 12, 16, 20, 24, 32, 48, 64};
++
++/* get data length from raw data length code (DLC) */
++u8 can_fd_dlc2len(u8 dlc)
++{
++	return dlc2len[dlc & 0x0F];
++}
++EXPORT_SYMBOL_GPL(can_fd_dlc2len);
++
++static const u8 len2dlc[] = {0, 1, 2, 3, 4, 5, 6, 7, 8,		/* 0 - 8 */
++			     9, 9, 9, 9,			/* 9 - 12 */
++			     10, 10, 10, 10,			/* 13 - 16 */
++			     11, 11, 11, 11,			/* 17 - 20 */
++			     12, 12, 12, 12,			/* 21 - 24 */
++			     13, 13, 13, 13, 13, 13, 13, 13,	/* 25 - 32 */
++			     14, 14, 14, 14, 14, 14, 14, 14,	/* 33 - 40 */
++			     14, 14, 14, 14, 14, 14, 14, 14,	/* 41 - 48 */
++			     15, 15, 15, 15, 15, 15, 15, 15,	/* 49 - 56 */
++			     15, 15, 15, 15, 15, 15, 15, 15};	/* 57 - 64 */
++
++/* map the sanitized data length to an appropriate data length code */
++u8 can_fd_len2dlc(u8 len)
++{
++	if (unlikely(len > 64))
++		return 0xF;
++
++	return len2dlc[len];
++}
++EXPORT_SYMBOL_GPL(can_fd_len2dlc);
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 054c3bed190b..d75fba1d030a 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -18,6 +18,7 @@
+ #include <linux/can/bittiming.h>
+ #include <linux/can/error.h>
+ #include <linux/can/led.h>
++#include <linux/can/length.h>
+ #include <linux/can/netlink.h>
+ #include <linux/can/skb.h>
+ #include <linux/netdevice.h>
+@@ -83,15 +84,6 @@ struct can_priv {
+ #endif
+ };
+ 
+-/*
+- * can_cc_dlc2len(value) - convert a given data length code (dlc) of a
+- * Classical CAN frame into a valid data length of max. 8 bytes.
+- *
+- * To be used in the CAN netdriver receive path to ensure conformance with
+- * ISO 11898-1 Chapter 8.4.2.3 (DLC field)
+- */
+-#define can_cc_dlc2len(dlc)	(min_t(u8, (dlc), CAN_MAX_DLEN))
+-
+ /* Check for outgoing skbs that have not been created by the CAN subsystem */
+ static inline bool can_skb_headroom_valid(struct net_device *dev,
+ 					  struct sk_buff *skb)
+@@ -156,31 +148,6 @@ static inline bool can_is_canfd_skb(const struct sk_buff *skb)
+ 	return skb->len == CANFD_MTU;
+ }
+ 
+-/* helper to get the data length code (DLC) for Classical CAN raw DLC access */
+-static inline u8 can_get_cc_dlc(const struct can_frame *cf, const u32 ctrlmode)
+-{
+-	/* return len8_dlc as dlc value only if all conditions apply */
+-	if ((ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC) &&
+-	    (cf->len == CAN_MAX_DLEN) &&
+-	    (cf->len8_dlc > CAN_MAX_DLEN && cf->len8_dlc <= CAN_MAX_RAW_DLC))
+-		return cf->len8_dlc;
+-
+-	/* return the payload length as dlc value */
+-	return cf->len;
+-}
+-
+-/* helper to set len and len8_dlc value for Classical CAN raw DLC access */
+-static inline void can_frame_set_cc_len(struct can_frame *cf, const u8 dlc,
+-					const u32 ctrlmode)
+-{
+-	/* the caller already ensured that dlc is a value from 0 .. 15 */
+-	if (ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC && dlc > CAN_MAX_DLEN)
+-		cf->len8_dlc = dlc;
+-
+-	/* limit the payload length 'len' to CAN_MAX_DLEN */
+-	cf->len = can_cc_dlc2len(dlc);
+-}
+-
+ /* helper to define static CAN controller features at device creation time */
+ static inline void can_set_static_ctrlmode(struct net_device *dev,
+ 					   u32 static_mode)
+@@ -196,12 +163,6 @@ static inline void can_set_static_ctrlmode(struct net_device *dev,
+ 		dev->mtu = CANFD_MTU;
+ }
+ 
+-/* get data length from raw data length code (DLC) */
+-u8 can_fd_dlc2len(u8 dlc);
+-
+-/* map the sanitized data length to an appropriate data length code */
+-u8 can_fd_len2dlc(u8 len);
+-
+ struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
+ 				    unsigned int txqs, unsigned int rxqs);
+ #define alloc_candev(sizeof_priv, echo_skb_max) \
+diff --git a/include/linux/can/length.h b/include/linux/can/length.h
+new file mode 100644
+index 000000000000..156b9d17969a
+--- /dev/null
++++ b/include/linux/can/length.h
+@@ -0,0 +1,48 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (C) 2020 Oliver Hartkopp <socketcan@hartkopp.net>
++ */
++
++#ifndef _CAN_LENGTH_H
++#define _CAN_LENGTH_H
++
++/*
++ * can_cc_dlc2len(value) - convert a given data length code (dlc) of a
++ * Classical CAN frame into a valid data length of max. 8 bytes.
++ *
++ * To be used in the CAN netdriver receive path to ensure conformance with
++ * ISO 11898-1 Chapter 8.4.2.3 (DLC field)
++ */
++#define can_cc_dlc2len(dlc)	(min_t(u8, (dlc), CAN_MAX_DLEN))
++
++/* helper to get the data length code (DLC) for Classical CAN raw DLC access */
++static inline u8 can_get_cc_dlc(const struct can_frame *cf, const u32 ctrlmode)
++{
++	/* return len8_dlc as dlc value only if all conditions apply */
++	if ((ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC) &&
++	    (cf->len == CAN_MAX_DLEN) &&
++	    (cf->len8_dlc > CAN_MAX_DLEN && cf->len8_dlc <= CAN_MAX_RAW_DLC))
++		return cf->len8_dlc;
++
++	/* return the payload length as dlc value */
++	return cf->len;
++}
++
++/* helper to set len and len8_dlc value for Classical CAN raw DLC access */
++static inline void can_frame_set_cc_len(struct can_frame *cf, const u8 dlc,
++					const u32 ctrlmode)
++{
++	/* the caller already ensured that dlc is a value from 0 .. 15 */
++	if (ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC && dlc > CAN_MAX_DLEN)
++		cf->len8_dlc = dlc;
++
++	/* limit the payload length 'len' to CAN_MAX_DLEN */
++	cf->len = can_cc_dlc2len(dlc);
++}
++
++/* get data length from raw data length code (DLC) */
++u8 can_fd_dlc2len(u8 dlc);
++
++/* map the sanitized data length to an appropriate data length code */
++u8 can_fd_len2dlc(u8 len);
++
++#endif /* !_CAN_LENGTH_H */
 -- 
 2.29.2
 
