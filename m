@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BC38C43333
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B2EEC43332
 	for <linux-can@archiver.kernel.org>; Mon, 11 Jan 2021 14:23:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 086762242A
-	for <linux-can@archiver.kernel.org>; Mon, 11 Jan 2021 14:23:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E879622473
+	for <linux-can@archiver.kernel.org>; Mon, 11 Jan 2021 14:23:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729803AbhAKOXo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 11 Jan 2021 09:23:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        id S1733111AbhAKOXb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 11 Jan 2021 09:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727750AbhAKOXo (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 11 Jan 2021 09:23:44 -0500
+        with ESMTP id S1733112AbhAKOXa (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 11 Jan 2021 09:23:30 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963C8C0617B9
-        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 06:22:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AF6C0617B0
+        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 06:22:12 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kyy5E-0007db-4T
-        for linux-can@vger.kernel.org; Mon, 11 Jan 2021 15:22:12 +0100
+        id 1kyy5D-0007cb-4V
+        for linux-can@vger.kernel.org; Mon, 11 Jan 2021 15:22:11 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DFB2D5C0FA3
-        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 14:19:39 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9D2E75C0FB0
+        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 14:19:40 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 505135C0F75;
-        Mon, 11 Jan 2021 14:19:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5F8795C0F85;
+        Mon, 11 Jan 2021 14:19:38 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f1db4ada;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 89121bf2;
         Mon, 11 Jan 2021 14:19:32 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next v3 11/15] can: dev: extend struct can_skb_priv to hold CAN frame length
-Date:   Mon, 11 Jan 2021 15:19:26 +0100
-Message-Id: <20210111141930.693847-12-mkl@pengutronix.de>
+Subject: [net-next v3 14/15] can: dev: can_rx_offload_get_echo_skb(): extend to return can frame length
+Date:   Mon, 11 Jan 2021 15:19:29 +0100
+Message-Id: <20210111141930.693847-15-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210111141930.693847-1-mkl@pengutronix.de>
 References: <20210111141930.693847-1-mkl@pengutronix.de>
@@ -65,98 +65,97 @@ In order to implement byte queue limits (bql) in CAN drivers, the length of the
 CAN frame needs to be passed into the networking stack after queueing and after
 transmission completion.
 
-To avoid to calculate this length twice, extend the struct can_skb_priv to hold
-the length of the CAN frame and extend __can_get_echo_skb() to return that
-value.
+To avoid to calculate this length twice, extend can_rx_offload_get_echo_skb()
+to return that value. Convert all users of this function, too.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/rx-offload.c | 2 +-
- drivers/net/can/dev/skb.c        | 9 +++++++--
- include/linux/can/skb.h          | 4 +++-
- 3 files changed, 11 insertions(+), 4 deletions(-)
+ drivers/net/can/dev/rx-offload.c               | 5 +++--
+ drivers/net/can/flexcan.c                      | 5 +++--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 2 +-
+ drivers/net/can/ti_hecc.c                      | 2 +-
+ include/linux/can/rx-offload.h                 | 3 ++-
+ 5 files changed, 10 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
-index 3c1912c0430b..6a26b5282df1 100644
+index 6a26b5282df1..ab2c1543786c 100644
 --- a/drivers/net/can/dev/rx-offload.c
 +++ b/drivers/net/can/dev/rx-offload.c
-@@ -271,7 +271,7 @@ unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
+@@ -263,7 +263,8 @@ int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
+ EXPORT_SYMBOL_GPL(can_rx_offload_queue_sorted);
+ 
+ unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
+-					 unsigned int idx, u32 timestamp)
++					 unsigned int idx, u32 timestamp,
++					 unsigned int *frame_len_ptr)
+ {
+ 	struct net_device *dev = offload->dev;
+ 	struct net_device_stats *stats = &dev->stats;
+@@ -271,7 +272,7 @@ unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
  	u8 len;
  	int err;
  
--	skb = __can_get_echo_skb(dev, idx, &len);
-+	skb = __can_get_echo_skb(dev, idx, &len, NULL);
+-	skb = __can_get_echo_skb(dev, idx, &len, NULL);
++	skb = __can_get_echo_skb(dev, idx, &len, frame_len_ptr);
  	if (!skb)
  		return 0;
  
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 26cd597ff771..24f782a23409 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -76,7 +76,8 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- EXPORT_SYMBOL_GPL(can_put_echo_skb);
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 202d08f8e1a4..5d9157c655e9 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1122,8 +1122,9 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+ 		u32 reg_ctrl = priv->read(&priv->tx_mb->can_ctrl);
  
- struct sk_buff *
--__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
-+__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr,
-+		   unsigned int *frame_len_ptr)
- {
- 	struct can_priv *priv = netdev_priv(dev);
+ 		handled = IRQ_HANDLED;
+-		stats->tx_bytes += can_rx_offload_get_echo_skb(&priv->offload,
+-							       0, reg_ctrl << 16);
++		stats->tx_bytes +=
++			can_rx_offload_get_echo_skb(&priv->offload, 0,
++						    reg_ctrl << 16, NULL);
+ 		stats->tx_packets++;
+ 		can_led_event(dev, CAN_LED_EVENT_TX);
  
-@@ -91,6 +92,7 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
- 		 * length is supported on both CAN and CANFD frames.
- 		 */
- 		struct sk_buff *skb = priv->echo_skb[idx];
-+		struct can_skb_priv *can_skb_priv = can_skb_prv(skb);
- 		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 95bba456a4cd..63bbe0930e53 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1271,7 +1271,7 @@ mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
+ 	stats->tx_bytes +=
+ 		can_rx_offload_get_echo_skb(&priv->offload,
+ 					    mcp251xfd_get_tef_tail(priv),
+-					    hw_tef_obj->ts);
++					    hw_tef_obj->ts, NULL);
+ 	stats->tx_packets++;
+ 	priv->tef->tail++;
  
- 		/* get the real payload length for netdev statistics */
-@@ -99,6 +101,9 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
- 		else
- 			*len_ptr = cf->len;
- 
-+		if (frame_len_ptr)
-+			*frame_len_ptr = can_skb_priv->frame_len;
-+
- 		priv->echo_skb[idx] = NULL;
- 
- 		return skb;
-@@ -118,7 +123,7 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
- 	struct sk_buff *skb;
- 	u8 len;
- 
--	skb = __can_get_echo_skb(dev, idx, &len);
-+	skb = __can_get_echo_skb(dev, idx, &len, NULL);
- 	if (!skb)
- 		return 0;
- 
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index c90ebbd3008c..5db9da30843c 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -20,7 +20,7 @@ void can_flush_echo_skb(struct net_device *dev);
- int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 		     unsigned int idx);
- struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx,
--				   u8 *len_ptr);
-+				   u8 *len_ptr, unsigned int *frame_len_ptr);
- unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
- void can_free_echo_skb(struct net_device *dev, unsigned int idx);
- struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf);
-@@ -42,11 +42,13 @@ struct sk_buff *alloc_can_err_skb(struct net_device *dev,
-  * struct can_skb_priv - private additional data inside CAN sk_buffs
-  * @ifindex:	ifindex of the first interface the CAN frame appeared on
-  * @skbcnt:	atomic counter to have an unique id together with skb pointer
-+ * @frame_len:	length of CAN frame in data link layer
-  * @cf:		align to the following CAN frame at skb->data
-  */
- struct can_skb_priv {
- 	int ifindex;
- 	int skbcnt;
-+	unsigned int frame_len;
- 	struct can_frame cf[];
- };
- 
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 485c19bc98c2..73245d8836a9 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -757,7 +757,7 @@ static irqreturn_t ti_hecc_interrupt(int irq, void *dev_id)
+ 			stamp = hecc_read_stamp(priv, mbxno);
+ 			stats->tx_bytes +=
+ 				can_rx_offload_get_echo_skb(&priv->offload,
+-							    mbxno, stamp);
++							    mbxno, stamp, NULL);
+ 			stats->tx_packets++;
+ 			can_led_event(ndev, CAN_LED_EVENT_TX);
+ 			--priv->tx_tail;
+diff --git a/include/linux/can/rx-offload.h b/include/linux/can/rx-offload.h
+index f1b38088b765..40882df7105e 100644
+--- a/include/linux/can/rx-offload.h
++++ b/include/linux/can/rx-offload.h
+@@ -44,7 +44,8 @@ int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload);
+ int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
+ 				struct sk_buff *skb, u32 timestamp);
+ unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
+-					 unsigned int idx, u32 timestamp);
++					 unsigned int idx, u32 timestamp,
++					 unsigned int *frame_len_ptr);
+ int can_rx_offload_queue_tail(struct can_rx_offload *offload,
+ 			      struct sk_buff *skb);
+ void can_rx_offload_del(struct can_rx_offload *offload);
 -- 
 2.29.2
 
