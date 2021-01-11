@@ -2,52 +2,52 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2C81C4332D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95562C43381
 	for <linux-can@archiver.kernel.org>; Mon, 11 Jan 2021 14:23:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A97B722473
+	by mail.kernel.org (Postfix) with ESMTP id 71FAB22473
 	for <linux-can@archiver.kernel.org>; Mon, 11 Jan 2021 14:23:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbhAKOXb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1733169AbhAKOXb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 11 Jan 2021 09:23:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36184 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733087AbhAKOXa (ORCPT
+        with ESMTP id S1733084AbhAKOXa (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 11 Jan 2021 09:23:30 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B257C0617AA
-        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 06:22:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9334BC0617A9
+        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 06:22:11 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kyy5C-0007bc-M4
+        id 1kyy5C-0007bU-0Z
         for linux-can@vger.kernel.org; Mon, 11 Jan 2021 15:22:10 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 7D45D5C0F44
-        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 14:19:33 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 6E58D5C0F79
+        for <linux-can@vger.kernel.org>; Mon, 11 Jan 2021 14:19:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4AAE55C0F36;
-        Mon, 11 Jan 2021 14:19:32 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id EC1175C0F53;
+        Mon, 11 Jan 2021 14:19:34 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f4635547;
-        Mon, 11 Jan 2021 14:19:31 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0a3e6ca7;
+        Mon, 11 Jan 2021 14:19:32 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next v3 01/15] MAINTAINERS: CAN network layer: add missing header file can-ml.h
-Date:   Mon, 11 Jan 2021 15:19:16 +0100
-Message-Id: <20210111141930.693847-2-mkl@pengutronix.de>
+Subject: [net-next v3 08/15] can: length: can_fd_len2dlc(): simplify length calculcation
+Date:   Mon, 11 Jan 2021 15:19:23 +0100
+Message-Id: <20210111141930.693847-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210111141930.693847-1-mkl@pengutronix.de>
 References: <20210111141930.693847-1-mkl@pengutronix.de>
@@ -61,27 +61,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch add the can-ml.h to the list of maintained files of the CAN network
-layer.
+If the length paramter in len2dlc() exceeds the size of the len2dlc array, we
+return 0xF. This is equal to the last 16 members of the array.
 
-Fixes: ffd956eef69b ("can: introduce CAN midlayer private and allocate it automatically")
+This patch removes these members from the array, uses ARRAY_SIZE() for the
+length check, and returns CANFD_MAX_DLC (which is 0xf).
+
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/dev/length.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 54fcd5fe572d..c3091a91ebbf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3960,6 +3960,7 @@ W:	https://github.com/linux-can
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
- F:	Documentation/networking/can.rst
-+F:	include/linux/can/can-ml.h
- F:	include/linux/can/core.h
- F:	include/linux/can/skb.h
- F:	include/net/netns/can.h
+diff --git a/drivers/net/can/dev/length.c b/drivers/net/can/dev/length.c
+index 5e7d481717ea..d695a3bee1ed 100644
+--- a/drivers/net/can/dev/length.c
++++ b/drivers/net/can/dev/length.c
+@@ -27,15 +27,13 @@ static const u8 len2dlc[] = {
+ 	13, 13, 13, 13, 13, 13, 13, 13,	/* 25 - 32 */
+ 	14, 14, 14, 14, 14, 14, 14, 14,	/* 33 - 40 */
+ 	14, 14, 14, 14, 14, 14, 14, 14,	/* 41 - 48 */
+-	15, 15, 15, 15, 15, 15, 15, 15,	/* 49 - 56 */
+-	15, 15, 15, 15, 15, 15, 15, 15	/* 57 - 64 */
+ };
+ 
+ /* map the sanitized data length to an appropriate data length code */
+ u8 can_fd_len2dlc(u8 len)
+ {
+-	if (unlikely(len > 64))
+-		return 0xF;
++	if (len > ARRAY_SIZE(len2dlc))
++		return CANFD_MAX_DLC;
+ 
+ 	return len2dlc[len];
+ }
 -- 
 2.29.2
 
