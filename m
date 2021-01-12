@@ -2,82 +2,178 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE282C433DB
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 09:09:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64D98C433DB
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 09:13:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5887B2253A
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 09:09:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2886A22D2A
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 09:13:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388070AbhALJJO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 12 Jan 2021 04:09:14 -0500
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:11224 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388941AbhALJJO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jan 2021 04:09:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610442318;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=Message-Id:Date:Subject:Cc:To:From:From:Subject:Sender;
-        bh=Y2hdyqEH9W0jOqo8WF9Mxe0UWTLLyiqI7gZPa3+rneA=;
-        b=k4nMtEGE5qTCJNho5lQM1eA9eiKRmGNVD6piAeQY1Rtnwp79EHa2AE4pid5BZ0mes2
-        aDI1RLUy4wQtKu7MhGIqq5yEdDjIp7esrag3WwvKHTGy11bZP2zxcyOrQhS0xDfdVzOU
-        QCrV0KNMRzZtqwuYkg4GQXN9penVOw4mChvldHDSH45+4Q/opzbEZPiCDI/W9mFWDanC
-        SDFbec37l29ABb/CfQ0NEil/y3vwHgRFqI0WTIImpQbWpYY8se/7nalUxrO2K3hFrYwY
-        bPe4bdJNeA0BuDpdfvA3JBex9NLuE+tEgvicbVoH2q4GCT+By+9dSzEaxyKcuEzcCJL7
-        IXJQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0k+8CejudJywjsStM+A=="
-X-RZG-CLASS-ID: mo00
-Received: from silver.lan
-        by smtp.strato.de (RZmta 47.12.1 SBL|AUTH)
-        with ESMTPSA id k075acx0C95HKR6
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Tue, 12 Jan 2021 10:05:17 +0100 (CET)
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-To:     mkl@pengutronix.de, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-can@vger.kernel.org
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
+        id S2389625AbhALJND (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 12 Jan 2021 04:13:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389612AbhALJND (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jan 2021 04:13:03 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCFAC061786
+        for <linux-can@vger.kernel.org>; Tue, 12 Jan 2021 01:12:22 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kzFis-0008Rr-74; Tue, 12 Jan 2021 10:12:18 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:6421:fa79:a26c:5f73] (unknown [IPv6:2a03:f580:87bc:d400:6421:fa79:a26c:5f73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 8AB315C195B;
+        Tue, 12 Jan 2021 09:12:16 +0000 (UTC)
+Subject: Re: [PATCH] can: isotp: fix isotp_getname() leak
+To:     Oliver Hartkopp <socketcan@hartkopp.net>, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-can@vger.kernel.org
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
         syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
-Subject: [PATCH] can: isotp: fix isotp_getname() leak
-Date:   Tue, 12 Jan 2021 10:04:57 +0100
-Message-Id: <20210112090457.11262-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.29.2
+References: <20210112090457.11262-1-socketcan@hartkopp.net>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <6c2550bd-0e58-c300-c830-94d38b6ab7c9@pengutronix.de>
+Date:   Tue, 12 Jan 2021 10:12:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210112090457.11262-1-socketcan@hartkopp.net>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="YIzwLljT7ljJXcYJS3G8bBXitGzH3Ev0K"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Initialize the sockaddr_can structure to prevent a data leak to user space.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--YIzwLljT7ljJXcYJS3G8bBXitGzH3Ev0K
+Content-Type: multipart/mixed; boundary="lYslXoyF0lxjIGb8QM8Sy7VJTZBWebtP4";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, kuba@kernel.org,
+ netdev@vger.kernel.org, linux-can@vger.kernel.org
+Cc: Cong Wang <xiyou.wangcong@gmail.com>,
+ syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
+Message-ID: <6c2550bd-0e58-c300-c830-94d38b6ab7c9@pengutronix.de>
+Subject: Re: [PATCH] can: isotp: fix isotp_getname() leak
+References: <20210112090457.11262-1-socketcan@hartkopp.net>
+In-Reply-To: <20210112090457.11262-1-socketcan@hartkopp.net>
 
-Suggested-by: Cong Wang <xiyou.wangcong@gmail.com>
-Reported-by: syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/isotp.c | 1 +
- 1 file changed, 1 insertion(+)
+--lYslXoyF0lxjIGb8QM8Sy7VJTZBWebtP4
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 7839c3b9e5be..3ef7f78e553b 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1153,10 +1153,11 @@ static int isotp_getname(struct socket *sock, struct sockaddr *uaddr, int peer)
- 	struct isotp_sock *so = isotp_sk(sk);
- 
- 	if (peer)
- 		return -EOPNOTSUPP;
- 
-+	memset(addr, 0, sizeof(*addr));
- 	addr->can_family = AF_CAN;
- 	addr->can_ifindex = so->ifindex;
- 	addr->can_addr.tp.rx_id = so->rxid;
- 	addr->can_addr.tp.tx_id = so->txid;
- 
--- 
-2.29.2
+On 1/12/21 10:04 AM, Oliver Hartkopp wrote:
+> Initialize the sockaddr_can structure to prevent a data leak to user sp=
+ace.
+>=20
+> Suggested-by: Cong Wang <xiyou.wangcong@gmail.com>
+> Reported-by: syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
+Can you add a Fixes: tag?
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--lYslXoyF0lxjIGb8QM8Sy7VJTZBWebtP4--
+
+--YIzwLljT7ljJXcYJS3G8bBXitGzH3Ev0K
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/9Z+0ACgkQqclaivrt
+76m+Jwf8DCCDv2N5naXSY4Al71hbHap8TZrnT6whSdb9CR7cHkFnWcVL+S39vxy5
+G3UNZ20mSZ2ZWWefTbQYRs1Nutz5Kg5WustHORueSyuPlVIO91QVgpliP7x55oTU
+UR+rHTtAqYXKiQRYZax4KarGruHXFzzb+MpHHNLIHiyDxrTfn8Yte3wFASdUL85a
+RgMbP16Vu4m76eKh+lhLDpatoEh++SyvuP0zoLfa2PydpmjBYRAjyUs13nwyf15k
+acbiJO+/jhZnNTiC9aZCkwHYooQ2kG5u4DcGHtF1Th8JpzOqqeE97Te7cAWGd8Ua
+6S6a5aiEpMZqeIa0hI1fz4dnk+AbVA==
+=XDiY
+-----END PGP SIGNATURE-----
+
+--YIzwLljT7ljJXcYJS3G8bBXitGzH3Ev0K--
