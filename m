@@ -2,125 +2,86 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BC9DC43333
-	for <linux-can@archiver.kernel.org>; Mon, 11 Jan 2021 19:32:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E005CC433E0
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 00:27:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 854D722CAF
-	for <linux-can@archiver.kernel.org>; Mon, 11 Jan 2021 19:32:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD99F22D57
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 00:27:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391232AbhAKTbn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 11 Jan 2021 14:31:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391107AbhAKTbm (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:31:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8147322A84;
-        Mon, 11 Jan 2021 19:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610393460;
-        bh=CzOgAbq/i/ABHtAiBRihLOwC5OEAFdAAMCCUKs67AEc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hFdsPvgoPadh+Rcv6wB5zxtOUOhZDKRXTw9/6yh73tGF2+Z3NLuyeQ42I3XM4aJBT
-         GaGFmOdms+8Gn6ljLTteqRsLQ9K1J+jWuDwU8xJkJnHiOQEW9FdK9g/LoXe1j/tLPi
-         WjWe8740igQdO0PC93VR8TdTorOkN9ylrL3EAZ76WCmrfUv2FCle7q9hYdlsnCGdbQ
-         zIya+9JHvbOxI+zinzsbyZRATmanJYnDfsE6t1GxW9tdfx5cDivxQnCh2NwjXDUaWv
-         yrvp3pJKtvlz+Hcf3A14Nb1dBnbmGJOrsTL4BD7aNWt5K0xwSq/OP3Fsc+sMJf2YLu
-         jvF4O0x1tn4mA==
-Date:   Mon, 11 Jan 2021 11:30:59 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     syzbot <syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com>,
+        id S2404151AbhALA0F (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 11 Jan 2021 19:26:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404259AbhALARz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 11 Jan 2021 19:17:55 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227D0C061575;
+        Mon, 11 Jan 2021 16:17:15 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id q20so285078pfu.8;
+        Mon, 11 Jan 2021 16:17:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eMOGjx4X1G85YpVaLNWlXD4JxAjkbXS4+mOr5OYo8sI=;
+        b=Ie1Q5gDrHumtlGRP7Ula133n91VU8nJcDCw79dJgUxoeRc1a+Dh6C53LngnDM7NDlL
+         RqQv9nQ+BQU1a7X0h1f7F9f2IRBCZ2zpIwiYAuSYOZSQziDRuQR/8fDKW16zQOmFYdET
+         +Wuqt2VXw6fN7WfnYOc4QXN5um42TIb/K6xEAbHNJVsJFyGjTTS19wqf+dgvNQVkDMEU
+         beS7VJ7MTzF2cG3ISIiuR7gUPTFi12TqokwkboM7btsl/qTZxaiZcc0DVorX8yrauAwE
+         Vle1QlUvtAoSKYZHNWFicaFlLlumHY3Od+z2jAN2sFKB7pRpy6hL7+xlcIL6U02KDV1Y
+         H1FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eMOGjx4X1G85YpVaLNWlXD4JxAjkbXS4+mOr5OYo8sI=;
+        b=PaROZQC/cWOYS8txtBNOvvJpB+L70zrN+MXtWZ5vxEzvn/JmGNzBOKFio2Hzdoper6
+         AmtTCJFUFLR8kCAXGayzFtHGE1rEjxnXmuBf2ksjCE1D8eVx9irjR24c82vuXzL78Oyt
+         C4ok5Wl9Nywk0P+uM7wB0oo4n66OMNdmZwVwtiesfQ5cZG1VgK5eNjLuYEVKVTUF48FJ
+         vHLc55IhnyoM0Z37C0onhulS2K7b5PDsdBJDqTDZDQQoE1HLVbIA/YWoYCKmcEVT3Llf
+         UDghlj+KXF9oAuVqqXYw08nwVLg/vLNKsDdnPYMhJIFEa3UR96Ba/SuXQnMxrwb/w7gC
+         Uk1g==
+X-Gm-Message-State: AOAM532QPvH7gQa7ZSkyfkDaXQV0TWJ4sj+TUPX8Y9Y79BeaWcPJlH/4
+        rjpKj+EBK9ln+1wxohTOAQM9pUOAtPHamrnXqVo=
+X-Google-Smtp-Source: ABdhPJzUpY3jMAx5iegF3WyYbaQBMHOy/tXVFcIxoYLTA1mDgn+AAvvsNB7b1iBngqOrnpfKH2KrRR1i7EuVDUA7f+o=
+X-Received: by 2002:a62:808d:0:b029:19e:b084:d5b0 with SMTP id
+ j135-20020a62808d0000b029019eb084d5b0mr1862142pfd.80.1610410634548; Mon, 11
+ Jan 2021 16:17:14 -0800 (PST)
+MIME-Version: 1.0
+References: <00000000000019908405b8891f9d@google.com> <20210111113059.42de599d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210111113059.42de599d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 11 Jan 2021 16:17:03 -0800
+Message-ID: <CAM_iQpXbARpYRxFv4g2gC1+oPfdpKx8mMD_7d6BjWr5mPn3nrg@mail.gmail.com>
+Subject: Re: KMSAN: kernel-infoleak in move_addr_to_user (4)
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     syzbot <syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com>,
         Robin van der Gracht <robin@protonic.nl>,
         Oleksij Rempel <o.rempel@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org
-Cc:     davem@davemloft.net, glider@google.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: KMSAN: kernel-infoleak in move_addr_to_user (4)
-Message-ID: <20210111113059.42de599d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <00000000000019908405b8891f9d@google.com>
-References: <00000000000019908405b8891f9d@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        linux-can@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Alexander Potapenko <glider@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Looks like a AF_CAN socket:
+On Mon, Jan 11, 2021 at 11:33 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> Looks like a AF_CAN socket:
+>
+> r0 = socket(0x1d, 0x2, 0x6)
+> getsockname$packet(r0, &(0x7f0000000100)={0x11, 0x0, 0x0, 0x1, 0x0, 0x6, @broadcast}, &(0x7f0000000000)=0x14)
+>
 
-r0 = socket(0x1d, 0x2, 0x6)
-getsockname$packet(r0, &(0x7f0000000100)={0x11, 0x0, 0x0, 0x1, 0x0, 0x6, @broadcast}, &(0x7f0000000000)=0x14)
+Right, it seems we need a memset(0) in isotp_getname().
 
-
-On Sun, 10 Jan 2021 02:19:15 -0800 syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
-> git tree:       https://github.com/google/kmsan.git master
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15c8b8c7500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
-> dashboard link: https://syzkaller.appspot.com/bug?extid=057884e2f453e8afebc8
-> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101520c7500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100b8f4f500000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
-> 
-> =====================================================
-> BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
-> CPU: 0 PID: 8245 Comm: syz-executor868 Not tainted 5.10.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x21c/0x280 lib/dump_stack.c:118
->  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
->  kmsan_internal_check_memory+0x202/0x520 mm/kmsan/kmsan.c:402
->  kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
->  instrument_copy_to_user include/linux/instrumented.h:121 [inline]
->  _copy_to_user+0x1af/0x270 lib/usercopy.c:33
->  copy_to_user include/linux/uaccess.h:209 [inline]
->  move_addr_to_user+0x3a2/0x640 net/socket.c:237
->  __sys_getsockname+0x407/0x5d0 net/socket.c:1906
->  __do_sys_getsockname net/socket.c:1917 [inline]
->  __se_sys_getsockname+0x91/0xb0 net/socket.c:1914
->  __x64_sys_getsockname+0x4a/0x70 net/socket.c:1914
->  do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x441219
-> Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007ffe3c24eaf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000033
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441219
-> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 0000000000000003
-> RBP: 00000000006cb018 R08: 00000000004002c8 R09: 00000000004002c8
-> R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000401fc0
-> R13: 0000000000402050 R14: 0000000000000000 R15: 0000000000000000
-> 
-> Local variable ----address@__sys_getsockname created at:
->  __sys_getsockname+0x91/0x5d0 net/socket.c:1891
->  __sys_getsockname+0x91/0x5d0 net/socket.c:1891
-> 
-> Bytes 2-3 of 20 are uninitialized
-> Memory access of size 20 starts at ffff888124bbbdf0
-> Data copied to user address 0000000020000100
-> =====================================================
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
-
+Thanks.
