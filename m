@@ -2,49 +2,62 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B407C43381
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 00:27:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ED65C433DB
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 02:15:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 09CAE22D5A
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 00:27:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2670622510
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 02:15:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404137AbhALA0F (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 11 Jan 2021 19:26:05 -0500
-Received: from mail-yb1-f181.google.com ([209.85.219.181]:33122 "EHLO
-        mail-yb1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404219AbhALABZ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 11 Jan 2021 19:01:25 -0500
-Received: by mail-yb1-f181.google.com with SMTP id o144so526977ybc.0;
-        Mon, 11 Jan 2021 16:01:09 -0800 (PST)
+        id S1728203AbhALCPF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 11 Jan 2021 21:15:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727426AbhALCPE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 11 Jan 2021 21:15:04 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDE7C061575;
+        Mon, 11 Jan 2021 18:14:24 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id v19so392862pgj.12;
+        Mon, 11 Jan 2021 18:14:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HKwXEUt2KV6yKFtidI9ws3+xlcJfaSAZDwRiqf3lrro=;
+        b=hYKPwKhE2oU3iWkqGCpi/yuf+O+T231tjBRvlO+6Xuu+HiZZQG9uWqHKQ9HHbqY1A2
+         eRVIfiz8M/v9v7O5bbkyxPZoXS2fgBWJ+TGb3j4CZwAaB/qDjDR/fPKl2Cb7GbMMF3Mg
+         UbW7/Wpy3gAOpMn3Th39IycQtbDbx3OkfVF0e9iS4B7oMhteQDfQfFPJLjMAklqxS/G8
+         2bTDftSWBMaKyPUGu4tSigE6dCpa4hch6hTYrjTPssQuYz4CgkBjEeetRkAoo1akqVfx
+         KTwg+kupB2acjFapYmLz0tXVDvKIR7HIJ30yRvuu+kKgijJ2iQGPYnWb3rPvQuAtuO1l
+         fb0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WYFvp4pRAM4I/ettmtAye/8Q4IbY3OpbPnErkgoce1U=;
-        b=OAHGanJiW1cArupnEBR8NfBR2WjUwgS3dXjbElol9ZSNHBHL+eBYDVqrFWR22MnERr
-         4k4aS7O6nv4zDe5KK/s6jTpxAiS2s7JUGkf8nkaTuG32nMIHCiYz0gA6r5qCeCDPrFw2
-         2V0asE6R8OTsCKUepwZeMUldbGEOsEO4QpzFKfLry/JvU/1hNnFotXk++W28UWJzkR1F
-         KhE2l4HR64WPTQVMj28TIWyhir/mD9RIoooLFvyWYrF33IrIuwvjl/RvwFcwgdi2UPkQ
-         +E9SRppB9DVgD0BF655ylTHsmKtR2fApzKY3Lak5nnx75F0oSZSOeXrNi1tT8tW+ZQwB
-         K6DQ==
-X-Gm-Message-State: AOAM533mB8I9pPOJLAMux7db2iSO1+w6vVD8VaVp/1AxO+QzDLx++Hc4
-        6hrYKcBujH3PIPrvzsIVuxJ7dgt8mN8clMGe08w=
-X-Google-Smtp-Source: ABdhPJyZU2BdSQ+kFkk8X57TMyaU2YTJdJxlj5Zf+wUs4Crk+U/tbWoCABMCQIpaDWVbmxIKdlTqvyvx3vtp86RICU4=
-X-Received: by 2002:a05:6902:4f4:: with SMTP id w20mr3149495ybs.125.1610409643862;
- Mon, 11 Jan 2021 16:00:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20210110124903.109773-1-mailhol.vincent@wanadoo.fr>
- <20210110124903.109773-2-mailhol.vincent@wanadoo.fr> <20210111171152.GB11715@hoboy.vegasvil.org>
-In-Reply-To: <20210111171152.GB11715@hoboy.vegasvil.org>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Tue, 12 Jan 2021 09:00:33 +0900
-Message-ID: <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] can: dev: add software tx timestamps
-To:     Richard Cochran <richardcochran@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HKwXEUt2KV6yKFtidI9ws3+xlcJfaSAZDwRiqf3lrro=;
+        b=UsPk3k6N5ZwnyZZ1r8YQ401zATF4lSHEmnrvXv77MH3D5aZdjnVpjB+sde8xFXcyyn
+         GobG6sngSX5GFWvaTvfCFGaDC03y1XPH5DzDucrZs+mvCXs9OYi/Y3p4QPymGSEXaYOZ
+         b4qsvXY87/dui5Xk35t7apEb4d3UNfMJLJLAoG1WIhYxlFvnyx2diHMurWCYx6y0lB5a
+         Prak/tCHApg7aBs86B8huJoCQRJckPR8PBQuZCX3L5Zw8jDcO2aCy7UsPurwBdkR5dEj
+         2cSK8csVFKEWocCZuR271RpzGyKozrHlKfIxJ7T9YZ+KuFETQY1HM+CnGoYq0TTcV23K
+         9FSA==
+X-Gm-Message-State: AOAM530oRW1cQyRnPxPgwChYPZz2MoOAAKM6uwEzAg9yZGazYuRpFGeq
+        VfKWAfWU3cs1sUUM0+fZmKY=
+X-Google-Smtp-Source: ABdhPJw9slzE8OzBbO4J+eiwaR63/+A8LmJOYK2IcTk2DUpF3XBWYgYkRWdbJ2m7CsHVB3685yLJQA==
+X-Received: by 2002:a62:1ad3:0:b029:19d:cc02:5d07 with SMTP id a202-20020a621ad30000b029019dcc025d07mr2302990pfa.70.1610417663981;
+        Mon, 11 Jan 2021 18:14:23 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id i25sm1092775pgb.33.2021.01.11.18.14.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 18:14:22 -0800 (PST)
+Date:   Mon, 11 Jan 2021 18:14:20 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
 Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
         linux-can <linux-can@vger.kernel.org>,
         Jeroen Hofstee <jhofstee@victronenergy.com>,
@@ -53,39 +66,33 @@ Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Jakub Kicinski <kuba@kernel.org>,
         "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v3 1/1] can: dev: add software tx timestamps
+Message-ID: <20210112021420.GA18703@hoboy.vegasvil.org>
+References: <20210110124903.109773-1-mailhol.vincent@wanadoo.fr>
+ <20210110124903.109773-2-mailhol.vincent@wanadoo.fr>
+ <20210111171152.GB11715@hoboy.vegasvil.org>
+ <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue. 12 Jan 2021 at 02:11, Richard Cochran <richardcochran@gmail.com> wrote:
->
-> On Sun, Jan 10, 2021 at 09:49:03PM +0900, Vincent Mailhol wrote:
-> >   * The hardware rx timestamp of a local loopback message is the
-> >     hardware tx timestamp. This means that there are no needs to
-> >     implement SOF_TIMESTAMPING_TX_HARDWARE for CAN sockets.
->
-> I can't agree with that statement.  The local loopback is a special
-> "feature" of CAN sockets, and some programs turn it off.  Furthermore,
-> requiring user space to handle CAN sockets differently WRT Tx time
-> stamps is user-unfriendly.  So I would strongly support adding
-> SOF_TIMESTAMPING_TX_HARDWARE to the CAN layer in the future.
->
-> (This isn't a criticism of the current patch, though.)
+On Tue, Jan 12, 2021 at 09:00:33AM +0900, Vincent MAILHOL wrote:
+> Out of curiosity, which programs do you use? I guess wireshark
+> but please let me know if you use any other programs (I just use
+> to write a small C program to do the stuff).
 
-Fair enough. Implementing SOF_TIMESTAMPING_TX_HARDWARE would
-result into having the timestamp being duplicated for the
-loopback frames but allowing existing programs to work as
-with no modifications is a good enough reason.
+I was thinking of PTP over DeviceNET (which, in turn, is over CAN).
+This is specified in Annex G of IEEE 1588.
 
-Out of curiosity, which programs do you use? I guess wireshark
-but please let me know if you use any other programs (I just use
-to write a small C program to do the stuff).
+The linuxptp stack has modular design and could one day support
+DeviceNET.  It would be much easier for linuxptp if CAN interfaces
+support hardware time stamping in the same way as other network
+interfaces.
 
-Mark: do you want me to send a v4 of that patch with above
-comment removed or can you directly do the change in your testing
-branch?
-
-
-Yours sincerely,
-Vincent
+Thanks,
+Richard
