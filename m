@@ -2,90 +2,83 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1082BC433DB
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 09:15:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 927EDC433E0
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 09:20:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D9E6422E00
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 09:15:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4120E22DFB
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jan 2021 09:20:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbhALJPO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 12 Jan 2021 04:15:14 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:33304 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729821AbhALJPM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jan 2021 04:15:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610442740;
+        id S2390545AbhALJTp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 12 Jan 2021 04:19:45 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.170]:35325 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390629AbhALJTp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jan 2021 04:19:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610443010;
         s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:From:
-        Subject:Sender;
-        bh=EpANNDf4CjUjzP+5Duuu4ccpZXLfRAhsfQONK2YZNGg=;
-        b=bgvcK7GXH0Vvpumu/P+f5q99UlmuxgOmab7w9aKvYCYbRp++isVY+toj/UeF9C2nD0
-        JxYIoXxsnQnqMyCFoE6xTa4dfipgQJSnzhA6LQGA5aGeRVOKqyf0ZpT4awZkIJbLXnhh
-        bLluvnz5Ry2d236I6x4bFWKCj0HMmzFuTdvq24dsGRD+iF+q8AcTNFJtypF6cScOW7JX
-        NW7+xzc3YHJFpZelAq9wZFQ5BmQw3M62I+ek35ggiha8ZgAcb+fNPM3Vy2CPM/OWfFwG
-        wy3BJgn2kSPkUUlfJ8I/fM0AXUlsJ+ywh0HZXjXKKJ3bz6hOJ+lg7UOWu3cBsGwH/8Jk
-        Wpig==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR9J8xty10="
+        h=Message-Id:Date:Subject:Cc:To:From:From:Subject:Sender;
+        bh=7pyP7lDPNTdyYupdnAeIGcGbSW38pPi0EFXIRuaqpWM=;
+        b=M+z8MJxUPTlJOs1e3fOCXx8NZJLoWPR8oLynNpJ1HuNfvrCFcNwCCO3h+Nu5FoHn19
+        rTxm5V//KPD6EwM3BnSeXjQY56kG1negx8b4K6j9ZesmgKfscGWKvjPHAPTbP3DcJ5SR
+        /Mz15CkL2DVBhMVtGokY9JbDVF8qslMhFAD+kmfUFysrFjJDqcwYw0pUkDdP+DPZQ7JR
+        F/U+8V4ffcE7E8f9Tzj+vuoJK71RSZKWAWGhupcWMCDB4IC0QnQupxbMMbwRyzGmdhwb
+        chIyEtaKnL3xzVC61YUe83v906bbNoEGqSVZ6kifpzNqlxsC3Uu/U+16JGfI78Ca+DPk
+        x4+w==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0k+8CejudJywjsStM+A=="
 X-RZG-CLASS-ID: mo00
-Received: from [192.168.10.137]
+Received: from silver.lan
         by smtp.strato.de (RZmta 47.12.1 SBL|AUTH)
-        with ESMTPSA id k075acx0C9C7KTC
+        with ESMTPSA id k075acx0C9GnKUa
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Tue, 12 Jan 2021 10:12:07 +0100 (CET)
-Subject: Re: KMSAN: kernel-infoleak in move_addr_to_user (4)
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     syzbot <syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Alexander Potapenko <glider@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <00000000000019908405b8891f9d@google.com>
- <20210111113059.42de599d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAM_iQpXbARpYRxFv4g2gC1+oPfdpKx8mMD_7d6BjWr5mPn3nrg@mail.gmail.com>
+        Tue, 12 Jan 2021 10:16:49 +0100 (CET)
 From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <b8606599-22ce-85af-21df-0a1c4a8f174b@hartkopp.net>
-Date:   Tue, 12 Jan 2021 10:12:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+To:     mkl@pengutronix.de, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
+Subject: [PATCH v2] can: isotp: fix isotp_getname() leak
+Date:   Tue, 12 Jan 2021 10:16:43 +0100
+Message-Id: <20210112091643.11789-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpXbARpYRxFv4g2gC1+oPfdpKx8mMD_7d6BjWr5mPn3nrg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Initialize the sockaddr_can structure to prevent a data leak to user space.
 
+Suggested-by: Cong Wang <xiyou.wangcong@gmail.com>
+Reported-by: syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/isotp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 12.01.21 01:17, Cong Wang wrote:
-> On Mon, Jan 11, 2021 at 11:33 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> Looks like a AF_CAN socket:
->>
->> r0 = socket(0x1d, 0x2, 0x6)
->> getsockname$packet(r0, &(0x7f0000000100)={0x11, 0x0, 0x0, 0x1, 0x0, 0x6, @broadcast}, &(0x7f0000000000)=0x14)
->>
-> 
-> Right, it seems we need a memset(0) in isotp_getname().
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 7839c3b9e5be..3ef7f78e553b 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1153,10 +1153,11 @@ static int isotp_getname(struct socket *sock, struct sockaddr *uaddr, int peer)
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 
+ 	if (peer)
+ 		return -EOPNOTSUPP;
+ 
++	memset(addr, 0, sizeof(*addr));
+ 	addr->can_family = AF_CAN;
+ 	addr->can_ifindex = so->ifindex;
+ 	addr->can_addr.tp.rx_id = so->rxid;
+ 	addr->can_addr.tp.tx_id = so->txid;
+ 
+-- 
+2.29.2
 
-Yes m(
-
-Sent a patch to fix it:
-
-https://lore.kernel.org/linux-can/20210112090457.11262-1-socketcan@hartkopp.net/T/#u
-
-Many thanks!
-
-Oliver
