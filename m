@@ -2,52 +2,55 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3724C432C3
-	for <linux-can@archiver.kernel.org>; Thu, 14 Jan 2021 02:16:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7624DC433E9
+	for <linux-can@archiver.kernel.org>; Thu, 14 Jan 2021 02:16:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7A93C23359
-	for <linux-can@archiver.kernel.org>; Thu, 14 Jan 2021 02:16:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 352F423359
+	for <linux-can@archiver.kernel.org>; Thu, 14 Jan 2021 02:16:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbhANCQA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 13 Jan 2021 21:16:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        id S1728985AbhANCQp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 13 Jan 2021 21:16:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728968AbhAMVW5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 13 Jan 2021 16:22:57 -0500
+        with ESMTP id S1729043AbhAMVQZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 13 Jan 2021 16:16:25 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDB1C061795
-        for <linux-can@vger.kernel.org>; Wed, 13 Jan 2021 13:22:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5820DC0617BD
+        for <linux-can@vger.kernel.org>; Wed, 13 Jan 2021 13:14:33 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1kznac-0002wN-UR
-        for linux-can@vger.kernel.org; Wed, 13 Jan 2021 22:22:02 +0100
+        id 1kznTL-0001rP-UE
+        for linux-can@vger.kernel.org; Wed, 13 Jan 2021 22:14:32 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DEC695C30E3
-        for <linux-can@vger.kernel.org>; Wed, 13 Jan 2021 21:22:00 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 6D6E85C3068
+        for <linux-can@vger.kernel.org>; Wed, 13 Jan 2021 21:14:23 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id EC5BE5C30D7;
-        Wed, 13 Jan 2021 21:21:59 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 649785C3012;
+        Wed, 13 Jan 2021 21:14:13 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 506d9869;
-        Wed, 13 Jan 2021 21:21:59 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 441fa3fc;
+        Wed, 13 Jan 2021 21:14:11 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: pull-request: can 2021-01-13
-Date:   Wed, 13 Jan 2021 22:21:56 +0100
-Message-Id: <20210113212158.925513-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [net-next 12/17] can: dev: extend struct can_skb_priv to hold CAN frame length
+Date:   Wed, 13 Jan 2021 22:14:05 +0100
+Message-Id: <20210113211410.917108-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210113211410.917108-1-mkl@pengutronix.de>
+References: <20210113211410.917108-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -58,45 +61,105 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+In order to implement byte queue limits (bql) in CAN drivers, the length of the
+CAN frame needs to be passed into the networking stack after queueing and after
+transmission completion.
 
-this is a pull request of 2 patches for net/master.
+To avoid to calculate this length twice, extend the struct can_skb_priv to hold
+the length of the CAN frame and extend __can_get_echo_skb() to return that
+value.
 
-The first patch is by Oliver Hartkopp for the CAn ISO-TP protocol and fixes a
-kernel information leak to userspace.
-
-The last patch is by Qinglang Miao for the mcp251xfd driver and fixes a NULL
-pointer check to work on the correct variable.
-
-regards,
-Marc
-
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/r/20210111141930.693847-12-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/dev/rx-offload.c | 2 +-
+ drivers/net/can/dev/skb.c        | 9 +++++++--
+ include/linux/can/skb.h          | 4 +++-
+ 3 files changed, 11 insertions(+), 4 deletions(-)
 
-The following changes since commit a95d25dd7b94a5ba18246da09b4218f132fed60e:
-
-  rxrpc: Call state should be read with READ_ONCE() under some circumstances (2021-01-13 10:38:20 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.11-20210113
-
-for you to fetch changes up to ca4c6ebeeb50112f5178f14bfb6d9e8ddf148545:
-
-  can: mcp251xfd: mcp251xfd_handle_rxif_one(): fix wrong NULL pointer check (2021-01-13 22:16:16 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.11-20210113
-
-----------------------------------------------------------------
-Oliver Hartkopp (1):
-      can: isotp: isotp_getname(): fix kernel information leak
-
-Qinglang Miao (1):
-      can: mcp251xfd: mcp251xfd_handle_rxif_one(): fix wrong NULL pointer check
-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 2 +-
- net/can/isotp.c                                | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
+index 3c1912c0430b..6a26b5282df1 100644
+--- a/drivers/net/can/dev/rx-offload.c
++++ b/drivers/net/can/dev/rx-offload.c
+@@ -271,7 +271,7 @@ unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
+ 	u8 len;
+ 	int err;
+ 
+-	skb = __can_get_echo_skb(dev, idx, &len);
++	skb = __can_get_echo_skb(dev, idx, &len, NULL);
+ 	if (!skb)
+ 		return 0;
+ 
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index 26cd597ff771..24f782a23409 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -76,7 +76,8 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ EXPORT_SYMBOL_GPL(can_put_echo_skb);
+ 
+ struct sk_buff *
+-__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
++__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr,
++		   unsigned int *frame_len_ptr)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+ 
+@@ -91,6 +92,7 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
+ 		 * length is supported on both CAN and CANFD frames.
+ 		 */
+ 		struct sk_buff *skb = priv->echo_skb[idx];
++		struct can_skb_priv *can_skb_priv = can_skb_prv(skb);
+ 		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+ 
+ 		/* get the real payload length for netdev statistics */
+@@ -99,6 +101,9 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
+ 		else
+ 			*len_ptr = cf->len;
+ 
++		if (frame_len_ptr)
++			*frame_len_ptr = can_skb_priv->frame_len;
++
+ 		priv->echo_skb[idx] = NULL;
+ 
+ 		return skb;
+@@ -118,7 +123,7 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
+ 	struct sk_buff *skb;
+ 	u8 len;
+ 
+-	skb = __can_get_echo_skb(dev, idx, &len);
++	skb = __can_get_echo_skb(dev, idx, &len, NULL);
+ 	if (!skb)
+ 		return 0;
+ 
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index c90ebbd3008c..5db9da30843c 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -20,7 +20,7 @@ void can_flush_echo_skb(struct net_device *dev);
+ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 		     unsigned int idx);
+ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx,
+-				   u8 *len_ptr);
++				   u8 *len_ptr, unsigned int *frame_len_ptr);
+ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
+ void can_free_echo_skb(struct net_device *dev, unsigned int idx);
+ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf);
+@@ -42,11 +42,13 @@ struct sk_buff *alloc_can_err_skb(struct net_device *dev,
+  * struct can_skb_priv - private additional data inside CAN sk_buffs
+  * @ifindex:	ifindex of the first interface the CAN frame appeared on
+  * @skbcnt:	atomic counter to have an unique id together with skb pointer
++ * @frame_len:	length of CAN frame in data link layer
+  * @cf:		align to the following CAN frame at skb->data
+  */
+ struct can_skb_priv {
+ 	int ifindex;
+ 	int skbcnt;
++	unsigned int frame_len;
+ 	struct can_frame cf[];
+ };
+ 
+-- 
+2.29.2
 
 
