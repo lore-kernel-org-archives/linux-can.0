@@ -2,152 +2,182 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11897C433E0
-	for <linux-can@archiver.kernel.org>; Thu, 14 Jan 2021 15:36:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 434B6C433DB
+	for <linux-can@archiver.kernel.org>; Thu, 14 Jan 2021 15:54:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C580E23B3E
-	for <linux-can@archiver.kernel.org>; Thu, 14 Jan 2021 15:36:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 07D1022210
+	for <linux-can@archiver.kernel.org>; Thu, 14 Jan 2021 15:54:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbhANPgQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 14 Jan 2021 10:36:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728080AbhANPgP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 14 Jan 2021 10:36:15 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047EAC0613D6
-        for <linux-can@vger.kernel.org>; Thu, 14 Jan 2021 07:34:57 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1l04eF-0004YX-K9
-        for linux-can@vger.kernel.org; Thu, 14 Jan 2021 16:34:55 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 319185C3C7C
-        for <linux-can@vger.kernel.org>; Thu, 14 Jan 2021 15:34:53 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 56FCF5C3C5D;
-        Thu, 14 Jan 2021 15:34:50 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 60a187ce;
-        Thu, 14 Jan 2021 15:34:49 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     kernel@pengutronix.de, linux-can@vger.kernel.org
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Thomas Kopp <thomas.kopp@microchip.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5/6] can: mcp251xfd: add len8_dlc support
-Date:   Thu, 14 Jan 2021 16:34:47 +0100
-Message-Id: <20210114153448.1506901-6-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210114153448.1506901-1-mkl@pengutronix.de>
-References: <20210114153448.1506901-1-mkl@pengutronix.de>
+        id S1726298AbhANPyb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 14 Jan 2021 10:54:31 -0500
+Received: from mail-qk1-f177.google.com ([209.85.222.177]:39135 "EHLO
+        mail-qk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbhANPyb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 14 Jan 2021 10:54:31 -0500
+Received: by mail-qk1-f177.google.com with SMTP id p14so8606043qke.6;
+        Thu, 14 Jan 2021 07:54:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oER94ISeeQp8C2fada71qvbSp81ji9VD0JCVbzgzuL4=;
+        b=UwkfeYjnG+xELWW0nR1ZGqfKr4pk1KYx9rDg32/zQvV28e9E7qr+EWkvYrmBu/yvxd
+         rC6cB6hZPcNviBzQ1xBZJlXtPJ1WILT6tPsb8jzeSic7iIp1uAu4t8qJBh2k7n5KH7pe
+         XHPy7N3U8NNPA2IGo7yUcpD8xnwU3J1A1fX8Kc3bWi/vIfDRK5zWNSz0g36FEq1H0Hrn
+         Ddt6Jc22HQmzw9YkOFbIheNt7VWMa1YcsKBXCqaXZLpBsXDauAA1QXJ/Te7KYEW0cM5N
+         XLzSGe/VKmUGFdk2PO3tBK/H3AUpFweYlgjXWACkaqTeEOWTCvqkQ4ICYZHm4f2szHjf
+         yG6A==
+X-Gm-Message-State: AOAM532i4X0GDuAZylgdDyVp4dGeCEgpMMDwmtmn1FOPONsrOH0VAQtS
+        plDWDrG1i9vkk0Lc2mw4QXtdbk5obpBPIamHpko=
+X-Google-Smtp-Source: ABdhPJwu8omCz5uioYXNhdJ3CclkR43ziBbBIlt918T2EGG/rjJeqVk9QiPFKxeYRYlA2oOum9+PYLCgWDgdMeRjCoA=
+X-Received: by 2002:a25:d84:: with SMTP id 126mr4336174ybn.145.1610639629162;
+ Thu, 14 Jan 2021 07:53:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+References: <20210112130538.14912-1-mailhol.vincent@wanadoo.fr>
+ <20210112130538.14912-2-mailhol.vincent@wanadoo.fr> <7643bd48-6594-9ede-b791-de6e155c62c1@pengutronix.de>
+ <CAMZ6Rq+HggK2HHkPn_QTKzz-niyiU8AkHc4rP5AXE+AqJmkbrg@mail.gmail.com> <24603b31-fe7b-1f03-4939-fa074f471239@pengutronix.de>
+In-Reply-To: <24603b31-fe7b-1f03-4939-fa074f471239@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Fri, 15 Jan 2021 00:53:37 +0900
+Message-ID: <CAMZ6RqL4xW0WsJO=m-r8DTSDJai31GPtMM6zZYXZYHiwQ5hAPA@mail.gmail.com>
+Subject: Re: [PATCH v10 1/1] can: usb: etas_es58X: add support for ETAS ES58X
+ CAN USB interfaces
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jimmy Assarsson <extja@kvaser.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "open list : NETWORKING DRIVERS" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds support for the Classical CAN raw DLC functionality to send and
-receive DLC values from 9 ... 15 to the mcp251xfd driver.
+On Tue. 14 janv. 2021 at 01:04, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+>
+> On 1/13/21 1:15 PM, Vincent MAILHOL wrote:
+> >>> +/**
+> >>> + * es58x_calculate_crc() - Compute the crc16 of a given URB.
+> >>> + * @urb_cmd: The URB command for which we want to calculate the CRC.
+> >>> + * @urb_len: Length of @urb_cmd. Must be at least bigger than 4
+> >>> + *   (ES58X_CRC_CALC_OFFSET + sizeof(crc))
+> >>> + *
+> >>> + * Return: crc16 value.
+> >>> + */
+> >>> +static u16 es58x_calculate_crc(const union es58x_urb_cmd *urb_cmd, u16 urb_len)
+> >>> +{
+> >>> +     u16 crc;
+> >>> +     ssize_t len = urb_len - ES58X_CRC_CALC_OFFSET - sizeof(crc);
+> >>> +
+> >>> +     WARN_ON(len < 0);
+> >>
+> >> Is it possible to ensure earlier, that the urbs are of correct length?
+> >
+> > Easy answer: it is ensured.
+>
+> Okay, then get rid of those checks :)
+>
+> > On the Tx branch, I create the urbs so I
+> > know for sure that the length is correct. On the Rx branch, I have a
+> > dedicated function: es58x_check_rx_urb() for this purpose.  I
+> > will remove that WARN_ON() and the one in es58x_get_crc().
+> >
+> > I will also check the other WARN_ON() in my code to see if they
+> > can be removed (none on my test throughout the last ten months or
+> > so could trigger any of these WARN_ON() so should be fine to
+> > remove but I will double check).
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 23 ++++++++++++-------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+Checked, all WARN_ON() will be removed in v11.
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index f6e684210689..9ffcfd64b904 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -1438,6 +1438,7 @@ mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
- 			   struct sk_buff *skb)
- {
- 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
-+	u8 dlc;
- 
- 	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_IDE) {
- 		u32 sid, eid;
-@@ -1453,9 +1454,10 @@ mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
- 					hw_rx_obj->id);
- 	}
- 
-+	dlc = FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC, hw_rx_obj->flags);
-+
- 	/* CANFD */
- 	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF) {
--		u8 dlc;
- 
- 		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_ESI)
- 			cfd->flags |= CANFD_ESI;
-@@ -1463,14 +1465,13 @@ mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
- 		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_BRS)
- 			cfd->flags |= CANFD_BRS;
- 
--		dlc = FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC, hw_rx_obj->flags);
- 		cfd->len = can_fd_dlc2len(dlc);
- 	} else {
- 		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR)
- 			cfd->can_id |= CAN_RTR_FLAG;
- 
--		cfd->len = can_cc_dlc2len(FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC,
--						 hw_rx_obj->flags));
-+		can_frame_set_cc_len((struct can_frame *)cfd, dlc,
-+				     priv->can.ctrlmode);
- 	}
- 
- 	if (!(hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR))
-@@ -2322,9 +2323,7 @@ mcp251xfd_tx_obj_from_skb(const struct mcp251xfd_priv *priv,
- 	 * harm, only the lower 7 bits will be transferred into the
- 	 * TEF object.
- 	 */
--	dlc = can_fd_len2dlc(cfd->len);
--	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_SEQ_MCP2518FD_MASK, seq) |
--		FIELD_PREP(MCP251XFD_OBJ_FLAGS_DLC, dlc);
-+	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_SEQ_MCP2518FD_MASK, seq);
- 
- 	if (cfd->can_id & CAN_RTR_FLAG)
- 		flags |= MCP251XFD_OBJ_FLAGS_RTR;
-@@ -2340,8 +2339,15 @@ mcp251xfd_tx_obj_from_skb(const struct mcp251xfd_priv *priv,
- 
- 		if (cfd->flags & CANFD_BRS)
- 			flags |= MCP251XFD_OBJ_FLAGS_BRS;
-+
-+		dlc = can_fd_len2dlc(cfd->len);
-+	} else {
-+		dlc = can_get_cc_dlc((struct can_frame *)cfd,
-+				     priv->can.ctrlmode);
- 	}
- 
-+	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_DLC, dlc);
-+
- 	load_buf = &tx_obj->buf;
- 	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_TX)
- 		hw_tx_obj = &load_buf->crc.hw_tx_obj;
-@@ -2893,7 +2899,8 @@ static int mcp251xfd_probe(struct spi_device *spi)
- 	priv->can.data_bittiming_const = &mcp251xfd_data_bittiming_const;
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
- 		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_BERR_REPORTING |
--		CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO;
-+		CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO |
-+		CAN_CTRLMODE_CC_LEN8_DLC;
- 	priv->ndev = ndev;
- 	priv->spi = spi;
- 	priv->rx_int = rx_int;
--- 
-2.29.2
+> >>> +struct es58x_priv {
+> >>> +     struct can_priv can;
+> >>> +     struct es58x_device *es58x_dev;
+> >>> +     struct urb *tx_urb;
+> >>> +
+> >>> +     spinlock_t echo_skb_spinlock;   /* Comments: c.f. supra */
+> >>> +     u32 current_packet_idx;
+> >>> +     u16 echo_skb_tail_idx;
+> >>> +     u16 echo_skb_head_idx;
+> >>> +     u16 num_echo_skb;
+> >>
+> >> Can you explain me how the tx-path works, especially why you need the
+> >> current_packet_idx.
+> >>
+> >> In the mcp251xfd driver, the number of TX buffers is a power of two, that makes
+> >> things easier. tx_heads % len points to the next buffer to be filled, tx_tail %
+> >> len points to the next buffer to be completed. tx_head - tx_tail is the fill
+> >> level of the FIFO. This works without spinlocks.
+> >
+> > For what I understand of your explanations here are the equivalences
+> > between the etas_es58x and the mcp251xfd drivers:
+> >
+> >  +--------------------+-------------------+
+> >  | etas_es58x         | mcp251xfd         |
+> >  +--------------------+-------------------+
+> >  | current_packet_idx | tx_head           |
+> >  | echo_skb_tail_idx  | tx_tail % len     |
+> >  | echo_skb_head_idx  | tx_head % len     |
+> >  | num_echo_skb       | tx_head - tx_tail |
+> >  +--------------------+-------------------+
+> >
+> > Especially, the current_packet_idx is sent to the device and returned
+> > to the driver upon completion.
+>
+> Is current_packet_idx used only for the TX-PATH?
+
+It is used in the RX path of loopback packet. When a packet comes
+back, its index should be equal to current_packet_idx -
+num_echo_skb. I use this in es58x_can_get_echo_skb() to check
+that there are no packet drops.
+
+Of course, if the FIFO size is a power of two, the
+current_packet_idx would become useless.
+
+> > I wish the TX buffers were a power of two which is unfortunately not
+> > the case. The theoretical TX buffer sizes are 330 and 500 for the two
+> > devices so I wrote the code to work with those values. The exact size
+> > of the TX buffer is actually even more of a mystery because during
+> > testing both devices were unstable when using the theoretical values
+> > and I had to lower these. There is a comment at the bottom of
+> > es581_4.c and es58x_fd.c to reflect those issues.
+>
+> What are the performance penalties for using 256 for the fd and 64 ofr the other?
+
+I checked my passed log, actually, I had good results with 256 on
+the FD. I lowered it to 255 with no strong reasons.
+
+For the classical CAN changing from 75 to 64 should still be
+enough to reach full busload.
+
+> > Because I do not
+> > have access to the source code of the firmware, I could not identify
+> > the root cause.
+>
+> ok
+>
+> > My understanding is that having a queue size being a power of two is
+> > required in order not to use spinlocks (else, modulo operations would
+> > break when the index wraparound back to zero). I tried to minimize the
+> > number of spinlock: only one per bulk send or bulk receive.
+>
+> With queue size being power of two the modulo can be written as a mask
+> operation, so it's reasonable fast. So you only need to care about tx_head and
+> tx_tail, and there is only one writer for each variable. With a little dance and
+> barriers when stopping and starting the queue it's race-free without spinlocks.
+
+Yep, I checked linux/kfifo.h in the past. I think I understand
+the theory, now I need to practice.
+
+I will try to do the change. Will get back to you later when it is
+done and tested.
 
 
+Yours sincerely,
+Vincent
