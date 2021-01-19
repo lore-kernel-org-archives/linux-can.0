@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93161C433E0
-	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 14:39:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0C7BC43381
+	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 18:27:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 50E97206E5
-	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 14:39:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 844262253A
+	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 18:27:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387599AbhASOjA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Jan 2021 09:39:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49564 "EHLO mx2.suse.de"
+        id S2388721AbhASOiu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Jan 2021 09:38:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48732 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387591AbhASJe5 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:34:57 -0500
+        id S2387558AbhASJeC (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 19 Jan 2021 04:34:02 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611048791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1611048790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xRpur4X4QLIwGgVlq2ehmCMknCfsPV+EU++nQPDZmbk=;
-        b=r+YIz7RC1B4PHwb+fWUqL+6q9gX6XqwjZzNrTFroD0e5rR64WOakCPFH1X7n44yTWGXZxh
-        4TLuKG8IEI26varW77Nvn6Xh/GSG7VCfmJLw8sRYJwHr/ZookaBuk/xfuu9Rb+DdDCYNHO
-        7d7HIp5WHg5GoUDPBjgDsHEP/lkUauo=
+        bh=phAc6QzcUkpTuIKJqWr11O7D/l00ywW42zUecuX6+rM=;
+        b=Ag3e9airlZX0YBrGmiZyyPEoUoJ0hs+33L4vjE/yD7mtP4N+W2BZfAKPXKYx9Dypqq+qaY
+        qYsdPJNC77crXr7DvHPr/1sD7+rNwW+1FruTG63deQrB/6Z/w+HLlCjX4aB9q/GcHuJvKK
+        v0zdRD0Jn3xJPYjrmONoRcq3EvWSTxA=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B61B6B699;
-        Tue, 19 Jan 2021 09:33:11 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C49A4B337;
+        Tue, 19 Jan 2021 09:33:10 +0000 (UTC)
 From:   Richard Palethorpe <rpalethorpe@suse.com>
 To:     ltp@lists.linux.it
 Cc:     linux-can@vger.kernel.org,
         Oliver Hartkopp <socketcan@hartkopp.net>,
         Richard Palethorpe <rpalethorpe@suse.com>
-Subject: [PATCH v2 5/6] can: Remove obsolete test wrapper script
-Date:   Tue, 19 Jan 2021 09:31:42 +0000
-Message-Id: <20210119093143.17222-6-rpalethorpe@suse.com>
+Subject: [PATCH v2 3/6] can_filter: Convert to new library
+Date:   Tue, 19 Jan 2021 09:31:40 +0000
+Message-Id: <20210119093143.17222-4-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210119093143.17222-1-rpalethorpe@suse.com>
 References: <20210119093143.17222-1-rpalethorpe@suse.com>
@@ -49,177 +49,398 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Functionality moved into can_common.h and the test executables.
+Behavior is mostly the same, but on some errors we print fail and
+continue instead of exiting immediately. It appears this would result
+in more information being printed if there is a failure.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/network/can/Makefile                |   2 -
- .../can/filter-tests/00_Descriptions.txt      |   1 +
- testcases/network/can/filter-tests/INSTALL    |   3 +-
- testcases/network/can/filter-tests/Makefile   |   2 -
- .../network/can/filter-tests/can_run_tests.sh | 106 ------------------
- 5 files changed, 3 insertions(+), 111 deletions(-)
- delete mode 100755 testcases/network/can/filter-tests/can_run_tests.sh
+ .../network/can/filter-tests/can_filter.c     | 317 +++++++-----------
+ 1 file changed, 124 insertions(+), 193 deletions(-)
 
-diff --git a/testcases/network/can/Makefile b/testcases/network/can/Makefile
-index 31744534a..a69f6be87 100644
---- a/testcases/network/can/Makefile
-+++ b/testcases/network/can/Makefile
-@@ -22,6 +22,4 @@ top_srcdir		?= ../../..
+diff --git a/testcases/network/can/filter-tests/can_filter.c b/testcases/network/can/filter-tests/can_filter.c
+index db017451a..d14e42fac 100644
+--- a/testcases/network/can/filter-tests/can_filter.c
++++ b/testcases/network/can/filter-tests/can_filter.c
+@@ -1,63 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * tst-filter.c
+- *
+  * Copyright (c) 2011 Volkswagen Group Electronic Research
+- * All rights reserved.
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in the
+- *    documentation and/or other materials provided with the distribution.
+- * 3. Neither the name of Volkswagen nor the names of its contributors
+- *    may be used to endorse or promote products derived from this software
+- *    without specific prior written permission.
+- *
+- * Alternatively, provided that this notice is retained in full, this
+- * software may be distributed under the terms of the GNU General
+- * Public License ("GPL") version 2, in which case the provisions of the
+- * GPL apply INSTEAD OF those given above.
+- *
+- * The provided data structures and external interfaces from this code
+- * are not restricted to be used by modules with a GPL compatible license.
+- *
+- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+- * DAMAGE.
+- *
+- * Send feedback to <socketcan-users@lists.berlios.de>
+- *
++ * Copyright (c) 2021 SUSE LLC
+  */
  
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--INSTALL_TARGETS		:= *.sh
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
 -
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/network/can/filter-tests/00_Descriptions.txt b/testcases/network/can/filter-tests/00_Descriptions.txt
-index 89610982c..55d213456 100644
---- a/testcases/network/can/filter-tests/00_Descriptions.txt
-+++ b/testcases/network/can/filter-tests/00_Descriptions.txt
-@@ -5,5 +5,6 @@ information on the CAN network protocol family PF_CAN is contained in
- <Kernel/Documentation/networking/can.txt>.
+-#include <sys/types.h>
+-#include <sys/socket.h>
+-#include <sys/ioctl.h>
+-#include <sys/time.h>
+-#include <net/if.h>
+ #include "config.h"
+-#include "tst_res_flags.h"
++#include "tst_test.h"
  
- For any issue(s) with CAN tests please write to:
-+<ltp@lists.linux.it>
- <socketcan-users@lists.berlios.de>,
- Oliver Hartkopp <oliver.hartkopp@volkswagen.de>,
-diff --git a/testcases/network/can/filter-tests/INSTALL b/testcases/network/can/filter-tests/INSTALL
-index e549aed0f..7d62d65fe 100644
---- a/testcases/network/can/filter-tests/INSTALL
-+++ b/testcases/network/can/filter-tests/INSTALL
-@@ -12,7 +12,8 @@ enable CAN protocol, please see ltp/README file.
- $ make
+ #ifdef HAVE_LINUX_CAN_H
  
- 2) To Run the tests from this directory, do:
--$ ./run_ltp-can_tests.sh
-+$ ./can_filter
-+$ ./can_rcv_own_msgs
+-#include <linux/can.h>
+-#include <linux/can/raw.h>
++#include "can_common.h"
  
- 3) To let LTP run the tests from $LTPROOT, execute:
- $ ./runltp -f can
-diff --git a/testcases/network/can/filter-tests/Makefile b/testcases/network/can/filter-tests/Makefile
-index 6a9474164..29aaa3240 100644
---- a/testcases/network/can/filter-tests/Makefile
-+++ b/testcases/network/can/filter-tests/Makefile
-@@ -23,6 +23,4 @@ include $(top_srcdir)/include/mk/testcases.mk
+ #define ID 0x123
+ #define TC 18			/* # of testcases */
+@@ -66,7 +18,9 @@ const int rx_res[TC] = { 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1 };
+ const int rxbits_res[TC] = { 4369, 4369, 4369, 4369, 17, 4352, 17, 4352, 257,
+ 			     257, 4112, 4112, 1, 256, 16, 4096, 1, 256 };
  
- CPPFLAGS		+= -DETH_P_CAN=0x000C -DPF_CAN=29 -DAF_CAN=PF_CAN
+-canid_t calc_id(int testcase)
++static int s;
++
++static canid_t calc_id(int testcase)
+ {
+ 	canid_t id = ID;
  
--INSTALL_TARGETS		:= *.sh
+@@ -78,7 +32,7 @@ canid_t calc_id(int testcase)
+ 	return id;
+ }
+ 
+-canid_t calc_mask(int testcase)
++static canid_t calc_mask(int testcase)
+ {
+ 	canid_t mask = CAN_SFF_MASK;
+ 
+@@ -93,174 +47,151 @@ canid_t calc_mask(int testcase)
+ 	return mask;
+ }
+ 
+-int main(int argc, char **argv)
++static void setup(void)
+ {
+-	fd_set rdfs;
+-	struct timeval tv;
+-	int s;
+ 	struct sockaddr_can addr;
+-	struct can_filter rfilter;
+-	struct can_frame frame;
+-	int testcase;
+-	int have_rx;
+-	int rx;
+-	int rxbits, rxbitval;
+-	int ret;
+-	int recv_own_msgs = 1;
+ 	struct ifreq ifr;
++	int recv_own_msgs = 1;
+ 
+-	/* check command line options */
+-	if (argc != 2) {
+-		fprintf(stderr, "Usage: %s <device>\n", argv[0]);
+-		return TFAIL;
+-	}
++	can_setup_vcan();
+ 
+-	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+-	if (s < 0) {
+-		perror("socket");
+-		return TFAIL;
+-	}
++	s = SAFE_SOCKET(PF_CAN, SOCK_RAW, CAN_RAW);
++
++	strcpy(ifr.ifr_name, can_dev_name);
++	SAFE_IOCTL(s, SIOCGIFINDEX, &ifr);
+ 
+-	strcpy(ifr.ifr_name, argv[1]);
+-	if (ioctl(s, SIOCGIFINDEX, &ifr) < 0) {
+-		perror("SIOCGIFINDEX");
+-		return TFAIL;
+-	}
+ 	addr.can_family = AF_CAN;
+ 	addr.can_ifindex = ifr.ifr_ifindex;
+ 
+-	setsockopt(s, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS,
+-		   &recv_own_msgs, sizeof(recv_own_msgs));
++	SAFE_SETSOCKOPT(s, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS,
++			&recv_own_msgs, sizeof(recv_own_msgs));
+ 
+-	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+-		perror("bind");
+-		return TFAIL;
+-	}
++	SAFE_BIND(s, (struct sockaddr *)&addr, sizeof(addr));
++}
+ 
+-	printf("---\n");
++static void cleanup(void)
++{
++	if (s)
++		SAFE_CLOSE(s);
+ 
+-	for (testcase = 0; testcase < TC; testcase++) {
++	can_cleanup_vcan();
++}
+ 
+-		rfilter.can_id = calc_id(testcase);
+-		rfilter.can_mask = calc_mask(testcase);
+-		setsockopt(s, SOL_CAN_RAW, CAN_RAW_FILTER,
+-			   &rfilter, sizeof(rfilter));
++static void run(unsigned int n)
++{
++	fd_set rdfs;
++	struct timeval tv;
++	struct can_frame frame;
++	static struct can_filter rfilter;
++	int testcase = n;
++	int have_rx = 1;
++	int rx = 0;
++	int rxbits = 0, rxbitval;
+ 
+-		printf("testcase %2d filters : can_id = 0x%08X can_mask = "
+-		       "0x%08X\n", testcase, rfilter.can_id, rfilter.can_mask);
++	rfilter.can_id = calc_id(testcase);
++	rfilter.can_mask = calc_mask(testcase);
++	SAFE_SETSOCKOPT(s, SOL_CAN_RAW, CAN_RAW_FILTER,
++			&rfilter, sizeof(rfilter));
+ 
+-		printf("testcase %2d sending patterns ... ", testcase);
++	tst_res(TINFO, "testcase %2d filters : can_id = 0x%08X can_mask = "
++	       "0x%08X", testcase, rfilter.can_id, rfilter.can_mask);
+ 
+-		frame.can_dlc = 1;
+-		frame.data[0] = testcase;
++	tst_res(TINFO, "testcase %2d sending patterns ... ", testcase);
+ 
+-		frame.can_id = ID;
+-		if (write(s, &frame, sizeof(frame)) < 0) {
+-			perror("write");
+-			exit(1);
+-		}
+-		frame.can_id = (ID | CAN_RTR_FLAG);
+-		if (write(s, &frame, sizeof(frame)) < 0) {
+-			perror("write");
+-			exit(1);
+-		}
+-		frame.can_id = (ID | CAN_EFF_FLAG);
+-		if (write(s, &frame, sizeof(frame)) < 0) {
+-			perror("write");
+-			exit(1);
+-		}
+-		frame.can_id = (ID | CAN_EFF_FLAG | CAN_RTR_FLAG);
+-		if (write(s, &frame, sizeof(frame)) < 0) {
+-			perror("write");
+-			exit(1);
+-		}
++	frame.can_dlc = 1;
++	frame.data[0] = testcase;
+ 
+-		printf("ok\n");
++	frame.can_id = ID;
++	SAFE_WRITE(1, s, &frame, sizeof(frame));
+ 
+-		have_rx = 1;
+-		rx = 0;
+-		rxbits = 0;
++	frame.can_id = (ID | CAN_RTR_FLAG);
++	SAFE_WRITE(1, s, &frame, sizeof(frame));
+ 
+-		while (have_rx) {
++	frame.can_id = (ID | CAN_EFF_FLAG);
++	SAFE_WRITE(1, s, &frame, sizeof(frame));
+ 
+-			have_rx = 0;
+-			FD_ZERO(&rdfs);
+-			FD_SET(s, &rdfs);
+-			tv.tv_sec = 0;
+-			tv.tv_usec = 50000;	/* 50ms timeout */
++	frame.can_id = (ID | CAN_EFF_FLAG | CAN_RTR_FLAG);
++	SAFE_WRITE(1, s, &frame, sizeof(frame));
+ 
+-			ret = select(s + 1, &rdfs, NULL, NULL, &tv);
+-			if (ret < 0) {
+-				perror("select");
+-				exit(1);
+-			}
++	tst_res(TPASS, "testcase %2d Sent patterns", testcase);
++
++	while (have_rx) {
++
++		have_rx = 0;
++		FD_ZERO(&rdfs);
++		FD_SET(s, &rdfs);
++		tv.tv_sec = 0;
++		tv.tv_usec = 50000;	/* 50ms timeout */
++
++		if (select(s + 1, &rdfs, NULL, NULL, &tv) < 0)
++			tst_brk(TBROK | TERRNO, "select");
+ 
+-			if (FD_ISSET(s, &rdfs)) {
+-				have_rx = 1;
+-				ret = read(s, &frame, sizeof(struct can_frame));
+-				if (ret < 0) {
+-					perror("read");
+-					exit(1);
+-				}
+-				if ((frame.can_id & CAN_SFF_MASK) != ID) {
+-					fprintf(stderr,
+-						"received wrong can_id!\n");
+-					exit(1);
+-				}
+-				if (frame.data[0] != testcase) {
+-					fprintf(stderr,
+-						"received wrong testcase!\n");
+-					exit(1);
+-				}
 -
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/can/filter-tests/can_run_tests.sh b/testcases/network/can/filter-tests/can_run_tests.sh
-deleted file mode 100755
-index 762d90eca..000000000
---- a/testcases/network/can/filter-tests/can_run_tests.sh
-+++ /dev/null
-@@ -1,106 +0,0 @@
--#!/bin/sh
--################################################################################
--## Copyright (c) Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, 2011        ##
--## Copyright (c) International Business Machines  Corp., 2009                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software Foundation,   ##
--## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
--##                                                                            ##
--################################################################################
+-				/* test & calc rxbits */
+-				rxbitval = 1 << ((frame.can_id &
+-						 (CAN_EFF_FLAG | CAN_RTR_FLAG |
+-						  CAN_ERR_FLAG)) >> 28);
 -
--TCID="$1"
--TST_TOTAL=1
--export TST_COUNT
+-				/* only receive a rxbitval once */
+-				if ((rxbits & rxbitval) == rxbitval) {
+-					fprintf(stderr,
+-						"received rxbitval %d twice!\n",
+-						rxbitval);
+-					exit(1);
+-				}
+-				rxbits |= rxbitval;
+-				rx++;
 -
--. test.sh
+-				printf("testcase %2d rx : can_id = 0x%08X rx = "
+-				       "%d rxbits = %d\n", testcase,
+-				       frame.can_id, rx, rxbits);
++		if (FD_ISSET(s, &rdfs)) {
++			have_rx = 1;
++			SAFE_READ(1, s, &frame, sizeof(struct can_frame));
++
++			if ((frame.can_id & CAN_SFF_MASK) != ID)
++				tst_res(TFAIL, "received wrong can_id!");
++
++			if (frame.data[0] != testcase)
++				tst_res(TFAIL, "received wrong testcase!");
++
++			/* test & calc rxbits */
++			rxbitval = 1 << ((frame.can_id &
++					  (CAN_EFF_FLAG | CAN_RTR_FLAG |
++					   CAN_ERR_FLAG)) >> 28);
++
++			/* only receive a rxbitval once */
++			if ((rxbits & rxbitval) == rxbitval) {
++				tst_res(TFAIL, "received rxbitval %d twice!",
++					rxbitval);
+ 			}
++			rxbits |= rxbitval;
++			rx++;
++
++			tst_res(TINFO, "testcase %2d rx : can_id = 0x%08X rx = "
++			       "%d rxbits = %d", testcase,
++			       frame.can_id, rx, rxbits);
+ 		}
+-		/* rx timed out -> check the received results */
+-		if (rx_res[testcase] != rx) {
+-			fprintf(stderr,
+-				"wrong rx value in testcase %d : %d (expected "
+-				"%d)\n", testcase, rx, rx_res[testcase]);
+-			exit(1);
+-		}
+-		if (rxbits_res[testcase] != rxbits) {
+-			fprintf(stderr,
+-				"wrong rxbits value in testcase %d : %d "
+-				"(expected %d)\n", testcase, rxbits,
+-				rxbits_res[testcase]);
+-			exit(1);
+-		}
+-		printf("testcase %2d ok\n---\n", testcase);
+ 	}
 -
--setup()
+-	close(s);
+-
+-	return TPASS;
++	/* rx timed out -> check the received results */
++	if (rx_res[testcase] != rx) {
++		tst_brk(TBROK,
++			"wrong rx value in testcase %d : %d (expected "
++			"%d)", testcase, rx, rx_res[testcase]);
++	}
++	if (rxbits_res[testcase] != rxbits) {
++		tst_brk(TBROK,
++			"wrong rxbits value in testcase %d : %d "
++			"(expected %d)", testcase, rxbits,
++			rxbits_res[testcase]);
++	}
++	tst_res(TPASS, "testcase %2d ok", testcase);
+ }
+ 
++static struct tst_test test = {
++	.tcnt = TC,
++	.options = (struct tst_option[]) {
++		{"D:", &can_dev_name, "-D <device>	CAN device name"},
++		{}
++	},
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = run,
++	.caps = (struct tst_cap []) {
++		TST_CAP(TST_CAP_REQ, CAP_NET_RAW),
++		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
++		{}
++	},
++	.needs_drivers = (const char *const[]) {
++		"vcan",
++		"can-raw",
++		NULL
++	}
++};
++
+ #else
+ 
+-int main(void)
 -{
--	tst_require_root
--
--	# load needed CAN networklayer modules
--	modprobe can
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TCONF "modprobe can failed: ret - $ret"
--	fi
--
--	modprobe can_raw
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TCONF "modprobe can_raw failed: ret - $ret"
--	fi
--
--	# ensure the vcan driver to perform the ECHO on driver level
--	modprobe -r vcan
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TCONF "modprobe -r vcan failed: ret - $ret"
--	fi
--
--	modprobe vcan echo=1
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TCONF "modprobe vcan echo=1 failed: ret - $ret"
--	fi
--
--	VCAN=vcan0
--
--	# create virtual CAN device
--	ip link add dev $VCAN type vcan
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TBROK \
--			 "ip link add dev $VCAN type vcan failed: ret - $ret"
--	fi
--
--	ip link set dev $VCAN up
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TBROK "ip link set dev $VCAN up failed: ret - $ret"
--	fi
--
--	# check precondition for CAN frame flow test
--	HAS_ECHO=`ip link show $VCAN | grep -c ECHO`
--	if [ $HAS_ECHO -ne 1 ]; then
--		tst_brkm TBROK "ECHO is not 1"
--	fi
+-	printf("The linux/can.h was missing upon compilation.\n");
+-	return TCONF;
 -}
--
--cleanup()
--{
--	ip link set dev $VCAN down
--	ip link del dev $VCAN
--	modprobe -r vcan
--	modprobe -r can_raw
--	modprobe -r can
--}
--
--if [ $# -ne 1 ]; then
--	tst_brkm TBROK "Usage: $0 [can_filter | can_rcv_own_msgs]"
--fi
--
--setup
--TST_CLEANUP=cleanup
--
--"$1" "$VCAN"
--ret=$?
--case "$ret" in
--0)	tst_resm TPASS "Test $1 PASS";;
--1)	tst_resm TFAIL "Test $1 FAIL";;
--32)	tst_resm TCONF "$1 is not appropriate for configuration flag";;
--*)	tst_resm TBROK "Invalid resm type $ret";;
--esac
--
--tst_exit
++TST_TEST_TCONF("The linux/can.h was missing upon compilation");
+ 
+ #endif /* HAVE_LINUX_CAN_H */
 -- 
 2.29.2
 
