@@ -2,106 +2,77 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BD75C07548
-	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 18:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 903C8C1B0E3
+	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 18:29:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 465E623109
-	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 18:29:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6369222E00
+	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 18:29:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727140AbhASRa0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Jan 2021 12:30:26 -0500
-Received: from mail-yb1-f173.google.com ([209.85.219.173]:34011 "EHLO
-        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390732AbhASRIt (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Jan 2021 12:08:49 -0500
-Received: by mail-yb1-f173.google.com with SMTP id x6so16678730ybr.1
-        for <linux-can@vger.kernel.org>; Tue, 19 Jan 2021 09:08:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N/amjSCxiEdzeoXIElkPEVr9qS0tkOIHBvyzNNOuPGk=;
-        b=S8ZYm22fKZrt/yU1061f2cENslHZ4LnLlBBJub8oUCG0Ysj5hXmNEyxPydoAztvnvI
-         i17CNupunBcU065q2fX4htc+wyTFFMuB2iX799T+OX3ZBJ01hrkNaInibR8v15hD5heZ
-         EYjsdQC5z5ySNgNpDw7/P55HQqIQyB01/HoS5jCzmKdrKY0giBlPTrth4G3xWxfWzFwq
-         he+CMaQD3QQmUeUWkmuVQs85iP8N0huIRal0yU16hJNJWNzRrjZYUnGXuk75Z8ITqvQ1
-         Ub6JPxmnU/SnDx7c4i1XHZ1fbxj2xf4PV6yNMI3Actnoq+NI1Fiy5GSmZjWhQ6esvOax
-         BPxw==
-X-Gm-Message-State: AOAM530bkwDRtWE3EXGlGVF01SR7R1UkUMKibOCZ8oWxHm05rHL9b32o
-        +u4ubTi3tehisf1E8kEzC/h8RpzTafHR9mnMvVc=
-X-Google-Smtp-Source: ABdhPJzLx+zZNIvh4wCFnAs7nDqUtT18BqSutvcx8HCsYUlUwHsZRd7lfBmu46RiWllWlASc/thDR7hy5GKAaQtPipI=
-X-Received: by 2002:a25:3858:: with SMTP id f85mr1780177yba.125.1611076082904;
- Tue, 19 Jan 2021 09:08:02 -0800 (PST)
-MIME-Version: 1.0
-References: <20210119162512.5236-1-mailhol.vincent@wanadoo.fr> <20210119162512.5236-3-mailhol.vincent@wanadoo.fr>
-In-Reply-To: <20210119162512.5236-3-mailhol.vincent@wanadoo.fr>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 20 Jan 2021 02:07:52 +0900
-Message-ID: <CAMZ6RqJb=y9E3tmT+kPwAB1cYyDE2v4e5iMaoB_J17U-W+WB3w@mail.gmail.com>
-Subject: Re: [PATCH 2/3] can: vxcan: vxcan_xmit: fix use after free bug
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        id S1728121AbhASRr7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Jan 2021 12:47:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39986 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731893AbhASPGG (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 19 Jan 2021 10:06:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 370AEB737;
+        Tue, 19 Jan 2021 15:04:59 +0000 (UTC)
+Date:   Tue, 19 Jan 2021 16:06:02 +0100
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it,
         Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-can <linux-can@vger.kernel.org>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Loris Fauster <loris.fauster@ttcontrol.com>,
-        Alejandro Concepcion Rodriguez <alejandro@acoro.eu>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-can@vger.kernel.org
+Subject: Re: [LTP] [PATCH v2 4/6] can_recv_own_msgs: Convert to new library
+Message-ID: <YAb1Wncn2/x6LBYj@yuki.lan>
+References: <20210119093143.17222-1-rpalethorpe@suse.com>
+ <20210119093143.17222-5-rpalethorpe@suse.com>
+ <322f1056-0a73-65e6-531a-3275029df256@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <322f1056-0a73-65e6-531a-3275029df256@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed. 20 Jan 2021 at 01:25, Vincent Mailhol
-<mailhol.vincent@wanadoo.fr> wrote:
->
-> After calling netif_rx_ni(skb), dereferencing skb is unsafe.
-> Especially, the canfd_frame cfd which aliases skb memory is accessed
-> after the netif_rx_ni().
->
-> fixes: a8f820a380a2 ("can: add Virtual CAN Tunnel driver (vxcan)")
-> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> ---
->  drivers/net/can/vxcan.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-> index fa47bab510bb..a525ef8d19b0 100644
-> --- a/drivers/net/can/vxcan.c
-> +++ b/drivers/net/can/vxcan.c
-> @@ -39,6 +39,7 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
->         struct net_device *peer;
->         struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
->         struct net_device_stats *peerstats, *srcstats = &dev->stats;
-> +       u8 len;
->
->         if (can_dropped_invalid_skb(dev, skb))
->                 return NETDEV_TX_OK;
-> @@ -61,12 +62,13 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
->         skb->dev        = peer;
->         skb->ip_summed  = CHECKSUM_UNNECESSARY;
->
-> +       u8 len = cfd->len;
+Hi!
+> >  /*
+> > - * tst-rcv-own-msgs.c
+> > - *
+> > - * Copyright (c) 2010 Volkswagen Group Electronic Research
+> > - * All rights reserved.
+> > - *
+> > - * Redistribution and use in source and binary forms, with or without
+> > - * modification, are permitted provided that the following conditions
+> > - * are met:
+> > - * 1. Redistributions of source code must retain the above copyright
+> > - *    notice, this list of conditions and the following disclaimer.
+> > - * 2. Redistributions in binary form must reproduce the above copyright
+> > - *    notice, this list of conditions and the following disclaimer in the
+> > - *    documentation and/or other materials provided with the distribution.
+> > - * 3. Neither the name of Volkswagen nor the names of its contributors
+> > - *    may be used to endorse or promote products derived from this software
+> > - *    without specific prior written permission.
+> 
+> IANAL, I think you're missing this license. Is looks like some sort of BSD to me.
+> 
+> > - *
+> > - * Alternatively, provided that this notice is retained in full, this
+> > - * software may be distributed under the terms of the GNU General
+> > - * Public License ("GPL") version 2, in which case the provisions of the
+> > - * GPL apply INSTEAD OF those given above.
+> 
+> It doesn't say "or later".
 
-len = cfd->len;
-Silly mistake: u8 not needed twice of course...
+Looks like we cannot just remove this license. So what about moving this
+text into a separate COPYING file and changing the SPDX to GPL-v2.0?
 
->         if (netif_rx_ni(skb) == NET_RX_SUCCESS) {
->                 srcstats->tx_packets++;
-> -               srcstats->tx_bytes += cfd->len;
-> +               srcstats->tx_bytes += len;
->                 peerstats = &peer->stats;
->                 peerstats->rx_packets++;
-> -               peerstats->rx_bytes += cfd->len;
-> +               peerstats->rx_bytes += len;
->         }
->
->  out_unlock:
-> --
-> 2.26.2
->
+-- 
+Cyril Hrubis
+chrubis@suse.cz
