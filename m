@@ -2,29 +2,28 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B42EDC43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C8EDC41620
 	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 18:27:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 66B7922C9E
+	by mail.kernel.org (Postfix) with ESMTP id 251B222C9E
 	for <linux-can@archiver.kernel.org>; Tue, 19 Jan 2021 18:27:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728349AbhASQ2N (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Jan 2021 11:28:13 -0500
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:22180 "EHLO
+        id S1729409AbhASQ1q (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Jan 2021 11:27:46 -0500
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:33977 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729498AbhASQ2A (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Jan 2021 11:28:00 -0500
+        with ESMTP id S1729360AbhASQ13 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Jan 2021 11:27:29 -0500
 Received: from tomoyo.flets-east.jp ([153.202.107.157])
         by mwinf5d12 with ME
-        id JgS9240013PnFJp03gSCtF; Tue, 19 Jan 2021 17:26:15 +0100
+        id JgRY2400F3PnFJp03gRbnx; Tue, 19 Jan 2021 17:25:45 +0100
 X-ME-Helo: tomoyo.flets-east.jp
 X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 19 Jan 2021 17:26:15 +0100
+X-ME-Date: Tue, 19 Jan 2021 17:25:45 +0100
 X-ME-IP: 153.202.107.157
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -36,56 +35,47 @@ Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Alejandro Concepcion Rodriguez <alejandro@acoro.eu>,
         Dan Carpenter <dan.carpenter@oracle.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH 2/3] can: vxcan: vxcan_xmit: fix use after free bug
-Date:   Wed, 20 Jan 2021 01:25:11 +0900
-Message-Id: <20210119162512.5236-3-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH 0/3] Fix several use after free bugs.
+Date:   Wed, 20 Jan 2021 01:25:09 +0900
+Message-Id: <20210119162512.5236-1-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210119162512.5236-1-mailhol.vincent@wanadoo.fr>
-References: <20210119162512.5236-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-After calling netif_rx_ni(skb), dereferencing skb is unsafe.
-Especially, the canfd_frame cfd which aliases skb memory is accessed
-after the netif_rx_ni().
+This series fix three bugs which all have the same root cause.
 
-fixes: a8f820a380a2 ("can: add Virtual CAN Tunnel driver (vxcan)")
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- drivers/net/can/vxcan.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+When calling netif_rx(skb) and its variants, the skb will eventually
+get consumed (or freed) and thus it is unsafe to dereference it after
+the call returns.
 
-diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-index fa47bab510bb..a525ef8d19b0 100644
---- a/drivers/net/can/vxcan.c
-+++ b/drivers/net/can/vxcan.c
-@@ -39,6 +39,7 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
- 	struct net_device *peer;
- 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 	struct net_device_stats *peerstats, *srcstats = &dev->stats;
-+	u8 len;
- 
- 	if (can_dropped_invalid_skb(dev, skb))
- 		return NETDEV_TX_OK;
-@@ -61,12 +62,13 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
- 	skb->dev        = peer;
- 	skb->ip_summed  = CHECKSUM_UNNECESSARY;
- 
-+	u8 len = cfd->len;
- 	if (netif_rx_ni(skb) == NET_RX_SUCCESS) {
- 		srcstats->tx_packets++;
--		srcstats->tx_bytes += cfd->len;
-+		srcstats->tx_bytes += len;
- 		peerstats = &peer->stats;
- 		peerstats->rx_packets++;
--		peerstats->rx_bytes += cfd->len;
-+		peerstats->rx_bytes += len;
- 	}
- 
- out_unlock:
+This remark especially applies to any variable with aliases the skb
+memory which is the case of the can(fd)_frame.
+
+The pattern is as this:
+    skb = alloc_can_skb(dev, &cf);
+    /* Do stuff */
+    netif_rx(skb);
+    stats->rx_bytes += cf->len;
+
+Increasing the stats should be done *before* the call to netif_rx()
+while the skb is still safe to use.
+
+Vincent Mailhol (3):
+  can: dev: can_restart: fix use after free bug
+  can: vxcan: vxcan_xmit: fix use after free bug
+  can: peak_usb: fix use after free bugs
+
+ drivers/net/can/dev/dev.c                  | 4 ++--
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 8 ++++----
+ drivers/net/can/vxcan.c                    | 6 ++++--
+ 3 files changed, 10 insertions(+), 8 deletions(-)
+
+
+base-commit: 1105592cb8fdfcc96f2c9c693ff4106bac5fac7c
+prerequisite-patch-id: d9d54d9159b70a5ef179d19d5add20caffbae638
 -- 
 2.26.2
 
