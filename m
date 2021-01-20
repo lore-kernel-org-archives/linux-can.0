@@ -2,115 +2,80 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02F51C433E6
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:26:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81BB1C4332D
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:42:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B2BB9233FC
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:26:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A7F9235F7
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:42:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732564AbhATN4N (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jan 2021 08:56:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732337AbhATMxh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2021 07:53:37 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBD2C06179C
-        for <linux-can@vger.kernel.org>; Wed, 20 Jan 2021 04:52:09 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1l2Cy0-00055L-1c
-        for linux-can@vger.kernel.org; Wed, 20 Jan 2021 13:52:08 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 09CAB5C8B16
-        for <linux-can@vger.kernel.org>; Wed, 20 Jan 2021 12:52:06 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 48BC15C8B02;
-        Wed, 20 Jan 2021 12:52:04 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0c760e6b;
-        Wed, 20 Jan 2021 12:52:03 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 3/3] can: peak_usb: fix use after free bugs
-Date:   Wed, 20 Jan 2021 13:52:02 +0100
-Message-Id: <20210120125202.2187358-4-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120125202.2187358-1-mkl@pengutronix.de>
+        id S2387447AbhATUiZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jan 2021 15:38:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732169AbhATUhR (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 20 Jan 2021 15:37:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69950233FC;
+        Wed, 20 Jan 2021 20:36:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611174961;
+        bh=LikNbco49Fp0cV/R7LXralZjgkOCB6bhi5ixJuHU1xY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VOpPHGAqF//Glk9f7ts2njyS78kP5BCSmH9/LPxr4Ni7TSUnR+RJp8iNE42NM6X6I
+         GfDVob9Rmu7sxv9rfeEAKptHRcxNoav3u2jmygmYvR0KsIkdP8eSMoPb+JN2G4D8QI
+         T/d49RfY2dZ0QhAWi3fKoBn4O3vRHYsfMCQj4z/3yEFN44cpY1iaCMNekI/79ZDevZ
+         8YkvMc9BBHpG2gqG6S4MpcfJKMBlBoHeWpTdMhRpyCgVGNIiGoTeWK74BlvMVBL22m
+         YWrHZO9zd1AHf1asGhoNvKx9x133f9w9Mf5vVmUjp/wcMg4FNI5zi9oHkQjPW0FWgT
+         rmPTEi3M2q+Yg==
+Date:   Wed, 20 Jan 2021 12:36:00 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net,
+        linux-can@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: pull-request: can 2021-01-20
+Message-ID: <20210120123600.3e2a4356@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <410e7552-a6bd-d48c-6530-e4b5154687d2@pengutronix.de>
 References: <20210120125202.2187358-1-mkl@pengutronix.de>
+        <20210120091955.54a52e09@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <410e7552-a6bd-d48c-6530-e4b5154687d2@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+On Wed, 20 Jan 2021 21:20:13 +0100 Marc Kleine-Budde wrote:
+> On 1/20/21 6:19 PM, Jakub Kicinski wrote:
+> >> this is a pull request of 3 patches for net/master.
+> >>
+> >> All three patches are by Vincent Mailhol and fix a potential use after free bug
+> >> in the CAN device infrastructure, the vxcan driver, and the peak_usk driver. In
+> >> the TX-path the skb is used to read from after it was passed to the networking
+> >> stack with netif_rx_ni().  
+> > 
+> > Pulled, thanks.
+> > 
+> > Seems like the PR didn't show up in patchwork at all :S Hopefully I can
+> > still pull reight manually without the scripts :)  
+> 
+> Fingers crossed. :D
+> 
+> Today I noticed a lag of >4h on vger.kernel.org. Even this mail of yours hasn't
+> made it to the linux-can list, yet. It's 3h delayed.
 
-After calling peak_usb_netif_rx_ni(skb), dereferencing skb is unsafe.
-Especially, the can_frame cf which aliases skb memory is accessed
-after the peak_usb_netif_rx_ni().
+It's been reported but it's unclear what's causing this one :(
 
-Reordering the lines solves the issue.
+> >> Note: Patch 1/3 touches "drivers/net/can/dev.c". In net-next/master this file
+> >> has been moved to drivers/net/can/dev/dev.c [1] and parts of it have been
+> >> transfered into separate files. This may result in a merge conflict. Please
+> >> carry this patch forward, the change is rather simple. Drop us a note if
+> >> needed. Are any actions needed with regards to linux-next?  
+> > 
+> > Thanks for the note, I'm sending the PR to Linus now, so I think
+> > linux-next may never see the the conflict.  
 
-Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
-Link: https://lore.kernel.org/r/20210120114137.200019-4-mailhol.vincent@wanadoo.fr
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 61631f4fd92a..f347ecc79aef 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -514,11 +514,11 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
- 	else
- 		memcpy(cfd->data, rm->d, cfd->len);
- 
--	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(rm->ts_low));
--
- 	netdev->stats.rx_packets++;
- 	netdev->stats.rx_bytes += cfd->len;
- 
-+	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(rm->ts_low));
-+
- 	return 0;
- }
- 
-@@ -580,11 +580,11 @@ static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
- 	if (!skb)
- 		return -ENOMEM;
- 
--	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(sm->ts_low));
--
- 	netdev->stats.rx_packets++;
- 	netdev->stats.rx_bytes += cf->len;
- 
-+	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(sm->ts_low));
-+
- 	return 0;
- }
- 
--- 
-2.29.2
-
-
+The merge has been done now, could you double check?
