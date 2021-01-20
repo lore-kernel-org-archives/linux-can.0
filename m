@@ -2,146 +2,93 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80A61C433E6
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 14:38:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2E4BC433E0
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 14:39:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 58DE223381
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 14:38:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A57D02245C
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 14:39:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390601AbhATOi3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jan 2021 09:38:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60476 "EHLO mx2.suse.de"
+        id S2390494AbhATOih (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jan 2021 09:38:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60420 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390416AbhATOiZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:38:25 -0500
+        id S2389175AbhATOiY (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:38:24 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611153458; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a6hdMxU6bfIY9nuDlBnPbWgIEEGZnE8NhXKn9sSPVlQ=;
-        b=cTM2ED8VOEeu4a0EtFT7NRrUIuwvxQSK3b5jmw8koWkCC3j5npjoaLQkPf1ycNC9jG08Ly
-        yKrUdpOO2OSObRUuG6zzevi/Yik3JY5flwjMGXn1dG/g16mrRr/2YyoSWzOrhGARl8JNtI
-        /PXXX7339IpzSA8s1oifkx7CrF/ct+U=
+        t=1611153456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=IjY/D1iXjKz54pM82wpuiKbmLEMaLpoadCsoWoh5Jog=;
+        b=pVOso3GEue7YH2GAuPKkrbOTS3CfmWwpiTy8dfAgeu/OebjoVkWVRPLBizO0kUKvCzxU6h
+        NBXx/IdPHyqyyBjkA6bKz8qkR9qQSFj6kdT7cWEB6zZprn7bfMgjsv2BKIuTH2qEOCHTJt
+        QFDuK5vPTdvoMAfSAdg2h2+cGHXTx6g=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1820AACAD;
-        Wed, 20 Jan 2021 14:37:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A9971AB9F;
+        Wed, 20 Jan 2021 14:37:36 +0000 (UTC)
 From:   Richard Palethorpe <rpalethorpe@suse.com>
 To:     ltp@lists.linux.it
 Cc:     linux-can@vger.kernel.org,
         Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Richard Palethorpe <rpalethorpe@suse.com>
-Subject: [PATCH v3 2/7] can: Add can_common.h for vcan device setup
-Date:   Wed, 20 Jan 2021 14:37:18 +0000
-Message-Id: <20210120143723.26483-3-rpalethorpe@suse.com>
+Subject: [PATCH v3 0/7] Convert CAN tests to new LTP API
+Date:   Wed, 20 Jan 2021 14:37:16 +0000
+Message-Id: <20210120143723.26483-1-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210120143723.26483-1-rpalethorpe@suse.com>
-References: <20210120143723.26483-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Note that we call modprobe to set echo=1. However this does seem to be
-necessary for the current tests on 5.10. It has been kept to avoid
-changing the test behavior unnecessarily, but can most likely be
-safely removed if it causes problems.
+Hello,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- .../network/can/filter-tests/can_common.h     | 75 +++++++++++++++++++
- 1 file changed, 75 insertions(+)
+This is an attempt to convert the CAN tests to the (modern) Linux Test
+Project API and removes the wrapper script. To be clear, this is a
+patch-set for the LTP *not* the kernel tree or can-utils.
+
+I have tried to keep the core test behaviour the same, but (for
+example) moving to the SAFE_ functions will naturally introduce some
+changes in error checking. Deliberate behavioral changes have been
+noted in the commit messages.
+
+FYI, we appear to have 4 CAN tests in LTP including two tests for
+SLCAN (pty03, pty04).
+
+V2: Update e-mail addresses and resend
+V3:
+* Add COPYING and use dual license SPDX identifier
+* Fix compilation issues with can_common.h
+
+Richard Palethorpe (7):
+  API: Add FILE_SCANF to new lib
+  can: Add can_common.h for vcan device setup
+  can: Add COPYING with dual license text
+  can_filter: Convert to new library
+  can_recv_own_msgs: Convert to new library
+  can: Remove obsolete test wrapper script
+  can: Update contact details
+
+ include/tst_safe_file_ops.h                   |   3 +
+ testcases/network/can/Makefile                |   2 -
+ .../can/filter-tests/00_Descriptions.txt      |   6 +-
+ testcases/network/can/filter-tests/COPYING    |  35 ++
+ testcases/network/can/filter-tests/INSTALL    |   3 +-
+ testcases/network/can/filter-tests/Makefile   |   4 -
+ .../network/can/filter-tests/can_common.h     |  75 +++++
+ .../network/can/filter-tests/can_filter.c     | 317 +++++++-----------
+ .../can/filter-tests/can_rcv_own_msgs.c       | 273 +++++----------
+ .../network/can/filter-tests/can_run_tests.sh | 106 ------
+ 10 files changed, 331 insertions(+), 493 deletions(-)
+ create mode 100644 testcases/network/can/filter-tests/COPYING
  create mode 100644 testcases/network/can/filter-tests/can_common.h
+ delete mode 100755 testcases/network/can/filter-tests/can_run_tests.sh
 
-diff --git a/testcases/network/can/filter-tests/can_common.h b/testcases/network/can/filter-tests/can_common.h
-new file mode 100644
-index 000000000..f15145f30
---- /dev/null
-+++ b/testcases/network/can/filter-tests/can_common.h
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 SUSE LLC
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <sys/ioctl.h>
-+#include <sys/time.h>
-+
-+#include "tst_cmd.h"
-+#include "tst_safe_stdio.h"
-+#include "tst_safe_file_ops.h"
-+
-+#include <linux/if.h>
-+#include <linux/can.h>
-+#include <linux/can/raw.h>
-+
-+#ifndef IFF_ECHO
-+# define IFF_ECHO (1<<18)
-+#endif
-+
-+static char *can_dev_name;
-+static int can_created_dev;
-+
-+static void can_cmd(const char *const argv[])
-+{
-+	tst_cmd(argv, NULL, NULL, TST_CMD_TCONF_ON_MISSING);
-+}
-+
-+#define CAN_CMD(...) can_cmd((const char *const[]){ __VA_ARGS__, NULL })
-+
-+static void can_setup_vcan(void)
-+{
-+	unsigned int flags;
-+	char *path;
-+
-+	if (can_dev_name)
-+		goto check_echo;
-+
-+	can_dev_name = "vcan0";
-+
-+	tst_res(TINFO, "Creating vcan0 device; use -D option to avoid this");
-+
-+	CAN_CMD("modprobe", "-r", "vcan");
-+	CAN_CMD("modprobe", "vcan", "echo=1");
-+
-+	can_created_dev = 1;
-+
-+	CAN_CMD("ip", "link", "add", "dev", "vcan0", "type", "vcan");
-+	CAN_CMD("ip", "link", "set", "dev", "vcan0", "up");
-+
-+check_echo:
-+	/* Precondition for the frame flow test? */
-+	SAFE_ASPRINTF(&path, "/sys/class/net/%s/flags", can_dev_name);
-+	if (FILE_SCANF(path, "%x", &flags) || !(flags & IFF_ECHO)) {
-+		tst_res(TWARN, "Could not determine if ECHO is set on %s",
-+			can_dev_name);
-+	}
-+}
-+
-+static void can_cleanup_vcan(void)
-+{
-+	if (!can_created_dev)
-+		return;
-+
-+	CAN_CMD("ip", "link", "set", "dev", "vcan0", "down");
-+	CAN_CMD("ip", "link", "del", "dev", "vcan0");
-+	CAN_CMD("modprobe", "-r", "vcan");
-+}
 -- 
 2.30.0
 
