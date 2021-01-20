@@ -7,45 +7,44 @@ X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10DA7C433E0
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 10:35:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1BF8C433E0
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 10:35:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A313D23339
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 10:35:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 59D3223339
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 10:35:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbhATKNX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jan 2021 05:13:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
+        id S1728756AbhATKNJ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jan 2021 05:13:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731190AbhATJUE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2021 04:20:04 -0500
+        with ESMTP id S1730989AbhATJQh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2021 04:16:37 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59222C061575
-        for <linux-can@vger.kernel.org>; Wed, 20 Jan 2021 01:19:23 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F223BC061798
+        for <linux-can@vger.kernel.org>; Wed, 20 Jan 2021 01:15:39 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1l29dz-0007Mf-QT; Wed, 20 Jan 2021 10:19:15 +0100
+        id 1l29aP-00075y-8N; Wed, 20 Jan 2021 10:15:33 +0100
 Received: from [IPv6:2a03:f580:87bc:d400:26cf:9004:ca44:570] (unknown [IPv6:2a03:f580:87bc:d400:26cf:9004:ca44:570])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 4055E5C88D3;
-        Wed, 20 Jan 2021 09:19:14 +0000 (UTC)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4C6DB5C88CC;
+        Wed, 20 Jan 2021 09:15:30 +0000 (UTC)
 Subject: Re: [PATCH v2 0/3] Fix several use after free bugs
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-can <linux-can@vger.kernel.org>
+        linux-can@vger.kernel.org
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Stephane Grosjean <s.grosjean@peak-system.com>,
         Loris Fauster <loris.fauster@ttcontrol.com>,
         Alejandro Concepcion Rodriguez <alejandro@acoro.eu>,
         Dan Carpenter <dan.carpenter@oracle.com>
 References: <20210120090930.137581-1-mailhol.vincent@wanadoo.fr>
- <CAMZ6RqJSYx=-nHJSLtca9w-X-JVVvEZL_bBc_Q1Z=2pCH_dT-w@mail.gmail.com>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -107,15 +106,15 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <24f7a08a-8ff1-d07e-19db-96a11dec654b@pengutronix.de>
-Date:   Wed, 20 Jan 2021 10:19:10 +0100
+Message-ID: <d5b95332-d2ae-edba-1af7-641c1eb616bf@pengutronix.de>
+Date:   Wed, 20 Jan 2021 10:15:27 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAMZ6RqJSYx=-nHJSLtca9w-X-JVVvEZL_bBc_Q1Z=2pCH_dT-w@mail.gmail.com>
+In-Reply-To: <20210120090930.137581-1-mailhol.vincent@wanadoo.fr>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="o2f1YnDzbjuK0CQWuiLzT4YjwVyqvycnL"
+ boundary="MlHUYjKsrpChlwx2QNCIpzBPXpLxjjzNA"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -125,81 +124,62 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---o2f1YnDzbjuK0CQWuiLzT4YjwVyqvycnL
-Content-Type: multipart/mixed; boundary="nwKi1ZdbtBbVvL13lcZUQ3QQEa0RsnXUF";
+--MlHUYjKsrpChlwx2QNCIpzBPXpLxjjzNA
+Content-Type: multipart/mixed; boundary="iAHxvKikv2Fs81j2LFMp1Wu9YPtgwa26T";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- linux-can <linux-can@vger.kernel.org>
+To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+ Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 Cc: Wolfgang Grandegger <wg@grandegger.com>,
  Stephane Grosjean <s.grosjean@peak-system.com>,
  Loris Fauster <loris.fauster@ttcontrol.com>,
  Alejandro Concepcion Rodriguez <alejandro@acoro.eu>,
  Dan Carpenter <dan.carpenter@oracle.com>
-Message-ID: <24f7a08a-8ff1-d07e-19db-96a11dec654b@pengutronix.de>
+Message-ID: <d5b95332-d2ae-edba-1af7-641c1eb616bf@pengutronix.de>
 Subject: Re: [PATCH v2 0/3] Fix several use after free bugs
 References: <20210120090930.137581-1-mailhol.vincent@wanadoo.fr>
- <CAMZ6RqJSYx=-nHJSLtca9w-X-JVVvEZL_bBc_Q1Z=2pCH_dT-w@mail.gmail.com>
-In-Reply-To: <CAMZ6RqJSYx=-nHJSLtca9w-X-JVVvEZL_bBc_Q1Z=2pCH_dT-w@mail.gmail.com>
+In-Reply-To: <20210120090930.137581-1-mailhol.vincent@wanadoo.fr>
 
---nwKi1ZdbtBbVvL13lcZUQ3QQEa0RsnXUF
+--iAHxvKikv2Fs81j2LFMp1Wu9YPtgwa26T
 Content-Type: text/plain; charset=utf-8
 Content-Language: de-DE
 Content-Transfer-Encoding: quoted-printable
 
-On 1/20/21 10:17 AM, Vincent MAILHOL wrote:
-> On Wed. 20 Jan 2021 =C3=A0 18:09, Vincent Mailhol <mailhol.vincent@wana=
-doo.fr> wrote:
->> This series fix three bugs which all have the same root cause.
->>
->> When calling netif_rx(skb) and its variants, the skb will eventually
->> get consumed (or freed) and thus it is unsafe to dereference it after
->> the call returns.
->>
->> This remark especially applies to any variable with aliases the skb
->> memory which is the case of the can(fd)_frame.
->>
->> The pattern is as this:
->>     skb =3D alloc_can_skb(dev, &cf);
->>     /* Do stuff */
->>     netif_rx(skb);
->>     stats->rx_bytes +=3D cf->len;
->>
->> Increasing the stats should be done *before* the call to netif_rx()
->> while the skb is still safe to use.
->>
->>
->> Changes since v1:
->>   - fix a silly typo in patch 2/3 (variable len was declared twice...)=
-
->>
->>
->> Vincent Mailhol (3):
->>   can: dev: can_restart: fix use after free bug
->>   can: vxcan: vxcan_xmit: fix use after free bug
->>   can: peak_usb: fix use after free bugs
->>
->>  drivers/net/can/dev/dev.c                  | 4 ++--
->>  drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 8 ++++----
->>  drivers/net/can/vxcan.c                    | 6 ++++--
->>  3 files changed, 10 insertions(+), 8 deletions(-)
->>
->>
->> base-commit: 1105592cb8fdfcc96f2c9c693ff4106bac5fac7c
->> --
->> 2.26.2
+On 1/20/21 10:09 AM, Vincent Mailhol wrote:
+> This series fix three bugs which all have the same root cause.
 >=20
-> And of course, I just saw Marc comments just after sending the v2...
-> Please ignore this message, there will be a v3 rebased on net/master.
+> When calling netif_rx(skb) and its variants, the skb will eventually
+> get consumed (or freed) and thus it is unsafe to dereference it after
+> the call returns.
+>=20
+> This remark especially applies to any variable with aliases the skb
+> memory which is the case of the can(fd)_frame.
+>=20
+> The pattern is as this:
+>     skb =3D alloc_can_skb(dev, &cf);
+>     /* Do stuff */
+>     netif_rx(skb);
+>     stats->rx_bytes +=3D cf->len;
+>=20
+> Increasing the stats should be done *before* the call to netif_rx()
+> while the skb is still safe to use.
+>=20
+>=20
+> Changes since v1:
+>   - fix a silly typo in patch 2/3 (variable len was declared twice...)
+>=20
+>=20
+> Vincent Mailhol (3):
+>   can: dev: can_restart: fix use after free bug
+>   can: vxcan: vxcan_xmit: fix use after free bug
+>   can: peak_usb: fix use after free bugs
+>=20
+>  drivers/net/can/dev/dev.c                  | 4 ++--
+>  drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 8 ++++----
+>  drivers/net/can/vxcan.c                    | 6 ++++--
+>  3 files changed, 10 insertions(+), 8 deletions(-)
 
-I thought something like this.
-
-Please go ahead. I'll wait for your v3.
-
-> And sorry for the noise.
-
-No problem.
+I'll rebase to net/master and apply to linux-can/testing.
 
 regards,
 Marc
@@ -211,23 +191,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---nwKi1ZdbtBbVvL13lcZUQ3QQEa0RsnXUF--
+--iAHxvKikv2Fs81j2LFMp1Wu9YPtgwa26T--
 
---o2f1YnDzbjuK0CQWuiLzT4YjwVyqvycnL
+--MlHUYjKsrpChlwx2QNCIpzBPXpLxjjzNA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAH9Y8ACgkQqclaivrt
-76lLtAf9HEMcgPAApqzq8kCBeaO5LUhwG7dNZg7re4tHR9lK01VQKiphiQ7R+ds6
-Vm7HfgtQaB+fJyjpoQ1VxmCEzs5ULgHufWcwuJ9llnw5+39zgC+6687dU2otxvB9
-QC3x9q1cdfZMGMKrVgsX2jr9aZEjCLJn9+hFdIhDDJ7myr6vhPUYik/XVOplx8n1
-W65X20rWLREHb+Z54ZgOD2j8cfWbgTrjsVKdUHIRTpVklJ+WQ35601pZ0c9Pj3nz
-fWYtivAyU2G0xyNYHCsPVBKbSOnMePOY0lrGs0Cqp8b1c0scmZ+W+qs9rqFFDhV8
-lOPQwnsJ5AHP6L81iMHCFt4XwVsPpA==
-=Khnm
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAH9K8ACgkQqclaivrt
+76lXVwf8Cc2Da3XWZnqBkdHJgGcjHVfp2Ca7M9vkWkaOt8sOfyLcXw5euN+UpxSv
+0mu2eijdfRoVnhKdxMgQtgWglshnbwnH90Egeu72odNFQkuAzoQ/0/uDcv31FmTd
+A//DpDz/j9b7jyO+uIZJsuaPN4RR7GxpolVEGhtuN+dvkmhodXmDGyztsEu9Sn1f
+jmwXPgZHpv7EwhM/LC9hrAtG/CrRFnTh39ad5h/ITVcB1IOvIS0rZH6d5rWAycyJ
+aYm61qFoOOx3/7rs5yK0IBFEGSN5DIfw/cXr7AcbcqJhSOijkUphM8mzikDCZc9f
+WETCY7/bf5PpILbvCWL4IVHS9kGMIw==
+=BBof
 -----END PGP SIGNATURE-----
 
---o2f1YnDzbjuK0CQWuiLzT4YjwVyqvycnL--
+--MlHUYjKsrpChlwx2QNCIpzBPXpLxjjzNA--
