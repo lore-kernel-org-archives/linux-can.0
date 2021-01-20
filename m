@@ -2,80 +2,76 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81BB1C4332D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE269C43331
 	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:42:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3A7F9235F7
+	by mail.kernel.org (Postfix) with ESMTP id 87E6F235DD
 	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:42:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387447AbhATUiZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jan 2021 15:38:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44960 "EHLO mail.kernel.org"
+        id S2387822AbhATUmD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jan 2021 15:42:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732169AbhATUhR (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:37:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69950233FC;
-        Wed, 20 Jan 2021 20:36:01 +0000 (UTC)
+        id S2388782AbhATUlB (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 20 Jan 2021 15:41:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id AD403235DD;
+        Wed, 20 Jan 2021 20:40:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611174961;
-        bh=LikNbco49Fp0cV/R7LXralZjgkOCB6bhi5ixJuHU1xY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VOpPHGAqF//Glk9f7ts2njyS78kP5BCSmH9/LPxr4Ni7TSUnR+RJp8iNE42NM6X6I
-         GfDVob9Rmu7sxv9rfeEAKptHRcxNoav3u2jmygmYvR0KsIkdP8eSMoPb+JN2G4D8QI
-         T/d49RfY2dZ0QhAWi3fKoBn4O3vRHYsfMCQj4z/3yEFN44cpY1iaCMNekI/79ZDevZ
-         8YkvMc9BBHpG2gqG6S4MpcfJKMBlBoHeWpTdMhRpyCgVGNIiGoTeWK74BlvMVBL22m
-         YWrHZO9zd1AHf1asGhoNvKx9x133f9w9Mf5vVmUjp/wcMg4FNI5zi9oHkQjPW0FWgT
-         rmPTEi3M2q+Yg==
-Date:   Wed, 20 Jan 2021 12:36:00 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net,
-        linux-can@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: pull-request: can 2021-01-20
-Message-ID: <20210120123600.3e2a4356@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <410e7552-a6bd-d48c-6530-e4b5154687d2@pengutronix.de>
-References: <20210120125202.2187358-1-mkl@pengutronix.de>
-        <20210120091955.54a52e09@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <410e7552-a6bd-d48c-6530-e4b5154687d2@pengutronix.de>
+        s=k20201202; t=1611175219;
+        bh=J9gJsDe4PT7BikWljJQxv0oXaAShLH+MI1eVrEhcyKU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GaT1G6JfBOX6/Mn0nhcSNTLbi43lRqbQeE0V4QXDPNCu6WGwy7LnSI8Gh7pll0nvU
+         lj/sVzsBPl2RRCcs2ne5VKlbgUxSMZnrZo8/+FmfRvmKJF25JfLw8BiPHYjBvzcuat
+         SsryyJD+zY6JZbslLSDyFCWeQ4YnG+9LN7CtjRJbsqJxK107lIo/vEsrLhCRvI2v1R
+         TjH4qR4LEN54UD3iPhZwuAn5L+j33ytxamX7J5uxISQJ4+9D6J5pAy0NaiVMz6LgtC
+         Wd3qr+lJ97XBduCcKx69S+EnDKy/6F5YdwEzOjMG3iX+o7LPH0X2WhiLqO4qCYKUk7
+         q5dUEArIMXG2w==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net 1/3] can: dev: can_restart: fix use after free bug
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161117521965.21178.935318491555433677.git-patchwork-notify@kernel.org>
+Date:   Wed, 20 Jan 2021 20:40:19 +0000
+References: <20210120125202.2187358-2-mkl@pengutronix.de>
+In-Reply-To: <20210120125202.2187358-2-mkl@pengutronix.de>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, kernel@pengutronix.de,
+        mailhol.vincent@wanadoo.fr
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, 20 Jan 2021 21:20:13 +0100 Marc Kleine-Budde wrote:
-> On 1/20/21 6:19 PM, Jakub Kicinski wrote:
-> >> this is a pull request of 3 patches for net/master.
-> >>
-> >> All three patches are by Vincent Mailhol and fix a potential use after free bug
-> >> in the CAN device infrastructure, the vxcan driver, and the peak_usk driver. In
-> >> the TX-path the skb is used to read from after it was passed to the networking
-> >> stack with netif_rx_ni().  
-> > 
-> > Pulled, thanks.
-> > 
-> > Seems like the PR didn't show up in patchwork at all :S Hopefully I can
-> > still pull reight manually without the scripts :)  
+Hello:
+
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Wed, 20 Jan 2021 13:52:00 +0100 you wrote:
+> From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 > 
-> Fingers crossed. :D
+> After calling netif_rx_ni(skb), dereferencing skb is unsafe.
+> Especially, the can_frame cf which aliases skb memory is accessed
+> after the netif_rx_ni() in:
+>       stats->rx_bytes += cf->len;
 > 
-> Today I noticed a lag of >4h on vger.kernel.org. Even this mail of yours hasn't
-> made it to the linux-can list, yet. It's 3h delayed.
+> [...]
 
-It's been reported but it's unclear what's causing this one :(
+Here is the summary with links:
+  - [net,1/3] can: dev: can_restart: fix use after free bug
+    https://git.kernel.org/netdev/net-next/c/03f16c5075b2
+  - [net,2/3] can: vxcan: vxcan_xmit: fix use after free bug
+    https://git.kernel.org/netdev/net-next/c/75854cad5d80
+  - [net,3/3] can: peak_usb: fix use after free bugs
+    https://git.kernel.org/netdev/net-next/c/50aca891d7a5
 
-> >> Note: Patch 1/3 touches "drivers/net/can/dev.c". In net-next/master this file
-> >> has been moved to drivers/net/can/dev/dev.c [1] and parts of it have been
-> >> transfered into separate files. This may result in a merge conflict. Please
-> >> carry this patch forward, the change is rather simple. Drop us a note if
-> >> needed. Are any actions needed with regards to linux-next?  
-> > 
-> > Thanks for the note, I'm sending the PR to Linus now, so I think
-> > linux-next may never see the the conflict.  
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-The merge has been done now, could you double check?
+
