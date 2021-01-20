@@ -2,73 +2,109 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B476C4332E
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:42:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F0E7C433DB
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:50:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5E332235F9
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:42:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 12F1323602
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 20:50:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732394AbhATUl5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jan 2021 15:41:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388761AbhATUlA (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 20 Jan 2021 15:41:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B51AF235F7;
-        Wed, 20 Jan 2021 20:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611175219;
-        bh=HI/wzQ4N2mmemZh/ROgouP4NvuKtskCJbdebKaBFIMs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=vHj9cM3RUVinpaP+i/zP1ngpE+9lgqGY7I83s+xim2FpLFbGW52utcc5IegazJ6lW
-         HjUkcCRK+jpwb6Fk1Pm4KBCUxVZyqQOWHndn8zKltqCQZ4kqK6q6v78hsH076qcvDz
-         1jtSarIXD0kpNVLXY/X89oe5ULhCbUGi0O6ctz+Z+sg1Ywg+5p3zIBnscHJxy0a3NS
-         27nq2yAu9fHyAX/6lQnGAOGaLVzKWYC5IUwuyiBnP2sKzChFAjuhu/kKHg/EoG1Ckb
-         ZFmdQLEebPBlHtctgmBw7g+ILaGBqotFHe0rxRaC0pywyClHO0LBo9USJuWbp2MibI
-         vqPh5+P8fe/CQ==
-Content-Type: text/plain; charset="utf-8"
+        id S1729197AbhATNzg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jan 2021 08:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732751AbhATMwt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2021 07:52:49 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDAEC06179A
+        for <linux-can@vger.kernel.org>; Wed, 20 Jan 2021 04:52:09 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1l2Cxz-000551-RZ
+        for linux-can@vger.kernel.org; Wed, 20 Jan 2021 13:52:07 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 3789F5C8B11
+        for <linux-can@vger.kernel.org>; Wed, 20 Jan 2021 12:52:05 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2C3315C8AFF;
+        Wed, 20 Jan 2021 12:52:04 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0ba0132d;
+        Wed, 20 Jan 2021 12:52:03 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 2/3] can: vxcan: vxcan_xmit: fix use after free bug
+Date:   Wed, 20 Jan 2021 13:52:01 +0100
+Message-Id: <20210120125202.2187358-3-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210120125202.2187358-1-mkl@pengutronix.de>
+References: <20210120125202.2187358-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: can 2021-01-20
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161117521969.21178.9145815988654345424.git-patchwork-notify@kernel.org>
-Date:   Wed, 20 Jan 2021 20:40:19 +0000
-References: <20210120125202.2187358-1-mkl@pengutronix.de>
-In-Reply-To: <20210120125202.2187358-1-mkl@pengutronix.de>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, kernel@pengutronix.de
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-This pull request was applied to netdev/net-next.git (refs/heads/master):
+After calling netif_rx_ni(skb), dereferencing skb is unsafe.
+Especially, the canfd_frame cfd which aliases skb memory is accessed
+after the netif_rx_ni().
 
-On Wed, 20 Jan 2021 13:51:59 +0100 you wrote:
-> Hello Jakub, hello David,
-> 
-> this is a pull request of 3 patches for net/master.
-> 
-> All three patches are by Vincent Mailhol and fix a potential use after free bug
-> in the CAN device infrastructure, the vxcan driver, and the peak_usk driver. In
-> the TX-path the skb is used to read from after it was passed to the networking
-> stack with netif_rx_ni().
-> 
-> [...]
+Fixes: a8f820a380a2 ("can: add Virtual CAN Tunnel driver (vxcan)")
+Link: https://lore.kernel.org/r/20210120114137.200019-3-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/vxcan.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Here is the summary with links:
-  - pull-request: can 2021-01-20
-    https://git.kernel.org/netdev/net-next/c/535d31593f59
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
+index fa47bab510bb..f9a524c5f6d6 100644
+--- a/drivers/net/can/vxcan.c
++++ b/drivers/net/can/vxcan.c
+@@ -39,6 +39,7 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	struct net_device *peer;
+ 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 	struct net_device_stats *peerstats, *srcstats = &dev->stats;
++	u8 len;
+ 
+ 	if (can_dropped_invalid_skb(dev, skb))
+ 		return NETDEV_TX_OK;
+@@ -61,12 +62,13 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	skb->dev        = peer;
+ 	skb->ip_summed  = CHECKSUM_UNNECESSARY;
+ 
++	len = cfd->len;
+ 	if (netif_rx_ni(skb) == NET_RX_SUCCESS) {
+ 		srcstats->tx_packets++;
+-		srcstats->tx_bytes += cfd->len;
++		srcstats->tx_bytes += len;
+ 		peerstats = &peer->stats;
+ 		peerstats->rx_packets++;
+-		peerstats->rx_bytes += cfd->len;
++		peerstats->rx_bytes += len;
+ 	}
+ 
+ out_unlock:
+-- 
+2.29.2
 
 
