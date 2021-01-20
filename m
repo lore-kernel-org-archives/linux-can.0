@@ -2,93 +2,108 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64805C4332E
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 13:58:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B239DC433E9
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 14:38:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 39AE8233F8
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 13:58:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8D5CF23371
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jan 2021 14:38:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387652AbhATN4r (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jan 2021 08:56:47 -0500
-Received: from mail-yb1-f179.google.com ([209.85.219.179]:35529 "EHLO
-        mail-yb1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388004AbhATNbQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jan 2021 08:31:16 -0500
-Received: by mail-yb1-f179.google.com with SMTP id k132so12320553ybf.2;
-        Wed, 20 Jan 2021 05:31:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TDkQlUwx2SnbfI3bo/dvPQ9TYvp5Pg19eP3Xh9x9QQA=;
-        b=akR9tPgogBqDO1N0u69Dvan6xv8axu2t+ZJDkrnxmr5MppVTxF69kV1bTdEFl45tZN
-         lgsmSMMFrIlPxGXcLHn4PeanH0Gf+OR+MmVytcax6kQLzyy7bzbxNwB4CRTNT1c3si6k
-         9+zdQfVMn8zBjnCW/2fzmMz/YbxPMJAyBnZgVGkyybyiOOqMFk78aMd9pvRbLbBrpgsX
-         l2IwLknmetULmhrxNchL8zbGEP6KLmH6qbcRe9b1zFyXWqXjdR7u4XbZRmRQtwjUg31v
-         vQcACGexPMbvJr7dz9kr4NJ5Kc9Tk5ftyPnzbLiIM/Yr/GhRNIEYMkeJy8x1VurjIlWc
-         KMKw==
-X-Gm-Message-State: AOAM532ixOsN0M9ZZhp9AXIQhoVXfUCM2vnGHbLrEkyDObqlD1RxQ0Je
-        78Lft7fAFN3V6kOlHd0ryGOoXSXm82njPboTUsY=
-X-Google-Smtp-Source: ABdhPJyXniBHr/mjEIYxXgrcej64wZm2Dv4s6R/ANXLhIvvrZaLeby7h0bBliGh4tZh4wy6V/MqgDH3HRBfMB5BfZYI=
-X-Received: by 2002:a25:5583:: with SMTP id j125mr12566111ybb.307.1611149434990;
- Wed, 20 Jan 2021 05:30:34 -0800 (PST)
+        id S2390416AbhATOie (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jan 2021 09:38:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60498 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390494AbhATOiZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:38:25 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611153458; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O8bxkecA30vKpvKXV5/2+zt45Y6vrE4AWViiGp85qzs=;
+        b=XthkpOnZxxtc//TIr/0+IE/0iE77xtWE/aVa3MZIHQjYwbEhjNNXGOCLaRWDqt3cnJjGFf
+        AjYaR8sU1jwYvCtB+PWHrR43eG9ejq7euylHE0vQdHgP6wjowLKDNllTzeYfD2FJTlnQny
+        N7jSaKnGLazS+AR/i+8sXsms/eLqOR0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 790A5ACE1;
+        Wed, 20 Jan 2021 14:37:38 +0000 (UTC)
+From:   Richard Palethorpe <rpalethorpe@suse.com>
+To:     ltp@lists.linux.it
+Cc:     linux-can@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Richard Palethorpe <rpalethorpe@suse.com>
+Subject: [PATCH v3 3/7] can: Add COPYING with dual license text
+Date:   Wed, 20 Jan 2021 14:37:19 +0000
+Message-Id: <20210120143723.26483-4-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210120143723.26483-1-rpalethorpe@suse.com>
+References: <20210120143723.26483-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-References: <20210120114137.200019-1-mailhol.vincent@wanadoo.fr>
- <20210120114137.200019-2-mailhol.vincent@wanadoo.fr> <994ac0a3-afd9-eca7-9640-e001f5a43d65@pengutronix.de>
-In-Reply-To: <994ac0a3-afd9-eca7-9640-e001f5a43d65@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 20 Jan 2021 22:30:24 +0900
-Message-ID: <CAMZ6RqL46r5FnD7WQqFa5Z715id7r3qrdh2nR=gVFesLDdrCQA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] can: dev: can_restart: fix use after free bug
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Loris Fauster <loris.fauster@ttcontrol.com>,
-        Alejandro Concepcion Rodriguez <alejandro@acoro.eu>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed. 20 janv. 2021 at 21:53, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 1/20/21 12:41 PM, Vincent Mailhol wrote:
-> > After calling netif_rx_ni(skb), dereferencing skb is unsafe.
-> > Especially, the can_frame cf which aliases skb memory is accessed
-> > after the netif_rx_ni() in:
-> >       stats->rx_bytes += cf->len;
-> >
-> > Reordering the lines solves the issue.
-> >
-> > Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
-> > Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> > ---
-> > *Remark for upstream*
-> > drivers/net/can/dev.c has been moved to drivers/net/can/dev/dev.c in
-> > below commit, please carry the patch forward.
-> > Reference: 3e77f70e7345 ("can: dev: move driver related infrastructure
-> > into separate subdir")
->
-> I've send a pull request to Jakub and David. Let's see what happens :)
+This may be referred to with
 
-Thanks!
+SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
 
-Yours sincerely,
-Vincent
+The kernel version includes the syscall note, but the contents of the
+syscall note have never been included within the LTP CAN tests.
 
-> Marc
->
-> --
-> Pengutronix e.K.                 | Marc Kleine-Budde           |
-> Embedded Linux                   | https://www.pengutronix.de  |
-> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
->
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ testcases/network/can/filter-tests/COPYING | 35 ++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+ create mode 100644 testcases/network/can/filter-tests/COPYING
+
+diff --git a/testcases/network/can/filter-tests/COPYING b/testcases/network/can/filter-tests/COPYING
+new file mode 100644
+index 000000000..2fa5eb911
+--- /dev/null
++++ b/testcases/network/can/filter-tests/COPYING
+@@ -0,0 +1,35 @@
++Copyright (c) 2010-2011 Volkswagen Group Electronic Research
++All rights reserved.
++
++Redistribution and use in source and binary forms, with or without
++modification, are permitted provided that the following conditions
++are met:
++1. Redistributions of source code must retain the above copyright
++   notice, this list of conditions and the following disclaimer.
++2. Redistributions in binary form must reproduce the above copyright
++   notice, this list of conditions and the following disclaimer in the
++   documentation and/or other materials provided with the distribution.
++3. Neither the name of Volkswagen nor the names of its contributors
++   may be used to endorse or promote products derived from this software
++   without specific prior written permission.
++
++Alternatively, provided that this notice is retained in full, this
++software may be distributed under the terms of the GNU General
++Public License ("GPL") version 2, in which case the provisions of the
++GPL apply INSTEAD OF those given above.
++
++The provided data structures and external interfaces from this code
++are not restricted to be used by modules with a GPL compatible license.
++
++THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
++DAMAGE.
+-- 
+2.30.0
+
