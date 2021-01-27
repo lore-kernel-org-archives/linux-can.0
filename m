@@ -2,52 +2,54 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D266C433E0
-	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:26:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6313C433DB
+	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:27:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 03E5220757
-	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:26:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD01820758
+	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:27:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbhA0J0a (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 27 Jan 2021 04:26:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
+        id S235262AbhA0J07 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 27 Jan 2021 04:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235169AbhA0JXR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Jan 2021 04:23:17 -0500
+        with ESMTP id S235289AbhA0JYx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Jan 2021 04:24:53 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFB0C061574
-        for <linux-can@vger.kernel.org>; Wed, 27 Jan 2021 01:22:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D628DC061786
+        for <linux-can@vger.kernel.org>; Wed, 27 Jan 2021 01:22:42 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1l4h21-00083L-Iv
-        for linux-can@vger.kernel.org; Wed, 27 Jan 2021 10:22:33 +0100
+        id 1l4h29-0008DB-9C
+        for linux-can@vger.kernel.org; Wed, 27 Jan 2021 10:22:41 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A03295CF0DF
-        for <linux-can@vger.kernel.org>; Wed, 27 Jan 2021 09:22:30 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 563525CF116
+        for <linux-can@vger.kernel.org>; Wed, 27 Jan 2021 09:22:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7BF565CF0CC;
-        Wed, 27 Jan 2021 09:22:28 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id AF0E95CF0E1;
+        Wed, 27 Jan 2021 09:22:31 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4fdf02df;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1f441bea;
         Wed, 27 Jan 2021 09:22:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: pull-request: can-next 2021-01-27
-Date:   Wed, 27 Jan 2021 10:22:15 +0100
-Message-Id: <20210127092227.2775573-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-next 07/12] can: mcp251xfd: mcp251xfd_start_xmit(): use mcp251xfd_get_tx_free() to check TX is is full
+Date:   Wed, 27 Jan 2021 10:22:22 +0100
+Message-Id: <20210127092227.2775573-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210127092227.2775573-1-mkl@pengutronix.de>
+References: <20210127092227.2775573-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -58,78 +60,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+This patch replaces an open coded check if the TX ring is full by a check if
+mcp251xfd_get_tx_free() returns 0.
 
-this is a pull request of 12 patches for net-next/master.
-
-The first two patches are by me and fix typos on the CAN gw protocol and the
-flexcan driver.
-
-The next patch is by Vincent Mailhol and targets the CAN driver infrastructure,
-it exports the function that converts the CAN state into a human readable
-string.
-
-A patch by me, which target the CAN driver infrastructure, too, makes the
-calculation in can_fd_len2dlc() more readable.
-
-A patch by Tom Rix fixes a checkpatch warning in the mcba_usb driver.
-
-The next seven patches target the mcp251xfd driver. Su Yanjun's patch replaces
-several hardcoded assumptions when calling regmap, by using
-regmap_get_val_bytes(). The remaining patches are by me. First an open coded
-check is replaced by an existing helper function, then in the TX path the
-padding for CAN-FD frames is cleaned up. The next two patches clean up the RTR
-frame handling in the RX and TX path. Then support for len8_dlc is added. The
-last patch adds BQL support.
-
-regards,
-Marc
-
+Link: https://lore.kernel.org/r/20210114153448.1506901-2-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The following changes since commit 6626a0266566c5aea16178c5e6cd7fc4db3f2f56:
-
-  Merge branch 'net-usbnet-convert-to-new-tasklet-api' (2021-01-26 18:04:28 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-5.12-20210127
-
-for you to fetch changes up to 4162e18e949ba520d5116ac0323500355479a00e:
-
-  can: mcp251xfd: add BQL support (2021-01-27 10:01:47 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-5.12-20210127
-
-----------------------------------------------------------------
-Marc Kleine-Budde (9):
-      can: gw: fix typo
-      can: flexcan: fix typos
-      can: length: can_fd_len2dlc(): make legnth calculation readable again
-      can: mcp251xfd: mcp251xfd_start_xmit(): use mcp251xfd_get_tx_free() to check TX is is full
-      can: mcp251xfd: mcp251xfd_tx_obj_from_skb(): clean up padding of CAN-FD frames
-      can: mcp251xfd: mcp251xfd_hw_rx_obj_to_skb(): don't copy data for RTR CAN frames in RX-path
-      can: mcp251xfd: mcp251xfd_tx_obj_from_skb(): don't copy data for RTR CAN frames in TX-path
-      can: mcp251xfd: add len8_dlc support
-      can: mcp251xfd: add BQL support
-
-Su Yanjun (1):
-      can: mcp251xfd: replace sizeof(u32) with val_bytes in regmap
-
-Tom Rix (1):
-      can: mcba_usb: remove h from printk format specifier
-
-Vincent Mailhol (1):
-      can: dev: export can_get_state_str() function
-
- drivers/net/can/dev/dev.c                      |  3 +-
- drivers/net/can/dev/length.c                   |  7 ++-
- drivers/net/can/flexcan.c                      |  4 +-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 79 ++++++++++++++++++--------
- drivers/net/can/usb/mcba_usb.c                 |  6 +-
- include/linux/can/dev.h                        |  1 +
- net/can/gw.c                                   |  2 +-
- 7 files changed, 70 insertions(+), 32 deletions(-)
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 897c9310266a..1dbb87c28049 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -2436,7 +2436,7 @@ static netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+ 	/* Stop queue if we occupy the complete TX FIFO */
+ 	tx_head = mcp251xfd_get_tx_head(tx_ring);
+ 	tx_ring->head++;
+-	if (tx_ring->head - tx_ring->tail >= tx_ring->obj_num)
++	if (mcp251xfd_get_tx_free(tx_ring) == 0)
+ 		netif_stop_queue(ndev);
+ 
+ 	can_put_echo_skb(skb, ndev, tx_head, 0);
+-- 
+2.29.2
 
 
