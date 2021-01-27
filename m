@@ -5,48 +5,49 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FEA5C433E0
-	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:30:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67F55C433E6
+	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:44:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 101E220780
-	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:30:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2B55C20759
+	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:44:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235404AbhA0J27 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 27 Jan 2021 04:28:59 -0500
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:48285 "EHLO
+        id S234164AbhA0JoT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 27 Jan 2021 04:44:19 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:35155 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235253AbhA0JZ6 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Jan 2021 04:25:58 -0500
+        with ESMTP id S235371AbhA0Jld (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Jan 2021 04:41:33 -0500
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1l4h29-0008D7-9L
-        for linux-can@vger.kernel.org; Wed, 27 Jan 2021 10:22:41 +0100
+        id 1l4hJR-0002IA-I6
+        for linux-can@vger.kernel.org; Wed, 27 Jan 2021 10:40:33 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 480F35CF113
-        for <linux-can@vger.kernel.org>; Wed, 27 Jan 2021 09:22:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 1E8C85CF839
+        for <linux-can@vger.kernel.org>; Wed, 27 Jan 2021 09:40:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2C2E45CF0E6;
-        Wed, 27 Jan 2021 09:22:32 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 02FFB5CF82C;
+        Wed, 27 Jan 2021 09:40:31 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6e1da509;
-        Wed, 27 Jan 2021 09:22:28 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id afc944fc;
+        Wed, 27 Jan 2021 09:40:30 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 08/12] can: mcp251xfd: mcp251xfd_tx_obj_from_skb(): clean up padding of CAN-FD frames
-Date:   Wed, 27 Jan 2021 10:22:23 +0100
-Message-Id: <20210127092227.2775573-9-mkl@pengutronix.de>
+        kernel@pengutronix.de, Dan Carpenter <dan.carpenter@oracle.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net] can: dev: prevent potential information leak in can_fill_info()
+Date:   Wed, 27 Jan 2021 10:40:28 +0100
+Message-Id: <20210127094028.2778793-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210127092227.2775573-1-mkl@pengutronix.de>
-References: <20210127092227.2775573-1-mkl@pengutronix.de>
+In-Reply-To: <20210127094028.2778793-1-mkl@pengutronix.de>
+References: <20210127094028.2778793-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -57,54 +58,35 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-CAN-FD frames have only specific frame length (0, 1, 2, 3, 4, 5, 6, 7, 8, 12,
-16, 20, 24, 32, 48, 64). A CAN-FD frame provided by user space might not cover
-the whole CAN-FD frame. To avoid sending garbage over the CAN bus the driver
-pads the CAN frame with 0x0 (if MCP251XFD_SANITIZE_CAN is activated).
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-This patch cleans up the pad len calculation. Rounding to full u32 brings no
-benefit, in case of CRC transfers, the hw_tx_obj->data is not aligned to u32
-anyway.
+The "bec" struct isn't necessarily always initialized. For example, the
+mcp251xfd_get_berr_counter() function doesn't initialize anything if the
+interface is down.
 
-Link: https://lore.kernel.org/r/20210114153448.1506901-3-mkl@pengutronix.de
+Fixes: 52c793f24054 ("can: netlink support for bus-error reporting and counters")
+Link: https://lore.kernel.org/r/YAkaRdRJncsJO8Ve@mwanda
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/net/can/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 1dbb87c28049..aa992e71d787 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2303,7 +2303,7 @@ mcp251xfd_tx_obj_from_skb(const struct mcp251xfd_priv *priv,
- 	union mcp251xfd_tx_obj_load_buf *load_buf;
- 	u8 dlc;
- 	u32 id, flags;
--	int offset, len;
-+	int pad_len, len;
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 8b1ae023cb21..c73e2a65c904 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -1163,7 +1163,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+ 	struct can_ctrlmode cm = {.flags = priv->ctrlmode};
+-	struct can_berr_counter bec;
++	struct can_berr_counter bec = { };
+ 	enum can_state state = priv->state;
  
- 	if (cfd->can_id & CAN_EFF_FLAG) {
- 		u32 sid, eid;
-@@ -2351,13 +2351,14 @@ mcp251xfd_tx_obj_from_skb(const struct mcp251xfd_priv *priv,
- 	put_unaligned_le32(id, &hw_tx_obj->id);
- 	put_unaligned_le32(flags, &hw_tx_obj->flags);
- 
--	/* Clear data at end of CAN frame */
--	offset = round_down(cfd->len, sizeof(u32));
--	len = round_up(can_fd_dlc2len(dlc), sizeof(u32)) - offset;
--	if (MCP251XFD_SANITIZE_CAN && len)
--		memset(hw_tx_obj->data + offset, 0x0, len);
-+	/* Copy data */
- 	memcpy(hw_tx_obj->data, cfd->data, cfd->len);
- 
-+	/* Clear unused data at end of CAN frame */
-+	pad_len = can_fd_dlc2len(dlc) - cfd->len;
-+	if (MCP251XFD_SANITIZE_CAN && pad_len)
-+		memset(hw_tx_obj->data + cfd->len, 0x0, pad_len);
-+
- 	/* Number of bytes to be written into the RAM of the controller */
- 	len = sizeof(hw_tx_obj->id) + sizeof(hw_tx_obj->flags);
- 	if (MCP251XFD_SANITIZE_CAN)
+ 	if (priv->do_get_state)
+
+base-commit: b491e6a7391e3ecdebdd7a097550195cc878924a
 -- 
 2.29.2
 
