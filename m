@@ -5,47 +5,45 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73F97C433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B34BBC433E9
 	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:28:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2A02D2075A
+	by mail.kernel.org (Postfix) with ESMTP id 7EC742075B
 	for <linux-can@archiver.kernel.org>; Wed, 27 Jan 2021 09:28:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235347AbhA0J2A (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 27 Jan 2021 04:28:00 -0500
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:48023 "EHLO
+        id S235247AbhA0J2L (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 27 Jan 2021 04:28:11 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:40891 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235195AbhA0JZw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Jan 2021 04:25:52 -0500
+        with ESMTP id S235256AbhA0J0H (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Jan 2021 04:26:07 -0500
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1l4h26-0008BV-Vw
-        for linux-can@vger.kernel.org; Wed, 27 Jan 2021 10:22:39 +0100
+        id 1l4h2C-0008HY-Db
+        for linux-can@vger.kernel.org; Wed, 27 Jan 2021 10:22:44 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A6F1B5CF106
-        for <linux-can@vger.kernel.org>; Wed, 27 Jan 2021 09:22:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id ADF415CF12E
+        for <linux-can@vger.kernel.org>; Wed, 27 Jan 2021 09:22:40 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E13745CF0D3;
-        Wed, 27 Jan 2021 09:22:28 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D406D5CF0F9;
+        Wed, 27 Jan 2021 09:22:34 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 752c95bc;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 10066a34;
         Wed, 27 Jan 2021 09:22:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [net-next 04/12] can: length: can_fd_len2dlc(): make legnth calculation readable again
-Date:   Wed, 27 Jan 2021 10:22:19 +0100
-Message-Id: <20210127092227.2775573-5-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-next 12/12] can: mcp251xfd: add BQL support
+Date:   Wed, 27 Jan 2021 10:22:27 +0100
+Message-Id: <20210127092227.2775573-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210127092227.2775573-1-mkl@pengutronix.de>
 References: <20210127092227.2775573-1-mkl@pengutronix.de>
@@ -59,43 +57,103 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In commit 652562e5ff06 ("can: length: can_fd_len2dlc(): simplify length
-calculcation") the readability of the code degraded and became more error
-prone. To counteract this, partially convert that patch and replace open coded
-values (of the original code) with proper defines.
+This patch adds BQL support to the driver. Support for netdev_xmit_more() will
+be added in a separate patch series.
 
-Fixes: 652562e5ff06 ("can: length: can_fd_len2dlc(): simplify length calculcation")
-Cc: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/r/20210118201346.79422-1-socketcan@hartkopp.net
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/r/20210114153448.1506901-7-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/length.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 21 +++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/dev/length.c b/drivers/net/can/dev/length.c
-index d35c4e82314d..b48140b1102e 100644
---- a/drivers/net/can/dev/length.c
-+++ b/drivers/net/can/dev/length.c
-@@ -27,12 +27,17 @@ static const u8 len2dlc[] = {
- 	13, 13, 13, 13, 13, 13, 13, 13,	/* 25 - 32 */
- 	14, 14, 14, 14, 14, 14, 14, 14,	/* 33 - 40 */
- 	14, 14, 14, 14, 14, 14, 14, 14,	/* 41 - 48 */
-+	15, 15, 15, 15, 15, 15, 15, 15,	/* 49 - 56 */
-+	15, 15, 15, 15, 15, 15, 15, 15	/* 57 - 64 */
- };
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 8f78a29db39b..3638b474d86b 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -335,6 +335,8 @@ static void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ 	u8 len;
+ 	int i, j;
  
- /* map the sanitized data length to an appropriate data length code */
- u8 can_fd_len2dlc(u8 len)
- {
--	if (len >= ARRAY_SIZE(len2dlc))
-+	/* check for length mapping table size at build time */
-+	BUILD_BUG_ON(ARRAY_SIZE(len2dlc) != CANFD_MAX_DLEN + 1);
++	netdev_reset_queue(priv->ndev);
 +
-+	if (unlikely(len > CANFD_MAX_DLEN))
- 		return CANFD_MAX_DLC;
+ 	/* TEF */
+ 	tef_ring = priv->tef;
+ 	tef_ring->head = 0;
+@@ -1249,7 +1251,8 @@ mcp251xfd_handle_tefif_recover(const struct mcp251xfd_priv *priv, const u32 seq)
  
- 	return len2dlc[len];
+ static int
+ mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
+-			   const struct mcp251xfd_hw_tef_obj *hw_tef_obj)
++			   const struct mcp251xfd_hw_tef_obj *hw_tef_obj,
++			   unsigned int *frame_len_ptr)
+ {
+ 	struct net_device_stats *stats = &priv->ndev->stats;
+ 	u32 seq, seq_masked, tef_tail_masked;
+@@ -1271,7 +1274,8 @@ mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
+ 	stats->tx_bytes +=
+ 		can_rx_offload_get_echo_skb(&priv->offload,
+ 					    mcp251xfd_get_tef_tail(priv),
+-					    hw_tef_obj->ts, NULL);
++					    hw_tef_obj->ts,
++					    frame_len_ptr);
+ 	stats->tx_packets++;
+ 	priv->tef->tail++;
+ 
+@@ -1329,6 +1333,7 @@ mcp251xfd_tef_obj_read(const struct mcp251xfd_priv *priv,
+ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ {
+ 	struct mcp251xfd_hw_tef_obj hw_tef_obj[MCP251XFD_TX_OBJ_NUM_MAX];
++	unsigned int total_frame_len = 0;
+ 	u8 tef_tail, len, l;
+ 	int err, i;
+ 
+@@ -1350,7 +1355,9 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 	}
+ 
+ 	for (i = 0; i < len; i++) {
+-		err = mcp251xfd_handle_tefif_one(priv, &hw_tef_obj[i]);
++		unsigned int frame_len;
++
++		err = mcp251xfd_handle_tefif_one(priv, &hw_tef_obj[i], &frame_len);
+ 		/* -EAGAIN means the Sequence Number in the TEF
+ 		 * doesn't match our tef_tail. This can happen if we
+ 		 * read the TEF objects too early. Leave loop let the
+@@ -1360,6 +1367,8 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 			goto out_netif_wake_queue;
+ 		if (err)
+ 			return err;
++
++		total_frame_len += frame_len;
+ 	}
+ 
+  out_netif_wake_queue:
+@@ -1390,6 +1399,7 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 			return err;
+ 
+ 		tx_ring->tail += len;
++		netdev_completed_queue(priv->ndev, len, total_frame_len);
+ 
+ 		err = mcp251xfd_check_tef_tail(priv);
+ 		if (err)
+@@ -2435,6 +2445,7 @@ static netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+ 	struct mcp251xfd_priv *priv = netdev_priv(ndev);
+ 	struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+ 	struct mcp251xfd_tx_obj *tx_obj;
++	unsigned int frame_len;
+ 	u8 tx_head;
+ 	int err;
+ 
+@@ -2453,7 +2464,9 @@ static netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+ 	if (mcp251xfd_get_tx_free(tx_ring) == 0)
+ 		netif_stop_queue(ndev);
+ 
+-	can_put_echo_skb(skb, ndev, tx_head, 0);
++	frame_len = can_skb_get_frame_len(skb);
++	can_put_echo_skb(skb, ndev, tx_head, frame_len);
++	netdev_sent_queue(priv->ndev, frame_len);
+ 
+ 	err = mcp251xfd_tx_obj_write(priv, tx_obj);
+ 	if (err)
 -- 
 2.29.2
 
