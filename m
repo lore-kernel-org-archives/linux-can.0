@@ -7,47 +7,44 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B547C433E0
-	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:48:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 989A6C433DB
+	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:50:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 18C0664DCC
-	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:48:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5FD9964DCC
+	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:50:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbhA1KsW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 28 Jan 2021 05:48:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhA1KsT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 28 Jan 2021 05:48:19 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5F5C061786
-        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 02:46:56 -0800 (PST)
+        id S231156AbhA1Kty (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 28 Jan 2021 05:49:54 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:53045 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231208AbhA1Ktq (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 28 Jan 2021 05:49:46 -0500
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1l54pC-0000sx-Ta
-        for linux-can@vger.kernel.org; Thu, 28 Jan 2021 11:46:54 +0100
+        id 1l54pA-0000qQ-Bu
+        for linux-can@vger.kernel.org; Thu, 28 Jan 2021 11:46:52 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E2CF45D06DC
-        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 10:46:51 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 0B1235D06C3
+        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 10:46:49 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CE9475D06B1;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4C8BD5D06AA;
         Thu, 28 Jan 2021 10:46:47 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 78c365f3;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b2c4c7d0;
         Thu, 28 Jan 2021 10:46:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     kernel@pengutronix.de, linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 7/8] can: mcp251xfd: mcp251xfd_chip_clock_enable(): simplify return
-Date:   Thu, 28 Jan 2021 11:46:43 +0100
-Message-Id: <20210128104644.2982125-8-mkl@pengutronix.de>
+Subject: [PATCH 2/8] can: mcp251xfd: mcp251xfd_probe(): sort errata table alphabetically, fix indention
+Date:   Thu, 28 Jan 2021 11:46:38 +0100
+Message-Id: <20210128104644.2982125-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210128104644.2982125-1-mkl@pengutronix.de>
 References: <20210128104644.2982125-1-mkl@pengutronix.de>
@@ -61,31 +58,30 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch simplifies the return of the mcp251xfd_chip_clock_enable()
-function by direct returning the error.
+This patch sorts the errata table alphabetically and fixes the indention.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 04870a741792..da5e8e416440 100644
+index 015227422372..c6ccd0054152 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -596,11 +596,9 @@ static int mcp251xfd_chip_clock_enable(const struct mcp251xfd_priv *priv)
- 			   "Timeout waiting for Oscillator Ready (osc=0x%08x, osc_reference=0x%08x)\n",
- 			   osc, osc_reference);
- 		return -ETIMEDOUT;
--	} else if (err) {
--		return err;
- 	}
- 
--	return 0;
-+	return err;
- }
- 
- static int mcp251xfd_chip_softreset_do(const struct mcp251xfd_priv *priv)
+@@ -2953,10 +2953,10 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 	 * 2518	20 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	 9375000 Hz	 93.75%	600000000 Hz	bad	assigned-clocks = <&ccu CLK_SPIx>
+ 	 * 2518	40 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	16666667 Hz	 83.33%	600000000 Hz	good	assigned-clocks = <&ccu CLK_SPIx>
+ 	 * 2518	40 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	18750000 Hz	 93.75%	600000000 Hz	bad	assigned-clocks = <&ccu CLK_SPIx>
++	 * 2517	40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	good	default
++	 * 2518	40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	good	default
+ 	 * 2517	20 MHz	fsl,imx8mm		fsl,imx51-ecspi		 8333333 Hz	 83.33%	 16666667 Hz	good	assigned-clocks = <&clk IMX8MM_CLK_ECSPIx_ROOT>
+ 	 * 2517	20 MHz	fsl,imx8mm		fsl,imx51-ecspi		 9523809 Hz	 95.34%	 28571429 Hz	bad	assigned-clocks = <&clk IMX8MM_CLK_ECSPIx_ROOT>
+-	 * 2517 40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	good	default
+-	 * 2518 40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	good	default
+ 	 *
+ 	 */
+ 	priv->spi_max_speed_hz_orig = spi->max_speed_hz;
 -- 
 2.29.2
 
