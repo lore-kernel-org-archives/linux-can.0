@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76AE7C43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95365C433E0
 	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:47:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 366ED64DDA
+	by mail.kernel.org (Postfix) with ESMTP id 5D4DE64DD8
 	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:47:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhA1Krq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 28 Jan 2021 05:47:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51796 "EHLO
+        id S231409AbhA1Krs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 28 Jan 2021 05:47:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbhA1Krg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 28 Jan 2021 05:47:36 -0500
+        with ESMTP id S231422AbhA1Krf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 28 Jan 2021 05:47:35 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C13C0613D6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829FAC061756
         for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 02:46:55 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1l54pC-0000sb-E8
-        for linux-can@vger.kernel.org; Thu, 28 Jan 2021 11:46:54 +0100
+        id 1l54pB-0000qt-U4
+        for linux-can@vger.kernel.org; Thu, 28 Jan 2021 11:46:53 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 0B6DA5D06D9
-        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 10:46:51 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E4F445D06CC
+        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 10:46:49 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id B4A425D06AF;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5DAB65D06AB;
         Thu, 28 Jan 2021 10:46:47 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9f9fb2cd;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 11404362;
         Thu, 28 Jan 2021 10:46:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     kernel@pengutronix.de, linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 6/8] can: mcp251xfd: add missing _MASK postfix to MCP251XFD_OBJ_FLAGS_DLC
-Date:   Thu, 28 Jan 2021 11:46:42 +0100
-Message-Id: <20210128104644.2982125-7-mkl@pengutronix.de>
+Subject: [PATCH 3/8] can: mcp251xfd: mcp251xfd_probe(): remove known bad combinations from errata tabe
+Date:   Thu, 28 Jan 2021 11:46:39 +0100
+Message-Id: <20210128104644.2982125-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210128104644.2982125-1-mkl@pengutronix.de>
 References: <20210128104644.2982125-1-mkl@pengutronix.de>
@@ -61,50 +61,46 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-As MCP251XFD_OBJ_FLAGS_DLC is a mask, add the missing _MASK postfix,
-that all other masks in the driver have.
+The published errata specify the maximum allowed SPI frequency to be
+max 85% of (FSYSCLK/2). So there's no need to track known bad clock
+settings in the driver. As the setup of known good values is a bit
+tricky, keep them.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 ++--
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h      | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 5c7fdf31dce8..04870a741792 100644
+index c6ccd0054152..d51d11fd7064 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -1465,7 +1465,7 @@ mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
- 					hw_rx_obj->id);
- 	}
- 
--	dlc = FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC, hw_rx_obj->flags);
-+	dlc = FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC_MASK, hw_rx_obj->flags);
- 
- 	/* CANFD */
- 	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF) {
-@@ -2359,7 +2359,7 @@ mcp251xfd_tx_obj_from_skb(const struct mcp251xfd_priv *priv,
- 				     priv->can.ctrlmode);
- 	}
- 
--	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_DLC, dlc);
-+	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_DLC_MASK, dlc);
- 
- 	load_buf = &tx_obj->buf;
- 	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_TX)
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index cb6398c2a560..480bd4480bdf 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -305,7 +305,7 @@
- #define MCP251XFD_OBJ_FLAGS_BRS BIT(6)
- #define MCP251XFD_OBJ_FLAGS_RTR BIT(5)
- #define MCP251XFD_OBJ_FLAGS_IDE BIT(4)
--#define MCP251XFD_OBJ_FLAGS_DLC GENMASK(3, 0)
-+#define MCP251XFD_OBJ_FLAGS_DLC_MASK GENMASK(3, 0)
- 
- #define MCP251XFD_REG_FRAME_EFF_SID_MASK GENMASK(28, 18)
- #define MCP251XFD_REG_FRAME_EFF_EID_MASK GENMASK(17, 0)
+@@ -2945,18 +2945,15 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 	 * Ensure that FSCK is less than or equal to 0.85 *
+ 	 * (FSYSCLK/2).
+ 	 *
+-	 * Known good and bad combinations are:
++	 * Known good combinations are:
+ 	 *
+-	 * MCP	ext-clk	SoC			SPI			SPI-clk		max-clk	parent-clk	Status	config
++	 * MCP	ext-clk	SoC			SPI			SPI-clk		max-clk	parent-clk	config
+ 	 *
+-	 * 2518	20 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	 8333333 Hz	 83.33%	600000000 Hz	good	assigned-clocks = <&ccu CLK_SPIx>
+-	 * 2518	20 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	 9375000 Hz	 93.75%	600000000 Hz	bad	assigned-clocks = <&ccu CLK_SPIx>
+-	 * 2518	40 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	16666667 Hz	 83.33%	600000000 Hz	good	assigned-clocks = <&ccu CLK_SPIx>
+-	 * 2518	40 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	18750000 Hz	 93.75%	600000000 Hz	bad	assigned-clocks = <&ccu CLK_SPIx>
+-	 * 2517	40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	good	default
+-	 * 2518	40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	good	default
+-	 * 2517	20 MHz	fsl,imx8mm		fsl,imx51-ecspi		 8333333 Hz	 83.33%	 16666667 Hz	good	assigned-clocks = <&clk IMX8MM_CLK_ECSPIx_ROOT>
+-	 * 2517	20 MHz	fsl,imx8mm		fsl,imx51-ecspi		 9523809 Hz	 95.34%	 28571429 Hz	bad	assigned-clocks = <&clk IMX8MM_CLK_ECSPIx_ROOT>
++	 * 2518	20 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	 8333333 Hz	 83.33%	600000000 Hz	assigned-clocks = <&ccu CLK_SPIx>
++	 * 2518	40 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	16666667 Hz	 83.33%	600000000 Hz	assigned-clocks = <&ccu CLK_SPIx>
++	 * 2517	40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	default
++	 * 2518	40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	default
++	 * 2517	20 MHz	fsl,imx8mm		fsl,imx51-ecspi		 8333333 Hz	 83.33%	 16666667 Hz	assigned-clocks = <&clk IMX8MM_CLK_ECSPIx_ROOT>
+ 	 *
+ 	 */
+ 	priv->spi_max_speed_hz_orig = spi->max_speed_hz;
 -- 
 2.29.2
 
