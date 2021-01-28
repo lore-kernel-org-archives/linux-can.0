@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54500C433E9
-	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:47:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFA12C433E0
+	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:47:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0D4A764DCC
-	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:47:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 705F764DD6
+	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:47:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhA1Krp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 28 Jan 2021 05:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
+        id S229785AbhA1Kri (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 28 Jan 2021 05:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbhA1Krg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 28 Jan 2021 05:47:36 -0500
+        with ESMTP id S231415AbhA1Kre (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 28 Jan 2021 05:47:34 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44064C0613ED
-        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 02:46:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE74C061574
+        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 02:46:53 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1l54pC-0000sp-PI
-        for linux-can@vger.kernel.org; Thu, 28 Jan 2021 11:46:54 +0100
+        id 1l54pA-0000qP-8j
+        for linux-can@vger.kernel.org; Thu, 28 Jan 2021 11:46:52 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 6CB7C5D06DA
-        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 10:46:51 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 0ADF65D06C2
+        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 10:46:49 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E32CA5D06B3;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3AF5D5D06A9;
         Thu, 28 Jan 2021 10:46:47 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d82e6f5d;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e9dec1c3;
         Thu, 28 Jan 2021 10:46:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     kernel@pengutronix.de, linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 8/8] can: mcp251xfd: mcp251xfd_probe(): use dev_err_probe() to simplify error handling
-Date:   Thu, 28 Jan 2021 11:46:44 +0100
-Message-Id: <20210128104644.2982125-9-mkl@pengutronix.de>
+Subject: [PATCH 1/8] can: mcp251xfd: mcp251xfd_probe(): fix errata reference
+Date:   Thu, 28 Jan 2021 11:46:37 +0100
+Message-Id: <20210128104644.2982125-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210128104644.2982125-1-mkl@pengutronix.de>
 References: <20210128104644.2982125-1-mkl@pengutronix.de>
@@ -61,63 +61,28 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-dev_err_probe() can reduce code size, uniform error handling and record the
-defer probe reason etc., use it to simplify the code.
+This patch fixes the reference to the errata for both the mcp2517fd
+and the mcp2518fd.
 
+Fixes: f5b84dedf7eb ("can: mcp25xxfd: mcp25xxfd_probe(): add SPI clk limit related errata information")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 28 ++++++++-----------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index da5e8e416440..3c5b92911d46 100644
+index 3638b474d86b..015227422372 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2849,32 +2849,28 @@ static int mcp251xfd_probe(struct spi_device *spi)
+@@ -2932,7 +2932,7 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 			spi_get_device_id(spi)->driver_data;
  
- 	rx_int = devm_gpiod_get_optional(&spi->dev, "microchip,rx-int",
- 					 GPIOD_IN);
--	if (PTR_ERR(rx_int) == -EPROBE_DEFER)
--		return -EPROBE_DEFER;
--	else if (IS_ERR(rx_int))
--		return PTR_ERR(rx_int);
-+	if (IS_ERR(rx_int))
-+		return dev_err_probe(&spi->dev, PTR_ERR(rx_int),
-+				     "Failed to get RX-INT!\n");
- 
- 	reg_vdd = devm_regulator_get_optional(&spi->dev, "vdd");
--	if (PTR_ERR(reg_vdd) == -EPROBE_DEFER)
--		return -EPROBE_DEFER;
--	else if (PTR_ERR(reg_vdd) == -ENODEV)
-+	if (PTR_ERR(reg_vdd) == -ENODEV)
- 		reg_vdd = NULL;
- 	else if (IS_ERR(reg_vdd))
--		return PTR_ERR(reg_vdd);
-+		return dev_err_probe(&spi->dev, PTR_ERR(reg_vdd),
-+				     "Failed to get VDD regulator!\n");
- 
- 	reg_xceiver = devm_regulator_get_optional(&spi->dev, "xceiver");
--	if (PTR_ERR(reg_xceiver) == -EPROBE_DEFER)
--		return -EPROBE_DEFER;
--	else if (PTR_ERR(reg_xceiver) == -ENODEV)
-+	if (PTR_ERR(reg_xceiver) == -ENODEV)
- 		reg_xceiver = NULL;
- 	else if (IS_ERR(reg_xceiver))
--		return PTR_ERR(reg_xceiver);
-+		return dev_err_probe(&spi->dev, PTR_ERR(reg_xceiver),
-+				     "Failed to get Transceiver regulator!\n");
- 
- 	clk = devm_clk_get(&spi->dev, NULL);
--	if (IS_ERR(clk)) {
--		dev_err(&spi->dev, "No Oscillator (clock) defined.\n");
--		return PTR_ERR(clk);
--	}
-+	if (IS_ERR(clk))
-+		dev_err_probe(&spi->dev, PTR_ERR(clk),
-+			      "Failed to get Oscillator (clock)!\n");
- 	freq = clk_get_rate(clk);
- 
- 	/* Sanity check */
+ 	/* Errata Reference:
+-	 * mcp2517fd: DS80000789B, mcp2518fd: DS80000792C 4.
++	 * mcp2517fd: DS80000792C 5., mcp2518fd: DS80000789C 4.
+ 	 *
+ 	 * The SPI can write corrupted data to the RAM at fast SPI
+ 	 * speeds:
 -- 
 2.29.2
 
