@@ -2,113 +2,99 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23DF1C4332B
-	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:50:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF635C433E0
+	for <linux-can@archiver.kernel.org>; Fri, 29 Jan 2021 17:04:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CDE5764DCC
-	for <linux-can@archiver.kernel.org>; Thu, 28 Jan 2021 10:50:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 605D964D9A
+	for <linux-can@archiver.kernel.org>; Fri, 29 Jan 2021 17:04:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbhA1KuA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 28 Jan 2021 05:50:00 -0500
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:53285 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhA1Ktr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 28 Jan 2021 05:49:47 -0500
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1l54pC-0000sF-MT
-        for linux-can@vger.kernel.org; Thu, 28 Jan 2021 11:46:54 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 093F05D06D8
-        for <linux-can@vger.kernel.org>; Thu, 28 Jan 2021 10:46:51 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8D41A5D06AD;
-        Thu, 28 Jan 2021 10:46:47 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 694f10c0;
-        Thu, 28 Jan 2021 10:46:46 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     kernel@pengutronix.de, linux-can@vger.kernel.org
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Thomas Kopp <thomas.kopp@microchip.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5/8] can: mcp251xfd: unify error messages and commets
-Date:   Thu, 28 Jan 2021 11:46:41 +0100
-Message-Id: <20210128104644.2982125-6-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210128104644.2982125-1-mkl@pengutronix.de>
-References: <20210128104644.2982125-1-mkl@pengutronix.de>
+        id S229953AbhA2REe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 29 Jan 2021 12:04:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49806 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230249AbhA2REX (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 29 Jan 2021 12:04:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611939816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=urqIhegsxh2vaWCOT9YaPeuULZIBdkaKaHNo1UPjvQs=;
+        b=WJfp2PKVh1G21RA+TY65XX0kgNVJFSf+grhJTAmW1BN5lyruS90eWxe81hJklG/jQcIPl8
+        nf998hS+OjjkZnjjDpojZLHoMbL+Sc9YGJ+r1tGaEfaYidRIMY9WDER6JZYhF/7fLuxqmk
+        key6LKJeMC5dD5WVDP++YdrJ3pLGjVc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 860DEABD6;
+        Fri, 29 Jan 2021 17:03:36 +0000 (UTC)
+From:   Richard Palethorpe <rpalethorpe@suse.com>
+To:     ltp@lists.linux.it
+Cc:     linux-can@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Richard Palethorpe <rpalethorpe@suse.com>
+Subject: [PATCH v4 0/7] Convert CAN tests to new LTP API
+Date:   Fri, 29 Jan 2021 17:02:58 +0000
+Message-Id: <20210129170305.27383-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch unifies the error messages:
-- have a "." and the end of each message
-- write controller with a small "c", if not the first word of an error
-  message.
+Hello,
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+This converts the CAN tests to the modern Linux Test Project API and
+removes the wrapper script. To be clear, this is a patch-set for the
+LTP *not* the kernel tree or can-utils.
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index f76cc62cbac4..5c7fdf31dce8 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -651,7 +651,7 @@ static int mcp251xfd_chip_softreset_check(const struct mcp251xfd_priv *priv)
- 
- 	if (osc != osc_reference) {
- 		netdev_info(priv->ndev,
--			    "Controller failed to reset. osc=0x%08x, reference value=0x%08x\n",
-+			    "Controller failed to reset. osc=0x%08x, reference value=0x%08x.\n",
- 			    osc, osc_reference);
- 		return -ETIMEDOUT;
- 	}
-@@ -666,7 +666,7 @@ static int mcp251xfd_chip_softreset(const struct mcp251xfd_priv *priv)
- 	for (i = 0; i < MCP251XFD_SOFTRESET_RETRIES_MAX; i++) {
- 		if (i)
- 			netdev_info(priv->ndev,
--				    "Retrying to reset Controller.\n");
-+				    "Retrying to reset controller.\n");
- 
- 		err = mcp251xfd_chip_softreset_do(priv);
- 		if (err == -ETIMEDOUT)
-@@ -1239,7 +1239,7 @@ mcp251xfd_handle_tefif_recover(const struct mcp251xfd_priv *priv, const u32 seq)
- 	}
- 
- 	netdev_info(priv->ndev,
--		    "Transmit Event FIFO buffer %s. (seq=0x%08x, tef_tail=0x%08x, tef_head=0x%08x, tx_head=0x%08x)\n",
-+		    "Transmit Event FIFO buffer %s. (seq=0x%08x, tef_tail=0x%08x, tef_head=0x%08x, tx_head=0x%08x).\n",
- 		    tef_sta & MCP251XFD_REG_TEFSTA_TEFFIF ?
- 		    "full" : tef_sta & MCP251XFD_REG_TEFSTA_TEFNEIF ?
- 		    "not empty" : "empty",
-@@ -1891,7 +1891,7 @@ mcp251xfd_handle_modif(const struct mcp251xfd_priv *priv, bool *set_normal_mode)
- 			   "Controller changed into %s Mode (%u).\n",
- 			   mcp251xfd_get_mode_str(mode), mode);
- 
--	/* After the application requests Normal mode, the Controller
-+	/* After the application requests Normal mode, the controller
- 	 * will automatically attempt to retransmit the message that
- 	 * caused the TX MAB underflow.
- 	 *
+I have tried to keep the core test behaviour the same, but (for
+example) moving to the SAFE_ functions will naturally introduce some
+changes in error checking. Deliberate behavioral changes have been
+noted in the commit messages.
+
+FYI, we appear to have 4 CAN tests in LTP including two tests for
+SLCAN (pty03, pty04). It appears these could be quite easily extended.
+
+V2: Update e-mail addresses and resend
+V3:
+* Add COPYING and use dual license SPDX identifier
+* Fix compilation issues with can_common.h
+V4:
+* Remove IFF_ECHO fallback which is not needed with only linux/if.h
+* Add missing static to function
+* State effect of echo on coverage
+* remove shell script from runtest file
+* Add various git trailers
+
+Richard Palethorpe (7):
+  API: Add FILE_SCANF to new lib
+  can: Add can_common.h for vcan device setup
+  can: Add COPYING with dual license text
+  can_filter: Convert to new library
+  can_recv_own_msgs: Convert to new library
+  can: Remove obsolete test wrapper script
+  can: Update contact details
+
+ include/tst_safe_file_ops.h                   |   3 +
+ runtest/can                                   |   4 +-
+ testcases/network/can/Makefile                |   2 -
+ .../can/filter-tests/00_Descriptions.txt      |   6 +-
+ testcases/network/can/filter-tests/COPYING    |  35 ++
+ testcases/network/can/filter-tests/INSTALL    |   3 +-
+ testcases/network/can/filter-tests/Makefile   |   4 -
+ .../network/can/filter-tests/can_common.h     |  71 ++++
+ .../network/can/filter-tests/can_filter.c     | 317 +++++++-----------
+ .../can/filter-tests/can_rcv_own_msgs.c       | 273 +++++----------
+ .../network/can/filter-tests/can_run_tests.sh | 106 ------
+ 11 files changed, 329 insertions(+), 495 deletions(-)
+ create mode 100644 testcases/network/can/filter-tests/COPYING
+ create mode 100644 testcases/network/can/filter-tests/can_common.h
+ delete mode 100755 testcases/network/can/filter-tests/can_run_tests.sh
+
 -- 
-2.29.2
-
+2.30.0
 
