@@ -2,45 +2,117 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 144FEC433E0
-	for <linux-can@archiver.kernel.org>; Mon,  1 Feb 2021 15:21:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A454C433E0
+	for <linux-can@archiver.kernel.org>; Mon,  1 Feb 2021 15:23:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CAEDD64D9E
-	for <linux-can@archiver.kernel.org>; Mon,  1 Feb 2021 15:21:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3984E64EAB
+	for <linux-can@archiver.kernel.org>; Mon,  1 Feb 2021 15:23:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhBAPVS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 1 Feb 2021 10:21:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51230 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231255AbhBAPVM (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:21:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 60D4FAB92;
-        Mon,  1 Feb 2021 15:20:29 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 16:21:32 +0100
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     Richard Palethorpe <rpalethorpe@suse.com>
-Cc:     ltp@lists.linux.it, Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-can@vger.kernel.org
-Subject: Re: [LTP] [PATCH v4 0/7] Convert CAN tests to new LTP API
-Message-ID: <YBgcfPG08oqZdh5W@yuki.lan>
-References: <20210129170305.27383-1-rpalethorpe@suse.com>
+        id S231337AbhBAPXE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 1 Feb 2021 10:23:04 -0500
+Received: from mail-yb1-f169.google.com ([209.85.219.169]:38983 "EHLO
+        mail-yb1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhBAPWP (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 1 Feb 2021 10:22:15 -0500
+Received: by mail-yb1-f169.google.com with SMTP id k4so17206522ybp.6;
+        Mon, 01 Feb 2021 07:22:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dsxwO7hWzLBNBcxb5oAX/WrRy6edgK73m5vgz2nVH7Q=;
+        b=jua+dTqmXbEX85xGAg+cPYPLbnY+yfw7xhyJavOO42LaavNpH5zixaSfHZTeAsJ8BN
+         Lzi4qIrdwusUb0W1xAsQbEffQ726BRItX7AU00lNK0ZB/gBedzp8OkrrkAZMF34kQWzk
+         GGmoh4LMH4rH0p7qQv8Myaioc3dDjiqHDxiIVqGBfaw3WFfuQ8Fh66EAGgELgmAPfZ4M
+         +I4dqpANQvnT7kRX3MjWmXVgAzy+Ie3SeQH4+wecPTPIBhDjrczS8Uvhz/jttlp3f5fG
+         WjsfbqFTqm8lFqjPwKxGp4Dg7ORm15Msetl+ZbrR0w8/cmiPnGaImtFqnby0iIdiZ/+B
+         VEZA==
+X-Gm-Message-State: AOAM531zVP5lRqm2HVps3UIfFl5VTT0kJSyB5ldfAZbT3r6M+iJEoa44
+        gqLGTmPa2hoNeXHv0muA7oBiYIw4U2fcs+lc/N6iYE18ycTjM5+b
+X-Google-Smtp-Source: ABdhPJwnE27Wk0UI8BZqnbJwsTwAI0TzEdeQheHNeNLfkQnPyHM9Ix5xSG/me6TxuPLoo+O9WHeKxVml6/8tmbokDPs=
+X-Received: by 2002:a25:84cc:: with SMTP id x12mr8729588ybm.487.1612192894792;
+ Mon, 01 Feb 2021 07:21:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129170305.27383-1-rpalethorpe@suse.com>
+References: <20210125104055.79882-1-socketcan@hartkopp.net>
+In-Reply-To: <20210125104055.79882-1-socketcan@hartkopp.net>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Tue, 2 Feb 2021 00:21:23 +0900
+Message-ID: <CAMZ6Rq+WvuGMrR2sQykt727ZZPvb2v-6hb0nvVpsUwWCco7bFg@mail.gmail.com>
+Subject: Re: [PATCH RESEND iproute2 5.11] iplink_can: add Classical CAN frame
+ LEN8_DLC support
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-can <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi!
-Patchset pushed, thanks.
+On Mon. 25 Jan 2021 at 19:40, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+> The len8_dlc element is filled by the CAN interface driver and used for CAN
+> frame creation by the CAN driver when the CAN_CTRLMODE_CC_LEN8_DLC flag is
+> supported by the driver and enabled via netlink configuration interface.
+>
+> Add the command line support for cc-len8-dlc for Linux 5.11+
+>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>  ip/iplink_can.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/ip/iplink_can.c b/ip/iplink_can.c
+> index 735ab941..6a26f3ff 100644
+> --- a/ip/iplink_can.c
+> +++ b/ip/iplink_can.c
+> @@ -35,10 +35,11 @@ static void print_usage(FILE *f)
+>                 "\t[ one-shot { on | off } ]\n"
+>                 "\t[ berr-reporting { on | off } ]\n"
+>                 "\t[ fd { on | off } ]\n"
+>                 "\t[ fd-non-iso { on | off } ]\n"
+>                 "\t[ presume-ack { on | off } ]\n"
+> +               "\t[ cc-len8-dlc { on | off } ]\n"
+>                 "\n"
+>                 "\t[ restart-ms TIME-MS ]\n"
+>                 "\t[ restart ]\n"
+>                 "\n"
+>                 "\t[ termination { 0..65535 } ]\n"
+> @@ -101,10 +102,11 @@ static void print_ctrlmode(FILE *f, __u32 cm)
+>         _PF(CAN_CTRLMODE_ONE_SHOT, "ONE-SHOT");
+>         _PF(CAN_CTRLMODE_BERR_REPORTING, "BERR-REPORTING");
+>         _PF(CAN_CTRLMODE_FD, "FD");
+>         _PF(CAN_CTRLMODE_FD_NON_ISO, "FD-NON-ISO");
+>         _PF(CAN_CTRLMODE_PRESUME_ACK, "PRESUME-ACK");
+> +       _PF(CAN_CTRLMODE_CC_LEN8_DLC, "CC-LEN8-DLC");
+>  #undef _PF
+>         if (cm)
+>                 print_hex(PRINT_ANY, NULL, "%x", cm);
+>         close_json_array(PRINT_ANY, "> ");
+>  }
+> @@ -209,10 +211,14 @@ static int can_parse_opt(struct link_util *lu, int argc, char **argv,
+>                                      CAN_CTRLMODE_FD_NON_ISO);
+>                 } else if (matches(*argv, "presume-ack") == 0) {
+>                         NEXT_ARG();
+>                         set_ctrlmode("presume-ack", *argv, &cm,
+>                                      CAN_CTRLMODE_PRESUME_ACK);
+> +               } else if (matches(*argv, "cc-len8-dlc") == 0) {
+> +                       NEXT_ARG();
+> +                       set_ctrlmode("cc-len8-dlc", *argv, &cm,
+> +                                    CAN_CTRLMODE_CC_LEN8_DLC);
+>                 } else if (matches(*argv, "restart") == 0) {
+>                         __u32 val = 1;
+>
+>                         addattr32(n, 1024, IFLA_CAN_RESTART, val);
+>                 } else if (matches(*argv, "restart-ms") == 0) {
+> --
+> 2.29.2
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+
+Reviewed and tested the patch, everything is OK for me.
+Thanks Oliver!
