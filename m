@@ -2,166 +2,182 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 046CBC433E0
-	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 06:43:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D3FEC433E0
+	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 08:27:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A1C7864F69
-	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 06:43:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF04664F67
+	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 08:27:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhBCGmv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 3 Feb 2021 01:42:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhBCGmv (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Feb 2021 01:42:51 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF05C06174A
-        for <linux-can@vger.kernel.org>; Tue,  2 Feb 2021 22:42:10 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id m22so31747839lfg.5
-        for <linux-can@vger.kernel.org>; Tue, 02 Feb 2021 22:42:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZVObF6RQIKUV7edOIq2XzGpwGVjwfc3YddEZOCDfVmk=;
-        b=sgGg9ehhbN8SKOxZJS97YGjVdAvAUAYyR4Jo5qFxmsUqu9uEZMe2+vh/DS/+c7j/FG
-         m2u3fTHUZ38lVgF3jSqpIueN9DZh8Zenl+4VpMbyMS0Wumb0QgmmldL5iIVeoJq4RA2T
-         ULH0y6EwN7reIw62Gacyu/iQ+WeeV5wOGDlrVE/M/2UeKKEJkUGmm45x8EzM+JNmxEFd
-         ZlR98QVB8+LHCH+k0/KByMwMNkWL+ObX5fl20lPgkTOxDGOGjhOHU0RFvWAwrTpo53XG
-         WHS8PQuucQ+CbgsOaSbpbUR+Mc3BXG8f5xaDQVRYNCPAba5Jznf9qobVvzG2bUNlbFAv
-         w+kw==
+        id S232491AbhBCI1J (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Feb 2021 03:27:09 -0500
+Received: from mail-yb1-f179.google.com ([209.85.219.179]:38508 "EHLO
+        mail-yb1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232621AbhBCI1E (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Feb 2021 03:27:04 -0500
+Received: by mail-yb1-f179.google.com with SMTP id i6so16802365ybq.5
+        for <linux-can@vger.kernel.org>; Wed, 03 Feb 2021 00:26:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZVObF6RQIKUV7edOIq2XzGpwGVjwfc3YddEZOCDfVmk=;
-        b=jD8tukAXuZSSK1I+Ngo0xGAcNr9BQRuqlc2I7C5vWcwGkkJCXdgFZuQCmhdtZDNFNv
-         DZ8D1pcqRD039YSBWbn6+LnMb0iCTt3voKSqiHg/X+7VBKWSkVEMNt3amNJ6TCb6ANCl
-         C1ESfKQ2GqBZNRjqrWgYSyEchTZn/nYI7ozH21kQsBU7mljWLigwZVuKnwO33qzI8N1P
-         4jKqxcF+rBTFHUoZE9trc2Lz/UIKjXpCarxrraPTK9ZoPEF/APYIjDauMo79/rdt2/xg
-         4A7pPPemmVG4eUxztx4Gv1vg2awpu/0F6ugioH79rAcwMF3PdZpV1jXVWiKfQ6zA5hxe
-         RySA==
-X-Gm-Message-State: AOAM530ORNgKtzUTFhJnu2IfIUGg1cjOudTGBNNoiOXGbGnkaHTFRA5T
-        CzcyiauxSnqrGLx7izfWTVo=
-X-Google-Smtp-Source: ABdhPJyVG30vseAD2FELKtbqZ20LHdacJHfvKOvXrHdngMIrAxQnU50qRH3BwQsF6298mGziGVh6lA==
-X-Received: by 2002:a19:cd:: with SMTP id 196mr903480lfa.267.1612334528217;
-        Tue, 02 Feb 2021 22:42:08 -0800 (PST)
-Received: from [192.168.16.194] (h-4-68-234.A785.priv.bahnhof.se. [155.4.68.234])
-        by smtp.googlemail.com with ESMTPSA id d18sm138830lfm.285.2021.02.02.22.42.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 22:42:07 -0800 (PST)
-Subject: Re: [Question] Sending CAN error frames
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Jimmy Assarsson <extja@kvaser.com>,
-        linux-can <linux-can@vger.kernel.org>,
-        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-References: <CAMZ6RqK0rTNg3u3mBpZOoY51jLZ-et-J01tY6-+mWsM4meVw-A@mail.gmail.com>
- <87e3dd54-50ab-1190-efdb-18ddb3b21a02@hartkopp.net>
- <42080d05-7ab3-99be-92e2-73ed262350ba@gmail.com>
- <CAMZ6RqJWrObGZRwyA1kD5cEZRUd_-4zt8rsMR+zZPLpxD6AWAQ@mail.gmail.com>
- <1debcaeb-71c7-6b78-88b3-7f121a33c1c1@kvaser.com>
- <CAMZ6Rq+ObkS2RDFbgbPP7HZH26WbN-eoLeQyiY6+CpDGYjE10w@mail.gmail.com>
- <17b14b11-87bf-9508-0da5-1031c5d5e132@pengutronix.de>
- <20210202082340.GA23043@x1.vandijck-laurijssen.be>
- <8050d433-591c-2d1f-f0c7-ffa92e33032d@pengutronix.de>
- <cac31b51-514d-462b-fe48-4c3bea8b28fd@hartkopp.net>
- <1b82f875-5884-3bf6-7891-2e4461d2a72a@pengutronix.de>
- <abc8923c-8cf6-c0d5-ec67-73afe183b9b3@hartkopp.net>
- <CAMZ6RqKx5NCFKiahb8AbUx=LC5xS6oYCdVZk8WGSAzZeAVs9Qg@mail.gmail.com>
- <ac8c4d3c-4261-8909-3481-abcd1d3bf43e@hartkopp.net>
- <CAMZ6RqKkeV6WRtfh65mDsYthuG1S+LD=kexAdcx=DeShf0T0YQ@mail.gmail.com>
- <d7584992-78a0-4be7-6b31-0bc1e4adfeca@hartkopp.net>
-From:   Jimmy Assarsson <jimmyassarsson@gmail.com>
-Message-ID: <707944b7-f202-edb1-cb67-beedaeedfda0@gmail.com>
-Date:   Wed, 3 Feb 2021 07:42:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/SfDCgsLPVNMkoPlfHEnYZdnYjdV5IflalDNzAtWbxk=;
+        b=bGDhmV+BbvnMnkWQ+PwaOb5nL60wyB/Qz7J6Mo0o1rB5aqErRs9VlDO2KPq3NM8E8i
+         iTaaFCuEOsypzM5Pse/3IDQqHkaG/FkhQS4P/AUJ8P5yreRxl5+V2mlmpUMcc+Oyt6d8
+         OMu3+0udDXylYmlHeZNsUsmQYK4z6GIQ9ottlFjv42SXLJoH81BzaIiR2vNDnW6CTLgT
+         I8Qlykuy+P1FX1WaA6KeEZqV6T/9UiDxrGLnLHr1jc2SjWv/i+8nWarptfaEK0zXNEa/
+         UIy0WV+JpnN3BWouvJxYZe73TdvEC8ee7suE3ouIvcOrdQXzWH+/RD2Sj4agc0fmkKoK
+         HJhA==
+X-Gm-Message-State: AOAM533ayf0uVqW+uy5p5tv27bscEH+ERO03ObF0AwZL7WrsWbMx1beH
+        JxMM3dO4/wtp2Qg5PkuZvihkDkQrPOwirpEsqZU=
+X-Google-Smtp-Source: ABdhPJxkXoL8IYcirec2lDAjr7YxfQ3JjSkWuscIob4gP3jvtmP3LB/4PdQz9AzKM25Y/sOysGWHuVcGgL8JT5PxzxE=
+X-Received: by 2002:a25:ba05:: with SMTP id t5mr2672938ybg.360.1612340782927;
+ Wed, 03 Feb 2021 00:26:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <d7584992-78a0-4be7-6b31-0bc1e4adfeca@hartkopp.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAMZ6RqK0rTNg3u3mBpZOoY51jLZ-et-J01tY6-+mWsM4meVw-A@mail.gmail.com>
+ <87e3dd54-50ab-1190-efdb-18ddb3b21a02@hartkopp.net> <42080d05-7ab3-99be-92e2-73ed262350ba@gmail.com>
+ <CAMZ6RqJWrObGZRwyA1kD5cEZRUd_-4zt8rsMR+zZPLpxD6AWAQ@mail.gmail.com>
+ <1debcaeb-71c7-6b78-88b3-7f121a33c1c1@kvaser.com> <CAMZ6Rq+ObkS2RDFbgbPP7HZH26WbN-eoLeQyiY6+CpDGYjE10w@mail.gmail.com>
+ <17b14b11-87bf-9508-0da5-1031c5d5e132@pengutronix.de> <20210202082340.GA23043@x1.vandijck-laurijssen.be>
+ <8050d433-591c-2d1f-f0c7-ffa92e33032d@pengutronix.de> <cac31b51-514d-462b-fe48-4c3bea8b28fd@hartkopp.net>
+ <1b82f875-5884-3bf6-7891-2e4461d2a72a@pengutronix.de> <abc8923c-8cf6-c0d5-ec67-73afe183b9b3@hartkopp.net>
+ <CAMZ6RqKx5NCFKiahb8AbUx=LC5xS6oYCdVZk8WGSAzZeAVs9Qg@mail.gmail.com>
+ <ac8c4d3c-4261-8909-3481-abcd1d3bf43e@hartkopp.net> <CAMZ6RqKkeV6WRtfh65mDsYthuG1S+LD=kexAdcx=DeShf0T0YQ@mail.gmail.com>
+ <d7584992-78a0-4be7-6b31-0bc1e4adfeca@hartkopp.net> <707944b7-f202-edb1-cb67-beedaeedfda0@gmail.com>
+In-Reply-To: <707944b7-f202-edb1-cb67-beedaeedfda0@gmail.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Wed, 3 Feb 2021 17:26:11 +0900
+Message-ID: <CAMZ6RqK_McbYNMqdb+zynH-CGaERFv5j5MgNd9X7MJBqu1f4Xw@mail.gmail.com>
+Subject: Re: [Question] Sending CAN error frames
+To:     Jimmy Assarsson <jimmyassarsson@gmail.com>
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Jimmy Assarsson <extja@kvaser.com>,
+        linux-can <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 2021-02-02 20:19, Oliver Hartkopp wrote:
-> On 02.02.21 12:12, Vincent MAILHOL wrote:
-> 
->>> The CAN_ERR_FLAG has been renamed in the documentation to indicate
->>> "error messages" from the CAN controller, as an error frame is something
->>> completely different.
->>>
->>> Now as we are talking about having CAN_ERR_FLAG in the TX path besides
->>> the vcan testing stuff, we should think about an API for the really
->>> outgoing frames.
->>>
->>> We could not only think about "create an error frame right now" but also
->>> think about a more intelligent CAN node, which also offers to destroy
->>> one or more specific CAN ID(s) at a specific bit position after
->>> detecting that CAN ID.
->>
->> My original idea was to leave it unspecified until a device was
->> actually capable of doing such a thing. But I am not against
->> defining the API now :) We might just have to wait a long time
->> for someone to actually implement it.
->>
->>> We could use the CAN_RTR_FLAG and the data[] section of the outgoing
->>> error CAN frames for such an API.
->>
->> We are not limited to the CAN_RTR_FLAG and the data[]
->>
->> First, we have to list the use cases.
->>
->> As I wrote before, there are only two forms for the error flag:
->>    - The active error flag: 6 consecutive dominant bits
->>    - The passive error flag: 6 consecutive recessive bits
-> 
-> IMO this passive error flag stuff is pointless.
-> The passive error does not have any effect on the bus. Nobody sees it. It's just a measure to continue counting error counters inside the CAN controller. IMO it's a read-only feature about the controller internal status.
+On Wed. 3 Feb 2021 at 15:42, Jimmy Assarsson <jimmyassarsson@gmail.com> wrote:
+>
+> On 2021-02-02 20:19, Oliver Hartkopp wrote:
+> > On 02.02.21 12:12, Vincent MAILHOL wrote:
+> >
+> >>> The CAN_ERR_FLAG has been renamed in the documentation to indicate
+> >>> "error messages" from the CAN controller, as an error frame is something
+> >>> completely different.
+> >>>
+> >>> Now as we are talking about having CAN_ERR_FLAG in the TX path besides
+> >>> the vcan testing stuff, we should think about an API for the really
+> >>> outgoing frames.
+> >>>
+> >>> We could not only think about "create an error frame right now" but also
+> >>> think about a more intelligent CAN node, which also offers to destroy
+> >>> one or more specific CAN ID(s) at a specific bit position after
+> >>> detecting that CAN ID.
+> >>
+> >> My original idea was to leave it unspecified until a device was
+> >> actually capable of doing such a thing. But I am not against
+> >> defining the API now :) We might just have to wait a long time
+> >> for someone to actually implement it.
+> >>
+> >>> We could use the CAN_RTR_FLAG and the data[] section of the outgoing
+> >>> error CAN frames for such an API.
+> >>
+> >> We are not limited to the CAN_RTR_FLAG and the data[]
+> >>
+> >> First, we have to list the use cases.
+> >>
+> >> As I wrote before, there are only two forms for the error flag:
+> >>    - The active error flag: 6 consecutive dominant bits
+> >>    - The passive error flag: 6 consecutive recessive bits
+> >
+> > IMO this passive error flag stuff is pointless.
+> > The passive error does not have any effect on the bus. Nobody sees it. It's just a measure to continue counting error counters inside the CAN controller. IMO it's a read-only feature about the controller internal status.
+>
+> I agree.
 
-I agree.
+Passive error flags will have effect if initiated by the
+transmitter. It will break the bitsuffing rule and other nodes
+will notice.  Passive error flags initiated by the receivers
+shall indeed have no effects.
 
->> The device can either inject the flag either during:
->>    - bus idle
-> 
-> Is an error flag defined at bus idle?
-> 
-> Error flags are intended to destroy *other CAN controllers* transmissions when detecting protocol violations. There can not be a protocol violation at idle time, right?
+This is admitelly an edge case. It really depends how much we
+want to cover with our API.
 
-This is what the Kvaser CAN controller does. It will wait for the bus to become idle, before an active error flag is transmitted.
+> >> The device can either inject the flag either during:
+> >>    - bus idle
+> >
+> > Is an error flag defined at bus idle?
+> >
+> > Error flags are intended to destroy *other CAN controllers* transmissions when detecting protocol violations. There can not be a protocol violation at idle time, right?
+>
+> This is what the Kvaser CAN controller does. It will wait for the bus to become idle, before an active error flag is transmitted.
 
->>    - while it is transmitting a frame
-> 
-> What's the use-case for destroying your own transmission?
-> 
->>    - while it is receiving a frame
-> 
-> This makes sense, especially when you can destroy specific CAN ID frames at a specific bit position.
-> Or for any CAN ID at a specific bit position.
-> Or for any CAN ID at an undefined bit position.
+To add to Jimmy's comment, the ISO standard does not
+differentiate this. In section 10.4.4.2 "Error flag", it states
+that "An error-active node detecting an error condition shall
+signal this by sending an active error flag."
 
-I agree.
+If you try to shortcut the CAN High and CAN low wires or connect
+those to the ground while the bus is idle, you would probably get
+some errors.
 
->> The error flag can occur at any time.
-> 
-> Sure? (see above)
-> 
-> Of course we might also provide some pump gun mode which just sends an error flag at some (any) time.
+> >>    - while it is transmitting a frame
+> >
+> > What's the use-case for destroying your own transmission?
 
-As above.
+For active error flags: I admit that there is no benefit. You
+could emulate this easily if you have two nodes under your
+control: you send the frame on the first node and inject the error
+on the second one.
 
-> But for what reason?
+The only use case is for the passive error flag just because the
+transmission is the only way to do it. So it just brings us back
+to the above discussion: how much do we want to cover.
 
-Testing purpose, e.g if you develop software where you want to keep track of bus errors, this makes it possible to test such software in a controlled way.
-We also use this ourselves when testing the transitions ERROR_ACTIVE <-> ERROR_WARNING <-> ERROR_PASSIVE, for Rx.
+> >>    - while it is receiving a frame
+> >
+> > This makes sense, especially when you can destroy specific CAN ID frames at a specific bit position.
+> > Or for any CAN ID at a specific bit position.
+> > Or for any CAN ID at an undefined bit position.
+>
+> I agree.
+>
+> >> The error flag can occur at any time.
+> >
+> > Sure? (see above)
+> >
+> > Of course we might also provide some pump gun mode which just sends an error flag at some (any) time.
+>
+> As above.
+>
+> > But for what reason?
+>
+> Testing purpose, e.g if you develop software where you want to keep track of bus errors, this makes it possible to test such software in a controlled way.
+> We also use this ourselves when testing the transitions ERROR_ACTIVE <-> ERROR_WARNING <-> ERROR_PASSIVE, for Rx.
 
-Regards,
-jimmy
+I think that there are two axes in this discussion: the attacker
+point of view and the functional testing point of view.
+
+From the attacker point of view, you are mostly interested in
+destroying the transmitter frames.
+
+For the functional testing, it is about covering the all the
+aspects of the standard: make sure that all the TX and RX counters
+are correctly incremented, test the transitions between the
+different states and that for all offsets. And to confirm all
+aspects, you might want to inject both the active and the passive
+error flags and do it at all possible positions.
+
+That said, my vision on functional testing is an uneducated
+guess. I never worked on that and my personal focus is more the
+attacker point of view.
+
+
+Yours sincerely,
+Vincent
