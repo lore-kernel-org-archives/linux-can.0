@@ -2,182 +2,135 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D3FEC433E0
-	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 08:27:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7135FC43381
+	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 10:03:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EF04664F67
-	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 08:27:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2106C64F68
+	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 10:03:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhBCI1J (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 3 Feb 2021 03:27:09 -0500
-Received: from mail-yb1-f179.google.com ([209.85.219.179]:38508 "EHLO
-        mail-yb1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbhBCI1E (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Feb 2021 03:27:04 -0500
-Received: by mail-yb1-f179.google.com with SMTP id i6so16802365ybq.5
-        for <linux-can@vger.kernel.org>; Wed, 03 Feb 2021 00:26:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/SfDCgsLPVNMkoPlfHEnYZdnYjdV5IflalDNzAtWbxk=;
-        b=bGDhmV+BbvnMnkWQ+PwaOb5nL60wyB/Qz7J6Mo0o1rB5aqErRs9VlDO2KPq3NM8E8i
-         iTaaFCuEOsypzM5Pse/3IDQqHkaG/FkhQS4P/AUJ8P5yreRxl5+V2mlmpUMcc+Oyt6d8
-         OMu3+0udDXylYmlHeZNsUsmQYK4z6GIQ9ottlFjv42SXLJoH81BzaIiR2vNDnW6CTLgT
-         I8Qlykuy+P1FX1WaA6KeEZqV6T/9UiDxrGLnLHr1jc2SjWv/i+8nWarptfaEK0zXNEa/
-         UIy0WV+JpnN3BWouvJxYZe73TdvEC8ee7suE3ouIvcOrdQXzWH+/RD2Sj4agc0fmkKoK
-         HJhA==
-X-Gm-Message-State: AOAM533ayf0uVqW+uy5p5tv27bscEH+ERO03ObF0AwZL7WrsWbMx1beH
-        JxMM3dO4/wtp2Qg5PkuZvihkDkQrPOwirpEsqZU=
-X-Google-Smtp-Source: ABdhPJxkXoL8IYcirec2lDAjr7YxfQ3JjSkWuscIob4gP3jvtmP3LB/4PdQz9AzKM25Y/sOysGWHuVcGgL8JT5PxzxE=
-X-Received: by 2002:a25:ba05:: with SMTP id t5mr2672938ybg.360.1612340782927;
- Wed, 03 Feb 2021 00:26:22 -0800 (PST)
+        id S233152AbhBCKDO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Feb 2021 05:03:14 -0500
+Received: from mail-eopbgr50078.outbound.protection.outlook.com ([40.107.5.78]:45805
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233365AbhBCKDL (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:03:11 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hwq/vig7syMo2T/+5XqRe/ArcK43q9t7/t16g1LGApqPuXbHLZAVXQH7lu3jZSKtFBVhKEQeZbHxjW6RDTRsrLYhM8RzfhxDqLSNivozHdZOKXWfeJ0VnGBs1EBlg5acvw/2FhUQeTRIt96Gp2SXzAU0J1fChdaNXKsYvNHzq3XMzlmlRLQUNM/9j5ooJkb3i1y5dRtfhZhP/4v21ISOCBnJUOdfHdGyxF1XcAKT2Or2xq6Rkel00GF3xB4/yiVqnkXZpMOpARWbzd00cPZyUR/C0pZIW/WiJXjqjJcczxRZsXGZfYFKadQBWV45BLmVlkfp6MRvuoRhNy+9skX3VA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FRXVyqGU5xYXxARufVupvQL/xnyaBdea3kmDQlh9SGA=;
+ b=b34Ylh78vKGfE5hAq2svzmH22oyRq2MOvKqdlrvIjVnMTl4POGlbdypUk0mCckUN7OXOL4dThZGbFsF4Dqvt2a2lRWf5I863Ugb7zzhgsebR2UU6QNBuo2+N8WZA/85mxOxXkth5n+/5G5gv+6CgTmbDowniIyJkACy9jx52d65ijDuw5TJq1IZUni2dq5fgTrqbyVKLfJvwrRPjaSVC3jnIYuxE89yXxnDfahXgrPF73xk4PifA6oUbL04wcZoWfN16t8eS9yXmSX0Tkg3rT6wUwz1nzotAaUcq2TFpu4QG7NIT+QSLtkXZOtvlxwJPEf5V2GZgSE9xbnZ+DPhxDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FRXVyqGU5xYXxARufVupvQL/xnyaBdea3kmDQlh9SGA=;
+ b=eiGiGaUGdqVAtrx50C3Q1JliWxKf43PzYcBWAMIVg+qDNE+kOddzBM0nk/b3i8XjWqU8FUGMe/mtr4PH8Ax6VtbN9toGffC4jE5uZwxscCBVqzGRsS4K4Fj8VUX6Yizd7eseQzKXdXvCK7DfKukXBcpYldYqjAAjMMIcD6B0fKo=
+Authentication-Results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (10.255.185.79) by
+ DBAPR04MB7429.eurprd04.prod.outlook.com (20.181.184.150) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3805.17; Wed, 3 Feb 2021 10:02:22 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9d2b:182e:ba3b:5920]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9d2b:182e:ba3b:5920%3]) with mapi id 15.20.3805.027; Wed, 3 Feb 2021
+ 10:02:22 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     mkl@pengutronix.de
+Cc:     linux-can@vger.kernel.org, linux-imx@nxp.com
+Subject: [PATCH V2 1/3] can: flexcan: assert FRZ bit in flexcan_chip_freeze()
+Date:   Wed,  3 Feb 2021 18:02:53 +0800
+Message-Id: <20210203100255.12472-2-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210203100255.12472-1-qiangqing.zhang@nxp.com>
+References: <20210203100255.12472-1-qiangqing.zhang@nxp.com>
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2P153CA0027.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::14)
+ To DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-References: <CAMZ6RqK0rTNg3u3mBpZOoY51jLZ-et-J01tY6-+mWsM4meVw-A@mail.gmail.com>
- <87e3dd54-50ab-1190-efdb-18ddb3b21a02@hartkopp.net> <42080d05-7ab3-99be-92e2-73ed262350ba@gmail.com>
- <CAMZ6RqJWrObGZRwyA1kD5cEZRUd_-4zt8rsMR+zZPLpxD6AWAQ@mail.gmail.com>
- <1debcaeb-71c7-6b78-88b3-7f121a33c1c1@kvaser.com> <CAMZ6Rq+ObkS2RDFbgbPP7HZH26WbN-eoLeQyiY6+CpDGYjE10w@mail.gmail.com>
- <17b14b11-87bf-9508-0da5-1031c5d5e132@pengutronix.de> <20210202082340.GA23043@x1.vandijck-laurijssen.be>
- <8050d433-591c-2d1f-f0c7-ffa92e33032d@pengutronix.de> <cac31b51-514d-462b-fe48-4c3bea8b28fd@hartkopp.net>
- <1b82f875-5884-3bf6-7891-2e4461d2a72a@pengutronix.de> <abc8923c-8cf6-c0d5-ec67-73afe183b9b3@hartkopp.net>
- <CAMZ6RqKx5NCFKiahb8AbUx=LC5xS6oYCdVZk8WGSAzZeAVs9Qg@mail.gmail.com>
- <ac8c4d3c-4261-8909-3481-abcd1d3bf43e@hartkopp.net> <CAMZ6RqKkeV6WRtfh65mDsYthuG1S+LD=kexAdcx=DeShf0T0YQ@mail.gmail.com>
- <d7584992-78a0-4be7-6b31-0bc1e4adfeca@hartkopp.net> <707944b7-f202-edb1-cb67-beedaeedfda0@gmail.com>
-In-Reply-To: <707944b7-f202-edb1-cb67-beedaeedfda0@gmail.com>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 3 Feb 2021 17:26:11 +0900
-Message-ID: <CAMZ6RqK_McbYNMqdb+zynH-CGaERFv5j5MgNd9X7MJBqu1f4Xw@mail.gmail.com>
-Subject: Re: [Question] Sending CAN error frames
-To:     Jimmy Assarsson <jimmyassarsson@gmail.com>
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Jimmy Assarsson <extja@kvaser.com>,
-        linux-can <linux-can@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2P153CA0027.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.0 via Frontend Transport; Wed, 3 Feb 2021 10:02:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7051078e-468a-465f-d212-08d8c82acca6
+X-MS-TrafficTypeDiagnostic: DBAPR04MB7429:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DBAPR04MB74296A55B9CA4F702E52309DE6B49@DBAPR04MB7429.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pj0Yg4h1jHYbOZjvQYjrXxYlzHAVQs3gKgTfwLZw2L2Vopi4RRFMnyhMU2J2Dq8PHD7QEeD2GEa1R7NxNny4sknTVT4G7f9o5HwNvHq6iF6N2HATxLW6NnnG/05xJql7J+f8XXk1EJpX3J3sgxqUvCsUG2hJ8Z8HUyEZiq2aZVGXu1yMVZPKlCcdfl2Xm1egthGoKqvj6Rgh4NT/kckjDKl4anh8KFkFYjMMHcvHeYYXWBgWKSwAwgC6g3i9fPP5f37+MOKNQ3NIJOmKYTo6rECpdMuMX5eVsoC7OfjTbImY2jsBhqTBZoUuTR4WdZcBnzkf6KawDQ/hPuNjPbNcF6wO+TtH6RV6nwisIYq+Nml1di9FaXYeSKAHzb/7m8vSDz56unvTBqNIlX5MgLhJo958dXK66TDatvpnIHoTZ+dlBlHqNeiYQVj/aP+LvXyhai9csEda89Mp5haxdEz+p6PlyLTBFJDcbfjtXjxoQG5PQRirfi1Gp2nGV5cLJ0eTd6vExvBIeh5GOsK72XzMI3UVcYxxL4a8TCXVD51L+Oxa1nHLh9OSzPo1C3gy7gdL7Lec8fT2vP4SVp+dUJQHrQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39860400002)(136003)(376002)(346002)(86362001)(66476007)(8936002)(478600001)(2906002)(4326008)(66556008)(52116002)(66946007)(316002)(1076003)(956004)(36756003)(8676002)(26005)(83380400001)(6506007)(16526019)(69590400011)(186003)(5660300002)(6666004)(6916009)(6486002)(2616005)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?dmz1hnvA8x8ZD9fSXSKblzr/7olTUeNGT6cJMGCfoS9lP/LUsL49kur8TQUw?=
+ =?us-ascii?Q?CwL6w5vP3QIIMpIIMZZ6Pqvqa3aVhsowA64lcu+undngXLJOYjJG1u2dHfuy?=
+ =?us-ascii?Q?6nEyocZBCjrQlyebUYhVnQ8kmY7rnmAE5c2Zhd9lyrQ2+MqQBKAZMbfjCFGe?=
+ =?us-ascii?Q?7DbQlyE3dZkfsuL4nxqWLlzForB5T7zMC36CFiE2dtfsLggUTUU+/vepG6IS?=
+ =?us-ascii?Q?drjlasCwqMyqh+GAgP/mynLeyBmKHhAl93tPB5DC4UQ60ZJis54dk7q4J9vt?=
+ =?us-ascii?Q?JghvdVxbc+Yv8Xb0B4RP3OHCPVvCsEpu4njf1qMujvKNzX81JiUD319xCTuU?=
+ =?us-ascii?Q?0XfMGUVjmWE7cpYElLfLT3G3OO3hncYMe+GnnYCjAEh96PuG7us6Bojf2Rb6?=
+ =?us-ascii?Q?qO5YMDzr8GJdbbS0ZaLtl0US7qbkH0X/iorjP/c186YMm/S/w3sFJPhqNA4a?=
+ =?us-ascii?Q?NzsF2PqeSjgMq3iLWONt/gfxPm91YZ5Ah0GN+dL+mILIdC7l76vXGSMNWHRq?=
+ =?us-ascii?Q?BVk4i1ta8xf4OFLJArTH3onUjcSdt/1h2Qmgx++wlCXDSlH79CilN4tfKf6q?=
+ =?us-ascii?Q?Vi+QBLxQK5fT/O9a4rNIBHGRjW9NHpsgFbrICVzhCBNXxLqunoFBCG8Ynb0I?=
+ =?us-ascii?Q?1SJQpa5y9ZaK1t7fiMfcy24jOg8xefPVmzv4wnQY9LJKXKh2Vaz89KzmHd7n?=
+ =?us-ascii?Q?Qi55i+X2v4BV2rVjtDbIFAyo/cGGf6u+wj3QLn/0VU4E+WzkXvGGarg/G2jp?=
+ =?us-ascii?Q?enKuo6L6APk9K4U71gs1C3krZ4/xnLqhFDQGEAZLg3kaj1EUXNClEpNiUclO?=
+ =?us-ascii?Q?b4ehFCTv78w+hAUaLqtKVb7Y6yDtUWMI4oQLUP7z1VMet8OjQD5ZSl0ZISvQ?=
+ =?us-ascii?Q?DhpiCaQjySFf5+ikXvikYvAqZjB4BHOe4UdphU5oNYT4a0EBzAxPSjqwgc7X?=
+ =?us-ascii?Q?xxxVH+ZimVB556+ycbrfFXhQkJ3F527YgblTKm/4O9vivsfXMsJxsKVw9U4b?=
+ =?us-ascii?Q?COsSCBc0uTu3sYn1ggALxMj2ptcITs+GWOZSAglvvWqbzfFD30WIZp73/4i8?=
+ =?us-ascii?Q?D1Ied9Jx?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7051078e-468a-465f-d212-08d8c82acca6
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2021 10:02:22.4613
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N04MuHkvSueORM5/8x0i7d1aFrA2RPEjk9BgnMlmysqKfGfkAgc8ljVCQR2mpxjzQrW8IrA+/P4SUk1CnCCMlw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7429
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed. 3 Feb 2021 at 15:42, Jimmy Assarsson <jimmyassarsson@gmail.com> wrote:
->
-> On 2021-02-02 20:19, Oliver Hartkopp wrote:
-> > On 02.02.21 12:12, Vincent MAILHOL wrote:
-> >
-> >>> The CAN_ERR_FLAG has been renamed in the documentation to indicate
-> >>> "error messages" from the CAN controller, as an error frame is something
-> >>> completely different.
-> >>>
-> >>> Now as we are talking about having CAN_ERR_FLAG in the TX path besides
-> >>> the vcan testing stuff, we should think about an API for the really
-> >>> outgoing frames.
-> >>>
-> >>> We could not only think about "create an error frame right now" but also
-> >>> think about a more intelligent CAN node, which also offers to destroy
-> >>> one or more specific CAN ID(s) at a specific bit position after
-> >>> detecting that CAN ID.
-> >>
-> >> My original idea was to leave it unspecified until a device was
-> >> actually capable of doing such a thing. But I am not against
-> >> defining the API now :) We might just have to wait a long time
-> >> for someone to actually implement it.
-> >>
-> >>> We could use the CAN_RTR_FLAG and the data[] section of the outgoing
-> >>> error CAN frames for such an API.
-> >>
-> >> We are not limited to the CAN_RTR_FLAG and the data[]
-> >>
-> >> First, we have to list the use cases.
-> >>
-> >> As I wrote before, there are only two forms for the error flag:
-> >>    - The active error flag: 6 consecutive dominant bits
-> >>    - The passive error flag: 6 consecutive recessive bits
-> >
-> > IMO this passive error flag stuff is pointless.
-> > The passive error does not have any effect on the bus. Nobody sees it. It's just a measure to continue counting error counters inside the CAN controller. IMO it's a read-only feature about the controller internal status.
->
-> I agree.
+Assert HALT bit to enter freeze mode, there is a premise that FRZ bit is
+asserted. This patch asserts FRZ bit in flexcan_chip_freeze, although
+the reset value is 1b'1. This is a prepare patch, later patch will
+invoke flexcan_chip_freeze() to enter freeze mode, which polling freeze
+mode acknowledge.
 
-Passive error flags will have effect if initiated by the
-transmitter. It will break the bitsuffing rule and other nodes
-will notice.  Passive error flags initiated by the receivers
-shall indeed have no effects.
+Fixes: b1aa1c7a2165b ("can: flexcan: fix transition from and to freeze mode in chip_{,un}freeze")
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+---
+ drivers/net/can/flexcan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is admitelly an edge case. It really depends how much we
-want to cover with our API.
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 038fe1036df2..737e594cb12c 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -662,7 +662,7 @@ static int flexcan_chip_freeze(struct flexcan_priv *priv)
+ 	u32 reg;
+ 
+ 	reg = priv->read(&regs->mcr);
+-	reg |= FLEXCAN_MCR_HALT;
++	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT;
+ 	priv->write(reg, &regs->mcr);
+ 
+ 	while (timeout-- && !(priv->read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
+-- 
+2.17.1
 
-> >> The device can either inject the flag either during:
-> >>    - bus idle
-> >
-> > Is an error flag defined at bus idle?
-> >
-> > Error flags are intended to destroy *other CAN controllers* transmissions when detecting protocol violations. There can not be a protocol violation at idle time, right?
->
-> This is what the Kvaser CAN controller does. It will wait for the bus to become idle, before an active error flag is transmitted.
-
-To add to Jimmy's comment, the ISO standard does not
-differentiate this. In section 10.4.4.2 "Error flag", it states
-that "An error-active node detecting an error condition shall
-signal this by sending an active error flag."
-
-If you try to shortcut the CAN High and CAN low wires or connect
-those to the ground while the bus is idle, you would probably get
-some errors.
-
-> >>    - while it is transmitting a frame
-> >
-> > What's the use-case for destroying your own transmission?
-
-For active error flags: I admit that there is no benefit. You
-could emulate this easily if you have two nodes under your
-control: you send the frame on the first node and inject the error
-on the second one.
-
-The only use case is for the passive error flag just because the
-transmission is the only way to do it. So it just brings us back
-to the above discussion: how much do we want to cover.
-
-> >>    - while it is receiving a frame
-> >
-> > This makes sense, especially when you can destroy specific CAN ID frames at a specific bit position.
-> > Or for any CAN ID at a specific bit position.
-> > Or for any CAN ID at an undefined bit position.
->
-> I agree.
->
-> >> The error flag can occur at any time.
-> >
-> > Sure? (see above)
-> >
-> > Of course we might also provide some pump gun mode which just sends an error flag at some (any) time.
->
-> As above.
->
-> > But for what reason?
->
-> Testing purpose, e.g if you develop software where you want to keep track of bus errors, this makes it possible to test such software in a controlled way.
-> We also use this ourselves when testing the transitions ERROR_ACTIVE <-> ERROR_WARNING <-> ERROR_PASSIVE, for Rx.
-
-I think that there are two axes in this discussion: the attacker
-point of view and the functional testing point of view.
-
-From the attacker point of view, you are mostly interested in
-destroying the transmitter frames.
-
-For the functional testing, it is about covering the all the
-aspects of the standard: make sure that all the TX and RX counters
-are correctly incremented, test the transitions between the
-different states and that for all offsets. And to confirm all
-aspects, you might want to inject both the active and the passive
-error flags and do it at all possible positions.
-
-That said, my vision on functional testing is an uneducated
-guess. I never worked on that and my personal focus is more the
-attacker point of view.
-
-
-Yours sincerely,
-Vincent
