@@ -2,118 +2,88 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2B2AC433E0
-	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 20:07:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A2BFC433E0
+	for <linux-can@archiver.kernel.org>; Thu,  4 Feb 2021 03:16:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7004A64F8C
-	for <linux-can@archiver.kernel.org>; Wed,  3 Feb 2021 20:07:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DFBD664E2C
+	for <linux-can@archiver.kernel.org>; Thu,  4 Feb 2021 03:16:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbhBCUHQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 3 Feb 2021 15:07:16 -0500
-Received: from relay-b03.edpnet.be ([212.71.1.220]:37588 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhBCUHQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Feb 2021 15:07:16 -0500
-X-ASG-Debug-ID: 1612382790-0a8818776efe8c0001-ZXuqFv
-Received: from zotac.vandijck-laurijssen.be (77.109.126.125.adsl.dyn.edpnet.net [77.109.126.125]) by relay-b03.edpnet.be with ESMTP id fHwDFGLrTAoZMDVi; Wed, 03 Feb 2021 21:06:30 +0100 (CET)
-X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
-X-Barracuda-Effective-Source-IP: 77.109.126.125.adsl.dyn.edpnet.net[77.109.126.125]
-X-Barracuda-Apparent-Source-IP: 77.109.126.125
-Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
-        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id 25AFA12403D6;
-        Wed,  3 Feb 2021 21:06:30 +0100 (CET)
-Date:   Wed, 3 Feb 2021 21:06:14 +0100
-From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Jimmy Assarsson <jimmyassarsson@gmail.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Jimmy Assarsson <extja@kvaser.com>,
-        linux-can <linux-can@vger.kernel.org>
-Subject: Re: [Question] Sending CAN error frames
-Message-ID: <20210203200614.GB23073@x1.vandijck-laurijssen.be>
-X-ASG-Orig-Subj: Re: [Question] Sending CAN error frames
-Mail-Followup-To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
-        Jimmy Assarsson <jimmyassarsson@gmail.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Jimmy Assarsson <extja@kvaser.com>,
-        linux-can <linux-can@vger.kernel.org>
-References: <8050d433-591c-2d1f-f0c7-ffa92e33032d@pengutronix.de>
- <cac31b51-514d-462b-fe48-4c3bea8b28fd@hartkopp.net>
- <1b82f875-5884-3bf6-7891-2e4461d2a72a@pengutronix.de>
- <abc8923c-8cf6-c0d5-ec67-73afe183b9b3@hartkopp.net>
- <CAMZ6RqKx5NCFKiahb8AbUx=LC5xS6oYCdVZk8WGSAzZeAVs9Qg@mail.gmail.com>
- <ac8c4d3c-4261-8909-3481-abcd1d3bf43e@hartkopp.net>
- <CAMZ6RqKkeV6WRtfh65mDsYthuG1S+LD=kexAdcx=DeShf0T0YQ@mail.gmail.com>
- <d7584992-78a0-4be7-6b31-0bc1e4adfeca@hartkopp.net>
- <707944b7-f202-edb1-cb67-beedaeedfda0@gmail.com>
- <CAMZ6RqK_McbYNMqdb+zynH-CGaERFv5j5MgNd9X7MJBqu1f4Xw@mail.gmail.com>
+        id S231177AbhBDDP4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Feb 2021 22:15:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233517AbhBDDPw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Feb 2021 22:15:52 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C75C061573;
+        Wed,  3 Feb 2021 19:15:12 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id i20so2059584otl.7;
+        Wed, 03 Feb 2021 19:15:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dL2HlrenlcR0aeJ/c9YQKTZwO4wZrZX9JFm2i1Qu9X0=;
+        b=VDe/o2nxsc3rMKgqLbrY/PLCZmjOwugco0SREC5xz//Wu92VuUBF/x1Y5MHlfNmPrC
+         26oxzsS2J9yVwKfBlJ4qyacsmJpgxLDkjqxyydzHsSF3jl2okwPb2G7zA5dPj87PfVXK
+         2pjuOiXYdvjog+xNJ940aymXGiaKlboJD22xgnZZ5PypNa+GjKC1bCyUFlA0SijjVXOO
+         MHGLLOaRRXUOC0GuMUvP5Bqm3ykIxy/sJWJknq97iEOH6EVzW03IbNuVa8smNvFgAlXp
+         ALAvBkvDF05JYlyisjtI0p+vadarO0DnWIPg/1ZMwgEgb9lBSfs91PUb6e+1suBXIiFg
+         k7ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dL2HlrenlcR0aeJ/c9YQKTZwO4wZrZX9JFm2i1Qu9X0=;
+        b=pchl157aPvlKXYnMSlFf+6nIwjperzZ2sABcsnhHvDxw49p0oucmYWCSeGU673vZ/3
+         n4NuCfLtQaf7a/a/UflW/XtZAZ4EyMRB+ZiISLVFrxSnExnIPZqRMPdG3fQcZnMyvUC3
+         0xzuyaaJ1pIhkVz5bZ+HhDc7SYh0NumKRWNPbkIP6I7xMjYXghe1wt8OWXRO7vX5wC52
+         I/3OU+1F2+kswsdHaupP9IzT8UgiBYSbV7zQA/HkQD0Rrlfix/oOCx5GRI6mpT44Pnp6
+         cVePvsgP3ToKDPJ6GjjUcBhAtbYAD4349LS7RMXGuO8bqKUBIRVUq4zJRTkrobifzpPl
+         J9XQ==
+X-Gm-Message-State: AOAM531t3x4mZ5XSJPUUhBp8rwG4iPMJ54FcY6OQ44JLoSOQWUWpZzVb
+        Z1OURWfkr52cG/t3lejb6ddGP2Wqcvo=
+X-Google-Smtp-Source: ABdhPJxfyfrQDNS5yRnsk+wrf/aedgAhlP5gs+HNxp8X9uFHxOFfEQn2O0jShbkrKyG/4I0aniDuHg==
+X-Received: by 2002:a05:6830:1158:: with SMTP id x24mr4075633otq.108.1612408512045;
+        Wed, 03 Feb 2021 19:15:12 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.50])
+        by smtp.googlemail.com with ESMTPSA id k129sm888820oib.5.2021.02.03.19.15.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 19:15:10 -0800 (PST)
+Subject: Re: [PATCH RESEND iproute2 5.11] iplink_can: add Classical CAN frame
+ LEN8_DLC support
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Stephen Hemminger <stephen@networkplumber.org>
+Cc:     netdev@vger.kernel.org, linux-can@vger.kernel.org
+References: <20210125104055.79882-1-socketcan@hartkopp.net>
+ <b835a46c-f950-6c58-f50f-9b2f4fd66b46@gmail.com>
+ <d8ba08c4-a1c2-78b8-1b09-36c522b07a8c@hartkopp.net>
+ <586c2310-17ee-328e-189c-f03aae1735e9@gmail.com>
+ <fe697032-88f2-c1f1-8afc-f4469a5f3bd5@hartkopp.net>
+ <1bf605b4-70e5-e5f2-f076-45c9b52a5758@gmail.com>
+ <dccf261d-6cc3-f79a-8044-f0800c88108d@hartkopp.net>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <aeb9d16e-e101-e2e5-d136-b48333f03997@gmail.com>
+Date:   Wed, 3 Feb 2021 20:15:07 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <dccf261d-6cc3-f79a-8044-f0800c88108d@hartkopp.net>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMZ6RqK_McbYNMqdb+zynH-CGaERFv5j5MgNd9X7MJBqu1f4Xw@mail.gmail.com>
-User-Agent: Mutt/1.5.22 (2013-10-16)
-X-Barracuda-Connect: 77.109.126.125.adsl.dyn.edpnet.net[77.109.126.125]
-X-Barracuda-Start-Time: 1612382790
-X-Barracuda-URL: https://212.71.1.220:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 2067
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.87225
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, 03 Feb 2021 17:26:11 +0900, Vincent MAILHOL wrote:
-> On Wed. 3 Feb 2021 at 15:42, Jimmy Assarsson <jimmyassarsson@gmail.com> wrote:
-> > >
-> > > Of course we might also provide some pump gun mode which just sends an error flag at some (any) time.
-> >
-> > As above.
-> >
-> > > But for what reason?
-> >
-> > Testing purpose, e.g if you develop software where you want to keep track of bus errors, this makes it possible to test such software in a controlled way.
-> > We also use this ourselves when testing the transitions ERROR_ACTIVE <-> ERROR_WARNING <-> ERROR_PASSIVE, for Rx.
-> 
-> I think that there are two axes in this discussion: the attacker
-> point of view and the functional testing point of view.
-> 
-> From the attacker point of view, you are mostly interested in
-> destroying the transmitter frames.
-> 
-> For the functional testing, it is about covering the all the
-> aspects of the standard: make sure that all the TX and RX counters
-> are correctly incremented, test the transitions between the
-> different states and that for all offsets. And to confirm all
-> aspects, you might want to inject both the active and the passive
-> error flags and do it at all possible positions.
-> 
-> That said, my vision on functional testing is an uneducated
-> guess. I never worked on that and my personal focus is more the
-> attacker point of view.
+On 2/3/21 12:04 PM, Oliver Hartkopp wrote:
+> My only fault was, that I did not send the patch for iproute2-next at
+> the time when the len8_dlc patches were in net-next, right?
 
-Looking back to it, my first interest would be to fire N error frames,
-so to control other nodes' rx error counters.
-Controlling your own tx error counter makes less sense, I assume that if
-your chip is capable of triggering error frames on demand, then I also
-assume that the tx error counter detection is done right.
-
-destroying specific CAN frames sounds much like functional testing,
-and can be done much simpler by modifying the node that sends it and add
-some very ad-hoc test code to not send specific can frames at all.
-
-The attacker point of view indeed could require a more elaborate API,
-but I still doubt we can deliver what is required for attacking.
-
-Kurt
+yes
