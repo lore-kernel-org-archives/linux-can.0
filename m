@@ -2,84 +2,146 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 283ABC433E0
-	for <linux-can@archiver.kernel.org>; Thu,  4 Feb 2021 20:33:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AB1BC433E6
+	for <linux-can@archiver.kernel.org>; Fri,  5 Feb 2021 07:28:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D6F6E64E4E
-	for <linux-can@archiver.kernel.org>; Thu,  4 Feb 2021 20:33:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C809F64E27
+	for <linux-can@archiver.kernel.org>; Fri,  5 Feb 2021 07:28:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238507AbhBDUdI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 4 Feb 2021 15:33:08 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:25954 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240222AbhBDUcr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 4 Feb 2021 15:32:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1612470590;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-        From:Subject:Sender;
-        bh=t1aAvkRCETTrfGuIzFK7zRTpWkJziC4roy/wMf7REBc=;
-        b=F8P4diFRSwqhumz4wAYnUm6+G6VI9fHN2OckjxOmSyqbXGb1Xiby/ddtvlS+09kFlj
-        UQdirJ8etJRuH7eFDcayA5CQockuyEx8u8sIY1crnUIeuF+Dwu2hWkeqZM9T+gK77GiC
-        pa0IPTFVIZ1lZwaVtzbhF9CLwgzBeblSDkrtCfuthnoah7cNpH966N4SCvJQwqF1R8Dh
-        Iqyat7kaNpjf/jPkMGuD56+rNcEtxpILpcZWK7/VEfE6euIjKYVuLTOzWLGvWChezVCz
-        URwwL4nmOUi2PLIdnKRtL8ytaFM+scP830Y0NaZ7F+vu5fht3pvzXGQ55EomgGYr0hYx
-        Lbcg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMJVch5kkU2"
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.50.177]
-        by smtp.strato.de (RZmta 47.17.0 DYNA|AUTH)
-        with ESMTPSA id U025c8x14KTm0AL
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Thu, 4 Feb 2021 21:29:48 +0100 (CET)
-Subject: Re: [PATCH RESEND iproute2 5.11] iplink_can: add Classical CAN frame
- LEN8_DLC support
-To:     David Ahern <dsahern@gmail.com>,
-        Stephen Hemminger <stephen@networkplumber.org>
-Cc:     netdev@vger.kernel.org, linux-can@vger.kernel.org
-References: <20210125104055.79882-1-socketcan@hartkopp.net>
- <b835a46c-f950-6c58-f50f-9b2f4fd66b46@gmail.com>
- <d8ba08c4-a1c2-78b8-1b09-36c522b07a8c@hartkopp.net>
- <586c2310-17ee-328e-189c-f03aae1735e9@gmail.com>
- <fe697032-88f2-c1f1-8afc-f4469a5f3bd5@hartkopp.net>
- <1bf605b4-70e5-e5f2-f076-45c9b52a5758@gmail.com>
- <dccf261d-6cc3-f79a-8044-f0800c88108d@hartkopp.net>
- <aeb9d16e-e101-e2e5-d136-b48333f03997@gmail.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <2e59f04e-ca7e-1a23-3554-3760c665d635@hartkopp.net>
-Date:   Thu, 4 Feb 2021 21:29:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231529AbhBEH1y (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 5 Feb 2021 02:27:54 -0500
+Received: from mail-mw2nam12on2085.outbound.protection.outlook.com ([40.107.244.85]:50849
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231509AbhBEH1s (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 5 Feb 2021 02:27:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l8ttYU/OVqQJVvjtbl3WWnKFry3DWxTmKILaXIH92Bz6lO8VLT5qljBzL4RMUDB2DrcA6ZYienXPR7YbzKl082xAvmAVNuX5uPTNqpR6RaGR6ijTMHr9Ys25s4Srb+NRQvLHXucDoSaAA+wVAj2uelyWFjaLOaGMcFHdzmyvagSI8x4N4/Zacuqd/sefZfooXU6JLIVUVz5ahFubkZniawmEa4aM6B+3ahKOK72moDkrZjTcT1Nf1SRxXf/DKBqRC+FiOWbj/o/N7WOtOYC8rwcxX2/tZQ9hqumPV9aqQ1yKQ1SMsEXZVsput/Nw3NKy6/tP3Eefsr/yWCrFI1EyCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sHId1mWeBQb6P0X8xTLdnyY7yxEgLjNp/8E6auNgBfU=;
+ b=ZZRXvf787JGqLUkU5GRGfYfiY5IrFijRFvkqRt6j4iOkRwAVPlo2H9TItug58dgb9JnCG+I/7neV4QXo8SfFkgwtI/UURKBWjE9+W5A9YedYvE7yuf268tcsNgfsCgofM1n1tQyfVj7SzSlyN/o2zV0ZmEaltUVLcWnYQVTpRUuP2wtEREQ+XqjA1oFCjlV/C/q+ChxibjrUmKHT5I2gozG4rYaBB40ul6M58CACDMXFlzBD31R7plZID0TkHxzr6XSO0lFPBll3YfbBMr0WRUSkYevzu2pi2cXV+srXfS7dW0a5za4VqINtg1klklx34Md/zID5eS/ikh16/5HA9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sHId1mWeBQb6P0X8xTLdnyY7yxEgLjNp/8E6auNgBfU=;
+ b=VV/az/h5fHofZsO6gS4cWcHnvViUiVlX4aJY6Vfivvqb/ejwgS4PA89e6RcEqAbUovm7+tSWe3Olz5pKRRpwXUK2UkTK5ECSbMC/7803EI4G1t4GlWHrziSDJn3vXHW9F6WZd7R8cPUfKkwdmwWl10Mh/2m8+H4JZl6ZqoH8tuo=
+Authentication-Results: grandegger.com; dkim=none (message not signed)
+ header.d=none;grandegger.com; dmarc=none action=none
+ header.from=windriver.com;
+Received: from DM5PR11MB1898.namprd11.prod.outlook.com (2603:10b6:3:114::10)
+ by DM6PR11MB3627.namprd11.prod.outlook.com (2603:10b6:5:13b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Fri, 5 Feb
+ 2021 07:26:29 +0000
+Received: from DM5PR11MB1898.namprd11.prod.outlook.com
+ ([fe80::d4c5:af6f:ddff:a34d]) by DM5PR11MB1898.namprd11.prod.outlook.com
+ ([fe80::d4c5:af6f:ddff:a34d%8]) with mapi id 15.20.3825.024; Fri, 5 Feb 2021
+ 07:26:29 +0000
+From:   Xulin Sun <xulin.sun@windriver.com>
+To:     wg@grandegger.com, mkl@pengutronix.de
+Cc:     dmurphy@ti.com, sriram.dash@samsung.com, kuba@kernel.org,
+        davem@davemloft.net, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xulin.sun@windriver.com, xulinsun@gmail.com
+Subject: [PATCH 2/2] can: m_can: m_can_class_allocate_dev(): remove impossible error return judgment
+Date:   Fri,  5 Feb 2021 15:25:59 +0800
+Message-Id: <20210205072559.13241-2-xulin.sun@windriver.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210205072559.13241-1-xulin.sun@windriver.com>
+References: <20210205072559.13241-1-xulin.sun@windriver.com>
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK0PR03CA0116.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::32) To DM5PR11MB1898.namprd11.prod.outlook.com
+ (2603:10b6:3:114::10)
 MIME-Version: 1.0
-In-Reply-To: <aeb9d16e-e101-e2e5-d136-b48333f03997@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpggp4.wrs.com (60.247.85.82) by HK0PR03CA0116.apcprd03.prod.outlook.com (2603:1096:203:b0::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23 via Frontend Transport; Fri, 5 Feb 2021 07:26:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f0d9db16-ca03-4a23-a16f-08d8c9a75ad7
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3627:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR11MB3627505DAE95E4EA4D8121D5FBB29@DM6PR11MB3627.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dYJ6GxOPh0+SrjZUR7x6d6xrA86QVHRzAU5XAZ72VbE83NMRuiqQKgRiCRVTg7mqp5Q9KWfCN524ckJzcUDJ6w2Md/juC4imYb50eC2IDPPl3Br/w8LXCM3JIvKnpXxCvqZN/9qF/BIUslURHiicbDlWDUeM4t6+Abb2cRLLPoL1OjXOSkUhQKY6EgZ5CHBSbW7w4G6JT8gHL8uBVYzRfp1Yc0Jfzofug2yOpw9kya8ipLhP7m7MgYxoy5dT9Cx4CvXpGtml0WnukwhMIqsL25LFgZ/ckVnhn7wLpRvmA4wVRuWn7UG6cN7iNdxCUcl5q5XipW8VNEdXSvlAJsgDwQXwjBvNlpD9pw8/+O877sAFUTVG2IH9vKKYyyfrfZ4gwJwtuX73XCsowqj+eu+/nCcjSZRmskQAJ/IR47rCM0Hets2C6u3YkG3UgAZcOEizwuUnyFyG2VSTIgIsBZPCIHPK0kHF5bPZzSm6sraO/CZVA5q1ba4ZrlLoF4SN8YjalwLA2cQnOvVKweNKCCK4LQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1898.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(376002)(39850400004)(396003)(316002)(956004)(2616005)(16526019)(186003)(8676002)(5660300002)(66946007)(66556008)(66476007)(6666004)(52116002)(44832011)(7416002)(36756003)(83380400001)(6486002)(2906002)(4326008)(8936002)(6512007)(4744005)(86362001)(6506007)(478600001)(1076003)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?EExT9NnISx8a+iAbVWYI6b/F8Vm5+SXAstc50VD1EEJFg3Pp/cCIzh/UzEMy?=
+ =?us-ascii?Q?R1C3IvD+/PNEXz0Kd31PjUz43DFim/U/fL9Ijz6LRkZZrWe4Ryc5kHALOJNc?=
+ =?us-ascii?Q?nR6aCWt1oZzybWh3ZNuw6lX0MkgqDWvT8UwqE84Qx/sxHk0mDXjTvrXrnssj?=
+ =?us-ascii?Q?BZEjZvW6luKjs59FH+DpTyEo9/zGNFdHkQMnhE2wi+Gtg8B2be2Jsiq3E60E?=
+ =?us-ascii?Q?dMmMUhTlFnRYTlmOq4cJIanGE0Q0U8REqgvtLs0wGRurGHuJQr4cJTS/1MDI?=
+ =?us-ascii?Q?N714SRhe9+6Q6KCcpYpILtGsQcdIdqlLQcadJ6DnQgfc99NUs4Si3vG//nUk?=
+ =?us-ascii?Q?ua1xZiSqMVdOj2GWER2BlkyzullDdgyXX8dPRilpxnWLIH/PPTDPQ3m7uyfJ?=
+ =?us-ascii?Q?slwc2Tw166Anw5U5gDmE+5NCoZuoigt7v8irHOBCw4DUsC6VhwlW7cu79cJ9?=
+ =?us-ascii?Q?wZuzVUuLRtIhvdV38ZEjK4c+S+yqSE3KqjFJmki9C8UD+Dhmx2Lp7OxeO5BH?=
+ =?us-ascii?Q?JGWFkehzsewc0mxXG0ql2sJnoJ3dZ0HvkAkkyvqAD1gfZ4tpkqywHCMz7uVX?=
+ =?us-ascii?Q?7rJ4Z3uIXKOT7/C4ft4WmIAK4bQJcr8Kf6ecXy7z56jgttA2sXnPMonyDuV5?=
+ =?us-ascii?Q?eggXtrBsPertskOM2cB06nWzXTr94Zjk2tqQOMtyiVtFnSYAdPQgspmChiMs?=
+ =?us-ascii?Q?SZyEKBPcwKabZSrmzL23cqp/4+FFeLPLw7GnR4E+oD41LKiu/0dOk1D7t+wY?=
+ =?us-ascii?Q?uHRvMAwygzYG8uMGmHwxm6eH7FdBu56oGZLr6k5476gH2OdyGmy+iGrKXzBr?=
+ =?us-ascii?Q?F4Z6imFfVs0B4a705XBCpkY+FQ9X98gr993pkRIuMvAXBkCc/aScgZKsvMe0?=
+ =?us-ascii?Q?Hks+IGf+2/r0HRpB6sLJ7eGQFV6tXKxhzTBjysv0RxU+5YKD6B9aW6KA2GSQ?=
+ =?us-ascii?Q?slqufn0x1EkeNgOiqna/MSH91EYnyPLfJR4BLaUOGVeaeCgIZleK3GMpxhRo?=
+ =?us-ascii?Q?QLJcVU6Sr52JmekHfBoThB5G0PE/Fgke/A41rExGnhkYj19V/5yB/vfS8w5L?=
+ =?us-ascii?Q?TKWIxQshc/Lwti3BcRMqwqf+BiTLuYNFZcj1cfq/mvnZClzaBtROQCTMlO1C?=
+ =?us-ascii?Q?LHTUMQltLZLiR90t+1m4DnbjAtRawRkWYnhLFWCms+bOI/LsBUWi+lWlFbyr?=
+ =?us-ascii?Q?uRqwJgrQckOSPvmI3GC1r9V3YrdUzM5i8hrixSk/3i0FX+C0cRtd6aSy4qo3?=
+ =?us-ascii?Q?yagnEmlYL08Ium5leyw+0cytGIZMSzXgxDcDxDVcG3UJih2FXhwObTSlG7TK?=
+ =?us-ascii?Q?nP5IWdIYuLA6WAsh0BmeU1Ns?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0d9db16-ca03-4a23-a16f-08d8c9a75ad7
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1898.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 07:26:29.7306
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qUKatR2/vSg2h5MQIiRGCU8b82zILfpWaciE+zo0ttwMYw1WvM6CigMl2kxyNmiePFrhNetZx09Mt6GXcNy9yQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3627
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+If the previous can_net device has been successfully allocated, its
+private data structure is impossible to be empty, remove this redundant
+error return judgment. Otherwise, memory leaks for alloc_candev() will
+be triggered.
 
+Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
+---
+ drivers/net/can/m_can/m_can.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-On 04.02.21 04:15, David Ahern wrote:
-> On 2/3/21 12:04 PM, Oliver Hartkopp wrote:
->> My only fault was, that I did not send the patch for iproute2-next at
->> the time when the len8_dlc patches were in net-next, right?
-> 
-> yes
-> 
-
-Now that I know about iproute2-next, I will do better next time.
-
-Can you please apply this simple patch intended for Linux 5.11 to the 
-iproute2 tree this time?
-
-Thanks,
-Oliver
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 02c5795b7393..042940088d41 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1797,11 +1797,6 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev)
+ 	}
+ 
+ 	class_dev = netdev_priv(net_dev);
+-	if (!class_dev) {
+-		dev_err(dev, "Failed to init netdev cdevate");
+-		goto out;
+-	}
+-
+ 	class_dev->net = net_dev;
+ 	class_dev->dev = dev;
+ 	SET_NETDEV_DEV(net_dev, dev);
+-- 
+2.17.1
 
