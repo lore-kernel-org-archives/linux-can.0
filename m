@@ -2,93 +2,102 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48590C433E0
-	for <linux-can@archiver.kernel.org>; Sun,  7 Feb 2021 18:27:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9402C433E6
+	for <linux-can@archiver.kernel.org>; Mon,  8 Feb 2021 13:15:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0736B64DDC
-	for <linux-can@archiver.kernel.org>; Sun,  7 Feb 2021 18:27:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 78DAF64E7A
+	for <linux-can@archiver.kernel.org>; Mon,  8 Feb 2021 13:15:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbhBGS1S (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 7 Feb 2021 13:27:18 -0500
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.162]:19906 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhBGS1R (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 7 Feb 2021 13:27:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1612722203;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:To:Subject:Cc:Date:From:
-        Subject:Sender;
-        bh=hnbcsvjB0aAzoi2XylNmKq2AMKPQaxSezQL2SYddjEU=;
-        b=aPiJC8l6DPrPb2UZiBMI8pc+em+efCbF7B7U7xtMGSC1FWw7kc+Zayf5MVe7x/ZRTR
-        OZuPHwPEaeb6IhjlIsjNes8xUB5VQ4yjrILMNdB1AiW90wC92ff9Wb0/hNyqLh2hViRB
-        m4//mf2LBntdKdKg8JJbQzuHYJZD5mnErjc3Ced1ToojscMCE5571fm1WhTjDsh3YpaI
-        QjoUXihs4Qw/tkMQRqPgMR18xJrAoNJAwdD+jrVKS5ZORXPfv5kEAU8WvT9fcjZlbQfC
-        dHAqMrSQK76pAyMZRCpDJT4dIIYACIBrTN0xhOSxKu+Kmf4+YK6DgVMZJF3fdelJiGwv
-        TJcw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMGUch5mUj/"
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.50.177]
-        by smtp.strato.de (RZmta 47.17.1 DYNA|AUTH)
-        with ESMTPSA id R0883bx17INM0G4
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sun, 7 Feb 2021 19:23:22 +0100 (CET)
-Subject: Re: correct length of bcm message
-To:     Patrick Menschel <menschel.p@posteo.de>,
-        linux-can <linux-can@vger.kernel.org>
-References: <ff7c731b-6b98-79d7-b652-6ba2fe0afc3c@posteo.de>
- <c859e653-af2b-332c-f3d0-cf2525d1382a@posteo.de>
- <d73f45d8-da19-2d09-78ea-318faa98e7aa@hartkopp.net>
- <b987ec8d-d1a8-34e3-7c8b-4ce0bbd4b30f@posteo.de>
- <7f9ffbe7-8926-3874-9261-03e26f711b8d@hartkopp.net>
- <f0b2d6de-9254-be02-abd6-0373834b574b@posteo.de>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <ea71b986-7826-0566-44e6-703cbd76e49a@hartkopp.net>
-Date:   Sun, 7 Feb 2021 19:23:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S229861AbhBHNPD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 8 Feb 2021 08:15:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhBHNPA (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 8 Feb 2021 08:15:00 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63D8C061788
+        for <linux-can@vger.kernel.org>; Mon,  8 Feb 2021 05:14:20 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1l96Mk-0001oz-EI; Mon, 08 Feb 2021 14:14:10 +0100
+Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:291f:f238:66b7:a1f0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 837DB5D950A;
+        Mon,  8 Feb 2021 13:14:07 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 14:14:06 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: can: rcar_canfd: Group tuples in pin
+ control properties
+Message-ID: <20210208131406.rslj5pjijgerbky2@hardanger.blackshift.org>
+References: <20210204125937.1646305-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-In-Reply-To: <f0b2d6de-9254-be02-abd6-0373834b574b@posteo.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="w7uyeyiofkeeex2j"
+Content-Disposition: inline
+In-Reply-To: <20210204125937.1646305-1-geert+renesas@glider.be>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
+--w7uyeyiofkeeex2j
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 07.02.21 07:33, Patrick Menschel wrote:
->>> Interesting to know, apparently native alignment is 8 on X86_64 linux
->>> and 4 on armhf linux. That's why it worked on X86_64.
->>>
->>> Regarding python ctypes module, setting _pack_=8 has no remedy effect on
->>> armhf platform, so I'll move to struct module.
-> 
-> Hi,
-> 
-> tying some loose ends here.
-> My final solution to force alignment after bcm_msg_head to the next 8
-> byte boundary in python3 is to use an alignment hack of struct module.
-> https://docs.python.org/3/library/struct.html#struct-examples
-> 
-> struct.pack("IIIllllII0q",opcode,flags,count,ival1_sec,ival1_usec,ival2_sec,ival2_usec,can_id,nframes)
-> 
-> The "0q" is a zero length long long which causes padding up to the next
-> 8 byte boundary.
+On 04.02.2021 13:59:37, Geert Uytterhoeven wrote:
+> To improve human readability and enable automatic validation, the tuples
+> in "pinctrl-*" properties should be grouped using angle brackets.
+>=20
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Excellent! Exactly what is needed here.
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Thanks,
-Oliver
+regards,
+Marc
 
-> This works for ARMHF (40 bytes) and X86_64 (72 bytes).
-> 
-> Regards,
-> Patrick
-> 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--w7uyeyiofkeeex2j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAhORsACgkQqclaivrt
+76mS8wf+LIfsAtf78toTh4zBnPrAiGt8exLZ8mvpZzt/Vu2pCGi3X/a9aEI2Z/HR
+lHsIQQHC3b0bY/Drv2EnOBnJ0cLFC98U95pyu8T2b8+zQEjDY18OQW9nxVagzsrV
+Cmut0pQ1V12tezmeD1QdxTTTxUPJKevu2RJLCiIhtA2Q+QAqU8BgMZYi/zbBAGaL
+/tNi5ffyVqXCdXoHIR77nt3bul9JJnyo/yrj1WQI6zTtTeC2uAI+21/K9E3nLK9r
+oEVUiO2bDgJn2gvxyY80rj9xHSz+Mw6zWqz3MrXsOqcSig78S+tZHH+i+Ft5p1yl
+x92lUCIqQvPlBYPuamYhmcFTm3qotQ==
+=oc1f
+-----END PGP SIGNATURE-----
+
+--w7uyeyiofkeeex2j--
