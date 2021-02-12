@@ -2,77 +2,91 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19161C433DB
-	for <linux-can@archiver.kernel.org>; Tue,  9 Feb 2021 23:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8915C433E6
+	for <linux-can@archiver.kernel.org>; Fri, 12 Feb 2021 08:21:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C95B864E37
-	for <linux-can@archiver.kernel.org>; Tue,  9 Feb 2021 23:49:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7BE8C64E2D
+	for <linux-can@archiver.kernel.org>; Fri, 12 Feb 2021 08:21:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbhBIXsw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 Feb 2021 18:48:52 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:34999 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbhBIWyT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Feb 2021 17:54:19 -0500
-Received: by mail-ot1-f53.google.com with SMTP id k10so81012otl.2;
-        Tue, 09 Feb 2021 14:53:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BdXrNYH73Jb2kpPTUcCxcN6nJbRmjpr252i7yRd/ggk=;
-        b=I6j242afR1bGVHPA78DIpg36KAcDA6RH+YSBVIqsLS4nr/aA6pQTS6nAc5gRo3FIc5
-         qlVtEZlMvhV82isi2+KB4Mje+JJOWQ40OndBxvVpethcd11a/OamQrIMXM4K+m3C/xlI
-         okj26FgdNuFZNR9WrES4PH8ehIzJq4QiwSwkjUt9nSvgO3IGcpXOWX86od8nhtBJgZgM
-         fktdz9cVPRYFbwKDi7frTlJb8pYstb/enyxpUA0EdbKlk9ZZGAtNZivjjGaFr7yclKV1
-         zoQQxk4SzMFRsZBdZnxmm8KBNwMLVqRI4q8Lo3AvrkRDyup+elnw92zOHaKs9xIs2UZi
-         0X/Q==
-X-Gm-Message-State: AOAM531M9hfaz4kN636GZxNGm+JgK033W2wc36nvg/e8CxAY3ilvxmZm
-        5S9uIm944qTp4VHjqghkyjqHHSSZEQ==
-X-Google-Smtp-Source: ABdhPJwzuiohuTuCd8IQ8dk5kVshNfOVLhoaBlPjyV7EoguvkYCz0yVz+su4drcXtxGAADhkz3ARLA==
-X-Received: by 2002:a9d:7514:: with SMTP id r20mr17267303otk.318.1612911157755;
-        Tue, 09 Feb 2021 14:52:37 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o98sm641ota.0.2021.02.09.14.52.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 14:52:36 -0800 (PST)
-Received: (nullmailer pid 372109 invoked by uid 1000);
-        Tue, 09 Feb 2021 22:52:35 -0000
-Date:   Tue, 9 Feb 2021 16:52:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-can@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: can: rcar_canfd: Group tuples in pin
- control properties
-Message-ID: <20210209225235.GA371996@robh.at.kernel.org>
-References: <20210204125937.1646305-1-geert+renesas@glider.be>
+        id S229992AbhBLIVj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 12 Feb 2021 03:21:39 -0500
+Received: from ozlabs.org ([203.11.71.1]:38277 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229965AbhBLIVW (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 12 Feb 2021 03:21:22 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DcRJl6cDgz9sB4;
+        Fri, 12 Feb 2021 19:20:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
+        t=1613118040; bh=5MaJGvBp35LQnuv/WVy3idsdObN11F6uoStWZVNU/UI=;
+        h=Subject:From:To:Cc:Date:From;
+        b=XaDGk5uIbxaWhSzEJt36kiLPkmiWMSWiVkeF+4aukmx1DY5TiNdhV6fvx5GgtmtZA
+         8Ud9mo9FC5ZT9LFHj024lLLsth5rO5RzVdkxxdKy4O4RR9/bMPYGQkH0xcgANUBCY7
+         vyfj35OGztexp/f13vsbHcYXJzcNVq8YQuGIQJyDMM7B/2x7sJho7SIRmeNidgdtpU
+         OVOZNk7EpJ8kKfF+RGqlbqB9m1ceTPPkEsbhfQffhGQujPVs9kHRR76owtBcc9yhaG
+         tISKemoQv4IRQZifiGgJ78U2lWlq86avkj1iwf9UjFfBoBLcgOwQPW8ASjItOdsmao
+         pH01HNJAO6pxw==
+Message-ID: <98cea51e699d405ebe9a6d475e51608f318a4209.camel@ozlabs.org>
+Subject: Proposal for a new protocol family - AF_MCTP
+From:   Jeremy Kerr <jk@ozlabs.org>
+To:     netdev@vger.kernel.org
+Cc:     linux-can@vger.kernel.org
+Date:   Fri, 12 Feb 2021 16:20:39 +0800
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204125937.1646305-1-geert+renesas@glider.be>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Thu, 04 Feb 2021 13:59:37 +0100, Geert Uytterhoeven wrote:
-> To improve human readability and enable automatic validation, the tuples
-> in "pinctrl-*" properties should be grouped using angle brackets.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+Hi all,
 
-Applied, thanks!
+I'm currently working on implementing support for the Management
+Controller Transport Protocol (MCTP). Briefly, MCTP is a protocol for
+intra-system communication between a management controller (typically a
+BMC), and the devices it manages. If you're after the full details, the
+DMTF have a specification (DSP0236) up at:
+
+  https://www.dmtf.org/standards/pmci
+
+In short, this involves adding a new protocol / address family
+("AF_MCTP"), the supporting types for a sockets API, and netlink
+protocol definitions.
+
+At the moment, I'm currently at the design & prototyping stage - so no
+patches to send just yet! However, if you're super keen, you can have a
+review of the design outline for the OpenBMC project, up at:
+
+  https://github.com/jk-ozlabs/openbmc-docs/blob/mctp/designs/mctp/mctp-kernel.md
+
+If you'd like to send feedback on any aspects of that, I'm keen to hear
+them. You can either respond to me via email, or participate in the
+gerrit review of that document, which is at:
+
+  https://gerrit.openbmc-project.xyz/c/openbmc/docs/+/40514
+
+Otherwise, if you prefer to review as code instead, I'll be sending
+patches to netdev once we've done a few passes of the design doc with
+the OpenBMC community.
+
+linux-can folks: the structure of MCTP is a little similar to CAN, and
+I've been referring to net/can/ a little for the mctp implementation,
+hence including the list here. If you have any particular hindsight you
+have from your work, I'd be keen to hear about it too.
+
+Cheers,
+
+
+Jeremy
+ 
+
+
