@@ -7,29 +7,29 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC0A1C433E6
-	for <linux-can@archiver.kernel.org>; Mon, 22 Feb 2021 15:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14AF3C43381
+	for <linux-can@archiver.kernel.org>; Mon, 22 Feb 2021 15:15:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9A81264E29
+	by mail.kernel.org (Postfix) with ESMTP id C897D64E83
 	for <linux-can@archiver.kernel.org>; Mon, 22 Feb 2021 15:15:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhBVPO4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 22 Feb 2021 10:14:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        id S231258AbhBVPO5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 22 Feb 2021 10:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhBVPOK (ORCPT
+        with ESMTP id S231276AbhBVPOK (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 22 Feb 2021 10:14:10 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0562AC06121D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFA2C06121F
         for <linux-can@vger.kernel.org>; Mon, 22 Feb 2021 07:12:57 -0800 (PST)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lECtF-0007dv-15; Mon, 22 Feb 2021 16:12:49 +0100
+        id 1lECtF-0007ds-15; Mon, 22 Feb 2021 16:12:49 +0100
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lECtE-00075k-HH; Mon, 22 Feb 2021 16:12:48 +0100
+        id 1lECtE-00071U-AA; Mon, 22 Feb 2021 16:12:48 +0100
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     mkl@pengutronix.de, "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
         linux-wireless@vger.kernel.org
-Subject: [PATCH net v1 3/3] [RFC] mac80211: ieee80211_store_ack_skb(): make use of skb_clone_sk_optional()
-Date:   Mon, 22 Feb 2021 16:12:47 +0100
-Message-Id: <20210222151247.24534-4-o.rempel@pengutronix.de>
+Subject: [PATCH net v1 1/3] skbuff: skb_clone_sk_optional(): add function to always clone a skb and increase refcount on sk if valid
+Date:   Mon, 22 Feb 2021 16:12:45 +0100
+Message-Id: <20210222151247.24534-2-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210222151247.24534-1-o.rempel@pengutronix.de>
 References: <20210222151247.24534-1-o.rempel@pengutronix.de>
@@ -56,33 +56,69 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This code is trying to clone the skb with optional skb->sk. But this
-will fail to clone the skb if socket was closed just after the skb was
-pushed into the networking stack.
+There already the function skb_clone_sk(), which clones the skb, but
+only if the sk is valid.
 
-Fixes: a7528198add8 ("mac80211: support control port TX status reporting")
+There are several users in the networking stack, which always need a
+clone of a skb with the sk refcount incremented (but only if the sk is
+valid). This patch adds such a function.
+
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- net/mac80211/tx.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ include/linux/skbuff.h |  1 +
+ net/core/skbuff.c      | 27 +++++++++++++++++++++++++++
+ 2 files changed, 28 insertions(+)
 
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index 5d06de61047a..c0dd326db10d 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -2439,11 +2439,7 @@ static u16 ieee80211_store_ack_skb(struct ieee80211_local *local,
- 	struct sk_buff *ack_skb;
- 	u16 info_id = 0;
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 6d0a33d1c0db..99d552017508 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -3874,6 +3874,7 @@ static inline void skb_metadata_clear(struct sk_buff *skb)
+ 	skb_metadata_set(skb, 0);
+ }
  
--	if (skb->sk)
--		ack_skb = skb_clone_sk(skb);
--	else
--		ack_skb = skb_clone(skb, GFP_ATOMIC);
--
-+	ack_skb = skb_clone_sk_optional(skb);
- 	if (ack_skb) {
- 		unsigned long flags;
- 		int id;
++struct sk_buff *skb_clone_sk_optional(struct sk_buff *skb);
+ struct sk_buff *skb_clone_sk(struct sk_buff *skb);
+ 
+ #ifdef CONFIG_NETWORK_PHY_TIMESTAMPING
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 545a472273a5..97341f173fb0 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -4671,6 +4671,33 @@ struct sk_buff *sock_dequeue_err_skb(struct sock *sk)
+ }
+ EXPORT_SYMBOL(sock_dequeue_err_skb);
+ 
++/**
++ * skb_clone_sk_optional - create clone of skb, and take reference to socket if
++ *                         socket is referenced in original skb
++ * @skb: the skb to clone
++ *
++ * This function always creates a clone of a buffer. If it that holds a valid
++ * reference on sk_refcnt this is increased.
++ */
++struct sk_buff *skb_clone_sk_optional(struct sk_buff *skb)
++{
++	struct sock *sk = skb->sk;
++	struct sk_buff *clone;
++
++	clone = skb_clone(skb, GFP_ATOMIC);
++	if (!clone)
++		return NULL;
++
++	if (!sk || !refcount_inc_not_zero(&sk->sk_refcnt))
++		return clone;
++
++	clone->sk = sk;
++	clone->destructor = sock_efree;
++
++	return clone;
++}
++EXPORT_SYMBOL(skb_clone_sk_optional);
++
+ /**
+  * skb_clone_sk - create clone of skb, and take reference to socket
+  * @skb: the skb to clone
 -- 
 2.29.2
 
