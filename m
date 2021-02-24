@@ -2,140 +2,305 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-23.2 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93B89C433E0
-	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 08:54:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4743C433E0
+	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 12:52:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4B95964E24
-	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 08:54:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 782E764F03
+	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 12:52:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234603AbhBXIyU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 24 Feb 2021 03:54:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234628AbhBXIx7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 24 Feb 2021 03:53:59 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72507C06174A
-        for <linux-can@vger.kernel.org>; Wed, 24 Feb 2021 00:53:19 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id p193so1137184yba.4
-        for <linux-can@vger.kernel.org>; Wed, 24 Feb 2021 00:53:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BGwJ0SHFnCl5BWg2YtrAv0Cs7u3OxCrNO9fhAiDyyc0=;
-        b=sI++S4ETsAzOHE1Ik9dxQNVCfXfwgtiZoyvMOVvSERvzvyvLkk+1KJTj08NYT8Awrq
-         mDvMPaqTS/XQop0MEqVKk/CI7p690Rp3cdkqt9MZBSpXl2cQ+SQAquMEBI56pMje4cIK
-         sxtQDhChAjn47HWlLgXaQIZSkQ6kCFPcvYTa0fDzCYG8/EWhUlvpPFklNr7W170/0Q11
-         cc+WIRo6e8Bt3FT8dPbLnheeuMn1CoIgzTanRe/m+CgwzHTWb+cwMLVql27ggg0ux+PL
-         rr/C5JwvZx3DlT7Y2gZkBjFro3xQoJD+W76Muh44QAUCPeKkScIOtHSnmU5RmLNOGwaz
-         rhWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BGwJ0SHFnCl5BWg2YtrAv0Cs7u3OxCrNO9fhAiDyyc0=;
-        b=eItYakk5+s1zKPyV507qBCl3gw5eaz/QPhKAkmMl6EsBvojv5rbvu/chowFVAszieb
-         0AEqkA56SvDpYfhKX18N5RG6QCAQUT0VE+7AJ5+ksyF0UsgfcPa2exDpNjfdNw4frUvy
-         E28lBRH15l1VQ8jymIJ78Um/qL15Sx87hDhyumSRwfjNhq+oR8A7ORs8isXqUZ/FW3+J
-         xQ9hZdHRenqT90dyiY+lg82unK0/Z/xSYMQwRvodoACVi3qxs4Mdt9/jDvKccy2Auvrn
-         cT4u6IAZsdHVrMkIRIRpN4kzurAd75U3s+5mRrEI9PUur8xoW3WItsg8REye/rsWM/2o
-         ls8w==
-X-Gm-Message-State: AOAM531dBR403yrOg5L+Idg6NlK9HLt8O/BrfzWC0/K4Jml7FNIZa5rE
-        IvsE4F6oTWLjVJvU760QHAv1VooQknSojwou993UuJjhjeg=
-X-Google-Smtp-Source: ABdhPJxjLulVroVfrHz8PIwjnx4bI6Q5vq/R8DvUGLL3tRfTN3KlsvS6H006ilRb7ikZXP92VZ5FwaNg+UfrHQ/zvHE=
-X-Received: by 2002:a25:1d88:: with SMTP id d130mr47638433ybd.446.1614156798239;
- Wed, 24 Feb 2021 00:53:18 -0800 (PST)
+        id S233826AbhBXMv1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 24 Feb 2021 07:51:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232408AbhBXMvO (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 24 Feb 2021 07:51:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2ADE64EEA;
+        Wed, 24 Feb 2021 12:50:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614171033;
+        bh=wWRzA55ZZ0wfuWAkDVKRy/jzGb5TYicPsND7SZ8CG04=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SMkL+CgAVwlbeoPk4s6gppMEzDkB6F1w2l55l50dnZ9FS8AmMZBsz0jX9vunb0zuT
+         0VOlGu0/vFhfSr6UsN0h5Edxz9qNx6KfcYFi6+tFK/DvdBq6suJCKnyBqy438MHIid
+         XJ3gHkWZe8Q3plPE09lbUKv0Y8ytoxOpWTBzl7CBP/r7zu20B0S4ARCG/U2Y/bQmBD
+         70kCXJqV+6qHqBADU2mjchdFhCtZYzxLEshT9MpoNwZF7ba1ckd2P1mHsfQyp9SgoK
+         /qXgaGV8Yh64xIriR9UpwBoMzbfF2vAXYobPE29uaT9LRtDR0xWuahFxToyAwUMCbK
+         4hzq5njIFHl5A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 05/67] can: flexcan: add CAN wakeup function for i.MX8QM
+Date:   Wed, 24 Feb 2021 07:49:23 -0500
+Message-Id: <20210224125026.481804-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210224125026.481804-1-sashal@kernel.org>
+References: <20210224125026.481804-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210224075932.20234-1-o.rempel@pengutronix.de>
-In-Reply-To: <20210224075932.20234-1-o.rempel@pengutronix.de>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 24 Feb 2021 09:53:06 +0100
-Message-ID: <CANn89iLEHpCphH8vKd=0BS7pgdP1YZDGqQfQPeGBkD09RoHtzg@mail.gmail.com>
-Subject: Re: [PATCH net v3 1/1] can: can_skb_set_owner(): fix ref counting if
- socket was closed before setting skb ownership
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Andre Naujoks <nautsch2@gmail.com>, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 8:59 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->
-> There are two ref count variables controlling the free()ing of a socket:
-> - struct sock::sk_refcnt - which is changed by sock_hold()/sock_put()
-> - struct sock::sk_wmem_alloc - which accounts the memory allocated by
->   the skbs in the send path.
->
-> In case there are still TX skbs on the fly and the socket() is closed,
-> the struct sock::sk_refcnt reaches 0. In the TX-path the CAN stack
-> clones an "echo" skb, calls sock_hold() on the original socket and
-> references it. This produces the following back trace:
->
-> | WARNING: CPU: 0 PID: 280 at lib/refcount.c:25 refcount_warn_saturate+0x114/0x134
-> | refcount_t: addition on 0; use-after-free.
-> | Modules linked in: coda_vpu(E) v4l2_jpeg(E) videobuf2_vmalloc(E) imx_vdoa(E)
-> | CPU: 0 PID: 280 Comm: test_can.sh Tainted: G            E     5.11.0-04577-gf8ff6603c617 #203
-> | Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-> | Backtrace:
-> | [<80bafea4>] (dump_backtrace) from [<80bb0280>] (show_stack+0x20/0x24) r7:00000000 r6:600f0113 r5:00000000 r4:81441220
-> | [<80bb0260>] (show_stack) from [<80bb593c>] (dump_stack+0xa0/0xc8)
-> | [<80bb589c>] (dump_stack) from [<8012b268>] (__warn+0xd4/0x114) r9:00000019 r8:80f4a8c2 r7:83e4150c r6:00000000 r5:00000009 r4:80528f90
-> | [<8012b194>] (__warn) from [<80bb09c4>] (warn_slowpath_fmt+0x88/0xc8) r9:83f26400 r8:80f4a8d1 r7:00000009 r6:80528f90 r5:00000019 r4:80f4a8c2
-> | [<80bb0940>] (warn_slowpath_fmt) from [<80528f90>] (refcount_warn_saturate+0x114/0x134) r8:00000000 r7:00000000 r6:82b44000 r5:834e5600 r4:83f4d540
-> | [<80528e7c>] (refcount_warn_saturate) from [<8079a4c8>] (__refcount_add.constprop.0+0x4c/0x50)
-> | [<8079a47c>] (__refcount_add.constprop.0) from [<8079a57c>] (can_put_echo_skb+0xb0/0x13c)
-> | [<8079a4cc>] (can_put_echo_skb) from [<8079ba98>] (flexcan_start_xmit+0x1c4/0x230) r9:00000010 r8:83f48610 r7:0fdc0000 r6:0c080000 r5:82b44000 r4:834e5600
-> | [<8079b8d4>] (flexcan_start_xmit) from [<80969078>] (netdev_start_xmit+0x44/0x70) r9:814c0ba0 r8:80c8790c r7:00000000 r6:834e5600 r5:82b44000 r4:82ab1f00
-> | [<80969034>] (netdev_start_xmit) from [<809725a4>] (dev_hard_start_xmit+0x19c/0x318) r9:814c0ba0 r8:00000000 r7:82ab1f00 r6:82b44000 r5:00000000 r4:834e5600
-> | [<80972408>] (dev_hard_start_xmit) from [<809c6584>] (sch_direct_xmit+0xcc/0x264) r10:834e5600 r9:00000000 r8:00000000 r7:82b44000 r6:82ab1f00 r5:834e5600 r4:83f27400
-> | [<809c64b8>] (sch_direct_xmit) from [<809c6c0c>] (__qdisc_run+0x4f0/0x534)
->
-> To fix this problem, only set skb ownership to sockets which have still
-> a ref count > 0.
->
-> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-> Cc: Andre Naujoks <nautsch2@gmail.com>
-> Suggested-by: Eric Dumazet <edumazet@google.com>
-> Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-SGTM
+[ Upstream commit 812f0116c66a3ebaf0b6062226aa85574dd79f67 ]
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+The System Controller Firmware (SCFW) is a low-level system function
+which runs on a dedicated Cortex-M core to provide power, clock, and
+resource management. It exists on some i.MX8 processors. e.g. i.MX8QM
+(QM, QP), and i.MX8QX (QXP, DX). SCU driver manages the IPC interface
+between host CPU and the SCU firmware running on M4.
 
-> ---
->  include/linux/can/skb.h | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-> index 685f34cfba20..655f33aa99e3 100644
-> --- a/include/linux/can/skb.h
-> +++ b/include/linux/can/skb.h
-> @@ -65,8 +65,7 @@ static inline void can_skb_reserve(struct sk_buff *skb)
->
->  static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
->  {
-> -       if (sk) {
-> -               sock_hold(sk);
-> +       if (sk && refcount_inc_not_zero(&sk->sk_refcnt)) {
->                 skb->destructor = sock_efree;
->                 skb->sk = sk;
->         }
-> --
-> 2.29.2
->
+For i.MX8QM, stop mode request is controlled by System Controller Unit(SCU)
+firmware, this patch introduces FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW quirk
+for this function.
+
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Link: https://lore.kernel.org/r/20201106105627.31061-6-qiangqing.zhang@nxp.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/can/flexcan.c | 123 ++++++++++++++++++++++++++++++++------
+ 1 file changed, 106 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 038fe1036df23..7ab20a6b0d1db 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -9,6 +9,7 @@
+ //
+ // Based on code originally by Andrey Volkov <avolkov@varma-el.com>
+ 
++#include <dt-bindings/firmware/imx/rsrc.h>
+ #include <linux/bitfield.h>
+ #include <linux/can.h>
+ #include <linux/can/dev.h>
+@@ -17,6 +18,7 @@
+ #include <linux/can/rx-offload.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/firmware/imx/sci.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/mfd/syscon.h>
+@@ -242,6 +244,8 @@
+ #define FLEXCAN_QUIRK_SUPPORT_FD BIT(9)
+ /* support memory detection and correction */
+ #define FLEXCAN_QUIRK_SUPPORT_ECC BIT(10)
++/* Setup stop mode with SCU firmware to support wakeup */
++#define FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW BIT(11)
+ 
+ /* Structure of the message buffer */
+ struct flexcan_mb {
+@@ -347,6 +351,7 @@ struct flexcan_priv {
+ 	u8 mb_count;
+ 	u8 mb_size;
+ 	u8 clk_src;	/* clock source of CAN Protocol Engine */
++	u8 scu_idx;
+ 
+ 	u64 rx_mask;
+ 	u64 tx_mask;
+@@ -358,6 +363,9 @@ struct flexcan_priv {
+ 	struct regulator *reg_xceiver;
+ 	struct flexcan_stop_mode stm;
+ 
++	/* IPC handle when setup stop mode by System Controller firmware(scfw) */
++	struct imx_sc_ipc *sc_ipc_handle;
++
+ 	/* Read and Write APIs */
+ 	u32 (*read)(void __iomem *addr);
+ 	void (*write)(u32 val, void __iomem *addr);
+@@ -387,7 +395,7 @@ static const struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+ static const struct flexcan_devtype_data fsl_imx8qm_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+-		FLEXCAN_QUIRK_SUPPORT_FD,
++		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW,
+ };
+ 
+ static struct flexcan_devtype_data fsl_imx8mp_devtype_data = {
+@@ -546,18 +554,42 @@ static void flexcan_enable_wakeup_irq(struct flexcan_priv *priv, bool enable)
+ 	priv->write(reg_mcr, &regs->mcr);
+ }
+ 
++static int flexcan_stop_mode_enable_scfw(struct flexcan_priv *priv, bool enabled)
++{
++	u8 idx = priv->scu_idx;
++	u32 rsrc_id, val;
++
++	rsrc_id = IMX_SC_R_CAN(idx);
++
++	if (enabled)
++		val = 1;
++	else
++		val = 0;
++
++	/* stop mode request via scu firmware */
++	return imx_sc_misc_set_control(priv->sc_ipc_handle, rsrc_id,
++				       IMX_SC_C_IPG_STOP, val);
++}
++
+ static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
+ {
+ 	struct flexcan_regs __iomem *regs = priv->regs;
+ 	u32 reg_mcr;
++	int ret;
+ 
+ 	reg_mcr = priv->read(&regs->mcr);
+ 	reg_mcr |= FLEXCAN_MCR_SLF_WAK;
+ 	priv->write(reg_mcr, &regs->mcr);
+ 
+ 	/* enable stop request */
+-	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+-			   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW) {
++		ret = flexcan_stop_mode_enable_scfw(priv, true);
++		if (ret < 0)
++			return ret;
++	} else {
++		regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
++				   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
++	}
+ 
+ 	return flexcan_low_power_enter_ack(priv);
+ }
+@@ -566,10 +598,17 @@ static inline int flexcan_exit_stop_mode(struct flexcan_priv *priv)
+ {
+ 	struct flexcan_regs __iomem *regs = priv->regs;
+ 	u32 reg_mcr;
++	int ret;
+ 
+ 	/* remove stop request */
+-	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+-			   1 << priv->stm.req_bit, 0);
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW) {
++		ret = flexcan_stop_mode_enable_scfw(priv, false);
++		if (ret < 0)
++			return ret;
++	} else {
++		regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
++				   1 << priv->stm.req_bit, 0);
++	}
+ 
+ 	reg_mcr = priv->read(&regs->mcr);
+ 	reg_mcr &= ~FLEXCAN_MCR_SLF_WAK;
+@@ -1867,7 +1906,7 @@ static void unregister_flexcandev(struct net_device *dev)
+ 	unregister_candev(dev);
+ }
+ 
+-static int flexcan_setup_stop_mode(struct platform_device *pdev)
++static int flexcan_setup_stop_mode_gpr(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -1912,11 +1951,6 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
+ 		"gpr %s req_gpr=0x02%x req_bit=%u\n",
+ 		gpr_np->full_name, priv->stm.req_gpr, priv->stm.req_bit);
+ 
+-	device_set_wakeup_capable(&pdev->dev, true);
+-
+-	if (of_property_read_bool(np, "wakeup-source"))
+-		device_set_wakeup_enable(&pdev->dev, true);
+-
+ 	return 0;
+ 
+ out_put_node:
+@@ -1924,6 +1958,58 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++static int flexcan_setup_stop_mode_scfw(struct platform_device *pdev)
++{
++	struct net_device *dev = platform_get_drvdata(pdev);
++	struct flexcan_priv *priv;
++	u8 scu_idx;
++	int ret;
++
++	ret = of_property_read_u8(pdev->dev.of_node, "fsl,scu-index", &scu_idx);
++	if (ret < 0) {
++		dev_dbg(&pdev->dev, "failed to get scu index\n");
++		return ret;
++	}
++
++	priv = netdev_priv(dev);
++	priv->scu_idx = scu_idx;
++
++	/* this function could be defered probe, return -EPROBE_DEFER */
++	return imx_scu_get_handle(&priv->sc_ipc_handle);
++}
++
++/* flexcan_setup_stop_mode - Setup stop mode for wakeup
++ *
++ * Return: = 0 setup stop mode successfully or doesn't support this feature
++ *         < 0 fail to setup stop mode (could be defered probe)
++ */
++static int flexcan_setup_stop_mode(struct platform_device *pdev)
++{
++	struct net_device *dev = platform_get_drvdata(pdev);
++	struct flexcan_priv *priv;
++	int ret;
++
++	priv = netdev_priv(dev);
++
++	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW)
++		ret = flexcan_setup_stop_mode_scfw(pdev);
++	else if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR)
++		ret = flexcan_setup_stop_mode_gpr(pdev);
++	else
++		/* return 0 directly if doesn't support stop mode feature */
++		return 0;
++
++	if (ret)
++		return ret;
++
++	device_set_wakeup_capable(&pdev->dev, true);
++
++	if (of_property_read_bool(pdev->dev.of_node, "wakeup-source"))
++		device_set_wakeup_enable(&pdev->dev, true);
++
++	return 0;
++}
++
+ static const struct of_device_id flexcan_of_match[] = {
+ 	{ .compatible = "fsl,imx8qm-flexcan", .data = &fsl_imx8qm_devtype_data, },
+ 	{ .compatible = "fsl,imx8mp-flexcan", .data = &fsl_imx8mp_devtype_data, },
+@@ -2054,17 +2140,20 @@ static int flexcan_probe(struct platform_device *pdev)
+ 		goto failed_register;
+ 	}
+ 
++	err = flexcan_setup_stop_mode(pdev);
++	if (err < 0) {
++		if (err != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "setup stop mode failed\n");
++		goto failed_setup_stop_mode;
++	}
++
+ 	of_can_transceiver(dev);
+ 	devm_can_led_init(dev);
+ 
+-	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR) {
+-		err = flexcan_setup_stop_mode(pdev);
+-		if (err)
+-			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
+-	}
+-
+ 	return 0;
+ 
++ failed_setup_stop_mode:
++	unregister_flexcandev(dev);
+  failed_register:
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+-- 
+2.27.0
+
