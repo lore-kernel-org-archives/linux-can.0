@@ -2,41 +2,42 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2F9DC433E9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F02A0C43381
 	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 23:04:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 928E164F06
+	by mail.kernel.org (Postfix) with ESMTP id BBCF164EDD
 	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 23:04:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236269AbhBXXDy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 24 Feb 2021 18:03:54 -0500
-Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:50626 "EHLO
+        id S236283AbhBXXEA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 24 Feb 2021 18:04:00 -0500
+Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:36194 "EHLO
         libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236271AbhBXXDv (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Wed, 24 Feb 2021 18:03:51 -0500
+        id S236281AbhBXXD6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 24 Feb 2021 18:03:58 -0500
 Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
  ([87.20.116.197])
         by smtp-17.iol.local with ESMTPA
-        id F32VlxCf1lChfF32clf7Xj; Wed, 24 Feb 2021 23:53:59 +0100
+        id F32VlxCf1lChfF32Ylf7W1; Wed, 24 Feb 2021 23:53:56 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1614207239; bh=du/r059EGbu4TPhvkxNS/d6olzOblvZ4VEQuwxQdY+Y=;
+        t=1614207236; bh=6o6jDBvR5XQjgJ8BGNlWOmm64d1YNEr7t6lmSQ620tU=;
         h=From;
-        b=RbOBMX4JZ2BfUT6o3fOBK3A5/5xjwSTKHnVUGx+Da7w4DfgB3L9xQcJBmfIoVG0Ko
-         pa6jhOyxtkFeeZ48grdqXWUNMpX211R2nvRDfT0NB+A6lEiSLc/ZAugfMchFeqtdb8
-         xhPJYwbixx1uK7AR2l5sS2yJpXIB/5qU8ksMBtYoIXz0ZqGXTlyIaSrcvtj75QyzPn
-         7jlv/Ber75iVjr3212iKXmXMdaN4oz8ijQ1+ziGz2MkR/sgi3K2EokJ3rLdpGyWZQb
-         1FatfF+LvdTV8DNpO2bQcK0ifMAELGVZwzzcOLJoU06rDIQ+XjwplN6Zi/ArXLcmrW
-         OnHpYppy2dZjQ==
-X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=6036d907 cx=a_exe
- a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=Et75ynYvZpBubEpffocA:9 a=guPwXWNZSXGlnza0:21 a=TNOWAEZzmosXMk2n:21
+        b=eMZ0ljuDRUWKxtg+LRiec7AwT//WdWV8DapMtlEaTrbn3xmFeSnqYmc/m2KojXnLE
+         7o3pac8rWyodynOZ4n6q6MymMlO83caXAORJF2C0jm8C8V7CYRYNFImIpLfITzZXOI
+         nio6wM29gj9urJiiAvMQdErK5bNi0Mbj3p/5Wj/QHHshe+Wz6Dv5zua1vXUhgKMnZx
+         8R45rkF2jlJGujmU1qhNQFGSi4jAby2QavNwvUgWmK/h7X3PYhrZk75L6rT9JRdqMo
+         6EjyVRWBdezFc7isgpa78NNHgxmMfhfH7RevBaAZGVQjUVPdjKC00xyopIqdzsPoUP
+         PC0aEJ/+ClVIQ==
+X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=6036d904 cx=a_exe
+ a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17 a=gu6fZOg2AAAA:8
+ a=FCneKAZuOMEC46B4a7wA:9 a=-FEs8UIgK8oA:10 a=NWVoK91CQyQA:10
+ a=2RSlZUUhi9gRBrsHwhhZ:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
 From:   Dario Binacchi <dariobin@libero.it>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dario Binacchi <dariobin@libero.it>,
@@ -49,170 +50,49 @@ Cc:     Dario Binacchi <dariobin@libero.it>,
         YueHaibing <yuehaibing@huawei.com>,
         Zhang Qilong <zhangqilong3@huawei.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 6/6] can: c_can: add support to 64 messages objects
-Date:   Wed, 24 Feb 2021 23:52:46 +0100
-Message-Id: <20210224225246.11346-7-dariobin@libero.it>
+Subject: [PATCH 0/6] can: c_can: add support to 64 messages objects
+Date:   Wed, 24 Feb 2021 23:52:40 +0100
+Message-Id: <20210224225246.11346-1-dariobin@libero.it>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210224225246.11346-1-dariobin@libero.it>
-References: <20210224225246.11346-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfLvwxBQLCQPQhDNkT/ybW8k2/InpKU2rjXB1xggz9UHl+xJ4nzvqUNdWRbHwVJGqXr1oeh2iddosJSnI7A2RlEJwSIMvyBw7qLfCIgnlzsjMUHn0sSyu
- di9n1EoQdiMe0E1ByYKafEuus0383cJ1eWhSzHlpkOWMJXA71Mq3gOwOSyDy/29MUfHcYL1Fd+mG+iZ5PmCKtjtK6p1pNpgXLINEXeDjo4d+YbzeEUyOfv4B
- MpFqkOSaroL7ajDgG/XzwTn3E+7FihmzrklNrMvbgdaYMp/ZYKzJx5MER9AFw6l8GJm1s44ISPfQAKA19uc52NvhJg1E85EdeF8fBRgdfV7S4++q7/g3NiAq
- qIldyhtLoyWvQNdOZPIQdY/MZQzkOJQYPQGw+Tkab1HMdLDiieCM89sYzwJtFpnDYqk4qtEohhsizQMPTh4kLOqnzzKhlC4I7ptxq3UxUuwqNG4hkhjacdYC
- YQ4IhEvB+LJPFSFx6N2OqQz/etU8MHxYygZQ8nipTmQgE4zWTifoZSoNv22I8QjXiktV4V33ztx3BJFVI00YfE7anWbPow8v4QE0/dq5sbihe6mlneZLnvIQ
- +ioTR/+hJQmSnSYKhjI+NipO
+X-CMAE-Envelope: MS4xfMOLlCecWLvUGrZ7U5u1wIQsmh8zYjADupowNCTunlqn3AYJ7cx8lPJ5yDyX/ogisOrWL37tzz2APPsamdAFFz7RVfq6ILVDTaGTkwAYAyYMKMmju+Xq
+ ePNcq/wACcZ5kKxR5dJ/AUMgfJ+odwsBZqSD9gsmUVWbH4CAHg5j+lllLg14qWp1UytCf11ESQZ9TGbEvW+asfU2+au/UIyKp0/jI6vrbaM14GyH9hmXLChT
+ hbjtTFRt8arwVuXsjGfMkIaxiROIHm0WWNye3GNqan2EKzOpJYsNlqs5qxrUekH3XvGqbyJ24Nh6wvDi5OOEV+aiMqVZCnI0yqo6HEUBPgfXEgQMqmM/+mNw
+ +dfF8VhFQabo+sb2C3hUcatQCudUvCfQfP8FHZNWtYYNeHB28eap5vmwElBfxDp6K5ognpcMr4+bH3+cLstLS4RLve3UpUIFsQ3407/G77JTxlJdGFBkB956
+ tds9OXOuvwXkUZVkO+Hh0mnH+o0ZhN6aL2/r9uHb/m9QFn8+yGLg1u7aOvAa4NEBjIg/Id48aGuWTa11wQpx9/0mNjF4nOZM7PrjoLZdbJo3Uifc/lJzkJ/c
+ aLniYsX/CbTlG5xsV7fqGUKQ
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-D_CAN controller supports 16, 32, 64 or 128 messages objects, comparing
-to 32 on C_CAN.
-AM335x/AM437x Sitara processors and DRA7 SOC all instantiate a D_CAN
-controller with 64 message objects, as described in the "DCAN features"
-subsection of the CAN chapter of their technical reference manuals.
 
-The driver policy has been kept unchanged, and as in the previous
-version, the first half of the message objects is used for reception and
-the second for transmission.
+The D_CAN controller supports up to 128 messages. Until now the driver
+only managed 32 messages although Sitara processors and DRA7 SOC can
+handle 64.
 
-The I/O load is increased only in the case of 64 message objects,
-keeping it unchanged in the case of 32. Two 32-bit read accesses are in
-fact required, which however remained at 16-bit for configurations with
-32 message objects.
+The series was tested on a beaglebone board.
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+Note:
+I have not changed the type of tx_field (belonging to the c_can_priv
+structure) to atomic64_t because I think the atomic_t type has size
+of at least 32 bits on x86 and arm, which is enough to handle 64
+messages.
+http://marc.info/?l=linux-can&m=139746476821294&w=2 reports the results
+of tests performed just on x86 and arm architectures.
 
----
 
- drivers/net/can/c_can/c_can.c          | 19 +++++++++++--------
- drivers/net/can/c_can/c_can.h          |  5 +++--
- drivers/net/can/c_can/c_can_platform.c |  6 +++++-
- 3 files changed, 19 insertions(+), 11 deletions(-)
+Dario Binacchi (6):
+  can: c_can: remove unused code
+  can: c_can: fix indentation
+  can: c_can: fix control interface used by c_can_do_tx
+  can: c_can: use 32-bit write to set arbitration register
+  can: c_can: prepare to up the message objects number
+  can: c_can: add support to 64 messages objects
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 772b26685fea..3429eab5ac7d 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -723,8 +723,12 @@ static void c_can_do_tx(struct net_device *dev)
- 	struct net_device_stats *stats = &dev->stats;
- 	u32 idx, obj, pkts = 0, bytes = 0, pend, clr;
- 
--	clr = pend = priv->read_reg(priv, C_CAN_INTPND2_REG);
-+	if (priv->msg_obj_tx_last > 32)
-+		pend = priv->read_reg32(priv, C_CAN_INTPND3_REG);
-+	else
-+		pend = priv->read_reg(priv, C_CAN_INTPND2_REG);
- 
-+	clr = pend;
- 	while ((idx = ffs(pend))) {
- 		idx--;
- 		pend &= ~(1 << idx);
-@@ -834,7 +838,12 @@ static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
- 
- static inline u32 c_can_get_pending(struct c_can_priv *priv)
- {
--	u32 pend = priv->read_reg(priv, C_CAN_NEWDAT1_REG);
-+	u32 pend;
-+
-+	if (priv->msg_obj_rx_last > 16)
-+		pend = priv->read_reg32(priv, C_CAN_NEWDAT1_REG);
-+	else
-+		pend = priv->read_reg(priv, C_CAN_NEWDAT1_REG);
- 
- 	return pend;
- }
-@@ -856,12 +865,6 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
- 	struct c_can_priv *priv = netdev_priv(dev);
- 	u32 pkts = 0, pend = 0, toread, n;
- 
--	/*
--	 * It is faster to read only one 16bit register. This is only possible
--	 * for a maximum number of 16 objects.
--	 */
--	WARN_ON(priv->msg_obj_rx_last > 16);
--
- 	while (quota > 0) {
- 		if (!pend) {
- 			pend = c_can_get_pending(priv);
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 1dbe777320f5..7cf92a576d4a 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -22,8 +22,6 @@
- #ifndef C_CAN_H
- #define C_CAN_H
- 
--#define C_CAN_NO_OF_OBJECTS	32
--
- enum reg {
- 	C_CAN_CTRL_REG = 0,
- 	C_CAN_CTRL_EX_REG,
-@@ -61,6 +59,7 @@ enum reg {
- 	C_CAN_NEWDAT2_REG,
- 	C_CAN_INTPND1_REG,
- 	C_CAN_INTPND2_REG,
-+	C_CAN_INTPND3_REG,
- 	C_CAN_MSGVAL1_REG,
- 	C_CAN_MSGVAL2_REG,
- 	C_CAN_FUNCTION_REG,
-@@ -122,6 +121,7 @@ static const u16 __maybe_unused reg_map_d_can[] = {
- 	[C_CAN_NEWDAT2_REG]	= 0x9E,
- 	[C_CAN_INTPND1_REG]	= 0xB0,
- 	[C_CAN_INTPND2_REG]	= 0xB2,
-+	[C_CAN_INTPND3_REG]	= 0xB4,
- 	[C_CAN_MSGVAL1_REG]	= 0xC4,
- 	[C_CAN_MSGVAL2_REG]	= 0xC6,
- 	[C_CAN_IF1_COMREQ_REG]	= 0x100,
-@@ -161,6 +161,7 @@ struct raminit_bits {
- 
- struct c_can_driver_data {
- 	enum c_can_dev_id id;
-+	int msg_obj_num;
- 
- 	/* RAMINIT register description. Optional. */
- 	const struct raminit_bits *raminit_bits; /* Array of START/DONE bit positions */
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index a5b9b1a93702..87a145b67a2f 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -192,10 +192,12 @@ static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
- 
- static const struct c_can_driver_data c_can_drvdata = {
- 	.id = BOSCH_C_CAN,
-+	.msg_obj_num = 32,
- };
- 
- static const struct c_can_driver_data d_can_drvdata = {
- 	.id = BOSCH_D_CAN,
-+	.msg_obj_num = 32,
- };
- 
- static const struct raminit_bits dra7_raminit_bits[] = {
-@@ -205,6 +207,7 @@ static const struct raminit_bits dra7_raminit_bits[] = {
- 
- static const struct c_can_driver_data dra7_dcan_drvdata = {
- 	.id = BOSCH_D_CAN,
-+	.msg_obj_num = 64,
- 	.raminit_num = ARRAY_SIZE(dra7_raminit_bits),
- 	.raminit_bits = dra7_raminit_bits,
- 	.raminit_pulse = true,
-@@ -217,6 +220,7 @@ static const struct raminit_bits am3352_raminit_bits[] = {
- 
- static const struct c_can_driver_data am3352_dcan_drvdata = {
- 	.id = BOSCH_D_CAN,
-+	.msg_obj_num = 64,
- 	.raminit_num = ARRAY_SIZE(am3352_raminit_bits),
- 	.raminit_bits = am3352_raminit_bits,
- };
-@@ -293,7 +297,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	}
- 
- 	/* allocate the c_can device */
--	dev = alloc_c_can_dev(C_CAN_NO_OF_OBJECTS);
-+	dev = alloc_c_can_dev(drvdata->msg_obj_num);
- 	if (!dev) {
- 		ret = -ENOMEM;
- 		goto exit;
+ drivers/net/can/c_can/c_can.c          | 83 ++++++++++++++++----------
+ drivers/net/can/c_can/c_can.h          | 32 ++++------
+ drivers/net/can/c_can/c_can_platform.c |  6 +-
+ 3 files changed, 69 insertions(+), 52 deletions(-)
+
 -- 
 2.17.1
 
