@@ -2,141 +2,92 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ADE3C433E0
-	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 21:15:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BA2BC433DB
+	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 23:00:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0553B64EFA
-	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 21:15:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B3FE864F03
+	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 23:00:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233251AbhBXVPO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 24 Feb 2021 16:15:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232623AbhBXVPN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 24 Feb 2021 16:15:13 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F41C06174A
-        for <linux-can@vger.kernel.org>; Wed, 24 Feb 2021 13:14:33 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lF1UE-00078Y-RH; Wed, 24 Feb 2021 22:14:22 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:55fd:a17b:b4ca:d5fb])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id C3D555E8908;
-        Wed, 24 Feb 2021 21:14:19 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 22:14:18 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
+        id S235980AbhBXW77 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 24 Feb 2021 17:59:59 -0500
+Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:53609 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235521AbhBXW77 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 24 Feb 2021 17:59:59 -0500
+X-Greylist: delayed 315 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Feb 2021 17:59:58 EST
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([87.20.116.197])
+        by smtp-17.iol.local with ESMTPA
+        id F32VlxCf1lChfF32alf7Wj; Wed, 24 Feb 2021 23:53:57 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1614207237; bh=jl5f1tB4px5StQFU2IVlCyd+HEkDPcfvymDiEqyycck=;
+        h=From;
+        b=If68/0AU94kxip7M4BMxD3MPCKMtlkY6j/abeD6HENhJLGFj4iJiTYYG3QYXTOEEH
+         HRzWTx9ukxazpye0HW5PT7aOrInQE0buYvl3gpp/GtHV+pgFmmMjl8m6GZxS1emkzS
+         uD9BhAa8R0E0BoKt9zfb3HFPdu0yFt3C22sjfoXmQURENaqYZOJmVRvW2HG8XCVWuy
+         bnqeX6RuInV8GQEJ0N8j8YuCYmT4KW+ST7HyexNRfM9NBkR+gAq06qRJ+UGIrsbz6j
+         cr/yK4ugshI60cYm/ivZNZJqCkMHruXI8049mPH3L7j7slSlBkIVF/F2w7KqfQsGA5
+         tvIZRtrHrsc6Q==
+X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=6036d905 cx=a_exe
+ a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
+ a=AkCzXzlJzD4X874_W7gA:9
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Andre Naujoks <nautsch2@gmail.com>, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net v3 1/1] can: can_skb_set_owner(): fix ref counting if
- socket was closed before setting skb ownership
-Message-ID: <20210224211418.74dltgabq2rpfuf2@pengutronix.de>
-References: <20210224075932.20234-1-o.rempel@pengutronix.de>
- <CANn89iLEHpCphH8vKd=0BS7pgdP1YZDGqQfQPeGBkD09RoHtzg@mail.gmail.com>
- <76ec5c10-c051-7a52-9ae7-04af79a0e9e5@hartkopp.net>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dnjabxnrhdo3b7pb"
-Content-Disposition: inline
-In-Reply-To: <76ec5c10-c051-7a52-9ae7-04af79a0e9e5@hartkopp.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 2/6] can: c_can: fix indentation
+Date:   Wed, 24 Feb 2021 23:52:42 +0100
+Message-Id: <20210224225246.11346-3-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210224225246.11346-1-dariobin@libero.it>
+References: <20210224225246.11346-1-dariobin@libero.it>
+X-CMAE-Envelope: MS4xfJkuawPBeIAI7RvLQt2PqRPk8oryQV6eJXSBCTbyPJNMKZ5EydhRp9g3DZXGMF1HSBWwV4zzACoFYMCty3ptPV7UMmluayJhF940XCkOjbucwpIKmNGn
+ Jz6vyFim9ORgc1NHfEK0rPUbZ5BzSqMd+KRA6yCYCqpYymkntrqekdKlbOR1Oqzb2+wRXyv8hLOLNIu6ht3N0yiT1GoaxnN4q92wevNtJTKgnPZep19Uk5Q8
+ CmOHFHzPxR5cgis75WP/k3R91/eV+cPbuWj4rx6b7rhAtelhX35PmCk9mBe6NY+ZJDsOGGkOV2Q9a+N/URJHrsup2+w/74kqYwo4vBjNFPD+X4rk3g8eXp2F
+ j+/dN4lW+YXFYsSXQt7ueY6Xl07vbsszPhunCWYg8igatipAvnGkfdnOiX+DfO+3b4+iOLm+J+9bddtiyOPl/RiYFSzHC9WbQd181tAl/rl5wNhI/nx3Vkpd
+ g6VVg+2mTUI2eMTOoKkh1I75rAGabjXkm/kwbPHHnItx/2rSebPZwZRklpiNY+F0OS+jNu9wALZczKXhInrDJgKWVCEb6NrigBhMjmu3SzoUMLUDC/gWrxPK
+ x/yAFo3hC1S8HehAPnqZE+nd
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Commit 524369e2391f ("can: c_can: remove obsolete STRICT_FRAME_ORDERING Kconfig option")
+left behind wrong indentation, fix it.
 
---dnjabxnrhdo3b7pb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
+---
 
-On 24.02.2021 21:32:29, Oliver Hartkopp wrote:
-> > > To fix this problem, only set skb ownership to sockets which have sti=
-ll
-> > > a ref count > 0.
-> > >=20
-> > > Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-> > > Cc: Andre Naujoks <nautsch2@gmail.com>
-> > > Suggested-by: Eric Dumazet <edumazet@google.com>
-> > > Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> >=20
-> > SGTM
-> >=20
-> > Reviewed-by: Eric Dumazet <edumazet@google.com>
-> >=20
-> > > ---
-> > >   include/linux/can/skb.h | 3 +--
-> > >   1 file changed, 1 insertion(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-> > > index 685f34cfba20..655f33aa99e3 100644
-> > > --- a/include/linux/can/skb.h
-> > > +++ b/include/linux/can/skb.h
-> > > @@ -65,8 +65,7 @@ static inline void can_skb_reserve(struct sk_buff *=
-skb)
-> > >=20
-> > >   static inline void can_skb_set_owner(struct sk_buff *skb, struct so=
-ck *sk)
-> > >   {
-> > > -       if (sk) {
-> > > -               sock_hold(sk);
->=20
-> Although the commit message gives a comprehensive reason for this patch: =
-Can
-> you please add some comment here as I do not think the use of
-> refcount_inc_not_zero() makes clear what is checked here.
+ drivers/net/can/c_can/c_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Good point. What about:
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index a962ceefd44a..dbcc1c1c92d6 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -786,7 +786,7 @@ static u32 c_can_adjust_pending(u32 pend)
+ static inline void c_can_rx_object_get(struct net_device *dev,
+ 				       struct c_can_priv *priv, u32 obj)
+ {
+-		c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
++	c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
+ }
+ 
+ static inline void c_can_rx_finalize(struct net_device *dev,
+-- 
+2.17.1
 
-If the socket has already been closed by user space, the refcount may
-already be 0 (and the socket will be freed after the last TX skb has
-been freed). So only increase socket refcount if the refcount is > 0.
-
-regards
-Marc
-
-P.S.: Have you had time to look at my ISOTOP RFC patch?
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---dnjabxnrhdo3b7pb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA2waYACgkQqclaivrt
-76nYUAf/RrC5ym0WGkJahDL9D9tdBge7At8Sl8OywoWTczF1RKFmTf+rYh+QZryN
-4/8Oyu+FNUIsKueWAukyE9cEzuja9K7RjGHD8j8JlUKxDZtfei9PrXEZh2QqRrAk
-A9rt1Uy9KaHPDAmn9O79gpgbd7/Zaopyz4X8u4lzusibVJD0PoQcAOgC3E7MERZK
-7/FvUYNzePRSGydOFEKCrcwIcxl7zWHIyQGLeioTCWwzqdLGyBn3wTY44fuhuBYE
-uMYY59ePaZk8OIG7YXhgJMtwstiXCEhSUnFINivQcg9va3FnsvBKSxYnInje5S2W
-O0EO83ZMmDTs8XIJZQL55MScMZKtHg==
-=qiPV
------END PGP SIGNATURE-----
-
---dnjabxnrhdo3b7pb--
