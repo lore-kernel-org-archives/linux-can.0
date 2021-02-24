@@ -2,137 +2,208 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2785EC433E0
-	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:07:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2681C4332B
+	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:08:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D99C164DBD
-	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:07:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C84064DAF
+	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:08:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbhBXBGg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 23 Feb 2021 20:06:36 -0500
-Received: from mail-yb1-f174.google.com ([209.85.219.174]:39955 "EHLO
-        mail-yb1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234737AbhBXAGl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Feb 2021 19:06:41 -0500
-Received: by mail-yb1-f174.google.com with SMTP id c131so52208ybf.7
-        for <linux-can@vger.kernel.org>; Tue, 23 Feb 2021 16:06:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ob1ifamVEUqkO6WMYRQn8pEi+9UY+qX/obk03BohRww=;
-        b=BesWqDH0FEFPSKbiT+WDiNyOeTuiydvWvKvpqu92OjWzgO84cYtaQrkEppqOUGHDhG
-         G1m++yvtWlgmt+ajdR3GB1wrSjaB4MpitxmD3vBokmLtOXH1CbaYDeHAEsUHiizh9Fa7
-         a8AFxwUAmwrOjlRNFVnxZinpeSw6Zv+Hht/A0zOA3NbSEewGsFlpwSbyqKGL+r7D6nh6
-         11uCBa6YqTuwWv8m5k/q3UvBvFgISE/3YKzhAOlYCABHunH5dTVFaHHqmnHBEP1o6lwz
-         ssG0ss2CFheW/n7WHzWc0/lyK3fl8TIpVQwpyhUKsxu/YFX5ilI4ojLNPAc6TaCUv6SW
-         iZEQ==
-X-Gm-Message-State: AOAM531unSvJ6adnx/82+0oKD9YN5TW5jtJZfzSj9F/BUcH6KlAHdKlv
-        +0r3JhT7ChTtGZsA+TqlB61iI8DCRTaTFdY6ioQ=
-X-Google-Smtp-Source: ABdhPJz7RMLAo4gdXl1OtLnIurrOAVTegTAYb8tfVLru7Rmw/iTBb7VdFSEPhIVcJJbhPZvfDmZaseeIabjq4XbUNEI=
-X-Received: by 2002:a25:850f:: with SMTP id w15mr43859054ybk.487.1614125159144;
- Tue, 23 Feb 2021 16:05:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20210223162852.218041-1-mailhol.vincent@wanadoo.fr>
- <20210223162852.218041-4-mailhol.vincent@wanadoo.fr> <20210223194730.mswiinbzwuo26bt6@pengutronix.de>
-In-Reply-To: <20210223194730.mswiinbzwuo26bt6@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 24 Feb 2021 09:05:48 +0900
-Message-ID: <CAMZ6RqKhA=iNuiCJ3_Sv3kmrv=bfzVSWnQ_1KSu6ryLaL=J-uQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/5] can: netlink: move '=' operators back to previous
- line (checkpatch fix)
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Wolfgang Grandegger <wg@grandegger.com>,
+        id S233629AbhBXBHo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 23 Feb 2021 20:07:44 -0500
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:36969 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234944AbhBXAXt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Feb 2021 19:23:49 -0500
+Received: from localhost.localdomain ([153.202.107.157])
+        by mwinf5d12 with ME
+        id YoMr240043PnFJp03oMuXJ; Wed, 24 Feb 2021 01:21:56 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 24 Feb 2021 01:21:56 +0100
+X-ME-IP: 153.202.107.157
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH v2 2/5] can: dev: reorder struct can_priv members for better packing
+Date:   Wed, 24 Feb 2021 09:20:05 +0900
+Message-Id: <20210224002008.4158-3-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210224002008.4158-1-mailhol.vincent@wanadoo.fr>
+References: <20210224002008.4158-1-mailhol.vincent@wanadoo.fr>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Marc,
+Save eight bytes of holes on x86-64 architectures by reordering struct
+can_priv members.
 
-On Wed. 24 Feb 2021 at 04:47, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->
-> On 24.02.2021 01:28:50, Vincent Mailhol wrote:
-> > Fix the warning triggered by having an '=' at the beginning of the
-> > line and add one indentation to fix the alignment.
-> >
-> > Extract of ./scripts/checkpatch.pl -f drivers/net/can/dev/netlink.c:
-> >
-> > CHECK: Assignment operator '=' should be on the previous line
-> > +       [IFLA_CAN_BITTIMING_CONST]
-> > +                               = { .len = sizeof(struct can_bittiming_const) },
-> >
-> > CHECK: Assignment operator '=' should be on the previous line
-> > +       [IFLA_CAN_DATA_BITTIMING]
-> > +                               = { .len = sizeof(struct can_bittiming) },
-> >
-> > CHECK: Assignment operator '=' should be on the previous line
-> > +       [IFLA_CAN_DATA_BITTIMING_CONST]
-> > +                               = { .len = sizeof(struct can_bittiming_const) },
-> >
-> > Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> > ---
-> >  drivers/net/can/dev/netlink.c | 26 ++++++++++++--------------
-> >  1 file changed, 12 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> > index 867f6be31230..75851fab7ff5 100644
-> > --- a/drivers/net/can/dev/netlink.c
-> > +++ b/drivers/net/can/dev/netlink.c
-> > @@ -8,20 +8,18 @@
-> >  #include <net/rtnetlink.h>
-> >
-> >  static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
-> > -     [IFLA_CAN_STATE]        = { .type = NLA_U32 },
-> > -     [IFLA_CAN_CTRLMODE]     = { .len = sizeof(struct can_ctrlmode) },
-> > -     [IFLA_CAN_RESTART_MS]   = { .type = NLA_U32 },
-> > -     [IFLA_CAN_RESTART]      = { .type = NLA_U32 },
-> > -     [IFLA_CAN_BITTIMING]    = { .len = sizeof(struct can_bittiming) },
-> > -     [IFLA_CAN_BITTIMING_CONST]
-> > -                             = { .len = sizeof(struct can_bittiming_const) },
-> > -     [IFLA_CAN_CLOCK]        = { .len = sizeof(struct can_clock) },
-> > -     [IFLA_CAN_BERR_COUNTER] = { .len = sizeof(struct can_berr_counter) },
-> > -     [IFLA_CAN_DATA_BITTIMING]
-> > -                             = { .len = sizeof(struct can_bittiming) },
-> > -     [IFLA_CAN_DATA_BITTIMING_CONST]
-> > -                             = { .len = sizeof(struct can_bittiming_const) },
-> > -     [IFLA_CAN_TERMINATION]  = { .type = NLA_U16 },
->
-> What about having only one space before and after the "="? Otherwise if
-> another entry is added wich is longer, the aligning would be broken again...
+Before:
 
-Yes sir!
+$ pahole -C can_priv drivers/net/can/dev/dev.o
+struct can_priv {
+	struct net_device *        dev;                  /*     0     8 */
+	struct can_device_stats    can_stats;            /*     8    24 */
+	struct can_bittiming       bittiming;            /*    32    32 */
+	/* --- cacheline 1 boundary (64 bytes) --- */
+	struct can_bittiming       data_bittiming;       /*    64    32 */
+	const struct can_bittiming_const  * bittiming_const; /*    96     8 */
+	const struct can_bittiming_const  * data_bittiming_const; /*   104     8 */
+	struct can_tdc             tdc;                  /*   112    12 */
 
-I do not have a strong preference between one style or the
-other. Will resend the patch with a single space instead of
-tabulations.
+	/* XXX 4 bytes hole, try to pack */
 
-> > +     [IFLA_CAN_STATE]                = { .type = NLA_U32 },
-> > +     [IFLA_CAN_CTRLMODE]             = { .len = sizeof(struct can_ctrlmode) },
-> > +     [IFLA_CAN_RESTART_MS]           = { .type = NLA_U32 },
-> > +     [IFLA_CAN_RESTART]              = { .type = NLA_U32 },
-> > +     [IFLA_CAN_BITTIMING]            = { .len = sizeof(struct can_bittiming) },
-> > +     [IFLA_CAN_BITTIMING_CONST]      = { .len = sizeof(struct can_bittiming_const) },
-> > +     [IFLA_CAN_CLOCK]                = { .len = sizeof(struct can_clock) },
-> > +     [IFLA_CAN_BERR_COUNTER]         = { .len = sizeof(struct can_berr_counter) },
-> > +     [IFLA_CAN_DATA_BITTIMING]       = { .len = sizeof(struct can_bittiming) },
-> > +     [IFLA_CAN_DATA_BITTIMING_CONST] = { .len = sizeof(struct can_bittiming_const) },
-> > +     [IFLA_CAN_TERMINATION]          = { .type = NLA_U16 },
-> > +     [IFLA_CAN_TERMINATION]          = { .type = NLA_U16 },
-> >  };
->
-> Marc
->
-> --
-> Pengutronix e.K.                 | Marc Kleine-Budde           |
-> Embedded Linux                   | https://www.pengutronix.de  |
-> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+	/* --- cacheline 2 boundary (128 bytes) --- */
+	const struct can_tdc_const  * tdc_const;         /*   128     8 */
+	const u16  *               termination_const;    /*   136     8 */
+	unsigned int               termination_const_cnt; /*   144     4 */
+	u16                        termination;          /*   148     2 */
+
+	/* XXX 2 bytes hole, try to pack */
+
+	const u32  *               bitrate_const;        /*   152     8 */
+	unsigned int               bitrate_const_cnt;    /*   160     4 */
+
+	/* XXX 4 bytes hole, try to pack */
+
+	const u32  *               data_bitrate_const;   /*   168     8 */
+	unsigned int               data_bitrate_const_cnt; /*   176     4 */
+	u32                        bitrate_max;          /*   180     4 */
+	struct can_clock           clock;                /*   184     4 */
+	enum can_state             state;                /*   188     4 */
+	/* --- cacheline 3 boundary (192 bytes) --- */
+	u32                        ctrlmode;             /*   192     4 */
+	u32                        ctrlmode_supported;   /*   196     4 */
+	u32                        ctrlmode_static;      /*   200     4 */
+	int                        restart_ms;           /*   204     4 */
+	struct delayed_work        restart_work;         /*   208   168 */
+
+	/* XXX last struct has 4 bytes of padding */
+
+	/* --- cacheline 5 boundary (320 bytes) was 56 bytes ago --- */
+	int                        (*do_set_bittiming)(struct net_device *); /*   376     8 */
+	/* --- cacheline 6 boundary (384 bytes) --- */
+	int                        (*do_set_data_bittiming)(struct net_device *); /*   384     8 */
+	int                        (*do_set_mode)(struct net_device *, enum can_mode); /*   392     8 */
+	int                        (*do_set_termination)(struct net_device *, u16); /*   400     8 */
+	int                        (*do_get_state)(const struct net_device  *, enum can_state *); /*   408     8 */
+	int                        (*do_get_berr_counter)(const struct net_device  *, struct can_berr_counter *); /*   416     8 */
+	unsigned int               echo_skb_max;         /*   424     4 */
+
+	/* XXX 4 bytes hole, try to pack */
+
+	struct sk_buff * *         echo_skb;             /*   432     8 */
+
+	/* size: 440, cachelines: 7, members: 31 */
+	/* sum members: 426, holes: 4, sum holes: 14 */
+	/* paddings: 1, sum paddings: 4 */
+	/* last cacheline: 56 bytes */
+};
+
+After:
+
+$ pahole -C can_priv drivers/net/can/dev/dev.o
+struct can_priv {
+	struct net_device *        dev;                  /*     0     8 */
+	struct can_device_stats    can_stats;            /*     8    24 */
+	const struct can_bittiming_const  * bittiming_const; /*    32     8 */
+	const struct can_bittiming_const  * data_bittiming_const; /*    40     8 */
+	struct can_bittiming       bittiming;            /*    48    32 */
+	/* --- cacheline 1 boundary (64 bytes) was 16 bytes ago --- */
+	struct can_bittiming       data_bittiming;       /*    80    32 */
+	const struct can_tdc_const  * tdc_const;         /*   112     8 */
+	struct can_tdc             tdc;                  /*   120    12 */
+	/* --- cacheline 2 boundary (128 bytes) was 4 bytes ago --- */
+	unsigned int               bitrate_const_cnt;    /*   132     4 */
+	const u32  *               bitrate_const;        /*   136     8 */
+	const u32  *               data_bitrate_const;   /*   144     8 */
+	unsigned int               data_bitrate_const_cnt; /*   152     4 */
+	u32                        bitrate_max;          /*   156     4 */
+	struct can_clock           clock;                /*   160     4 */
+	unsigned int               termination_const_cnt; /*   164     4 */
+	const u16  *               termination_const;    /*   168     8 */
+	u16                        termination;          /*   176     2 */
+
+	/* XXX 2 bytes hole, try to pack */
+
+	enum can_state             state;                /*   180     4 */
+	u32                        ctrlmode;             /*   184     4 */
+	u32                        ctrlmode_supported;   /*   188     4 */
+	/* --- cacheline 3 boundary (192 bytes) --- */
+	u32                        ctrlmode_static;      /*   192     4 */
+	int                        restart_ms;           /*   196     4 */
+	struct delayed_work        restart_work;         /*   200   168 */
+
+	/* XXX last struct has 4 bytes of padding */
+
+	/* --- cacheline 5 boundary (320 bytes) was 48 bytes ago --- */
+	int                        (*do_set_bittiming)(struct net_device *); /*   368     8 */
+	int                        (*do_set_data_bittiming)(struct net_device *); /*   376     8 */
+	/* --- cacheline 6 boundary (384 bytes) --- */
+	int                        (*do_set_mode)(struct net_device *, enum can_mode); /*   384     8 */
+	int                        (*do_set_termination)(struct net_device *, u16); /*   392     8 */
+	int                        (*do_get_state)(const struct net_device  *, enum can_state *); /*   400     8 */
+	int                        (*do_get_berr_counter)(const struct net_device  *, struct can_berr_counter *); /*   408     8 */
+	unsigned int               echo_skb_max;         /*   416     4 */
+
+	/* XXX 4 bytes hole, try to pack */
+
+	struct sk_buff * *         echo_skb;             /*   424     8 */
+
+	/* size: 432, cachelines: 7, members: 31 */
+	/* sum members: 426, holes: 2, sum holes: 6 */
+	/* paddings: 1, sum paddings: 4 */
+	/* last cacheline: 48 bytes */
+};
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+ include/linux/can/dev.h | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 4795da0eb949..27b275e463da 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -39,22 +39,23 @@ struct can_priv {
+ 	struct net_device *dev;
+ 	struct can_device_stats can_stats;
+ 
+-	struct can_bittiming bittiming, data_bittiming;
+ 	const struct can_bittiming_const *bittiming_const,
+ 		*data_bittiming_const;
+-	struct can_tdc tdc;
++	struct can_bittiming bittiming, data_bittiming;
+ 	const struct can_tdc_const *tdc_const;
++	struct can_tdc tdc;
+ 
+-	const u16 *termination_const;
+-	unsigned int termination_const_cnt;
+-	u16 termination;
+-	const u32 *bitrate_const;
+ 	unsigned int bitrate_const_cnt;
++	const u32 *bitrate_const;
+ 	const u32 *data_bitrate_const;
+ 	unsigned int data_bitrate_const_cnt;
+ 	u32 bitrate_max;
+ 	struct can_clock clock;
+ 
++	unsigned int termination_const_cnt;
++	const u16 *termination_const;
++	u16 termination;
++
+ 	enum can_state state;
+ 
+ 	/* CAN controller features - see include/uapi/linux/can/netlink.h */
+-- 
+2.26.2
+
