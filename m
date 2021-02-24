@@ -7,24 +7,24 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF28FC433E0
-	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:08:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02ADEC43381
+	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:08:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6F69264EC8
-	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:08:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C7CAB60231
+	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:08:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbhBXBHj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 23 Feb 2021 20:07:39 -0500
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:57380 "EHLO
+        id S233654AbhBXBHs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 23 Feb 2021 20:07:48 -0500
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:51130 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234910AbhBXAXH (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Feb 2021 19:23:07 -0500
+        with ESMTP id S233918AbhBXAfU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Feb 2021 19:35:20 -0500
 Received: from localhost.localdomain ([153.202.107.157])
         by mwinf5d12 with ME
-        id YoMB240033PnFJp03oMFT0; Wed, 24 Feb 2021 01:21:18 +0100
+        id YoNW240083PnFJp03oNcc5; Wed, 24 Feb 2021 01:22:39 +0100
 X-ME-Helo: localhost.localdomain
 X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 24 Feb 2021 01:21:18 +0100
+X-ME-Date: Wed, 24 Feb 2021 01:22:39 +0100
 X-ME-IP: 153.202.107.157
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -32,9 +32,9 @@ To:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Oliver Hartkopp <socketcan@hartkopp.net>
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2 1/5] can: add new CAN FD bittiming parameters: Transmitter Delay Compensation (TDC)
-Date:   Wed, 24 Feb 2021 09:20:04 +0900
-Message-Id: <20210224002008.4158-2-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v2 3/5] can: netlink: move '=' operators back to previous line (checkpatch fix)
+Date:   Wed, 24 Feb 2021 09:20:06 +0900
+Message-Id: <20210224002008.4158-4-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210224002008.4158-1-mailhol.vincent@wanadoo.fr>
 References: <20210224002008.4158-1-mailhol.vincent@wanadoo.fr>
@@ -44,140 +44,66 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-At high bit rates, the propagation delay from the TX pin to the RX pin
-of the transceiver causes measurement errors: the sample point on the
-RX pin might occur on the previous bit.
+Fix the warning triggered by having an '=' at the beginning of the
+line by moving it back to the previous line. Also replace all
+indentations with a single space so that future entries can be more
+easily added.
 
-This issue is addressed in ISO 11898-1 section 11.3.3 "Transmitter
-delay compensation" (TDC).
+Extract of ./scripts/checkpatch.pl -f drivers/net/can/dev/netlink.c:
 
-This patch adds two new structures: can_tdc and can_tdc_const in order
-to implement this TDC.
+CHECK: Assignment operator '=' should be on the previous line
++       [IFLA_CAN_BITTIMING_CONST]
++                               = { .len = sizeof(struct can_bittiming_const) },
 
-The structures are then added to can_priv.
+CHECK: Assignment operator '=' should be on the previous line
++       [IFLA_CAN_DATA_BITTIMING]
++                               = { .len = sizeof(struct can_bittiming) },
 
-A controller supports TDC if an only if can_priv::tdc_const is not
-NULL.
-
-TDC is active if and only if:
-  - fd flag is on
-  - can_priv::tdc.tdco is not zero.
-It is the driver responsibility to check those two conditions are met.
-
-No new controller modes are introduced (i.e. no CAN_CTRL_MODE_TDC) in
-order not to be redundant with above logic.
-
-The names of the parameters are chosen to match existing CAN
-controllers specification. References:
-  - Bosch C_CAN FD8:
-https://www.bosch-semiconductors.com/media/ip_modules/pdf_2/c_can_fd8/users_manual_c_can_fd8_r210_1.pdf
-  - Microchip CAN FD Controller Module:
-http://ww1.microchip.com/downloads/en/DeviceDoc/MCP251XXFD-CAN-FD-Controller-Module-Family-Reference-Manual-20005678B.pdf
-  - SAM E701/S70/V70/V71 Family:
-https://www.mouser.com/datasheet/2/268/60001527A-1284321.pdf
+CHECK: Assignment operator '=' should be on the previous line
++       [IFLA_CAN_DATA_BITTIMING_CONST]
++                               = { .len = sizeof(struct can_bittiming_const) },
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- include/linux/can/bittiming.h | 65 +++++++++++++++++++++++++++++++++++
- include/linux/can/dev.h       |  3 ++
- 2 files changed, 68 insertions(+)
+ drivers/net/can/dev/netlink.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 707575c668f4..91bf9f8926a7 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -1,5 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /* Copyright (c) 2020 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
-+ * Copyright (c) 2021 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-  */
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 867f6be31230..c19eef775ec8 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -8,20 +8,17 @@
+ #include <net/rtnetlink.h>
  
- #ifndef _CAN_BITTIMING_H
-@@ -10,6 +11,70 @@
+ static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
+-	[IFLA_CAN_STATE]	= { .type = NLA_U32 },
+-	[IFLA_CAN_CTRLMODE]	= { .len = sizeof(struct can_ctrlmode) },
+-	[IFLA_CAN_RESTART_MS]	= { .type = NLA_U32 },
+-	[IFLA_CAN_RESTART]	= { .type = NLA_U32 },
+-	[IFLA_CAN_BITTIMING]	= { .len = sizeof(struct can_bittiming) },
+-	[IFLA_CAN_BITTIMING_CONST]
+-				= { .len = sizeof(struct can_bittiming_const) },
+-	[IFLA_CAN_CLOCK]	= { .len = sizeof(struct can_clock) },
+-	[IFLA_CAN_BERR_COUNTER]	= { .len = sizeof(struct can_berr_counter) },
+-	[IFLA_CAN_DATA_BITTIMING]
+-				= { .len = sizeof(struct can_bittiming) },
+-	[IFLA_CAN_DATA_BITTIMING_CONST]
+-				= { .len = sizeof(struct can_bittiming_const) },
+-	[IFLA_CAN_TERMINATION]	= { .type = NLA_U16 },
++	[IFLA_CAN_STATE] = { .type = NLA_U32 },
++	[IFLA_CAN_CTRLMODE] = { .len = sizeof(struct can_ctrlmode) },
++	[IFLA_CAN_RESTART_MS] = { .type = NLA_U32 },
++	[IFLA_CAN_RESTART] = { .type = NLA_U32 },
++	[IFLA_CAN_BITTIMING] = { .len = sizeof(struct can_bittiming) },
++	[IFLA_CAN_BITTIMING_CONST] = { .len = sizeof(struct can_bittiming_const) },
++	[IFLA_CAN_CLOCK] = { .len = sizeof(struct can_clock) },
++	[IFLA_CAN_BERR_COUNTER] = { .len = sizeof(struct can_berr_counter) },
++	[IFLA_CAN_DATA_BITTIMING] = { .len = sizeof(struct can_bittiming) },
++	[IFLA_CAN_DATA_BITTIMING_CONST]	= { .len = sizeof(struct can_bittiming_const) },
++	[IFLA_CAN_TERMINATION] = { .type = NLA_U16 },
+ };
  
- #define CAN_SYNC_SEG 1
- 
-+/*
-+ * struct can_tdc - CAN FD Transmission Delay Compensation parameters
-+ *
-+ * At high bit rates, the propagation delay from the TX pin to the RX
-+ * pin of the transceiver causes measurement errors: the sample point
-+ * on the RX pin might occur on the previous bit.
-+ *
-+ * To solve this issue, ISO 11898-1 introduces in section 11.3.3
-+ * "Transmitter delay compensation" a SSP (Secondary Sample Point)
-+ * equal to the distance, in time quanta, from the start of the bit
-+ * time on the TX pin to the actual measurement on the RX pin.
-+ *
-+ * This structure contains the parameters to calculate that SSP.
-+ *
-+ * @tdcv: Transmitter Delay Compensation Value. Distance, in time
-+ *	quanta, from when the bit is sent on the TX pin to when it is
-+ *	received on the RX pin of the transmitter. Possible options:
-+ *
-+ *	  O: automatic mode. The controller dynamically measure @tdcv
-+ *	  for each transmited CAN FD frame.
-+ *
-+ *	  Other values: manual mode. Use the fixed provided value.
-+ *
-+ * @tdco: Transmitter Delay Compensation Offset. Offset value, in time
-+ *	quanta, defining the distance between the start of the bit
-+ *	reception on the RX pin of the transceiver and the SSP
-+ *	position such as SSP = @tdcv + @tdco.
-+ *
-+ *	If @tdco is zero, then TDC is disabled and both @tdcv and
-+ *	@tdcf should be ignored.
-+ *
-+ * @tdcf: Transmitter Delay Compensation Filter window. Defines the
-+ *	minimum value for the SSP position in time quanta. If SSP is
-+ *	less than @tdcf, then no delay compensations occur and the
-+ *	normal sampling point is used instead. The feature is enabled
-+ *	if and only if @tdcv is set to zero (automatic mode) and @tdcf
-+ *	is configured to a value greater than @tdco.
-+ */
-+struct can_tdc {
-+	u32 tdcv;
-+	u32 tdco;
-+	u32 tdcf;
-+};
-+
-+/*
-+ * struct can_tdc_const - CAN hardware-dependent constant for
-+ *	Transmission Delay Compensation
-+ *
-+ * @tdcv_max: Transmitter Delay Compensation Value maximum value.
-+ *	Should be set to zero if the controller does not support
-+ *	manual mode for tdcv.
-+ * @tdco_max: Transmitter Delay Compensation Offset maximum value.
-+ *	Should not be zero. If the controller does not support TDC,
-+ *	then the pointer to this structure should be NULL.
-+ * @tdcf_max: Transmitter Delay Compensation Filter window maximum
-+ *	value. Should be set to zero if the controller does not
-+ *	support this feature.
-+ */
-+struct can_tdc_const {
-+	u32 tdcv_max;
-+	u32 tdco_max;
-+	u32 tdcf_max;
-+};
-+
- #ifdef CONFIG_CAN_CALC_BITTIMING
- int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 		       const struct can_bittiming_const *btc);
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index ac4d83a1ab81..4795da0eb949 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -42,6 +42,9 @@ struct can_priv {
- 	struct can_bittiming bittiming, data_bittiming;
- 	const struct can_bittiming_const *bittiming_const,
- 		*data_bittiming_const;
-+	struct can_tdc tdc;
-+	const struct can_tdc_const *tdc_const;
-+
- 	const u16 *termination_const;
- 	unsigned int termination_const_cnt;
- 	u16 termination;
+ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
 -- 
 2.26.2
 
