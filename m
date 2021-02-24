@@ -2,106 +2,202 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0915C433DB
-	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:08:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D1B3C433E9
+	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:08:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AAA0C64E09
+	by mail.kernel.org (Postfix) with ESMTP id E8A4A64DBD
 	for <linux-can@archiver.kernel.org>; Wed, 24 Feb 2021 01:08:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhBXBGu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 23 Feb 2021 20:06:50 -0500
-Received: from mail-yb1-f169.google.com ([209.85.219.169]:33474 "EHLO
-        mail-yb1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234184AbhBXALE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Feb 2021 19:11:04 -0500
-Received: by mail-yb1-f169.google.com with SMTP id x19so93485ybe.0
-        for <linux-can@vger.kernel.org>; Tue, 23 Feb 2021 16:10:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cml7mREV7L5A/aqvNQAAB5IflVJixN22fq1jq0gbRRA=;
-        b=cvqN2OKf7in8ByhFpbjnQFzXjgmdOQ9YUSKLztB7AhzxrGEPETF3US0rs3Hvq0O3hB
-         x8dMEcVxmsuq5d2ixkr/4+49uWuUMAAJKqOEBKRqwLbex5sXGnc6+Qho13vwtPvOaPJT
-         z9HIW/xe2N2e7rqcUMNTlVJGcnWQYp4PmKvHgxtjYv1HrLL57VK0VqHN9rLlSns7GwC+
-         4rUN5Xv6x+njvmIzQvxWXzubR3oYIUXfRXJkat44BC3EQxYWdmk8IDbxMG5diEPW807t
-         /Hxg0Q+SwHYoIP5mz5wV7RSVjUakxwKepov4aOZqGpXizOAeIArH87ZKiCahxF/SR5xv
-         Cx4w==
-X-Gm-Message-State: AOAM531zs1gHjNynJbxhCDkgSlbfiDiYnpgWXdIRP6K4y3A4iujyp+6K
-        d3jFjBazlzBW0owmAhVl1uDJ5H2JZwKVEWjh8ZhWaJQUYP5AnA==
-X-Google-Smtp-Source: ABdhPJwylANlyaj45F25bMY6+YAhXGplUkJW7eRogMnd7ar/U4TowIO0bPUHa4nA3Z2rHi809Wh20dr5odsoQqmU5Qw=
-X-Received: by 2002:a05:6902:4b2:: with SMTP id r18mr45085435ybs.226.1614125420922;
- Tue, 23 Feb 2021 16:10:20 -0800 (PST)
+        id S233726AbhBXBHx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 23 Feb 2021 20:07:53 -0500
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:40332 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235015AbhBXAfW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Feb 2021 19:35:22 -0500
+Received: from localhost.localdomain ([153.202.107.157])
+        by mwinf5d12 with ME
+        id YoPH240063PnFJp03oPPhm; Wed, 24 Feb 2021 01:23:25 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 24 Feb 2021 01:23:25 +0100
+X-ME-IP: 153.202.107.157
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v2 4/5] can: add netlink interface for CAN-FD Transmitter Delay Compensation (TDC)
+Date:   Wed, 24 Feb 2021 09:20:07 +0900
+Message-Id: <20210224002008.4158-5-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210224002008.4158-1-mailhol.vincent@wanadoo.fr>
+References: <20210224002008.4158-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-References: <20210223162852.218041-1-mailhol.vincent@wanadoo.fr>
- <20210223162852.218041-4-mailhol.vincent@wanadoo.fr> <87im6id0o3.fsf@hardanger.blackshift.org>
-In-Reply-To: <87im6id0o3.fsf@hardanger.blackshift.org>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 24 Feb 2021 09:10:10 +0900
-Message-ID: <CAMZ6RqJ71DW7=AaABijtLnvi1nX-z3eDTnwx=UZQhX-6AGu0Cw@mail.gmail.com>
-Subject: Re: [PATCH v1 3/5] can: netlink: move '=' operators back to previous
- line (checkpatch fix)
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Wolfgang Grandegger <wg@grandegger.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Marc,
+Add the netlink interface for TDC parameters of struct can_tdc and
+can_tdc_const.
 
-On Wed. 24 Feb 2021 at 04:49, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->
-> On 24.02.2021 01:28:50, Vincent Mailhol wrote:
-> [...]
-> > --- a/drivers/net/can/dev/netlink.c
-> > +++ b/drivers/net/can/dev/netlink.c
-> > @@ -8,20 +8,18 @@
-> >  #include <net/rtnetlink.h>
-> >
-> >  static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
-> > -     [IFLA_CAN_STATE]        = { .type = NLA_U32 },
-> > -     [IFLA_CAN_CTRLMODE]     = { .len = sizeof(struct can_ctrlmode) },
-> > -     [IFLA_CAN_RESTART_MS]   = { .type = NLA_U32 },
-> > -     [IFLA_CAN_RESTART]      = { .type = NLA_U32 },
-> > -     [IFLA_CAN_BITTIMING]    = { .len = sizeof(struct can_bittiming) },
-> > -     [IFLA_CAN_BITTIMING_CONST]
-> > -                             = { .len = sizeof(struct can_bittiming_const) },
-> > -     [IFLA_CAN_CLOCK]        = { .len = sizeof(struct can_clock) },
-> > -     [IFLA_CAN_BERR_COUNTER] = { .len = sizeof(struct can_berr_counter) },
-> > -     [IFLA_CAN_DATA_BITTIMING]
-> > -                             = { .len = sizeof(struct can_bittiming) },
-> > -     [IFLA_CAN_DATA_BITTIMING_CONST]
-> > -                             = { .len = sizeof(struct can_bittiming_const) },
-> > -     [IFLA_CAN_TERMINATION]  = { .type = NLA_U16 },
-> > +     [IFLA_CAN_STATE]                = { .type = NLA_U32 },
-> > +     [IFLA_CAN_CTRLMODE]             = { .len = sizeof(struct can_ctrlmode) },
-> > +     [IFLA_CAN_RESTART_MS]           = { .type = NLA_U32 },
-> > +     [IFLA_CAN_RESTART]              = { .type = NLA_U32 },
-> > +     [IFLA_CAN_BITTIMING]            = { .len = sizeof(struct can_bittiming) },
-> > +     [IFLA_CAN_BITTIMING_CONST]      = { .len = sizeof(struct can_bittiming_const) },
-> > +     [IFLA_CAN_CLOCK]                = { .len = sizeof(struct can_clock) },
-> > +     [IFLA_CAN_BERR_COUNTER]         = { .len = sizeof(struct can_berr_counter) },
-> > +     [IFLA_CAN_DATA_BITTIMING]       = { .len = sizeof(struct can_bittiming) },
-> > +     [IFLA_CAN_DATA_BITTIMING_CONST] = { .len = sizeof(struct can_bittiming_const) },
-> > +     [IFLA_CAN_TERMINATION]          = { .type = NLA_U16 },
-> > +     [IFLA_CAN_TERMINATION]          = { .type = NLA_U16 },
->
-> You doubled the last entry by mistake.
+Contrary to the can_bittiming(_const) structures for which there is
+just a single IFLA_CAN(_DATA)_BITTMING(_CONST) entry per structure,
+here, an IFLA_CAN_TDC* entry is added for each of the TDC parameters
+of the newly introduced struct can_tdc and struct can_tdc_const.
 
-Arf...
-As you noticed, the double entry is then removed in the next
-patch. That is because I saw the issue but miserably modified the
-wrong patch.
+For struct can_tdc, these are:
+	IFLA_CAN_TDCV
+	IFLA_CAN_TDCO
+	IFLA_CAN_TDCF
 
-I will correct this in v2.
+For struct can_tdc_const, these are:
+	IFLA_CAN_TDCV_MAX_CONST
+	IFLA_CAN_TDCO_MAX_CONST
+	IFLA_CAN_TDCF_MAX_CONST
 
+This is done so that changes can be applied in the future to the
+structures without breaking the netlink interface.
 
-Yours sincerely,
-Vincent
+All the new parameters are defined as u32. This arbitrary choice is
+done to mimic the other bittiming values with are also all of type
+u32. An u16 would have been sufficient to hold the TDC values.
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+ drivers/net/can/dev/netlink.c    | 74 +++++++++++++++++++++++++++++++-
+ include/uapi/linux/can/netlink.h |  6 +++
+ 2 files changed, 79 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index c19eef775ec8..c3f75c09d6c8 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -19,6 +19,12 @@ static const struct nla_policy can_policy[IFLA_CAN_MAX + 1] = {
+ 	[IFLA_CAN_DATA_BITTIMING] = { .len = sizeof(struct can_bittiming) },
+ 	[IFLA_CAN_DATA_BITTIMING_CONST]	= { .len = sizeof(struct can_bittiming_const) },
+ 	[IFLA_CAN_TERMINATION] = { .type = NLA_U16 },
++	[IFLA_CAN_TDCV] = { .type = NLA_U32 },
++	[IFLA_CAN_TDCV_MAX_CONST] = { .type = NLA_U32 },
++	[IFLA_CAN_TDCO] = { .type = NLA_U32 },
++	[IFLA_CAN_TDCO_MAX_CONST] = { .type = NLA_U32 },
++	[IFLA_CAN_TDCF] = { .type = NLA_U32 },
++	[IFLA_CAN_TDCF_MAX_CONST] = { .type = NLA_U32 },
+ };
+ 
+ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
+@@ -218,6 +224,51 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 		priv->termination = termval;
+ 	}
+ 
++	if (data[IFLA_CAN_TDCV]) {
++		u32 tdcv = nla_get_u32(data[IFLA_CAN_TDCV]);
++
++		if (!priv->tdc_const || !priv->tdc_const->tdcv_max)
++			return -EOPNOTSUPP;
++
++		if (tdcv > priv->tdc_const->tdcv_max)
++			return -EINVAL;
++
++		if (dev->flags & IFF_UP)
++			return -EBUSY;
++
++		priv->tdc.tdcv = tdcv;
++	}
++
++	if (data[IFLA_CAN_TDCO]) {
++		u32 tdco = nla_get_u32(data[IFLA_CAN_TDCO]);
++
++		if (!priv->tdc_const || !priv->tdc_const->tdco_max)
++			return -EOPNOTSUPP;
++
++		if (tdco > priv->tdc_const->tdco_max)
++			return -EINVAL;
++
++		if (dev->flags & IFF_UP)
++			return -EBUSY;
++
++		priv->tdc.tdco = tdco;
++	}
++
++	if (data[IFLA_CAN_TDCF]) {
++		u32 tdcf = nla_get_u32(data[IFLA_CAN_TDCF]);
++
++		if (!priv->tdc_const || !priv->tdc_const->tdcf_max)
++			return -EOPNOTSUPP;
++
++		if (tdcf > priv->tdc_const->tdcf_max)
++			return -EINVAL;
++
++		if (dev->flags & IFF_UP)
++			return -EBUSY;
++
++		priv->tdc.tdcf = tdcf;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -252,6 +303,16 @@ static size_t can_get_size(const struct net_device *dev)
+ 		size += nla_total_size(sizeof(*priv->data_bitrate_const) *
+ 				       priv->data_bitrate_const_cnt);
+ 	size += sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
++	if (priv->tdc.tdco) {
++		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV */
++		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCO */
++		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCF */
++	}
++	if (priv->tdc_const) {
++		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV_MAX_CONST */
++		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCO_MAX_CONST */
++		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCF_MAX_CONST */
++	}
+ 
+ 	return size;
+ }
+@@ -313,7 +374,18 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 
+ 	    (nla_put(skb, IFLA_CAN_BITRATE_MAX,
+ 		     sizeof(priv->bitrate_max),
+-		     &priv->bitrate_max))
++		     &priv->bitrate_max)) ||
++
++	    (priv->tdc_const &&
++	     (nla_put_u32(skb, IFLA_CAN_TDCV, priv->tdc.tdcv) ||
++	      nla_put_u32(skb, IFLA_CAN_TDCO, priv->tdc.tdco) ||
++	      nla_put_u32(skb, IFLA_CAN_TDCF, priv->tdc.tdcf) ||
++	      nla_put_u32(skb, IFLA_CAN_TDCV_MAX_CONST,
++			  priv->tdc_const->tdcv_max) ||
++	      nla_put_u32(skb, IFLA_CAN_TDCO_MAX_CONST,
++			  priv->tdc_const->tdco_max) ||
++	      nla_put_u32(skb, IFLA_CAN_TDCF_MAX_CONST,
++			  priv->tdc_const->tdcf_max)))
+ 	    )
+ 
+ 		return -EMSGSIZE;
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index f730d443b918..e69c4b330ae6 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -134,6 +134,12 @@ enum {
+ 	IFLA_CAN_BITRATE_CONST,
+ 	IFLA_CAN_DATA_BITRATE_CONST,
+ 	IFLA_CAN_BITRATE_MAX,
++	IFLA_CAN_TDCV,
++	IFLA_CAN_TDCO,
++	IFLA_CAN_TDCF,
++	IFLA_CAN_TDCV_MAX_CONST,
++	IFLA_CAN_TDCO_MAX_CONST,
++	IFLA_CAN_TDCF_MAX_CONST,
+ 	__IFLA_CAN_MAX
+ };
+ 
+-- 
+2.26.2
+
