@@ -8,35 +8,35 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D346C4332B
-	for <linux-can@archiver.kernel.org>; Thu, 25 Feb 2021 21:54:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 392FDC433DB
+	for <linux-can@archiver.kernel.org>; Thu, 25 Feb 2021 21:56:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EA57964F2C
-	for <linux-can@archiver.kernel.org>; Thu, 25 Feb 2021 21:54:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0861E64EC3
+	for <linux-can@archiver.kernel.org>; Thu, 25 Feb 2021 21:56:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234109AbhBYVyl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 25 Feb 2021 16:54:41 -0500
-Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:45027 "EHLO
+        id S234567AbhBYV4u (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 25 Feb 2021 16:56:50 -0500
+Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:57169 "EHLO
         libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234704AbhBYVyC (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:54:02 -0500
+        id S232349AbhBYVzQ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 25 Feb 2021 16:55:16 -0500
 Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
  ([87.20.116.197])
         by smtp-17.iol.local with ESMTPA
-        id FOYQlNUJ2lChfFOYZlkbhQ; Thu, 25 Feb 2021 22:52:24 +0100
+        id FOYQlNUJ2lChfFOYWlkbfx; Thu, 25 Feb 2021 22:52:21 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1614289944; bh=zrB7Sex8qAljdk/P0favelF3Z2QW1uq0XCEp2nBu39I=;
+        t=1614289941; bh=ZwZwTipdZKxY6qGd4VuGRlxL2+9rpHSGnSFdq6NXms8=;
         h=From;
-        b=zFg22pCfjHhJMdOR+sy+LuWnSD883ppuuy4r1j+OLUD8OZi3/Z/eN8lArW956o2gI
-         DimTwLEky5X1nlxEt24Maz7Ezy/036wTmws5DOvwSJ7Py8zcud+Y3dKlmOEgX3ChQh
-         +E/lQmFQsJjUxL7XC+mXNAv4g/0cXkN3fWDtkY0kC/aLBrVp8LinGOs5gEwZUP0w6U
-         +HrLuPMHCiE8mzT7CWE05uPl9v37Km5XMJ7PDYSk8X7l/NPc2C+FQG3DSiy7SzFciA
-         XuO5fYSUwIU9GBMhzY8eEMpXL31pfeFbpgX/I1ElMaXkH9/COu64puz1MOAffti213
-         KP+fWD1xOzg5w==
-X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=60381c18 cx=a_exe
+        b=nPqtD7JEACtSZgRq+Y+7+amJ9UEw2g4F9Ow0l6RJbzEibTAkGaa7bF2WhTVHlxve1
+         oHLwSmqke9ZWsWeNFcZGlx7TMv4clil4jCCdM2x2yYk4PPqLqVfF2Q31n89XWG/tr6
+         CJODTsADPWI3Qj7pib1oLuWXv4TABf7i96VTYEo2z4eK+UDEFmz00wDFn/6rrvnRY+
+         Lyzb1yl/M9JnrVNmFWsMJ8wpYLTEwVZjBPVt97wEgQA7eh34VJ1j63H4uX08SbP6FB
+         wZPg1Bq2VrQk6m2qfdl/TKioRQND4v7VMJuZPB4j76gknFcgbnSrW4CjJfrX5h2J1T
+         LUv71dyyg42HA==
+X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=60381c15 cx=a_exe
  a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=FEz_7PL0ERQs5GQP_jQA:9 a=EQGfsiorO9qKaa_4:21 a=GjewnYaElfTv6_oh:21
+ a=AkCzXzlJzD4X874_W7gA:9
 From:   Dario Binacchi <dariobin@libero.it>
 To:     linux-kernel@vger.kernel.org
 Cc:     Alexander Stein <alexander.stein@systec-electronic.com>,
@@ -51,212 +51,46 @@ Cc:     Alexander Stein <alexander.stein@systec-electronic.com>,
         YueHaibing <yuehaibing@huawei.com>,
         Zhang Qilong <zhangqilong3@huawei.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v2 6/6] can: c_can: add support to 64 message objects
-Date:   Thu, 25 Feb 2021 22:51:55 +0100
-Message-Id: <20210225215155.30509-7-dariobin@libero.it>
+Subject: [PATCH v2 2/6] can: c_can: fix indentation
+Date:   Thu, 25 Feb 2021 22:51:51 +0100
+Message-Id: <20210225215155.30509-3-dariobin@libero.it>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210225215155.30509-1-dariobin@libero.it>
 References: <20210225215155.30509-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfFMAPA/Fi5dwIs8cvMTO93k73YNNOSJ+XOPpg8LGQMt4XZ8QrrHJje7xLkIJVXnqIzLOFqRhRo336KskWqnxd9eZ4HmEdqxckfyhh2LHUDKSRJA1YYKp
- 5rzpZ4H+dF+i8UencNPBJ3GT/TN/1eoX1tWFu+CQTSlWphgy6gNBrv0jsQBVHTFQUr9XMAh1SS75jvPOurnRnoxzkl4aEkRypio2syCkNSjWMumFa0faRO4p
- MCxNyyu0nCAS0ih4+n0uJReoAzMlycJUlAWL7CRgCYK09+Ehdmo1XdnrE5XBFT2A3s6HVpenAc0qyydAMrn9b+/TwKLINrtQ/GSgamKvdK4Fy77wV6SdHZfA
- v3JldOAneHbJojF7nRKmk9WfOGKqQ2AMTtcQJ0vbuVvPmX3VEhO85KejNSFvBPJiFmn6leH7GThW/PhHVQEk/X+JlVDfbbxvbzIS37dx2gfvyyY3Wcw9oB7Q
- 34hsBQuuZvuCTRMrFiytK5B58NVBGHqeM0B+D5yZM5YAvut7SZ8mpVPkiCAoLGW508lLLmhrnd2zUYwK2vQ351kTo+kG+TiEWmVmge9qGVc2smKDerLrNz2E
- qZYdx6Q0g3szkI6cKP+a7a/vuSTd1NiI+mK8SlxFgUh3LaEn4arURPAdamOv+IFr0fSmyUN6er8WX5qs2zmRCoofSk48sAiQjmlv39JDSSbKxQ==
+X-CMAE-Envelope: MS4xfLyEMjqPMWD6UklMARrB4DSdHDnqxkwrej79EXjWITQpcm3rEgvUMPyPzGMGZPXL/kNJ2iArJDBnhfYbLPSejaI69YZVumO8EuiQyLE4G976ejrsS8FX
+ grbzC2RPpJG+jl9ysT98tvGC6yM10VDgeskEII7SoPXfswWqhs2FOsB9AtAj5B5arznhapM0MCs0k5AFr+cr9868DHBba+gY4brGgRirOzQgdNvUBBJxFqyM
+ mLRgTzswhkuBukt/9pDXwM3A2qZ8IIajyFDKW9aIo1j1j2p+UUQPNBrNEypdkY/fHOamth4l2O/MmQDolGW/QoFGPfzeKIcZrKBYogn6sI44pcbOHCp6thMt
+ Y5xoY8Xw7NSqyhtL/KDG4hzzOSjm4ibSUY7Qxe56qaX74l5F34V0PxC3w+gxNHCRWKY4Xxg1qptR+nnoC4pdZQeM9O5IjX/xMj8RApBZ4EiVO4R3G0tRsnko
+ k9CNEsBRDql69PX45vBm9/DHYTb3pqo1g6Y/787aW0Ce7/eX3HMKkglTy4eD5qgWKy6eTBcv3Tu2xcPiRaeKi3f4qZu3fFizD/3R1bHj0Xgz/sccSSvSWjic
+ UBgK5sPz7+0D8zoTZZk5UcKYj4dPF9lQroIJtwBjbvnzb0MeCr3X1NKQVZvzDtFHsdXeAJmV7NrSK65/oVfTAklmpJfDFueUkiQeDqTkAk5Cdw==
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-D_CAN controller supports 16, 32, 64 or 128 message objects, comparing
-to 32 on C_CAN.
-AM335x/AM437x Sitara processors and DRA7 SOC all instantiate a D_CAN
-controller with 64 message objects, as described in the "DCAN features"
-subsection of the CAN chapter of their technical reference manuals.
-
-The driver policy has been kept unchanged, and as in the previous
-version, the first half of the message objects is used for reception and
-the second for transmission.
-
-The I/O load is increased only in the case of 64 message objects,
-keeping it unchanged in the case of 32. Two 32-bit read accesses are in
-fact required, which however remained at 16-bit for configurations with
-32 message objects.
+Commit 524369e2391f ("can: c_can: remove obsolete STRICT_FRAME_ORDERING Kconfig option")
+left behind wrong indentation, fix it.
 
 Signed-off-by: Dario Binacchi <dariobin@libero.it>
-
 ---
 
-Changes in v2:
-- Add message objects number to PCI driver data.
+(no changes since v1)
 
- drivers/net/can/c_can/c_can.c          | 19 +++++++++++--------
- drivers/net/can/c_can/c_can.h          |  5 +++--
- drivers/net/can/c_can/c_can_pci.c      |  6 +++++-
- drivers/net/can/c_can/c_can_platform.c |  6 +++++-
- 4 files changed, 24 insertions(+), 12 deletions(-)
+ drivers/net/can/c_can/c_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index df1ad6b3fd3b..b049e94543cb 100644
+index a962ceefd44a..dbcc1c1c92d6 100644
 --- a/drivers/net/can/c_can/c_can.c
 +++ b/drivers/net/can/c_can/c_can.c
-@@ -723,8 +723,12 @@ static void c_can_do_tx(struct net_device *dev)
- 	struct net_device_stats *stats = &dev->stats;
- 	u32 idx, obj, pkts = 0, bytes = 0, pend, clr;
- 
--	clr = pend = priv->read_reg(priv, C_CAN_INTPND2_REG);
-+	if (priv->msg_obj_tx_last > 32)
-+		pend = priv->read_reg32(priv, C_CAN_INTPND3_REG);
-+	else
-+		pend = priv->read_reg(priv, C_CAN_INTPND2_REG);
- 
-+	clr = pend;
- 	while ((idx = ffs(pend))) {
- 		idx--;
- 		pend &= ~(1 << idx);
-@@ -834,7 +838,12 @@ static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
- 
- static inline u32 c_can_get_pending(struct c_can_priv *priv)
+@@ -786,7 +786,7 @@ static u32 c_can_adjust_pending(u32 pend)
+ static inline void c_can_rx_object_get(struct net_device *dev,
+ 				       struct c_can_priv *priv, u32 obj)
  {
--	u32 pend = priv->read_reg(priv, C_CAN_NEWDAT1_REG);
-+	u32 pend;
-+
-+	if (priv->msg_obj_rx_last > 16)
-+		pend = priv->read_reg32(priv, C_CAN_NEWDAT1_REG);
-+	else
-+		pend = priv->read_reg(priv, C_CAN_NEWDAT1_REG);
- 
- 	return pend;
+-		c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
++	c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
  }
-@@ -856,12 +865,6 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
- 	struct c_can_priv *priv = netdev_priv(dev);
- 	u32 pkts = 0, pend = 0, toread, n;
  
--	/*
--	 * It is faster to read only one 16bit register. This is only possible
--	 * for a maximum number of 16 objects.
--	 */
--	WARN_ON(priv->msg_obj_rx_last > 16);
--
- 	while (quota > 0) {
- 		if (!pend) {
- 			pend = c_can_get_pending(priv);
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 22ae6077b489..cff24597be3c 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -22,8 +22,6 @@
- #ifndef C_CAN_H
- #define C_CAN_H
- 
--#define C_CAN_NO_OF_OBJECTS	32
--
- enum reg {
- 	C_CAN_CTRL_REG = 0,
- 	C_CAN_CTRL_EX_REG,
-@@ -61,6 +59,7 @@ enum reg {
- 	C_CAN_NEWDAT2_REG,
- 	C_CAN_INTPND1_REG,
- 	C_CAN_INTPND2_REG,
-+	C_CAN_INTPND3_REG,
- 	C_CAN_MSGVAL1_REG,
- 	C_CAN_MSGVAL2_REG,
- 	C_CAN_FUNCTION_REG,
-@@ -122,6 +121,7 @@ static const u16 __maybe_unused reg_map_d_can[] = {
- 	[C_CAN_NEWDAT2_REG]	= 0x9E,
- 	[C_CAN_INTPND1_REG]	= 0xB0,
- 	[C_CAN_INTPND2_REG]	= 0xB2,
-+	[C_CAN_INTPND3_REG]	= 0xB4,
- 	[C_CAN_MSGVAL1_REG]	= 0xC4,
- 	[C_CAN_MSGVAL2_REG]	= 0xC6,
- 	[C_CAN_IF1_COMREQ_REG]	= 0x100,
-@@ -161,6 +161,7 @@ struct raminit_bits {
- 
- struct c_can_driver_data {
- 	enum c_can_dev_id id;
-+	int msg_obj_num;
- 
- 	/* RAMINIT register description. Optional. */
- 	const struct raminit_bits *raminit_bits; /* Array of START/DONE bit positions */
-diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
-index 3752f68d095e..2cb98ccd04d7 100644
---- a/drivers/net/can/c_can/c_can_pci.c
-+++ b/drivers/net/can/c_can/c_can_pci.c
-@@ -31,6 +31,8 @@ enum c_can_pci_reg_align {
- struct c_can_pci_data {
- 	/* Specify if is C_CAN or D_CAN */
- 	enum c_can_dev_id type;
-+	/* Number of message objects */
-+	int msg_obj_num;
- 	/* Set the register alignment in the memory */
- 	enum c_can_pci_reg_align reg_align;
- 	/* Set the frequency */
-@@ -149,7 +151,7 @@ static int c_can_pci_probe(struct pci_dev *pdev,
- 	}
- 
- 	/* allocate the c_can device */
--	dev = alloc_c_can_dev(C_CAN_NO_OF_OBJECTS);
-+	dev = alloc_c_can_dev(c_can_pci_data->msg_obj_num);
- 	if (!dev) {
- 		ret = -ENOMEM;
- 		goto out_iounmap;
-@@ -253,6 +255,7 @@ static void c_can_pci_remove(struct pci_dev *pdev)
- 
- static const struct c_can_pci_data c_can_sta2x11= {
- 	.type = BOSCH_C_CAN,
-+	.msg_obj_num = 32,
- 	.reg_align = C_CAN_REG_ALIGN_32,
- 	.freq = 52000000, /* 52 Mhz */
- 	.bar = 0,
-@@ -260,6 +263,7 @@ static const struct c_can_pci_data c_can_sta2x11= {
- 
- static const struct c_can_pci_data c_can_pch = {
- 	.type = BOSCH_C_CAN,
-+	.msg_obj_num = 32,
- 	.reg_align = C_CAN_REG_32,
- 	.freq = 50000000, /* 50 MHz */
- 	.init = c_can_pci_reset_pch,
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index a5b9b1a93702..87a145b67a2f 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -192,10 +192,12 @@ static void c_can_hw_raminit(const struct c_can_priv *priv, bool enable)
- 
- static const struct c_can_driver_data c_can_drvdata = {
- 	.id = BOSCH_C_CAN,
-+	.msg_obj_num = 32,
- };
- 
- static const struct c_can_driver_data d_can_drvdata = {
- 	.id = BOSCH_D_CAN,
-+	.msg_obj_num = 32,
- };
- 
- static const struct raminit_bits dra7_raminit_bits[] = {
-@@ -205,6 +207,7 @@ static const struct raminit_bits dra7_raminit_bits[] = {
- 
- static const struct c_can_driver_data dra7_dcan_drvdata = {
- 	.id = BOSCH_D_CAN,
-+	.msg_obj_num = 64,
- 	.raminit_num = ARRAY_SIZE(dra7_raminit_bits),
- 	.raminit_bits = dra7_raminit_bits,
- 	.raminit_pulse = true,
-@@ -217,6 +220,7 @@ static const struct raminit_bits am3352_raminit_bits[] = {
- 
- static const struct c_can_driver_data am3352_dcan_drvdata = {
- 	.id = BOSCH_D_CAN,
-+	.msg_obj_num = 64,
- 	.raminit_num = ARRAY_SIZE(am3352_raminit_bits),
- 	.raminit_bits = am3352_raminit_bits,
- };
-@@ -293,7 +297,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	}
- 
- 	/* allocate the c_can device */
--	dev = alloc_c_can_dev(C_CAN_NO_OF_OBJECTS);
-+	dev = alloc_c_can_dev(drvdata->msg_obj_num);
- 	if (!dev) {
- 		ret = -ENOMEM;
- 		goto exit;
+ static inline void c_can_rx_finalize(struct net_device *dev,
 -- 
 2.17.1
 
