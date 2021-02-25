@@ -6,37 +6,37 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF68DC433DB
-	for <linux-can@archiver.kernel.org>; Thu, 25 Feb 2021 21:57:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C57E4C433DB
+	for <linux-can@archiver.kernel.org>; Thu, 25 Feb 2021 21:58:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C378614A7
-	for <linux-can@archiver.kernel.org>; Thu, 25 Feb 2021 21:57:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 84A0264EBA
+	for <linux-can@archiver.kernel.org>; Thu, 25 Feb 2021 21:58:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234584AbhBYV45 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 25 Feb 2021 16:56:57 -0500
-Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:45027 "EHLO
+        id S233404AbhBYV6p (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 25 Feb 2021 16:58:45 -0500
+Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:41073 "EHLO
         libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234879AbhBYVzY (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:55:24 -0500
+        id S233946AbhBYV5a (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 25 Feb 2021 16:57:30 -0500
 Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
  ([87.20.116.197])
         by smtp-17.iol.local with ESMTPA
-        id FOYQlNUJ2lChfFOYXlkbgJ; Thu, 25 Feb 2021 22:52:22 +0100
+        id FOYQlNUJ2lChfFOYYlkbgi; Thu, 25 Feb 2021 22:52:22 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1614289942; bh=j7GRCoTejXM7B9fJVl1bTmRrEzrTT3KamKBLcuWoSdk=;
+        t=1614289943; bh=BCMzyFPGjvLZKNUS2sizrsXN5C/G8I7qiN9C3GvALOQ=;
         h=From;
-        b=aQXhC9sBNN93GeYw4esKYoNGJMPZMNLWgrYE83abP0Nw/CGXJoyoPv+KAzAnF5E/l
-         QvzHd+pKIbGa5AvOD3OyDMhHTCw8Rvr5nzCK+GvkJCyAxH0CfjXBJ6ePScVG/lOzRA
-         +zidJq7s9Vq/B9LusPURVs7elE+g/X3RRzCaDQB4g/Awe4Uq23D7bf64xwJs+zV2tb
-         3XsrkAN/+r1CijnWd1r4OQ9ByTRFxqaAOcAEDNN5K2hZoGVRKzuXL799Ea4wnu0CCG
-         FOBnyXHLLYjfZN8dsqk5DQJzxKDKcXJvwl7OdBFm4UEpfkp67a6+0axJRdpCSe0kTh
-         MU32eX7SV0vuQ==
-X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=60381c16 cx=a_exe
+        b=G/sqbnbhoBrcJVq4yhhyZ1gRfCNRus6HLixJb3gvcg+gdfpPzgd5whGJLColg977R
+         60z3nofAlamkDuTthuedA2r3ngmYH6sx8R9uPzzQdn3gjl7SC4VEtogzcc5QEVgbGM
+         7jeMlyzif3LpyaZ8aFMTuZe+07D5WlByeDV6SJN3/t2BqsrlA4vh+cWQVg63KCzVSM
+         Ce4doVJeeEBLkgFB0KhcguInW0xHITeKXi106NVTBoG4rZmMBN+xh4skXjUJ4HEAng
+         8rMTBvXxyiYoqh+sNNTK2899ZSWKGdPqfeqyDyO8jXZRibZvhKE94wtGu9FH1MlyWA
+         7iQzwU/MRZU4g==
+X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=60381c17 cx=a_exe
  a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=6WxvSi62EpDuW4hn7DoA:9
+ a=YyHhdtpqV3cun0yf7GkA:9
 From:   Dario Binacchi <dariobin@libero.it>
 To:     linux-kernel@vger.kernel.org
 Cc:     Alexander Stein <alexander.stein@systec-electronic.com>,
@@ -51,46 +51,47 @@ Cc:     Alexander Stein <alexander.stein@systec-electronic.com>,
         YueHaibing <yuehaibing@huawei.com>,
         Zhang Qilong <zhangqilong3@huawei.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v2 3/6] can: c_can: fix control interface used by c_can_do_tx
-Date:   Thu, 25 Feb 2021 22:51:52 +0100
-Message-Id: <20210225215155.30509-4-dariobin@libero.it>
+Subject: [PATCH v2 4/6] can: c_can: use 32-bit write to set arbitration register
+Date:   Thu, 25 Feb 2021 22:51:53 +0100
+Message-Id: <20210225215155.30509-5-dariobin@libero.it>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210225215155.30509-1-dariobin@libero.it>
 References: <20210225215155.30509-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfPTJVu/b4W/lDf0Rt18zHhRwMpHd1BkDGPYy0FpY80gMrR9Lu9WZompAs77KBBfKMdwZRlBBH0dvhFQeVLFKK3CGvAcOJ9BD+RkDPijbzbJ3Z27HSyBc
- wOItyxSDdpNDePV3OQmXEkG8mE+tGXsQF8jRD4tyIDGWGWu38s5QBQSmCDxTGITHVYuagr0DE6ux1lOJmBJLkiKh/+KzCfJ4EasyY0JTKmaBasKwIzQW8Qbs
- zDmkMzh4RpdZ3+LQ7eD2HvBgJaW52frQ/+d4jYvj+EAkgYOg61k/oPt65aqOjlBY2p+ZLpQ0xcu6e7OyYI/vrSHv2iElTTs5XgFDYkrqMyuKfJ0YNpnOAqKI
- uLEv/KOtms3BQNVwz8jXT+O5EcO57ZEj1kx3URL0OnNPHZnSLJzlPy5GOVQ4cv6hdTM7qX8LeomhWpfTVUg2+F7oBIXeUkYxwsF+Gm8iOm/93z9s22z2TVGZ
- 9ycaHOc35NAnPDFgttLcf/FWbfYOIhR15SNPqlHsaxAE+bIUd3JgDVQU156m8nM/LkduMCAvsqhPEpbuBNsWqi2kKlTKkkSYze6oiIlhwcSWmHwVnFd3/zhX
- /8fLDv61eFQezQaSTPPE8ok9UUayGvdQIpwM8phZkaTEvGtXYtlnfY2xiM2iMSusGT3X7yelQqEURw3j1XJQXGkpU7knR/CsxnNTsKrOwQP1eQ==
+X-CMAE-Envelope: MS4xfN5b3Rqft8U7sYPJxUkdMUWC1LS8OtnTPA11KZdrUvwXZNfnsJYRZ+Vn1uNUlhHDizOz33lXjueok4cZYUrttT9Of6L/P+Tc2dGCGoMKxQQs8KeSBVNo
+ KtBLeHv0L07u/tTEJao2Ybhh4h/HrROJe/uHI3wOI8wwhIF9FSJCR9hgWWNJAtUzDYCwJWpVZPXit6HjCQOVeB0eo0BjmghmLlZOjLZPuK7+6Cg4rIDZIvCC
+ 66o1nWgRniRAB8bjRte8XAxfZlxz8VtKCWDBverXiPHJmT57HaoZXGqUPDb4dZP8pufWDWCKWxdC9g2kF9XZU44SEzytO5YXEOzklNzuetTB57xyr5xlX/e0
+ Qi5W0claOPGkj+gpYTFmL3d36ZCQzR+C/U+pk2eNa0D53ZPiphE8MbFmgwTlfgCeuADde47OEwf+E8SddSKXeLFN9xhYmsu88aZehVdgu+g36I6NPDfA+RXB
+ eDavfma1gpo6Vw/7NkzILVDeSq/GkSe5UQGvTlkhzhtGyp0+Y0GkZuEVSCE83lzB+NJLHfRMsZhofZe5qg6rfaIMuXpvJhl8FtSEQ7ffmCnGB0jDWBrkaTs2
+ smhF7ZLVjFugHl7vQ9rhfodC41wttg2vza7XzPP2RJcHa2qLtamUv3W7jzPVULpTK1o91l/DmcN48RD5epR8j8h8kUjVmTK0tRw/C0kWLn8bLA==
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-According to commit 640916db2bf7 ("can: c_can: Make it SMP safe") let RX use
-IF1 (i.e. IF_RX) and TX use IF2 (i.e. IF_TX).
+The arbitration register is already set up with 32-bit writes in the
+other parts of the code except for this point.
 
 Signed-off-by: Dario Binacchi <dariobin@libero.it>
 ---
 
 (no changes since v1)
 
- drivers/net/can/c_can/c_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/c_can/c_can.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index dbcc1c1c92d6..69526c3a671c 100644
+index 69526c3a671c..7081cfaf62e2 100644
 --- a/drivers/net/can/c_can/c_can.c
 +++ b/drivers/net/can/c_can/c_can.c
-@@ -732,7 +732,7 @@ static void c_can_do_tx(struct net_device *dev)
- 		idx--;
- 		pend &= ~(1 << idx);
- 		obj = idx + C_CAN_MSG_OBJ_TX_FIRST;
--		c_can_inval_tx_object(dev, IF_RX, obj);
-+		c_can_inval_tx_object(dev, IF_TX, obj);
- 		can_get_echo_skb(dev, idx, NULL);
- 		bytes += priv->dlc[idx];
- 		pkts++;
+@@ -297,8 +297,7 @@ static void c_can_inval_msg_object(struct net_device *dev, int iface, int obj)
+ {
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 
+-	priv->write_reg(priv, C_CAN_IFACE(ARB1_REG, iface), 0);
+-	priv->write_reg(priv, C_CAN_IFACE(ARB2_REG, iface), 0);
++	priv->write_reg32(priv, C_CAN_IFACE(ARB1_REG, iface), 0);
+ 	c_can_inval_tx_object(dev, iface, obj);
+ }
+ 
 -- 
 2.17.1
 
