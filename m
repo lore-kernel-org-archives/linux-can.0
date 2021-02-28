@@ -2,229 +2,183 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86977C433DB
-	for <linux-can@archiver.kernel.org>; Sat, 27 Feb 2021 04:47:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7692DC433E6
+	for <linux-can@archiver.kernel.org>; Sun, 28 Feb 2021 08:34:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4819F64E66
-	for <linux-can@archiver.kernel.org>; Sat, 27 Feb 2021 04:47:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 317CF64D9E
+	for <linux-can@archiver.kernel.org>; Sun, 28 Feb 2021 08:34:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhB0Eqs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 26 Feb 2021 23:46:48 -0500
-Received: from mxwn13.webd.pl ([194.181.228.67]:52295 "EHLO mxwn13.webd.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229795AbhB0Eqr (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 26 Feb 2021 23:46:47 -0500
-X-Greylist: delayed 2550 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 23:46:43 EST
-Received: from wn13.int.webd ([192.168.101.113] helo=wn13.webd.pl)
-        by mta01.webd.pl with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <mariusz.madej@xtrack.com>)
-        id 1lFqpA-0002fg-3U; Sat, 27 Feb 2021 05:03:24 +0100
-Received: from [192.168.101.231] (port=38386 helo=mta01.int.webd)
-        by wn13.webd.pl with esmtp (Exim 4.93)
-        (envelope-from <mariusz.madej@xtrack.com>)
-        id 1lFqp9-0008OD-VT; Sat, 27 Feb 2021 05:03:23 +0100
-X-Quarantine-ID: <xGQNV92m42CQ>
-X-Virus-Scanned: amavisd-new at mxwn13.webd.pl
-Received: from wn13.webd.pl ([192.168.101.113])
-        by mta01.int.webd (mxwn13.webd.pl [192.168.101.200]) (amavisd-new, port 10134)
-        with ESMTP id xGQNV92m42CQ; Sat, 27 Feb 2021 05:03:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xtrack.com;
-         s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version
-        :Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Mfps4u+b9Jhg8JCS6rdyt4ryBICe3YrINKfFonXomgY=; b=krtKdS39LXlKkIheVHm6gohIHu
-        K0ArzN0+5V6FqRZhsTRgSDGDwre1hv+i3P5ylAft/DvTzOmXTvFbseKglurWa10BPJBDZyiy8VToM
-        +CVD8KdgdEiPR9P037yszeH3aauqs9EWyXFzzy5Nmqo0B/oTXlby4WgK6jmfbTH6yWNED8TswFFji
-        xH+r8Vk9s4l75XwX1Pk14aZ3d0/TCdVJGG36Wir1xCP+PqcX9huYs+6NY1J0CvD/cXmHM2EsVfPhg
-        nbQAip+KRsRQ/33fVqkUfgdMEBttbmEQY8WMvqRMpU5L1cGpI1EBXplth/7FuZa08YmqUOBWXc/3i
-        x0cFUQgA==;
-Received: from [185.241.198.130] (port=57272 helo=[192.168.32.4])
-        by wn13.webd.pl with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <mariusz.madej@xtrack.com>)
-        id 1lFqp1-0008N9-HS; Sat, 27 Feb 2021 05:03:15 +0100
-Subject: Re: m_can: a lot of 'Rx FIFO 0 Message Lost' in dmesg
-To:     Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Cc:     "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-References: <PR3PR05MB7212376CDA795770B7E625E6809F9@PR3PR05MB7212.eurprd05.prod.outlook.com>
- <20210226133702.echxlob5z4pj5ptc@bigthink>
-From:   Mariusz Madej <mariusz.madej@xtrack.com>
-Message-ID: <d0ebed81-3f7a-1e82-e16b-85e242d1ddca@xtrack.com>
-Date:   Sat, 27 Feb 2021 05:03:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S230147AbhB1Ieh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 28 Feb 2021 03:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhB1Iee (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 28 Feb 2021 03:34:34 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD5AC061756
+        for <linux-can@vger.kernel.org>; Sun, 28 Feb 2021 00:33:54 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lGHWS-0006aC-Cv
+        for linux-can@vger.kernel.org; Sun, 28 Feb 2021 09:33:52 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 668EE5EA818
+        for <linux-can@vger.kernel.org>; Sun, 28 Feb 2021 08:33:51 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A881C5EA813;
+        Sun, 28 Feb 2021 08:33:50 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9a89b003;
+        Sun, 28 Feb 2021 08:33:49 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     linux-can@vger.kernel.org
+Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>
+Subject: [PATCH] can: mcp251xfd: revert "can: mcp251xfd: add BQL support"
+Date:   Sun, 28 Feb 2021 09:33:47 +0100
+Message-Id: <20210228083347.28580-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <20210226133702.echxlob5z4pj5ptc@bigthink>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 2/26/21 2:37 PM, Torin Cooper-Bennun wrote
+In the following 4 patches
 
->> The only place in m_can.c file, where interrupt register is cleared is function
->> called when interrupt arrives
->>
->> static irqreturn_t m_can_isr(int irq, void *dev_id)
->> {
->> .
->> .
->>          /* ACK all irqs */
->>          if (ir & IR_ALL_INT)
->>                  m_can_write(cdev, M_CAN_IR, ir);
->> .
->> .
->> }
->>
->> But when we enter 'NAPI mode' in heavy load we are never get to this function
->> until load gets lower and interrupts are enabled again. In this situation,
->> this code:
-> The m_can driver handles the IRQ by offloading the RX to a NAPI queue,
-> so the RX procedure is deferred, and is scheduled to happen at a
-> (slightly) later time. As far as I understand it, interrupts are not
-> disabled at any point.
+| 99842c9685ab can: dev: can_rx_offload_get_echo_skb(): extend to return can frame length
+| 9420e1d495e2 can: dev: can_get_echo_skb(): extend to return can frame length
+| 1dcb6e57db83 can: dev: can_put_echo_skb(): extend to handle frame_len
+| f0ef72febc9a can: dev: extend struct can_skb_priv to hold CAN frame length
 
-Interupts are disabled in m_can_isr function:
+the CAN echo SKB support was extended to hold the CAN frame
+length (which is the length of the CAN frame on the wire). It is meant
+as a helper for BQL support, to avoid the re-calculation of the frame
+length before sending it and on TX-completion.
 
-if ((ir & IR_RF0N) || (ir & IR_ERR_ALL_30X)) {
-         cdev->irqstatus = ir;
-         m_can_disable_all_interrupts(cdev);    <--------HERE
-         if (!cdev->is_peripheral)
-                 napi_schedule(&cdev->napi);
-         else
-                 m_can_rx_peripheral(dev);
+However if the CAN frame is send without the request to be looped back
+the SKB is discarded in can_put_echo_skb() and the subsequent
+can_get_echo_skb() and can_rx_offload_get_echo_skb() return 0 for the
+CAN frame length. This results in BQL stalling the TX queue after a
+few packages.
 
-}
+Until the BQL helpers can_get_echo_skb() and
+can_rx_offload_get_echo_skb() are fixed, revert the BQL support for
+the mcp251xfd driver.
 
-and they are enabled conditionaly in function:
+This reverts commit 4162e18e949ba520d5116ac0323500355479a00e.
+Fixes: 4162e18e949b ("can: mcp251xfd: add BQL support")
+Cc: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Thomas Kopp <thomas.kopp@microchip.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 21 ++++---------------
+ 1 file changed, 4 insertions(+), 17 deletions(-)
 
-static int m_can_poll(struct napi_struct *napi, int quota)
-{
-         struct net_device *dev = napi->dev;
-         struct m_can_classdev *cdev = netdev_priv(dev);
-         int work_done;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 3c5b92911d46..799e9d5d3481 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -335,8 +335,6 @@ static void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ 	u8 len;
+ 	int i, j;
+ 
+-	netdev_reset_queue(priv->ndev);
+-
+ 	/* TEF */
+ 	tef_ring = priv->tef;
+ 	tef_ring->head = 0;
+@@ -1249,8 +1247,7 @@ mcp251xfd_handle_tefif_recover(const struct mcp251xfd_priv *priv, const u32 seq)
+ 
+ static int
+ mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
+-			   const struct mcp251xfd_hw_tef_obj *hw_tef_obj,
+-			   unsigned int *frame_len_ptr)
++			   const struct mcp251xfd_hw_tef_obj *hw_tef_obj)
+ {
+ 	struct net_device_stats *stats = &priv->ndev->stats;
+ 	u32 seq, seq_masked, tef_tail_masked;
+@@ -1272,8 +1269,7 @@ mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
+ 	stats->tx_bytes +=
+ 		can_rx_offload_get_echo_skb(&priv->offload,
+ 					    mcp251xfd_get_tef_tail(priv),
+-					    hw_tef_obj->ts,
+-					    frame_len_ptr);
++					    hw_tef_obj->ts, NULL);
+ 	stats->tx_packets++;
+ 	priv->tef->tail++;
+ 
+@@ -1331,7 +1327,6 @@ mcp251xfd_tef_obj_read(const struct mcp251xfd_priv *priv,
+ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ {
+ 	struct mcp251xfd_hw_tef_obj hw_tef_obj[MCP251XFD_TX_OBJ_NUM_MAX];
+-	unsigned int total_frame_len = 0;
+ 	u8 tef_tail, len, l;
+ 	int err, i;
+ 
+@@ -1353,9 +1348,7 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 	}
+ 
+ 	for (i = 0; i < len; i++) {
+-		unsigned int frame_len;
+-
+-		err = mcp251xfd_handle_tefif_one(priv, &hw_tef_obj[i], &frame_len);
++		err = mcp251xfd_handle_tefif_one(priv, &hw_tef_obj[i]);
+ 		/* -EAGAIN means the Sequence Number in the TEF
+ 		 * doesn't match our tef_tail. This can happen if we
+ 		 * read the TEF objects too early. Leave loop let the
+@@ -1365,8 +1358,6 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 			goto out_netif_wake_queue;
+ 		if (err)
+ 			return err;
+-
+-		total_frame_len += frame_len;
+ 	}
+ 
+  out_netif_wake_queue:
+@@ -1397,7 +1388,6 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 			return err;
+ 
+ 		tx_ring->tail += len;
+-		netdev_completed_queue(priv->ndev, len, total_frame_len);
+ 
+ 		err = mcp251xfd_check_tef_tail(priv);
+ 		if (err)
+@@ -2443,7 +2433,6 @@ static netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+ 	struct mcp251xfd_priv *priv = netdev_priv(ndev);
+ 	struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+ 	struct mcp251xfd_tx_obj *tx_obj;
+-	unsigned int frame_len;
+ 	u8 tx_head;
+ 	int err;
+ 
+@@ -2462,9 +2451,7 @@ static netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+ 	if (mcp251xfd_get_tx_free(tx_ring) == 0)
+ 		netif_stop_queue(ndev);
+ 
+-	frame_len = can_skb_get_frame_len(skb);
+-	can_put_echo_skb(skb, ndev, tx_head, frame_len);
+-	netdev_sent_queue(priv->ndev, frame_len);
++	can_put_echo_skb(skb, ndev, tx_head, 0);
+ 
+ 	err = mcp251xfd_tx_obj_write(priv, tx_obj);
+ 	if (err)
+-- 
+2.30.1
 
-         work_done = m_can_rx_handler(dev, quota);
-         if (work_done < quota) {
-                 napi_complete_done(napi, work_done);
-                 m_can_enable_all_interrupts(cdev); <---- HERE
-         }
-
-         return work_done;
-}
-
-so if work_done==quota(64) napi will schedule next receiving instead
-of enabling interrupts. That is why i wrote that in my condition i dont get
-to m_can_isr function and message lost interrupt is not cleared. As a result
-my device enters to this function:
-
-static int m_can_do_rx_poll(struct net_device *dev, int quota)
-{
-         struct m_can_classdev *cdev = netdev_priv(dev);
-         u32 pkts = 0;
-         u32 rxfs;
-
-         rxfs = m_can_read(cdev, M_CAN_RXF0S);
-         if (!(rxfs & RXFS_FFL_MASK)) {
-                 netdev_dbg(dev, "no messages in fifo0\n");
-                 return 0;
-         }
-
-         while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
-                 if (rxfs & RXFS_RFL)
-                         netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
-
-                 m_can_read_fifo(dev, rxfs);
-
-                 quota--;
-                 pkts++;
-                 rxfs = m_can_read(cdev, M_CAN_RXF0S);
-         }
-
-         if (pkts)
-                 can_led_event(dev, CAN_LED_EVENT_RX);
-
-         return pkts;
-}
-
-With RXFS_RFL==true and 64 messages to be read, that is why i have 64 warnings
-in a row.
-Those warnings take cpu time, and in this time fifo is full again so
-function m_can_poll does not enable interrupts again, and so on...
-
->> That is why we got so many messages in a row for so long time. So clearing
->> RXFS_RFL bit after warning is issued could be a solution.
-> RXFS_RFL is a flag in a status register, not an interrupt flag. There is
-> a corresponding interrupt flag, but that is cleared along with the rest,
-> at the top of m_can_isr.
-
-I agree, sorry for not being specific, the problem is cpu can not get into
-m_can_isr for a long time in my case.
-
->
-> I think you are losing messages because the traffic is too heavy for
-> your system to read out the messages fast enough. That is the usual
-> reason for seeing "Rx FIFO 0 Message Lost".
-
-Seeing "Rx FIFO 0 Message Lost" is not my biggest problem. The problem is
-my system is not responsive along this messages.
-
-I changed m_can_do_rx_poll:
-
-static int m_can_do_rx_poll(struct net_device *dev, int quota)
-{
-         struct m_can_classdev *cdev = netdev_priv(dev);
-         u32 pkts = 0;
-         u32 rxfs;
-
-         rxfs = m_can_read(cdev, M_CAN_RXF0S);
-         if (!(rxfs & RXFS_FFL_MASK)) {
-                 netdev_dbg(dev, "no messages in fifo0\n");
-                 return 0;
-         }
-
-         while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
-                 if (rxfs & RXFS_RFL) {
-                         netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
-                         m_can_write(cdev, M_CAN_IR, IR_RF0L);
-                 }
-
-                 m_can_read_fifo(dev, rxfs);
-
-                 quota--;
-                 pkts++;
-                 rxfs = m_can_read(cdev, M_CAN_RXF0S);
-         }
-
-         if (pkts)
-                 can_led_event(dev, CAN_LED_EVENT_RX);
-
-         return pkts;
-}
-
-And now my system is responsive - i sometimes get "Rx FIFO 0 Message Lost"
-but one at a time - not 100k and this is not a big problem for me.
-CAN works OK
-So IMO it is a bug.
-
->
-> --
-> Regards,
->
-> Torin Cooper-Bennun
-> Software Engineer  | maxiluxsystems.com
->
-Regards,
-
-Mariusz
 
