@@ -2,60 +2,59 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5804C433DB
-	for <linux-can@archiver.kernel.org>; Mon,  1 Mar 2021 11:23:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAD44C433DB
+	for <linux-can@archiver.kernel.org>; Mon,  1 Mar 2021 11:37:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4CFDE64DE0
-	for <linux-can@archiver.kernel.org>; Mon,  1 Mar 2021 11:23:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A121B64E22
+	for <linux-can@archiver.kernel.org>; Mon,  1 Mar 2021 11:37:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbhCALXn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 1 Mar 2021 06:23:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        id S232596AbhCALhM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 1 Mar 2021 06:37:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232933AbhCALWk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 1 Mar 2021 06:22:40 -0500
+        with ESMTP id S231473AbhCALhL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 1 Mar 2021 06:37:11 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C545AC061356
-        for <linux-can@vger.kernel.org>; Mon,  1 Mar 2021 03:21:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01ACEC061756
+        for <linux-can@vger.kernel.org>; Mon,  1 Mar 2021 03:36:30 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lGgbx-00036P-F7
-        for linux-can@vger.kernel.org; Mon, 01 Mar 2021 12:21:13 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id EEAA15EB132
-        for <linux-can@vger.kernel.org>; Mon,  1 Mar 2021 11:21:11 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1lGgqU-0004vZ-O1; Mon, 01 Mar 2021 12:36:14 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:6e66:a1a4:a449:44cd])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 907895EB0FF;
-        Mon,  1 Mar 2021 11:21:04 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 61ca5b99;
-        Mon, 1 Mar 2021 11:21:02 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E3F005EB192;
+        Mon,  1 Mar 2021 11:36:12 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 12:36:12 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Federico Vaga <federico.vaga@gmail.com>,
         Oliver Hartkopp <socketcan@hartkopp.net>,
-        Andre Naujoks <nautsch2@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 5/6] can: skb: can_skb_set_owner(): fix ref counting if socket was closed before setting skb ownership
-Date:   Mon,  1 Mar 2021 12:20:59 +0100
-Message-Id: <20210301112100.197939-6-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301112100.197939-1-mkl@pengutronix.de>
-References: <20210301112100.197939-1-mkl@pengutronix.de>
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] can: c_can: fix control interface used by
+ c_can_do_tx
+Message-ID: <20210301113612.rvbjnqacqstseokm@pengutronix.de>
+References: <20210225215155.30509-1-dariobin@libero.it>
+ <20210225215155.30509-4-dariobin@libero.it>
+ <20210226084456.l2oztlesjzl6t2nm@pengutronix.de>
+ <942251933.544595.1614508531322@mail1.libero.it>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yq2w6x3aott2pfwm"
+Content-Disposition: inline
+In-Reply-To: <942251933.544595.1614508531322@mail1.libero.it>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -64,72 +63,70 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-There are two ref count variables controlling the free()ing of a socket:
-- struct sock::sk_refcnt - which is changed by sock_hold()/sock_put()
-- struct sock::sk_wmem_alloc - which accounts the memory allocated by
-  the skbs in the send path.
+--yq2w6x3aott2pfwm
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In case there are still TX skbs on the fly and the socket() is closed,
-the struct sock::sk_refcnt reaches 0. In the TX-path the CAN stack
-clones an "echo" skb, calls sock_hold() on the original socket and
-references it. This produces the following back trace:
+On 28.02.2021 11:35:31, Dario Binacchi wrote:
+> > On 25.02.2021 22:51:52, Dario Binacchi wrote:
+> > > According to commit 640916db2bf7 ("can: c_can: Make it SMP safe") let=
+ RX use
+> > > IF1 (i.e. IF_RX) and TX use IF2 (i.e. IF_TX).
+> >=20
+> > Is this a fix?
+> >=20
+>=20
+> I think that If I consider what is described in the 640916db2bf7
+> commit, using the IF_RX interface in a tx routine is wrong.
 
-| WARNING: CPU: 0 PID: 280 at lib/refcount.c:25 refcount_warn_saturate+0x114/0x134
-| refcount_t: addition on 0; use-after-free.
-| Modules linked in: coda_vpu(E) v4l2_jpeg(E) videobuf2_vmalloc(E) imx_vdoa(E)
-| CPU: 0 PID: 280 Comm: test_can.sh Tainted: G            E     5.11.0-04577-gf8ff6603c617 #203
-| Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-| Backtrace:
-| [<80bafea4>] (dump_backtrace) from [<80bb0280>] (show_stack+0x20/0x24) r7:00000000 r6:600f0113 r5:00000000 r4:81441220
-| [<80bb0260>] (show_stack) from [<80bb593c>] (dump_stack+0xa0/0xc8)
-| [<80bb589c>] (dump_stack) from [<8012b268>] (__warn+0xd4/0x114) r9:00000019 r8:80f4a8c2 r7:83e4150c r6:00000000 r5:00000009 r4:80528f90
-| [<8012b194>] (__warn) from [<80bb09c4>] (warn_slowpath_fmt+0x88/0xc8) r9:83f26400 r8:80f4a8d1 r7:00000009 r6:80528f90 r5:00000019 r4:80f4a8c2
-| [<80bb0940>] (warn_slowpath_fmt) from [<80528f90>] (refcount_warn_saturate+0x114/0x134) r8:00000000 r7:00000000 r6:82b44000 r5:834e5600 r4:83f4d540
-| [<80528e7c>] (refcount_warn_saturate) from [<8079a4c8>] (__refcount_add.constprop.0+0x4c/0x50)
-| [<8079a47c>] (__refcount_add.constprop.0) from [<8079a57c>] (can_put_echo_skb+0xb0/0x13c)
-| [<8079a4cc>] (can_put_echo_skb) from [<8079ba98>] (flexcan_start_xmit+0x1c4/0x230) r9:00000010 r8:83f48610 r7:0fdc0000 r6:0c080000 r5:82b44000 r4:834e5600
-| [<8079b8d4>] (flexcan_start_xmit) from [<80969078>] (netdev_start_xmit+0x44/0x70) r9:814c0ba0 r8:80c8790c r7:00000000 r6:834e5600 r5:82b44000 r4:82ab1f00
-| [<80969034>] (netdev_start_xmit) from [<809725a4>] (dev_hard_start_xmit+0x19c/0x318) r9:814c0ba0 r8:00000000 r7:82ab1f00 r6:82b44000 r5:00000000 r4:834e5600
-| [<80972408>] (dev_hard_start_xmit) from [<809c6584>] (sch_direct_xmit+0xcc/0x264) r10:834e5600 r9:00000000 r8:00000000 r7:82b44000 r6:82ab1f00 r5:834e5600 r4:83f27400
-| [<809c64b8>] (sch_direct_xmit) from [<809c6c0c>] (__qdisc_run+0x4f0/0x534)
+Yes, IF_RX is used in c_can_do_tx(), but that's called from
+c_can_poll(), which runs ins NAPI.
 
-To fix this problem, only set skb ownership to sockets which have still
-a ref count > 0.
+As far as I understand 640916db2bf7 ("can: c_can: Make it SMP safe")
+fixes the race condition that c_can_poll() and c_can_start_xmit() both
+access the same IF. See again the patch description:
 
-Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Andre Naujoks <nautsch2@gmail.com>
-Link: https://lore.kernel.org/r/20210226092456.27126-1-o.rempel@pengutronix.de
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- include/linux/can/skb.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+| The hardware has two message control interfaces, but the code only uses t=
+he
+| first one. So on SMP the following can be observed:
+|=20
+| CPU0            CPU1
+| rx_poll()
+|   write IF1     xmit()
+|                 write IF1
+|   write IF1
 
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 685f34cfba20..d438eb058069 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -65,8 +65,12 @@ static inline void can_skb_reserve(struct sk_buff *skb)
- 
- static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
- {
--	if (sk) {
--		sock_hold(sk);
-+	/* If the socket has already been closed by user space, the
-+	 * refcount may already be 0 (and the socket will be freed
-+	 * after the last TX skb has been freed). So only increase
-+	 * socket refcount if the refcount is > 0.
-+	 */
-+	if (sk && refcount_inc_not_zero(&sk->sk_refcnt)) {
- 		skb->destructor = sock_efree;
- 		skb->sk = sk;
- 	}
--- 
-2.30.1
+It's not 100% accurate, as the race condition is not just
+c_can_do_rx_poll() against the c_can_start_xmit(), but the whole
+c_can_poll() against c_can_start_xmit().
 
+If you think my analysis is correct, please update the patch and add a
+comment to clarify why IF_RX is used instead of changing it to IF_TX.
 
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--yq2w6x3aott2pfwm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA80akACgkQqclaivrt
+76lmNAf+K8+BpPxNctjZO/WLuktbWGjezyM/yhftX3gPoo8YBrpACGQ4/HBs1mIn
+7QYXMJMM2H3JI3HzAQ5YTKhQRvMamAm71SgcrbCZ+72cVwUkOpRd7PhxUNTsAOyG
+1txJpZI9Na/bP7RiaRk3vk11wPB2oIiJz/FhT1By27U7j1rOoK+xBaU0+LpVIAJB
++ZhK+P/RoxCN+8/LQSW0M6sOxfyPeuj3E88tMW+vzutJ/puwsuFJhXhYt9I/d8JA
+J04LcyV5m6Mv1omeykP6x6+dTmyar/VJMgQMm1PiOcimRCLNtJV8YAIK9nN5p1ok
+hnj2rndapVwoSy6tLJ6kJ2aCgVCOlA==
+=YGWX
+-----END PGP SIGNATURE-----
+
+--yq2w6x3aott2pfwm--
