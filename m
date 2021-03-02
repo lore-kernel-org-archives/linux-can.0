@@ -2,79 +2,132 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1DCCC4332D
-	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0652C28CBC
+	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 98D6364FC8
-	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 84E3C64FC4
+	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhCCAAQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 2 Mar 2021 19:00:16 -0500
-Received: from mx.krause.de ([88.79.216.98]:55227 "EHLO mx.krause.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381809AbhCBIqm (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:46:42 -0500
-Received: from [172.20.10.125] (port=33925 helo=mail.horstmanngroup.de)
-        by mx.krause.de with esmtps (TLSv1:AES256-SHA:256)
-        (Exim 4.82_1-5b7a7c0-XX)
-        (envelope-from <t.schluessler@krause.de>)
-        id 1lH0O7-0007QR-0i; Tue, 02 Mar 2021 09:28:15 +0100
-Received: from HG-SRV-053.HG.local (172.20.10.125) by HG-SRV-053.HG.local
- (172.20.10.125) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 2 Mar
- 2021 09:28:14 +0100
-Received: from HG-SRV-053.HG.local ([::1]) by HG-SRV-053.HG.local ([::1]) with
- mapi id 15.00.1367.000; Tue, 2 Mar 2021 09:28:14 +0100
-X-CTCH-RefID: str=0001.0A782F29.603DF71F.0044,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-From:   =?utf-8?B?U2NobMO8w59sZXIsIFRpbW8=?= <t.schluessler@krause.de>
-To:     'Marc Kleine-Budde' <mkl@pengutronix.de>,
-        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-CC:     "ukrfoil@gmail.com" <ukrfoil@gmail.com>,
-        linux-can <linux-can@vger.kernel.org>
-Subject: RE: mcp251x hangs during ifup
-Thread-Topic: mcp251x hangs during ifup
-Thread-Index: AQHXDwULsseziUMWSEmfL1A+/cbmIKpwOdWAgAAg2xA=
-Date:   Tue, 2 Mar 2021 08:28:13 +0000
-Message-ID: <638520bccd0c44d091d5715fe7d303ec@HG-SRV-053.HG.local>
-References: <20210301165856.37gvqkomvjkjvbj2@pengutronix.de>
- <CAMZ6RqKfXR9cHxjvnPwxjWHWEuxYNV9V4qLSd0ZQGP0JOMKX0w@mail.gmail.com>
- <20210302071901.ptwvejkedascbdsv@pengutronix.de>
-In-Reply-To: <20210302071901.ptwvejkedascbdsv@pengutronix.de>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.20.35.35]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S234965AbhCCAB7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 2 Mar 2021 19:01:59 -0500
+Received: from sitav-80046.hsr.ch ([152.96.80.46]:56262 "EHLO
+        mail.strongswan.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234413AbhCBNBb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 2 Mar 2021 08:01:31 -0500
+Received: from localhost.localdomain (unknown [185.12.128.224])
+        by mail.strongswan.org (Postfix) with ESMTPSA id 7CD5E409FE;
+        Tue,  2 Mar 2021 13:24:36 +0100 (CET)
+From:   Martin Willi <martin@strongswan.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>
+Cc:     netdev@vger.kernel.org, linux-can@vger.kernel.org
+Subject: [PATCH net] can: dev: Move device back to init netns on owning netns delete
+Date:   Tue,  2 Mar 2021 13:24:23 +0100
+Message-Id: <20210302122423.872326-1-martin@strongswan.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-T24gMDIuMDMuMjAyMSAwODoxOTowMCwgTWFyYyB3cm90ZToNCj4gT24gMDIuMDMuMjAyMSAxMDo0
-MDoyMSwgVmluY2VudCBNQUlMSE9MIHdyb3RlOg0KPiA+IFRoaXMgbWNwMjUxeF9od193YWtlKCkg
-ZnVuY3Rpb24gd2FzIGludHJvZHVjZWQgaW4gYmVsb3cgY29tbWl0Og0KPiA+IDhjZThjMGFiY2Jh
-MyAoImNhbjogbWNwMjUxeDogb25seSByZXNldCBoYXJkd2FyZSBhcyByZXF1aXJlZCIpIA0KPiA+
-IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRz
-L2xpbnV4LmdpdC9jb20NCj4gPiBtaXQvP2lkPThjZThjMGFiY2JhMzE0ZTFmZTk1NGExODQwZjY1
-NjhiZjVhZWYyZWYNCg0KPiA+IEkgYW0gYWRkaW5nIFRpbW8gdG8gdGhlIGxvb3AuIEhlIGlzIHRo
-ZSBhdXRob3Igb2YgdGhlIHR3byBjb21taXRzIGFib3ZlLg0KPiA+IEkgdGhpbmsgaGUgd2lsbCBi
-ZSBvZiBiZXR0ZXIgc3VwcG9ydCB0aGFuIG1lIGhlcmUgOikNCg0KPiBPZiBjb3Vyc2UgSSB3YW50
-ZWQgdG8gYWRkIFRpbW8sIHRoYW5rcy4gSSB0aGluayBJJ3ZlIHBpY2tlZCB5b3VyIGUtbWFpbCwg
-YXMgeW91J3ZlIGRvbmUgdGhlIG5ld2VzdCBjaGFuZ2Ugb24gdGhlIGRyaXZlciBhZnRlciBtZSA6
-KQ0KDQpUaGlzIENBTiBjb250cm9sbGVyIGRlbWFuZHMgYSBzb2Z0d2FyZSByZXNldCBhZnRlciBw
-b3dlciBvbiB3aGljaCBpcyBkb25lIGluIG1jcDI1MXhfY2FuX3Byb2JlIC0+IG1jcDI1MXhfaHdf
-cHJvYmUuDQpTaW5jZSB0aGVuIHJlc2V0cyBhcmUgb25seSBwZXJmb3JtZWQgd2hlbiB0aGUgcG93
-ZXIgdG8gdGhlIGNvbnRyb2xsZXIgaGFzIGJlZW4gZGlzYWJsZWQuIEUuZy4gd2hlbiBtY3AyNTF4
-X2Nhbl9zdXNwZW5kIGlzIGNhbGxlZCwNCnBvd2VyIGlzIHR1cm5lZCBvZmYgYW5kIGJ5IHNldHRp
-bmcgQUZURVJfU1VTUEVORF9QT1dFUiBpbiBwcml2LT5hZnRlcl9zdXNwZW5kIGl0IHdpbGwgYmUg
-cmVlbmFibGVkIGFuZCByZXNldCBpbiBtY3AyNTF4X2Nhbl9yZXN1bWUNCmFuZCBtY3AyNTF4X3Jl
-c3RhcnRfd29ya19oYW5kbGVyLg0KQ291bGQgaXQgYmUgdGhhdCBtY3AyNTF4X2Nhbl9wcm9iZSBk
-b2VzIG5vdCBnZXQgY2FsbGVkIGluIGFueSBjb25maWd1cmF0aW9uPyBPciBjb3VsZCBpdCBiZSB0
-aGF0IHRoZSBjb250cm9sbGVyIGdldHMgcG93ZXIgY3ljbGVkIGR1cmluZw0Kb3BlcmF0aW9uIHdp
-dGggdGhlc2UgT3JhbmdlIFBpIGJvYXJkcz8NCg0KUmVnYXJkcw0KVGltbw0K
+When a non-initial netns is destroyed, the usual policy is to delete
+all virtual network interfaces contained, but move physical interfaces
+back to the initial netns. This keeps the physical interface visible
+on the system.
+
+CAN devices are somewhat special, as they define rtnl_link_ops even
+if they are physical devices. If a CAN interface is moved into a
+non-initial netns, destroying that netns lets the interface vanish
+instead of moving it back to the initial netns. default_device_exit()
+skips CAN interfaces due to having rtnl_link_ops set. Reproducer:
+
+  ip netns add foo
+  ip link set can0 netns foo
+  ip netns delete foo
+
+WARNING: CPU: 1 PID: 84 at net/core/dev.c:11030 ops_exit_list+0x38/0x60
+CPU: 1 PID: 84 Comm: kworker/u4:2 Not tainted 5.10.19 #1
+Workqueue: netns cleanup_net
+[<c010e700>] (unwind_backtrace) from [<c010a1d8>] (show_stack+0x10/0x14)
+[<c010a1d8>] (show_stack) from [<c086dc10>] (dump_stack+0x94/0xa8)
+[<c086dc10>] (dump_stack) from [<c086b938>] (__warn+0xb8/0x114)
+[<c086b938>] (__warn) from [<c086ba10>] (warn_slowpath_fmt+0x7c/0xac)
+[<c086ba10>] (warn_slowpath_fmt) from [<c0629f20>] (ops_exit_list+0x38/0x60)
+[<c0629f20>] (ops_exit_list) from [<c062a5c4>] (cleanup_net+0x230/0x380)
+[<c062a5c4>] (cleanup_net) from [<c0142c20>] (process_one_work+0x1d8/0x438)
+[<c0142c20>] (process_one_work) from [<c0142ee4>] (worker_thread+0x64/0x5a8)
+[<c0142ee4>] (worker_thread) from [<c0148a98>] (kthread+0x148/0x14c)
+[<c0148a98>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+
+To properly restore physical CAN devices to the initial netns on owning
+netns exit, introduce a flag on rtnl_link_ops that can be set by drivers.
+For CAN devices setting this flag, default_device_exit() considers them
+non-virtual, applying the usual namespace move.
+
+The issue was introduced in the commit mentioned below, as at that time
+CAN devices did not have a dellink() operation.
+
+Fixes: e008b5fc8dc7 ("net: Simplfy default_device_exit and improve batching.")
+Signed-off-by: Martin Willi <martin@strongswan.org>
+---
+ drivers/net/can/dev/netlink.c | 1 +
+ include/net/rtnetlink.h       | 2 ++
+ net/core/dev.c                | 2 +-
+ 3 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 867f6be31230..f5d79e6e5483 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -355,6 +355,7 @@ static void can_dellink(struct net_device *dev, struct list_head *head)
+ 
+ struct rtnl_link_ops can_link_ops __read_mostly = {
+ 	.kind		= "can",
++	.netns_refund	= true,
+ 	.maxtype	= IFLA_CAN_MAX,
+ 	.policy		= can_policy,
+ 	.setup		= can_setup,
+diff --git a/include/net/rtnetlink.h b/include/net/rtnetlink.h
+index e2091bb2b3a8..4da61c950e93 100644
+--- a/include/net/rtnetlink.h
++++ b/include/net/rtnetlink.h
+@@ -33,6 +33,7 @@ static inline int rtnl_msg_family(const struct nlmsghdr *nlh)
+  *
+  *	@list: Used internally
+  *	@kind: Identifier
++ *	@netns_refund: Physical device, move to init_net on netns exit
+  *	@maxtype: Highest device specific netlink attribute number
+  *	@policy: Netlink policy for device specific attribute validation
+  *	@validate: Optional validation function for netlink/changelink parameters
+@@ -64,6 +65,7 @@ struct rtnl_link_ops {
+ 	size_t			priv_size;
+ 	void			(*setup)(struct net_device *dev);
+ 
++	bool			netns_refund;
+ 	unsigned int		maxtype;
+ 	const struct nla_policy	*policy;
+ 	int			(*validate)(struct nlattr *tb[],
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 6c5967e80132..a142a207fc1d 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -11346,7 +11346,7 @@ static void __net_exit default_device_exit(struct net *net)
+ 			continue;
+ 
+ 		/* Leave virtual devices for the generic cleanup */
+-		if (dev->rtnl_link_ops)
++		if (dev->rtnl_link_ops && !dev->rtnl_link_ops->netns_refund)
+ 			continue;
+ 
+ 		/* Push remaining network devices to init_net */
+-- 
+2.25.1
+
