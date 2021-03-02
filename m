@@ -2,37 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DEAEC4161F
-	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6CC3C28E82
+	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 28DE264FC6
-	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 79B8D64F2B
+	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235298AbhCCAD1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 2 Mar 2021 19:03:27 -0500
-Received: from relay-b03.edpnet.be ([212.71.1.220]:46096 "EHLO
-        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835428AbhCBTGy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 2 Mar 2021 14:06:54 -0500
-X-ASG-Debug-ID: 1614710693-15c4356e4c23060001-ZXuqFv
-Received: from zotac.vandijck-laurijssen.be (94.105.105.240.dyn.edpnet.net [94.105.105.240]) by relay-b03.edpnet.be with ESMTP id b4Gey686mZx8ui2U; Tue, 02 Mar 2021 19:44:53 +0100 (CET)
-X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
-X-Barracuda-Effective-Source-IP: 94.105.105.240.dyn.edpnet.net[94.105.105.240]
-X-Barracuda-Apparent-Source-IP: 94.105.105.240
-Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
-        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id 3D62612A739F;
-        Tue,  2 Mar 2021 19:44:53 +0100 (CET)
-Date:   Tue, 2 Mar 2021 19:44:51 +0100
-From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
+        id S235465AbhCCAEh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 2 Mar 2021 19:04:37 -0500
+Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:60037 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1837609AbhCBV6H (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 2 Mar 2021 16:58:07 -0500
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([87.20.116.197])
+        by smtp-17.iol.local with ESMTPA
+        id HCz0lBDmUlChfHCz9lGZzj; Tue, 02 Mar 2021 22:55:20 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1614722120; bh=ZwZwTipdZKxY6qGd4VuGRlxL2+9rpHSGnSFdq6NXms8=;
+        h=From;
+        b=mPrpEseLmRrBAvDVm04K8oNNF28Zo/O/F0qD5uEk4Up7Y3uoqdtz+zXu1AzwFIMdP
+         j0HCZMMKK98dqhfU3IWrb8+e7iuMyJ7ki5vqiJ8gruOIvw7wErtVYCWVwFKfpzqmxp
+         uwo1acySIN6i/2BVaKJe2jWrdOa2QNzFkZRj/anG6il33wNxYpiMSdWMnKJHppkpxf
+         0wIHDFZUWZB6wuI1JN4X859+j3PnCM03RmrjpUPKkPe1YArgRVpez8Gsb2TG59Tobc
+         JAj/xle++6jY9sTNqtQaWraAT966UuBpbDaoxG9GeIuqx9UOcDpEa93ToyEJrfOoL0
+         PmNRkDJhakNUA==
+X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=603eb448 cx=a_exe
+ a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
+ a=AkCzXzlJzD4X874_W7gA:9
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alexander Stein <alexander.stein@systec-electronic.com>,
         Federico Vaga <federico.vaga@gmail.com>,
-        Alexander Stein <alexander.stein@systec-electronic.com>,
+        Dario Binacchi <dariobin@libero.it>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -42,77 +51,46 @@ Cc:     linux-kernel@vger.kernel.org,
         YueHaibing <yuehaibing@huawei.com>,
         Zhang Qilong <zhangqilong3@huawei.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] can: c_can: fix control interface used by
- c_can_do_tx
-Message-ID: <20210302184451.GC26930@x1.vandijck-laurijssen.be>
-X-ASG-Orig-Subj: Re: [PATCH v3 3/6] can: c_can: fix control interface used by
- c_can_do_tx
-Mail-Followup-To: Dario Binacchi <dariobin@libero.it>,
-        linux-kernel@vger.kernel.org,
-        Federico Vaga <federico.vaga@gmail.com>,
-        Alexander Stein <alexander.stein@systec-electronic.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210228103856.4089-1-dariobin@libero.it>
- <20210228103856.4089-4-dariobin@libero.it>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210228103856.4089-4-dariobin@libero.it>
-User-Agent: Mutt/1.5.22 (2013-10-16)
-X-Barracuda-Connect: 94.105.105.240.dyn.edpnet.net[94.105.105.240]
-X-Barracuda-Start-Time: 1614710693
-X-Barracuda-URL: https://212.71.1.220:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 1116
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.88269
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
+Subject: [PATCH v4 2/6] can: c_can: fix indentation
+Date:   Tue,  2 Mar 2021 22:54:31 +0100
+Message-Id: <20210302215435.18286-3-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210302215435.18286-1-dariobin@libero.it>
+References: <20210302215435.18286-1-dariobin@libero.it>
+X-CMAE-Envelope: MS4xfI+vjYn0/uqmevKnPg9KnLpPOBK8b83OBrdtkArRSpSR/lB1fyWXvSx1aaQaq8iD80nZa8tu9Aibepn3Zpu8XMjq659gMLR/wRhhLWws1QoHPXdOdU7t
+ nw5q39a2Kyn0BVa6RmrJrV16o7UO0v8frA20GoiQEHGYoHIDOtCE3ui9DrOKS9VvQfqniYmpAdqgeBl0t/IfdgP4WET+0PQDGwL4Oda//5gW4VaROPl1OXYW
+ rYXgN8JA2amTRRJDUR/jTtPofmxWKILyJj/XIOPOYHhor5mWUAHbil813bTFeK7Y7z0fwLwD5Lgs24VcbS3zyZsKc7uUt/PO8FF6of6efXqHGbL6ViTcaklM
+ jYjoQlnTqZW0AI2PGOK1C4xOESF6WswqM7ZQXZnC4fx7BxwVb2OS49/W7pWILf+5xvO8VkLSU6+YSrrEvL6OjIaEleuxWBt+QoHxMSCiyY2giOfuei32wCSt
+ XY7M69zaBK5x8OUTHAtZ2226g2JLAHCm7Tb+8RXIxLmYM6boE19+tr41E4U7UNk/jTH0w0SocPjoYmBumSgIMtgcllXr7pjPIyjk3yIqE3hnAqmzc7bIeRFj
+ nFZRk21NuxG+cHREwabEZqM0/fhYh0GDeBRwBKLimBD82BvvTweiFwA52SwJfI0S7UXCdNeEuQ4qfnvO/vA27lW+6CtgHuCavBBkS1QCOfH7YA==
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Sun, 28 Feb 2021 11:38:52 +0100, Dario Binacchi wrote:
-> According to commit 640916db2bf7 ("can: c_can: Make it SMP safe") let RX use
-> IF1 (i.e. IF_RX) and TX use IF2 (i.e. IF_TX).
-> 
-> Signed-off-by: Dario Binacchi <dariobin@libero.it>
-> ---
-> 
-> (no changes since v1)
-> 
->  drivers/net/can/c_can/c_can.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-> index dbcc1c1c92d6..69526c3a671c 100644
-> --- a/drivers/net/can/c_can/c_can.c
-> +++ b/drivers/net/can/c_can/c_can.c
-> @@ -732,7 +732,7 @@ static void c_can_do_tx(struct net_device *dev)
->  		idx--;
->  		pend &= ~(1 << idx);
->  		obj = idx + C_CAN_MSG_OBJ_TX_FIRST;
-> -		c_can_inval_tx_object(dev, IF_RX, obj);
-> +		c_can_inval_tx_object(dev, IF_TX, obj);
+Commit 524369e2391f ("can: c_can: remove obsolete STRICT_FRAME_ORDERING Kconfig option")
+left behind wrong indentation, fix it.
 
-Right. I had a similar effort last year to increase the reception
-throughput, but I ended with some sporadic strange tx echo problems.
-This fix may have fixed my problem as wel.
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
+---
 
->  		can_get_echo_skb(dev, idx, NULL);
->  		bytes += priv->dlc[idx];
->  		pkts++;
-> -- 
-> 2.17.1
-> 
+(no changes since v1)
+
+ drivers/net/can/c_can/c_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index a962ceefd44a..dbcc1c1c92d6 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -786,7 +786,7 @@ static u32 c_can_adjust_pending(u32 pend)
+ static inline void c_can_rx_object_get(struct net_device *dev,
+ 				       struct c_can_priv *priv, u32 obj)
+ {
+-		c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
++	c_can_object_get(dev, IF_RX, obj, priv->comm_rcv_high);
+ }
+ 
+ static inline void c_can_rx_finalize(struct net_device *dev,
+-- 
+2.17.1
+
