@@ -2,53 +2,59 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C411C43381
-	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57E84C43333
+	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3301464F39
-	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 145A964FC8
+	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231866AbhCBX7a (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 2 Mar 2021 18:59:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        id S234568AbhCCABW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 2 Mar 2021 19:01:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376384AbhCBH1L (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 2 Mar 2021 02:27:11 -0500
+        with ESMTP id S1838648AbhCBK5i (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 2 Mar 2021 05:57:38 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF09C061756
-        for <linux-can@vger.kernel.org>; Mon,  1 Mar 2021 23:26:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9308AC06178A
+        for <linux-can@vger.kernel.org>; Tue,  2 Mar 2021 02:56:57 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lGzQ4-0000p3-UA; Tue, 02 Mar 2021 08:26:13 +0100
+        id 1lH2hk-0001ZR-JF; Tue, 02 Mar 2021 11:56:40 +0100
 Received: from [IPv6:2a03:f580:87bc:d400:170b:eff8:30a0:9455] (unknown [IPv6:2a03:f580:87bc:d400:170b:eff8:30a0:9455])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
          client-signature RSA-PSS (4096 bits) client-digest SHA256)
         (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
         (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 602A85EC02E;
-        Tue,  2 Mar 2021 07:26:09 +0000 (UTC)
-Subject: Re: [PATCH v2] can: c_can: move runtime PM enable/disable to
- c_can_platform
-To:     Tong Zhang <ztong0001@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4E1855EC2A0;
+        Tue,  2 Mar 2021 10:56:35 +0000 (UTC)
+Subject: Re: [PATCH v3 5/6] can: c_can: prepare to up the message objects
+ number
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Federico Vaga <federico.vaga@gmail.com>,
+        Alexander Stein <alexander.stein@systec-electronic.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
         YueHaibing <yuehaibing@huawei.com>,
         Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210301150840.mqngl7og46o3nxjb@pengutronix.de>
- <20210302025542.987600-1-ztong0001@gmail.com>
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+References: <20210228103856.4089-1-dariobin@libero.it>
+ <20210228103856.4089-6-dariobin@libero.it>
+ <20210301113805.jylhc373sip7zmed@pengutronix.de>
+ <1037673059.602534.1614619302914@mail1.libero.it>
+ <20210301194550.6zqmxzcwvzlgjzcj@pengutronix.de>
+ <1154674280.137227.1614682252245@mail1.libero.it>
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
@@ -110,15 +116,15 @@ Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
  0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
  HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
  xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <593fd5a2-b801-82cc-34ae-cc6617096ab5@pengutronix.de>
-Date:   Tue, 2 Mar 2021 08:26:01 +0100
+Message-ID: <3e02f656-573d-8615-60c7-7c62af615a10@pengutronix.de>
+Date:   Tue, 2 Mar 2021 11:56:32 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210302025542.987600-1-ztong0001@gmail.com>
+In-Reply-To: <1154674280.137227.1614682252245@mail1.libero.it>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="FR48JlmjKdecAeAeTvxOLPymBVRFXt0hA"
+ boundary="HVzkvO2wFvndWwHoH5zV90NUDan4VQl8A"
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -128,43 +134,74 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---FR48JlmjKdecAeAeTvxOLPymBVRFXt0hA
-Content-Type: multipart/mixed; boundary="bIpJ6cYKzzPuqp8ApA7u1ny9oL9fZVC1F";
+--HVzkvO2wFvndWwHoH5zV90NUDan4VQl8A
+Content-Type: multipart/mixed; boundary="NqCD5WZtdBXi0l0B7Gy05QjU2aqXJBIe2";
  protected-headers="v1"
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Tong Zhang <ztong0001@gmail.com>, Wolfgang Grandegger
- <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>,
+To: Dario Binacchi <dariobin@libero.it>
+Cc: linux-kernel@vger.kernel.org, Federico Vaga <federico.vaga@gmail.com>,
+ Alexander Stein <alexander.stein@systec-electronic.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
  Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
- Oliver Hartkopp <socketcan@hartkopp.net>, YueHaibing
- <yuehaibing@huawei.com>, Zhang Qilong <zhangqilong3@huawei.com>,
- linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <593fd5a2-b801-82cc-34ae-cc6617096ab5@pengutronix.de>
-Subject: Re: [PATCH v2] can: c_can: move runtime PM enable/disable to
- c_can_platform
-References: <20210301150840.mqngl7og46o3nxjb@pengutronix.de>
- <20210302025542.987600-1-ztong0001@gmail.com>
-In-Reply-To: <20210302025542.987600-1-ztong0001@gmail.com>
+ Wolfgang Grandegger <wg@grandegger.com>, YueHaibing <yuehaibing@huawei.com>,
+ Zhang Qilong <zhangqilong3@huawei.com>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org
+Message-ID: <3e02f656-573d-8615-60c7-7c62af615a10@pengutronix.de>
+Subject: Re: [PATCH v3 5/6] can: c_can: prepare to up the message objects
+ number
+References: <20210228103856.4089-1-dariobin@libero.it>
+ <20210228103856.4089-6-dariobin@libero.it>
+ <20210301113805.jylhc373sip7zmed@pengutronix.de>
+ <1037673059.602534.1614619302914@mail1.libero.it>
+ <20210301194550.6zqmxzcwvzlgjzcj@pengutronix.de>
+ <1154674280.137227.1614682252245@mail1.libero.it>
+In-Reply-To: <1154674280.137227.1614682252245@mail1.libero.it>
 
---bIpJ6cYKzzPuqp8ApA7u1ny9oL9fZVC1F
+--NqCD5WZtdBXi0l0B7Gy05QjU2aqXJBIe2
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-On 3/2/21 3:55 AM, Tong Zhang wrote:
-> Currently doing modprobe c_can_pci will make kernel complain
-> "Unbalanced pm_runtime_enable!", this is caused by pm_runtime_enable()
-> called before pm is initialized.
-> This fix is similar to 227619c3ff7c, move those pm_enable/disable code =
-to
-> c_can_platform.
+On 3/2/21 11:50 AM, Dario Binacchi wrote:
+> Hi Marc,
 >=20
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+>> Il 01/03/2021 20:45 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:=
 
-Applied to linux-can/testing.
+>>
+>> =20
+>> On 01.03.2021 18:21:42, Dario Binacchi wrote:
+>>>>> @@ -730,7 +728,7 @@ static void c_can_do_tx(struct net_device *dev)=
 
-Thanks,
+>>>>>  	while ((idx =3D ffs(pend))) {
+>>>>>  		idx--;
+>>>>>  		pend &=3D ~(1 << idx);
+>>>>> -		obj =3D idx + C_CAN_MSG_OBJ_TX_FIRST;
+>>>>> +		obj =3D idx + priv->msg_obj_tx_first;
+>>>>>  		c_can_inval_tx_object(dev, IF_TX, obj);
+>>>>>  		can_get_echo_skb(dev, idx, NULL);
+>>>>>  		bytes +=3D priv->dlc[idx];
+>>>>> @@ -740,7 +738,7 @@ static void c_can_do_tx(struct net_device *dev)=
+
+>>>>>  	/* Clear the bits in the tx_active mask */
+>>>>>  	atomic_sub(clr, &priv->tx_active);
+>>>>> =20
+>>>>> -	if (clr & (1 << (C_CAN_MSG_OBJ_TX_NUM - 1)))
+>>>>> +	if (clr & (1 << (priv->msg_obj_tx_num - 1)))
+>>>>
+>>>> Do we need 1UL here, too?
+>>>
+>>> Do you agree if I use the BIT macro ?
+>>
+>> No, please use GENMASK(priv->msg_obj_tx_num, 0) here.
+>=20
+> In case of 64 message objects, msg_obj_tx_num =3D 32, and 1 << (priv->m=
+sg_obj_tx_num - 1) =3D 0x80000000.=20
+> GENMASK(priv->msg_obj_tx_num, 0) =3D 0.=20
+> BIT(priv->msg_obj_tx_num - 1) =3D 0x80000000.
+
+Doh! I've misread where the -1 is places.
+
 Marc
 
 --=20
@@ -174,23 +211,23 @@ Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
---bIpJ6cYKzzPuqp8ApA7u1ny9oL9fZVC1F--
+--NqCD5WZtdBXi0l0B7Gy05QjU2aqXJBIe2--
 
---FR48JlmjKdecAeAeTvxOLPymBVRFXt0hA
+--HVzkvO2wFvndWwHoH5zV90NUDan4VQl8A
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA96IwACgkQqclaivrt
-76mD5QgArOA7uZnze0rcsB0hwCidoq0XSlcDosb8nF3hRfvLZmds52nfJjkm7loo
-jEfOqe8/HYQmW8a1mWknXXgEZMShuDEJA8aUR2SVREV/g6W1luJ7LoVpye/9zj9H
-HdAdvV5BoatFsQLhPNoB5ZFlMLdiqUKVoXTRk1zas7C6Y2h+ZbeREmProEtkqKVv
-TenR2Mo3iJtsWJjdkZ7boZQ8u5oA7ORhQJc8SpD8DKJ7DrWNhGA4L6wH/MBar65F
-Gkrm6rms9TdsptR5HcfNiJAh/YmL3syVA8WLqbqH9dMHOzkgO/RhC0t3Q2ZJzGlE
-dgHSYpITGSCl3O2/ZrpF6rusEkRqag==
-=xufc
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA+GeAACgkQqclaivrt
+76kWtQf/QKPLMn0MnWkf4a0CdFhyE/5rEjO6AsqAQDSPn0Noz3FARXuZICAMq6ks
+weKLtxVy4vzaXinyf+9fpY12p0/bX4IQleQY5HMTvBLrgPjm0yO1bLg/0pcqb+0m
+s0yzznF9X7mqR+UVKLatuQoklbbzdieYLpg1A7NhVIfcBiSUJXLkvHJtWGVaF+TO
+yrLaXTnzGiiDAVmxayN3uzGXRTZ3enl9Z3dl97jfTgQQ7yuDW6EB4X1n03+xqmEs
+2kCbjf2udpwmFx31bEwyj8Zum9Fpo6oTGATc2/lHqlDuCYNHT3dtbn9gJytsi8l8
+x7WHvpc1GNY0VT3ZCIPRTT3RZiivzg==
+=YzP6
 -----END PGP SIGNATURE-----
 
---FR48JlmjKdecAeAeTvxOLPymBVRFXt0hA--
+--HVzkvO2wFvndWwHoH5zV90NUDan4VQl8A--
