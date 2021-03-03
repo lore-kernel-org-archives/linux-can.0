@@ -2,105 +2,107 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83576C433E9
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:23:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 998E7C433E0
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:24:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5CAC064F02
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:23:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 688EC64EA4
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:24:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355366AbhCDAXm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
+        id S240990AbhCDAX6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:23:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842623AbhCCIIx (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 03:08:53 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C205C061793
-        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 00:08:12 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id n4so5316006wmq.3
-        for <linux-can@vger.kernel.org>; Wed, 03 Mar 2021 00:08:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=maxiluxsystems-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VFRRoGfckXg7HGIHciNO0j64FnqzsFblrRwXjjxT5aQ=;
-        b=zTNcj+w6s3QVfZnUWrYAMq3n3VsKwVdUj8ssQwMhaTr8oBshIbSZs7mdA/oXjmqQ//
-         g4b6vNLRv+pIQJSiG59qcGArFiz29J59mqL7iFUzEg2ijU5r9WK6rGNU0Lk5QI+2QJfC
-         OzOhF0pMquICtpp4QYCYX4SxfgY/56zKLWGcXJcUS0hjMKPRDRXOQW0eNdMfszaPtptR
-         QBifXuStuRl03ff+A2Btp39bHwgKlOSB+wyz3YZUB+A4H4NWl9mfndtIh/2TEGJkq/5y
-         lLR1IBkSvvpkuDf3hyXCOnWsmUJLlmIEbNKbsG8RVConCc/69XCoOzf8Giclwi9M2m/p
-         sLCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VFRRoGfckXg7HGIHciNO0j64FnqzsFblrRwXjjxT5aQ=;
-        b=Hsi5PasBF3SB4BLzid1ICbdR10bq51pMuFde2xcb461G/hUD/2ZJ3WRP1AQ1WU9QRH
-         XPe6D2+GHLCwRRMI6zftDMc41hwLcYHW6Si4qiA4PhSLANjXE0BpdoPVPf9UTfT05N3B
-         7mZf4yYLHK0XcFdmDBshY07hi1ZEZKMateFx1VnajJU/ymwMqMxpI4ZNNPI07nPVMseI
-         cBiZZldfGb9Iw1MeZEyUmQHB5+77ujBbeTM2PAuZCf2xdOKSDnooSKtoFE25Uz6XhkuZ
-         o8rjFzzrp8gkkXVw4N4C5owg0ruq1gLVgh4YxhbVeo7P5uG0GYI/4A+SacMhNct00zbu
-         FogA==
-X-Gm-Message-State: AOAM530vQ82i92+z3kSUmn/FvJMI5fz6IA6aSEKWIVCDct1CzqZQWX/8
-        mTw0+tLUAVv8x5gJAjWRu7e5HvVqF3LucQ==
-X-Google-Smtp-Source: ABdhPJyW5r4wKfWXy2ptJTfwpcf0kaJhu7DHOcOExroDX7tKWu0htHyirwIGzDdi7qPaGYQMT14lyA==
-X-Received: by 2002:a05:600c:4c11:: with SMTP id d17mr8064464wmp.86.1614758890936;
-        Wed, 03 Mar 2021 00:08:10 -0800 (PST)
-Received: from bigthink (94.197.200.66.threembb.co.uk. [94.197.200.66])
-        by smtp.gmail.com with ESMTPSA id g9sm32360806wrp.14.2021.03.03.00.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 00:08:10 -0800 (PST)
-Date:   Wed, 3 Mar 2021 08:08:09 +0000
-From:   Torin Cooper-Bennun <torin@maxiluxsystems.com>
-To:     Mariusz Madej <mariusz.madej@xtrack.com>
-Cc:     "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: m_can: reset IR_RF0L in message reception loop
-Message-ID: <20210303080809.zfjh6oolqxcv4pir@bigthink>
-References: <0710fbd2-4b88-21bf-88f7-0b97d7e7dc0b@xtrack.com>
+        with ESMTP id S241434AbhCCNMX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 08:12:23 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5294C061788
+        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 05:11:25 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lHRHg-0008PM-Gk; Wed, 03 Mar 2021 14:11:24 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:a20d:2fb6:f2cb:982e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id BAE7D5ECC1C;
+        Wed,  3 Mar 2021 13:11:23 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 14:11:22 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Torin Cooper-Bennun <torin@maxiluxsystems.com>
+Cc:     linux-can@vger.kernel.org
+Subject: Re: [PATCH] can: m_can: m_can_rx_handler(): fix RX in periphs being
+ blocked by error handling
+Message-ID: <20210303131122.nem3z2iq4ts3iirj@pengutronix.de>
+References: <20210303124950.3917746-1-torin@maxiluxsystems.com>
+ <20210303125523.4tfd6ifwyugoygzh@pengutronix.de>
+ <20210303130750.y2leqimmthzn2liy@bigthink>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ppb3kpalxj6x5kto"
 Content-Disposition: inline
-In-Reply-To: <0710fbd2-4b88-21bf-88f7-0b97d7e7dc0b@xtrack.com>
+In-Reply-To: <20210303130750.y2leqimmthzn2liy@bigthink>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 10:21:27PM +0100, Mariusz Madej wrote:
-> Message lost warning is reported in loop without interrupt reset. Besides
-> redundant log messages it may lead to serious performance problem, where
-> fifo gets full faster than next reception is scheduled by NAPI. This
-> patch fixes it.
 
-Looking at the flow in m_can_rx_handler, it looks as though
-m_can_handle_bus_errors -> m_can_handle_lost_msg already handles message
-loss properly, and issues a netdev_err. I wonder whether we can remove
-the warning from m_can_do_rx_poll entirely:
+--ppb3kpalxj6x5kto
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 3752520a7d4b..d783c46cac16 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -501,9 +501,6 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
- 	}
- 
- 	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
--		if (rxfs & RXFS_RFL)
--			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
--
- 		m_can_read_fifo(dev, rxfs);
- 
- 		quota--;
+On 03.03.2021 13:07:50, Torin Cooper-Bennun wrote:
+> On Wed, Mar 03, 2021 at 01:55:23PM +0100, Marc Kleine-Budde wrote:
+> > > In peripherals, m_can_rx_handler is called with quota =3D 1 from an I=
+SR
+> > > context.
+> >=20
+> > To be precise, it's a threaded Interrupt. Why not call the rx_handler
+> > with a reasonable quota instead?
+>=20
+> I see, thanks. Forgive my ignorance, but how long should a threaded ISR
+> reasonably block for?
 
----
-Regards,
+It's a IRQ thread, so it's subject to scheduling and priorities can be
+configured. The IRQ thread of the mcp251xfd driver runs until all IRQs
+are handled.
 
-Torin Cooper-Bennun
-Software Engineer | maxiluxsystems.com
+> Was there ever a good reason for the quota to be 1 here?
 
+Don't know.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--ppb3kpalxj6x5kto
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA/ivgACgkQqclaivrt
+76m28Af/R7awfbIhphTghJQtqavF9x0MZ30vo0Da0bIqAskTPFwxLuG4zHkDyfuZ
+pu2x+Lpp5Ywv7TsTOcglx7VN6WXjob0gfI1wyaENTT9rWNaZSIQ/4wCNFLOOuolA
+mM9koYLKkc6+hHMa38N3f9k83IWvI4G0X+AuELIbCnYwtsq0h1c3kxhAqAYzQHFR
+6fWcBcBeFpzNoJXhyTmAkb/lQX+4dbktFNoPOFVft8NUMTz8Pr+y9mN77zcjkRg3
+OTT6Uu4UJ2BFjk0V4FQ0R67A+z1EAgvfzCj7a+D2j64ifcLPlS8CbtGrwyWEaP6l
+tx7DC2aM3doph5D5Zd1AnZu61EbHpg==
+=W+d3
+-----END PGP SIGNATURE-----
+
+--ppb3kpalxj6x5kto--
