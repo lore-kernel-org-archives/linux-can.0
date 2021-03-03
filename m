@@ -2,228 +2,161 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C1AAC432C3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF314C4361A
 	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:27:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CBC8564EBD
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:27:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7D16B64E68
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:27:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350149AbhCDAYC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:24:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388032AbhCCUac (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 15:30:32 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945A1C061756
-        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 12:29:52 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lHY7u-0007KX-OU; Wed, 03 Mar 2021 21:29:46 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:a20d:2fb6:f2cb:982e] (unknown [IPv6:2a03:f580:87bc:d400:a20d:2fb6:f2cb:982e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 568465ED0E6;
-        Wed,  3 Mar 2021 20:29:44 +0000 (UTC)
-Subject: Re: [PATCH net] can: dev: Move device back to init netns on owning
- netns delete
-To:     Martin Willi <martin@strongswan.org>,
-        "David S . Miller" <davem@davemloft.net>,
+        id S241192AbhCDAXx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:23:53 -0500
+Received: from smtp-33-i2.italiaonline.it ([213.209.12.33]:47741 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240689AbhCCKbx (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:31:53 -0500
+Received: from oxapps-11-061.iol.local ([10.101.8.71])
+        by smtp-33.iol.local with ESMTPA
+        id HOmcl0ssMR8VAHOmclqOk0; Wed, 03 Mar 2021 11:31:10 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1614767471; bh=iWeKOBQjPDMP70PIy6g/lv11yegMli1iUbTvPIab9Hw=;
+        h=From;
+        b=Sc7Dy2wN0gP1XRVMgTMpMxmI1D3l5ClDP3toihoaqHPAuKMnmh496S9X8HYkW8lPC
+         3pVaJ6bUFXHKfLbox8LgOm7/9m3N7Nr4o6fiTnOG8XVGtIvHAlvVCJ9g/nBn7I6Aea
+         ZSaovdx1MChmi1TtZ3w7XE11luWaWuL8Txskv28NSC6yKHyuBypzJAX9PF2/STLe8G
+         hZgW8MEP1KG4GC+a5sICYeOPkBsgKvmlJ89cX/L+33rRtHgO0zpiaXr1xF7HhZq6nx
+         WG4H825ttXbFc+K0FEDw9apRECHaXvYw7lu0DKinCqnXythIAj2SNRwI/i3ACxUSIT
+         ingFK3U8FV5EQ==
+X-CNFS-Analysis: v=2.4 cv=OapdsjfY c=1 sm=1 tr=0 ts=603f656f cx=a_exe
+ a=EdAe90YrY4QbXR8+o2XJeA==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
+ a=vesc6bHxzc4A:10 a=P-IC7800AAAA:8 a=bGNZPXyTAAAA:8 a=lneh_w3DiUngg6D-LXoA:9
+ a=QEXdDO2ut3YA:10 a=d3PnA9EDa4IxuAV0gXij:22 a=yL4RfsBhuEsimFDS2qtJ:22
+ a=BPzZvq435JnGatEyYwdK:22
+Date:   Wed, 3 Mar 2021 11:31:10 +0100 (CET)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+        linux-kernel@vger.kernel.org,
+        Federico Vaga <federico.vaga@gmail.com>,
+        Alexander Stein <alexander.stein@systec-electronic.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>
-Cc:     netdev@vger.kernel.org, linux-can@vger.kernel.org
-References: <20210302122423.872326-1-martin@strongswan.org>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <86f703d8-d658-505a-6493-54bf09ed65b2@pengutronix.de>
-Date:   Wed, 3 Mar 2021 21:29:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <1871630605.34606.1614767470294@mail1.libero.it>
+In-Reply-To: <20210303090036.aocqk6gp3vqnzaku@pengutronix.de>
+References: <20210228103856.4089-1-dariobin@libero.it>
+ <20210228103856.4089-6-dariobin@libero.it>
+ <20210302184901.GD26930@x1.vandijck-laurijssen.be>
+ <91394876.26757.1614759793793@mail1.libero.it>
+ <20210303090036.aocqk6gp3vqnzaku@pengutronix.de>
+Subject: Re: [PATCH v3 5/6] can: c_can: prepare to up the message objects
+ number
 MIME-Version: 1.0
-In-Reply-To: <20210302122423.872326-1-martin@strongswan.org>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="DsbahqJdLwBJAhKMeNNNn9zszdLQ7X4GA"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev27
+X-Originating-IP: 185.33.57.41
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: e/8xLbhvGv4RhpAuB15ddAfaBZ6f60R7
+x-libjamv: H528txnWAb8=
+X-CMAE-Envelope: MS4xfLp0UZWodVO6sdmB8YeH3dE4jHsE98HGVnRNZs/1QONJC62Zhmsfok8ovMiiQfnz5IfFhwVkyLDNajUMbWKCKr/2yGMm2tylZMMzbNGQnx5ZnLLgxPH8
+ oH3lLxRdyOxpT0f44rzgqaDq1PXpP9JjJcl/DmCiombR+3kfDGzsPK4SiCo/6yKRHY/WjuT9dShZZ9xvZtwXHjFPW9rqj1X7El7ZEhuUpU2oAq4TZ2c/tt5k
+ iIzsU8plzv59qefSv7NykZF5OqAYunEEDQwumMIIBbezNw2S4L4WDFA4NKHWkUfv9YJXyYlIthyRJa36U89csRhFnRtLMnCY47afkTEx/x6OJoP/9DLtB04K
+ yCTBgfetHXI8JKCbJEpy3dl7aioFyuCsKgQnlQmoAZTkhM1WvA19b+qjKTuF5NqR/PWHhG2C3zOY4O4Vq8zmjNoBqZUb88WK3roxmivQryM9V1DlTSN1RE/U
+ nr1JatGzu7SIiIzyy8nXB9dTsaVxYd5q4qHlsQZ3tJ5i7wl1xrgYfjTUpjdyRErcQ8ld18c8KJYW8gW95zXso7bQ23zFoI5VbMpaeSadDXYNc8wj4An5Zlek
+ r425X09xKMur4csD1xdjAxpoo/xqoFDBT62JAVoR0oxZVXGWysNpi65UsY6BpZNVetKbuRkR3pgkafKN+1OsFjAw
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DsbahqJdLwBJAhKMeNNNn9zszdLQ7X4GA
-Content-Type: multipart/mixed; boundary="ojcBFNFqivFoD36g4TUxyBuWoCCP0GhPF";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Martin Willi <martin@strongswan.org>,
- "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Wolfgang Grandegger <wg@grandegger.com>
-Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org
-Message-ID: <86f703d8-d658-505a-6493-54bf09ed65b2@pengutronix.de>
-Subject: Re: [PATCH net] can: dev: Move device back to init netns on owning
- netns delete
-References: <20210302122423.872326-1-martin@strongswan.org>
-In-Reply-To: <20210302122423.872326-1-martin@strongswan.org>
+Hi Marc,
 
---ojcBFNFqivFoD36g4TUxyBuWoCCP0GhPF
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+> Il 03/03/2021 10:00 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:
+> 
+>  
+> On 03.03.2021 09:23:13, Dario Binacchi wrote:
+> [...]
+> > > > @@ -1205,17 +1203,31 @@ static int c_can_close(struct net_device *dev)
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > -struct net_device *alloc_c_can_dev(void)
+> > > > +struct net_device *alloc_c_can_dev(int msg_obj_num)
+> > > >  {
+> > > >  	struct net_device *dev;
+> > > >  	struct c_can_priv *priv;
+> > > > +	int msg_obj_tx_num = msg_obj_num / 2;
+> > > 
+> > > IMO, a bigger tx queue is not usefull.
+> > > A bigger rx queue however is.
+> > 
+> > This would not be good for my application. I think it really depends
+> > on the type of application. We can probably say that being able to
+> > size rx/tx queue would be a useful feature.
+> 
+> Ok. There is an ethtool interface to configure the size of the RX and TX
+> queues. In ethtool it's called the RX/TX "ring" size and you can get it
+> via the -g parameter, e.g. here for by Ethernet interface:
+> 
+> | $ ethtool -g enp0s25
+> | Ring parameters for enp0s25:
+> | Pre-set maximums:
+> | RX:		4096
+> | RX Mini:	n/a
+> | RX Jumbo:	n/a
+> | TX:		4096
+> | Current hardware settings:
+> | RX:		256
+> | RX Mini:	n/a
+> | RX Jumbo:	n/a
+> | TX:		256
+> 
+> If I understand correctly patch 6 has some assumptions that RX and TX
+> are max 32. To support up to 64 RX objects, you have to convert:
+> - u32 -> u64
+> - BIT() -> BIT_ULL()
+> - GENMASK() -> GENMASK_ULL()
+> 
+> The register access has to be converted, too. For performance reasons
+> you want to do as least as possible. Which is probably the most
+> complicated.
+> 
+> In the flexcan driver I have a similar problem. The driver keeps masks,
+> which mailboxes are RX and which TX and I added wrapper functions to
+> minimize IO access:
+> 
+> https://elixir.bootlin.com/linux/v5.11/source/drivers/net/can/flexcan.c#L904
+> 
+> This should to IMHO into patch 6.
+> 
+> Adding the ethtool support and making the rings configurable would be a
+> separate patch.
+> 
 
-On 3/2/21 1:24 PM, Martin Willi wrote:
-> When a non-initial netns is destroyed, the usual policy is to delete
-> all virtual network interfaces contained, but move physical interfaces
-> back to the initial netns. This keeps the physical interface visible
-> on the system.
->=20
-> CAN devices are somewhat special, as they define rtnl_link_ops even
-> if they are physical devices. If a CAN interface is moved into a
-> non-initial netns, destroying that netns lets the interface vanish
-> instead of moving it back to the initial netns. default_device_exit()
-> skips CAN interfaces due to having rtnl_link_ops set. Reproducer:
->=20
->   ip netns add foo
->   ip link set can0 netns foo
->   ip netns delete foo
->=20
-> WARNING: CPU: 1 PID: 84 at net/core/dev.c:11030 ops_exit_list+0x38/0x60=
+I think these features need to be developed in a later series. 
+I would stay with the extension to 64 messages equally divided 
+between reception and transmission.
 
-> CPU: 1 PID: 84 Comm: kworker/u4:2 Not tainted 5.10.19 #1
-> Workqueue: netns cleanup_net
-> [<c010e700>] (unwind_backtrace) from [<c010a1d8>] (show_stack+0x10/0x14=
-)
-> [<c010a1d8>] (show_stack) from [<c086dc10>] (dump_stack+0x94/0xa8)
-> [<c086dc10>] (dump_stack) from [<c086b938>] (__warn+0xb8/0x114)
-> [<c086b938>] (__warn) from [<c086ba10>] (warn_slowpath_fmt+0x7c/0xac)
-> [<c086ba10>] (warn_slowpath_fmt) from [<c0629f20>] (ops_exit_list+0x38/=
-0x60)
-> [<c0629f20>] (ops_exit_list) from [<c062a5c4>] (cleanup_net+0x230/0x380=
-)
-> [<c062a5c4>] (cleanup_net) from [<c0142c20>] (process_one_work+0x1d8/0x=
-438)
-> [<c0142c20>] (process_one_work) from [<c0142ee4>] (worker_thread+0x64/0=
-x5a8)
-> [<c0142ee4>] (worker_thread) from [<c0148a98>] (kthread+0x148/0x14c)
-> [<c0148a98>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
->=20
-> To properly restore physical CAN devices to the initial netns on owning=
+Thanks and regards,
+Dario
 
-> netns exit, introduce a flag on rtnl_link_ops that can be set by driver=
-s.
-> For CAN devices setting this flag, default_device_exit() considers them=
-
-> non-virtual, applying the usual namespace move.
->=20
-> The issue was introduced in the commit mentioned below, as at that time=
-
-> CAN devices did not have a dellink() operation.
->=20
-> Fixes: e008b5fc8dc7 ("net: Simplfy default_device_exit and improve batc=
-hing.")
-> Signed-off-by: Martin Willi <martin@strongswan.org>
-
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-David, Jakub are you taking this patch?
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---ojcBFNFqivFoD36g4TUxyBuWoCCP0GhPF--
-
---DsbahqJdLwBJAhKMeNNNn9zszdLQ7X4GA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA/8bMACgkQqclaivrt
-76nSkwf+KVqms7jf85bmKIidAg5kqlOPjiErIdhflBW93D9vP4r0626qnZVYOW21
-vphheuy+KkAEcGrIZbLiB35uLJkG+SVFa/Yh45LGlSLKvzBe9vpn1/mwohg2PS7Q
-EueKNxUSJoNfp7nc3Lmtuy1QDd2kbApX9+7meRXzyiUfg8TxkJg/+OmOoZM10rS1
-Zbh2uH4C7SPv2GEckdX/WyjPSnP/LHmh4DSDS2QRzhSXg/wOoEJ9VeRj87yWNaWc
-HrhWpH+M3i7lV05Q/NsxQWAy05WKjDKj92gB0RPl5uFxmGCDMDrA3HmO6hsreRpp
-SXKfgVLxa1HE8ydyHrsPRoBNZ0f8oQ==
-=LQzS
------END PGP SIGNATURE-----
-
---DsbahqJdLwBJAhKMeNNNn9zszdLQ7X4GA--
+> regards,
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
