@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B550BC4332B
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:24:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC2C4C433E0
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:24:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8E4E064F02
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:24:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD2F864EA4
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:24:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380742AbhCDAYB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:24:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
+        id S1355326AbhCDAXz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:23:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447752AbhCCPQV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 10:16:21 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D0AC0611A3
-        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 06:44:32 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id 7so23980676wrz.0
-        for <linux-can@vger.kernel.org>; Wed, 03 Mar 2021 06:44:32 -0800 (PST)
+        with ESMTP id S239164AbhCCMvz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 07:51:55 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A49C061793
+        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 04:50:25 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id v15so23556285wrx.4
+        for <linux-can@vger.kernel.org>; Wed, 03 Mar 2021 04:50:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=maxiluxsystems-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sTCwzn3oKxMCf1Fn/+EFMRYBOCtivaEMQs5qlcJpOJw=;
-        b=Am2myAUUVowOyKE7h8Ucqpa5z1rtl4V8Vz8ZCF7zai8asJOtWuhXkYmfHgqN8YLEHA
-         q7RA80olYy3BEwXz+Xr/BNnJDBFYKDmMfj8FwtkevHQpqiaWhJ4ksdSxpSFOdaiJdEiQ
-         0BA6mgZz384Kdf0fWAlfhctBX4UiAuTnunHjAWqv1dwakBsM7S/ZRzQfqWWnvAYzrb3R
-         G4FZiK7mHSYUSVubbllXFYeaj1My/Asoit8XYzVdXKygyWqtgndOL8eFe3SeU6E4DKyZ
-         eOvImfpeRj8HQzckhqk0lqESpLAYzqmyGfEy6KulTaNSmQzSyVVrH4IFtIjWdPT2fmv7
-         r8UQ==
+        bh=9/Ng2ZRdSTsvGRg2FA/bvFJe+jmS0IAxAzAbkFPyPR0=;
+        b=LRddkNQ3Kbn75vozmW1azF82ZNgTGBd7NbROl+o/9UWaHzr09ZMeSsIt7zyDwj+ATG
+         LHDR6viAG3Y80xLflqGrIB30CuHcWP7375YEmjWbWXl1nRNMcbCWfHVSyoW8GveBSKja
+         ivBW0kiGOYWwyQ/37P3UIzOBZVua0/Cp/IPzn2U1DeEPS/xQygyZnBAu+7G4W7SAZxe5
+         gF46rjyKiR20rPFpKnp8D2OwHO0J+qRuPgpgO7I0Zb97UqXC1fusNgbwdjx1CP58NNqZ
+         Ow7f9Y9Ac7X+Xskq93kGZB1F83Y86mOKFluUslJCrZaXhQeo4OIXTswHWo2wVR7ZxSjn
+         bP8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sTCwzn3oKxMCf1Fn/+EFMRYBOCtivaEMQs5qlcJpOJw=;
-        b=fV/K2mlPhb0nwtQg0iAUiAiWkDklHUGbPLK+cg4e/mPfkPmuYmmPKK/tbwx+ME5a4g
-         yc7B0Yql4YEurMqXbeaOawHM4WhHbV4pyx0NgM02d7gXjFLVmGXpy+UB+NBiZfbllfmZ
-         qcKIqZp1J/ylVKOrI2MniBZ3piGiiZ35nyOBERsc6g49XUnyBOU0VmlyDfYMYD8S9Fc2
-         k8H10Of/aESattUp62KuHmD45R3DXHfh+R5w6JH5bIXvGBkBtP9lcyS2/uGOs8aMkl/g
-         kgJ7a8h6V00CSPcvRGR2tJjhrzYde+SBAcbxn1qGiIU/ayqeCDeVw179jOOPPmxNhLQE
-         lWag==
-X-Gm-Message-State: AOAM530t/NwqQ4AitCUlJ7cNJYi18b8vRKqXthgI5Ibtvs/cX4SKKhhK
-        aUrKxdPi2Wby2aoCNO/WHrOOPOXiX2VUmw==
-X-Google-Smtp-Source: ABdhPJzOFw4oEsrLPp157vd2hR5M3qLawnbmyZRQxR/dUVGiJc95RVpNf+kjAb5SDkO0b6y/GDjQtg==
-X-Received: by 2002:a5d:5047:: with SMTP id h7mr17048718wrt.111.1614782671305;
-        Wed, 03 Mar 2021 06:44:31 -0800 (PST)
+        bh=9/Ng2ZRdSTsvGRg2FA/bvFJe+jmS0IAxAzAbkFPyPR0=;
+        b=MZSK3yAU6A/L2BXkfX+kgMuhmqF88EEE3GBHU92EKmoKzxFZaH+xw0wRNFdCqNpQQ/
+         /PgCl41EL3+td1sLgzr+bgcUfYOTFJ0vh+nehjNG16BaNNuXDjpSM2WS8LhcMEEzKf/v
+         2yD/6YIVXtY3N5Oy88HDyCwH+ebU6B5Pq0wKnYJ+ruTbfJZSOaBWC02XGMgmtydBgUH5
+         DkO/1ew7WtBsU79PvUjaus70XzaJbqD6ZyTKbZ+nwI8xNTsI7duHkH/VbFCyLWHFAQ4r
+         Ta3+ELxUIKuMo1EpSbpNkkJEJSRtxwot9+U/tWbEMW191V8AlH9F8J32bDng7kChhFSj
+         C5Rg==
+X-Gm-Message-State: AOAM5327PYpvhKR/SQ2mR/TEKJE7gUjX27GX32kH9DrmWQFcHPx6v5EO
+        GCBSHv6kWDBnI6jcQ1Oz3aOCJGded8aWGQ==
+X-Google-Smtp-Source: ABdhPJxQHerz7Un+83VTt0TML2nd0yND21fNVNrjZ1GVEPaajJYvRu+LmKWJH25B8UrCDe5E8Hb73Q==
+X-Received: by 2002:adf:e482:: with SMTP id i2mr27016820wrm.392.1614775823715;
+        Wed, 03 Mar 2021 04:50:23 -0800 (PST)
 Received: from localhost.localdomain (94.197.200.66.threembb.co.uk. [94.197.200.66])
-        by smtp.gmail.com with ESMTPSA id h20sm5877480wmp.38.2021.03.03.06.44.30
+        by smtp.gmail.com with ESMTPSA id a198sm5949764wmd.11.2021.03.03.04.50.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 06:44:31 -0800 (PST)
+        Wed, 03 Mar 2021 04:50:23 -0800 (PST)
 From:   Torin Cooper-Bennun <torin@maxiluxsystems.com>
 To:     linux-can@vger.kernel.org
 Cc:     mkl@pengutronix.de, Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Subject: [PATCH] can: m_can: m_can_rx_peripheral: fix RX being blocked by errors
-Date:   Wed,  3 Mar 2021 14:43:51 +0000
-Message-Id: <20210303144350.4093750-1-torin@maxiluxsystems.com>
+Subject: [PATCH] can: m_can: m_can_rx_handler(): fix RX in periphs being blocked by error handling
+Date:   Wed,  3 Mar 2021 12:49:52 +0000
+Message-Id: <20210303124950.3917746-1-torin@maxiluxsystems.com>
 X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -68,32 +68,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-For M_CAN peripherals, m_can_rx_handler was called with quota = 1, which
-caused any error handling to block RX from taking place until the next
-time the IRQ handler is called. This had been observed to cause RX to be
-blocked indefinitely in some cases.
+In peripherals, m_can_rx_handler is called with quota = 1 from an ISR
+context. If the M_CAN reports a high volume of errors, such as message
+loss due to heavy bus traffic, then error handling, which is prioritised
+in m_can_rx_handler, fills the quota immediately, and RX does not occur.
+This has been observed to cause an indefinite blocking of RX.
 
-This is fixed by calling m_can_rx_handler with a sensibly high quota.
+The patch fixes this by ensuring that in peripherals, m_can_do_rx_poll
+is always called with a quota of at least 1, regardless of any errors
+handled.
 
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+This has been tested with the TCAN4550 under heavy bus traffic; message
+loss is still detected correctly.
+
 Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
 ---
- drivers/net/can/m_can/m_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/m_can/m_can.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 3752520a7d4b..1f265895bf87 100644
+index 3752520a7d4b..3ec42e613ca1 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -876,7 +876,7 @@ static int m_can_rx_peripheral(struct net_device *dev)
- {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
+@@ -866,8 +866,14 @@ static int m_can_rx_handler(struct net_device *dev, int quota)
+ 	if (irqstatus & IR_ERR_BUS_30X)
+ 		work_done += m_can_handle_bus_errors(dev, irqstatus, psr);
  
--	m_can_rx_handler(dev, 1);
-+	m_can_rx_handler(dev, M_CAN_NAPI_WEIGHT);
- 
- 	m_can_enable_all_interrupts(cdev);
- 
+-	if (irqstatus & IR_RF0N)
+-		work_done += m_can_do_rx_poll(dev, (quota - work_done));
++	if (irqstatus & IR_RF0N) {
++		int rx_quota = quota - work_done;
++
++		if (cdev->is_peripheral && (rx_quota <= 0))
++			rx_quota = 1;
++
++		work_done += m_can_do_rx_poll(dev, rx_quota);
++	}
+ end:
+ 	return work_done;
+ }
 -- 
 2.30.1
 
