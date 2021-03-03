@@ -2,56 +2,62 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF2C0C4332B
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:26:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ADC6C4332E
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:27:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9003B64E56
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:26:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2C6F364E56
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:27:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359261AbhCDAYD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:24:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
+        id S1382072AbhCDAYE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:24:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1581469AbhCCVPh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 16:15:37 -0500
+        with ESMTP id S232489AbhCCVUV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 16:20:21 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81399C06175F
-        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 13:14:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1ABC061756
+        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 13:19:33 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lHYpX-0004BN-Sn; Wed, 03 Mar 2021 22:14:52 +0100
+        id 1lHYu3-0004et-Lt; Wed, 03 Mar 2021 22:19:31 +0100
 Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:a20d:2fb6:f2cb:982e])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
         (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 50FEF5ED149;
-        Wed,  3 Mar 2021 21:14:50 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 22:14:49 +0100
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 0000B5ED151;
+        Wed,  3 Mar 2021 21:19:29 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 22:19:29 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     David Miller <davem@davemloft.net>
-Cc:     martin@strongswan.org, kuba@kernel.org, wg@grandegger.com,
-        netdev@vger.kernel.org, linux-can@vger.kernel.org
-Subject: Re: [PATCH net] can: dev: Move device back to init netns on owning
- netns delete,Re: [PATCH net] can: dev: Move device back to init netns on
- owning netns delete
-Message-ID: <20210303211449.m2qslfoohyxjspfi@pengutronix.de>
-References: <20210302122423.872326-1-martin@strongswan.org>
- <20210302122423.872326-1-martin@strongswan.org>
- <86f703d8-d658-505a-6493-54bf09ed65b2@pengutronix.de>
- <20210303.131231.1574207832462999993.davem@davemloft.net>
+To:     =?utf-8?B?dWtyZm9pbC5jb20sIEPRgtGD0LTQuNC+0L/QsNC6INCj0LrRgNCw0LjQvdCw?=
+         =?utf-8?B?LCDQktC+0YHRgtC+0YfQvdGL0Lkg0YDQtdCz0LjQvtC9?= 
+        <ukrfoil@gmail.com>
+Cc:     =?utf-8?B?U2NobMO8w59sZXIs?= Timo <t.schluessler@krause.de>,
+        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        linux-can <linux-can@vger.kernel.org>
+Subject: Re: mcp251x hangs during ifup
+Message-ID: <20210303211929.gvgbk2aimwbsj6x7@pengutronix.de>
+References: <CACGOs=TG4jyXKHBfPGDEJp1gSA+PyNVqCM7grPGMpe9+wYDBLA@mail.gmail.com>
+ <20210303072653.zb66tkdlsxtval5n@pengutronix.de>
+ <CACGOs=TJhoV99D=V-7xa8LG6Ftx8SWUO_XCHGAP3L1_UGLVm3w@mail.gmail.com>
+ <20210303074841.me5egjpecebrpxc4@pengutronix.de>
+ <CACGOs=SOxiN1PKhZvhTizH92vneKUOfjxL+9fg4-=JmHHgYtNw@mail.gmail.com>
+ <20210303080825.lcpphr2ihvuugfl7@pengutronix.de>
+ <CACGOs=SSEvb=5AG9a7dSpOuiaq-wX+FLe3NAMEtKcMFdwJx8Pw@mail.gmail.com>
+ <20210303083336.4rn47cnzcexk7czq@pengutronix.de>
+ <ce8e93fce5e44fa9a4c097d06e3e2be1@HG-SRV-053.HG.local>
+ <CACGOs=Ry7DtLooobKzuK7PWLOaWVnawMNTkErKC8e4OJKjNJPQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="otblozkkaskyqcad"
+        protocol="application/pgp-signature"; boundary="kvtpvjrj7pkogzjb"
 Content-Disposition: inline
-In-Reply-To: <20210303.131231.1574207832462999993.davem@davemloft.net>
+In-Reply-To: <CACGOs=Ry7DtLooobKzuK7PWLOaWVnawMNTkErKC8e4OJKjNJPQ@mail.gmail.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -61,24 +67,38 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---otblozkkaskyqcad
+--kvtpvjrj7pkogzjb
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 03.03.2021 13:12:31, David Miller wrote:
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> Date: Wed, 3 Mar 2021 21:29:39 +0100
+On 03.03.2021 20:46:25, ukrfoil.com, C=D1=82=D1=83=D0=B4=D0=B8=D0=BE=D0=BF=
+=D0=B0=D0=BA =D0=A3=D0=BA=D1=80=D0=B0=D0=B8=D0=BD=D0=B0, =D0=92=D0=BE=D1=81=
+=D1=82=D0=BE=D1=87=D0=BD=D1=8B=D0=B9 =D1=80=D0=B5=D0=B3=D0=B8=D0=BE=D0=BD w=
+rote:
+> You have set IRQ_TYPE_LEVEL_LOW correctly
 >=20
-> > Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> >=20
-> > David, Jakub are you taking this patch?
+> After installation and with the default driver, everything works,
+> there is no hang.
+
+\o/
+
+> It looks like I was wrong in my experiments, I was led astray, there
+> is a lot of information on the Internet about setting
+> IRQ_TYPE_EDGE_FALLING as correct. Therefore, I apologize for the time
+> spent solving this problem. Thanks for the help.
+
+No problem!
+
+> data after changing to IRQ_TYPE_LEVEL_LOW
 >=20
-> Nope, please take via the can tree, thanks!
+> root@nanopi-neo:~#cat /proc/interrupts
+> >            CPU0       CPU1       CPU2       CPU3
+> > 107:          0          0          0          0  sunxi_pio_level  40 L=
+evel     spi0.0
 
-Will do.
+This looks consistent.
 
-Thanks,
 Marc
 
 --=20
@@ -87,19 +107,19 @@ Embedded Linux                   | https://www.pengutronix.de  |
 Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---otblozkkaskyqcad
+--kvtpvjrj7pkogzjb
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA//EYACgkQqclaivrt
-76lseAf/VRNhlOBH7D1RvNTuYck0SJAXvWZF/VmdvlNmS59gmE+445LJTrJ0xFaB
-eNGhq2+Fk1BnuqvjkAJhaMDOkZ8odgyKwrLAAVFbADz7edBbxsxSUxCQ32PGOXZw
-IHq7R5xBimwvOmoNf8/o6FfI0FsPznTw0tbSMiABdPmwViYAcFq6uyTp2Ln19oJo
-QZayKwZ9UXJFBJa2dC+jJchsYq5chlqjC3GEnFkENXolGlz/9GX5pHmtNx4+8tsd
-4KIXRRaLp+7xV4pP78wu9Bo7SMBCtBgw4V8DsrSWIug/0r8HPUgFUwLMKW+9uFuj
-fTIqP14CoCiwnxqe+JIi5XS8GIqMmg==
-=XRVQ
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA//V0ACgkQqclaivrt
+76kfxQf/bQVMYrGQS9qqCnwCiPBu/K4BLeE0XApZ8ZD57z96pBPMxsOiwTLI4Tlt
+n8Ghs7rL2DAgVAUd+vONWd6k2cYZqDtjwTCtyGE3fLbIxOuqkd5YvRWvQHbys4ei
+P5RmmIVsCjHIB/b/3maLIMSg/VBDrAxJ2R9zq+zbwmeHSnrvz4TAyEPcK8WQdhVM
+IBFpC/vHHTUD80uWTBRlzURlPUb2QYULxMl35sXLs5wPmyyTjL0qk+6swa6uF/+N
+xvJ4HS7Pa08s9T46bkavFDZiPprG57dgolrNaIFCdyojbmZrNfGWqj14tC0PB8P1
+tjPVVgv3Gjou3fqotKOM+TP4uucFOA==
+=4209
 -----END PGP SIGNATURE-----
 
---otblozkkaskyqcad--
+--kvtpvjrj7pkogzjb--
