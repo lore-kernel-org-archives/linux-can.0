@@ -2,89 +2,232 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CE9EC4332B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5610CC433E6
 	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:23:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4195864EEC
+	by mail.kernel.org (Postfix) with ESMTP id 2C7C864E12
 	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:23:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240731AbhCDAX5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
+        id S1355365AbhCDAXl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:23:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240990AbhCCNIo (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 08:08:44 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0203C06178B
-        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 05:07:53 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id e10so23368741wro.12
-        for <linux-can@vger.kernel.org>; Wed, 03 Mar 2021 05:07:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=maxiluxsystems-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gT3e+ll57UiNKMckiUfYzGEhCLqAbjuKvFeG+pjUby8=;
-        b=eK4xGGiyKLCiFI//fmkOKaxdnFBPvyJBm3lfFnoZd3gHCBZhsjnzimTwoZYbyX7mTz
-         jICc04c/Lr4adtDYDHroV+0bkPEmcsmmjjIb0l0HTtP3pqwus0u/QPulgKxJopclWRq9
-         573AiszUAH0QXC940jn4KFHEdFQ5o4Q9KBiPTWis7S8Y6uEoMC65CtZ53PwTB3e0d8Ci
-         JivRQooLpGJ9XkQfe5o8ehUqAuNkQNFgoUADuBoEOfcD4bnWigNtmIyQF5exBkKpMAbN
-         IZLZ9V85YTrI/7WJak0hWpTHKZmSHXjvP1eyGuGq1ra7PM+xXhXSAPHWsOASd8TFBi4q
-         InAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gT3e+ll57UiNKMckiUfYzGEhCLqAbjuKvFeG+pjUby8=;
-        b=Ct8ps/ul25C5lizfESHTr9nF4s6s7Q0cCNVMneLq88HfeDyWWsL+gSQN4077OoEz95
-         07DFN+IamGE5E2HAGXn0r8Nn6+KPI099LN99GQHYoc5RawxUPIVMJmlat/I+7WofS0dM
-         gPrdtxlaBB4sCOuS70UJxEHvs15t/kZ+5vMMCXgCWoHYi4eN5tCmyIJx1GfWZwUVkIjp
-         COpOf8n7SpcpCpHZP6jBTimwSIOKgPTt2i3LXaEhazFtgKtl2lb84YAbUlCQoALT0vHR
-         kPJsz0Tz53gmgBOlWzPmMAfogyTtcIan1wd/U6r3/uK74xT3EQlXzC3KiHwoTwvdj2S9
-         Ncng==
-X-Gm-Message-State: AOAM533RZOVbqjBa6SIMjgch2TpR8ygt9VMfGKGFHZxkQ6bmPFq1gZ/I
-        IUUBd5ZMlD4xHTbUknUw/83Kiw==
-X-Google-Smtp-Source: ABdhPJwy4AoNuTElpza13/9UgNsdQSNzz7q3CFFZI+6tkmJRqe4DxJkG/GE4DO5uYniD4Zse9L/G7w==
-X-Received: by 2002:a5d:4445:: with SMTP id x5mr25927885wrr.30.1614776872479;
-        Wed, 03 Mar 2021 05:07:52 -0800 (PST)
-Received: from bigthink (94.197.200.66.threembb.co.uk. [94.197.200.66])
-        by smtp.gmail.com with ESMTPSA id w16sm18973710wrk.41.2021.03.03.05.07.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 05:07:52 -0800 (PST)
-Date:   Wed, 3 Mar 2021 13:07:50 +0000
-From:   Torin Cooper-Bennun <torin@maxiluxsystems.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org
-Subject: Re: [PATCH] can: m_can: m_can_rx_handler(): fix RX in periphs being
- blocked by error handling
-Message-ID: <20210303130750.y2leqimmthzn2liy@bigthink>
-References: <20210303124950.3917746-1-torin@maxiluxsystems.com>
- <20210303125523.4tfd6ifwyugoygzh@pengutronix.de>
+        with ESMTP id S1835026AbhCCIC7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 03:02:59 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCBCC0617AB
+        for <linux-can@vger.kernel.org>; Tue,  2 Mar 2021 23:48:45 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lHMFQ-0003Ie-1Y; Wed, 03 Mar 2021 08:48:44 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:a20d:2fb6:f2cb:982e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id EAE9D5ECA3C;
+        Wed,  3 Mar 2021 07:48:42 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 08:48:41 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     =?utf-8?B?dWtyZm9pbC5jb20sIEPRgtGD0LTQuNC+0L/QsNC6INCj0LrRgNCw0LjQvdCw?=
+         =?utf-8?B?LCDQktC+0YHRgtC+0YfQvdGL0Lkg0YDQtdCz0LjQvtC9?= 
+        <ukrfoil@gmail.com>
+Cc:     =?utf-8?B?U2NobMO8w59sZXIs?= Timo <t.schluessler@krause.de>,
+        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        linux-can <linux-can@vger.kernel.org>
+Subject: Re: mcp251x hangs during ifup
+Message-ID: <20210303074841.me5egjpecebrpxc4@pengutronix.de>
+References: <20210301165856.37gvqkomvjkjvbj2@pengutronix.de>
+ <CAMZ6RqKfXR9cHxjvnPwxjWHWEuxYNV9V4qLSd0ZQGP0JOMKX0w@mail.gmail.com>
+ <20210302071901.ptwvejkedascbdsv@pengutronix.de>
+ <638520bccd0c44d091d5715fe7d303ec@HG-SRV-053.HG.local>
+ <CACGOs=TG4jyXKHBfPGDEJp1gSA+PyNVqCM7grPGMpe9+wYDBLA@mail.gmail.com>
+ <20210303072653.zb66tkdlsxtval5n@pengutronix.de>
+ <CACGOs=TJhoV99D=V-7xa8LG6Ftx8SWUO_XCHGAP3L1_UGLVm3w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qjyipyfts5bxvvcy"
 Content-Disposition: inline
-In-Reply-To: <20210303125523.4tfd6ifwyugoygzh@pengutronix.de>
+In-Reply-To: <CACGOs=TJhoV99D=V-7xa8LG6Ftx8SWUO_XCHGAP3L1_UGLVm3w@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 01:55:23PM +0100, Marc Kleine-Budde wrote:
-> > In peripherals, m_can_rx_handler is called with quota = 1 from an ISR
-> > context.
-> 
-> To be precise, it's a threaded Interrupt. Why not call the rx_handler
-> with a reasonable quota instead?
 
-I see, thanks. Forgive my ignorance, but how long should a threaded ISR
-reasonably block for? Was there ever a good reason for the quota to be 1
-here?
+--qjyipyfts5bxvvcy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---
-Regards,
+On 03.03.2021 09:44:54, ukrfoil.com, C=D1=82=D1=83=D0=B4=D0=B8=D0=BE=D0=BF=
+=D0=B0=D0=BA =D0=A3=D0=BA=D1=80=D0=B0=D0=B8=D0=BD=D0=B0, =D0=92=D0=BE=D1=81=
+=D1=82=D0=BE=D1=87=D0=BD=D1=8B=D0=B9 =D1=80=D0=B5=D0=B3=D0=B8=D0=BE=D0=BD w=
+rote:
+| root@nanopi-neo:~#cat /proc/interrupts
+|            CPU0       CPU1       CPU2       CPU3     =20
+|  25:          0          0          0          0     GICv2  50 Level     =
+timer@1c20c00
+|  26:          0          0          0          0     GICv2  29 Level     =
+arch_timer
+|  27:    1696369    3348041    3820461      82777     GICv2  30 Level     =
+arch_timer
+|  30:          0          0          0          0     GICv2  82 Level     =
+1c02000.dma-controller
+|  32:       5404          0          0          0     GICv2  92 Level     =
+sunxi-mmc
+|  34:          0          0          0          0     GICv2 103 Level     =
+musb-hdrc.2.auto
+|  35:          0          0          0          0     GICv2 104 Level     =
+ehci_hcd:usb1
+|  36:          0          0          0          0     GICv2 105 Level     =
+ohci_hcd:usb2
+|  37:          0          0          0          0     GICv2 110 Level     =
+ehci_hcd:usb3
+|  38:          0          0          0          0     GICv2 111 Level     =
+ohci_hcd:usb4
+|  42:       9952          0          0          0     GICv2 114 Level     =
+eth0
+|  43:          4          0          0          0     GICv2  97 Level     =
+sun6i-spi
+|  46:         49          0          0          0     GICv2  32 Level     =
+ttyS0
+|  47:  211302239          0          0          0     GICv2  38 Level     =
+mv64xxx_i2c
+|  48:   18992623          0          0          0     GICv2  39 Level     =
+mv64xxx_i2c
+|  49:          0          0          0          0     GICv2  72 Level     =
+1f00000.rtc
+|  63:          0          0          0          0     GICv2 152 Level     =
+arm-pmu
+|  64:          0          0          0          0     GICv2 153 Level     =
+arm-pmu
+|  65:          0          0          0          0     GICv2 154 Level     =
+arm-pmu
+|  66:          0          0          0          0     GICv2 155 Level     =
+arm-pmu
+| 111:          1          0          0          0  sunxi_pio_edge  44 Edge=
+      usb0-id-det
+| IPI0:          0          0          0          0  CPU wakeup interrupts
+| IPI1:          0          0          0          0  Timer broadcast interr=
+upts
+| IPI2:         47         88         79         82  Rescheduling interrupts
+| IPI3:     304963    2353917     362091       1661  Function call interrup=
+ts
+| IPI4:          0          0          0          0  CPU stop interrupts
+| IPI5:          0          0          0          0  IRQ work interrupts
+| IPI6:          0          0          0          0  completion interrupts
+| Err:          0
+[...]
+| root@nanopi-neo:~#cat /proc/interrupts
+|            CPU0       CPU1       CPU2       CPU3     =20
+|  25:          0          0          0          0     GICv2  50 Level     =
+timer@1c20c00
+|  26:          0          0          0          0     GICv2  29 Level     =
+arch_timer
+|  27:    1711040    3437940    3850320      84900     GICv2  30 Level     =
+arch_timer
+|  30:          0          0          0          0     GICv2  82 Level     =
+1c02000.dma-controller
+|  32:       5516          0          0          0     GICv2  92 Level     =
+sunxi-mmc
+|  34:          0          0          0          0     GICv2 103 Level     =
+musb-hdrc.2.auto
+|  35:          0          0          0          0     GICv2 104 Level     =
+ehci_hcd:usb1
+|  36:          0          0          0          0     GICv2 105 Level     =
+ohci_hcd:usb2
+|  37:          0          0          0          0     GICv2 110 Level     =
+ehci_hcd:usb3
+|  38:          0          0          0          0     GICv2 111 Level     =
+ohci_hcd:usb4
+|  42:      10190          0          0          0     GICv2 114 Level     =
+eth0
+|  43:         18          0          0          0     GICv2  97 Level     =
+sun6i-spi
+|  46:         49          0          0          0     GICv2  32 Level     =
+ttyS0
+|  47:  214592622          0          0          0     GICv2  38 Level     =
+mv64xxx_i2c
+|  48:   19314189          0          0          0     GICv2  39 Level     =
+mv64xxx_i2c
+|  49:          0          0          0          0     GICv2  72 Level     =
+1f00000.rtc
+|  63:          0          0          0          0     GICv2 152 Level     =
+arm-pmu
+|  64:          0          0          0          0     GICv2 153 Level     =
+arm-pmu
+|  65:          0          0          0          0     GICv2 154 Level     =
+arm-pmu
+|  66:          0          0          0          0     GICv2 155 Level     =
+arm-pmu
+| 107:          1          0          0          0  sunxi_pio_edge  40 Edge=
+      spi0.0
+| 111:          1          0          0          0  sunxi_pio_edge  44 Edge=
+      usb0-id-det
+| IPI0:          0          0          0          0  CPU wakeup interrupts
+| IPI1:          0          0          0          0  Timer broadcast interr=
+upts
+| IPI2:         48         88         85         83  Rescheduling interrupts
+| IPI3:     305542    2828247     362982       1704  Function call interrup=
+ts
+| IPI4:          0          0          0          0  CPU stop interrupts
+| IPI5:          0          0          0          0  IRQ work interrupts
+| IPI6:          0          0          0          0  completion interrupts
+| Err:          0
 
-Torin Cooper-Bennun
-Software Engineer | maxiluxsystems.com
+That looks good, the IRQ is not shared. Can you test again with
+IRQ_TYPE_EDGE_FALLING in the DT instead of IRQ_TYPE_LEVEL_LOW?
 
+| can0: can@0 {
+|       reg =3D <0>;
+|       compatible =3D "microchip,mcp2515";
+|       pinctrl-names =3D "default";
+|       pinctrl-0 =3D <&can0_pin_irq>;
+|       interrupt-parent =3D <&pio>;
+|       interrupts =3D <6 8 IRQ_TYPE_EDGE_FALLING>;
+
+You better use IRQ_TYPE_LEVEL_LOW instead of IRQ_TYPE_EDGE_FALLING, but
+that's unrelated to this problem.
+
+|       clocks =3D <&can0_osc_fixed>;
+|       spi-max-frequency =3D <10000000>;
+|       gpio-controller;
+|       gpio-cells =3D <2>;
+|       status =3D "okay";
+| };
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--qjyipyfts5bxvvcy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA/P1cACgkQqclaivrt
+76m7sAgAtZCTxGrSYfQ8PvrIsO0qZ2XzTPwF/CdoTtdrhK/kxwyS1qzv2vmIbBrf
+AiI91vxlU1vqGbmPxHUemmVhHEUOq4NdjgW/w6Qas1ZX3k+eYLAnTQ/XTxEDxqlD
+YqrAu2BDTygaa2LvwCXwzBN54xfjXsq1Gc83xolWrhhVkuv3h0mu+CsssNnEhL+u
+PqAOwlUPPiEJRQ5HbvkXP4QpvADaBumHyOVZWZENLltBHU/SMOKGTFKkfZ2BOZwa
+1XPO7+njU4gq7+8rNdK2yRbxh/gXRT0ISCBzSRo9rfUAu3+TKgVxzTrJ8rQ3e6Zi
+bsZKBkJKfAPUloNNLUzL71RhzgfGDQ==
+=iK8p
+-----END PGP SIGNATURE-----
+
+--qjyipyfts5bxvvcy--
