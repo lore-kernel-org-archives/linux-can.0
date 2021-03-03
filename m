@@ -2,107 +2,109 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3179C4332B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 926CCC433E9
 	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:27:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 815DD64E68
+	by mail.kernel.org (Postfix) with ESMTP id 6FB4B64E62
 	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:27:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355377AbhCDAXq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:23:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
+        id S1355374AbhCDAXp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:23:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843045AbhCCKYy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 05:24:54 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B25C08EDBE
-        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 02:20:18 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id 7so23054837wrz.0
-        for <linux-can@vger.kernel.org>; Wed, 03 Mar 2021 02:20:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=maxiluxsystems-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oJadlViRhHHTP8OkBMDOWwUEXALsISsGUTDXRJKkqoM=;
-        b=NHggoNOvzF4CEYx61GeB8kjuJiKcZEysbSfjhkha3kw4b4A4nOGVlsw+e+D5FzGyuG
-         ECSxuSphtEY4mQOp3gxppSJQSFulIaNcEvlreJ3hjdDL4gk/9o91onwzEN/Y/A4OF+U6
-         U249LcZSYJAyQqPqpJHojMJv4zQLQlpwpvSCoKOCMB5dfuISi3wgHAA1SuPfp/3ub8Md
-         aPGDNjD4dXgQAPHqiC+sdUG44mdGeX+/t5jhxdTVooJLGA3edJWZgwdJEulAUO0V7JRA
-         h4FDvAJOdLkb3N+h9Zvh9GSYfKztiElDN5MvpC4IP9hg1wPif0ei4ZVSvJVV4x2kIrET
-         yEGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oJadlViRhHHTP8OkBMDOWwUEXALsISsGUTDXRJKkqoM=;
-        b=ZqDGNLzbAhcmNyWR0qVnzrT8a81m80cyHpmFACDlGt28eL5q/Nic0AdBeOG4XEsRJ9
-         CoyB0Ko4Q8tbKs3NBo80hYM5GJSlYEB6qCjLRJQb+dWn5aTXztJJYWdVYwhlYrzlEyHs
-         WITswya/XTt8Hs4fksxaC9ySwTbU31WqTE1F25ULaqIt5mebx+A2NIzUSpX/ioNHEwcq
-         NfpLEgoEahjN93koYS6q9vbw6yLyz+htN9Nf0E/BDCYNrVDX3dSCSHdD6l4pQvg4FsVO
-         jUZLSVIRAxbWZpXi2l4GzZqz3+ylIh0uVqVKWVUTxDa5v2V0sBvc2Pd/4qtkPFmWj5nD
-         Sn4A==
-X-Gm-Message-State: AOAM533zcyY/NPut2ZIfxdUvbX1WpVnr+uYy2tGnX4uAqHobr1G43qGu
-        F+OqAWoVw+EwrDhC+4tXX4RW3w==
-X-Google-Smtp-Source: ABdhPJzUhP2Ssx7P59Qw3EVkXOKhcrPhqmB9p78vYoyhRdWjrLcBfOc+kXDfULvLp5/EeGvxiFYuGQ==
-X-Received: by 2002:a5d:6945:: with SMTP id r5mr26175192wrw.367.1614766817377;
-        Wed, 03 Mar 2021 02:20:17 -0800 (PST)
-Received: from bigthink (94.197.200.66.threembb.co.uk. [94.197.200.66])
-        by smtp.gmail.com with ESMTPSA id v6sm32171984wrx.32.2021.03.03.02.20.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 02:20:16 -0800 (PST)
-Date:   Wed, 3 Mar 2021 10:20:10 +0000
-From:   Torin Cooper-Bennun <torin@maxiluxsystems.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Mariusz Madej <mariusz.madej@xtrack.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH] can: m_can: reset IR_RF0L in message reception loop
-Message-ID: <20210303102010.gjkvr35n7gc5uf2f@bigthink>
-References: <0710fbd2-4b88-21bf-88f7-0b97d7e7dc0b@xtrack.com>
- <20210303080809.zfjh6oolqxcv4pir@bigthink>
- <20210303083136.72bwnozqhzznvanu@pengutronix.de>
+        with ESMTP id S1843029AbhCCKYg (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 3 Mar 2021 05:24:36 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15AFC061226
+        for <linux-can@vger.kernel.org>; Wed,  3 Mar 2021 00:33:40 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lHMws-000832-OO; Wed, 03 Mar 2021 09:33:38 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:a20d:2fb6:f2cb:982e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 789375ECA89;
+        Wed,  3 Mar 2021 08:33:37 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 09:33:36 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     =?utf-8?B?dWtyZm9pbC5jb20sIEPRgtGD0LTQuNC+0L/QsNC6INCj0LrRgNCw0LjQvdCw?=
+         =?utf-8?B?LCDQktC+0YHRgtC+0YfQvdGL0Lkg0YDQtdCz0LjQvtC9?= 
+        <ukrfoil@gmail.com>
+Cc:     =?utf-8?B?U2NobMO8w59sZXIs?= Timo <t.schluessler@krause.de>,
+        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        linux-can <linux-can@vger.kernel.org>
+Subject: Re: mcp251x hangs during ifup
+Message-ID: <20210303083336.4rn47cnzcexk7czq@pengutronix.de>
+References: <CAMZ6RqKfXR9cHxjvnPwxjWHWEuxYNV9V4qLSd0ZQGP0JOMKX0w@mail.gmail.com>
+ <20210302071901.ptwvejkedascbdsv@pengutronix.de>
+ <638520bccd0c44d091d5715fe7d303ec@HG-SRV-053.HG.local>
+ <CACGOs=TG4jyXKHBfPGDEJp1gSA+PyNVqCM7grPGMpe9+wYDBLA@mail.gmail.com>
+ <20210303072653.zb66tkdlsxtval5n@pengutronix.de>
+ <CACGOs=TJhoV99D=V-7xa8LG6Ftx8SWUO_XCHGAP3L1_UGLVm3w@mail.gmail.com>
+ <20210303074841.me5egjpecebrpxc4@pengutronix.de>
+ <CACGOs=SOxiN1PKhZvhTizH92vneKUOfjxL+9fg4-=JmHHgYtNw@mail.gmail.com>
+ <20210303080825.lcpphr2ihvuugfl7@pengutronix.de>
+ <CACGOs=SSEvb=5AG9a7dSpOuiaq-wX+FLe3NAMEtKcMFdwJx8Pw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7w2qdn6u3jdykc32"
 Content-Disposition: inline
-In-Reply-To: <20210303083136.72bwnozqhzznvanu@pengutronix.de>
+In-Reply-To: <CACGOs=SSEvb=5AG9a7dSpOuiaq-wX+FLe3NAMEtKcMFdwJx8Pw@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 09:31:36AM +0100, Marc Kleine-Budde wrote:
-> > Looking at the flow in m_can_rx_handler, it looks as though
-> > m_can_handle_bus_errors -> m_can_handle_lost_msg already handles message
-> > loss properly, and issues a netdev_err. I wonder whether we can remove
-> > the warning from m_can_do_rx_poll entirely:
-> > 
-> > diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> > index 3752520a7d4b..d783c46cac16 100644
-> > --- a/drivers/net/can/m_can/m_can.c
-> > +++ b/drivers/net/can/m_can/m_can.c
-> > @@ -501,9 +501,6 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
-> >  	}
-> >  
-> >  	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
-> > -		if (rxfs & RXFS_RFL)
-> > -			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
-> > -
-> >  		m_can_read_fifo(dev, rxfs);
-> >  
-> >  		quota--;
-> > 
-> 
-> Looks good to me. Can you send a proper patch?
 
-Of course, will do shortly.
+--7w2qdn6u3jdykc32
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---
-Regards,
+On 03.03.2021 10:24:56, ukrfoil.com, C=D1=82=D1=83=D0=B4=D0=B8=D0=BE=D0=BF=
+=D0=B0=D0=BA =D0=A3=D0=BA=D1=80=D0=B0=D0=B8=D0=BD=D0=B0, =D0=92=D0=BE=D1=81=
+=D1=82=D0=BE=D1=87=D0=BD=D1=8B=D0=B9 =D1=80=D0=B5=D0=B3=D0=B8=D0=BE=D0=BD w=
+rote:
+> I've tried this and that before - the effect is the same, I'll
+> double-check it again later.
 
-Torin Cooper-Bennun
-Software Engineer | maxiluxsystems.com
+Thanks.
 
+Timo, can you change the routine to keep the interrupts enabled?
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--7w2qdn6u3jdykc32
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA/Sd4ACgkQqclaivrt
+76mvrAf/UAYVgc9u1G/JFbjQPgoDNXrdc3qMysq4jNpYZce1oIVfcrp1na4CPyu3
+79IP7byFc8A9Y4RlaA8o/BRuxEzz4NKtHXlNNieNZ+kILHGBrUwC38t7cwlz+8ui
+7u5cAbZ4i1u3xVcyDSKn9QV8XvOphSSAtYFkvuNcBFyGZM+VulcmgajS95JFGRmV
+TvxoWKKea2QR1v2lHhzQUwXeEFI7rXEuawCqUFaYxaeRqlWnHFtZ3rAhx17fmliF
+MOYebF0+FU9KG/6RJoldy5eUcrOwstHBroBMKKo9+QcZiJINqRBFgd3u/3J91wsw
+GNdEgR8r9i6xzHK5Pd4ilWgkTR8yOQ==
+=Hj7+
+-----END PGP SIGNATURE-----
+
+--7w2qdn6u3jdykc32--
