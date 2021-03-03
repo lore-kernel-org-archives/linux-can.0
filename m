@@ -2,46 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66B13C28E89
-	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81A59C433DB
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:23:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D00064F3A
-	for <linux-can@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4407064EC4
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 00:23:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235757AbhCCAFb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 2 Mar 2021 19:05:31 -0500
-Received: from smtp-17.italiaonline.it ([213.209.10.17]:37740 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2359541AbhCBWAu (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:00:50 -0500
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([87.20.116.197])
-        by smtp-17.iol.local with ESMTPA
-        id HCz0lBDmUlChfHCzBlGa0q; Tue, 02 Mar 2021 22:55:21 +0100
+        id S1346348AbhCDAXf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:23:35 -0500
+Received: from smtp-16-i2.italiaonline.it ([213.209.12.16]:46322 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1345256AbhCCHYR (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 3 Mar 2021 02:24:17 -0500
+Received: from oxapps-13-073.iol.local ([10.101.8.83])
+        by smtp-16.iol.local with ESMTPA
+        id HLqHlh1k8f2ANHLqHlsrls; Wed, 03 Mar 2021 08:22:46 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1614722121; bh=gGBb0if76oFz8ZwaKKCbLEQjDj90X/5zDbKBMeSdiUc=;
+        t=1614756166; bh=QJcBdYO/0I9MwVLIbtdpqhadKDYr8uo6v7fShrjNVOY=;
         h=From;
-        b=T8B5ZefqPk3DmSIj78XmxkBIraj5oovEoTGNwI3NQdUftYczqjyYwtVeOPeO0WjdN
-         VwEmR+E4viE9hJ+/PB3cjONepFPkrLiwZziq0ESRarJzX72x0/1TmMaAtLenEs83ZT
-         Wzt67w6HL10O/lEaTI4YTXCCKaHYkCLHpWD9GYiZkO8X7yxBaXYELOz6dCBXJWjBQ1
-         SgMbyxHWD59HsSTkUFw94hwmjRkyXAgLM8zit3wzkAJfclg+c2J5yF0pzPX5LrwF/t
-         FNffUmH3lWqs4Eftd3fymewl0OEd/5RR5ArHTwjVG++usdo889HwlQY9Gbi2gGAgnh
-         I5LbG2BSsV8fA==
-X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=603eb449 cx=a_exe
- a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=YyHhdtpqV3cun0yf7GkA:9
+        b=CcXR4Gb+90GDLfsjnSRHZ+xmJNuI+Yk6uN7QG1YKXFtUKwXGKJ61EpMWopoO+WqqK
+         KK0BB84q0yiB0JZYH40C68M4KeiZcfpPkIOeE7ZSXFvN6UQod+iKMa6ddR/4HB8dvH
+         gArUzkXWSPIEjJ/hFIRoToiVxZ/OAntTCYBvqBuU/eGzZDE1iK7e+CM+zavdrII2hK
+         ftyKjrzH1aDopsTe11W1OCDlr2v6Rai1wYU/qh7XvJVAHyFc+tSVjMagn/XegGWAXX
+         E7Z3aSUDyLYtrGY5svV7ZJVJjI/dSgeq0SCN+b8vcA4rBP7Jvcgm9FBPV5QNU/taNZ
+         WyAsYuaX2rIwQ==
+X-CNFS-Analysis: v=2.4 cv=Adt0o1bG c=1 sm=1 tr=0 ts=603f3946 cx=a_exe
+ a=w+zvPzfS58/fxdOpREFJIQ==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
+ a=vesc6bHxzc4A:10 a=VwQbUJbxAAAA:8 a=SIyDddvurb8hmoSH9n0A:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=BPzZvq435JnGatEyYwdK:22
+Date:   Wed, 3 Mar 2021 08:22:45 +0100 (CET)
 From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Alexander Stein <alexander.stein@systec-electronic.com>,
+To:     Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Cc:     linux-kernel@vger.kernel.org,
         Federico Vaga <federico.vaga@gmail.com>,
-        Dario Binacchi <dariobin@libero.it>,
+        Alexander Stein <alexander.stein@systec-electronic.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -51,47 +52,73 @@ Cc:     Alexander Stein <alexander.stein@systec-electronic.com>,
         YueHaibing <yuehaibing@huawei.com>,
         Zhang Qilong <zhangqilong3@huawei.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v4 4/6] can: c_can: use 32-bit write to set arbitration register
-Date:   Tue,  2 Mar 2021 22:54:33 +0100
-Message-Id: <20210302215435.18286-5-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210302215435.18286-1-dariobin@libero.it>
-References: <20210302215435.18286-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfALmbl+rhBfE4zafOS7jLa8Q+n7eEyC7LfLeVholBUrNRtsS4icLPd420gn24S1iGl7/F2v00nn0ztIvFSw3x2OYNtzQTD+NsS91Pkgzz4XXw7X7w5Kh
- Ld+nTL/fnRIOd2U6NtS717z6EmJmhr1XP2E5U0g2VjUil6TI4YchvC4rxhexKDqP7OXB870P9TvtyPnrZ0t58oNvdFkKJI0MjNTy8kqwluXWoM7wUTqMlEzf
- YzUul0/BzolOjdq+0a8bVBiRdpiDCU1xoPvuGmoC/OvRZLg9DnNrHPxrq2h5ed3wCW3mdzYT2eNzakA0L5sxAGCnRgljyNTMvfrMzmX0mf9MCrysHWZdxel3
- QO6FtueafHelSduDqQCCly6SXty2mvxmyax2fZrk1LRWHw9zyhoM+bZr37K/LkLGWhHgNdvDKQTZfZrkbsOcH9fskjhZFee6dfHeYbtHYGKAcBKcFLDY/ac5
- FeSnJPVy6air3fx2bIRbZKwtxmDb5d1/TXRKls0wMva5mkpKbG+Ou/cGkIBUxUBeqE+gm30oTIMIYPjU1gttCS2gUG1qa8jcpaYvc/MDP1p+ihVbLQHBgJ2n
- 5n9qaOGsri2Ub3j93+jY0nbyb1SFsnrlzIQyU0hT5fZrURLIMUwQNPVyNIscuxpQ/m3ZYN3lp7obxDu2o+UwrELXMQqJCfbm+FAiVX+H3tqdWQ==
+Message-ID: <431497521.23578.1614756165933@mail1.libero.it>
+In-Reply-To: <20210302184451.GC26930@x1.vandijck-laurijssen.be>
+References: <20210228103856.4089-1-dariobin@libero.it>
+ <20210228103856.4089-4-dariobin@libero.it>
+ <20210302184451.GC26930@x1.vandijck-laurijssen.be>
+Subject: Re: [PATCH v3 3/6] can: c_can: fix control interface used by
+ c_can_do_tx
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev27
+X-Originating-IP: 185.33.57.41
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: TDghmEpNsl1kzDDdlh5MJLZ+dOyjbiBd
+x-libjamv: AjczAB1oGAU=
+X-CMAE-Envelope: MS4xfCv1TYbXL5RSjKCVuB+MimNHn0kxtjf4jvMX6Qj+4hwJ9/N8/RsGC0fG5JxVvRC5siuJlDQfk2CrdKnbVwAn9kGMEc+sbVbf9SWKfgZuyeSIT7JsL/Ec
+ NR71UeEtIIOYOSAnnVZGZ5nF2jutOgOUe6L+valOBYTLqa5zk7fwaFNbUbL/yQgy7PY5vsdvPV3fBY6AZIgUukGnje+B8Ka8TXO/hbQi5/7bR9pgWSCcQALF
+ EaVcXCS1Mhggp/aW/30q7/1LEnt2pZq4/0EA/qqaSm8W7NKTRWa/kmtCZcxe9Zr74wvOePf3+pJdI3cJnlekfckUlJ20NO2Pw3lUKpBs/Ppu6ojiLYd4Ez+u
+ A3GJnoPik8VdnWHu6/vkG6WIGFUwxrWWDB4//lRT6Y5TL8C/LjWbnvoiaZnsH1Knh0LK8/mnfQCm1vU1bZKOGZqMs7T/GhM2HDcSoeLxJmzmnb336HZjClxJ
+ YJKrOKXAVMA/ReZy+NdOYaJNDZVlDLk/TowohBo0EuQKsLDUfAWPCXKk81LYCvjsm0R7bVQoVNrhluKu/Et4b5FQ9f9xpgNJDz3FslPjNAvUwVRVIy62WJ3n
+ kkGt68AH/H3NIOltpYLjngg9aLODwOhioyotU6KGiuWWqIy+rTuTEwtutk2ba6zpV+v+qqWXPwY/ofdctUsFq78B
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The arbitration register is already set up with 32-bit writes in the
-other parts of the code except for this point.
+Hi Kurt,
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
----
+> Il 02/03/2021 19:44 Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be> ha scritto:
+> 
+>  
+> On Sun, 28 Feb 2021 11:38:52 +0100, Dario Binacchi wrote:
+> > According to commit 640916db2bf7 ("can: c_can: Make it SMP safe") let RX use
+> > IF1 (i.e. IF_RX) and TX use IF2 (i.e. IF_TX).
+> > 
+> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> > ---
+> > 
+> > (no changes since v1)
+> > 
+> >  drivers/net/can/c_can/c_can.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+> > index dbcc1c1c92d6..69526c3a671c 100644
+> > --- a/drivers/net/can/c_can/c_can.c
+> > +++ b/drivers/net/can/c_can/c_can.c
+> > @@ -732,7 +732,7 @@ static void c_can_do_tx(struct net_device *dev)
+> >  		idx--;
+> >  		pend &= ~(1 << idx);
+> >  		obj = idx + C_CAN_MSG_OBJ_TX_FIRST;
+> > -		c_can_inval_tx_object(dev, IF_RX, obj);
+> > +		c_can_inval_tx_object(dev, IF_TX, obj);
+> 
+> Right. I had a similar effort last year to increase the reception
+> throughput, but I ended with some sporadic strange tx echo problems.
+> This fix may have fixed my problem as well.
 
-(no changes since v1)
+Take a look at https://lore.kernel.org/patchwork/patch/1384649/
 
- drivers/net/can/c_can/c_can.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 6c6d0d0ff7b8..77b9aee56154 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -297,8 +297,7 @@ static void c_can_inval_msg_object(struct net_device *dev, int iface, int obj)
- {
- 	struct c_can_priv *priv = netdev_priv(dev);
- 
--	priv->write_reg(priv, C_CAN_IFACE(ARB1_REG, iface), 0);
--	priv->write_reg(priv, C_CAN_IFACE(ARB2_REG, iface), 0);
-+	priv->write_reg32(priv, C_CAN_IFACE(ARB1_REG, iface), 0);
- 	c_can_inval_tx_object(dev, iface, obj);
- }
- 
--- 
-2.17.1
-
+Thanks and regards,
+Dario
+> 
+> >  		can_get_echo_skb(dev, idx, NULL);
+> >  		bytes += priv->dlc[idx];
+> >  		pkts++;
+> > -- 
+> > 2.17.1
+> >
