@@ -7,46 +7,46 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF771C4321A
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82517C433E6
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:44:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7B62C64F51
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:44:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 521B664F32
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:44:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235407AbhCDPnt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 4 Mar 2021 10:43:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
+        id S235348AbhCDPoV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 4 Mar 2021 10:44:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235322AbhCDPn2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 4 Mar 2021 10:43:28 -0500
+        with ESMTP id S235491AbhCDPoG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 4 Mar 2021 10:44:06 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAFD6C061761
-        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 07:42:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573DEC0613DB
+        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 07:42:51 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lHq7i-0003Ws-G4
-        for linux-can@vger.kernel.org; Thu, 04 Mar 2021 16:42:46 +0100
+        id 1lHq7l-0003dP-SG
+        for linux-can@vger.kernel.org; Thu, 04 Mar 2021 16:42:49 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9CAD45EDD20
-        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 15:42:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9FF425EDD3D
+        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 15:42:45 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 720625EDD09;
-        Thu,  4 Mar 2021 15:42:42 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 445AF5EDD18;
+        Thu,  4 Mar 2021 15:42:43 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 642f6b6a;
-        Thu, 4 Mar 2021 15:42:41 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0d0b3a22;
+        Thu, 4 Mar 2021 15:42:42 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v5 02/11] can: c_can: remove unnecessary blank lines and add suggested ones
-Date:   Thu,  4 Mar 2021 16:42:31 +0100
-Message-Id: <20210304154240.2747987-3-mkl@pengutronix.de>
+Subject: [PATCH v5 09/11] can: c_can: c_can_do_tx(): add a comment about IF_RX interface's use
+Date:   Thu,  4 Mar 2021 16:42:38 +0100
+Message-Id: <20210304154240.2747987-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210304154240.2747987-1-mkl@pengutronix.de>
 References: <20210304154240.2747987-1-mkl@pengutronix.de>
@@ -60,47 +60,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch removes unnecessary blank lines and add suggested ones, so
-that checkpatch doesn't complain anymore.
+From: Dario Binacchi <dariobin@libero.it>
 
+After reading the commit 640916db2bf7 ("can: c_can: Make it SMP safe")
+it may sound strange to see the IF_RX interface used by the
+can_inval_tx_object function. A comment was added to avoid any
+misunderstanding.
+
+Link: https://lore.kernel.org/r/20210302215435.18286-4-dariobin@libero.it
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c     | 2 --
- drivers/net/can/c_can/c_can_pci.c | 1 +
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/can/c_can/c_can.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index b55931806479..b2bb9d1d8354 100644
+index ce4efc88a841..3c2cc9dbf5ad 100644
 --- a/drivers/net/can/c_can/c_can.c
 +++ b/drivers/net/can/c_can/c_can.c
-@@ -132,7 +132,6 @@
- /* For the high buffers we clear the interrupt bit and newdat */
- #define IF_COMM_RCV_HIGH	(IF_COMM_RCV_LOW | IF_COMM_CLR_NEWDAT)
- 
--
- /* Receive setup of message objects */
- #define IF_COMM_RCV_SETUP	(IF_COMM_MASK | IF_COMM_ARB | IF_COMM_CONTROL)
- 
-@@ -262,7 +261,6 @@ static void c_can_obj_update(struct net_device *dev, int iface, u32 cmd, u32 obj
- 		udelay(1);
- 	}
- 	netdev_err(dev, "Updating object timed out\n");
--
- }
- 
- static inline void c_can_object_get(struct net_device *dev, int iface,
-diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
-index 4a39b39db3b9..d2dcbba8b772 100644
---- a/drivers/net/can/c_can/c_can_pci.c
-+++ b/drivers/net/can/c_can/c_can_pci.c
-@@ -277,6 +277,7 @@ static const struct pci_device_id c_can_pci_tbl[] = {
- 		 c_can_pch),
- 	{},
- };
+@@ -722,6 +722,11 @@ static void c_can_do_tx(struct net_device *dev)
+ 		idx--;
+ 		pend &= ~(1 << idx);
+ 		obj = idx + C_CAN_MSG_OBJ_TX_FIRST;
 +
- static struct pci_driver c_can_pci_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = c_can_pci_tbl,
++		/* We use IF_RX interface instead of IF_TX because we
++		 * are called from c_can_poll(), which runs inside
++		 * NAPI. We are not trasmitting.
++		 */
+ 		c_can_inval_tx_object(dev, IF_RX, obj);
+ 		can_get_echo_skb(dev, idx, NULL);
+ 		bytes += priv->dlc[idx];
 -- 
 2.30.1
 
