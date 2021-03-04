@@ -2,61 +2,56 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BA9CC433DB
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF24FC433DB
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:44:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 686BA64F97
-	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:28:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 822CB64F32
+	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:44:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbhCDP1s (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 4 Mar 2021 10:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
+        id S235365AbhCDPnt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 4 Mar 2021 10:43:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234858AbhCDP10 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 4 Mar 2021 10:27:26 -0500
+        with ESMTP id S235315AbhCDPn0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 4 Mar 2021 10:43:26 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FA9C061574
-        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 07:26:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00336C061760
+        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 07:42:45 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lHprr-00015l-Vn; Thu, 04 Mar 2021 16:26:24 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:3b3:61f5:ff65:ce3])
+        id 1lHq7g-0003Vt-FC
+        for linux-can@vger.kernel.org; Thu, 04 Mar 2021 16:42:44 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id E86DE5EDD13
+        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 15:42:42 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id B552A5EDCD1;
-        Thu,  4 Mar 2021 15:26:19 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 16:26:18 +0100
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5506D5EDD07;
+        Thu,  4 Mar 2021 15:42:42 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7d0297b8;
+        Thu, 4 Mar 2021 15:42:41 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Stein <alexander.stein@systec-electronic.com>,
-        Federico Vaga <federico.vaga@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v4 5/6] can: c_can: prepare to up the message objects
- number
-Message-ID: <20210304152618.rqajqmzcqqhszfem@pengutronix.de>
-References: <20210302215435.18286-1-dariobin@libero.it>
- <20210302215435.18286-6-dariobin@libero.it>
+To:     linux-can@vger.kernel.org
+Cc:     kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v5 01/11] can: c_can: convert block comments to network style comments
+Date:   Thu,  4 Mar 2021 16:42:30 +0100
+Message-Id: <20210304154240.2747987-2-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210304154240.2747987-1-mkl@pengutronix.de>
+References: <20210304154240.2747987-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wgmmyfwmn76i5d4s"
-Content-Disposition: inline
-In-Reply-To: <20210302215435.18286-6-dariobin@libero.it>
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -65,56 +60,205 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+This patch converts all block comments to network subsystem style
+block comments.
 
---wgmmyfwmn76i5d4s
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/c_can/c_can.c     | 52 ++++++++++---------------------
+ drivers/net/can/c_can/c_can_pci.c |  3 +-
+ 2 files changed, 18 insertions(+), 37 deletions(-)
 
-On 02.03.2021 22:54:34, Dario Binacchi wrote:
-> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-> index 77b9aee56154..0052ba5197e0 100644
-> --- a/drivers/net/can/c_can/c_can.c
-> +++ b/drivers/net/can/c_can/c_can.c
-[...]
-> -struct net_device *alloc_c_can_dev(void)
-> +struct net_device *alloc_c_can_dev(int msg_obj_num)
->  {
->  	struct net_device *dev;
->  	struct c_can_priv *priv;
-> +	int msg_obj_tx_num =3D msg_obj_num / 2;
-> =20
-> -	dev =3D alloc_candev(sizeof(struct c_can_priv), C_CAN_MSG_OBJ_TX_NUM);
-> +	dev =3D alloc_candev(sizeof(*priv) + sizeof(u32) * msg_obj_tx_num,
-> +			   msg_obj_tx_num);
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index ef474bae47a1..b55931806479 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -161,9 +161,7 @@
+ 
+ #define IF_MCONT_TX		(IF_MCONT_TXIE | IF_MCONT_EOB)
+ 
+-/*
+- * Use IF1 for RX and IF2 for TX
+- */
++/* Use IF1 for RX and IF2 for TX */
+ #define IF_RX			0
+ #define IF_TX			1
+ 
+@@ -189,8 +187,7 @@ enum c_can_lec_type {
+ 	LEC_MASK = LEC_UNUSED,
+ };
+ 
+-/*
+- * c_can error types:
++/* c_can error types:
+  * Bus errors (BUS_OFF, ERROR_WARNING, ERROR_PASSIVE) are supported
+  */
+ enum c_can_bus_error_types {
+@@ -280,8 +277,7 @@ static inline void c_can_object_put(struct net_device *dev, int iface,
+ 	c_can_obj_update(dev, iface, cmd | IF_COMM_WR, obj);
+ }
+ 
+-/*
+- * Note: According to documentation clearing TXIE while MSGVAL is set
++/* Note: According to documentation clearing TXIE while MSGVAL is set
+  * is not allowed, but works nicely on C/DCAN. And that lowers the I/O
+  * load significantly.
+  */
+@@ -321,8 +317,7 @@ static void c_can_setup_tx_object(struct net_device *dev, int iface,
+ 	if (!rtr)
+ 		arb |= IF_ARB_TRANSMIT;
+ 
+-	/*
+-	 * If we change the DIR bit, we need to invalidate the buffer
++	/* If we change the DIR bit, we need to invalidate the buffer
+ 	 * first, i.e. clear the MSGVAL flag in the arbiter.
+ 	 */
+ 	if (rtr != (bool)test_bit(idx, &priv->tx_dir)) {
+@@ -459,8 +454,7 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
+ 
+ 	if (can_dropped_invalid_skb(dev, skb))
+ 		return NETDEV_TX_OK;
+-	/*
+-	 * This is not a FIFO. C/D_CAN sends out the buffers
++	/* This is not a FIFO. C/D_CAN sends out the buffers
+ 	 * prioritized. The lowest buffer number wins.
+ 	 */
+ 	idx = fls(atomic_read(&priv->tx_active));
+@@ -469,8 +463,7 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
+ 	/* If this is the last buffer, stop the xmit queue */
+ 	if (idx == C_CAN_MSG_OBJ_TX_NUM - 1)
+ 		netif_stop_queue(dev);
+-	/*
+-	 * Store the message in the interface so we can call
++	/* Store the message in the interface so we can call
+ 	 * can_put_echo_skb(). We must do this before we enable
+ 	 * transmit as we might race against do_tx().
+ 	 */
+@@ -539,8 +532,7 @@ static int c_can_set_bittiming(struct net_device *dev)
+ 	return c_can_wait_for_ctrl_init(dev, priv, 0);
+ }
+ 
+-/*
+- * Configure C_CAN message objects for Tx and Rx purposes:
++/* Configure C_CAN message objects for Tx and Rx purposes:
+  * C_CAN provides a total of 32 message objects that can be configured
+  * either for Tx or Rx purposes. Here the first 16 message objects are used as
+  * a reception FIFO. The end of reception FIFO is signified by the EoB bit
+@@ -584,8 +576,7 @@ static int c_can_software_reset(struct net_device *dev)
+ 	return 0;
+ }
+ 
+-/*
+- * Configure C_CAN chip:
++/* Configure C_CAN chip:
+  * - enable/disable auto-retransmission
+  * - set operating mode
+  * - configure message objects
+@@ -751,8 +742,7 @@ static void c_can_do_tx(struct net_device *dev)
+ 	}
+ }
+ 
+-/*
+- * If we have a gap in the pending bits, that means we either
++/* If we have a gap in the pending bits, that means we either
+  * raced with the hardware or failed to readout all upper
+  * objects in the last run due to quota limit.
+  */
+@@ -763,8 +753,7 @@ static u32 c_can_adjust_pending(u32 pend)
+ 	if (pend == RECEIVE_OBJECT_BITS)
+ 		return pend;
+ 
+-	/*
+-	 * If the last set bit is larger than the number of pending
++	/* If the last set bit is larger than the number of pending
+ 	 * bits we have a gap.
+ 	 */
+ 	weight = hweight32(pend);
+@@ -774,8 +763,7 @@ static u32 c_can_adjust_pending(u32 pend)
+ 	if (lasts == weight)
+ 		return pend;
+ 
+-	/*
+-	 * Find the first set bit after the gap. We walk backwards
++	/* Find the first set bit after the gap. We walk backwards
+ 	 * from the last set bit.
+ 	 */
+ 	for (lasts--; pend & (1 << (lasts - 1)); lasts--);
+@@ -815,8 +803,7 @@ static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
+ 			continue;
+ 		}
+ 
+-		/*
+-		 * This really should not happen, but this covers some
++		/* This really should not happen, but this covers some
+ 		 * odd HW behaviour. Do not remove that unless you
+ 		 * want to brick your machine.
+ 		 */
+@@ -842,8 +829,7 @@ static inline u32 c_can_get_pending(struct c_can_priv *priv)
+ 	return pend;
+ }
+ 
+-/*
+- * theory of operation:
++/* theory of operation:
+  *
+  * c_can core saves a received CAN message into the first free message
+  * object it finds free (starting with the lowest). Bits NEWDAT and
+@@ -860,8 +846,7 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
+ 	struct c_can_priv *priv = netdev_priv(dev);
+ 	u32 pkts = 0, pend = 0, toread, n;
+ 
+-	/*
+-	 * It is faster to read only one 16bit register. This is only possible
++	/* It is faster to read only one 16bit register. This is only possible
+ 	 * for a maximum number of 16 objects.
+ 	 */
+ 	BUILD_BUG_ON_MSG(C_CAN_MSG_OBJ_RX_LAST > 16,
+@@ -872,8 +857,7 @@ static int c_can_do_rx_poll(struct net_device *dev, int quota)
+ 			pend = c_can_get_pending(priv);
+ 			if (!pend)
+ 				break;
+-			/*
+-			 * If the pending field has a gap, handle the
++			/* If the pending field has a gap, handle the
+ 			 * bits above the gap first.
+ 			 */
+ 			toread = c_can_adjust_pending(pend);
+@@ -991,8 +975,7 @@ static int c_can_handle_bus_err(struct net_device *dev,
+ 	struct can_frame *cf;
+ 	struct sk_buff *skb;
+ 
+-	/*
+-	 * early exit if no lec update or no error.
++	/* early exit if no lec update or no error.
+ 	 * no lec update means that no CAN bus event has been detected
+ 	 * since CPU wrote 0x7 value to status reg.
+ 	 */
+@@ -1011,8 +994,7 @@ static int c_can_handle_bus_err(struct net_device *dev,
+ 	if (unlikely(!skb))
+ 		return 0;
+ 
+-	/*
+-	 * check for 'last error code' which tells us the
++	/* check for 'last error code' which tells us the
+ 	 * type of the last error to occur on the CAN bus
+ 	 */
+ 	cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index 406b4847e5dc..4a39b39db3b9 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -41,8 +41,7 @@ struct c_can_pci_data {
+ 	void (*init)(const struct c_can_priv *priv, bool enable);
+ };
+ 
+-/*
+- * 16-bit c_can registers can be arranged differently in the memory
++/* 16-bit c_can registers can be arranged differently in the memory
+  * architecture of different implementations. For example: 16-bit
+  * registers can be aligned to a 16-bit boundary or 32-bit boundary etc.
+  * Handle the same by providing a common read/write interface.
+-- 
+2.30.1
 
-I've converted this to make use of the struct_size() macro:
 
-+       dev =3D alloc_candev(struct_size(priv, dlc, msg_obj_tx_num),
-+                          msg_obj_tx_num);
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---wgmmyfwmn76i5d4s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBA/BgACgkQqclaivrt
-76m4zwgAny/+Z6viYUgp3sOUmSnJzENe19yvsk7JUDQ10FUvBTGDASIHY9qEg+Sn
-nJ1EDa8d37+SO7SYusaiogXzxV61vnZSmvfrzERCN8kH4jVRscNXd6tD12P04FDS
-6Jj+Oks0+hYL0+9r8qzR9NPZzoxWqWbUyGk4tEnYFQ84LALZjmWpEeOv/ORKv6UI
-KJPTl1asXcVOj1gyq0AvAHaND0Ei+t2lmej5iA4dxxdi8dIt1nYq+tDo8IGl5jqa
-cPaP4jKopOHMaOgwYzpPieG4NXoBvai3XxfxjP+ZWUB70MU3YfP5JCn0m+tqAOsh
-bshqNyienPr57S0oyUuXkt9zikG61w==
-=LgIH
------END PGP SIGNATURE-----
-
---wgmmyfwmn76i5d4s--
