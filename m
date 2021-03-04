@@ -2,54 +2,50 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CD33C4332E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86FFFC43332
 	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:44:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 36F4864FB1
+	by mail.kernel.org (Postfix) with ESMTP id 4B34C64F4D
 	for <linux-can@archiver.kernel.org>; Thu,  4 Mar 2021 15:44:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235436AbhCDPnu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 4 Mar 2021 10:43:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
+        id S235355AbhCDPns (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 4 Mar 2021 10:43:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235332AbhCDPnf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 4 Mar 2021 10:43:35 -0500
+        with ESMTP id S235285AbhCDPnZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 4 Mar 2021 10:43:25 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0755FC061765
-        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 07:42:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF32C06175F
+        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 07:42:45 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lHq7k-0003bV-Db
-        for linux-can@vger.kernel.org; Thu, 04 Mar 2021 16:42:48 +0100
+        id 1lHq7f-0003Vh-Pk
+        for linux-can@vger.kernel.org; Thu, 04 Mar 2021 16:42:43 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DB7DE5EDD31
-        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 15:42:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id A04915EDD0E
+        for <linux-can@vger.kernel.org>; Thu,  4 Mar 2021 15:42:42 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0DF2D5EDD14;
-        Thu,  4 Mar 2021 15:42:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 438515EDD06;
+        Thu,  4 Mar 2021 15:42:42 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 97f20049;
-        Thu, 4 Mar 2021 15:42:42 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c110c194;
+        Thu, 4 Mar 2021 15:42:41 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v5 07/11] can: c_can: remove unused code
-Date:   Thu,  4 Mar 2021 16:42:36 +0100
-Message-Id: <20210304154240.2747987-8-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>
+Subject: [PATCH v5 0/11] can: c_can: add support to 64 message objects
+Date:   Thu,  4 Mar 2021 16:42:29 +0100
+Message-Id: <20210304154240.2747987-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210304154240.2747987-1-mkl@pengutronix.de>
-References: <20210304154240.2747987-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -60,56 +56,47 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dario Binacchi <dariobin@libero.it>
+Hello,
 
-Commit 9d23a9818cb1 ("can: c_can: Remove unused inline function") left
-behind C_CAN_MSG_OBJ_TX_LAST constant.
+this series picks up Dario Binacchi's patches and adds some cleanup
+patches in front.
 
-Commit fa39b54ccf28 ("can: c_can: Get rid of pointless interrupts")
-left behind C_CAN_MSG_RX_LOW_LAST and C_CAN_MSG_OBJ_RX_SPLIT
-constants.
+The D_CAN controller supports up to 128 messages. Until now the driver
+only managed 32 messages although Sitara processors and DRA7 SOC can
+handle 64.
 
-The removed code also made a comment useless and misleading.
+The series was tested on a beaglebone board.
 
-Link: https://lore.kernel.org/r/20210302215435.18286-2-dariobin@libero.it
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/c_can/c_can.c | 3 +--
- drivers/net/can/c_can/c_can.h | 4 ----
- 2 files changed, 1 insertion(+), 6 deletions(-)
+Note:
+I have not changed the type of tx_field (belonging to the c_can_priv
+structure) to atomic64_t because I think the atomic_t type has size
+of at least 32 bits on x86 and arm, which is enough to handle 64
+messages.
+http://marc.info/?l=linux-can&m=139746476821294&w=2 reports the results
+of tests performed just on x86 and arm architectures.
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index b820002fb81e..e0c57cab7ab2 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -834,8 +834,7 @@ static inline u32 c_can_get_pending(struct c_can_priv *priv)
-  * c_can core saves a received CAN message into the first free message
-  * object it finds free (starting with the lowest). Bits NEWDAT and
-  * INTPND are set for this message object indicating that a new message
-- * has arrived. To work-around this issue, we keep two groups of message
-- * objects whose partitioning is defined by C_CAN_MSG_OBJ_RX_SPLIT.
-+ * has arrived.
-  *
-  * We clear the newdat bit right away.
-  *
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 3d07285e46c1..7a7d3fb4b1c3 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -32,11 +32,7 @@
- 				C_CAN_MSG_OBJ_RX_NUM - 1)
- 
- #define C_CAN_MSG_OBJ_TX_FIRST	(C_CAN_MSG_OBJ_RX_LAST + 1)
--#define C_CAN_MSG_OBJ_TX_LAST	(C_CAN_MSG_OBJ_TX_FIRST + \
--				C_CAN_MSG_OBJ_TX_NUM - 1)
- 
--#define C_CAN_MSG_OBJ_RX_SPLIT	9
--#define C_CAN_MSG_RX_LOW_LAST	(C_CAN_MSG_OBJ_RX_SPLIT - 1)
- #define RECEIVE_OBJECT_BITS	0x0000ffff
- 
- enum reg {
--- 
-2.30.1
+Changes in v5:
+- Add cleanup patches
+- alloc_c_can_dev(): make use of struct_size()
+
+Changes in v4:
+- Restore IF_RX interface.
+- Add a comment to clarify why IF_RX interface is used instead of IF_TX.
+- Use GENMASK() for setting msg_obj_rx_mask.
+- Use BIT() for setting single bits and GENMASK() for setting masks.
+
+Changes in v3:
+- Use unsigned int instead of int as type of the msg_obj_* fields
+  in the c_can_priv structure.
+- Replace (u64)1 with 1UL in msg_obj_rx_mask setting.
+- Use unsigned int instead of int as type of the msg_obj_num field
+  in c_can_driver_data and c_can_pci_data structures.
+
+Changes in v2:
+- Fix compiling error reported by kernel test robot.
+- Add Reported-by tag.
+- Pass larger size to alloc_candev() routine to avoid an additional
+  memory allocation/deallocation.
+- Add message objects number to PCI driver data.
 
 
