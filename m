@@ -2,50 +2,54 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC806C433E9
-	for <linux-can@archiver.kernel.org>; Fri,  5 Mar 2021 13:03:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1573AC4332B
+	for <linux-can@archiver.kernel.org>; Fri,  5 Mar 2021 13:03:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C86C864F73
+	by mail.kernel.org (Postfix) with ESMTP id E90AE64F67
 	for <linux-can@archiver.kernel.org>; Fri,  5 Mar 2021 13:03:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhCENCd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 5 Mar 2021 08:02:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43838 "EHLO
+        id S230081AbhCENCe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 5 Mar 2021 08:02:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhCENCR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 5 Mar 2021 08:02:17 -0500
+        with ESMTP id S230320AbhCENCW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 5 Mar 2021 08:02:22 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C8FC061574
-        for <linux-can@vger.kernel.org>; Fri,  5 Mar 2021 05:02:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD3EC061761
+        for <linux-can@vger.kernel.org>; Fri,  5 Mar 2021 05:02:21 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lIA5v-0006FE-Jg
-        for linux-can@vger.kernel.org; Fri, 05 Mar 2021 14:02:15 +0100
+        id 1lIA60-0006Kr-3z
+        for linux-can@vger.kernel.org; Fri, 05 Mar 2021 14:02:20 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id AA1C25EE835
-        for <linux-can@vger.kernel.org>; Fri,  5 Mar 2021 13:02:13 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2B5E35EE854
+        for <linux-can@vger.kernel.org>; Fri,  5 Mar 2021 13:02:17 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4D26D5EE82D;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A36895EE834;
         Fri,  5 Mar 2021 13:02:13 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5872892e;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9c3d4daa;
         Fri, 5 Mar 2021 13:02:12 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>
-Subject: [PATCH v6 0/12] can: c_can: add support to 64 message objects
-Date:   Fri,  5 Mar 2021 14:01:59 +0100
-Message-Id: <20210305130211.2860914-1-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v6 04/12] can: c_can: fix print formating string
+Date:   Fri,  5 Mar 2021 14:02:03 +0100
+Message-Id: <20210305130211.2860914-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210305130211.2860914-1-mkl@pengutronix.de>
+References: <20210305130211.2860914-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -56,53 +60,30 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello,
+This patch fixes the print format string in the driver, so that it
+stays in a single line.
 
-this series picks up Dario Binacchi's patches and adds some cleanup
-patches in front.
+Link: https://lore.kernel.org/r/20210304154240.2747987-5-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/c_can/c_can_pci.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-The D_CAN controller supports up to 128 messages. Until now the driver
-only managed 32 messages although Sitara processors and DRA7 SOC can
-handle 64.
-
-The series was tested on a beaglebone board.
-
-Note:
-I have not changed the type of tx_field (belonging to the c_can_priv
-structure) to atomic64_t because I think the atomic_t type has size
-of at least 32 bits on x86 and arm, which is enough to handle 64
-messages.
-http://marc.info/?l=linux-can&m=139746476821294&w=2 reports the results
-of tests performed just on x86 and arm architectures.
-
-Changes in v6:
-- make patches
-  [PATCH v5 0/11] can: c_can: add support to 64 message objects
-  [PATCH v5 0/11] can: c_can: add support to 64 message objects
-  separate again, they have been squashed accidentally 
-
-Changes in v5:
-- Add cleanup patches
-- alloc_c_can_dev(): make use of struct_size()
-
-Changes in v4:
-- Restore IF_RX interface.
-- Add a comment to clarify why IF_RX interface is used instead of IF_TX.
-- Use GENMASK() for setting msg_obj_rx_mask.
-- Use BIT() for setting single bits and GENMASK() for setting masks.
-
-Changes in v3:
-- Use unsigned int instead of int as type of the msg_obj_* fields
-  in the c_can_priv structure.
-- Replace (u64)1 with 1UL in msg_obj_rx_mask setting.
-- Use unsigned int instead of int as type of the msg_obj_num field
-  in c_can_driver_data and c_can_pci_data structures.
-
-Changes in v2:
-- Fix compiling error reported by kernel test robot.
-- Add Reported-by tag.
-- Pass larger size to alloc_candev() routine to avoid an additional
-  memory allocation/deallocation.
-- Add message objects number to PCI driver data.
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index 26194adbadb1..8cd9578b30b4 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -141,8 +141,7 @@ static int c_can_pci_probe(struct pci_dev *pdev,
+ 			 pci_resource_len(pdev, c_can_pci_data->bar));
+ 	if (!addr) {
+ 		dev_err(&pdev->dev,
+-			"device has no PCI memory resources, "
+-			"failing adapter\n");
++			"device has no PCI memory resources, failing adapter\n");
+ 		ret = -ENOMEM;
+ 		goto out_release_regions;
+ 	}
+-- 
+2.30.1
 
 
