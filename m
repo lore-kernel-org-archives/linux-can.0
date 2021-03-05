@@ -2,114 +2,102 @@ Return-Path: <SRS0=fev5=ID=vger.kernel.org=linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B777DC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E300EC433E6
 	for <linux-can@archiver.kernel.org>; Fri,  5 Mar 2021 17:22:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 89607650A2
+	by mail.kernel.org (Postfix) with ESMTP id B4719650A7
 	for <linux-can@archiver.kernel.org>; Fri,  5 Mar 2021 17:22:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbhCERVu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S229563AbhCERVu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 5 Mar 2021 12:21:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhCERVc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 5 Mar 2021 12:21:32 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7DDC061756
-        for <linux-can@vger.kernel.org>; Fri,  5 Mar 2021 09:21:32 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id h98so2879011wrh.11
-        for <linux-can@vger.kernel.org>; Fri, 05 Mar 2021 09:21:32 -0800 (PST)
+        with ESMTP id S229446AbhCERVb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 5 Mar 2021 12:21:31 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CD1C061574
+        for <linux-can@vger.kernel.org>; Fri,  5 Mar 2021 09:21:30 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id h7so2121307wmf.3
+        for <linux-can@vger.kernel.org>; Fri, 05 Mar 2021 09:21:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=maxiluxsystems-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JW5c1u4SWQMGxSS5sSyhEtgIh0KGdGvIu4dU/YzXaFI=;
-        b=TpIa+mC2wALaSayznTKWnoZgxozg4My/Lh3/UkMzo/4qP6KYgew+vLAZZSXXlTQMDU
-         SOyGbimZ3aKzTwiSwVTbot07LN9qzdFfzUVyGZRyson+khvVFuKNhDKkDh2gJD3H8Kaj
-         Miw9dvXOx8XKaf322gNbWixCefjHTBtKxLYt2jS6/4Obay0J6Ns9cXhw1WxEcRU+gyh5
-         6ZXW5VB/UWsuUyifaZ7yuTNDo4ZOK+OFYqeoV7+jV33884hX8sQ5GqkXLrmn+zeQ7vcr
-         bFZjobyiNkO3MX1SOHl+CUH5/mnUt+HlM1IpPmMlePsuBmhttt/5rOydso4HbzWwPMxq
-         XhXw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bA3sZ1iKiwFXADJLE0E7x4c/ocdTjI73bvH5osutgeg=;
+        b=TpTFFBN6Ma72eNvwu7JHkDLnvofxnnhS7fN9mjYhhk3MlKfNepjHt/e5BsdkQ60oAI
+         vz8gGe5IH2B/MX2WPcAGNguTArlE58zGIi7bwKHxL6/zP5B+qnJhlcVCTRXTwwRnsczy
+         SfhG4oqk0GXdNs4qZog6Y4LXeAos4VYknzejw0ziFq2SKVbugTbBlwAUPrICIu7XqtEj
+         RLsy4rAzwc7SpGwXVHpzTeHsHcSMBrrQxa4zcXY5yzLrPRJUleBGc8af0xSW8PDh/gZM
+         tN1Pvk+F1g9jK/mZnuX0XTThfPvh9DvnKb2T2HOyTMI38V8bcXQiSHbxYkNdtlJT9frl
+         t3WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JW5c1u4SWQMGxSS5sSyhEtgIh0KGdGvIu4dU/YzXaFI=;
-        b=PIPxQ0jjkJ1ZknxNntMKOAIgVyuS1OedTv5xDMk+v6+JunV7JtWcc2quEgwc6na/7Z
-         HXJI0WB3D0CPtaGXUzw6OPGKB4Itc2TEv887f5i/gpwcSa45HeMLmoImSlZoPjFRQOzb
-         /N82IOMSvy3fqQhvcY/xsSDriby7IeEKzSNhACZNqjTirFV91hxkfleQvqkFktbV/ekJ
-         zh615C5jfmadfeCYVxx/e2d63+5+1lJeCVNJa/71KBxeIaSbVxO4Nas2UaonFwRTA4b0
-         uIGq5JA7jc/wrq0/XurUDzHMr64TA3vR21mZF3mzbfhU22fcPYutFRnpbAsQfKlwZMLh
-         974g==
-X-Gm-Message-State: AOAM5314dtlaLPx33reyix/DhVLc0K9tfAMZN3WEPnTTBOce4CbF+JnS
-        FKNud5I30GGfasGNjzOGvlzssfnJCbfWxw==
-X-Google-Smtp-Source: ABdhPJxN5P3iS9P+8WdVPKBmf9ekunOIMhY2g/QJB6R1nVYuC97uXZgd/s8XsWBCO8xzL2PN5cwxgQ==
-X-Received: by 2002:adf:fd48:: with SMTP id h8mr10464693wrs.229.1614964890998;
-        Fri, 05 Mar 2021 09:21:30 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bA3sZ1iKiwFXADJLE0E7x4c/ocdTjI73bvH5osutgeg=;
+        b=r4f3+mxLZ5g6uhv3RypLYiQGIhdJpaS+4D5w3lvk5rbq0lzF/DO2hGlmT87hmCEpK8
+         AooEw9pN8FofAwWjuCpst12bzOP4dmuU2UhmuoJUrRDCjrkeLAwm8mpuecKGhhX02QAu
+         wQf6VJjLJ8/wQbNFEUKu/1Hht/2bZVf576l5C/SKb9/2ZgrHBmAkxNFMOHbmLsHbygvF
+         gC/y3jtwWhDzMccfWLIYviWdqMgB7/I8tIoywsIo+r5+49lczcNt0gUe/Yy/V0VEy1w7
+         MqFAP9OtYHelYbTbOeTxT2OxN9z27Pjc4IXLV4l8wKg9nvAkWr1pGBimliiQo5/mLBbZ
+         wWZA==
+X-Gm-Message-State: AOAM533IkiO4z0N9gqaWnfvaoDUPArBSDKuc1Vw3HvWmedQZ8s06g5lA
+        zWdSdZA/0d3ifLBq3At1jhu5z+yOlHinLQ==
+X-Google-Smtp-Source: ABdhPJwx96Way9M+Glt8uj6enbuIUJAQjlDe3DF1VoDXFo6UFGPBscI+zVSbTTaJZDQMGYq2NoTjjg==
+X-Received: by 2002:a1c:1fc6:: with SMTP id f189mr10038826wmf.68.1614964889312;
+        Fri, 05 Mar 2021 09:21:29 -0800 (PST)
 Received: from localhost.localdomain ([185.69.145.254])
-        by smtp.gmail.com with ESMTPSA id c9sm5174926wmb.33.2021.03.05.09.21.30
+        by smtp.gmail.com with ESMTPSA id c9sm5174926wmb.33.2021.03.05.09.21.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 09:21:30 -0800 (PST)
+        Fri, 05 Mar 2021 09:21:29 -0800 (PST)
 From:   Torin Cooper-Bennun <torin@maxiluxsystems.com>
 To:     linux-can@vger.kernel.org
 Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Pankaj Sharma <pankj.sharma@samsung.com>,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Subject: [PATCH 2/3] can: m_can: m_can_chip_config(): enable and configure internal timestamps
-Date:   Fri,  5 Mar 2021 17:20:14 +0000
-Message-Id: <20210305172015.1506525-3-torin@maxiluxsystems.com>
+        Pankaj Sharma <pankj.sharma@samsung.com>
+Subject: [PATCH 0/3] can: m_can: stabilise peripheral m_can RX and TX
+Date:   Fri,  5 Mar 2021 17:20:12 +0000
+Message-Id: <20210305172015.1506525-1-torin@maxiluxsystems.com>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305172015.1506525-1-torin@maxiluxsystems.com>
-References: <20210305172015.1506525-1-torin@maxiluxsystems.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This is a prerequisite for transitioning the m_can driver to rx-offload,
-which works best with TX and RX timestamps.
+In this patch series, rx-offload is utilised in the m_can driver,
+instead of sending skbs directly from a threaded IRQ using
+netif_receive_skb() (which is meant to be called only from a softirq
+context). This should fix the major stability problems with M_CAN
+peripherals (tcan4x5x being the only practical example at the moment).
 
-The timestamps provided by M_CAN are 16-bit, timed according to the
-nominal bit timing, and may be prescaled by a multiplier up to 16. We
-choose the highest prescalar so that the timestamp wraps every 2^20 bit
-times, or 209 ms at a bus speed of 5 Mbit/s. Timestamps will have a
-precision of 16 bit times.
+I have tested this with a Raspberry Pi 3 Model B and a TCAN4550. The
+driver no longer crashes outright, and TX works consistently and echoes
+correctly. RX is also much more stable, but I think more testing is
+required with different hardware to really ensure stability.
 
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
----
- drivers/net/can/m_can/m_can.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+There is definitely at least one outstanding issue. In my tests, if the
+TCAN4550 encounters bus activity immediately after init, such that RX
+FIFO 0 is already full by the time the IRQ handler is first called, then
+in the initial round of RX polling, the frames are apparently read out
+empty (DLC = 0, ID = 0). After this point, RX works as expected. I
+assume there's a data race hidden in the init process somewhere, but I
+have failed to find it!
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index ea79cf0640a8..83a673417e7c 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1139,6 +1139,7 @@ static int m_can_set_bittiming(struct net_device *dev)
-  *		- >= v3.1.x: TX FIFO is used
-  * - configure mode
-  * - setup bittiming
-+ * - configure timestamp generation
-  */
- static void m_can_chip_config(struct net_device *dev)
- {
-@@ -1250,6 +1251,11 @@ static void m_can_chip_config(struct net_device *dev)
- 	/* set bittiming params */
- 	m_can_set_bittiming(dev);
- 
-+	/* enable internal timestamp generation, with a prescalar of 16. The
-+	 * prescalar is applied to the nominal bit timing */
-+	m_can_write(cdev, M_CAN_TSCC,
-+		    (0xf << TSCC_TCP_SHIFT) | TSCC_TSS_INTERNAL);
-+
- 	m_can_config_endisable(cdev, false);
- 
- 	if (cdev->ops->init)
--- 
-2.30.1
+On my hardware setup, I still have occasional incorrectly-read-out
+frames (e.g. DLC wrong, or the odd 4 data bytes reading 0), but I am yet
+to rule out SPI signal problems, nor Raspberry Pi SPI hardware problems.
+In any case, these problems existed in my setup before this patch
+series.
+
+I would be grateful if someone were able to test these changes with a
+different hardware setup, and also with non-peripheral M_CAN.
+
+Many thanks,
+Torin
+
+
 
