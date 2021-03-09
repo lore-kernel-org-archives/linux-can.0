@@ -2,100 +2,102 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD46DC433E0
-	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 15:25:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1FDCC433E0
+	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 15:28:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A762C65274
-	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 15:25:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7CC426521D
+	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 15:28:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhCIPYt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 Mar 2021 10:24:49 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:39747 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhCIPYa (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Mar 2021 10:24:30 -0500
-Received: from localhost.localdomain ([153.202.107.157])
-        by mwinf5d20 with ME
-        id eFQD2400T3PnFJp03FQMkA; Tue, 09 Mar 2021 16:24:28 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 09 Mar 2021 16:24:28 +0100
-X-ME-IP: 153.202.107.157
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Tom Herbert <therbert@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [RFC PATCH 0/1] Modify dql.min_limit value inside the driver
-Date:   Wed, 10 Mar 2021 00:23:53 +0900
-Message-Id: <20210309152354.95309-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.26.2
+        id S231239AbhCIP2C (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 9 Mar 2021 10:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231674AbhCIP1n (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Mar 2021 10:27:43 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88D1C06174A
+        for <linux-can@vger.kernel.org>; Tue,  9 Mar 2021 07:27:43 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lJeGs-0007gy-9T; Tue, 09 Mar 2021 16:27:42 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:4699:faa8:8510:ac25])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 15AA25F1E84;
+        Tue,  9 Mar 2021 15:27:41 +0000 (UTC)
+Date:   Tue, 9 Mar 2021 16:27:40 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     =?utf-8?B?U3TDqXBoYW5l?= Grosjean <s.grosjean@peak-system.com>
+Cc:     linux-can Mailing List <linux-can@vger.kernel.org>
+Subject: Re: [PATCH 2/3] can/peak_usb: add forgotten supported devices
+Message-ID: <20210309152740.mbrkzp3vz53ojeua@pengutronix.de>
+References: <20210309110739.x2njhvrau5v5vtaz@pengutronix.de>
+ <PA4PR03MB6797F30B0A13B189E969933AD6929@PA4PR03MB6797.eurprd03.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nbttwacwnsixb7cf"
+Content-Disposition: inline
+In-Reply-To: <PA4PR03MB6797F30B0A13B189E969933AD6929@PA4PR03MB6797.eurprd03.prod.outlook.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Abstract: would like to directly set dql.min_limit value inside a
-driver to improve BQL performances of a CAN USB driver.
 
-CAN packets have a small PDU: for classical CAN maximum size is
-roughly 16 bytes (8 for payload and 8 for arbitration, CRC and
-others).
+--nbttwacwnsixb7cf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I am writing an CAN driver for an USB interface. To compensate the
-extra latency introduced by the USB, I want to group several CAN
-frames and do one USB bulk send. To this purpose, I implemented BQL in
-my driver.
+On 09.03.2021 14:22:38, St=C3=A9phane Grosjean wrote:
+> Hi Marc,
+>=20
+> PCAN-USB X6 support has been added by
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3Df00b534ded60bd0a23c2fa8dec4ece52aa7d235f
+>=20
+> PCAN-Chip USB support has been added by
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3Dea8b65b596d78969629562f9728f76cbf565fbec
+>=20
+> Should I update the patch description with these commit Id and push a
+> v2?
 
-However, the BQL algorithms can take time to adjust, especially if
-there are small bursts.
+No need, I've updated the patch.
 
-The best way I found is to directly modify the dql.min_limit and set
-it to some empirical values. This way, even during small burst events
-I can have a good throughput. Slightly increasing the dql.min_limit
-has no measurable impact on the latency as long as frames fit in the
-same USB packet (i.e. BQL overheard is negligible compared to USB
-overhead).
+regards,
+Marc
 
-The BQL was not designed for USB nor was it designed for CAN's small
-PDUs which probably explains why I am the first one to ever have
-thought of using dql.min_limit within the driver.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-The code I wrote looks like:
+--nbttwacwnsixb7cf
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> #ifdef CONFIG_BQL
->	netdev_get_tx_queue(netdev, 0)->dql.min_limit = <some empirical value>;
-> #endif
+-----BEGIN PGP SIGNATURE-----
 
-Using #ifdef to set up some variables is not a best practice. I am
-sending this RFC to see if we can add a function to set this
-dql.min_limit in a more pretty way.
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBHk+kACgkQqclaivrt
+76lnaAgAozm43yIHOq4I99mHOdBdNk6cJZaafZbxgYqyzubX8jvYyvH4nfmVcE4K
+QPpQ4Bkt1Ke6Ese2rjlRU0xnN6bcGg6smGqxeaWe7bzEJvbpusAhlPhvgLIslEDe
++bLKjjVFC6jele7lu15XE3JF2RPFXgim0mLOejdNnkKLlrneeN4sETCndHUh58KK
+kqlpaQlBuaxvO3q+aTzFCHgtYRNRNTujt8WEhWJ0L5pz1vW8BUs5OYuggAU/vyv7
+4Y3jSJlpvzefnXLxt2SVDrFrxAGCxr8h1RAo+CcAg7sOzTYo+z8DdRU/1OSltiPB
+0LrBApJlxneWpslPtkj7RZs+EFJpRA==
+=5VOP
+-----END PGP SIGNATURE-----
 
-For your reference, this RFQ is a follow-up of a discussion on the
-linux-can mailing list:
-https://lore.kernel.org/linux-can/20210309125708.ei75tr5vp2sanfh6@pengutronix.de/
-
-Thank you for your comments.
-
-Yours sincerely,
-Vincent
-
-
-Vincent Mailhol (1):
-  dql: add dql_set_min_limit()
-
- include/linux/dynamic_queue_limits.h | 3 +++
- lib/dynamic_queue_limits.c           | 8 ++++++++
- 2 files changed, 11 insertions(+)
-
--- 
-2.26.2
-
+--nbttwacwnsixb7cf--
