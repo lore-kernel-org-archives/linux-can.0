@@ -2,50 +2,50 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CBF7C433DB
-	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 11:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB637C433E0
+	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 11:21:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2B17265252
-	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 11:08:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5DE3565253
+	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 11:21:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhCILIA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 Mar 2021 06:08:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
+        id S229520AbhCILUf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 9 Mar 2021 06:20:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhCILHn (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Mar 2021 06:07:43 -0500
+        with ESMTP id S229481AbhCILUN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Mar 2021 06:20:13 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F032C06174A
-        for <linux-can@vger.kernel.org>; Tue,  9 Mar 2021 03:07:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88ABEC06174A
+        for <linux-can@vger.kernel.org>; Tue,  9 Mar 2021 03:20:13 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lJaDF-0004Zw-Os; Tue, 09 Mar 2021 12:07:41 +0100
+        id 1lJaPM-0006I2-4N; Tue, 09 Mar 2021 12:20:12 +0100
 Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:4699:faa8:8510:ac25])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
         (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id C03145F1693;
-        Tue,  9 Mar 2021 11:07:40 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 12:07:39 +0100
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 57D915F16B8;
+        Tue,  9 Mar 2021 11:20:11 +0000 (UTC)
+Date:   Tue, 9 Mar 2021 12:20:10 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     Stephane Grosjean <s.grosjean@peak-system.com>
 Cc:     linux-can Mailing List <linux-can@vger.kernel.org>
-Subject: Re: [PATCH 2/3] can/peak_usb: add forgotten supported devices
-Message-ID: <20210309110739.x2njhvrau5v5vtaz@pengutronix.de>
+Subject: Re: [PATCH 1/3] can/peak_usb: add support of ethtool set_phys_id()
+Message-ID: <20210309112010.t7reyqjkfkj6jtjp@pengutronix.de>
 References: <20210309082128.23125-1-s.grosjean@peak-system.com>
- <20210309082128.23125-3-s.grosjean@peak-system.com>
+ <20210309082128.23125-2-s.grosjean@peak-system.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="huz3ah2xobmge22y"
+        protocol="application/pgp-signature"; boundary="jkpgaw4eor6d3ado"
 Content-Disposition: inline
-In-Reply-To: <20210309082128.23125-3-s.grosjean@peak-system.com>
+In-Reply-To: <20210309082128.23125-2-s.grosjean@peak-system.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -55,18 +55,18 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---huz3ah2xobmge22y
+--jkpgaw4eor6d3ado
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 09.03.2021 09:21:27, Stephane Grosjean wrote:
-> Since the peak_usb driver also supports the CAN-USB interfaces
-> "PCAN-USB X6" and "PCAN-Chip USB" from PEAK-System GmbH, this patch adds
-> their names to the list of explicitly supported devices.
+On 09.03.2021 09:21:26, Stephane Grosjean wrote:
+> This patch makes it possible to specifically flash the LED of a CAN port
+> of the CAN-USB interfaces of PEAK-System.
+>=20
+> Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Can you look up which patch added support for these interfaces? Then we
-can add a Fixes tag.
+Added this one to linux-can-next/testing.
 
 Marc
 
@@ -76,19 +76,19 @@ Embedded Linux                   | https://www.pengutronix.de  |
 Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---huz3ah2xobmge22y
+--jkpgaw4eor6d3ado
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBHVvkACgkQqclaivrt
-76ni7Qf/UmmKrhyAJmn5gnslI3AItRVJDCnw+gWLFVAe3PGZ18dwDcju2SvX9Z63
-X0dNhSbXFwqna7Dy25+JA7I3EhGbK60qeNoPenp+g1lYB/Y1Vu33R+UeO0YHq2DJ
-DEx+jKG8WA5HdUSfMT440sH5RI/EX6tgIVZ1t9/Cnd/yJSKuKvhOYWGlDgEVHL0z
-9dKrDvaYfZ7Q82mjskBgtOBj+QuMS4YQOQCMOgskvvzb3Bm0KZlwGQj9Hznqr4Af
-+ZFky7Br+gdAaVEig0Zwc9s/Xo6lxFrKYpY1uB15zIuzgPi8A4ZBBM48rFZzZuJd
-KrhKsmxC6E+YVrtaukxlrdJgyS8Mww==
-=Ls+i
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBHWegACgkQqclaivrt
+76kKrQf+IKNlwtSrZWQ3WDcMu3ehQShtPd/JnUzyjOBOwYUM9d9+vvZvreSHYHkt
+CYG/EEtsuBimZXrk9CuF2vzb0YJe7L/1ZybE045jL69HLblS0AwL9yf5SXGtVdKH
+f6tH3BWh7jCLtovxotQVtC0AfILGGSSJPfRECAAIfMDDeRXqhJw5Ifm7018E1lpT
+5cOKKBOrUdhYnxWreccyYBENlH8vZWPj8uaCHyfVP4WwsNCrWEHfG1kBPRRJcoYl
+FXiPWXPG5INrc7rhAo5Q2udJfPwYxJlA5aLoDRS6WyF3zmfaP4wuk3i+PCAVVcFM
+SYtn9hVxo4vfRotn//kPIzpcrHEKaA==
+=UeaS
 -----END PGP SIGNATURE-----
 
---huz3ah2xobmge22y--
+--jkpgaw4eor6d3ado--
