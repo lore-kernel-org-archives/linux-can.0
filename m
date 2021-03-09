@@ -2,145 +2,100 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DBBAC433DB
-	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 08:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19BD1C433E6
+	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 08:31:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0B9665173
-	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 08:23:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E4AEB65272
+	for <linux-can@archiver.kernel.org>; Tue,  9 Mar 2021 08:31:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhCIIW7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 Mar 2021 03:22:59 -0500
-Received: from smtp5-g21.free.fr ([212.27.42.5]:13366 "EHLO smtp5-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230143AbhCIIWt (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:22:49 -0500
-Received: from localhost.localdomain (unknown [89.158.142.148])
-        (Authenticated sender: stephane.grosjean@free.fr)
-        by smtp5-g21.free.fr (Postfix) with ESMTPSA id 95BE65FF3F;
-        Tue,  9 Mar 2021 09:22:14 +0100 (CET)
-From:   Stephane Grosjean <s.grosjean@peak-system.com>
-To:     linux-can Mailing List <linux-can@vger.kernel.org>
-Cc:     Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH 3/3] can/peak_usb: add support of ONE_SHOT mode
-Date:   Tue,  9 Mar 2021 09:21:28 +0100
-Message-Id: <20210309082128.23125-4-s.grosjean@peak-system.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210309082128.23125-1-s.grosjean@peak-system.com>
-References: <20210309082128.23125-1-s.grosjean@peak-system.com>
+        id S229480AbhCIIac (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 9 Mar 2021 03:30:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhCIIaR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Mar 2021 03:30:17 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A579C06174A
+        for <linux-can@vger.kernel.org>; Tue,  9 Mar 2021 00:30:16 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id f1so25672509lfu.3
+        for <linux-can@vger.kernel.org>; Tue, 09 Mar 2021 00:30:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kZFd+XZ5Ze1AiCBZl14c8mEkDNV3+D55AzM5OcEAkUE=;
+        b=RA1AXgztRKbfIhedIxrgPoghvZO+8j/HhLP/jfvO0jLzSKfh1PBQD1wrdek/4rpa8z
+         Xi04XiR9zsnAN8uvTgfrfm5P6OI8l9Vd4hVF/gDWL3Qzx2d4JkB84BXlZuI3mDWz27sx
+         vnekqocP6OjhuZmO4JMUlgio6eec0ZwGMWDzx8ar5fKmzoN2T81ZKr2o71taEdUKYlUa
+         dx5sTXhAuGay6WIau9/+aS2GzbK0/zQ7qT8wMVKGQaAZiBcMTyHJVMF8sIbeN3pxLck5
+         f6tGXI2E2KpB/qf5NU1Q1Qrnsauu+gHFIqMEFRp30WFtGQtv50TOavJQOvxUWkdX99S9
+         tk6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kZFd+XZ5Ze1AiCBZl14c8mEkDNV3+D55AzM5OcEAkUE=;
+        b=s8F/6ot/8qwVQQ8S21LaXqq1+IO31hR7vcvAOVAX7LERpGb4fzpELcwmr8CX/KHRPw
+         YYTYEidZf15wvq86EE3pA4o2Ej8c3BShfDDO7esxU0Rzt4MLpxJS8a0NvrTM98/B1nkw
+         m+VlLYJG2gAre2Rw8SI2ghayEgplRBFHO0iNMgC6wm30V/T/m/WuWXVxpMHAkys9EyP5
+         mqTL9B9e1HxpZhbko5msuIfa7/Hicd0mViXR178ZHzJnR+PTX8zCDPOQaK/pqARPVj9A
+         RSJsuEBvCCCFIInx2jU9QzUEKpNn2e5Tbkcm1ZE5OLu0Q+iD0QKC9B+M78GcNyZwl6Ww
+         zRsw==
+X-Gm-Message-State: AOAM531PU57VMGWjLphooU/Pi2L9jp4AHYBOHXQwQTVnqPXreLbnujN6
+        G0jnRJVVhLNidyg5QuJU+oQtjGI4OiE=
+X-Google-Smtp-Source: ABdhPJwwSJ6xmicbYSKxN1rgqWTfMyZgkPrsNY06OoF6I9lyQ9hPiYdwsd9m43d5O40iAK0i1I35xg==
+X-Received: by 2002:a05:6512:969:: with SMTP id v9mr9104277lft.466.1615278614853;
+        Tue, 09 Mar 2021 00:30:14 -0800 (PST)
+Received: from [192.168.16.194] (h-4-68-234.A785.priv.bahnhof.se. [155.4.68.234])
+        by smtp.googlemail.com with ESMTPSA id t16sm1800667ljj.137.2021.03.09.00.30.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 00:30:14 -0800 (PST)
+Subject: Re: [PATCH v12 0/1] Introducing ETAS ES58X CAN USB interfaces
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org
+References: <20210308163445.103636-1-mailhol.vincent@wanadoo.fr>
+From:   Jimmy Assarsson <jimmyassarsson@gmail.com>
+Message-ID: <2f2db145-0d70-0795-2dda-54f5ade68681@gmail.com>
+Date:   Tue, 9 Mar 2021 09:30:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210308163445.103636-1-mailhol.vincent@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds "ONE-SHOT" mode support to the following CAN-USB
-PEAK-System GmbH interfaces:
-- PCAN-USB X6
-- PCAN-USB FD
-- PCAN-USB Pro FD
-- PCAN-Chip USB
-- PCAN-USB Pro
+On 2021-03-08 17:34, Vincent Mailhol wrote:
+> Here comes the twelfth iteration of the ETAS es58x usb driver. The
+> major difference from previous version is the total removal of
+> spinlocks. Aside of that, I also implemented the TDC accordingly to
+> the patch series which I submitted here two weeks ago.
+> 
+> This patch series is based on linux-can-next/testing. It requires the
+> latest patches in that branch to compile.
+> 
+> Crossing fingers, hoping that we are now close to a release.
+> 
+> Thank you in advance for your review and for your time!
+> 
+> 
+> Yours sincerely,
+> Vincent
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
----
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c  | 12 ++++++++----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 12 +++++++++---
- 2 files changed, 17 insertions(+), 7 deletions(-)
+Hi Vincent,
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 8e6250c4c417..0e3bb3a4945d 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -779,6 +779,10 @@ static int pcan_usb_fd_encode_msg(struct peak_usb_device *dev,
- 			tx_msg_flags |= PUCAN_MSG_RTR;
- 	}
- 
-+	/* Single-Shot frame */
-+	if (dev->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-+		tx_msg_flags |= PUCAN_MSG_SINGLE_SHOT;
-+
- 	tx_msg->flags = cpu_to_le16(tx_msg_flags);
- 	tx_msg->channel_dlc = PUCAN_MSG_CHANNEL_DLC(dev->ctrl_idx, dlc);
- 	memcpy(tx_msg->d, cfd->data, cfd->len);
-@@ -1068,7 +1072,7 @@ const struct peak_usb_adapter pcan_usb_fd = {
- 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
- 	.ctrlmode_supported = CAN_CTRLMODE_FD |
- 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
--			CAN_CTRLMODE_CC_LEN8_DLC,
-+			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_UFD_CRYSTAL_HZ,
- 	},
-@@ -1143,7 +1147,7 @@ const struct peak_usb_adapter pcan_usb_chip = {
- 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
- 	.ctrlmode_supported = CAN_CTRLMODE_FD |
- 		CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
--		CAN_CTRLMODE_CC_LEN8_DLC,
-+		CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_UFD_CRYSTAL_HZ,
- 	},
-@@ -1217,7 +1221,7 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
- 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
- 	.ctrlmode_supported = CAN_CTRLMODE_FD |
- 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
--			CAN_CTRLMODE_CC_LEN8_DLC,
-+			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_UFD_CRYSTAL_HZ,
- 	},
-@@ -1292,7 +1296,7 @@ const struct peak_usb_adapter pcan_usb_x6 = {
- 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
- 	.ctrlmode_supported = CAN_CTRLMODE_FD |
- 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
--			CAN_CTRLMODE_CC_LEN8_DLC,
-+			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_UFD_CRYSTAL_HZ,
- 	},
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index ff740b4203fa..5b098d1e3746 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -39,6 +39,7 @@ MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB Pro adapter");
- 
- #define PCAN_USBPRO_RTR			0x01
- #define PCAN_USBPRO_EXT			0x02
-+#define PCAN_USBPRO_SS			0x08
- 
- #define PCAN_USBPRO_CMD_BUFFER_SIZE	512
- 
-@@ -779,9 +780,13 @@ static int pcan_usb_pro_encode_msg(struct peak_usb_device *dev,
- 
- 	flags = 0;
- 	if (cf->can_id & CAN_EFF_FLAG)
--		flags |= 0x02;
-+		flags |= PCAN_USBPRO_EXT;
- 	if (cf->can_id & CAN_RTR_FLAG)
--		flags |= 0x01;
-+		flags |= PCAN_USBPRO_RTR;
-+
-+	/* Single-Shot frame */
-+	if (dev->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-+		flags |= PCAN_USBPRO_SS;
- 
- 	pcan_msg_add_rec(&usb_msg, data_type, 0, flags, len, cf->can_id,
- 			 cf->data);
-@@ -1041,7 +1046,8 @@ const struct peak_usb_adapter pcan_usb_pro = {
- 	.name = "PCAN-USB Pro",
- 	.device_id = PCAN_USBPRO_PRODUCT_ID,
- 	.ctrl_count = PCAN_USBPRO_CHANNEL_COUNT,
--	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
-+	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
-+			      CAN_CTRLMODE_ONE_SHOT,
- 	.clock = {
- 		.freq = PCAN_USBPRO_CRYSTAL_HZ,
- 	},
--- 
-2.25.1
+Can you please send me the patch, since it does not reach the mailing list (+100 000 characters).
 
+Regards,
+jimmy
