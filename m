@@ -2,128 +2,97 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A62C4C433E0
-	for <linux-can@archiver.kernel.org>; Mon, 15 Mar 2021 16:00:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C646CC433E0
+	for <linux-can@archiver.kernel.org>; Mon, 15 Mar 2021 18:54:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 77CF064DFD
-	for <linux-can@archiver.kernel.org>; Mon, 15 Mar 2021 16:00:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7951964EFD
+	for <linux-can@archiver.kernel.org>; Mon, 15 Mar 2021 18:54:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhCOP7a (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 15 Mar 2021 11:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCOP7F (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Mar 2021 11:59:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B08C06174A
-        for <linux-can@vger.kernel.org>; Mon, 15 Mar 2021 08:59:04 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lLpcU-0002zv-G0; Mon, 15 Mar 2021 16:59:02 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:91fd:fdb9:356d:9a2d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id D00C45F5D28;
-        Mon, 15 Mar 2021 15:59:00 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 16:59:00 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v2 4/5] can: add netlink interface for CAN-FD Transmitter
- Delay Compensation (TDC)
-Message-ID: <20210315155900.a6l5l5aeuvsgn55x@pengutronix.de>
-References: <20210224002008.4158-1-mailhol.vincent@wanadoo.fr>
- <20210224002008.4158-5-mailhol.vincent@wanadoo.fr>
+        id S231574AbhCOSxp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 15 Mar 2021 14:53:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232701AbhCOSxe (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:53:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC9D64E61;
+        Mon, 15 Mar 2021 18:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615834414;
+        bh=I/C5JsE0km0+j4siEIBkM6jWf4KUJ3smXtoWYnUceEk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=K/yoqIYs8ult9ZaBc1vO0zCXU6+iWRWYWcqDLZihMz/21Hj4Wy/htWvM6CfAf4Qc6
+         m8NwZBzJAwD/n8rB2rb2Rhl8jClNYKCYlgX4My0C4bELzXVSwo5YnCIysNN12Z4D2K
+         jnVwYLtsSOLgoJ2n6F1TCLqPVm49t1aSE4NeeFE0lbUV3c6GcRRlN+XYIVNocCgucB
+         hSKRFDMq7EoCMVHeUEvY31qVNEwfY/jYMTBmBomfjV4lPj8Yv4QND4d1xXOTGs3UBO
+         9F45bp24HVlh1Gvqjz9VGEO5otHVsQl3gd9t+3blsPt4zTjk/pVcyMOWDJPdJLL3bw
+         0UKi27M10rixw==
+Date:   Mon, 15 Mar 2021 11:53:32 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>
+Subject: Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS for lockless
+ qdisc
+Message-ID: <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
+References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
+        <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="claa2ydl5f2a7cxu"
-Content-Disposition: inline
-In-Reply-To: <20210224002008.4158-5-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On Mon, 15 Mar 2021 11:10:18 +0800 Yunsheng Lin wrote:
+> @@ -606,6 +623,11 @@ static const u8 prio2band[TC_PRIO_MAX + 1] = {
+>   */
+>  struct pfifo_fast_priv {
+>  	struct skb_array q[PFIFO_FAST_BANDS];
+> +
+> +	/* protect against data race between enqueue/dequeue and
+> +	 * qdisc->empty setting
+> +	 */
+> +	spinlock_t lock;
+>  };
+>  
+>  static inline struct skb_array *band2list(struct pfifo_fast_priv *priv,
+> @@ -623,7 +645,10 @@ static int pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc,
+>  	unsigned int pkt_len = qdisc_pkt_len(skb);
+>  	int err;
+>  
+> -	err = skb_array_produce(q, skb);
+> +	spin_lock(&priv->lock);
+> +	err = __ptr_ring_produce(&q->ring, skb);
+> +	WRITE_ONCE(qdisc->empty, false);
+> +	spin_unlock(&priv->lock);
+>  
+>  	if (unlikely(err)) {
+>  		if (qdisc_is_percpu_stats(qdisc))
+> @@ -642,6 +667,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>  	struct sk_buff *skb = NULL;
+>  	int band;
+>  
+> +	spin_lock(&priv->lock);
+>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+>  		struct skb_array *q = band2list(priv, band);
+>  
+> @@ -655,6 +681,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>  	} else {
+>  		WRITE_ONCE(qdisc->empty, true);
+>  	}
+> +	spin_unlock(&priv->lock);
+>  
+>  	return skb;
+>  }
 
---claa2ydl5f2a7cxu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 24.02.2021 09:20:07, Vincent Mailhol wrote:
-> Add the netlink interface for TDC parameters of struct can_tdc and
-> can_tdc_const.
->=20
-> Contrary to the can_bittiming(_const) structures for which there is
-> just a single IFLA_CAN(_DATA)_BITTMING(_CONST) entry per structure,
-> here, an IFLA_CAN_TDC* entry is added for each of the TDC parameters
-> of the newly introduced struct can_tdc and struct can_tdc_const.
->=20
-> For struct can_tdc, these are:
-> 	IFLA_CAN_TDCV
-> 	IFLA_CAN_TDCO
-> 	IFLA_CAN_TDCF
->=20
-> For struct can_tdc_const, these are:
-> 	IFLA_CAN_TDCV_MAX_CONST
-> 	IFLA_CAN_TDCO_MAX_CONST
-> 	IFLA_CAN_TDCF_MAX_CONST
->=20
-> This is done so that changes can be applied in the future to the
-> structures without breaking the netlink interface.
->=20
-> All the new parameters are defined as u32. This arbitrary choice is
-> done to mimic the other bittiming values with are also all of type
-> u32. An u16 would have been sufficient to hold the TDC values.
-
-I just had a look at the ethtool-netlink interface:
-
-| Documentation/networking/ethtool-netlink.rst
-
-this is much better designed than the CAN netlink interface. It was done
-by the pros and much later than CAN. :D So I'd like to have a similar
-structure for new CAN netlink stuff.
-
-So I think I'll remove this patch for now from can-next-testing. The
-kernel internal interface to tdc is still OK, we can leave it as is and
-change it if needed. But netlink is user space and I'd like to have it
-properly designed.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---claa2ydl5f2a7cxu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBPhEEACgkQqclaivrt
-76kl8Qf+J4tDslM4VNAhhcjOdBGXweZMng5DnLon7LRR/DxfX5Eh21c9agyRqrH3
-LiOnGZevytsa63Trb7LPomFB0b2+yqnYrcLfy4n11j3DAO6tQXiDoTuzrE+HIBtt
-7Gp+rdeqoZyTmlFjfzQhd9ln9g5k6iRmCYK5cfguqtranL8IgDBrzT9re1k/Uvjr
-6iEPXKYtW0XrZX8Ju9X3o4aPTVBOQjgfr7YSuF+yD9kqUh4Vt1ha2r7BRhMQMP9n
-y6+uxx9EC0ge+HXf54LRAF4YxnSfQLIQ5RQQbrE4FaH6KJTiB5Q+of9EMWJz4Hbm
-XyhYvMv1ZDjtHPDtzcicy2lbRJ4BOw==
-=5C+6
------END PGP SIGNATURE-----
-
---claa2ydl5f2a7cxu--
+I thought pfifo was supposed to be "lockless" and this change
+re-introduces a lock between producer and consumer, no?
