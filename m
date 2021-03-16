@@ -7,48 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AF74C43333
-	for <linux-can@archiver.kernel.org>; Tue, 16 Mar 2021 08:22:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEF39C4332E
+	for <linux-can@archiver.kernel.org>; Tue, 16 Mar 2021 08:22:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0802664FFC
-	for <linux-can@archiver.kernel.org>; Tue, 16 Mar 2021 08:22:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A2B9D65007
+	for <linux-can@archiver.kernel.org>; Tue, 16 Mar 2021 08:22:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbhCPIVj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S234411AbhCPIVj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 16 Mar 2021 04:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234421AbhCPIVW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Mar 2021 04:21:22 -0400
+        with ESMTP id S234403AbhCPIVT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Mar 2021 04:21:19 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC71C06174A
-        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 01:21:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9133C061756
+        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 01:21:16 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lM4x6-0003Dh-VW
-        for linux-can@vger.kernel.org; Tue, 16 Mar 2021 09:21:21 +0100
+        id 1lM4x1-00034M-Fq
+        for linux-can@vger.kernel.org; Tue, 16 Mar 2021 09:21:15 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 79F2B5F646C
-        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 08:21:17 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2E5635F6446
+        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 08:21:12 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 030605F643A;
-        Tue, 16 Mar 2021 08:21:10 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 89c33ec4;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D6AF65F6418;
         Tue, 16 Mar 2021 08:21:06 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b86149c7;
+        Tue, 16 Mar 2021 08:21:05 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
+        kernel@pengutronix.de, Angelo Dureghello <angelo@kernel-space.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 11/11] can: m_can: m_can_rx_peripheral(): fix RX being blocked by errors
-Date:   Tue, 16 Mar 2021 09:21:04 +0100
-Message-Id: <20210316082104.4027260-12-mkl@pengutronix.de>
+Subject: [net 05/11] can: flexcan: flexcan_chip_freeze(): fix chip freeze for missing bitrate
+Date:   Tue, 16 Mar 2021 09:20:58 +0100
+Message-Id: <20210316082104.4027260-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210316082104.4027260-1-mkl@pengutronix.de>
 References: <20210316082104.4027260-1-mkl@pengutronix.de>
@@ -62,37 +61,49 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+From: Angelo Dureghello <angelo@kernel-space.org>
 
-For M_CAN peripherals, m_can_rx_handler() was called with quota = 1,
-which caused any error handling to block RX from taking place until
-the next time the IRQ handler is called. This had been observed to
-cause RX to be blocked indefinitely in some cases.
+For cases when flexcan is built-in, bitrate is still not set at
+registering. So flexcan_chip_freeze() generates:
 
-This is fixed by calling m_can_rx_handler with a sensibly high quota.
+[    1.860000] *** ZERO DIVIDE ***   FORMAT=4
+[    1.860000] Current process id is 1
+[    1.860000] BAD KERNEL TRAP: 00000000
+[    1.860000] PC: [<402e70c8>] flexcan_chip_freeze+0x1a/0xa8
 
-Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
-Link: https://lore.kernel.org/r/20210303144350.4093750-1-torin@maxiluxsystems.com
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+To allow chip freeze, using an hardcoded timeout when bitrate is still
+not set.
+
+Fixes: ec15e27cc890 ("can: flexcan: enable RX FIFO after FRZ/HALT valid")
+Link: https://lore.kernel.org/r/20210315231510.650593-1-angelo@kernel-space.org
+Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+[mkl: use if instead of ? operator]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index d783c46cac16..0c8d36bc668c 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -873,7 +873,7 @@ static int m_can_rx_peripheral(struct net_device *dev)
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 134c05757a3b..57f3635ad8d7 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -697,9 +697,15 @@ static int flexcan_chip_disable(struct flexcan_priv *priv)
+ static int flexcan_chip_freeze(struct flexcan_priv *priv)
  {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs = priv->regs;
+-	unsigned int timeout = 1000 * 1000 * 10 / priv->can.bittiming.bitrate;
++	unsigned int timeout;
++	u32 bitrate = priv->can.bittiming.bitrate;
+ 	u32 reg;
  
--	m_can_rx_handler(dev, 1);
-+	m_can_rx_handler(dev, M_CAN_NAPI_WEIGHT);
- 
- 	m_can_enable_all_interrupts(cdev);
- 
++	if (bitrate)
++		timeout = 1000 * 1000 * 10 / bitrate;
++	else
++		timeout = FLEXCAN_TIMEOUT_US / 10;
++
+ 	reg = priv->read(&regs->mcr);
+ 	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT;
+ 	priv->write(reg, &regs->mcr);
 -- 
 2.30.1
 
