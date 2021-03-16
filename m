@@ -7,51 +7,54 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C0C6C4360C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CDFEC4321A
 	for <linux-can@archiver.kernel.org>; Tue, 16 Mar 2021 08:22:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5C41E6500E
+	by mail.kernel.org (Postfix) with ESMTP id 45FF264FFC
 	for <linux-can@archiver.kernel.org>; Tue, 16 Mar 2021 08:22:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234466AbhCPIVk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 16 Mar 2021 04:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        id S234467AbhCPIVl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 16 Mar 2021 04:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234418AbhCPIVW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Mar 2021 04:21:22 -0400
+        with ESMTP id S234431AbhCPIVX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Mar 2021 04:21:23 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F7BC06174A
-        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 01:21:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EDDC06174A
+        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 01:21:23 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lM4x6-0003CZ-FY
-        for linux-can@vger.kernel.org; Tue, 16 Mar 2021 09:21:20 +0100
+        id 1lM4x7-0003G1-S3
+        for linux-can@vger.kernel.org; Tue, 16 Mar 2021 09:21:21 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id F3C715F6461
-        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 08:21:15 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 37E5F5F6472
+        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 08:21:18 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9C8815F641F;
-        Tue, 16 Mar 2021 08:21:07 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C97455F642A;
+        Tue, 16 Mar 2021 08:21:08 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ad0dfa80;
-        Tue, 16 Mar 2021 08:21:05 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3c8d1744;
+        Tue, 16 Mar 2021 08:21:06 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
+        kernel@pengutronix.de, Tong Zhang <ztong0001@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 07/11] can: kvaser_usb: Add support for USBcan Pro 4xHS
-Date:   Tue, 16 Mar 2021 09:21:00 +0100
-Message-Id: <20210316082104.4027260-8-mkl@pengutronix.de>
+Subject: [net 09/11] can: c_can: move runtime PM enable/disable to c_can_platform
+Date:   Tue, 16 Mar 2021 09:21:02 +0100
+Message-Id: <20210316082104.4027260-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210316082104.4027260-1-mkl@pengutronix.de>
 References: <20210316082104.4027260-1-mkl@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -61,53 +64,128 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Jimmy Assarsson <extja@kvaser.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-Add support for Kvaser USBcan Pro 4xHS.
+Currently doing modprobe c_can_pci will make the kernel complain:
 
-Link: https://lore.kernel.org/r/20210309091724.31262-2-jimmyassarsson@gmail.com
-Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+    Unbalanced pm_runtime_enable!
+
+this is caused by pm_runtime_enable() called before pm is initialized.
+
+This fix is similar to 227619c3ff7c, move those pm_enable/disable code
+to c_can_platform.
+
+Fixes: 4cdd34b26826 ("can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller")
+Link: http://lore.kernel.org/r/20210302025542.987600-1-ztong0001@gmail.com
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Tested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/Kconfig                      | 1 +
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 4 +++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/c_can/c_can.c          | 24 +-----------------------
+ drivers/net/can/c_can/c_can_platform.c |  6 +++++-
+ 2 files changed, 6 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
-index c1e5d5b570b6..538f4d9adb91 100644
---- a/drivers/net/can/usb/Kconfig
-+++ b/drivers/net/can/usb/Kconfig
-@@ -73,6 +73,7 @@ config CAN_KVASER_USB
- 	    - Kvaser Memorator Pro 5xHS
- 	    - Kvaser USBcan Light 4xHS
- 	    - Kvaser USBcan Pro 2xHS v2
-+	    - Kvaser USBcan Pro 4xHS
- 	    - Kvaser USBcan Pro 5xHS
- 	    - Kvaser U100
- 	    - Kvaser U100P
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index 2b7efd296758..4e97da8434ab 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -86,8 +86,9 @@
- #define USB_U100_PRODUCT_ID			273
- #define USB_U100P_PRODUCT_ID			274
- #define USB_U100S_PRODUCT_ID			275
-+#define USB_USBCAN_PRO_4HS_PRODUCT_ID		276
- #define USB_HYDRA_PRODUCT_ID_END \
--	USB_U100S_PRODUCT_ID
-+	USB_USBCAN_PRO_4HS_PRODUCT_ID
- 
- static inline bool kvaser_is_leaf(const struct usb_device_id *id)
- {
-@@ -193,6 +194,7 @@ static const struct usb_device_id kvaser_usb_table[] = {
- 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_U100_PRODUCT_ID) },
- 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_U100P_PRODUCT_ID) },
- 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_U100S_PRODUCT_ID) },
-+	{ USB_DEVICE(KVASER_VENDOR_ID, USB_USBCAN_PRO_4HS_PRODUCT_ID) },
- 	{ }
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index ef474bae47a1..6958830cb983 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -212,18 +212,6 @@ static const struct can_bittiming_const c_can_bittiming_const = {
+ 	.brp_inc = 1,
  };
- MODULE_DEVICE_TABLE(usb, kvaser_usb_table);
+ 
+-static inline void c_can_pm_runtime_enable(const struct c_can_priv *priv)
+-{
+-	if (priv->device)
+-		pm_runtime_enable(priv->device);
+-}
+-
+-static inline void c_can_pm_runtime_disable(const struct c_can_priv *priv)
+-{
+-	if (priv->device)
+-		pm_runtime_disable(priv->device);
+-}
+-
+ static inline void c_can_pm_runtime_get_sync(const struct c_can_priv *priv)
+ {
+ 	if (priv->device)
+@@ -1335,7 +1323,6 @@ static const struct net_device_ops c_can_netdev_ops = {
+ 
+ int register_c_can_dev(struct net_device *dev)
+ {
+-	struct c_can_priv *priv = netdev_priv(dev);
+ 	int err;
+ 
+ 	/* Deactivate pins to prevent DRA7 DCAN IP from being
+@@ -1345,28 +1332,19 @@ int register_c_can_dev(struct net_device *dev)
+ 	 */
+ 	pinctrl_pm_select_sleep_state(dev->dev.parent);
+ 
+-	c_can_pm_runtime_enable(priv);
+-
+ 	dev->flags |= IFF_ECHO;	/* we support local echo */
+ 	dev->netdev_ops = &c_can_netdev_ops;
+ 
+ 	err = register_candev(dev);
+-	if (err)
+-		c_can_pm_runtime_disable(priv);
+-	else
++	if (!err)
+ 		devm_can_led_init(dev);
+-
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(register_c_can_dev);
+ 
+ void unregister_c_can_dev(struct net_device *dev)
+ {
+-	struct c_can_priv *priv = netdev_priv(dev);
+-
+ 	unregister_candev(dev);
+-
+-	c_can_pm_runtime_disable(priv);
+ }
+ EXPORT_SYMBOL_GPL(unregister_c_can_dev);
+ 
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index 05f425ceb53a..47b251b1607c 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -29,6 +29,7 @@
+ #include <linux/list.h>
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/clk.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -386,6 +387,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, dev);
+ 	SET_NETDEV_DEV(dev, &pdev->dev);
+ 
++	pm_runtime_enable(priv->device);
+ 	ret = register_c_can_dev(dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+@@ -398,6 +400,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ exit_free_device:
++	pm_runtime_disable(priv->device);
+ 	free_c_can_dev(dev);
+ exit:
+ 	dev_err(&pdev->dev, "probe failed\n");
+@@ -408,9 +411,10 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ static int c_can_plat_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
++	struct c_can_priv *priv = netdev_priv(dev);
+ 
+ 	unregister_c_can_dev(dev);
+-
++	pm_runtime_disable(priv->device);
+ 	free_c_can_dev(dev);
+ 
+ 	return 0;
 -- 
 2.30.1
 
