@@ -7,47 +7,49 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA60FC4361B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D49DEC4361A
 	for <linux-can@archiver.kernel.org>; Tue, 16 Mar 2021 08:22:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 992FE64FFC
+	by mail.kernel.org (Postfix) with ESMTP id B4D1664FF5
 	for <linux-can@archiver.kernel.org>; Tue, 16 Mar 2021 08:22:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234463AbhCPIVk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 16 Mar 2021 04:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
+        id S234473AbhCPIVl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 16 Mar 2021 04:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234419AbhCPIVW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Mar 2021 04:21:22 -0400
+        with ESMTP id S234426AbhCPIVX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Mar 2021 04:21:23 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7E7C061756
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B6CC061762
         for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 01:21:22 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lM4x6-0003Ca-Kb
-        for linux-can@vger.kernel.org; Tue, 16 Mar 2021 09:21:20 +0100
+        id 1lM4x7-0003E7-9c
+        for linux-can@vger.kernel.org; Tue, 16 Mar 2021 09:21:21 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id F42255F6462
-        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 08:21:15 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7C6885F646B
+        for <linux-can@vger.kernel.org>; Tue, 16 Mar 2021 08:21:17 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 53F145F6424;
-        Tue, 16 Mar 2021 08:21:08 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 122E25F6433;
+        Tue, 16 Mar 2021 08:21:10 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 295bf872;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id fbe726a4;
         Tue, 16 Mar 2021 08:21:06 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Tong Zhang <ztong0001@gmail.com>,
+        kernel@pengutronix.de,
+        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
+        Mariusz Madej <mariusz.madej@xtrack.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 08/11] can: c_can_pci: c_can_pci_remove(): fix use-after-free
-Date:   Tue, 16 Mar 2021 09:21:01 +0100
-Message-Id: <20210316082104.4027260-9-mkl@pengutronix.de>
+Subject: [net 10/11] can: m_can: m_can_do_rx_poll(): fix extraneous msg loss warning
+Date:   Tue, 16 Mar 2021 09:21:03 +0100
+Message-Id: <20210316082104.4027260-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210316082104.4027260-1-mkl@pengutronix.de>
 References: <20210316082104.4027260-1-mkl@pengutronix.de>
@@ -61,39 +63,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
 
-There is a UAF in c_can_pci_remove(). dev is released by
-free_c_can_dev() and is used by pci_iounmap(pdev, priv->base) later.
-To fix this issue, save the mmio address before releasing dev.
+Message loss from RX FIFO 0 is already handled in
+m_can_handle_lost_msg(), with netdev output included.
 
-Fixes: 5b92da0443c2 ("c_can_pci: generic module for C_CAN/D_CAN on PCI")
-Link: https://lore.kernel.org/r/20210301024512.539039-1-ztong0001@gmail.com
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Removing this warning also improves driver performance under heavy
+load, where m_can_do_rx_poll() may be called many times before this
+interrupt is cleared, causing this message to be output many
+times (thanks Mariusz Madej for this report).
+
+Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
+Link: https://lore.kernel.org/r/20210303103151.3760532-1-torin@maxiluxsystems.com
+Reported-by: Mariusz Madej <mariusz.madej@xtrack.com>
+Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can_pci.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/m_can/m_can.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
-index 406b4847e5dc..7efb60b50876 100644
---- a/drivers/net/can/c_can/c_can_pci.c
-+++ b/drivers/net/can/c_can/c_can_pci.c
-@@ -239,12 +239,13 @@ static void c_can_pci_remove(struct pci_dev *pdev)
- {
- 	struct net_device *dev = pci_get_drvdata(pdev);
- 	struct c_can_priv *priv = netdev_priv(dev);
-+	void __iomem *addr = priv->base;
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 3752520a7d4b..d783c46cac16 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -501,9 +501,6 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+ 	}
  
- 	unregister_c_can_dev(dev);
+ 	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
+-		if (rxfs & RXFS_RFL)
+-			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
+-
+ 		m_can_read_fifo(dev, rxfs);
  
- 	free_c_can_dev(dev);
- 
--	pci_iounmap(pdev, priv->base);
-+	pci_iounmap(pdev, addr);
- 	pci_disable_msi(pdev);
- 	pci_clear_master(pdev);
- 	pci_release_regions(pdev);
+ 		quota--;
 -- 
 2.30.1
 
