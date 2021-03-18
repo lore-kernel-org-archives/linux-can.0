@@ -2,79 +2,162 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17DE0C433DB
-	for <linux-can@archiver.kernel.org>; Thu, 18 Mar 2021 09:24:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAEAAC433E6
+	for <linux-can@archiver.kernel.org>; Thu, 18 Mar 2021 10:03:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D450364F38
-	for <linux-can@archiver.kernel.org>; Thu, 18 Mar 2021 09:24:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A730E64F3B
+	for <linux-can@archiver.kernel.org>; Thu, 18 Mar 2021 10:03:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhCRJX5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 18 Mar 2021 05:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhCRJXg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 18 Mar 2021 05:23:36 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6607C06174A
-        for <linux-can@vger.kernel.org>; Thu, 18 Mar 2021 02:23:35 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lMosO-0003JJ-5D; Thu, 18 Mar 2021 10:23:32 +0100
-Subject: Re: [BUG] Re: [net 3/6] can: flexcan: invoke flexcan_chip_freeze() to
- enter freeze mode
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        linux-can@vger.kernel.org, kernel@pengutronix.de, kuba@kernel.org,
-        davem@davemloft.net
-References: <20210301112100.197939-1-mkl@pengutronix.de>
- <20210301112100.197939-4-mkl@pengutronix.de>
- <65137c60-4fbe-6772-6d48-ac360930f62b@pengutronix.de>
- <20210317081831.osalrszbje4oofoh@pengutronix.de>
- <20210317114938.lcqudto75wc6nkzq@pengutronix.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <148ff70d-96a6-952c-279d-ad1c5cd4e71d@pengutronix.de>
-Date:   Thu, 18 Mar 2021 10:23:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229990AbhCRKDQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 18 Mar 2021 06:03:16 -0400
+Received: from mail-yb1-f170.google.com ([209.85.219.170]:43068 "EHLO
+        mail-yb1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229810AbhCRKDM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 Mar 2021 06:03:12 -0400
+Received: by mail-yb1-f170.google.com with SMTP id u75so1924753ybi.10
+        for <linux-can@vger.kernel.org>; Thu, 18 Mar 2021 03:03:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ysxm+f3DcM/Jk5RY2cdHDBr6MjC8CH1FDRB72v4sZWE=;
+        b=WERPDWu4A/dBMQhd46FGoZv3X7ZaUsz/Qk6Bzop27Qbpnsm0Y+piWxeCQAUbgoQkBg
+         FfFQ4iF86rKfWOZjjPq23Vf6lvWHQo7PAZ1PtsGvTeelkNDi8itCYMGp4sqY0kOVrbDz
+         RGllVpArPp+2Tq+alTCtkHtOgPS4OVB2Fv0U9GggM2Rla58DFZ0QmGocToaJKggB7x+r
+         +uENqWk30KLdBrxFtsCPIz9GxV2HJ9k6WYcYYkTM2rh7ydp8W5fIsUFaSgeK55JlCKax
+         APttbvQ4veRmUcO9vNz4FNktWcjcH0pLOtqz4MeBRWOLuE3ETAEFCFe8wPsPGdIL0CiE
+         b2LA==
+X-Gm-Message-State: AOAM530lQgGAfn2oIgy9ugtPU1Tl5zmflMcfQyyYfopepVM946NhzEyw
+        MT+YSlhhFRlJZ5pKes6l9d4DLQV9shbBw1pKFITs4k4ezGRGJg==
+X-Google-Smtp-Source: ABdhPJzzMNhqraQECaVzzTu70tHIWfPgXG68E2O/U0tSMC9QD7OPgzmEHuNdSO+T/ZpHBSnU0knZLWET3+umF5MdvsI=
+X-Received: by 2002:a05:6902:4b2:: with SMTP id r18mr10694938ybs.226.1616061791301;
+ Thu, 18 Mar 2021 03:03:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210317114938.lcqudto75wc6nkzq@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+References: <20210309211904.3348700-1-mkl@pengutronix.de>
+In-Reply-To: <20210309211904.3348700-1-mkl@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Thu, 18 Mar 2021 19:03:00 +0900
+Message-ID: <CAMZ6Rq+QNj6ajmTyqtZt0HnJjg95Y_Ud-eokhZj9AvN1dPpRYg@mail.gmail.com>
+Subject: Re: [PATCH can-next] can: dev: always create TX echo skb
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 17.03.21 12:49, Marc Kleine-Budde wrote:
-> On 17.03.2021 09:18:31, Marc Kleine-Budde wrote:
->> A fix for this in on its way to net/master:
->>
->> https://lore.kernel.org/linux-can/20210316082104.4027260-6-mkl@pengutronix.de/
-> 
-> It's already in net/master.
+Hi Marc,
 
-Cherry-picked and works for me.
+On Wed. 10 Mar 2021 at 06:19, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+>
+> So far the creation of the TX echo skb was optional and can be
+> controlled by the local sender of a CAN frame.
+>
+> It turns out that the TX echo CAN skb can be piggybacked to carry
+> information in the driver from the TX- to the TX-complete handler.
+>
+> Several drivers already use the return value of
+> can_get_echo_skb() (which is the length of the data field in the CAN
+> frame) for their number of transferred bytes statistics. The
+> statistics are not working if CAN echo skbs are disabled.
+>
+> Another use case is to calculate and set the CAN frame length on the
+> wire, which is needed for BQL support in both the TX and TX-completion
+> handler.
+>
+> For now in can_put_echo_skb(), which is called from the TX handler,
+> the skb carrying the CAN frame is discarded if no TX echo is
+> requested, leading to the above illustrated problems.
+>
+> This patch changes the can_put_echo_skb() function, so that the echo
+> skb is always generated. If the sender requests no echo, the echo skb
+> is consumed in __can_get_echo_skb() without being passed into the RX
+> handler of the networking stack, but the CAN data length and CAN frame
+> length information is properly returned.
+>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/net/can/dev/skb.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+> index 6a64fe410987..22b0472a5fad 100644
+> --- a/drivers/net/can/dev/skb.c
+> +++ b/drivers/net/can/dev/skb.c
+> @@ -45,7 +45,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+>         BUG_ON(idx >= priv->echo_skb_max);
+>
+>         /* check flag whether this packet has to be looped back */
+> -       if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK ||
+> +       if (!(dev->flags & IFF_ECHO) ||
+>             (skb->protocol != htons(ETH_P_CAN) &&
+>              skb->protocol != htons(ETH_P_CANFD))) {
+>                 kfree_skb(skb);
+> @@ -58,7 +58,6 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+>                         return -ENOMEM;
+>
+>                 /* make settings for echo to reduce code in irq context */
+> -               skb->pkt_type = PACKET_BROADCAST;
+>                 skb->ip_summed = CHECKSUM_UNNECESSARY;
+>                 skb->dev = dev;
+>
+> @@ -111,6 +110,13 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr,
+>
+>                 priv->echo_skb[idx] = NULL;
+>
+> +               if (skb->pkt_type == PACKET_LOOPBACK) {
+> +                       skb->pkt_type = PACKET_BROADCAST;
+> +               } else {
+> +                       dev_consume_skb_any(skb);
+> +                       return NULL;
+> +               }
+> +
+>                 return skb;
+>         }
 
-Thanks,
-Ahmad
+I do see any particular issues on this patch at the moment,
+however, while looking at the TX echo functionality, it reminded
+me of a point which has always been a bit unclear to me: the
+CAN_CTRLMODE_LOOPBACK. So let me go a bit off topic.
 
-> 
-> regards,
-> Marc
-> 
+Like all other controller's mode, I would expect the
+CAN_CTRLMODE_LOOPBACK flag to do two things:
+  - Announce that the device is capable of doing loopback
+  - Control this feature (enable/disable it)
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+But, by default, this flag is set to 0 unless the user
+explicitly passes the "loopback on" argument when configuring
+the device.
+
+So isn't this supposed to be an issue for all the drivers which
+expect to get a TX loopback in order to trigger the TX completion
+handler?
+
+Personally, for my driver, I would like to use the
+can_set_static_ctrlmode() to force CAN_CTRLMODE_LOOPBACK so that
+I do not need a different TX completion logic when
+CAN_CTRLMODE_LOOPBACK is off.
+
+The issue is that because CAN_CTRLMODE_LOOPBACK is per default
+off, doing:
+  can_set_static_ctrlmode(netdev, CAN_CTRLMODE_LOOPBACK);
+would lead to a
+  RTNETLINK answers: Operation not supported
+when configuring the device unless "loopback on" is explicitly
+passed on the command line.
+
+At the moment, I have the feeling that many drivers just ignore
+the value of this flag and activate the loopback regardless.
+
+Do you think that it would make sense to set
+CAN_CTRLMODE_LOOPBACK by default to on?
+
+
+Yours sincerely,
+Vincent
