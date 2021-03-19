@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CDE3C43332
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B19F8C43603
 	for <linux-can@archiver.kernel.org>; Fri, 19 Mar 2021 12:42:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D771D64F65
-	for <linux-can@archiver.kernel.org>; Fri, 19 Mar 2021 12:42:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 96F5164EF6
+	for <linux-can@archiver.kernel.org>; Fri, 19 Mar 2021 12:42:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhCSMmQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 19 Mar 2021 08:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
+        id S230044AbhCSMmS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 19 Mar 2021 08:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhCSMlw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 19 Mar 2021 08:41:52 -0400
+        with ESMTP id S230046AbhCSMl4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 19 Mar 2021 08:41:56 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B69CC06174A
-        for <linux-can@vger.kernel.org>; Fri, 19 Mar 2021 05:41:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310F0C06175F
+        for <linux-can@vger.kernel.org>; Fri, 19 Mar 2021 05:41:56 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lNERq-000334-U0
-        for linux-can@vger.kernel.org; Fri, 19 Mar 2021 13:41:50 +0100
+        id 1lNERu-0003EJ-QP
+        for linux-can@vger.kernel.org; Fri, 19 Mar 2021 13:41:54 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 77FD05FA981
-        for <linux-can@vger.kernel.org>; Fri, 19 Mar 2021 12:41:47 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 048555FA99D
+        for <linux-can@vger.kernel.org>; Fri, 19 Mar 2021 12:41:51 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id BA1635FA969;
-        Fri, 19 Mar 2021 12:41:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7754B5FA97F;
+        Fri, 19 Mar 2021 12:41:47 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4f61e125;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3a8a0ca8;
         Fri, 19 Mar 2021 12:41:43 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, mailhol.vincent@wanadoo.fr,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v13 05/11] can: etas_es58x: remove setting of dql.min_limit for now
-Date:   Fri, 19 Mar 2021 13:41:35 +0100
-Message-Id: <20210319124141.247844-6-mkl@pengutronix.de>
+Subject: [PATCH v13 11/11] can: etas_es58x: es58x_fd: remove setting of dql.min_limit for now
+Date:   Fri, 19 Mar 2021 13:41:41 +0100
+Message-Id: <20210319124141.247844-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210319124141.247844-1-mkl@pengutronix.de>
 References: <20210319124141.247844-1-mkl@pengutronix.de>
@@ -62,40 +62,24 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_core.c | 5 -----
- drivers/net/can/usb/etas_es58x/es58x_core.h | 3 ---
- 2 files changed, 8 deletions(-)
+ drivers/net/can/usb/etas_es58x/es58x_fd.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index 89a4051afc82..d6a114a7e090 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -2150,11 +2150,6 @@ static int es58x_init_netdev(struct es58x_device *es58x_dev, int channel_idx)
- 	netdev_dbg(netdev, "%s: Registered channel %s\n",
- 		   es58x_dev->udev->product, netdev->name);
- 
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.c b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+index 5260c14c6378..e0c4f9f5f94e 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_fd.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+@@ -576,10 +576,6 @@ const struct es58x_parameters es58x_fd_param = {
+ 	 * maximum, so no impact on performance was measured.
+ 	 */
+ 	.fifo_mask = 255, /* echo_skb_max = 256 */
 -#ifdef CONFIG_BQL
--	netdev_get_tx_queue(netdev, 0)->dql.min_limit =
--	    es58x_dev->param->dql_limit_min;
+-	/* Empirical value. */
+-	.dql_limit_min = CAN_FRAME_LEN_MAX * 15,
 -#endif
--
- 	return ret;
- }
- 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.h b/drivers/net/can/usb/etas_es58x/es58x_core.h
-index 71f278e6e85c..ba6cdb9dfcf4 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.h
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.h
-@@ -306,9 +306,6 @@ struct es58x_parameters {
- 	u16 tx_urb_cmd_max_len;
- 	u16 rx_urb_cmd_max_len;
- 	u16 fifo_mask;
--#ifdef CONFIG_BQL
--	u16 dql_limit_min;
--#endif
- 	u8 tx_bulk_max;
- 	u8 urb_cmd_header_len;
- 	u8 rx_urb_max;
+ 	.tx_bulk_max = ES58X_FD_TX_BULK_MAX,
+ 	.urb_cmd_header_len = ES58X_FD_URB_CMD_HEADER_LEN,
+ 	.rx_urb_max = ES58X_RX_URBS_MAX,
 -- 
 2.30.2
 
