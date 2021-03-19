@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCD4BC43331
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7E01C4332E
 	for <linux-can@archiver.kernel.org>; Fri, 19 Mar 2021 12:42:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A846064F70
+	by mail.kernel.org (Postfix) with ESMTP id 93FEF64F6C
 	for <linux-can@archiver.kernel.org>; Fri, 19 Mar 2021 12:42:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhCSMmQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S229949AbhCSMmQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 19 Mar 2021 08:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhCSMlw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 19 Mar 2021 08:41:52 -0400
+        with ESMTP id S229967AbhCSMly (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 19 Mar 2021 08:41:54 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7C2C06174A
-        for <linux-can@vger.kernel.org>; Fri, 19 Mar 2021 05:41:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B29EC06174A
+        for <linux-can@vger.kernel.org>; Fri, 19 Mar 2021 05:41:54 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lNERq-00031y-B6
-        for linux-can@vger.kernel.org; Fri, 19 Mar 2021 13:41:50 +0100
+        id 1lNERt-00037g-16
+        for linux-can@vger.kernel.org; Fri, 19 Mar 2021 13:41:53 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 77B145FA980
-        for <linux-can@vger.kernel.org>; Fri, 19 Mar 2021 12:41:47 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2CFF75FA98E
+        for <linux-can@vger.kernel.org>; Fri, 19 Mar 2021 12:41:50 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A225B5FA968;
-        Fri, 19 Mar 2021 12:41:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 49F535FA96D;
+        Fri, 19 Mar 2021 12:41:45 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 30323499;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ca493546;
         Fri, 19 Mar 2021 12:41:43 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, mailhol.vincent@wanadoo.fr,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v13 04/11] can: etas_es58x: es58x_rx_cmd_ret_u32() fix kernel doc
-Date:   Fri, 19 Mar 2021 13:41:34 +0100
-Message-Id: <20210319124141.247844-5-mkl@pengutronix.de>
+Subject: [PATCH v13 07/11] can: etas_es58x: es581_4: es581_4_sizeof_rx_tx_msg(): fix kernel doc
+Date:   Fri, 19 Mar 2021 13:41:37 +0100
+Message-Id: <20210319124141.247844-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210319124141.247844-1-mkl@pengutronix.de>
 References: <20210319124141.247844-1-mkl@pengutronix.de>
@@ -62,22 +62,22 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_core.c | 2 +-
+ drivers/net/can/usb/etas_es58x/es581_4.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index b8dfff4bc7ac..89a4051afc82 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -935,7 +935,7 @@ int es58x_rx_dev_ret_u8(struct device *dev,
- }
+diff --git a/drivers/net/can/usb/etas_es58x/es581_4.c b/drivers/net/can/usb/etas_es58x/es581_4.c
+index ea900491e9c4..f77924fd6557 100644
+--- a/drivers/net/can/usb/etas_es58x/es581_4.c
++++ b/drivers/net/can/usb/etas_es58x/es581_4.c
+@@ -16,7 +16,7 @@
+ #include "es581_4.h"
  
  /**
-- * es58x_rx_dev_ret_u32() - Handle return codes received from the
-+ * es58x_rx_cmd_ret_u32() - Handle return codes received from the
-  *	ES58X device.
-  * @netdev: CAN network device.
-  * @cmd_ret_type: Type of the command which triggered the return code.
+- * es58x_sizeof_rx_tx_msg() - Calculate the actual length of the
++ * es581_4_sizeof_rx_tx_msg() - Calculate the actual length of the
+  *	structure of a rx or tx message.
+  * @msg: message of variable length, must have a dlc field.
+  *
 -- 
 2.30.2
 
