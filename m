@@ -2,74 +2,81 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
-Received: from mail.kernel.org (unknown [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 803A8C433E9
-	for <linux-can@archiver.kernel.org>; Sun, 21 Mar 2021 02:12:34 +0000 (UTC)
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ABBBC433C1
+	for <linux-can@archiver.kernel.org>; Sun, 21 Mar 2021 07:34:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D480261968
-	for <linux-can@archiver.kernel.org>; Sun, 21 Mar 2021 02:12:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 205366192E
+	for <linux-can@archiver.kernel.org>; Sun, 21 Mar 2021 07:34:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhCUCLk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 20 Mar 2021 22:11:40 -0400
-Received: from [198.145.29.99] ([198.145.29.99]:50912 "EHLO mail.kernel.org"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S230014AbhCUCLH (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 20 Mar 2021 22:11:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D58DE6194C;
-        Sun, 21 Mar 2021 02:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616292608;
-        bh=ii0hhmDiWoJrsDyEsa5R+c4c2PK3zuX8YCpsV7ZteZ8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FZFY/HRuX/57ji52zIfPJq39nWagaID0MoMeoKbHP+B3WZHaC+VXdNqkGHdjYfFB/
-         SpE98h8Ct6dH3O61ObTNWhktyeDjOz1e6qyrYZPW/vKwAIVXqkfw7vqbfqAdhuhSUB
-         fWsMBR18PjlosPSNpujuMni+dgXp+7Sx8/lNSE6polJpPV/mTM8gM6QawYY6ZyVTG+
-         obzVjAOofC7NYIXMuWdvK1z1w+cRW1qBA6Y9cXlQICHD0auzbaBw75HwCCwUO6KR3U
-         tit/olS6gajGnaB/RavilDA/JnTQ7iYhv0s4j7DJweXGaqjF9NrVXVm4v0e6++aQDo
-         XHUuu9ofjJd6w==
-Content-Type: text/plain; charset="utf-8"
+        id S229817AbhCUHd6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 21 Mar 2021 03:33:58 -0400
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:20223 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229821AbhCUHdx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 21 Mar 2021 03:33:53 -0400
+Received: from tomoyo.flets-east.jp ([153.202.107.157])
+        by mwinf5d13 with ME
+        id ivZc240053PnFJp03vZrbF; Sun, 21 Mar 2021 08:33:52 +0100
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 21 Mar 2021 08:33:52 +0100
+X-ME-IP: 153.202.107.157
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v4 1/1] can: netlink: do tdco calculation after data bittiming is copied to can_priv
+Date:   Sun, 21 Mar 2021 16:33:29 +0900
+Message-Id: <20210321073329.1454-2-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210321073329.1454-1-mailhol.vincent@wanadoo.fr>
+References: <20210321073329.1454-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: can 2021-03-20
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161629260880.5230.14283916005008635768.git-patchwork-notify@kernel.org>
-Date:   Sun, 21 Mar 2021 02:10:08 +0000
-References: <20210320193708.348503-1-mkl@pengutronix.de>
-In-Reply-To: <20210320193708.348503-1-mkl@pengutronix.de>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, kernel@pengutronix.de
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+The call to can_calc_tdco() is done too early. The data_bittiming
+field of can_priv is not yet updated.
 
-This pull request was applied to netdev/net.git (refs/heads/master):
+Moving the call after tdco is memcopied solves the issue.
 
-On Sat, 20 Mar 2021 20:37:06 +0100 you wrote:
-> Hello Jakub, hello David,
-> 
-> this is a pull request of 2 patches for net/master.
-> 
-> The first patch is by Oliver Hartkopp. He fixes the TX-path in the
-> ISO-TP protocol by properly initializing the outgoing CAN frames.
-> 
-> [...]
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+Hi Marc,
 
-Here is the summary with links:
-  - pull-request: can 2021-03-20
-    https://git.kernel.org/netdev/net/c/49371a8a66ac
-  - [net,2/2] can: peak_usb: Revert "can: peak_usb: add forgotten supported devices"
-    https://git.kernel.org/netdev/net/c/5d7047ed6b72
+Please squash this into below commit:
+2b3d40020eca ("can: bittiming: add calculation for CAN FD Transmitter Delay Compensation (TDC)")
+---
+ drivers/net/can/dev/netlink.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 88dc56268670..18f7beeaf7d8 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -177,7 +177,6 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 					priv->data_bitrate_const_cnt);
+ 		if (err)
+ 			return err;
+-		can_calc_tdco(dev);
+ 
+ 		if (priv->bitrate_max && dbt.bitrate > priv->bitrate_max) {
+ 			netdev_err(dev, "canfd data bitrate surpasses transceiver capabilities of %d bps\n",
+@@ -187,6 +186,8 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 
+ 		memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
+ 
++		can_calc_tdco(dev);
++
+ 		if (priv->do_set_data_bittiming) {
+ 			/* Finally, set the bit-timing registers */
+ 			err = priv->do_set_data_bittiming(dev);
+-- 
+2.26.2
 
