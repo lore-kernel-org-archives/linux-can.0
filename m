@@ -2,71 +2,104 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A4A2C433C1
-	for <linux-can@archiver.kernel.org>; Mon, 22 Mar 2021 08:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9CADC433C1
+	for <linux-can@archiver.kernel.org>; Mon, 22 Mar 2021 08:41:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 540366196E
-	for <linux-can@archiver.kernel.org>; Mon, 22 Mar 2021 08:33:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8827D61919
+	for <linux-can@archiver.kernel.org>; Mon, 22 Mar 2021 08:41:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbhCVIdH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 22 Mar 2021 04:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
+        id S229482AbhCVIlR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 22 Mar 2021 04:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhCVIcr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 22 Mar 2021 04:32:47 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3113C061574
-        for <linux-can@vger.kernel.org>; Mon, 22 Mar 2021 01:32:46 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id x21so18215576eds.4
-        for <linux-can@vger.kernel.org>; Mon, 22 Mar 2021 01:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=8FvBM2oWd+FCyV4C/gnTu6HqNKF162jkU776/Z4CW2E=;
-        b=FZT6zawKqsLdDQ1I32LGTLG67CtBN/g9fM9D50svIcpQNwupj0UtBvdKHMyil7ZKs4
-         nrmMwp71L42zUmOI6awyqSF4iS8bO4mtEMNR/6acvO75xJb1/krQ9vwU3jVTI8UQFJgp
-         dYm0wkRFOU05uHIwwKOn/5PO9AZC1HLp1V4mgLs61ywFS/BWwwZqXU7Ci8vXMIc6Tgkr
-         po+SIsUloRcwcJv60oScrxsUi3FowuSsmquIxA251HYeILqabChT+HVEKGN9ctsRo2Mh
-         KgJVdC2MdAItM3k0TzkQUYQCVkgyzAhweUpyYTdVaPBS5GwZNW8mGqIRc76NZ50F8n28
-         oVWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=8FvBM2oWd+FCyV4C/gnTu6HqNKF162jkU776/Z4CW2E=;
-        b=TQt8ZRyh0vDcvqETDMP/1+yQxhbkheIycBDllqooE9hnYrtYwzlACQU/dd9Vtfpnk0
-         Xa2migINpundvI3p2EgyUIXguXbyzzfVU86Qz6cXYP8fFtP5Z4Dzox3oytbTRQdwrZAh
-         3k2G+HDZSmgIB5a8YVoibRT0AEWmwun+aBF1pxLdmYeqtKzDbM/o8Ocoj21vGKTMWWr9
-         qMUcor8yxqy5Q+k5KIWf6Igot1X985zHKOzb8J2Daw3ikpXMB9YoGvWrqJBhu66PSWCf
-         3kjDRb6/U5PxyU/V15Jb7hx/NKoo3A8BdHq2nloFlE+ZQDS1EnjKzHYxF4rgwgh+TZun
-         TnGQ==
-X-Gm-Message-State: AOAM533qcF2RB0if6pVnQ3lONkR3vObvSD6RGySd92tlGF3ry8S7udjw
-        0iPlb7pHY5EVQsDQ0y/LcfT1yrGhhYfobHmDkiW94wTXptc=
-X-Google-Smtp-Source: ABdhPJzKNLOVS0m5zH1p9kLjSpawLpluh63a27e/9lTJLtclA9wAePqHqhLeOHJMtLIL65IsDxy2AnTyr/jufyUo5Jk=
-X-Received: by 2002:aa7:da46:: with SMTP id w6mr24638979eds.40.1616401965151;
- Mon, 22 Mar 2021 01:32:45 -0700 (PDT)
+        with ESMTP id S229760AbhCVIlA (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 22 Mar 2021 04:41:00 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12646C061574
+        for <linux-can@vger.kernel.org>; Mon, 22 Mar 2021 01:41:00 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lOG7O-0001kL-My; Mon, 22 Mar 2021 09:40:58 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:2d14:11e9:80f:5de6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 40FD75FCA3C;
+        Mon, 22 Mar 2021 07:53:17 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 08:53:16 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] can: netlink: do tdco calculation after data
+ bittiming is copied to can_priv
+Message-ID: <20210322075316.343tc2yh62zewf4c@pengutronix.de>
+References: <20210321073329.1454-1-mailhol.vincent@wanadoo.fr>
+ <20210321073329.1454-2-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-From:   Yegor Yefremov <yegorslists@googlemail.com>
-Date:   Mon, 22 Mar 2021 09:31:16 +0100
-Message-ID: <CAGm1_ksAVdckLEg+uMts6U9+=83PjesaSNjFojFPedeCsUCrUA@mail.gmail.com>
-Subject: RFC: slcan: read status flags
-To:     linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="is3k5laf7uxq2jmv"
+Content-Disposition: inline
+In-Reply-To: <20210321073329.1454-2-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Is there any chance we could add 'F' command to get the error flags?
-The problem is, there is no special interrupt or special packet coming
-from the serial-to-CAN converter. So we cannot timely send this
-information to the user. But perhaps an IOCTL could get the current
-state?
 
-What do you think?
+--is3k5laf7uxq2jmv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Yegor
+On 21.03.2021 16:33:29, Vincent Mailhol wrote:
+> The call to can_calc_tdco() is done too early. The data_bittiming
+> field of can_priv is not yet updated.
+>=20
+> Moving the call after tdco is memcopied solves the issue.
+>=20
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> ---
+> Hi Marc,
+>=20
+> Please squash this into below commit:
+> 2b3d40020eca ("can: bittiming: add calculation for CAN FD Transmitter Del=
+ay Compensation (TDC)")
+
+done
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--is3k5laf7uxq2jmv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBYTOkACgkQqclaivrt
+76lzcQf6A0lbSFzpdXFgM+RGhdRYAK6vv4iYL+nUr9oOoHzPhnrStk+Wsv3tHzPx
+s00I6qxqlQMnZqZKT+Ey+uax4mkk795l7r6JhPkCqKZKEQr4LMSuLDP/kCY9eKX1
+NkhaXBpTRNAssy73veh2NajO9QyDtM2YDsya6DaPCxZXBPpGGpuTrAYixwC0eUgg
+ls/y3NP+1epPHaVkPMdkd83ZFXzXLwKJwcFYq7Rr7k+OMqP7hR4N/h6CYHgXlkjC
+yRPYVjzVoAHFps0j9T29fV1pgM/TtogoUtjTe7N/PeiIJ3JJ/6HviIBg30OSmd0z
+w6AtXUanvt7ZChj/TABGxogSBaMFuQ==
+=8uu2
+-----END PGP SIGNATURE-----
+
+--is3k5laf7uxq2jmv--
