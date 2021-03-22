@@ -2,114 +2,71 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF403C433DB
-	for <linux-can@archiver.kernel.org>; Mon, 22 Mar 2021 01:38:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A4A2C433C1
+	for <linux-can@archiver.kernel.org>; Mon, 22 Mar 2021 08:33:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7A3A961920
-	for <linux-can@archiver.kernel.org>; Mon, 22 Mar 2021 01:38:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 540366196E
+	for <linux-can@archiver.kernel.org>; Mon, 22 Mar 2021 08:33:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhCVBhu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 21 Mar 2021 21:37:50 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3493 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhCVBhc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 21 Mar 2021 21:37:32 -0400
-Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F3cWx3nwFzRSjD;
-        Mon, 22 Mar 2021 09:35:41 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 22 Mar 2021 09:37:25 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Mon, 22 Mar
- 2021 09:37:25 +0800
-Subject: Re: [Linuxarm] [PATCH net] net: sched: fix packet stuck problem for
- lockless qdisc
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-CC:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jonas Bonn <jonas.bonn@netrounds.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Michael Zhivich <mzhivich@akamai.com>,
-        Josh Hunt <johunt@akamai.com>,
-        "Jike Song" <albcamus@gmail.com>,
-        Kehuan Feng <kehuan.feng@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
- <e5c2d82c-0158-3997-80b6-4aab56c61367@huawei.com>
- <CAM_iQpV4HX5L1b8ofUig-bi3r_MDdsjThqaxfoRCd=02XZBprQ@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <383f1c9b-016f-0aaa-def3-9d8786d40b01@huawei.com>
-Date:   Mon, 22 Mar 2021 09:37:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S229508AbhCVIdH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 22 Mar 2021 04:33:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhCVIcr (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 22 Mar 2021 04:32:47 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3113C061574
+        for <linux-can@vger.kernel.org>; Mon, 22 Mar 2021 01:32:46 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id x21so18215576eds.4
+        for <linux-can@vger.kernel.org>; Mon, 22 Mar 2021 01:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=8FvBM2oWd+FCyV4C/gnTu6HqNKF162jkU776/Z4CW2E=;
+        b=FZT6zawKqsLdDQ1I32LGTLG67CtBN/g9fM9D50svIcpQNwupj0UtBvdKHMyil7ZKs4
+         nrmMwp71L42zUmOI6awyqSF4iS8bO4mtEMNR/6acvO75xJb1/krQ9vwU3jVTI8UQFJgp
+         dYm0wkRFOU05uHIwwKOn/5PO9AZC1HLp1V4mgLs61ywFS/BWwwZqXU7Ci8vXMIc6Tgkr
+         po+SIsUloRcwcJv60oScrxsUi3FowuSsmquIxA251HYeILqabChT+HVEKGN9ctsRo2Mh
+         KgJVdC2MdAItM3k0TzkQUYQCVkgyzAhweUpyYTdVaPBS5GwZNW8mGqIRc76NZ50F8n28
+         oVWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=8FvBM2oWd+FCyV4C/gnTu6HqNKF162jkU776/Z4CW2E=;
+        b=TQt8ZRyh0vDcvqETDMP/1+yQxhbkheIycBDllqooE9hnYrtYwzlACQU/dd9Vtfpnk0
+         Xa2migINpundvI3p2EgyUIXguXbyzzfVU86Qz6cXYP8fFtP5Z4Dzox3oytbTRQdwrZAh
+         3k2G+HDZSmgIB5a8YVoibRT0AEWmwun+aBF1pxLdmYeqtKzDbM/o8Ocoj21vGKTMWWr9
+         qMUcor8yxqy5Q+k5KIWf6Igot1X985zHKOzb8J2Daw3ikpXMB9YoGvWrqJBhu66PSWCf
+         3kjDRb6/U5PxyU/V15Jb7hx/NKoo3A8BdHq2nloFlE+ZQDS1EnjKzHYxF4rgwgh+TZun
+         TnGQ==
+X-Gm-Message-State: AOAM533qcF2RB0if6pVnQ3lONkR3vObvSD6RGySd92tlGF3ry8S7udjw
+        0iPlb7pHY5EVQsDQ0y/LcfT1yrGhhYfobHmDkiW94wTXptc=
+X-Google-Smtp-Source: ABdhPJzKNLOVS0m5zH1p9kLjSpawLpluh63a27e/9lTJLtclA9wAePqHqhLeOHJMtLIL65IsDxy2AnTyr/jufyUo5Jk=
+X-Received: by 2002:aa7:da46:: with SMTP id w6mr24638979eds.40.1616401965151;
+ Mon, 22 Mar 2021 01:32:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpV4HX5L1b8ofUig-bi3r_MDdsjThqaxfoRCd=02XZBprQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+From:   Yegor Yefremov <yegorslists@googlemail.com>
+Date:   Mon, 22 Mar 2021 09:31:16 +0100
+Message-ID: <CAGm1_ksAVdckLEg+uMts6U9+=83PjesaSNjFojFPedeCsUCrUA@mail.gmail.com>
+Subject: RFC: slcan: read status flags
+To:     linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 2021/3/20 3:45, Cong Wang wrote:
-> On Fri, Mar 19, 2021 at 2:25 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->> I had done some performance test to see if there is value to
->> fix the packet stuck problem and support lockless qdisc bypass,
->> here is some result using pktgen in 'queue_xmit' mode on a dummy
->> device as Paolo Abeni had done in [1], and using pfifo_fast qdisc:
->>
->> threads  vanilla    locked-qdisc    vanilla+this_patch
->>    1     2.6Mpps      2.9Mpps            2.5Mpps
->>    2     3.9Mpps      4.8Mpps            3.6Mpps
->>    4     5.6Mpps      3.0Mpps            4.7Mpps
->>    8     2.7Mpps      1.6Mpps            2.8Mpps
->>    16    2.2Mpps      1.3Mpps            2.3Mpps
->>
->> locked-qdisc: test by removing the "TCQ_F_NOLOCK | TCQ_F_CPUSTATS".
-> 
-> I read this as this patch introduces somehow a performance
-> regression for -net, as the lockless bypass patch you submitted is
-> for -net-next.
+Is there any chance we could add 'F' command to get the error flags?
+The problem is, there is no special interrupt or special packet coming
+from the serial-to-CAN converter. So we cannot timely send this
+information to the user. But perhaps an IOCTL could get the current
+state?
 
-Yes, right now there is performance regression for fixing this bug,
-but the problem is that if we can not fix the above data race without
-any performance regression, do you prefer to send this patch to
--net, or to -net-next with the lockless bypass patch?
+What do you think?
 
-Any idea to fix this with less performance regression?
-
-> 
-> Thanks.
-> 
-> .
-> 
-
+Regards,
+Yegor
