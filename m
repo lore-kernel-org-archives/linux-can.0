@@ -6,46 +6,50 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C415BC433DB
-	for <linux-can@archiver.kernel.org>; Tue, 23 Mar 2021 07:32:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBB97C433C1
+	for <linux-can@archiver.kernel.org>; Tue, 23 Mar 2021 07:32:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 63458619AB
-	for <linux-can@archiver.kernel.org>; Tue, 23 Mar 2021 07:32:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C41C619B2
+	for <linux-can@archiver.kernel.org>; Tue, 23 Mar 2021 07:32:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbhCWHbo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 23 Mar 2021 03:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
+        id S229746AbhCWHcQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 23 Mar 2021 03:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhCWHbo (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Mar 2021 03:31:44 -0400
+        with ESMTP id S229482AbhCWHbw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Mar 2021 03:31:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3109C061574
-        for <linux-can@vger.kernel.org>; Tue, 23 Mar 2021 00:31:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F945C061574
+        for <linux-can@vger.kernel.org>; Tue, 23 Mar 2021 00:31:52 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lObVt-0005mf-NJ; Tue, 23 Mar 2021 08:31:41 +0100
+        id 1lObVz-0005mg-FY; Tue, 23 Mar 2021 08:31:47 +0100
 Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:c81e:25b5:b851:4b31])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
         (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 71DFC5FDBDD;
-        Tue, 23 Mar 2021 07:26:07 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 08:26:06 +0100
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E8F295FDBF1;
+        Tue, 23 Mar 2021 07:30:49 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 08:30:49 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        Han Xu <han.xu@nxp.com>
-Subject: Re: CAN performance test
-Message-ID: <20210323072606.nara6bctyuj6mpfl@pengutronix.de>
-References: <DB8PR04MB6795C0366E4B43B3D12461EDE6649@DB8PR04MB6795.eurprd04.prod.outlook.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Dan Murphy <dmurphy@ti.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kael_w@yeah.net
+Subject: Re: [PATCH] net: can: Remove duplicate include of regmap.h
+Message-ID: <20210323073049.xtsa4qfquezickon@pengutronix.de>
+References: <20210323021026.140460-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qsz3rundxy3vrft3"
+        protocol="application/pgp-signature"; boundary="2x7tt3dycidjeo77"
 Content-Disposition: inline
-In-Reply-To: <DB8PR04MB6795C0366E4B43B3D12461EDE6649@DB8PR04MB6795.eurprd04.prod.outlook.com>
+In-Reply-To: <20210323021026.140460-1-wanjiabing@vivo.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -55,23 +59,18 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---qsz3rundxy3vrft3
+--2x7tt3dycidjeo77
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 23.03.2021 04:31:41, Joakim Zhang wrote:
-> Do you know there is some easy ways for us to test CAN performance? I
-> tested it before by hardcode the driver, it's not a good way. Thanks a
-> lot!
+On 23.03.2021 10:10:25, Wan Jiabing wrote:
+> linux/regmap.h has been included at line 13, so remove the=20
+> duplicate one at line 14.
 
-I usually use cansequence to test TX and RX performance independent of
-each other, or canfdtest for a full duplex test.
+applied to linux-can-next/testing.
 
-cansequence sends CAN frames as fast as possible, while canfdtest has
-some sleeps to properly interlace the RX and TX path.
-
-regards,
+Thanks,
 Marc
 
 --=20
@@ -80,19 +79,19 @@ Embedded Linux                   | https://www.pengutronix.de  |
 Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---qsz3rundxy3vrft3
+--2x7tt3dycidjeo77
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBZmAwACgkQqclaivrt
-76l0bwf/YoP/Rp5M+BWC78iG12hxTtquKWSsBSL7LQGqyrLuZ2TQ+vMkjQOdEU8x
-mpT624IHnIpVOf+js4SARJj4XhTz2iseoA6X8YmRZ7lY4Xer8QZM5F7zdQrg4qEr
-p9CVKl9/mU2IJNnaTtwLDgc/d7F4+JrDb+sd+pt5o7Fqy3grHpjAmSDrR0vY4UKF
-3HNfARdmeUJppcrSeZZqJ9xqzLzd2ItNa1FlF4GvzOGNqMVtqaH+z//F+arCD787
-uQiIvgsNfIrsfJaMHWCKc5NwwiQpF1xxO/qYHwy0dTMV6wu4I9yha2x6auputgY/
-/0BGf5E+8CgujDqsEv/KepKwg/Kz1w==
-=aBsY
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBZmSYACgkQqclaivrt
+76k9hgf9E1gyqjyXoEpiqFqSf7ZDUNLduopZyW4BCvi6dF4SoZnaFmgPLbRuZTup
+n4/0ylnbQ7Y4T/5Yyzv7nXaZlr9SLP86uAS+pqUzlQiKl0+Woz3c9SSvjaJDdrvu
+BZEbBx2Bhc0olUgFvuJsHMbgC7VSpQHqLOTpszYJGu14fd2u4CNawknJtNAUP8Bs
+emBNEA0Yq6nic70t16UhrPzjlUgZfhDDj0BBFyu1CBrBb5Vq3GG/3A74sVneVhvW
+BsSfZTpl1i1+IyFi+FXDi2tJ4SML7d4tAKV2G8COP8sEnrlBp5mubw3NUH7JRz3l
+mU9iAbLp5LCCKhdJubnUCP7e+FNQpQ==
+=05VG
 -----END PGP SIGNATURE-----
 
---qsz3rundxy3vrft3--
+--2x7tt3dycidjeo77--
