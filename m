@@ -2,230 +2,190 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D71CDC433DB
-	for <linux-can@archiver.kernel.org>; Tue, 23 Mar 2021 06:39:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 680A8C433DB
+	for <linux-can@archiver.kernel.org>; Tue, 23 Mar 2021 07:27:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A5945619B4
-	for <linux-can@archiver.kernel.org>; Tue, 23 Mar 2021 06:39:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 343D7619AB
+	for <linux-can@archiver.kernel.org>; Tue, 23 Mar 2021 07:27:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhCWGjA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 23 Mar 2021 02:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhCWGi2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Mar 2021 02:38:28 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9B1C061574
-        for <linux-can@vger.kernel.org>; Mon, 22 Mar 2021 23:38:28 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lOag2-0007ur-BO; Tue, 23 Mar 2021 07:38:06 +0100
-Subject: Re: [RFC v3] net: sched: implement TCQ_F_CAN_BYPASS for lockless
- qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     olteanv@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, edumazet@google.com, weiwan@google.com,
-        cong.wang@bytedance.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com
-References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
- <1616404156-11772-1-git-send-email-linyunsheng@huawei.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <5bef912e-aa7d-8a27-4d18-ac8cf4f7afdf@pengutronix.de>
-Date:   Tue, 23 Mar 2021 07:37:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229504AbhCWH10 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 23 Mar 2021 03:27:26 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:54699 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229493AbhCWH06 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 23 Mar 2021 03:26:58 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id C69DC2400FD
+        for <linux-can@vger.kernel.org>; Tue, 23 Mar 2021 08:26:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1616484416; bh=wjDMqOP5WB2g46s/lrBrOAAKFhKaX5fxTrbYRqYNI0Y=;
+        h=To:Cc:From:Autocrypt:Subject:Date:From;
+        b=dETfi8hXRGGnIm6/H0Eg/UpWQ6o+AJIKHIyXqk4P6QaUCCSMZgcMNlXSmf/r1r8bJ
+         IL7Q3k2tlxiYXoS/UbwR6A9ILYV8VvsltnSIyV+Y3SvXjXjotXRpsbe9+T0PvKQnTV
+         sFfPpTOSLm4WunPtmtN6gofwTsgI9fccTfJE53Y9ZBlRxXZfHpB/g6m3IF2zDV1Z02
+         72ZsW1NpZTO+i1qmro7rOs4/yOuxRzc5AAIsLkyU7TFpkfhIwFfYq0R9MbxIdsLLIR
+         xMYyzNISPgrjofmmJpLPAyhelvo8JO8rkhCo+0m9JK8jCQcIHBFlFMqodlvNkd2uBK
+         cqI0AicdLsBeQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4F4NGl3nTlz6tmM;
+        Tue, 23 Mar 2021 08:26:55 +0100 (CET)
+To:     Rong Chen <rong.a.chen@intel.com>
+Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>
+References: <202103210435.I0fiBGAC-lkp@intel.com>
+ <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
+ <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
+ <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
+ <b10903ca-c424-b305-d981-fe0004500190@intel.com>
+ <CAMZ6RqK0-7DaoscTgKD+APDxtPw1q0Dz0Kef_doa0PZOnBav=w@mail.gmail.com>
+ <52e57719-7b55-b21a-5e30-4be2fb4e776c@intel.com>
+From:   Patrick Menschel <menschel.p@posteo.de>
+Autocrypt: addr=menschel.p@posteo.de; prefer-encrypt=mutual; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUlOQkZ3RG1RZ0JFQUMr
+ elBRRy9KTHQyWUpiNTRERFBKd0Jtd25EUTh4dUZQcEFjRjNYSVVuZkFOTGs0OUpoClhWczFR
+ TnVHZk1VLytmY3RPWGd0SmF6Q3doc3NGdlUvWStPc1Nmd3FTN1ROOXhIWE1DZmtnK1gxRHhI
+ ZGtqcmoKL1pUYkxHd1FUQlE2SVpVeW9BTEVSQ2RHZFBETFVqWERSS0poSTdvV3RqYlVFWUVr
+ ZE9RYnY2eDhLVWd1bGtHUgpYYWxka1hJZ0R0VWZLaUE0VGhBVXpncVJuZ09DV2ZITis4TnBo
+ Q2pGVlFnclRSakxCc3pkZTFnTmJkZ2kvdWxiClcyTngvS1Jqa0F1TTdFUVJvVUJ2QUJWb2FX
+ R3ZYenIzUmphUFhrSk5wNHdFbm1IcVoxZlVteWMvSGZRNnVjWnkKRW5QZnlEWExtWTJQUU5P
+ N2ZCemZLMTJVRTdWZHh0OTBDNURPSkRBc25kNHYreloxNHJObEpmTHNwaDZkVlNIbApsS2t2
+ NE1BTndNaGxRT3Bta1pLMHhVU0Q2R0M1OHRiV0RSbEg4b3UrWUhDYlh2OHJCTXphR0phWDVB
+ S25lNTJTCmZEUCtiQVVTdWVQdDhrRG5TaU1ZNk9iUEdObWhqcW1JN1RmNkU1NDdqRXUzcmxr
+ aVI3Rno2cktVVzA5VlBlcnAKUnVya3orSTFtTDZ5ZTlZdGFDZ3MwbFR4b3VuYnA5emROVE04
+ djZFOGJsMWNoSnRoYWs1bkEvRktnbmRtVHdhUQpNclFTRFEyNmxMcUw0MXRPZzhlVXFhTzJI
+ TXVPRGNaaVVIMGVNWHlQZjhsbXhMcy9sbUVZU3hGUXFMWlBjWW9pClA0SGxVcDNSMkxIa0hO
+ WDg1WDBKUldwRkkwLzNKMTFiWEpjLzc1MzVKODExdE9aRDkyRHlkK20zS3dBUkFRQUIKdENk
+ UVlYUnlhV05ySUUxbGJuTmphR1ZzSUR4dFpXNXpZMmhsYkM1d1FIQnZjM1JsYnk1a1pUNkpB
+ bFFFRXdFSwpBRDRXSVFUcFZLQkNXcGNoUW9QQURFY3g1bTR3ejYrNFRnVUNYQU9aQ0FJYkl3
+ VUpDV1lCZ0FVTENRZ0hBZ1lWCkNna0lDd0lFRmdJREFRSWVBUUlYZ0FBS0NSQXg1bTR3ejYr
+ NFRnQTJELzBTQW92U0xuK1pTcGUzK0d4UUhKMzYKWmJ1TWs0REVSa0RKMnIveStvc254WUd2
+ TmNtU3N5Q1pBaVZjTTlFM0kxUXVtdDZvWHpoditJUDJNd09MZTlQMwpvUmhJQ1JyQ2RwWmY1
+ YjdDb0lOc3lENUJwNGFsSUs5UFpHUDdXTjRHeGE3OVpNYkRhNVBNWGVQZ2psckFNVGNOCjRv
+ c2Q5NVB4eFNkV1dheTB2TUh0VWYwRGJkaDFRNUs1U3lkREpxdG56dFBkNzBzUG9wOHBRSWhE
+ NExGUWdpcFgKL3VRdkEvWnZpN2c5T3N4YThCNnRDTG41VG5LT2lNYktCVUFya1FHTDFnbDQ4
+ NFJtKzRlR011YVZrVjVBb3VYMApOaGQvTVU3eEMxS2dGcWZwYTMzZ0ZRdUxTSTU2aStuRkt6
+ dzNIdiszeHBJOXJjaHFXQjNnSWNVQ2lQZmFxcU1vCnI4RVNKODF0NWlvckQrRlpQb1RyMUEz
+ aGZTMTNuMGxWUytsZUd3dlNucjRRZ0gvcjZ5eGw4RERIaUdFMUFXblAKaTNaWFNKWnkxRUJW
+ TWJXTXFBNzFwczZDS2ZnbmpmSHVvVmNsTElXd3cxT2gwYXlER1hMZUFic1VPTGtGOXAxMwo1
+ MWxRS0lJWUZpcXVwL09qa0pKMlgxaTdITjlqV2xRVnR0SER3QlhZOWNYWDRHUzk3cnNwSVhj
+ S2hHRytFSVB0CjFEaFdBdDR1ZDdqcDIrSDRmTXlKZGlVK0wrYTVXNjlTODZpOURTMjBUdXd2
+ K3JRemNQWTQ3MkVxZmo0elhWWmsKNUNzZ2kxVDZzQ1lnZDd5TGpHMnFYblZsSTJqQ1JyT0RW
+ dGJiY25jSi9peEhPQ1h2TmlvRzZPREhBM3ZtNlZxaQpEelBmYTBFaWZveWMxbDRvSUZvQ2c3
+ a0NEUVJjQTVrSUFSQUEwdUlXUGNrRlpzb0ZVZG1Sd29vMW95YzhmSyttCll6TmhTc1l0UTlI
+ ZDMvQmlWeUxwUERQK0F6eks4U2JvWXVGcTJOaGRJaTIyeFRTZ2pyRFZMOU10YTdNbDB6cHgK
+ QnJSTitySm5LRFl3bThJeUl6eUpCRmhXU1l3YnVPSXVqbnB6U1IvVGVDT1VvelRadFhnQmRU
+ YzZrUG5kV1BWTgpDWU9hZVFXdDI1Qnc3ZGNVbllUQ1FWYm9EN0RFVWFEVkVqM1BKM2U0aGli
+ TEp1UnEvK1dQY3kxQ3g2UFNucTJ6CkdQN1pVNWh6NjF2ZGovbVJJa2QxS2UzUTZmWUwzSVRN
+ T1l1WGF6VUVEZ3l3TlN0bVkwRmZUT05GWEtGTXdSNm8KcUtuSGlTN2tINytxQWFodUpkdVFB
+ MW9SU2xUTWRFb3F2WHEySlVJTm1NaGdYL0ZQN3ZpZEFxcTdnVjRXWElxcAptckliVHBiNVpz
+ U0N6dUJBd3lkOTYxM1lmYWpZVGlUYkJGRzQ1Mld4TnlJeTFUdVpWMmIxZlhPbGdLRjNvbmUx
+ CnhwbURqbTFlZVhSdjRnV0d0Vks5cXlEaUtYWnlmQ0YyL2o5d08xaTNnUHZqYmFvU1dhT2hH
+ T2V6dlNFQzB4RjgKWU9TMitGSmxVclVyVm54UXZsZkdyWFYxbUpRTHpvcFJ5N0VndjNlRDI0
+ NUx5YjhjUHpOUmppelRqV2RYN0g0MwpuNTlXMkdWTkFLTkNyV1pkOGNjZEdJK1RodmwzUUh1
+ YWQ3NEY5cGdDUUNZWXM5dG92YVZldFR1WlI2Y3JMaG10CmxmK1V4ME5SV29PV2ZTR0w5anBt
+ dkR3aGlwWCszMUlvb1FiOTZ1a2UzOFBZMUVOMjJ6QlBxZ25jVVVrUkxQQncKbEhYbnpFVit6
+ U1p4QXpFQUVRRUFBWWtDUEFRWUFRb0FKaFloQk9sVW9FSmFseUZDZzhBTVJ6SG1iakRQcjdo
+ TwpCUUpjQTVrSUFoc01CUWtKWmdHQUFBb0pFREhtYmpEUHI3aE9Db0lQLzNTanBFdTl4Wkpj
+ TlZvU0s5MTA0enB6CmtnS2FUVmcrR0tZSEFJa1NZL3U2NU1zVmFTWk14bWVDSzdtTiswNU1w
+ RUZCYW9uMG5sVTlRK0ZMRDFkRDBsenYKTVBkOEZOcEx4VEMxVDQwbXBVN0ZCV1hlVjZWRHoz
+ STY5VkFBdjRWVDM4ZVZhYXBOS1lmVGdwcFRYVEVNYVdoTApVYUpGaU1HaFNYaGkrR01GV2Ji
+ NVNFOGJJRTZ0WUpONWlYZUFNVFE4NjhYVGtHS0VHTjk3bEU2S09odmpWV0kxCkhiUVIzZ0tV
+ ck1uVmlhbGp0YnV4bGNvS2YrblRvNG85OUEyTkprRCswaFozclJZTWhacFR1MitkcCt2Rm9p
+ aEQKdVNFTCtoblZhNFRMd2pYd2gzNzNweU9XMFhra2E5YWpNTEFoMUFtMmRBa0pLSDhzMVlJ
+ UUlpL2Q3bEkyYXQ1awpIcWtIa2p0YzE1ZkgrQUU5Q0VSM3RCSVNoYU9Fb0hXTXc0WEs5NS9n
+ MWVnMVB1cmJmN3RwRnltcklxU3ppQjlvCjJBWituSHVDQ001ZC9pQXh5MmJOcndqNDhPM2Z5
+ WXd1a0pManUyNlJKbzRMNStjNEJoTU1Ray9nVWROdldHK2YKNUxreVhvbHNMY0p0SktLdStD
+ V1pFK1hxc2RGWHd2d2xDRVNSQ012cGZyQmNtY1hrT0g3S1JKVy9pUjFXVjVRZApjR3ZDcDl0
+ a08vaEhSb2t0dzBibUl1MlFhZkovajZLTGJqZWV4cTc0TWUyb0U5YmkxY3B2azYvSElDV0JQ
+ dHVYCnNqd2o1Q2M3UlZOMjJLekdZT0RKVGtxU0d4RjV1NVlkTHVNVG5CVGNweEphR2h3MzNq
+ QjgwY3o3enFwQXBpREIKZFFnR2psVlNQT3ZidU04aXBPZDYKPW1nREMKLS0tLS1FTkQgUEdQ
+ IFBVQkxJQyBLRVkgQkxPQ0stLS0tLQo=
+Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
+ call to '__compiletime_assert_536' declared with attribute error:
+ BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
+ canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
+Message-ID: <f215591d-1d5f-b5ae-38fe-4f6407bb2116@posteo.de>
+Date:   Tue, 23 Mar 2021 08:26:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1616404156-11772-1-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <52e57719-7b55-b21a-5e30-4be2fb4e776c@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Language: de-DE
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+
+Am 23.03.21 um 07:06 schrieb Rong Chen:
+>>>> Ugh! Why did the compiler extend the space for the union to 4 bytes?!?
+>> Just a random idea but maybe the added padding is due to some
+>> kind of odd intrication with the __attribute__((__aligned__(8)))
+>> just below? Does this reproduce if we remove the
+>> __attribute__((__aligned__(8)))?
+> 
+> Here is the layout without __attribute__((__aligned__(8))),
+> the union is still extended to 4 bytes:
+> 
+> struct can_frame {
+>         canid_t                    can_id;               /* 0     4 */
+>         union {
+>                 __u8               len;                  /* 4     1 */
+>                 __u8               can_dlc;              /* 4     1 */
+>         };                                               /* 4     4 */
+>         __u8                       __pad;                /* 8     1 */
+>         __u8                       __res0;               /* 9     1 */
+>         __u8                       len8_dlc;             /* 10     1 */
+>         __u8                       data[8];              /* 11     8 */
+> 
+>         /* size: 20, cachelines: 1, members: 6 */
+>         /* padding: 1 */
+>         /* last cacheline: 20 bytes */
+> };
+> 
+> Best Regards,
+> Rong Chen
+
 Hi,
 
-On 22.03.21 10:09, Yunsheng Lin wrote:
-> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
-> flag set, but queue discipline by-pass does not work for lockless
-> qdisc because skb is always enqueued to qdisc even when the qdisc
-> is empty, see __dev_xmit_skb().
-> 
-> This patch calls sch_direct_xmit() to transmit the skb directly
-> to the driver for empty lockless qdisc too, which aviod enqueuing
-> and dequeuing operation. qdisc->empty is set to false whenever a
-> skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
-> skb dequeuing return NULL, see pfifo_fast_dequeue().
-> 
-> There is a data race between enqueue/dequeue and qdisc->empty
-> setting, qdisc->empty is only used as a hint, so we need to call
-> sch_may_need_requeuing() to see if the queue is really empty and if
-> there is requeued skb, which has higher priority than the current
-> skb.
-> 
-> The performance for ip_forward test increases about 10% with this
-> patch.
-> 
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
-> Hi, Vladimir and Ahmad
-> 	Please give it a test to see if there is any out of order
-> packet for this patch, which has removed the priv->lock added in
-> RFC v2.
+I would suggest a try with __attribute__((__aligned__(8))) only on
+can_frame, not on data[8].
 
-Overnight test (10h, 64 mil frames) didn't see any out-of-order frames
-between 2 FlexCANs on a dual core machine:
+If the structure length is a multiple of 8, the compiler should
+recognize this and keep the union a single byte in favor of an array
+configuration of that struct.
 
-Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+The __attribute__((__aligned__(8))) on data[8] has strange propagation
+effects upwards.
 
-No performance measurements taken.
+If the attributes are really necessary, I would suggest to have both
 
-> 
-> There is a data race as below:
-> 
->       CPU1                                   CPU2
-> qdisc_run_begin(q)                            .
->         .                                q->enqueue()
-> sch_may_need_requeuing()                      .
->     return true                               .
->         .                                     .
->         .                                     .
->     q->enqueue()                              .
-> 
-> When above happen, the skb enqueued by CPU1 is dequeued after the
-> skb enqueued by CPU2 because sch_may_need_requeuing() return true.
-> If there is not qdisc bypass, the CPU1 has better chance to queue
-> the skb quicker than CPU2.
-> 
-> This patch does not take care of the above data race, because I
-> view this as similar as below:
-> 
-> Even at the same time CPU1 and CPU2 write the skb to two socket
-> which both heading to the same qdisc, there is no guarantee that
-> which skb will hit the qdisc first, becuase there is a lot of
-> factor like interrupt/softirq/cache miss/scheduling afffecting
-> that.
-> 
-> So I hope the above data race will not cause problem for Vladimir
-> and Ahmad.
-> ---
->  include/net/pkt_sched.h   |  1 +
->  include/net/sch_generic.h |  1 -
->  net/core/dev.c            | 22 ++++++++++++++++++++++
->  net/sched/sch_generic.c   | 11 +++++++++++
->  4 files changed, 34 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-> index f5c1bee..5715ddf 100644
-> --- a/include/net/pkt_sched.h
-> +++ b/include/net/pkt_sched.h
-> @@ -122,6 +122,7 @@ void qdisc_warn_nonwc(const char *txt, struct Qdisc *qdisc);
->  bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
->  		     struct net_device *dev, struct netdev_queue *txq,
->  		     spinlock_t *root_lock, bool validate);
-> +bool sch_may_need_requeuing(struct Qdisc *q);
->  
->  void __qdisc_run(struct Qdisc *q);
->  
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index f7a6e14..e08cc77 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -161,7 +161,6 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->  	if (qdisc->flags & TCQ_F_NOLOCK) {
->  		if (!spin_trylock(&qdisc->seqlock))
->  			return false;
-> -		WRITE_ONCE(qdisc->empty, false);
->  	} else if (qdisc_is_running(qdisc)) {
->  		return false;
->  	}
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index be941ed..317180a 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -3796,9 +3796,31 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->  	qdisc_calculate_pkt_len(skb, q);
->  
->  	if (q->flags & TCQ_F_NOLOCK) {
-> +		if (q->flags & TCQ_F_CAN_BYPASS && READ_ONCE(q->empty) &&
-> +		    qdisc_run_begin(q)) {
-> +			if (sch_may_need_requeuing(q)) {
-> +				rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-> +				__qdisc_run(q);
-> +				qdisc_run_end(q);
-> +
-> +				goto no_lock_out;
-> +			}
-> +
-> +			qdisc_bstats_cpu_update(q, skb);
-> +
-> +			if (sch_direct_xmit(skb, q, dev, txq, NULL, true) &&
-> +			    !READ_ONCE(q->empty))
-> +				__qdisc_run(q);
-> +
-> +			qdisc_run_end(q);
-> +			return NET_XMIT_SUCCESS;
-> +		}
-> +
->  		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-> +		WRITE_ONCE(q->empty, false);
->  		qdisc_run(q);
->  
-> +no_lock_out:
->  		if (unlikely(to_free))
->  			kfree_skb_list(to_free);
->  		return rc;
-> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-> index 44991ea..2145fdad 100644
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -146,6 +146,8 @@ static inline void dev_requeue_skb(struct sk_buff *skb, struct Qdisc *q)
->  	}
->  	if (lock)
->  		spin_unlock(lock);
-> +
-> +	WRITE_ONCE(q->empty, false);
->  	__netif_schedule(q);
->  }
->  
-> @@ -273,6 +275,15 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
->  	return skb;
->  }
->  
-> +bool sch_may_need_requeuing(struct Qdisc *q)
-> +{
-> +	if (likely(skb_queue_empty(&q->gso_skb) &&
-> +		   !q->ops->peek(q)))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  /*
->   * Transmit possibly several skbs, and handle the return status as
->   * required. Owning running seqcount bit guarantees that
-> 
+__attribute__((packed))
+__attribute__((__aligned__(8)))
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+on structure level instead of inside, so no padding happens inside the
+structure while the structure itself is aligned.
+Using aligned and packaged inside a structure may be contradictive to
+the compiler.
+
+This reminds me of the alignment/gap issue with my python3
+implementation of bcm message while alternating between X86_64 and
+ARMHF. Using c_types was a mess but bytestrings worked in the end.
+Be aware native alignment apparently is 4 on armhf linux and 8 on X86_64
+linux.
+
+https://marc.info/?l=linux-can&m=161251622904527&w=2
+https://gitlab.com/Menschel/socketcan/-/commit/afc6744129448ae4333629fc0297808dd42e3530#e522710a8423075cfd1147ae6b7f44facac3ffb0_133_132
+
+Best Regards,
+Patrick Menschel
