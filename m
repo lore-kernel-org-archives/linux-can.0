@@ -4,145 +4,231 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DC10C433E2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E1E4C433E0
 	for <linux-can@archiver.kernel.org>; Thu, 25 Mar 2021 13:00:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 68415619E8
+	by mail.kernel.org (Postfix) with ESMTP id 591B061A11
 	for <linux-can@archiver.kernel.org>; Thu, 25 Mar 2021 13:00:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbhCYM73 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 25 Mar 2021 08:59:29 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:29127 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhCYM7W (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 25 Mar 2021 08:59:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1616677156; cv=none;
+        id S229963AbhCYM7a (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 25 Mar 2021 08:59:30 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:23331 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230016AbhCYM7Y (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 25 Mar 2021 08:59:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1616677155; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=VqkvthETLW4kzMxOgojRKCUOZEjdybvilX+6dbtYnCqlmrWhApHcxWIusAB3L1xI1Q
-    kWq1z/PMcvasQAPDrAKrFhLBLJNHd1DPNsxApId9uqIfYp6PiALggivxJLwfsS8dGV65
-    WnBCsBwsVZA9ITBrmwIh79rPdqIQ28OEqxeODnx4D2bgRlUEX3B8Qq1Ca/W23QvuyxPB
-    Mbl507BHZCxsJFdJ9laBl0gO/ZGo37wPNz0PEKJMemnRjLNaCmyTTuZi+L+LCJoc/N6r
-    4gxuxuDd+QwjcJBarJC645kJXyDaZjk4IBCK3txkoV5Zdn8wzBth3hN03c9dFnCZWisE
-    JoJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616677156;
+    b=ln/2VCb5g/oA+7ZeuVzvLKdrZ5RJNpEX0IBfZLIpUO9yAnIC2ZTguWVTdjiPHdmJF7
+    UB+phCVq7DUwh70DemhfIM7Q4Hbm3qCEkIZvNuewrUJHbB9ecZMW+uNVxJ8b9u2/Tc1Y
+    0NiGsTEPBmLMrLakrbj5K79oZhJg9EFkQyB7pAq6pUqiwu3w9oCBSmunqlT1o39zwojj
+    Q5CYYTnxQk+YItkpT4n0fJmOGk5EpNFA3GVNxh8oMCIFEbDVHrVFYIXRAQpI5dnbWJVk
+    eGYIXSYfO5gWfLkwT3eEFxXhJj91LBxnNFH0+vsz58aa7jmhdrjTb8ZsXo8+xdnKeHgY
+    kc0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616677155;
     s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=5da/XseoIf1FLJUIMaN4zg257fUOiUlJl/iL7aMvTYc=;
-    b=aNUOI21WkHm8Ytg5X33V4FiHBdOFh9cnSgx8a7FMsQApImwbWM/HybtKj99ZInfsYp
-    gL/wEJtBoNcjD6Lih6f3pvAMR21v7w9wEPnaquA+nYNzjklDkNWcH6wZ/hAMJfJakF25
-    CGRuGtxLuNzDrRPWXmZMePOsX0UXbjmY1OdqcRylfQ3KuAPuz4e3Lbeat72Hp1UKrL+o
-    GyMItkmdcoY+MrYIEDFpY6bgz0jfSHuNsscgCcmDOpBXZv633ok7VuimVNCR6Lz/NfCk
-    lTMigafX800sS8FhXK4jkCqgyT/9QB+VAq4G/IAmumwk5DVvORTMJ3qF7DnY4LUJ0TtS
-    y9lA==
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=9p53nm6HlAOy3B84ljTprAtSH3tTGr/W8Btxf3nVmkY=;
+    b=sF1w/lHlJ4v6HoaOgpG4w7spoLQZkbq7CbkVnpxTIjPC/i05NvXsvAzuIG1lDB5FgR
+    5e+Q+UTt0Bye0rU4sIIcX3gorQUrX+9qn2TRD/i9VMq5jgrY1AGn2j7A6TZBY8e0Onu0
+    9lxd+3g+gzYA+LoO+851ZeTvadAduv+0Xx+0bX7DtqK3Q0dAseFOACbQ1QHjolmAB510
+    LQylHzeWKfk1yA3m/t6DmrrlgPLbkGwqAqTPoHBHTjNaL6h9gFD0VFj/tW6kkRRd05FP
+    5R0UToGYo5b0u5fNiKQDq4C1flyudCnHCRSERSpS01iIX+rXzNyQlcPj6IycStOiqYmq
+    IG1g==
 ARC-Authentication-Results: i=1; strato.com;
     dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616677156;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616677155;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=5da/XseoIf1FLJUIMaN4zg257fUOiUlJl/iL7aMvTYc=;
-    b=jJ7Olchk4ibYrCK1fK3jmwCKV/5iWtrj+JNlGSoAhfX933fIE+yzM6HjIpOkhgoUF8
-    Waux5SQniEfBj/i6DMqSAc7GM6D/xIJHDBeuFFlF5bxU/kygvqgeBoXdIEmCdLTygqcF
-    828bKNnt/Dcul+rVfPBRrI0sxmuHHbgGiKoFuHUDr89HX+fjgUIG9wRiqaUUiRUpV5TA
-    7EOemS+mo/wHwxy+Q4ZxtCtbXBeQG4EO2CkKF5jL7hCIcO5ZPFozI1AGffoICJcXptlq
-    HutcfU/Ta0ukdXLyBObW3XPlgh3S9oj/ypImOzXWT1na+JqPs8aPbZImRGLcBEqCYYRz
-    JpWQ==
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=9p53nm6HlAOy3B84ljTprAtSH3tTGr/W8Btxf3nVmkY=;
+    b=b7i5TMY9orVyc055AmBv4xPKqGc+ucyoB80oN3hoIr9zkV4S5csLgYLj6BHahM0sjM
+    3YkiOLkyiqGm/2kYBrT8mRQIi0UndhHh3GlPYYTknjVk/qPgBtbb4n+BrB3IcaLLk2Vw
+    UXhp4uyGT+eRJJxLPyAbidyAzwUvgROvT9uzuPiTIOmPt6FG3ONCSzgGv/15jctFc7KK
+    p2l9N8/RkIF4hy6KI3SSJwtNZTCZKuiVGc9daE1vAkGfo6sQBTsdLcETf+GJ5MTV04nU
+    A5fBqY5MQHi21dSYfQq6RnqSRAtRA4noAAvfnCPhbS+/3rJdHS/mppZlXkp1xJkTZWRC
+    v25g==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0k+8CejuVLjM8tyWa"
 X-RZG-CLASS-ID: mo00
 Received: from silver.lan
     by smtp.strato.de (RZmta 47.22.0 DYNA|AUTH)
-    with ESMTPSA id z00fabx2PCxG4Ck
+    with ESMTPSA id z00fabx2PCxF4Ch
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Thu, 25 Mar 2021 13:59:16 +0100 (CET)
+    Thu, 25 Mar 2021 13:59:15 +0100 (CET)
 From:   Oliver Hartkopp <socketcan@hartkopp.net>
 To:     linux-can@vger.kernel.org
 Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 3/3] can: uapi: can.h: suppress padding of union inside struct can_frame
-Date:   Thu, 25 Mar 2021 13:58:50 +0100
-Message-Id: <20210325125850.1620-3-socketcan@hartkopp.net>
+        Richard Weinberger <richard@nod.at>,
+        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: [PATCH 1/3] can: bcm/raw: fix msg_namelen values depending on CAN_REQUIRED_SIZE
+Date:   Thu, 25 Mar 2021 13:58:48 +0100
+Message-Id: <20210325125850.1620-1-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210325125850.1620-1-socketcan@hartkopp.net>
-References: <20210325125850.1620-1-socketcan@hartkopp.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In commit ea7800565a12 ("can: add optional DLC element to Classical
-CAN frame structure") the struct can_frame::can_dlc was put into an
-anonymous union with another u8 variable.
+Since commit f5223e9eee65 ("can: extend sockaddr_can to include j1939
+members") the sockaddr_can has been extended in size and a new
+CAN_REQUIRED_SIZE macro has been introduced to calculate the protocol
+specific needed size.
 
-For various reasons some members in struct can_frame and canfd_frame
-including the first 8 byes of data are expected to have the same
-memory layout. This is enforced by a BUILD_BUG_ON check in af_can.c.
+The ABI for the msg_name and msg_namelen has not been adapted to the
+new CAN_REQUIRED_SIZE macro for the other CAN protocols which leads
+to a problem when an existing binary reads the (increased)
+struct sockaddr_can in msg_name.
 
-Since the above mentioned commit this check fails on some compilers
-(e.g. arm-linux-gnueabi-gcc (GCC) 9.3.0) that apply an alignment on
-an (anonymous) union (see Link). Rong Chen analyzed the problem and
-found that the union in struct can_frame takes 4 bytes instead of
-the expected 1:
-
-| struct can_frame {
-|          canid_t                    can_id;               /* 0     4 */
-|          union {
-|                  __u8               len;                  /* 4     1 */
-|                  __u8               can_dlc;              /* 4     1 */
-|          };                                               /* 4     4 */
-|          __u8                       __pad;                /* 8     1 */
-|          __u8                       __res0;               /* 9     1 */
-|          __u8                       len8_dlc;             /* 10     1 */
-|
-|          /* XXX 5 bytes hole, try to pack */
-|
-|          __u8                       data[8]
-| __attribute__((__aligned__(8))); /*    16     8 */
-|
-|          /* size: 24, cachelines: 1, members: 6 */
-|          /* sum members: 19, holes: 1, sum holes: 5 */
-|          /* forced alignments: 1, forced holes: 1, sum forced holes: 5 */
-|          /* last cacheline: 24 bytes */
-| } __attribute__((__aligned__(8)));
-
-Marking the anonymous union as __attribute__((packed)) fixes the
-BUILD_BUG_ON problem on these compilers.
-
-Fixes: ea7800565a12 ("can: add optional DLC element to Classical CAN frame structure")
-Link: https://lore.kernel.org/linux-can/2c82ec23-3551-61b5-1bd8-178c3407ee83@hartkopp.net/
-Suggested-by: Rong Chen <rong.a.chen@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Author: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: f5223e9eee65 ("can: extend sockaddr_can to include j1939 members")
+Link: https://lore.kernel.org/linux-can/1135648123.112255.1616613706554.JavaMail.zimbra@nod.at/T/#t
+Reported-by: Richard Weinberger <richard@nod.at>
+Tested-by: Richard Weinberger <richard@nod.at>
+Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- include/uapi/linux/can.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/can/bcm.c | 10 ++++++----
+ net/can/raw.c | 14 ++++++++------
+ 2 files changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
-index f75238ac6dce..56abe9b50561 100644
---- a/include/uapi/linux/can.h
-+++ b/include/uapi/linux/can.h
-@@ -111,11 +111,11 @@ struct can_frame {
- 		 * was previously named can_dlc so we need to carry that
- 		 * name for legacy support
- 		 */
- 		__u8 len;
- 		__u8 can_dlc; /* deprecated */
--	};
-+	} __attribute__((packed)); /* disable padding by some compilers */
- 	__u8 __pad; /* padding */
- 	__u8 __res0; /* reserved / padding */
- 	__u8 len8_dlc; /* optional DLC for 8 byte payload length (9 .. 15) */
- 	__u8 data[CAN_MAX_DLEN] __attribute__((aligned(8)));
- };
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 0e5c37be4a2b..909b9e684e04 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -84,10 +84,12 @@
+ MODULE_DESCRIPTION("PF_CAN broadcast manager protocol");
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
+ MODULE_ALIAS("can-proto-2");
+ 
++#define BCM_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
++
+ /*
+  * easy access to the first 64 bit of can(fd)_frame payload. cp->data is
+  * 64 bit aligned so the offset has to be multiples of 8 which is ensured
+  * by the only callers in bcm_rx_cmp_to_index() bcm_rx_handler().
+  */
+@@ -1290,11 +1292,11 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 
+ 	if (!ifindex && msg->msg_name) {
+ 		/* no bound device as default => check msg_name */
+ 		DECLARE_SOCKADDR(struct sockaddr_can *, addr, msg->msg_name);
+ 
+-		if (msg->msg_namelen < CAN_REQUIRED_SIZE(*addr, can_ifindex))
++		if (msg->msg_namelen < BCM_MIN_NAMELEN)
+ 			return -EINVAL;
+ 
+ 		if (addr->can_family != AF_CAN)
+ 			return -EINVAL;
+ 
+@@ -1532,11 +1534,11 @@ static int bcm_connect(struct socket *sock, struct sockaddr *uaddr, int len,
+ 	struct sock *sk = sock->sk;
+ 	struct bcm_sock *bo = bcm_sk(sk);
+ 	struct net *net = sock_net(sk);
+ 	int ret = 0;
+ 
+-	if (len < CAN_REQUIRED_SIZE(*addr, can_ifindex))
++	if (len < BCM_MIN_NAMELEN)
+ 		return -EINVAL;
+ 
+ 	lock_sock(sk);
+ 
+ 	if (bo->bound) {
+@@ -1614,12 +1616,12 @@ static int bcm_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	}
+ 
+ 	sock_recv_ts_and_drops(msg, sk, skb);
+ 
+ 	if (msg->msg_name) {
+-		__sockaddr_check_size(sizeof(struct sockaddr_can));
+-		msg->msg_namelen = sizeof(struct sockaddr_can);
++		__sockaddr_check_size(BCM_MIN_NAMELEN);
++		msg->msg_namelen = BCM_MIN_NAMELEN;
+ 		memcpy(msg->msg_name, skb->cb, msg->msg_namelen);
+ 	}
+ 
+ 	skb_free_datagram(sk, skb);
+ 
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 37b47a39a3ed..139d9471ddcf 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -58,10 +58,12 @@
+ MODULE_DESCRIPTION("PF_CAN raw protocol");
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Urs Thuermann <urs.thuermann@volkswagen.de>");
+ MODULE_ALIAS("can-proto-1");
+ 
++#define RAW_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
++
+ #define MASK_ALL 0
+ 
+ /* A raw socket has a list of can_filters attached to it, each receiving
+  * the CAN frames matching that filter.  If the filter list is empty,
+  * no CAN frames will be received by the socket.  The default after
+@@ -392,11 +394,11 @@ static int raw_bind(struct socket *sock, struct sockaddr *uaddr, int len)
+ 	struct raw_sock *ro = raw_sk(sk);
+ 	int ifindex;
+ 	int err = 0;
+ 	int notify_enetdown = 0;
+ 
+-	if (len < CAN_REQUIRED_SIZE(*addr, can_ifindex))
++	if (len < RAW_MIN_NAMELEN)
+ 		return -EINVAL;
+ 	if (addr->can_family != AF_CAN)
+ 		return -EINVAL;
+ 
+ 	lock_sock(sk);
+@@ -473,15 +475,15 @@ static int raw_getname(struct socket *sock, struct sockaddr *uaddr,
+ 	struct raw_sock *ro = raw_sk(sk);
+ 
+ 	if (peer)
+ 		return -EOPNOTSUPP;
+ 
+-	memset(addr, 0, sizeof(*addr));
++	memset(addr, 0, RAW_MIN_NAMELEN);
+ 	addr->can_family  = AF_CAN;
+ 	addr->can_ifindex = ro->ifindex;
+ 
+-	return sizeof(*addr);
++	return RAW_MIN_NAMELEN;
+ }
+ 
+ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 			  sockptr_t optval, unsigned int optlen)
+ {
+@@ -737,11 +739,11 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	int err;
+ 
+ 	if (msg->msg_name) {
+ 		DECLARE_SOCKADDR(struct sockaddr_can *, addr, msg->msg_name);
+ 
+-		if (msg->msg_namelen < CAN_REQUIRED_SIZE(*addr, can_ifindex))
++		if (msg->msg_namelen < RAW_MIN_NAMELEN)
+ 			return -EINVAL;
+ 
+ 		if (addr->can_family != AF_CAN)
+ 			return -EINVAL;
+ 
+@@ -830,12 +832,12 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	}
+ 
+ 	sock_recv_ts_and_drops(msg, sk, skb);
+ 
+ 	if (msg->msg_name) {
+-		__sockaddr_check_size(sizeof(struct sockaddr_can));
+-		msg->msg_namelen = sizeof(struct sockaddr_can);
++		__sockaddr_check_size(RAW_MIN_NAMELEN);
++		msg->msg_namelen = RAW_MIN_NAMELEN;
+ 		memcpy(msg->msg_name, skb->cb, msg->msg_namelen);
+ 	}
+ 
+ 	/* assign the flags that have been recorded in raw_rcv() */
+ 	msg->msg_flags |= *(raw_flags(skb));
 -- 
 2.30.2
 
