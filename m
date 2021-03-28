@@ -2,233 +2,100 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E1E4C433E0
-	for <linux-can@archiver.kernel.org>; Thu, 25 Mar 2021 13:00:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 373C5C433F1
+	for <linux-can@archiver.kernel.org>; Sun, 28 Mar 2021 06:32:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 591B061A11
-	for <linux-can@archiver.kernel.org>; Thu, 25 Mar 2021 13:00:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 268C76191A
+	for <linux-can@archiver.kernel.org>; Sun, 28 Mar 2021 06:32:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhCYM7a (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 25 Mar 2021 08:59:30 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:23331 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbhCYM7Y (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 25 Mar 2021 08:59:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1616677155; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=ln/2VCb5g/oA+7ZeuVzvLKdrZ5RJNpEX0IBfZLIpUO9yAnIC2ZTguWVTdjiPHdmJF7
-    UB+phCVq7DUwh70DemhfIM7Q4Hbm3qCEkIZvNuewrUJHbB9ecZMW+uNVxJ8b9u2/Tc1Y
-    0NiGsTEPBmLMrLakrbj5K79oZhJg9EFkQyB7pAq6pUqiwu3w9oCBSmunqlT1o39zwojj
-    Q5CYYTnxQk+YItkpT4n0fJmOGk5EpNFA3GVNxh8oMCIFEbDVHrVFYIXRAQpI5dnbWJVk
-    eGYIXSYfO5gWfLkwT3eEFxXhJj91LBxnNFH0+vsz58aa7jmhdrjTb8ZsXo8+xdnKeHgY
-    kc0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616677155;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=9p53nm6HlAOy3B84ljTprAtSH3tTGr/W8Btxf3nVmkY=;
-    b=sF1w/lHlJ4v6HoaOgpG4w7spoLQZkbq7CbkVnpxTIjPC/i05NvXsvAzuIG1lDB5FgR
-    5e+Q+UTt0Bye0rU4sIIcX3gorQUrX+9qn2TRD/i9VMq5jgrY1AGn2j7A6TZBY8e0Onu0
-    9lxd+3g+gzYA+LoO+851ZeTvadAduv+0Xx+0bX7DtqK3Q0dAseFOACbQ1QHjolmAB510
-    LQylHzeWKfk1yA3m/t6DmrrlgPLbkGwqAqTPoHBHTjNaL6h9gFD0VFj/tW6kkRRd05FP
-    5R0UToGYo5b0u5fNiKQDq4C1flyudCnHCRSERSpS01iIX+rXzNyQlcPj6IycStOiqYmq
-    IG1g==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616677155;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=9p53nm6HlAOy3B84ljTprAtSH3tTGr/W8Btxf3nVmkY=;
-    b=b7i5TMY9orVyc055AmBv4xPKqGc+ucyoB80oN3hoIr9zkV4S5csLgYLj6BHahM0sjM
-    3YkiOLkyiqGm/2kYBrT8mRQIi0UndhHh3GlPYYTknjVk/qPgBtbb4n+BrB3IcaLLk2Vw
-    UXhp4uyGT+eRJJxLPyAbidyAzwUvgROvT9uzuPiTIOmPt6FG3ONCSzgGv/15jctFc7KK
-    p2l9N8/RkIF4hy6KI3SSJwtNZTCZKuiVGc9daE1vAkGfo6sQBTsdLcETf+GJ5MTV04nU
-    A5fBqY5MQHi21dSYfQq6RnqSRAtRA4noAAvfnCPhbS+/3rJdHS/mppZlXkp1xJkTZWRC
-    v25g==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0k+8CejuVLjM8tyWa"
-X-RZG-CLASS-ID: mo00
-Received: from silver.lan
-    by smtp.strato.de (RZmta 47.22.0 DYNA|AUTH)
-    with ESMTPSA id z00fabx2PCxF4Ch
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 25 Mar 2021 13:59:15 +0100 (CET)
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-To:     linux-can@vger.kernel.org
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Richard Weinberger <richard@nod.at>,
-        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: [PATCH 1/3] can: bcm/raw: fix msg_namelen values depending on CAN_REQUIRED_SIZE
-Date:   Thu, 25 Mar 2021 13:58:48 +0100
-Message-Id: <20210325125850.1620-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.30.2
+        id S231199AbhC1Gbz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 28 Mar 2021 02:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229997AbhC1Gb0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 28 Mar 2021 02:31:26 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB84CC061762
+        for <linux-can@vger.kernel.org>; Sat, 27 Mar 2021 23:31:25 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id o66so10300457ybg.10
+        for <linux-can@vger.kernel.org>; Sat, 27 Mar 2021 23:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=+qWYn1hSdRIVBHQHbWXIxh/qjNFpXHdieofhcKfb/ys=;
+        b=un5ugo9bupqrzZuaBDEbB786JWEzOQTNdwphXi4TOqH9iSP+44sC/hABKBkrd5PRtf
+         7jZx0pPsKeCWa97uNLMVrxcUbXHvpyoBn5oZYNAQFZsmvyS2liGWbAih8Qo/juVJGCzw
+         Y16g0hPbvSZtfV7CLm9ZaDSsZyOkcdd3roHlRv6xJ+OmFx8tEUguEZyn8zBrxBjk/HtR
+         dyf9+rh7TFsjL0A7AdpBP6TqBjy5+u/bfausEvolq7MwJ6du/43NJnkt8pCLIlzELbih
+         GgycRMRIUYRaoHxZdjTU6NIUvq0hWr2tRmOwwsRt0IOmTuJTvn2J9bkg0EKDwCYhtPNW
+         SqKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=+qWYn1hSdRIVBHQHbWXIxh/qjNFpXHdieofhcKfb/ys=;
+        b=eED9lnZoqx+CcZK7brYHwomgOntFioVDOFWfLW1hQK3ZuSZbRvMEkzIjV05TJ+s7Gt
+         fl//WnBM5hAR65qc/KC/WLnNndnBz5c0NaTi4RDHvjNcGAnMsc8ZXI1aBiymA2SCGUOn
+         5ywFrNGsNhwH00nVLCimHzaKStaKO+/QsKzNoqhYh59pw2foytqZs8Ckw5H0M6wnBgvv
+         mhff5HAfKfQbhq99D2p6HHH/fHtL0XEeLtVrxUGvt+3ogp+sg0zStjngwVBGQT/9OuXV
+         1Qd5kcKuoh++LGk3bBCeDNb35mROb3HF6J3nxtjkouzfHSzhwO48StSuTpjCwfAoYIh0
+         mI7A==
+X-Gm-Message-State: AOAM530b27uFJplnJMo2K47mA9/eqpbd6VqfdX2j6E8MCV693Njw4MOU
+        Ty3ldZ/AERFILB+U3r9ELOm5PgpeqzQWrZZu3I08cZUO2HkE+zAl
+X-Google-Smtp-Source: ABdhPJyH177l3kLMciSz+F2h7fE/2KJD26NzaPVAQcXeg491DZUuRqEA5sRQSzEZw5XltCBNgmf5XVS5jqjuvTMUPXU=
+X-Received: by 2002:a25:ae8c:: with SMTP id b12mr30625767ybj.173.1616913084786;
+ Sat, 27 Mar 2021 23:31:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Belisko Marek <marek.belisko@gmail.com>
+Date:   Sun, 28 Mar 2021 08:31:14 +0200
+Message-ID: <CAAfyv37vMxhN2B1uR5xUzZwVzAqrQOyPA6stWYj_5346xO0s3A@mail.gmail.com>
+Subject: m_can error/overrun frames on high speed
+To:     linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Since commit f5223e9eee65 ("can: extend sockaddr_can to include j1939
-members") the sockaddr_can has been extended in size and a new
-CAN_REQUIRED_SIZE macro has been introduced to calculate the protocol
-specific needed size.
+Hi,
 
-The ABI for the msg_name and msg_namelen has not been adapted to the
-new CAN_REQUIRED_SIZE macro for the other CAN protocols which leads
-to a problem when an existing binary reads the (increased)
-struct sockaddr_can in msg_name.
+I have a beaglebone based board and I'm performing some tests. I
+discovered that when set bitrate to 500k during replaying can file
+from PC to board ip detect 4-5 error/overrun frames. When comparing
+the original file with received one few lines in candump are missing.
+When decreased can speed to 125KB replaying the same file no
+error/overruns are detected and files are the same. I'm not can expert
+thus I'm asking for some advice on how to debug such phenomena. I'm
+using mainline 4.12 kernel which shows this symptom. I compared
+changes with the latest mainline kernel and there are few patches only
+which seems can influence can behavior (others are only cosmetical). I
+took :
 
-Fixes: f5223e9eee65 ("can: extend sockaddr_can to include j1939 members")
-Link: https://lore.kernel.org/linux-can/1135648123.112255.1616613706554.JavaMail.zimbra@nod.at/T/#t
-Reported-by: Richard Weinberger <richard@nod.at>
-Tested-by: Richard Weinberger <richard@nod.at>
-Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/bcm.c | 10 ++++++----
- net/can/raw.c | 14 ++++++++------
- 2 files changed, 14 insertions(+), 10 deletions(-)
+3cb3eaac52c0f145d895f4b6c22834d5f02b8569 - can: c_can: c_can_poll():
+only read status register after status IRQ
+23c5a9488f076bab336177cd1d1a366bd8ddf087 - can: c_can: D_CAN:
+c_can_chip_config(): perform a sofware reset on open
+6f12001ad5e79d0a0b08c599731d45c34cafd376 - can: c_can: C_CAN: add bus
+recovery events
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 0e5c37be4a2b..909b9e684e04 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -84,10 +84,12 @@
- MODULE_DESCRIPTION("PF_CAN broadcast manager protocol");
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
- MODULE_ALIAS("can-proto-2");
- 
-+#define BCM_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
-+
- /*
-  * easy access to the first 64 bit of can(fd)_frame payload. cp->data is
-  * 64 bit aligned so the offset has to be multiples of 8 which is ensured
-  * by the only callers in bcm_rx_cmp_to_index() bcm_rx_handler().
-  */
-@@ -1290,11 +1292,11 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 
- 	if (!ifindex && msg->msg_name) {
- 		/* no bound device as default => check msg_name */
- 		DECLARE_SOCKADDR(struct sockaddr_can *, addr, msg->msg_name);
- 
--		if (msg->msg_namelen < CAN_REQUIRED_SIZE(*addr, can_ifindex))
-+		if (msg->msg_namelen < BCM_MIN_NAMELEN)
- 			return -EINVAL;
- 
- 		if (addr->can_family != AF_CAN)
- 			return -EINVAL;
- 
-@@ -1532,11 +1534,11 @@ static int bcm_connect(struct socket *sock, struct sockaddr *uaddr, int len,
- 	struct sock *sk = sock->sk;
- 	struct bcm_sock *bo = bcm_sk(sk);
- 	struct net *net = sock_net(sk);
- 	int ret = 0;
- 
--	if (len < CAN_REQUIRED_SIZE(*addr, can_ifindex))
-+	if (len < BCM_MIN_NAMELEN)
- 		return -EINVAL;
- 
- 	lock_sock(sk);
- 
- 	if (bo->bound) {
-@@ -1614,12 +1616,12 @@ static int bcm_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	}
- 
- 	sock_recv_ts_and_drops(msg, sk, skb);
- 
- 	if (msg->msg_name) {
--		__sockaddr_check_size(sizeof(struct sockaddr_can));
--		msg->msg_namelen = sizeof(struct sockaddr_can);
-+		__sockaddr_check_size(BCM_MIN_NAMELEN);
-+		msg->msg_namelen = BCM_MIN_NAMELEN;
- 		memcpy(msg->msg_name, skb->cb, msg->msg_namelen);
- 	}
- 
- 	skb_free_datagram(sk, skb);
- 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 37b47a39a3ed..139d9471ddcf 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -58,10 +58,12 @@
- MODULE_DESCRIPTION("PF_CAN raw protocol");
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_AUTHOR("Urs Thuermann <urs.thuermann@volkswagen.de>");
- MODULE_ALIAS("can-proto-1");
- 
-+#define RAW_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
-+
- #define MASK_ALL 0
- 
- /* A raw socket has a list of can_filters attached to it, each receiving
-  * the CAN frames matching that filter.  If the filter list is empty,
-  * no CAN frames will be received by the socket.  The default after
-@@ -392,11 +394,11 @@ static int raw_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 	struct raw_sock *ro = raw_sk(sk);
- 	int ifindex;
- 	int err = 0;
- 	int notify_enetdown = 0;
- 
--	if (len < CAN_REQUIRED_SIZE(*addr, can_ifindex))
-+	if (len < RAW_MIN_NAMELEN)
- 		return -EINVAL;
- 	if (addr->can_family != AF_CAN)
- 		return -EINVAL;
- 
- 	lock_sock(sk);
-@@ -473,15 +475,15 @@ static int raw_getname(struct socket *sock, struct sockaddr *uaddr,
- 	struct raw_sock *ro = raw_sk(sk);
- 
- 	if (peer)
- 		return -EOPNOTSUPP;
- 
--	memset(addr, 0, sizeof(*addr));
-+	memset(addr, 0, RAW_MIN_NAMELEN);
- 	addr->can_family  = AF_CAN;
- 	addr->can_ifindex = ro->ifindex;
- 
--	return sizeof(*addr);
-+	return RAW_MIN_NAMELEN;
- }
- 
- static int raw_setsockopt(struct socket *sock, int level, int optname,
- 			  sockptr_t optval, unsigned int optlen)
- {
-@@ -737,11 +739,11 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	int err;
- 
- 	if (msg->msg_name) {
- 		DECLARE_SOCKADDR(struct sockaddr_can *, addr, msg->msg_name);
- 
--		if (msg->msg_namelen < CAN_REQUIRED_SIZE(*addr, can_ifindex))
-+		if (msg->msg_namelen < RAW_MIN_NAMELEN)
- 			return -EINVAL;
- 
- 		if (addr->can_family != AF_CAN)
- 			return -EINVAL;
- 
-@@ -830,12 +832,12 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	}
- 
- 	sock_recv_ts_and_drops(msg, sk, skb);
- 
- 	if (msg->msg_name) {
--		__sockaddr_check_size(sizeof(struct sockaddr_can));
--		msg->msg_namelen = sizeof(struct sockaddr_can);
-+		__sockaddr_check_size(RAW_MIN_NAMELEN);
-+		msg->msg_namelen = RAW_MIN_NAMELEN;
- 		memcpy(msg->msg_name, skb->cb, msg->msg_namelen);
- 	}
- 
- 	/* assign the flags that have been recorded in raw_rcv() */
- 	msg->msg_flags |= *(raw_flags(skb));
+I know most of the answers for such issues is to try latest kernel
+(i'm in process trying 5.10).
+
+Thanks and BR,
+
+marek
+
 -- 
-2.30.2
+as simple and primitive as possible
+-------------------------------------------------
+Marek Belisko - OPEN-NANDRA
+Freelance Developer
 
+Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
+Tel: +421 915 052 184
+skype: marekwhite
+twitter: #opennandra
+web: http://open-nandra.com
