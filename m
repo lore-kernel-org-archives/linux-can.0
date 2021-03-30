@@ -7,46 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2823C433F8
-	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 648F4C4345F
+	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9035561998
-	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A80D61921
+	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhC3LrG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 30 Mar 2021 07:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
+        id S232111AbhC3LrK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 30 Mar 2021 07:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232014AbhC3Lqq (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 30 Mar 2021 07:46:46 -0400
+        with ESMTP id S232036AbhC3Lqv (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 30 Mar 2021 07:46:51 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A078C061764
-        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 04:46:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1910AC0613D8
+        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 04:46:51 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lRCpZ-0006Y6-27
-        for linux-can@vger.kernel.org; Tue, 30 Mar 2021 13:46:45 +0200
+        id 1lRCpd-0006br-K3
+        for linux-can@vger.kernel.org; Tue, 30 Mar 2021 13:46:49 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 7CF45603ECC
-        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 11:46:28 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id A2B41603F10
+        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 11:46:36 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E5833603E40;
-        Tue, 30 Mar 2021 11:46:13 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id B0FEE603E53;
+        Tue, 30 Mar 2021 11:46:15 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0060f3d9;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 06abeaef;
         Tue, 30 Mar 2021 11:46:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 29/39] can: c_can: remove unnecessary blank lines and add suggested ones
-Date:   Tue, 30 Mar 2021 13:45:49 +0200
-Message-Id: <20210330114559.1114855-30-mkl@pengutronix.de>
+        kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-next 34/39] can: c_can: remove unused code
+Date:   Tue, 30 Mar 2021 13:45:54 +0200
+Message-Id: <20210330114559.1114855-35-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210330114559.1114855-1-mkl@pengutronix.de>
 References: <20210330114559.1114855-1-mkl@pengutronix.de>
@@ -60,48 +61,54 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch removes unnecessary blank lines and add suggested ones, so
-that checkpatch doesn't complain anymore.
+From: Dario Binacchi <dariobin@libero.it>
 
-Link: https://lore.kernel.org/r/20210304154240.2747987-3-mkl@pengutronix.de
+Commit 9d23a9818cb1 ("can: c_can: Remove unused inline function") left
+behind C_CAN_MSG_OBJ_TX_LAST constant.
+
+Commit fa39b54ccf28 ("can: c_can: Get rid of pointless interrupts") left
+behind C_CAN_MSG_RX_LOW_LAST and C_CAN_MSG_OBJ_RX_SPLIT constants.
+
+The removed code also made a comment useless and misleading.
+
+Link: https://lore.kernel.org/r/20210302215435.18286-2-dariobin@libero.it
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c     | 2 --
- drivers/net/can/c_can/c_can_pci.c | 1 +
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/can/c_can/c_can.c | 3 +--
+ drivers/net/can/c_can/c_can.h | 4 ----
+ 2 files changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 6629951e4935..cb0707a899d5 100644
+index eeef1f7b53c7..b31c3beddec8 100644
 --- a/drivers/net/can/c_can/c_can.c
 +++ b/drivers/net/can/c_can/c_can.c
-@@ -132,7 +132,6 @@
- /* For the high buffers we clear the interrupt bit and newdat */
- #define IF_COMM_RCV_HIGH	(IF_COMM_RCV_LOW | IF_COMM_CLR_NEWDAT)
+@@ -822,8 +822,7 @@ static inline u32 c_can_get_pending(struct c_can_priv *priv)
+  * c_can core saves a received CAN message into the first free message
+  * object it finds free (starting with the lowest). Bits NEWDAT and
+  * INTPND are set for this message object indicating that a new message
+- * has arrived. To work-around this issue, we keep two groups of message
+- * objects whose partitioning is defined by C_CAN_MSG_OBJ_RX_SPLIT.
++ * has arrived.
+  *
+  * We clear the newdat bit right away.
+  *
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 3d07285e46c1..7a7d3fb4b1c3 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -32,11 +32,7 @@
+ 				C_CAN_MSG_OBJ_RX_NUM - 1)
  
--
- /* Receive setup of message objects */
- #define IF_COMM_RCV_SETUP	(IF_COMM_MASK | IF_COMM_ARB | IF_COMM_CONTROL)
+ #define C_CAN_MSG_OBJ_TX_FIRST	(C_CAN_MSG_OBJ_RX_LAST + 1)
+-#define C_CAN_MSG_OBJ_TX_LAST	(C_CAN_MSG_OBJ_TX_FIRST + \
+-				C_CAN_MSG_OBJ_TX_NUM - 1)
  
-@@ -250,7 +249,6 @@ static void c_can_obj_update(struct net_device *dev, int iface, u32 cmd, u32 obj
- 		udelay(1);
- 	}
- 	netdev_err(dev, "Updating object timed out\n");
--
- }
+-#define C_CAN_MSG_OBJ_RX_SPLIT	9
+-#define C_CAN_MSG_RX_LOW_LAST	(C_CAN_MSG_OBJ_RX_SPLIT - 1)
+ #define RECEIVE_OBJECT_BITS	0x0000ffff
  
- static inline void c_can_object_get(struct net_device *dev, int iface,
-diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
-index 9d7a4a335249..35a914e70cc9 100644
---- a/drivers/net/can/c_can/c_can_pci.c
-+++ b/drivers/net/can/c_can/c_can_pci.c
-@@ -278,6 +278,7 @@ static const struct pci_device_id c_can_pci_tbl[] = {
- 		 c_can_pch),
- 	{},
- };
-+
- static struct pci_driver c_can_pci_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = c_can_pci_tbl,
+ enum reg {
 -- 
 2.30.2
 
