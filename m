@@ -7,48 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7467C433ED
-	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71760C433E0
+	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 849EC61921
-	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E7EA61987
+	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhC3LrD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 30 Mar 2021 07:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
+        id S232010AbhC3LrG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 30 Mar 2021 07:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231987AbhC3Lqi (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 30 Mar 2021 07:46:38 -0400
+        with ESMTP id S232013AbhC3Lqq (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 30 Mar 2021 07:46:46 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4C0C061764
-        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 04:46:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3184C061762
+        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 04:46:45 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lRCpQ-0006G4-2d
-        for linux-can@vger.kernel.org; Tue, 30 Mar 2021 13:46:36 +0200
+        id 1lRCpY-0006Xd-A1
+        for linux-can@vger.kernel.org; Tue, 30 Mar 2021 13:46:44 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 650B0603E81
-        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 11:46:20 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 097A2603EC6
+        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 11:46:26 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 10EF0603E13;
-        Tue, 30 Mar 2021 11:46:09 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 45762603E1E;
+        Tue, 30 Mar 2021 11:46:10 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9abfcafd;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e74b9963;
         Tue, 30 Mar 2021 11:46:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
+        kernel@pengutronix.de, Wan Jiabing <wanjiabing@vivo.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 19/39] can: m_can: m_can_chip_config(): enable and configure internal timestamps
-Date:   Tue, 30 Mar 2021 13:45:39 +0200
-Message-Id: <20210330114559.1114855-20-mkl@pengutronix.de>
+Subject: [net-next 21/39] can: tcan4x5x: remove duplicate include of regmap.h
+Date:   Tue, 30 Mar 2021 13:45:41 +0200
+Message-Id: <20210330114559.1114855-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210330114559.1114855-1-mkl@pengutronix.de>
 References: <20210330114559.1114855-1-mkl@pengutronix.de>
@@ -62,47 +61,31 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+From: Wan Jiabing <wanjiabing@vivo.com>
 
-This is a prerequisite for transitioning the m_can driver to rx-offload,
-which works best with TX and RX timestamps.
+linux/regmap.h has been included at line 13, so remove the duplicate
+one at line 14.
 
-The timestamps provided by M_CAN are 16-bit, timed according to the
-nominal bit timing, and may be prescaled by a multiplier up to 16. We
-choose the highest prescalar so that the timestamp wraps every 2^20 bit
-times, or 209 ms at a bus speed of 5 Mbit/s. Timestamps will have a
-precision of 16 bit times.
-
-Link: https://lore.kernel.org/r/20210308102427.63916-3-torin@maxiluxsystems.com
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+Fixes: 67def4ef8bb9 ("can: tcan4x5x: move regmap code into seperate file")
+Link: https://lore.kernel.org/r/20210323021026.140460-1-wanjiabing@vivo.com
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/can/m_can/tcan4x5x.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 9f7cfe91f7ff..7df81e38b043 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1135,6 +1135,7 @@ static int m_can_set_bittiming(struct net_device *dev)
-  *		- >= v3.1.x: TX FIFO is used
-  * - configure mode
-  * - setup bittiming
-+ * - configure timestamp generation
-  */
- static void m_can_chip_config(struct net_device *dev)
- {
-@@ -1246,6 +1247,10 @@ static void m_can_chip_config(struct net_device *dev)
- 	/* set bittiming params */
- 	m_can_set_bittiming(dev);
+diff --git a/drivers/net/can/m_can/tcan4x5x.h b/drivers/net/can/m_can/tcan4x5x.h
+index c66da829b795..e62c030d3e1e 100644
+--- a/drivers/net/can/m_can/tcan4x5x.h
++++ b/drivers/net/can/m_can/tcan4x5x.h
+@@ -11,7 +11,6 @@
  
-+	/* enable internal timestamp generation, with a prescalar of 16. The
-+	 * prescalar is applied to the nominal bit timing */
-+	m_can_write(cdev, M_CAN_TSCC, FIELD_PREP(TSCC_TCP_MASK, 0xf));
-+
- 	m_can_config_endisable(cdev, false);
+ #include <linux/gpio/consumer.h>
+ #include <linux/regmap.h>
+-#include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/spi/spi.h>
  
- 	if (cdev->ops->init)
 -- 
 2.30.2
 
