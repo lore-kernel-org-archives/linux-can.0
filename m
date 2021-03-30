@@ -2,51 +2,52 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0081DC433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D08DC433E2
 	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:46:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C7D4F61959
-	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:46:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2762461998
+	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:46:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhC3LqX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 30 Mar 2021 07:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
+        id S231912AbhC3LqW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 30 Mar 2021 07:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhC3LqJ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 30 Mar 2021 07:46:09 -0400
+        with ESMTP id S231794AbhC3LqG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 30 Mar 2021 07:46:06 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0154C061574
-        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 04:46:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B342FC061574
+        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 04:46:06 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lRCox-0005aQ-Ff
-        for linux-can@vger.kernel.org; Tue, 30 Mar 2021 13:46:07 +0200
+        id 1lRCov-0005Wq-8E
+        for linux-can@vger.kernel.org; Tue, 30 Mar 2021 13:46:05 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 27AC6603DE2
-        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 11:46:04 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9732B603DD2
+        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 11:46:02 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 34DC0603DC3;
-        Tue, 30 Mar 2021 11:46:01 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C628B603DBF;
+        Tue, 30 Mar 2021 11:46:00 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1a1f9727;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id fa83cb28;
         Tue, 30 Mar 2021 11:46:00 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 03/39] can: dev: always create TX echo skb
-Date:   Tue, 30 Mar 2021 13:45:23 +0200
-Message-Id: <20210330114559.1114855-4-mkl@pengutronix.de>
+Subject: [net-next 01/39] MAINTAINERS: remove Dan Murphy from m_can and tcan4x5x
+Date:   Tue, 30 Mar 2021 13:45:21 +0200
+Message-Id: <20210330114559.1114855-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210330114559.1114855-1-mkl@pengutronix.de>
 References: <20210330114559.1114855-1-mkl@pengutronix.de>
@@ -60,72 +61,48 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-So far the creation of the TX echo skb was optional and can be
-controlled by the local sender of a CAN frame.
+Dan Murphy's email address at ti.com doesn't work anymore, mails
+bounce with:
 
-It turns out that the TX echo CAN skb can be piggybacked to carry
-information in the driver from the TX- to the TX-complete handler.
+| 550 Invalid recipient <dmurphy@ti.com> (#5.1.1)
 
-Several drivers already use the return value of
-can_get_echo_skb() (which is the length of the data field in the CAN
-frame) for their number of transferred bytes statistics. The
-statistics are not working if CAN echo skbs are disabled.
+For now remove all CAN related entries of Dan from the Maintainers
+file.
 
-Another use case is to calculate and set the CAN frame length on the
-wire, which is needed for BQL support in both the TX and TX-completion
-handler.
-
-For now in can_put_echo_skb(), which is called from the TX handler,
-the skb carrying the CAN frame is discarded if no TX echo is
-requested, leading to the above illustrated problems.
-
-This patch changes the can_put_echo_skb() function, so that the echo
-skb is always generated. If the sender requests no echo, the echo skb
-is consumed in __can_get_echo_skb() without being passed into the RX
-handler of the networking stack, but the CAN data length and CAN frame
-length information is properly returned.
-
-Link: https://lore.kernel.org/r/20210309211904.3348700-1-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20210228094218.40015-1-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/skb.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ MAINTAINERS | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 6a64fe410987..22b0472a5fad 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -45,7 +45,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	BUG_ON(idx >= priv->echo_skb_max);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 11177892c373..45c400e9d5fc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10910,7 +10910,6 @@ T:	git git://linuxtv.org/media_tree.git
+ F:	drivers/media/radio/radio-maxiradio*
  
- 	/* check flag whether this packet has to be looped back */
--	if (!(dev->flags & IFF_ECHO) || skb->pkt_type != PACKET_LOOPBACK ||
-+	if (!(dev->flags & IFF_ECHO) ||
- 	    (skb->protocol != htons(ETH_P_CAN) &&
- 	     skb->protocol != htons(ETH_P_CANFD))) {
- 		kfree_skb(skb);
-@@ -58,7 +58,6 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 			return -ENOMEM;
+ MCAN MMIO DEVICE DRIVER
+-M:	Dan Murphy <dmurphy@ti.com>
+ M:	Pankaj Sharma <pankj.sharma@samsung.com>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+@@ -17983,13 +17982,6 @@ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ S:	Odd Fixes
+ F:	sound/soc/codecs/tas571x*
  
- 		/* make settings for echo to reduce code in irq context */
--		skb->pkt_type = PACKET_BROADCAST;
- 		skb->ip_summed = CHECKSUM_UNNECESSARY;
- 		skb->dev = dev;
- 
-@@ -111,6 +110,13 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr,
- 
- 		priv->echo_skb[idx] = NULL;
- 
-+		if (skb->pkt_type == PACKET_LOOPBACK) {
-+			skb->pkt_type = PACKET_BROADCAST;
-+		} else {
-+			dev_consume_skb_any(skb);
-+			return NULL;
-+		}
-+
- 		return skb;
- 	}
- 
+-TI TCAN4X5X DEVICE DRIVER
+-M:	Dan Murphy <dmurphy@ti.com>
+-L:	linux-can@vger.kernel.org
+-S:	Maintained
+-F:	Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+-F:	drivers/net/can/m_can/tcan4x5x*
+-
+ TI TRF7970A NFC DRIVER
+ M:	Mark Greer <mgreer@animalcreek.com>
+ L:	linux-wireless@vger.kernel.org
+
+base-commit: d0922bf7981799fd86e248de330fb4152399d6c2
 -- 
 2.30.2
 
