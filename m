@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39C58C433E9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C178C433EB
 	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 170A661921
+	by mail.kernel.org (Postfix) with ESMTP id 38370619AA
 	for <linux-can@archiver.kernel.org>; Tue, 30 Mar 2021 11:47:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbhC3LrC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 30 Mar 2021 07:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38154 "EHLO
+        id S232053AbhC3LrB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 30 Mar 2021 07:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231983AbhC3Lqg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 30 Mar 2021 07:46:36 -0400
+        with ESMTP id S231977AbhC3Lqf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 30 Mar 2021 07:46:35 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB92C061762
-        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 04:46:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD187C061574
+        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 04:46:33 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lRCpO-0006EM-AW
-        for linux-can@vger.kernel.org; Tue, 30 Mar 2021 13:46:34 +0200
+        id 1lRCpM-0006Dg-B3
+        for linux-can@vger.kernel.org; Tue, 30 Mar 2021 13:46:32 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DBC6D603E78
-        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 11:46:19 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 225AE603E6A
+        for <linux-can@vger.kernel.org>; Tue, 30 Mar 2021 11:46:18 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 10BCC603E12;
-        Tue, 30 Mar 2021 11:46:09 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 95872603E05;
+        Tue, 30 Mar 2021 11:46:08 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a153314c;
-        Tue, 30 Mar 2021 11:46:01 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8803bc0b;
+        Tue, 30 Mar 2021 11:46:00 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 18/39] can: m_can: add infrastructure for internal timestamps
-Date:   Tue, 30 Mar 2021 13:45:38 +0200
-Message-Id: <20210330114559.1114855-19-mkl@pengutronix.de>
+Subject: [net-next 16/39] can: peak_usb: add support of ONE_SHOT mode
+Date:   Tue, 30 Mar 2021 13:45:36 +0200
+Message-Id: <20210330114559.1114855-17-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210330114559.1114855-1-mkl@pengutronix.de>
 References: <20210330114559.1114855-1-mkl@pengutronix.de>
@@ -62,84 +62,108 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Add infrastucture to allow internal timestamps from the M_CAN to be
-configured and retrieved.
+This patch adds "ONE-SHOT" mode support to the following CAN-USB
+PEAK-System GmbH interfaces:
+- PCAN-USB X6
+- PCAN-USB FD
+- PCAN-USB Pro FD
+- PCAN-Chip USB
+- PCAN-USB Pro
 
-Link: https://lore.kernel.org/r/20210308102427.63916-2-torin@maxiluxsystems.com
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+[mkl: split into two patches]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c  | 12 ++++++++----
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c |  8 +++++++-
+ 2 files changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 12a75ebe9ce1..9f7cfe91f7ff 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -8,6 +8,7 @@
-  * https://github.com/linux-can/can-doc/tree/master/m_can
-  */
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index b3e56ee03cd5..6f62b6f51051 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -774,6 +774,10 @@ static int pcan_usb_fd_encode_msg(struct peak_usb_device *dev,
+ 			tx_msg_flags |= PUCAN_MSG_RTR;
+ 	}
  
-+#include <linux/bitfield.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-@@ -148,6 +149,16 @@ enum m_can_reg {
- #define NBTP_NTSEG2_SHIFT	0
- #define NBTP_NTSEG2_MASK	(0x7f << NBTP_NTSEG2_SHIFT)
++	/* Single-Shot frame */
++	if (dev->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
++		tx_msg_flags |= PUCAN_MSG_SINGLE_SHOT;
++
+ 	tx_msg->flags = cpu_to_le16(tx_msg_flags);
+ 	tx_msg->channel_dlc = PUCAN_MSG_CHANNEL_DLC(dev->ctrl_idx, dlc);
+ 	memcpy(tx_msg->d, cfd->data, cfd->len);
+@@ -1063,7 +1067,7 @@ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			CAN_CTRLMODE_CC_LEN8_DLC,
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+@@ -1138,7 +1142,7 @@ const struct peak_usb_adapter pcan_usb_chip = {
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 		CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-		CAN_CTRLMODE_CC_LEN8_DLC,
++		CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+@@ -1213,7 +1217,7 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			CAN_CTRLMODE_CC_LEN8_DLC,
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+@@ -1288,7 +1292,7 @@ const struct peak_usb_adapter pcan_usb_x6 = {
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			CAN_CTRLMODE_CC_LEN8_DLC,
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+index b314d2eaaece..2d1b645af76c 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+@@ -37,6 +37,7 @@
  
-+/* Timestamp Counter Configuration Register (TSCC) */
-+#define TSCC_TCP_MASK		GENMASK(19, 16)
-+#define TSCC_TSS_MASK		GENMASK(1, 0)
-+#define TSCC_TSS_DISABLE	0x0
-+#define TSCC_TSS_INTERNAL	0x1
-+#define TSCC_TSS_EXTERNAL	0x2
-+
-+/* Timestamp Counter Value Register (TSCV) */
-+#define TSCV_TSC_MASK		GENMASK(15, 0)
-+
- /* Error Counter Register(ECR) */
- #define ECR_RP			BIT(15)
- #define ECR_REC_SHIFT		8
-@@ -302,6 +313,7 @@ enum m_can_reg {
- #define RX_BUF_ANMF		BIT(31)
- #define RX_BUF_FDF		BIT(21)
- #define RX_BUF_BRS		BIT(20)
-+#define RX_BUF_RXTS_MASK	GENMASK(15, 0)
+ #define PCAN_USBPRO_RTR			0x01
+ #define PCAN_USBPRO_EXT			0x02
++#define PCAN_USBPRO_SS			0x08
  
- /* Tx Buffer Element */
- /* T0 */
-@@ -319,6 +331,7 @@ enum m_can_reg {
- /* E1 */
- #define TX_EVENT_MM_SHIFT	TX_BUF_MM_SHIFT
- #define TX_EVENT_MM_MASK	(0xff << TX_EVENT_MM_SHIFT)
-+#define TX_EVENT_TXTS_MASK	GENMASK(15, 0)
+ #define PCAN_USBPRO_CMD_BUFFER_SIZE	512
  
- static inline u32 m_can_read(struct m_can_classdev *cdev, enum m_can_reg reg)
- {
-@@ -413,6 +426,20 @@ static inline void m_can_disable_all_interrupts(struct m_can_classdev *cdev)
- 	m_can_write(cdev, M_CAN_ILE, 0x0);
- }
+@@ -781,6 +782,10 @@ static int pcan_usb_pro_encode_msg(struct peak_usb_device *dev,
+ 	if (cf->can_id & CAN_RTR_FLAG)
+ 		flags |= PCAN_USBPRO_RTR;
  
-+/* Retrieve internal timestamp counter from TSCV.TSC, and shift it to 32-bit
-+ * width.
-+ */
-+static u32 m_can_get_timestamp(struct m_can_classdev *cdev)
-+{
-+	u32 tscv;
-+	u32 tsc;
++	/* Single-Shot frame */
++	if (dev->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
++		flags |= PCAN_USBPRO_SS;
 +
-+	tscv = m_can_read(cdev, M_CAN_TSCV);
-+	tsc = FIELD_GET(TSCV_TSC_MASK, tscv);
-+
-+	return (tsc << 16);
-+}
-+
- static void m_can_clean(struct net_device *net)
- {
- 	struct m_can_classdev *cdev = netdev_priv(net);
+ 	pcan_msg_add_rec(&usb_msg, data_type, 0, flags, len, cf->can_id,
+ 			 cf->data);
+ 
+@@ -1039,7 +1044,8 @@ const struct peak_usb_adapter pcan_usb_pro = {
+ 	.name = "PCAN-USB Pro",
+ 	.device_id = PCAN_USBPRO_PRODUCT_ID,
+ 	.ctrl_count = PCAN_USBPRO_CHANNEL_COUNT,
+-	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY,
++	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
++			      CAN_CTRLMODE_ONE_SHOT,
+ 	.clock = {
+ 		.freq = PCAN_USBPRO_CRYSTAL_HZ,
+ 	},
 -- 
 2.30.2
 
