@@ -2,155 +2,151 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 300ECC433ED
-	for <linux-can@archiver.kernel.org>; Fri,  2 Apr 2021 13:02:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95B55C433B4
+	for <linux-can@archiver.kernel.org>; Thu,  1 Apr 2021 07:50:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E73016113D
-	for <linux-can@archiver.kernel.org>; Fri,  2 Apr 2021 13:02:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 55D566105A
+	for <linux-can@archiver.kernel.org>; Thu,  1 Apr 2021 07:50:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235285AbhDBNCY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 2 Apr 2021 09:02:24 -0400
-Received: from mail-yb1-f179.google.com ([209.85.219.179]:46841 "EHLO
-        mail-yb1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235204AbhDBNCY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 2 Apr 2021 09:02:24 -0400
-Received: by mail-yb1-f179.google.com with SMTP id 8so5017057ybc.13
-        for <linux-can@vger.kernel.org>; Fri, 02 Apr 2021 06:02:21 -0700 (PDT)
+        id S233490AbhDAHtq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 1 Apr 2021 03:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233227AbhDAHt1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Apr 2021 03:49:27 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E45C0613E6
+        for <linux-can@vger.kernel.org>; Thu,  1 Apr 2021 00:49:26 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lRs4z-000216-Cf
+        for linux-can@vger.kernel.org; Thu, 01 Apr 2021 09:49:25 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:3432:3a72:abbc:cd9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id BC230605872
+        for <linux-can@vger.kernel.org>; Thu,  1 Apr 2021 07:49:24 +0000 (UTC)
+Received: from bjornoya.blackshift.org
+        by bjornoya with LMTP
+        id LtEOMtXwZGAlLAAAs6a69A
+        (envelope-from <keescook@chromium.org>)
+        for <mkl-all@blackshift.org>; Wed, 31 Mar 2021 21:59:49 +0000
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9E727605398
+        for <mkl-all@blackshift.org>; Wed, 31 Mar 2021 21:59:49 +0000 (UTC)
+Received: from metis.ext.pengutronix.de (unknown [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 64C9B605397
+        for <ptx@kleine-budde.de>; Wed, 31 Mar 2021 21:59:49 +0000 (UTC)
+Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <keescook@chromium.org>)
+        id 1lRisN-0000Cp-0M
+        for mkl@pengutronix.de; Wed, 31 Mar 2021 23:59:47 +0200
+Received: by mail-pl1-x631.google.com with SMTP id f17so8612993plr.0
+        for <mkl@pengutronix.de>; Wed, 31 Mar 2021 14:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=o6cVP/Hyd+IJoAbbWeUqu70F8kY7jqZxnvxhQO4a7+E=;
+        b=J12K7YicqdLYYU1F6pb1bg/UgvJ7wVtUVaqnUZqNXzT3MDNvZFWYxPyUemdEjMP8TA
+         37Eah0fGI9crTuDJcKy7d4P3t4tK3iWzt4N/ZyyEwBfCP3urj8Zbc3LgQMpox8SdqLqb
+         FP6E1XWz+T84zJTnqc3APgoEcBgA4oSqjA+98=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FIg0i6CmYh4n4awmgUOl25efgfB/lH0FnDU+1uIse9A=;
-        b=XgNXSj7V4qgdYDBmvOdorKa48vkxhGeqCe4Jh4Ip360ndL/ghLluo+w2FQrkUNGy9M
-         r7ve1fVyxw6+qdyL/C5K2L83D8epUUfU70GQ1TLTvN2nvPeT8aXQGLqlJnkSWD0i9Qvo
-         HtH3Q1uhJgvwsDBI+ZQuu7NEvLArnOc3qL9H6QWZkaso6AQbsLaB3QRVAuCqGYmvFaQz
-         E20U8IKolXrRolqsTg2wplZ8gtffnXlITO1w0p7fZscNQ9dxvqmRXMR6eqx6ySzl8brJ
-         OONSdpx2XwAzelhaWVlFok3101cJ70NTuXSckn7OC5IsSMyNVLKyynitlp5B0/Wq4YsS
-         5mwg==
-X-Gm-Message-State: AOAM532DMgr18wqoX2fXy7q+wlFF4u5xK/D7sqfnf08L0T2i7ehO6ZuY
-        t1nFgcEsM6HAZAvr4ok395akp7VSfeHkVYFr3hg=
-X-Google-Smtp-Source: ABdhPJxFlNOVjUvC+qwxWxtDTQtZlBs5UwHbNsQUZpOSCwnv7F0OlItO7iTh35G/PacVl25wKqDcVU+5AF6Zff+Mo20=
-X-Received: by 2002:a25:7a02:: with SMTP id v2mr17763881ybc.514.1617368541407;
- Fri, 02 Apr 2021 06:02:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210321104103.213308-1-mailhol.vincent@wanadoo.fr>
- <20210321104103.213308-2-mailhol.vincent@wanadoo.fr> <20210329123636.5xrgzdxyt54y7coe@pengutronix.de>
- <CAMZ6RqKeEoNGN0iZUfEG8x=FMHu4d2ZE=0QPiOxSXTrXFjg9rg@mail.gmail.com> <20210402104735.ucv6it3pk4ze4umy@pengutronix.de>
-In-Reply-To: <20210402104735.ucv6it3pk4ze4umy@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Fri, 2 Apr 2021 22:02:10 +0900
-Message-ID: <CAMZ6RqKM8FBwNMxnO-D6zTCs32Fc-KB=8+7O2wtDH=hcoTVX6g@mail.gmail.com>
-Subject: Re: [PATCH v14 1/4] can: etas_es58x: add core support for ETAS ES58X
- CAN USB interfaces
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=o6cVP/Hyd+IJoAbbWeUqu70F8kY7jqZxnvxhQO4a7+E=;
+        b=diUw2dTYxguvfgM7LxjIBsQ3eRcAU/+o1lU6kqbET+SN1wv3xeEGdJk4OrFd41D/HA
+         XkRh1krpY8I+4TXI4TugNeW1/NY1zcbWYA0O2fBZgCxRmliJpgwDVATohE6IMMahSLdf
+         2CrM2iBKWrqmswzkS/gjF9/gZoxfyGDY2IXLHHAj8NW6uSuz8kBwG7s/Scp+s0zsNOvW
+         C+idK8cttUlg5ESlTkJfVukwT/44agBJMu477GDSosm7w3UwuAnKz9y8TkfHL6N+9cyo
+         RNS6Zjb4EL52TbKzJ7uc6nVxoTTZIa4t26+E6OzpfssVpNZ3gj6NXw3QNbJNLptBBIVE
+         4uzQ==
+X-Gm-Message-State: AOAM533w/6urHEPIYsbErUlmr1B4tECvMtNUE31AkoBOzaRPJTbkpuQE
+        kTS1ghD2c/AsnbtseoGV+UofRQ==
+X-Google-Smtp-Source: ABdhPJw3IAweAz7FWYovvvotd5+zDf41UIjG/njGExPOfV4vCqAqmICRiktNQOJv4aLP+csI3Ckkxw==
+X-Received: by 2002:a17:90a:d58a:: with SMTP id v10mr5613036pju.36.1617227985157;
+        Wed, 31 Mar 2021 14:59:45 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 11sm3393600pfn.146.2021.03.31.14.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 14:59:44 -0700 (PDT)
+From:   coverity-bot <keescook@chromium.org>
+X-Google-Original-From: coverity-bot <keescook+coverity-bot@chromium.org>
+Date:   Wed, 31 Mar 2021 14:59:44 -0700
 To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linux-next@vger.kernel.org
+Message-ID: <202103311459.93EB7DEBDC@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: Coverity: mcp251xfd_dump_rx_ring(): Memory - illegal accesses
+X-PTX-Original-Recipient: mkl@pengutronix.de
+X-PTX-Original-Recipient: ptx@kleine-budde.de
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Fri. 2 Apr 2021 at 19:47, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 02.04.2021 18:56:33, Vincent MAILHOL wrote:
-> > > > +int es58x_rx_err_msg(struct net_device *netdev, enum es58x_err error,
-> > > > +                  enum es58x_event event, u64 timestamp)
-> > > > +{
-> > > > +     struct es58x_priv *priv = es58x_priv(netdev);
-> > > > +     struct can_priv *can = netdev_priv(netdev);
-> > > > +     struct can_device_stats *can_stats = &can->can_stats;
-> > > > +     struct can_frame *cf;
-> > >
-> > > = NULL;
-> > >
-> > > So that the if (cf) properly works...
-> >
-> > I actually expected cfto be set to NULL when an error
-> > occurred (same as skb).
-> >
-> > But indeed, cf is not initialised if the allocation fails. I was
-> > wondering if it would not be better to make both alloc_can_skb()
-> > and and alloc_canfd_skb() set cf to NULL. That would remove a
-> > pitfall.
->
-> Makes sense.
->
-> > If you like the idea, I can submit a patch.
->
-> Sorry creating this drive by patch. The patch description took longer
-> than the actual patch :)
+Hello!
 
-This is often the case for any patches where the diff is one or two lines!
+This is an experimental semi-automated report about issues detected by
+Coverity from a scan of next-20210331 as part of the linux-next scan project:
+https://scan.coverity.com/projects/linux-next-weekly-scan
 
-[...]
->
-> > > > +/**
-> > > > + * es58x_open() - Open and start network device.
-> > > > + * @netdev: CAN network device.
-> > > > + *
-> > > > + * Called when the network transitions to the up state.
-> > > > + *
-> > > > + * Return: zero on success, errno when any error occurs.
-> > > > + */
-> > > > +static int es58x_open(struct net_device *netdev)
-> > > > +{
-> > > > +     int ret;
-> > > > +
-> > > > +     ret = open_candev(netdev);
-> > > > +     if (ret)
-> > > > +             return ret;
-> > > > +
-> > > > +     ret = es58x_enable_channel(netdev);
-> > > > +     if (ret)
-> > > > +             return ret;
-> > >
-> > > Please do an as complete as possible reset and configuration during
-> > > open(). If there is any error a ifdown/ifup should fix it. Here on a USB
-> > > device with multiple interfaces it's not as easy as on devices with only
-> > > one CAN interface.
-> >
-> > ACK.
-> >
-> > I will use a function as below to check if all interfaces are
-> > down.
-> >
-> > static bool es58x_are_all_channels_closed(struct es58x_device *es58x_dev)
-> > {
-> >     int i;
-> >
-> >     for (i = 0; i < es58x_dev->num_can_ch; i++) {
-> >         struct can_priv *can_priv = netdev_priv(es58x_dev->netdev[i]);
-> >         if (can_priv->state != CAN_STATE_STOPPED)
-> >             return false;
-> >     }
-> >     return true;
-> > }
-> >
-> > I will modify both es58x_open() and es58x_close().
->
-> Have a look at
-> https://elixir.bootlin.com/linux/v5.11/source/include/linux/kref.h
->
-> I'm not sure if kref is overkill here :)
+You're getting this email because you were associated with the identified
+lines of code (noted below) that were touched by commits:
 
-There is indeed a race condition in which the above function
-might return true when it is not supposed to.
+  None
+    e0ab3dd5f98f ("can: mcp251xfd: add dev coredump support")
 
-I checked the struct kref and the refcount_t, but here, I think
-that a simple atomic_t is enough because there is no risk of
-saturation.
+Coverity reported the following:
 
-Something like:
-|     if (atomic_inc_return(opened_channel_cnt) == 1)
-|         /* configure */
-and
-|     if (atomic_dec_and_test(opened_channel_cnt))
-|         /* release */
+*** CID 1503585:  Memory - illegal accesses  (OVERRUN)
+/drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c: 190 in mcp251xfd_dump_rx_ring()
+184     static void mcp251xfd_dump_rx_ring(const struct mcp251xfd_priv *priv,
+185     				   struct mcp251xfd_dump_iter *iter)
+186     {
+187     	struct mcp251xfd_rx_ring *rx_ring;
+188     	unsigned int i;
+189
+vvv     CID 1503585:  Memory - illegal accesses  (OVERRUN)
+vvv     Overrunning array of 1 8-byte elements at element index 1 (byte offset 15) by dereferencing pointer "priv->rx + i".
+190     	mcp251xfd_for_each_rx_ring(priv, rx_ring, i)
+191     		mcp251xfd_dump_rx_ring_one(priv, iter, rx_ring);
+192     }
+193
+194     static void mcp251xfd_dump_tx_ring(const struct mcp251xfd_priv *priv,
+195     				   struct mcp251xfd_dump_iter *iter)
 
-[...]
+If this is a false positive, please let us know so we can mark it as
+such, or teach the Coverity rules to be smarter. If not, please make
+sure fixes get into linux-next. :) For patches fixing this, please
+include these lines (but double-check the "Fixes" first):
 
-Yours sincerely,
-Vincent
+Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+Addresses-Coverity-ID: 1503585 ("Memory - illegal accesses")
+Fixes: e0ab3dd5f98f ("can: mcp251xfd: add dev coredump support")
+
+Thanks for your attention!
+
+-- 
+Coverity-bot
+
