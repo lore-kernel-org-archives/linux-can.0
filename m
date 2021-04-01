@@ -2,54 +2,50 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8E74C433B4
-	for <linux-can@archiver.kernel.org>; Wed, 31 Mar 2021 15:07:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56706C43460
+	for <linux-can@archiver.kernel.org>; Thu,  1 Apr 2021 07:49:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B949C61019
-	for <linux-can@archiver.kernel.org>; Wed, 31 Mar 2021 15:07:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 20EAF60BD3
+	for <linux-can@archiver.kernel.org>; Thu,  1 Apr 2021 07:49:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbhCaPG3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 31 Mar 2021 11:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
+        id S233394AbhDAHtL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 1 Apr 2021 03:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236023AbhCaPGD (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 31 Mar 2021 11:06:03 -0400
+        with ESMTP id S233580AbhDAHtJ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Apr 2021 03:49:09 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A897DC061574
-        for <linux-can@vger.kernel.org>; Wed, 31 Mar 2021 08:06:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6FCC0613E6
+        for <linux-can@vger.kernel.org>; Thu,  1 Apr 2021 00:49:08 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lRcPx-0006RT-Ft; Wed, 31 Mar 2021 17:06:01 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:a06:b6ed:4055:757b])
+        id 1lRs4h-0001zC-3k; Thu, 01 Apr 2021 09:49:07 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:3432:3a72:abbc:cd9])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
         (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 8BFB9605033;
-        Wed, 31 Mar 2021 15:06:00 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 17:05:59 +0200
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 6E92160586F;
+        Thu,  1 Apr 2021 07:49:05 +0000 (UTC)
+Date:   Thu, 1 Apr 2021 09:49:04 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Gerhard Bertelsmann <info@gerhard-bertelsmann.de>,
-        linux-can@vger.kernel.org
-Subject: Re: [PATCH] can: mcp251x: fix support for half duplex SPI host
- controllers
-Message-ID: <20210331150559.5fbus7itrotjwvxs@pengutronix.de>
-References: <20210330100246.1074375-1-mkl@pengutronix.de>
- <CAJ+vNU0w2faqmW0MOA9FQD8=vxpJH1Lc8c0BMcAVKGNq1vNjjg@mail.gmail.com>
- <20210331071427.w4bplxt2hoiduho2@pengutronix.de>
- <CAJ+vNU10c5NtLaG64VhcYO8E9sA3di6v5_MnNHVTaFrfkrpxyQ@mail.gmail.com>
+To:     coverity-bot <keescook@chromium.org>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linux-next@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
+Subject: Re: Coverity: mcp251xfd_dump_rx_ring(): Memory - illegal accesses
+Message-ID: <20210401074904.ucgl4pictqaw6gew@pengutronix.de>
+References: <202103311459.93EB7DEBDC@keescook>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zatwqarglwkofgwg"
+        protocol="application/pgp-signature"; boundary="yqtcshijiunsl7rr"
 Content-Disposition: inline
-In-Reply-To: <CAJ+vNU10c5NtLaG64VhcYO8E9sA3di6v5_MnNHVTaFrfkrpxyQ@mail.gmail.com>
+In-Reply-To: <202103311459.93EB7DEBDC@keescook>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -59,57 +55,85 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---zatwqarglwkofgwg
+--yqtcshijiunsl7rr
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 31.03.2021 07:54:19, Tim Harvey wrote:
-> > Your patch only converted the SPI read path to use half duplex
-> > transfers. My patch also converts the SPI write path.
-> >
-> > If your half duplex controller works without that patch, the controller
-> > driver doesn't advertise correctly that it is half duplex only. If the
-> > hardware is indeed half duplex only, better send a patch that sets the
-> > half duplex flag. If the hardware support full duplex, but the driver
-> > somehow doesn't implement it correctly, so that it implements half
-> > duplex only you should at least drop a note on the SPI mailing list.
-
-[...]
-
-> Thanks for the explanation!
+On 31.03.2021 14:59:44, coverity-bot wrote:
+> This is an experimental semi-automated report about issues detected by
+> Coverity from a scan of next-20210331 as part of the linux-next scan proj=
+ect:
+> https://scan.coverity.com/projects/linux-next-weekly-scan
 >=20
-> I was surprised as the 5.4 kernel I use with the CN803x OcteonTX using
-> drivers/spi/spi-cavium-thunderx.c works fine but as you say it is
-> because the host controller does not advertise half duplex only in
-> that kernel. I did mainlin in e8510d43f219 ("spi: spi-cavium-thunderx:
-> flag controller as half duplex") which appears in 5.9.
-
-Thanks for mainlining the half duplex flag and clarifying the issue
-here, I was to lazy to look up which controller you're using and if the
-patch was mainlined.
-
-> > Can you test this patch and give me a Tested-by?
-> >
+> You're getting this email because you were associated with the identified
+> lines of code (noted below) that were touched by commits:
 >=20
-> I did verify that with this patch 5.12-rc5 initializes the mcp251x on
-> the CN803x OcteonTx and without it we fail.
+>   None
+>     e0ab3dd5f98f ("can: mcp251xfd: add dev coredump support")
 >=20
-> Tested on a GW6404 board with an OcteonTX SoC and MCP25625
+> Coverity reported the following:
 >=20
-> Tested-By: Tim Harvey <tharvey@gateworks.com>
+> *** CID 1503585:  Memory - illegal accesses  (OVERRUN)
+> /drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c: 190 in mcp251xfd_dump_rx=
+_ring()
+> 184     static void mcp251xfd_dump_rx_ring(const struct mcp251xfd_priv *p=
+riv,
+> 185     				   struct mcp251xfd_dump_iter *iter)
+> 186     {
+> 187     	struct mcp251xfd_rx_ring *rx_ring;
+> 188     	unsigned int i;
+> 189
+> vvv     CID 1503585:  Memory - illegal accesses  (OVERRUN)
+> vvv     Overrunning array of 1 8-byte elements at element index 1 (byte o=
+ffset 15) by dereferencing pointer "priv->rx + i".
+> 190     	mcp251xfd_for_each_rx_ring(priv, rx_ring, i)
+> 191     		mcp251xfd_dump_rx_ring_one(priv, iter, rx_ring);
 
-Thanks a lot!
+mcp251xfd_for_each_rx_ring is a macro that iterates over all RX rings in
+the struct mcp251xfd_priv. It's not pretty (as it uses its arguments
+more than once), but it works:
 
-> By the way, I believe you were discussing at one point the possibility
-> of adding something in the spi core that would be able to implement
-> half duplex transactions for drivers written for full duplex
-> communication. Is that something on your list or even possible?
+| #define mcp251xfd_for_each_rx_ring(priv, ring, n) \
+| 	for ((n) =3D 0, (ring) =3D *((priv)->rx + (n)); \
+| 	     (n) < (priv)->rx_ring_num; \
+| 	     (n)++, (ring) =3D *((priv)->rx + (n)))
 
-Yes I had this discussion, but the only thing the SPI core can do is to
-aggregate several half duplex transfers into one full duplex one. This
-requires a lot of memory handling/copying and I decided to not work on
-this.
+For now there is only one rx ring...
+
+| struct mcp251xfd_priv {
+|       [...]
+| 	struct mcp251xfd_rx_ring *rx[1];
+| 	u8 rx_ring_num;
+|       [...]
+| }
+
+=2E..and rx_ring_num is initialized as "1".
+
+| 	for (i =3D 0;
+| 	     i < ARRAY_SIZE(priv->rx) && ram_free >=3D rx_obj_size;
+| 	     i++) {
+|               [...]
+| 	}
+| 	priv->rx_ring_num =3D i;
+
+
+> 192     }
+> 193
+> 194     static void mcp251xfd_dump_tx_ring(const struct mcp251xfd_priv *p=
+riv,
+> 195     				   struct mcp251xfd_dump_iter *iter)
+>=20
+> If this is a false positive, please let us know so we can mark it as
+> such, or teach the Coverity rules to be smarter. If not, please make
+> sure fixes get into linux-next. :) For patches fixing this, please
+> include these lines (but double-check the "Fixes" first):
+
+This looks indeed like a false positive to me.
+
+> Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+> Addresses-Coverity-ID: 1503585 ("Memory - illegal accesses")
+> Fixes: e0ab3dd5f98f ("can: mcp251xfd: add dev coredump support")
 
 regards,
 Marc
@@ -120,19 +144,19 @@ Embedded Linux                   | https://www.pengutronix.de  |
 Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---zatwqarglwkofgwg
+--yqtcshijiunsl7rr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBkj80ACgkQqclaivrt
-76ljawf9EHwaju91gEqdYyvu2QjzZGQW5lvXa2siuWG9+VLOILR2WPocd2jmAPcO
-g9qNVaifKgiTcERFzn5DaS0ZiIzOe1nX1xREc2Ke9K8vL0LNPENDc2hJTgAYW852
-UlU7O/SFlTtB5vBwWhrqIGIWDGVNCXi7ZNsEdYBp7VJlnnAc9eTVwm54T3fiSE3S
-4UidEs7eOcMNeQXNvPzZspuSoMzOvo/hzBnFzacoRhFd6df7jHvFJeR1kvtgx2wG
-qd6WsV7ZbhLXjJm6Qx5rITZNc+5LvRvtdHeOxfjPX5GMozIztcYI8usyVaPF+USu
-dYhbrW34rjUgIXwyDbSVYA8Fu7MWTg==
-=VMAd
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBleu0ACgkQqclaivrt
+76kzSQf+N/BeFzig+HpeakG1l/24VG7WOzsvlcZ4DVTcBgbopDmuKIHJt+7XcZpT
+Qapsc1TAPnNaJx/MdjPELDfjh175QwBqp0Z6Y/5BNIFlkMXA/nBDbYVhT6kcrdLW
+ncqda07mr4NqOLw2AOZ/Pp8TRRzLSbtz0u+9BM3KKkGEQ+6YtvvcbklHk9Y0hGfk
+B6v6aAw8sSMNNmUxlSBNH2kIElXp9P0AlL527Xo3wIReYlt1tE9Exxcustf3am+u
+7LgrBOAT7wEQtJwwRHV7VyEboxLtKzOj7UfrRRRBbgy4EhXgHOjFLBeVDMhuVKSh
+rw0IpnhgaaOOp0Lrxur/8PPr0p4S6Q==
+=g9ir
 -----END PGP SIGNATURE-----
 
---zatwqarglwkofgwg--
+--yqtcshijiunsl7rr--
