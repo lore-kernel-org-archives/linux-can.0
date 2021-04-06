@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0DA7C433B4
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E65CFC43460
 	for <linux-can@archiver.kernel.org>; Tue,  6 Apr 2021 11:16:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 838A1613C6
+	by mail.kernel.org (Postfix) with ESMTP id C1D32613CA
 	for <linux-can@archiver.kernel.org>; Tue,  6 Apr 2021 11:16:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238378AbhDFLQo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 6 Apr 2021 07:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
+        id S238480AbhDFLQs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 6 Apr 2021 07:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238419AbhDFLQl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Apr 2021 07:16:41 -0400
+        with ESMTP id S238971AbhDFLQm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Apr 2021 07:16:42 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDB4C06174A
-        for <linux-can@vger.kernel.org>; Tue,  6 Apr 2021 04:16:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A730C061761
+        for <linux-can@vger.kernel.org>; Tue,  6 Apr 2021 04:16:32 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lTjh8-0000x4-Aw
-        for linux-can@vger.kernel.org; Tue, 06 Apr 2021 13:16:30 +0200
+        id 1lTjh9-0000yX-Ig
+        for linux-can@vger.kernel.org; Tue, 06 Apr 2021 13:16:31 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 7672D608726
-        for <linux-can@vger.kernel.org>; Tue,  6 Apr 2021 11:16:26 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E51B860872E
+        for <linux-can@vger.kernel.org>; Tue,  6 Apr 2021 11:16:28 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0E3FC608704;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A1714608710;
         Tue,  6 Apr 2021 11:16:24 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 50c1608f;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4785ee9e;
         Tue, 6 Apr 2021 11:16:23 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de,
         Stephane Grosjean <s.grosjean@peak-system.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [can-next-rfc 05/10] can: peak_usb: peak_usb_probe(): make use of driver_info
-Date:   Tue,  6 Apr 2021 13:16:17 +0200
-Message-Id: <20210406111622.1874957-6-mkl@pengutronix.de>
+Subject: [can-next-rfc 10/10] can: peak_usb: pcan_usb: replace open coded endianness conversion of unaligned data
+Date:   Tue,  6 Apr 2021 13:16:22 +0200
+Message-Id: <20210406111622.1874957-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210406111622.1874957-1-mkl@pengutronix.de>
 References: <20210406111622.1874957-1-mkl@pengutronix.de>
@@ -61,109 +61,104 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-There's no need to iterate over all supported adapters to find the
-struct peak_usb_adapter that describes the currently probed devices's
-capabilities. The driver core gives us the information for free, if we
-assign it to the struct usb_device_id::driver_info.
-
-This patch assigns the usb_device_id::driver_info and converts
-peak_usb_probe() to make use of it. This reduces the driver size by
-100 bytes on ARCH=arm.
-
-| add/remove: 0/1 grow/shrink: 0/1 up/down: 0/-124 (-124)
-| Function                                     old     new   delta
-| peak_usb_adapters_list                        24       -     -24
-| peak_usb_probe                               236     136    -100
-| Total: Before=25263, After=25139, chg -0.49%
+This patch replaces the open coded endianness conversion of unaligned
+data by the appropriate get/put_unaligned_leXX() variants.
 
 Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 57 +++++++++-----------
- 1 file changed, 24 insertions(+), 33 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 37 ++++++++-----------------
+ 1 file changed, 11 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index eccaf7fb3310..4eea65aced8f 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -27,28 +27,32 @@ MODULE_DESCRIPTION("CAN driver for PEAK-System USB adapters");
- MODULE_LICENSE("GPL v2");
- 
- /* Table of devices that work with this driver */
--static struct usb_device_id peak_usb_table[] = {
--	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USB_PRODUCT_ID)},
--	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBPRO_PRODUCT_ID)},
--	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBFD_PRODUCT_ID)},
--	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBPROFD_PRODUCT_ID)},
--	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBCHIP_PRODUCT_ID)},
--	{USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBX6_PRODUCT_ID)},
--	{} /* Terminating entry */
-+static const struct usb_device_id peak_usb_table[] = {
-+	{
-+		USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USB_PRODUCT_ID),
-+		.driver_info = (kernel_ulong_t)&pcan_usb,
-+	}, {
-+		USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBPRO_PRODUCT_ID),
-+		.driver_info = (kernel_ulong_t)&pcan_usb_pro,
-+	}, {
-+		USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBFD_PRODUCT_ID),
-+		.driver_info = (kernel_ulong_t)&pcan_usb_fd,
-+	}, {
-+		USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBPROFD_PRODUCT_ID),
-+		.driver_info = (kernel_ulong_t)&pcan_usb_pro_fd,
-+	}, {
-+		USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBCHIP_PRODUCT_ID),
-+		.driver_info = (kernel_ulong_t)&pcan_usb_chip,
-+	}, {
-+		USB_DEVICE(PCAN_USB_VENDOR_ID, PCAN_USBX6_PRODUCT_ID),
-+		.driver_info = (kernel_ulong_t)&pcan_usb_x6,
-+	}, {
-+		/* Terminating entry */
-+	}
- };
- 
- MODULE_DEVICE_TABLE(usb, peak_usb_table);
- 
--/* List of supported PCAN-USB adapters (NULL terminated list) */
--static const struct peak_usb_adapter *const peak_usb_adapters_list[] = {
--	&pcan_usb,
--	&pcan_usb_pro,
--	&pcan_usb_fd,
--	&pcan_usb_pro_fd,
--	&pcan_usb_chip,
--	&pcan_usb_x6,
--};
--
- /*
-  * dump memory
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 929cc1b05aa2..1d6f77252f01 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -394,14 +394,10 @@ static int pcan_usb_get_device_id(struct peak_usb_device *dev, u32 *device_id)
   */
-@@ -924,24 +928,11 @@ static void peak_usb_disconnect(struct usb_interface *intf)
- static int peak_usb_probe(struct usb_interface *intf,
- 			  const struct usb_device_id *id)
+ static int pcan_usb_update_ts(struct pcan_usb_msg_context *mc)
  {
--	struct usb_device *usb_dev = interface_to_usbdev(intf);
--	const u16 usb_id_product = le16_to_cpu(usb_dev->descriptor.idProduct);
--	const struct peak_usb_adapter *peak_usb_adapter = NULL;
-+	const struct peak_usb_adapter *peak_usb_adapter;
- 	int i, err = -ENOMEM;
- 
- 	/* get corresponding PCAN-USB adapter */
--	for (i = 0; i < ARRAY_SIZE(peak_usb_adapters_list); i++)
--		if (peak_usb_adapters_list[i]->device_id == usb_id_product) {
--			peak_usb_adapter = peak_usb_adapters_list[i];
--			break;
--		}
+-	__le16 tmp16;
 -
--	if (!peak_usb_adapter) {
--		/* should never come except device_id bad usage in this file */
--		pr_err("%s: didn't find device id. 0x%x in devices list\n",
--			PCAN_USB_DRIVER_NAME, usb_id_product);
--		return -ENODEV;
--	}
-+	peak_usb_adapter = (const struct peak_usb_adapter *)id->driver_info;
+ 	if ((mc->ptr + 2) > mc->end)
+ 		return -EINVAL;
  
- 	/* got corresponding adapter: check if it handles current interface */
- 	if (peak_usb_adapter->intf_probe) {
+-	memcpy(&tmp16, mc->ptr, 2);
+-
+-	mc->ts16 = le16_to_cpu(tmp16);
++	mc->ts16 = get_unaligned_le16(mc->ptr);
+ 
+ 	if (mc->rec_idx > 0)
+ 		peak_usb_update_ts_now(&mc->pdev->time_ref, mc->ts16);
+@@ -418,16 +414,13 @@ static int pcan_usb_decode_ts(struct pcan_usb_msg_context *mc, u8 first_packet)
+ {
+ 	/* only 1st packet supplies a word timestamp */
+ 	if (first_packet) {
+-		__le16 tmp16;
+-
+ 		if ((mc->ptr + 2) > mc->end)
+ 			return -EINVAL;
+ 
+-		memcpy(&tmp16, mc->ptr, 2);
+-		mc->ptr += 2;
+-
+-		mc->ts16 = le16_to_cpu(tmp16);
++		mc->ts16 = get_unaligned_le16(mc->ptr);
+ 		mc->prev_ts8 = mc->ts16 & 0x00ff;
++
++		mc->ptr += 2;
+ 	} else {
+ 		u8 ts8;
+ 
+@@ -717,25 +710,17 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
+ 		return -ENOMEM;
+ 
+ 	if (status_len & PCAN_USB_STATUSLEN_EXT_ID) {
+-		__le32 tmp32;
+-
+ 		if ((mc->ptr + 4) > mc->end)
+ 			goto decode_failed;
+ 
+-		memcpy(&tmp32, mc->ptr, 4);
++		cf->can_id = get_unaligned_le32(mc->ptr) >> 3 | CAN_EFF_FLAG;
+ 		mc->ptr += 4;
+-
+-		cf->can_id = (le32_to_cpu(tmp32) >> 3) | CAN_EFF_FLAG;
+ 	} else {
+-		__le16 tmp16;
+-
+ 		if ((mc->ptr + 2) > mc->end)
+ 			goto decode_failed;
+ 
+-		memcpy(&tmp16, mc->ptr, 2);
++		cf->can_id = get_unaligned_le16(mc->ptr) >> 5;
+ 		mc->ptr += 2;
+-
+-		cf->can_id = le16_to_cpu(tmp16) >> 5;
+ 	}
+ 
+ 	can_frame_set_cc_len(cf, rec_len, mc->pdev->dev.can.ctrlmode);
+@@ -849,15 +834,15 @@ static int pcan_usb_encode_msg(struct peak_usb_device *dev, struct sk_buff *skb,
+ 
+ 	/* can id */
+ 	if (cf->can_id & CAN_EFF_FLAG) {
+-		__le32 tmp32 = cpu_to_le32((cf->can_id & CAN_ERR_MASK) << 3);
+-
+ 		*pc |= PCAN_USB_STATUSLEN_EXT_ID;
+-		memcpy(++pc, &tmp32, 4);
++		pc++;
++
++		put_unaligned_le32((cf->can_id & CAN_ERR_MASK) << 3, pc);
+ 		pc += 4;
+ 	} else {
+-		__le16 tmp16 = cpu_to_le16((cf->can_id & CAN_ERR_MASK) << 5);
++		pc++;
+ 
+-		memcpy(++pc, &tmp16, 2);
++		put_unaligned_le16((cf->can_id & CAN_ERR_MASK) << 5, pc);
+ 		pc += 2;
+ 	}
+ 
 -- 
 2.30.2
 
