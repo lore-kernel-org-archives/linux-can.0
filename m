@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2FE7C433ED
-	for <linux-can@archiver.kernel.org>; Tue,  6 Apr 2021 11:06:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9AECC433B4
+	for <linux-can@archiver.kernel.org>; Tue,  6 Apr 2021 11:16:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 88BDE61055
-	for <linux-can@archiver.kernel.org>; Tue,  6 Apr 2021 11:06:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9A2D4613C6
+	for <linux-can@archiver.kernel.org>; Tue,  6 Apr 2021 11:16:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241287AbhDFLGd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 6 Apr 2021 07:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
+        id S238314AbhDFLQg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 6 Apr 2021 07:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245347AbhDFLGc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Apr 2021 07:06:32 -0400
+        with ESMTP id S236359AbhDFLQg (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Apr 2021 07:16:36 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06B6C06174A
-        for <linux-can@vger.kernel.org>; Tue,  6 Apr 2021 04:06:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EB4C061756
+        for <linux-can@vger.kernel.org>; Tue,  6 Apr 2021 04:16:28 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lTjXL-0007q1-Az
-        for linux-can@vger.kernel.org; Tue, 06 Apr 2021 13:06:23 +0200
+        id 1lTjh5-0000rx-1t
+        for linux-can@vger.kernel.org; Tue, 06 Apr 2021 13:16:27 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A2BD16086CF
-        for <linux-can@vger.kernel.org>; Tue,  6 Apr 2021 11:06:21 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 5B55560870A
+        for <linux-can@vger.kernel.org>; Tue,  6 Apr 2021 11:16:24 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 513DC6086BF;
-        Tue,  6 Apr 2021 11:06:19 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9DF4D6086FC;
+        Tue,  6 Apr 2021 11:16:23 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6a07bb0b;
-        Tue, 6 Apr 2021 11:06:18 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b2098864;
+        Tue, 6 Apr 2021 11:16:23 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Thomas Kopp <thomas.kopp@microchip.com>
-Subject: [can-next-rfc 4/4] can: mcp251xfd: mcp251xfd_regmap_crc_read(): work around broken CRC on TBC register
-Date:   Tue,  6 Apr 2021 13:06:17 +0200
-Message-Id: <20210406110617.1865592-5-mkl@pengutronix.de>
+Cc:     kernel@pengutronix.de,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [can-next-rfc 01/10] can: peak_usb: fix checkpatch warnings
+Date:   Tue,  6 Apr 2021 13:16:13 +0200
+Message-Id: <20210406111622.1874957-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210406110617.1865592-1-mkl@pengutronix.de>
-References: <20210406110617.1865592-1-mkl@pengutronix.de>
+In-Reply-To: <20210406111622.1874957-1-mkl@pengutronix.de>
+References: <20210406111622.1874957-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -61,96 +61,79 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-MCP251XFD_REG_TBC is the time base counter register. It increments
-once per SYS clock tick, which is 20 or 40 MHz. Observation shows that
-if the lowest byte (which is transferred first on the SPI bus) of that
-register is 0x00 or 0x80 the calculated CRC doesn't always match the
-transferred one.
+This patch cleans several checkpatch warnings in the peak_usb driver.
 
-To reproduce this problem let the driver read the TBC register in a
-high frequency. This can be done by attaching only the mcp251xfd CAN
-controller to a valid terminated CAN bus and send a single CAN frame.
-As there are no other CAN controller on the bus, the sent CAN frame is
-not ACKed and the mcp251xfd repeats it. If user space enables the bus
-error reporting, each of the NACK errors is reported with a time
-stamp (which is read from the TBC register) to user space.
-
-$ ip link set can0 down
-$ ip link set can0 up type can bitrate 500000 berr-reporting on
-$ cansend can0 4FF#ff.01.00.00.00.00.00.00
-
-This leads to several error messages per second:
-
-| mcp251xfd spi0.0 can0: CRC read error at address 0x0010 (length=4, data=00 3a 86 da, CRC=0x7753) retrying.
-| mcp251xfd spi0.0 can0: CRC read error at address 0x0010 (length=4, data=80 01 b4 da, CRC=0x5830) retrying.
-| mcp251xfd spi0.0 can0: CRC read error at address 0x0010 (length=4, data=00 e9 23 db, CRC=0xa723) retrying.
-| mcp251xfd spi0.0 can0: CRC read error at address 0x0010 (length=4, data=00 8a 30 db, CRC=0x4a9c) retrying.
-| mcp251xfd spi0.0 can0: CRC read error at address 0x0010 (length=4, data=80 f3 43 db, CRC=0x66d2) retrying.
-
-If the highest bit in the lowest byte is flipped the transferred CRC
-matches the calculated one. We assume for now the CRC calculation in
-the chip works on wrong data and the transferred data is correct.
-
-This patch implements the following workaround:
-
-- If a CRC read error on the TBC register is detected and the lowest
-  byte is 0x00 or 0x80, the highest bit of the lowest byte is flipped
-  and the CRC is calculated again.
-- If the CRC now matches, the _original_ data is passed to the reader.
-  For now we assume transferred data was OK.
-
-Cc: Manivannan Sadhasivam <mani@kernel.org>
-Cc: Thomas Kopp <thomas.kopp@microchip.com>
+Cc: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-regmap.c  | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ drivers/net/can/usb/peak_usb/pcan_usb.c      | 4 ++--
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 1 +
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h | 2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 2 +-
+ 4 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
-index 35557ac43c03..297491516a26 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
-@@ -321,6 +321,40 @@ mcp251xfd_regmap_crc_read(void *context,
- 		if (err != -EBADMSG)
- 			return err;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index ba509aed7b4c..e23049c81159 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -401,7 +401,7 @@ static int pcan_usb_update_ts(struct pcan_usb_msg_context *mc)
+ {
+ 	__le16 tmp16;
  
-+		/* MCP251XFD_REG_TBC is the time base counter
-+		 * register. It increments once per SYS clock tick,
-+		 * which is 20 or 40 MHz.
-+		 *
-+		 * Observation shows that if the lowest byte (which is
-+		 * transferred first on the SPI bus) of that register
-+		 * is 0x00 or 0x80 the calculated CRC doesn't always
-+		 * match the transferred one.
-+		 *
-+		 * If the highest bit in the lowest byte is flipped
-+		 * the transferred CRC matches the calculated one. We
-+		 * assume for now the CRC calculation in the chip
-+		 * works on wrong data and the transferred data is
-+		 * correct.
-+		 */
-+		if (reg == MCP251XFD_REG_TBC &&
-+		    (buf_rx->data[0] == 0x0 || buf_rx->data[0] == 0x80)) {
-+			/* Flip highest bit in lowest byte of le32 */
-+			buf_rx->data[0] ^= 0x80;
+-	if ((mc->ptr+2) > mc->end)
++	if ((mc->ptr + 2) > mc->end)
+ 		return -EINVAL;
+ 
+ 	memcpy(&tmp16, mc->ptr, 2);
+@@ -1039,7 +1039,7 @@ const struct peak_usb_adapter pcan_usb = {
+ 			      CAN_CTRLMODE_BERR_REPORTING |
+ 			      CAN_CTRLMODE_CC_LEN8_DLC,
+ 	.clock = {
+-		.freq = PCAN_USB_CRYSTAL_HZ / 2 ,
++		.freq = PCAN_USB_CRYSTAL_HZ / 2,
+ 	},
+ 	.bittiming_const = &pcan_usb_const,
+ 
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index ad006edf474d..eccaf7fb3310 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -624,6 +624,7 @@ static int peak_usb_ndo_stop(struct net_device *netdev)
+ 	/* can set bus off now */
+ 	if (dev->adapter->dev_set_bus) {
+ 		int err = dev->adapter->dev_set_bus(dev, 0);
 +
-+			/* re-check CRC */
-+			err = mcp251xfd_regmap_crc_read_check_crc(buf_rx,
-+								  buf_tx,
-+								  val_len);
-+			if (!err) {
-+				/* If CRC is now correct, assume
-+				 * transferred data was OK, flip bit
-+				 * back to original value.
-+				 */
-+				buf_rx->data[0] ^= 0x80;
-+				goto out;
-+			}
-+		}
-+
- 		/* MCP251XFD_REG_OSC is the first ever reg we read from.
- 		 *
- 		 * The chip may be in deep sleep and this SPI transfer
+ 		if (err)
+ 			return err;
+ 	}
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+index e15b4c78f309..59afe880a481 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+@@ -31,7 +31,7 @@
+ /* usb adapters maximum channels per usb interface */
+ #define PCAN_USB_MAX_CHANNEL		2
+ 
+-/* maximum length of the usb commands sent to/received from  the devices */
++/* maximum length of the usb commands sent to/received from the devices */
+ #define PCAN_USB_MAX_CMD_LEN		32
+ 
+ struct peak_usb_device;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+index 2d1b645af76c..ecb08359f719 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+@@ -290,7 +290,7 @@ static int pcan_usb_pro_wait_rsp(struct peak_usb_device *dev,
+ 					   pr->data_type);
+ 
+ 			/* check if channel in response corresponds too */
+-			else if ((req_channel != 0xff) && \
++			else if ((req_channel != 0xff) &&
+ 				(pr->bus_act.channel != req_channel))
+ 				netdev_err(dev->netdev,
+ 					"got rsp %xh but on chan%u: ignored\n",
+
+base-commit: cc0626c2aaed8e475efdd85fa374b497a7192e35
 -- 
 2.30.2
 
