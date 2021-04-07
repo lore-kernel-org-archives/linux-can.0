@@ -7,47 +7,46 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35552C43461
-	for <linux-can@archiver.kernel.org>; Wed,  7 Apr 2021 08:01:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2A8FC433ED
+	for <linux-can@archiver.kernel.org>; Wed,  7 Apr 2021 08:01:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ED07660BD3
-	for <linux-can@archiver.kernel.org>; Wed,  7 Apr 2021 08:01:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9BB7F6120E
+	for <linux-can@archiver.kernel.org>; Wed,  7 Apr 2021 08:01:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236437AbhDGIBf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 7 Apr 2021 04:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
+        id S240611AbhDGIBj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 7 Apr 2021 04:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235995AbhDGIBe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Apr 2021 04:01:34 -0400
+        with ESMTP id S235854AbhDGIBh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Apr 2021 04:01:37 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D80C06174A
-        for <linux-can@vger.kernel.org>; Wed,  7 Apr 2021 01:01:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A51C06174A
+        for <linux-can@vger.kernel.org>; Wed,  7 Apr 2021 01:01:28 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lU37r-0001sI-QB
-        for linux-can@vger.kernel.org; Wed, 07 Apr 2021 10:01:23 +0200
+        id 1lU37v-0001xT-2l
+        for linux-can@vger.kernel.org; Wed, 07 Apr 2021 10:01:27 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 648516097DB
-        for <linux-can@vger.kernel.org>; Wed,  7 Apr 2021 08:01:21 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 795D86097E9
+        for <linux-can@vger.kernel.org>; Wed,  7 Apr 2021 08:01:22 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4FB086097CB;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A5F6F6097D1;
         Wed,  7 Apr 2021 08:01:20 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8c9f63b1;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 87386490;
         Wed, 7 Apr 2021 08:01:19 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Subject: [net-next 1/6] can: skb: alloc_can{,fd}_skb(): set "cf" to NULL if skb allocation fails
-Date:   Wed,  7 Apr 2021 10:01:13 +0200
-Message-Id: <20210407080118.1916040-2-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-next 3/6] can: c_can: remove unused enum BOSCH_C_CAN_PLATFORM
+Date:   Wed,  7 Apr 2021 10:01:15 +0200
+Message-Id: <20210407080118.1916040-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210407080118.1916040-1-mkl@pengutronix.de>
 References: <20210407080118.1916040-1-mkl@pengutronix.de>
@@ -61,74 +60,26 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The handling of CAN bus errors typically consist of allocating a CAN
-error SKB using alloc_can_err_skb() followed by stats handling and
-filling the error details in the newly allocated CAN error SKB. Even
-if the allocation of the SKB fails the stats handling should not be
-skipped.
+This patch removes the unused enum BOSCH_C_CAN_PLATFORM.
 
-The common pattern in CAN drivers is to allocate the skb and work on
-the struct can_frame pointer "cf", if it has been assigned by
-alloc_can_err_skb().
-
-|	skb = alloc_can_err_skb(priv->ndev, &cf);
-|
-| 	/* RX errors */
-| 	if (bdiag1 & (MCP251XFD_REG_BDIAG1_DCRCERR |
-| 		      MCP251XFD_REG_BDIAG1_NCRCERR)) {
-| 		netdev_dbg(priv->ndev, "CRC error\n");
-|
-| 		stats->rx_errors++;
-| 		if (cf)
-| 			cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
-| 	}
-
-In case of an OOM alloc_can_err_skb() returns NULL, but doesn't set
-"cf" to NULL as well. For the above pattern to work the "cf" has to be
-initialized to NULL, which is easily forgotten.
-
-To solve this kind of problems, set "cf" to NULL if
-alloc_can_err_skb() returns NULL.
-
-Link: https://lore.kernel.org/r/20210402102245.1512583-1-mkl@pengutronix.de
-Suggested-by: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/r/20210406110617.1865592-2-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/skb.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/net/can/c_can/c_can.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 387c0bc0fb9c..61660248c69e 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -183,8 +183,11 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 8acedd9e63a7..06045f610f0e 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -149,7 +149,6 @@ static const u16 __maybe_unused reg_map_d_can[] = {
+ };
  
- 	skb = netdev_alloc_skb(dev, sizeof(struct can_skb_priv) +
- 			       sizeof(struct can_frame));
--	if (unlikely(!skb))
-+	if (unlikely(!skb)) {
-+		*cf = NULL;
-+
- 		return NULL;
-+	}
- 
- 	skb->protocol = htons(ETH_P_CAN);
- 	skb->pkt_type = PACKET_BROADCAST;
-@@ -211,8 +214,11 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
- 
- 	skb = netdev_alloc_skb(dev, sizeof(struct can_skb_priv) +
- 			       sizeof(struct canfd_frame));
--	if (unlikely(!skb))
-+	if (unlikely(!skb)) {
-+		*cfd = NULL;
-+
- 		return NULL;
-+	}
- 
- 	skb->protocol = htons(ETH_P_CANFD);
- 	skb->pkt_type = PACKET_BROADCAST;
-
-base-commit: 0b35e0deb5bee7d4882356d6663522c1562a8321
+ enum c_can_dev_id {
+-	BOSCH_C_CAN_PLATFORM,
+ 	BOSCH_C_CAN,
+ 	BOSCH_D_CAN,
+ };
 -- 
 2.30.2
 
