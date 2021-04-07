@@ -2,71 +2,114 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57764C43460
-	for <linux-can@archiver.kernel.org>; Tue,  6 Apr 2021 23:40:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD80AC433ED
+	for <linux-can@archiver.kernel.org>; Wed,  7 Apr 2021 08:01:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2CF0F613BE
-	for <linux-can@archiver.kernel.org>; Tue,  6 Apr 2021 23:40:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8E1A861222
+	for <linux-can@archiver.kernel.org>; Wed,  7 Apr 2021 08:01:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344644AbhDFXkV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 6 Apr 2021 19:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245173AbhDFXkS (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 6 Apr 2021 19:40:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C9796613CC;
-        Tue,  6 Apr 2021 23:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617752409;
-        bh=Cztl8+1YDNggIF5BPVqueMeWUuEVSSvZdOqpc6EzcUw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dzYIK5FwsDlV1ANnZwU38kFXDLZRFKU71reooy11wWVAfAQZdkkIwfZEn2CUcTnwW
-         dAkJHi5QwgZnarAYuPA/pk4hIJaOaC9terwStGzWyI+u9B7AM4nkIGEFmgpNIN2VfI
-         f99Et9qb5l/yvb/fMrOF5O51tVw7uQNIDbhan8GjD78Jbnd4Yeq5Cbo4838MeSl/Jk
-         ereyj/oAq4RHfIxcoPdZjBmm66tgsZCHiMUv4QrQHBEh4XY8NTqdnPQ3myO+ivaL8t
-         DqodnYJRVvngLMfO6AnxtvpOoOYCXqLD13+AoOmydEpX9BSxQfWZeHDWC/WAB6vfV7
-         vyaomm3Stkxhg==
-Content-Type: text/plain; charset="utf-8"
+        id S235703AbhDGIBd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 7 Apr 2021 04:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhDGIBd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Apr 2021 04:01:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4135CC06174A
+        for <linux-can@vger.kernel.org>; Wed,  7 Apr 2021 01:01:24 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lU37q-0001rg-TL
+        for linux-can@vger.kernel.org; Wed, 07 Apr 2021 10:01:22 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id D52706097D4
+        for <linux-can@vger.kernel.org>; Wed,  7 Apr 2021 08:01:20 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2BCB96097CA;
+        Wed,  7 Apr 2021 08:01:20 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f454e5fb;
+        Wed, 7 Apr 2021 08:01:19 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: pull-request: can-next 2021-04-07
+Date:   Wed,  7 Apr 2021 10:01:12 +0200
+Message-Id: <20210407080118.1916040-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: can 2021-04-06
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161775240978.19905.569061289554147402.git-patchwork-notify@kernel.org>
-Date:   Tue, 06 Apr 2021 23:40:09 +0000
-References: <20210406103606.1847506-1-mkl@pengutronix.de>
-In-Reply-To: <20210406103606.1847506-1-mkl@pengutronix.de>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, kernel@pengutronix.de
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+Hello Jakub, hello David,
 
-This pull request was applied to netdev/net.git (refs/heads/master):
+this is a pull request of 6 patches for net-next/master.
 
-On Tue,  6 Apr 2021 12:36:05 +0200 you wrote:
-> Hello Jakub, hello David,
-> 
-> this is a pull request of 1 patch for net/master.
-> 
-> The patch is by me and fixes the SPI half duplex support in the
-> mcp251x CAN driver.
-> 
-> [...]
+The first patch targets the CAN driver infrastructure, it improves the
+alloc_can{,fd}_skb() function to set the pointer to the CAN frame to
+NULL if skb allocation fails.
 
-Here is the summary with links:
-  - pull-request: can 2021-04-06
-    https://git.kernel.org/netdev/net/c/f57796a4b80b
+The next patch adds missing error handling to the m_can driver's RX
+path (the code was introduced in -next, no need to backport).
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+In the next patch an unused constant is removed from an enum in the
+c_can driver.
+
+The last 3 patches target the mcp251xfd driver. They add BQL support
+and try to work around a sometimes broken CRC when reading the TBC
+register.
+
+regards,
+Marc
+
+---
+
+The following changes since commit 0b35e0deb5bee7d4882356d6663522c1562a8321:
+
+  docs: ethtool: correct quotes (2021-04-06 16:56:58 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-5.13-20210407
+
+for you to fetch changes up to c7eb923c3caf4c6a183465cc012dc368b199a4b2:
+
+  can: mcp251xfd: mcp251xfd_regmap_crc_read(): work around broken CRC on TBC register (2021-04-07 09:31:28 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-5.13-20210407
+
+----------------------------------------------------------------
+Marc Kleine-Budde (6):
+      can: skb: alloc_can{,fd}_skb(): set "cf" to NULL if skb allocation fails
+      can: m_can: m_can_receive_skb(): add missing error handling to can_rx_offload_queue_sorted() call
+      can: c_can: remove unused enum BOSCH_C_CAN_PLATFORM
+      can: mcp251xfd: add BQL support
+      can: mcp251xfd: mcp251xfd_regmap_crc_read_one(): Factor out crc check into separate function
+      can: mcp251xfd: mcp251xfd_regmap_crc_read(): work around broken CRC on TBC register
+
+ drivers/net/can/c_can/c_can.h                    |  1 -
+ drivers/net/can/dev/skb.c                        | 10 +++-
+ drivers/net/can/m_can/m_can.c                    | 13 +++--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c   | 23 +++++++--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c | 64 ++++++++++++++++++++----
+ 5 files changed, 90 insertions(+), 21 deletions(-)
 
 
