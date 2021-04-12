@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E443AC43600
-	for <linux-can@archiver.kernel.org>; Mon, 12 Apr 2021 16:42:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BC6DC433ED
+	for <linux-can@archiver.kernel.org>; Mon, 12 Apr 2021 16:42:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B683461357
-	for <linux-can@archiver.kernel.org>; Mon, 12 Apr 2021 16:42:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2668461220
+	for <linux-can@archiver.kernel.org>; Mon, 12 Apr 2021 16:42:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244960AbhDLQml (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 12 Apr 2021 12:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37302 "EHLO mail.kernel.org"
+        id S245121AbhDLQmm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 12 Apr 2021 12:42:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343743AbhDLQf4 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:35:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B86C61241;
-        Mon, 12 Apr 2021 16:27:13 +0000 (UTC)
+        id S1344030AbhDLQge (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:36:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A92A8613E7;
+        Mon, 12 Apr 2021 16:27:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618244834;
-        bh=NImA9/AZjrb9hLyaSnO3BEs1RF/8hyaHB9zQ7WGL7I4=;
+        s=k20201202; t=1618244866;
+        bh=3BsJZPvidZptNSMKyAvAy70rJ969almak4Ru9bdTfgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YmADYXusopkm5etncFVGfDVHUFFMD6/bm9BDOO2388Y1Z1nppCgBYoXAyO1ueHORB
-         BPfegFPW48lj7sVJGLmDUi2W0+KSPfXT7br+h9RGsXrnjl3P/Y26UAMSYGeEUFTy1B
-         pVqRejefBZ4pmmu/rQrkplqpChwWwBewOD9ldfaH8SOuTrhf2raTWnvE93TQT5Yh3/
-         srtiZ3k7uIQXcYywc5iXplGM9OGXV4CMHSRuvLz86kl6gsdN76q/hv6p+elJ4iObCP
-         yZhUDEPysTDmsHulMyvXRgY0pWtUgvMEx7jERO5PFvQVRG0UQrOlVAdVlL7RwJ+MoG
-         6eIgOvFonHKIg==
+        b=PqJ1uDXxpkfmR5uB1Ub3CszcBN0/Y7dXrF5Y5Zc6TDHQ1Ej+vtIhU+SOxzQDH022A
+         +hGaiJAACOwVs2iH3vQ5j5Z+A2YM0tPsTvZ5dufUWVkrtwkbukqO4ooYxWXVtoiGjR
+         O9qLmt1O/ET+x7XF5jJ3Q6Iys7a3sxazDZmiuxMc+TIQoBfIuCdKVPTO+ZrtmKS7F9
+         HACqVLYNwGK+VocAQiHHy7dd2uwt2kOCPLs3WdG6PG2kTa/GwvC7xwf27QMTrSP9Lg
+         y1lksCh0XY//0GOflEnrAV0DgVnZUTHSf/T4b7JoXx3en06zjy9r/2KC6ml/GuUOsN
+         MIdHpMRQ0W1aA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Pavel Skripkin <paskripkin@gmail.com>,
@@ -38,12 +38,12 @@ Cc:     Pavel Skripkin <paskripkin@gmail.com>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 07/23] drivers: net: fix memory leak in peak_usb_create_dev
-Date:   Mon, 12 Apr 2021 12:26:48 -0400
-Message-Id: <20210412162704.315783-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 07/23] drivers: net: fix memory leak in peak_usb_create_dev
+Date:   Mon, 12 Apr 2021 12:27:20 -0400
+Message-Id: <20210412162736.316026-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412162704.315783-1-sashal@kernel.org>
-References: <20210412162704.315783-1-sashal@kernel.org>
+In-Reply-To: <20210412162736.316026-1-sashal@kernel.org>
+References: <20210412162736.316026-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -78,10 +78,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 2e316228aa1e..c8502bd8e3dc 100644
+index 7b148174eb76..620db93ab9a3 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -880,7 +880,7 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
+@@ -882,7 +882,7 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
  	if (dev->adapter->dev_set_bus) {
  		err = dev->adapter->dev_set_bus(dev, 0);
  		if (err)
@@ -90,7 +90,7 @@ index 2e316228aa1e..c8502bd8e3dc 100644
  	}
  
  	/* get device number early */
-@@ -892,6 +892,10 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
+@@ -894,6 +894,10 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
  
  	return 0;
  
