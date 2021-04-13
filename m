@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9F58C43460
-	for <linux-can@archiver.kernel.org>; Tue, 13 Apr 2021 09:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47681C433ED
+	for <linux-can@archiver.kernel.org>; Tue, 13 Apr 2021 09:52:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D046361369
-	for <linux-can@archiver.kernel.org>; Tue, 13 Apr 2021 09:52:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25E7B61369
+	for <linux-can@archiver.kernel.org>; Tue, 13 Apr 2021 09:52:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242343AbhDMJxO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S243219AbhDMJxO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 13 Apr 2021 05:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241565AbhDMJw5 (ORCPT
+        with ESMTP id S242406AbhDMJw5 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 13 Apr 2021 05:52:57 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EBFC061349
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1543C06134B
         for <linux-can@vger.kernel.org>; Tue, 13 Apr 2021 02:52:26 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lWFia-0002hL-Be
+        id 1lWFia-0002i9-Qo
         for linux-can@vger.kernel.org; Tue, 13 Apr 2021 11:52:24 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C0C0960DABE
+        by bjornoya.blackshift.org (Postfix) with SMTP id C801460DAC0
         for <linux-can@vger.kernel.org>; Tue, 13 Apr 2021 09:52:17 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8EA9960DA57;
-        Tue, 13 Apr 2021 09:52:04 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5E49160DA6C;
+        Tue, 13 Apr 2021 09:52:07 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8cfdf408;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f67ba6ef;
         Tue, 13 Apr 2021 09:52:03 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
         Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [net-next 08/14] can: peak_usb: remove write only variable struct peak_usb_adapter::ts_period
-Date:   Tue, 13 Apr 2021 11:51:55 +0200
-Message-Id: <20210413095201.2409865-9-mkl@pengutronix.de>
+Subject: [net-next 12/14] can: peak_usb: pcan_usb_get_serial(): make use of le32_to_cpup()
+Date:   Tue, 13 Apr 2021 11:51:59 +0200
+Message-Id: <20210413095201.2409865-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210413095201.2409865-1-mkl@pengutronix.de>
 References: <20210413095201.2409865-1-mkl@pengutronix.de>
@@ -61,92 +61,35 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The variable struct peak_usb_adapter::ts_period is only ever written
-to. This patch removes it from the driver.
+This patch replaces the memcpy() + le32_to_cpu() by le32_to_cpup().
 
-Link: https://lore.kernel.org/r/20210406111622.1874957-5-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20210406111622.1874957-9-mkl@pengutronix.de
 Acked-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Tested-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb.c      | 1 -
- drivers/net/can/usb/peak_usb/pcan_usb_core.h | 1 -
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 4 ----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 1 -
- 4 files changed, 7 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index e23049c81159..38bee69ff48a 100644
+index fd5ea95fd55d..ffb01c3a3827 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -1050,7 +1050,6 @@ const struct peak_usb_adapter pcan_usb = {
+@@ -368,12 +368,8 @@ static int pcan_usb_get_serial(struct peak_usb_device *dev, u32 *serial_number)
+ 	if (err)
+ 		return err;
  
- 	/* timestamps usage */
- 	.ts_used_bits = 16,
--	.ts_period = 24575, /* calibration period in ts. */
- 	.us_per_ts_scale = PCAN_USB_TS_US_PER_TICK, /* us=(ts*scale) */
- 	.us_per_ts_shift = PCAN_USB_TS_DIV_SHIFTER, /*  >> shift     */
+-	if (serial_number) {
+-		__le32 tmp32;
+-
+-		memcpy(&tmp32, args, 4);
+-		*serial_number = le32_to_cpu(tmp32);
+-	}
++	if (serial_number)
++		*serial_number = le32_to_cpup((__le32 *)args);
  
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index 64c4c22bb296..b00a4811bf61 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -73,7 +73,6 @@ struct peak_usb_adapter {
- 	u8 ep_msg_in;
- 	u8 ep_msg_out[PCAN_USB_MAX_CHANNEL];
- 	u8 ts_used_bits;
--	u32 ts_period;
- 	u8 us_per_ts_shift;
- 	u32 us_per_ts_scale;
- 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 6f62b6f51051..b11eabad575b 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -1081,7 +1081,6 @@ const struct peak_usb_adapter pcan_usb_fd = {
- 
- 	/* timestamps usage */
- 	.ts_used_bits = 32,
--	.ts_period = 1000000, /* calibration period in ts. */
- 	.us_per_ts_scale = 1, /* us = (ts * scale) >> shift */
- 	.us_per_ts_shift = 0,
- 
-@@ -1156,7 +1155,6 @@ const struct peak_usb_adapter pcan_usb_chip = {
- 
- 	/* timestamps usage */
- 	.ts_used_bits = 32,
--	.ts_period = 1000000, /* calibration period in ts. */
- 	.us_per_ts_scale = 1, /* us = (ts * scale) >> shift */
- 	.us_per_ts_shift = 0,
- 
-@@ -1231,7 +1229,6 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
- 
- 	/* timestamps usage */
- 	.ts_used_bits = 32,
--	.ts_period = 1000000, /* calibration period in ts. */
- 	.us_per_ts_scale = 1, /* us = (ts * scale) >> shift */
- 	.us_per_ts_shift = 0,
- 
-@@ -1306,7 +1303,6 @@ const struct peak_usb_adapter pcan_usb_x6 = {
- 
- 	/* timestamps usage */
- 	.ts_used_bits = 32,
--	.ts_period = 1000000, /* calibration period in ts. */
- 	.us_per_ts_scale = 1, /* us = (ts * scale) >> shift */
- 	.us_per_ts_shift = 0,
- 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index ecb08359f719..589ba797fb33 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -1058,7 +1058,6 @@ const struct peak_usb_adapter pcan_usb_pro = {
- 
- 	/* timestamps usage */
- 	.ts_used_bits = 32,
--	.ts_period = 1000000, /* calibration period in ts. */
- 	.us_per_ts_scale = 1, /* us = (ts * scale) >> shift */
- 	.us_per_ts_shift = 0,
- 
+ 	return 0;
+ }
 -- 
 2.30.2
 
