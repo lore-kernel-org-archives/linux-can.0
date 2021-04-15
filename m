@@ -2,39 +2,39 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36ABAC433ED
-	for <linux-can@archiver.kernel.org>; Thu, 15 Apr 2021 09:03:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72B5BC433B4
+	for <linux-can@archiver.kernel.org>; Thu, 15 Apr 2021 09:04:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 13D0861222
-	for <linux-can@archiver.kernel.org>; Thu, 15 Apr 2021 09:03:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5162A6124B
+	for <linux-can@archiver.kernel.org>; Thu, 15 Apr 2021 09:04:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhDOJD6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 15 Apr 2021 05:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
+        id S231842AbhDOJEo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 15 Apr 2021 05:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbhDOJDr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Apr 2021 05:03:47 -0400
+        with ESMTP id S232006AbhDOJEn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Apr 2021 05:04:43 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CEDC061574
-        for <linux-can@vger.kernel.org>; Thu, 15 Apr 2021 02:03:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AC9C061574
+        for <linux-can@vger.kernel.org>; Thu, 15 Apr 2021 02:04:20 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lWxu9-00013A-Ns; Thu, 15 Apr 2021 11:03:17 +0200
+        id 1lWxv5-000169-KF; Thu, 15 Apr 2021 11:04:15 +0200
 Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:983:856d:54dc:ee1c])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
         (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id E2DC960F2D5;
-        Thu, 15 Apr 2021 09:03:14 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 11:03:14 +0200
+        by smtp.blackshift.org (Postfix) with ESMTPSA id B209860F2DC;
+        Thu, 15 Apr 2021 09:04:12 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 11:04:12 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     Colin King <colin.king@canonical.com>
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -44,15 +44,15 @@ Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] can: etas_es58x: Fix potential null pointer
- dereference on pointer cf
-Message-ID: <20210415090314.vvyvr2wihwnauyi6@pengutronix.de>
-References: <20210415085535.1808272-1-colin.king@canonical.com>
+Subject: Re: [PATCH][next] can: etas_es58x: Fix missing null check on netdev
+ pointer
+Message-ID: <20210415090412.q3k4tmsp3rdfj54t@pengutronix.de>
+References: <20210415084723.1807935-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7e3ebrdbrcx3sqls"
+        protocol="application/pgp-signature"; boundary="szmpbpc75mtqb4hx"
 Content-Disposition: inline
-In-Reply-To: <20210415085535.1808272-1-colin.king@canonical.com>
+In-Reply-To: <20210415084723.1807935-1-colin.king@canonical.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -62,29 +62,26 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---7e3ebrdbrcx3sqls
+--szmpbpc75mtqb4hx
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 15.04.2021 09:55:35, Colin King wrote:
+On 15.04.2021 09:47:23, Colin King wrote:
 > From: Colin Ian King <colin.king@canonical.com>
 >=20
-> The pointer cf is being null checked earlier in the code, however the
-> update of the rx_bytes statistics is dereferencing cf without null
-> checking cf.  Fix this by moving the statement into the following code
-> block that has a null cf check.
+> There is an assignment to *netdev that is can potentially be null but the
+> null check is checking netdev and not *netdev as intended. Fix this by
+> adding in the missing * operator.
 >=20
-> Addresses-Coverity: ("Dereference after null check")
+> Addresses-Coverity: ("Dereference before null check")
 > Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CA=
 N USB interfaces")
 > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-A somewhat different fix is already in net-next/master
+Looks good. Applied to linux-can-next/testing.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/=
-?id=3De2b1e4b532abdd39bfb7313146153815e370d60c
-
+Tnx,
 Marc
 
 --=20
@@ -93,19 +90,19 @@ Embedded Linux                   | https://www.pengutronix.de  |
 Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---7e3ebrdbrcx3sqls
+--szmpbpc75mtqb4hx
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB4AU8ACgkQqclaivrt
-76kJ4Qf6AjMxbSUwQpN3Q7AkPMl6N7dnvgRstIgDwT/bEwd+/CKvK2Wortipw6Pa
-FbWHTZp+L1/S2Cue4uDFyqn/aJ4hwDYwp1qSImA3cwqsb1WV40/+VVjO1UBHEBA7
-Apz7ycNmGVVvGS6wqvqOvxERLCccEiyny+QJoNeDaRiEZ5DcKHfvgrF8lMG5qolO
-uGSp6jS/1OE4QlqUMNYuKIPRqWOZNIhd5JnzQPx2EnTQ3MR5HMD1sJZRh42qa6Ov
-1ZcE15c2W6B8IJBAuvCbf9m+fCpNB0lYwM4SrvDa7vJtRp3ctJdcC70W4m2XXrUe
-Dwi/OimD4yCeTWuetmUu9Yy3FCGdLg==
-=/Z25
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB4AYgACgkQqclaivrt
+76lQ5gf+MVDfgP/lHzpBKIj8U4d1CJ+Hb2cUtI+HcxDsNqc08ZCbsoiWhze1E0df
+W4Hv7r7oN5RtUpsmM5hF8NV1jwjR3/buD6AIaTTMYWLOLm0QU+o/W2uKydBy1M9y
+ythlIG/6MN132kMeNLk7iHfXzT4jHCrVouq1kNVGZBwch+ljGCYw+1LJ5WwCutvh
+PP04dZZF/9EmYX10mWgmor6bMcD5tCPGd4P54sYsGuN6KV0pZiCWK2H2xqpi8sPW
+K3yWIPUnrI3RGqwmwAq/0v+JHi2rpipNvEUKz6+t326FhQcE6vy6oQ71pfcHM3Vk
+FN2fr4XDZLDEqPIe3Sl90lCNwKWhBA==
+=NznM
 -----END PGP SIGNATURE-----
 
---7e3ebrdbrcx3sqls--
+--szmpbpc75mtqb4hx--
