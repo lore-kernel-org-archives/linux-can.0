@@ -2,48 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 090DDC43461
-	for <linux-can@archiver.kernel.org>; Fri, 16 Apr 2021 05:27:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69C8AC433ED
+	for <linux-can@archiver.kernel.org>; Fri, 16 Apr 2021 05:27:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E77FF61073
-	for <linux-can@archiver.kernel.org>; Fri, 16 Apr 2021 05:27:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4C95161029
+	for <linux-can@archiver.kernel.org>; Fri, 16 Apr 2021 05:27:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236990AbhDPF1a (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 16 Apr 2021 01:27:30 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52448 "EHLO
+        id S237362AbhDPF1c (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 16 Apr 2021 01:27:32 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52460 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236464AbhDPF1a (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 16 Apr 2021 01:27:30 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13G5QqFO100260;
-        Fri, 16 Apr 2021 00:26:52 -0500
+        with ESMTP id S237117AbhDPF1b (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 16 Apr 2021 01:27:31 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13G5R0l7100431;
+        Fri, 16 Apr 2021 00:27:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618550812;
-        bh=OGWmPUCq+G+tmdEY0d0MYzZx+ArvEQd++b9Kv5/YV/E=;
-        h=From:To:CC:Subject:Date;
-        b=bKVPKDEfLI2hpgA9W5zUZ+v+2bH+DJh7fvypqo7urWwKY/ggxJdKUdLtFYoqfqYz6
-         c3xBY35VBjYNuvG8dzBASwFwfRBe9DfXrX8YnIbOtlDITgos/pO9XA3ka1n1FX4Uoa
-         BZSpMEUfiF6x+WLYrjbI1VIN1Q/mOksR9ICq0AFw=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13G5Qqpt114854
+        s=ti-com-17Q1; t=1618550820;
+        bh=MelUBgWsylW80+RVjogTPjEFvjvSH2ZwkORUG97pKnw=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=X1yWw5EWiM0XJbTWHnERYBIg3AckVLre/S9gFzuP7d55LfMz89td9NW1sqbb1lq1V
+         wtP34DcrBZtJh3dxlBtf7ADzu+ZdW5QFOVfvSCS8I0HQDuVw9FL1D5l2kZpv2OXaYa
+         EAiuf0/LAWF9gtV9Lr5O9FK8g1FHeyYwBah5bBR8=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13G5R0PJ119159
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Apr 2021 00:26:52 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 16 Apr 2021 00:27:00 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
- Apr 2021 00:26:52 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2021 00:27:00 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 16 Apr 2021 00:26:52 -0500
+ Frontend Transport; Fri, 16 Apr 2021 00:27:00 -0500
 Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13G5QlLL023847;
-        Fri, 16 Apr 2021 00:26:48 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13G5QlLN023847;
+        Fri, 16 Apr 2021 00:26:56 -0500
 From:   Aswath Govindraju <a-govindraju@ti.com>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-phy@lists.infradead.org>, <linux-can@vger.kernel.org>,
@@ -56,10 +56,12 @@ CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Grygorii Strashko <grygorii.strashko@ti.com>,
         Aswath Govindraju <a-govindraju@ti.com>
-Subject: [PATCH v4 0/3] CAN TRANSCEIVER: Add support for CAN transceivers
-Date:   Fri, 16 Apr 2021 10:56:44 +0530
-Message-ID: <20210416052647.2758-1-a-govindraju@ti.com>
+Subject: [PATCH v4 2/3] dt-bindings: phy: Add binding for TI TCAN104x CAN transceivers
+Date:   Fri, 16 Apr 2021 10:56:46 +0530
+Message-ID: <20210416052647.2758-3-a-govindraju@ti.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210416052647.2758-1-a-govindraju@ti.com>
+References: <20210416052647.2758-1-a-govindraju@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
@@ -68,84 +70,90 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The following series of patches add support for CAN transceivers.
+Add binding documentation for TI TCAN104x CAN transceivers.
 
-TCAN1042 has a standby signal that needs to be pulled high for
-sending/receiving messages[1]. TCAN1043 has a enable signal along with
-standby signal that needs to be pulled up for sending/receiving
-messages[2], and other combinations of the two lines can be used to put the
-transceiver in different states to reduce power consumption. On boards
-like the AM654-idk and J721e-evm these signals are controlled using gpios.
-
-Patch 1 rewords the comment that restricts max_link_rate attribute to have
-units of Mbps.
-
-Patch 2 models the transceiver as a phy device tree node with properties
-for max bit rate supported, gpio properties for indicating gpio pin numbers
-to which standby and enable signals are connected.
-
-Patch 2 adds a generic driver to support CAN transceivers.
-
-changes since v3:
-- dropped patch 2(in v3)
-- changed the node name property in patch 3(in v3)
-- picked up Rob Herring's reviewed-by for patch 3(in v3)
-
-changes since v2:
-- dropped 5 and 6 patches and to be sent via linux-can-next
-- added static keyword for can_transceiver_phy_probe()
-- changed enable gpio example to active high in patch 3
-- Rearranged the file names in alphabetical order in Makefile
-  and MAINTAINERS file
-
-changes since v1:
-- Added patch 1 (in v2) that rewords the comment that restrict
-  max_link_rate attribute to have units of Mbps.
-- Added patch 2 (in v2) that adds an API for
-  devm_of_phy_optional_get_by_index
-- Patch 1 (in v1)
-  - updated MAINTAINERS file
-- Patch 2 (in v1)
-  - replaced m_can with CAN to make the driver independent of CAN driver
-  - Added prefix CAN_TRANSCEIVER for EN_PRESENT and STB_PRESENT
-  - Added new line before return statements in power_on() and power_off
-  - Added error handling patch for devm_kzalloc()
-  - used the max_link_rate attribute directly instead of dividing it by
-    1000000
-  - removed the spaces before GPIOD_OUT_LOW in devm_gpiod_get()
-  - Corrected requested value for standby-gpios to GPIOD_OUT_HIGH
-  - Updated MAINTAINERS file
-- Patch 3 (in v1)
-  - replaced minItems with maxItems
-  - Removed phy-names property as there is only one phy
-- Patch 4 (in v1)
-  - replaced dev_warn with dev_info when no transceiver is found
-  - Added struct phy * field in m_can_classdev struct
-  - moved phy_power_on and phy_power_off to m_can_open and m_can_close
-    respectively
-  - Moved the check for max_bit_rate to generice transceiver driver
-
-[1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
-[2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
-
-
-Aswath Govindraju (3):
-  phy: core: Reword the comment specifying the units of max_link_rate to
-    be Mbps
-  dt-bindings: phy: Add binding for TI TCAN104x CAN transceivers
-  phy: phy-can-transceiver: Add support for generic CAN transceiver
-    driver
-
- .../bindings/phy/ti,tcan104x-can.yaml         |  56 +++++++
- MAINTAINERS                                   |   2 +
- drivers/phy/Kconfig                           |   9 ++
- drivers/phy/Makefile                          |   1 +
- drivers/phy/phy-can-transceiver.c             | 146 ++++++++++++++++++
- include/linux/phy/phy.h                       |   2 +-
- 6 files changed, 215 insertions(+), 1 deletion(-)
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/phy/ti,tcan104x-can.yaml         | 56 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 57 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
- create mode 100644 drivers/phy/phy-can-transceiver.c
 
+diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+new file mode 100644
+index 000000000000..6107880e5246
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/phy/ti,tcan104x-can.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: TCAN104x CAN TRANSCEIVER PHY
++
++maintainers:
++  - Aswath Govindraju <a-govindraju@ti.com>
++
++properties:
++  $nodename:
++    pattern: "^can-phy"
++
++  compatible:
++    enum:
++      - ti,tcan1042
++      - ti,tcan1043
++
++  '#phy-cells':
++    const: 0
++
++  standby-gpios:
++    description:
++      gpio node to toggle standby signal on transceiver
++    maxItems: 1
++
++  enable-gpios:
++    description:
++      gpio node to toggle enable signal on transceiver
++    maxItems: 1
++
++  max-bitrate:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      max bit rate supported in bps
++    minimum: 1
++
++required:
++  - compatible
++  - '#phy-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    transceiver1: can-phy {
++      compatible = "ti,tcan1043";
++      #phy-cells = <0>;
++      max-bitrate = <5000000>;
++      standby-gpios = <&wakeup_gpio1 16 GPIO_ACTIVE_LOW>;
++      enable-gpios = <&main_gpio1 67 GPIO_ACTIVE_HIGH>;
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 84ef96a444c3..e666d33af10d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4046,6 +4046,7 @@ W:	https://github.com/linux-can
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
+ F:	Documentation/devicetree/bindings/net/can/
++F:	Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+ F:	drivers/net/can/
+ F:	include/linux/can/bittiming.h
+ F:	include/linux/can/dev.h
 -- 
 2.17.1
 
