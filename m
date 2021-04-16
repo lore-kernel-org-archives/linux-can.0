@@ -2,146 +2,97 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 083C3C433B4
-	for <linux-can@archiver.kernel.org>; Fri, 16 Apr 2021 07:51:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59A8CC433B4
+	for <linux-can@archiver.kernel.org>; Fri, 16 Apr 2021 11:31:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D68C86113B
-	for <linux-can@archiver.kernel.org>; Fri, 16 Apr 2021 07:51:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2423F61166
+	for <linux-can@archiver.kernel.org>; Fri, 16 Apr 2021 11:31:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239715AbhDPHvv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 16 Apr 2021 03:51:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239713AbhDPHvu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 16 Apr 2021 03:51:50 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5BDC061574
-        for <linux-can@vger.kernel.org>; Fri, 16 Apr 2021 00:51:25 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lXJFv-0007Vj-FL; Fri, 16 Apr 2021 09:51:11 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:b21a:a98c:8cd:ce9c])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id AEC6260FFEB;
-        Fri, 16 Apr 2021 07:51:09 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 09:51:09 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-can@vger.kernel.org,
+        id S239551AbhDPLbl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 16 Apr 2021 07:31:41 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46832 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229719AbhDPLbl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 16 Apr 2021 07:31:41 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13GBV7jx106544;
+        Fri, 16 Apr 2021 06:31:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618572667;
+        bh=IlU5JTHbgq4me6qjMbuUKqaDA5SuF5DOc/xXRU46LRk=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=HnMQBAeEMo/H52ClX9Jm9ZuhXkLBmMmH2ArgcWYHHEi0hVcxF8dujEpa1pIf+XUNj
+         Dq7URl8wU8NgoOxz+HXWWc1IX+Bv9NZfba9x7e80xdpUQFU67O7h7ucONQaYf6e5CB
+         EUrKq97Lra64A73eUfiqjroYflTgyhCg/n79GhmU=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13GBV7Uv122596
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Apr 2021 06:31:07 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
+ Apr 2021 06:31:06 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 16 Apr 2021 06:31:06 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13GBUwIv073816;
+        Fri, 16 Apr 2021 06:31:03 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-can@vger.kernel.org>,
         Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Wolfgang Grandegger <wg@grandegger.com>,
         Lokesh Vutla <lokeshvutla@ti.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: Re: [PATCH v4 3/3] phy: phy-can-transceiver: Add support for generic
- CAN transceiver driver
-Message-ID: <20210416075109.yw3c47ii67gckeqd@pengutronix.de>
-References: <20210416052647.2758-1-a-govindraju@ti.com>
- <20210416052647.2758-4-a-govindraju@ti.com>
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>
+Subject: [PATCH v5 1/3] phy: core: Reword the comment specifying the units of max_link_rate to be Mbps
+Date:   Fri, 16 Apr 2021 17:00:56 +0530
+Message-ID: <20210416113058.23815-2-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210416113058.23815-1-a-govindraju@ti.com>
+References: <20210416113058.23815-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ady7filrbecwiiya"
-Content-Disposition: inline
-In-Reply-To: <20210416052647.2758-4-a-govindraju@ti.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+In some subsystems (eg. CAN, SPI), the max link rate supported can be less
+than 1 Mbps and if the unit for max_link_rate is Mbps then it can't be
+used. Therefore, leave the decision of units to be used, to the producer
+and consumer.
 
---ady7filrbecwiiya
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+ include/linux/phy/phy.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 16.04.2021 10:56:47, Aswath Govindraju wrote:
-> The driver adds support for generic CAN transceivers. Currently
-> the modes supported by this driver are standby and normal modes for TI
-> TCAN1042 and TCAN1043 CAN transceivers.
->=20
-> The transceiver is modelled as a phy with pins controlled by gpios, to put
-> the transceiver in various device functional modes. It also gets the phy
-> attribute max_link_rate for the usage of CAN drivers.
->=20
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> ---
->  MAINTAINERS                       |   1 +
->  drivers/phy/Kconfig               |   9 ++
->  drivers/phy/Makefile              |   1 +
->  drivers/phy/phy-can-transceiver.c | 146 ++++++++++++++++++++++++++++++
->  4 files changed, 157 insertions(+)
->  create mode 100644 drivers/phy/phy-can-transceiver.c
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e666d33af10d..4e868f2a97c7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4048,6 +4048,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/gi=
-t/mkl/linux-can-next.git
->  F:	Documentation/devicetree/bindings/net/can/
->  F:	Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
->  F:	drivers/net/can/
-> +F:	drivers/phy/phy-can-transceiver.c
->  F:	include/linux/can/bittiming.h
->  F:	include/linux/can/dev.h
->  F:	include/linux/can/led.h
-> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-> index 54c1f2f0985f..51902b629fc6 100644
-> --- a/drivers/phy/Kconfig
-> +++ b/drivers/phy/Kconfig
-> @@ -61,6 +61,15 @@ config USB_LGM_PHY
->  	  interface to interact with USB GEN-II and USB 3.x PHY that is part
->  	  of the Intel network SOC.
-> =20
-> +config PHY_CAN_TRANSCEIVER
-> +	tristate "CAN transceiver PHY"
-> +	select GENERIC_PHY
-> +	help
-> +	  This option enables support for CAN transceivers as a PHY. This
-> +	  driver provides function for putting the transceivers in various
-> +	  functional modes using gpios and sets the attribute max link
-> +	  rate, for mcan drivers.
-                    ^^^^
+diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+index 0ed434d02196..f3286f4cd306 100644
+--- a/include/linux/phy/phy.h
++++ b/include/linux/phy/phy.h
+@@ -125,7 +125,7 @@ struct phy_ops {
+ /**
+  * struct phy_attrs - represents phy attributes
+  * @bus_width: Data path width implemented by PHY
+- * @max_link_rate: Maximum link rate supported by PHY (in Mbps)
++ * @max_link_rate: Maximum link rate supported by PHY (units to be decided by producer and consumer)
+  * @mode: PHY mode
+  */
+ struct phy_attrs {
+-- 
+2.17.1
 
-CAN
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---ady7filrbecwiiya
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB5QeoACgkQqclaivrt
-76lL2Af/UvxExvGuIijK2rChTwL3SRtvX/+pPjQvIocOQXS0k3f/Qrn4kekRnYra
-L5E5CKfkfDyQ8+Z1hI10WxOKP12wtekyocXH06+wPYZfnSfVXTGa0udUzQsnDbZq
-HWJcSdy1AIAuDuRCteWuaAKpXkvqRIKcg2i06DWKHnsM/CiHN6PHunf2pNO7vN6N
-m+tM2haOcNWGb0MQ9MYL3q18rN+MtO/FyKhGnQ6G0WNPGzhwPoHHuYEk/tP2mMB8
-kbqRyYOOTdtmssPqLGU9/w3N2AB+av9m+JtiVO4xfk9lcREN5NdF7DFsdCg3pC2q
-uojUDhg536F1EyjPzsiuucbsPtSE7Q==
-=WkZb
------END PGP SIGNATURE-----
-
---ady7filrbecwiiya--
