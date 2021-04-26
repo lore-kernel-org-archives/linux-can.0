@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E778EC43460
-	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 06:55:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C2CFC433ED
+	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 06:55:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BDC3A611B0
-	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 06:55:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F321861027
+	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 06:55:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhDZGzl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Apr 2021 02:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
+        id S232018AbhDZGzm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 26 Apr 2021 02:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbhDZGzk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Apr 2021 02:55:40 -0400
+        with ESMTP id S232072AbhDZGzl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Apr 2021 02:55:41 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B033CC061756
-        for <linux-can@vger.kernel.org>; Sun, 25 Apr 2021 23:54:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846CCC061756
+        for <linux-can@vger.kernel.org>; Sun, 25 Apr 2021 23:55:00 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lav90-0003zY-AJ
-        for linux-can@vger.kernel.org; Mon, 26 Apr 2021 08:54:58 +0200
+        id 1lav91-00040G-3w
+        for linux-can@vger.kernel.org; Mon, 26 Apr 2021 08:54:59 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 82038616F80
-        for <linux-can@vger.kernel.org>; Mon, 26 Apr 2021 06:54:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 0DC31616F8A
+        for <linux-can@vger.kernel.org>; Mon, 26 Apr 2021 06:54:56 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 498B3616F6A;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7DEDF616F6E;
         Mon, 26 Apr 2021 06:54:54 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 199e4ce4;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1642f94a;
         Mon, 26 Apr 2021 06:54:53 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Colin Ian King <colin.king@canonical.com>,
+        kernel@pengutronix.de, Erik Flodin <erik@flodin.me>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 2/4] can: etas_es58x: Fix a couple of spelling mistakes
-Date:   Mon, 26 Apr 2021 08:54:50 +0200
-Message-Id: <20210426065452.3411360-3-mkl@pengutronix.de>
+Subject: [net-next 4/4] can: proc: fix rcvlist_* header alignment on 64-bit system
+Date:   Mon, 26 Apr 2021 08:54:52 +0200
+Message-Id: <20210426065452.3411360-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210426065452.3411360-1-mkl@pengutronix.de>
 References: <20210426065452.3411360-1-mkl@pengutronix.de>
@@ -61,40 +61,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Erik Flodin <erik@flodin.me>
 
-There are spelling mistakes in netdev_dbg and netdev_dbg messages,
-fix these.
+Before this fix, the function and userdata columns weren't aligned:
+  device   can_id   can_mask  function  userdata   matches  ident
+   vcan0  92345678  9fffffff  0000000000000000  0000000000000000         0  raw
+   vcan0     123    00000123  0000000000000000  0000000000000000         0  raw
 
-Link: https://lore.kernel.org/r/20210415113050.1942333-1-colin.king@canonical.com
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+After the fix they are:
+  device   can_id   can_mask      function          userdata       matches  ident
+   vcan0  92345678  9fffffff  0000000000000000  0000000000000000         0  raw
+   vcan0     123    00000123  0000000000000000  0000000000000000         0  raw
+
+Link: Link: https://lore.kernel.org/r/20210425141440.229653-1-erik@flodin.me
+Signed-off-by: Erik Flodin <erik@flodin.me>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/can/proc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index 57e5f94468e9..8e9102482c52 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -688,7 +688,7 @@ int es58x_rx_err_msg(struct net_device *netdev, enum es58x_err error,
+diff --git a/net/can/proc.c b/net/can/proc.c
+index b15760b5c1cc..d1fe49e6f16d 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -205,8 +205,10 @@ static void can_print_recv_banner(struct seq_file *m)
+ 	 *                  can1.  00000000  00000000  00000000
+ 	 *                 .......          0  tp20
+ 	 */
+-	seq_puts(m, "  device   can_id   can_mask  function"
+-			"  userdata   matches  ident\n");
++	if (IS_ENABLED(CONFIG_64BIT))
++		seq_puts(m, "  device   can_id   can_mask      function          userdata       matches  ident\n");
++	else
++		seq_puts(m, "  device   can_id   can_mask  function  userdata   matches  ident\n");
+ }
  
- 	case ES58X_ERR_PROT_STUFF:
- 		if (net_ratelimit())
--			netdev_dbg(netdev, "Error BITSUFF\n");
-+			netdev_dbg(netdev, "Error BITSTUFF\n");
- 		if (cf)
- 			cf->data[2] |= CAN_ERR_PROT_STUFF;
- 		break;
-@@ -1015,7 +1015,7 @@ int es58x_rx_cmd_ret_u32(struct net_device *netdev,
- 			int ret;
- 
- 			netdev_warn(netdev,
--				    "%s: channel is already opened, closing and re-openning it to reflect new configuration\n",
-+				    "%s: channel is already opened, closing and re-opening it to reflect new configuration\n",
- 				    ret_desc);
- 			ret = ops->disable_channel(es58x_priv(netdev));
- 			if (ret)
+ static int can_stats_proc_show(struct seq_file *m, void *v)
 -- 
 2.30.2
 
