@@ -4,100 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E12FBC433B4
-	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 06:55:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C991C433B4
+	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 10:09:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB48C61027
-	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 06:55:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BE8CA61249
+	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 10:09:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232020AbhDZGzm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Apr 2021 02:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhDZGzl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Apr 2021 02:55:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A51C061760
-        for <linux-can@vger.kernel.org>; Sun, 25 Apr 2021 23:55:00 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lav91-00040I-5x
-        for linux-can@vger.kernel.org; Mon, 26 Apr 2021 08:54:59 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 10FA3616F8B
-        for <linux-can@vger.kernel.org>; Mon, 26 Apr 2021 06:54:56 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 67160616F6C;
-        Mon, 26 Apr 2021 06:54:54 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f54d6cd7;
-        Mon, 26 Apr 2021 06:54:53 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Erik Flodin <erik@flodin.me>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 3/4] can: add a note that RECV_OWN_MSGS frames are subject to filtering
-Date:   Mon, 26 Apr 2021 08:54:51 +0200
-Message-Id: <20210426065452.3411360-4-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210426065452.3411360-1-mkl@pengutronix.de>
-References: <20210426065452.3411360-1-mkl@pengutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+        id S232340AbhDZKKB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 26 Apr 2021 06:10:01 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:42910 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232173AbhDZKJ7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Apr 2021 06:09:59 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UWoKdug_1619431698;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWoKdug_1619431698)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 26 Apr 2021 18:09:16 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     wg@grandegger.com
+Cc:     mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] can: softing: Remove redundant variable ptr
+Date:   Mon, 26 Apr 2021 18:08:16 +0800
+Message-Id: <1619431696-81853-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Erik Flodin <erik@flodin.me>
+Variable ptr is being assigned a value from a calculation
+however the variable is never read, so this redundant variable
+can be removed.
 
-Some parts of the documentation may lead the reader to think that the
-socket's own frames are always received when CAN_RAW_RECV_OWN_MSGS is
-enabled, but all frames are subject to filtering.
+Cleans up the following clang-analyzer warning:
 
-As explained by Marc Kleine-Budde:
+drivers/net/can/softing/softing_main.c:279:3: warning: Value stored to
+'ptr' is never read [clang-analyzer-deadcode.DeadStores].
 
-On TX complete of a CAN frame it's pushed into the RX path of the
-networking stack, along with the information of the originating socket.
+drivers/net/can/softing/softing_main.c:242:3: warning: Value stored to
+'ptr' is never read [clang-analyzer-deadcode.DeadStores].
 
-Then the CAN frame is delivered into AF_CAN, where it is passed on to
-all registered receivers depending on filters. One receiver is the
-sending socket in CAN_RAW. Then in CAN_RAW the it is checked if the
-sending socket has RECV_OWN_MSGS enabled.
-
-Link: https://lore.kernel.org/r/20210420191212.42753-1-erik@flodin.me
-Signed-off-by: Erik Flodin <erik@flodin.me>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- Documentation/networking/can.rst | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/softing/softing_main.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index f8dae662e454..f34cb0e4460e 100644
---- a/Documentation/networking/can.rst
-+++ b/Documentation/networking/can.rst
-@@ -608,6 +608,8 @@ demand:
-     setsockopt(s, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS,
-                &recv_own_msgs, sizeof(recv_own_msgs));
+diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
+index c44f341..cfc1325 100644
+--- a/drivers/net/can/softing/softing_main.c
++++ b/drivers/net/can/softing/softing_main.c
+@@ -239,7 +239,6 @@ static int softing_handle_1(struct softing *card)
+ 				DPRAM_INFO_BUSSTATE2 : DPRAM_INFO_BUSSTATE]);
+ 		/* timestamp */
+ 		tmp_u32 = le32_to_cpup((void *)ptr);
+-		ptr += 4;
+ 		ktime = softing_raw2ktime(card, tmp_u32);
  
-+Note that reception of a socket's own CAN frames are subject to the same
-+filtering as other CAN frames (see :ref:`socketcan-rawfilter`).
- 
- .. _socketcan-rawfd:
- 
+ 		++netdev->stats.rx_errors;
+@@ -276,7 +275,6 @@ static int softing_handle_1(struct softing *card)
+ 		ktime = softing_raw2ktime(card, tmp_u32);
+ 		if (!(msg.can_id & CAN_RTR_FLAG))
+ 			memcpy(&msg.data[0], ptr, 8);
+-		ptr += 8;
+ 		/* update socket */
+ 		if (cmd & CMD_ACK) {
+ 			/* acknowledge, was tx msg */
 -- 
-2.30.2
-
+1.8.3.1
 
