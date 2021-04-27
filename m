@@ -7,94 +7,79 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6DD9C433ED
-	for <linux-can@archiver.kernel.org>; Tue, 27 Apr 2021 05:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABC02C433ED
+	for <linux-can@archiver.kernel.org>; Tue, 27 Apr 2021 05:22:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9C929613B0
-	for <linux-can@archiver.kernel.org>; Tue, 27 Apr 2021 05:21:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 731C9613B4
+	for <linux-can@archiver.kernel.org>; Tue, 27 Apr 2021 05:22:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhD0FWi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 27 Apr 2021 01:22:38 -0400
-Received: from mout02.posteo.de ([185.67.36.66]:56333 "EHLO mout02.posteo.de"
+        id S231788AbhD0FWm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 27 Apr 2021 01:22:42 -0400
+Received: from mout01.posteo.de ([185.67.36.65]:59085 "EHLO mout01.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229501AbhD0FWg (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 27 Apr 2021 01:22:36 -0400
+        id S229788AbhD0FWh (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 27 Apr 2021 01:22:37 -0400
 Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 309632400FE
-        for <linux-can@vger.kernel.org>; Tue, 27 Apr 2021 07:21:52 +0200 (CEST)
+        by mout01.posteo.de (Postfix) with ESMTPS id 99BC2240028
+        for <linux-can@vger.kernel.org>; Tue, 27 Apr 2021 07:21:53 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1619500912; bh=r49o/Gcq6TCorMWcYz7eb/OdEGXFuPCA/ZwX7ZH817k=;
+        t=1619500913; bh=c9HwlFNkXVQClpPdN97uB7nEFbFhZBEgXsw6/gyE4Y4=;
         h=From:To:Subject:Date:From;
-        b=jASVHDZY5jtu84PyQzgXYQ9SYofOzkZDhGy+zjeBE0cGCRL2WTdQM0n4OpbzomEwp
-         LzJLVpzXqgZJpKIp+xA/0n1OYn4nKhm9sgnt+/QLCO5wehNMeUV27GFyEhgoe1PnEf
-         waDLZDshOYV8/UvA9Lxppqo/IXSMBiKTZV2yTazPy172SlK8VBGqMwvpKFIdg4p24W
-         c5lDdC06CnqowpubHTHO9PhdnuMQW0ydgulZE1y2NPfRT2epMzSOcYJULiyMDaNp03
-         x763UQxBogfuuBf2TXPvbS3NFG2FcFwnSRsDT+cxDeFpZ3KW7J0UrX71fu1+3M5UsG
-         0qqIostB4ASCQ==
+        b=sPGdMcPF3yZXGDUihXtW36CEMvYumSt+3EGohi5iT0bCeZtfrELCK19c1rExoFLZg
+         M9qarxENQp5hFSiAyxrmLo6grjn5RVeBm58UXIRHpNhYSdiX/CelVoZ/58vgP1Radt
+         3h6qbtOtgPdNB9+y7UXJhtFGPAiJK4p1mBZcVonXdME0VFH7Drr4vDsCVsiM4foftZ
+         Z+0HEJ1h4XBRmfzD82G+M/ENaGaORtMhGSbOl8Oks6wHbDaYkScZcZrMI1hIwASomV
+         tg+BCHwzIK1gyr247lDuy8/t0suqrGpo6JLk1vZbnB0IHFa9uFpTRuw8COEOpD4U18
+         H+7y2BBKXEg0A==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4FTqrH3zRrz9rxM;
-        Tue, 27 Apr 2021 07:21:51 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4FTqrK04Djz9rxF;
+        Tue, 27 Apr 2021 07:21:52 +0200 (CEST)
 From:   Patrick Menschel <menschel.p@posteo.de>
 To:     Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] can-isotp: Change error format from decimal to symbolic error names
-Date:   Tue, 27 Apr 2021 05:21:47 +0000
-Message-Id: <20210427052150.2308-2-menschel.p@posteo.de>
+Subject: [PATCH v2 3/3] can-isotp: Add error message if txqueuelen is too small
+Date:   Tue, 27 Apr 2021 05:21:49 +0000
+Message-Id: <20210427052150.2308-4-menschel.p@posteo.de>
 In-Reply-To: <20210427052150.2308-1-menschel.p@posteo.de>
 References: <20210427052150.2308-1-menschel.p@posteo.de>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch changes the format string for errors from
-decimal %d to symbolic error names %pe to achieve
-more comprehensive log messages.
+This patch adds an additional error message in
+case that txqueuelen is set too small and
+advices the user to increase txqueuelen.
+
+This is likely to happen even with small transfers if
+txqueuelen is at default value 10 frames.
 
 Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
 ---
- net/can/isotp.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ net/can/isotp.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 9f94ad3ca..2c4f84fac 100644
+index 2075d8d9e..d08f95bfd 100644
 --- a/net/can/isotp.c
 +++ b/net/can/isotp.c
-@@ -221,8 +221,8 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
- 
- 	can_send_ret = can_send(nskb, 1);
- 	if (can_send_ret)
--		pr_notice_once("can-isotp: %s: can_send_ret %d\n",
--			       __func__, can_send_ret);
-+		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
-+			       __func__, ERR_PTR(can_send_ret));
- 
- 	dev_put(dev);
- 
-@@ -798,8 +798,8 @@ static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
+@@ -797,10 +797,12 @@ static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
+ 		can_skb_set_owner(skb, sk);
  
  		can_send_ret = can_send(skb, 1);
- 		if (can_send_ret)
--			pr_notice_once("can-isotp: %s: can_send_ret %d\n",
--				       __func__, can_send_ret);
-+			pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
-+				       __func__, ERR_PTR(can_send_ret));
- 
+-		if (can_send_ret)
++		if (can_send_ret) {
+ 			pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
+ 				       __func__, ERR_PTR(can_send_ret));
+-
++			if (can_send_ret == -ENOBUFS)
++				pr_notice_once("can-isotp: tx queue is full, increasing txqueuelen may prevent this error");
++		}
  		if (so->tx.idx >= so->tx.len) {
  			/* we are done */
-@@ -946,8 +946,8 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	err = can_send(skb, 1);
- 	dev_put(dev);
- 	if (err) {
--		pr_notice_once("can-isotp: %s: can_send_ret %d\n",
--			       __func__, err);
-+		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
-+			       __func__, ERR_PTR(err));
- 		return err;
- 	}
- 
+ 			so->tx.state = ISOTP_IDLE;
 -- 
 2.17.1
 
