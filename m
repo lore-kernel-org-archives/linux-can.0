@@ -2,84 +2,69 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABC02C433ED
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 055D6C43460
 	for <linux-can@archiver.kernel.org>; Tue, 27 Apr 2021 05:22:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 731C9613B4
-	for <linux-can@archiver.kernel.org>; Tue, 27 Apr 2021 05:22:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CAEA8613BD
+	for <linux-can@archiver.kernel.org>; Tue, 27 Apr 2021 05:21:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhD0FWm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 27 Apr 2021 01:22:42 -0400
-Received: from mout01.posteo.de ([185.67.36.65]:59085 "EHLO mout01.posteo.de"
+        id S229550AbhD0FWj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 27 Apr 2021 01:22:39 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:55661 "EHLO mout02.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229788AbhD0FWh (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Tue, 27 Apr 2021 01:22:37 -0400
+        id S229536AbhD0FWg (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 27 Apr 2021 01:22:36 -0400
 Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 99BC2240028
-        for <linux-can@vger.kernel.org>; Tue, 27 Apr 2021 07:21:53 +0200 (CEST)
+        by mout02.posteo.de (Postfix) with ESMTPS id C0CDB2400FD
+        for <linux-can@vger.kernel.org>; Tue, 27 Apr 2021 07:21:51 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1619500913; bh=c9HwlFNkXVQClpPdN97uB7nEFbFhZBEgXsw6/gyE4Y4=;
+        t=1619500911; bh=9OnaEzP7+K30fSr267P0abZkCLV5RfY0Ce9iEMsTJgU=;
         h=From:To:Subject:Date:From;
-        b=sPGdMcPF3yZXGDUihXtW36CEMvYumSt+3EGohi5iT0bCeZtfrELCK19c1rExoFLZg
-         M9qarxENQp5hFSiAyxrmLo6grjn5RVeBm58UXIRHpNhYSdiX/CelVoZ/58vgP1Radt
-         3h6qbtOtgPdNB9+y7UXJhtFGPAiJK4p1mBZcVonXdME0VFH7Drr4vDsCVsiM4foftZ
-         Z+0HEJ1h4XBRmfzD82G+M/ENaGaORtMhGSbOl8Oks6wHbDaYkScZcZrMI1hIwASomV
-         tg+BCHwzIK1gyr247lDuy8/t0suqrGpo6JLk1vZbnB0IHFa9uFpTRuw8COEOpD4U18
-         H+7y2BBKXEg0A==
+        b=pWY14SFSs5+n0YJS6P128no1j/HE9TMuwAWXlmTAYH24SFkPpCQPCedR31Z0CvvYA
+         NeZbUzY1Pv7bwYz6VGA6Is+LGpIOxWaAjHyUsYAsf4nHj8/4KJP+9PkOsDX6vF+m9S
+         Gderr/Pzj138dfLItnzLoLUZyo0U7Qgr2RPhnfgkjk0W2IipyaItB8iUaiPagX+UcD
+         8pFDkgZkWB93KmOkWgt3L62YnYDC4MVFIn7zWjWdzWR/wQRH1f8V+v2KHTEvylSUDR
+         FdlOaXsMnzEMZwMcSbxvxS0lIe82UOHSGioZxx1Qi73lSAR2DXLvhY5QCYIEDI3hc9
+         9pXdggK5abM3g==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4FTqrK04Djz9rxF;
-        Tue, 27 Apr 2021 07:21:52 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4FTqrG3sdWz9rxG;
+        Tue, 27 Apr 2021 07:21:50 +0200 (CEST)
 From:   Patrick Menschel <menschel.p@posteo.de>
 To:     Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] can-isotp: Add error message if txqueuelen is too small
-Date:   Tue, 27 Apr 2021 05:21:49 +0000
-Message-Id: <20210427052150.2308-4-menschel.p@posteo.de>
-In-Reply-To: <20210427052150.2308-1-menschel.p@posteo.de>
-References: <20210427052150.2308-1-menschel.p@posteo.de>
+Subject: [PATCH v2 0/3] can-isotp: Add more comprehensive error messages
+Date:   Tue, 27 Apr 2021 05:21:46 +0000
+Message-Id: <20210427052150.2308-1-menschel.p@posteo.de>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds an additional error message in
-case that txqueuelen is set too small and
-advices the user to increase txqueuelen.
+This patch series adds more comprehensive error messages to isotp.c by
+using error pointers instead of decimal error numbers.
 
-This is likely to happen even with small transfers if
-txqueuelen is at default value 10 frames.
+https://www.kernel.org/doc/html/latest/core-api/printk-formats.html#error-pointers
 
-Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
----
- net/can/isotp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+It also adds a more comprehensive error message in case txqueue is full
+due to a burst transfer, telling the user to increase txqueuelen to 
+prevent this from happening.
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 2075d8d9e..d08f95bfd 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -797,10 +797,12 @@ static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
- 		can_skb_set_owner(skb, sk);
- 
- 		can_send_ret = can_send(skb, 1);
--		if (can_send_ret)
-+		if (can_send_ret) {
- 			pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
- 				       __func__, ERR_PTR(can_send_ret));
--
-+			if (can_send_ret == -ENOBUFS)
-+				pr_notice_once("can-isotp: tx queue is full, increasing txqueuelen may prevent this error");
-+		}
- 		if (so->tx.idx >= so->tx.len) {
- 			/* we are done */
- 			so->tx.state = ISOTP_IDLE;
+
+Patrick Menschel (3):
+  can-isotp: Change error format from decimal to symbolic error names
+  can-isotp: Add symbolic error message to isotp_module_init()
+  can-isotp: Add error message if txqueuelen is too small
+
+ net/can/isotp.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
 -- 
 2.17.1
 
