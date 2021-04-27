@@ -2,78 +2,99 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7634BC433ED
-	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 20:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6DD9C433ED
+	for <linux-can@archiver.kernel.org>; Tue, 27 Apr 2021 05:21:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4442461359
-	for <linux-can@archiver.kernel.org>; Mon, 26 Apr 2021 20:00:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9C929613B0
+	for <linux-can@archiver.kernel.org>; Tue, 27 Apr 2021 05:21:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241661AbhDZUA4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Apr 2021 16:00:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47406 "EHLO mail.kernel.org"
+        id S229872AbhD0FWi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 27 Apr 2021 01:22:38 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:56333 "EHLO mout02.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241643AbhDZUAz (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 26 Apr 2021 16:00:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3F08761359;
-        Mon, 26 Apr 2021 20:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619467210;
-        bh=TSP9laMO4J+RyNDorr3aO5dlTm3tpcLkmZhZFedDnnc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LGdYLZrHot33o7+u42dI7PJYWLMwidaL1Vedk4aFQAoIBd/gTOgH4FDP57mzfl+ku
-         tzY/jOu7TaIdND59qitwGamvCvM4y6jXh8zfkhS1el+RUlyEmPQny/ITMw1hJs60It
-         Ucfusx4/ecFeruN0ZQbv+Ehx6snjnIJNt/CnP6+x3BUBLBFFZXLm4VuMUnj4Nydwi3
-         T8TtQWbqS32znhpgHC/a+K5A8bKVvjccujatDwg1h+1HxsEBA6P4sqKr30orE4dVv8
-         uVEG00bXOiTdZoCdJpeAkX6H4fl9xfBmCUJKd4AtPNsQMw8ruH1ojdEBVNkBoYOeR3
-         is/mztaC9P+4A==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: can-next 2021-04-26
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161946721020.23958.12763756415417873021.git-patchwork-notify@kernel.org>
-Date:   Mon, 26 Apr 2021 20:00:10 +0000
-References: <20210426065452.3411360-1-mkl@pengutronix.de>
-In-Reply-To: <20210426065452.3411360-1-mkl@pengutronix.de>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, kernel@pengutronix.de
+        id S229501AbhD0FWg (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Tue, 27 Apr 2021 01:22:36 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 309632400FE
+        for <linux-can@vger.kernel.org>; Tue, 27 Apr 2021 07:21:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1619500912; bh=r49o/Gcq6TCorMWcYz7eb/OdEGXFuPCA/ZwX7ZH817k=;
+        h=From:To:Subject:Date:From;
+        b=jASVHDZY5jtu84PyQzgXYQ9SYofOzkZDhGy+zjeBE0cGCRL2WTdQM0n4OpbzomEwp
+         LzJLVpzXqgZJpKIp+xA/0n1OYn4nKhm9sgnt+/QLCO5wehNMeUV27GFyEhgoe1PnEf
+         waDLZDshOYV8/UvA9Lxppqo/IXSMBiKTZV2yTazPy172SlK8VBGqMwvpKFIdg4p24W
+         c5lDdC06CnqowpubHTHO9PhdnuMQW0ydgulZE1y2NPfRT2epMzSOcYJULiyMDaNp03
+         x763UQxBogfuuBf2TXPvbS3NFG2FcFwnSRsDT+cxDeFpZ3KW7J0UrX71fu1+3M5UsG
+         0qqIostB4ASCQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4FTqrH3zRrz9rxM;
+        Tue, 27 Apr 2021 07:21:51 +0200 (CEST)
+From:   Patrick Menschel <menschel.p@posteo.de>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] can-isotp: Change error format from decimal to symbolic error names
+Date:   Tue, 27 Apr 2021 05:21:47 +0000
+Message-Id: <20210427052150.2308-2-menschel.p@posteo.de>
+In-Reply-To: <20210427052150.2308-1-menschel.p@posteo.de>
+References: <20210427052150.2308-1-menschel.p@posteo.de>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+This patch changes the format string for errors from
+decimal %d to symbolic error names %pe to achieve
+more comprehensive log messages.
 
-This pull request was applied to netdev/net-next.git (refs/heads/master):
+Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
+---
+ net/can/isotp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-On Mon, 26 Apr 2021 08:54:48 +0200 you wrote:
-> Hello Jakub, hello David,
-> 
-> this is a pull request of 4 patches for net-next/master.
-> 
-> the first two patches are from Colin Ian King and target the
-> etas_es58x driver, they add a missing NULL pointer check and fix some
-> typos.
-> 
-> [...]
-
-Here is the summary with links:
-  - pull-request: can-next 2021-04-26
-    https://git.kernel.org/netdev/net-next/c/d0c5d18da2da
-  - [net-next,2/4] can: etas_es58x: Fix a couple of spelling mistakes
-    https://git.kernel.org/netdev/net-next/c/1c9690dd308e
-  - [net-next,3/4] can: add a note that RECV_OWN_MSGS frames are subject to filtering
-    https://git.kernel.org/netdev/net-next/c/924e464f4a8a
-  - [net-next,4/4] can: proc: fix rcvlist_* header alignment on 64-bit system
-    https://git.kernel.org/netdev/net-next/c/e6b031d3c37f
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 9f94ad3ca..2c4f84fac 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -221,8 +221,8 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
+ 
+ 	can_send_ret = can_send(nskb, 1);
+ 	if (can_send_ret)
+-		pr_notice_once("can-isotp: %s: can_send_ret %d\n",
+-			       __func__, can_send_ret);
++		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
++			       __func__, ERR_PTR(can_send_ret));
+ 
+ 	dev_put(dev);
+ 
+@@ -798,8 +798,8 @@ static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
+ 
+ 		can_send_ret = can_send(skb, 1);
+ 		if (can_send_ret)
+-			pr_notice_once("can-isotp: %s: can_send_ret %d\n",
+-				       __func__, can_send_ret);
++			pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
++				       __func__, ERR_PTR(can_send_ret));
+ 
+ 		if (so->tx.idx >= so->tx.len) {
+ 			/* we are done */
+@@ -946,8 +946,8 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	err = can_send(skb, 1);
+ 	dev_put(dev);
+ 	if (err) {
+-		pr_notice_once("can-isotp: %s: can_send_ret %d\n",
+-			       __func__, err);
++		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
++			       __func__, ERR_PTR(err));
+ 		return err;
+ 	}
+ 
+-- 
+2.17.1
 
