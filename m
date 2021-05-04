@@ -2,101 +2,316 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67665C43461
-	for <linux-can@archiver.kernel.org>; Tue,  4 May 2021 20:36:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A08A2C433B4
+	for <linux-can@archiver.kernel.org>; Tue,  4 May 2021 20:36:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 47689613DF
-	for <linux-can@archiver.kernel.org>; Tue,  4 May 2021 20:36:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6DBCB613D2
+	for <linux-can@archiver.kernel.org>; Tue,  4 May 2021 20:36:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbhEDUhB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 4 May 2021 16:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
+        id S232871AbhEDUhO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 4 May 2021 16:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbhEDUhA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 May 2021 16:37:00 -0400
+        with ESMTP id S232169AbhEDUhN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 May 2021 16:37:13 -0400
 Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B7AC061574
-        for <linux-can@vger.kernel.org>; Tue,  4 May 2021 13:36:02 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id o16so12875866ljp.3
-        for <linux-can@vger.kernel.org>; Tue, 04 May 2021 13:36:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7C5C06138E
+        for <linux-can@vger.kernel.org>; Tue,  4 May 2021 13:36:17 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id b21so12806601ljf.11
+        for <linux-can@vger.kernel.org>; Tue, 04 May 2021 13:36:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=flodin-me.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0axzc7no5h3INRXc+5xP0BDp3d4xOPiiJKbi/m2zvG0=;
-        b=nA0Vd3HsV37YAgXFnWawSi/QUAI712ahgzw7ZE2JNmqbv+UnWLJRodeqdyIeeZ++3k
-         gY05zrgmnKAD4gTH55N25Nxqs4X7Fgi6yHs5E1TWCHQQ8A9605fzRpeHhBa22c/7JFC8
-         zSY+5WtwB9XPqxTwg2ZYYIGqvYca1Ewh6b4dzjPC/vXByy3iuCzg8ORm9gmK9w/FGoU8
-         GjkLfboxu3CBKVgTbV4dMWy/FdxOgS6DxwmnesgNXQP62L7H99LcYbjk04xpjkqWVHHL
-         9wXS9Rch6nFZbtncdiIa9XJWa4Xs6AYEHaw9bz+D0IFiUUE1LrQoLPgsuj4bQr0o67jn
-         /Khg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oVZGRUnLTF2ujsME2GvskilHwBjffJIH9l/zY7blY+k=;
+        b=lk6a1HUIdGsM/bQVsENvrSvdkW+3O7gTMZWK3Jnmj6/ULj3S1buH7yU5tfYKbsd3PL
+         EiV8q/K1oYRmRDDxGnOzdMpMhe51rFQpOamWVUvFwvkX1LIGp4jpUD4ISiJ635QLzqfJ
+         Vo1vgi/hDwn36ARlKK3tKQ9evGvDgKzuhDMiBsd12C3UX5Oq40mv9/qfTg7Tsbyu50nj
+         EsX4PGMJu9oLzJz9ZGHJjsU92AKyJAleyZ54H+YgaEdZLwmoU7VwMBjGM9nijPnLHgj0
+         qGK0emtAOJx7pEkUXkHmKF/FU7TD1G/7GuxSB0oAC00Kf7iQfixjJWT2BomSx3/ZYuG0
+         q35Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0axzc7no5h3INRXc+5xP0BDp3d4xOPiiJKbi/m2zvG0=;
-        b=SDoghjQlNSAojfY6lEbz71eO+X0tk2MffNvVA2q53UnoI5hpmZq+Magck4ExvuYcJQ
-         N5y3pDAoYDdMO0dMqsuDXEjl06n6yI/zt7d3vSBffPweGvY/HIPZo5uIkl7wL2Polez8
-         jAirjZ/7NOZv+nabfoDaOXrT75O4jVjuPXYPobYHWinjh1xLhAuhNqdMA+2lw5LQSBWD
-         00/bumpJNqNw/7s2Hx6IZNKRRNiVDoThZbe19cpgaw99cmMNA4GRBi4GZ1CTxVt3ajcq
-         9aYjI2jyP1kexwbnizgSJyFHerWnn7+g12zOq8DThuRZy8Ce6A3SJ0eam7tuhzEdcHUC
-         VRww==
-X-Gm-Message-State: AOAM533aWw2dI96O8EoK3IJGtFAsVnvhhQ+OQs5pft8Yh4ruQgISye7G
-        y26J1EDYDKOdTSLhtxf+ksVpLQ==
-X-Google-Smtp-Source: ABdhPJyUeoCJBYXqXV0qacfH28GoiRJuTtvPEt6/vftDe5OL79M2MJx9P5fHe1QdpXiP6+KjgToevw==
-X-Received: by 2002:a2e:2c01:: with SMTP id s1mr3082191ljs.17.1620160561169;
-        Tue, 04 May 2021 13:36:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oVZGRUnLTF2ujsME2GvskilHwBjffJIH9l/zY7blY+k=;
+        b=pOzv2hsMtpi7Qk3kxkcK3ZSHg+5dg+z1tM+9g9cYHUOskbHx3J8/DZeWOG3YrmIX8a
+         Ct1CrAT5Oh3BTGmuu1IwvcIXimujpANYwtywItb7OH2oHTpcqmhdCSOhABX0XVvlb0fh
+         4zDs25oadAjgXIX3Q9UeV4PfGI4M+9EpgGkMha4g2iX3E+QMxyM3Mqodsg3RPnDdHVBW
+         FH3vreK53bNar9Z5in5v1ZJ49WEF/ct0kU5pWFswKGrHDM0NZaOYvh6OUcq9DKKuZmTz
+         sXCXHuu5u3XIGeoqf/mUJOy8Ow177UgI/5SBa2/q1f7K+lJg2XS7Y3Qiw4cUG0P7loKM
+         JzxQ==
+X-Gm-Message-State: AOAM5309n3MrcXRHmRGkeVK4uGUGYWXB9NGcvGywXHqj1g0eaQGZLLTg
+        CL1/oZdf5cRNaxazWDNiglge1w==
+X-Google-Smtp-Source: ABdhPJxUoJpdWIrynpc1QosXAoFSxzQgX0GUa9XVdBfz1+dnSK88qo2t9eZJJ3MaMdZAJvkU3vddxQ==
+X-Received: by 2002:a2e:a365:: with SMTP id i5mr10860264ljn.344.1620160576339;
+        Tue, 04 May 2021 13:36:16 -0700 (PDT)
 Received: from trillian.bjorktomta.lan (h-158-174-77-132.NA.cust.bahnhof.se. [158.174.77.132])
-        by smtp.gmail.com with ESMTPSA id v1sm1792222ljj.77.2021.05.04.13.35.59
+        by smtp.gmail.com with ESMTPSA id v1sm1792222ljj.77.2021.05.04.13.36.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 13:36:00 -0700 (PDT)
+        Tue, 04 May 2021 13:36:15 -0700 (PDT)
 From:   Erik Flodin <erik@flodin.me>
 To:     socketcan@hartkopp.net, mkl@pengutronix.de
 Cc:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-doc@vger.kernel.org, Erik Flodin <erik@flodin.me>
-Subject: [PATCH v2 0/2] can: Add CAN_RAW_RECV_OWN_MSGS_ALL socket option
-Date:   Tue,  4 May 2021 22:35:44 +0200
-Message-Id: <20210504203546.115734-1-erik@flodin.me>
+Subject: [PATCH v2 2/2] can: raw: add CAN_RAW_RECV_OWN_MSGS_ALL socket option
+Date:   Tue,  4 May 2021 22:35:46 +0200
+Message-Id: <20210504203546.115734-3-erik@flodin.me>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210504203546.115734-1-erik@flodin.me>
+References: <20210504203546.115734-1-erik@flodin.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add a socket option that works as CAN_RAW_RECV_OWN_MSGS but where reception
-of a socket's own frame isn't subject to filtering. This way transmission
-confirmation can more easily (or at all if CAN_RAW_JOIN_FILTERS is enabled)
-be used in combination with filters.
+CAN_RAW_RECV_OWN_MSGS_ALL works as CAN_RAW_RECV_OWN_MSGS with the
+difference that all sent frames are received as no filtering is applied
+on the socket's own frames in this case.
 
-Changes since v1:
-- Rebase on top of can-next/master.
+Signed-off-by: Erik Flodin <erik@flodin.me>
+---
+ Documentation/networking/can.rst |  7 +++
+ include/uapi/linux/can/raw.h     | 18 ++++---
+ net/can/raw.c                    | 91 +++++++++++++++++++++++++++-----
+ 3 files changed, 95 insertions(+), 21 deletions(-)
 
-Erik Flodin (2):
-  can: add support for filtering own messages only
-  can: raw: add CAN_RAW_RECV_OWN_MSGS_ALL socket option
-
- Documentation/networking/can.rst |   7 +++
- include/linux/can/core.h         |   4 +-
- include/uapi/linux/can/raw.h     |  18 +++---
- net/can/af_can.c                 |  50 ++++++++-------
- net/can/af_can.h                 |   1 +
- net/can/bcm.c                    |   9 ++-
- net/can/gw.c                     |   7 ++-
- net/can/isotp.c                  |   8 +--
- net/can/j1939/main.c             |   4 +-
- net/can/proc.c                   |  11 ++--
- net/can/raw.c                    | 101 +++++++++++++++++++++++++------
- 11 files changed, 153 insertions(+), 67 deletions(-)
-
-
-base-commit: 9d31d2338950293ec19d9b095fbaa9030899dcb4
+diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
+index f34cb0e4460e..80c70357cd33 100644
+--- a/Documentation/networking/can.rst
++++ b/Documentation/networking/can.rst
+@@ -611,6 +611,13 @@ demand:
+ Note that reception of a socket's own CAN frames are subject to the same
+ filtering as other CAN frames (see :ref:`socketcan-rawfilter`).
+ 
++RAW socket option CAN_RAW_RECV_OWN_MSGS_ALL
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Identical to CAN_RAW_RECV_OWN_MSGS except that all sent messages are
++received. I.e. reception is not subject to filtering.
++
++
+ .. _socketcan-rawfd:
+ 
+ RAW Socket Option CAN_RAW_FD_FRAMES
+diff --git a/include/uapi/linux/can/raw.h b/include/uapi/linux/can/raw.h
+index 3386aa81fdf2..6e29b2b145e2 100644
+--- a/include/uapi/linux/can/raw.h
++++ b/include/uapi/linux/can/raw.h
+@@ -53,15 +53,17 @@ enum {
+ 	SCM_CAN_RAW_ERRQUEUE = 1,
+ };
+ 
+-/* for socket options affecting the socket (not the global system) */
+-
++/* For socket options affecting the socket (not the global system).
++ * Options default to off unless noted otherwise.
++ */
+ enum {
+-	CAN_RAW_FILTER = 1,	/* set 0 .. n can_filter(s)          */
+-	CAN_RAW_ERR_FILTER,	/* set filter for error frames       */
+-	CAN_RAW_LOOPBACK,	/* local loopback (default:on)       */
+-	CAN_RAW_RECV_OWN_MSGS,	/* receive my own msgs (default:off) */
+-	CAN_RAW_FD_FRAMES,	/* allow CAN FD frames (default:off) */
+-	CAN_RAW_JOIN_FILTERS,	/* all filters must match to trigger */
++	CAN_RAW_FILTER = 1,	   /* set 0 .. n can_filter(s)          */
++	CAN_RAW_ERR_FILTER,	   /* set filter for error frames       */
++	CAN_RAW_LOOPBACK,	   /* local loopback (default on)       */
++	CAN_RAW_RECV_OWN_MSGS,	   /* receive my own msgs w/ filtering  */
++	CAN_RAW_FD_FRAMES,	   /* allow CAN FD frames               */
++	CAN_RAW_JOIN_FILTERS,	   /* all filters must match to trigger */
++	CAN_RAW_RECV_OWN_MSGS_ALL, /* receive my own msgs w/o filtering */
+ };
+ 
+ #endif /* !_UAPI_CAN_RAW_H */
+diff --git a/net/can/raw.c b/net/can/raw.c
+index acfbae28d451..79c29942b0be 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -86,6 +86,7 @@ struct raw_sock {
+ 	struct notifier_block notifier;
+ 	int loopback;
+ 	int recv_own_msgs;
++	int recv_own_msgs_all;
+ 	int fd_frames;
+ 	int join_filters;
+ 	int count;                 /* number of active filters */
+@@ -122,7 +123,7 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+ 	unsigned int *pflags;
+ 
+ 	/* check the received tx sock reference */
+-	if (!ro->recv_own_msgs && oskb->sk == sk)
++	if (!ro->recv_own_msgs && !ro->recv_own_msgs_all && oskb->sk == sk)
+ 		return;
+ 
+ 	/* do not pass non-CAN2.0 frames to a legacy socket */
+@@ -132,7 +133,8 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+ 	/* eliminate multiple filter matches for the same skb */
+ 	if (this_cpu_ptr(ro->uniq)->skb == oskb &&
+ 	    this_cpu_ptr(ro->uniq)->skbcnt == can_skb_prv(oskb)->skbcnt) {
+-		if (ro->join_filters) {
++		if (ro->join_filters &&
++		    (!ro->recv_own_msgs_all || oskb->sk != sk)) {
+ 			this_cpu_inc(ro->uniq->join_rx_count);
+ 			/* drop frame until all enabled filters matched */
+ 			if (this_cpu_ptr(ro->uniq)->join_rx_count < ro->count)
+@@ -145,8 +147,10 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+ 		this_cpu_ptr(ro->uniq)->skbcnt = can_skb_prv(oskb)->skbcnt;
+ 		this_cpu_ptr(ro->uniq)->join_rx_count = 1;
+ 		/* drop first frame to check all enabled filters? */
+-		if (ro->join_filters && ro->count > 1)
++		if (ro->join_filters && ro->count > 1 &&
++		    (!ro->recv_own_msgs_all || oskb->sk != sk)) {
+ 			return;
++		}
+ 	}
+ 
+ 	/* clone the given skb to be able to enqueue it into the rcv queue */
+@@ -214,6 +218,18 @@ static int raw_enable_errfilter(struct net *net, struct net_device *dev,
+ 	return err;
+ }
+ 
++static int raw_enable_ownfilter(struct net *net, struct net_device *dev,
++				struct sock *sk, bool recv_own_msgs_all)
++{
++	int err = 0;
++
++	if (recv_own_msgs_all)
++		err = can_rx_register(net, dev, 0, MASK_ALL, true, raw_rcv,
++				      sk, "raw", sk);
++
++	return err;
++}
++
+ static void raw_disable_filters(struct net *net, struct net_device *dev,
+ 				struct sock *sk, struct can_filter *filter,
+ 				int count)
+@@ -236,6 +252,13 @@ static inline void raw_disable_errfilter(struct net *net,
+ 				  false, raw_rcv, sk);
+ }
+ 
++static void raw_disable_ownfilter(struct net *net, struct net_device *dev,
++				  struct sock *sk, bool recv_own_msgs_all)
++{
++	if (recv_own_msgs_all)
++		can_rx_unregister(net, dev, 0, MASK_ALL, true, raw_rcv, sk);
++}
++
+ static inline void raw_disable_allfilters(struct net *net,
+ 					  struct net_device *dev,
+ 					  struct sock *sk)
+@@ -244,6 +267,7 @@ static inline void raw_disable_allfilters(struct net *net,
+ 
+ 	raw_disable_filters(net, dev, sk, ro->filter, ro->count);
+ 	raw_disable_errfilter(net, dev, sk, ro->err_mask);
++	raw_disable_ownfilter(net, dev, sk, ro->recv_own_msgs_all);
+ }
+ 
+ static int raw_enable_allfilters(struct net *net, struct net_device *dev,
+@@ -253,13 +277,19 @@ static int raw_enable_allfilters(struct net *net, struct net_device *dev,
+ 	int err;
+ 
+ 	err = raw_enable_filters(net, dev, sk, ro->filter, ro->count);
+-	if (!err) {
+-		err = raw_enable_errfilter(net, dev, sk, ro->err_mask);
+-		if (err)
+-			raw_disable_filters(net, dev, sk, ro->filter,
+-					    ro->count);
+-	}
++	if (err)
++		goto out;
++	err = raw_enable_errfilter(net, dev, sk, ro->err_mask);
++	if (err)
++		goto out_disable;
++	err = raw_enable_ownfilter(net, dev, sk, ro->recv_own_msgs_all);
++	if (!err)
++		goto out;
+ 
++	raw_disable_errfilter(net, dev, sk, ro->err_mask);
++out_disable:
++	raw_disable_filters(net, dev, sk, ro->filter, ro->count);
++out:
+ 	return err;
+ }
+ 
+@@ -323,10 +353,11 @@ static int raw_init(struct sock *sk)
+ 	ro->count            = 1;
+ 
+ 	/* set default loopback behaviour */
+-	ro->loopback         = 1;
+-	ro->recv_own_msgs    = 0;
+-	ro->fd_frames        = 0;
+-	ro->join_filters     = 0;
++	ro->loopback          = 1;
++	ro->recv_own_msgs     = 0;
++	ro->recv_own_msgs_all = 0;
++	ro->fd_frames         = 0;
++	ro->join_filters      = 0;
+ 
+ 	/* alloc_percpu provides zero'ed memory */
+ 	ro->uniq = alloc_percpu(struct uniqframe);
+@@ -495,6 +526,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 	can_err_mask_t err_mask = 0;
+ 	int count = 0;
+ 	int err = 0;
++	int old_val;
+ 
+ 	if (level != SOL_CAN_RAW)
+ 		return -EINVAL;
+@@ -639,6 +671,33 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 
+ 		break;
+ 
++	case CAN_RAW_RECV_OWN_MSGS_ALL:
++		if (optlen != sizeof(ro->recv_own_msgs_all))
++			return -EINVAL;
++
++		old_val = ro->recv_own_msgs_all;
++		if (copy_from_sockptr(&ro->recv_own_msgs_all, optval, optlen))
++			return -EFAULT;
++
++		lock_sock(sk);
++
++		if (ro->bound && ro->ifindex)
++			dev = dev_get_by_index(sock_net(sk), ro->ifindex);
++
++		if (ro->bound) {
++			if (old_val && !ro->recv_own_msgs_all)
++				raw_disable_ownfilter(sock_net(sk), dev, sk, true);
++			else if (!old_val && ro->recv_own_msgs_all)
++				err = raw_enable_ownfilter(sock_net(sk), dev, sk, true);
++		}
++
++		if (dev)
++			dev_put(dev);
++
++		release_sock(sk);
++
++		break;
++
+ 	default:
+ 		return -ENOPROTOOPT;
+ 	}
+@@ -718,6 +777,12 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
+ 		val = &ro->join_filters;
+ 		break;
+ 
++	case CAN_RAW_RECV_OWN_MSGS_ALL:
++		if (len > sizeof(int))
++			len = sizeof(int);
++		val = &ro->recv_own_msgs_all;
++		break;
++
+ 	default:
+ 		return -ENOPROTOOPT;
+ 	}
 -- 
 2.31.1
 
