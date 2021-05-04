@@ -2,138 +2,100 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A4FCC433ED
-	for <linux-can@archiver.kernel.org>; Tue,  4 May 2021 11:21:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E902C433B4
+	for <linux-can@archiver.kernel.org>; Tue,  4 May 2021 11:28:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7353E61185
-	for <linux-can@archiver.kernel.org>; Tue,  4 May 2021 11:21:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DE739611AE
+	for <linux-can@archiver.kernel.org>; Tue,  4 May 2021 11:28:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhEDLV4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 4 May 2021 07:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
+        id S230043AbhEDL2z (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 4 May 2021 07:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhEDLVz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 May 2021 07:21:55 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0D6C0613ED
-        for <linux-can@vger.kernel.org>; Tue,  4 May 2021 04:20:58 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id g65so5150823wmg.2
-        for <linux-can@vger.kernel.org>; Tue, 04 May 2021 04:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=maxiluxsystems-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cAwBbYzvWD7oIUAO1sUhohUXvBfbHjObsY39o0c6Ua8=;
-        b=J9D9jFg2jMWxFkY2kFAK+k1Jo5hmTgEBU+jSjDW8MRCUEfu24hG/D5zpYmmXePj5mJ
-         OuUZUYRREuERu3+d5nAkbPWCGTyJjVUMKruIcPqXm9RN09kldujMfYMLqtze7I9pz2D7
-         imMhBrvqgWmFjBRUmHrj4LkGrDNNNp7tsDBKhedDvEoxc+vxUCJmZgLjOg+eKXtk9+Ep
-         TP9YMpMvtrodlkjGZ1/X4FLvgfEtK99ErA89/03vBwYd9GRJLfp/aQkzm0oDN2fAwZ7d
-         6FXU5LBanLPJyvXeg+82DtDfOfTHzAVB3hJ0wDnsI8phE91GUoMhW9SE3JRZpckCKw4M
-         T7cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cAwBbYzvWD7oIUAO1sUhohUXvBfbHjObsY39o0c6Ua8=;
-        b=cFpItKuqyOz7bEq63NR5ZxlAVTv1sptylAYT8Nkh6KZoikqcrheWTLF5dE6sAk9D00
-         HkOrtTUuhsO/LsNLHkR9Jvwd/2PYRP4L8j+D99EVB9uaFVjp4bctv3Hjr+2S8FqO9rU6
-         hQoEX8UEpSC/SnjSam3aF2kDIJbQdmub3EKEvlBZ4XfPJP3x0V5a1OPB4kbFTHuI8DnZ
-         gYgnL7QudrA1soeBjKRn/2NAoWwaJNmsBKMMiqQ2xFlC5YS2a0NbXnWCAVH4cSFmNcqO
-         R28FNsSaEoDyzuCTG/sNR+PJ5bcJTOTYLq4ef1TlFrnO63KZepNrPljP9nfS8jGFXwUE
-         WRpA==
-X-Gm-Message-State: AOAM531wpkltGj4BRgf4XitmkMw5//+iXH7/Q7SlGuJKKcQcJT7WN9qs
-        DVdq+vK6eTUfdtcBCIDzlLoCgSb7qtZrmz5u
-X-Google-Smtp-Source: ABdhPJy8e6brJlwhmXyyGt/itKepOiWiUtAhw9LQE1HBBoOifZfrhqYd2WdG4SZ+KgmD12OhUoJelQ==
-X-Received: by 2002:a7b:c006:: with SMTP id c6mr26426833wmb.129.1620127257046;
-        Tue, 04 May 2021 04:20:57 -0700 (PDT)
-Received: from localhost.localdomain (92.41.10.173.threembb.co.uk. [92.41.10.173])
-        by smtp.gmail.com with ESMTPSA id a21sm2222022wmj.34.2021.05.04.04.20.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 04:20:56 -0700 (PDT)
-From:   Torin Cooper-Bennun <torin@maxiluxsystems.com>
-To:     linux-can@vger.kernel.org
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Pankaj Sharma <pankj.sharma@samsung.com>,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Subject: [PATCH 3/4] can: m_can: make TXESC, RXESC config more explicit
-Date:   Tue,  4 May 2021 12:20:34 +0100
-Message-Id: <20210504112035.336424-4-torin@maxiluxsystems.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210504112035.336424-1-torin@maxiluxsystems.com>
+        with ESMTP id S229903AbhEDL2z (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 May 2021 07:28:55 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951F6C061574
+        for <linux-can@vger.kernel.org>; Tue,  4 May 2021 04:28:00 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1ldtDa-0006nR-K1; Tue, 04 May 2021 13:27:58 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:4880:7cee:6dec:c8f9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id DFCA861BBBC;
+        Tue,  4 May 2021 11:27:56 +0000 (UTC)
+Date:   Tue, 4 May 2021 13:27:56 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Torin Cooper-Bennun <torin@maxiluxsystems.com>
+Cc:     linux-can@vger.kernel.org, Pankaj Sharma <pankj.sharma@samsung.com>
+Subject: Re: PATCH [0/4] can: m_can: various regmask-related cleanup
+Message-ID: <20210504112756.mqidrskk4mswgxvs@pengutronix.de>
 References: <20210504112035.336424-1-torin@maxiluxsystems.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mwb5asr2fneawbhu"
+Content-Disposition: inline
+In-Reply-To: <20210504112035.336424-1-torin@maxiluxsystems.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Introduce masks for the three RXESC fields (RBDS, F1DS, F0DS) and the
-one TXESC field (TBDS). Update m_can_chip_config() to explicitly set all
-four fields to the 64-byte option (0x7) (and these defs are renamed to
-be more concise).
 
-This is an improvement in maintainability, and also makes it easier to
-implement more flexible configuration of the M_CAN buffers in the
-future.
----
- drivers/net/can/m_can/m_can.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+--mwb5asr2fneawbhu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index c85f064de4a0..e3b15b74fdc9 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -235,8 +235,10 @@ enum m_can_reg {
- #define RXFS_FFL_MASK	GENMASK(6, 0)
- 
- /* Rx Buffer / FIFO Element Size Configuration (RXESC) */
--#define M_CAN_RXESC_8BYTES	0x0
--#define M_CAN_RXESC_64BYTES	0x777
-+#define RXESC_RBDS_MASK		GENMASK(10, 8)
-+#define RXESC_F1DS_MASK		GENMASK(6, 4)
-+#define RXESC_F0DS_MASK		GENMASK(2, 0)
-+#define RXESC_64B		0x7
- 
- /* Tx Buffer Configuration (TXBC) */
- #define TXBC_TFQS_MASK		GENMASK(29, 24)
-@@ -249,8 +251,8 @@ enum m_can_reg {
- #define TXFQS_TFFL_MASK		GENMASK(5, 0)
- 
- /* Tx Buffer Element Size Configuration(TXESC) */
--#define TXESC_TBDS_8BYTES	0x0
--#define TXESC_TBDS_64BYTES	0x7
-+#define TXESC_TBDS_MASK		GENMASK(2, 0)
-+#define TXESC_TBDS_64B		0x7
- 
- /* Tx Event FIFO Configuration (TXEFC) */
- #define TXEFC_EFS_MASK		GENMASK(21, 16)
-@@ -1191,7 +1193,10 @@ static void m_can_chip_config(struct net_device *dev)
- 	m_can_config_endisable(cdev, true);
- 
- 	/* RX Buffer/FIFO Element Size 64 bytes data field */
--	m_can_write(cdev, M_CAN_RXESC, M_CAN_RXESC_64BYTES);
-+	m_can_write(cdev, M_CAN_RXESC,
-+		    FIELD_PREP(RXESC_RBDS_MASK, RXESC_64B) |
-+		    FIELD_PREP(RXESC_F1DS_MASK, RXESC_64B) |
-+		    FIELD_PREP(RXESC_F0DS_MASK, RXESC_64B));
- 
- 	/* Accept Non-matching Frames Into FIFO 0 */
- 	m_can_write(cdev, M_CAN_GFC, 0x0);
-@@ -1209,7 +1214,8 @@ static void m_can_chip_config(struct net_device *dev)
- 	}
- 
- 	/* support 64 bytes payload */
--	m_can_write(cdev, M_CAN_TXESC, TXESC_TBDS_64BYTES);
-+	m_can_write(cdev, M_CAN_TXESC,
-+		    FIELD_PREP(TXESC_TBDS_MASK, TXESC_TBDS_64B));
- 
- 	/* TX Event FIFO */
- 	if (cdev->version == 30) {
--- 
-2.30.2
+On 04.05.2021 12:20:31, Torin Cooper-Bennun wrote:
+> 1/4 modernises m_can.c, using GENMASK for all regmasks and
+> FIELD_{GET,PREP,MAX} for ops. Maintainable, consistent and concise.
+>=20
+> 2/4 makes clear all the differences in CCCR between M_CAN spec revisions,
+> and orders the defs by revision, ascending.
+>=20
+> 3/4 makes explicit the config of RX & TX buffer sizes, making it a bit
+> more readable, especially against the spec.
+>=20
+> 4/4 fixes whitespace in a few comments.
 
+Well done! A really nice cleanup series.
+
+Please repost with your Signed-off-by: added.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--mwb5asr2fneawbhu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCRL7kACgkQqclaivrt
+76lBDQf+MZUDHZqDFUXGCvGWs6Qfb6JUSNXsjbGdN1NfQPP7xcS4lKLtPHac2Dl+
+IWalpq7CojXco3CtfWshSHHRHqg9Vg+6JBjWNI39Nw4+X4UGQG9Qj0CAquaqGYgh
+F3RgU24DtG1WQZnHGHdrcEW362rc8LkyPEX8x1kmeIg9+vHMMUxxJcYR/JIv14K7
+xuks+YVWfCHdlt4hGUOvfNUMYRLwQI/5qD0N5kxyXvV/9xP6HeMmYfUYwpqwMfqa
+pTBYOwby+QRlMP3E3ukySQEFksuKYk29jnhuhZJLoVrCKCEBwv1fD/9xfLXMhHLY
+CgqwtJIiyrYR3AysmE3f05NOV9G0wA==
+=Bjaz
+-----END PGP SIGNATURE-----
+
+--mwb5asr2fneawbhu--
