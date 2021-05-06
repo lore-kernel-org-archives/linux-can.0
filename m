@@ -7,46 +7,48 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F61BC433B4
-	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 07:40:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AB4AC43461
+	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 07:40:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 14E08611CB
-	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 07:40:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DBF8D61185
+	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 07:40:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhEFHlW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 6 May 2021 03:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
+        id S233524AbhEFHlY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 6 May 2021 03:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233532AbhEFHlV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 May 2021 03:41:21 -0400
+        with ESMTP id S233536AbhEFHlW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 6 May 2021 03:41:22 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB57EC06174A
-        for <linux-can@vger.kernel.org>; Thu,  6 May 2021 00:40:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF24C061761
+        for <linux-can@vger.kernel.org>; Thu,  6 May 2021 00:40:24 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1leYcQ-0003CZ-EB
+        id 1leYcQ-0003Cf-QO
         for linux-can@vger.kernel.org; Thu, 06 May 2021 09:40:22 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 39D9C61DD80
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7315B61DD86
         for <linux-can@vger.kernel.org>; Thu,  6 May 2021 07:40:19 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 37A6861DD6F;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1BCB061DD6D;
         Thu,  6 May 2021 07:40:18 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5d0cfd0a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ecd8dc44;
         Thu, 6 May 2021 07:40:17 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 2/4] can: mcp251xfd: mcp251xfd_probe(): add missing can_rx_offload_del() in error path
-Date:   Thu,  6 May 2021 09:40:13 +0200
-Message-Id: <20210506074015.1300591-3-mkl@pengutronix.de>
+        kernel@pengutronix.de, Dan Carpenter <dan.carpenter@oracle.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 1/4] can: mcp251xfd: mcp251xfd_probe(): fix an error pointer dereference in probe
+Date:   Thu,  6 May 2021 09:40:12 +0200
+Message-Id: <20210506074015.1300591-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210506074015.1300591-1-mkl@pengutronix.de>
 References: <20210506074015.1300591-1-mkl@pengutronix.de>
@@ -60,34 +62,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds the missing can_rx_offload_del(), that must be called
-if mcp251xfd_register() fails.
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
-Link: https://lore.kernel.org/r/20210504091838.1109047-1-mkl@pengutronix.de
+When we converted this code to use dev_err_probe() we accidentally
+removed a return. It means that if devm_clk_get() it will lead to an
+Oops when we call clk_get_rate() on the next line.
+
+Fixes: cf8ee6de2543 ("can: mcp251xfd: mcp251xfd_probe(): use dev_err_probe() to simplify error handling")
+Link: https://lore.kernel.org/r/YJANZf13Qxd5Mhr1@mwanda
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index f122976e90da..e0ae00e34c7b 100644
+index 970dc570e7a5..f122976e90da 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2986,10 +2986,12 @@ static int mcp251xfd_probe(struct spi_device *spi)
+@@ -2885,8 +2885,8 @@ static int mcp251xfd_probe(struct spi_device *spi)
  
- 	err = mcp251xfd_register(priv);
- 	if (err)
--		goto out_free_candev;
-+		goto out_can_rx_offload_del;
+ 	clk = devm_clk_get(&spi->dev, NULL);
+ 	if (IS_ERR(clk))
+-		dev_err_probe(&spi->dev, PTR_ERR(clk),
+-			      "Failed to get Oscillator (clock)!\n");
++		return dev_err_probe(&spi->dev, PTR_ERR(clk),
++				     "Failed to get Oscillator (clock)!\n");
+ 	freq = clk_get_rate(clk);
  
- 	return 0;
- 
-+ out_can_rx_offload_del:
-+	can_rx_offload_del(&priv->offload);
-  out_free_candev:
- 	spi->max_speed_hz = priv->spi_max_speed_hz_orig;
- 
+ 	/* Sanity check */
+
+base-commit: 8621436671f3a4bba5db57482e1ee604708bf1eb
 -- 
 2.30.2
 
