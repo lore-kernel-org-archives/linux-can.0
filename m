@@ -2,79 +2,153 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEB85C433ED
-	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 17:56:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E4AFC433B4
+	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 18:01:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 84B60610F7
-	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 17:56:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 63DC5610F7
+	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 18:01:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236392AbhEFR5R (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 6 May 2021 13:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbhEFR5L (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 May 2021 13:57:11 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B94C06138A
-        for <linux-can@vger.kernel.org>; Thu,  6 May 2021 10:56:03 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:f434:20f9:aa9e:b80c])
-        by laurent.telenet-ops.be with bizsmtp
-        id 1Vvy2500U0ZPnBx01VvyXi; Thu, 06 May 2021 19:56:02 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1leiEA-003NT5-31; Thu, 06 May 2021 19:55:58 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1leiE9-00HHNK-Bk; Thu, 06 May 2021 19:55:57 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ulrich Hecht <uli+renesas@fpond.eu>
-Cc:     linux-can@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 0/2] dt-bindings: can: renesas: Convert to json-schema
-Date:   Thu,  6 May 2021 19:55:52 +0200
-Message-Id: <cover.1620323639.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S236362AbhEFSCD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 6 May 2021 14:02:03 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.21]:21818 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236389AbhEFSCD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 6 May 2021 14:02:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1620324063; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=W+iVTO9HuJof1hEZTF/DeUPsjKU3C89n9YnXua5ocPX55BqnjqhJHQmI0Z/5nkwNAo
+    IB6cEjA2ganLabsSVkBB5d0G8Uv0+NzX3RAHGwa0NvzUGymihRE78EPqiTY59h32Kujo
+    yCvCeJ++jye0lYQKZU/zcXxZNPqGiDuCND+WAYxXU+B84SYx8aNlkNs2LbfyxaDshbW1
+    cvXKX3zoVUoYjut2L/wEMrDR4+ixqj91BtngOjmvoqa5sArkhjo96Z385kjUt34Twssx
+    K/h2AJ2Pnxhhbg/T21EO7SWeFsX5NLaWUgVlqcy1to+aubiVl3GzOWrsVvVC1dalq6nP
+    /KQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1620324063;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:Date:Message-ID:Cc:From:References:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Utbqd4mo9pMH66+lxQyVg812iLGjXms55qaqLiivWZI=;
+    b=ooEzMRUf7kYeIJSek1Jzs2gEyD1CdXBoXRT1nXgTOGoNDFnUJfqJgM8GS0HfT569Q0
+    TI+Ph6Bg8uSCAqX9gH6WdC6TRy6hzAL1aq/mIPnEfiidTaF6/7O1xbgapavKxEDmo5oG
+    oqkN5tHVDR94Evly+uk/20J05pQw2EXxWZq5NeIGXgRdPovtOoPZWolT8S2SjJBwMIIe
+    G8pQ5BTMe6//uiMHjq93UjQ5nPKiQkdZJcfiutGRQ59p4bqoQXzpFwnARNImXR1oai5/
+    L0FnakLgWptxygFafnpCjJe8LDRk6O+eC5Bpg0tshc7fpzRHEoF9w5e7iRlgxjeW0i3F
+    2hCg==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1620324063;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:Date:Message-ID:Cc:From:References:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Utbqd4mo9pMH66+lxQyVg812iLGjXms55qaqLiivWZI=;
+    b=k8xQ0NMmKXsxBfeOcoMYPgYwK3BD+EVk4UfvHKL46OhFfEsgU8NxxDbCYtRCXCKEPW
+    IZhA4qvbzrTO+NpGLsRvergcr6P0kbTzetuyR2Oa6xCWu1YZedcvZNqT8nxWk2kcu83P
+    DJOXj3WS4ztOGBz75CUflQ6yj80iy0J4PJTwLLV9NKe/swnCjp4w6HUcZSp54LF3Ab2d
+    dpzWee+yBN1VaN4xHiA+58oqSlNc6kZWARVwKqgCYXSQd9tejgJb0WRpjE4l+bdMdWIP
+    HZC3T8w4WiZM+INjLH2KEayqvv34QefIaV6+TPtaa8I38TBOz8EpxhTh/jJDqyw+uV19
+    5JKg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3HMbEWKONebStI="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.50.177]
+    by smtp.strato.de (RZmta 47.25.6 DYNA|AUTH)
+    with ESMTPSA id e040b6x46I1305Q
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 6 May 2021 20:01:03 +0200 (CEST)
+Subject: Re: CAN ISO-TP
+To:     Bartosz Zdanowicz <zdanowiczb@gmail.com>
+References: <CAERdor5nY73X4qip=up8fNU=xT+H7r2XnKiob66=4DxovkBiGw@mail.gmail.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     linux-can <linux-can@vger.kernel.org>
+Message-ID: <a7df697c-b6d3-1894-dcc6-672698caa19a@hartkopp.net>
+Date:   Thu, 6 May 2021 20:01:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAERdor5nY73X4qip=up8fNU=xT+H7r2XnKiob66=4DxovkBiGw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-	Hi all,
++CC Linux CAN ML
 
-This patch series converts the DT bindings for the Renesas R-Car CAN and
-CAN FD controllers found in Renesas SoCs to json-schema.
+Hi Bartosz,
 
-Thanks for your comments!
+On 06.05.21 19:28, Bartosz Zdanowicz wrote:
 
-Geert Uytterhoeven (2):
-  dt-bindings: can: rcar_can: Convert to json-schema
-  dt-bindings: can: rcar_canfd: Convert to json-schema
+> I'm not sure if you prefer e-mail message, but I don't want to raise 
+> GitHub Issue yet.
+> 
 
- .../devicetree/bindings/net/can/rcar_can.txt  |  80 ----------
- .../bindings/net/can/rcar_canfd.txt           | 107 --------------
- .../bindings/net/can/renesas,rcar-can.yaml    | 139 ++++++++++++++++++
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 122 +++++++++++++++
- 4 files changed, 261 insertions(+), 187 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/can/rcar_can.txt
- delete mode 100644 Documentation/devicetree/bindings/net/can/rcar_canfd.txt
- create mode 100644 Documentation/devicetree/bindings/net/can/renesas,rcar-can.yaml
- create mode 100644 Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+Raising a GitHub issue is generally a good idea as it may help other 
+people too.
 
--- 
-2.25.1
+But asking on the Linux CAN mailing list is even better ;-)
 
+> I'm using module that you are an author and it's working perfectly on my 
+> local PC. I'm using Ubuntu with Kernel version 5.4.0-70-generic
+
+Which branch did you use? master branch?
+
+> I tried to simplify example where I use python wrappers and other things 
+> and manage to get minimal example:
+> 
+> /import socket as s
+> socket = s.socket(s.AF_CAN, s.SOCK_DGRAM, s.CAN_ISOTP)
+> socket.bind(("vcan0", 1, 2))
+> socket.send(b"AAAAAAAAA")
+> socket.send(b"AAAAAAAAA")/
+> /
+> /
+> It's working perfectly, even if I don't open receiver socket. It just 
+> timeout and there is no issue.
+
+But this should raise an issue as you send 9 bytes which would need 
+segmentation.
+
+This should only work with CAN FD frames with a single frame.
+
+Can you create a candump log from vcan0 to see, what's going on the bus?
+
+> I tried to run my application on RPI, when module is already included 
+> with kernel version Linux raspberrypi 5.10.17-v7+ #1403 SMP Mon Feb 22 
+> 11:29:51 GMT 2021 armv7l GNU/Linux.
+> 
+> I run above code and first send is working (no receiver as well), 
+> timeout, but second one is printing
+> 
+> OSError: [Errno 70] Communication error on send
+
+That's interesting! We are currently working on creating that kind of 
+feedback.
+
+https://lore.kernel.org/linux-can/97e2ddd5-cc8b-9c7b-6198-2eceee39dfd4@hartkopp.net/
+
+So how is Python getting this information?
+
+Regards,
+Oliver
+
+> 
+> And pattern is repeated. So sending next data works and after those 
+> error appears. It seems like sending new data somehow ,,validate" 
+> previous send. When I create other socket that reads data it's working 
+> perfectly. The issue is, somehow in our architecture other device might 
+> be unavailable.
+> 
+> I checked also dmesg and there is no tips. Is it any known issue, or 
+> maybe it's expected?
+> 
+> Thanks in advance for you reply.
+> 
+> Best Regards,
+> Bartosz Zdanowicz
