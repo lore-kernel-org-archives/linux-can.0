@@ -2,52 +2,54 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A420C433B4
-	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 07:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F61BC433B4
+	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 07:40:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2835E611CB
-	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 07:40:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 14E08611CB
+	for <linux-can@archiver.kernel.org>; Thu,  6 May 2021 07:40:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbhEFHlU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 6 May 2021 03:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
+        id S233541AbhEFHlW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 6 May 2021 03:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233486AbhEFHlU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 May 2021 03:41:20 -0400
+        with ESMTP id S233532AbhEFHlV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 6 May 2021 03:41:21 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D9BC061574
-        for <linux-can@vger.kernel.org>; Thu,  6 May 2021 00:40:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB57EC06174A
+        for <linux-can@vger.kernel.org>; Thu,  6 May 2021 00:40:23 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1leYcP-0003Bn-3P
-        for linux-can@vger.kernel.org; Thu, 06 May 2021 09:40:21 +0200
+        id 1leYcQ-0003CZ-EB
+        for linux-can@vger.kernel.org; Thu, 06 May 2021 09:40:22 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BE07761DD79
-        for <linux-can@vger.kernel.org>; Thu,  6 May 2021 07:40:18 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 39D9C61DD80
+        for <linux-can@vger.kernel.org>; Thu,  6 May 2021 07:40:19 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 04DA061DD6C;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 37A6861DD6F;
         Thu,  6 May 2021 07:40:18 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3d0cd145;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5d0cfd0a;
         Thu, 6 May 2021 07:40:17 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: pull-request: can 2021-05-06
-Date:   Thu,  6 May 2021 09:40:11 +0200
-Message-Id: <20210506074015.1300591-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 2/4] can: mcp251xfd: mcp251xfd_probe(): add missing can_rx_offload_del() in error path
+Date:   Thu,  6 May 2021 09:40:13 +0200
+Message-Id: <20210506074015.1300591-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210506074015.1300591-1-mkl@pengutronix.de>
+References: <20210506074015.1300591-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -58,56 +60,35 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+This patch adds the missing can_rx_offload_del(), that must be called
+if mcp251xfd_register() fails.
 
-this is a pull request of 4 patches for net/master.
-
-The first two patches target the mcp251xfd driver. Dan Carpenter's
-patch fixes a NULL pointer dereference in the probe function's error
-path. A patch by me adds the missing can_rx_offload_del() in error
-path of the probe function.
-
-Frieder Schrempf contributes a patch for the mcp251x driver, the patch
-fixes the resume from sleep before interface was brought up.
-
-The last patch is by me and fixes a race condition in the TX path of
-the m_can driver for peripheral (SPI) based m_can cores.
-
-regards,
-Marc
-
+Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
+Link: https://lore.kernel.org/r/20210504091838.1109047-1-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-The following changes since commit 8621436671f3a4bba5db57482e1ee604708bf1eb:
-
-  smc: disallow TCP_ULP in smc_setsockopt() (2021-05-05 12:52:45 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.13-20210506
-
-for you to fetch changes up to e04b2cfe61072c7966e1a5fb73dd1feb30c206ed:
-
-  can: m_can: m_can_tx_work_queue(): fix tx_skb race condition (2021-05-06 09:24:07 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.13-20210506
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      can: mcp251xfd: mcp251xfd_probe(): fix an error pointer dereference in probe
-
-Frieder Schrempf (1):
-      can: mcp251x: fix resume from sleep before interface was brought up
-
-Marc Kleine-Budde (2):
-      can: mcp251xfd: mcp251xfd_probe(): add missing can_rx_offload_del() in error path
-      can: m_can: m_can_tx_work_queue(): fix tx_skb race condition
-
- drivers/net/can/m_can/m_can.c                  |  3 ++-
- drivers/net/can/spi/mcp251x.c                  | 35 +++++++++++++-------------
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c |  8 +++---
- 3 files changed, 25 insertions(+), 21 deletions(-)
-
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index f122976e90da..e0ae00e34c7b 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -2986,10 +2986,12 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 
+ 	err = mcp251xfd_register(priv);
+ 	if (err)
+-		goto out_free_candev;
++		goto out_can_rx_offload_del;
+ 
+ 	return 0;
+ 
++ out_can_rx_offload_del:
++	can_rx_offload_del(&priv->offload);
+  out_free_candev:
+ 	spi->max_speed_hz = priv->spi_max_speed_hz_orig;
+ 
+-- 
+2.30.2
 
 
