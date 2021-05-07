@@ -2,103 +2,87 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A99CC433B4
-	for <linux-can@archiver.kernel.org>; Fri,  7 May 2021 14:18:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7FB5C433ED
+	for <linux-can@archiver.kernel.org>; Fri,  7 May 2021 22:17:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0014F61421
-	for <linux-can@archiver.kernel.org>; Fri,  7 May 2021 14:18:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AC6B561414
+	for <linux-can@archiver.kernel.org>; Fri,  7 May 2021 22:17:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235163AbhEGOTr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 7 May 2021 10:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233715AbhEGOTq (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 7 May 2021 10:19:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9CFC061574
-        for <linux-can@vger.kernel.org>; Fri,  7 May 2021 07:18:46 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lf1JV-00042k-4U; Fri, 07 May 2021 16:18:45 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:10aa:68ec:7bd5:aa67])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id D260561EE1B;
-        Fri,  7 May 2021 14:18:43 +0000 (UTC)
-Date:   Fri, 7 May 2021 16:18:42 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     "Sottas Guillaume (LMB)" <Guillaume.Sottas@liebherr.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Subject: Re: [PATCH RFC] can: isotp: isotp_sendmsg(): return error on FC
- timeout on TX path
-Message-ID: <20210507141842.uu3huooq4gfywacd@pengutronix.de>
-References: <e9ebf4ab4b1a431eac24a21ab8379894@liebherr.com>
- <20210507125017.hu3rcilzcw4rknof@pengutronix.de>
- <d691ed18-d9d4-bf78-d506-cbd7a74dba6b@hartkopp.net>
+        id S229791AbhEGWSB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 7 May 2021 18:18:01 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:34543 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhEGWSB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 7 May 2021 18:18:01 -0400
+Received: by mail-oi1-f171.google.com with SMTP id l6so10106520oii.1;
+        Fri, 07 May 2021 15:17:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GWOEPR/A11iaMsH2CHmu/qIwfEzADJJvuj2QafKuI7c=;
+        b=ElbgQlNX9SnSYYP3myOTV1sONa3YVeCc1ld4onGYh6U5FbYlDWpWJP0CsjMkULSl9n
+         HxFYrXEZh3YuhhDqCgEc90Wmes3ciGIzuswnPCgnpzCvwoEqW2yyju/OJQflx5sJWINg
+         kZ0JR0YGnC0a4lQbDOfe9Ug+pdXPQ+h8BG4zFLZ2lt9L5SBi5rjes58mDiXDhSFuYWPS
+         nf7nmVWDxeY8moQ8CuSBgPs4w9UqCATQ7D/L7/LynTX0FRLklJysUhhf8JRqaPInbMxd
+         QVLoW9yyiFtQ4twi5AGczEU6jPyjS4ocdJnXtsm52KJSdu3xedLWubGyNMQUnG7Pro3O
+         2ZQA==
+X-Gm-Message-State: AOAM531KaaNLQPe2Ti8UsxNZse58Dg319k7zNx1fXUprOz87GyxS8gTa
+        cAA8FcZIDHkXUXifWrhTKg==
+X-Google-Smtp-Source: ABdhPJyccjuuOpjh3uZRoBE6ReAS0JGYPJllnNKSrK89RtwvbRpiMiSzD7NWQO1acGWIvWtOg/YoSA==
+X-Received: by 2002:aca:edd1:: with SMTP id l200mr2584059oih.154.1620425820683;
+        Fri, 07 May 2021 15:17:00 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t74sm1208993oie.51.2021.05.07.15.16.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 15:17:00 -0700 (PDT)
+Received: (nullmailer pid 2996061 invoked by uid 1000);
+        Fri, 07 May 2021 22:16:58 -0000
+Date:   Fri, 7 May 2021 17:16:58 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Ulrich Hecht <uli+renesas@fpond.eu>, netdev@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: can: rcar_can: Convert to json-schema
+Message-ID: <20210507221658.GA2996032@robh.at.kernel.org>
+References: <cover.1620323639.git.geert+renesas@glider.be>
+ <561c35648e22a3c1e3b5477ae27fd1a50da7fe98.1620323639.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="neugqirz5rcmoufj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d691ed18-d9d4-bf78-d506-cbd7a74dba6b@hartkopp.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+In-Reply-To: <561c35648e22a3c1e3b5477ae27fd1a50da7fe98.1620323639.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On Thu, 06 May 2021 19:55:53 +0200, Geert Uytterhoeven wrote:
+> Convert the Renesas R-Car CAN Controller Device Tree binding
+> documentation to json-schema.
+> 
+> Document missing properties.
+> Update the example to match reality.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> I have listed Sergei as the maintainer, as he wrote the original driver
+> and bindings.  Sergei: Please scream if this is inappropriate ;-)
+> ---
+>  .../devicetree/bindings/net/can/rcar_can.txt  |  80 ----------
+>  .../bindings/net/can/renesas,rcar-can.yaml    | 139 ++++++++++++++++++
+>  2 files changed, 139 insertions(+), 80 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/can/rcar_can.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/can/renesas,rcar-can.yaml
+> 
 
---neugqirz5rcmoufj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 07.05.2021 16:12:49, Oliver Hartkopp wrote:
-> Hi Marc,
->=20
-> On 07.05.21 14:50, Marc Kleine-Budde wrote:
-> > On 07.05.2021 12:29:33, Sottas Guillaume (LMB) wrote:
-> > > Indeed the first version (with positive value) does not work, but I
-> > > just tested the V2 of the patch, and work like a charm. Let me know if
-> > > I can help to get it integrated
-> >=20
-> > You can send you Tested-by to that v2 patch, like Oliver did to the v1.
->=20
-> Of course I did the test to my adapted version which now became the v2 ;-)
-
-I interpreted your post that way :D
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---neugqirz5rcmoufj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCVTD8ACgkQqclaivrt
-76lSBgf+Nd5F3375taF2igF4WCprlSkviOpzm1IWckVnqfe3fHdE+t1TsxKfpk3j
-a7ugy8Oul/RJD2Pc1c1hfWvPj4n4Ljl9uqA4WSbS/H1FQcPk/fPicQUJIP0I5cDv
-6Au6IJcnW8fE9xC2gGUCqSee9Y1icQMEcmbryicNqZGCNbvXl3gUSfvQQZMw16H0
-E84ePXreS++CQsL32jnVJlbJavFGPNFxGjhmuR6lXw8vCmUWvELrtTktW+CVPYaF
-BqbecXkWEz07ImxuoODI+DkYy5OBQrep2+peNX1hhCOgndL6ARvvA5lmJSReew9P
-cgd8FnTty3Qn2aX5LrsmiJyaY9AlFQ==
-=OWnn
------END PGP SIGNATURE-----
-
---neugqirz5rcmoufj--
+Reviewed-by: Rob Herring <robh@kernel.org>
