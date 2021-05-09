@@ -2,119 +2,103 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27EA7C433B4
-	for <linux-can@archiver.kernel.org>; Sun,  9 May 2021 11:28:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83B97C433ED
+	for <linux-can@archiver.kernel.org>; Sun,  9 May 2021 12:51:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ED61E613D6
-	for <linux-can@archiver.kernel.org>; Sun,  9 May 2021 11:28:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5DEA2613F0
+	for <linux-can@archiver.kernel.org>; Sun,  9 May 2021 12:51:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhEILaA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 9 May 2021 07:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhEIL37 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 9 May 2021 07:29:59 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED206C061573
-        for <linux-can@vger.kernel.org>; Sun,  9 May 2021 04:28:55 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id t18so13683251wry.1
-        for <linux-can@vger.kernel.org>; Sun, 09 May 2021 04:28:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flodin-me.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VaLM6gqnr87nZ/J/GoIbImlKOLbOi6aa/fwQ0JZIaSI=;
-        b=bLewWa/lCyqxDDIcoZPSsZVSA4RaF6k9cxcr3z02/w0ecM/lOYQaIz1BVazRNLKf5x
-         8omo5m+6MpN8c85jKZ1rcK3FmUhCKq/TPaJl6qrTxSm/iQRNwiHUoZCzGXBbi1I6iphy
-         cjLDSPQuZUHjcLXLr0a7JcCk7C87RVe8EZ0uhAc/EYmV92B66150kEhW55CxFqKxe1Hu
-         94HBWFmDfumdDVfI603DzGed4meHe6A+0vzVegsqEFtu0o/YFkWjCYz6NY5CLJJqnWrZ
-         hKnfJfIyVdE4B1mF6JrOLhBnmvDDw1bGpt1veCoTw8jQqIPdVe8JQUl2OwidEjRlP8qD
-         jNTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VaLM6gqnr87nZ/J/GoIbImlKOLbOi6aa/fwQ0JZIaSI=;
-        b=P5NMJwq5swjO7xyc/KJ3A7VtBajRTSQinQjq0ev7DZvh+HA92CVqX1VPeXErcRYi+b
-         vHJiJgklca9fI6yHO8lMnlpzaamXv+ay+MLlXtJu3BYOUlGH4+vZrnicZyKlKrJM4la6
-         Dof8KZfkRLfCExjYyK75dkaTiKo56kUYj19G6v3framrUBR9oTGJN9vv7Lv7rWfMGu//
-         VqV+0jZUBJgP1+febNPOFN09h65Y1Vtr7JQOBGl5TTRq1usK3qi2LY0enXYRjo1gTzXc
-         WMRkDAcqIbYO/XOFXSrsmdF95UHrL/XhSk7YkbTZih9eLbuowUIciIVSSYGlO/GbqjoZ
-         N8xA==
-X-Gm-Message-State: AOAM533NM7zOeHd1pWXDtYDhLqYl0i6mluFLof53gZWLwrcFuj7Vf46e
-        c9muP+6BvPrx3L1ijtdfG3PGFR7zfrdIRRhT0uoFfKv9slw=
-X-Google-Smtp-Source: ABdhPJzsqntl5R/Miby/7ERXNOg2WCCToNoGvsQnGK8MtPVwWz/hzrC2lf814LUf6JUz7G3mNpZCZeLE1aGFLIAxoo4=
-X-Received: by 2002:a5d:63cb:: with SMTP id c11mr24478518wrw.49.1620559734469;
- Sun, 09 May 2021 04:28:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210504203546.115734-1-erik@flodin.me> <20210504203546.115734-2-erik@flodin.me>
- <cf5fdb14-47e2-2d08-0d29-c621bff7b312@hartkopp.net> <CAAMKmocxj1zOQastSqKhHmV0-9HVh3NpPmSPWf=byxj+fFPUHQ@mail.gmail.com>
- <64bf5aaf-1e8c-2f29-8263-63710a771843@hartkopp.net> <CAAMKmoda0U912_6Qp97fzt4BjcbUPDrE8Cy5C7C-TS5_7du31Q@mail.gmail.com>
- <46bdff5c-c0ab-56e9-7c70-8a3267458d55@hartkopp.net>
-In-Reply-To: <46bdff5c-c0ab-56e9-7c70-8a3267458d55@hartkopp.net>
-From:   Erik Flodin <erik@flodin.me>
-Date:   Sun, 9 May 2021 13:28:40 +0200
-Message-ID: <CAAMKmocsZBsFfpRLyLHqFE94xb-xrm5S8YG=QzQTndDjtOyuzw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] can: add support for filtering own messages only
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S229737AbhEIMwd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 9 May 2021 08:52:33 -0400
+Received: from smtp-35.italiaonline.it ([213.209.10.35]:35375 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229658AbhEIMwd (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sun, 9 May 2021 08:52:33 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([95.244.94.151])
+        by smtp-35.iol.local with ESMTPA
+        id fim8lvyCKpK9wfimFlntVO; Sun, 09 May 2021 14:43:19 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1620564199; bh=UhV8rqTENwuZ3s7Sy5Xkw0YwPYTFwDkCVFGaL/kQI2w=;
+        h=From;
+        b=rLXtuXfu3CHd35KAlnf20j/SOodPwume18srm3/j7/FvFVY0jyewEtb7i1I7WGtKB
+         ctLrAaHBobtfeuAcZFGt2b1fAGCMZjodYTIuE+1vvgqx0M/eP5zCx6PFWz4dlB8r41
+         z38mpWn7gTpmlLW3YxDIwZ9z5lzRyttrdDBLKizLbqHrJWPSRLsM622tmvz1ZhGP9A
+         qnn7xxmX7bKRdR9yIUXMQ3g66SUmtNXlR/2PzfOYShDDm8zIHwnvj9SuZ2vAGc/ji1
+         obNMADzk3q86yyl9EU0l4ceHD5IsQrch60myJBRWnvKiYe/d3OA2RoHsEKJZJQ34eQ
+         +CRhgbvnpUBWA==
+X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=6097d8e7 cx=a_exe
+ a=ugxisoNCKEotYwafST++Mw==:117 a=ugxisoNCKEotYwafST++Mw==:17
+ a=G6fnrvWBiLgj45YZLGUA:9
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 1/3] can: c_can: remove the rxmasked unused variable
+Date:   Sun,  9 May 2021 14:43:07 +0200
+Message-Id: <20210509124309.30024-2-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210509124309.30024-1-dariobin@libero.it>
+References: <20210509124309.30024-1-dariobin@libero.it>
+X-CMAE-Envelope: MS4xfLeBA7YIlgML9uS/zWAM3EWuzlbsvrGWpYBRNVYTJ50C8o7V9ZZ4dMUF17CEq4I58qOG2IvRufI7QOXChXGq67RpBO2xJ5Vf2W8ZpxPGd0v7ITpAaZAy
+ TW5QKyzIU2+H40Oh/q6I0DAYxee3Q/w12skB+vTgsEJE6lb1btjpENqkc2tpzBPuvyM4vSqROCgJO9iS957lX+kCpCQ78SjflV0+P9KJbU/o6PrLRQGa4BRh
+ A86S98mXDj0UytUXIeLY4VSmLc0bIW4kcRzBbC63/2l6oZ/skBqVYJwcOL67rt6kqBL20R7UqXiA7SUaQxuBMurTh5C9y6ueb/LtZa8KkDVtNHDgR4ujLvWZ
+ 45wML/E159Buxwvl5gPzqvJnpmdxjjuqMW5kTZEg7LB8NgYnZpfdObXmCRwzgiioQP24/vuePbKTGIt6XSMH9ZFlqtXpLO50n8Td+SGRzk14S7YZe2znNZ0A
+ zkIwFxaM/6osqJYHtexOMqAH0ibF46APal3Uv8HluNrHmy4yhIcHF0YWyvN5r6Yo6EeH55BQAHZgvAkdV4UnkJblzHFYxZc4yhfYN6WeHwYa5rgD0tv1NWyo
+ eYtakmw/9+xFG7O+SVcFQJmQD0yLbvZ7kCG2LiXvTUzkhQ==
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Thu, 6 May 2021 at 07:26, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> On 05.05.21 20:54, Erik Flodin wrote:
-> > On Wed, 5 May 2021 at 11:15, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> >> On 05.05.21 10:37, Erik Flodin wrote:
-> >>
-> >>>>> Add a new flag to can_rx_register/unregister that, when set, requires
-> >>>>> that the received sk_buff's owning socket matches the socket pointer
-> >>>>> given when setting the filter. This makes it possible to set a filter
-> >>>>> that matches all frames sent on a given socket and nothing else.
-> >>>>
-> >>
-> >> (..)
-> >>
-> >>>>
-> >>>> Wouldn't that already match your requirements?
-> >>>
-> >>> I guess that would require me to use two sockets: one for sending
-> >>> (with RECV_ONLY_OWN_MSGS set) and one for receiving. The problem might
-> >>> then be how to avoid the second socket seeing the frames sent from the
-> >>> first, without disabling loopback completly?
-> >>
-> >> This is indeed a question of the application layout.
-> >>
-> >>   From what I understood your main requirement is to double check the
-> >> outgoing traffic whether is has been sent.
-> >
-> > What I would like to have is:
-> > 1. Be notified when a frame has been sent. I send (from user space) a
-> > single frame and wait until I get confirmation before sending the next
-> > to give other nodes on the bus a slot to start sending, even if their
-> > frames have ID with lower priority.
->
-> o_O
->
-> Sorry, but I have problems to get behind your use-case.
->
-> 1. You are sending a frame
-> 2. You get a confirmation
-> 3. You are waiting some time (which is not written above), to give other
-> nodes a slot??
+Initialized by c_can_chip_config() it's never used.
 
-No explicit sleep is needed. The machine is sufficient slow so that
-just waiting for the confirmation before sending the next frame is
-enough. But if the frames are queued in the socket/device then the
-frames are sent back-to-back.
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
+---
 
-> 4. goto 1??
+ drivers/net/can/c_can/c_can.c | 1 -
+ drivers/net/can/c_can/c_can.h | 1 -
+ 2 files changed, 2 deletions(-)
 
-Yes.
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 313793f6922d..1fa47968c2ec 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -599,7 +599,6 @@ static int c_can_chip_config(struct net_device *dev)
+ 
+ 	/* Clear all internal status */
+ 	atomic_set(&priv->tx_active, 0);
+-	priv->rxmasked = 0;
+ 	priv->tx_dir = 0;
+ 
+ 	/* set bittiming params */
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 06045f610f0e..517845c4571e 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -205,7 +205,6 @@ struct c_can_priv {
+ 	struct c_can_raminit raminit_sys;	/* RAMINIT via syscon regmap */
+ 	void (*raminit)(const struct c_can_priv *priv, bool enable);
+ 	u32 comm_rcv_high;
+-	u32 rxmasked;
+ 	u32 dlc[];
+ };
+ 
+-- 
+2.17.1
 
-// Erik
