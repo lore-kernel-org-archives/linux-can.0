@@ -2,177 +2,78 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F0B9C433ED
-	for <linux-can@archiver.kernel.org>; Sun,  9 May 2021 12:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BFEEC433ED
+	for <linux-can@archiver.kernel.org>; Sun,  9 May 2021 15:16:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6AB1F6128C
-	for <linux-can@archiver.kernel.org>; Sun,  9 May 2021 12:56:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2FADD61059
+	for <linux-can@archiver.kernel.org>; Sun,  9 May 2021 15:16:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbhEIM5i (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 9 May 2021 08:57:38 -0400
-Received: from smtp-35.italiaonline.it ([213.209.10.35]:58097 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229563AbhEIM5i (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sun, 9 May 2021 08:57:38 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([95.244.94.151])
-        by smtp-35.iol.local with ESMTPA
-        id fim8lvyCKpK9wfimGlntVh; Sun, 09 May 2021 14:43:20 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1620564200; bh=MIC+8AvIQ/VJx/FyZwe6EZOxmjOe7sYnk6eOS8E7LDY=;
-        h=From;
-        b=CNn4GzKPtu6KZi8fwNyVrOz3HfJ6WlW4R2+D5ZTWG1y8ImhtsfCCfa0diJjAdc2xH
-         zEN/hh1kNOielZeSmAjb4v4IXMN0xtZvW+R/ajezOtBxk9KWRqjnD2pvY7dmhn1Kx3
-         vSzizbMgRWRkJzJu5gpYjBxKN7jeLvkc9LUdXx+PhySUMg9uaUiR/JdIJdBfMOYBvQ
-         78EZ7G/xYV1yVlE6abEnLePNVqlhu0PjllMhOLPPQU2AxsIqHYqDGqn+Hti5Apuj2E
-         E6/l2+b1j9wOPSXJ9T8w+gWTK8jaHbIdC/BrdoKoslXWlt82pXe/+vGcI6MwMHqiKI
-         tdH3H/nCqVo7w==
-X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=6097d8e8 cx=a_exe
- a=ugxisoNCKEotYwafST++Mw==:117 a=ugxisoNCKEotYwafST++Mw==:17
- a=SGOFpciEqo9vyzegYnIA:9 a=-4wPlLVnJ--VLaRH:21 a=zBB0C0jdxDwOhFAb:21
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Tong Zhang <ztong0001@gmail.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 2/3] can: c_can: add ethtool support
-Date:   Sun,  9 May 2021 14:43:08 +0200
-Message-Id: <20210509124309.30024-3-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210509124309.30024-1-dariobin@libero.it>
-References: <20210509124309.30024-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfA0qDsJjNLWgnIKNi26fKGnMaxj6u1Cz9OWj2YYk6ar4WfzymnKgl0hOBUivPBQYf0LDW3FE995pKfX4pFi2yDXvkRmyzc/nkeoeczogcsFeubOt6ikb
- hF2rDcIQScqX+MHXgQYuCds51aLZ1y6kNLWuZmHi7ZrghMqnz4gW5RUd5TCQv/x8enSPnj5h7cq5p+N/ij16Rc2urTjpzrOeKXq2MkVTkqPpVyZ8iJdGYVYE
- 61YrJPNFGLyYmI1NSB4hOTfBcDGiIXCPAJUqCV+rtQVnu4pZYPDaPCYMMB+T3Ft54Vdpq7NlAiCv+Mhz9TMpwVnr/sE/nTDnunALbVhKFU+8pUfiGvw7OH9P
- 1d5Dy/mQbnVZxie6Bs2+q7vYw4KDcOuZwNiD2JNC1Vs91qDOFyDqteeFlj0DmcD1yq7+4vUqahKvU9+2yl53aRp0mcAQVUbvv4MO3pVRXtAd3bFeKAC8gUZN
- Cvg6udyvHRadYRKBgUOdQv5WaXzVkbzBouzo5AfCS7BDL8/StscmdSuX3d6sILIiTzdruZi7ytw4o4aaH7uGz93D6I56VcH1qMsHrcwT+ZY+7a/Pqg5lBN6h
- xyuCGn08RRcCJv35edJB1cZb
+        id S229707AbhEIPRM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 9 May 2021 11:17:12 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:42550 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhEIPRL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 9 May 2021 11:17:11 -0400
+Received: by mail-il1-f200.google.com with SMTP id d3-20020a9287430000b0290181f7671fa1so11697640ilm.9
+        for <linux-can@vger.kernel.org>; Sun, 09 May 2021 08:16:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ptj/dJVyElDcDR4dlhXEYGbK7nkar7mLZG2Y7a4j/mk=;
+        b=YxPkNG3sc2HY/ycF4dV8971sWhJSO68kF/pvxLQ05h+nzEc2menZxfDvgtOvpz07Cq
+         CKGX9Prfn8V6pC0dltAf4AxiJtpthSKHszkriLwzh8PWopuc4y8uCXHL+WXxoSeuc5rc
+         jkLtfLCX8c0UxJxGbcZmsipbRzmCd2JkBY1WcTUze51me+jJp0wvK8Fkg29pMU8DLvUF
+         kjYm6gUD74vp3bA66pEtdLvVcyiMyyIeMaQwbkdQvKWODTznrzcXeKtzLr3cEhLHvDQp
+         8APZ01oNszyHb+lMBQsdEUeXo6dJRVvk9dDkXiYwyIyGobpzAymhS5piubd0FT/j4m8p
+         GB0Q==
+X-Gm-Message-State: AOAM533IdW2jNxBOwRgJ6mzyc3SCHJyWVaeYVLv4xo7plmPWgIZmvwIc
+        A0dDSiTMKmbQYtDSGoy5L1xxoVO0PBcBrHzyhzS9MUn2+YO8
+X-Google-Smtp-Source: ABdhPJyJwGwIL1loYhchZjvnNXd4eyMCeUirhmBOuDgssB8pUDt9169y2A7L98/9mTHVSC/CagAOsT8bOf+hALkYwWJBC7G5uvBO
+MIME-Version: 1.0
+X-Received: by 2002:a6b:dc16:: with SMTP id s22mr14878581ioc.170.1620573367415;
+ Sun, 09 May 2021 08:16:07 -0700 (PDT)
+Date:   Sun, 09 May 2021 08:16:07 -0700
+In-Reply-To: <0000000000009f94c1057e772431@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e5b92105c1e723d5@google.com>
+Subject: Re: [syzbot] WARNING in hsr_forward_skb
+From:   syzbot <syzbot+fdce8f2a8903f3ba0e6b@syzkaller.appspotmail.com>
+To:     arvid.brodin@alten.se, axboe@fb.com, axboe@kernel.dk,
+        davem@davemloft.net, dvyukov@google.com, edumazet@google.com,
+        hch@lst.de, kuba@kernel.org, kurt@linutronix.de,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
+        ming.lei@redhat.com, mkl@pengutronix.de, netdev@vger.kernel.org,
+        socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-With commit 132f2d45fb23 ("can: c_can: add support to 64 message objects")
-the number of message objects used for reception / transmission depends
-on FIFO size.
-The ethtools API support allows you to retrieve this info. Driver info
-has been added too.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
----
+commit 9d6803921a16f4d768dc41a75375629828f4d91e
+Author: Kurt Kanzenbach <kurt@linutronix.de>
+Date:   Tue Apr 6 07:35:09 2021 +0000
 
- drivers/net/can/c_can/Makefile                |  3 ++
- drivers/net/can/c_can/c_can.h                 |  2 +
- drivers/net/can/c_can/c_can_ethtool.c         | 46 +++++++++++++++++++
- .../net/can/c_can/{c_can.c => c_can_main.c}   |  1 +
- 4 files changed, 52 insertions(+)
- create mode 100644 drivers/net/can/c_can/c_can_ethtool.c
- rename drivers/net/can/c_can/{c_can.c => c_can_main.c} (99%)
+    net: hsr: Reset MAC header for Tx path
 
-diff --git a/drivers/net/can/c_can/Makefile b/drivers/net/can/c_can/Makefile
-index e6a94c948531..ac2bca39d6ff 100644
---- a/drivers/net/can/c_can/Makefile
-+++ b/drivers/net/can/c_can/Makefile
-@@ -4,5 +4,8 @@
- #
- 
- obj-$(CONFIG_CAN_C_CAN) += c_can.o
-+
-+c_can-objs := c_can_main.o c_can_ethtool.o
-+
- obj-$(CONFIG_CAN_C_CAN_PLATFORM) += c_can_platform.o
- obj-$(CONFIG_CAN_C_CAN_PCI) += c_can_pci.o
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 517845c4571e..4247ff80a29c 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -218,4 +218,6 @@ int c_can_power_up(struct net_device *dev);
- int c_can_power_down(struct net_device *dev);
- #endif
- 
-+void c_can_set_ethtool_ops(struct net_device *dev);
-+
- #endif /* C_CAN_H */
-diff --git a/drivers/net/can/c_can/c_can_ethtool.c b/drivers/net/can/c_can/c_can_ethtool.c
-new file mode 100644
-index 000000000000..1987c78b9647
---- /dev/null
-+++ b/drivers/net/can/c_can/c_can_ethtool.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2021, Dario Binacchi <dariobin@libero.it>
-+ */
-+
-+#include <linux/ethtool.h>
-+#include <linux/kernel.h>
-+#include <linux/platform_device.h>
-+#include <linux/netdevice.h>
-+#include <linux/can/dev.h>
-+
-+#include "c_can.h"
-+
-+static void c_can_get_drvinfo(struct net_device *netdev,
-+			      struct ethtool_drvinfo *info)
-+{
-+	struct c_can_priv *priv = netdev_priv(netdev);
-+	struct platform_device	*pdev = to_platform_device(priv->device);
-+
-+	strscpy(info->driver, "c_can", sizeof(info->driver));
-+	strscpy(info->version, "1.0", sizeof(info->version));
-+	strscpy(info->bus_info, pdev->name, sizeof(info->bus_info));
-+}
-+
-+static void c_can_get_channels(struct net_device *netdev,
-+			       struct ethtool_channels *ch)
-+{
-+	struct c_can_priv *priv = netdev_priv(netdev);
-+
-+	ch->max_rx = priv->msg_obj_num;
-+	ch->max_tx = priv->msg_obj_num;
-+	ch->max_combined = priv->msg_obj_num;
-+	ch->rx_count = priv->msg_obj_rx_num;
-+	ch->tx_count = priv->msg_obj_tx_num;
-+	ch->combined_count = priv->msg_obj_rx_num + priv->msg_obj_tx_num;
-+}
-+
-+static const struct ethtool_ops c_can_ethtool_ops = {
-+	.get_drvinfo = c_can_get_drvinfo,
-+	.get_channels = c_can_get_channels,
-+};
-+
-+void c_can_set_ethtool_ops(struct net_device *netdev)
-+{
-+	netdev->ethtool_ops = &c_can_ethtool_ops;
-+}
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can_main.c
-similarity index 99%
-rename from drivers/net/can/c_can/c_can.c
-rename to drivers/net/can/c_can/c_can_main.c
-index 1fa47968c2ec..7588f70ca0fe 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can_main.c
-@@ -1334,6 +1334,7 @@ int register_c_can_dev(struct net_device *dev)
- 
- 	dev->flags |= IFF_ECHO;	/* we support local echo */
- 	dev->netdev_ops = &c_can_netdev_ops;
-+	c_can_set_ethtool_ops(dev);
- 
- 	err = register_candev(dev);
- 	if (!err)
--- 
-2.17.1
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119c7fedd00000
+start commit:   3af409ca net: enetc: fix destroyed phylink dereference dur..
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
+dashboard link: https://syzkaller.appspot.com/bug?extid=fdce8f2a8903f3ba0e6b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1525467ad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114c0b12d00000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: net: hsr: Reset MAC header for Tx path
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
