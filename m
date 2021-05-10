@@ -2,106 +2,122 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AB1AC433ED
-	for <linux-can@archiver.kernel.org>; Mon, 10 May 2021 06:09:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F674C433B4
+	for <linux-can@archiver.kernel.org>; Mon, 10 May 2021 09:54:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1C888613DC
-	for <linux-can@archiver.kernel.org>; Mon, 10 May 2021 06:09:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6BA9960200
+	for <linux-can@archiver.kernel.org>; Mon, 10 May 2021 09:54:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhEJGK7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 10 May 2021 02:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
+        id S230463AbhEJJzx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 10 May 2021 05:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhEJGK7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 10 May 2021 02:10:59 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2087FC061760
-        for <linux-can@vger.kernel.org>; Sun,  9 May 2021 23:09:55 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id v4so2378044qtp.1
-        for <linux-can@vger.kernel.org>; Sun, 09 May 2021 23:09:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eGZtaov/2jLp363MbdipRXDLJ+YxSvxBrC/OhuvnYEY=;
-        b=Tv8XwToGZImRnH+ZMmuLTzHnVD5UsM8Ex7xEdqPm1D286RgzDjkHSFL0rdq9Uztdcm
-         JKvFQjM9F6f3o3Edwo3OuHurfKBFErCcapmgs0Rk92eOaFWQ3WWXHM54dbH+bSk+l3ih
-         EaeWoHl1D7IbFxHdBPgNQdDRqiR4X3JIXrYFss6a1TeAV98Z/tc1QJEAJEND5qfAQ7nE
-         BJK+uRT2WRin8d3NqVW71PZxNHSzckNzDtUPnF8N96GpRdhvXRwUmAcBEgPvRyXjtvf/
-         eV65vqynzK4bNnmHBUkr2Ab9QZ9AOxK0VTC2iL7nqSy5LcjR4e2NOK9qYcuoYPJKiSQz
-         tKbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eGZtaov/2jLp363MbdipRXDLJ+YxSvxBrC/OhuvnYEY=;
-        b=Ayn+lw/1+zv/hVQeJm1KZg7mS6MSWGAbmXAnaQEWsX9gv8GbcyCTkW572z/vNSlpLm
-         4Rj1/gFft+sfA1iVMyxePDD4kcIET+L2FQEwcq8z6Sjsm1n9MZCNLVm5XgVw4LCG5W2E
-         FyZmXEaPMrFtJPPaGa/in2veAUiN0keQw9rVWphTtwnO0IzJNigi5mdtVkRRUw4D38rh
-         oUU8uCG/N++ByrVC86ErNjofCLEDvNaDhiDAv+i7T6Od/5hMJT8qRxFd6/ytJBJcBV0m
-         B5HtBw5ebLAgEj79dcQ9+GPWrmR4fgrGvodqvu+ZXog/HDqpsFvZh5YluWTxDWYBEsc5
-         OHSQ==
-X-Gm-Message-State: AOAM53383Voc6Ask83cCmeFGG4TD7pfJ7OfxmwpNezqR2zUF8uDba03M
-        VgPiVX0bitKeHadeq3cN/Zb8udXcvips3KNRaClvSg==
-X-Google-Smtp-Source: ABdhPJwDXNAJ7rqPdsxdvS37L/b6fPAlZK2aUqvtF7QMNjEjv477/3kILJBGFyURKDos3ry5nTQ9UROQCms1gkuN9xY=
-X-Received: by 2002:ac8:110d:: with SMTP id c13mr20896043qtj.337.1620626993742;
- Sun, 09 May 2021 23:09:53 -0700 (PDT)
+        with ESMTP id S231241AbhEJJzQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 10 May 2021 05:55:16 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2658C061342
+        for <linux-can@vger.kernel.org>; Mon, 10 May 2021 02:54:11 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lg2c5-0000Jm-Rz; Mon, 10 May 2021 11:54:09 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:80ab:77d5:ac71:3f91])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id A7FAA6200B9;
+        Mon, 10 May 2021 07:45:56 +0000 (UTC)
+Date:   Mon, 10 May 2021 09:45:55 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Patrick Menschel <menschel.p@posteo.de>
+Cc:     Drew Fustini <drew@beagleboard.org>, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, Will C <will@macchina.cc>
+Subject: Re: [net-next 6/6] can: mcp251xfd: mcp251xfd_regmap_crc_read(): work
+ around broken CRC on TBC register
+Message-ID: <20210510074555.ufojb42u5cyrmomb@pengutronix.de>
+References: <20210407080118.1916040-1-mkl@pengutronix.de>
+ <20210407080118.1916040-7-mkl@pengutronix.de>
+ <CAPgEAj6N9d=s1a-P_P0mBe1aV2tQBQ4m6shvbPcPvX7W1NNzJw@mail.gmail.com>
+ <a46b95e3-4238-a930-6de3-360f86beaf52@pengutronix.de>
+ <20210507072521.3y652xz2kmibjo7d@pengutronix.de>
+ <c0048a2a-2a32-00b5-f995-f30453aaeedb@posteo.de>
+ <20210507082536.jgmaoyusp3papmlw@pengutronix.de>
+ <7cb69acc-ee56-900b-0320-a893f687d850@posteo.de>
+ <b58d4484-db27-f199-875e-ae3694cd271f@posteo.de>
 MIME-Version: 1.0
-References: <0000000000009f94c1057e772431@google.com> <000000000000e5b92105c1e723d5@google.com>
-In-Reply-To: <000000000000e5b92105c1e723d5@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 10 May 2021 08:09:42 +0200
-Message-ID: <CACT4Y+a-WdDEJEx=E7gr2ci0F6U8ncvMgVSzph00H7U_qmc+_Q@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in hsr_forward_skb
-To:     syzbot <syzbot+fdce8f2a8903f3ba0e6b@syzkaller.appspotmail.com>
-Cc:     arvid.brodin@alten.se, Jens Axboe <axboe@fb.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jakub Kicinski <kuba@kernel.org>, kurt@linutronix.de,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        m-karicheri2@ti.com, Ming Lei <ming.lei@redhat.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        netdev <netdev@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2zdw3gilkfygg52a"
+Content-Disposition: inline
+In-Reply-To: <b58d4484-db27-f199-875e-ae3694cd271f@posteo.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Sun, May 9, 2021 at 5:16 PM syzbot
-<syzbot+fdce8f2a8903f3ba0e6b@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 9d6803921a16f4d768dc41a75375629828f4d91e
-> Author: Kurt Kanzenbach <kurt@linutronix.de>
-> Date:   Tue Apr 6 07:35:09 2021 +0000
->
->     net: hsr: Reset MAC header for Tx path
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119c7fedd00000
-> start commit:   3af409ca net: enetc: fix destroyed phylink dereference dur..
-> git tree:       net
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=fdce8f2a8903f3ba0e6b
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1525467ad00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114c0b12d00000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: net: hsr: Reset MAC header for Tx path
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-The patch references this exact warning.
+--2zdw3gilkfygg52a
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-#syz fix: net: hsr: Reset MAC header for Tx path
+On 09.05.2021 07:46:20, Patrick Menschel wrote:
+> > Do I have to change my test?
+>=20
+> I changed my test to 1 hour and removed the sleep statement.
+> Still no measurable difference for performance and no CRC Errors with
+> both kernels.
+
+See other mail about my thoughts about performance and CRC.
+
+> Apparently the test is hard on the CPU, I have two pytest processes
+> listed in htop one with 80%CPU and one with 60% CPU, approx 30% ram
+> usage of 512MB. I have no clue how it reaches the CPU values, there
+> should be only one CPU on the pi0w.
+
+Interesting :)
+
+> ### 5.10.17+ on pi0w ###
+>=20
+> 2021-05-09 08:02:56 [    INFO] 725649 frames in 1:00:00
+> (test_socketcan.py:890)
+>=20
+> ### 5.10.31-performance-backports+ on pi0w ###
+>=20
+> 2021-05-09 09:13:32 [    INFO] 715936 frames in 1:00:00
+> (test_socketcan.py:890)
+>=20
+> I'll switch boards to a pi3b and test again with these settings.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--2zdw3gilkfygg52a
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCY5LEACgkQqclaivrt
+76k2KQf+IkLY0SNsKy3+XbUpDeRFI8uUkzjnPy1T3+lSSxB0uHsYbwUlcV7MoQ7n
+vKnJkcqufssvXhA7Prgh72rw5+4pE9jqTPngVJ5aCDbwm2yng/1IqvWlLpaKgWIl
+Mn4F4ubyVTF6hcQirvwloVPKJ9iNR+Bq0skwN3GlHCEPfFL9/tA4Bd+3jLRwsM3L
+RIPcfLbUuSZN0VuNmYTuLfccLH/4pEJEVCa6qcLmwjaH0IP0bd9uoFhRA77AQLe0
+FAPkI14H8+mIdDTm2/G5Nbg9b0D4tepTRuUcUs9F1tycFnQ9BDUuV0wy3y6kvO8u
+48lDb4Ssxw9dGLOzSmcGjHmvF9ugxA==
+=xvTR
+-----END PGP SIGNATURE-----
+
+--2zdw3gilkfygg52a--
