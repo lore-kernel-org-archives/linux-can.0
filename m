@@ -2,29 +2,28 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91EA3C433B4
-	for <linux-can@archiver.kernel.org>; Mon, 10 May 2021 01:42:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92951C43461
+	for <linux-can@archiver.kernel.org>; Mon, 10 May 2021 01:42:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 73994613DF
-	for <linux-can@archiver.kernel.org>; Mon, 10 May 2021 01:42:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 653B6613DF
+	for <linux-can@archiver.kernel.org>; Mon, 10 May 2021 01:42:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhEJBno (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 9 May 2021 21:43:44 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2423 "EHLO
+        id S230183AbhEJBnp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 9 May 2021 21:43:45 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2424 "EHLO
         szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbhEJBnn (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 9 May 2021 21:43:43 -0400
+        with ESMTP id S230139AbhEJBno (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 9 May 2021 21:43:44 -0400
 Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FdkJG0wGgzCr4y;
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FdkJG1hsvzCr5Y;
         Mon, 10 May 2021 09:39:58 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 10 May 2021 09:42:33 +0800
+ 14.3.498.0; Mon, 10 May 2021 09:42:32 +0800
 From:   Yunsheng Lin <linyunsheng@huawei.com>
 To:     <davem@davemloft.net>, <kuba@kernel.org>
 CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
@@ -43,12 +42,10 @@ CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
         <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
         <alobakin@pm.me>
-Subject: [PATCH net v6 3/3] net: sched: fix tx action reschedule issue with stopped queue
-Date:   Mon, 10 May 2021 09:42:36 +0800
-Message-ID: <1620610956-56306-4-git-send-email-linyunsheng@huawei.com>
+Subject: [PATCH net v6 0/3] fix packet stuck problem for lockless qdisc
+Date:   Mon, 10 May 2021 09:42:33 +0800
+Message-ID: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
-References: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.56]
@@ -57,85 +54,33 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The netdev qeueue might be stopped when byte queue limit has
-reached or tx hw ring is full, net_tx_action() may still be
-rescheduled endlessly if STATE_MISSED is set, which consumes
-a lot of cpu without dequeuing and transmiting any skb because
-the netdev queue is stopped, see qdisc_run_end().
+This patchset fixes the packet stuck problem mentioned in [1].
 
-This patch fixes it by checking the netdev queue state before
-calling qdisc_run() and clearing STATE_MISSED if netdev queue is
-stopped during qdisc_run(), the net_tx_action() is recheduled
-again when netdev qeueue is restarted, see netif_tx_wake_queue().
+Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
+Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
+         flag is added in patch 1.
+Patch 3: Fix the significantly higher CPU consumption problem when
+         multiple threads are competing on a saturated outgoing
+         device.
 
-Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
-Reported-by: Michal Kubecek <mkubecek@suse.cz>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
-V6: Drop NET_XMIT_DROP checking for it is not really relevant
-    to this patch, and it may cause performance performance
-    regression with multi pktgen threads on dummy netdev with
-    pfifo_fast qdisc case.
----
- net/core/dev.c          | 3 ++-
- net/sched/sch_generic.c | 8 +++++++-
- 2 files changed, 9 insertions(+), 2 deletions(-)
+V6: Some performance optimization in patch 1 suggested by Jakub
+    and drop NET_XMIT_DROP checking in patch 3.
+V5: add patch 3 to fix the problem reported by Michal Kubecek.
+V4: Change STATE_NEED_RESCHEDULE to STATE_MISSED and add patch 2.
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index d596cd7..ef8cf76 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3853,7 +3853,8 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
- 
- 	if (q->flags & TCQ_F_NOLOCK) {
- 		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
--		qdisc_run(q);
-+		if (likely(!netif_xmit_frozen_or_stopped(txq)))
-+			qdisc_run(q);
- 
- 		if (unlikely(to_free))
- 			kfree_skb_list(to_free);
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index d86c4cc..37403c1 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -74,6 +74,7 @@ static inline struct sk_buff *__skb_dequeue_bad_txq(struct Qdisc *q)
- 			}
- 		} else {
- 			skb = SKB_XOFF_MAGIC;
-+			clear_bit(__QDISC_STATE_MISSED, &q->state);
- 		}
- 	}
- 
-@@ -242,6 +243,7 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 			}
- 		} else {
- 			skb = NULL;
-+			clear_bit(__QDISC_STATE_MISSED, &q->state);
- 		}
- 		if (lock)
- 			spin_unlock(lock);
-@@ -251,8 +253,10 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 	*validate = true;
- 
- 	if ((q->flags & TCQ_F_ONETXQUEUE) &&
--	    netif_xmit_frozen_or_stopped(txq))
-+	    netif_xmit_frozen_or_stopped(txq)) {
-+		clear_bit(__QDISC_STATE_MISSED, &q->state);
- 		return skb;
-+	}
- 
- 	skb = qdisc_dequeue_skb_bad_txq(q);
- 	if (unlikely(skb)) {
-@@ -311,6 +315,8 @@ bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
- 		HARD_TX_LOCK(dev, txq, smp_processor_id());
- 		if (!netif_xmit_frozen_or_stopped(txq))
- 			skb = dev_hard_start_xmit(skb, dev, txq, &ret);
-+		else
-+			clear_bit(__QDISC_STATE_MISSED, &q->state);
- 
- 		HARD_TX_UNLOCK(dev, txq);
- 	} else {
+[1]. https://lkml.org/lkml/2019/10/9/42
+
+Yunsheng Lin (3):
+  net: sched: fix packet stuck problem for lockless qdisc
+  net: sched: fix endless tx action reschedule during deactivation
+  net: sched: fix tx action reschedule issue with stopped queue
+
+ include/net/pkt_sched.h   |  7 +------
+ include/net/sch_generic.h | 33 ++++++++++++++++++++++++++++++++-
+ net/core/dev.c            | 29 ++++++++++++++++++++++++-----
+ net/sched/sch_generic.c   | 31 +++++++++++++++++++++++++++++--
+ 4 files changed, 86 insertions(+), 14 deletions(-)
+
 -- 
 2.7.4
 
