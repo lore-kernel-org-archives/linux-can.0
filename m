@@ -2,120 +2,220 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83836C433B4
-	for <linux-can@archiver.kernel.org>; Thu, 20 May 2021 13:47:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7ACEC433B4
+	for <linux-can@archiver.kernel.org>; Thu, 20 May 2021 22:35:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5E9596121E
-	for <linux-can@archiver.kernel.org>; Thu, 20 May 2021 13:47:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B31E16023E
+	for <linux-can@archiver.kernel.org>; Thu, 20 May 2021 22:35:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238435AbhETNsU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 20 May 2021 09:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbhETNsS (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 20 May 2021 09:48:18 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F85BC06175F;
-        Thu, 20 May 2021 06:46:57 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id i7so7566038ejc.5;
-        Thu, 20 May 2021 06:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aFmQJac4iuxwmbF46KvAyNCQors8o3Kv89Ax85e/fSk=;
-        b=gfp3n9YGxa7K7QrH/kG5G7lPmDgckjSFtBzbP7QN0LXBdbrlGj776BLliSEBgqM95/
-         m/IVG5AhFHf/oP+kzg/Upa9G/dl1UnuvaWRyhzyOMKk7VfECGaMSpKbe1nC1Emw7exAO
-         Drridg9cymRj9v09HdxOQON2wpAvoKYewwipxAyzmA11kIMIHIOh64BUJwxq34PRbgov
-         jPqXLEfv4KLHy7CnBDA42vhhV7VTi+NayC1OW2U2zYTH194RMbGWaIAIg+/xY+W898w3
-         e7kd5O1rs3FG2qI6zalGvnOBAAP62K6MkPVpuuSI13hJj2UtoPQH1lEEkHFiJX/ZcoiM
-         i3fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aFmQJac4iuxwmbF46KvAyNCQors8o3Kv89Ax85e/fSk=;
-        b=F3raFBVbuKxz+LJOIyPuOzBukXlfmbJL5U87IlOPexanUqKCFQt9ysUj51st7A7QAj
-         wsgo7IexMXv2b+NlA3/V5qivEjfDp63rqWT2oi3QzGLANP9kdcQAVOvskQU5S5gwyn0G
-         0t9fR5m3JqERZIl7DmgZH9Z2E7vqQFvQMEFf7lZtQ5SC/0Yxy1I4JMqn3HuM8RO7ANy9
-         mCFaofALclSJU8Opx1XONxKeNuIpMzKQ0lOLKdXyiMUGfzhiRcqWaVPx2cuKgCHN6aju
-         J05mqTRukyzmCYxf158J60ofTYiNFyP13J/GbJFnOcBxtFgpdyGSW6wQvha7pAOsn240
-         0BVA==
-X-Gm-Message-State: AOAM5317cH2esWaJnInoyC7olp3crVTUwGjGhWionXlE6xzVID+gZVgy
-        s2oVRitAtAQ9FmfxxLqIwDY=
-X-Google-Smtp-Source: ABdhPJyEghuZf4q6DPfhgET8q0IkDmgbGMyM7NDdSatnuXlqzH162qSD+d218cYgpqK4TrAH2uovmA==
-X-Received: by 2002:a17:906:5210:: with SMTP id g16mr4915987ejm.116.1621518415727;
-        Thu, 20 May 2021 06:46:55 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id bw26sm1419379ejb.119.2021.05.20.06.46.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 06:46:55 -0700 (PDT)
-Date:   Thu, 20 May 2021 16:46:52 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, a.fatoum@pengutronix.de,
-        vladimir.oltean@nxp.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, edumazet@google.com, weiwan@google.com,
-        cong.wang@bytedance.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
-        atenart@kernel.org, alexander.duyck@gmail.com, hdanton@sina.com,
-        jgross@suse.com, JKosina@suse.com, mkubecek@suse.cz,
-        bjorn@kernel.org, alobakin@pm.me
-Subject: Re: [Linuxarm] [PATCH RFC v4 0/3] Some optimization for lockless
- qdisc
-Message-ID: <20210520134652.2sw6gzfdzsqeedzz@skbuf>
-References: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
- <829cc4c1-46cc-c96c-47ba-438ae3534b94@huawei.com>
+        id S229951AbhETWg7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 20 May 2021 18:36:59 -0400
+Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:37872 "EHLO
+        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231593AbhETWg6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 20 May 2021 18:36:58 -0400
+Received: from MTA-13-4.privateemail.com (mta-13.privateemail.com [198.54.118.203])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id 4D7BB8154C
+        for <linux-can@vger.kernel.org>; Thu, 20 May 2021 18:28:21 -0400 (EDT)
+Received: from mta-13.privateemail.com (localhost [127.0.0.1])
+        by mta-13.privateemail.com (Postfix) with ESMTP id 48F0F80078;
+        Thu, 20 May 2021 18:28:19 -0400 (EDT)
+Received: from localhost (unknown [10.20.151.240])
+        by mta-13.privateemail.com (Postfix) with ESMTPA id 1CEF08006C;
+        Thu, 20 May 2021 18:28:19 -0400 (EDT)
+Date:   Thu, 20 May 2021 15:28:18 -0700
+From:   Matt Kline <mkline@anduril.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org
+Subject: [PATCH 1/2] can: m_can: Batch FIFO reads during CAN receive
+Message-ID: <cb36acc2ce9c6bd8f517a8ccee9a651a243bf8be.1621547812.git.mkline@anduril.com>
+References: <cover.1621547812.git.mkline@anduril.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <829cc4c1-46cc-c96c-47ba-438ae3534b94@huawei.com>
+In-Reply-To: <cover.1621547812.git.mkline@anduril.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Yunsheng,
+On peripherals communicating over a relatively slow SPI line
+(e.g. tcan4x5x), individual transfers have high fixed costs.
+This causes the driver to spend most of its time waiting between
+transfers and severely limits throughput.
 
-On Thu, May 20, 2021 at 05:45:14PM +0800, Yunsheng Lin wrote:
-> On 2021/5/20 17:27, Yunsheng Lin wrote:
-> > Patch 1: remove unnecessary seqcount operation.
-> > Patch 2: implement TCQ_F_CAN_BYPASS.
-> > Patch 3: remove qdisc->empty.
-> > 
-> > RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
-> >         qdisc, and add patch 1 and 3.
-> 
-> @Vladimir, Ahmad
-> It would be good to run your testcase to see if there are any
-> out of order for this version, because this version has used
-> STATE_MISSED and STATE_DRAINING to indicate non-empty qdisc,
-> thanks.
-> 
-> It is based on newest net branch with qdisc stuck patchset.
-> 
-> Some performance data as below:
-> 
-> pktgen + dummy netdev:
->  threads  without+this_patch   with+this_patch      delta
->     1       2.60Mpps            3.18Mpps             +22%
->     2       3.84Mpps            5.72Mpps             +48%
->     4       5.52Mpps            5.52Mpps             +0.0%
->     8       2.77Mpps            2.81Mpps             +1.4%
->    16       2.24Mpps            2.29Mpps             +2.2%
-> 
-> IP forward testing: 1.05Mpps increases to 1.15Mpps
+Reduce these overheads by reading more than one word at a time.
+Writing could get a similar treatment.
 
-I will start the regression test with the flexcan driver on LS1028A and
-let you know tomorrow or so if there is any TX reordering issue.
+Signed-off-by: Matt Kline <mkline@anduril.com>
+---
+ drivers/net/can/m_can/m_can.c          | 27 +++++++++++++++-----------
+ drivers/net/can/m_can/m_can.h          |  2 +-
+ drivers/net/can/m_can/m_can_pci.c      |  6 ++++--
+ drivers/net/can/m_can/m_can_platform.c |  6 ++++--
+ drivers/net/can/m_can/tcan4x5x-core.c  |  8 +++-----
+ 5 files changed, 28 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 3cf6de21d19c..0defdb33a7c0 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -344,13 +344,15 @@ static inline void m_can_write(struct m_can_classdev *cdev, enum m_can_reg reg,
+ 	cdev->ops->write_reg(cdev, reg, val);
+ }
+ 
+-static u32 m_can_fifo_read(struct m_can_classdev *cdev,
+-			   u32 fgi, unsigned int offset)
++static void m_can_fifo_read(struct m_can_classdev *cdev,
++			    u32 fgi, unsigned int offset, void *val, size_t val_count)
+ {
++	u32 result;
+ 	u32 addr_offset = cdev->mcfg[MRAM_RXF0].off + fgi * RXF0_ELEMENT_SIZE +
+ 		offset;
+ 
+-	return cdev->ops->read_fifo(cdev, addr_offset);
++	result = cdev->ops->read_fifo(cdev, addr_offset, val, val_count);
++	WARN_ON(result != 0);
+ }
+ 
+ static void m_can_fifo_write(struct m_can_classdev *cdev,
+@@ -370,10 +372,13 @@ static inline void m_can_fifo_write_no_off(struct m_can_classdev *cdev,
+ 
+ static u32 m_can_txe_fifo_read(struct m_can_classdev *cdev, u32 fgi, u32 offset)
+ {
++	u32 val, result;
+ 	u32 addr_offset = cdev->mcfg[MRAM_TXE].off + fgi * TXE_ELEMENT_SIZE +
+ 		offset;
+ 
+-	return cdev->ops->read_fifo(cdev, addr_offset);
++	result = cdev->ops->read_fifo(cdev, addr_offset, &val, 1);
++	WARN_ON(result != 0);
++	return val;
+ }
+ 
+ static inline bool m_can_tx_fifo_full(struct m_can_classdev *cdev)
+@@ -485,13 +490,17 @@ static void m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	struct canfd_frame *cf;
+ 	struct sk_buff *skb;
++	u32 id_and_dlc[2];
+ 	u32 id, fgi, dlc;
+ 	u32 timestamp = 0;
+-	int i;
+ 
+ 	/* calculate the fifo get index for where to read data */
+ 	fgi = (rxfs & RXFS_FGI_MASK) >> RXFS_FGI_SHIFT;
+-	dlc = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DLC);
++
++	m_can_fifo_read(cdev, fgi, M_CAN_FIFO_ID, id_and_dlc, ARRAY_SIZE(id_and_dlc));
++	id = id_and_dlc[0];
++	dlc = id_and_dlc[1];
++
+ 	if (dlc & RX_BUF_FDF)
+ 		skb = alloc_canfd_skb(dev, &cf);
+ 	else
+@@ -506,7 +515,6 @@ static void m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 	else
+ 		cf->len = can_cc_dlc2len((dlc >> 16) & 0x0F);
+ 
+-	id = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_ID);
+ 	if (id & RX_BUF_XTD)
+ 		cf->can_id = (id & CAN_EFF_MASK) | CAN_EFF_FLAG;
+ 	else
+@@ -523,10 +531,7 @@ static void m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 		if (dlc & RX_BUF_BRS)
+ 			cf->flags |= CANFD_BRS;
+ 
+-		for (i = 0; i < cf->len; i += 4)
+-			*(u32 *)(cf->data + i) =
+-				m_can_fifo_read(cdev, fgi,
+-						M_CAN_FIFO_DATA(i / 4));
++		m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DATA(0), cf->data, DIV_ROUND_UP(cf->len, 4));
+ 	}
+ 
+ 	/* acknowledge rx fifo 0 */
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index ace071c3e58c..2571ec1efec4 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -64,7 +64,7 @@ struct m_can_ops {
+ 	int (*clear_interrupts)(struct m_can_classdev *cdev);
+ 	u32 (*read_reg)(struct m_can_classdev *cdev, int reg);
+ 	int (*write_reg)(struct m_can_classdev *cdev, int reg, int val);
+-	u32 (*read_fifo)(struct m_can_classdev *cdev, int addr_offset);
++	int (*read_fifo)(struct m_can_classdev *cdev, int addr_offset, void *val, size_t val_count);
+ 	int (*write_fifo)(struct m_can_classdev *cdev, int addr_offset,
+ 			  int val);
+ 	int (*init)(struct m_can_classdev *cdev);
+diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
+index 128808605c3f..11614a635796 100644
+--- a/drivers/net/can/m_can/m_can_pci.c
++++ b/drivers/net/can/m_can/m_can_pci.c
+@@ -39,11 +39,13 @@ static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
+ 	return readl(priv->base + reg);
+ }
+ 
+-static u32 iomap_read_fifo(struct m_can_classdev *cdev, int offset)
++static int iomap_read_fifo(struct m_can_classdev *cdev, int offset, void *val, size_t val_count)
+ {
+ 	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
+ 
+-	return readl(priv->base + offset);
++	ioread32_rep(priv->base + offset, val, val_count);
++
++	return 0;
+ }
+ 
+ static int iomap_write_reg(struct m_can_classdev *cdev, int reg, int val)
+diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+index 599de0e08cd7..94c82dd39076 100644
+--- a/drivers/net/can/m_can/m_can_platform.c
++++ b/drivers/net/can/m_can/m_can_platform.c
+@@ -28,11 +28,13 @@ static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
+ 	return readl(priv->base + reg);
+ }
+ 
+-static u32 iomap_read_fifo(struct m_can_classdev *cdev, int offset)
++static int iomap_read_fifo(struct m_can_classdev *cdev, int offset, void *val, size_t val_count)
+ {
+ 	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
+ 
+-	return readl(priv->mram_base + offset);
++	ioread32_rep(priv->mram_base + offset, val, val_count);
++
++	return 0;
+ }
+ 
+ static int iomap_write_reg(struct m_can_classdev *cdev, int reg, int val)
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index 4147cecfbbd6..4f77b1dbd492 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -154,14 +154,12 @@ static u32 tcan4x5x_read_reg(struct m_can_classdev *cdev, int reg)
+ 	return val;
+ }
+ 
+-static u32 tcan4x5x_read_fifo(struct m_can_classdev *cdev, int addr_offset)
++static int tcan4x5x_read_fifo(struct m_can_classdev *cdev, int addr_offset,
++			      void *val, size_t val_count)
+ {
+ 	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+-	u32 val;
+ 
+-	regmap_read(priv->regmap, TCAN4X5X_MRAM_START + addr_offset, &val);
+-
+-	return val;
++	return regmap_bulk_read(priv->regmap, TCAN4X5X_MRAM_START + addr_offset, val, val_count);
+ }
+ 
+ static int tcan4x5x_write_reg(struct m_can_classdev *cdev, int reg, int val)
+-- 
+2.31.1
+
