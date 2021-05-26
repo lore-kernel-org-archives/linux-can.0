@@ -2,124 +2,109 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35D76C433B4
-	for <linux-can@archiver.kernel.org>; Fri, 21 May 2021 14:14:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1D3AC47088
+	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0485A6101B
-	for <linux-can@archiver.kernel.org>; Fri, 21 May 2021 14:14:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7FA4761026
+	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236604AbhEUOPf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 21 May 2021 10:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
+        id S234805AbhEZMxO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 26 May 2021 08:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbhEUOPe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 21 May 2021 10:15:34 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD775C061574;
-        Fri, 21 May 2021 07:14:10 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id lz27so30687757ejb.11;
-        Fri, 21 May 2021 07:14:10 -0700 (PDT)
+        with ESMTP id S234858AbhEZMv0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 May 2021 08:51:26 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D27BC06134E
+        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:38 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id o127so642151wmo.4
+        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nqRwQlClWrSCEOn0RjHe1V2/QBqk87xD6ByHv3kJbQY=;
-        b=oXrPFbj/F4QzgIwh7EPXBwVXmfNwLpxjxJ8zrD47PK9mL/aHImNzJakNOsj+lGlnC5
-         3uvms4VIUXbLD2/aJUKzTO+6SmVuoulZAZfLa5N1xjjxPcy2sK/uf4S+IRe3qhJILdlu
-         YjTA1/odtMmIxzvxB9P/5iRtIkrEfCTJP7Yuz8XL1rTjNriUSXwPmNGuKgYhxUrFe3DN
-         nIyLv/kpqyTzM0FaOgwdKS3byWirSTBnkxmy4pygSkYHlI38+MkO/2rRx/G6pamrlRxq
-         lCKtZE0xXNXtE4WWdgtADhO4iPu+fJZnfuWDcaDBxMC8jKiVRdHDKjKhEk+dcNUfPZBs
-         V+Tg==
+        d=maxiluxsystems-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Czs5kXwrH/tFZuPzkMfogPeQprDHVJKI3DJ0y1eHbPE=;
+        b=1jA/H1XgsRz3Vxwx1aRDSih9XyNMMzO08j49RjBZYjuQdu3vzTXUS8dMiZGyGzBeiL
+         ayHszn86KZCaGsR1iv5G0QAZaAOMICc2APki3OfD1dcaVq9HSnr97u836xR9zPLO7vNz
+         46tpxPNMoRJq5c+pj74IRrClfD3Y/U0+9iOUpZXlyz5B7ETdoUqPWVU99mpDYoo+gXnp
+         FuV/V8hUUXnVLY1OY8c+mTGH3X510PSwwDEnQh8q/Vfx7xbQ8ZXcLOxq7XYKO3ke2NDZ
+         6JkJ+saOUdWRMrQVSoGM68OdPQ3qz1Ve9BpRE/lcPcCpuJbcyXCxoqu/0dwXKvM/ks7n
+         umeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nqRwQlClWrSCEOn0RjHe1V2/QBqk87xD6ByHv3kJbQY=;
-        b=oAKyS2WabClHUe3hBWwHdBKsPOG+yp/g1Ko/Tfi9jv5sMhBq6tAYHsOTgx2fRQkyHb
-         iSN6viIw4whQ5U3L2tz0aS77CqW+ktyq72ps7pjqG6wyVZvfscc+up+VUl5Q1AMcqzh6
-         avUFJ0mfBW3p63x5kat3RbNzu0wpmFvoOMhdKxkKfh4N7S3I+HoA0OFsSFCeojbWMLOo
-         1Y2qLoqUHrkUWh9X3D0PtbkJ4df3mWnS0RA8b2OEqUgfsh3vd39TksT6Ezc0QQ/XqbEn
-         Kb031jub8m3Fc+VBpl7yG+qSTz8KPg7t1swD99WHbJcyPzdKXVNrjhlHA9aRdyZD9IVV
-         Y/WQ==
-X-Gm-Message-State: AOAM531Gn+DzwpkO2dxKedVMAKhw9rx6zDjytyokGlkf+j0XsuWNTVzb
-        76sV4wyQGKjx/Gg/HtwT4SY=
-X-Google-Smtp-Source: ABdhPJxlz9dC5l2beVI0RR8Y4plsZ6zJ1KUqmT/4uqPHe135qkehopOjM9gv55t4tHtyvNX8lBqRuQ==
-X-Received: by 2002:a17:906:c9cf:: with SMTP id hk15mr10403984ejb.445.1621606449227;
-        Fri, 21 May 2021 07:14:09 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id gu16sm3610416ejb.88.2021.05.21.07.14.06
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Czs5kXwrH/tFZuPzkMfogPeQprDHVJKI3DJ0y1eHbPE=;
+        b=rPcbSTY2fHH5sNF+t/KjwEx+45YJufl64KdIq8K0gfWRwLjQtBgDbMJbEac1e3HRmo
+         saqFC486qMfJOqxcBG8rYYn+InbtvVmDQae511fA6dcWceOAUdp9qQJwzyukpjlrn8/r
+         /8KSydiCPdLtXtG4+aLd2fN3QgZTts+GKIED46YvuktPdLqN5z6chQQrnIeCU6WYzpeQ
+         XDUEVPu3Ae4pQj4rMfSidVZMmvVOq+7CuwbZzzjgoog9nr7qmz8Mi9DAJNxtz9RIt/Jt
+         +PpOj0NkQ4g9m7YwEJQaGi62OXWlV4L42trpxFA0sDRSMFy1Vc7G/hQFSsOyx3XSXamg
+         +qVA==
+X-Gm-Message-State: AOAM531l7DshPPauPnyFJxQyWnZcUmAQdO5JckbDO/CHoNbgvWJp1t0j
+        JOueCMMwo+M2YD0PtPybEX/thd+xzjJqVQ==
+X-Google-Smtp-Source: ABdhPJwyeqirgYZxA/+H3MJ1EyUUeD3X3mqCKm0WOQ1Eu54zSqIwffknhc26oPv3HVVIHVtkuJoUhQ==
+X-Received: by 2002:a7b:cc94:: with SMTP id p20mr3297567wma.39.1622033316975;
+        Wed, 26 May 2021 05:48:36 -0700 (PDT)
+Received: from localhost.localdomain (92.41.10.155.threembb.co.uk. [92.41.10.155])
+        by smtp.gmail.com with ESMTPSA id a4sm1864100wme.45.2021.05.26.05.48.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 07:14:08 -0700 (PDT)
-Date:   Fri, 21 May 2021 17:14:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, a.fatoum@pengutronix.de,
-        vladimir.oltean@nxp.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, edumazet@google.com, weiwan@google.com,
-        cong.wang@bytedance.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
-        atenart@kernel.org, alexander.duyck@gmail.com, hdanton@sina.com,
-        jgross@suse.com, JKosina@suse.com, mkubecek@suse.cz,
-        bjorn@kernel.org, alobakin@pm.me
-Subject: Re: [Linuxarm] [PATCH RFC v4 0/3] Some optimization for lockless
- qdisc
-Message-ID: <20210521141406.mmxv4ikfp4zfkcwo@skbuf>
-References: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
- <829cc4c1-46cc-c96c-47ba-438ae3534b94@huawei.com>
- <20210520134652.2sw6gzfdzsqeedzz@skbuf>
+        Wed, 26 May 2021 05:48:36 -0700 (PDT)
+From:   Torin Cooper-Bennun <torin@maxiluxsystems.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Subject: [PATCH can-next 0/5] m_can, tcan4x5x: device-specific interrupt handling
+Date:   Wed, 26 May 2021 13:47:42 +0100
+Message-Id: <20210526124747.674055-1-torin@maxiluxsystems.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520134652.2sw6gzfdzsqeedzz@skbuf>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Thu, May 20, 2021 at 04:46:52PM +0300, Vladimir Oltean wrote:
-> Hi Yunsheng,
-> 
-> On Thu, May 20, 2021 at 05:45:14PM +0800, Yunsheng Lin wrote:
-> > On 2021/5/20 17:27, Yunsheng Lin wrote:
-> > > Patch 1: remove unnecessary seqcount operation.
-> > > Patch 2: implement TCQ_F_CAN_BYPASS.
-> > > Patch 3: remove qdisc->empty.
-> > > 
-> > > RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
-> > >         qdisc, and add patch 1 and 3.
-> > 
-> > @Vladimir, Ahmad
-> > It would be good to run your testcase to see if there are any
-> > out of order for this version, because this version has used
-> > STATE_MISSED and STATE_DRAINING to indicate non-empty qdisc,
-> > thanks.
-> > 
-> > It is based on newest net branch with qdisc stuck patchset.
-> > 
-> > Some performance data as below:
-> > 
-> > pktgen + dummy netdev:
-> >  threads  without+this_patch   with+this_patch      delta
-> >     1       2.60Mpps            3.18Mpps             +22%
-> >     2       3.84Mpps            5.72Mpps             +48%
-> >     4       5.52Mpps            5.52Mpps             +0.0%
-> >     8       2.77Mpps            2.81Mpps             +1.4%
-> >    16       2.24Mpps            2.29Mpps             +2.2%
-> > 
-> > IP forward testing: 1.05Mpps increases to 1.15Mpps
-> 
-> I will start the regression test with the flexcan driver on LS1028A and
-> let you know tomorrow or so if there is any TX reordering issue.
+Hi Marc and list,
 
-14 million CAN frames later, I did not observe any TX reordering at all.
+This series is a follow-up to the RFC here:
+  https://lore.kernel.org/linux-can/20210514121946.2344901-1-torin@maxiluxsystems.com/
+
+In this series we enable M_CAN-based devices to implement their own
+device-specific interrupt handling, and add such handling for tcan4x5x.
+
+In 1, we replace the clear_interrupts() m_can_ops callback with
+handle_interrupts(), which returns irqreturn_t and has an extra
+parameter, clear_only, which is used if it isn't necessary to handle
+device interrupts, only clear them.
+
+In 2, we use the new infrastructure in m_can_isr(). If M_CAN core
+interrupts are handled, we still only clear device interrupts.
+Otherwise, we try to handle any pending device interrupts.
+
+In 3-5, we clean up interrupt enabling and clearing in tcan4x5x, and
+handle device interrupts appropriately. We specifically look for fatal
+errors arising from transceiver or power, and SPI errors, which are not
+necessarily fatal, but are dangerous!
+
+TCAN4550 shutdown is attempted by setting the device into standby mode.
+There is probably a better way, but I understand we are limited by being
+in the ISR context.
+
+The patches are based on linux-can-next/testing.
+
+Torin Cooper-Bennun (5):
+  can: m_can: ops: clear_interrupts -> handle_dev_interrupts
+  can: m_can: m_can_isr(): handle device-specific interrupts
+  can: tcan4x5x: tcan4x5x_clear_interrupts(): rm unnecessary reg clears
+  can: tcan4x5x: only enable useful device interrupts
+  can: tcan4x5x: implement handling of device interrupts
+
+ drivers/net/can/m_can/m_can.c         | 21 +++++++----
+ drivers/net/can/m_can/m_can.h         |  4 +-
+ drivers/net/can/m_can/tcan4x5x-core.c | 71 ++++++++++++++++++++++++++++-------
+ 3 files changed, 75 insertions(+), 21 deletions(-)
+
+
