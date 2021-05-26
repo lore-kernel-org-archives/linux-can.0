@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0234C47088
-	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EAE8C47088
+	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 965046113D
-	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 43A3561026
+	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbhEZMxR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 26 May 2021 08:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
+        id S234844AbhEZMxS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 26 May 2021 08:53:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234863AbhEZMv2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 May 2021 08:51:28 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7C0C061351
-        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:41 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id h3so643036wmq.3
-        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:40 -0700 (PDT)
+        with ESMTP id S234890AbhEZMvf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 May 2021 08:51:35 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA442C061353
+        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:42 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id z130so649436wmg.2
+        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=maxiluxsystems-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AGcjh4qQwZf7olurqRtc2i5yeO9GnQLlCr1W5lh/u8M=;
-        b=i7micjIk7dkgVDZM6jqPL9ab9E116vAxSPQSoJav6WAy3R72SJViilEMwFGGgVirqG
-         j7KvWj9+CE+qFNdaVvk7o4wKon+uO2QUo1bkresCM7901nYV+i5eJRLQRHQkP6ayoPXs
-         YgpGFbcBHL6WbEUFCGyExQp4jnDAuvfh5v3AijevyzkS1dlxCwq1VaOsVbKeUFuM2jmo
-         rDR4/rlxfp4vJhOMFuRDCR5Rt8KkxpZTj5DSi5bDuk4n01NnmoRsHlLYd7YoGza5E9ZR
-         aY7rRwACHAMN8WScpIZMotOi5yw1xS3bQNMGvRjeV9ZU3kqoLJoDksPiAJ4+a0ABck1+
-         kJBA==
+        bh=KV9OPdvkLE9lJcOLgvnbfvjH3bSi9Jsp496zmVnrnvU=;
+        b=umnAcqU5q22Szmb/oTzF88nwvYG76ab+GcxfCkoFrZmUTfkIzjlZD03p0AKEyaN2pX
+         MCWkOeoq3PbFZNByUkE/aJU1OXAHSxxW08G6mhsVen+ONusfTiYzCX7JdK+SfCuD6Hq7
+         WNVQIMiKe59pKyidwOab6eIMzHF9O8PRQNzL9lD1T4HIsb7nKa5c5VAC67XrZiW4UK15
+         xmRS5uOi3ubgcHfmJRqUSUB+qN+WElVs/Lz6LLy56lmrteExpeg3vkT7CBIIr9YQ04sm
+         HdV+NiE54gl3ARZGz0AvAuz7DiuKbvbjaAkGNPmEVRTKpECNnh8QhhZfui9BGJzpqYpW
+         c6yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AGcjh4qQwZf7olurqRtc2i5yeO9GnQLlCr1W5lh/u8M=;
-        b=j7oPaMfKMKaXGD9XhEWekR/E5VFYE727KPfK9UttioRpkPW2H3Ae6pYFVwIwbSX+AI
-         B209aMWe5MQ3nCLpcd0xksAZowuqJ7ugdUFKqJ5MBn5k801fD+uqMMPGQBQcQ64S90Ca
-         TlhL72IWMKkdEXgMeBw1arJE/GD0gOwiNWmNFXaRXXpHlnqtubQ2NCi3EbjWBUjMgsnI
-         8GInMZdmAd8mu23m8lLfMDhoTtmuN588tuj6FbgDESgiHIyeGple3e9qwQxw6xW2LXZb
-         4Lg9hQtNm5HbBqjRP2uWqe8o0BKlHjS0Sse50mTah2E9s0VLDLM9tUI17XtKKSRKA3ld
-         o4qA==
-X-Gm-Message-State: AOAM5310hxM/4gRxxHegnQ6OGO56ykCFSrxr3YwawErtBR/SaaFv9ZJ/
-        wBKh6nfHCqxrkTaVYzkW2Xhp9w==
-X-Google-Smtp-Source: ABdhPJySLryvF9KYlScsBCULocdHwTtpsAUBq9elW/OJzT6R1ugj35kqQcmK4QstDrSRcf4AmMslkg==
-X-Received: by 2002:a1c:7f86:: with SMTP id a128mr28191635wmd.20.1622033319696;
-        Wed, 26 May 2021 05:48:39 -0700 (PDT)
+        bh=KV9OPdvkLE9lJcOLgvnbfvjH3bSi9Jsp496zmVnrnvU=;
+        b=YqY6H7cyabXPLer6I6iqIRMchKekwo/A7pgX/9eDMoizg5lFpdDLSQSOT8PeOs3rg6
+         X74H7Lj/CL/tMHU/0bfFKUNTeh/RSVC3PhIv8il4dPO+IXiAQcc8q3y6bmE9wzy3Tb53
+         3iQnkjJj/FeDt59hTEi8AWpVmWOvB2UDk2Mg2GES6/+k+vA77lL3HVtw3SCtiAdsQQ+V
+         FmbWYhH4v6ljUm7NabkviMLd6SgkyAw/sJtl/n+6+K/oaOShU1Q1CyphIDspmnlYQbD0
+         srX0YiBXNRqcmHt+8UlbxaVHjzVtv+rxedCmtN4z8y+R4dCvzUZY4UkGjhxtkDkmUqdM
+         nv2A==
+X-Gm-Message-State: AOAM5304s0lXDnHIbvAARhCCy4CjTRNiXpQGyShHr5Lnk5WxN7clkyMC
+        WCOhjUAOAzP1jI8gd3lvGUqPZ0M7uHym+A==
+X-Google-Smtp-Source: ABdhPJzpFPwswFylicwWhV/WOJIC79+FeLROA6H6H6PUAeM34fOtTVYogydE3a9OOIjqD9gpP2Ap0g==
+X-Received: by 2002:a1c:3186:: with SMTP id x128mr28051433wmx.167.1622033321530;
+        Wed, 26 May 2021 05:48:41 -0700 (PDT)
 Received: from localhost.localdomain (92.41.10.155.threembb.co.uk. [92.41.10.155])
-        by smtp.gmail.com with ESMTPSA id a4sm1864100wme.45.2021.05.26.05.48.38
+        by smtp.gmail.com with ESMTPSA id a4sm1864100wme.45.2021.05.26.05.48.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 05:48:39 -0700 (PDT)
+        Wed, 26 May 2021 05:48:41 -0700 (PDT)
 From:   Torin Cooper-Bennun <torin@maxiluxsystems.com>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 Cc:     Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Subject: [PATCH can-next 3/5] can: tcan4x5x: tcan4x5x_clear_interrupts(): rm unnecessary reg clears
-Date:   Wed, 26 May 2021 13:47:45 +0100
-Message-Id: <20210526124747.674055-4-torin@maxiluxsystems.com>
+Subject: [PATCH can-next 5/5] can: tcan4x5x: implement handling of device interrupts
+Date:   Wed, 26 May 2021 13:47:47 +0100
+Message-Id: <20210526124747.674055-6-torin@maxiluxsystems.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210526124747.674055-1-torin@maxiluxsystems.com>
 References: <20210526124747.674055-1-torin@maxiluxsystems.com>
@@ -70,39 +70,84 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Remove clear of reg 0x0824 (TCAN4X5X_MCAN_INT_REG). It has no effect, as
-this is a read-only copy of the M_CAN core interrupt register.
+Handle power, transceiver and SPI failures by printing a useful error
+message (multiple simultaneous failures are not logged) and disabling
+the TCAN4550 by setting it to standby mode.
 
-Remove clear of reg 0x0010 (TCAN4X5X_ERROR_STATUS). The reg is not
-documented in the TCAN4550 datasheet. It is listed in the official TI
-demo program headers, but is not used.
+Additionally, print an error message if any regmap access fails in the
+tcan4x5x_handle_dev_interrupts() call.
 
 Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
 ---
- drivers/net/can/m_can/tcan4x5x-core.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ drivers/net/can/m_can/tcan4x5x-core.c | 50 ++++++++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index b4aeab10d62f..a938dbc617e3 100644
+index a300a14dc5de..2016a4b54a44 100644
 --- a/drivers/net/can/m_can/tcan4x5x-core.c
 +++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -207,17 +207,7 @@ static int tcan4x5x_clear_interrupts(struct m_can_classdev *cdev)
- 	if (ret)
- 		return ret;
- 
--	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_MCAN_INT_REG,
--				      TCAN4X5X_ENABLE_MCAN_INT);
--	if (ret)
--		return ret;
--
--	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_INT_FLAGS,
--				      TCAN4X5X_CLEAR_ALL_INT);
--	if (ret)
--		return ret;
--
--	return tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_ERROR_STATUS,
-+	return tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_INT_FLAGS,
- 				       TCAN4X5X_CLEAR_ALL_INT);
+@@ -38,6 +38,7 @@
+ #define TCAN4X5X_CANDOM_INT_EN BIT(8)
+ #define TCAN4X5X_CANBUS_ERR_INT_EN BIT(5)
+ #define TCAN4X5X_BUS_FAULT BIT(4)
++#define TCAN4X5X_SPIERR_INT BIT(3)
+ #define TCAN4X5X_MCAN_INT BIT(1)
+ #define TCAN4X5X_ENABLE_TCAN_INT \
+ 	(TCAN4X5X_UVSUP_INT_EN | TCAN4X5X_UVIO_INT_EN | TCAN4X5X_TSD_INT_EN | \
+@@ -214,7 +215,54 @@ static int tcan4x5x_clear_interrupts(struct m_can_classdev *cdev)
+ static irqreturn_t tcan4x5x_handle_dev_interrupts(struct m_can_classdev *cdev,
+ 						  bool clear_only)
+ {
+-	tcan4x5x_clear_interrupts(cdev);
++	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
++	int err = 0;
++	irqreturn_t handled = IRQ_NONE;
++
++	if (!clear_only) {
++		u32 ir = 0;
++		const char *fail_str = "";
++
++		err = regmap_read(priv->regmap, TCAN4X5X_INT_FLAGS, &ir);
++		if (err)
++			goto exit_regmap_failure;
++
++		handled = IRQ_HANDLED;
++
++		if (ir & TCAN4X5X_UVSUP_INT_EN)
++			fail_str = "supply under-voltage (UVSUP)";
++		else if (ir & TCAN4X5X_UVIO_INT_EN)
++			fail_str = "I/O under-voltage (UVIO)";
++		else if (ir & TCAN4X5X_TSD_INT_EN)
++			fail_str = "thermal shutdown (TSD)";
++		else if (ir & TCAN4X5X_ECCERR_INT_EN)
++			fail_str = "uncorrectable ECC error (ECCERR)";
++		else if (ir & TCAN4X5X_CANDOM_INT_EN)
++			fail_str = "CAN stuck dominant (CANDOM)";
++		else if (ir & TCAN4X5X_SPIERR_INT)
++			fail_str = "SPI error (SPIERR)";
++		else
++			handled = IRQ_NONE;
++
++		if (handled == IRQ_HANDLED) {
++			netdev_err(cdev->net, "%s: device is disabled.\n",
++				   fail_str);
++			err = regmap_update_bits(priv->regmap, TCAN4X5X_CONFIG,
++						 TCAN4X5X_MODE_SEL_MASK,
++						 TCAN4X5X_MODE_STANDBY);
++			if (err)
++				goto exit_regmap_failure;
++		}
++	}
++
++	err = tcan4x5x_clear_interrupts(cdev);
++	if (err)
++		goto exit_regmap_failure;
++
++	return handled;
++
++exit_regmap_failure:
++	netdev_err(cdev->net, "regmap access failed in IRQ handler.\n");
+ 	return IRQ_NONE;
  }
  
 -- 
