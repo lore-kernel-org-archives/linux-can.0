@@ -2,109 +2,103 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1D3AC47088
-	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 561B6C47082
+	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7FA4761026
-	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D2DC61026
+	for <linux-can@archiver.kernel.org>; Wed, 26 May 2021 12:51:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhEZMxO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S234858AbhEZMxO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 26 May 2021 08:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234858AbhEZMv0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 May 2021 08:51:26 -0400
+        with ESMTP id S234859AbhEZMv1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 May 2021 08:51:27 -0400
 Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D27BC06134E
-        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:38 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id o127so642151wmo.4
-        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E71C061352
+        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:42 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 16so638033wmj.5
+        for <linux-can@vger.kernel.org>; Wed, 26 May 2021 05:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=maxiluxsystems-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Czs5kXwrH/tFZuPzkMfogPeQprDHVJKI3DJ0y1eHbPE=;
-        b=1jA/H1XgsRz3Vxwx1aRDSih9XyNMMzO08j49RjBZYjuQdu3vzTXUS8dMiZGyGzBeiL
-         ayHszn86KZCaGsR1iv5G0QAZaAOMICc2APki3OfD1dcaVq9HSnr97u836xR9zPLO7vNz
-         46tpxPNMoRJq5c+pj74IRrClfD3Y/U0+9iOUpZXlyz5B7ETdoUqPWVU99mpDYoo+gXnp
-         FuV/V8hUUXnVLY1OY8c+mTGH3X510PSwwDEnQh8q/Vfx7xbQ8ZXcLOxq7XYKO3ke2NDZ
-         6JkJ+saOUdWRMrQVSoGM68OdPQ3qz1Ve9BpRE/lcPcCpuJbcyXCxoqu/0dwXKvM/ks7n
-         umeg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JUrl4fnvvNKLa1rPCktyHZZm6yh4mY7qJMWTsOc5obw=;
+        b=dxzupDYhfTk8UBmddpaVE4wr/pEtVwjSEWD44QwpISp79QWalcLizHUfPTjoKPeT4C
+         MpncS+GMRpf8V5kNLYydQ7uL5WmbwxNvJ4Dpv8oMP25zS5nvYFPaKksDFoyow/YLserg
+         KM3Pnva93blnksGWmlP8BgNZagOesmZowBIjjd3kLg1/OrGOu8A+E0tD/d4NR648UV9K
+         f/MJ10oH7wPP+bKCAOvxetqZYWQrIq3+ugNoSls+uJBi7GoMgMNAFv8znKlZaBkEuLsi
+         AF1UbymmuIhwvhr6ZBU9mP7e4G9dMFELMJLzeU65L4FJMMH5dwO0z9Tw2+4lVX1Chhbp
+         ozKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Czs5kXwrH/tFZuPzkMfogPeQprDHVJKI3DJ0y1eHbPE=;
-        b=rPcbSTY2fHH5sNF+t/KjwEx+45YJufl64KdIq8K0gfWRwLjQtBgDbMJbEac1e3HRmo
-         saqFC486qMfJOqxcBG8rYYn+InbtvVmDQae511fA6dcWceOAUdp9qQJwzyukpjlrn8/r
-         /8KSydiCPdLtXtG4+aLd2fN3QgZTts+GKIED46YvuktPdLqN5z6chQQrnIeCU6WYzpeQ
-         XDUEVPu3Ae4pQj4rMfSidVZMmvVOq+7CuwbZzzjgoog9nr7qmz8Mi9DAJNxtz9RIt/Jt
-         +PpOj0NkQ4g9m7YwEJQaGi62OXWlV4L42trpxFA0sDRSMFy1Vc7G/hQFSsOyx3XSXamg
-         +qVA==
-X-Gm-Message-State: AOAM531l7DshPPauPnyFJxQyWnZcUmAQdO5JckbDO/CHoNbgvWJp1t0j
-        JOueCMMwo+M2YD0PtPybEX/thd+xzjJqVQ==
-X-Google-Smtp-Source: ABdhPJwyeqirgYZxA/+H3MJ1EyUUeD3X3mqCKm0WOQ1Eu54zSqIwffknhc26oPv3HVVIHVtkuJoUhQ==
-X-Received: by 2002:a7b:cc94:: with SMTP id p20mr3297567wma.39.1622033316975;
-        Wed, 26 May 2021 05:48:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JUrl4fnvvNKLa1rPCktyHZZm6yh4mY7qJMWTsOc5obw=;
+        b=Fb4Sj7huvO4cMa88iz8eV1cpHcFff3WcdyE62nAutirjUY8EsEl6AA4jLwP4VFZ8eG
+         BvOCuNXvunZmtcKI+6RNwIDACcBWBoUcMdcU7y/2L3JBm8Bubg9cKzgldiIjJzgmD4Im
+         bH4OtkhYob1Fle2jpnbOQdUk9NANJ4SOLpLmlrdoV7TK4LLWWnF/JBrEvzrF26UbQZ7p
+         uhSnRebWgUkE7asszkhaO5bNh34LH4CuHyeJbWf6zO3739ZmDIFcMC1o21zvcUkrjQ4h
+         2ZSIcpXJ74pxiLeCjm6s1oNizmHKL4Vt72fV5iVV1NWcy4kG9M3Kez7uPi/ZRNUBXt9R
+         EQPw==
+X-Gm-Message-State: AOAM532hsO+QVBbluXbgaSEWc73ZFuUKcUPct0aG/3IkjiumWcIUtmyM
+        9wZLJLZPJS40XvdOYejTTSXSQA==
+X-Google-Smtp-Source: ABdhPJxRsLCa8FjRX5aLZ/h9+NjGasQKsyNoweaYjIDboANBL7E++Z+tuE/R1+Z4EkXzjtvIVZ+/jg==
+X-Received: by 2002:a1c:2155:: with SMTP id h82mr29353326wmh.115.1622033320572;
+        Wed, 26 May 2021 05:48:40 -0700 (PDT)
 Received: from localhost.localdomain (92.41.10.155.threembb.co.uk. [92.41.10.155])
-        by smtp.gmail.com with ESMTPSA id a4sm1864100wme.45.2021.05.26.05.48.36
+        by smtp.gmail.com with ESMTPSA id a4sm1864100wme.45.2021.05.26.05.48.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 05:48:36 -0700 (PDT)
+        Wed, 26 May 2021 05:48:40 -0700 (PDT)
 From:   Torin Cooper-Bennun <torin@maxiluxsystems.com>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Subject: [PATCH can-next 0/5] m_can, tcan4x5x: device-specific interrupt handling
-Date:   Wed, 26 May 2021 13:47:42 +0100
-Message-Id: <20210526124747.674055-1-torin@maxiluxsystems.com>
+Cc:     Torin Cooper-Bennun <torin@maxiluxsystems.com>
+Subject: [PATCH can-next 4/5] can: tcan4x5x: only enable useful device interrupts
+Date:   Wed, 26 May 2021 13:47:46 +0100
+Message-Id: <20210526124747.674055-5-torin@maxiluxsystems.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210526124747.674055-1-torin@maxiluxsystems.com>
+References: <20210526124747.674055-1-torin@maxiluxsystems.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Marc and list,
+Aside from TCAN4X5X_CANINT_INT_EN, the masks used to write to the IE
+register (0x0830) were all reserved fields. Remove these. Remove CANINT
+also: it indicates a CAN wake event, which is not processed by the
+driver.
 
-This series is a follow-up to the RFC here:
-  https://lore.kernel.org/linux-can/20210514121946.2344901-1-torin@maxiluxsystems.com/
+Instead, enable optional interrupts that indicate power and transceiver
+failures. We are able to shut down the device if these interrupts are
+handled.
 
-In this series we enable M_CAN-based devices to implement their own
-device-specific interrupt handling, and add such handling for tcan4x5x.
+Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+---
+ drivers/net/can/m_can/tcan4x5x-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-In 1, we replace the clear_interrupts() m_can_ops callback with
-handle_interrupts(), which returns irqreturn_t and has an extra
-parameter, clear_only, which is used if it isn't necessary to handle
-device interrupts, only clear them.
-
-In 2, we use the new infrastructure in m_can_isr(). If M_CAN core
-interrupts are handled, we still only clear device interrupts.
-Otherwise, we try to handle any pending device interrupts.
-
-In 3-5, we clean up interrupt enabling and clearing in tcan4x5x, and
-handle device interrupts appropriately. We specifically look for fatal
-errors arising from transceiver or power, and SPI errors, which are not
-necessarily fatal, but are dangerous!
-
-TCAN4550 shutdown is attempted by setting the device into standby mode.
-There is probably a better way, but I understand we are limited by being
-in the ISR context.
-
-The patches are based on linux-can-next/testing.
-
-Torin Cooper-Bennun (5):
-  can: m_can: ops: clear_interrupts -> handle_dev_interrupts
-  can: m_can: m_can_isr(): handle device-specific interrupts
-  can: tcan4x5x: tcan4x5x_clear_interrupts(): rm unnecessary reg clears
-  can: tcan4x5x: only enable useful device interrupts
-  can: tcan4x5x: implement handling of device interrupts
-
- drivers/net/can/m_can/m_can.c         | 21 +++++++----
- drivers/net/can/m_can/m_can.h         |  4 +-
- drivers/net/can/m_can/tcan4x5x-core.c | 71 ++++++++++++++++++++++++++++-------
- 3 files changed, 75 insertions(+), 21 deletions(-)
-
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index a938dbc617e3..a300a14dc5de 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -40,8 +40,8 @@
+ #define TCAN4X5X_BUS_FAULT BIT(4)
+ #define TCAN4X5X_MCAN_INT BIT(1)
+ #define TCAN4X5X_ENABLE_TCAN_INT \
+-	(TCAN4X5X_MCAN_INT | TCAN4X5X_BUS_FAULT | \
+-	 TCAN4X5X_CANBUS_ERR_INT_EN | TCAN4X5X_CANINT_INT_EN)
++	(TCAN4X5X_UVSUP_INT_EN | TCAN4X5X_UVIO_INT_EN | TCAN4X5X_TSD_INT_EN | \
++	 TCAN4X5X_ECCERR_INT_EN | TCAN4X5X_CANDOM_INT_EN)
+ 
+ /* MCAN Interrupt bits */
+ #define TCAN4X5X_MCAN_IR_ARA BIT(29)
+-- 
+2.30.2
 
