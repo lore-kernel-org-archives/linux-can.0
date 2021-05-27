@@ -5,50 +5,49 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEC9DC4707F
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7A4CC4708D
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A3D7B61222
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A06E261222
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235704AbhE0IuQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 27 May 2021 04:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
+        id S235642AbhE0IuR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 27 May 2021 04:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235637AbhE0It4 (ORCPT
+        with ESMTP id S235641AbhE0It4 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:49:56 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75740C061574
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD19C061343
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:23 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lmBgi-00024r-LD
-        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:20 +0200
+        id 1lmBgj-00026Y-N0
+        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:21 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 713BF62D4E5
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:47 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 95E6A62D4A6
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:44 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 56D5F62D440;
-        Thu, 27 May 2021 08:45:40 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6ADEC62D410;
+        Thu, 27 May 2021 08:45:37 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1f50c894;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cdee3d72;
         Thu, 27 May 2021 08:45:34 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
+        kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 21/21] can: m_can: fix whitespace in a few comments
-Date:   Thu, 27 May 2021 10:45:32 +0200
-Message-Id: <20210527084532.1384031-22-mkl@pengutronix.de>
+Subject: [net-next 16/21] can: c_can: remove unused variable struct c_can_priv::rxmasked
+Date:   Thu, 27 May 2021 10:45:27 +0200
+Message-Id: <20210527084532.1384031-17-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210527084532.1384031-1-mkl@pengutronix.de>
 References: <20210527084532.1384031-1-mkl@pengutronix.de>
@@ -62,60 +61,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+From: Dario Binacchi <dariobin@libero.it>
 
-Fixes whitespace in comments titling sections of register masks.
+The member rxmasked of struct c_can_priv is initialized by
+c_can_chip_config(), but's it's never used, so remove it.
 
-Link: https://lore.kernel.org/r/20210504125123.500553-5-torin@maxiluxsystems.com
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+Link: https://lore.kernel.org/r/20210509124309.30024-2-dariobin@libero.it
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/can/c_can/c_can.c | 1 -
+ drivers/net/can/c_can/c_can.h | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index ce7722229964..bba2a449ac70 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -101,7 +101,7 @@ enum m_can_reg {
- /* Test Register (TEST) */
- #define TEST_LBCK		BIT(4)
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 313793f6922d..1fa47968c2ec 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -599,7 +599,6 @@ static int c_can_chip_config(struct net_device *dev)
  
--/* CC Control Register(CCCR) */
-+/* CC Control Register (CCCR) */
- #define CCCR_TXP		BIT(14)
- #define CCCR_TEST		BIT(7)
- #define CCCR_DAR		BIT(6)
-@@ -147,18 +147,18 @@ enum m_can_reg {
- /* Timestamp Counter Value Register (TSCV) */
- #define TSCV_TSC_MASK		GENMASK(15, 0)
+ 	/* Clear all internal status */
+ 	atomic_set(&priv->tx_active, 0);
+-	priv->rxmasked = 0;
+ 	priv->tx_dir = 0;
  
--/* Error Counter Register(ECR) */
-+/* Error Counter Register (ECR) */
- #define ECR_RP			BIT(15)
- #define ECR_REC_MASK		GENMASK(14, 8)
- #define ECR_TEC_MASK		GENMASK(7, 0)
- 
--/* Protocol Status Register(PSR) */
-+/* Protocol Status Register (PSR) */
- #define PSR_BO		BIT(7)
- #define PSR_EW		BIT(6)
- #define PSR_EP		BIT(5)
- #define PSR_LEC_MASK	GENMASK(2, 0)
- 
--/* Interrupt Register(IR) */
-+/* Interrupt Register (IR) */
- #define IR_ALL_INT	0xffffffff
- 
- /* Renamed bits for versions > 3.1.x */
-@@ -250,7 +250,7 @@ enum m_can_reg {
- #define TXFQS_TFGI_MASK		GENMASK(12, 8)
- #define TXFQS_TFFL_MASK		GENMASK(5, 0)
- 
--/* Tx Buffer Element Size Configuration(TXESC) */
-+/* Tx Buffer Element Size Configuration (TXESC) */
- #define TXESC_TBDS_MASK		GENMASK(2, 0)
- #define TXESC_TBDS_64B		0x7
+ 	/* set bittiming params */
+diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+index 06045f610f0e..517845c4571e 100644
+--- a/drivers/net/can/c_can/c_can.h
++++ b/drivers/net/can/c_can/c_can.h
+@@ -205,7 +205,6 @@ struct c_can_priv {
+ 	struct c_can_raminit raminit_sys;	/* RAMINIT via syscon regmap */
+ 	void (*raminit)(const struct c_can_priv *priv, bool enable);
+ 	u32 comm_rcv_high;
+-	u32 rxmasked;
+ 	u32 dlc[];
+ };
  
 -- 
 2.30.2
