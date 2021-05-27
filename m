@@ -7,46 +7,47 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A7C6C4707F
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42155C4708A
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:49:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 221066128D
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:49:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 27A3A61222
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:49:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235766AbhE0Iub (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 27 May 2021 04:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
+        id S235641AbhE0Iug (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 27 May 2021 04:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235705AbhE0IuQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:50:16 -0400
+        with ESMTP id S235639AbhE0IuU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:50:20 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86663C061359
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48618C06135E
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:30 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lmBgp-0002Ng-Lz
-        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:27 +0200
+        id 1lmBgq-0002QJ-KZ
+        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:28 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id D9E8562D477
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:42 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id EFCBF62D425
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:38 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 97D0862D3FE;
-        Thu, 27 May 2021 08:45:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1854462D3E1;
+        Thu, 27 May 2021 08:45:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 624478a0;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bd38402a;
         Thu, 27 May 2021 08:45:34 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 13/21] can: at91_can: silence clang warning
-Date:   Thu, 27 May 2021 10:45:24 +0200
-Message-Id: <20210527084532.1384031-14-mkl@pengutronix.de>
+        kernel@pengutronix.de, zuoqilin <zuoqilin@yulong.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-next 05/21] can: proc: remove unnecessary variables
+Date:   Thu, 27 May 2021 10:45:16 +0200
+Message-Id: <20210527084532.1384031-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210527084532.1384031-1-mkl@pengutronix.de>
 References: <20210527084532.1384031-1-mkl@pengutronix.de>
@@ -60,38 +61,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the following clang warning, by marking the functions
-as maybe unused. gcc doesn't complain about unused inline functions.
+From: zuoqilin <zuoqilin@yulong.com>
 
-| drivers/net/can/at91_can.c:178:1: warning: unused function 'at91_is_sam9X5' [-Wunused-function]
-| AT91_IS(9X5);
-| ^
-| drivers/net/can/at91_can.c:172:19: note: expanded from macro 'AT91_IS'
-| static inline int at91_is_sam##_model(const struct at91_priv *priv) \
-|                   ^
-| <scratch space>:66:1: note: expanded from here
-| at91_is_sam9X5
-| ^
+There is no need to define the variable "rate" to receive, just return
+directly.
 
-Link: https://lore.kernel.org/r/20210514153741.1958041-2-mkl@pengutronix.de
+Link: https://lore.kernel.org/r/20210514100806.792-1-zuoqilin1@163.com
+Signed-off-by: zuoqilin <zuoqilin@yulong.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/can/proc.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 9ad9b39f480e..04d0bb3ffe89 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -169,7 +169,7 @@ static const struct can_bittiming_const at91_bittiming_const = {
- };
+diff --git a/net/can/proc.c b/net/can/proc.c
+index d1fe49e6f16d..b3099f0a3cb8 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -99,8 +99,6 @@ static void can_init_stats(struct net *net)
+ static unsigned long calc_rate(unsigned long oldjif, unsigned long newjif,
+ 			       unsigned long count)
+ {
+-	unsigned long rate;
+-
+ 	if (oldjif == newjif)
+ 		return 0;
  
- #define AT91_IS(_model) \
--static inline int at91_is_sam##_model(const struct at91_priv *priv) \
-+static inline int __maybe_unused at91_is_sam##_model(const struct at91_priv *priv) \
- { \
- 	return priv->devtype_data.type == AT91_DEVTYPE_SAM##_model; \
+@@ -111,9 +109,7 @@ static unsigned long calc_rate(unsigned long oldjif, unsigned long newjif,
+ 		return 99999999;
+ 	}
+ 
+-	rate = (count * HZ) / (newjif - oldjif);
+-
+-	return rate;
++	return (count * HZ) / (newjif - oldjif);
  }
+ 
+ void can_stat_update(struct timer_list *t)
 -- 
 2.30.2
 
