@@ -2,52 +2,53 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,TVD_SPACE_RATIO,
+	UNWANTED_LANGUAGE_BODY,UPPERCASE_50_75,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7A4CC4708D
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD71EC4708B
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A06E261222
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 86FCA6128D
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbhE0IuR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 27 May 2021 04:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S235720AbhE0IuZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 27 May 2021 04:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235641AbhE0It4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:49:56 -0400
+        with ESMTP id S235683AbhE0IuK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:50:10 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD19C061343
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79216C061352
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:26 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lmBgj-00026Y-N0
-        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:21 +0200
+        id 1lmBgm-0002G2-L5
+        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:24 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 95E6A62D4A6
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id BB9A762D490
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:43 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6ADEC62D410;
-        Thu, 27 May 2021 08:45:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C121962D400;
+        Thu, 27 May 2021 08:45:36 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cdee3d72;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d610c9d7;
         Thu, 27 May 2021 08:45:34 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>,
+        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 16/21] can: c_can: remove unused variable struct c_can_priv::rxmasked
-Date:   Thu, 27 May 2021 10:45:27 +0200
-Message-Id: <20210527084532.1384031-17-mkl@pengutronix.de>
+Subject: [net-next 14/21] can: kvaser_usb: Rename define USB_HYBRID_{,PRO_}CANLIN_PRODUCT_ID
+Date:   Thu, 27 May 2021 10:45:25 +0200
+Message-Id: <20210527084532.1384031-15-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210527084532.1384031-1-mkl@pengutronix.de>
 References: <20210527084532.1384031-1-mkl@pengutronix.de>
@@ -61,43 +62,48 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dario Binacchi <dariobin@libero.it>
+From: Jimmy Assarsson <extja@kvaser.com>
 
-The member rxmasked of struct c_can_priv is initialized by
-c_can_chip_config(), but's it's never used, so remove it.
+Rename define USB_HYBRID_{,PRO_}CANLIN_PRODUCT_ID to
+USB_HYBRID_{,PRO_}2CANLIN_PRODUCT_ID, to reflect the channel count.
 
-Link: https://lore.kernel.org/r/20210509124309.30024-2-dariobin@libero.it
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+Link: https://lore.kernel.org/r/20210429093730.499263-1-extja@kvaser.com
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can.c | 1 -
- drivers/net/can/c_can/c_can.h | 1 -
- 2 files changed, 2 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 313793f6922d..1fa47968c2ec 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -599,7 +599,6 @@ static int c_can_chip_config(struct net_device *dev)
- 
- 	/* Clear all internal status */
- 	atomic_set(&priv->tx_active, 0);
--	priv->rxmasked = 0;
- 	priv->tx_dir = 0;
- 
- 	/* set bittiming params */
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 06045f610f0e..517845c4571e 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -205,7 +205,6 @@ struct c_can_priv {
- 	struct c_can_raminit raminit_sys;	/* RAMINIT via syscon regmap */
- 	void (*raminit)(const struct c_can_priv *priv, bool enable);
- 	u32 comm_rcv_high;
--	u32 rxmasked;
- 	u32 dlc[];
- };
- 
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index 90ebcae13409..b2236bf63b41 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -79,10 +79,10 @@
+ #define USB_USBCAN_PRO_2HS_V2_PRODUCT_ID	264
+ #define USB_MEMO_2HS_PRODUCT_ID			265
+ #define USB_MEMO_PRO_2HS_V2_PRODUCT_ID		266
+-#define USB_HYBRID_CANLIN_PRODUCT_ID		267
++#define USB_HYBRID_2CANLIN_PRODUCT_ID		267
+ #define USB_ATI_USBCAN_PRO_2HS_V2_PRODUCT_ID	268
+ #define USB_ATI_MEMO_PRO_2HS_V2_PRODUCT_ID	269
+-#define USB_HYBRID_PRO_CANLIN_PRODUCT_ID	270
++#define USB_HYBRID_PRO_2CANLIN_PRODUCT_ID	270
+ #define USB_U100_PRODUCT_ID			273
+ #define USB_U100P_PRODUCT_ID			274
+ #define USB_U100S_PRODUCT_ID			275
+@@ -187,10 +187,10 @@ static const struct usb_device_id kvaser_usb_table[] = {
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_USBCAN_PRO_2HS_V2_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MEMO_2HS_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MEMO_PRO_2HS_V2_PRODUCT_ID) },
+-	{ USB_DEVICE(KVASER_VENDOR_ID, USB_HYBRID_CANLIN_PRODUCT_ID) },
++	{ USB_DEVICE(KVASER_VENDOR_ID, USB_HYBRID_2CANLIN_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_ATI_USBCAN_PRO_2HS_V2_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_ATI_MEMO_PRO_2HS_V2_PRODUCT_ID) },
+-	{ USB_DEVICE(KVASER_VENDOR_ID, USB_HYBRID_PRO_CANLIN_PRODUCT_ID) },
++	{ USB_DEVICE(KVASER_VENDOR_ID, USB_HYBRID_PRO_2CANLIN_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_U100_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_U100P_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_U100S_PRODUCT_ID) },
 -- 
 2.30.2
 
