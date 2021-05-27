@@ -7,47 +7,48 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD2C9C47089
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38853C4708A
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A050A61222
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1D2FC61222
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235682AbhE0IuZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 27 May 2021 04:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
+        id S235762AbhE0Iu3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 27 May 2021 04:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235692AbhE0IuL (ORCPT
+        with ESMTP id S235622AbhE0IuL (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:50:11 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51DBC061346
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D570CC061353
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:26 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lmBgn-0002JN-Ue
-        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:26 +0200
+        id 1lmBgn-0002GH-0d
+        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:25 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id CB80D62D433
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:39 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id BB44C62D48F
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:43 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3913F62D3E3;
-        Thu, 27 May 2021 08:45:35 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 18F7B62D3F3;
+        Thu, 27 May 2021 08:45:36 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6a062877;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4070e316;
         Thu, 27 May 2021 08:45:34 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Patrick Menschel <menschel.p@posteo.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 06/21] can: isotp: change error format from decimal to symbolic error names
-Date:   Thu, 27 May 2021 10:45:17 +0200
-Message-Id: <20210527084532.1384031-7-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [net-next 11/21] can: mcp251x: mcp251x_can_probe(): silence clang warning
+Date:   Thu, 27 May 2021 10:45:22 +0200
+Message-Id: <20210527084532.1384031-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210527084532.1384031-1-mkl@pengutronix.de>
 References: <20210527084532.1384031-1-mkl@pengutronix.de>
@@ -61,55 +62,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Patrick Menschel <menschel.p@posteo.de>
+This patch silences the following clang warning:
 
-This patch changes the format string for errors from decimal %d to
-symbolic error names %pe to achieve more comprehensive log messages.
+| drivers/net/can/spi/mcp251x.c:1333:17: warning: cast to smaller integer type
+| 'enum mcp251x_model' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+|                 priv->model = (enum mcp251x_model)match;
+|                               ^~~~~~~~~~~~~~~~~~~~~~~~~
 
-Link: https://lore.kernel.org/r/20210427052150.2308-2-menschel.p@posteo.de
-Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
+Fixes: 8de29a5c34a5 ("can: mcp251x: Make use of device property API")
+Link: https://lore.kernel.org/r/20210504200520.1179635-2-mkl@pengutronix.de
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/isotp.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/can/spi/mcp251x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 9f94ad3caee9..2c4f84fac70a 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -221,8 +221,8 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
- 
- 	can_send_ret = can_send(nskb, 1);
- 	if (can_send_ret)
--		pr_notice_once("can-isotp: %s: can_send_ret %d\n",
--			       __func__, can_send_ret);
-+		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
-+			       __func__, ERR_PTR(can_send_ret));
- 
- 	dev_put(dev);
- 
-@@ -798,8 +798,8 @@ static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
- 
- 		can_send_ret = can_send(skb, 1);
- 		if (can_send_ret)
--			pr_notice_once("can-isotp: %s: can_send_ret %d\n",
--				       __func__, can_send_ret);
-+			pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
-+				       __func__, ERR_PTR(can_send_ret));
- 
- 		if (so->tx.idx >= so->tx.len) {
- 			/* we are done */
-@@ -946,8 +946,8 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	err = can_send(skb, 1);
- 	dev_put(dev);
- 	if (err) {
--		pr_notice_once("can-isotp: %s: can_send_ret %d\n",
--			       __func__, err);
-+		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
-+			       __func__, ERR_PTR(err));
- 		return err;
- 	}
- 
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index 173c6614086f..0579ab74f728 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -1330,7 +1330,7 @@ static int mcp251x_can_probe(struct spi_device *spi)
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
+ 		CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_LISTENONLY;
+ 	if (match)
+-		priv->model = (enum mcp251x_model)match;
++		priv->model = (enum mcp251x_model)(uintptr_t)match;
+ 	else
+ 		priv->model = spi_get_device_id(spi)->driver_data;
+ 	priv->net = net;
 -- 
 2.30.2
 
