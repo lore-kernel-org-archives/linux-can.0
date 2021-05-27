@@ -2,54 +2,52 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F04E6C4707F
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26F00C4708A
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D118261222
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1072D61222
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235624AbhE0IuM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 27 May 2021 04:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
+        id S235579AbhE0IuP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 27 May 2021 04:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235610AbhE0Itz (ORCPT
+        with ESMTP id S235633AbhE0Itz (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:49:55 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF493C06138E
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFE2C06134D
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:22 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lmBgg-00023c-N0
-        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:18 +0200
+        id 1lmBgi-000269-Kv
+        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:20 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 7C27C62D46C
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:42 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 95B8A62D3EA
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D75A362D3EF;
-        Thu, 27 May 2021 08:45:35 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 443cdd57;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 64E7C62D3D8;
         Thu, 27 May 2021 08:45:34 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4ac409e1;
+        Thu, 27 May 2021 08:45:33 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 10/21] can: hi311x: hi3110_can_probe(): silence clang warning
-Date:   Thu, 27 May 2021 10:45:21 +0200
-Message-Id: <20210527084532.1384031-11-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: pull-request: can-next 2021-05-27
+Date:   Thu, 27 May 2021 10:45:11 +0200
+Message-Id: <20210527084532.1384031-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210527084532.1384031-1-mkl@pengutronix.de>
-References: <20210527084532.1384031-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -60,34 +58,125 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch silences the following clang warning:
+Hello Jakub, hello David,
 
-| drivers/net/can/spi/hi311x.c:874:17: warning: cast to smaller integer type
-| 'enum hi3110_model' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-|                 priv->model = (enum hi3110_model)of_id->data;
-|                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+this is a pull request of 21 patches for net-next/master. I hope
+that's OK, as http://vger.kernel.org/~davem/net-next.html still says
+closed.
 
-Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
-Link: https://lore.kernel.org/r/20210504200520.1179635-3-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The first 2 patches are by Geert Uytterhoeven and convert the rcan_can
+and rcan_canfd device tree bindings to yaml.
+
+The next 2 patches are by Oliver Hartkopp and me and update the CAN
+uapi headers.
+
+zuoqilin's patch removes an unnecessary variable from the CAN proc
+code.
+
+Patrick Menschel contributes 3 patches for CAN ISOTP to enhance the
+error messages.
+
+Jiapeng Chong's patch removes two dead stores from the softing driver.
+
+The next 4 patches are by me and silence several warnings found by
+clang compiler.
+
+Jimmy Assarsson's patches for the kvaser_usb driver add support for
+the Kvaser hydra devices.
+
+Dario Binacchi provides 2 patches for the c_can driver, first removing
+an unused variable, then adding basic ethtool support to query driver
+and ring parameter info.
+
+The last 4 patches are by Torin Cooper-Bennun and clean up the m_can
+driver.
+
+regards,
+Marc
+
 ---
- drivers/net/can/spi/hi311x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index 6f5d6d04a8b9..dd17b8c53e1c 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -871,7 +871,7 @@ static int hi3110_can_probe(struct spi_device *spi)
- 		CAN_CTRLMODE_BERR_REPORTING;
- 
- 	if (of_id)
--		priv->model = (enum hi3110_model)of_id->data;
-+		priv->model = (enum hi3110_model)(uintptr_t)of_id->data;
- 	else
- 		priv->model = spi_get_device_id(spi)->driver_data;
- 	priv->net = net;
--- 
-2.30.2
+The following changes since commit 59c56342459a483d5e563ed8b5fdb77ab7622a73:
+
+  Merge branch '1GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue (2021-05-26 18:33:01 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-5.14-20210527
+
+for you to fetch changes up to 50fe7547b637b3cf51876ce9ec829e79d76e5de0:
+
+  can: m_can: fix whitespace in a few comments (2021-05-27 09:42:24 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-5.14-20210527
+
+----------------------------------------------------------------
+Dario Binacchi (2):
+      can: c_can: remove unused variable struct c_can_priv::rxmasked
+      can: c_can: add ethtool support
+
+Geert Uytterhoeven (2):
+      dt-bindings: can: rcar_can: Convert to json-schema
+      dt-bindings: can: rcar_canfd: Convert to json-schema
+
+Jiapeng Chong (1):
+      can: softing: Remove redundant variable ptr
+
+Jimmy Assarsson (2):
+      can: kvaser_usb: Rename define USB_HYBRID_{,PRO_}CANLIN_PRODUCT_ID
+      can: kvaser_usb: Add new Kvaser hydra devices
+
+Marc Kleine-Budde (5):
+      can: uapi: update CAN-FD frame description
+      can: hi311x: hi3110_can_probe(): silence clang warning
+      can: mcp251x: mcp251x_can_probe(): silence clang warning
+      can: mcp251xfd: silence clang warning
+      can: at91_can: silence clang warning
+
+Oliver Hartkopp (1):
+      can: uapi: introduce CANFD_FDF flag for mixed content in struct canfd_frame
+
+Patrick Menschel (3):
+      can: isotp: change error format from decimal to symbolic error names
+      can: isotp: add symbolic error message to isotp_module_init()
+      can: isotp: Add error message if txqueuelen is too small
+
+Torin Cooper-Bennun (4):
+      can: m_can: use bits.h macros for all regmasks
+      can: m_can: clean up CCCR reg defs, order by revs
+      can: m_can: make TXESC, RXESC config more explicit
+      can: m_can: fix whitespace in a few comments
+
+zuoqilin (1):
+      can: proc: remove unnecessary variables
+
+ .../devicetree/bindings/net/can/rcar_can.txt       |  80 -------
+ .../devicetree/bindings/net/can/rcar_canfd.txt     | 107 ---------
+ .../bindings/net/can/renesas,rcar-can.yaml         | 139 ++++++++++++
+ .../bindings/net/can/renesas,rcar-canfd.yaml       | 122 +++++++++++
+ drivers/net/can/at91_can.c                         |   2 +-
+ drivers/net/can/c_can/Makefile                     |   5 +
+ drivers/net/can/c_can/c_can.h                      |   3 +-
+ drivers/net/can/c_can/c_can_ethtool.c              |  43 ++++
+ drivers/net/can/c_can/{c_can.c => c_can_main.c}    |   2 +-
+ drivers/net/can/m_can/m_can.c                      | 244 ++++++++++-----------
+ drivers/net/can/softing/softing_main.c             |   2 -
+ drivers/net/can/spi/hi311x.c                       |   2 +-
+ drivers/net/can/spi/mcp251x.c                      |   2 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c     |   2 +-
+ drivers/net/can/usb/Kconfig                        |   2 +
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   |  14 +-
+ include/uapi/linux/can.h                           |  13 +-
+ net/can/isotp.c                                    |  20 +-
+ net/can/proc.c                                     |   6 +-
+ 19 files changed, 463 insertions(+), 347 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/can/rcar_can.txt
+ delete mode 100644 Documentation/devicetree/bindings/net/can/rcar_canfd.txt
+ create mode 100644 Documentation/devicetree/bindings/net/can/renesas,rcar-can.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+ create mode 100644 drivers/net/can/c_can/c_can_ethtool.c
+ rename drivers/net/can/c_can/{c_can.c => c_can_main.c} (99%)
+
 
 
