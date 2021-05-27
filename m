@@ -7,48 +7,47 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFAA6C47089
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7FF1C47089
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9FBEA61222
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A0D2261222
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235583AbhE0It5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 27 May 2021 04:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S235674AbhE0IuI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 27 May 2021 04:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235589AbhE0Itw (ORCPT
+        with ESMTP id S235617AbhE0Itw (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:49:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AADC061761
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60FCC061348
         for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:19 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lmBgf-000214-AO
-        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:17 +0200
+        id 1lmBgf-00022M-UL
+        for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:18 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 632A762D4DF
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:47 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7A21762D419
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:38 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A127E62D416;
-        Thu, 27 May 2021 08:45:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D82B862D3DE;
+        Thu, 27 May 2021 08:45:34 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c0b68a92;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 543047b9;
         Thu, 27 May 2021 08:45:34 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Dario Binacchi <dariobin@libero.it>,
-        Andrew Lunn <andrew@lunn.ch>,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 17/21] can: c_can: add ethtool support
-Date:   Thu, 27 May 2021 10:45:28 +0200
-Message-Id: <20210527084532.1384031-18-mkl@pengutronix.de>
+Subject: [net-next 04/21] can: uapi: introduce CANFD_FDF flag for mixed content in struct canfd_frame
+Date:   Thu, 27 May 2021 10:45:15 +0200
+Message-Id: <20210527084532.1384031-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210527084532.1384031-1-mkl@pengutronix.de>
 References: <20210527084532.1384031-1-mkl@pengutronix.de>
@@ -62,118 +61,49 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dario Binacchi <dariobin@libero.it>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-With commit 132f2d45fb23 ("can: c_can: add support to 64 message
-objects") the number of message objects used for reception /
-transmission depends on FIFO size.
+The struct can_frame and struct canfd_frame intentionally share the
+same layout to be able to write CAN frame content into a CAN FD frame
+structure. When this is done the former differentiation via CAN_MTU /
+CANFD_MTU is lost. CANFD_FDF allows programmers to mark CAN FD frames
+in the case of using struct canfd_frame for mixed CAN/CAN FD
+content (dual use).
 
-The ethtools API support allows you to retrieve this info. Driver info
-has been added too.
+N.B. the Kernel APIs do NOT provide mixed CAN / CAN FD content inside
+of struct canfd_frame therefore the CANFD_FDF flag is disregarded by
+Linux.
 
-Link: https://lore.kernel.org/r/20210514165549.14365-2-dariobin@libero.it
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20170411134343.3089-1-socketcan@hartkopp.net
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/Makefile                |  5 +++
- drivers/net/can/c_can/c_can.h                 |  2 +
- drivers/net/can/c_can/c_can_ethtool.c         | 43 +++++++++++++++++++
- .../net/can/c_can/{c_can.c => c_can_main.c}   |  1 +
- 4 files changed, 51 insertions(+)
- create mode 100644 drivers/net/can/c_can/c_can_ethtool.c
- rename drivers/net/can/c_can/{c_can.c => c_can_main.c} (99%)
+ include/uapi/linux/can.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/net/can/c_can/Makefile b/drivers/net/can/c_can/Makefile
-index e6a94c948531..6fa3b2b9e4b9 100644
---- a/drivers/net/can/c_can/Makefile
-+++ b/drivers/net/can/c_can/Makefile
-@@ -4,5 +4,10 @@
- #
+diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
+index ac5d7a31671f..90801ada2bbe 100644
+--- a/include/uapi/linux/can.h
++++ b/include/uapi/linux/can.h
+@@ -135,9 +135,18 @@ struct can_frame {
+  * controller only the CANFD_BRS bit is relevant for real CAN controllers when
+  * building a CAN FD frame for transmission. Setting the CANFD_ESI bit can make
+  * sense for virtual CAN interfaces to test applications with echoed frames.
++ *
++ * The struct can_frame and struct canfd_frame intentionally share the same
++ * layout to be able to write CAN frame content into a CAN FD frame structure.
++ * When this is done the former differentiation via CAN_MTU / CANFD_MTU gets
++ * lost. CANFD_FDF allows programmers to mark CAN FD frames in the case of
++ * using struct canfd_frame for mixed CAN / CAN FD content (dual use).
++ * N.B. the Kernel APIs do NOT provide mixed CAN / CAN FD content inside of
++ * struct canfd_frame therefore the CANFD_FDF flag is disregarded by Linux.
+  */
+ #define CANFD_BRS 0x01 /* bit rate switch (second bitrate for payload data) */
+ #define CANFD_ESI 0x02 /* error state indicator of the transmitting node */
++#define CANFD_FDF 0x04 /* mark CAN FD for dual use of struct canfd_frame */
  
- obj-$(CONFIG_CAN_C_CAN) += c_can.o
-+
-+c_can-objs :=
-+c_can-objs += c_can_ethtool.o
-+c_can-objs += c_can_main.o
-+
- obj-$(CONFIG_CAN_C_CAN_PLATFORM) += c_can_platform.o
- obj-$(CONFIG_CAN_C_CAN_PCI) += c_can_pci.o
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 517845c4571e..4247ff80a29c 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -218,4 +218,6 @@ int c_can_power_up(struct net_device *dev);
- int c_can_power_down(struct net_device *dev);
- #endif
- 
-+void c_can_set_ethtool_ops(struct net_device *dev);
-+
- #endif /* C_CAN_H */
-diff --git a/drivers/net/can/c_can/c_can_ethtool.c b/drivers/net/can/c_can/c_can_ethtool.c
-new file mode 100644
-index 000000000000..cd5f07fca2a5
---- /dev/null
-+++ b/drivers/net/can/c_can/c_can_ethtool.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2021, Dario Binacchi <dariobin@libero.it>
-+ */
-+
-+#include <linux/ethtool.h>
-+#include <linux/kernel.h>
-+#include <linux/platform_device.h>
-+#include <linux/netdevice.h>
-+#include <linux/can/dev.h>
-+
-+#include "c_can.h"
-+
-+static void c_can_get_drvinfo(struct net_device *netdev,
-+			      struct ethtool_drvinfo *info)
-+{
-+	struct c_can_priv *priv = netdev_priv(netdev);
-+	struct platform_device *pdev = to_platform_device(priv->device);
-+
-+	strscpy(info->driver, "c_can", sizeof(info->driver));
-+	strscpy(info->bus_info, pdev->name, sizeof(info->bus_info));
-+}
-+
-+static void c_can_get_ringparam(struct net_device *netdev,
-+				struct ethtool_ringparam *ring)
-+{
-+	struct c_can_priv *priv = netdev_priv(netdev);
-+
-+	ring->rx_max_pending = priv->msg_obj_num;
-+	ring->tx_max_pending = priv->msg_obj_num;
-+	ring->rx_pending = priv->msg_obj_rx_num;
-+	ring->tx_pending = priv->msg_obj_tx_num;
-+}
-+
-+static const struct ethtool_ops c_can_ethtool_ops = {
-+	.get_drvinfo = c_can_get_drvinfo,
-+	.get_ringparam = c_can_get_ringparam,
-+};
-+
-+void c_can_set_ethtool_ops(struct net_device *netdev)
-+{
-+	netdev->ethtool_ops = &c_can_ethtool_ops;
-+}
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can_main.c
-similarity index 99%
-rename from drivers/net/can/c_can/c_can.c
-rename to drivers/net/can/c_can/c_can_main.c
-index 1fa47968c2ec..7588f70ca0fe 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can_main.c
-@@ -1334,6 +1334,7 @@ int register_c_can_dev(struct net_device *dev)
- 
- 	dev->flags |= IFF_ECHO;	/* we support local echo */
- 	dev->netdev_ops = &c_can_netdev_ops;
-+	c_can_set_ethtool_ops(dev);
- 
- 	err = register_candev(dev);
- 	if (!err)
+ /**
+  * struct canfd_frame - CAN flexible data rate frame structure
 -- 
 2.30.2
 
