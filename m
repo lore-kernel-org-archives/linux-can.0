@@ -7,47 +7,46 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA7F4C47089
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F04E6C4707F
 	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9ECBC61222
+	by mail.kernel.org (Postfix) with ESMTP id D118261222
 	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:48:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhE0IuM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S235624AbhE0IuM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 27 May 2021 04:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235628AbhE0Ity (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:49:54 -0400
+        with ESMTP id S235610AbhE0Itz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:49:55 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B179C06138C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF493C06138E
         for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:20 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lmBgg-000237-Kp
+        id 1lmBgg-00023c-N0
         for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:18 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 758B662D469
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7C27C62D46C
         for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:42 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7CBDB62D3E8;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D75A362D3EF;
         Thu, 27 May 2021 08:45:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id dd9d80bb;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 443cdd57;
         Thu, 27 May 2021 08:45:34 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Patrick Menschel <menschel.p@posteo.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 08/21] can: isotp: Add error message if txqueuelen is too small
-Date:   Thu, 27 May 2021 10:45:19 +0200
-Message-Id: <20210527084532.1384031-9-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net-next 10/21] can: hi311x: hi3110_can_probe(): silence clang warning
+Date:   Thu, 27 May 2021 10:45:21 +0200
+Message-Id: <20210527084532.1384031-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210527084532.1384031-1-mkl@pengutronix.de>
 References: <20210527084532.1384031-1-mkl@pengutronix.de>
@@ -61,40 +60,33 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Patrick Menschel <menschel.p@posteo.de>
+This patch silences the following clang warning:
 
-This patch adds an additional error message in case that txqueuelen is
-set too small and advices the user to increase txqueuelen.
+| drivers/net/can/spi/hi311x.c:874:17: warning: cast to smaller integer type
+| 'enum hi3110_model' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+|                 priv->model = (enum hi3110_model)of_id->data;
+|                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is likely to happen even with small transfers if txqueuelen is at
-default value 10 frames.
-
-Link: https://lore.kernel.org/r/20210427052150.2308-4-menschel.p@posteo.de
-Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
+Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
+Link: https://lore.kernel.org/r/20210504200520.1179635-3-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/isotp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/can/spi/hi311x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 2075d8d9e6b6..5ff11aaf0a79 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -797,10 +797,12 @@ static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
- 		can_skb_set_owner(skb, sk);
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index 6f5d6d04a8b9..dd17b8c53e1c 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -871,7 +871,7 @@ static int hi3110_can_probe(struct spi_device *spi)
+ 		CAN_CTRLMODE_BERR_REPORTING;
  
- 		can_send_ret = can_send(skb, 1);
--		if (can_send_ret)
-+		if (can_send_ret) {
- 			pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
- 				       __func__, ERR_PTR(can_send_ret));
--
-+			if (can_send_ret == -ENOBUFS)
-+				pr_notice_once("can-isotp: tx queue is full, increasing txqueuelen may prevent this error\n");
-+		}
- 		if (so->tx.idx >= so->tx.len) {
- 			/* we are done */
- 			so->tx.state = ISOTP_IDLE;
+ 	if (of_id)
+-		priv->model = (enum hi3110_model)of_id->data;
++		priv->model = (enum hi3110_model)(uintptr_t)of_id->data;
+ 	else
+ 		priv->model = spi_get_device_id(spi)->driver_data;
+ 	priv->net = net;
 -- 
 2.30.2
 
