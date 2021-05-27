@@ -7,47 +7,48 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42155C4708A
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:49:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24083C47089
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:49:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 27A3A61222
-	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:49:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0C3A36128D
+	for <linux-can@archiver.kernel.org>; Thu, 27 May 2021 08:49:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235641AbhE0Iug (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 27 May 2021 04:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
+        id S235721AbhE0Iuh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 27 May 2021 04:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235639AbhE0IuU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:50:20 -0400
+        with ESMTP id S235734AbhE0IuW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 04:50:22 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48618C06135E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92001C061360
         for <linux-can@vger.kernel.org>; Thu, 27 May 2021 01:48:30 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lmBgq-0002QJ-KZ
+        id 1lmBgq-0002Qn-SV
         for linux-can@vger.kernel.org; Thu, 27 May 2021 10:48:28 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id EFCBF62D425
-        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:38 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E673E62D4BD
+        for <linux-can@vger.kernel.org>; Thu, 27 May 2021 08:45:45 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1854462D3E1;
-        Thu, 27 May 2021 08:45:35 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 78D0162D42B;
+        Thu, 27 May 2021 08:45:39 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bd38402a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 34fe22dc;
         Thu, 27 May 2021 08:45:34 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, zuoqilin <zuoqilin@yulong.com>,
+        kernel@pengutronix.de,
+        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net-next 05/21] can: proc: remove unnecessary variables
-Date:   Thu, 27 May 2021 10:45:16 +0200
-Message-Id: <20210527084532.1384031-6-mkl@pengutronix.de>
+Subject: [net-next 19/21] can: m_can: clean up CCCR reg defs, order by revs
+Date:   Thu, 27 May 2021 10:45:30 +0200
+Message-Id: <20210527084532.1384031-20-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210527084532.1384031-1-mkl@pengutronix.de>
 References: <20210527084532.1384031-1-mkl@pengutronix.de>
@@ -61,42 +62,67 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
 
-There is no need to define the variable "rate" to receive, just return
-directly.
+Ensures that the different CCCR regmasks for m_can revs 3.0.x, 3.1.x,
+3.2.x and 3.3.x are clearly distinguishable. Removes incorrect
+CCCR_CANFD define. Adds bit fields UTSU and WMM for rev 3.3.x, for
+completeness.
 
-Link: https://lore.kernel.org/r/20210514100806.792-1-zuoqilin1@163.com
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+Link: https://lore.kernel.org/r/20210504125123.500553-3-torin@maxiluxsystems.com
+Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/proc.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/net/can/m_can/m_can.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/net/can/proc.c b/net/can/proc.c
-index d1fe49e6f16d..b3099f0a3cb8 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -99,8 +99,6 @@ static void can_init_stats(struct net *net)
- static unsigned long calc_rate(unsigned long oldjif, unsigned long newjif,
- 			       unsigned long count)
- {
--	unsigned long rate;
--
- 	if (oldjif == newjif)
- 		return 0;
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 5bed59b1083f..cee542c0fdd5 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -102,14 +102,6 @@ enum m_can_reg {
+ #define TEST_LBCK		BIT(4)
  
-@@ -111,9 +109,7 @@ static unsigned long calc_rate(unsigned long oldjif, unsigned long newjif,
- 		return 99999999;
- 	}
+ /* CC Control Register(CCCR) */
+-#define CCCR_CMR_MASK		GENMASK(11, 10)
+-#define CCCR_CMR_CANFD		0x1
+-#define CCCR_CMR_CANFD_BRS	0x2
+-#define CCCR_CMR_CAN		0x3
+-#define CCCR_CME_MASK		GENMASK(9, 8)
+-#define CCCR_CME_CAN		0
+-#define CCCR_CME_CANFD		0x1
+-#define CCCR_CME_CANFD_BRS	0x2
+ #define CCCR_TXP		BIT(14)
+ #define CCCR_TEST		BIT(7)
+ #define CCCR_DAR		BIT(6)
+@@ -119,14 +111,25 @@ enum m_can_reg {
+ #define CCCR_ASM		BIT(2)
+ #define CCCR_CCE		BIT(1)
+ #define CCCR_INIT		BIT(0)
+-#define CCCR_CANFD		BIT(4)
++/* for version 3.0.x */
++#define CCCR_CMR_MASK		GENMASK(11, 10)
++#define CCCR_CMR_CANFD		0x1
++#define CCCR_CMR_CANFD_BRS	0x2
++#define CCCR_CMR_CAN		0x3
++#define CCCR_CME_MASK		GENMASK(9, 8)
++#define CCCR_CME_CAN		0
++#define CCCR_CME_CANFD		0x1
++#define CCCR_CME_CANFD_BRS	0x2
+ /* for version >=3.1.x */
+ #define CCCR_EFBI		BIT(13)
+ #define CCCR_PXHD		BIT(12)
+ #define CCCR_BRSE		BIT(9)
+ #define CCCR_FDOE		BIT(8)
+-/* only for version >=3.2.x */
++/* for version >=3.2.x */
+ #define CCCR_NISO		BIT(15)
++/* for version >=3.3.x */
++#define CCCR_WMM		BIT(11)
++#define CCCR_UTSU		BIT(10)
  
--	rate = (count * HZ) / (newjif - oldjif);
--
--	return rate;
-+	return (count * HZ) / (newjif - oldjif);
- }
- 
- void can_stat_update(struct timer_list *t)
+ /* Nominal Bit Timing & Prescaler Register (NBTP) */
+ #define NBTP_NSJW_MASK		GENMASK(31, 25)
 -- 
 2.30.2
 
