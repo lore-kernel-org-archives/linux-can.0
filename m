@@ -2,28 +2,27 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C332C47089
-	for <linux-can@archiver.kernel.org>; Fri, 28 May 2021 02:50:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F2F5C4707F
+	for <linux-can@archiver.kernel.org>; Fri, 28 May 2021 02:50:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4222A60FE7
-	for <linux-can@archiver.kernel.org>; Fri, 28 May 2021 02:50:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 33947613DA
+	for <linux-can@archiver.kernel.org>; Fri, 28 May 2021 02:50:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235986AbhE1Cvm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 27 May 2021 22:51:42 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5125 "EHLO
+        id S236064AbhE1Cvn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 27 May 2021 22:51:43 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5124 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhE1Cvm (ORCPT
+        with ESMTP id S234485AbhE1Cvm (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 22:51:42 -0400
-Received: from dggeml713-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Frpxn3yMSzYnqQ;
+Received: from dggeml714-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Frpxn2YTRzYnp2;
         Fri, 28 May 2021 10:47:25 +0800 (CST)
 Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggeml713-chm.china.huawei.com (10.3.17.124) with Microsoft SMTP Server
+ dggeml714-chm.china.huawei.com (10.3.17.125) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
  15.1.2176.2; Fri, 28 May 2021 10:50:05 +0800
 Received: from localhost.localdomain (10.69.192.56) by
@@ -48,12 +47,10 @@ CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
         <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
         <alobakin@pm.me>
-Subject: [PATCH net-next 1/3] net: sched: avoid unnecessary seqcount operation for lockless qdisc
-Date:   Fri, 28 May 2021 10:49:55 +0800
-Message-ID: <1622170197-27370-2-git-send-email-linyunsheng@huawei.com>
+Subject: [PATCH net-next 0/3] Some optimization for lockless qdisc
+Date:   Fri, 28 May 2021 10:49:54 +0800
+Message-ID: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
-References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.56]
@@ -64,47 +61,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-qdisc->running seqcount operation is mainly used to do heuristic
-locking on q->busylock for locked qdisc, see qdisc_is_running()
-and __dev_xmit_skb().
+Patch 1: remove unnecessary seqcount operation.
+Patch 2: implement TCQ_F_CAN_BYPASS.
+Patch 3: remove qdisc->empty.
 
-So avoid doing seqcount operation for qdisc with TCQ_F_NOLOCK
-flag.
+Performance data for pktgen in queue_xmit mode + dummy netdev
+with pfifo_fast:
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- include/net/sch_generic.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ threads    unpatched           patched             delta
+    1       2.60Mpps            3.21Mpps             +23%
+    2       3.84Mpps            5.56Mpps             +44%
+    4       5.52Mpps            5.58Mpps             +1%
+    8       2.77Mpps            2.76Mpps             -0.3%
+   16       2.24Mpps            2.23Mpps             +0.4%
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 1e62551..3ed6bcc 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -188,6 +188,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 
- nolock_empty:
- 		WRITE_ONCE(qdisc->empty, false);
-+		return true;
- 	} else if (qdisc_is_running(qdisc)) {
- 		return false;
- 	}
-@@ -201,7 +202,6 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 
- static inline void qdisc_run_end(struct Qdisc *qdisc)
- {
--	write_seqcount_end(&qdisc->running);
- 	if (qdisc->flags & TCQ_F_NOLOCK) {
- 		spin_unlock(&qdisc->seqlock);
- 
-@@ -210,6 +210,8 @@ static inline void qdisc_run_end(struct Qdisc *qdisc)
- 			clear_bit(__QDISC_STATE_MISSED, &qdisc->state);
- 			__netif_schedule(qdisc);
- 		}
-+	} else {
-+		write_seqcount_end(&qdisc->running);
- 	}
- }
- 
+Performance for IP forward testing: 1.05Mpps increases to
+1.16Mpps, about 10% improvement.
+
+V1: Drop RFC tag, Add nolock_qdisc_is_empty() and do the qdisc
+    empty checking without the protection of qdisc->seqlock to
+    aviod doing unnecessary spin_trylock() for contention case.
+RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
+        qdisc, and add patch 1 and 3.
+
+Yunsheng Lin (3):
+  net: sched: avoid unnecessary seqcount operation for lockless qdisc
+  net: sched: implement TCQ_F_CAN_BYPASS for lockless qdisc
+  net: sched: remove qdisc->empty for lockless qdisc
+
+ include/net/sch_generic.h | 31 ++++++++++++++++++-------------
+ net/core/dev.c            | 26 ++++++++++++++++++++++++--
+ net/sched/sch_generic.c   | 23 ++++++++++++++++-------
+ 3 files changed, 58 insertions(+), 22 deletions(-)
+
 -- 
 2.7.4
 
