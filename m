@@ -2,33 +2,34 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F2F5C4707F
-	for <linux-can@archiver.kernel.org>; Fri, 28 May 2021 02:50:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB061C4708F
+	for <linux-can@archiver.kernel.org>; Fri, 28 May 2021 02:50:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 33947613DA
-	for <linux-can@archiver.kernel.org>; Fri, 28 May 2021 02:50:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BD5C3613DA
+	for <linux-can@archiver.kernel.org>; Fri, 28 May 2021 02:50:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236064AbhE1Cvn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 27 May 2021 22:51:43 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5124 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234485AbhE1Cvm (ORCPT
+        id S236141AbhE1Cvq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 27 May 2021 22:51:46 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2385 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235886AbhE1Cvm (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 27 May 2021 22:51:42 -0400
-Received: from dggeml714-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Frpxn2YTRzYnp2;
-        Fri, 28 May 2021 10:47:25 +0800 (CST)
+Received: from dggeml760-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Frpwg4YlRz66Qp;
+        Fri, 28 May 2021 10:46:27 +0800 (CST)
 Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggeml714-chm.china.huawei.com (10.3.17.125) with Microsoft SMTP Server
+ dggeml760-chm.china.huawei.com (10.1.199.160) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 10:50:05 +0800
+ 15.1.2176.2; Fri, 28 May 2021 10:50:06 +0800
 Received: from localhost.localdomain (10.69.192.56) by
  dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 28 May 2021 10:50:05 +0800
+ 15.1.2176.2; Fri, 28 May 2021 10:50:06 +0800
 From:   Yunsheng Lin <linyunsheng@huawei.com>
 To:     <davem@davemloft.net>, <kuba@kernel.org>
 CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
@@ -47,10 +48,12 @@ CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
         <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
         <alobakin@pm.me>
-Subject: [PATCH net-next 0/3] Some optimization for lockless qdisc
-Date:   Fri, 28 May 2021 10:49:54 +0800
-Message-ID: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
+Subject: [PATCH net-next 3/3] net: sched: remove qdisc->empty for lockless qdisc
+Date:   Fri, 28 May 2021 10:49:57 +0800
+Message-ID: <1622170197-27370-4-git-send-email-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
+References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.56]
@@ -61,39 +64,81 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Patch 1: remove unnecessary seqcount operation.
-Patch 2: implement TCQ_F_CAN_BYPASS.
-Patch 3: remove qdisc->empty.
+As MISSED and DRAINING state are used to indicate a non-empty
+qdisc, qdisc->empty is not longer needed, so remove it.
 
-Performance data for pktgen in queue_xmit mode + dummy netdev
-with pfifo_fast:
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+ include/net/sch_generic.h | 13 +++----------
+ net/sched/sch_generic.c   |  3 ---
+ 2 files changed, 3 insertions(+), 13 deletions(-)
 
- threads    unpatched           patched             delta
-    1       2.60Mpps            3.21Mpps             +23%
-    2       3.84Mpps            5.56Mpps             +44%
-    4       5.52Mpps            5.58Mpps             +1%
-    8       2.77Mpps            2.76Mpps             -0.3%
-   16       2.24Mpps            2.23Mpps             +0.4%
-
-Performance for IP forward testing: 1.05Mpps increases to
-1.16Mpps, about 10% improvement.
-
-V1: Drop RFC tag, Add nolock_qdisc_is_empty() and do the qdisc
-    empty checking without the protection of qdisc->seqlock to
-    aviod doing unnecessary spin_trylock() for contention case.
-RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
-        qdisc, and add patch 1 and 3.
-
-Yunsheng Lin (3):
-  net: sched: avoid unnecessary seqcount operation for lockless qdisc
-  net: sched: implement TCQ_F_CAN_BYPASS for lockless qdisc
-  net: sched: remove qdisc->empty for lockless qdisc
-
- include/net/sch_generic.h | 31 ++++++++++++++++++-------------
- net/core/dev.c            | 26 ++++++++++++++++++++++++--
- net/sched/sch_generic.c   | 23 ++++++++++++++++-------
- 3 files changed, 58 insertions(+), 22 deletions(-)
-
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index 177f240..c99ffe9 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -117,8 +117,6 @@ struct Qdisc {
+ 	spinlock_t		busylock ____cacheline_aligned_in_smp;
+ 	spinlock_t		seqlock;
+ 
+-	/* for NOLOCK qdisc, true if there are no enqueued skbs */
+-	bool			empty;
+ 	struct rcu_head		rcu;
+ 
+ 	/* private data */
+@@ -165,7 +163,7 @@ static inline bool qdisc_is_percpu_stats(const struct Qdisc *q)
+ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
+ {
+ 	if (qdisc_is_percpu_stats(qdisc))
+-		return READ_ONCE(qdisc->empty);
++		return nolock_qdisc_is_empty(qdisc);
+ 	return !READ_ONCE(qdisc->q.qlen);
+ }
+ 
+@@ -173,7 +171,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ {
+ 	if (qdisc->flags & TCQ_F_NOLOCK) {
+ 		if (spin_trylock(&qdisc->seqlock))
+-			goto nolock_empty;
++			return true;
+ 
+ 		/* If the MISSED flag is set, it means other thread has
+ 		 * set the MISSED flag before second spin_trylock(), so
+@@ -195,12 +193,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ 		/* Retry again in case other CPU may not see the new flag
+ 		 * after it releases the lock at the end of qdisc_run_end().
+ 		 */
+-		if (!spin_trylock(&qdisc->seqlock))
+-			return false;
+-
+-nolock_empty:
+-		WRITE_ONCE(qdisc->empty, false);
+-		return true;
++		return spin_trylock(&qdisc->seqlock);
+ 	} else if (qdisc_is_running(qdisc)) {
+ 		return false;
+ 	}
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 83d7f5f..1abd9c7 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -707,8 +707,6 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ 		need_retry = false;
+ 
+ 		goto retry;
+-	} else {
+-		WRITE_ONCE(qdisc->empty, true);
+ 	}
+ 
+ 	return skb;
+@@ -909,7 +907,6 @@ struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
+ 	sch->enqueue = ops->enqueue;
+ 	sch->dequeue = ops->dequeue;
+ 	sch->dev_queue = dev_queue;
+-	sch->empty = true;
+ 	dev_hold(dev);
+ 	refcount_set(&sch->refcnt, 1);
+ 
 -- 
 2.7.4
 
