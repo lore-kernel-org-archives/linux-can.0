@@ -2,76 +2,107 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A374C48BD1
-	for <linux-can@archiver.kernel.org>; Tue,  8 Jun 2021 20:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A65FBC4743D
+	for <linux-can@archiver.kernel.org>; Wed,  9 Jun 2021 01:31:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2CE4A6127A
-	for <linux-can@archiver.kernel.org>; Tue,  8 Jun 2021 20:53:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 79834610A1
+	for <linux-can@archiver.kernel.org>; Wed,  9 Jun 2021 01:31:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhFHUzM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 8 Jun 2021 16:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhFHUzM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Jun 2021 16:55:12 -0400
-Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0B2C061574;
-        Tue,  8 Jun 2021 13:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-        s=20190913; t=1623185196;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rEvCmMNpxeYO45M5lh0EKK3/k+qeySJGXHyN0xv7Mj8=;
-        b=uKkAboyQiDnhc4KNbQzo8Gr2TXaihPZgzvDkIrjOKhwwggy7IZReOJEbot+kg0+hJi9TkA
-        jkiAX3oqQJ24jbaGXKyYK9WhyZ6peVZRjZcPmRWTNC34jukEPv7aS29oqAk+2yjLgvMcaa
-        r+DiHpsp7oNbzpA7yAQkPST4A9x3Q70=
-Received: from dfj.1.1.1.1 (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
-        by ziongate (OpenSMTPD) with ESMTPSA id 50314316 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 8 Jun 2021 20:46:36 +0000 (UTC)
-From:   Angelo Dureghello <angelo@kernel-space.org>
-To:     gerg@linux-m68k.org, wg@grandegger.com, mkl@pengutronix.de
-Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
-        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com,
-        Angelo Dureghello <angelo@kernel-space.org>
-Subject: [PATCH 4/5] can: flexcan: enable Kconfig for ColdFire
-Date:   Tue,  8 Jun 2021 22:45:41 +0200
-Message-Id: <20210608204542.983925-4-angelo@kernel-space.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210608204542.983925-1-angelo@kernel-space.org>
-References: <20210608204542.983925-1-angelo@kernel-space.org>
+        id S232200AbhFIBdh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 8 Jun 2021 21:33:37 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3804 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFIBdg (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Jun 2021 21:33:36 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G08bD5sKqzWtJn;
+        Wed,  9 Jun 2021 09:26:48 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 9 Jun 2021 09:31:40 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
+ 09:31:40 +0800
+Subject: Re: Re: [PATCH net-next v2 0/3] Some optimization for lockless qdisc
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+References: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
+ <20210603113548.2d71b4d3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <20210608125349.7azp7zeae3oq3izc@skbuf>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
+Date:   Wed, 9 Jun 2021 09:31:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210608125349.7azp7zeae3oq3izc@skbuf>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Enable flexcan KConfig for ColdFire m5441x cpu's.
+On 2021/6/8 20:53, Vladimir Oltean wrote:
+> On Thu, Jun 03, 2021 at 11:35:48AM -0700, Jakub Kicinski wrote:
+>> On Thu, 3 Jun 2021 09:47:57 +0800 Yunsheng Lin wrote:
+>>> Patch 1: remove unnecessary seqcount operation.
+>>> Patch 2: implement TCQ_F_CAN_BYPASS.
+>>> Patch 3: remove qdisc->empty.
+>>>
+>>> Performance data for pktgen in queue_xmit mode + dummy netdev
+>>> with pfifo_fast:
+>>>
+>>>  threads    unpatched           patched             delta
+>>>     1       2.60Mpps            3.21Mpps             +23%
+>>>     2       3.84Mpps            5.56Mpps             +44%
+>>>     4       5.52Mpps            5.58Mpps             +1%
+>>>     8       2.77Mpps            2.76Mpps             -0.3%
+>>>    16       2.24Mpps            2.23Mpps             +0.4%
+>>>
+>>> Performance for IP forward testing: 1.05Mpps increases to
+>>> 1.16Mpps, about 10% improvement.
+>>
+>> Acked-by: Jakub Kicinski <kuba@kernel.org>
+> 
+> Any idea why these patches are deferred in patchwork?
+> https://patchwork.kernel.org/project/netdevbpf/cover/1622684880-39895-1-git-send-email-linyunsheng@huawei.com/
 
-Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
----
- drivers/net/can/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I suppose it is a controversial change, which need more time
+hanging to be reviewed and tested.
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index e355d3974977..7a1be9dad52d 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -97,7 +97,7 @@ config CAN_AT91
- 
- config CAN_FLEXCAN
- 	tristate "Support for Freescale FLEXCAN based chips"
--	depends on OF && HAS_IOMEM
-+	depends on (OF || M5441x) && HAS_IOMEM
- 	help
- 	  Say Y here if you want to support for Freescale FlexCAN.
- 
--- 
-2.31.1
+By the way, I did not pick up your "Tested-by" from previous
+RFC version because there is some change between those version
+that deserves a retesting. So it would be good to have a
+"Tested-by" from you after confirming no out of order happening
+for this version, thanks.
+
+
 
