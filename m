@@ -6,44 +6,43 @@ X-Spam-Status: No, score=1.0 required=3.0 tests=BAYES_50,DKIMWL_BL,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AAAAC48BD1
-	for <linux-can@archiver.kernel.org>; Wed,  9 Jun 2021 13:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAECBC48BDF
+	for <linux-can@archiver.kernel.org>; Wed,  9 Jun 2021 15:09:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 24D606108D
-	for <linux-can@archiver.kernel.org>; Wed,  9 Jun 2021 13:31:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C447A61184
+	for <linux-can@archiver.kernel.org>; Wed,  9 Jun 2021 15:09:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236391AbhFINda (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 9 Jun 2021 09:33:30 -0400
-Received: from flippie-beckerswealthsa.xyz ([62.173.138.170]:51990 "EHLO
-        host.flippie-beckerswealthsa.xyz" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236392AbhFINd0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Jun 2021 09:33:26 -0400
-X-Greylist: delayed 4112 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Jun 2021 09:33:26 EDT
-Received: from flippie-beckerswealthsa.xyz (ec2-18-118-29-154.us-east-2.compute.amazonaws.com [18.118.29.154])
-        by host.flippie-beckerswealthsa.xyz (Postfix) with ESMTPA id 5B60F3115AD8
-        for <linux-can@vger.kernel.org>; Wed,  9 Jun 2021 15:09:32 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippie-beckerswealthsa.xyz 5B60F3115AD8
+        id S235672AbhFIPLc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 9 Jun 2021 11:11:32 -0400
+Received: from flippie-beckerswealth-sa.xyz ([62.173.147.2]:56148 "EHLO
+        host.flippie-beckerswealth-sa.xyz" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235717AbhFIPL2 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Jun 2021 11:11:28 -0400
+Received: from flippie-beckerswealth-sa.xyz (ec2-3-131-99-163.us-east-2.compute.amazonaws.com [3.131.99.163])
+        by host.flippie-beckerswealth-sa.xyz (Postfix) with ESMTPA id 40C3530572B3
+        for <linux-can@vger.kernel.org>; Wed,  9 Jun 2021 15:10:27 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippie-beckerswealth-sa.xyz 40C3530572B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flippie-beckerswealthsa.xyz; s=default; t=1623240572;
+        d=flippie-beckerswealth-sa.xyz; s=default; t=1623240627;
         bh=h0ivQLrZuUWuyEKz/TWb+FP9AASpHhVqOsJtRcwKQV4=;
         h=Reply-To:From:To:Subject:Date:From;
-        b=g0f75ydlxRR1qsQlQRJ9PaqToS/PfPTOJrpMvOP50zjwOvOQIfUrvfCn2OeR0Gw+6
-         34fWoohflRCkxdOoN+zOCZmyAunNhRM35rGmto2pgZWujw9bPH28OXSLMOdfdINqJK
-         vaaMI3tSvsAm7MSCm13yIwNUARjJ+drRg7sicRNo=
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippie-beckerswealthsa.xyz 5B60F3115AD8
+        b=s7qZejlyeUj09sNgMj4xtmrVx9L2jeUTAQWll+9buZPBvhf3J4breQqCdqPuFembm
+         IlMDyYztbehVWeNglz/kFwF84+eczAyc7xMLraXHjhgOldwHHMHEkcGkguY5zrAr8o
+         btlUZBppi+CspRSyyy0ARjDEWno9dnewE5SNYZi0=
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippie-beckerswealth-sa.xyz 40C3530572B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flippie-beckerswealthsa.xyz; s=default; t=1623240572;
+        d=flippie-beckerswealth-sa.xyz; s=default; t=1623240627;
         bh=h0ivQLrZuUWuyEKz/TWb+FP9AASpHhVqOsJtRcwKQV4=;
         h=Reply-To:From:To:Subject:Date:From;
-        b=g0f75ydlxRR1qsQlQRJ9PaqToS/PfPTOJrpMvOP50zjwOvOQIfUrvfCn2OeR0Gw+6
-         34fWoohflRCkxdOoN+zOCZmyAunNhRM35rGmto2pgZWujw9bPH28OXSLMOdfdINqJK
-         vaaMI3tSvsAm7MSCm13yIwNUARjJ+drRg7sicRNo=
+        b=s7qZejlyeUj09sNgMj4xtmrVx9L2jeUTAQWll+9buZPBvhf3J4breQqCdqPuFembm
+         IlMDyYztbehVWeNglz/kFwF84+eczAyc7xMLraXHjhgOldwHHMHEkcGkguY5zrAr8o
+         btlUZBppi+CspRSyyy0ARjDEWno9dnewE5SNYZi0=
 Reply-To: jmasuku40@flippiebeckerwealthservices.com
-From:   Jotham Masuku <jmasuku40@flippie-beckerswealthsa.xyz>
+From:   Jotham Masuku <jmasuku40@flippie-beckerswealth-sa.xyz>
 To:     linux-can@vger.kernel.org
-Subject: Projects
-Date:   09 Jun 2021 12:09:31 +0000
-Message-ID: <20210609120931.81856531CD99B3B9@flippie-beckerswealthsa.xyz>
+Subject: Proposal
+Date:   09 Jun 2021 12:10:26 +0000
+Message-ID: <20210609121026.08C51882DBA636CD@flippie-beckerswealth-sa.xyz>
 Mime-Version: 1.0
 Content-Type: text/plain;
         charset="utf-8"
