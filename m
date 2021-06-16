@@ -7,51 +7,49 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2946EC48BE8
-	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 11:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2185C49EA2
+	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 11:02:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 086F861075
-	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 11:02:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B85F3610A3
+	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 11:02:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhFPLEp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Jun 2021 07:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34552 "EHLO
+        id S232499AbhFPLEr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Jun 2021 07:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232592AbhFPLEO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Jun 2021 07:04:14 -0400
+        with ESMTP id S232609AbhFPLEQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Jun 2021 07:04:16 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01914C0611C0
-        for <linux-can@vger.kernel.org>; Wed, 16 Jun 2021 04:02:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4476CC0611C2
+        for <linux-can@vger.kernel.org>; Wed, 16 Jun 2021 04:02:03 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ltTJ3-0007pX-B6
+        id 1ltTJ3-0007pe-Kw
         for linux-can@vger.kernel.org; Wed, 16 Jun 2021 13:02:01 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 4E40963D2B3
+        by bjornoya.blackshift.org (Postfix) with SMTP id 95DB663D2B5
         for <linux-can@vger.kernel.org>; Wed, 16 Jun 2021 11:01:59 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8B5CA63D28D;
-        Wed, 16 Jun 2021 11:01:54 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3563363D293;
+        Wed, 16 Jun 2021 11:01:55 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 88f2d04a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a3baff8f;
         Wed, 16 Jun 2021 11:01:54 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Hillf Danton <hdanton@sina.com>,
+        kernel@pengutronix.de, Pavel Skripkin <paskripkin@gmail.com>,
         linux-stable <stable@vger.kernel.org>,
-        syzbot+220c1a29987a9a490903@syzkaller.appspotmail.com,
-        syzbot+45199c1b73b4013525cf@syzkaller.appspotmail.com,
+        syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 1/4] can: j1939: fix Use-after-Free, hold skb ref while in use
-Date:   Wed, 16 Jun 2021 13:01:49 +0200
-Message-Id: <20210616110152.2456765-2-mkl@pengutronix.de>
+Subject: [net 4/4] can: mcba_usb: fix memory leak in mcba_usb
+Date:   Wed, 16 Jun 2021 13:01:52 +0200
+Message-Id: <20210616110152.2456765-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210616110152.2456765-1-mkl@pengutronix.de>
 References: <20210616110152.2456765-1-mkl@pengutronix.de>
@@ -65,203 +63,101 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-This patch fixes a Use-after-Free found by the syzbot.
+Syzbot reported memory leak in SocketCAN driver for Microchip CAN BUS
+Analyzer Tool. The problem was in unfreed usb_coherent.
 
-The problem is that a skb is taken from the per-session skb queue,
-without incrementing the ref count. This leads to a Use-after-Free if
-the skb is taken concurrently from the session queue due to a CTS.
+In mcba_usb_start() 20 coherent buffers are allocated and there is
+nothing, that frees them:
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Link: https://lore.kernel.org/r/20210521115720.7533-1-o.rempel@pengutronix.de
-Cc: Hillf Danton <hdanton@sina.com>
+1) In callback function the urb is resubmitted and that's all
+2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
+   is not set (see mcba_usb_start) and this flag cannot be used with
+   coherent buffers.
+
+Fail log:
+| [ 1354.053291][ T8413] mcba_usb 1-1:0.0 can0: device disconnected
+| [ 1367.059384][ T8420] kmemleak: 20 new suspected memory leaks (see /sys/kernel/debug/kmem)
+
+So, all allocated buffers should be freed with usb_free_coherent()
+explicitly
+
+NOTE:
+The same pattern for allocating and freeing coherent buffers
+is used in drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+
+Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
+Link: https://lore.kernel.org/r/20210609215833.30393-1-paskripkin@gmail.com
 Cc: linux-stable <stable@vger.kernel.org>
-Reported-by: syzbot+220c1a29987a9a490903@syzkaller.appspotmail.com
-Reported-by: syzbot+45199c1b73b4013525cf@syzkaller.appspotmail.com
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reported-and-tested-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/transport.c | 54 +++++++++++++++++++++++++++++----------
- 1 file changed, 40 insertions(+), 14 deletions(-)
+ drivers/net/can/usb/mcba_usb.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index e09d087ba240..c3946c355882 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -330,6 +330,9 @@ static void j1939_session_skb_drop_old(struct j1939_session *session)
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index 029e77dfa773..a45865bd7254 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -82,6 +82,8 @@ struct mcba_priv {
+ 	bool can_ka_first_pass;
+ 	bool can_speed_check;
+ 	atomic_t free_ctx_cnt;
++	void *rxbuf[MCBA_MAX_RX_URBS];
++	dma_addr_t rxbuf_dma[MCBA_MAX_RX_URBS];
+ };
  
- 	if ((do_skcb->offset + do_skb->len) < offset_start) {
- 		__skb_unlink(do_skb, &session->skb_queue);
-+		/* drop ref taken in j1939_session_skb_queue() */
-+		skb_unref(do_skb);
-+
- 		kfree_skb(do_skb);
- 	}
- 	spin_unlock_irqrestore(&session->skb_queue.lock, flags);
-@@ -349,12 +352,13 @@ void j1939_session_skb_queue(struct j1939_session *session,
+ /* CAN frame */
+@@ -633,6 +635,7 @@ static int mcba_usb_start(struct mcba_priv *priv)
+ 	for (i = 0; i < MCBA_MAX_RX_URBS; i++) {
+ 		struct urb *urb = NULL;
+ 		u8 *buf;
++		dma_addr_t buf_dma;
  
- 	skcb->flags |= J1939_ECU_LOCAL_SRC;
- 
-+	skb_get(skb);
- 	skb_queue_tail(&session->skb_queue, skb);
- }
- 
- static struct
--sk_buff *j1939_session_skb_find_by_offset(struct j1939_session *session,
--					  unsigned int offset_start)
-+sk_buff *j1939_session_skb_get_by_offset(struct j1939_session *session,
-+					 unsigned int offset_start)
- {
- 	struct j1939_priv *priv = session->priv;
- 	struct j1939_sk_buff_cb *do_skcb;
-@@ -371,6 +375,10 @@ sk_buff *j1939_session_skb_find_by_offset(struct j1939_session *session,
- 			skb = do_skb;
- 		}
- 	}
-+
-+	if (skb)
-+		skb_get(skb);
-+
- 	spin_unlock_irqrestore(&session->skb_queue.lock, flags);
- 
- 	if (!skb)
-@@ -381,12 +389,12 @@ sk_buff *j1939_session_skb_find_by_offset(struct j1939_session *session,
- 	return skb;
- }
- 
--static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+static struct sk_buff *j1939_session_skb_get(struct j1939_session *session)
- {
- 	unsigned int offset_start;
- 
- 	offset_start = session->pkt.dpo * 7;
--	return j1939_session_skb_find_by_offset(session, offset_start);
-+	return j1939_session_skb_get_by_offset(session, offset_start);
- }
- 
- /* see if we are receiver
-@@ -776,7 +784,7 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 	int ret = 0;
- 	u8 dat[8];
- 
--	se_skb = j1939_session_skb_find_by_offset(session, session->pkt.tx * 7);
-+	se_skb = j1939_session_skb_get_by_offset(session, session->pkt.tx * 7);
- 	if (!se_skb)
- 		return -ENOBUFS;
- 
-@@ -801,7 +809,8 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 			netdev_err_once(priv->ndev,
- 					"%s: 0x%p: requested data outside of queued buffer: offset %i, len %i, pkt.tx: %i\n",
- 					__func__, session, skcb->offset, se_skb->len , session->pkt.tx);
--			return -EOVERFLOW;
-+			ret = -EOVERFLOW;
-+			goto out_free;
+ 		/* create a URB, and a buffer for it */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+@@ -642,7 +645,7 @@ static int mcba_usb_start(struct mcba_priv *priv)
  		}
  
- 		if (!len) {
-@@ -835,6 +844,12 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 	if (pkt_done)
- 		j1939_tp_set_rxtimeout(session, 250);
+ 		buf = usb_alloc_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
+-					 GFP_KERNEL, &urb->transfer_dma);
++					 GFP_KERNEL, &buf_dma);
+ 		if (!buf) {
+ 			netdev_err(netdev, "No memory left for USB buffer\n");
+ 			usb_free_urb(urb);
+@@ -661,11 +664,14 @@ static int mcba_usb_start(struct mcba_priv *priv)
+ 		if (err) {
+ 			usb_unanchor_urb(urb);
+ 			usb_free_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
+-					  buf, urb->transfer_dma);
++					  buf, buf_dma);
+ 			usb_free_urb(urb);
+ 			break;
+ 		}
  
-+ out_free:
-+	if (ret)
-+		kfree_skb(se_skb);
-+	else
-+		consume_skb(se_skb);
++		priv->rxbuf[i] = buf;
++		priv->rxbuf_dma[i] = buf_dma;
 +
- 	return ret;
+ 		/* Drop reference, USB core will take care of freeing it */
+ 		usb_free_urb(urb);
+ 	}
+@@ -708,7 +714,14 @@ static int mcba_usb_open(struct net_device *netdev)
+ 
+ static void mcba_urb_unlink(struct mcba_priv *priv)
+ {
++	int i;
++
+ 	usb_kill_anchored_urbs(&priv->rx_submitted);
++
++	for (i = 0; i < MCBA_MAX_RX_URBS; ++i)
++		usb_free_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
++				  priv->rxbuf[i], priv->rxbuf_dma[i]);
++
+ 	usb_kill_anchored_urbs(&priv->tx_submitted);
  }
  
-@@ -1007,7 +1022,7 @@ static int j1939_xtp_txnext_receiver(struct j1939_session *session)
- static int j1939_simple_txnext(struct j1939_session *session)
- {
- 	struct j1939_priv *priv = session->priv;
--	struct sk_buff *se_skb = j1939_session_skb_find(session);
-+	struct sk_buff *se_skb = j1939_session_skb_get(session);
- 	struct sk_buff *skb;
- 	int ret;
- 
-@@ -1015,8 +1030,10 @@ static int j1939_simple_txnext(struct j1939_session *session)
- 		return 0;
- 
- 	skb = skb_clone(se_skb, GFP_ATOMIC);
--	if (!skb)
--		return -ENOMEM;
-+	if (!skb) {
-+		ret = -ENOMEM;
-+		goto out_free;
-+	}
- 
- 	can_skb_set_owner(skb, se_skb->sk);
- 
-@@ -1024,12 +1041,18 @@ static int j1939_simple_txnext(struct j1939_session *session)
- 
- 	ret = j1939_send_one(priv, skb);
- 	if (ret)
--		return ret;
-+		goto out_free;
- 
- 	j1939_sk_errqueue(session, J1939_ERRQUEUE_SCHED);
- 	j1939_sk_queue_activate_next(session);
- 
--	return 0;
-+ out_free:
-+	if (ret)
-+		kfree_skb(se_skb);
-+	else
-+		consume_skb(se_skb);
-+
-+	return ret;
- }
- 
- static bool j1939_session_deactivate_locked(struct j1939_session *session)
-@@ -1170,9 +1193,10 @@ static void j1939_session_completed(struct j1939_session *session)
- 	struct sk_buff *skb;
- 
- 	if (!session->transmission) {
--		skb = j1939_session_skb_find(session);
-+		skb = j1939_session_skb_get(session);
- 		/* distribute among j1939 receivers */
- 		j1939_sk_recv(session->priv, skb);
-+		consume_skb(skb);
- 	}
- 
- 	j1939_session_deactivate_activate_next(session);
-@@ -1744,7 +1768,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- {
- 	struct j1939_priv *priv = session->priv;
- 	struct j1939_sk_buff_cb *skcb;
--	struct sk_buff *se_skb;
-+	struct sk_buff *se_skb = NULL;
- 	const u8 *dat;
- 	u8 *tpdat;
- 	int offset;
-@@ -1786,7 +1810,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 		goto out_session_cancel;
- 	}
- 
--	se_skb = j1939_session_skb_find_by_offset(session, packet * 7);
-+	se_skb = j1939_session_skb_get_by_offset(session, packet * 7);
- 	if (!se_skb) {
- 		netdev_warn(priv->ndev, "%s: 0x%p: no skb found\n", __func__,
- 			    session);
-@@ -1848,11 +1872,13 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 		j1939_tp_set_rxtimeout(session, 250);
- 	}
- 	session->last_cmd = 0xff;
-+	consume_skb(se_skb);
- 	j1939_session_put(session);
- 
- 	return;
- 
-  out_session_cancel:
-+	kfree_skb(se_skb);
- 	j1939_session_timers_cancel(session);
- 	j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
- 	j1939_session_put(session);
-
-base-commit: a4f0377db1254373513b992ff31a351a7111f0fd
 -- 
 2.30.2
 
