@@ -7,47 +7,46 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D31AC48BE8
-	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 10:28:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CA26C48BE5
+	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 10:28:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 17CCF61245
-	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 10:28:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4938061245
+	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 10:28:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhFPKaZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Jun 2021 06:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
+        id S232355AbhFPKa2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Jun 2021 06:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbhFPKaX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Jun 2021 06:30:23 -0400
+        with ESMTP id S232323AbhFPKa1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Jun 2021 06:30:27 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECEFC0617A8
-        for <linux-can@vger.kernel.org>; Wed, 16 Jun 2021 03:28:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B1BC061574
+        for <linux-can@vger.kernel.org>; Wed, 16 Jun 2021 03:28:21 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ltSmN-0004xi-QG
-        for linux-can@vger.kernel.org; Wed, 16 Jun 2021 12:28:15 +0200
+        id 1ltSmS-0005Ae-45
+        for linux-can@vger.kernel.org; Wed, 16 Jun 2021 12:28:20 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BB15063D16A
-        for <linux-can@vger.kernel.org>; Wed, 16 Jun 2021 10:28:13 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id B8F2263D186
+        for <linux-can@vger.kernel.org>; Wed, 16 Jun 2021 10:28:16 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 18F1163D15E;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9440963D168;
         Wed, 16 Jun 2021 10:28:13 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cc45fe25;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id dc9a77c7;
         Wed, 16 Jun 2021 10:28:12 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [can-next-rfc 1/9] can: j1939: fix checkpatch warnings
-Date:   Wed, 16 Jun 2021 12:28:03 +0200
-Message-Id: <20210616102811.2449426-2-mkl@pengutronix.de>
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
+Subject: [can-next-rfc 6/9] can: m_can: remove support for custom bit timing
+Date:   Wed, 16 Jun 2021 12:28:08 +0200
+Message-Id: <20210616102811.2449426-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210616102811.2449426-1-mkl@pengutronix.de>
 References: <20210616102811.2449426-1-mkl@pengutronix.de>
@@ -61,39 +60,78 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes a checkpatch warning about a long line and wrong
-indention.
+Since commit aee2b3ccc8a6 ("can: tcan4x5x: fix bittiming const, use
+common bittiming from m_can driver") there is no use of the device
+specific bit timing parameters (m_can_classdev::bit_timing and struct
+m_can_classdev::data_timing).
 
-Cc: Robin van der Gracht <robin@protonic.nl>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+This patch removes the support for custom bit timing from the driver,
+as the common bit timing works for all known IP core implementations.
+
+Cc: Chandrasekar Ramakrishnan <rcsekar@samsung.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/transport.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/can/m_can/m_can.c | 24 ++++++------------------
+ drivers/net/can/m_can/m_can.h |  3 ---
+ 2 files changed, 6 insertions(+), 21 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index e09d087ba240..86cb943ef14a 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -800,7 +800,8 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 		if (offset + len > se_skb->len) {
- 			netdev_err_once(priv->ndev,
- 					"%s: 0x%p: requested data outside of queued buffer: offset %i, len %i, pkt.tx: %i\n",
--					__func__, session, skcb->offset, se_skb->len , session->pkt.tx);
-+					__func__, session, se_skcb->offset,
-+					se_skb->len, session->pkt.tx);
- 			return -EOVERFLOW;
- 		}
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index bba2a449ac70..3a2afa54aca2 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1436,32 +1436,20 @@ static int m_can_dev_setup(struct m_can_classdev *cdev)
+ 	case 30:
+ 		/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.0.x */
+ 		can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
+-		cdev->can.bittiming_const = cdev->bit_timing ?
+-			cdev->bit_timing : &m_can_bittiming_const_30X;
+-
+-		cdev->can.data_bittiming_const = cdev->data_timing ?
+-			cdev->data_timing :
+-			&m_can_data_bittiming_const_30X;
++		cdev->can.bittiming_const = &m_can_bittiming_const_30X;
++		cdev->can.data_bittiming_const = &m_can_data_bittiming_const_30X;
+ 		break;
+ 	case 31:
+ 		/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.1.x */
+ 		can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
+-		cdev->can.bittiming_const = cdev->bit_timing ?
+-			cdev->bit_timing : &m_can_bittiming_const_31X;
+-
+-		cdev->can.data_bittiming_const = cdev->data_timing ?
+-			cdev->data_timing :
+-			&m_can_data_bittiming_const_31X;
++		cdev->can.bittiming_const = &m_can_bittiming_const_31X;
++		cdev->can.data_bittiming_const = &m_can_data_bittiming_const_31X;
+ 		break;
+ 	case 32:
+ 	case 33:
+ 		/* Support both MCAN version v3.2.x and v3.3.0 */
+-		cdev->can.bittiming_const = cdev->bit_timing ?
+-			cdev->bit_timing : &m_can_bittiming_const_31X;
+-
+-		cdev->can.data_bittiming_const = cdev->data_timing ?
+-			cdev->data_timing :
+-			&m_can_data_bittiming_const_31X;
++		cdev->can.bittiming_const = &m_can_bittiming_const_31X;
++		cdev->can.data_bittiming_const = &m_can_data_bittiming_const_31X;
  
-@@ -1069,7 +1070,7 @@ j1939_session_deactivate_activate_next(struct j1939_session *session)
- }
+ 		cdev->can.ctrlmode_supported |=
+ 			(m_can_niso_supported(cdev) ?
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index ace071c3e58c..ea53322d110e 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -83,9 +83,6 @@ struct m_can_classdev {
+ 	struct work_struct tx_work;
+ 	struct sk_buff *tx_skb;
  
- static void __j1939_session_cancel(struct j1939_session *session,
--				 enum j1939_xtp_abort err)
-+				   enum j1939_xtp_abort err)
- {
- 	struct j1939_priv *priv = session->priv;
+-	struct can_bittiming_const *bit_timing;
+-	struct can_bittiming_const *data_timing;
+-
+ 	struct m_can_ops *ops;
  
+ 	int version;
 -- 
 2.30.2
 
