@@ -3,128 +3,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5AC6C48BE8
-	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 15:45:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7390FC48BE8
+	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 16:18:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CAF306109D
-	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 15:45:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B84161159
+	for <linux-can@archiver.kernel.org>; Wed, 16 Jun 2021 16:18:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235426AbhFPPrq convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Jun 2021 11:47:46 -0400
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:46660 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235727AbhFPPqb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Jun 2021 11:46:31 -0400
-Received: by mail-lj1-f175.google.com with SMTP id b37so4435194ljr.13;
-        Wed, 16 Jun 2021 08:44:24 -0700 (PDT)
+        id S231511AbhFPQUV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Jun 2021 12:20:21 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:38611 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231193AbhFPQUU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Jun 2021 12:20:20 -0400
+Received: by mail-lf1-f51.google.com with SMTP id r5so5272706lfr.5
+        for <linux-can@vger.kernel.org>; Wed, 16 Jun 2021 09:18:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bx6pJveQBPVAV+AJO0rwH2DDFurC6rZ+xmLnsk0p5p0=;
-        b=M5dJ2sD5vJNuU9yn/+ll8720MTu2jLo2Fni9RU1MpOSFQpKz81u7B15T93w60E2mNy
-         yR9iv/a/y9iaUsu9oyhimakJkw2+lBhvgFHSWtPERT+S2Dhv2dw+RQHXI+JUbx1lezfD
-         RvOeHu49POlf/Nc9IEll5cxNdd8PJ3kX9qjb5vtK0laVpo6KcIuW4GmG/x9Xg3HawyGz
-         vnBSTGQo60Z5dlw4YE92aEqXjttwYEzmbnjnaT3aDM0sZ2FRDiMoy4DEYXhE02ZlqPyM
-         3omOkGepaZthiz3BSG8BNmqzO3r4I8ehJn8UOBuhfTwS9RjGHksbkjhhPKhqCV0PuzEC
-         9wTQ==
-X-Gm-Message-State: AOAM533t+LyVU97pMGkt189FI3I/grkUYaLCA/B5OYi2suP+rfBdTDr5
-        lMzbsesoFRrNz17SKnL9sU1Syb10Bw2Z1mwcvEU=
-X-Google-Smtp-Source: ABdhPJyHjZG2mpJuBPJ413x6JX/SXhfTuADPMsO3XYRp3UZ1qcNmx/OzV0bOlGpMYVpyKcLv5gaee8P528z9B5oSWI4=
-X-Received: by 2002:a2e:984a:: with SMTP id e10mr397620ljj.331.1623858263457;
- Wed, 16 Jun 2021 08:44:23 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=50El5zFtiyo7178A5KVVuFBhNjIoY1fnUAwbESb+iBM=;
+        b=FT1p7lg3GQYmf+D87O5wXF2mQHZ3JzDY1A+jYPKKLppJ+rZT32F3LPXfriAMHPNlfm
+         a9V38WOUh/RrleHZWrH9qshGlt5NRNC1pmUnqg6YcaXkgrhblaZ3IbY38Yz4kNOU+QUV
+         vp6E87FhrxH16+INr8AZ1hXdglcHmDotFyH4olxg+ocpzmwgC5KH/kD7oR3BTZOjK/Pp
+         kk7Pnw7/GJw/shgScuHYWW55iE5gLPtZJuozrVrIr690hdbpOvyEV/gIfeb6LfNKFaIu
+         gS42jw/EGQb0uTc2C9p3SM6mhY2ARZ/70M8LG7DFgdhpaNkbHSCry2j/ne6dxPZDMW/7
+         icaA==
+X-Gm-Message-State: AOAM531aRq6UJjpIX0MDNNTA3y5zyxi1zvmvYDrx169fLT71RECFbmWJ
+        d7H+fXjJYc1FJRKQLfyV8ca/2qAkVZrGLxvgfck=
+X-Google-Smtp-Source: ABdhPJyoPVzUkqtrJI/qgNnUL2zUWtNPP1w0hsb1XAj14BeTZwQxyq2s9kAMIfhAdmuXXiWUQ9DAB6e71YSalLB/nHQ=
+X-Received: by 2002:ac2:5cb9:: with SMTP id e25mr348805lfq.488.1623860292478;
+ Wed, 16 Jun 2021 09:18:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
- <20210603151550.140727-3-mailhol.vincent@wanadoo.fr> <20210616094633.fwg6rsyxyvm2zc6d@pengutronix.de>
- <CAMZ6RqLj59+3PrQwTCfK_bVebRBHE=HqCfRb31MU9pRDBPxG8w@mail.gmail.com>
- <20210616142940.wxllr3c55rk66rij@pengutronix.de> <CAMZ6RqJWeexWTGVkEJWMvBs1f=HQOc4zjd-PqPsxKnCr_XDFZQ@mail.gmail.com>
- <20210616144640.l4hjc6mc3ndw25hj@pengutronix.de>
-In-Reply-To: <20210616144640.l4hjc6mc3ndw25hj@pengutronix.de>
+References: <20210616124057.60723-1-mailhol.vincent@wanadoo.fr> <20210616133304.txu6tt7v3ezfgvvi@pengutronix.de>
+In-Reply-To: <20210616133304.txu6tt7v3ezfgvvi@pengutronix.de>
 From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Thu, 17 Jun 2021 00:44:12 +0900
-Message-ID: <CAMZ6RqLZAO3UX=B8yVUse=4DAVG_zGPrdoYpd-7Cp_To58CChw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] can: netlink: add interface for CAN-FD Transmitter
- Delay Compensation (TDC)
+Date:   Thu, 17 Jun 2021 01:18:00 +0900
+Message-ID: <CAMZ6RqKF=TkE9099ip2Ac_t+kcC1Ztba6+hzAuTi3-_qLk+Aaw@mail.gmail.com>
+Subject: Re: [PATCH] can: bittiming: fix two grammar mistakes in documentation
+ for struct can_tdc
 To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     linux-can <linux-can@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed. 16 Jun 2021 at 23:46, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 16.06.2021 23:43:35, Vincent MAILHOL wrote:
-> > > Sounds good, I'm squashing this patch:
-> > >
-> > > | diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> > > | index 6134bbf69c10..d48be574eae7 100644
-> > > | --- a/drivers/net/can/dev/netlink.c
-> > > | +++ b/drivers/net/can/dev/netlink.c
-> > > | @@ -311,7 +311,7 @@ static size_t can_tdc_get_size(const struct net_device *dev)
-> > > |         size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCO_MAX */
-> > > |         size += nla_total_size(sizeof(u32));            /* IFLA_CAN_TDCF_MAX */
-> > > |
-> > > | -       if (priv->tdc.tdco) {
-> > > | +       if (can_tdc_is_enabled(priv)) {
-> > > |                 size += nla_total_size(sizeof(u32));    /* IFLA_CAN_TDCV */
-> > > |                 size += nla_total_size(sizeof(u32));    /* IFLA_CAN_TDCO */
-> > > |                 size += nla_total_size(sizeof(u32));    /* IFLA_CAN_TDCF */
-> > > | @@ -352,6 +352,7 @@ static size_t can_get_size(const struct net_device *dev)
-> > > |                                        priv->data_bitrate_const_cnt);
-> > > |         size += sizeof(priv->bitrate_max);                      /* IFLA_CAN_BITRATE_MAX */
-> > > |         size += can_tdc_get_size(dev);                          /* IFLA_CAN_TDC */
-> > > | +
-> > > |         return size;
-> > > |  }
-> > > |
-> > > | @@ -374,7 +375,7 @@ static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev)
-> > > |             nla_put_u32(skb, IFLA_CAN_TDC_TDCF_MAX, tdc_const->tdcf_max))
-> > > |                 goto err_cancel;
-> > > |
-> > > | -       if (priv->tdc.tdco)
-> > > | +       if (can_tdc_is_enabled(priv)) {
-> > > |                 if (nla_put_u32(skb, IFLA_CAN_TDC_TDCV, tdc->tdcv) ||
-> > > |                     nla_put_u32(skb, IFLA_CAN_TDC_TDCO, tdc->tdco) ||
-> > > |                     nla_put_u32(skb, IFLA_CAN_TDC_TDCF, tdc->tdcf))
-> > > | diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-> > > | index 9de6e9053e34..b6d1db1e7258 100644
-> > > | --- a/include/linux/can/bittiming.h
-> > > | +++ b/include/linux/can/bittiming.h
-> > > | @@ -83,6 +83,11 @@ struct can_tdc_const {
-> > > |         u32 tdcf_max;
-> > > |  };
-> > > |
-> > > | +static inline bool can_tdc_is_enabled(const struct can_priv *priv)
+On Wed. 16 Jun 2021 at 22:33, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+>
+> On 16.06.2021 21:40:57, Vincent Mailhol wrote:
+> > This patch fixes two grammar errors in the documentation for struct
+> > can_tdc.
 > >
-> > Did you try to compile?
+> > First grammar error: add a missing third person 's'.
+> >
+> > Second grammar error: replace "such as" by "such that". The intent is
+> > to give a condition, not an example.
+> >
+> > Fixes: 289ea9e4ae59 ("can: add new CAN FD bittiming parameters: Transmitter Delay Compensation (TDC)")
+> > Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> > ---
+> > Hi Marc,
+> >
+> > If that makes sense to you, feel free to squash this in your other
+> > patch.
 >
-> Not before sending that mail :)
+> Makes sense. I've added you as Co-developed-by:
+
+Great, thank you!
+
+> |     can: bittiming: fix documentation for struct can_tdc::tdcv
+
+One nitpick: the title should become
+|     can: bittiming: fix documentation for struct can_tdc
+(without the ::tdcv) because the last fix is on tdco.
+
+> |     This patch fixes a typo in the documentation for struct can_tdc::tdcv.
+> |     The number "0" refers to automatic mode not the letter "O".
+> |
+> |     Further two grammar errors in the documentation for struct can_tdc are
+> |     fixed.
+> |
+> |     First grammar error: add a missing third person 's'.
+> |
+> |     Second grammar error: replace "such as" by "such that". The intent is
+> |     to give a condition, not an example.
+> |
+> |     Fixes: 289ea9e4ae59 ("can: add new CAN FD bittiming parameters: Transmitter Delay Compensation (TDC)")
+> |     Link: https://lore.kernel.org/r/20210616095922.2430415-1-mkl@pengutronix.de
+> |     Link: https://lore.kernel.org/r/20210616124057.60723-1-mailhol.vincent@wanadoo.fr
+> |     Co-developed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> |     Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> |     Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> |     Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 >
-> > I am not sure if bittiming.h is able to see struct can_priv which is
-> > defined in dev.h.
+> regards,
+> Marc
 >
-> Nope it doesn't, I moved the can_tdc_is_enabled() to
-> include/linux/can/dev.h
-
-Ack. It seems to be the only solution…
-
-Moving forward, I will do one more round of tests and send the
-patch for iproute2-next (warning, the RFC I sent last month has
-some issues, if you wish to test it on your side, please wait).
-
-I will also apply can_tdc_is_enabled() to the etas_es58x driver.
-
-Could you push the recent changes on the testing branch of linux-can-next? It
-would be really helpful for me!
-
-
-Yours sincerely,
-Vincent
+> --
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
