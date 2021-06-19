@@ -7,52 +7,48 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F80BC49EA2
-	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 22:01:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C3EBC49361
+	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 22:01:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4161D611AC
-	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 22:01:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4EF5E601FC
+	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 22:01:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhFSWDl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 19 Jun 2021 18:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
+        id S230087AbhFSWDn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 19 Jun 2021 18:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFSWDi (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 19 Jun 2021 18:03:38 -0400
+        with ESMTP id S230174AbhFSWDj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 19 Jun 2021 18:03:39 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150DDC06175F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1966C061766
         for <linux-can@vger.kernel.org>; Sat, 19 Jun 2021 15:01:27 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1luj1p-0005Wr-E3
-        for linux-can@vger.kernel.org; Sun, 20 Jun 2021 00:01:25 +0200
+        id 1luj1q-0005Y7-4x
+        for linux-can@vger.kernel.org; Sun, 20 Jun 2021 00:01:26 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DBDA163F80B
-        for <linux-can@vger.kernel.org>; Sat, 19 Jun 2021 22:01:21 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 3C66863F815
+        for <linux-can@vger.kernel.org>; Sat, 19 Jun 2021 22:01:23 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E0DD563F7E3;
-        Sat, 19 Jun 2021 22:01:18 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id AAC6663F7EA;
+        Sat, 19 Jun 2021 22:01:19 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 65d533c4;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1f9ffb67;
         Sat, 19 Jun 2021 22:01:18 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        kernel@pengutronix.de, Pavel Skripkin <paskripkin@gmail.com>,
         linux-stable <stable@vger.kernel.org>,
-        syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [net 1/5] can: bcm: delay release of struct bcm_op after synchronize_rcu()
-Date:   Sun, 20 Jun 2021 00:01:11 +0200
-Message-Id: <20210619220115.2830761-2-mkl@pengutronix.de>
+Subject: [net 5/5] net: can: ems_usb: fix use-after-free in ems_usb_disconnect()
+Date:   Sun, 20 Jun 2021 00:01:15 +0200
+Message-Id: <20210619220115.2830761-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210619220115.2830761-1-mkl@pengutronix.de>
 References: <20210619220115.2830761-1-mkl@pengutronix.de>
@@ -66,65 +62,67 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-can_rx_register() callbacks may be called concurrently to the call to
-can_rx_unregister(). The callbacks and callback data, though, are
-protected by RCU and the struct sock reference count.
+In ems_usb_disconnect() dev pointer, which is netdev private data, is
+used after free_candev() call:
+| 	if (dev) {
+| 		unregister_netdev(dev->netdev);
+| 		free_candev(dev->netdev);
+|
+| 		unlink_all_urbs(dev);
+|
+| 		usb_free_urb(dev->intr_urb);
+|
+| 		kfree(dev->intr_in_buffer);
+| 		kfree(dev->tx_msg_buffer);
+| 	}
 
-So the callback data is really attached to the life of sk, meaning
-that it should be released on sk_destruct. However, bcm_remove_op()
-calls tasklet_kill(), and RCU callbacks may be called under RCU
-softirq, so that cannot be used on kernels before the introduction of
-HRTIMER_MODE_SOFT.
+Fix it by simply moving free_candev() at the end of the block.
 
-However, bcm_rx_handler() is called under RCU protection, so after
-calling can_rx_unregister(), we may call synchronize_rcu() in order to
-wait for any RCU read-side critical sections to finish. That is,
-bcm_rx_handler() won't be called anymore for those ops. So, we only
-free them, after we do that synchronize_rcu().
+Fail log:
+| BUG: KASAN: use-after-free in ems_usb_disconnect
+| Read of size 8 at addr ffff88804e041008 by task kworker/1:2/2895
+|
+| CPU: 1 PID: 2895 Comm: kworker/1:2 Not tainted 5.13.0-rc5+ #164
+| Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.4
+| Workqueue: usb_hub_wq hub_event
+| Call Trace:
+|     dump_stack (lib/dump_stack.c:122)
+|     print_address_description.constprop.0.cold (mm/kasan/report.c:234)
+|     kasan_report.cold (mm/kasan/report.c:420 mm/kasan/report.c:436)
+|     ems_usb_disconnect (drivers/net/can/usb/ems_usb.c:683 drivers/net/can/usb/ems_usb.c:1058)
 
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
-Link: https://lore.kernel.org/r/20210619161813.2098382-1-cascardo@canonical.com
+Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB interface")
+Link: https://lore.kernel.org/r/20210617185130.5834-1-paskripkin@gmail.com
 Cc: linux-stable <stable@vger.kernel.org>
-Reported-by: syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com
-Reported-by: Norbert Slusarek <nslusarek@gmx.net>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/bcm.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/ems_usb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index f3e4d9528fa3..0928a39c4423 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -785,6 +785,7 @@ static int bcm_delete_rx_op(struct list_head *ops, struct bcm_msg_head *mh,
- 						  bcm_rx_handler, op);
+diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+index 5af69787d9d5..0a37af4a3fa4 100644
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -1053,7 +1053,6 @@ static void ems_usb_disconnect(struct usb_interface *intf)
  
- 			list_del(&op->list);
-+			synchronize_rcu();
- 			bcm_remove_op(op);
- 			return 1; /* done */
- 		}
-@@ -1533,9 +1534,13 @@ static int bcm_release(struct socket *sock)
- 					  REGMASK(op->can_id),
- 					  bcm_rx_handler, op);
+ 	if (dev) {
+ 		unregister_netdev(dev->netdev);
+-		free_candev(dev->netdev);
  
--		bcm_remove_op(op);
+ 		unlink_all_urbs(dev);
+ 
+@@ -1061,6 +1060,8 @@ static void ems_usb_disconnect(struct usb_interface *intf)
+ 
+ 		kfree(dev->intr_in_buffer);
+ 		kfree(dev->tx_msg_buffer);
++
++		free_candev(dev->netdev);
  	}
+ }
  
-+	synchronize_rcu();
-+
-+	list_for_each_entry_safe(op, next, &bo->rx_ops, list)
-+		bcm_remove_op(op);
-+
- #if IS_ENABLED(CONFIG_PROC_FS)
- 	/* remove procfs entry */
- 	if (net->can.bcmproc_dir && bo->bcm_proc_read)
-
-base-commit: dda2626b86c2c1813b7bfdd10d2fdd849611fc97
 -- 
 2.30.2
 
