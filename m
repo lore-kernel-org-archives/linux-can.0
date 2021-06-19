@@ -2,79 +2,151 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA78C49EA5
-	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 10:00:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9EACC2B9F4
+	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 10:30:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C442E613E8
-	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 10:00:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 872F2611CC
+	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 10:30:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233571AbhFSKCI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 19 Jun 2021 06:02:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5054 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbhFSKCB (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 19 Jun 2021 06:02:01 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G6WNg4bBSzXhCC;
-        Sat, 19 Jun 2021 17:54:43 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 19 Jun 2021 17:59:44 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 19 Jun 2021 17:59:44 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <wg@grandegger.com>, <mkl@pengutronix.de>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lipeng321@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 7/8] net: at91_can: remove redundant space
-Date:   Sat, 19 Jun 2021 17:56:28 +0800
-Message-ID: <1624096589-13452-8-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1624096589-13452-1-git-send-email-huangguangbin2@huawei.com>
-References: <1624096589-13452-1-git-send-email-huangguangbin2@huawei.com>
+        id S230512AbhFSKc1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 19 Jun 2021 06:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230430AbhFSKc0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 19 Jun 2021 06:32:26 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A190C061574;
+        Sat, 19 Jun 2021 03:30:15 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id p14so4090318ilg.8;
+        Sat, 19 Jun 2021 03:30:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=btyhMs4BkaLRs/VMcp+enV+QTHYcvlAoTR3AvLbdS/U=;
+        b=jtsTLOo/2Og5PavjWiBWWetfdiOD6O3MtdQCnm67cZpkXC+khgTySN4toBchSCCkN8
+         z96E/8suqcqpzGNMa7lscwSNRzJRgu3PCQV6F7pScTurBGWQueCoIzDfTaaJMauer4G6
+         C9vfYEEDeb89jdtlfzvcWwPIXOnHlXI4zdClj9rZlqoemMtFoKrHsFYgqrkAhylIpYZV
+         O4q8C+6FYIcDpzEKthEg7gSWsJJciIaQ9KGnTY6hE0+kwo9YwhUTNak973UWLUrSA1yC
+         iZtBbo3N+uQ12BPSRVwO84vYhvlPS8InCXzSDypzHEJGNu2LP/mb31cpGIi4TuGRkGrH
+         2k0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=btyhMs4BkaLRs/VMcp+enV+QTHYcvlAoTR3AvLbdS/U=;
+        b=jPUMOpQFGs6/QYAi1Jl8K6hod5exASFFJG6K60OasfvvamPWUYeJbmAm4R/jp5M1fg
+         KkWQAAzLnsCaFia94rcwXsuyMAMU2Ud/1hF6E+udZ/iayEgvWynuBsPN+PpCKhmLc3Pa
+         otnOcg41ImvaxHM/z0R7SDNJL0qBMswHOsRGk4JCeUeC3fjWe3fndLo5p+ZqnHi771jd
+         wOnPpHd9qUiw10YrYP7bdFmBZp5pm6rRx6wqLNitxFBFYj3tlpnxM6f3nm16LTf+v9pl
+         YYhyUufa9hr+iowyVA8VIIRG2JTvpGBVzjvp5gFizRbp3JMP/jN1HsjFCU54CyIUK6oJ
+         u71Q==
+X-Gm-Message-State: AOAM531MBwcINKxJtw1RPkxruBJFc+QTvt094WUjoVzu9Q7NZd2tUK1i
+        IMFSg5U1YNWTqT1pN5dqPvg=
+X-Google-Smtp-Source: ABdhPJyvmJv4uXJsxkLlkbrO1wG4kwi3D99EUsIl+tbuYjBX1Gk1oJ3fY9NR2Acv3pMVeRzs92rZng==
+X-Received: by 2002:a92:d2ce:: with SMTP id w14mr5111289ilg.217.1624098614544;
+        Sat, 19 Jun 2021 03:30:14 -0700 (PDT)
+Received: from ip-172-31-30-86.us-east-2.compute.internal (ec2-18-118-82-35.us-east-2.compute.amazonaws.com. [18.118.82.35])
+        by smtp.gmail.com with ESMTPSA id l5sm6141996ion.44.2021.06.19.03.30.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 19 Jun 2021 03:30:13 -0700 (PDT)
+Date:   Sat, 19 Jun 2021 10:30:09 +0000
+From:   Yunsheng Lin <yunshenglin0825@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        olteanv@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        andriin@fb.com, edumazet@google.com, weiwan@google.com,
+        cong.wang@bytedance.com, ap420073@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@openeuler.org, mkl@pengutronix.de,
+        linux-can@vger.kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
+        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
+        a.fatoum@pengutronix.de, atenart@kernel.org,
+        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
+        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
+        alobakin@pm.me
+Subject: Re: [PATCH net v2] net: sched: add barrier to ensure correct
+ ordering for lockless qdisc
+Message-ID: <20210619103009.GA1530@ip-172-31-30-86.us-east-2.compute.internal>
+References: <1623891854-57416-1-git-send-email-linyunsheng@huawei.com>
+ <20210618173047.68db0b81@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210618173837.0131edc3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618173837.0131edc3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+On Fri, Jun 18, 2021 at 05:38:37PM -0700, Jakub Kicinski wrote:
+> On Fri, 18 Jun 2021 17:30:47 -0700 Jakub Kicinski wrote:
+> > On Thu, 17 Jun 2021 09:04:14 +0800 Yunsheng Lin wrote:
+> > > The spin_trylock() was assumed to contain the implicit
+> > > barrier needed to ensure the correct ordering between
+> > > STATE_MISSED setting/clearing and STATE_MISSED checking
+> > > in commit a90c57f2cedd ("net: sched: fix packet stuck
+> > > problem for lockless qdisc").
+> > > 
+> > > But it turns out that spin_trylock() only has load-acquire
+> > > semantic, for strongly-ordered system(like x86), the compiler
+> > > barrier implicitly contained in spin_trylock() seems enough
+> > > to ensure the correct ordering. But for weakly-orderly system
+> > > (like arm64), the store-release semantic is needed to ensure
+> > > the correct ordering as clear_bit() and test_bit() is store
+> > > operation, see queued_spin_lock().
+> > > 
+> > > So add the explicit barrier to ensure the correct ordering
+> > > for the above case.
+> > > 
+> > > Fixes: a90c57f2cedd ("net: sched: fix packet stuck problem for lockless qdisc")
+> > > Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>  
+> > 
+> > Acked-by: Jakub Kicinski <kuba@kernel.org>
+> 
+> Actually.. do we really need the _before_atomic() barrier?
+> I'd think we only need to make sure we re-check the lock 
+> after we set the bit, ordering of the first check doesn't 
+> matter.
 
-According to the chackpatch.pl, no space before tabs.
+When debugging pointed to the misordering between STATE_MISSED
+setting/clearing and STATE_MISSED checking, only _after_atomic()
+was added first, and it did not fix the misordering problem,
+when both _before_atomic() and _after_atomic() were added, the
+misordering problem disappeared.
 
-Signed-off-by: Peng Li <lipeng321@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/can/at91_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I suppose _before_atomic() matters because the STATE_MISSED
+setting and the lock rechecking is only done when first check of
+STATE_MISSED returns false. _before_atomic() is used to make sure
+the first check returns correct result, if it does not return the
+correct result, then we may have misordering problem too.
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 5d984a448de4..0e6ed59a763d 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -163,7 +163,7 @@ static const struct can_bittiming_const at91_bittiming_const = {
- 	.tseg2_min	= 2,
- 	.tseg2_max	= 8,
- 	.sjw_max	= 4,
--	.brp_min 	= 2,
-+	.brp_min	= 2,
- 	.brp_max	= 128,
- 	.brp_inc	= 1,
- };
--- 
-2.8.1
+     cpu0                        cpu1
+                              clear MISSED
+                             _after_atomic()
+                                dequeue
+    enqueue
+ first trylock() #false
+  MISSED check #*true* ?
 
+As above, even cpu1 has a _after_atomic() between clearing
+STATE_MISSED and dequeuing, we might stiil need a barrier to
+prevent cpu0 doing speculative MISSED checking before cpu1
+clearing MISSED?
+
+And the implicit load-acquire barrier contained in the first
+trylock() does not seems to prevent the above case too.
+
+And there is no load-acquire barrier in pfifo_fast_dequeue()
+too, which possibly make the above case more likely to happen.
