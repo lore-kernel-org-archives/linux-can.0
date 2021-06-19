@@ -2,52 +2,56 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E993DC2B9F4
-	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 22:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A56EAC49361
+	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 22:01:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CA6E8611B0
-	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 22:01:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 88786611AC
+	for <linux-can@archiver.kernel.org>; Sat, 19 Jun 2021 22:01:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhFSWDh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 19 Jun 2021 18:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37082 "EHLO
+        id S230107AbhFSWDi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 19 Jun 2021 18:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhFSWDg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 19 Jun 2021 18:03:36 -0400
+        with ESMTP id S230082AbhFSWDh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 19 Jun 2021 18:03:37 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F3CC061574
-        for <linux-can@vger.kernel.org>; Sat, 19 Jun 2021 15:01:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8B2C061574
+        for <linux-can@vger.kernel.org>; Sat, 19 Jun 2021 15:01:25 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1luj1n-0005VB-AY
-        for linux-can@vger.kernel.org; Sun, 20 Jun 2021 00:01:23 +0200
+        id 1luj1o-0005Vq-89
+        for linux-can@vger.kernel.org; Sun, 20 Jun 2021 00:01:24 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 43F1863F7F6
+        by bjornoya.blackshift.org (Postfix) with SMTP id B07F563F7FF
         for <linux-can@vger.kernel.org>; Sat, 19 Jun 2021 22:01:20 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C1AA563F7E2;
-        Sat, 19 Jun 2021 22:01:18 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 18ACB63F7E4;
+        Sat, 19 Jun 2021 22:01:19 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f1e7984f;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 250b17ff;
         Sat, 19 Jun 2021 22:01:18 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: pull-request: can 2021-06-19
-Date:   Sun, 20 Jun 2021 00:01:10 +0200
-Message-Id: <20210619220115.2830761-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        linux-stable <stable@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 2/5] can: gw: synchronize rcu operations before removing gw job entry
+Date:   Sun, 20 Jun 2021 00:01:12 +0200
+Message-Id: <20210619220115.2830761-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210619220115.2830761-1-mkl@pengutronix.de>
+References: <20210619220115.2830761-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -58,71 +62,51 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-this is a pull request of 5 patches for net/master.
+can_can_gw_rcv() is called under RCU protection, so after calling
+can_rx_unregister(), we have to call synchronize_rcu in order to wait
+for any RCU read-side critical sections to finish before removing the
+kmem_cache entry with the referenced gw job entry.
 
-The first patch is by Thadeu Lima de Souza Cascardo and fixes a
-potential use-after-free in the CAN broadcast manager socket, by
-delaying the release of struct bcm_op after synchronize_rcu().
-
-Oliver Hartkopp's patch fixes a similar potential user-after-free in
-the CAN gateway socket by synchronizing RCU operations before removing
-gw job entry.
-
-Another patch by Oliver Hartkopp fixes a potential use-after-free in
-the ISOTP socket by omitting unintended hrtimer restarts on socket
-release.
-
-Oleksij Rempel's patch for the j1939 socket fixes a potential
-use-after-free by setting the SOCK_RCU_FREE flag on the socket.
-
-The last patch is by Pavel Skripkin and fixes a use-after-free in the
-ems_usb CAN driver.
-
-All patches are intended for stable and have stable@v.k.o on Cc.
-
-regards,
-Marc
-
+Link: https://lore.kernel.org/r/20210618173645.2238-1-socketcan@hartkopp.net
+Fixes: c1aabdf379bc ("can-gw: add netlink based CAN routing")
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ net/can/gw.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-The following changes since commit dda2626b86c2c1813b7bfdd10d2fdd849611fc97:
-
-  Merge branch 'ezchip-fixes' (2021-06-19 11:46:24 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.13-20210619
-
-for you to fetch changes up to ab4a0b8fcb9a95c02909b62049811bd2e586aaa4:
-
-  net: can: ems_usb: fix use-after-free in ems_usb_disconnect() (2021-06-19 23:54:00 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.13-20210619
-
-----------------------------------------------------------------
-Oleksij Rempel (1):
-      can: j1939: j1939_sk_init(): set SOCK_RCU_FREE to call sk_destruct() after RCU is done
-
-Oliver Hartkopp (2):
-      can: gw: synchronize rcu operations before removing gw job entry
-      can: isotp: isotp_release(): omit unintended hrtimer restart on socket release
-
-Pavel Skripkin (1):
-      net: can: ems_usb: fix use-after-free in ems_usb_disconnect()
-
-Thadeu Lima de Souza Cascardo (1):
-      can: bcm: delay release of struct bcm_op after synchronize_rcu()
-
- drivers/net/can/usb/ems_usb.c | 3 ++-
- net/can/bcm.c                 | 7 ++++++-
- net/can/gw.c                  | 3 +++
- net/can/isotp.c               | 7 ++++---
- net/can/j1939/main.c          | 4 ++++
- net/can/j1939/socket.c        | 3 +++
- 6 files changed, 22 insertions(+), 5 deletions(-)
-
+diff --git a/net/can/gw.c b/net/can/gw.c
+index ba4124805602..d8861e862f15 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -596,6 +596,7 @@ static int cgw_notifier(struct notifier_block *nb,
+ 			if (gwj->src.dev == dev || gwj->dst.dev == dev) {
+ 				hlist_del(&gwj->list);
+ 				cgw_unregister_filter(net, gwj);
++				synchronize_rcu();
+ 				kmem_cache_free(cgw_cache, gwj);
+ 			}
+ 		}
+@@ -1154,6 +1155,7 @@ static void cgw_remove_all_jobs(struct net *net)
+ 	hlist_for_each_entry_safe(gwj, nx, &net->can.cgw_list, list) {
+ 		hlist_del(&gwj->list);
+ 		cgw_unregister_filter(net, gwj);
++		synchronize_rcu();
+ 		kmem_cache_free(cgw_cache, gwj);
+ 	}
+ }
+@@ -1222,6 +1224,7 @@ static int cgw_remove_job(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 
+ 		hlist_del(&gwj->list);
+ 		cgw_unregister_filter(net, gwj);
++		synchronize_rcu();
+ 		kmem_cache_free(cgw_cache, gwj);
+ 		err = 0;
+ 		break;
+-- 
+2.30.2
 
 
