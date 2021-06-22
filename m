@@ -2,33 +2,34 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B974C48BE5
-	for <linux-can@archiver.kernel.org>; Tue, 22 Jun 2021 06:50:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE4B1C2B9F4
+	for <linux-can@archiver.kernel.org>; Tue, 22 Jun 2021 06:50:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 766AA61350
-	for <linux-can@archiver.kernel.org>; Tue, 22 Jun 2021 06:50:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B2BDC6134F
+	for <linux-can@archiver.kernel.org>; Tue, 22 Jun 2021 06:50:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhFVGwm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 22 Jun 2021 02:52:42 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8290 "EHLO
+        id S230161AbhFVGwn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 22 Jun 2021 02:52:43 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8291 "EHLO
         szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhFVGwl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Jun 2021 02:52:41 -0400
+        with ESMTP id S229828AbhFVGwm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Jun 2021 02:52:42 -0400
 Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G8H2g0cjTz1BQQ9;
-        Tue, 22 Jun 2021 14:45:15 +0800 (CST)
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G8H2h1Qddz1BQRW;
+        Tue, 22 Jun 2021 14:45:16 +0800 (CST)
 Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 22 Jun 2021 14:50:23 +0800
+ 15.1.2176.2; Tue, 22 Jun 2021 14:50:24 +0800
 Received: from localhost.localdomain (10.69.192.56) by
  dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 22 Jun 2021 14:50:22 +0800
+ 15.1.2176.2; Tue, 22 Jun 2021 14:50:23 +0800
 From:   Yunsheng Lin <linyunsheng@huawei.com>
 To:     <davem@davemloft.net>, <kuba@kernel.org>
 CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
@@ -47,10 +48,12 @@ CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
         <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
         <alobakin@pm.me>
-Subject: [PATCH net-next v3 0/3] Some optimization for lockless qdisc
-Date:   Tue, 22 Jun 2021 14:49:54 +0800
-Message-ID: <1624344597-11806-1-git-send-email-linyunsheng@huawei.com>
+Subject: [PATCH net-next v3 3/3] net: sched: remove qdisc->empty for lockless qdisc
+Date:   Tue, 22 Jun 2021 14:49:57 +0800
+Message-ID: <1624344597-11806-4-git-send-email-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1624344597-11806-1-git-send-email-linyunsheng@huawei.com>
+References: <1624344597-11806-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.56]
@@ -61,43 +64,83 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Patch 1: remove unnecessary seqcount operation.
-Patch 2: implement TCQ_F_CAN_BYPASS.
-Patch 3: remove qdisc->empty.
+As MISSED and DRAINING state are used to indicate a non-empty
+qdisc, qdisc->empty is not longer needed, so remove it.
 
-Performance data for pktgen in queue_xmit mode + dummy netdev
-with pfifo_fast:
+Acked-by: Jakub Kicinski <kuba@kernel.org>
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com> # flexcan
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+ include/net/sch_generic.h | 13 +++----------
+ net/sched/sch_generic.c   |  3 ---
+ 2 files changed, 3 insertions(+), 13 deletions(-)
 
- threads    unpatched           patched             delta
-    1       2.60Mpps            3.21Mpps             +23%
-    2       3.84Mpps            5.56Mpps             +44%
-    4       5.52Mpps            5.58Mpps             +1%
-    8       2.77Mpps            2.76Mpps             -0.3%
-   16       2.24Mpps            2.23Mpps             -0.4%
-
-Performance for IP forward testing: 1.05Mpps increases to
-1.16Mpps, about 10% improvement.
-
-V3: Add 'Acked-by' from Jakub and 'Tested-by' from Vladimir,
-    and resend based on latest net-next.
-V2: Adjust the comment and commit log according to discussion
-    in V1.
-V1: Drop RFC tag, add nolock_qdisc_is_empty() and do the qdisc
-    empty checking without the protection of qdisc->seqlock to
-    aviod doing unnecessary spin_trylock() for contention case.
-RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
-        qdisc, and add patch 1 and 3.
-
-Yunsheng Lin (3):
-  net: sched: avoid unnecessary seqcount operation for lockless qdisc
-  net: sched: implement TCQ_F_CAN_BYPASS for lockless qdisc
-  net: sched: remove qdisc->empty for lockless qdisc
-
- include/net/sch_generic.h | 31 ++++++++++++++++++-------------
- net/core/dev.c            | 27 +++++++++++++++++++++++++--
- net/sched/sch_generic.c   | 23 ++++++++++++++++-------
- 3 files changed, 59 insertions(+), 22 deletions(-)
-
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index 177f240..c99ffe9 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -117,8 +117,6 @@ struct Qdisc {
+ 	spinlock_t		busylock ____cacheline_aligned_in_smp;
+ 	spinlock_t		seqlock;
+ 
+-	/* for NOLOCK qdisc, true if there are no enqueued skbs */
+-	bool			empty;
+ 	struct rcu_head		rcu;
+ 
+ 	/* private data */
+@@ -165,7 +163,7 @@ static inline bool qdisc_is_percpu_stats(const struct Qdisc *q)
+ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
+ {
+ 	if (qdisc_is_percpu_stats(qdisc))
+-		return READ_ONCE(qdisc->empty);
++		return nolock_qdisc_is_empty(qdisc);
+ 	return !READ_ONCE(qdisc->q.qlen);
+ }
+ 
+@@ -173,7 +171,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ {
+ 	if (qdisc->flags & TCQ_F_NOLOCK) {
+ 		if (spin_trylock(&qdisc->seqlock))
+-			goto nolock_empty;
++			return true;
+ 
+ 		/* If the MISSED flag is set, it means other thread has
+ 		 * set the MISSED flag before second spin_trylock(), so
+@@ -195,12 +193,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ 		/* Retry again in case other CPU may not see the new flag
+ 		 * after it releases the lock at the end of qdisc_run_end().
+ 		 */
+-		if (!spin_trylock(&qdisc->seqlock))
+-			return false;
+-
+-nolock_empty:
+-		WRITE_ONCE(qdisc->empty, false);
+-		return true;
++		return spin_trylock(&qdisc->seqlock);
+ 	} else if (qdisc_is_running(qdisc)) {
+ 		return false;
+ 	}
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 9984ccc..d9ac60f 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -725,8 +725,6 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ 		need_retry = false;
+ 
+ 		goto retry;
+-	} else {
+-		WRITE_ONCE(qdisc->empty, true);
+ 	}
+ 
+ 	return skb;
+@@ -927,7 +925,6 @@ struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
+ 	sch->enqueue = ops->enqueue;
+ 	sch->dequeue = ops->dequeue;
+ 	sch->dev_queue = dev_queue;
+-	sch->empty = true;
+ 	dev_hold(dev);
+ 	refcount_set(&sch->refcnt, 1);
+ 
 -- 
 2.7.4
 
