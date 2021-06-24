@@ -2,52 +2,57 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7D7CC48BDF
-	for <linux-can@archiver.kernel.org>; Thu, 24 Jun 2021 06:42:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50C50C49EA6
+	for <linux-can@archiver.kernel.org>; Thu, 24 Jun 2021 06:42:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9A2E6613E0
-	for <linux-can@archiver.kernel.org>; Thu, 24 Jun 2021 06:42:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3077E613E0
+	for <linux-can@archiver.kernel.org>; Thu, 24 Jun 2021 06:42:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhFXGo1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S231350AbhFXGo1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 24 Jun 2021 02:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhFXGo0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Jun 2021 02:44:26 -0400
+        with ESMTP id S231270AbhFXGo1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Jun 2021 02:44:27 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CECC061574
-        for <linux-can@vger.kernel.org>; Wed, 23 Jun 2021 23:42:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535F1C061574
+        for <linux-can@vger.kernel.org>; Wed, 23 Jun 2021 23:42:08 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1lwJ3u-0008Pq-5m
+        id 1lwJ3u-0008QP-PK
         for linux-can@vger.kernel.org; Thu, 24 Jun 2021 08:42:06 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 093CD6427B2
-        for <linux-can@vger.kernel.org>; Thu, 24 Jun 2021 06:42:03 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 4DFA96427B7
+        for <linux-can@vger.kernel.org>; Thu, 24 Jun 2021 06:42:04 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 055CD6427A3;
-        Thu, 24 Jun 2021 06:42:02 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2AB6F6427A5;
+        Thu, 24 Jun 2021 06:42:03 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 477bbe8c;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9b59a8a6;
         Thu, 24 Jun 2021 06:42:02 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: pull-request: can 2021-06-24
-Date:   Thu, 24 Jun 2021 08:41:58 +0200
-Message-Id: <20210624064200.2998085-1-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [net 2/2] can: peak_pciefd: pucan_handle_status(): fix a potential starvation issue in TX path
+Date:   Thu, 24 Jun 2021 08:42:00 +0200
+Message-Id: <20210624064200.2998085-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210624064200.2998085-1-mkl@pengutronix.de>
+References: <20210624064200.2998085-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -58,45 +63,41 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-this is a pull request of 2 patches for net/master.
+Rather than just indicating that transmission can start, this patch
+requires the explicit flushing of the network TX queue when the driver
+is informed by the device that it can transmit, next to its
+configuration.
 
-The first patch is by Norbert Slusarek and prevent allocation of
-filter for optlen == 0 in the j1939 CAN protocol.
+In this way, if frames have already been written by the application,
+they will actually be transmitted.
 
-The last patch is by Stephane Grosjean and fixes a potential
-starvation in the TX path of the peak_pciefd driver.
-
-regards,
-Marc
-
+Fixes: ffd137f7043c ("can: peak/pcie_fd: remove useless code when interface starts")
+Link: https://lore.kernel.org/r/20210623142600.149904-1-s.grosjean@peak-system.com
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-
-The following changes since commit c2f5c57d99debf471a1b263cdf227e55f1364e95:
-
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf (2021-06-23 14:12:14 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.13-20210624
-
-for you to fetch changes up to b17233d385d0b6b43ecf81d43008cb1bbb008166:
-
-  can: peak_pciefd: pucan_handle_status(): fix a potential starvation issue in TX path (2021-06-24 08:40:10 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.13-20210624
-
-----------------------------------------------------------------
-Norbert Slusarek (1):
-      can: j1939: j1939_sk_setsockopt(): prevent allocation of j1939 filter for optlen == 0
-
-Stephane Grosjean (1):
-      can: peak_pciefd: pucan_handle_status(): fix a potential starvation issue in TX path
-
  drivers/net/can/peak_canfd/peak_canfd.c | 4 ++--
- net/can/j1939/socket.c                  | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
+index 00847cbaf7b6..d08718e98e11 100644
+--- a/drivers/net/can/peak_canfd/peak_canfd.c
++++ b/drivers/net/can/peak_canfd/peak_canfd.c
+@@ -351,8 +351,8 @@ static int pucan_handle_status(struct peak_canfd_priv *priv,
+ 				return err;
+ 		}
+ 
+-		/* start network queue (echo_skb array is empty) */
+-		netif_start_queue(ndev);
++		/* wake network queue up (echo_skb array is empty) */
++		netif_wake_queue(ndev);
+ 
+ 		return 0;
+ 	}
+-- 
+2.30.2
 
 
