@@ -7,28 +7,28 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95807C2B9F4
-	for <linux-can@archiver.kernel.org>; Fri, 25 Jun 2021 13:10:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BBA2C2B9F4
+	for <linux-can@archiver.kernel.org>; Fri, 25 Jun 2021 13:10:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 76C3961949
-	for <linux-can@archiver.kernel.org>; Fri, 25 Jun 2021 13:10:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6353161954
+	for <linux-can@archiver.kernel.org>; Fri, 25 Jun 2021 13:10:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbhFYNMv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 25 Jun 2021 09:12:51 -0400
-Received: from smtp5-g21.free.fr ([212.27.42.5]:29756 "EHLO smtp5-g21.free.fr"
+        id S231445AbhFYNND (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 25 Jun 2021 09:13:03 -0400
+Received: from smtp5-g21.free.fr ([212.27.42.5]:31012 "EHLO smtp5-g21.free.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231501AbhFYNMv (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:12:51 -0400
+        id S231405AbhFYNND (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Fri, 25 Jun 2021 09:13:03 -0400
 Received: from localhost.localdomain (unknown [89.158.142.148])
         (Authenticated sender: stephane.grosjean@free.fr)
-        by smtp5-g21.free.fr (Postfix) with ESMTPSA id 287F35FFA2;
-        Fri, 25 Jun 2021 15:10:25 +0200 (CEST)
+        by smtp5-g21.free.fr (Postfix) with ESMTPSA id A9C625FFA0;
+        Fri, 25 Jun 2021 15:10:37 +0200 (CEST)
 From:   Stephane Grosjean <s.grosjean@peak-system.com>
 To:     linux-can Mailing List <linux-can@vger.kernel.org>
 Cc:     Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH 1/5] can: peak_usb: pcan_usb_get_device_id(): read value only in case of success
-Date:   Fri, 25 Jun 2021 15:09:27 +0200
-Message-Id: <20210625130931.27438-2-s.grosjean@peak-system.com>
+Subject: [PATCH 4/5] can: peak_usb: pcan_usb_encode_msg(): adds information
+Date:   Fri, 25 Jun 2021 15:09:30 +0200
+Message-Id: <20210625130931.27438-5-s.grosjean@peak-system.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210625130931.27438-1-s.grosjean@peak-system.com>
 References: <20210625130931.27438-1-s.grosjean@peak-system.com>
@@ -38,27 +38,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In case of error, reading value from response argument is useless.
+This patch adds information by replacing hard-coded values with their
+symbol and adding comments.
 
 Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 1d6f77252f01..9f3e16684e28 100644
+index 341ace36570b..7d18bc6911f5 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -384,7 +384,8 @@ static int pcan_usb_get_device_id(struct peak_usb_device *dev, u32 *device_id)
- 	if (err)
- 		netdev_err(dev->netdev, "getting device id failure: %d\n", err);
+@@ -63,6 +63,8 @@
  
--	*device_id = args[0];
-+	else
-+		*device_id = args[0];
+ #define PCAN_USB_MSG_HEADER_LEN		2
  
- 	return err;
- }
++#define PCAN_USB_MSG_TX_CAN		2	/* Tx msg is a CAN frame */
++
+ /* PCAN-USB adapter internal clock (MHz) */
+ #define PCAN_USB_CRYSTAL_HZ		16000000
+ 
+@@ -836,8 +838,8 @@ static int pcan_usb_encode_msg(struct peak_usb_device *dev, struct sk_buff *skb,
+ 	u32 can_id_flags = cf->can_id & CAN_ERR_MASK;
+ 	u8 *pc;
+ 
+-	obuf[0] = 2;
+-	obuf[1] = 1;
++	obuf[0] = PCAN_USB_MSG_TX_CAN;
++	obuf[1] = 1;	/* only one CAN frame is stored in the packet */
+ 
+ 	pc = obuf + PCAN_USB_MSG_HEADER_LEN;
+ 
 -- 
 2.25.1
 
