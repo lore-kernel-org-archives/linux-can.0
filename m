@@ -2,202 +2,218 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A047C07E95
-	for <linux-can@archiver.kernel.org>; Tue, 13 Jul 2021 07:46:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9EEBC07E96
+	for <linux-can@archiver.kernel.org>; Tue, 13 Jul 2021 10:41:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 102D561260
-	for <linux-can@archiver.kernel.org>; Tue, 13 Jul 2021 07:46:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9E2F161279
+	for <linux-can@archiver.kernel.org>; Tue, 13 Jul 2021 10:41:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbhGMHtB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 13 Jul 2021 03:49:01 -0400
-Received: from mx-lax3-1.ucr.edu ([169.235.156.35]:34785 "EHLO
-        mx-lax3-1.ucr.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233762AbhGMHtA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 13 Jul 2021 03:49:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
-  t=1626162372; x=1657698372;
-  h=mime-version:references:in-reply-to:from:date:message-id:
-   subject:to:cc;
-  bh=/PDBt9wlRWM1iCLp+k/CLplY3xQTV5OM8VyXbBUUaog=;
-  b=AgJvR9YPOYo55oU70TRbahZTMKg6od1iLRg1jd/q48MB0yRH647MZzGo
-   J0kj0Itca9NCmteud7SkvM1D4IT24kdwANMioLhFdIcLFwMZp0Qk81k3U
-   dApJ92iDZQyQ0dHxDteJs4GxJGap15IX4vMRMHGIa9O7+I6syVgXkFhHe
-   D9UZ20fk33PGPNj8w3Hs1L3juNk5b7GpsuMdORnCky/hL8wqCWxii+Zna
-   7W7VUk/wPIA3rbF5sTyzNMEdF9Zo02seGtb/0gWCaZkbHG+1ct1fhDu/C
-   3Fna1tWb3W4YyVTzLvSq9/6kwyHZk/ptnN8+lA1KF14Gqcwn3Yf33u9TP
-   A==;
-IronPort-SDR: EzKnXJOUFj61YobJ/eRgXRHouyjBqBiCjFXOt1lVVreyoZhij86313JEMWSFZQonsBd8A0MLPk
- WCBH60W5YQHxQZ0QmSGgUamlPM2UwtXUaVDV8lVLJn//QxoEtAPgzeZXAGz4wjp5hCldc6jncS
- mRJajGvueXM/W2ANJvAwwZtKOXu3ZOlRkKrLgVCHXRwAsCjHS8YHmk1oEJoBau5oNFgRzt9orU
- MiC3YxDB2xR0yxXPFNmXPaOeawShJqvU4p/tJvZ9VDuMRjdds+78Gd5uWjtMDLRhAIyBKfBVmg
- HdA=
-X-IPAS-Result: =?us-ascii?q?A2HjAgDOQ+1gdEahVdFaHgEBCxIMQIFOC4MiVmwCGIQuk?=
- =?us-ascii?q?VsDlhuCa4JUgXwCCQEBAQ83CgQBAQMBA4ESgndEAm2CDAIlNAkOAgQBAQEBA?=
- =?us-ascii?q?wIDAQEBAQUBAQYBAQEBAQEFBAEBAhABb4UvOQ2COCkBUhIDDVYBAQEBAQEBA?=
- =?us-ascii?q?QEBAQEBAQEBIAIBAQEmAggFTQVnAQEBAxIRBFIOAgsLDQICJgICGwcSAQUBH?=
- =?us-ascii?q?AYTCBqCUIMHD5s6gQQ9izJ/M4EBiCEBCQ2BXQYFDX4qhwmGYieCKYFLgQWBa?=
- =?us-ascii?q?j6CYgSEdYJkBIMZTFUYe1JtQFMBAQGfCpp2gg8BBgKDChyKMpQCK4Nji1yFe?=
- =?us-ascii?q?0KQWC2UR41AkxcLhUkQI4E4ghUzGiV/BmeBS1AZDod/hiwWg04zikskLwIBD?=
- =?us-ascii?q?CkCBgoBAQMJh2cBAQ?=
-IronPort-PHdr: A9a23:77zHBBRTVs6KWpAD1UIp2jTGntpsohCfAWYlg6HPa5pwe6iut67vI
- FbYra00ygOTBcOCt7ka1aKW6/mmBTVRp87Z8TgrS99lb1c9k8IYnggtUoauKHbQC7rUVRE8B
- 9lIT1R//nu2YgB/Ecf6YEDO8DXptWZBUhrwOhBoKevrB4Xck9q41/yo+53Ufg5EmCexbal9I
- RmosQndrNQajIRtJqswyxbCv39Ed/hLyW9yKl+fghLx6t2s8JJ/9ihbpu4s+dNHXajmZaozU
- KZWDC4hM2A75c3rsQfMQA6S7XYCUWsYjwRFDRHd4B71Qpn+vC36tvFg2CaBJs35Uao0WTW54
- Kh1ThLjlToKOCQ48GHTjcxwkb5brRe8rBFx34LYfIeYP+dlc6jDYd0VW3ZOXsdJVyxAHIy8a
- ZcPD/EcNupctoXxukcCoQe7CQSqGejhyCJHhmXu0KI13eQuEwHI0gIjEdwTrnrbsM74NLsOX
- e2v0KXE0SnPYvFQ1Dzg6IbIaBchofSUUL1xcMre004vGB/FjlqOr4zuIjCa1uMQs2OG6OdhW
- uOui2k6qw1tvzSixNwhipTViYIP0FzL6zh2wJssKNC+VUV0bsKqHoFKuCGGK4t5XNkiQ2dwt
- Ss0xLMLpIC3cDUJxZg72RPSaf2KfYeI7B/+VOucISl1iXBrdr+7iRu/7Eeux+/8WMS13lhEr
- ilInsXOu30T2RHe7NWMRPV6/kekwzmP1gbT5/lfLkAzkqrbN5ohwr82lpYJrUvDGSr2lF3uj
- KCIcEUk9fWo6/j9YrXhoJ+cNoB1hhvjPaswnMG0HOc2MhAWUmSF5eix0Kfv8E75TblQk/E7k
- 7TVvIrYKMgHoKOyHhVb3Zw56xmlCjeryNEYnX4aI11bYB+HlI3pO03WIPD/EPe/n0ygkDd1y
- PDCOb3sGpDNIWLCkLflZLp97ElcxBcqwdBR5Z9YFqsNIP30Wk/2u9zYCgE2PxaozObgDdVxz
- oIeWWSRDa+FKK7er0OE6+Y1L+SPZIIZoivxJvk46/L0j3I1hUcRfayz0psWbHC4EO5mI0KcY
- Xf0jdYAEGAKvhciQOD3ilCPSiNTaGqoX64m+D40FZ+mAZ/ZRo+xmLyBwDu7HppOa2BCC1CMF
- 2rodoqdV/gQci2SJNRskiILVbe/UY8tzxKuuxHgy7phMOXU/jcUtZX51Nh6tKXvkkQX/CZ/R
- +eZ3mCLQiReg28ESndi2aN7iVRwzFiezbJ/hf1IU9BesaBnSAA/YK7dxutxC930EjDGY5/dW
- EShX43/XhksRch3ztMTNRUuU+6+hwzOinL5S4QekKaGUdltqvq04g==
-IronPort-HdrOrdr: A9a23:3MwS+6kg84iilj2YOjjkOPZVLs3pDfIX3DAbv31ZSRFFG/FwWf
- re5cjztCWE8Ar5N0tQ/OxoVJPwI080sKQFgrX5Xo3CYOCFghrNEGgK1+KLqAEIWRefygc379
- YGT0ERMqyXMbG4t6vHCcuDeerIDOPpzElgv4ux80tQ
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="53814362"
-Received: from mail-oo1-f70.google.com ([209.85.161.70])
-  by smtp-lax3-1.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Jul 2021 00:46:11 -0700
-Received: by mail-oo1-f70.google.com with SMTP id g4-20020a4adc840000b029025e89d69142so2734415oou.8
-        for <linux-can@vger.kernel.org>; Tue, 13 Jul 2021 00:46:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E0c/itnJRqvseiRzZWaYFdOYbaZVWfzwqyJIgaHRkI4=;
-        b=lTN2TFCen3LPEmwHOrz99Hj6Kl7KKZjU10OHAXSR1mNRWPSgupFXgcm/4ZwyJ11qxk
-         0Q3dN5UM2YAnErmH+m4gVrjZ+15SIthga5AzO3ReiRboF1GDZIyVr1QThkroscVkWg2A
-         rBF4rtf+tA8aVL4e4LsHul95hIpvGqs0hlWFOw6ITJ74/j7rXCdvqzHS7ZrcJhunLKx+
-         50sL+sWcjt3GUSDGqFsjTF6MVL2AfwN6la9olZKVr72kgrH3Jx/COtWQFyfP98EI+0LL
-         xcywQRV2RYQFzxYvx8y+JySANzhXeX/INOTUb18Ekz9vfuXRrE6KKnpNx8s/GTbs+owf
-         Tl1g==
-X-Gm-Message-State: AOAM5327ivqUBEDq5LZth7rwe6KNoqVN6OGbVX+Os49Vm6tnnUcjolUV
-        Gjbx7G4slucBKbxpjN8KtBggBc9oc7z/EFqrv3h/NaHScOjqRN2/wFLsdhjRNHOch4LP/w87JZu
-        yeXtp2PYGAmOlWc5B9k87X/DEniLKEX90ti+TTw==
-X-Received: by 2002:a05:6830:1e42:: with SMTP id e2mr2537578otj.135.1626162369807;
-        Tue, 13 Jul 2021 00:46:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBf6asctnycGHrf0aHsUd7mMNxKyN11KyP8TucFVKHbFU6gvW9YJZO6cqXJ6+ucEspUXAJ06v7fWy8ISSDRwE=
-X-Received: by 2002:a05:6830:1e42:: with SMTP id e2mr2537573otj.135.1626162369633;
- Tue, 13 Jul 2021 00:46:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAE1SXrtrg4CrWg_rZLUHqWWFHkGnK5Ez0PExJq8-A9d5NjE_-w@mail.gmail.com>
- <YO0Z7s8p7CoetxdW@kroah.com> <CAE1SXrv2Et9icDf2NesjWmrwbjXL8067Y=D3RnwqpEeZT4OgTg@mail.gmail.com>
- <e1f71c33-a5dd-82b1-2dce-be4f052d6aa6@pengutronix.de>
-In-Reply-To: <e1f71c33-a5dd-82b1-2dce-be4f052d6aa6@pengutronix.de>
-From:   Xiaochen Zou <xzou017@ucr.edu>
-Date:   Tue, 13 Jul 2021 00:46:07 -0700
-Message-ID: <CAE1SXrv3Ouwt4Y9NEWGi0WO701w1YP1ruMSxraZr4PZTGsUZgg@mail.gmail.com>
-Subject: Re: Use-after-free access in j1939_session_deactivate
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Greg KH <greg@kroah.com>, netdev@vger.kernel.org,
+        id S235669AbhGMKoR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 13 Jul 2021 06:44:17 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:42689 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235408AbhGMKoQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 13 Jul 2021 06:44:16 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 759BA580AA5;
+        Tue, 13 Jul 2021 06:41:26 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 13 Jul 2021 06:41:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=0ld3gGk2gOLemZpCiTYaFnpWl3D
+        uUP1r1OodiqyM0kE=; b=bdlURKK0SpCEnCHd+MwZg2/yETX7d/EqzVvlku3yPSM
+        UWAIb3BQiQSJpRfuxVP+1pcR4/7WP5yS9F5zcTWjc9xzpUdKgS/zx0r+mr6R6jMT
+        6TLUOTrU8IDdW/e9tDZKY91yEoC49qBrKRQRvSwBgpePa7axRSod0tjvbL8YiMS/
+        6zVOCbhls36RAlcYA/9UBp551btahEU5nLk2tdXfx/WcB1SXrU2likpNjQDe44nI
+        UNxTD5zrJ9dQXEWdLOGf/h2FA8ItqwiEgyjtUnbw5cIIRxHkYrMjjbmw8yOyetOC
+        0RwoNcxnfWtIv2l+O6j18libL1Ca19uKQN9S2rTrwnw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=0ld3gG
+        k2gOLemZpCiTYaFnpWl3DuUP1r1OodiqyM0kE=; b=USOjJ5YiR/x/hjMSmJBgUr
+        ERHLg3R2Izs0jArfewhVoJ62nEuv3TxorETAgis6+dw8RKD4GUZEJKKjXEdA0EPk
+        quZ6w1uYGsLGiIINT8v31VXXKNqMZ+B8fjXyuCn3ElVveciU4T/jDQ47aqPiQ3Hm
+        2+qny9Mv/f2bujeXsrFYO+OLH8+GgGTiJAunVrbD7K8ngkJzByJToAbqwGGYYiJp
+        GznKGSMVbiCtOtYHX40h2nSL4FDzY+dcUUS6ynLW6hC8K+ve0h8/WOQs+o6yDmgP
+        TtPySORxi1o2inm7DxbqdYmXjq2lVxK5/0rFxO9M6ClT0iaUBrwXzCY4JXTMcZLw
+        ==
+X-ME-Sender: <xms:1W3tYLS8fzscBIssjTPfThdiDuFBFpjmUFZuUrywtrQRaVAIgDjJNw>
+    <xme:1W3tYMws0262fHnPbUjiX6EjRGvYNubc12EokPgly_pqME9GUiRuONydNGbj721Ml
+    9YDx3AsTV-H1w>
+X-ME-Received: <xmr:1W3tYA2zmRUn103eWSVDQtD5PR6Df_4SYqOVz9jXhvp-t-0Q2VH_hUWJTFUGnmXmHbIEq_YBX0ruQITs040u5Slstw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehgddvvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepudetieegte
+    ehkeefueeggfehgeekvddvkeeugefhkeffhfeivddtueetvdeigfejnecuffhomhgrihhn
+    pegsohhothhlihhnrdgtohhmpdhpvghnghhuthhrohhnihigrdguvgenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdr
+    tghomh
+X-ME-Proxy: <xmx:1W3tYLBWLuSOir9e02wPSFLp46X65-TCMKR2uXTs53mf0lRYrKxOWA>
+    <xmx:1W3tYEjNIJCJ6odQVAvXPLaTypeHkPozDzkxGPzmj3JSeIlNLul6gw>
+    <xmx:1W3tYPqzrAUJhdtdE4vfobo8TKUllb0AGFe_ePrTulNSYAMkdvJckg>
+    <xmx:1m3tYJZB9W5DhS_Ii-9Z5IYEdIZ3R-Jy2NCEFDJ0B2IiPcRJc879zQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 13 Jul 2021 06:41:25 -0400 (EDT)
+Date:   Tue, 13 Jul 2021 12:41:22 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Xiaochen Zou <xzou017@ucr.edu>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org,
         stable@vger.kernel.org, kernel@pengutronix.de,
         linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: Use-after-free access in j1939_session_deactivate
+Message-ID: <YO1t0nB10tlnfEtK@kroah.com>
+References: <CAE1SXrtrg4CrWg_rZLUHqWWFHkGnK5Ez0PExJq8-A9d5NjE_-w@mail.gmail.com>
+ <YO0Z7s8p7CoetxdW@kroah.com>
+ <CAE1SXrv2Et9icDf2NesjWmrwbjXL8067Y=D3RnwqpEeZT4OgTg@mail.gmail.com>
+ <e1f71c33-a5dd-82b1-2dce-be4f052d6aa6@pengutronix.de>
+ <CAE1SXrv3Ouwt4Y9NEWGi0WO701w1YP1ruMSxraZr4PZTGsUZgg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE1SXrv3Ouwt4Y9NEWGi0WO701w1YP1ruMSxraZr4PZTGsUZgg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-j1939_session_destroy() will free both session and session->priv. It
-leads to multiple use-after-free read and write in
-j1939_session_deactivate() when session was freed in
-j1939_session_deactivate_locked(). The free chain is
-j1939_session_deactivate_locked()->j1939_session_put()->__j1939_session_release()->j1939_session_destroy().
-To fix this bug, I moved j1939_session_put() behind
-j1939_session_deactivate_locked() and guarded it with a check of
-active since the session would be freed only if active is true.
+On Tue, Jul 13, 2021 at 12:46:07AM -0700, Xiaochen Zou wrote:
+> j1939_session_destroy() will free both session and session->priv. It
+> leads to multiple use-after-free read and write in
+> j1939_session_deactivate() when session was freed in
+> j1939_session_deactivate_locked(). The free chain is
+> j1939_session_deactivate_locked()->j1939_session_put()->__j1939_session_release()->j1939_session_destroy().
+> To fix this bug, I moved j1939_session_put() behind
+> j1939_session_deactivate_locked() and guarded it with a check of
+> active since the session would be freed only if active is true.
+> 
+> Signed-off-by: Xiaochen Zou <xzou017@ucr.edu>
+> 
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index e5f1a56994c6..b6448f29a4bd 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1018,7 +1018,6 @@ static bool
+> j1939_session_deactivate_locked(struct j1939_session *session)
+> 
+>         list_del_init(&session->active_session_list_entry);
+>         session->state = J1939_SESSION_DONE;
+> -       j1939_session_put(session);
+>     }
+> 
+>     return active;
+> @@ -1031,6 +1030,9 @@ static bool j1939_session_deactivate(struct
+> j1939_session *session)
+>     j1939_session_list_lock(session->priv);
+>     active = j1939_session_deactivate_locked(session);
+>     j1939_session_list_unlock(session->priv);
+> +   if (active) {
+> +       j1939_session_put(session);
+> +   }
+> 
+>     return active;
+>  }
+> @@ -2021,6 +2023,7 @@ void j1939_simple_recv(struct j1939_priv *priv,
+> struct sk_buff *skb)
+>  int j1939_cancel_active_session(struct j1939_priv *priv, struct sock *sk)
+>  {
+>     struct j1939_session *session, *saved;
+> +   bool active;
+> 
+>     netdev_dbg(priv->ndev, "%s, sk: %p\n", __func__, sk);
+>     j1939_session_list_lock(priv);
+> @@ -2030,7 +2033,10 @@ int j1939_cancel_active_session(struct
+> j1939_priv *priv, struct sock *sk)
+>         if (!sk || sk == session->sk) {
+>             j1939_session_timers_cancel(session);
+>             session->err = ESHUTDOWN;
+> -           j1939_session_deactivate_locked(session);
+> +           active = j1939_session_deactivate_locked(session);
+> +           if (active) {
+> +               j1939_session_put(session);
+> +           }
+>         }
+>     }
+>     j1939_session_list_unlock(priv);
+> 
+> On Tue, Jul 13, 2021 at 12:35 AM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> >
+> > On 7/13/21 9:30 AM, Xiaochen Zou wrote:
+> > > j1939_session_destroy() will free both session and session->priv. It
+> > > leads to multiple use-after-free read and write in
+> > > j1939_session_deactivate() when session was freed in
+> > > j1939_session_deactivate_locked(). The free chain is
+> > > j1939_session_deactivate_locked()->
+> > > j1939_session_put()->__j1939_session_release()->j1939_session_destroy().
+> > > To fix this bug, I moved j1939_session_put() behind
+> > > j1939_session_deactivate_locked() and guarded it with a check of
+> > > active since the session would be freed only if active is true.
+> >
+> > Please include your Signed-off-by.
+> > See
+> > https://elixir.bootlin.com/linux/v5.12/source/Documentation/process/submitting-patches.rst#L356
+> >
+> > Marc
+> >
+> > --
+> > Pengutronix e.K.                 | Marc Kleine-Budde           |
+> > Embedded Linux                   | https://www.pengutronix.de  |
+> > Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> > Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+> >
+> 
+> 
 
-Signed-off-by: Xiaochen Zou <xzou017@ucr.edu>
+Hi,
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index e5f1a56994c6..b6448f29a4bd 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1018,7 +1018,6 @@ static bool
-j1939_session_deactivate_locked(struct j1939_session *session)
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-        list_del_init(&session->active_session_list_entry);
-        session->state = J1939_SESSION_DONE;
--       j1939_session_put(session);
-    }
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-    return active;
-@@ -1031,6 +1030,9 @@ static bool j1939_session_deactivate(struct
-j1939_session *session)
-    j1939_session_list_lock(session->priv);
-    active = j1939_session_deactivate_locked(session);
-    j1939_session_list_unlock(session->priv);
-+   if (active) {
-+       j1939_session_put(session);
-+   }
+- Your patch contains warnings and/or errors noticed by the
+  scripts/checkpatch.pl tool.
 
-    return active;
- }
-@@ -2021,6 +2023,7 @@ void j1939_simple_recv(struct j1939_priv *priv,
-struct sk_buff *skb)
- int j1939_cancel_active_session(struct j1939_priv *priv, struct sock *sk)
- {
-    struct j1939_session *session, *saved;
-+   bool active;
+- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
+  and can not be applied.  Please read the file,
+  Documentation/email-clients.txt in order to fix this.
 
-    netdev_dbg(priv->ndev, "%s, sk: %p\n", __func__, sk);
-    j1939_session_list_lock(priv);
-@@ -2030,7 +2033,10 @@ int j1939_cancel_active_session(struct
-j1939_priv *priv, struct sock *sk)
-        if (!sk || sk == session->sk) {
-            j1939_session_timers_cancel(session);
-            session->err = ESHUTDOWN;
--           j1939_session_deactivate_locked(session);
-+           active = j1939_session_deactivate_locked(session);
-+           if (active) {
-+               j1939_session_put(session);
-+           }
-        }
-    }
-    j1939_session_list_unlock(priv);
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
 
-On Tue, Jul 13, 2021 at 12:35 AM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->
-> On 7/13/21 9:30 AM, Xiaochen Zou wrote:
-> > j1939_session_destroy() will free both session and session->priv. It
-> > leads to multiple use-after-free read and write in
-> > j1939_session_deactivate() when session was freed in
-> > j1939_session_deactivate_locked(). The free chain is
-> > j1939_session_deactivate_locked()->
-> > j1939_session_put()->__j1939_session_release()->j1939_session_destroy().
-> > To fix this bug, I moved j1939_session_put() behind
-> > j1939_session_deactivate_locked() and guarded it with a check of
-> > active since the session would be freed only if active is true.
->
-> Please include your Signed-off-by.
-> See
-> https://elixir.bootlin.com/linux/v5.12/source/Documentation/process/submitting-patches.rst#L356
->
-> Marc
->
-> --
-> Pengutronix e.K.                 | Marc Kleine-Budde           |
-> Embedded Linux                   | https://www.pengutronix.de  |
-> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
->
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what a proper Subject: line should
+  look like.
 
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
 
--- 
-Xiaochen Zou
-PhD Student
-Department of Computer Science & Engineering
-University of California, Riverside
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
