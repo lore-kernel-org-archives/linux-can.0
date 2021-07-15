@@ -2,112 +2,247 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB879C07E96
-	for <linux-can@archiver.kernel.org>; Thu, 15 Jul 2021 12:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D466DC47E4F
+	for <linux-can@archiver.kernel.org>; Thu, 15 Jul 2021 14:29:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D211661178
-	for <linux-can@archiver.kernel.org>; Thu, 15 Jul 2021 12:34:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD9C661380
+	for <linux-can@archiver.kernel.org>; Thu, 15 Jul 2021 14:29:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237371AbhGOMhD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 15 Jul 2021 08:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237354AbhGOMhB (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Jul 2021 08:37:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A221DC06175F
-        for <linux-can@vger.kernel.org>; Thu, 15 Jul 2021 05:34:08 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1m40Yu-0003MQ-V2; Thu, 15 Jul 2021 14:33:57 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:968e:ea40:4726:28f1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id C042564FF2E;
-        Thu, 15 Jul 2021 12:07:29 +0000 (UTC)
-Date:   Thu, 15 Jul 2021 14:07:29 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dong Aisheng <dongas86@gmail.com>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH 1/7] dt-bindings: can: flexcan: fix imx8mp compatbile
-Message-ID: <20210715120729.6ify4gh7vcenkxxm@pengutronix.de>
-References: <20210715082536.1882077-1-aisheng.dong@nxp.com>
- <20210715082536.1882077-2-aisheng.dong@nxp.com>
- <20210715091207.gkd73vh3w67ccm4q@pengutronix.de>
- <CAA+hA=QDJhf_LnBZCiKE-FbUNciX4bmgmrvft8Y-vkB9Lguj=w@mail.gmail.com>
- <DB8PR04MB6795ACFCCB64354C8E810EE8E6129@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <20210715110706.ysktvpzzaqaiimpl@pengutronix.de>
- <CAA+hA=RBysrM5qXC=gve5n8-Rm7w_Nvsf+qurYJTkWQWPmGobw@mail.gmail.com>
+        id S231522AbhGOOb6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 15 Jul 2021 10:31:58 -0400
+Received: from smtp2-g21.free.fr ([212.27.42.2]:26147 "EHLO smtp2-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229624AbhGOOb6 (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:31:58 -0400
+Received: from localhost.localdomain (unknown [89.158.146.116])
+        (Authenticated sender: stephane.grosjean@free.fr)
+        by smtp2-g21.free.fr (Postfix) with ESMTPSA id 745FC20036C;
+        Thu, 15 Jul 2021 16:29:00 +0200 (CEST)
+From:   Stephane Grosjean <s.grosjean@peak-system.com>
+To:     linux-can Mailing List <linux-can@vger.kernel.org>
+Cc:     Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH v3 1/2] can: peak_usb: upgrades the handling of bus state changes
+Date:   Thu, 15 Jul 2021 16:28:41 +0200
+Message-Id: <20210715142842.35793-1-s.grosjean@peak-system.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lrbkdnzszrwfxx6h"
-Content-Disposition: inline
-In-Reply-To: <CAA+hA=RBysrM5qXC=gve5n8-Rm7w_Nvsf+qurYJTkWQWPmGobw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+This patch updates old code by using the functions published since by the
+socket-can module. In particular, this new code better manages the change
+of bus state by also using the value of the error counters that the driver
+now systematically asks for when initializing the channel.
 
---lrbkdnzszrwfxx6h
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+---
+v2:
+ - do the statistics and state update, even if the allocation of the skb
+   fails.
+v3:
+ - do call can_change_state() even when cf is NULL
+ - do supply Tx/Rx error counters in controller error skb
+---
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 161 ++++++------------------
+ 1 file changed, 40 insertions(+), 121 deletions(-)
 
-On 15.07.2021 19:36:06, Dong Aisheng wrote:
-> Then should it be "fsl,imx8mp-flexcan", "fsl,imx8qxp-flexcan" rather than=
- only
-> drop "fsl,imx6q-flexcan"?
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 1d6f77252f01..3af3136645ac 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -445,145 +445,64 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ {
+ 	struct sk_buff *skb;
+ 	struct can_frame *cf;
+-	enum can_state new_state;
++	enum can_state new_state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	/* ignore this error until 1st ts received */
+ 	if (n == PCAN_USB_ERROR_QOVR)
+ 		if (!mc->pdev->time_ref.tick_count)
+ 			return 0;
+ 
+-	new_state = mc->pdev->dev.can.state;
+-
+-	switch (mc->pdev->dev.can.state) {
+-	case CAN_STATE_ERROR_ACTIVE:
+-		if (n & PCAN_USB_ERROR_BUS_LIGHT) {
+-			new_state = CAN_STATE_ERROR_WARNING;
+-			break;
+-		}
+-		fallthrough;
+-
+-	case CAN_STATE_ERROR_WARNING:
+-		if (n & PCAN_USB_ERROR_BUS_HEAVY) {
+-			new_state = CAN_STATE_ERROR_PASSIVE;
+-			break;
+-		}
+-		if (n & PCAN_USB_ERROR_BUS_OFF) {
+-			new_state = CAN_STATE_BUS_OFF;
+-			break;
+-		}
+-		if (n & ~PCAN_USB_ERROR_BUS) {
+-			/*
+-			 * trick to bypass next comparison and process other
+-			 * errors
+-			 */
+-			new_state = CAN_STATE_MAX;
+-			break;
+-		}
+-		if ((n & PCAN_USB_ERROR_BUS_LIGHT) == 0) {
+-			/* no error (back to active state) */
+-			new_state = CAN_STATE_ERROR_ACTIVE;
+-			break;
+-		}
+-		break;
+-
+-	case CAN_STATE_ERROR_PASSIVE:
+-		if (n & PCAN_USB_ERROR_BUS_OFF) {
+-			new_state = CAN_STATE_BUS_OFF;
+-			break;
+-		}
+-		if (n & PCAN_USB_ERROR_BUS_LIGHT) {
+-			new_state = CAN_STATE_ERROR_WARNING;
+-			break;
+-		}
+-		if (n & ~PCAN_USB_ERROR_BUS) {
+-			/*
+-			 * trick to bypass next comparison and process other
+-			 * errors
+-			 */
+-			new_state = CAN_STATE_MAX;
+-			break;
+-		}
+-
+-		if ((n & PCAN_USB_ERROR_BUS_HEAVY) == 0) {
+-			/* no error (back to warning state) */
+-			new_state = CAN_STATE_ERROR_WARNING;
+-			break;
+-		}
+-		break;
+-
+-	default:
+-		/* do nothing waiting for restart */
+-		return 0;
+-	}
+-
+-	/* donot post any error if current state didn't change */
+-	if (mc->pdev->dev.can.state == new_state)
+-		return 0;
+-
+ 	/* allocate an skb to store the error frame */
+ 	skb = alloc_can_err_skb(mc->netdev, &cf);
+-	if (!skb)
+-		return -ENOMEM;
+ 
+-	switch (new_state) {
+-	case CAN_STATE_BUS_OFF:
+-		cf->can_id |= CAN_ERR_BUSOFF;
+-		mc->pdev->dev.can.can_stats.bus_off++;
+-		can_bus_off(mc->netdev);
+-		break;
+-
+-	case CAN_STATE_ERROR_PASSIVE:
+-		cf->can_id |= CAN_ERR_CRTL;
+-		cf->data[1] = (mc->pdev->bec.txerr > mc->pdev->bec.rxerr) ?
+-				CAN_ERR_CRTL_TX_PASSIVE :
+-				CAN_ERR_CRTL_RX_PASSIVE;
+-		cf->data[6] = mc->pdev->bec.txerr;
+-		cf->data[7] = mc->pdev->bec.rxerr;
+-
+-		mc->pdev->dev.can.can_stats.error_passive++;
+-		break;
++	if (n & PCAN_USB_ERROR_RXQOVR) {
++		/* data overrun interrupt */
++		netdev_dbg(mc->netdev, "data overrun interrupt\n");
++		mc->netdev->stats.rx_over_errors++;
++		mc->netdev->stats.rx_errors++;
++		if (cf) {
++			cf->can_id |= CAN_ERR_CRTL;
++			cf->data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
++		}
++	}
+ 
+-	case CAN_STATE_ERROR_WARNING:
+-		cf->can_id |= CAN_ERR_CRTL;
+-		cf->data[1] = (mc->pdev->bec.txerr > mc->pdev->bec.rxerr) ?
+-				CAN_ERR_CRTL_TX_WARNING :
+-				CAN_ERR_CRTL_RX_WARNING;
+-		cf->data[6] = mc->pdev->bec.txerr;
+-		cf->data[7] = mc->pdev->bec.rxerr;
++	if (n & PCAN_USB_ERROR_TXQFULL)
++		netdev_dbg(mc->netdev, "device Tx queue full)\n");
+ 
+-		mc->pdev->dev.can.can_stats.error_warning++;
+-		break;
++	if (n & PCAN_USB_ERROR_BUS_OFF) {
++		new_state = CAN_STATE_BUS_OFF;
++	} else if (n & PCAN_USB_ERROR_BUS_HEAVY) {
++		new_state = ((mc->pdev->bec.txerr >= 128) ||
++			     (mc->pdev->bec.rxerr >= 128)) ?
++				CAN_STATE_ERROR_PASSIVE :
++				CAN_STATE_ERROR_WARNING;
++	} else {
++		new_state = CAN_STATE_ERROR_ACTIVE;
++	}
+ 
+-	case CAN_STATE_ERROR_ACTIVE:
+-		cf->can_id |= CAN_ERR_CRTL;
+-		cf->data[1] = CAN_ERR_CRTL_ACTIVE;
++	/* handle change of state */
++	if (new_state != mc->pdev->dev.can.state) {
++		enum can_state tx_state =
++			(mc->pdev->bec.txerr >= mc->pdev->bec.rxerr) ?
++				new_state : 0;
++		enum can_state rx_state =
++			(mc->pdev->bec.txerr <= mc->pdev->bec.rxerr) ?
++				new_state : 0;
+ 
+-		/* sync local copies of rxerr/txerr counters */
+-		mc->pdev->bec.txerr = 0;
+-		mc->pdev->bec.rxerr = 0;
+-		break;
++		can_change_state(mc->netdev, cf, tx_state, rx_state);
+ 
+-	default:
+-		/* CAN_STATE_MAX (trick to handle other errors) */
+-		if (n & PCAN_USB_ERROR_TXQFULL)
+-			netdev_dbg(mc->netdev, "device Tx queue full)\n");
++		if (new_state == CAN_STATE_BUS_OFF) {
++			can_bus_off(mc->netdev);
+ 
+-		if (n & PCAN_USB_ERROR_RXQOVR) {
+-			netdev_dbg(mc->netdev, "data overrun interrupt\n");
+-			cf->can_id |= CAN_ERR_CRTL;
+-			cf->data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
+-			mc->netdev->stats.rx_over_errors++;
+-			mc->netdev->stats.rx_errors++;
++		/* supply tx/rx error counters in case of controller error */
++		} else if (cf && (cf->can_id & CAN_ERR_CRTL)) {
++			cf->data[6] = mc->pdev->bec.txerr;
++			cf->data[7] = mc->pdev->bec.rxerr;
+ 		}
+-
+-		cf->data[6] = mc->pdev->bec.txerr;
+-		cf->data[7] = mc->pdev->bec.rxerr;
+-
+-		new_state = mc->pdev->dev.can.state;
+-		break;
+ 	}
+ 
+-	mc->pdev->dev.can.state = new_state;
++	if (!skb)
++		return -ENOMEM;
+ 
+ 	if (status_len & PCAN_USB_STATUSLEN_TIMESTAMP) {
+ 		struct skb_shared_hwtstamps *hwts = skb_hwtstamps(skb);
+-- 
+2.25.1
 
-The driver has compatibles for the 8qm, not for the 8qxp:
-
-|	{ .compatible =3D "fsl,imx8qm-flexcan", .data =3D &fsl_imx8qm_devtype_dat=
-a, },
-|	{ .compatible =3D "fsl,imx8mp-flexcan", .data =3D &fsl_imx8mp_devtype_dat=
-a, },
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---lrbkdnzszrwfxx6h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDwJP4ACgkQqclaivrt
-76kEKAf/ei6IOOUTeOXkmfYBk+9XSDomucSWz/JK+JcGmkHtKWaDvZ85xJKLyyzi
-X0SkHJeieX81WvCRGweRObl/e40BSm7/1US0TZQU4eceizOaPAPZUufyOeJ1k9dr
-gwSTJRDfNGo13E9rEpFfg04y/ScQLFXG6Ge5xYUA625yfu/JbeT8qTCSRks2qmkZ
-upSYr5YqdPFro+8frBb3TJ3uEr1IxBZ7jSyjqTlm8vo7ERV7gQf7pl6X7F/EMkAV
-nuUZ6HuxShjI6qFXDvmr3kjk9IECyGM+zUN8qk+Rm9vBQ+7LAtHuW4Z31sPQ7GgC
-TyVWhS6BRHl2x/ynenn0u895BSug0g==
-=mDQp
------END PGP SIGNATURE-----
-
---lrbkdnzszrwfxx6h--
