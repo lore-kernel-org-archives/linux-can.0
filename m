@@ -2,51 +2,51 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45F18C07E9B
-	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63634C07E9B
+	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:40:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 27F126101E
-	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:33:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 457726108B
+	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:40:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237616AbhGTJwt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 20 Jul 2021 05:52:49 -0400
-Received: from mail-ua1-f41.google.com ([209.85.222.41]:43908 "EHLO
-        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237861AbhGTJuu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Jul 2021 05:50:50 -0400
-Received: by mail-ua1-f41.google.com with SMTP id 109so7895008uar.10;
-        Tue, 20 Jul 2021 03:31:07 -0700 (PDT)
+        id S234895AbhGTKAH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 20 Jul 2021 06:00:07 -0400
+Received: from mail-vs1-f41.google.com ([209.85.217.41]:42647 "EHLO
+        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237156AbhGTJ7M (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Jul 2021 05:59:12 -0400
+Received: by mail-vs1-f41.google.com with SMTP id u7so10964636vst.9;
+        Tue, 20 Jul 2021 03:39:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cFJr3mnxmkAIaRVKTYv7QqTxKFA58WNsYKCu7chQapI=;
-        b=ZQqhW6TMLHax5JVUXRn319CU2pgZnIZwGBToaDTfcEePCjPiGlfVTv/N79KdIpv4n8
-         yZQO0rV1CKpxmAutOW1HIemQz2jlWcFgdcaRcOo2Xv1DSKfmN2Nawn7BfrSxEM18Cj/6
-         t0gugw3UUP2qiUcvuqS1wMVuIcOL5pjQnGBgDSUkrVHMOyrPsnru4LMvNZ2aLwThBxSC
-         7JWJ4K4SQOb0dwbJgWWrmN4vgwIB01AwKy99gejj4jXl7KwJoK+0KM0zh+kgG+Ftxv9O
-         L+p5fl4OKhSGf7+25nLpwUWIQ9rbqmwJYUo9yo3OBNa2uQsN1gLIS2I/0K7Ue9Yox4ad
-         g7EQ==
-X-Gm-Message-State: AOAM530R9D/fUS9wVLbZgGjAmTtaA+/YHEx/E4Fe0ty1yBvLIJIA6GXa
-        5BOlEjI+Xvj/85xjJQ9dvqwOgvCkLNNIiebxBiA=
-X-Google-Smtp-Source: ABdhPJx/ZYpxNeEBypBsMcNZBb58Bq9X6WTtWKsSNi6NMeuUBQjblbsD5zBbvCvq65O90njI6YIwBFB4rrfE2qmBb4Q=
-X-Received: by 2002:ab0:2554:: with SMTP id l20mr30624074uan.58.1626777067084;
- Tue, 20 Jul 2021 03:31:07 -0700 (PDT)
+        bh=CVIxBg628PAwDy/vo0ZmoulomT3dP+R815FPvXclsao=;
+        b=i6zUi2zFGiUf758QvKHeDisW1Yyhw8CN/CJeKYrd1gxzicxiqWeoIpQQSXUbBwL702
+         wQd5LLrVzZRIybhYHhVv4cfTcSRD09oaOs9m22Vmj8IAQ4xpPqXYj4xDtbV+Nno/3i+q
+         Tm+tx+deC0mReIw8gokcWX5DJ36vsc2Q+4f7fQopIrKGl+SFuNRIIu9T+fBsIRGYe8QI
+         iOmlzjv/A2OsTf9H2FeClZI7UVzajvBlDPV9urbtURS56mSJKJ4VrJ3dLCW+MfxYl74t
+         fyEl0LSpFC4DO7fiPV2Y8U2d205T6xahLIZYBOynfg5j1XYzeQG4pI5y1B1ouY3nAji7
+         jWbw==
+X-Gm-Message-State: AOAM533jWVJe/VpoKp/7CZ3xy2Xfbgovf6Izbu5UmnZutSm/t1wgIgaI
+        RU4vuVXDll3pjPlxw7CGvhvk1eS+Oh+6FKaTGZc=
+X-Google-Smtp-Source: ABdhPJwdSimcy72NVuCQcZHymT6OXIFKfyNe/sBA/FR+wAEOfy6VNjuVPwJUkNefHXoUgy46bedfu9+7qODNk6hj3Zc=
+X-Received: by 2002:a05:6102:2828:: with SMTP id ba8mr28494942vsb.18.1626777589760;
+ Tue, 20 Jul 2021 03:39:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210719143811.2135-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210719143811.2135-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210719143811.2135-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210719143811.2135-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 20 Jul 2021 12:30:55 +0200
-Message-ID: <CAMuHMdXkPDaaRZZTCyn-Mwfakuzui69GWuiKUWYEOyhQmuFB=w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] can: rcar_canfd: Add support for RZ/G2L family
+Date:   Tue, 20 Jul 2021 12:39:38 +0200
+Message-ID: <CAMuHMdXQKmG-pdnh+M27CDMfTYrC7eq1kdyAb5P5Pgyc22vs+g@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] clk: renesas: r9a07g044-cpg: Add entry for fixed
+ clock P0_DIV2
 To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -68,158 +68,16 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Prabhakar,
-
-On Mon, Jul 19, 2021 at 4:39 PM Lad Prabhakar
+On Mon, Jul 19, 2021 at 4:40 PM Lad Prabhakar
 <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> CANFD block on RZ/G2L SoC is almost identical to one found on
-> R-Car Gen3 SoC's. On RZ/G2L SoC interrupt sources for each channel
-> are split into different sources and the IP doesn't divide (1/2)
-> CANFD clock within the IP.
->
-> This patch adds compatible string for RZ/G2L family and registers
-> the irq handlers required for CANFD operation. IRQ numbers are now
-> fetched based on names instead of indices. For backward compatibility
-> on non RZ/G2L SoC's we fallback reading based on indices.
+> Add entry for fixed core clock P0_DIV2 and assign LAST_DT_CORE_CLK
+> to R9A07G044_CLK_P0_DIV2.
 >
 > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Thanks for your patch!
-
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
-> @@ -37,9 +37,15 @@
->  #include <linux/bitmap.h>
->  #include <linux/bitops.h>
->  #include <linux/iopoll.h>
-> +#include <linux/reset.h>
->
->  #define RCANFD_DRV_NAME                        "rcar_canfd"
->
-> +enum rcanfd_chip_id {
-> +       RENESAS_RCAR_GEN3 = 0,
-> +       RENESAS_RZG2L,
-> +};
-> +
->  /* Global register bits */
->
->  /* RSCFDnCFDGRMCFG */
-> @@ -513,6 +519,9 @@ struct rcar_canfd_global {
->         enum rcar_canfd_fcanclk fcan;   /* CANFD or Ext clock */
->         unsigned long channels_mask;    /* Enabled channels mask */
->         bool fdmode;                    /* CAN FD or Classical CAN only mode */
-> +       struct reset_control *rstc1;     /* Pointer to reset source1 */
-> +       struct reset_control *rstc2;     /* Pointer to reset source2 */
-
-Are these comments helpful? IMHO they're stating the obvious.
-
-> +       enum rcanfd_chip_id chip_id;
->  };
->
->  /* CAN FD mode nominal rate constants */
-> @@ -1577,6 +1586,45 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
->         priv->can.clock.freq = fcan_freq;
->         dev_info(&pdev->dev, "can_clk rate is %u\n", priv->can.clock.freq);
->
-> +       if (gpriv->chip_id == RENESAS_RZG2L) {
-> +               char *irq_name;
-> +               int err_irq;
-> +               int tx_irq;
-> +
-> +               err_irq = platform_get_irq_byname(pdev, ch == 0 ? "can0_error" : "can1_error");
-> +               if (err_irq < 0) {
-> +                       err = err_irq;
-> +                       goto fail;
-> +               }
-> +
-> +               tx_irq = platform_get_irq_byname(pdev, ch == 0 ? "can0_tx" : "can1_tx");
-> +               if (tx_irq < 0) {
-> +                       err = tx_irq;
-> +                       goto fail;
-> +               }
-> +
-> +               irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> +                                         "canfd.chnerr%d", ch);
-
-if (!irq_name) {
-    ret = -ENOMEM;
-    goto fail;
-}
-
-> +               err = devm_request_irq(&pdev->dev, err_irq,
-> +                                      rcar_canfd_channel_interrupt, 0,
-> +                                      irq_name, gpriv);
-> +               if (err) {
-> +                       dev_err(&pdev->dev, "devm_request_irq CH Err(%d) failed, error %d\n",
-> +                               err_irq, err);
-> +                       goto fail;
-> +               }
-> +               irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> +                                         "canfd.chntx%d", ch);
-
-Likewise.
-
-> +               err = devm_request_irq(&pdev->dev, tx_irq,
-> +                                      rcar_canfd_channel_interrupt, 0,
-> +                                      irq_name, gpriv);
-> +               if (err) {
-> +                       dev_err(&pdev->dev, "devm_request_irq Tx (%d) failed, error %d\n",
-> +                               tx_irq, err);
-> +                       goto fail;
-> +               }
-> +       }
-> +
->         if (gpriv->fdmode) {
->                 priv->can.bittiming_const = &rcar_canfd_nom_bittiming_const;
->                 priv->can.data_bittiming_const =
-
-> @@ -1649,27 +1700,64 @@ static int rcar_canfd_probe(struct platform_device *pdev)
->         if (of_child && of_device_is_available(of_child))
->                 channels_mask |= BIT(1);        /* Channel 1 */
->
-> -       ch_irq = platform_get_irq(pdev, 0);
-> -       if (ch_irq < 0) {
-> -               err = ch_irq;
-> -               goto fail_dev;
-> -       }
-> +       if (chip_id == RENESAS_RCAR_GEN3) {
-> +               ch_irq = platform_get_irq_byname(pdev, "ch_int");
-
-platform_get_irq_byname_optional()?
-Unless you want to urge people to update their DTB.
-
-> +               if (ch_irq < 0) {
-> +                       /* For backward compatibility get irq by index */
-> +                       ch_irq = platform_get_irq(pdev, 0);
-> +                       if (ch_irq < 0)
-> +                               return ch_irq;
-> +               }
->
-> -       g_irq = platform_get_irq(pdev, 1);
-> -       if (g_irq < 0) {
-> -               err = g_irq;
-> -               goto fail_dev;
-> +               g_irq = platform_get_irq_byname(pdev, "g_int");
-
-Likewise,
-
-> +               if (g_irq < 0) {
-> +                       /* For backward compatibility get irq by index */
-> +                       g_irq = platform_get_irq(pdev, 1);
-> +                       if (g_irq < 0)
-> +                               return g_irq;
-> +               }
-> +       } else {
-> +               g_irq = platform_get_irq_byname(pdev, "g_error");
-> +               if (g_irq < 0)
-> +                       return g_irq;
-> +
-> +               g_rx_irq = platform_get_irq_byname(pdev, "g_rx_fifo");
-> +               if (g_rx_irq < 0)
-> +                       return g_rx_irq;
->         }
->
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v5.15.
 
 Gr{oetje,eeting}s,
 
