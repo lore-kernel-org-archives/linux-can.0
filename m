@@ -4,175 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1A78C636C9
-	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:23:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0208FC07E9B
+	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:24:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D6FE261175
-	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:23:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DD3F961175
+	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:24:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233653AbhGTJlU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 20 Jul 2021 05:41:20 -0400
-Received: from mail-vk1-f175.google.com ([209.85.221.175]:35390 "EHLO
-        mail-vk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236430AbhGTJk1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Jul 2021 05:40:27 -0400
-Received: by mail-vk1-f175.google.com with SMTP id d7so4457431vkf.2;
-        Tue, 20 Jul 2021 03:21:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t3ZjcsKyMCs8EAu6vLk3qNYhP9FzOKu10cixbnS0WFM=;
-        b=AnXhBPICi8rm1xs6EGPMwaWX4F69FqPJYh1Sd4F15v7LfaoMS70xV+xzeLNFRCeK8m
-         g80Fc5fHtrovjDV3DJ+VrlgD1+N+zZoTrHQKyM8bpa1SOojJYS7mRKV88EAtvyHQEtSn
-         7l8hOdA1qVom41ch03q6k6pEu56lKZtdYMKMZ3Eyf4RbFR90o0UqkgerZAjslsKKf2aT
-         f8Yvi6NXyJGSp/9mT8NLrGZZlddMuyJjKKt7ZQiDSmrqW0F1m+SxKjnbEgXe0XwW4sbC
-         RngCLdW/DIBeDH8lhkEgvfXkP4jTxJFQDyKFDmNqW8vsTS9kqx8N2OnErlPLElg+Yet9
-         VVSg==
-X-Gm-Message-State: AOAM532H2JeV2RsNJnTVPiB0+OxM1q6As5nviXUDloHEKliW6+b5uH5h
-        GiPOq7NE7vp/v/bDlmUEFWYYC84Nabo8Ww4u68S2UqhgLak=
-X-Google-Smtp-Source: ABdhPJzwKBBMCHAKd1HCgWQzlIm99pF6UYc3GUznLjiSmkL+xSsHOJZ2HsElwYwl6AdrLpRDjH62WLjjBgovo33fffo=
-X-Received: by 2002:a1f:2746:: with SMTP id n67mr25101438vkn.5.1626776464175;
- Tue, 20 Jul 2021 03:21:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210719143811.2135-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210719143811.2135-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 20 Jul 2021 12:20:53 +0200
-Message-ID: <CAMuHMdV1cLZkvyocVrAo6n6Y73QZBGOUMeJKqjk533gqk_RVLg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] dt-bindings: net: can: renesas,rcar-canfd:
- Document RZ/G2L SoC
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+        id S236961AbhGTJnX convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 20 Jul 2021 05:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237059AbhGTJmh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Jul 2021 05:42:37 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98B0C061574
+        for <linux-can@vger.kernel.org>; Tue, 20 Jul 2021 03:23:15 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1m5mu4-0001g8-Aw; Tue, 20 Jul 2021 12:23:08 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1m5mu3-0002S8-Sy; Tue, 20 Jul 2021 12:23:07 +0200
+Message-ID: <c8ec5fe0c8eb86898416edb7c68dcf0eeeaccf54.camel@pengutronix.de>
+Subject: Re: [PATCH v2 2/5] can: rcar_canfd: Add support for RZ/G2L family
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
         Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         Prabhakar <prabhakar.csengg@gmail.com>,
         Biju Das <biju.das.jz@bp.renesas.com>
+Date:   Tue, 20 Jul 2021 12:23:07 +0200
+In-Reply-To: <20210719143811.2135-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+         <20210719143811.2135-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Prabhakar,
-
-On Mon, Jul 19, 2021 at 4:39 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add CANFD binding documentation for Renesas RZ/G2L SoC.
->
+On Mon, 2021-07-19 at 15:38 +0100, Lad Prabhakar wrote:
+> CANFD block on RZ/G2L SoC is almost identical to one found on
+> R-Car Gen3 SoC's. On RZ/G2L SoC interrupt sources for each channel
+> are split into different sources and the IP doesn't divide (1/2)
+> CANFD clock within the IP.
+> 
+> This patch adds compatible string for RZ/G2L family and registers
+> the irq handlers required for CANFD operation. IRQ numbers are now
+> fetched based on names instead of indices. For backward compatibility
+> on non RZ/G2L SoC's we fallback reading based on indices.
+> 
 > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+>  drivers/net/can/rcar/rcar_canfd.c | 178 ++++++++++++++++++++++++------
+>  1 file changed, 147 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+> index 311e6ca3bdc4..d4affc002fb3 100644
+> --- a/drivers/net/can/rcar/rcar_canfd.c
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
+> @@ -37,9 +37,15 @@
+[...]
+> +	if (gpriv->chip_id == RENESAS_RZG2L) {
+> +		gpriv->rstc1 = devm_reset_control_get_exclusive_by_index(&pdev->dev, 0);
+> +		if (IS_ERR(gpriv->rstc1)) {
+> +			dev_err(&pdev->dev, "failed to get reset index 0\n");
 
-Thanks for your patch!
+Please consider requesting the reset controls by name instead of by
+index. See also my reply to the binding patch.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Just some bikeshedding on the exact naming below ;-)
-
-> --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> @@ -91,6 +92,59 @@ required:
->    - channel0
->    - channel1
->
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - renesas,rzg2l-canfd
-> +then:
-> +  properties:
-> +    interrupts:
-> +      items:
-> +        - description: CAN global error interrupt
-> +        - description: CAN receive FIFO interrupt
-> +        - description: CAN0 error interrupt
-> +        - description: CAN0 transmit interrupt
-> +        - description: CAN0 transmit/receive FIFO receive completion interrupt
-> +        - description: CAN1 error interrupt
-> +        - description: CAN1 transmit interrupt
-> +        - description: CAN1 transmit/receive FIFO receive completion interrupt
+> +			return PTR_ERR(gpriv->rstc1);
+> +		}
 > +
-> +    interrupt-names:
-> +      items:
-> +        - const: g_error
-> +        - const: g_rx_fifo
-> +        - const: can0_error
+> +		err = reset_control_reset(gpriv->rstc1);
+> +		if (err)
+> +			return err;
 
-s/error/err/?
+I suggest to wait until after all resource requests have succeeded
+before triggering the resets, i.e. first get all reset controls and
+clocks, etc., and only then trigger resets, enable clocks, and so on.
 
-> +        - const: can0_tx
-> +        - const: can0_tx_rx_fifo_receive_completion
-> +        - const: can1_error
-> +        - const: can1_tx
-> +        - const: can1_tx_rx_fifo_receive_completion
+That way there will be no spurious resets in case of probe deferrals.
 
-s/receive/rx/?
-
-Some are also a bit long to type.
-Perhaps use naming closer to the User's Manual?
-
-INTRCANGERR => g_err
-INTRCANGRECC => g_recc
-INTRCAN0ERR => ch0_err
-INTRCAN0REC => ch0_rec
-INTRCAN0TRX => ch0_trx
-INTRCAN1ERR => ch1_err
-INTRCAN1REC => ch1_rec
-INTRCAN1TRX => ch1_trx
-
-These do not have "_int" suffixes...
-
-> +
-> +    resets:
-> +      items:
-> +        - description: CANFD_RSTP_N
-> +        - description: CANFD_RSTC_N
-> +
-> +  required:
-> +    - interrupt-names
-> +else:
-> +  properties:
-> +    interrupts:
-> +      items:
-> +        - description: Channel interrupt
-> +        - description: Global interrupt
-> +
-> +    interrupt-names:
-> +      items:
-> +        - const: ch_int
-> +        - const: g_int
-
-... and these do have "_int" suffixes.
-
-> +
-> +    resets:
-> +      items:
-> +        - description: CANFD reset
-> +
->  unevaluatedProperties: false
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+regards
+Philipp
