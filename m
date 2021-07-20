@@ -2,91 +2,191 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E695C636C8
-	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0D81C07E95
+	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 14:43:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 134BF6120A
-	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 10:41:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C4A3861164
+	for <linux-can@archiver.kernel.org>; Tue, 20 Jul 2021 14:43:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbhGTKBF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 20 Jul 2021 06:01:05 -0400
-Received: from mail-vs1-f52.google.com ([209.85.217.52]:43676 "EHLO
-        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236747AbhGTJ6k (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Jul 2021 05:58:40 -0400
-Received: by mail-vs1-f52.google.com with SMTP id a66so10953111vsd.10;
-        Tue, 20 Jul 2021 03:39:18 -0700 (PDT)
+        id S240308AbhGTOBV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 20 Jul 2021 10:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240192AbhGTNvv (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Jul 2021 09:51:51 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C53C0613DF;
+        Tue, 20 Jul 2021 07:31:55 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id a16so32973852ybt.8;
+        Tue, 20 Jul 2021 07:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ed1Y4Okvup8k5YO3/YT98hea6PEaLzb9sqfNLq78+zk=;
+        b=Nsx7ArD4Rci3ff1BKmU44+pNxlsryzBPiY/+GGrWoPNgzQMO45zmwSS7EWmAuj6eJ7
+         PIzgY44+bOmKaNtipp5eOFBN51JrZpY1v5XTSxLlPFF6BtDHFD40Vwh4pGaUw54jLZe+
+         Z9xAQdxwAUZFCqrQf4QIwowjSg7duc1XKn31MzT6DOEJSDYAldiszwIw3jHL5v4xZrtj
+         Yd1gSUUvgW56j/idv2JoNsqQOmAMOrKuXE3bJq5b2RkZFkc6Ejs2qZJsUPumEMCgJfen
+         kVQoR7tZIQBFjhRVXBAzYvwrFSleTiHkP45mpzp+0pNfJXdv7vMqpHlIqU3ISpDCzpc8
+         Muvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CSO/icj4gzKZwgdBUMKYFWUyTK7NvNCfOpft3VKskeo=;
-        b=SM08hSXDDv8IqRMCcmrpiyln7SaM2x80Dx31aLUACyGNZ/djx9JXyTFFx4Ad37BlTK
-         P1SXbq4ns0CJOuJr8LUeoMS1PdKete/G3GqIlblv+TtbRZF57e61GeFRNXHzF+bYAg8f
-         ORAUGvV6pTTz6q/S+fCX8xbj5ZoQV/E/sLj6AQ3eodPo3uVaNpkI57Td5xPPDQIN3Xrz
-         gRjGByHKXZ80HAObrlOPVPeTLdNTh4ewaoPHqyckOJcu3A1X/qMAv8uKuVhrR6s2K+rL
-         s9s7BsBmmyzw2oQO4HbnxboLyrrwq2poKetWoCh6ZdqS5xLl8xAsfMgb3Lds0UT6daKU
-         181g==
-X-Gm-Message-State: AOAM531/ftU7XlFuYnYRCUffR0xI8n4ssYSU/BNtzpVUvHY6fj7ZyKIr
-        fpWksK77fEAbblueFTJa9ILiA1s7BMiV6qVZT8E=
-X-Google-Smtp-Source: ABdhPJzRtcoT6owd3KcZf2ajJSjrqyZ2Ebluu5PNlZ7DbDPKNJmE2zJ7L7+yaj41O8uhqDPC+tueEC0bnsNjhfTlvzY=
-X-Received: by 2002:a67:1542:: with SMTP id 63mr28883617vsv.40.1626777558174;
- Tue, 20 Jul 2021 03:39:18 -0700 (PDT)
+        bh=ed1Y4Okvup8k5YO3/YT98hea6PEaLzb9sqfNLq78+zk=;
+        b=VV31NDf80k+7zOZ8VQe6x3Lep29luZdyH5nO2JrOyc95DErTJ3UA6kSpxeqFJeEjXv
+         ZcAI3e9/8NIF4ucYK+1ohx8wf/vpBIUfP0eM+R0LqfkTY95JUra/AL47s4xRmJxjiwhk
+         SqHk6k+kn7xANd0ZIiwBNifX7x8fv7GEyQgPtaLIGNT+BsPS3ZJJVID9NYUl2XI68ntr
+         VKlzE+VvIL8uaQLeS+gpw0F92EzaTBcB2FKFZgc7UtFkBsK6KWdQUByy8h5u5ZY2Rl1K
+         nbREVNXYMNN3b0RFluBiuX9GdYNRTer7iCdVvw1n2U0Yco+7rJ7m45ey4if+AG8VdNBk
+         9KFQ==
+X-Gm-Message-State: AOAM5315EKYHEz5zqMllcsYclb0+T3kwD7L7Ruq6Pbh2prknq2yLdtcD
+        EWBkGeVzmEyCBwcdGDOGC8eCrHjii2KFU11le80=
+X-Google-Smtp-Source: ABdhPJwCf11Hq0YHSufyO0M1ZyMgmaPERHtjCoh9hI/YsFZqZm99LxXr558BP9gkYHMaHwj1/Wbfm3/vyZdZ6xp33OI=
+X-Received: by 2002:a25:7e86:: with SMTP id z128mr38612042ybc.222.1626791514490;
+ Tue, 20 Jul 2021 07:31:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210719143811.2135-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210719143811.2135-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 20 Jul 2021 12:39:07 +0200
-Message-ID: <CAMuHMdWkeCxyaSfD2aQ346DV0n1JsxxUCB1jBD92evBYVVLFNg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] dt-bindings: clk: r9a07g044-cpg: Add entry for
- P0_DIV2 core clock
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+References: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210719143811.2135-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <dc2de27b087c7030ea7e76dd31bb3d8bce18d97f.camel@pengutronix.de>
+In-Reply-To: <dc2de27b087c7030ea7e76dd31bb3d8bce18d97f.camel@pengutronix.de>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 20 Jul 2021 15:31:28 +0100
+Message-ID: <CA+V-a8v-54QXtcT-gPy5vj9drqZ6Ntr0-3j=42Dedi-kojNtXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] dt-bindings: net: can: renesas,rcar-canfd:
+ Document RZ/G2L SoC
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
         linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
         Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 4:39 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add P0_DIV2 core clock required for CANFD module. CANFD core clock is
-> sourced from P0_DIV2 referenced from HW manual Rev.0.50.
+Hi Philipp,
+
+Thank you for the review.
+
+On Tue, Jul 20, 2021 at 11:22 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Hi Lad,
+>
+> On Mon, 2021-07-19 at 15:38 +0100, Lad Prabhakar wrote:
+> > Add CANFD binding documentation for Renesas RZ/G2L SoC.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> >  .../bindings/net/can/renesas,rcar-canfd.yaml  | 66 +++++++++++++++++--
+> >  1 file changed, 60 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > index 0b33ba9ccb47..4fb6dd370904 100644
+> > --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > @@ -30,13 +30,15 @@ properties:
+> >                - renesas,r8a77995-canfd     # R-Car D3
+> >            - const: renesas,rcar-gen3-canfd # R-Car Gen3 and RZ/G2
+> >
+> > +      - items:
+> > +          - enum:
+> > +              - renesas,r9a07g044-canfd    # RZ/G2{L,LC}
+> > +          - const: renesas,rzg2l-canfd     # RZ/G2L family
+> > +
+> >    reg:
+> >      maxItems: 1
+> >
+> > -  interrupts:
+> > -    items:
+> > -      - description: Channel interrupt
+> > -      - description: Global interrupt
+> > +  interrupts: true
+> >
+> >    clocks:
+> >      maxItems: 3
+> > @@ -50,8 +52,7 @@ properties:
+> >    power-domains:
+> >      maxItems: 1
+> >
+> > -  resets:
+> > -    maxItems: 1
+> > +  resets: true
+> >
+> >    renesas,no-can-fd:
+> >      $ref: /schemas/types.yaml#/definitions/flag
+> > @@ -91,6 +92,59 @@ required:
+> >    - channel0
+> >    - channel1
+> >
+> > +if:
+> > +  properties:
+> > +    compatible:
+> > +      contains:
+> > +        enum:
+> > +          - renesas,rzg2l-canfd
+> > +then:
+> > +  properties:
+> > +    interrupts:
+> > +      items:
+> > +        - description: CAN global error interrupt
+> > +        - description: CAN receive FIFO interrupt
+> > +        - description: CAN0 error interrupt
+> > +        - description: CAN0 transmit interrupt
+> > +        - description: CAN0 transmit/receive FIFO receive completion interrupt
+> > +        - description: CAN1 error interrupt
+> > +        - description: CAN1 transmit interrupt
+> > +        - description: CAN1 transmit/receive FIFO receive completion interrupt
+> > +
+> > +    interrupt-names:
+> > +      items:
+> > +        - const: g_error
+> > +        - const: g_rx_fifo
+> > +        - const: can0_error
+> > +        - const: can0_tx
+> > +        - const: can0_tx_rx_fifo_receive_completion
+> > +        - const: can1_error
+> > +        - const: can1_tx
+> > +        - const: can1_tx_rx_fifo_receive_completion
+> > +
+> > +    resets:
+> > +      items:
+> > +        - description: CANFD_RSTP_N
+> > +        - description: CANFD_RSTC_N
+>
+> Do you know what the "P" and "C" stands for? It would be nice if the
+> description could tell us what the reset lines are used for.
+>
+unfortunately the HW manual does not mention  anything about "P" and "C" :(
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-r9a07g044-dt-binding-defs, to be shared by
-renesas-clk-for-v5.15 and renesas-devel for v5.15.
+> I would prefer if you used these names (or shortened versions, for
+> example "rstp_n", "rstc_n") as "reset-names" and let the driver
+> reference the resets by name instead of by index.
+>
+OK will do that and maxItems:2 for resets.
 
-Gr{oetje,eeting}s,
+@Geert, for R-Car Gen3 does "canfd_rst" (as it's a module reset)
+sounds good for reset-names? Or do you have any other suggestions?
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Cheers,
+Prabhakar
