@@ -7,47 +7,48 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D91E6C432BE
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:12:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 995DCC4320E
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:12:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C473F60F44
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:12:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 83D076008E
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:12:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbhGZNb4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Jul 2021 09:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S234355AbhGZNb6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 26 Jul 2021 09:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234377AbhGZNbi (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:31:38 -0400
+        with ESMTP id S234608AbhGZNbw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:31:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9884FC0613D5
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF95C0617BC
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:09 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1m81Kv-00012j-1I
-        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:05 +0200
+        id 1m81Ky-000194-4Z
+        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:08 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 345406581BB
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:11:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id B33AA6581CF
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:11:57 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8118B658167;
-        Mon, 26 Jul 2021 14:11:47 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1D223658173;
+        Mon, 26 Jul 2021 14:11:48 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8c04a95c;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e08b5e1f;
         Mon, 26 Jul 2021 14:11:45 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH net-next 08/46] can: rx-offload: can_rx_offload_irq_finish(): directly call napi_schedule()
-Date:   Mon, 26 Jul 2021 16:11:06 +0200
-Message-Id: <20210726141144.862529-9-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 11/46] can: netlink: clear data_bittiming if FD is turned off
+Date:   Mon, 26 Jul 2021 16:11:09 +0200
+Message-Id: <20210726141144.862529-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210726141144.862529-1-mkl@pengutronix.de>
 References: <20210726141144.862529-1-mkl@pengutronix.de>
@@ -61,47 +62,80 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Instead of calling can_rx_offload_schedule() call napi_schedule()
-directly. As this was the last use of can_rx_offload_schedule() remove
-this helper function.
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Link: https://lore.kernel.org/r/20210724204745.736053-3-mkl@pengutronix.de
-Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
+When the FD is turned off through the netlink interface, the data bit
+timing values still remain in data_bittiming and are displayed despite
+of the feature being disabled.
+
+Example:
+
+| $ ip link set can0 type can bitrate 500000 dbitrate 2000000 fd on
+| $ ip --details link show can0
+| 1:  can0: <NOARP,ECHO> mtu 72 qdisc pfifo_fast state DOWN mode DEFAULT group default qlen 10
+|     link/can  promiscuity 0 minmtu 0 maxmtu 0
+|     can <FD> state STOPPED restart-ms 0
+| 	  bitrate 500000 sample-point 0.875
+| 	  tq 12 prop-seg 69 phase-seg1 70 phase-seg2 20 sjw 1
+| 	  ES582.1/ES584.1: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 brp-inc 1
+| 	  dbitrate 2000000 dsample-point 0.750
+| 	  dtq 12 dprop-seg 14 dphase-seg1 15 dphase-seg2 10 dsjw 1
+| 	  ES582.1/ES584.1: dtseg1 2..32 dtseg2 1..16 dsjw 1..8 dbrp 1..32 dbrp-inc 1
+| 	  clock 80000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+|
+| $ ip link set can0 type can bitrate 500000 fd off
+| $ ip --details link show can0
+| 1:  can0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN mode DEFAULT group default qlen 10
+|     link/can  promiscuity 0 minmtu 0 maxmtu 0
+|     can state STOPPED restart-ms 0
+| 	  bitrate 500000 sample-point 0.875
+| 	  tq 12 prop-seg 69 phase-seg1 70 phase-seg2 20 sjw 1
+| 	  ES582.1/ES584.1: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 brp-inc 1
+| 	  dbitrate 2000000 dsample-point 0.750
+| 	  dtq 12 dprop-seg 14 dphase-seg1 15 dphase-seg2 10 dsjw 1
+| 	  ES582.1/ES584.1: dtseg1 2..32 dtseg2 1..16 dsjw 1..8 dbrp 1..32 dbrp-inc 1
+| 	  clock 80000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+
+Remark: once FD is turned off, it is not possible to turn fd back on
+and reuse the previously input data bit timing values:
+
+| $ ip link set can0 type can bitrate 500000 fd on
+| RTNETLINK answers: Operation not supported
+
+This means that the user will need to re-configure the data bit timing
+in order to turn fd on again.
+
+Because old data bit timing values cannot be reused, this patch clears
+priv->data_bit timing whenever FD is turned off. This way, the data
+bit timing variables are not displayed anymore.
+
+Link: https://lore.kernel.org/r/20210618081904.141114-2-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/rx-offload.c | 2 +-
- include/linux/can/rx-offload.h   | 5 -----
- 2 files changed, 1 insertion(+), 6 deletions(-)
+ drivers/net/can/dev/netlink.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
-index d0bdb6db3a57..82ade3aa5c13 100644
---- a/drivers/net/can/dev/rx-offload.c
-+++ b/drivers/net/can/dev/rx-offload.c
-@@ -295,7 +295,7 @@ void can_rx_offload_irq_finish(struct can_rx_offload *offload)
- 		netdev_dbg(offload->dev, "%s: queue_len=%d\n",
- 			   __func__, queue_len);
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index e38c2566aff4..b567fd628c17 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -132,10 +132,13 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 		priv->ctrlmode |= maskedflags;
  
--	can_rx_offload_schedule(offload);
-+	napi_schedule(&offload->napi);
- }
- EXPORT_SYMBOL_GPL(can_rx_offload_irq_finish);
+ 		/* CAN_CTRLMODE_FD can only be set when driver supports FD */
+-		if (priv->ctrlmode & CAN_CTRLMODE_FD)
++		if (priv->ctrlmode & CAN_CTRLMODE_FD) {
+ 			dev->mtu = CANFD_MTU;
+-		else
++		} else {
+ 			dev->mtu = CAN_MTU;
++			memset(&priv->data_bittiming, 0,
++			       sizeof(priv->data_bittiming));
++		}
+ 	}
  
-diff --git a/include/linux/can/rx-offload.h b/include/linux/can/rx-offload.h
-index d71c938e17d0..516f64df0ebc 100644
---- a/include/linux/can/rx-offload.h
-+++ b/include/linux/can/rx-offload.h
-@@ -53,11 +53,6 @@ void can_rx_offload_irq_finish(struct can_rx_offload *offload);
- void can_rx_offload_del(struct can_rx_offload *offload);
- void can_rx_offload_enable(struct can_rx_offload *offload);
- 
--static inline void can_rx_offload_schedule(struct can_rx_offload *offload)
--{
--	napi_schedule(&offload->napi);
--}
--
- static inline void can_rx_offload_disable(struct can_rx_offload *offload)
- {
- 	napi_disable(&offload->napi);
+ 	if (data[IFLA_CAN_RESTART_MS]) {
 -- 
 2.30.2
 
