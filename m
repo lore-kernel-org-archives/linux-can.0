@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 975DDC4338F
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5CC7C432BE
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 80A4F60560
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8E48760F5A
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234460AbhGZNds (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S234731AbhGZNds (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 26 Jul 2021 09:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbhGZNd3 (ORCPT
+        with ESMTP id S234799AbhGZNd3 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:33:29 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5D0C0619E1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFC3C0619DF
         for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:45 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1m81LY-0002Mf-4I
+        id 1m81LY-0002Mb-0l
         for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:44 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 53FC26582CE
+        by bjornoya.blackshift.org (Postfix) with SMTP id D014E6582CC
         for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:25 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3188E658225;
-        Mon, 26 Jul 2021 14:12:07 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4C2B0658219;
+        Mon, 26 Jul 2021 14:12:06 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e9c93aad;
-        Mon, 26 Jul 2021 14:11:47 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cfe6ba4d;
+        Mon, 26 Jul 2021 14:11:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 42/46] can: etas_es58x: use sizeof and sizeof_field macros instead of constant values
-Date:   Mon, 26 Jul 2021 16:11:40 +0200
-Message-Id: <20210726141144.862529-43-mkl@pengutronix.de>
+Subject: [PATCH net-next 38/46] can: etas_es58x: fix three typos in author name and documentation
+Date:   Mon, 26 Jul 2021 16:11:36 +0200
+Message-Id: <20210726141144.862529-39-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210726141144.862529-1-mkl@pengutronix.de>
 References: <20210726141144.862529-1-mkl@pengutronix.de>
@@ -64,43 +64,91 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Replace two constant values by a call to sizeof{,_field} on the
-relevant field to make the logic easier to understand.
+Change the author name from "lastname firstname" to "firstname
+lastname".
 
-Link: https://lore.kernel.org/r/20210628155420.1176217-6-mailhol.vincent@wanadoo.fr
+Fix a typo in a variable name in the documentation of struct
+es58x_parameters::fifo_mask.
+
+Fix a typo in the title of the datasheet (E701 -> E70) and re-indent
+the comments.
+
+Link: https://lore.kernel.org/r/20210628155420.1176217-2-mailhol.vincent@wanadoo.fr
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es581_4.c    | 2 +-
- drivers/net/can/usb/etas_es58x/es58x_core.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/etas_es58x/es58x_core.c |  2 +-
+ drivers/net/can/usb/etas_es58x/es58x_core.h |  2 +-
+ drivers/net/can/usb/etas_es58x/es58x_fd.c   | 16 ++++++++--------
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es581_4.c b/drivers/net/can/usb/etas_es58x/es581_4.c
-index 1985f772fc3c..88dbfe41ba85 100644
---- a/drivers/net/can/usb/etas_es58x/es581_4.c
-+++ b/drivers/net/can/usb/etas_es58x/es581_4.c
-@@ -355,7 +355,7 @@ static int es581_4_tx_can_msg(struct es58x_priv *priv,
- 		return -EMSGSIZE;
- 
- 	if (priv->tx_can_msg_cnt == 0) {
--		msg_len = 1; /* struct es581_4_bulk_tx_can_msg:num_can_msg */
-+		msg_len = sizeof(es581_4_urb_cmd->bulk_tx_can_msg.num_can_msg);
- 		es581_4_fill_urb_header(urb_cmd, ES581_4_CAN_COMMAND_TYPE,
- 					ES581_4_CMD_ID_TX_MSG,
- 					priv->channel_idx, msg_len);
 diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index 126e4d57332e..96a13c770e4a 100644
+index 8e9102482c52..4758f793627a 100644
 --- a/drivers/net/can/usb/etas_es58x/es58x_core.c
 +++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -70,7 +70,7 @@ MODULE_DEVICE_TABLE(usb, es58x_id_table);
-  * bytes (the start of frame) are skipped and the CRC calculation
-  * starts on the third byte.
-  */
--#define ES58X_CRC_CALC_OFFSET 2
-+#define ES58X_CRC_CALC_OFFSET sizeof_field(union es58x_urb_cmd, sof)
+@@ -19,7 +19,7 @@
+ #include "es58x_core.h"
  
- /**
-  * es58x_calculate_crc() - Compute the crc16 of a given URB.
+ #define DRV_VERSION "1.00"
+-MODULE_AUTHOR("Mailhol Vincent <mailhol.vincent@wanadoo.fr>");
++MODULE_AUTHOR("Vincent Mailhol <mailhol.vincent@wanadoo.fr>");
+ MODULE_AUTHOR("Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>");
+ MODULE_DESCRIPTION("Socket CAN driver for ETAS ES58X USB adapters");
+ MODULE_VERSION(DRV_VERSION);
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.h b/drivers/net/can/usb/etas_es58x/es58x_core.h
+index fcf219e727bf..826a15871573 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.h
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.h
+@@ -287,7 +287,7 @@ struct es58x_priv {
+  * @rx_urb_cmd_max_len: Maximum length of a RX URB command.
+  * @fifo_mask: Bit mask to quickly convert the tx_tail and tx_head
+  *	field of the struct es58x_priv into echo_skb
+- *	indexes. Properties: @fifo_mask = echos_skb_max - 1 where
++ *	indexes. Properties: @fifo_mask = echo_skb_max - 1 where
+  *	echo_skb_max must be a power of two. Also, echo_skb_max must
+  *	not exceed the maximum size of the device internal TX FIFO
+  *	length. This parameter is used to control the network queue
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.c b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+index 1a2779d383a4..e8a77d136165 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_fd.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+@@ -463,9 +463,9 @@ static int es58x_fd_get_timestamp(struct es58x_device *es58x_dev)
+ }
+ 
+ /* Nominal bittiming constants for ES582.1 and ES584.1 as specified in
+- * the microcontroller datasheet: "SAM E701/S70/V70/V71 Family"
+- * section 49.6.8 "MCAN Nominal Bit Timing and Prescaler Register"
+- * from Microchip.
++ * the microcontroller datasheet: "SAM E70/S70/V70/V71 Family" section
++ * 49.6.8 "MCAN Nominal Bit Timing and Prescaler Register" from
++ * Microchip.
+  *
+  * The values from the specification are the hardware register
+  * values. To convert them to the functional values, all ranges were
+@@ -484,8 +484,8 @@ static const struct can_bittiming_const es58x_fd_nom_bittiming_const = {
+ };
+ 
+ /* Data bittiming constants for ES582.1 and ES584.1 as specified in
+- * the microcontroller datasheet: "SAM E701/S70/V70/V71 Family"
+- * section 49.6.4 "MCAN Data Bit Timing and Prescaler Register" from
++ * the microcontroller datasheet: "SAM E70/S70/V70/V71 Family" section
++ * 49.6.4 "MCAN Data Bit Timing and Prescaler Register" from
+  * Microchip.
+  */
+ static const struct can_bittiming_const es58x_fd_data_bittiming_const = {
+@@ -501,9 +501,9 @@ static const struct can_bittiming_const es58x_fd_data_bittiming_const = {
+ };
+ 
+ /* Transmission Delay Compensation constants for ES582.1 and ES584.1
+- * as specified in the microcontroller datasheet: "SAM
+- * E701/S70/V70/V71 Family" section 49.6.15 "MCAN Transmitter Delay
+- * Compensation Register" from Microchip.
++ * as specified in the microcontroller datasheet: "SAM E70/S70/V70/V71
++ * Family" section 49.6.15 "MCAN Transmitter Delay Compensation
++ * Register" from Microchip.
+  */
+ static const struct can_tdc_const es58x_tdc_const = {
+ 	.tdcv_max = 0, /* Manual mode not supported. */
 -- 
 2.30.2
 
