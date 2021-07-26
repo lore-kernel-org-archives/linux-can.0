@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92AA9C43214
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C99CEC4338F
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7E0586008E
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B2D8460F44
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234486AbhGZNcc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Jul 2021 09:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
+        id S234092AbhGZNc4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 26 Jul 2021 09:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234608AbhGZNcE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:32:04 -0400
+        with ESMTP id S234776AbhGZNcW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:32:22 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E584DC061367
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5533DC061299
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:23 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1m81L6-0001M7-7s
-        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:16 +0200
+        id 1m81LB-0001dI-Qd
+        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:21 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8EA20658216
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:05 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id B6703658223
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:06 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 93EEC658192;
-        Mon, 26 Jul 2021 14:11:51 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 055446581AE;
+        Mon, 26 Jul 2021 14:11:53 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c65624f8;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bf57c323;
         Mon, 26 Jul 2021 14:11:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Yang Yingliang <yangyingliang@huawei.com>,
+        kernel@pengutronix.de, Zhen Lei <thunder.leizhen@huawei.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 15/46] can: m_can: use devm_platform_ioremap_resource_byname
-Date:   Mon, 26 Jul 2021 16:11:13 +0200
-Message-Id: <20210726141144.862529-16-mkl@pengutronix.de>
+Subject: [PATCH net-next 20/46] can: esd_usb2: use DEVICE_ATTR_RO() helper macro
+Date:   Mon, 26 Jul 2021 16:11:18 +0200
+Message-Id: <20210726141144.862529-21-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210726141144.862529-1-mkl@pengutronix.de>
 References: <20210726141144.862529-1-mkl@pengutronix.de>
@@ -61,33 +61,64 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Use the devm_platform_ioremap_resource_byname() helper instead of
-calling platform_get_resource_byname() and devm_ioremap_resource()
-separately.
+Use DEVICE_ATTR_RO() helper macro instead of plain DEVICE_ATTR(), which
+makes the code a bit shorter and easier to read.
 
-Link: https://lore.kernel.org/r/20210603073441.2983497-1-yangyingliang@huawei.com
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210603110902.11930-1-thunder.leizhen@huawei.com
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can_platform.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/can/usb/esd_usb2.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-index 8b5819cd4b80..a28c84aa8fa8 100644
---- a/drivers/net/can/m_can/m_can_platform.c
-+++ b/drivers/net/can/m_can/m_can_platform.c
-@@ -82,8 +82,7 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto probe_fail;
+diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
+index 65b58f8fc328..60f3e0ca080a 100644
+--- a/drivers/net/can/usb/esd_usb2.c
++++ b/drivers/net/can/usb/esd_usb2.c
+@@ -474,7 +474,7 @@ static void esd_usb2_write_bulk_callback(struct urb *urb)
+ 	netif_trans_update(netdev);
+ }
  
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "m_can");
--	addr = devm_ioremap_resource(&pdev->dev, res);
-+	addr = devm_platform_ioremap_resource_byname(pdev, "m_can");
- 	irq = platform_get_irq_byname(pdev, "int0");
- 	if (IS_ERR(addr) || irq < 0) {
- 		ret = -EINVAL;
+-static ssize_t show_firmware(struct device *d,
++static ssize_t firmware_show(struct device *d,
+ 			     struct device_attribute *attr, char *buf)
+ {
+ 	struct usb_interface *intf = to_usb_interface(d);
+@@ -485,9 +485,9 @@ static ssize_t show_firmware(struct device *d,
+ 		       (dev->version >> 8) & 0xf,
+ 		       dev->version & 0xff);
+ }
+-static DEVICE_ATTR(firmware, 0444, show_firmware, NULL);
++static DEVICE_ATTR_RO(firmware);
+ 
+-static ssize_t show_hardware(struct device *d,
++static ssize_t hardware_show(struct device *d,
+ 			     struct device_attribute *attr, char *buf)
+ {
+ 	struct usb_interface *intf = to_usb_interface(d);
+@@ -498,9 +498,9 @@ static ssize_t show_hardware(struct device *d,
+ 		       (dev->version >> 24) & 0xf,
+ 		       (dev->version >> 16) & 0xff);
+ }
+-static DEVICE_ATTR(hardware, 0444, show_hardware, NULL);
++static DEVICE_ATTR_RO(hardware);
+ 
+-static ssize_t show_nets(struct device *d,
++static ssize_t nets_show(struct device *d,
+ 			 struct device_attribute *attr, char *buf)
+ {
+ 	struct usb_interface *intf = to_usb_interface(d);
+@@ -508,7 +508,7 @@ static ssize_t show_nets(struct device *d,
+ 
+ 	return sprintf(buf, "%d", dev->net_count);
+ }
+-static DEVICE_ATTR(nets, 0444, show_nets, NULL);
++static DEVICE_ATTR_RO(nets);
+ 
+ static int esd_usb2_send_msg(struct esd_usb2 *dev, struct esd_usb2_msg *msg)
+ {
 -- 
 2.30.2
 
