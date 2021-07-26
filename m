@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06799C43216
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B213C4320A
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E41A260F44
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8127260560
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbhGZNd0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Jul 2021 09:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
+        id S234406AbhGZNdf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 26 Jul 2021 09:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234599AbhGZNdP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:33:15 -0400
+        with ESMTP id S234499AbhGZNdY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:33:24 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBC5C0619C5
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6ACC0619D9
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:45 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1m81LS-0002Bk-FH
-        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:38 +0200
+        id 1m81LX-0002MN-HI
+        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:43 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 01C7B6582A1
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:21 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C713F6582C6
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:24 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 078B66581E8;
-        Mon, 26 Jul 2021 14:11:59 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 53B2465821A;
+        Mon, 26 Jul 2021 14:12:06 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1dc6051d;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d5624d68;
         Mon, 26 Jul 2021 14:11:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Peng Li <lipeng321@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 29/46] net: at91_can: remove redundant space
-Date:   Mon, 26 Jul 2021 16:11:27 +0200
-Message-Id: <20210726141144.862529-30-mkl@pengutronix.de>
+Subject: [PATCH net-next 39/46] can: etas_es58x: use error pointer during device probing
+Date:   Mon, 26 Jul 2021 16:11:37 +0200
+Message-Id: <20210726141144.862529-40-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210726141144.862529-1-mkl@pengutronix.de>
 References: <20210726141144.862529-1-mkl@pengutronix.de>
@@ -62,31 +62,86 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-According to the chackpatch.pl, no space before tabs.
+Make es58x_init_es58x_dev return a pointer to the allocated structure
+instead of returning an integer. Errors are handled through the helper
+function ERR_PTR and IS_ERR.
 
-Link: https://lore.kernel.org/r/1624096589-13452-8-git-send-email-huangguangbin2@huawei.com
-Signed-off-by: Peng Li <lipeng321@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+This slightly simplifies the code.
+
+Link: https://lore.kernel.org/r/20210628155420.1176217-3-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 23 +++++++++------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 87c2555933e4..3709152e9695 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -163,7 +163,7 @@ static const struct can_bittiming_const at91_bittiming_const = {
- 	.tseg2_min	= 2,
- 	.tseg2_max	= 8,
- 	.sjw_max	= 4,
--	.brp_min 	= 2,
-+	.brp_min	= 2,
- 	.brp_max	= 128,
- 	.brp_inc	= 1,
- };
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+index 4758f793627a..7650e349cae1 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+@@ -2152,14 +2152,13 @@ static int es58x_get_product_info(struct es58x_device *es58x_dev)
+ /**
+  * es58x_init_es58x_dev() - Initialize the ES58X device.
+  * @intf: USB interface.
+- * @p_es58x_dev: pointer to the address of the ES58X device.
+  * @driver_info: Quirks of the device.
+  *
+- * Return: zero on success, errno when any error occurs.
++ * Return: pointer to an ES58X device on success, error pointer when
++ *	any error occurs.
+  */
+-static int es58x_init_es58x_dev(struct usb_interface *intf,
+-				struct es58x_device **p_es58x_dev,
+-				kernel_ulong_t driver_info)
++static struct es58x_device *es58x_init_es58x_dev(struct usb_interface *intf,
++						 kernel_ulong_t driver_info)
+ {
+ 	struct device *dev = &intf->dev;
+ 	struct es58x_device *es58x_dev;
+@@ -2176,7 +2175,7 @@ static int es58x_init_es58x_dev(struct usb_interface *intf,
+ 	ret = usb_find_common_endpoints(intf->cur_altsetting, &ep_in, &ep_out,
+ 					NULL, NULL);
+ 	if (ret)
+-		return ret;
++		return ERR_PTR(ret);
+ 
+ 	if (driver_info & ES58X_FD_FAMILY) {
+ 		param = &es58x_fd_param;
+@@ -2188,7 +2187,7 @@ static int es58x_init_es58x_dev(struct usb_interface *intf,
+ 
+ 	es58x_dev = kzalloc(es58x_sizeof_es58x_device(param), GFP_KERNEL);
+ 	if (!es58x_dev)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	es58x_dev->param = param;
+ 	es58x_dev->ops = ops;
+@@ -2213,9 +2212,7 @@ static int es58x_init_es58x_dev(struct usb_interface *intf,
+ 					     ep_out->bEndpointAddress);
+ 	es58x_dev->rx_max_packet_size = le16_to_cpu(ep_in->wMaxPacketSize);
+ 
+-	*p_es58x_dev = es58x_dev;
+-
+-	return 0;
++	return es58x_dev;
+ }
+ 
+ /**
+@@ -2232,9 +2229,9 @@ static int es58x_probe(struct usb_interface *intf,
+ 	struct es58x_device *es58x_dev;
+ 	int ch_idx, ret;
+ 
+-	ret = es58x_init_es58x_dev(intf, &es58x_dev, id->driver_info);
+-	if (ret)
+-		return ret;
++	es58x_dev = es58x_init_es58x_dev(intf, id->driver_info);
++	if (IS_ERR(es58x_dev))
++		return PTR_ERR(es58x_dev);
+ 
+ 	ret = es58x_get_product_info(es58x_dev);
+ 	if (ret)
 -- 
 2.30.2
 
