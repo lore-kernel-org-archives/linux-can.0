@@ -5,50 +5,50 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85F04C4320E
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3751AC43216
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6C6DD60F55
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 23F5360F44
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:14:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbhGZNd5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Jul 2021 09:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
+        id S234120AbhGZNeB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 26 Jul 2021 09:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbhGZNda (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:33:30 -0400
+        with ESMTP id S234801AbhGZNd3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:33:29 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEB5C0619E5
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A523BC0619DE
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:45 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1m81LZ-0002Pj-RJ
-        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:45 +0200
+        id 1m81LY-0002MM-1R
+        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:44 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 41E9F6582D7
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:26 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 88D306582C5
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:24 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 36D7E658228;
-        Mon, 26 Jul 2021 14:12:07 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C6C0C658206;
+        Mon, 26 Jul 2021 14:12:04 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 279693ad;
-        Mon, 26 Jul 2021 14:11:47 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9ca0619f;
+        Mon, 26 Jul 2021 14:11:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 41/46] can: etas_es58x: add es58x_free_netdevs() to factorize code
-Date:   Mon, 26 Jul 2021 16:11:39 +0200
-Message-Id: <20210726141144.862529-42-mkl@pengutronix.de>
+Subject: [PATCH net-next 34/46] can: peak_usb: pcan_usb_get_device_id(): read value only in case of success
+Date:   Mon, 26 Jul 2021 16:11:32 +0200
+Message-Id: <20210726141144.862529-35-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210726141144.862529-1-mkl@pengutronix.de>
 References: <20210726141144.862529-1-mkl@pengutronix.de>
@@ -62,94 +62,30 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Both es58x_probe() and es58x_disconnect() use a similar code snippet
-to release the netdev resources. Factorize it in an helper function
-named es58x_free_netdevs().
+In case of error, reading value from response argument is useless.
 
-Link: https://lore.kernel.org/r/20210628155420.1176217-5-mailhol.vincent@wanadoo.fr
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/r/20210625130931.27438-2-s.grosjean@peak-system.com
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_core.c | 46 +++++++++++----------
- 1 file changed, 24 insertions(+), 22 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index d2bb1b56f962..126e4d57332e 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -2107,6 +2107,25 @@ static int es58x_init_netdev(struct es58x_device *es58x_dev, int channel_idx)
- 	return ret;
- }
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 1d6f77252f01..9f3e16684e28 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -384,7 +384,8 @@ static int pcan_usb_get_device_id(struct peak_usb_device *dev, u32 *device_id)
+ 	if (err)
+ 		netdev_err(dev->netdev, "getting device id failure: %d\n", err);
  
-+/**
-+ * es58x_free_netdevs() - Release all network resources of the device.
-+ * @es58x_dev: ES58X device.
-+ */
-+static void es58x_free_netdevs(struct es58x_device *es58x_dev)
-+{
-+	int i;
-+
-+	for (i = 0; i < es58x_dev->num_can_ch; i++) {
-+		struct net_device *netdev = es58x_dev->netdev[i];
-+
-+		if (!netdev)
-+			continue;
-+		unregister_candev(netdev);
-+		es58x_dev->netdev[i] = NULL;
-+		free_candev(netdev);
-+	}
-+}
-+
- /**
-  * es58x_get_product_info() - Get the product information and print them.
-  * @es58x_dev: ES58X device.
-@@ -2240,18 +2259,11 @@ static int es58x_probe(struct usb_interface *intf,
+-	*device_id = args[0];
++	else
++		*device_id = args[0];
  
- 	for (ch_idx = 0; ch_idx < es58x_dev->num_can_ch; ch_idx++) {
- 		ret = es58x_init_netdev(es58x_dev, ch_idx);
--		if (ret)
--			goto cleanup_candev;
--	}
--
--	return ret;
--
-- cleanup_candev:
--	for (ch_idx = 0; ch_idx < es58x_dev->num_can_ch; ch_idx++)
--		if (es58x_dev->netdev[ch_idx]) {
--			unregister_candev(es58x_dev->netdev[ch_idx]);
--			free_candev(es58x_dev->netdev[ch_idx]);
-+		if (ret) {
-+			es58x_free_netdevs(es58x_dev);
-+			return ret;
- 		}
-+	}
- 
- 	return ret;
- }
-@@ -2266,21 +2278,11 @@ static int es58x_probe(struct usb_interface *intf,
- static void es58x_disconnect(struct usb_interface *intf)
- {
- 	struct es58x_device *es58x_dev = usb_get_intfdata(intf);
--	struct net_device *netdev;
--	int i;
- 
- 	dev_info(&intf->dev, "Disconnecting %s %s\n",
- 		 es58x_dev->udev->manufacturer, es58x_dev->udev->product);
- 
--	for (i = 0; i < es58x_dev->num_can_ch; i++) {
--		netdev = es58x_dev->netdev[i];
--		if (!netdev)
--			continue;
--		unregister_candev(netdev);
--		es58x_dev->netdev[i] = NULL;
--		free_candev(netdev);
--	}
--
-+	es58x_free_netdevs(es58x_dev);
- 	es58x_free_urbs(es58x_dev);
- 	usb_set_intfdata(intf, NULL);
+ 	return err;
  }
 -- 
 2.30.2
