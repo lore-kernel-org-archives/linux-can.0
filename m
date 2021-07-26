@@ -5,50 +5,49 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40907C432BE
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35790C4320A
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2C60460F44
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 207696008E
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:13:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234343AbhGZNdB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Jul 2021 09:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
+        id S234567AbhGZNdP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 26 Jul 2021 09:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234661AbhGZNcW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:32:22 -0400
+        with ESMTP id S233526AbhGZNcy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:32:54 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F65C061372
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AF0C0617A5
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:26 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1m81LB-0001dD-Cb
-        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:21 +0200
+        id 1m81LF-0001ix-Bo
+        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:25 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B43C3658221
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:06 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 1983465823E
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:08 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 86F6665819E;
-        Mon, 26 Jul 2021 14:11:52 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id EE2136581B8;
+        Mon, 26 Jul 2021 14:11:54 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5d658279;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 90596ae0;
         Mon, 26 Jul 2021 14:11:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        kernel@pengutronix.de, Zhen Lei <thunder.leizhen@huawei.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 17/46] can: mcp251xfd: mcp251xfd_probe(): try to get crystal clock rate from property
-Date:   Mon, 26 Jul 2021 16:11:15 +0200
-Message-Id: <20210726141144.862529-18-mkl@pengutronix.de>
+Subject: [PATCH net-next 22/46] can: at91_can: use DEVICE_ATTR_RW() helper macro
+Date:   Mon, 26 Jul 2021 16:11:20 +0200
+Message-Id: <20210726141144.862529-23-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210726141144.862529-1-mkl@pengutronix.de>
 References: <20210726141144.862529-1-mkl@pengutronix.de>
@@ -62,55 +61,53 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-In some configurations, mainly ACPI-based, the clock frequency of the
-device is supplied by very well established 'clock-frequency'
-property. Hence, try to get it from the property at last if no other
-providers are available.
+Use DEVICE_ATTR_RW() helper macro instead of plain DEVICE_ATTR(), which
+makes the code a bit shorter and easier to read.
 
-Link: https://lore.kernel.org/r/20210531084444.1785397-1-mkl@pengutronix.de
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210603100233.11877-1-thunder.leizhen@huawei.com
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/net/can/at91_can.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 6962ab2749df..1544e19b60b9 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2860,7 +2860,7 @@ static int mcp251xfd_probe(struct spi_device *spi)
- 	struct gpio_desc *rx_int;
- 	struct regulator *reg_vdd, *reg_xceiver;
- 	struct clk *clk;
--	u32 freq;
-+	u32 freq = 0;
- 	int err;
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 04d0bb3ffe89..ca736b26e218 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -1176,8 +1176,8 @@ static const struct net_device_ops at91_netdev_ops = {
+ 	.ndo_change_mtu = can_change_mtu,
+ };
  
- 	if (!spi->irq)
-@@ -2887,11 +2887,19 @@ static int mcp251xfd_probe(struct spi_device *spi)
- 		return dev_err_probe(&spi->dev, PTR_ERR(reg_xceiver),
- 				     "Failed to get Transceiver regulator!\n");
+-static ssize_t at91_sysfs_show_mb0_id(struct device *dev,
+-		struct device_attribute *attr, char *buf)
++static ssize_t mb0_id_show(struct device *dev,
++			   struct device_attribute *attr, char *buf)
+ {
+ 	struct at91_priv *priv = netdev_priv(to_net_dev(dev));
  
--	clk = devm_clk_get(&spi->dev, NULL);
-+	clk = devm_clk_get_optional(&spi->dev, NULL);
- 	if (IS_ERR(clk))
- 		return dev_err_probe(&spi->dev, PTR_ERR(clk),
- 				     "Failed to get Oscillator (clock)!\n");
--	freq = clk_get_rate(clk);
-+	if (clk) {
-+		freq = clk_get_rate(clk);
-+	} else {
-+		err = device_property_read_u32(&spi->dev, "clock-frequency",
-+					       &freq);
-+		if (err)
-+			return dev_err_probe(&spi->dev, err,
-+					     "Failed to get clock-frequency!\n");
-+	}
+@@ -1187,8 +1187,8 @@ static ssize_t at91_sysfs_show_mb0_id(struct device *dev,
+ 		return snprintf(buf, PAGE_SIZE, "0x%03x\n", priv->mb0_id);
+ }
  
- 	/* Sanity check */
- 	if (freq < MCP251XFD_SYSCLOCK_HZ_MIN ||
+-static ssize_t at91_sysfs_set_mb0_id(struct device *dev,
+-		struct device_attribute *attr, const char *buf, size_t count)
++static ssize_t mb0_id_store(struct device *dev,
++			    struct device_attribute *attr, const char *buf, size_t count)
+ {
+ 	struct net_device *ndev = to_net_dev(dev);
+ 	struct at91_priv *priv = netdev_priv(ndev);
+@@ -1222,7 +1222,7 @@ static ssize_t at91_sysfs_set_mb0_id(struct device *dev,
+ 	return ret;
+ }
+ 
+-static DEVICE_ATTR(mb0_id, 0644, at91_sysfs_show_mb0_id, at91_sysfs_set_mb0_id);
++static DEVICE_ATTR_RW(mb0_id);
+ 
+ static struct attribute *at91_sysfs_attrs[] = {
+ 	&dev_attr_mb0_id.attr,
 -- 
 2.30.2
 
